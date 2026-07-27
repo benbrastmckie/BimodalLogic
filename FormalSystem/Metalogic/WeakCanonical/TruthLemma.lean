@@ -42,15 +42,15 @@ consumers) was archived to
 truth lemma (ParametricTruthLemma.lean) is the live truth-lemma path,
 handling Until/Since via BFMCS coherence.
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems
 
 /-! ## Bot exclusion: Proved (sorry-free) -/
 
@@ -103,7 +103,7 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         · exact absurd rfl h_ne
         · exact h
       have h_dne : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
-        Bimodal.Theorems.Propositional.double_negation ψ
+        FormalSystem.Theorems.Propositional.double_negation ψ
       have d_psi : DerivationTree FrameClass.Base L_filt ψ := by
         have d_dne_weak : DerivationTree FrameClass.Base L_filt
             ((Formula.neg (Formula.neg ψ)).imp ψ) :=
@@ -177,7 +177,7 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         · exact absurd rfl h_ne
         · exact h
       have h_dne : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
-        Bimodal.Theorems.Propositional.double_negation ψ
+        FormalSystem.Theorems.Propositional.double_negation ψ
       have d_psi : DerivationTree FrameClass.Base L_filt ψ := by
         have d_dne_weak : DerivationTree FrameClass.Base L_filt
             ((Formula.neg (Formula.neg ψ)).imp ψ) :=
@@ -203,4 +203,4 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
   have h_neg_in_y : Formula.neg ψ ∈ y₀ := hy_sub (by simp)
   exact set_consistent_not_both hy_mcs.1 ψ h_psi_in_y h_neg_in_y
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

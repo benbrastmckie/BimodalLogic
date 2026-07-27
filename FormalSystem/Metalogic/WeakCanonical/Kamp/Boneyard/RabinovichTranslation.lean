@@ -37,10 +37,10 @@ exists-forall formula with one free variable, and provides `future_chain`,
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## ExistsForallSpec: User-facing specification type -/
 
@@ -303,4 +303,4 @@ theorem translateSpecs_correct {sig : MonadicSignature}
       List.mem_map_of_mem (f := fun s => s.translate) h_spec_mem
     exact ⟨spec.translate, hmem, spec.translate_forward M atomMap t h_sem⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

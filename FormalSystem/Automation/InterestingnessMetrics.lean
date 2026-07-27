@@ -35,10 +35,10 @@ interesting results. The multiplicative SNT gate ensures trivial formulas
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.InterestingnessMetrics
+namespace FormalSystem.Automation.InterestingnessMetrics
 
-open Bimodal.Syntax
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.Automation.DataExport
 
 /--
 Lightweight proof data for interestingness metrics.
@@ -581,4 +581,4 @@ def InterestingnessResult.toJson (r : InterestingnessResult) : String :=
   ++ ", \"proof_richness\": " ++ toString r.proofRichness
   ++ "}"
 
-end Bimodal.Automation.InterestingnessMetrics
+end FormalSystem.Automation.InterestingnessMetrics

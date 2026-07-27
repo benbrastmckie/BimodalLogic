@@ -47,10 +47,10 @@ formulas over (Z, <) into temporal formulas using Since and Until.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ## FO-to-Temporal Infrastructure -/
 
@@ -176,7 +176,7 @@ and future-only formulas depend only on times > t. -/
     their truth at t depends only on the valuation at times ≤ t. -/
 theorem past_only_is_pure_past {φ : Formula} (h : Separation.is_past_only φ = true) :
     ∀ (M₁ M₂ : Separation.IntStructure) (t : Int),
-      (∀ (a : Bimodal.Syntax.Atom) (s : Int), s ≤ t → (s ∈ M₁.val a ↔ s ∈ M₂.val a)) →
+      (∀ (a : FormalSystem.Syntax.Atom) (s : Int), s ≤ t → (s ∈ M₁.val a ↔ s ∈ M₂.val a)) →
       (Separation.int_truth M₁ t φ ↔ Separation.int_truth M₂ t φ) := by
   induction φ with
   | atom a =>
@@ -218,7 +218,7 @@ theorem past_only_is_pure_past {φ : Formula} (h : Separation.is_past_only φ = 
     their truth at t depends only on the valuation at times ≥ t. -/
 theorem future_only_is_pure_future {φ : Formula} (h : Separation.is_future_only φ = true) :
     ∀ (M₁ M₂ : Separation.IntStructure) (t : Int),
-      (∀ (a : Bimodal.Syntax.Atom) (s : Int), t ≤ s → (s ∈ M₁.val a ↔ s ∈ M₂.val a)) →
+      (∀ (a : FormalSystem.Syntax.Atom) (s : Int), t ≤ s → (s ∈ M₁.val a ↔ s ∈ M₂.val a)) →
       (Separation.int_truth M₁ t φ ↔ Separation.int_truth M₂ t φ) := by
   induction φ with
   | atom a =>
@@ -265,7 +265,7 @@ and atoms in future-only parts can be substituted based on future evaluation. -/
 /-- In a past-only formula, substituting an atom whose truth at times ≤ t matches
     a replacement formula preserves truth at t. -/
 theorem past_only_subst_correct {φ : Formula} (hpo : Separation.is_past_only φ = true)
-    (target : Bimodal.Syntax.Atom) (replacement : Formula)
+    (target : FormalSystem.Syntax.Atom) (replacement : Formula)
     (M : Separation.IntStructure) (t : Int)
     (h_match : ∀ s : Int, s ≤ t →
       (Separation.int_truth M s replacement ↔ s ∈ M.val target)) :
@@ -282,7 +282,7 @@ theorem past_only_subst_correct {φ : Formula} (hpo : Separation.is_past_only φ
 /-- In a future-only formula, substituting an atom whose truth at times ≥ t matches
     a replacement formula preserves truth at t. -/
 theorem future_only_subst_correct {φ : Formula} (hfo : Separation.is_future_only φ = true)
-    (target : Bimodal.Syntax.Atom) (replacement : Formula)
+    (target : FormalSystem.Syntax.Atom) (replacement : Formula)
     (M : Separation.IntStructure) (t : Int)
     (h_match : ∀ s : Int, t ≤ s →
       (Separation.int_truth M s replacement ↔ s ∈ M.val target)) :
@@ -1803,4 +1803,4 @@ theorem atom_elim_correct {sig : MonadicSignature}
     subst hσ_eq
     exact body_correct.mpr h_body
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

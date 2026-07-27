@@ -27,17 +27,17 @@ module's niche is the kernel-checkable propositional reflection procedure, and t
 argument here reuses only the already-verified, sorry-free semantic soundness theorem.
 -/
 
-namespace Bimodal.Metalogic.Decidability.Propositional
+namespace FormalSystem.Metalogic.Decidability.Propositional
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
 
 /-! ## `isPropositional` and Reification -/
 
 /-- `true` iff `φ` is built only from `atom`/`bot`/`imp` (no `box`/`untl`/`snce`). Called as
 `isPropositional φ` (not dot notation — this is defined outside `Formula`'s home namespace
-`Bimodal.Syntax`, so `φ.isPropositional` would not resolve). -/
+`FormalSystem.Syntax`, so `φ.isPropositional` would not resolve). -/
 def isPropositional : Formula → Bool
   | .atom _ => true
   | .bot => true
@@ -157,24 +157,24 @@ reification. Box/until/since cases are dismissed by `isPropositional`; the atom 
 via the trivial history's total domain. -/
 theorem trivial_truth_iff (v : Nat → Bool) (atomList : List Atom) (t : Int) :
     ∀ q : Formula, isPropositional q = true →
-      (Bimodal.Semantics.truth_at (trivialModel v atomList) Set.univ
+      (FormalSystem.Semantics.truth_at (trivialModel v atomList) Set.univ
           (WorldHistory.trivial (D := Int)) t q ↔ (reifyWith atomList q).eval v = true) := by
   intro q
   induction q with
   | atom a =>
       intro _
-      simp [Bimodal.Semantics.truth_at, WorldHistory.trivial, trivialModel, reifyWith
+      simp [FormalSystem.Semantics.truth_at, WorldHistory.trivial, trivialModel, reifyWith
         ]
   | bot =>
       intro _
-      simp [Bimodal.Semantics.truth_at, reifyWith]
+      simp [FormalSystem.Semantics.truth_at, reifyWith]
   | imp φ ψ ihφ ihψ =>
       intro hprop
       have hpair : isPropositional φ = true ∧ isPropositional ψ = true := by
         simpa [isPropositional, Bool.and_eq_true_iff] using hprop
       have hφ := ihφ hpair.1
       have hψ := ihψ hpair.2
-      simp only [Bimodal.Semantics.truth_at, reifyWith, PropForm.eval]
+      simp only [FormalSystem.Semantics.truth_at, reifyWith, PropForm.eval]
       rw [hφ, hψ]
       cases (reifyWith atomList φ).eval v <;> cases (reifyWith atomList ψ).eval v <;> simp
   | box φ _ => intro hprop; simp [isPropositional] at hprop
@@ -194,14 +194,14 @@ theorem derivable_tautology (p : Formula) (hp : isPropositional p = true)
     obtain ⟨v, hv⟩ := this
     exact ⟨v, Bool.not_eq_true _ |>.mp hv⟩
   have htruth_iff := trivial_truth_iff v (formulaAtomsList p) (0 : Int) p hp
-  have hnot_truth : ¬ Bimodal.Semantics.truth_at (trivialModel v (formulaAtomsList p)) Set.univ
+  have hnot_truth : ¬ FormalSystem.Semantics.truth_at (trivialModel v (formulaAtomsList p)) Set.univ
       (WorldHistory.trivial (D := Int)) (0 : Int) p := by
     rw [htruth_iff]
     simp [hv]
   obtain ⟨d⟩ := h
-  have htruth := Bimodal.Metalogic.soundness [] p d Int
+  have htruth := FormalSystem.Metalogic.soundness [] p d Int
     (TaskFrame.trivial_frame (D := Int)) (trivialModel v (formulaAtomsList p)) Set.univ
-    Bimodal.Semantics.Set.univ_shift_closed (WorldHistory.trivial (D := Int))
+    FormalSystem.Semantics.Set.univ_shift_closed (WorldHistory.trivial (D := Int))
     (Set.mem_univ _) (0 : Int) (fun ψ hψ => absurd hψ List.not_mem_nil)
   exact hnot_truth htruth
 
@@ -245,4 +245,4 @@ example : ¬ |-! (pAtomEx.imp qAtomEx) := by
       have htaut := derivable_tautology (pAtomEx.imp qAtomEx) hp hd
       exact absurd htaut (by decide)
 
-end Bimodal.Metalogic.Decidability.Propositional
+end FormalSystem.Metalogic.Decidability.Propositional

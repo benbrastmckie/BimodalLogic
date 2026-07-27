@@ -118,7 +118,7 @@
     #block(width: 80%)[
       #set align(left)
       + #link("https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf")[_"The Construction of Possible Worlds"_], Brast-McKie, _Journal of Philosophical Logic_, forthcoming.
-      + The #proofchecker Lean 4 repository, `Theories/Bimodal/` -- ground truth for all formal claims.
+      + The #proofchecker Lean 4 repository, `FormalSystem/` -- ground truth for all formal claims.
     ]
     #v(1cm)
   ]
@@ -182,7 +182,7 @@
     library, followed by the system's position among neighboring
     temporal-modal logics and the decidability frontier for its extensions.
     The formal claims in this part resolve to live Lean source under
-    `Theories/Bimodal/`.
+    `FormalSystem/`.
   ],
 )
 

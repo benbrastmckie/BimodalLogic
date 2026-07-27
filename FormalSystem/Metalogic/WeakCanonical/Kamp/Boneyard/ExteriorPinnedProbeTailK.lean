@@ -122,10 +122,10 @@ general-m G1/G2 supply against the refined interface remains open. -/
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Probe cast -/
 
@@ -347,4 +347,4 @@ theorem kvE_probe358_tailDG_sigma_in_population :
         (@decide_eq_false _ (Classical.dec _) (by omega : ¬((30:ℤ) < 2))).symm
     | .order ⟨2, _⟩ ⟨2, _⟩ h => exact absurd rfl h
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

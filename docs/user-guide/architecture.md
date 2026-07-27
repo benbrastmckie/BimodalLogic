@@ -241,8 +241,8 @@ purposes; the `sorry` placeholders above are illustrative, not a live status rep
 a self-declared roadmap whose `Formula` type (6 constructors, `String` atoms) diverges from the
 real `Syntax/Formula.lean` type, which is what makes this block schematic rather than stale. In
 the actual implementation, all six perpetuity principles are complete and sorry-free — see
-`Theories/Bimodal/Theorems/Perpetuity/Principles.lean` (P1–P5) and
-`Theories/Bimodal/Theorems/Perpetuity/Bridge.lean` (P6).
+`FormalSystem/Theorems/Perpetuity/Principles.lean` (P1–P5) and
+`FormalSystem/Theorems/Perpetuity/Bridge.lean` (P6).
 
 #### Derivation Trees: Type vs Prop
 

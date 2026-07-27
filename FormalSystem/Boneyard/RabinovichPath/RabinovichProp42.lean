@@ -69,10 +69,10 @@ either:
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Wiring: master_induction → ExistPart
 
@@ -113,4 +113,4 @@ theorem existPart_succ_n1_via_master
            (Fin.cons x (fun _ => t)) sub_nf) :=
   nf_2var_exist_formula_prior_fill atomMap h_surj (k + 1) parent_atoms sub_nf
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

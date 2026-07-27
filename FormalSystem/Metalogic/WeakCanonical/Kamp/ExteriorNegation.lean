@@ -88,11 +88,11 @@ if/when Phase 3 meets unbounded positive content (recorded for Phase 3's budget)
 
 Purely additive leaf module (H7 territory: this file + additive import wiring only). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-- `ZoneSpec n` equality is decidable (file-local mirror of the private SW:61 bridge). -/
 private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
@@ -1868,4 +1868,4 @@ theorem kvE2_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [De
         exact absurd hbitv Bool.false_ne_true
   · exact hoff
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

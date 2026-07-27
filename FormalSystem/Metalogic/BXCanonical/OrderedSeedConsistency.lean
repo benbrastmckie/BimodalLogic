@@ -35,14 +35,14 @@ the remaining F-formulas in the seed.
 - Goldblatt 1992: "Logics of Time and Computation"
 -/
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
 
 /-! ## Enriched Resolving Seed
 
@@ -258,4 +258,4 @@ theorem resolved_target_in_successor {M M' : Set Formula}
     (h_seed_sub : {ψ} ∪ g_content M ⊆ M') : ψ ∈ M' :=
   h_seed_sub (Set.mem_union_left _ (Set.mem_singleton ψ))
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

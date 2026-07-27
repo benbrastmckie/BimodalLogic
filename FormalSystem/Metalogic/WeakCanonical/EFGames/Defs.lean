@@ -13,9 +13,9 @@ import FormalSystem.Metalogic.WeakCanonical.NormalForm
 EF game foundations: positions, n-equivalence, gap structures, and rank embedding basics.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## General Temporal Truth on OrderedMonadicStructure
 
@@ -568,4 +568,4 @@ theorem discrete_no_gaps {T : Type} [LinearOrder T]
   rw [← hn] at hb
   exact hb (h_all n)
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

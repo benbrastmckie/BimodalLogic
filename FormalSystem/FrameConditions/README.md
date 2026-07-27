@@ -39,7 +39,7 @@ not preference.
   - `Bimodal.Metalogic.Soundness`
   - `Bimodal.ProofSystem.Axioms`
   - `Bimodal.Semantics.Validity`
-- Live importers of `Bimodal.FrameConditions` anywhere: **1** — `Theories/Bimodal/Bimodal.lean`,
+- Live importers of `Bimodal.FrameConditions` anywhere: **1** — `FormalSystem/Bimodal.lean`,
   the library root.
 
 The direction is unambiguous: `FrameConditions/` sits strictly **above** `Metalogic/` and
@@ -66,8 +66,8 @@ as measurements rather than as prose.
 ## Usage
 
 ```lean
-import Bimodal.FrameConditions
-open Bimodal.FrameConditions
+import FormalSystem.FrameConditions
+open FormalSystem.FrameConditions
 
 example [DiscreteTemporalFrame D] : soundness_discrete D := ...
 ```
@@ -76,8 +76,8 @@ example [DiscreteTemporalFrame D] : soundness_discrete D := ...
 
 ```bash
 # The layering claims above, re-derived:
-grep -rl 'Bimodal\.FrameConditions' Theories/Bimodal/Metalogic --include='*.lean'   # expect: no output
-grep -h '^import' Theories/Bimodal/FrameConditions/*.lean | sort -u
+grep -rl 'Bimodal\.FrameConditions' FormalSystem/Metalogic --include='*.lean'   # expect: no output
+grep -h '^import' FormalSystem/FrameConditions/*.lean | sort -u
 ```
 
 ## Related Documentation

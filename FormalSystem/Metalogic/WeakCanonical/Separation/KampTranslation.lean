@@ -34,10 +34,10 @@ for details on the blocker and three identified approaches to resolve it.
 - Doets 1989, Lemma 1.1 (normal form theory)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper: Conjunction and Disjunction of Lists -/
 
@@ -167,4 +167,4 @@ theorem nf_depth0_char_formula_correct
     obtain ⟨p, _, rfl⟩ := h_mem
     exact (atom_literal_correct M atomMap h_surj p _ t).mpr (h p)
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

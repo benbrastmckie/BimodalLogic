@@ -23,7 +23,7 @@ and is used by the tableau decision procedure.
 
 Archived: the former `DenseFMP.lean`/`DiscreteFMP.lean` variant modules
 (`fmp_dense`, `fmp_discrete`) had no live importers and were moved to
-`Theories/Bimodal/Boneyard/FMPVariants/`.
+`FormalSystem/Boneyard/FMPVariants/`.
 
 ## Dependencies
 

@@ -12,9 +12,9 @@ import FormalSystem.Metalogic.WeakCanonical.EFGames.GapDetection
 Custom game G_{n;r}: definition, winning conditions, and strategy restriction.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Custom Game G_{n;r} (GHR93 Definition 8.7)
 
@@ -1718,4 +1718,4 @@ theorem ghr93_winning_condition_symm {sig : MonadicSignature}
     fun i A hA => (hform i A hA).symm⟩
 
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

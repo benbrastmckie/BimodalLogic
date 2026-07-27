@@ -29,15 +29,15 @@ reflexive, which enables the Z-model compression bypassing `succ_cofinal`
 - `reflCanV`: canonical valuation
 - `canS5R`: S5 box-accessibility relation
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems
 
 /-! ## Domain -/
 
@@ -188,7 +188,7 @@ theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
   have h_G_dni : [] ⊢ Formula.all_future (ψ.imp ψ.neg.neg) :=
     DerivationTree.temporal_necessitation _ h_dni
   have h_kd : [] ⊢ (ψ.imp ψ.neg.neg).all_future.imp (ψ.all_future.imp ψ.neg.neg.all_future) :=
-    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ ψ.neg.neg
+    FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived ψ ψ.neg.neg
   have h_Gψ_imp_Gnn : [] ⊢ ψ.all_future.imp ψ.neg.neg.all_future :=
     Combinators.mp h_G_dni h_kd
   -- G(¬¬ψ) ∈ y.val
@@ -608,7 +608,7 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
     DerivationTree.temporal_necessitation _ h_ef
   have h_kd : DerivationTree FrameClass.Base [] ((Formula.bot.imp neg_top).all_future.imp
     (Formula.bot.all_future.imp neg_top.all_future)) :=
-    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot neg_top
+    FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot neg_top
   have h1 := theorem_in_mcs h_mcs h_G_ef
   have h2 := theorem_in_mcs h_mcs h_kd
   have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
@@ -661,10 +661,10 @@ theorem h_content_set_consistent (x : ReflCanDomain) :
   have h_ef : DerivationTree FrameClass.Base [] (Formula.bot.imp neg_top) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso neg_top) trivial
   have h_H_ef : DerivationTree FrameClass.Base [] (Formula.all_past (Formula.bot.imp neg_top)) :=
-    Bimodal.Theorems.past_necessitation _ h_ef
+    FormalSystem.Theorems.past_necessitation _ h_ef
   have h_kd : DerivationTree FrameClass.Base [] ((Formula.bot.imp neg_top).all_past.imp
     (Formula.bot.all_past.imp neg_top.all_past)) :=
-    Bimodal.Theorems.past_k_dist Formula.bot neg_top
+    FormalSystem.Theorems.past_k_dist Formula.bot neg_top
   have h1 := theorem_in_mcs h_mcs h_H_ef
   have h2 := theorem_in_mcs h_mcs h_kd
   have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
@@ -777,4 +777,4 @@ theorem canS5R_trans {x y z : ReflCanDomain}
   -- Then φ ∈ z
   exact h_yz φ h_box_phi_y
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

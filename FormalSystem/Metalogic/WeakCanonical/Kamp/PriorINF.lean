@@ -44,10 +44,10 @@ holds outright, and the K+ disjunct is vacuous.
 - Rabinovich 2014, Proposition 4.2 (negation closure uses INF/SUP)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## K+ operator (holds arbitrarily soon after)
 
@@ -293,4 +293,4 @@ theorem prior_hasAttainedSUP {sig : MonadicSignature}
              exact this,
            h_Pr0⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

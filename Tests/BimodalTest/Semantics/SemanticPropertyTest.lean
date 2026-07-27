@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Semantics.TaskFrame
-import Bimodal.Semantics.TaskModel
-import Bimodal.Semantics.Truth
+import FormalSystem.Semantics.TaskFrame
+import FormalSystem.Semantics.TaskModel
+import FormalSystem.Semantics.Truth
 import BimodalTest.Property.Generators
 import Plausible
 
@@ -37,8 +37,8 @@ valid frames.
 
 namespace BimodalTest.Semantics.SemanticPropertyTest
 
-open Bimodal.Syntax
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.Semantics
 open BimodalTest.Property.Generators
 open Plausible
 

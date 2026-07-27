@@ -61,11 +61,11 @@ example : ⊢ (□p → p) := by
 * [Axioms.lean](../ProofSystem/Axioms.lean)
 -/
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems
 
 /-!
 ## Direct Axiom Rules
@@ -108,7 +108,7 @@ def axiom_modal_b (Γ : Context) (φ : Formula) {fc : FrameClass} :
 @[aesop safe apply]
 noncomputable def axiom_temp_4 (Γ : Context) (φ : Formula) :
     Γ ⊢ ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ))) :=
-  DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived φ) (List.nil_subset Γ)
+  DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived φ) (List.nil_subset Γ)
 
 /-- Connect future (BX4): φ → G(P(φ)). In BX axiom system. -/
 @[aesop safe apply]
@@ -281,4 +281,4 @@ Normalize some_past operator to primitive negation.
 @[aesop norm unfold]
 def normalize_some_past := @Formula.some_past
 
-end Bimodal.Automation
+end FormalSystem.Automation

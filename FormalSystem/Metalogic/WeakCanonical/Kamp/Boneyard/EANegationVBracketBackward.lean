@@ -19,10 +19,10 @@ Moved verbatim from EANegation.lean: the warm-up trio
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- For n=0, the negation is False (since the predicate is always True). -/
 theorem neg_orderedPointsExist_zero_false {sig : MonadicSignature}
@@ -610,4 +610,4 @@ theorem neg_partialBracketExist_is_vbracket
         This sorry does NOT block the completeness proof. -/
       sorry
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

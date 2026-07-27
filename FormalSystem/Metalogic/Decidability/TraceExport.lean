@@ -16,9 +16,9 @@ import FormalSystem.Automation.DataExport
 # JSON Serialization for Trace Certificates
 
 This module provides string-based JSON serialization for the trace certificate
-data types defined in `Bimodal.Metalogic.Decidability.TraceCertificate`.
+data types defined in `FormalSystem.Metalogic.Decidability.TraceCertificate`.
 
-The serialization mirrors the style of `Bimodal.Automation.DataExport`:
+The serialization mirrors the style of `FormalSystem.Automation.DataExport`:
 - Field names are quoted strings.
 - Lists are rendered as JSON arrays.
 - Strings are escaped using `escapeJsonString` (re-used from `DataExport`).
@@ -40,16 +40,16 @@ The serialization mirrors the style of `Bimodal.Automation.DataExport`:
 
 ## References
 
-- `Bimodal.Automation.DataExport` — String-based JSON helpers.
-- `Bimodal.Metalogic.Decidability.TraceCertificate` — Data types.
+- `FormalSystem.Automation.DataExport` — String-based JSON helpers.
+- `FormalSystem.Metalogic.Decidability.TraceCertificate` — Data types.
 - `tableau_rule_firing_traces` — the rule-firing trace deliverable exported here.
 -/
 
-namespace Bimodal.Metalogic.Decidability.TraceExport
+namespace FormalSystem.Metalogic.Decidability.TraceExport
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation.DataExport
 
 /-!
 ## Primitive Type Serialization
@@ -219,4 +219,4 @@ def traceResultToJsonString (result : TraceResult) : String :=
       ", \"trace\": " ++ listToJsonArray (trace.map traceEntryToJsonString) ++
       "}"
 
-end Bimodal.Metalogic.Decidability.TraceExport
+end FormalSystem.Metalogic.Decidability.TraceExport

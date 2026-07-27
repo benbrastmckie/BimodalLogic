@@ -53,10 +53,10 @@ or the completeness spine; it is a pure off-path probe. `KampPrior.lean:562` is 
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula)
+open FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
@@ -103,4 +103,4 @@ theorem capFn_forces_local
   rw [← hCap y1, ← hCap y2]
   exact intervalHolds_local N S y1 y2 hagree
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

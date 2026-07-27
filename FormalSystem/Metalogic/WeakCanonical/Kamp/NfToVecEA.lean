@@ -30,11 +30,11 @@ decomposes by order direction.
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Section 5 (base case)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff nf_depth0_char_formula nf_depth0_char_formula_correct)
 
 /-! ## VecEA2 Since-direction semantics (holdsRight)
@@ -571,4 +571,4 @@ theorem nf_2var_exist_depth0_tl
         exact ⟨(nfPred_correct M atomMap h_surj (nf_x_proj' sub_nf) x).mpr h_x_nf,
                (nfPred_correct M atomMap h_surj (nf_t_proj sub_nf) x).mpr h_t_nf⟩⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

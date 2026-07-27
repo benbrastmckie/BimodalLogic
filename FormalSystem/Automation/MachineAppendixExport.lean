@@ -36,7 +36,7 @@ and the rule *count* is cross-checked against the live source by
 
 `main` fails with a nonzero exit unless:
 - exactly 42 axiom entries are present, with name multiset equal to
-  `Bimodal.Automation.allAxiomNames` (shared with `BenchmarkAnchors.lean` via
+  `FormalSystem.Automation.allAxiomNames` (shared with `BenchmarkAnchors.lean` via
   `Automation/AxiomNames.lean`; no missing, no extra, no duplicates);
 - exactly 7 inference-rule entries are present.
 
@@ -66,17 +66,17 @@ Invoked by `scripts/typst-machine-appendix.sh`, which injects the git stamps
 
 ## References
 
-- `Bimodal.ProofSystem.Axioms` — the 42 `Axiom` constructors and `FrameClass`
-- `Bimodal.ProofSystem.Derivation` — the 7 `DerivationTree` constructors
-- `Bimodal.Automation.DataExport` — `Formula.toJson`, `prettyPrint`, escaping
-- `Bimodal.Automation.AxiomNames` — `allAxiomNames` (canonical 42-name list)
+- `FormalSystem.ProofSystem.Axioms` — the 42 `Axiom` constructors and `FrameClass`
+- `FormalSystem.ProofSystem.Derivation` — the 7 `DerivationTree` constructors
+- `FormalSystem.Automation.DataExport` — `Formula.toJson`, `prettyPrint`, escaping
+- `FormalSystem.Automation.AxiomNames` — `allAxiomNames` (canonical 42-name list)
 -/
 
-namespace Bimodal.Automation.MachineAppendixExport
+namespace FormalSystem.Automation.MachineAppendixExport
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation.DataExport
 
 /-!
 ## Schematic Atoms
@@ -252,7 +252,7 @@ def allAxiomEntries : List AxiomEntry :=
 ## Inference Rule Entries
 
 The 7 rules are the constructors of `DerivationTree`
-(`Bimodal.ProofSystem.Derivation`). These records are declarative: the
+(`FormalSystem.ProofSystem.Derivation`). These records are declarative: the
 turnstile schemata below mirror the constructor doc-comments; the count is
 cross-checked against the live `inductive DerivationTree` block by
 `scripts/typst-sync-check.sh` Check 3.
@@ -484,8 +484,8 @@ def main (args : List String) : IO UInt32 := do
     stamp {cfg.stampCommit} {cfg.stampDate})"
   return 0
 
-end Bimodal.Automation.MachineAppendixExport
+end FormalSystem.Automation.MachineAppendixExport
 
 /-- Executable entry point for `lake exe machine_appendix`. -/
 def main (args : List String) : IO UInt32 :=
-  Bimodal.Automation.MachineAppendixExport.main args
+  FormalSystem.Automation.MachineAppendixExport.main args

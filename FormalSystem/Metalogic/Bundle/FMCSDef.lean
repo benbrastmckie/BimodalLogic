@@ -67,12 +67,12 @@ removed because:
 
 -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.ProofSystem
+open FormalSystem.ProofSystem
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
 
 /-!
 ## FMCS Structure
@@ -128,4 +128,4 @@ variable {D : Type*} [Preorder D]
 -- FMCS.H_implies_past_phi, IsConstantFamily
 -- These were thin wrappers around structure fields that were never used.
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

@@ -30,9 +30,9 @@ junction-depth monotonicity.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Predicate: Formula has Single U-Type
 
@@ -1067,4 +1067,4 @@ theorem is_separable_with_U_type_replace_args {φ A A' B B' : Formula}
       (int_equiv_symm hA_equiv) (int_equiv_symm hB_equiv)),
     replace_untl_args_has_single_U_type ψ A B⟩
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

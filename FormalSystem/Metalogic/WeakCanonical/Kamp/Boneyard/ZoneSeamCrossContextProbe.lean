@@ -58,11 +58,11 @@ file is touched. -/
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 set_option maxHeartbeats 1600000
 
@@ -290,4 +290,4 @@ theorem crossContext_attack_payload (k : Nat)
   simp only [atom_eval, Fin.cons_one, Fin.cons_zero] at h31
   exact absurd h31 (show ¬ ((3 : ℤ) = 1) by norm_num)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

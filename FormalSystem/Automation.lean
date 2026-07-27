@@ -24,7 +24,7 @@ import FormalSystem.Automation.PrefilterSoundness
 -- and must not be imported through the umbrella; use them only via `lake exe` commands.
 
 /-!
-# Bimodal.Automation - Proof Automation
+# FormalSystem.Automation - Proof Automation
 
 Aggregates all Automation components for the Core TM logic layer.
 

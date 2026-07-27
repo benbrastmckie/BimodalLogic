@@ -33,16 +33,16 @@ sorries above.
 
 -- Deep API drift: DeterministicChain behind #exit, ParametricRepresentation namespace renamed.
 
-namespace Bimodal.Metalogic.Algebraic.DeterministicFMCS
+namespace FormalSystem.Metalogic.Algebraic.DeterministicFMCS
 
-open Bimodal.Syntax Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.DeterministicChain
-open Bimodal.Metalogic.Algebraic.UltrafilterChain
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Metalogic.Algebraic.ParametricRepresentation
-open Bimodal.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Syntax FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.DeterministicChain
+open FormalSystem.Metalogic.Algebraic.UltrafilterChain
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic.ParametricRepresentation
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
 
 /-!
 ## DeterministicFMCS
@@ -199,15 +199,15 @@ private theorem YX_round_trip {M : Set Formula} (h_mcs : SetMaximalConsistent M)
   have h_x_det : [] ⊢ (Formula.untl Formula.bot φ).neg.imp
       (Formula.untl Formula.bot φ.neg) :=
     sorry /- x_det removed in BX -/
-  have h_H_xdet := Bimodal.Theorems.past_necessitation _ h_x_det
+  have h_H_xdet := FormalSystem.Theorems.past_necessitation _ h_x_det
   have h_Y_xdet := DerivationTree.modus_ponens [] _ _
-    (Bimodal.Theorems.TemporalDerived.H_implies_Y _) h_H_xdet
+    (FormalSystem.Theorems.TemporalDerived.H_implies_Y _) h_H_xdet
   have h_Y_Xneg := SetMaximalConsistent.implication_property h_mcs
     (SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (sorry /- y_k_dist removed in BX -/))
       (theorem_in_mcs h_mcs h_Y_xdet)) h_Y_negX
   have h_neg_phi := SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.YX_identity φ.neg)) h_Y_Xneg
+    (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.YX_identity φ.neg)) h_Y_Xneg
   exact set_consistent_not_both h_mcs.1 φ h_phi h_neg_phi
 
 /-- In any MCS: φ ∈ M → X(Y(φ)) ∈ M.
@@ -226,13 +226,13 @@ private theorem XY_round_trip {M : Set Formula} (h_mcs : SetMaximalConsistent M)
     sorry /- y_det removed in BX -/
   have h_G_ydet := DerivationTree.temporal_necessitation _ h_y_det
   have h_X_ydet := DerivationTree.modus_ponens [] _ _
-    (Bimodal.Theorems.TemporalDerived.G_implies_X _) h_G_ydet
+    (FormalSystem.Theorems.TemporalDerived.G_implies_X _) h_G_ydet
   have h_X_Yneg := SetMaximalConsistent.implication_property h_mcs
     (SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (sorry /- x_k_dist removed in BX -/))
       (theorem_in_mcs h_mcs h_X_ydet)) h_X_negY
   have h_neg_phi := SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.XY_identity φ.neg)) h_X_Yneg
+    (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.XY_identity φ.neg)) h_X_Yneg
   exact set_consistent_not_both h_mcs.1 φ h_phi h_neg_phi
 
 /-- General integer x_content membership: φ ∈ chain(n+1) ↔ X(φ) ∈ chain(n) for all ℤ. -/
@@ -262,7 +262,7 @@ theorem x_mem_chain_general (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M
         | succ m' => simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h_X; exact h_X
       exact SetMaximalConsistent.implication_property (deterministic_chain_mcs M₀ h_mcs (Int.negSucc m + 1))
         (theorem_in_mcs (deterministic_chain_mcs M₀ h_mcs (Int.negSucc m + 1))
-          (Bimodal.Theorems.TemporalDerived.YX_identity φ)) h_YX
+          (FormalSystem.Theorems.TemporalDerived.YX_identity φ)) h_YX
 
 /-- General integer y_content membership: φ ∈ chain(n-1) ↔ Y(φ) ∈ chain(n) for all ℤ. -/
 theorem y_mem_chain_general (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
@@ -299,7 +299,7 @@ theorem y_mem_chain_general (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M
           rw [mem_chain_succ_iff_x_mem_chain] at this; exact this
         exact SetMaximalConsistent.implication_property (deterministic_chain_mcs M₀ h_mcs ↑m')
           (theorem_in_mcs (deterministic_chain_mcs M₀ h_mcs ↑m')
-            (Bimodal.Theorems.TemporalDerived.XY_identity φ)) h_XY
+            (FormalSystem.Theorems.TemporalDerived.XY_identity φ)) h_XY
   | negSucc m =>
     constructor
     · intro h
@@ -318,9 +318,9 @@ theorem y_mem_chain_general (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M
 private theorem mcs_or_intro_left {M : Set Formula} (h_mcs : SetMaximalConsistent M)
     {a : Formula} (h_a : a ∈ M) (b : Formula) : Formula.or a b ∈ M := by
   have h_nna := SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.dni a)) h_a
+    (theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.dni a)) h_a
   have h_bc : [] ⊢ (Formula.bot.imp b).imp ((a.neg.imp Formula.bot).imp (a.neg.imp b)) :=
-    @Bimodal.Theorems.Combinators.b_combinator a.neg Formula.bot b
+    @FormalSystem.Theorems.Combinators.b_combinator a.neg Formula.bot b
   have h_ef : [] ⊢ Formula.bot.imp b := DerivationTree.axiom [] _ (Axiom.ex_falso b)
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (DerivationTree.modus_ponens [] _ _ h_bc h_ef)) h_nna
@@ -336,7 +336,7 @@ private theorem mcs_and_intro' {M : Set Formula} (h_mcs : SetMaximalConsistent M
     {a b : Formula} (h_a : a ∈ M) (h_b : b ∈ M) : Formula.and a b ∈ M :=
   SetMaximalConsistent.implication_property h_mcs
     (SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.pairing a b)) h_a) h_b
+      (theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.pairing a b)) h_a) h_b
 
 /-!
 ### Backward Until/Since via Chain Induction
@@ -375,7 +375,7 @@ private theorem backward_until_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- until_intro: X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (Bimodal.Theorems.TemporalDerived.until_intro φ ψ)) h_X_disj
+        (FormalSystem.Theorems.TemporalDerived.until_intro φ ψ)) h_X_disj
   | succ d' ih =>
     -- Inductive case: s' = t' + d' + 2
     intro t' s' h_diff h_psi_s h_phi_guard
@@ -399,7 +399,7 @@ private theorem backward_until_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- until_intro
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (Bimodal.Theorems.TemporalDerived.until_intro φ ψ)) h_X_disj
+        (FormalSystem.Theorems.TemporalDerived.until_intro φ ψ)) h_X_disj
 
 /-- Backward Since for the deterministic chain: given a witness at s < t with guard
 on (s, t), derive (φ S ψ) ∈ chain(t). Uses since_intro and induction on t - s. -/
@@ -431,7 +431,7 @@ private theorem backward_since_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- since_intro: Y(ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (Bimodal.Theorems.TemporalDerived.since_intro φ ψ)) h_Y_disj
+        (FormalSystem.Theorems.TemporalDerived.since_intro φ ψ)) h_Y_disj
   | succ d' ih =>
     -- Inductive case: t' = s' + d' + 2
     intro t' s' h_diff h_psi_s h_phi_guard
@@ -455,7 +455,7 @@ private theorem backward_since_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- since_intro
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (Bimodal.Theorems.TemporalDerived.since_intro φ ψ)) h_Y_disj
+        (FormalSystem.Theorems.TemporalDerived.since_intro φ ψ)) h_Y_disj
 
 /-!
 ## Temporal and Until/Since Coherence
@@ -532,4 +532,4 @@ noncomputable def deterministic_representation {φ : Formula}
     (h_not_prov : ¬Nonempty ([] ⊢ φ)) :=
   parametric_algebraic_representation_conditional φ h_not_prov construct_bfmcs_callback
 
-end Bimodal.Metalogic.Algebraic.DeterministicFMCS
+end FormalSystem.Metalogic.Algebraic.DeterministicFMCS

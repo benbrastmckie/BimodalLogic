@@ -19,9 +19,9 @@ This document provides a centralized API reference for all Bimodal modules, gene
 
 ## Syntax
 
-### Formula (`Bimodal.Syntax.Formula`)
+### Formula (`FormalSystem.Syntax.Formula`)
 
-**Module**: `Theories/Bimodal/Syntax/Formula.lean`
+**Module**: `FormalSystem/Syntax/Formula.lean`
 
 The core syntax for bimodal logic TM (Tense and Modality), combining S5 modal logic with linear temporal logic.
 
@@ -87,9 +87,9 @@ swap_temporal (p.all_future) = p.all_past
 
 ---
 
-### Context (`Bimodal.Syntax.Context`)
+### Context (`FormalSystem.Syntax.Context`)
 
-**Module**: `Theories/Bimodal/Syntax/Context.lean`
+**Module**: `FormalSystem/Syntax/Context.lean`
 
 Formula lists for proof contexts representing assumptions in derivations.
 
@@ -119,9 +119,9 @@ Context.map Formula.box [p, q] = [□p, □q]
 
 ## Semantics
 
-### TaskFrame (`Bimodal.Semantics.TaskFrame`)
+### TaskFrame (`FormalSystem.Semantics.TaskFrame`)
 
-**Module**: `Theories/Bimodal/Semantics/TaskFrame.lean`
+**Module**: `FormalSystem/Semantics/TaskFrame.lean`
 
 Task frame structure for TM semantics, defining the fundamental semantic structures.
 
@@ -148,9 +148,9 @@ structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
 
 ---
 
-### TaskModel (`Bimodal.Semantics.TaskModel`)
+### TaskModel (`FormalSystem.Semantics.TaskModel`)
 
-**Module**: `Theories/Bimodal/Semantics/TaskModel.lean`
+**Module**: `FormalSystem/Semantics/TaskModel.lean`
 
 Task models extending task frames with valuation functions for propositional atoms.
 
@@ -166,9 +166,9 @@ structure TaskModel (F : TaskFrame T) where
 
 ---
 
-### WorldHistory (`Bimodal.Semantics.WorldHistory`)
+### WorldHistory (`FormalSystem.Semantics.WorldHistory`)
 
-**Module**: `Theories/Bimodal/Semantics/WorldHistory.lean`
+**Module**: `FormalSystem/Semantics/WorldHistory.lean`
 
 World histories representing functions from convex time intervals to world states.
 
@@ -188,9 +188,9 @@ structure WorldHistory (F : TaskFrame T) where
 
 ---
 
-### Truth (`Bimodal.Semantics.Truth`)
+### Truth (`FormalSystem.Semantics.Truth`)
 
-**Module**: `Theories/Bimodal/Semantics/Truth.lean`
+**Module**: `FormalSystem/Semantics/Truth.lean`
 
 Truth definition for formulas at world histories and times.
 
@@ -198,9 +198,9 @@ Truth definition for formulas at world histories and times.
 
 ---
 
-### Validity (`Bimodal.Semantics.Validity`)
+### Validity (`FormalSystem.Semantics.Validity`)
 
-**Module**: `Theories/Bimodal/Semantics/Validity.lean`
+**Module**: `FormalSystem/Semantics/Validity.lean`
 
 Semantic validity and consequence relations for TM logic.
 
@@ -208,9 +208,9 @@ Semantic validity and consequence relations for TM logic.
 
 ## Proof System
 
-### Axioms (`Bimodal.ProofSystem.Axioms`)
+### Axioms (`FormalSystem.ProofSystem.Axioms`)
 
-**Module**: `Theories/Bimodal/ProofSystem/Axioms.lean`
+**Module**: `FormalSystem/ProofSystem/Axioms.lean`
 
 The 14 axiom schemata for bimodal logic TM.
 
@@ -261,9 +261,9 @@ inductive Axiom : Formula → Prop where
 
 ---
 
-### Derivation (`Bimodal.ProofSystem.Derivation`)
+### Derivation (`FormalSystem.ProofSystem.Derivation`)
 
-**Module**: `Theories/Bimodal/ProofSystem/Derivation.lean`
+**Module**: `FormalSystem/ProofSystem/Derivation.lean`
 
 Derivability relation and inference rules for TM logic.
 
@@ -296,9 +296,9 @@ inductive DerivationTree : Context → Formula → Prop where
 
 ## Automation
 
-### Tactics (`Bimodal.Automation.Tactics`)
+### Tactics (`FormalSystem.Automation.Tactics`)
 
-**Module**: `Theories/Bimodal/Automation/Tactics.lean`
+**Module**: `FormalSystem/Automation/Tactics.lean`
 
 Custom tactics for modal and temporal reasoning.
 
@@ -365,7 +365,7 @@ example (h : p → q) : p → q := by
 
 ---
 
-### ProofSearch (`Bimodal.Automation.ProofSearch`)
+### ProofSearch (`FormalSystem.Automation.ProofSearch`)
 
 **Module**: `Bimodal/Automation/ProofSearch.lean`
 
@@ -435,7 +435,7 @@ Batch search that accumulates patterns across multiple goals.
 
 ---
 
-### SuccessPatterns (`Bimodal.Automation.SuccessPatterns`)
+### SuccessPatterns (`FormalSystem.Automation.SuccessPatterns`)
 
 **Module**: `Bimodal/Automation/SuccessPatterns.lean`
 
@@ -484,9 +484,9 @@ match db'.queryPatterns φ with
 
 ---
 
-### AesopRules (`Bimodal.Automation.AesopRules`)
+### AesopRules (`FormalSystem.Automation.AesopRules`)
 
-**Module**: `Theories/Bimodal/Automation/AesopRules.lean`
+**Module**: `FormalSystem/Automation/AesopRules.lean`
 
 Aesop rule registration for TM automation.
 
@@ -499,9 +499,9 @@ Aesop rule registration for TM automation.
 
 ## Theorems
 
-### Propositional (`Bimodal.Theorems.Propositional`)
+### Propositional (`FormalSystem.Theorems.Propositional`)
 
-**Module**: `Theories/Bimodal/Theorems/Propositional.lean`
+**Module**: `FormalSystem/Theorems/Propositional.lean`
 
 Key propositional theorems in Hilbert-style proof calculus.
 
@@ -524,33 +524,33 @@ Key propositional theorems in Hilbert-style proof calculus.
 
 ---
 
-### ModalS4 (`Bimodal.Theorems.ModalS4`)
+### ModalS4 (`FormalSystem.Theorems.ModalS4`)
 
-**Module**: `Theories/Bimodal/Theorems/ModalS4.lean`
+**Module**: `FormalSystem/Theorems/ModalS4.lean`
 
 S4 modal logic theorems (reflexivity + transitivity).
 
 ---
 
-### ModalS5 (`Bimodal.Theorems.ModalS5`)
+### ModalS5 (`FormalSystem.Theorems.ModalS5`)
 
-**Module**: `Theories/Bimodal/Theorems/ModalS5.lean`
+**Module**: `FormalSystem/Theorems/ModalS5.lean`
 
 S5 modal logic theorems (reflexivity + transitivity + symmetry).
 
 ---
 
-### GeneralizedNecessitation (`Bimodal.Theorems.GeneralizedNecessitation`)
+### GeneralizedNecessitation (`FormalSystem.Theorems.GeneralizedNecessitation`)
 
-**Module**: `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean`
+**Module**: `FormalSystem/Theorems/GeneralizedNecessitation.lean`
 
 Generalized necessitation rules for modal and temporal operators.
 
 ---
 
-### Combinators (`Bimodal.Theorems.Combinators`)
+### Combinators (`FormalSystem.Theorems.Combinators`)
 
-**Module**: `Theories/Bimodal/Theorems/Combinators.lean`
+**Module**: `FormalSystem/Theorems/Combinators.lean`
 
 Combinator infrastructure for proof construction.
 
@@ -567,9 +567,9 @@ Combinator infrastructure for proof construction.
 
 ---
 
-### Perpetuity (`Bimodal.Theorems.Perpetuity`)
+### Perpetuity (`FormalSystem.Theorems.Perpetuity`)
 
-**Module**: `Theories/Bimodal/Theorems/Perpetuity.lean`
+**Module**: `FormalSystem/Theorems/Perpetuity.lean`
 
 Perpetuity principles connecting modal and temporal operators.
 
@@ -590,9 +590,9 @@ Perpetuity principles connecting modal and temporal operators.
 
 ## Metalogic
 
-### Soundness (`Bimodal.Metalogic.Soundness`)
+### Soundness (`FormalSystem.Metalogic.Soundness`)
 
-**Module**: `Theories/Bimodal/Metalogic/Soundness.lean`
+**Module**: `FormalSystem/Metalogic/Soundness.lean`
 
 Soundness theorem: derivability implies semantic consequence.
 
@@ -600,9 +600,9 @@ Soundness theorem: derivability implies semantic consequence.
 
 ---
 
-### DeductionTheorem (`Bimodal.Metalogic.Core.DeductionTheorem`)
+### DeductionTheorem (`FormalSystem.Metalogic.Core.DeductionTheorem`)
 
-**Module**: `Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean`
+**Module**: `FormalSystem/Metalogic/Core/DeductionTheorem.lean`
 
 Deduction theorem for TM logic.
 
@@ -612,16 +612,16 @@ Deduction theorem for TM logic.
 
 ---
 
-### Completeness (`Bimodal.Metalogic.BXCanonical`)
+### Completeness (`FormalSystem.Metalogic.BXCanonical`)
 
-**Module**: `Theories/Bimodal/Metalogic/BXCanonical.lean`
+**Module**: `FormalSystem/Metalogic/BXCanonical.lean`
 
 Completeness theorem: semantic consequence implies derivability. The chronicle
 construction under `BXCanonical/` carries the flagship results (`completeness`,
 `completeness_dense`, `completeness_discrete`); `WeakCanonical/` and `Algebraic/`
 are the two alternative routes. The former top-level `Metalogic/Completeness.lean`
 had no live importer and is archived under
-`Theories/Bimodal/Boneyard/SupersededCompleteness/`.
+`FormalSystem/Boneyard/SupersededCompleteness/`.
 
 **Main Theorem**: `completeness : Γ ⊨ φ → Γ ⊢ φ`
 
@@ -634,7 +634,7 @@ had no live importer and is archived under
 ```lean
 import Bimodal
 
-open Bimodal.Syntax Bimodal.ProofSystem
+open FormalSystem.Syntax FormalSystem.ProofSystem
 
 -- Prove modal T axiom
 example (p : Formula) : ⊢ (p.box.imp p) := by
@@ -652,9 +652,9 @@ example (p : Formula) : ⊢ (p.box.imp p) := by
 ### Proof Search
 
 ```lean
-import Bimodal.Automation.ProofSearch
+import FormalSystem.Automation.ProofSearch
 
-open Bimodal.Automation
+open FormalSystem.Automation
 
 -- Bounded search for derivation
 def search_example : Bool :=
@@ -668,9 +668,9 @@ def heuristic_example : Bool :=
 ### Semantic Evaluation
 
 ```lean
-import Bimodal.Semantics
+import FormalSystem.Semantics
 
-open Bimodal.Semantics
+open FormalSystem.Semantics
 
 -- Define a task frame
 def example_frame : TaskFrame Int := {
@@ -711,8 +711,8 @@ All Bimodal modules follow these documentation standards:
 ## Version History
 
 - **1.1.0** (2026-01-11): Task 176 - Enhanced proof search documentation
-  - Added `Bimodal.Automation.ProofSearch` with multiple strategies
-  - Added `Bimodal.Automation.SuccessPatterns` for pattern learning
+  - Added `FormalSystem.Automation.ProofSearch` with multiple strategies
+  - Added `FormalSystem.Automation.SuccessPatterns` for pattern learning
   - Updated search function signatures and benchmark results
   - Added strategy selection guide and heuristic configuration
 

@@ -36,11 +36,11 @@ there are at most 2^|closure| distinct equivalence classes.
 - Blackburn, de Rijke, Venema: Modal Logic (Ch 2.3)
 -/
 
-namespace Bimodal.Metalogic.Decidability.FMP
+namespace FormalSystem.Metalogic.Decidability.FMP
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
 
 /-!
 ## Characteristic Sets
@@ -180,4 +180,4 @@ by characteristic sets, and these sets form a finite type
 (the powerset of a finite set is finite).
 -/
 
-end Bimodal.Metalogic.Decidability.FMP
+end FormalSystem.Metalogic.Decidability.FMP

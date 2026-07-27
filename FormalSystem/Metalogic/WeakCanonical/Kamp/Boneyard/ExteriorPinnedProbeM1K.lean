@@ -93,10 +93,10 @@ touched (Phase 6 makes zero production edits). -/
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Probe signature and model (template copies of the `p3*` conventions,
 ExteriorPinnedProbeK.lean:75-84) -/
@@ -910,4 +910,4 @@ theorem kvE_probeM1_foldCollision_hcons_status :
    m1_qnf_sigma_false,
    m1_sigma_not_pinned4⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

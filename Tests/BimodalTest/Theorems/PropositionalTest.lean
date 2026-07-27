@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Theorems.Propositional.Core
+import FormalSystem.Theorems.Propositional.Core
 
 /-!
 # Propositional Theorems Tests
@@ -29,9 +29,9 @@ Each theorem has minimum 2 test cases (simple atomic, nested/complex).
 
 namespace BimodalTest.Theorems.PropositionalTest
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Propositional
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Propositional
 
 /-!
 ## Law of Excluded Middle Tests
@@ -201,7 +201,7 @@ noncomputable example : [(Formula.atom_s "p").and (Formula.atom_s "q")] ⊢
 
   -- Step 3: Apply deduction theorem: [p] ⊢ p ∨ r implies ⊢ p → (p ∨ r)
   have h_imp : [] ⊢ (Formula.atom_s "p").imp ((Formula.atom_s "p").or (Formula.atom_s "r")) :=
-    Bimodal.Metalogic.Core.deduction_theorem [] (Formula.atom_s "p")
+    FormalSystem.Metalogic.Core.deduction_theorem [] (Formula.atom_s "p")
       ((Formula.atom_s "p").or (Formula.atom_s "r")) h_ldi
 
   -- Step 4: Weaken to the context [p ∧ q]

@@ -6,10 +6,10 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Automation.ProofSearch.Core
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## Best-First Search
@@ -382,4 +382,4 @@ example (p : Formula) (_ : [p.box] ⊢ p) :
     ∃ (_ : [p.box] ⊢ p.box), True :=
   ⟨DerivationTree.assumption [p.box] p.box (by simp), trivial⟩
 
-end Bimodal.Automation
+end FormalSystem.Automation

@@ -51,10 +51,10 @@ does not re-derive PROBE 1's `False`.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
@@ -183,4 +183,4 @@ theorem reconciled_no_surj_onto_inr
         ↔ temporal_truth (canonExpand sig F M (fun C x => temporal_truth M g x C)) atomMap y B := by
   exact ⟨A, canonExpand_atom_named M atomMap g hMap A y⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

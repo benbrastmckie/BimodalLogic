@@ -4,7 +4,7 @@
 
 ## Reference Document
 
-For the complete formal specification, see **BimodalReference** ([tex](latex/BimodalReference.tex) | [pdf](latex/BimodalReference.pdf)).
+For the complete formal specification, see **BimodalReference** ([tex](../latex/BimodalReference.tex) | [pdf](../latex/BimodalReference.pdf)).
 
 This README provides an overview; BimodalReference contains the detailed specification of syntax, semantics, proof theory, and metalogic.
 
@@ -274,8 +274,8 @@ lake build Bimodal
 lake build
 
 # Type-check specific file
-lake env lean Theories/Bimodal/Syntax/Formula.lean
-lake env lean Theories/Bimodal/ProofSystem/Axioms.lean
+lake env lean FormalSystem/Syntax/Formula.lean
+lake env lean FormalSystem/ProofSystem/Axioms.lean
 ```
 
 ## Implementation Status
@@ -295,19 +295,19 @@ deduction theorem, and decidability are all fully proven.
 
 ## Theory-Specific Documentation
 
-For Bimodal-specific guides and references, see [docs/](docs/README.md):
+For Bimodal-specific guides and references, see [docs/](../docs/README.md):
 
 | Document | Description |
 |----------|-------------|
-| [Quick Start](docs/user-guide/quickstart.md) | Get started with Bimodal proofs |
-| [Proof Patterns](docs/user-guide/proof-patterns.md) | Common proof strategies |
-| [Axiom Reference](docs/reference/axiom-reference.md) | Complete axiom schemas |
-| [Tactic Reference](docs/reference/tactic-reference.md) | Custom tactic usage |
+| [Quick Start](../docs/user-guide/quickstart.md) | Get started with Bimodal proofs |
+| [Proof Patterns](../docs/user-guide/proof-patterns.md) | Common proof strategies |
+| [Axiom Reference](../docs/reference/axiom-reference.md) | Complete axiom schemas |
+| [Tactic Reference](../docs/reference/tactic-reference.md) | Custom tactic usage |
 
 ## Navigation
 
-- **Parent**: [Project Root](../../) | [Tests](../../Tests/)
-- **Docs**: [docs/](docs/README.md)
+- **Parent**: [Project Root](../../) | [Tests](../Tests/)
+- **Docs**: [docs/](../docs/README.md)
 - **Boneyard**: [Boneyard/](Boneyard/README.md) (archived code)
 
 ---

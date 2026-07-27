@@ -26,14 +26,14 @@ Phase 6 of the algebraic completeness theorem. Contains sorries pending earlier 
 
 #exit
 
-namespace Bimodal.Metalogic.Algebraic.AlgebraicCompleteness
+namespace FormalSystem.Metalogic.Algebraic.AlgebraicCompleteness
 
-open Bimodal.Syntax Bimodal.ProofSystem
-open Bimodal.Metalogic.Algebraic.LindenbaumQuotient
-open Bimodal.Metalogic.Algebraic.BooleanStructure
-open Bimodal.Metalogic.Algebraic.InteriorOperators
-open Bimodal.Metalogic.Algebraic.UltrafilterMCS
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
+open FormalSystem.Metalogic.Algebraic.BooleanStructure
+open FormalSystem.Metalogic.Algebraic.InteriorOperators
+open FormalSystem.Metalogic.Algebraic.UltrafilterMCS
+open FormalSystem.Metalogic.Core
 
 /-!
 ## Algebraic Canonical Frame
@@ -117,7 +117,7 @@ theorem consistent_implies_satisfiable {φ : Formula} (h : AlgConsistent φ) :
         simp [h_all_phi ψ hψ]
       -- By deduction theorem: ⊢ ¬φ
       have d_neg : DerivationTree FrameClass.Base [] φ.neg :=
-        Bimodal.Metalogic.Core.deduction_theorem [] φ Formula.bot d_phi_bot
+        FormalSystem.Metalogic.Core.deduction_theorem [] φ Formula.bot d_phi_bot
       exact h ⟨d_neg⟩
 
   -- Step 2: Extend {φ} to MCS using Lindenbaum
@@ -192,4 +192,4 @@ theorem algebraic_completeness_theorem' (φ : Formula) :
     AlgSatisfiable φ ↔ ¬Nonempty (⊢ φ.neg) :=
   algebraic_completeness_theorem φ
 
-end Bimodal.Metalogic.Algebraic.AlgebraicCompleteness
+end FormalSystem.Metalogic.Algebraic.AlgebraicCompleteness

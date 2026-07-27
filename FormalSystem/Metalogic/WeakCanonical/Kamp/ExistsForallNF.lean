@@ -39,10 +39,10 @@ key closure properties needed for the Kamp theorem proof.
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Section 3
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Temporal Predicates
 
@@ -357,4 +357,4 @@ noncomputable def translateVEF1 (disjuncts : List Formula) : Formula :=
   | [f] => f
   | f :: rest => Formula.or f (translateVEF1 rest)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -65,9 +65,9 @@ The derivation tree includes 7 inference rules:
 * [Axioms.lean](./Axioms.lean) - Axiom schemata definitions
 -/
 
-namespace Bimodal.ProofSystem
+namespace FormalSystem.ProofSystem
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /--
 Derivation tree for bimodal logic TM, parameterized by frame class.
@@ -124,7 +124,7 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
 
   **Note**: The generalized rule `Γ ⊢ φ` ⟹ `□Γ ⊢ □φ` is derivable from
   this rule plus K distribution (`modal_k_dist`) and the deduction theorem.
-  See `Bimodal.Theorems.GeneralizedNecessitation` for the derivation.
+  See `FormalSystem.Theorems.GeneralizedNecessitation` for the derivation.
   -/
   | necessitation (φ : Formula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.box φ)
@@ -141,7 +141,7 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
 
   **Note**: The generalized rule `Γ ⊢ φ` ⟹ `GΓ ⊢ Gφ` is derivable from
   this rule plus temporal K distribution (`temp_k_dist`) and the deduction theorem.
-  See `Bimodal.Theorems.GeneralizedNecessitation` for the derivation.
+  See `FormalSystem.Theorems.GeneralizedNecessitation` for the derivation.
   -/
   | temporal_necessitation (φ : Formula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.all_future φ)
@@ -217,7 +217,7 @@ to produce data. The height function is computable and can be evaluated.
 
 ## Usage
 
-The height measure is primarily used in `Bimodal.Metalogic.DeductionTheorem`
+The height measure is primarily used in `FormalSystem.Metalogic.DeductionTheorem`
 for proving termination of the deduction theorem via well-founded recursion.
 -/
 def height {fc : FrameClass} {Γ : Context} {φ : Formula} : DerivationTree fc Γ φ → Nat
@@ -383,4 +383,4 @@ Example: Lifting a base derivation to dense frame class.
 example (p : Atom) : ⊢[FrameClass.Dense] (Formula.box (Formula.atom p)).imp (Formula.atom p) :=
   DerivationTree.lift (fc₁ := .Base) trivial (.axiom _ _ (Axiom.modal_t _) trivial)
 
-end Bimodal.ProofSystem
+end FormalSystem.ProofSystem

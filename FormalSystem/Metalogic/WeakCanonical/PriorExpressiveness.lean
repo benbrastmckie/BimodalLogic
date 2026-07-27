@@ -40,9 +40,9 @@ on the critical path for `US_expressively_complete_over_prior`.
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Theorem 9.3.1
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Semantic Prior-UZ/SZ Hypotheses
 
@@ -369,4 +369,4 @@ noncomputable def US_expressively_complete_over_prior
   -- Direct application of Kamp/Rabinovich 2014 (relativized to Prior structures)
   Kamp.kamp_prior_expressive_completeness atomMap h_surj psi
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

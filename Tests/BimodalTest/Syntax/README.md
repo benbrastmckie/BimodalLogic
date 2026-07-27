@@ -18,7 +18,7 @@ Tests for formula syntax and context operations.
 
 ## Related
 
-- [Source: Syntax/](../../../Theories/Bimodal/Syntax/)
+- [Source: Syntax/](../../../FormalSystem/Syntax/)
 - [Parent README](../README.md)
 
 ---

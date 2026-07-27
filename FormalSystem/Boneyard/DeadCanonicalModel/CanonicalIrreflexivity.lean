@@ -43,11 +43,11 @@ When strictness (M != W) is needed for witness constructions:
 
 #exit
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 -- Classical decidability for set membership
 attribute [local instance] Classical.propDecidable
@@ -178,4 +178,4 @@ theorem strict_of_formula_with_G_not_in_source {M W : Set Formula} {φ : Formula
 
 end
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

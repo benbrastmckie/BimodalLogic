@@ -65,11 +65,11 @@ No frozen file is touched.
 - The negfix-refactor design for the exterior carriers, Phase 14a (E2 — the past-side navigator).
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 section ExteriorNavPast
 
@@ -1099,4 +1099,4 @@ theorem CExtPast_inconsistent_false (M : OrderedMonadicStructure sig)
 
 end ExteriorNavPast
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

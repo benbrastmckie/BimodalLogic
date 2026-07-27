@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Syntax.Formula
+import FormalSystem.Syntax.Formula
 
 /-!
 # Formula Test Suite
@@ -24,7 +24,7 @@ Tests for the Formula inductive type and derived operators.
 
 namespace BimodalTest.Syntax
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 -- Test: Formula atom construction
 example : Formula.atom_s "p" = Formula.atom_s "p" := rfl

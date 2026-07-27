@@ -39,9 +39,9 @@ to find the "first failure" point.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Negation of Until -/
 
@@ -175,4 +175,4 @@ theorem neg_since_equiv (A B : Formula) :
     · -- m < u: u in (m, t), so ¬A(u) by hnotAguard. But A(u) holds.
       exact hnotAguard u hum hut hAu
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

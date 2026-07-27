@@ -207,7 +207,7 @@ git diff <commit1> <commit2> -- TODO.md
 git log --all -S "Perpetuity" --oneline
 
 # Find commits that modified specific file
-git log --oneline -- Theories/Bimodal/Theorems/Perpetuity.lean
+git log --oneline -- FormalSystem/Theorems/Perpetuity.lean
 
 # View commit history with dates
 git log --all --pretty=format:"%h %ad %s" --date=short
@@ -242,19 +242,19 @@ cat specs/025_soundness_automation_implementation/summaries/004_iteration_3_fina
 
 ```bash
 # Count active sorry placeholders
-grep -rn "sorry" Theories/Bimodal/**/*.lean 2>/dev/null | wc -l
+grep -rn "sorry" FormalSystem/**/*.lean 2>/dev/null | wc -l
 
 # List sorry locations with context
-grep -rn "sorry" Theories/Bimodal/**/*.lean 2>/dev/null
+grep -rn "sorry" FormalSystem/**/*.lean 2>/dev/null
 
 # Find sorry in specific module
-grep -n "sorry" Theories/Bimodal/Core/Theorems/Perpetuity.lean
+grep -n "sorry" FormalSystem/Core/Theorems/Perpetuity.lean
 
 # Search commit history for sorry resolutions
 git log --all --grep="sorry" --oneline
 
 # Find when file became sorry-free
-git log --all -S "sorry" -- Theories/Bimodal/Semantics/Truth.lean
+git log --all -S "sorry" -- FormalSystem/Semantics/Truth.lean
 ```
 
 ---
@@ -432,7 +432,7 @@ If SORRY_REGISTRY.md count doesn't match actual:
 
 ```bash
 # Get actual count
-grep -rn "sorry" Theories/Bimodal/**/*.lean 2>/dev/null | wc -l
+grep -rn "sorry" FormalSystem/**/*.lean 2>/dev/null | wc -l
 
 # Compare with registry
 grep -c "^- \*\*.*\.lean:" docs/project-info/SORRY_REGISTRY.md

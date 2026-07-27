@@ -7,10 +7,10 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.BoundedFixAnchored
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.ConcatPin
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! # Lemma 5.1 fixed-formula negation: the n = 1 gated instance
 
@@ -560,4 +560,4 @@ theorem caseB4_holds : caseB4_Z.holds MZ atomMapZ 0 10 := by
 end NegFixGateProbe
 
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

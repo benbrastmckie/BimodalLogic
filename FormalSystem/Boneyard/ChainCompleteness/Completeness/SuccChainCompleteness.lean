@@ -50,13 +50,13 @@ or the algebraic path (Algebraic/ParametricRepresentation.lean).
 
 -- Deep API drift: SuccChainTruth behind #exit.
 
-namespace Bimodal.Metalogic.Completeness
+namespace FormalSystem.Metalogic.Completeness
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Semantics
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Semantics
+open FormalSystem.ProofSystem
 
 /-!
 ## Consistency of Unprovable Formulas
@@ -179,4 +179,4 @@ theorem succ_chain_completeness_standard (φ : Formula)
   obtain ⟨M0, h_not_true⟩ := succ_chain_completeness φ h_not_prov
   exact h_not_true (h_valid M0)
 
-end Bimodal.Metalogic.Completeness
+end FormalSystem.Metalogic.Completeness

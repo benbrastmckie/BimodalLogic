@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.Tactics.Commands
+import FormalSystem.Automation.Tactics.Commands
 
 /-!
 # LemmaDB Tests (Task 187)
@@ -27,7 +27,7 @@ pre-existing errors from the frame-class generalization). Build gate:
 namespace BimodalTest.Automation.LemmaDBTest
 
 open Lean
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Automation
+open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Automation
 
 /-!
 ## Group 1: Label-count smoke check

@@ -26,14 +26,14 @@ follows from S5 properties of BXCanonical (box_preserved_along_bx_le,
 bx_modal_witness).
 -/
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Theorems.Perpetuity
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Theorems.Perpetuity
+open FormalSystem.Theorems.Combinators
 
 /-! ## Schedule -/
 
@@ -852,4 +852,4 @@ noncomputable def henkin_bfmcs (fc : FrameClass) (A : Set Formula)
   eval_family := shifted_bx_fmcs_fc A h_mcs 0
   eval_family_mem := ⟨A, h_mcs, 0, fun _ => Iff.rfl, rfl⟩
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

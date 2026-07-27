@@ -128,10 +128,10 @@ This project follows Lean 4 ecosystem conventions for directory naming:
 Directories containing Lean source code use PascalCase. These names must match Lean's import path requirements:
 
 - `Logos/` - Main Lean source code
-- `Theories/` - Theory implementations (Bimodal, Logos)
+- `FormalSystem/` - Theory implementations (Bimodal, Logos)
 - `Tests/` - Test suites
 
-**Rationale**: Lean imports like `import Theories.Bimodal.Syntax` require directory names to match exactly.
+**Rationale**: Lean imports like `import FormalSystem.Syntax` require directory names to match exactly.
 
 ### lowercase
 

@@ -63,7 +63,7 @@ Resolved by the reorganization into `Automation/ProofSearch/Core.lean` and
 
 ### Description
 
-`Theories/Bimodal/Examples/` contains exactly two files, `BimodalProofs.lean` and
+`FormalSystem/Examples/` contains exactly two files, `BimodalProofs.lean` and
 `TemporalStructures.lean`, both sorry-free (0 total, as of the current build).
 
 ### Impact

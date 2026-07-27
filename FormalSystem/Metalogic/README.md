@@ -11,8 +11,8 @@ Boneyards — see [Counting Live Files](#counting-live-files).
 
 There are two archive directories, not one:
 
-- `Theories/Bimodal/Boneyard/` — 93 files / 59,010 lines
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` — 62 files / 27,394 lines
+- `FormalSystem/Boneyard/` — 93 files / 59,010 lines
+- `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` — 62 files / 27,394 lines
 
 A `find` filter naming only the top-level `Boneyard` silently counts the 27k-line
 Kamp-local archive as live. Use the invariant script rather than an ad-hoc `find`:
@@ -76,18 +76,18 @@ regenerated from the tree rather than copied from any report.
 ```
 BXCanonical → WeakCanonical  (2 import lines)
   BXCanonical/Chronicle/ChronicleToCountermodel.lean
-      → Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery
+      → FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery
   BXCanonical/Completeness.lean
-      → Bimodal.Metalogic.WeakCanonical
+      → FormalSystem.Metalogic.WeakCanonical
 
 WeakCanonical → BXCanonical  (4 import lines)
   WeakCanonical/ChronicleExtraction.lean
-      → Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleConstruction
-      → Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic
+      → FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleConstruction
+      → FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic
   WeakCanonical/ReflexiveCanonical.lean
-      → Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
+      → FormalSystem.Metalogic.BXCanonical.OrderedSeedConsistency
   WeakCanonical/Transfer.lean
-      → Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
+      → FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 ```
 
 ### Cycle 2: `Bundle` ↔ `Core`
@@ -95,7 +95,7 @@ WeakCanonical → BXCanonical  (4 import lines)
 ```
 Bundle → Core  (18 import lines across 10 files)
 Core  → Bundle (1 import line)
-  Core/RestrictedMCS/Basic.lean → Bimodal.Metalogic.Bundle.CanonicalTaskRelation
+  Core/RestrictedMCS/Basic.lean → FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
 ```
 
 Nesting either pair produces a directory whose contents import upward out of it —
@@ -146,8 +146,8 @@ Two rules keep this safe:
    compile-checks them, so an unreachable aggregator cannot rot unnoticed.
 
 The one deliberate exception to the sibling rule is the Lake library root pair
-`Theories/Bimodal.lean` + `Theories/Bimodal/Bimodal.lean`. `lean_lib Bimodal` sets
-`srcDir := "Theories"` and `roots := #[`Bimodal]`, so that indirection is
+`FormalSystem.lean` + `FormalSystem/Bimodal.lean`. `lean_lib FormalSystem` sets
+`srcDir := "FormalSystem"` and `roots := #[`Bimodal]`, so that indirection is
 load-bearing. The invariant check allowlists it by name.
 
 ## Directory Inventory
@@ -228,7 +228,7 @@ A tableau-based decision procedure with countermodel extraction, plus a separate
 propositional fragment under `Decidability/Propositional/`.
 
 ```lean
-import Bimodal.Metalogic.Decidability   -- decide, isValid, isSatisfiable
+import FormalSystem.Metalogic.Decidability   -- decide, isValid, isSatisfiable
 ```
 
 ## Sorry Status
@@ -262,10 +262,10 @@ new cycle. See [`../FrameConditions/README.md`](../FrameConditions/README.md).
 Four files under `Decidability/` import from `Automation/`:
 
 ```
-Decidability/Closure.lean            → Bimodal.Automation.ProofSearch.Core
-Decidability/DecisionProcedure.lean  → Bimodal.Automation.ProofSearch.Strategies
-Decidability/DecisionProcedure.lean  → Bimodal.Automation.Normalization
-Decidability/TraceExport.lean        → Bimodal.Automation.DataExport
+Decidability/Closure.lean            → FormalSystem.Automation.ProofSearch.Core
+Decidability/DecisionProcedure.lean  → FormalSystem.Automation.ProofSearch.Strategies
+Decidability/DecisionProcedure.lean  → FormalSystem.Automation.Normalization
+Decidability/TraceExport.lean        → FormalSystem.Automation.DataExport
 ```
 
 These are upward edges: `Automation/` is a consumer layer that itself imports

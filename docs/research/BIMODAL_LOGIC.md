@@ -86,7 +86,7 @@ Six theorems connecting modal and temporal operators:
 
 **Key Result**: Bimodal has fully verified soundness and completeness proofs, establishing it as a production-ready implementation.
 
-**Implementation location**: [Theories/Bimodal/README.md](../../Theories/Bimodal/README.md)
+**Implementation location**: [FormalSystem/README.md](../../FormalSystem/README.md)
 
 ---
 
@@ -130,7 +130,7 @@ Bimodal logic is a fragment of the **Logos**, a formal language of thought desig
 
 ## Navigation
 
-- [Bimodal Implementation](../../Theories/Bimodal/README.md) - Full implementation details
+- [Bimodal Implementation](../../FormalSystem/README.md) - Full implementation details
 - [Research Documentation](README.md) - Research index
 - [Architecture Guide](../user-guide/architecture.md) - System architecture
 

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Syntax.Formula
-import Bimodal.Automation.FormulaMutator
+import FormalSystem.Syntax.Formula
+import FormalSystem.Automation.FormulaMutator
 
 /-! # Formula Mutator Test Suite
 
@@ -22,8 +22,8 @@ Tests for the single-occurrence mutation engine and contrastive pair generation.
 
 namespace BimodalTest.Automation
 
-open Bimodal.Syntax
-open Bimodal.Automation.FormulaMutator
+open FormalSystem.Syntax
+open FormalSystem.Automation.FormulaMutator
 
 -- Convenience atoms
 private def p : Formula := .atom_s "p"

@@ -5,8 +5,8 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Mathlib.Algebra.Order.Group.Int
-import Bimodal.Semantics.Truth
-import Bimodal.Semantics.TaskFrame
+import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.TaskFrame
 
 /-!
 # Truth Evaluation Tests
@@ -22,8 +22,8 @@ explicit `Int` annotations.
 
 namespace BimodalTest.Semantics
 
-open Bimodal.Syntax
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.Semantics
 
 -- Helper: use trivial frame for testing (with explicit Int time)
 def testFrame : TaskFrame Int := TaskFrame.trivial_frame

@@ -25,16 +25,16 @@ the corresponding CanonicalTask theorems proven in CanonicalTaskRelation.lean.
 
 - `CanonicalTaskRelation.lean`: CanonicalTask definition and axioms
 - `SuccChainFMCS.lean`: FMCS family construction
-- Bimodal.Semantics.TaskFrame: TaskFrame structure definition
+- FormalSystem.Semantics.TaskFrame: TaskFrame structure definition
 -/
 
 #exit
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.Semantics
 
 /-!
 ## TaskFrame Instantiation
@@ -99,4 +99,4 @@ def CanonicalTaskTaskFrame : TaskFrame Int where
   forward_comp := CanonicalTask_forward_comp_for_frame
   converse := CanonicalTask_converse_for_frame
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

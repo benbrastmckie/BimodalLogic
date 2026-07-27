@@ -12,9 +12,9 @@ import FormalSystem.Metalogic.WeakCanonical.EFGames.CustomGame
 Decomposition formulas and Lemma 11: game-decomposition equivalence.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Decomposition Formulas and Lemma 11 (GHR93 Definition 8.8)
 
@@ -317,4 +317,4 @@ theorem ghr93_game_iff_decomposition {sig : MonadicSignature}
    fun hd => ghr93_decomposition_implies_game h_pt h_pt_M hd⟩
 
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

@@ -43,7 +43,7 @@ subdirectories for their implementation infrastructure.
 | `ProofSearch/` | Depth-limited proof search engine |
 
 `EFGameTactics.lean` used to live here. It declares `namespace
-Bimodal.Metalogic.WeakCanonical` and its only consumer is the EF-game development,
+FormalSystem.Metalogic.WeakCanonical` and its only consumer is the EF-game development,
 so it now lives at `Metalogic/WeakCanonical/EFGameTactics.lean`, where its path and
 its namespace agree. `Automation.lean` still re-exports it.
 
@@ -89,10 +89,10 @@ example : ⊢ (□p → p) := by
 
 ```bash
 # ML pipeline: Generate dataset
-lake run Bimodal.Automation.DatasetExporter -- output.jsonl
+lake run FormalSystem.Automation.DatasetExporter -- output.jsonl
 
 # Run benchmark oracle on formulas
-lake run Bimodal.Automation.BenchmarkOracle -- formulas.jsonl results.jsonl
+lake run FormalSystem.Automation.BenchmarkOracle -- formulas.jsonl results.jsonl
 ```
 
 ## Related Documentation

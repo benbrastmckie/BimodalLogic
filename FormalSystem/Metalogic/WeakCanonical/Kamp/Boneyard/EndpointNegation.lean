@@ -24,10 +24,10 @@ witness.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **Lemma 5.1** (Rabinovich 2014, VecEA2 level): The negation of any
     `VecEA2 n` formula is model-independently equivalent to a `VVecEA2`
@@ -163,4 +163,4 @@ theorem neg_vecEA2_is_vvecEA2 :
        This sorry is NOT on the critical path to completeness. -/
     sorry
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

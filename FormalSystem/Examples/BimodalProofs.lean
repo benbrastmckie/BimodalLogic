@@ -41,12 +41,12 @@ This file demonstrates both available notation styles:
 * [architecture.md](../docs/user-guide/architecture.md) - TM logic specification
 -/
 
-namespace Bimodal.Examples.BimodalProofs
+namespace FormalSystem.Examples.BimodalProofs
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Perpetuity
-open Bimodal.Automation
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Perpetuity
+open FormalSystem.Automation
 
 /-!
 ## P1: Necessary Implies Always
@@ -244,4 +244,4 @@ For more details on the perpetuity principles, see:
 - [Perpetuity.lean](../ProofChecker/Theorems/Perpetuity.lean)
 -/
 
-end Bimodal.Examples.BimodalProofs
+end FormalSystem.Examples.BimodalProofs

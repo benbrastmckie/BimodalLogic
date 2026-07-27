@@ -12,9 +12,9 @@ import FormalSystem.Metalogic.WeakCanonical.Expressiveness.Claim1
 D-consistency and game rank downward transport.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## GHR93 Claim 1: D-Consistency of Strategy Responses
 
@@ -752,4 +752,4 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
   exact ⟨proj, hproj_in, hwin, hpos⟩
 
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

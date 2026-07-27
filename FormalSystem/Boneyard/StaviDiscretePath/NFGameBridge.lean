@@ -51,9 +51,9 @@ splits intervals while maintaining the game invariant at each sub-interval.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## NF Agreement Helpers
 
@@ -1244,4 +1244,4 @@ theorem game_win_to_formula_agree {sig : MonadicSignature}
   simp only [game_tuple_b_eq] at h
   exact h
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

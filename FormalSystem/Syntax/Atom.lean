@@ -45,7 +45,7 @@ finitely many atoms in `GContent(M)`, we can find a fresh atom not mentioned.
 - Blackburn, de Rijke, Venema (2001), Modal Logic
 -/
 
-namespace Bimodal.Syntax
+namespace FormalSystem.Syntax
 
 /-!
 ## Countability Prerequisites
@@ -211,4 +211,4 @@ noncomputable def Atom.fresh_for (S : Finset Atom) : Atom :=
 theorem Atom.fresh_for_not_mem (S : Finset Atom) : Atom.fresh_for S ∉ S :=
   Classical.choose_spec (Atom.exists_fresh S)
 
-end Bimodal.Syntax
+end FormalSystem.Syntax

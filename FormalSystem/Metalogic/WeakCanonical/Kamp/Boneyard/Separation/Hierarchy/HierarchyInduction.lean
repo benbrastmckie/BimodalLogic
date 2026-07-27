@@ -28,9 +28,9 @@ measures, and callback infrastructure.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Hierarchy Theorem (GHR94 Lemmas 10.2.5-10.2.8)
 
@@ -1452,4 +1452,4 @@ theorem snce_single_U_depth_one_sep_with_U_type (C F A B : Formula)
         exact case6_sep_with_U_type_Z_gen a_neg q_neg A B ha_neg_uf hqn_uf hA_uf hB_uf hA_sf hB_sf
 
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

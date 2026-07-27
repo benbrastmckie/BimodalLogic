@@ -50,9 +50,9 @@ let hints := db'.queryPatterns newGoal context
 - "Reinforcement Learning for Theorem Proving" (Kaliszyk et al., 2018)
 -/
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-!
 ## Goal Category Types
@@ -426,4 +426,4 @@ def ProofInfo.fromSearchStats (φ : Formula) (depth : Nat) (contextSize : Nat)
   , nodesVisited := nodesVisited
   }
 
-end Bimodal.Automation
+end FormalSystem.Automation

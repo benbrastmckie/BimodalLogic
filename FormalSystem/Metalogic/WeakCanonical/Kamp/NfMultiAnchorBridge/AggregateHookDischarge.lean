@@ -109,11 +109,11 @@ exclusion type, never `TemporalPred.top`. G5 — every Cor 5.4 chain step below 
   verbatim into the Phase-1 adjudication record above.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -2188,4 +2188,4 @@ example (atomMap : Formula → sig.preds)
 
 end AggDiagK1
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

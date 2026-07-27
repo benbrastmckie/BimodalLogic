@@ -44,11 +44,11 @@ Def 4.1 (p.5).
   `atom_eval`).
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (formula_conjList formula_conjList_iff atom_literal atom_literal_correct)
 
 variable {sig : MonadicSignature} {F : Finset Formula}
@@ -173,4 +173,4 @@ theorem unaryToFormulaFin_correct
     rw [← atom_eval1_iff_interp]
     exact h a
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

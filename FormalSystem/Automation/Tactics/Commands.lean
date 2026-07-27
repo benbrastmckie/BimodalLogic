@@ -7,10 +7,10 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Automation.Tactics.Helpers
 import FormalSystem.Automation.Tactics.Deduction
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 open Lean Elab Tactic Meta
 
 /-!
@@ -118,7 +118,7 @@ syntax modalSearchParam := "(" ident " := " num ")"
 syntax "modal_search" modalSearchParam* : tactic
 
 /-- Parse named parameter value from TSyntax -/
-def parseSearchParam (stx : TSyntax `Bimodal.Automation.modalSearchParam) : TacticM (String × Nat) := do
+def parseSearchParam (stx : TSyntax `FormalSystem.Automation.modalSearchParam) : TacticM (String × Nat) := do
   match stx with
   | `(modalSearchParam| ( $name:ident := $val:num )) =>
     return (name.getId.toString, val.getNat)
@@ -719,4 +719,4 @@ noncomputable example (p q : Formula) : ⊢ (p.imp q).imp ((p.neg.imp q).imp q) 
 example (p : Formula) : ⊢ p.box.imp p.box.all_future := by
   modal_search
 
-end Bimodal.Automation
+end FormalSystem.Automation

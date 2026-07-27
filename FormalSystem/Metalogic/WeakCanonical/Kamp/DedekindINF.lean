@@ -99,7 +99,7 @@ The deferred re-base, precisely:
 follow-up task, and nowhere as a `sorry`-bodied theorem. A dead module carrying strategic sorries
 would be the wrong answer: `Kamp/Boneyard/*` is covered by no glob and compiled by nothing in CI,
 so such a module would rot invisibly — which is precisely the failure the Section 5 correspondence
-guard exists to prevent. **This module is CI-protected** (reachable from `Theories/Bimodal.lean`
+guard exists to prevent. **This module is CI-protected** (reachable from `FormalSystem.lean`
 via the `NfMultiAnchorBridge` import edge) and **contains no sorries**.
 
 ## What already exists to build on
@@ -115,10 +115,10 @@ primitive for eq (5.2)'s `(P₁(r₀) ∨ K⁺(P₁)(r₀))`.
 - Rabinovich 2014, *A Proof of Kamp's Theorem*, Lemma 5.3 and eq (5.2), PDF p.8
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## The faithful carrier -/
 
@@ -288,4 +288,4 @@ theorem hasDefinableINF_incompatible_with_kplus {sig : MonadicSignature}
     ¬HasDefinableINF M atomMap :=
   fun h_inf => hasDefinableINF_excludes_kplus M atomMap h_inf P z0 z1 h_lt h_occ h_kplus
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

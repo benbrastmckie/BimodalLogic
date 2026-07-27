@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.Tactics.PropDecide
+import FormalSystem.Automation.Tactics.PropDecide
 
 /-!
 # Tests for `prop_decide`
@@ -22,9 +22,9 @@ marking since `Prop`-valued definitions are erased by the compiler.
 
 namespace BimodalTest.Metalogic.PropDecideTest
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation
 
 /-! ## Schematic Goals (`⊢ φ`) -/
 

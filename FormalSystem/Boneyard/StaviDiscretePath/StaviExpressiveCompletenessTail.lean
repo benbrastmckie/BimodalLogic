@@ -46,9 +46,9 @@ Do not import from live code.
 #exit
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean
-   Original context: `namespace Bimodal.Metalogic.WeakCanonical`,
-   `open Bimodal.Syntax`.
+   Source: FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean
+   Original context: `namespace FormalSystem.Metalogic.WeakCanonical`,
+   `open FormalSystem.Syntax`.
    ====================================================================== -/
 
 /- ---------------------------------------------------------------------

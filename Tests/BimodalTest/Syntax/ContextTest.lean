@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Syntax.Context
+import FormalSystem.Syntax.Context
 
 /-!
 # Context Test Suite
@@ -23,7 +23,7 @@ Tests for the Context type and helper functions.
 
 namespace BimodalTest.Syntax
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 -- Test: Empty context
 example : ([] : Context) = [] := rfl

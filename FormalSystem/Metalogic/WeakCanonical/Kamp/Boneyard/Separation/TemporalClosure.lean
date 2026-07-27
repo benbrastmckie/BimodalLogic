@@ -58,9 +58,9 @@ junction-depth induction machinery.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Box Normalization
 
@@ -690,4 +690,4 @@ theorem restricted_u_free_separated (phi : Formula)
     is_syntactically_separated phi = true :=
   expanded_jd_zero_imp_separated phi hrestr (u_free_junction_depth_zero phi huf)
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

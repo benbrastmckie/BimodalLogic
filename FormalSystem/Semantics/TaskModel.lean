@@ -31,9 +31,9 @@ This module defines task models, which extend task frames with valuation functio
 * [Formula.lean](../Syntax/Formula.lean) - Formula syntax
 -/
 
-namespace Bimodal.Semantics
+namespace FormalSystem.Semantics
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /--
 Task model for bimodal logic TM.
@@ -97,4 +97,4 @@ This is defined as an abbreviation for convenience.
 abbrev FiniteTaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (F : FiniteTaskFrame D) := TaskModel F.toTaskFrame
 
-end Bimodal.Semantics
+end FormalSystem.Semantics

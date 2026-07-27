@@ -37,10 +37,10 @@ remain valid.
   certificates feed (exported by `TraceExport.lean`).
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace FormalSystem.Metalogic.Decidability
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## TraceEntry Inductive
@@ -307,4 +307,4 @@ def recordRuleFired (rule : TableauRule) (sign : Sign) (formula : Formula)
 
 end TraceM
 
-end Bimodal.Metalogic.Decidability
+end FormalSystem.Metalogic.Decidability

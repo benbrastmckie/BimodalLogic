@@ -100,10 +100,10 @@ Probe conventions: model `(ℤ, <)`, `P = {0,10,20}`, anchors `[25,15,2,18]`, do
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Predicate location
 
@@ -497,4 +497,4 @@ theorem kvE_probe364_sigma2_inadmissible : kvE_futAdmissible m2sigma = false := 
     · rw [m2_sigma_marks_sstar] at h
       exact absurd h (by decide)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

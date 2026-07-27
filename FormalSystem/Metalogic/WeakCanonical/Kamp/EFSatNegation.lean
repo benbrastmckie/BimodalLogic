@@ -48,10 +48,10 @@ engine).
 - `VeeExistsForall.lean`: `veeSat`, `veeSat_append`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Fin layer: De Morgan decomposition and swap symmetry on the per-formula representation
 
@@ -130,4 +130,4 @@ theorem efSat_negation_pairFin {sig : MonadicSignature} {F : Finset Formula}
 
 end FinLayer
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

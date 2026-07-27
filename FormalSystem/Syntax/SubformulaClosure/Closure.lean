@@ -17,9 +17,9 @@ Core subformula closure as Finset, closureWithNeg, diamond detection/subformulas
 and subformula membership lemmas.
 -/
 
-namespace Bimodal.Syntax
+namespace FormalSystem.Syntax
 
-open Bimodal.Syntax.Formula
+open FormalSystem.Syntax.Formula
 
 /-!
 ## Subformula Closure as Finset
@@ -371,4 +371,4 @@ theorem some_future_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Form
     exact absurd h_psi_neg_eq (by intro h; cases h)
 
 
-end Bimodal.Syntax
+end FormalSystem.Syntax

@@ -1,7 +1,7 @@
 // ============================================================================
 // 04-metalogic.typ
 // Metalogic chapter for Bimodal TM Logic Reference Manual
-// Lean name ground truth: Theories/Bimodal/ (see ../SYNC-MAP.md).
+// Lean name ground truth: FormalSystem/ (see ../SYNC-MAP.md).
 // ============================================================================
 
 #import "../template.typ": *
@@ -120,7 +120,7 @@ The full operational account -- entry points, fuel semantics, certificate/counte
 
 == Module Structure
 
-The live metalogic code is organized as follows (`Theories/Bimodal/Metalogic/`):
+The live metalogic code is organized as follows (`FormalSystem/Metalogic/`):
 
 #figure(
   table(
@@ -151,7 +151,7 @@ The live metalogic code is organized as follows (`Theories/Bimodal/Metalogic/`):
 
 == Implementation Status
 
-Soundness in all three frame-class variants, the deduction theorem, the MCS/Lindenbaum infrastructure, the perpetuity principles P1--P6, and the entire `Syntax/`, `Semantics/`, `ProofSystem/`, and `Theorems/` trees are fully proven in Lean under `Theories/Bimodal/`.
+Soundness in all three frame-class variants, the deduction theorem, the MCS/Lindenbaum infrastructure, the perpetuity principles P1--P6, and the entire `Syntax/`, `Semantics/`, `ProofSystem/`, and `Theorems/` trees are fully proven in Lean under `FormalSystem/`.
 The canonical-model construction toward completeness is developed end-to-end for each frame class, with the open steps localized as described above; completeness itself remains an open problem.
 The decision procedure's soundness (`decide_sound`) and the finite-filtration FMP statement (`fmp_completeness`) are likewise proven, with the semantic-validity bridge treated in @sec:decidability-practice.
 

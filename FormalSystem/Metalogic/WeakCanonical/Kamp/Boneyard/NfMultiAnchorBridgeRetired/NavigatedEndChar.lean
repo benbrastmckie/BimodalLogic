@@ -67,11 +67,11 @@ free-standing `NavResidual`. Cross-references:
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-- **Arity-3 specialization of `nfEval_le2_reduction`** (Rabinovich Lemma 3.2(2), md:119).
 For every depth `k`, environment `env : Fin 3 → M.carrier`, and normal form
@@ -293,4 +293,4 @@ theorem endCharStep_quant_reduceA {sig : MonadicSignature} [Fintype sig.preds] [
           (qnf.2 sub = true)) :=
   forall_congr' (fun sub => iff_congr (endCharStep_reduceA M w x t sub) Iff.rfl)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

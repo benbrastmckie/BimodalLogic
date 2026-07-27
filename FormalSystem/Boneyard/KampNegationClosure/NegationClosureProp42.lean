@@ -34,10 +34,10 @@ negations, handled by induction on the disjunct list using conjunction closure.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper: Lift VBracketFormula to VVecEA2
 
@@ -170,4 +170,4 @@ theorem neg_2var_vec_ea {sig : MonadicSignature}
   push_neg at h_neg
   exact neg_disjunct_list M atomMap h_UZ z0 z1 h_lt v.disjuncts h_neg
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

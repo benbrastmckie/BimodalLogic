@@ -1,6 +1,6 @@
 # BundleSuccessorSeed -- Dead Successor/Predecessor Seed Construction
 
-Archived from `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean`.
+Archived from `FormalSystem/Metalogic/Bundle/SuccExistence.lean`.
 
 ## Purpose of the Archived Code
 
@@ -25,7 +25,7 @@ Consistency of the seed was the load-bearing step; everything downstream (Linden
 ## Why It Is Dead
 
 **Zero live consumers, anywhere.** All 72 declarations were grepped by word boundary across
-`Theories/` and `Tests/`. The file's two headline results, `successor_exists` and
+`FormalSystem/` and `Tests/`. The file's two headline results, `successor_exists` and
 `predecessor_exists`, have no code references at all. The only external occurrences of any name
 defined here are prose inside docstrings and `--` comments:
 
@@ -39,7 +39,7 @@ sorries here taint a 36-declaration closure that is *entirely contained* in this
 `Bundle/SuccRelation.lean`. Had any Chronicle or WeakCanonical declaration consumed
 `successor_exists`, it would have appeared in the tainted set. None did.
 
-`Metalogic/Core/RestrictedMCS/Basic.lean` did `import Bimodal.Metalogic.Bundle.SuccExistence`,
+`Metalogic/Core/RestrictedMCS/Basic.lean` did `import FormalSystem.Metalogic.Bundle.SuccExistence`,
 but used no declaration from it — a stale import edge, not a dependency. That import line was
 deleted when this file was archived.
 

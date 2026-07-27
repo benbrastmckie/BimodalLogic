@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.ProofSearch.Core
-import Bimodal.Automation.Tactics.Commands
+import FormalSystem.Automation.ProofSearch.Core
+import FormalSystem.Automation.Tactics.Commands
 
 /-!
 # Weakening-Aware Search Tests (Task 188)
@@ -27,7 +27,7 @@ Tests for weakening-aware proof search across both layers:
 
 namespace BimodalTest.Automation.WeakeningSearch
 
-open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
+open FormalSystem.Syntax FormalSystem.Automation FormalSystem.ProofSystem
 
 abbrev p : Formula := Formula.atom_s "p"
 abbrev q : Formula := Formula.atom_s "q"

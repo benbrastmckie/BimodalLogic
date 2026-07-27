@@ -29,9 +29,9 @@ Core definitions for the separation theorem over integer time (GHR94 Chapter 10.
 - Design provenance: the expressive-completeness proof for U/S over integer time
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Integer Temporal Structure -/
 
@@ -567,4 +567,4 @@ theorem separable_iff_properly_separable (φ : Formula) :
   · rintro ⟨ψ, hpsep, hequiv⟩
     exact ⟨ψ, (syn_sep_eq_proper_sep ψ).symm ▸ hpsep, hequiv⟩
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

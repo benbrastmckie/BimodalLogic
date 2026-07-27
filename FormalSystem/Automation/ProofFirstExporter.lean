@@ -23,12 +23,12 @@ lake exe proof_first_generator -- --max-depth 2 --seed 1000 --atoms "p,q,r" --ou
 
 -/
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation.DataExport
-open Bimodal.Automation.InterestingnessMetrics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation.DataExport
+open FormalSystem.Automation.InterestingnessMetrics
 
 /-- Convert a forward-generation result into a list of labeled formulas. -/
 def exportToJsonl (cfg : ForwardConfig)
@@ -130,17 +130,17 @@ def parseOutputPath (args : List String) : IO System.FilePath := do
     i := i + 1
   return path
 
-end Bimodal.Automation
+end FormalSystem.Automation
 
 /-- Main entry point for the proof-first generator CLI. -/
 def main (args : List String) : IO Unit := do
-  let cfg ← Bimodal.Automation.parseForwardConfig args
-  let outputPath ← Bimodal.Automation.parseOutputPath args
+  let cfg ← FormalSystem.Automation.parseForwardConfig args
+  let outputPath ← FormalSystem.Automation.parseOutputPath args
   IO.println s!"[proof-first] Starting generation with config: {repr cfg}"
   IO.println s!"[proof-first] Generating proof pool..."
-  let pool ← Bimodal.Automation.forwardGenerate cfg
+  let pool ← FormalSystem.Automation.forwardGenerate cfg
   IO.println s!"[proof-first] Pool size: {pool.length}"
-  let records ← Bimodal.Automation.exportToJsonl cfg pool
+  let records ← FormalSystem.Automation.exportToJsonl cfg pool
   IO.println s!"[proof-first] Exporting {records.length} records to {outputPath}"
-  Bimodal.Automation.writeJsonl records outputPath
+  FormalSystem.Automation.writeJsonl records outputPath
   IO.println s!"[proof-first] Done."

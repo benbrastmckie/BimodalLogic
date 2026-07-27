@@ -46,10 +46,10 @@ This construction:
 
 -/
 
-namespace Bimodal.Metalogic.Core
+namespace FormalSystem.Metalogic.Core
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## Closure-Restricted Consistency
@@ -455,7 +455,7 @@ because RestrictedMCS is bounded by closureWithNeg and iter_F eventually leaves
 closureWithNeg.
 -/
 
-open Bimodal.Metalogic.Bundle
+open FormalSystem.Metalogic.Bundle
 
 /--
 In any RestrictedMCS M over phi, there exists n such that iter_F n phi is not in M.
@@ -659,4 +659,4 @@ theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
     exact h_min_not
 
 
-end Bimodal.Metalogic.Core
+end FormalSystem.Metalogic.Core

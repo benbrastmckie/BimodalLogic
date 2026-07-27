@@ -24,11 +24,11 @@ t and x produces a VecEA2 with 1 bracket witness.
 - NfToVecEA.lean (depth-0 2-var case, template)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff nf_depth0_char_formula nf_depth0_char_formula_correct)
 
 /-! ## Projection functions for 3-var depth-0 NFs
@@ -945,4 +945,4 @@ the existential and a VecEA2.holds (or direct NF eval for equality cases).
 The VecEA2 can then be translated to a temporal formula via the sorry-free
 translateLeft / translateRight infrastructure. -/
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

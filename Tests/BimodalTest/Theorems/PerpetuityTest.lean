@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Theorems.Perpetuity
-import Bimodal.Theorems.Combinators
+import FormalSystem.Theorems.Perpetuity
+import FormalSystem.Theorems.Combinators
 
 /-!
 # Perpetuity Principles Tests
@@ -25,10 +25,10 @@ with temporal operators (always/sometimes).
 
 namespace BimodalTest.Theorems.PerpetuityTest
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Perpetuity
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Perpetuity
+open FormalSystem.Theorems.Combinators
 
 -- Some perpetuity principles depend on noncomputable deduction_theorem
 noncomputable section

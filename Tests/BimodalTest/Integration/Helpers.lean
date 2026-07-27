@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Syntax
-import Bimodal.ProofSystem
-import Bimodal.Semantics
-import Bimodal.Metalogic
+import FormalSystem.Syntax
+import FormalSystem.ProofSystem
+import FormalSystem.Semantics
+import FormalSystem.Metalogic
 
 /-!
 # Integration Test Helpers
@@ -42,10 +42,10 @@ have valid := verify_validity (ψ.imp φ) deriv
 
 namespace BimodalTest.Integration.Helpers
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic
 
 -- ============================================================
 -- Formula Builders

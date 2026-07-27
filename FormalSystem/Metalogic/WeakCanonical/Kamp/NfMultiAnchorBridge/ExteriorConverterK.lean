@@ -35,11 +35,11 @@ The depth-`k` chain destructor `kvE_futChainDestructG` (`ExteriorNegationK.lean:
 falsity of `σ.2` comes from the admissibility conjunct 2. Purely additive NEW leaf module; no
 frozen file is touched. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff)
 
 /-! ## Admissibility conjunct-2 reader (off-fiber falsity)
@@ -258,4 +258,4 @@ theorem kvE_futBundle_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
   · exact (hfib s hd).mpr hbit
   · rw [hoff s hd] at hbit; exact absurd hbit (by decide)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

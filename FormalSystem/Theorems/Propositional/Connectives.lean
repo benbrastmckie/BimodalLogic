@@ -14,11 +14,11 @@ Classical merge, iff introduction/elimination, contraposition, and De Morgan law
 for the Hilbert-style proof system.
 -/
 
-namespace Bimodal.Theorems.Propositional
+namespace FormalSystem.Theorems.Propositional
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators
 
 noncomputable section
 
@@ -110,14 +110,14 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
       exact DerivationTree.modus_ponens _ B Formula.bot h_neg_b h_b
     -- Apply deduction theorem: [A → ¬B, A → B] ⊢ A → ⊥ = ¬A
     have step1 : [(A.imp B.neg), (A.imp B)] ⊢ A.neg :=
-      Bimodal.Metalogic.Core.deduction_theorem
+      FormalSystem.Metalogic.Core.deduction_theorem
         [(A.imp B.neg), (A.imp B)] A Formula.bot h_in_ctx
     -- Apply deduction theorem: [A → B] ⊢ (A → ¬B) → ¬A
     have step2 : [(A.imp B)] ⊢ (A.imp B.neg).imp A.neg :=
-      Bimodal.Metalogic.Core.deduction_theorem
+      FormalSystem.Metalogic.Core.deduction_theorem
         [(A.imp B)] (A.imp B.neg) A.neg step1
     -- Apply deduction theorem: [] ⊢ (A → B) → ((A → ¬B) → ¬A)
-    exact Bimodal.Metalogic.Core.deduction_theorem
+    exact FormalSystem.Metalogic.Core.deduction_theorem
       [] (A.imp B) ((A.imp B.neg).imp A.neg) step2
   -- Now use this with A = ¬Q, B = ¬P
   have ci_inst : ⊢ (Q.neg.imp P.neg).imp ((Q.neg.imp P.neg.neg).imp Q.neg.neg) :=
@@ -205,8 +205,8 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
   -- deduction_theorem Γ A B h requires h : (A :: Γ) ⊢ B
   -- For step1: Γ = [P → Q], A = (¬P → Q), so need [(¬P → Q), (P → Q)] ⊢ Q ✓
   have step1 : [(P.imp Q)] ⊢ (P.neg.imp Q).imp Q :=
-    Bimodal.Metalogic.Core.deduction_theorem [(P.imp Q)] (P.neg.imp Q) Q h_combined
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (P.imp Q) ((P.neg.imp Q).imp Q) step1
+    FormalSystem.Metalogic.Core.deduction_theorem [(P.imp Q)] (P.neg.imp Q) Q h_combined
+  exact FormalSystem.Metalogic.Core.deduction_theorem [] (P.imp Q) ((P.neg.imp Q).imp Q) step1
 
 /--
 Biconditional Introduction: From `⊢ A → B` and `⊢ B → A`, derive `⊢ A ↔ B`.
@@ -549,14 +549,14 @@ def demorgan_conj_neg_backward (A B : Formula) :
   have step1 :
     [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
     (A.and B).imp Formula.bot :=
-    Bimodal.Metalogic.Core.deduction_theorem
+    FormalSystem.Metalogic.Core.deduction_theorem
       [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))]
       (A.and B) Formula.bot h_in_ctx
   -- Apply deduction theorem: [] ⊢ (¬¬A → ¬B) → ((A ∧ B) → ⊥)
   have step2 :
     ⊢ (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp
       ((A.and B).imp Formula.bot) :=
-    Bimodal.Metalogic.Core.deduction_theorem []
+    FormalSystem.Metalogic.Core.deduction_theorem []
       (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
       ((A.and B).imp Formula.bot) step1
   -- (A ∧ B).neg = (A.and B).imp Formula.bot by definition
@@ -698,4 +698,4 @@ def demorgan_disj_neg (A B : Formula) :
 
 end -- noncomputable section
 
-end Bimodal.Theorems.Propositional
+end FormalSystem.Theorems.Propositional

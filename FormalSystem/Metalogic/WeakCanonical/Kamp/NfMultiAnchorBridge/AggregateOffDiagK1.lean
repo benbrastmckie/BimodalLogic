@@ -74,11 +74,11 @@ G5 — every bridge is a manual `constructor`/`intro`/`exact` step. FORBIDDEN
   and channel split restated in the Structure section above.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 section AggregateOffDiag
 
@@ -1558,4 +1558,4 @@ end ShapeCertificatesK1
 
 end AggregateOffDiag
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

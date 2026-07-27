@@ -38,10 +38,10 @@ open-interval semantics. Not on critical path; bypassed by plan v23.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Section 1: Syntactic BracketFormula Negation
 
@@ -331,4 +331,4 @@ theorem nf_exist_as_monadic
   exact ⟨fun ⟨x, hx⟩ => ⟨x, (nf_to_formula_correct M _ sub_nf).mpr hx⟩,
          fun ⟨x, hx⟩ => ⟨x, (nf_to_formula_correct M _ sub_nf).mp hx⟩⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

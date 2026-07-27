@@ -50,11 +50,11 @@ and enables cleaner proofs of individual directions.
 - Goldblatt 1992, Logics of Time and Computation
 -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
 
 /-!
 ## Iterated F Helper
@@ -144,11 +144,11 @@ Since f_nesting_depth counts consecutive outermost F applications, and iter_F
 applies F n times at the outermost level, the depth increases by n.
 -/
 lemma iter_F_f_nesting_depth (n : Nat) (phi : Formula) :
-    Bimodal.Syntax.f_nesting_depth (iter_F n phi) = n + Bimodal.Syntax.f_nesting_depth phi := by
+    FormalSystem.Syntax.f_nesting_depth (iter_F n phi) = n + FormalSystem.Syntax.f_nesting_depth phi := by
   induction n with
   | zero => simp only [iter_F_zero, Nat.zero_add]
   | succ k ih =>
-    simp only [iter_F_succ, Bimodal.Syntax.f_nesting_depth_some_future, ih]
+    simp only [iter_F_succ, FormalSystem.Syntax.f_nesting_depth_some_future, ih]
     omega
 
 /-- The bound on n for iter_F to leave closureWithNeg.
@@ -157,7 +157,7 @@ If n > max_F_depth_in_closure(phi), then iter_F n phi is not in closureWithNeg(p
 We define closure_F_bound as max_F_depth + 1 to get the first n that leaves the closure.
 -/
 def closure_F_bound (phi : Formula) : Nat :=
-  max (Bimodal.Syntax.max_F_depth_in_closure phi) 1 + 1
+  max (FormalSystem.Syntax.max_F_depth_in_closure phi) 1 + 1
 
 /-- iter_F exceeds the max F-depth bound for large n.
 
@@ -165,11 +165,11 @@ If n >= closure_F_bound(phi), then the f_nesting_depth of iter_F n phi
 exceeds max(max_F_depth_in_closure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_F_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closure_F_bound phi) :
-    Bimodal.Syntax.f_nesting_depth (iter_F n phi) > max (Bimodal.Syntax.max_F_depth_in_closure phi)
+    FormalSystem.Syntax.f_nesting_depth (iter_F n phi) > max (FormalSystem.Syntax.max_F_depth_in_closure phi)
         1 := by
   rw [iter_F_f_nesting_depth]
   unfold closure_F_bound at h
-  have h_depth_nonneg : Bimodal.Syntax.f_nesting_depth phi ≥ 0 := Nat.zero_le _
+  have h_depth_nonneg : FormalSystem.Syntax.f_nesting_depth phi ≥ 0 := Nat.zero_le _
   omega
 
 /-- **Main Theorem**: iter_F n phi is not in closureWithNeg(phi) for large enough n.
@@ -180,17 +180,17 @@ its f_nesting_depth would be bounded by max_F_depth_in_closure(phi), but
 iter_F increases depth beyond that bound.
 -/
 theorem iter_F_not_mem_closureWithNeg (phi : Formula) (n : Nat) (h : n ≥ closure_F_bound phi) :
-    iter_F n phi ∉ Bimodal.Syntax.closureWithNeg phi := by
+    iter_F n phi ∉ FormalSystem.Syntax.closureWithNeg phi := by
   intro h_mem
-  have h_depth_bound : Bimodal.Syntax.f_nesting_depth (iter_F n phi) ≤
-      Bimodal.Syntax.max_F_depth_in_closure phi :=
-    Bimodal.Syntax.f_depth_le_max h_mem
+  have h_depth_bound : FormalSystem.Syntax.f_nesting_depth (iter_F n phi) ≤
+      FormalSystem.Syntax.max_F_depth_in_closure phi :=
+    FormalSystem.Syntax.f_depth_le_max h_mem
   have h_exceeds := iter_F_exceeds_max_depth phi n h
   omega
 
 /-- Explicit form: iter_F at the bound leaves closureWithNeg. -/
 theorem iter_F_leaves_closure (phi : Formula) :
-    iter_F (closure_F_bound phi) phi ∉ Bimodal.Syntax.closureWithNeg phi :=
+    iter_F (closure_F_bound phi) phi ∉ FormalSystem.Syntax.closureWithNeg phi :=
   iter_F_not_mem_closureWithNeg phi (closure_F_bound phi) (Nat.le_refl _)
 
 /-!
@@ -790,11 +790,11 @@ Since p_nesting_depth counts consecutive outermost P applications, and iter_P
 applies P n times at the outermost level, the depth increases by n.
 -/
 lemma iter_P_p_nesting_depth (n : Nat) (phi : Formula) :
-    Bimodal.Syntax.p_nesting_depth (iter_P n phi) = n + Bimodal.Syntax.p_nesting_depth phi := by
+    FormalSystem.Syntax.p_nesting_depth (iter_P n phi) = n + FormalSystem.Syntax.p_nesting_depth phi := by
   induction n with
   | zero => simp only [iter_P_zero, Nat.zero_add]
   | succ k ih =>
-    simp only [iter_P_succ, Bimodal.Syntax.p_nesting_depth_some_past, ih]
+    simp only [iter_P_succ, FormalSystem.Syntax.p_nesting_depth_some_past, ih]
     omega
 
 /-- The bound on n for iter_P to leave closureWithNeg.
@@ -803,7 +803,7 @@ If n > max_P_depth_in_closure(phi), then iter_P n phi is not in closureWithNeg(p
 We define closure_P_bound as max_P_depth + 1 to get the first n that leaves the closure.
 -/
 def closure_P_bound (phi : Formula) : Nat :=
-  max (Bimodal.Syntax.max_P_depth_in_closure phi) 1 + 1
+  max (FormalSystem.Syntax.max_P_depth_in_closure phi) 1 + 1
 
 /-- iter_P exceeds the max P-depth bound for large n.
 
@@ -811,11 +811,11 @@ If n >= closure_P_bound(phi), then the p_nesting_depth of iter_P n phi
 exceeds max(max_P_depth_in_closure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_P_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closure_P_bound phi) :
-    Bimodal.Syntax.p_nesting_depth (iter_P n phi) > max (Bimodal.Syntax.max_P_depth_in_closure phi)
+    FormalSystem.Syntax.p_nesting_depth (iter_P n phi) > max (FormalSystem.Syntax.max_P_depth_in_closure phi)
         1 := by
   rw [iter_P_p_nesting_depth]
   unfold closure_P_bound at h
-  have h_depth_nonneg : Bimodal.Syntax.p_nesting_depth phi ≥ 0 := Nat.zero_le _
+  have h_depth_nonneg : FormalSystem.Syntax.p_nesting_depth phi ≥ 0 := Nat.zero_le _
   omega
 
 /-- **Main Theorem**: iter_P n phi is not in closureWithNeg(phi) for large enough n.
@@ -826,17 +826,17 @@ its p_nesting_depth would be bounded by max_P_depth_in_closure(phi), but
 iter_P increases depth beyond that bound.
 -/
 theorem iter_P_not_mem_closureWithNeg (phi : Formula) (n : Nat) (h : n ≥ closure_P_bound phi) :
-    iter_P n phi ∉ Bimodal.Syntax.closureWithNeg phi := by
+    iter_P n phi ∉ FormalSystem.Syntax.closureWithNeg phi := by
   intro h_mem
-  have h_depth_bound : Bimodal.Syntax.p_nesting_depth (iter_P n phi) ≤
-      Bimodal.Syntax.max_P_depth_in_closure phi :=
-    Bimodal.Syntax.p_depth_le_max h_mem
+  have h_depth_bound : FormalSystem.Syntax.p_nesting_depth (iter_P n phi) ≤
+      FormalSystem.Syntax.max_P_depth_in_closure phi :=
+    FormalSystem.Syntax.p_depth_le_max h_mem
   have h_exceeds := iter_P_exceeds_max_depth phi n h
   omega
 
 /-- Explicit form: iter_P at the bound leaves closureWithNeg. -/
 theorem iter_P_leaves_closure (phi : Formula) :
-    iter_P (closure_P_bound phi) phi ∉ Bimodal.Syntax.closureWithNeg phi :=
+    iter_P (closure_P_bound phi) phi ∉ FormalSystem.Syntax.closureWithNeg phi :=
   iter_P_not_mem_closureWithNeg phi (closure_P_bound phi) (Nat.le_refl _)
 
 /--
@@ -1043,4 +1043,4 @@ theorem backward_witness
     -- Now apply single_step_forcing_past
     exact single_step_forcing_past u w h_mcs_u h_mcs_w phi h_P_phi_in_w h_PP_not_w h_succ h_p_step
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

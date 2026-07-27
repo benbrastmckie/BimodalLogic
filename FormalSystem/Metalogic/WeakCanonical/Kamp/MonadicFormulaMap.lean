@@ -46,16 +46,16 @@ Off the live import path (imported by nothing on the spine); the completeness sp
 - `ESigmaExpansion.lean`: `sigE`, `oldPred`, `canonExpand`, `atom_eval_old`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula)
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **Predicate relabelling.** Relabel the unary predicate symbols of a monadic formula along a
 signature map `f : sig.preds → sig'.preds`, leaving the De Bruijn variables, the order atoms, the
 connectives, and the binders untouched. The predicate-side analogue of the landed variable-side
 `MonadicFormula.rename`. -/
-def _root_.Bimodal.Metalogic.WeakCanonical.MonadicFormula.mapPreds
+def _root_.FormalSystem.Metalogic.WeakCanonical.MonadicFormula.mapPreds
     {sig sig' : MonadicSignature} (f : sig.preds → sig'.preds) :
     {n : Nat} → MonadicFormula sig n → MonadicFormula sig' n
   | _, .atom p i => .atom (f p) i
@@ -104,4 +104,4 @@ theorem mapPreds_eval_iff {sig : MonadicSignature} {F : Finset Formula}
     eval (canonExpand sig F M sat) env (α.mapPreds oldPred) ↔ eval M env α := by
   rw [mapPreds_eval M sat env α]
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

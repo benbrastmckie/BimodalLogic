@@ -5,8 +5,8 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Mathlib.Algebra.Order.Group.Int
-import Bimodal.Semantics.Truth
-import Bimodal.Semantics.TaskFrame
+import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.TaskFrame
 import BimodalTest.Automation.ProofSearchBenchmark
 
 /-!
@@ -37,7 +37,7 @@ Measures evaluation time and validates expected results for soundness.
 
 namespace BimodalTest.Semantics.Benchmark
 
-open Bimodal.Syntax Bimodal.Semantics
+open FormalSystem.Syntax FormalSystem.Semantics
 open BimodalTest.Automation.Benchmark (timed formatNanos)
 
 /-!

@@ -1,7 +1,7 @@
 # Dead Chronicle Gap Elimination (Archived)
 
-**Original location**: `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean`,
-plus (for the newest file) `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean`.
+**Original location**: `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean`,
+plus (for the newest file) `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`.
 
 Dead code from the BX chronicle gap-elimination pipeline. None of it is on any live call path to
 `completeness_discrete`, which uses the Reynolds pipeline (`countermodel_discrete_reynolds_v2`,

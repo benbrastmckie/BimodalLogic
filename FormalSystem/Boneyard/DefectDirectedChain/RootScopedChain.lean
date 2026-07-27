@@ -44,21 +44,21 @@ This is derivable in BX. At the MCS level: F(F(ψ)) ∈ M → F(ψ) ∈ M.
 -- temp_future axiom removed, fully_restricted_parametric_representation_from_neg_membership deleted.
 -- Code preserved below #exit for reference only.
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Metalogic.Algebraic.ParametricRepresentation
-open Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
-open Bimodal.Semantics
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Perpetuity
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic.ParametricRepresentation
+open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+open FormalSystem.Semantics
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Perpetuity
 open Classical
 
 /-! ## F(F(ψ)) → F(ψ) -/
@@ -71,7 +71,7 @@ noncomputable def FF_imp_F (ψ : Formula) :
   -- Step 1: G(¬ψ) → G(G(¬ψ)) by temp_4
   have h1 : [] ⊢ (Formula.all_future (Formula.neg ψ)).imp
       (Formula.all_future (Formula.all_future (Formula.neg ψ))) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived (Formula.neg ψ)
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived (Formula.neg ψ)
   -- Step 2: G(¬ψ) → ¬¬G(¬ψ) by double negation intro
   have h2 : [] ⊢ (Formula.all_future (Formula.neg ψ)).imp
       (Formula.all_future (Formula.neg ψ)).neg.neg :=
@@ -89,7 +89,7 @@ noncomputable def FF_imp_F (ψ : Formula) :
   --   F(ψ) = ¬G(¬ψ) = (all_future (neg ψ)).neg
   --   F(F(ψ)) = ¬G(¬F(ψ)) = ¬G(¬¬G(¬ψ)) = (all_future (neg (neg (all_future (neg ψ))))).neg
   --           = (all_future (all_future (neg ψ)).neg.neg).neg
-  exact Bimodal.Theorems.Propositional.contraposition h4
+  exact FormalSystem.Theorems.Propositional.contraposition h4
 
 /-- F(F(ψ)) ∈ M → F(ψ) ∈ M for any MCS M. -/
 theorem FF_imp_F_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
@@ -108,25 +108,25 @@ contrapose to ¬G(¬A) → ¬G(¬B), i.e., F(A) → F(B). -/
 noncomputable def F_mono {A B : Formula} (h : ⊢ A.imp B) :
     ⊢ A.some_future.imp B.some_future := by
   -- ⊢ ¬B → ¬A
-  have h1 := Bimodal.Theorems.Propositional.contraposition h
+  have h1 := FormalSystem.Theorems.Propositional.contraposition h
   -- ⊢ G(¬B) → G(¬A)
   have h2 := future_mono h1
   -- ⊢ ¬G(¬A) → ¬G(¬B), i.e., F(A) → F(B)
-  exact Bimodal.Theorems.Propositional.contraposition h2
+  exact FormalSystem.Theorems.Propositional.contraposition h2
 
 /-- F(A ∧ B) → F(A) at MCS level. -/
 theorem F_conj_left_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
     (A B : Formula) (h : (A.and B).some_future ∈ M) :
     A.some_future ∈ M :=
   SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (F_mono (Bimodal.Theorems.Propositional.lce_imp A B))) h
+    (theorem_in_mcs h_mcs (F_mono (FormalSystem.Theorems.Propositional.lce_imp A B))) h
 
 /-- F(A ∧ B) → F(B) at MCS level. -/
 theorem F_conj_right_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
     (A B : Formula) (h : (A.and B).some_future ∈ M) :
     B.some_future ∈ M :=
   SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (F_mono (Bimodal.Theorems.Propositional.rce_imp A B))) h
+    (theorem_in_mcs h_mcs (F_mono (FormalSystem.Theorems.Propositional.rce_imp A B))) h
 
 /-! ## BX11 Fold: Enriched Forward Step Existence
 
@@ -199,9 +199,9 @@ private theorem enriched_fwd_fold {M : Set Formula} (h_mcs : SetMaximalConsisten
       · -- extract for β ∧ χ
         intro M' h_mcs' h_βχ ψ' hψ'
         have h_lce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β χ)) h_βχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.lce_imp β χ)) h_βχ
         have h_rce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β χ)) h_βχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.rce_imp β χ)) h_βχ
         rcases List.mem_append.mp hψ' with h_tracked | h_new
         · exact h_extract M' h_mcs' h_lce ψ' h_tracked
         · rw [List.mem_singleton] at h_new; rw [h_new]; exact Or.inl h_rce
@@ -220,9 +220,9 @@ private theorem enriched_fwd_fold {M : Set Formula} (h_mcs : SetMaximalConsisten
       · -- extract for β ∧ F(χ)
         intro M' h_mcs' h_βFχ ψ' hψ'
         have h_lce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β χ.some_future)) h_βFχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.lce_imp β χ.some_future)) h_βFχ
         have h_rce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β χ.some_future)) h_βFχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.rce_imp β χ.some_future)) h_βFχ
         rcases List.mem_append.mp hψ' with h_tracked | h_new
         · exact h_extract M' h_mcs' h_lce ψ' h_tracked
         · rw [List.mem_singleton] at h_new; rw [h_new]; exact Or.inr h_rce
@@ -241,9 +241,9 @@ private theorem enriched_fwd_fold {M : Set Formula} (h_mcs : SetMaximalConsisten
       · -- extract for F(β) ∧ χ
         intro M' h_mcs' h_Fβχ ψ' hψ'
         have h_lce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β.some_future χ)) h_Fβχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.lce_imp β.some_future χ)) h_Fβχ
         have h_rce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β.some_future χ)) h_Fβχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.rce_imp β.some_future χ)) h_Fβχ
         rcases List.mem_append.mp hψ' with h_tracked | h_new
         · exact Or.inr (h_F_extract M' h_mcs' h_lce ψ' h_tracked)
         · rw [List.mem_singleton] at h_new; rw [h_new]; exact Or.inl h_rce
@@ -302,9 +302,9 @@ private theorem enriched_fwd_fold_with_witness {M : Set Formula} (h_mcs : SetMax
         (List.mem_append_left _ h_witness_mem) ?_ ?_
       · intro M' h_mcs' h_βχ ψ' hψ'
         have h_lce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β χ)) h_βχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.lce_imp β χ)) h_βχ
         have h_rce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β χ)) h_βχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.rce_imp β χ)) h_βχ
         rcases List.mem_append.mp hψ' with h_tracked | h_new
         · exact h_extract M' h_mcs' h_lce ψ' h_tracked
         · rw [List.mem_singleton] at h_new; rw [h_new]; exact Or.inl h_rce
@@ -317,7 +317,7 @@ private theorem enriched_fwd_fold_with_witness {M : Set Formula} (h_mcs : SetMax
       · -- witness is still direct: β ∧ χ ∈ M' → β ∈ M' → witness ∈ M'
         intro M' h_mcs' h_βχ
         have h_lce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β χ)) h_βχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.lce_imp β χ)) h_βχ
         exact h_witness_direct M' h_mcs' h_lce
       · intro ψ' hψ'; exact h_F_others ψ' (List.mem_cons_of_mem _ hψ')
     · -- Case 2: F(β ∧ F(χ)) ∈ M. Witness stays the same.
@@ -327,9 +327,9 @@ private theorem enriched_fwd_fold_with_witness {M : Set Formula} (h_mcs : SetMax
         (List.mem_append_left _ h_witness_mem) ?_ ?_
       · intro M' h_mcs' h_βFχ ψ' hψ'
         have h_lce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β χ.some_future)) h_βFχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.lce_imp β χ.some_future)) h_βFχ
         have h_rce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β χ.some_future)) h_βFχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.rce_imp β χ.some_future)) h_βFχ
         rcases List.mem_append.mp hψ' with h_tracked | h_new
         · exact h_extract M' h_mcs' h_lce ψ' h_tracked
         · rw [List.mem_singleton] at h_new; rw [h_new]; exact Or.inr h_rce
@@ -342,7 +342,7 @@ private theorem enriched_fwd_fold_with_witness {M : Set Formula} (h_mcs : SetMax
       · -- witness is still direct: β ∧ F(χ) ∈ M' → β ∈ M' → witness ∈ M'
         intro M' h_mcs' h_βFχ
         have h_lce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β χ.some_future)) h_βFχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.lce_imp β χ.some_future)) h_βFχ
         exact h_witness_direct M' h_mcs' h_lce
       · intro ψ' hψ'; exact h_F_others ψ' (List.mem_cons_of_mem _ hψ')
     · -- Case 3: F(F(β) ∧ χ) ∈ M. Witness CHANGES to χ.
@@ -352,9 +352,9 @@ private theorem enriched_fwd_fold_with_witness {M : Set Formula} (h_mcs : SetMax
         (List.mem_append_right _ (List.mem_singleton.mpr rfl)) ?_ ?_
       · intro M' h_mcs' h_Fβχ ψ' hψ'
         have h_lce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β.some_future χ)) h_Fβχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.lce_imp β.some_future χ)) h_Fβχ
         have h_rce := SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β.some_future χ)) h_Fβχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.rce_imp β.some_future χ)) h_Fβχ
         rcases List.mem_append.mp hψ' with h_tracked | h_new
         · exact Or.inr (h_F_extract M' h_mcs' h_lce ψ' h_tracked)
         · rw [List.mem_singleton] at h_new; rw [h_new]; exact Or.inl h_rce
@@ -367,7 +367,7 @@ private theorem enriched_fwd_fold_with_witness {M : Set Formula} (h_mcs : SetMax
       · -- χ is the new direct witness: F(β) ∧ χ ∈ M' → χ ∈ M' (right conjunct)
         intro M' h_mcs' h_Fβχ
         exact SetMaximalConsistent.implication_property h_mcs'
-          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β.some_future χ)) h_Fβχ
+          (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.rce_imp β.some_future χ)) h_Fβχ
       · intro ψ' hψ'; exact h_F_others ψ' (List.mem_cons_of_mem _ hψ')
 
 /-- Strengthened version of enriched_fwd_exists: additionally guarantees that
@@ -835,9 +835,9 @@ guaranteeing ψ is directly in the successor MCS via enriched_resolving_seed_con
 
 /-- Conjunction commutativity: ⊢ (A ∧ B) → (B ∧ A). -/
 noncomputable def conj_comm_imp (A B : Formula) : ⊢ (A.and B).imp (B.and A) :=
-  Bimodal.Theorems.Combinators.combine_imp_conj
-    (Bimodal.Theorems.Propositional.rce_imp A B)
-    (Bimodal.Theorems.Propositional.lce_imp A B)
+  FormalSystem.Theorems.Combinators.combine_imp_conj
+    (FormalSystem.Theorems.Propositional.rce_imp A B)
+    (FormalSystem.Theorems.Propositional.lce_imp A B)
 
 /-- F(A ∧ B) ∈ M → F(B ∧ A) ∈ M for any MCS M, by F-monotonicity of conjunction
 commutativity. -/
@@ -980,14 +980,14 @@ theorem target_stays_direct_in_fold {M : Set Formula} (h_mcs : SetMaximalConsist
     · simp only [compounds, List.mem_pmap] at h_w_comp
       obtain ⟨χ, hχ, rfl⟩ := h_w_comp
       exact SetMaximalConsistent.implication_property h_mcs'
-        (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp target _)) h_w_in
+        (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.lce_imp target _)) h_w_in
   refine ⟨M', h_mcs', h_g, h_target_in, fun χ hχ => ?_⟩
   have h_comp_mem : target.and (h_data χ hχ).choose ∈ compounds :=
     List.mem_pmap.mpr ⟨χ, hχ, rfl⟩
   rcases h_c_disj _ h_comp_mem with h_direct | h_F_wrap
   · exact (h_data χ hχ).choose_spec.2.1 M' h_mcs'
       (SetMaximalConsistent.implication_property h_mcs'
-        (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp target _)) h_direct)
+        (theorem_in_mcs h_mcs' (FormalSystem.Theorems.Propositional.rce_imp target _)) h_direct)
   · exact Or.inr ((h_data χ hχ).choose_spec.2.2 M' h_mcs'
       (F_conj_right_mcs h_mcs' target _ h_F_wrap))
 
@@ -1029,8 +1029,8 @@ noncomputable def dd_bfmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
       · exact absurd h h_not_box
       · exact h
     have h_diamond_neg : (Formula.neg φ).diamond ∈ M₀ :=
-      Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h₀
-        (Bimodal.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
+      FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h₀
+        (FormalSystem.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
     obtain ⟨v, h_equiv, h_neg_phi_v⟩ := bx_modal_witness ⟨M₀, h₀⟩ (Formula.neg φ) h_diamond_neg
     have h_fam_v_mem : shifted_dd_fmcs v.formulas v.is_mcs sigma_list t ∈
         { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N) (s : Int),
@@ -1081,13 +1081,13 @@ private theorem fwd_chain_F_obligation_monotone (M₀ : Set Formula) (h₀ : Set
         · exact absurd h h_not_F_m
         · -- ¬F(χ) = ¬¬G(¬χ) ∈ chain(m), so G(¬χ) ∈ chain(m) by double negation elimination
           exact SetMaximalConsistent.implication_property h_mcs_m
-            (theorem_in_mcs h_mcs_m (Bimodal.Theorems.Propositional.dne (Formula.all_future (Formula.neg χ)))) h
+            (theorem_in_mcs h_mcs_m (FormalSystem.Theorems.Propositional.dne (Formula.all_future (Formula.neg χ)))) h
       -- By temp_4: G(¬χ) → G(G(¬χ)), so G(G(¬χ)) ∈ chain(m)
       have h_GG_neg : Formula.all_future (Formula.all_future (Formula.neg χ)) ∈
           (fwd_chain_of_sigma M₀ h₀ sigma_list m).val :=
         SetMaximalConsistent.implication_property h_mcs_m
           (theorem_in_mcs h_mcs_m
-            (Bimodal.Theorems.TemporalDerived.temp_4_derived (Formula.neg χ))) h_G_neg
+            (FormalSystem.Theorems.TemporalDerived.temp_4_derived (Formula.neg χ))) h_G_neg
       -- G(¬χ) ∈ g_content(chain(m)) ⊆ chain(m+1)
       have h_G_neg_succ : Formula.all_future (Formula.neg χ) ∈
           (fwd_chain_of_sigma M₀ h₀ sigma_list (m + 1)).val :=
@@ -1345,11 +1345,11 @@ theorem enriched_past_resolving_seed_consistent {M : Set Formula}
   -- target ∈ M' by left conjunction elimination
   have h_target_in : target ∈ M' :=
     SetMaximalConsistent.implication_property h_M'_mcs
-      (theorem_in_mcs h_M'_mcs (Bimodal.Theorems.Propositional.lce_imp target guard)) h_conj_in
+      (theorem_in_mcs h_M'_mcs (FormalSystem.Theorems.Propositional.lce_imp target guard)) h_conj_in
   -- guard ∈ M' by right conjunction elimination
   have h_guard_in : guard ∈ M' :=
     SetMaximalConsistent.implication_property h_M'_mcs
-      (theorem_in_mcs h_M'_mcs (Bimodal.Theorems.Propositional.rce_imp target guard)) h_conj_in
+      (theorem_in_mcs h_M'_mcs (FormalSystem.Theorems.Propositional.rce_imp target guard)) h_conj_in
   -- Step 4: h_content(M) ⊆ M'
   have h_h_sub : h_content M ⊆ M' :=
     fun χ hχ => h_sup (Set.mem_union_right _ hχ)
@@ -1561,4 +1561,4 @@ Given `F(ψ) ∈ chain(n)` with `ψ ∈ defects`:
    ψ is eventually resolved.
 -/
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

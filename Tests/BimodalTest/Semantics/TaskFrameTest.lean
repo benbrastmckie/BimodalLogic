@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Mathlib.Algebra.Order.Group.Int
-import Bimodal.Semantics.TaskFrame
+import FormalSystem.Semantics.TaskFrame
 
 /-!
 # TaskFrame Tests
@@ -21,7 +21,7 @@ to specify the temporal type.
 
 namespace BimodalTest.Semantics
 
-open Bimodal.Semantics
+open FormalSystem.Semantics
 
 /-! ## trivial_frame Tests (using Int time) -/
 

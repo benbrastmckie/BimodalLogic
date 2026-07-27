@@ -57,11 +57,11 @@ The output JSON has this structure:
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.DatasetExporter
+namespace FormalSystem.Automation.DatasetExporter
 
-open Bimodal.Syntax
-open Bimodal.Automation
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.Automation
+open FormalSystem.Automation.DataExport
 
 /-!
 ## JSON Serialization for EnumConfig and BatchStats
@@ -345,4 +345,4 @@ noncomputable def generateSplitDatasets (config : EnumConfig) (trainPath evalPat
   IO.println ""
   IO.println "Dataset generation complete."
 
-end Bimodal.Automation.DatasetExporter
+end FormalSystem.Automation.DatasetExporter

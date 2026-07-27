@@ -15,8 +15,8 @@ This module aggregates the sorry-free example files demonstrating the Bimodal lo
 
 ## Modules
 
-- `Bimodal.Examples.BimodalProofs` - Combined modal-temporal proofs (sorry-free)
-- `Bimodal.Examples.TemporalStructures` - Temporal structure examples (sorry-free)
+- `FormalSystem.Examples.BimodalProofs` - Combined modal-temporal proofs (sorry-free)
+- `FormalSystem.Examples.TemporalStructures` - Temporal structure examples (sorry-free)
 
 ## Usage
 

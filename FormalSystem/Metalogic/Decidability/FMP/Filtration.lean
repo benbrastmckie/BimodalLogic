@@ -44,11 +44,11 @@ For TM bimodal logic, we use an MCS-based filtration approach:
 - Hughes & Cresswell: A New Introduction to Modal Logic (Ch 6.2)
 -/
 
-namespace Bimodal.Metalogic.Decidability.FMP
+namespace FormalSystem.Metalogic.Decidability.FMP
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
 
 /-!
 ## MCS-Based Filtration Equivalence
@@ -326,4 +326,4 @@ Next phases will prove:
 - Phase 4: Truth preservation (Filtration Lemma)
 -/
 
-end Bimodal.Metalogic.Decidability.FMP
+end FormalSystem.Metalogic.Decidability.FMP

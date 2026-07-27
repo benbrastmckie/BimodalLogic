@@ -15,17 +15,17 @@ For implementation status by module, see [implementation-status.md](implementati
 - **Description**: Full formalization of the bimodal logic TM combining S5 modal logic with
   linear temporal logic, including syntax, proof system, semantics, soundness, and completeness.
 - **Key Files**:
-  - `Theories/Bimodal/Syntax/Formula.lean` - Formula type with all operators
-  - `Theories/Bimodal/ProofSystem/Axioms.lean` - 14 axiom schemata
-  - `Theories/Bimodal/Metalogic/Soundness.lean` - Soundness theorem (proved)
-  - `Theories/Bimodal/Metalogic/Completeness.lean` - Completeness theorem (proved)
+  - `FormalSystem/Syntax/Formula.lean` - Formula type with all operators
+  - `FormalSystem/ProofSystem/Axioms.lean` - 14 axiom schemata
+  - `FormalSystem/Metalogic/Soundness.lean` - Soundness theorem (proved)
+  - `FormalSystem/Metalogic/Completeness.lean` - Completeness theorem (proved)
 
 ### Perpetuity Principles
 
 - **Status**: Complete (P1-P6 all proven)
 - **Description**: Six perpetuity principles connecting modal necessity (□) with eternal
   truth (△) and temporal operators.
-- **Key File**: `Theories/Bimodal/Theorems/Perpetuity.lean`
+- **Key File**: `FormalSystem/Theorems/Perpetuity.lean`
 - **Principles**: `□φ → △φ` (P1), `▽φ → ◇φ` (P2), `□φ → Gφ` (P3), `Pφ → ◇φ` (P4),
   `□φ → Hφ` (P5), `Fφ → ◇φ` (P6)
 
@@ -33,14 +33,14 @@ For implementation status by module, see [implementation-status.md](implementati
 
 - **Status**: Complete
 - **Description**: If `φ :: Γ ⊢ ψ` then `Γ ⊢ φ → ψ`.
-- **Key File**: `Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean`
+- **Key File**: `FormalSystem/Metalogic/Core/DeductionTheorem.lean`
 
 ### Propositional Theorems
 
 - **Status**: Complete (10 theorems, zero sorry)
 - **Description**: Key propositional theorems in Hilbert-style calculus including double
   negation elimination, ex contradictione quodlibet, law of excluded middle, and combinators.
-- **Key File**: `Theories/Bimodal/Theorems/Propositional.lean`
+- **Key File**: `FormalSystem/Theorems/Propositional.lean`
 
 ## Automation Features
 
@@ -48,7 +48,7 @@ For implementation status by module, see [implementation-status.md](implementati
 
 - **Status**: Active
 - **Description**: Custom Lean 4 tactics for TM modal-temporal reasoning.
-- **Key File**: `Theories/Bimodal/Automation/Tactics.lean`
+- **Key File**: `FormalSystem/Automation/Tactics.lean`
 - **Theory-Specific Registry**: See [docs/project-info/tactic-registry.md](tactic-registry.md)
 
 ### Proof Search
@@ -56,14 +56,14 @@ For implementation status by module, see [implementation-status.md](implementati
 - **Status**: Active
 - **Description**: Automated proof search with IDDFS, BoundedDFS, and BestFirst strategies,
   plus pattern learning for repeated goals.
-- **Key File**: `Theories/Bimodal/Automation/ProofSearch.lean`
+- **Key File**: `FormalSystem/Automation/ProofSearch.lean`
 
 ### Aesop Integration
 
 - **Status**: Active
 - **Description**: Aesop rule registration for TM automation with forward chaining and
   safe apply rules.
-- **Key File**: `Theories/Bimodal/Automation/AesopRules.lean`
+- **Key File**: `FormalSystem/Automation/AesopRules.lean`
 
 ## Testing Features
 

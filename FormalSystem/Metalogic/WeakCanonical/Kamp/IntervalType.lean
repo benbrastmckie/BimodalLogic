@@ -45,9 +45,9 @@ bounded search `∃ τ ∈ S` at each point.
 - `NormalForm.lean`: the `Fintype`/`DecidableEq` instances on `NormalForm`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax (Formula)
+open FormalSystem.Syntax (Formula)
 
 /-! ## 1. The partial interval type and its satisfaction relation
 
@@ -188,4 +188,4 @@ theorem intervalHoldsFin_inter_right
 
 end Kamp
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

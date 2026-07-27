@@ -27,10 +27,10 @@ side-by-side comparison utility.
 8. **Generation cost** — wall-clock milliseconds (supplied by caller)
 -/
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.Automation.DataExport
 
 /-- Temporal axiom names used for metric classification. -/
 def temporalAxiomNames : List String :=
@@ -170,4 +170,4 @@ def compareCorpora (name1 name2 : String) (corpus1 corpus2 : List LabeledFormula
   IO.FS.writeFile jsonPath report
   IO.println ("Comparison JSON written to " ++ toString jsonPath)
 
-end Bimodal.Automation
+end FormalSystem.Automation

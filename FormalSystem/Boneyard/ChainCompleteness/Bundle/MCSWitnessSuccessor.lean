@@ -35,13 +35,13 @@ Given a DRM u over phi with F(target) in u:
 
 #exit
 
-namespace Bimodal.Metalogic.Bundle.MCSWitnessSuccessor
+namespace FormalSystem.Metalogic.Bundle.MCSWitnessSuccessor
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.UltrafilterChain
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.UltrafilterChain
 
 -- Deep API drift: UltrafilterChain partly behind #exit,
 -- box_class_agree/temporal_theory_witness_with_g_exists removed.
@@ -298,7 +298,7 @@ theorem build_targeted_successor_has_F_top
     (h_target_dc : target ∈ (deferralClosure phi : Set Formula)) :
     F_top ∈ build_targeted_successor phi u h_drm target h_F_target h_target_dc :=
   theorem_in_drm (build_targeted_successor_is_drm phi u h_drm target h_F_target h_target_dc)
-    F_top_theorem (Bimodal.Syntax.F_top_mem_deferralClosure phi)
+    F_top_theorem (FormalSystem.Syntax.F_top_mem_deferralClosure phi)
 
 theorem build_targeted_successor_has_P_top
     (phi : Formula) (u : Set Formula) (h_drm : DeferralRestrictedMCS phi u)
@@ -306,7 +306,7 @@ theorem build_targeted_successor_has_P_top
     (h_target_dc : target ∈ (deferralClosure phi : Set Formula)) :
     P_top ∈ build_targeted_successor phi u h_drm target h_F_target h_target_dc :=
   theorem_in_drm (build_targeted_successor_is_drm phi u h_drm target h_F_target h_target_dc)
-    P_top_theorem (Bimodal.Syntax.P_top_mem_deferralClosure phi)
+    P_top_theorem (FormalSystem.Syntax.P_top_mem_deferralClosure phi)
 
 /-! ## Targeted Backward Predecessor -/
 
@@ -358,7 +358,7 @@ theorem build_targeted_predecessor_has_F_top
     (h_target_dc : target ∈ (deferralClosure phi : Set Formula)) :
     F_top ∈ build_targeted_predecessor phi u h_drm target h_P_target h_target_dc :=
   theorem_in_drm (build_targeted_predecessor_is_drm phi u h_drm target h_P_target h_target_dc)
-    F_top_theorem (Bimodal.Syntax.F_top_mem_deferralClosure phi)
+    F_top_theorem (FormalSystem.Syntax.F_top_mem_deferralClosure phi)
 
 theorem build_targeted_predecessor_has_P_top
     (phi : Formula) (u : Set Formula) (h_drm : DeferralRestrictedMCS phi u)
@@ -366,6 +366,6 @@ theorem build_targeted_predecessor_has_P_top
     (h_target_dc : target ∈ (deferralClosure phi : Set Formula)) :
     P_top ∈ build_targeted_predecessor phi u h_drm target h_P_target h_target_dc :=
   theorem_in_drm (build_targeted_predecessor_is_drm phi u h_drm target h_P_target h_target_dc)
-    P_top_theorem (Bimodal.Syntax.P_top_mem_deferralClosure phi)
+    P_top_theorem (FormalSystem.Syntax.P_top_mem_deferralClosure phi)
 
-end Bimodal.Metalogic.Bundle.MCSWitnessSuccessor
+end FormalSystem.Metalogic.Bundle.MCSWitnessSuccessor

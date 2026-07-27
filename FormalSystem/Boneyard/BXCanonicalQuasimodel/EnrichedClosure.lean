@@ -35,9 +35,9 @@ Phase 2 (the migration) can be executed surgically without file rewrites.
 
 #exit
 
-namespace Bimodal.Metalogic.BXCanonical.Quasimodel
+namespace FormalSystem.Metalogic.BXCanonical.Quasimodel
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- The set of `G(¬ (bigconj T.toList))` for every subset `T` of the base. -/
 noncomputable def enrichedGNegBigconj (base : Finset Formula) : Finset Formula :=
@@ -162,5 +162,5 @@ theorem enriched_nonempty (target : Formula) :
     (enrichedClosure target).Nonempty :=
   ⟨target, enriched_target_mem target⟩
 
-end Bimodal.Metalogic.BXCanonical.Quasimodel
+end FormalSystem.Metalogic.BXCanonical.Quasimodel
 

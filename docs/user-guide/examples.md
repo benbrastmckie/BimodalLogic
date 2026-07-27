@@ -633,9 +633,9 @@ If P is necessary (true in all worlds), then P is possible (true in some world).
 <summary>Solution</summary>
 
 ```lean
-import Bimodal.Theorems.Propositional.Core
+import FormalSystem.Theorems.Propositional.Core
 
-open Bimodal.Theorems.Propositional
+open FormalSystem.Theorems.Propositional
 
 example (P : Formula) : ⊢ P.box.imp P.diamond := by
   -- □P → ◇P
@@ -705,9 +705,9 @@ The `always` operator is defined as a conjunction of past and future necessity. 
 <summary>Solution</summary>
 
 ```lean
-import Bimodal.Theorems.Propositional.Core
+import FormalSystem.Theorems.Propositional.Core
 
-open Bimodal.Theorems.Propositional
+open FormalSystem.Theorems.Propositional
 
 example (P : Formula) : [P.always] ⊢ P := by
   -- always P = HP ∧ GP where H = all_past, G = all_future
@@ -753,11 +753,11 @@ From necessity of P and necessity of Q, derive necessity of their conjunction.
 <summary>Solution</summary>
 
 ```lean
-import Bimodal.Theorems.Propositional.Core
-import Bimodal.Theorems.Combinators
+import FormalSystem.Theorems.Propositional.Core
+import FormalSystem.Theorems.Combinators
 
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
 
 noncomputable example (P Q : Formula) : [P.box, Q.box] ⊢ (P.and Q).box := by
   -- Strategy:
@@ -820,9 +820,9 @@ This is perpetuity principle P1: necessity implies eternal truth.
 <summary>Solution</summary>
 
 ```lean
-import Bimodal.Theorems.Combinators
+import FormalSystem.Theorems.Combinators
 
-open Bimodal.Theorems.Combinators
+open FormalSystem.Theorems.Combinators
 
 example (P : Formula) : ⊢ P.box.imp P.always := by
   -- always P = HP ∧ GP
@@ -861,11 +861,11 @@ The necessity of something is equivalent to eternal necessity.
 <summary>Solution</summary>
 
 ```lean
-import Bimodal.Theorems.Combinators
-import Bimodal.Theorems.Propositional.Core
+import FormalSystem.Theorems.Combinators
+import FormalSystem.Theorems.Propositional.Core
 
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Propositional
 
 -- Forward direction: always □P → □P
 example (P : Formula) : ⊢ P.box.always.imp P.box := by

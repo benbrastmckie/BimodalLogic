@@ -1,6 +1,6 @@
 import FormalSystem.Metalogic.BXCanonical.OrderedSeedConsistency
 import FormalSystem.Metalogic.BXCanonical.CanonicalModel
--- import Bimodal.Metalogic.BXCanonical.Quasimodel.OracleStep  -- archived; no longer compiled
+-- import FormalSystem.Metalogic.BXCanonical.Quasimodel.OracleStep  -- archived; no longer compiled
 import FormalSystem.Metalogic.Bundle.UntilSinceCoherence
 import FormalSystem.Metalogic.Algebraic.ParametricCompleteness
 import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
@@ -24,7 +24,7 @@ hintikka_step_for_sigma_sig) is preserved as reusable infrastructure.
 -- Deep API drift (101 errors): Quasimodel namespace removed, ParametricCanonical renamed.
 -- Code preserved below #exit for reference only.
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
 /-! ## Oracle-Based FMCS Construction (Phase 4)
 
@@ -317,8 +317,8 @@ noncomputable def qm_bfmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
       · exact absurd h h_not_box
       · exact h
     have h_diamond_neg : (Formula.neg φ).diamond ∈ M₀ :=
-      Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h₀
-        (Bimodal.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
+      FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h₀
+        (FormalSystem.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
     obtain ⟨v, h_equiv, h_neg_phi_v⟩ := bx_modal_witness ⟨M₀, h₀⟩ (Formula.neg φ) h_diamond_neg
     have h_fam_v_mem : shifted_qm_fmcs v.formulas v.is_mcs Sigma t ∈
         { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N) (s : Int),
@@ -505,4 +505,4 @@ theorem qm_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsisten
     -- Symmetric.
     exact sorry
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

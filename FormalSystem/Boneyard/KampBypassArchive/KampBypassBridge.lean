@@ -14,11 +14,11 @@ Split from KampBypassCore.lean for modularity.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -546,4 +546,4 @@ theorem bracket_constant_seg_dichotomy {sig : MonadicSignature}
         exact absurd (le_antisymm h_y_gt_wk (h_le_all ⟨k', by omega⟩))
           (h_none ⟨k', by omega⟩).1
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

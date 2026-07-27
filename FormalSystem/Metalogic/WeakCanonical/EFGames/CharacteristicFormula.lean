@@ -40,9 +40,9 @@ existence proof relies on:
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definition 8.8
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Boolean Formula Combinators
 
@@ -682,4 +682,4 @@ theorem formula_transfer_rank_embed {sig : MonadicSignature} [Fintype sig.preds]
     stavi_temporal_truth_mu M atomMap r t A :=
   rank_embed_stavi_truth_mu h t A
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

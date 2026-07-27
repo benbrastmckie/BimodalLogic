@@ -58,11 +58,11 @@ INPUTS**; this file only *applies* them.
   integration is a distinct downstream task, out of scope here.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula)
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula)
 
 /-! ## Phase 1 — live wrapper def + `rfl` bridge -/
 
@@ -440,4 +440,4 @@ theorem bracketEndChar_kvE2_correct_two_prior_frag {sig : MonadicSignature} [Fin
   · exact bracketEndChar_kvE2_complete_two_prior atomMap h_surj P qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

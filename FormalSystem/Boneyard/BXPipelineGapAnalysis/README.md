@@ -40,6 +40,6 @@ pipeline** via `no_gaps_discrete` (task 202).
 ## Recovery
 
 ```bash
-git log --follow --oneline Theories/Bimodal/Boneyard/BXPipelineGapAnalysis/ChronicleNoGaps.lean
-git log --follow --oneline Theories/Bimodal/Boneyard/BXPipelineGapAnalysis/HenkinDiscreteChain.lean
+git log --follow --oneline FormalSystem/Boneyard/BXPipelineGapAnalysis/ChronicleNoGaps.lean
+git log --follow --oneline FormalSystem/Boneyard/BXPipelineGapAnalysis/HenkinDiscreteChain.lean
 ```

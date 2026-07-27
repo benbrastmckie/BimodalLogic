@@ -17,7 +17,7 @@ import FormalSystem.Metalogic.Decidability.Propositional.Kalmar
 import FormalSystem.Metalogic.Decidability.Propositional.Decidable
 
 /-!
-# Bimodal.Metalogic.Decidability - Decision Procedure for TM Logic
+# FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
 
 Tableau-based decision procedure returning proof terms or countermodels.
 
@@ -43,7 +43,7 @@ Tableau-based decision procedure returning proof terms or countermodels.
 ```lean
 import FormalSystem.Metalogic.Decidability
 
-open Bimodal.Metalogic.Decidability
+open FormalSystem.Metalogic.Decidability
 
 #check decide        -- Main decision procedure
 #check isValid       -- Boolean validity check

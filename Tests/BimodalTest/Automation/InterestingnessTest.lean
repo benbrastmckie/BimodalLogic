@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.InterestingnessMetrics
-import Bimodal.Automation.DataExport
+import FormalSystem.Automation.InterestingnessMetrics
+import FormalSystem.Automation.DataExport
 
 /-!
 # Interestingness Metrics Tests
@@ -22,9 +22,9 @@ Tests cover:
 
 namespace BimodalTest.Automation.Interestingness
 
-open Bimodal.Syntax
-open Bimodal.Automation.InterestingnessMetrics
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.Automation.InterestingnessMetrics
+open FormalSystem.Automation.DataExport
 
 -- Convenience abbreviations
 private abbrev p : Formula := .atom_s "p"

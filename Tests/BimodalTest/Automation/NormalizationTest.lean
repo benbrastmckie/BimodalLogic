@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.Normalization
-import Bimodal.Automation.FormulaEnumerator
-import Bimodal.Metalogic.Decidability.DecisionProcedure
+import FormalSystem.Automation.Normalization
+import FormalSystem.Automation.FormulaEnumerator
+import FormalSystem.Metalogic.Decidability.DecisionProcedure
 
 /-!
 # Normalization Tests (Task 287)
@@ -30,8 +30,8 @@ works correctly with normalization wired in.
 
 namespace BimodalTest.Automation.NormalizationTest
 
-open Bimodal.Syntax Bimodal.Automation.Normalization
-open Bimodal.Metalogic.Decidability
+open FormalSystem.Syntax FormalSystem.Automation.Normalization
+open FormalSystem.Metalogic.Decidability
 
 -- Convenience abbreviations
 private def p : Formula := .atom (Atom.mk_base "p")
@@ -239,8 +239,8 @@ No timeouts, confirming zero performance regression from normalization.
 -/
 
 #eval do
-  let config := Bimodal.Automation.smallConfig
-  let formulas := Bimodal.Automation.enumerateUpToDepth config
+  let config := FormalSystem.Automation.smallConfig
+  let formulas := FormalSystem.Automation.enumerateUpToDepth config
   let sample := formulas.take 50
   let counts := sample.foldl (fun (v, i, t) f =>
     let result := decide f

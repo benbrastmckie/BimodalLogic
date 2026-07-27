@@ -67,9 +67,9 @@ This is handled automatically by `DerivationTree.temporal_duality`.
 - Blackburn, de Rijke, Venema 2001, *Modal Logic*
 -/
 
-namespace Bimodal.ProofSystem
+namespace FormalSystem.ProofSystem
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /--
 The temporal linearity axiom as a derivation from the empty context.
@@ -85,4 +85,4 @@ noncomputable def temp_linearity_derivation (φ ψ : Formula) :
           (Formula.some_future (Formula.and (Formula.some_future φ) ψ))))) :=
   DerivationTree.axiom [] _ (Axiom.temp_linearity φ ψ) trivial
 
-end Bimodal.ProofSystem
+end FormalSystem.ProofSystem

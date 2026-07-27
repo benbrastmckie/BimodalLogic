@@ -12,7 +12,7 @@
 # link with `supportInterpreter := true` recompiles Formula.c.o.export
 # under LEAN_EXPORTING at -O3, which exhausts memory on constrained
 # machines (clang OOM, exit 137). The interpreter consumes the ordinary
-# .oleans (built by `lake build Bimodal.Automation.MachineAppendixExport`)
+# .oleans (built by `lake build FormalSystem.Automation.MachineAppendixExport`)
 # and produces byte-identical JSONL in seconds. The `lean_exe
 # machine_appendix` stanza remains in lakefile.lean for machines that can
 # afford the native build, but this script's default path is the
@@ -53,7 +53,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-# typst/ lives at the project root; the Lean source root (Theories/) does not move.
+# typst/ lives at the project root; the Lean source root (FormalSystem/) does not move.
 GEN_DIR="${REPO_ROOT}/typst/generated"
 JSONL="${GEN_DIR}/machine-appendix.jsonl"
 OUT_TYP="${GEN_DIR}/machine-appendix.typ"
@@ -189,11 +189,11 @@ cd "${REPO_ROOT}"
 # Ensure the exporter's .olean (and its dependency closure) is fresh.
 # This is ordinary elaboration -- it does NOT trigger the native
 # LEAN_EXPORTING/clang link that OOMs on constrained machines.
-lake build Bimodal.Automation.MachineAppendixExport
+lake build FormalSystem.Automation.MachineAppendixExport
 
 # Run the exporter through the Lean interpreter (uses the .oleans;
 # no native code generation). See header comment for rationale.
-lake env lean --run Theories/Bimodal/Automation/MachineAppendixExport.lean -- \
+lake env lean --run FormalSystem/Automation/MachineAppendixExport.lean -- \
   --output "${JSONL}" \
   --stamp-commit "${STAMP_COMMIT}" \
   --stamp-date "${STAMP_DATE}"

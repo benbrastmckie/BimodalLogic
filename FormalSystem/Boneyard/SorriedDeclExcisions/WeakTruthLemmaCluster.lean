@@ -41,11 +41,11 @@ Do not import from live code.
 #exit
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/WeakCanonical/TruthLemma.lean
-   Original context: `namespace Bimodal.Metalogic.WeakCanonical`,
-   `open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Metalogic.Core
-   Bimodal.Metalogic.Bundle Bimodal.Theorems.Propositional
-   Bimodal.Theorems.Combinators Bimodal.Theorems`.
+   Source: FormalSystem/Metalogic/WeakCanonical/TruthLemma.lean
+   Original context: `namespace FormalSystem.Metalogic.WeakCanonical`,
+   `open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Metalogic.Core
+   FormalSystem.Metalogic.Bundle FormalSystem.Theorems.Propositional
+   FormalSystem.Theorems.Combinators FormalSystem.Theorems`.
    ====================================================================== -/
 
 /-! ## Truth in the Reflexive Canonical Model -/
@@ -104,7 +104,7 @@ theorem imp_mcs_iff (x : ReflCanDomain) (φ ψ : Formula) :
             DerivationTree.axiom [] _ (Axiom.ex_falso ψ) trivial
           exact DerivationTree.modus_ponens _ _ _
             (DerivationTree.weakening [] _ _ h_ef (List.nil_subset _)) h_bot
-        exact Bimodal.Metalogic.Core.deduction_theorem [φ.neg] φ ψ h_step
+        exact FormalSystem.Metalogic.Core.deduction_theorem [φ.neg] φ ψ h_step
       exact h_mcs.closed_under_derivation [φ.neg]
         (fun χ hχ => by simp at hχ; rw [hχ]; exact h_neg_φ) h_deriv
 
@@ -161,7 +161,7 @@ theorem box_backward_mcs (x : ReflCanDomain) (φ : Formula)
         · exact h
       -- DNE: ¬¬φ → φ
       have h_dne : [] ⊢ (Formula.neg (Formula.neg φ)).imp φ :=
-        Bimodal.Theorems.Propositional.double_negation φ
+        FormalSystem.Theorems.Propositional.double_negation φ
       have d_phi : DerivationTree FrameClass.Base L_filt φ := by
         have d_dne_weak : DerivationTree FrameClass.Base L_filt ((Formula.neg (Formula.neg φ)).imp φ) :=
           DerivationTree.weakening [] L_filt _ h_dne (List.nil_subset _)

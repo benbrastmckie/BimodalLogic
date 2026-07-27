@@ -1,7 +1,7 @@
 # Known-unreachable live modules (C6 rot guard).
 #
 # A module listed here is NOT reachable from any Lake target root
-# (`lean_lib Bimodal`, `lean_lib BimodalTest`, or any `lean_exe` root), so
+# (`lean_lib FormalSystem`, `lean_lib BimodalTest`, or any `lean_exe` root), so
 # `lake build` never compiles it and a broken import inside it would go
 # unnoticed. C6 compile-checks each entry in isolation with `lake env lean`.
 #
@@ -15,7 +15,7 @@
 # Benchmark harness. Its only importer is BimodalTest.Automation.ProofFirstTests,
 # which cannot be wired into the test root (see the Tests section below), so this
 # module stays outside the build graph too.
-Bimodal.Automation.ProofFirstBenchmark
+FormalSystem.Automation.ProofFirstBenchmark
 
 # --- Metalogic -------------------------------------------------------------
 # Sibling aggregators for directories whose contents are reached directly rather
@@ -24,10 +24,10 @@ Bimodal.Automation.ProofFirstBenchmark
 # its own contents already reach is how a module-level cycle gets introduced.
 # Being unreachable, `lake build` never compiles them, so C6 does it here --
 # which is what keeps a stale import inside one of them from going unnoticed.
-Bimodal.Metalogic.Core
-Bimodal.Metalogic.Bundle
-Bimodal.Metalogic.Algebraic
-Bimodal.Metalogic.SoundnessLemmas
+FormalSystem.Metalogic.Core
+FormalSystem.Metalogic.Bundle
+FormalSystem.Metalogic.Algebraic
+FormalSystem.Metalogic.SoundnessLemmas
 
 # --- Tests -----------------------------------------------------------------
 # Test modules present under Tests/ but not imported by Tests/BimodalTest.lean,
@@ -40,7 +40,7 @@ broken: BimodalTest.Semantics.SemanticBenchmark
 
 # These two compile in isolation but cannot be imported by Tests/BimodalTest.lean:
 # each pulls in an executable root that defines `main`, colliding with the `main`
-# from Bimodal.Automation.DatasetValidator already in that environment. They stay
+# from FormalSystem.Automation.DatasetValidator already in that environment. They stay
 # unwired and compile-checked here.
 BimodalTest.Automation.FormulaMutatorTest
 BimodalTest.Automation.ProofFirstTests

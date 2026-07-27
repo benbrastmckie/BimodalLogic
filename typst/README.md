@@ -94,7 +94,7 @@ Packages are downloaded automatically on first compile.
 
 ## Source Synchronization
 
-The chapters are synchronized against the live Lean source in `Theories/Bimodal/`
+The chapters are synchronized against the live Lean source in `FormalSystem/`
 (excluding `Boneyard/`). `SYNC-MAP.md` in this directory is a repo-side development
 document recording the claim-verification history; it does not govern the compiled PDF.
 When the Lean source moves, regenerate via the scripts above rather than editing counts

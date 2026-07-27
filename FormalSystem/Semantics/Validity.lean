@@ -51,9 +51,9 @@ which is implicit in the paper's use of the full universe of histories.
 * [Context.lean](../Syntax/Context.lean) - Proof contexts
 -/
 
-namespace Bimodal.Semantics
+namespace FormalSystem.Semantics
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /--
 A formula is valid if it is true in all models at all times in all histories within
@@ -321,4 +321,4 @@ theorem valid_of_valid_box {φ : Formula} (h : valid (Formula.box φ)) :
 
 end Validity
 
-end Bimodal.Semantics
+end FormalSystem.Semantics

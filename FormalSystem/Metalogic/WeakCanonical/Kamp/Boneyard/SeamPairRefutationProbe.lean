@@ -53,10 +53,10 @@ Purely additive leaf probe (style precedent: `RefutationF2.lean`,
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **The Gap B joint seam refutation.** The hypothesis pair {`hcharFib`, `hcharFibSoundP`}
     (binders byte-faithful to `ExteriorGateAssembleK.lean:574-581`) is jointly false at any
@@ -174,4 +174,4 @@ theorem seamPair_joint_refutation_int (k : Nat)
   seamPair_joint_refutation atomMap charFib spM 0 2 1 3 (by norm_num) (spQnf k)
     (spQnf_render k) hcharFib hcharFibSoundP
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

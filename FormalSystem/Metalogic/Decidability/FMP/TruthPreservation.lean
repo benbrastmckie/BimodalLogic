@@ -43,12 +43,12 @@ additional work on modal/temporal MCS properties.
 - Blackburn, de Rijke, Venema: Modal Logic (Ch 2.3)
 -/
 
-namespace Bimodal.Metalogic.Decidability.FMP
+namespace FormalSystem.Metalogic.Decidability.FMP
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 /-!
 ## MCS Truth Definition
@@ -267,7 +267,7 @@ theorem mcs_all_future_all_future {phi : Formula} {S : ClosureMCSBundle phi}
     ψ.all_future.all_future ∈ S.carrier := by
   -- Temporal 4 axiom: Gψ → GGψ
   have h_temp_4_thm : [] ⊢ (ψ.all_future).imp (ψ.all_future.all_future) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived ψ
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived ψ
   have h_deriv : [ψ.all_future] ⊢ ψ.all_future.all_future := by
     have h_axiom : [ψ.all_future] ⊢ (ψ.all_future).imp (ψ.all_future.all_future) :=
       DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)
@@ -404,4 +404,4 @@ These properties ensure that truth (membership) is preserved under the
 filtration quotient, enabling the Finite Model Property proof.
 -/
 
-end Bimodal.Metalogic.Decidability.FMP
+end FormalSystem.Metalogic.Decidability.FMP

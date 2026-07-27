@@ -57,11 +57,11 @@ time-reversal of `kvE2_extNegFut_complete` via the private mirrors
 
 Purely additive leaf module (H7 territory: this file + additive import wiring only). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-- `ZoneSpec n` equality is decidable (file-local mirror of the private SW:61 bridge;
     the `ExteriorNegation.lean` copy is `private` and not reachable here). -/
@@ -1212,4 +1212,4 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
         exact absurd hbitv Bool.false_ne_true
   · exact hoff
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -47,10 +47,10 @@ stays OFF the live import path.
 - `VeeExistsForall.lean`: `VeeExistsForall`, `veeSatFin`, `veeSat_nil`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
 
@@ -162,4 +162,4 @@ theorem veeSat_negationFin
 
 end FinLayer
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

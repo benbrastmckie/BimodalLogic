@@ -57,7 +57,7 @@ have no "gaps" in time.
 * JPL Paper app:TaskSemantics (def:world-history, line 1849) - Formal world history definition
 -/
 
-namespace Bimodal.Semantics
+namespace FormalSystem.Semantics
 
 /--
 World history for a task frame.
@@ -423,4 +423,4 @@ theorem neg_injective (s t : D) : -s = -t ↔ s = t := by
 
 end WorldHistory
 
-end Bimodal.Semantics
+end FormalSystem.Semantics

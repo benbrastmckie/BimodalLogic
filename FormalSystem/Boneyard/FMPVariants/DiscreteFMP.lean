@@ -31,12 +31,12 @@ MCS-based construction here is independent of that work.
 
 #exit
 
-namespace Bimodal.Metalogic.Decidability.FMP
+namespace FormalSystem.Metalogic.Decidability.FMP
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 /-!
 ## Discrete Frame Preservation
@@ -118,4 +118,4 @@ the completeness theorem infrastructure.
 will benefit from axiom-free discrete infrastructure.
 -/
 
-end Bimodal.Metalogic.Decidability.FMP
+end FormalSystem.Metalogic.Decidability.FMP

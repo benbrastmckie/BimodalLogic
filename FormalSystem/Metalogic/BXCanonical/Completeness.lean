@@ -53,12 +53,12 @@ there). Its dense branch (`countermodel_dense_enriched`, on ℚ) and mixed branc
 - Burgess 1984, Goldblatt 1992 (completeness for tense logics)
 -/
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Semantics
 
 /-! ## Consistency of {¬φ} When φ Is Not Derivable -/
 
@@ -100,7 +100,7 @@ theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
       deduction_theorem [] (Formula.neg φ) Formula.bot d_reord
     -- ¬¬φ → φ by double negation elimination
     have h_dne : DerivationTree fc [] ((Formula.neg (Formula.neg φ)).imp φ) :=
-      Bimodal.Theorems.Propositional.double_negation φ
+      FormalSystem.Theorems.Propositional.double_negation φ
     have d_phi : DerivationTree fc [] φ :=
       DerivationTree.modus_ponens [] _ _ h_dne d_negneg
     exact h_not_deriv ⟨d_phi⟩
@@ -122,8 +122,8 @@ theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
 
 -- The two witnesses used below have fully-qualified names 97 and 118 characters long, so
 -- they cannot be written out inside this proof and stay under the 100-column limit.
-open Bimodal.Metalogic.Algebraic.ParametricHistory in
-open Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma in
+open FormalSystem.Metalogic.Algebraic.ParametricHistory in
+open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma in
 /--
 Enriched dense countermodel: constructs the same countermodel as `countermodel_dense`
 but with `Rat` explicit throughout, so `DenselyOrdered` is available for `valid_dense`.
@@ -140,12 +140,12 @@ theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
       ¬truth_at TM Omega τ t φ := by
   let bfmcs := Chronicle.cantor_bfmcs_dense fc A h_mcs h_box_dense
   let fam₀ := Chronicle.rooted_cantor_fmcs_dense fc A h_mcs h_box_dense 0
-  refine ⟨Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Rat,
-    Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Rat,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
+  refine ⟨FormalSystem.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Rat,
+    FormalSystem.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Rat,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
     shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
       ⟨fam₀, ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
     0, ?_⟩
   have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
@@ -313,7 +313,7 @@ theorem completeness_discrete (φ : Formula) :
     -- □(neg(next_top)) ∈ M extract neg(next_top) ∈ M via Modal T, contradiction.
     -- Step 1: T = bot → bot
     have h_top : ⊢[FrameClass.Discrete] Chronicle.top_formula :=
-      Bimodal.Theorems.Combinators.identity Formula.bot
+      FormalSystem.Theorems.Combinators.identity Formula.bot
     -- Steps 2-3: F(T) from seriality + MP
     have h_ft : ⊢[FrameClass.Discrete] Chronicle.top_formula.some_future :=
       DerivationTree.modus_ponens [] _ _
@@ -364,15 +364,15 @@ theorem completeness_discrete (φ : Formula) :
       (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
     · -- Discrete case: □(U(T,bot)) ∈ M — countermodel on ℤ via Reynolds pipeline
       obtain ⟨D, _, _, _, _, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-        Bimodal.Metalogic.WeakCanonical.countermodel_discrete_reynolds_v2
+        FormalSystem.Metalogic.WeakCanonical.countermodel_discrete_reynolds_v2
           M hM_mcs φ h_neg_in h_box_discrete
       exact h_not_true (h_valid_discrete D F TM Omega h_sc τ h_mem t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Discrete M hM_mcs
           h_not_box_dense h_not_box_discrete)
 
-#print axioms Bimodal.Metalogic.BXCanonical.completeness_dense
-#print axioms Bimodal.Metalogic.BXCanonical.completeness_discrete
+#print axioms FormalSystem.Metalogic.BXCanonical.completeness_dense
+#print axioms FormalSystem.Metalogic.BXCanonical.completeness_discrete
 
 /-! ## Axiom Audit
 
@@ -414,10 +414,10 @@ is the only Chronicle symbol used by `completeness_discrete`.
 - no `sorryAx`
 -/
 
-#print axioms Bimodal.Metalogic.BXCanonical.completeness
+#print axioms FormalSystem.Metalogic.BXCanonical.completeness
 -- dd_countermodel archived to Boneyard/ScheduleBasedBFMCS/ (see its README.md)
 -- Chronicle.countermodel_dense is no longer consumed by `completeness` (its dense branch
 -- now uses `countermodel_dense_enriched`); audit retained pending archival.
-#print axioms Bimodal.Metalogic.BXCanonical.Chronicle.countermodel_dense
+#print axioms FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

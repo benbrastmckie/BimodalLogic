@@ -273,7 +273,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ```lean
 -- In code
-#eval Bimodal.version  -- "0.2.0"
+#eval FormalSystem.version  -- "0.2.0"
 
 -- From command line
 lake env lean --version
@@ -285,7 +285,7 @@ cat lakefile.toml | grep version
 ```lean
 /-- Check minimum version requirement -/
 def require_version (min_version : String) : Bool :=
-  version_compare Bimodal.version min_version ≥ 0
+  version_compare FormalSystem.version min_version ≥ 0
 
 -- Use in code
 #guard require_version "0.2.0"

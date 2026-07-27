@@ -11,11 +11,11 @@ k=1 V-carrier kit: `bracketEndChar_k0`/`_k1`, `bracketFromLists`, `bracketEndCha
 with its helper kit and soundness/completeness/correctness (`_sound`, `_complete`, `_correct`).
 Byte-identical relocation except 6 sanctioned `private ` removals. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -2164,4 +2164,4 @@ theorem VVecEA2.singleton_holds {sig : MonadicSignature} [Fintype sig.preds] [De
 -- Boneyard/NfMultiAnchorBridgeRetired/EndIntervalSkeleton.lean. The live replacement
 -- is endIntervalStepPrior in EndIntervalConsumerK.lean.
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

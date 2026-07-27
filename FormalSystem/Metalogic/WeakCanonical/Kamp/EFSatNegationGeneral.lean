@@ -73,10 +73,10 @@ Cited by
 OFF the live import path: nothing here is imported by `KampPrior.lean` or the completeness spine.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
 
@@ -514,4 +514,4 @@ theorem efSat_negation_generalFin
 
 end FinLayer
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

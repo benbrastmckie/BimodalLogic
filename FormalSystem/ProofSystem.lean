@@ -10,7 +10,7 @@ import FormalSystem.ProofSystem.Derivable
 import FormalSystem.ProofSystem.LinearityDerivedFacts
 
 /-!
-# Bimodal.ProofSystem - TM Proof System
+# FormalSystem.ProofSystem - TM Proof System
 
 Aggregates all proof system components for bimodal logic TM (Tense and Modality).
 Provides the Hilbert-style axiom system with 21 axiom schemata and derivation
@@ -62,8 +62,8 @@ trees with 7 inference rules.
 ```lean
 import FormalSystem.ProofSystem
 
-open Bimodal.ProofSystem
-open Bimodal.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Syntax
 
 -- Use Modal T axiom: □φ → φ
 example (p : String) : ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by

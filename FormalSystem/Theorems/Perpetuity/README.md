@@ -49,7 +49,7 @@ modal necessity (□) and temporal operators (always △, sometimes ▽).
 ## Building
 
 ```bash
-lake build Bimodal.Theorems.Perpetuity
+lake build FormalSystem.Theorems.Perpetuity
 ```
 
 ## Related Documentation

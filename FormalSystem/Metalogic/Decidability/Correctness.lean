@@ -34,12 +34,12 @@ The `FrameClass.Base` parameter structurally excludes axioms with
 * Gore, R. (1999). Tableau Methods for Modal and Temporal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace FormalSystem.Metalogic.Decidability
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic
 
 /-!
 ## Soundness of the Decision Procedure
@@ -150,4 +150,4 @@ theorem countermodel_size_bound (φ : Formula) :
     Finite (FMP.FilteredWorld φ) :=
   FMP.FilteredWorld.finite φ
 
-end Bimodal.Metalogic.Decidability
+end FormalSystem.Metalogic.Decidability

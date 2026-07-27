@@ -57,9 +57,9 @@ includes:
 * JPL Paper app:TaskSemantics (def:frame, line 1835) - Temporal structure specification
 -/
 
-namespace Bimodal.Examples.TemporalStructures
+namespace FormalSystem.Examples.TemporalStructures
 
-open Bimodal.Semantics
+open FormalSystem.Semantics
 
 /-! ## Integer Time Examples (Standard) -/
 
@@ -283,4 +283,4 @@ theorem generic_domain_universal (D : Type*) [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] (t : D) :
     (genericTimeHistory D).domain t := trivial
 
-end Bimodal.Examples.TemporalStructures
+end FormalSystem.Examples.TemporalStructures

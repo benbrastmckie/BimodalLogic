@@ -38,11 +38,11 @@ Base plumbing (phases 1-7 of the original bridge): diagonal depth-0 atom layer,
 `nf_char2_*` kit, `nf_zone_flatten_navigable`, `A_diag`, `nf_char3_endpoint_tl`,
 `endChar0`, `seg`, off-diagonal formulas. Byte-identical relocation. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -2234,4 +2234,4 @@ with `h_past`/`h_now`/`h_fut` instantiated to the now-unconditional IH `endCharR
 — so the inner-witness `NavResidual` goal that blocked v2 no longer arises. NON-vacuous: RHS is the
 full `nf_eval_nf` characterization, never weakened to `True`/`top`. -/
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

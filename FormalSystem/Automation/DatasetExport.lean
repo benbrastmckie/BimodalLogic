@@ -79,13 +79,13 @@ valid = [r for r in records if r["label"] == "valid"]
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.DatasetExport
+namespace FormalSystem.Automation.DatasetExport
 
-open Bimodal.Syntax
-open Bimodal.Automation
-open Bimodal.Automation.DataExport
-open Bimodal.Metalogic.Decidability
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Automation
+open FormalSystem.Automation.DataExport
+open FormalSystem.Metalogic.Decidability
+open FormalSystem.ProofSystem
 
 /-!
 ## Additional JSON Serialization
@@ -622,7 +622,7 @@ where
     go rest { acc with poolSeeds := n.toNat! }
   | _ :: rest, acc => go rest acc
 
-end Bimodal.Automation.DatasetExport
+end FormalSystem.Automation.DatasetExport
 
 /-!
 ## S-Expression Parser for Checkpoint Resume
@@ -631,11 +631,11 @@ Parse formulas from S-expression strings written by `Formula.toSExpr`.
 Used to read checkpoint files for deterministic resume.
 -/
 
-open Bimodal.Syntax
-open Bimodal.Automation
-open Bimodal.Automation.DatasetExport
-open Bimodal.Automation.AtomCanonicalization
-open Bimodal.Automation.InterestingnessMetrics
+open FormalSystem.Syntax
+open FormalSystem.Automation
+open FormalSystem.Automation.DatasetExport
+open FormalSystem.Automation.AtomCanonicalization
+open FormalSystem.Automation.InterestingnessMetrics
 
 /-- Parser state for S-expression parsing using raw byte positions. -/
 structure SExprPS where

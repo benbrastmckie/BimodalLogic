@@ -34,7 +34,7 @@ These checks verify that information is consistent across all documentation file
 **Verification**:
 ```bash
 # Count tactic declarations in Tactics.lean
-TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " Theories/Bimodal/Automation/Tactics.lean)
+TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " FormalSystem/Automation/Tactics.lean)
 
 # Count tactic references in tactic-development.md
 TACTICS_DOC=$(grep -c "^\#\#\# " docs/project-info/tactic-registry.md)
@@ -83,7 +83,7 @@ and implementation gaps.
 **Verification**:
 ```bash
 # Verify sorry count in Perpetuity.lean
-PERPETUITY_SORRY=$(grep -c "sorry" Theories/Bimodal/Theorems/Perpetuity.lean)
+PERPETUITY_SORRY=$(grep -c "sorry" FormalSystem/Theorems/Perpetuity.lean)
 echo "Perpetuity.lean sorry count: $PERPETUITY_SORRY"
 
 # Check implementation-status.md Known Limitations section claims
@@ -108,7 +108,7 @@ and implementation-status.md Known Limitations section.
 **Verification**:
 ```bash
 # Count total sorry placeholders in codebase
-TOTAL_SORRY=$(find Theories/Bimodal -name "*.lean" -type f -exec grep -c "sorry" {} + |
+TOTAL_SORRY=$(find FormalSystem -name "*.lean" -type f -exec grep -c "sorry" {} + |
               awk '{sum+=$1} END {print sum}')
 echo "Total sorry placeholders in codebase: $TOTAL_SORRY"
 
@@ -161,7 +161,7 @@ LEAN Style Guide format.
 **Verification**:
 ```bash
 # Check for missing README.md files in main directories
-for dir in Theories/Bimodal/*/ Tests/BimodalTest/*/ docs/*/; do
+for dir in FormalSystem/*/ Tests/BimodalTest/*/ docs/*/; do
   if [ ! -f "$dir/README.md" ]; then
     echo "Missing README.md in $dir"
   fi
@@ -238,10 +238,10 @@ These checks verify that documentation claims are accurate and verifiable.
 cd /home/benjamin/Projects/BimodalLogic
 
 # Example: Verify Soundness module sorry count
-grep -c "sorry" Theories/Bimodal/Metalogic/Soundness.lean
+grep -c "sorry" FormalSystem/Metalogic/Soundness.lean
 
 # Example: Verify Automation package completion
-ls Theories/Bimodal/Automation/*.lean
+ls FormalSystem/Automation/*.lean
 
 # Manual verification: Run verification commands from implementation-status.md
 # and confirm results match documented status
@@ -500,9 +500,9 @@ current priorities.
 # implementation-status.md claims "50% complete (P1-P3 proven, P4-P6 incomplete)"
 
 # Verify P1-P3 status
-grep -A5 "theorem p1" Theories/Bimodal/Theorems/Perpetuity.lean | grep "sorry"
-grep -A5 "theorem p2" Theories/Bimodal/Theorems/Perpetuity.lean | grep "sorry"
-grep -A5 "theorem p3" Theories/Bimodal/Theorems/Perpetuity.lean | grep "sorry"
+grep -A5 "theorem p1" FormalSystem/Theorems/Perpetuity.lean | grep "sorry"
+grep -A5 "theorem p2" FormalSystem/Theorems/Perpetuity.lean | grep "sorry"
+grep -A5 "theorem p3" FormalSystem/Theorems/Perpetuity.lean | grep "sorry"
 
 # Expected: P1-P2 have sorry in helpers, P3 has zero sorry
 

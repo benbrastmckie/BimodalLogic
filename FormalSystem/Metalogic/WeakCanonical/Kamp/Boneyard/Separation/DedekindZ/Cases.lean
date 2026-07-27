@@ -26,9 +26,9 @@ for Dedekind-complete integer orders (GHR94 Lemma 10.3.11 items 5-8 on Z).
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Cases 5-8 Separability (Non-Circular)
 
@@ -1784,4 +1784,4 @@ theorem case8_separable_Z (a q A B : Formula)
     exact case5_separable_Z (Formula.neg q) (Formula.neg a) A B hnq_uf hna_uf hA hB hnq_sf hna_sf hA' hB'
 
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

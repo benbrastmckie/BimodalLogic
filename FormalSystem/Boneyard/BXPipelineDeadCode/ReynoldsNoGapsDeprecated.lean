@@ -47,9 +47,9 @@ The following remain in `ReynoldsNoGaps.lean`:
 -- The #exit above prevents Lean from processing it.
 -- ============================================================================
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /--
 **Archimedean No-Gaps Theorem**: Specialization of `no_gaps_discrete` for
@@ -160,4 +160,4 @@ theorem one_class_implies_succ_archimedean (sig : MonadicSignature) (k : Nat) (h
     @IsSuccArchimedean M.carrier inferInstance (inferInstance : SuccOrder M.carrier) :=
   prior_implies_succ_archimedean sig k hk M atomMap h_surj h_prior_UZ h_prior_SZ
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

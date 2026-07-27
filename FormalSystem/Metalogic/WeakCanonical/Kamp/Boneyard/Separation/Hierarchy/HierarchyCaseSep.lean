@@ -28,9 +28,9 @@ These theorems do NOT depend on HierarchyInduction.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- has_single_U_type for case1_psi when a, q, A, B are U-free. -/
 private theorem case1_psi_has_single_U_type (a q A B : Formula)
@@ -671,4 +671,4 @@ theorem case7_sep_with_U_type_Z_gen (a q A B : Formula)
         (u_free_separable_with_type hB)
     · exact untl_s_free_separable_with_type hA' hB'
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

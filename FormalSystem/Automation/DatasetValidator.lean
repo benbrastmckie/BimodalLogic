@@ -42,11 +42,11 @@ network training.
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.DatasetValidator
+namespace FormalSystem.Automation.DatasetValidator
 
-open Bimodal.Syntax
-open Bimodal.Automation
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.Automation
+open FormalSystem.Automation.DataExport
 
 /-!
 ## Helper Atoms
@@ -584,7 +584,7 @@ def runFullValidation (parallelThreads : Nat := 0) : IO Unit := do
       IO.println s!"    - {reason}"
   IO.println "============================================"
 
-end Bimodal.Automation.DatasetValidator
+end FormalSystem.Automation.DatasetValidator
 
 /--
 Entry point for the dataset validator executable.
@@ -598,4 +598,4 @@ def main (args : List String) : IO Unit := do
       | _ :: rest => go rest
       | [] => 0
     go args
-  Bimodal.Automation.DatasetValidator.runFullValidation parallelThreads
+  FormalSystem.Automation.DatasetValidator.runFullValidation parallelThreads

@@ -81,12 +81,12 @@ Augmented seed approach also fails: `{ψ} ∪ g_content(M) ∪ {F(χ)}` may be i
 The following lemmas are sorry-free building blocks for any future approach.
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Chronicle
+namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
 open Classical
 
 /--
@@ -100,7 +100,7 @@ theorem g_content_consistent {fc : FrameClass} (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) M) :
     SetConsistent (fc := fc) (g_content M) := by
   have h_top : (Formula.bot.imp Formula.bot) ∈ M :=
-    theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.identity Formula.bot)
+    theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_F_top : Formula.some_future (Formula.bot.imp Formula.bot) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.serial_future trivial)) h_top
@@ -117,7 +117,7 @@ theorem h_content_consistent {fc : FrameClass} (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) M) :
     SetConsistent (fc := fc) (h_content M) := by
   have h_top : (Formula.bot.imp Formula.bot) ∈ M :=
-    theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.identity Formula.bot)
+    theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_P_top : Formula.some_past (Formula.bot.imp Formula.bot) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.serial_past trivial)) h_top
@@ -127,4 +127,4 @@ theorem h_content_consistent {fc : FrameClass} (M : Set Formula)
   intro L hL ⟨d⟩
   exact h_seed L (fun x hx => h_sub (hL x hx)) ⟨d⟩
 
-end Bimodal.Metalogic.BXCanonical.Chronicle
+end FormalSystem.Metalogic.BXCanonical.Chronicle

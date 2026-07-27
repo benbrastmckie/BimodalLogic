@@ -8,7 +8,7 @@ is wrong about the repository.
 ## This Directory Has Its Own Boneyard
 
 `Kamp/Boneyard/` holds 62 archived files / 27,394 lines. It is the **second** archive
-directory in the tree; the other is `Theories/Bimodal/Boneyard/`. A `find` filter
+directory in the tree; the other is `FormalSystem/Boneyard/`. A `find` filter
 naming only the top-level `Boneyard` counts these 27k lines as live, which is how
 several past counts of this repository came out wrong. Re-derive counts with:
 

@@ -25,10 +25,10 @@ from `VecEAFormula.lean` to the temporal translation machinery in
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 3.5
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Recursive chain specification and translation -/
 
@@ -574,4 +574,4 @@ theorem VVecEA2.translateLeft_correct {sig : MonadicSignature}
            List.mem_map.mpr ⟨⟨n, vea⟩, h_mem, rfl⟩,
            (vea.translateLeft_correct M atomMap t).mpr h_holds⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -33,17 +33,17 @@ Since domain = True for all times, we sidestep domain-related complexity.
 
 ## References
 
-- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalFrame.lean (to_history)
+- Existing: FormalSystem/Metalogic/Bundle/CanonicalFrame.lean (to_history)
 -/
 
-namespace Bimodal.Metalogic.Algebraic.ParametricHistory
+namespace FormalSystem.Metalogic.Algebraic.ParametricHistory
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Semantics
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Semantics
+open FormalSystem.ProofSystem
 
 variable {fc : FrameClass} {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
@@ -179,4 +179,4 @@ theorem parametric_to_history_domain_full (fam : FMCS (fc := fc) D) (t : D) :
 theorem parametric_to_history_mcs_eq (fam : FMCS (fc := fc) D) (t : D) (ht : True) :
     ((parametric_to_history fam).states t ht).val = fam.mcs t := rfl
 
-end Bimodal.Metalogic.Algebraic.ParametricHistory
+end FormalSystem.Metalogic.Algebraic.ParametricHistory

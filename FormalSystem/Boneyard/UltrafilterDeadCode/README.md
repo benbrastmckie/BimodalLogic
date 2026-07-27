@@ -2,7 +2,7 @@ TOMBSTONE — code deleted; README retained as historical record.
 
 # UltrafilterChain Dead Code Archive
 
-This directory contains documentation for dead code removed from `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` during Task 80 cleanup.
+This directory contains documentation for dead code removed from `FormalSystem/Metalogic/Algebraic/UltrafilterChain.lean` during Task 80 cleanup.
 
 ## Archived Date
 
@@ -41,10 +41,10 @@ The full code exists in git history. To retrieve:
 
 ```bash
 # View the file before cleanup
-git show HEAD~1:Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean
+git show HEAD~1:FormalSystem/Metalogic/Algebraic/UltrafilterChain.lean
 
 # Or checkout specific commit before Task 80
-git log --oneline Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean
+git log --oneline FormalSystem/Metalogic/Algebraic/UltrafilterChain.lean
 ```
 
 ## Reference

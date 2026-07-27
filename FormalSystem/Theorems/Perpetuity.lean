@@ -83,7 +83,7 @@ compatibility with existing code.
 -/
 
 -- Re-export all submodules to maintain backward compatibility
-namespace Bimodal.Theorems.Perpetuity
+namespace FormalSystem.Theorems.Perpetuity
 
 -- All definitions from submodules are automatically available
 -- through the transitive imports:
@@ -91,4 +91,4 @@ namespace Bimodal.Theorems.Perpetuity
 -- Principles is imported by Bridge
 -- Bridge imports both
 
-end Bimodal.Theorems.Perpetuity
+end FormalSystem.Theorems.Perpetuity

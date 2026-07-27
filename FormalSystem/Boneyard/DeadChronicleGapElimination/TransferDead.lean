@@ -134,17 +134,17 @@ private theorem countermodel_discrete_enriched {fc : FrameClass} (A : Set Formul
       ¬truth_at TM Omega τ t φ := by
   let bfmcs := Chronicle.cantor_bfmcs_discrete fc A h_mcs h_box_discrete
   let fam₀ := Chronicle.rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0
-  refine ⟨Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Int,
-    Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Int,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
+  refine ⟨FormalSystem.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Int,
+    FormalSystem.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Int,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
       ⟨fam₀, ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
     0, ?_⟩
   have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
     rw [Chronicle.rooted_succ_discrete_fmcs_at_s]; exact h_neg_in
-  exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
+  exact FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
     bfmcs φ
     (Chronicle.cantor_bfmcs_discrete_restricted_tc fc A h_mcs h_fc h_box_discrete φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))

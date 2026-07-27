@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal
+import FormalSystem
 
 /-!
 # End-to-End Integration Tests
@@ -14,10 +14,10 @@ These tests verify the complete workflow from derivation to validity.
 
 namespace BimodalTest.Integration
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic
 
 /--
 Integration Test 1: Derive Modal T theorem.

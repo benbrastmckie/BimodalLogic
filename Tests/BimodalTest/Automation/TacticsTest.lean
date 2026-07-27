@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.Tactics.Commands
-import Bimodal.Automation.ProofSearch.Core
-import Bimodal.ProofSystem
+import FormalSystem.Automation.Tactics.Commands
+import FormalSystem.Automation.ProofSearch.Core
+import FormalSystem.ProofSystem
 
 /-!
 # Tests for Automation Tactics
@@ -56,7 +56,7 @@ Comprehensive test suite covering:
 
 namespace BimodalTest.Automation
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Automation
+open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Automation
 
 /-!
 ## Phase 4: apply_axiom and modal_t Tests
@@ -88,7 +88,7 @@ example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (F
 
 /-- Test 6: temp_4 axiom (Gp → GGp) -/
 noncomputable example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) :=
-  Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 7: temp_a axiom (p → GPp) -/
 example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) :=
@@ -106,7 +106,7 @@ example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.a
 
 /-- Test 10: temp_future derived (□p → G□p, from MF + T + Modal 4) -/
 example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
-  Bimodal.Theorems.Combinators.temp_future_derived _
+  FormalSystem.Theorems.Combinators.temp_future_derived _
 
 /-- Test 11: apply_axiom tactic unifies with modal_t -/
 example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "q")) (Formula.atom_s "q")) :=
@@ -132,7 +132,7 @@ example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.a
 
 /-- Test 15: tm_auto finds temp_4 axiom -/
 noncomputable example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 16: tm_auto finds temp_a axiom -/
 example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) := by
@@ -144,7 +144,7 @@ example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.a
 
 /-- Test 18: tm_auto finds temp_future (now derived from MF + T + Modal 4) -/
 example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
-  Bimodal.Theorems.Combinators.temp_future_derived _
+  FormalSystem.Theorems.Combinators.temp_future_derived _
 
 /-!
 ## Phase 7: tm_auto Extended Coverage Tests
@@ -301,7 +301,7 @@ example : is_box_formula (Formula.box (Formula.box (Formula.box (Formula.atom_s 
 
 /-- Test 49: Complex bimodal formula (TF derived from MF + T + Modal 4) -/
 example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
-  Bimodal.Theorems.Combinators.temp_future_derived _
+  FormalSystem.Theorems.Combinators.temp_future_derived _
 
 /-- Test 50: assumption_search with long context -/
 example (a b c d _ : Nat) : Nat := by
@@ -313,16 +313,16 @@ example (a b c d _ : Nat) : Nat := by
 Tests for generalized_modal_k, generalized_temporal_k, temporal_duality inference rules.
 
 NOTE: DerivationTree.modal_k and DerivationTree.temporal_k were removed in Task 44.
-The generalized rules are now in Bimodal.Theorems.GeneralizedNecessitation.
+The generalized rules are now in FormalSystem.Theorems.GeneralizedNecessitation.
 -/
 
-open Bimodal.Theorems in
+open FormalSystem.Theorems in
 /-- Test 51: generalized_modal_k rule derives □φ from φ (empty context) -/
 noncomputable example (h : DerivationTree FrameClass.Base [] (Formula.atom_s "p")) :
     DerivationTree FrameClass.Base (Context.map Formula.box []) (Formula.box (Formula.atom_s "p")) :=
   generalized_modal_k [] _ h
 
-open Bimodal.Theorems in
+open FormalSystem.Theorems in
 /-- Test 52: generalized_temporal_k rule derives Fφ from φ (empty context) -/
 noncomputable example (h : DerivationTree FrameClass.Base [] (Formula.atom_s "p")) :
     DerivationTree FrameClass.Base (Context.map Formula.all_future []) (Formula.all_future (Formula.atom_s "p")) :=
@@ -333,25 +333,25 @@ example (h : DerivationTree FrameClass.Base [] (Formula.all_past (Formula.atom_s
     DerivationTree FrameClass.Base [] (Formula.swap_temporal (Formula.all_past (Formula.atom_s "p"))) :=
   DerivationTree.temporal_duality _ h
 
-open Bimodal.Theorems in
+open FormalSystem.Theorems in
 /-- Test 54: generalized_modal_k with axiom derivation -/
 noncomputable example :
     DerivationTree FrameClass.Base (Context.map Formula.box []) (Formula.box (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p"))) :=
   generalized_modal_k [] _ (DerivationTree.axiom [] _ (Axiom.modal_t _) trivial)
 
-open Bimodal.Theorems in
+open FormalSystem.Theorems in
 /-- Test 55: generalized_temporal_k with axiom derivation -/
 noncomputable example :
     DerivationTree FrameClass.Base (Context.map Formula.all_future []) (Formula.all_future (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p"))))) :=
-  generalized_temporal_k [] _ (Bimodal.Theorems.TemporalDerived.temp_4_derived _)
+  generalized_temporal_k [] _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived _)
 
-open Bimodal.Theorems in
+open FormalSystem.Theorems in
 /-- Test 56: generalized_modal_k with non-empty context -/
 noncomputable example (h : DerivationTree FrameClass.Base [Formula.atom_s "p"] (Formula.atom_s "p")) :
     DerivationTree FrameClass.Base (Context.map Formula.box [Formula.atom_s "p"]) (Formula.box (Formula.atom_s "p")) :=
   generalized_modal_k _ _ h
 
-open Bimodal.Theorems in
+open FormalSystem.Theorems in
 /-- Test 57: generalized_temporal_k with non-empty context -/
 noncomputable example (h : DerivationTree FrameClass.Base [Formula.atom_s "p"] (Formula.atom_s "p")) :
     DerivationTree FrameClass.Base (Context.map Formula.all_future [Formula.atom_s "p"]) (Formula.all_future (Formula.atom_s "p")) :=
@@ -391,7 +391,7 @@ example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.i
 
 /-- Test 64: Temporal 4 applied to compound formula -/
 noncomputable example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.all_future (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 65: Modal B with atomic formula -/
 example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "q") (Formula.box (Formula.diamond (Formula.atom_s "q")))) :=
@@ -407,7 +407,7 @@ example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.i
 
 /-- Test 68: Temp future with compound formula (derived from MF + T + Modal 4) -/
 example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.all_future (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) :=
-  Bimodal.Theorems.Combinators.temp_future_derived _
+  FormalSystem.Theorems.Combinators.temp_future_derived _
 
 /-!
 ## Phase 5 Group 3: Propositional Depth Tests
@@ -455,7 +455,7 @@ example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (F
 
 /-- Test 76: apply_axiom finds temp_4 -/
 noncomputable example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 77: apply_axiom finds temp_a -/
 example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) := by
@@ -488,7 +488,7 @@ example (p : Formula) : DerivationTree FrameClass.Base [p.all_future] p.all_futu
 
 /-- Test 82: Temporal K with modus ponens -/
 noncomputable example (p : Formula) : DerivationTree FrameClass.Base [] (p.all_future.imp p.all_future.all_future) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 83: Temporal K weakening -/
 example (p : Formula) : DerivationTree FrameClass.Base [p.all_future.all_future] p.all_future.all_future := by
@@ -527,15 +527,15 @@ example : DerivationTree FrameClass.Base [] ((Formula.atom_s "p").imp (Formula.a
 
 /-- Test 90: temp_4_tactic basic application -/
 noncomputable example (p : Formula) : DerivationTree FrameClass.Base [] (p.all_future.imp p.all_future.all_future) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 91: temp_4_tactic with compound formula -/
 noncomputable example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).all_future.imp (p.imp q).all_future.all_future) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 92: temp_4_tactic with atom -/
 noncomputable example : DerivationTree FrameClass.Base [] ((Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 93: temp_a_tactic basic application -/
 example (p : Formula) : DerivationTree FrameClass.Base [] (p.imp p.some_past.all_future) := by
@@ -572,7 +572,7 @@ example (p : Formula) : DerivationTree FrameClass.Base [] (p.imp p.diamond.box) 
 
 /-- Test 99: temporal_search depth 1 on temp_4 -/
 noncomputable example (p : Formula) : DerivationTree FrameClass.Base [] (p.all_future.imp p.all_future.all_future) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 100: temporal_search depth 2 on temp_a -/
 example (p : Formula) : DerivationTree FrameClass.Base [] (p.imp p.some_past.all_future) := by
@@ -584,7 +584,7 @@ example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).box.imp (
 
 /-- Test 102: temporal_search with complex nested formula -/
 noncomputable example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).all_future.imp (p.imp q).all_future.all_future) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 103: modal_search on prop_s -/
 example (p q : Formula) : DerivationTree FrameClass.Base [] (p.imp (q.imp p)) :=
@@ -596,7 +596,7 @@ example (p : Formula) : DerivationTree FrameClass.Base [] (p.box.imp p) :=
 
 /-- Test 105: modal_search combined with temporal -/
 noncomputable example (p : Formula) : DerivationTree FrameClass.Base [] (p.all_future.imp p.all_future.all_future) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /-!
 ## Phase 9: Integration Tests and Complex Bimodal Tests

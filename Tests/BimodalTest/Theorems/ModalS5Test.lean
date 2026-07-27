@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Theorems.ModalS5
+import FormalSystem.Theorems.ModalS5
 
 /-!
 # Modal S5 Theorems Tests
@@ -26,11 +26,11 @@ Each theorem has minimum 2 test cases (simple atomic, nested/complex).
 
 namespace BimodalTest.Theorems.ModalS5Test
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Perpetuity
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.ModalS5
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Perpetuity
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.ModalS5
 
 /-!
 ## T-Box-to-Diamond Tests (Task 30)

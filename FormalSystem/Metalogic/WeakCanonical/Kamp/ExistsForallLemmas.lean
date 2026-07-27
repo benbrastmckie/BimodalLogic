@@ -69,9 +69,9 @@ forward direction does not:
 - `VeeExistsForall.lean`: the disjunctive dual and Lemma 3.4 disjunction closure.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax (Formula)
+open FormalSystem.Syntax (Formula)
 
 /-- Congruence for a `max'`-with-fallback `dite` under Finset equality. -/
 private theorem dite_max'_congr {α : Type*} [LinearOrder α] {s t : Finset α} (h : s = t) (c : α) :
@@ -696,4 +696,4 @@ theorem augTargetFin_iff {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
 
 end Kamp
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

@@ -46,11 +46,11 @@ termination with the identical `termination_by fuel` / `decreasing_by
 all_goals simp_wf` already discharged for `_tracedImpl`.
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace FormalSystem.Metalogic.Decidability
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation
 
 /--
 Cancellable `IO` mirror of `expandBranchWithFuel` (Saturation.lean:228).
@@ -253,4 +253,4 @@ def decideAutoAdaptiveCancellable (abortRef : IO.Ref Bool) (φ : Formula)
   | .timeout => return (.timeout, "adaptive_timeout")
   | result => return (result, s!"adaptive_{fuel}")
 
-end Bimodal.Metalogic.Decidability
+end FormalSystem.Metalogic.Decidability

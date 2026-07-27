@@ -158,10 +158,10 @@ lemmas (`kvE_deepOnFiber_iff`, `kvE_futRealizer_admissible`,
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## CM-A cast: the deep-incomplete homogeneous ambient (kills row 13) -/
 
@@ -979,4 +979,4 @@ theorem kvE_probe368_ambient_copyPlant_collapses (qs : NormalForm mBsig 3 3)
     qs = nf_characteristic MB 3 3 mBreal3 :=
   Prod.ext (hrow.symm.trans subAnchor_on_row) hcopy
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

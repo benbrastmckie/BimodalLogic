@@ -35,19 +35,19 @@ theorems are sound — the obstruction is specifically in `rr_fwd_chain_forward_
 -- temp_t_future/temp_t_past axioms removed, resolving_enriched_fwd_exists deleted.
 -- Code preserved below #exit for reference only.
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Semantics
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Perpetuity
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Semantics
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Perpetuity
 open Classical
 
 /-! ## Round-Robin Schedule -/
@@ -514,4 +514,4 @@ theorem dd_fmcs_backward_P (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
     ∃ s : Int, s < t ∧ ψ ∈ (dd_fmcs M₀ h₀ sigma_list).mcs s := by
   sorry
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

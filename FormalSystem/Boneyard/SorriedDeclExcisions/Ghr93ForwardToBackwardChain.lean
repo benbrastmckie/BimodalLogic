@@ -33,9 +33,9 @@ Do not import from live code.
 #exit
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean
-   Original context: `namespace Bimodal.Metalogic.WeakCanonical`,
-   `open Bimodal.Syntax`, `set_option maxHeartbeats 800000`.
+   Source: FormalSystem/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean
+   Original context: `namespace FormalSystem.Metalogic.WeakCanonical`,
+   `open FormalSystem.Syntax`, `set_option maxHeartbeats 800000`.
    ====================================================================== -/
 
 /-- In a gap's cut, every element has a strictly larger element in the cut.
@@ -1660,9 +1660,9 @@ theorem ghr93_inductive_step {sig : MonadicSignature} [Fintype sig.preds] [Decid
       h_mono
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Theorem6.lean
-   Original context: `namespace Bimodal.Metalogic.WeakCanonical`,
-   `open Bimodal.Syntax`.
+   Source: FormalSystem/Metalogic/WeakCanonical/Expressiveness/Theorem6.lean
+   Original context: `namespace FormalSystem.Metalogic.WeakCanonical`,
+   `open FormalSystem.Syntax`.
    ====================================================================== -/
 
 /-! ## GHR93 Theorem 6: Forward-to-Backward Transfer (Uniform Rank) -/

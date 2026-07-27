@@ -41,9 +41,9 @@ This file lands the fold TYPE and EVALUATOR (Phase 1). The quant-assignment doma
 - `NfDepth0Generalized.lean` (`skipFin`, `mergeNF`) — reused by the Phase-2 split kit.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Zone specification (Def 3.1 ordering conjuncts, PDF p.4) -/
 
@@ -711,4 +711,4 @@ theorem nf_eval_nfk_iff_efold_k1_recovers {sig : MonadicSignature} [Fintype sig.
       ∀ sub : NormalForm sig 0 (n + 1), nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) :=
   (nf_eval_nfk_iff_efold M env qnf).symm.trans (nf_eval_nf1_iff_efold M env qnf)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -40,6 +40,6 @@ imports it); it re-exports nothing.
 - `ExistsForallFormula.lean`: the Def 3.1 object.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

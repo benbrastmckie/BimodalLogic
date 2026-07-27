@@ -42,7 +42,7 @@ The `searchProof` function uses five strategies in order:
 
 2. **Lemma database matching** (`tryLemmaMatch`): empty-context derived theorems
    registered via the `@[tm_lemma]` label attribute (declared in
-   `Bimodal.Automation.LemmaDB`), applied with backward chaining: remaining
+   `FormalSystem.Automation.LemmaDB`), applied with backward chaining: remaining
    `DerivationTree` premises are proven recursively via `searchProof`, and side
    goals (frame-class `≤`, context membership) are discharged by
    `trivial | decide | simp`. Tag a theorem `@[tm_lemma]` at its definition
@@ -71,10 +71,10 @@ example (p : Formula) : [p.box] ⊢ p := by
 ```
 -/
 
-open Bimodal.Syntax Bimodal.ProofSystem
+open FormalSystem.Syntax FormalSystem.ProofSystem
 open Lean Elab Tactic Meta
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
 /-!
 ## Phase 4: Basic Tactics Implementation
@@ -780,7 +780,7 @@ def tryLemmaMatchCore (lemmas : Array Name) (goal : MVarId) (fc _ctx formula : E
 
 /--
 Try to prove the goal by matching against the `@[tm_lemma]` attribute
-database (see `Bimodal.Automation.LemmaDB`), with backward chaining through
+database (see `FormalSystem.Automation.LemmaDB`), with backward chaining through
 lemma premises.
 
 Replaces the former `tryDerivedMatch` static 26-name list: the database is
@@ -1147,4 +1147,4 @@ partial def searchProof (counter : IO.Ref Nat) (goal : MVarId) (depth : Nat) : T
   return false
 
 
-end Bimodal.Automation
+end FormalSystem.Automation

@@ -7,7 +7,7 @@ Authors: Benjamin Brast-McKie
 /-!
 # Axiom Names - Canonical 42-Constructor Name List
 
-The canonical list of all `Bimodal.ProofSystem.Axiom` constructor names, in
+The canonical list of all `FormalSystem.ProofSystem.Axiom` constructor names, in
 `Axioms.lean` source order.
 
 Extracted from `BenchmarkAnchors.lean` into a leaf module so that
@@ -27,7 +27,7 @@ The mismatch is caught mechanically:
   live source and compares it against the shipped machine appendix.
 -/
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
 /-- All 42 axiom constructor names, in `Axioms.lean` source order. -/
 def allAxiomNames : List String :=
@@ -53,4 +53,4 @@ def allAxiomNames : List String :=
   , "density", "dense_indicator"
   ]
 
-end Bimodal.Automation
+end FormalSystem.Automation

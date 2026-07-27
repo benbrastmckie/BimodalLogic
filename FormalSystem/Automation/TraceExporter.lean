@@ -44,8 +44,8 @@ echo '(imp (atom p) (atom q))' | lake exe trace_exporter -- --fuel 200 --frame-c
 
 ## References
 
-- `Bimodal.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry point.
-- `Bimodal.Metalogic.Decidability.TraceExport.proofCertificateToJsonString` — JSON serializer.
+- `FormalSystem.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry point.
+- `FormalSystem.Metalogic.Decidability.TraceExport.proofCertificateToJsonString` — JSON serializer.
 -/
 
 /-!
@@ -79,20 +79,20 @@ echo '(imp (atom p) (atom q))' | lake exe trace_exporter -- --fuel 200 --frame-c
 
 ## References
 
-- `Bimodal.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry point.
-- `Bimodal.Metalogic.Decidability.TraceExport.proofCertificateToJsonString` — JSON serializer.
-- `Bimodal.Automation.DatasetExport.parseFormulaSExpr` — S-expression formula parser.
+- `FormalSystem.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry point.
+- `FormalSystem.Metalogic.Decidability.TraceExport.proofCertificateToJsonString` — JSON serializer.
+- `FormalSystem.Automation.DatasetExport.parseFormulaSExpr` — S-expression formula parser.
 -/
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.TraceExporter
+namespace FormalSystem.Automation.TraceExporter
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Decidability
-open Bimodal.Metalogic.Decidability.TraceExport
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Decidability
+open FormalSystem.Metalogic.Decidability.TraceExport
+open FormalSystem.Automation.DataExport
 
 /-!
 ## S-Expression Formula Parser
@@ -248,7 +248,7 @@ partial def mainLoop (cfg : Config) : IO Unit := do
     loop
   loop
 
-end Bimodal.Automation.TraceExporter
+end FormalSystem.Automation.TraceExporter
 
 /--
 Entry point for the `trace_exporter` executable.
@@ -259,5 +259,5 @@ echo '(imp (atom p) (atom q))' | lake exe trace_exporter
 ```
 -/
 def main (args : List String) : IO Unit := do
-  let cfg := Bimodal.Automation.TraceExporter.parseArgs args
-  Bimodal.Automation.TraceExporter.mainLoop cfg
+  let cfg := FormalSystem.Automation.TraceExporter.parseArgs args
+  FormalSystem.Automation.TraceExporter.mainLoop cfg

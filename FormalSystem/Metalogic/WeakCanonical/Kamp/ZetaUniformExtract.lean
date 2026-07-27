@@ -41,10 +41,10 @@ The proof bodies are the per-`N` Fin-layer proofs verbatim, re-entered after `in
 - `EFSatNegationGeneral.lean` / `VeeSatNegation.lean`: the per-`N` negation stack.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
@@ -818,4 +818,4 @@ theorem kampArm_zeta {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         change (∃ x : M.carrier, eval M (Fin.cons x (fun _ => t)) (nf_to_formula sub_nf)) ↔ _
         exact exists_congr fun x => nf_to_formula_correct M _ sub_nf
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -24,10 +24,10 @@ This module proves that the Lindenbaum-Tarski algebra is a `BooleanAlgebra`.
 Phase 3 of the algebraic completeness theorem. Contains sorries pending propositional helper lemmas.
 -/
 
-namespace Bimodal.Metalogic.Algebraic.BooleanStructure
+namespace FormalSystem.Metalogic.Algebraic.BooleanStructure
 
-open Bimodal.Syntax Bimodal.ProofSystem
-open Bimodal.Metalogic.Algebraic.LindenbaumQuotient
+open FormalSystem.Syntax FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
 
 /-!
 ## Order Structure
@@ -110,8 +110,8 @@ theorem inf_le_left_quot (a b : LindenbaumAlg) : and_quot a b ≤ a := by
   induction b using Quotient.ind
   rename_i φ ψ
   change Derives (φ.and ψ) φ
-  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and ψ) φ
-    (Bimodal.Theorems.Propositional.lce φ ψ)⟩
+  exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] (φ.and ψ) φ
+    (FormalSystem.Theorems.Propositional.lce φ ψ)⟩
 
 /--
 `a ⊓ b ≤ b`: conjunction implies second conjunct.
@@ -121,8 +121,8 @@ theorem inf_le_right_quot (a b : LindenbaumAlg) : and_quot a b ≤ b := by
   induction b using Quotient.ind
   rename_i φ ψ
   change Derives (φ.and ψ) ψ
-  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and ψ) ψ
-    (Bimodal.Theorems.Propositional.rce φ ψ)⟩
+  exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] (φ.and ψ) ψ
+    (FormalSystem.Theorems.Propositional.rce φ ψ)⟩
 
 /--
 `a ≤ b → a ≤ c → a ≤ b ⊓ c`: greatest lower bound property.
@@ -138,7 +138,7 @@ theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a 
   have h_ac : Derives φ χ := hac
   obtain ⟨d_ab⟩ := h_ab
   obtain ⟨d_ac⟩ := h_ac
-  exact ⟨Bimodal.Theorems.Combinators.combine_imp_conj d_ab d_ac⟩
+  exact ⟨FormalSystem.Theorems.Combinators.combine_imp_conj d_ab d_ac⟩
 
 /--
 `a ≤ a ⊔ b`: first disjunct implies disjunction.
@@ -152,7 +152,7 @@ theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ or_quot a b := by
   -- This is raa (Reductio ad Absurdum): ⊢ φ → (¬φ → ψ)
   unfold Derives
   unfold Formula.or
-  exact ⟨Bimodal.Theorems.Propositional.raa φ ψ⟩
+  exact ⟨FormalSystem.Theorems.Propositional.raa φ ψ⟩
 
 /--
 `b ≤ a ⊔ b`: second disjunct implies disjunction.
@@ -193,7 +193,7 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : or
   -- Step 1: Build (¬φ → χ) using composition with (¬φ → ψ) → (ψ → χ) → (¬φ → χ)
   -- b_combinator: (ψ → χ) → (¬φ → ψ) → (¬φ → χ)
   have b1 : ⊢ (ψ.imp χ).imp ((φ.neg.imp ψ).imp (φ.neg.imp χ)) :=
-    Bimodal.Theorems.Combinators.b_combinator
+    FormalSystem.Theorems.Combinators.b_combinator
   have neg_phi_to_chi_given_disj : ⊢ (φ.neg.imp ψ).imp (φ.neg.imp χ) :=
     DerivationTree.modus_ponens [] _ _ b1 d_bc
   -- Step 2: Use classical_merge: (φ → χ) → ((¬φ → χ) → χ)
@@ -201,13 +201,13 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : or
   -- We need to combine with the above to get: (¬φ → ψ) → χ
   -- Build: (φ → χ) → ((¬φ → χ) → χ) and compose with (¬φ → ψ) → (¬φ → χ)
   have cm : ⊢ (φ.imp χ).imp ((φ.neg.imp χ).imp χ) :=
-    Bimodal.Theorems.Propositional.classical_merge φ χ
+    FormalSystem.Theorems.Propositional.classical_merge φ χ
   have step1 : ⊢ (φ.neg.imp χ).imp χ :=
     DerivationTree.modus_ponens [] _ _ cm d_ac
   -- Now compose: (¬φ → ψ) → (¬φ → χ) with (¬φ → χ) → χ
   have b2 : ⊢ ((φ.neg.imp χ).imp χ).imp (((φ.neg.imp ψ).imp (φ.neg.imp χ)).imp
       ((φ.neg.imp ψ).imp χ)) :=
-    Bimodal.Theorems.Combinators.b_combinator
+    FormalSystem.Theorems.Combinators.b_combinator
   have step2 : ⊢ ((φ.neg.imp ψ).imp (φ.neg.imp χ)).imp ((φ.neg.imp ψ).imp χ) :=
     DerivationTree.modus_ponens [] _ _ b2 step1
   exact ⟨DerivationTree.modus_ponens [] _ _ step2 neg_phi_to_chi_given_disj⟩
@@ -231,7 +231,7 @@ theorem le_top_quot (a : LindenbaumAlg) : a ≤ ⊤ := by
   -- ⊢ φ → (⊥ → ⊥)
   -- Derivable: from identity and weakening
   have d_id : ⊢ (Formula.bot.imp Formula.bot) :=
-    Bimodal.Theorems.Combinators.identity Formula.bot
+    FormalSystem.Theorems.Combinators.identity Formula.bot
   have d_s : ⊢ ((Formula.bot.imp Formula.bot).imp (φ.imp (Formula.bot.imp Formula.bot))) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp Formula.bot) φ) trivial
   exact ⟨DerivationTree.modus_ponens [] _ _ d_s d_id⟩
@@ -266,7 +266,7 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   -- Left intro: φ → φ ∨ (ψ ∧ χ)
   -- Using deduction theorem on ldi: [φ] ⊢ φ ∨ (ψ ∧ χ) implies ⊢ φ → φ ∨ (ψ ∧ χ)
   have di_left : ⊢ φ.imp Q :=
-    Bimodal.Metalogic.Core.deduction_theorem [] φ Q (Bimodal.Theorems.Propositional.ldi φ (ψ.and χ))
+    FormalSystem.Metalogic.Core.deduction_theorem [] φ Q (FormalSystem.Theorems.Propositional.ldi φ (ψ.and χ))
   -- From context [P], derive φ ∨ ψ and φ ∨ χ
   -- Then derive: ¬φ → ψ (from φ ∨ ψ = ¬φ → ψ) and ¬φ → χ (from φ ∨ χ = ¬φ → χ)
   -- Combine: ¬φ → (ψ ∧ χ)
@@ -275,12 +275,12 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   -- di_right: ψ ∧ χ → φ ∨ (ψ ∧ χ)
   -- Using deduction theorem on rdi: [ψ ∧ χ] ⊢ φ ∨ (ψ ∧ χ) implies ⊢ (ψ ∧ χ) → φ ∨ (ψ ∧ χ)
   have di_right_conj : ⊢ (ψ.and χ).imp Q :=
-    Bimodal.Metalogic.Core.deduction_theorem [] (ψ.and χ) Q
-        (Bimodal.Theorems.Propositional.rdi φ (ψ.and χ))
+    FormalSystem.Metalogic.Core.deduction_theorem [] (ψ.and χ) Q
+        (FormalSystem.Theorems.Propositional.rdi φ (ψ.and χ))
   -- lce: P → (φ ∨ ψ)
-  have lce_p : ⊢ P.imp (φ.or ψ) := Bimodal.Theorems.Propositional.lce_imp (φ.or ψ) (φ.or χ)
+  have lce_p : ⊢ P.imp (φ.or ψ) := FormalSystem.Theorems.Propositional.lce_imp (φ.or ψ) (φ.or χ)
   -- rce: P → (φ ∨ χ)
-  have rce_p : ⊢ P.imp (φ.or χ) := Bimodal.Theorems.Propositional.rce_imp (φ.or ψ) (φ.or χ)
+  have rce_p : ⊢ P.imp (φ.or χ) := FormalSystem.Theorems.Propositional.rce_imp (φ.or ψ) (φ.or χ)
   -- φ ∨ ψ = ¬φ → ψ, so P → (¬φ → ψ)
   have p_to_neg_phi_psi : ⊢ P.imp (φ.neg.imp ψ) := lce_p
   -- φ ∨ χ = ¬φ → χ, so P → (¬φ → χ)
@@ -312,7 +312,7 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
     have h_chi : [φ.neg, P] ⊢ χ :=
       DerivationTree.modus_ponens _ _ _ h4 h_neg_phi
     -- Combine ψ and χ into ψ ∧ χ using pairing
-    have pair : ⊢ ψ.imp (χ.imp (ψ.and χ)) := Bimodal.Theorems.Combinators.pairing ψ χ
+    have pair : ⊢ ψ.imp (χ.imp (ψ.and χ)) := FormalSystem.Theorems.Combinators.pairing ψ χ
     have pair_ctx : [φ.neg, P] ⊢ ψ.imp (χ.imp (ψ.and χ)) :=
       DerivationTree.weakening [] _ _ pair (List.nil_subset _)
     have step1 : [φ.neg, P] ⊢ χ.imp (ψ.and χ) :=
@@ -320,13 +320,13 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
     exact DerivationTree.modus_ponens _ _ _ step1 h_chi
   -- Apply deduction theorem twice: [P, ¬φ] ⊢ ψ ∧ χ implies [P] ⊢ ¬φ → ψ ∧ χ
   have h_ctx2 : [P] ⊢ φ.neg.imp (ψ.and χ) :=
-    Bimodal.Metalogic.Core.deduction_theorem [P] φ.neg (ψ.and χ) h_ctx
+    FormalSystem.Metalogic.Core.deduction_theorem [P] φ.neg (ψ.and χ) h_ctx
   -- Now [P] ⊢ ¬φ → ψ ∧ χ, and ψ ∧ χ → Q (di_right)
   -- Compose to get [P] ⊢ ¬φ → Q
   have di_right_ctx : [P] ⊢ (ψ.and χ).imp Q :=
     DerivationTree.weakening [] _ _ di_right_conj (List.nil_subset _)
   have b_inst : ⊢ ((ψ.and χ).imp Q).imp ((φ.neg.imp (ψ.and χ)).imp (φ.neg.imp Q)) :=
-    Bimodal.Theorems.Combinators.b_combinator
+    FormalSystem.Theorems.Combinators.b_combinator
   have b_ctx : [P] ⊢ ((ψ.and χ).imp Q).imp ((φ.neg.imp (ψ.and χ)).imp (φ.neg.imp Q)) :=
     DerivationTree.weakening [] _ _ b_inst (List.nil_subset _)
   have step2 : [P] ⊢ (φ.neg.imp (ψ.and χ)).imp (φ.neg.imp Q) :=
@@ -338,7 +338,7 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   have di_left_ctx : [P] ⊢ φ.imp Q :=
     DerivationTree.weakening [] _ _ di_left (List.nil_subset _)
   have cm : ⊢ (φ.imp Q).imp ((φ.neg.imp Q).imp Q) :=
-    Bimodal.Theorems.Propositional.classical_merge φ Q
+    FormalSystem.Theorems.Propositional.classical_merge φ Q
   have cm_ctx : [P] ⊢ (φ.imp Q).imp ((φ.neg.imp Q).imp Q) :=
     DerivationTree.weakening [] _ _ cm (List.nil_subset _)
   have step3 : [P] ⊢ (φ.neg.imp Q).imp Q :=
@@ -346,7 +346,7 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   have h_Q : [P] ⊢ Q :=
     DerivationTree.modus_ponens _ _ _ step3 h_neg_phi_Q
   -- Apply deduction theorem: [P] ⊢ Q implies [] ⊢ P → Q
-  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] P Q h_Q⟩
+  exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] P Q h_Q⟩
 
 /-!
 ## Complement and Boolean Algebra
@@ -371,19 +371,19 @@ theorem inf_compl_le_bot_quot (a : LindenbaumAlg) : and_quot a (neg_quot a) ≤ 
   have h_phi : [φ.and φ.neg] ⊢ φ := by
     apply DerivationTree.modus_ponens [φ.and φ.neg] _ _
     · apply DerivationTree.weakening [] [φ.and φ.neg]
-      · exact Bimodal.Theorems.Propositional.lce_imp φ φ.neg
+      · exact FormalSystem.Theorems.Propositional.lce_imp φ φ.neg
       · intro; simp
     · exact h_conj_ctx
   have h_neg_phi : [φ.and φ.neg] ⊢ φ.neg := by
     apply DerivationTree.modus_ponens [φ.and φ.neg] _ _
     · apply DerivationTree.weakening [] [φ.and φ.neg]
-      · exact Bimodal.Theorems.Propositional.rce_imp φ φ.neg
+      · exact FormalSystem.Theorems.Propositional.rce_imp φ φ.neg
       · intro; simp
     · exact h_conj_ctx
   -- φ.neg = φ → ⊥, so modus ponens gives ⊥
   have h_bot : [φ.and φ.neg] ⊢ Formula.bot :=
     DerivationTree.modus_ponens [φ.and φ.neg] φ Formula.bot h_neg_phi h_phi
-  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and φ.neg) Formula.bot h_bot⟩
+  exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] (φ.and φ.neg) Formula.bot h_bot⟩
 
 /--
 `⊤ ≤ a ⊔ aᶜ`: top is at most join with complement.
@@ -396,7 +396,7 @@ theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ or_quot a (neg_quot 
   -- This follows from LEM (⊢ φ ∨ ¬φ) by weakening
   change Derives (Formula.bot.imp Formula.bot) (φ.or φ.neg)
   unfold Derives
-  have h_lem : ⊢ φ.or φ.neg := Bimodal.Theorems.Propositional.lem φ
+  have h_lem : ⊢ φ.or φ.neg := FormalSystem.Theorems.Propositional.lem φ
   -- Weaken: ⊢ (φ ∨ ¬φ) → ((⊥ → ⊥) → (φ ∨ ¬φ))
   have h_s : ⊢ (φ.or φ.neg).imp ((Formula.bot.imp Formula.bot).imp (φ.or φ.neg)) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (φ.or φ.neg) (Formula.bot.imp Formula.bot)) trivial
@@ -437,4 +437,4 @@ instance : BooleanAlgebra LindenbaumAlg where
   sdiff_eq := fun _ _ => rfl
   himp_eq := fun _a _b => sup_comm_quot _ _
 
-end Bimodal.Metalogic.Algebraic.BooleanStructure
+end FormalSystem.Metalogic.Algebraic.BooleanStructure

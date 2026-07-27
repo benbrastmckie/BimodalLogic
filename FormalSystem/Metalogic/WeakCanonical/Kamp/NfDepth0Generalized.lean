@@ -35,11 +35,11 @@ The succ case proceeds in three sub-cases:
 - Translation.lean (translateEF1, translateEF1_correct)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula
   nf_depth0_char_formula_correct)
 
 /-! ## Environment insertion -/
@@ -1818,4 +1818,4 @@ theorem nf_quant_clause_tl_correct {sig : MonadicSignature} [Fintype sig.preds]
   · simp only [ite_true, iff_true]
     exact h_exist
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

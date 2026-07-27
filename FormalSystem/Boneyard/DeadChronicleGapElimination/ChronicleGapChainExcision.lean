@@ -27,8 +27,8 @@ ARCHIVED (Boneyard) — never compiled.
 The `chronicle_gap_contradiction` `sorryAx` closure, excised as ONE unit from two live files.
 
 Origin:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` (9 declarations)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` (1 declaration)
+- `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` (9 declarations)
+- `FormalSystem/Metalogic/WeakCanonical/Transfer.lean` (1 declaration)
 
 ## The closure
 
@@ -109,7 +109,7 @@ Do not import from live code.
 #exit
 
 /- ============================================================================
-   SOURCE: Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
+   SOURCE: FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
    Section: `## Chronicle Gap Elimination via Model Surgery`
    Declarations: limit_f_some_future_of_lt, limit_f_not_G_neg_of_mem,
                  chronicle_gap_contradiction, succ_cofinal,
@@ -263,7 +263,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     -- Build a single-predicate OrderedMonadicStructure on LimitDomSubtype.
     -- sig has one predicate; interp maps that predicate to ψ-membership.
     -- The signature: a single predicate p₀
-    let sig : Bimodal.Metalogic.WeakCanonical.MonadicSignature := {
+    let sig : FormalSystem.Metalogic.WeakCanonical.MonadicSignature := {
       preds := Unit
       fintypePreds := inferInstance
       decEqPreds := inferInstance
@@ -274,7 +274,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     rcases hψ with ⟨hψ_in, hψ_not⟩ | ⟨hψ_in, hψ_not⟩
     · -- ψ ∈ limit_f(a.val) but ψ ∉ limit_f(b.val)
       -- Build the OrderedMonadicStructure
-      let M : Bimodal.Metalogic.WeakCanonical.OrderedMonadicStructure sig := {
+      let M : FormalSystem.Metalogic.WeakCanonical.OrderedMonadicStructure sig := {
         carrier := LimitDomSubtype fc A h_mcs
         interp := fun () x => ψ ∈ limit_f fc A h_mcs x.val
         carrier_order := inferInstance
@@ -320,7 +320,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
       -- The proof follows the chronicle_semantic_prior_UZ pattern but operates on
       -- the raw limit_f/limit_c0/limit_satisfies_c5_strong/limit_satisfies_c4 directly.
       have h_temporal_truth_eff : ∀ (t : LimitDomSubtype fc A h_mcs) (f : Formula),
-          Bimodal.Metalogic.WeakCanonical.temporal_truth M atomMap t f ↔
+          FormalSystem.Metalogic.WeakCanonical.temporal_truth M atomMap t f ↔
           eff f ∈ limit_f fc A h_mcs t.val := by
         intro t f
         induction f generalizing t with
@@ -330,12 +330,12 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
           · exact False.elim
           · intro h; exact absurd h (bot_not_in_mcs (limit_c0 fc A h_mcs t.val t.property))
         | imp f₁ f₂ ih₁ ih₂ =>
-          simp only [Bimodal.Metalogic.WeakCanonical.temporal_truth, eff]
+          simp only [FormalSystem.Metalogic.WeakCanonical.temporal_truth, eff]
           rw [ih₁ t, ih₂ t]
-          exact (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).symm
+          exact (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).symm
         | box _ => show (ψ ∈ limit_f fc A h_mcs t.val) ↔ (ψ ∈ limit_f fc A h_mcs t.val); exact Iff.rfl
         | untl f₁ f₂ ih₁ ih₂ =>
-          simp only [Bimodal.Metalogic.WeakCanonical.temporal_truth, eff]
+          simp only [FormalSystem.Metalogic.WeakCanonical.temporal_truth, eff]
           constructor
           · -- Forward: temporal Until → MCS Until
             intro ⟨s, hts, hf₁s, h_guard⟩
@@ -360,7 +360,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
             exact ⟨⟨y, hy⟩, hty, (ih₁ ⟨y, hy⟩).mpr hf₁y,
               fun r htr hrs => (ih₂ r).mpr (h_guard r.val r.property htr hrs)⟩
         | snce f₁ f₂ ih₁ ih₂ =>
-          simp only [Bimodal.Metalogic.WeakCanonical.temporal_truth, eff]
+          simp only [FormalSystem.Metalogic.WeakCanonical.temporal_truth, eff]
           constructor
           · -- Forward: temporal Since → MCS Since
             intro ⟨s, hst, hf₁s, h_guard⟩
@@ -385,7 +385,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
             exact ⟨⟨y, hy⟩, hyt, (ih₁ ⟨y, hy⟩).mpr hf₁y,
               fun r hsr hrt => (ih₂ r).mpr (h_guard r.val r.property hsr hrt)⟩
       -- Now prove semantic_prior_UZ
-      have h_prior_UZ : Bimodal.Metalogic.WeakCanonical.semantic_prior_UZ M atomMap := by
+      have h_prior_UZ : FormalSystem.Metalogic.WeakCanonical.semantic_prior_UZ M atomMap := by
         intro t ψ' ⟨s, hts, h_ψ_s⟩
         let eff_ψ := eff ψ'
         have h_eff_s : eff_ψ ∈ limit_f fc A h_mcs s.val :=
@@ -399,29 +399,29 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
           obtain ⟨z, hz, htz, hzs, h_neg_top⟩ :=
             limit_satisfies_c4 fc A h_mcs t.val s.val t.property s.property hts _ _ h_neg_F h_eff_s
           have h_top : Formula.imp Formula.bot Formula.bot ∈ limit_f fc A h_mcs z :=
-            (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mpr (fun h => h)
+            (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mpr (fun h => h)
           have h_bot : Formula.bot ∈ limit_f fc A h_mcs z :=
-            (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mp h_neg_top h_top
+            (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mp h_neg_top h_top
           exact absurd h_bot (bot_not_in_mcs (limit_c0 fc A h_mcs z hz))
         -- Prior-UZ axiom: F(eff_ψ) → U(eff_ψ, ¬eff_ψ) in every MCS
         have h_prior := theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
           (DerivationTree.axiom [] _ (Axiom.prior_UZ eff_ψ) h_fc)
         have h_until : Formula.untl eff_ψ eff_ψ.neg ∈ limit_f fc A h_mcs t.val :=
-          (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).mp h_prior h_F_eff
+          (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).mp h_prior h_F_eff
         -- C5 forward
         obtain ⟨s', hs', hts', h_eff_s', h_guard⟩ :=
           limit_satisfies_c5_strong fc A h_mcs t.val t.property eff_ψ.neg eff_ψ h_until
         refine ⟨⟨s', hs'⟩, hts', ?_, ?_⟩
         · exact (h_temporal_truth_eff ⟨s', hs'⟩ ψ').mpr h_eff_s'
         · intro r htr hrs
-          simp only [Formula.neg, Bimodal.Metalogic.WeakCanonical.temporal_truth]
+          simp only [Formula.neg, FormalSystem.Metalogic.WeakCanonical.temporal_truth]
           intro h_ψ_r
           have h_eff_r : eff_ψ ∈ limit_f fc A h_mcs r.val :=
             (h_temporal_truth_eff r ψ').mp h_ψ_r
           exact absurd h_eff_r
             (SetMaximalConsistent.neg_excludes (limit_c0 fc A h_mcs r.val r.property) _ (h_guard r.val r.property htr hrs))
       -- Prove semantic_prior_SZ (symmetric)
-      have h_prior_SZ : Bimodal.Metalogic.WeakCanonical.semantic_prior_SZ M atomMap := by
+      have h_prior_SZ : FormalSystem.Metalogic.WeakCanonical.semantic_prior_SZ M atomMap := by
         intro t ψ' ⟨s, hst, h_ψ_s⟩
         let eff_ψ := eff ψ'
         have h_eff_s : eff_ψ ∈ limit_f fc A h_mcs s.val :=
@@ -434,39 +434,39 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
           obtain ⟨z, hz, hsz, hzt, h_neg_top⟩ :=
             limit_satisfies_c4' fc A h_mcs t.val s.val t.property s.property hst _ _ h_neg_P h_eff_s
           have h_top : Formula.imp Formula.bot Formula.bot ∈ limit_f fc A h_mcs z :=
-            (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mpr (fun h => h)
+            (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mpr (fun h => h)
           have h_bot : Formula.bot ∈ limit_f fc A h_mcs z :=
-            (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mp h_neg_top h_top
+            (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mp h_neg_top h_top
           exact absurd h_bot (bot_not_in_mcs (limit_c0 fc A h_mcs z hz))
         have h_prior := theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
           (DerivationTree.axiom [] _ (Axiom.prior_SZ eff_ψ) h_fc)
         have h_since : Formula.snce eff_ψ eff_ψ.neg ∈ limit_f fc A h_mcs t.val :=
-          (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).mp h_prior h_P_eff
+          (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).mp h_prior h_P_eff
         obtain ⟨s', hs', hst', h_eff_s', h_guard⟩ :=
           limit_satisfies_c5'_strong fc A h_mcs t.val t.property eff_ψ.neg eff_ψ h_since
         refine ⟨⟨s', hs'⟩, hst', ?_, ?_⟩
         · exact (h_temporal_truth_eff ⟨s', hs'⟩ ψ').mpr h_eff_s'
         · intro r hsr hrt
-          simp only [Formula.neg, Bimodal.Metalogic.WeakCanonical.temporal_truth]
+          simp only [Formula.neg, FormalSystem.Metalogic.WeakCanonical.temporal_truth]
           intro h_ψ_r
           have h_eff_r : eff_ψ ∈ limit_f fc A h_mcs r.val :=
             (h_temporal_truth_eff r ψ').mp h_ψ_r
           exact absurd h_eff_r
             (SetMaximalConsistent.neg_excludes (limit_c0 fc A h_mcs r.val r.property) _ (h_guard r.val r.property hsr hrt))
       -- Succ-closure: class of a is succ-closed by no_boundary_at_successor + transitivity
-      have h_succ_closed : ∀ c, Bimodal.Metalogic.WeakCanonical.contemp_equiv sig 0 M a c →
-          Bimodal.Metalogic.WeakCanonical.contemp_equiv sig 0 M a (Order.succ c) :=
-        fun c hac => (Bimodal.Metalogic.WeakCanonical.contemp_equiv_is_equiv sig 0 M).trans hac
-          (Bimodal.Metalogic.WeakCanonical.no_boundary_at_successor sig 0 M c)
+      have h_succ_closed : ∀ c, FormalSystem.Metalogic.WeakCanonical.contemp_equiv sig 0 M a c →
+          FormalSystem.Metalogic.WeakCanonical.contemp_equiv sig 0 M a (Order.succ c) :=
+        fun c hac => (FormalSystem.Metalogic.WeakCanonical.contemp_equiv_is_equiv sig 0 M).trans hac
+          (FormalSystem.Metalogic.WeakCanonical.no_boundary_at_successor sig 0 M c)
       -- Bounded above: b is NOT in a's class (ψ distinguishes them at k=0)
-      have h_not_equiv_ab : ¬ Bimodal.Metalogic.WeakCanonical.contemp_equiv sig 0 M a b := by
+      have h_not_equiv_ab : ¬ FormalSystem.Metalogic.WeakCanonical.contemp_equiv sig 0 M a b := by
         intro h_equiv
         -- contemp_equiv at k=0 means all subintervals have the same 0-type.
         -- In particular, the structure at a and b must agree on all predicates.
         -- Since sig has one predicate (ψ membership), a and b must both have ψ
         -- or both lack ψ. But ψ ∈ limit_f(a.val) and ψ ∉ limit_f(b.val).
         -- The 0-equivalence implies identical predicate assignments.
-        simp only [Bimodal.Metalogic.WeakCanonical.contemp_equiv] at h_equiv
+        simp only [FormalSystem.Metalogic.WeakCanonical.contemp_equiv] at h_equiv
         -- The subinterval [min(a,b), max(a,b)] = [a, b] has good(0) for M.
         -- Good at depth 0 means all pairs of elements in [a,b] have the same
         -- predicate values. Since a, b ∈ [a, b], interp () a = interp () b.
@@ -492,7 +492,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
         -- Let me use k = 1 instead.
         sorry
       -- Apply gap_contradicts_prior
-      exact Bimodal.Metalogic.WeakCanonical.gap_contradicts_prior sig 0 M atomMap h_surj
+      exact FormalSystem.Metalogic.WeakCanonical.gap_contradicts_prior sig 0 M atomMap h_surj
         h_prior_UZ h_prior_SZ a h_succ_closed ⟨b, hab, h_not_equiv_ab⟩
     · -- ψ ∈ limit_f(b.val) but ψ ∉ limit_f(a.val)
       -- Symmetric case: b has ψ, a doesn't.
@@ -500,7 +500,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
       -- Use gap_contradicts_prior_below or rearrange the argument.
       -- Actually, we can use the same argument: a's class contains points where ψ ∉ limit_f.
       -- b is NOT in a's class. Since b > a, a's class is bounded above.
-      let M : Bimodal.Metalogic.WeakCanonical.OrderedMonadicStructure sig := {
+      let M : FormalSystem.Metalogic.WeakCanonical.OrderedMonadicStructure sig := {
         carrier := LimitDomSubtype fc A h_mcs
         interp := fun () x => ψ ∈ limit_f fc A h_mcs x.val
         carrier_order := inferInstance
@@ -556,7 +556,7 @@ noncomputable def limitDomSubtype_isSuccArchimedean (fc : FrameClass)
         fun j ⟨_, hj⟩ => hj
 
 /- ============================================================================
-   SOURCE: Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
+   SOURCE: FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
    Declaration: succ_embed_surjective
    ============================================================================ -/
 
@@ -642,7 +642,7 @@ theorem succ_embed_surjective (fc : FrameClass) (A : Set Formula) (h_mcs : SetMa
     exact ⟨-(↑n), by rw [h_succ_embed_neg]; exact h_w_eq.symm⟩
 
 /- ============================================================================
-   SOURCE: Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
+   SOURCE: FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
    Declarations: cantor_bfmcs_discrete_restricted_tc, cantor_bfmcs_discrete_restricted_fuc
    ============================================================================ -/
 
@@ -783,7 +783,7 @@ theorem cantor_bfmcs_discrete_restricted_fuc (fc : FrameClass) (A : Set Formula)
         (succ_embed fc N h_N h_discrete_N (r + offset)).property h_lt1 h_lt2
 
 /- ============================================================================
-   SOURCE: Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
+   SOURCE: FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
    Declaration: dd_countermodel_chronicle_discrete
    ============================================================================ -/
 
@@ -835,7 +835,7 @@ theorem dd_countermodel_chronicle_discrete (fc : FrameClass) (A : Set Formula) (
     ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
 /- ============================================================================
-   SOURCE: Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean
+   SOURCE: FormalSystem/Metalogic/WeakCanonical/Transfer.lean
    Declaration: countermodel_discrete_reynolds (plus its two preceding doc blocks,
    the first of which is the stale "is now sorry-free" claim)
    ============================================================================ -/
@@ -885,19 +885,19 @@ theorem countermodel_discrete_reynolds
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ := by
   -- Construct BFMCS bundle and root family
-  let bfmcs := Bimodal.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete
+  let bfmcs := FormalSystem.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete
     FrameClass.Discrete A h_mcs h_box_discrete
-  let fam₀ := Bimodal.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs
+  let fam₀ := FormalSystem.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs
     FrameClass.Discrete A h_mcs h_box_discrete 0
   -- Package as existential with parametric canonical model
   refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
     inferInstance, inferInstance, inferInstance, inferInstance,
-    Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame ℤ,
-    Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel ℤ,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
+    FormalSystem.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame ℤ,
+    FormalSystem.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel ℤ,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
       ⟨fam₀, ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
     0, ?_⟩
   -- Show φ.neg ∈ fam₀.mcs 0 (root family at origin contains ¬φ)
@@ -907,21 +907,21 @@ theorem countermodel_discrete_reynolds
     -- exposes the definition the metavariable pattern still fails to match, because
     -- `h_mcs`'s implicit `fc` is only definitionally `FrameClass.Discrete`. Supplying
     -- the lemma's arguments explicitly removes both problems.
-    show φ.neg ∈ (Bimodal.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs
+    show φ.neg ∈ (FormalSystem.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs
       FrameClass.Discrete A h_mcs h_box_discrete 0).mcs 0
-    rw [Bimodal.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs_at_s
+    rw [FormalSystem.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs_at_s
       FrameClass.Discrete A h_mcs h_box_discrete 0]
     exact h_neg_in
   -- Apply restricted parametric truth lemma to get ¬truth_at φ
-  exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
+  exact FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
     bfmcs φ
-    (Bimodal.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete_restricted_tc
+    (FormalSystem.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete_restricted_tc
       FrameClass.Discrete A h_mcs (le_refl _) h_box_discrete φ
       (fun ψ hψ => Finset.mem_toList.mpr
         (deferralClosure_subset_extendedDeferralClosure φ hψ)))
-    (Bimodal.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete_restricted_buc
+    (FormalSystem.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete_restricted_buc
       FrameClass.Discrete A h_mcs h_box_discrete φ)
-    (Bimodal.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete_restricted_fuc
+    (FormalSystem.Metalogic.BXCanonical.Chronicle.cantor_bfmcs_discrete_restricted_fuc
       FrameClass.Discrete A h_mcs (le_refl _) h_box_discrete φ)
     φ (self_mem_subformulaClosure φ)
     fam₀ ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam

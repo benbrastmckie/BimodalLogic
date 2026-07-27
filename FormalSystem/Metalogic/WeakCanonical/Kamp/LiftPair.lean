@@ -50,9 +50,9 @@ all completions — exactly as `skelR` demonstrates end to end here.
 OFF the live import path: nothing here is imported by `KampPrior.lean` or the completeness spine.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax (Formula)
+open FormalSystem.Syntax (Formula)
 
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
 
@@ -1260,4 +1260,4 @@ end FinLayer
 
 end Kamp
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

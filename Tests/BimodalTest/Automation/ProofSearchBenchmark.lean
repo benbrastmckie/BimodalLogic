@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.ProofSearch.Strategies
-import Bimodal.ProofSystem
+import FormalSystem.Automation.ProofSearch.Strategies
+import FormalSystem.ProofSystem
 
 /-!
 # Proof Search Benchmark Suite
@@ -34,7 +34,7 @@ Supports comparison of search strategies and tuning of heuristic weights.
 
 namespace BimodalTest.Automation.Benchmark
 
-open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
+open FormalSystem.Syntax FormalSystem.Automation FormalSystem.ProofSystem
 
 -- Convenience abbreviations
 abbrev p : Formula := .atom_s "p"

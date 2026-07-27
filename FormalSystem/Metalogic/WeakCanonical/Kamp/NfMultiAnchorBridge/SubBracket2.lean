@@ -12,11 +12,11 @@ The anchor-at-`x` corrected sub-bracket: `kvE_subBracket2`, `kvE_subChain2`, zon
 (research Finding 4): removed `private ` from `kvE_sub2_zXU`, `kvE_sub2_zUW`, `kvE_sub2_zWT`,
 `kvE_sub2_zoneHolds_cons_iff`. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -681,4 +681,4 @@ theorem kvE_subBracket2_complete_extract {sig : MonadicSignature} [Fintype sig.p
     obtain ⟨hwv, hvt⟩ := kvE_sub2_zoneHolds_zWT M x1 w x t v hz
     exact ⟨v, hwv, hvt, hv⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

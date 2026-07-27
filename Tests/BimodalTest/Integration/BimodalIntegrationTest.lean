@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.ProofSystem
-import Bimodal.Semantics
-import Bimodal.Metalogic
-import Bimodal.Theorems.Combinators
+import FormalSystem.ProofSystem
+import FormalSystem.Semantics
+import FormalSystem.Metalogic
+import FormalSystem.Theorems.Combinators
 import BimodalTest.Integration.Helpers
 
 /-!
@@ -42,11 +42,11 @@ Tests are organized by bimodal axiom:
 
 namespace BimodalTest.Integration
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic
+open FormalSystem.Theorems.Combinators
 open BimodalTest.Integration.Helpers
 
 -- ============================================================
@@ -244,7 +244,7 @@ example : True := by
 
   -- Step 2: F□p → FF□p using Temporal 4
   let ax2 : Γ ⊢ ((p.box.all_future).imp ((p.box.all_future).all_future)) :=
-    DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived p.box) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived p.box) (List.nil_subset _)
   let d2 : Γ ⊢ ((p.box.all_future).all_future) :=
     DerivationTree.modus_ponens Γ (p.box.all_future)
       ((p.box.all_future).all_future) ax2 d1
@@ -323,7 +323,7 @@ example : True := by
   -- Step 3: F□Fp → FF□Fp (Temporal 4)
   let ax3 : Γ ⊢ (((p.all_future.box).all_future).imp
                   (((p.all_future.box).all_future).all_future)) :=
-    DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived (p.all_future.box)) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived (p.all_future.box)) (List.nil_subset _)
   let d3 : Γ ⊢ (((p.all_future.box).all_future).all_future) :=
     DerivationTree.modus_ponens Γ ((p.all_future.box).all_future)
       (((p.all_future.box).all_future).all_future) ax3 d2
@@ -407,7 +407,7 @@ example : True := by
   let φ := (p.box.imp q.box).all_future.imp
            (p.box.all_future.imp q.box.all_future)
   let d : ⊢ φ :=
-    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived p.box q.box
+    FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived p.box q.box
   
   -- Verify soundness
   have v : [] ⊨ φ := soundness [] φ d

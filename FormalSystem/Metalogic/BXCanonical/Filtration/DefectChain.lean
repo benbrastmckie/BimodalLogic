@@ -35,13 +35,13 @@ unsound under open guard.
 - Burgess 1984: One-step defect discharge
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Filtration
+namespace FormalSystem.Metalogic.BXCanonical.Filtration
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.BXCanonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.BXCanonical
 
 /-! ## Until Defect Count -/
 
@@ -136,4 +136,4 @@ theorem since_defect_step_connect {w : BXPoint} {φ ψ : Formula}
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h_since
 
-end Bimodal.Metalogic.BXCanonical.Filtration
+end FormalSystem.Metalogic.BXCanonical.Filtration

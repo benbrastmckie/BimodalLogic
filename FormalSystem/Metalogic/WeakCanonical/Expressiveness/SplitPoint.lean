@@ -12,9 +12,9 @@ import FormalSystem.Metalogic.WeakCanonical.Expressiveness.DConsistencyTransport
 Split-point infrastructure: SplitPointProps and the main obtain_split_point_props theorem.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## GHR93 Theorem 6: Inductive Step Infrastructure
 
@@ -4903,4 +4903,4 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
   refine ⟨c_inf, hc_inf_interval, hform_cd, hgp_cd, hbdy_cd, h_interior_left, h_interior_right⟩
 
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

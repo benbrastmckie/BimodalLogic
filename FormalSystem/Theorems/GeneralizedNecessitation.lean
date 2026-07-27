@@ -38,13 +38,13 @@ All theorems in this module are now fully proven derived theorems.
 
 -/
 
-namespace Bimodal.Theorems
+namespace FormalSystem.Theorems
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Propositional
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Propositional
 
 /-! ### Local derivation of temp_k_dist from BX3
 
@@ -243,4 +243,4 @@ noncomputable def generalized_past_k {fc : FrameClass} : (Γ : Context) → (φ 
       DerivationTree.modus_ponens _ _ _ k_dist_weak ih_res
     reverse_deduction h_mp
 
-end Bimodal.Theorems
+end FormalSystem.Theorems

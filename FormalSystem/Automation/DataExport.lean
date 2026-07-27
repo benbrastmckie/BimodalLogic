@@ -35,18 +35,18 @@ is required. String values are escaped (double quotes replaced with `\"`).
 
 ## References
 
-- `Bimodal.Syntax.Formula` — Formula inductive type
-- `Bimodal.Automation.SuccessPatterns` — `PatternKey` and `GoalCategory`
-- `Bimodal.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`
-- `Bimodal.ProofSystem.Derivation` — `DerivationTree` and `height`
+- `FormalSystem.Syntax.Formula` — Formula inductive type
+- `FormalSystem.Automation.SuccessPatterns` — `PatternKey` and `GoalCategory`
+- `FormalSystem.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`
+- `FormalSystem.ProofSystem.Derivation` — `DerivationTree` and `height`
 -/
 
-namespace Bimodal.Automation.DataExport
+namespace FormalSystem.Automation.DataExport
 
-open Bimodal.Syntax
-open Bimodal.Automation
-open Bimodal.Metalogic.Decidability
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Automation
+open FormalSystem.Metalogic.Decidability
+open FormalSystem.ProofSystem
 
 /-!
 ## String Helpers
@@ -84,7 +84,7 @@ Examples:
 - `{ base := "p", fresh_index := none }` → `{"base": "p", "fresh_index": null}`
 - `{ base := "p", fresh_index := some 3 }` → `{"base": "p", "fresh_index": 3}`
 -/
-def _root_.Bimodal.Syntax.Atom.toJson (a : Atom) : String :=
+def _root_.FormalSystem.Syntax.Atom.toJson (a : Atom) : String :=
   let baseStr := escapeJsonString a.base
   let idxStr := match a.fresh_index with
     | none   => "null"
@@ -106,7 +106,7 @@ The JSON schema uses a `"tag"` field for the constructor name:
 - `untl φ ψ` → `{"tag": "untl", "event": <φ>, "guard": <ψ>}`
 - `snce φ ψ` → `{"tag": "snce", "event": <φ>, "guard": <ψ>}`
 -/
-def _root_.Bimodal.Syntax.Formula.toJson : Formula → String
+def _root_.FormalSystem.Syntax.Formula.toJson : Formula → String
   | .atom a   =>
     let nameStr := escapeJsonString a.base
     "{\"tag\": \"atom\", \"name\": \"" ++ nameStr ++ "\"}"
@@ -130,7 +130,7 @@ Pretty-print a `Formula` in human-readable notation.
 - `untl φ ψ` → `"U(φ, ψ)"`
 - `snce φ ψ` → `"S(φ, ψ)"`
 -/
-def _root_.Bimodal.Syntax.Formula.prettyPrint : Formula → String
+def _root_.FormalSystem.Syntax.Formula.prettyPrint : Formula → String
   | .atom a   => a.base
   | .bot      => "⊥"
   | .imp φ ψ  => "(" ++ φ.prettyPrint ++ " → " ++ ψ.prettyPrint ++ ")"
@@ -149,7 +149,7 @@ Canonical parenthesized prefix notation using constructor names as heads:
 - `untl φ ψ` → `(untl <φ> <ψ>)`
 - `snce φ ψ` → `(snce <φ> <ψ>)`
 -/
-def _root_.Bimodal.Syntax.Formula.toSExpr : Formula → String
+def _root_.FormalSystem.Syntax.Formula.toSExpr : Formula → String
   | .atom a   =>
     let idx := match a.fresh_index with
       | none => ""
@@ -172,7 +172,7 @@ Examples:
 - `□p` → `["BOX", "ATOM", "p"]`
 - `U(p, q)` → `["UNTL", "ATOM", "p", "ATOM", "q"]`
 -/
-def _root_.Bimodal.Syntax.Formula.tokenize : Formula → List String
+def _root_.FormalSystem.Syntax.Formula.tokenize : Formula → List String
   | .atom a   => ["ATOM", a.base]
   | .bot      => ["BOT"]
   | .imp φ ψ  => "IMP" :: (φ.tokenize ++ ψ.tokenize)
@@ -195,7 +195,7 @@ def tokenListToJson (tokens : List String) : String :=
 /--
 Serialize a `GoalCategory` to its string name for JSON.
 -/
-def _root_.Bimodal.Automation.GoalCategory.toJson : GoalCategory → String
+def _root_.FormalSystem.Automation.GoalCategory.toJson : GoalCategory → String
   | .Atom        => "\"Atom\""
   | .Bottom      => "\"Bottom\""
   | .Implication => "\"Implication\""
@@ -217,7 +217,7 @@ Example output:
 {"modalDepth": 1, "temporalDepth": 0, "impCount": 1, "complexity": 3, "topOperator": "Implication"}
 ```
 -/
-def _root_.Bimodal.Automation.PatternKey.toJson (pk : PatternKey) : String :=
+def _root_.FormalSystem.Automation.PatternKey.toJson (pk : PatternKey) : String :=
   "{\"modalDepth\": " ++ toString pk.modalDepth
   ++ ", \"temporalDepth\": " ++ toString pk.temporalDepth
   ++ ", \"impCount\": " ++ toString pk.impCount
@@ -231,7 +231,7 @@ Map a `GoalCategory` to a numeric ID for feature vector encoding.
 - `Atom` = 0, `Bottom` = 1, `Implication` = 2, `Box` = 3,
   `AllPast` = 4, `AllFuture` = 5, `Until` = 6, `Since` = 7
 -/
-def _root_.Bimodal.Automation.GoalCategory.toNat : GoalCategory → Nat
+def _root_.FormalSystem.Automation.GoalCategory.toNat : GoalCategory → Nat
   | .Atom        => 0
   | .Bottom      => 1
   | .Implication => 2
@@ -247,7 +247,7 @@ Extract a flat numeric feature vector from a `PatternKey`.
 The vector has 5 elements:
 `[modalDepth, temporalDepth, impCount, complexity, topOperator.toNat]`
 -/
-def _root_.Bimodal.Automation.PatternKey.toFeatureVector (pk : PatternKey) : List Nat :=
+def _root_.FormalSystem.Automation.PatternKey.toFeatureVector (pk : PatternKey) : List Nat :=
   [pk.modalDepth, pk.temporalDepth, pk.impCount, pk.complexity, pk.topOperator.toNat]
 
 /--
@@ -256,7 +256,7 @@ Serialize a `PatternKey` feature vector as a JSON array of integers.
 Example: `[1, 0, 1, 3, 2]` for modalDepth=1, temporalDepth=0, impCount=1,
 complexity=3, topOperator=Implication.
 -/
-def _root_.Bimodal.Automation.PatternKey.featureVectorToJson (pk : PatternKey) : String :=
+def _root_.FormalSystem.Automation.PatternKey.featureVectorToJson (pk : PatternKey) : String :=
   listToJsonArray (pk.toFeatureVector.map toString)
 
 /-!
@@ -271,7 +271,7 @@ Example output:
 {"trueAtoms": [...], "falseAtoms": [...], "formula": {...}}
 ```
 -/
-def _root_.Bimodal.Metalogic.Decidability.SimpleCountermodel.toJson
+def _root_.FormalSystem.Metalogic.Decidability.SimpleCountermodel.toJson
     (cm : SimpleCountermodel) : String :=
   let trueStr := listToJsonArray (cm.trueAtoms.map Atom.toJson)
   let falseStr := listToJsonArray (cm.falseAtoms.map Atom.toJson)
@@ -385,4 +385,4 @@ def proofMetricsToJson (height : Nat) (rp : RuleProfile) : String :=
   ++ ", \"rules\": " ++ rp.toJson
   ++ "}"
 
-end Bimodal.Automation.DataExport
+end FormalSystem.Automation.DataExport

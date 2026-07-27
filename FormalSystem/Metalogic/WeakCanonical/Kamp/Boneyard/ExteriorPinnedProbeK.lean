@@ -75,10 +75,10 @@ touched (Phase 0 makes zero production edits). -/
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Probe signature and model (template copies of the `p2*` conventions,
 ExteriorFiberProbeK.lean:48-116) -/
@@ -435,7 +435,7 @@ Deviation note (recorded in the plan): consuming the Phase-2 supplier
 `kvE_futAtomPinned_zero` requires importing `ExteriorPinnedConverseK` (leaf-safe: that
 module does not import this probe file) — the ONE non-append edit of this phase. -/
 
-open Bimodal.Metalogic.WeakCanonical.Separation (formula_conjList formula_conjList_iff)
+open FormalSystem.Metalogic.WeakCanonical.Separation (formula_conjList formula_conjList_iff)
 
 /-! ### P3 (C9): depth-0 same-witness interior transfer -/
 
@@ -758,4 +758,4 @@ theorem kvE_probe_p2_sliceId (σ : NormalForm p3sig 1 4)
         rw [hss0, hbit0] at hσbit
         exact Bool.noConfusion hσbit
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

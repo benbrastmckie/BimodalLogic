@@ -40,12 +40,12 @@ The compositional builder handles:
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace FormalSystem.Metalogic.Decidability
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation
+open FormalSystem.Theorems.Combinators
 
 /-!
 ## Proof Construction Helpers
@@ -360,4 +360,4 @@ structure ProofExtractionStats where
   height : Option Nat
   deriving Repr, Inhabited
 
-end Bimodal.Metalogic.Decidability
+end FormalSystem.Metalogic.Decidability

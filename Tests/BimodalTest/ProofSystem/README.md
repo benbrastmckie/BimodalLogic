@@ -20,7 +20,7 @@ Tests for the Hilbert-style proof system.
 
 ## Related
 
-- [Source: ProofSystem/](../../../Theories/Bimodal/ProofSystem/)
+- [Source: ProofSystem/](../../../FormalSystem/ProofSystem/)
 - [Parent README](../README.md)
 
 ---

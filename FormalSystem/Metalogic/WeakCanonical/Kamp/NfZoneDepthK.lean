@@ -182,10 +182,10 @@ chain) — exactly the endpoint machinery the flat reframing tried to avoid; it 
 - plan v39 Phase 11; Phase 10 "Re-scoped on resume" note
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Uniform depth-k atom-layer extraction -/
 
@@ -567,4 +567,4 @@ theorem nf_char3_eq_succ_iff {sig : MonadicSignature}
   obtain ⟨atomA, quantA⟩ := qnf
   simp only [nf_eval_nf, NormalForm.atom_assgn, NormalForm.quant_assgn]
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

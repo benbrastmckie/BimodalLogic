@@ -31,10 +31,10 @@ step can be preserved without modification.
 
 #exit
 
-namespace Bimodal.Metalogic.ConservativeExtension
+namespace FormalSystem.Metalogic.ConservativeExtension
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## Unembedding: Inverse of embedFormula for q-free formulas
@@ -699,4 +699,4 @@ theorem lift_derivation_qfree {fc : FrameClass} (L : List Formula) (phi : Formul
   rw [h_ctx, h_concl] at lifted
   exact ⟨lifted⟩
 
-end Bimodal.Metalogic.ConservativeExtension
+end FormalSystem.Metalogic.ConservativeExtension

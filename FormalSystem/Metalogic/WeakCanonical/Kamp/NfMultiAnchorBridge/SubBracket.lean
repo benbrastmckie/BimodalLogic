@@ -11,11 +11,11 @@ F4 resolution (faithful foundation): `kvE_subFoldBits`, `kvE_subInteriorZones`,
 `kvE_subBracket`, `kvE_subChain`, discrimination kit, verdict record. Includes the in-file
 do-not-edit records (orig :5866, :6098) — byte-identical, token edits NONE. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -287,4 +287,4 @@ grow only (G2/G4/G6); no `simp`/`omega`/`aesop` in any chain-construction body (
 :1900); Rabinovich cited at every chain step (G5); all new symbols axiom-clean
 (`propext`, `Classical.choice`, `Quot.sound`); no `sorry` on any live path. -/
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

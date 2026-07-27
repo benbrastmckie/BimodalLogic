@@ -71,10 +71,10 @@ bridge).
 - `VeeExistsForall.lean`: `veeSat`, `veeSat_append`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **Finite choice distribution over `piFinset`.** A single admissible completion tuple realizing a
 per-index predicate exists iff every index has an admissible realizer. This is the combinatorial
@@ -498,4 +498,4 @@ theorem vvecea2_collapse_bridgeFin {sig : MonadicSignature} {F : Finset Formula}
 
 end FinLayer
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

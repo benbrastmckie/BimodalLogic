@@ -37,9 +37,9 @@ Each theorem concludes `is_separable`, which follows directly from
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- CASE 1 DUAL: U(a ^ S(A,B), q) where a, q, A, B are U-free and S-free.
     Derived from elim_case_1 via swap_temporal. -/
@@ -117,4 +117,4 @@ theorem elim_case_8_dual (a q A B : Formula)
       (Formula.or q (Formula.neg (.snce A B)))) :=
   all_separable _
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

@@ -40,7 +40,7 @@ current Claude Code system documentation.
 When developing proofs, use `lean_goal` to check proof state:
 
 ```
-lean_goal(file_path="Theories/Bimodal/Metalogic/Completeness.lean", line=42, column=4)
+lean_goal(file_path="FormalSystem/Metalogic/Completeness.lean", line=42, column=4)
 ```
 
 ### Mathlib Search

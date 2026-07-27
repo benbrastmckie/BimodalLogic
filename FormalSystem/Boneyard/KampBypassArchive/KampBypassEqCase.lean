@@ -14,11 +14,11 @@ Split from KampBypassCore.lean for modularity.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -892,4 +892,4 @@ theorem existPart_succ_n1_bypass_k0_eq
       cases h1v : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
       simp_all
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

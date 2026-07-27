@@ -61,10 +61,10 @@ relevant arity-≤2 condition.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Lift constructors: arity-≤2 components back to arity-m -/
 
@@ -297,4 +297,4 @@ theorem neg_vec_ea_m {sig : MonadicSignature}
   push_neg at h_neg
   exact neg_vecEA_m_list h_INF env henv_mono v.disjuncts h_neg
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -33,7 +33,7 @@ The finiteness argument follows the classical filtration pattern, specialized to
 Everything is relativized to the input formula $φ$: the *subformula closure* of $φ$ collects its subformulas and their negations, a finite set; a *closure MCS* is a maximal consistent set restricted to that closure (`ClosureMCS`, with the bundled form `ClosureMCSBundle` pairing a carrier set with its maximality witness, `Filtration.lean:114`).
 Two closure MCSs are *filtration-equivalent* when they agree on every closure formula, and the quotient of bundles by this equivalence is the finite world type:
 
-#leansrc("Bimodal.Metalogic.Decidability.FMP", "FilteredWorld")
+#leansrc("FormalSystem.Metalogic.Decidability.FMP", "FilteredWorld")
 ```
 def FilteredWorld (phi : Formula) : Type :=
   Quotient (ClosureMCSSetoid phi)
@@ -48,7 +48,7 @@ The construction is thus a complete, self-contained finite combinatorics of the 
 
 `decide` is the top-level entry point:
 
-#leansrc("Bimodal.Metalogic.Decidability", "decide")
+#leansrc("FormalSystem.Metalogic.Decidability", "decide")
 ```
 def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
     (fc : FrameClass := .Base) : DecisionResult φ

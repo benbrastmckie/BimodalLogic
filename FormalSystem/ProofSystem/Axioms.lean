@@ -59,9 +59,9 @@ Note: temp_k_dist and temp_4 are now derived theorems (`temp_k_dist_derived`,
 * Venema 1993: Temporal logic survey
 -/
 
-namespace Bimodal.ProofSystem
+namespace FormalSystem.ProofSystem
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
@@ -437,4 +437,4 @@ No new `Axiom` constructors are needed since M/ST expand to primitive
 from the existing BX1-BX12 + modal_future axiom system.
 -/
 
-end Bimodal.ProofSystem
+end FormalSystem.ProofSystem

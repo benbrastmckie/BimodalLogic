@@ -67,7 +67,7 @@ not referenced.
 - The negfix-refactor design for the exterior carriers, Phase 12a (the point-merge channels).
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 section AggPointMerge01
 
@@ -685,4 +685,4 @@ theorem aggPm02_clause_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [De
 
 end AggPointMerge02
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

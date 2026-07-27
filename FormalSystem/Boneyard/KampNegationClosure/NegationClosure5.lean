@@ -46,10 +46,10 @@ The K+ disjunct from eq (5.2) is vacuous on Prior structures.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Phase 4a: Lemma 5.3 Base Case
 
@@ -1032,4 +1032,4 @@ theorem neg_interval_formula {sig : MonadicSignature}
                (fun y hy0 hy1 => (TemporalPred.eval_at_neg M atomMap
                  (bf.pointTypes ⟨0, by omega⟩) y).mpr (h_exists y hy0 hy1))⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

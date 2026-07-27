@@ -26,10 +26,10 @@ by construction.
 - Phase 3-6: algorithmic content added later.
 -/
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-- Dedup strategy for the proof pool. -/
 inductive DedupStrategy where
@@ -387,4 +387,4 @@ def forwardGenerate (cfg : ForwardConfig)
   IO.println s!"[proof-first] Generation complete: {pool.size} theorems in {endMs - startMs}ms"
   return pool.toList
 
-end Bimodal.Automation
+end FormalSystem.Automation

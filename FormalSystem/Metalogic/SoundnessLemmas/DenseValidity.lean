@@ -16,11 +16,11 @@ class. Proves that all TM axioms remain valid after temporal swap, and that deri
 implies both local validity and swap validity.
 -/
 
-namespace Bimodal.Metalogic.SoundnessLemmas
+namespace FormalSystem.Metalogic.SoundnessLemmas
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem (Axiom DerivationTree FrameClass)
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem (Axiom DerivationTree FrameClass)
+open FormalSystem.Semantics
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
@@ -1358,4 +1358,4 @@ theorem derivable_implies_swap_valid [DenselyOrdered D] [Nontrivial D]
   (derivable_valid_and_swap_valid d).2
 
 
-end Bimodal.Metalogic.SoundnessLemmas
+end FormalSystem.Metalogic.SoundnessLemmas

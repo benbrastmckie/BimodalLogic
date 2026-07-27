@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.ProofSystem
-import Bimodal.Semantics
-import Bimodal.Metalogic
+import FormalSystem.ProofSystem
+import FormalSystem.Semantics
+import FormalSystem.Metalogic
 import BimodalTest.Integration.Helpers
 
 /-!
@@ -41,10 +41,10 @@ Tests are organized by complexity:
 
 namespace BimodalTest.Integration
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic
 open BimodalTest.Integration.Helpers
 
 -- ============================================================
@@ -257,15 +257,15 @@ example : True := by
   -- Derive FFFp → FFFFp using Temporal 4
   let d1 : ⊢ (p.all_future.all_future.all_future.imp
               p.all_future.all_future.all_future.all_future) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived p.all_future.all_future
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived p.all_future.all_future
   
   -- Derive FFp → FFFp using Temporal 4
   let d2 : ⊢ (p.all_future.all_future.imp p.all_future.all_future.all_future) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived p.all_future
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived p.all_future
   
   -- Derive Fp → FFp using Temporal 4
   let d3 : ⊢ (p.all_future.imp p.all_future.all_future) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived p
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived p
   
   -- Verify all are sound
   have v1 : [] ⊨ (p.all_future.all_future.all_future.imp
@@ -291,7 +291,7 @@ example : True := by
   let ax : Γ ⊢ (p.all_future.all_future.all_future.imp
                  p.all_future.all_future.all_future.all_future) :=
     DerivationTree.weakening [] Γ _
-      (Bimodal.Theorems.TemporalDerived.temp_4_derived p.all_future.all_future)
+      (FormalSystem.Theorems.TemporalDerived.temp_4_derived p.all_future.all_future)
       (List.nil_subset _)
   let ass : Γ ⊢ p.all_future.all_future.all_future :=
     DerivationTree.assumption Γ p.all_future.all_future.all_future (List.Mem.head _)

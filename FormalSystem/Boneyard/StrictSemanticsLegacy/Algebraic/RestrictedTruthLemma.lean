@@ -50,15 +50,15 @@ for the restricted completeness construction.
 
 #exit
 
-namespace Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
+namespace FormalSystem.Metalogic.Algebraic.RestrictedTruthLemma
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Semantics
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Semantics
+open FormalSystem.ProofSystem
 
 /-!
 ## Helper Lemmas for G/H Propagation
@@ -365,4 +365,4 @@ theorem neg_consistent_gives_mcs_without_phi (phi : Formula)
     exact set_consistent_not_both h_mcs.1 phi h_phi h_neg_in
   exact ⟨M, h_mcs, h_neg_in, h_phi_not⟩
 
-end Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
+end FormalSystem.Metalogic.Algebraic.RestrictedTruthLemma

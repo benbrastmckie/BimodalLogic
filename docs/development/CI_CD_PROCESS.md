@@ -53,7 +53,7 @@ with:
 
 The build step compiles all Lean source files in the project:
 
-- `Logos` library (main logic implementation in `Theories/`)
+- `Logos` library (main logic implementation in `FormalSystem/`)
 - `Bimodal` library (TM logic implementation)
 - `BimodalTest` test library
 - All executable scripts

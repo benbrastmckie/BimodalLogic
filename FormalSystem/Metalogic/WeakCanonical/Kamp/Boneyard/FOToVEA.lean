@@ -44,10 +44,10 @@ To resolve the remaining sorry, implement:
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper: atom formula for predicate p -/
 
@@ -150,4 +150,4 @@ theorem nf_exist_to_temporal_correct {sig : MonadicSignature}
     ∃ x : M.carrier, nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf :=
   (nf_exist_to_temporal_aux atomMap h_surj sub_nf).choose_spec M h_UZ h_SZ t
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

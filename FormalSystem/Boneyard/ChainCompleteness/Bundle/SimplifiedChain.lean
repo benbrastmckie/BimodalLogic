@@ -45,11 +45,11 @@ choose F(psi) over psi).
 
 #exit
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 -- Deep API drift: g_content_subset_deferral_restricted_mcs,
 -- deferralDisjunctions_subset_deferral_restricted_mcs removed.
@@ -212,4 +212,4 @@ theorem targeted_restricted_seed_consistent (phi : Formula) (u : Set Formula) (t
       · exact absurd hx h_target_in
     exact deferral_restricted_mcs_is_consistent h_drm L h_all_in_u ⟨d⟩
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

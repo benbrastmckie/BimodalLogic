@@ -44,21 +44,21 @@ and P-resolution works within bwd_chain (t-s ≤ 0), the cross-region cases
 
 #exit
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Metalogic.Algebraic.ParametricCompleteness
-open Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
-open Bimodal.Semantics
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Perpetuity
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic.ParametricCompleteness
+open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+open FormalSystem.Semantics
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Perpetuity
 open Classical
 
 /-! ## BFMCS from schedule-based chains -/
@@ -93,8 +93,8 @@ noncomputable def bx_bfmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
       · exact absurd h h_not_box
       · exact h
     have h_diamond_neg : (Formula.neg φ).diamond ∈ M₀ :=
-      Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h₀
-        (Bimodal.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
+      FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h₀
+        (FormalSystem.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
     obtain ⟨v, h_equiv, h_neg_phi_v⟩ := bx_modal_witness ⟨M₀, h₀⟩ (Formula.neg φ) h_diamond_neg
     have h_fam_v_mem : shifted_bx_fmcs v.formulas v.is_mcs t ∈
         { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N) (s : Int),
@@ -223,4 +223,4 @@ theorem dd_countermodel (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     φ (self_mem_subformulaClosure φ)
     (shifted_bx_fmcs M h_mcs 0) ⟨M, h_mcs, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

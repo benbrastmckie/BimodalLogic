@@ -32,12 +32,12 @@ entire module (Kalmar step, variable elimination, `tautology_derivable'`) is
 the noncomputability is confined to the *soundness proof*, not the checker.
 -/
 
-namespace Bimodal.Metalogic.Decidability.Propositional
+namespace FormalSystem.Metalogic.Decidability.Propositional
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
 
 noncomputable section
 
@@ -64,10 +64,10 @@ def neg_imp_intro (φ ψ : Formula) : ⊢ φ.imp (ψ.neg.imp (φ.imp ψ).neg) :=
       simp
     exact DerivationTree.modus_ponens _ φ ψ ha hb
   have hstep : ([ψ.neg, φ] : Context) ⊢ (φ.imp ψ).neg :=
-    Bimodal.Theorems.Propositional.ni [ψ.neg, φ] (φ.imp ψ) ψ h1 h2
+    FormalSystem.Theorems.Propositional.ni [ψ.neg, φ] (φ.imp ψ) ψ h1 h2
   have hstep2 : ([φ] : Context) ⊢ ψ.neg.imp (φ.imp ψ).neg :=
-    Bimodal.Metalogic.Core.deduction_theorem [φ] ψ.neg ((φ.imp ψ).neg) hstep
-  exact Bimodal.Metalogic.Core.deduction_theorem [] φ (ψ.neg.imp (φ.imp ψ).neg) hstep2
+    FormalSystem.Metalogic.Core.deduction_theorem [φ] ψ.neg ((φ.imp ψ).neg) hstep
+  exact FormalSystem.Metalogic.Core.deduction_theorem [] φ (ψ.neg.imp (φ.imp ψ).neg) hstep2
 
 /-! ## Literal Machinery -/
 
@@ -227,9 +227,9 @@ def elim_vars (env : Nat → Formula) (φ : Formula) :
         rw [hcast_true] at h_true
         rw [hcast_false] at h_false
         have d_true : (litCtx env v ns) ⊢ (env n).imp φ :=
-          Bimodal.Metalogic.Core.deduction_theorem (litCtx env v ns) (env n) φ h_true
+          FormalSystem.Metalogic.Core.deduction_theorem (litCtx env v ns) (env n) φ h_true
         have d_false : (litCtx env v ns) ⊢ (env n).neg.imp φ :=
-          Bimodal.Metalogic.Core.deduction_theorem (litCtx env v ns) (env n).neg φ h_false
+          FormalSystem.Metalogic.Core.deduction_theorem (litCtx env v ns) (env n).neg φ h_false
         have hcm : (⊢ ((env n).imp φ).imp (((env n).neg.imp φ).imp φ)) :=
           classical_merge (env n) φ
         have hcm' := DerivationTree.weakening [] (litCtx env v ns) _ hcm (List.nil_subset _)
@@ -295,4 +295,4 @@ example (A : Formula) : ⊢ A.box.imp A.box := by
 
 end -- noncomputable section
 
-end Bimodal.Metalogic.Decidability.Propositional
+end FormalSystem.Metalogic.Decidability.Propositional

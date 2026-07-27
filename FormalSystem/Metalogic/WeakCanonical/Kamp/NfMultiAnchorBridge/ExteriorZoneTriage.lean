@@ -39,10 +39,10 @@ needs a linear order on `M.carrier`; it is exposed as the instance
 Purely additive leaf module: imports SharedWitness for the zone constants; edits nothing
 frozen (341/347 frozen-file gate respected). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- `kvE2_sep_zPastX3` is the CONSTANT `(true, false)` zone spec: `x1` strictly below
     every env point (`SharedWitness.lean:70-72`). -/
@@ -188,4 +188,4 @@ theorem kvE2_exterior_offZone_notRealizable {sig : MonadicSignature} [Fintype si
   · exact hzone (Or.inl hz)
   · exact hzone (Or.inr hz)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

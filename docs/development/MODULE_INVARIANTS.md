@@ -20,13 +20,13 @@ file and line.
 | C1 | `lake build` and `lake build BimodalTest` exit 0 | Baseline correctness |
 | C2 | `#print axioms` for four flagship theorems matches a recorded baseline | Detects a proof silently rerouted through different dependencies — invisible to a green build and an unchanged sorry count |
 | C3 | Exactly one structural `sorry`, located **by content** | Asserting a line number breaks on any edit above it; the check finds the enclosing declaration instead |
-| C4 | Every `import Bimodal.*` / `import BimodalTest.*` resolves | Catches a half-finished file move |
+| C4 | Every `import FormalSystem.*` / `import BimodalTest.*` resolves | Catches a half-finished file move |
 | C5 | Every module-shaped `Bimodal.*` path in non-`specs/` markdown resolves | A `.lean`-only rewrite leaves documentation dangling |
 | C6 | Known-unreachable live modules still compile | Code outside the build graph cannot rot unseen |
 | C7 | Live inventory (informational, never asserted) | The correct source for any file count |
 | C8 | Every Lean-bearing subdirectory has exactly one sibling aggregator `X.lean` beside `X/` | One convention, checkable |
-| C9 | Zero task-number citations under `Theories/` | Task numbers are renumbered by archival and mean nothing to a later reader |
-| C10 | Zero references to the pre-relocation `Theories/Bimodal/{docs,latex,typst}` paths | `docs/`, `latex/` and `typst/` live at the project root |
+| C9 | Zero task-number citations under `FormalSystem/` | Task numbers are renumbered by archival and mean nothing to a later reader |
+| C10 | Zero references to the pre-relocation `FormalSystem/{docs,latex,typst}` paths | `docs/`, `latex/` and `typst/` live at the project root |
 
 ## The Two Companion Files
 
@@ -78,6 +78,6 @@ line.
 
 ## Related Documentation
 
-- [Metalogic architecture map](../../Theories/Bimodal/Metalogic/README.md)
+- [Metalogic architecture map](../../FormalSystem/Metalogic/README.md)
 - [Module organization](MODULE_ORGANIZATION.md)
-- [Library README](../../Theories/Bimodal/README.md)
+- [Library README](../../FormalSystem/README.md)

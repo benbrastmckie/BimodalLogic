@@ -55,8 +55,8 @@ data/bmlogic_metadata.json data/eval_dataset.json
 
 ### `DataExport.lean`
 
-**Path**: `Theories/Bimodal/Automation/DataExport.lean`
-**Namespace**: `Bimodal.Automation.DataExport`
+**Path**: `FormalSystem/Automation/DataExport.lean`
+**Namespace**: `FormalSystem.Automation.DataExport`
 **Role**: JSON serialization primitives for all core types. No external JSON library — uses string concatenation with proper escaping. This module is a dependency of all other pipeline modules.
 
 #### Key API
@@ -117,8 +117,8 @@ All serialization is pure string manipulation — no `import Json` or external d
 
 ### `FormulaEnumerator.lean`
 
-**Path**: `Theories/Bimodal/Automation/FormulaEnumerator.lean`
-**Namespace**: `Bimodal.Automation`
+**Path**: `FormalSystem/Automation/FormulaEnumerator.lean`
+**Namespace**: `FormalSystem.Automation`
 **Role**: Bounded enumeration of TM bimodal logic formulas. Provides both exhaustive enumeration (for small complexity bounds) and deterministic pseudo-random sampling (for larger spaces). Contains two APIs: the plan-specified API (Task 201) and a legacy API (Task 203).
 
 #### Plan-Specified API (Task 201): EnumConfig
@@ -159,8 +159,8 @@ All serialization is pure string manipulation — no `import Json` or external d
 
 ### `DatasetGenerator.lean`
 
-**Path**: `Theories/Bimodal/Automation/DatasetGenerator.lean`
-**Namespace**: `Bimodal.Automation`
+**Path**: `FormalSystem/Automation/DatasetGenerator.lean`
+**Namespace**: `FormalSystem.Automation`
 **Role**: The labeling pipeline. Runs the formal `DecisionProcedure.decide` on enumerated formulas, extracts proof traces and countermodels, computes difficulty metrics, and produces `LabeledFormula` records.
 
 #### Key API
@@ -204,8 +204,8 @@ For each formula, `labelFormula`:
 
 ### `EnrichedCountermodel.lean`
 
-**Path**: `Theories/Bimodal/Automation/EnrichedCountermodel.lean`
-**Namespace**: `Bimodal.Automation.Enriched`
+**Path**: `FormalSystem/Automation/EnrichedCountermodel.lean`
+**Namespace**: `FormalSystem.Automation.Enriched`
 **Role**: Extends `SimpleCountermodel` (atom truth assignments only) with the full saturated branch from the tableau, providing a richer corrective signal for the value network.
 
 #### Key API
@@ -233,8 +233,8 @@ For each formula, `labelFormula`:
 
 ### `DatasetExporter.lean`
 
-**Path**: `Theories/Bimodal/Automation/DatasetExporter.lean`
-**Namespace**: `Bimodal.Automation.DatasetExporter`
+**Path**: `FormalSystem/Automation/DatasetExporter.lean`
+**Namespace**: `FormalSystem.Automation.DatasetExporter`
 **Role**: Assembles labeled formulas into a structured JSON dataset file with metadata, statistics, and a deterministic stratified train/eval split. This is the Python pipeline's primary input format.
 
 #### Key API
@@ -296,8 +296,8 @@ For each formula, `labelFormula`:
 
 ### `DatasetExport.lean`
 
-**Path**: `Theories/Bimodal/Automation/DatasetExport.lean`
-**Namespace**: `Bimodal.Automation.DatasetExport`
+**Path**: `FormalSystem/Automation/DatasetExport.lean`
+**Namespace**: `FormalSystem.Automation.DatasetExport`
 **Role**: JSONL streaming output, CLI argument parsing, and the `main` function for the `lake exe dataset_generator` executable. This is the BimodalHarness-facing export path.
 
 **Note**: This module is distinct from `DataExport.lean` (the JSON serialization primitives). Despite the similar name, `DatasetExport.lean` is the CLI executable entry point, while `DataExport.lean` provides the underlying serialization library.
@@ -351,8 +351,8 @@ Split assignment (`assignSplit`) uses hash bucketing for deterministic 80/10/10 
 
 ### `DatasetValidator.lean`
 
-**Path**: `Theories/Bimodal/Automation/DatasetValidator.lean`
-**Namespace**: `Bimodal.Automation.DatasetValidator`
+**Path**: `FormalSystem/Automation/DatasetValidator.lean`
+**Namespace**: `FormalSystem.Automation.DatasetValidator`
 **Role**: Quality assurance for the pipeline. Validates correctness via conformance tests (known valid/invalid formulas) and evaluates dataset readiness for training via a feasibility gate. Provides the `main` entry point for `lake exe dataset_validator`.
 
 #### Key API
@@ -394,13 +394,13 @@ Two `lake exe` targets are registered in `lakefile.lean`:
 
 ```lean
 lean_exe dataset_generator where
-  root := `Bimodal.Automation.DatasetExport
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.DatasetExport
+  srcDir := "FormalSystem"
   supportInterpreter := true
 
 lean_exe dataset_validator where
-  root := `Bimodal.Automation.DatasetValidator
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.DatasetValidator
+  srcDir := "FormalSystem"
   supportInterpreter := true
 ```
 
@@ -600,10 +600,10 @@ BimodalHarness defines Python dataclasses in `src/bimodal_harness/schema/records
 | Python Class | Lean Type |
 |---|---|
 | `TrainingRecord` | `LabeledFormula` (conceptual) |
-| `PatternKey` | `Bimodal.Automation.PatternKey` |
-| `RuleProfile` | `Bimodal.Automation.DataExport.RuleProfile` |
+| `PatternKey` | `FormalSystem.Automation.PatternKey` |
+| `RuleProfile` | `FormalSystem.Automation.DataExport.RuleProfile` |
 | `ProofTrace` | `ProofTrace` (DatasetGenerator.lean) |
-| `SimpleCountermodel` | `Bimodal.Metalogic.Decidability.SimpleCountermodel` |
+| `SimpleCountermodel` | `FormalSystem.Metalogic.Decidability.SimpleCountermodel` |
 | `DifficultyMetrics` | `DifficultyMetrics` (DatasetGenerator.lean) |
 
 Serialization (`schema/serialization.py`) handles `camelCase` ↔ `snake_case` field name mapping between the Lean JSON output and Python dataclasses.

@@ -13,11 +13,11 @@ literal families (`kvE2_sepEpL`/`EpR`/`PtW`), the depth-2 gate `kvE2_sepGate`, t
 order-type disjunction index (`KvE2SepSpikeOrderType`, `kvE2_sepArr'`) and the rank
 `kvE2_ordRank` (Rabinovich Lemma 3.2(1), PDF p.3; §5 coincidence, PDF p.5). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -1555,4 +1555,4 @@ example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
   simp only [kvE2_sepSlotMergeLe, decide_eq_true_eq]
   omega
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

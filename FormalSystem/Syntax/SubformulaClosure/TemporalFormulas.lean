@@ -14,9 +14,9 @@ seriality formulas, temporal blocking set, deferral closure definitions, F/P-dep
 bounding for deferral closure, and structural lemmas.
 -/
 
-namespace Bimodal.Syntax
+namespace FormalSystem.Syntax
 
-open Bimodal.Syntax.Formula
+open FormalSystem.Syntax.Formula
 
 /-!
 ## Deferral Closure
@@ -1317,4 +1317,4 @@ theorem box_inner_in_deferralClosure (phi psi : Formula)
     (box_inner_in_closureWithNeg_of_deferralClosure phi psi h)
 
 
-end Bimodal.Syntax
+end FormalSystem.Syntax

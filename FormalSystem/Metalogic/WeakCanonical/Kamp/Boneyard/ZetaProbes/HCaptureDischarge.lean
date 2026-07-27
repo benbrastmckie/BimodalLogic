@@ -8,7 +8,7 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 # General `esigma_descent.hcapture` discharge (Rabinovich 2014, Def 4.1, PDF p.5 / p.6 collapse)
 
 The landed E[Σ] descent `esigma_descent` (sibling module
-`Bimodal.Metalogic.WeakCanonical.Kamp.ESigmaExpansion`) takes as a hypothesis
+`FormalSystem.Metalogic.WeakCanonical.Kamp.ESigmaExpansion`) takes as a hypothesis
 
     hcapture : ∀ σ : NormalForm sig k (n+1),
         sat (Aσ σ) (env anchor) ↔ (∃ x, nf_eval_nf M k (n+1) (Fin.cons x env) σ)
@@ -44,16 +44,16 @@ Phase ζ wires these into the live spine.
 
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Definition 4.1 (p.5), collapse note (p.6),
   Lemma 3.2(2) (p.4). Cited by PDF page only; the companion markdown transcription is corrupt.
-- `Bimodal.Metalogic.WeakCanonical.Kamp.ESigmaExpansion`: `esigma_descent`.
-- `Bimodal.Metalogic.WeakCanonical.NormalForm`: `NormalForm`, `nf_eval_nf`, `AtomKind`, `atom_eval`.
+- `FormalSystem.Metalogic.WeakCanonical.Kamp.ESigmaExpansion`: `esigma_descent`.
+- `FormalSystem.Metalogic.WeakCanonical.NormalForm`: `NormalForm`, `nf_eval_nf`, `AtomKind`, `atom_eval`.
 -/
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Syntax (Formula)
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula)
 
 /-- **General `hcapture` discharge (Def 4.1, p.5 / p.6 collapse).** For any injective naming `Aσ`
 of depth-`k` sub-normal-forms by formulas, the fresh atom interpreted by the anchored-existential
@@ -118,4 +118,4 @@ theorem esigma_descent_composes
   obtain ⟨sat, hsat⟩ := hcapture_dischargeable M env anchor Aσ hAσ
   exact ⟨sat, esigma_descent sig M sat k n env Aσ anchor hsat nf⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

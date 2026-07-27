@@ -12,11 +12,11 @@ Module J of the `SharedWitness` tower, and its apex. Resolution R2: the RIGHT pi
 fragment gate producer, the kit-sound fragment bridge, and the outer fold
 `kvE2_outer_fold_frag` consumed by `OuterGate` (Rabinovich Prop 4.3, PDF p.6). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -1389,4 +1389,4 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
       -- retired: boundary positives are now admissible and are REALIZED, not refuted.
       exact hreal w hxw hwt hptW σ hmem
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -294,7 +294,7 @@ import Logos.ProofSystem.Axioms
 - Use relative imports within the same package/directory
 
 ```lean
--- In Theories/Bimodal/Semantics/Truth.lean
+-- In FormalSystem/Semantics/Truth.lean
 import Logos.Syntax.Formula        -- absolute (different package)
 import Logos.Semantics.TaskFrame   -- relative would also work
 ```

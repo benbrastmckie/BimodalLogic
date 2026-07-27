@@ -94,11 +94,11 @@ Prior-UZ/SZ are excluded from dense derivations by the `h.minFrameClass ≤ .Den
 * JPL Paper app:valid (line 1984) - Perpetuity principle validity proofs
 -/
 
-namespace Bimodal.Metalogic
+namespace FormalSystem.Metalogic
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
 
 /-! ## Classical Logic Helper -/
 
@@ -1391,4 +1391,4 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
-end Bimodal.Metalogic
+end FormalSystem.Metalogic

@@ -44,9 +44,9 @@ atom names) map to the same canonical representative.
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.AtomCanonicalization
+namespace FormalSystem.Automation.AtomCanonicalization
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- The canonical atom ordering used for renaming.
     First-seen atom maps to index 0 (p), second to index 1 (q), etc. -/
@@ -144,4 +144,4 @@ def deduplicateCanonical (formulas : List Formula) : List Formula :=
   ) ({}, #[])
   result.toList
 
-end Bimodal.Automation.AtomCanonicalization
+end FormalSystem.Automation.AtomCanonicalization

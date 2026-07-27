@@ -52,7 +52,7 @@ Use method syntax: `φ.all_past`, `φ.some_future`, etc.
 * [LEAN Style Guide](../../../docs/development/LEAN_STYLE_GUIDE.md) - Coding conventions
 -/
 
-namespace Bimodal.Syntax
+namespace FormalSystem.Syntax
 
 /--
 Formula type for bimodal logic TM.
@@ -753,4 +753,4 @@ def predFormulas : Formula → Finset Formula
 
 end Formula
 
-end Bimodal.Syntax
+end FormalSystem.Syntax

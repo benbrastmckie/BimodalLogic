@@ -46,11 +46,11 @@ WitnessSeed.lean) guarantees `{psi} ∪ g_content(M)` is consistent, and
 - Goldblatt 1992, Logics of Time and Computation (canonical model for tense logics)
 -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
 
 /-!
 ## Canonical Relations
@@ -274,7 +274,7 @@ theorem existsTask_transitive {fc : FrameClass} (M M' M'' : Set Formula)
   -- By Temporal 4: ⊢ G phi → G(G phi), so G(G phi) ∈ M
   have h_T4 : DerivationTree fc [] ((Formula.all_future phi).imp
       (Formula.all_future (Formula.all_future phi))) :=
-    (Bimodal.Theorems.TemporalDerived.temp_4_derived phi).lift (by cases fc <;> trivial)
+    (FormalSystem.Theorems.TemporalDerived.temp_4_derived phi).lift (by cases fc <;> trivial)
   have h_GG : Formula.all_future (Formula.all_future phi) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_G_phi
   -- G phi ∈ g_content M, and g_content M ⊆ M' by h_R1
@@ -312,4 +312,4 @@ theorem h_content_chain_transitive {fc : FrameClass} (M N V : Set Formula)
   -- phi ∈ h_content N, and h_content N ⊆ M, so phi ∈ M
   exact hMN h_Hphi_in_N
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

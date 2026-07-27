@@ -55,10 +55,10 @@ Defined here:
 * Modal Logic, Blackburn et al., Chapter 4
 -/
 
-namespace Bimodal.Metalogic
+namespace FormalSystem.Metalogic
 
 open Syntax ProofSystem Semantics Theorems.Combinators Theorems.Propositional
-open Bimodal.Metalogic.Core
+open FormalSystem.Metalogic.Core
 
 /--
 Set-based MCS: disjunction property (forward direction).
@@ -531,4 +531,4 @@ Modal saturation (forward direction) is proven below. Full saturation theorems
 requiring canonical frame and history constructions have been archived.
 -/
 
-end Bimodal.Metalogic
+end FormalSystem.Metalogic

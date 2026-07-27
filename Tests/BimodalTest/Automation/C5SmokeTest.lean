@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.DatasetGenerator
-import Bimodal.Automation.DatasetValidator
+import FormalSystem.Automation.DatasetGenerator
+import FormalSystem.Automation.DatasetValidator
 
 /-!
 # C5 Smoke Test: Decision Procedure at Complexity 5
@@ -29,9 +29,9 @@ Covers:
 
 namespace BimodalTest.Automation.C5Smoke
 
-open Bimodal.Syntax
-open Bimodal.Automation
-open Bimodal.Automation.DatasetValidator
+open FormalSystem.Syntax
+open FormalSystem.Automation
+open FormalSystem.Automation.DatasetValidator
 
 -- Convenience abbreviations (using atom_s for compatibility with DatasetValidator patterns)
 private abbrev p : Formula := .atom_s "p"

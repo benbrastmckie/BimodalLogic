@@ -55,11 +55,11 @@ are all sorry-free and reused directly.
 - Reynolds 1994, Theorem 5
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -1982,4 +1982,4 @@ recursion arms (since retired — see `kampArm_zeta`) can cite them without forw
 references. This is the plan-v10 sanctioned hoist (Phase 21 forward-reference safety clause);
 the arm-closure lemma moved verbatim, no proof edit. -/
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

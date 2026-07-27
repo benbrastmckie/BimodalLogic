@@ -12,11 +12,11 @@ Module D of the `SharedWitness` tower. Lemma 3.2(1) ⇐: the honest arrangement 
 own order-type disjunct (Rabinovich Lemma 3.2(1), PDF p.3; §5 meet-typed shared point,
 PDF p.5), reducing to `kvE2_sepBody_complete`. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -1136,4 +1136,4 @@ theorem kvE2_sepHonest_rank_strictMono {sig : MonadicSignature} [Fintype sig.pre
       < kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) b :=
   kvE2_ordRank_strictMono (kvE2_sepAnchorFam qnf M w x t h) hlt
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

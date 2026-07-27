@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Syntax.Formula
+import FormalSystem.Syntax.Formula
 import BimodalTest.Property.Generators
 import Plausible
 
@@ -35,7 +35,7 @@ Generators defined in BimodalTest.Property.Generators.
 
 namespace BimodalTest.Syntax.FormulaPropertyTest
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 open BimodalTest.Property.Generators
 open Plausible
 

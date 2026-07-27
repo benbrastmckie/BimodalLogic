@@ -4,14 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Syntax
-import Bimodal.ProofSystem
-import Bimodal.Metalogic.Decidability.SignedFormula
-import Bimodal.Metalogic.Decidability.Closure
-import Bimodal.Metalogic.Decidability.Tableau
-import Bimodal.Metalogic.Decidability.TraceCertificate
-import Bimodal.Metalogic.Decidability.DecisionProcedure
-import Bimodal.Metalogic.Decidability.TraceExport
+import FormalSystem.Syntax
+import FormalSystem.ProofSystem
+import FormalSystem.Metalogic.Decidability.SignedFormula
+import FormalSystem.Metalogic.Decidability.Closure
+import FormalSystem.Metalogic.Decidability.Tableau
+import FormalSystem.Metalogic.Decidability.TraceCertificate
+import FormalSystem.Metalogic.Decidability.DecisionProcedure
+import FormalSystem.Metalogic.Decidability.TraceExport
 
 /-!
 # Round-Trip Test for Trace Certificate JSON Serialization (Task 277)
@@ -25,16 +25,16 @@ the *semantic* content of the JSON, only that the structure is valid.
 
 ## References
 
-- `Bimodal.Metalogic.Decidability.TraceExport` — String-based JSON.
+- `FormalSystem.Metalogic.Decidability.TraceExport` — String-based JSON.
 - Task 277 — tableau_rule_firing_traces.
 -/
 
 namespace BimodalTest.TraceExportTest
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Decidability
-open Bimodal.Metalogic.Decidability.TraceExport
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Decidability
+open FormalSystem.Metalogic.Decidability.TraceExport
 
 /-- Atom helper. -/
 private def p : Formula := .atom_s "p"

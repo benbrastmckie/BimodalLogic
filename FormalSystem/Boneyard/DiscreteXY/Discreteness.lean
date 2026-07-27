@@ -24,16 +24,16 @@ discreteness axiom (DF) using the temporal_duality inference rule.
 ## References
 
 - Research-013 Section 3.3: DP derivable from DF via temporal_duality
-- `Bimodal.ProofSystem.Axioms`: DF axiom definition
-- `Bimodal.Syntax.Formula.swap_temporal_involution`: swap is involutive
+- `FormalSystem.ProofSystem.Axioms`: DF axiom definition
+- `FormalSystem.Syntax.Formula.swap_temporal_involution`: swap is involutive
 -/
 
 #exit
 
-namespace Bimodal.Theorems.Discreteness
+namespace FormalSystem.Theorems.Discreteness
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /--
 The backward discreteness axiom (DP) is derivable from the forward discreteness
@@ -74,4 +74,4 @@ def discreteness_past (φ : Formula) :
   rw [h_eq] at h_swap
   exact h_swap
 
-end Bimodal.Theorems.Discreteness
+end FormalSystem.Theorems.Discreteness

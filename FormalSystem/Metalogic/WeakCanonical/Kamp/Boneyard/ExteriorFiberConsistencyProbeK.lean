@@ -78,10 +78,10 @@ proved in full generality in the production home `ExteriorFiberConsistencyK.lean
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Predicate location
 
@@ -365,4 +365,4 @@ theorem kvE_probe363_tau_admissible : kvE_futAdmissible m1tau = true :=
     (show (2 : ℤ) < 15 by omega) (show (15 : ℤ) < 18 by omega) (show (18 : ℤ) < 25 by omega)
     (nf_characteristic_satisfies M1M 2 4 m1env4)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

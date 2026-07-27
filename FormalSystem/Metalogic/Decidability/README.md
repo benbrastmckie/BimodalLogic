@@ -43,9 +43,9 @@ This directory implements a verified decision procedure that:
 ## Usage
 
 ```lean
-import Bimodal.Metalogic.Decidability
+import FormalSystem.Metalogic.Decidability
 
-open Bimodal.Metalogic.Decidability
+open FormalSystem.Metalogic.Decidability
 
 #check decide        -- Main decision procedure
 #check isValid       -- Boolean validity check

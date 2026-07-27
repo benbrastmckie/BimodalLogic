@@ -61,8 +61,8 @@ The redundant formula encodings serve different consumers: `formula_str` for hum
 Two `lake exe` executables compile from this pipeline:#footnote[`docs/training/PIPELINE.md:428-437`, quoting the `lakefile.lean` executable declarations.]
 
 #items[
-  #item[`dataset_generator` (root `Bimodal.Automation.DatasetExport`) -- the main JSONL export executable.]
-  #item[`dataset_validator` (root `Bimodal.Automation.DatasetValidator`) -- validates exported datasets against the schema contract.]
+  #item[`dataset_generator` (root `FormalSystem.Automation.DatasetExport`) -- the main JSONL export executable.]
+  #item[`dataset_validator` (root `FormalSystem.Automation.DatasetValidator`) -- validates exported datasets against the schema contract.]
 ]
 
 == BimodalHarness Integration: Artifact-Only

@@ -50,12 +50,12 @@ For formulas in deferralClosure, membership in the MCS equals membership in the 
 
 -- Deep API drift: SimplifiedChain behind #exit.
 
-namespace Bimodal.Metalogic.Bundle.ResolvingChain
+namespace FormalSystem.Metalogic.Bundle.ResolvingChain
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.ProofSystem
 open Classical
 
 /-!
@@ -140,10 +140,10 @@ theorem simplified_restricted_successor_f_step (phi : Formula) (u : Set Formula)
   -- and the DRM maximality guarantees the disjunction is resolved.
   let v := simplified_restricted_successor phi u h_drm h_F_top
   have h_v_drm := simplified_restricted_successor_is_drm phi u h_drm h_F_top
-  have h_F_ψ_in_dc : Formula.some_future ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+  have h_F_ψ_in_dc : Formula.some_future ψ ∈ (FormalSystem.Syntax.deferralClosure phi : Set Formula) :=
     h_drm.1.1 h_F_ψ
-  have h_ψ_in_dc : ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
-    Bimodal.Syntax.F_inner_in_deferralClosure phi ψ h_F_ψ_in_dc
+  have h_ψ_in_dc : ψ ∈ (FormalSystem.Syntax.deferralClosure phi : Set Formula) :=
+    FormalSystem.Syntax.F_inner_in_deferralClosure phi ψ h_F_ψ_in_dc
   by_cases h_ψ_in : ψ ∈ v
   · exact Set.mem_union_left _ h_ψ_in
   · by_cases h_F_ψ_in : Formula.some_future ψ ∈ v
@@ -232,7 +232,7 @@ theorem simplified_restricted_successor_f_step (phi : Formula) (u : Set Formula)
         DerivationTree.weakening L'_filt Γ _ d_neg_F h_L'_filt_sub_Γ
       have d_or : Γ ⊢ Formula.or ψ (Formula.some_future ψ) :=
         DerivationTree.assumption Γ _ (List.mem_append_right _ (List.mem_singleton_self _))
-      have d_bot_final := Bimodal.Theorems.Propositional.or_elim_neg_neg Γ ψ (Formula.some_future ψ) d_or d_neg_ψ' d_neg_F'
+      have d_bot_final := FormalSystem.Theorems.Propositional.or_elim_neg_neg Γ ψ (Formula.some_future ψ) d_or d_neg_ψ' d_neg_F'
       exact deferral_restricted_mcs_is_consistent h_v_drm Γ h_Γ_in_v ⟨d_bot_final⟩
 
 /-- The simplified restricted successor satisfies Succ. -/
@@ -243,4 +243,4 @@ theorem simplified_restricted_successor_succ (phi : Formula) (u : Set Formula)
   ⟨simplified_restricted_successor_g_persistence phi u h_drm h_F_top,
    simplified_restricted_successor_f_step phi u h_drm h_F_top⟩
 
-end Bimodal.Metalogic.Bundle.ResolvingChain
+end FormalSystem.Metalogic.Bundle.ResolvingChain

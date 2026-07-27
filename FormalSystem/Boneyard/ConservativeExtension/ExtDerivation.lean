@@ -26,17 +26,17 @@ to an extended derivation, preserving the proof structure.
 
 #exit
 
-namespace Bimodal.Metalogic.ConservativeExtension
+namespace FormalSystem.Metalogic.ConservativeExtension
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-- Context in the extended language. -/
 abbrev ExtContext := List ExtFormula
 
 /--
 Axiom schemata for the extended proof system.
-Mirrors all axiom schemas from `Bimodal.ProofSystem.Axiom` but over `ExtFormula`.
+Mirrors all axiom schemas from `FormalSystem.ProofSystem.Axiom` but over `ExtFormula`.
 -/
 inductive ExtAxiom : ExtFormula → Type where
   -- Layer 1: Propositional (4)
@@ -288,4 +288,4 @@ noncomputable def embedDerivation {fc : FrameClass} : {Γ : List Formula} → {�
   | _, _, DerivationTree.weakening _Γ _Δ _φ d h =>
     ExtDerivationTree.weakening _ _ _ (embedDerivation d) (map_embedFormula_subset h)
 
-end Bimodal.Metalogic.ConservativeExtension
+end FormalSystem.Metalogic.ConservativeExtension

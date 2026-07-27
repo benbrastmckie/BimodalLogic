@@ -7,10 +7,10 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.NegFix
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAConjFull
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! # Prop 4.2 / 4.3 De Morgan fold: `VecEA2.negFix` and `VVecEA2.negFix`
 
@@ -19,7 +19,7 @@ open Bimodal.Metalogic.WeakCanonical
 fold (**PDF p.6**, proved in Section 5, pp.7-11). The full page-cited Section 5 correspondence
 table — and `prop42_contentful_of_attained`, which wires this theorem to the contentful Prop 4.2
 target of `Prop42Contentful.lean` — is `Kamp/Section5Correspondence.lean`, reachable from
-`Theories/Bimodal.lean` and so CI-protected. **Consult it before planning any Section 5 work.**
+`FormalSystem.lean` and so CI-protected. **Consult it before planning any Section 5 work.**
 Cite by PDF page only: the former `chunk_0012` citation here pointed into the companion `.md`
 conversion, which is corrupt (drops displayed equations, inverts `k ≠ m` to `k = m`).
 
@@ -189,4 +189,4 @@ theorem VVecEA2.negFix_iff {sig : MonadicSignature}
     v.disjuncts).trans ?_
   simp only [VVecEA2.holds, not_exists, not_and]
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -49,11 +49,11 @@ Guard consumption ONLY via `kvE_deepOnFiber_zero` / `kvE_deepOnFiber_of_realized
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ## m = 0 vacuity kernel (sorry-free) -/
 
@@ -133,4 +133,4 @@ theorem kvE_hexclDeepPast_supply {sig : MonadicSignature} [Fintype sig.preds] [D
       rw [hmk] at hbf
       exact Bool.noConfusion hbf
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

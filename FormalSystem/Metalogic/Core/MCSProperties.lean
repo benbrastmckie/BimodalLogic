@@ -31,10 +31,10 @@ Depends on `DeductionTheorem.lean` for the deduction theorem and
 `MaximalConsistent.lean` for MCS definitions.
 -/
 
-namespace Bimodal.Metalogic.Core
+namespace FormalSystem.Metalogic.Core
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-! ## Helper Lemmas -/
 
@@ -253,7 +253,7 @@ theorem SetMaximalConsistent.all_future_all_future {fc : FrameClass} {S : Set Fo
     (h_all_future : Formula.all_future φ ∈ S) : (Formula.all_future φ).all_future ∈ S := by
   -- Temporal 4 axiom: Gφ → GGφ (derived from BX3 + BX6, at Base, then lifted)
   have h_temp_4_base : ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived φ
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived φ
   have h_temp_4_thm :
     ⊢[fc] (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
     DerivationTree.lift (FrameClass.base_le fc) h_temp_4_base
@@ -284,7 +284,7 @@ noncomputable def temp_4_past (φ : Formula) : ⊢ (φ.all_past.imp φ.all_past.
   let ψ := φ.swap_temporal
   -- Step 1: Get T4 derived theorem for ψ: Gψ → GGψ
   have h1 : ⊢ (ψ.all_future.imp ψ.all_future.all_future) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived ψ
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived ψ
   -- Step 2: Apply temporal duality to get: H(swap ψ) → HH(swap ψ)
   have h2 : ⊢ (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
     DerivationTree.temporal_duality _ h1
@@ -374,4 +374,4 @@ theorem SetMaximalConsistent.neg_excludes {fc : FrameClass} {S : Set Formula}
   intro h_phi
   exact set_consistent_not_both h_mcs.1 phi h_phi h_neg
 
-end Bimodal.Metalogic.Core
+end FormalSystem.Metalogic.Core

@@ -9,12 +9,12 @@
 #   C1  `lake build` exits 0
 #   C2  `#print axioms` for the four flagship theorems matches the recorded baseline
 #   C3  Exactly one structural `sorry`, located BY CONTENT (never by line number)
-#   C4  Every `import Bimodal.*` / `import BimodalTest.*` resolves to a real file
-#   C5  Every module-shaped `Bimodal.*` path in non-specs markdown resolves
+#   C4  Every `import FormalSystem.*` / `import BimodalTest.*` resolves to a real file
+#   C5  Every module-shaped `FormalSystem.*` path in non-specs markdown resolves
 #   C6  Known-unreachable live modules still compile (rot guard)
 #   C7  Live inventory (informational, never asserted)
 #   C8  Aggregator convention: sibling `X.lean` beside `X/`, no `X/X.lean`
-#   C9  Zero task-number citations under Theories/
+#   C9  Zero task-number citations under FormalSystem/
 #   C10 Zero references to the pre-relocation docs/latex/typst paths
 #
 # Every filesystem traversal excludes BOTH Boneyards via `-not -path '*/Boneyard/*'`.
@@ -46,7 +46,7 @@ RUN_BUILD=1
 # becomes exit-code-affecting once its flag flips to 1. Never flip a flag to 0 to
 # make a gate pass; that is what the flag exists to prevent.
 ENFORCE_C8=${ENFORCE_C8:-1}   # aggregator convention (enforced)
-ENFORCE_C9=${ENFORCE_C9:-1}   # no task-number citations under Theories/ (enforced)
+ENFORCE_C9=${ENFORCE_C9:-1}   # no task-number citations under FormalSystem/ (enforced)
 ENFORCE_C10=${ENFORCE_C10:-1} # no stale docs/latex/typst paths (enforced)
 
 FAILURES=0
@@ -69,7 +69,7 @@ echo
 # ---------------------------------------------------------------------------
 # B0: Boneyard exclusion self-test
 # ---------------------------------------------------------------------------
-mapfile -t BONEYARDS < <(find Theories -type d -name Boneyard | sort)
+mapfile -t BONEYARDS < <(find FormalSystem -type d -name Boneyard | sort)
 if [ "${#BONEYARDS[@]}" -eq 2 ]; then
   pass B0 "Boneyard exclusion covers exactly 2 directories"
   for b in "${BONEYARDS[@]}"; do note "$b"; done
@@ -78,8 +78,8 @@ else
   for b in "${BONEYARDS[@]}"; do note "$b"; done
 fi
 # Prove the exclusion is load-bearing: archived files must not be in the live set.
-ALL_LEAN=$(find Theories -name '*.lean' | wc -l)
-LIVE_LEAN=$(live_lean Theories | wc -l)
+ALL_LEAN=$(find FormalSystem -name '*.lean' | wc -l)
+LIVE_LEAN=$(live_lean FormalSystem | wc -l)
 if [ "$ALL_LEAN" -gt "$LIVE_LEAN" ]; then
   note "excluded $((ALL_LEAN - LIVE_LEAN)) archived .lean files ($ALL_LEAN total -> $LIVE_LEAN live)"
 else
@@ -117,22 +117,28 @@ echo
 # re-emit them. A dedicated scratch file is compiled against the built library.
 # ---------------------------------------------------------------------------
 read -r -d '' AXIOM_BASELINE <<'BASELINE'
-'Bimodal.Metalogic.BXCanonical.completeness' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
-'Bimodal.Metalogic.BXCanonical.completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Bimodal.Metalogic.BXCanonical.completeness_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Bimodal.Metalogic.BXCanonical.Chronicle.countermodel_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.BXCanonical.completeness' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.BXCanonical.completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.BXCanonical.completeness_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
 BASELINE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
   AX_SRC=$(mktemp --suffix=.lean)
   cat >"$AX_SRC" <<'LEAN'
-import Bimodal
-#print axioms Bimodal.Metalogic.BXCanonical.completeness
-#print axioms Bimodal.Metalogic.BXCanonical.completeness_dense
-#print axioms Bimodal.Metalogic.BXCanonical.completeness_discrete
-#print axioms Bimodal.Metalogic.BXCanonical.Chronicle.countermodel_dense
+import FormalSystem
+#print axioms FormalSystem.Metalogic.BXCanonical.completeness
+#print axioms FormalSystem.Metalogic.BXCanonical.completeness_dense
+#print axioms FormalSystem.Metalogic.BXCanonical.completeness_discrete
+#print axioms FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense
 LEAN
-  AX_OUT=$(lake env lean "$AX_SRC" 2>&1 | grep 'depends on axioms')
+  # The pretty-printer wraps at a fixed width, and `FormalSystem.` is longer than the
+  # namespace it replaced, so a long axiom record now spills onto continuation lines that
+  # begin with a space. Rejoin those before grepping, or the record is silently truncated
+  # and C2 reports a divergence that is purely cosmetic.
+  AX_OUT=$(lake env lean "$AX_SRC" 2>&1 \
+    | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
+    | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
     pass C2 "all four flagship axiom sets match baseline"
@@ -157,7 +163,7 @@ echo
 # ---------------------------------------------------------------------------
 SORRY_HITS=$(grep -rnE --include='*.lean' \
   '(^[[:space:]]*sorry[[:space:]]*$)|(:=[[:space:]]*sorry[[:space:]]*$)|(\bexact sorry\b)|(<;> sorry)' \
-  Theories | grep -v '/Boneyard/')
+  FormalSystem | grep -v '/Boneyard/')
 SORRY_COUNT=$(printf '%s' "$SORRY_HITS" | grep -c . || true)
 
 if [ "$SORRY_COUNT" -ne 1 ]; then
@@ -166,7 +172,7 @@ if [ "$SORRY_COUNT" -ne 1 ]; then
 else
   SORRY_FILE=${SORRY_HITS%%:*}
   SORRY_LINE=$(printf '%s' "$SORRY_HITS" | cut -d: -f2)
-  EXPECTED_FILE="Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean"
+  EXPECTED_FILE="FormalSystem/Metalogic/WeakCanonical/Transfer.lean"
   EXPECTED_THM="countermodel_discrete"
   ENCLOSING=$(awk -v n="$SORRY_LINE" '
     NR <= n && /^[[:space:]]*(private[[:space:]]+|protected[[:space:]]+|noncomputable[[:space:]]+)*(theorem|lemma|def|example|instance)[[:space:]]+/ {
@@ -215,17 +221,19 @@ def live_files(base, ext):
     return sorted(out)
 
 def mod_to_path(m):
-    base = "Tests" if m.split(".")[0] == "BimodalTest" else "Theories"
-    return os.path.join(base, *m.split(".")) + ".lean"
+    base = "Tests" if m.split(".")[0] == "BimodalTest" else "."
+    return os.path.normpath(os.path.join(base, *m.split("."))) + ".lean"
 
 def path_to_mod(p):
-    for base in ("Theories/", "Tests/"):
+    for base in ("Tests/", ""):
         if p.startswith(base):
             return p[len(base):-len(".lean")].replace(os.sep, ".")
     return None
 
-lean_files = live_files("Theories", ".lean") + live_files("Tests", ".lean")
-imp_re = re.compile(r"^import\s+(Bimodal(?:Test)?(?:\.[A-Za-z0-9_]+)*)\s*$", re.M)
+lean_files = (live_files("FormalSystem", ".lean") + live_files("Tests", ".lean")
+              + (["FormalSystem.lean"]
+                 if os.path.isfile("FormalSystem.lean") else []))
+imp_re = re.compile(r"^import\s+((?:FormalSystem|BimodalTest)(?:\.[A-Za-z0-9_]+)*)\s*$", re.M)
 
 graph, texts = {}, {}
 for p in lean_files:
@@ -249,7 +257,7 @@ if dangling:
     for p, i, t in dangling:
         note(f"{p}:{i}: import {t}  ->  {mod_to_path(t)} (missing)")
 else:
-    pas("C4", f"all {total_imports} Bimodal/BimodalTest import lines resolve")
+    pas("C4", f"all {total_imports} FormalSystem/BimodalTest import lines resolve")
 
 # --- C5: markdown module paths ---------------------------------------------
 allow = set()
@@ -267,11 +275,11 @@ for root, dirs, files in os.walk("."):
         if f.endswith(".md"):
             md_files.append(os.path.relpath(os.path.join(root, f), "."))
 
-mod_re = re.compile(r"\bBimodal(?:Test)?(?:\.[A-Z][A-Za-z0-9_]*)+")
+mod_re = re.compile(r"\b(?:FormalSystem|BimodalTest)(?:\.[A-Z][A-Za-z0-9_]*)+")
 
 def resolves(m):
-    base = "Tests" if m.split(".")[0] == "BimodalTest" else "Theories"
-    p = os.path.join(base, *m.split("."))
+    base = "Tests" if m.split(".")[0] == "BimodalTest" else "."
+    p = os.path.normpath(os.path.join(base, *m.split(".")))
     return os.path.isfile(p + ".lean") or os.path.isdir(p)
 
 unresolved, used_allow = [], set()
@@ -298,7 +306,7 @@ if stale_allow:
         note(m)
 
 # --- reachability (feeds C6 and C7) ----------------------------------------
-roots = ["Bimodal", "BimodalTest"]
+roots = ["FormalSystem", "BimodalTest"]
 try:
     lf = open("lakefile.lean", encoding="utf-8").read()
     roots += re.findall(r"root\s*:=\s*`([A-Za-z0-9_.]+)", lf)
@@ -380,12 +388,12 @@ else:
 
 # --- C7: live inventory (informational) -------------------------------------
 inf("C7", f"{len(lean_files)} live .lean files "
-          f"({len(live_files('Theories', '.lean'))} Theories / "
+          f"({len(live_files('FormalSystem', '.lean'))} FormalSystem / "
           f"{len(live_files('Tests', '.lean'))} Tests); "
           f"{len(seen)} reachable, {len(unreachable)} unreachable")
 counts = {}
-for p in live_files("Theories/Bimodal", ".lean"):
-    top = os.path.relpath(p, "Theories/Bimodal").split(os.sep)[0]
+for p in live_files("FormalSystem", ".lean"):
+    top = os.path.relpath(p, "FormalSystem").split(os.sep)[0]
     if top.endswith(".lean"):
         top = "(loose)"
     counts[top] = counts.get(top, 0) + 1
@@ -394,13 +402,13 @@ for k in sorted(counts):
 
 # --- C8: aggregator convention ----------------------------------------------
 # Convention: a directory `X/` has exactly one sibling aggregator `X.lean`.
-# Allowlisted exception: `Theories/Bimodal.lean` + `Theories/Bimodal/Bimodal.lean`.
-# That pair is the Lake `lean_lib Bimodal` root (`srcDir := "Theories"`,
-# `roots := #[`Bimodal]`), so the self-named indirection is load-bearing, not a
+# Allowlisted exception: `FormalSystem.lean` + `FormalSystem/FormalSystem.lean`.
+# That pair is the Lake `lean_lib FormalSystem` root (`srcDir := "."`,
+# `roots := #[`FormalSystem]`), so the self-named indirection is load-bearing, not a
 # convention violation.
-C8_ALLOW_SELFNAMED = {"Theories/Bimodal/Bimodal.lean"}
+C8_ALLOW_SELFNAMED = {"FormalSystem/FormalSystem.lean"}
 c8_problems = []
-for parent in ("Theories/Bimodal", "Theories/Bimodal/Metalogic"):
+for parent in ("FormalSystem", "FormalSystem/Metalogic"):
     for d in sorted(os.listdir(parent)):
         full = os.path.join(parent, d)
         if not os.path.isdir(full) or d == "Boneyard":
@@ -423,7 +431,7 @@ if c8_problems:
     for m in c8_problems:
         note(m)
 else:
-    pas("C8", "every Bimodal/ and Metalogic/ subdirectory has exactly one sibling aggregator")
+    pas("C8", "every FormalSystem/ and Metalogic/ subdirectory has exactly one sibling aggregator")
 
 sys.exit(1 if failures else 0)
 PYEOF
@@ -432,19 +440,19 @@ PY_STATUS=$?
 echo
 
 # ---------------------------------------------------------------------------
-# C9: no task-number citations under Theories/
+# C9: no task-number citations under FormalSystem/
 #
 # `.claude/rules/no-task-references-in-deliverables.md` forbids ephemeral
 # task-management identifiers in deliverable files. Task numbers are renumbered
 # by vault operations and mean nothing to a future reader of a README.
 # ---------------------------------------------------------------------------
 TASK_REFS=$(grep -rniE --include='*.lean' --include='*.md' \
-  '\b(tasks?[[:space:]]+#?[0-9]+|task-[0-9]+)\b' Theories 2>/dev/null | grep -v '/Boneyard/')
+  '\b(tasks?[[:space:]]+#?[0-9]+|task-[0-9]+)\b' FormalSystem 2>/dev/null | grep -v '/Boneyard/')
 TASK_REF_COUNT=$(printf '%s' "$TASK_REFS" | grep -c . || true)
 if [ "$TASK_REF_COUNT" -eq 0 ]; then
-  pass C9 "zero task-number citations under Theories/"
+  pass C9 "zero task-number citations under FormalSystem/"
 else
-  MSG="$TASK_REF_COUNT task-number citation(s) under Theories/ (use a durable anchor instead)"
+  MSG="$TASK_REF_COUNT task-number citation(s) under FormalSystem/ (use a durable anchor instead)"
   if [ "$ENFORCE_C9" -eq 1 ]; then fail C9 "$MSG"; else soft C9 "$MSG (not yet enforced)"; fi
   printf '%s\n' "$TASK_REFS" | head -20 | while IFS= read -r l; do note "$l"; done
   [ "$TASK_REF_COUNT" -gt 20 ] && note "... and $((TASK_REF_COUNT - 20)) more"
@@ -457,16 +465,16 @@ echo
 # docs/, latex/ and typst/ live at the project root. `specs/**` legitimately
 # records the historical paths and is excluded.
 # ---------------------------------------------------------------------------
-STALE_PATHS=$(grep -rnE 'Theories/Bimodal/(docs|latex|typst)\b' . \
+STALE_PATHS=$(grep -rnE 'FormalSystem/(docs|latex|typst)\b' . \
   --exclude-dir=.git --exclude-dir=.lake --exclude-dir=specs \
   --exclude-dir=build --exclude-dir=__pycache__ 2>/dev/null \
   | grep -v '/Boneyard/' \
   | grep -v '^\./scripts/check-module-invariants\.sh:')
 STALE_COUNT=$(printf '%s' "$STALE_PATHS" | grep -c . || true)
 if [ "$STALE_COUNT" -eq 0 ]; then
-  pass C10 "zero references to Theories/Bimodal/{docs,latex,typst} outside specs/"
+  pass C10 "zero references to FormalSystem/{docs,latex,typst} outside specs/"
 else
-  MSG="$STALE_COUNT stale reference(s) to Theories/Bimodal/{docs,latex,typst}"
+  MSG="$STALE_COUNT stale reference(s) to FormalSystem/{docs,latex,typst}"
   if [ "$ENFORCE_C10" -eq 1 ]; then fail C10 "$MSG"; else soft C10 "$MSG (not yet enforced)"; fi
   printf '%s\n' "$STALE_PATHS" | head -20 | while IFS= read -r l; do note "$l"; done
   [ "$STALE_COUNT" -gt 20 ] && note "... and $((STALE_COUNT - 20)) more"

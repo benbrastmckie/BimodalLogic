@@ -28,8 +28,8 @@ Must be run in compiled mode via `lake exe enum_benchmark`.
 
 set_option autoImplicit false
 
-open Bimodal.Syntax
-open Bimodal.Automation
+open FormalSystem.Syntax
+open FormalSystem.Automation
 
 /-- Check if a formula matches the ex_falso pattern: bot -> phi. -/
 private def isExFalsoPattern : Formula → Bool

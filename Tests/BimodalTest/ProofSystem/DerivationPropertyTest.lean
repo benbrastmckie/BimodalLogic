@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.ProofSystem.Derivation
-import Bimodal.ProofSystem.Axioms
-import Bimodal.Theorems.TemporalDerived
+import FormalSystem.ProofSystem.Derivation
+import FormalSystem.ProofSystem.Axioms
+import FormalSystem.Theorems.TemporalDerived
 import BimodalTest.Property.Generators
 import Plausible
 
@@ -41,8 +41,8 @@ structural properties that can be tested with arbitrary inputs.
 
 namespace BimodalTest.ProofSystem.DerivationPropertyTest
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 open BimodalTest.Property.Generators
 open Plausible
 
@@ -139,7 +139,7 @@ example (φ : Formula) : ⊢ (φ.box.imp φ.box.box) :=
 Test: Temporal 4 axiom is derivable.
 -/
 noncomputable example (φ : Formula) : ⊢ (φ.all_future.imp φ.all_future.all_future) :=
-  Bimodal.Theorems.TemporalDerived.temp_4_derived φ
+  FormalSystem.Theorems.TemporalDerived.temp_4_derived φ
 
 /-! ## Modus Ponens Properties -/
 
@@ -254,7 +254,7 @@ example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.box (Formula.all_fut
 Test: Temporal-Future is derivable (derived from MF + T + Modal 4).
 -/
 example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) :=
-  Bimodal.Theorems.Combinators.temp_future_derived φ
+  FormalSystem.Theorems.Combinators.temp_future_derived φ
 
 /-! ## Context Operations Properties -/
 

@@ -56,9 +56,9 @@ Only the E[Σ] atom *vocabulary* is shared.
 - `NormalForm.lean`: `AtomKind`, `atom_eval`, `NormalForm`, `nf_eval_nf`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax (Formula)
+open FormalSystem.Syntax (Formula)
 
 /-! ## 1. The infinite E[Σ] signature expansion (Def 4.1, p.5) -/
 
@@ -196,4 +196,4 @@ theorem esigma_descent
     refine ⟨hatom, fun σ => ?_⟩
     rw [← hcapture σ]; exact hquant σ
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

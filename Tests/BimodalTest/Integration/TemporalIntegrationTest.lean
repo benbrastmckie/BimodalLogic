@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.ProofSystem
-import Bimodal.Semantics
-import Bimodal.Metalogic
-import Bimodal.Theorems.Combinators
+import FormalSystem.ProofSystem
+import FormalSystem.Semantics
+import FormalSystem.Metalogic
+import FormalSystem.Theorems.Combinators
 import BimodalTest.Integration.Helpers
 
 /-!
@@ -45,10 +45,10 @@ Tests are organized by temporal axiom:
 
 namespace BimodalTest.Integration
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic
 open BimodalTest.Integration.Helpers
 
 -- ============================================================
@@ -67,7 +67,7 @@ example : True := by
   let φ := p.all_future.imp p.all_future.all_future
   
   -- Derive using Temporal 4 axiom
-  let d : ⊢ φ := Bimodal.Theorems.TemporalDerived.temp_4_derived p
+  let d : ⊢ φ := FormalSystem.Theorems.TemporalDerived.temp_4_derived p
   
   -- Verify soundness
   have v : [] ⊨ φ := soundness [] φ d
@@ -88,7 +88,7 @@ example : True := by
   
   -- Fp → FFp
   let ax : Γ ⊢ (p.all_future.imp p.all_future.all_future) :=
-    DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived p) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived p) (List.nil_subset _)
   
   -- Fp (assumption)
   let ass : Γ ⊢ p.all_future :=
@@ -115,7 +115,7 @@ example : True := by
   
   -- Step 1: Fp → FFp, Fp ⊢ FFp
   let ax1 : Γ ⊢ (p.all_future.imp p.all_future.all_future) :=
-    DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived p) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived p) (List.nil_subset _)
   let ass : Γ ⊢ p.all_future :=
     DerivationTree.assumption Γ p.all_future (List.Mem.head _)
   let d1 : Γ ⊢ p.all_future.all_future :=
@@ -123,7 +123,7 @@ example : True := by
   
   -- Step 2: FFp → FFFp, FFp ⊢ FFFp
   let ax2 : Γ ⊢ (p.all_future.all_future.imp p.all_future.all_future.all_future) :=
-    DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived p.all_future) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived p.all_future) (List.nil_subset _)
   let d2 : Γ ⊢ p.all_future.all_future.all_future :=
     DerivationTree.modus_ponens Γ p.all_future.all_future
       p.all_future.all_future.all_future ax2 d1
@@ -270,7 +270,7 @@ example : True := by
   let φ := (p.imp q).all_future.imp (p.all_future.imp q.all_future)
   
   -- Derive using Temporal K distribution axiom
-  let d : ⊢ φ := Bimodal.Theorems.TemporalDerived.temp_k_dist_derived p q
+  let d : ⊢ φ := FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived p q
   
   -- Verify soundness
   have v : [] ⊨ φ := soundness [] φ d
@@ -292,7 +292,7 @@ example : True := by
   
   -- F(p → q) → (Fp → Fq)
   let ax : Γ ⊢ ((p.imp q).all_future.imp (p.all_future.imp q.all_future)) :=
-    DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived p q) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived p q) (List.nil_subset _)
   
   -- F(p → q) (assumption)
   let ass1 : Γ ⊢ (p.imp q).all_future :=
@@ -333,7 +333,7 @@ example : True := by
   let p := Formula.atom_s "p"
   
   -- Derive p → p (propositional tautology)
-  let d1 : ⊢ (p.imp p) := Bimodal.Theorems.Combinators.identity p
+  let d1 : ⊢ (p.imp p) := FormalSystem.Theorems.Combinators.identity p
   
   -- Apply temporal necessitation to get F(p → p)
   let d2 : ⊢ ((p.imp p).all_future) :=
@@ -392,7 +392,7 @@ example : True := by
   
   -- Derive Fp → FFp
   let d1 : ⊢ (p.all_future.imp p.all_future.all_future) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived p
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived p
   
   -- Apply temporal duality
   let d2 : ⊢ ((p.all_future.imp p.all_future.all_future).swap_temporal) :=

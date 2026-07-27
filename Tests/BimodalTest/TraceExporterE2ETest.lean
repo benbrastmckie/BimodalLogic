@@ -4,15 +4,15 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Syntax
-import Bimodal.ProofSystem
-import Bimodal.Metalogic.Decidability.SignedFormula
-import Bimodal.Metalogic.Decidability.Closure
-import Bimodal.Metalogic.Decidability.Tableau
-import Bimodal.Metalogic.Decidability.TraceCertificate
-import Bimodal.Metalogic.Decidability.Saturation
-import Bimodal.Metalogic.Decidability.DecisionProcedure
-import Bimodal.Metalogic.Decidability.TraceExport
+import FormalSystem.Syntax
+import FormalSystem.ProofSystem
+import FormalSystem.Metalogic.Decidability.SignedFormula
+import FormalSystem.Metalogic.Decidability.Closure
+import FormalSystem.Metalogic.Decidability.Tableau
+import FormalSystem.Metalogic.Decidability.TraceCertificate
+import FormalSystem.Metalogic.Decidability.Saturation
+import FormalSystem.Metalogic.Decidability.DecisionProcedure
+import FormalSystem.Metalogic.Decidability.TraceExport
 
 /-!
 # Trace Exporter E2E Smoke Test (Task 277)
@@ -38,10 +38,10 @@ on a set of canonical formulas and verifies that:
 
 namespace BimodalTest.TraceExporterE2ETest
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Decidability
-open Bimodal.Metalogic.Decidability.TraceExport
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Decidability
+open FormalSystem.Metalogic.Decidability.TraceExport
 
 private def p : Formula := .atom_s "p"
 private def q : Formula := .atom_s "q"

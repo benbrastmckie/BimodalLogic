@@ -34,16 +34,16 @@ additional infrastructure.
 
 #exit
 
-namespace Bimodal.Metalogic.Bundle.MCSWitnessChain
+namespace FormalSystem.Metalogic.Bundle.MCSWitnessChain
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Bundle.MCSWitnessSuccessor
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Bundle.MCSWitnessSuccessor
 
 -- Deep API drift: MCSWitnessSuccessor behind #exit.
-open Bimodal.Metalogic.Algebraic.UltrafilterChain
+open FormalSystem.Metalogic.Algebraic.UltrafilterChain
 
 /-! ## Forward Chain -/
 
@@ -193,4 +193,4 @@ theorem one_step_P_resolution (phi : Formula) (u : Set Formula)
     psi ∈ build_targeted_predecessor phi u h_drm psi h_P h_dc :=
   build_targeted_predecessor_has_target phi u h_drm psi h_P h_dc
 
-end Bimodal.Metalogic.Bundle.MCSWitnessChain
+end FormalSystem.Metalogic.Bundle.MCSWitnessChain

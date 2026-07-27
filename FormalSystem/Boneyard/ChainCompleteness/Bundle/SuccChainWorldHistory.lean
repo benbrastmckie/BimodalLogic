@@ -28,16 +28,16 @@ Since adjacent chain elements satisfy Succ, the CanonicalTask relation
 ## References
 
 - `SuccChainFMCS.lean`, `SuccChainTaskFrame.lean`
-- Bimodal.Semantics.WorldHistory
+- FormalSystem.Semantics.WorldHistory
 -/
 
 #exit
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.Semantics
 
 /-!
 ## CanonicalTask from Chain Structure
@@ -163,4 +163,4 @@ theorem succ_chain_history_respects_task (M0 : SerialMCS) (s t : Int) (h_le : s 
     CanonicalTask (succ_chain_fam M0 s) (t - s) (succ_chain_fam M0 t) :=
   succ_chain_canonical_task M0 s t h_le
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

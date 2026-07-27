@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.Core.MCSProperties
 /-!
 ARCHIVED (Boneyard) — never compiled.
 
-Origin: `Theories/Bimodal/Metalogic/Bundle/SuccRelation.lean`, the
+Origin: `FormalSystem/Metalogic/Bundle/SuccRelation.lean`, the
 `/-! ## Until/Since Step Properties -/` section (7 declarations, 7 sorries). The rest of
 `SuccRelation.lean` is live and stays in place — this is a declaration excision, not a file move.
 

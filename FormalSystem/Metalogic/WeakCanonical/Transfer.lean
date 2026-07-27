@@ -43,14 +43,14 @@ The file also provides:
 - Reynolds 1994, Theorem 18 (full completeness pipeline)
 - Doets 1989, Theorem 1.1 (k-equivalence preserves bounded-depth sentences)
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Semantics
 
 /-! ## Signature and Atom Map Construction -/
 
@@ -454,7 +454,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
     intro t _h_section
     simp only [temporal_truth]
     exact ⟨False.elim, fun h => absurd h
-      (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))⟩
+      (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))⟩
   | imp φ₁ φ₂ ih₁ ih₂ =>
     intro t h_section
     simp only [temporal_truth, Formula.predFormulas] at *
@@ -464,7 +464,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
     have h_sec2 : ∀ f ∈ φ₂.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
       fun f hf => h_section f (Finset.mem_union_right _ hf)
     rw [ih₁ t h_sec1, ih₂ t h_sec2]
-    exact (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) φ₁ φ₂).symm
+    exact (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) φ₁ φ₂).symm
   | box φ =>
     intro t h_section
     simp only [temporal_truth, chronicleAsMonadicStructure, Formula.predFormulas,
@@ -1041,12 +1041,12 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
     constructor
     · exact False.elim
     · intro h; exact absurd h
-        (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))
+        (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))
   | imp φ₁ φ₂ ih₁ ih₂ =>
     intro t
     simp only [temporal_truth, effectiveFormula]
     rw [ih₁ t, ih₂ t]
-    exact (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).symm
+    exact (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).symm
   | box φ =>
     intro t
     change (chronicleAsMonadicStructure M sig atomMap_rev).interp (atomMap_fwd (.box φ)) t ↔
@@ -1132,15 +1132,15 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
     -- = Formula.imp (Formula.imp Formula.bot Formula.bot) Formula.bot ∈ M.fmcs z
     -- This means top → bot ∈ fmcs(z), i.e., ¬top ∈ fmcs(z), i.e., bot ∈ fmcs(z)
     have h_top : Formula.imp Formula.bot Formula.bot ∈ M.fmcs z :=
-      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
+      (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
     have h_bot : Formula.bot ∈ M.fmcs z :=
-      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
-    exact absurd h_bot (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
+      (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
+    exact absurd h_bot (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
   -- Step 3: Apply MCS-level Prior-UZ: F(eff_ψ) → U(eff_ψ, ¬eff_ψ) ∈ fmcs(t)
   have h_prior := M.prior_UZ_valid t eff_ψ
   -- prior_UZ_valid gives: (F(eff_ψ) → U(eff_ψ, ¬eff_ψ)) ∈ fmcs(t)
   have h_until : Formula.untl eff_ψ eff_ψ.neg ∈ M.fmcs t :=
-    (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_F_eff
+    (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_F_eff
   -- Step 4: C5 forward: U(eff_ψ, ¬eff_ψ) ∈ fmcs(t) → ∃s' > t, eff_ψ ∈ fmcs(s') ∧ guard
   obtain ⟨s', hts', h_eff_s', h_guard⟩ := M.until_coherent_fwd t eff_ψ eff_ψ.neg h_until
   -- Step 5: Convert back to temporal_truth
@@ -1182,14 +1182,14 @@ theorem chronicle_semantic_prior_SZ {fc : FrameClass}
     simp only [Formula.some_past] at h_neg_P
     obtain ⟨z, hsz, hzt, h_neg_top⟩ := M.neg_since_coherent t s hst _ _ h_neg_P h_eff_s
     have h_top : Formula.imp Formula.bot Formula.bot ∈ M.fmcs z :=
-      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
+      (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
     have h_bot : Formula.bot ∈ M.fmcs z :=
-      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
-    exact absurd h_bot (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
+      (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
+    exact absurd h_bot (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
   -- Step 3: Apply MCS-level Prior-SZ
   have h_prior := M.prior_SZ_valid t eff_ψ
   have h_since : Formula.snce eff_ψ eff_ψ.neg ∈ M.fmcs t :=
-    (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_P_eff
+    (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_P_eff
   -- Step 4: C5 forward for Since
   obtain ⟨s', hst', h_eff_s', h_guard⟩ := M.since_coherent_fwd t eff_ψ eff_ψ.neg h_since
   -- Step 5: Convert back
@@ -1241,4 +1241,4 @@ theorem countermodel_discrete (A : Set Formula)
   -- model built directly from a Base-MCS. See the section docstring above.
   sorry
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

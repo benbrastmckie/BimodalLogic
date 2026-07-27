@@ -41,13 +41,13 @@ All modal S5 theorems in this module are fully proven, including the bicondition
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
 -/
 
-namespace Bimodal.Theorems.ModalS5
+namespace FormalSystem.Theorems.ModalS5
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Perpetuity
-open Bimodal.Theorems.Propositional
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Perpetuity
+open FormalSystem.Theorems.Propositional
 
 /-!
 ## Helper Lemmas for Classical Reasoning
@@ -773,5 +773,5 @@ def s5_diamond_box_to_truth (A : Formula) : ⊢ (A.box.diamond).imp A := by
   -- Compose: ◇□A → A
   exact imp_trans h1 h2
 
-end Bimodal.Theorems.ModalS5
+end FormalSystem.Theorems.ModalS5
 

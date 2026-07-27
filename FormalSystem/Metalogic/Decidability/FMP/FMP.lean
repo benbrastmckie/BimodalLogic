@@ -42,13 +42,13 @@ The proof uses the MCS-based filtration approach:
 - Hughes & Cresswell: A New Introduction to Modal Logic (Ch 6.2)
 -/
 
-namespace Bimodal.Metalogic.Decidability.FMP
+namespace FormalSystem.Metalogic.Decidability.FMP
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Propositional
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Propositional
 
 /-!
 ## Finite Model Construction
@@ -256,4 +256,4 @@ These results establish that TM bimodal logic has the finite model property,
 which is essential for decidability.
 -/
 
-end Bimodal.Metalogic.Decidability.FMP
+end FormalSystem.Metalogic.Decidability.FMP

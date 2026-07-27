@@ -154,7 +154,7 @@ An atom $p$ is true at world state $[\tau, x]$ iff $p \in \mathsf{MCS}(\tau(x))$
 \end{definition}
 
 \begin{lemma}[Truth Lemma]
-In the canonical model, $\varphi \in \mathsf{MCS}(t)$ iff $\varphi$ is true at time $t$ in the canonical model.\footnote{This is proven as \texttt{truth\_lemma} in \texttt{Theories/Bimodal/Metalogic/Representation/TruthLemma.lean}.}
+In the canonical model, $\varphi \in \mathsf{MCS}(t)$ iff $\varphi$ is true at time $t$ in the canonical model.\footnote{This is proven as \texttt{truth\_lemma} in \texttt{FormalSystem/Metalogic/Representation/TruthLemma.lean}.}
 \end{lemma}
 
 % TODO: This is not in the correct spirit of a representation theorem which aims to build a semantic object out of pure syntax. A purely syntactic, and fully general approach should be carefully researched and implemented, thinking hardest about this crux of the metalogic.
@@ -166,7 +166,7 @@ The \emph{Truth Lemma} follows directly from this construction: membership in a 
 \subsubsection{Representation Theorem}
 
 \begin{theorem}[Representation Theorem]
-Every consistent formula is satisfiable in the canonical model.\footnote{This is proven as \texttt{representation\_theorem} in \texttt{Theories/Bimodal/Metalogic/Representation/UniversalCanonicalModel.lean}.}
+Every consistent formula is satisfiable in the canonical model.\footnote{This is proven as \texttt{representation\_theorem} in \texttt{FormalSystem/Metalogic/Representation/UniversalCanonicalModel.lean}.}
 \end{theorem}
 
 This theorem is the pivotal result linking syntax to semantics.
@@ -390,7 +390,7 @@ Despite computational limitations, decidability is practically valuable: small f
 
 \subsection{File Organization and Dependencies}
 
-The active metalogic infrastructure is in \texttt{Theories/Bimodal/Metalogic/}, using the \texttt{IndexedMCSFamily} approach.
+The active metalogic infrastructure is in \texttt{FormalSystem/Metalogic/}, using the \texttt{IndexedMCSFamily} approach.
 Deprecated code in \texttt{Boneyard/Metalogic\_v2/} is preserved for historical reference.
 The following diagram illustrates the import structure of the active codebase.
 

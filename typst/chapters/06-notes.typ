@@ -1,7 +1,7 @@
 // ============================================================================
 // 06-notes.typ
 // Notes chapter for Bimodal TM Logic Reference Manual
-// Lean name ground truth: Theories/Bimodal/ (see ../SYNC-MAP.md).
+// Lean name ground truth: FormalSystem/ (see ../SYNC-MAP.md).
 // ============================================================================
 
 #import "../template.typ": *

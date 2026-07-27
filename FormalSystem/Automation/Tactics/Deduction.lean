@@ -10,7 +10,7 @@ import FormalSystem.Automation.Tactics.Helpers
 # Deduction Theorem Tactics
 
 This module provides tactics that apply the frame-class-polymorphic deduction
-theorem (`Bimodal.Metalogic.Core.deduction_theorem`) to derivability goals.
+theorem (`FormalSystem.Metalogic.Core.deduction_theorem`) to derivability goals.
 
 ## Main Tactics
 
@@ -35,7 +35,7 @@ well-founded recursion). Consequently, any `def`/`example` whose proof term is
 produced by `deduction` or `undischarge` must be marked `noncomputable`. This
 matches established codebase practice for `modal_k_tactic` and friends. For
 `Prop`-valued derivability statements, use `Derivable.deduction`
-(`Bimodal.Metalogic.Core`) instead — `Prop` proofs never need the marker.
+(`FormalSystem.Metalogic.Core`) instead — `Prop` proofs never need the marker.
 
 The converse direction (`deduction_converse`) is computable; it is a term-level
 lemma, not a tactic, and can be used directly.
@@ -46,10 +46,10 @@ lemma, not a tactic, and can be used directly.
 * [Helpers.lean](./Helpers.lean) — the `mkOperatorKTactic` template this follows
 -/
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 open Lean Elab Tactic Meta
 
 /--
@@ -57,7 +57,7 @@ Core implementation of the `deduction` tactic.
 
 Matches the goal against the 3-app pattern
 `DerivationTree fc Γ φ` (guard for error messages only), then applies
-`Bimodal.Metalogic.Core.deduction_theorem` via `MVarId.apply`, which unifies
+`FormalSystem.Metalogic.Core.deduction_theorem` via `MVarId.apply`, which unifies
 `φ =?= ?A.imp ?B` at default transparency (so `ψ.neg` goals unify via defeq).
 -/
 def runDeductionTactic : TacticM Unit := do
@@ -68,7 +68,7 @@ def runDeductionTactic : TacticM Unit := do
   | .app (.app (.app (.const ``DerivationTree _) _fc) _context) _formula =>
     let newGoals ←
       try
-        goal.apply (mkConst ``Bimodal.Metalogic.Core.deduction_theorem)
+        goal.apply (mkConst ``FormalSystem.Metalogic.Core.deduction_theorem)
       catch _ =>
         throwError "deduction: goal formula is not an implication (expected `Γ ⊢[fc] A → B`, got {goalType})"
     replaceMainGoal newGoals
@@ -126,7 +126,7 @@ noncomputable example (p : Formula) (h : [p] ⊢ Formula.bot) : ⊢ p.neg := by
 ```
 -/
 macro "undischarge" h:term : tactic =>
-  `(tactic| exact Bimodal.Metalogic.Core.deduction_theorem _ _ _ $h)
+  `(tactic| exact FormalSystem.Metalogic.Core.deduction_theorem _ _ _ $h)
 
 /-! ## Smoke Tests
 
@@ -145,4 +145,4 @@ noncomputable example (p : Formula) (h : [p] ⊢ Formula.bot) : ⊢ p.neg := by
   deduction
   exact h
 
-end Bimodal.Automation
+end FormalSystem.Automation

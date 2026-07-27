@@ -46,7 +46,7 @@ For architectural rationale, see [ADR-001-Classical-Logic-Noncomputable.md](../a
   - Propositional.lean: 32 (entire section)
   - GeneralizedNecessitation.lean: 2 (need fixing - Task 192)
 
-### Module: `Theories/Bimodal/Metalogic/`
+### Module: `FormalSystem/Metalogic/`
 
 #### File: `DeductionTheorem.lean`
 
@@ -89,7 +89,7 @@ For architectural rationale, see [ADR-001-Classical-Logic-Noncomputable.md](../a
 
 ---
 
-### Module: `Theories/Bimodal/Theorems/`
+### Module: `FormalSystem/Theorems/`
 
 #### File: `Propositional.lean`
 
@@ -191,7 +191,7 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
 
 ---
 
-### Module: `Theories/Bimodal/Theorems/Perpetuity/`
+### Module: `FormalSystem/Theorems/Perpetuity/`
 
 #### File: `Principles.lean`
 

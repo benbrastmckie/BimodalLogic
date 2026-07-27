@@ -67,10 +67,10 @@ Phase 5's target. The phase boundary is respected rather than papered over with 
 construction. See `lemma53` below for the exact boundary and what discharging it requires.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## The `⊤` instantiation idiom
 
@@ -460,4 +460,4 @@ theorem lemma53 {sig : MonadicSignature} {n : Nat} (P : Fin n → TemporalPred) 
         exact negChainOn_holds_of_not_lt M atomMap (List.ofFn P)
           (by simp) z0 z1 hlt
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

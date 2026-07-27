@@ -185,10 +185,10 @@ let finalResult := batch_search_with_learning benchmarks
 * LEAN Proof Search: Mathlib's `solve_by_elim` tactic
 -/
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## Proof Search Types (Planned)
@@ -1045,7 +1045,7 @@ def matchDerived (φ : Formula) : Option (⊢ φ) :=
       (match lhs, rhs with
        | .box phi, .all_future (.box phi') =>
            if h : phi = phi' then
-             some (h ▸ Bimodal.Theorems.Combinators.temp_future_derived phi)
+             some (h ▸ FormalSystem.Theorems.Combinators.temp_future_derived phi)
            else none
        | _, _ => none)
 
@@ -1053,7 +1053,7 @@ def matchDerived (φ : Formula) : Option (⊢ φ) :=
       <|> (match lhs, rhs with
            | .box phi, .all_future phi' =>
                if h : phi = phi' then
-                 some (h ▸ Bimodal.Theorems.Perpetuity.box_to_future phi)
+                 some (h ▸ FormalSystem.Theorems.Perpetuity.box_to_future phi)
                else none
            | _, _ => none)
 
@@ -1061,20 +1061,20 @@ def matchDerived (φ : Formula) : Option (⊢ φ) :=
       <|> (match lhs, rhs with
            | .box phi, .all_past phi' =>
                if h : phi = phi' then
-                 some (h ▸ Bimodal.Theorems.Perpetuity.box_to_past phi)
+                 some (h ▸ FormalSystem.Theorems.Perpetuity.box_to_past phi)
                else none
            | _, _ => none)
 
       -- identity: φ → φ
       <|> (if h : lhs = rhs then
-             some (h ▸ Bimodal.Theorems.Combinators.identity lhs)
+             some (h ▸ FormalSystem.Theorems.Combinators.identity lhs)
            else none)
 
       -- dni: φ → ¬¬φ (¬ψ unfolds to ψ → ⊥)
       <|> (match lhs, rhs with
            | phi, .imp (.imp phi' .bot) .bot =>
                if h : phi = phi' then
-                 some (h ▸ Bimodal.Theorems.Combinators.dni phi)
+                 some (h ▸ FormalSystem.Theorems.Combinators.dni phi)
                else none
            | _, _ => none)
   | _ => none
@@ -1251,4 +1251,4 @@ def iddfs_search (Γ : Context) (φ : Formula) (maxDepth : Nat := 100)
   iterate 0 ProofCache.empty {} 0
 
 
-end Bimodal.Automation
+end FormalSystem.Automation

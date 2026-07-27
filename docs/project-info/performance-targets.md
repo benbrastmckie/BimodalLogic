@@ -10,7 +10,7 @@ Theory-specific performance baselines and regression thresholds for Bimodal TM l
 
 ## Proof Search Benchmarks
 
-Benchmarks for `Bimodal.Automation.ProofSearch`:
+Benchmarks for `FormalSystem.Automation.ProofSearch`:
 
 | Benchmark | Baseline Time | Max Visits | Regression Threshold |
 |-----------|---------------|------------|----------------------|
@@ -31,7 +31,7 @@ Benchmarks for `Bimodal.Automation.ProofSearch`:
 
 ## Derivation Construction
 
-Benchmarks for `Bimodal.ProofSystem.Derivation`:
+Benchmarks for `FormalSystem.ProofSystem.Derivation`:
 
 | Benchmark | Baseline Time | Tree Height | Regression Threshold |
 |-----------|---------------|-------------|----------------------|
@@ -55,7 +55,7 @@ Benchmarks for `Bimodal.ProofSystem.Derivation`:
 
 ## Semantic Evaluation
 
-Benchmarks for `Bimodal.Semantics.Truth`:
+Benchmarks for `FormalSystem.Semantics.Truth`:
 
 | Benchmark | Baseline Time | Correctness | Regression Threshold |
 |-----------|---------------|-------------|----------------------|

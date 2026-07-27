@@ -134,10 +134,10 @@ level without the `INF` anchors above — that route is ruled unfixable by two i
 in-tree analyses (`Boneyard/NegationIndep.lean:346-364`) and is a three-strikes target.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **Rabinovich's Proposition 4.2, contentfully stated** (2014, *Proof of Kamp's Theorem*,
     PDF p.6; proved in Section 5, pp.7-11).
@@ -341,4 +341,4 @@ theorem prop42_contentful_endpoint_instance {sig : MonadicSignature}
   rw [endpointOnlyNeg_holds, endpointOnly_holds]
   tauto
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

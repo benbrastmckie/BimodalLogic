@@ -137,7 +137,7 @@ example (p q : Formula) (h1 : ⊢ p.imp q) : ⊢ p.box.imp q.box := by
 Bimodal provides an Aesop rule set for automated reasoning:
 
 ```lean
-import Bimodal.Automation.AesopRules
+import FormalSystem.Automation.AesopRules
 
 -- Use Aesop with TMLogic rules
 example (p : Formula) : ⊢ p.box.imp p := by
@@ -173,4 +173,4 @@ example (p : Formula) : ⊢ p.box.imp p := by
 
 - [Axiom Reference](axiom-reference.md) - Axiom schemas used by tactics
 - [Proof Patterns](../user-guide/proof-patterns.md) - Manual proof strategies
-- [Automation README](../../Theories/Bimodal/Automation/README.md) - Automation implementation
+- [Automation README](../../FormalSystem/Automation/README.md) - Automation implementation

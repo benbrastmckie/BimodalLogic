@@ -29,11 +29,11 @@ The density axiom GGφ → Gφ has `minFrameClass = .Dense` which is incomparabl
 
 #exit
 
-namespace Bimodal.Metalogic.DiscreteSoundness
+namespace FormalSystem.Metalogic.DiscreteSoundness
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
 
 /--
 The forward discreteness axiom DF is valid over all discrete temporal orders.
@@ -53,4 +53,4 @@ theorem axiom_discrete_valid' {φ : Formula} (h : Axiom φ)
     valid_discrete φ :=
   axiom_discrete_valid h h_fc
 
-end Bimodal.Metalogic.DiscreteSoundness
+end FormalSystem.Metalogic.DiscreteSoundness

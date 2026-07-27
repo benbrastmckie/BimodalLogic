@@ -38,9 +38,9 @@ needed by the separation proof.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Substitution -/
 
@@ -251,4 +251,4 @@ theorem multi_subst_nil (phi : Formula) : multi_subst phi [] = phi := rfl
 theorem multi_subst_singleton (phi : Formula) (a : Atom) (f : Formula) :
     multi_subst phi [(a, f)] = subst_formula phi a f := rfl
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

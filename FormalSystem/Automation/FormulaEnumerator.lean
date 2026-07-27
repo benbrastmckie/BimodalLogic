@@ -60,10 +60,10 @@ and both IO-based random and deterministic seed-based sampling at higher complex
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## Plan-specified API: EnumConfig and Core Enumeration
@@ -2301,4 +2301,4 @@ def enumerateWithPipeline (params : EnumParams) (parallelConfig : ParallelEnumCo
   let result := allFormulas.toList
   if params.maxFormulas == 0 then return result else return result.take params.maxFormulas
 
-end Bimodal.Automation
+end FormalSystem.Automation

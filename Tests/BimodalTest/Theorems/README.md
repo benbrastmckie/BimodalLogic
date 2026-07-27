@@ -19,7 +19,7 @@ Tests for derived theorems.
 
 ## Related
 
-- [Source: Theorems/](../../../Theories/Bimodal/Theorems/)
+- [Source: Theorems/](../../../FormalSystem/Theorems/)
 - [Parent README](../README.md)
 
 ---

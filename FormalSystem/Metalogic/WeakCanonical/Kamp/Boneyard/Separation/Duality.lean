@@ -39,9 +39,9 @@ enabling automatic derivation of "S out of U" cases from "U out of S" cases.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Time Reversal -/
 
@@ -358,4 +358,4 @@ theorem u_free_s_free_no_future_imp_past_only {φ : Formula}
     (hpo : is_past_only φ = true) :
     is_past_only φ = true := hpo
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

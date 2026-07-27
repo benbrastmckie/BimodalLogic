@@ -16,11 +16,11 @@ proof. Contains the local `is_valid` definition and the `truth_at_swap_swap` inv
 lemma.
 -/
 
-namespace Bimodal.Metalogic.SoundnessLemmas
+namespace FormalSystem.Metalogic.SoundnessLemmas
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem (Axiom DerivationTree FrameClass)
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem (Axiom DerivationTree FrameClass)
+open FormalSystem.Semantics
 
 /--
 Local definition of validity to avoid circular dependency with Validity.lean.
@@ -105,4 +105,4 @@ theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
       exact ⟨s, h_le, (ih_φ τ s).mpr h_event, fun r hr1 hr2 => (ih_ψ τ r).mpr (h_guard r hr1 hr2)⟩
 
 
-end Bimodal.Metalogic.SoundnessLemmas
+end FormalSystem.Metalogic.SoundnessLemmas

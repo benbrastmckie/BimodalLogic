@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# readme-lint.sh -- Check README health across Theories/Bimodal/
+# readme-lint.sh -- Check README health across FormalSystem/
 #
 # Checks performed:
 #   1. Every directory containing .lean files has a README.md
@@ -9,12 +9,12 @@
 #
 # Usage: ./scripts/readme-lint.sh [<root-directory>]
 #
-# Default root: Theories/Bimodal
+# Default root: FormalSystem
 # Exit code: 0 = all clean, 1 = errors found
 
 set -euo pipefail
 
-ROOT="${1:-Theories/Bimodal}"
+ROOT="${1:-FormalSystem}"
 
 if [ ! -d "$ROOT" ]; then
   echo "Error: Root directory '$ROOT' does not exist." >&2

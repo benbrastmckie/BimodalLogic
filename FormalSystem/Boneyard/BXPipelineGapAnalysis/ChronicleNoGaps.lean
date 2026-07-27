@@ -72,10 +72,10 @@ since `limitDomSubtype_isSuccArchimedean` derives from `succ_cofinal` which deri
 - Reynolds 1994, Theorem 5 (US expressive completeness, pp.123-124)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.BXCanonical.Chronicle
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.BXCanonical.Chronicle
 
 /-! ## Gap Existence from Non-Archimedean (Local Copy)
 
@@ -170,4 +170,4 @@ theorem gap_succ_cut_lt_complement {T : Type} [LinearOrder T] [SuccOrder T]
     Order.succ t < s :=
   gap_cut_lt_complement γ (Order.succ t) (gap_cut_succ_closed γ t ht) s hs
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

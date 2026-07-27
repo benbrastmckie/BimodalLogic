@@ -34,9 +34,9 @@ formula where U(A,B) appears only at top level (not under S).
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 open Classical
 
 /-! ## Helper Lemmas -/
@@ -916,4 +916,4 @@ theorem since_guard_weaken {event guard₁ guard₂ : Formula}
 
 -- Note: Cases 6-8 theorems are now in NormalForm.lean (proved via all_formulas_separable).
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

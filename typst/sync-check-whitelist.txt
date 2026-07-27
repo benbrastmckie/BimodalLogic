@@ -10,7 +10,7 @@
 #   - Type-signature / turnstile illustrations copied for exposition, not
 #     meant to literal-grep-match Lean source formatting exactly.
 #   - typst/template API names (not Lean identifiers).
-#   - Project/tool proper nouns that do not appear inside Theories/Bimodal
+#   - Project/tool proper nouns that do not appear inside FormalSystem
 #     Lean source.
 # ============================================================================
 

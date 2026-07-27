@@ -24,9 +24,9 @@ had zero code consumers, and the general Stavi result remains a documented
 open formalization target.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Standard Translation for Stavi Formulas over muSig (GHR93 p.111)
 
@@ -1728,4 +1728,4 @@ theorem below_min_depth_decrease {sig : MonadicSignature}
 
 Discrete versions were archived to Boneyard/StaviDiscretePath/. -/
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

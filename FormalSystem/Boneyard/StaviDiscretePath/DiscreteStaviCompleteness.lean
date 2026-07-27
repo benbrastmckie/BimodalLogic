@@ -35,9 +35,9 @@ StaviCompleteness public API.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Local iff lemmas for public sf_disjList/sf_conjList
 
@@ -501,4 +501,4 @@ noncomputable def discrete_stavi_expressive_completeness
       exact ⟨nf_M, Multiset.mem_toList.mpr (Fintype.complete nf_M), h_good, rfl⟩
     exact ⟨char_sf nf_M, h_in, h_char_eval⟩
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

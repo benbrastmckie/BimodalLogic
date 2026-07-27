@@ -28,9 +28,9 @@ are preserved under atom substitution when the substituted atom is fresh.
 
 #exit
 
-namespace Bimodal.Syntax
+namespace FormalSystem.Syntax
 
-open Bimodal.Syntax.Formula
+open FormalSystem.Syntax.Formula
 
 /-- Substitute atom `q` with atom `r` in a formula. -/
 def Formula.subst (q r : Atom) : Formula → Formula
@@ -176,12 +176,12 @@ theorem subst_atoms (q r : Atom) (φ : Formula) :
 
 end Formula
 
-end Bimodal.Syntax
+end FormalSystem.Syntax
 
-namespace Bimodal.ProofSystem
+namespace FormalSystem.ProofSystem
 
-open Bimodal.Syntax
-open Bimodal.Syntax.Formula
+open FormalSystem.Syntax
+open FormalSystem.Syntax.Formula
 
 /-!
 ## Context substitution
@@ -460,4 +460,4 @@ def derivation_subst (q r : Atom) {fc : FrameClass} : {Γ : Context} → {φ : F
     obtain ⟨χ, hχ, heq⟩ := hψ
     exact ⟨χ, h hχ, heq⟩
 
-end Bimodal.ProofSystem
+end FormalSystem.ProofSystem

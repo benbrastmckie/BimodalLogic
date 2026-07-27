@@ -42,11 +42,11 @@ filtered by the quant-layer bit — a stable-order, nodup, Fintype-backed enumer
 Purely additive NEW leaf module; no frozen file is touched (postmortem rule 5); the landed
 determinacy core is consumed unchanged (postmortem rule 6). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (formula_disjList formula_disjList_iff)
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (formula_disjList formula_disjList_iff)
 
 /-! ## The positive-sub fiber of a depth-`(k+1)` arity-4 sub -/
 
@@ -400,4 +400,4 @@ theorem kvE_fiberPosOnShift_correct {sig : MonadicSignature} [Fintype sig.preds]
     exact ⟨renameNF rot5Fwd rot5Bwd s, List.mem_map.mpr ⟨s, hsl, rfl⟩, env,
       (kvE_anchorBridge M env p s).mpr hev⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

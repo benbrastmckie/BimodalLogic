@@ -30,11 +30,11 @@ by the `h.minFrameClass ≤ FrameClass.Dense` constraint.
 
 #exit
 
-namespace Bimodal.Metalogic.DenseSoundness
+namespace FormalSystem.Metalogic.DenseSoundness
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
 
 /--
 The density axiom GGφ → Gφ is valid over all densely ordered temporal types.
@@ -51,4 +51,4 @@ theorem axiom_dense_valid' {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass
     valid_dense φ :=
   axiom_dense_valid h h_fc
 
-end Bimodal.Metalogic.DenseSoundness
+end FormalSystem.Metalogic.DenseSoundness

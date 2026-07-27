@@ -22,7 +22,7 @@ Tests for proof automation tactics.
 
 ## Related
 
-- [Source: Automation/](../../../Theories/Bimodal/Automation/)
+- [Source: Automation/](../../../FormalSystem/Automation/)
 - [Parent README](../README.md)
 
 ---

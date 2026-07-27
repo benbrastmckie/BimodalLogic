@@ -11,7 +11,7 @@ import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.Validity
 
 /-!
-# Bimodal.Semantics - Task Frame Semantics
+# FormalSystem.Semantics - Task Frame Semantics
 
 Aggregates all semantic components for bimodal logic TM (Tense and Modality). Provides
 task frame semantics with world histories, truth evaluation, and validity definitions
@@ -66,8 +66,8 @@ The semantics is polymorphic over temporal type `T : Type*` with
 ```lean
 import FormalSystem.Semantics
 
-open Bimodal.Semantics
-open Bimodal.Syntax
+open FormalSystem.Semantics
+open FormalSystem.Syntax
 
 -- Validity notation
 #check (⊨ Formula.atom_s "p" : Prop)  -- Not valid

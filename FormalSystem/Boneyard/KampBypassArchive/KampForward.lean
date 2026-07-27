@@ -44,11 +44,11 @@ For the Until direction (t < x):
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -676,4 +676,4 @@ These are the building blocks for the full enriched bypass formula:
 for each ssn in the outer Until/Since formula, the appropriate zone
 composition theorem provides the temporal formula and its correctness. -/
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

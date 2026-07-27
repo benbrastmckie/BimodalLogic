@@ -44,12 +44,12 @@ We handle each case of the Derivable relation:
 * [Combinators.lean](../../Theorems/Combinators.lean) - Combinator infrastructure
 -/
 
-namespace Bimodal.Metalogic.Core
+namespace FormalSystem.Metalogic.Core
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
-open Bimodal.Theorems.Combinators
+open FormalSystem.Theorems.Combinators
 attribute [local instance] Classical.propDecidable
 
 /-! ## Helper Lemmas -/
@@ -464,9 +464,9 @@ that `deduction_theorem` itself carries — use this form to avoid
 Lives in this file (not `ProofSystem/Derivable.lean`) because the proof
 depends on `deduction_theorem`, and `ProofSystem` must not import `Metalogic`.
 -/
-theorem _root_.Bimodal.ProofSystem.Derivable.deduction {fc : FrameClass}
+theorem _root_.FormalSystem.ProofSystem.Derivable.deduction {fc : FrameClass}
     {Γ : Context} {A B : Formula} (h : Derivable fc (A :: Γ) B) :
     Derivable fc Γ (A.imp B) :=
   h.elim fun d => ⟨deduction_theorem Γ A B d⟩
 
-end Bimodal.Metalogic.Core
+end FormalSystem.Metalogic.Core

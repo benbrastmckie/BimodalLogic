@@ -25,11 +25,11 @@ Factored from a single 4488-line file for modularity.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (formula_disjList formula_disjList_iff
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (formula_disjList formula_disjList_iff
   formula_conjList formula_conjList_iff)
 
 /-! ## Cross-Structure NF Transfer -/
@@ -890,4 +890,4 @@ theorem existPart_succ_n1_bypass
         · rintro ⟨x, hx⟩
           exact absurd ⟨M, ‹_›, ‹_›, t, x, hx, h_atoms⟩ h_unsat⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

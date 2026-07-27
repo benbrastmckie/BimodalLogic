@@ -62,13 +62,13 @@ and BX10 (until_F: phi U psi -> F(psi)) as replacements.
 - Burgess 1984: "Basic tense logic"
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Chronicle
+namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Theorems
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Theorems
 
 /-- Base is the minimum frame class: `FrameClass.Base ≤ fc` for all `fc`. -/
 theorem base_le (fc : FrameClass) : FrameClass.Base ≤ fc := by
@@ -153,7 +153,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
       have d_reord : DerivationTree fc (ψ :: L_filt) Formula.bot :=
         derivation_exchange d (fun x => (cons_filter_neq_perm h_ψ_in x).symm)
       have d_neg : DerivationTree fc L_filt (Formula.neg ψ) :=
-        Bimodal.Metalogic.Core.deduction_theorem L_filt ψ Formula.bot d_reord
+        FormalSystem.Metalogic.Core.deduction_theorem L_filt ψ Formula.bot d_reord
       have h_filt_in_bc : ∀ χ ∈ L_filt, χ ∈ bc := by
         intro χ hχ
         have h_and := List.mem_filter.mp hχ
@@ -221,7 +221,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         · exact h
       have h_m5 : DerivationTree fc [] ((Formula.box χ).neg.imp
           (Formula.box (Formula.box χ).neg)) :=
-        liftBase fc (Bimodal.Metalogic.Bundle.axiom_5_negative_introspection χ)
+        liftBase fc (FormalSystem.Metalogic.Bundle.axiom_5_negative_introspection χ)
       have h_box_neg_box := SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_m5) h_neg_box
       have h_neg_box_M : (Formula.box χ).neg ∈ M := h_bc_sub h_box_neg_box
@@ -297,7 +297,7 @@ theorem cud_conj_closed {fc : FrameClass} {S : Set Formula}
     (h : ClosedUnderDerivation fc S)
     {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S := by
   have h_pair := cud_contains_theorems h
-    (Bimodal.Theorems.Combinators.pairing φ ψ)
+    (FormalSystem.Theorems.Combinators.pairing φ ψ)
   exact cud_modus_ponens h (cud_modus_ponens h h_pair h_phi) h_psi
 
 /-- A DCS is closed under conjunction: if phi, psi in S then phi ∧ psi in S. -/
@@ -318,7 +318,7 @@ theorem cud_not_mem_is_sdc {fc : FrameClass} {B : Set Formula}
   -- In particular φ ∈ B, contradicting h_not_mem.
   have h_bot : Formula.bot ∈ B := h_cud L Formula.bot hL d
   have h_efq : DerivationTree fc [] (Formula.bot.imp φ) :=
-    Bimodal.Theorems.Propositional.efq_axiom φ
+    FormalSystem.Theorems.Propositional.efq_axiom φ
   exact h_not_mem (cud_modus_ponens h_cud (cud_contains_theorems h_cud h_efq) h_bot)
 
 /-! ## Adjacency predicate -/
@@ -871,4 +871,4 @@ theorem dcs_inter_mcs_inter_dcs {fc : FrameClass} {S₁ S₂ S₃ : Set Formula}
             (mcs_is_dcs h₂).2 L φ (fun ψ hψ => (hL ψ hψ).1.2) hd⟩,
             h₃.2 L φ (fun ψ hψ => (hL ψ hψ).2) hd⟩
 
-end Bimodal.Metalogic.BXCanonical.Chronicle
+end FormalSystem.Metalogic.BXCanonical.Chronicle

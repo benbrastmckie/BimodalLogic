@@ -45,11 +45,11 @@ state or properly deferred.
 - Goldblatt 1992, Logics of Time and Computation
 -/
 
-namespace Bimodal.Metalogic.Bundle
-open Bimodal.ProofSystem
+namespace FormalSystem.Metalogic.Bundle
+open FormalSystem.ProofSystem
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
 
 /-!
 ## Succ Definition
@@ -162,7 +162,7 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula)
     -- Apply DNE to get: some_future (all_future phi.neg).neg ∈ M, i.e., F(¬G(¬φ)) ∈ M
     have h_dne1 : [] ⊢ (Formula.all_future (Formula.all_future phi.neg)).neg.imp
         (Formula.some_future (Formula.all_future phi.neg).neg) :=
-      Bimodal.Theorems.Propositional.double_negation _
+      FormalSystem.Theorems.Propositional.double_negation _
     have h_F_neg_G : Formula.some_future (Formula.all_future phi.neg).neg ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne1) h_neg_goal
     -- Now: (all_future phi.neg).neg = (some_future phi.neg.neg).neg.neg (by def of all_future)
@@ -171,49 +171,49 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula)
     -- Lift through F via temporal necessitation + BX3:
     have h_dne2_base : [] ⊢ (Formula.some_future phi.neg.neg).neg.neg.imp
         (Formula.some_future phi.neg.neg) :=
-      Bimodal.Theorems.Propositional.double_negation _
+      FormalSystem.Theorems.Propositional.double_negation _
     have h_dne2_nec : [] ⊢ ((Formula.some_future phi.neg.neg).neg.neg.imp
         (Formula.some_future phi.neg.neg)).all_future :=
-      Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dne2_base
+      FormalSystem.ProofSystem.DerivationTree.temporal_necessitation _ h_dne2_base
     have h_dne2_bx3 : [] ⊢ ((Formula.some_future phi.neg.neg).neg.neg.imp
         (Formula.some_future phi.neg.neg)).all_future.imp
         ((Formula.untl (Formula.some_future phi.neg.neg).neg.neg Formula.top).imp
          (Formula.untl (Formula.some_future phi.neg.neg) Formula.top)) :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _
-        (Bimodal.ProofSystem.Axiom.right_mono_until
+      FormalSystem.ProofSystem.DerivationTree.axiom [] _
+        (FormalSystem.ProofSystem.Axiom.right_mono_until
           (Formula.some_future phi.neg.neg).neg.neg
           (Formula.some_future phi.neg.neg) Formula.top) trivial
     have h_F_dne2 : [] ⊢ (Formula.some_future (Formula.some_future phi.neg.neg).neg.neg).imp
         (Formula.some_future (Formula.some_future phi.neg.neg)) :=
-      Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne2_bx3 h_dne2_nec
+      FormalSystem.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne2_bx3 h_dne2_nec
     have h_FF_negneg : Formula.some_future (Formula.some_future phi.neg.neg) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_F_dne2) h_F_neg_G
     -- Now: F(F(¬¬φ)) ∈ M. Derive F(F(φ)) via BX3+DNE on inner F.
     -- ⊢ phi.neg.neg → phi (DNE), lift through F via BX3: ⊢ F(¬¬φ) → F(φ)
     have h_dne3_base : [] ⊢ phi.neg.neg.imp phi :=
-      Bimodal.Theorems.Propositional.double_negation _
+      FormalSystem.Theorems.Propositional.double_negation _
     have h_dne3_nec : [] ⊢ (phi.neg.neg.imp phi).all_future :=
-      Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dne3_base
+      FormalSystem.ProofSystem.DerivationTree.temporal_necessitation _ h_dne3_base
     have h_dne3_bx3 : [] ⊢ (phi.neg.neg.imp phi).all_future.imp
         ((Formula.untl phi.neg.neg Formula.top).imp (Formula.untl phi Formula.top)) :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _
-        (Bimodal.ProofSystem.Axiom.right_mono_until phi.neg.neg phi Formula.top) trivial
+      FormalSystem.ProofSystem.DerivationTree.axiom [] _
+        (FormalSystem.ProofSystem.Axiom.right_mono_until phi.neg.neg phi Formula.top) trivial
     have h_F_dne3 : [] ⊢ (Formula.some_future phi.neg.neg).imp (Formula.some_future phi) :=
-      Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne3_bx3 h_dne3_nec
+      FormalSystem.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne3_bx3 h_dne3_nec
     -- Lift ⊢ F(¬¬φ) → F(φ) through outer F via BX3:
     have h_lift_nec : [] ⊢ ((Formula.some_future phi.neg.neg).imp
         (Formula.some_future phi)).all_future :=
-      Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_F_dne3
+      FormalSystem.ProofSystem.DerivationTree.temporal_necessitation _ h_F_dne3
     have h_lift_bx3 : [] ⊢ ((Formula.some_future phi.neg.neg).imp
         (Formula.some_future phi)).all_future.imp
         ((Formula.untl (Formula.some_future phi.neg.neg) Formula.top).imp
          (Formula.untl (Formula.some_future phi) Formula.top)) :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _
-        (Bimodal.ProofSystem.Axiom.right_mono_until
+      FormalSystem.ProofSystem.DerivationTree.axiom [] _
+        (FormalSystem.ProofSystem.Axiom.right_mono_until
           (Formula.some_future phi.neg.neg) (Formula.some_future phi) Formula.top) trivial
     have h_FF_lift : [] ⊢ (Formula.some_future (Formula.some_future phi.neg.neg)).imp
         (Formula.some_future (Formula.some_future phi)) :=
-      Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_lift_bx3 h_lift_nec
+      FormalSystem.ProofSystem.DerivationTree.modus_ponens [] _ _ h_lift_bx3 h_lift_nec
     have h_FF_phi : Formula.some_future (Formula.some_future phi) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_FF_lift) h_FF_negneg
     -- Contradiction: FF(φ) ∈ M and ¬FF(φ) ∈ M
@@ -327,54 +327,54 @@ lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula)
     -- Apply DNE to get: some_past (all_past phi.neg).neg ∈ M, i.e., P(¬H(¬φ)) ∈ M
     have h_dne1 : [] ⊢ (Formula.all_past (Formula.all_past phi.neg)).neg.imp
         (Formula.some_past (Formula.all_past phi.neg).neg) :=
-      Bimodal.Theorems.Propositional.double_negation _
+      FormalSystem.Theorems.Propositional.double_negation _
     have h_P_neg_H : Formula.some_past (Formula.all_past phi.neg).neg ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne1) h_neg_goal
     -- (all_past phi.neg).neg = (some_past phi.neg.neg).neg.neg (by def of all_past)
     -- Lift DNE through P via BX3' (right_mono_since):
     have h_dne2_base : [] ⊢ (Formula.some_past phi.neg.neg).neg.neg.imp
         (Formula.some_past phi.neg.neg) :=
-      Bimodal.Theorems.Propositional.double_negation _
+      FormalSystem.Theorems.Propositional.double_negation _
     have h_dne2_nec : [] ⊢ ((Formula.some_past phi.neg.neg).neg.neg.imp
         (Formula.some_past phi.neg.neg)).all_past :=
-      Bimodal.Theorems.past_necessitation _ h_dne2_base
+      FormalSystem.Theorems.past_necessitation _ h_dne2_base
     have h_dne2_bx3 : [] ⊢ ((Formula.some_past phi.neg.neg).neg.neg.imp
         (Formula.some_past phi.neg.neg)).all_past.imp
         ((Formula.snce (Formula.some_past phi.neg.neg).neg.neg Formula.top).imp
          (Formula.snce (Formula.some_past phi.neg.neg) Formula.top)) :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _
-        (Bimodal.ProofSystem.Axiom.right_mono_since
+      FormalSystem.ProofSystem.DerivationTree.axiom [] _
+        (FormalSystem.ProofSystem.Axiom.right_mono_since
           (Formula.some_past phi.neg.neg).neg.neg
           (Formula.some_past phi.neg.neg) Formula.top) trivial
     have h_P_dne2 : [] ⊢ (Formula.some_past (Formula.some_past phi.neg.neg).neg.neg).imp
         (Formula.some_past (Formula.some_past phi.neg.neg)) :=
-      Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne2_bx3 h_dne2_nec
+      FormalSystem.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne2_bx3 h_dne2_nec
     have h_PP_negneg : Formula.some_past (Formula.some_past phi.neg.neg) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_P_dne2) h_P_neg_H
     -- PP(¬¬φ) ∈ M. Derive PP(φ) via BX3'+DNE on inner P.
     have h_dne3_base : [] ⊢ phi.neg.neg.imp phi :=
-      Bimodal.Theorems.Propositional.double_negation _
+      FormalSystem.Theorems.Propositional.double_negation _
     have h_dne3_nec : [] ⊢ (phi.neg.neg.imp phi).all_past :=
-      Bimodal.Theorems.past_necessitation _ h_dne3_base
+      FormalSystem.Theorems.past_necessitation _ h_dne3_base
     have h_dne3_bx3 : [] ⊢ (phi.neg.neg.imp phi).all_past.imp
         ((Formula.snce phi.neg.neg Formula.top).imp (Formula.snce phi Formula.top)) :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _
-        (Bimodal.ProofSystem.Axiom.right_mono_since phi.neg.neg phi Formula.top) trivial
+      FormalSystem.ProofSystem.DerivationTree.axiom [] _
+        (FormalSystem.ProofSystem.Axiom.right_mono_since phi.neg.neg phi Formula.top) trivial
     have h_P_dne3 : [] ⊢ (Formula.some_past phi.neg.neg).imp (Formula.some_past phi) :=
-      Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne3_bx3 h_dne3_nec
+      FormalSystem.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne3_bx3 h_dne3_nec
     -- Lift P(¬¬φ) → P(φ) through outer P via BX3':
     have h_lift_nec : [] ⊢ ((Formula.some_past phi.neg.neg).imp (Formula.some_past phi)).all_past :=
-      Bimodal.Theorems.past_necessitation _ h_P_dne3
+      FormalSystem.Theorems.past_necessitation _ h_P_dne3
     have h_lift_bx3 : [] ⊢ ((Formula.some_past phi.neg.neg).imp
         (Formula.some_past phi)).all_past.imp
         ((Formula.snce (Formula.some_past phi.neg.neg) Formula.top).imp
          (Formula.snce (Formula.some_past phi) Formula.top)) :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _
-        (Bimodal.ProofSystem.Axiom.right_mono_since
+      FormalSystem.ProofSystem.DerivationTree.axiom [] _
+        (FormalSystem.ProofSystem.Axiom.right_mono_since
           (Formula.some_past phi.neg.neg) (Formula.some_past phi) Formula.top) trivial
     have h_PP_lift : [] ⊢ (Formula.some_past (Formula.some_past phi.neg.neg)).imp
         (Formula.some_past (Formula.some_past phi)) :=
-      Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_lift_bx3 h_lift_nec
+      FormalSystem.ProofSystem.DerivationTree.modus_ponens [] _ _ h_lift_bx3 h_lift_nec
     have h_PP_phi : Formula.some_past (Formula.some_past phi) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_PP_lift) h_PP_negneg
     -- Contradiction: PP(φ) ∈ M and ¬PP(φ) ∈ M
@@ -550,4 +550,4 @@ theorem single_step_forcing_past
     exact absurd h_in_p_content_u h_P_not_u
 
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

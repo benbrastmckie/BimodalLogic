@@ -32,13 +32,13 @@ with the defect-discharge property for Until/Since formulas.
 - Reynolds 1996: Formal treatment of quasimodel chains
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Quasimodel
+namespace FormalSystem.Metalogic.BXCanonical.Quasimodel
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.BXCanonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.BXCanonical
 
 /-! ## One-Step Relation -/
 
@@ -857,4 +857,4 @@ theorem quasimodel_chain_exists
       c.head = h0 ∧ ψ ∈ c.last.formulas ∧ ChainWitnessed c :=
   hintikka_chain_exists oracle h0 w0 h0_sub h_target
 
-end Bimodal.Metalogic.BXCanonical.Quasimodel
+end FormalSystem.Metalogic.BXCanonical.Quasimodel

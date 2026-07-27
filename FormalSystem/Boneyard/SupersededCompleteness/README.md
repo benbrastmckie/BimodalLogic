@@ -6,7 +6,7 @@
 
 ## Why Archived
 
-The file had **zero live importers**. The only `import Bimodal.Metalogic.Completeness`
+The file had **zero live importers**. The only `import FormalSystem.Metalogic.Completeness`
 line anywhere in the repository came from another Boneyard file, so the module sat
 outside every Lake target's import closure and `lake build` never compiled it — while
 both `Metalogic/README.md` and the `Metalogic.lean` module docstring continued to
@@ -14,7 +14,7 @@ document it as live. That combination (unreachable code documented as live) is t
 specific defect this archival resolves.
 
 It did in fact still compile when archived — verified with `lake build
-Bimodal.Metalogic.Completeness` immediately before the move. That fact is recorded
+FormalSystem.Metalogic.Completeness` immediately before the move. That fact is recorded
 here because it is the only place it survives: the file is now inert, so nothing
 re-checks it, and a future reader deciding whether to revive it should know it was
 archived for being unreferenced, not for being broken.

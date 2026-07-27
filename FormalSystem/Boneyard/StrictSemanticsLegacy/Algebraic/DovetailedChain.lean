@@ -79,19 +79,19 @@ All 6 sorries in this module are annotated as `DEPRECATED` and will not be resol
 New development should use the BXCanonical path for the completeness proof pipeline.
 -/
 
-namespace Bimodal.Metalogic.Algebraic.DovetailedChain
+namespace FormalSystem.Metalogic.Algebraic.DovetailedChain
 
 open Classical
-open Bimodal.Syntax Bimodal.ProofSystem
-open Bimodal.Metalogic.Algebraic.UltrafilterChain
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Syntax FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Algebraic.UltrafilterChain
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
 
 /-- Helper: Int.negSucc is monotone-reversing on ≤. -/
 private theorem negSucc_le_negSucc_of_le {a b : Nat} (h : a ≤ b) :
     Int.negSucc b ≤ Int.negSucc a :=
   Int.neg_le_neg (Int.ofNat_le.mpr (Nat.succ_le_succ h))
-open Bimodal.Metalogic.Bundle
+open FormalSystem.Metalogic.Bundle
 
 /-!
 ## Phase 1: Forward Dovetailed Chain
@@ -582,7 +582,7 @@ theorem F_implies_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M
 /-- Conjunction introduction in MCS. -/
 private theorem mcs_and_intro (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (A B : Formula) (h_A : A ∈ M) (h_B : B ∈ M) : A.and B ∈ M := by
-  have h_pair := Bimodal.Theorems.Combinators.pairing A B
+  have h_pair := FormalSystem.Theorems.Combinators.pairing A B
   have h1 := SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_pair) h_A
   exact SetMaximalConsistent.implication_property h_mcs h1 h_B
@@ -591,7 +591,7 @@ private theorem mcs_and_intro (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 private noncomputable def premise2_deriv :
     [] ⊢ ((Formula.neg Formula.bot).and Formula.bot).imp (Formula.bot.all_future) := by
   apply deduction_theorem
-  have h_rce := Bimodal.Theorems.Propositional.rce (Formula.neg Formula.bot) Formula.bot
+  have h_rce := FormalSystem.Theorems.Propositional.rce (Formula.neg Formula.bot) Formula.bot
   have h_efq := DerivationTree.axiom [(Formula.neg Formula.bot).and Formula.bot] _
     (Axiom.ex_falso (Formula.bot.all_future))
   exact DerivationTree.modus_ponens _ _ _ h_efq h_rce
@@ -606,7 +606,7 @@ Contrapositive: `(top U psi) → F(psi)`.
 theorem until_implies_F_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (psi : Formula) (h_U : Formula.untl (Formula.neg Formula.bot) psi ∈ M) :
     Formula.some_future psi ∈ M := by
-  have h_thm := Bimodal.Theorems.TemporalDerived.until_implies_some_future
+  have h_thm := FormalSystem.Theorems.TemporalDerived.until_implies_some_future
     (Formula.neg Formula.bot) psi
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_thm) h_U
 
@@ -902,7 +902,7 @@ theorem backward_dovetailed_G_step (M_0 : Set Formula) (h_mcs_0 : SetMaximalCons
   -- G(G(phi)) ∈ chain(n+1) by temp_4 for G
   have h_GG : Formula.all_future (Formula.all_future phi) ∈ backward_dovetailed M_0 h_mcs_0 (n + 1) :=
     SetMaximalConsistent.implication_property h_mcs_n1
-      (theorem_in_mcs h_mcs_n1 (Bimodal.Theorems.TemporalDerived.temp_4_derived phi)) h_G
+      (theorem_in_mcs h_mcs_n1 (FormalSystem.Theorems.TemporalDerived.temp_4_derived phi)) h_G
   -- G(phi) ∈ g_content(chain(n+1))
   have h_Gphi_g : Formula.all_future phi ∈ g_content (backward_dovetailed M_0 h_mcs_0 (n + 1)) := h_GG
   -- G(phi) ∈ chain(n) by duality
@@ -984,7 +984,7 @@ private noncomputable def past_nec (φ : Formula) (d : DerivationTree [] φ) :
 private noncomputable def premise2_deriv_past :
     [] ⊢ ((Formula.neg Formula.bot).and Formula.bot).imp (Formula.bot.all_past) := by
   apply deduction_theorem
-  have h_rce := Bimodal.Theorems.Propositional.rce (Formula.neg Formula.bot) Formula.bot
+  have h_rce := FormalSystem.Theorems.Propositional.rce (Formula.neg Formula.bot) Formula.bot
   have h_efq := DerivationTree.axiom [(Formula.neg Formula.bot).and Formula.bot] _
     (Axiom.ex_falso (Formula.bot.all_past))
   exact DerivationTree.modus_ponens _ _ _ h_efq h_rce
@@ -999,7 +999,7 @@ Contrapositive: `(top S psi) → P(psi)`.
 theorem since_implies_P_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (psi : Formula) (h_S : Formula.snce (Formula.neg Formula.bot) psi ∈ M) :
     Formula.some_past psi ∈ M := by
-  have h_thm := Bimodal.Theorems.TemporalDerived.since_implies_some_past
+  have h_thm := FormalSystem.Theorems.TemporalDerived.since_implies_some_past
     (Formula.neg Formula.bot) psi
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_thm) h_S
 
@@ -1459,4 +1459,4 @@ noncomputable def construct_dovetailed_bfmcs_bundle (M0 : Set Formula) (h_mcs : 
   eval_family := DovetailedFMCS M0 h_mcs
   eval_family_mem := eval_family_mem_dovetailedBoxClassFamilies M0 h_mcs
 
-end Bimodal.Metalogic.Algebraic.DovetailedChain
+end FormalSystem.Metalogic.Algebraic.DovetailedChain

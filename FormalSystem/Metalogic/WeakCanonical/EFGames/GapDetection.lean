@@ -12,9 +12,9 @@ import FormalSystem.Metalogic.WeakCanonical.EFGames.TypeFormulas
 Gap detection formulas and Lemma 9 (both directions): the core EF game characterization.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Gap Detection Formulas (GHR93 Definition 8.5)
 
@@ -5087,4 +5087,4 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           (hB_mu (extendPoint v) hvt₁ hγv ⟨v, rfl⟩)
 
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

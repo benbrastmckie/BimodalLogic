@@ -38,10 +38,10 @@ The disjunction covers all models because the three cases are exhaustive.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Model-Independent Lemma 5.1: neg_interval_formula_indep
 
@@ -377,7 +377,7 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
 -- both irrelevant: neither tests whether a statement says anything, and a vacuous statement
 -- passes both trivially. `Prop43.lean:120-129` independently recorded this same vacuity —
 -- correctly, and before the fallback above was adopted. It went unread. This file is in
--- `Boneyard/`, which is NOT reachable from `Theories/Bimodal.lean` and therefore never
+-- `Boneyard/`, which is NOT reachable from `FormalSystem.lean` and therefore never
 -- compiles; that is why the guard lives in the live tree instead of here.
 --
 -- The model-INDEPENDENT backward gap dismissed above as a "bounded follow-up item" is in fact
@@ -385,4 +385,4 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
 -- it). Nothing on the negation path is discharged. `neg_2var_vec_ea_indep` (:315) has the
 -- contentful shape structurally, and its forward direction (`_correct`, :319) is proved.
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -30,9 +30,9 @@ formula from the original language, enabling the standard Goldblatt/BdRV naming 
 
 #exit
 
-namespace Bimodal.Metalogic.ConservativeExtension
+namespace FormalSystem.Metalogic.ConservativeExtension
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- Extended atom type: original Atom atoms plus one fresh Unit atom. -/
 abbrev ExtAtom := Atom ⊕ Unit
@@ -354,4 +354,4 @@ theorem fresh_not_in_embedded_set_atoms (S : Set Formula) (ψ : ExtFormula) (h :
   obtain ⟨φ, _, rfl⟩ := h
   exact fresh_not_in_embedFormula_atoms φ
 
-end Bimodal.Metalogic.ConservativeExtension
+end FormalSystem.Metalogic.ConservativeExtension

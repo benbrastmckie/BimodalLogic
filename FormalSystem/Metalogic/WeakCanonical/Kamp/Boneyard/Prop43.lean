@@ -36,11 +36,11 @@ the Phase 4 plan: faithful assets land off-path before the Phase 5 `:391` rewire
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct)
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct)
 
 /-! ## Constant-true and constant-false VVecEA_m -/
 
@@ -193,4 +193,4 @@ Lemma 7.6 adjacency) is viable WITHOUT the blocked uniform machinery — the uni
 stay documented here as future work only.
 -/
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -138,8 +138,8 @@ Any derivable formula is valid in all models (standard or BFMCS).
 ### Import for Completeness Results
 
 ```lean
-import Bimodal.Metalogic.Bundle.Construction
-import Bimodal.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Metalogic.Bundle.Construction
+import FormalSystem.Metalogic.Bundle.CanonicalFrame
 
 -- Main infrastructure for BFMCS completeness
 ```
@@ -147,9 +147,9 @@ import Bimodal.Metalogic.Bundle.CanonicalFrame
 ### Import for BFMCS Infrastructure
 
 ```lean
-import Bimodal.Metalogic.Bundle.BFMCS
-import Bimodal.Metalogic.Bundle.FMCS
-import Bimodal.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Metalogic.Bundle.BFMCS
+import FormalSystem.Metalogic.Bundle.FMCS
+import FormalSystem.Metalogic.Bundle.CanonicalFrame
 
 -- For working with BFMCS structures directly
 ```

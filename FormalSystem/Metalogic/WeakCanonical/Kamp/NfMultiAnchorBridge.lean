@@ -53,7 +53,7 @@ import Mathlib.Data.List.Permutation
 -- reasoning as the Prop42Vacuity edge below: an unreachable target protects and records
 -- nothing. Cycle-free: Prop42Contentful imports only `...Kamp.VecEAFormula`.
 -- NOTE: `import ...Kamp.Prop42Vacuity` lands the import edge that makes the Prop 4.2 vacuity
--- guard REACHABLE from `Theories/Bimodal.lean`, so CI compiles it. This edge is the whole
+-- guard REACHABLE from `FormalSystem.lean`, so CI compiles it. This edge is the whole
 -- point of that file: a guard sitting in an unreachable directory protects nothing (that is
 -- precisely how the same finding, recorded at `Boneyard/NegationIndep.lean:357-364`, went
 -- unread). Prop42Vacuity proves that `neg_2var_vec_ea`'s conclusion — re-exported by this

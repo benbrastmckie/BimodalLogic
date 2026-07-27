@@ -31,12 +31,12 @@ discrete infrastructure. Dense FMP can proceed independently.
 
 #exit
 
-namespace Bimodal.Metalogic.Decidability.FMP
+namespace FormalSystem.Metalogic.Decidability.FMP
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 /-!
 ## Dense Frame Preservation
@@ -113,4 +113,4 @@ connecting to semantic validity, which is handled separately by
 the completeness theorem infrastructure.
 -/
 
-end Bimodal.Metalogic.Decidability.FMP
+end FormalSystem.Metalogic.Decidability.FMP

@@ -6,10 +6,10 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.OnBuilder
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! # Corollary 5.4 mirrors
 
@@ -861,4 +861,4 @@ theorem negBoundedLeftFix_iff {sig : MonadicSignature}
       exact ⟨d, List.mem_cons_of_mem _ hmem, hh⟩
 
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

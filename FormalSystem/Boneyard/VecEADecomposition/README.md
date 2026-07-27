@@ -1,7 +1,7 @@
 # VecEADecomposition (Archived)
 
 **Archived**: Task 301 (completeness cleanup)
-**Original location**: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean`
+**Original location**: `FormalSystem/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean`
 
 Syntactic VBracketFormula negation and Prop 4.3 support. Quarantined as dead code
 by task 273 (plan v23). The two remaining sorries (`neg_bracket_syn_iff` soundness

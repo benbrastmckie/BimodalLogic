@@ -11,11 +11,11 @@ import Lean
 
 This leaf module declares the `@[tm_lemma]` label attribute used by the
 `modal_search` family of tactics to enumerate derived theorems for
-backward chaining (see `Bimodal.Automation.Tactics.Helpers.tryLemmaMatch`).
+backward chaining (see `FormalSystem.Automation.Tactics.Helpers.tryLemmaMatch`).
 
 **Import discipline**: this module imports ONLY `Lean`. Theorem modules
-under `Bimodal.Theorems.*` import this module to tag their declarations,
-while `Bimodal.Automation.Tactics.*` (which imports `Bimodal.Theorems.*`)
+under `FormalSystem.Theorems.*` import this module to tag their declarations,
+while `FormalSystem.Automation.Tactics.*` (which imports `FormalSystem.Theorems.*`)
 reads the database via `Lean.labelled `tm_lemma`. Keeping this module a
 leaf avoids the `Theorems -> Automation -> Theorems` import cycle.
 
@@ -35,7 +35,7 @@ Never tag:
   `tryModalK`/`tryTemporalK` (duplicative search branches).
 -/
 
-namespace Bimodal.Automation.LemmaDB
+namespace FormalSystem.Automation.LemmaDB
 
 /--
 Declarations labelled `@[tm_lemma]` are enumerated by `modal_search`'s
@@ -44,4 +44,4 @@ docstring for the tagging policy.
 -/
 register_label_attr tm_lemma
 
-end Bimodal.Automation.LemmaDB
+end FormalSystem.Automation.LemmaDB

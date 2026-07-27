@@ -42,11 +42,11 @@ only monotonicity remains valid (`H_monotone` below; the sorried `G_monotone`
 was archived to `Boneyard/SorriedDeclExcisions/AlgebraicGQuotChain.lean`).
 -/
 
-namespace Bimodal.Metalogic.Algebraic.InteriorOperators
+namespace FormalSystem.Metalogic.Algebraic.InteriorOperators
 
-open Bimodal.Syntax Bimodal.ProofSystem
-open Bimodal.Metalogic.Algebraic.LindenbaumQuotient
-open Bimodal.Metalogic.Algebraic.BooleanStructure
+open FormalSystem.Syntax FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
+open FormalSystem.Metalogic.Algebraic.BooleanStructure
 
 /-!
 ## Interior Operator Definition
@@ -84,7 +84,7 @@ theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : H_quot a ≤ H_quot b :
   change Derives φ.all_past ψ.all_past
   have h' : Derives φ ψ := h
   obtain ⟨d⟩ := h'
-  exact ⟨Bimodal.Theorems.Perpetuity.past_mono d⟩
+  exact ⟨FormalSystem.Theorems.Perpetuity.past_mono d⟩
 
 /-!
 ## Box as Interior Operator
@@ -173,4 +173,4 @@ But they fail:
 Thus, `G_interior` and `H_interior` instances are not defined under strict semantics.
 -/
 
-end Bimodal.Metalogic.Algebraic.InteriorOperators
+end FormalSystem.Metalogic.Algebraic.InteriorOperators

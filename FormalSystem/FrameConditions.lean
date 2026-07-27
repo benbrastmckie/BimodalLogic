@@ -43,9 +43,9 @@ under `Metalogic/`, and this directory consumes it rather than providing it.
 ## Position in the Layering
 
 This directory sits strictly ABOVE `Metalogic/`, on measured evidence: zero files
-under `Metalogic/` import `Bimodal.FrameConditions`, while `FrameConditions/`
-imports `Bimodal.Metalogic.Soundness`, `Bimodal.ProofSystem.Axioms` and
-`Bimodal.Semantics.Validity`. Merging it into `Metalogic/` would invert that
+under `Metalogic/` import `FormalSystem.FrameConditions`, while `FrameConditions/`
+imports `FormalSystem.Metalogic.Soundness`, `FormalSystem.ProofSystem.Axioms` and
+`FormalSystem.Semantics.Validity`. Merging it into `Metalogic/` would invert that
 direction and manufacture a new cycle. See `FrameConditions/README.md`.
 
 ## Usage
@@ -54,7 +54,7 @@ direction and manufacture a new cycle. See `FrameConditions/README.md`.
 import FormalSystem.FrameConditions
 
 -- Use parameterized validity
-open Bimodal.FrameConditions
+open FormalSystem.FrameConditions
 
 -- Check if a formula is valid over discrete frames
 example : valid_over Int φ ↔ ... := ...

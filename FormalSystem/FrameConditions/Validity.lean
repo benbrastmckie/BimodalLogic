@@ -23,7 +23,7 @@ different frame classes using the typeclass architecture.
 ## Equivalence Lemmas
 
 This module proves equivalence between the new parameterized validity
-and the existing definitions in `Bimodal.Semantics.Validity`:
+and the existing definitions in `FormalSystem.Semantics.Validity`:
 - `valid_over_iff_valid`: `valid_over D φ ↔ valid φ` (when D satisfies minimal constraints)
 - `valid_dense_fc_iff_valid_dense`: Connection to existing `valid_dense`
 - `valid_discrete_fc_iff_valid_discrete`: Connection to existing `valid_discrete`
@@ -39,13 +39,13 @@ version allows:
 
 ## References
 
-- `Bimodal.Semantics.Validity`: Original validity definitions
+- `FormalSystem.Semantics.Validity`: Original validity definitions
 -/
 
-namespace Bimodal.FrameConditions
+namespace FormalSystem.FrameConditions
 
-open Bimodal.Syntax
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.Semantics
 
 /-! ## Parameterized Validity -/
 
@@ -53,7 +53,7 @@ open Bimodal.Semantics
 A formula is valid over temporal domain D if it is true in all models
 at all times in all histories within any shift-closed set of histories.
 
-This is the parameterized version of `Bimodal.Semantics.valid`, fixed to
+This is the parameterized version of `FormalSystem.Semantics.valid`, fixed to
 a specific temporal type D rather than quantifying over all types.
 -/
 def valid_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -207,4 +207,4 @@ theorem valid_over_Int_of_valid_discrete {φ : Formula} (h : valid_discrete φ) 
   intro F M Omega h_sc τ h_mem t
   exact h Int F M Omega h_sc τ h_mem t
 
-end Bimodal.FrameConditions
+end FormalSystem.FrameConditions

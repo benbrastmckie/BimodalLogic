@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.Tactics.Commands
+import FormalSystem.Automation.Tactics.Commands
 
 /-!
 # Simple Tests for Automation Tactics
@@ -14,7 +14,7 @@ Basic compilation tests to verify tactics type-check correctly.
 
 namespace BimodalTest.Automation.Simple
 
-open Bimodal.Syntax Bimodal.ProofSystem
+open FormalSystem.Syntax FormalSystem.ProofSystem
 
 -- NOTE (Task 365): quarantined — the `apply_axiom`, `modal_t`, and `assumption_search`
 -- tactic macros were removed in a prior automation refactor. The current search tactics are
@@ -25,9 +25,9 @@ open Bimodal.Syntax Bimodal.ProofSystem
 -- #check (@assumption_search : Lean.ParserDescr)
 
 -- Test helper functions
-#check Bimodal.Automation.is_box_formula
-#check Bimodal.Automation.is_future_formula
-#check Bimodal.Automation.extract_from_box
-#check Bimodal.Automation.extract_from_future
+#check FormalSystem.Automation.is_box_formula
+#check FormalSystem.Automation.is_future_formula
+#check FormalSystem.Automation.extract_from_box
+#check FormalSystem.Automation.extract_from_future
 
 end BimodalTest.Automation.Simple

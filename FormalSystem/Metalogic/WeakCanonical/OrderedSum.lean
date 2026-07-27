@@ -26,7 +26,7 @@ building on definitions from NEquivalence.lean.
 - Reynolds 1994, Lemma 16 (uses Doets 1.4/1.5):
 `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Doets Lemma 1.4 -/
 
@@ -46,7 +46,7 @@ theorem doets_lemma_1_4 (sig : MonadicSignature) [Fintype sig.preds] [DecidableE
   KEquivalenceFramework.sum_preservation k I m m' h_equiv
 
 -- NOTE: `finite_structures_k_equiv_to_Z_interval` and `finite_structures_k_equiv_for_all_k`
--- were archived to Theories/Bimodal/Boneyard/VacuousKEquiv.lean. They proved only
+-- were archived to FormalSystem/Boneyard/VacuousKEquiv.lean. They proved only
 -- reflexivity (⟨M, rfl⟩) rather than genuine Z-interval equivalence.
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

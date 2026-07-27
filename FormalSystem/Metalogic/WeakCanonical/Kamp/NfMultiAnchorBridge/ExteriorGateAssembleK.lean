@@ -42,11 +42,11 @@ This is a purely additive leaf. Every composition input is landed sorry-free:
 site-certificate reshape belong to the KampPrior provider instantiation, which also discharges the
 threaded `hreal`/`hexcl`. No interior-gate mathematics. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 open private k1v_reconstruct_nf3 from
   FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
@@ -788,4 +788,4 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
       · -- hslice: the carried Future slice-honesty obligation.
         exact hsliceFut w hxw hwt h
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -12,11 +12,11 @@ import FormalSystem.Metalogic.WeakCanonical.TruthLemma
 Proves key frame properties that hold in the canonical model.
 All proofs rely on `theorem_in_mcs` — axiom instances are theorems, hence in every MCS.
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
 
 /-! ## Z1 in the Canonical Frame -/
 
@@ -64,4 +64,4 @@ theorem serial_past_in_frame (x : ReflCanDomain) :
         x.val :=
   theorem_in_mcs x.property (DerivationTree.axiom [] _ Axiom.serial_past trivial)
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

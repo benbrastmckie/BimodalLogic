@@ -49,10 +49,10 @@ Phases 8-11) and the `aggPop1` conjunction fold (Phase 16) require.
   Lemma 3.4 (p. 4).
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Segment gluing -/
 
@@ -581,4 +581,4 @@ theorem VVecEA2.trivialTrue_conjFull_iff {sig : MonadicSignature}
   rw [VVecEA2.conjFull_iff]
   exact and_iff_right (trivialTrue_holds M atomMap z0 z1)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

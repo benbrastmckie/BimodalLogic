@@ -38,14 +38,14 @@ at each step, selecting which obligation to resolve via round-robin scheduling.
 
 #exit
 
-namespace Bimodal.Metalogic.Bundle.TargetedChain
+namespace FormalSystem.Metalogic.Bundle.TargetedChain
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
 open Classical
-open Bimodal.Metalogic.Algebraic.UltrafilterChain
+open FormalSystem.Metalogic.Algebraic.UltrafilterChain
 
 -- Deep API drift: contains_F_top/contains_P_top removed from SetMaximalConsistent.
 
@@ -416,4 +416,4 @@ theorem targeted_fam_H_step
 -- ARCHIVED to Boneyard/TAxiomDependentCode/TargetedChainArchive.lean
 -- All depended on T-axiom (temp_t_future/temp_t_past) which is not valid under strict semantics.
 
-end Bimodal.Metalogic.Bundle.TargetedChain
+end FormalSystem.Metalogic.Bundle.TargetedChain

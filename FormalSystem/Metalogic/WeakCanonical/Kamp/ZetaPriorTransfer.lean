@@ -48,10 +48,10 @@ landed `prior_hasAttainedINF`/`prior_hasAttainedSUP` (`PriorINF.lean`).
 - `ESigmaExpansion.lean`: `canonExpand`, `oldPred`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula)
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## 1. Transfer of the semantic Prior axioms -/
 
@@ -130,4 +130,4 @@ theorem canonExpand_hasAttainedSUP {sig : MonadicSignature} {F : Finset Formula}
   prior_hasAttainedSUP (canonExpand sig F M sat) atomMap
     (canonExpand_semantic_prior_SZ M sat atomMap g hMap hSZ)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -27,10 +27,10 @@ decidability procedures.
 
 ## References
 
-- Migrated from `Bimodal.Metalogic.Decidability.SignedFormula` for better modularity
+- Migrated from `FormalSystem.Metalogic.Decidability.SignedFormula` for better modularity
 -/
 
-namespace Bimodal.Syntax
+namespace FormalSystem.Syntax
 
 namespace Formula
 
@@ -232,4 +232,4 @@ theorem mem_subformulas_of_snce_right {ψ χ phi : Formula}
 
 end Formula
 
-end Bimodal.Syntax
+end FormalSystem.Syntax

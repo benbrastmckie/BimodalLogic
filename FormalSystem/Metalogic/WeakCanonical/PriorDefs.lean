@@ -18,9 +18,9 @@ Extracted from `PriorExpressiveness.lean` to break import cycles:
 needs to import `KampPrior.lean`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- Semantic Prior-UZ: every future occurrence of ψ has a first occurrence.
     If ψ holds somewhere above t, then there is a FIRST occurrence of ψ
@@ -44,4 +44,4 @@ abbrev semantic_prior_SZ {sig : MonadicSignature}
     ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
       ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

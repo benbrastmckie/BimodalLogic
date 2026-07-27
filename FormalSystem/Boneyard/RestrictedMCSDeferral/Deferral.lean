@@ -8,11 +8,11 @@ Do not import from live code.
 
 #exit
 
-namespace Bimodal.Metalogic.Core
+namespace FormalSystem.Metalogic.Core
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Bundle
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Bundle
 
 /-!
 ## Deferral-Restricted MCS
@@ -267,7 +267,7 @@ theorem deferral_restricted_mcs_double_neg_elim {phi : Formula} {M : Set Formula
     deduction_theorem Γ psi Formula.bot d_bot'
   -- We have neg(neg psi) in M, so from DNE: {neg(neg psi)} derives psi
   have d_dne : [] ⊢ (Formula.neg (Formula.neg psi)).imp psi :=
-    Bimodal.Theorems.Propositional.double_negation psi
+    FormalSystem.Theorems.Propositional.double_negation psi
   have d_dne_ctx : [Formula.neg (Formula.neg psi)] ⊢ (Formula.neg (Formula.neg psi)).imp psi :=
     DerivationTree.weakening [] [Formula.neg (Formula.neg psi)] _ d_dne (List.nil_subset _)
   have d_assumption : [Formula.neg (Formula.neg psi)] ⊢ Formula.neg (Formula.neg psi) :=
@@ -314,9 +314,9 @@ the unrestricted version fails.
 -/
 theorem p_step_blocking_restricted_subset (phi : Formula) (u : Set Formula)
     (h_mcs : DeferralRestrictedMCS phi u) :
-    Bimodal.Metalogic.Bundle.p_step_blocking_formulas_restricted phi u ⊆ u := by
+    FormalSystem.Metalogic.Bundle.p_step_blocking_formulas_restricted phi u ⊆ u := by
   intro chi h_block
-  rw [Bimodal.Metalogic.Bundle.mem_p_step_blocking_formulas_restricted_iff] at h_block
+  rw [FormalSystem.Metalogic.Bundle.mem_p_step_blocking_formulas_restricted_iff] at h_block
   obtain ⟨psi, h_P_in_dc, h_P_not_in, _, rfl⟩ := h_block
   -- Goal: H(neg psi) = Formula.all_past (Formula.neg psi) ∈ u
   -- Use the cases theorem to handle both closureWithNeg and P_top cases
@@ -385,16 +385,16 @@ theorem p_step_blocking_restricted_subset (phi : Formula) (u : Set Formula)
     deduction_theorem Δ _ Formula.bot d_bot'''
   -- Derive H(¬psi) from ¬P(psi): via contrapositive of ⊢ P(¬¬psi) → P(psi)
   -- ¬P(¬¬psi) = neg (snce (neg (neg psi)) top) = all_past (neg psi) = H(¬psi) definitionally
-  have h_dne : [] ⊢ psi.neg.neg.imp psi := Bimodal.Theorems.Propositional.double_negation psi
+  have h_dne : [] ⊢ psi.neg.neg.imp psi := FormalSystem.Theorems.Propositional.double_negation psi
   have h_H_dne : [] ⊢ (psi.neg.neg.imp psi).all_past :=
-    Bimodal.Theorems.past_necessitation _ h_dne
+    FormalSystem.Theorems.past_necessitation _ h_dne
   have h_bx3' : [] ⊢ (psi.neg.neg.imp psi).all_past.imp
       ((Formula.snce psi.neg.neg Formula.top).imp (Formula.snce psi Formula.top)) :=
     DerivationTree.axiom [] _ (Axiom.right_mono_since psi.neg.neg psi Formula.top) trivial
   have h_P_mono : [] ⊢ (Formula.some_past psi.neg.neg).imp (Formula.some_past psi) :=
     DerivationTree.modus_ponens [] _ _ h_bx3' h_H_dne
   have h_contra : [] ⊢ (Formula.some_past psi).neg.imp (Formula.some_past psi.neg.neg).neg :=
-    Bimodal.Theorems.Propositional.contraposition h_P_mono
+    FormalSystem.Theorems.Propositional.contraposition h_P_mono
   -- Γ ⊢ ¬P(psi), so Γ ⊢ ¬P(¬¬psi) = H(¬psi)
   have d_H : Γ ⊢ Formula.all_past (Formula.neg psi) :=
     DerivationTree.modus_ponens Γ _ _ (DerivationTree.weakening [] Γ _ h_contra (by intro; simp)) d_neg_P
@@ -741,7 +741,7 @@ theorem drm_G_neg_implies_not_F {phi : Formula} {M : Set Formula}
   -- ⊢ F(psi) → F(¬¬psi) (from DNI + BX3)
   -- G(¬psi) = ¬F(¬¬psi) (definitional: all_future X = neg (some_future (neg X)))
   -- So {F(psi), G(¬psi)} ⊢ ⊥ via modus ponens
-  have h_dni : [] ⊢ psi.imp psi.neg.neg := Bimodal.Theorems.Combinators.dni psi
+  have h_dni : [] ⊢ psi.imp psi.neg.neg := FormalSystem.Theorems.Combinators.dni psi
   have h_G_dni : [] ⊢ (psi.imp psi.neg.neg).all_future :=
     DerivationTree.temporal_necessitation _ h_dni
   have h_bx3 : [] ⊢ (psi.imp psi.neg.neg).all_future.imp
@@ -769,4 +769,4 @@ theorem drm_G_neg_implies_not_F {phi : Formula} {M : Set Formula}
     DerivationTree.modus_ponens L (Formula.some_future psi.neg.neg) Formula.bot d_G d_Fnn
   exact h_mcs.1.2 L h_L_sub ⟨d_bot⟩
 
-end Bimodal.Metalogic.Core
+end FormalSystem.Metalogic.Core

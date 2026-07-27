@@ -14,11 +14,11 @@ bits, the coincidence disjunct σ's CLOSED `zAtX1L` bit (Rabinovich Lemma 3.2(1)
 §5 meet-typed shared point, PDF p.5) — plus `kvE2_sepProjFresh_eval` and the
 disjunction-spike machinery. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -1235,4 +1235,4 @@ theorem kvE2_sepEpR_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds]
       exact kvE2_sepOwnerLit_zFutT4 charBase M atomMap σ a w x t hat hwt
         (hxw.trans hwt) hs hcb χ
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

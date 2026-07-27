@@ -39,11 +39,11 @@ The backward lemmas are proven by contraposition:
 - Used by BXCanonical/CanonicalModel.lean and BXCanonical/Chronicle/
 -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 variable {fc : FrameClass} {D : Type*} [Preorder D] [Zero D]
 
@@ -71,7 +71,7 @@ noncomputable def G_dne_theorem (phi : Formula) :
   have h_K : [] ⊢ (Formula.all_future ((Formula.neg (Formula.neg phi)).imp phi)).imp
                ((Formula.all_future (Formula.neg (Formula.neg phi))).imp
                    (Formula.all_future phi)) :=
-    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived (Formula.neg (Formula.neg phi)) phi
+    FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived (Formula.neg (Formula.neg phi)) phi
   exact DerivationTree.modus_ponens [] _ _ h_K h_G_dne
 
 /--
@@ -83,10 +83,10 @@ noncomputable def H_dne_theorem (phi : Formula) :
     [] ⊢ (Formula.all_past (Formula.neg (Formula.neg phi))).imp (Formula.all_past phi) := by
   have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dne_theorem phi
   have h_H_dne : [] ⊢ Formula.all_past ((Formula.neg (Formula.neg phi)).imp phi) :=
-    Bimodal.Theorems.past_necessitation _ h_dne
+    FormalSystem.Theorems.past_necessitation _ h_dne
   have h_K : [] ⊢ (Formula.all_past ((Formula.neg (Formula.neg phi)).imp phi)).imp
                ((Formula.all_past (Formula.neg (Formula.neg phi))).imp (Formula.all_past phi)) :=
-    Bimodal.Theorems.past_k_dist _ _
+    FormalSystem.Theorems.past_k_dist _ _
   exact DerivationTree.modus_ponens [] _ _ h_K h_H_dne
 
 /--
@@ -559,11 +559,11 @@ def BFMCS.restricted_forward_until_since_coherent (B : BFMCS (fc := fc) D) (root
     Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.untl φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
+      Formula.untl φ ψ ∈ FormalSystem.Syntax.subformulaClosure root →
       Formula.untl φ ψ ∈ fam.mcs t →
       ∃ s : D, t < s ∧ φ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → ψ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.snce φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
+      Formula.snce φ ψ ∈ FormalSystem.Syntax.subformulaClosure root →
       Formula.snce φ ψ ∈ fam.mcs t →
       ∃ s : D, s < t ∧ φ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → ψ ∈ fam.mcs r)
 
@@ -590,11 +590,11 @@ def BFMCS.restricted_backward_until_since_coherent (B : BFMCS (fc := fc) D) (roo
     Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.untl φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
+      Formula.untl φ ψ ∈ FormalSystem.Syntax.subformulaClosure root →
       (∃ s : D, t < s ∧ φ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → ψ ∈ fam.mcs r) →
       Formula.untl φ ψ ∈ fam.mcs t) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.snce φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
+      Formula.snce φ ψ ∈ FormalSystem.Syntax.subformulaClosure root →
       (∃ s : D, s < t ∧ φ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → ψ ∈ fam.mcs r) →
       Formula.snce φ ψ ∈ fam.mcs t)
 
@@ -642,4 +642,4 @@ theorem BFMCS.until_since_coherent_forward (B : BFMCS (fc := fc) D)
   obtain ⟨h_fwd_U, _, h_fwd_S, _⟩ := h_uc fam hfam
   exact ⟨h_fwd_U, h_fwd_S⟩
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

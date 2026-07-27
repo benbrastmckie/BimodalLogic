@@ -164,7 +164,7 @@ This is exactly what happens in task 192:
 
 ### Context
 
-**File**: `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean`
+**File**: `FormalSystem/Theorems/GeneralizedNecessitation.lean`
 
 **Errors**:
 ```

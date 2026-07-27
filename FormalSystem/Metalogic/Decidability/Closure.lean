@@ -35,11 +35,11 @@ axioms are valid in all models.
 * Gore, R. (1999). Tableau Methods for Modal and Temporal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace FormalSystem.Metalogic.Decidability
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation
 
 /-!
 ## Closure Reason Type
@@ -402,4 +402,4 @@ Count negated axiom instances in a branch.
 def countNegatedAxioms (b : Branch) : Nat :=
   b.filter (fun sf => sf.isNeg ∧ (matchAxiom sf.formula).isSome) |>.length
 
-end Bimodal.Metalogic.Decidability
+end FormalSystem.Metalogic.Decidability

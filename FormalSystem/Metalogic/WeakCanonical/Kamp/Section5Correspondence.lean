@@ -17,7 +17,7 @@ numbers. It was discoverable by `grep` for thirteen months and was nonetheless r
 scratch by successive agents, one of which marked six of these rows ABSENT in a research report
 while every one of them was present and sorry-free. This module exists so that the next reader
 finds the correspondence instead of re-deriving it, and it is CI-protected: it is reachable from
-`Theories/Bimodal.lean`, so the table below cannot rot without breaking the build.
+`FormalSystem.lean`, so the table below cannot rot without breaking the build.
 
 Cite Rabinovich by **PDF page only**:
 `~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
@@ -100,10 +100,10 @@ that the all-`⊤` term does **not** typecheck against `Prop42Contentful` — is
 this phase's handoff.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **Rabinovich's Proposition 4.2 (PDF p.6), at the attained carrier.**
 
@@ -132,4 +132,4 @@ theorem prop42_contentful_of_attained {sig : MonadicSignature}
     Prop42Contentful M atomMap v :=
   ⟨v.negFix, fun z0 z1 hlt => VVecEA2.negFix_iff M atomMap h_INF h_SUP v z0 z1 hlt⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

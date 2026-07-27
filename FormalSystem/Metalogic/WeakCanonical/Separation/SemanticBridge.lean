@@ -25,9 +25,9 @@ Connects `IntStructure`/`int_truth` (separation framework) with
 - GHR94 Chapter 10: Separation on integer time
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Construction -/
 
@@ -183,4 +183,4 @@ theorem int_equiv_implies_temporal_equiv_with_iso {sig : MonadicSignature}
   let Z : ZStructure sig := ⟨fun p z => M.interp p (iso.symm z)⟩
   exact int_equiv_implies_temporal_equiv_Z φ ψ h_equiv h_bf_φ h_bf_ψ Z atomMap (iso t)
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

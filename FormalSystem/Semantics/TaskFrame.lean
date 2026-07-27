@@ -68,7 +68,7 @@ This matches the paper's specification exactly and allows for various temporal s
 * JPL Paper app:TaskSemantics (def:frame, line 1835) - Formal task frame definition
 -/
 
-namespace Bimodal.Semantics
+namespace FormalSystem.Semantics
 
 /--
 Task frame for bimodal logic TM.
@@ -308,4 +308,4 @@ instance : Coe (FiniteTaskFrame D) (TaskFrame D) where
 
 end FiniteTaskFrame
 
-end Bimodal.Semantics
+end FormalSystem.Semantics

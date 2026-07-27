@@ -23,32 +23,32 @@ with linear temporal logic.
 
 ## Components
 
-- `Bimodal.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, all_past, all_future)
+- `FormalSystem.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, all_past, all_future)
   plus derived operators and context types
-- `Bimodal.ProofSystem`: Hilbert-style proof system with 21 axiom schemata (base/dense/discrete)
+- `FormalSystem.ProofSystem`: Hilbert-style proof system with 21 axiom schemata (base/dense/discrete)
 and 7 inference rules
-- `Bimodal.Semantics`: Task frame semantics with world histories, truth evaluation, and validity
-- `Bimodal.Metalogic`: Soundness, three completeness routes, and the tableau decision
+- `FormalSystem.Semantics`: Task frame semantics with world histories, truth evaluation, and validity
+- `FormalSystem.Metalogic`: Soundness, three completeness routes, and the tableau decision
   procedure. By far the largest component (210 live files); see `Metalogic/README.md` for
   the architecture map and the two-Boneyard counting caveat
-- `Bimodal.FrameConditions`: Typeclass-based frame condition architecture (4 modules)
+- `FormalSystem.FrameConditions`: Typeclass-based frame condition architecture (4 modules)
   - `LinearTemporalFrame`, `SerialFrame`, `DenseTemporalFrame`, `DiscreteTemporalFrame`
   - Parameterized validity and soundness, plus axiom compatibility typeclasses
   - Sits strictly above `Metalogic`, which it consumes; see `FrameConditions/README.md`
-- `Bimodal.Theorems`: Derived theorems (Combinators, Propositional, ModalS5, ModalS4,
+- `FormalSystem.Theorems`: Derived theorems (Combinators, Propositional, ModalS5, ModalS4,
   Perpetuity, GeneralizedNecessitation, TemporalDerived, ContextualProofs)
-- `Bimodal.Automation`: Proof tactics (modal_search, temporal_search), native proof search,
+- `FormalSystem.Automation`: Proof tactics (modal_search, temporal_search), native proof search,
   and the ML dataset-generation pipeline
-- `Bimodal.Examples`: Pedagogical examples and proof strategies
+- `FormalSystem.Examples`: Pedagogical examples and proof strategies
 
 ## Quick Start
 
 ```lean
 import FormalSystem
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation
 
 -- Define a formula
 def my_formula : Formula := Formula.box (Formula.atom_s "p")
@@ -58,7 +58,7 @@ example (p : String) : ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) :
   modal_search
 
 -- Use perpetuity principles
-open Bimodal.Theorems.Perpetuity
+open FormalSystem.Theorems.Perpetuity
 #check perpetuity_1  -- □φ → △φ
 ```
 
@@ -88,9 +88,9 @@ import FormalSystem.Theorems
 * [Examples.lean](Examples.lean) - Pedagogical examples
 -/
 
-namespace Bimodal
+namespace FormalSystem
 
 /-- Core layer version string for tracking releases and compatibility. -/
 def version : String := "0.1.0"
 
-end Bimodal
+end FormalSystem

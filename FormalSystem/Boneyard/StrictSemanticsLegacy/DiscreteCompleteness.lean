@@ -74,14 +74,14 @@ enabling the ℤ isomorphism via Mathlib's `orderIsoIntOfLinearSuccPredArch`.
 
 #exit
 
-namespace Bimodal.Metalogic.DiscreteCompleteness
+namespace FormalSystem.Metalogic.DiscreteCompleteness
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Bundle.Canonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Bundle.Canonical
 
 /-!
 ## Discrete Completeness Statement
@@ -242,4 +242,4 @@ This is reflected in the axioms:
 - DF (discreteness) is NOT valid on dense orders
 -/
 
-end Bimodal.Metalogic.DiscreteCompleteness
+end FormalSystem.Metalogic.DiscreteCompleteness

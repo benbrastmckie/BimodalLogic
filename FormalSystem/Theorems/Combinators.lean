@@ -64,10 +64,10 @@ This module depends only on:
 * [Axioms.lean](../ProofSystem/Axioms.lean) - Provides K and S axioms
 -/
 
-namespace Bimodal.Theorems.Combinators
+namespace FormalSystem.Theorems.Combinators
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## Helper Lemmas: Propositional Reasoning
@@ -666,4 +666,4 @@ def temp_future_derived {fc : FrameClass} (φ : Formula) :
   imp_trans m4 chain1
     -- □φ → G(□φ)
 
-end Bimodal.Theorems.Combinators
+end FormalSystem.Theorems.Combinators

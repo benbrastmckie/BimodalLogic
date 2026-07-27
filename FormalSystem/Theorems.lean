@@ -13,7 +13,7 @@ import FormalSystem.Theorems.ModalS4
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.GeneralizedNecessitation
 /-!
-# Bimodal.Theorems - Key Theorems
+# FormalSystem.Theorems - Key Theorems
 
 Aggregates all theorem modules for the TM bimodal logic system. Provides derived
 theorems ranging from fundamental propositional combinators through modal S4/S5
@@ -52,20 +52,20 @@ pairing, dni)
 import FormalSystem.Theorems
 
 -- Propositional combinators and theorems
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Propositional
 
 #check imp_trans    -- Transitivity of implication
 #check ecq          -- Ex Contradictione Quodlibet
 
 -- Modal S5 theorems
-open Bimodal.Theorems.ModalS5
+open FormalSystem.Theorems.ModalS5
 
 #check t_box_to_diamond  -- □A → ◇A
 #check box_contrapose    -- □(A → B) → □(¬B → ¬A)
 
 -- Perpetuity principles
-open Bimodal.Theorems.Perpetuity
+open FormalSystem.Theorems.Perpetuity
 
 #check perpetuity_1  -- □φ → △φ
 #check perpetuity_5  -- ◇▽φ → △◇φ

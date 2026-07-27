@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Theorems.ModalS4
+import FormalSystem.Theorems.ModalS4
 
 /-!
 # Modal S4 Theorems Tests
@@ -24,10 +24,10 @@ All tests are placeholders pending Phase 4 implementation.
 
 namespace BimodalTest.Theorems.ModalS4Test
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.ModalS4
-open Bimodal.Theorems.ModalS5 (iff)
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.ModalS4
+open FormalSystem.Theorems.ModalS5 (iff)
 
 /-!
 ## S4 Theorem Tests

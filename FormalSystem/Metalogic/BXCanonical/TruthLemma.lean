@@ -48,13 +48,13 @@ remaining sorries are in chain coherence proofs (RootScopedChain.lean, Canonical
 - Burgess 1984, Goldblatt 1992 (canonical model truth lemma)
 -/
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Semantics
 
 /-! ## MCS Truth Properties
 
@@ -181,7 +181,7 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
     -- 2. NEC+K: ⊢ □(¬¬φ) → □φ
     -- 3. Contrapositive: ⊢ ¬□φ → ¬□(¬¬φ) = ◇(¬φ)
     have h_dne : DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
-      Bimodal.Theorems.Propositional.double_negation φ
+      FormalSystem.Theorems.Propositional.double_negation φ
     -- NEC: □(¬¬φ → φ)
     have h_nec_dne : DerivationTree FrameClass.Base [] (Formula.box (φ.neg.neg.imp φ)) :=
       DerivationTree.necessitation _ h_dne
@@ -195,7 +195,7 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
     -- Contrapositive: ¬□φ → ¬□(¬¬φ) = ◇(¬φ)
     -- φ.box.neg → φ.neg.neg.box.neg
     have h_neg_box_to_dia : DerivationTree FrameClass.Base [] (φ.box.neg.imp φ.neg.neg.box.neg) :=
-      Bimodal.Theorems.Propositional.contraposition h_box_dne
+      FormalSystem.Theorems.Propositional.contraposition h_box_dne
     -- ¬□φ ∈ w
     have h_neg_box : (Formula.box φ).neg ∈ w.formulas := by
       cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.box φ) with
@@ -248,7 +248,7 @@ theorem F_from_witness {w v : BXPoint} {ψ : Formula}
     | inl h => exact absurd h h_not_F
     | inr h => exact h
   have h_G_neg_psi : ψ.neg.all_future ∈ w.formulas :=
-    Bimodal.Metalogic.Bundle.neg_some_future_to_all_future_neg w.is_mcs ψ h_neg_F
+    FormalSystem.Metalogic.Bundle.neg_some_future_to_all_future_neg w.is_mcs ψ h_neg_F
   -- G(¬ψ) ∈ w and bx_le w v: ¬ψ ∈ v
   have h_neg_psi_v : ψ.neg ∈ v.formulas := bx_G_forward h_wv h_G_neg_psi
   -- But ψ ∈ v and ¬ψ ∈ v contradicts consistency
@@ -269,7 +269,7 @@ theorem P_from_witness {w v : BXPoint} {ψ : Formula}
     | inl h => exact absurd h h_not_P
     | inr h => exact h
   have h_H_neg_psi : ψ.neg.all_past ∈ w.formulas :=
-    Bimodal.Metalogic.Bundle.neg_some_past_to_all_past_neg w.is_mcs ψ h_neg_P
+    FormalSystem.Metalogic.Bundle.neg_some_past_to_all_past_neg w.is_mcs ψ h_neg_P
   have h_neg_psi_v : ψ.neg ∈ v.formulas := bx_H_forward h_vw h_H_neg_psi
   exact set_consistent_not_both v.is_mcs.1 ψ h_ψv h_neg_psi_v
 
@@ -309,4 +309,4 @@ theorem since_forward_mcs (w : BXPoint) (φ ψ : Formula)
   · exact Or.inl h_φ
   · exact Or.inr (bx_since_eventuality_resolution w ψ φ h_since h_φ)
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

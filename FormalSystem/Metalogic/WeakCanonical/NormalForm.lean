@@ -47,7 +47,7 @@ The equivalence `normalForm_equiv_fin` provides the bijection between the induct
 - Doets 1987, Definition 1.6.1 (n-characteristics)
 - Design provenance: the concrete NormalForm-evaluation design (Doets Lemma 1.1 / `KType`)
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Atomic Propositions -/
 
@@ -870,4 +870,4 @@ theorem nf_to_sentence_correct {sig : MonadicSignature}
     eval M Fin.elim0 (nf_to_sentence nf) ↔ nf_eval_nf M k 0 Fin.elim0 nf :=
   nf_to_formula_correct M Fin.elim0 nf
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

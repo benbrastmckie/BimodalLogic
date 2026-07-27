@@ -19,7 +19,7 @@ whole chain was a dead closure carrying sorried gap-detection cases, with zero
 external call sites.
 
 This module is intentionally declaration-free. It is kept (with its import) so
-that existing imports of `Bimodal.Metalogic.WeakCanonical.Expressiveness.Theorem6`
+that existing imports of `FormalSystem.Metalogic.WeakCanonical.Expressiveness.Theorem6`
 continue to compile unchanged. The live discrete-path analogue is
 `ghr93_inductive_step_discrete` in `Metalogic/WeakCanonical/Transfer.lean`.
 -/

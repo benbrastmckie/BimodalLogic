@@ -13,7 +13,7 @@ This document establishes standards for directory-level README files in LEAN 4 p
 ### Scope
 
 **In Scope (Covered by This Standard)**:
-- LEAN source directories (`Theories/Bimodal/`, `Theories/Bimodal/Syntax/`, etc.)
+- LEAN source directories (`FormalSystem/`, `FormalSystem/Syntax/`, etc.)
 - LEAN test directories (`Tests/BimodalTest/`, `Tests/BimodalTest/Syntax/`, etc.)
 - LEAN example/archive directories (`Archive/`, `Archive/Examples/`, etc.)
 - Documentation organization directories (`docs/`, `docs/user-guide/`, etc.)
@@ -34,7 +34,7 @@ This standard **extends** and **complements**:
 ### Classification Rules
 
 **✓ README Required**:
-1. **Top-level LEAN source directory** (`Theories/Bimodal/`): Module organization overview
+1. **Top-level LEAN source directory** (`FormalSystem/`): Module organization overview
 2. **Test directory with 3+ subdirectories** (`Tests/BimodalTest/`): Test organization and running instructions
 3. **Example/Archive directory** (`Archive/`): Learning paths and pedagogical guidance
 4. **Multi-subdirectory documentation root** (`docs/`): Documentation navigation
@@ -58,7 +58,7 @@ Otherwise → NO README needed (rely on .lean module documentation)
 
 ## 3. Template D: LEAN Source Directory (Lightweight)
 
-**Use Case**: Top-level source directory (`Theories/Bimodal/`) or major submodule with multiple components
+**Use Case**: Top-level source directory (`FormalSystem/`) or major submodule with multiple components
 
 **Structure**:
 ```markdown
@@ -87,13 +87,13 @@ Where to find specific functionality:
 lake build
 
 # Type-check specific file
-lake env lean Theories/Bimodal/Syntax/Formula.lean
+lake env lean FormalSystem/Syntax/Formula.lean
 ```
 
 ## API Documentation
 
 For detailed API documentation, see:
-- Module overview: [Bimodal.lean](../Theories/Bimodal/Bimodal.lean)
+- Module overview: [FormalSystem.lean](../FormalSystem/FormalSystem.lean)
 - Generated docs: Run `lake build :docs`
 - Architecture guide: [architecture.md](../docs/user-guide/architecture.md)
 

@@ -6,7 +6,7 @@ Do not import from live code.
 #exit
 
 -- RELOCATED from root Boneyard/DeadConvergenceProof/limit_dom_succ_iterates.lean
--- Reason: Consolidation — moved from root-level Boneyard/ to Theories/Bimodal/Boneyard/
+-- Reason: Consolidation — moved from root-level Boneyard/ to FormalSystem/Boneyard/
 -- Relocated: 2026-06-16
 
 /-!

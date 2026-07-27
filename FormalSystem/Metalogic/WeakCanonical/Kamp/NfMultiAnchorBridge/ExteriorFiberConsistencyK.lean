@@ -63,10 +63,10 @@ type of the walk point over the DOPPELGÄNGER tail `[25,15,2,21]`) marks the inn
 the `P`-point `20`, whose dropped row demands a `σ`-marked mate realized at
 `[x, 25, 15, 2, 18]` with `P x ∧ 15 < x < 18` — impossible for `P = {0, 10, 20}`. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **Per-fiber depth-graded consistency** of a fiber `s` within an ambient `σ` marking it:
     every inner form marked by `s` (i) has a mate among `σ`'s marked fibers that matches its
@@ -262,4 +262,4 @@ theorem kvE_fiberConsistent_of_realized {sig : MonadicSignature} [Fintype sig.pr
     exact Or.inr (kvE_fiberElemConsistent_of_realized M env xs σ s hσ hxs)
   · exact Or.inl (by rw [Bool.not_eq_true] at hb; rw [hb]; rfl)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

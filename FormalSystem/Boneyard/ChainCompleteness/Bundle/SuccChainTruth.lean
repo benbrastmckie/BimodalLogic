@@ -53,11 +53,11 @@ is intentionally left with a sorry to document WHY bundling is mathematically ne
 
 #exit
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.Semantics
 
 -- Deep API drift: SerialMCS/succ_chain_fam/succ_chain_history behind #exit.
 
@@ -101,49 +101,49 @@ theorem succ_chain_history_states (M0 : SerialMCS) (t : Int) :
 
 /-- Classical tautology: neg(psi -> chi) -> psi -/
 private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
-    Bimodal.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp ψ) := by
-  have h_efq : Bimodal.ProofSystem.DerivationTree [] (ψ.neg.imp (ψ.imp χ)) :=
-    Bimodal.Theorems.Propositional.efq_neg ψ χ
+    FormalSystem.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp ψ) := by
+  have h_efq : FormalSystem.ProofSystem.DerivationTree [] (ψ.neg.imp (ψ.imp χ)) :=
+    FormalSystem.Theorems.Propositional.efq_neg ψ χ
   have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
-    Bimodal.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
+    FormalSystem.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
   have h_neg_psi : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg :=
-    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_efq_ctx h_neg_psi
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_efq_ctx h_neg_psi
   have h_neg_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
-    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_bot : [ψ.neg, (ψ.imp χ).neg] ⊢ Formula.bot :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
   have h_neg_neg_psi : [(ψ.imp χ).neg] ⊢ ψ.neg.neg :=
-    Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] ψ.neg Formula.bot h_bot
+    FormalSystem.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] ψ.neg Formula.bot h_bot
   have h_deduct : [] ⊢ (ψ.imp χ).neg.imp ψ.neg.neg :=
-    Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg ψ.neg.neg h_neg_neg_psi
+    FormalSystem.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg ψ.neg.neg h_neg_neg_psi
   have h_dne : [] ⊢ ψ.neg.neg.imp ψ :=
-    Bimodal.Theorems.Propositional.double_negation ψ
+    FormalSystem.Theorems.Propositional.double_negation ψ
   have h_b : [] ⊢ (ψ.neg.neg.imp ψ).imp (((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ)) :=
-    Bimodal.Theorems.Combinators.b_combinator
+    FormalSystem.Theorems.Combinators.b_combinator
   have h_step1 : [] ⊢ ((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ) :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_b h_dne
-  exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_b h_dne
+  exact FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
 
 /-- Classical tautology: neg(psi -> chi) -> neg(chi) -/
 private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
-    Bimodal.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp χ.neg) := by
+    FormalSystem.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp χ.neg) := by
   have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.prop_s χ ψ)
+    FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.prop_s χ ψ)
   have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
-    Bimodal.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
+    FormalSystem.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
   have h_chi : [χ, (ψ.imp χ).neg] ⊢ χ :=
-    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_imp : [χ, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_prop_s_ctx h_chi
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_prop_s_ctx h_chi
   have h_neg_imp : [χ, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
-    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_bot : [χ, (ψ.imp χ).neg] ⊢ Formula.bot :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
   have h_neg_chi : [(ψ.imp χ).neg] ⊢ χ.neg :=
-    Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] χ Formula.bot h_bot
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
+    FormalSystem.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] χ Formula.bot h_bot
+  exact FormalSystem.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
 
 /-!
 ## Truth Lemma (Biconditional)
@@ -190,8 +190,8 @@ theorem succ_chain_truth_lemma (M0 : SerialMCS) (phi : Formula) (t : Int) :
     constructor
     · intro h_bot
       have h_cons := (succ_chain_fam_mcs M0 t).1
-      have h_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
-        Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+      have h_deriv : FormalSystem.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+        FormalSystem.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
       exact h_cons [Formula.bot] (fun psi hpsi => by simp at hpsi; rw [hpsi]; exact h_bot) ⟨h_deriv⟩
     · intro h_false
       exact False.elim h_false
@@ -220,16 +220,16 @@ theorem succ_chain_truth_lemma (M0 : SerialMCS) (phi : Formula) (t : Int) :
           have h_taut := neg_imp_implies_antecedent psi chi
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(psi.imp chi).neg]
             (by simp [h_neg_imp])
-            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
-              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
-              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
+            (FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _
+              (FormalSystem.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
+              (FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_chi_mcs : chi.neg ∈ succ_chain_fam M0 t := by
           have h_taut := neg_imp_implies_neg_consequent psi chi
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(psi.imp chi).neg]
             (by simp [h_neg_imp])
-            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
-              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
-              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
+            (FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _
+              (FormalSystem.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
+              (FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         -- By IH: psi is true
         have h_psi_true : truth_at succ_chain_model (succ_chain_omega M0)
             (succ_chain_history M0) t psi := (ih_psi t).mp h_psi_mcs
@@ -250,7 +250,7 @@ theorem succ_chain_truth_lemma (M0 : SerialMCS) (phi : Formula) (t : Int) :
       subst h_sigma_mem
       -- Box psi in MCS -> psi in MCS by T-axiom
       have h_T_axiom : [] ⊢ (Formula.box psi).imp psi :=
-        Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_t psi)
+        FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.modal_t psi)
       have h_psi_mcs : psi ∈ succ_chain_fam M0 t :=
         SetMaximalConsistent.implication_property (succ_chain_fam_mcs M0 t)
           (theorem_in_mcs (succ_chain_fam_mcs M0 t) h_T_axiom) h_box
@@ -373,4 +373,4 @@ theorem succ_chain_truth_forward (M0 : SerialMCS) (phi : Formula) (t : Int) :
     truth_at succ_chain_model (succ_chain_omega M0) (succ_chain_history M0) t phi :=
   (succ_chain_truth_lemma M0 phi t).mp
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

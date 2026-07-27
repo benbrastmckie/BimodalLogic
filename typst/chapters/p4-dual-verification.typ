@@ -72,4 +72,4 @@ Sanity-check lemmas (`Examples/TemporalStructures.lean:217` and `Examples/Tempor
 
 == Reproducibility Note
 
-Every derivation cited in this chapter is sorry-free and can be re-checked by compiling `Theories/Bimodal/Examples/BimodalProofs.lean` and `TemporalStructures.lean` directly; no external tooling (ModelChecker, Z3) is required for the worked examples above.
+Every derivation cited in this chapter is sorry-free and can be re-checked by compiling `FormalSystem/Examples/BimodalProofs.lean` and `TemporalStructures.lean` directly; no external tooling (ModelChecker, Z3) is required for the worked examples above.

@@ -31,11 +31,11 @@ formula for each 2-var NF existential, which is P2(k+1).
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -228,4 +228,4 @@ noncomputable def p2_from_p1_succ
         simp only [Bool.not_eq_true] at h1 h2
         rw [h1, h2]
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

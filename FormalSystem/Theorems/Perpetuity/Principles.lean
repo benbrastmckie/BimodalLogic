@@ -38,11 +38,11 @@ establish fundamental connections between modal necessity (□) and temporal ope
 * [architecture.md](../../../../docs/user-guide/architecture.md) - TM logic specification
 -/
 
-namespace Bimodal.Theorems.Perpetuity
+namespace FormalSystem.Theorems.Perpetuity
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators
 
 /--
 Double Negation Elimination (local helper): `⊢ ¬¬φ → φ`.
@@ -628,7 +628,7 @@ noncomputable def future_k_dist (A B : Formula) :
   
   -- Step 2: Apply generalized_temporal_k to get [G(A → B), GA] ⊢ GB
   have step2 : [(A.imp B).all_future, A.all_future] ⊢ B.all_future := by
-    exact Bimodal.Theorems.generalized_temporal_k [A.imp B, A] B step1
+    exact FormalSystem.Theorems.generalized_temporal_k [A.imp B, A] B step1
   
   -- Step 3: Reorder context to [GA, G(A → B)] ⊢ GB using weakening
   -- We need GA at the front to apply deduction theorem
@@ -641,12 +641,12 @@ noncomputable def future_k_dist (A B : Formula) :
   
   -- Step 4: Apply deduction theorem to get [G(A → B)] ⊢ GA → GB
   have step4 : [(A.imp B).all_future] ⊢ A.all_future.imp B.all_future := by
-    exact Bimodal.Metalogic.Core.deduction_theorem [(A.imp B).all_future]
+    exact FormalSystem.Metalogic.Core.deduction_theorem [(A.imp B).all_future]
       A.all_future B.all_future step3_reordered
   
   -- Step 5: Apply deduction theorem again to get ⊢ G(A → B) → (GA → GB)
   have step5 : [] ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future) := by
-    exact Bimodal.Metalogic.Core.deduction_theorem []
+    exact FormalSystem.Metalogic.Core.deduction_theorem []
       (A.imp B).all_future (A.all_future.imp B.all_future) step4
   
   exact step5
@@ -811,4 +811,4 @@ P5 is semantically valid in task semantics:
 noncomputable def perpetuity_5 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always :=
   imp_trans (perpetuity_4 φ) (persistence φ)
 
-end Bimodal.Theorems.Perpetuity
+end FormalSystem.Theorems.Perpetuity

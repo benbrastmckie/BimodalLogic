@@ -12,11 +12,11 @@ Module H of the `SharedWitness` tower. The O4 assembly: `kvE2_sepBody_extract` (
 direction) and `kvE2_sepBody_holds_of_honest` (completeness direction), over the primed
 tie-reporting order bridge and value-sortedness. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -1720,4 +1720,4 @@ theorem kvE2_sepBody_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds
   kvE2_sepBody_complete_holds' charBase charK qnf hg M atomMap w x t hxw hwt h
     (kvE2_sepDisjunct'_holds_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -57,10 +57,10 @@ ONLY via `kvE_futAdmissible_onFiber` / `kvE_pastAdmissible_onFiber`; no `rw`/`un
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Slice-equality reflexivity (both sides) -/
 
@@ -187,4 +187,4 @@ theorem kvE_hslicePast_supply {sig : MonadicSignature} [Fintype sig.preds] [Deci
         kvE_deepMate_collapse M qnf w x t hqnf σ
           (fun s hs => kvE_pastAdmissible_onFiber σ hadm s hs) hguard⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -13,11 +13,11 @@ Module I of the `SharedWitness` tower. Per-σ kit application — bundles → so
 predicates `kvE2_sepFragment_frag` / `kvE2_sepFragment_realizable` and `kvE2_outer_fold`
 (Rabinovich Prop 4.3, PDF p.6). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -1811,4 +1811,4 @@ theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature} [Fintype sig.preds] [De
 
 -- ============================================================================
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

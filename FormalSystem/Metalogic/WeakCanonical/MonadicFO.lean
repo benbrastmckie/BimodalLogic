@@ -41,7 +41,7 @@ for quantifier binding.
 - Reynolds 1994, Section 6 (monadic FO language):
 `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Monadic Signature -/
 
@@ -819,4 +819,4 @@ The finite index type for normal forms at depth `k` with `n` free variables.
 abbrev NormalFormIdx (sig : MonadicSignature) [Fintype sig.preds] (k n : Nat) :=
   Fin (nfCount (Fintype.card sig.preds) k n)
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

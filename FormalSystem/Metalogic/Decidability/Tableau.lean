@@ -54,10 +54,10 @@ simplified tableau system that exploits the special properties of S5
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace FormalSystem.Metalogic.Decidability
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## Tableau Rule Type
@@ -1218,4 +1218,4 @@ def totalUnexpandedComplexity (b : Branch) (timeOrd : TimeOrdering := TimeOrderi
   b.filter (fun sf => ¬isExpanded sf b timeOrd fc)
   |>.foldl (fun acc sf => acc + sf.complexity) 0
 
-end Bimodal.Metalogic.Decidability
+end FormalSystem.Metalogic.Decidability

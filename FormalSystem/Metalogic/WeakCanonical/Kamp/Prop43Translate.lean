@@ -79,10 +79,10 @@ discharged** — their discharge is the Phase-ζ concern. This module stays OFF 
 - `ExistsForallLemmas.lean`: `veeSat_exists` (Lemma 3.4, ∃-closure).
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
 
@@ -106,7 +106,7 @@ hypothesis is available. Following report 14 (path (c)), the bridge lives on the
 index map `ρ : Fin n → Fin n'`. Generalizes `MonadicFormula.lift` (which is `rename (finLift c)`).
 Under a binder, `ρ` is lifted to fix the bound variable `0` and shift the rest: `Fin.cons 0
 (Fin.succ ∘ ρ)`. -/
-def _root_.Bimodal.Metalogic.WeakCanonical.MonadicFormula.rename {sig : MonadicSignature} :
+def _root_.FormalSystem.Metalogic.WeakCanonical.MonadicFormula.rename {sig : MonadicSignature} :
     {n n' : Nat} → (Fin n → Fin n') → MonadicFormula sig n → MonadicFormula sig n'
   | _, _, ρ, .atom p i => .atom p (ρ i)
   | _, _, ρ, .lt i j => .lt (ρ i) (ρ j)
@@ -156,7 +156,7 @@ theorem eval_rename {sig : MonadicSignature} (M : OrderedMonadicStructure sig) :
 /-- **Connective-count size.** Counts only the logical connectives/quantifiers (not the `Fin`
 indices), so it is preserved by `rename`. This is the well-founded measure under which a renamed
 subformula is strictly smaller than a quantified formula. -/
-def _root_.Bimodal.Metalogic.WeakCanonical.MonadicFormula.size {sig : MonadicSignature} :
+def _root_.FormalSystem.Metalogic.WeakCanonical.MonadicFormula.size {sig : MonadicSignature} :
     {n : Nat} → MonadicFormula sig n → Nat
   | _, .atom _ _ => 0
   | _, .lt _ _ => 0
@@ -185,7 +185,7 @@ theorem size_rename {sig : MonadicSignature} :
 variable `i`, producing an `m`-ary formula. Realized as `rename` along `Fin.cons i id`
 (`0 ↦ i`, `j+1 ↦ j`). Used for existential witnesses `x = env i` (ties), which admit no
 strictly-monotone reordering. -/
-def _root_.Bimodal.Metalogic.WeakCanonical.MonadicFormula.subst0 {sig : MonadicSignature} {m : Nat}
+def _root_.FormalSystem.Metalogic.WeakCanonical.MonadicFormula.subst0 {sig : MonadicSignature} {m : Nat}
     (i : Fin m) (α : MonadicFormula sig (m + 1)) : MonadicFormula sig m :=
   α.rename (Fin.cons i (fun j => j))
 
@@ -651,4 +651,4 @@ decreasing_by
 
 end FinLayer
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

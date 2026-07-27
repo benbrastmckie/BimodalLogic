@@ -29,7 +29,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # BIMODAL_DIR is the LEAN SOURCE root, which does not move. The typst tree it
 # writes into now lives at the project root, so the two are no longer nested.
-BIMODAL_DIR="${REPO_ROOT}/Theories/Bimodal"
+BIMODAL_DIR="${REPO_ROOT}/FormalSystem"
 OUT_TYP="${REPO_ROOT}/typst/generated/status.typ"
 
 JSON_ONLY=0

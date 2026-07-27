@@ -1,7 +1,7 @@
 # Kamp Boneyard -- Archived Kamp-Pipeline Dead Code
 
 Archived Lean files from the Kamp/Rabinovich expressive-completeness pipeline
-(`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/`). Files here are probes,
+(`FormalSystem/Metalogic/WeakCanonical/Kamp/`). Files here are probes,
 retired escalation paths, and superseded infrastructure that are no longer on
 any live proof path.
 
@@ -11,15 +11,15 @@ This directory is the **second**, easily-missed archive in the repository:
 
 | Boneyard | Files | Lines |
 |----------|------:|------:|
-| `Theories/Bimodal/Boneyard/` | 93 | 59,010 |
-| `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` (this one) | 62 | 27,394 |
+| `FormalSystem/Boneyard/` | 93 | 59,010 |
+| `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` (this one) | 62 | 27,394 |
 
 Because this one is nested five levels deep, a filter written as
-`-not -path 'Theories/Bimodal/Boneyard/*'` — naming only the top-level archive —
+`-not -path 'FormalSystem/Boneyard/*'` — naming only the top-level archive —
 counts these 27,394 lines as live code. Use a pattern that matches both:
 
 ```bash
-find Theories -name '*.lean' -not -path '*/Boneyard/*'
+find FormalSystem -name '*.lean' -not -path '*/Boneyard/*'
 ```
 
 Or, preferably, the invariant script, which hardcodes the exclusion and asserts that
@@ -45,7 +45,7 @@ Boneyard would let it rot invisibly.
 
 Boneyard code is never compiled. There is no lakefile target covering this
 directory; liveness equals reachability: a module is live if and only if it is
-reachable from `Theories/Bimodal.lean` or another lakefile root. Nothing under
+reachable from `FormalSystem.lean` or another lakefile root. Nothing under
 a `Boneyard/` directory is reachable from any root.
 
 The only build invariant is that the default target stays green after any
@@ -155,7 +155,7 @@ archived by earlier Kamp cleanup passes:
 ## Relationship to the Top-Level Boneyard
 
 The maintenance standard (archival steps, retrieval via `git log --follow`,
-archival-reason taxonomy) is documented in `Theories/Bimodal/Boneyard/README.md`.
+archival-reason taxonomy) is documented in `FormalSystem/Boneyard/README.md`.
 This directory follows the same never-built policy; it is nested here rather
 than under the top-level Boneyard to keep the Kamp pipeline's history next to
 the live `Kamp/` code it descended from.

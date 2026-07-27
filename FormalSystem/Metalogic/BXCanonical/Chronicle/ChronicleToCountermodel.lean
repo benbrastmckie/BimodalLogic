@@ -45,22 +45,22 @@ This is a DAG, not a cycle, because `ChronicleExtraction` now imports
 - Reynolds 1994: "Axiomatising first-order temporal logic: Until and Since over linear time"
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Chronicle
+namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Metalogic.Algebraic.ParametricCompleteness
-open Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
-open Bimodal.Semantics
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Perpetuity
-open Bimodal.Metalogic.BXCanonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic.ParametricCompleteness
+open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+open FormalSystem.Semantics
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Perpetuity
+open FormalSystem.Metalogic.BXCanonical
 
 /-! ## Gap Elimination and IsSuccArchimedean — TOMBSTONE
 
@@ -1155,8 +1155,8 @@ noncomputable def cantor_bfmcs_discrete (fc : FrameClass) (A : Set Formula)
       · exact absurd h h_not_box
       · exact h
     have h_diamond_neg : (Formula.neg φ).diamond ∈ A :=
-      Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
-        (liftBase fc (Bimodal.Metalogic.Bundle.box_dne_theorem φ)) h_neg_box
+      FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
+        (liftBase fc (FormalSystem.Metalogic.Bundle.box_dne_theorem φ)) h_neg_box
     obtain ⟨v, h_v_mcs, h_equiv, h_neg_phi_v⟩ := bx_modal_witness_fc h_mcs (Formula.neg φ)
         h_diamond_neg
     have h_box_discrete_v : Formula.box next_top ∈ v :=
@@ -1264,4 +1264,4 @@ theorem cantor_bfmcs_discrete_restricted_buc (fc : FrameClass) (A : Set Formula)
 -- mcs_mixed_case_absurd and dd_countermodel_chronicle_mixed_sorry moved to MCSMixedCase.lean
 -- to decouple from dead-code sorry chain (chronicle_gap_contradiction)
 
-end Bimodal.Metalogic.BXCanonical.Chronicle
+end FormalSystem.Metalogic.BXCanonical.Chronicle

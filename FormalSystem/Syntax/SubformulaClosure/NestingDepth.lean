@@ -12,9 +12,9 @@ import FormalSystem.Syntax.SubformulaClosure.Closure
 F/P-nesting depth, max nesting depth in closure, and F/P inner formula extraction.
 -/
 
-namespace Bimodal.Syntax
+namespace FormalSystem.Syntax
 
-open Bimodal.Syntax.Formula
+open FormalSystem.Syntax.Formula
 
 /-!
 ## F-Nesting Depth
@@ -55,7 +55,7 @@ theorem f_nesting_depth_some_future (psi : Formula) :
 
 /-- Atoms have F-nesting depth 0. -/
 @[simp]
-theorem f_nesting_depth_atom (a : Bimodal.Syntax.Atom) : f_nesting_depth (.atom a) = 0 := rfl
+theorem f_nesting_depth_atom (a : FormalSystem.Syntax.Atom) : f_nesting_depth (.atom a) = 0 := rfl
 
 /-- Bot has F-nesting depth 0. -/
 @[simp]
@@ -139,7 +139,7 @@ theorem p_nesting_depth_some_past (psi : Formula) :
 
 /-- Atoms have P-nesting depth 0. -/
 @[simp]
-theorem p_nesting_depth_atom (a : Bimodal.Syntax.Atom) : p_nesting_depth (.atom a) = 0 := rfl
+theorem p_nesting_depth_atom (a : FormalSystem.Syntax.Atom) : p_nesting_depth (.atom a) = 0 := rfl
 
 /-- Bot has P-nesting depth 0. -/
 @[simp]
@@ -237,4 +237,4 @@ instance : DecidablePred IsPastFormula :=
     (by simp only [IsPastFormula])
 
 
-end Bimodal.Syntax
+end FormalSystem.Syntax

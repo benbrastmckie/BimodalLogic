@@ -28,9 +28,9 @@ and Case 3 equivalence for Z.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## K-plus, K-minus, Gamma Definitions -/
 
@@ -475,4 +475,4 @@ theorem case3_equiv_Z_general (a q A B : Formula) :
   fun M t => ⟨case3_equiv_Z_fwd a q A B M t, case3_equiv_Z_bwd a q A B M t⟩
 
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

@@ -33,11 +33,11 @@ Purely additive NEW leaf module; no frozen file is touched (postmortem rule 5); 
 determinacy core (ExteriorBracketK) and the FROZEN Phase-2 fiber interface (ExteriorFiberK) are
 consumed unchanged (postmortem rule 6). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff)
 
 /-! ## Zone classification at the exterior anchor (depth-independent geometry)
@@ -671,4 +671,4 @@ theorem kvE_extNegFut_sound {sig : MonadicSignature} [Fintype sig.preds] [Decida
   rw [kvE_futPos, if_pos hadm, formula_disjList_iff]
   exact ⟨_, List.mem_map.mpr ⟨l, List.mem_permutations.mpr hlperm, rfl⟩, hltruth⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

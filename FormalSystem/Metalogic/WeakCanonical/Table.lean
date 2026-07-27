@@ -29,9 +29,9 @@ The standard translation sends each temporal atom to a distinct monadic predicat
 The signature's `preds` type is indexed by formulas, providing the finite set
 of predicates needed for a given formula's translation.
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Helper: Operator Depth -/
 
@@ -40,7 +40,7 @@ Operator depth: a natural number bounding the quantifier depth of the table
 translation. Counts the nesting depth of temporal operators (modal + temporal)
 in the formula.
 
-Note: This is distinct from `Bimodal.Syntax.Formula.complexity` which counts
+Note: This is distinct from `FormalSystem.Syntax.Formula.complexity` which counts
 total structural complexity (sum of all subformula sizes). `operator_depth`
 counts only the maximum nesting depth of modal/temporal operators, which
 directly corresponds to quantifier depth in the FO translation.
@@ -182,7 +182,7 @@ For atoms and box-subformulas, truth is determined by the structure's
 predicate interpretation (through `atomMap`). For temporal operators,
 truth is defined by quantification over the carrier's linear order.
 
-This mirrors `truth_at` from `Theories/Bimodal/Semantics/Truth.lean`
+This mirrors `truth_at` from `FormalSystem/Semantics/Truth.lean`
 but operates on `OrderedMonadicStructure` rather than `TaskModel`.
 -/
 def temporal_truth {sig : MonadicSignature}
@@ -293,4 +293,4 @@ theorem table_correctness {sig : MonadicSignature}
             push Not; intro ⟨hsr, hrt⟩; rw [lift1_lift1_eval]; exact (ih₂ r).mpr (h2 r hsr hrt)⟩)
 
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

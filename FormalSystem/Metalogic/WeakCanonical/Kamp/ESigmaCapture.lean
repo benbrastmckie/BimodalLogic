@@ -44,10 +44,10 @@ discharged directly at the ζ re-wire and the `hCapture`/`capFn` parameters are 
 - `Table.lean`: `temporal_truth`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula)
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## 1. Discharging the atom-naming premise on the concrete `canonExpand`
 
@@ -165,4 +165,4 @@ theorem capTypeFin_atomNamed (N : OrderedMonadicStructure (sigE sig F))
       ↔ temporal_truth N atomMap y A :=
   (intervalHoldsFin_capTypeFin N (esigmaPred (F := F) A) y).trans (hNamed A y)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

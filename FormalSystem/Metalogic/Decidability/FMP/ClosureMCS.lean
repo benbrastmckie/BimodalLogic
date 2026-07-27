@@ -45,11 +45,11 @@ The closure MCS infrastructure connects to filtration as follows:
 - Implementation Plan v2 Phase 1
 -/
 
-namespace Bimodal.Metalogic.Decidability.FMP
+namespace FormalSystem.Metalogic.Decidability.FMP
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 /-!
 ## Core Closure MCS Definitions
@@ -282,4 +282,4 @@ theorem closure_mcs_card_bound (phi : Formula) :
         exact Finset.card_image_le
     _ = 2 * (subformulaClosure phi).card := by omega
 
-end Bimodal.Metalogic.Decidability.FMP
+end FormalSystem.Metalogic.Decidability.FMP

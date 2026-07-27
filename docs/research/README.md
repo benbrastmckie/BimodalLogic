@@ -24,7 +24,7 @@ and linear temporal operators with **verified soundness and completeness proofs*
 operator and axiom coverage, perpetuity principles, and theoretical foundations.
 
 **Status**: Complete (production-ready implementation)
-**Related**: [Bimodal README](../../Theories/Bimodal/README.md)
+**Related**: [Bimodal README](../../FormalSystem/README.md)
 
 ---
 

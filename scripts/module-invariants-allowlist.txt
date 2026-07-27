@@ -12,15 +12,15 @@
 #
 # One name per line; `#` starts a comment.
 
-# `namespace Bimodal.Automation.Enriched` -- Automation/EnrichedCountermodel.lean:48
-Bimodal.Automation.Enriched
+# `namespace FormalSystem.Automation.Enriched` -- Automation/EnrichedCountermodel.lean:48
+FormalSystem.Automation.Enriched
 
-# `structure PatternKey` in namespace Bimodal.Automation -- Automation/SuccessPatterns.lean:101
-Bimodal.Automation.PatternKey
+# `structure PatternKey` in namespace FormalSystem.Automation -- Automation/SuccessPatterns.lean:101
+FormalSystem.Automation.PatternKey
 
-# `structure RuleProfile` in namespace Bimodal.Automation.DataExport -- Automation/DataExport.lean:294
-Bimodal.Automation.DataExport.RuleProfile
+# `structure RuleProfile` in namespace FormalSystem.Automation.DataExport -- Automation/DataExport.lean:294
+FormalSystem.Automation.DataExport.RuleProfile
 
-# `structure SimpleCountermodel` in namespace Bimodal.Metalogic.Decidability
+# `structure SimpleCountermodel` in namespace FormalSystem.Metalogic.Decidability
 # -- Metalogic/Decidability/CountermodelExtraction.lean:70
-Bimodal.Metalogic.Decidability.SimpleCountermodel
+FormalSystem.Metalogic.Decidability.SimpleCountermodel

@@ -53,10 +53,10 @@ to carry caps — that would be canonical-form machinery beyond Rabinovich.
   `Prop42Contentful`; `VecEANegFix.lean`: `VVecEA2.negFix`, `VVecEA2.negFix_iff`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## 5. Fin layer: the endpoint-pinned canonical translation on the per-formula representation
 
@@ -472,4 +472,4 @@ theorem prop42_veeSatFin_negation {sig : MonadicSignature} {F : Finset Formula}
       translateVeeProp42Fin_correct N atomMap nameOf hName env Ψ hep hlt]
 
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

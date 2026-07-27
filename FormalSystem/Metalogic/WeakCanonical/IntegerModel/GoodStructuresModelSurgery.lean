@@ -86,9 +86,9 @@ and the docstring on
 - Reynolds 1994, Theorem 5 (US expressive completeness, PriorExpressiveness.lean)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Temporal Truth Helpers -/
 
@@ -2212,4 +2212,4 @@ theorem no_gaps_discrete_model_surgery (sig : MonadicSignature) [Fintype sig.pre
     exact gap_contradicts_prior_below sig k M atomMap h_surj h_prior_UZ h_prior_SZ
       a h_succ_closed h_bdd ⟨b, hba_lt, h_diff_class⟩
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

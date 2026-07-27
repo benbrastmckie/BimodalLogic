@@ -48,11 +48,11 @@ monotonicity lemmas, and the proof of perpetuity principle P6.
 * [Principles.lean](Principles.lean) - P1-P5 proofs
 -/
 
-namespace Bimodal.Theorems.Perpetuity
+namespace FormalSystem.Theorems.Perpetuity
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators
 
 -- Many definitions in this module depend on noncomputable deduction_theorem
 noncomputable section
@@ -462,14 +462,14 @@ Left Conjunction Elimination (implication form): `⊢ (A ∧ B) → A`.
 -/
 def lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
   have h : [A.and B] ⊢ A := local_lce A B
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) A h
+  exact FormalSystem.Metalogic.Core.deduction_theorem [] (A.and B) A h
 
 /--
 Right Conjunction Elimination (implication form): `⊢ (A ∧ B) → B`.
 -/
 def rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
   have h : [A.and B] ⊢ B := local_rce A B
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) B h
+  exact FormalSystem.Metalogic.Core.deduction_theorem [] (A.and B) B h
 
 /-!
 ## Decomposition Lemmas for Always Operator
@@ -933,4 +933,4 @@ def perpetuity_6 (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := by
 
 end
 
-end Bimodal.Theorems.Perpetuity
+end FormalSystem.Theorems.Perpetuity

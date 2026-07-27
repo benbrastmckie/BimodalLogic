@@ -18,11 +18,11 @@ Z-interval structures, good structures, succ-iteration, transitivity helpers
 and the one-class theorem.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
 
 /-! ## Z-Interval Structures -/
 
@@ -877,5 +877,5 @@ See:
 - `chronicle_is_good_direct` in `ShiftAndGlue.lean` (inlined sorry-free version)
 -/
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical
 

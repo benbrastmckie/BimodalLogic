@@ -1,7 +1,7 @@
 # Module Docstring Quality Standard
 
 This document defines the four-tier quality standard for module docstrings in the
-`Theories/Bimodal/` library. All `.lean` files must meet at minimum the tier appropriate
+`FormalSystem/` library. All `.lean` files must meet at minimum the tier appropriate
 for their file type.
 
 **Last verified: 2026-05-29**
@@ -153,7 +153,7 @@ Use this command to find files with fewer than 10 lines of module docstring:
 
 ```bash
 # Files with thin module docstrings (less than 10 lines)
-for f in $(find Theories/Bimodal -name "*.lean" | grep -v Boneyard); do
+for f in $(find FormalSystem -name "*.lean" | grep -v Boneyard); do
   count=$(sed -n '/^\/\-\!/,/^\-\//p' "$f" | wc -l)
   if [ "$count" -lt 10 ]; then echo "$count $f"; fi
 done | sort -n

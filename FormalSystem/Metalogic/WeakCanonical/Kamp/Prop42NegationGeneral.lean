@@ -63,10 +63,10 @@ case, mirroring how `Prop42ExistsForall.lean` and `Prop43.lean` already sit off-
 - `VecEAFormula.lean`: `VVecEA2`, `VecEA2`, `BracketFormula.trivial`, `VVecEA2.disj`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## 6. Fin layer: clause constructors on the per-formula representation
 
@@ -993,4 +993,4 @@ theorem prop42_efSat_negation_generalFin {sig : MonadicSignature} {F : Finset Fo
 
 end FinLayer
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

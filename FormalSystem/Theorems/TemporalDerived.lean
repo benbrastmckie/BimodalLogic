@@ -87,12 +87,12 @@ originals remain in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDerived.lean`
 - Archive of 27 sorry-tainted definitions
 -/
 
-namespace Bimodal.Theorems.TemporalDerived
+namespace FormalSystem.Theorems.TemporalDerived
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Propositional
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Propositional
 
 -- Abbreviations for readability
 private abbrev top : Formula := Formula.neg Formula.bot  -- ⊤ = ¬⊥
@@ -268,7 +268,7 @@ noncomputable def G_distribution (φ ψ : Formula) :
 @[tm_lemma]
 noncomputable def H_distribution (φ ψ : Formula) :
     ⊢ (φ.imp ψ).all_past.imp (φ.all_past.imp ψ.all_past) :=
-  Bimodal.Theorems.past_k_dist φ ψ
+  FormalSystem.Theorems.past_k_dist φ ψ
 
 /--
 `⊢ G(φ) → G(G(φ))`: G-transitivity. Derived from BX3 + BX6.
@@ -383,12 +383,12 @@ contraposition of the hypothesis composed with DNE. -/
 @[tm_lemma]
 noncomputable def formula_or_comm (A B : Formula) : ⊢ (A.or B).imp (B.or A) := by
   unfold Formula.or
-  apply Bimodal.Metalogic.Core.deduction_theorem [] (A.neg.imp B) (B.neg.imp A)
-  apply Bimodal.Metalogic.Core.deduction_theorem [A.neg.imp B] B.neg A
+  apply FormalSystem.Metalogic.Core.deduction_theorem [] (A.neg.imp B) (B.neg.imp A)
+  apply FormalSystem.Metalogic.Core.deduction_theorem [A.neg.imp B] B.neg A
   have h1 : [B.neg, A.neg.imp B] ⊢ A.neg.imp B := DerivationTree.assumption _ _ (by simp)
   have h2 : [B.neg, A.neg.imp B] ⊢ B.neg := DerivationTree.assumption _ _ (by simp)
   have h3 : [B.neg, A.neg.imp B] ⊢ A.neg.neg := ctx_mp (ctx_mp (ctx_thm b_combinator) h2) h1
-  exact ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.double_negation A)) h3
+  exact ctx_mp (ctx_thm (FormalSystem.Theorems.Propositional.double_negation A)) h3
 
 /-!
 ## Category B: Temporal Monotonicity (4 computable theorems)
@@ -548,7 +548,7 @@ Mirror of `G_and_intro` using `H_distribution` and `past_necessitation`.
 -/
 noncomputable def H_and_intro (φ ψ : Formula) :
     ⊢ φ.all_past.imp (ψ.all_past.imp (φ.and ψ).all_past) :=
-  let h_pair := Bimodal.Theorems.past_necessitation _ (pairing φ ψ)
+  let h_pair := FormalSystem.Theorems.past_necessitation _ (pairing φ ψ)
   let step1 := mp h_pair (H_distribution φ (ψ.imp (φ.and ψ)))
   imp_trans step1 (H_distribution ψ (φ.and ψ))
 
@@ -581,7 +581,7 @@ Mirror of `G_imp_trans` using `H_distribution` and `past_necessitation`.
 -/
 noncomputable def H_imp_trans (φ ψ χ : Formula) :
     ⊢ (φ.imp ψ).all_past.imp ((ψ.imp χ).all_past.imp (φ.imp χ).all_past) :=
-  let h_b := Bimodal.Theorems.past_necessitation _ (@b_combinator .Base (A := φ) (B := ψ) (C := χ))
+  let h_b := FormalSystem.Theorems.past_necessitation _ (@b_combinator .Base (A := φ) (B := ψ) (C := χ))
   let step1 := mp h_b (H_distribution (ψ.imp χ) ((φ.imp ψ).imp (φ.imp χ)))
   let step2 := imp_trans step1 (H_distribution (φ.imp ψ) (φ.imp χ))
   mp step2 (@theorem_flip .Base
@@ -618,7 +618,7 @@ From `contrapose_imp φ ψ : ⊢ (φ → ψ) → (¬ψ → ¬φ)`, past necessit
 -/
 noncomputable def H_contrapose (φ ψ : Formula) :
     ⊢ (φ.imp ψ).all_past.imp (ψ.neg.imp φ.neg).all_past :=
-  let h_cp := Bimodal.Theorems.past_necessitation _ (contrapose_imp φ ψ)
+  let h_cp := FormalSystem.Theorems.past_necessitation _ (contrapose_imp φ ψ)
   mp h_cp (H_distribution (φ.imp ψ) (ψ.neg.imp φ.neg))
 
 end TemporalContraposition
@@ -653,7 +653,7 @@ From `connect_past φ : ⊢ φ → H(F φ)`, past necessitate to get
 -/
 noncomputable def connect_past_H (φ : Formula) :
     ⊢ φ.all_past.imp (φ.some_future.all_past).all_past :=
-  let h_cp := Bimodal.Theorems.past_necessitation _ (connect_past_thm φ)
+  let h_cp := FormalSystem.Theorems.past_necessitation _ (connect_past_thm φ)
   mp h_cp (H_distribution φ (φ.some_future.all_past))
 
 /--
@@ -682,7 +682,7 @@ Compose `connect_past φ : φ → H(F φ)` with
 -/
 noncomputable def connect_past_chain (φ : Formula) :
     ⊢ φ.imp ((φ.some_future.some_past.all_future).all_past) :=
-  let step1 := Bimodal.Theorems.past_necessitation _ (connect_future_thm φ.some_future)
+  let step1 := FormalSystem.Theorems.past_necessitation _ (connect_future_thm φ.some_future)
   let step2 := mp step1 (H_distribution φ.some_future (φ.some_future.some_past.all_future))
   imp_trans (connect_past_thm φ) step2
 
@@ -797,4 +797,4 @@ noncomputable def always_imp_all_past (φ : Formula) :
 
 end ConjunctionElimination
 
-end Bimodal.Theorems.TemporalDerived
+end FormalSystem.Theorems.TemporalDerived

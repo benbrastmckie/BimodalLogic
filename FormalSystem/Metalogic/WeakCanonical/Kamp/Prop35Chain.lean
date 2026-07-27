@@ -45,10 +45,10 @@ formulation.
 - `ExistsForallFormula.lean`: `ExistsForallFormula`, `efSat`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula)
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## 1. Generic rightward chain bridge -/
 
@@ -234,4 +234,4 @@ theorem buildLeft_spec_iff_chain {sig : MonadicSignature}
           exact hbeta (i + 1) (by omega) y hy1 hy2
         · exact hlast
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

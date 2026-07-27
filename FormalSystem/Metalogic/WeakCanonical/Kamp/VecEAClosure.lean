@@ -18,10 +18,10 @@ under disjunction, conjunction, and existential quantification.
 - Rabinovich 2014, Lemma 3.2 (pp. 3-4), Lemma 3.4 (p. 4)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## TemporalPred semantics helpers -/
 
@@ -413,4 +413,4 @@ theorem VBracketFormula.existsBounded_right
     BracketFormula.existsBounded_right M atomMap bf z0 z1 z hz0z hzz1 hbf ptZ hptZ segAfterZ hseg
   exact ⟨⟨[⟨m, bf'⟩]⟩, ⟨m, bf'⟩, List.mem_singleton.mpr rfl, hbf'⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

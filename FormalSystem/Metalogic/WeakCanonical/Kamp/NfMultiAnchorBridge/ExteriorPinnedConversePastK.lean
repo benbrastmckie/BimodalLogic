@@ -26,11 +26,11 @@ data. `kvE_pastSliceMarked` re-keys `kvE_extBracketPast`'s per-σ if-then-else i
 (`kvE_pastSliceId_of_end_zero`, `kvE_pastSliceUnique_zero`) are plan v2 Phase 4 and land in
 this file later. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ## The Past slice defs (mirrors of report 02 §3.3, Future file Phase 3) -/
 
@@ -898,4 +898,4 @@ theorem kvE_hslicePast_supply_zero {sig : MonadicSignature} [Fintype sig.preds]
     rfl
   exact ⟨σ', hadm', hslEq, hmark⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

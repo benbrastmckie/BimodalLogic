@@ -118,12 +118,12 @@ example (φ ψ : Formula) (Γ : Context) (h : Γ ⊢ φ) :
 Leverage proven theorems from the library:
 
 ```lean
--- From Bimodal.Theorems.Propositional
+-- From FormalSystem.Theorems.Propositional
 example (A B : Formula) : ⊢ A.imp (B.imp A) := theorem_1 A B
 example (A B C : Formula) : ⊢ (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
   theorem_2 A B C
 
--- From Bimodal.Theorems.ModalS4
+-- From FormalSystem.Theorems.ModalS4
 -- (Import specific theorem modules as needed)
 ```
 
@@ -154,8 +154,8 @@ example (φ : Formula) : ⊢ φ.box.imp φ := by
 
 ```lean
 -- Always import appropriate modules
-import Bimodal.Theorems.Propositional  -- For theorem_1, theorem_2, etc.
-import Bimodal.Theorems.ModalS4        -- For S4-specific theorems
+import FormalSystem.Theorems.Propositional  -- For theorem_1, theorem_2, etc.
+import FormalSystem.Theorems.ModalS4        -- For S4-specific theorems
 ```
 
 ### Mistake 3: Type Confusion
@@ -169,4 +169,4 @@ import Bimodal.Theorems.ModalS4        -- For S4-specific theorems
 
 - [quickstart.md](quickstart.md) - Getting started
 - [axiom-reference.md](../reference/axiom-reference.md) - Complete axiom list
-- [Examples](../../Theories/Bimodal/Examples/) - Full proof examples
+- [Examples](../../FormalSystem/Examples/) - Full proof examples

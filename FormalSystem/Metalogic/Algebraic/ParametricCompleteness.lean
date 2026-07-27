@@ -87,19 +87,19 @@ which is done in the instantiation modules.
 
 ## References
 
-- Auxiliary: Theories/Bimodal/Metalogic/StagedConstruction/DFromCantor.lean
+- Auxiliary: FormalSystem/Metalogic/StagedConstruction/DFromCantor.lean
 -/
 
-namespace Bimodal.Metalogic.Algebraic.ParametricCompleteness
+namespace FormalSystem.Metalogic.Algebraic.ParametricCompleteness
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Semantics
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
@@ -128,17 +128,17 @@ theorem not_provable_implies_neg_set_consistent (φ : Formula)
       have := hL x hx
       simp only [Set.mem_singleton_iff] at this
       simp [this]
-    have d_single : Bimodal.ProofSystem.DerivationTree FrameClass.Base [φ.neg] Formula.bot :=
-      Bimodal.ProofSystem.DerivationTree.weakening L [φ.neg] Formula.bot d h_weak
+    have d_single : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [φ.neg] Formula.bot :=
+      FormalSystem.ProofSystem.DerivationTree.weakening L [φ.neg] Formula.bot d h_weak
     -- By deduction theorem: ⊢ phi.neg → ⊥ = ⊢ ¬¬phi
-    have d_neg_neg : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg) :=
-      Bimodal.Metalogic.Core.deduction_theorem [] φ.neg Formula.bot d_single
+    have d_neg_neg : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg) :=
+      FormalSystem.Metalogic.Core.deduction_theorem [] φ.neg Formula.bot d_single
     -- By DNE: ⊢ ¬¬phi → phi
-    have h_dne : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
-      Bimodal.Theorems.Propositional.double_negation φ
+    have h_dne : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
+      FormalSystem.Theorems.Propositional.double_negation φ
     -- By modus ponens: ⊢ phi
-    have d_phi : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ :=
-      Bimodal.ProofSystem.DerivationTree.modus_ponens [] φ.neg.neg φ h_dne d_neg_neg
+    have d_phi : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] φ :=
+      FormalSystem.ProofSystem.DerivationTree.modus_ponens [] φ.neg.neg φ h_dne d_neg_neg
     exact h_not_prov ⟨d_phi⟩
   · -- phi.neg ∉ L, so L ⊆ {phi.neg} means L = []
     have h_L_empty : L = [] := by
@@ -153,10 +153,10 @@ theorem not_provable_implies_neg_set_consistent (φ : Formula)
     -- [] ⊢ ⊥ means ⊥ is a theorem, contradicting consistency
     rw [h_L_empty] at d
     -- From ⊢ ⊥, derive ⊢ phi via ex falso
-    have d_efq : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (Formula.bot.imp φ) :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso φ) trivial
-    have d_phi : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ :=
-      Bimodal.ProofSystem.DerivationTree.modus_ponens [] Formula.bot φ d_efq d
+    have d_efq : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] (Formula.bot.imp φ) :=
+      FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.ex_falso φ) trivial
+    have d_phi : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] φ :=
+      FormalSystem.ProofSystem.DerivationTree.modus_ponens [] Formula.bot φ d_efq d
     exact h_not_prov ⟨d_phi⟩
 
 /-!
@@ -306,4 +306,4 @@ theorem countermodel_implies_not_provable
   have h_true := (parametric_shifted_truth_lemma B h_tc h_buc h_fuc φ fam hfam t).mp h_in
   exact h_false h_true
 
-end Bimodal.Metalogic.Algebraic.ParametricCompleteness
+end FormalSystem.Metalogic.Algebraic.ParametricCompleteness

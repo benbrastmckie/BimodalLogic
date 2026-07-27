@@ -54,7 +54,7 @@ an env. G5 — every bridge below is a manual `constructor`/`intro`/`exact` step
 - The negfix-refactor design for the exterior carriers, Phase 13 (E1 — the zone-fiber kit).
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 section ExteriorFiberKit
 
@@ -634,4 +634,4 @@ theorem extProbe_bitFalse_excluded (M : OrderedMonadicStructure sig)
 
 end ExteriorFiberKit
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

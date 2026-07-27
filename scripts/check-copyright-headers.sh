@@ -4,10 +4,10 @@
 # WHY THIS EXISTS: Mathlib's `linter.style.header` cannot see this project.
 # Its gate, `isInLibraryRoot` (Mathlib/Tactic/Linter/Header.lean:259-264), looks for
 # `<root>.lean` relative to the CWD and asks whether that file *directly* imports the
-# module being linted. This project's lakefile sets `srcDir := "Theories"`, so the root
-# lives at `Theories/Bimodal.lean` and `./Bimodal.lean` does not exist -- the linter
-# silently no-ops on every file. Even with the root path fixed, `Theories/Bimodal.lean`
-# directly imports only `Bimodal.Bimodal`, so the linter would still cover exactly one
+# module being linted. This project's lakefile sets `srcDir := "FormalSystem"`, so the root
+# lives at `FormalSystem.lean` and `./FormalSystem.lean` does not exist -- the linter
+# silently no-ops on every file. Even with the root path fixed, `FormalSystem.lean`
+# directly imports only `FormalSystem.Bimodal`, so the linter would still cover exactly one
 # module. Hence a text-based checker.
 #
 # The predicate below mirrors Mathlib's `copyrightHeaderChecks`
@@ -19,10 +19,10 @@
 #   check-copyright-headers.sh --exclude GLOB    # skip paths matching GLOB (repeatable)
 #
 # --exclude exists because the 151 archived files under the two Boneyard trees
-# (Theories/Bimodal/Boneyard/ and Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/)
-# are intentionally unheadered, so `--strict Theories` could otherwise never exit 0.
+# (FormalSystem/Boneyard/ and FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/)
+# are intentionally unheadered, so `--strict FormalSystem` could otherwise never exit 0.
 # The live-set gate is:
-#   check-copyright-headers.sh --strict --exclude '*/Boneyard/*' Theories
+#   check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem
 #
 # Bucket lists are written to $OUTDIR (default: a mktemp dir, path echoed at the end).
 set -uo pipefail
@@ -45,7 +45,7 @@ if [ "$want_exclude" = 1 ]; then
   echo "error: --exclude requires a PATTERN argument" >&2
   exit 2
 fi
-[ "${#ROOTS[@]}" -eq 0 ] && ROOTS=("Theories")
+[ "${#ROOTS[@]}" -eq 0 ] && ROOTS=("FormalSystem")
 
 # Build the find predicate: `! -path GLOB` per exclusion.
 FIND_ARGS=()

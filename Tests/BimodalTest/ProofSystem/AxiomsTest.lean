@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.ProofSystem.Axioms
-import Bimodal.Theorems.Combinators
-import Bimodal.Theorems.TemporalDerived
+import FormalSystem.ProofSystem.Axioms
+import FormalSystem.Theorems.Combinators
+import FormalSystem.Theorems.TemporalDerived
 
 /-!
 # Axioms Test Suite
@@ -24,9 +24,9 @@ Tests for the TM axiom schemata.
 
 namespace BimodalTest.ProofSystem
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.TemporalDerived
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.TemporalDerived
 
 -- ============================================================
 -- Propositional K Axiom Tests: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
@@ -198,11 +198,11 @@ example : Axiom (((Formula.atom_s "p").imp (Formula.atom_s "q")).box.imp ((Formu
 
 -- Test: Temporal-Future derived theorem on atom
 example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.all_future :=
-  Bimodal.Theorems.Combinators.temp_future_derived (Formula.atom_s "p")
+  FormalSystem.Theorems.Combinators.temp_future_derived (Formula.atom_s "p")
 
 -- Test: Temporal-Future derived theorem on complex formula
 example : ⊢ ((Formula.atom_s "p").and (Formula.atom_s "q")).box.imp ((Formula.atom_s "p").and (Formula.atom_s "q")).box.all_future :=
-  Bimodal.Theorems.Combinators.temp_future_derived ((Formula.atom_s "p").and (Formula.atom_s "q"))
+  FormalSystem.Theorems.Combinators.temp_future_derived ((Formula.atom_s "p").and (Formula.atom_s "q"))
 
 -- ============================================================
 -- Modal K Distribution Axiom Tests: □(φ → ψ) → (□φ → □ψ)
@@ -228,7 +228,7 @@ example (A B : Formula) :
 -- Double Negation Elimination: Now Derived (not an axiom)
 -- ============================================================
 
--- Note: DNE is now derived from EFQ + Peirce (see Bimodal.Theorems.Propositional.double_negation)
+-- Note: DNE is now derived from EFQ + Peirce (see FormalSystem.Theorems.Propositional.double_negation)
 -- The following tests have been removed as DNE is no longer an axiom:
 -- - Double negation elimination on atom
 -- - Double negation elimination on box formula

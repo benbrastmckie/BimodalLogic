@@ -25,10 +25,10 @@ infrastructure (GHR93 expressive completeness proof).
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Section 8
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
 open Lean Elab Tactic
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Component B: game_tuple_simp -/
 
@@ -328,4 +328,4 @@ macro "same_order_type_grid_uh" : tactic =>
 macro "extract_order" h:ident i:term j:term : tactic =>
   `(tactic| (have h := $h $i $j; simp_game_tuple at h; exact h))
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

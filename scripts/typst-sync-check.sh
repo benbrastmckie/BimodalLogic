@@ -30,7 +30,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # Two independent roots since the asset relocation: BIMODAL_DIR is the LEAN
 # SOURCE root, used for identifier and path resolution, and does NOT move.
 # TYPST_DIR is the typst tree being scanned, which now sits at the project root.
-BIMODAL_DIR="${REPO_ROOT}/Theories/Bimodal"
+BIMODAL_DIR="${REPO_ROOT}/FormalSystem"
 TYPST_DIR="${REPO_ROOT}/typst"
 WHITELIST="${TYPST_DIR}/sync-check-whitelist.txt"
 MAIN_FILE="${TYPST_DIR}/BimodalReference.typ"
@@ -130,8 +130,8 @@ for cand, files in sorted(candidates.items()):
     if is_pathlike:
         rel = cand_delined
         allow_boneyard = "Boneyard" in rel.split("/")
-        if rel.startswith("Theories/Bimodal/"):
-            rel_bimodal = rel[len("Theories/Bimodal/"):]
+        if rel.startswith("FormalSystem/"):
+            rel_bimodal = rel[len("FormalSystem/"):]
         else:
             rel_bimodal = rel
         if path_exists_excl_boneyard(rel_bimodal, bimodal_dir):
@@ -142,12 +142,12 @@ for cand, files in sorted(candidates.items()):
             continue
         if suffix_search(rel, repo_root, allow_boneyard):
             continue
-        violations.append((cand, files, "path does not exist under the Lean source root Theories/Bimodal/ (excl. Boneyard/ unless the candidate itself names it) nor under the repo root"))
+        violations.append((cand, files, "path does not exist under the Lean source root FormalSystem/ (excl. Boneyard/ unless the candidate itself names it) nor under the repo root"))
         continue
     # Bare identifier / dotted qualified name
     if grep_lean(cand):
         continue
-    violations.append((cand, files, "identifier not found in any *.lean file under the Lean source root Theories/Bimodal/ (excl. Boneyard/)"))
+    violations.append((cand, files, "identifier not found in any *.lean file under the Lean source root FormalSystem/ (excl. Boneyard/)"))
 
 if violations:
     for cand, files, reason in violations:

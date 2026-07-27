@@ -41,13 +41,13 @@ code consumers) was archived to `Boneyard/SorriedDeclExcisions/SingletonSorriedD
 - Burgess 1984, Goldblatt 1992 (canonical model construction for tense logics)
 -/
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Theorems
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Theorems
 
 /-! ## BX Canonical Point -/
 
@@ -145,7 +145,7 @@ theorem g_content_set_consistent {S : Set Formula}
   -- temp_k_dist: [] ⊢ G(⊥ → ¬⊤) → (G(⊥) → G(¬⊤))
   have h_kd : DerivationTree FrameClass.Base [] ((Formula.bot.imp neg_top).all_future.imp
     (Formula.bot.all_future.imp neg_top.all_future)) :=
-    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot neg_top
+    FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot neg_top
   -- G(⊥ → ¬⊤) ∈ S and G(⊥ → ¬⊤) → (G(⊥) → G(¬⊤)) ∈ S
   have h1 := theorem_in_mcs h_mcs h_G_ef
   have h2 := theorem_in_mcs h_mcs h_kd
@@ -290,7 +290,7 @@ theorem bx_G_backward (w : BXPoint) (φ : Formula)
         · exact h
       -- Derive double_neg_elim: ¬¬φ → φ
       have h_dne : [] ⊢ (Formula.neg (Formula.neg φ)).imp φ :=
-        Bimodal.Theorems.Propositional.double_negation φ
+        FormalSystem.Theorems.Propositional.double_negation φ
       -- L_filt ⊢ ¬¬φ, weaken dne to L_filt, apply MP to get L_filt ⊢ φ
       have d_dne_weak : DerivationTree FrameClass.Base L_filt
           ((Formula.neg (Formula.neg φ)).imp φ) :=
@@ -358,7 +358,7 @@ theorem bx_H_backward (w : BXPoint) (φ : Formula)
         · exact absurd rfl h_ne
         · exact h
       have h_dne : [] ⊢ (Formula.neg (Formula.neg φ)).imp φ :=
-        Bimodal.Theorems.Propositional.double_negation φ
+        FormalSystem.Theorems.Propositional.double_negation φ
       have d_dne_weak : DerivationTree FrameClass.Base L_filt
           ((Formula.neg (Formula.neg φ)).imp φ) :=
         DerivationTree.weakening [] L_filt _ h_dne (List.nil_subset _)
@@ -725,4 +725,4 @@ theorem bx_since_eventuality_resolution
   -- By bx_backward_witness: get v with bx_le v w and ψ ∈ v
   exact bx_backward_witness w ψ h_P_psi
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

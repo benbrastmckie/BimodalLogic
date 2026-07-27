@@ -75,10 +75,10 @@ Discharge ONLY via the byte-stable lemmas here (`kvE_deepOnFiber_of_realized`,
 `kvE_deepOnFiber`, `kvE_fiberElemConsistent`, or the admissibility predicates outside their
 home modules. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **Hereditary deep-anchor guard**. Fiber-depth graded: at σ-depth ≤ 1 it IS
     the depth-0 row check (`nfk_dropFresh σ = qnf.1` — m = 0 inertness); at σ-depth ≥ 2 it
@@ -201,4 +201,4 @@ theorem kvE_deepOnFiber_of_realized {sig : MonadicSignature} [Fintype sig.preds]
     rw [kvE_deepOnFiber_iff]
     exact ⟨hrow env x1 qnf σ hqnf hσ, σ, (hqnf.2 σ).mp ⟨x1, hσ⟩, rfl⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

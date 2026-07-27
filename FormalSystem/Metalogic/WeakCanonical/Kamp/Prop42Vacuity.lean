@@ -70,7 +70,7 @@ a proved asset **at least twice**:
   "introduces no new sorry or axiom" — the exact inference this file refutes.
 
 Both records were dated, correct, and unread. The second sits in `Boneyard/`, which is **not
-reachable** from `Theories/Bimodal.lean` and therefore is not compiled, not checked, and not
+reachable** from `FormalSystem.lean` and therefore is not compiled, not checked, and not
 surfaced by anything. Prose in an unreachable file protects nothing.
 
 This file is reachable from the root (the import edge is landed in
@@ -87,10 +87,10 @@ Annotated in place; **deliberately not deleted** (they are consumed live):
   verbatim, and so re-exports the vacuity.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **The conclusion of `neg_2var_vec_ea` (`EANegationClosure.lean:722`), proved from NOTHING.**
 
@@ -116,4 +116,4 @@ theorem prop42_conclusion_is_vacuous {sig : MonadicSignature}
       (fun y _ _ => by
         simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth])
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

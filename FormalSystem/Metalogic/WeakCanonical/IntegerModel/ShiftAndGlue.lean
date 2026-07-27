@@ -14,11 +14,11 @@ Very good to good (Reynolds Lemma 16), half-open partition, shift-and-glue
 helpers, and chronicle-is-good theorem.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
 
 /-! ## Very Good → Good (Reynolds Lemma 16) -/
 
@@ -920,4 +920,4 @@ theorem one_class_implies_very_good (sig : MonadicSignature) [Fintype sig.preds]
 -- chronicle_is_good_direct archived to
 -- Boneyard/DeadChronicleGapElimination/TransferDead.lean
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

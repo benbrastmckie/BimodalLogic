@@ -6,7 +6,7 @@ This document defines testing requirements, organization, and best practices for
 
 ```
 Tests/
-└── BimodalTest/               # Test suite mirroring Theories/Bimodal/ structure
+└── BimodalTest/               # Test suite mirroring FormalSystem/ structure
     ├── BimodalTest.lean       # Test root
     ├── Syntax/
     │   ├── FormulaTest.lean   # Formula construction tests
@@ -35,11 +35,11 @@ Test individual functions and definitions in isolation.
 
 ```lean
 -- Tests/BimodalTest/Syntax/FormulaTest.lean
-import Bimodal.Syntax.Formula
+import FormalSystem.Syntax.Formula
 
 namespace BimodalTest.Syntax
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- Test formula complexity calculation for atoms -/
 #guard (Formula.atom "p").complexity = 1
@@ -69,9 +69,9 @@ import Bimodal
 
 namespace BimodalTest.Theorems
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems
 
 /-- Test P1: □φ → always φ is derivable -/
 example (φ : Formula) : ⊢ (φ.box.imp (always φ)) := perpetuity_1 φ
@@ -98,9 +98,9 @@ import Bimodal
 
 namespace BimodalTest.Metalogic
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
 
 /-- Axiom MT is valid (property test) -/
 theorem test_modal_t_valid (φ : Formula) :
@@ -127,8 +127,8 @@ import Bimodal
 
 namespace BimodalTest.ProofSystem
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-- Regression test: Nested modal formulas -/
 example : ⊢ ((Formula.box (Formula.box (Formula.atom "p"))).imp
@@ -268,7 +268,7 @@ example (φ : Formula) : ⊢ (φ.new_operator.imp φ) := by
 **2. GREEN: Implement minimal code to pass**
 
 ```lean
--- Theories/Bimodal/ProofSystem/Axioms.lean
+-- FormalSystem/ProofSystem/Axioms.lean
 inductive Axiom : Formula → Prop
   | ...
   | new_axiom_x (φ : Formula) : Axiom (φ.new_operator.imp φ)
@@ -392,7 +392,7 @@ theorem formula_complexity_positive (φ : Formula) : φ.complexity > 0 := by
 /-!
 # Formula Tests
 
-Unit tests for the Formula type defined in Bimodal.Syntax.Formula.
+Unit tests for the Formula type defined in FormalSystem.Syntax.Formula.
 
 ## Test Categories
 

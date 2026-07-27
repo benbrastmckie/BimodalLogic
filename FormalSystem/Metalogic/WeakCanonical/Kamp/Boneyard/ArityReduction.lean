@@ -59,10 +59,10 @@ a different property from VVecEA2 negation.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## IsVEA Predicate -/
 
@@ -111,4 +111,4 @@ theorem isVEA_ex {sig : MonadicSignature} {m : Nat}
     rintro ⟨env, h_ei, h_ej, x, h_eval⟩
     exact ⟨(Fin.cons x env : Fin (m + 1) → M.carrier), h_ei, h_ej, h_eval⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

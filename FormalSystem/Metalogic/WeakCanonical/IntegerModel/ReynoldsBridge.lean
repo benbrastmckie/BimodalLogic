@@ -53,13 +53,13 @@ that used to live in `WeakCanonical/Transfer.lean`.
 - Design provenance: the strategy-B route for the Reynolds pipeline bridge
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.BXCanonical.Chronicle
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.BXCanonical.Chronicle
+open FormalSystem.Semantics
 
 /-! ## Phase 1: LimitDomSubtype as OrderedMonadicStructure -/
 
@@ -921,8 +921,8 @@ theorem countermodel_discrete_reynolds_v2
         have h_neg_box : (Formula.box ψ).neg ∈ A :=
           (SetMaximalConsistent.negation_complete h_mcs (Formula.box ψ)).resolve_left h_not_box
         have h_diamond_neg : (Formula.neg ψ).diamond ∈ A :=
-          Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
-            (liftBase FrameClass.Discrete (Bimodal.Metalogic.Bundle.box_dne_theorem ψ)) h_neg_box
+          FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
+            (liftBase FrameClass.Discrete (FormalSystem.Metalogic.Bundle.box_dne_theorem ψ)) h_neg_box
         obtain ⟨v, h_v_mcs, h_v_equiv, h_neg_ψ_v⟩ :=
           bx_modal_witness_fc h_mcs (Formula.neg ψ) h_diamond_neg
         -- v is box-equiv to A, so □(next_top) ∈ v
@@ -1151,5 +1151,5 @@ theorem countermodel_discrete_reynolds_v2
           change (w₀ + r : ℤ) < w₀ + t; omega
         exact hguard _ h_lt h_lt2
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical
 

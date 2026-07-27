@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.ProofSearch.Core
-import Bimodal.Automation.ProofSearch.Strategies
-import Bimodal.Automation.Tactics.Commands
-import Bimodal.ProofSystem
+import FormalSystem.Automation.ProofSearch.Core
+import FormalSystem.Automation.ProofSearch.Strategies
+import FormalSystem.Automation.Tactics.Commands
+import FormalSystem.ProofSystem
 
 /-!
 # Edge Case Tests for Proof Search Automation (Task 319 Phase 2)
@@ -25,7 +25,7 @@ Systematic edge case testing for the proof search system covering:
 
 namespace BimodalTest.Automation.EdgeCase
 
-open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
+open FormalSystem.Syntax FormalSystem.Automation FormalSystem.ProofSystem
 
 -- Convenience abbreviations
 abbrev p : Formula := .atom_s "p"

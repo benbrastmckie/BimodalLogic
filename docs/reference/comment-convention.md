@@ -1,7 +1,7 @@
 # Comment Convention Standard
 
 This document defines the conventions for inline comments, tag-prefixed annotations,
-and `#check` usage in the `Theories/Bimodal/` library.
+and `#check` usage in the `FormalSystem/` library.
 
 **Last verified: 2026-05-29**
 

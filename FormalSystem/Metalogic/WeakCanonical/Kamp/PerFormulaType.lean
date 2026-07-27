@@ -60,10 +60,10 @@ over `{a // a ∈ M}`, never over `UnaryType` |
   module and keeps only the gate equivalence).
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
@@ -129,4 +129,4 @@ def weaken {M M' : Finset (AtomKind (sigE sig F) 1)} (h : M ⊆ M')
     (c : UnaryTypeFin sig F M') : UnaryTypeFin sig F M :=
   fun a => c ⟨a.1, h a.2⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

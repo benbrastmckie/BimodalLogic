@@ -34,12 +34,12 @@ MCS A with `neg(phi)` and `□(next_top)` and produces the prior model.
 - Reynolds 1994, Corollary 3 (= Burgess-Xu)
 - Burgess 1982: "Axioms for tense logic II: Time periods"
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.BXCanonical.Chronicle
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.BXCanonical.Chronicle
 
 /-! ## Discrete Hypothesis -/
 
@@ -212,4 +212,4 @@ def chronicle_discrete_pred (M : ChronicleAsPriorModel)
     (t : M.domain) : M.domain :=
   Order.pred t
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

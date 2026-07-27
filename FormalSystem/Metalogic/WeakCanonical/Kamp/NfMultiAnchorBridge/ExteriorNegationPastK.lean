@@ -68,11 +68,11 @@ uniqueness); the conjunct is restored per report 03. `kvE_pastFreshProfile`
 Purely additive NEW leaf module (H7 territory: this file only); no frozen file is touched;
 `ExteriorFiberK.lean` is FROZEN and consumed unchanged (postmortem rules 5-6). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ## Possible zones and zone classification (depth-independent, reused from the frozen layer)
 
@@ -738,4 +738,4 @@ theorem kvE_extNegPast_sound {sig : MonadicSignature} [Fintype sig.preds] [Decid
   rw [kvE_pastPos, if_pos hadm, formula_disjList_iff]
   exact ⟨_, List.mem_map.mpr ⟨l, List.mem_permutations.mpr hlperm, rfl⟩, hltruth⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

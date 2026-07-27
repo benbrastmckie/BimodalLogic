@@ -52,11 +52,11 @@ module. The determinacy core below is what every resolution of that residual con
 
 Purely additive leaf module; no frozen file is touched. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ## One-layer depth truncation (full-arity, fiber-existential — G1-compliant) -/
 
@@ -424,4 +424,4 @@ example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
   rw [← kvE_futAnyBit_zero]
   exact kvE_futAnyBit_correct M w x t (k := 0) qnf hq zs χ
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

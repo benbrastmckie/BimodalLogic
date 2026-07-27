@@ -33,9 +33,9 @@ For discrete orders, only Cases I and II apply, yielding a simpler proof.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Discrete ExtendedCarrier Simplification
 
@@ -1473,4 +1473,4 @@ theorem discrete_ghr93_proposition7 {sig : MonadicSignature}
         have h_A := h A; simp only [Set.mem_setOf_eq] at h_A
         exact ⟨fun hakA => (h_A.mp ⟨hA, hakA⟩).2, fun ha'kA => (h_A.mpr ⟨hA, ha'kA⟩).2⟩)
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

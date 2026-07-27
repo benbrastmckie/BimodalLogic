@@ -69,11 +69,11 @@ machine-validated on the probe model — ExteriorPinnedProbeK.lean, C8 GO):
 
 Purely additive NEW leaf module; no existing file is touched. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
    nf_depth0_char_formula)
 
@@ -1386,4 +1386,4 @@ theorem kvE_hsliceFut_supply_zero {sig : MonadicSignature} [Fintype sig.preds]
     rfl
   exact ⟨σ', hadm', hslEq, hmark⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

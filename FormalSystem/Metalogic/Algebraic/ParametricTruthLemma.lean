@@ -81,18 +81,18 @@ theorems `Truth.future_iff` and `Truth.past_iff`.
 
 ## References
 
-- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalFrame.lean
+- Existing: FormalSystem/Metalogic/Bundle/CanonicalFrame.lean
 -/
 
-namespace Bimodal.Metalogic.Algebraic.ParametricTruthLemma
+namespace FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Semantics
 
 variable {fc : FrameClass} {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
@@ -115,52 +115,52 @@ def ParametricCanonicalTaskModel (D : Type*) [AddCommGroup D] [LinearOrder D]
 
 /-- Classical tautology: neg(psi -> chi) -> psi. Derived at Base and lifted to fc. -/
 private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
-    Bimodal.ProofSystem.DerivationTree fc [] ((ψ.imp χ).neg.imp ψ) := by
+    FormalSystem.ProofSystem.DerivationTree fc [] ((ψ.imp χ).neg.imp ψ) := by
   have h_efq : [] ⊢ (ψ.neg.imp (ψ.imp χ)) :=
-    Bimodal.Theorems.Propositional.efq_neg ψ χ
+    FormalSystem.Theorems.Propositional.efq_neg ψ χ
   have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
-    Bimodal.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
+    FormalSystem.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
   have h_neg_psi : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg :=
-    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_efq_ctx h_neg_psi
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_efq_ctx h_neg_psi
   have h_neg_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
-    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_bot : [ψ.neg, (ψ.imp χ).neg] ⊢ Formula.bot :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
   have h_neg_neg_psi : [(ψ.imp χ).neg] ⊢ ψ.neg.neg :=
-    Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] ψ.neg Formula.bot h_bot
+    FormalSystem.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] ψ.neg Formula.bot h_bot
   have h_deduct : [] ⊢ (ψ.imp χ).neg.imp ψ.neg.neg :=
-    Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg ψ.neg.neg h_neg_neg_psi
+    FormalSystem.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg ψ.neg.neg h_neg_neg_psi
   have h_dne : [] ⊢ ψ.neg.neg.imp ψ :=
-    Bimodal.Theorems.Propositional.double_negation ψ
+    FormalSystem.Theorems.Propositional.double_negation ψ
   have h_b : [] ⊢ (ψ.neg.neg.imp ψ).imp (((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ)) :=
-    Bimodal.Theorems.Combinators.b_combinator
+    FormalSystem.Theorems.Combinators.b_combinator
   have h_step1 : [] ⊢ ((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ) :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_b h_dne
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_b h_dne
   have h_base : [] ⊢ (ψ.imp χ).neg.imp ψ :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
   exact h_base.lift (by cases fc <;> trivial)
 
 /-- Classical tautology: neg(psi -> chi) -> neg(chi) -/
 private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
-    Bimodal.ProofSystem.DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := by
+    FormalSystem.ProofSystem.DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := by
   have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.prop_s χ ψ) trivial
+    FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.prop_s χ ψ) trivial
   have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
-    Bimodal.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
+    FormalSystem.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
   have h_chi : [χ, (ψ.imp χ).neg] ⊢ χ :=
-    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_imp : [χ, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_prop_s_ctx h_chi
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_prop_s_ctx h_chi
   have h_neg_imp : [χ, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
-    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_bot : [χ, (ψ.imp χ).neg] ⊢ Formula.bot :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+    FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
   have h_neg_chi : [(ψ.imp χ).neg] ⊢ χ.neg :=
-    Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] χ Formula.bot h_bot
+    FormalSystem.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] χ Formula.bot h_bot
   have h_base : [] ⊢ (ψ.imp χ).neg.imp χ.neg :=
-    Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
+    FormalSystem.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
   exact h_base.lift (by cases fc <;> trivial)
 
 /-!
@@ -169,10 +169,10 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 
 /-- Past analog of TF axiom: Box phi -> H(Box phi), derived via temporal duality. -/
 private def past_tf_deriv (φ : Formula) :
-    Bimodal.ProofSystem.DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
-  have h_tf_swap : Bimodal.ProofSystem.DerivationTree fc [] _ :=
-      Bimodal.Theorems.Combinators.temp_future_derived (Formula.swap_temporal φ)
-  have h_dual := Bimodal.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
+    FormalSystem.ProofSystem.DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
+  have h_tf_swap : FormalSystem.ProofSystem.DerivationTree fc [] _ :=
+      FormalSystem.Theorems.Combinators.temp_future_derived (Formula.swap_temporal φ)
+  have h_dual := FormalSystem.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
   have h_eq : Formula.swap_temporal ((Formula.box (Formula.swap_temporal φ)).imp
       (Formula.box (Formula.swap_temporal φ)).all_future) =
     (Formula.box φ).imp (Formula.box φ).all_past := by
@@ -195,7 +195,7 @@ theorem parametric_box_persistent
     Formula.box φ ∈ fam.mcs s := by
   -- Step 1: G(Box phi) in fam.mcs t via TF axiom
   have h_tf : (Formula.box φ).imp (Formula.box φ).all_future ∈ fam.mcs t :=
-    theorem_in_mcs (fam.is_mcs t) (Bimodal.Theorems.Combinators.temp_future_derived φ)
+    theorem_in_mcs (fam.is_mcs t) (FormalSystem.Theorems.Combinators.temp_future_derived φ)
   have h_G_box : (Formula.box φ).all_future ∈ fam.mcs t :=
     SetMaximalConsistent.implication_property (fam.is_mcs t) h_tf h_box
   -- Step 2: H(Box phi) in fam.mcs t via past-TF
@@ -260,8 +260,8 @@ theorem parametric_canonical_truth_lemma
     · intro h_bot
       -- bot in MCS contradicts consistency
       have h_cons := (fam.is_mcs t).1
-      have h_deriv : Bimodal.ProofSystem.DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
-        Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+      have h_deriv : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
+        FormalSystem.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
       exact h_cons [Formula.bot] (fun psi hpsi => by simp only
           [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_bot) ⟨h_deriv⟩
     · intro h_false
@@ -286,16 +286,16 @@ theorem parametric_canonical_truth_lemma
           have h_taut := @neg_imp_implies_antecedent FrameClass.Base psi chi
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(psi.imp chi).neg]
             (by simp [h_neg_imp])
-            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
-              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
-              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
+            (FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _
+              (FormalSystem.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
+              (FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_chi_mcs : chi.neg ∈ fam.mcs t := by
           have h_taut := @neg_imp_implies_neg_consequent FrameClass.Base psi chi
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(psi.imp chi).neg]
             (by simp [h_neg_imp])
-            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
-              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
-              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
+            (FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _
+              (FormalSystem.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
+              (FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_psi_true : truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
             (parametric_to_history fam) t psi :=
           (ih_psi fam hfam t).mp h_psi_mcs
@@ -393,8 +393,8 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
     · intro h_mem
       exfalso
       have h_cons := (fam.is_mcs t).1
-      have h_deriv : Bimodal.ProofSystem.DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
-        Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+      have h_deriv : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
+        FormalSystem.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
       exact h_cons [Formula.bot] (fun psi hpsi => by simp only
           [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
@@ -413,16 +413,16 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
           have h_taut := @neg_imp_implies_antecedent FrameClass.Base ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
-            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
-              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
-              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
+            (FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _
+              (FormalSystem.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
+              (FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_χ_mcs : χ.neg ∈ fam.mcs t := by
           have h_taut := @neg_imp_implies_neg_consequent FrameClass.Base ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
-            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
-              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
-              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
+            (FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _
+              (FormalSystem.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
+              (FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_ψ_true : truth_at (ParametricCanonicalTaskModel D)
             (ShiftClosedParametricCanonicalOmega B)
             (parametric_to_history fam) t ψ :=
@@ -486,4 +486,4 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         (ih_phi fam hfam s).mpr h_truth_event_s,
         fun r h_sr h_rt => (ih_psi fam hfam r).mpr (h_truth_guard r h_sr h_rt)⟩
 
-end Bimodal.Metalogic.Algebraic.ParametricTruthLemma
+end FormalSystem.Metalogic.Algebraic.ParametricTruthLemma

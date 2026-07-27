@@ -41,9 +41,9 @@ Given S(C, F) with a single U(A,B) type at top level:
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Generalized Case 3: No U-free Precondition on Event
 
@@ -570,4 +570,4 @@ theorem lemma_10_2_4_guard_with_neg_U (a q A B : Formula)
     (case7_separable a q A B ha_uf hq_uf hA_uf hB_uf ha_sf hq_sf hA_sf hB_sf)
     (case8_separable a q A B ha_uf hq_uf hA_uf hB_uf ha_sf hq_sf hA_sf hB_sf)
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

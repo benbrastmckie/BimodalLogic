@@ -39,16 +39,16 @@ and what subgoals remain.
 
 ## References
 
-- `Bimodal.ProofSystem.Derivation` — `DerivationTree` and constructors
-- `Bimodal.ProofSystem.Axioms` — `Axiom` inductive with 42 constructors
-- `Bimodal.Automation.DataExport` — JSON serialization helpers
+- `FormalSystem.ProofSystem.Derivation` — `DerivationTree` and constructors
+- `FormalSystem.ProofSystem.Axioms` — `Axiom` inductive with 42 constructors
+- `FormalSystem.Automation.DataExport` — JSON serialization helpers
 -/
 
-namespace Bimodal.Automation.ProofStepExtractor
+namespace FormalSystem.Automation.ProofStepExtractor
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation.DataExport
 
 /-!
 ## Axiom Name Mapping
@@ -61,9 +61,9 @@ Map each axiom constructor to its canonical string name.
 
 This exhaustive 42-case pattern match provides the string representation
 of each axiom for the training data action space. The names match the
-constructor names in `Bimodal.ProofSystem.Axiom`.
+constructor names in `FormalSystem.ProofSystem.Axiom`.
 -/
-def _root_.Bimodal.ProofSystem.Axiom.toName {φ : Formula} : Axiom φ → String
+def _root_.FormalSystem.ProofSystem.Axiom.toName {φ : Formula} : Axiom φ → String
   -- Layer 1: Propositional (4)
   | .prop_k _ _ _ => "prop_k"
   | .prop_s _ _ => "prop_s"
@@ -342,4 +342,4 @@ structure TheoremEntry where
   name : String
   extract : Unit → List ProofStep
 
-end Bimodal.Automation.ProofStepExtractor
+end FormalSystem.Automation.ProofStepExtractor

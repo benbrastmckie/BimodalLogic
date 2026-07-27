@@ -24,13 +24,13 @@ interface for higher-level modules.
 - Design provenance: signature weakening to the chain-member guard (v5)
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Quasimodel
+namespace FormalSystem.Metalogic.BXCanonical.Quasimodel
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.BXCanonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.BXCanonical
 
 /-! ## Sorry-Closing Lemmas for Frame.lean -/
 
@@ -52,4 +52,4 @@ theorem bx_since_eventuality_resolution'
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas :=
   since_eventuality_resolution w φ ψ h_since h_not_psi
 
-end Bimodal.Metalogic.BXCanonical.Quasimodel
+end FormalSystem.Metalogic.BXCanonical.Quasimodel

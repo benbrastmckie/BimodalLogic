@@ -41,11 +41,11 @@ is a premise.
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.PrefilterSoundness
+namespace FormalSystem.Automation.PrefilterSoundness
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.Automation
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.Automation
 
 /-!
 ## Core Lemma: isUnsatBotTemporal implies falsity
@@ -174,4 +174,4 @@ theorem false_consequent_not_truth
   have h_conseq := h_imp h_ante_true
   exact isUnsatBotTemporal_not_truth hτ h_false h_conseq
 
-end Bimodal.Automation.PrefilterSoundness
+end FormalSystem.Automation.PrefilterSoundness

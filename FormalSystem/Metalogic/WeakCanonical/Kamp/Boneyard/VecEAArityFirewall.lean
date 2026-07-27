@@ -45,10 +45,10 @@ construction.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Arity-1 endpoint component -/
 
@@ -143,4 +143,4 @@ theorem VecEA_m.arity_firewall {sig : MonadicSignature} {m : Nat}
     · intro i
       exact (vea.intervalComponent_holds M atomMap i _ _).mp (hbr_c i)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

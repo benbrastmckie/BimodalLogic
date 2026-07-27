@@ -17,11 +17,11 @@ and the coincident-anchor discharge.
 (`kvE2_sepBody_extract` in `Assembly`, `kvE2_outer_fold_frag` in `FragmentFoldRight`), so
 the tower has no forward reference into it. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -780,4 +780,4 @@ theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature} [Fintype sig
 -- coincidence order `kvE2_sepCoincidentOrder`). It had zero live consumers and is superseded by the
 -- unconditional `kvE2_sepBody_complete` (`Completeness.lean`). See plan 04, Phase 1.
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

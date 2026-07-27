@@ -43,14 +43,14 @@ All 4 theorems above are fully proven; this module is sorry-free.
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
 -/
 
-namespace Bimodal.Theorems.ModalS4
+namespace FormalSystem.Theorems.ModalS4
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Perpetuity
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.ModalS5
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Perpetuity
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.ModalS5
 
 /-!
 ## Phase 4: Modal S4 Theorems (Not Started)
@@ -417,4 +417,4 @@ noncomputable def s5_diamond_conj_diamond (A B : Formula) :
   -- Combine into biconditional
   exact Propositional.iff_intro (A.and B.diamond).diamond (A.diamond.and B.diamond) forward backward
 
-end Bimodal.Theorems.ModalS4
+end FormalSystem.Theorems.ModalS4

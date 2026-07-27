@@ -132,7 +132,7 @@ lake env lean BimodalTest/ProofSystem/AxiomsTest.lean
 Tests for [module description].
 -/
 
-import Bimodal.[Module]
+import FormalSystem.[Module]
 
 namespace BimodalTest.[Module]Test
 

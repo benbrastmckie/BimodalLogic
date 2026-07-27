@@ -15,9 +15,9 @@ import Mathlib.Data.Fintype.Pigeonhole
 GHR93 Claim 1: continuation predicates, gap construction, and gap r-definability.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Base Case Helper: Embedding 0-Game into 1-Game Tuples
 
@@ -1649,4 +1649,4 @@ theorem infimum_gap_r_definable_cross {sig : MonadicSignature} [Fintype sig.pred
       exact hu_fail h_holds
 
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

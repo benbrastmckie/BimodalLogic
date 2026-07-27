@@ -58,9 +58,9 @@ open Lean Elab Tactic Meta
 Import Bimodal modules for TM logic types and operations:
 
 ```lean
-import Bimodal.Syntax.Formula         -- Formula inductive type
-import Bimodal.ProofSystem.Axioms     -- TM axiom schemata
-import Bimodal.ProofSystem.Derivation -- Derivable relation, inference rules
+import FormalSystem.Syntax.Formula         -- Formula inductive type
+import FormalSystem.ProofSystem.Axioms     -- TM axiom schemata
+import FormalSystem.ProofSystem.Derivation -- Derivable relation, inference rules
 ```
 
 ### Complete Working Example
@@ -68,25 +68,25 @@ import Bimodal.ProofSystem.Derivation -- Derivable relation, inference rules
 Full import block for a tactic file:
 
 ```lean
--- File: Theories/Bimodal/Automation/Tactics.lean
+-- File: FormalSystem/Automation/Tactics.lean
 import Lean.Elab.Tactic
 import Lean.Meta.Basic
 import Lean.Expr
 import Lean.MVarId
 
-import Bimodal.Syntax.Formula
-import Bimodal.ProofSystem.Axioms
-import Bimodal.ProofSystem.Derivation
+import FormalSystem.Syntax.Formula
+import FormalSystem.ProofSystem.Axioms
+import FormalSystem.ProofSystem.Derivation
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
 open Lean Elab Tactic Meta
-open Bimodal.Syntax (Formula)
-open Bimodal.ProofSystem (Axiom Derivable)
+open FormalSystem.Syntax (Formula)
+open FormalSystem.ProofSystem (Axiom Derivable)
 
 -- Tactic implementations here...
 
-end Bimodal.Automation
+end FormalSystem.Automation
 ```
 
 ## 3. Goal Management

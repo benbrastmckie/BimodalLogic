@@ -4,15 +4,15 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.Tactics.Deduction
+import FormalSystem.Automation.Tactics.Deduction
 
 /-!
 # Tests for Deduction Theorem Tactics
 
 Tests for the `deduction`, `deduction n`, and `undischarge` tactics defined in
-`Theories/Bimodal/Automation/Tactics/Deduction.lean`, plus the term-level
+`FormalSystem/Automation/Tactics/Deduction.lean`, plus the term-level
 `deduction_converse` and Prop-level `Derivable.deduction` from
-`Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean`.
+`FormalSystem/Metalogic/Core/DeductionTheorem.lean`.
 
 ## Test Coverage
 
@@ -35,7 +35,7 @@ generalization and does not currently compile); examples requiring
 
 namespace BimodalTest.Automation.DeductionTest
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Metalogic.Core
+open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Metalogic.Core
 
 /-! ## Basic discharge -/
 

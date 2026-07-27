@@ -19,11 +19,11 @@ reductio ad absurdum (raa), left/right disjunction introduction (ldi, rdi),
 left/right conjunction elimination (lce, rce), and right conjunction principle (rcp).
 -/
 
-namespace Bimodal.Theorems.Propositional
+namespace FormalSystem.Theorems.Propositional
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators
 
 noncomputable section
 
@@ -649,7 +649,7 @@ def lce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp A := by
   -- Use deduction theorem: from [A ∧ B] ⊢ A, derive ⊢ (A ∧ B) → A
   have h : [A.and B] ⊢ A := lce A B
   exact DerivationTree.lift (FrameClass.base_le fc)
-    (Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) A h)
+    (FormalSystem.Metalogic.Core.deduction_theorem [] (A.and B) A h)
 
 /--
 Right Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → B`.
@@ -667,9 +667,9 @@ def rce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp B := by
   -- Use deduction theorem: from [A ∧ B] ⊢ B, derive ⊢ (A ∧ B) → B
   have h : [A.and B] ⊢ B := rce A B
   exact DerivationTree.lift (FrameClass.base_le fc)
-    (Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) B h)
+    (FormalSystem.Metalogic.Core.deduction_theorem [] (A.and B) B h)
 
 
 end -- noncomputable section
 
-end Bimodal.Theorems.Propositional
+end FormalSystem.Theorems.Propositional

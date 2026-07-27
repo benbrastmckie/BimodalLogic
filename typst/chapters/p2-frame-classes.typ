@@ -20,7 +20,7 @@
 
 The `FrameClass` classification that parameterizes `DerivationTree` (@sec:formulas) is a three-element inductive type with an explicit partial order, defined in `ProofSystem/Axioms.lean`:
 
-#leansrc("Bimodal.ProofSystem", "FrameClass")
+#leansrc("FormalSystem.ProofSystem", "FrameClass")
 ```
 inductive FrameClass where
   | Base
@@ -117,7 +117,7 @@ This asymmetry (Discreteness/Density formalized, Completeness not) matches the t
 The paper's *Next* and *Previous* operators are derived, not primitive, in the Lean formalization.
 `Syntax/Formula.lean` defines them with the formula argument *first* and $bot$ as the guard (the "Burgess convention" @burgess1982axioms: event first, guard second):
 
-#leansrc("Bimodal.Syntax.Formula", "next")
+#leansrc("FormalSystem.Syntax.Formula", "next")
 ```
 def next (φ : Formula) : Formula := Formula.untl φ Formula.bot   -- X(φ) := φ U ⊥
 def prev (φ : Formula) : Formula := Formula.snce φ Formula.bot   -- Y(φ) := φ S ⊥

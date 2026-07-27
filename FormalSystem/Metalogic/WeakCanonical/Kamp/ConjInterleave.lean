@@ -83,9 +83,9 @@ OFF the live import path: nothing here is imported by `KampPrior.lean` or the co
 - `VecEAConjFull.lean`: `BracketFormula.conjFull` — the type-merge bookkeeping template.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax (Formula)
+open FormalSystem.Syntax (Formula)
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
@@ -1062,4 +1062,4 @@ theorem veeConjFin_pin_strictMono {r : Nat} (Ψ₁ Ψ₂ : VeeExistsForallFin si
 
 end Kamp
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

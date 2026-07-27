@@ -20,7 +20,7 @@ Tests for task frame semantics.
 
 ## Related
 
-- [Source: Semantics/](../../../Theories/Bimodal/Semantics/)
+- [Source: Semantics/](../../../FormalSystem/Semantics/)
 - [Parent README](../README.md)
 
 ---

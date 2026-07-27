@@ -52,20 +52,20 @@ DecisionProcedure.decideAuto(phi)
 
 ## References
 
-- `Bimodal.Automation.FormulaEnumerator` — formula generation
-- `Bimodal.Metalogic.Decidability.DecisionProcedure` — `decideAuto`
-- `Bimodal.Automation.ProofStepExtractor` — `extractStepSequence`
+- `FormalSystem.Automation.FormulaEnumerator` — formula generation
+- `FormalSystem.Metalogic.Decidability.DecisionProcedure` — `decideAuto`
+- `FormalSystem.Automation.ProofStepExtractor` — `extractStepSequence`
 -/
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.TableauProofStepPipeline
+namespace FormalSystem.Automation.TableauProofStepPipeline
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation.ProofStepExtractor
-open Bimodal.Automation.DataExport
-open Bimodal.Metalogic.Decidability
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation.ProofStepExtractor
+open FormalSystem.Automation.DataExport
+open FormalSystem.Metalogic.Decidability
 
 /-!
 ## Pipeline Configuration
@@ -656,9 +656,9 @@ def parseArgs (args : List String) : PipelineConfig := Id.run do
       i := i + 1
   return config
 
-end Bimodal.Automation.TableauProofStepPipeline
+end FormalSystem.Automation.TableauProofStepPipeline
 
-open Bimodal.Automation.TableauProofStepPipeline in
+open FormalSystem.Automation.TableauProofStepPipeline in
 /--
 Main entry point for `lake exe tableau_proof_steps`.
 

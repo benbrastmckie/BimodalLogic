@@ -6,7 +6,7 @@ Do not import from live code.
 #exit
 
 -- RELOCATED from root Boneyard/DeadConvergenceProof/succ_cofinal_convergence.lean
--- Reason: Consolidation — moved from root-level Boneyard/ to Theories/Bimodal/Boneyard/
+-- Reason: Consolidation — moved from root-level Boneyard/ to FormalSystem/Boneyard/
 -- Relocated: 2026-06-16
 
 /-!
@@ -201,21 +201,21 @@ argument.
         (SetMaximalConsistent.negation_complete h_mcs_x ψ.all_future).resolve_left h_not
       -- Build derivation: ⊢ ψ.neg.neg → ψ (double negation elimination)
       have h_dne : DerivationTree fc [] (ψ.neg.neg.imp ψ) :=
-        Bimodal.Theorems.Propositional.double_negation ψ
+        FormalSystem.Theorems.Propositional.double_negation ψ
       -- Temporal necessitation: ⊢ G(ψ.neg.neg → ψ)
       have h_G_dne : DerivationTree fc [] (Formula.all_future (ψ.neg.neg.imp ψ)) :=
         DerivationTree.temporal_necessitation _ h_dne
       -- K-distribution: ⊢ G(ψ.neg.neg → ψ) → (G(ψ.neg.neg) → G(ψ))
       have h_dist : DerivationTree fc [] ((ψ.neg.neg.imp ψ).all_future.imp
           (ψ.neg.neg.all_future.imp ψ.all_future)) :=
-        liftBase fc (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ.neg.neg ψ)
+        liftBase fc (FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived ψ.neg.neg ψ)
       -- Modus ponens: ⊢ G(ψ.neg.neg) → G(ψ)
       have h_G_impl : DerivationTree fc [] (ψ.neg.neg.all_future.imp ψ.all_future) :=
         DerivationTree.modus_ponens [] _ _ h_dist h_G_dne
       -- Contrapositive: ⊢ ¬G(ψ) → ¬G(ψ.neg.neg)
       -- Note: ¬G(ψ.neg.neg) = (ψ.neg.neg.all_future).neg = F(ψ.neg)  (definitionally)
       have h_contra : DerivationTree fc [] (ψ.all_future.neg.imp ψ.neg.neg.all_future.neg) := by
-        have h_cp := liftBase fc (Bimodal.Theorems.TemporalDerived.contrapositive
+        have h_cp := liftBase fc (FormalSystem.Theorems.TemporalDerived.contrapositive
           ψ.neg.neg.all_future ψ.all_future)
         exact DerivationTree.modus_ponens [] _ _ h_cp h_G_impl
       -- Apply in MCS: F(ψ.neg) ∈ limit_f(x)

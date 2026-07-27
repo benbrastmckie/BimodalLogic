@@ -41,8 +41,8 @@ Do not import from live code.
 #exit
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/WeakCanonical/OrderedSum.lean
-   Original context: `namespace Bimodal.Metalogic.WeakCanonical`.
+   Source: FormalSystem/Metalogic/WeakCanonical/OrderedSum.lean
+   Original context: `namespace FormalSystem.Metalogic.WeakCanonical`.
    ====================================================================== -/
 
 /-! ## Doets Lemma 1.5 (Type-Matching Variant) -/
@@ -64,10 +64,10 @@ theorem doets_lemma_1_5 (sig : MonadicSignature) (k : Nat) (I J : Type)
   sorry
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/BXCanonical/Frame.lean
-   Original context: `namespace Bimodal.Metalogic.BXCanonical`,
-   `open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Metalogic.Core
-   Bimodal.Metalogic.Bundle Bimodal.Theorems`.
+   Source: FormalSystem/Metalogic/BXCanonical/Frame.lean
+   Original context: `namespace FormalSystem.Metalogic.BXCanonical`,
+   `open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Metalogic.Core
+   FormalSystem.Metalogic.Bundle FormalSystem.Theorems`.
    ====================================================================== -/
 
 /-! ## Reflexivity (from BX1: G(φ) → φ) -/
@@ -81,17 +81,17 @@ theorem bx_le_refl (w : BXPoint) : bx_le w w := by
   sorry
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
-   Original context: `namespace Bimodal.Metalogic.BXCanonical.Chronicle`,
-   `open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Metalogic.Core
-   Bimodal.Metalogic.Bundle Bimodal.Metalogic.Algebraic.ParametricCanonical
-   Bimodal.Metalogic.Algebraic.ParametricHistory
-   Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-   Bimodal.Metalogic.Algebraic.ParametricCompleteness
-   Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
-   Bimodal.Semantics Bimodal.Theorems.Propositional
-   Bimodal.Theorems.Combinators Bimodal.Theorems.Perpetuity
-   Bimodal.Metalogic.BXCanonical Classical`.
+   Source: FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
+   Original context: `namespace FormalSystem.Metalogic.BXCanonical.Chronicle`,
+   `open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Metalogic.Core
+   FormalSystem.Metalogic.Bundle FormalSystem.Metalogic.Algebraic.ParametricCanonical
+   FormalSystem.Metalogic.Algebraic.ParametricHistory
+   FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+   FormalSystem.Metalogic.Algebraic.ParametricCompleteness
+   FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+   FormalSystem.Semantics FormalSystem.Theorems.Propositional
+   FormalSystem.Theorems.Combinators FormalSystem.Theorems.Perpetuity
+   FormalSystem.Metalogic.BXCanonical Classical`.
    ====================================================================== -/
 
 /--

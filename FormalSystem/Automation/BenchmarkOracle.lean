@@ -31,11 +31,11 @@ Where `formulas.txt` contains one JSON AST per line.
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.BenchmarkOracle
+namespace FormalSystem.Automation.BenchmarkOracle
 
-open Bimodal.Syntax
-open Bimodal.Automation
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.Automation
+open FormalSystem.Automation.DataExport
 
 /-!
 ## Simple recursive-descent JSON AST parser for Formula
@@ -252,15 +252,15 @@ def parseFormulaFromRecord (line : String) : Except String Formula := do
 def strContains (s : String) (sub : String) : Bool :=
   (s.splitOn sub).length > 1
 
-end Bimodal.Automation.BenchmarkOracle
+end FormalSystem.Automation.BenchmarkOracle
 
 /-!
 ## Main Entry Point
 -/
 
-open Bimodal.Automation
-open Bimodal.Automation.BenchmarkOracle
-open Bimodal.Automation.DataExport
+open FormalSystem.Automation
+open FormalSystem.Automation.BenchmarkOracle
+open FormalSystem.Automation.DataExport
 
 def main (args : List String) : IO Unit := do
   let argsArr := args.toArray

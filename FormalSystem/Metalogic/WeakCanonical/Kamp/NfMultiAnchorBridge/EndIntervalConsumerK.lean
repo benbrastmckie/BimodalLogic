@@ -48,11 +48,11 @@ introduced here.
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Cor 5.4 + Lemma 7.6.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ## Phase 2 — reshaped recursion carriers (`charF` + provider family threaded) -/
 
@@ -393,4 +393,4 @@ example (m : Nat) : endIntervalPrior atomMap h_surj charF Pfam (m + 2) =
 
 end RecursionReductionProbes
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

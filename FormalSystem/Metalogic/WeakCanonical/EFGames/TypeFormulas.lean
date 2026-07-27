@@ -12,9 +12,9 @@ import FormalSystem.Metalogic.WeakCanonical.EFGames.Defs
 Type formulas and mu-relativized truth for rank-embedding transfer.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Rank Embedding Infrastructure
 
@@ -1111,4 +1111,4 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         ⟨y, rfl⟩)
 
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

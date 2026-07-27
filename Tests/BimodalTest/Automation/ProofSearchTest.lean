@@ -4,12 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation.ProofSearch.Strategies
-import Bimodal.ProofSystem
+import FormalSystem.Automation.ProofSearch.Strategies
+import FormalSystem.ProofSystem
 
 namespace BimodalTest.Automation
 
-open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
+open FormalSystem.Syntax FormalSystem.Automation FormalSystem.ProofSystem
 
 abbrev p : Formula := .atom_s "p"
 abbrev q : Formula := .atom_s "q"

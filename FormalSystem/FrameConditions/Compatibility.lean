@@ -42,14 +42,14 @@ Total: 19 axioms (2 T-axioms removed under strict semantics)
 
 ## References
 
-- `Bimodal.ProofSystem.Axioms`: Axiom definitions and frame class enum
+- `FormalSystem.ProofSystem.Axioms`: Axiom definitions and frame class enum
 -/
 
-namespace Bimodal.FrameConditions
+namespace FormalSystem.FrameConditions
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.ProofSystem
 
 /-! ## Axiom Compatibility Typeclass -/
 
@@ -180,4 +180,4 @@ theorem axiom_base_implies_linear_compatible {φ : Formula} (ax : Axiom φ)
   intro D _ _ _ _ _
   exact axiom_base_valid_linear ax h D
 
-end Bimodal.FrameConditions
+end FormalSystem.FrameConditions

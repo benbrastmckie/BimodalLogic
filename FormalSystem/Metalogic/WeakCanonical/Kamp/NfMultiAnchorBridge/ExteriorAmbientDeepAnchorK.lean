@@ -77,10 +77,10 @@ Discharge ONLY via the byte-stable lemmas here (`kvE_ambientDeepAnchor_of_realiz
 `kvE_ambientDeepAnchor`, `kvE_deepOnFiber`, `kvE_fiberElemConsistent`, or the admissibility
 predicates outside their home modules. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- **Top-two-slot swap** on a depth-`K`, arity-`(N+2)` normal form: the sanctioned
     depth/arity-preserving reindex by the involution `Equiv.swap 0 1` (from
@@ -232,4 +232,4 @@ theorem kvE_ambientDeepAnchor_of_realized {sig : MonadicSignature} [Fintype sig.
       rw [hρeq, swapNF01_char M, cons2_comp_swap01]
       exact nf_characteristic_satisfies M (k + 1) (n + 2) (Fin.cons x1 (Fin.cons x2 env))
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

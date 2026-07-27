@@ -43,11 +43,11 @@ No cross-structure transfer is needed.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula
   nf_depth0_char_formula_correct formula_conjList formula_conjList_iff
   formula_disjList formula_disjList_iff)
 
@@ -402,4 +402,4 @@ theorem zone3_from_bracket {sig : MonadicSignature}
       M₀ (Fin.cons w₀ (Fin.cons x₀ (fun _ => t₀)))
       h_3var_agree K (by omega) psi
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -45,17 +45,17 @@ K-distribution chain argument.
 
 #exit
 
-namespace Bimodal.Metalogic.Algebraic.UltrafilterChain
+namespace FormalSystem.Metalogic.Algebraic.UltrafilterChain
 
-open Bimodal.Syntax Bimodal.ProofSystem
-open Bimodal.Metalogic.Algebraic.LindenbaumQuotient
-open Bimodal.Metalogic.Algebraic.BooleanStructure
-open Bimodal.Metalogic.Algebraic.InteriorOperators
-open Bimodal.Metalogic.Algebraic.TenseS5Algebra
-open Bimodal.Metalogic.Algebraic.UltrafilterMCS
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
+open FormalSystem.Syntax FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
+open FormalSystem.Metalogic.Algebraic.BooleanStructure
+open FormalSystem.Metalogic.Algebraic.InteriorOperators
+open FormalSystem.Metalogic.Algebraic.TenseS5Algebra
+open FormalSystem.Metalogic.Algebraic.UltrafilterMCS
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
 
 /-!
 ## Phase 1: Temporal Accessibility Relations
@@ -694,7 +694,7 @@ theorem G_preimage_top (U : Ultrafilter LindenbaumAlg) : ⊤ ∈ G_preimage U :=
       -- From ⊢ ⊥ → ⊥, by necessitation get ⊢ G(⊥ → ⊥)
       -- Then ⊢ ⊤ → G(⊤) by prop_s
       have h_id : [] ⊢ Formula.bot.imp Formula.bot :=
-        Bimodal.Theorems.Combinators.identity Formula.bot
+        FormalSystem.Theorems.Combinators.identity Formula.bot
       have h_nec : [] ⊢ Formula.all_future (Formula.bot.imp Formula.bot) :=
         DerivationTree.temporal_necessitation (Formula.bot.imp Formula.bot) h_id
       have h_s : [] ⊢ (Formula.all_future (Formula.bot.imp Formula.bot)).imp
@@ -747,28 +747,28 @@ theorem G_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
     unfold Derives
     -- Step 1: pairing gives ⊢ φ → (ψ → φ ∧ ψ)
     have d_pairing : ⊢ φ.imp (ψ.imp (φ.and ψ)) :=
-      Bimodal.Theorems.Combinators.pairing φ ψ
+      FormalSystem.Theorems.Combinators.pairing φ ψ
     -- Step 2: temporal_necessitation gives ⊢ G(φ → (ψ → φ ∧ ψ))
     have d_G_pairing : ⊢ (φ.imp (ψ.imp (φ.and ψ))).all_future :=
       DerivationTree.temporal_necessitation (φ.imp (ψ.imp (φ.and ψ))) d_pairing
     -- Step 3: temp_k_dist at outer level: G(φ → (ψ → φ ∧ ψ)) → (G(φ) → G(ψ → φ ∧ ψ))
     have d_k1 : ⊢ ((φ.imp (ψ.imp (φ.and ψ))).all_future).imp
                    (φ.all_future.imp (ψ.imp (φ.and ψ)).all_future) :=
-      Bimodal.Theorems.Perpetuity.future_k_dist _ _
+      FormalSystem.Theorems.Perpetuity.future_k_dist _ _
     -- Apply to get: ⊢ G(φ) → G(ψ → φ ∧ ψ)
     have d_step3 : ⊢ φ.all_future.imp (ψ.imp (φ.and ψ)).all_future :=
       DerivationTree.modus_ponens [] _ _ d_k1 d_G_pairing
     -- Step 4: temp_k_dist at inner level: G(ψ → φ ∧ ψ) → (G(ψ) → G(φ ∧ ψ))
     have d_k2 : ⊢ ((ψ.imp (φ.and ψ)).all_future).imp
                    (ψ.all_future.imp (φ.and ψ).all_future) :=
-      Bimodal.Theorems.Perpetuity.future_k_dist _ _
+      FormalSystem.Theorems.Perpetuity.future_k_dist _ _
     -- Step 5: Compose: G(φ) → (G(ψ) → G(φ ∧ ψ))
     -- Using b_combinator: (B → C) → (A → B) → (A → C)
     -- With A = φ.all_future, B = (ψ.imp (φ.and ψ)).all_future, C = ψ.all_future.imp (φ.and ψ).all_future
     have d_b : ⊢ ((ψ.imp (φ.and ψ)).all_future.imp (ψ.all_future.imp (φ.and ψ).all_future)).imp
                   ((φ.all_future.imp (ψ.imp (φ.and ψ)).all_future).imp
                    (φ.all_future.imp (ψ.all_future.imp (φ.and ψ).all_future))) :=
-      Bimodal.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.b_combinator
     have d_step5_inter : ⊢ (φ.all_future.imp (ψ.imp (φ.and ψ)).all_future).imp
                            (φ.all_future.imp (ψ.all_future.imp (φ.and ψ).all_future)) :=
       DerivationTree.modus_ponens [] _ _ d_b d_k2
@@ -786,14 +786,14 @@ theorem G_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
       have h_Gφ : [φ.all_future.and ψ.all_future] ⊢ φ.all_future := by
         apply DerivationTree.modus_ponens _ _ _
         · apply DerivationTree.weakening [] _
-          · exact Bimodal.Theorems.Propositional.lce_imp φ.all_future ψ.all_future
+          · exact FormalSystem.Theorems.Propositional.lce_imp φ.all_future ψ.all_future
           · intro; simp
         · exact h_conj
       -- Get G(ψ) from conjunction
       have h_Gψ : [φ.all_future.and ψ.all_future] ⊢ ψ.all_future := by
         apply DerivationTree.modus_ponens _ _ _
         · apply DerivationTree.weakening [] _
-          · exact Bimodal.Theorems.Propositional.rce_imp φ.all_future ψ.all_future
+          · exact FormalSystem.Theorems.Propositional.rce_imp φ.all_future ψ.all_future
           · intro; simp
         · exact h_conj
       -- Weaken d_step5 into context
@@ -807,7 +807,7 @@ theorem G_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
         DerivationTree.modus_ponens _ _ _ h_step5_ctx h_Gφ
       exact DerivationTree.modus_ponens _ _ _ h_inner h_Gψ
     -- Apply deduction theorem
-    exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.all_future.and ψ.all_future)
+    exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] (φ.all_future.and ψ.all_future)
              (φ.and ψ).all_future h_ctx⟩
   exact U.mem_of_le h_inf h_K_inf
 
@@ -832,9 +832,9 @@ theorem H_preimage_top (U : Ultrafilter LindenbaumAlg) : ⊤ ∈ H_preimage U :=
       unfold top_quot H_quot
       show Derives (Formula.bot.imp Formula.bot) (Formula.all_past (Formula.bot.imp Formula.bot))
       have h_id : [] ⊢ Formula.bot.imp Formula.bot :=
-        Bimodal.Theorems.Combinators.identity Formula.bot
+        FormalSystem.Theorems.Combinators.identity Formula.bot
       have h_nec : [] ⊢ Formula.all_past (Formula.bot.imp Formula.bot) :=
-        Bimodal.Theorems.past_necessitation (Formula.bot.imp Formula.bot) h_id
+        FormalSystem.Theorems.past_necessitation (Formula.bot.imp Formula.bot) h_id
       have h_s : [] ⊢ (Formula.all_past (Formula.bot.imp Formula.bot)).imp
           ((Formula.bot.imp Formula.bot).imp (Formula.all_past (Formula.bot.imp Formula.bot))) :=
         DerivationTree.axiom [] _ (Axiom.prop_s _ _)
@@ -871,25 +871,25 @@ theorem H_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
     unfold Derives
     -- Step 1: pairing gives ⊢ φ → (ψ → φ ∧ ψ)
     have d_pairing : ⊢ φ.imp (ψ.imp (φ.and ψ)) :=
-      Bimodal.Theorems.Combinators.pairing φ ψ
+      FormalSystem.Theorems.Combinators.pairing φ ψ
     -- Step 2: past_necessitation gives ⊢ H(φ → (ψ → φ ∧ ψ))
     have d_H_pairing : ⊢ (φ.imp (ψ.imp (φ.and ψ))).all_past :=
-      Bimodal.Theorems.past_necessitation (φ.imp (ψ.imp (φ.and ψ))) d_pairing
+      FormalSystem.Theorems.past_necessitation (φ.imp (ψ.imp (φ.and ψ))) d_pairing
     -- Step 3: past_k_dist at outer level
     have d_k1 : ⊢ ((φ.imp (ψ.imp (φ.and ψ))).all_past).imp
                    (φ.all_past.imp (ψ.imp (φ.and ψ)).all_past) :=
-      Bimodal.Theorems.past_k_dist φ (ψ.imp (φ.and ψ))
+      FormalSystem.Theorems.past_k_dist φ (ψ.imp (φ.and ψ))
     have d_step3 : ⊢ φ.all_past.imp (ψ.imp (φ.and ψ)).all_past :=
       DerivationTree.modus_ponens [] _ _ d_k1 d_H_pairing
     -- Step 4: past_k_dist at inner level
     have d_k2 : ⊢ ((ψ.imp (φ.and ψ)).all_past).imp
                    (ψ.all_past.imp (φ.and ψ).all_past) :=
-      Bimodal.Theorems.past_k_dist ψ (φ.and ψ)
+      FormalSystem.Theorems.past_k_dist ψ (φ.and ψ)
     -- Step 5: Compose using b_combinator
     have d_b : ⊢ ((ψ.imp (φ.and ψ)).all_past.imp (ψ.all_past.imp (φ.and ψ).all_past)).imp
                   ((φ.all_past.imp (ψ.imp (φ.and ψ)).all_past).imp
                    (φ.all_past.imp (ψ.all_past.imp (φ.and ψ).all_past))) :=
-      Bimodal.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.b_combinator
     have d_step5_inter : ⊢ (φ.all_past.imp (ψ.imp (φ.and ψ)).all_past).imp
                            (φ.all_past.imp (ψ.all_past.imp (φ.and ψ).all_past)) :=
       DerivationTree.modus_ponens [] _ _ d_b d_k2
@@ -903,13 +903,13 @@ theorem H_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
       have h_Hφ : [φ.all_past.and ψ.all_past] ⊢ φ.all_past := by
         apply DerivationTree.modus_ponens _ _ _
         · apply DerivationTree.weakening [] _
-          · exact Bimodal.Theorems.Propositional.lce_imp φ.all_past ψ.all_past
+          · exact FormalSystem.Theorems.Propositional.lce_imp φ.all_past ψ.all_past
           · intro; simp
         · exact h_conj
       have h_Hψ : [φ.all_past.and ψ.all_past] ⊢ ψ.all_past := by
         apply DerivationTree.modus_ponens _ _ _
         · apply DerivationTree.weakening [] _
-          · exact Bimodal.Theorems.Propositional.rce_imp φ.all_past ψ.all_past
+          · exact FormalSystem.Theorems.Propositional.rce_imp φ.all_past ψ.all_past
           · intro; simp
         · exact h_conj
       have h_step5_ctx : [φ.all_past.and ψ.all_past] ⊢
@@ -920,7 +920,7 @@ theorem H_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
       have h_inner : [φ.all_past.and ψ.all_past] ⊢ ψ.all_past.imp (φ.and ψ).all_past :=
         DerivationTree.modus_ponens _ _ _ h_step5_ctx h_Hφ
       exact DerivationTree.modus_ponens _ _ _ h_inner h_Hψ
-    exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.all_past.and ψ.all_past)
+    exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] (φ.all_past.and ψ.all_past)
              (φ.and ψ).all_past h_ctx⟩
   exact U.mem_of_le h_inf h_K_inf
 
@@ -989,7 +989,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
       unfold Derives
       -- ⊢ ⊤, so ⊢ G(⊤), then ⊢ ⊤ → G(⊤) by prop_s pattern
       let T := Formula.bot.imp Formula.bot
-      have h_T : [] ⊢ T := Bimodal.Theorems.Combinators.identity Formula.bot
+      have h_T : [] ⊢ T := FormalSystem.Theorems.Combinators.identity Formula.bot
       have h_GT : [] ⊢ T.all_future := DerivationTree.temporal_necessitation T h_T
       -- From ⊢ G(⊤), derive ⊢ ⊤ → G(⊤) using prop_s: ⊢ φ → (ψ → φ)
       have h_s : [] ⊢ T.all_future.imp (T.imp T.all_future) :=
@@ -1001,7 +1001,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
     show G_quot (toQuot Formula.bot) ≤ bot_quot
     unfold G_quot bot_quot
     show Derives Formula.bot.all_future Formula.bot
-    exact ⟨Bimodal.Theorems.TemporalDerived.G_bot_absurd⟩
+    exact ⟨FormalSystem.Theorems.TemporalDerived.G_bot_absurd⟩
 
   -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
@@ -1045,7 +1045,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
           · right; exact List.mem_append_left _ h
           · left; exact h
           · right; exact List.mem_append_right _ h
-        exact Bimodal.Metalogic.Core.deduction_theorem L_no_phi φ Formula.bot d_rearranged
+        exact FormalSystem.Metalogic.Core.deduction_theorem L_no_phi φ Formula.bot d_rearranged
 
       -- Filter out ALL occurrences of φ from L_no_phi to get L_filt
       -- This is the key fix: L_no_phi.erase only removes ONE occurrence, but φ may appear multiple times
@@ -1077,7 +1077,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
         -- From prop_k: (A → (A → B)) → ((A → A) → (A → B))
         have k_inst : ⊢ (A.imp (A.imp B)).imp ((A.imp A).imp (A.imp B)) :=
           DerivationTree.axiom [] _ (Axiom.prop_k A A B)
-        have id_A : ⊢ A.imp A := Bimodal.Theorems.Combinators.identity A
+        have id_A : ⊢ A.imp A := FormalSystem.Theorems.Combinators.identity A
         -- We need: (A → A) → ((A → A → B) → (A → B))
         -- We have k_inst: (A → A → B) → ((A → A) → (A → B))
         -- We have id_A: A → A
@@ -1087,7 +1087,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
         -- gives: ((A → A → B) → (A → A) → (A → B)) → ((A → A) → (A → A → B) → (A → B))
         have flip_thm : ⊢ ((A.imp (A.imp B)).imp ((A.imp A).imp (A.imp B))).imp
                           ((A.imp A).imp ((A.imp (A.imp B)).imp (A.imp B))) :=
-          Bimodal.Theorems.Combinators.theorem_flip
+          FormalSystem.Theorems.Combinators.theorem_flip
         have step1 : ⊢ (A.imp A).imp ((A.imp (A.imp B)).imp (A.imp B)) :=
           DerivationTree.modus_ponens [] _ _ flip_thm k_inst
         exact DerivationTree.modus_ponens [] _ _ step1 id_A
@@ -1115,7 +1115,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
             -- By deduction theorem: rest ⊢ a → B = rest ⊢ φ → B
             have d_rewritten : DerivationTree (φ :: rest) B := h_eq ▸ d
             have d_deduct : DerivationTree rest (φ.imp B) :=
-              Bimodal.Metalogic.Core.deduction_theorem rest φ B d_rewritten
+              FormalSystem.Metalogic.Core.deduction_theorem rest φ B d_rewritten
             -- By IH: rest.filter(≠φ) ⊢ φ → (φ → B)
             have ih_applied := ih (φ.imp B) d_deduct
             -- By contraction (weakened to context): rest.filter(≠φ) ⊢ φ → B
@@ -1128,13 +1128,13 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
             -- d : (a :: rest) ⊢ B
             -- By deduction: rest ⊢ a → B
             have d_deduct : DerivationTree rest (a.imp B) :=
-              Bimodal.Metalogic.Core.deduction_theorem rest a B d
+              FormalSystem.Metalogic.Core.deduction_theorem rest a B d
             -- By IH: rest.filter(≠φ) ⊢ φ → (a → B)
             have ih_applied := ih (a.imp B) d_deduct
             -- By flip (weakened to context): rest.filter(≠φ) ⊢ a → (φ → B)
             let ctx := rest.filter (fun ψ => decide (ψ ≠ φ))
             have flip_weak : DerivationTree ctx ((φ.imp (a.imp B)).imp (a.imp (φ.imp B))) :=
-              DerivationTree.weakening [] ctx _ Bimodal.Theorems.Combinators.theorem_flip
+              DerivationTree.weakening [] ctx _ FormalSystem.Theorems.Combinators.theorem_flip
                 (fun _ h => nomatch h)
             have flipped : DerivationTree ctx (a.imp (φ.imp B)) :=
               DerivationTree.modus_ponens _ _ _ flip_weak ih_applied
@@ -1299,8 +1299,8 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
       show Derives (Formula.bot.imp Formula.bot) (Formula.bot.imp Formula.bot).all_past
       unfold Derives
       let T := Formula.bot.imp Formula.bot
-      have h_T : [] ⊢ T := Bimodal.Theorems.Combinators.identity Formula.bot
-      have h_HT : [] ⊢ T.all_past := Bimodal.Theorems.past_necessitation T h_T
+      have h_T : [] ⊢ T := FormalSystem.Theorems.Combinators.identity Formula.bot
+      have h_HT : [] ⊢ T.all_past := FormalSystem.Theorems.past_necessitation T h_T
       have h_s : [] ⊢ T.all_past.imp (T.imp T.all_past) :=
         DerivationTree.axiom [] _ (Axiom.prop_s T.all_past T)
       exact ⟨DerivationTree.modus_ponens [] _ _ h_s h_HT⟩
@@ -1310,7 +1310,7 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
     show H_quot (toQuot Formula.bot) ≤ bot_quot
     unfold H_quot bot_quot
     show Derives Formula.bot.all_past Formula.bot
-    exact ⟨Bimodal.Theorems.TemporalDerived.H_bot_absurd⟩
+    exact ⟨FormalSystem.Theorems.TemporalDerived.H_bot_absurd⟩
 
   -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
@@ -1344,7 +1344,7 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
           · right; exact List.mem_append_left _ h
           · left; exact h
           · right; exact List.mem_append_right _ h
-        exact Bimodal.Metalogic.Core.deduction_theorem L_no_phi φ Formula.bot d_rearranged
+        exact FormalSystem.Metalogic.Core.deduction_theorem L_no_phi φ Formula.bot d_rearranged
 
       -- Filter out ALL occurrences of φ from L_no_phi to get L_filt
       -- (Symmetric fix to F_resolution using filter-deduction-contraction)
@@ -1373,10 +1373,10 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
       have contraction : ∀ (A B : Formula), ⊢ (A.imp (A.imp B)).imp (A.imp B) := fun A B => by
         have k_inst : ⊢ (A.imp (A.imp B)).imp ((A.imp A).imp (A.imp B)) :=
           DerivationTree.axiom [] _ (Axiom.prop_k A A B)
-        have id_A : ⊢ A.imp A := Bimodal.Theorems.Combinators.identity A
+        have id_A : ⊢ A.imp A := FormalSystem.Theorems.Combinators.identity A
         have flip_thm : ⊢ ((A.imp (A.imp B)).imp ((A.imp A).imp (A.imp B))).imp
                           ((A.imp A).imp ((A.imp (A.imp B)).imp (A.imp B))) :=
-          Bimodal.Theorems.Combinators.theorem_flip
+          FormalSystem.Theorems.Combinators.theorem_flip
         have step1 : ⊢ (A.imp A).imp ((A.imp (A.imp B)).imp (A.imp B)) :=
           DerivationTree.modus_ponens [] _ _ flip_thm k_inst
         exact DerivationTree.modus_ponens [] _ _ step1 id_A
@@ -1397,7 +1397,7 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
             simp only [ne_eq, not_true_eq_false, decide_false, ite_false]
             have d_rewritten : DerivationTree (φ :: rest) B := h_eq ▸ d
             have d_deduct : DerivationTree rest (φ.imp B) :=
-              Bimodal.Metalogic.Core.deduction_theorem rest φ B d_rewritten
+              FormalSystem.Metalogic.Core.deduction_theorem rest φ B d_rewritten
             have ih_applied := ih (φ.imp B) d_deduct
             let ctx := rest.filter (fun ψ => decide (ψ ≠ φ))
             have contr_weak : DerivationTree ctx ((φ.imp (φ.imp B)).imp (φ.imp B)) :=
@@ -1405,11 +1405,11 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
             exact DerivationTree.modus_ponens _ _ _ contr_weak ih_applied
           · simp only [decide_eq_true_eq, ne_eq, h_eq, not_false_eq_true, decide_true, ite_true]
             have d_deduct : DerivationTree rest (a.imp B) :=
-              Bimodal.Metalogic.Core.deduction_theorem rest a B d
+              FormalSystem.Metalogic.Core.deduction_theorem rest a B d
             have ih_applied := ih (a.imp B) d_deduct
             let ctx := rest.filter (fun ψ => decide (ψ ≠ φ))
             have flip_weak : DerivationTree ctx ((φ.imp (a.imp B)).imp (a.imp (φ.imp B))) :=
-              DerivationTree.weakening [] ctx _ Bimodal.Theorems.Combinators.theorem_flip
+              DerivationTree.weakening [] ctx _ FormalSystem.Theorems.Combinators.theorem_flip
                 (fun _ h => nomatch h)
             have flipped : DerivationTree ctx (a.imp (φ.imp B)) :=
               DerivationTree.modus_ponens _ _ _ flip_weak ih_applied
@@ -1765,7 +1765,7 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
 
   -- Deduction theorem: L_no_psi ⊢ neg(psi) = psi → bot
   have d_neg_psi : DerivationTree L_no_psi (Formula.neg psi) :=
-    Bimodal.Metalogic.Core.deduction_theorem L_no_psi psi Formula.bot d_weak
+    FormalSystem.Metalogic.Core.deduction_theorem L_no_psi psi Formula.bot d_weak
 
   -- box_lift_from_context: if ctx ⊢ phi and Box(x) ∈ M for all x ∈ ctx, then Box(phi) ∈ M
   -- Proved by induction: use necessitation at base, deduction + K-distribution at cons.
@@ -1787,7 +1787,7 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
     -- d_ctx : (a :: rest) ⊢ phi
     -- By deduction theorem: rest ⊢ a → phi
     have d_imp : DerivationTree rest (a.imp phi) :=
-      Bimodal.Metalogic.Core.deduction_theorem rest a phi d_ctx
+      FormalSystem.Metalogic.Core.deduction_theorem rest a phi d_ctx
     -- By induction hypothesis (since all elements of rest have their Box in M):
     -- Box(a → phi) ∈ M
     have h_rest_box : ∀ x ∈ rest, Formula.box x ∈ M :=
@@ -1921,7 +1921,7 @@ theorem box_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
     DerivationTree.weakening L (psi :: L_no_psi) Formula.bot d h_L_sub_psi_Lnp
 
   have d_neg_psi : DerivationTree L_no_psi (Formula.neg psi) :=
-    Bimodal.Metalogic.Core.deduction_theorem L_no_psi psi Formula.bot d_weak
+    FormalSystem.Metalogic.Core.deduction_theorem L_no_psi psi Formula.bot d_weak
 
   -- All elements of L_no_psi are in box_theory(M), so their Box is in M
   have h_L_no_psi_box : ∀ x ∈ L_no_psi, Formula.box x ∈ M :=
@@ -1939,7 +1939,7 @@ theorem box_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
     | nil =>
       exact theorem_in_mcs h_mcs (DerivationTree.necessitation phi d_ctx)
     | cons a rest ih =>
-      have d_imp := Bimodal.Metalogic.Core.deduction_theorem rest a phi d_ctx
+      have d_imp := FormalSystem.Metalogic.Core.deduction_theorem rest a phi d_ctx
       have h_rest_box := fun x hx => h_ctx_box x (List.mem_cons_of_mem a hx)
       have h_box_imp := ih (a.imp phi) d_imp h_rest_box
       have h_box_a := h_ctx_box a (.head _)
@@ -2083,7 +2083,7 @@ theorem G_of_box_theory (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     have h_k : [] ⊢ (Formula.all_future ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg))).imp
         ((Formula.all_future (Formula.box ((Formula.box a).neg))).imp
          (Formula.all_future ((Formula.box a).neg))) :=
-      Bimodal.Theorems.Perpetuity.future_k_dist _ _
+      FormalSystem.Theorems.Perpetuity.future_k_dist _ _
     -- Combine via modus ponens: [] ⊢ G(Box(x)).imp G(x)
     have h_G_imp : [] ⊢ (Formula.all_future (Formula.box ((Formula.box a).neg))).imp
         (Formula.all_future ((Formula.box a).neg)) :=
@@ -2124,11 +2124,11 @@ theorem G_lift_from_context (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   | nil =>
     exact theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation phi h_deriv)
   | cons a rest ih =>
-    have d_imp := Bimodal.Metalogic.Core.deduction_theorem rest a phi h_deriv
+    have d_imp := FormalSystem.Metalogic.Core.deduction_theorem rest a phi h_deriv
     have h_rest_G := fun x hx => h_ctx_G x (List.mem_cons_of_mem a hx)
     have h_G_imp := ih (a.imp phi) d_imp h_rest_G
     have h_G_a := h_ctx_G a (.head _)
-    have h_K := Bimodal.Theorems.Perpetuity.future_k_dist a phi
+    have h_K := FormalSystem.Theorems.Perpetuity.future_k_dist a phi
     have h_imp_in_M := SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_K) h_G_imp
     exact SetMaximalConsistent.implication_property h_mcs h_imp_in_M h_G_a
@@ -2186,7 +2186,7 @@ theorem temporal_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximal
     DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
 
   have d_neg_phi : DerivationTree L_no_phi (Formula.neg phi) :=
-    Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
+    FormalSystem.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
 
   -- All elements of L_no_phi are in temporal_box_seed(M), so their G is in M
   have h_L_no_phi_G : ∀ x ∈ L_no_phi, Formula.all_future x ∈ M :=
@@ -2299,7 +2299,7 @@ theorem temporal_theory_witness_with_g_consistent (M : Set Formula) (h_mcs : Set
   have d_weak : DerivationTree (phi :: L_no_phi) Formula.bot :=
     DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
   have d_neg_phi : DerivationTree L_no_phi (Formula.neg phi) :=
-    Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
+    FormalSystem.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
   have h_L_no_phi_G : ∀ x ∈ L_no_phi, Formula.all_future x ∈ M :=
     fun x hx => G_of_temporal_box_g_seed M h_mcs x (h_L_no_phi_seed x hx)
   have h_G_neg_phi : Formula.all_future (Formula.neg phi) ∈ M :=
@@ -2453,11 +2453,11 @@ theorem H_of_box_theory (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     -- H(Box(x) → x) via past necessitation (empty context version)
     have h_H_box_t : [] ⊢ Formula.all_past ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)) := by
       have h_mapped : (Context.map Formula.all_past []) ⊢ ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)).all_past :=
-        Bimodal.Theorems.generalized_past_k [] _ h_box_t
+        FormalSystem.Theorems.generalized_past_k [] _ h_box_t
       simp [Context.map] at h_mapped
       exact h_mapped
     -- past K-distribution: H(A → B) → (H(A) → H(B))
-    have h_pk := Bimodal.Theorems.past_k_dist (Formula.box ((Formula.box a).neg)) ((Formula.box a).neg)
+    have h_pk := FormalSystem.Theorems.past_k_dist (Formula.box ((Formula.box a).neg)) ((Formula.box a).neg)
     -- Combine: H(Box(neg(Box(a)))) → H(neg(Box(a)))
     have h_H_imp : [] ⊢ (Formula.all_past (Formula.box ((Formula.box a).neg))).imp
         (Formula.all_past ((Formula.box a).neg)) :=
@@ -2486,7 +2486,7 @@ theorem H_lift_from_context (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (h_ctx_H : ∀ x ∈ ctx, Formula.all_past x ∈ M) :
     Formula.all_past phi ∈ M := by
   -- Use generalized_past_k: Γ ⊢ φ implies H[Γ] ⊢ H(φ)
-  have h_H_deriv := Bimodal.Theorems.generalized_past_k ctx phi h_deriv
+  have h_H_deriv := FormalSystem.Theorems.generalized_past_k ctx phi h_deriv
   -- H[ctx] ⊢ H(phi). Need all H[ctx] elements in M, then H(phi) ∈ M.
   have h_H_ctx_in_M : ∀ x ∈ Context.map Formula.all_past ctx, x ∈ M := by
     intro x hx
@@ -2528,7 +2528,7 @@ theorem past_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalCons
     DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
 
   have d_neg_phi : DerivationTree L_no_phi (Formula.neg phi) :=
-    Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
+    FormalSystem.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
 
   have h_L_no_phi_H : ∀ x ∈ L_no_phi, Formula.all_past x ∈ M :=
     fun x hx => H_of_past_temporal_box_seed M h_mcs x (h_L_no_phi_seed x hx)
@@ -2623,7 +2623,7 @@ theorem past_theory_witness_with_h_consistent (M : Set Formula) (h_mcs : SetMaxi
   have d_weak : DerivationTree (phi :: L_no_phi) Formula.bot :=
     DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
   have d_neg_phi : DerivationTree L_no_phi (Formula.neg phi) :=
-    Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
+    FormalSystem.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
   have h_L_no_phi_H : ∀ x ∈ L_no_phi, Formula.all_past x ∈ M :=
     fun x hx => H_of_past_temporal_box_h_seed M h_mcs x (h_L_no_phi_seed x hx)
   have h_H_neg_phi : Formula.all_past (Formula.neg phi) ∈ M :=
@@ -3194,7 +3194,7 @@ noncomputable def omega_chain_forward_with_inv
     let M_n := prev.val
     let inv_n := prev.property
     -- F_top is in M_n (every MCS contains F_top by seriality)
-    let h_F_top : Bimodal.Syntax.F_top ∈ M_n := SetMaximalConsistent.contains_F_top inv_n.is_mcs
+    let h_F_top : FormalSystem.Syntax.F_top ∈ M_n := SetMaximalConsistent.contains_F_top inv_n.is_mcs
     -- Get a witness for F_top
     let witness := omega_step_forward M_n inv_n.is_mcs (Formula.neg Formula.bot) h_F_top
     ⟨witness.val, {
@@ -3292,7 +3292,7 @@ noncomputable def omega_chain_backward_with_inv
     let M_n := prev.val
     let inv_n := prev.property
     -- P_top is in M_n (every MCS contains P_top by seriality)
-    let h_P_top : Bimodal.Syntax.P_top ∈ M_n := SetMaximalConsistent.contains_P_top inv_n.is_mcs
+    let h_P_top : FormalSystem.Syntax.P_top ∈ M_n := SetMaximalConsistent.contains_P_top inv_n.is_mcs
     -- Get a witness for P_top
     let witness := omega_step_backward M_n inv_n.is_mcs (Formula.neg Formula.bot) h_P_top
     ⟨witness.val, {
@@ -3782,8 +3782,8 @@ This is the key fact that powers the forward truth lemma.
 theorem bot_not_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Formula.bot ∉ M := by
   intro h_bot
-  have h_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
-    Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+  have h_deriv : FormalSystem.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+    FormalSystem.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
   exact h_mcs.1 [Formula.bot] (fun x hx => by simp at hx; rw [hx]; exact h_bot) ⟨h_deriv⟩
 
 /--
@@ -3844,8 +3844,8 @@ theorem not_provable_implies_neg_consistent (phi : Formula)
     rw [h_empty] at d
     -- [] ⊢ bot gives [] ⊢ phi via explosion
     have h_efq : [] ⊢ Formula.bot.imp phi :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso phi)
-    have h_phi : [] ⊢ phi := Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_efq d
+      FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.ex_falso phi)
+    have h_phi : [] ⊢ phi := FormalSystem.ProofSystem.DerivationTree.modus_ponens [] _ _ h_efq d
     exact h_not_prov ⟨h_phi⟩
   · -- L ≠ [], so L contains neg(phi)
     -- d : L ⊢ bot and L ⊆ {neg(phi)}
@@ -3855,13 +3855,13 @@ theorem not_provable_implies_neg_consistent (phi : Formula)
       have := h_L_sub x hx
       simp only [Set.mem_singleton_iff] at this
       simp [this]
-    have d' := Bimodal.ProofSystem.DerivationTree.weakening L [Formula.neg phi] Formula.bot d h_sub
+    have d' := FormalSystem.ProofSystem.DerivationTree.weakening L [Formula.neg phi] Formula.bot d h_sub
     -- [neg(phi)] ⊢ bot means [] ⊢ neg(phi) → bot = neg(neg(phi))
-    have h_ded := Bimodal.Metalogic.Core.deduction_theorem [] (Formula.neg phi) Formula.bot d'
+    have h_ded := FormalSystem.Metalogic.Core.deduction_theorem [] (Formula.neg phi) Formula.bot d'
     -- neg(neg(phi)) → phi (double negation elimination)
     have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
-      Bimodal.Theorems.Propositional.double_negation phi
-    have h_phi : [] ⊢ phi := Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne h_ded
+      FormalSystem.Theorems.Propositional.double_negation phi
+    have h_phi : [] ⊢ phi := FormalSystem.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne h_ded
     exact h_not_prov ⟨h_phi⟩
 
 /-!
@@ -3919,7 +3919,7 @@ more precise sorry than the original `bfmcs_from_mcs_temporally_coherent`, scope
 a single chain property rather than the entire BFMCS coherence.
 -/
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /--
 Restricted forward_F for SuccChainFMCS: for formulas in deferralClosure(root),
@@ -3983,4 +3983,4 @@ theorem shifted_restricted_backward_P (f : FMCS Int) (root : Formula)
   obtain ⟨m, h_lt, h_psi⟩ := h_bwd (t - k) psi h_dc h_P
   exact ⟨m + k, by omega, by simp only [Int.add_sub_cancel]; exact h_psi⟩
 
-end Bimodal.Metalogic.Algebraic.UltrafilterChain
+end FormalSystem.Metalogic.Algebraic.UltrafilterChain

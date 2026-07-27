@@ -27,10 +27,10 @@ self-contained lemmas with simple type signatures.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Fin.cons evaluation helpers
 
@@ -514,4 +514,4 @@ theorem ssn_order_consistent_of_eval {sig : MonadicSignature}
               | (have := lt_trans ‹_ < _› ‹_ < _›; exact aux ‹_› ‹_›)))
   )
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

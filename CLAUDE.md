@@ -10,7 +10,7 @@ lake build
 
 ## Project Structure
 
-- `Theories/Bimodal/` — Main library source
+- `FormalSystem/` — Main library source
   - `Syntax/` — Formula types, atoms, contexts
   - `ProofSystem/` — Axioms, derivation trees, inference rules
   - `Semantics/` — Task frame semantics, truth evaluation

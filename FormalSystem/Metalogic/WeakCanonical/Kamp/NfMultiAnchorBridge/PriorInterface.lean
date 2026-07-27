@@ -11,11 +11,11 @@ Protected prior interface (byte-identical, token edits NONE): `ExistProviders`,
 `BracketCarrierCorrectVPrior`, `bracketEndChar_kv_correct_zero_prior`,
 `bracketEndChar_kv_correct_one_prior`. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -115,4 +115,4 @@ theorem bracketEndChar_kv_correct_one_prior {sig : MonadicSignature} [Fintype si
     bracketEndChar_kv_correct_one atomMap h_surj charF h0 qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

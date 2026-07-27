@@ -37,9 +37,9 @@ linear flows of time (not just integers).
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Helper: or/and unfolding
 
@@ -204,4 +204,4 @@ theorem since_distrib_and_right (A B C : Formula) :
         · exact hB r (lt_trans hle hr1) hr2
         · exact hC r hr1 hr2⟩
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

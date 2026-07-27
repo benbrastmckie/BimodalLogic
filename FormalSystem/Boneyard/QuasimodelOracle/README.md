@@ -30,7 +30,7 @@ All three files were already outside the build chain (not imported by any compil
 The full git history is preserved. To view files at their original locations:
 
 ```bash
-git log --follow Theories/Bimodal/Boneyard/QuasimodelOracle/OracleStep.lean
+git log --follow FormalSystem/Boneyard/QuasimodelOracle/OracleStep.lean
 ```
 
 ## Reference

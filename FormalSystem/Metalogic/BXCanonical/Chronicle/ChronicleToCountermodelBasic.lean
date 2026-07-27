@@ -53,22 +53,22 @@ succ chain reaching any target element).
 - Design provenance: the case-split completeness route
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Chronicle
+namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Metalogic.Algebraic.ParametricCompleteness
-open Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
-open Bimodal.Semantics
-open Bimodal.Theorems.Propositional
-open Bimodal.Theorems.Combinators
-open Bimodal.Theorems.Perpetuity
-open Bimodal.Metalogic.BXCanonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic.ParametricCompleteness
+open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+open FormalSystem.Semantics
+open FormalSystem.Theorems.Propositional
+open FormalSystem.Theorems.Combinators
+open FormalSystem.Theorems.Perpetuity
+open FormalSystem.Metalogic.BXCanonical
 
 /-! ## Limit Domain Properties
 
@@ -105,7 +105,7 @@ theorem limit_dom_no_max (fc : FrameClass) (A : Set Formula)
     ∃ y ∈ limit_dom fc A h_mcs, x < y := by
   have h_mcs_x := limit_c0 fc A h_mcs x hx
   have h_top : (Formula.bot.imp Formula.bot) ∈ limit_f fc A h_mcs x :=
-    theorem_in_mcs h_mcs_x (Bimodal.Theorems.Combinators.identity Formula.bot)
+    theorem_in_mcs h_mcs_x (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_F_top : Formula.some_future (Formula.bot.imp Formula.bot) ∈ limit_f fc A h_mcs x :=
     SetMaximalConsistent.implication_property h_mcs_x
       (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.serial_future trivial)) h_top
@@ -125,7 +125,7 @@ theorem limit_dom_no_min (fc : FrameClass) (A : Set Formula)
     ∃ y ∈ limit_dom fc A h_mcs, y < x := by
   have h_mcs_x := limit_c0 fc A h_mcs x hx
   have h_top : (Formula.bot.imp Formula.bot) ∈ limit_f fc A h_mcs x :=
-    theorem_in_mcs h_mcs_x (Bimodal.Theorems.Combinators.identity Formula.bot)
+    theorem_in_mcs h_mcs_x (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_P_top : Formula.some_past (Formula.bot.imp Formula.bot) ∈ limit_f fc A h_mcs x :=
     SetMaximalConsistent.implication_property h_mcs_x
       (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.serial_past trivial)) h_top
@@ -343,7 +343,7 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
       rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
       · -- x > 0: use G propagation
         have h_G := SetMaximalConsistent.implication_property h_mcs
-          (theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.temp_future_derived
+          (theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.temp_future_derived
               (Formula.box φ).neg))
           h_box_neg
         rw [← limit_f_zero fc A h_mcs] at h_G
@@ -376,7 +376,7 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
     rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
     · -- x > 0: use G propagation (temp_future_derived: □φ → G(□φ))
       have h_G := SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.temp_future_derived φ)) h_box_A
+        (theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.temp_future_derived φ)) h_box_A
       rw [← limit_f_zero fc A h_mcs] at h_G
       exact limit_forward_G fc A h_mcs 0 x (zero_mem_limit_dom fc A h_mcs) hx h_pos
         (Formula.box φ) h_G
@@ -445,7 +445,7 @@ theorem box_dense_gives_density (fc : FrameClass) (N : Set Formula)
   -- G(□(F'T)) ∈ N (from □(F'T) by temp_future_derived)
   have h_G_box : Formula.all_future (Formula.box next_top.neg) ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (Bimodal.Theorems.Combinators.temp_future_derived next_top.neg))
+      (theorem_in_mcs h_N (FormalSystem.Theorems.Combinators.temp_future_derived next_top.neg))
       h_box_dense
   -- H(□(F'T)) ∈ N (from □(F'T) → □□(F'T) → H(□(F'T)))
   have h_box_box : Formula.box (Formula.box next_top.neg) ∈ N :=
@@ -589,8 +589,8 @@ noncomputable def cantor_bfmcs_dense (fc : FrameClass) (A : Set Formula)
       · exact h
     -- ◇(¬φ) ∈ A
     have h_diamond_neg : (Formula.neg φ).diamond ∈ A :=
-      Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
-        (liftBase fc (Bimodal.Metalogic.Bundle.box_dne_theorem φ)) h_neg_box
+      FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
+        (liftBase fc (FormalSystem.Metalogic.Bundle.box_dne_theorem φ)) h_neg_box
     -- Modal witness: v box-equivalent to A with ¬φ ∈ v (fc-parameterized)
     obtain ⟨v, h_v_mcs, h_equiv, h_neg_phi_v⟩ := bx_modal_witness_fc h_mcs (Formula.neg φ)
         h_diamond_neg
@@ -1190,7 +1190,7 @@ theorem box_discrete_gives_discreteness (fc : FrameClass) (N : Set Formula)
   -- G(□(U(T,bot))) ∈ N (from □(U(T,bot)) by temp_future_derived)
   have h_G_box : Formula.all_future (Formula.box next_top) ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (Bimodal.Theorems.Combinators.temp_future_derived next_top))
+      (theorem_in_mcs h_N (FormalSystem.Theorems.Combinators.temp_future_derived next_top))
       h_box_discrete
   -- H(□(U(T,bot))) ∈ N (from □(U(T,bot)) → □□(U(T,bot)) → H(□(U(T,bot))))
   have h_box_box : Formula.box (Formula.box next_top) ∈ N :=
@@ -1219,4 +1219,4 @@ theorem box_discrete_gives_discreteness (fc : FrameClass) (N : Set Formula)
       (theorem_in_mcs (limit_c0 fc N h_N x hx)
         (DerivationTree.axiom [] _ (Axiom.modal_t next_top) trivial)) h_box_x
 
-end Bimodal.Metalogic.BXCanonical.Chronicle
+end FormalSystem.Metalogic.BXCanonical.Chronicle

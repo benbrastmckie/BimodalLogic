@@ -30,9 +30,9 @@ of Phase 4 and are not yet proved.
 - `ExistsForallFormula.lean`: the Def 3.1 object and its `efSat` semantics.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax (Formula)
+open FormalSystem.Syntax (Formula)
 
 /-! ## 1. The ∨∃∀ disjunction object (Def 3.3, p.4) -/
 
@@ -89,4 +89,4 @@ theorem veeSat_append {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
     · exact ⟨ψ, Or.inl h, hsat⟩
     · exact ⟨ψ, Or.inr h, hsat⟩
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

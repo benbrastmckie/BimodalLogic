@@ -45,9 +45,9 @@ The following definitions were moved to
 - Doets 1989, Theorem 1.1 (finite structures are good)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Archimedean Very-Good Theorem
 
@@ -203,4 +203,4 @@ theorem gap_of_not_succ_archimedean {T : Type} [LinearOrder T]
     -- But succ^[n+1] a < m (from hm_above)
     exact not_le.mpr (hm_above (n + 1)) this
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

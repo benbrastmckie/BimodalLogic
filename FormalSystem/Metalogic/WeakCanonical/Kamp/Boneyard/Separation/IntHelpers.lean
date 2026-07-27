@@ -34,9 +34,9 @@ Provides integer-arithmetic lemmas needed by the separation proof:
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Finite Interval Properties -/
 
@@ -147,4 +147,4 @@ theorem until_top_is_future (a : Formula) :
     int_equiv (.untl a (Formula.neg .bot)) (Formula.some_future a) :=
   int_equiv_refl _
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

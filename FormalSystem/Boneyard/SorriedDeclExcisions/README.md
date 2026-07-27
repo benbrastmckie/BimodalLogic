@@ -1,8 +1,8 @@
 # SorriedDeclExcisions
 
 Dead-sorry closure excisions: verified-dead declaration closures (each carrying one or
-more statement-position sorries) moved out of live `Theories/Bimodal/` code. Every
-declaration archived here was confirmed dead by word-boundary grep over `Theories/`
+more statement-position sorries) moved out of live `FormalSystem/` code. Every
+declaration archived here was confirmed dead by word-boundary grep over `FormalSystem/`
 (Boneyard excluded) and `Tests/` — zero external consumers; consumers, where any exist,
 fall entirely inside the moved closure.
 

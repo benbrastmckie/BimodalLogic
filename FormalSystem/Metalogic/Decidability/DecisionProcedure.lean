@@ -44,11 +44,11 @@ The procedure decides whether a formula is valid, returning either:
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace FormalSystem.Metalogic.Decidability
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation
 
 /-!
 ## Decision Result Type
@@ -392,4 +392,4 @@ def decideAutoWithTrace (φ : Formula) (fc : FrameClass := .Base) : TraceResult 
   let fuel := soundFuel φ
   decideWithTrace φ fuel fc
 
-end Bimodal.Metalogic.Decidability
+end FormalSystem.Metalogic.Decidability

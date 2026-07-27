@@ -4,15 +4,15 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Syntax.Formula
-import Bimodal.ProofSystem.Axioms
-import Bimodal.ProofSystem.Derivation
-import Bimodal.Automation.FormulaEnumerator
-import Bimodal.Automation.ForwardProofGenerator
-import Bimodal.Automation.ProofFirstExporter
-import Bimodal.Automation.ProofFirstBenchmark
-import Bimodal.Automation.DatasetGenerator
-import Bimodal.Automation.DataExport
+import FormalSystem.Syntax.Formula
+import FormalSystem.ProofSystem.Axioms
+import FormalSystem.ProofSystem.Derivation
+import FormalSystem.Automation.FormulaEnumerator
+import FormalSystem.Automation.ForwardProofGenerator
+import FormalSystem.Automation.ProofFirstExporter
+import FormalSystem.Automation.ProofFirstBenchmark
+import FormalSystem.Automation.DatasetGenerator
+import FormalSystem.Automation.DataExport
 
 /-! # Proof-First Integration Tests (Task 279 Phase 11)
 
@@ -21,10 +21,10 @@ import Bimodal.Automation.DataExport
 
 namespace BimodalTest.Automation.ProofFirst
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation
+open FormalSystem.Automation.DataExport
 open FormulaLabel
 
 -- Convenience atoms

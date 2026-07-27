@@ -30,15 +30,15 @@ Do not import from live code.
 #exit
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/Bundle/UntilSinceCoherence.lean
-   Original context: `namespace Bimodal.Metalogic.Bundle`.
+   Source: FormalSystem/Metalogic/Bundle/UntilSinceCoherence.lean
+   Original context: `namespace FormalSystem.Metalogic.Bundle`.
    ====================================================================== -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 /-!
 ## Reflexive Base Case
@@ -182,4 +182,4 @@ theorem backward_since_coherent (B : BFMCS Int)
   intro fam hfam t φ ψ ⟨s, h_le, h_psi, h_guard⟩
   exact backward_since_from_step fam φ ψ (h_step fam hfam φ ψ) t s h_le h_psi h_guard
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

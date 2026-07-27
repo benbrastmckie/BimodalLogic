@@ -51,9 +51,9 @@ this noncomputability does not infect `PropForm.isTaut` itself.
 - `PropForm.isTaut_iff_forall_eval`: the checker is correct w.r.t. `eval`
 -/
 
-namespace Bimodal.Metalogic.Decidability.Propositional
+namespace FormalSystem.Metalogic.Decidability.Propositional
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- Deep-embedded propositional formula: variables are bare `Nat` indices (not `Atom`),
 so that `box`/`untl`/`snce` subformulas can be reified as opaque variables uniformly with
@@ -231,4 +231,4 @@ example : fiveVarForm.isTaut = true := by decide
 
 end PropForm
 
-end Bimodal.Metalogic.Decidability.Propositional
+end FormalSystem.Metalogic.Decidability.Propositional

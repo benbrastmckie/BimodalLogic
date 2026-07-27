@@ -55,13 +55,13 @@ sorry never fires on the actual completeness proof path.
 
 #exit
 
-namespace Bimodal.Metalogic.BXCanonical.Quasimodel
+namespace FormalSystem.Metalogic.BXCanonical.Quasimodel
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.BXCanonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.BXCanonical
 open Classical
 
 /-! ## Oracle Seed and Consistency -/
@@ -449,4 +449,4 @@ theorem hintikka_step_oracle_for_sigma_sig
       -- Defect count decrease: sorry (Lindenbaum may introduce new Until-defects)
       sorry⟩
 
-end Bimodal.Metalogic.BXCanonical.Quasimodel
+end FormalSystem.Metalogic.BXCanonical.Quasimodel

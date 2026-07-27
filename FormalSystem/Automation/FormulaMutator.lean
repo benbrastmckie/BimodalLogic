@@ -45,19 +45,19 @@ encoding in terms of `imp`, `bot`, `untl`, `snce`.
 
 ## References
 
-- Formula AST: Theories/Bimodal/Syntax/Formula.lean
-- Decision procedure: Theories/Bimodal/Metalogic/Decidability/DecisionProcedure.lean
+- Formula AST: FormalSystem/Syntax/Formula.lean
+- Decision procedure: FormalSystem/Metalogic/Decidability/DecisionProcedure.lean
 -/
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.FormulaMutator
+namespace FormalSystem.Automation.FormulaMutator
 
-open Bimodal.Syntax
-open Bimodal.Automation
-open Bimodal.Automation.DataExport
-open Bimodal.Automation.Enriched
-open Bimodal.Metalogic.Decidability
+open FormalSystem.Syntax
+open FormalSystem.Automation
+open FormalSystem.Automation.DataExport
+open FormalSystem.Automation.Enriched
+open FormalSystem.Metalogic.Decidability
 
 /-!
 ## Core Types
@@ -142,7 +142,7 @@ structure ContrastivePair where
 Substitute a formula for an atom throughout a formula.
 
 This is a local reimplementation to avoid importing the heavy
-`Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps` dependency chain.
+`FormalSystem.Metalogic.WeakCanonical.Separation.FormulaOps` dependency chain.
 -/
 def substAtom (φ : Formula) (target : Atom) (replacement : Formula) : Formula :=
   match φ with
@@ -1029,15 +1029,15 @@ def runBatchContrastive (labeledFormulas : List LabeledFormula)
   IO.println s!"Output written to: {outputPath}"
   IO.println s!"Summary written to: {summaryPath}"
 
-end Bimodal.Automation.FormulaMutator
+end FormalSystem.Automation.FormulaMutator
 
 /-!
 ## Standalone Executable Entry Point
 -/
 
-open Bimodal.Syntax
-open Bimodal.Automation
-open Bimodal.Automation.FormulaMutator
+open FormalSystem.Syntax
+open FormalSystem.Automation
+open FormalSystem.Automation.FormulaMutator
 
 /--
 Configuration for the contrastive pair generator.

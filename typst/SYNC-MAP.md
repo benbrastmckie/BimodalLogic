@@ -15,7 +15,7 @@
 > assignments below are retained as historical record of how each claim was verified.
 
 Generated during the BimodalReference typst revision.
-Lean source ground truth: `Theories/Bimodal/` (excluding `Boneyard/`).
+Lean source ground truth: `FormalSystem/` (excluding `Boneyard/`).
 Stamp: 2026-07-06, git commit `a883361bf`.
 
 ## Sync-Class Legend — HISTORICAL
@@ -36,7 +36,7 @@ Every chapter file included by `BimodalReference.typ` formerly carried a
 1. No chapter banner-classed ○ or ◇ may contain an inline "lean-verified"/✓ claim about its
    own headline content (a ○/◇ chapter may still *cite* a ✓ result from another chapter).
 2. No backticked Lean identifier or path may appear anywhere in `typst/**/*.typ` that fails
-   to resolve under `Theories/Bimodal/` (excluding `Boneyard/`), per the Phase 6 extraction
+   to resolve under `FormalSystem/` (excluding `Boneyard/`), per the Phase 6 extraction
    method below — external-repo (Logos) names are cited as external and commit-pinned, never
    as if they were local Lean names.
 3. Per-claim overrides are allowed *inside* a chapter via inline sync-class markers (e.g. a
@@ -68,8 +68,8 @@ input to Phase 4's `scripts/typst-sync-check.sh` (Checks 2 and 4).
 
 ### D1. Primary completeness wiring (verified from live source)
 
-**Primary completeness theorem**: `Bimodal.Metalogic.BXCanonical.completeness`
-(`Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:135`):
+**Primary completeness theorem**: `FormalSystem.Metalogic.BXCanonical.completeness`
+(`FormalSystem/Metalogic/BXCanonical/Completeness.lean:135`):
 
 ```
 theorem completeness (φ : Formula) :
@@ -80,9 +80,9 @@ with frame-class variants `completeness_dense` (`:234`) and `completeness_discre
 and alternate form `completeness'` (`:177`).
 
 **Live-source evidence** (imports and theorem locations, not README/ROADMAP sentences):
-- `Metalogic.lean` imports `Bimodal.Metalogic.Soundness`,
-  `Bimodal.Metalogic.Decidability`, `Bimodal.Metalogic.BXCanonical`,
-  `Bimodal.Metalogic.WeakCanonical` — BXCanonical is the wired entry point.
+- `Metalogic.lean` imports `FormalSystem.Metalogic.Soundness`,
+  `FormalSystem.Metalogic.Decidability`, `FormalSystem.Metalogic.BXCanonical`,
+  `FormalSystem.Metalogic.WeakCanonical` — BXCanonical is the wired entry point.
 - `BXCanonical/Completeness.lean:4-8` imports `Chronicle.ChronicleToCountermodel`,
   `Chronicle.MCSMixedCase`, and `WeakCanonical` — the proof is wired through
   `countermodel_dense` (`Chronicle/ChronicleToCountermodelBasic.lean:792`, Burgess 1982
@@ -163,7 +163,7 @@ temporal_duality, weakening.
 
 ### Sorry counts (genuine `sorry` terms, comments stripped)
 
-Command: Python comment-stripping scan over `Theories/Bimodal/Metalogic/**/*.lean`
+Command: Python comment-stripping scan over `FormalSystem/Metalogic/**/*.lean`
 (block `/- -/` and line `--` comments removed before counting `\bsorry\b`).
 
 | Metalogic/ subtree | Sorries |
@@ -184,7 +184,7 @@ the archived `Boneyard/SoundnessVariants/` wrappers, entire `Theorems/` tree (in
 
 `FrameClass` inductive (`ProofSystem/Axioms.lean:422-426`): `Base`, `Dense`,
 `Discrete`, partially ordered with Base ≤ Dense, Base ≤ Discrete (Dense, Discrete
-incomparable). Frame-condition semantics in top-level `Theories/Bimodal/FrameConditions/`
+incomparable). Frame-condition semantics in top-level `FormalSystem/FrameConditions/`
 (FrameClass.lean, Validity.lean, Soundness.lean, Compatibility.lean).
 
 ## Claim Verification Table (Phase 1)
@@ -203,7 +203,7 @@ Locations abbreviated: PS = ProofSystem, SEM = Semantics, ML = Metalogic, TH = T
 
 | Line | Claim | Verdict | Live location / replacement |
 |------|-------|---------|------------------------------|
-| 85 | `Bimodal/` | verified | Theories/Bimodal/ |
+| 85 | `Bimodal/` | verified | FormalSystem/ |
 | 86 | `Syntax/` | verified | dir exists |
 | 87 | `ProofSystem/` + "14 schemata" | stale count | 42 constructors (Axioms.lean:76) |
 | 88 | `Semantics/` | verified | dir exists |
@@ -304,8 +304,8 @@ Locations abbreviated: PS = ProofSystem, SEM = Semantics, ML = Metalogic, TH = T
 
 Re-run stamp: 2026-07-06, commit `a883361bf` (chapters revised in working tree).
 Extraction re-run over the seven revised chapters + main file: *271 unique backticked
-names*, every one resolving under `Theories/Bimodal/` excluding `Boneyard/` (checked
-via `grep -rn --include='*.lean' -F <name> Theories/Bimodal --exclude-dir=Boneyard`;
+names*, every one resolving under `FormalSystem/` excluding `Boneyard/` (checked
+via `grep -rn --include='*.lean' -F <name> FormalSystem --exclude-dir=Boneyard`;
 file and directory paths checked against the filesystem; the deliberate historical
 references to `Boneyard/` and the nested `WeakCanonical/Kamp/Boneyard/` archive resolve
 as existing paths). Zero `stale` / `not-found` names remain in the revised text.
@@ -334,7 +334,7 @@ Automation, The BMLogic Dataset Pipeline, and Dual Verification and Worked Examp
 `scripts/typst-sync-check.sh` (which supersedes and automates the Phase-6 manual
 extraction method above) was run against the final Phase-11 tree: **485 unique backticked
 candidates** across all fifteen real chapters plus the twelve part-5/stub files, **zero
-violations** -- every non-whitelisted candidate resolves under `Theories/Bimodal/`
+violations** -- every non-whitelisted candidate resolves under `FormalSystem/`
 (excluding `Boneyard/` unless the candidate itself names a historical `Boneyard/` path),
 every included chapter carries a `#sync-banner(` call, no paper/outlook chapter carries a
 conflicting lean-verified banner, and `typst/generated/status.typ` matches a live

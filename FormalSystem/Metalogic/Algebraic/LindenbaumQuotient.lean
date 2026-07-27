@@ -30,9 +30,9 @@ by provable equivalence.
 
 -/
 
-namespace Bimodal.Metalogic.Algebraic.LindenbaumQuotient
+namespace FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
 
-open Bimodal.Syntax Bimodal.ProofSystem
+open FormalSystem.Syntax FormalSystem.ProofSystem
 
 /-!
 ## Provable Equivalence
@@ -64,7 +64,7 @@ Identity derivation: `⊢ φ → φ`.
 -/
 theorem derives_refl (φ : Formula) : Derives φ φ := by
   unfold Derives
-  exact ⟨Bimodal.Theorems.Combinators.identity φ⟩
+  exact ⟨FormalSystem.Theorems.Combinators.identity φ⟩
 
 /--
 Provable equivalence is reflexive.
@@ -86,7 +86,7 @@ theorem derives_trans {φ ψ χ : Formula} (h1 : Derives φ ψ) (h2 : Derives ψ
   unfold Derives at *
   obtain ⟨d1⟩ := h1
   obtain ⟨d2⟩ := h2
-  exact ⟨Bimodal.Theorems.Combinators.imp_trans d1 d2⟩
+  exact ⟨FormalSystem.Theorems.Combinators.imp_trans d1 d2⟩
 
 /--
 Provable equivalence is transitive.
@@ -141,7 +141,7 @@ Derivability respects negation contravariantly: `Derives ψ φ → Derives φ.ne
 theorem derives_neg_antitone {φ ψ : Formula} (h : Derives ψ φ) : Derives φ.neg ψ.neg := by
   unfold Derives at *
   obtain ⟨d⟩ := h
-  exact ⟨Bimodal.Theorems.Propositional.contraposition d⟩
+  exact ⟨FormalSystem.Theorems.Propositional.contraposition d⟩
 
 /--
 Provable equivalence respects negation: `φ ≈ₚ ψ → ¬φ ≈ₚ ¬ψ`.
@@ -179,8 +179,8 @@ theorem provEquiv_all_past_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
   unfold ProvEquiv Derives at *
   obtain ⟨⟨d_fwd⟩, ⟨d_bwd⟩⟩ := h
   constructor
-  · exact ⟨Bimodal.Theorems.Perpetuity.past_mono d_fwd⟩
-  · exact ⟨Bimodal.Theorems.Perpetuity.past_mono d_bwd⟩
+  · exact ⟨FormalSystem.Theorems.Perpetuity.past_mono d_fwd⟩
+  · exact ⟨FormalSystem.Theorems.Perpetuity.past_mono d_bwd⟩
 
 /--
 Provable equivalence respects implication.
@@ -198,37 +198,37 @@ theorem provEquiv_imp_congr {φ₁ φ₂ ψ₁ ψ₂ : Formula}
     -- b_combinator: ⊢ (B → C) → (A → B) → (A → C)
     -- Step 1: (ψ₁ → ψ₂) → (φ₂ → ψ₁) → (φ₂ → ψ₂)
     have b1 : ⊢ (ψ₁.imp ψ₂).imp ((φ₂.imp ψ₁).imp (φ₂.imp ψ₂)) :=
-      Bimodal.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.b_combinator
     have h1 : ⊢ (φ₂.imp ψ₁).imp (φ₂.imp ψ₂) :=
       DerivationTree.modus_ponens [] _ _ b1 d_ψ_fwd
     -- Step 2: (φ₂ → φ₁) → (φ₁ → ψ₁) → (φ₂ → ψ₁) via flipped b_combinator
     have b2_pre : ⊢ (φ₁.imp ψ₁).imp ((φ₂.imp φ₁).imp (φ₂.imp ψ₁)) :=
-      Bimodal.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.b_combinator
     have flip2 : ⊢ ((φ₁.imp ψ₁).imp ((φ₂.imp φ₁).imp (φ₂.imp ψ₁))).imp
                     ((φ₂.imp φ₁).imp ((φ₁.imp ψ₁).imp (φ₂.imp ψ₁))) :=
-      Bimodal.Theorems.Combinators.theorem_flip
+      FormalSystem.Theorems.Combinators.theorem_flip
     have b2 : ⊢ (φ₂.imp φ₁).imp ((φ₁.imp ψ₁).imp (φ₂.imp ψ₁)) :=
       DerivationTree.modus_ponens [] _ _ flip2 b2_pre
     have h2 : ⊢ (φ₁.imp ψ₁).imp (φ₂.imp ψ₁) :=
       DerivationTree.modus_ponens [] _ _ b2 d_φ_bwd
     -- Compose h2 and h1
-    exact ⟨Bimodal.Theorems.Combinators.imp_trans h2 h1⟩
+    exact ⟨FormalSystem.Theorems.Combinators.imp_trans h2 h1⟩
   · -- Show ⊢ (φ₂ → ψ₂) → (φ₁ → ψ₁)
     -- Symmetric: use d_φ_fwd and d_ψ_bwd
     have b1 : ⊢ (ψ₂.imp ψ₁).imp ((φ₁.imp ψ₂).imp (φ₁.imp ψ₁)) :=
-      Bimodal.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.b_combinator
     have h1 : ⊢ (φ₁.imp ψ₂).imp (φ₁.imp ψ₁) :=
       DerivationTree.modus_ponens [] _ _ b1 d_ψ_bwd
     have b2_pre : ⊢ (φ₂.imp ψ₂).imp ((φ₁.imp φ₂).imp (φ₁.imp ψ₂)) :=
-      Bimodal.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.b_combinator
     have flip2 : ⊢ ((φ₂.imp ψ₂).imp ((φ₁.imp φ₂).imp (φ₁.imp ψ₂))).imp
                     ((φ₁.imp φ₂).imp ((φ₂.imp ψ₂).imp (φ₁.imp ψ₂))) :=
-      Bimodal.Theorems.Combinators.theorem_flip
+      FormalSystem.Theorems.Combinators.theorem_flip
     have b2 : ⊢ (φ₁.imp φ₂).imp ((φ₂.imp ψ₂).imp (φ₁.imp ψ₂)) :=
       DerivationTree.modus_ponens [] _ _ flip2 b2_pre
     have h2 : ⊢ (φ₂.imp ψ₂).imp (φ₁.imp ψ₂) :=
       DerivationTree.modus_ponens [] _ _ b2 d_φ_fwd
-    exact ⟨Bimodal.Theorems.Combinators.imp_trans h2 h1⟩
+    exact ⟨FormalSystem.Theorems.Combinators.imp_trans h2 h1⟩
 
 /--
 Provable equivalence respects conjunction.
@@ -390,4 +390,4 @@ theorem sigma_quot_box (a : LindenbaumAlg) :
   simp only [Formula.swap_temporal]
   rfl
 
-end Bimodal.Metalogic.Algebraic.LindenbaumQuotient
+end FormalSystem.Metalogic.Algebraic.LindenbaumQuotient

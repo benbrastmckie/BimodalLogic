@@ -33,10 +33,10 @@ unprovable at the `BracketFormula` level and superseded by `VVecEA2.negFix_iff`
 - Rabinovich 2014, Lemma 5.3 (p.8), Corollary 5.4 (p.9), Lemma 5.1 (pp.7-11)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Lemma 5.3: Negation of Ordered Points (All-Betas-True Base Case)
 
@@ -691,4 +691,4 @@ theorem BracketFormula.bracket_implies_fChainPred
 -- superseded by VVecEA2.negFix_iff (EANegationFix/VecEANegFix.lean) and the closure
 -- lemmas in EANegationClosure.lean.
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

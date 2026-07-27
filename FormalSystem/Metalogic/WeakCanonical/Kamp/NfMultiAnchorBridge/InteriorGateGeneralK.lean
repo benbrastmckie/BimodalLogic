@@ -53,11 +53,11 @@ known dead end (F1) and MUST NOT be pursued.
 - **General-`k` close** (Phase 6): `Nat`-induction assembling the base rungs and the step gate.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula formula_conjList formula_conjList_iff)
 
 /-! ## Phase 1 — frozen general-`k` statement + base-rung reconciliation
@@ -2549,4 +2549,4 @@ theorem bracketEndChar_kvFib_step_correct {sig : MonadicSignature} [Fintype sig.
 
 end
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

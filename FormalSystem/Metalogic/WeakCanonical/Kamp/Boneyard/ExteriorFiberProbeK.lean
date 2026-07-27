@@ -57,10 +57,10 @@ Purely additive NEW leaf module; probe-local (`private`) machinery; no frozen fi
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Probe signature and model (template copies of `f2sig`/`F2M`, RefutationF2.lean:92/:104) -/
 
@@ -359,4 +359,4 @@ theorem kvE_fiberPos_separates_F2 :
     rw [p2_estar_not_in_sub2] at hbit
     exact Bool.noConfusion hbit
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

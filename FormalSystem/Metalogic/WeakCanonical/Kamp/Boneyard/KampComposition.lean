@@ -26,9 +26,9 @@ elements into multi-var NF agreement.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper Lemmas -/
 
@@ -214,4 +214,4 @@ theorem constenv_same_depth_nvar {sig : MonadicSignature}
   constenv_2var_determines M N (K + 1) n t t s s
     (constenv_same_depth_2var K M t N s h_t)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

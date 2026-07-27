@@ -38,18 +38,18 @@ subformulas are the obstruction.
 
 ## References
 
-- `Bimodal.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`
-- `Bimodal.Metalogic.Decidability.SignedFormula` — `SignedFormula`, `Branch`
-- `Bimodal.Metalogic.Decidability.Saturation` — `buildTableau`, `ExpandedTableau`
+- `FormalSystem.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`
+- `FormalSystem.Metalogic.Decidability.SignedFormula` — `SignedFormula`, `Branch`
+- `FormalSystem.Metalogic.Decidability.Saturation` — `buildTableau`, `ExpandedTableau`
 -/
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.Enriched
+namespace FormalSystem.Automation.Enriched
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Decidability
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Decidability
+open FormalSystem.Automation.DataExport
 
 /-!
 ## Enriched Countermodel Type
@@ -182,7 +182,7 @@ Example output:
 {"sign": "pos", "formula": {"tag": "atom", "name": "p"}}
 ```
 -/
-def _root_.Bimodal.Metalogic.Decidability.SignedFormula.toJson (sf : SignedFormula) : String :=
+def _root_.FormalSystem.Metalogic.Decidability.SignedFormula.toJson (sf : SignedFormula) : String :=
   "{\"sign\": " ++ Sign.toJsonStr sf.sign
   ++ ", \"formula\": " ++ sf.formula.toJson
   ++ ", \"label\": {\"world\": " ++ toString sf.label.world
@@ -215,4 +215,4 @@ def EnrichedCountermodel.toJson (ecm : EnrichedCountermodel) : String :=
   ++ ", \"branchLength\": " ++ toString ecm.branchLength
   ++ "}"
 
-end Bimodal.Automation.Enriched
+end FormalSystem.Automation.Enriched

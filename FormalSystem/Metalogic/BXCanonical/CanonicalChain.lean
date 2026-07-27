@@ -35,13 +35,13 @@ Under open guard, the return types no longer claim φ ∈ w
   "Eventuality Resolution for Until/Since")
 -/
 
-namespace Bimodal.Metalogic.BXCanonical
+namespace FormalSystem.Metalogic.BXCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.BXCanonical.Filtration
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.BXCanonical.Filtration
 
 /-! ## BX12 at MCS level: F(ψ) → ⊤ U ψ -/
 
@@ -116,4 +116,4 @@ theorem delegation_since_eventuality
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
 
-end Bimodal.Metalogic.BXCanonical
+end FormalSystem.Metalogic.BXCanonical

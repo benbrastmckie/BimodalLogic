@@ -50,10 +50,10 @@ express what the atomic flattening could not.
 - Rabinovich 2014 "A Proof of Kamp's Theorem" Cor 5.4 (`md:154-157`).
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Pillar: a NAVIGATED bracket reaches the future exterior
 
@@ -437,4 +437,4 @@ theorem A_future_correct {sig : MonadicSignature} [Fintype sig.preds] [Decidable
   simp only [A_future]
   exact bracketBuildRight_correct seg futureEnd M atomMap t
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

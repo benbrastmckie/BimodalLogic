@@ -10,8 +10,8 @@ This is **not** the only archive directory in the repository:
 
 | Boneyard | Files | Lines |
 |----------|------:|------:|
-| `Theories/Bimodal/Boneyard/` (this one) | 93 | 59,010 |
-| `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` | 62 | 27,394 |
+| `FormalSystem/Boneyard/` (this one) | 93 | 59,010 |
+| `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` | 62 | 27,394 |
 
 Any `find` or `grep` filter that names only this directory silently counts the
 27,394 archived lines under `Kamp/Boneyard/` as **live code**. Several past counts of
@@ -19,7 +19,7 @@ this repository were wrong for exactly that reason. The correct filter excludes 
 by pattern:
 
 ```bash
-find Theories -name '*.lean' -not -path '*/Boneyard/*'
+find FormalSystem -name '*.lean' -not -path '*/Boneyard/*'
 ```
 
 Better, do not hand-roll it — the invariant script hardcodes the two-Boneyard
@@ -377,29 +377,29 @@ To browse a file's history before archival:
 
 ```bash
 # Follow renames to see original location
-git log --follow --oneline Theories/Bimodal/Boneyard/<subdir>/<file>.lean
+git log --follow --oneline FormalSystem/Boneyard/<subdir>/<file>.lean
 
 # View file at a specific commit
-git show <commit>:Theories/Bimodal/<original-path>/<file>.lean
+git show <commit>:FormalSystem/<original-path>/<file>.lean
 
 # Diff between archival and current
-git diff <pre-archival-commit> HEAD -- Theories/Bimodal/Boneyard/<subdir>/<file>.lean
+git diff <pre-archival-commit> HEAD -- FormalSystem/Boneyard/<subdir>/<file>.lean
 ```
 
 To find when a file was archived:
 
 ```bash
 # Check the commit that moved the file
-git log --diff-filter=A --oneline -- Theories/Bimodal/Boneyard/<subdir>/<file>.lean
+git log --diff-filter=A --oneline -- FormalSystem/Boneyard/<subdir>/<file>.lean
 ```
 
 ## Boneyard Maintenance Standard
 
 ### How to Archive Files
 
-1. **Create a subdirectory** under `Theories/Bimodal/Boneyard/` with a descriptive name
+1. **Create a subdirectory** under `FormalSystem/Boneyard/` with a descriptive name
 2. **Move the file** using Boneyard-qualified import paths:
-   - If the file imports other Boneyard files, use `import Bimodal.Boneyard.<subdir>.<file>`
+   - If the file imports other Boneyard files, use `import FormalSystem.Boneyard.<subdir>.<file>`
    - If the file imports active modules, keep those imports as-is
 3. **Move imports before doc comments**: In Lean 4, `/-! ... -/` doc comments are commands;
    `import` statements must appear BEFORE any commands
@@ -413,7 +413,7 @@ git log --diff-filter=A --oneline -- Theories/Bimodal/Boneyard/<subdir>/<file>.l
 
 Boneyard code is never compiled. There is no lakefile target covering the Boneyard;
 liveness equals reachability: a module is live if and only if it is reachable from
-`Theories/Bimodal.lean` or another lakefile root. Nothing under a `Boneyard/`
+`FormalSystem.lean` or another lakefile root. Nothing under a `Boneyard/`
 directory is reachable from any root.
 
 The only build invariant is that the default target stays green after any Boneyard

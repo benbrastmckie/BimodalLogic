@@ -48,10 +48,10 @@ The fold direction is non-deterministic for certain patterns. The key ambiguity:
 - Research reports: 01_normalization-seed.md, 02_modal-norm-research.md
 -/
 
-namespace Bimodal.Automation.Normalization
+namespace FormalSystem.Automation.Normalization
 
-open Bimodal.Syntax
-open Bimodal.Syntax.Formula
+open FormalSystem.Syntax
+open FormalSystem.Syntax.Formula
 
 /-!
 ## Phase 1: Unfold Lemmas
@@ -438,7 +438,7 @@ The algorithm:
 - `snce φ top` → `some_past φ`
 - `snce φ bot` → `prev φ`
 -/
-def _root_.Bimodal.Syntax.Formula.foldFormula : Formula → EnrichedFormula
+def _root_.FormalSystem.Syntax.Formula.foldFormula : Formula → EnrichedFormula
   | Formula.atom a => .atom a
   | Formula.bot => .bot
   | Formula.box φ => .box φ.foldFormula
@@ -595,7 +595,7 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
   | .weak_since φ ψ => .weak_since φ.recognizeComposites ψ.recognizeComposites
 
 /-- Full fold: fold primitives then recognize composite operators. -/
-def _root_.Bimodal.Syntax.Formula.foldFormulaFull (f : Formula) : EnrichedFormula :=
+def _root_.FormalSystem.Syntax.Formula.foldFormulaFull (f : Formula) : EnrichedFormula :=
   f.foldFormula.recognizeComposites
 
 /-!
@@ -1108,15 +1108,15 @@ def toSExpr : EnrichedFormula → String
 end EnrichedFormula
 
 /-- Convenience: fold a primitive `Formula` and serialize to enriched JSON. -/
-def _root_.Bimodal.Syntax.Formula.toEnrichedJson (f : Formula) : String :=
+def _root_.FormalSystem.Syntax.Formula.toEnrichedJson (f : Formula) : String :=
   (f.foldFormulaFull).toJson
 
 /-- Convenience: fold a primitive `Formula` and pretty-print with enriched operators. -/
-def _root_.Bimodal.Syntax.Formula.toEnrichedPretty (f : Formula) : String :=
+def _root_.FormalSystem.Syntax.Formula.toEnrichedPretty (f : Formula) : String :=
   (f.foldFormulaFull).prettyPrint
 
 /-- Convenience: fold a primitive `Formula` and serialize to enriched S-expression. -/
-def _root_.Bimodal.Syntax.Formula.toEnrichedSExpr (f : Formula) : String :=
+def _root_.FormalSystem.Syntax.Formula.toEnrichedSExpr (f : Formula) : String :=
   (f.foldFormulaFull).toSExpr
 
 end Serialization
@@ -1254,7 +1254,7 @@ section OperatorCensus
     - `weak_since φ ψ = (φ S ψ) ∨ Hψ`         = `imp (imp (snce φ ψ) ⊥) (Hψ)`
     - `strong_release φ ψ = (ψ ∧ φ) U ψ`      = `untl (and ψ φ) ψ`
     - `strong_trigger φ ψ = (ψ ∧ φ) S ψ`      = `snce (and ψ φ) ψ` -/
-def _root_.Bimodal.Syntax.Formula.matchBinaryDerived : Formula → Option String
+def _root_.FormalSystem.Syntax.Formula.matchBinaryDerived : Formula → Option String
   -- weak_until: imp (imp (untl φ ψ) ⊥) (imp (untl (imp ψ' ⊥) (imp ⊥ ⊥)) ⊥), ψ == ψ'
   | .imp (.imp (.untl _ ψ) .bot) (.imp (.untl (.imp ψ' .bot) (.imp .bot .bot)) .bot) =>
     if ψ == ψ' then some "weak_until" else none
@@ -1287,7 +1287,7 @@ def EnrichedFormula.topBinaryTag : EnrichedFormula → Option String
   | _ => none
 
 /-- Folded-tag census over a formula's top node: fold then read the binary tag. -/
-def _root_.Bimodal.Syntax.Formula.foldedBinaryTag (f : Formula) : Option String :=
+def _root_.FormalSystem.Syntax.Formula.foldedBinaryTag (f : Formula) : Option String :=
   f.foldFormulaFull.topBinaryTag
 
 /-- Census over a list of formulas: the multiset (as a sorted `List String`) of binary
@@ -1332,4 +1332,4 @@ end CensusTests
 
 end OperatorCensus
 
-end Bimodal.Automation.Normalization
+end FormalSystem.Automation.Normalization

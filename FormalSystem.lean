@@ -28,12 +28,12 @@ Bimodal provides:
 
 The library is organized into the following submodules:
 
-- `Bimodal.Syntax`: Formula types, parsing, DSL
-- `Bimodal.ProofSystem`: Axioms, derivation trees, and inference rules
-- `Bimodal.Semantics`: Task frame semantics
-- `Bimodal.Metalogic`: Soundness and completeness proofs
-- `Bimodal.Theorems`: Key theorems (perpetuity principles, etc.)
-- `Bimodal.Automation`: Proof automation tactics
+- `FormalSystem.Syntax`: Formula types, parsing, DSL
+- `FormalSystem.ProofSystem`: Axioms, derivation trees, and inference rules
+- `FormalSystem.Semantics`: Task frame semantics
+- `FormalSystem.Metalogic`: Soundness and completeness proofs
+- `FormalSystem.Theorems`: Key theorems (perpetuity principles, etc.)
+- `FormalSystem.Automation`: Proof automation tactics
 
 ## Usage
 

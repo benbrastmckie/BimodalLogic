@@ -45,10 +45,10 @@ here touches `Finset.univ` at `UnaryType` |
   `intervalHoldsFin`); `IntervalType.lean` (partial interval-type algebra).
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula)
+open FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
@@ -112,4 +112,4 @@ theorem efSatFin_interval_iff {r : Nat}
             intervalHoldsFin N (ψ.intervalType (Fin.last (ψ.n + 1))) y) := by
   simp only [efSatFin]
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

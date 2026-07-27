@@ -75,10 +75,10 @@ which is *not* a flat `BracketFormula.holds … x t` disjunction.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Pillar 1: an exterior-demanding sub forces an exterior realizer
 
@@ -152,4 +152,4 @@ theorem interior_bracket_cannot_realize_exterior_sub_k1 {sig : MonadicSignature}
   rintro ⟨w, hInterior, hReal⟩
   exact (nf0_4_exterior_witness_is_exterior M w y x t sub hsub hReal).2 hInterior
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

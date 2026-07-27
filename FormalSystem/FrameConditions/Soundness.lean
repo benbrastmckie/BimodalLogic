@@ -23,7 +23,7 @@ new typeclass-based frame condition architecture.
 
 ## Design Notes
 
-The existing soundness proofs in `Bimodal.Metalogic.Soundness` already
+The existing soundness proofs in `FormalSystem.Metalogic.Soundness` already
 quantify over types with the appropriate constraints. This module provides
 wrappers that use the typeclass architecture for cleaner API.
 
@@ -37,15 +37,15 @@ All 21 axioms are covered:
 
 ## References
 
-- `Bimodal.Metalogic.Soundness`: Existing soundness proofs
+- `FormalSystem.Metalogic.Soundness`: Existing soundness proofs
 -/
 
-namespace Bimodal.FrameConditions
+namespace FormalSystem.FrameConditions
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.ProofSystem
-open Bimodal.Metalogic
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic
 
 /-! ## Parameterized Soundness -/
 
@@ -193,4 +193,4 @@ Note: Under strict semantics (G/H quantify over s > t / s < t), frame class cons
 are essential for axiom validity, not merely structural.
 -/
 
-end Bimodal.FrameConditions
+end FormalSystem.FrameConditions

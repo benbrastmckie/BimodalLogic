@@ -36,10 +36,10 @@ holds iff there exist strictly decreasing witnesses x_1 > ... > x_m all < t with
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 3.5
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper lemmas for temporal truth of derived connectives -/
 
@@ -344,4 +344,4 @@ theorem translateVEF1_correct {sig : MonadicSignature}
         · exact Or.inl hf'
         · exact Or.inr (ih.mpr ⟨f', by simp [hmem], hf'⟩)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

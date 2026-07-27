@@ -34,7 +34,7 @@ machinery. The `F_i` predicates of Cor 5.4 will enter (Phase 9) as native
 
 `negChainOn_iff` below **is** Rabinovich's Lemma 5.3 (PDF p.8). The full Section 5
 correspondence table — which in-tree name transcribes which numbered result, with page cites —
-is `Kamp/Section5Correspondence.lean`, which is reachable from `Theories/Bimodal.lean` and so
+is `Kamp/Section5Correspondence.lean`, which is reachable from `FormalSystem.lean` and so
 CI-protected. **Consult it before planning any Section 5 work**: this transcription was
 discoverable by grep for thirteen months and was nonetheless re-planned from scratch more than
 once, because nothing here names Rabinovich, a section, or a lemma number.
@@ -78,10 +78,10 @@ one pin disjunct whose tail is unsatisfiable-free — see `negChainOn_iff`.)
 - `Kamp/Section5Correspondence.lean`: the CI-protected Section 5 correspondence table
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Witness combination (extracted from `neg_orderedPointsExist_is_vbracket`)
 
@@ -282,4 +282,4 @@ theorem negChainOn_iff {sig : MonadicSignature}
           exact h_occ y hy0 hy1
 
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

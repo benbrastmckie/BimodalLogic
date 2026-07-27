@@ -28,7 +28,7 @@ is provable using base axioms plus the density axiom DN.
 Dense completeness is being rebuilt using the SuccChain architecture.
 The StagedConstruction approach has been archived.
 
-See `Bimodal.Metalogic.SuccChain/` for the current approach.
+See `FormalSystem.Metalogic.SuccChain/` for the current approach.
 
 ## Infrastructure Status
 
@@ -67,14 +67,14 @@ The SuccChain architecture addresses this gap by:
 - `Bundle/CanonicalConstruction.lean`: Truth lemma infrastructure
 -/
 
-namespace Bimodal.Metalogic.DenseCompleteness
+namespace FormalSystem.Metalogic.DenseCompleteness
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Bundle.Canonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Bundle.Canonical
 
 /-!
 ## Dense Completeness Statement
@@ -104,7 +104,7 @@ where `⊢_dense φ` means derivable using base axioms plus the density axiom DN
 ### Current Status
 
 The SuccChain architecture is being developed to complete this proof.
-See `Bimodal.Metalogic.SuccChain/` for current progress.
+See `FormalSystem.Metalogic.SuccChain/` for current progress.
 -/
 
 /-!
@@ -169,8 +169,8 @@ This avoids the conflation that blocked the StagedConstruction approach.
 
 ### References
 
-- `Bimodal.Metalogic.SuccChain/` - Active development
+- `FormalSystem.Metalogic.SuccChain/` - Active development
 - StagedConstruction analysis - Analysis of blockers
 -/
 
-end Bimodal.Metalogic.DenseCompleteness
+end FormalSystem.Metalogic.DenseCompleteness

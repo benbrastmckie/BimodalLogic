@@ -9,10 +9,10 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.ConcatPin
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.BoundedFixAnchored
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAConjFull
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! # Lemma 5.1 general recursion: `BracketFormula.negFix`
 
@@ -23,7 +23,7 @@ riding IN the disjuncts.
 **Correspondence guard.** `BracketFormula.negFix_iff` below is Lemma 5.1; `negFixList` is the
 `Aᵢ`/`Bᵢ` split plus the closing induction (PDF pp.10-11). The full page-cited Section 5
 correspondence table is `Kamp/Section5Correspondence.lean`, reachable from
-`Theories/Bimodal.lean` and so CI-protected — **consult it before planning any Section 5 work**.
+`FormalSystem.lean` and so CI-protected — **consult it before planning any Section 5 work**.
 Cite Rabinovich by PDF page only: the former `chunk_0017` citation here pointed into the
 companion `.md` conversion, which is corrupt (drops displayed equations, inverts `k ≠ m` to
 `k = m`), and has been re-cited by page.
@@ -703,4 +703,4 @@ theorem BracketFormula.negFix_iff {sig : MonadicSignature}
     (not_congr (BracketFormula.holds_iff_bracketOf M atomMap n bf
       z0 z1).symm)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

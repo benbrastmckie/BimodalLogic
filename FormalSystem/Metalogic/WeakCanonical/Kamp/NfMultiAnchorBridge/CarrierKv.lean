@@ -13,11 +13,11 @@ relocation of `nf_eval_depth1_fold_iff` (orig. lines 5333-5358) so faithful modu
 import the quarantine. Byte-identical except 1 sanctioned `private ` removal
 (`atomKind_castLE`). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -614,4 +614,4 @@ noncomputable def bracketEndChar_kvFib {sig : MonadicSignature} [Fintype sig.pre
       (fun zs sub => decide (qnf.2 sub = true ∧
         nf0_zoneSpec (NormalForm.atom_assgn sub) = zs))
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

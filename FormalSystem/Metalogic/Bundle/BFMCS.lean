@@ -47,11 +47,11 @@ From the modal coherence conditions, we derive S5-like properties:
 
 -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
 
 /-!
 ## BFMCS Structure Definition
@@ -175,7 +175,7 @@ theorem BFMCS.transitivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.famili
 
 /-- The MCS at any family and time is consistent (used by BFMCS.diamond_witness) -/
 lemma BFMCS.consistent (B : BFMCS D) (fam : FMCS D) (_hfam : fam ∈ B.families) (t : D) :
-    SetConsistent (fc := Bimodal.ProofSystem.FrameClass.Base) (fam.mcs t) :=
+    SetConsistent (fc := FormalSystem.ProofSystem.FrameClass.Base) (fam.mcs t) :=
   (fam.is_mcs t).1
 
 /-!
@@ -233,4 +233,4 @@ theorem BFMCS.diamond_witness (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.fam
 -- BFMCS.box_from_universal, BFMCS.phi_from_box, BFMCS.box_iff_universal
 -- These were never used in any proofs.
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

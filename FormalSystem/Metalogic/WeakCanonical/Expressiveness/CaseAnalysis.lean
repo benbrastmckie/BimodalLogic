@@ -22,9 +22,9 @@ resting on sorried gap-detection lemmas; zero external call sites). The live
 and does not depend on the archived chain.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ### Case I: The Split Case
 
@@ -2162,4 +2162,4 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             exact (hform_en_an A hA).symm
 /- OLD CASE II PROOF DELETED. See git history for reference. -/
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

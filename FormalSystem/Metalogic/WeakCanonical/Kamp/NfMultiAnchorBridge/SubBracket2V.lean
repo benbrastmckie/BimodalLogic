@@ -36,11 +36,11 @@ This module is the faithful separate-bracket route for the k=2 gate. Source mapp
 `bracketFromLists_flatMap_subchain_below_pin` stays in this module (private): its only code
 consumers are the `_of_outer` closers here. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -2260,4 +2260,4 @@ theorem kvE_subBracket2V_correctness_pair {sig : MonadicSignature} [Fintype sig.
    fun h => kvE_subBracket2V_complete atomMap h_surj charK σ M w x t h_xx1 h_x1w h_wt hcharK h⟩
 
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

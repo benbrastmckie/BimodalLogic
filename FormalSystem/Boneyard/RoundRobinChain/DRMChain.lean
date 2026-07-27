@@ -19,12 +19,12 @@ forward_F for formulas in `deferralClosure(root)`.
 -- temp_t_future axiom removed, drm_fwd_chain recursive definition rejected.
 -- Code preserved below #exit for reference only.
 
-namespace Bimodal.Metalogic.BXCanonical.DRMChain
+namespace FormalSystem.Metalogic.BXCanonical.DRMChain
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.ProofSystem
 open Classical
 
 /-! ## Simplified Restricted Seed -/
@@ -206,7 +206,7 @@ theorem simplified_restricted_successor_f_step (phi : Formula) (u : Set Formula)
         simp only [Γ, List.mem_append, List.mem_singleton] at hx
         rcases hx with (h | h) | rfl
         · exact hLf x h; · exact hL'f x h; · exact h_disj)
-        ⟨Bimodal.Theorems.Propositional.or_elim_neg_neg Γ ψ (Formula.some_future ψ)
+        ⟨FormalSystem.Theorems.Propositional.or_elim_neg_neg Γ ψ (Formula.some_future ψ)
           (DerivationTree.assumption Γ _ (List.mem_append_right _ (List.mem_singleton_self _)))
           (DerivationTree.weakening Lf Γ _ d_neg_ψ
             (fun x hx => List.mem_append_left _ (List.mem_append_left _ hx)))
@@ -291,4 +291,4 @@ theorem drm_fwd_chain_forward_F (phi : Formula) (u₀ : Set Formula)
   -- After d steps: psi = iter_F 0 psi ∈ drm_chain(n + d).
   sorry
 
-end Bimodal.Metalogic.BXCanonical.DRMChain
+end FormalSystem.Metalogic.BXCanonical.DRMChain

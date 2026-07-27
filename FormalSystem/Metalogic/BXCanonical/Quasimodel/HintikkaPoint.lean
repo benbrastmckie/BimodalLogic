@@ -29,13 +29,13 @@ subsets of a finite formula set that respect the BX truth conditions.
 - Reynolds 1996: Section 2 (Hintikka structures for temporal logic)
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Quasimodel
+namespace FormalSystem.Metalogic.BXCanonical.Quasimodel
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.BXCanonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.BXCanonical
 
 /-! ## Hintikka Point Definition -/
 
@@ -148,4 +148,4 @@ theorem hintikka_point_formulas_injective (Sigma : Finset Formula) :
     Function.Injective (fun (h : HintikkaPoint Sigma) => h.formulas) :=
   fun _h1 _h2 heq => HintikkaPoint.ext heq
 
-end Bimodal.Metalogic.BXCanonical.Quasimodel
+end FormalSystem.Metalogic.BXCanonical.Quasimodel

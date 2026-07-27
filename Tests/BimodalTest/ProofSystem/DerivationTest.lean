@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.ProofSystem.Derivation
-import Bimodal.Theorems.GeneralizedNecessitation
-import Bimodal.Theorems.TemporalDerived
+import FormalSystem.ProofSystem.Derivation
+import FormalSystem.Theorems.GeneralizedNecessitation
+import FormalSystem.Theorems.TemporalDerived
 
 /-!
 # Derivation Test Suite
@@ -27,8 +27,8 @@ Tests for the DerivationTree relation and inference rules.
 
 namespace BimodalTest.ProofSystem
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 -- Some derivations depend on noncomputable deduction_theorem
 noncomputable section
@@ -51,7 +51,7 @@ example : ⊢ (Formula.atom_s "p").imp (Formula.box (Formula.atom_s "p").diamond
 
 -- Test: Temporal 4 is derivable (now a derived theorem, no longer an axiom constructor)
 noncomputable example : ⊢ (Formula.all_future (Formula.atom_s "p")).imp (Formula.all_future (Formula.all_future (Formula.atom_s "p"))) :=
-  Bimodal.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "p")
+  FormalSystem.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "p")
 
 -- Test: connect_future is derivable (φ → G(P(φ)), BX4)
 example : ⊢ (Formula.atom_s "p").imp (Formula.all_future (Formula.atom_s "p").some_past) :=
@@ -67,7 +67,7 @@ example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.box (Formula.all_f
 
 -- Test: Temporal-Future is derivable (derived from MF + T + Modal 4)
 example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.all_future (Formula.box (Formula.atom_s "p"))) :=
-  Bimodal.Theorems.Combinators.temp_future_derived (Formula.atom_s "p")
+  FormalSystem.Theorems.Combinators.temp_future_derived (Formula.atom_s "p")
 
 -- ============================================================
 -- Assumption Rule Tests
@@ -227,7 +227,7 @@ example (p : Formula) : [(Formula.atom_s "p").box] ⊢ (Formula.atom_s "p").box 
     apply DerivationTree.assumption
     simp
   -- Apply generalized modal K
-  have d_gen := Bimodal.Theorems.generalized_modal_k [Formula.atom_s "p"] (Formula.atom_s "p") d
+  have d_gen := FormalSystem.Theorems.generalized_modal_k [Formula.atom_s "p"] (Formula.atom_s "p") d
   -- Result should be [□p] ⊢ □p. `simp at d_gen` no longer reduces the `List.map` (it now
   -- reports "made no progress"); the two are still definitionally equal, so `exact` closes it.
   exact d_gen
@@ -240,7 +240,7 @@ example (p : Formula) : [(Formula.atom_s "p").all_future] ⊢ (Formula.atom_s "p
     apply DerivationTree.assumption
     simp
   -- Apply generalized temporal K
-  have d_gen := Bimodal.Theorems.generalized_temporal_k [Formula.atom_s "p"] (Formula.atom_s "p") d
+  have d_gen := FormalSystem.Theorems.generalized_temporal_k [Formula.atom_s "p"] (Formula.atom_s "p") d
   -- Result should be [Fp] ⊢ Fp. Same `List.map` reduction as the modal case above.
   exact d_gen
 

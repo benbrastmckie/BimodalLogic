@@ -521,8 +521,8 @@ For theorem proving purposes, this is acceptable and idiomatic.
 - *Isabelle/HOL* documentation - Classical metalogic patterns
 
 ### ProofChecker Files
-- `Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean` (lines 41, 206, 332)
-- `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean` (lines 66, 101)
+- `FormalSystem/Metalogic/Core/DeductionTheorem.lean` (lines 41, 206, 332)
+- `FormalSystem/Theorems/GeneralizedNecessitation.lean` (lines 66, 101)
 - [NONCOMPUTABLE.md](NONCOMPUTABLE.md) (comprehensive guide)
 
 ---

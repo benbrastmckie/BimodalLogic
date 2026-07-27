@@ -5,10 +5,10 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Mathlib.Algebra.Order.Group.Int
-import Bimodal.Syntax.Formula
-import Bimodal.Syntax.Context
-import Bimodal.Semantics.TaskFrame
-import Bimodal.Semantics.TaskModel
+import FormalSystem.Syntax.Formula
+import FormalSystem.Syntax.Context
+import FormalSystem.Semantics.TaskFrame
+import FormalSystem.Semantics.TaskModel
 import Plausible
 
 /-!
@@ -50,8 +50,8 @@ The Plausible API changed since this file was written:
 
 namespace BimodalTest.Property.Generators
 
-open Bimodal.Syntax
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.Semantics
 open Plausible
 
 /-! ## Formula Generators -/

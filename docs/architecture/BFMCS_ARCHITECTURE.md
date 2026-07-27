@@ -359,12 +359,12 @@ The 4 sorries in DovetailingChain.lean propagate up through the entire chain. On
 
 | File | Lines | Content |
 |------|-------|---------|
-| `Theories/Bimodal/Metalogic/Bundle/BFMCS.lean` | 80-98 | BFMCS structure definition |
-| `Theories/Bimodal/Metalogic/Bundle/BMCS.lean` | 82-113 | BMCS structure definition |
-| `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` | 588-666 | buildDovetailingChainFamily with 4 sorries |
-| `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean` | 461-522 | temporal_witness_seed_consistent proof |
-| `Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean` | 19-26 | GContent/HContent definitions |
-| `Theories/Bimodal/Metalogic/Bundle/Completeness.lean` | 100-113 | bmcs_representation theorem |
+| `FormalSystem/Metalogic/Bundle/BFMCS.lean` | 80-98 | BFMCS structure definition |
+| `FormalSystem/Metalogic/Bundle/BMCS.lean` | 82-113 | BMCS structure definition |
+| `FormalSystem/Metalogic/Bundle/DovetailingChain.lean` | 588-666 | buildDovetailingChainFamily with 4 sorries |
+| `FormalSystem/Metalogic/Bundle/TemporalCoherentConstruction.lean` | 461-522 | temporal_witness_seed_consistent proof |
+| `FormalSystem/Metalogic/Bundle/TemporalContent.lean` | 19-26 | GContent/HContent definitions |
+| `FormalSystem/Metalogic/Bundle/Completeness.lean` | 100-113 | bmcs_representation theorem |
 
 ---
 

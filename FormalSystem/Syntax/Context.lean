@@ -37,7 +37,7 @@ This module defines the Context type used to represent assumptions in derivation
 * [Formula.lean](./Formula.lean) - Formula type definition
 -/
 
-namespace Bimodal.Syntax
+namespace FormalSystem.Syntax
 
 /--
 Context type representing a list of formula assumptions.
@@ -207,4 +207,4 @@ theorem exists_mem_of_ne_nil {Γ : Context} (h : Γ ≠ []) :
 
 end Context
 
-end Bimodal.Syntax
+end FormalSystem.Syntax

@@ -23,10 +23,10 @@ prior_nonconstenv_2var_agree_until/since, etc.) if restoration is needed.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Atom Agreement for Non-Constant 2-var Environments -/
 
@@ -401,4 +401,4 @@ theorem prior_second_1var_from_2var_since {sig : MonadicSignature}
       nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf1 :=
   cross_2nd_1var_from_2var M x t M₀ x₀ t₀ h_2var
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

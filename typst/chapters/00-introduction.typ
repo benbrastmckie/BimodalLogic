@@ -106,7 +106,7 @@ In *TM* the interaction is carried by a dedicated axiom (MF) together with the u
 The fusion is therefore not a notational convenience: the metatheory of the combined system -- its canonical models, its frame correspondences, its decision procedures -- is substantially subtler than the metatheory of S5 and of Until/Since temporal logic taken separately, and Part I develops that metatheory in full.
 
 A second motivation is verification.
-Every axiom, inference rule, and derived theorem presented in Part I resolves to a named declaration in the live Lean 4 source under `Theories/Bimodal/`, and the machine appendix at the end of the book lists the correspondence explicitly.
+Every axiom, inference rule, and derived theorem presented in Part I resolves to a named declaration in the live Lean 4 source under `FormalSystem/`, and the machine appendix at the end of the book lists the correspondence explicitly.
 This discipline pays for itself: formal statements in prose are easy to drift out of alignment with a developing formalization, whereas a book whose claims are checked against source admits a sharp distinction between what is proven, what is constructed but open, and what is paper-side mathematics.
 The book maintains that distinction throughout: proven results are cited by Lean name; open problems are stated as open problems; and results belonging to the companion papers rather than the formalization are attributed to the papers.
 
@@ -130,7 +130,7 @@ Formal claims are typeset with their Lean identifiers in fixed-width font (e.g. 
 
 == Project Structure
 
-The Lean 4 implementation is in the `Theories/Bimodal/` directory:
+The Lean 4 implementation is in the `FormalSystem/` directory:
 - `Syntax/` -- Defines the formula language with 6 primitive constructors (atoms, $bot$, implication, $square.stroked$, Until, Since) and derived operators.
 - `ProofSystem/` -- The Burgess-Xu (BX) axiom system: #axiom-count axiom constructors in 8 layers and #rule-count inference rules forming a Hilbert-style proof system, parameterized by frame class (Base/Dense/Discrete).
 - `Semantics/` -- Task frames model possible worlds; world histories model time; strict (irreflexive) truth conditions define meaning.

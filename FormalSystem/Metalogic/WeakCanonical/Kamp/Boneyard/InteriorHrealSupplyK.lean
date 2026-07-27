@@ -45,11 +45,11 @@ the row-5 site is the Phase-7 binder retrofit, out of scope here.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula formula_conjList_iff)
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula formula_conjList_iff)
 
 set_option maxHeartbeats 1600000 in
 /-- **Crux A — interior `hreal` supply** (Phase 5, the deep `⇐` witness selection).
@@ -209,4 +209,4 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
       M atomMap w x t hxw hwt hcharFibSound σ hb hepR
     exact ⟨x1, hx1⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

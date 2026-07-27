@@ -43,9 +43,9 @@ plus the proper separation theorem and atom-preserving separation.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Congruence and Separability Helpers -/
 
@@ -370,4 +370,4 @@ theorem proper_separation_preserves_atoms (φ : Formula) :
     int_equiv_restrict_atoms hψ₀_equiv (formula_atoms φ) Set.Subset.rfl,
     formula_atoms_restrict_subset ψ₀ (formula_atoms φ)⟩
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

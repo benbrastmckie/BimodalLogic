@@ -294,7 +294,7 @@ Tasks 5, 7, 8 immediately; start Task 6 as soon as Task 2 finishes.
 **Phased Implementation**:
 
 **Phase 1** (15-20 hours): Decidability Infrastructure
-- Create Theories/Bimodal/Decidability/Procedures.lean
+- Create FormalSystem/Decidability/Procedures.lean
 - Define satisfiability decision algorithm
 - Define validity decision algorithm via completeness
 

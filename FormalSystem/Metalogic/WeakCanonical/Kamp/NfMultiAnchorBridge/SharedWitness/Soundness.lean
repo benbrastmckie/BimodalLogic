@@ -13,11 +13,11 @@ extract the shared witness `w` (the one `ptW` slot) and the per-σ segment-form 
 (Rabinovich Cor 5.4, PDF p.5). Carries `kvE2_sepHonest_hLR_absurd` and
 `kvE2_sepHonestOrder'`. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -1615,4 +1615,4 @@ coincidence is a first-class DISJUNCT admitted by the closed channel, NOT a tie 
 open-bit inequality. This is per-order-type validity, NOT handoff-05's rejected "Option A" (a
 single disjunctive open∨closed filter over the same flat union). -/
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

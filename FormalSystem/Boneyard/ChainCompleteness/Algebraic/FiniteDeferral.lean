@@ -37,13 +37,13 @@ restricted theory cycling implies full G-coherence. This step is left as sorry.
 - DeterministicChain.lean: until_persists_chain
 -/
 
-namespace Bimodal.Metalogic.Algebraic.FiniteDeferral
+namespace FormalSystem.Metalogic.Algebraic.FiniteDeferral
 
-open Bimodal.Syntax Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.DeterministicChain
-open Bimodal.Metalogic.Algebraic.DeterministicFMCS
+open FormalSystem.Syntax FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.DeterministicChain
+open FormalSystem.Metalogic.Algebraic.DeterministicFMCS
 
 /-!
 ## F to Until Conversion
@@ -200,8 +200,8 @@ theorem G_neg_kills_until (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
     · -- ¬⊥ ∧ (⊥ U ⊥) ∈ chain(t) → contradiction
       have h_xbot := mcs_and_right h_mcs_t h
       have h_bot := SetMaximalConsistent.implication_property h_mcs_t
-        (theorem_in_mcs h_mcs_t Bimodal.Theorems.TemporalDerived.X_bot_absurd) h_xbot
-      exact (Bimodal.Metalogic.Algebraic.UltrafilterChain.bot_not_in_mcs _ h_mcs_t h_bot).elim
+        (theorem_in_mcs h_mcs_t FormalSystem.Theorems.TemporalDerived.X_bot_absurd) h_xbot
+      exact (FormalSystem.Metalogic.Algebraic.UltrafilterChain.bot_not_in_mcs _ h_mcs_t h_bot).elim
     · -- ¬(¬⊥ ∧ (⊥ U ⊥)) ∈ chain(t), which is step_formula
       exact h
   -- Step 2: G(step_formula) ∈ chain(t) by temporal necessitation + forward_G
@@ -291,9 +291,9 @@ theorem G_neg_kills_until (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
     -- Then DNE: ⊢ ¬¬B → B.
     -- Chain: ⊢ ¬(A → ¬B) → B.
     -- This works! Let me build it.
-    have h_dn := Bimodal.Theorems.Combinators.dni (A.imp B.neg)
+    have h_dn := FormalSystem.Theorems.Combinators.dni (A.imp B.neg)
     -- h_dn: ⊢ (A → ¬B) → ¬¬(A → ¬B)
-    have h_chain1 := Bimodal.Theorems.Combinators.imp_trans h_s h_dn
+    have h_chain1 := FormalSystem.Theorems.Combinators.imp_trans h_s h_dn
     -- h_chain1: ⊢ ¬B → ¬¬(A → ¬B)
     -- ¬¬(A → ¬B) = ((A → ¬B) → ⊥) → ⊥ = ¬(A → ¬B).neg
     -- So h_chain1: ⊢ B.neg → ((A.imp B.neg).neg).neg
@@ -310,16 +310,16 @@ theorem G_neg_kills_until (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
     --      = ⊢ (A.imp B.neg) → (A.imp B.neg).neg → ⊥
     -- h_chain1 = imp_trans h_s h_dn: ⊢ ¬B → (¬(A → ¬B) → ⊥)
     -- Now flip (theorem_flip): ⊢ (¬B → (¬(A → ¬B) → ⊥)) → (¬(A → ¬B) → (¬B → ⊥))
-    have h_flip := @Bimodal.Theorems.Combinators.theorem_flip B.neg (A.imp B.neg).neg Formula.bot
+    have h_flip := @FormalSystem.Theorems.Combinators.theorem_flip B.neg (A.imp B.neg).neg Formula.bot
     have h_contra : [] ⊢ (A.imp B.neg).neg.imp (B.neg.imp Formula.bot) :=
-      Bimodal.Theorems.Combinators.mp h_chain1 h_flip
+      FormalSystem.Theorems.Combinators.mp h_chain1 h_flip
     -- h_contra: ⊢ ¬(A → ¬B) → (¬B → ⊥) = ⊢ (A ∧ B) → ¬¬B
     -- Chain with DNE: ⊢ ¬¬B → B
     have h_dne := dne_theorem B
-    exact Bimodal.Theorems.Combinators.imp_trans h_contra h_dne
+    exact FormalSystem.Theorems.Combinators.imp_trans h_contra h_dne
   -- Now: ⊢ (¬⊥ ∧ (⊥ U ⊥)) → (⊥ U ⊥), and ⊢ (⊥ U ⊥) → ⊥
   have h_step_thm : [] ⊢ step_formula :=
-    Bimodal.Theorems.Combinators.imp_trans h_and_right_thm Bimodal.Theorems.TemporalDerived.X_bot_absurd
+    FormalSystem.Theorems.Combinators.imp_trans h_and_right_thm FormalSystem.Theorems.TemporalDerived.X_bot_absurd
   -- G(step_formula) by temporal necessitation
   have h_G_step : [] ⊢ Formula.all_future step_formula :=
     DerivationTree.temporal_necessitation _ h_step_thm
@@ -328,7 +328,7 @@ theorem G_neg_kills_until (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
   -- Build conjunction: G(¬ψ) ∧ G(step) ∈ chain(t)
   have h_conj := SetMaximalConsistent.implication_property h_mcs_t
     (SetMaximalConsistent.implication_property h_mcs_t
-      (theorem_in_mcs h_mcs_t (Bimodal.Theorems.Combinators.pairing _ _))
+      (theorem_in_mcs h_mcs_t (FormalSystem.Theorems.Combinators.pairing _ _))
       h_G_neg) h_G_step_in
   -- until_induction axiom: G(¬ψ) ∧ G(step) → ((¬⊥ U ψ) → (⊥ U ⊥))
   have h_ax := sorry /- until_induction removed in BX -/ ψ Formula.bot)
@@ -338,8 +338,8 @@ theorem G_neg_kills_until (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
   have h_X_bot := SetMaximalConsistent.implication_property h_mcs_t h_imp h_U
   -- (⊥ U ⊥) → ⊥
   have h_bot := SetMaximalConsistent.implication_property h_mcs_t
-    (theorem_in_mcs h_mcs_t Bimodal.Theorems.TemporalDerived.X_bot_absurd) h_X_bot
-  exact Bimodal.Metalogic.Algebraic.UltrafilterChain.bot_not_in_mcs _ h_mcs_t h_bot
+    (theorem_in_mcs h_mcs_t FormalSystem.Theorems.TemporalDerived.X_bot_absurd) h_X_bot
+  exact FormalSystem.Metalogic.Algebraic.UltrafilterChain.bot_not_in_mcs _ h_mcs_t h_bot
 
 /-!
 ## Main Forward F Theorem (Sorry)
@@ -389,4 +389,4 @@ theorem forward_F_via_deferral (M₀ : Set Formula) (h_mcs : SetMaximalConsisten
     ∃ s : ℤ, t < s ∧ ψ ∈ deterministic_chain M₀ s := by
   sorry
 
-end Bimodal.Metalogic.Algebraic.FiniteDeferral
+end FormalSystem.Metalogic.Algebraic.FiniteDeferral

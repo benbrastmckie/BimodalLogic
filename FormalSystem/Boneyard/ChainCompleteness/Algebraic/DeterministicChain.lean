@@ -39,11 +39,11 @@ These are currently axiomatized here; Phase 2 will provide the actual proofs.
 
 #exit
 
-namespace Bimodal.Metalogic.Algebraic.DeterministicChain
+namespace FormalSystem.Metalogic.Algebraic.DeterministicChain
 
-open Bimodal.Syntax Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
+open FormalSystem.Syntax FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
 
 /-!
 ## Deterministic Chain Definition
@@ -333,7 +333,7 @@ theorem g_content_propagates_to_x_content (M : Set Formula)
     φ ∈ x_content M := by
   -- G_implies_X gives ⊢ G(φ) → X(φ). Apply in MCS.
   simp only [mem_x_content_iff]
-  have h_GX := Bimodal.Theorems.TemporalDerived.G_implies_X φ
+  have h_GX := FormalSystem.Theorems.TemporalDerived.G_implies_X φ
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_GX) h_G
 
 /-- H-content propagates backward through y_content:
@@ -345,7 +345,7 @@ theorem h_content_propagates_to_y_content (M : Set Formula)
     φ ∈ y_content M := by
   -- H_implies_Y gives ⊢ H(φ) → Y(φ). Apply in MCS.
   simp only [mem_y_content_iff]
-  have h_HY := Bimodal.Theorems.TemporalDerived.H_implies_Y φ
+  have h_HY := FormalSystem.Theorems.TemporalDerived.H_implies_Y φ
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_HY) h_H
 
 /-!
@@ -469,7 +469,7 @@ theorem H_persists_backward_one_step (M₀ : Set Formula) (h_mcs : SetMaximalCon
     Formula.all_past φ ∈ deterministic_chain M₀ (Int.negSucc (n + 1)) := by
   have h_mcs_n := deterministic_chain_mcs M₀ h_mcs (Int.negSucc n)
   -- temp_4_past: H(φ) → H(H(φ)) (from temporal duality of temp_4)
-  have h_t4p := Bimodal.Metalogic.Core.temp_4_past φ
+  have h_t4p := FormalSystem.Metalogic.Core.temp_4_past φ
   have h_HH : φ.all_past.all_past ∈ deterministic_chain M₀ (Int.negSucc n) :=
     SetMaximalConsistent.implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_t4p) h_H
   -- H(H(φ)) → Y(H(φ)) via h_content_propagates_to_y_content
@@ -538,7 +538,7 @@ private theorem G_persists_backward_toward_zero (M₀ : Set Formula) (h_mcs : Se
         deterministic_chain M₀ (Int.negSucc k) := by
       simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h_GG ⊢
       exact h_GG
-    have h_YGG_to_G := Bimodal.Theorems.TemporalDerived.YG_implies_self φ.all_future
+    have h_YGG_to_G := FormalSystem.Theorems.TemporalDerived.YG_implies_self φ.all_future
     have h_mcs_k := deterministic_chain_mcs M₀ h_mcs (Int.negSucc k)
     have h_G_at_k : φ.all_future ∈ deterministic_chain M₀ (Int.negSucc k) :=
       SetMaximalConsistent.implication_property h_mcs_k
@@ -570,7 +570,7 @@ private theorem G_persists_forward_in_backward (M₀ : Set Formula) (h_mcs : Set
     have h_mcs_md := deterministic_chain_mcs M₀ h_mcs (Int.negSucc (m + d))
     have h_G_at_md : φ.all_future ∈ deterministic_chain M₀ (Int.negSucc (m + d)) :=
       SetMaximalConsistent.implication_property h_mcs_md
-        (theorem_in_mcs h_mcs_md (Bimodal.Theorems.TemporalDerived.YG_implies_self φ.all_future))
+        (theorem_in_mcs h_mcs_md (FormalSystem.Theorems.TemporalDerived.YG_implies_self φ.all_future))
         h_Y_GG_in
     exact ih h_G_at_md
 
@@ -586,7 +586,7 @@ theorem forward_G_within_backward (M₀ : Set Formula) (h_mcs : SetMaximalConsis
     exact h_persist
   have h_mcs_m := deterministic_chain_mcs M₀ h_mcs (Int.negSucc m)
   exact SetMaximalConsistent.implication_property h_mcs_m
-    (theorem_in_mcs h_mcs_m (Bimodal.Theorems.TemporalDerived.YG_implies_self φ)) h_YG
+    (theorem_in_mcs h_mcs_m (FormalSystem.Theorems.TemporalDerived.YG_implies_self φ)) h_YG
 
 /-- Forward G coherence across the boundary: G(φ) ∈ chain(-(k+1)) implies φ ∈ chain(m)
 for any m ≥ 0 (non-negative). -/
@@ -598,7 +598,7 @@ theorem forward_G_boundary (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
   have h_YG_in_M0 : (Formula.snce Formula.bot φ.all_future) ∈ M₀ := by
     simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h_G_at_neg1
     exact h_G_at_neg1
-  have h_YG_to_phi := Bimodal.Theorems.TemporalDerived.YG_implies_self φ
+  have h_YG_to_phi := FormalSystem.Theorems.TemporalDerived.YG_implies_self φ
   have h_phi_in_M0 : φ ∈ M₀ :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_YG_to_phi) h_YG_in_M0
   have h_t4 : DerivationTree [] (φ.all_future.imp φ.all_future.all_future) :=
@@ -610,7 +610,7 @@ theorem forward_G_boundary (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
   have h_YGG_in_M0 : (Formula.snce Formula.bot φ.all_future.all_future) ∈ M₀ := by
     simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h_GG_neg1
     exact h_GG_neg1
-  have h_YGG_to_G := Bimodal.Theorems.TemporalDerived.YG_implies_self φ.all_future
+  have h_YGG_to_G := FormalSystem.Theorems.TemporalDerived.YG_implies_self φ.all_future
   have h_G_in_M0 : φ.all_future ∈ M₀ :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_YGG_to_G) h_YGG_in_M0
   match m with
@@ -655,7 +655,7 @@ private theorem H_persists_backward_in_forward_one_step
     (h_H : φ.all_past ∈ deterministic_chain M₀ ↑(n + 2)) :
     φ.all_past ∈ deterministic_chain M₀ ↑(n + 1) := by
   have h_mcs_succ := deterministic_chain_mcs M₀ h_mcs ↑(n + 2)
-  have h_t4p := Bimodal.Metalogic.Core.temp_4_past φ
+  have h_t4p := FormalSystem.Metalogic.Core.temp_4_past φ
   have h_HH : φ.all_past.all_past ∈ deterministic_chain M₀ ↑(n + 2) :=
     SetMaximalConsistent.implication_property h_mcs_succ
       (theorem_in_mcs h_mcs_succ h_t4p) h_H
@@ -667,7 +667,7 @@ private theorem H_persists_backward_in_forward_one_step
     exact h_HH
   have h_mcs_n := deterministic_chain_mcs M₀ h_mcs ↑(n + 1)
   exact SetMaximalConsistent.implication_property h_mcs_n
-    (theorem_in_mcs h_mcs_n (Bimodal.Theorems.TemporalDerived.XH_implies_self φ.all_past))
+    (theorem_in_mcs h_mcs_n (FormalSystem.Theorems.TemporalDerived.XH_implies_self φ.all_past))
     h_X_HH_in
 
 /-- H(φ) persists backward through the forward chain from position n to position m (m ≤ n). -/
@@ -699,7 +699,7 @@ theorem backward_H_within_forward (M₀ : Set Formula) (h_mcs : SetMaximalConsis
     exact h_persist
   have h_mcs_m := deterministic_chain_mcs M₀ h_mcs ↑(m + 1)
   exact SetMaximalConsistent.implication_property h_mcs_m
-    (theorem_in_mcs h_mcs_m (Bimodal.Theorems.TemporalDerived.XH_implies_self φ)) h_XH
+    (theorem_in_mcs h_mcs_m (FormalSystem.Theorems.TemporalDerived.XH_implies_self φ)) h_XH
 
 /-- Full backward H coherence for the deterministic chain over Int.
 H(φ) ∈ chain(n) and m < n implies φ ∈ chain(m). -/
@@ -729,9 +729,9 @@ theorem backward_H_int (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
           have h_XH_M0 : (Formula.untl Formula.bot φ.all_past) ∈ M₀ := by
             simp only [deterministic_chain, iterate_x_content, mem_x_content_iff] at h_H_1
             exact h_H_1
-          have h_XH_self := Bimodal.Theorems.TemporalDerived.XH_implies_self φ.all_past
+          have h_XH_self := FormalSystem.Theorems.TemporalDerived.XH_implies_self φ.all_past
           -- X(H(H(φ))) → H(φ)
-          have h_t4p := Bimodal.Metalogic.Core.temp_4_past φ
+          have h_t4p := FormalSystem.Metalogic.Core.temp_4_past φ
           have h_mcs_1 := deterministic_chain_mcs M₀ h_mcs (↑(0 + 1) : ℤ)
           have h_HH_1 := SetMaximalConsistent.implication_property h_mcs_1
             (theorem_in_mcs h_mcs_1 h_t4p) h_H_1
@@ -755,7 +755,7 @@ theorem backward_H_int (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
               exact h_H_1
             show φ ∈ M₀
             exact SetMaximalConsistent.implication_property h_mcs
-              (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.XH_implies_self φ))
+              (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.XH_implies_self φ))
               h_XH_M0
           | m'' + 1 =>
             exact backward_H_within_forward M₀ h_mcs n'' m''
@@ -763,7 +763,7 @@ theorem backward_H_int (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
       | negSucc m' =>
         -- Need φ ∈ chain(negSucc m'). We have H(φ) ∈ M₀.
         -- Get H(H(φ)) ∈ M₀, then H(φ) ∈ y_content(M₀) = chain(-1).
-        have h_t4p := Bimodal.Metalogic.Core.temp_4_past φ
+        have h_t4p := FormalSystem.Metalogic.Core.temp_4_past φ
         have h_HH_M0 := SetMaximalConsistent.implication_property h_mcs
           (theorem_in_mcs h_mcs h_t4p) h_H_M0
         have h_H_neg1 : φ.all_past ∈ deterministic_chain M₀ (Int.negSucc 0) := by
@@ -782,7 +782,7 @@ theorem backward_H_int (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
       | negSucc m' =>
         exact backward_H_negSucc M₀ h_mcs n' m' (by omega) φ h_H
 
-end Bimodal.Metalogic.Algebraic.DeterministicChain
+end FormalSystem.Metalogic.Algebraic.DeterministicChain
 
 /-
 OLD CODE BELOW - replaced by sorry-based stubs above.
@@ -824,7 +824,7 @@ private theorem G_persists_backward_toward_zero_OLD (M₀ : Set Formula) (h_mcs 
       simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h_GG ⊢
       exact h_GG
     -- YG_implies_self for G(φ): ⊢ Y(G(G(φ))) → G(φ)
-    have h_YGG_to_G := Bimodal.Theorems.TemporalDerived.YG_implies_self φ.all_future
+    have h_YGG_to_G := FormalSystem.Theorems.TemporalDerived.YG_implies_self φ.all_future
     have h_mcs_k := deterministic_chain_mcs M₀ h_mcs (Int.negSucc k)
     have h_G_at_k : φ.all_future ∈ deterministic_chain M₀ (Int.negSucc k) :=
       SetMaximalConsistent.implication_property h_mcs_k
@@ -858,7 +858,7 @@ private theorem G_persists_forward_in_backward (M₀ : Set Formula) (h_mcs : Set
     have h_mcs_md := deterministic_chain_mcs M₀ h_mcs (Int.negSucc (m + d))
     have h_G_at_md : φ.all_future ∈ deterministic_chain M₀ (Int.negSucc (m + d)) :=
       SetMaximalConsistent.implication_property h_mcs_md
-        (theorem_in_mcs h_mcs_md (Bimodal.Theorems.TemporalDerived.YG_implies_self φ.all_future))
+        (theorem_in_mcs h_mcs_md (FormalSystem.Theorems.TemporalDerived.YG_implies_self φ.all_future))
         h_Y_GG_in
     exact ih h_G_at_md
 
@@ -877,7 +877,7 @@ theorem forward_G_within_backward (M₀ : Set Formula) (h_mcs : SetMaximalConsis
     exact h_persist
   have h_mcs_m := deterministic_chain_mcs M₀ h_mcs (Int.negSucc m)
   exact SetMaximalConsistent.implication_property h_mcs_m
-    (theorem_in_mcs h_mcs_m (Bimodal.Theorems.TemporalDerived.YG_implies_self φ)) h_YG
+    (theorem_in_mcs h_mcs_m (FormalSystem.Theorems.TemporalDerived.YG_implies_self φ)) h_YG
 
 /-- Forward G coherence across the boundary: G(φ) ∈ chain(-(k+1)) implies φ ∈ chain(m)
 for any m ≥ 0 (non-negative). -/
@@ -892,7 +892,7 @@ theorem forward_G_boundary (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
     simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h_G_at_neg1
     exact h_G_at_neg1
   -- Step 3: YG_implies_self: Y(G(φ)) → φ, so φ ∈ M₀
-  have h_YG_to_phi := Bimodal.Theorems.TemporalDerived.YG_implies_self φ
+  have h_YG_to_phi := FormalSystem.Theorems.TemporalDerived.YG_implies_self φ
   have h_phi_in_M0 : φ ∈ M₀ :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_YG_to_phi) h_YG_in_M0
   -- Step 4: Also G(φ) ∈ M₀ from Y(G(φ)) ∈ M₀ ... no, we need G(φ) ∈ M₀ for forward propagation
@@ -909,7 +909,7 @@ theorem forward_G_boundary (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
   have h_YGG_in_M0 : (Formula.snce Formula.bot φ.all_future.all_future) ∈ M₀ := by
     simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h_GG_neg1
     exact h_GG_neg1
-  have h_YGG_to_G := Bimodal.Theorems.TemporalDerived.YG_implies_self φ.all_future
+  have h_YGG_to_G := FormalSystem.Theorems.TemporalDerived.YG_implies_self φ.all_future
   have h_G_in_M0 : φ.all_future ∈ M₀ :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_YGG_to_G) h_YGG_in_M0
   -- Step 5: G(φ) ∈ M₀ = chain(0). Use forward_G_nat for m > 0.
@@ -949,7 +949,7 @@ private theorem H_persists_backward_in_forward_one_step
     (h_H : φ.all_past ∈ deterministic_chain M₀ ↑(n + 2)) :
     φ.all_past ∈ deterministic_chain M₀ ↑(n + 1) := by
   have h_mcs_succ := deterministic_chain_mcs M₀ h_mcs ↑(n + 2)
-  have h_t4p := Bimodal.Metalogic.Core.temp_4_past φ
+  have h_t4p := FormalSystem.Metalogic.Core.temp_4_past φ
   have h_HH : φ.all_past.all_past ∈ deterministic_chain M₀ ↑(n + 2) :=
     SetMaximalConsistent.implication_property h_mcs_succ
       (theorem_in_mcs h_mcs_succ h_t4p) h_H
@@ -962,7 +962,7 @@ private theorem H_persists_backward_in_forward_one_step
     exact h_HH
   have h_mcs_n := deterministic_chain_mcs M₀ h_mcs ↑(n + 1)
   exact SetMaximalConsistent.implication_property h_mcs_n
-    (theorem_in_mcs h_mcs_n (Bimodal.Theorems.TemporalDerived.XH_implies_self φ.all_past))
+    (theorem_in_mcs h_mcs_n (FormalSystem.Theorems.TemporalDerived.XH_implies_self φ.all_past))
     h_X_HH_in
 
 /-- H(φ) persists backward through the forward chain from position n to position m (m ≤ n). -/
@@ -996,7 +996,7 @@ theorem backward_H_within_forward (M₀ : Set Formula) (h_mcs : SetMaximalConsis
     exact h_persist
   have h_mcs_m := deterministic_chain_mcs M₀ h_mcs ↑(m + 1)
   exact SetMaximalConsistent.implication_property h_mcs_m
-    (theorem_in_mcs h_mcs_m (Bimodal.Theorems.TemporalDerived.XH_implies_self φ)) h_XH
+    (theorem_in_mcs h_mcs_m (FormalSystem.Theorems.TemporalDerived.XH_implies_self φ)) h_XH
 
 /-- Full backward H coherence for the deterministic chain over Int.
 H(φ) ∈ chain(n) and m < n implies φ ∈ chain(m). -/
@@ -1020,7 +1020,7 @@ theorem backward_H_int (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
             rw [show (↑(0 + 1) : ℤ) = ↑(0 + 1) from rfl] at h_H_1
             rw [mem_chain_succ_iff_x_mem_chain] at h_H_1; exact h_H_1
           exact SetMaximalConsistent.implication_property h_mcs
-            (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.XH_implies_self φ))
+            (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.XH_implies_self φ))
             h_XH_M0
         | m'' + 1 =>
           exact backward_H_within_forward M₀ h_mcs n'' m'' (by omega) φ h_H
@@ -1036,10 +1036,10 @@ theorem backward_H_int (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
           rw [mem_chain_succ_iff_x_mem_chain] at h_H_1; exact h_H_1
         have h_phi_M0 : φ ∈ M₀ :=
           SetMaximalConsistent.implication_property h_mcs
-            (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.XH_implies_self φ))
+            (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.XH_implies_self φ))
             h_XH_M0
         -- Get H(φ) ∈ M₀
-        have h_t4p := Bimodal.Metalogic.Core.temp_4_past φ
+        have h_t4p := FormalSystem.Metalogic.Core.temp_4_past φ
         have h_mcs_1 := deterministic_chain_mcs M₀ h_mcs ↑(0 + 1)
         have h_HH := SetMaximalConsistent.implication_property h_mcs_1
           (theorem_in_mcs h_mcs_1 h_t4p) h_H_1
@@ -1048,7 +1048,7 @@ theorem backward_H_int (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
           rw [mem_chain_succ_iff_x_mem_chain] at h_HH; exact h_HH
         have h_H_M0 : φ.all_past ∈ M₀ :=
           SetMaximalConsistent.implication_property h_mcs
-            (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.XH_implies_self φ.all_past))
+            (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.XH_implies_self φ.all_past))
             h_XHH_M0
         -- H(φ) ∈ M₀. Now use backward_H_negSucc to get φ ∈ chain(negSucc m').
         have h_H_neg1 : φ.all_past ∈ deterministic_chain M₀ (Int.negSucc 0) := by
@@ -1062,4 +1062,4 @@ theorem backward_H_int (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
       -- Both negative: m' > n' (since negSucc m' < negSucc n')
       exact backward_H_negSucc M₀ h_mcs n' m' (by omega) φ h_H
 
-end Bimodal.Metalogic.Algebraic.DeterministicChain
+end FormalSystem.Metalogic.Algebraic.DeterministicChain

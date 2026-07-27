@@ -43,9 +43,9 @@ This induces a relationship between the content extractors via MCS properties:
 - u_content and s_content: Until/Since step conditions in `UntilSinceCoherence.lean`
 -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /--
 g_content of an MCS: the set of all formulas phi where G phi appears in the MCS.
@@ -141,7 +141,7 @@ lemma mem_s_content_iff {M : Set Formula} {p : Formula × Formula} :
 
 /-! ## Duality Lemmas -/
 
-open Bimodal.Metalogic.Core Bimodal.ProofSystem Bimodal.Theorems in
+open FormalSystem.Metalogic.Core FormalSystem.ProofSystem FormalSystem.Theorems in
 /--
 Duality between f_content and g_content for MCS.
 
@@ -155,7 +155,7 @@ This reflects the definitional duality Fφ = ¬G¬φ lifted to content extractor
 - Backward: If G¬φ ∉ M, then ¬G¬φ ∈ M by negation completeness, so Fφ ∈ M
 -/
 theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
-    (h_mcs : SetMaximalConsistent (fc := Bimodal.ProofSystem.FrameClass.Base) M) (phi : Formula) :
+    (h_mcs : SetMaximalConsistent (fc := FormalSystem.ProofSystem.FrameClass.Base) M) (phi : Formula) :
     phi ∈ f_content M ↔ phi.neg ∉ g_content M := by
   simp only [mem_f_content_iff, mem_g_content_iff]
   -- Goal: some_future phi ∈ M ↔ all_future (phi.neg) ∉ M
@@ -198,7 +198,7 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
         (theorem_in_mcs h_mcs h_sf_impl) h_in
     | inr h_neg_in => exact absurd h_neg_in h_af_not_in
 
-open Bimodal.Metalogic.Core Bimodal.ProofSystem Bimodal.Theorems in
+open FormalSystem.Metalogic.Core FormalSystem.ProofSystem FormalSystem.Theorems in
 /--
 Duality between p_content and h_content for MCS.
 
@@ -209,7 +209,7 @@ This reflects the definitional duality Pφ = ¬H¬φ lifted to content extractor
 Symmetric to `f_content_iff_not_neg_in_g_content`.
 -/
 theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
-    (h_mcs : SetMaximalConsistent (fc := Bimodal.ProofSystem.FrameClass.Base) M) (phi : Formula) :
+    (h_mcs : SetMaximalConsistent (fc := FormalSystem.ProofSystem.FrameClass.Base) M) (phi : Formula) :
     phi ∈ p_content M ↔ phi.neg ∉ h_content M := by
   simp only [mem_p_content_iff, mem_h_content_iff]
   -- Goal: some_past phi ∈ M ↔ all_past (phi.neg) ∉ M
@@ -221,7 +221,7 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
     -- Derive ⊢ some_past phi → some_past (phi.neg.neg) via DNI + BX3' (right_mono_since)
     have h_dni : [] ⊢ phi.imp phi.neg.neg := Combinators.dni phi
     have h_H_dni : [] ⊢ (phi.imp phi.neg.neg).all_past :=
-      Bimodal.Theorems.past_necessitation _ h_dni
+      FormalSystem.Theorems.past_necessitation _ h_dni
     have h_bx3p : [] ⊢ (phi.imp phi.neg.neg).all_past.imp
         ((Formula.snce phi Formula.top).imp (Formula.snce phi.neg.neg Formula.top)) :=
       DerivationTree.axiom [] _ (Axiom.right_mono_since phi phi.neg.neg Formula.top) trivial
@@ -238,7 +238,7 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
       -- Derive ⊢ some_past (phi.neg.neg) → some_past phi via DNE + BX3'
       have h_dne : [] ⊢ phi.neg.neg.imp phi := Propositional.double_negation phi
       have h_H_dne : [] ⊢ (phi.neg.neg.imp phi).all_past :=
-        Bimodal.Theorems.past_necessitation _ h_dne
+        FormalSystem.Theorems.past_necessitation _ h_dne
       have h_bx3p : [] ⊢ (phi.neg.neg.imp phi).all_past.imp
           ((Formula.snce phi.neg.neg Formula.top).imp (Formula.snce phi Formula.top)) :=
         DerivationTree.axiom [] _ (Axiom.right_mono_since phi.neg.neg phi Formula.top) trivial
@@ -248,4 +248,4 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
         (theorem_in_mcs h_mcs h_sp_impl) h_in
     | inr h_neg_in => exact absurd h_neg_in h_ap_not_in
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

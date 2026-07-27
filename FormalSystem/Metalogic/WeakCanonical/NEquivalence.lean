@@ -38,10 +38,10 @@ concrete recursive normal form type from NormalForm.lean. This makes
 - Design provenance: the NEquivalence split — `KType` redesigned onto `NormalForm`,
   closing `k_equiv_monotone`
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-! ## k-Types and k-Equivalence -/
 
@@ -1312,4 +1312,4 @@ instance chronicleAsMonadicStructure_nonempty {fc : FrameClass} (M : ChronicleAs
     Nonempty (chronicleAsMonadicStructure M sig atomMap).carrier :=
   M.domain_nonempty
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

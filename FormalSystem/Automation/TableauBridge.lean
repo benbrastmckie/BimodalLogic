@@ -61,15 +61,15 @@ Then send JSON requests on stdin, one per line. Responses appear on stdout.
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.TableauBridge
+namespace FormalSystem.Automation.TableauBridge
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Decidability
-open Bimodal.Automation
-open Bimodal.Automation.DataExport
-open Bimodal.Automation.ProofStepExtractor
-open Bimodal.Automation.Enriched
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Decidability
+open FormalSystem.Automation
+open FormalSystem.Automation.DataExport
+open FormalSystem.Automation.ProofStepExtractor
+open FormalSystem.Automation.Enriched
 
 /-!
 ## JSON Parser Infrastructure
@@ -614,7 +614,7 @@ partial def replLoop : IO Unit := do
           loop
   loop
 
-end Bimodal.Automation.TableauBridge
+end FormalSystem.Automation.TableauBridge
 
 /-!
 ## Main Entry Point
@@ -625,4 +625,4 @@ Entry point for the `tableau_bridge` executable.
 Ignores command-line arguments and enters the REPL loop.
 -/
 def main (_args : List String) : IO Unit :=
-  Bimodal.Automation.TableauBridge.replLoop
+  FormalSystem.Automation.TableauBridge.replLoop

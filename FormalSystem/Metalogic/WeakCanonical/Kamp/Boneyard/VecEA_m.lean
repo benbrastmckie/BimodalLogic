@@ -43,10 +43,10 @@ which gets folded into the endpoint predicate at z_{m-2}.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper: Extend an environment by appending a point -/
 
@@ -660,4 +660,4 @@ theorem VecEA2.toVecEA_m_toVecEA2_correct {sig : MonadicSignature} {n : Nat}
     · have := hep ⟨1, by omega⟩; simp [env2_one] at this; exact this
     · have := hbr ⟨0, by omega⟩; simp [env2_zero, env2_one] at this; exact this
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

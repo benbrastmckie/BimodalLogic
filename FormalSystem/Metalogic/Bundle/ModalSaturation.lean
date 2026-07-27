@@ -42,11 +42,11 @@ predicate and prove that any BFMCS satisfying it has the modal_backward property
 
 -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 variable {D : Type*} [Preorder D]
 
@@ -166,7 +166,7 @@ lemma diamond_implies_psi_consistent {S : Set Formula}
       DerivationTree.weakening L [psi] _ d h_weak
     -- By deduction theorem: ⊢ psi → ⊥ = ⊢ neg psi
     have d_neg : DerivationTree FrameClass.Base [] (Formula.neg psi) :=
-      Bimodal.Metalogic.Core.deduction_theorem [] psi Formula.bot d_psi
+      FormalSystem.Metalogic.Core.deduction_theorem [] psi Formula.bot d_psi
     -- By necessitation: ⊢ Box (neg psi)
     have d_box : DerivationTree FrameClass.Base [] (Formula.box (Formula.neg psi)) :=
       DerivationTree.necessitation (Formula.neg psi) d_neg
@@ -227,7 +227,7 @@ Double negation elimination theorem: ⊢ ¬¬φ → φ
 This is derived using Peirce's law and Ex Falso.
 -/
 noncomputable def dne_theorem (phi : Formula) : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
-  Bimodal.Theorems.Propositional.double_negation phi
+  FormalSystem.Theorems.Propositional.double_negation phi
 
 /--
 Double negation introduction: ⊢ φ → ¬¬φ
@@ -249,9 +249,9 @@ noncomputable def dni_theorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (For
     DerivationTree.modus_ponens _ phi Formula.bot h2 h1
   -- Deduction theorem: [φ] ⊢ (φ → ⊥) → ⊥
   have h4 : [phi] ⊢ (phi.imp Formula.bot).imp Formula.bot :=
-    Bimodal.Metalogic.Core.deduction_theorem [phi] (phi.imp Formula.bot) Formula.bot h3
+    FormalSystem.Metalogic.Core.deduction_theorem [phi] (phi.imp Formula.bot) Formula.bot h3
   -- Deduction theorem again: [] ⊢ φ → ((φ → ⊥) → ⊥)
-  exact Bimodal.Metalogic.Core.deduction_theorem [] phi ((phi.imp Formula.bot).imp Formula.bot) h4
+  exact FormalSystem.Metalogic.Core.deduction_theorem [] phi ((phi.imp Formula.bot).imp Formula.bot) h4
 
 /--
 Box distributes over double negation elimination: ⊢ Box(¬¬φ) → Box φ
@@ -301,9 +301,9 @@ lemma SetMaximalConsistent.contrapositive {fc : FrameClass} {S : Set Formula}
   have h5 : DerivationTree fc [A, B.neg] Formula.bot :=
     DerivationTree.modus_ponens _ B Formula.bot h4 h3
   have h6 : DerivationTree fc [B.neg] A.neg :=
-    Bimodal.Metalogic.Core.deduction_theorem [B.neg] A Formula.bot h5
+    FormalSystem.Metalogic.Core.deduction_theorem [B.neg] A Formula.bot h5
   have h7 : DerivationTree fc [] (B.neg.imp A.neg) :=
-    Bimodal.Metalogic.Core.deduction_theorem [] B.neg A.neg h6
+    FormalSystem.Metalogic.Core.deduction_theorem [] B.neg A.neg h6
   -- Now ⊢ ¬B → ¬A is in S (as a theorem)
   have h_thm_in_S : B.neg.imp A.neg ∈ S := theorem_in_mcs h_mcs h7
   -- And ¬B ∈ S, so ¬A ∈ S by MCS implication property
@@ -425,7 +425,7 @@ noncomputable def axiom_5_negative_introspection (phi : Formula) :
     modal_5_collapse_theorem phi
   -- Step 2: By contraposition: ¬□φ → ¬◇□φ
   have h_contra : [] ⊢ (Formula.box phi).neg.imp (Formula.box phi).diamond.neg :=
-    Bimodal.Theorems.Propositional.contraposition h_collapse
+    FormalSystem.Theorems.Propositional.contraposition h_collapse
   -- Step 3: ¬◇□φ = □¬□φ by definition
   -- ◇A = ¬□¬A, so ¬◇A = ¬¬□¬A
   -- ¬◇□φ = ¬¬□(¬□φ) = □(¬□φ) (by double negation)
@@ -465,7 +465,7 @@ noncomputable def axiom_5_negative_introspection (phi : Formula) :
 
   -- Use DNE: ¬¬B → B where B = (Formula.box phi).neg.box
   have h_dne : [] ⊢ ((Formula.box phi).neg.box.neg.neg).imp ((Formula.box phi).neg.box) :=
-    Bimodal.Theorems.Propositional.double_negation ((Formula.box phi).neg.box)
+    FormalSystem.Theorems.Propositional.double_negation ((Formula.box phi).neg.box)
   -- Now compose: ¬□φ → ¬¬□¬□φ → □¬□φ
   -- h_contra : ¬□φ → (diamond □φ).neg = ¬□φ → (¬□(¬□φ)).neg = ¬□φ → ¬¬□¬□φ
   -- h_dne : ¬¬□¬□φ → □¬□φ
@@ -489,7 +489,7 @@ noncomputable def axiom_5_negative_introspection (phi : Formula) :
     -- Now h_contra : (Formula.box phi).neg.imp ((Formula.box phi).neg.box.neg.neg)
 
     -- Compose with DNE using imp_trans
-    exact Bimodal.Theorems.Combinators.imp_trans h_contra h_dne
+    exact FormalSystem.Theorems.Combinators.imp_trans h_contra h_dne
   exact h_result
 
 /--
@@ -517,4 +517,4 @@ lemma SetMaximalConsistent.neg_box_implies_box_neg_box {fc : FrameClass} {S : Se
   have h_ax5_in := theorem_in_mcs h_mcs h_ax5
   exact SetMaximalConsistent.implication_property h_mcs h_ax5_in h_neg_box
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

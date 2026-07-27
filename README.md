@@ -12,7 +12,7 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 
 **Specification**: [BimodalReference.pdf](latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation (outdated)
 
-**Demo**: [BimodalProofs.lean](Theories/Bimodal/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
+**Demo**: [BimodalProofs.lean](FormalSystem/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
 
 | Metric | Count |
 |--------|-------|
@@ -86,7 +86,7 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 
 ```
 ProofChecker/
-├── Theories/
+├── FormalSystem/
 │   └── Bimodal/                  # TM bimodal logic library
 │       ├── Syntax/               # Formula types, atoms, signed formulas
 │       ├── ProofSystem/          # Axioms (44 constructors, 7 layers)
@@ -174,7 +174,7 @@ The base system includes propositional (4), S5 modal (5), Burgess-Xu temporal (2
 ### Research
 
 - [Bimodal Logic](docs/research/BIMODAL_LOGIC.md) — theoretical foundations and Logos connection
-- [Metalogic README](Theories/Bimodal/Metalogic/README.md) — architecture of the completeness proof
+- [Metalogic README](FormalSystem/Metalogic/README.md) — architecture of the completeness proof
 
 ---
 

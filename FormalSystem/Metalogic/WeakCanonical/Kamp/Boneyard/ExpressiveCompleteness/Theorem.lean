@@ -47,10 +47,10 @@ logic over (Z, <) is expressible by a temporal formula using Since and Until.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ### Core Expressiveness Lemma
 
@@ -360,10 +360,10 @@ theorem separation_implies_expressiveness
           eval (int_to_ordered sig M) (fun _ => t) psi ↔
           Separation.int_truth (to_int_struct M atomMap) t A := by
   intro sig psi
-  let atomMap : sig.preds -> Bimodal.Syntax.Atom :=
-    fun q => Bimodal.Syntax.Atom.mk_fresh "p" (Fintype.equivFin sig.preds q).val
+  let atomMap : sig.preds -> FormalSystem.Syntax.Atom :=
+    fun q => FormalSystem.Syntax.Atom.mk_fresh "p" (Fintype.equivFin sig.preds q).val
   have h_am_form : ∀ p, atomMap p =
-      Bimodal.Syntax.Atom.mk_fresh "p" (Fintype.equivFin sig.preds p).val :=
+      FormalSystem.Syntax.Atom.mk_fresh "p" (Fintype.equivFin sig.preds p).val :=
     fun _ => rfl
   have h_base_ne : "p" ≠ "e" ++ toString (Fintype.card sig.preds) := by
     exact fun h => by have := congrArg (fun s => s.toList.head!) h; simp at this; exact absurd this (by decide)
@@ -387,4 +387,4 @@ theorem US_expressively_complete_over_Z :
           Separation.int_truth (to_int_struct M atomMap) t A :=
   separation_implies_expressiveness (fun phi => proper_separation_theorem_int phi)
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

@@ -51,9 +51,9 @@ needs a not-q witness before u0 (contradicting minimality).
 - BdRV 2002, Definition 7.11 (gap-based picture)
 - Reynolds 1994, Section 4 (p.122-124)
 -/
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Stavi Connective Semantics -/
 
@@ -132,7 +132,7 @@ def stavi_S_truth {sig : MonadicSignature}
 Extended temporal formula type that includes Stavi connectives U' and S'
 in addition to the standard temporal formula constructors.
 
-This extends `Bimodal.Syntax.Formula` with two new constructors for the
+This extends `FormalSystem.Syntax.Formula` with two new constructors for the
 Stavi connectives. Used in the GHR93 expressive completeness theorem
 where {U, S, U', S'} is shown to be expressively complete for all
 linear temporal structures.
@@ -580,4 +580,4 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
     · intro ⟨s, hst, hAs, hBu⟩
       exact ⟨s, hst, (ihA s).mpr hAs, fun u hsu hut => (ihB u).mpr (hBu u hsu hut)⟩
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

@@ -25,8 +25,8 @@ Common errors and solutions when working with the Bimodal TM logic library.
 ```lean
 import Bimodal
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 ```
 
 ### 1.2 "unknown identifier 'modal_search'" or "'apply_axiom'"
@@ -38,9 +38,9 @@ open Bimodal.ProofSystem
 **Solution**: Add the automation import:
 
 ```lean
-import Bimodal.Automation
+import FormalSystem.Automation
 
-open Bimodal.Automation
+open FormalSystem.Automation
 ```
 
 ### 1.3 "file not found: Bimodal"
@@ -174,7 +174,7 @@ example (φ : Formula) (h : ⊢ φ) : ⊢ φ.box :=
   DerivationTree.necessitation φ h
 
 -- For non-empty context, use weakening or generalized_modal_k
-import Bimodal.Theorems.GeneralizedNecessitation
+import FormalSystem.Theorems.GeneralizedNecessitation
 
 noncomputable example (φ : Formula) : [φ.box] ⊢ φ.box.box := by
   have h : [φ] ⊢ φ.box := ...
@@ -370,7 +370,7 @@ example : ⊢ very_complex := by
 
 ### 5.3 ProofSearch module build failures (historical)
 
-**Symptom**: `Bimodal.Automation.ProofSearch` fails to build.
+**Symptom**: `FormalSystem.Automation.ProofSearch` fails to build.
 
 **Cause**: Historical — `ProofSearch` previously had build issues; it has since been reorganized
 into `Automation/ProofSearch/Core.lean` and `Automation/ProofSearch/Strategies.lean` and builds
@@ -378,8 +378,8 @@ cleanly (confirmed via `lake build`, 0 errors). If you hit this symptom against 
 codebase, the module path itself is stale — the file no longer exists as a single
 `ProofSearch.lean`.
 
-**Solution**: Use `Bimodal.Automation.Tactics`, `Bimodal.Automation.ProofSearch.Core`, or
-`Bimodal.Automation.ProofSearch.Strategies`, all of which build and provide `modal_search` and
+**Solution**: Use `FormalSystem.Automation.Tactics`, `FormalSystem.Automation.ProofSearch.Core`, or
+`FormalSystem.Automation.ProofSearch.Strategies`, all of which build and provide `modal_search` and
 other working tactics.
 
 ### 5.4 "failed to synthesize: DecidableEq Formula"
@@ -391,7 +391,7 @@ other working tactics.
 **Solution**: Formula has a `DecidableEq` instance; ensure it's available:
 
 ```lean
-import Bimodal.Syntax.Formula
+import FormalSystem.Syntax.Formula
 
 -- DecidableEq is derived, should work automatically
 #check (inferInstance : DecidableEq Formula)

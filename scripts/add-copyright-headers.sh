@@ -14,8 +14,8 @@
 #
 # SKIP PREDICATES (a file is a target only if it passes BOTH):
 #   1. Its path does not match `*/Boneyard/*`. There are TWO Boneyard trees --
-#      Theories/Bimodal/Boneyard/ (89 files) and
-#      Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/ (62 files) -- so a
+#      FormalSystem/Boneyard/ (89 files) and
+#      FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/ (62 files) -- so a
 #      predicate keyed on the top-level path alone would wrongly header 62 files.
 #   2. It does not contain a line-initial `#exit`. All 151 archived files carry one and
 #      no file outside the two Boneyard trees does, so this is an independent check on (1).
@@ -27,7 +27,7 @@
 # that already carry a stale header; those are repaired by hand, not by this script.
 #
 # Usage:
-#   add-copyright-headers.sh [--dry-run] [ROOT ...]   # ROOT defaults to Theories
+#   add-copyright-headers.sh [--dry-run] [ROOT ...]   # ROOT defaults to FormalSystem
 #
 # Lists and the year manifest are written to $OUTDIR (default: a mktemp dir, echoed at the end).
 set -uo pipefail
@@ -41,7 +41,7 @@ for a in "$@"; do
     *) ROOTS+=("$a") ;;
   esac
 done
-[ "${#ROOTS[@]}" -eq 0 ] && ROOTS=("Theories")
+[ "${#ROOTS[@]}" -eq 0 ] && ROOTS=("FormalSystem")
 
 DEFAULT_YEAR=2026
 HOLDER='Benjamin Brast-McKie'

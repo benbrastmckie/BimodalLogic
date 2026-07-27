@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.ProofSystem
-import Bimodal.Semantics
-import Bimodal.Metalogic
+import FormalSystem.ProofSystem
+import FormalSystem.Semantics
+import FormalSystem.Metalogic
 
 /-!
 # Proof System and Semantics Integration Tests
@@ -45,10 +45,10 @@ Tests are organized by category:
 
 namespace BimodalTest.Integration
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic
 
 -- ============================================================
 -- Axiom Validity Tests (15 axioms)
@@ -144,7 +144,7 @@ Test 10: Temporal K Distribution axiom is valid.
 Verifies that `F(φ → ψ) → (Fφ → Fψ)` is valid via soundness.
 -/
 example (φ ψ : Formula) : [] ⊨ ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) := by
-  let deriv := Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ ψ
+  let deriv := FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived φ ψ
   exact soundness [] _ deriv
 
 /--
@@ -153,7 +153,7 @@ Test 11: Temporal 4 axiom is valid.
 Verifies that `Fφ → FFφ` is valid via soundness.
 -/
 example (φ : Formula) : [] ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := by
-  let deriv := Bimodal.Theorems.TemporalDerived.temp_4_derived φ
+  let deriv := FormalSystem.Theorems.TemporalDerived.temp_4_derived φ
   exact soundness [] _ deriv
 
 /--
@@ -192,7 +192,7 @@ Verifies that `□φ → G□φ` is valid via soundness (TF derived from MF + T 
 -/
 example (φ : Formula) : [] ⊨ ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) := by
   let deriv : ⊢ ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) :=
-    Bimodal.Theorems.Combinators.temp_future_derived φ
+    FormalSystem.Theorems.Combinators.temp_future_derived φ
   exact soundness [] _ deriv
 
 end AxiomValidityTests
@@ -265,7 +265,7 @@ example : [] ⊨ ((Formula.all_future (Formula.atom_s "p")).imp
               (Formula.all_future (Formula.all_future (Formula.atom_s "p")))).swap_temporal := by
   let deriv : [] ⊢ ((Formula.all_future (Formula.atom_s "p")).imp 
                     (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "p")
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "p")
   let deriv_swap : [] ⊢ ((Formula.all_future (Formula.atom_s "p")).imp 
                          (Formula.all_future (Formula.all_future (Formula.atom_s "p")))).swap_temporal :=
     DerivationTree.temporal_duality _ deriv
@@ -339,7 +339,7 @@ Demonstrates: Derivation → Soundness → Validity for temporal transitivity.
 -/
 example : True := by
   let proof : ⊢ ((Formula.atom_s "r").all_future.imp (Formula.atom_s "r").all_future.all_future) :=
-    Bimodal.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "r")
+    FormalSystem.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "r")
   
   let valid_from_soundness : [] ⊨ ((Formula.atom_s "r").all_future.imp 
                                     (Formula.atom_s "r").all_future.all_future) :=
@@ -433,7 +433,7 @@ example (p : Formula) : [p.all_future.all_future] ⊨ (p.all_future.imp p.all_fu
   -- Demonstrate that axioms are sound even in non-empty contexts
   let ax : [p.all_future.all_future] ⊢ (p.all_future.imp p.all_future.all_future) :=
     DerivationTree.weakening [] [p.all_future.all_future] _
-      (Bimodal.Theorems.TemporalDerived.temp_4_derived p) (List.nil_subset _)
+      (FormalSystem.Theorems.TemporalDerived.temp_4_derived p) (List.nil_subset _)
   
   -- Apply soundness to show the axiom is valid
   exact soundness [p.all_future.all_future] _ ax
@@ -544,7 +544,7 @@ Verify F(p → q) → (Fp → Fq) is sound.
 -/
 example : [] ⊨ (((Formula.atom_s "p").imp (Formula.atom_s "q")).all_future.imp 
              ((Formula.atom_s "p").all_future.imp (Formula.atom_s "q").all_future)) := by
-  let deriv := Bimodal.Theorems.TemporalDerived.temp_k_dist_derived
+  let deriv := FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived
     (Formula.atom_s "p") (Formula.atom_s "q")
   exact soundness [] _ deriv
 

@@ -32,10 +32,10 @@ The total complexity decreases with each expansion step.
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace FormalSystem.Metalogic.Decidability
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## Expanded Tableau Type
@@ -625,7 +625,7 @@ which is at most `n * 2^n` where n accounts for the time points and `2^n`
 for the types.
 -/
 def soundFuel (φ : Formula) : Nat :=
-  let n := (Bimodal.Syntax.subformulaClosure φ).card
+  let n := (FormalSystem.Syntax.subformulaClosure φ).card
   let bound := n * (2 ^ n)
   -- Cap at practical maximum; blocking fires well before this bound
   min bound 100000
@@ -699,7 +699,7 @@ produce correct results for known axioms and satisfiable formulas.
 
 section UntilSinceTests
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 -- Helper: create propositional atom formulas
 private def p : Formula := .atom (Atom.mk_base "p")
@@ -785,7 +785,7 @@ for formulas that would previously loop or exhaust fuel.
 
 section BlockingTests
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 private def p' : Formula := .atom (Atom.mk_base "p")
 private def q' : Formula := .atom (Atom.mk_base "q")
@@ -831,7 +831,7 @@ These tests verify the cross-modal-temporal interaction rules:
 
 section ModalTemporalTests
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 -- Helper: create propositional atom formulas
 private def mt_p : Formula := .atom (Atom.mk_base "p")
@@ -910,7 +910,7 @@ a range of formula patterns.
 
 section ExtendedTests
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 private def et_p : Formula := .atom (Atom.mk_base "p")
 private def et_q : Formula := .atom (Atom.mk_base "q")
@@ -1262,8 +1262,8 @@ These tests verify that the FrameClass parameter correctly gates axiom closure:
 
 section FrameClassGatingTests
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 private def fc_p : Formula := .atom (Atom.mk_base "p")
 
@@ -1365,7 +1365,7 @@ end FrameClassGatingTests
 
 section PersistentLoopTests
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 private def pl_p : Formula := .atom (Atom.mk_base "p")
 private def pl_r : Formula := .atom (Atom.mk_base "r")
@@ -1432,7 +1432,7 @@ co-decomposition there, rather than returning notApplicable.
 
 section ActiveUntlNegTests
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 private def an_p : Formula := .atom (Atom.mk_base "p")
 private def an_q : Formula := .atom (Atom.mk_base "q")
@@ -1551,9 +1551,9 @@ end ActiveUntlNegTests
 -/
 section FuelAllocationTests
 
-open Bimodal.Syntax in
+open FormalSystem.Syntax in
 private def fa_p := Formula.atom ⟨"p", none⟩
-open Bimodal.Syntax in
+open FormalSystem.Syntax in
 private def fa_q := Formula.atom ⟨"q", none⟩
 
 -- Test FA1: balanced branches (identical formulas) get approximately equal fuel
@@ -1617,4 +1617,4 @@ private def fa_q := Formula.atom ⟨"q", none⟩
 
 end FuelAllocationTests
 
-end Bimodal.Metalogic.Decidability
+end FormalSystem.Metalogic.Decidability

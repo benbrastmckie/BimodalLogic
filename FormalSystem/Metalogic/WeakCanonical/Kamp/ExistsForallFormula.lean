@@ -51,9 +51,9 @@ object's arity is capped by construction.
 - `NormalForm.lean`: `NormalForm`, `nf_eval_nf`, `AtomKind`, `atom_eval`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax (Formula)
+open FormalSystem.Syntax (Formula)
 
 /-! ## 1. Quantifier-free unary types and their satisfaction -/
 
@@ -164,4 +164,4 @@ theorem efSat_pinned {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
   obtain ⟨x, _, hpin, _⟩ := h
   exact ⟨x, hpin k⟩
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

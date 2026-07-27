@@ -22,9 +22,9 @@ These are the foundation for proving axiom closure and the lifting theorem.
 
 #exit
 
-namespace Bimodal.Metalogic.ConservativeExtension
+namespace FormalSystem.Metalogic.ConservativeExtension
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- Substitution sigma[q -> bot]: replace the fresh atom `Sum.inr ()` with `bot`.
 All other atoms (of the form `Sum.inl a`) are unchanged. -/
@@ -263,4 +263,4 @@ theorem substFormula_map_embedded (L : List Formula) :
     (L.map embedFormula).map substFormula = L.map embedFormula := by
   simp [List.map_map, Function.comp, substFormula_of_embedded]
 
-end Bimodal.Metalogic.ConservativeExtension
+end FormalSystem.Metalogic.ConservativeExtension

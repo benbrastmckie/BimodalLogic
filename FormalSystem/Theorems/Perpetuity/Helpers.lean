@@ -35,11 +35,11 @@ These helpers include temporal component lemmas and boilerplate reduction utilit
 * [Derivation.lean](../../ProofSystem/Derivation.lean) - Derivability relation
 -/
 
-namespace Bimodal.Theorems.Perpetuity
+namespace FormalSystem.Theorems.Perpetuity
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Combinators  -- Re-export combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators  -- Re-export combinators
 
 /-!
 ## Helper Lemmas: Temporal Components
@@ -168,4 +168,4 @@ def apply_axiom_in_context {fc : FrameClass} (Γ : Context) {A B : Formula}
   have hAB : Γ ⊢[fc] A.imp B := axiom_in_context Γ (A.imp B) axiom_proof h_fc
   exact DerivationTree.modus_ponens Γ A B hAB h
 
-end Bimodal.Theorems.Perpetuity
+end FormalSystem.Theorems.Perpetuity

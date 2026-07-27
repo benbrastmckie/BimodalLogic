@@ -50,12 +50,12 @@ an enumeration of `Rat x Formula x Formula x Bool`. Since both `Rat` and
 - Burgess 1982: "Axioms for tense logic II: Time periods", Section 2
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Chronicle
+namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
 
 /-! ## Singleton Chronicle
 
@@ -984,12 +984,12 @@ theorem g_content_sub_imp_h_content_sub {fc : FrameClass} {A B : Set Formula}
   have h_P_neg_ψ_B : Formula.some_past ψ.neg ∈ B := h_gAB h_GP
   -- H(¬¬ψ) ∈ B from H(ψ) via DNI under H, then contradiction with P(¬ψ)
   have h_dni : DerivationTree fc [] (ψ.imp ψ.neg.neg) :=
-    Bimodal.Theorems.Combinators.dni ψ
+    FormalSystem.Theorems.Combinators.dni ψ
   have h_H_dni : DerivationTree fc [] (Formula.all_past (ψ.imp ψ.neg.neg)) :=
-    Bimodal.Theorems.past_necessitation _ h_dni
+    FormalSystem.Theorems.past_necessitation _ h_dni
   have h_H_dist : DerivationTree fc [] ((Formula.all_past (ψ.imp ψ.neg.neg)).imp
       (Formula.all_past ψ |>.imp (Formula.all_past ψ.neg.neg))) :=
-    Bimodal.Theorems.past_k_dist ψ ψ.neg.neg
+    FormalSystem.Theorems.past_k_dist ψ ψ.neg.neg
   have h_H_nn : Formula.all_past ψ.neg.neg ∈ B := by
     have h1 := theorem_in_mcs h_mcs_B h_H_dni
     have h2 := theorem_in_mcs h_mcs_B h_H_dist
@@ -1028,12 +1028,12 @@ theorem h_content_sub_imp_g_content_sub {fc : FrameClass} {A B : Set Formula}
   have h_F_neg_ψ_A : Formula.some_future ψ.neg ∈ A := h_hBA h_HF
   -- G(¬¬ψ) ∈ A from G(ψ) via DNI under G, then contradiction with F(¬ψ)
   have h_dni : DerivationTree fc [] (ψ.imp ψ.neg.neg) :=
-    Bimodal.Theorems.Combinators.dni ψ
+    FormalSystem.Theorems.Combinators.dni ψ
   have h_G_dni : DerivationTree fc [] (Formula.all_future (ψ.imp ψ.neg.neg)) :=
     DerivationTree.temporal_necessitation _ h_dni
   have h_G_dist : DerivationTree fc [] ((Formula.all_future (ψ.imp ψ.neg.neg)).imp
       (Formula.all_future ψ |>.imp (Formula.all_future ψ.neg.neg))) :=
-    liftBase fc (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived ψ ψ.neg.neg)
+    liftBase fc (FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived ψ ψ.neg.neg)
   have h_G_nn : Formula.all_future ψ.neg.neg ∈ A := by
     have h1 := theorem_in_mcs h_mcs_A h_G_dni
     have h2 := theorem_in_mcs h_mcs_A h_G_dist
@@ -1080,12 +1080,12 @@ theorem limit_forward_G (fc : FrameClass) (A : Set Formula)
     · exact h
   -- Step 1: G(φ) ∈ f(x) implies G(φ^{nn}) ∈ f(x) by DNI + temporal necessitation + K
   have h_dni : DerivationTree fc [] (φ.imp φ.neg.neg) :=
-    Bimodal.Theorems.Combinators.dni φ
+    FormalSystem.Theorems.Combinators.dni φ
   have h_G_dni : DerivationTree fc [] (Formula.all_future (φ.imp φ.neg.neg)) :=
     DerivationTree.temporal_necessitation _ h_dni
   have h_G_dist : DerivationTree fc [] ((Formula.all_future (φ.imp φ.neg.neg)).imp
       (Formula.all_future φ |>.imp (Formula.all_future φ.neg.neg))) :=
-    liftBase fc (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived φ φ.neg.neg)
+    liftBase fc (FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived φ φ.neg.neg)
   have h_G_nn : Formula.all_future φ.neg.neg ∈ limit_f fc A h_mcs x := by
     have h1 := theorem_in_mcs h_mcs_x h_G_dni
     have h2 := theorem_in_mcs h_mcs_x h_G_dist
@@ -1134,12 +1134,12 @@ theorem limit_backward_H (fc : FrameClass) (A : Set Formula)
     · exact h
   -- H(φ) → H(φ^{nn}) by DNI + past necessitation + past K
   have h_dni : DerivationTree fc [] (φ.imp φ.neg.neg) :=
-    Bimodal.Theorems.Combinators.dni φ
+    FormalSystem.Theorems.Combinators.dni φ
   have h_H_dni : DerivationTree fc [] (Formula.all_past (φ.imp φ.neg.neg)) :=
-    Bimodal.Theorems.past_necessitation _ h_dni
+    FormalSystem.Theorems.past_necessitation _ h_dni
   have h_H_dist : DerivationTree fc [] ((Formula.all_past (φ.imp φ.neg.neg)).imp
       (Formula.all_past φ |>.imp (Formula.all_past φ.neg.neg))) :=
-    Bimodal.Theorems.past_k_dist φ φ.neg.neg
+    FormalSystem.Theorems.past_k_dist φ φ.neg.neg
   have h_H_nn : Formula.all_past φ.neg.neg ∈ limit_f fc A h_mcs x := by
     have h1 := theorem_in_mcs h_mcs_x h_H_dni
     have h2 := theorem_in_mcs h_mcs_x h_H_dist
@@ -1561,4 +1561,4 @@ theorem limit_satisfies_c5'_strong (fc : FrameClass) (A : Set Formula)
       exact adj_g_mem_limit_f fc A h_mcs (n + 1) a b h_adj_n1 ξ
         (h_adj_guard a b h_adj_n1 ha_ge_y hb_le_x) w hw haw hwb
 
-end Bimodal.Metalogic.BXCanonical.Chronicle
+end FormalSystem.Metalogic.BXCanonical.Chronicle

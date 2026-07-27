@@ -54,9 +54,9 @@ lemma `consistent_iff_not_derivable_bot` witnesses this as `Iff.rfl`.
 * [MaximalConsistent.lean](../Metalogic/Core/MaximalConsistent.lean) - Consistency definition
 -/
 
-namespace Bimodal.ProofSystem
+namespace FormalSystem.ProofSystem
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /--
 Prop-valued derivability: `Derivable fc G p` holds iff there exists a derivation tree
@@ -213,7 +213,7 @@ example (p : Atom) (h : Derivable .Base [] ((Formula.box (Formula.atom p)).imp (
 
 /-! ## Consistent Bridge
 
-`Consistent fc G` (defined in `Bimodal.Metalogic.Core.MaximalConsistent`) is
+`Consistent fc G` (defined in `FormalSystem.Metalogic.Core.MaximalConsistent`) is
 `¬Nonempty (DerivationTree fc G Formula.bot)`, which is definitionally equal
 to `¬Derivable fc G Formula.bot`. The bridge lemma cannot live here due to
 import ordering (MaximalConsistent imports ProofSystem), so any file that
@@ -225,4 +225,4 @@ theorem consistent_iff_not_derivable_bot (fc : FrameClass) (G : Context) :
 ```
 -/
 
-end Bimodal.ProofSystem
+end FormalSystem.ProofSystem

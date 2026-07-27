@@ -88,9 +88,9 @@ See SoundnessLemmas.lean for details on the module hierarchy restructuring.
 * JPL Paper lines 892-919 - Semantic design rationale
 -/
 
-namespace Bimodal.Semantics
+namespace FormalSystem.Semantics
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F : TaskFrame D}
 
@@ -692,4 +692,4 @@ theorem exists_shifted_history (M : TaskModel F) (Omega : Set (WorldHistory F))
 end TimeShift
 
 
-end Bimodal.Semantics
+end FormalSystem.Semantics

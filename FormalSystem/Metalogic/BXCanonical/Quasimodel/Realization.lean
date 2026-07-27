@@ -43,13 +43,13 @@ recommended resolution path (chain-based completeness).
 - Reynolds 2003: Until axiomatization and completeness
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Quasimodel
+namespace FormalSystem.Metalogic.BXCanonical.Quasimodel
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.BXCanonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.BXCanonical
 
 /-! ## Helper: F(ψ) from bx_le w v and ψ ∈ v
 
@@ -72,7 +72,7 @@ consistency reduction below: given a finite subset `L_h` of a Hintikka
 point's formulas, we need to move between "each element of `L_h` is
 derivable" and "the conjunction `bigconj L_h` is derivable".
 
-They are colocated here (rather than in `Bimodal.Syntax.BigConj`) because
+They are colocated here (rather than in `FormalSystem.Syntax.BigConj`) because
 they depend on `DerivationTree` and the propositional combinator library,
 whereas `BigConj.lean` is `DerivationTree`-free scaffolding for the
 Fisher-Ladner `EnrichedClosure`. -/
@@ -83,7 +83,7 @@ noncomputable def bigconj_intro : (L : List Formula) → L ⊢ bigconj L
   | [] => by
       -- bigconj [] = ¬⊥ = ⊥ → ⊥
       have h : ⊢ Formula.bot.imp Formula.bot :=
-        Bimodal.Theorems.Combinators.identity Formula.bot
+        FormalSystem.Theorems.Combinators.identity Formula.bot
       change [] ⊢ Formula.bot.neg
       simpa [bigconj, Formula.neg] using h
   | [a] => by
@@ -105,7 +105,7 @@ noncomputable def bigconj_intro : (L : List Formula) → L ⊢ bigconj L
         DerivationTree.assumption _ a (by simp)
       have h_pair :
           ⊢ a.imp ((bigconj (b :: rest)).imp (Formula.and a (bigconj (b :: rest)))) :=
-        Bimodal.Theorems.Combinators.pairing a (bigconj (b :: rest))
+        FormalSystem.Theorems.Combinators.pairing a (bigconj (b :: rest))
       have h_pair_w :
           (a :: b :: rest) ⊢ a.imp ((bigconj (b :: rest)).imp
             (Formula.and a (bigconj (b :: rest)))) :=
@@ -132,13 +132,13 @@ noncomputable def bigconj_mem_iff :
       rw [show bigconj (a :: b :: rest) = Formula.and a (bigconj (b :: rest)) from rfl]
       by_cases hφa : φ = a
       · subst hφa
-        exact Bimodal.Theorems.Propositional.lce φ (bigconj (b :: rest))
+        exact FormalSystem.Theorems.Propositional.lce φ (bigconj (b :: rest))
       · have h_in : φ ∈ b :: rest := by
           rcases List.mem_cons.mp h with rfl | h'
           · exact absurd rfl hφa
           · exact h'
         have h_rce : [Formula.and a (bigconj (b :: rest))] ⊢ bigconj (b :: rest) :=
-          Bimodal.Theorems.Propositional.rce a (bigconj (b :: rest))
+          FormalSystem.Theorems.Propositional.rce a (bigconj (b :: rest))
         have h_rec : [bigconj (b :: rest)] ⊢ φ := bigconj_mem_iff (b :: rest) φ h_in
         have h_imp : [] ⊢ (bigconj (b :: rest)).imp φ :=
           deduction_theorem [] (bigconj (b :: rest)) φ (by simpa using h_rec)
@@ -502,4 +502,4 @@ theorem SubformulaClosure_untl_closed {target φ ψ : Formula}
     simp only [Formula.neg] at hg_eq
     exact absurd hg_eq (by intro h'; exact Formula.noConfusion h')
 
-end Bimodal.Metalogic.BXCanonical.Quasimodel
+end FormalSystem.Metalogic.BXCanonical.Quasimodel

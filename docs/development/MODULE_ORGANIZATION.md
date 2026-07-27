@@ -1,15 +1,15 @@
 # Module Organization for ProofChecker
 
-This document specifies the directory structure, namespace conventions, and module organization for the ProofChecker project (BimodalLogic repository). The primary library is the `Bimodal` theory, residing under `Theories/Bimodal/`.
+This document specifies the directory structure, namespace conventions, and module organization for the ProofChecker project (BimodalLogic repository). The primary library is the `Bimodal` theory, residing under `FormalSystem/`.
 
 ## 1. Directory Structure
 
 ```
 BimodalLogic/
 ├── lakefile.toml               # Lake build configuration (package name: Logos)
-├── Theories/
+├── FormalSystem/
 │   └── Bimodal/                # Main library source
-│       ├── Bimodal.lean        # Library root (re-exports all sub-modules)
+│       ├── FormalSystem.lean        # Library root (re-exports all sub-modules)
 │       ├── Syntax.lean         # Aggregates Syntax/
 │       ├── ProofSystem.lean    # Aggregates ProofSystem/
 │       ├── Semantics.lean      # Aggregates Semantics/
@@ -27,7 +27,7 @@ BimodalLogic/
 │       ├── Boneyard/           # Archived/experimental work
 │       └── docs/               # Theory-specific documentation
 ├── Tests/
-│   └── BimodalTest/            # Test suite mirroring Theories/Bimodal/ structure
+│   └── BimodalTest/            # Test suite mirroring FormalSystem/ structure
 │       ├── BimodalTest.lean    # Test root
 │       ├── Syntax/             # Syntax tests
 │       ├── ProofSystem/        # Proof system tests
@@ -58,20 +58,20 @@ Namespaces mirror directory structure:
 
 | Directory | Namespace |
 |-----------|-----------|
-| `Theories/Bimodal/Syntax/` | `Bimodal.Syntax` |
-| `Theories/Bimodal/ProofSystem/` | `Bimodal.ProofSystem` |
-| `Theories/Bimodal/Semantics/` | `Bimodal.Semantics` |
-| `Theories/Bimodal/Metalogic/` | `Bimodal.Metalogic` |
-| `Theories/Bimodal/Theorems/` | `Bimodal.Theorems` |
-| `Theories/Bimodal/Automation/` | `Bimodal.Automation` |
+| `FormalSystem/Syntax/` | `FormalSystem.Syntax` |
+| `FormalSystem/ProofSystem/` | `FormalSystem.ProofSystem` |
+| `FormalSystem/Semantics/` | `FormalSystem.Semantics` |
+| `FormalSystem/Metalogic/` | `FormalSystem.Metalogic` |
+| `FormalSystem/Theorems/` | `FormalSystem.Theorems` |
+| `FormalSystem/Automation/` | `FormalSystem.Automation` |
 
 ### Nested Namespaces
 
 Use nested namespaces for logical grouping within a file:
 
 ```lean
--- In Theories/Bimodal/Syntax/Formula.lean
-namespace Bimodal.Syntax
+-- In FormalSystem/Syntax/Formula.lean
+namespace FormalSystem.Syntax
 
 inductive Formula : Type
   | atom : String → Formula
@@ -94,7 +94,7 @@ def complexity : Formula → Nat
 
 end Formula
 
-end Bimodal.Syntax
+end FormalSystem.Syntax
 ```
 
 ## 3. Module Dependencies
@@ -127,15 +127,15 @@ Layer 0: Syntax (no internal dependencies)
 ### Import Guidelines
 
 ```lean
--- Theories/Bimodal/ProofSystem/Derivation.lean
+-- FormalSystem/ProofSystem/Derivation.lean
 -- Good: Only imports from Syntax (lower layer)
-import Bimodal.Syntax.Formula
-import Bimodal.Syntax.Context
-import Bimodal.ProofSystem.Axioms
-import Bimodal.ProofSystem.Derivation
+import FormalSystem.Syntax.Formula
+import FormalSystem.Syntax.Context
+import FormalSystem.ProofSystem.Axioms
+import FormalSystem.ProofSystem.Derivation
 
 -- Bad: Would create circular dependency
--- import Bimodal.Semantics.Truth  -- Semantics depends on ProofSystem!
+-- import FormalSystem.Semantics.Truth  -- Semantics depends on ProofSystem!
 ```
 
 ### Detecting Circular Dependencies
@@ -177,7 +177,7 @@ Any important implementation details or design decisions.
 
 -- 1. Imports (ordered by: standard library, mathlib, project)
 import Init.Data.List
-import Bimodal.Syntax.Formula
+import FormalSystem.Syntax.Formula
 
 -- 2. Namespace opening
 namespace Bimodal.«ModuleName»
@@ -209,7 +209,7 @@ end Bimodal.«ModuleName»
 
 ## 5. Library Root File
 
-The `Bimodal.lean` file aggregates all sub-modules:
+The `FormalSystem.lean` file aggregates all sub-modules:
 
 ```lean
 /-!
@@ -221,46 +221,46 @@ logic with linear temporal logic. Proven sound and complete.
 ## Core Modules
 
 ### Syntax
-* `Bimodal.Syntax.Formula`
-* `Bimodal.Syntax.Context`
+* `FormalSystem.Syntax.Formula`
+* `FormalSystem.Syntax.Context`
 
 ### Proof System
-* `Bimodal.ProofSystem.Axioms`
-* `Bimodal.ProofSystem.Derivation`
+* `FormalSystem.ProofSystem.Axioms`
+* `FormalSystem.ProofSystem.Derivation`
 
 ### Semantics
-* `Bimodal.Semantics.TaskFrame`
-* `Bimodal.Semantics.WorldHistory`
-* `Bimodal.Semantics.TaskModel`
-* `Bimodal.Semantics.Truth`
-* `Bimodal.Semantics.Validity`
+* `FormalSystem.Semantics.TaskFrame`
+* `FormalSystem.Semantics.WorldHistory`
+* `FormalSystem.Semantics.TaskModel`
+* `FormalSystem.Semantics.Truth`
+* `FormalSystem.Semantics.Validity`
 
 ### Metalogic
-* `Bimodal.Metalogic.Soundness`
-* `Bimodal.Metalogic.BXCanonical`
-* `Bimodal.Metalogic.WeakCanonical`
-* `Bimodal.Metalogic.Algebraic`
-* `Bimodal.Metalogic.Core.DeductionTheorem`
+* `FormalSystem.Metalogic.Soundness`
+* `FormalSystem.Metalogic.BXCanonical`
+* `FormalSystem.Metalogic.WeakCanonical`
+* `FormalSystem.Metalogic.Algebraic`
+* `FormalSystem.Metalogic.Core.DeductionTheorem`
 
 ### Theorems
-* `Bimodal.Theorems.Perpetuity`
-* `Bimodal.Theorems.ModalS4`
-* `Bimodal.Theorems.ModalS5`
-* `Bimodal.Theorems.GeneralizedNecessitation`
-* `Bimodal.Theorems.Combinators`
-* `Bimodal.Theorems.Propositional`
+* `FormalSystem.Theorems.Perpetuity`
+* `FormalSystem.Theorems.ModalS4`
+* `FormalSystem.Theorems.ModalS5`
+* `FormalSystem.Theorems.GeneralizedNecessitation`
+* `FormalSystem.Theorems.Combinators`
+* `FormalSystem.Theorems.Propositional`
 
 ### Automation
-* `Bimodal.Automation.Tactics`
-* `Bimodal.Automation.ProofSearch`
+* `FormalSystem.Automation.Tactics`
+* `FormalSystem.Automation.ProofSearch`
 -/
 
-import Bimodal.Syntax
-import Bimodal.ProofSystem
-import Bimodal.Semantics
-import Bimodal.Metalogic
-import Bimodal.Theorems
-import Bimodal.Automation
+import FormalSystem.Syntax
+import FormalSystem.ProofSystem
+import FormalSystem.Semantics
+import FormalSystem.Metalogic
+import FormalSystem.Theorems
+import FormalSystem.Automation
 ```
 
 ## 6. Public API vs Internal Implementation
@@ -270,7 +270,7 @@ import Bimodal.Automation
 Definitions that users should use directly:
 
 - Marked with docstrings
-- Re-exported from `Bimodal.lean`
+- Re-exported from `FormalSystem.lean`
 - Stable across versions
 
 ```lean
@@ -294,12 +294,12 @@ Helper functions and intermediate definitions:
 - May change between versions
 
 ```lean
-namespace Bimodal.Semantics.«Internal»
+namespace FormalSystem.Semantics.«Internal»
 
 /-- Internal helper for canonical model construction. -/
 def extend_consistent_set (Γ : Context) : Context := ...
 
-end Bimodal.Semantics.«Internal»
+end FormalSystem.Semantics.«Internal»
 ```
 
 ## 7. Module Size Guidelines
@@ -327,7 +327,7 @@ Split a module when:
 
 ## 8. Examples Module Organization
 
-Pedagogical examples live in `Theories/Bimodal/Examples/`. These files use only proven
+Pedagogical examples live in `FormalSystem/Examples/`. These files use only proven
 components and mirror the core structure:
 
 - `Examples/ModalProofs.lean` - S5 modal logic examples
@@ -341,7 +341,7 @@ All examples import `Bimodal` (or targeted sub-modules) and avoid unproven axiom
 See [TESTING_STANDARDS.md](TESTING_STANDARDS.md) for detailed test organization.
 
 Summary:
-- `Tests/BimodalTest/` mirrors `Theories/Bimodal/` (Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation)
+- `Tests/BimodalTest/` mirrors `FormalSystem/` (Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation)
 - Test files are named `<Module>Test.lean` and collected via `BimodalTest.lean`
 
 ## References

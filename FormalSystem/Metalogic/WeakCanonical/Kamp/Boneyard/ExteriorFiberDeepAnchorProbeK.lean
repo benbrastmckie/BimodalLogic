@@ -120,10 +120,10 @@ production file is touched by Phases 1-3. -/
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## The guard (Phase 4 rewire: certificates below certify the PRODUCTION definition
 `kvE_deepOnFiber` from `ExteriorFiberDeepAnchorK.lean`, to which the Phase-1 candidate
@@ -371,4 +371,4 @@ theorem kvE_probe367_copyPlant_collapses (σs : NormalForm m3sig 2 4)
         (nf_characteristic_satisfies M3M 2 4 m3realEnv))
   exact Prod.ext (hfib.symm.trans hrow) hcopy
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

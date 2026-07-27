@@ -42,10 +42,10 @@ Rabinovich 2014. This extends the interval decomposition infrastructure in
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Definition 3.1, Notation 5.2
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Vec-EA Formula Type (Definition 3.1)
 
@@ -791,4 +791,4 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
           congr 1; simp only [Fin.ext_iff]; omega
         rw [hseg]; exact hslR y hlo hy_hi
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

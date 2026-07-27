@@ -13,9 +13,9 @@ import FormalSystem.Metalogic.WeakCanonical.EFGames.CustomGame
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Proposition 7
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Pivot Transfer -/
 
@@ -637,4 +637,4 @@ where
               rw [game_tuple_sel_eq, game_tuple_sel_eq] at this
               rwa [hR_eq k h_gt] at this
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

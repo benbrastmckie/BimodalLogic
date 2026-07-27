@@ -58,11 +58,11 @@ exclusion for bit-false-but-slice-marked σ is recovered where consumed (the gat
 discharge) via the carried `hexclSlice*` obligations, m=0-discharged by `kvE_futSliceUnique_zero`
 + the interior-style `hreal` (report 02 §3.4 last paragraph). -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff)
 
 /-! ## The Future slice-marking extraction interface -/
@@ -308,4 +308,4 @@ theorem kvE_extBracketPast_complete {sig : MonadicSignature} [Fintype sig.preds]
     rw [hbit] at hcontra
     exact Bool.noConfusion hcontra
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

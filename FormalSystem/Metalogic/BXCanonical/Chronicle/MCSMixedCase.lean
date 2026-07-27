@@ -19,14 +19,14 @@ since been archived to `Boneyard/DeadChronicleGapElimination/ChronicleGapChainEx
 and no longer exists in live code.
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Chronicle
+namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Semantics
-open Bimodal.Theorems.Propositional
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Semantics
+open FormalSystem.Theorems.Propositional
 
 /--
 The mixed case (¬□(F'T) ∧ ¬□(U(⊤,⊥)) in an MCS) is impossible.
@@ -46,7 +46,7 @@ theorem mcs_mixed_case_absurd (fc : FrameClass) (A : Set Formula)
   have h_axiom : [] ⊢ next_top.imp (Formula.box next_top) :=
     DerivationTree.axiom [] _ Axiom.discrete_box_necessity trivial
   have h_contra : [] ⊢ (Formula.box next_top).neg.imp next_top.neg :=
-    Bimodal.Theorems.Propositional.contraposition h_axiom
+    FormalSystem.Theorems.Propositional.contraposition h_axiom
   have h_nec : [] ⊢ Formula.box ((Formula.box next_top).neg.imp next_top.neg) :=
     DerivationTree.necessitation _ h_contra
   have h_k_dist : [] ⊢ (Formula.box ((Formula.box next_top).neg.imp next_top.neg)).imp
@@ -77,4 +77,4 @@ theorem dd_countermodel_chronicle_mixed_sorry (fc : FrameClass) (A : Set Formula
       ¬truth_at TM Omega τ t φ := by
   exact False.elim (mcs_mixed_case_absurd fc A h_mcs h_not_box_dense h_not_box_discrete)
 
-end Bimodal.Metalogic.BXCanonical.Chronicle
+end FormalSystem.Metalogic.BXCanonical.Chronicle

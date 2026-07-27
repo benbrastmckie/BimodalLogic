@@ -23,10 +23,10 @@ integer discreteness provides.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper: temporal_truth of negation -/
 
@@ -200,4 +200,4 @@ theorem neg_since_equiv_prior {sig : MonadicSignature}
       · push_neg at h
         exact h_nB_s₀ (hBguard s₀ h hs₀t)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

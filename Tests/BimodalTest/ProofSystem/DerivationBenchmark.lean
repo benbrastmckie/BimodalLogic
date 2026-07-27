@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.ProofSystem.Derivation
+import FormalSystem.ProofSystem.Derivation
 import BimodalTest.Automation.ProofSearchBenchmark
 
 /-!
@@ -34,7 +34,7 @@ Measures construction time and tree height for various derivation patterns.
 
 namespace BimodalTest.ProofSystem.Benchmark
 
-open Bimodal.Syntax Bimodal.ProofSystem
+open FormalSystem.Syntax FormalSystem.ProofSystem
 open BimodalTest.Automation.Benchmark (timed formatNanos)
 
 -- Convenience abbreviations (matching ProofSearchBenchmark)

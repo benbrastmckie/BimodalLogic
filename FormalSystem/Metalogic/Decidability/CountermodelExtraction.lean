@@ -54,10 +54,10 @@ saturation invariants.
 * Gore, R. (1999). Tableau Methods for Modal and Temporal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace FormalSystem.Metalogic.Decidability
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 /-!
 ## Simple Countermodel Type
@@ -1129,4 +1129,4 @@ def extractCountermodelsFromTableau (φ : Formula) (tableau : ExpandedTableau)
       let semantic := extractSemanticCountermodel φ openBranch ord
       some (simple, semantic)
 
-end Bimodal.Metalogic.Decidability
+end FormalSystem.Metalogic.Decidability

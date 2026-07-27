@@ -79,23 +79,23 @@ Formal soundness proofs in `PrefilterSoundness.lean`.
   the proof pool for O(1) lookup before falling through to the tableau.
 - **Wall-clock timing**: Uses `IO.monoMsNow` for decision time measurement
 - **All axiom constructors handled**: Pattern match covers all constructors in
-  `Bimodal.ProofSystem.Axiom`
+  `FormalSystem.ProofSystem.Axiom`
 
 ## References
 
-- DecisionProcedure: Theories/Bimodal/Metalogic/Decidability/DecisionProcedure.lean
+- DecisionProcedure: FormalSystem/Metalogic/Decidability/DecisionProcedure.lean
 -/
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation
+namespace FormalSystem.Automation
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Decidability
-open Bimodal.Automation.DataExport
-open Bimodal.Automation.Enriched
-open Bimodal.Automation.InterestingnessMetrics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Decidability
+open FormalSystem.Automation.DataExport
+open FormalSystem.Automation.Enriched
+open FormalSystem.Automation.InterestingnessMetrics
 
 /--
 Simplified proof trace extracted from a DerivationTree.
@@ -246,7 +246,7 @@ instance : Inhabited LabeledFormula :=
 /--
 Extract axiom schema name as a string from an Axiom constructor.
 
-Covers all constructors in `Bimodal.ProofSystem.Axiom`:
+Covers all constructors in `FormalSystem.ProofSystem.Axiom`:
 - Layer 1: Propositional (prop_k, prop_s, ex_falso, peirce)
 - Layer 2: S5 Modal (modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist)
 - Layer 3: BX Temporal (20 constructors)
@@ -2199,4 +2199,4 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   else
     IO.println s!"[test] FAIL: edge case failures (pass1={pass1} pass2={pass2} pass3={pass3} pass4={pass4})"
 
-end Bimodal.Automation
+end FormalSystem.Automation

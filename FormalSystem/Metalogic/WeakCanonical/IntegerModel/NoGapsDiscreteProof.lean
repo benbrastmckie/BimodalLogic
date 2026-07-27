@@ -32,10 +32,10 @@ The `chronicle_is_good_direct` theorem in ShiftAndGlue.lean independently
 inlines this same proof pattern for the chronicle-level application.
 -/
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
 /-! ## No-Gaps Theorem (Discrete Case) -/
 
@@ -120,4 +120,4 @@ theorem one_class (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.
     (contemp_equiv_is_equiv sig k M).trans hac hc_succ
   exact h_not_succ hac_succ
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

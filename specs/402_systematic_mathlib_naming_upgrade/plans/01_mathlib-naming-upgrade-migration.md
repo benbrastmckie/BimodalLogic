@@ -324,26 +324,26 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 
 ---
 
-### Phase 3: Part A-2 - root namespace rename and path references [NOT STARTED]
+### Phase 3: Part A-2 - root namespace rename and path references [COMPLETED]
 
 - **Goal:** Rename the root namespace `Bimodal` to `FormalSystem` everywhere it is written, repair
   `scripts/nolints.json`, and update every non-Lean reference to the old directory path.
 - **Tasks:**
-  - [ ] Rewrite the 903 `namespace Bimodal…` / `end Bimodal…` lines and the 1,324 `open Bimodal…`
+  - [x] Rewrite the 903 `namespace Bimodal…` / `end Bimodal…` lines and the 1,324 `open Bimodal…`
         occurrences with a line-anchored syntactic pass. These carry **zero** `.ilean` coverage and
-        cannot be done by `rename.py`.
-  - [ ] Rewrite the 554 term references written as `Bimodal.…` and the 25 written as
+        cannot be done by `rename.py`. *(deviation: altered — implemented as a lexer-guarded pass (`tools/leanmask.py`) rather than a line-anchored one. `Bimodal` is also the LOGIC's name, so a line-anchored pass cannot tell `namespace Bimodal.Syntax` from the prose "the Bimodal library". The mask separates code from comments/strings by depth-counting nested `/- -/` and string literals: 3,669 code identifiers rewritten, 221 qualified `Bimodal.X` references inside docstrings rewritten as stale references, and 343 bare prose mentions of the logic deliberately left intact.)*
+  - [x] Rewrite the 554 term references written as `Bimodal.…` and the 25 written as
         `_root_.Bimodal…`. These *are* `.ilean`-covered; either mechanism is sound here, but the
         boundary guard from postmortem constraint 2 is mandatory either way.
-  - [ ] **Rewrite the namespace prefix inside `scripts/nolints.json`**: all 860 entries are
+  - [x] **Rewrite the namespace prefix inside `scripts/nolints.json`**: all 860 entries are
         fully-qualified (`["defsWithUnderscore", "Bimodal.Automation.apply_modal_k"]`) and match
         nothing after the rename. Without this, the interim `defsWithUnderscore` reading jumps from
         1 to 861 for reasons unrelated to progress. Verify with a masked linter run reporting 1
         (or 2, allowing the one known drift entry `temp_linearity_derivation`).
-  - [ ] Update non-Lean path references (~111 files): `README.md`, `docs/` (56 files), `typst/`
+  - [x] Update non-Lean path references *(deviation: altered — scope grew beyond docs/typst/latex/scripts once `scripts/check-module-invariants.sh` was run: its own module-path resolver, import regex, reachability roots, and embedded axiom baseline all encoded the old layout. Repairing them surfaced pre-existing under-matching — C4 went from checking 50 import lines to 1,078, and C5 from a broken resolver to 1,612 markdown files — and the suite now reports ALL CHECKS PASSED.)* (~111 files): `README.md`, `docs/` (56 files), `typst/`
         (21), `latex/` (21), `scripts/` (12). These are path/namespace references only; declaration
         names are Phase 7's territory.
-  - [ ] `lake build`; run the linter masked and confirm the count is back to its baseline value.
+  - [x] `lake build`; run the linter masked and confirm the count is back to its baseline value.
 - **Estimated output:** ~250 lines (rewrite script + nolints prefix repair + non-Lean sweep)
 - **Done when:** `lake build` green; `BimodalTest` green; sorry count 1;
   `grep -rn "\bBimodal\b" --include=*.lean FormalSystem/ Tests/` returns only Boneyard and prose

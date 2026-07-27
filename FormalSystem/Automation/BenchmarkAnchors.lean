@@ -47,12 +47,12 @@ axioms are excluded since the benchmark uses FrameClass.Base throughout.
 
 set_option autoImplicit false
 
-namespace Bimodal.Automation.BenchmarkAnchors
+namespace FormalSystem.Automation.BenchmarkAnchors
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Automation
-open Bimodal.Automation.DataExport
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Automation
+open FormalSystem.Automation.DataExport
 
 /-!
 ## Substitution Vocabulary
@@ -300,7 +300,7 @@ def generateAllInstances : List TaggedFormula :=
 -/
 
 -- NOTE: `allAxiomNames` (the canonical 42-name list) moved to
--- `Bimodal.Automation.AxiomNames` so that `MachineAppendixExport.lean` can
+-- `FormalSystem.Automation.AxiomNames` so that `MachineAppendixExport.lean` can
 -- share it (this module declares a root-level `main` and cannot be imported
 -- by another executable). Resolved here via the parent namespace.
 
@@ -330,7 +330,7 @@ Returns `none` if `matchAxiom` fails (shouldn't happen for well-formed instances
 -/
 def labelViaAxiomMatch (tf : TaggedFormula) : Option LabeledFormula :=
   let φ := tf.formula
-  match Bimodal.Automation.matchAxiom φ with
+  match FormalSystem.Automation.matchAxiom φ with
   | some ⟨_, _witness⟩ =>
     let metrics := computeMetrics φ 0
     let patternKey := PatternKey.fromFormula φ
@@ -441,15 +441,15 @@ def taggedToJsonl (idx : Nat) (tf : TaggedFormula) (lf : LabeledFormula)
   ++ ", \"axiom_name\": \"" ++ escapeJsonString tf.axiomName ++ "\""
   ++ "}"
 
-end Bimodal.Automation.BenchmarkAnchors
+end FormalSystem.Automation.BenchmarkAnchors
 
 /-!
 ## Main Entry Point
 -/
 
-open Bimodal.Automation
-open Bimodal.Automation.BenchmarkAnchors
-open Bimodal.Automation.DataExport
+open FormalSystem.Automation
+open FormalSystem.Automation.BenchmarkAnchors
+open FormalSystem.Automation.DataExport
 
 /--
 Main entry point for the benchmark_anchors executable.

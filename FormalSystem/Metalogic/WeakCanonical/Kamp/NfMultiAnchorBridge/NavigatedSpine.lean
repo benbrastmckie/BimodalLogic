@@ -24,11 +24,11 @@ Literature chunk `Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Ka
 Also hosts: the v6 audit record :8827-:8858 (incl. the no-nesting rule :8841-:8846),
 `VVecEA2.holds_flatMap_map` :9018, and the Phase-7 rescope record :9183-:9249. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -497,4 +497,4 @@ assembly + Phase-7 glue), to be built in a dedicated follow-up:
 per-region segment structure, then assembling the outer witness `w`. The v6 supporting bricks
 (Phases 1-6) are the correct, landed inputs to this engine. This record is additive and inert. -/
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

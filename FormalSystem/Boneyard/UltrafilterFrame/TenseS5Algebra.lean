@@ -36,11 +36,11 @@ The STSA axioms capture:
 
 #exit
 
-namespace Bimodal.Metalogic.Algebraic.TenseS5Algebra
+namespace FormalSystem.Metalogic.Algebraic.TenseS5Algebra
 
-open Bimodal.Syntax Bimodal.ProofSystem
-open Bimodal.Metalogic.Algebraic.LindenbaumQuotient
-open Bimodal.Metalogic.Algebraic.BooleanStructure
+open FormalSystem.Syntax FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
+open FormalSystem.Metalogic.Algebraic.BooleanStructure
 
 /-!
 ## STSA Typeclass Definition
@@ -133,7 +133,7 @@ class STSA (α : Type*) extends BooleanAlgebra α where
 We prove that the Lindenbaum algebra satisfies all STSA axioms.
 -/
 
-open Bimodal.Metalogic.Algebraic.InteriorOperators
+open FormalSystem.Metalogic.Algebraic.InteriorOperators
 
 /--
 S5 collapse property: (□a)ᶜ ≤ □(□a)ᶜ, i.e., ¬□a → □¬□a
@@ -156,15 +156,15 @@ theorem box_s5_quot (a : LindenbaumAlg) : (box_quot a)ᶜ ≤ box_quot ((box_quo
     DerivationTree.axiom [] _ (Axiom.modal_5_collapse φ)
   -- Step 2: Contrapose to get ¬□φ → ¬◇□φ
   have h_contra : ⊢ (Formula.box φ).neg.imp (Formula.box φ).diamond.neg :=
-    Bimodal.Theorems.Propositional.contraposition h_collapse
+    FormalSystem.Theorems.Propositional.contraposition h_collapse
   -- Step 3: (□φ).diamond.neg = (□φ).neg.box.neg.neg syntactically
   have h_expand : (Formula.box φ).diamond.neg = (Formula.box φ).neg.box.neg.neg := rfl
   rw [h_expand] at h_contra
   -- Step 4: DNE: (□φ).neg.box.neg.neg → (□φ).neg.box
   have h_dne : ⊢ ((Formula.box φ).neg.box.neg.neg).imp ((Formula.box φ).neg.box) :=
-    Bimodal.Theorems.Propositional.double_negation ((Formula.box φ).neg.box)
+    FormalSystem.Theorems.Propositional.double_negation ((Formula.box φ).neg.box)
   -- Step 5: Compose via imp_trans
-  exact ⟨Bimodal.Theorems.Combinators.imp_trans h_contra h_dne⟩
+  exact ⟨FormalSystem.Theorems.Combinators.imp_trans h_contra h_dne⟩
 
 /--
 MF axiom on quotient: □a ≤ □Ga
@@ -182,7 +182,7 @@ theorem TF_quot (a : LindenbaumAlg) : box_quot a ≤ G_quot (box_quot a) := by
   induction a using Quotient.ind
   rename_i φ
   show Derives (Formula.box φ) (Formula.all_future (Formula.box φ))
-  exact ⟨Bimodal.Theorems.Combinators.temp_future_derived φ⟩
+  exact ⟨FormalSystem.Theorems.Combinators.temp_future_derived φ⟩
 
 /--
 TA axiom on quotient: a ≤ G((Ha)ᶜ)ᶜ, i.e., a ≤ GPa
@@ -228,7 +228,7 @@ theorem TL_quot (a : LindenbaumAlg) : and_quot (and_quot (H_quot a) a) (G_quot a
   -- Extract components from (Hφ ∧ φ) ∧ Gφ
   -- lce: (Hφ ∧ φ) ∧ Gφ → Hφ ∧ φ
   have lce1_thm : ⊢ LHS.imp (Formula.and φ.all_past φ) :=
-    Bimodal.Theorems.Propositional.lce_imp (Formula.and φ.all_past φ) φ.all_future
+    FormalSystem.Theorems.Propositional.lce_imp (Formula.and φ.all_past φ) φ.all_future
   have lce1_ctx : [LHS] ⊢ LHS.imp (Formula.and φ.all_past φ) :=
     DerivationTree.weakening [] [LHS] _ lce1_thm (List.nil_subset _)
   have h_HP : [LHS] ⊢ Formula.and φ.all_past φ :=
@@ -236,7 +236,7 @@ theorem TL_quot (a : LindenbaumAlg) : and_quot (and_quot (H_quot a) a) (G_quot a
 
   -- lce: Hφ ∧ φ → Hφ
   have lce2_thm : ⊢ (Formula.and φ.all_past φ).imp φ.all_past :=
-    Bimodal.Theorems.Propositional.lce_imp φ.all_past φ
+    FormalSystem.Theorems.Propositional.lce_imp φ.all_past φ
   have lce2_ctx : [LHS] ⊢ (Formula.and φ.all_past φ).imp φ.all_past :=
     DerivationTree.weakening [] [LHS] _ lce2_thm (List.nil_subset _)
   have h_H : [LHS] ⊢ φ.all_past :=
@@ -244,7 +244,7 @@ theorem TL_quot (a : LindenbaumAlg) : and_quot (and_quot (H_quot a) a) (G_quot a
 
   -- rce: Hφ ∧ φ → φ
   have rce1_thm : ⊢ (Formula.and φ.all_past φ).imp φ :=
-    Bimodal.Theorems.Propositional.rce_imp φ.all_past φ
+    FormalSystem.Theorems.Propositional.rce_imp φ.all_past φ
   have rce1_ctx : [LHS] ⊢ (Formula.and φ.all_past φ).imp φ :=
     DerivationTree.weakening [] [LHS] _ rce1_thm (List.nil_subset _)
   have h_phi : [LHS] ⊢ φ :=
@@ -252,7 +252,7 @@ theorem TL_quot (a : LindenbaumAlg) : and_quot (and_quot (H_quot a) a) (G_quot a
 
   -- rce: (Hφ ∧ φ) ∧ Gφ → Gφ
   have rce2_thm : ⊢ LHS.imp φ.all_future :=
-    Bimodal.Theorems.Propositional.rce_imp (Formula.and φ.all_past φ) φ.all_future
+    FormalSystem.Theorems.Propositional.rce_imp (Formula.and φ.all_past φ) φ.all_future
   have rce2_ctx : [LHS] ⊢ LHS.imp φ.all_future :=
     DerivationTree.weakening [] [LHS] _ rce2_thm (List.nil_subset _)
   have h_G : [LHS] ⊢ φ.all_future :=
@@ -260,7 +260,7 @@ theorem TL_quot (a : LindenbaumAlg) : and_quot (and_quot (H_quot a) a) (G_quot a
 
   -- Build always φ = Hφ ∧ (φ ∧ Gφ) from components
   have pair1 : ⊢ φ.imp (φ.all_future.imp (φ.and φ.all_future)) :=
-    Bimodal.Theorems.Combinators.pairing φ φ.all_future
+    FormalSystem.Theorems.Combinators.pairing φ φ.all_future
   have pair1_ctx : [LHS] ⊢ φ.imp (φ.all_future.imp (φ.and φ.all_future)) :=
     DerivationTree.weakening [] [LHS] _ pair1 (List.nil_subset _)
   have h_step1 : [LHS] ⊢ φ.all_future.imp (φ.and φ.all_future) :=
@@ -269,7 +269,7 @@ theorem TL_quot (a : LindenbaumAlg) : and_quot (and_quot (H_quot a) a) (G_quot a
     DerivationTree.modus_ponens [LHS] _ _ h_step1 h_G
 
   have pair2 : ⊢ φ.all_past.imp ((φ.and φ.all_future).imp (φ.all_past.and (φ.and φ.all_future))) :=
-    Bimodal.Theorems.Combinators.pairing φ.all_past (φ.and φ.all_future)
+    FormalSystem.Theorems.Combinators.pairing φ.all_past (φ.and φ.all_future)
   have pair2_ctx : [LHS] ⊢ φ.all_past.imp ((φ.and φ.all_future).imp (φ.all_past.and (φ.and φ.all_future))) :=
     DerivationTree.weakening [] [LHS] _ pair2 (List.nil_subset _)
   have h_step2 : [LHS] ⊢ (φ.and φ.all_future).imp (φ.all_past.and (φ.and φ.all_future)) :=
@@ -285,7 +285,7 @@ theorem TL_quot (a : LindenbaumAlg) : and_quot (and_quot (H_quot a) a) (G_quot a
     DerivationTree.modus_ponens [LHS] _ _ temp_l_ctx h_always
 
   -- Apply deduction theorem
-  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] LHS (φ.all_past.all_future) h_result⟩
+  exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] LHS (φ.all_past.all_future) h_result⟩
 
 /--
 Linearity on quotient.
@@ -358,4 +358,4 @@ theorem sigma_inf (a b : α) : STSA.sigma (a ⊓ b) = STSA.sigma a ⊓ STSA.sigm
   rw [h, STSA.sigma_neg, STSA.sigma_sup, STSA.sigma_neg, STSA.sigma_neg]
   simp only [compl_compl, ← compl_inf]
 
-end Bimodal.Metalogic.Algebraic.TenseS5Algebra
+end FormalSystem.Metalogic.Algebraic.TenseS5Algebra

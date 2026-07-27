@@ -6,10 +6,10 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.BoundedFix
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! # The pinned-concatenation builder
 
@@ -124,4 +124,4 @@ theorem VBracketFormula.concatPin_holds_iff {sig : MonadicSignature}
         ⟨r, h1, h2, h3, h4, h5⟩
 
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -16,11 +16,11 @@ per-slot `Fin N` families, and the positive-interior selectors `kvE2_sepPos` /
 
 Leaf of the tower: imports only `SubBracket2V` and `NavigatedSpine`. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -921,4 +921,4 @@ theorem kvE2_sepConsistentBlock_slotIndexOf {sig : MonadicSignature} [Fintype si
   rw [kvE2_sepBlockMap_getD, kvE2_sepBlockMap_getD]
   exact kvE2_sepSlotIndexOf_block_mono qnf hσ (kvE2_sepBlock_pos_lt_of_rank_lt σ hreg hrank)
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

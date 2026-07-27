@@ -17,7 +17,7 @@ import FormalSystem.Syntax.SubformulaClosure.TemporalFormulas
 /-!
 ARCHIVED (Boneyard) — never compiled.
 
-Origin: `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean` (whole file, 1,178 lines,
+Origin: `FormalSystem/Metalogic/Bundle/SuccExistence.lean` (whole file, 1,178 lines,
 72 declarations).
 
 All 72 declarations in this file have zero live consumers. Its two headline results,
@@ -87,11 +87,11 @@ The **predecessor deferral seed** is symmetric using h_content and P.
 - Goldblatt 1992, Logics of Time and Computation
 -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 /-!
 ## Phase 1: Successor Deferral Seed Definition
@@ -351,7 +351,7 @@ theorem boundary_resolution_set_subset_deferralClosure (phi : Formula) (u : Set 
   -- F(chi) ∈ u ⊆ deferralClosure
   have h_F_chi_in_dc : Formula.some_future chi ∈ deferralClosure phi := h_u h_F_chi_in_u
   -- F(chi) ∈ deferralClosure implies chi ∈ deferralClosure (handles both F_top case and regular case)
-  exact Bimodal.Syntax.F_inner_in_deferralClosure phi chi h_F_chi_in_dc
+  exact FormalSystem.Syntax.F_inner_in_deferralClosure phi chi h_F_chi_in_dc
 
 /-!
 ## Restricted Constrained Successor Seed
@@ -466,7 +466,7 @@ This is trivial: F(φ) → (φ ∨ F(φ)) by disjunction introduction (right).
 def deferral_disjunction_from_F (φ : Formula) :
     [Formula.some_future φ] ⊢ deferralDisjunction φ := by
   unfold deferralDisjunction
-  exact Bimodal.Theorems.Propositional.rdi φ (Formula.some_future φ)
+  exact FormalSystem.Theorems.Propositional.rdi φ (Formula.some_future φ)
 
 /--
 The constrained successor seed is consistent.
@@ -848,7 +848,7 @@ Symmetric to `deferral_disjunction_from_F`.
 def past_deferral_disjunction_from_P (φ : Formula) :
     [Formula.some_past φ] ⊢ pastDeferralDisjunction φ := by
   unfold pastDeferralDisjunction
-  exact Bimodal.Theorems.Propositional.rdi φ (Formula.some_past φ)
+  exact FormalSystem.Theorems.Propositional.rdi φ (Formula.some_past φ)
 
 /--
 The predecessor deferral seed is consistent.
@@ -1215,4 +1215,4 @@ theorem predecessor_satisfies_p_step
     -- This means φ ∈ p_content(predecessor)
     exact Set.mem_union_right _ h_P_φ_pred
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

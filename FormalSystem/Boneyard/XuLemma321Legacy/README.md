@@ -31,7 +31,7 @@ None. No theorem in CounterexampleElimination.lean, ChronicleToCountermodel.lean
 ## Code Retrieval
 
 ```bash
-git log --follow Theories/Bimodal/Boneyard/XuLemma321Legacy/XuLemma321.lean
+git log --follow FormalSystem/Boneyard/XuLemma321Legacy/XuLemma321.lean
 ```
 
 ## References

@@ -1,7 +1,7 @@
-# README Standard for Theories/Bimodal/
+# README Standard for FormalSystem/
 
 This document defines the template and required sections for all README files in the
-`Theories/Bimodal/` directory tree.
+`FormalSystem/` directory tree.
 
 **Last verified: 2026-05-29**
 
@@ -98,7 +98,7 @@ Use `—` in the Lines column. Describe the subdirectory's purpose in one phrase
 ## Cross-Link Requirements
 
 Every README must link to:
-- Its **parent directory** README (except the root `Theories/Bimodal/README.md`)
+- Its **parent directory** README (except the root `FormalSystem/README.md`)
 - Any **child directory** READMEs (for directories with subdirectories)
 - Closely **related sibling** READMEs (as applicable)
 

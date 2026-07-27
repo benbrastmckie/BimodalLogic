@@ -1,7 +1,7 @@
 /-
 ARCHIVED — off-faithful-path Kamp infrastructure (Boneyard).
 
-Anchor declaration: `Bimodal.Metalogic.WeakCanonical.Kamp.f2_relativized_refutation`.
+Anchor declaration: `FormalSystem.Metalogic.WeakCanonical.Kamp.f2_relativized_refutation`.
 
 This module is a dead-but-compiled F2 refutation certificate. Its sole live-facing
 declaration, `f2_relativized_refutation`, was formerly reachable only through the
@@ -28,11 +28,11 @@ byte-identical, do not extend. Contents: F1 finding record, `f2*` probe machiner
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -983,4 +983,4 @@ UZ/SZ-relativized `k = 2` correctness statement for `bracketEndChar_kv` is FALSE
 (statement surgery: `ExistProviders` + `BracketCarrierCorrectVPrior`) AND the FULL ladder
 13.2 → 13.3 → 13.4 → 14. Do NOT collapse to surgery-only; do NOT strengthen the kv gate. -/
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

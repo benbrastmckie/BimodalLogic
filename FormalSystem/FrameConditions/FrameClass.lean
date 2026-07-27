@@ -68,7 +68,7 @@ instance built into the construction.
 - Mathlib: `DenselyOrdered`, `SuccOrder`, `PredOrder`, `NoMaxOrder`, `NoMinOrder`
 -/
 
-namespace Bimodal.FrameConditions
+namespace FormalSystem.FrameConditions
 
 /-! ## Base Typeclass: LinearTemporalFrame -/
 
@@ -224,4 +224,4 @@ theorem DiscreteTemporalFrame.mk' (D : Type) [AddCommGroup D] [LinearOrder D] [I
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] :
     DiscreteTemporalFrame D := {}
 
-end Bimodal.FrameConditions
+end FormalSystem.FrameConditions

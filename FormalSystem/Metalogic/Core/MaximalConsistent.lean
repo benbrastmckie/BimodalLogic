@@ -32,8 +32,8 @@ TM bimodal logic system. These are foundational for canonical model construction
 ## Layer Dependencies
 
 Core.MaximalConsistent depends on:
-- Bimodal.ProofSystem (derivation trees)
-- Bimodal.Metalogic.Core.DeductionTheorem (deduction theorem)
+- FormalSystem.ProofSystem (derivation trees)
+- FormalSystem.Metalogic.Core.DeductionTheorem (deduction theorem)
 - Mathlib.Order.Zorn (Zorn's lemma)
 
 ## History
@@ -42,10 +42,10 @@ Originally developed in Metalogic_v2, consolidated into active Core module
 as part of the boneyard archive.
 -/
 
-namespace Bimodal.Metalogic.Core
+namespace FormalSystem.Metalogic.Core
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Theorems.Combinators
-  Bimodal.Theorems.Propositional
+open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Semantics FormalSystem.Theorems.Combinators
+  FormalSystem.Theorems.Propositional
 
 /-!
 ## List-Based Consistency
@@ -534,4 +534,4 @@ theorem theorem_in_mcs {fc : FrameClass} {S : Set Formula} {φ : Formula}
   have h_Γ_cons : Consistent (fc := fc) Γ := h_mcs.1 Γ h_Γ_in_S
   exact h_Γ_cons ⟨d_bot_Γ⟩
 
-end Bimodal.Metalogic.Core
+end FormalSystem.Metalogic.Core

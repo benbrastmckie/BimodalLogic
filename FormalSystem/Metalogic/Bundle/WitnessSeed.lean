@@ -42,11 +42,11 @@ the `psi ∉ L` case uses generalized temporal K to derive G(⊥) from L ⊢ ⊥
 then derives G(¬psi) which contradicts F(psi) ∈ M.
 -/
 
-namespace Bimodal.Metalogic.Bundle
+namespace FormalSystem.Metalogic.Bundle
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.Core
-open Bimodal.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 /-! ## Duality Helpers
 
@@ -54,7 +54,7 @@ Since `some_future`/`some_past` are no longer definitionally `neg(all_future/all
 we need helpers that derive contradictions between `some_future psi ∈ M` and
 `all_future (neg psi) ∈ M` in an MCS. -/
 
-open Bimodal.ProofSystem Bimodal.Theorems in
+open FormalSystem.ProofSystem FormalSystem.Theorems in
 /-- In an MCS, `some_future psi ∈ M` and `all_future (neg psi) ∈ M` is contradictory. -/
 lemma some_future_all_future_neg_absurd {fc : FrameClass} {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) (psi : Formula)
@@ -76,7 +76,7 @@ lemma some_future_all_future_neg_absurd {fc : FrameClass} {M : Set Formula}
       (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_impl)) h_F
   exact set_consistent_not_both h_mcs.1 (Formula.some_future psi.neg.neg) h_sf_nn h_G_neg
 
-open Bimodal.ProofSystem Bimodal.Theorems in
+open FormalSystem.ProofSystem FormalSystem.Theorems in
 /-- In an MCS, `some_past psi ∈ M` and `all_past (neg psi) ∈ M` is contradictory. -/
 lemma some_past_all_past_neg_absurd {fc : FrameClass} {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) (psi : Formula)
@@ -101,7 +101,7 @@ These lemmas convert between `¬F(φ)` and `G(¬φ)` (and their past duals) in a
 Since `some_future`/`some_past` and `all_future`/`all_past` are no longer structurally
 dual, these conversions go through the proof system (BX3/BX3' + DNE/DNI). -/
 
-open Bimodal.ProofSystem Bimodal.Theorems in
+open FormalSystem.ProofSystem FormalSystem.Theorems in
 /-- In an MCS, `¬F(φ) ∈ M` implies `G(¬φ) ∈ M`.
     Proof: `¬P(φ) → ¬P(φ.neg.neg)` via contrapositive of BX3'+DNE, which equals `G(¬φ)`. -/
 lemma neg_some_future_to_all_future_neg {fc : FrameClass} {M : Set Formula}
@@ -122,7 +122,7 @@ lemma neg_some_future_to_all_future_neg {fc : FrameClass} {M : Set Formula}
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_contra)) h_neg_F
 
-open Bimodal.ProofSystem Bimodal.Theorems in
+open FormalSystem.ProofSystem FormalSystem.Theorems in
 /-- In an MCS, `¬P(φ) ∈ M` implies `H(¬φ) ∈ M`.
     Past dual of `neg_some_future_to_all_future_neg`. -/
 lemma neg_some_past_to_all_past_neg {fc : FrameClass} {M : Set Formula}
@@ -205,7 +205,7 @@ theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Form
     -- Apply generalized temporal K (G distributes over derivation)
     have d_G_neg : (Context.map Formula.all_future L_filt) ⊢[fc] Formula.all_future
         (Formula.neg psi) :=
-      Bimodal.Theorems.generalized_temporal_k L_filt (Formula.neg psi) d_neg
+      FormalSystem.Theorems.generalized_temporal_k L_filt (Formula.neg psi) d_neg
     -- All formulas in G(L_filt) are in M
     have h_G_context_in_M : ∀ phi ∈ Context.map Formula.all_future L_filt, phi ∈ M := by
       intro phi h_mem
@@ -230,7 +230,7 @@ theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Form
       · exact h_gcontent
     -- From L ⊢ ⊥, by generalized temporal K: G(L) ⊢ G(⊥)
     have d_G_bot : (Context.map Formula.all_future L) ⊢[fc] Formula.all_future Formula.bot :=
-      Bimodal.Theorems.generalized_temporal_k L Formula.bot d
+      FormalSystem.Theorems.generalized_temporal_k L Formula.bot d
     -- All formulas in G(L) are in M
     have h_G_L_in_M : ∀ phi ∈ Context.map Formula.all_future L, phi ∈ M := by
       intro phi h_mem
@@ -253,7 +253,7 @@ theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Form
                      ((Formula.all_future Formula.bot).imp
                          (Formula.all_future (Formula.neg psi))) :=
       DerivationTree.lift (FrameClass.base_le fc)
-          (Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot (Formula.neg psi))
+          (FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot (Formula.neg psi))
     -- Modus ponens twice: G(¬psi) ∈ M
     have h_G_imp : ⊢[fc] (Formula.all_future Formula.bot).imp
         (Formula.all_future (Formula.neg psi)) :=
@@ -313,7 +313,7 @@ theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula
       · exact h_hcontent
     -- Apply generalized past K (H distributes over derivation)
     have d_H_neg : (Context.map Formula.all_past L_filt) ⊢[fc] Formula.all_past (Formula.neg psi) :=
-      Bimodal.Theorems.generalized_past_k L_filt (Formula.neg psi) d_neg
+      FormalSystem.Theorems.generalized_past_k L_filt (Formula.neg psi) d_neg
     -- All formulas in H(L_filt) are in M
     have h_H_context_in_M : ∀ phi ∈ Context.map Formula.all_past L_filt, phi ∈ M := by
       intro phi h_mem
@@ -337,7 +337,7 @@ theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula
       · exact h_hcontent
     -- From L ⊢ ⊥, by generalized past K: H(L) ⊢ H(⊥)
     have d_H_bot : (Context.map Formula.all_past L) ⊢[fc] Formula.all_past Formula.bot :=
-      Bimodal.Theorems.generalized_past_k L Formula.bot d
+      FormalSystem.Theorems.generalized_past_k L Formula.bot d
     -- All formulas in H(L) are in M
     have h_H_L_in_M : ∀ phi ∈ Context.map Formula.all_past L, phi ∈ M := by
       intro phi h_mem
@@ -354,11 +354,11 @@ theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula
       DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot psi) (FrameClass.base_le fc)
     -- By past necessitation: ⊢ H(⊥ → ¬psi)
     have h_H_ef : ⊢[fc] Formula.all_past (Formula.bot.imp (Formula.neg psi)) :=
-      Bimodal.Theorems.past_necessitation _ h_bot_imp_neg
+      FormalSystem.Theorems.past_necessitation _ h_bot_imp_neg
     -- By past K distribution: ⊢ H(⊥ → ¬psi) → (H(⊥) → H(¬psi))
     have h_K : ⊢[fc] (Formula.all_past (Formula.bot.imp (Formula.neg psi))).imp
                      ((Formula.all_past Formula.bot).imp (Formula.all_past (Formula.neg psi))) :=
-      Bimodal.Theorems.past_k_dist Formula.bot (Formula.neg psi)
+      FormalSystem.Theorems.past_k_dist Formula.bot (Formula.neg psi)
     -- Modus ponens twice: H(¬psi) ∈ M
     have h_H_imp : ⊢[fc] (Formula.all_past Formula.bot).imp (Formula.all_past (Formula.neg psi)) :=
       DerivationTree.modus_ponens [] _ _ h_K h_H_ef
@@ -432,7 +432,7 @@ theorem until_witness_seed_consistent (M : Set Formula)
         · exact absurd h_eq h_ne
         · exact h_gcontent
       have d_G_neg : (Context.map Formula.all_future L_filt) ⊢ Formula.all_future (Formula.neg ψ) :=
-        Bimodal.Theorems.generalized_temporal_k L_filt (Formula.neg ψ) d_neg
+        FormalSystem.Theorems.generalized_temporal_k L_filt (Formula.neg ψ) d_neg
       have h_G_context_in_M : ∀ f ∈ Context.map Formula.all_future L_filt, f ∈ M := by
         intro f h_mem
         rw [Context.mem_map_iff] at h_mem
@@ -450,7 +450,7 @@ theorem until_witness_seed_consistent (M : Set Formula)
         · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
         · exact h_gcontent
       have d_G_bot : (Context.map Formula.all_future L) ⊢ Formula.all_future Formula.bot :=
-        Bimodal.Theorems.generalized_temporal_k L Formula.bot d
+        FormalSystem.Theorems.generalized_temporal_k L Formula.bot d
       have h_G_L_in_M : ∀ f ∈ Context.map Formula.all_future L, f ∈ M := by
         intro f h_mem
         rw [Context.mem_map_iff] at h_mem
@@ -467,7 +467,7 @@ theorem until_witness_seed_consistent (M : Set Formula)
       have h_K : [] ⊢ (Formula.all_future (Formula.bot.imp (Formula.neg ψ))).imp
                        ((Formula.all_future Formula.bot).imp
                            (Formula.all_future (Formula.neg ψ))) :=
-        Bimodal.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot (Formula.neg ψ)
+        FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived Formula.bot (Formula.neg ψ)
       have h_G_imp : [] ⊢ (Formula.all_future Formula.bot).imp
           (Formula.all_future (Formula.neg ψ)) :=
         DerivationTree.modus_ponens [] _ _ h_K h_G_ef
@@ -476,7 +476,7 @@ theorem until_witness_seed_consistent (M : Set Formula)
   -- BX10 contradiction: (φ U ψ) → F(ψ) by BX10, and F(ψ) = ¬G(¬ψ), contradicting G(¬ψ) ∈ M
   have h_F_psi : ψ.some_future ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.until_imp_F φ ψ)) h_U
+      (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.until_imp_F φ ψ)) h_U
   exact some_future_all_future_neg_absurd h_mcs ψ h_F_psi h_G_neg_psi
 
 /--
@@ -510,7 +510,7 @@ theorem since_witness_seed_consistent (M : Set Formula)
         · exact absurd h_eq h_ne
         · exact h_hcontent
       have d_H_neg : (Context.map Formula.all_past L_filt) ⊢ Formula.all_past (Formula.neg ψ) :=
-        Bimodal.Theorems.generalized_past_k L_filt (Formula.neg ψ) d_neg
+        FormalSystem.Theorems.generalized_past_k L_filt (Formula.neg ψ) d_neg
       have h_H_context_in_M : ∀ f ∈ Context.map Formula.all_past L_filt, f ∈ M := by
         intro f h_mem
         rw [Context.mem_map_iff] at h_mem
@@ -527,7 +527,7 @@ theorem since_witness_seed_consistent (M : Set Formula)
         · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
         · exact h_hcontent
       have d_H_bot : (Context.map Formula.all_past L) ⊢ Formula.all_past Formula.bot :=
-        Bimodal.Theorems.generalized_past_k L Formula.bot d
+        FormalSystem.Theorems.generalized_past_k L Formula.bot d
       have h_H_L_in_M : ∀ f ∈ Context.map Formula.all_past L, f ∈ M := by
         intro f h_mem
         rw [Context.mem_map_iff] at h_mem
@@ -540,10 +540,10 @@ theorem since_witness_seed_consistent (M : Set Formula)
       have h_bot_imp_neg : [] ⊢ Formula.bot.imp (Formula.neg ψ) :=
         DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot ψ) trivial
       have h_H_ef : [] ⊢ Formula.all_past (Formula.bot.imp (Formula.neg ψ)) :=
-        Bimodal.Theorems.past_necessitation _ h_bot_imp_neg
+        FormalSystem.Theorems.past_necessitation _ h_bot_imp_neg
       have h_K : [] ⊢ (Formula.all_past (Formula.bot.imp (Formula.neg ψ))).imp
                        ((Formula.all_past Formula.bot).imp (Formula.all_past (Formula.neg ψ))) :=
-        Bimodal.Theorems.past_k_dist Formula.bot (Formula.neg ψ)
+        FormalSystem.Theorems.past_k_dist Formula.bot (Formula.neg ψ)
       have h_H_imp : [] ⊢ (Formula.all_past Formula.bot).imp (Formula.all_past (Formula.neg ψ)) :=
         DerivationTree.modus_ponens [] _ _ h_K h_H_ef
       exact SetMaximalConsistent.implication_property h_mcs
@@ -551,7 +551,7 @@ theorem since_witness_seed_consistent (M : Set Formula)
   -- BX10' contradiction: (φ S ψ) → P(ψ) by BX10', and P(ψ) = ¬H(¬ψ), contradicting H(¬ψ) ∈ M
   have h_P_psi : ψ.some_past ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.since_imp_P φ ψ)) h_S
+      (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.since_imp_P φ ψ)) h_S
   exact some_past_all_past_neg_absurd h_mcs ψ h_P_psi h_H_neg_psi
 
 /-!
@@ -586,11 +586,11 @@ theorem g_content_subset_implies_h_content_reverse
   have h_G_P_neg : Formula.all_future (Formula.neg phi).some_past ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ta) h_neg_phi
   have h_P_neg_M' : (Formula.neg phi).some_past ∈ M' := h_GC h_G_P_neg
-  have h_dni : [] ⊢ phi.imp phi.neg.neg := Bimodal.Theorems.Combinators.dni phi
+  have h_dni : [] ⊢ phi.imp phi.neg.neg := FormalSystem.Theorems.Combinators.dni phi
   have h_H_dni : [] ⊢ (phi.imp phi.neg.neg).all_past :=
-    Bimodal.Theorems.past_necessitation _ h_dni
+    FormalSystem.Theorems.past_necessitation _ h_dni
   have h_pk : [] ⊢ (phi.imp phi.neg.neg).all_past.imp (phi.all_past.imp phi.neg.neg.all_past) :=
-    Bimodal.Theorems.past_k_dist phi phi.neg.neg
+    FormalSystem.Theorems.past_k_dist phi phi.neg.neg
   have h_H_imp : [] ⊢ phi.all_past.imp phi.neg.neg.all_past :=
     DerivationTree.modus_ponens [] _ _ h_pk h_H_dni
   have h_H_nn : phi.neg.neg.all_past ∈ M' :=
@@ -616,16 +616,16 @@ theorem h_content_subset_implies_g_content_reverse
   have h_H_F_neg : (Formula.neg phi).some_future.all_past ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_pta) h_neg_phi
   have h_F_neg_M' : (Formula.neg phi).some_future ∈ M' := h_HC h_H_F_neg
-  have h_dni : [] ⊢ phi.imp phi.neg.neg := Bimodal.Theorems.Combinators.dni phi
+  have h_dni : [] ⊢ phi.imp phi.neg.neg := FormalSystem.Theorems.Combinators.dni phi
   have h_G_dni : [] ⊢ (phi.imp phi.neg.neg).all_future :=
     DerivationTree.temporal_necessitation _ h_dni
   have h_fk : [] ⊢ (phi.imp phi.neg.neg).all_future.imp
       (phi.all_future.imp phi.neg.neg.all_future) :=
-    Bimodal.Theorems.Perpetuity.future_k_dist phi phi.neg.neg
+    FormalSystem.Theorems.Perpetuity.future_k_dist phi phi.neg.neg
   have h_G_imp : [] ⊢ phi.all_future.imp phi.neg.neg.all_future :=
     DerivationTree.modus_ponens [] _ _ h_fk h_G_dni
   have h_G_nn : phi.neg.neg.all_future ∈ M' :=
     SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_G_imp) h_G_phi
   exact some_future_all_future_neg_absurd h_mcs' (Formula.neg phi) h_F_neg_M' h_G_nn
 
-end Bimodal.Metalogic.Bundle
+end FormalSystem.Metalogic.Bundle

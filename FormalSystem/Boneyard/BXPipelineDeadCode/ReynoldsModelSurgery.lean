@@ -43,11 +43,11 @@ dependency if we imported it.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical
+namespace FormalSystem.Metalogic.WeakCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
 
 /-! ## PriorModelData: ChronicleAsPriorModel without IsSuccArchimedean -/
 
@@ -166,12 +166,12 @@ theorem temporal_truth_effective_raw {fc : FrameClass}
     constructor
     · exact False.elim
     · intro h; exact absurd h
-        (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))
+        (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))
   | imp φ₁ φ₂ ih₁ ih₂ =>
     intro t
     simp only [temporal_truth, effectiveFormula_raw]
     rw [ih₁ t, ih₂ t]
-    exact (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).symm
+    exact (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).symm
   | box φ =>
     intro t
     show (priorModelAsMonadicStructure M sig atomMap_rev).interp (atomMap_fwd (.box φ)) t ↔
@@ -237,13 +237,13 @@ theorem semantic_prior_UZ_raw {fc : FrameClass}
     simp only [Formula.some_future] at h_neg_F
     obtain ⟨z, htz, hzs, h_neg_top⟩ := M.neg_until_coherent t s hts _ _ h_neg_F h_eff_s
     have h_top : Formula.imp Formula.bot Formula.bot ∈ M.fmcs z :=
-      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
+      (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
     have h_bot : Formula.bot ∈ M.fmcs z :=
-      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
-    exact absurd h_bot (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
+      (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
+    exact absurd h_bot (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
   have h_prior := M.prior_UZ_valid t eff_ψ
   have h_until : Formula.untl eff_ψ eff_ψ.neg ∈ M.fmcs t :=
-    (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_F_eff
+    (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_F_eff
   obtain ⟨s', hts', h_eff_s', h_guard⟩ := M.until_coherent_fwd t eff_ψ eff_ψ.neg h_until
   refine ⟨s', hts', ?_, ?_⟩
   · exact (temporal_truth_effective_raw M sig atomMap_rev atomMap_fwd ψ s').mpr h_eff_s'
@@ -274,13 +274,13 @@ theorem semantic_prior_SZ_raw {fc : FrameClass}
     simp only [Formula.some_past] at h_neg_P
     obtain ⟨z, hsz, hzt, h_neg_top⟩ := M.neg_since_coherent t s hst _ _ h_neg_P h_eff_s
     have h_top : Formula.imp Formula.bot Formula.bot ∈ M.fmcs z :=
-      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
+      (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
     have h_bot : Formula.bot ∈ M.fmcs z :=
-      (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
-    exact absurd h_bot (Bimodal.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
+      (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
+    exact absurd h_bot (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
   have h_prior := M.prior_SZ_valid t eff_ψ
   have h_since : Formula.snce eff_ψ eff_ψ.neg ∈ M.fmcs t :=
-    (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_P_eff
+    (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_P_eff
   obtain ⟨s', hst', h_eff_s', h_guard⟩ := M.since_coherent_fwd t eff_ψ eff_ψ.neg h_since
   refine ⟨s', hst', ?_, ?_⟩
   · exact (temporal_truth_effective_raw M sig atomMap_rev atomMap_fwd ψ s').mpr h_eff_s'
@@ -408,4 +408,4 @@ noncomputable def prior_model_is_succ_archimedean {fc : FrameClass}
   obtain ⟨γ⟩ := h_gap
   exact (no_gaps_faithful M).elim γ
 
-end Bimodal.Metalogic.WeakCanonical
+end FormalSystem.Metalogic.WeakCanonical

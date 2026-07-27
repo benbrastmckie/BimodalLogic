@@ -34,11 +34,11 @@ constructors never appear in the proof step dataset. This file fills that gap.
 * [Combinators.lean](./Combinators.lean) - Propositional combinators
 -/
 
-namespace Bimodal.Theorems.ContextualProofs
+namespace FormalSystem.Theorems.ContextualProofs
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Theorems.Combinators
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators
 
 /-! ## Membership helpers for list positions -/
 private abbrev mem0 {α : Type} {a : α} {l : List α} : a ∈ (a :: l) := List.Mem.head _
@@ -465,4 +465,4 @@ def theorem_flip_weakened {A B C : Formula} (psi : Formula) :
 def theorem_app1_weakened {A B : Formula} (psi : Formula) : [psi] ⊢ A.imp ((A.imp B).imp B) :=
   weakenEmpty theorem_app1
 
-end Bimodal.Theorems.ContextualProofs
+end FormalSystem.Theorems.ContextualProofs

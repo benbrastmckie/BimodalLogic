@@ -104,14 +104,14 @@ there EXISTS a model falsifying them). The Int model provides this witness.
 - `DenseCompleteness.lean`: Dense completeness (parallel structure)
 -/
 
-namespace Bimodal.Metalogic.BaseCompleteness
+namespace FormalSystem.Metalogic.BaseCompleteness
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Bundle.Canonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Bundle.Canonical
 
 /-!
 ## Base Completeness Statement
@@ -217,4 +217,4 @@ theorem base_axioms_are_base {φ : Formula} (h : Axiom φ) (hb : h.isBase) :
     h.isDenseCompatible ∧ h.isDiscreteCompatible :=
   h.isBase_implies_both_compatible hb
 
-end Bimodal.Metalogic.BaseCompleteness
+end FormalSystem.Metalogic.BaseCompleteness

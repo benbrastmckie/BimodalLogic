@@ -32,7 +32,7 @@ stylistic argument was ultimately judged insufficient to settle the question per
 ## The architectural root cause
 
 `DerivationTree`, defined in
-[`Theories/Bimodal/ProofSystem/Derivation.lean`](../../Theories/Bimodal/ProofSystem/Derivation.lean),
+[`FormalSystem/ProofSystem/Derivation.lean`](../../FormalSystem/ProofSystem/Derivation.lean),
 is `Type`-valued rather than `Prop`-valued. Every derived result built from it therefore *must* be
 a `def` rather than a `theorem` — and `def` is precisely what this linter inspects. A result that
 is mathematically a theorem is forced by the encoding into the syntactic category the linter
@@ -89,7 +89,7 @@ runs `lean-action` with `lint: false`. A green build therefore carries **no info
 this category. The only gate that observes it is an explicit:
 
 ```
-lake exe runLinter Bimodal
+lake exe runLinter FormalSystem
 ```
 
 `nolintsFile` resolves to `scripts/nolints.json` relative to the invocation working directory, so
@@ -97,7 +97,7 @@ run this from the repository root. Expect `defsWithUnderscore` to be absent from
 the sibling categories (`unusedArguments`, `simpNF`/`LINTER FAILED`, `docBlame`, `tacticDocs`,
 `structureInType`) to remain live and unchanged.
 
-> **Trap when regenerating.** `lake exe runLinter Bimodal --update` rewrites
+> **Trap when regenerating.** `lake exe runLinter FormalSystem --update` rewrites
 > `scripts/nolints.json` in one command, but it is **indiscriminate**: it sweeps in every other
 > linter category too. On the run that produced the current file it emitted 1141 rows, of which
 > 281 belonged to unrelated categories. Any regeneration must filter the output back down to
@@ -141,7 +141,7 @@ Three consequences follow, and each is a hard constraint on how the migration ma
 
 3. **The churn is concentrated in data names, not in the mathematical layer.** This inverts the
    intuition suggested by the architectural argument above. The 12 flagged names in
-   `Theories/Bimodal/Syntax/Formula.lean` carry **4,929** resolved usages — roughly 5× the entire
+   `FormalSystem/Syntax/Formula.lean` carry **4,929** resolved usages — roughly 5× the entire
    `Theorems/` layer, whose 135 flagged declarations account for 994. `all_future` alone has 1,647
    usages. Any migration should expect its cost to be dominated by a handful of `Formula`
    constructor-adjacent names, and should sequence accordingly.
@@ -157,5 +157,5 @@ than a planned improvement.
 - [`LEAN_STYLE_GUIDE.md`](LEAN_STYLE_GUIDE.md) — the naming conventions this document records a
   deviation from
 - [`scripts/nolints.json`](../../scripts/nolints.json) — the suppression list itself
-- [`Theories/Bimodal/ProofSystem/Derivation.lean`](../../Theories/Bimodal/ProofSystem/Derivation.lean)
+- [`FormalSystem/ProofSystem/Derivation.lean`](../../FormalSystem/ProofSystem/Derivation.lean)
   — the `Type`-valued `DerivationTree` that forces `def` over `theorem`

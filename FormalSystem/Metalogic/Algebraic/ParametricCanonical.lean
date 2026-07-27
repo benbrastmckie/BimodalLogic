@@ -41,18 +41,18 @@ Bundle/CanonicalTaskRelation.lean but generalized to arbitrary D instead of hard
 
 ## References
 
-- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalFrame.lean
-- Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalTaskRelation.lean
+- Existing: FormalSystem/Metalogic/Bundle/CanonicalFrame.lean
+- Existing: FormalSystem/Metalogic/Bundle/CanonicalTaskRelation.lean
 -/
 
-namespace Bimodal.Metalogic.Algebraic.ParametricCanonical
+namespace FormalSystem.Metalogic.Algebraic.ParametricCanonical
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.UltrafilterMCS
-open Bimodal.Semantics
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Algebraic.UltrafilterMCS
+open FormalSystem.Semantics
 
 /-!
 ## Parametric Canonical World State
@@ -254,4 +254,4 @@ theorem parametric_task_rel_neg {d : D} (hd : d < 0)
   have hd_npos : ¬(d > 0) := not_lt.mpr (le_of_lt hd)
   simp only [hd_npos, ite_false, hd, ite_true]
 
-end Bimodal.Metalogic.Algebraic.ParametricCanonical
+end FormalSystem.Metalogic.Algebraic.ParametricCanonical

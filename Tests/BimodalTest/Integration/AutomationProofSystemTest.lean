@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import Bimodal.Automation
-import Bimodal.ProofSystem
-import Bimodal.Semantics
-import Bimodal.Metalogic
+import FormalSystem.Automation
+import FormalSystem.ProofSystem
+import FormalSystem.Semantics
+import FormalSystem.Metalogic
 
 /-!
 # Automation and Proof System Integration Tests
@@ -47,11 +47,11 @@ Tests are organized by tactic:
 
 namespace BimodalTest.Integration
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Semantics
-open Bimodal.Metalogic
-open Bimodal.Automation
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Semantics
+open FormalSystem.Metalogic
+open FormalSystem.Automation
 
 -- ============================================================
 -- tm_auto Tactic Tests (Aesop-powered automation)
@@ -181,7 +181,7 @@ The apply_axiom macro should apply the Temporal 4 axiom.
 -/
 noncomputable example : ⊢ ((Formula.atom_s "p").all_future.imp 
              (Formula.atom_s "p").all_future.all_future) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "p")
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "p")
 
 /--
 Test 15: apply_axiom works for Temporal A.
@@ -263,7 +263,7 @@ Test 23: temp_4_tactic applies Temporal 4 axiom.
 The temp_4_tactic should automatically apply the Temporal 4 axiom.
 -/
 noncomputable example (p : Formula) : ⊢ (p.all_future.imp p.all_future.all_future) := by
-  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
 
 /--
 Test 24: temp_a_tactic applies Temporal A axiom.
@@ -362,7 +362,7 @@ Test 33: temp_4_tactic produces sound derivations.
 Specific tactic applications should be valid via soundness.
 -/
 example (p : Formula) : [] ⊨ (p.all_future.imp p.all_future.all_future) := by
-  have deriv : ⊢ (p.all_future.imp p.all_future.all_future) := Bimodal.Theorems.TemporalDerived.temp_4_derived _
+  have deriv : ⊢ (p.all_future.imp p.all_future.all_future) := FormalSystem.Theorems.TemporalDerived.temp_4_derived _
   exact soundness [] _ deriv
 
 /--

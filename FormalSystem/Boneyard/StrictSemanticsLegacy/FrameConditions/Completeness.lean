@@ -60,23 +60,23 @@ See: Boneyard/BundleTemporalCoherence/README.md for full semantic explanation.
 
 ## References
 
-- `Bimodal.Metalogic.Algebraic.UltrafilterChain`: Bundle-level temporal coherence
-- `Bimodal.Metalogic.DiscreteCompleteness`: Discrete completeness infrastructure
+- `FormalSystem.Metalogic.Algebraic.UltrafilterChain`: Bundle-level temporal coherence
+- `FormalSystem.Metalogic.DiscreteCompleteness`: Discrete completeness infrastructure
 -/
 
 #exit
 
-namespace Bimodal.FrameConditions
+namespace FormalSystem.FrameConditions
 
-open Bimodal.Syntax
-open Bimodal.Semantics
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Bundle.Canonical
-open Bimodal.Metalogic.DiscreteCompleteness
-open Bimodal.Metalogic.Algebraic.UltrafilterChain
-open Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
+open FormalSystem.Syntax
+open FormalSystem.Semantics
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.Bundle.Canonical
+open FormalSystem.Metalogic.DiscreteCompleteness
+open FormalSystem.Metalogic.Algebraic.UltrafilterChain
+open FormalSystem.Metalogic.Algebraic.RestrictedTruthLemma
 
 /-! ## Completeness Template -/
 
@@ -425,7 +425,7 @@ The dovetailed chain has sorry-free forward_F and backward_P, so this path
 avoids the sorries in `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P`.
 -/
 
-open Bimodal.Metalogic.Algebraic.DovetailedChain
+open FormalSystem.Metalogic.Algebraic.DovetailedChain
 
 /--
 Convert dovetailed BFMCS_Bundle to BFMCS (same as bundle_to_bfmcs).
@@ -633,4 +633,4 @@ Lindenbaum extension freedom (research: 4 rounds, 95% confidence).
 - Fair scheduling: dovetailed F/P resolution (standard textbook approach)
 -/
 
-end Bimodal.FrameConditions
+end FormalSystem.FrameConditions

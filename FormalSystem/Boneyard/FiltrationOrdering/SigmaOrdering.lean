@@ -42,13 +42,13 @@ Sigma-signature.
 
 #exit
 
-namespace Bimodal.Metalogic.BXCanonical.Filtration
+namespace FormalSystem.Metalogic.BXCanonical.Filtration
 
-open Bimodal.Syntax
-open Bimodal.ProofSystem
-open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.BXCanonical
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+open FormalSystem.Metalogic.Bundle
+open FormalSystem.Metalogic.BXCanonical
 
 /-! ## Sigma-Restricted Ordering -/
 
@@ -167,4 +167,4 @@ theorem sigma_H_backward {u v : BXPoint}
     f ∈ u.formulas :=
   bx_H_forward h_le h_Hf_v
 
-end Bimodal.Metalogic.BXCanonical.Filtration
+end FormalSystem.Metalogic.BXCanonical.Filtration

@@ -26,9 +26,9 @@ Given a target formula (e.g., `φ U ψ`), the Sigma-closure includes:
 - Reynolds 1996: "An axiomatization of full computation tree logic" (Section 2)
 -/
 
-namespace Bimodal.Metalogic.BXCanonical.Quasimodel
+namespace FormalSystem.Metalogic.BXCanonical.Quasimodel
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-! ## Subformula Extraction -/
 
@@ -115,4 +115,4 @@ theorem neg_pairing (target : Formula) :
   · exact Finset.mem_union_left _ hf
   · exact neg_of_base_mem hf
 
-end Bimodal.Metalogic.BXCanonical.Quasimodel
+end FormalSystem.Metalogic.BXCanonical.Quasimodel

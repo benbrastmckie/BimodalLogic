@@ -75,10 +75,10 @@ is therefore tractable. **GO** on Phases 2-5.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
@@ -136,4 +136,4 @@ theorem typeEqFiniteDisjunction (N : OrderedMonadicStructure (sigE sig F))
         exact decide_eq_true hiff
     rw [hEq]; exact hadm
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

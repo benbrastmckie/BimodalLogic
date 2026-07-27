@@ -43,10 +43,10 @@ Adapted to use `HasAttainedINF` instead of raw `semantic_prior_UZ`.
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Lemma 5.1 (pp.7-11), Corollary 5.4 (p.10)
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper: TemporalPred.eval_at_neg -/
 
@@ -796,4 +796,4 @@ theorem exists_permutation_head?_eq {α : Type*} {l : List α} {χ : α} (hχ : 
   obtain ⟨rest, hrest⟩ := exists_permutation_cons_head hχ
   exact ⟨χ :: rest, hrest, rfl⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

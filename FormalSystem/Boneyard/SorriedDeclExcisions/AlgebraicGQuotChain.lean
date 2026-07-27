@@ -34,9 +34,9 @@ Do not import from live code.
 #exit
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/Algebraic/LindenbaumQuotient.lean
-   Original context: `namespace Bimodal.Metalogic.Algebraic.LindenbaumQuotient`,
-   `open Bimodal.Syntax Bimodal.ProofSystem`.
+   Source: FormalSystem/Metalogic/Algebraic/LindenbaumQuotient.lean
+   Original context: `namespace FormalSystem.Metalogic.Algebraic.LindenbaumQuotient`,
+   `open FormalSystem.Syntax FormalSystem.ProofSystem`.
    ====================================================================== -/
 
 /--
@@ -88,11 +88,11 @@ theorem sigma_quot_H_G (a : LindenbaumAlg) :
   rfl
 
 /- ======================================================================
-   Source: Theories/Bimodal/Metalogic/Algebraic/InteriorOperators.lean
-   Original context: `namespace Bimodal.Metalogic.Algebraic.InteriorOperators`,
-   `open Bimodal.Syntax Bimodal.ProofSystem`,
-   `open Bimodal.Metalogic.Algebraic.LindenbaumQuotient`,
-   `open Bimodal.Metalogic.Algebraic.BooleanStructure`.
+   Source: FormalSystem/Metalogic/Algebraic/InteriorOperators.lean
+   Original context: `namespace FormalSystem.Metalogic.Algebraic.InteriorOperators`,
+   `open FormalSystem.Syntax FormalSystem.ProofSystem`,
+   `open FormalSystem.Metalogic.Algebraic.LindenbaumQuotient`,
+   `open FormalSystem.Metalogic.Algebraic.BooleanStructure`.
    ====================================================================== -/
 
 /-!

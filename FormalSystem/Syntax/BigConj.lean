@@ -30,7 +30,7 @@ rather than added here, keeping Phase 1 self-contained and `DerivationTree`-free
 - Teammate A findings (specs/098/reports/03_teammate-a-findings.md §3.2)
 -/
 
-namespace Bimodal.Syntax
+namespace FormalSystem.Syntax
 
 /-- Big conjunction over a list of formulas: `bigconj [φ₁, …, φₙ] = φ₁ ∧ … ∧ φₙ`.
     Base case: the empty list folds to `⊤`, represented as `¬ ⊥ = bot.imp bot`. -/
@@ -52,4 +52,4 @@ def neg_bigconj (L : List Formula) : Formula := (bigconj L).neg
 @[simp] theorem neg_bigconj_def (L : List Formula) :
     neg_bigconj L = (bigconj L).neg := rfl
 
-end Bimodal.Syntax
+end FormalSystem.Syntax

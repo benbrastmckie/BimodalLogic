@@ -28,9 +28,9 @@ oracle threading, and all_formulas_separable.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.WeakCanonical.Separation
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 /-- GHR94 Lemma 10.2.6 (parameterized): A formula with `no_S_nested_in_U` and
     `has_no_allpast_allfuture` is separable, given a callback for handling
@@ -997,4 +997,4 @@ theorem all_formulas_separable (φ : Formula) : is_separable φ :=
     (all_formulas_separable_aux (expand_temporal φ) (expand_has_no_allpast_allfuture φ))
 
 
-end Bimodal.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.WeakCanonical.Separation

@@ -90,10 +90,10 @@ divergence is exactly the non-theorem this file records.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Pillar 1: the future-zone RHS pins the free anchor `x`'s monadic type
 
@@ -186,4 +186,4 @@ theorem no_x_independent_formula_captures_future_zone_k1 {sig : MonadicSignature
   have hpin := (future_zone_pins_x_pred M qnf x₂ t p hx₂real).mpr hp
   exact hx₂ hpin
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

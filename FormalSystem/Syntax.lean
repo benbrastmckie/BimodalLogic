@@ -12,7 +12,7 @@ import FormalSystem.Syntax.SubformulaClosure.NestingDepth
 import FormalSystem.Syntax.SubformulaClosure.TemporalFormulas
 
 /-!
-# Bimodal.Syntax - Formula Syntax
+# FormalSystem.Syntax - Formula Syntax
 
 Aggregates all syntax components for bimodal logic TM (Tense and Modality). Provides
 the inductive formula type with 6 primitive constructors and derived operators,
@@ -54,7 +54,7 @@ operations
 ```lean
 import FormalSystem.Syntax
 
-open Bimodal.Syntax
+open FormalSystem.Syntax
 
 -- Build formulas using constructors
 def necessity_p : Formula := Formula.box (Formula.atom_s "p")

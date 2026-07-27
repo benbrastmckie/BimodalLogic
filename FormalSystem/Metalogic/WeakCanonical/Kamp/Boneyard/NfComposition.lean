@@ -40,9 +40,9 @@ For the inter-structure case over ordered sums, see NEquivalence.lean.
 
 #exit
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- If two points have the same depth-(k+1) 1-var NF, they agree on predicates. -/
 theorem pred_agree_of_1var_nf_eq {sig : MonadicSignature}
@@ -647,4 +647,4 @@ theorem constenv_2var_determines {sig : MonadicSignature}
   | succ n' =>
     exact constenv_2var_determines_aux M N k x t x' t' h_2var n' nf
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

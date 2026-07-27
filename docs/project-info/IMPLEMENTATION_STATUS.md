@@ -22,7 +22,7 @@
 - Status: PRODUCTION-READY for Layer 0
 
 ## Latest Changes (2026-01-15)
-- **Codebase review completed** (sess_1768528304_4parxt): Comprehensive analysis of Theories/Bimodal
+- **Codebase review completed** (sess_1768528304_4parxt): Comprehensive analysis of FormalSystem
   - Sorry count: 9 active placeholders (7 in Domain/DiscreteTimeline.lean, 2 in Canonical/ConstructiveFragment.lean)
   - Axiom count: 0 (no unproven axiom declarations)
   - See SORRY_REGISTRY.md for current tracking
@@ -53,7 +53,7 @@
 
 **How to Update**:
 1. Update module status tables when implementation changes
-2. Verify sorry counts with: `grep -rn "sorry" Theories/Bimodal/**/*.lean`
+2. Verify sorry counts with: `grep -rn "sorry" FormalSystem/**/*.lean`
 3. Update Summary Table at bottom to reflect current state
 4. Update "Last Updated" date and "Project Version" if significant
 5. Cross-reference changes in SORRY_REGISTRY.md and tactic-registry.md when command/task updates affect sorry or tactic status (keep all three files in sync)
@@ -62,8 +62,8 @@
 ```bash
 # Verify implementation claims
 lake build && lake test
-grep -rn "sorry" Theories/Bimodal/**/*.lean | wc -l
-grep -rn "^axiom " Theories/Bimodal/**/*.lean | wc -l
+grep -rn "sorry" FormalSystem/**/*.lean | wc -l
+grep -rn "^axiom " FormalSystem/**/*.lean | wc -l
 ```
 
 **Relationship to Other Files**:
@@ -115,18 +115,18 @@ All status claims in this document can be verified by inspecting the source code
 
 ```bash
 # Count sorry placeholders in Metalogic
-grep -n "sorry" Theories/Bimodal/Metalogic/Soundness.lean
-grep -n "sorry" Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean
-grep -n "sorry" Theories/Bimodal/Metalogic/Completeness.lean
+grep -n "sorry" FormalSystem/Metalogic/Soundness.lean
+grep -n "sorry" FormalSystem/Metalogic/Core/DeductionTheorem.lean
+grep -n "sorry" FormalSystem/Metalogic/Completeness.lean
 
 # Count sorry placeholders in Theorems
-grep -n "sorry" Theories/Bimodal/Theorems/Perpetuity.lean
+grep -n "sorry" FormalSystem/Theorems/Perpetuity.lean
 
 # Verify axiom usage in Completeness
-grep -n "^axiom" Theories/Bimodal/Metalogic/Completeness.lean
+grep -n "^axiom" FormalSystem/Metalogic/Completeness.lean
 
 # Check tactic implementations
-cat Theories/Bimodal/Automation/Tactics.lean
+cat FormalSystem/Automation/Tactics.lean
 
 # Run test suite
 lake test
@@ -141,7 +141,7 @@ lake test
 **Completed Work**: Task 7 (COMPLETE - 2025-12-21): Creation of context files for the LEAN 4 ProofChecker project.
 
 **Planned Work**:
-- Task 8: Refactor `Theories/Bimodal/Syntax/Context.lean` to improve clarity and performance.
+- Task 8: Refactor `FormalSystem/Syntax/Context.lean` to improve clarity and performance.
 - Task 9: Update all references to the `Context` module after refactoring.
 
 

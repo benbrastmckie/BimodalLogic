@@ -13,11 +13,11 @@ family and its rank strict-monotonicity, and the per-zone `Nodup`/realization in
 consumed by the `SubBracket2V` sorted-realization engine. Internal scaffolding: no symbol
 here is part of the external contract. -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -1402,4 +1402,4 @@ theorem kvE2_sepHonest_witnesses {sig : MonadicSignature} [Fintype sig.preds]
   · exact haw
   · exact haw.trans (hRlow b hb')
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp

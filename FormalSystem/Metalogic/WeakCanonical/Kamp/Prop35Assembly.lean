@@ -57,10 +57,10 @@ biconditional against `efSat`, and lifts the result through `VeeExistsForall` (D
 - `ExistsForallNF.lean`: `translateVEF1`, `translateVEF1_correct`.
 -/
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula Atom)
-open Bimodal.Metalogic.WeakCanonical
+open FormalSystem.Syntax (Formula Atom)
+open FormalSystem.Metalogic.WeakCanonical
 
 /-- A `foldr`-of-`disj` temporal predicate holds at `y` iff some list element does (the empty fold
 is `⊥`, which never holds). Instance-free: shared by the total-type section and the Fin layer. -/
@@ -486,4 +486,4 @@ theorem translateVeeProp35Fin_correct {sig : MonadicSignature} {F : Finset Formu
     obtain ⟨ψ, hmem', rfl⟩ := List.mem_map.mp hmem
     exact ⟨ψ, hmem', (translateProp35Fin_correct N atomMap nameOf hName env ψ).mpr htt⟩
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.WeakCanonical.Kamp
