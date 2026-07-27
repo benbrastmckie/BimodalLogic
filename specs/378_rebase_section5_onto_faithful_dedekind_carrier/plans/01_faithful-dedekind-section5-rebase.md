@@ -1175,24 +1175,38 @@ safe direction and the re-split boundaries were never needed.
 
 ---
 
-### Phase 8: The faithful `negFix` lift chain [NOT STARTED]
+### Phase 8: The faithful `negFix` lift chain [COMPLETED]
 
 - **Goal:** `BracketFormula.negFixFaithful` → `VecEA2.negFixFaithful` → `VVecEA2.negFixFaithful`,
   with their `_iff` lemmas at the faithful carriers.
 - **Source correspondence:** PDF pp.10-11 (Lemma 5.1) and p.6 (Prop 4.3's De Morgan fold, which
   `VVecEA2.negFix` at `VecEANegFix.lean:154` already encodes).
 - **Tasks:**
-  - [ ] Re-confirm the current line numbers of `BracketFormula.negFix_iff` (`NegFix.lean:694`),
+  - [x] Re-confirm the current line numbers of `BracketFormula.negFix_iff` (`NegFix.lean:694`),
         `VVecEA2.negFix` (`VecEANegFix.lean:154`), `VVecEA2.negFix_iff` (`VecEANegFix.lean:183`) and
-        the lift point (`VecEANegFix.lean:67`) before editing.
-  - [ ] Build the three faithful analogues in that order, each proved from the previous, following
-        the landed lift structurally.
-  - [ ] **Binding Constraint 3 applies with full force here.** These are carrier-anchored
+        the lift point (`VecEANegFix.lean:67`) before editing. *(completed — all four re-confirmed
+        by `grep -n` before any edit; none had drifted. One correction to the plan's own path text,
+        not to a line number: the file is `EANegationFix/VecEANegFix.lean`, not `Kamp/VecEANegFix.lean`
+        — `find` was needed to locate it. `BracketFormula.negFix` itself is at `NegFix.lean:479`,
+        also current.)*
+  - [x] Build the three faithful analogues in that order, each proved from the previous, following
+        the landed lift structurally. *(completed — `BracketFormula.negFixFaithful` /`_iff`,
+        `VecEA2.negFixFaithful` /`_iff`, `VVecEA2.negFixFaithful` /`_iff` plus the auxiliary
+        `vecEANegFixFaithfulFold_iff`, mirroring `vecEANegFixFold_iff` (`VecEANegFix.lean:160`).
+        Every proof is the landed one with the carrier hypothesis swapped; the single structural
+        difference is recorded as Deviation 1 below.)*
+  - [x] **Binding Constraint 3 applies with full force here.** These are carrier-anchored
         (`HasDedekindINF`/`HasDedekindSUP`) throughout. The model-independent `BracketFormula`-level
         backward direction is out of scope and must not be attempted, cited as license, or worked
         around. If a step appears to require it, that is a `[BLOCKED]` escalation, not a fourth
-        attempt.
-  - [ ] Additions only; `NegFix.lean` and `VecEANegFix.lean` are not edited.
+        attempt. *(completed — CONSTRAINT HELD. No attempt was made, and none was needed:
+        `negFixListFaithful_iff` supplies the entire biconditional, and every `_iff` here is
+        `HasDedekindINF`-anchored. `EANegation.lean` and `Boneyard/EANegationVBracketBackward.lean`
+        were not read, not referenced, and not edited; `BracketFormula.negFix_iff` is cited only as
+        the mirror whose shape was followed, never as license.)*
+  - [x] Additions only; `NegFix.lean` and `VecEANegFix.lean` are not edited. *(completed —
+        `git status` shows the only modified tracked file is `NfMultiAnchorBridge.lean` (one import
+        + NOTE); nothing under `EANegationFix/` is touched.)*
 - **Files to create/modify:**
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/VecEANegFixFaithful.lean` — new, live
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` — one import + NOTE
@@ -1207,6 +1221,110 @@ safe direction and the re-split boundaries were never needed.
 - **Done when:** all three faithful `_iff` lemmas are live, sorry-free, axiom-clean.
 - **Timing:** 2 hours (one agent run)
 - **Depends on:** 7
+
+**Phase 8 measured outcome** (actual, not asserted):
+
+| Gate | Before | After | Verdict |
+|---|---|---|---|
+| `lake build` exit | 0 | **0** | pass |
+| Jobs | 1890 | **1891** | +1, as specified |
+| Live modules from `FormalSystem.lean` | 276 | **277** | +1, as specified |
+| Tactic-position sorries in `Kamp/` | 4 dead / 0 live | **4 dead / 0 live** | unchanged |
+| Tactic-position sorries in the new module | — | **0** | pass |
+| Real `axiom` declarations in `FormalSystem/` | 0 | **0** | unchanged |
+| `AggregateOffDiagK1` explicit build | 1098 jobs, EXIT 0 | **1098 jobs, EXIT 0** | no regression |
+
+Census is tactic-position via `.claude/scripts/lean-sorry-census.sh`, never `grep -c`. The four dead
+sorries are unchanged and all under `Kamp/Boneyard/`: `EndpointNegation.lean:164`,
+`FOToVEA.lean:122`, `EANegationVBracketBackward.lean:452`, `:611`. Liveness was decided by a
+transitive `import` walk from `FormalSystem.lean`; `lake build BoneyardArchive` was never run or
+cited. Bare `grep -c '^axiom ' FormalSystem/` still returns 2, both prose continuation lines inside
+`Boneyard/` comments (`DiscreteXY/Discreteness.lean:40`,
+`StrictSemanticsLegacy/Bundle/SuccChainFMCS.lean:1233`); neither is a declaration, so the real axiom
+count is 0.
+
+`#print axioms` on all **11** new declarations: **no `sorryAx` anywhere.** Exactly
+`[propext, Classical.choice, Quot.sound]` for `BracketFormula.negFixFaithful_iff`,
+`VecEA2.negFixFaithful_iff`, `vecEANegFixFaithfulFold_iff`, `VVecEA2.negFixFaithful_iff`,
+`VecEA2.negFixFaithful_carries_limit_gate`, `VVecEA2.negFixFaithful_iff_of_attained`; the strict
+subset `[propext, Quot.sound]` for the three definitions and for
+`VecEA2.mem_negFixFaithful_disjuncts`, `VecEA2.negFixFaithful_of_bracket`.
+
+The module compiled **on the first build**, with no proof body requiring adaptation beyond the one
+structural change recorded as Deviation 1.
+
+**Phase 8 deviations** (one; a strict change to the construction, reported rather than annotated
+silently — per `.claude/rules/plan-compliance.md` it is recorded here because it is a change to
+*how* a listed task was executed, not a substitution for it):
+
+1. *Altered — the bracket leg of `VecEA2.negFixFaithful` is spliced verbatim, not mapped under `⊤`
+   endpoints.* The plan says "following the landed lift structurally", and `VecEA2.negFix`
+   (`EANegationFix/VecEANegFix.lean:75`) maps its bracket leg through
+   `fun bf => ⟨bf.1, {endpointLeft := ⊤, endpointRight := ⊤, bracket := bf.2}⟩`. That `map` exists
+   only because a `VBracketFormula` disjunct is a bare `BracketFormula` with no endpoint slots, so
+   the surrounding `VecEA2` slots have to be filled with *something*. The faithful bracket leg is
+   already a `List (Σ n, VecEA2 n)`, so the corresponding step is `… :: vea.bracket.negFixFaithful.disjuncts`
+   with no `map` at all. Reproducing the `map` would have **erased** the endpoint predicates the
+   faithful recursion carries — including `kplusLeftBlock`'s, which is a pure left-endpoint
+   condition and would have been overwritten by `⊤`. This is the same payoff the Phase 4 canary
+   recorded, appearing a second time and for the same structural reason. Nothing was skipped,
+   narrowed, or substituted.
+
+**Non-vacuity statement (required), in the exact form this phase's Verification bullet asks for.**
+
+*The carrier is preserved at every step, and no shim runs backwards.* The only carrier hypothesis in
+any of the four `_iff` lemmas is `HasDedekindINF`. `HasAttainedINF` appears in exactly one
+declaration, `VVecEA2.negFixFaithful_iff_of_attained`, which runs the shim
+`HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:167`) in the sanctioned attained → faithful
+direction. No declaration in the module uses a faithful → attained shim; there is none to use, and
+such a use would be a strengthening rather than a lift. This is checkable from the signatures, not
+argued: `HasAttained*` occurs once in the file and `HasDefinable*` occurs zero times.
+
+*What the `_iff` lemmas do NOT exclude, and what does.* A lift that dropped bracket-leg disjuncts,
+merged them, or `⊤`-erased their endpoints would prove all four biconditionals **verbatim**, because
+their right-hand sides mention only `¬ vea.holds` and say nothing about the construction. That is
+precisely the "passes sorry-free and axiom-clean exactly as a vacuous one does" failure mode this
+plan's Binding Constraint 5 names. Three declarations were added to close it, all carrier-free:
+
+- `VecEA2.mem_negFixFaithful_disjuncts` — every disjunct of `vea.bracket.negFixFaithful` occurs
+  **verbatim** (same witness count, same endpoint predicates, same bracket) among
+  `vea.negFixFaithful.disjuncts`. The attained `VecEA2.negFix` *cannot* state this lemma: its `map`
+  means no disjunct survives unchanged.
+- `VecEA2.negFixFaithful_of_bracket` — the semantic form: the bracket leg reaches the top of the
+  lift. It consumes no `_iff`, so it is a fact about the construction, not about the theorem.
+- `VecEA2.negFixFaithful_carries_limit_gate` — the one that matters for fidelity: given
+  `K⁺(¬β₁)(z₀)` (PDF p.9, Case 1) and a cons-shaped `foldPairs`, `vea.negFixFaithful` holds. So the
+  third disjunct — the limit gate the faithful recursion adds and the attained one cannot have —
+  is still reachable at the top of the three-step chain. **All three disjuncts are carried
+  through; a two-disjunct lift is machine-excluded, not merely intended.**
+
+Together with `negFixListFaithful_case1_is_indispensable` (`NegFixListFaithful.lean:542`, Phase 7)
+these exclude the two distinct ways a three-disjunct recursion can degrade into a two-disjunct one
+without any statement becoming false: absorption by a neighbouring disjunct *inside* the recursion
+(Phase 7's artifact) and silent discard *by the lift* (this phase's).
+
+*Honest limit, unchanged from Phases 1-7.* Case 1 is dead on Prior structures and on every
+attained-INF structure (`hasDefinableINF_excludes_kplus`, `Lemma53.lean:290`), so what the lift
+carries is contentful mathematics not yet observable from any live consumer. Observability arrives
+only with a genuinely non-attained Dedekind-complete frame class, which this task does not build.
+`hasDedekindINF_admits_kplus_shape` (`DedekindINF.lean:264`) is not cited as contrary evidence.
+
+*Fidelity note recorded because it is favourable and could otherwise look like an accident.*
+Rabinovich states Proposition 4.2 on PDF p.6 as holding **over Dedekind complete chains**. The
+faithful chain landed here is one strengthening step above that (`HasDedekindINF`), where the
+landed attained chain is three (`Rabinovich's Dedekind completeness < HasDedekindINF <
+HasDefinableINF < HasAttainedINF`).
+
+**`HasDedekindSUP`: FIFTH consecutive drop.** Confirmed, not re-litigated and not contrived around.
+Phase 8 consumes `HasDedekindINF` alone — the lift is a De Morgan fold plus two endpoint legs, and
+none of the three steps touches a supremum, a `K⁻`, or a last-occurrence point. `HasDedekindSUP`,
+`orderedPointsExist_combine_kminus` and `HasDedekindSUP.last_occ_tp` remain unconsumed after Phases
+4, 5, 6, 7 **and** 8. Phase 9 is the terminal `prop42_contentful_of_dedekind` statement, whose
+carrier is inherited from `VVecEA2.negFixFaithful_iff` — so it is not a plausible consumer either,
+and Phase 9 should be expected to state `HasDedekindINF` alone rather than to add `HasDedekindSUP`
+for symmetry. Phase 2 retains its independent value (`kminusFormula` / `kminus_formula_correct` were
+absent from the tree before it, along with the right-end chain primitives and the SUP-side exclusion
+theorem). Report the drop; do not contrive a use.
 
 ---
 

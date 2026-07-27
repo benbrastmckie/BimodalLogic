@@ -295,6 +295,29 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixOne
 -- `Kamp.EANegationFix.NegFix` and `Kamp.EANegationFixFaithful.NegFixOneFaithful`, both already in
 -- this file's transitive closure above.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixListFaithful
+-- NOTE: `import ...Kamp.EANegationFixFaithful.VecEANegFixFaithful` lands the import edge for the
+-- PROP 4.2 / 4.3 LIFT CHAIN over the faithful carrier (Rabinovich 2014, PDF p.6 for the two lift
+-- steps, pp.10-11 for the bracket leg it consumes): `BracketFormula.negFixFaithful` →
+-- `VecEA2.negFixFaithful` → `VVecEA2.negFixFaithful`, each with its `_iff`. It mirrors the landed
+-- attained chain (`EANegationFix/NegFix.lean:479`, `EANegationFix/VecEANegFix.lean:67`/`:154`)
+-- declaration for declaration, with one structural difference that is the migration's whole point:
+-- the attained `VecEA2.negFix` MAPS its bracket leg under `⊤` endpoints, because a
+-- `VBracketFormula` disjunct has no endpoint slots; the faithful bracket leg is already a list of
+-- `VecEA2` disjuncts, so it is spliced VERBATIM and no endpoint predicate is erased. The edge also
+-- protects the three declarations that machine-check what the `_iff` statements are silent about —
+-- `VecEA2.mem_negFixFaithful_disjuncts` and `VecEA2.negFixFaithful_of_bracket` (no disjunct is
+-- dropped or `⊤`-erased at the lift) and `VecEA2.negFixFaithful_carries_limit_gate` (the added
+-- Case 1 `K⁺(¬β₁)(z₀)` disjunct, PDF p.9, still forces the top of the chain). A lift that silently
+-- collapsed the faithful recursion's three disjuncts to two would prove the same biconditionals,
+-- so those three are the non-vacuity content here. Carrier result: `HasDedekindINF` ALONE, where
+-- `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`) needs `HasAttainedINF` AND
+-- `HasAttainedSUP`; the only shim used runs attained → faithful
+-- (`VVecEA2.negFixFaithful_iff_of_attained`), never the reverse. Nothing in `EANegationFix/` is
+-- edited; `VecEA2.negFix` and `VVecEA2.negFix_iff` stay live and consumed. The module contains no
+-- sorries and every declaration is axiom-clean. Cycle-free: it imports only
+-- `Kamp.EANegationFixFaithful.NegFixListFaithful`, already in this file's transitive closure
+-- directly above.
+import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.VecEANegFixFaithful
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge
