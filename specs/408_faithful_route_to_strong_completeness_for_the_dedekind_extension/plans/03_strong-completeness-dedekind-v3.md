@@ -1,9 +1,4 @@
-# Implementation Plan: Weak + Finite-Context Consequence Completeness for FrameClass.Dedekind (v2)
-
-> **SUPERSEDED BY `plans/03_strong-completeness-dedekind-v3.md`** (2026-07-27). v3 repairs the
-> `BFMCS.LimitFutureWitness` statement, adds Phase 6.2 (the Prior-U-at-`Fφ` discharge), marks
-> Phase 6.1 `[COMPLETED]`, splits Phase 7 into 7a and 7b, and purges the refuted
-> `limitMCS_no_oscillation` instruction from Phase 7. Do not dispatch against this file.
+# Implementation Plan: Weak + Finite-Context Consequence Completeness for FrameClass.Dedekind (v3)
 
 > **REFRAMING NOTE (carried forward from v1, applies to the whole plan)**: "Strong completeness"
 > is reserved, project-wide, for the genuine infinite-premise statement (`Γ : Set Formula` with
@@ -20,15 +15,20 @@
 
 - **Task**: 408 - faithful_route_to_strong_completeness_for_the_dedekind_extension
 - **Status**: [IMPLEMENTING]
-- **Effort**: 37 hours
+- **Effort**: 44 hours
 - **Dependencies**: None (coordinates with, but is not blocked by, the strong-completeness
   architecture and finite-context strong-completeness efforts — neither has artifacts on disk)
 - **Research Inputs**:
-  - reports/01_faithful-route-strong-completeness.md (primary, adversarially verified)
-  - reports/02_literature-coverage-audit.md (secondary, literature infrastructure)
-  - plans/01_strong-completeness-dedekind.md (superseded predecessor; its Phase 3 dispatch
-    supplied the counterexample that triggered this revision)
-- **Artifacts**: plans/02_strong-completeness-dedekind-v2.md (this file)
+  - reports/03_limit-future-witness-blocker.md (primary for this revision; adversarially
+    verified, Tier 1 literature-backed — Reynolds 1992 printed p.176, Burgess 1984 printed
+    pp.109-110)
+  - reports/01_faithful-route-strong-completeness.md (route selection, adversarially verified)
+  - reports/02_literature-coverage-audit.md (literature infrastructure, citation discipline)
+  - plans/02_strong-completeness-dedekind-v2.md (superseded predecessor; its Phase 6.1 dispatch
+    supplied the `LimitFutureWitness` blocker that triggered this revision)
+  - plans/01_strong-completeness-dedekind.md (superseded predecessor of v2)
+  - summaries/02_phase-6-1-real-bundle-summary.md
+- **Artifacts**: plans/03_strong-completeness-dedekind-v3.md (this file)
 - **Standards**:
   - .claude/rules/artifact-formats.md
   - .claude/rules/plan-format-enforcement.md
@@ -40,7 +40,88 @@
 
 ---
 
-## Revision Rationale (v1 → v2)
+## Revision Rationale (v2 → v3)
+
+Two triggers, both established by `reports/03_limit-future-witness-blocker.md`. Neither is a
+route change: the completion route, the rational-selection extension shape, and every asset
+landed by Phases 1-6.1 stand unamended.
+
+**Trigger 1 — the `LimitFutureWitness` counterexample.** Phase 6.1 landed
+`BFMCS.toRealBundle_restricted_temporally_coherent` under a named extra hypothesis
+`B.LimitFutureWitness root` and marked itself `[BLOCKED]` on discharging it. The blocker research
+found that the predicate **as written is false**, and not for a subtle reason: it quantifies over
+*all* `r : ℝ`, including rationals. At a rational `r = (p : ℝ)` where `S_φ := {q | φ ∈ m q}` has a
+maximum `p`, the hypothesis `Fφ ∈ limitMCSBelow m r` holds and the conclusion "some rational
+`s > r` carries `φ`" fails. The only consumer
+(`BFMCS.toRealBundle_restricted_temporally_coherent`, `RealExtensionBundle.lean:306`) calls it
+strictly inside the `hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ` branch and therefore already has the
+missing hypothesis in scope. The repair is one line at the definition and one argument at the
+call site. This is a defect in the *statement* of an isolated obligation, not in the extension.
+
+**Trigger 2 — Prior-U applies at the `Fφ` level, and the route was never using the Dedekind
+axioms.** `Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:377`, `minFrameClass = .Dedekind` at
+`Axioms.lean:524`) appears nowhere in `Bundle/`, nowhere in `BXCanonical/Chronicle/`, and nowhere
+in v2's Phases 3-8. The obstruction the counterexample exhibits is exactly a **definable gap**,
+which is precisely what Prior-U excludes (Reynolds 1992, printed p.176, Theorem 3's proof: "By
+Prior-U applied to `B` we have `M ⊨ U(¬B ∨ K⁺(¬B), B)(t)` which is the contradiction"). Phase 4's
+refutation of Prior-U is **not** contradicted: Phase 4 applied Prior-U to `φ` itself, whose truth
+region below a gap need not be an interval, so the axiom's antecedent `U(⊤, φ)` was unavailable.
+Applied instead to `χ := Formula.someFuture φ`, whose truth region below the gap **is** the
+interval `(-∞, sup S_φ)`, the antecedent is free. The two statements are different and both
+verdicts stand; v2's blanket "no further attempt is warranted" is narrowed in place to "no
+further attempt **at the `φ` level** is warranted".
+
+**The enabling discovery.** `cantor_bfmcs_dense_restricted_tc` / `_buc` / `_fuc`
+(`ChronicleToCountermodelBasic.lean:629,680,755`) each **discard** the closure-membership
+argument of the restricted predicate (`intro t φ _ h_F`, `intro t φ ψ _ ⟨u, …⟩`,
+`intro t φ ψ _ h_until`), because the underlying `limit_F_resolution`
+(`ChronicleConstruction.lean:722`), `limit_satisfies_c4` (`:776`) and `limit_satisfies_c5_strong`
+(`:1482`) are unrestricted in the formula. The Cantor dense chronicle therefore satisfies **full,
+unrestricted** Until/Since coherence for every formula, and the auxiliary Prior-U formulas
+(`U(⊤, Fφ)`, `U(¬Fφ ∨ K⁺¬Fφ, Fφ)`) are obtained at zero cost by instantiating those theorems at
+*self-roots*, discharging the membership side condition with `self_mem_subformulaClosure`. **No
+chronicle declaration is modified.**
+
+What changes in v3:
+
+1. **New Phase 6.2** — "The definable-gap discharge of `LimitFutureWitness`". One agent run:
+   the predicate repair plus call-site line, the general `fc`-conditional gap lemma
+   `limitFutureWitness_of_priorU`, and the chronicle instantiation
+   `cantor_bfmcs_dense_limit_future_witness`. The discharge is **`fc`-conditional**
+   (`FrameClass.Dedekind ≤ fc`), not `fc`-generic — this is the first place in the plan where the
+   Dedekind axiom layer is actually consumed.
+2. **Phase 6.1 → `[COMPLETED]`.** Its landed content (334 lines, 7 declarations, sorry-free,
+   full `lake build` green) stands byte-identical; its one conditional task is discharged by
+   Phase 6.2 rather than reopened. The inline BLOCKER block is retired into a RESOLUTION block
+   pointing at Phase 6.2.
+3. **Phase 7 is split.** 7a collects the mechanical work (backward transport, the shared guard
+   lemma, forward case A, the `snce` mirrors, and the two chronicle real instances that become
+   available). 7b is a **two-outcome probe** for forward case B, whose acceptable outcomes are a
+   proof *or* a refuting family — the research constructed a candidate family in which Prior-U at
+   `untl α β` is satisfied locally with no contradiction, so refutation is live and is not a
+   phase failure. The fallback ladder for the refutation outcome is fixed in advance in 7b so the
+   orchestrator never improvises.
+4. **`limitMCS_no_oscillation` is purged.** Phase 4's OUTCOME refuted it; v2's Phase 7 still
+   instructed the implementer to re-invoke it. No task list, mapping-table row, or docstring
+   instruction in v3 names that lemma. Phase 4's historical bullets are retained as record only
+   and are explicitly not live instructions.
+5. **Phase 8 acquires one prerequisite and one signature change.**
+   `countermodel_dedekind_dense` gains `(hfc : FrameClass.Dedekind ≤ fc)` and must discharge
+   `BFMCS.LimitFutureWitness` for `cantorBfmcsDense` via Phase 6.2's instantiation. Both are
+   benign: `completeness_dedekind_engine` instantiates at `FrameClass.Dedekind` and
+   `Dedekind ≤ Dedekind` is `by decide` (`Axioms.lean:491`).
+6. **Postmortem Constraints extended** with the prohibitions implied by the three rejected
+   alternatives: no two-sided/symmetric limit, no witness-aware selection at the unselected
+   branch, no chronicle modification, no closure enlargement, and no `φ`-level Prior-U retry.
+
+Everything binding in v2 is carried through unchanged: the pinned
+`consequence_completeness_dedekind_of_engine` signature (commit `bd9ae0ac1`), the Reframing Note,
+the Preserved Assets accounting, risk-first ordering, and the single-permitted-strategic-sorry
+rule.
+
+---
+
+## Revision Rationale (v1 → v2, retained for history)
 
 v1's Phase 3 task 4, `limitSetBelow_of_rat` — "at a rational `q` the limit set agrees with
 `m q` on membership" — is **false in both directions**, and the Phase 3 implementation dispatch
@@ -129,9 +210,13 @@ Quot.sound]`.
 | reports/01_faithful-route-strong-completeness.md | v1, 2026-07-27 | Route selection (B over A), phase sequencing, preserved-assets list, bridge prohibitions |
 | reports/02_literature-coverage-audit.md | v1, 2026-07-27 | Goldblatt provenance caveat, sub-index gaps, citation discipline (PDF page, never `md:NN`) |
 | plans/01_strong-completeness-dedekind.md — Phase 3 dispatch BLOCKER block | v2, 2026-07-27 | The rational-agreement counterexample; the rational-selection unblock path; the corrected Phase 3 task list |
+| reports/03_limit-future-witness-blocker.md | v3, 2026-07-27 | The `LimitFutureWitness` predicate repair (unselectedness hypothesis); the Prior-U-at-`Fφ` discharge and its four-step proof; the self-root closure discovery; the Phase 7 split with its two-outcome probe; the Phase 8 `hfc` signature change; the three rejected alternatives now encoded as Postmortem Constraints |
+| plans/02_strong-completeness-dedekind-v2.md — Phase 6.1 BLOCKER block | v3, 2026-07-27 | The four-element defect bar isolating `BFMCS.LimitFutureWitness`; the below-only asymmetry note that scopes Phase 7 |
 
-No new research report was produced for this revision. The revision trigger is a
-counterexample established during implementation, not a new literature finding.
+`reports/03_limit-future-witness-blocker.md` is the revision trigger for v3 and is Tier 1
+literature-backed: its discharge is Reynolds' own argument (printed p.176) and its rejection of
+the two-sided limit is Burgess's own text (printed pp.109-110). Cite both by PDF page in every
+docstring; never by chunk-relative `md:NN` line numbers.
 
 ### Preserved Assets
 
@@ -157,6 +242,22 @@ generalizes, or "cleans up" any row in this table.
 | `dedekind_box_dense_mem`, `real_lub_of_bddAbove`, the `CarrierProbe` examples | `Metalogic/BXCanonical/CompletenessDedekind.lean` | [COMPLETED] landed by Phase 1 of this plan | 2026-07-27 |
 | `SemanticConsequenceDedekindDense`, `truthAt_foldr_imp`, `semantic_deduction_dedekind_dense`, `derivable_foldr_imp_iff`, `consequence_completeness_dedekind_of_engine`, `soundness_dedekind_consequence`, `completeness_dedekind_of_engine` | `Metalogic/StrongCompleteness.lean` | [COMPLETED] landed by Phase 2 of this plan, commit `bd9ae0ac1`; renamed (not restructured) by the concurrent terminology reframing. **The `consequence_completeness_dedekind_of_engine` signature is pinned and may not be restated** | 2026-07-27 |
 | `limitSetBelow`, `limitSetAbove`, `limitSetBelow/Above_mono_directed`, `limitSetBelow/Above_finite_subset_mem`, `limitSetBelow/Above_consistent`, `limitSetBelow/Above_of_rat` | `Metalogic/Bundle/LimitMCS.lean` (10 declarations) | [COMPLETED] landed by Phase 3 of this plan, sorry-free | 2026-07-27 |
+| `limitMCSBelow`, `limitMCSBelow_is_mcs`, `limitSetBelow_subset_limitMCSBelow`, `limitMCSLindenbaum*`, `fc_theorem_true_in_parametric_model`, and above all **`limitMCSBelow_cofinal_below`** — `(hA : A ∈ limitMCSBelow m r) (z : ℝ) (hz : z < r) : ∃ q : Rat, z < (q:ℝ) ∧ (q:ℝ) < r ∧ A ∈ m q`, the descent handle every unselected-source case consumes and the reason the ultrafilter limit was chosen over bare Lindenbaum | `Metalogic/Bundle/LimitMCS.lean` (+14 declarations) | [COMPLETED] landed by Phase 4 of this plan, sorry-free. **Load-bearing in Phase 6.2 Step A** | 2026-07-27 |
+| The six `limitSetBelow`-source case lemmas plus the four `limitMCSBelow`-source variants | `Metalogic/Bundle/LimitMCSCoherence.lean` (11 declarations) | [COMPLETED] landed by Phases 5-6, sorry-free | 2026-07-27 |
+| `realLimitMCS`, `realLimitMCS_of_rat`, `realLimitMCS_of_not_rat`, `realLimitMCS_is_mcs`, `realLimitMCS_forward_G/backward_H`, `FMCS.toRealShift`, `FMCS.toReal`, `FMCS.toReal_at_rat` | `Metalogic/Bundle/RealExtension.lean` (9 declarations) | [COMPLETED] landed by Phase 6, sorry-free | 2026-07-27 |
+| `negBoxIntrospection`, `box_forward_in_fmcs`, `box_stable_in_fmcs`, `mem_realLimitMCS_of_forall`, `box_mem_realLimitMCS_iff`, `BFMCS.toRealBundle` (both modal fields), `BFMCS.toRealBundle_restricted_temporally_coherent` (conditional on `LimitFutureWitness`; the `somePast` half unconditional) | `Metalogic/Bundle/RealExtensionBundle.lean` (334 lines, 7 declarations) | [COMPLETED] landed by Phase 6.1, sorry-free, axioms exactly `[propext, Classical.choice, Quot.sound]`. **Phase 6.2 edits exactly two lines in this file** (the `LimitFutureWitness` binder list and the one call site at `:306`) and nothing else | 2026-07-27 |
+| `self_mem_subformulaClosure (phi : Formula) : phi ∈ subformulaClosure phi` | `Syntax/SubformulaClosure/Closure.lean:42` | [COMPLETED] generic | 2026-07-27 |
+| `conj_mcs`, `theorem_in_mcs`, `DerivationTree.axiom` (whose `h_fc : h.minFrameClass ≤ fc` field is what `hfc` discharges) | `Chronicle/PointInsertion.lean:227`; `Core/MaximalConsistent.lean:491`; `ProofSystem/Derivation.lean:98` | [COMPLETED] generic in `fc` | 2026-07-27 |
+
+**Closure discovery (v3, load-bearing).** `cantor_bfmcs_dense_restricted_tc` / `_buc` / `_fuc`
+bind the restricted predicates' closure-membership argument to `_` and never use it
+(`ChronicleToCountermodelBasic.lean:642`, `:691`, `:766`), because `limit_F_resolution`
+(`ChronicleConstruction.lean:722`), `limit_satisfies_c4` (`:776`) and `limit_satisfies_c5_strong`
+(`:1482`) take their formula arguments unconstrained. The Cantor dense chronicle therefore
+satisfies **unrestricted** Until/Since coherence for every formula, recoverable by instantiating
+at a self-root and discharging the side condition with `self_mem_subformulaClosure`. This is an
+observation *about* preserved assets, not a licence to edit them: the three theorems and their
+three underlying resolution lemmas stay byte-identical.
 
 **Explicitly NOT touched by any phase of this plan** (regressing or "generalizing" any of these
 is a defect, not progress):
@@ -177,9 +278,15 @@ Cite by **PDF page** in all Lean docstrings. Never cite chunk-relative `md:NN` l
 
 | Source | Location | Lean identifier | Statement used | Phase |
 |---|---|---|---|---|
-| Reynolds 1992 | §5, printed p.176 (chunk `reynolds_1992_sec06`, pp.174-179) | `limitMCS_negation_complete` | "Call a linear temporal structure a *Prior structure* if it satisfies all substitution instances of Prior-U and Prior-S. It is easy to see that then there are no definable gaps." | 4 |
-| Reynolds 1992 | §5, printed p.176 (same chunk) | `limitMCS_no_oscillation` | "By Prior-U applied to `B` we have `M ⊨ U(¬B ∨ K⁺(¬B), B)(t)` which is the contradiction." — the one-line proof of no-definable-gaps | 4 |
-| Reynolds 1992 | §5, printed p.176 (same chunk) | `kplusFormula` (reused) | `γ⁺(A)` "holds exactly when `A` remains true for a while after now but only up until a gap after which `A` is arbitrarily soon false" — the oscillation pattern Phase 4 must exclude | 4 |
+| Reynolds 1992 | §5, printed p.176 (chunk `reynolds_1992_sec06`, pp.174-179) | `limitMCS_negation_complete` | "Call a linear temporal structure a *Prior structure* if it satisfies all substitution instances of Prior-U and Prior-S. It is easy to see that then there are no definable gaps." | 4 (**refuted at the `φ` level** — see the Phase 4 OUTCOME block) |
+| Reynolds 1992 | §5, printed p.176 (same chunk) | `kplusFormula` (reused) | `γ⁺(A)` "holds exactly when `A` remains true for a while after now but only up until a gap after which `A` is arbitrarily soon false" — the definable-gap pattern | 4 |
+| **Reynolds 1992** | **Thm 3 proof, printed p.176** | **`limitFutureWitness_of_priorU`** | **"Suppose for contradiction that `M ⊨ U'(A,B)(t)` in some Prior structure `M`. Thus `B` holds for a while up until a gap after which `¬B` is true arbitrarily soon. By Prior-U applied to `B` we have `M ⊨ U(¬B ∨ K⁺(¬B), B)(t)` which is the contradiction."** Instantiated at `B := χ = Fφ`, whose truth region below the gap is the interval `(-∞, sup S_φ)`, so the antecedent `U(⊤, χ)` is free — the exact step v2's Phase 4 could not take at the `φ` level | **6.2** |
+| **Reynolds 1992** | **Prior-U axiom, printed p.168** | **`Axiom.prior_U_gap`** | `U(⊤, φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)`. PRESENT at `Axioms.lean:377`, `minFrameClass = .Dedekind` at `:524` | **6.2 (consumed), 8 (threaded as `hfc`)** |
+| **Reynolds 1992** | **`K⁺A = ¬U(⊤,¬A)`, printed p.168** | **`Formula.kPlus`** | `def kPlus (φ) : Formula := (Formula.untl Formula.top φ.neg).neg`, `Syntax/Formula.lean:180`; `Formula.or a b = a.neg.imp b` at `:438` | **6.2 (Step D)** |
+| **Reynolds 1992** | **Lemma 3 proof, printed p.178** | *(pattern for Steps C-D)* | "Prior-U applied to `R` implies that `M` contains a last point of this stretch of `R` … or a first point of `¬R`" | **6.2** |
+| **Reynolds 1992** | **§6 opening, printed p.176** | *(scoping note only)* | "We know that the Prior axioms ensure that there will not be any definable gaps in a model. To show that our model can be made into a model over the reals we actually need a stronger result." Records why gap-freeness alone does **not** settle Phase 7b, and why Reynolds' own route to ℝ (Doets + `Axiom.sep`, printed pp.177-178, 184-188) is a *different* route from this plan's completion route | **7b (scoping), 7b fallback R2** |
+| **Burgess 1984** | **§2.7 Continuity, printed pp.109-110** | **`BFMCS.LimitFutureWitness`** | "Now if `Fa ∈ T*(w(Y,Z))`, we claim that `Fa ∈ T(z)` for some `z ∈ Z`. For if not, then `G¬a ∈ T(z)` for all `z ∈ Z`, and by the previous Lemma, `G¬a ∈ T(y)` for some `y ∈ Y`" — the predicate is *literally* Burgess's prophecy-at-a-gap claim, and his proof routes through the continuity axiom `A7a`. This is why the obligation cannot be dissolved by a construction change | **6.1 (statement), 6.2 (discharge)** |
+| **Burgess 1984** | **§2.7, printed p.109** | *(rejected alternative)* | `C(Y,Z) = {Pa : ∃y ∈ Y, a ∈ T(y)} ∪ {Fa : ∃z ∈ Z, a ∈ T(z)}` — the two-sided seed at a gap. Burgess adopts it and **still** needs the continuity axiom for the step above, so it removes no obligation. Grounds the Postmortem Constraint against a two-sided limit | **(constraint)** |
 | Reynolds 1992 | §1, printed p.169 (chunk `reynolds_1992_sec01`, pp.165-172) | docstring of `CompletenessDedekind.lean` | "The Prior axioms enforce a *definably* Dedekind complete model … there may be gaps in the order but … you wouldn't know that just looking at the behaviour of temporal formulas." Scopes what Phase 4 may claim: definable gap-freeness only | 4 |
 | Reynolds 1992 | Prior-U / Prior-S / Sep, printed p.168 | `Axiom.prior_U_gap`, `prior_S_gap`, `sep` | PRESENT in the tree at `Axioms.lean:377,387,398` | 4 (consumed) |
 | Goldblatt 2023 (arXiv:2310.20069) | Introduction (chunk `goldblatt_2023_strong-completeness-real-time`, `chunk_0002.md`) | docstring of `StrongCompleteness.lean` | "if the flow of time is modelled by the linearly ordered set (R, <) … the resulting temporal logic of valid **propositional** formulas is recursively axiomatisable. This was shown by Robert Bull, using finitely many axioms and inference rules. The situation of first-order temporal logic is quite different." **Resolves the audit's highest-ranked gap in favour of this plan**: Scott's non-axiomatizability obstruction is first-order-specific and does not bear on propositional TM. `[UNVERIFIED — provenance_fidelity: unverified_conversion]`; re-read against the PDF before quoting in a deliverable | 2 |
@@ -261,6 +368,56 @@ planning, and (new in v2) the Phase 3 dispatch's counterexample.
 - **(v2) Do NOT define the real bundle's family set as the image of the rational bundle's
   families under a single extension.** `modal_backward` is then unprovable at unselected reals.
   The family set must be closed under **real** shifts. See Phase 6.1 and the corresponding Risk.
+- **(v3) Do NOT re-attempt Prior-U at the `φ` level.** Phase 4's OUTCOME refutation stands
+  unamended: negation-completeness of `limitSetBelow m r` asserts eventual constancy of *every*
+  formula below `r`, a formula whose membership pattern is dense and co-dense in every left
+  neighbourhood of `r` refutes it, and Prior-U's antecedent `U(⊤, φ)` is unavailable because
+  `φ`'s truth region below the gap need not be an interval. v3's route applies Prior-U to
+  `χ := Formula.someFuture φ` **only**, whose truth region below the gap *is* an interval. These
+  are different statements; do not merge them, and do not read v3's success as licence to reopen
+  the `φ`-level attempt.
+- **(v3) Do NOT name, state, or re-derive `limitMCS_no_oscillation`.** It is false as stated
+  (Phase 4 OUTCOME) and no phase of v3 needs it. Phase 4's two historical bullets naming it are
+  record, not instructions. If an implementer finds a task pointing at it, they are reading v2.
+- **(v3) Do NOT adopt a two-sided / symmetric limit at gaps, and do NOT choose the side
+  per-point.** Burgess 1984 (printed p.109) defines exactly this two-sided seed and his very next
+  paragraph (pp.109-110) still has to *prove* the prophecy claim via the continuity axiom `A7a`,
+  so the seed makes the limit MCS coherent without removing this obligation. Cost of adopting it:
+  `limitMCSBelow_cofinal_below` (`LimitMCS.lean:379`) has no two-sided analogue usable in both
+  temporal directions, and all four `limitMCSBelow`-source coherence variants,
+  `box_mem_realLimitMCS_iff`, both modal fields, and the currently-**unconditional** `somePast`
+  half route through it — the last of which would acquire a mirror `prior_S_gap` obligation it
+  does not have now. A per-point side choice is worse: `forward_G`/`backward_H` quantify over all
+  pairs of real points, so a varying side breaks the 2x2 case matrix Phases 5-6 closed. Strictly
+  more obligations, no gain.
+- **(v3) Do NOT refine the unselected branch by a witness-aware / F-obligation-aware selection.**
+  Refining it means abandoning the ultrafilter limit for `limitMCSLindenbaum`-style arbitrary
+  extension, which has **no descent path back to `m q`** (`LimitMCS.lean:291`). Every asset
+  Phases 5, 6 and 6.1 landed — the four `limitMCSBelow`-source coherence variants,
+  `realLimitMCS_is_mcs`, `box_mem_realLimitMCS_iff`, both modal fields, and the unconditional
+  `somePast` half — consumes `limitMCSBelow_cofinal_below`. This direction discards all of them
+  and reopens Phases 4-6.1, and it is unnecessary: the object already in the tree satisfies the
+  property once the frame class is used.
+- **(v3) Do NOT modify any `cantorBfmcsDense` chronicle declaration**, in particular
+  `cantor_bfmcs_dense_restricted_tc` / `_buc` / `_fuc` (`:629`, `:680`, `:755`) or the underlying
+  `limit_F_resolution` / `limit_satisfies_c4` / `limit_satisfies_c5_strong`. Phase 6.2 *consumes*
+  them at self-roots and writes no chronicle-level proof. Editing them is the wrong seam, exactly
+  as the standing constraint against lifting the Cantor layer to `ℝ` says.
+- **(v3) Do NOT enlarge `deferralClosure`, `extendedDeferralClosure`, or the root** to make the
+  auxiliary Prior-U formulas (`U(⊤, Fφ)`, `U(¬Fφ ∨ K⁺¬Fφ, Fφ)`) available. Self-root
+  instantiation plus `self_mem_subformulaClosure` makes closure enlargement unnecessary; a
+  restricted-closure *finiteness* argument is also not a fix, since the counterexample uses a
+  single atom that lies in `deferralClosure root` whenever it occurs in `root`.
+- **(v3) Do NOT state `BFMCS.LimitFutureWitness` without the unselectedness hypothesis.** The
+  all-`r` form is false at any selected `r = (p : ℝ)` where `S_φ` attains a maximum at `p`; a
+  phase that "proves" the all-`r` form has proved something wrong or has smuggled in an
+  assumption.
+- **(v3) Do NOT make `countermodel_dedekind_dense`, `completeness_dedekind_engine`,
+  `consequence_completeness_dedekind`, or `completeness_dedekind` conditional on an undischarged
+  bundle-shaped predicate.** The single permitted added hypothesis anywhere on that chain is
+  `(hfc : FrameClass.Dedekind ≤ fc)`, which is discharged by `decide` at the instantiation point.
+  A terminus carrying an unproven property of the very object it constructs is vacuous-adjacent
+  and is not an acceptable outcome of Phase 7b — see 7b's fallback ladder.
 
 **MUST preserve**:
 
@@ -309,6 +466,16 @@ planning, and (new in v2) the Phase 3 dispatch's counterexample.
   agreement is unavailable as a lemma.
 - **(v2, settled by proof obligation) The real bundle's family set is the real-shift closure**
   `{fam.toRealShift δ | fam ∈ B.families, δ : ℝ}`, not an image. Justification in Phase 6.1.
+- **(v3, settled by the blocker research) The discharge of `LimitFutureWitness` is
+  `fc`-conditional, not `fc`-generic.** It consumes `Axiom.prior_U_gap`, whose
+  `minFrameClass` is `.Dedekind`, so `limitFutureWitness_of_priorU` and
+  `cantor_bfmcs_dense_limit_future_witness` both carry `(hfc : FrameClass.Dedekind ≤ fc)`. This
+  is not a weakness of the route — it is the route finally using the axioms that distinguish the
+  class it is proving completeness for. Do not attempt an `fc`-generic version.
+- **(v3, settled) The residual obligation is a property of the *rational family*, not of the
+  extension.** The Phase 6.1 counterexample uses no field of the real extension. No change to the
+  real-shift closure, the selection condition, or the limit branch can repair it, and none should
+  be attempted.
 - **(v2) Only the *below* limit is load-bearing.** `limitSetAbove` and its Phase 3 duals are
   standing sorry-free assets; the extension uses `limitSetBelow` alone, and both `forward_G`
   and `backward_H` go through it (verified case-by-case in Phase 5). No phase is obliged to
@@ -322,6 +489,9 @@ planning, and (new in v2) the Phase 3 dispatch's counterexample.
   - `consequence_completeness_dedekind (Γ : Context) (φ : Formula) : SemanticConsequenceDedekindDense Γ φ → Derivable FrameClass.Dedekind Γ φ`, sorry-free.
   - `completeness_dedekind (φ : Formula) : ValidDedekindDense φ → Derivable FrameClass.Dedekind [] φ` as the `Γ = []` corollary.
   - A reusable `BFMCS (fc := fc) Rat → BFMCS (fc := fc) ℝ` limit extension with its coherence proofs.
+  - **(v3)** `limitFutureWitness_of_priorU` — a reusable, `fc`-conditional statement that a
+    Dedekind-MCS family has no definable `Fφ`-gap at an irrational point, and its chronicle
+    instantiation `cantor_bfmcs_dense_limit_future_witness`.
   - `FormalSystem/Metalogic.lean` tracking table updated.
 - **Non-Goals**:
   - Infinite-premise (`Set Formula`) strong completeness or compactness for this class — the
@@ -334,6 +504,12 @@ planning, and (new in v2) the Phase 3 dispatch's counterexample.
   - Expanding `specs/literature-index.json` (a separate curation concern; the audit's
     recommendations are recorded, not executed here).
   - **(v2)** Maximality of `limitSetAbove`. Not on the route.
+  - **(v3)** The `prior_S_gap` / past mirror of `limitFutureWitness_of_priorU`. The `somePast`
+    half of the temporal transport is already unconditional, so the mirror has no consumer. Prove
+    it only if a later phase acquires one.
+  - **(v3)** Reynolds' separability route to ℝ (Doets' theorem + `Axiom.sep`). It is named in
+    Phase 7b's fallback ladder as the escalation target if the probe refutes; it is **not** built
+    by this plan and electing it requires a new research dispatch.
 
 ---
 
@@ -396,14 +572,57 @@ planning, and (new in v2) the Phase 3 dispatch's counterexample.
 - **Risk: `RestrictedForwardUntilSinceCoherent` at an unselected `t` is the hardest transport.**
   Producing `s > t` with the guard `ψ ∈ mcs r` for *all* `r ∈ (t,s)` — including unselected
   `r` — re-invokes the limit-MCS property rather than merely quoting the `Rat` witness.
-  **Mitigation**: it is isolated in its own phase (7), after the limit MCS is fully
+  **Mitigation**: it is isolated in its own phase, after the limit MCS is fully
   characterized, so it cannot silently consume the crux phase's budget.
   **(v2 refinement)**: the difficulty is now located precisely. The *guard* side is easy in both
   cases — a `Rat` guard covering all rationals in `(t+δ, s+δ)` automatically covers unselected
   `r`, because `limitSetBelow m (r+δ)` is witnessed by the threshold `t+δ`. The *selected-`t`*
   case is fully mechanical. Only obtaining the real witness `s` from a membership at an
   **unselected** `t` is hard, because the `Rat` witnesses `s_p` for rationals `p ↗ t+δ` may
-  shrink to `t+δ`. That is the single sub-obligation that may re-invoke Phase 4.
+  shrink to `t+δ`.
+  **(v3 relocation)**: this sub-obligation is now Phase 7b and nothing else; Phase 7a is
+  everything that is mechanical. It is explicitly **not** repaired by re-invoking Phase 4 —
+  see the next risk.
+- **Risk (v3, HIGHEST OPEN): the Prior-U technique does not transfer to Phase 7b, and there is a
+  candidate refuting family.** Phase 6.2's Step A works because the truth region of
+  `someFuture φ` below a gap is the interval `(-∞, r)`. The truth region of `untl α β` need not
+  be. Concretely: a family in which `β` fails at rationals `t_n ↗ r`, `α` holds at a single point
+  `α_n ∈ (t_n, t_{n+1})`, and `α` fails everywhere above `r`, has `untl α β` true on `⋃(t_n, α_n)`
+  and false on `⋃(α_n, t_{n+1})` — cofinal below `r` in both directions. Prior-U applied to
+  `untl α β` at `t_n` is then satisfied *locally*, with its witness `u` landing in
+  `[α_n, t_{n+1}]` where `¬(untl α β)` genuinely holds, so **no contradiction arises**. Whether
+  such a family is realizable inside `cantorBfmcsDense` at `fc = FrameClass.Dedekind`, and whether
+  the below-limit ultrafilter can admit `{q | untl α β ∈ m q}`, are open. Reynolds is explicit
+  (§6 opening, printed p.176) that no-definable-gaps is *not by itself enough* for the reals
+  construction, and his stronger result routes through contemporaneous equivalence classes,
+  Doets' theorem and `Axiom.sep` — **not** through a Dedekind completion of a rational chronicle.
+  Burgess runs the completion route but only in the `F`/`G` fragment (printed pp.109-110) and says
+  nothing about `U`/`S` at a gap. So Phase 7b is doing something neither primary source does
+  directly.
+  **Mitigation**: Phase 7b is a **two-outcome probe**, not proof engineering. A refuting family is
+  an acceptable, planned outcome with a fixed fallback ladder (7b, "If the refutation outcome
+  fires"). Do not budget 7b as if a proof were assured, and do not let a 7b dispatch drift into
+  Phase 8 work. Partial structure that is already established and does **not** need re-deriving:
+  case (a) — a rational Until-witness strictly above `r + δ` — closes cleanly with 7a's guard
+  lemma; case (b) — all rational witnesses squeezing to `r` — is the residual, where Phase 6.2's
+  lemma applied to `α` does produce a rational `α`-point above `r` (the eventuality half is fine)
+  but supplies **no guard** on the interval between `r` and that point. The guard is the whole
+  difficulty.
+- **Risk (v3, MEDIUM): module placement of `limitFutureWitness_of_priorU` rests on a
+  Medium-confidence import-direction claim.** `conj_mcs` lives in
+  `BXCanonical/Chronicle/PointInsertion.lean`, above `Bundle/` in the import graph, while
+  `limitMCSBelow_cofinal_below` lives in `Bundle/LimitMCS.lean`. The blocker research inferred the
+  direction from Phase 6.1's OUTCOME note rather than from a `lake` dependency dump.
+  **Mitigation**: Phase 6.2 places both new theorems in a **new chronicle-level module**, where
+  both `conj_mcs` and (transitively) `Bundle/` are in scope, so the claim being wrong costs
+  nothing. If the module fails to import, the fallback is `Bundle/LimitGapWitness.lean` with a
+  three-line local `and`-introduction — the same move `negBoxIntrospection` made in Phase 6.1.
+  Verify the import direction with one `lake build` rather than by reading files.
+- **Risk (v3, LOW): the `hfc` thread.** `countermodel_dedekind_dense` becomes conditional on
+  `FrameClass.Dedekind ≤ fc`. **Mitigation**: `completeness_dedekind_engine` instantiates at
+  `FrameClass.Dedekind` anyway and `Dedekind ≤ Dedekind` is `by decide` (`Axioms.lean:491`).
+  `consequence_completeness_dedekind_of_engine`'s pinned signature is stated at `.Dedekind` and is
+  unaffected.
 - **Risk: analysis paralysis on the crux.** **Mitigation**: Phases 2 and 3 landed real,
   sorry-free Lean before the crux is attempted, so the H2 formal-proof-line bar is already met
   when Phase 4 starts; and Phase 4's done-criterion is a single named lemma, not a survey.
@@ -458,8 +677,10 @@ shape is fixed in advance and an implementer never has to invent it:
 | 3 | 4, 5 | 3 |
 | 4 | 6 | 4, 5 |
 | 5 | 6.1 | 6 |
-| 6 | 7 | 6.1 |
-| 7 | 8 | 2, 7 |
+| 6 | 6.2 | 6.1 |
+| 7 | 7a | 6.2 |
+| 8 | 7b | 7a |
+| 9 | 8 | 2, 6.2, 7a, 7b |
 
 Phases within the same wave can execute in parallel. Territory contracts (H7): each phase owns
 the files listed under its **Owns** line and MUST NOT edit any file owned by a concurrent phase.
@@ -467,6 +688,14 @@ Phases 1 and 2 own disjoint new files. Phases 4 and 5 own disjoint new files and
 declared parallel pair in the engine — **verified in v2**: Phase 5's six lemmas are statements
 about `limitSetBelow` membership and the `Rat` family's own `forward_G`/`backward_H` fields, and
 none of them mentions or requires maximality, so Phase 5 does not depend on Phase 4's crux.
+
+**(v3) Waves 6-9 are deliberately serial and each is a single dispatch.** 7a could in principle
+run beside 6.2, but 7a's two chronicle instances consume 6.2's discharge, and both phases would
+touch the same aggregator import line; serializing costs one dispatch and removes the only H7
+conflict in the plan. 7b is separated from 7a because its deliverable is a *probe outcome*, not a
+line count, and mixing it with mechanical work is exactly how a probe silently becomes an
+open-ended proof attempt. Phase 8 is blocked by 7b regardless of 7b's outcome — see 7b's
+fallback ladder for what happens if the outcome is a refutation.
 
 ---
 
@@ -637,6 +866,14 @@ none of them mentions or requires maximality, so Phase 5 does not depend on Phas
 **This is the crux and the only legitimate `[BLOCKED]` point in the plan. It is new
 mathematics, argued from Reynolds' no-definable-gaps lemma rather than transcribed from it.**
 
+> **(v3) COMPLETED — NOT A LIVE PHASE.** v2's two `limitMCS_no_oscillation` bullets have been
+> **deleted from the task list below**: the step was refuted during implementation and the
+> refutation now lives only in the Phase 4 OUTCOME block, where it remains fully auditable. No
+> phase of v3 asks for that lemma and the Postmortem Constraints forbid re-deriving it.
+> The refutation is scoped to applying Prior-U **at the `φ` level**; v3's Phase 6.2 applies it at
+> the `someFuture φ` level, which is a different statement whose antecedent *is* available. Do
+> not read the two verdicts as a contradiction and do not reopen this phase.
+
 - **Goal:** Turn `limitSetBelow m r` into a genuine maximal consistent set.
 - **Owns:** `FormalSystem/Metalogic/Bundle/LimitMCS.lean` (extends Phase 3's file).
 - **v2 ripple: statements unaffected; one scope reduction.** The crux is a statement about
@@ -651,18 +888,14 @@ mathematics, argued from Reynolds' no-definable-gaps lemma rather than transcrib
   - [x] Re-read Reynolds 1992 §5, printed p.176 (chunk `reynolds_1992_sec06`) verbatim before
         writing anything: the `γ⁺` definition, the Prior-structure definition, and the one-line
         Prior-U contradiction. Cite by PDF page in the docstring.
-  - [ ] State `limitMCS_no_oscillation`: for every `A : Formula` and `r : ℝ`, there is `z < r`
-        such that either `A ∈ m q` for all rational `q ∈ (z, r)`, or `A.neg ∈ m q` for all
-        rational `q ∈ (z, r)`. This is the MCS-membership analogue of "no definable gaps".
-        *(deviation: skipped — the statement is **not** the MCS analogue of no-definable-gaps;
-        it is strictly stronger, and mitigation (a) is refuted at the level of the source. See
-        the mitigation-(a) refutation recorded below and in the module docstring.)*
-  - [ ] Prove it. The intended argument: `Axiom.prior_U_gap` instances are theorems of
-        `FrameClass.Dedekind`, hence in every Dedekind-MCS by `theorem_in_mcs`
-        (`MaximalConsistent.lean:491`); reuse the syntactic `kplusFormula`
-        (`Kamp/PriorINF.lean:93`) for `K⁺`; derive a contradiction from an oscillating `A`
-        exactly as Reynolds does. **Attempt the unrestricted form first** (see Risks).
-        *(deviation: skipped — see refutation below.)*
+  - *(v3: two bullets removed from this checklist.* v2 asked here for a lemma named
+        `limitMCS_no_oscillation` — "for every `A` and `r` there is `z < r` such that `A`, or
+        `A.neg`, belongs to `m q` for all rational `q ∈ (z, r)`" — and for its proof from
+        `Axiom.prior_U_gap`. The implementation dispatch **refuted** the statement at the level of
+        the cited source and skipped both bullets; the refutation is preserved in full in the
+        Phase 4 OUTCOME block below, which is now its only home. They are deleted from the task
+        list so that no dispatch can read an unchecked box as pending work. **No phase of v3 asks
+        for that lemma**, and the Postmortem Constraints forbid re-deriving it.)*
   - [ ] Prove `limitSetBelow_negation_complete`, then
         `limitSetBelow_is_mcs : SetMaximalConsistent (fc := fc) (limitSetBelow m r)`.
         *(deviation: altered — `limitSetBelow` is not negation-complete, so maximality is
@@ -707,7 +940,12 @@ Risks was **not** exercised, and the live sorry count outside `Boneyard/` is unc
 exactly `WeakCanonical/Transfer.lean:1242`.
 
 *Mitigation (a) is refuted, not merely hard.* The refutation is at the level of the cited
-source, so no further attempt is warranted:
+source, so no further attempt **at the `φ` level** is warranted *(v3 narrowing: the original text
+read "no further attempt is warranted" without qualification. The blocker research established
+that the refutation below is a statement about applying Prior-U to `A := φ`, whose truth region
+below a gap need not be an interval. Applied to `A := Formula.someFuture φ`, whose region below
+the gap is the interval `(-∞, sup S_φ)`, the antecedent the refutation correctly identifies as
+missing is supplied — that is Phase 6.2, and it does not disturb anything below)*: 
 
 - Reynolds (1992, §5, printed p.176) defines `γ⁺(A)` to hold "exactly when `A` remains true for
   a while after now but only up until a gap after which `A` is arbitrarily soon false", and a
@@ -975,9 +1213,28 @@ point of the v2 revision — the false agreement lemma that sank v1 has no desce
 family set can be built as `{fam.toRealShift δ | fam ∈ B.families, δ : ℝ}` without any further
 construction at the `FMCS` layer. `limitSetAbove` remains unused; confirmed again this phase.
 
-### Phase 6.1: The BFMCS real bundle, box time-stability, and restricted temporal coherence [BLOCKED]
+### Phase 6.1: The BFMCS real bundle, box time-stability, and restricted temporal coherence [COMPLETED]
 
-**BLOCKER** (Phase 6.1, last task only — the first five tasks are `[COMPLETED]` and sorry-free):
+**RESOLUTION (v3).** This phase is `[COMPLETED]`. Its landed content stands byte-identical —
+`FormalSystem/Metalogic/Bundle/RealExtensionBundle.lean`, 334 lines, 7 declarations, sorry-free,
+full `lake build` green (1895 jobs), axioms exactly `[propext, Classical.choice, Quot.sound]` on
+every declaration. Nothing in it is reopened, regenerated, or reproved.
+
+What the phase *delivered* is the real bundle plus a temporal-coherence transport whose future
+half is conditional on one named, honestly-raised predicate, `B.LimitFutureWitness root`, and
+whose past half is unconditional. What the phase's `[BLOCKED]` marker was tracking is the
+discharge of that predicate. **That discharge is Phase 6.2**, which also repairs the predicate's
+statement (it is false as written at selected rationals) with a one-line change to its binder
+list and one argument at its single call site. Phase 6.1's proof script is otherwise untouched by
+6.2. The two phases jointly deliver what one phase would have delivered had the obligation been
+foreseen; splitting them is an H8 sizing consequence, not a defect.
+
+The former BLOCKER block is retained verbatim below as the record of the counterexample, because
+that counterexample is still live mathematics: it is what forces the `fc`-conditional route and
+it is quoted in `BFMCS.LimitFutureWitness`'s docstring. Read it as a **finding**, not as an open
+obligation.
+
+**BLOCKER (retained record — discharged by Phase 6.2)**:
 
 - **What failed**: `BFMCS.toRealBundle_restricted_temporally_coherent` cannot be proved from
   `B.RestrictedTemporallyCoherent root` alone. Its `someFuture` half at an **unselected** real
@@ -1015,6 +1272,10 @@ construction at the `FMCS` layer. `limitSetAbove` remains unused; confirmed agai
   (`ChronicleToCountermodelBasic.lean`), or replace it with a property of the Cantor
   back-and-forth chronicle that implies it. This is a research obligation, not a proof-engineering
   one, and it is a prerequisite for Phase 8's terminus, which consumes the transported coherence.
+  *(v3: answered. The research dispatch ran and returned `reports/03_limit-future-witness-blocker.md`.
+  The obligation is dischargeable — not by a property of the back-and-forth construction, but by
+  the Dedekind axiom layer the route had not yet used, and only after the predicate is restricted
+  to unselected points. See Phase 6.2.)*
 - **Landed instead** (explicitly hypothesised, never hidden):
   `BFMCS.toRealBundle_restricted_temporally_coherent` takes `B.LimitFutureWitness root` as a
   named extra hypothesis and is otherwise sorry-free. The `somePast` half is proved
@@ -1068,7 +1329,9 @@ construction at the `FMCS` layer. `limitSetAbove` remains unused; confirmed agai
         rational, so the `Rat`-side field can never be applied. Note that this mirrors the
         `Rat` construction at `ChronicleToCountermodelBasic.lean:576`, which positions its
         witness family by choosing the chronicle's rational shift.
-  - [ ] Prove `BFMCS.toRealBundle_restricted_temporally_coherent`: transport
+  - [x] *(v3: landed conditionally; the residual hypothesis is discharged by Phase 6.2, so this
+        task is closed at 6.1 and no work on it remains in this phase.)*
+        Prove `BFMCS.toRealBundle_restricted_temporally_coherent`: transport
         `RestrictedTemporallyCoherent root` (`TemporalCoherence.lean:308`) from `Rat` to `ℝ`.
         For `someFuture φ ∈ G.mcs t` with `G = fam.toRealShift δ`: at a selected `t` quote the
         rational witness directly and map it back through `realLimitMCS_of_rat`; at an
@@ -1080,9 +1343,11 @@ construction at the `FMCS` layer. `limitSetAbove` remains unused; confirmed agai
         because the stated threshold check is refuted by the counterexample in the BLOCKER
         block above. Raised as a blocker, not silently substituted.)*
   - [x] `lake build FormalSystem.Metalogic.Bundle.RealExtensionBundle`.
-- **Estimated output:** ~280 lines.
+- **Estimated output:** ~280 lines. *(Actual: 334 lines, 7 declarations, sorry-free.)*
 - **Done when:** `BFMCS.toRealBundle` and the restricted-temporal-coherence transport are
-  sorry-free and the module builds.
+  sorry-free and the module builds. *(v3: met. The transport is sorry-free under one named
+  hypothesis, raised as a blocker rather than hidden, per `.claude/rules/plan-compliance.md`;
+  the hypothesis is discharged by Phase 6.2.)*
 - **Timing:** 4 hours.
 - **Depends on:** 6
 
@@ -1117,24 +1382,172 @@ phrasing and is what landed.
 `somePast` half transports unconditionally; the `someFuture` half at unselected points is
 refuted as a consequence of `RestrictedTemporallyCoherent` and now carries the named hypothesis
 `BFMCS.LimitFutureWitness`. Discharging that predicate for `cantorBfmcsDense` is a new
-prerequisite of Phase 8 and is not covered by any existing phase.
+prerequisite of Phase 8 and is not covered by any existing phase. *(v3: it is now covered — see
+Phase 6.2, which also repairs the predicate's statement.)*
 
 *Ordering note for Phase 7.* Nothing in Phase 7's Until/Since transport depends on the blocked
 half, so Phase 7 can proceed; but it should expect the *same* asymmetry, since
 `forward_until_since_coherent` also demands a witness strictly **above** the evaluation point
-and the extension limits only from below.
+and the extension limits only from below. *(v3: this prediction was correct and is now the
+organising principle of the Phase 7 split — 7a is everything that avoids the asymmetry, 7b is the
+asymmetry itself. Phase 7a is nonetheless ordered after 6.2 because two of its chronicle
+instances consume 6.2's discharge.)*
 
-### Phase 7: Restricted forward and backward Until/Since coherence at ℝ [NOT STARTED]
+### Phase 6.2: The definable-gap discharge of LimitFutureWitness [NOT STARTED]
 
-- **Goal:** Transport the two Until/Since coherence predicates to the real bundle. This is
-  the hardest transport and is deliberately isolated.
+**This phase is the first place in the plan where the Dedekind axiom layer is used.** Everything
+before it is `fc`-generic. `Axiom.prior_U_gap` has `minFrameClass = .Dedekind`
+(`Axioms.lean:524`), so both new theorems are `fc`-**conditional** on `FrameClass.Dedekind ≤ fc`.
+That is the intended shape, not a compromise.
+
+- **Goal:** Repair `BFMCS.LimitFutureWitness` to its true statement and discharge it for
+  `cantorBfmcsDense`, closing Phase 6.1's residual hypothesis.
+- **Owns:** `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleLimitGapWitness.lean` (new),
+  `FormalSystem/Metalogic/BXCanonical/Chronicle.lean` (import line only),
+  and **exactly two lines** of `FormalSystem/Metalogic/Bundle/RealExtensionBundle.lean` (the
+  `LimitFutureWitness` binder list at `:271-274` and the single call site at `:306`), plus that
+  predicate's docstring.
+- **Module placement.** A new chronicle-level module is used so that `conj_mcs`
+  (`Chronicle/PointInsertion.lean:227`) and the `Bundle/` layer are both in scope, and so that
+  Phase 7a's `ChronicleRealExtension.lean` stays a separate territory. If the import fails,
+  the fallback is `Bundle/LimitGapWitness.lean` with a three-line local `and`-introduction — the
+  same move `negBoxIntrospection` made in Phase 6.1. Decide this with one `lake build`, not by
+  reading files. Do **not** put these theorems in `ChronicleRealExtension.lean`.
+- **Literature grounding (H3, Tier 1).** Every task below is Reynolds 1992, Theorem 3's proof,
+  **printed p.176**: "Suppose for contradiction that `M ⊨ U'(A,B)(t)` in some Prior structure
+  `M`. Thus `B` holds for a while up until a gap after which `¬B` is true arbitrarily soon. By
+  Prior-U applied to `B` we have `M ⊨ U(¬B ∨ K⁺(¬B), B)(t)` which is the contradiction." The
+  shape of Steps C-D additionally follows Reynolds' Lemma 3, **printed p.178**: "Prior-U applied
+  to `R` implies that `M` contains a last point of this stretch of `R` … or a first point of
+  `¬R`." The obligation being discharged is Burgess 1984's prophecy-at-a-gap claim, **printed
+  pp.109-110**. Cite all three by PDF page in the module docstring; never by `md:NN`.
+- **Tasks:**
+  - [ ] **Predicate repair (Statement 1).** In `Bundle/RealExtensionBundle.lean`, replace the
+        definition at `:271` with exactly:
+        ```lean
+        def BFMCS.LimitFutureWitness {fc : FrameClass} (B : BFMCS (fc := fc) Rat) (root : Formula) :
+            Prop :=
+          ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ φ : Formula,
+            φ ∈ deferralClosure root →
+            Formula.someFuture φ ∈ limitMCSBelow fam.mcs r → ∃ s : Rat, r < (s : ℝ) ∧ φ ∈ fam.mcs s
+        ```
+        **Why the repair is forced, not cosmetic**: as written the predicate quantifies over all
+        `r : ℝ` including rationals, and at `r = (p : ℝ)` with `p = max {q | φ ∈ m q}` the
+        hypothesis holds while the conclusion fails. Irrationality of `r` is used exactly twice in
+        the proof of Statement 2 (Step A and Step D's first bullet).
+  - [ ] **Call-site line.** The predicate's only consumer is
+        `BFMCS.toRealBundle_restricted_temporally_coherent` (`RealExtensionBundle.lean:306`),
+        already inside the `hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ` branch of its `by_cases`. The call
+        becomes `h_lfw fam hfam (t + δ) hx φ hdc hFφ'`. `hx` is already in the exact shape the new
+        binder wants; if binder-name or defeq friction appears, `by simpa using hx` — do not
+        restructure the proof script, and change **nothing else** in that file.
+  - [ ] **Docstring amendment.** Retain the existing counterexample paragraph verbatim (it is
+        still valid, and it is what makes the `fc`-conditional route necessary). Add one
+        paragraph recording (i) that the all-`r` form is refutable at a selected `r` where `S_φ`
+        attains a maximum, hence the unselectedness hypothesis; and (ii) that the predicate is
+        **discharged** at `fc = FrameClass.Dedekind` because the obstruction is exactly a
+        definable gap for `Fφ` and `Axiom.prior_U_gap` excludes those (Reynolds 1992, printed
+        p.176). No task-number citations.
+  - [ ] **Statement 2 — the general gap lemma.** In the new module, prove exactly:
+        ```lean
+        theorem limitFutureWitness_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
+            (m : Rat → Set Formula) (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q))
+            (hUf : ∀ (t : Rat) (α β : Formula), Formula.untl α β ∈ m t →
+              ∃ s : Rat, t < s ∧ α ∈ m s ∧ ∀ p : Rat, t < p → p < s → β ∈ m p)
+            (hUb : ∀ (t : Rat) (α β : Formula),
+              (∃ s : Rat, t < s ∧ α ∈ m s ∧ ∀ p : Rat, t < p → p < s → β ∈ m p) →
+              Formula.untl α β ∈ m t)
+            (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (φ : Formula)
+            (hF : Formula.someFuture φ ∈ limitMCSBelow m r) :
+            ∃ s : Rat, r < (s : ℝ) ∧ φ ∈ m s
+        ```
+        Write `χ := Formula.someFuture φ = untl φ ⊤`. Suppose for contradiction
+        `(†) ∀ s : Rat, r < (s:ℝ) → φ ∉ m s`, then follow the four steps:
+        - **Step A — `χ ∈ m q` for every rational `q` with `(q:ℝ) < r`.**
+          `limitMCSBelow_cofinal_below` (`Bundle/LimitMCS.lean:379`) at `z := (q:ℝ)` yields `q'`
+          with `q < q' < r` and `χ ∈ m q'`; `hUf` at `q'` (with `α := φ`, `β := ⊤`) gives `s > q'`
+          with `φ ∈ m s`; by `(†)` and irrationality of `r`, `(s:ℝ) < r`; `hUb` at `q` with witness
+          `s` (guard trivial since `β = ⊤`) gives `χ ∈ m q`.
+        - **Step B — `χ.neg ∈ m u` for every rational `u` with `r < (u:ℝ)`.** If `χ ∈ m u`, `hUf`
+          gives `s > u > r` with `φ ∈ m s`, contradicting `(†)`; conclude by negation-completeness.
+        - **Step C — the Prior-U antecedent at any rational `t` with `(t:ℝ) < r`.**
+          `untl ⊤ χ ∈ m t` by `hUb` at `t` with any rational `s ∈ (t, r)` (`exists_rat_btwn`), its
+          guard true by Step A and `⊤ ∈ m s` by `theorem_in_mcs`;
+          `χ.neg.someFuture = untl χ.neg ⊤ ∈ m t` by `hUb` at `t` with any rational `u₀ > r`
+          (`exists_rat_gt`), using Step B, guard trivial; combine with `conj_mcs`
+          (`Chronicle/PointInsertion.lean:227`); then
+          `theorem_in_mcs (hm t) (DerivationTree.axiom [] _ (Axiom.prior_U_gap χ) hfc)` plus
+          `SetMaximalConsistent.implication_property` yields
+          `untl (Formula.or χ.neg (Formula.kPlus χ.neg)) χ ∈ m t`.
+        - **Step D — contradiction.** `hUf` at `t` on that formula gives `u > t` with
+          `Formula.or χ.neg (kPlus χ.neg) ∈ m u` and `χ ∈ m p` for all rationals `p ∈ (t,u)`.
+          First `(u:ℝ) < r`: if `(u:ℝ) > r`, a rational `p ∈ (r,u)` lies in `(t,u)` so `χ ∈ m p`,
+          contradicting Step B; `(u:ℝ) = r` is excluded by irrationality. By Step A, `χ ∈ m u`, so
+          `χ.neg ∉ m u`, so `χ.neg.neg ∈ m u`; since `Formula.or a b = a.neg.imp b`
+          (`Syntax/Formula.lean:438`), `implication_property` gives `kPlus χ.neg ∈ m u`, i.e.
+          `untl ⊤ χ.neg.neg ∉ m u` (`Formula.kPlus` at `Syntax/Formula.lean:180`). But `hUb` at `u`
+          with any rational `s ∈ (u, r)` gives `untl ⊤ χ.neg.neg ∈ m u`, its guard true by Step A
+          plus MCS double-negation. Contradiction.
+        Land each of Steps A-D as its own named `have` (or private lemma) so the case analysis
+        stays reviewable, exactly as Phase 5 required of its `exists_rat_btwn` interpolations.
+  - [ ] **Statement 3 — the chronicle instantiation.** In the same module, prove exactly:
+        ```lean
+        theorem cantor_bfmcs_dense_limit_future_witness (fc : FrameClass)
+            (hfc : FrameClass.Dedekind ≤ fc) (A : Set Formula)
+            (h_mcs : SetMaximalConsistent (fc := fc) A)
+            (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) (root : Formula) :
+            (Chronicle.cantorBfmcsDense fc A h_mcs h_box_dense).LimitFutureWitness root
+        ```
+        Proof: `intro fam hfam r hr φ _ hF`, then build the unrestricted coherence hypotheses by
+        **self-root instantiation** —
+        ```lean
+        hUf := fun t α β h =>
+          (Chronicle.cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense
+              (Formula.untl α β) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+        hUb := fun t α β h =>
+          (Chronicle.cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense
+              (Formula.untl α β) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+        ```
+        then `exact limitFutureWitness_of_priorU hfc fam.mcs fam.is_mcs hUf hUb r hr φ hF`.
+        This works because `_fuc` and `_buc` are polymorphic in `root` and their proofs discard
+        the closure-membership argument (`ChronicleToCountermodelBasic.lean:766`, `:691`), so the
+        side condition is `self_mem_subformulaClosure (Formula.untl α β)`
+        (`Syntax/SubformulaClosure/Closure.lean:42`). **No chronicle declaration is modified and
+        no chronicle-level proof is written.** If the self-root instantiation does not elaborate,
+        that is a signature discrepancy to report, not a licence to edit `_fuc`/`_buc`.
+  - [ ] Module docstring: cite Reynolds 1992 printed p.176 (Theorem 3's Prior-U contradiction) and
+        p.178 (Lemma 3's pattern) and Burgess 1984 printed pp.109-110 (the obligation's origin);
+        record that the discharge is `fc`-conditional and why; record the self-root discovery in
+        one sentence so a future reader does not re-derive it.
+  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGapWitness` and
+        `lake build FormalSystem.Metalogic.Bundle.RealExtensionBundle`, then full `lake build`.
+  - [ ] `#print axioms limitFutureWitness_of_priorU` and
+        `#print axioms cantor_bfmcs_dense_limit_future_witness`; record the results.
+- **Estimated output:** ~180-220 lines in the new module (Statement 2 ~140-180, Statement 3 ~25,
+  docstring the rest), plus ~15 lines of docstring and exactly 2 changed lines in
+  `RealExtensionBundle.lean`. **One agent run (H8).**
+- **Done when:** both new theorems are sorry-free, the repaired predicate and its single call site
+  build, full `lake build` is green, live sorries outside `Boneyard/` are unchanged at exactly
+  `WeakCanonical/Transfer.lean:1242`, and `#print axioms` on both new declarations is
+  `[propext, Classical.choice, Quot.sound]`. No `sorry`, no vacuous definition; if a step cannot
+  be closed, mark the phase `[BLOCKED]` with the exact goal state for that step.
+- **Timing:** 3 hours.
+- **Depends on:** 6.1
+
+### Phase 7a: Until/Since transport at ℝ — the mechanical cases [NOT STARTED]
+
+- **Goal:** Land everything in the Until/Since transport that does not meet the below-only
+  asymmetry: the backward direction, the shared guard lemma, forward case A, the `snce` mirrors,
+  and the two chronicle real instances that become available once Phase 6.2 has landed.
 - **Owns:** `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean` (new),
-  `FormalSystem/Metalogic/BXCanonical/Chronicle.lean` (import line only).
-- **v2 ripple: statements unaffected, proof obligations refined.** The two predicates
-  (`TemporalCoherence.lean:558,589`) are quantified over `B.families` and real times, so their
-  *statements* are unchanged by rational selection. What changes: the family set is now the
-  real-shift closure, so every proof is `∀ δ : ℝ`; and the guard/witness reasoning splits on
-  selected vs unselected times. The split is **not** symmetric in difficulty — see the tasks.
+  `FormalSystem/Metalogic/BXCanonical/Chronicle.lean` (import line only — coordinate with
+  Phase 6.2's edit, which lands first).
+- **v3 ripple: this is v2's Phase 7 minus its forward case B, plus the two chronicle instances
+  that Phase 6.2 unblocks.** The two predicates (`TemporalCoherence.lean:558,589`) are quantified
+  over `B.families` and real times, so their *statements* are unchanged by rational selection.
+  What changes: the family set is the real-shift closure, so every proof is `∀ δ : ℝ`; and the
+  guard/witness reasoning splits on selected vs unselected times. The split is **not** symmetric
+  in difficulty, which is exactly why 7b exists.
 - **Tasks:**
   - [ ] Prove `BFMCS.toRealBundle_restricted_backward_until_since`
         (`TemporalCoherence.lean:589`). The witness-pattern direction is the easier of the two:
@@ -1143,39 +1556,148 @@ and the extension limits only from below.
   - [ ] **Guard lemma, shared by both directions**: a rational guard covering *all rationals* in
         `(t + δ, s + δ)` automatically covers every real `r ∈ (t, s)`. At a selected `r` this is
         `realLimitMCS_of_rat`; at an unselected `r`, `ψ ∈ limitSetBelow m (r + δ)` is witnessed
-        by the threshold `t + δ`. Land this as its own named lemma before either forward case —
-        it removes the unselected-`r` difficulty that v1 anticipated in the guard.
+        by the threshold `t + δ`, and `limitSetBelow_subset_limitMCSBelow` upgrades it. Land this
+        as its own named lemma **before** either forward case — it removes the unselected-`r`
+        difficulty in the guard, and 7b depends on it.
   - [ ] **Forward case A — selected `t` (mechanical).** From `untl φ ψ ∈ m q` with
         `(q:ℝ) = t + δ`, the `Rat` coherence gives `s' > q` with `φ ∈ m s'` and the rational
         guard on `(q, s')`. Return `s := s' - δ`; `φ ∈ realLimitMCS m δ s` by
-        `realLimitMCS_of_rat`, and the guard follows from the shared guard lemma. No appeal to
-        Phase 4.
-  - [ ] **Forward case B — unselected `t` (the load-bearing case).** From
-        `untl φ ψ ∈ limitSetBelow m (t + δ)`, the membership holds at rationals `p ↗ t + δ`, and
-        each gives a rational witness `s'_p`. The obstruction is that `s'_p` may shrink to
-        `t + δ`, leaving no real `s > t`. **This is where `limitMCS_no_oscillation` (Phase 4) is
-        expected to be re-invoked**: if the witnesses shrink to `t + δ`, then `φ` holds
-        arbitrarily soon after `t + δ` while `ψ` holds throughout, which is exactly the
-        oscillation pattern Prior-U excludes (Reynolds 1992 §5, printed p.176). Prove it, or
-        mark **this task only** as the blocked one and report the exact goal state — do not mark
-        the whole phase blocked if cases A and the backward direction have landed.
-  - [ ] Mirror both forward cases for `snce` (`Formula.snce`).
-  - [ ] Land the chronicle-specific instances:
-        `cantor_bfmcs_dense_real_restricted_tc` / `_buc` / `_fuc`, obtained by composing the
-        three transports with the existing `Rat` instances
-        (`ChronicleToCountermodelBasic.lean:629,680,755`). Do not modify those three. Note that
+        `realLimitMCS_of_rat`, and the guard follows from the shared guard lemma. Land this as a
+        named standalone lemma, not as a branch inside an unfinished proof, so that 7b's outcome
+        cannot invalidate it.
+  - [ ] Mirror the backward direction and forward case A for `snce` (`Formula.snce`).
+  - [ ] Land `cantor_bfmcs_dense_real_restricted_tc`: compose
+        `BFMCS.toRealBundle_restricted_temporally_coherent` with the existing `Rat` instance
+        `cantor_bfmcs_dense_restricted_tc` (`ChronicleToCountermodelBasic.lean:629`) **and Phase
+        6.2's `cantor_bfmcs_dense_limit_future_witness`** for the `LimitFutureWitness` argument.
         `_tc` alone carries an extra unnamed closure-containment hypothesis
         `∀ ψ, ψ ∈ deferralClosure root → ψ ∈ (extendedDeferralClosure root).toList`, discharged
         at the call site by
         `fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)`;
-        thread it through unchanged rather than reproving it. All three are polymorphic in
-        `root`, so no coherence proof needs to change.
+        thread it through unchanged rather than reproving it. It is polymorphic in `root`; it
+        additionally becomes conditional on `hfc`, which is threaded, not discharged, here.
+  - [ ] Land `cantor_bfmcs_dense_real_restricted_buc` by composing the backward transport with
+        `cantor_bfmcs_dense_restricted_buc` (`:680`). Do not modify that theorem.
+  - [ ] Record in the module docstring that `cantor_bfmcs_dense_real_restricted_fuc` is
+        deliberately absent and is Phase 7b's sole deliverable, so a reader does not conclude the
+        module is half-finished by accident.
   - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension`.
-- **Estimated output:** ~380 lines.
-- **Done when:** all three chronicle-specific real-carrier coherence instances are sorry-free and
-  the module builds.
+- **Estimated output:** ~240 lines. **One agent run (H8).**
+- **Done when:** the backward transport, the guard lemma, forward case A, both `snce` mirrors, and
+  the `_tc` and `_buc` chronicle real instances are sorry-free and the module builds. **This phase
+  must not attempt forward case B.** If an implementer finds themselves reasoning about witnesses
+  shrinking to `t + δ`, they have left 7a; stop and let 7b own it.
+- **Timing:** 4 hours.
+- **Depends on:** 6.2
+
+### Phase 7b: Forward case B — a two-outcome probe [NOT STARTED]
+
+**This phase has two acceptable outcomes and a refutation is not a failure.** The blocker research
+constructed a candidate family in which Prior-U applied to `untl α β` is satisfied *locally* with
+no contradiction; it did not show that family to be realizable inside `cantorBfmcsDense`, and it
+did not show it unrealizable. Budget this as a probe, not as proof engineering.
+
+- **Goal:** Settle forward case B — obtain the real Until witness from a membership at an
+  **unselected** `t` — either by proving it or by exhibiting a refuting family.
+- **Owns:** `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean` (extends
+  Phase 7a's file). No other file.
+- **The obligation, stated exactly.** From `untl φ ψ ∈ limitMCSBelow m (t + δ)` at an unselected
+  `t`, the membership descends to rationals `p ↗ t + δ` via `limitMCSBelow_cofinal_below`, each
+  giving a rational witness `s'_p`. Two cases:
+  - **Case (a) — some rational witness lands strictly above `t + δ`.** Closes cleanly with Phase
+    7a's guard lemma: the rational guard on `(p, s')` covers `(t + δ, s')`, and every unselected
+    real in between inherits `ψ` from a `limitFilterBelow` generator. **No new work; do this
+    first and land it.**
+  - **Case (b) — all rational witnesses squeeze to `t + δ`.** This is the residual. Phase 6.2's
+    `limitFutureWitness_of_priorU` applied to `α := φ` *does* produce a rational `φ`-point above
+    `t + δ`, so the **eventuality** half is already available — but it supplies **no guard** on
+    the interval between `t + δ` and that point. The guard is the entire difficulty and is what
+    this probe must settle.
+- **Why Phase 6.2's technique does not simply transfer.** Step A of Phase 6.2 works because the
+  truth region of `someFuture φ` below a gap is the interval `(-∞, sup S_φ)`, which supplies
+  Prior-U's antecedent `U(⊤, χ)` for free. The truth region of `untl α β` need not be an interval:
+  with `β` failing at rationals `t_n ↗ r`, a single `α`-point `α_n ∈ (t_n, t_{n+1})`, and `α`
+  failing everywhere above `r`, `untl α β` is true on `⋃(t_n, α_n)` and false on
+  `⋃(α_n, t_{n+1})` — cofinal below `r` in both directions — and Prior-U at `t_n` is satisfied by
+  a witness `u ∈ [α_n, t_{n+1}]` where `¬(untl α β)` genuinely holds. Reynolds says as much
+  directly (§6 opening, **printed p.176**): "We know that the Prior axioms ensure that there will
+  not be any definable gaps in a model. To show that our model can be made into a model over the
+  reals we actually need a stronger result." Burgess runs the completion route only in the `F`/`G`
+  fragment (**printed pp.109-110**) and says nothing about `U`/`S` at a gap.
+- **Tasks:**
+  - [ ] Land case (a) first, as a named lemma, using Phase 7a's guard lemma. This is the H2
+        formal-proof-line bar for the dispatch and must exist before any analysis of case (b) is
+        written down.
+  - [ ] **Probe case (b), pursuing outcome (i) first**: attempt
+        `limitUntilWitness_of_priorU` — the analogue of Phase 6.2's Statement 2 for `untl α β`,
+        with an **explicit guard** on the interval between `t + δ` and the produced witness. Any
+        such attempt must state up front which formula Prior-U is being applied to and what
+        supplies its `U(⊤, ·)` antecedent; if the antecedent cannot be exhibited, the attempt has
+        already failed and the dispatch moves to outcome (ii) rather than iterating tactics.
+  - [ ] **If outcome (i) succeeds**: compose it with case (a) into
+        `BFMCS.toRealBundle_restricted_forward_until_since`, mirror for `snce`, and land
+        `cantor_bfmcs_dense_real_restricted_fuc` against `cantor_bfmcs_dense_restricted_fuc`
+        (`ChronicleToCountermodelBasic.lean:755`), which is not modified. Then
+        `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension` and mark
+        the phase `[COMPLETED]`.
+  - [ ] **If outcome (ii) fires — a refuting family**: deliver, as the phase's artifact, (1) the
+        family exhibited concretely, (2) an argument that it is realizable inside
+        `cantorBfmcsDense` at `fc = FrameClass.Dedekind` (or an explicit statement that
+        realizability is itself unsettled, which is a *weaker* outcome and must be labelled as
+        such), and (3) the ultrafilter computation showing `{q | untl α β ∈ m q}` does or does not
+        belong to `limitFilterBelow (t + δ)`. Mark the phase `[BLOCKED]` with that content. **Do
+        not** add a `sorry`, a vacuous definition, or a hypothesised `LimitUntilWitness` predicate
+        threaded onto the terminus.
+  - [ ] Either way, record the outcome in the module docstring by PDF page, not by task number.
+- **If the refutation outcome fires, this is what it means for the route.** Fixed in advance so
+  the orchestrator does not improvise:
+  1. **It does not invalidate anything already landed.** Phases 1-7a stand. The limit MCS, the
+     real extension, both modal fields, the temporal transport, the backward Until/Since
+     transport, the guard lemma, forward case A and the `_tc`/`_buc` real instances are all
+     independently sorry-free and keep their value under every fallback below.
+  2. **What it *does* mean**: the completion route (Burgess-style Dedekind completion of a
+     rational chronicle) does not deliver full restricted **forward** Until/Since coherence at
+     `ℝ`. That is a route-level finding about `U`/`S` at a gap, a step neither primary source
+     performs — Burgess runs the completion only in `F`/`G`, and Reynolds reaches `ℝ` by a
+     different construction entirely.
+  3. **Fallback R2 (preferred escalation) — Reynolds' separability route.** Reach `ℝ` via Doets'
+     theorem and `Axiom.sep` (`Axioms.lean:398`, already in the tree and already proved valid)
+     with the contemporaneous-equivalence machinery (Reynolds, printed pp.177-178, 184-188),
+     instead of by completing a rational chronicle. This replaces Phases 7-8 and **requires a new
+     research dispatch before any Lean is written** — it is not a thing to start improvising at
+     the end of a 7b dispatch. Note that the standing Postmortem Constraint against the Reynolds
+     *transfer* route (monadic-FO, Stavi connectives, EF games, expressive completeness) still
+     applies in full; R2 is the separability construction, not the transfer argument, and if an
+     escalation finds itself needing expressive completeness of `{U,S}` then R2 is also dead.
+  4. **Fallback R3 (second choice) — strengthen the rational chronicle.** Add a
+     no-left-accumulation invariant on Until-witnesses in the deferral closure to
+     `cantorBfmcsDense`'s construction so the refuting family is excluded by construction. This
+     **modifies `Chronicle/`, which the Postmortem Constraints currently forbid**, so electing it
+     requires an explicit amendment to those constraints plus a new research dispatch. Do not
+     elect it silently.
+  5. **Fallback R4 (honest floor) — `[BLOCKED]`.** Mark 7b `[BLOCKED]`, mark the task `[PARTIAL]`,
+     keep the terminus statement (Phase 2) and everything through 7a, and do **not** dispatch
+     Phase 8. This is a legitimate terminus for the task and is preferable to any of the
+     prohibitions below.
+  6. **Explicitly NOT permitted under any outcome**: threading an undischarged
+     `LimitUntilWitness`-style predicate onto `countermodel_dedekind_dense`,
+     `completeness_dedekind_engine`, `consequence_completeness_dedekind`, or
+     `completeness_dedekind`; narrowing the target class to make the obstruction disappear;
+     restricting `ValidDedekindDense`; or reporting Phase 8 as complete against a conditional
+     engine. Phase 6.1's conditional hypothesis was acceptable only because it was phase-internal
+     with a named discharge phase; a hypothesis with no discharge path on the terminus is not the
+     same thing.
+- **Estimated output:** ~140 lines if outcome (i); ~40 lines (case (a)) plus a written refutation
+  if outcome (ii). **One agent run (H8) either way** — if the probe is not settled within one run,
+  report the exact goal state and the partial structure rather than requesting a second run
+  against the same target (that is the churn pattern H6 exists to catch).
+- **Done when:** either `cantor_bfmcs_dense_real_restricted_fuc` is sorry-free and the module
+  builds (outcome (i)), or case (a) is landed sorry-free and the refuting family is delivered with
+  the three elements above and the phase is marked `[BLOCKED]` (outcome (ii)). Reporting neither —
+  an analysis of the difficulty with no landed case (a) and no exhibited family — is a **failed**
+  dispatch, not a third outcome.
 - **Timing:** 5 hours.
-- **Depends on:** 6.1
+- **Depends on:** 7a
 
 ### Phase 8: The Dedekind countermodel on ℝ and the unconditional terminus [NOT STARTED]
 
@@ -1189,13 +1711,35 @@ and the extension limits only from below.
   `consequence_completeness_dedekind_of_engine`'s pinned signature is untouched. The one thing
   rational selection changes is the *evaluation point*: the root MCS must still sit at the
   evaluation time, and that now needs an explicit check rather than being assumed.
+- **v3 ripple: one new prerequisite and one signature change, both benign.**
+  `countermodel_dedekind_dense` acquires `(hfc : FrameClass.Dedekind ≤ fc)` because Phase 6.2's
+  discharge is `fc`-conditional, and it must now supply `BFMCS.LimitFutureWitness` explicitly
+  when instantiating the temporal-coherence transport. Neither touches
+  `consequence_completeness_dedekind_of_engine`, whose pinned signature is stated at `.Dedekind`.
+  **Do not dispatch this phase unless Phase 7b reported outcome (i)** — see 7b's fallback ladder;
+  under outcome (ii) the correct action is `[PARTIAL]`, not a conditional terminus.
 - **Tasks:**
+  - [ ] **(v3, new)** Discharge `BFMCS.LimitFutureWitness` for the chronicle bundle: pass
+        `Chronicle.cantor_bfmcs_dense_limit_future_witness fc hfc A h_mcs h_box_dense root`
+        (Phase 6.2) as the `h_lfw` argument wherever
+        `BFMCS.toRealBundle_restricted_temporally_coherent` is instantiated — in practice, inside
+        Phase 7a's `cantor_bfmcs_dense_real_restricted_tc`, which this phase consumes rather than
+        re-derives. Verify that the `root` at which it is instantiated is the same `root` the
+        truth lemma is applied at; a mismatch here is silent and is exactly the kind of seam the
+        Postmortem Constraints warn about.
+  - [ ] **(v3, new)** Add `(hfc : FrameClass.Dedekind ≤ fc)` to `countermodel_dedekind_dense`'s
+        binder list (or pin it at `fc := FrameClass.Dedekind`) and thread it through the three
+        chronicle coherence instances. At the single call site in `completeness_dedekind_engine`,
+        `fc` is `FrameClass.Dedekind` and the hypothesis is `by decide` (`Axioms.lean:491`
+        exhibits `FrameClass.Dense ≤ FrameClass.Dedekind` by `decide`, so the reflexive instance
+        is at least as cheap). Do **not** add any other hypothesis to this signature.
   - [ ] **(v2, new)** Verify the root placement: `B.evalFamily.toRealShift 0` takes the value
         `B.evalFamily.mcs 0` at `t = 0`, because `0 + 0 = ((0 : Rat) : ℝ)` is selected. Compose
         with `rooted_cantor_fmcs_dense_at_s` (`ChronicleToCountermodelBasic.lean:511`) to get
         the root MCS `A` at real time `0`. Land this as a named lemma before the countermodel,
         not as an inline `have`.
-  - [ ] Prove `countermodel_dedekind_dense {fc : FrameClass} (A : Set Formula)
+  - [ ] Prove `countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
+        (A : Set Formula)
         (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) (h_neg_in : φ.neg ∈ A)
         (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
         ∃ (F : TaskFrame ℝ) (TM : TaskModel F) (Omega : Set (WorldHistory F))
@@ -1209,7 +1753,8 @@ and the extension limits only from below.
         `neg_consistent_of_not_derivable (fc := FrameClass.Dedekind)`, `set_lindenbaum`,
         `dedekind_box_dense_mem` (Phase 1) for the box-dense hypothesis, then
         `countermodel_dedekind_dense` applied at `ℝ` with `real_lub_of_bddAbove` discharging the
-        lub binder of `ValidDedekindDense`.
+        lub binder of `ValidDedekindDense` and `by decide` discharging `hfc` at
+        `fc := FrameClass.Dedekind`.
   - [ ] Instantiate Phase 2's `consequence_completeness_dedekind_of_engine` with this engine to
         obtain the unconditional `consequence_completeness_dedekind`. **Do not restate or re-bind
         that signature** — it is pinned by commit `bd9ae0ac1`.
@@ -1228,7 +1773,7 @@ and the extension limits only from below.
   `lake build` is green; `#print axioms` on both shows exactly
   `[propext, Classical.choice, Quot.sound]`; the tracking table is updated.
 - **Timing:** 4 hours.
-- **Depends on:** 2, 7
+- **Depends on:** 2, 6.2, 7a, 7b
 
 ---
 
@@ -1249,22 +1794,46 @@ and the extension limits only from below.
 - [ ] **(v2)** `Bundle/LimitMCS.lean`'s ten Phase 3 declarations are unchanged except for the
       sanctioned in-place generalization of `limitSetBelow_of_rat` in Phase 5.
 - [ ] **(v2)** No `modal_past` axiom was added to `ProofSystem/Axioms.lean`.
+- [ ] **(v3)** No declaration anywhere asserts `BFMCS.LimitFutureWitness` (or any statement of its
+      shape) at a **selected** real. Grep the predicate's binder list for the unselectedness
+      hypothesis: `∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) →`.
+- [ ] **(v3)** `#print axioms limitFutureWitness_of_priorU` and
+      `#print axioms cantor_bfmcs_dense_limit_future_witness` are exactly
+      `[propext, Classical.choice, Quot.sound]`.
+- [ ] **(v3)** `cantor_bfmcs_dense_restricted_tc` / `_buc` / `_fuc`
+      (`ChronicleToCountermodelBasic.lean:629,680,755`) and the three underlying resolution
+      lemmas (`ChronicleConstruction.lean:722,776,1482`) are byte-identical to their pre-task
+      state. `git diff` on those files shows no change.
+- [ ] **(v3)** `Bundle/RealExtensionBundle.lean`'s diff from Phase 6.1 consists of exactly the
+      `LimitFutureWitness` binder-list line, the one call-site line at `:306`, and docstring
+      prose. No proof script in that file is restructured.
+- [ ] **(v3)** No `.lean` file introduced by this task names `limitMCS_no_oscillation`.
+- [ ] **(v3)** `deferralClosure` and `extendedDeferralClosure` are unchanged; no root was widened
+      to make the auxiliary Prior-U formulas available.
+- [ ] **(v3)** The only hypothesis added anywhere on the
+      `countermodel_dedekind_dense → completeness_dedekind_engine →
+      consequence_completeness_dedekind → completeness_dedekind` chain is
+      `FrameClass.Dedekind ≤ fc`, and it is discharged (not propagated) at the instantiation
+      point.
 - [ ] No `.lean` file added or edited by this task contains a task-number citation
       (`.claude/hooks/validate-no-task-references.sh` advisory).
 - [ ] No vacuous definitions (`:= True`, `:= trivial`, `:= Unit`) introduced.
 
 ## Artifacts & Outputs
 
-- `specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/02_strong-completeness-dedekind-v2.md` (this file)
-- `specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/01_strong-completeness-dedekind.md` (superseded predecessor, retained)
-- `specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/01_strong-completeness-dedekind-summary.md`
+- `specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/03_strong-completeness-dedekind-v3.md` (this file)
+- `specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/02_strong-completeness-dedekind-v2.md` (superseded predecessor, retained)
+- `specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/01_strong-completeness-dedekind.md` (superseded predecessor of v2, retained)
+- `specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/03_limit-future-witness-blocker.md` (the v3 revision trigger)
+- `specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/` (per-phase summaries, one per dispatch)
 - `FormalSystem/Metalogic/StrongCompleteness.lean` (Phase 2, landed — terminus)
 - `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean` (Phase 1, landed; Phase 8 extends — countermodel + engine)
 - `FormalSystem/Metalogic/Bundle/LimitMCS.lean` (Phase 3, landed; Phase 4 extends — limit set, consistency, maximality)
 - `FormalSystem/Metalogic/Bundle/LimitMCSCoherence.lean` (new — the six forward_G / backward_H case lemmas)
 - `FormalSystem/Metalogic/Bundle/RealExtension.lean` (new — `realLimitMCS`, `FMCS.toRealShift`, `FMCS.toReal`)
-- `FormalSystem/Metalogic/Bundle/RealExtensionBundle.lean` (new — box time-stability, `BFMCS.toRealBundle`, restricted temporal coherence)
-- `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean` (new — U/S coherence transport)
+- `FormalSystem/Metalogic/Bundle/RealExtensionBundle.lean` (Phase 6.1, landed — box time-stability, `BFMCS.toRealBundle`, restricted temporal coherence; Phase 6.2 changes exactly two lines plus a docstring)
+- `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleLimitGapWitness.lean` (new, Phase 6.2 — `limitFutureWitness_of_priorU`, `cantor_bfmcs_dense_limit_future_witness`)
+- `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean` (new, Phases 7a and 7b — U/S coherence transport)
 - Aggregator import updates: `FormalSystem/Metalogic.lean`, `FormalSystem/Metalogic/Bundle.lean`,
   `FormalSystem/Metalogic/BXCanonical.lean`, `FormalSystem/Metalogic/BXCanonical/Chronicle.lean`
 
@@ -1272,8 +1841,17 @@ and the extension limits only from below.
 
 - Every file created by this plan is **additive**. Rollback of any phase is deletion of its new
   file plus removal of its one-line aggregator import. No existing declaration is modified except
-  the `FormalSystem/Metalogic.lean` tracking table (Phase 8, prose only) and the sanctioned
-  in-place generalization of `limitSetBelow_of_rat` (Phase 5).
+  the `FormalSystem/Metalogic.lean` tracking table (Phase 8, prose only), the sanctioned
+  in-place generalization of `limitSetBelow_of_rat` (Phase 5), the two-line
+  `BFMCS.LimitFutureWitness` repair (Phase 6.2), and the `hfc` binder added to
+  `countermodel_dedekind_dense` (Phase 8).
+- **(v3) Rolling back Phase 6.2** means reverting those two lines in
+  `Bundle/RealExtensionBundle.lean` and deleting `ChronicleLimitGapWitness.lean`. Phase 6.1's
+  module returns to its conditional-but-sorry-free state, which builds; nothing else regresses.
+- **(v3) Phase 7b's refutation outcome is not a rollback event.** It is a planned outcome with a
+  fixed fallback ladder (R2/R3/R4 in Phase 7b). Do not delete 7a's module, do not revert 6.2, and
+  do not dispatch Phase 8 against a conditional engine. Mark the task `[PARTIAL]` and escalate to
+  a new research dispatch for the R2-vs-R3 route decision.
 - Commit at every green milestone per `wrap-up.md` incremental-commit discipline, using
   `task 408 phase {P}: {description}`. Never accumulate multiple phases into one commit.
 - Phase 1's probe has passed; the carrier question is closed and does not need re-litigating.
