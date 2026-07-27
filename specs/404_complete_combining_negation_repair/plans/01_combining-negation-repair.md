@@ -567,19 +567,35 @@ category, without yet writing to the corpus.
 
 ---
 
-### Phase 6: Apply part-scoped repair to baier_katoen_2008 and venema_1993 [NOT STARTED]
+### Phase 6: Apply part-scoped repair to baier_katoen_2008 and venema_1993 [COMPLETED]
 
 **Goal**: Land the corpus write for the two multi-file documents, under the full safety contract.
 
 **Tasks**:
-- [ ] Review the Phase 5 dry-run diff for baier_katoen_2008 in detail — this document holds 59% of
+- [x] Review the Phase 5 dry-run diff for baier_katoen_2008 in detail — this document holds 59% of
       the residual work and was one of the two documents damaged by the earlier over-wide-span bug.
-- [ ] Run `--write` over baier_katoen_2008; confirm backup created with sha256 manifest before any
+      *(completed: sampled 8 of the 88 newly-resolved control_char/absent candidates, verified each
+      against PDF ground-truth context, and specifically re-confirmed the `|=` turnstile family
+      against Phase 4's finding via corpus grep -- see progress/phase-6-progress.json objective 1.)*
+- [x] Run `--write` over baier_katoen_2008; confirm backup created with sha256 manifest before any
       edit, and that post-write word/byte delta verification passes on all 12 part files.
-- [ ] Run `--write` over venema_1993 across its 9 `secNN_*.md` section files, same verification.
-- [ ] Re-run the detector over both documents and record the new residual counts.
-- [ ] Spot-check a sample of repaired passages against their cited `pdf_char_offset` to confirm the
-      repaired reading matches the PDF ground truth.
+      *(completed: 70 occurrences written across 10 files, 0 refused, 0 rolled back. All 12 part
+      files have a verified sha256 manifest entry under
+      `$LITERATURE_DIR/.backups/combining-repair-2026-07-27/`.)*
+- [x] Run `--write` over venema_1993 across its 9 `secNN_*.md` section files, same verification.
+      *(completed: 0 proposed rewrites, 0 files written — exactly the outcome Phase 5's dry-run
+      predicted; venema_1993 was byte-identical before/after the scoping code change. Not a
+      failure — see Phase 5's Deviations note.)*
+- [x] Re-run the detector over both documents and record the new residual counts.
+      *(completed: baier_katoen_2008 469 -> 398 (Phase 5 code, pre-write) -> 395 (post-write, the
+      extra -3 from `overlapping_edit` collisions resolving as adjacent gap text shrank).
+      venema_1993 unchanged at 26. Idempotence confirmed: a second `--write` over both proposes 0
+      edits.)*
+- [x] Spot-check a sample of repaired passages against their cited `pdf_char_offset` to confirm the
+      repaired reading matches the PDF ground truth. *(completed: 6/8 sampled offsets now classify
+      `precomposed` (repaired, matches PDF ground truth); the remaining 2/8 are legitimately
+      `overlapping_edit` residuals (refused, not guessed at) — the safety contract working as
+      designed.)*
 
 **Timing**: 1.5 hours
 
@@ -591,10 +607,12 @@ category, without yet writing to the corpus.
 
 **Verification**:
 - Backups exist under `$LITERATURE_DIR/.backups/` with a verified sha256 manifest for every
-  touched file.
-- Post-write delta verification passes on every file; no rollback triggered.
-- Manual spot-check of sampled repairs matches PDF ground truth at the cited offsets.
-- Second `--write` run over both documents proposes zero edits.
+  touched file. *(confirmed: 12/12 baier part files present in the manifest.)*
+- Post-write delta verification passes on every file; no rollback triggered. *(confirmed: 0
+  rolled back, 0 refused.)*
+- Manual spot-check of sampled repairs matches PDF ground truth at the cited offsets. *(confirmed,
+  see Task 5 above.)*
+- Second `--write` run over both documents proposes zero edits. *(confirmed.)*
 
 ---
 
