@@ -412,22 +412,26 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 
 ---
 
-### Phase 5: `Automation/` Residual Hand-Fix [NOT STARTED]
+### Phase 5: `Automation/` Residual Hand-Fix [COMPLETED]
 
 - **Goal:** `FormalSystem/Automation/` at exactly 0 violations.
 
 - **Tasks:**
-  - [ ] Work the enumerated residual from Phase 4. Research predicts ~50 sites before the
+  - [x] Work the enumerated residual from Phase 4. Research predicts ~50 sites before the
         string-gap breaker lands, concentrated in `DatasetExport.lean` (23),
         `TableauProofStepPipeline.lean` (9), `DatasetGenerator.lean` (6),
         `FormulaEnumerator.lean` (6), `Tactics/Commands.lean` (3), and a 16-site tail across
         ~10 files; Phase 2 should have absorbed a substantial part of that.
-  - [ ] For interpolated log strings, prefer extracting a `let` binding for a sub-expression over
-        contorting the literal, where that reads better than a gap.
-  - [ ] For embedded JSON schema literals in `DatasetExport.lean`, string gaps are the intended
-        technique; keep the emitted JSON byte-identical.
-  - [ ] Rebuild after each file, not only at the end.
-  - [ ] Commit.
+  - [x] For interpolated log strings, prefer extracting a `let` binding for a sub-expression over
+        contorting the literal, where that reads better than a gap. *(deviation: skipped — not
+        reached. The Phase 2 string-gap breaker absorbed every interpolated log string in
+        `Automation/`; not one survived into the residual.)*
+  - [x] For embedded JSON schema literals in `DatasetExport.lean`, string gaps are the intended
+        technique; keep the emitted JSON byte-identical. *(deviation: skipped — not reached.
+        `DatasetExport.lean` swept clean mechanically, 30/30, its predicted 23-site residual
+        entirely absorbed by the string-gap breaker.)*
+  - [x] Rebuild after each file, not only at the end. *(single file; rebuilt after it)*
+  - [x] Commit.
 
 - **Timing:** 2 hours
 - **Depends on:** 4
@@ -435,14 +439,30 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 - **Files to modify:** the subset of `FormalSystem/Automation/` files named in the Phase 4
   residual list.
 
+- **Phase 5 measured result:** the residual was **6 sites, not the predicted ~50**, and none of
+  them was a string at all — the string-gap breaker had already taken the entire string-heavy
+  tail in Phase 4. All six were the same shape in one record literal in
+  `computeContrastiveStats` (`FormulaMutator.lean:979-990`): a `pairs.filter (fun p => match …
+  with | … | _ => false) |>.length` one-liner whose only legal continuation would start at
+  `| _ => false`, which rule 8 forbids from landing left of its corresponding `|`.
+
+  The fix needed no invention: the *same declaration* already contains two hand-written
+  siblings in the required shape (`subformulaDeletionCount` at `:983-985`,
+  `temporalReductionCount` at `:987-989`) — `pairs.filter` alone on the binding line, the whole
+  lambda on the next at +4, `|>.length` on a third at +8. The six were rewritten to match, so
+  the declaration is now internally uniform rather than half-broken-by-machine.
+
 - **Verification:**
-  - `count_long_lines.py` reports **0** for `FormalSystem/Automation/`.
-  - `lake build` green, ≥ 1883 jobs, exit 0, zero errors.
-  - For every hand-edited string literal, the decoded value is unchanged — checked by the
-    surrounding `#guard`/`#eval` where one exists, and by inspection of the escape sequences
-    otherwise.
-  - Declaration inventory unchanged; frozen categories unchanged by equality.
-  - Comment-stripped live `sorry` count = 1.
+  - [x] `count_long_lines.py` reports **0** for `FormalSystem/Automation/` (0 sites, 0 files).
+  - [x] `lake build` green, **1883 jobs**, exit 0, zero errors.
+  - [x] `lake build BimodalTest` green, 1923 jobs, exit 0.
+  - [x] For every hand-edited string literal, the decoded value is unchanged — **vacuously
+    satisfied and recorded as such**: the residual contained no string literals, so no string
+    was hand-edited in this phase. The check is not silently skipped; it has nothing to range
+    over.
+  - [x] Declaration inventory unchanged; frozen categories unchanged by equality
+    (`gate.py check` → **GATE PASSED**).
+  - [x] Comment-stripped live `sorry` count = 1 (`countermodel_discrete`, by content).
 
 ---
 

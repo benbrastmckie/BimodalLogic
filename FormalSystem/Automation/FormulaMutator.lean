@@ -976,18 +976,30 @@ def computeContrastiveStats (totalMutations : Nat) (pairs : List ContrastivePair
   { totalMutations := totalMutations
     contrastiveCount := count
     yieldRate := rate
-    atomSubBotCount := pairs.filter (fun p => match p.mutationType with | .atomSubBot _ => true | _ => false) |>.length
-    boxToDiamondCount := pairs.filter (fun p => match p.mutationType with | .boxToDiamond => true | _ => false) |>.length
-    allFutureToSomeCount := pairs.filter (fun p => match p.mutationType with | .allFutureToSomeFuture => true | _ => false) |>.length
-    allPastToSomeCount := pairs.filter (fun p => match p.mutationType with | .allPastToSomePast => true | _ => false) |>.length
+    atomSubBotCount := pairs.filter
+        (fun p => match p.mutationType with | .atomSubBot _ => true | _ => false)
+            |>.length
+    boxToDiamondCount := pairs.filter
+        (fun p => match p.mutationType with | .boxToDiamond => true | _ => false)
+            |>.length
+    allFutureToSomeCount := pairs.filter
+        (fun p => match p.mutationType with | .allFutureToSomeFuture => true | _ => false)
+            |>.length
+    allPastToSomeCount := pairs.filter
+        (fun p => match p.mutationType with | .allPastToSomePast => true | _ => false)
+            |>.length
     subformulaDeletionCount := pairs.filter
         (fun p => match p.mutationType with | .subformulaDeletion _ _ => true | _ => false)
             |>.length
-    modalReductionCount := pairs.filter (fun p => match p.mutationType with | .modalDepthReduction => true | _ => false) |>.length
+    modalReductionCount := pairs.filter
+        (fun p => match p.mutationType with | .modalDepthReduction => true | _ => false)
+            |>.length
     temporalReductionCount := pairs.filter
         (fun p => match p.mutationType with | .temporalDepthReduction => true | _ => false)
             |>.length
-    temporalDualityCount := pairs.filter (fun p => match p.mutationType with | .temporalDuality => true | _ => false) |>.length
+    temporalDualityCount := pairs.filter
+        (fun p => match p.mutationType with | .temporalDuality => true | _ => false)
+            |>.length
     modalSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "modal_swap")
         |>.length
     temporalSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "temporal_swap")
