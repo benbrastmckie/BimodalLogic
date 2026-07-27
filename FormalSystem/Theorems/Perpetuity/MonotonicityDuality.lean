@@ -9,7 +9,7 @@ import FormalSystem.Theorems.Perpetuity.Principles
 import FormalSystem.Theorems.Propositional.Connectives
 
 /-!
-# Perpetuity Bridge Lemmas and P6
+# Perpetuity Monotonicity and Duality Lemmas, and P6
 
 This module contains bridge lemmas connecting modal and temporal duality,
 monotonicity lemmas, and the proof of perpetuity principle P6.

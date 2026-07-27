@@ -148,7 +148,7 @@ import FormalSystem.Metalogic.Bundle.CanonicalFrame
 
 ```lean
 import FormalSystem.Metalogic.Bundle.BFMCS
-import FormalSystem.Metalogic.Bundle.FMCS
+import FormalSystem.Metalogic.Bundle.FMCSDef
 import FormalSystem.Metalogic.Bundle.CanonicalFrame
 
 -- For working with BFMCS structures directly

@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Theorems.Perpetuity.Helpers
 import FormalSystem.Theorems.Perpetuity.Principles
-import FormalSystem.Theorems.Perpetuity.Bridge
+import FormalSystem.Theorems.Perpetuity.MonotonicityDuality
 
 /-!
 # Perpetuity Principles (P1-P6)
@@ -66,7 +66,7 @@ This module is split into three submodules for maintainability:
 2. **Principles** (`Perpetuity.Principles`): Proofs of perpetuity principles P1-P5,
    including supporting lemmas like contraposition, diamond_4, modal_5, and persistence.
 
-3. **Bridge** (`Perpetuity.Bridge`): Bridge lemmas connecting modal/temporal duality,
+3. **MonotonicityDuality** (`Perpetuity.MonotonicityDuality`): duality and monotonicity lemmas,
    monotonicity lemmas, double negation elimination, and the proof of P6.
 
 All definitions and theorems are re-exported from this parent module for backward
@@ -79,7 +79,7 @@ compatibility with existing code.
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
 * [Helpers.lean](Perpetuity/Helpers.lean) - Helper lemmas
 * [Principles.lean](Perpetuity/Principles.lean) - P1-P5 proofs
-* [Bridge.lean](Perpetuity/Bridge.lean) - Bridge lemmas and P6
+* [MonotonicityDuality.lean](Perpetuity/MonotonicityDuality.lean) - duality/monotonicity lemmas and P6
 -/
 
 -- Re-export all submodules to maintain backward compatibility

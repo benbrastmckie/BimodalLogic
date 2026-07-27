@@ -95,7 +95,6 @@ open FormalSystem.Theorems.Combinators
 open FormalSystem.Theorems.Propositional
 
 -- Abbreviations for readability
-private abbrev top : Formula := Formula.neg Formula.bot  -- ⊤ = ¬⊥
 
 /-!
 ## Derived G-Distribution and G-Transitivity

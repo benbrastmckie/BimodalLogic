@@ -9,7 +9,7 @@ import FormalSystem.Metalogic.Bundle.CanonicalFrame
 import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
 import FormalSystem.Metalogic.Bundle.Construction
 import FormalSystem.Metalogic.Bundle.FMCSDef
-import FormalSystem.Metalogic.Bundle.FMCS
+import FormalSystem.Metalogic.Bundle.FMCSDef
 import FormalSystem.Metalogic.Bundle.ModalSaturation
 import FormalSystem.Metalogic.Bundle.SuccRelation
 import FormalSystem.Metalogic.Bundle.TemporalCoherence

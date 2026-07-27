@@ -355,7 +355,7 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 
 ---
 
-### Phase 4: Part C structural cleanup [NOT STARTED]
+### Phase 4: Part C structural cleanup [COMPLETED]
 
 - **Goal:** Delete, inline, and unify everything Part C calls for that is *not* a rename, so the
   Phase 5 target-name table is derived over the final declaration set rather than over declarations
@@ -410,20 +410,26 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 - **Timing:** 2 hours
 - **Depends on:** 3
 
-#### Phase 4.2: File rename, definition unification, re-export removal [NOT STARTED]
+#### Phase 4.2: File rename, definition unification, re-export removal [COMPLETED]
 
 - **Goal:** Structural tidy-ups that change module paths, done before the snapshot Phase 5/6 depends
   on.
 - **Tasks:**
-  - [ ] Rename `Theorems/Perpetuity/Bridge.lean` -> `Theorems/Perpetuity/MonotonicityDuality.lean`
+  - [x] Rename `Theorems/Perpetuity/Bridge.lean` -> `Theorems/Perpetuity/MonotonicityDuality.lean`
         (its content is duality and monotonicity proofs for P6, not a bridge). Update the importing
         modules and any `namespace` block naming.
-  - [ ] Unify `Formula.top`: `private abbrev top = Formula.neg Formula.bot` (`TemporalDerived.lean:62`)
+  - [x] Unify `Formula.top`: `private abbrev top = Formula.neg Formula.bot` (`TemporalDerived.lean:62`)
         vs `abbrev Formula.top = .imp .bot .bot` (`TemporalClosure.lean:515`). Pick one canonical
-        form, delete the other, repoint callers.
-  - [ ] Remove the `Bundle/FMCS.lean` re-export file (17 lines, pure re-export of `FMCSDef.lean`) by
-        repointing its importers.
-  - [ ] `lake clean && lake build` - the file rename creates a stale `.ilean` exactly like the five
+        form, delete the other, repoint callers. *(deviation: altered — `TemporalClosure.lean`
+        no longer exists. The canonical `Formula.top` is `Syntax/Formula.lean:118`
+        (`Formula.bot.imp Formula.bot`, 440 resolved usages). The `private abbrev top` at
+        `TemporalDerived.lean:98` had ZERO usages and a semantically different body
+        (`Formula.neg Formula.bot`) — a dead private shadow, deleted outright. No caller
+        repointing was needed.)*
+  - [x] Remove the `Bundle/FMCS.lean` re-export file (17 lines, pure re-export of `FMCSDef.lean`) by
+        repointing its importers. *(deviation: altered — 2 importers, `Metalogic/Bundle.lean`
+        and `Bundle/BFMCS.lean`, both repointed to `Bundle.FMCSDef`.)*
+  - [x] `lake clean && lake build` - the file rename creates a stale `.ilean` exactly like the five
         found in research; a plain incremental build will leave it behind.
 - **Estimated output:** ~120 lines of diff
 - **Done when:** `lake build` green from a clean state; `BimodalTest` green; sorry count 1; no

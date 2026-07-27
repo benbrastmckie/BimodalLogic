@@ -66,7 +66,7 @@ a different history and would not produce the needed contradiction.
 
 ## Design
 
-The proof follows the same structure as Bundle/FMCS.lean and Bundle/CanonicalFrame.lean,
+The proof follows the same structure as Bundle/FMCSDef.lean and Bundle/CanonicalFrame.lean,
 but generalized to arbitrary D. The key cases are:
 - atom: valuation = MCS membership (by definition)
 - bot: both sides are False
