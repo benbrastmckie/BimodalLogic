@@ -267,10 +267,32 @@ of rationals converging to `r`, with `¬φ` at every rational above `r`.
 
 The selected points need nothing: there the extension *is* the rational family, and the rational
 witness transports by a shift.
+
+*Why the unselectedness hypothesis is forced, not cosmetic.* Quantifying over **all** reals `r`
+makes the statement outright false. Take `r = (p : ℝ)` for a rational `p` at which the set
+`S_φ = {q | φ ∈ m q}` attains a maximum. Every rational `q < p` then sees a `φ`-point in
+`(q, p]`, so `F φ` can sit in the ultrafilter limit at `p`, while no rational **strictly above**
+`p` carries `φ` at all. The hypothesis `¬ ∃ q : Rat, (q : ℝ) = r` removes exactly that
+configuration, and it is what the sole consumer already has in scope: the future half of
+`BFMCS.toRealBundle_restricted_temporally_coherent` invokes this predicate only inside the
+`by_cases` branch where the shifted coordinate is unselected.
+
+*Why the predicate is nevertheless discharged, and at what cost.* The obstruction described
+above is precisely a **definable gap** for the formula `F φ`: below the gap `F φ` holds on an
+initial interval `(-∞, sup S_φ)`, above it `F φ` fails everywhere, and no point realises the
+transition. Prior's Until axiom in gap form, `Axiom.prior_U_gap` — `U(⊤,χ) ∧ F(¬χ) →
+U(¬χ ∨ K⁺(¬χ), χ)` — excludes exactly such configurations (Reynolds 1992, printed p.168 for the
+axiom; printed p.176 for the "no definable gaps" argument). Applying it at `χ := F φ` rather
+than at `φ` is what makes the antecedent `U(⊤, χ)` free, since `χ`'s truth region below the gap
+is an interval rather than an accumulating set. The discharge is therefore
+**`fc`-conditional**: it needs `FrameClass.Dedekind ≤ fc`, and it is carried out in
+`BXCanonical/Chronicle/ChronicleLimitGapWitness.lean` as `limitFutureWitness_of_priorU`.
+The obligation itself is Burgess 1984's prophecy-at-a-gap claim, printed pp.109-110.
 -/
 def BFMCS.LimitFutureWitness {fc : FrameClass} (B : BFMCS (fc := fc) Rat) (root : Formula) :
     Prop :=
-  ∀ fam ∈ B.families, ∀ (r : ℝ) (φ : Formula), φ ∈ deferralClosure root →
+  ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ φ : Formula,
+    φ ∈ deferralClosure root →
     Formula.someFuture φ ∈ limitMCSBelow fam.mcs r → ∃ s : Rat, r < (s : ℝ) ∧ φ ∈ fam.mcs s
 
 /--
@@ -303,7 +325,7 @@ theorem BFMCS.toRealBundle_restricted_temporally_coherent {fc : FrameClass}
       rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]
       exact hφs
     · rw [realLimitMCS_of_not_rat fam.mcs δ t hx] at hFφ'
-      obtain ⟨s, hs, hφs⟩ := h_lfw fam hfam (t + δ) φ hdc hFφ'
+      obtain ⟨s, hs, hφs⟩ := h_lfw fam hfam (t + δ) hx φ hdc hFφ'
       refine ⟨(s : ℝ) - δ, by linarith, ?_⟩
       show φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
       rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]

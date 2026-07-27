@@ -1393,7 +1393,7 @@ organising principle of the Phase 7 split — 7a is everything that avoids the a
 asymmetry itself. Phase 7a is nonetheless ordered after 6.2 because two of its chronicle
 instances consume 6.2's discharge.)*
 
-### Phase 6.2: The definable-gap discharge of LimitFutureWitness [NOT STARTED]
+### Phase 6.2: The definable-gap discharge of LimitFutureWitness [IN PROGRESS]
 
 **This phase is the first place in the plan where the Dedekind axiom layer is used.** Everything
 before it is `fc`-generic. `Axiom.prior_U_gap` has `minFrameClass = .Dedekind`
@@ -1699,7 +1699,7 @@ did not show it unrealizable. Budget this as a probe, not as proof engineering.
 - **Timing:** 5 hours.
 - **Depends on:** 7a
 
-### Phase 8: The Dedekind countermodel on ℝ and the unconditional terminus [NOT STARTED]
+### Phase 8: The Dedekind countermodel on ℝ and the unconditional terminus [IN PROGRESS]
 
 - **Goal:** Discharge the engine hypothesis of Phase 2 and land `consequence_completeness_dedekind`
   unconditionally, with `completeness_dedekind` as its `Γ = []` corollary.
