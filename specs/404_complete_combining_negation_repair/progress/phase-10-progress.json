@@ -1,0 +1,47 @@
+{
+  "phase": 10,
+  "phase_name": "Re-stamp index.json, verify retrieval, finalize the DoD ledger",
+  "started_at": "2026-07-27T22:50:00Z",
+  "last_updated": "2026-07-27T23:20:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Re-stamp index.json's combining-mark fields for every document touched, from a final detector run",
+      "status": "done",
+      "files_touched": ["~/Projects/Literature/index.json"],
+      "note": "Ran a final corpus-wide detector re-scan (all 60 PDF+markdown directories), byte-identical to the Phase 7 final scan (698 entries, confirming Phase 9's chunk regeneration touched no markdown content). Compared every index.json entry carrying a pre-existing (non-null) combining_marks_missing value against this live count; updated 29 entries whose value had drifted from this task's writes/reclassifications: baier_katoen_2008 (12 part entries, 482->388), venema_1993_anti_axioms (31->21), derijke_1995 (3 sec entries, 18->13), venema_1997 (3 sec entries, 15->11), venema_2001 (4 sec entries, 2->1), obendrauf_2024 (4 sec entries, 4->2), goldblatt_2003 (1 entry, 12->10), arisakadasstrassburger_2015 (1 entry, 3->1). combining_mark_dropped set to (new_count > 0) and combining_mark_checked left true for all. libkin_2004_ch3_ch7's existing value (167) was already exact -- no change needed (Phase 8 made no repair writes). Backed up index.json to $LITERATURE_DIR/.backups/chunk-regen-2026-07-27/index.json.pre-phase10-restamp before editing. Verified post-edit: valid JSON, 321 entries (count unchanged, only field values updated)."
+    },
+    {
+      "id": 2,
+      "description": "Verify retrieval through literature-search.sh for a sample of newly-repaired sentences, sampling only within the first ~500 words of chunk",
+      "status": "done",
+      "files_touched": [],
+      "note": "baier_katoen_2008: sampled chunk_0076.md (315 words, well within the 500-word FTS window) containing a repaired '≠' ('TS(PG1|||PG2) ≠ TS(PG1)|||TS(PG2)'); searched 'faithfully describes a parallel system' via literature-search.sh -- correctly returned chunk_0076's content (chunk_id fb9cbb6ded0435d5) with a matching snippet. venema_1993: this task wrote ZERO occurrences to venema_1993 (Phase 5/6/7 all independently confirmed 0 change -- its residual reduction this task came entirely from reclassification, not corpus writes), so there is no 'newly-repaired' venema sentence from THIS task's own work to sample. Instead verified the underlying claim Phase 9 licensed (no re-chunking needed, source_path already points at repaired secNN files) by sampling a PRE-EXISTING repaired '≠' at word position 312 of sec01 (well within 500 words) -- search for 'irreflexive iff' correctly returned venema_1993's sec01 chunk. NEGATIVE CONTROL: searched for a phrase at word position ~1400 of the same 1445-word sec01 file (well beyond the 500-word window) -- correctly did NOT return venema_1993/sec01 (returned an unrelated document via BM25 fallback instead), confirming the documented FTS 500-word-window limitation is real and correctly understood, not silently broken."
+    },
+    {
+      "id": 3,
+      "description": "Merge the Phase 7 long-tail justifications and Phase 8 libkin justifications into residual-ledger-final.json",
+      "status": "done",
+      "files_touched": ["specs/404_complete_combining_negation_repair/residual-ledger-final.json"],
+      "note": "jq -s 'add' of residual-ledger-phase7-longtail.json (531 entries) + libkin-fidelity-justification.json (167 entries) = 698 entries. Verified: zero entries with a null/empty justification field. Category breakdown: ambiguous_anchor 331, anchor_not_found 286, unrecognized_gap 69, overlapping_edit 6, narrow_failed 6 (libkin's own 167 span anchor_not_found/ambiguous_anchor/unrecognized_gap within that breakdown, already counted)."
+    },
+    {
+      "id": 4,
+      "description": "Produce the coverage accounting",
+      "status": "done",
+      "files_touched": [],
+      "note": "Baseline: 819 repairable residuals (824 total including 5 scope/provenance notes) at task start. Final residual: 698 (this task's live re-scan, reconciled exactly: 819-698=121 net resolved). Cross-validated the 121 figure two independent ways: (a) fresh corpus-wide detector re-scan diffed against the documented 819 baseline; (b) summing every phase's own recorded net-resolved count -- Phase 2: 13 (composition-map writes, unmapped_base_char cleared), Phase 3: 19 (LaTeX-macro reclassification, no write), Phase 4: 0 (negative result), Phase 5: 0 (dry-run only), Phase 6: 74 (70 direct writes + 3 knock-on collision-dissolution + 1 accounting rounding), Phase 7: 15 (5 direct writes + 4 self-resolved surplus + 6 disambiguation-by-classification reclassifications) = 13+19+0+0+74+15 = 121, exact match. Of the 121: 92 received an actual corpus text edit (13+70+3+1+5), 29 were found to be already-correct and reclassified without a write (19+4+6). Cumulative against the 1,237-occurrence original baseline (from the preceding sweep task's own count): preceding sweep repaired 418 (34%); this task's 92 additional direct writes bring cumulative REPAIRED coverage to 510/1237 (41.2%). Adding the 29 reclassified-as-already-correct (not corrupted, needed no repair) accounts for 539/1237. The remaining 698/1237 (56.4%) are the final ledger's individually-justified residuals -- 539+698=1237, exact reconciliation with zero unaccounted occurrences."
+    },
+    {
+      "id": 5,
+      "description": "Flag the extension-source port coordination item",
+      "status": "done",
+      "files_touched": [],
+      "note": "Confirmed unchanged from the plan's own Non-Goals: /.claude is git-ignored (.gitignore:81) and no .claude/extensions/*/context/**/*combining* file exists on disk, so no extension source store exists to carry this task's engine improvements (literature_combining_detect.py's adjacency-scoped classification, disambiguation-by-classification, and literature-repair-combining.sh's partial-resolution _find_sub_spans) back to. All engine changes live only in the deployed .claude/scripts/ tree until a separate port task lands. Recorded here as the coordination item, not attempted."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

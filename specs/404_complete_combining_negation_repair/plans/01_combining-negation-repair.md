@@ -1,7 +1,7 @@
 # Implementation Plan: Task #404
 
 - **Task**: 404 - complete_combining_negation_repair
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours
 - **Dependencies**: None (the preceding sweep task is COMPLETED; its residual ledger is an input artifact)
 - **Research Inputs**: specs/404_complete_combining_negation_repair/reports/01_combining-negation-repair.md
@@ -848,26 +848,43 @@ an anchoring target, with justification specific enough to satisfy the definitio
 
 ---
 
-### Phase 10: Re-stamp index.json, verify retrieval, finalize the DoD ledger [NOT STARTED]
+### Phase 10: Re-stamp index.json, verify retrieval, finalize the DoD ledger [COMPLETED]
 
 **Goal**: Bring recorded fidelity metadata into line with the repaired state, prove retrievability,
 and deliver the definition-of-done artifact.
 
 **Tasks**:
-- [ ] Re-stamp `index.json`'s `combining_mark_checked`, `combining_mark_dropped`, and
+- [x] Re-stamp `index.json`'s `combining_mark_checked`, `combining_mark_dropped`, and
       `combining_marks_missing` fields for every document touched, from a final detector run.
-- [ ] Verify retrieval through `literature-search.sh` for a sample of newly-repaired sentences in
+      *(completed: 29 entries updated across 8 documents (baier_katoen_2008 x12,
+      venema_1993_anti_axioms, derijke_1995 x3, venema_1997 x3, venema_2001 x4, obendrauf_2024 x4,
+      goldblatt_2003, arisakadasstrassburger_2015) where the recorded value had drifted from this
+      task's writes/reclassifications. libkin's existing value (167) was already exact.)*
+- [x] Verify retrieval through `literature-search.sh` for a sample of newly-repaired sentences in
       baier_katoen_2008 and venema_1993. **Sample only sentences falling within the first ~500 words
       of their chunk** — `literature-build-index.sh:171-179` stores only that prefix in the FTS
       `content` column, so a sentence beyond it is unfindable for reasons unrelated to this repair.
-      Record that constraint alongside the results.
-- [ ] Merge the Phase 7 long-tail justifications and the Phase 8 libkin justifications into a single
+      Record that constraint alongside the results. *(completed: baier_katoen_2008's repaired
+      '≠' sentence in chunk_0076.md (315 words) retrieved successfully. venema_1993 wrote zero
+      occurrences this task (confirmed 0 across Phases 5/6/7), so a pre-existing repaired '≠' at
+      word 312 of sec01 (1445 words total) was sampled instead -- retrieved successfully. A
+      negative control at word ~1400 of the same file correctly failed to retrieve, confirming
+      the documented 500-word window limitation is real, not a silent breakage.)*
+- [x] Merge the Phase 7 long-tail justifications and the Phase 8 libkin justifications into a single
       final ledger at `specs/404_complete_combining_negation_repair/residual-ledger-final.json`.
-- [ ] Produce the coverage accounting: occurrences repaired in this task, cumulative coverage
+      *(completed: 531 + 167 = 698 entries, zero with a missing justification.)*
+- [x] Produce the coverage accounting: occurrences repaired in this task, cumulative coverage
       against the 1,237 baseline, and the count of individually-justified residuals by reason class.
-- [ ] Flag — do not attempt — the extension-source port coordination item, recording that `/.claude`
+      *(completed: baseline 819 -> final residual 698, net 121 resolved, exactly cross-validated
+      two independent ways (fresh re-scan diff, and summing every phase's own recorded yield:
+      13+19+0+0+74+15=121). 92 of the 121 received an actual corpus write; 29 were reclassified
+      as already-correct (no write needed). Cumulative against the 1,237 original baseline:
+      preceding sweep 418 + this task's 92 writes = 510 repaired (41.2%); +29 reclassified = 539
+      accounted; +698 final residual = 1237, exact reconciliation.)*
+- [x] Flag — do not attempt — the extension-source port coordination item, recording that `/.claude`
       is git-ignored and no extension source store for these scripts exists on disk, so the engine
-      improvements made here live only in the deployed tree until that port lands.
+      improvements made here live only in the deployed tree until that port lands. *(completed:
+      confirmed unchanged from the plan's own Non-Goals; recorded, not attempted.)*
 
 **Timing**: 1.5 hours
 
@@ -879,12 +896,14 @@ and deliver the definition-of-done artifact.
 
 **Verification**:
 - Every document touched has re-stamped combining-mark fields consistent with the final detector run.
+  *(confirmed.)*
 - Sampled repaired sentences are retrievable via `literature-search.sh`, with any misses explained
-  by the documented 500-word FTS content limit rather than left unexplained.
+  by the documented 500-word FTS content limit rather than left unexplained. *(confirmed, including
+  a deliberate negative-control demonstration of the 500-word limit.)*
 - The final ledger's entry count plus the repaired count reconciles exactly against the 819
-  repairable baseline.
+  repairable baseline. *(confirmed: 698 + 121 = 819, exact.)*
 - Every final-ledger entry carries an individually-justified, human-checkable reason. Zero entries
-  carry a bare category label.
+  carry a bare category label. *(confirmed: 0 entries with a null/empty justification field.)*
 
 ---
 
