@@ -1,5 +1,5 @@
 ---
-next_project_number: 407
+next_project_number: 408
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 407
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,390,404,405,406 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,390,404,405,406,407 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296 | 193,231,298,361 | formula-refactor, dataset-enhancement, strong_completeness |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -67,12 +67,50 @@ next_project_number: 407
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
+### Cleanup
+
+407 [NOT STARTED] — Excise or Boneyard the unwired arity-4 characteristic-formula sta
+
 ### Uncategorized
 
 405 [NOT STARTED] — Discharge two strategic sorries left by task 391 phase 8 in Forma
 406 [NOT STARTED] — Discharge the two Sep strategic sorries left by task 391 phase 8 
 
 ## Tasks
+
+### 407. Retire unwired arity4 char stack
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: cleanup
+- **Dependencies**: None
+
+**Description**: Excise or Boneyard the unwired arity-4 characteristic-formula stack in FormalSystem/Metalogic/WeakCanonical/Kamp/. This is dead-code removal, not mathematics: the routing question it belonged to is SETTLED.
+
+BACKGROUND. Task 377's Phase 9 adjudication (specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md, section 6 item 3) found this stack "landed, unwired, circular, fiber-refuted" and directed that it "be excised or Boneyarded, not consumed". The competing route won: task 379 (commits 9b3bfa100, 10fe1d939) discharged the KampPrior k>=2 residual via the zeta wire (kampArm_zeta, Kamp/ZetaUniformExtract.lean) using Rabinovich's faithful UNARY E[Sigma]-atom encoding (Def 4.1 p.5) with structural Prop 4.3 composition (p.6), keeping charF arity-1 end-to-end. completeness_discrete is now sorryAx-free. The arity-4 stack is the losing branch and has no consumer.
+
+CRITICAL SCOPING TRAP -- "Fib" IS AMBIGUOUS IN THIS TREE. A blind grep for *Fib will delete LIVE code. There are 49 live *Fib declarations under Kamp/ and they split into two unrelated families:
+  (a) DEAD -- the arity-4 CHARACTERISTIC-FORMULA stack, recognizable by being parameterized over `charFib : (j : Nat) -> NormalForm sig j 4 -> Formula` (note: `charFib` is a BINDER, not a definition -- do not search for its declaration). Members include igPtWFib, igEpLFib, igEpRFib, igFoldBitFib, igCharPFib, igSegLFib, igSegRFib, igSLFib, igSRFib, igBodyFib, igMkDisjunctFib, igGateFib, igOffFiber, bracketEndCharKvFib, bracketEndCharKvExtFib, kampPrior_site_rungKFib_gate_match, and the bracketEndChar_kvFib_*/kvExtFib_* theorem family.
+  (b) LIVE -- general "fiber" machinery that merely shares the suffix, e.g. kvEFiber and the kvE_deepOnFiber_* family, consumed across ExteriorFiberK.lean, ExteriorNegationK.lean, ExteriorNegationPastK.lean, and ExteriorPinnedConverseK.lean. DO NOT TOUCH THESE.
+Phase 1 must therefore be a reachability audit from the live roots, not a name-pattern sweep.
+
+ALREADY DONE, DO NOT REDO: kampPrior_hreal_supply is already retired to Boneyard/InteriorHrealSupplyK.lean. Only a prose comment at NfMultiAnchorBridge/InteriorGateGeneralK.lean:1653 still names it (recording the machine-confirmed circularity). Leave or update the comment; there is no live declaration to remove.
+
+SUGGESTED PHASING:
+1. Reachability audit. Compute the set of declarations transitively reachable from the live roots (kampPriorExpressiveCompleteness, completeness_discrete, and anything else exported from Kamp/). Anything in family (a) that is unreachable is the excision set; write it down explicitly before deleting anything. Confirm family (b) is reachable and excluded.
+2. Excise or Boneyard the audited dead set, following the tree's existing Boneyard convention (Kamp/Boneyard/ already holds prior retirements, including three of this stack's own members).
+3. Verify.
+
+NON-GOALS (each repeats an abandoned effort):
+- Do NOT wire, repair, complete, or find a consumer for the arity-4 stack. Task 376 was abandoned for exactly that.
+- Do NOT build an arity-4 realization engine. Rabinovich has no arity-4 object in 16 pages (Def 3.1 p.4: one variable; Lemma 3.2(2) p.4: <=2 free variables; Def 4.1 p.5: unary E[Sigma]).
+- Do NOT reach for Feferman-Vaught. Prop 4.3 makes composition structural, so Rabinovich never needs it; reaching for it is novel mathematics and is prohibited.
+
+DONE WHEN: `lake build` AND `lake build BimodalTest` both exit 0; `#print axioms` on FormalSystem.Metalogic.BXCanonical.completeness_discrete and FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness both still report exactly [propext, Classical.choice, Quot.sound] with NO sorryAx; the repo-wide sorry census is unchanged at 5 (4 in Metalogic/Soundness.lean, 1 at WeakCanonical/Transfer.lean:1225); and the excision set from phase 1 is recorded in the summary.
+
+VERIFICATION NOTE: do not trust mcp__lean-lsp__lean_run_code for existence or axiom claims in this repository -- it has reported success for deliberately bogus identifiers. Use `lake env lean` on a probe file and always include a bogus-identifier control that must error with unknownIdentifier.
+
+---
 
 ### 406. Prove semantic validity of the sep axiom over real flow reynolds 1992 section 7 lemma 10
 - **Effort**: large
