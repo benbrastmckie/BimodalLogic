@@ -118,7 +118,7 @@ Since we restrict to non-negative durations, only these cases apply:
 - x = 0, y = 0: M = U ∧ U = V → M = V (transitivity of equality)
 - x = 0, y > 0: M = U, substitute → ExistsTask M V
 - x > 0, y = 0: U = V, substitute → ExistsTask M V
-- x > 0, y > 0: chain via `canonicalR_transitive` (uses temp_4: G(φ) → G(G(φ)))
+- x > 0, y > 0: chain via `existsTask_transitive` (uses temp_4: G(φ) → G(G(φ)))
 -/
 theorem parametric_task_rel_forward_comp
     (M U V : ParametricCanonicalWorldState fc) (x y : D)
@@ -138,7 +138,7 @@ theorem parametric_task_rel_forward_comp
       simp only [hy_pos, ite_true, hy_neg, ite_false] at h2
       have hsum_pos : x + y > 0 := add_pos hx_pos hy_pos
       simp only [hsum_pos, ite_true]
-      exact canonicalR_transitive M.val U.val V.val M.property h1 h2
+      exact existsTask_transitive M.val U.val V.val M.property h1 h2
     · -- x > 0, y = 0: h2 gives U = V
       have hy_eq : y = 0 := le_antisymm (not_lt.mp hy_pos) hy
       subst hy_eq

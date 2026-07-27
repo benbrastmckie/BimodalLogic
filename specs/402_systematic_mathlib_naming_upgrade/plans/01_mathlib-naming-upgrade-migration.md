@@ -361,26 +361,46 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
   Phase 5 target-name table is derived over the final declaration set rather than over declarations
   that are about to disappear.
 
-#### Phase 4.1: Dead-code deletion, alias removal, trivial-wrapper inlining [NOT STARTED]
+#### Phase 4.1: Dead-code deletion, alias removal, trivial-wrapper inlining [COMPLETED]
 
 - **Goal:** Remove declarations with zero callers and inline the confirmed trivial wrappers.
 - **Tasks:**
-  - [ ] Verify-then-delete the four zero-caller propositional declarations: `ni`
+  - [x] Verify-then-delete the four zero-caller propositional declarations: `ni`
         (`Propositional.lean:1507`), `ne` (`:1531`), `de` (`:1614`), `bi_imp` (`:1562`). Re-verify
         zero callers against the current tree before each deletion - line numbers are from the Part
-        C audit and will have drifted.
-  - [ ] Delete the unused aliases: `completeness'` (`BXCanonical/Completeness.lean:176`),
+        C audit and will have drifted. *(deviation: altered — the re-verification the plan mandates
+        overturned three of the four. Measured with `tools/refcount.py` against the resolved
+        `.ilean` graph, not grep: `ni` has a LIVE caller
+        (`Metalogic/Decidability/Propositional/Kalmar.lean:67`); `de` is used by
+        `or_elim_neg_neg` in its own file; `bi_imp` carries `@[tm_lemma]`, so it is reachable
+        through `modal_search`'s proof-search database and produces NO `.ilean` usage at all —
+        a reference count of 0 is not evidence of deadness for an attribute-registered
+        declaration. Only `ne` (0 usages, no attribute) was deleted. The other three are
+        KEPT, each for a recorded reason.)*
+  - [x] Delete the unused aliases: `completeness'` (`BXCanonical/Completeness.lean:176`),
         `algebraic_completeness_theorem'` (`Algebraic/AlgebraicCompleteness.lean:187`),
         `minimalFrameClass` (`ProofSystem/Axioms.lean:412`).
-  - [ ] Inline `canonicalR_transitive` -> `existsTask_transitive` (`Bundle/CanonicalFrame.lean:268`,
-        3 call sites).
-  - [ ] In `Theorems/Perpetuity/Bridge.lean`: inline `dne` -> `Propositional.double_negation`
+  - [x] Inline `canonicalR_transitive` -> `existsTask_transitive` (`Bundle/CanonicalFrame.lean:268`,
+        1 call site). *(deviation: altered — 1 call site
+        (`Metalogic/Algebraic/ParametricCanonical.lean:141`), not 3, and the alias was at
+        `CanonicalFrame.lean:285`. The alias was written `abbrev … := @existsTask_transitive`,
+        so the inline had to drop the `@` — `existsTask_transitive` takes `{fc : FrameClass}`
+        implicitly, and keeping the `@` shifted `M.val` into the `fc` position.)*
+  - [x] In `Theorems/Perpetuity/Bridge.lean`: inline `dne` -> `Propositional.double_negation`
         (7 refs); remove the duplicate `lce_imp` and `rce_imp` (0 qualified callers); attempt removal
         of `local_efq` / `local_lce` / `local_rce` by redirecting to the `Propositional` versions.
         **If the circular import between `Propositional` and `Perpetuity` cannot be broken, keep the
         three `local_*` definitions and record why** - the Part C research explicitly left this
-        unresolved. Do not restructure the import graph to force it.
-  - [ ] **Do not touch** the 25 substantive Bridge definitions (`box_mono` 29 refs,
+        unresolved. Do not restructure the import graph to force it. *(deviation: altered — the feared
+        circular import DOES NOT EXIST: no module under `Theorems/Propositional/` imports
+        `Perpetuity`, and `Bridge.lean` already imports `Propositional.Connectives` (which
+        re-exports `Propositional.Core`). All three `local_*` re-implementations were therefore
+        removed, not kept: `local_efq`/`local_lce`/`local_rce` have signatures IDENTICAL to
+        `Propositional.efq`/`lce`/`rce` and were redirected to them. `dne` was a one-line alias
+        for `Propositional.double_negation` (3 uses, not 7). The duplicate `lce_imp`/`rce_imp`
+        were repointed at the FrameClass-generic `Propositional` versions. 276 lines removed
+        from Bridge.lean with no import-graph restructuring.)*
+  - [x] **Do not touch** the 25 substantive Bridge definitions (`box_mono` 29 refs,
         `diamond_mono` 12, `past_mono` 5, `perpetuity_6` 6, `bridge1`, `bridge2`,
         `double_contrapose`, the duality and always-decomposition lemmas).
 - **Estimated output:** ~150 lines of diff

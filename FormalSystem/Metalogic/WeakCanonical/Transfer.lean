@@ -1206,7 +1206,7 @@ theorem chronicle_semantic_prior_SZ {fc : FrameClass}
 /-! ## countermodel_discrete — the one live sorry
 
 This is the repository's sole live `sorry`, and the sole `sorryAx` source reaching
-`BXCanonical.completeness` (and its alias `completeness'`). It is a genuine open obligation,
+`BXCanonical.completeness`. It is a genuine open obligation,
 not dead code: its axiom set is `[propext, sorryAx]` — a *direct terminal* sorry with no
 inherited taint.
 

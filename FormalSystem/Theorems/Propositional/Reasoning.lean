@@ -54,37 +54,6 @@ def ni (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ)
   exact FormalSystem.Metalogic.Core.deduction_theorem Γ A Formula.bot h_bot
 
 /--
-Negation Elimination (NE): If `Γ, ¬A ⊢ B` and `Γ, ¬A ⊢ ¬B`, then `Γ ⊢ A`.
-
-This is classical proof by contradiction (indirect proof): if assuming ¬A leads to
-a contradiction, then A holds.
-
-**Proof Strategy**:
-1. From `h1 : (A.neg :: Γ) ⊢ ¬B` and `h2 : (A.neg :: Γ) ⊢ B`, derive `(A.neg :: Γ) ⊢ ⊥`
-2. Apply deduction_theorem: `Γ ⊢ ¬A → ⊥` = `Γ ⊢ ¬¬A`
-3. Apply DNE (double_negation axiom): `Γ ⊢ A`
-
-**Complexity**: Medium
-
-**Dependencies**: `DerivationTree.modus_ponens`, `DerivationTree.weakening`,
-`double_negation` (derived theorem), `deduction_theorem`
--/
-def ne (Γ : Context) (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) ⊢ B) :
-    Γ ⊢ A := by
-  -- From h1 and h2, derive (A.neg :: Γ) ⊢ ⊥
-  have h_bot : (A.neg :: Γ) ⊢ Formula.bot :=
-    DerivationTree.modus_ponens (A.neg :: Γ) B Formula.bot h1 h2
-  -- Apply deduction theorem: Γ ⊢ ¬A → ⊥ = Γ ⊢ ¬¬A
-  have h_neg_neg : Γ ⊢ A.neg.neg :=
-    FormalSystem.Metalogic.Core.deduction_theorem Γ A.neg Formula.bot h_bot
-  -- Apply DNE: ¬¬A → A
-  have dne : ⊢ A.neg.neg.imp A :=
-    double_negation A
-  have dne_ctx : Γ ⊢ A.neg.neg.imp A :=
-    DerivationTree.weakening [] Γ _ dne (List.nil_subset Γ)
-  exact DerivationTree.modus_ponens Γ A.neg.neg A dne_ctx h_neg_neg
-
-/--
 Biconditional Introduction (Implication Form): `⊢ (A → B) → ((B → A) → (A ↔ B))`.
 
 This is the curried form of biconditional introduction for compositional proofs.

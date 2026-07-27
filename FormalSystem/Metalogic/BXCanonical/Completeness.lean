@@ -230,13 +230,6 @@ theorem completeness (φ : Formula) :
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Base M hM_mcs
         h_not_box_dense h_not_box_discrete)
 
-/--
-Completeness (alternate form): valid → derivable.
--/
-theorem completeness' (φ : Formula) (h : valid φ) :
-    Derivable FrameClass.Base [] φ :=
-  completeness φ h
-
 /-! ## Frame-Class-Specific Completeness Theorems -/
 
 -- countermodel_discrete_enriched archived to

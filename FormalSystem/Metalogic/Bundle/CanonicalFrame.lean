@@ -282,13 +282,10 @@ theorem existsTask_transitive {fc : FrameClass} (M M' M'' : Set Formula)
   -- phi ∈ g_content M', and g_content M' ⊆ M'' by h_R2
   exact h_R2 h_G_in_M'
 
-/-- Backward compatibility alias. -/
-abbrev canonicalR_transitive := @existsTask_transitive
-
 /--
 h_content chain transitivity: If `h_content V ⊆ N` and `h_content N ⊆ M`, then `h_content V ⊆ M`.
 
-This is the backward (past) analogue of `canonicalR_transitive`.
+This is the backward (past) analogue of `existsTask_transitive`.
 The proof uses the Temporal 4 axiom for the past direction: `H phi → H(H phi)`.
 
 Given `phi ∈ h_content V` (i.e., `H phi ∈ V`):
