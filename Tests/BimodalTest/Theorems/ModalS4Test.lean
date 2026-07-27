@@ -40,37 +40,37 @@ noncomputable section
 
 /-- Test s4_diamond_box_conj type signature -/
 example (A B : Formula) : ⊢ (A.diamond.and B.box).imp ((A.and B.box).diamond) :=
-  s4_diamond_box_conj A B
+  s4DiamondBoxConj A B
 
 /-- Test s4_diamond_box_conj with atomic formulas -/
-example : ⊢ ((Formula.atom_s "p").diamond.and (Formula.atom_s "q").box).imp
-             (((Formula.atom_s "p").and (Formula.atom_s "q").box).diamond) :=
-  s4_diamond_box_conj (Formula.atom_s "p") (Formula.atom_s "q")
+example : ⊢ ((Formula.atomS "p").diamond.and (Formula.atomS "q").box).imp
+             (((Formula.atomS "p").and (Formula.atomS "q").box).diamond) :=
+  s4DiamondBoxConj (Formula.atomS "p") (Formula.atomS "q")
 
 /-- Test s4_box_diamond_box type signature -/
 example (A : Formula) : ⊢ A.box.imp ((A.box.diamond).box) :=
-  s4_box_diamond_box A
+  s4BoxDiamondBox A
 
 /-- Test s4_box_diamond_box with atomic formula -/
-example : ⊢ (Formula.atom_s "p").box.imp (((Formula.atom_s "p").box.diamond).box) :=
-  s4_box_diamond_box (Formula.atom_s "p")
+example : ⊢ (Formula.atomS "p").box.imp (((Formula.atomS "p").box.diamond).box) :=
+  s4BoxDiamondBox (Formula.atomS "p")
 
 /-- Test s4_diamond_box_diamond type signature -/
 example (A : Formula) : ⊢ iff (A.diamond.box.diamond) A.diamond :=
-  s4_diamond_box_diamond A
+  s4DiamondBoxDiamond A
 
 /-- Test s4_diamond_box_diamond with atomic formula -/
-example : ⊢ iff ((Formula.atom_s "p").diamond.box.diamond) (Formula.atom_s "p").diamond :=
-  s4_diamond_box_diamond (Formula.atom_s "p")
+example : ⊢ iff ((Formula.atomS "p").diamond.box.diamond) (Formula.atomS "p").diamond :=
+  s4DiamondBoxDiamond (Formula.atomS "p")
 
 /-- Test s5_diamond_conj_diamond type signature -/
 example (A B : Formula) : ⊢ iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond) :=
-  s5_diamond_conj_diamond A B
+  s5DiamondConjDiamond A B
 
 /-- Test s5_diamond_conj_diamond with atomic formulas -/
-example : ⊢ iff (((Formula.atom_s "p").and (Formula.atom_s "q").diamond).diamond)
-                 ((Formula.atom_s "p").diamond.and (Formula.atom_s "q").diamond) :=
-  s5_diamond_conj_diamond (Formula.atom_s "p") (Formula.atom_s "q")
+example : ⊢ iff (((Formula.atomS "p").and (Formula.atomS "q").diamond).diamond)
+                 ((Formula.atomS "p").diamond.and (Formula.atomS "q").diamond) :=
+  s5DiamondConjDiamond (Formula.atomS "p") (Formula.atomS "q")
 
 end
 

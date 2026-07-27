@@ -26,8 +26,8 @@ open FormalSystem.Syntax
 open FormalSystem.Automation.FormulaMutator
 
 -- Convenience atoms
-private def p : Formula := .atom_s "p"
-private def q : Formula := .atom_s "q"
+private def p : Formula := .atomS "p"
+private def q : Formula := .atomS "q"
 
 /-!
 ## mutateSingleOccurrence Engine Tests
@@ -80,25 +80,25 @@ example : trySwapReleaseUntil (Formula.release p q) = some (.untl p q) := rfl
 example : trySwapFutureGlobally p = none := rfl
 
 -- trySwapFutureGlobally returns some on some_future p
-example : trySwapFutureGlobally p.some_future = some (Formula.all_future p) := rfl
+example : trySwapFutureGlobally p.someFuture = some (Formula.allFuture p) := rfl
 
 -- trySwapGloballyFuture returns none on atom
 example : trySwapGloballyFuture p = none := rfl
 
 -- trySwapGloballyFuture returns some on all_future p
-example : trySwapGloballyFuture (Formula.all_future p) = some p.some_future := rfl
+example : trySwapGloballyFuture (Formula.allFuture p) = some p.someFuture := rfl
 
 -- trySwapPastHistorically returns none on atom
 example : trySwapPastHistorically p = none := rfl
 
 -- trySwapPastHistorically returns some on some_past p
-example : trySwapPastHistorically p.some_past = some (Formula.all_past p) := rfl
+example : trySwapPastHistorically p.somePast = some (Formula.allPast p) := rfl
 
 -- trySwapHistoricallyPast returns none on atom
 example : trySwapHistoricallyPast p = none := rfl
 
 -- trySwapHistoricallyPast returns some on all_past p
-example : trySwapHistoricallyPast (Formula.all_past p) = some p.some_past := rfl
+example : trySwapHistoricallyPast (Formula.allPast p) = some p.somePast := rfl
 
 -- tryFlipImplication returns none on negation (imp φ bot)
 example : tryFlipImplication p.neg = none := rfl
@@ -122,25 +122,25 @@ example : tryRemoveRightConjunct (Formula.and p q) = some p := rfl
 example : trySwapWeakUntilStrongRelease p = none := rfl
 
 -- trySwapWeakUntilStrongRelease on weak_until p q
-example : trySwapWeakUntilStrongRelease (Formula.weak_until p q) = some (Formula.strong_release p q) := rfl
+example : trySwapWeakUntilStrongRelease (Formula.weakUntil p q) = some (Formula.strongRelease p q) := rfl
 
 -- trySwapStrongReleaseWeakUntil returns none on atom
 example : trySwapStrongReleaseWeakUntil p = none := rfl
 
 -- trySwapStrongReleaseWeakUntil on strong_release p q
-example : trySwapStrongReleaseWeakUntil (Formula.strong_release p q) = some (Formula.weak_until p q) := rfl
+example : trySwapStrongReleaseWeakUntil (Formula.strongRelease p q) = some (Formula.weakUntil p q) := rfl
 
 -- trySwapTriggerStrongTrigger returns none on atom
 example : trySwapTriggerStrongTrigger p = none := rfl
 
 -- trySwapTriggerStrongTrigger on trigger p q
-example : trySwapTriggerStrongTrigger (Formula.trigger p q) = some (Formula.strong_trigger p q) := rfl
+example : trySwapTriggerStrongTrigger (Formula.trigger p q) = some (Formula.strongTrigger p q) := rfl
 
 -- trySwapStrongTriggerTrigger returns none on atom
 example : trySwapStrongTriggerTrigger p = none := rfl
 
 -- trySwapStrongTriggerTrigger on strong_trigger p q
-example : trySwapStrongTriggerTrigger (Formula.strong_trigger p q) = some (Formula.trigger p q) := rfl
+example : trySwapStrongTriggerTrigger (Formula.strongTrigger p q) = some (Formula.trigger p q) := rfl
 
 /-!
 ## MutationType Serialization Tests

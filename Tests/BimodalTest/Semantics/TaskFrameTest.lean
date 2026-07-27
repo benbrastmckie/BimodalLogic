@@ -26,29 +26,29 @@ open FormalSystem.Semantics
 /-! ## trivial_frame Tests (using Int time) -/
 
 -- Test: trivial_frame satisfies nullity
-example : (TaskFrame.trivial_frame (D := Int)).task_rel () 0 () :=
-  (TaskFrame.trivial_frame (D := Int)).nullity ()
+example : (TaskFrame.trivialFrame (D := Int)).TaskRel () 0 () :=
+  (TaskFrame.trivialFrame (D := Int)).nullity ()
 
 -- Test: trivial_frame satisfies compositionality (task relation is always true)
-example : (TaskFrame.trivial_frame (D := Int)).task_rel () 5 () := trivial
+example : (TaskFrame.trivialFrame (D := Int)).TaskRel () 5 () := trivial
 
 -- Test: trivial_frame with negative duration
-example : (TaskFrame.trivial_frame (D := Int)).task_rel () (-3) () := trivial
+example : (TaskFrame.trivialFrame (D := Int)).TaskRel () (-3) () := trivial
 
 /-! ## identity_frame Tests -/
 
 -- Test: identity_frame satisfies nullity (with explicit type annotation)
-example : (TaskFrame.identity_frame Nat (D := Int)).task_rel (3 : Nat) 0 (3 : Nat) :=
-  (TaskFrame.identity_frame Nat (D := Int)).nullity (3 : Nat)
+example : (TaskFrame.identityFrame Nat (D := Int)).TaskRel (3 : Nat) 0 (3 : Nat) :=
+  (TaskFrame.identityFrame Nat (D := Int)).nullity (3 : Nat)
 
 /-! ## nat_frame Tests (using Int time) -/
 
 -- Test: nat_frame satisfies nullity
-example : (TaskFrame.nat_frame (D := Int)).task_rel (5 : Nat) 0 (5 : Nat) :=
-  (TaskFrame.nat_frame (D := Int)).nullity (5 : Nat)
+example : (TaskFrame.natFrame (D := Int)).TaskRel (5 : Nat) 0 (5 : Nat) :=
+  (TaskFrame.natFrame (D := Int)).nullity (5 : Nat)
 
 -- Test: nat_frame with non-zero duration (task relation always true)
-example : (TaskFrame.nat_frame (D := Int)).task_rel (0 : Nat) 10 (42 : Nat) := Or.inl (by decide)
+example : (TaskFrame.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) := Or.inl (by decide)
 
 /-! ## Custom Frame Tests -/
 
@@ -56,7 +56,7 @@ example : (TaskFrame.nat_frame (D := Int)).task_rel (0 : Nat) 10 (42 : Nat) := O
 def customFrame : TaskFrame Int where
   WorldState := Bool
   -- Permissive within non-zero durations; identity at zero duration (mirrors `nat_frame`).
-  task_rel := fun w d u => d ≠ 0 ∨ w = u
+  TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
     constructor
     · intro h
@@ -93,24 +93,24 @@ def customFrame : TaskFrame Int where
       | inr heq => right; exact heq.symm
 
 -- Test: Custom frame satisfies properties
-example : customFrame.task_rel true 0 true := customFrame.nullity true
-example : customFrame.task_rel false 5 true := Or.inl (by decide)
+example : customFrame.TaskRel true 0 true := customFrame.nullity true
+example : customFrame.TaskRel false 5 true := Or.inl (by decide)
 
 /-! ## Polymorphism Tests -/
 
 -- Test: TaskFrame can be instantiated with Int explicitly
-example : TaskFrame Int := TaskFrame.trivial_frame
+example : TaskFrame Int := TaskFrame.trivialFrame
 
 -- Test: Nullity constraint works with explicit type
-theorem nullity_test_int : (TaskFrame.trivial_frame (D := Int)).task_rel () 0 () :=
-  TaskFrame.trivial_frame.nullity ()
+theorem nullity_test_int : (TaskFrame.trivialFrame (D := Int)).TaskRel () 0 () :=
+  TaskFrame.trivialFrame.nullity ()
 
 -- Test: Compositionality with Int time (1 + 2 = 3)
 theorem compositionality_test_int :
-    (TaskFrame.trivial_frame (D := Int)).task_rel () 3 () := by
+    (TaskFrame.trivialFrame (D := Int)).TaskRel () 3 () := by
   -- trivial_frame's task_rel is `True`; forward_comp now also requires 0 ≤ x, 0 ≤ y
-  exact (TaskFrame.trivial_frame (D := Int)).forward_comp () () () 1 2 (by decide) (by decide)
-    ((TaskFrame.trivial_frame (D := Int)).nullity ())
-    ((TaskFrame.trivial_frame (D := Int)).nullity ())
+  exact (TaskFrame.trivialFrame (D := Int)).forward_comp () () () 1 2 (by decide) (by decide)
+    ((TaskFrame.trivialFrame (D := Int)).nullity ())
+    ((TaskFrame.trivialFrame (D := Int)).nullity ())
 
 end BimodalTest.Semantics

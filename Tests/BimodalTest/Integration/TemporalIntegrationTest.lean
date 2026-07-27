@@ -63,11 +63,11 @@ Test 1: Temporal 4 axiom derivation and soundness.
 Verifies Fp → FFp is derivable and sound.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
-  let φ := p.all_future.imp p.all_future.all_future
+  let p := Formula.atomS "p"
+  let φ := p.allFuture.imp p.allFuture.allFuture
   
   -- Derive using Temporal 4 axiom
-  let d : ⊢ φ := FormalSystem.Theorems.TemporalDerived.temp_4_derived p
+  let d : ⊢ φ := FormalSystem.Theorems.TemporalDerived.temporal4Derived p
   
   -- Verify soundness
   have v : [] ⊨ φ := soundness [] φ d
@@ -83,24 +83,24 @@ Test 2: Temporal 4 with modus ponens.
 From [Fp], derive FFp.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
-  let Γ := [p.all_future]
+  let p := Formula.atomS "p"
+  let Γ := [p.allFuture]
   
   -- Fp → FFp
-  let ax : Γ ⊢ (p.all_future.imp p.all_future.all_future) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived p) (List.nil_subset _)
+  let ax : Γ ⊢ (p.allFuture.imp p.allFuture.allFuture) :=
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p) (List.nil_subset _)
   
   -- Fp (assumption)
-  let ass : Γ ⊢ p.all_future :=
-    DerivationTree.assumption Γ p.all_future (List.Mem.head _)
+  let ass : Γ ⊢ p.allFuture :=
+    DerivationTree.assumption Γ p.allFuture (List.Mem.head _)
   
   -- FFp (by modus ponens)
-  let d : Γ ⊢ p.all_future.all_future :=
-    DerivationTree.modus_ponens Γ p.all_future p.all_future.all_future ax ass
+  let d : Γ ⊢ p.allFuture.allFuture :=
+    DerivationTree.modus_ponens Γ p.allFuture p.allFuture.allFuture ax ass
   
   -- Verify soundness
-  have v : Γ ⊨ p.all_future.all_future :=
-    soundness Γ p.all_future.all_future d
+  have v : Γ ⊨ p.allFuture.allFuture :=
+    soundness Γ p.allFuture.allFuture d
   
   trivial
 
@@ -110,29 +110,29 @@ Test 3: Chained Temporal 4 applications.
 From [Fp], derive FFFp through repeated application.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
-  let Γ := [p.all_future]
+  let p := Formula.atomS "p"
+  let Γ := [p.allFuture]
   
   -- Step 1: Fp → FFp, Fp ⊢ FFp
-  let ax1 : Γ ⊢ (p.all_future.imp p.all_future.all_future) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived p) (List.nil_subset _)
-  let ass : Γ ⊢ p.all_future :=
-    DerivationTree.assumption Γ p.all_future (List.Mem.head _)
-  let d1 : Γ ⊢ p.all_future.all_future :=
-    DerivationTree.modus_ponens Γ p.all_future p.all_future.all_future ax1 ass
+  let ax1 : Γ ⊢ (p.allFuture.imp p.allFuture.allFuture) :=
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p) (List.nil_subset _)
+  let ass : Γ ⊢ p.allFuture :=
+    DerivationTree.assumption Γ p.allFuture (List.Mem.head _)
+  let d1 : Γ ⊢ p.allFuture.allFuture :=
+    DerivationTree.modus_ponens Γ p.allFuture p.allFuture.allFuture ax1 ass
   
   -- Step 2: FFp → FFFp, FFp ⊢ FFFp
-  let ax2 : Γ ⊢ (p.all_future.all_future.imp p.all_future.all_future.all_future) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived p.all_future) (List.nil_subset _)
-  let d2 : Γ ⊢ p.all_future.all_future.all_future :=
-    DerivationTree.modus_ponens Γ p.all_future.all_future
-      p.all_future.all_future.all_future ax2 d1
+  let ax2 : Γ ⊢ (p.allFuture.allFuture.imp p.allFuture.allFuture.allFuture) :=
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p.allFuture) (List.nil_subset _)
+  let d2 : Γ ⊢ p.allFuture.allFuture.allFuture :=
+    DerivationTree.modus_ponens Γ p.allFuture.allFuture
+      p.allFuture.allFuture.allFuture ax2 d1
   
   -- Verify soundness at each step
-  have v1 : Γ ⊨ p.all_future.all_future :=
-    soundness Γ p.all_future.all_future d1
-  have v2 : Γ ⊨ p.all_future.all_future.all_future :=
-    soundness Γ p.all_future.all_future.all_future d2
+  have v1 : Γ ⊨ p.allFuture.allFuture :=
+    soundness Γ p.allFuture.allFuture d1
+  have v2 : Γ ⊨ p.allFuture.allFuture.allFuture :=
+    soundness Γ p.allFuture.allFuture.allFuture d2
   
   trivial
 
@@ -150,8 +150,8 @@ Test 4: Temporal A axiom derivation and soundness.
 Verifies p → F(some_past p) is derivable and sound.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
-  let φ := p.imp (Formula.all_future p.some_past)
+  let p := Formula.atomS "p"
+  let φ := p.imp (Formula.allFuture p.somePast)
   
   -- Derive using Temporal A axiom
   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.connect_future p) trivial
@@ -170,11 +170,11 @@ Test 5: Temporal A with modus ponens.
 From [p], derive F(some_past p).
 -/
 example : True := by
-  let p := Formula.atom_s "p"
+  let p := Formula.atomS "p"
   let Γ := [p]
   
   -- p → F(some_past p)
-  let ax : Γ ⊢ (p.imp (Formula.all_future p.some_past)) :=
+  let ax : Γ ⊢ (p.imp (Formula.allFuture p.somePast)) :=
     DerivationTree.axiom Γ _ (Axiom.connect_future p) trivial
   
   -- p (assumption)
@@ -182,12 +182,12 @@ example : True := by
     DerivationTree.assumption Γ p (List.Mem.head _)
   
   -- F(some_past p) (by modus ponens)
-  let d : Γ ⊢ (Formula.all_future p.some_past) :=
-    DerivationTree.modus_ponens Γ p (Formula.all_future p.some_past) ax ass
+  let d : Γ ⊢ (Formula.allFuture p.somePast) :=
+    DerivationTree.modus_ponens Γ p (Formula.allFuture p.somePast) ax ass
   
   -- Verify soundness
-  have v : Γ ⊨ (Formula.all_future p.some_past) :=
-    soundness Γ (Formula.all_future p.some_past) d
+  have v : Γ ⊨ (Formula.allFuture p.somePast) :=
+    soundness Γ (Formula.allFuture p.somePast) d
   
   trivial
 
@@ -265,12 +265,12 @@ Test 8: Temporal K distribution axiom.
 Verifies F(p → q) → (Fp → Fq) is derivable and sound.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
-  let q := Formula.atom_s "q"
-  let φ := (p.imp q).all_future.imp (p.all_future.imp q.all_future)
+  let p := Formula.atomS "p"
+  let q := Formula.atomS "q"
+  let φ := (p.imp q).allFuture.imp (p.allFuture.imp q.allFuture)
   
   -- Derive using Temporal K distribution axiom
-  let d : ⊢ φ := FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived p q
+  let d : ⊢ φ := FormalSystem.Theorems.TemporalDerived.temporalKDistDerived p q
   
   -- Verify soundness
   have v : [] ⊨ φ := soundness [] φ d
@@ -286,33 +286,33 @@ Test 9: Temporal K with modus ponens chain.
 From [F(p → q), Fp], derive Fq.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
-  let q := Formula.atom_s "q"
-  let Γ := [(p.imp q).all_future, p.all_future]
+  let p := Formula.atomS "p"
+  let q := Formula.atomS "q"
+  let Γ := [(p.imp q).allFuture, p.allFuture]
   
   -- F(p → q) → (Fp → Fq)
-  let ax : Γ ⊢ ((p.imp q).all_future.imp (p.all_future.imp q.all_future)) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_k_dist_derived p q) (List.nil_subset _)
+  let ax : Γ ⊢ ((p.imp q).allFuture.imp (p.allFuture.imp q.allFuture)) :=
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived p q) (List.nil_subset _)
   
   -- F(p → q) (assumption)
-  let ass1 : Γ ⊢ (p.imp q).all_future :=
-    DerivationTree.assumption Γ (p.imp q).all_future (List.Mem.head _)
+  let ass1 : Γ ⊢ (p.imp q).allFuture :=
+    DerivationTree.assumption Γ (p.imp q).allFuture (List.Mem.head _)
   
   -- Fp → Fq (by modus ponens)
-  let d1 : Γ ⊢ (p.all_future.imp q.all_future) :=
-    DerivationTree.modus_ponens Γ (p.imp q).all_future
-      (p.all_future.imp q.all_future) ax ass1
+  let d1 : Γ ⊢ (p.allFuture.imp q.allFuture) :=
+    DerivationTree.modus_ponens Γ (p.imp q).allFuture
+      (p.allFuture.imp q.allFuture) ax ass1
   
   -- Fp (assumption)
-  let ass2 : Γ ⊢ p.all_future :=
-    DerivationTree.assumption Γ p.all_future (List.Mem.tail _ (List.Mem.head _))
+  let ass2 : Γ ⊢ p.allFuture :=
+    DerivationTree.assumption Γ p.allFuture (List.Mem.tail _ (List.Mem.head _))
   
   -- Fq (by modus ponens)
-  let d2 : Γ ⊢ q.all_future :=
-    DerivationTree.modus_ponens Γ p.all_future q.all_future d1 ass2
+  let d2 : Γ ⊢ q.allFuture :=
+    DerivationTree.modus_ponens Γ p.allFuture q.allFuture d1 ass2
   
   -- Verify soundness
-  have v : Γ ⊨ q.all_future := soundness Γ q.all_future d2
+  have v : Γ ⊨ q.allFuture := soundness Γ q.allFuture d2
   
   trivial
 
@@ -330,18 +330,18 @@ Test 10: Temporal necessitation rule.
 From ⊢ φ, derive ⊢ Fφ.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
+  let p := Formula.atomS "p"
   
   -- Derive p → p (propositional tautology)
   let d1 : ⊢ (p.imp p) := FormalSystem.Theorems.Combinators.identity p
   
   -- Apply temporal necessitation to get F(p → p)
-  let d2 : ⊢ ((p.imp p).all_future) :=
+  let d2 : ⊢ ((p.imp p).allFuture) :=
     DerivationTree.temporal_necessitation (p.imp p) d1
   
   -- Verify soundness
-  have v : [] ⊨ ((p.imp p).all_future) :=
-    soundness [] ((p.imp p).all_future) d2
+  have v : [] ⊨ ((p.imp p).allFuture) :=
+    soundness [] ((p.imp p).allFuture) d2
   
   trivial
 
@@ -351,26 +351,26 @@ Test 11: Chained temporal necessitation.
 Apply temporal necessitation multiple times.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
+  let p := Formula.atomS "p"
   
   -- Start with Modal T axiom
   let d1 : ⊢ (p.box.imp p) :=
     DerivationTree.axiom [] (p.box.imp p) (Axiom.modal_t p) trivial
   
   -- Apply temporal necessitation once
-  let d2 : ⊢ ((p.box.imp p).all_future) :=
+  let d2 : ⊢ ((p.box.imp p).allFuture) :=
     DerivationTree.temporal_necessitation (p.box.imp p) d1
   
   -- Apply temporal necessitation again
-  let d3 : ⊢ (((p.box.imp p).all_future).all_future) :=
-    DerivationTree.temporal_necessitation ((p.box.imp p).all_future) d2
+  let d3 : ⊢ (((p.box.imp p).allFuture).allFuture) :=
+    DerivationTree.temporal_necessitation ((p.box.imp p).allFuture) d2
   
   -- Verify soundness at each step
   have v1 : [] ⊨ (p.box.imp p) := soundness [] (p.box.imp p) d1
-  have v2 : [] ⊨ ((p.box.imp p).all_future) :=
-    soundness [] ((p.box.imp p).all_future) d2
-  have v3 : [] ⊨ (((p.box.imp p).all_future).all_future) :=
-    soundness [] (((p.box.imp p).all_future).all_future) d3
+  have v2 : [] ⊨ ((p.box.imp p).allFuture) :=
+    soundness [] ((p.box.imp p).allFuture) d2
+  have v3 : [] ⊨ (((p.box.imp p).allFuture).allFuture) :=
+    soundness [] (((p.box.imp p).allFuture).allFuture) d3
   
   trivial
 
@@ -388,18 +388,18 @@ Test 12: Temporal duality rule.
 From ⊢ φ, derive ⊢ swap_temporal φ.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
+  let p := Formula.atomS "p"
   
   -- Derive Fp → FFp
-  let d1 : ⊢ (p.all_future.imp p.all_future.all_future) :=
-    FormalSystem.Theorems.TemporalDerived.temp_4_derived p
+  let d1 : ⊢ (p.allFuture.imp p.allFuture.allFuture) :=
+    FormalSystem.Theorems.TemporalDerived.temporal4Derived p
   
   -- Apply temporal duality
-  let d2 : ⊢ ((p.all_future.imp p.all_future.all_future).swap_temporal) :=
+  let d2 : ⊢ ((p.allFuture.imp p.allFuture.allFuture).swapTemporal) :=
     DerivationTree.temporal_duality _ d1
   
   -- Verify soundness
-  have v : [] ⊨ ((p.all_future.imp p.all_future.all_future).swap_temporal) :=
+  have v : [] ⊨ ((p.allFuture.imp p.allFuture.allFuture).swapTemporal) :=
     soundness [] _ d2
   
   trivial
@@ -410,18 +410,18 @@ Test 13: Temporal duality with complex formula.
 Apply temporal duality to formula with mixed operators.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
+  let p := Formula.atomS "p"
   
   -- Derive Temporal A axiom
-  let d1 : ⊢ (p.imp (Formula.all_future p.some_past)) :=
+  let d1 : ⊢ (p.imp (Formula.allFuture p.somePast)) :=
     DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_future p) trivial
   
   -- Apply temporal duality
-  let d2 : ⊢ ((p.imp (Formula.all_future p.some_past)).swap_temporal) :=
+  let d2 : ⊢ ((p.imp (Formula.allFuture p.somePast)).swapTemporal) :=
     DerivationTree.temporal_duality _ d1
   
   -- Verify soundness
-  have v : [] ⊨ ((p.imp (Formula.all_future p.some_past)).swap_temporal) :=
+  have v : [] ⊨ ((p.imp (Formula.allFuture p.somePast)).swapTemporal) :=
     soundness [] _ d2
   
   trivial
@@ -466,11 +466,11 @@ Test 15: Complex temporal workflow.
 Multi-step derivation with past and future operators.
 -/
 example : True := by
-  let p := Formula.atom_s "p"
+  let p := Formula.atomS "p"
   let Γ := [p]
   
   -- Step 1: p → F(some_past p)
-  let ax : Γ ⊢ (p.imp (Formula.all_future p.some_past)) :=
+  let ax : Γ ⊢ (p.imp (Formula.allFuture p.somePast)) :=
     DerivationTree.axiom Γ _ (Axiom.connect_future p) trivial
   
   -- Step 2: p (assumption)
@@ -478,12 +478,12 @@ example : True := by
     DerivationTree.assumption Γ p (List.Mem.head _)
   
   -- Step 3: F(some_past p) (by modus ponens)
-  let d : Γ ⊢ (Formula.all_future p.some_past) :=
-    DerivationTree.modus_ponens Γ p (Formula.all_future p.some_past) ax ass
+  let d : Γ ⊢ (Formula.allFuture p.somePast) :=
+    DerivationTree.modus_ponens Γ p (Formula.allFuture p.somePast) ax ass
   
   -- Verify soundness
-  have v : Γ ⊨ (Formula.all_future p.some_past) :=
-    soundness Γ (Formula.all_future p.some_past) d
+  have v : Γ ⊨ (Formula.allFuture p.somePast) :=
+    soundness Γ (Formula.allFuture p.somePast) d
   
   trivial
 

@@ -37,20 +37,20 @@ open FormalSystem.Theorems.ModalS5
 -/
 
 /-- Test t_box_to_diamond type signature: □A → ◇A -/
-example (A : Formula) : ⊢ A.box.imp A.diamond := t_box_to_diamond A
+example (A : Formula) : ⊢ A.box.imp A.diamond := tBoxToDiamond A
 
 /-- Test t_box_to_diamond with atomic formula -/
-example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").diamond :=
-  t_box_to_diamond (Formula.atom_s "p")
+example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").diamond :=
+  tBoxToDiamond (Formula.atomS "p")
 
 /-- Test t_box_to_diamond with complex formula -/
-example : ⊢ ((Formula.atom_s "p").imp (Formula.atom_s "q")).box.imp
-             ((Formula.atom_s "p").imp (Formula.atom_s "q")).diamond :=
-  t_box_to_diamond ((Formula.atom_s "p").imp (Formula.atom_s "q"))
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "q")).box.imp
+             ((Formula.atomS "p").imp (Formula.atomS "q")).diamond :=
+  tBoxToDiamond ((Formula.atomS "p").imp (Formula.atomS "q"))
 
 /-- Test t_box_to_diamond with nested modal formula -/
-example : ⊢ ((Formula.atom_s "p").box).box.imp ((Formula.atom_s "p").box).diamond :=
-  t_box_to_diamond ((Formula.atom_s "p").box)
+example : ⊢ ((Formula.atomS "p").box).box.imp ((Formula.atomS "p").box).diamond :=
+  tBoxToDiamond ((Formula.atomS "p").box)
 
 /-!
 ## Box-Contraposition Tests (Task 35)
@@ -58,48 +58,48 @@ example : ⊢ ((Formula.atom_s "p").box).box.imp ((Formula.atom_s "p").box).diam
 
 /-- Test box_contrapose type signature: □(A → B) → □(¬B → ¬A) -/
 example (A B : Formula) : ⊢ (A.imp B).box.imp ((B.neg.imp A.neg).box) :=
-  box_contrapose A B
+  boxContrapose A B
 
 /-- Test box_contrapose with atomic formulas -/
-example : ⊢ ((Formula.atom_s "p").imp (Formula.atom_s "q")).box.imp
-             (((Formula.atom_s "q").neg.imp (Formula.atom_s "p").neg).box) :=
-  box_contrapose (Formula.atom_s "p") (Formula.atom_s "q")
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "q")).box.imp
+             (((Formula.atomS "q").neg.imp (Formula.atomS "p").neg).box) :=
+  boxContrapose (Formula.atomS "p") (Formula.atomS "q")
 
 /-- Test box_contrapose with complex formulas -/
-example : ⊢ (((Formula.atom_s "p").box).imp ((Formula.atom_s "q").diamond)).box.imp
-             ((((Formula.atom_s "q").diamond).neg.imp ((Formula.atom_s "p").box).neg).box) :=
-  box_contrapose ((Formula.atom_s "p").box) ((Formula.atom_s "q").diamond)
+example : ⊢ (((Formula.atomS "p").box).imp ((Formula.atomS "q").diamond)).box.imp
+             ((((Formula.atomS "q").diamond).neg.imp ((Formula.atomS "p").box).neg).box) :=
+  boxContrapose ((Formula.atomS "p").box) ((Formula.atomS "q").diamond)
 
 /-!
 ## T-Box-Consistency Tests (Task 36)
 -/
 
 /-- Test t_box_consistency type signature: ¬□(A ∧ ¬A) -/
-example (A : Formula) : ⊢ ((A.and A.neg).box).neg := t_box_consistency A
+example (A : Formula) : ⊢ ((A.and A.neg).box).neg := tBoxConsistency A
 
 /-- Test t_box_consistency with atomic formula -/
-example : ⊢ (((Formula.atom_s "p").and (Formula.atom_s "p").neg).box).neg :=
-  t_box_consistency (Formula.atom_s "p")
+example : ⊢ (((Formula.atomS "p").and (Formula.atomS "p").neg).box).neg :=
+  tBoxConsistency (Formula.atomS "p")
 
 /-- Test t_box_consistency with complex formula -/
-example : ⊢ ((((Formula.atom_s "p").imp (Formula.atom_s "q")).and
-               ((Formula.atom_s "p").imp (Formula.atom_s "q")).neg).box).neg :=
-  t_box_consistency ((Formula.atom_s "p").imp (Formula.atom_s "q"))
+example : ⊢ ((((Formula.atomS "p").imp (Formula.atomS "q")).and
+               ((Formula.atomS "p").imp (Formula.atomS "q")).neg).box).neg :=
+  tBoxConsistency ((Formula.atomS "p").imp (Formula.atomS "q"))
 
 /-!
 ## Integration Tests: Combining Modal S5 Theorems
 -/
 
 /-- Test: t_box_to_diamond composes with modal_t -/
-example (A : Formula) : ⊢ A.box.imp A.diamond := t_box_to_diamond A
+example (A : Formula) : ⊢ A.box.imp A.diamond := tBoxToDiamond A
 
 /-- Test: box_contrapose preserves modal structure -/
 example (A B : Formula) : ⊢ (A.imp B).box.imp ((B.neg.imp A.neg).box) :=
-  box_contrapose A B
+  boxContrapose A B
 
 /-- Test: Consistency and modal T together -/
-example : ⊢ (((Formula.atom_s "p").and (Formula.atom_s "p").neg).box).neg :=
-  t_box_consistency (Formula.atom_s "p")
+example : ⊢ (((Formula.atomS "p").and (Formula.atomS "p").neg).box).neg :=
+  tBoxConsistency (Formula.atomS "p")
 
 /-!
 ## Placeholder Tests for Biconditional Theorems

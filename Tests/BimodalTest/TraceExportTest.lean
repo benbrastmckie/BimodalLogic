@@ -37,8 +37,8 @@ open FormalSystem.Metalogic.Decidability
 open FormalSystem.Metalogic.Decidability.TraceExport
 
 /-- Atom helper. -/
-private def p : Formula := .atom_s "p"
-private def q : Formula := .atom_s "q"
+private def p : Formula := .atomS "p"
+private def q : Formula := .atomS "q"
 
 /--
 Verify that a JSON string has the expected structural form:

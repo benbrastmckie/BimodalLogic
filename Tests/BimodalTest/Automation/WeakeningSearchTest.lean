@@ -29,8 +29,8 @@ namespace BimodalTest.Automation.WeakeningSearch
 
 open FormalSystem.Syntax FormalSystem.Automation FormalSystem.ProofSystem
 
-abbrev p : Formula := Formula.atom_s "p"
-abbrev q : Formula := Formula.atom_s "q"
+abbrev p : Formula := Formula.atomS "p"
+abbrev q : Formula := Formula.atomS "q"
 
 /-! ## Tactic layer (`modal_search`) -/
 
@@ -44,30 +44,30 @@ example (p q : Formula) : [(p.imp p).imp q] ⊢ q := by modal_search 3
 
 -- Tier-2 case: `□p → Gp` via `box_to_future` (`@[tm_lemma]`) in a non-empty
 -- context.
-example (p q : Formula) : [q] ⊢ ((Formula.box p).imp (Formula.all_future p)) := by
+example (p q : Formula) : [q] ⊢ ((Formula.box p).imp (Formula.allFuture p)) := by
   modal_search
 
 /-! ## Computable layer (`bounded_search_with_proof`) -/
 
 -- Headline mirror: the identity arm of `matchDerived` fires through the
 -- `weakening [] Γ` wrapper in a non-empty context.
-#guard (bounded_search_with_proof [p, q] (p.imp p) 3).1.isSome
+#guard (boundedSearchWithProof [p, q] (p.imp p) 3).1.isSome
 
 -- box_to_future arm in a non-empty context.
-#guard (bounded_search_with_proof [q]
-  ((Formula.box p).imp (Formula.all_future p)) 3).1.isSome
+#guard (boundedSearchWithProof [q]
+  ((Formula.box p).imp (Formula.allFuture p)) 3).1.isSome
 
 -- box_to_past arm in a non-empty context.
-#guard (bounded_search_with_proof [q]
-  ((Formula.box p).imp (Formula.all_past p)) 3).1.isSome
+#guard (boundedSearchWithProof [q]
+  ((Formula.box p).imp (Formula.allPast p)) 3).1.isSome
 
 -- dni arm: `p → ¬¬p` in a non-empty context.
-#guard (bounded_search_with_proof [q] (p.imp p.neg.neg) 3).1.isSome
+#guard (boundedSearchWithProof [q] (p.imp p.neg.neg) 3).1.isSome
 
 -- Regression: the pre-existing TF arm (`□p → G(□p)`) still fires (empty
 -- context, no weakening involved).
-#guard (bounded_search_with_proof []
-  ((Formula.box p).imp (Formula.all_future (Formula.box p))) 3).1.isSome
+#guard (boundedSearchWithProof []
+  ((Formula.box p).imp (Formula.allFuture (Formula.box p))) 3).1.isSome
 
 /-! ## `matchAxiom` fall-through (completeness fix) -/
 
@@ -76,15 +76,15 @@ example (p q : Formula) : [q] ⊢ ((Formula.box p).imp (Formula.all_future p)) :
 -- frame-class mismatch made `bounded_search_with_proof` return `none`
 -- outright; now the search falls through to the assumption strategy and
 -- closes the goal from the context.
-#guard (bounded_search_with_proof
-  [(Formula.all_future (Formula.all_future p)).imp (Formula.all_future p)]
-  ((Formula.all_future (Formula.all_future p)).imp (Formula.all_future p))
+#guard (boundedSearchWithProof
+  [(Formula.allFuture (Formula.allFuture p)).imp (Formula.allFuture p)]
+  ((Formula.allFuture (Formula.allFuture p)).imp (Formula.allFuture p))
   3).1.isSome
 
 /-! ## Negative fast-fail guard -/
 
 -- An atomic goal in the empty context is unprovable; the search returns
 -- `none` quickly (no strategy applies, no search-space blow-up).
-#guard (bounded_search_with_proof [] (Formula.atom_s "z") 5).1.isNone
+#guard (boundedSearchWithProof [] (Formula.atomS "z") 5).1.isNone
 
 end BimodalTest.Automation.WeakeningSearch

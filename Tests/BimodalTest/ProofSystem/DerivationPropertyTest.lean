@@ -138,8 +138,8 @@ example (φ : Formula) : ⊢ (φ.box.imp φ.box.box) :=
 /-!
 Test: Temporal 4 axiom is derivable.
 -/
-noncomputable example (φ : Formula) : ⊢ (φ.all_future.imp φ.all_future.all_future) :=
-  FormalSystem.Theorems.TemporalDerived.temp_4_derived φ
+noncomputable example (φ : Formula) : ⊢ (φ.allFuture.imp φ.allFuture.allFuture) :=
+  FormalSystem.Theorems.TemporalDerived.temporal4Derived φ
 
 /-! ## Modus Ponens Properties -/
 
@@ -233,8 +233,8 @@ example (φ : Formula) : ⊢ (φ.box.diamond.imp φ.box) :=
 /-!
 Test: Temporal A axiom is derivable.
 -/
-example (φ : Formula) : ⊢ (φ.imp (Formula.all_future φ.some_past)) :=
-  DerivationTree.axiom [] (φ.imp (Formula.all_future φ.some_past)) (Axiom.connect_future φ) trivial
+example (φ : Formula) : ⊢ (φ.imp (Formula.allFuture φ.somePast)) :=
+  DerivationTree.axiom [] (φ.imp (Formula.allFuture φ.somePast)) (Axiom.connect_future φ) trivial
 
 -- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
@@ -247,14 +247,14 @@ example (φ : Formula) : ⊢ (φ.imp (Formula.all_future φ.some_past)) :=
 /-!
 Test: Modal-Future axiom is derivable.
 -/
-example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.box (Formula.all_future φ))) :=
-  DerivationTree.axiom [] ((Formula.box φ).imp (Formula.box (Formula.all_future φ))) (Axiom.modal_future φ) trivial
+example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))) :=
+  DerivationTree.axiom [] ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))) (Axiom.modal_future φ) trivial
 
 /-!
 Test: Temporal-Future is derivable (derived from MF + T + Modal 4).
 -/
-example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) :=
-  FormalSystem.Theorems.Combinators.temp_future_derived φ
+example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.allFuture (Formula.box φ))) :=
+  FormalSystem.Theorems.Combinators.temporalFutureDerived φ
 
 /-! ## Context Operations Properties -/
 

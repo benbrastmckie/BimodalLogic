@@ -97,17 +97,17 @@ example (p q : Formula) : ⊢ p.imp ((p.imp q).imp q) := by modal_search
 
 -- temp_k_dist_derived: G(φ→ψ) → (Gφ→Gψ)
 noncomputable example (p q : Formula) :
-    ⊢ (p.imp q).all_future.imp (p.all_future.imp q.all_future) := by modal_search
+    ⊢ (p.imp q).allFuture.imp (p.allFuture.imp q.allFuture) := by modal_search
 
 -- temp_4_derived: Gφ → GGφ
-noncomputable example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by modal_search
+noncomputable example (p : Formula) : ⊢ p.allFuture.imp p.allFuture.allFuture := by modal_search
 
 -- H_distribution: H(φ→ψ) → (Hφ→Hψ)
 noncomputable example (p q : Formula) :
-    ⊢ (p.imp q).all_past.imp (p.all_past.imp q.all_past) := by modal_search
+    ⊢ (p.imp q).allPast.imp (p.allPast.imp q.allPast) := by modal_search
 
 -- H_transitivity: Hφ → HHφ
-noncomputable example (p : Formula) : ⊢ p.all_past.imp p.all_past.all_past := by modal_search
+noncomputable example (p : Formula) : ⊢ p.allPast.imp p.allPast.allPast := by modal_search
 
 -- t_box_to_diamond: □A → ◇A
 example (p : Formula) : ⊢ p.box.imp p.diamond := by modal_search
@@ -122,10 +122,10 @@ example (p : Formula) : ⊢ p.diamond.diamond.imp p.diamond := by modal_search
 example (p : Formula) : ⊢ p.diamond.imp p.diamond.box := by modal_search
 
 -- box_to_future: □φ → Gφ
-example (p : Formula) : ⊢ p.box.imp p.all_future := by modal_search
+example (p : Formula) : ⊢ p.box.imp p.allFuture := by modal_search
 
 -- box_to_past: □φ → Hφ
-example (p : Formula) : ⊢ p.box.imp p.all_past := by modal_search
+example (p : Formula) : ⊢ p.box.imp p.allPast := by modal_search
 
 -- formula_or_comm: (A ∨ B) → (B ∨ A)
 noncomputable example (p q : Formula) : ⊢ (p.or q).imp (q.or p) := by modal_search
@@ -138,7 +138,7 @@ example (p q : Formula) :
 noncomputable example (p q : Formula) : ⊢ (p.imp q).imp ((p.neg.imp q).imp q) := by modal_search
 
 -- temp_future_derived: □φ → G□φ
-example (p : Formula) : ⊢ p.box.imp p.box.all_future := by modal_search
+example (p : Formula) : ⊢ p.box.imp p.box.allFuture := by modal_search
 
 /-!
 ## Group 3: New backward-chaining capability (Phase 3)
@@ -164,21 +164,21 @@ weakening fallback below) is the demonstrated new capability.
 example (X Y : Formula) : [Y] ⊢ X.imp X := by modal_search 6
 
 -- (c) box_to_future under a non-empty context — weakening + direct lemma
-example (X Y : Formula) : [Y] ⊢ X.box.imp X.all_future := by modal_search 6
+example (X Y : Formula) : [Y] ⊢ X.box.imp X.allFuture := by modal_search 6
 
 -- (c) weakening fallback recursing through modus-ponens under context
 example (X Y : Formula) : [Y] ⊢ X.diamond.imp X.diamond.box := by modal_search 6
 
 -- (d) an underivable bare atom fails (and terminates) at empty context
 example : True := by
-  fail_if_success (have : ⊢ (Formula.atom_s "p") := by modal_search 3)
+  fail_if_success (have : ⊢ (Formula.atomS "p") := by modal_search 3)
   trivial
 
 -- (d) an underivable goal under a non-empty context fails AND terminates —
 -- confirms the weakening fallback does not loop on unprovable goals
 example : True := by
   fail_if_success
-    (have : [Formula.atom_s "q"] ⊢ (Formula.atom_s "p") := by modal_search 4)
+    (have : [Formula.atomS "q"] ⊢ (Formula.atomS "p") := by modal_search 4)
   trivial
 
 /-!
@@ -193,12 +193,12 @@ real abort, not a no-op.
 -- visitLimit := 0 aborts before visiting any node — even a trivial axiom goal
 example : True := by
   fail_if_success
-    (have : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
+    (have : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") := by
       modal_search (depth := 10) (visitLimit := 0))
   trivial
 
 -- the same goal closes with an adequate budget
-example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
+example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") := by
   modal_search (depth := 10) (visitLimit := 1000)
 
 /-!

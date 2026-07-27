@@ -34,9 +34,9 @@ open FormalSystem.Syntax FormalSystem.Automation.Normalization
 open FormalSystem.Metalogic.Decidability
 
 -- Convenience abbreviations
-private def p : Formula := .atom (Atom.mk_base "p")
-private def q : Formula := .atom (Atom.mk_base "q")
-private def r : Formula := .atom (Atom.mk_base "r")
+private def p : Formula := .atom (Atom.mkBase "p")
+private def q : Formula := .atom (Atom.mkBase "q")
+private def r : Formula := .atom (Atom.mkBase "r")
 
 /-!
 ## Section 1: Primitive Formula Tests
@@ -47,7 +47,7 @@ theorem directly.
 -/
 
 -- Test 1: atom is preserved
-example : normalizeFormula (.atom (Atom.mk_base "p")) = .atom (Atom.mk_base "p") := rfl
+example : normalizeFormula (.atom (Atom.mkBase "p")) = .atom (Atom.mkBase "p") := rfl
 
 -- Test 2: bot is preserved
 example : normalizeFormula .bot = .bot := rfl
@@ -93,19 +93,19 @@ example : normalizeFormula (Formula.next p) = Formula.next p := normalizeFormula
 example : normalizeFormula (Formula.prev p) = Formula.prev p := normalizeFormula_id _
 
 -- Test 14: some_future is preserved
-example : normalizeFormula (Formula.some_future p) = Formula.some_future p :=
+example : normalizeFormula (Formula.someFuture p) = Formula.someFuture p :=
   normalizeFormula_id _
 
 -- Test 15: some_past is preserved
-example : normalizeFormula (Formula.some_past p) = Formula.some_past p :=
+example : normalizeFormula (Formula.somePast p) = Formula.somePast p :=
   normalizeFormula_id _
 
 -- Test 16: all_future is preserved
-example : normalizeFormula (Formula.all_future p) = Formula.all_future p :=
+example : normalizeFormula (Formula.allFuture p) = Formula.allFuture p :=
   normalizeFormula_id _
 
 -- Test 17: all_past is preserved
-example : normalizeFormula (Formula.all_past p) = Formula.all_past p :=
+example : normalizeFormula (Formula.allPast p) = Formula.allPast p :=
   normalizeFormula_id _
 
 /-!
@@ -113,11 +113,11 @@ example : normalizeFormula (Formula.all_past p) = Formula.all_past p :=
 -/
 
 -- Test 18: weak_future is preserved
-example : normalizeFormula (Formula.weak_future p) = Formula.weak_future p :=
+example : normalizeFormula (Formula.weakFuture p) = Formula.weakFuture p :=
   normalizeFormula_id _
 
 -- Test 19: weak_past is preserved
-example : normalizeFormula (Formula.weak_past p) = Formula.weak_past p :=
+example : normalizeFormula (Formula.weakPast p) = Formula.weakPast p :=
   normalizeFormula_id _
 
 -- Test 20: always is preserved
@@ -129,11 +129,11 @@ example : normalizeFormula (Formula.sometimes p) = Formula.sometimes p :=
   normalizeFormula_id _
 
 -- Test 22: strong_release is preserved
-example : normalizeFormula (Formula.strong_release p q) = Formula.strong_release p q :=
+example : normalizeFormula (Formula.strongRelease p q) = Formula.strongRelease p q :=
   normalizeFormula_id _
 
 -- Test 23: strong_trigger is preserved
-example : normalizeFormula (Formula.strong_trigger p q) = Formula.strong_trigger p q :=
+example : normalizeFormula (Formula.strongTrigger p q) = Formula.strongTrigger p q :=
   normalizeFormula_id _
 
 /-!
@@ -149,8 +149,8 @@ example : normalizeFormula (Formula.box (Formula.neg (Formula.and p q))) =
     Formula.box (Formula.neg (Formula.and p q)) := normalizeFormula_id _
 
 -- Test 26: imp (diamond p) (all_future q) is preserved
-example : normalizeFormula (Formula.imp (Formula.diamond p) (Formula.all_future q)) =
-    Formula.imp (Formula.diamond p) (Formula.all_future q) := normalizeFormula_id _
+example : normalizeFormula (Formula.imp (Formula.diamond p) (Formula.allFuture q)) =
+    Formula.imp (Formula.diamond p) (Formula.allFuture q) := normalizeFormula_id _
 
 -- Test 27: untl (neg p) (or q r) is preserved
 example : normalizeFormula (Formula.untl (Formula.neg p) (Formula.or q r)) =
@@ -173,16 +173,16 @@ using computable equality.
     Formula.diamond p,
     -- Derived temporal
     Formula.next p, Formula.prev p,
-    Formula.some_future p, Formula.some_past p,
-    Formula.all_future p, Formula.all_past p,
+    Formula.someFuture p, Formula.somePast p,
+    Formula.allFuture p, Formula.allPast p,
     -- Composite
-    Formula.weak_future p, Formula.weak_past p,
+    Formula.weakFuture p, Formula.weakPast p,
     Formula.always p, Formula.sometimes p,
-    Formula.strong_release p q, Formula.strong_trigger p q,
+    Formula.strongRelease p q, Formula.strongTrigger p q,
     -- Nested
     Formula.always (Formula.diamond p),
     Formula.box (Formula.neg (Formula.and p q)),
-    Formula.imp (Formula.diamond p) (Formula.all_future q)
+    Formula.imp (Formula.diamond p) (Formula.allFuture q)
   ]
   let results := formulas.map fun f =>
     normalizeFormula f == f

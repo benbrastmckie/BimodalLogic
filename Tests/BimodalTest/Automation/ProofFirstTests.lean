@@ -28,10 +28,10 @@ open FormalSystem.Automation.DataExport
 open FormulaLabel
 
 -- Convenience atoms
-private def p : Formula := .atom_s "p"
-private def q : Formula := .atom_s "q"
-private def r : Formula := .atom_s "r"
-private def atoms : List Atom := [Atom.mk_base "p", Atom.mk_base "q", Atom.mk_base "r"]
+private def p : Formula := .atomS "p"
+private def q : Formula := .atomS "q"
+private def r : Formula := .atomS "r"
+private def atoms : List Atom := [Atom.mkBase "p", Atom.mkBase "q", Atom.mkBase "r"]
 
 /-! ## Test 1: All 42 axiom schemata produce witnesses -/
 
@@ -138,7 +138,7 @@ private def hasWeakeningNode {fc Γ φ} : DerivationTree fc Γ φ → Bool
   let mut foundDensity := false
   for σ in pool do
     let trace := extractProofTrace σ.snd
-    if trace.axioms_used.contains "density" then
+    if trace.axiomsUsed.contains "density" then
       foundDensity := true
   if foundDensity then
     throw (IO.userError "Test 6: Density axiom found under Base")
@@ -188,11 +188,11 @@ private def hasWeakeningNode {fc Γ φ} : DerivationTree fc Γ φ → Bool
 #eval do
   IO.println "=== Test 10: Corpus metrics known values ==="
   let lf1 : LabeledFormula := {
-    formula := p, label := FormulaLabel.valid, proofTrace := some { height := 0, axioms_used := ["prop_s"], rules_applied := [] },
+    formula := p, label := FormulaLabel.valid, proofTrace := some { height := 0, axiomsUsed := ["prop_s"], rulesApplied := [] },
     countermodel := none, metrics := default, patternKey := default, ruleProfile := some { axiomCount := 1, assumptionCount := 0, mpCount := 0, necessitationCount := 0, temporalNecessitationCount := 0, temporalDualityCount := 0, weakeningCount := 0 },
     decisionMethod := "proof_first", countermodelConsistent := none, enrichedCountermodel := none, semanticCountermodelSummary := none, proofReconstructionMethod := none }
   let lf2 : LabeledFormula := {
-    formula := q, label := FormulaLabel.valid, proofTrace := some { height := 0, axioms_used := ["prop_s"], rules_applied := [] },
+    formula := q, label := FormulaLabel.valid, proofTrace := some { height := 0, axiomsUsed := ["prop_s"], rulesApplied := [] },
     countermodel := none, metrics := default, patternKey := default, ruleProfile := some { axiomCount := 1, assumptionCount := 0, mpCount := 0, necessitationCount := 0, temporalNecessitationCount := 0, temporalDualityCount := 0, weakeningCount := 0 },
     decisionMethod := "proof_first", countermodelConsistent := none, enrichedCountermodel := none, semanticCountermodelSummary := none, proofReconstructionMethod := none }
   let m := computeCorpusMetrics [lf1, lf2]

@@ -28,10 +28,10 @@ namespace BimodalTest.Automation.EdgeCase
 open FormalSystem.Syntax FormalSystem.Automation FormalSystem.ProofSystem
 
 -- Convenience abbreviations
-abbrev p : Formula := .atom_s "p"
-abbrev q : Formula := .atom_s "q"
-abbrev r : Formula := .atom_s "r"
-abbrev s : Formula := .atom_s "s"
+abbrev p : Formula := .atomS "p"
+abbrev q : Formula := .atomS "q"
+abbrev r : Formula := .atomS "r"
+abbrev s : Formula := .atomS "s"
 
 /-!
 ## Section 1: Empty Context Tests
@@ -46,8 +46,8 @@ example : ⊢ p.imp (Formula.box p.diamond) := by modal_search
 
 -- Temporal axioms with empty context
 -- Note: Gp → GGp is now resolved by tryDerivedMatch (temp_4_derived), which is noncomputable
-noncomputable example : ⊢ (Formula.all_future p).imp (Formula.all_future (Formula.all_future p)) := by temporal_search
-example : ⊢ p.imp (Formula.all_future (Formula.some_past p)) := by temporal_search
+noncomputable example : ⊢ (Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)) := by temporal_search
+example : ⊢ p.imp (Formula.allFuture (Formula.somePast p)) := by temporal_search
 
 -- Propositional axioms with empty context
 example : ⊢ p.imp (q.imp p) := by propositional_search
@@ -58,10 +58,10 @@ example : ⊢ Formula.bot.imp p := by propositional_search
   IO.println "=== Empty Context Tests ==="
   let tests := [
     ([], (Formula.box p).imp p, "Modal T"),
-    ([], (Formula.all_future p).imp (Formula.all_future (Formula.all_future p)), "Temporal 4"),
+    ([], (Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)), "Temporal 4"),
     ([], p.imp (q.imp p), "Prop S"),
     ([], Formula.bot.imp p, "Ex Falso"),
-    ([], (Formula.box p).imp (Formula.all_future (Formula.box p)), "Temp Future")
+    ([], (Formula.box p).imp (Formula.allFuture (Formula.box p)), "Temp Future")
   ]
   let mut passed := 0
   for (ctx, formula, name) in tests do
@@ -91,7 +91,7 @@ Test formulas with deeply nested modal/temporal operators.
   ]
   let mut passed := 0
   for (formula, desc) in tests do
-    let matched := matches_axiom formula
+    let matched := matchesAxiom formula
     let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
     if matched && found then
       passed := passed + 1
@@ -104,13 +104,13 @@ Test formulas with deeply nested modal/temporal operators.
 #eval do
   IO.println "=== Deep Temporal Nesting Tests ==="
   let tests := [
-    ((Formula.all_future p).imp (Formula.all_future (Formula.all_future p)), "Gp → GGp"),
-    ((Formula.all_future (Formula.all_future p)).imp (Formula.all_future (Formula.all_future (Formula.all_future p))), "GGp → GGGp"),
-    ((Formula.all_future (Formula.all_future (Formula.all_future p))).imp (Formula.all_future (Formula.all_future (Formula.all_future (Formula.all_future p)))), "GGGp → GGGGp")
+    ((Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)), "Gp → GGp"),
+    ((Formula.allFuture (Formula.allFuture p)).imp (Formula.allFuture (Formula.allFuture (Formula.allFuture p))), "GGp → GGGp"),
+    ((Formula.allFuture (Formula.allFuture (Formula.allFuture p))).imp (Formula.allFuture (Formula.allFuture (Formula.allFuture (Formula.allFuture p)))), "GGGp → GGGGp")
   ]
   let mut passed := 0
   for (formula, desc) in tests do
-    let matched := matches_axiom formula
+    let matched := matchesAxiom formula
     let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
     if matched && found then
       passed := passed + 1
@@ -125,7 +125,7 @@ example : ⊢ (Formula.box (Formula.box (Formula.box p))).imp (Formula.box (Form
 
 -- Deep temporal nesting with tactics
 -- Note: GGp → GGGp is now resolved by tryDerivedMatch (temp_4_derived), which is noncomputable
-noncomputable example : ⊢ (Formula.all_future (Formula.all_future p)).imp (Formula.all_future (Formula.all_future (Formula.all_future p))) := by temporal_search
+noncomputable example : ⊢ (Formula.allFuture (Formula.allFuture p)).imp (Formula.allFuture (Formula.allFuture (Formula.allFuture p))) := by temporal_search
 
 /-!
 ## Section 3: Large Context Tests
@@ -142,14 +142,14 @@ Test with contexts containing many formulas.
   IO.println s!"Context size 5: found={found5}, visited={stats5.visited}"
 
   -- Context with 10 formulas
-  let ctx10 := [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.all_future q, p.imp (q.imp p)]
+  let ctx10 := [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q, p.imp (q.imp p)]
   let (found10, _, _, stats10, _) := search ctx10 p (.IDDFS 5) 100
   IO.println s!"Context size 10: found={found10}, visited={stats10.visited}"
 
   -- Context with 15 formulas
-  let ctx15 := [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.all_future q,
-                p.imp (q.imp p), Formula.box q, Formula.box r, Formula.all_future p,
-                (Formula.box p).imp p, (Formula.all_future p).imp (Formula.all_future (Formula.all_future p))]
+  let ctx15 := [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q,
+                p.imp (q.imp p), Formula.box q, Formula.box r, Formula.allFuture p,
+                (Formula.box p).imp p, (Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p))]
   let (found15, _, _, stats15, _) := search ctx15 p (.IDDFS 5) 100
   IO.println s!"Context size 15: found={found15}, visited={stats15.visited}"
 
@@ -161,7 +161,7 @@ Test with contexts containing many formulas.
 -- Tactic tests with large context
 example : [p, q, r, s, p.imp q] ⊢ p := by modal_search
 example : [p, q, r, s, p.imp q, q.imp r] ⊢ p := by modal_search
-example : [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.all_future q, p.imp (q.imp p)] ⊢ p := by modal_search
+example : [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q, p.imp (q.imp p)] ⊢ p := by modal_search
 
 /-!
 ## Section 4: Complex Formula Tests
@@ -174,14 +174,14 @@ Test with mixed modal/temporal/propositional operators.
 
   -- Mixed modal and temporal
   let mixedFormulas := [
-    ((Formula.box p).imp (Formula.all_future (Formula.box p)), "□p → G□p (temp_future_derived)"),
-    ((Formula.box p).imp (Formula.box (Formula.all_future p)), "□p → □Gp (modal_future)"),
+    ((Formula.box p).imp (Formula.allFuture (Formula.box p)), "□p → G□p (temp_future_derived)"),
+    ((Formula.box p).imp (Formula.box (Formula.allFuture p)), "□p → □Gp (modal_future)"),
     ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)), "□(p→q) → (□p → □q) (modal_k)")
   ]
 
   let mut passed := 0
   for (formula, desc) in mixedFormulas do
-    let matched := matches_axiom formula
+    let matched := matchesAxiom formula
     let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
     if matched && found then
       passed := passed + 1
@@ -191,8 +191,8 @@ Test with mixed modal/temporal/propositional operators.
   IO.println s!"Complex formula tests: {passed}/{mixedFormulas.length} passed"
 
 -- Bimodal tactic tests
-example : ⊢ (Formula.box p).imp (Formula.all_future (Formula.box p)) := by modal_search
-example : ⊢ (Formula.box p).imp (Formula.box (Formula.all_future p)) := by modal_search
+example : ⊢ (Formula.box p).imp (Formula.allFuture (Formula.box p)) := by modal_search
+example : ⊢ (Formula.box p).imp (Formula.box (Formula.allFuture p)) := by modal_search
 
 /-!
 ## Section 5: Depth Limit Tests
@@ -212,7 +212,7 @@ Verify search respects depth limits.
   IO.println s!"Modal T at depth 1: found={found1}"
 
   -- Non-axiom should not be found at any reasonable depth
-  let nonAxiom := Formula.atom_s "nonexistent"
+  let nonAxiom := Formula.atomS "nonexistent"
   let (foundNA1, _, _, _, _) := search [] nonAxiom (.BoundedDFS 1) 100
   let (foundNA5, _, _, _, _) := search [] nonAxiom (.BoundedDFS 5) 100
 
@@ -234,11 +234,11 @@ Verify search respects visit limits.
   IO.println "=== Visit Limit Tests ==="
 
   -- Search for non-axiom with various visit limits
-  let nonAxiom := Formula.atom_s "x"
+  let nonAxiom := Formula.atomS "x"
 
   let limits := [1, 5, 10, 50, 100]
   for limit in limits do
-    let (found, _, _, stats, visits) := iddfs_search [] nonAxiom 10 limit
+    let (found, _, _, stats, visits) := iddfsSearch [] nonAxiom 10 limit
     IO.println s!"Visit limit {limit}: found={found}, visits={visits}, visited={stats.visited}"
     if visits > limit then
       IO.println s!"  ✗ EXCEEDED LIMIT!"
@@ -274,7 +274,7 @@ example : ⊢ (p.imp q).imp (r.imp (p.imp q)) := by propositional_search
 
   let mut passed := 0
   for (formula, desc) in selfRef do
-    let matched := matches_axiom formula
+    let matched := matchesAxiom formula
     let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
     if matched && found then
       passed := passed + 1
@@ -293,17 +293,17 @@ Test with various atom names including longer names.
   IO.println "=== Atom Name Variation Tests ==="
 
   let atoms := [
-    Formula.atom_s "x",
-    Formula.atom_s "variable",
-    Formula.atom_s "longAtomName123",
-    Formula.atom_s "special_chars_allowed"
+    Formula.atomS "x",
+    Formula.atomS "variable",
+    Formula.atomS "longAtomName123",
+    Formula.atomS "special_chars_allowed"
   ]
 
   let mut passed := 0
   for atom in atoms do
     -- Test prop_s with this atom
     let formula := atom.imp (q.imp atom)
-    let matched := matches_axiom formula
+    let matched := matchesAxiom formula
     let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
     if matched && found then
       passed := passed + 1
@@ -341,11 +341,11 @@ allow unification-based matching in tryAxiomMatch and tryDerivedMatch.
 
 -- 9a: Non-base frame class axioms (empty context)
 -- Prior-UZ (Discrete): F(φ) → U(φ, ¬φ)
-example (φ : Formula) : ⊢[FrameClass.Discrete] φ.some_future.imp (Formula.untl φ φ.neg) := by
+example (φ : Formula) : ⊢[FrameClass.Discrete] φ.someFuture.imp (Formula.untl φ φ.neg) := by
   modal_search
 
 -- Density (Dense): GGφ → Gφ
-example (φ : Formula) : ⊢[FrameClass.Dense] φ.all_future.all_future.imp φ.all_future := by
+example (φ : Formula) : ⊢[FrameClass.Dense] φ.allFuture.allFuture.imp φ.allFuture := by
   modal_search
 
 -- Dense indicator (Dense): ¬U(⊤,⊥)
@@ -354,7 +354,7 @@ example : ⊢[FrameClass.Dense] (Formula.untl (Formula.bot.imp Formula.bot) Form
 
 -- Z1 (Discrete): G(Gφ→φ) → (FGφ→Gφ)
 example (φ : Formula) : ⊢[FrameClass.Discrete]
-    (φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future) := by
+    (φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture) := by
   modal_search
 
 -- 9b: Derived theorems with free variables (verify unification works)
@@ -372,10 +372,10 @@ example (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by modal_searc
 
 -- 9d: Until/Since axioms (BX temporal) with free variables
 -- connect_future: φ → G(P(φ))
-example (φ : Formula) : ⊢ φ.imp (φ.some_past.all_future) := by modal_search
+example (φ : Formula) : ⊢ φ.imp (φ.somePast.allFuture) := by modal_search
 
 -- connect_past: φ → H(F(φ))
-example (φ : Formula) : ⊢ φ.imp (φ.some_future.all_past) := by modal_search
+example (φ : Formula) : ⊢ φ.imp (φ.someFuture.allPast) := by modal_search
 
 -- self_accum_until: U(ψ,φ) → U(ψ, φ ∧ U(ψ,φ))
 example (φ ψ : Formula) : ⊢ (Formula.untl ψ φ).imp
@@ -384,7 +384,7 @@ example (φ ψ : Formula) : ⊢ (Formula.untl ψ φ).imp
 -- 9e: Temporal derived theorems
 -- temp_k_dist_derived: G(φ→ψ) → (Gφ→Gψ) (derived, noncomputable)
 noncomputable example (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) := by modal_search
+    ⊢ (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) := by modal_search
 
 -- 9f: Combined propositional + axiom (modus ponens with axiom result)
 -- MP(assumption, prop_s) chain: [A, B] ⊢ A is just assumption

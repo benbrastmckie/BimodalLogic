@@ -29,19 +29,19 @@ open FormalSystem.Syntax
 example : ([] : Context) = [] := rfl
 
 -- Test: Single formula context
-example : [Formula.atom_s "p"] = [Formula.atom_s "p"] := rfl
+example : [Formula.atomS "p"] = [Formula.atomS "p"] := rfl
 
 -- Test: Multiple formulas context
 example :
-  [Formula.atom_s "p", Formula.atom_s "q", Formula.bot] =
-  [Formula.atom_s "p", Formula.atom_s "q", Formula.bot] := rfl
+  [Formula.atomS "p", Formula.atomS "q", Formula.bot] =
+  [Formula.atomS "p", Formula.atomS "q", Formula.bot] := rfl
 
 -- Test: Membership - element present
-example : Formula.atom_s "p" ∈ [Formula.atom_s "p", Formula.atom_s "q"] := by
+example : Formula.atomS "p" ∈ [Formula.atomS "p", Formula.atomS "q"] := by
   simp
 
 -- Test: Membership - element not present
-example : Formula.atom_s "r" ∉ [Formula.atom_s "p", Formula.atom_s "q"] := by
+example : Formula.atomS "r" ∉ [Formula.atomS "p", Formula.atomS "q"] := by
   decide
 
 -- Test: Subset - empty is subset of any
@@ -73,13 +73,13 @@ example (f : Formula → Formula) (p q r : Formula) :
 
 -- Test: Map with box operator
 example :
-  Context.map Formula.box [Formula.atom_s "p", Formula.atom_s "q"] =
-  [Formula.box (Formula.atom_s "p"), Formula.box (Formula.atom_s "q")] := rfl
+  Context.map Formula.box [Formula.atomS "p", Formula.atomS "q"] =
+  [Formula.box (Formula.atomS "p"), Formula.box (Formula.atomS "q")] := rfl
 
 -- Test: Map with all_future operator
 example :
-  Context.map Formula.all_future [Formula.atom_s "p", Formula.atom_s "q"] =
-  [Formula.all_future (Formula.atom_s "p"), Formula.all_future (Formula.atom_s "q")] := rfl
+  Context.map Formula.allFuture [Formula.atomS "p", Formula.atomS "q"] =
+  [Formula.allFuture (Formula.atomS "p"), Formula.allFuture (Formula.atomS "q")] := rfl
 
 -- Test: Map composition theorem
 example (f g : Formula → Formula) (Γ : Context) :
@@ -104,10 +104,10 @@ example (f : Formula → Formula) (Γ Δ : Context) :
 example : Context.isEmpty [] = true := rfl
 
 -- Test: isEmpty - non-empty context
-example : Context.isEmpty [Formula.atom_s "p"] = false := rfl
+example : Context.isEmpty [Formula.atomS "p"] = false := rfl
 
 -- Test: singleton creates single-element context
-example : Context.singleton (Formula.atom_s "p") = [Formula.atom_s "p"] := rfl
+example : Context.singleton (Formula.atomS "p") = [Formula.atomS "p"] := rfl
 
 -- Test: mem_singleton_iff
 example (φ ψ : Formula) :
@@ -144,20 +144,20 @@ example (Γ : Context) (h : Γ ≠ []) : ∃ φ, φ ∈ Γ := by
 
 -- Integration test: Map box over context and check membership
 example :
-  Formula.box (Formula.atom_s "p") ∈
-    Context.map Formula.box [Formula.atom_s "p", Formula.atom_s "q"] := by
+  Formula.box (Formula.atomS "p") ∈
+    Context.map Formula.box [Formula.atomS "p", Formula.atomS "q"] := by
   apply Context.mem_map_of_mem
   simp
 
 -- Integration test: Map composition with box and all_future
 example (Γ : Context) :
-  Context.map Formula.box (Context.map Formula.all_future Γ) =
-  Context.map (Formula.box ∘ Formula.all_future) Γ := by
-  exact Context.map_comp Formula.box Formula.all_future Γ
+  Context.map Formula.box (Context.map Formula.allFuture Γ) =
+  Context.map (Formula.box ∘ Formula.allFuture) Γ := by
+  exact Context.map_comp Formula.box Formula.allFuture Γ
 
 -- Integration test: Length preservation through multiple maps
 example (Γ : Context) :
-  (Context.map Formula.box (Context.map Formula.all_future Γ)).length = Γ.length := by
+  (Context.map Formula.box (Context.map Formula.allFuture Γ)).length = Γ.length := by
   rw [Context.map_comp]
   exact Context.map_length _ Γ
 

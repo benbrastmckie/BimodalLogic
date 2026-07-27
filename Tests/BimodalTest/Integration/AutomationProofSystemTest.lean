@@ -64,7 +64,7 @@ Test 1: tm_auto solves Modal T axiom.
 
 The tm_auto tactic should automatically derive □p → p.
 -/
-example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
   tm_auto
 
 /--
@@ -72,7 +72,7 @@ Test 2: tm_auto solves Modal 4 axiom.
 
 The tm_auto tactic should automatically derive □p → □□p.
 -/
-example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box) := by
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := by
   tm_auto
 
 /--
@@ -80,7 +80,7 @@ Test 3: tm_auto solves Modal B axiom.
 
 The tm_auto tactic should automatically derive p → □◇p.
 -/
-example : ⊢ ((Formula.atom_s "p").imp ((Formula.atom_s "p").diamond.box)) := by
+example : ⊢ ((Formula.atomS "p").imp ((Formula.atomS "p").diamond.box)) := by
   tm_auto
 
 /--
@@ -88,8 +88,8 @@ Test 4: tm_auto solves Temporal 4 axiom.
 
 The tm_auto tactic should automatically derive Fp → FFp.
 -/
-noncomputable example : ⊢ ((Formula.atom_s "p").all_future.imp 
-             (Formula.atom_s "p").all_future.all_future) := by
+noncomputable example : ⊢ ((Formula.atomS "p").allFuture.imp 
+             (Formula.atomS "p").allFuture.allFuture) := by
   tm_auto
 
 /--
@@ -97,8 +97,8 @@ Test 5: tm_auto solves Temporal A axiom.
 
 The tm_auto tactic should automatically derive p → F(some_past p).
 -/
-example : ⊢ ((Formula.atom_s "p").imp 
-             (Formula.all_future (Formula.atom_s "p").some_past)) := by
+example : ⊢ ((Formula.atomS "p").imp 
+             (Formula.allFuture (Formula.atomS "p").somePast)) := by
   tm_auto
 
 /--
@@ -155,42 +155,42 @@ Test 11: apply_axiom works for Modal T.
 
 The apply_axiom macro should apply the Modal T axiom.
 -/
-example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
-  exact DerivationTree.axiom _ _ (Axiom.modal_t (Formula.atom_s "p")) trivial
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
+  exact DerivationTree.axiom _ _ (Axiom.modal_t (Formula.atomS "p")) trivial
 
 /--
 Test 12: apply_axiom works for Modal 4.
 
 The apply_axiom macro should apply the Modal 4 axiom.
 -/
-example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box) := by
-  exact DerivationTree.axiom _ _ (Axiom.modal_4 (Formula.atom_s "p")) trivial
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := by
+  exact DerivationTree.axiom _ _ (Axiom.modal_4 (Formula.atomS "p")) trivial
 
 /--
 Test 13: apply_axiom works for Modal B.
 
 The apply_axiom macro should apply the Modal B axiom.
 -/
-example : ⊢ ((Formula.atom_s "p").imp ((Formula.atom_s "p").diamond.box)) := by
-  exact DerivationTree.axiom _ _ (Axiom.modal_b (Formula.atom_s "p")) trivial
+example : ⊢ ((Formula.atomS "p").imp ((Formula.atomS "p").diamond.box)) := by
+  exact DerivationTree.axiom _ _ (Axiom.modal_b (Formula.atomS "p")) trivial
 
 /--
 Test 14: apply_axiom works for Temporal 4.
 
 The apply_axiom macro should apply the Temporal 4 axiom.
 -/
-noncomputable example : ⊢ ((Formula.atom_s "p").all_future.imp 
-             (Formula.atom_s "p").all_future.all_future) := by
-  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived (Formula.atom_s "p")
+noncomputable example : ⊢ ((Formula.atomS "p").allFuture.imp 
+             (Formula.atomS "p").allFuture.allFuture) := by
+  exact FormalSystem.Theorems.TemporalDerived.temporal4Derived (Formula.atomS "p")
 
 /--
 Test 15: apply_axiom works for Temporal A.
 
 The apply_axiom macro should apply the Temporal A axiom.
 -/
-example : ⊢ ((Formula.atom_s "p").imp 
-             (Formula.all_future (Formula.atom_s "p").some_past)) := by
-  exact DerivationTree.axiom _ _ (Axiom.connect_future (Formula.atom_s "p")) trivial
+example : ⊢ ((Formula.atomS "p").imp 
+             (Formula.allFuture (Formula.atomS "p").somePast)) := by
+  exact DerivationTree.axiom _ _ (Axiom.connect_future (Formula.atomS "p")) trivial
 
 /--
 Test 16: apply_axiom works for Propositional K.
@@ -262,15 +262,15 @@ Test 23: temp_4_tactic applies Temporal 4 axiom.
 
 The temp_4_tactic should automatically apply the Temporal 4 axiom.
 -/
-noncomputable example (p : Formula) : ⊢ (p.all_future.imp p.all_future.all_future) := by
-  exact FormalSystem.Theorems.TemporalDerived.temp_4_derived _
+noncomputable example (p : Formula) : ⊢ (p.allFuture.imp p.allFuture.allFuture) := by
+  exact FormalSystem.Theorems.TemporalDerived.temporal4Derived _
 
 /--
 Test 24: temp_a_tactic applies Temporal A axiom.
 
 The temp_a_tactic should automatically apply the Temporal A axiom.
 -/
-example (p : Formula) : ⊢ (p.imp (p.some_past.all_future)) := by
+example (p : Formula) : ⊢ (p.imp (p.somePast.allFuture)) := by
   exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
 
 /--
@@ -295,8 +295,8 @@ Test 26: tm_auto produces sound derivations (Modal T).
 
 Automated proofs should be valid via soundness.
 -/
-example : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
-  have deriv : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by tm_auto
+example : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
+  have deriv : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by tm_auto
   exact soundness [] _ deriv
 
 /--
@@ -304,8 +304,8 @@ Test 27: tm_auto produces sound derivations (Modal 4).
 
 Automated proofs should be valid via soundness.
 -/
-example : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box) := by
-  have deriv : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box) := by tm_auto
+example : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := by
+  have deriv : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := by tm_auto
   exact soundness [] _ deriv
 
 /--
@@ -313,10 +313,10 @@ Test 28: tm_auto produces sound derivations (Temporal 4).
 
 Automated proofs should be valid via soundness.
 -/
-example : [] ⊨ ((Formula.atom_s "p").all_future.imp 
-             (Formula.atom_s "p").all_future.all_future) := by
-  have deriv : ⊢ ((Formula.atom_s "p").all_future.imp 
-                  (Formula.atom_s "p").all_future.all_future) := by tm_auto
+example : [] ⊨ ((Formula.atomS "p").allFuture.imp 
+             (Formula.atomS "p").allFuture.allFuture) := by
+  have deriv : ⊢ ((Formula.atomS "p").allFuture.imp 
+                  (Formula.atomS "p").allFuture.allFuture) := by tm_auto
   exact soundness [] _ deriv
 
 /--
@@ -333,9 +333,9 @@ Test 30: apply_axiom produces sound derivations.
 
 Axiom applications should be valid via soundness.
 -/
-example : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
-  have deriv : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
-    exact DerivationTree.axiom _ _ (Axiom.modal_t (Formula.atom_s "p")) trivial
+example : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
+  have deriv : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
+    exact DerivationTree.axiom _ _ (Axiom.modal_t (Formula.atomS "p")) trivial
   exact soundness [] _ deriv
 
 /--
@@ -361,8 +361,8 @@ Test 33: temp_4_tactic produces sound derivations.
 
 Specific tactic applications should be valid via soundness.
 -/
-example (p : Formula) : [] ⊨ (p.all_future.imp p.all_future.all_future) := by
-  have deriv : ⊢ (p.all_future.imp p.all_future.all_future) := FormalSystem.Theorems.TemporalDerived.temp_4_derived _
+example (p : Formula) : [] ⊨ (p.allFuture.imp p.allFuture.allFuture) := by
+  have deriv : ⊢ (p.allFuture.imp p.allFuture.allFuture) := FormalSystem.Theorems.TemporalDerived.temporal4Derived _
   exact soundness [] _ deriv
 
 /--
@@ -370,8 +370,8 @@ Test 34: temp_a_tactic produces sound derivations.
 
 Specific tactic applications should be valid via soundness.
 -/
-example (p : Formula) : [] ⊨ (p.imp (p.some_past.all_future)) := by
-  have deriv : ⊢ (p.imp (p.some_past.all_future)) := DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+example (p : Formula) : [] ⊨ (p.imp (p.somePast.allFuture)) := by
+  have deriv : ⊢ (p.imp (p.somePast.allFuture)) := DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
   exact soundness [] _ deriv
 
 /--
@@ -379,9 +379,9 @@ Test 35: Chained automation produces sound derivations.
 
 Multiple tactic applications should produce valid results.
 -/
-example : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
-  have deriv : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
-    exact DerivationTree.axiom _ _ (Axiom.modal_t (Formula.atom_s "p")) trivial
+example : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
+  have deriv : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
+    exact DerivationTree.axiom _ _ (Axiom.modal_t (Formula.atomS "p")) trivial
   exact soundness [] _ deriv
 
 end SoundnessIntegrationTests
@@ -406,7 +406,7 @@ Test 37: tm_auto with multiple modal operators.
 
 Automation should handle nested modal operators.
 -/
-example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box) := by
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := by
   tm_auto
 
 /--
@@ -414,8 +414,8 @@ Test 38: tm_auto with temporal operators.
 
 Automation should handle temporal reasoning.
 -/
-noncomputable example : ⊢ ((Formula.atom_s "p").all_future.imp 
-             (Formula.atom_s "p").all_future.all_future) := by
+noncomputable example : ⊢ ((Formula.atomS "p").allFuture.imp 
+             (Formula.atomS "p").allFuture.allFuture) := by
   tm_auto
 
 /--
@@ -434,8 +434,8 @@ Test 40: Combining multiple tactics.
 
 Different tactics should compose correctly.
 -/
-example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
-  exact DerivationTree.axiom _ _ (Axiom.modal_t (Formula.atom_s "p")) trivial
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
+  exact DerivationTree.axiom _ _ (Axiom.modal_t (Formula.atomS "p")) trivial
 
 end CombinedAutomationTests
 
@@ -544,7 +544,7 @@ Test 51: tm_auto completes quickly on simple goals.
 
 Automation should be fast for simple cases.
 -/
-example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
   tm_auto
 
 /--
@@ -560,7 +560,7 @@ Test 53: Multiple axiom applications.
 
 Automation should handle multiple axiom applications.
 -/
-example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
   tm_auto
 
 /--
@@ -568,7 +568,7 @@ Test 54: Nested modal operators.
 
 Automation should handle nested operators efficiently.
 -/
-example : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box) := by
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := by
   tm_auto
 
 /--
@@ -576,8 +576,8 @@ Test 55: Temporal operator chains.
 
 Automation should handle temporal chains efficiently.
 -/
-noncomputable example : ⊢ ((Formula.atom_s "p").all_future.imp 
-             (Formula.atom_s "p").all_future.all_future) := by
+noncomputable example : ⊢ ((Formula.atomS "p").allFuture.imp 
+             (Formula.atomS "p").allFuture.allFuture) := by
   tm_auto
 
 end PerformanceTests
@@ -595,15 +595,15 @@ Demonstrates the full automation pipeline.
 -/
 example : True := by
   -- Step 1: Automated derivation
-  have proof : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by tm_auto
+  have proof : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by tm_auto
   
   -- Step 2: Apply soundness
-  have valid_from_soundness : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
+  have valid_from_soundness : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) :=
     soundness [] _ proof
   
   -- Step 3: Verify validity
-  have valid_direct : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) :=
-    (Validity.valid_iff_empty_consequence _).mp (modal_t_valid (Formula.atom_s "p"))
+  have valid_direct : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) :=
+    (Validity.valid_iff_empty_consequence _).mp (modal_t_valid (Formula.atomS "p"))
   
   trivial
 
@@ -627,13 +627,13 @@ Test 58: Automation with modus ponens.
 Automation should handle inference rules.
 -/
 example : True := by
-  have proof : [Formula.atom_s "p", (Formula.atom_s "p").imp (Formula.atom_s "q")] ⊢ 
-               Formula.atom_s "q" := by tm_auto
+  have proof : [Formula.atomS "p", (Formula.atomS "p").imp (Formula.atomS "q")] ⊢ 
+               Formula.atomS "q" := by tm_auto
   
-  have valid : [Formula.atom_s "p", (Formula.atom_s "p").imp (Formula.atom_s "q")] ⊨ 
-               Formula.atom_s "q" :=
-    soundness [Formula.atom_s "p", (Formula.atom_s "p").imp (Formula.atom_s "q")] 
-              (Formula.atom_s "q") proof
+  have valid : [Formula.atomS "p", (Formula.atomS "p").imp (Formula.atomS "q")] ⊨ 
+               Formula.atomS "q" :=
+    soundness [Formula.atomS "p", (Formula.atomS "p").imp (Formula.atomS "q")] 
+              (Formula.atomS "q") proof
   
   trivial
 
@@ -652,16 +652,16 @@ All automated proofs should be verifiable via soundness.
 -/
 example : True := by
   -- Test multiple axioms
-  have t1 : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := by tm_auto
-  have t2 : ⊢ ((Formula.atom_s "q").box.imp (Formula.atom_s "q").box.box) := by tm_auto
-  have t3 : ⊢ ((Formula.atom_s "r").all_future.imp 
-               (Formula.atom_s "r").all_future.all_future) := by tm_auto
+  have t1 : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by tm_auto
+  have t2 : ⊢ ((Formula.atomS "q").box.imp (Formula.atomS "q").box.box) := by tm_auto
+  have t3 : ⊢ ((Formula.atomS "r").allFuture.imp 
+               (Formula.atomS "r").allFuture.allFuture) := by tm_auto
   
   -- All should be valid
-  have v1 : [] ⊨ ((Formula.atom_s "p").box.imp (Formula.atom_s "p")) := soundness [] _ t1
-  have v2 : [] ⊨ ((Formula.atom_s "q").box.imp (Formula.atom_s "q").box.box) := soundness [] _ t2
-  have v3 : [] ⊨ ((Formula.atom_s "r").all_future.imp 
-               (Formula.atom_s "r").all_future.all_future) := soundness [] _ t3
+  have v1 : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := soundness [] _ t1
+  have v2 : [] ⊨ ((Formula.atomS "q").box.imp (Formula.atomS "q").box.box) := soundness [] _ t2
+  have v3 : [] ⊨ ((Formula.atomS "r").allFuture.imp 
+               (Formula.atomS "r").allFuture.allFuture) := soundness [] _ t3
   
   trivial
 

@@ -27,9 +27,9 @@ open FormalSystem.Automation.InterestingnessMetrics
 open FormalSystem.Automation.DataExport
 
 -- Convenience abbreviations
-private abbrev p : Formula := .atom_s "p"
-private abbrev q : Formula := .atom_s "q"
-private abbrev r : Formula := .atom_s "r"
+private abbrev p : Formula := .atomS "p"
+private abbrev q : Formula := .atomS "q"
+private abbrev r : Formula := .atomS "r"
 
 /-!
 ## Section 1: Semantic Non-Triviality (SNT Gate)
@@ -75,7 +75,7 @@ Verify that trivial patterns receive SNT = 0.
 
 -- bimodal formula: □p → Fp should have SNT = 3
 #eval do
-  let snt := semanticNonTriviality (.imp (.box p) (Formula.some_future p))
+  let snt := semanticNonTriviality (.imp (.box p) (Formula.someFuture p))
   if snt != 3 then throw (IO.userError s!"Expected SNT=3 for bimodal, got {snt}")
   IO.println "PASS: bimodal SNT = 3"
 
@@ -87,25 +87,25 @@ Verify that derived operator patterns are correctly detected.
 
 -- F(p) = untl p top should detect hasSomeFuture
 #eval do
-  let profile := extractOperatorProfile (Formula.some_future p)
+  let profile := extractOperatorProfile (Formula.someFuture p)
   if !profile.hasSomeFuture then throw (IO.userError "Expected hasSomeFuture for F(p)")
   IO.println "PASS: F(p) detected as some_future"
 
 -- P(p) = snce p top should detect hasSomePast
 #eval do
-  let profile := extractOperatorProfile (Formula.some_past p)
+  let profile := extractOperatorProfile (Formula.somePast p)
   if !profile.hasSomePast then throw (IO.userError "Expected hasSomePast for P(p)")
   IO.println "PASS: P(p) detected as some_past"
 
 -- G(p) = ¬F(¬p) should detect hasAllFuture
 #eval do
-  let profile := extractOperatorProfile (Formula.all_future p)
+  let profile := extractOperatorProfile (Formula.allFuture p)
   if !profile.hasAllFuture then throw (IO.userError "Expected hasAllFuture for G(p)")
   IO.println "PASS: G(p) detected as all_future"
 
 -- H(p) = ¬P(¬p) should detect hasAllPast
 #eval do
-  let profile := extractOperatorProfile (Formula.all_past p)
+  let profile := extractOperatorProfile (Formula.allPast p)
   if !profile.hasAllPast then throw (IO.userError "Expected hasAllPast for H(p)")
   IO.println "PASS: H(p) detected as all_past"
 
@@ -151,14 +151,14 @@ Verify that derived operator patterns are correctly detected.
 
 -- Box + F (cross-modal): □p → Fp should have high OD (base + cross-modal bonus)
 #eval do
-  let od := operatorDiversity (.imp (.box p) (Formula.some_future p))
+  let od := operatorDiversity (.imp (.box p) (Formula.someFuture p))
   -- hasBox=1, hasSomeFuture=1, cross-modal=2 => 4
   if od < 4 then throw (IO.userError s!"Expected OD>=4 for □p→Fp, got {od}")
   IO.println s!"PASS: □p→Fp OD = {od}"
 
 -- G + H (bidirectional): Gp → Hp should have bidirectional bonus
 #eval do
-  let od := operatorDiversity (.imp (Formula.all_future p) (Formula.all_past p))
+  let od := operatorDiversity (.imp (Formula.allFuture p) (Formula.allPast p))
   -- hasAllFuture=1, hasAllPast=1, bidirectional=1 => 3
   if od < 3 then throw (IO.userError s!"Expected OD>=3 for Gp→Hp, got {od}")
   IO.println s!"PASS: Gp→Hp OD = {od}"
@@ -281,11 +281,11 @@ Verify that derived operator patterns are correctly detected.
 
 -- Bimodal formula with proof data should get non-zero score
 #eval do
-  let φ := Formula.imp (.box p) (Formula.some_future p)
+  let φ := Formula.imp (.box p) (Formula.someFuture p)
   let proofData : ProofData := {
     height := 5
-    axioms_used := ["modal_future", "modal_t", "serial_future"]
-    rules_applied := ["modus_ponens", "necessitation", "temporal_necessitation"]
+    axiomsUsed := ["modal_future", "modal_t", "serial_future"]
+    rulesApplied := ["modus_ponens", "necessitation", "temporal_necessitation"]
   }
   let rp : RuleProfile := {
     axiomCount := 3
@@ -310,7 +310,7 @@ Verify that derived operator patterns are correctly detected.
 -/
 
 #eval do
-  let result := computeInterestingness (.imp (.box p) (Formula.some_future p)) none none
+  let result := computeInterestingness (.imp (.box p) (Formula.someFuture p)) none none
   let json := result.toJson
   -- Check that JSON starts with { and contains key fields
   if !json.startsWith "{" then
@@ -342,7 +342,7 @@ Verify that derived operator patterns are correctly detected.
 
 -- Bimodal formula should have interaction
 #eval do
-  if !modalTemporalInteraction (.imp (.box p) (Formula.some_future p)) then
+  if !modalTemporalInteraction (.imp (.box p) (Formula.someFuture p)) then
     throw (IO.userError "Expected interaction for bimodal formula")
   IO.println "PASS: bimodal formula has modal-temporal interaction"
 

@@ -52,7 +52,7 @@ open FormalSystem.Metalogic
 -- ============================================================
 
 /-- Build simple atomic formula -/
-def mk_atom (name : String) : Formula := Formula.atom_s name
+def mk_atom (name : String) : Formula := Formula.atomS name
 
 /-- Build implication -/
 def mk_imp (φ ψ : Formula) : Formula := φ.imp ψ
@@ -64,10 +64,10 @@ def mk_box (φ : Formula) : Formula := φ.box
 def mk_diamond (φ : Formula) : Formula := φ.diamond
 
 /-- Build future formula -/
-def mk_future (φ : Formula) : Formula := φ.all_future
+def mk_future (φ : Formula) : Formula := φ.allFuture
 
 /-- Build past formula -/
-def mk_past (φ : Formula) : Formula := φ.all_past
+def mk_past (φ : Formula) : Formula := φ.allPast
 
 /-- Build complex nested modal formula with given depth -/
 def mk_nested_modal (φ : Formula) (depth : Nat) : Formula :=
@@ -79,10 +79,10 @@ def mk_nested_modal (φ : Formula) (depth : Nat) : Formula :=
 def mk_nested_temporal (φ : Formula) (depth : Nat) : Formula :=
   match depth with
   | 0 => φ
-  | n+1 => (mk_nested_temporal φ n).all_future
+  | n+1 => (mk_nested_temporal φ n).allFuture
 
 /-- Build bimodal formula (box + future) -/
-def mk_bimodal (φ : Formula) : Formula := φ.box.all_future
+def mk_bimodal (φ : Formula) : Formula := φ.box.allFuture
 
 -- ============================================================
 -- Derivation Builders
@@ -110,7 +110,7 @@ def mk_necessitation_deriv (φ : Formula)
 
 /-- Build temporal necessitation derivation -/
 def mk_temporal_necessitation_deriv (φ : Formula)
-    (d : DerivationTree FrameClass.Base [] φ) : DerivationTree FrameClass.Base [] (φ.all_future) :=
+    (d : DerivationTree FrameClass.Base [] φ) : DerivationTree FrameClass.Base [] (φ.allFuture) :=
   DerivationTree.temporal_necessitation φ d
 
 /-- Build weakening derivation -/

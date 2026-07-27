@@ -78,7 +78,7 @@ This is proven as a theorem in Formula.lean, here we test it.
 /-!
 Test: Temporal swap involution (100 test cases).
 -/
-#eval Testable.check (∀ φ : Formula, φ.swap_temporal.swap_temporal = φ) {
+#eval Testable.check (∀ φ : Formula, φ.swapTemporal.swapTemporal = φ) {
   numInst := 100,
   maxSize := 50
 }
@@ -97,7 +97,7 @@ swap(◇φ) = ◇(swap φ)
 /-!
 Test: Temporal swap distributes over diamond (100 test cases).
 -/
-#eval Testable.check (∀ φ : Formula, φ.diamond.swap_temporal = φ.swap_temporal.diamond) {
+#eval Testable.check (∀ φ : Formula, φ.diamond.swapTemporal = φ.swapTemporal.diamond) {
   numInst := 100,
   maxSize := 50
 }
@@ -116,7 +116,7 @@ swap(¬φ) = ¬(swap φ)
 /-!
 Test: Temporal swap distributes over negation (100 test cases).
 -/
-#eval Testable.check (∀ φ : Formula, φ.neg.swap_temporal = φ.swap_temporal.neg) {
+#eval Testable.check (∀ φ : Formula, φ.neg.swapTemporal = φ.swapTemporal.neg) {
   numInst := 100,
   maxSize := 50
 }
@@ -217,7 +217,7 @@ all_past and all_future are injective on structure.
 /-!
 Test: all_past injectivity (100 test cases).
 -/
-#eval Testable.check (∀ φ ψ : Formula, φ.all_past = ψ.all_past → φ = ψ) {
+#eval Testable.check (∀ φ ψ : Formula, φ.allPast = ψ.allPast → φ = ψ) {
   numInst := 100,
   maxSize := 50
 }
@@ -234,7 +234,7 @@ Property: all_future injectivity.
 /-!
 Test: all_future injectivity (100 test cases).
 -/
-#eval Testable.check (∀ φ ψ : Formula, φ.all_future = ψ.all_future → φ = ψ) {
+#eval Testable.check (∀ φ ψ : Formula, φ.allFuture = ψ.allFuture → φ = ψ) {
   numInst := 100,
   maxSize := 50
 }
@@ -467,7 +467,7 @@ Property: Temporal operators add one to complexity.
 /-!
 Test: All-past complexity formula (100 test cases).
 -/
-#eval Testable.check (∀ φ : Formula, φ.all_past.complexity = 1 + φ.complexity) {
+#eval Testable.check (∀ φ : Formula, φ.allPast.complexity = 1 + φ.complexity) {
   numInst := 100,
   maxSize := 50
 }

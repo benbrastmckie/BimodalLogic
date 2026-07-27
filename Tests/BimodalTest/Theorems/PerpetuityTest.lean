@@ -64,7 +64,7 @@ example (φ : Formula) : ⊢ (φ.box.imp φ).box := by
 
 /-- Test box_conj_intro: combining boxed formulas -/
 example (A B : Formula) (hA : ⊢ A.box) (hB : ⊢ B.box) : ⊢ (A.and B).box :=
-  box_conj_intro hA hB
+  boxConjIntro hA hB
 
 /--
 Test box_conj_intro with concrete formulas.
@@ -73,23 +73,23 @@ Test box_conj_intro with concrete formulas.
 The parametric form below correctly demonstrates the helper's behavior by accepting
 boxed premises and showing they combine correctly.
 -/
-example (hp : ⊢ (Formula.atom_s "p").box) (hq : ⊢ (Formula.atom_s "q").box) :
-    ⊢ ((Formula.atom_s "p").and (Formula.atom_s "q")).box :=
-  box_conj_intro hp hq
+example (hp : ⊢ (Formula.atomS "p").box) (hq : ⊢ (Formula.atomS "q").box) :
+    ⊢ ((Formula.atomS "p").and (Formula.atomS "q")).box :=
+  boxConjIntro hp hq
 
 /-- Test box_conj_intro_imp: implicational variant -/
 example (P A B : Formula) (hA : ⊢ P.imp A.box) (hB : ⊢ P.imp B.box) : ⊢ P.imp (A.and B).box :=
-  box_conj_intro_imp hA hB
+  boxConjIntroImp hA hB
 
 /-- Test box_conj_intro_imp_3: three-way combination -/
 example (P A B C : Formula)
     (hA : ⊢ P.imp A.box) (hB : ⊢ P.imp B.box) (hC : ⊢ P.imp C.box) :
     ⊢ P.imp (A.and (B.and C)).box :=
-  box_conj_intro_imp_3 hA hB hC
+  boxConjIntroImp3 hA hB hC
 
 /-- Test imp_trans: transitivity of implication -/
 example (A B C : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp C) : ⊢ A.imp C :=
-  imp_trans h1 h2
+  impTrans h1 h2
 
 /-!
 ## Combinator Theorems Tests
@@ -98,82 +98,82 @@ Tests for the flip, app1, app2, and pairing combinators derived from K and S axi
 -/
 
 /-- Test theorem_flip type signature: (A → B → C) → (B → A → C) -/
-example (A B C : Formula) : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C)) := theorem_flip
+example (A B C : Formula) : ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C)) := theoremFlip
 
 /-- Test theorem_flip with atomic formulas -/
-example : ⊢ ((Formula.atom_s "p").imp ((Formula.atom_s "q").imp (Formula.atom_s "r"))).imp
-           ((Formula.atom_s "q").imp ((Formula.atom_s "p").imp (Formula.atom_s "r"))) := theorem_flip
+example : ⊢ ((Formula.atomS "p").imp ((Formula.atomS "q").imp (Formula.atomS "r"))).imp
+           ((Formula.atomS "q").imp ((Formula.atomS "p").imp (Formula.atomS "r"))) := theoremFlip
 
 /-- Test theorem_flip applied to Modal T axiom form -/
-example : ⊢ ((Formula.atom_s "p").box.imp ((Formula.atom_s "q").imp (Formula.atom_s "p"))).imp
-           ((Formula.atom_s "q").imp ((Formula.atom_s "p").box.imp (Formula.atom_s "p"))) := theorem_flip
+example : ⊢ ((Formula.atomS "p").box.imp ((Formula.atomS "q").imp (Formula.atomS "p"))).imp
+           ((Formula.atomS "q").imp ((Formula.atomS "p").box.imp (Formula.atomS "p"))) := theoremFlip
 
 /-- Test theorem_app1 type signature: A → (A → B) → B -/
-example (A B : Formula) : ⊢ A.imp ((A.imp B).imp B) := theorem_app1
+example (A B : Formula) : ⊢ A.imp ((A.imp B).imp B) := theoremApp1
 
 /-- Test theorem_app1 with atomic formulas -/
-example : ⊢ (Formula.atom_s "p").imp (((Formula.atom_s "p").imp (Formula.atom_s "q")).imp (Formula.atom_s "q")) := theorem_app1
+example : ⊢ (Formula.atomS "p").imp (((Formula.atomS "p").imp (Formula.atomS "q")).imp (Formula.atomS "q")) := theoremApp1
 
 /-- Test theorem_app1 corresponds to function application -/
-example : ⊢ (Formula.atom_s "x").imp (((Formula.atom_s "x").imp (Formula.atom_s "y")).imp (Formula.atom_s "y")) := theorem_app1
+example : ⊢ (Formula.atomS "x").imp (((Formula.atomS "x").imp (Formula.atomS "y")).imp (Formula.atomS "y")) := theoremApp1
 
 /-- Test theorem_app2 type signature: A → B → (A → B → C) → C -/
-example (A B C : Formula) : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C)) := theorem_app2
+example (A B C : Formula) : ⊢ A.imp (B.imp ((A.imp (B.imp C)).imp C)) := theoremApp2
 
 /-- Test theorem_app2 with atomic formulas -/
-example : ⊢ (Formula.atom_s "a").imp ((Formula.atom_s "b").imp
-           (((Formula.atom_s "a").imp ((Formula.atom_s "b").imp (Formula.atom_s "c"))).imp (Formula.atom_s "c"))) := theorem_app2
+example : ⊢ (Formula.atomS "a").imp ((Formula.atomS "b").imp
+           (((Formula.atomS "a").imp ((Formula.atomS "b").imp (Formula.atomS "c"))).imp (Formula.atomS "c"))) := theoremApp2
 
 /-- Test theorem_app2 is the Vireo combinator (V = λa.λb.λf. f a b) -/
-example : ⊢ (Formula.atom_s "x").imp ((Formula.atom_s "y").imp
-           (((Formula.atom_s "x").imp ((Formula.atom_s "y").imp (Formula.atom_s "z"))).imp (Formula.atom_s "z"))) := theorem_app2
+example : ⊢ (Formula.atomS "x").imp ((Formula.atomS "y").imp
+           (((Formula.atomS "x").imp ((Formula.atomS "y").imp (Formula.atomS "z"))).imp (Formula.atomS "z"))) := theoremApp2
 
 /-- Test pairing theorem type signature: A → B → A ∧ B -/
 example (A B : Formula) : ⊢ A.imp (B.imp (A.and B)) := pairing A B
 
 /-- Test pairing with atomic formulas -/
-example : ⊢ (Formula.atom_s "p").imp ((Formula.atom_s "q").imp ((Formula.atom_s "p").and (Formula.atom_s "q"))) :=
-  pairing (Formula.atom_s "p") (Formula.atom_s "q")
+example : ⊢ (Formula.atomS "p").imp ((Formula.atomS "q").imp ((Formula.atomS "p").and (Formula.atomS "q"))) :=
+  pairing (Formula.atomS "p") (Formula.atomS "q")
 
 /-- Test pairing derives conjunction from K and S combinators -/
 -- This test verifies pairing is now a theorem (not axiom) derived from theorem_app2
-example : ⊢ (Formula.atom_s "a").imp ((Formula.atom_s "b").imp ((Formula.atom_s "a").and (Formula.atom_s "b"))) :=
-  pairing (Formula.atom_s "a") (Formula.atom_s "b")
+example : ⊢ (Formula.atomS "a").imp ((Formula.atomS "b").imp ((Formula.atomS "a").and (Formula.atomS "b"))) :=
+  pairing (Formula.atomS "a") (Formula.atomS "b")
 
 /-- Test pairing with compound formulas -/
-example : ⊢ ((Formula.atom_s "p").box).imp
-           ((Formula.atom_s "q").diamond.imp (((Formula.atom_s "p").box).and ((Formula.atom_s "q").diamond))) :=
-  pairing (Formula.atom_s "p").box (Formula.atom_s "q").diamond
+example : ⊢ ((Formula.atomS "p").box).imp
+           ((Formula.atomS "q").diamond.imp (((Formula.atomS "p").box).and ((Formula.atomS "q").diamond))) :=
+  pairing (Formula.atomS "p").box (Formula.atomS "q").diamond
 
 /-- Test pairing is complete theorem (derived from theorem_app2, no sorry) -/
 example (φ ψ : Formula) : ⊢ φ.imp (ψ.imp (φ.and ψ)) := pairing φ ψ
 
 /-- Test imp_trans with concrete formulas using modal axioms -/
-example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
+example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") := by
   -- □p → □□p by Modal 4
-  have h1 : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom_s "p")) trivial
+  have h1 : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").box.box :=
+    DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atomS "p")) trivial
   -- □□p → □p trivially (by Modal T applied to □p)
-  have h2 : ⊢ (Formula.atom_s "p").box.box.imp (Formula.atom_s "p").box :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p").box) trivial
+  have h2 : ⊢ (Formula.atomS "p").box.box.imp (Formula.atomS "p").box :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atomS "p").box) trivial
   -- □p → □p by transitivity (degenerate case, but tests the mechanism)
   -- Actually, let's use a proper chain: □p → □□p → □p
   -- Then compose with MT: □p → p
-  have h3 : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p")) trivial
+  have h3 : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atomS "p")) trivial
   exact h3
 
 /-- Test mp (modus ponens restatement) with axioms -/
-example (φ : Formula) : ⊢ φ.box.imp φ.all_future := by
+example (φ : Formula) : ⊢ φ.box.imp φ.allFuture := by
   -- Testing imp_trans in a proof similar to perpetuity components
-  have h1 : ⊢ φ.box.imp (φ.all_future.box) := DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
-  have h2 : ⊢ (φ.all_future.box).imp φ.all_future := DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future) trivial
-  exact imp_trans h1 h2
+  have h1 : ⊢ φ.box.imp (φ.allFuture.box) := DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
+  have h2 : ⊢ (φ.allFuture.box).imp φ.allFuture := DerivationTree.axiom [] _ (Axiom.modal_t φ.allFuture) trivial
+  exact impTrans h1 h2
 
 /-- Test that imp_trans composes three implications -/
 example (A B C D : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp C) (h3 : ⊢ C.imp D) : ⊢ A.imp D := by
-  have h4 := imp_trans h1 h2  -- A → C
-  exact imp_trans h4 h3       -- A → D
+  have h4 := impTrans h1 h2  -- A → C
+  exact impTrans h4 h3       -- A → D
 
 /-!
 ## P1 Tests: □φ → always φ (necessary implies always)
@@ -183,7 +183,7 @@ example (A B C D : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp C) (h3 : ⊢ C.im
 example (φ : Formula) : ⊢ φ.box.imp φ.always := perpetuity_1 φ
 
 /-- Test P1 with atomic formula -/
-example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").always := perpetuity_1 _
+example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").always := perpetuity_1 _
 
 /-- Test P1 using triangle notation -/
 example (φ : Formula) : ⊢ φ.box.imp (△φ) := perpetuity_1 φ
@@ -196,7 +196,7 @@ example (φ : Formula) : ⊢ φ.box.imp (△φ) := perpetuity_1 φ
 example (φ : Formula) : ⊢ φ.sometimes.imp φ.diamond := perpetuity_2 φ
 
 /-- Test P2 with atomic formula -/
-example : ⊢ (Formula.atom_s "p").sometimes.imp (Formula.atom_s "p").diamond := perpetuity_2 _
+example : ⊢ (Formula.atomS "p").sometimes.imp (Formula.atomS "p").diamond := perpetuity_2 _
 
 /-- Test P2 using triangle notation -/
 example (φ : Formula) : ⊢ (▽φ).imp φ.diamond := perpetuity_2 φ
@@ -206,41 +206,41 @@ example (φ : Formula) : ⊢ (▽φ).imp φ.diamond := perpetuity_2 φ
 -/
 
 /-- Test P3 type signature: □φ → □△φ -/
-example (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := perpetuity_3 φ
+example (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := perpetuity3 φ
 
 /-- Test P3 with atomic formula -/
-example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").always.box := perpetuity_3 _
+example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").always.box := perpetuity3 _
 
 /-- Test P3 with complex formula -/
-example : ⊢ ((Formula.atom_s "p").imp (Formula.atom_s "q")).box.imp
-             ((Formula.atom_s "p").imp (Formula.atom_s "q")).always.box :=
-  perpetuity_3 _
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "q")).box.imp
+             ((Formula.atomS "p").imp (Formula.atomS "q")).always.box :=
+  perpetuity3 _
 
 /-- Test P3 proof is complete (no sorry markers) -/
 -- This test verifies that P3 compiles and type-checks correctly
 -- The absence of sorry is verified by the fact that this compiles
-example (φ : Formula) : ⊢ φ.box.imp (△φ).box := perpetuity_3 φ
+example (φ : Formula) : ⊢ φ.box.imp (△φ).box := perpetuity3 φ
 
 /-!
 ## Helper Lemma Tests: B Combinator and Contraposition
 -/
 
 /-- Test b_combinator type signature: (B → C) → (A → B) → (A → C) -/
-example (A B C : Formula) : ⊢ (B.imp C).imp ((A.imp B).imp (A.imp C)) := b_combinator
+example (A B C : Formula) : ⊢ (B.imp C).imp ((A.imp B).imp (A.imp C)) := bCombinator
 
 /-- Test b_combinator with concrete formulas -/
-example : ⊢ ((Formula.atom_s "q").imp (Formula.atom_s "r")).imp
-           (((Formula.atom_s "p").imp (Formula.atom_s "q")).imp
-            ((Formula.atom_s "p").imp (Formula.atom_s "r"))) := b_combinator
+example : ⊢ ((Formula.atomS "q").imp (Formula.atomS "r")).imp
+           (((Formula.atomS "p").imp (Formula.atomS "q")).imp
+            ((Formula.atomS "p").imp (Formula.atomS "r"))) := bCombinator
 
 /-- Test contraposition type signature: (A → B) → (¬B → ¬A) -/
 example (A B : Formula) (h : ⊢ A.imp B) : ⊢ B.neg.imp A.neg := contraposition h
 
 /-- Test contraposition with concrete formulas using modal T -/
-example : ⊢ (Formula.atom_s "p").neg.imp (Formula.atom_s "p").box.neg := by
+example : ⊢ (Formula.atomS "p").neg.imp (Formula.atomS "p").box.neg := by
   -- From □p → p (Modal T), derive ¬p → ¬□p
-  have h : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p")) trivial
+  have h : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atomS "p")) trivial
   exact contraposition h
 
 /-- Test contraposition is complete (no sorry) -/
@@ -251,87 +251,87 @@ example {p q : Formula} (h : ⊢ p.imp q) : ⊢ q.neg.imp p.neg := contrapositio
 -/
 
 /-- Test P4 type signature: ◇▽φ → ◇φ -/
-example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond := perpetuity_4 φ
+example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond := perpetuity4 φ
 
 /-- Test P4 with atomic formula -/
-example : ⊢ (Formula.atom_s "p").sometimes.diamond.imp (Formula.atom_s "p").diamond := perpetuity_4 _
+example : ⊢ (Formula.atomS "p").sometimes.diamond.imp (Formula.atomS "p").diamond := perpetuity4 _
 
 /-- Test P4 with compound formula -/
-example : ⊢ ((Formula.atom_s "p").imp (Formula.atom_s "q")).sometimes.diamond.imp
-             ((Formula.atom_s "p").imp (Formula.atom_s "q")).diamond := perpetuity_4 _
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "q")).sometimes.diamond.imp
+             ((Formula.atomS "p").imp (Formula.atomS "q")).diamond := perpetuity4 _
 
 /-- Test P4 is complete theorem (no sorry, no axiom) -/
-example (φ : Formula) : ⊢ (▽φ).diamond.imp φ.diamond := perpetuity_4 φ
+example (φ : Formula) : ⊢ (▽φ).diamond.imp φ.diamond := perpetuity4 φ
 
 /-!
 ## P5 Tests: ◇sometimes φ → always ◇φ (persistent possibility)
 -/
 
 /-- Test P5 type signature: ◇▽φ → △◇φ -/
-example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always := perpetuity_5 φ
+example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always := perpetuity5 φ
 
 /-- Test P5 with atomic formula -/
-example : ⊢ (Formula.atom_s "p").sometimes.diamond.imp (Formula.atom_s "p").diamond.always := perpetuity_5 _
+example : ⊢ (Formula.atomS "p").sometimes.diamond.imp (Formula.atomS "p").diamond.always := perpetuity5 _
 
 /-!
 ## Modal and Temporal Duality Lemma Tests
 -/
 
 /-- Test modal_duality_neg: ◇¬φ → ¬□φ -/
-example (φ : Formula) : ⊢ φ.neg.diamond.imp φ.box.neg := modal_duality_neg φ
+example (φ : Formula) : ⊢ φ.neg.diamond.imp φ.box.neg := modalDualityNeg φ
 
 /-- Test modal_duality_neg with atomic formula -/
-example : ⊢ (Formula.atom_s "p").neg.diamond.imp (Formula.atom_s "p").box.neg := modal_duality_neg _
+example : ⊢ (Formula.atomS "p").neg.diamond.imp (Formula.atomS "p").box.neg := modalDualityNeg _
 
 /-- Test modal_duality_neg_rev: ¬□φ → ◇¬φ -/
-example (φ : Formula) : ⊢ φ.box.neg.imp φ.neg.diamond := modal_duality_neg_rev φ
+example (φ : Formula) : ⊢ φ.box.neg.imp φ.neg.diamond := modalDualityNegRev φ
 
 /-- Test modal_duality_neg_rev with atomic formula -/
-example : ⊢ (Formula.atom_s "p").box.neg.imp (Formula.atom_s "p").neg.diamond := modal_duality_neg_rev _
+example : ⊢ (Formula.atomS "p").box.neg.imp (Formula.atomS "p").neg.diamond := modalDualityNegRev _
 
 /-- Test temporal_duality_neg: ▽¬φ → ¬△φ -/
-example (φ : Formula) : ⊢ φ.neg.sometimes.imp φ.always.neg := temporal_duality_neg φ
+example (φ : Formula) : ⊢ φ.neg.sometimes.imp φ.always.neg := temporalDualityNeg φ
 
 /-- Test temporal_duality_neg with atomic formula -/
-example : ⊢ (Formula.atom_s "p").neg.sometimes.imp (Formula.atom_s "p").always.neg := temporal_duality_neg _
+example : ⊢ (Formula.atomS "p").neg.sometimes.imp (Formula.atomS "p").always.neg := temporalDualityNeg _
 
 /-- Test temporal_duality_neg_rev: ¬△φ → ▽¬φ -/
-example (φ : Formula) : ⊢ φ.always.neg.imp φ.neg.sometimes := temporal_duality_neg_rev φ
+example (φ : Formula) : ⊢ φ.always.neg.imp φ.neg.sometimes := temporalDualityNegRev φ
 
 /-- Test temporal_duality_neg_rev with atomic formula -/
-example : ⊢ (Formula.atom_s "p").always.neg.imp (Formula.atom_s "p").neg.sometimes := temporal_duality_neg_rev _
+example : ⊢ (Formula.atomS "p").always.neg.imp (Formula.atomS "p").neg.sometimes := temporalDualityNegRev _
 
 /-!
 ## P6 Tests: sometimes □φ → □always φ (occurrent necessity perpetual)
 -/
 
 /-- Test P6 type signature: ▽□φ → □△φ -/
-example (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := perpetuity_6 φ
+example (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := perpetuity6 φ
 
 /-- Test P6 with atomic formula -/
-example : ⊢ (Formula.atom_s "p").box.sometimes.imp (Formula.atom_s "p").always.box := perpetuity_6 _
+example : ⊢ (Formula.atomS "p").box.sometimes.imp (Formula.atomS "p").always.box := perpetuity6 _
 
 /-!
 ## Triangle Notation Tests
 -/
 
 /-- Test: P3 with triangle notation - □φ → □△φ -/
-example (φ : Formula) : ⊢ φ.box.imp (△φ).box := perpetuity_3 φ
+example (φ : Formula) : ⊢ φ.box.imp (△φ).box := perpetuity3 φ
 
 /-- Test: P4 with triangle notation - ◇▽φ → ◇φ -/
-example (φ : Formula) : ⊢ (▽φ).diamond.imp φ.diamond := perpetuity_4 φ
+example (φ : Formula) : ⊢ (▽φ).diamond.imp φ.diamond := perpetuity4 φ
 
 /-- Test: P5 with triangle notation - ◇▽φ → △◇φ -/
-example (φ : Formula) : ⊢ (▽φ).diamond.imp (△(φ.diamond)) := perpetuity_5 φ
+example (φ : Formula) : ⊢ (▽φ).diamond.imp (△(φ.diamond)) := perpetuity5 φ
 
 /-- Test: P6 with triangle notation - ▽□φ → □△φ -/
-example (φ : Formula) : ⊢ (▽(φ.box)).imp (△φ).box := perpetuity_6 φ
+example (φ : Formula) : ⊢ (▽(φ.box)).imp (△φ).box := perpetuity6 φ
 
 /-- Test: Mixed notation - box with triangle -/
-example (p : Formula) : ⊢ p.box.imp (△p).box := perpetuity_3 p
+example (p : Formula) : ⊢ p.box.imp (△p).box := perpetuity3 p
 
 /-- Test: Mixed notation - diamond with triangle -/
-example (p : Formula) : ⊢ (▽p).diamond.imp (△(p.diamond)) := perpetuity_5 p
+example (p : Formula) : ⊢ (▽p).diamond.imp (△(p.diamond)) := perpetuity5 p
 
 /-!
 ## Integration Tests
@@ -343,7 +343,7 @@ example (φ : Formula) : ⊢ φ.box.imp φ := by
   exact DerivationTree.axiom _ _ (Axiom.modal_t φ) trivial
 
 /-- Test: P3 is derivable from MF axiom (□φ → □Fφ, and always = future) -/
-example (φ : Formula) : ⊢ φ.box.imp φ.always.box := perpetuity_3 φ
+example (φ : Formula) : ⊢ φ.box.imp φ.always.box := perpetuity3 φ
 
 /-- Test: Triangle notation equivalence - △ = always -/
 example (p : Formula) : △p = p.always := rfl

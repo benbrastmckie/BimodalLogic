@@ -34,9 +34,9 @@ open FormalSystem.Automation
 open FormalSystem.Automation.DatasetValidator
 
 -- Convenience abbreviations (using atom_s for compatibility with DatasetValidator patterns)
-private abbrev p : Formula := .atom_s "p"
-private abbrev q : Formula := .atom_s "q"
-private abbrev r : Formula := .atom_s "r"
+private abbrev p : Formula := .atomS "p"
+private abbrev q : Formula := .atomS "q"
+private abbrev r : Formula := .atomS "r"
 
 /-!
 ## Section 1: Previously-Problematic Formulas
@@ -165,10 +165,10 @@ Formulas with nested temporal operators testing complexity boundary behavior.
     -- S(p, q) — bare Since is not valid
     (Formula.snce p q, "S(p, q)", .invalid),
     -- F(p) = U(p, ⊤) — not valid
-    (Formula.some_future p, "Fp", .invalid),
+    (Formula.someFuture p, "Fp", .invalid),
     -- p → G(F(p)) is NOT valid in general for strict future
     -- But p → F(p) is not valid either (strict future)
-    (Formula.imp p (Formula.some_future p), "p → Fp", .invalid)
+    (Formula.imp p (Formula.someFuture p), "p → Fp", .invalid)
   ]
   let mut passed := 0
   let mut failed := 0

@@ -51,13 +51,13 @@ For any frame F and world w, task_rel w 0 w.
 This is enforced by the TaskFrame structure.
 -/
 def frame_nullity_property (F : TaskFrame Int) (w : F.WorldState) :
-    F.task_rel w 0 w :=
+    F.TaskRel w 0 w :=
   F.nullity w
 
 /-!
 Test: Frame nullity (verifies generator produces valid frames).
 -/
-example : ∀ (F : TaskFrame Int) (w : F.WorldState), F.task_rel w 0 w := by
+example : ∀ (F : TaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w := by
   intro F w
   exact F.nullity w
 
@@ -72,15 +72,15 @@ This is enforced by the TaskFrame structure.
 -- frame property. Added the non-negativity hypotheses to match the current structure.
 def frame_compositionality_property (F : TaskFrame Int)
     (w u v : F.WorldState) (x y : Int) (hx : 0 ≤ x) (hy : 0 ≤ y)
-    (h1 : F.task_rel w x u) (h2 : F.task_rel u y v) :
-    F.task_rel w (x + y) v :=
+    (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
+    F.TaskRel w (x + y) v :=
   F.forward_comp w u v x y hx hy h1 h2
 
 /-!
 Test: Frame compositionality (verifies generator produces valid frames).
 -/
 example : ∀ (F : TaskFrame Int) (w u v : F.WorldState) (x y : Int),
-    0 ≤ x → 0 ≤ y → F.task_rel w x u → F.task_rel u y v → F.task_rel w (x + y) v := by
+    0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
   intro F w u v x y hx hy h1 h2
   exact F.forward_comp w u v x y hx hy h1 h2
 
@@ -89,14 +89,14 @@ example : ∀ (F : TaskFrame Int) (w u v : F.WorldState) (x y : Int),
 /-!
 Property: Trivial frame has Unit world states.
 -/
-example : (TaskFrame.trivial_frame (D := Int)).WorldState = Unit := by
+example : (TaskFrame.trivialFrame (D := Int)).WorldState = Unit := by
   rfl
 
 /-!
 Property: Trivial frame task relation is always true.
 -/
 example (w u : Unit) (x : Int) :
-    (TaskFrame.trivial_frame (D := Int)).task_rel w x u := by
+    (TaskFrame.trivialFrame (D := Int)).TaskRel w x u := by
   trivial
 
 /-! ## Identity Frame Properties -/
@@ -105,7 +105,7 @@ example (w u : Unit) (x : Int) :
 Property: Identity frame task relation requires w = u and x = 0.
 -/
 example (W : Type) (w u : W) (x : Int) :
-    (TaskFrame.identity_frame W (D := Int)).task_rel w x u ↔ w = u ∧ x = 0 := by
+    (TaskFrame.identityFrame W (D := Int)).TaskRel w x u ↔ w = u ∧ x = 0 := by
   rfl
 
 /-! ## Nat Frame Properties -/
@@ -113,7 +113,7 @@ example (W : Type) (w u : W) (x : Int) :
 /-!
 Property: Nat frame has Nat world states.
 -/
-example : (TaskFrame.nat_frame (D := Int)).WorldState = Nat := by
+example : (TaskFrame.natFrame (D := Int)).WorldState = Nat := by
   rfl
 
 /-!
@@ -236,7 +236,7 @@ Property: All constructed frames satisfy nullity.
 This is a meta-property: any frame we can construct must satisfy nullity
 because it's required by the structure definition.
 -/
-example (F : TaskFrame Int) : ∀ w, F.task_rel w 0 w := by
+example (F : TaskFrame Int) : ∀ w, F.TaskRel w 0 w := by
   intro w
   exact F.nullity w
 
@@ -244,7 +244,7 @@ example (F : TaskFrame Int) : ∀ w, F.task_rel w 0 w := by
 Property: All constructed frames satisfy compositionality.
 -/
 example (F : TaskFrame Int) :
-    ∀ w u v x y, 0 ≤ x → 0 ≤ y → F.task_rel w x u → F.task_rel u y v → F.task_rel w (x + y) v := by
+    ∀ w u v x y, 0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
   intro w u v x y hx hy h1 h2
   exact F.forward_comp w u v x y hx hy h1 h2
 
@@ -255,7 +255,7 @@ Property: TaskModel valuation is well-defined for all worlds and atoms.
 
 The valuation function always returns a Prop (decidable truth value).
 -/
-example : ∀ (M : TaskModel (TaskFrame.nat_frame (D := Int))) (w : Nat) (s : Atom),
+example : ∀ (M : TaskModel (TaskFrame.natFrame (D := Int))) (w : Nat) (s : Atom),
     M.valuation w s ∨ ¬M.valuation w s := by
   intro M w s
   by_cases h : M.valuation w s
@@ -279,7 +279,7 @@ The frame of a generated model is nat_frame.
 Property: All-false model has no atoms true.
 -/
 example : ∀ (w : Nat) (s : Atom),
-    ¬(TaskModel.all_false (F := TaskFrame.nat_frame (D := Int))).valuation w s := by
+    ¬(TaskModel.allFalse (F := TaskFrame.natFrame (D := Int))).valuation w s := by
   intro w s
   exact id
 
@@ -287,7 +287,7 @@ example : ∀ (w : Nat) (s : Atom),
 Property: All-true model has all atoms true.
 -/
 example : ∀ (w : Nat) (s : Atom),
-    (TaskModel.all_true (F := TaskFrame.nat_frame (D := Int))).valuation w s := by
+    (TaskModel.allTrue (F := TaskFrame.natFrame (D := Int))).valuation w s := by
   intro w s
   trivial
 

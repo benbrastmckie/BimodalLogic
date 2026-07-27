@@ -25,9 +25,9 @@ open FormalSystem.Syntax FormalSystem.ProofSystem
 -- #check (@assumption_search : Lean.ParserDescr)
 
 -- Test helper functions
-#check FormalSystem.Automation.is_box_formula
-#check FormalSystem.Automation.is_future_formula
-#check FormalSystem.Automation.extract_from_box
-#check FormalSystem.Automation.extract_from_future
+#check FormalSystem.Automation.isBoxFormula
+#check FormalSystem.Automation.isFutureFormula
+#check FormalSystem.Automation.extractFromBox
+#check FormalSystem.Automation.extractFromFuture
 
 end BimodalTest.Automation.Simple

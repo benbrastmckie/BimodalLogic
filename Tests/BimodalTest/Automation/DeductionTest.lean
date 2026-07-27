@@ -113,17 +113,17 @@ noncomputable example (p : Formula) (h : [p] ⊢ Formula.bot) : ⊢ p.neg := by
 /-- Test 11: converse direction — plain `example`, NO `noncomputable` marker.
 This compiles only because `deduction_converse` is computable. -/
 example (p q : Formula) (h : ⊢ p.imp q) : [p] ⊢ q :=
-  deduction_converse [] p q h
+  deductionConverse [] p q h
 
 /-- Test 12: converse at a non-Base frame class, non-empty context. -/
 example (p q r : Formula) (h : [r] ⊢[FrameClass.Dense] p.imp q) :
     [p, r] ⊢[FrameClass.Dense] q :=
-  deduction_converse [r] p q h
+  deductionConverse [r] p q h
 
 /-- Test 13: round-trip `deduction_converse ∘ deduction_theorem` (noncomputable
 because `deduction_theorem` is). -/
 noncomputable example (p q : Formula) (h : [p] ⊢ q) : [p] ⊢ q :=
-  deduction_converse [] p q (deduction_theorem [] p q h)
+  deductionConverse [] p q (deductionTheorem [] p q h)
 
 /-! ## `Derivable.deduction` (Prop-level) -/
 

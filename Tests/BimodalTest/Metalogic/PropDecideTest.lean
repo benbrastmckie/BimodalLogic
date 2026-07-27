@@ -71,8 +71,8 @@ example (fc : FrameClass) (p q : Formula) : |-![fc] p.imp (q.imp p) := by prop_d
 
 /-! ## Concrete (Atom-Only) Goals -/
 
-noncomputable example : ⊢ (Formula.atom (Atom.mk_base "p")).imp
-    ((Formula.atom (Atom.mk_base "q")).imp (Formula.atom (Atom.mk_base "p"))) := by
+noncomputable example : ⊢ (Formula.atom (Atom.mkBase "p")).imp
+    ((Formula.atom (Atom.mkBase "q")).imp (Formula.atom (Atom.mkBase "p"))) := by
   prop_decide
 
 end BimodalTest.Metalogic.PropDecideTest

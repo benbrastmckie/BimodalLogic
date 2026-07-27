@@ -70,18 +70,18 @@ partial def genFormula : Gen Formula := Gen.sized fun size =>
   if size ≤ 0 then
     -- Base case: only atoms and bot
     Gen.oneOfWithDefault (pure Formula.bot) [
-      Formula.atom_s <$> (Arbitrary.arbitrary : Gen String)
+      Formula.atomS <$> (Arbitrary.arbitrary : Gen String)
     ]
   else
     -- Recursive case: all constructors with reduced size
     let subsize := size / 2
     Gen.oneOfWithDefault (pure Formula.bot) [
-      Formula.atom_s <$> (Arbitrary.arbitrary : Gen String),
+      Formula.atomS <$> (Arbitrary.arbitrary : Gen String),
       Formula.imp <$> Gen.resize (fun _ => subsize) genFormula
                   <*> Gen.resize (fun _ => subsize) genFormula,
       Formula.box <$> Gen.resize (fun _ => size - 1) genFormula,
-      Formula.all_past <$> Gen.resize (fun _ => size - 1) genFormula,
-      Formula.all_future <$> Gen.resize (fun _ => size - 1) genFormula
+      Formula.allPast <$> Gen.resize (fun _ => size - 1) genFormula,
+      Formula.allFuture <$> Gen.resize (fun _ => size - 1) genFormula
     ]
 
 /--
@@ -147,7 +147,7 @@ simple generator suitable for basic property testing.
 -/
 instance : SampleableExt (TaskFrame Int) where
   proxy := Unit
-  interp _ := TaskFrame.nat_frame (D := Int)
+  interp _ := TaskFrame.natFrame (D := Int)
 
 /-! ## TaskModel Generators (QUARANTINED — Task 365)
 
@@ -211,7 +211,7 @@ Useful for testing base cases.
 -/
 def genAtom : Gen Formula := do
   let s ← (Arbitrary.arbitrary : Gen String)
-  return Formula.atom_s s
+  return Formula.atomS s
 
 /--
 Generate a propositional formula (no modal/temporal operators).
@@ -221,12 +221,12 @@ Useful for testing propositional logic properties.
 partial def genPropFormula : Gen Formula := Gen.sized fun size =>
   if size ≤ 0 then
     Gen.oneOfWithDefault (pure Formula.bot) [
-      Formula.atom_s <$> (Arbitrary.arbitrary : Gen String)
+      Formula.atomS <$> (Arbitrary.arbitrary : Gen String)
     ]
   else
     let subsize := size / 2
     Gen.oneOfWithDefault (pure Formula.bot) [
-      Formula.atom_s <$> (Arbitrary.arbitrary : Gen String),
+      Formula.atomS <$> (Arbitrary.arbitrary : Gen String),
       Formula.imp <$> Gen.resize (fun _ => subsize) genPropFormula
                   <*> Gen.resize (fun _ => subsize) genPropFormula
     ]

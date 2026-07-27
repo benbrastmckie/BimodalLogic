@@ -43,8 +43,8 @@ open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Decidability
 open FormalSystem.Metalogic.Decidability.TraceExport
 
-private def p : Formula := .atom_s "p"
-private def q : Formula := .atom_s "q"
+private def p : Formula := .atomS "p"
+private def q : Formula := .atomS "q"
 
 /-- Run the full e2e smoke test. -/
 def runE2ETest : IO Bool := do

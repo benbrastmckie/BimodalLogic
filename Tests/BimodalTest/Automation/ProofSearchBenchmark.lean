@@ -37,9 +37,9 @@ namespace BimodalTest.Automation.Benchmark
 open FormalSystem.Syntax FormalSystem.Automation FormalSystem.ProofSystem
 
 -- Convenience abbreviations
-abbrev p : Formula := .atom_s "p"
-abbrev q : Formula := .atom_s "q"
-abbrev r : Formula := .atom_s "r"
+abbrev p : Formula := .atomS "p"
+abbrev q : Formula := .atomS "q"
+abbrev r : Formula := .atomS "r"
 
 /-- Benchmark result for a single proof attempt. -/
 structure BenchmarkResult where
@@ -129,9 +129,9 @@ def runModalBenchmarks (config : BenchmarkConfig := {}) : IO (List BenchmarkResu
 
 /-- Temporal axiom benchmarks. -/
 def temporalBenchmarks : List (String × Context × Formula) := [
-  ("Temporal 4 (Gp → GGp)", [], (Formula.all_future p).imp (Formula.all_future (Formula.all_future p))),
-  ("Temporal A (p → GHp)", [], p.imp (Formula.all_future (Formula.some_past p))),
-  ("Temporal K dist", [], (Formula.all_future (p.imp q)).imp ((Formula.all_future p).imp (Formula.all_future q)))
+  ("Temporal 4 (Gp → GGp)", [], (Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p))),
+  ("Temporal A (p → GHp)", [], p.imp (Formula.allFuture (Formula.somePast p))),
+  ("Temporal K dist", [], (Formula.allFuture (p.imp q)).imp ((Formula.allFuture p).imp (Formula.allFuture q)))
 ]
 
 def runTemporalBenchmarks (config : BenchmarkConfig := {}) : IO (List BenchmarkResult) := do
@@ -170,8 +170,8 @@ def runPropBenchmarks (config : BenchmarkConfig := {}) : IO (List BenchmarkResul
 
 /-- Mixed modal-temporal benchmarks. -/
 def mixedBenchmarks : List (String × Context × Formula) := [
-  ("Modal-Future (□p → □Gp)", [], (Formula.box p).imp (Formula.box (Formula.all_future p))),
-  ("Future-Modal (□p → G□p)", [], (Formula.box p).imp (Formula.all_future (Formula.box p)))
+  ("Modal-Future (□p → □Gp)", [], (Formula.box p).imp (Formula.box (Formula.allFuture p))),
+  ("Future-Modal (□p → G□p)", [], (Formula.box p).imp (Formula.allFuture (Formula.box p)))
 ]
 
 def runMixedBenchmarks (config : BenchmarkConfig := {}) : IO (List BenchmarkResult) := do
@@ -356,7 +356,7 @@ def runLearningBenchmarks (benchmarks : List (String × Context × Formula))
   let mut firstPassFound := 0
 
   for (name, ctx, goal) in benchmarks do
-    let result := search_with_learning ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights db true
+    let result := searchWithLearning ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights db true
     if result.found then
       firstPassFound := firstPassFound + 1
       db := result.patternDb
@@ -372,7 +372,7 @@ def runLearningBenchmarks (benchmarks : List (String × Context × Formula))
   let mut secondPassFound := 0
 
   for (name, ctx, goal) in benchmarks do
-    let result := search_with_learning ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights db false
+    let result := searchWithLearning ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights db false
     if result.found then secondPassFound := secondPassFound + 1
     secondPassVisits := secondPassVisits + result.visits
     IO.println s!"{name}: found={result.found}, visits={result.visits}"
