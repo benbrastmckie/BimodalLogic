@@ -12,8 +12,9 @@
 # One module path per line; `#` starts a comment.
 
 # --- Automation ------------------------------------------------------------
-# Benchmark harness; its only importer is BimodalTest.Automation.ProofFirstTests,
-# itself unreachable from the BimodalTest root.
+# Benchmark harness. Its only importer is BimodalTest.Automation.ProofFirstTests,
+# which cannot be wired into the test root (see the Tests section below), so this
+# module stays outside the build graph too.
 Bimodal.Automation.ProofFirstBenchmark
 
 # --- Metalogic -------------------------------------------------------------
@@ -27,16 +28,17 @@ Bimodal.Metalogic.Completeness
 Bimodal.ProofSystem.LinearityDerivedFacts
 
 # --- Tests -----------------------------------------------------------------
-# Orphaned test modules: present under Tests/ but not imported by
-# Tests/BimodalTest.lean, so `lake build BimodalTest` never compiles them.
-BimodalTest.Automation.FormulaMutatorTest
-BimodalTest.Automation.InterestingnessTest
-BimodalTest.Automation.ProofFirstTests
+# Test modules present under Tests/ but not imported by Tests/BimodalTest.lean,
+# so `lake build BimodalTest` never compiles them.
 # These two do not compile: they pass `String` where `Atom` is now expected,
 # i.e. they predate the Atom type change and were never updated because nothing
 # builds them. Recorded rather than re-discovered on every run.
 broken: BimodalTest.ProofSystem.DerivationBenchmark
 broken: BimodalTest.Semantics.SemanticBenchmark
-BimodalTest.TraceCertificateTest
-BimodalTest.TraceExportTest
-BimodalTest.TraceExporterE2ETest
+
+# These two compile in isolation but cannot be imported by Tests/BimodalTest.lean:
+# each pulls in an executable root that defines `main`, colliding with the `main`
+# from Bimodal.Automation.DatasetValidator already in that environment. They stay
+# unwired and compile-checked here.
+BimodalTest.Automation.FormulaMutatorTest
+BimodalTest.Automation.ProofFirstTests

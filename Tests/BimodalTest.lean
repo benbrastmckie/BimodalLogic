@@ -28,6 +28,10 @@ import BimodalTest.Automation.DeductionTest
 import BimodalTest.Automation.C5SmokeTest
 import BimodalTest.Automation.NormalizationTest
 import BimodalTest.Automation.WeakeningSearchTest
+import BimodalTest.Automation.InterestingnessTest
+import BimodalTest.TraceCertificateTest
+import BimodalTest.TraceExportTest
+import BimodalTest.TraceExporterE2ETest
 import BimodalTest.Integration.Helpers
 import BimodalTest.Integration.EndToEndTest
 import BimodalTest.Integration.ProofSystemSemanticsTest
@@ -55,6 +59,25 @@ Tests mirror the Bimodal library structure:
 - `Automation/` - Proof search and tactic tests
 - `Integration/` - Cross-module integration tests
 - `Property/` - Property-based tests with Plausible
+- Loose `Trace*Test.lean` - trace-certificate and trace-export round-trip tests
+
+Every test module that can be imported here is imported above. Four are
+deliberately excluded, for two different reasons:
+
+- `ProofSystem/DerivationBenchmark.lean`, `Semantics/SemanticBenchmark.lean` —
+  do not compile at all; they pass `String` where `Atom` is now required.
+- `Automation/FormulaMutatorTest.lean`, `Automation/ProofFirstTests.lean` —
+  compile in isolation but cannot be imported here. Each pulls in an executable
+  root (`Automation/FormulaMutator.lean`, `Automation/ProofFirstExporter.lean`)
+  that defines `main`, and this environment already has `main` from
+  `Automation/DatasetValidator.lean`. Importing either yields
+  "environment already contains 'main'". Fixing this means restructuring where
+  `main` lives in the executable roots, not editing the tests.
+
+All four are tracked in `scripts/module-invariants-manifest.txt`, which
+compile-checks the importable ones in isolation, so excluded code cannot rot
+unseen. A test module absent from both this file and that manifest is a gap in
+the gate; the invariant check fails on exactly that condition.
 
 ## Running Tests
 

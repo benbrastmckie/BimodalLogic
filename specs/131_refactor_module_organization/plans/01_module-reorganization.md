@@ -204,22 +204,22 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 2: Widen the Test Gate [NOT STARTED]
+### Phase 2: Widen the Test Gate [COMPLETED]
 
 - **Goal:** Make `BimodalTest` a real gate before any file moves happen. 8 test modules are
   unreachable from `Tests/BimodalTest.lean` and would not catch a broken import.
 - **Tasks:**
-  - [ ] Compile-check each of the 8 orphaned modules in isolation with `lake env lean`:
+  - [x] Compile-check each of the 8 orphaned modules in isolation with `lake env lean`: *(deviation: altered — used `lake build <Module>` instead of `lake env lean <path>`; the latter reports spurious "object file ... does not exist" errors because unbuilt executable-root .oleans are missing, which would have been misread as rot. Result: 6 compile, 2 broken.)*
         `BimodalTest.Automation.FormulaMutatorTest`, `BimodalTest.Automation.InterestingnessTest`,
         `BimodalTest.Automation.ProofFirstTests`, `BimodalTest.ProofSystem.DerivationBenchmark`,
         `BimodalTest.Semantics.SemanticBenchmark`, `BimodalTest.TraceCertificateTest`,
         `BimodalTest.TraceExportTest`, `BimodalTest.TraceExporterE2ETest`.
-  - [ ] Wire every module that compiles cleanly into `Tests/BimodalTest.lean`.
-  - [ ] For any module that does NOT compile, leave it unwired and add it to the Phase 1
+  - [x] Wire every module that compiles cleanly into `Tests/BimodalTest.lean`. *(deviation: altered — only 4 of the 6 compiling modules could be wired. `FormulaMutatorTest` and `ProofFirstTests` compile in isolation but fail on import into the test root with "environment already contains 'main' from Bimodal.Automation.DatasetValidator": each pulls in an executable root that defines `main`. Quarantined per the phase's own "more than an import fix -> quarantine" instruction.)*
+  - [x] For any module that does NOT compile, leave it unwired and add it to the Phase 1
         unreachable-module manifest with a one-line reason, so C6 keeps watching it.
-  - [ ] Record which modules were wired and which were quarantined; this determines whether
+  - [x] Record which modules were wired and which were quarantined; this determines whether
         `BimodalTest.Automation.ProofFirstBenchmark` is live (Phase 5 depends on the answer).
-  - [ ] These modules are name-stable; do not rename anything to make them compile. If a module
+  - [x] These modules are name-stable; do not rename anything to make them compile. If a module
         needs more than an import fix, quarantine it.
 - **Timing:** 1.5 hours
 - **Depends on:** 1
