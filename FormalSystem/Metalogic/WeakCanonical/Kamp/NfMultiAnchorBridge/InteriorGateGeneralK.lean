@@ -603,6 +603,14 @@ replaced by the fiber-existential `igFoldBit`:
   (`nf_eval_unique` against the given realization). No chain step is shortcut (G5); the fold bit is
   read FIBER-EXISTENTIALLY throughout (F1 channel preserved). -/
 
+/-! ## Circularity record for the bridge below
+
+`igFoldBit_realize_iff` takes the deep render `NfEvalNf M (k+1) 3 [w,x,t] qnf` as an EXPLICIT
+hypothesis, yet that render is produced downstream of the fold content this bridge supplies. The
+firing route for `kampPrior_hreal_supply` (archived, `Boneyard/InteriorHrealSupplyK.lean`) is
+therefore machine-confirmed CIRCULAR. The de-folded branch built to decircularize it is itself
+retired, unwired, in `Boneyard/Arity4CharStackK.lean` — which holds the full original record. -/
+
 /-- **Fold-realization biconditional at depth `k+1`**.
     The successor carrier's fiber-existential fold bit is TRUE exactly when the model realizes the
     interior 1-type `χ` at some point in zone `zs` relative to `[w,x,t]`. Consumes

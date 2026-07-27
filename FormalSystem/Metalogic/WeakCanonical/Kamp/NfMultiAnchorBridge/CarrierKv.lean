@@ -235,6 +235,14 @@ private noncomputable def kv_body {sig : MonadicSignature} [Fintype sig.preds]
               S_R.permutations.map fun lR => mkDisjunct lL lR })
       (fun _ => { disjuncts := [] })
 
+/-! ## M1 refutation record — the F1 fold-information loss
+
+The frozen `bracketEndCharKv` below FOLDS each marked arity-4 fiber `sub : NormalForm sig k 4`
+down to the arity-1 pair `(nf0ZoneSpec (atomAssgn sub), nfkProjFresh sub)`. The fold is lossy —
+carriers stay EQUAL across quant layers disagreeing on which marked sub realized a shared fiber
+— and that F1 information loss is the M1 refutation record. The de-folded sibling carrier built
+to avoid it is retired, unwired, in `Boneyard/Arity4CharStackK.lean`. -/
+
 open Classical in
 /-- **The depth-`k` V-carrier**. See the doc-comment block above
     `kv_body` for the full construction record and citations. `k = 0`: singleton-disjunct

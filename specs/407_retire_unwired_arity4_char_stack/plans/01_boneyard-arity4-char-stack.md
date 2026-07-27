@@ -349,7 +349,7 @@ suffix and are LIVE. Delete by verified line block only.
 
 ---
 
-### Phase 4: Relocate the two prose records [NOT STARTED]
+### Phase 4: Relocate the two prose records [COMPLETED]
 
 **Goal**: Restore, beside the LIVE code each one documents, a condensed version of the two records
 that were carried away with the deleted blocks. These are records about live declarations; losing
@@ -362,21 +362,32 @@ shifted nothing above these anchors, but confirm by content regardless.
 
 **Tasks**:
 
-- [ ] **Record A — circularity.** Attach a condensed 3-5 line note to `igFoldBit_realize_iff` in
+- [x] **Record A — circularity.** Attach a condensed 3-5 line note to `igFoldBit_realize_iff` in
       `InteriorGateGeneralK.lean` (live, currently `:611`). Content: this bridge requires the deep
       render `NfEvalNf M (k+1) 3 [w,x,t] qnf` as an *explicit hypothesis*, which makes the firing
       route for the already-retired `kampPrior_hreal_supply` machine-confirmed **circular**.
       Cross-reference `Boneyard/InteriorHrealSupplyK.lean` (where that lemma now lives) and
       `Boneyard/Arity4CharStackK.lean` (where the full original record now lives). Do not restate
       the deleted derivation; point at it.
-- [ ] **Record B — M1/F1 fold-information loss.** Attach a condensed note near `bracketEndCharKv` in
+      *(completed — 7-line `/-! ## Circularity record for the bridge below -/` block inserted
+      directly above the `igFoldBit_realize_iff` docstring. Anchor located by content match on the
+      docstring text, not by line number; the declaration was confirmed at `:611`, NOT the `:563`
+      that the tree's own prose cites — the plan's stale-citation warning was accurate.)*
+- [x] **Record B — M1/F1 fold-information loss.** Attach a condensed note near `bracketEndCharKv` in
       `CarrierKv.lean` (live, currently `:248`). Content: the frozen `bracketEndCharKv` folds each
       marked arity-4 fiber down to `(nf0ZoneSpec (atomAssgn sub), nfkProjFresh sub)` — the F1
       information loss constituting the M1 refutation record. Cross-reference
       `Boneyard/Arity4CharStackK.lean`. **Drop** the sentence "the M2 fix is the sibling carrier
       below" — that clause is about the archived sibling and belongs only with the archive.
-- [ ] Do not cite task numbers in either note (per `.claude/rules/no-task-references-in-deliverables.md`);
+      *(completed — 7-line `/-! ## M1 refutation record — the F1 fold-information loss -/` block
+      inserted directly above the `open Classical in` / docstring pair heading `bracketEndCharKv`.
+      Anchor located by content; declaration confirmed at `:248`, NOT the `:238` the tree's prose
+      cites. The "M2 fix is the sibling carrier below" clause was DROPPED as directed — the note
+      says only that the de-folded sibling is retired and unwired in the archive.)*
+- [x] Do not cite task numbers in either note (per `.claude/rules/no-task-references-in-deliverables.md`);
       cite the declaration names and Boneyard filenames, which are durable anchors.
+      *(completed — grep for `task [0-9]+` over the added lines returns 0. Both notes cite only
+      declaration names and Boneyard filenames.)*
 
 **Timing**: 45 minutes
 
