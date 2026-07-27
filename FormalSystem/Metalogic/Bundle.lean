@@ -10,6 +10,7 @@ import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
 import FormalSystem.Metalogic.Bundle.Construction
 import FormalSystem.Metalogic.Bundle.FMCSDef
 import FormalSystem.Metalogic.Bundle.FMCSDef
+import FormalSystem.Metalogic.Bundle.LimitMCS
 import FormalSystem.Metalogic.Bundle.ModalSaturation
 import FormalSystem.Metalogic.Bundle.SuccRelation
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
@@ -27,6 +28,7 @@ establishes the coherence conditions the truth lemma needs.
 ## Contents
 
 - `FMCSDef`, `FMCS`, `BFMCS` — families of MCSs and their bundling
+- `LimitMCS` — the limit set of a `Rat`-indexed family at a real point, and its consistency
 - `CanonicalFrame`, `CanonicalTaskRelation`, `SuccRelation` — the frame and its relations
 - `Construction`, `WitnessSeed` — building bundles from a seed
 - `ModalSaturation`, `TemporalCoherence`, `TemporalContent`, `UntilSinceCoherence` —
