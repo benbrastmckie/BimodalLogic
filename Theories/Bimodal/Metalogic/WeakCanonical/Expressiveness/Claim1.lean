@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness
-import Bimodal.Automation.EFGameTactics
+import Bimodal.Metalogic.WeakCanonical.EFGameTactics
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Fintype.Pigeonhole
 

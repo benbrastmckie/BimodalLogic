@@ -291,30 +291,47 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 4: Relocate Misplaced Modules [NOT STARTED]
+### Phase 4: Relocate Misplaced Modules [COMPLETED]
 
 - **Goal:** Put the one namespace-mismatched file where its namespace says it lives, which also
   removes a real layering inversion, and delete the empty placeholder directory.
 - **Tasks:**
-  - [ ] `git mv Theories/Bimodal/Automation/EFGameTactics.lean Theories/Bimodal/Metalogic/WeakCanonical/EFGameTactics.lean`.
+  - [x] `git mv Theories/Bimodal/Automation/EFGameTactics.lean Theories/Bimodal/Metalogic/WeakCanonical/EFGameTactics.lean`.
         It declares `namespace Bimodal.Metalogic.WeakCanonical` and imports
         `Bimodal.Metalogic.WeakCanonical.EFGames.CustomGame`; it is a Metalogic file that was living
         in Automation.
-  - [ ] Update its two importers: `Theories/Bimodal/Automation.lean` and
+  - [x] Update its two importers: `Theories/Bimodal/Automation.lean` and
         `Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Claim1.lean`, both to
         `import Bimodal.Metalogic.WeakCanonical.EFGameTactics`.
-  - [ ] Confirm the layering improvement: `Claim1.lean`'s import becomes intra-Metalogic, removing
+  - [x] Confirm the layering improvement: `Claim1.lean`'s import becomes intra-Metalogic, removing
         the only `Metalogic -> Automation` upward edge. `Automation.lean` gaining a
         `Metalogic.WeakCanonical` import introduces no new layering violation — Automation already
         imports `Bimodal.Metalogic.Decidability.*` (13 such import lines) and previously reached
         `Metalogic.WeakCanonical.EFGames.CustomGame` transitively through this very file.
-  - [ ] Verify by measurement that no `Metalogic/**` file imports `Bimodal.Automation.*` after the
-        move, and record the result.
-  - [ ] Remove `Theories/Bimodal/Metalogic/Relational/`. It contains only a `README.md` describing
+  - [x] Verify by measurement that no `Metalogic/**` file imports `Bimodal.Automation.*` after the
+        move, and record the result. *(deviation: altered -- the measurement contradicts the plan's
+        premise. `Claim1.lean` was NOT the only `Metalogic -> Automation` edge: four more exist and
+        remain after the move, all in `Metalogic/Decidability/`:
+        `Closure.lean -> Automation.ProofSearch.Core`,
+        `DecisionProcedure.lean -> Automation.ProofSearch.Strategies`,
+        `DecisionProcedure.lean -> Automation.Normalization`, and
+        `TraceExport.lean -> Automation.DataExport`.
+        The move still removes one genuine inversion and fixes the namespace/path mismatch, but this
+        phase's verification criterion "zero files under `Metalogic/` import `Bimodal.Automation.*`"
+        is unreachable without relocating the decision-procedure / proof-search boundary, which is
+        outside this task's scope. Recorded here and in the Phase 13 decision record rather than
+        silently restated as satisfied. Measured edge count: 5 before, 4 after.)*
+  - [x] Remove `Theories/Bimodal/Metalogic/Relational/`. It contains only a `README.md` describing
         itself as a placeholder and zero `.lean` files. `git rm -r` the directory; if any document
         references it, that reference is corrected in Phase 7 or 8.
-  - [ ] Update `Theories/Bimodal/Automation/README.md` and any `Metalogic/WeakCanonical/README.md`
-        file listing to reflect the moved file.
+  - [x] Update `Theories/Bimodal/Automation/README.md` and any `Metalogic/WeakCanonical/README.md`
+        file listing to reflect the moved file. *(deviation: altered -- scope widened. The
+        `WeakCanonical/README.md` module table was wrong well beyond the moved file: it listed a
+        non-existent `ExpressiveCompleteness/` directory and a non-existent `Separation.lean`,
+        omitted `Kamp/` (99 files / 71,246 lines) and `PriorDefs.lean` entirely, and mis-stated every
+        subdirectory count (`Separation/` as "11+ files"; actually 3). The table was regenerated from
+        measurement -- correcting one row of a table that stale would have left exactly the dangling
+        references Phase 13 forbids.)*
 - **Timing:** 1 hour
 - **Depends on:** 3
 - **Files to modify:**

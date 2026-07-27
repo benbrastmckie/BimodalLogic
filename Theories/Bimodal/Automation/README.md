@@ -6,7 +6,7 @@ This directory serves two complementary purposes:
 1. **Proof automation**: Custom Lean 4 tactics and Aesop rule sets for TM logic proofs
 2. **ML dataset pipeline**: Formula enumeration, labeling, validation, and export for ML benchmarks
 
-The proof automation tools (AesopRules, EFGameTactics, SuccessPatterns) are used
+The proof automation tools (AesopRules, SuccessPatterns) are used
 throughout the library. The ML pipeline (DatasetGenerator, FormulaEnumerator, etc.)
 produces the BMLogic benchmark datasets. Both rely on the ProofSearch/ and Tactics/
 subdirectories for their implementation infrastructure.
@@ -23,7 +23,6 @@ subdirectories for their implementation infrastructure.
 | `DatasetExporter.lean` | 342 | Dataset exporter: configurable export with format options |
 | `DatasetGenerator.lean` | 471 | Dataset generator: runs `decide` on enumerated formulas, extracts proof traces |
 | `DatasetValidator.lean` | 589 | Dataset validator: conformance tests, diversity metrics, feasibility gate |
-| `EFGameTactics.lean` | 326 | EF game automation tactics for expressive completeness proofs |
 | `EnrichedCountermodel.lean` | 211 | Enriched countermodel extraction for dataset negative examples |
 | `EnumBenchmark.lean` | 196 | Enumeration benchmark: performance testing for formula enumeration |
 | `FormulaEnumerator.lean` | 1091 | Formula enumerator: depth-bounded enumeration of all TM formulas |
@@ -39,10 +38,14 @@ subdirectories for their implementation infrastructure.
 | File | Purpose |
 |------|---------|
 | `AesopRules.lean` | `@[aesop]` rule set; use via `tm_auto` tactic |
-| `EFGameTactics.lean` | Tactics for WeakCanonical/EFGames proofs |
 | `SuccessPatterns.lean` | Heuristic proof patterns for `ProofSearch/` |
 | `Tactics/` | Tactic elaboration (`apply_axiom`, `modal_t`, `tm_auto`) |
 | `ProofSearch/` | Depth-limited proof search engine |
+
+`EFGameTactics.lean` used to live here. It declares `namespace
+Bimodal.Metalogic.WeakCanonical` and its only consumer is the EF-game development,
+so it now lives at `Metalogic/WeakCanonical/EFGameTactics.lean`, where its path and
+its namespace agree. `Automation.lean` still re-exports it.
 
 ## ML Dataset Pipeline
 

@@ -11,25 +11,32 @@ characterize expressive power and establishing completeness via normal-form redu
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `ChronicleExtraction.lean` | 255 | Extracting chronicles from the weak canonical model |
-| `FrameProperties.lean` | 55 | Frame property verification for the weak canonical model |
-| `MonadicFO.lean` | 406 | Monadic first-order logic translation for expressiveness results |
-| `NEquivalence.lean` | 1227 | N-equivalence relation and its properties for bisimulation games |
-| `NormalForm.lean` | 615 | Normal form for TM formulas used in the completeness proof |
-| `OrderedSum.lean` | 62 | Ordered sum construction for building new models |
-| `PriorExpressiveness.lean` | 395 | Prior's theorem on temporal expressiveness |
-| `ReflexiveCanonical.lean` | 760 | Main reflexive canonical model construction |
-| `Separation.lean` | 38 | Re-export module for the Separation subdirectory |
-| `StaviConnectives.lean` | 578 | Stavi connectives (Until, Since extensions) and their properties |
-| `Table.lean` | 280 | Tabular representation for N-equivalence classes |
-| `Transfer.lean` | 1110 | Transfer lemma: truth transferred via N-equivalence |
-| `TruthLemma.lean` | 565 | Truth lemma for the weak canonical model |
-| `WeakCanonical.lean` | 62 | Re-export module for the WeakCanonical package |
-| `EFGames/` | — | Ehrenfeucht-Fraisse bisimulation game engine (9 files) |
-| `ExpressiveCompleteness/` | — | Expressive completeness results (2 files) |
-| `Expressiveness/` | — | Expressiveness separation results (5 files) |
-| `IntegerModel/` | — | Integer model construction (3 files) |
-| `Separation/` | — | Separation theorem and supporting lemmas (11+ files) |
+| `ChronicleExtraction.lean` | 215 | Extracting chronicles from the weak canonical model |
+| `EFGameTactics.lean` | 331 | EF game automation tactics for expressive completeness proofs |
+| `FrameProperties.lean` | 67 | Frame property verification for the weak canonical model |
+| `MonadicFO.lean` | 822 | Monadic first-order logic translation for expressiveness results |
+| `NEquivalence.lean` | 1315 | N-equivalence relation and its properties for bisimulation games |
+| `NormalForm.lean` | 873 | Normal form for TM formulas used in the completeness proof |
+| `OrderedSum.lean` | 52 | Ordered sum construction for building new models |
+| `PriorDefs.lean` | 47 | Shared definitions for the Prior expressiveness development |
+| `PriorExpressiveness.lean` | 372 | Prior's theorem on temporal expressiveness |
+| `ReflexiveCanonical.lean` | 780 | Main reflexive canonical model construction |
+| `StaviConnectives.lean` | 583 | Stavi connectives (Until, Since extensions) and their properties |
+| `Table.lean` | 296 | Tabular representation for N-equivalence classes |
+| `Transfer.lean` | 1244 | Transfer lemma; carries `countermodel_discrete`, the sole live `sorry` |
+| `TruthLemma.lean` | 206 | Truth lemma for the weak canonical model |
+| `EFGames/` | 11,872 | Ehrenfeucht-Fraisse bisimulation game engine (8 files) |
+| `Expressiveness/` | 9,503 | Expressiveness separation results (5 files) |
+| `IntegerModel/` | 5,503 | Integer model construction (6 files) |
+| `Kamp/` | 71,246 | Kamp/Reynolds separation machinery (99 files) -- by far the largest subtree in the repository, and the reason `WeakCanonical` is the riskiest thing in the tree to relocate. Carries its own local `Boneyard/`. |
+| `Separation/` | 926 | Separation theorem and supporting lemmas (3 files) |
+
+The aggregator for this directory is the sibling `Metalogic/WeakCanonical.lean`,
+not a self-named file inside it. Counts above are measured, and both this
+directory's `Boneyard/` and the one under `Kamp/` are excluded from them; run
+`scripts/check-module-invariants.sh` rather than an ad-hoc `find` to re-derive
+live counts, since a filter naming only the top-level `Boneyard` silently counts
+the Kamp-local archive as live.
 
 ## Key Results
 

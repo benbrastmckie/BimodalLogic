@@ -10,7 +10,7 @@ import Bimodal.Automation.ProofSearch.Core
 import Bimodal.Automation.ProofSearch.Strategies
 import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.AesopRules
-import Bimodal.Automation.EFGameTactics
+import Bimodal.Metalogic.WeakCanonical.EFGameTactics
 import Bimodal.Automation.FormulaEnumerator
 import Bimodal.Automation.DatasetGenerator
 import Bimodal.Automation.DataExport
