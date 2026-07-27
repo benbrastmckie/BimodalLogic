@@ -222,6 +222,42 @@ theorem toRealBundle_backward_until_selected {fc : FrameClass} (B : BFMCS (fc :=
   have hr := hguard ((q : ℝ) - δ) (by linarith) (by linarith)
   rwa [realLimitMCS_of_rat fam.mcs δ ((q : ℝ) - δ) q (by ring)] at hr
 
+/--
+**Backward `snce` at a selected target, from a selected witness.**
+
+The `snce` mirror of `toRealBundle_backward_until_selected`, and it is stated with the witness's
+shifted coordinate `w` assumed rational rather than obtained by interpolation. That hypothesis is
+not a convenience: for `snce` the witness lies *below* the target, so
+`exists_rat_witness_of_realLimitMCS` — which descends — would produce a rational strictly below
+`w`, outside the guarded interval `(s, t)`, where nothing is known about `ψ`. The Refutations
+section of this module's docstring exhibits a family where exactly that failure is fatal.
+
+With `w` rational the proof is the mirror image of the `untl` case and uses no limit reasoning at
+all: every rational `q` with `w < q < p` has `(q : ℝ) - δ` strictly between `s` and `t`, so the
+real guard reads off as `ψ ∈ fam.mcs q`.
+-/
+theorem toRealBundle_backward_since_selected_of_rat_witness {fc : FrameClass}
+    (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_rbuc : B.RestrictedBackwardUntilSinceCoherent root)
+    (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
+    (hsub : Formula.snce φ ψ ∈ subformulaClosure root)
+    (p : Rat) (hp : (p : ℝ) = t + δ)
+    (s : ℝ) (hst : s < t) (w : Rat) (hw : (w : ℝ) = s + δ)
+    (hφ : φ ∈ realLimitMCS fam.mcs δ s)
+    (hguard : ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r) :
+    Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t := by
+  rw [realLimitMCS_of_rat fam.mcs δ t p hp]
+  rw [realLimitMCS_of_rat fam.mcs δ s w hw] at hφ
+  have hwp : (w : ℝ) < (p : ℝ) := by rw [hw, hp]; linarith
+  refine (h_rbuc fam hfam).2 p φ ψ hsub ⟨w, by exact_mod_cast hwp, hφ, ?_⟩
+  intro q hwq hqp
+  have h1 : (w : ℝ) < (q : ℝ) := by exact_mod_cast hwq
+  have h2 : (q : ℝ) < (p : ℝ) := by exact_mod_cast hqp
+  rw [hw] at h1
+  rw [hp] at h2
+  have hr := hguard ((q : ℝ) - δ) (by linarith) (by linarith)
+  rwa [realLimitMCS_of_rat fam.mcs δ ((q : ℝ) - δ) q (by ring)] at hr
+
 end FormalSystem.Metalogic.Bundle
 
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle
