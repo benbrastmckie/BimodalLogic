@@ -613,24 +613,6 @@
       "file_scope": null
     },
     {
-      "project_number": 318,
-      "project_name": "slot_lk_results_into_bimodalreference_decidability",
-      "status": "not_started",
-      "task_type": "typst",
-      "topic": "reference-book",
-      "description": "GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymous TACAS 2027 double-blind submission at ~/Philosophy/Papers/PossibleWorlds/Lk/) is accepted and the embargo (user decision 2 on task 313) lifts. Insert the Lk-specific content into chapters/p3-decidability-frontier.typ at the prepared // SLOT-IN: anchors, without renumbering chapters or sections: the BL-star ladder table (Lk 07-related-work.tex 32-104, tab:bl-star-ladder), the complexity map (L1 = PTL x S5 EXPSPACE-complete; L_k undecidable for k >= 2; alternation-freedom does not restore decidability, Theorem F-B; forall-AF-L_k PSPACE-complete flagship, Theorem F-A), and the hardware case study (constant-time as forall-forall, reset convergence, SVA/Logos-Hardware bridge, Lk 06-case-study.tex). Add the Lk bibliography entry with its final published citation. State openly, in plain prose, which results are established in print and which are new; note that none are Lean-formalized (Lk 08-conclusion.tex names Lean 4 formalization as future work). Include the honest trace-vs-task-semantics bridging caveats (Lk is discrete/future-only trace sets; TM is group-time/two-sided task frames). Sources: teammate A rows 15-18.",
-      "effort": "3-4 hours",
-      "parent_task": 313,
-      "dependencies": [
-        313,
-        319
-      ],
-      "created": "2026-07-07T04:28:56Z",
-      "last_updated": "2026-07-07T06:49:15Z",
-      "artifacts": [],
-      "file_scope": null
-    },
-    {
       "project_number": 321,
       "project_name": "implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution",
       "status": "expanded",
@@ -1229,8 +1211,9 @@
         391
       ],
       "created": "2026-07-27T16:49:49Z",
-      "last_updated": "2026-07-27T16:49:49Z",
-      "artifacts": []
+      "last_updated": "2026-07-27T00:00:00Z",
+      "artifacts": [],
+      "topic": "cleanup"
     },
     {
       "project_number": 406,
@@ -1244,8 +1227,9 @@
         391
       ],
       "created": "2026-07-27T16:49:49Z",
-      "last_updated": "2026-07-27T16:49:49Z",
-      "artifacts": []
+      "last_updated": "2026-07-27T00:00:00Z",
+      "artifacts": [],
+      "topic": "cleanup"
     },
     {
       "project_number": 407,
