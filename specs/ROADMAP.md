@@ -23,6 +23,51 @@ inequality), and Until/Since require strictly future/past witnesses.
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
+**Completeness programme: strong vs weak terminology and per-class targets** (2026-07-27,
+settled; the in-tree authority is the module docstring of
+`FormalSystem/Metalogic/StrongCompleteness.lean`):
+
+- **Terminology.** "Strong completeness" is reserved, project-wide, for consequence from
+  possibly-INFINITE premise sets: `Γ : Set Formula` with the finitary set-derivability relation
+  `∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ`. Because `Context = List Formula`
+  is finite, any finite-context consequence statement is inter-derivable with weak
+  (single-formula) completeness through the deduction theorem
+  (`Γ ⊨ φ ↔ ⊨ Γ.foldr imp φ`), and is therefore named **consequence completeness**, never
+  strong. The former "main_strong_completeness" finite-context framing (still visible in
+  `latex/subfiles/04-Metalogic.tex`) was misleading in exactly this way and is retired; the
+  LaTeX restatement is owned by task 362.
+- **For a finitary proof system, genuine strong completeness entails compactness** of the class
+  consequence relation, so it is available exactly where that relation is compact. Per class:
+
+  | Class | Weak completeness | Finite-context consequence | Genuine strong (`Set Formula`) |
+  |---|---|---|---|
+  | Base | open — task 169 | capstone task 362 | OPEN question — compactness research, task 361 |
+  | Dense | open — task 170 | capstone task 362 | OPEN question — compactness research, task 361 |
+  | Discrete | DONE (pristine axiom set) | capstone task 362 | **IMPOSSIBLE** — non-compact |
+  | Dedekind | in flight — task 408 | task 408 (`consequence_completeness_dedekind`) | **IMPOSSIBLE** — non-compact |
+
+- **Why Discrete is weak-only**: `ValidDiscrete` requires `IsSuccArchimedean`/
+  `IsPredArchimedean`, and `next φ = untl φ bot` is a genuine next-step operator on discrete
+  orders, so `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}` is finitely satisfiable over `ℤ` yet unsatisfiable over
+  every Archimedean discrete carrier — compactness fails, hence no strong form.
+- **Why Dedekind is weak-only**: Reynolds 1992 Theorem 7 is *weak* completeness for the
+  real-line axiomatisation and the restriction is genuine — the Dedekind-class consequence
+  relation is not compact. Task 408's terminus pair was renamed accordingly (headline
+  `completeness_dedekind`, corollary `consequence_completeness_dedekind`; formerly
+  "strong_completeness_dedekind").
+- **Why Base/Dense are open rather than settled**: neither binder list imposes
+  Archimedean-ness, so the counterexamples above do not apply, and Burgess-style strong
+  completeness for the classical ℚ tense logic suggests plausibility — but whether the full
+  task-frame consequence relation (S5 box over shift-closed `Omega`, ordered-abelian-group
+  time) is compact is genuinely open. The set-based MCS layer (`SetConsistent` — correctly
+  finitary, `SetMaximalConsistent`, `set_lindenbaum`, in `Metalogic/Core/MaximalConsistent.lean`)
+  already exists; the missing substantive piece is a **model-existence theorem** (every
+  `SetConsistent` set satisfiable in a class frame), which does NOT follow from the
+  single-formula countermodel engines. Task 361 owns the feasibility verdict, the per-class
+  set-consequence/set-derivability definitions, and the sub-task decomposition.
+
+---
+
 **Current state** (2026-07-24, final assembly + axiom audit; supersedes the 2026-07-16 block
 below, which is retained only as history):
 

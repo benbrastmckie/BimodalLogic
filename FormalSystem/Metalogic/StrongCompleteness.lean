@@ -9,50 +9,65 @@ import FormalSystem.Metalogic.Core.DeductionTheorem
 import FormalSystem.Metalogic.Soundness
 
 /-!
-# Strong Completeness
+# Consequence Completeness, and the Strong Completeness Programme
 
-This module hosts the *strong* (arbitrary-context) completeness statements of the bimodal
-system, together with the class-specific semantic consequence relations they are stated
-against. The `FrameClass.Dedekind` instance is the one developed here; the Base, Dense and
-Discrete instances have the same shape and drop into the marked sections below without
-restructuring.
+This module hosts the finite-context *consequence completeness* statements of the bimodal
+system — completeness for `Γ : Context` semantic consequence — together with the
+class-specific semantic consequence relations they are stated against. The
+`FrameClass.Dedekind` instance is the one developed here; the Base, Dense and Discrete
+instances have the same shape and drop into the marked sections below without restructuring.
+It is also the intended home of the genuine *strong* completeness statements (arbitrary
+`Set Formula` premise sets) for the classes that can support them; see the programme below.
 
-## The terminus is strong; weak completeness is the `Γ = []` instance
+## Terminology: "strong completeness" is reserved for infinite premise sets
 
-`Context` is `List Formula` (`Syntax/Context.lean`), i.e. every context is finite. Finiteness
-is what makes strong and weak completeness inter-derivable, and the bridge is the deduction
-theorem: `Γ ⊨ φ` iff `⊨ Γ.foldr (· ⇒ ·) φ`, so a single-formula completeness engine plus
-iterated `deductionConverse` already yields the arbitrary-`Γ` statement. Consequently the
-target of this file is the strong form, and the weak form is recovered by instantiating
-`Γ := []` — *not* the other way around. `soundness_dedekind` (`Metalogic/Soundness.lean`) is
-already stated in strong arbitrary-`Γ` form, so the strong terminus is its exact converse.
+In the standard sense, strong completeness is completeness for consequence from an arbitrary —
+possibly infinite — set of premises. `Context` is `List Formula` (`Syntax/Context.lean`), so
+every context in this development is finite, and finite-context consequence completeness is
+inter-derivable with *weak* (single-formula) completeness through the deduction theorem:
+`Γ ⊨ φ` iff `⊨ Γ.foldr (· ⇒ ·) φ`, and a single-formula completeness engine plus iterated
+`deductionConverse` yields the arbitrary-`Γ` statement. The finite-context results in this
+file are therefore deliberately **not** named "strong": calling a statement that is
+inter-derivable with weak completeness "strong completeness" would misrepresent it. The
+reserved name applies to:
 
-The practical consequence for the completeness engine is stated once, here, because it is easy
-to get backwards: the engine never sees a context. It is fed the single formula
+* **Strong completeness** (reserved, not yet stated in this file): `Γ ⊨_X φ → Γ ⊢_X φ` with
+  `Γ : Set Formula` and a finitary set-derivability relation
+  (`∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ`). For a finitary proof system
+  this entails compactness of the class consequence relation, so it is available exactly for
+  the frame classes whose consequence relation is compact.
+
+The engine contract is unaffected by this naming discipline and is stated once, here, because
+it is easy to get backwards: the engine never sees a context. It is fed the single formula
 `Γ.foldr Formula.imp φ` and returns a derivation from `[]`. No `Γ`-relative Lindenbaum step, no
 `Γ`-relative consistency notion, and no widened subformula root are needed anywhere downstream.
 
-## Why Reynolds' "weakly complete" does not bite here
+## The per-class programme
 
-Reynolds 1992 (§9, printed p.189) states his Theorem 7 as *weak* completeness for the real-line
-axiomatisation. The restriction is a genuine one in his setting, where a context may be
-infinite and the proof's parameter `k` is fixed one greater than the quantifier depth of a
-*single* input formula. At `Context = List Formula` there is no infinite context to express, so
-the gap the word "weakly" marks is not expressible in this development's types, and the strong
-form follows from the weak one by the deduction theorem above. Extending to `Set Formula`
-contexts would require compactness of the Dedekind-class consequence relation, which is a
-separate question and is deliberately out of scope for this module.
-
-Stated plainly, so that the scope of the word "strong" in this file is not mistaken:
-*infinitary* strong completeness — a turnstile whose left-hand side ranges over arbitrary,
-possibly infinite sets of formulas — is a strictly different statement, it is provably out of
-reach for any finitary proof system because the consequence relation over Dedekind-complete
-flows is not compact (an infinite premise set can have no model while every finite subset has
-one, and a derivation can only use finitely many premises), and it is in any case
-*inexpressible* in this development: `Context` is defined as `List Formula`
-(`Syntax/Context.lean`), so both the derivability turnstile and the semantic-consequence
-relation are finitary by type. Nothing in this module either proves or purports to prove the
-infinitary statement.
+* **`FrameClass.Base` and `FrameClass.Dense`**: genuine strong completeness is the intended
+  eventual terminus. Neither class's binder list imposes Archimedean-ness, so the standard
+  non-compactness counterexamples do not apply; whether the full task-frame consequence
+  relation (S5 box over shift-closed history sets, ordered-abelian-group time) is in fact
+  compact is an open research question for this development. The set-based MCS layer
+  (`SetConsistent` — correctly finitary, `SetMaximalConsistent`, `set_lindenbaum` in
+  `Metalogic/Core/MaximalConsistent.lean`) is already in place; the missing substantive piece
+  is a model-existence theorem — every `SetConsistent` set is satisfiable in a frame of the
+  class — which does *not* follow from the single-formula countermodel engines.
+* **`FrameClass.Discrete`**: strong completeness is provably FALSE — the consequence relation
+  is not compact. `ValidDiscrete` requires `IsSuccArchimedean`/`IsPredArchimedean`, and
+  `Formula.next φ = Formula.untl φ Formula.bot` is a genuine next-step operator on discrete
+  orders, so the premise set `{F p} ∪ {(¬Xⁿ p) : n ∈ ℕ}` is finitely satisfiable over `ℤ`
+  (place `p` far enough out) yet unsatisfiable over every Archimedean discrete carrier: the
+  `F p` witness would lie at some finite successor distance. Only weak completeness, and its
+  finite-context consequence corollary, is available for this class.
+* **`FrameClass.Dedekind`**: strong completeness is likewise out of reach. Reynolds 1992
+  (Theorem 7, §9, printed p.189) is *weak* completeness for the real-line axiomatisation, and
+  the restriction is genuine: the consequence relation over Dedekind-complete flows is not
+  compact (an infinite premise set can have no model while every finite subset has one, and a
+  derivation can only use finitely many premises). The headline result for this class is
+  therefore weak completeness, `completeness_dedekind`, with the finite-context form
+  `consequence_completeness_dedekind` as its deduction-theorem companion — not a "strong"
+  theorem, and nothing in this module purports otherwise.
 
 ## Axiomatisability of the real-line temporal logic
 
@@ -77,8 +92,8 @@ for the reader, and no declaration below cites it.
 * `truthAt_foldr_imp` — the pointwise currying lemma relating a context to its `imp`-fold.
 * `semantic_deduction_dedekind_dense` — the semantic deduction theorem for that relation.
 * `derivable_foldr_imp_iff` — its proof-theoretic counterpart, generic in the frame class.
-* `strong_completeness_dedekind_of_engine` — the terminus, stated against a single-formula
-  completeness engine supplied as a hypothesis.
+* `consequence_completeness_dedekind_of_engine` — finite-context consequence completeness,
+  stated against a single-formula completeness engine supplied as a hypothesis.
 * `soundness_dedekind_consequence` — the matching soundness direction, which pins the
   consequence relation to `soundness_dedekind` and rules out a vacuous target.
 * `completeness_dedekind_of_engine` — weak completeness, exhibited as the `Γ = []` instance.
@@ -212,22 +227,30 @@ theorem derivable_foldr_imp_iff {fc : FrameClass} (Γ : Context) (φ : Formula) 
   · intro h
     simpa using derivable_of_derivable_foldr_imp Γ [] φ h
 
-/-! ## Strong completeness for `FrameClass.Dedekind` -/
+/-! ## Consequence completeness for `FrameClass.Dedekind` -/
 
 /--
-**Strong completeness over dense Dedekind-complete frames, modulo the engine.**
+**Finite-context consequence completeness over dense Dedekind-complete frames, modulo the
+engine.**
 
 Given a single-formula completeness engine for `ValidDedekindDense`, semantic consequence from
 an arbitrary finite context is derivable at `FrameClass.Dedekind`.
 
-The engine hypothesis is deliberate. It fixes the terminus of the Dedekind route *before* the
-countermodel construction exists, so the statement cannot silently drift toward the weak form,
-and it records the exact interface the construction must meet: one formula in, one derivation
-from the empty context out. Discharging `engine` turns this into the unconditional
-`strong_completeness_dedekind`, of which weak completeness is the `Γ := []` instance (via
-`derivable_foldr_imp_iff`) — the weak form is never proved separately.
+This is *not* strong completeness: with `Γ : Context = List Formula` it is inter-derivable
+with weak completeness through the deduction theorem, and genuine strong completeness
+(infinite `Set Formula` premise sets) is unavailable for this class because its consequence
+relation is not compact — see the module docstring. The finite-context form is still the right
+statement to carry, because it matches the arbitrary-`Γ` shape of `soundness_dedekind`
+exactly.
+
+The engine hypothesis is deliberate. It fixes the target of the Dedekind route *before* the
+countermodel construction exists, and it records the exact interface the construction must
+meet: one formula in, one derivation from the empty context out. Discharging `engine` turns
+this into the unconditional `consequence_completeness_dedekind`, of which weak completeness —
+the headline result for this class — is the `Γ := []` instance (via
+`derivable_foldr_imp_iff`); the weak form is never proved separately.
 -/
-theorem strong_completeness_dedekind_of_engine
+theorem consequence_completeness_dedekind_of_engine
     (engine : ∀ ψ : Formula, ValidDedekindDense ψ → Derivable FrameClass.Dedekind [] ψ)
     (Γ : Context) (φ : Formula) (h : SemanticConsequenceDedekindDense Γ φ) :
     Derivable FrameClass.Dedekind Γ φ :=
@@ -251,33 +274,48 @@ theorem soundness_dedekind_consequence (Γ : Context) (φ : Formula)
   exact h.elim fun d => soundness_dedekind Γ φ d D h_lub F M Omega h_sc τ h_mem t h_ctx
 
 /--
-**Weak completeness as the `Γ = []` instance of the strong terminus.**
+**Weak completeness — the headline result for the Dedekind class — as the `Γ = []` instance
+of the consequence form.**
 
-Recorded here so that the weak form has exactly one proof in the tree, and that proof is a
-corollary rather than a parallel construction. Proving weak completeness independently would
-duplicate the countermodel engine and re-introduce the weaker terminus the strong statement
-exists to eliminate; this declaration makes that redundancy visible in the type.
+Weak completeness is the strongest completeness statement available for `FrameClass.Dedekind`:
+the class consequence relation is not compact, so the genuine strong (infinite-premise) form
+is out of reach (see the module docstring). Recorded here so that the weak form has exactly
+one proof in the tree, and that proof is a corollary rather than a parallel construction —
+proving it independently would duplicate the countermodel engine; this declaration makes that
+redundancy visible in the type.
 -/
 theorem completeness_dedekind_of_engine
     (engine : ∀ ψ : Formula, ValidDedekindDense ψ → Derivable FrameClass.Dedekind [] ψ)
     (φ : Formula) (h : ValidDedekindDense φ) : Derivable FrameClass.Dedekind [] φ :=
-  strong_completeness_dedekind_of_engine engine [] φ
+  consequence_completeness_dedekind_of_engine engine [] φ
     ((semantic_deduction_dedekind_dense [] φ).mpr (by simpa using h))
 
-/-! ## Strong completeness for `FrameClass.Base`
+/-! ## Consequence and strong completeness for `FrameClass.Base`
 
-Reserved. The Base instance has the same three-declaration shape as the Dedekind section above
-(`SemanticConsequenceBase`, its semantic deduction lemma, and a `_of_engine` terminus), reusing
-`truthAt_foldr_imp` and `derivable_foldr_imp_iff` unchanged; only the binder list of the
-consequence relation differs. It is owned by the finite-context strong-completeness effort and
-is intentionally absent rather than stubbed. -/
+Reserved. Two layers are expected here, and both are intentionally absent rather than stubbed:
 
-/-! ## Strong completeness for `FrameClass.Dense`
+1. The finite-context consequence instance, with the same three-declaration shape as the
+   Dedekind section above (`SemanticConsequenceBase`, its semantic deduction lemma, and a
+   `_of_engine` form), reusing `truthAt_foldr_imp` and `derivable_foldr_imp_iff` unchanged;
+   only the binder list of the consequence relation differs.
+2. Genuine strong completeness over `Set Formula` premise sets, pending the compactness /
+   model-existence research described in the module docstring. The Base binder list imposes no
+   Archimedean-ness, so no known non-compactness obstruction applies. -/
 
-Reserved, same shape as the Base section above, against the `ValidDense` binder list. -/
+/-! ## Consequence and strong completeness for `FrameClass.Dense`
 
-/-! ## Strong completeness for `FrameClass.Discrete`
+Reserved, same two-layer shape as the Base section above, against the `ValidDense` binder
+list. Like Base, the Dense class has no known non-compactness obstruction, so genuine strong
+completeness is the intended terminus. -/
 
-Reserved, same shape as the Base section above, against the `ValidDiscrete` binder list. -/
+/-! ## Consequence completeness for `FrameClass.Discrete`
+
+Reserved — the finite-context consequence layer only, against the `ValidDiscrete` binder list.
+Genuine strong completeness is provably unavailable for this class: `ValidDiscrete` requires
+`IsSuccArchimedean`/`IsPredArchimedean`, and the premise set `{F p} ∪ {(¬Xⁿ p) : n ∈ ℕ}` —
+expressible because `Formula.next φ = Formula.untl φ Formula.bot` is a genuine next-step
+operator on discrete orders — is finitely satisfiable over `ℤ` yet unsatisfiable over every
+Archimedean discrete carrier, so the class consequence relation is not compact. Weak
+completeness (`completeness_discrete`) is the strongest form for this class. -/
 
 end FormalSystem.Metalogic
