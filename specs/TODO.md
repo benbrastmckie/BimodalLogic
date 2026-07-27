@@ -20,7 +20,7 @@ next_project_number: 410
 ### Completeness
 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
-165 [RESEARCHED] — Establish the semantic finite model property for TM bimodal logic
+165 [RESEARCHED] — Establish verified decidability of TM bimodal logic for all four 
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
 408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
 
@@ -433,7 +433,25 @@ ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the
 - **Dependencies**: None
 - **Research**: [165_establish_semantic_finite_model_property/reports/01_semantic-fmp-research.md]
 
-**Description**: Establish the semantic finite model property for TM bimodal logic. The existing FMP in Decidability/FMP/ is purely proof-theoretic: it shows closure MCS structures are finite and that provability is decidable via MCS enumeration, but it does not construct finite semantic models (task frames with world histories). A standard semantic FMP requires: (1) Starting from a canonical model where phi fails, quotient worlds by agreement on the subformula closure. (2) Prove the filtration lemma for all formula constructors including Until/Since (known to be problematic for naive filtration). (3) Prove the quotient model is a valid task frame. (4) Bound the model size by 2^|cl(phi)|. The result should be stated as: if phi is satisfiable in a task model, then phi is satisfiable in a finite task model of bounded size.
+**Description**: Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.
+
+CURRENT STATE (sound-only). The tableau stack exists and builds: a 28-rule calculus in Tableau.lean (23 base rules in allRules, 2 in denseRules, 3 in discreteRules), fuel-based saturation with blocking plus AppliedSet and EventualityTracker (Saturation.lean), per-frame-class closure detection (Closure.lean), and the entry point `decide` (DecisionProcedure.lean:128). Valid answers do carry proof terms, but the stack is sound only, and three gaps block any decidability theorem: (a) closed-tableau proof extraction (`extractProof`, ProofExtraction.lean:258) is a best-effort runtime search over 5 strategies that can fail, returning `.timeout` even on a genuinely closed tableau; (b) there is NO termination theorem -- `soundFuel` (Saturation.lean:627) caps at `min bound 100000` with nothing proved about it, and the original `blocking_terminates` was found FALSE (see the status discussion at Saturation.lean:1028-1060); (c) countermodel extraction proves `branchTruthLemma` (CountermodelExtraction.lean:1044) only over a bespoke `branchTruth` semantics (CountermodelExtraction.lean:263 -- direct-successor Until/Since, box quantified over a finite world list) that is NOT connected to the repository's real `TruthAt`/`valid`.
+
+WORK PACKAGES, in recommended order.
+
+WP1 -- Adversarial calculus-adequacy probe (must come first; top risk). The branch's `TimeOrdering` is a partial order while real TM time is linear, and the calculus appears to lack an ordering-trichotomy/linearity branching rule for freshly introduced times. Probe whether an open saturated branch can fail to admit any linear model. Also probe Until-guard interpolation at times not present on the branch, and blocking-vs-truth-lemma compatibility (blocked branches will need an unwinding argument). This package comes first because a negative result forces rule additions, which would invalidate every downstream proof in WP2-WP4.
+
+WP2 -- Refutation meta-theorem (closed tableau to Derivable). Replace runtime proof extraction with a theorem of the form `allClosed tableau -> Derivable fc [] phi`, established via per-rule admissibility lemmas in the Hilbert system across all ~28 rules. The untlPos/untlNeg Reynolds decomposition and z1Rule are the hard cases. The existing runtime strategies in ProofExtraction.lean are retained only as fast paths, no longer as the correctness story.
+
+WP3 -- Termination theorem. Prove a generalized subformula property covering every rule in `applyRule` (the current `subformula_property` at Saturation.lean:1014 covers only the initial branch), then a pigeonhole argument on at most 2^(2n) distinct time types showing that blocking must fire, and finally an uncapped, justified fuel function with a theorem of the form `buildTableau phi (soundFuel' phi) fc = some _`.
+
+WP4 -- Semantic bridge (open saturated branch to not-valid). This is the mathematical core, comparable in weight to a canonical-model completeness proof. Embed the finite branch time order into an actual temporal type D (arbitrary, Q, Z, or R according to frame class), interpolate valuations so that the real Until/Since guard conditions hold at in-between times, construct genuine WorldHistories and a shift-closed Omega, and prove `not TruthAt` -- thereby replacing the bespoke `branchTruth` semantics with the real one.
+
+ASSEMBLY AND PAYOFF. WP2 + WP3 + WP4 together yield `Decidable (Derivable fc [] phi)` and decidability of validity for each frame class. As a corollary they also yield completeness for all four classes, which discharges the repository's single live sorry -- `countermodel_discrete` at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242, which currently taints Base `completeness` -- and supplies the missing Dedekind engine required by `completeness_dedekind_of_engine` (StrongCompleteness.lean:308, via `consequence_completeness_dedekind_of_engine` at :274).
+
+DEDEKIND CAVEAT. `allRulesForFC` (Tableau.lean:1067) gates dense rules on `Dense <= fc` and discrete rules on `Discrete <= fc`; since the FrameClass order (Axioms.lean:456-463) makes `Dense <= Dedekind` true but `Discrete <= Dedekind` false, the Dedekind class receives only the Base + Dense rules. Adequacy for Dedekind must therefore be proved rather than assumed: finite branch models do embed into R, but this requires an actual theorem.
+
+HYGIENE SUBTASK. Delete or replace the two vacuous theorems `validity_decidable` and `validity_has_decision_procedure` (Decidability/Correctness.lean:78 and :91 -- both are mere `Classical.em`/`by_cases` tautologies), and the `and True`-padded `filtered_world_bound` and `fmp_size_bound` (Decidability/FMP/FMP.lean:183 and :237). Also correct the LaTeX and Typst documentation that currently cites the unproven 2^|cl(phi)| bound as an established result.
 
 ---
 
