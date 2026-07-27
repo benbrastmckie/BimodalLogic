@@ -130,12 +130,12 @@ def ecq_computable (A B : Formula) : [A, A.neg] ⊢ B :=
 def ldi_computable (A B : Formula) : [A] ⊢ A.or B :=
   let a_imp_or : DerivationTree .Base [] (A.imp (A.or B)) :=
     -- A → (¬A → B): compose A → (¬A → ⊥) with b_combinator on (⊥ → B)
-    let h1 : ⊢ A.imp (A.neg.imp Formula.bot) := @theorem_app1 .Base A Formula.bot
+    let h1 : ⊢ A.imp (A.neg.imp Formula.bot) := @theoremApp1 .Base A Formula.bot
     let h2 : ⊢ Formula.bot.imp B := .axiom [] _ (Axiom.ex_falso B) trivial
     let h3 : ⊢ (Formula.bot.imp B).imp ((A.neg.imp Formula.bot).imp (A.neg.imp B)) :=
-      @b_combinator .Base A.neg Formula.bot B
+      @bCombinator .Base A.neg Formula.bot B
     let h4 : ⊢ (A.neg.imp Formula.bot).imp (A.neg.imp B) := mp h2 h3
-    imp_trans h1 h4
+    impTrans h1 h4
   .modus_ponens [A] A (A.or B)
     (weakenEmpty a_imp_or)
     (.assumption [A] A mem0)
@@ -183,8 +183,8 @@ def box_b_ctx (A : Formula) : [A] ⊢ Formula.box A.diamond :=
     Chain: □A →(T) A →(B) □◇A →(T) ◇A. -/
 def box_to_diamond_ctx (A : Formula) : [Formula.box A] ⊢ A.diamond :=
   let thm : ⊢ (Formula.box A).imp A.diamond :=
-    imp_trans
-      (imp_trans
+    impTrans
+      (impTrans
         (DerivationTree.axiom [] _ (Axiom.modal_t A) trivial)
         (DerivationTree.axiom [] _ (Axiom.modal_b A) trivial))
       (DerivationTree.axiom [] _ (Axiom.modal_t A.diamond) trivial)
@@ -223,11 +223,11 @@ def diamond_5_ctx (A : Formula) : [A.diamond] ⊢ Formula.box A.diamond.diamond 
     (.assumption _ A.diamond mem0)
 
 /-- Box to future: `[box A] |- G(A)`. Uses MF + T composition. -/
-def box_to_future_ctx (A : Formula) : [Formula.box A] ⊢ A.all_future :=
-  let thm := imp_trans
+def box_to_future_ctx (A : Formula) : [Formula.box A] ⊢ A.allFuture :=
+  let thm := impTrans
     (DerivationTree.axiom [] _ (Axiom.modal_future A) trivial)
-    (DerivationTree.axiom [] _ (Axiom.modal_t A.all_future) trivial)
-  .modus_ponens [Formula.box A] (Formula.box A) A.all_future
+    (DerivationTree.axiom [] _ (Axiom.modal_t A.allFuture) trivial)
+  .modus_ponens [Formula.box A] (Formula.box A) A.allFuture
     (weakenEmpty thm)
     (.assumption _ (Formula.box A) mem0)
 
@@ -237,60 +237,60 @@ def box_to_future_ctx (A : Formula) : [Formula.box A] ⊢ A.all_future :=
 
 /-- Temporal MP in enriched context: `[A -> B, A, G(A -> B), G(A)] |- B`. 2 assumption + 1 MP. -/
 def temp_k_ctx (A B : Formula) :
-    [A.imp B, A, (A.imp B).all_future, A.all_future] ⊢ B :=
-  let ctx := [A.imp B, A, (A.imp B).all_future, A.all_future]
+    [A.imp B, A, (A.imp B).allFuture, A.allFuture] ⊢ B :=
+  let ctx := [A.imp B, A, (A.imp B).allFuture, A.allFuture]
   .modus_ponens ctx A B
     (.assumption ctx (A.imp B) mem0)
     (.assumption ctx A mem1)
 
 /-- Connect future in context: `[A] |- G(P(A))`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
-def connect_future_ctx (A : Formula) : [A] ⊢ A.some_past.all_future :=
-  .modus_ponens [A] A A.some_past.all_future
+def connect_future_ctx (A : Formula) : [A] ⊢ A.somePast.allFuture :=
+  .modus_ponens [A] A A.somePast.allFuture
     (weakenEmpty (.axiom [] _ (Axiom.connect_future A) trivial))
     (.assumption _ A mem0)
 
 /-- Connect past in context: `[A] |- H(F(A))`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
-def connect_past_ctx (A : Formula) : [A] ⊢ A.some_future.all_past :=
-  .modus_ponens [A] A A.some_future.all_past
+def connect_past_ctx (A : Formula) : [A] ⊢ A.someFuture.allPast :=
+  .modus_ponens [A] A A.someFuture.allPast
     (weakenEmpty (.axiom [] _ (Axiom.connect_past A) trivial))
     (.assumption _ A mem0)
 
 /-- Box future in context: `[box A] |- G(box A)`. Uses temp_future_derived. -/
-def box_future_ctx (A : Formula) : [Formula.box A] ⊢ (Formula.box A).all_future :=
-  .modus_ponens [Formula.box A] (Formula.box A) (Formula.box A).all_future
-    (weakenEmpty (temp_future_derived A))
+def box_future_ctx (A : Formula) : [Formula.box A] ⊢ (Formula.box A).allFuture :=
+  .modus_ponens [Formula.box A] (Formula.box A) (Formula.box A).allFuture
+    (weakenEmpty (temporalFutureDerived A))
     (.assumption _ (Formula.box A) mem0)
 
 /-- Box past in context: `[box A] |- H(F(A))`. Chain: □A →(T) A →(connect_past) H(F(A)). -/
-def box_past_ctx (A : Formula) : [Formula.box A] ⊢ A.some_future.all_past :=
-  let thm := imp_trans
+def box_past_ctx (A : Formula) : [Formula.box A] ⊢ A.someFuture.allPast :=
+  let thm := impTrans
     (DerivationTree.axiom [] _ (Axiom.modal_t A) trivial)
     (DerivationTree.axiom [] _ (Axiom.connect_past A) trivial)
-  .modus_ponens [Formula.box A] (Formula.box A) A.some_future.all_past
+  .modus_ponens [Formula.box A] (Formula.box A) A.someFuture.allPast
     (weakenEmpty thm)
     (.assumption _ (Formula.box A) mem0)
 
 /-- Until implies F in context:
   `[U(psi, phi)] |- F(psi)`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
-def until_F_ctx (phi psi : Formula) : [Formula.untl psi phi] ⊢ psi.some_future :=
-  .modus_ponens [Formula.untl psi phi] (Formula.untl psi phi) psi.some_future
+def until_F_ctx (phi psi : Formula) : [Formula.untl psi phi] ⊢ psi.someFuture :=
+  .modus_ponens [Formula.untl psi phi] (Formula.untl psi phi) psi.someFuture
     (weakenEmpty (.axiom [] _ (Axiom.until_F phi psi) trivial))
     (.assumption _ (Formula.untl psi phi) mem0)
 
 /-- Since implies P in context:
   `[S(psi, phi)] |- P(psi)`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
-def since_P_ctx (phi psi : Formula) : [Formula.snce psi phi] ⊢ psi.some_past :=
-  .modus_ponens [Formula.snce psi phi] (Formula.snce psi phi) psi.some_past
+def since_P_ctx (phi psi : Formula) : [Formula.snce psi phi] ⊢ psi.somePast :=
+  .modus_ponens [Formula.snce psi phi] (Formula.snce psi phi) psi.somePast
     (weakenEmpty (.axiom [] _ (Axiom.since_P phi psi) trivial))
     (.assumption _ (Formula.snce psi phi) mem0)
 
 /-- Serial future in context: `[A] |- F(top)`. 2 weakening + 1 axiom + identity steps + 1 MP. -/
-def serial_future_ctx (A : Formula) : [A] ⊢ Formula.top.some_future :=
+def serial_future_ctx (A : Formula) : [A] ⊢ Formula.top.someFuture :=
   let top_ctx : DerivationTree .Base [A] Formula.top :=
     weakenEmpty (identity Formula.bot)
-  let sf_ctx : DerivationTree .Base [A] (Formula.top.imp Formula.top.some_future) :=
+  let sf_ctx : DerivationTree .Base [A] (Formula.top.imp Formula.top.someFuture) :=
     weakenEmpty (.axiom [] _ Axiom.serial_future trivial)
-  .modus_ponens [A] Formula.top Formula.top.some_future sf_ctx top_ctx
+  .modus_ponens [A] Formula.top Formula.top.someFuture sf_ctx top_ctx
 
 /-!
 ## Weakening Variants
@@ -328,19 +328,19 @@ def box_b_ctx_weak (A B : Formula) : [B, A] ⊢ Formula.box A.diamond :=
   weakenCons B (box_b_ctx A)
 
 /-- `[B, A] |- G(P(A))` -/
-def connect_future_ctx_weak (A B : Formula) : [B, A] ⊢ A.some_past.all_future :=
+def connect_future_ctx_weak (A B : Formula) : [B, A] ⊢ A.somePast.allFuture :=
   weakenCons B (connect_future_ctx A)
 
 /-- `[B, A] |- H(F(A))` -/
-def connect_past_ctx_weak (A B : Formula) : [B, A] ⊢ A.some_future.all_past :=
+def connect_past_ctx_weak (A B : Formula) : [B, A] ⊢ A.someFuture.allPast :=
   weakenCons B (connect_past_ctx A)
 
 /-- `[C, U(psi, phi)] |- F(psi)` -/
-def until_F_ctx_weak (phi psi C : Formula) : [C, Formula.untl psi phi] ⊢ psi.some_future :=
+def until_F_ctx_weak (phi psi C : Formula) : [C, Formula.untl psi phi] ⊢ psi.someFuture :=
   weakenCons C (until_F_ctx phi psi)
 
 /-- `[C, S(psi, phi)] |- P(psi)` -/
-def since_P_ctx_weak (phi psi C : Formula) : [C, Formula.snce psi phi] ⊢ psi.some_past :=
+def since_P_ctx_weak (phi psi C : Formula) : [C, Formula.snce psi phi] ⊢ psi.somePast :=
   weakenCons C (since_P_ctx phi psi)
 
 /-- `[B, A] |- A` -/
@@ -361,15 +361,15 @@ def box_pair_ctx_weak (A B C : Formula) :
   weakenCons C (box_pair_ctx A B)
 
 /-- `[B, box A] |- G(box A)` -/
-def box_future_ctx_weak (A B : Formula) : [B, Formula.box A] ⊢ (Formula.box A).all_future :=
+def box_future_ctx_weak (A B : Formula) : [B, Formula.box A] ⊢ (Formula.box A).allFuture :=
   weakenCons B (box_future_ctx A)
 
 /-- `[B, box A] |- H(F(A))` -/
-def box_past_ctx_weak (A B : Formula) : [B, Formula.box A] ⊢ A.some_future.all_past :=
+def box_past_ctx_weak (A B : Formula) : [B, Formula.box A] ⊢ A.someFuture.allPast :=
   weakenCons B (box_past_ctx A)
 
 /-- `[B, A] |- F(top)` -/
-def serial_future_ctx_weak (A B : Formula) : [B, A] ⊢ Formula.top.some_future :=
+def serial_future_ctx_weak (A B : Formula) : [B, A] ⊢ Formula.top.someFuture :=
   weakenCons B (serial_future_ctx A)
 
 /-!
@@ -386,24 +386,24 @@ def identity_weakened (A psi : Formula) : [psi] ⊢ A.imp A :=
 /-- `[psi] |- (B -> C) -> (A -> B) -> (A -> C)` -/
 def b_combinator_weakened {A B C : Formula} (psi : Formula) :
     [psi] ⊢ (B.imp C).imp ((A.imp B).imp (A.imp C)) :=
-  weakenEmpty b_combinator
+  weakenEmpty bCombinator
 
 /-- `[psi] |- A -> neg(neg A)` -/
 def dni_weakened (A psi : Formula) : [psi] ⊢ A.imp A.neg.neg :=
-  weakenEmpty (dni A)
+  weakenEmpty (notNotIntro A)
 
 /-- `[psi] |- A -> G(P(A))` -/
-def connect_future_weakened (A psi : Formula) : [psi] ⊢ A.imp A.some_past.all_future :=
+def connect_future_weakened (A psi : Formula) : [psi] ⊢ A.imp A.somePast.allFuture :=
   weakenEmpty (.axiom [] _ (Axiom.connect_future A) trivial)
 
 /-- `[psi] |- A -> H(F(A))` -/
-def connect_past_weakened (A psi : Formula) : [psi] ⊢ A.imp A.some_future.all_past :=
+def connect_past_weakened (A psi : Formula) : [psi] ⊢ A.imp A.someFuture.allPast :=
   weakenEmpty (.axiom [] _ (Axiom.connect_past A) trivial)
 
 /-- `[psi] |- box(A) -> G(box(A))` -/
 def temp_future_weakened (A psi : Formula) :
-    [psi] ⊢ (Formula.box A).imp (Formula.box A).all_future :=
-  weakenEmpty (temp_future_derived A)
+    [psi] ⊢ (Formula.box A).imp (Formula.box A).allFuture :=
+  weakenEmpty (temporalFutureDerived A)
 
 /-- `[psi] |- A -> B -> A and B` -/
 def pairing_weakened (A B psi : Formula) : [psi] ⊢ A.imp (B.imp (A.and B)) :=
@@ -441,28 +441,28 @@ def prop_s_weakened (A B psi : Formula) : [psi] ⊢ A.imp (B.imp A) :=
   weakenEmpty (.axiom [] _ (Axiom.prop_s A B) trivial)
 
 /-- `[psi] |- U(B, A) -> F(B)` -/
-def until_F_weakened (A B psi : Formula) : [psi] ⊢ (Formula.untl B A).imp B.some_future :=
+def until_F_weakened (A B psi : Formula) : [psi] ⊢ (Formula.untl B A).imp B.someFuture :=
   weakenEmpty (.axiom [] _ (Axiom.until_F A B) trivial)
 
 /-- `[psi] |- S(B, A) -> P(B)` -/
-def since_P_weakened (A B psi : Formula) : [psi] ⊢ (Formula.snce B A).imp B.some_past :=
+def since_P_weakened (A B psi : Formula) : [psi] ⊢ (Formula.snce B A).imp B.somePast :=
   weakenEmpty (.axiom [] _ (Axiom.since_P A B) trivial)
 
 /-- `[psi] |- top -> F(top)` -/
-def serial_future_weakened (psi : Formula) : [psi] ⊢ Formula.top.imp Formula.top.some_future :=
+def serial_future_weakened (psi : Formula) : [psi] ⊢ Formula.top.imp Formula.top.someFuture :=
   weakenEmpty (.axiom [] _ Axiom.serial_future trivial)
 
 /-- `[psi] |- top -> P(top)` -/
-def serial_past_weakened (psi : Formula) : [psi] ⊢ Formula.top.imp Formula.top.some_past :=
+def serial_past_weakened (psi : Formula) : [psi] ⊢ Formula.top.imp Formula.top.somePast :=
   weakenEmpty (.axiom [] _ Axiom.serial_past trivial)
 
 /-- `[psi] |- (A -> B -> C) -> (B -> A -> C)` -/
 def theorem_flip_weakened {A B C : Formula} (psi : Formula) :
     [psi] ⊢ (A.imp (B.imp C)).imp (B.imp (A.imp C)) :=
-  weakenEmpty theorem_flip
+  weakenEmpty theoremFlip
 
 /-- `[psi] |- A -> (A -> B) -> B` -/
 def theorem_app1_weakened {A B : Formula} (psi : Formula) : [psi] ⊢ A.imp ((A.imp B).imp B) :=
-  weakenEmpty theorem_app1
+  weakenEmpty theoremApp1
 
 end FormalSystem.Theorems.ContextualProofs

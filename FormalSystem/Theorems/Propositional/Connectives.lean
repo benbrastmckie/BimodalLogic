@@ -48,7 +48,7 @@ Proof:
 4. Compose with DNE to get Q
 -/
 @[tm_lemma]
-def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
+def classicalMerge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
   -- Goal: (P → Q) → ((¬P → Q) → Q)
   -- This is case analysis on P using LEM.
   --
@@ -110,14 +110,14 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
       exact DerivationTree.modus_ponens _ B Formula.bot h_neg_b h_b
     -- Apply deduction theorem: [A → ¬B, A → B] ⊢ A → ⊥ = ¬A
     have step1 : [(A.imp B.neg), (A.imp B)] ⊢ A.neg :=
-      FormalSystem.Metalogic.Core.deduction_theorem
+      FormalSystem.Metalogic.Core.deductionTheorem
         [(A.imp B.neg), (A.imp B)] A Formula.bot h_in_ctx
     -- Apply deduction theorem: [A → B] ⊢ (A → ¬B) → ¬A
     have step2 : [(A.imp B)] ⊢ (A.imp B.neg).imp A.neg :=
-      FormalSystem.Metalogic.Core.deduction_theorem
+      FormalSystem.Metalogic.Core.deductionTheorem
         [(A.imp B)] (A.imp B.neg) A.neg step1
     -- Apply deduction theorem: [] ⊢ (A → B) → ((A → ¬B) → ¬A)
-    exact FormalSystem.Metalogic.Core.deduction_theorem
+    exact FormalSystem.Metalogic.Core.deductionTheorem
       [] (A.imp B) ((A.imp B.neg).imp A.neg) step2
   -- Now use this with A = ¬Q, B = ¬P
   have ci_inst : ⊢ (Q.neg.imp P.neg).imp ((Q.neg.imp P.neg.neg).imp Q.neg.neg) :=
@@ -142,13 +142,13 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
     -- We need: (A → B) → (B → ⊥) → (A → ⊥)
     -- Use theorem_flip to swap arguments
     have b : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=
-      b_combinator
+      bCombinator
     -- theorem_flip : (X → Y → Z) → (Y → X → Z)
     -- With X = B → ⊥, Y = A → B, Z = A → ⊥
     -- We get: ((B → ⊥) → (A → B) → (A → ⊥)) → ((A → B) → (B → ⊥) → (A → ⊥))
     have flip_inst : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                        ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
-      @theorem_flip FrameClass.Base (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
+      @theoremFlip FrameClass.Base (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
     exact DerivationTree.modus_ponens [] _ _ flip_inst b
   -- Now compose everything
   -- From (P → Q):
@@ -158,7 +158,7 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
   have contra1 : ⊢ (P.imp Q).imp (Q.neg.imp P.neg) := contrapose_thm P Q
   have contra2 : ⊢ (P.neg.imp Q).imp (Q.neg.imp P.neg.neg) := contrapose_thm P.neg Q
   -- DNE for Q
-  have dne_q : ⊢ Q.neg.neg.imp Q := double_negation Q
+  have dne_q : ⊢ Q.neg.neg.imp Q := doubleNegation Q
   -- Use deduction theorem to combine
   -- From [P → Q, ¬P → Q]:
   --   Get (¬Q → ¬P) from contra1 and first assumption
@@ -205,8 +205,8 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
   -- deduction_theorem Γ A B h requires h : (A :: Γ) ⊢ B
   -- For step1: Γ = [P → Q], A = (¬P → Q), so need [(¬P → Q), (P → Q)] ⊢ Q ✓
   have step1 : [(P.imp Q)] ⊢ (P.neg.imp Q).imp Q :=
-    FormalSystem.Metalogic.Core.deduction_theorem [(P.imp Q)] (P.neg.imp Q) Q h_combined
-  exact FormalSystem.Metalogic.Core.deduction_theorem [] (P.imp Q) ((P.neg.imp Q).imp Q) step1
+    FormalSystem.Metalogic.Core.deductionTheorem [(P.imp Q)] (P.neg.imp Q) Q h_combined
+  exact FormalSystem.Metalogic.Core.deductionTheorem [] (P.imp Q) ((P.neg.imp Q).imp Q) step1
 
 /--
 Biconditional Introduction: From `⊢ A → B` and `⊢ B → A`, derive `⊢ A ↔ B`.
@@ -217,7 +217,7 @@ Construct a biconditional from two implications.
 
 **Proof Strategy**: Use `pairing` to combine the two implications into a conjunction.
 -/
-def iff_intro (A B : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp A) :
+def iffIntro (A B : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp A) :
     ⊢ (A.imp B).and (B.imp A) := by
   -- Use pairing: A → B → (A ∧ B)
   have pair_inst : ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
@@ -232,7 +232,7 @@ Left Biconditional Elimination: From `A ↔ B` and `A`, derive `B`.
 
 **Proof Strategy**: Extract `A → B` from biconditional using lce, then apply modus ponens.
 -/
-def iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := by
+def iffElimLeft (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := by
   -- Get A from context
   have h_a : [((A.imp B).and (B.imp A)), A] ⊢ A := by
     apply DerivationTree.assumption
@@ -248,7 +248,7 @@ def iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := by
     -- We have [(A → B) ∧ (B → A), A] and need (A → B)
     -- Use weakening from lce
     have lce_inst : [(A.imp B).and (B.imp A)] ⊢ A.imp B :=
-      lce (A.imp B) (B.imp A)
+      andLeft (A.imp B) (B.imp A)
     exact DerivationTree.weakening [(A.imp B).and (B.imp A)] _ _ lce_inst
       (by intro x; simp only [List.mem_cons, List.not_mem_nil, or_false]; intro h; left; exact h)
   -- Apply modus ponens
@@ -259,7 +259,7 @@ Right Biconditional Elimination: From `A ↔ B` and `B`, derive `A`.
 
 **Proof Strategy**: Extract `B → A` from biconditional using rce, then apply modus ponens.
 -/
-def iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A := by
+def iffElimRight (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A := by
   -- Get B from context
   have h_b : [((A.imp B).and (B.imp A)), B] ⊢ B := by
     apply DerivationTree.assumption
@@ -268,7 +268,7 @@ def iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A := by
   have h_imp : [((A.imp B).and (B.imp A)), B] ⊢ B.imp A := by
     -- Use weakening from rce
     have rce_inst : [(A.imp B).and (B.imp A)] ⊢ B.imp A :=
-      rce (A.imp B) (B.imp A)
+      andRight (A.imp B) (B.imp A)
     exact DerivationTree.weakening [(A.imp B).and (B.imp A)] _ _ rce_inst
       (by intro x; simp only [List.mem_cons, List.not_mem_nil, or_false]; intro h; left; exact h)
   -- Apply modus ponens
@@ -294,14 +294,14 @@ From implication, derive its contrapositive.
 **Proof Strategy**: Use b_combinator and theorem_flip to build contraposition.
 -/
 @[tm_lemma]
-def contrapose_imp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := by
+def contraposeImp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := by
   -- b_combinator: (B → ⊥) → (A → B) → (A → ⊥)
   have bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=
-    b_combinator
+    bCombinator
   -- theorem_flip: (X → Y → Z) → (Y → X → Z)
   have flip : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                  ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
-    @theorem_flip FrameClass.Base (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
+    @theoremFlip FrameClass.Base (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
   exact DerivationTree.modus_ponens [] _ _ flip bc
 
 /--
@@ -310,7 +310,7 @@ Contraposition (helper): From `⊢ A → B`, derive `⊢ ¬B → ¬A`.
 This is a convenience wrapper that applies contrapose_imp via modus ponens.
 -/
 def contraposition {A B : Formula} (h : ⊢ A.imp B) : ⊢ B.neg.imp A.neg := by
-  have cp : ⊢ (A.imp B).imp (B.neg.imp A.neg) := contrapose_imp A B
+  have cp : ⊢ (A.imp B).imp (B.neg.imp A.neg) := contraposeImp A B
   exact DerivationTree.modus_ponens [] _ _ cp h
 
 /-!
@@ -331,29 +331,29 @@ on both directions to get `(¬B → ¬A) ∧ (¬A → ¬B)`, which is `¬A ↔ �
 
 **Dependencies**: contrapose_imp, lce_imp, rce_imp, iff_intro
 -/
-def contrapose_iff (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
+def contraposeIff (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
     ⊢ (A.neg.imp B.neg).and (B.neg.imp A.neg) := by
   -- h: (A → B) ∧ (B → A)
   -- Goal: (¬A → ¬B) ∧ (¬B → ¬A)
 
   -- Extract A → B from biconditional
   have ab : ⊢ A.imp B := by
-    have lce : ⊢ ((A.imp B).and (B.imp A)).imp (A.imp B) := lce_imp (A.imp B) (B.imp A)
+    have lce : ⊢ ((A.imp B).and (B.imp A)).imp (A.imp B) := lceImp (A.imp B) (B.imp A)
     exact DerivationTree.modus_ponens [] _ _ lce h
   -- Extract B → A from biconditional
   have ba : ⊢ B.imp A := by
-    have rce : ⊢ ((A.imp B).and (B.imp A)).imp (B.imp A) := rce_imp (A.imp B) (B.imp A)
+    have rce : ⊢ ((A.imp B).and (B.imp A)).imp (B.imp A) := rceImp (A.imp B) (B.imp A)
     exact DerivationTree.modus_ponens [] _ _ rce h
   -- Contrapose A → B to get ¬B → ¬A
   have nb_na : ⊢ B.neg.imp A.neg := by
-    have cp : ⊢ (A.imp B).imp (B.neg.imp A.neg) := contrapose_imp A B
+    have cp : ⊢ (A.imp B).imp (B.neg.imp A.neg) := contraposeImp A B
     exact DerivationTree.modus_ponens [] _ _ cp ab
   -- Contrapose B → A to get ¬A → ¬B
   have na_nb : ⊢ A.neg.imp B.neg := by
-    have cp : ⊢ (B.imp A).imp (A.neg.imp B.neg) := contrapose_imp B A
+    have cp : ⊢ (B.imp A).imp (A.neg.imp B.neg) := contraposeImp B A
     exact DerivationTree.modus_ponens [] _ _ cp ba
   -- Combine into biconditional (¬A → ¬B) ∧ (¬B → ¬A)
-  exact iff_intro A.neg B.neg na_nb nb_na
+  exact iffIntro A.neg B.neg na_nb nb_na
 
 /--
 Biconditional Introduction for Negations: From `⊢ ¬A → ¬B` and `⊢ ¬B → ¬A`, derive `⊢ ¬A ↔ ¬B`.
@@ -364,9 +364,9 @@ Direct application of iff_intro for negated formulas.
 
 **Dependencies**: iff_intro
 -/
-def iff_neg_intro (A B : Formula) (h1 : ⊢ A.neg.imp B.neg) (h2 : ⊢ B.neg.imp A.neg) :
+def iffNegIntro (A B : Formula) (h1 : ⊢ A.neg.imp B.neg) (h2 : ⊢ B.neg.imp A.neg) :
     ⊢ (A.neg.imp B.neg).and (B.neg.imp A.neg) := by
-  exact iff_intro A.neg B.neg h1 h2
+  exact iffIntro A.neg B.neg h1 h2
 
 /--
 De Morgan Law 1 (Forward Direction): `⊢ ¬(A ∧ B) → (¬A ∨ ¬B)`.
@@ -379,7 +379,7 @@ So goal: `¬¬(A → ¬B) → (¬¬A → ¬B)`
 
 **Proof Strategy**: Use DNE and composition.
 -/
-def demorgan_conj_neg_forward (A B : Formula) :
+def demorganConjNegForward (A B : Formula) :
     ⊢ (A.and B).neg.imp (A.neg.or B.neg) := by
   -- Unfold definitions
   -- A.and B = (A.imp B.neg).neg
@@ -394,19 +394,19 @@ def demorgan_conj_neg_forward (A B : Formula) :
   -- Step 1: DNE on (A → ¬B): ¬¬(A → ¬B) → (A → ¬B)
   have dne_inner : ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp Formula.bot |>.imp
                       (A.imp (B.imp Formula.bot)) :=
-    double_negation (A.imp (B.imp Formula.bot))
+    doubleNegation (A.imp (B.imp Formula.bot))
   -- Step 2: (A → ¬B) → (¬¬A → ¬B)
   -- This is b_combinator flipped: (A → C) → ((B → A) → (B → C))
   -- With B = ¬¬A, C = ¬B
   -- We need DNE on A: ¬¬A → A
   have dne_a : ⊢ ((A.imp Formula.bot).imp Formula.bot).imp A :=
-    double_negation A
+    doubleNegation A
   -- b_combinator: (A → C) → (B → A) → (B → C)
   -- With B = ¬¬A, A = A, C = ¬B
   have b1 : ⊢ (A.imp (B.imp Formula.bot)).imp
                ((((A.imp Formula.bot).imp Formula.bot).imp A).imp
                 (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))) :=
-    b_combinator
+    bCombinator
   -- Flip to get: (¬¬A → A) → ((A → ¬B) → (¬¬A → ¬B))
   have flip : ⊢ ((A.imp (B.imp Formula.bot)).imp
                   ((((A.imp Formula.bot).imp Formula.bot).imp A).imp
@@ -414,7 +414,7 @@ def demorgan_conj_neg_forward (A B : Formula) :
                  ((((A.imp Formula.bot).imp Formula.bot).imp A).imp
                   ((A.imp (B.imp Formula.bot)).imp
                    (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)))) :=
-    @theorem_flip FrameClass.Base (A.imp (B.imp Formula.bot))
+    @theoremFlip FrameClass.Base (A.imp (B.imp Formula.bot))
                   (((A.imp Formula.bot).imp Formula.bot).imp A)
                   (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
   have step1 : ⊢ (((A.imp Formula.bot).imp Formula.bot).imp A).imp
@@ -425,7 +425,7 @@ def demorgan_conj_neg_forward (A B : Formula) :
                   (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)) :=
     DerivationTree.modus_ponens [] _ _ step1 dne_a
   -- Compose: ¬¬(A → ¬B) → (A → ¬B) → (¬¬A → ¬B)
-  exact imp_trans dne_inner step2
+  exact impTrans dne_inner step2
 
 /--
 De Morgan Law 1 (Backward Direction): `⊢ (¬A ∨ ¬B) → ¬(A ∧ B)`.
@@ -438,7 +438,7 @@ So goal: `(¬¬A → ¬B) → ¬(A → ¬B)`
 
 **Proof Strategy**: Use contraposition and DNI.
 -/
-def demorgan_conj_neg_backward (A B : Formula) :
+def demorganConjNegBackward (A B : Formula) :
     ⊢ (A.neg.or B.neg).imp (A.and B).neg := by
   unfold Formula.and Formula.or Formula.neg
   -- Goal: (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp
@@ -517,14 +517,14 @@ def demorgan_conj_neg_backward (A B : Formula) :
       apply DerivationTree.assumption
       simp
     -- Extract A from conjunction using lce
-    have lce_inst : ⊢ (A.and B).imp A := lce_imp A B
+    have lce_inst : ⊢ (A.and B).imp A := lceImp A B
     have lce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         (A.and B).imp A :=
       DerivationTree.weakening [] _ _ lce_inst (List.nil_subset _)
     have h_a : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ A :=
       DerivationTree.modus_ponens _ _ _ lce_ctx h_conj
     -- Extract B from conjunction using rce
-    have rce_inst : ⊢ (A.and B).imp B := rce_imp A B
+    have rce_inst : ⊢ (A.and B).imp B := rceImp A B
     have rce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         (A.and B).imp B :=
       DerivationTree.weakening [] _ _ rce_inst (List.nil_subset _)
@@ -532,7 +532,7 @@ def demorgan_conj_neg_backward (A B : Formula) :
       DerivationTree.modus_ponens _ _ _ rce_ctx h_conj
     -- From A, derive ¬¬A using DNI (theorem_app1)
     have dni_inst : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
-      @theorem_app1 FrameClass.Base A Formula.bot
+      @theoremApp1 FrameClass.Base A Formula.bot
     have dni_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         A.imp ((A.imp Formula.bot).imp Formula.bot) :=
       DerivationTree.weakening [] _ _ dni_inst (List.nil_subset _)
@@ -549,14 +549,14 @@ def demorgan_conj_neg_backward (A B : Formula) :
   have step1 :
     [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
     (A.and B).imp Formula.bot :=
-    FormalSystem.Metalogic.Core.deduction_theorem
+    FormalSystem.Metalogic.Core.deductionTheorem
       [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))]
       (A.and B) Formula.bot h_in_ctx
   -- Apply deduction theorem: [] ⊢ (¬¬A → ¬B) → ((A ∧ B) → ⊥)
   have step2 :
     ⊢ (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp
       ((A.and B).imp Formula.bot) :=
-    FormalSystem.Metalogic.Core.deduction_theorem []
+    FormalSystem.Metalogic.Core.deductionTheorem []
       (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
       ((A.and B).imp Formula.bot) step1
   -- (A ∧ B).neg = (A.and B).imp Formula.bot by definition
@@ -571,12 +571,12 @@ Negated conjunction is equivalent to disjunction of negations.
 
 **Proof Strategy**: Combine forward and backward directions using iff_intro.
 -/
-def demorgan_conj_neg (A B : Formula) :
+def demorganConjNeg (A B : Formula) :
     ⊢ ((A.and B).neg.imp (A.neg.or B.neg)).and ((A.neg.or B.neg).imp (A.and B).neg) := by
   -- iff_intro takes Formulas A B and proofs of A→B and B→A
   -- Here A = (A.and B).neg, B = (A.neg.or B.neg)
-  exact iff_intro (A.and B).neg (A.neg.or B.neg)
-    (demorgan_conj_neg_forward A B) (demorgan_conj_neg_backward A B)
+  exact iffIntro (A.and B).neg (A.neg.or B.neg)
+    (demorganConjNegForward A B) (demorganConjNegBackward A B)
 
 /--
 De Morgan Law 2 (Forward Direction): `⊢ ¬(A ∨ B) → (¬A ∧ ¬B)`.
@@ -589,7 +589,7 @@ So goal: `¬(¬A → B) → ¬(¬A → ¬¬B)`
 
 **Proof Strategy**: Use the fact that B → ¬¬B (DNI) and contraposition.
 -/
-def demorgan_disj_neg_forward (A B : Formula) :
+def demorganDisjNegForward (A B : Formula) :
     ⊢ (A.or B).neg.imp (A.neg.and B.neg) := by
   unfold Formula.or Formula.and Formula.neg
   -- Goal: (((A.imp Formula.bot).imp B).imp Formula.bot).imp
@@ -630,13 +630,13 @@ def demorgan_disj_neg_forward (A B : Formula) :
 
   -- Build: (¬A → ¬¬B) → (¬A → B)
   have dne_b : ⊢ ((B.imp Formula.bot).imp Formula.bot).imp B :=
-    double_negation B
+    doubleNegation B
   -- b_combinator: (C → D) → (A → C) → (A → D)
   -- With A = ¬A, C = ¬¬B, D = B
   have bc : ⊢ (((B.imp Formula.bot).imp Formula.bot).imp B).imp
                (((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp
                 ((A.imp Formula.bot).imp B)) :=
-    b_combinator
+    bCombinator
   have impl : ⊢ ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp
                  ((A.imp Formula.bot).imp B) :=
     DerivationTree.modus_ponens [] _ _ bc dne_b
@@ -654,7 +654,7 @@ So goal: `¬(¬A → ¬¬B) → ¬(¬A → B)`
 
 **Proof Strategy**: Use DNI and contraposition.
 -/
-def demorgan_disj_neg_backward (A B : Formula) :
+def demorganDisjNegBackward (A B : Formula) :
     ⊢ (A.neg.and B.neg).imp (A.or B).neg := by
   unfold Formula.or Formula.and Formula.neg
   -- Goal: (((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp Formula.bot).imp
@@ -668,13 +668,13 @@ def demorgan_disj_neg_backward (A B : Formula) :
 
   -- Build: (¬A → B) → (¬A → ¬¬B)
   have dni_b : ⊢ B.imp ((B.imp Formula.bot).imp Formula.bot) :=
-    @theorem_app1 FrameClass.Base B Formula.bot
+    @theoremApp1 FrameClass.Base B Formula.bot
   -- b_combinator: (C → D) → (A → C) → (A → D)
   -- With A = ¬A, C = B, D = ¬¬B
   have bc : ⊢ (B.imp ((B.imp Formula.bot).imp Formula.bot)).imp
                (((A.imp Formula.bot).imp B).imp
                 ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot))) :=
-    b_combinator
+    bCombinator
   have impl : ⊢ ((A.imp Formula.bot).imp B).imp
                  ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)) :=
     DerivationTree.modus_ponens [] _ _ bc dni_b
@@ -688,12 +688,12 @@ Negated disjunction is equivalent to conjunction of negations.
 
 **Proof Strategy**: Combine forward and backward directions using iff_intro.
 -/
-def demorgan_disj_neg (A B : Formula) :
+def demorganDisjNeg (A B : Formula) :
     ⊢ ((A.or B).neg.imp (A.neg.and B.neg)).and ((A.neg.and B.neg).imp (A.or B).neg) := by
   -- iff_intro takes Formulas A B and proofs of A→B and B→A
   -- Here A = (A.or B).neg, B = (A.neg.and B.neg)
-  exact iff_intro (A.or B).neg (A.neg.and B.neg)
-    (demorgan_disj_neg_forward A B) (demorgan_disj_neg_backward A B)
+  exact iffIntro (A.or B).neg (A.neg.and B.neg)
+    (demorganDisjNegForward A B) (demorganDisjNegBackward A B)
 
 
 end -- noncomputable section

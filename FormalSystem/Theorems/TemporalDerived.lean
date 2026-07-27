@@ -134,7 +134,7 @@ section DerivedAxioms
 This is the contrapositive of the contrapositive theorem, composed with itself. -/
 private noncomputable def neg_contrapositive_imp_neg (φ ψ : Formula) :
     ⊢ (ψ.neg.imp φ.neg).neg.imp (φ.imp ψ).neg :=
-  mp (contrapose_imp φ ψ) (contrapose_imp (φ.imp ψ) (ψ.neg.imp φ.neg))
+  mp (contraposeImp φ ψ) (contraposeImp (φ.imp ψ) (ψ.neg.imp φ.neg))
 
 /-- `⊢ X → ⊤ ∧ X`: Any formula implies its conjunction with ⊤.
 From pairing and the theorem `⊢ ⊤`. -/
@@ -154,8 +154,8 @@ private def top_and_intro (X : Formula) : ⊢ X.imp (Formula.top.and X) :=
 From the tautology `¬(¬ψ→¬φ) → ¬(φ→ψ)`, lift through G via temporal necessitation,
 then apply BX3 (right_mono_until) to obtain F-monotonicity. -/
 private noncomputable def F_neg_contra_imp_F_neg (φ ψ : Formula) :
-    ⊢ (Formula.some_future (ψ.neg.imp φ.neg).neg).imp
-      (Formula.some_future (φ.imp ψ).neg) :=
+    ⊢ (Formula.someFuture (ψ.neg.imp φ.neg).neg).imp
+      (Formula.someFuture (φ.imp ψ).neg) :=
   mp (DerivationTree.temporal_necessitation _ (neg_contrapositive_imp_neg φ ψ))
      (DerivationTree.axiom [] _
        (Axiom.right_mono_until (ψ.neg.imp φ.neg).neg (φ.imp ψ).neg Formula.top) trivial)
@@ -165,7 +165,7 @@ private noncomputable def F_neg_contra_imp_F_neg (φ ψ : Formula) :
 From `F(¬(¬ψ→¬φ)) → F(¬(φ→ψ))` (F_neg_contra_imp_F_neg), take the contrapositive:
 `¬F(¬(φ→ψ)) → ¬F(¬(¬ψ→¬φ))`, which is `G(φ→ψ) → G(¬ψ→¬φ)` by definition of G. -/
 private noncomputable def G_imp_to_G_contra (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp (ψ.neg.imp φ.neg).all_future :=
+    ⊢ (φ.imp ψ).allFuture.imp (ψ.neg.imp φ.neg).allFuture :=
   contraposition (F_neg_contra_imp_F_neg φ ψ)
 
 /-- `⊢ G(¬ψ→¬φ) → (Gφ → Gψ)`: From the contrapositive under G, derive K-distribution.
@@ -173,10 +173,10 @@ private noncomputable def G_imp_to_G_contra (φ ψ : Formula) :
 BX3 with `α := ¬ψ, β := ¬φ, γ := ⊤` gives `G(¬ψ→¬φ) → (F(¬ψ) → F(¬φ))`.
 The propositional contrapositive of `F(¬ψ) → F(¬φ)` is `¬F(¬φ) → ¬F(¬ψ)` = `Gφ → Gψ`. -/
 private noncomputable def G_contra_to_GK (φ ψ : Formula) :
-    ⊢ (ψ.neg.imp φ.neg).all_future.imp (φ.all_future.imp ψ.all_future) :=
-  imp_trans
+    ⊢ (ψ.neg.imp φ.neg).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
+  impTrans
     (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top) trivial)
-    (contrapose_imp (Formula.some_future ψ.neg) (Formula.some_future φ.neg))
+    (contraposeImp (Formula.someFuture ψ.neg) (Formula.someFuture φ.neg))
 
 /-- **Derived temp_k_dist**: `⊢ G(φ→ψ) → (Gφ → Gψ)`.
 
@@ -185,9 +185,9 @@ contraposition. Replaces the primitive `Axiom.temp_k_dist` constructor.
 
 **Derivation**: Compose `G(φ→ψ) → G(¬ψ→¬φ)` with `G(¬ψ→¬φ) → (Gφ → Gψ)`. -/
 @[tm_lemma]
-noncomputable def temp_k_dist_derived (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
-  imp_trans (G_imp_to_G_contra φ ψ) (G_contra_to_GK φ ψ)
+noncomputable def temporalKDistDerived (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
+  impTrans (G_imp_to_G_contra φ ψ) (G_contra_to_GK φ ψ)
 
 /-! ### temp_4: G-transitivity derived from BX6
 
@@ -203,33 +203,33 @@ Decompose into three steps using BX3 and BX6:
 From the propositional tautology `¬¬X → X` at `X = F(¬φ)`, apply temporal
 necessitation and BX3 to obtain F-monotonicity. -/
 private noncomputable def dne_lift_F (φ : Formula) :
-    ⊢ (Formula.some_future (Formula.some_future φ.neg).neg.neg).imp
-      (Formula.some_future (Formula.some_future φ.neg)) :=
-  mp (DerivationTree.temporal_necessitation _ (double_negation (Formula.some_future φ.neg)))
+    ⊢ (Formula.someFuture (Formula.someFuture φ.neg).neg.neg).imp
+      (Formula.someFuture (Formula.someFuture φ.neg)) :=
+  mp (DerivationTree.temporal_necessitation _ (doubleNegation (Formula.someFuture φ.neg)))
      (DerivationTree.axiom [] _
        (Axiom.right_mono_until
-         (Formula.some_future φ.neg).neg.neg (Formula.some_future φ.neg) Formula.top) trivial)
+         (Formula.someFuture φ.neg).neg.neg (Formula.someFuture φ.neg) Formula.top) trivial)
 
 /-- `⊢ F(F(¬φ)) → F(⊤ ∧ F(¬φ))`: Enrich F(¬φ) with ⊤ via the tautology `X → ⊤ ∧ X`.
 
 From the propositional tautology `X → ⊤ ∧ X` at `X = F(¬φ)`, apply temporal
 necessitation and BX3 to lift through F. -/
 private noncomputable def FF_to_F_top_and (φ : Formula) :
-    ⊢ (Formula.some_future (Formula.some_future φ.neg)).imp
-      (Formula.some_future (Formula.top.and (Formula.some_future φ.neg))) :=
-  mp (DerivationTree.temporal_necessitation _ (top_and_intro (Formula.some_future φ.neg)))
+    ⊢ (Formula.someFuture (Formula.someFuture φ.neg)).imp
+      (Formula.someFuture (Formula.top.and (Formula.someFuture φ.neg))) :=
+  mp (DerivationTree.temporal_necessitation _ (top_and_intro (Formula.someFuture φ.neg)))
      (DerivationTree.axiom [] _
        (Axiom.right_mono_until
-         (Formula.some_future φ.neg)
-         (Formula.top.and (Formula.some_future φ.neg)) Formula.top) trivial)
+         (Formula.someFuture φ.neg)
+         (Formula.top.and (Formula.someFuture φ.neg)) Formula.top) trivial)
 
 /-- `⊢ F(⊤ ∧ F(¬φ)) → F(¬φ)`: Absorption of Until (BX6) collapses nested eventuality.
 
 BX6 at `φ := ⊤, ψ := ¬φ_orig` gives `U(⊤ ∧ U(¬φ, ⊤), ⊤) → U(¬φ, ⊤)`,
 which is `F(⊤ ∧ F(¬φ)) → F(¬φ)`. -/
 private def F_top_and_absorb (φ : Formula) :
-    ⊢ (Formula.some_future (Formula.top.and (Formula.some_future φ.neg))).imp
-      (Formula.some_future φ.neg) :=
+    ⊢ (Formula.someFuture (Formula.top.and (Formula.someFuture φ.neg))).imp
+      (Formula.someFuture φ.neg) :=
   DerivationTree.axiom [] _ (Axiom.absorb_until Formula.top φ.neg) trivial
 
 /-- **Derived temp_4**: `⊢ Gφ → GGφ`.
@@ -241,9 +241,9 @@ Replaces the primitive `Axiom.temp_4` constructor.
 **Derivation**: The contrapositive `F(¬¬F(¬φ)) → F(¬φ)` is proved by composing
 three F-monotonicity steps, then negated to obtain `Gφ → GGφ`. -/
 @[tm_lemma]
-noncomputable def temp_4_derived (φ : Formula) :
-    ⊢ φ.all_future.imp φ.all_future.all_future :=
-  contraposition (imp_trans (imp_trans (dne_lift_F φ) (FF_to_F_top_and φ)) (F_top_and_absorb φ))
+noncomputable def temporal4Derived (φ : Formula) :
+    ⊢ φ.allFuture.imp φ.allFuture.allFuture :=
+  contraposition (impTrans (impTrans (dne_lift_F φ) (FF_to_F_top_and φ)) (F_top_and_absorb φ))
 
 end DerivedAxioms
 
@@ -257,39 +257,39 @@ All definitions below are sorry-free.
 /--
 `⊢ G(φ → ψ) → (G(φ) → G(ψ))`: G-distribution. Derived from BX3 (right_mono_until).
 -/
-noncomputable def G_distribution (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
-  temp_k_dist_derived φ ψ
+noncomputable def gDistribution (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
+  temporalKDistDerived φ ψ
 
 /--
 `⊢ H(φ → ψ) → (H(φ) → H(ψ))`: H-distribution. Derived via temporal duality from G-distribution.
 -/
 @[tm_lemma]
-noncomputable def H_distribution (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_past.imp (φ.all_past.imp ψ.all_past) :=
-  FormalSystem.Theorems.past_k_dist φ ψ
+noncomputable def hDistribution (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).allPast.imp (φ.allPast.imp ψ.allPast) :=
+  FormalSystem.Theorems.pastKDist φ ψ
 
 /--
 `⊢ G(φ) → G(G(φ))`: G-transitivity. Derived from BX3 + BX6.
 -/
-noncomputable def G_transitivity (φ : Formula) :
-    ⊢ φ.all_future.imp φ.all_future.all_future :=
-  temp_4_derived φ
+noncomputable def gTransitivity (φ : Formula) :
+    ⊢ φ.allFuture.imp φ.allFuture.allFuture :=
+  temporal4Derived φ
 
 /--
 `⊢ H(φ) → H(H(φ))`: H-transitivity. Derived via temporal duality from G-transitivity.
 -/
 @[tm_lemma]
-noncomputable def H_transitivity (φ : Formula) :
-    ⊢ φ.all_past.imp φ.all_past.all_past := by
+noncomputable def hTransitivity (φ : Formula) :
+    ⊢ φ.allPast.imp φ.allPast.allPast := by
   -- Derive by applying temporal duality to G-transitivity of swap_temporal φ
-  let ψ := φ.swap_temporal
-  have h1 : ⊢ ψ.all_future.imp ψ.all_future.all_future :=
-    temp_4_derived ψ
-  have h2 : ⊢ (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
+  let ψ := φ.swapTemporal
+  have h1 : ⊢ ψ.allFuture.imp ψ.allFuture.allFuture :=
+    temporal4Derived ψ
+  have h2 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture).swapTemporal :=
     DerivationTree.temporal_duality _ h1
-  simp only [Formula.swap_temporal_all_future, Formula.swap_temporal] at h2
-  have h_inv : ψ.swap_temporal = φ := Formula.swap_temporal_involution φ
+  simp only [Formula.swap_temporal_all_future, Formula.swapTemporal] at h2
+  have h_inv : ψ.swapTemporal = φ := Formula.swap_temporal_involution φ
   rw [h_inv] at h2
   exact h2
 
@@ -297,25 +297,25 @@ noncomputable def H_transitivity (φ : Formula) :
 `⊢ φ → G(P(φ))`: Temporal connectedness (future). Direct axiom (BX4).
 The present is always in the past of the future.
 -/
-def connect_future_thm (φ : Formula) :
-    ⊢ φ.imp (φ.some_past.all_future) :=
+def connectFutureThm (φ : Formula) :
+    ⊢ φ.imp (φ.somePast.allFuture) :=
   DerivationTree.axiom [] _ (Axiom.connect_future φ) trivial
 
 /--
 `⊢ φ → H(F(φ))`: Temporal connectedness (past). Direct axiom (BX4').
 The present is always in the future of the past.
 -/
-def connect_past_thm (φ : Formula) :
-    ⊢ φ.imp (φ.some_future.all_past) :=
+def connectPastThm (φ : Formula) :
+    ⊢ φ.imp (φ.someFuture.allPast) :=
   DerivationTree.axiom [] _ (Axiom.connect_past φ) trivial
 
 /--
 `⊢ G(a) → G(a → a)`: G(a→a) is a theorem, so G(a) → G(a→a) by prop_s.
 -/
-def G_implies_G_id (a : Formula) :
-    ⊢ a.all_future.imp (a.imp a).all_future :=
+def gImpliesGId (a : Formula) :
+    ⊢ a.allFuture.imp (a.imp a).allFuture :=
   mp (DerivationTree.temporal_necessitation _ (identity a))
-     (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).all_future a.all_future) trivial)
+     (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).allFuture a.allFuture) trivial)
 
 /-!
 ## BX10-Derived Theorems
@@ -328,16 +328,16 @@ the basic Until/Since eventuality lemmas.
 `⊢ (φ U ψ) → F(ψ)`: Any Until formula implies eventuality of its second argument.
 Direct from BX10 axiom.
 -/
-def until_implies_some_future (φ ψ : Formula) :
-    ⊢ (Formula.untl ψ φ).imp (Formula.some_future ψ) :=
+def untilImpliesSomeFuture (φ ψ : Formula) :
+    ⊢ (Formula.untl ψ φ).imp (Formula.someFuture ψ) :=
   DerivationTree.axiom [] _ (Axiom.until_F φ ψ) trivial
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Any Since formula implies past eventuality.
 Direct from BX10' axiom.
 -/
-def since_implies_some_past (φ ψ : Formula) :
-    ⊢ (Formula.snce ψ φ).imp (Formula.some_past ψ) :=
+def sinceImpliesSomePast (φ ψ : Formula) :
+    ⊢ (Formula.snce ψ φ).imp (Formula.somePast ψ) :=
   DerivationTree.axiom [] _ (Axiom.since_P φ ψ) trivial
 
 /--
@@ -345,16 +345,16 @@ def since_implies_some_past (φ ψ : Formula) :
 The witness s ≥ t with ψ(s) certifies F(ψ) at t.
 Direct from BX10 axiom.
 -/
-def until_imp_F (φ ψ : Formula) :
-    ⊢ (Formula.untl ψ φ).imp (Formula.some_future ψ) :=
+def untilImpF (φ ψ : Formula) :
+    ⊢ (Formula.untl ψ φ).imp (Formula.someFuture ψ) :=
   DerivationTree.axiom [] _ (Axiom.until_F φ ψ) trivial
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Since implies past eventuality of its endpoint.
 Mirror of until_imp_F.
 -/
-def since_imp_P (φ ψ : Formula) :
-    ⊢ (Formula.snce ψ φ).imp (Formula.some_past ψ) :=
+def sinceImpP (φ ψ : Formula) :
+    ⊢ (Formula.snce ψ φ).imp (Formula.somePast ψ) :=
   DerivationTree.axiom [] _ (Axiom.since_P φ ψ) trivial
 
 /-!
@@ -365,8 +365,8 @@ def since_imp_P (φ ψ : Formula) :
 Derived from b_combinator and theorem_flip. -/
 @[tm_lemma]
 noncomputable def contrapositive (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) :=
-  mp b_combinator
-    (theorem_flip (A := (B.imp Formula.bot)) (B := (A.imp B)) (C := (A.imp Formula.bot)))
+  mp bCombinator
+    (theoremFlip (A := (B.imp Formula.bot)) (B := (A.imp B)) (C := (A.imp Formula.bot)))
 
 private noncomputable def ctx_mp {Γ : Context} {A B : Formula}
     (h1 : Γ ⊢ A.imp B) (h2 : Γ ⊢ A) : Γ ⊢ B :=
@@ -380,14 +380,14 @@ private noncomputable def ctx_thm {Γ : Context} {A : Formula}
 Since `A ∨ B = ¬A → B`, this is `(¬A → B) → (¬B → A)`, proved by
 contraposition of the hypothesis composed with DNE. -/
 @[tm_lemma]
-noncomputable def formula_or_comm (A B : Formula) : ⊢ (A.or B).imp (B.or A) := by
+noncomputable def formulaOrComm (A B : Formula) : ⊢ (A.or B).imp (B.or A) := by
   unfold Formula.or
-  apply FormalSystem.Metalogic.Core.deduction_theorem [] (A.neg.imp B) (B.neg.imp A)
-  apply FormalSystem.Metalogic.Core.deduction_theorem [A.neg.imp B] B.neg A
+  apply FormalSystem.Metalogic.Core.deductionTheorem [] (A.neg.imp B) (B.neg.imp A)
+  apply FormalSystem.Metalogic.Core.deductionTheorem [A.neg.imp B] B.neg A
   have h1 : [B.neg, A.neg.imp B] ⊢ A.neg.imp B := DerivationTree.assumption _ _ (by simp)
   have h2 : [B.neg, A.neg.imp B] ⊢ B.neg := DerivationTree.assumption _ _ (by simp)
-  have h3 : [B.neg, A.neg.imp B] ⊢ A.neg.neg := ctx_mp (ctx_mp (ctx_thm b_combinator) h2) h1
-  exact ctx_mp (ctx_thm (FormalSystem.Theorems.Propositional.double_negation A)) h3
+  have h3 : [B.neg, A.neg.imp B] ⊢ A.neg.neg := ctx_mp (ctx_mp (ctx_thm bCombinator) h2) h1
+  exact ctx_mp (ctx_thm (FormalSystem.Theorems.Propositional.doubleNegation A)) h3
 
 /-!
 ## Category B: Temporal Monotonicity (4 computable theorems)
@@ -404,8 +404,8 @@ section TemporalMonotonicity
 Direct from BX3 (right_mono_until) with χ := ⊤:
 `G(φ → ψ) → (untl(φ, ⊤) → untl(ψ, ⊤))` = `G(φ → ψ) → (F(φ) → F(ψ))`.
 -/
-def F_mono (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp (φ.some_future.imp ψ.some_future) :=
+def fMono (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).allFuture.imp (φ.someFuture.imp ψ.someFuture) :=
   DerivationTree.axiom [] _ (Axiom.right_mono_until φ ψ Formula.top) trivial
 
 /--
@@ -414,8 +414,8 @@ def F_mono (φ ψ : Formula) :
 Direct from BX3' (right_mono_since) with χ := ⊤:
 `H(φ → ψ) → (snce(φ, ⊤) → snce(ψ, ⊤))` = `H(φ → ψ) → (P(φ) → P(ψ))`.
 -/
-def P_mono (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_past.imp (φ.some_past.imp ψ.some_past) :=
+def pMono (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).allPast.imp (φ.somePast.imp ψ.somePast) :=
   DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ Formula.top) trivial
 
 /--
@@ -424,9 +424,9 @@ def P_mono (φ ψ : Formula) :
 This is `G_distribution` under a discoverable name. Noncomputable because
 it depends on the derived `temp_k_dist_derived`.
 -/
-noncomputable abbrev G_mono (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
-  G_distribution φ ψ
+noncomputable abbrev gMono (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
+  gDistribution φ ψ
 
 /--
 `⊢ H(φ → ψ) → (H(φ) → H(ψ))`: H is monotone (alias for H_distribution).
@@ -434,9 +434,9 @@ noncomputable abbrev G_mono (φ ψ : Formula) :
 This is `H_distribution` under a discoverable name. Noncomputable because
 it depends on the derived `past_k_dist`.
 -/
-noncomputable abbrev H_mono (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_past.imp (φ.all_past.imp ψ.all_past) :=
-  H_distribution φ ψ
+noncomputable abbrev hMono (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).allPast.imp (φ.allPast.imp ψ.allPast) :=
+  hDistribution φ ψ
 
 end TemporalMonotonicity
 
@@ -454,8 +454,8 @@ section UntilSinceStructural
 
 Direct from BX2G (left_mono_until_G).
 -/
-def until_mono_guard (φ χ ψ : Formula) :
-    ⊢ (φ.imp χ).all_future.imp ((Formula.untl ψ φ).imp (Formula.untl ψ χ)) :=
+def untilMonoGuard (φ χ ψ : Formula) :
+    ⊢ (φ.imp χ).allFuture.imp ((Formula.untl ψ φ).imp (Formula.untl ψ χ)) :=
   DerivationTree.axiom [] _ (Axiom.left_mono_until_G φ χ ψ) trivial
 
 /--
@@ -463,8 +463,8 @@ def until_mono_guard (φ χ ψ : Formula) :
 
 Direct from BX2H (left_mono_since_H).
 -/
-def since_mono_guard (φ χ ψ : Formula) :
-    ⊢ (φ.imp χ).all_past.imp ((Formula.snce ψ φ).imp (Formula.snce ψ χ)) :=
+def sinceMonoGuard (φ χ ψ : Formula) :
+    ⊢ (φ.imp χ).allPast.imp ((Formula.snce ψ φ).imp (Formula.snce ψ χ)) :=
   DerivationTree.axiom [] _ (Axiom.left_mono_since_H φ χ ψ) trivial
 
 /--
@@ -472,8 +472,8 @@ def since_mono_guard (φ χ ψ : Formula) :
 
 Direct from BX3 (right_mono_until).
 -/
-def until_mono_event (φ ψ χ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ)) :=
+def untilMonoEvent (φ ψ χ : Formula) :
+    ⊢ (φ.imp ψ).allFuture.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ)) :=
   DerivationTree.axiom [] _ (Axiom.right_mono_until φ ψ χ) trivial
 
 /--
@@ -481,8 +481,8 @@ def until_mono_event (φ ψ χ : Formula) :
 
 Direct from BX3' (right_mono_since).
 -/
-def since_mono_event (φ ψ χ : Formula) :
-    ⊢ (φ.imp ψ).all_past.imp ((Formula.snce φ χ).imp (Formula.snce ψ χ)) :=
+def sinceMonoEvent (φ ψ χ : Formula) :
+    ⊢ (φ.imp ψ).allPast.imp ((Formula.snce φ χ).imp (Formula.snce ψ χ)) :=
   DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ χ) trivial
 
 end UntilSinceStructural
@@ -501,9 +501,9 @@ section TemporalDuality
 Since `G(φ) = ¬F(¬φ)`, we have `¬(G(φ)) = ¬¬F(¬φ)`.
 Thus `F(¬φ) → ¬(G(φ))` is `F(¬φ) → ¬¬(F(¬φ))`, which is DNI at `F(¬φ)`.
 -/
-def F_neg_G (φ : Formula) :
-    ⊢ (φ.neg.some_future).imp φ.all_future.neg :=
-  dni (φ.neg.some_future)
+def fNegG (φ : Formula) :
+    ⊢ (φ.neg.someFuture).imp φ.allFuture.neg :=
+  notNotIntro (φ.neg.someFuture)
 
 /--
 `⊢ P(¬φ) → ¬(H(φ))`: If ¬φ was once true, then φ was not always true.
@@ -511,9 +511,9 @@ def F_neg_G (φ : Formula) :
 Since `H(φ) = ¬P(¬φ)`, we have `¬(H(φ)) = ¬¬P(¬φ)`.
 Thus `P(¬φ) → ¬(H(φ))` is `P(¬φ) → ¬¬(P(¬φ))`, which is DNI at `P(¬φ)`.
 -/
-def P_neg_H (φ : Formula) :
-    ⊢ (φ.neg.some_past).imp φ.all_past.neg :=
-  dni (φ.neg.some_past)
+def pNegH (φ : Formula) :
+    ⊢ (φ.neg.somePast).imp φ.allPast.neg :=
+  notNotIntro (φ.neg.somePast)
 
 end TemporalDuality
 
@@ -534,22 +534,22 @@ From `pairing φ ψ : ⊢ φ → ψ → φ ∧ ψ`, temporal necessitate to get
 - First: `G φ → G(ψ → φ ∧ ψ)`
 - Second: `G(ψ → φ ∧ ψ) → (G ψ → G(φ ∧ ψ))`
 -/
-noncomputable def G_and_intro (φ ψ : Formula) :
-    ⊢ φ.all_future.imp (ψ.all_future.imp (φ.and ψ).all_future) :=
+noncomputable def gAndIntro (φ ψ : Formula) :
+    ⊢ φ.allFuture.imp (ψ.allFuture.imp (φ.and ψ).allFuture) :=
   let g_pair := DerivationTree.temporal_necessitation _ (pairing φ ψ)
-  let step1 := mp g_pair (G_distribution φ (ψ.imp (φ.and ψ)))
-  imp_trans step1 (G_distribution ψ (φ.and ψ))
+  let step1 := mp g_pair (gDistribution φ (ψ.imp (φ.and ψ)))
+  impTrans step1 (gDistribution ψ (φ.and ψ))
 
 /--
 `⊢ H(φ) → H(ψ) → H(φ ∧ ψ)`: H distributes into conjunction introduction.
 
 Mirror of `G_and_intro` using `H_distribution` and `past_necessitation`.
 -/
-noncomputable def H_and_intro (φ ψ : Formula) :
-    ⊢ φ.all_past.imp (ψ.all_past.imp (φ.and ψ).all_past) :=
-  let h_pair := FormalSystem.Theorems.past_necessitation _ (pairing φ ψ)
-  let step1 := mp h_pair (H_distribution φ (ψ.imp (φ.and ψ)))
-  imp_trans step1 (H_distribution ψ (φ.and ψ))
+noncomputable def hAndIntro (φ ψ : Formula) :
+    ⊢ φ.allPast.imp (ψ.allPast.imp (φ.and ψ).allPast) :=
+  let h_pair := FormalSystem.Theorems.pastNecessitation _ (pairing φ ψ)
+  let step1 := mp h_pair (hDistribution φ (ψ.imp (φ.and ψ)))
+  impTrans step1 (hDistribution ψ (φ.and ψ))
 
 /--
 `⊢ G(φ → ψ) → G(ψ → χ) → G(φ → χ)`: G distributes over implication transitivity.
@@ -560,33 +560,33 @@ From `b_combinator : ⊢ (ψ → χ) → (φ → ψ) → (φ → χ)`, temporal 
 - Second: `G((φ → ψ) → (φ → χ)) → (G(φ → ψ) → G(φ → χ))`
 Then flip the argument order with `theorem_flip`-style composition.
 -/
-noncomputable def G_imp_trans (φ ψ χ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp ((ψ.imp χ).all_future.imp (φ.imp χ).all_future) :=
+noncomputable def gImpTrans (φ ψ χ : Formula) :
+    ⊢ (φ.imp ψ).allFuture.imp ((ψ.imp χ).allFuture.imp (φ.imp χ).allFuture) :=
   let g_b :=
-    DerivationTree.temporal_necessitation _ (@b_combinator .Base (A := φ) (B := ψ) (C := χ))
-  let step1 := mp g_b (G_distribution (ψ.imp χ) ((φ.imp ψ).imp (φ.imp χ)))
-  let step2 := imp_trans step1 (G_distribution (φ.imp ψ) (φ.imp χ))
+    DerivationTree.temporal_necessitation _ (@bCombinator .Base (A := φ) (B := ψ) (C := χ))
+  let step1 := mp g_b (gDistribution (ψ.imp χ) ((φ.imp ψ).imp (φ.imp χ)))
+  let step2 := impTrans step1 (gDistribution (φ.imp ψ) (φ.imp χ))
   -- step2 : G(ψ → χ) → G(φ → ψ) → G(φ → χ)
   -- Need: G(φ → ψ) → G(ψ → χ) → G(φ → χ)
-  mp step2 (@theorem_flip .Base
-    (A := (ψ.imp χ).all_future)
-    (B := (φ.imp ψ).all_future)
-    (C := (φ.imp χ).all_future))
+  mp step2 (@theoremFlip .Base
+    (A := (ψ.imp χ).allFuture)
+    (B := (φ.imp ψ).allFuture)
+    (C := (φ.imp χ).allFuture))
 
 /--
 `⊢ H(φ → ψ) → H(ψ → χ) → H(φ → χ)`: H distributes over implication transitivity.
 
 Mirror of `G_imp_trans` using `H_distribution` and `past_necessitation`.
 -/
-noncomputable def H_imp_trans (φ ψ χ : Formula) :
-    ⊢ (φ.imp ψ).all_past.imp ((ψ.imp χ).all_past.imp (φ.imp χ).all_past) :=
-  let h_b := FormalSystem.Theorems.past_necessitation _ (@b_combinator .Base (A := φ) (B := ψ) (C := χ))
-  let step1 := mp h_b (H_distribution (ψ.imp χ) ((φ.imp ψ).imp (φ.imp χ)))
-  let step2 := imp_trans step1 (H_distribution (φ.imp ψ) (φ.imp χ))
-  mp step2 (@theorem_flip .Base
-    (A := (ψ.imp χ).all_past)
-    (B := (φ.imp ψ).all_past)
-    (C := (φ.imp χ).all_past))
+noncomputable def hImpTrans (φ ψ χ : Formula) :
+    ⊢ (φ.imp ψ).allPast.imp ((ψ.imp χ).allPast.imp (φ.imp χ).allPast) :=
+  let h_b := FormalSystem.Theorems.pastNecessitation _ (@bCombinator .Base (A := φ) (B := ψ) (C := χ))
+  let step1 := mp h_b (hDistribution (ψ.imp χ) ((φ.imp ψ).imp (φ.imp χ)))
+  let step2 := impTrans step1 (hDistribution (φ.imp ψ) (φ.imp χ))
+  mp step2 (@theoremFlip .Base
+    (A := (ψ.imp χ).allPast)
+    (B := (φ.imp ψ).allPast)
+    (C := (φ.imp χ).allPast))
 
 end DistributionVariants
 
@@ -604,10 +604,10 @@ section TemporalContraposition
 From `contrapose_imp φ ψ : ⊢ (φ → ψ) → (¬ψ → ¬φ)`, temporal necessitate to get
 `G((φ → ψ) → (¬ψ → ¬φ))`, then apply G_distribution.
 -/
-noncomputable def G_contrapose (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp (ψ.neg.imp φ.neg).all_future :=
-  let g_cp := DerivationTree.temporal_necessitation _ (contrapose_imp φ ψ)
-  mp g_cp (G_distribution (φ.imp ψ) (ψ.neg.imp φ.neg))
+noncomputable def gContrapose (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).allFuture.imp (ψ.neg.imp φ.neg).allFuture :=
+  let g_cp := DerivationTree.temporal_necessitation _ (contraposeImp φ ψ)
+  mp g_cp (gDistribution (φ.imp ψ) (ψ.neg.imp φ.neg))
 
 /--
 `⊢ H(φ → ψ) → H(¬ψ → ¬φ)`: Contraposition under H.
@@ -615,10 +615,10 @@ noncomputable def G_contrapose (φ ψ : Formula) :
 From `contrapose_imp φ ψ : ⊢ (φ → ψ) → (¬ψ → ¬φ)`, past necessitate to get
 `H((φ → ψ) → (¬ψ → ¬φ))`, then apply H_distribution.
 -/
-noncomputable def H_contrapose (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_past.imp (ψ.neg.imp φ.neg).all_past :=
-  let h_cp := FormalSystem.Theorems.past_necessitation _ (contrapose_imp φ ψ)
-  mp h_cp (H_distribution (φ.imp ψ) (ψ.neg.imp φ.neg))
+noncomputable def hContrapose (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).allPast.imp (ψ.neg.imp φ.neg).allPast :=
+  let h_cp := FormalSystem.Theorems.pastNecessitation _ (contraposeImp φ ψ)
+  mp h_cp (hDistribution (φ.imp ψ) (ψ.neg.imp φ.neg))
 
 end TemporalContraposition
 
@@ -638,10 +638,10 @@ holds in the future — φ's future permanence propagates through past reflectio
 From `connect_future φ : ⊢ φ → G(P φ)`, temporal necessitate to get
 `G(φ → G(P φ))`, then apply G_distribution: `G φ → G(G(P φ))`.
 -/
-noncomputable def connect_future_G (φ : Formula) :
-    ⊢ φ.all_future.imp (φ.some_past.all_future).all_future :=
-  let g_cf := DerivationTree.temporal_necessitation _ (connect_future_thm φ)
-  mp g_cf (G_distribution φ (φ.some_past.all_future))
+noncomputable def connectFutureG (φ : Formula) :
+    ⊢ φ.allFuture.imp (φ.somePast.allFuture).allFuture :=
+  let g_cf := DerivationTree.temporal_necessitation _ (connectFutureThm φ)
+  mp g_cf (gDistribution φ (φ.somePast.allFuture))
 
 /--
 `⊢ H(φ) → H(H(F(φ)))`: If φ always held in the past, then H(F(φ)) always
@@ -650,10 +650,10 @@ held in the past — φ's past permanence propagates through future reflection.
 From `connect_past φ : ⊢ φ → H(F φ)`, past necessitate to get
 `H(φ → H(F φ))`, then apply H_distribution: `H φ → H(H(F φ))`.
 -/
-noncomputable def connect_past_H (φ : Formula) :
-    ⊢ φ.all_past.imp (φ.some_future.all_past).all_past :=
-  let h_cp := FormalSystem.Theorems.past_necessitation _ (connect_past_thm φ)
-  mp h_cp (H_distribution φ (φ.some_future.all_past))
+noncomputable def connectPastH (φ : Formula) :
+    ⊢ φ.allPast.imp (φ.someFuture.allPast).allPast :=
+  let h_cp := FormalSystem.Theorems.pastNecessitation _ (connectPastThm φ)
+  mp h_cp (hDistribution φ (φ.someFuture.allPast))
 
 /--
 `⊢ φ → G(H(F(P(φ))))`: Deep temporal chain combining future and past connectedness.
@@ -664,11 +664,11 @@ Compose `connect_future φ : φ → G(P φ)` with
 2. G_distribution: `G(P φ) → G(H(F(P φ)))`
 3. imp_trans with connect_future: `φ → G(H(F(P φ)))`
 -/
-noncomputable def connect_future_chain (φ : Formula) :
-    ⊢ φ.imp ((φ.some_past.some_future.all_past).all_future) :=
-  let step1 := DerivationTree.temporal_necessitation _ (connect_past_thm φ.some_past)
-  let step2 := mp step1 (G_distribution φ.some_past (φ.some_past.some_future.all_past))
-  imp_trans (connect_future_thm φ) step2
+noncomputable def connectFutureChain (φ : Formula) :
+    ⊢ φ.imp ((φ.somePast.someFuture.allPast).allFuture) :=
+  let step1 := DerivationTree.temporal_necessitation _ (connectPastThm φ.somePast)
+  let step2 := mp step1 (gDistribution φ.somePast (φ.somePast.someFuture.allPast))
+  impTrans (connectFutureThm φ) step2
 
 /--
 `⊢ φ → H(G(P(F(φ))))`: Deep temporal chain combining past and future connectedness.
@@ -679,11 +679,11 @@ Compose `connect_past φ : φ → H(F φ)` with
 2. H_distribution: `H(F φ) → H(G(P(F φ)))`
 3. imp_trans with connect_past: `φ → H(G(P(F φ)))`
 -/
-noncomputable def connect_past_chain (φ : Formula) :
-    ⊢ φ.imp ((φ.some_future.some_past.all_future).all_past) :=
-  let step1 := FormalSystem.Theorems.past_necessitation _ (connect_future_thm φ.some_future)
-  let step2 := mp step1 (H_distribution φ.some_future (φ.some_future.some_past.all_future))
-  imp_trans (connect_past_thm φ) step2
+noncomputable def connectPastChain (φ : Formula) :
+    ⊢ φ.imp ((φ.someFuture.somePast.allFuture).allPast) :=
+  let step1 := FormalSystem.Theorems.pastNecessitation _ (connectFutureThm φ.someFuture)
+  let step2 := mp step1 (hDistribution φ.someFuture (φ.someFuture.somePast.allFuture))
+  impTrans (connectPastThm φ) step2
 
 end FuturePastChains
 
@@ -719,9 +719,9 @@ section ConjunctionElimination
 Since `always φ = Hφ ∧ (φ ∧ Gφ)`, we extract the right conjunct `φ ∧ Gφ`
 and then extract the left conjunct `φ`.
 -/
-noncomputable def always_to_present (φ : Formula) :
+noncomputable def alwaysToPresent (φ : Formula) :
     ⊢ φ.always.imp φ :=
-  imp_trans (rce_imp φ.all_past (φ.and φ.all_future)) (lce_imp φ φ.all_future)
+  impTrans (rceImp φ.allPast (φ.and φ.allFuture)) (lceImp φ φ.allFuture)
 
 /--
 `⊢ φ → sometimes(φ)`: If φ holds now, then φ holds at some time.
@@ -730,50 +730,50 @@ Since `sometimes φ = ¬(always(¬φ))`, we prove the contrapositive:
 `always(¬φ) → ¬φ` and then take the contrapositive to get `¬¬φ → ¬(always(¬φ))`,
 composed with DNI to get `φ → sometimes(φ)`.
 -/
-noncomputable def present_to_sometimes (φ : Formula) :
+noncomputable def presentToSometimes (φ : Formula) :
     ⊢ φ.imp φ.sometimes := by
   -- sometimes φ = (φ.neg.always).neg
   -- Need: φ → ¬(always(¬φ))
   -- From always_to_present: always(¬φ) → ¬φ
   -- Contrapositive: ¬¬φ → ¬(always(¬φ))
   -- Then compose with DNI: φ → ¬¬φ
-  exact imp_trans (dni φ) (contraposition (always_to_present φ.neg))
+  exact impTrans (notNotIntro φ) (contraposition (alwaysToPresent φ.neg))
 
 /--
 `⊢ weak_future(φ) → φ`: Extract the present-tense component from weak_future.
 
 Since `weak_future φ = φ ∧ Gφ`, this is just left conjunction elimination.
 -/
-noncomputable def weak_future_left (φ : Formula) :
-    ⊢ φ.weak_future.imp φ :=
-  lce_imp φ φ.all_future
+noncomputable def weakFutureLeft (φ : Formula) :
+    ⊢ φ.weakFuture.imp φ :=
+  lceImp φ φ.allFuture
 
 /--
 `⊢ weak_future(φ) → Gφ`: Extract the future component from weak_future.
 
 Since `weak_future φ = φ ∧ Gφ`, this is just right conjunction elimination.
 -/
-noncomputable def weak_future_right (φ : Formula) :
-    ⊢ φ.weak_future.imp φ.all_future :=
-  rce_imp φ φ.all_future
+noncomputable def weakFutureRight (φ : Formula) :
+    ⊢ φ.weakFuture.imp φ.allFuture :=
+  rceImp φ φ.allFuture
 
 /--
 `⊢ weak_past(φ) → φ`: Extract the present-tense component from weak_past.
 
 Since `weak_past φ = φ ∧ Hφ`, this is just left conjunction elimination.
 -/
-noncomputable def weak_past_left (φ : Formula) :
-    ⊢ φ.weak_past.imp φ :=
-  lce_imp φ φ.all_past
+noncomputable def weakPastLeft (φ : Formula) :
+    ⊢ φ.weakPast.imp φ :=
+  lceImp φ φ.allPast
 
 /--
 `⊢ weak_past(φ) → Hφ`: Extract the past component from weak_past.
 
 Since `weak_past φ = φ ∧ Hφ`, this is just right conjunction elimination.
 -/
-noncomputable def weak_past_right (φ : Formula) :
-    ⊢ φ.weak_past.imp φ.all_past :=
-  rce_imp φ φ.all_past
+noncomputable def weakPastRight (φ : Formula) :
+    ⊢ φ.weakPast.imp φ.allPast :=
+  rceImp φ φ.allPast
 
 /--
 `⊢ always(φ) → Gφ`: Extract the future component from always.
@@ -781,18 +781,18 @@ noncomputable def weak_past_right (φ : Formula) :
 Since `always φ = Hφ ∧ (φ ∧ Gφ)`, extract the right conjunct `φ ∧ Gφ`
 and then extract the right conjunct `Gφ`.
 -/
-noncomputable def always_imp_all_future (φ : Formula) :
-    ⊢ φ.always.imp φ.all_future :=
-  imp_trans (rce_imp φ.all_past (φ.and φ.all_future)) (rce_imp φ φ.all_future)
+noncomputable def alwaysImpAllFuture (φ : Formula) :
+    ⊢ φ.always.imp φ.allFuture :=
+  impTrans (rceImp φ.allPast (φ.and φ.allFuture)) (rceImp φ φ.allFuture)
 
 /--
 `⊢ always(φ) → Hφ`: Extract the past component from always.
 
 Since `always φ = Hφ ∧ (φ ∧ Gφ)`, this is just left conjunction elimination.
 -/
-noncomputable def always_imp_all_past (φ : Formula) :
-    ⊢ φ.always.imp φ.all_past :=
-  lce_imp φ.all_past (φ.and φ.all_future)
+noncomputable def alwaysImpAllPast (φ : Formula) :
+    ⊢ φ.always.imp φ.allPast :=
+  lceImp φ.allPast (φ.and φ.allFuture)
 
 end ConjunctionElimination
 

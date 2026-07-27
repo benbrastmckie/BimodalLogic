@@ -51,7 +51,7 @@ def ni (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ)
   have h_bot : (A :: Γ) ⊢ Formula.bot :=
     DerivationTree.modus_ponens (A :: Γ) B Formula.bot h1 h2
   -- Apply deduction theorem: Γ ⊢ A → ⊥ = Γ ⊢ ¬A
-  exact FormalSystem.Metalogic.Core.deduction_theorem Γ A Formula.bot h_bot
+  exact FormalSystem.Metalogic.Core.deductionTheorem Γ A Formula.bot h_bot
 
 /--
 Biconditional Introduction (Implication Form): `⊢ (A → B) → ((B → A) → (A ↔ B))`.
@@ -72,7 +72,7 @@ The context-based `iff_intro` already exists; this provides the pure implication
 `DerivationTree.weakening`
 -/
 @[tm_lemma]
-def bi_imp (A B : Formula) :
+def biImp (A B : Formula) :
     ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) := by
   -- First, derive [(A → B), (B → A)] ⊢ (A → B) ∧ (B → A)
   have h_in_ctx : [(B.imp A), (A.imp B)] ⊢ (A.imp B).and (B.imp A) := by
@@ -97,9 +97,9 @@ def bi_imp (A B : Formula) :
     exact DerivationTree.modus_ponens _ _ _ step1 h_ba
   -- Apply deduction theorem: [(A → B)] ⊢ (B → A) → ((A → B) ∧ (B → A))
   have step1 : [(A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
-    FormalSystem.Metalogic.Core.deduction_theorem [(A.imp B)] (B.imp A) _ h_in_ctx
+    FormalSystem.Metalogic.Core.deductionTheorem [(A.imp B)] (B.imp A) _ h_in_ctx
   -- Apply deduction theorem: [] ⊢ (A → B) → ((B → A) → ((A → B) ∧ (B → A)))
-  exact FormalSystem.Metalogic.Core.deduction_theorem [] (A.imp B) _ step1
+  exact FormalSystem.Metalogic.Core.deductionTheorem [] (A.imp B) _ step1
 
 /--
 Disjunction Elimination (DE): If `Γ, A ⊢ C` and `Γ, B ⊢ C`, then `Γ, A ∨ B ⊢ C`.
@@ -126,10 +126,10 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
     ((A.or B) :: Γ) ⊢ C := by
   -- Apply deduction theorem to get Γ ⊢ A → C
   have ac : Γ ⊢ A.imp C :=
-    FormalSystem.Metalogic.Core.deduction_theorem Γ A C h1
+    FormalSystem.Metalogic.Core.deductionTheorem Γ A C h1
   -- Apply deduction theorem to get Γ ⊢ B → C
   have bc : Γ ⊢ B.imp C :=
-    FormalSystem.Metalogic.Core.deduction_theorem Γ B C h2
+    FormalSystem.Metalogic.Core.deductionTheorem Γ B C h2
   -- Weaken A → C to context ((A.or B) :: Γ)
   have ac_ctx : ((A.or B) :: Γ) ⊢ A.imp C :=
     DerivationTree.weakening Γ _ _ ac
@@ -147,7 +147,7 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
 
   -- b_combinator: (B → C) → (¬A → B) → (¬A → C)
   have b_inst : ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
-    b_combinator
+    bCombinator
   have b_ctx : ((A.or B) :: Γ) ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
     DerivationTree.weakening [] _ _ b_inst (List.nil_subset _)
   have step1 : ((A.or B) :: Γ) ⊢ (A.neg.imp B).imp (A.neg.imp C) :=
@@ -162,7 +162,7 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
     DerivationTree.modus_ponens _ _ _ step1 h_disj_unf
   -- Now use classical_merge: (A → C) → ((¬A → C) → C)
   have cm : ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
-    classical_merge A C
+    classicalMerge A C
   have cm_ctx : ((A.or B) :: Γ) ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
     DerivationTree.weakening [] _ _ cm (List.nil_subset _)
   have step2 : ((A.or B) :: Γ) ⊢ (A.neg.imp C).imp C :=
@@ -183,7 +183,7 @@ if we have A ∨ B and both A and B lead to contradiction, then we can derive �
 3. Apply disjunction elimination `de` to get (A ∨ B) :: Γ ⊢ ⊥
 4. Apply cut with h_or to eliminate A ∨ B from context
 -/
-noncomputable def or_elim_neg_neg (Γ : Context) (A B : Formula)
+noncomputable def orElimNegNeg (Γ : Context) (A B : Formula)
     (h_or : Γ ⊢ A.or B)
     (h_neg_A : Γ ⊢ A.neg)
     (h_neg_B : Γ ⊢ B.neg) :
@@ -208,7 +208,7 @@ noncomputable def or_elim_neg_neg (Γ : Context) (A B : Formula)
   have h_disj_bot : ((A.or B) :: Γ) ⊢ Formula.bot := de Γ A B Formula.bot h_A_bot h_B_bot
   -- Apply cut with h_or: deduction_theorem gives Γ ⊢ (A.or B) → ⊥, then modus_ponens with h_or
   have h_impl : Γ ⊢ (A.or B).imp Formula.bot :=
-    FormalSystem.Metalogic.Core.deduction_theorem Γ (A.or B) Formula.bot h_disj_bot
+    FormalSystem.Metalogic.Core.deductionTheorem Γ (A.or B) Formula.bot h_disj_bot
   exact DerivationTree.modus_ponens Γ (A.or B) Formula.bot h_impl h_or
 
 

@@ -96,7 +96,7 @@ Proof:
 -- backtracking over metavariable instantiations (out of scope). Determined
 -- premises (e.g. the weakening fallback, or rules whose conclusion fixes all
 -- variables) DO chain via `tryLemmaMatchCore`.
-def imp_trans {fc : FrameClass} {A B C : Formula}
+def impTrans {fc : FrameClass} {A B C : Formula}
     (h1 : DerivationTree fc [] (A.imp B))
     (h2 : DerivationTree fc [] (B.imp C)) : DerivationTree fc [] (A.imp C) := by
   have s_axiom :=
@@ -145,7 +145,7 @@ Proof strategy:
 3. Compose: `(B → C) → ((A → B) → (A → C))` (by transitivity)
 -/
 @[tm_lemma]
-def b_combinator {fc : FrameClass} {A B C : Formula} :
+def bCombinator {fc : FrameClass} {A B C : Formula} :
     ⊢[fc] (B.imp C).imp ((A.imp B).imp (A.imp C)) := by
   -- Step 1: S axiom gives us (B → C) → (A → (B → C))
   have s_axiom : ⊢[fc] (B.imp C).imp (A.imp (B.imp C)) :=
@@ -154,7 +154,7 @@ def b_combinator {fc : FrameClass} {A B C : Formula} :
   have k_axiom : ⊢[fc] (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
     DerivationTree.axiom [] _ (Axiom.prop_k A B C) (FrameClass.base_le fc)
   -- Step 3: Compose with imp_trans
-  exact imp_trans s_axiom k_axiom
+  exact impTrans s_axiom k_axiom
 
 /--
 Flip combinator (C): `⊢ (A → B → C) → (B → A → C)`.
@@ -166,7 +166,7 @@ This is essential for deriving the pairing combinator and dni.
 arguments at nested levels, composing with b_combinator.
 -/
 @[tm_lemma]
-def theorem_flip {fc : FrameClass} {A B C : Formula} :
+def theoremFlip {fc : FrameClass} {A B C : Formula} :
     ⊢[fc] (A.imp (B.imp C)).imp (B.imp (A.imp C)) := by
   -- Goal: (A → B → C) → (B → A → C)
   -- Strategy: Build B → ((A → B → C) → (A → C)) using K and S axioms,
@@ -219,7 +219,7 @@ def theorem_flip {fc : FrameClass} {A B C : Formula} :
     DerivationTree.modus_ponens [] _ _ k_step step2
   -- Compose step1 with step3 to get (A → B → C) → (B → ((A → B) → (A → C)))
   have step4 : ⊢[fc] (A.imp (B.imp C)).imp (B.imp ((A.imp B).imp (A.imp C))) :=
-    imp_trans step1 step3
+    impTrans step1 step3
   -- Now we need to get from (B → ((A → B) → (A → C))) to ((A → B → C) → (B → (A → C)))
   -- We need to "supply" (A → B) = S axiom!
 
@@ -243,7 +243,7 @@ def theorem_flip {fc : FrameClass} {A B C : Formula} :
   -- We have k_final: (B → ((A → B) → (A → C))) → ((B → (A → B)) → (B → (A → C)))
   -- Compose: (A → B → C) → ((B → (A → B)) → (B → (A → C)))
   have step5 : ⊢[fc] (A.imp (B.imp C)).imp ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
-    imp_trans step4 k_final
+    impTrans step4 k_final
   -- Now apply s_ab
   -- We have step5: (A → B → C) → ((B → (A → B)) → (B → (A → C)))
   -- We have s_ab: B → (A → B)
@@ -289,7 +289,7 @@ to the application pattern derived from flip applied to identity.
 **Derivation**: Apply theorem_flip to identity with appropriate substitutions.
 -/
 @[tm_lemma]
-def theorem_app1 {fc : FrameClass} {A B : Formula} : ⊢[fc] A.imp ((A.imp B).imp B) := by
+def theoremApp1 {fc : FrameClass} {A B : Formula} : ⊢[fc] A.imp ((A.imp B).imp B) := by
   -- Goal: A → (A → B) → B
   -- Strategy: Use flip to swap arguments of a suitable function
 
@@ -303,7 +303,7 @@ def theorem_app1 {fc : FrameClass} {A B : Formula} : ⊢[fc] A.imp ((A.imp B).im
 
   -- First, we need flip at these types
   have flip_inst : ⊢[fc] ((A.imp B).imp (A.imp B)).imp (A.imp ((A.imp B).imp B)) :=
-    @theorem_flip fc (A.imp B) A B
+    @theoremFlip fc (A.imp B) A B
   exact DerivationTree.modus_ponens [] _ _ flip_inst id_ab
 
 /--
@@ -315,15 +315,15 @@ function A → B → C, we can produce a value of type C.
 **Derivation**: Compose theorem_app1 applications using b_combinator and
 distribute appropriately using prop_k and prop_s axioms.
 -/
-def theorem_app2 {fc : FrameClass} {A B C : Formula} :
+def theoremApp2 {fc : FrameClass} {A B C : Formula} :
     ⊢[fc] A.imp (B.imp ((A.imp (B.imp C)).imp C)) := by
   -- Goal: A → B → (A → B → C) → C
   -- Strategy: Use app1 at A-level and B-level, then compose
 
   -- Step 1: Use app1 at A to get: A → (A → (B → C)) → (B → C)
-  have step_a : ⊢[fc] A.imp ((A.imp (B.imp C)).imp (B.imp C)) := theorem_app1
+  have step_a : ⊢[fc] A.imp ((A.imp (B.imp C)).imp (B.imp C)) := theoremApp1
   -- Step 2: Use app1 at B to get: B → (B → C) → C
-  have step_b : ⊢[fc] B.imp ((B.imp C).imp C) := theorem_app1
+  have step_b : ⊢[fc] B.imp ((B.imp C).imp C) := theoremApp1
   -- Step 3: Weaken step_b with A: (B → (B → C) → C) → (A → (B → (B → C) → C))
   have weak_step_b : ⊢[fc] (B.imp ((B.imp C).imp C)).imp (A.imp (B.imp ((B.imp C).imp C))) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (B.imp ((B.imp C).imp C)) A) (FrameClass.base_le fc)
@@ -338,7 +338,7 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
     DerivationTree.modus_ponens [] _ _ weak_step_a step_a
   -- Step 5: Flip to get A → B → (A → B → C) → (B → C)
   have a_b_abc_bc : ⊢[fc] A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C))) :=
-    DerivationTree.modus_ponens [] _ _ theorem_flip b_a_abc_bc
+    DerivationTree.modus_ponens [] _ _ theoremFlip b_a_abc_bc
   -- Step 6: Now we have:
   -- a_b_abc_bc: A → B → (A → B → C) → (B → C)
   -- a_b_bc_c: A → B → (B → C) → C
@@ -350,7 +350,7 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
   have b_comp :
     ⊢[fc] ((B.imp C).imp C).imp
       (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)) :=
-    b_combinator
+    bCombinator
   -- Weaken with B
   have weak_b_comp :
     ⊢[fc] (((B.imp C).imp C).imp
@@ -559,7 +559,7 @@ def pairing {fc : FrameClass} (A B : Formula) : ⊢[fc] A.imp (B.imp (A.and B)) 
   -- The types match exactly after unfolding the definition of conjunction
   unfold Formula.and Formula.neg
   -- Now goal is: A → B → (A → B → ⊥) → ⊥
-  exact @theorem_app2 fc A B Formula.bot
+  exact @theoremApp2 fc A B Formula.bot
 
 /-!
 ## Helper Lemmas: Double Negation Introduction
@@ -586,8 +586,8 @@ we simply apply modus ponens to get `⊥`.
 **Usage**: Required for P4 perpetuity proof (◇▽φ → ◇φ) via contraposition of P3.
 -/
 @[tm_lemma]
-def dni {fc : FrameClass} (A : Formula) : ⊢[fc] A.imp A.neg.neg :=
-  @theorem_app1 fc A Formula.bot
+def notNotIntro {fc : FrameClass} (A : Formula) : ⊢[fc] A.imp A.neg.neg :=
+  @theoremApp1 fc A Formula.bot
 
 /--
 Combine two implications into a conjunction implication.
@@ -600,12 +600,12 @@ Proof:
 3. By K axiom (S combinator): `(P → B → A∧B) → (P → B) → P → A∧B`
 4. Apply modus ponens: `⊢ P → A ∧ B`
 -/
-def combine_imp_conj {fc : FrameClass} {P A B : Formula}
+def combineImpConj {fc : FrameClass} {P A B : Formula}
     (hA : DerivationTree fc [] (P.imp A))
     (hB : DerivationTree fc [] (P.imp B)) : DerivationTree fc [] (P.imp (A.and B)) := by
   have pair_ab : DerivationTree fc [] (A.imp (B.imp (A.and B))) :=
     (pairing A B).lift (FrameClass.base_le fc)
-  have h1 := imp_trans hA pair_ab
+  have h1 := impTrans hA pair_ab
   have s :=
     DerivationTree.axiom (fc := fc) [] _ (Axiom.prop_k P B (A.and B)) (FrameClass.base_le fc)
   have h2 :=
@@ -619,12 +619,12 @@ Given `⊢ P → A`, `⊢ P → B`, and `⊢ P → C`, derive `⊢ P → A ∧ (
 
 This is used for P1 where △φ = Hφ ∧ (φ ∧ Gφ).
 -/
-def combine_imp_conj_3 {fc : FrameClass} {P A B C : Formula}
+def combineImpConj3 {fc : FrameClass} {P A B C : Formula}
     (hA : DerivationTree fc [] (P.imp A))
     (hB : DerivationTree fc [] (P.imp B))
     (hC : DerivationTree fc [] (P.imp C)) : DerivationTree fc [] (P.imp (A.and (B.and C))) := by
-  have hBC := combine_imp_conj hB hC
-  exact combine_imp_conj hA hBC
+  have hBC := combineImpConj hB hC
+  exact combineImpConj hA hBC
 
 /-!
 ## Derived Modal-Temporal Theorem: TF
@@ -650,20 +650,20 @@ Necessary truths will always be necessary. Derived from MF + T + Modal 4:
 - Composing: `□φ → □(□φ) → □(G(□φ)) → G(□φ)`
 -/
 @[tm_lemma]
-def temp_future_derived {fc : FrameClass} (φ : Formula) :
-    ⊢[fc] (Formula.box φ).imp (Formula.all_future (Formula.box φ)) :=
+def temporalFutureDerived {fc : FrameClass} (φ : Formula) :
+    ⊢[fc] (Formula.box φ).imp (Formula.allFuture (Formula.box φ)) :=
   let mf_box :=
     DerivationTree.axiom [] _ (Axiom.modal_future (Formula.box φ)) (FrameClass.base_le fc)
     -- □(□φ) → □(G(□φ))
   let t_G_box :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.all_future (Formula.box φ)))
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.allFuture (Formula.box φ)))
     (FrameClass.base_le fc)
     -- □(G(□φ)) → G(□φ)
-  let chain1 := imp_trans mf_box t_G_box
+  let chain1 := impTrans mf_box t_G_box
     -- □(□φ) → G(□φ)
   let m4 := DerivationTree.axiom [] _ (Axiom.modal_4 φ) (FrameClass.base_le fc)
     -- □φ → □(□φ)
-  imp_trans m4 chain1
+  impTrans m4 chain1
     -- □φ → G(□φ)
 
 end FormalSystem.Theorems.Combinators

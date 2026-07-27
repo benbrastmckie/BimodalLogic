@@ -53,9 +53,9 @@ and propositional contraposition. Defined here to avoid circular imports with
 TemporalDerived.lean. -/
 
 private noncomputable def temp_k_dist_local (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
+    ⊢ (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
   -- Step 1: ⊢ ¬(¬ψ→¬φ) → ¬(φ→ψ) (negated contrapositive)
-  let neg_contra := mp (contrapose_imp φ ψ) (contrapose_imp (φ.imp ψ) (ψ.neg.imp φ.neg))
+  let neg_contra := mp (contraposeImp φ ψ) (contraposeImp (φ.imp ψ) (ψ.neg.imp φ.neg))
   -- Step 2: F(¬(¬ψ→¬φ)) → F(¬(φ→ψ)) via BX3
   let F_step := mp (DerivationTree.temporal_necessitation _ neg_contra)
     (DerivationTree.axiom [] _
@@ -63,17 +63,17 @@ private noncomputable def temp_k_dist_local (φ ψ : Formula) :
   -- Step 3: G(φ→ψ) → G(¬ψ→¬φ) via contraposition
   let G_contra := contraposition F_step
   -- Step 4: G(¬ψ→¬φ) → (Gφ → Gψ) via BX3 + contraposition
-  let G_to_GK := imp_trans
+  let G_to_GK := impTrans
     (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top) trivial)
-    (contrapose_imp (Formula.some_future ψ.neg) (Formula.some_future φ.neg))
+    (contraposeImp (Formula.someFuture ψ.neg) (Formula.someFuture φ.neg))
   -- Compose
-  imp_trans G_contra G_to_GK
+  impTrans G_contra G_to_GK
 
 /--
 The reverse of the deduction theorem. If `Γ ⊢ A → B`, then `A :: Γ ⊢ B`.
 This is derivable from modus ponens and weakening.
 -/
-def reverse_deduction {fc : FrameClass} {Γ : Context} {A B : Formula}
+def reverseDeduction {fc : FrameClass} {Γ : Context} {A B : Formula}
     (h : Γ ⊢[fc] A.imp B) : (A :: Γ) ⊢[fc] B := by
   have h_weak : (A :: Γ) ⊢[fc] A.imp B :=
     DerivationTree.weakening _ _ _ h
@@ -92,12 +92,12 @@ This is derived via temporal duality:
 3. Apply `temporal_duality` again
 4. Simplify using `swap_temporal_involution` to get `⊢ Hφ`
 -/
-noncomputable def past_necessitation {fc : FrameClass} (φ : Formula)
-    (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.all_past φ) := by
-  have h_swap : DerivationTree fc [] φ.swap_temporal := DerivationTree.temporal_duality _ d
-  have g_swap : DerivationTree fc [] φ.swap_temporal.all_future :=
+noncomputable def pastNecessitation {fc : FrameClass} (φ : Formula)
+    (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.allPast φ) := by
+  have h_swap : DerivationTree fc [] φ.swapTemporal := DerivationTree.temporal_duality _ d
+  have g_swap : DerivationTree fc [] φ.swapTemporal.allFuture :=
     DerivationTree.temporal_necessitation _ h_swap
-  have final : DerivationTree fc [] φ.swap_temporal.all_future.swap_temporal :=
+  have final : DerivationTree fc [] φ.swapTemporal.allFuture.swapTemporal :=
     DerivationTree.temporal_duality _ g_swap
   simp only [Formula.swap_temporal_all_future,
     Formula.swap_temporal_involution] at final
@@ -111,20 +111,20 @@ Past K distribution axiom (derived via temporal duality).
 This is the past analog of `temp_k_dist`, derived by applying temporal duality
 to the future K distribution axiom.
 -/
-noncomputable def past_k_dist {fc : FrameClass} (A B : Formula) :
-    DerivationTree fc [] ((A.imp B).all_past.imp (A.all_past.imp B.all_past)) := by
+noncomputable def pastKDist {fc : FrameClass} (A B : Formula) :
+    DerivationTree fc [] ((A.imp B).allPast.imp (A.allPast.imp B.allPast)) := by
   -- Apply derived temp_k_dist to swapped formulas (at Base, then lift)
-  have fk : ⊢ (A.swap_temporal.imp B.swap_temporal).all_future.imp
-               (A.swap_temporal.all_future.imp B.swap_temporal.all_future) :=
-    temp_k_dist_local A.swap_temporal B.swap_temporal
+  have fk : ⊢ (A.swapTemporal.imp B.swapTemporal).allFuture.imp
+               (A.swapTemporal.allFuture.imp B.swapTemporal.allFuture) :=
+    temp_k_dist_local A.swapTemporal B.swapTemporal
   have fk_fc := DerivationTree.lift (fc₁ := .Base) (fc₂ := fc) trivial fk
   -- Apply temporal duality
-  have td : DerivationTree fc [] ((A.swap_temporal.imp B.swap_temporal).all_future.imp
-                (A.swap_temporal.all_future.imp B.swap_temporal.all_future)).swap_temporal :=
+  have td : DerivationTree fc [] ((A.swapTemporal.imp B.swapTemporal).allFuture.imp
+                (A.swapTemporal.allFuture.imp B.swapTemporal.allFuture)).swapTemporal :=
     DerivationTree.temporal_duality _ fk_fc
   -- Simplify: swap(swap x) = x
   simp only [Formula.swap_temporal_all_future,
-    Formula.swap_temporal, Formula.swap_temporal_involution] at td
+    Formula.swapTemporal, Formula.swap_temporal_involution] at td
   exact td
 
 /--
@@ -145,15 +145,15 @@ Induction on the context `Γ`.
   4. By `modal_k_dist` axiom and weakening, `□Γ' ⊢ □A → □φ`.
   5. By `reverse_deduction`, `□A :: □Γ' ⊢ □φ`, which is `□(A :: Γ') ⊢ □φ`.
 -/
-noncomputable def generalized_modal_k {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
+noncomputable def generalizedModalK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢[fc] φ) → ((Context.map Formula.box Γ) ⊢[fc] Formula.box φ)
   | [], φ, h => DerivationTree.necessitation φ h
   | A :: Γ', φ, h =>
     -- from (A :: Γ') ⊢ φ, get Γ' ⊢ A → φ
-    let h_deduction : Γ' ⊢[fc] A.imp φ := deduction_theorem Γ' A φ h
+    let h_deduction : Γ' ⊢[fc] A.imp φ := deductionTheorem Γ' A φ h
     -- apply inductive hypothesis to the implication
     let ih_res : (Context.map Formula.box Γ') ⊢[fc] Formula.box (A.imp φ) :=
-      generalized_modal_k Γ' (A.imp φ) h_deduction
+      generalizedModalK Γ' (A.imp φ) h_deduction
     -- use modal_k_dist axiom
     let k_dist : ⊢[fc] (Formula.box (A.imp φ)).imp ((Formula.box A).imp (Formula.box φ)) :=
       DerivationTree.axiom [] _ (Axiom.modal_k_dist A φ) trivial
@@ -167,7 +167,7 @@ noncomputable def generalized_modal_k {fc : FrameClass} : (Γ : Context) → (φ
     -- reverse deduction to get □A :: □Γ' ⊢ □φ
     -- Note: Context.map Formula.box (A :: Γ') = Formula.box A :: Context.map Formula.box Γ'
     -- so the context matches exactly.
-    reverse_deduction h_mp
+    reverseDeduction h_mp
 
 /--
 Generalized Temporal K rule (derived theorem).
@@ -180,31 +180,31 @@ It is now derivable from standard temporal necessitation + temporal K distributi
 
 **Proof Strategy**: Analogous to generalized modal K.
 -/
-noncomputable def generalized_temporal_k {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
-    (h : Γ ⊢[fc] φ) → ((Context.map Formula.all_future Γ) ⊢[fc] Formula.all_future φ)
+noncomputable def generalizedTemporalK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
+    (h : Γ ⊢[fc] φ) → ((Context.map Formula.allFuture Γ) ⊢[fc] Formula.allFuture φ)
   | [], φ, h => DerivationTree.temporal_necessitation φ h
   | A :: Γ', φ, h =>
-    let h_deduction : Γ' ⊢[fc] A.imp φ := deduction_theorem Γ' A φ h
+    let h_deduction : Γ' ⊢[fc] A.imp φ := deductionTheorem Γ' A φ h
     let ih_res :
-      (Context.map Formula.all_future Γ') ⊢[fc] Formula.all_future (A.imp φ) :=
-      generalized_temporal_k Γ' (A.imp φ) h_deduction
+      (Context.map Formula.allFuture Γ') ⊢[fc] Formula.allFuture (A.imp φ) :=
+      generalizedTemporalK Γ' (A.imp φ) h_deduction
     let k_dist_base :
-      ⊢ (Formula.all_future (A.imp φ)).imp
-        ((Formula.all_future A).imp (Formula.all_future φ)) :=
+      ⊢ (Formula.allFuture (A.imp φ)).imp
+        ((Formula.allFuture A).imp (Formula.allFuture φ)) :=
       temp_k_dist_local A φ
-    let k_dist : ⊢[fc] (Formula.all_future (A.imp φ)).imp
-        ((Formula.all_future A).imp (Formula.all_future φ)) :=
+    let k_dist : ⊢[fc] (Formula.allFuture (A.imp φ)).imp
+        ((Formula.allFuture A).imp (Formula.allFuture φ)) :=
       DerivationTree.lift (FrameClass.base_le fc) k_dist_base
     let k_dist_weak :
-      (Context.map Formula.all_future Γ') ⊢[fc]
-      (Formula.all_future (A.imp φ)).imp
-      ((Formula.all_future A).imp (Formula.all_future φ)) :=
+      (Context.map Formula.allFuture Γ') ⊢[fc]
+      (Formula.allFuture (A.imp φ)).imp
+      ((Formula.allFuture A).imp (Formula.allFuture φ)) :=
       DerivationTree.weakening [] _ _ k_dist (List.nil_subset _)
     let h_mp :
-      (Context.map Formula.all_future Γ') ⊢[fc]
-      (Formula.all_future A).imp (Formula.all_future φ) :=
+      (Context.map Formula.allFuture Γ') ⊢[fc]
+      (Formula.allFuture A).imp (Formula.allFuture φ) :=
       DerivationTree.modus_ponens _ _ _ k_dist_weak ih_res
-    reverse_deduction h_mp
+    reverseDeduction h_mp
 
 /--
 Generalized Past K rule (derived theorem).
@@ -220,27 +220,27 @@ Induction on context `Γ`:
 - **Inductive step `Γ = A :: Γ'`**: Use deduction theorem, inductive hypothesis,
   `past_k_dist`, and `reverse_deduction`.
 -/
-noncomputable def generalized_past_k {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
-    (h : Γ ⊢[fc] φ) → ((Context.map Formula.all_past Γ) ⊢[fc] Formula.all_past φ)
-  | [], φ, h => past_necessitation φ h
+noncomputable def generalizedPastK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
+    (h : Γ ⊢[fc] φ) → ((Context.map Formula.allPast Γ) ⊢[fc] Formula.allPast φ)
+  | [], φ, h => pastNecessitation φ h
   | A :: Γ', φ, h =>
-    let h_deduction : Γ' ⊢[fc] A.imp φ := deduction_theorem Γ' A φ h
+    let h_deduction : Γ' ⊢[fc] A.imp φ := deductionTheorem Γ' A φ h
     let ih_res :
-      (Context.map Formula.all_past Γ') ⊢[fc] Formula.all_past (A.imp φ) :=
-      generalized_past_k Γ' (A.imp φ) h_deduction
+      (Context.map Formula.allPast Γ') ⊢[fc] Formula.allPast (A.imp φ) :=
+      generalizedPastK Γ' (A.imp φ) h_deduction
     let k_dist :
-      ⊢[fc] (Formula.all_past (A.imp φ)).imp
-        ((Formula.all_past A).imp (Formula.all_past φ)) :=
-      past_k_dist A φ
+      ⊢[fc] (Formula.allPast (A.imp φ)).imp
+        ((Formula.allPast A).imp (Formula.allPast φ)) :=
+      pastKDist A φ
     let k_dist_weak :
-      (Context.map Formula.all_past Γ') ⊢[fc]
-      (Formula.all_past (A.imp φ)).imp
-      ((Formula.all_past A).imp (Formula.all_past φ)) :=
+      (Context.map Formula.allPast Γ') ⊢[fc]
+      (Formula.allPast (A.imp φ)).imp
+      ((Formula.allPast A).imp (Formula.allPast φ)) :=
       DerivationTree.weakening [] _ _ k_dist (List.nil_subset _)
     let h_mp :
-      (Context.map Formula.all_past Γ') ⊢[fc]
-      (Formula.all_past A).imp (Formula.all_past φ) :=
+      (Context.map Formula.allPast Γ') ⊢[fc]
+      (Formula.allPast A).imp (Formula.allPast φ) :=
       DerivationTree.modus_ponens _ _ _ k_dist_weak ih_res
-    reverse_deduction h_mp
+    reverseDeduction h_mp
 
 end FormalSystem.Theorems
