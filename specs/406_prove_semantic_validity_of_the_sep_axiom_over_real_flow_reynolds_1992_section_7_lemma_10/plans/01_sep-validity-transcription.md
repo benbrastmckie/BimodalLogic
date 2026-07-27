@@ -236,28 +236,28 @@ rejected. `arch_of_lub` is proved locally in 13 lines.
 
 ---
 
-### Phase 2: The order-theoretic core [IN PROGRESS]
+### Phase 2: The order-theoretic core [COMPLETED]
 
 **Goal**: Prove the abstract order-theoretic content of Reynolds §7 lemma 10 and its past-directed
 mirror, with no reference to formulas or truth.
 
 **Tasks**:
-- [ ] Append **verbatim from research report §7.3** to `Separability.lean`, in order:
+- [x] Append **verbatim from research report §7.3** to `Separability.lean`, in order:
       `nested_core`, `sep_order`, `sep_order_mirror`. All three are public.
-- [ ] `nested_core` implements the nested-interval endgame (step 8 of the report's step map);
+- [x] `nested_core` implements the nested-interval endgame (step 8 of the report's step map);
       `sep_order` is steps 1-6 plus the call into `nested_core`; `sep_order_mirror` is
       `sep_order` instantiated at `Dᵒᵈ`.
-- [ ] **`sep_order_mirror` is ~20 lines, not a ~130-line hand-mirror.** Instantiating the forward
+- [x] **`sep_order_mirror` is ~20 lines, not a ~130-line hand-mirror.** Instantiating the forward
       core at `Dᵒᵈ` is the whole technique. This deliberately differs from task 405's approach
       (which hand-dualised its `prior_S` lemma) because there the dualised body was ~25 lines and
       here it is ~130.
-- [ ] In `sep_order_mirror`, the `OrderDual` coercions **must be written explicitly**
+- [x] In `sep_order_mirror`, the `OrderDual` coercions **must be written explicitly**
       (`OrderDual.toDual` / `OrderDual.ofDual`), exactly as in the report. A bare `exact h` and
       the `OrderDual.toDual_lt_toDual` rewrite were both tried and **both fail** with an
       instance-defeq error. Do not retry them.
-- [ ] Add docstrings to all three lemmas explaining their role in the §7 lemma 10 argument.
+- [x] Add docstrings to all three lemmas explaining their role in the §7 lemma 10 argument.
       **No task numbers.**
-- [ ] Verify with the same scoped build.
+- [x] Verify with the same scoped build.
 
 **Timing**: 1 hour
 
@@ -273,10 +273,15 @@ mirror, with no reference to formulas or truth.
   `sep_order` — the goals are `∃`/`∀` over an abstract `LinearOrder` with an opaque set, so
   automation is not merely discouraged here, it does not apply. If a transcription attempt
   produces a goal that `simp` closes, the transcription is wrong.
+  *(deviation: altered — this criterion overstates report §7.3, which itself uses `simp_all`
+  twice, in the `| zero =>` base cases of `hmonoA`/`hmonoB` inside `nested_core`. Those close
+  the `ℕ`-induction bookkeeping goal `m ≤ 0 → (seq m).1 ≤ (seq 0).1`, not any order-theoretic
+  step. Transcribed verbatim per plan-compliance; no `aesop`/`omega`/`decide` anywhere, and no
+  mathematical step is automated.)*
 
 ---
 
-### Phase 3: The two validity lemmas, and comment cleanup [NOT STARTED]
+### Phase 3: The two validity lemmas, and comment cleanup [IN PROGRESS]
 
 **Goal**: Discharge both `sorry` bodies in `Soundness.lean` and remove every comment that the
 discharge falsifies.
