@@ -1,0 +1,73 @@
+{
+  "phase": 5,
+  "phase_name": "PDF-offset to part-file resolution for multi-file documents (dry-run only)",
+  "started_at": "2026-07-27T19:00:00Z",
+  "last_updated": "2026-07-27T19:45:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Verify contiguity across all 12 baier_katoen_2008 part boundaries",
+      "status": "done",
+      "files_touched": [
+        "specs/404_complete_combining_negation_repair/scripts/verify-part-contiguity.py"
+      ],
+      "note": "Wrote a read-only landmark-word contiguity checker (last >=6-letter word before a boundary vs first >=6-letter word after it, located in the ground-truth PDF text, gap measured in raw PDF characters). baier_katoen_2008 has 12 parts = 11 boundaries: 10/11 automatically OK (gap 2-106 chars, all running-header/page-number-sized), 1/11 (part09/part10) SKIPPED (no >=6-letter word within 600 chars of the boundary -- the split falls mid-equation in a probability derivation) but manually confirmed contiguous by direct inspection: part09 ends '...N\\u2192\\u221e ... n=2' and part10 begins '= lim Pr(EN).' -- the literal next line of the same equation, no duplication or drop. venema_1993 also checked as a bonus (not required by this task, which names only baier's 12 parts): 6/8 boundaries OK, 2 SKIPPED (hyphenation-split landmark words), 0 FLAGGED. Zero FLAGGED boundaries across both documents -- no evidence of duplicated or dropped content at any part/section split."
+    },
+    {
+      "id": 2,
+      "description": "Build cumulative character-offset table in classify_occurrence, gated on len(md_texts_raw) > 1, using the existing frac = idx/pdf_len proportional estimate to select a candidate file",
+      "status": "done",
+      "files_touched": [
+        ".claude/scripts/literature_combining_detect.py"
+      ],
+      "note": "Added build_cumulative_offsets(md_texts_raw) (mirrors the exact \"\\n\".join() semantics scan_directory() uses for md_concat_raw) and candidate_file_indices(idx, pdf_len, md_concat_raw, offsets, boundary_window=2000), reusing the SAME idx/pdf_len proportional estimate already proven in the latex_macro fuzzy-window fallback. classify_occurrence's three word-anchor search branches were refactored into a single search_files(indices) closure (no behavioural change to pattern construction) so the scoped/full-search choice is a single small block rather than tripled."
+    },
+    {
+      "id": 3,
+      "description": "Search a candidate window spanning the best-fit file plus its immediate neighbours when the estimate lands near a boundary",
+      "status": "done",
+      "files_touched": [
+        ".claude/scripts/literature_combining_detect.py"
+      ],
+      "note": "candidate_file_indices always includes best_i-1/best_i/best_i+1 (when in range), plus a second neighbour on whichever side the estimate lands within boundary_window (2000) characters of the best-fit file's edge -- verified via self-test fixtures 12b (mid-file: no widening) and 12c (near-edge: widens one file further)."
+    },
+    {
+      "id": 4,
+      "description": "Recall guard: if the narrowed search finds zero matches, fall back to the existing all-files search; add a fixture asserting this fallback fires",
+      "status": "done",
+      "files_touched": [
+        ".claude/scripts/literature_combining_detect.py",
+        ".claude/scripts/literature-convert.sh"
+      ],
+      "note": "classify_occurrence tries the candidate-scoped search first; if total_matches == 0 it re-runs the identical search over ALL files (the exact single-file-document code path). Self-test fixture 12e deliberately mis-points the proportional estimate at file index 0 while the true occurrence lives in file index 4 (outside the +-1 neighbour window and the boundary_window=2000 default given 5000-char filler); asserts the fallback still finds and correctly classifies it (sig=control_char, file_index=4), not a false anchor_not_found."
+    },
+    {
+      "id": 5,
+      "description": "Add --self-test fixtures for the offset table and the boundary-window behaviour",
+      "status": "done",
+      "files_touched": [
+        ".claude/scripts/literature-convert.sh"
+      ],
+      "note": "6 new fixtures added (32 -> 38 total, all passing): build-cumulative-offsets-basic, candidate-file-indices-midfile-excludes-far-files, candidate-file-indices-boundary-widens-window, classify-occurrence-scoped-ambiguity-resolution (5 synthetic files, 2 coincidental base-char-containing decoys excluded by scoping, true control_char occurrence in the correctly scoped file), classify-occurrence-recall-guard-fallback (12e above), classify-occurrence-single-file-inertness (explicit regression fixture: single-md-file classify_occurrence call matches the pre-phase-5 unconditional-loop result exactly)."
+    },
+    {
+      "id": 6,
+      "description": "Run --dry-run over baier_katoen_2008 and venema_1993; record the before/after ambiguous_anchor and anchor_not_found counts. No --write in this phase.",
+      "status": "done",
+      "files_touched": [],
+      "note": "baier_katoen_2008: ambiguous_anchor 362 -> 272 (-90), anchor_not_found 64 -> 64 (UNCHANGED, recall preserved), unrecognized_gap 25 -> 43 (+18, previously-ambiguous entries resolved to a unique match whose gap text still doesn't classify), narrow_failed 3 -> 4 (+1), ledger total 469 -> 398 (-71 residual entries net). venema_1993: NO CHANGE at all (ambiguous_anchor 8, anchor_not_found 17, unrecognized_gap 1, both before and after) -- scoping found no cross-file ambiguity to resolve for this document; this is a legitimate negative sub-result, not a defect (see Deviations). A corpus-wide differential scan (old code loaded via importlib.machinery.SourceFileLoader alongside the live module, per the Phase 4 handoff's proven technique) additionally confirmed: all 32 single-file PDF+markdown directories are BYTE-IDENTICAL in signature_counts before/after (the len(md_texts_raw)>1 gate is provably inert for them, corpus-wide, not sampled), and 27 of the 28 multi-file directories (including venema_1993 and all 26 others besides baier) are ALSO byte-identical -- only baier_katoen_2008 changed at all. baier's signature_counts: unanchored 451 -> 379 (-72, reconciles exactly with ambiguous_anchor+anchor_not_found+unrecognized_gap delta), control_char 15 -> 81 (+66), absent 2 -> 7 (+5), precomposed 350 -> 351 (+1) -- 66+5+1=72 newly-anchored occurrences, exactly accounting for the unanchored drop. --write is explicitly deferred to Phase 6 per the plan; no corpus write occurred in this phase."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "5.6",
+      "description": "Plan expected a 'substantial reduction' check scoped to baier_katoen_2008 and venema_1993 together.",
+      "type": "altered",
+      "reason": "venema_1993 showed zero change (not a reduction, not a regression -- exactly unchanged), while baier_katoen_2008 alone accounted for the entire ~460-occurrence root-cause category's yield in this phase (-90 ambiguous_anchor, -72 unanchored net). This is consistent with the plan's own Residual Accounting table, which already attributed baier 426 vs venema only 25 of the ~460 multi-file root-cause count -- venema's much smaller residual population apparently does not include cross-file coincidental word-pair collisions the way baier's does. Verified, not assumed: the corpus-wide differential scan confirms venema_1993's signature_counts are byte-for-byte identical before/after, so this is a clean negative sub-result rather than a partial/ambiguous one.",
+      "annotation": "*(deviation: altered — venema_1993 showed 0 change corpus-wide-verified, byte-identical before/after; all yield this phase is attributable to baier_katoen_2008 alone)*"
+    }
+  ]
+}

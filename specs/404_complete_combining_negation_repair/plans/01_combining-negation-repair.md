@@ -488,27 +488,40 @@ represent because it only ever returns a single character.
 
 ---
 
-### Phase 5: PDF-offset to part-file resolution for multi-file documents (dry-run only) [NOT STARTED]
+### Phase 5: PDF-offset to part-file resolution for multi-file documents (dry-run only) [COMPLETED]
 
 **Goal**: Build and validate the anchor-scoping change that addresses the single largest residual
 category, without yet writing to the corpus.
 
 **Tasks**:
-- [ ] Verify contiguity across **all 12** baier_katoen_2008 part boundaries (tail of partNN vs.
+- [x] Verify contiguity across **all 12** baier_katoen_2008 part boundaries (tail of partNN vs.
       head of partNN+1), not just part01/part02, before trusting a cumulative-offset table.
-- [ ] In `classify_occurrence`, gated on `len(md_texts_raw) > 1`: build a cumulative character-offset
+      *(completed: `specs/404_complete_combining_negation_repair/scripts/verify-part-contiguity.py`
+      -- 10/11 boundaries automatically confirmed OK (gap 2-106 chars), the 11th (part09/part10)
+      manually confirmed contiguous by direct inspection (split falls mid-equation, no landmark
+      word within scan range). Zero boundaries flagged as duplicated or gapped.)*
+- [x] In `classify_occurrence`, gated on `len(md_texts_raw) > 1`: build a cumulative character-offset
       table across `md_texts_raw` in filename order (`find_md_paths` already sorts, and both
       `partNN` and `secNN` names sort correctly), then use the existing `frac = idx / pdf_len`
       proportional estimate — the same technique already proven in the `latex_macro` fallback — to
-      select a candidate file.
-- [ ] Search a candidate window spanning the best-fit file plus its immediate neighbours when the
-      estimate lands near a boundary.
-- [ ] **Recall guard**: if the narrowed search finds zero matches, fall back to the existing
+      select a candidate file. *(completed: `build_cumulative_offsets()` + `candidate_file_indices()`
+      added to `literature_combining_detect.py`.)*
+- [x] Search a candidate window spanning the best-fit file plus its immediate neighbours when the
+      estimate lands near a boundary. *(completed: `candidate_file_indices()` always includes
+      best_i-1/best_i/best_i+1, plus a second neighbour on whichever side the estimate lands within
+      `BOUNDARY_WINDOW`=2000 characters of the best-fit file's edge.)*
+- [x] **Recall guard**: if the narrowed search finds zero matches, fall back to the existing
       all-files search. Scoping may only reduce ambiguity, never recall. Add a fixture asserting
-      this fallback fires.
-- [ ] Add `--self-test` fixtures for the offset table and the boundary-window behaviour.
-- [ ] Run `--dry-run` over baier_katoen_2008 and venema_1993; record the before/after
+      this fallback fires. *(completed: implemented in `classify_occurrence`; fixture
+      `classify-occurrence-recall-guard-fallback` proves it.)*
+- [x] Add `--self-test` fixtures for the offset table and the boundary-window behaviour.
+      *(completed: 6 new fixtures, 38/38 total passing.)*
+- [x] Run `--dry-run` over baier_katoen_2008 and venema_1993; record the before/after
       `ambiguous_anchor` and `anchor_not_found` counts. **No `--write` in this phase.**
+      *(completed: baier ambiguous_anchor 362->272 (-90), anchor_not_found 64->64 (unchanged);
+      venema 0 change corpus-wide-verified byte-identical. See Deviations below and
+      `progress/phase-5-progress.json` objective 6 for the full corpus-wide differential-scan
+      evidence. No `--write` performed.)*
 
 **Timing**: 2 hours
 
@@ -520,10 +533,37 @@ category, without yet writing to the corpus.
 
 **Verification**:
 - All 12 part boundaries verified contiguous (no duplication, no gap), with the check recorded.
-- Recall-guard fixture passes.
+  *(confirmed: see Task 1 above.)*
+- Recall-guard fixture passes. *(confirmed: `classify-occurrence-recall-guard-fallback`, 38/38
+  fixtures pass.)*
 - Dry-run shows a substantial reduction in `ambiguous_anchor` for baier_katoen_2008 with no
   increase in `anchor_not_found`; single-file documents show byte-identical classification to
-  before (the gate must be inert for them).
+  before (the gate must be inert for them). *(confirmed, and strengthened beyond the stated
+  criterion: a corpus-wide differential scan (old code loaded via
+  `importlib.machinery.SourceFileLoader` alongside the live module) proved ALL 32 single-file
+  directories AND 27 of the 28 multi-file directories are byte-identical in `signature_counts`
+  before/after -- only baier_katoen_2008 changed. baier: `ambiguous_anchor` 362->272 (-90),
+  `anchor_not_found` 64->64 (unchanged, recall preserved). See
+  `progress/phase-5-progress.json` objective 6 for the full breakdown.)*
+
+**Deviations**:
+- **venema_1993 showed zero change**, not a reduction: the plan's verification language names
+  both baier_katoen_2008 and venema_1993 together, but the corpus-wide differential scan confirms
+  venema_1993's `signature_counts` are byte-for-byte identical before and after this phase's code
+  change -- it has no cross-file coincidental word-pair collisions for scoping to resolve. This is
+  consistent with the plan's own Residual Accounting table, which already attributed baier 426 of
+  the ~460 multi-file root-cause occurrences vs. venema only 25. All of this phase's yield (-90
+  `ambiguous_anchor`, -72 net `unanchored`) is attributable to baier_katoen_2008 alone. Not a
+  defect: the recall guard's byte-identical-elsewhere result is itself strong evidence the change
+  is precisely scoped rather than accidentally destabilizing.
+- **All 28 multi-file directories in the corpus were exercised by this phase's code change**, not
+  only the two the plan names (the `len(md_texts_raw) > 1` gate is structural, not
+  document-specific). The corpus-wide differential scan was extended beyond the plan's stated
+  scope specifically to verify none of the other 26 multi-file documents regressed --
+  confirmed byte-identical for all 26. This additional verification was done because Phase 5 is
+  explicitly the riskiest phase in the plan and dry-run review is the only safety net before
+  Phase 6's write; it does not change what Phase 6 will `--write` (still only baier_katoen_2008
+  and venema_1993, per the plan).
 
 ---
 
