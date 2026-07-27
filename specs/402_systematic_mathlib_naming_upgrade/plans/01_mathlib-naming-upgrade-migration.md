@@ -296,25 +296,25 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 
 ---
 
-### Phase 2: Part A-1 - module path rename [NOT STARTED]
+### Phase 2: Part A-1 - module path rename [COMPLETED]
 
 - **Goal:** Move the library to `FormalSystem/` and make every module path resolve, leaving the
   `Bimodal` *namespace* untouched. Module name and namespace are independent in Lean, so this is a
   separately-green-able change.
 - **Tasks:**
-  - [ ] `git mv Theories/Bimodal FormalSystem`; `git mv FormalSystem/Bimodal.lean
-        FormalSystem/FormalSystem.lean`. `Theories/` is left empty and removed.
-  - [ ] `lakefile.lean`: `lean_lib Bimodal` -> `lean_lib FormalSystem`, `srcDir := "Theories"` ->
+  - [x] `git mv Theories/Bimodal FormalSystem`; `git mv FormalSystem/Bimodal.lean
+        FormalSystem/FormalSystem.lean`. `Theories/` is left empty and removed. *(deviation: altered — the root module `Theories/Bimodal.lean` became `FormalSystem.lean` at the repository root, matching the Mathlib layout the new `srcDir := "."` implies; `Theories/README.md` was deleted rather than moved, since all 33 of its lines describe the removed `Theories/` layout and its "Adding a New Theory" instructions are now wrong. `FormalSystem/README.md` (315 lines) is the surviving library doc.)*
+  - [x] `lakefile.lean`: `lean_lib Bimodal` -> `lean_lib FormalSystem`, `srcDir := "Theories"` ->
         `srcDir := "."` (or the layout that matches the new root), `roots := #[\`Bimodal]` ->
         `#[\`FormalSystem]`. Update **all 13 `lean_exe` roots** (`dataset_generator`,
         `dataset_validator`, `proof_extractor`, `enum_benchmark`, `benchmark_anchors`, and the
         remainder) - each carries its own `root := \`Bimodal.…` and `srcDir := "Theories"`.
-  - [ ] Rewrite all 1,581 `import Bimodal…` lines to `import FormalSystem…`, line-anchored on
+  - [x] Rewrite all 1,581 `import Bimodal…` lines to `import FormalSystem…`, line-anchored on
         `^import Bimodal(\.|$)`. Includes `Tests/BimodalTest/**`.
-  - [ ] Apply postmortem constraint 2: the pattern must not match `BimodalTest`, `BimodalHarness`,
+  - [x] Apply postmortem constraint 2: the pattern must not match `BimodalTest`, `BimodalHarness`,
         `BimodalLogic`, `BimodalProofs`, `BimodalReference`, `BimodalIntegrationTest`. Grep for all
         six after the pass and confirm each is unchanged.
-  - [ ] `lake build`; fix any residual module-resolution error.
+  - [x] `lake build`; fix any residual module-resolution error. *(deviation: altered — one residual class the import pass structurally could not see: `open private … from <Module>` clauses carry a module path that is not an `import` line. Three such clauses in `NfMultiAnchorBridge/{InteriorGateGeneralK,ExteriorGateAssembleK}.lean` were rewritten via a `from`-anchored pattern. This was the ONLY build failure.)*
 - **Estimated output:** ~200 lines (a line-anchored rewrite script + lakefile diff + build fixes)
 - **Done when:** `lake build` green; `BimodalTest` green; `grep -rn "import Bimodal" --include=*.lean`
   returns nothing; all six `Bimodal*` identifiers verified intact; sorry count still 1.

@@ -13,9 +13,9 @@ abbrev theoryLeanOptions : Array LeanOption := #[
 ]
 
 @[default_target]
-lean_lib Bimodal where
-  srcDir := "Theories"
-  roots := #[`Bimodal]
+lean_lib FormalSystem where
+  srcDir := "."
+  roots := #[`FormalSystem]
   leanOptions := theoryLeanOptions
 
 lean_lib BimodalTest where
@@ -26,85 +26,85 @@ lean_lib BimodalTest where
 /-- Dataset generator executable for ML training data.
     Run with: lake exe dataset_generator -- --max-complexity 5 --output data/bmlogic.jsonl -/
 lean_exe dataset_generator where
-  root := `Bimodal.Automation.DatasetExport
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.DatasetExport
+  srcDir := "."
   supportInterpreter := true
 
 /-- Dataset validator executable for conformance testing and feasibility gate.
     Run with: lake exe dataset_validator -/
 lean_exe dataset_validator where
-  root := `Bimodal.Automation.DatasetValidator
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.DatasetValidator
+  srcDir := "."
   supportInterpreter := true
 
 /-- Proof step extractor for BimodalHarness training data.
     Run with: lake exe proof_extractor -- --output data/proof_steps.jsonl -/
 lean_exe proof_extractor where
-  root := `Bimodal.Automation.ProofStepExport
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.ProofStepExport
+  srcDir := "."
   supportInterpreter := true
 
 /-- Enumerator benchmark: validates complexity 5-7 feasibility gates (Task 210).
     Run with: lake exe enum_benchmark -/
 lean_exe enum_benchmark where
-  root := `Bimodal.Automation.EnumBenchmark
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.EnumBenchmark
+  srcDir := "."
   supportInterpreter := true
 
 /-- Benchmark anchor generator: produces axiom instances for BMLogic-Bench (Task 205).
     Run with: lake exe benchmark_anchors -- --output data/axiom-instances.jsonl -/
 lean_exe benchmark_anchors where
-  root := `Bimodal.Automation.BenchmarkAnchors
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.BenchmarkAnchors
+  srcDir := "."
   supportInterpreter := true
 
 /-- Benchmark oracle: validates formula labels via decision procedure (Task 205).
     Run with: lake exe benchmark_oracle -- --input data/bmlogic-bench-candidates.jsonl --output data/bmlogic-bench-validated.jsonl -/
 lean_exe benchmark_oracle where
-  root := `Bimodal.Automation.BenchmarkOracle
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.BenchmarkOracle
+  srcDir := "."
   supportInterpreter := true
 
 /-- Contrastive pair generator for dual-verification training signal (Task 206).
     Run with: lake exe contrastive_generator -- --max-complexity 5 --output data/contrastive_pairs.jsonl -/
 lean_exe contrastive_generator where
-  root := `Bimodal.Automation.FormulaMutator
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.FormulaMutator
+  srcDir := "."
   supportInterpreter := true
 
 /-- Tableau bridge REPL for live formula queries (Task 246).
     Run with: lake exe tableau_bridge
     Then send JSONL requests on stdin, one per line. -/
 lean_exe tableau_bridge where
-  root := `Bimodal.Automation.TableauBridge
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.TableauBridge
+  srcDir := "."
   supportInterpreter := true
 
 /-- Tableau-derived proof step pipeline for large-scale training data (Task 242).
     Run with: lake exe tableau_proof_steps -- --max-complexity 7 --output data/tableau_proof_steps.jsonl -/
 lean_exe tableau_proof_steps where
-  root := `Bimodal.Automation.TableauProofStepPipeline
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.TableauProofStepPipeline
+  srcDir := "."
   supportInterpreter := true
 
 /-- Trace certificate exporter: emits JSONL proof certificates (Task 277).
     Run with: echo '{"command":"trace_decide","formula":{"tag":"atom","name":"p"}}' | lake exe trace_exporter -/
 lean_exe trace_exporter where
-  root := `Bimodal.Automation.TraceExporter
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.TraceExporter
+  srcDir := "."
   supportInterpreter := true
 
 /-- Proof-first generator: forward-chains from axioms, emits JSONL theorems (Task 279).
     Run with: lake exe proof_first_generator -- --max-depth 2 --seed 1000 --output data/proof_first.jsonl -/
 lean_exe proof_first_generator where
-  root := `Bimodal.Automation.ProofFirstExporter
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.ProofFirstExporter
+  srcDir := "."
   supportInterpreter := true
 
 /-- Machine-readable axiomatization appendix exporter (Task 316).
     Run with: lake exe machine_appendix -- --output typst/generated/machine-appendix.jsonl --stamp-commit SHA --stamp-date DATE
     Normally invoked via scripts/typst-machine-appendix.sh (injects git stamps). -/
 lean_exe machine_appendix where
-  root := `Bimodal.Automation.MachineAppendixExport
-  srcDir := "Theories"
+  root := `FormalSystem.Automation.MachineAppendixExport
+  srcDir := "."
   supportInterpreter := true

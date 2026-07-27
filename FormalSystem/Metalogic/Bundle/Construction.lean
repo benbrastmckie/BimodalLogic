@@ -1,0 +1,253 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Metalogic.Bundle.BFMCS
+import FormalSystem.Metalogic.Bundle.ModalSaturation
+import FormalSystem.Metalogic.Core.MaximalConsistent
+import FormalSystem.Metalogic.Core.MCSProperties
+import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Syntax.Formula
+import FormalSystem.Theorems.Propositional.Core
+
+/-!
+# BFMCS Construction Primitives
+
+This module provides primitive building blocks for BFMCS construction:
+- `contextAsSet` / `list_consistent_to_set_consistent`: Bridge from list to set consistency
+- `constantBFMCS`: A family assigning the same MCS at every time (T-axiom coherence)
+- `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
+
+## History
+
+## References
+
+- Modal saturation theory: Bimodal.Metalogic.Bundle.ModalSaturation
+- Active completeness chain: BXCanonical/CanonicalModel.lean and BXCanonical/Chronicle/
+-/
+
+namespace Bimodal.Metalogic.Bundle
+
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Metalogic.Core
+
+variable {D : Type*} [Preorder D]
+
+/-!
+## Stage 1: Extending Context to MCS
+
+Use Lindenbaum's lemma to extend a consistent context to a maximal consistent set.
+-/
+
+/--
+Convert a list context to a set for use with set-based Lindenbaum.
+-/
+def contextAsSet (Gamma : List Formula) : Set Formula := {phi | phi ∈ Gamma}
+
+/--
+A list context is set-consistent if listing its elements doesn't derive bot.
+This follows from list consistency plus finite subset property.
+-/
+lemma list_consistent_to_set_consistent {Gamma : List Formula}
+    (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
+    SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := by
+  intro L hL ⟨d⟩
+  apply h_cons
+  -- L is a list with all elements in Gamma (as a set)
+  -- Weaken derivation from L to Gamma
+  exact ⟨Bimodal.ProofSystem.DerivationTree.weakening L Gamma Formula.bot d hL⟩
+
+/-!
+## Stage 2: Building FMCS from MCS
+
+We create a constant FMCS where the same MCS is used at every time point.
+This satisfies all temporal coherence conditions trivially.
+-/
+
+/-!
+## REMOVED: constantBFMCS
+
+With irreflexive semantics, a constant family `t ↦ M` no longer satisfies `forward_G`:
+- `forward_G` requires: `Gφ ∈ M` and `t < t'` implies `φ ∈ M`
+- Without the T-axiom (`Gφ → φ`), this cannot be proven for a constant family
+- The constant family was only meaningful with reflexive semantics where `Gφ → φ` held
+
+The correct construction for irreflexive semantics uses non-constant families where
+the MCS at different times are related by the canonical temporal relation.
+-/
+
+/-!
+## REMOVED: singleFamilyBFMCS
+
+The following were previously archived:
+- singleFamilyBFMCS (sorry in modal_backward)
+- singleFamilyBFMCS_eval_family_eq
+- singleFamily_modal_backward_axiom (already removed)
+
+WHY: Single-family modal backward (phi in MCS -> Box phi in MCS) is NOT provable
+from first principles and the FALSE axiom was already removed. The sorry-backed
+definition was only used by construct_temporal_bfmcs (also archived).
+
+The active completeness chain uses BXCanonical/CanonicalModel.lean and
+BXCanonical/Chronicle/ with multi-family modal saturation.
+
+DO NOT reintroduce single-family BFMCS constructions.
+See archived analysis for details.
+-/
+
+/-!
+## Core Definitions
+
+These definitions are used by the active completeness chain.
+-/
+
+/--
+Helper: Extract MCS from Lindenbaum result for a list context.
+
+Given a consistent context Gamma, returns the MCS that extends it.
+-/
+noncomputable def lindenbaumMCS (Gamma : List Formula)
+    (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
+    Set Formula :=
+  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) :=
+      list_consistent_to_set_consistent h_cons
+  Classical.choose (set_lindenbaum (contextAsSet Gamma) h_set_cons)
+
+/--
+The Lindenbaum MCS contains the original context.
+-/
+lemma lindenbaumMCS_extends (Gamma : List Formula)
+    (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
+    contextAsSet Gamma ⊆ lindenbaumMCS Gamma h_cons :=
+  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) :=
+      list_consistent_to_set_consistent h_cons
+  (Classical.choose_spec (set_lindenbaum (contextAsSet Gamma) h_set_cons)).1
+
+/--
+The Lindenbaum MCS is maximal consistent.
+-/
+lemma lindenbaumMCS_is_mcs (Gamma : List Formula)
+    (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
+    SetMaximalConsistent (fc := FrameClass.Base) (lindenbaumMCS Gamma h_cons) :=
+  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) :=
+      list_consistent_to_set_consistent h_cons
+  (Classical.choose_spec (set_lindenbaum (contextAsSet Gamma) h_set_cons)).2
+
+/--
+Helper: Extract MCS from Lindenbaum result for a set.
+-/
+noncomputable def lindenbaumMCS_set (S : Set Formula)
+    (h_cons : SetConsistent (fc := FrameClass.Base) S) :
+    Set Formula :=
+  Classical.choose (set_lindenbaum S h_cons)
+
+/--
+The Lindenbaum MCS (set version) contains the original set.
+-/
+lemma lindenbaumMCS_set_extends (S : Set Formula)
+    (h_cons : SetConsistent (fc := FrameClass.Base) S) :
+    S ⊆ lindenbaumMCS_set S h_cons :=
+  (Classical.choose_spec (set_lindenbaum S h_cons)).1
+
+/--
+The Lindenbaum MCS (set version) is maximal consistent.
+-/
+lemma lindenbaumMCS_set_is_mcs (S : Set Formula)
+    (h_cons : SetConsistent (fc := FrameClass.Base) S) :
+    SetMaximalConsistent (fc := FrameClass.Base) (lindenbaumMCS_set S h_cons) :=
+  (Classical.choose_spec (set_lindenbaum S h_cons)).2
+
+/-!
+## Context Derivability Utilities
+
+These definitions and lemmas support the completeness chain. They were originally
+in `Completeness.lean` and relocated here to allow `Representation.lean`
+to avoid importing the archived `Completeness.lean`.
+-/
+
+/--
+Helper: If `⊬ φ` (not derivable from empty context), then `[φ.neg]` is consistent.
+
+**Proof Strategy**:
+Suppose `[φ.neg]` is inconsistent, i.e., `[φ.neg] ⊢ ⊥`.
+By deduction theorem, `⊢ φ.neg → ⊥`, i.e., `⊢ ¬¬φ`.
+By double negation elimination (classically derivable), `⊢ φ`.
+Contradiction with `⊬ φ`.
+-/
+lemma not_derivable_implies_neg_consistent (φ : Formula)
+    (h_not_deriv : ¬Derivable FrameClass.Base [] φ) :
+    Consistent (fc := FrameClass.Base) [φ.neg] := by
+  -- Suppose [φ.neg] is inconsistent
+  intro ⟨d_bot⟩
+  -- By deduction theorem: ⊢ φ.neg → ⊥ = ⊢ ¬¬φ
+  have d_neg_neg : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg) :=
+    Bimodal.Metalogic.Core.deduction_theorem [] φ.neg Formula.bot d_bot
+  -- Get double negation elimination: ⊢ ¬¬φ → φ
+  have h_dne : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
+    Bimodal.Theorems.Propositional.double_negation φ
+  -- Apply modus ponens to get ⊢ φ
+  have d_phi : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens [] φ.neg.neg φ h_dne d_neg_neg
+  -- Contradiction with h_not_deriv
+  exact h_not_deriv ⟨d_phi⟩
+
+/--
+Helper: If Γ ⊬ φ, then Γ ∪ {¬φ} (as a list) is consistent.
+
+**Proof Strategy**:
+Suppose Γ ++ [φ.neg] ⊢ ⊥.
+By deduction theorem repeatedly, we get:
+  ⊢ γ₁ → γ₂ → ... → γₙ → ¬φ → ⊥
+  = ⊢ γ₁ → ... → ¬¬φ
+Combined with Γ ⊢ γᵢ (assumption), we can derive ¬¬φ from Γ.
+By DNE, Γ ⊢ φ.
+Contradiction.
+-/
+lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ : Formula)
+    (h_not_deriv : ¬Derivable FrameClass.Base Γ φ) :
+    Consistent (fc := FrameClass.Base) (Γ ++ [φ.neg]) := by
+  -- Suppose Γ ++ [φ.neg] ⊢ ⊥
+  intro ⟨d_bot⟩
+  -- Step 1: Reorder context using weakening
+  -- Γ ++ [φ.neg] and (φ.neg :: Γ) have the same elements, just in different order
+  -- Since Γ ++ [φ.neg] ⊆ (φ.neg :: Γ), we can weaken
+  have h_subset : Γ ++ [φ.neg] ⊆ φ.neg :: Γ := by
+    intro x hx
+    simp at hx ⊢
+    tauto
+  have d_bot_reordered : (φ.neg :: Γ) ⊢ Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.weakening (Γ ++ [φ.neg]) (φ.neg :: Γ) Formula.bot d_bot
+        h_subset
+  -- Step 2: Apply deduction theorem to get Γ ⊢ φ.neg → ⊥ = Γ ⊢ ¬¬φ
+  have d_neg_neg : Γ ⊢ φ.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem Γ φ.neg Formula.bot d_bot_reordered
+  -- Step 3: Get double negation elimination: ⊢ ¬¬φ → φ
+  have h_dne : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
+    Bimodal.Theorems.Propositional.double_negation φ
+  -- Weaken to Γ
+  have h_dne_ctx : Γ ⊢ φ.neg.neg.imp φ :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] Γ (φ.neg.neg.imp φ) h_dne (by intro; simp)
+  -- Step 4: Apply modus ponens to get Γ ⊢ φ
+  have d_phi : Γ ⊢ φ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens Γ φ.neg.neg φ h_dne_ctx d_neg_neg
+  -- Contradiction with h_not_deriv
+  exact h_not_deriv ⟨d_phi⟩
+
+/-!
+## Summary
+
+This module provides:
+- `not_derivable_implies_neg_consistent`: Non-derivability implies neg consistency
+- `context_not_derivable_implies_extended_consistent`: Context extension consistency
+- `contextAsSet`, `list_consistent_to_set_consistent`: Set-based consistency bridge
+- `constantBFMCS`: Constant-time MCS family (temporal coherence via T-axioms)
+- `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
+
+**Sorry Status**: ZERO sorries in this module.
+(singleFamilyBFMCS with its sorry was previously archived.)
+-/
+
+end Bimodal.Metalogic.Bundle

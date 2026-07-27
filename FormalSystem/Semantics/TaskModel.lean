@@ -1,0 +1,100 @@
+/-
+Copyright (c) 2025 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Semantics.TaskFrame
+import FormalSystem.Semantics.WorldHistory
+import FormalSystem.Syntax.Formula
+
+/-!
+# TaskModel - Task Models with Valuation
+
+This module defines task models, which extend task frames with valuation functions.
+
+## Main Definitions
+
+- `TaskModel`: Task model structure with valuation function
+- Example models for testing
+
+## Implementation Notes
+
+- Valuation assigns truth values to atoms at each world state
+- Valuation function: `WorldState → Atom → Prop`
+- Models provide complete semantic interpretation for TM formulas
+
+## References
+
+* [architecture.md](../../../docs/user-guide/architecture.md) - Task model specification
+* [TaskFrame.lean](TaskFrame.lean) - Task frame structure
+* [Formula.lean](../Syntax/Formula.lean) - Formula syntax
+-/
+
+namespace Bimodal.Semantics
+
+open Bimodal.Syntax
+
+/--
+Task model for bimodal logic TM.
+
+A task model extends a task frame with a valuation function that determines
+which atomic propositions are true at each world state.
+
+This provides the complete semantic structure needed to evaluate formula truth.
+
+**Polymorphic Temporal Type**: TaskModel inherits temporal type parameter from TaskFrame,
+ensuring valuation is independent of the specific temporal order used.
+-/
+structure TaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F :
+      TaskFrame D) where
+  /--
+  Valuation function: assigns truth values to atomic propositions at world states.
+
+  `valuation w p` is true iff atomic proposition `p` is true at world state `w`.
+  -/
+  valuation : F.WorldState → Atom → Prop
+
+namespace TaskModel
+
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F : TaskFrame D}
+
+/--
+Simple model where all atoms are false everywhere.
+-/
+def all_false : TaskModel F where
+  valuation := fun _ _ => False
+
+/--
+Simple model where all atoms are true everywhere.
+-/
+def all_true : TaskModel F where
+  valuation := fun _ _ => True
+
+/--
+Model where specific atoms have specific truth values.
+
+Helper function to construct models for testing.
+Takes a list of atom base names (without fresh indices) for backward compatibility.
+-/
+def from_list (trueAtoms : List String) : TaskModel F where
+  valuation := fun _ p => p.base ∈ trueAtoms ∧ p.fresh_index.isNone
+
+end TaskModel
+
+/-!
+# Finite Task Models
+
+This section defines finite task models, which are task models over finite task frames.
+-/
+
+open TaskFrame
+
+/--
+A finite task model is simply a task model over a finite task frame.
+This is defined as an abbreviation for convenience.
+-/
+abbrev FiniteTaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (F : FiniteTaskFrame D) := TaskModel F.toTaskFrame
+
+end Bimodal.Semantics

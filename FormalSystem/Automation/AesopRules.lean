@@ -1,0 +1,284 @@
+/-
+Copyright (c) 2025 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import Aesop
+import FormalSystem.ProofSystem
+import FormalSystem.Syntax.Formula
+import FormalSystem.Syntax.Context
+import FormalSystem.Theorems.GeneralizedNecessitation
+import FormalSystem.Theorems.TemporalDerived
+
+/-!
+# Aesop Rules for TM Logic
+
+**DEPRECATION NOTICE**: As of 2026-01-17, the `tm_auto` tactic no longer
+uses Aesop. It now delegates to `modal_search` to avoid proof reconstruction issues
+with DerivationTree. This module is preserved for:
+1. Potential future Aesop integration experiments
+2. Reference documentation of the original rule set
+3. Direct Aesop usage (not via `tm_auto`)
+
+Custom rule set for Aesop automation in bimodal TM logic.
+
+This module defines the TMLogic rule set for Aesop, providing forward chaining
+automation for all proven TM axioms and key inference rules.
+
+## Main Components
+
+- Forward chaining lemmas for 5 proven axioms (MT, M4, MB, T4, TA)
+- Apply rules for core inference (modus_ponens, modal_k, temporal_k)
+- Normalization rules for derived operators (diamond, always, sometimes)
+
+## Excluded Axioms
+
+The following axioms are excluded pending soundness proofs:
+- TL (temp_l): Temporal introspection - soundness incomplete
+- MF (modal_future): Modal-future interaction - soundness incomplete
+- TF (temp_future_derived): Now derived from MF + T + Modal 4
+
+## Usage
+
+```lean
+-- DEPRECATED: tm_auto no longer uses Aesop
+-- Use modal_search instead for TM automation
+example : ⊢ (□p → p) := by
+  modal_search
+
+-- Direct Aesop usage (not via tm_auto). NOTE: the rules below are registered
+-- in Aesop's DEFAULT rule set via `@[aesop safe apply]`; there is no separate
+-- `TMLogic` rule set declared (`declare_aesop_rule_sets [TMLogic]` is absent),
+-- so plain `aesop` picks them up. Do not write `aesop (rule_sets [TMLogic])`.
+example : ⊢ (□p → p) := by
+  aesop
+```
+
+## References
+
+* [tactic-development.md](../../../docs/user-guide/tactic-development.md)
+* [Axioms.lean](../ProofSystem/Axioms.lean)
+-/
+
+namespace Bimodal.Automation
+
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Theorems
+
+/-!
+## Direct Axiom Rules
+
+These rules directly construct axiom instances as derivations.
+Uses safe apply to let Aesop try each axiom pattern.
+-/
+
+/-- Modal T axiom as direct derivation. -/
+@[aesop safe apply]
+def axiom_modal_t (Γ : Context) (φ : Formula) {fc : FrameClass} :
+    DerivationTree fc Γ ((Formula.box φ).imp φ) :=
+  DerivationTree.axiom Γ ((Formula.box φ).imp φ) (Axiom.modal_t φ) trivial
+
+/-- Propositional K axiom as direct derivation. -/
+@[aesop safe apply]
+def axiom_prop_k (Γ : Context) (φ ψ χ : Formula) {fc : FrameClass} :
+    DerivationTree fc Γ ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) :=
+  DerivationTree.axiom Γ _ (Axiom.prop_k φ ψ χ) trivial
+
+/-- Propositional S axiom as direct derivation. -/
+@[aesop safe apply]
+def axiom_prop_s (Γ : Context) (φ ψ : Formula) {fc : FrameClass} :
+    DerivationTree fc Γ (φ.imp (ψ.imp φ)) :=
+  DerivationTree.axiom Γ _ (Axiom.prop_s φ ψ) trivial
+
+/-- Modal 4 axiom as direct derivation. -/
+@[aesop safe apply]
+def axiom_modal_4 (Γ : Context) (φ : Formula) {fc : FrameClass} :
+    DerivationTree fc Γ ((Formula.box φ).imp (Formula.box (Formula.box φ))) :=
+  DerivationTree.axiom Γ _ (Axiom.modal_4 φ) trivial
+
+/-- Modal B axiom as direct derivation. -/
+@[aesop safe apply]
+def axiom_modal_b (Γ : Context) (φ : Formula) {fc : FrameClass} :
+    DerivationTree fc Γ (φ.imp (Formula.box φ.diamond)) :=
+  DerivationTree.axiom Γ _ (Axiom.modal_b φ) trivial
+
+/-- Temporal 4 axiom: G(φ) → G(G(φ)). Derived from BX3 + BX6. -/
+@[aesop safe apply]
+noncomputable def axiom_temp_4 (Γ : Context) (φ : Formula) :
+    Γ ⊢ ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ))) :=
+  DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived φ) (List.nil_subset Γ)
+
+/-- Connect future (BX4): φ → G(P(φ)). In BX axiom system. -/
+@[aesop safe apply]
+def axiom_temp_a (Γ : Context) (φ : Formula) {fc : FrameClass} :
+    DerivationTree fc Γ (φ.imp (Formula.all_future φ.some_past)) :=
+  DerivationTree.axiom Γ _ (Axiom.connect_future φ) trivial
+
+/-!
+## Forward Chaining Rules for Proven Axioms
+
+These rules apply axioms to derive new conclusions from existing assumptions.
+Only includes axioms with complete soundness proofs.
+-/
+
+/--
+Forward chaining for Modal T axiom: `□φ → φ`.
+
+If we have `□φ` derivable, we can derive `φ` using modal T axiom and modus ponens.
+-/
+@[aesop safe forward]
+def modal_t_forward {Γ : Context} {φ : Formula} {fc : FrameClass} :
+    DerivationTree fc Γ (Formula.box φ) → DerivationTree fc Γ φ := by
+  intro d
+  exact DerivationTree.modus_ponens Γ (Formula.box φ) φ
+    (DerivationTree.axiom Γ _ (Axiom.modal_t φ) trivial) d
+
+/--
+Forward chaining for Modal 4 axiom: `□φ → □□φ`.
+
+If we have `□φ` derivable, we can derive `□□φ` using modal 4 axiom and modus ponens.
+-/
+@[aesop safe forward]
+def modal_4_forward {Γ : Context} {φ : Formula} {fc : FrameClass} :
+    DerivationTree fc Γ (Formula.box φ) → DerivationTree fc Γ (Formula.box (Formula.box φ)) := by
+  intro d
+  exact DerivationTree.modus_ponens Γ (Formula.box φ) (Formula.box (Formula.box φ))
+    (DerivationTree.axiom Γ _ (Axiom.modal_4 φ) trivial) d
+
+/--
+Forward chaining for Modal B axiom: `φ → □◇φ`.
+
+If we have `φ` derivable, we can derive `□◇φ` using modal B axiom and modus ponens.
+-/
+@[aesop safe forward]
+def modal_b_forward {Γ : Context} {φ : Formula} {fc : FrameClass} :
+    DerivationTree fc Γ φ → DerivationTree fc Γ (Formula.box φ.diamond) := by
+  intro d
+  exact DerivationTree.modus_ponens Γ φ (Formula.box φ.diamond)
+    (DerivationTree.axiom Γ _ (Axiom.modal_b φ) trivial) d
+
+/--
+Forward chaining for Temporal 4 axiom: `Fφ → FFφ`.
+
+If we have `Fφ` derivable, we can derive `FFφ` using temporal 4 axiom and modus ponens.
+-/
+@[aesop safe forward]
+noncomputable def temp_4_forward {Γ : Context} {φ : Formula} :
+    (Γ ⊢ Formula.all_future φ) →
+    (Γ ⊢ Formula.all_future (Formula.all_future φ)) := by
+  intro d
+  exact DerivationTree.modus_ponens Γ _ _ (axiom_temp_4 Γ φ) d
+
+/--
+Forward chaining for Connect Future (BX4): `φ → G(P(φ))`.
+
+If we have `φ` derivable, we can derive `G(P(φ))` using connect_future axiom
+and modus ponens.
+-/
+@[aesop safe forward]
+def temp_a_forward {Γ : Context} {φ : Formula} {fc : FrameClass} :
+    DerivationTree fc Γ φ → DerivationTree fc Γ (Formula.all_future φ.some_past) := by
+  intro d
+  exact DerivationTree.modus_ponens Γ _ _ (axiom_temp_a Γ φ) d
+
+/--
+Forward chaining for Propositional K axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`.
+
+This is the distribution axiom for implication.
+-/
+@[aesop safe forward]
+def prop_k_forward {Γ : Context} {φ ψ χ : Formula} {fc : FrameClass} :
+    DerivationTree fc Γ (φ.imp (ψ.imp χ)) → DerivationTree fc Γ ((φ.imp ψ).imp (φ.imp χ)) := by
+  intro d
+  exact DerivationTree.modus_ponens Γ (φ.imp (ψ.imp χ)) ((φ.imp ψ).imp (φ.imp χ))
+    (DerivationTree.axiom Γ _ (Axiom.prop_k φ ψ χ) trivial) d
+
+/--
+Forward chaining for Propositional S axiom: `φ → (ψ → φ)`.
+
+This is the weakening axiom for implication.
+-/
+@[aesop safe forward]
+def prop_s_forward {Γ : Context} {φ ψ : Formula} {fc : FrameClass} :
+    DerivationTree fc Γ φ → DerivationTree fc Γ (ψ.imp φ) := by
+  intro d
+  exact DerivationTree.modus_ponens Γ φ (ψ.imp φ)
+    (DerivationTree.axiom Γ _ (Axiom.prop_s φ ψ) trivial) d
+
+/-!
+## Apply Rules for Inference
+
+These rules create subgoals for core inference rules.
+-/
+
+/--
+Modus ponens as safe apply rule.
+
+To prove `ψ`, if we can prove `φ → ψ` and `φ`, then we're done.
+-/
+@[aesop safe apply]
+def apply_modus_ponens {Γ : Context} {φ ψ : Formula} {fc : FrameClass} :
+    DerivationTree fc Γ (φ.imp ψ) → DerivationTree fc Γ φ → DerivationTree fc Γ ψ :=
+  DerivationTree.modus_ponens Γ φ ψ
+
+/--
+Generalized Modal K rule as safe apply rule.
+
+To prove `□φ` from `□Γ`, if we can prove `φ` from `Γ`, then we're done.
+-/
+@[aesop safe apply]
+noncomputable def apply_modal_k {Γ : Context} {φ : Formula} :
+    (Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ) :=
+  generalized_modal_k Γ φ
+
+/--
+Generalized Temporal K rule as safe apply rule.
+
+To prove `Fφ` from `FΓ`, if we can prove `φ` from `Γ`, then we're done.
+-/
+@[aesop safe apply]
+noncomputable def apply_temporal_k {Γ : Context} {φ : Formula} :
+    (Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ) :=
+  generalized_temporal_k Γ φ
+
+/-!
+## Normalization Rules for Derived Operators
+
+These rules unfold derived operators to their primitive definitions.
+-/
+
+/--
+Normalize diamond operator to primitive negation and box.
+
+`◇φ` unfolds to `¬□¬φ`.
+-/
+@[aesop norm unfold]
+def normalize_diamond := @Formula.diamond
+
+/--
+Normalize always operator to primitive conjunction.
+
+`△φ` unfolds to `Pφ ∧ φ ∧ Fφ`.
+-/
+@[aesop norm unfold]
+def normalize_always := @Formula.always
+
+/--
+Normalize sometimes operator to primitive disjunction.
+
+`▽φ` unfolds to `¬Pφ ∨ φ ∨ ¬Fφ` (via De Morgan's law).
+-/
+@[aesop norm unfold]
+def normalize_sometimes := @Formula.sometimes
+
+/--
+Normalize some_past operator to primitive negation.
+
+`some_past φ` unfolds to `¬P¬φ`.
+-/
+@[aesop norm unfold]
+def normalize_some_past := @Formula.some_past
+
+end Bimodal.Automation

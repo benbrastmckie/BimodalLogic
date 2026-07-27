@@ -1,0 +1,874 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Metalogic.Core.MaximalConsistent
+import FormalSystem.Metalogic.Core.MCSProperties
+import FormalSystem.Metalogic.Bundle.TemporalContent
+import FormalSystem.Metalogic.BXCanonical.Frame
+import FormalSystem.Theorems.GeneralizedNecessitation
+import FormalSystem.Metalogic.Bundle.ModalSaturation
+import Mathlib.Data.Rat.Defs
+
+/-!
+# Chronicle Types for Burgess 1982 Construction
+
+This module defines the chronicle data structure from Burgess 1982, Section 2,
+adapted for irreflexive (strict) temporal semantics.
+
+## Overview
+
+A **chronicle** is a triple `(f, g, dom)` where:
+- `f : Rat -> Set Formula` maps rational time points to maximal consistent sets (MCS)
+- `g : Rat -> Rat -> Set Formula` maps adjacent intervals to deductively closed sets (DCS)
+- `dom : Finset Rat` is the finite domain of defined time points
+
+## Key Definitions
+
+- `SetDeductivelyClosed`: A set of formulas closed under derivation
+- `rRelation`: The r-relation from Burgess Lemma 2.3
+- `rMaximal`: B is a maximal DCS with r(A, B)
+- `Chronicle`: The core data structure
+- `Chronicle.c0`-`c5'`: The chronicle conditions
+
+## Design Notes
+
+The r-relation captures Until-propagation conditions that g_content alone cannot
+provide. Where g_content(A) = {phi | G(phi) in A} captures universal future
+propagation, the r-relation additionally tracks which Until-obligations from A
+are resolved vs. continuing in the interval set B. This is exactly why the
+chronicle needs a binary interval function g(x,y) rather than the unary
+g_content approach used in the existing chain construction.
+
+## Adaptation for Open Guard Semantics
+
+Under open guard semantics, the Until operator `phi U psi` at time t requires
+a witness s > t (strict) with psi(s) and guard phi on (t,s) (open interval).
+The evaluation point t is NOT in the guard interval.
+
+Key consequences:
+- BX9 (until_elim) is REMOVED: `(phi U psi) -> (phi ∨ psi)` is invalid
+- until_guard axiom is REMOVED: `(phi U psi) -> phi` is invalid
+- `rRelation_of_superset_mcs` and `rRelationSince_of_superset_mcs` are REMOVED (invalid)
+
+The Burgess construction uses BX4 (connect_future), BX5 (self_accum_until),
+and BX10 (until_F: phi U psi -> F(psi)) as replacements.
+
+## References
+
+- Burgess 1982: "Axioms for tense logic II: Time periods"
+- Burgess 1984: "Basic tense logic"
+-/
+
+namespace Bimodal.Metalogic.BXCanonical.Chronicle
+
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Bundle
+open Bimodal.Theorems
+
+/-- Base is the minimum frame class: `FrameClass.Base ≤ fc` for all `fc`. -/
+theorem base_le (fc : FrameClass) : FrameClass.Base ≤ fc := by
+  cases fc <;> trivial
+
+/-- Lift a Base-level derivation to any frame class. -/
+noncomputable def liftBase (fc : FrameClass) {Γ : List Formula} {φ : Formula}
+    (d : DerivationTree FrameClass.Base Γ φ) : DerivationTree fc Γ φ :=
+  d.lift (base_le fc)
+
+/-- An MCS at any frame class is also an MCS at Base.
+
+Consistency: fc has more axioms than Base, so if ⊥ is not derivable at fc then
+it is not derivable at Base (any Base derivation lifts to fc by `liftBase`).
+
+Maximality: For φ ∉ A, negation completeness at fc gives ¬φ ∈ A. Then
+φ, ¬φ ⊢_Base ⊥ (structural, no axioms needed), so A ∪ {φ} is Base-inconsistent. -/
+theorem mcs_to_base {fc : FrameClass} {A : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) A) :
+    SetMaximalConsistent (fc := FrameClass.Base) A := by
+  constructor
+  · -- Consistency at Base: if L ⊆ A derived ⊥ at Base, lift to fc → contradiction
+    intro L hL ⟨d⟩
+    have d_fc : DerivationTree fc L Formula.bot := liftBase fc d
+    exact h_mcs.1 L hL ⟨d_fc⟩
+  · -- Maximality at Base: for φ ∉ A, show A ∪ {φ} is Base-inconsistent
+    intro φ hφ
+    -- By negation completeness at fc: ¬φ ∈ A
+    have h_neg : φ.neg ∈ A := by
+      rcases SetMaximalConsistent.negation_complete h_mcs φ with h | h
+      · exact absurd h hφ
+      · exact h
+    -- A ∪ {φ} contains both φ and ¬φ, which derive ⊥ at Base
+    intro h_cons
+    have h_phi_mem : φ ∈ insert φ A := Set.mem_insert φ A
+    have h_neg_mem : φ.neg ∈ insert φ A := Set.mem_insert_of_mem φ h_neg
+    exact set_consistent_not_both h_cons φ h_phi_mem h_neg_mem
+
+/-- Modal witness at arbitrary fc: given an fc-MCS A with ◇ψ ∈ A, produce an fc-MCS v
+that is box-equivalent to A and contains ψ. This is the fc-parameterized version of
+`bx_modal_witness` from Frame.lean.
+
+The proof is identical in structure to `bx_modal_witness`: construct seed {ψ} ∪ box_content(A),
+show fc-consistency, extend via Lindenbaum, prove box-equivalence via modal_4 + S5 collapse.
+All axioms used (modal_4, modal_t, modal_5_collapse, prop_s, peirce) are Base axioms
+available at any fc via `base_le`. -/
+theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) A) (ψ : Formula)
+    (h_dia : Formula.diamond ψ ∈ A) :
+    ∃ (v : Set Formula), SetMaximalConsistent (fc := fc) v ∧
+      (∀ χ, Formula.box χ ∈ A ↔ Formula.box χ ∈ v) ∧ ψ ∈ v := by
+  -- Use the Base-level bx_modal_witness on the Base-MCS derived from h_mcs
+  have h_mcs_base : SetMaximalConsistent (fc := FrameClass.Base) A := mcs_to_base h_mcs
+  obtain ⟨v, h_equiv, h_ψ_v⟩ := bx_modal_witness ⟨A, h_mcs_base⟩ ψ h_dia
+  -- v is a Base-MCS. We need it to be an fc-MCS.
+  -- Key: v has the same box-content as A (which is fc-MCS).
+  -- Show v is fc-consistent: if some finite L ⊆ v derived ⊥ at fc,
+  -- then by deduction theorem we'd get a derivation of ¬(∧L) at fc.
+  -- But v is Base-maximal, so for every φ, either φ ∈ v or ¬φ ∈ v.
+  -- The fc-derivation can be lifted from Base (if it only uses Base axioms)
+  -- or uses fc-specific axioms. In the latter case, we can't directly conclude.
+  --
+  -- Alternative: since v is Base-MCS, it's also fc-consistent iff no fc-derivation
+  -- from its finite subsets reaches ⊥. We prove this by showing v has the same
+  -- consistency-relevant structure as A.
+  --
+  -- Actually, the simplest approach: extend v's Base-consistency to fc-consistency
+  -- using the fact that Base-MCS implies fc-consistent (base_le means any Base
+  -- derivation lifts to fc, so if ⊥ is derivable at Base, it's derivable at fc;
+  -- contrapositively, fc-consistency implies Base-consistency, but we need the
+  -- other direction, which is NOT true in general).
+  --
+  -- Instead, we reproduce the Lindenbaum construction at fc:
+  -- The seed {ψ} ∪ box_content(A) is fc-consistent (same proof as Base).
+  -- Lindenbaum at fc gives an fc-MCS extending the seed.
+  -- Box-equivalence follows from the same argument.
+  let bc := {χ : Formula | Formula.box χ ∈ A}
+  have h_seed_fc_cons : SetConsistent (fc := fc) ({ψ} ∪ bc) := by
+    intro L hL ⟨d⟩
+    by_cases h_ψ_in : ψ ∈ L
+    · let L_filt := L.filter (fun y => decide (y ≠ ψ))
+      have d_reord : DerivationTree fc (ψ :: L_filt) Formula.bot :=
+        derivation_exchange d (fun x => (cons_filter_neq_perm h_ψ_in x).symm)
+      have d_neg : DerivationTree fc L_filt (Formula.neg ψ) :=
+        Bimodal.Metalogic.Core.deduction_theorem L_filt ψ Formula.bot d_reord
+      have h_filt_in_bc : ∀ χ ∈ L_filt, χ ∈ bc := by
+        intro χ hχ
+        have h_and := List.mem_filter.mp hχ
+        have h_ne : χ ≠ ψ := by simpa using h_and.2
+        have h_mem := hL χ h_and.1
+        simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
+        rcases h_mem with rfl | h
+        · exact absurd rfl h_ne
+        · exact h
+      have d_box_neg : DerivationTree fc (Context.map Formula.box L_filt)
+          (Formula.box (Formula.neg ψ)) :=
+        generalized_modal_k L_filt (Formula.neg ψ) d_neg
+      have h_box_L_in : ∀ f ∈ Context.map Formula.box L_filt, f ∈ A := by
+        intro f hf
+        rw [Context.mem_map_iff] at hf
+        obtain ⟨χ, hχ_in, hχ_eq⟩ := hf
+        rw [← hχ_eq]
+        exact h_filt_in_bc χ hχ_in
+      have h_box_neg_in := SetMaximalConsistent.closed_under_derivation h_mcs
+        (Context.map Formula.box L_filt) h_box_L_in d_box_neg
+      have h_eq : Formula.diamond ψ = Formula.neg (Formula.box (Formula.neg ψ)) := rfl
+      rw [h_eq] at h_dia
+      exact set_consistent_not_both h_mcs.1 _ h_box_neg_in h_dia
+    · have h_L_in_bc : ∀ χ ∈ L, χ ∈ bc := by
+        intro χ hχ
+        have h_mem := hL χ hχ
+        simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
+        rcases h_mem with rfl | h
+        · exact absurd hχ h_ψ_in
+        · exact h
+      have d_box_bot : DerivationTree fc (Context.map Formula.box L) (Formula.box Formula.bot) :=
+        generalized_modal_k L Formula.bot d
+      have h_box_L_in : ∀ f ∈ Context.map Formula.box L, f ∈ A := by
+        intro f hf
+        rw [Context.mem_map_iff] at hf
+        obtain ⟨χ, hχ_in, hχ_eq⟩ := hf
+        rw [← hχ_eq]
+        exact h_L_in_bc χ hχ_in
+      have h_box_bot_in := SetMaximalConsistent.closed_under_derivation h_mcs
+        (Context.map Formula.box L) h_box_L_in d_box_bot
+      have h_ax : DerivationTree fc [] (Formula.box Formula.bot |>.imp Formula.bot) :=
+        DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
+      have h_bot := SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs h_ax) h_box_bot_in
+      exact h_mcs.1 [Formula.bot] (fun χ hχ => by simp only
+          [List.mem_cons, List.not_mem_nil, or_false] at hχ; rw [hχ]; exact h_bot)
+        ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
+  obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum _ h_seed_fc_cons
+  have h_ψ_in : ψ ∈ M := hM_sup (Set.mem_union_left _ (Set.mem_singleton ψ))
+  have h_bc_sub : bc ⊆ M := fun χ hχ => hM_sup (Set.mem_union_right _ hχ)
+  have h_box_equiv : ∀ χ, Formula.box χ ∈ A ↔ Formula.box χ ∈ M := by
+    intro χ
+    constructor
+    · intro h_box
+      have h_m4 : DerivationTree fc [] ((Formula.box χ).imp (Formula.box (Formula.box χ))) :=
+        DerivationTree.axiom [] _ (Axiom.modal_4 χ) trivial
+      have h_box_box := SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs h_m4) h_box
+      exact h_bc_sub h_box_box
+    · intro h_box_M
+      by_contra h_not_box
+      have h_neg_box : (Formula.box χ).neg ∈ A := by
+        rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box χ) with h | h
+        · exact absurd h h_not_box
+        · exact h
+      have h_m5 : DerivationTree fc [] ((Formula.box χ).neg.imp
+          (Formula.box (Formula.box χ).neg)) :=
+        liftBase fc (Bimodal.Metalogic.Bundle.axiom_5_negative_introspection χ)
+      have h_box_neg_box := SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs h_m5) h_neg_box
+      have h_neg_box_M : (Formula.box χ).neg ∈ M := h_bc_sub h_box_neg_box
+      exact set_consistent_not_both hM_mcs.1 (Formula.box χ) h_box_M h_neg_box_M
+  exact ⟨M, hM_mcs, h_box_equiv, h_ψ_in⟩
+
+/-! ## Deductively Closed Sets (DCS) -/
+
+/-- A set is closed under derivation if every consequence of its elements is also in it.
+This is Burgess 1982's definition of "deductively closed set" (DCS).
+Note: does NOT require consistency. `Set.univ` is `ClosedUnderDerivation`. -/
+def ClosedUnderDerivation (fc : FrameClass) (S : Set Formula) : Prop :=
+  ∀ (L : List Formula) (φ : Formula),
+    (∀ ψ ∈ L, ψ ∈ S) → (DerivationTree fc L φ) → φ ∈ S
+
+/--
+A set of formulas is **deductively closed** if it is consistent and closed
+under derivation: whenever all premises of a derivation are in the set,
+the conclusion is also in the set.
+
+Every MCS is deductively closed, but not every DCS is maximal.
+DCS are used for the interval function `g(x,y)` in the chronicle,
+which describes the formulas that hold throughout an interval.
+-/
+def SetDeductivelyClosed (fc : FrameClass) (S : Set Formula) : Prop :=
+  SetConsistent (fc := fc) S ∧ ClosedUnderDerivation fc S
+
+/-- Every MCS is deductively closed. -/
+theorem mcs_is_dcs {fc : FrameClass} {S : Set Formula}
+    (h : SetMaximalConsistent (fc := fc) S) :
+    SetDeductivelyClosed fc S :=
+  ⟨h.1, fun L _ hL hd => SetMaximalConsistent.closed_under_derivation h L hL hd⟩
+
+/-- A CUD set contains all theorems. -/
+theorem cud_contains_theorems {fc : FrameClass} {S : Set Formula}
+    (h : ClosedUnderDerivation fc S)
+    {φ : Formula} (hd : DerivationTree fc [] φ) : φ ∈ S :=
+  h [] φ (fun _ h => absurd h List.not_mem_nil) hd
+
+/-- A DCS contains all theorems. -/
+theorem dcs_contains_theorems {fc : FrameClass} {S : Set Formula}
+    (h : SetDeductivelyClosed fc S)
+    {φ : Formula} (hd : DerivationTree fc [] φ) : φ ∈ S :=
+  cud_contains_theorems h.2 hd
+
+/-- A DCS is consistent. -/
+theorem dcs_consistent {fc : FrameClass} {S : Set Formula}
+    (h : SetDeductivelyClosed fc S) :
+    SetConsistent (fc := fc) S := h.1
+
+/-- Modus ponens in a CUD set. -/
+theorem cud_modus_ponens {fc : FrameClass} {S : Set Formula}
+    (h : ClosedUnderDerivation fc S)
+    {φ ψ : Formula} (h_imp : φ.imp ψ ∈ S) (h_phi : φ ∈ S) : ψ ∈ S := by
+  apply h [φ, φ.imp ψ] ψ
+  · intro χ h_mem
+    simp only [List.mem_cons, List.mem_nil_iff, or_false] at h_mem
+    rcases h_mem with rfl | rfl
+    · exact h_phi
+    · exact h_imp
+  · exact DerivationTree.modus_ponens [φ, φ.imp ψ] φ ψ
+      (DerivationTree.assumption _ (φ.imp ψ) (by simp))
+      (DerivationTree.assumption _ φ (by simp))
+
+/-- Modus ponens in a DCS: if phi -> psi and phi are in S, then psi is in S. -/
+theorem dcs_modus_ponens {fc : FrameClass} {S : Set Formula}
+    (h : SetDeductivelyClosed fc S)
+    {φ ψ : Formula} (h_imp : φ.imp ψ ∈ S) (h_phi : φ ∈ S) : ψ ∈ S :=
+  cud_modus_ponens h.2 h_imp h_phi
+
+/-- A CUD set is closed under conjunction. -/
+theorem cud_conj_closed {fc : FrameClass} {S : Set Formula}
+    (h : ClosedUnderDerivation fc S)
+    {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S := by
+  have h_pair := cud_contains_theorems h
+    (Bimodal.Theorems.Combinators.pairing φ ψ)
+  exact cud_modus_ponens h (cud_modus_ponens h h_pair h_phi) h_psi
+
+/-- A DCS is closed under conjunction: if phi, psi in S then phi ∧ psi in S. -/
+theorem dcs_conj_closed {fc : FrameClass} {S : Set Formula}
+    (h : SetDeductivelyClosed fc S)
+    {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S :=
+  cud_conj_closed h.2 h_phi h_psi
+
+/-- A CUD set with a non-member is SDC (consistent + CUD).
+If B is ClosedUnderDerivation and φ ∉ B, then B is SetDeductivelyClosed.
+Proof: if B were inconsistent, then B = Set.univ, but φ ∉ Set.univ is false. -/
+theorem cud_not_mem_is_sdc {fc : FrameClass} {B : Set Formula}
+    (h_cud : ClosedUnderDerivation fc B)
+    {φ : Formula} (h_not_mem : φ ∉ B) : SetDeductivelyClosed fc B := by
+  refine ⟨?_, h_cud⟩
+  intro L hL ⟨d⟩
+  -- If B inconsistent: ⊥ ∈ B, then for any ψ, ψ ∈ B (ex falso).
+  -- In particular φ ∈ B, contradicting h_not_mem.
+  have h_bot : Formula.bot ∈ B := h_cud L Formula.bot hL d
+  have h_efq : DerivationTree fc [] (Formula.bot.imp φ) :=
+    Bimodal.Theorems.Propositional.efq_axiom φ
+  exact h_not_mem (cud_modus_ponens h_cud (cud_contains_theorems h_cud h_efq) h_bot)
+
+/-! ## Adjacency predicate -/
+
+/--
+Two domain points x < y are **adjacent** in the domain dom if there is
+no z in dom strictly between them.
+-/
+def Adjacent (dom : Finset Rat) (x y : Rat) : Prop :=
+  x ∈ dom ∧ y ∈ dom ∧ x < y ∧ ∀ z ∈ dom, ¬(x < z ∧ z < y)
+
+/-! ## The r-Relation (Burgess Lemma 2.3) -/
+
+/--
+The **r-relation** `rRelation A B` from Burgess Section 2.
+
+For an MCS A and a set B (typically a DCS), `rRelation A B` holds when:
+for all formulas gamma and delta, if `Until(gamma, delta) in A`,
+then `delta in B` or (`gamma in B` and `Until(gamma, delta) in B`).
+
+This captures: B is a valid continuation of A with respect to Until-obligations.
+At B, either the Until-eventuality is resolved (delta holds) or the guard
+continues (gamma holds and the Until persists).
+
+Under open guard semantics, this connects to:
+- BX5 (self_accum_until): phi U psi -> (phi ∧ (phi U psi)) U psi
+- BX10 (until_F): phi U psi -> F(psi)
+Note: BX9 (until_elim: phi U psi -> phi ∨ psi) has been REMOVED.
+-/
+def rRelation (A B : Set Formula) : Prop :=
+  ∀ (γ δ : Formula),
+    Formula.untl δ γ ∈ A →
+    δ ∈ B ∨ (γ ∈ B ∧ Formula.untl δ γ ∈ B)
+
+/--
+Symmetric r-relation for Since: `rRelationSince A B`.
+
+For all gamma, delta: if `Since(gamma, delta) in A`, then `delta in B`
+or (`gamma in B` and `Since(gamma, delta) in B`).
+-/
+def rRelationSince (A B : Set Formula) : Prop :=
+  ∀ (γ δ : Formula),
+    Formula.snce δ γ ∈ A →
+    δ ∈ B ∨ (γ ∈ B ∧ Formula.snce δ γ ∈ B)
+
+/-! ## Three-Argument r-Relation (Burgess 2.3, adapted)
+
+The three-argument r-relation r3(A, B, C) captures interval-endpoint compatibility:
+B is a valid interval set between left endpoint A and right endpoint C.
+
+The condition is: rRelation A B AND rRelationSince C B. That is, B propagates
+Until-obligations from A correctly AND Since-obligations from C correctly.
+This dual constraint is what makes the three-argument r-relation strictly stronger
+than the two-argument version and is essential for the omega-chain invariant:
+it ensures that g-values inserted between endpoints are compatible with BOTH sides.
+
+Under Burgess's construction, r3(A, B, C) means the interval (x,y) with
+f(x) = A, f(y) = C has interval set g(x,y) = B that correctly propagates
+temporal obligations in both directions.
+-/
+
+/--
+The **three-argument r-relation** `r3Relation A B C`: B is a valid interval set
+between endpoints A (left) and C (right).
+
+Combines forward propagation (rRelation A B) with backward propagation
+(rRelationSince C B): for all Until formulas in A, B either resolves or
+continues them; for all Since formulas in C, B either resolves or continues them.
+-/
+def r3Relation (A B C : Set Formula) : Prop :=
+  rRelation A B ∧ rRelationSince C B
+
+/--
+Mirror for the Since direction: `r3RelationSince A B C` where A is
+the right endpoint and C is the left endpoint.
+
+Combines backward propagation (rRelationSince A B) with forward propagation
+(rRelation C B).
+-/
+def r3RelationSince (A B C : Set Formula) : Prop :=
+  rRelationSince A B ∧ rRelation C B
+
+/-! ## R-Maximality -/
+
+/--
+**R-maximality**: `rMaximal A B` means B is a maximal DCS satisfying `rRelation A B`.
+
+B is R-maximal with respect to A if:
+1. B is deductively closed
+2. rRelation A B holds
+3. No proper DCS extension of B still satisfies rRelation A
+
+R-maximality ensures interval sets contain as many formulas as possible
+while maintaining consistency and the r-relation.
+-/
+def rMaximal (fc : FrameClass) (A B : Set Formula) : Prop :=
+  SetDeductivelyClosed fc B ∧
+  rRelation A B ∧
+  ∀ (C : Set Formula),
+    SetDeductivelyClosed fc C →
+    B ⊂ C →
+    ¬rRelation A C
+
+/--
+R-maximality for Since.
+-/
+def rMaximalSince (fc : FrameClass) (A B : Set Formula) : Prop :=
+  SetDeductivelyClosed fc B ∧
+  rRelationSince A B ∧
+  ∀ (C : Set Formula),
+    SetDeductivelyClosed fc C →
+    B ⊂ C →
+    ¬rRelationSince A C
+
+/--
+**Three-argument R-maximality**: `R3Maximal A B C` means B is a maximal DCS
+satisfying `r3Relation A B C`.
+
+B is R3-maximal with respect to endpoints A and C if:
+1. B is deductively closed
+2. r3Relation A B C holds (both rRelation A B and rRelationSince C B)
+3. No proper DCS extension of B satisfies r3Relation A - C
+-/
+def R3Maximal (fc : FrameClass) (A B C : Set Formula) : Prop :=
+  SetDeductivelyClosed fc B ∧
+  r3Relation A B C ∧
+  ∀ (D : Set Formula),
+    SetDeductivelyClosed fc D →
+    B ⊂ D →
+    ¬r3Relation A D C
+
+/--
+Three-argument R-maximality for Since direction.
+-/
+def R3MaximalSince (fc : FrameClass) (A B C : Set Formula) : Prop :=
+  SetDeductivelyClosed fc B ∧
+  r3RelationSince A B C ∧
+  ∀ (D : Set Formula),
+    SetDeductivelyClosed fc D →
+    B ⊂ D →
+    ¬r3RelationSince A D C
+
+/-! ## Burgess r-Relation (Content-Based)
+
+Burgess's r-relation is fundamentally different from the codebase's `rRelation`:
+
+- **Codebase rRelation(A, B)**: For all gamma U delta in A, either delta in B or
+  (gamma in B and gamma U delta in B). This is OBLIGATION PROPAGATION: Until
+  formulas from A propagate to B. MONOTONE in B.
+
+- **Burgess r(A, beta, C)**: For all gamma in C, untl(beta, gamma) in A.
+  This is CONTENT: beta is a guard such that any formula from C can serve as
+  the event in an Until formula in A. ANTI-MONOTONE in B (at set level).
+
+Neither implies the other in general.
+-/
+
+/--
+**Burgess r-relation for a single element**: `burgessR A beta C` holds when
+for all gamma in C, `untl(beta, gamma) in A`.
+-/
+def burgessR (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
+  ∀ γ ∈ C, Formula.untl γ β ∈ A
+
+/--
+**Burgess r-relation for a set**: `burgessRSet A B C` holds when
+for all beta in B, `burgessR A beta C`.
+-/
+def burgessRSet (A B C : Set Formula) : Prop :=
+  ∀ β ∈ B, burgessR A β C
+
+/--
+**Burgess r-relation for Since (single element)**: `burgessRSince A beta C` holds
+when for all gamma in C, `snce(beta, gamma) in A`.
+-/
+def burgessRSince (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
+  ∀ γ ∈ C, Formula.snce γ β ∈ A
+
+/--
+**Burgess r-relation for Since (set)**: `burgessRSetSince A B C` holds when
+for all beta in B, `burgessRSince A beta C`.
+-/
+def burgessRSetSince (A B C : Set Formula) : Prop :=
+  ∀ β ∈ B, burgessRSince A β C
+
+/--
+**Combined Burgess r-relation**: `burgessR3 A B C` holds when
+burgessRSet(A, B, C) AND burgessRSetSince(C, B, A).
+
+This captures both forward (Until from A through B to C) and backward
+(Since from C through B to A) relationships.
+-/
+def burgessR3 (A B C : Set Formula) : Prop :=
+  burgessRSet A B C ∧ burgessRSetSince C B A
+
+/--
+**BurgessR3Maximal**: B is a maximal CUD set satisfying `burgessR3(A, B, C)`.
+
+This is Burgess's Definition 2.5 (R-maximality) using the correct content-based
+r-relation. B is maximal among all `ClosedUnderDerivation` proper extensions.
+
+The maximality clause uses `ClosedUnderDerivation` (closed under derivation,
+possibly inconsistent), matching Burgess 1982 exactly. For ANY δ not in B,
+`DC(B ∪ {δ})` is `ClosedUnderDerivation` and strictly extends B, so
+`¬burgessR3(A, DC(B ∪ {δ}), C)`. This gives the neg-until witness
+`∃ β₀ ∈ B, ∃ γ₀ ∈ C, untl(β₀ ∧ δ, γ₀).neg ∈ A`
+(Burgess p.371: "else consider B' = consequences of B ∪ {δ}").
+
+The Zorn construction (`burgessR3Maximal_extension_exists`) works directly
+over CUD sets, giving CUD-maximality by construction. No `NoUnivBurgessR3`
+hypothesis is needed. The resulting B may or may not be consistent;
+at finite stages g-values can be Set.univ (inconsistent).
+-/
+def BurgessR3Maximal (fc : FrameClass) (A B C : Set Formula) : Prop :=
+  ClosedUnderDerivation fc B ∧
+  burgessR3 A B C ∧
+  ∀ D, ClosedUnderDerivation fc D → B ⊂ D → ¬burgessR3 A D C
+
+/-! ## Chronicle Structure -/
+
+/--
+A **Chronicle** is a triple `(f, g, dom)` representing a finite temporal
+model over the rationals, as defined in Burgess 1982 Section 2.
+
+The chronicle assigns:
+- An MCS `f(x)` to each rational time point x in the domain
+- A DCS `g(x,y)` to each pair of adjacent time points x < y in the domain,
+  representing formulas that hold throughout the interval (x,y)
+-/
+structure Chronicle where
+  /-- Point assignment: maps rational time points to sets of formulas -/
+  f : Rat → Set Formula
+  /-- Interval assignment: maps pairs (x,y) with x < y to sets of formulas -/
+  g : Rat → Rat → Set Formula
+  /-- Finite domain of time points -/
+  dom : Finset Rat
+
+/-! ## Chronicle Conditions -/
+
+/-- **C0**: Every point in the domain maps to an MCS. -/
+def Chronicle.c0 (fc : FrameClass) (χ : Chronicle) : Prop :=
+  ∀ x ∈ χ.dom, SetMaximalConsistent (fc := fc) (χ.f x)
+
+/-- **C1**: Every pair x < y in the domain maps to a CUD set
+(closed under derivation, possibly inconsistent). This matches Burgess 1982
+exactly: interval sets g(x,y) are DCS = deductively closed, which does NOT
+require consistency. At finite stages, g-values can be Set.univ (inconsistent)
+when the interval is vacuous (adjacent points with no intermediate witnesses). -/
+def Chronicle.c1 (fc : FrameClass) (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → ClosedUnderDerivation fc (χ.g x y)
+
+/-- **C2**: The three-argument r-relation holds for all pairs x < y in the domain.
+For x < y in dom, r3Relation(f(x), g(x,y), f(y)) holds. -/
+def Chronicle.c2 (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → r3Relation (χ.f x) (χ.g x y) (χ.f y)
+
+/-- **C2'**: BurgessR3Maximal for adjacent pairs (Burgess Definition 2.5).
+
+At finite stages, g(x,y) must be a maximal DCS satisfying burgessR3(f(x), g(x,y), f(y))
+for adjacent pairs (x,y). This is the CORRECT formulation matching Burgess 1982's
+R-maximality requirement in C2'. Maximality ensures the interval sets contain as many
+formulas as possible while maintaining the r-relation, which is needed for:
+1. The C4 hard case (gamma not in g implies gamma.neg in an MCS extending g)
+2. Xu's Lemma 3.2.1 (closure of B under Until/Since formation)
+3. The truth lemma (g-values faithfully represent interval truth)
+
+At the limit, the domain is dense (no adjacent pairs), so c2' is vacuously true.
+The `burgessR3Maximal_exists_from_seed` theorem in RRelation.lean produces maximal
+DCS from seed elements. -/
+def Chronicle.c2' (fc : FrameClass) (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, Adjacent χ.dom x y →
+    BurgessR3Maximal fc (χ.f x) (χ.g x y) (χ.f y)
+
+/-- **C3**: Three-way interval decomposition (Burgess 1982, p. 372).
+For all x < y < z in dom, g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
+
+This is the CORRECT C3 from Burgess. The three-way intersection including f(y)
+is essential: it gives g(x,z) ⊆ f(y) immediately, which is the key property
+for the truth lemma. The earlier two-way version (omitting f(y)) was a
+transcription error that blocked 21 research rounds. -/
+def Chronicle.c3 (χ : Chronicle) : Prop :=
+  ∀ x y z : Rat, x ∈ χ.dom → y ∈ χ.dom → z ∈ χ.dom →
+    x < y → y < z → χ.g x z = χ.g x y ∩ χ.f y ∩ χ.g y z
+
+/-- **C4**: Backward counterexample condition for Until (Burgess 1982, C4a).
+For all x, y in dom with x < y: if `¬(γ U δ) ∈ f(x)` and `δ ∈ f(y)`,
+then there exists z in dom with `x < z < y` and `¬γ ∈ f(z)`.
+
+In `untl γ δ`: γ is the GUARD, δ is the EVENT.
+Burgess C4a checks the EVENT (δ) at f(y) and negates the GUARD (γ) at f(z).
+
+Intuition: If Until(γ,δ) is false at x but the eventuality δ holds at some
+future point y, then the guard γ must have failed somewhere between x and y --
+otherwise γ would hold throughout [x,y) and δ at y, satisfying Until.
+
+Note: Burgess C4a applies to ALL pairs x < y in the domain, not just adjacent
+pairs. The adjacency restriction was a transcription error that made C4
+vacuously true at the dense limit (where no adjacent pairs exist). -/
+def Chronicle.c4 (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y →
+    ∀ (γ δ : Formula),
+      (Formula.untl δ γ).neg ∈ χ.f x →
+      δ ∈ χ.f y →
+      ∃ z ∈ χ.dom, x < z ∧ z < y ∧ γ.neg ∈ χ.f z
+
+/-- **C4'**: Backward counterexample condition for Since (mirror of C4, Burgess C4b).
+For all x, y in dom with y < x: if `¬(γ S δ) ∈ f(x)` and `δ ∈ f(y)`,
+then there exists z in dom with `y < z < x` and `¬γ ∈ f(z)`.
+
+In `snce γ δ`: γ is the GUARD, δ is the EVENT.
+Checks EVENT (δ) at f(y), negates GUARD (γ) at f(z).
+
+Note: Like C4, this applies to ALL pairs y < x, not just adjacent pairs. -/
+def Chronicle.c4' (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → y < x →
+    ∀ (γ δ : Formula),
+      (Formula.snce δ γ).neg ∈ χ.f x →
+      δ ∈ χ.f y →
+      ∃ z ∈ χ.dom, y < z ∧ z < x ∧ γ.neg ∈ χ.f z
+
+/-- **C5**: Forward Until witness condition.
+For x in dom: if `gamma U delta in f(x)`, then there exists y in dom
+with x < y such that delta in f(y) and the guard gamma holds at all
+intermediate domain points. -/
+def Chronicle.c5 (χ : Chronicle) : Prop :=
+  ∀ x ∈ χ.dom,
+    ∀ (γ δ : Formula),
+      Formula.untl δ γ ∈ χ.f x →
+      ∃ y ∈ χ.dom, x < y ∧ δ ∈ χ.f y ∧
+        ∀ z ∈ χ.dom, x < z → z < y →
+          γ ∈ χ.f z ∧ Formula.untl δ γ ∈ χ.f z
+
+/-- **C5'**: Backward Since witness condition (mirror of C5). -/
+def Chronicle.c5' (χ : Chronicle) : Prop :=
+  ∀ x ∈ χ.dom,
+    ∀ (γ δ : Formula),
+      Formula.snce δ γ ∈ χ.f x →
+      ∃ y ∈ χ.dom, y < x ∧ δ ∈ χ.f y ∧
+        ∀ z ∈ χ.dom, y < z → z < x →
+          γ ∈ χ.f z ∧ Formula.snce δ γ ∈ χ.f z
+
+/--
+A **valid chronicle** satisfies all the core chronicle conditions.
+This is the target state after the omega-chain construction in Phase 4.
+-/
+structure ValidChronicle (fc : FrameClass) extends Chronicle where
+  /-- C0: Points map to MCS -/
+  hc0 : toChronicle.c0 fc
+  /-- C1: All pairs map to DCS -/
+  hc1 : toChronicle.c1 fc
+  /-- C2: Three-argument r-relation for all pairs -/
+  hc2 : toChronicle.c2
+  /-- C2': R3-maximality for adjacent pairs -/
+  hc2' : toChronicle.c2' fc
+  /-- C3: Three-way interval decomposition -/
+  hc3 : toChronicle.c3
+  /-- C4: Backward counterexample for Until -/
+  hc4 : toChronicle.c4
+  /-- C4': Backward counterexample for Since -/
+  hc4' : toChronicle.c4'
+  /-- C5: Forward Until witnesses -/
+  hc5 : toChronicle.c5
+  /-- C5': Backward Since witnesses -/
+  hc5' : toChronicle.c5'
+
+/-! ## C3 Consequences -/
+
+/--
+Key consequence of three-way C3: g(x,z) ⊆ f(y) for x < y < z in dom.
+Since g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z), the intersection is contained in f(y).
+This is the critical property for the truth lemma.
+-/
+theorem c3_interval_subset_point (χ : Chronicle) (h_c3 : χ.c3)
+    {x y z : Rat} (hx : x ∈ χ.dom) (hy : y ∈ χ.dom) (hz : z ∈ χ.dom)
+    (hxy : x < y) (hyz : y < z) :
+    χ.g x z ⊆ χ.f y := by
+  have h_eq := h_c3 x y z hx hy hz hxy hyz
+  intro φ hφ
+  rw [h_eq] at hφ
+  exact hφ.1.2
+
+/--
+C3 implies g(x,z) ⊆ g(x,y) for x < y < z in dom.
+-/
+theorem c3_interval_subset_left (χ : Chronicle) (h_c3 : χ.c3)
+    {x y z : Rat} (hx : x ∈ χ.dom) (hy : y ∈ χ.dom) (hz : z ∈ χ.dom)
+    (hxy : x < y) (hyz : y < z) :
+    χ.g x z ⊆ χ.g x y := by
+  have h_eq := h_c3 x y z hx hy hz hxy hyz
+  intro φ hφ
+  rw [h_eq] at hφ
+  exact hφ.1.1
+
+/--
+C3 implies g(x,z) ⊆ g(y,z) for x < y < z in dom.
+-/
+theorem c3_interval_subset_right (χ : Chronicle) (h_c3 : χ.c3)
+    {x y z : Rat} (hx : x ∈ χ.dom) (hy : y ∈ χ.dom) (hz : z ∈ χ.dom)
+    (hxy : x < y) (hyz : y < z) :
+    χ.g x z ⊆ χ.g y z := by
+  have h_eq := h_c3 x y z hx hy hz hxy hyz
+  intro φ hφ
+  rw [h_eq] at hφ
+  exact hφ.2
+
+/-! ## ChronicleInvariant Bundle -/
+
+/--
+Bundle of chronicle invariants maintained at every finite stage of the
+omega-chain construction. This replaces the previous approach of tracking
+only C0.
+
+The key insight (Burgess 1982): maintaining C0, C1, C2' (adjacent), and C3
+at every finite stage enables the limit to satisfy C4/C5 (which are ensured
+by counterexample elimination), and the truth lemma follows from C3 alone
+(no need for g_content_chain_property).
+
+Note: C2 (r3Relation for ALL pairs) is NOT maintained at finite stages.
+It is derivable at the limit from C2' + C3 + density via Lemma 2.5
+absorption (see `burgessR3_absorption` in RRelation.lean). The finite-stage
+invariant only needs C2' because non-adjacent g values are defined by C3
+and the r-relation for non-adjacent pairs follows from Lemma 2.5.
+-/
+structure ChronicleInvariant (fc : FrameClass) (χ : Chronicle) : Prop where
+  /-- C0: Every domain point maps to an MCS -/
+  hc0 : χ.c0 fc
+  /-- C1: Every pair x < y maps to a DCS -/
+  hc1 : χ.c1 fc
+  /-- C2': BurgessR3Maximal for adjacent pairs (Burgess Definition 2.5).
+  Uses the content-based Burgess r-relation (burgessR3) with maximality.
+  C2 (r3Relation for ALL pairs) is derivable at the limit via Lemma 2.5 absorption.
+  The finite-stage invariant only needs C2' for adjacent pairs. -/
+  hc2' : χ.c2' fc
+  /-- C3: Three-way interval decomposition -/
+  hc3 : χ.c3
+
+/-! ## Basic Properties -/
+
+/-- The r-relation is monotone in the second argument: if B subset C and r(A, C),
+then r(A, B) does NOT necessarily hold. But r-relation IS monotone contravariantly:
+if B subset C and r(A, B), then for gamma U delta in A, if delta in B then delta in C. -/
+theorem rRelation_subset {A B C : Set Formula}
+    (h_r : rRelation A B) (h_sub : B ⊆ C) : rRelation A C := by
+  intro γ δ h_until
+  rcases h_r γ δ h_until with h_delta | ⟨h_gamma, h_u⟩
+  · exact Or.inl (h_sub h_delta)
+  · exact Or.inr ⟨h_sub h_gamma, h_sub h_u⟩
+
+/-- Similarly for Since. -/
+theorem rRelationSince_subset {A B C : Set Formula}
+    (h_r : rRelationSince A B) (h_sub : B ⊆ C) : rRelationSince A C := by
+  intro γ δ h_since
+  rcases h_r γ δ h_since with h_delta | ⟨h_gamma, h_s⟩
+  · exact Or.inl (h_sub h_delta)
+  · exact Or.inr ⟨h_sub h_gamma, h_sub h_s⟩
+
+/-! ## Three-Argument r-Relation Properties -/
+
+/-- Bridge lemma: r3Relation implies rRelation (weakening, drops the C constraint). -/
+theorem r3Relation_implies_rRelation {A B C : Set Formula}
+    (h : r3Relation A B C) : rRelation A B := h.1
+
+/-- Bridge lemma: r3Relation implies rRelationSince from C. -/
+theorem r3Relation_implies_rRelationSince {A B C : Set Formula}
+    (h : r3Relation A B C) : rRelationSince C B := h.2
+
+/-- r3Relation is monotone in B (superset direction, covariant). -/
+theorem r3Relation_subset {A B B' C : Set Formula}
+    (h : r3Relation A B C) (h_sub : B ⊆ B') : r3Relation A B' C :=
+  ⟨rRelation_subset h.1 h_sub, rRelationSince_subset h.2 h_sub⟩
+
+/-- R3Maximal implies rMaximal (weakening, R3-maximal sets are at least R-maximal
+    within the class of DCS satisfying the three-argument constraint). -/
+theorem R3Maximal_dcs {fc : FrameClass} {A B C : Set Formula}
+    (h : R3Maximal fc A B C) :
+    SetDeductivelyClosed fc B := h.1
+
+/-- R3Maximal implies r3Relation. -/
+theorem R3Maximal_r3 {fc : FrameClass} {A B C : Set Formula}
+    (h : R3Maximal fc A B C) :
+    r3Relation A B C := h.2.1
+
+/-- R3Maximal implies rRelation (via bridge). -/
+theorem R3Maximal_rRelation {fc : FrameClass} {A B C : Set Formula}
+    (h : R3Maximal fc A B C) :
+    rRelation A B := h.2.1.1
+
+/-! ## DCS Intersection Properties -/
+
+/--
+The intersection of two DCS is deductively closed (when consistent).
+If S₁ and S₂ are both deductively closed and their intersection is consistent,
+then S₁ ∩ S₂ is deductively closed.
+
+Proof: If all premises of a derivation are in S₁ ∩ S₂, they are in both S₁ and S₂.
+Since both are closed under derivation, the conclusion is in both, hence in the
+intersection.
+-/
+theorem dcs_inter_dcs {fc : FrameClass} {S₁ S₂ : Set Formula}
+    (h₁ : SetDeductivelyClosed fc S₁) (h₂ : SetDeductivelyClosed fc S₂)
+    (h_cons : SetConsistent (fc := fc) (S₁ ∩ S₂)) :
+    SetDeductivelyClosed fc (S₁ ∩ S₂) := by
+  constructor
+  · exact h_cons
+  · intro L φ hL hd
+    constructor
+    · exact h₁.2 L φ (fun ψ hψ => (hL ψ hψ).1) hd
+    · exact h₂.2 L φ (fun ψ hψ => (hL ψ hψ).2) hd
+
+/--
+The intersection of a DCS with an MCS is deductively closed (when consistent).
+-/
+theorem dcs_inter_mcs {fc : FrameClass} {S₁ S₂ : Set Formula}
+    (h₁ : SetDeductivelyClosed fc S₁) (h₂ : SetMaximalConsistent (fc := fc) S₂)
+    (h_cons : SetConsistent (fc := fc) (S₁ ∩ S₂)) :
+    SetDeductivelyClosed fc (S₁ ∩ S₂) :=
+  dcs_inter_dcs h₁ (mcs_is_dcs h₂) h_cons
+
+/--
+A subset of a consistent set is consistent (for derivation-based consistency).
+If S ⊆ T and T is consistent, then S is consistent.
+-/
+theorem SetConsistent_of_subset {fc : FrameClass} {S T : Set Formula}
+    (h_sub : S ⊆ T) (h_cons : SetConsistent (fc := fc) T) : SetConsistent (fc := fc) S := by
+  intro L hL hd
+  exact h_cons L (fun ψ hψ => h_sub (hL ψ hψ)) hd
+
+/--
+The three-way intersection g(w,x) ∩ f(x) ∩ B is consistent when it is
+a subset of a consistent set (e.g., B).
+-/
+theorem three_way_inter_consistent {fc : FrameClass} {S₁ S₂ S₃ : Set Formula}
+    (h₃_cons : SetConsistent (fc := fc) S₃) :
+    SetConsistent (fc := fc) (S₁ ∩ S₂ ∩ S₃) :=
+  SetConsistent_of_subset (fun _ h => h.2) h₃_cons
+
+/--
+The three-way intersection of two DCS and an MCS is deductively closed.
+Used for C1 verification when defining g values by C3.
+-/
+theorem dcs_inter_mcs_inter_dcs {fc : FrameClass} {S₁ S₂ S₃ : Set Formula}
+    (h₁ : SetDeductivelyClosed fc S₁) (h₂ : SetMaximalConsistent (fc := fc) S₂)
+    (h₃ : SetDeductivelyClosed fc S₃)
+    (h_cons : SetConsistent (fc := fc) (S₁ ∩ S₂ ∩ S₃)) :
+    SetDeductivelyClosed fc (S₁ ∩ S₂ ∩ S₃) := by
+  constructor
+  · exact h_cons
+  · intro L φ hL hd
+    refine ⟨⟨h₁.2 L φ (fun ψ hψ => (hL ψ hψ).1.1) hd,
+            (mcs_is_dcs h₂).2 L φ (fun ψ hψ => (hL ψ hψ).1.2) hd⟩,
+            h₃.2 L φ (fun ψ hψ => (hL ψ hψ).2) hd⟩
+
+end Bimodal.Metalogic.BXCanonical.Chronicle
