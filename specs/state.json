@@ -4,8 +4,23 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 409,
+  "next_project_number": 410,
   "active_projects": [
+    {
+      "project_number": 409,
+      "project_name": "reconcile_latex_metalogic_docs_with_live_tree",
+      "status": "not_started",
+      "task_type": "general",
+      "topic": "documentation",
+      "effort": "medium",
+      "created": "2026-07-27",
+      "last_updated": "2026-07-27",
+      "dependencies": [],
+      "file_scope": [
+        "latex/subfiles/"
+      ],
+      "description": "Systematically reconcile the LaTeX reference (latex/subfiles/, especially 04-Metalogic.tex and 06-Notes.tex) with the live FormalSystem/ tree and the settled completeness terminology. The TERMINOLOGY pass already landed (2026-07-27): \"strong completeness\" is reserved for infinite premise sets, the finite-context form is named consequence completeness, and 04-Metalogic.tex now carries a \"Strong Completeness and Compactness\" subsection with the per-class split (Base/Dense open; Discrete/Dedekind provably non-compact) — see specs/ROADMAP.md (\"Completeness programme\" block) and the FormalSystem/Metalogic/StrongCompleteness.lean module docstring for the authoritative statements. What remains, and what this task owns, is ARCHITECTURE/IDENTIFIER fidelity: the chapter still largely describes the retired Metalogic_v2 (Boneyard) architecture.\n\nSCOPE:\n(1) Identifier audit: check every \\texttt{...} Lean identifier in latex/subfiles/ against the live tree (grep, excluding Boneyard/). Known-stale already: semantic_weak_completeness, main_provable_iff_valid(_v2), representation_theorem, strong_representation_theorem, deduction_theorem (live names: deductionTheorem / Derivable.deduction, Metalogic/Core/DeductionTheorem.lean), truth_lemma path (cited as Metalogic/Representation/TruthLemma.lean, which does not exist), semantic_task_rel_compositionality, finite_model_property_constructive, semantic_truth_lemma_v2, IndexedMCSFamily, canonical_model. The \"Implementation Status\" subsection describes Metalogic_v2 sorries and module layout (Core/, Soundness/, Representation/, Completeness/, Applications/, FMP.lean) that no longer exist.\n(2) Restate the completeness-proof narrative around the live architecture: per-class weak termini (completeness at Metalogic/BXCanonical/Completeness.lean:196, completeness_dense :255, completeness_discrete :296 — the latter two sorryAx-free with axioms [propext, Classical.choice, Quot.sound]; completeness_dedekind in flight via the limit-MCS route), consequence completeness (StrongCompleteness.lean), and the chronicle/parametric canonical machinery actually used (Metalogic/Core, BXCanonical + Chronicle, WeakCanonical/Kamp, Algebraic parametric truth lemma, Bundle FMCS/BFMCS) instead of the retired quotient/semantic-canonical story where the two diverge.\n(3) Update the two tikz diagrams (theorem dependency structure; directory structure) and the status tables to the live module layout and live theorem names; remove or historicize the Metalogic_v2 sorry inventory.\n(4) Verify compilation: pdflatex -interaction=nonstopmode with TEXINPUTS=../assets: from latex/subfiles/ (formatting.sty lives in latex/assets/); both 04-Metalogic.tex and 06-Notes.tex currently compile standalone and must still compile after the rewrite.\n\nCOORDINATION: task 362 leg D owns stating the genuine strong-completeness results (and any further restatement) once the per-class consequence/strong results land; this task owns bringing the existing chapter to identifier/architecture fidelity now. Do not duplicate. Per .claude/rules/no-task-references-in-deliverables.md, do not cite task numbers inside the .tex files — reference module names and theorem identifiers instead."
+    },
     {
       "project_number": 298,
       "project_name": "fix_c7_labeling_bug_and_regenerate_dataset",
