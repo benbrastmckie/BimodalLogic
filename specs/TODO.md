@@ -1,5 +1,5 @@
 ---
-next_project_number: 408
+next_project_number: 409
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 408
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,361,390 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,361,390,408 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296 | 193,231,298,361 | formula-refactor, dataset-enhancement, strong_completeness |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -22,6 +22,7 @@ next_project_number: 408
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
+408 [NOT STARTED] — Identify the most faithful and mathematically correct route to ST
 
 ### Formula Refactor
 
@@ -60,6 +61,40 @@ next_project_number: 408
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
+
+### 408. Faithful route to strong completeness for the dedekind extension
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: Identify the most faithful and mathematically correct route to STRONG completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics), with weak completeness obtained as a corollary rather than as the target.
+
+TARGET IS SETTLED, NOT AN OPEN QUESTION: strong completeness is the goal. Weak completeness is to fall out as a corollary. Do not produce a plan whose terminus is weak completeness.
+
+WHY THIS IS NOT MERELY "EXECUTE THE 390 PLAN": the route proposed in specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md is Reynolds' transfer argument, and Reynolds 1992 Theorem 7 delivers explicitly WEAK completeness ("sound and weakly complete", printed p.189). That report names this itself and states that if the target is strong completeness "this route does not reach it and the verdict changes." The verdict has now changed. The central question of this task is therefore whether the Reynolds route extends to strong completeness, or whether a different construction is the faithful one.
+
+DESIGN CONSTRAINT FROM THE USER: avoid needless bridges. Prefer the construction that is faithful to the mathematics over one that accumulates intermediate scaffolding, adapter lemmas, or bespoke bridge predicates. If a proposed step exists only to connect two artifacts the tree happens to already have, that is evidence the route is wrong, not evidence a bridge is needed. This applies specifically to the phase-5 gap-freeness bridge (Gap-free <-> conditionally complete for the dense case), which was NOT authorized as standalone work and should only appear if the faithful route genuinely requires it.
+
+CURRENT STATE (verified 2026-07-27, do not re-derive from stale notes):
+- Soundness is COMPLETE. FrameClass.Dedekind exists (ProofSystem/Axioms.lean:453) with the Base < Dense < Dedekind chain; the three Reynolds axioms prior_U_gap/prior_S_gap/sep exist (:377,:387,:398) with minFrameClass at :524-526; ValidDedekind and ValidDedekindDense exist (Semantics/Validity.lean:231,:255); all three axioms and the sep temporal dual are proved valid; soundness_dedekind is assembled at Metalogic/Soundness.lean:1910. Soundness.lean is at ZERO sorries.
+- Completeness is NOT STARTED. `completeness_dedekind` does not exist anywhere in the tree. completeness_dense and completeness_discrete exist and are sorryAx-free (Metalogic/BXCanonical/Completeness.lean:255,:296).
+- The only live sorry outside Boneyard is Metalogic/WeakCanonical/Transfer.lean:1242, on the DISCRETE countermodel branch (a Base-MCS -> Discrete-MCS gap). It blocks general `completeness` and is not on the Dedekind route.
+
+THREE KNOWN OBSTRUCTIONS the research must address explicitly:
+1. The input model does not exist. Reynolds' step 1 needs a Q-flowed model validating Prior-U/Prior-S/Sep. The tree's countermodel_dense_enriched (Metalogic/BXCanonical/Completeness.lean:133) produces a Q model for FrameClass.Dense (density + dense_indicator) -- a different axiom set.
+2. TRAP -- the Base-MCS problem applies verbatim. Completeness.lean:178-193 documents why general `completeness` carries sorryAx: a Base-MCS is not automatically Discrete-consistent. A Dedekind variant hits the structurally identical problem, since a Base-MCS need not validate Prior-U/Prior-S/Sep. Any countermodel must be built from an MCS of its own class. A proof that reuses the dense pipeline's MCS will look complete and be unsound at the seam.
+3. The transfer engine is Z-specialized. Metalogic/WeakCanonical/IntegerModel/ has the right primitives (good, VeryGood, ContempEquiv, k_equiv_of_iso, KEquiv, orderedSumPt) but its engine is subinterval_finite_of_succ_archimedean -- a FINITENESS argument with no dense analogue.
+
+DO NOT ASSUME THE BIMODAL GRAFT IS FREE. The recently-completed sep_valid work found the bimodal graft trivial for SOUNDNESS, because Sep's operators are all temporal evaluated at a fixed history, so the statement reduced to pure order theory. That result does NOT transfer to completeness, where the construction must PRODUCE histories rather than evaluate at one. Research task 390 flagged grafting a monadic-FO transfer argument onto TaskFrame/WorldHistory/Omega/ShiftClosed semantics as genuinely new work not present in any source read.
+
+COORDINATE WITH the existing strong-completeness axis: tasks 361 (strong_completeness_architecture_and_weak_terminus_gap_analysis) and 362 (main_strong_completeness_finite_context_all_frame_classes). If the faithful Dedekind route is a special case of, or is subsumed by, the architecture those tasks establish, say so plainly rather than proposing a parallel construction.
+
+LITERATURE: run with --lit. Primary sources already local: /home/benjamin/Projects/Literature/sources/reynolds_1992/ (all sections; sec04 is the separability section). GHR 1994 chapter 10 treats Dedekind completeness as a HYPOTHESIS rather than deriving it, per 390's Finding 3. Doets' theorem is reached via Reynolds section 8 (printed pp.184-188, lemmas 11-13). Read verbatim; do not reconstruct statements from memory.
+
+DONE WHEN: a research report that (a) gives an explicit, argued verdict on whether strong completeness for FrameClass.Dedekind is reachable and by which construction; (b) names the faithful route and justifies it against at least one rejected alternative; (c) states honestly if the answer is that it is not currently reachable, and what would have to change; (d) identifies which existing tree assets are genuinely reused versus which would be needless bridges; (e) does NOT propose a phase decomposition whose terminus is weak completeness.
+
+---
 
 ### 390. Dedekind carrier construction research
 - **Effort**: large
