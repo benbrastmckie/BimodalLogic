@@ -409,23 +409,43 @@ already in `PRECOMPOSED` — proving these are gap-window/whitespace tolerance f
 
 ---
 
-### Phase 4: Compound-base handling for `|=` [NOT STARTED]
+### Phase 4: Compound-base handling for `|=` [COMPLETED]
 
 **Goal**: Model the `|=` (models/satisfies turnstile) compound base, which `find_base` cannot
 represent because it only ever returns a single character.
 
 **Tasks**:
-- [ ] Confirm the mechanism on the 12 `base_char: "\|"` entries: PyMuPDF extracts `|` `=` as two
+- [x] Confirm the mechanism on the 12 `base_char: "\|"` entries: PyMuPDF extracts `|` `=` as two
       characters from the PDF while the corresponding markdown span contains no literal `|` at all.
-- [ ] Check whether the 4 letter-base entries (`T` 2, `L` 1, `C` 1) are the same family —
+      *(completed with a NEGATIVE result — see Deviations. The compound-base hypothesis does NOT
+      hold for any of the 12: every one is a wrong-location anchor match, not a case where the
+      correct location's markdown lacks a literal `|`. A debug harness reproducing
+      `classify_occurrence` for all 12 showed each matched "gap" is unrelated prose containing no
+      `|` at all, at a location structurally unrelated to the real occurrence. Spot-checking one
+      case (baier idx 452719, `"Provide a counterexample if TS ̸|= Psafe."`) found the TRUE
+      location DOES exist in the correct part file (part03.md) WITH a literal `|` already present
+      (`"...counterexample if TS \x0f|= Psaf e .\n\n\nExercise 4.7."`, control-char corrupted — a
+      normal, repairable `control_char` case) — but the anchor search missed it because "Psafe"
+      is kerned into two tokens "Psaf e" in that markdown, breaking the exact-literal word-anchor
+      match and causing the search to land on a coincidental unrelated span elsewhere with the
+      same expected length instead.)*
+- [x] Check whether the 4 letter-base entries (`T` 2, `L` 1, `C` 1) are the same family —
       `find_base` grabbing an adjacent letter from `TS ̸|= Psafe`-shaped text. Handle them here if
-      so; route them to Phase 7 individual justification if not.
+      so; route them to Phase 7 individual justification if not. *(completed: NOT the same family.
+      All 4 are in fine_2010_some-puzzles-of-ground at adjacent PDF offsets (41004-41018) inside a
+      dense truth-table cell (`"̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\nExtremist"`) where `find_base`
+      correctly identifies each of L/T/C as its own genuine single-letter base — there is no `|=`
+      or any compound relation nearby. Routed to Phase 7 per the plan's own fallback instruction.)*
 - [ ] Add a compound-base code path: when `find_base`'s single character is part of a recognized
       multi-character relation, search markdown for the *pair* (and its precomposed/negated
       renderings, e.g. `⊨`/`⊭`) rather than the lone character. Keep the recognized-compound list
-      to `|=` only unless implementation triage surfaces further evidence.
+      to `|=` only unless implementation triage surfaces further evidence. *(deviation: NOT
+      implemented — see Deviations. No confirmed real occurrence needs this code path; writing it
+      against zero evidence would violate the plan's own "narrowly evidence-driven" constraint.)*
 - [ ] Add `--self-test` fixtures for the compound path, including the `⊨`/`⊭` markdown rendering.
-- [ ] `--dry-run`, review diff, then `--write` with post-write verification.
+      *(deviation: not applicable — no code path was added to test.)*
+- [ ] `--dry-run`, review diff, then `--write` with post-write verification. *(deviation: no write
+      — nothing was changed in this phase.)*
 
 **Timing**: 2 hours
 
@@ -437,9 +457,34 @@ represent because it only ever returns a single character.
 - `~/Projects/Literature/sources/**/*.md`
 
 **Verification**:
-- Fixtures pass; the compound list contains only evidence-backed entries.
+- Fixtures pass; the compound list contains only evidence-backed entries. *(N/A — no fixtures
+  added; zero evidence-backed entries exist for a compound-base list.)*
 - Re-triage shows `unrecognized_gap` at or near 0, with any remainder individually characterized.
-- Post-write verification passes; second run is a no-op.
+  *(confirmed: `unrecognized_gap` is unchanged at 50 — Phase 4 made no corpus change — but all 16
+  target entries ARE individually characterized below, each pointing to the phase that actually
+  owns its fix.)*
+- Post-write verification passes; second run is a no-op. *(N/A — no write occurred.)*
+
+**Deviations**:
+- **The plan's `|=` compound-base premise does not hold for any of the 16 target entries** (12
+  `|` + 4 letter-base). Two distinct root causes were found instead, neither of which is a
+  compound-base representation defect:
+  - **10 of the 12 `|` entries are baier_katoen_2008** — this document is the dominant subject of
+    Phase 5/6's part-file anchor-scoping fix. At least one spot-checked case (idx 452719) traces to
+    a markdown kerning artifact (a landmark word split by a spurious space, e.g. "Psafe" ->
+    "Psaf e") that breaks the exact-literal word-anchor match rather than anything about `|`/`=`
+    specifically — the correct location has an ordinary, already-repairable `control_char`
+    occurrence. Re-triage after Phase 5/6 lands (which restructures how baier's anchor search
+    works) is the correct next check for these 10, not a compound-base code path.
+  - **The remaining 2 `|` entries (goldblatt_2003, venema_1997) and all 4 letter-base entries
+    (fine_2010_some-puzzles-of-ground) are single-file wrong-location anchor matches** unrelated to
+    baier's multi-file structure — routed to Phase 7's long-tail re-triage alongside Phase 3's 7
+    analogous single-file false positives.
+  - This is a legitimate, evidence-driven negative result for Phase 4's stated goal, not a
+    shortfall: the plan's own Residual Accounting table already flags root-cause rows as
+    overlapping and subject to revision as later phases land ("Treat the table as the partition of
+    causes, not a fixed budget"). Writing speculative compound-base-matching code with zero
+    confirmed real cases to validate it against would itself be the higher-risk choice.
 
 ---
 
