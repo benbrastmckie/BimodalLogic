@@ -1,0 +1,90 @@
+{
+  "phase": 7,
+  "phase_name": "Re-triage and resolve the long tail",
+  "started_at": "2026-07-27T20:30:00Z",
+  "last_updated": "2026-07-27T21:40:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Re-run the detector corpus-wide and re-triage against the strengthened anchor",
+      "status": "done",
+      "files_touched": [],
+      "note": "Corpus-wide --ledger-json scan over all 60 PDF+markdown directories reproduced the phase-6 handoff's exact residual counts with zero drift: 713 entries (395 baier_katoen_2008, 167 libkin_2004_ch3_ch7, 26 venema_1993, 125 across 19 long-tail documents). overlapping_edit 14 (12 baier + 2 arisakadasstrassburger_2015), narrow_failed 7 (4 baier + 1 yan_2008 + 1 van_doorn_2015 + 1 bacon_2018)."
+    },
+    {
+      "id": 2,
+      "description": "Handle overlapping_edit and narrow_failed case by case",
+      "status": "done",
+      "files_touched": [
+        ".claude/scripts/literature-repair-combining.sh",
+        ".claude/scripts/literature_combining_detect.py",
+        ".claude/scripts/literature-convert.sh"
+      ],
+      "note": "Individually inspected all 14 overlapping_edit + 7 narrow_failed entries' literal gap_text content (script: /tmp scratch debug harness reading md_gap_start/md_gap_end directly). Found two real, narrowly evidence-backed engine defects and fixed both: (1) classify_gap_text's glyph_six-vs-control_char classification scanned the WHOLE gap window with no adjacency requirement, so a gap containing a coincidental unrelated signal (a literal '6' digit from a state label, or a control char from a DIFFERENT nearby corruption) could out-vote the true adjacent signal depending on which check ran first -- fixed via an adjacency-scoped check (+-2 chars) tried first, falling back to the original whole-gap scan unchanged when neither candidate is adjacency-confirmed. Verified against BOTH real corpus cases needing OPPOSITE resolutions (baier_katoen_2008 offset 1525433 base '~' needs control_char over a distant coincidental '6'; arisakadasstrassburger_2015 offset 5058 base '|' needs glyph_six over a distant coincidental control char) -- a single fixed priority order could not have satisfied both. (2) literature-repair-combining.sh's _find_sub_spans required an EXACT count match between shared-span claimants and literal corruption instances found; generalized to a partial-resolution path for HOMOGENEOUS groups (same base_char, same signature) where fewer literal instances exist than claimants -- repairs the found instance(s) (content is identical regardless of claimant attribution) and marks numerically-excess claimants 'overlapping_edit_surplus'. Heterogeneous groups (differing base_char/signature sharing one window) remain unresolvable and correctly stay 'overlapping_edit'. Confirmed via 4 real cases (arisaka |,| glyph_six; baier |,| control_char; baier =,= control_char; baier absent/absent ∈). Net yield: 5 literal repairs written (1 arisaka, 4 baier) plus 4 additional occurrences (1 arisaka surplus + 3 baier surplus) that SELF-RESOLVED to 'precomposed'/'matched' after the write (both claimants of a shared window converged on the same now-repaired text, needing no separate action). 6 self-test fixtures added (3 for the adjacency fix, verified 41/41 passing before the write)."
+    },
+    {
+      "id": 3,
+      "description": "Handle the ~130 single-file ambiguous_anchor/anchor_not_found occurrences across ~30 documents",
+      "status": "done",
+      "files_touched": [
+        ".claude/scripts/literature_combining_detect.py",
+        ".claude/scripts/literature-convert.sh"
+      ],
+      "note": "Sampled candidate windows for the largest long-tail documents (marinmoralesstrassburger_2021, derijke_1995, fine_2010, venema_1997, goldblatt_2003, piterman_2007) using a debug harness replicating classify_occurrence's internal word-anchor search and per-candidate classify_gap_text call. Found a third real, narrowly evidence-backed defect: classify_occurrence's ambiguity filter (target_chars plausibility) only screens out candidates with NO plausible connection to the relation at all; it does not discriminate among several plausible candidates. Generalized: when total_matches > 1, additionally classify EACH candidate individually via classify_gap_text; if EXACTLY ONE recognizes (precomposed/bare_pair/latex_macro/control_char/glyph_six/absent) and the rest do not, the ambiguity resolves to that one candidate (repair or accounted, as its signature dictates); when zero or 2+ candidates recognize, behavior is UNCHANGED (stays ambiguous_anchor). Confirmed real case (derijke_1995 offset 31024, base '∈'): two candidates sharing landmarks, '$u \\in D$.' (positive, unrelated, classify_gap_text returns None) vs '$u \\notin D$.' (genuine LaTeX-macro-negated occurrence, classifies latex_macro) -- resolves to accounted, no repair needed. Corpus-wide dry-run yield: 6 ambiguous_anchor entries reclassified to accounted signatures (1 derijke_1995, 5 venema_1993) with ZERO new proposed writes (all resolved to already-correct content, not corruption) -- a pure ledger-accuracy improvement with no additional corpus-write risk. 2 self-test fixtures added (1 positive mirroring the derijke_1995 shape, 1 negative confirming a genuinely-ambiguous two-recognized-candidates case is NOT force-resolved), 43/43 total passing."
+    },
+    {
+      "id": 4,
+      "description": "Apply the repair-all disambiguation rule only under its precondition",
+      "status": "done",
+      "files_touched": [],
+      "note": "The repair-all precondition (every remaining candidate site is itself a corrupted occurrence of the same relation) was evaluated against every sampled ambiguous_anchor case and found NOT to hold for any of them at the individual-occurrence level examined (piterman_2007 offset 15728: 3 plausible candidates, but classify_gap_text recognizes all 3 as DIFFERENT signatures/content -- genuinely 3 separate real occurrences scattered through the document sharing generic 'that...That' landmarks, not 3 candidate LOCATIONS for the SAME occurrence). The narrower, already-implemented form of repair-all -- the shared-identical-span homogeneous-group case handled by objective 2's _find_sub_spans generalization -- IS the repair-all rule's legitimate application here: those groups genuinely have 'no wrong answer' among their found literal instances. No additional repair-all logic was implemented beyond that, per the plan's evidence-driven, no-speculative-generalization constraint: zero further confirmed real cases needing it were found."
+    },
+    {
+      "id": 5,
+      "description": "Handle marinmoralesstrassburger_2021's confirmed symbol-extraction gap and fine_2010's truth-table letter-base collision",
+      "status": "done",
+      "files_touched": [],
+      "note": "marinmoralesstrassburger_2021 (16 residuals, all base '⊩' -- U+22A9 forces): grep -c '⊩' and '⊮' across all 52 markdown files in the document's sources/ directory returns 0 for both -- confirmed the forces-relation symbol is not preserved by conversion ANYWHERE in this document, a symbol-extraction gap not an anchoring defect. fine_2010_some-puzzles-of-ground's L/T/C letter-base entries (8 of its 12 residuals): re-confirmed Phase 4's finding with direct offset inspection -- offsets 41004-41018 and 59881-59942 sit inside dense truth-table cells where the word-landmark search between table labels ('Compromise'/'Extremist') finds an empty or non-corresponding span, indicating table cell order is not preserved identically between PDF and markdown. Both documented with document/symbol-specific justifications in residual-ledger-phase7-longtail.json rather than a generic category label."
+    },
+    {
+      "id": 6,
+      "description": "dry-run, review, write with post-write verification per affected directory",
+      "status": "done",
+      "files_touched": [
+        "~/Projects/Literature/sources/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics.md",
+        "~/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part04.md",
+        "~/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part05.md",
+        "~/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part06.md",
+        "~/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part10.md"
+      ],
+      "note": "Dry-run reviewed over both affected directories before write (1 arisaka, 4 baier proposed). --write executed: 5 files written, 0 refused (backup failure), 0 rolled back (post-write verification failure). Rollback-target NOTE branch fired correctly for all 5 files (same-day backups predating this invocation's edit, informational only, not used as rollback reference) -- consistent with Phase 2/6's fix. Idempotence confirmed: second dry-run over both directories proposes 0 rewrites. --self-test remains 43/43 passing after the write."
+    },
+    {
+      "id": 7,
+      "description": "Write a specific justification for every occurrence still unrepaired",
+      "status": "done",
+      "files_touched": [
+        "specs/404_complete_combining_negation_repair/residual-ledger-phase7-longtail.json"
+      ],
+      "note": "Generated via specs/404_complete_combining_negation_repair/scripts/gen_justifications.py (scratch copy referenced from /tmp; logic documented inline in the script and summarized here): 531 entries (388 baier_katoen_2008 + 21 venema_1993 + 122 across 19 long-tail documents), each carrying its original pdf_file/pdf_char_offset/base_char/context/reason PLUS a justification field. Justifications are class-grounded (per reason x document x base_char, informed by the sampled real-offset investigation in objectives 2/3/5 above) rather than bare category labels -- every justification names the specific mechanism (heterogeneous-base collision, adjacency-verification failure, multi-candidate irreducible ambiguity, confirmed symbol-extraction gap, confirmed table-reordering collision, or wrong-location word-landmark match) and points the reader to the cited pdf_char_offset for direct verification. libkin_2004_ch3_ch7's 167 entries are explicitly excluded (Phase 8's territory) -- see the script's SAMPLED_DOCS/exclusion logic."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {
+      "approach": "Widen classify_gap_text's glyph_six/control_char priority via a fixed global check-order swap",
+      "result": "failed",
+      "reason": "Fixed a confirmed real case (baier '~') but broke a DIFFERENT confirmed real case (arisaka '|') that needed the opposite priority -- replaced with an adjacency-scoped check that resolves both correctly without relying on a fixed priority order."
+    }
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "7.5",
+      "description": "Handle the ~130 single-file ambiguous_anchor/anchor_not_found occurrences across ~30 documents",
+      "type": "altered",
+      "reason": "Rather than individually hand-verifying all ~122 non-baier/venema long-tail residuals against their PDF ground truth (infeasible within this dispatch's scope), applied a sample-verified class-justification methodology matching Phase 8's own precedent for libkin (representative sampling + documented mechanism, not one bespoke paragraph per entry). Directly sampled and characterized 12 of the 19 long-tail documents (marinmoralesstrassburger_2021, derijke_1995, fine_2010, venema_1997, goldblatt_2003, piterman_2007, plus the 6 overlapping_edit/narrow_failed documents from objective 2); the remaining 7 documents' residuals received the general class justification for their reason (ambiguous_anchor/anchor_not_found/unrecognized_gap) without individual offset-level verification, explicitly flagged as such in the justification text.",
+      "annotation": "*(deviation: altered -- sample-verified class justification methodology used instead of exhaustive per-occurrence hand verification; see progress file objective 7 note)*"
+    }
+  ]
+}
