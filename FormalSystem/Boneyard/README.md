@@ -32,10 +32,34 @@ bash scripts/check-module-invariants.sh --no-build   # structural checks only
 
 See [`../Metalogic/WeakCanonical/Kamp/Boneyard/README.md`](../Metalogic/WeakCanonical/Kamp/Boneyard/README.md).
 
+## Identifiers Here Predate the Mathlib Naming Migration
+
+**The declaration names in this directory were deliberately left untouched** when the rest of the
+library was migrated to Mathlib naming conventions. Expect `snake_case` `def`s here
+(`truth_at`, `all_future`, `nf_eval_nf`) that no longer exist anywhere in live code — roughly
+**8,718 stale references across 93 files**. This is a recorded, accepted cost, not an oversight.
+
+The reason is mechanical. The migration rewrote identifiers by position, driven by the resolved
+references the elaborator records in `.ilean` artifacts, which is what made it safe: 47.2% of the
+old final components are a proper prefix of another project identifier, so a textual pass would
+have corrupted nearly half the sites it touched. This directory has **zero** `.ilean` artifacts
+and **zero** imports from active code — nothing here is built — so the resolved-reference
+mechanism structurally cannot cover it, and the textual fallback would face the full prefix
+hazard with no build to catch the errors.
+
+Consequences for anyone reading or reviving a file from here:
+
+- A name found here will generally not resolve against live code. Translate it first; the
+  rule is in [`docs/development/NAMING_CONVENTION_DEVIATION.md`](../../docs/development/NAMING_CONVENTION_DEVIATION.md).
+- Do **not** grep this directory when auditing live identifier usage. It will produce thousands
+  of false positives.
+- Reviving a file means renaming its identifiers as part of the revival, exactly as the
+  "still compiled when archived" caveat below already implies for its build state.
+
 ## Archival Criterion
 
 A file belongs here when it is **unreachable from every Lake target root** — the
-`Bimodal` and `BimodalTest` libraries and every `lean_exe` root — and is not intended
+`FormalSystem` and `BimodalTest` libraries and every `lean_exe` root — and is not intended
 to become reachable. Unreachability alone is not sufficient: a module that is merely
 not-yet-wired belongs in `scripts/module-invariants-manifest.txt`, which compile-checks
 it so it cannot rot. Archiving is for code that is deliberately out of the development

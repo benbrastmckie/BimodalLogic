@@ -505,7 +505,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       -- After split_ifs, we have 16 goals corresponding to the 4×4 grid of
       -- index categories: {x=0, b=n+2, y=n+3, sel} × {x=0, b=n+2, y=n+3, sel}
       -- Goal 1: x vs x
-      · order_refl
+      · orderRefl
       -- Goal 2: x vs b
       · exact sig_x_b
       -- Goal 3: x vs y
@@ -532,7 +532,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       · have h := sig_ord ⟨L.card + 1, by omega⟩ ⟨0, by omega⟩
         simp_game_tuple at h; exact h
       -- Goal 6: b vs b
-      · order_refl
+      · orderRefl
       -- Goal 7: b vs y
       · exact pivot_chain_order' hb_resp_L_in.2 props.hdy' hbc props.hcy
           sig_b_d tau_d_y
@@ -560,7 +560,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       · exact pivot_chain_order_rev' props.hdy' hb_resp_L_in.2 props.hcy hbc
           tau_d_y sig_b_d
       -- Goal 11: y vs y
-      · order_refl
+      · orderRefl
       -- Goal 12: y vs sel(j)
       · set j' : Fin (n + 1) := ⟨j.val - 1, by omega⟩
         by_cases hjd' : a_bwd j' < d

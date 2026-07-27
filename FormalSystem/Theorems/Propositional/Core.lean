@@ -49,7 +49,7 @@ So: `A ∨ ¬A = ¬A → ¬A = identity ¬A`
 
 Therefore: `⊢ A ∨ ¬A` is immediate from identity.
 -/
-@[tm_lemma]
+@[tmLemma]
 def em (A : Formula) : ⊢ A.or A.neg := by
   -- A ∨ ¬A = ¬A → ¬A (by definition of disjunction)
   unfold Formula.or
@@ -71,7 +71,7 @@ A thin wrapper around the `Axiom.ex_falso` axiom, lifted to an arbitrary frame
 class via `FrameClass.base_le`, so that proofs can cite it by name rather than
 rebuilding the axiom application.
 -/
-@[tm_lemma]
+@[tmLemma]
 def efqAxiom {fc : FrameClass} (φ : Formula) : ⊢[fc] Formula.bot.imp φ :=
   DerivationTree.axiom [] _ (Axiom.ex_falso φ) (FrameClass.base_le fc)
 
@@ -82,7 +82,7 @@ Classical reasoning in pure implicational form. This is now an axiom.
 
 This theorem provides a convenient wrapper around Peirce's Law axiom for use in proofs.
 -/
-@[tm_lemma]
+@[tmLemma]
 def peirceAxiom {fc : FrameClass} (φ ψ : Formula) : ⊢[fc] ((φ.imp ψ).imp φ).imp φ :=
   DerivationTree.axiom [] _ (Axiom.peirce φ ψ) (FrameClass.base_le fc)
 
@@ -129,7 +129,7 @@ No circular dependencies - bCombinator is derived from K and S without using DNE
 **Historical Note**: Previously an axiom, now a derived theorem. This change
 improves the foundational structure without affecting derivational power.
 -/
-@[tm_lemma]
+@[tmLemma]
 def doubleNegation {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.neg.imp φ := by
   -- ¬¬φ = (φ → ⊥) → ⊥ (definition)
   unfold Formula.neg
@@ -251,7 +251,7 @@ Proof:
 1. By ECQ: `[A, ¬A] ⊢ B`
 2. Use deduction theorem pattern to lift to `⊢ A → (¬A → B)`
 -/
-@[tm_lemma]
+@[tmLemma]
 def impNegImp (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
   -- We need to show: ⊢ A → (¬A → B)
   -- Strategy: From A and ¬A, we get ⊥, then from ⊥ we derive B
@@ -320,7 +320,7 @@ example (P Q : Formula) : ⊢ P.neg.imp (P.imp Q) := impOfNeg P Q
 This is the primary `negImp` definition. The old `negImp` name is deprecated and aliased
 to this function for backward compatibility.
 -/
-@[tm_lemma]
+@[tmLemma]
 def impOfNeg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- Goal: ¬A → (A → B)
   -- We have RAA: A → (¬A → B)
@@ -644,7 +644,7 @@ arbitrary frame class via `FrameClass.base_le`.
 Unlike the context-based `andLeft`, this form composes without context manipulation, which is
 what `boxConjIff`'s forward direction in ModalS5.lean needs.
 -/
-@[tm_lemma]
+@[tmLemma]
 def lceImp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp A := by
   -- Use deduction theorem: from [A ∧ B] ⊢ A, derive ⊢ (A ∧ B) → A
   have h : [A.and B] ⊢ A := andLeft A B
@@ -662,7 +662,7 @@ arbitrary frame class via `FrameClass.base_le`.
 Unlike the context-based `andRight`, this form composes without context manipulation, which is
 what `boxConjIff`'s forward direction in ModalS5.lean needs.
 -/
-@[tm_lemma]
+@[tmLemma]
 def rceImp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp B := by
   -- Use deduction theorem: from [A ∧ B] ⊢ B, derive ⊢ (A ∧ B) → B
   have h : [A.and B] ⊢ B := andRight A B

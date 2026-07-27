@@ -18,7 +18,7 @@ infrastructure (GHR93 expressive completeness proof).
 - **Component B**: `simp_game_tuple` — simp rewrite set for gameTuple normalization
 - **Component C**: `pivot_order` — auto-fill interval bounds for pivot_chain_order
 - **Component D**: `winning_condition_tac` — 4-way index split for gap_point/formula agreement
-- **Component A**: `same_order_type_grid` — N×N grid dispatch for SameOrderType
+- **Component A**: `sameOrderTypeGrid` — N×N grid dispatch for SameOrderType
 
 ## References
 
@@ -106,7 +106,7 @@ theorem pivot_chain_order_rev' {α β : Type*} [LinearOrder α] [LinearOrder β]
     (a < b ↔ a' < b') ∧ (a = b ↔ a' = b') :=
   pivot_chain_order_rev hpa hbp hqa' hb'q hord_l.1 hord_l.2 hord_r.1 hord_r.2
 
-/-- `order_refl` closes goals of the form
+/-- `orderRefl` closes goals of the form
     `(a < a ↔ b < b) ∧ (a = a ↔ b = b)` — the diagonal case in the
     SameOrderType grid where both indices refer to the same element. -/
 theorem order_refl_pair {α β : Type*} [Preorder α] [Preorder β] (a : α) (b : β) :
@@ -114,9 +114,9 @@ theorem order_refl_pair {α β : Type*} [Preorder α] [Preorder β] (a : α) (b 
   ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
    ⟨fun _ => rfl, fun _ => rfl⟩⟩
 
-/-- `order_refl` tactic closes goals of the form
+/-- `orderRefl` tactic closes goals of the form
     `(a < a ↔ b < b) ∧ (a = a ↔ b = b)`. -/
-macro "order_refl" : tactic =>
+macro "orderRefl" : tactic =>
   `(tactic| exact order_refl_pair _ _)
 
 /-! ## Component D: winning_condition_tac -/
@@ -220,7 +220,7 @@ theorem order_reverse {α β : Type*} [LinearOrder α] [LinearOrder β]
     `(a < b ↔ a' < b') ∧ (a = b ↔ a' = b')` exists in context.
 
     Usage: `order_reverse` -/
-macro "order_rev" : tactic =>
+macro "orderRev" : tactic =>
   `(tactic| (first | exact order_reverse ‹_› | exact order_reverse (And.symm ‹_›)))
 
 /-! ## Component F: same_order_type_of_cases -/
@@ -278,7 +278,7 @@ theorem same_order_type_of_cases {sig : MonadicSignature}
 
 /-! ## Component A: SameOrderType Grid Setup -/
 
-/-- `same_order_type_grid` macro sets up the 4×4 grid proof for
+/-- `sameOrderTypeGrid` macro sets up the 4×4 grid proof for
     SameOrderType goals. It does:
     1. `intro i j` to introduce the two index variables
     2. `simp only [gameTuple]` to unfold gameTuple
@@ -290,14 +290,14 @@ theorem same_order_type_of_cases {sig : MonadicSignature}
     Usage:
     ```
     · -- SameOrderType
-      same_order_type_grid <;> first
-        | order_refl
+      sameOrderTypeGrid <;> first
+        | orderRefl
         | ...  -- handle off-diagonal cases
     ``` -/
-macro "same_order_type_grid" : tactic =>
+macro "sameOrderTypeGrid" : tactic =>
   `(tactic| (intro i j; simp only [game_tuple]; split_ifs))
 
-/-- `same_order_type_grid_uh` is a variant of `same_order_type_grid` that uses
+/-- `sameOrderTypeGridUh` is a variant of `sameOrderTypeGrid` that uses
     `unhygienic` to preserve access to `i` and `j` variable names through
     the `<;>` combinator. Without `unhygienic`, variables introduced by `intro`
     become inaccessible after `<;>`, preventing per-case tactics from
@@ -306,13 +306,13 @@ macro "same_order_type_grid" : tactic =>
     Usage:
     ```
     · -- SameOrderType
-      same_order_type_grid_uh <;>
+      sameOrderTypeGridUh <;>
         first
-          | order_refl
+          | orderRefl
           | exact order_reverse ‹_›
           | ...
     ``` -/
-macro "same_order_type_grid_uh" : tactic =>
+macro "sameOrderTypeGridUh" : tactic =>
   `(tactic| unhygienic (intro i j; simp only [game_tuple]; split_ifs))
 
 /-- `extract_order h i j` is a helper macro for extracting ordering data

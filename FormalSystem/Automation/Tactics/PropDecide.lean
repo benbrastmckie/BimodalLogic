@@ -10,7 +10,7 @@ import FormalSystem.Automation.Tactics.Helpers
 /-!
 # PropDecide - Reflective Propositional Tautology Tactic
 
-`prop_decide` closes derivability goals (`⊢ φ`, `⊢[fc] φ`, `|-! φ`, `|-![fc] φ`) whose
+`propDecide` closes derivability goals (`⊢ φ`, `⊢[fc] φ`, `|-! φ`, `|-![fc] φ`) whose
 implication/bot skeleton is a propositional tautology, treating every maximal non-imp/bot
 subterm (an atom, or an opaque `box`/`untl`/`snce`/free-variable subformula) as a reified
 `PropForm` variable. Because the underlying soundness theorem
@@ -33,7 +33,7 @@ formula variable `A`, not just goals built from atoms.
 ## Dispatch Ordering Guidance
 
 For dispatch tactics (e.g. a future `tm_prove`), route propositional-skeleton goals to
-`prop_decide` first (cheap, complete for the propositional fragment), then fall back to
+`propDecide` first (cheap, complete for the propositional fragment), then fall back to
 `modal_search`/the tableau decision procedure for goals with real modal/temporal structure.
 -/
 
@@ -42,7 +42,7 @@ namespace FormalSystem.Metalogic.Decidability.Propositional.PropForm
 open FormalSystem.Syntax
 
 /-- Build a schematic environment from a literal list of formulas, defaulting to `⊥` beyond
-the list. Used by `prop_decide` to reify accumulated opaque subterms into a closed
+the list. Used by `propDecide` to reify accumulated opaque subterms into a closed
 `Nat → Formula` environment. -/
 def envOfList (l : List Formula) : Nat → Formula := fun n => l.getD n Formula.bot
 
@@ -106,7 +106,7 @@ def PropDecide.extractDerivableGoal (goalType : Expr) : MetaM (Option (Expr × E
     return none
 
 /--
-`prop_decide` - Reflective propositional tautology tactic.
+`propDecide` - Reflective propositional tautology tactic.
 
 Closes `⊢ φ`, `⊢[fc] φ`, `|-! φ`, and `|-![fc] φ` goals whose implication/bot skeleton is a
 propositional tautology. Modal/temporal subterms (and free formula variables) are treated
@@ -115,12 +115,12 @@ as opaque reified variables, so this also closes fully schematic goals such as
 
 **Example**:
 ```lean
-example (p q : Formula) : ⊢ p.imp (q.imp p) := by prop_decide
-example (A : Formula) : ⊢ A.box.imp A.box := by prop_decide
-example (p q : Formula) : |-! ((p.imp q).imp p).imp p := by prop_decide  -- Peirce
+example (p q : Formula) : ⊢ p.imp (q.imp p) := by propDecide
+example (A : Formula) : ⊢ A.box.imp A.box := by propDecide
+example (p q : Formula) : |-! ((p.imp q).imp p).imp p := by propDecide  -- Peirce
 ```
 -/
-elab "prop_decide" : tactic => do
+elab "propDecide" : tactic => do
   let goal ← getMainGoal
   goal.withContext do
     let goalType ← instantiateMVars (← goal.getType)
@@ -152,7 +152,7 @@ elab "prop_decide" : tactic => do
           mkAppM ``Derivable.weaken #[derivProof, subProof]
       goal.assign finalProof
     else
-      throwError "prop_decide: goal must be a derivability relation `⊢ φ`, `⊢[fc] φ`, \
+      throwError "propDecide: goal must be a derivability relation `⊢ φ`, `⊢[fc] φ`, \
         `|-! φ`, or `|-![fc] φ`, got {goalType}"
 
 end FormalSystem.Automation

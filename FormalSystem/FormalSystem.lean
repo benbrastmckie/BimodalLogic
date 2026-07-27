@@ -30,7 +30,11 @@ and 7 inference rules
 - `FormalSystem.Semantics`: Task frame semantics with world histories, truth evaluation, and validity
 - `FormalSystem.Metalogic`: Soundness, three completeness routes, and the tableau decision
   procedure. By far the largest component (210 live files); see `Metalogic/README.md` for
-  the architecture map and the two-Boneyard counting caveat
+  the architecture map and the two-Boneyard counting caveat. Both Boneyard trees are excluded
+  from the Mathlib naming conventions the rest of this library follows: their identifiers
+  predate the migration and were deliberately left untouched (they have no `.ilean` artifacts
+  and no imports from active code, so a position-anchored rewrite structurally could not reach
+  them). See `Boneyard/README.md` before grepping either tree for identifier usage
 - `FormalSystem.FrameConditions`: Typeclass-based frame condition architecture (4 modules)
   - `LinearTemporalFrame`, `SerialFrame`, `DenseTemporalFrame`, `DiscreteTemporalFrame`
   - Parameterized validity and soundness, plus axiom compatibility typeclasses
@@ -51,7 +55,7 @@ open FormalSystem.ProofSystem
 open FormalSystem.Automation
 
 -- Define a formula
-def my_formula : Formula := Formula.box (Formula.atomS "p")
+def myFormula : Formula := Formula.box (Formula.atomS "p")
 
 -- Prove a theorem
 example (p : String) : ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by

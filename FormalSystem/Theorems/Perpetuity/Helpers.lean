@@ -58,7 +58,7 @@ Proof:
 2. MT axiom: `□Gφ → Gφ`
 3. Transitivity: `□φ → Gφ`
 -/
-@[tm_lemma]
+@[tmLemma]
 def boxToFuture (φ : Formula) : ⊢ φ.box.imp φ.allFuture := by
   have mf : ⊢ φ.box.imp (φ.allFuture.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
@@ -77,7 +77,7 @@ Proof via temporal duality:
 
 This clever use of temporal duality avoids needing a separate "modal-past" axiom.
 -/
-@[tm_lemma]
+@[tmLemma]
 def boxToPast (φ : Formula) : ⊢ φ.box.imp φ.allPast := by
   have h1 : ⊢ φ.swapTemporal.box.imp φ.swapTemporal.allFuture := boxToFuture φ.swapTemporal
   have h2 : ⊢ (φ.swapTemporal.box.imp φ.swapTemporal.allFuture).swapTemporal :=
@@ -89,7 +89,7 @@ def boxToPast (φ : Formula) : ⊢ φ.box.imp φ.allPast := by
 /--
 Box implies present: `⊢ □φ → φ` (MT axiom).
 -/
-@[tm_lemma]
+@[tmLemma]
 def boxToPresent (φ : Formula) : ⊢ φ.box.imp φ :=
   DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial
 

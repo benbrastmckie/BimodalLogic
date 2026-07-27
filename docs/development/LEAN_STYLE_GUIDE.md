@@ -41,34 +41,54 @@ structure task_frame where      -- snake_case for type
 ```
 
 ### Functions, Definitions, and Theorems
-- **Functions**: snake_case (`TruthAt`, `swapTemporal`, `canonical_history`)
-- **Definitions**: snake_case (`neg`, `diamond`, `always`, `somePast`, `someFuture`)
-- **Theorems**: snake_case with descriptive name (`soundness`, `weak_completeness`)
-- **Lemmas**: snake_case, often prefixed by subject (`modal_saturation`, `truth_lemma`)
+
+The rule is Mathlib's, and it keys on **what the declaration produces**, not on what kind of
+command declares it:
+
+- **`def` producing data** — lowerCamelCase (`swapTemporal`, `canonicalHistory`, `allFuture`,
+  `somePast`). This includes every `DerivationTree`-valued result in `Theorems/`: those are
+  mathematically theorems but are forced into `def` by the encoding (see below), and the rule
+  follows the syntactic category.
+- **`def` producing a `Prop`, i.e. defining a predicate** — UpperCamelCase (`TruthAt`,
+  `TemporalTruth`, `IsRDefinableGap`), matching Mathlib's `Function.Injective`, `IsCompact`.
+  Note this is about the *result* type after telescoping binders: `α → Prop` has type `Type`,
+  so such a declaration cannot be restated as a `theorem`.
+- **`def` producing a `Sort`/`Type`** — UpperCamelCase.
+- **`theorem` / `lemma`** — snake_case with a descriptive name (`soundness`,
+  `weak_completeness`, `modal_saturation`, `truth_lemma`). Underscores here are correct and are
+  not linted.
+- **Tactic tokens** — snake_case (`modal_t`, `apply_axiom`), like every Lean tactic
+  (`simp_all`, `norm_num`, `push_neg`).
 
 ```lean
 -- Good
-def TruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) : Formula → Prop := ...
+def swapTemporal : Formula → Formula := ...                    -- data: lowerCamelCase
+def TruthAt (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Time) : Formula → Prop := ...                       -- predicate: UpperCamelCase
 theorem soundness (Γ : Context) (φ : Formula) : Γ ⊢ φ → Γ ⊨ φ := ...
 lemma modal_t_valid (φ : Formula) : valid (φ.box.imp φ) := ...
 
 -- Avoid
-def TruthAt ...                 -- PascalCase for function
-theorem Soundness ...           -- PascalCase for theorem
-def truthAt ...                 -- camelCase
+def swap_temporal ...           -- snake_case for a def
+def truthAt ...                 -- lowerCamelCase for a Prop-valued def
+theorem Soundness ...           -- UpperCamelCase for a theorem
 ```
 
-> **Deviation from Mathlib, and its current status.** Mathlib reserves `snake_case` for
-> `theorem`s and expects `def`s to use `lowerCamelCase`; its `defsWithUnderscore` environment
-> linter enforces this. The `snake_case`-for-definitions rule above is a deviation, and the 860
-> declarations it currently affects are suppressed via a curated `scripts/nolints.json`.
+> **Full Mathlib conformance, reached and enforced.** `lake exe batteries/runLinter FormalSystem`
+> reports `defsWithUnderscore = 0` by genuine conformance. There is no `scripts/nolints.json` —
+> the curated 860-entry suppression file that formerly held this category at zero was deleted,
+> not filtered or emptied. The only surviving exemptions are seven in-source
+> `@[nolint defsWithUnderscore]` attributes in
+> [`Automation/Tactics/Helpers.lean`](../../FormalSystem/Automation/Tactics/Helpers.lean), each
+> on an auto-generated `tactic*` declaration and each naming the user-facing tactic token it
+> derives from.
 >
-> **This is an interim state, not the settled convention.** A full migration of those names to
-> `lowerCamelCase` is planned as separate work, after which the suppression entries are expected
-> to be deleted rather than maintained. See
-> [`NAMING_CONVENTION_DEVIATION.md`](NAMING_CONVENTION_DEVIATION.md) for the rationale, the
-> `Type`-valued `DerivationTree` root cause, the migration constraints already measured, and —
-> importantly — why a green `lake build` is *not* evidence of compliance with this linter.
+> **A green `lake build` is not evidence about this linter.** `defsWithUnderscore` is an
+> *environment* linter: it emits nothing during `lake build`, and CI runs `lean-action` with
+> `lint: false`. Every claim about this category must come from an explicit `runLinter` run.
+> See [`NAMING_CONVENTION_DEVIATION.md`](NAMING_CONVENTION_DEVIATION.md) for the closed-out
+> record and the `Type`-valued `DerivationTree` root cause that still shapes the `Theorems/`
+> layer.
 
 ### Namespaces
 - Match directory structure: `Logos.Syntax`, `Logos.ProofSystem`
@@ -796,14 +816,24 @@ set_option linter.unusedVariables false in
 def myFunction := ...
 ```
 
-**Project-wide exceptions** (use sparingly):
-Create `scripts/nolints.json`:
-```json
-[
-  ["docBlame", "Logos.Core.Internal.Helper"],
-  ["unusedArguments", "Logos.Test.Fixture"]
-]
+**Project-wide exceptions**: there are none, and a `scripts/nolints.json` must not be
+reintroduced. The former 860-entry file was deleted once the naming migration reached genuine
+conformance, and a suppression file that grows back is a regression, not a neutral event.
+
+Where an exemption is genuinely unavoidable — in practice only for a name Lean *auto-generates*,
+such as the `tactic*` declaration derived from a tactic token — use a per-declaration in-source
+attribute that states the reason at the site:
+
+```lean
+attribute [nolint defsWithUnderscore]
+  tacticModal_t              -- from the `modal_t` tactic token
 ```
+
+The distinction is not cosmetic: an in-source attribute is reviewable in the diff that
+introduces it and travels with the declaration, whereas a central JSON list accumulates entries
+that nobody re-justifies. It also fails loudly — after a namespace rename, every
+fully-qualified entry in a `nolints.json` silently stops matching and the whole category
+unmasks at once.
 
 ### TM-Specific Naming Conventions
 

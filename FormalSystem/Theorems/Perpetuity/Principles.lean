@@ -196,7 +196,7 @@ Note: Since `diamond φ = φ.neg.box.neg`, we have:
 The proof requires showing that the complex nested negation structure reduces
 correctly via double negation elimination within the modal operators.
 -/
-@[tm_lemma]
+@[tmLemma]
 def diamond4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
   -- Goal (by definition): φ.neg.box.neg.neg.box.neg.imp φ.neg.box.neg
   --
@@ -277,7 +277,7 @@ Derived from MB + diamond4 + MK distribution:
 4. MK distribution: `⊢ □◇◇φ → □◇φ`
 5. Compose steps 1 and 4: `⊢ ◇φ → □◇φ`
 -/
-@[tm_lemma]
+@[tmLemma]
 def modal5 (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.box := by
   -- Step 1: MB on ◇φ
   have mb_dia : ⊢ φ.diamond.imp φ.diamond.diamond.box :=
@@ -332,7 +332,7 @@ Box implies boxed past: `⊢ □φ → □Hφ`.
 
 Derived via temporal duality on MF, analogous to `boxToPast`.
 -/
-@[tm_lemma]
+@[tmLemma]
 def boxToBoxPast (φ : Formula) : ⊢ φ.box.imp (φ.allPast.box) := by
   have mf : ⊢ φ.swapTemporal.box.imp (φ.swapTemporal.allFuture.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_future φ.swapTemporal) trivial
@@ -563,7 +563,7 @@ Helper lemma: Modal B for diamond forms.
 From MB axiom `φ → □◇φ`, we can derive that truths are necessarily possible.
 This is used as a foundation for the persistence lemma.
 -/
-@[tm_lemma]
+@[tmLemma]
 def mbDiamond (φ : Formula) : ⊢ φ.imp (φ.diamond.box) :=
   DerivationTree.axiom [] _ (Axiom.modal_b φ) trivial
 

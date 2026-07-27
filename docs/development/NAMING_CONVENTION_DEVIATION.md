@@ -1,42 +1,58 @@
-# Naming Convention Deviation: `defsWithUnderscore`
+# Naming Convention Deviation: `defsWithUnderscore` — CLOSED
 
-**Status: interim.** This document records a deliberate, time-bounded engineering position, not a
-permanent architectural decision. A full migration of the affected names to `lowerCamelCase` is
-planned as separate work; the suppression described here exists so that the linter surface is
-clean and reviewable *now*, while that migration is designed and executed with its own research
-and verification strategy. See [What replaces this](#what-replaces-this).
+**Status: closed.** The deviation this document recorded no longer exists. The migration it named
+as its successor has landed: every affected declaration was renamed to Mathlib conventions,
+`scripts/nolints.json` was deleted from the tree, and
+`lake exe batteries/runLinter FormalSystem` reports `defsWithUnderscore = 0` by genuine
+conformance.
 
-## What the deviation is
+This file is retained rather than deleted because two things in it survive the migration: the
+architectural root cause, which is still true and still shapes the `Theorems/` layer, and the
+operational warning about what does and does not count as evidence for this linter.
 
-Mathlib's `defsWithUnderscore` environment linter flags any `def` whose name contains an
-underscore, on the convention that `def`s take `lowerCamelCase` and only `theorem`s take
-`snake_case`. This repository currently has **860** declarations that the linter flags. They are
-suppressed via a curated [`scripts/nolints.json`](../../scripts/nolints.json) containing exactly
-those 860 entries and nothing else.
+## Outcome
 
-Alongside the suppression, the declarations that were *genuinely* misclassified have been fixed
-rather than suppressed — see [What was actually fixed](#what-was-actually-fixed).
+| Measure | Before | After |
+|---|---|---|
+| `defsWithUnderscore`, unmasked | **861** | **0** |
+| `scripts/nolints.json` | 860 entries | **deleted from the tree** |
+| Inline `@[nolint defsWithUnderscore]` attributes | 0 | **7**, all on auto-generated `tactic*` names |
+| `unusedArguments` | 124 | 124 |
+| `LINTER FAILED` | 115 | 115 |
+| `docBlame` | 39 | 39 |
+| `tacticDocs` | 4 | 4 |
+| `structureInType` | 1 | 1 |
 
-## Why the names are `snake_case` today
+Every sibling category is unchanged to the unit, which is the evidence that the count fell by
+conformance rather than by silencing something.
 
-The names read as mathematics. `boxConjIff`, `perpetuity5`, and `s4BoxDiamondBox` are the
-project's rendering of statements from the modal-logic literature, and the underscore is doing the
-same work a space does in prose. Under `lowerCamelCase` they become `boxConjIff`, `perpetuity5`,
-and `s4BoxDiamondBox`, which is a readability cost concentrated exactly in the layer where the
-library's mathematical content lives.
+Alongside the renames, the library root moved from `Theories/Bimodal/` to `FormalSystem/` and the
+root namespace `Bimodal` became `FormalSystem`.
 
-That said, this is a *stylistic* argument, and it is not the whole story — see the next section
-for the part that is structural, and [What replaces this](#what-replaces-this) for why the
-stylistic argument was ultimately judged insufficient to settle the question permanently.
+## The naming rule now in force
 
-## The architectural root cause
+Keyed on what a declaration *produces*, not on which command declares it:
+
+| Declaration produces | Convention | Example |
+|---|---|---|
+| data (including all `DerivationTree`-valued results) | lowerCamelCase | `allFuture`, `swapTemporal` |
+| a `Prop` — i.e. it *defines a predicate* | UpperCamelCase | `TruthAt`, `TemporalTruth`, `IsRDefinableGap` |
+| a `Sort`/`Type` | UpperCamelCase | `TaskFrame` |
+| a proof (`theorem`/`lemma`) | snake_case | `soundness`, `truth_lemma` |
+
+The `Prop`-valued row is the one that surprises. `α → Prop` has type `Type`, not `Prop`, so a
+predicate definition **cannot** be restated as a `theorem` — the conversion is a type error, not
+a judgement call. 121 declarations fell in this category, `Semantics.TruthAt` (515 resolved
+usages) among them.
+
+## The architectural root cause — still true
 
 `DerivationTree`, defined in
-[`FormalSystem/ProofSystem/Derivation.lean`](../../FormalSystem/ProofSystem/Derivation.lean),
-is `Type`-valued rather than `Prop`-valued. Every derived result built from it therefore *must* be
-a `def` rather than a `theorem` — and `def` is precisely what this linter inspects. A result that
-is mathematically a theorem is forced by the encoding into the syntactic category the linter
-treats as data.
+[`FormalSystem/ProofSystem/Derivation.lean`](../../FormalSystem/ProofSystem/Derivation.lean), is
+`Type`-valued rather than `Prop`-valued. Every derived result built from it therefore *must* be a
+`def` rather than a `theorem` — and `def` is precisely what this linter inspects. A result that is
+mathematically a theorem is forced by the encoding into the syntactic category the linter treats
+as data.
 
 The `Type`-valued encoding is load-bearing, not incidental:
 
@@ -45,117 +61,90 @@ The `Type`-valued encoding is load-bearing, not incidental:
 - The `Automation/` proof-search layer consumes actual derivation trees — it inspects and
   transforms proof structure, so `Nonempty (DerivationTree …)` would not serve.
 
-**Scope of this explanation.** It is precise for the `Theorems/` layer, where it accounts for
-100% of the findings. It does *not* extend to the ordinary data definitions elsewhere in the
-library, whose `snake_case` names are a plain stylistic choice with no structural forcing behind
-them. Conflating the two would overstate the case: the structural argument covers a minority of
-the 860, and the majority are style.
+**What the migration changed about this argument**: nothing structural. The `Theorems/` layer is
+still 135-of-135 `DerivationTree`-valued and still declared with `def`. What changed is the
+conclusion drawn from it. The old reading was that a mathematically-theorem-shaped result
+deserves a theorem's `snake_case` name and the linter should be suppressed. The rule that
+actually applies keys on the syntactic category, so those declarations now take lowerCamelCase
+(`impTrans`, `perpetuity3`, `boxMono`) and the linter is satisfied without any exemption.
 
-## Upstream precedent for curated suppression
+**Scope of the explanation, unchanged.** It was always precise for `Theorems/` and never extended
+to the ordinary data definitions elsewhere in the library, whose names were a plain stylistic
+choice. The migration confirmed the proportion: the churn was dominated by data names, not by the
+mathematical layer.
 
-Mathlib's own `scripts/nolints.json` carries **719** entries, of which **493** are
-`defsWithUnderscore` (the remaining 226 are `docBlame`). Mathlib carries **zero** inline
-`@[nolint defsWithUnderscore]` attributes — it treats this linter as a curated suppression list
-rather than a hard gate, and keeps the entire list in one auditable file.
+## How to re-audit: a green build still proves nothing here
 
-This repository follows that mechanism exactly: one JSON file, no inline attributes. Note for
-proportion, though, that 860 entries is roughly 1.7× Mathlib's own volume in a codebase a
-fraction of its size — which is itself part of why the deviation is treated as interim rather
-than settled.
-
-## What was actually fixed
-
-Suppression was applied only to the residual. Thirty-eight declarations were genuinely
-misclassified — `Prop`-typed `def`s that should always have been `theorem`s — and these were
-converted rather than suppressed:
-
-| Linter | Before | After |
-|---|---|---|
-| `linter.defProp` | 38 | **0** |
-| `classDefReducibility` | 2 | **0** |
-| `defsWithUnderscore` | 888 | 860 (suppressed to **0**) |
-
-The conversion dropped the `noncomputable` modifier on the 31 declarations that carried it
-(`noncomputable theorem` does not elaborate) and removed one `@[instance_reducible]` attribute
-that is invalid on a `theorem`. Total build warnings fell from 70 to 30 with none added. No
-declaration was renamed.
-
-## How to re-audit: a green build proves nothing here
-
-This is the single most important operational fact in this document.
+This remains the single most important operational fact in this document, and deleting
+`nolints.json` did not change it.
 
 `defsWithUnderscore` is an *environment* linter. It emits **nothing** during `lake build`, and CI
 runs `lean-action` with `lint: false`. A green build therefore carries **no information** about
 this category. The only gate that observes it is an explicit:
 
 ```
-lake exe runLinter FormalSystem
+lake exe batteries/runLinter FormalSystem
 ```
 
-`nolintsFile` resolves to `scripts/nolints.json` relative to the invocation working directory, so
-run this from the repository root. Expect `defsWithUnderscore` to be absent from the output, and
-the sibling categories (`unusedArguments`, `simpNF`/`LINTER FAILED`, `docBlame`, `tacticDocs`,
-`structureInType`) to remain live and unchanged.
+Plain `lake exe runLinter` fails — the package declares no `lintDriver`. Expect
+`defsWithUnderscore` to be absent from the output, and the sibling categories to remain live and
+unchanged at the counts tabulated above.
 
-> **Trap when regenerating.** `lake exe runLinter FormalSystem --update` rewrites
-> `scripts/nolints.json` in one command, but it is **indiscriminate**: it sweeps in every other
-> linter category too. On the run that produced the current file it emitted 1141 rows, of which
-> 281 belonged to unrelated categories. Any regeneration must filter the output back down to
-> `defsWithUnderscore` rows only, and must then verify that the sibling category counts are
-> *unchanged* — a sibling count that dropped is a silenced linter, not a bonus.
+> **Trap when parsing the output.** batteries pretty-prints `@Name` for declarations with
+> implicit arguments. A parser that does not strip the leading `@` silently loses **425 of 861**
+> names — measured, not estimated.
 
-## What replaces this
+## The surviving exemptions, and why they are not a new suppression file
 
-A full migration of the affected names to `lowerCamelCase` is planned as separate work. When it
-lands, `scripts/nolints.json` entries are expected to be **deleted as the migration progresses**.
-The file is a checkpoint, not an asset to be maintained in perpetuity; a growing nolints file
-would be a regression, not a neutral event.
+Seven in-source attributes in
+[`FormalSystem/Automation/Tactics/Helpers.lean`](../../FormalSystem/Automation/Tactics/Helpers.lean):
 
-### What the migration will have to contend with
+```lean
+attribute [nolint defsWithUnderscore]
+  tacticApply_axiom          -- from the `apply_axiom` tactic token
+  tacticModal_t              -- from the `modal_t` tactic token
+  tacticAssumption_search    -- from the `assumption_search` tactic token
+  tacticModal_k_tactic       -- from the `modal_k_tactic` tactic token
+  tacticTemporal_k_tactic    -- from the `temporal_k_tactic` tactic token
+  tacticModal_4_tactic       -- from the `modal_4_tactic` tactic token
+  tacticModal_b_tactic       -- from the `modal_b_tactic` tactic token
+```
 
-Recorded here so the migration inherits these figures rather than rediscovering them. Usage counts
-are resolved, elaborator-authoritative references drawn from the `references` blocks of the
-compiled `.ilean` files — not textual matches.
+Each of these names is **auto-generated by Lean** from a tactic token: `macro "modal_t" : tactic`
+produces a declaration called `tacticModal_t`. The underscore is inherited from the token, and
+every Lean tactic token is snake_case (`simp_all`, `norm_num`, `push_neg`, `field_simp`).
 
-| Metric | Value |
-|---|---|
-| Resolved usages of the flagged names | **24,364** |
-| Modules containing at least one usage | **258 of 300 (86%)** |
-| Flagged names that are a proper prefix of another project identifier | **398 of 873 (45.6%)** |
-| Sites a naive substring pass would touch | **68,076** |
-| Of those, sites it would touch *wrongly* | **46.4%** |
+Mathlib has exactly the same declarations and escapes the linter not by camelCasing them but
+because `isBadNameWithUnderscore` (`Mathlib/Tactic/Linter/Style.lean`) whitelists the
+`Mathlib.Tactic` namespace prefix outright. This repository's tactics live under
+`FormalSystem.Automation`, so they are not covered by that whitelist.
 
-Three consequences follow, and each is a hard constraint on how the migration may be executed:
+The seven exempted tokens are the ones referenced from `docs/`, where renaming would be a
+user-facing API break. Internal-only tokens were renamed instead rather than exempted:
+`modal_norm`, `prop_norm`, `modal_op_norm`, `temporal_norm`, `modal_norm_all`, `modal_norm_at`,
+`modal_fold`, `prop_decide`, `order_refl`, `order_rev`, `same_order_type_grid`,
+`same_order_type_grid_uh`, and the `tm_lemma` label attribute.
 
-1. **Identifier-prefix collision is the central hazard.** With 45.6% of the names being proper
-   prefixes of other identifiers, a substring replacement is not merely risky but wrong at scale —
-   nearly half of the sites it touches. Position-anchored replacement, driven by resolved
-   reference positions rather than by text matching, is **mandatory**. A prior sweep in this
-   repository silently corrupted `List.take_succ_cons` precisely because `List.take_succ` is a
-   prefix of it.
+**Why this is categorically different from the deleted file.** A per-declaration in-source
+attribute is reviewable in the diff that introduces it, states its reason at the site, and
+travels with the declaration. A central JSON list accumulates entries nobody re-justifies — and
+it fails silently: during this migration, renaming the root namespace made all 860
+fully-qualified entries stop matching at once, and the masked count jumped from 284 to 1144
+without a single line of the file changing. That failure mode is a property of the mechanism,
+not an accident.
 
-2. **Deprecation shims make the problem worse, not better.** A `@[deprecated] alias` retains the
-   old `snake_case` name as a new `def`, so it is itself flagged: adding one alias measurably
-   raised `defsWithUnderscore` from 860 to **861**. Shims cannot be used as a soft-landing
-   strategy for this particular linter.
+## What would reopen this
 
-3. **The churn is concentrated in data names, not in the mathematical layer.** This inverts the
-   intuition suggested by the architectural argument above. The 12 flagged names in
-   `FormalSystem/Syntax/Formula.lean` carry **4,929** resolved usages — roughly 5× the entire
-   `Theorems/` layer, whose 135 flagged declarations account for 994. `allFuture` alone has 1,647
-   usages. Any migration should expect its cost to be dominated by a handful of `Formula`
-   constructor-adjacent names, and should sequence accordingly.
-
-### What would independently reopen or force the decision
-
-A port into a downstream library that enforces the environment linters as a hard gate. In that
-setting curated suppression is not available, and the migration becomes a prerequisite rather
-than a planned improvement.
+Nothing about the naming rule itself; full Mathlib conformance is now the settled convention and
+is recorded in [`LEAN_STYLE_GUIDE.md`](LEAN_STYLE_GUIDE.md). The remaining live question is
+narrower: if Mathlib's linter ever stops whitelisting the `Mathlib.Tactic` prefix and starts
+requiring camelCase tactic tokens, the seven exemptions above become renames.
 
 ## Related
 
-- [`LEAN_STYLE_GUIDE.md`](LEAN_STYLE_GUIDE.md) — the naming conventions this document records a
-  deviation from
-- [`scripts/nolints.json`](../../scripts/nolints.json) — the suppression list itself
+- [`LEAN_STYLE_GUIDE.md`](LEAN_STYLE_GUIDE.md) — the naming conventions, now describing the
+  settled state rather than a deviation from it
 - [`FormalSystem/ProofSystem/Derivation.lean`](../../FormalSystem/ProofSystem/Derivation.lean)
   — the `Type`-valued `DerivationTree` that forces `def` over `theorem`
+- [`FormalSystem/Boneyard/README.md`](../../FormalSystem/Boneyard/README.md) — the one tree
+  deliberately left un-migrated

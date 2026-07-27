@@ -42,7 +42,7 @@ unexpectedly (update deliberately when expanding the database).
 -- bound so migration coverage is guaranteed without pinning the exact total
 -- (tagging more theorems must never silently drop below the migration set).
 #eval show CoreM Unit from do
-  let names ← Lean.labelled `tm_lemma
+  let names ← Lean.labelled `tmLemma
   unless names.size ≥ 26 do
     throwError "expected ≥ 26 @[tmLemma] declarations, found {names.size}:\n{names}"
 

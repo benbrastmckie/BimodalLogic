@@ -795,7 +795,7 @@ the search, not just directly-matching statements.
 -/
 def tryLemmaMatch (goal : MVarId) (fc ctx formula : Expr)
     (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
-  let lemmas ← Lean.labelled `tm_lemma
+  let lemmas ← Lean.labelled `tmLemma
   tryLemmaMatchCore lemmas goal fc ctx formula searchFn depth
 
 /--
@@ -1146,5 +1146,39 @@ partial def searchProof (counter : IO.Ref Nat) (goal : MVarId) (depth : Nat) : T
 
   return false
 
+/-!
+## Naming-convention exemptions for user-facing tactic tokens
+
+Each `macro`/`elab` below declares a *tactic token*, and Lean auto-generates a declaration whose
+name is derived from that token (`modal_t` becomes `tacticModal_t`). Those generated names carry
+the token's underscores, so Mathlib's `defsWithUnderscore` linter flags them.
+
+**These seven tokens keep their snake_case spelling.** Every Lean tactic token is snake_case
+(`simp_all`, `norm_num`, `push_neg`, `field_simp`), and Mathlib's own `tactic*` declarations
+escape this linter not by being camelCased but because `isBadNameWithUnderscore`
+(`Mathlib/Tactic/Linter/Style.lean`) whitelists the `Mathlib.Tactic` namespace prefix outright.
+Renaming a tactic token to camelCase would satisfy the linter while making the tactic surface
+*less* conformant with Lean and Mathlib practice.
+
+Each token here is referenced from `docs/`, so renaming it is a user-facing API break rather
+than a naming cleanup. Tokens that are internal-only were renamed instead — `modal_norm`,
+`prop_norm`, `modal_op_norm`, `temporal_norm`, `modal_norm_all`, `modal_norm_at`, `modal_fold`,
+`prop_decide`, `order_refl`, `order_rev`, `same_order_type_grid`, `same_order_type_grid_uh`, and
+the `tm_lemma` label attribute.
+
+A per-declaration, in-source exemption on an auto-generated name is a **documented exemption**,
+naming the token it derives from and the reason. It is categorically different from the
+861-entry `scripts/nolints.json` this migration deleted, which suppressed hand-written
+declaration names in bulk with no per-site justification.
+-/
+
+attribute [nolint defsWithUnderscore]
+  tacticApply_axiom          -- from the `apply_axiom` tactic token
+  tacticModal_t              -- from the `modal_t` tactic token
+  tacticAssumption_search    -- from the `assumption_search` tactic token
+  tacticModal_k_tactic       -- from the `modal_k_tactic` tactic token
+  tacticTemporal_k_tactic    -- from the `temporal_k_tactic` tactic token
+  tacticModal_4_tactic       -- from the `modal_4_tactic` tactic token
+  tacticModal_b_tactic       -- from the `modal_b_tactic` tactic token
 
 end FormalSystem.Automation

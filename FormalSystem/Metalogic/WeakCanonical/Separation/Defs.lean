@@ -422,19 +422,19 @@ def sNestingAboveU : Formula → Nat
   | .untl _ _ => 0  -- U found; no S above it on this path
   | .snce φ ψ =>
     -- If there's a U below, this S adds 1 to the nesting
-    let sub := max (S_nesting_above_U_inner φ) (S_nesting_above_U_inner ψ)
+    let sub := max (sNestingAboveUInner φ) (sNestingAboveUInner ψ)
     if sub > 0 then 1 + sub else 0
 where
   /-- Helper: counts S-nesting above U inside an S context.
       Returns 0 if there is no U below. -/
-  S_nesting_above_U_inner : Formula → Nat
+  sNestingAboveUInner : Formula → Nat
     | .atom _ => 0
     | .bot => 0
-    | .imp φ ψ => max (S_nesting_above_U_inner φ) (S_nesting_above_U_inner ψ)
-    | .box φ => S_nesting_above_U_inner φ
+    | .imp φ ψ => max (sNestingAboveUInner φ) (sNestingAboveUInner ψ)
+    | .box φ => sNestingAboveUInner φ
     | .untl _ _ => 1  -- U found inside S: contributes 1 (the S we're in)
     | .snce φ ψ =>
-      let sub := max (S_nesting_above_U_inner φ) (S_nesting_above_U_inner ψ)
+      let sub := max (sNestingAboveUInner φ) (sNestingAboveUInner ψ)
       if sub > 0 then 1 + sub else 0
 
 /-! ## Auxiliary Predicates for Elimination Cases -/

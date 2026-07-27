@@ -47,7 +47,7 @@ Proof:
 3. Build (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q) using RAA pattern
 4. Compose with DNE to get Q
 -/
-@[tm_lemma]
+@[tmLemma]
 def classicalMerge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
   -- Goal: (P → Q) → ((¬P → Q) → Q)
   -- This is case analysis on P using LEM.
@@ -293,7 +293,7 @@ From implication, derive its contrapositive.
 
 **Proof Strategy**: Use bCombinator and theoremFlip to build contraposition.
 -/
-@[tm_lemma]
+@[tmLemma]
 def contraposeImp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := by
   -- bCombinator: (B → ⊥) → (A → B) → (A → ⊥)
   have bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=

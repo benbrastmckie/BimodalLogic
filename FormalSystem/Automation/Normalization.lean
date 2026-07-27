@@ -19,16 +19,16 @@ via greedy pattern matching.
 
 ### Unfold Direction (Phase 1)
 - 15 `_unfold` simp lemmas (all `rfl`) organized by dependency level
-- `modal_norm` macro: full normalization to primitives
-- `prop_norm`, `modal_op_norm`, `temporal_norm`: selective variant macros
-- `modal_norm_at`, `modal_norm_all`: hypothesis-targeting variants
+- `modalNorm` macro: full normalization to primitives
+- `propNorm`, `modalOpNorm`, `temporalNorm`: selective variant macros
+- `modalNormAt`, `modalNormAll`: hypothesis-targeting variants
 
 ### Fold Direction (Phase 2-3)
 - `EnrichedFormula`: ADT with 21 constructors (6 primitive + 15 enriched)
 - `Formula.foldFormula`: greedy bottom-up fold from primitives to enriched
 - `EnrichedFormula.toPrimitive`: inverse direction (enriched to primitives)
 - Fold-direction simp lemmas for unambiguous patterns
-- `modal_fold` macro: fold primitives back to derived operators
+- `modalFold` macro: fold primitives back to derived operators
 
 ### Serialization (Phase 4)
 - `EnrichedFormula.toJson`: JSON serialization with enriched tags
@@ -175,7 +175,7 @@ section NormTactics
 Full normalization to primitives: unfolds all 15 derived operators.
 Reduces any formula to a combination of `atom`, `bot`, `imp`, `box`, `untl`, `snce`.
 -/
-macro "modal_norm" : tactic =>
+macro "modalNorm" : tactic =>
   `(tactic| simp only [
     neg_unfold, top_unfold, next_unfold, prev_unfold,
     and_unfold, or_unfold, diamond_unfold, some_future_unfold, some_past_unfold,
@@ -186,16 +186,16 @@ macro "modal_norm" : tactic =>
     release_unfold, weak_until_unfold, trigger_unfold, weak_since_unfold])
 
 /-- Propositional normalization only: unfolds neg, top, and, or. -/
-macro "prop_norm" : tactic =>
+macro "propNorm" : tactic =>
   `(tactic| simp only [neg_unfold, top_unfold, and_unfold, or_unfold])
 
 /-- Modal operator normalization only: unfolds diamond. -/
-macro "modal_op_norm" : tactic =>
+macro "modalOpNorm" : tactic =>
   `(tactic| simp only [diamond_unfold])
 
 /-- Temporal normalization only: unfolds next, prev, someFuture, somePast,
     allFuture, allPast, weakFuture, weakPast, always, sometimes. -/
-macro "temporal_norm" : tactic =>
+macro "temporalNorm" : tactic =>
   `(tactic| simp only [
     next_unfold, prev_unfold,
     some_future_unfold, some_past_unfold,
@@ -204,9 +204,9 @@ macro "temporal_norm" : tactic =>
     always_unfold, sometimes_unfold])
 
 /-- Normalize at a specific hypothesis. -/
-syntax "modal_norm_at" ident : tactic
+syntax "modalNormAt" ident : tactic
 macro_rules
-  | `(tactic| modal_norm_at $h) =>
+  | `(tactic| modalNormAt $h) =>
     `(tactic| (simp only [
       neg_unfold, top_unfold, next_unfold, prev_unfold,
       and_unfold, or_unfold, diamond_unfold, some_future_unfold, some_past_unfold,
@@ -217,7 +217,7 @@ macro_rules
       release_unfold, weak_until_unfold, trigger_unfold, weak_since_unfold] at $h:ident))
 
 /-- Normalize all hypotheses and the goal. -/
-macro "modal_norm_all" : tactic =>
+macro "modalNormAll" : tactic =>
   `(tactic| simp only [
     neg_unfold, top_unfold, next_unfold, prev_unfold,
     and_unfold, or_unfold, diamond_unfold, some_future_unfold, some_past_unfold,
@@ -254,36 +254,36 @@ section UnfoldTests
 #check @strong_release_unfold
 #check @strong_trigger_unfold
 
--- Test: modal_norm reduces always (uses multiple unfold rounds)
+-- Test: modalNorm reduces always (uses multiple unfold rounds)
 example (p : Atom) : (atom p).always =
     (atom p).allPast.and ((atom p).and (atom p).allFuture) := by
   simp only [always_unfold]
 
--- Test: modal_norm reduces diamond to primitives
+-- Test: modalNorm reduces diamond to primitives
 example (p : Atom) : (atom p).diamond = ((atom p).imp bot).box.imp bot := by
-  modal_norm
+  modalNorm
 
--- Test: selective prop_norm preserves diamond (only unfolds neg, not diamond)
+-- Test: selective propNorm preserves diamond (only unfolds neg, not diamond)
 example (p : Atom) : (atom p).diamond.neg = ((atom p).diamond).imp bot := by
   simp only [neg_unfold]
 
--- Test: modal_op_norm unfolds diamond
+-- Test: modalOpNorm unfolds diamond
 example (p : Atom) : (atom p).diamond = ((atom p).neg).box.neg := by
   rfl  -- diamond is definitionally neg(box(neg φ))
 
--- Test: temporal_norm unfolds temporal operators
+-- Test: temporalNorm unfolds temporal operators
 example (p : Atom) : (atom p).someFuture = (atom p).untl (bot.imp bot) := by
-  temporal_norm
+  temporalNorm
 
--- Test: modal_norm reduces conjunction
+-- Test: modalNorm reduces conjunction
 example (p q : Atom) : (atom p).and (atom q) =
     ((atom p).imp ((atom q).imp bot)).imp bot := by
-  modal_norm
+  modalNorm
 
--- Test: modal_norm reduces disjunction
+-- Test: modalNorm reduces disjunction
 example (p q : Atom) : (atom p).or (atom q) =
     ((atom p).imp bot).imp (atom q) := by
-  modal_norm
+  modalNorm
 
 end UnfoldTests
 
@@ -840,7 +840,7 @@ section FoldTactics
 
 /-- Fold primitives back to derived operators where unambiguous.
     Uses the `← _unfold` pattern to reverse unfold lemmas. -/
-macro "modal_fold" : tactic =>
+macro "modalFold" : tactic =>
   `(tactic| simp only [
     ← neg_unfold, ← top_unfold, ← next_unfold, ← prev_unfold,
     ← and_unfold, ← diamond_unfold,
@@ -854,48 +854,48 @@ end FoldTactics
 
 section RoundTripTests
 
--- Round-trip tactic tests: modal_norm followed by modal_fold
+-- Round-trip tactic tests: modalNorm followed by modalFold
 -- For unambiguous operators, the unfold/fold cycle recovers the original.
--- (Since both sides of the equality are identical, modal_norm rewrites both
--- and the goal closes immediately. This tests that modal_norm does not get stuck.)
+-- (Since both sides of the equality are identical, modalNorm rewrites both
+-- and the goal closes immediately. This tests that modalNorm does not get stuck.)
 
 -- Test: neg round-trip
-example (φ : Formula) : φ.neg = φ.neg := by modal_norm
+example (φ : Formula) : φ.neg = φ.neg := by modalNorm
 
 -- Test: top round-trip
-example : Formula.top = Formula.top := by modal_norm
+example : Formula.top = Formula.top := by modalNorm
 
 -- Test: diamond round-trip
-example (φ : Formula) : φ.diamond = φ.diamond := by modal_norm
+example (φ : Formula) : φ.diamond = φ.diamond := by modalNorm
 
 -- Test: and round-trip
-example (φ ψ : Formula) : Formula.and φ ψ = Formula.and φ ψ := by modal_norm
+example (φ ψ : Formula) : Formula.and φ ψ = Formula.and φ ψ := by modalNorm
 
 -- Test: someFuture/somePast round-trip
-example (φ : Formula) : someFuture φ = someFuture φ := by modal_norm
-example (φ : Formula) : somePast φ = somePast φ := by modal_norm
+example (φ : Formula) : someFuture φ = someFuture φ := by modalNorm
+example (φ : Formula) : somePast φ = somePast φ := by modalNorm
 
 -- Test: allFuture/allPast round-trip
-example (φ : Formula) : allFuture φ = allFuture φ := by modal_norm
-example (φ : Formula) : allPast φ = allPast φ := by modal_norm
+example (φ : Formula) : allFuture φ = allFuture φ := by modalNorm
+example (φ : Formula) : allPast φ = allPast φ := by modalNorm
 
 -- Test: next/prev round-trip
-example (φ : Formula) : next φ = next φ := by modal_norm
-example (φ : Formula) : prev φ = prev φ := by modal_norm
+example (φ : Formula) : next φ = next φ := by modalNorm
+example (φ : Formula) : prev φ = prev φ := by modalNorm
 
 -- Test: weakFuture/weakPast round-trip
-example (φ : Formula) : weakFuture φ = weakFuture φ := by modal_norm
-example (φ : Formula) : weakPast φ = weakPast φ := by modal_norm
+example (φ : Formula) : weakFuture φ = weakFuture φ := by modalNorm
+example (φ : Formula) : weakPast φ = weakPast φ := by modalNorm
 
 -- Test: always/sometimes round-trip
-example (φ : Formula) : always φ = always φ := by modal_norm
-example (φ : Formula) : sometimes φ = sometimes φ := by modal_norm
+example (φ : Formula) : always φ = always φ := by modalNorm
+example (φ : Formula) : sometimes φ = sometimes φ := by modalNorm
 
--- Test: modal_fold recovers derived operators from primitive form
--- These tests verify that modal_fold actually does work on primitive-form goals.
-example (φ : Formula) : φ.imp Formula.bot = φ.neg := by modal_fold
-example (φ : Formula) : φ.untl Formula.bot = φ.next := by modal_fold
-example (φ : Formula) : φ.snce Formula.bot = φ.prev := by modal_fold
+-- Test: modalFold recovers derived operators from primitive form
+-- These tests verify that modalFold actually does work on primitive-form goals.
+example (φ : Formula) : φ.imp Formula.bot = φ.neg := by modalFold
+example (φ : Formula) : φ.untl Formula.bot = φ.next := by modalFold
+example (φ : Formula) : φ.snce Formula.bot = φ.prev := by modalFold
 
 -- Test: fold lemmas work individually via rw
 example (φ ψ : Formula) :

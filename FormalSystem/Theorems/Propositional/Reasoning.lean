@@ -71,7 +71,7 @@ The context-based `iffIntro` already exists; this provides the pure implication 
 **Dependencies**: `deductionTheorem`, `pairing`, `DerivationTree.assumption`,
 `DerivationTree.weakening`
 -/
-@[tm_lemma]
+@[tmLemma]
 def biImp (A B : Formula) :
     ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) := by
   -- First, derive [(A → B), (B → A)] ⊢ (A → B) ∧ (B → A)

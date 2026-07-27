@@ -184,7 +184,7 @@ K-distribution for G, derived from BX3 (right_mono_until) and propositional
 contraposition. Replaces the primitive `Axiom.temp_k_dist` constructor.
 
 **Derivation**: Compose `G(φ→ψ) → G(¬ψ→¬φ)` with `G(¬ψ→¬φ) → (Gφ → Gψ)`. -/
-@[tm_lemma]
+@[tmLemma]
 noncomputable def temporalKDistDerived (φ ψ : Formula) :
     ⊢ (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
   impTrans (G_imp_to_G_contra φ ψ) (G_contra_to_GK φ ψ)
@@ -240,7 +240,7 @@ Replaces the primitive `Axiom.temp_4` constructor.
 
 **Derivation**: The contrapositive `F(¬¬F(¬φ)) → F(¬φ)` is proved by composing
 three F-monotonicity steps, then negated to obtain `Gφ → GGφ`. -/
-@[tm_lemma]
+@[tmLemma]
 noncomputable def temporal4Derived (φ : Formula) :
     ⊢ φ.allFuture.imp φ.allFuture.allFuture :=
   contraposition (impTrans (impTrans (dne_lift_F φ) (FF_to_F_top_and φ)) (F_top_and_absorb φ))
@@ -264,7 +264,7 @@ noncomputable def gDistribution (φ ψ : Formula) :
 /--
 `⊢ H(φ → ψ) → (H(φ) → H(ψ))`: H-distribution. Derived via temporal duality from G-distribution.
 -/
-@[tm_lemma]
+@[tmLemma]
 noncomputable def hDistribution (φ ψ : Formula) :
     ⊢ (φ.imp ψ).allPast.imp (φ.allPast.imp ψ.allPast) :=
   FormalSystem.Theorems.pastKDist φ ψ
@@ -279,7 +279,7 @@ noncomputable def gTransitivity (φ : Formula) :
 /--
 `⊢ H(φ) → H(H(φ))`: H-transitivity. Derived via temporal duality from G-transitivity.
 -/
-@[tm_lemma]
+@[tmLemma]
 noncomputable def hTransitivity (φ : Formula) :
     ⊢ φ.allPast.imp φ.allPast.allPast := by
   -- Derive by applying temporal duality to G-transitivity of swapTemporal φ
@@ -363,7 +363,7 @@ def sinceImpP (φ ψ : Formula) :
 
 /-- Contrapositive: `⊢ (A → B) → (¬B → ¬A)`.
 Derived from bCombinator and theoremFlip. -/
-@[tm_lemma]
+@[tmLemma]
 noncomputable def contrapositive (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) :=
   mp bCombinator
     (theoremFlip (A := (B.imp Formula.bot)) (B := (A.imp B)) (C := (A.imp Formula.bot)))
@@ -379,7 +379,7 @@ private noncomputable def ctx_thm {Γ : Context} {A : Formula}
 /-- Disjunction commutativity: `⊢ (A ∨ B) → (B ∨ A)`.
 Since `A ∨ B = ¬A → B`, this is `(¬A → B) → (¬B → A)`, proved by
 contraposition of the hypothesis composed with DNE. -/
-@[tm_lemma]
+@[tmLemma]
 noncomputable def formulaOrComm (A B : Formula) : ⊢ (A.or B).imp (B.or A) := by
   unfold Formula.or
   apply FormalSystem.Metalogic.Core.deductionTheorem [] (A.neg.imp B) (B.neg.imp A)

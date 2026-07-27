@@ -1,7 +1,7 @@
 # Implementation Plan: Systematic Mathlib Naming Upgrade
 
 - **Task**: 402 - systematic_mathlib_naming_upgrade
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 25 hours (8 phases, 12 dispatch units)
 - **Dependencies**: None
 - **Research Inputs**:
@@ -688,7 +688,7 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 
 ---
 
-### Phase 7: Silent-staleness sweep [NOT STARTED]
+### Phase 7: Silent-staleness sweep [COMPLETED]
 
 - **Goal:** Eliminate the occurrences `lake build` structurally cannot catch. 7.1 and 7.2 own
   disjoint file trees and may run in parallel.
@@ -816,12 +816,12 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 
 ---
 
-### Phase 8: Linter proof and closeout [NOT STARTED]
+### Phase 8: Linter proof and closeout [COMPLETED]
 
 - **Goal:** Prove `defsWithUnderscore = 0` by genuine conformance with the suppression file gone,
   and close the loose ends the migration was supposed to retire.
 - **Tasks:**
-  - [ ] **Decide the 19 `tactic*` syntax declarations** and record the decision in writing. These
+  - [x] **Decide the 19 `tactic*` syntax declarations** and record the decision in writing. These
         are auto-generated from `syntax`/`macro` commands, with names derived from the user-facing
         tactic token (`Bimodal.Automation.tacticModal_norm` from the `modal_norm` tactic). The
         linter's exclusion list (`Mathlib/Tactic/Linter/Style.lean:535-548`) skips `term`-prefixed
@@ -831,23 +831,73 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
         `@[nolint defsWithUnderscore]` at the declaration with a one-line rationale naming the tactic
         token it derives from. Per-declaration in-source nolints on auto-generated names are a
         documented exemption, not the bulk masking the task rules out - state that distinction where
-        the attribute is applied.
-  - [ ] **Delete `scripts/nolints.json`.** Not filtered, not emptied - removed from the tree.
-  - [ ] Run `lake exe batteries/runLinter FormalSystem` (note: the root is renamed; plain
+        the attribute is applied. *(deviation: altered — the rule was applied as written; the SET it
+        applied to was wrong in three ways, all corrected. (1) **18, not 19** (Phase 5.1's measured
+        figure). (2) **Two further declarations of the same structural class were missing from the
+        list**: `Automation.LemmaDB.Parser.Attr.tm_lemma`, a `register_label_attr` label attribute,
+        and — not auto-generated at all —
+        `Separation.sNestingAboveU.S_nesting_above_U_inner`, a `where`-clause helper the Phase 5.2
+        table excluded on the false theory that Lean regenerates such names from the parent's;
+        renaming the parent moved only the NAMESPACE component. (3) The plan's cited exclusion-list
+        line numbers are right but the **mechanism matters**: Mathlib's own `tacticPush_neg` escapes
+        by `` (`Mathlib.Tactic).isPrefixOf declName ``, a NAMESPACE whitelist, not by camelCasing —
+        every Lean tactic token is snake_case. Outcome: 7 documented tokens exempted, 11
+        internal-only tokens renamed (126 occurrences / 16 files), plus `modal_norm_at` renamed for
+        family coherence though the linter never flagged it (its generated name ends in `_`).
+        **Each internal-only token was first checked for a non-tactic homonym** — `modal_t` is
+        simultaneously a token and the constructor `Axiom.modal_t`, and a whole-word rename would
+        have corrupted 234 axiom references. Full table and recorded dissent in
+        `phase8-decision-record.md`.)*
+  - [x] **Delete `scripts/nolints.json`.** Not filtered, not emptied - removed from the tree.
+        *(completed — `git rm`, 860 entries. No replacement file introduced.)*
+  - [x] Run `lake exe batteries/runLinter FormalSystem` (note: the root is renamed; plain
         `lake exe runLinter` fails - the package declares no `lintDriver`; batteries reads
         `scripts/nolints.json` relative to cwd, which is now absent). **Target: `defsWithUnderscore = 0`.**
-  - [ ] Compare all other linter categories against the Phase 1 baseline (`unusedArguments` 124,
+        *(completed — **`defsWithUnderscore = 0`**, zero names listed, with the suppression file
+        absent from the tree.)*
+  - [x] Compare all other linter categories against the Phase 1 baseline (`unusedArguments` 124,
         `simpNF` 78, `docBlame` 39, `tacticDocs` 4, `structureInType` 1). Any increase is a
         regression introduced by this migration and must be fixed or explicitly recorded.
-  - [ ] Remove or supersede `docs/development/NAMING_CONVENTION_DEVIATION.md`, which names this
+        *(completed — **zero regressions, every category unchanged to the unit**: `unusedArguments`
+        124->124, `LINTER FAILED` 115->115, `docBlame` 39->39, `tacticDocs` 4->4, `structureInType`
+        1->1. Total 1144 -> 283 = 1144 - 861 exactly. Note the plan's "`simpNF` 78" is the figure
+        this task's `runlinter.py` does NOT produce — it breaks `LINTER FAILED` out of `simpNF`
+        rather than folding it in, giving 115; the comparison is against
+        `baseline/linter-unmasked.json` from the same tool, as the baseline README requires.)*
+  - [x] Remove or supersede `docs/development/NAMING_CONVENTION_DEVIATION.md`, which names this
         migration as its successor. Its architectural-root-cause account remains precise for the
         `Theorems/` layer (135 of 135 `DerivationTree`-valued) - preserve that content if it is
-        moved rather than deleted.
-  - [ ] Add a one-line note to `FormalSystem/Boneyard/README.md` recording that its identifiers
+        moved rather than deleted. *(deviation: altered — **superseded in place rather than
+        removed**, keeping the path so the inbound link from `LEAN_STYLE_GUIDE.md` survives.
+        Rewritten as a CLOSED record: the `Type`-valued `DerivationTree` root-cause account is
+        preserved verbatim, with the conclusion updated (the encoding still forces `def`, but the
+        rule keys on syntactic category, so those declarations now take lowerCamelCase and need no
+        exemption), plus the before/after table and the surviving-exemptions rationale. Scope also
+        grew: **`LEAN_STYLE_GUIDE.md` had been left self-contradictory by the Phase 7.2 mechanical
+        sweep** — it is a document ABOUT naming, so the sweep rewrote its examples and produced
+        "**Functions**: snake_case (`TruthAt`, `swapTemporal`)" and an `-- Avoid` block listing
+        `def TruthAt` directly beneath a `-- Good` block containing the same text. Its naming
+        section and its "create `scripts/nolints.json`" instructions were rewritten to state the
+        rule now in force.)*
+  - [x] Add a one-line note to `FormalSystem/Boneyard/README.md` recording that its identifiers
         predate the Mathlib naming migration and were deliberately left untouched (8,718 stale
         references, 93 files). Also update the prose Boneyard mention in
-        `FormalSystem/FormalSystem.lean`.
-  - [ ] Final verification bar, all four layers, recorded with output.
+        `FormalSystem/FormalSystem.lean`. *(deviation: altered — a one-LINE note would have been
+        useless. Written as a section that states the operational consequences: a name found there
+        will generally not resolve against live code; do not grep the tree when auditing identifier
+        usage (thousands of false positives); reviving a file means renaming its identifiers. Also
+        corrected a stale claim in the same file's Archival Criterion — it still named the
+        `Bimodal` library, renamed to `FormalSystem` back in Phase 2. `FormalSystem.lean`'s
+        Boneyard mention was extended to cover BOTH Boneyard trees, and its Quick Start example
+        `def my_formula` was fixed to `def myFormula`, since a doc example in the root module
+        showing the superseded convention is exactly what readers copy.)*
+  - [x] Final verification bar, all four layers, recorded with output. *(completed — Layer 1: 0
+        guard rejections, self-test 99.8176% over 128,317 ranges, five known buckets. Layer 2:
+        `build-all.sh` green at 2,725 jobs; `check-sorry.sh` 1 live sorry located by content in
+        `Transfer.lean`; `scripts/check-module-invariants.sh` ALL CHECKS PASSED. Layer 3:
+        `defsWithUnderscore = 0` with `scripts/nolints.json` absent, no sibling regression. Layer
+        4: 8,116 residual-text rewrites (7,300 Lean + 816 docs), re-sweep returns FOUR hits, each
+        deliberate and listed in `phase8-decision-record.md`.)*
 - **Estimated output:** ~150 lines (decision record, deletions, doc updates, verification transcript)
 - **Done when:** `scripts/nolints.json` does not exist; `lake exe batteries/runLinter FormalSystem`
   reports `defsWithUnderscore = 0`; no other linter category regressed; `lake build` green;
@@ -860,30 +910,30 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 
 The four verification layers, in order of what each can and cannot prove:
 
-- [ ] **Layer 1 - Guard rejection report.** Every `.ilean` range whose extracted text does not end
+- [x] **Layer 1 - Guard rejection report.** Every `.ilean` range whose extracted text does not end
       with the expected old final component is rejected and listed. Expected ~0.2%. Every rejection
       is eyeballed and classified. This layer is what makes prefix corruption structurally
       impossible; it is precisely what a textual rewrite lacks.
-- [ ] **Layer 2 - `lake build` green, no new errors.** Catches the ~1.6% `.ilean` coverage gap as
+- [x] **Layer 2 - `lake build` green, no new errors.** Catches the ~1.6% `.ilean` coverage gap as
       loud `Unknown identifier` errors. Necessary, demonstrated to actually fire, and **not
       sufficient**.
-- [ ] **Layer 3 - `lake exe batteries/runLinter FormalSystem` with `scripts/nolints.json` deleted ->
+- [x] **Layer 3 - `lake exe batteries/runLinter FormalSystem` with `scripts/nolints.json` deleted ->
       `defsWithUnderscore = 0`.** The only evidence that counts for this category. The linter emits
       nothing during `lake build` and CI runs `lean-action` with `lint: false`, so no build result is
       evidence here.
-- [ ] **Layer 4 - Residual-text sweep.** The enumerable non-elaborated classes the build can never
+- [x] **Layer 4 - Residual-text sweep.** The enumerable non-elaborated classes the build can never
       catch: 682 string literals, 6 code backtick sites, 7,047 comments, `docs/` 695, `typst/` 94,
       `latex/` 3.
 
 Invariants checked at every phase boundary:
 
-- [ ] `lake build` green (excepting the declared red interval between 6.1 and 6.2).
-- [ ] `BimodalTest` green - it is a `lean_lib` built by the default target.
-- [ ] Live `sorry` count = 1, located **by content**: the bare `sorry` inside
+- [x] `lake build` green (excepting the declared red interval between 6.1 and 6.2).
+- [x] `BimodalTest` green - it is a `lean_lib` built by the default target.
+- [x] Live `sorry` count = 1, located **by content**: the bare `sorry` inside
       `theorem countermodel_discrete` in `Metalogic/WeakCanonical/Transfer.lean`.
-- [ ] The six `Bimodal*` identifiers (`BimodalTest`, `BimodalHarness`, `BimodalLogic`,
+- [x] The six `Bimodal*` identifiers (`BimodalTest`, `BimodalHarness`, `BimodalLogic`,
       `BimodalProofs`, `BimodalReference`, `BimodalIntegrationTest`) intact.
-- [ ] No `@[deprecated]` alias introduced anywhere.
+- [x] No `@[deprecated]` alias introduced anywhere.
 
 ## Artifacts & Outputs
 

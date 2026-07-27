@@ -122,7 +122,7 @@ The identity function can be built from K and S combinators:
 - K : A → B → A
 - SKK = λx. K x (K x) = λx. x
 -/
-@[tm_lemma]
+@[tmLemma]
 def identity {fc : FrameClass} (A : Formula) : ⊢[fc] A.imp A := by
   have k1 : ⊢[fc] A.imp ((A.imp A).imp A) :=
     DerivationTree.axiom [] _ (Axiom.prop_s A (A.imp A)) (FrameClass.base_le fc)
@@ -144,7 +144,7 @@ Proof strategy:
 2. By K axiom: `(A → (B → C)) → ((A → B) → (A → C))` (distribution)
 3. Compose: `(B → C) → ((A → B) → (A → C))` (by transitivity)
 -/
-@[tm_lemma]
+@[tmLemma]
 def bCombinator {fc : FrameClass} {A B C : Formula} :
     ⊢[fc] (B.imp C).imp ((A.imp B).imp (A.imp C)) := by
   -- Step 1: S axiom gives us (B → C) → (A → (B → C))
@@ -165,7 +165,7 @@ This is essential for deriving the pairing combinator and notNotIntro.
 **Derivation Strategy**: Use S axiom to weaken, then K axiom to redistribute
 arguments at nested levels, composing with bCombinator.
 -/
-@[tm_lemma]
+@[tmLemma]
 def theoremFlip {fc : FrameClass} {A B C : Formula} :
     ⊢[fc] (A.imp (B.imp C)).imp (B.imp (A.imp C)) := by
   -- Goal: (A → B → C) → (B → A → C)
@@ -288,7 +288,7 @@ to the application pattern derived from flip applied to identity.
 
 **Derivation**: Apply theoremFlip to identity with appropriate substitutions.
 -/
-@[tm_lemma]
+@[tmLemma]
 def theoremApp1 {fc : FrameClass} {A B : Formula} : ⊢[fc] A.imp ((A.imp B).imp B) := by
   -- Goal: A → (A → B) → B
   -- Strategy: Use flip to swap arguments of a suitable function
@@ -551,7 +551,7 @@ is the Vireo (V) combinator: V = λa.λb.λf. f a b. This derivation shows V can
 built from S (prop_s), K (prop_k), and I (identity = SKK) combinators via the
 flip (C) and application (app1, app2) intermediate combinators.
 -/
-@[tm_lemma]
+@[tmLemma]
 def pairing {fc : FrameClass} (A B : Formula) : ⊢[fc] A.imp (B.imp (A.and B)) := by
   -- Goal: A → B → A ∧ B
   -- Recall: A ∧ B = ¬(A → ¬B) = (A → B → ⊥) → ⊥
@@ -585,7 +585,7 @@ we simply apply modus ponens to get `⊥`.
 
 **Usage**: Required for P4 perpetuity proof (◇▽φ → ◇φ) via contraposition of P3.
 -/
-@[tm_lemma]
+@[tmLemma]
 def notNotIntro {fc : FrameClass} (A : Formula) : ⊢[fc] A.imp A.neg.neg :=
   @theoremApp1 fc A Formula.bot
 
@@ -649,7 +649,7 @@ Necessary truths will always be necessary. Derived from MF + T + Modal 4:
 - Modal 4 gives `□φ → □(□φ)` (positive introspection)
 - Composing: `□φ → □(□φ) → □(G(□φ)) → G(□φ)`
 -/
-@[tm_lemma]
+@[tmLemma]
 def temporalFutureDerived {fc : FrameClass} (φ : Formula) :
     ⊢[fc] (Formula.box φ).imp (Formula.allFuture (Formula.box φ)) :=
   let mf_box :=

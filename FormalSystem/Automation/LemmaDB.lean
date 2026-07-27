@@ -42,6 +42,6 @@ Declarations labelled `@[tmLemma]` are enumerated by `modal_search`'s
 `tryLemmaMatch` strategy and applied via backward chaining. See the module
 docstring for the tagging policy.
 -/
-register_label_attr tm_lemma
+register_label_attr tmLemma
 
 end FormalSystem.Automation.LemmaDB
