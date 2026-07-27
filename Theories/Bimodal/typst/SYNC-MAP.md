@@ -80,8 +80,8 @@ with frame-class variants `completeness_dense` (`:234`) and `completeness_discre
 and alternate form `completeness'` (`:177`).
 
 **Live-source evidence** (imports and theorem locations, not README/ROADMAP sentences):
-- `Metalogic/Metalogic.lean:1-5` imports `Bimodal.Metalogic.Soundness`,
-  `Bimodal.Metalogic.Decidability`, `Bimodal.Metalogic.BXCanonical.BXCanonical`,
+- `Metalogic.lean` imports `Bimodal.Metalogic.Soundness`,
+  `Bimodal.Metalogic.Decidability`, `Bimodal.Metalogic.BXCanonical`,
   `Bimodal.Metalogic.WeakCanonical` — BXCanonical is the wired entry point.
 - `BXCanonical/Completeness.lean:4-8` imports `Chronicle.ChronicleToCountermodel`,
   `Chronicle.MCSMixedCase`, and `WeakCanonical` — the proof is wired through

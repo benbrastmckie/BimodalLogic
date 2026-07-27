@@ -233,35 +233,48 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 3: Standardize Aggregators [NOT STARTED]
+### Phase 3: Standardize Aggregators [COMPLETED]
 
 - **Goal:** One convention — sibling `X.lean` beside `X/` — applied across Metalogic. Seven of the
   eight top-level directories already follow it; Metalogic is the outlier, and five of its
   subdirectories have no aggregator at all. Mathlib uses neither convention, so there is no upstream
   authority to appeal to; the local majority rule wins because it is checkable by script.
 - **Tasks:**
-  - [ ] `git mv Theories/Bimodal/Metalogic/Metalogic.lean Theories/Bimodal/Metalogic.lean`.
+  - [x] `git mv Theories/Bimodal/Metalogic/Metalogic.lean Theories/Bimodal/Metalogic.lean`.
         Update its 7 importers to `import Bimodal.Metalogic`: `Theories/Bimodal/Bimodal.lean` plus
         `Tests/BimodalTest/Integration/{BimodalIntegrationTest,ProofSystemSemanticsTest,TemporalIntegrationTest,Helpers,AutomationProofSystemTest,ComplexDerivationTest}.lean`.
-  - [ ] `git mv Theories/Bimodal/Metalogic/BXCanonical/BXCanonical.lean Theories/Bimodal/Metalogic/BXCanonical.lean`.
+  - [x] `git mv Theories/Bimodal/Metalogic/BXCanonical/BXCanonical.lean Theories/Bimodal/Metalogic/BXCanonical.lean`.
         Sole importer is the relocated `Metalogic.lean`; update it to
         `import Bimodal.Metalogic.BXCanonical`.
-  - [ ] Collapse the WeakCanonical duplication: `Theories/Bimodal/Metalogic/WeakCanonical.lean`
+  - [x] Collapse the WeakCanonical duplication: `Theories/Bimodal/Metalogic/WeakCanonical.lean`
         (13-line stub, correct sibling position) and
         `Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean` (80 lines, self-named inner).
         Fold the inner file's import list and module doc into the sibling file, then
         `git rm` the inner one. The sibling's only importer relationship is preserved.
-  - [ ] Add sibling aggregators that do not yet exist: `Theories/Bimodal/Metalogic/Core.lean`,
+  - [x] Add sibling aggregators that do not yet exist: `Theories/Bimodal/Metalogic/Core.lean`,
         `Bundle.lean`, `Algebraic.lean`, `SoundnessLemmas.lean`. Each imports the concrete leaf
         modules of its directory and carries a `/-!` module doc naming the directory's role.
-  - [ ] **Constraint**: aggregators import concrete leaf modules ONLY. Do not edit any existing file
+  - [x] **Constraint**: aggregators import concrete leaf modules ONLY. Do not edit any existing file
         to import an aggregator — that is how a real module-level cycle would get introduced.
-  - [ ] Do not touch `Theories/Bimodal.lean` / `Theories/Bimodal/Bimodal.lean`. That pair exhibits
+  - [x] Do not touch `Theories/Bimodal.lean` / `Theories/Bimodal/Bimodal.lean`. That pair exhibits
         the same both-at-once pattern, but `Theories/Bimodal.lean` is the Lake `lean_lib` root
         (`srcDir := "Theories"`), so the indirection is load-bearing. Note it in the Phase 7
         architecture map as a known, deliberate exception.
-  - [ ] Fix `Theories/Bimodal/Bimodal.lean`'s broken References link
+  - [x] Fix `Theories/Bimodal/Bimodal.lean`'s broken References link
         `[Metalogic.lean](Metalogic.lean)`, which now points at the real relocated file.
+        *(deviation: altered -- no edit was needed. The link is relative to
+        `Theories/Bimodal/`, so moving `Metalogic/Metalogic.lean` to
+        `Theories/Bimodal/Metalogic.lean` made the existing link resolve. Verified, not edited.)*
+
+  **Phase 3 result.** The gate caught two stale references a `.lean`-only rewrite would have
+  left dangling, both in the typst tree: `typst/SYNC-MAP.md` named the module
+  `Bimodal.Metalogic.BXCanonical.BXCanonical` (C5), and `typst/chapters/04-metalogic.typ`
+  cited the path `Metalogic/Metalogic.lean`. Both corrected. C8 (aggregator convention)
+  passes as of this phase, ahead of Phase 6 enforcing it.
+
+  The four new aggregators (`Core`, `Bundle`, `Algebraic`, `SoundnessLemmas`) have no importer,
+  per this phase's own no-cycle constraint, so they are unreachable from every Lake root and are
+  recorded in the C6 manifest. C6 compile-checks them, so they cannot rot.
 - **Timing:** 1.5 hours
 - **Depends on:** 2
 - **Files to modify:**

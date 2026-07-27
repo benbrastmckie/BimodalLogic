@@ -7,7 +7,7 @@ Authors: Benjamin Brast-McKie
 import Bimodal.Syntax
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic.Metalogic
+import Bimodal.Metalogic
 
 /-!
 # Integration Test Helpers

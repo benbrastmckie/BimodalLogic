@@ -22,6 +22,17 @@ Bimodal.Automation.ProofFirstBenchmark
 # Metalogic/BXCanonical/ and Metalogic/WeakCanonical/.
 Bimodal.Metalogic.Completeness
 
+# Sibling aggregators for directories whose contents are reached directly rather
+# than through the aggregator. They exist so every Metalogic/ subdirectory has
+# one, and deliberately have no importer: an aggregator imported by a file that
+# its own contents already reach is how a module-level cycle gets introduced.
+# Being unreachable, `lake build` never compiles them, so C6 does it here --
+# which is what keeps a stale import inside one of them from going unnoticed.
+Bimodal.Metalogic.Core
+Bimodal.Metalogic.Bundle
+Bimodal.Metalogic.Algebraic
+Bimodal.Metalogic.SoundnessLemmas
+
 # --- ProofSystem -----------------------------------------------------------
 # Cited in prose by ProofSystem/Axioms.lean as the non-derivability
 # counterexample, and listed in ProofSystem/README.md, but not imported.

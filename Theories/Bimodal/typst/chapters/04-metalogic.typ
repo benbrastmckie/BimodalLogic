@@ -158,5 +158,5 @@ The decision procedure's soundness (`decide_sound`) and the finite-filtration FM
 
 === Semantic Convention
 
-The completeness architecture is built for the *strict (irreflexive) temporal semantics* of @sec:truth: G and H quantify over strictly future and strictly past times, so the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are *not* valid, and seriality is supplied axiomatically by BX1/BX1$'$.#footnote[`Semantics/Truth.lean` and the module docstring of `Metalogic/Metalogic.lean` document this convention.]
+The completeness architecture is built for the *strict (irreflexive) temporal semantics* of @sec:truth: G and H quantify over strictly future and strictly past times, so the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are *not* valid, and seriality is supplied axiomatically by BX1/BX1$'$.#footnote[`Semantics/Truth.lean` and the module docstring of `Metalogic.lean` document this convention.]
 

@@ -7,7 +7,7 @@ Authors: Benjamin Brast-McKie
 -- Re-export commonly used modules for convenience
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Decidability
-import Bimodal.Metalogic.BXCanonical.BXCanonical
+import Bimodal.Metalogic.BXCanonical
 import Bimodal.Metalogic.WeakCanonical
 
 /-!

@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic.Metalogic
+import Bimodal.Metalogic
 import Bimodal.Theorems.Combinators
 import BimodalTest.Integration.Helpers
 
