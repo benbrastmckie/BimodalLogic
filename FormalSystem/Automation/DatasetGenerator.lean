@@ -716,7 +716,8 @@ def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
     if antecedent == consequent then some (true, "structural_identity")
     else if isUnsatBotTemporal antecedent then some (true, "structural_bot_temporal")
     else if isStructurallyValid consequent then some (true, "structural_tautology")
-    else if isStructurallyValidDeep consequent then some (true, "structural_polarity_drop_tautology")
+    else if isStructurallyValidDeep consequent then some
+        (true, "structural_polarity_drop_tautology")
     else
       -- Phase 1 quick wins: conjunct-level patterns
       let conjuncts := collectTopLevelConjuncts antecedent
@@ -980,9 +981,11 @@ private def q_test : Formula := .atom ⟨"q", none⟩
 #eval isStructurallyValid (.imp p_test q_test)                    -- false (p → q, p ≠ q)
 
 -- structuralPrefilter: integration tests
-#eval structuralPrefilter (.imp (.untl (.box .bot) p_test) q_test) -- some true (recursive unsat antecedent)
+#eval structuralPrefilter (.imp (.untl (.box .bot) p_test) q_test) -- some true (recursive unsat
+-- antecedent)
 #eval structuralPrefilter (.imp p_test (.imp q_test q_test))       -- some true (valid consequent)
-#eval structuralPrefilter (.imp p_test (.box (.imp q_test q_test)))-- some true (valid consequent under box)
+#eval structuralPrefilter (.imp p_test (.box (.imp q_test q_test)))-- some true (valid consequent
+-- under box)
 #eval structuralPrefilter (.imp p_test q_test)                     -- none  (unknown)
 
 -- structuralPrefilterWithAxiom: axiom attribution tests
@@ -1014,15 +1017,20 @@ private def q_test : Formula := .atom ⟨"q", none⟩
 #eval isSomePastShape p_test.somePast                 -- some p
 
 -- S5 reflexive shortcutting
-#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.box p_test) (Formula.neg p_test)) q_test)
+#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.box p_test) (Formula.neg p_test))
+    q_test)
   -- some (true, "structural_s5_reflexive_conflict")
 
 -- Temporal loop detection (until)
-#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.untl p_test q_test) (Formula.allFuture (Formula.neg q_test))) (Formula.atom (Atom.mkBase "r")))
+#eval structuralPrefilterWithAxiom (.imp
+    (Formula.and (Formula.untl p_test q_test) (Formula.allFuture (Formula.neg q_test)))
+        (Formula.atom (Atom.mkBase "r")))
   -- some (true, "structural_temporal_loop_until")
 
 -- Temporal loop detection (since)
-#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.snce p_test q_test) (Formula.allPast (Formula.neg q_test))) (Formula.atom (Atom.mkBase "r")))
+#eval structuralPrefilterWithAxiom (.imp
+    (Formula.and (Formula.snce p_test q_test) (Formula.allPast (Formula.neg q_test)))
+        (Formula.atom (Atom.mkBase "r")))
   -- some (true, "structural_temporal_loop_since")
 
 -- Subsumption rules
@@ -1102,7 +1110,8 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 -- isStructurallyValidDeep: nested unsat antecedent
 #eval isStructurallyValidDeep (Formula.imp (Formula.untl Formula.bot q_test) p_test)
   -- true (unsat → anything is valid)
-#eval structuralPrefilterWithAxiom (.imp p_test (Formula.imp (Formula.untl Formula.bot q_test) p_test))
+#eval structuralPrefilterWithAxiom (.imp p_test
+    (Formula.imp (Formula.untl Formula.bot q_test) p_test))
   -- some (true, "structural_polarity_drop_tautology")
 
 -- hasBotConjunct
@@ -1111,7 +1120,8 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 
 -- Phase 3 tests: lightweight propositional contradiction
 #eval hasPropContradiction [p_test, Formula.neg p_test]                    -- true
-#eval hasPropContradiction [p_test, Formula.imp p_test Formula.bot]        -- true (¬p derived as p→⊥)
+#eval hasPropContradiction [p_test, Formula.imp p_test Formula.bot]        -- true (¬p derived as
+-- p→⊥)
 #eval hasPropContradiction [p_test, q_test]                                -- false
 #eval structuralPrefilterWithAxiom (.imp (Formula.and p_test (Formula.neg p_test)) q_test)
   -- some (true, "structural_prop_contradiction")
@@ -1119,8 +1129,10 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 -- Extended tautology detection (φ → ⊤ and φ → □⊤)
 #eval isStructurallyValid (.imp p_test Formula.top)                     -- true
 #eval isStructurallyValid (.imp p_test (.box Formula.top))              -- true
-#eval structuralPrefilterWithAxiom (.imp p_test Formula.top)             -- some (true, "structural_tautology")
-#eval structuralPrefilterWithAxiom (.imp p_test (.box Formula.top))      -- some (true, "structural_tautology")
+#eval structuralPrefilterWithAxiom (.imp p_test Formula.top)             -- some (true,
+-- "structural_tautology")
+#eval structuralPrefilterWithAxiom (.imp p_test (.box Formula.top))      -- some (true,
+-- "structural_tautology")
 
 /-! ### Invalid prefilter unit tests -/
 
@@ -1130,55 +1142,82 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 #eval isTrivialSatisfiable (.box p_test)                                   -- true  (box(atom))
 #eval isTrivialSatisfiable (Formula.and p_test q_test)                     -- true  (and of atoms)
 #eval isTrivialSatisfiable (.box (.box p_test))                            -- true  (box(box(atom)))
-#eval isTrivialSatisfiable (Formula.neg .bot)                              -- true  (neg(bot) = top, isUnsatBotTemporal bot = true)
+#eval isTrivialSatisfiable (Formula.neg .bot)                              -- true  (neg(bot) =
+-- top, isUnsatBotTemporal bot = true)
 -- isTrivialSatisfiable: negative cases
-#eval isTrivialSatisfiable (.untl p_test q_test)                           -- false (Until needs 2+ times)
-#eval isTrivialSatisfiable (.snce p_test q_test)                           -- false (Since needs 2+ times)
-#eval isTrivialSatisfiable (.imp p_test q_test)                            -- false (imp not a known-sat shape)
-#eval isTrivialSatisfiable .bot                                            -- false (bot is never true)
+#eval isTrivialSatisfiable (.untl p_test q_test)                           -- false (Until needs 2+
+-- times)
+#eval isTrivialSatisfiable (.snce p_test q_test)                           -- false (Since needs 2+
+-- times)
+#eval isTrivialSatisfiable (.imp p_test q_test)                            -- false (imp not a
+-- known-sat shape)
+#eval isTrivialSatisfiable .bot                                            -- false (bot is never
+-- true)
 
 -- isTemporalContradiction: positive cases (invalid formulas)
-#eval isTemporalContradiction (.imp p_test (.untl .bot q_test))            -- true  (p → U(⊥,q): conseq always false)
-#eval isTemporalContradiction (.imp p_test (.box .bot))                    -- true  (p → □⊥: conseq always false)
-#eval isTemporalContradiction (.imp (.box p_test) .bot)                    -- true  (□p → ⊥: conseq false, antecedent not)
-#eval isTemporalContradiction (.imp p_test (.snce .bot q_test))            -- true  (p → S(⊥,q): conseq always false)
+#eval isTemporalContradiction (.imp p_test (.untl .bot q_test))            -- true  (p → U(⊥,q):
+-- conseq always false)
+#eval isTemporalContradiction (.imp p_test (.box .bot))                    -- true  (p → □⊥: conseq
+-- always false)
+#eval isTemporalContradiction (.imp (.box p_test) .bot)                    -- true  (□p → ⊥: conseq
+-- false, antecedent not)
+#eval isTemporalContradiction (.imp p_test (.snce .bot q_test))            -- true  (p → S(⊥,q):
+-- conseq always false)
 #eval isTemporalContradiction (.imp (.box (.untl p_test q_test)) (.untl .bot r_test))
   -- true  (□(U(p,q)) → U(⊥,r): consequent always false, antecedent satisfiable)
 -- isTemporalContradiction: negative cases
 #eval isTemporalContradiction (.imp (.untl .bot p_test) (.untl .bot q_test))
   -- false (both sides always false → vacuously valid, not invalid)
-#eval isTemporalContradiction (.imp p_test q_test)                         -- false (q not always false)
-#eval isTemporalContradiction p_test                                       -- false (not an implication)
-#eval isTemporalContradiction (.imp .bot .bot)                             -- false (bot → bot is valid)
+#eval isTemporalContradiction (.imp p_test q_test)                         -- false (q not always
+-- false)
+#eval isTemporalContradiction p_test                                       -- false (not an
+-- implication)
+#eval isTemporalContradiction (.imp .bot .bot)                             -- false (bot → bot is
+-- valid)
 
 -- isObviousSatisfiable: positive cases (invalid formulas)
-#eval isObviousSatisfiable (.imp p_test .bot)                              -- true  (p → ⊥: p satisfiable)
-#eval isObviousSatisfiable (.imp (.box p_test) .bot)                       -- true  (□p → ⊥: sat in reflexive model)
+#eval isObviousSatisfiable (.imp p_test .bot)                              -- true  (p → ⊥: p
+-- satisfiable)
+#eval isObviousSatisfiable (.imp (.box p_test) .bot)                       -- true  (□p → ⊥:
+-- sat in reflexive model)
 #eval isObviousSatisfiable (.imp (Formula.and p_test q_test) .bot)         -- true  ((p∧q) → ⊥: sat)
-#eval isObviousSatisfiable (.imp p_test (.untl .bot q_test))               -- true  (p → U(⊥,q): sat antecedent, false conseq)
-#eval isObviousSatisfiable (.imp (Formula.imp .bot .bot) .bot)             -- true  (⊤ → ⊥: top is satisfiable)
+#eval isObviousSatisfiable (.imp p_test (.untl .bot q_test))               -- true  (p → U(⊥,q):
+-- sat antecedent, false conseq)
+#eval isObviousSatisfiable (.imp (Formula.imp .bot .bot) .bot)             -- true  (⊤ → ⊥: top is
+-- satisfiable)
 -- isObviousSatisfiable: negative cases
-#eval isObviousSatisfiable (.imp (.untl p_test q_test) .bot)               -- false (U(p,q) not trivially sat)
-#eval isObviousSatisfiable (.imp p_test q_test)                            -- false (q not always false)
-#eval isObviousSatisfiable (.imp .bot .bot)                                -- false (bot not trivially sat)
-#eval isObviousSatisfiable p_test                                          -- false (not an implication)
+#eval isObviousSatisfiable (.imp (.untl p_test q_test) .bot)               -- false (U(p,q) not
+-- trivially sat)
+#eval isObviousSatisfiable (.imp p_test q_test)                            -- false (q not always
+-- false)
+#eval isObviousSatisfiable (.imp .bot .bot)                                -- false (bot not
+-- trivially sat)
+#eval isObviousSatisfiable p_test                                          -- false (not an
+-- implication)
 
 -- hasUnfulfillableEventuality: positive cases (invalid formulas)
-#eval hasUnfulfillableEventuality (.imp (Formula.allFuture (Formula.neg p_test)) (.untl p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.allFuture (Formula.neg p_test))
+    (.untl p_test q_test))
   -- true  (G(¬p) → U(p,q): p never true in future, Until unfulfillable)
-#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.allFuture (Formula.neg p_test)) r_test) (.untl p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.allFuture (Formula.neg p_test))
+    r_test) (.untl p_test q_test))
   -- true  (G(¬p) ∧ r → U(p,q): G(¬p) is a conjunct)
-#eval hasUnfulfillableEventuality (.imp (Formula.allPast (Formula.neg p_test)) (.snce p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.allPast (Formula.neg p_test))
+    (.snce p_test q_test))
   -- true  (H(¬p) → S(p,q): symmetric past case)
-#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.allPast (Formula.neg p_test)) r_test) (.snce p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.allPast (Formula.neg p_test)) r_test)
+    (.snce p_test q_test))
   -- true  (H(¬p) ∧ r → S(p,q): H(¬p) is a conjunct)
 -- hasUnfulfillableEventuality: negative cases
-#eval hasUnfulfillableEventuality (.imp (Formula.allFuture (Formula.neg q_test)) (.untl p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.allFuture (Formula.neg q_test))
+    (.untl p_test q_test))
   -- false (G(¬q), not G(¬p) — wrong atom)
 #eval hasUnfulfillableEventuality (.imp p_test (.untl q_test r_test))
   -- false (no G(¬q) in antecedent)
-#eval hasUnfulfillableEventuality (.imp p_test q_test)                     -- false (consequent not Until/Since)
-#eval hasUnfulfillableEventuality p_test                                   -- false (not an implication)
+#eval hasUnfulfillableEventuality (.imp p_test q_test)                     -- false (consequent not
+-- Until/Since)
+#eval hasUnfulfillableEventuality p_test                                   -- false (not an
+-- implication)
 
 -- structuralInvalidPrefilter: integration tests
 #eval structuralInvalidPrefilter (.imp p_test (.untl .bot q_test))
@@ -1187,7 +1226,8 @@ private def s_test : Formula := .atom ⟨"s", none⟩
   -- some (false, "invalid_satisfiable_neg") — atom is trivially satisfiable
 #eval structuralInvalidPrefilter (.imp (.untl p_test q_test) (.untl .bot r_test))
   -- some (false, "invalid_false_consequent") — U(p,q) not trivially satisfiable, falls to Pattern 1
-#eval structuralInvalidPrefilter (.imp (Formula.allFuture (Formula.neg p_test)) (.untl p_test q_test))
+#eval structuralInvalidPrefilter (.imp (Formula.allFuture (Formula.neg p_test))
+    (.untl p_test q_test))
   -- some (false, "invalid_unfulfillable_eventuality") — G(¬p) makes U(p,q) unfulfillable
 #eval structuralInvalidPrefilter (.imp p_test q_test)
   -- none (undetermined)
@@ -1301,7 +1341,8 @@ def DecideCache.display (c : DecideCache) : String :=
   let total := c.hits + c.misses
   let rateStr := if total == 0 then "N/A"
     else s!"{(c.hits * 100 / total)}%"
-  s!"Cache: {c.hits} hits, {c.misses} misses, {rateStr} hit rate, {c.evictions} evictions, {c.entries.size} entries"
+  s!"Cache: {c.hits} hits, {c.misses} misses, {rateStr} hit rate, {c.evictions} evictions, \
+      {c.entries.size} entries"
 
 /--
 Label a single formula by running the decision procedure.
@@ -1748,7 +1789,8 @@ def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
       allResults := allResults ++ chunkResult
       completedCount := completedCount + chunkResult.length
       if completedCount % 100 == 0 || i == numChunks - 1 then
-        IO.println s!"  Progress: {completedCount}/{total} formulas labeled (chunk {i + 1}/{numChunks})"
+        IO.println
+            s!"  Progress: {completedCount}/{total} formulas labeled (chunk {i + 1}/{numChunks})"
     -- Print cache statistics
     let cacheStats ← cache.atomically do return (← get)
     IO.println (cacheStats.display)
@@ -2047,7 +2089,8 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
     | some (φ, exLabel, exMethod), some (_, hyLabel, hyMethod) =>
       let labelMatch := exLabel == hyLabel
       if !labelMatch then
-        IO.println s!"[test] MISMATCH at {φ.prettyPrint}: exhaustive={repr exLabel} hybrid={repr hyLabel}"
+        IO.println
+            s!"[test] MISMATCH at {φ.prettyPrint}: exhaustive={repr exLabel} hybrid={repr hyLabel}"
         allMatch := false
       else
         IO.println s!"[test] OK: {φ.prettyPrint} -> {repr exLabel} (ex: {exMethod}, hy: {hyMethod})"
@@ -2070,9 +2113,11 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   -- Formulas that should be caught by the invalid prefilter
   let invalidFormulas : List (Formula × String) := [
     (.imp p .bot, "invalid_satisfiable_neg"),           -- p → ⊥: satisfiable negation
-    (.imp p (.untl .bot q), "invalid_satisfiable_neg"), -- p → U(⊥,q): satisfiable + false consequent
+    (.imp p (.untl .bot q), "invalid_satisfiable_neg"), -- p → U(⊥,q): satisfiable + false
+    -- consequent
     (.imp (.box p) .bot, "invalid_satisfiable_neg"),    -- □p → ⊥: box(atom) satisfiable
-    (.imp (.untl p q) (.untl .bot r), "invalid_false_consequent"),  -- U(p,q) → U(⊥,r): false consequent
+    (.imp (.untl p q) (.untl .bot r), "invalid_false_consequent"),  -- U(p,q) → U(⊥,r): false
+    -- consequent
     (.imp (Formula.allFuture (Formula.neg p)) (.untl p q), "invalid_unfulfillable_eventuality")
       -- G(¬p) → U(p,q): unfulfillable eventuality
   ]
@@ -2081,11 +2126,16 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
     let lf ← labelFormulaImpl φ .Base 1000
     let methodOk := lf.decisionMethod == "structural_invalid_prefilter"
     let labelOk := lf.label == .invalid
-    let patternOk := lf.proofReconstructionMethod == some ("structural_invalid_prefilter:" ++ expectedPattern)
+    let patternOk := lf.proofReconstructionMethod == some
+        ("structural_invalid_prefilter:" ++ expectedPattern)
     if methodOk && labelOk && patternOk then
-      IO.println s!"[test] OK: {φ.prettyPrint} -> invalid via structural_invalid_prefilter:{expectedPattern}"
+      IO.println
+          s!"[test] OK: {φ.prettyPrint} -> invalid via \
+              structural_invalid_prefilter:{expectedPattern}"
     else
-      IO.println s!"[test] FAIL: {φ.prettyPrint} -> label={repr lf.label} method={lf.decisionMethod} recon={repr lf.proofReconstructionMethod}"
+      IO.println
+          s!"[test] FAIL: {φ.prettyPrint} -> label={repr lf.label} method={lf.decisionMethod} \
+              recon={repr lf.proofReconstructionMethod}"
       allPass := false
   -- Verify valid formulas are NOT caught by the invalid prefilter
   let validFormulas : List Formula := [
@@ -2097,10 +2147,14 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   for φ in validFormulas do
     let lf ← labelFormulaImpl φ .Base 1000
     if lf.decisionMethod == "structural_invalid_prefilter" then
-      IO.println s!"[test] FAIL: valid formula {φ.prettyPrint} incorrectly caught by invalid prefilter (method={lf.decisionMethod})"
+      IO.println
+          s!"[test] FAIL: valid formula {φ.prettyPrint} incorrectly caught by invalid prefilter \
+              (method={lf.decisionMethod})"
       allPass := false
     else
-      IO.println s!"[test] OK: {φ.prettyPrint} -> {repr lf.label} via {lf.decisionMethod} (not invalid prefilter)"
+      IO.println
+          s!"[test] OK: {φ.prettyPrint} -> {repr lf.label} via {lf.decisionMethod} (not invalid \
+              prefilter)"
   if allPass then
     IO.println "[test] PASS: all invalid prefilter integration tests pass"
   else
@@ -2135,10 +2189,12 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
       if lf.label == .invalid || lf.decisionMethod == "structural_invalid_prefilter" then
         IO.println s!"[test] OK: {φ.prettyPrint} — prefilter=invalid, tableau={repr lf.label}"
       else
-        IO.println s!"[test] MISMATCH: {φ.prettyPrint} — prefilter=invalid but tableau={repr lf.label}"
+        IO.println
+            s!"[test] MISMATCH: {φ.prettyPrint} — prefilter=invalid but tableau={repr lf.label}"
         allMatch := false
     | _ =>
-      IO.println s!"[test] SKIP: {φ.prettyPrint} — not caught by prefilter (method={lf.decisionMethod})"
+      IO.println
+          s!"[test] SKIP: {φ.prettyPrint} — not caught by prefilter (method={lf.decisionMethod})"
   if allMatch then
     IO.println "[test] PASS: all cross-validation tests agree"
   else
@@ -2197,6 +2253,8 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   if pass1 && pass2 && pass3 && pass4 then
     IO.println "[test] PASS: all edge case tests correct"
   else
-    IO.println s!"[test] FAIL: edge case failures (pass1={pass1} pass2={pass2} pass3={pass3} pass4={pass4})"
+    IO.println
+        s!"[test] FAIL: edge case failures (pass1={pass1} pass2={pass2} pass3={pass3} \
+            pass4={pass4})"
 
 end FormalSystem.Automation

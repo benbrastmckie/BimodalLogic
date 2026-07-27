@@ -111,7 +111,8 @@ partial def readToken (acc : List Char) (chars : List Char) : List Char × List 
   match chars with
   | [] => (acc, [])
   | c :: rest =>
-    if c == ' ' ∨ c == Char.ofNat 9 ∨ c == Char.ofNat 10 ∨ c == Char.ofNat 13 ∨ c == '(' ∨ c == ')' then
+    if c == ' ' ∨ c == Char.ofNat 9 ∨ c == Char.ofNat 10 ∨ c == Char.ofNat 13 ∨ c == '(' ∨ c == ')'
+        then
       (acc, chars)
     else
       readToken (c :: acc) rest

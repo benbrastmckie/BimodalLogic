@@ -425,7 +425,8 @@ def taggedToJsonl (idx : Nat) (tf : TaggedFormula) (lf : LabeledFormula)
   let cmStr := match lf.countermodel with
     | none => "null"
     | some cm => cm.toJson
-  let augStr := "{\"source\": \"axiom_instance\", \"original_formula_str\": null, \"axiom_name\": \""
+  let augStr :=
+      "{\"source\": \"axiom_instance\", \"original_formula_str\": null, \"axiom_name\": \""
     ++ escapeJsonString tf.axiomName ++ "\"}"
   "{\"id\": \"" ++ escapeJsonString idStr ++ "\""
   ++ ", \"split\": \"" ++ escapeJsonString splitName ++ "\""
@@ -531,7 +532,8 @@ def main (args : List String) : IO Unit := do
       | .invalid => invalidCount := invalidCount + 1
       | .timeout => timeoutCount := timeoutCount + 1
   labeled := labeled.reverse
-  IO.println s!"  Labeling complete: {validCount} valid, {invalidCount} invalid, {timeoutCount} timeout"
+  IO.println
+      s!"  Labeling complete: {validCount} valid, {invalidCount} invalid, {timeoutCount} timeout"
   IO.println s!"  Axiom-matched: {axiomMatchCount}, Fallback: {fallbackCount}"
 
   -- Step 6: Per-constructor coverage summary

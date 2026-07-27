@@ -107,7 +107,8 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
   let rec searchLoop (queue : PriorityQueue) (cache : ProofCache) (visited : Visited)
                      (stats : SearchStats) (expansions : Nat) : (fuel : Nat) →
       Bool × ProofCache × Visited × SearchStats × Nat
-    | 0 => (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
+    | 0 =>
+        (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
     | fuel + 1 =>
         if expansions ≥ maxExpansions then
           (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
@@ -133,7 +134,8 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
                     (true, cache, visited', {stats' with hits := stats'.hits + 1}, expansions + 1)
                 | some false =>
                     -- Cached failure, skip
-                    searchLoop queue' cache visited' {stats' with hits := stats'.hits + 1} expansions fuel
+                    searchLoop queue' cache visited' {stats' with hits := stats'.hits + 1}
+                        expansions fuel
                 | none =>
                     let stats' := {stats' with misses := stats'.misses + 1}
 
@@ -150,7 +152,8 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
                       let implications := findImplicationsTo node.context node.goal
                       let mpNodes := implications.map fun ψ =>
                         let h := patternAwareScore weights node.context ψ patternDb .ModusPonens
-                        { context := node.context, goal := ψ, cost := node.cost + 1, heuristic := h : SearchNode }
+                        { context := node.context, goal := ψ, cost := node.cost + 1, heuristic := h
+                            : SearchNode }
 
                       -- 2. Modal K rule: if goal is □ψ, add ψ with boxed context
                       let modalNodes := match node.goal with
@@ -173,7 +176,8 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
                       let queue'' := allSuccessors.foldl PriorityQueue.insert queue'
 
                       -- Continue search
-                      searchLoop queue'' (cache.insert key false) visited' stats' (expansions + 1) fuel
+                      searchLoop queue'' (cache.insert key false) visited' stats' (expansions + 1)
+                          fuel
 
   -- Use maxExpansions * 10 as fuel (allows for skipped visited nodes)
   searchLoop initQueue ProofCache.empty Visited.empty {} 0 (maxExpansions * 10)
@@ -244,7 +248,8 @@ Returns the result, updated cache/visited sets, and stats.
 New code should use `search` with the appropriate `SearchStrategy`.
 -/
 def searchWithHeuristics (Γ : Context) (φ : Formula) (depth : Nat)
-    (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited × SearchStats × Nat :=
+    (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited ×
+        SearchStats × Nat :=
   boundedSearch Γ φ depth ProofCache.empty Visited.empty 0 visitLimit weights {}
 
 /--
@@ -253,8 +258,10 @@ Cached proof search using memoization, visit limits, and stats.
 Returns `(result, updated_cache, visited, stats, visits)` where `stats` exposes cache hits/misses,
 visited node count, and visit-limit prunes.
 -/
-def searchWithCache (cache : ProofCache := ProofCache.empty) (Γ : Context) (φ : Formula) (depth : Nat)
-    (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited × SearchStats × Nat :=
+def searchWithCache (cache : ProofCache := ProofCache.empty) (Γ : Context) (φ : Formula)
+    (depth : Nat)
+    (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited ×
+        SearchStats × Nat :=
   boundedSearch Γ φ depth cache Visited.empty 0 visitLimit weights {}
 
 /-!

@@ -18,7 +18,8 @@ the existing `LabeledFormula.toJson` from `DatasetGenerator.lean`.
 ## Usage
 
 ```bash
-lake exe proof_first_generator -- --max-depth 2 --seed 1000 --atoms "p,q,r" --output data/proof_first.jsonl
+lake exe proof_first_generator -- --max-depth 2 --seed 1000 --atoms "p,q,r" --output
+data/proof_first.jsonl
 ```
 
 -/

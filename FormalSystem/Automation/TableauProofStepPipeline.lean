@@ -203,7 +203,8 @@ Compute coverage metrics: (rules_covered, total_rules, axioms_covered, total_axi
 -/
 def computeCoverage (dist : StepDistribution) : Nat × Nat × Nat × Nat :=
   let rulesCovered := dist.ruleHistogram.size
-  let totalRules := 7  -- axiom, assumption, modus_ponens, necessitation, temporal_necessitation, temporal_duality, weakening
+  let totalRules := 7  -- axiom, assumption, modus_ponens, necessitation, temporal_necessitation,
+  -- temporal_duality, weakening
   let axiomsCovered := dist.axiomHistogram.size
   let totalAxioms := 42
   (rulesCovered, totalRules, axiomsCovered, totalAxioms)
@@ -291,7 +292,9 @@ partial def runEnumerationPipeline (config : PipelineConfig)
     , maxTemporalDepth := config.maxTemporalDepth
     , maxSize := config.maxComplexity
     , atomPool := config.atomPool }
-  IO.println s!"[enum] Enumerating formulas (complexity <= {config.maxComplexity}, modal <= {config.maxModalDepth}, temporal <= {config.maxTemporalDepth})..."
+  IO.println
+      s!"[enum] Enumerating formulas (complexity <= {config.maxComplexity}, modal <= \
+          {config.maxModalDepth}, temporal <= {config.maxTemporalDepth})..."
   let startMs ← IO.monoMsNow
   let formulas := enumerateUpToDepth enumConfig
   let enumMs ← IO.monoMsNow
@@ -330,9 +333,13 @@ partial def runEnumerationPipeline (config : PipelineConfig)
     if idx % 1000 == 0 then
       let elapsedMs ← IO.monoMsNow
       let elapsedSecs := (elapsedMs - startMs) / 1000
-      IO.println s!"[enum] Progress: {idx}/{formulas.length} formulas, {validCount} valid, {allSteps.size} steps, {elapsedSecs}s"
+      IO.println
+          s!"[enum] Progress: {idx}/{formulas.length} formulas, {validCount} valid, \
+              {allSteps.size} steps, {elapsedSecs}s"
   let endMs ← IO.monoMsNow
-  IO.println s!"[enum] Complete: {formulas.length} formulas, {validCount} valid, {allSteps.size} unique steps, {(endMs - startMs) / 1000}s"
+  IO.println
+      s!"[enum] Complete: {formulas.length} formulas, {validCount} valid, {allSteps.size} unique \
+          steps, {(endMs - startMs) / 1000}s"
   dist := { dist with theoremCount := validCount }
   return (allSteps, dist, validFormulas.reverse)
 
@@ -351,7 +358,8 @@ partial def runAxiomSeedPipeline (config : PipelineConfig)
   let startMs ← IO.monoMsNow
   let validFormulas ← generateValidBatch config.validSeedCount config.maxComplexity config.atomPool
   let genMs ← IO.monoMsNow
-  IO.println s!"[seed] Generated {validFormulas.length} valid formulas in {(genMs - startMs) / 1000}s"
+  IO.println
+      s!"[seed] Generated {validFormulas.length} valid formulas in {(genMs - startMs) / 1000}s"
   -- Process each valid formula through decideAuto + extractStepSequence
   let mut allSteps : Array ProofStep := #[]
   let mut dist := StepDistribution.empty
@@ -380,9 +388,13 @@ partial def runAxiomSeedPipeline (config : PipelineConfig)
     idx := idx + 1
     if idx % 500 == 0 then
       let elapsedMs ← IO.monoMsNow
-      IO.println s!"[seed] Progress: {idx}/{validFormulas.length}, {validCount} decided valid, {allSteps.size} steps, {(elapsedMs - startMs) / 1000}s"
+      IO.println
+          s!"[seed] Progress: {idx}/{validFormulas.length}, {validCount} decided valid, \
+              {allSteps.size} steps, {(elapsedMs - startMs) / 1000}s"
   let endMs ← IO.monoMsNow
-  IO.println s!"[seed] Complete: {validFormulas.length} formulas, {validCount} decided valid, {allSteps.size} unique steps, {(endMs - startMs) / 1000}s"
+  IO.println
+      s!"[seed] Complete: {validFormulas.length} formulas, {validCount} decided valid, \
+          {allSteps.size} unique steps, {(endMs - startMs) / 1000}s"
   dist := { dist with theoremCount := validCount }
   return (allSteps, dist, seenHashes)
 
@@ -399,7 +411,8 @@ private def iterG : Nat → Formula → Formula
 
 /--
 Wrap a derivation tree with n layers of `temporal_necessitation`.
-`wrapG 0 tree = tree`, `wrapG 3 tree = temporal_necessitation (temporal_necessitation (temporal_necessitation tree))`.
+`wrapG 0 tree = tree`, `wrapG 3 tree = temporal_necessitation (temporal_necessitation
+(temporal_necessitation tree))`.
 -/
 private def wrapG {fc : FrameClass} {φ : Formula} :
     (n : Nat) → DerivationTree fc [] φ → DerivationTree fc [] (iterG n φ)
@@ -418,7 +431,8 @@ partial def runDeepWrappingPipeline (validFormulas : List Formula)
     (config : PipelineConfig) (existingHashes : Std.HashSet UInt64 := {})
     : IO (Array ProofStep × StepDistribution × Std.HashSet UInt64) := do
   let batchFormulas := validFormulas.take config.wrapBatchSize
-  IO.println s!"[wrap] Deep G^n wrapping: {batchFormulas.length} formulas x {config.maxWrapDepth} depths"
+  IO.println
+      s!"[wrap] Deep G^n wrapping: {batchFormulas.length} formulas x {config.maxWrapDepth} depths"
   let startMs ← IO.monoMsNow
   let mut allSteps : Array ProofStep := #[]
   let mut dist := StepDistribution.empty
@@ -453,9 +467,13 @@ partial def runDeepWrappingPipeline (validFormulas : List Formula)
     idx := idx + 1
     if idx % 100 == 0 then
       let elapsedMs ← IO.monoMsNow
-      IO.println s!"[wrap] Progress: {idx}/{batchFormulas.length} formulas, {validCount} wrapped valid, {allSteps.size} steps, {(elapsedMs - startMs) / 1000}s"
+      IO.println
+          s!"[wrap] Progress: {idx}/{batchFormulas.length} formulas, {validCount} wrapped valid, \
+              {allSteps.size} steps, {(elapsedMs - startMs) / 1000}s"
   let endMs ← IO.monoMsNow
-  IO.println s!"[wrap] Complete: {batchFormulas.length} formulas x {config.maxWrapDepth} depths, {validCount} valid, {allSteps.size} unique steps, {(endMs - startMs) / 1000}s"
+  IO.println
+      s!"[wrap] Complete: {batchFormulas.length} formulas x {config.maxWrapDepth} depths, \
+          {validCount} valid, {allSteps.size} unique steps, {(endMs - startMs) / 1000}s"
   dist := { dist with theoremCount := validCount }
   return (allSteps, dist, seenHashes)
 
@@ -531,8 +549,12 @@ partial def runFullPipeline (config : PipelineConfig) : IO Unit := do
   IO.println "========================================"
   IO.println "Tableau Proof Step Pipeline"
   IO.println "========================================"
-  IO.println s!"Config: complexity={config.maxComplexity}, modal={config.maxModalDepth}, temporal={config.maxTemporalDepth}"
-  IO.println s!"Seeds: {config.validSeedCount}, wrap depth: {config.maxWrapDepth}, batch: {config.wrapBatchSize}"
+  IO.println
+      s!"Config: complexity={config.maxComplexity}, modal={config.maxModalDepth}, \
+          temporal={config.maxTemporalDepth}"
+  IO.println
+      s!"Seeds: {config.validSeedCount}, wrap depth: {config.maxWrapDepth}, batch: \
+          {config.wrapBatchSize}"
   IO.println s!"Output: {config.outputPath}"
   IO.println ""
 

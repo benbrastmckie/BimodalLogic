@@ -353,13 +353,13 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 
 ---
 
-### Phase 4: `Automation/` Mechanical Sweep (327 sites, 20 files) [NOT STARTED]
+### Phase 4: `Automation/` Mechanical Sweep (327 sites, 20 files) [COMPLETED]
 
 - **Goal:** Drive the mechanical fixer across all 20 `FormalSystem/Automation/` files and reduce
   the area to its irreducible hand-fix residual.
 
 - **Tasks:**
-  - [ ] Run `sweep.py` with a completion log so the run is resumable, over the 20 files in
+  - [x] Run `sweep.py` with a completion log so the run is resumable, over the 20 files in
         descending order: `ProofStepExport.lean` (83), `DatasetGenerator.lean` (51),
         `FormulaMutator.lean` (43), `FormulaEnumerator.lean` (41), `DatasetExport.lean` (30),
         `ProofFirstBenchmark.lean` (15), `Tactics/Commands.lean` (14),
@@ -369,10 +369,16 @@ Phases within the same wave can execute in parallel. Territory contracts for the
         `BenchmarkAnchors.lean` (2), and the six single-site files (`AesopRules.lean`,
         `EnumBenchmark.lean`, `Normalization.lean`, `ProofFirstExporter.lean`,
         `TraceExporter.lean`, `Tactics/Deduction.lean`).
-  - [ ] Let the per-file lint → fix → re-lint → revert-on-regression loop run to fixpoint.
-  - [ ] Enumerate the surviving residual into a checked-in list for Phase 5, with file, line, and
-        why the breaker declined.
-  - [ ] Commit the mechanical result even though the area is not yet at zero — it is green and
+  - [x] Let the per-file lint → fix → re-lint → revert-on-regression loop run to fixpoint.
+        *(deviation: altered — the inherited gate demands the in-scope category reach ZERO and
+        reverts the whole file otherwise, so one irreducible site would have cost a file its
+        other 80 mechanical fixes. Added `sweep.py --allow-residual`, which still reverts on any
+        introduced error and on any sibling-owned frozen-category drift, but records a non-zero
+        longLine remainder as a documented residual instead of failure. This is what the phase's
+        own "commit the mechanical result even though the area is not yet at zero" requires.)*
+  - [x] Enumerate the surviving residual into a checked-in list for Phase 5, with file, line, and
+        why the breaker declined. *(completed: `tools/logs/automation-residual.txt`, 6 entries)*
+  - [x] Commit the mechanical result even though the area is not yet at zero — it is green and
         independently verifiable.
 
 - **Timing:** 1.5 hours
@@ -381,16 +387,28 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 - **Files to modify:** the 20 `FormalSystem/Automation/` `.lean` files listed above; plus
   `specs/180_.../tools/logs/automation-residual.txt` (new).
 
+- **Phase 4 measured result:** 19 of 20 files swept clean on the first pass (`ProofStepExport`
+  83/83, `DatasetGenerator` 51/51, `DatasetExport` 30/30, `FormulaEnumerator` 43/43 over two
+  iterations, …). `FormulaMutator.lean` failed its gate and was auto-reverted with
+  `expected alternative right-hand-side to start in a column greater than or equal to the
+  corresponding '|'` at `:980:8` — a rule-8 match-alternative column violation. Re-run through
+  the inherited `--sequential` bisection salvage, it took 37 of its 43 sites and refused 6.
+  Area total **327 → 6**, all six in that one declaration.
+
 - **Verification:**
-  - `count_long_lines.py` reports the `Automation/` area strictly below 327, and the residual it
-    reports **equals** the length of the enumerated residual list — the list is not allowed to
-    drift from the measurement.
-  - `lake build` green, ≥ 1883 jobs, exit 0, zero errors.
-  - Sibling-owned frozen categories unchanged **by equality** against the Phase 1 baseline —
-    in particular `linter.unusedVariables` (e.g. the pre-existing warning at
-    `DatasetGenerator.lean:2179`) must still be present, not silently fixed.
-  - Declaration inventory unchanged.
-  - Comment-stripped live `sorry` count = 1.
+  - [x] `count_long_lines.py` reports the `Automation/` area strictly below 327 — **6** — and the
+    residual it reports **equals** the length of the enumerated residual list (6 entries in
+    `tools/logs/automation-residual.txt`); the list is not allowed to drift from the measurement.
+  - [x] `lake build` green, **1883 jobs**, exit 0, zero errors.
+  - [x] `lake build BimodalTest` green, 1923 jobs, exit 0.
+  - [x] Sibling-owned frozen categories unchanged **by equality** against the Phase 1 baseline —
+    printed category-by-category, all seven identical: `(deprecation)` 6, `(rintro-try-this)` 15,
+    `(sorry)` 1, `linter.defProp` 10, `linter.dupNamespace` 13, `linter.unusedSimpArgs` 3,
+    `linter.unusedVariables` 14. The `DatasetGenerator.lean` `unusedVariables` warning is still
+    present and still unfixed; it now reports at `:2235` rather than the plan's `:2179` purely
+    because this phase's own line breaks shifted it downward.
+  - [x] Declaration inventory unchanged (`gate.py check` → **GATE PASSED**).
+  - [x] Comment-stripped live `sorry` count = 1 (`countermodel_discrete`, by content).
 
 ---
 

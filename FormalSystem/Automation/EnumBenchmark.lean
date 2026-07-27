@@ -74,7 +74,8 @@ def benchmarkValidFraction (atoms : List Atom) (maxComplexity : Nat)
   let midStart := validFormulas.length / 3
   let sampleValid := (validFormulas.drop midStart).take 200
   IO.println s!"  Labeling {sampleValid.length} axiom-seeded formulas (from middle)..."
-  let labeledValid ← labelBatch sampleValid (parallelThreads := parallelThreads) (cacheMaxSize := cacheSize)
+  let labeledValid ← labelBatch sampleValid (parallelThreads := parallelThreads)
+      (cacheMaxSize := cacheSize)
   let statsValid := computeBatchStats labeledValid
   IO.println (statsValid.display)
   -- Ex_falso dominance check

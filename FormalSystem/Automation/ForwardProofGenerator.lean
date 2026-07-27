@@ -163,7 +163,8 @@ def schemaNames : List String :=
   , "temp_linearity", "temp_linearity_past"
   , "F_until_equiv", "P_since_equiv"
   , "modal_future"
-  , "discrete_symm_fwd", "discrete_symm_bwd", "discrete_propagate_fwd", "discrete_propagate_bwd", "discrete_box_necessity"
+  , "discrete_symm_fwd", "discrete_symm_bwd", "discrete_propagate_fwd", "discrete_propagate_bwd",
+      "discrete_box_necessity"
   , "prior_UZ", "prior_SZ"
   , "z1"
   , "density", "dense_indicator" ]
@@ -185,7 +186,8 @@ def schemaLayer (idx : Nat) : Layer :=
   match idx with
   | 0 | 1 | 2 | 3 => .Propositional
   | 4 | 5 | 6 | 7 | 8 => .Modal
-  | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 => .BX
+  | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 |
+      28 | 29 | 30 => .BX
   | 31 => .Interaction
   | 32 | 33 | 34 | 35 | 36 => .Uniformity
   | 37 | 38 => .Prior
@@ -207,7 +209,8 @@ witness (height 0).
 Returns `none` if the axiom's `minFrameClass` is incompatible with the config's
 `frameClass` (should not happen when using `pickSchemaIdx`).
 -/
-def instantiateAxiomWithProof (cfg : ForwardConfig) : IO (Option (Sigma fun φ => DerivationTree cfg.frameClass [] φ)) := do
+def instantiateAxiomWithProof (cfg : ForwardConfig) : IO
+    (Option (Sigma fun φ => DerivationTree cfg.frameClass [] φ)) := do
   let result ← instantiateAxiomWithWitness cfg.atoms cfg.maxParamSize cfg.frameClass
   match result with
   | some ⟨φ, ax⟩ =>
@@ -330,7 +333,9 @@ def forwardGenerate (cfg : ForwardConfig)
     | none => pure ()
     if (i + 1) % progressInterval == 0 then
       let elapsed ← IO.monoMsNow
-      IO.println s!"[proof-first] Seeding: {i + 1}/{cfg.seedCount}, pool size: {pool.size}, elapsed: {elapsed - seedStart}ms"
+      IO.println
+          s!"[proof-first] Seeding: {i + 1}/{cfg.seedCount}, pool size: {pool.size}, elapsed: \
+              {elapsed - seedStart}ms"
 
   -- Phase 2: Cap ex_falso fraction
   let capStart ← IO.monoMsNow
@@ -378,7 +383,9 @@ def forwardGenerate (cfg : ForwardConfig)
     let growth := pool.size - prevSize
     let growthRate := if prevSize > 0 then growth * 100 / prevSize else 100
     let elapsed ← IO.monoMsNow
-    IO.println s!"[proof-first] depth={depth} pool={pool.size} (+{growth}, {growthRate}% growth) elapsed={elapsed - closureStart}ms"
+    IO.println
+        s!"[proof-first] depth={depth} pool={pool.size} (+{growth}, {growthRate}% growth) \
+            elapsed={elapsed - closureStart}ms"
     if growthRate < 1 then
       IO.println s!"[proof-first] Fixpoint converged at depth {depth}"
       break

@@ -884,7 +884,8 @@ then recursively prove the antecedent.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
-def tryModusPonens (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+def tryModusPonens (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool)
+    (depth : Nat) : TacticM Bool := do
   -- Collect candidate antecedents from context implications `φ → formula`
   let ctxFormulas ← extractContextFormulas ctx
   let mut candidates : List Expr := []
@@ -897,13 +898,15 @@ def tryModusPonens (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId �
     let success ← observing? do
       setGoals [goal]
       -- Create metavariables for the two proofs
-      let impType ← mkAppM ``DerivationTree #[fc, ctx, ← mkAppM ``Formula.imp #[antecedent, formula]]
+      let impType ← mkAppM ``DerivationTree
+          #[fc, ctx, ← mkAppM ``Formula.imp #[antecedent, formula]]
       let antType ← mkAppM ``DerivationTree #[fc, ctx, antecedent]
       let impMVar ← mkFreshExprMVar impType
       let antMVar ← mkFreshExprMVar antType
 
       -- Build the modus ponens application
-      let mpProof ← mkAppM ``DerivationTree.modus_ponens #[ctx, antecedent, formula, impMVar, antMVar]
+      let mpProof ← mkAppM ``DerivationTree.modus_ponens
+          #[ctx, antecedent, formula, impMVar, antMVar]
       goal.assign mpProof
 
       -- Get the MVarIds for the subgoals
@@ -980,7 +983,8 @@ applies `generalizedModalK` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
-def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool)
+    (depth : Nat) : TacticM Bool := do
   -- Check if formula is □χ
   let innerFormula ← match formula with
     | .app (.const ``Formula.box _) inner => pure inner
@@ -1033,7 +1037,8 @@ applies `generalizedTemporalK` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
-def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool)
+    (depth : Nat) : TacticM Bool := do
   -- Check if formula is Fχ
   let innerFormula ← match formula with
     | .app (.const ``Formula.allFuture _) inner => pure inner
@@ -1059,7 +1064,8 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
     let subgoalMVar ← mkFreshExprMVar subgoalType
 
     -- Build the proof: generalizedTemporalK unfuturedCtx innerFormula subgoalMVar
-    let proof ← mkAppM ``Theorems.generalizedTemporalK #[unfuturedCtxExpr, innerFormula, subgoalMVar]
+    let proof ← mkAppM ``Theorems.generalizedTemporalK
+        #[unfuturedCtxExpr, innerFormula, subgoalMVar]
 
     -- Check that proof type matches goal type
     goal.assign proof

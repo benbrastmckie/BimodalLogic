@@ -226,7 +226,8 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "gImpliesGId" (FormalSystem.Theorems.TemporalDerived.gImpliesGId p),
 
   -- untilImpliesSomeFuture : ⊢ U(ψ,φ) → F(ψ)
-  mkEntry "untilImpliesSomeFuture" (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p q),
+  mkEntry "untilImpliesSomeFuture" (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p
+      q),
 
   -- sinceImpliesSomePast : ⊢ S(ψ,φ) → P(ψ)
   mkEntry "sinceImpliesSomePast" (FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast p q),
@@ -360,15 +361,19 @@ def theoremRegistry : List TheoremEntry := [
 
   -- TemporalDerived G-wrapped
   mkEntry "G_connect_future_thm"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
   mkEntry "G_connect_past_thm"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
   mkEntry "G_G_implies_G_id"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.gImpliesGId p)),
   mkEntry "G_until_implies_some_future"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p q)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p q)),
   mkEntry "G_since_implies_some_past"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast p q)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast p q)),
   mkEntry "G_until_imp_F"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpF p q)),
   mkEntry "G_since_imp_P"
@@ -380,13 +385,17 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G_P_mono"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.pMono p q)),
   mkEntry "G_until_mono_guard"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilMonoGuard p q r)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.untilMonoGuard p q r)),
   mkEntry "G_since_mono_guard"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceMonoGuard p q r)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.sinceMonoGuard p q r)),
   mkEntry "G_until_mono_event"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilMonoEvent p q r)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.untilMonoEvent p q r)),
   mkEntry "G_since_mono_event"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceMonoEvent p q r)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.sinceMonoEvent p q r)),
   mkEntry "G_F_neg_G"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.fNegG p)),
   mkEntry "G_P_neg_H"
@@ -463,7 +472,8 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p))),
   mkEntry "H_s4_diamond_box_diamond"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS4.s4DiamondBoxDiamond p))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.ModalS4.s4DiamondBoxDiamond p))),
 
   -- ModalS5 H-wrapped
   mkEntry "H_t_box_to_diamond"
@@ -483,30 +493,38 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.s5DiamondBox p))),
   mkEntry "H_s5_diamond_box_to_truth"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth p))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth p))),
 
   -- TemporalDerived H-wrapped
   mkEntry "H_connect_future_thm"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectFutureThm p))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.connectFutureThm p))),
   mkEntry "H_connect_past_thm"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectPastThm p))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.connectPastThm p))),
   mkEntry "H_G_implies_G_id"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.gImpliesGId p))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.gImpliesGId p))),
   mkEntry "H_until_implies_some_future"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p q))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p q))),
   mkEntry "H_since_implies_some_past"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast p q))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast p q))),
   mkEntry "H_until_imp_F"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpF p q))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.untilImpF p q))),
   mkEntry "H_since_imp_P"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceImpP p q))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.sinceImpP p q))),
 
   -- New TemporalDerived H-wrapped
   mkEntry "H_F_mono"
@@ -517,16 +535,20 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.pMono p q))),
   mkEntry "H_until_mono_guard"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilMonoGuard p q r))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.untilMonoGuard p q r))),
   mkEntry "H_since_mono_guard"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceMonoGuard p q r))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.sinceMonoGuard p q r))),
   mkEntry "H_until_mono_event"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilMonoEvent p q r))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.untilMonoEvent p q r))),
   mkEntry "H_since_mono_event"
     (DerivationTree.temporal_duality _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceMonoEvent p q r))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.sinceMonoEvent p q r))),
   mkEntry "H_F_neg_G"
     (DerivationTree.temporal_duality _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.fNegG p))),
@@ -596,22 +618,28 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p))),
   mkEntry "GG_connect_future_thm"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectFutureThm p))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.connectFutureThm p))),
   mkEntry "GG_connect_past_thm"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectPastThm p))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.connectPastThm p))),
   mkEntry "GG_until_implies_some_future"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p q))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p q))),
   mkEntry "GG_since_implies_some_past"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast p q))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast p q))),
   mkEntry "GG_until_imp_F"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpF p q))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.untilImpF p q))),
   mkEntry "GG_since_imp_P"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceImpP p q))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.TemporalDerived.sinceImpP p q))),
   mkEntry "GG_box_to_present"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToPresent p))),
@@ -620,7 +648,8 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.mbDiamond p))),
   mkEntry "GG_s5_diamond_box_to_truth"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth p))),
+      (DerivationTree.temporal_necessitation _
+          (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth p))),
 
   -- ============================================================
   -- GGG-TRIPLE-WRAPPED: Three temporal_necessitation layers
@@ -631,27 +660,33 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "GGG_s4_box_diamond_box"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)))),
+        (DerivationTree.temporal_necessitation _
+            (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)))),
   mkEntry "GGG_connect_future_thm"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)))),
+        (DerivationTree.temporal_necessitation _
+            (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)))),
   mkEntry "GGG_connect_past_thm"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectPastThm p)))),
+        (DerivationTree.temporal_necessitation _
+            (FormalSystem.Theorems.TemporalDerived.connectPastThm p)))),
   mkEntry "GGG_until_imp_F"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpF p q)))),
+        (DerivationTree.temporal_necessitation _
+            (FormalSystem.Theorems.TemporalDerived.untilImpF p q)))),
   mkEntry "GGG_since_imp_P"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)))),
+        (DerivationTree.temporal_necessitation _
+            (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)))),
   mkEntry "GGG_box_to_present"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToPresent p)))),
+        (DerivationTree.temporal_necessitation _
+            (FormalSystem.Theorems.Perpetuity.boxToPresent p)))),
   mkEntry "GGG_mb_diamond"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
@@ -902,9 +937,11 @@ def theoremRegistry : List TheoremEntry := [
 
   -- G-wrapped temporal variants
   mkEntry "G_connect_future_thm_q"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
   mkEntry "G_connect_past_thm_q"
-    (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
+    (DerivationTree.temporal_necessitation _
+        (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
   mkEntry "G_until_imp_F_qr"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpF q r)),
   mkEntry "G_since_imp_P_qr"
@@ -986,106 +1023,152 @@ def theoremRegistry : List TheoremEntry := [
 
   -- Depth 4 (4 temporal / 5 total = 80% per theorem)
   mkEntry "G4_s4_box_diamond_box"   (wrapG 4 (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)),
-  mkEntry "G4_connect_future"       (wrapG 4 (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
-  mkEntry "G4_connect_past"         (wrapG 4 (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
+  mkEntry "G4_connect_future"       (wrapG 4
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
+  mkEntry "G4_connect_past"         (wrapG 4
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
   mkEntry "G4_until_imp_F"          (wrapG 4 (FormalSystem.Theorems.TemporalDerived.untilImpF p q)),
   mkEntry "G4_since_imp_P"          (wrapG 4 (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)),
   mkEntry "G4_box_to_present"       (wrapG 4 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G4_mb_diamond"           (wrapG 4 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
-  mkEntry "G4_serial_future"        (wrapG 4 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
-  mkEntry "G4_serial_past"          (wrapG 4 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
+  mkEntry "G4_serial_future"        (wrapG 4
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+  mkEntry "G4_serial_past"          (wrapG 4
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
   mkEntry "G4_identity"             (wrapG 4 (@identity .Base p)),
 
   -- Depth 6 (6 temporal / 7 total = 86%)
   mkEntry "G6_s4_box_diamond_box"   (wrapG 6 (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)),
-  mkEntry "G6_connect_future"       (wrapG 6 (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
-  mkEntry "G6_connect_past"         (wrapG 6 (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
+  mkEntry "G6_connect_future"       (wrapG 6
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
+  mkEntry "G6_connect_past"         (wrapG 6
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
   mkEntry "G6_until_imp_F"          (wrapG 6 (FormalSystem.Theorems.TemporalDerived.untilImpF p q)),
   mkEntry "G6_since_imp_P"          (wrapG 6 (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)),
   mkEntry "G6_box_to_present"       (wrapG 6 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G6_mb_diamond"           (wrapG 6 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
-  mkEntry "G6_serial_future"        (wrapG 6 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
-  mkEntry "G6_serial_past"          (wrapG 6 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
+  mkEntry "G6_serial_future"        (wrapG 6
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+  mkEntry "G6_serial_past"          (wrapG 6
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
   mkEntry "G6_identity"             (wrapG 6 (@identity .Base p)),
 
   -- Depth 8 (8 temporal / 9 total = 89%)
   mkEntry "G8_s4_box_diamond_box"   (wrapG 8 (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)),
-  mkEntry "G8_connect_future"       (wrapG 8 (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
-  mkEntry "G8_connect_past"         (wrapG 8 (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
+  mkEntry "G8_connect_future"       (wrapG 8
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
+  mkEntry "G8_connect_past"         (wrapG 8
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
   mkEntry "G8_until_imp_F"          (wrapG 8 (FormalSystem.Theorems.TemporalDerived.untilImpF p q)),
   mkEntry "G8_since_imp_P"          (wrapG 8 (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)),
   mkEntry "G8_box_to_present"       (wrapG 8 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G8_mb_diamond"           (wrapG 8 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
-  mkEntry "G8_serial_future"        (wrapG 8 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
-  mkEntry "G8_serial_past"          (wrapG 8 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
+  mkEntry "G8_serial_future"        (wrapG 8
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+  mkEntry "G8_serial_past"          (wrapG 8
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
   mkEntry "G8_identity"             (wrapG 8 (@identity .Base p)),
 
   -- Depth 10 (10 temporal / 11 total = 91%)
   mkEntry "G10_s4_box_diamond_box"  (wrapG 10 (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)),
-  mkEntry "G10_connect_future"      (wrapG 10 (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
-  mkEntry "G10_connect_past"        (wrapG 10 (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
-  mkEntry "G10_until_imp_F"         (wrapG 10 (FormalSystem.Theorems.TemporalDerived.untilImpF p q)),
-  mkEntry "G10_since_imp_P"         (wrapG 10 (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)),
+  mkEntry "G10_connect_future"      (wrapG 10
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
+  mkEntry "G10_connect_past"        (wrapG 10
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
+  mkEntry "G10_until_imp_F"         (wrapG 10
+      (FormalSystem.Theorems.TemporalDerived.untilImpF p q)),
+  mkEntry "G10_since_imp_P"         (wrapG 10
+      (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)),
   mkEntry "G10_box_to_present"      (wrapG 10 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G10_mb_diamond"          (wrapG 10 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
-  mkEntry "G10_serial_future"       (wrapG 10 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
-  mkEntry "G10_serial_past"         (wrapG 10 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
+  mkEntry "G10_serial_future"       (wrapG 10
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+  mkEntry "G10_serial_past"         (wrapG 10
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
   mkEntry "G10_identity"            (wrapG 10 (@identity .Base p)),
 
   -- Depth 12 (12 temporal / 13 total = 92%)
-  mkEntry "G12_connect_future"      (wrapG 12 (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
-  mkEntry "G12_connect_past"        (wrapG 12 (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
-  mkEntry "G12_until_imp_F"         (wrapG 12 (FormalSystem.Theorems.TemporalDerived.untilImpF p q)),
-  mkEntry "G12_since_imp_P"         (wrapG 12 (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)),
+  mkEntry "G12_connect_future"      (wrapG 12
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
+  mkEntry "G12_connect_past"        (wrapG 12
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
+  mkEntry "G12_until_imp_F"         (wrapG 12
+      (FormalSystem.Theorems.TemporalDerived.untilImpF p q)),
+  mkEntry "G12_since_imp_P"         (wrapG 12
+      (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)),
   mkEntry "G12_box_to_present"      (wrapG 12 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G12_mb_diamond"          (wrapG 12 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
-  mkEntry "G12_serial_future"       (wrapG 12 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
-  mkEntry "G12_serial_past"         (wrapG 12 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
+  mkEntry "G12_serial_future"       (wrapG 12
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+  mkEntry "G12_serial_past"         (wrapG 12
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
   mkEntry "G12_identity"            (wrapG 12 (@identity .Base p)),
 
   -- Depth 15 (15 temporal / 16 total = 94%)
-  mkEntry "G15_connect_future"      (wrapG 15 (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
-  mkEntry "G15_connect_past"        (wrapG 15 (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
-  mkEntry "G15_serial_future"       (wrapG 15 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
-  mkEntry "G15_serial_past"         (wrapG 15 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
+  mkEntry "G15_connect_future"      (wrapG 15
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
+  mkEntry "G15_connect_past"        (wrapG 15
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
+  mkEntry "G15_serial_future"       (wrapG 15
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+  mkEntry "G15_serial_past"         (wrapG 15
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
   mkEntry "G15_identity"            (wrapG 15 (@identity .Base p)),
   mkEntry "G15_box_to_present"      (wrapG 15 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
 
   -- Depth 20 (20 temporal / 21 total = 95%)
-  mkEntry "G20_connect_future"      (wrapG 20 (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
-  mkEntry "G20_connect_past"        (wrapG 20 (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
-  mkEntry "G20_serial_future"       (wrapG 20 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
-  mkEntry "G20_serial_past"         (wrapG 20 (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
+  mkEntry "G20_connect_future"      (wrapG 20
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
+  mkEntry "G20_connect_past"        (wrapG 20
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
+  mkEntry "G20_serial_future"       (wrapG 20
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+  mkEntry "G20_serial_past"         (wrapG 20
+      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial)),
   mkEntry "G20_identity"            (wrapG 20 (@identity .Base p)),
   mkEntry "G20_box_to_present"      (wrapG 20 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
 
   -- Depth 4-8 with alternative atoms (q, r variants)
-  mkEntry "G4_connect_future_q"     (wrapG 4 (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
-  mkEntry "G4_connect_past_q"       (wrapG 4 (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
+  mkEntry "G4_connect_future_q"     (wrapG 4
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
+  mkEntry "G4_connect_past_q"       (wrapG 4
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
   mkEntry "G4_mb_diamond_q"         (wrapG 4 (FormalSystem.Theorems.Perpetuity.mbDiamond q)),
   mkEntry "G4_box_to_present_q"     (wrapG 4 (FormalSystem.Theorems.Perpetuity.boxToPresent q)),
   mkEntry "G4_until_imp_F_qr"       (wrapG 4 (FormalSystem.Theorems.TemporalDerived.untilImpF q r)),
   mkEntry "G4_since_imp_P_qr"       (wrapG 4 (FormalSystem.Theorems.TemporalDerived.sinceImpP q r)),
-  mkEntry "G6_connect_future_q"     (wrapG 6 (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
-  mkEntry "G6_connect_past_q"       (wrapG 6 (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
+  mkEntry "G6_connect_future_q"     (wrapG 6
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
+  mkEntry "G6_connect_past_q"       (wrapG 6
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
   mkEntry "G6_mb_diamond_q"         (wrapG 6 (FormalSystem.Theorems.Perpetuity.mbDiamond q)),
   mkEntry "G6_box_to_present_q"     (wrapG 6 (FormalSystem.Theorems.Perpetuity.boxToPresent q)),
-  mkEntry "G8_connect_future_q"     (wrapG 8 (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
-  mkEntry "G8_connect_past_q"       (wrapG 8 (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
+  mkEntry "G8_connect_future_q"     (wrapG 8
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
+  mkEntry "G8_connect_past_q"       (wrapG 8
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
   mkEntry "G8_mb_diamond_q"         (wrapG 8 (FormalSystem.Theorems.Perpetuity.mbDiamond q)),
   mkEntry "G8_box_to_present_q"     (wrapG 8 (FormalSystem.Theorems.Perpetuity.boxToPresent q)),
 
   -- Depth 10-15 with alternative atoms
-  mkEntry "G10_connect_future_q"    (wrapG 10 (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
-  mkEntry "G10_connect_past_q"      (wrapG 10 (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
-  mkEntry "G12_connect_future_q"    (wrapG 12 (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
-  mkEntry "G12_connect_past_q"      (wrapG 12 (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
-  mkEntry "G15_connect_future_q"    (wrapG 15 (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
-  mkEntry "G15_connect_past_q"      (wrapG 15 (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
+  mkEntry "G10_connect_future_q"    (wrapG 10
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
+  mkEntry "G10_connect_past_q"      (wrapG 10
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
+  mkEntry "G12_connect_future_q"    (wrapG 12
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
+  mkEntry "G12_connect_past_q"      (wrapG 12
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
+  mkEntry "G15_connect_future_q"    (wrapG 15
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
+  mkEntry "G15_connect_past_q"      (wrapG 15
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
 
   -- Depth 20 with alternative atoms
-  mkEntry "G20_connect_future_q"    (wrapG 20 (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
-  mkEntry "G20_connect_past_q"      (wrapG 20 (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
+  mkEntry "G20_connect_future_q"    (wrapG 20
+      (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
+  mkEntry "G20_connect_past_q"      (wrapG 20
+      (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
   mkEntry "G20_identity_q"          (wrapG 20 (@identity .Base q)),
   mkEntry "G20_box_to_present_q"    (wrapG 20 (FormalSystem.Theorems.Perpetuity.boxToPresent q)),
 

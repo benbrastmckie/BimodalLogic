@@ -70,7 +70,9 @@ def runDeductionTactic : TacticM Unit := do
       try
         goal.apply (mkConst ``FormalSystem.Metalogic.Core.deductionTheorem)
       catch _ =>
-        throwError "deduction: goal formula is not an implication (expected `Γ ⊢[fc] A → B`, got {goalType})"
+        throwError
+            "deduction: goal formula is not an implication (expected `Γ ⊢[fc] A → B`, got \
+                {goalType})"
     replaceMainGoal newGoals
   | _ =>
     throwError "deduction: goal must be a derivability goal `Γ ⊢[fc] A → B`, got {goalType}"

@@ -343,9 +343,12 @@ def computeDiversityReport (labeled : List LabeledFormula) : DiversityReport :=
         | some h => h :: heights
         | none => heights
       match lf.label with
-      | .valid => (total + 1, valid + 1, invalid, timeout, newOpDist, newModalDist, newTempDist, newHeights)
-      | .invalid => (total + 1, valid, invalid + 1, timeout, newOpDist, newModalDist, newTempDist, newHeights)
-      | .timeout => (total + 1, valid, invalid, timeout + 1, newOpDist, newModalDist, newTempDist, newHeights)
+      | .valid =>
+          (total + 1, valid + 1, invalid, timeout, newOpDist, newModalDist, newTempDist, newHeights)
+      | .invalid =>
+          (total + 1, valid, invalid + 1, timeout, newOpDist, newModalDist, newTempDist, newHeights)
+      | .timeout =>
+          (total + 1, valid, invalid, timeout + 1, newOpDist, newModalDist, newTempDist, newHeights)
     ) init
   -- Compute provability ratio
   let provRatio := if total > 0 then valid.toFloat / total.toFloat else 0.0

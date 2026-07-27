@@ -932,7 +932,8 @@ example (φ : Formula) :
     f == roundTrip
   let allPass := results.all id
   let failCount := results.filter (! ·) |>.length
-  return s!"Round-trip test: {if allPass then "ALL PASS" else s!"FAILURES: {failCount}"} ({testFormulas.length} formulas tested)"
+  return s!"Round-trip test: {if allPass then "ALL PASS" else s!"FAILURES:
+      {failCount}"} ({testFormulas.length} formulas tested)"
 
 end RoundTripTests
 

@@ -108,7 +108,8 @@ def axiomModalB (Γ : Context) (φ : Formula) {fc : FrameClass} :
 @[aesop safe apply]
 noncomputable def axiomTemp4 (Γ : Context) (φ : Formula) :
     Γ ⊢ ((Formula.allFuture φ).imp (Formula.allFuture (Formula.allFuture φ))) :=
-  DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived φ) (List.nil_subset Γ)
+  DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived φ)
+      (List.nil_subset Γ)
 
 /-- Connect future (BX4): φ → G(P(φ)). In BX axiom system. -/
 @[aesop safe apply]

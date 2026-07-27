@@ -893,9 +893,11 @@ Order candidate subgoals by advanced heuristic score (includes domain-specific b
 Uses stable merge sort (O(n log n)) to order targets by ascending advanced heuristic score.
 Lower scores indicate higher priority. Includes modal/temporal bonuses and structure penalties.
 -/
-def orderSubgoalsByAdvancedScore (weights : HeuristicWeights) (Γ : Context) (targets : List Formula) :
+def orderSubgoalsByAdvancedScore (weights : HeuristicWeights) (Γ : Context)
+    (targets : List Formula) :
     List Formula :=
-  targets.mergeSort (fun φ ψ => advancedHeuristicScore weights Γ φ ≤ advancedHeuristicScore weights Γ ψ)
+  targets.mergeSort (fun φ ψ => advancedHeuristicScore weights Γ φ ≤ advancedHeuristicScore weights
+      Γ ψ)
 
 /-!
 ## Pattern-Aware Heuristic Scoring
@@ -994,7 +996,8 @@ def boundedSearch (Γ : Context) (φ : Formula) (depth : Nat)
             let implications := findImplicationsTo Γ φ
             let orderedTargets := orderSubgoalsByScore weights Γ implications
             -- Try each antecedent in order (simplified - no nested recursion)
-            let tryAntecedent (state : Bool × ProofCache × Visited × SearchStats × Nat) (ψ : Formula) :
+            let tryAntecedent (state : Bool × ProofCache × Visited × SearchStats × Nat)
+                (ψ : Formula) :
                 Bool × ProofCache × Visited × SearchStats × Nat :=
               let (found, cache, visited, stats, visits) := state
               if found then state  -- Already found, skip
@@ -1011,13 +1014,17 @@ def boundedSearch (Γ : Context) (φ : Formula) (depth : Nat)
               match φ with
               | Formula.box ψ =>
                   let (found, cache', visited', stats', visits') :=
-                    boundedSearch (boxContext Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
+                    boundedSearch (boxContext Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp
+                        visitsAfterMp visitLimit weights statsAfterMp
                   (found, cache'.insert key found, visited', stats', visits')
               | Formula.untl ψ _ =>
                   let (found, cache', visited', stats', visits') :=
-                    boundedSearch (futureContext Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
+                    boundedSearch (futureContext Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp
+                        visitsAfterMp visitLimit weights statsAfterMp
                   (found, cache'.insert key found, visited', stats', visits')
-              | _ => (false, cacheAfterMp.insert key false, visitedAfterMp, statsAfterMp, visitsAfterMp)
+              | _ =>
+                  (false, cacheAfterMp.insert key false, visitedAfterMp, statsAfterMp,
+                      visitsAfterMp)
 termination_by depth
 decreasing_by
   all_goals omega
@@ -1179,11 +1186,13 @@ def boundedSearchWithProof (Γ : Context) (φ : Formula) (depth : Nat)
                     | some antProof =>
                         -- Build modus ponens: we have proof of antecedent and (antecedent → φ) ∈ Γ
                         let impProof := DerivationTree.assumption Γ (antecedent.imp φ) wit_imp.proof
-                        (some (DerivationTree.modus_ponens Γ antecedent φ impProof antProof), visited', visits')
+                        (some (DerivationTree.modus_ponens Γ antecedent φ impProof antProof),
+                            visited', visits')
                     | none =>
                         (none, visited', visits')
                   | none =>
-                    -- Implication not actually in context (shouldn't happen with findImplicationsTo)
+                    -- Implication not actually in context (shouldn't
+                    -- happen with findImplicationsTo)
                     (none, visited, visits))
             (none, visited, visits)
 

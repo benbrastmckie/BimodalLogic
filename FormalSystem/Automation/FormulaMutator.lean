@@ -212,7 +212,8 @@ mutant differs from the original by exactly one AST node transformation.
 The occurrence index is assigned sequentially in depth-first order
 to each node where `transform` returns `some`.
 -/
-def mutateSingleOccurrence (φ : Formula) (transform : Formula → Option Formula) : List (Formula × Nat) :=
+def mutateSingleOccurrence (φ : Formula) (transform : Formula → Option Formula) : List
+    (Formula × Nat) :=
   let rec go (ψ : Formula) (idx : Nat) : List (Formula × Nat) × Nat :=
     match transform ψ with
     | some mutated =>
@@ -230,12 +231,14 @@ def mutateSingleOccurrence (φ : Formula) (transform : Formula → Option Formul
       | .untl a b =>
         let (m1, i1) := go a (idx + 1)
         let (m2, i2) := go b i1
-        let wrapped := m1.map (fun (m, i) => (.untl m b, i)) ++ m2.map (fun (m, i) => (.untl a m, i))
+        let wrapped := m1.map (fun (m, i) => (.untl m b, i)) ++ m2.map
+            (fun (m, i) => (.untl a m, i))
         (wrapped, i2)
       | .snce a b =>
         let (m1, i1) := go a (idx + 1)
         let (m2, i2) := go b i1
-        let wrapped := m1.map (fun (m, i) => (.snce m b, i)) ++ m2.map (fun (m, i) => (.snce a m, i))
+        let wrapped := m1.map (fun (m, i) => (.snce m b, i)) ++ m2.map
+            (fun (m, i) => (.snce a m, i))
         (wrapped, i2)
       ((mutated, idx) :: childMuts, nextIdx)
     | none =>
@@ -253,12 +256,14 @@ def mutateSingleOccurrence (φ : Formula) (transform : Formula → Option Formul
       | .untl a b =>
         let (m1, i1) := go a idx
         let (m2, i2) := go b i1
-        let wrapped := m1.map (fun (m, i) => (.untl m b, i)) ++ m2.map (fun (m, i) => (.untl a m, i))
+        let wrapped := m1.map (fun (m, i) => (.untl m b, i)) ++ m2.map
+            (fun (m, i) => (.untl a m, i))
         (wrapped, i2)
       | .snce a b =>
         let (m1, i1) := go a idx
         let (m2, i2) := go b i1
-        let wrapped := m1.map (fun (m, i) => (.snce m b, i)) ++ m2.map (fun (m, i) => (.snce a m, i))
+        let wrapped := m1.map (fun (m, i) => (.snce m b, i)) ++ m2.map
+            (fun (m, i) => (.snce a m, i))
         (wrapped, i2)
       (childMuts, nextIdx)
   go φ 0 |>.1
@@ -282,7 +287,8 @@ def trySwapUntilRelease : Formula → Option Formula
   | .untl φ ψ => some (Formula.release φ ψ)
   | _ => none
 
-/-- Match `release φ ψ` (primitive: `imp (untl (imp φ bot) (imp ψ bot)) bot`) and return `untl φ ψ`. -/
+/-- Match `release φ ψ` (primitive: `imp (untl (imp φ bot) (imp ψ bot)) bot`) and return `untl φ
+ψ`. -/
 def trySwapReleaseUntil : Formula → Option Formula
   | .imp (.untl (.imp inner1 .bot) (.imp inner2 .bot)) .bot =>
     some (.untl inner1 inner2)
@@ -322,7 +328,8 @@ def trySwapStrongReleaseWeakUntil : Formula → Option Formula
     if ψ1 == ψ2 then some (Formula.weakUntil φ ψ1) else none
   | _ => none
 
-/-- Match `trigger φ ψ` (primitive: `imp (snce (imp φ bot) (imp ψ bot)) bot`) and return `strongTrigger φ ψ`. -/
+/-- Match `trigger φ ψ` (primitive: `imp (snce (imp φ bot) (imp ψ bot)) bot`) and
+return `strongTrigger φ ψ`. -/
 def trySwapTriggerStrongTrigger : Formula → Option Formula
   | .imp (.snce (.imp φ .bot) (.imp ψ .bot)) .bot =>
     some (Formula.strongTrigger φ ψ)
@@ -409,8 +416,10 @@ def deleteSubformula (φ : Formula) (target : Formula) (replacement : Formula) :
   | .bot => .bot
   | .imp ψ χ => .imp (deleteSubformula ψ target replacement) (deleteSubformula χ target replacement)
   | .box ψ => .box (deleteSubformula ψ target replacement)
-  | .untl ψ χ => .untl (deleteSubformula ψ target replacement) (deleteSubformula χ target replacement)
-  | .snce ψ χ => .snce (deleteSubformula ψ target replacement) (deleteSubformula χ target replacement)
+  | .untl ψ χ =>
+      .untl (deleteSubformula ψ target replacement) (deleteSubformula χ target replacement)
+  | .snce ψ χ =>
+      .snce (deleteSubformula ψ target replacement) (deleteSubformula χ target replacement)
 
 /--
 Reduce modal depth by stripping outermost box operators.
@@ -503,7 +512,8 @@ Returns a list of (mutated_formula, mutation_type) pairs. The mutations include:
 9. Single-occurrence mutations: ~10 fine-grained structural changes
 -/
 private def dedupMutations (muts : List (Formula × MutationType)) : List (Formula × MutationType) :=
-  let rec go (acc : List (Formula × MutationType)) (seen : List Formula) (rest : List (Formula × MutationType)) : List (Formula × MutationType) :=
+  let rec go (acc : List (Formula × MutationType)) (seen : List Formula)
+      (rest : List (Formula × MutationType)) : List (Formula × MutationType) :=
     match rest with
     | [] => acc.reverse
     | (f, mt) :: rest' =>
@@ -556,31 +566,44 @@ def generateMutations (φ : Formula) : List (Formula × MutationType) :=
   let diamondToBoxOccs := dedupMutations <|
     (mutateSingleOccurrence φ trySwapDiamondBox).map fun (m, i) => (m, .diamondToBoxAtOccurrence i)
   let untilToReleaseOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapUntilRelease).map fun (m, i) => (m, .untilToReleaseAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapUntilRelease).map fun (m, i) =>
+        (m, .untilToReleaseAtOccurrence i)
   let releaseToUntilOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapReleaseUntil).map fun (m, i) => (m, .releaseToUntilAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapReleaseUntil).map fun (m, i) =>
+        (m, .releaseToUntilAtOccurrence i)
   let futureToGloballyOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapFutureGlobally).map fun (m, i) => (m, .futureToGloballyAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapFutureGlobally).map fun (m, i) =>
+        (m, .futureToGloballyAtOccurrence i)
   let globallyToFutureOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapGloballyFuture).map fun (m, i) => (m, .globallyToFutureAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapGloballyFuture).map fun (m, i) =>
+        (m, .globallyToFutureAtOccurrence i)
   let pastToHistoricallyOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapPastHistorically).map fun (m, i) => (m, .pastToHistoricallyAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapPastHistorically).map fun (m, i) =>
+        (m, .pastToHistoricallyAtOccurrence i)
   let historicallyToPastOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapHistoricallyPast).map fun (m, i) => (m, .historicallyToPastAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapHistoricallyPast).map fun (m, i) =>
+        (m, .historicallyToPastAtOccurrence i)
   let weakUntilToStrongReleaseOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapWeakUntilStrongRelease).map fun (m, i) => (m, .weakUntilToStrongReleaseAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapWeakUntilStrongRelease).map fun (m, i) =>
+        (m, .weakUntilToStrongReleaseAtOccurrence i)
   let strongReleaseToWeakUntilOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapStrongReleaseWeakUntil).map fun (m, i) => (m, .strongReleaseToWeakUntilAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapStrongReleaseWeakUntil).map fun (m, i) =>
+        (m, .strongReleaseToWeakUntilAtOccurrence i)
   let triggerToStrongTriggerOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapTriggerStrongTrigger).map fun (m, i) => (m, .triggerToStrongTriggerAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapTriggerStrongTrigger).map fun (m, i) =>
+        (m, .triggerToStrongTriggerAtOccurrence i)
   let strongTriggerToTriggerOccs := dedupMutations <|
-    (mutateSingleOccurrence φ trySwapStrongTriggerTrigger).map fun (m, i) => (m, .strongTriggerToTriggerAtOccurrence i)
+    (mutateSingleOccurrence φ trySwapStrongTriggerTrigger).map fun (m, i) =>
+        (m, .strongTriggerToTriggerAtOccurrence i)
   let flipImplicationOccs := dedupMutations <|
-    (mutateSingleOccurrence φ tryFlipImplication).map fun (m, i) => (m, .flipImplicationAtOccurrence i)
+    (mutateSingleOccurrence φ tryFlipImplication).map fun (m, i) =>
+        (m, .flipImplicationAtOccurrence i)
   let removeLeftConjunctOccs := dedupMutations <|
-    (mutateSingleOccurrence φ tryRemoveLeftConjunct).map fun (m, i) => (m, .removeLeftConjunctAtOccurrence i)
+    (mutateSingleOccurrence φ tryRemoveLeftConjunct).map fun (m, i) =>
+        (m, .removeLeftConjunctAtOccurrence i)
   let removeRightConjunctOccs := dedupMutations <|
-    (mutateSingleOccurrence φ tryRemoveRightConjunct).map fun (m, i) => (m, .removeRightConjunctAtOccurrence i)
+    (mutateSingleOccurrence φ tryRemoveRightConjunct).map fun (m, i) =>
+        (m, .removeRightConjunctAtOccurrence i)
   -- Combine all mutations, filter out those producing same formula as original
   let allMutations := atomMutations ++ boxMutation ++ gMutation ++ hMutation
     ++ subDeletions ++ modalReduction ++ temporalReduction ++ dualityMutation
@@ -678,7 +701,9 @@ def generateBatchContrastive (labeledFormulas : List LabeledFormula)
     allPairs := allPairs ++ contrastive
     count := count + 1
     if count % 50 == 0 then
-      IO.println s!"  Contrastive progress: {count}/{total} formulas processed, {allPairs.length} pairs found"
+      IO.println
+          s!"  Contrastive progress: {count}/{total} formulas processed, {allPairs.length} pairs \
+              found"
   return allPairs
 
 /-!
@@ -735,8 +760,10 @@ def MutationType.toJson : MutationType → String
   | .globallyToFutureAtOccurrence i => "\"globally_to_future_at_" ++ Nat.repr i ++ "\""
   | .pastToHistoricallyAtOccurrence i => "\"past_to_historically_at_" ++ Nat.repr i ++ "\""
   | .historicallyToPastAtOccurrence i => "\"historically_to_past_at_" ++ Nat.repr i ++ "\""
-  | .weakUntilToStrongReleaseAtOccurrence i => "\"weak_until_to_strong_release_at_" ++ Nat.repr i ++ "\""
-  | .strongReleaseToWeakUntilAtOccurrence i => "\"strong_release_to_weak_until_at_" ++ Nat.repr i ++ "\""
+  | .weakUntilToStrongReleaseAtOccurrence i =>
+      "\"weak_until_to_strong_release_at_" ++ Nat.repr i ++ "\""
+  | .strongReleaseToWeakUntilAtOccurrence i =>
+      "\"strong_release_to_weak_until_at_" ++ Nat.repr i ++ "\""
   | .triggerToStrongTriggerAtOccurrence i => "\"trigger_to_strong_trigger_at_" ++ Nat.repr i ++ "\""
   | .strongTriggerToTriggerAtOccurrence i => "\"strong_trigger_to_trigger_at_" ++ Nat.repr i ++ "\""
   | .flipImplicationAtOccurrence i => "\"flip_implication_at_" ++ Nat.repr i ++ "\""
@@ -770,7 +797,8 @@ def MutationType.mutationFamily : MutationType → String
   | .untilToReleaseAtOccurrence _ | .releaseToUntilAtOccurrence _ => "temporal_swap"
   | .futureToGloballyAtOccurrence _ | .globallyToFutureAtOccurrence _
   | .pastToHistoricallyAtOccurrence _ | .historicallyToPastAtOccurrence _ => "temporal_swap"
-  | .weakUntilToStrongReleaseAtOccurrence _ | .strongReleaseToWeakUntilAtOccurrence _ => "derived_swap"
+  | .weakUntilToStrongReleaseAtOccurrence _ | .strongReleaseToWeakUntilAtOccurrence _ =>
+      "derived_swap"
   | .triggerToStrongTriggerAtOccurrence _ | .strongTriggerToTriggerAtOccurrence _ => "derived_swap"
   | .flipImplicationAtOccurrence _ => "structural_flip"
   | .removeLeftConjunctAtOccurrence _ | .removeRightConjunctAtOccurrence _ => "conjunct_removal"
@@ -952,15 +980,24 @@ def computeContrastiveStats (totalMutations : Nat) (pairs : List ContrastivePair
     boxToDiamondCount := pairs.filter (fun p => match p.mutationType with | .boxToDiamond => true | _ => false) |>.length
     allFutureToSomeCount := pairs.filter (fun p => match p.mutationType with | .allFutureToSomeFuture => true | _ => false) |>.length
     allPastToSomeCount := pairs.filter (fun p => match p.mutationType with | .allPastToSomePast => true | _ => false) |>.length
-    subformulaDeletionCount := pairs.filter (fun p => match p.mutationType with | .subformulaDeletion _ _ => true | _ => false) |>.length
+    subformulaDeletionCount := pairs.filter
+        (fun p => match p.mutationType with | .subformulaDeletion _ _ => true | _ => false)
+            |>.length
     modalReductionCount := pairs.filter (fun p => match p.mutationType with | .modalDepthReduction => true | _ => false) |>.length
-    temporalReductionCount := pairs.filter (fun p => match p.mutationType with | .temporalDepthReduction => true | _ => false) |>.length
+    temporalReductionCount := pairs.filter
+        (fun p => match p.mutationType with | .temporalDepthReduction => true | _ => false)
+            |>.length
     temporalDualityCount := pairs.filter (fun p => match p.mutationType with | .temporalDuality => true | _ => false) |>.length
-    modalSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "modal_swap") |>.length
-    temporalSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "temporal_swap") |>.length
-    derivedSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "derived_swap") |>.length
-    structuralFlipCount := pairs.filter (fun p => p.mutationType.mutationFamily == "structural_flip") |>.length
-    conjunctRemovalCount := pairs.filter (fun p => p.mutationType.mutationFamily == "conjunct_removal") |>.length
+    modalSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "modal_swap")
+        |>.length
+    temporalSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "temporal_swap")
+        |>.length
+    derivedSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "derived_swap")
+        |>.length
+    structuralFlipCount := pairs.filter (fun p => p.mutationType.mutationFamily ==
+        "structural_flip") |>.length
+    conjunctRemovalCount := pairs.filter (fun p => p.mutationType.mutationFamily ==
+        "conjunct_removal") |>.length
   }
 
 /--
@@ -998,7 +1035,8 @@ def writeYieldSummary (stats : ContrastiveBatchStats) (path : System.FilePath) :
     ++ ", \"families\": {"
     ++ "\"atom_sub\": " ++ toString stats.atomSubBotCount
     ++ ", \"modal_swap\": " ++ toString stats.modalSwapCount
-    ++ ", \"global_weakening\": " ++ toString (stats.allFutureToSomeCount + stats.allPastToSomeCount)
+    ++ ", \"global_weakening\": " ++ toString
+        (stats.allFutureToSomeCount + stats.allPastToSomeCount)
     ++ ", \"subformula_deletion\": " ++ toString stats.subformulaDeletionCount
     ++ ", \"modal_depth_reduction\": " ++ toString stats.modalReductionCount
     ++ ", \"temporal_depth_reduction\": " ++ toString stats.temporalReductionCount
@@ -1022,7 +1060,8 @@ def runBatchContrastive (labeledFormulas : List LabeledFormula)
     (summaryPath : System.FilePath) : IO Unit := do
   IO.println s!"Running batch contrastive on {labeledFormulas.length} labeled formulas..."
   let pairs ← generateBatchContrastive labeledFormulas
-  let stats := computeContrastiveStats (pairs.length + (pairs.filter (·.mutatedLabel == .timeout)).length) pairs
+  let stats := computeContrastiveStats (pairs.length +
+      (pairs.filter (·.mutatedLabel == .timeout)).length) pairs
   writeContrastiveJSONL pairs outputPath
   writeYieldSummary stats summaryPath
   printContrastiveStats stats
@@ -1092,7 +1131,9 @@ Main entry point for the contrastive pair generator executable.
 def main (args : List String) : IO Unit := do
   let cfg := parseContrastiveArgs args
   IO.println "=== Contrastive Pair Generator ==="
-  IO.println s!"Config: maxComplexity={cfg.maxComplexity}, maxModalDepth={cfg.maxModalDepth}, maxTemporalDepth={cfg.maxTemporalDepth}, maxFormulas={cfg.maxFormulas}"
+  IO.println
+      s!"Config: maxComplexity={cfg.maxComplexity}, maxModalDepth={cfg.maxModalDepth}, \
+          maxTemporalDepth={cfg.maxTemporalDepth}, maxFormulas={cfg.maxFormulas}"
   IO.println s!"Parallel threads: {cfg.parallelThreads}"
   IO.println s!"Output: {cfg.outputPath}"
 

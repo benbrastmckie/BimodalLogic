@@ -69,7 +69,7 @@ def apply_stage(lines, recs, cats):
     return lines, total, skipped
 
 
-def sweep_file(path, cats, max_iter, dry=False):
+def sweep_file(path, cats, max_iter, dry=False, allow_residual=False):
     full = os.path.join(lintlib.REPO, path)
     original = open(full, encoding='utf-8').read()
     recs = lintlib.lint(path)
@@ -115,13 +115,22 @@ def sweep_file(path, cats, max_iter, dry=False):
         if not any(after.get(c) for c in cats):
             break
 
-    ok, problems = lintlib.gate(before, after, in_scope_expected_zero=cats)
+    # `--allow-residual`: keep a PARTIAL win instead of throwing the file away.
+    #
+    # The inherited gate demands the in-scope category reach zero and reverts the whole file
+    # otherwise -- so one irreducible site would cost a file its other 80 mechanical fixes.
+    # With --allow-residual the file still must introduce no errors and must not move a single
+    # sibling-owned frozen category, but a non-zero longLine remainder is recorded as a
+    # documented residual for the hand-fix phase rather than treated as failure.
+    expect_zero = [] if allow_residual else cats
+    ok, problems = lintlib.gate(before, after, in_scope_expected_zero=expect_zero)
     if not ok:
         open(full, 'w', encoding='utf-8').write(original)
         return {'file': path, 'ok': False, 'reason': 'gate failed -- REVERTED',
                 'problems': problems, 'before': dict(before), 'after': dict(after),
                 'iters': iters, 'applied': applied_total, 'skipped': all_skipped[:20]}
     return {'file': path, 'ok': True, 'applied': applied_total, 'iters': iters,
+            'residual': sum(after.get(c, 0) for c in cats),
             'before': dict(before), 'after': dict(after),
             'skipped': all_skipped[:20]}
 
@@ -213,6 +222,10 @@ def main():
     ap.add_argument('--census-only', action='store_true')
     ap.add_argument('--dry', action='store_true')
     ap.add_argument('--jobs', type=int, default=8)
+    ap.add_argument('--allow-residual', action='store_true',
+                    help='keep a partial win: do not revert a file merely because the in-scope '
+                         'category did not reach zero (errors and frozen-category drift still '
+                         'revert)')
     ap.add_argument('--sequential', action='store_true',
                     help='apply one category at a time, gating each (salvage mode)')
     a = ap.parse_args()
@@ -240,7 +253,8 @@ def main():
 
     def work(f):
         rec = (sweep_file_sequential(f, cats, a.max_iter) if a.sequential
-               else sweep_file(f, cats, a.max_iter, dry=a.dry))
+               else sweep_file(f, cats, a.max_iter, dry=a.dry,
+                               allow_residual=a.allow_residual))
         with lock:
             counter[0] += 1
             if logf:
@@ -249,8 +263,8 @@ def main():
             status = 'OK ' if rec['ok'] else 'FAIL'
             extra = '' if rec['ok'] else '  ' + rec.get('reason', '')
             print(f'[{counter[0]}/{len(todo)}] {status} {f} '
-                  f'applied={rec.get("applied", 0)} iters={rec.get("iters", 0)}{extra}',
-                  flush=True)
+                  f'applied={rec.get("applied", 0)} residual={rec.get("residual", "?")} '
+                  f'iters={rec.get("iters", 0)}{extra}', flush=True)
             if not rec['ok']:
                 nfail[0] += 1
                 for p in rec.get('problems', [])[:6]:

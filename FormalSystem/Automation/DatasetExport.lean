@@ -448,15 +448,33 @@ def datasetMetadataToJson (m : DatasetMetadata) : String :=
   ++ "  \"frame_class\": \"" ++ escapeJsonString m.frameClassName ++ "\",\n"
   ++ "  \"generation_mode\": \"" ++ escapeJsonString m.generationMode ++ "\",\n"
   ++ "  \"representations\": [\n"
-  ++ "    {\"field\": \"formula_str\", \"format\": \"human-readable\", \"description\": \"Pretty-printed unicode notation\"},\n"
-  ++ "    {\"field\": \"formula_ast\", \"format\": \"json-ast\", \"description\": \"Recursive JSON AST with tag discriminator\"},\n"
-  ++ "    {\"field\": \"formula_sexpr\", \"format\": \"s-expression\", \"description\": \"Canonical parenthesized prefix notation\"},\n"
-  ++ "    {\"field\": \"formula_tokens\", \"format\": \"token-list\", \"description\": \"Prefix-notation token list for transformers\"},\n"
-  ++ "    {\"field\": \"pattern_key\", \"format\": \"json-object\", \"description\": \"Structural pattern key with named fields\"},\n"
-  ++ "    {\"field\": \"pattern_features\", \"format\": \"numeric-vector\", \"description\": \"Flat numeric feature vector for value estimators\"},\n"
-  ++ "    {\"field\": \"formula_folded_json\", \"format\": \"json-ast\", \"description\": \"Enriched JSON AST with derived operator tags (neg, and, or, diamond, etc.)\"},\n"
-  ++ "    {\"field\": \"formula_folded_str\", \"format\": \"human-readable\", \"description\": \"Enriched pretty-print with derived operator notation\"},\n"
-  ++ "    {\"field\": \"formula_folded_sexpr\", \"format\": \"s-expression\", \"description\": \"Enriched S-expression with derived operator tags\"}\n"
+  ++
+      "    {\"field\": \"formula_str\", \"format\": \"human-readable\", \"description\": \
+          \"Pretty-printed unicode notation\"},\n"
+  ++
+      "    {\"field\": \"formula_ast\", \"format\": \"json-ast\", \"description\": \"Recursive \
+          JSON AST with tag discriminator\"},\n"
+  ++
+      "    {\"field\": \"formula_sexpr\", \"format\": \"s-expression\", \"description\": \
+          \"Canonical parenthesized prefix notation\"},\n"
+  ++
+      "    {\"field\": \"formula_tokens\", \"format\": \"token-list\", \"description\": \
+          \"Prefix-notation token list for transformers\"},\n"
+  ++
+      "    {\"field\": \"pattern_key\", \"format\": \"json-object\", \"description\": \"Structural \
+          pattern key with named fields\"},\n"
+  ++
+      "    {\"field\": \"pattern_features\", \"format\": \"numeric-vector\", \"description\": \
+          \"Flat numeric feature vector for value estimators\"},\n"
+  ++
+      "    {\"field\": \"formula_folded_json\", \"format\": \"json-ast\", \"description\": \
+          \"Enriched JSON AST with derived operator tags (neg, and, or, diamond, etc.)\"},\n"
+  ++
+      "    {\"field\": \"formula_folded_str\", \"format\": \"human-readable\", \"description\": \
+          \"Enriched pretty-print with derived operator notation\"},\n"
+  ++
+      "    {\"field\": \"formula_folded_sexpr\", \"format\": \"s-expression\", \"description\": \
+          \"Enriched S-expression with derived operator tags\"}\n"
   ++ "  ]\n"
   ++ "}"
 
@@ -699,7 +717,8 @@ def parseQuotedStringSExpr (st : SExprPS) : Option (String × SExprPS) :=
   | _ => none
 
 /-- Parse a natural number (recursive helper). -/
-def parseNatSExprAux (st : SExprPS) (acc : Nat) (hasDigit : Bool) : (fuel : Nat) → Option (Nat × SExprPS)
+def parseNatSExprAux (st : SExprPS) (acc : Nat) (hasDigit : Bool) : (fuel : Nat) → Option
+    (Nat × SExprPS)
   | 0 => if hasDigit then some (acc, st) else none
   | fuel + 1 =>
     match st.peek with
@@ -940,7 +959,9 @@ def main (args : List String) : IO Unit := do
   IO.println s!"Max complexity: {cliArgs.maxComplexity}"
   IO.println s!"Max modal depth: {cliArgs.maxModalDepth}"
   IO.println s!"Max temporal depth: {cliArgs.maxTemporalDepth}"
-  IO.println s!"Max formulas: {if cliArgs.maxFormulas == 0 then "unlimited" else toString cliArgs.maxFormulas}"
+  IO.println
+      s!"Max formulas: \
+          {if cliArgs.maxFormulas == 0 then "unlimited" else toString cliArgs.maxFormulas}"
   IO.println s!"Valid seed count: {cliArgs.validSeedCount}"
   IO.println s!"Output: {cliArgs.output}"
   IO.println s!"Include duals: {cliArgs.includeDuals}"
@@ -1044,7 +1065,9 @@ def main (args : List String) : IO Unit := do
     let originalCount := formulas'.length
     let canonical := AtomCanonicalization.deduplicateCanonical formulas'
     let ratio := if canonical.length > 0 then originalCount * 100 / canonical.length else 0
-    IO.println s!"Deduplicated {originalCount} -> {canonical.length} formulas ({ratio / 100}.{ratio % 100 / 10}x reduction)"
+    IO.println
+        s!"Deduplicated {originalCount} -> {canonical.length} formulas \
+            ({ratio / 100}.{ratio % 100 / 10}x reduction)"
     pure canonical
 
   -- Step 3b: Stratified sampling
@@ -1056,12 +1079,18 @@ def main (args : List String) : IO Unit := do
     IO.println s!"Excluded {excludedCount} timeout-pattern formulas ({filtered.length} remaining)"
     -- Apply interestingness-stratified sampling
     let selected := stratifiedSelect filtered cliArgs.stratifiedSample
-    IO.println s!"Stratified sample: selected {selected.length} formulas (target: {cliArgs.stratifiedSample})"
+    IO.println
+        s!"Stratified sample: selected {selected.length} formulas (target: \
+            {cliArgs.stratifiedSample})"
     -- Log tier distribution
     let tier1Count := selected.filter (fun φ => preLabelInterestingness φ >= 60) |>.length
-    let tier2Count := selected.filter (fun φ => preLabelInterestingness φ >= 30 && preLabelInterestingness φ < 60) |>.length
-    let tier3Count := selected.filter (fun φ => preLabelInterestingness φ >= 1 && preLabelInterestingness φ < 30) |>.length
-    IO.println s!"  Tier 1 (interesting): {tier1Count}, Tier 2 (moderate): {tier2Count}, Tier 3 (routine): {tier3Count}"
+    let tier2Count := selected.filter (fun φ => preLabelInterestingness φ >= 30 &&
+        preLabelInterestingness φ < 60) |>.length
+    let tier3Count := selected.filter (fun φ => preLabelInterestingness φ >= 1 &&
+        preLabelInterestingness φ < 30) |>.length
+    IO.println
+        s!"  Tier 1 (interesting): {tier1Count}, Tier 2 (moderate): {tier2Count}, Tier 3 \
+            (routine): {tier3Count}"
     pure selected
   else
     pure formulasDeduped
@@ -1075,10 +1104,14 @@ def main (args : List String) : IO Unit := do
   -- Label each formula, write JSONL line immediately, accumulate lightweight stats
   let totalFormulas := formulasAfterSampling.length
   if cliArgs.resumeFrom > 0 then
-    IO.println s!"Resuming from formula {cliArgs.resumeFrom} ({formulasToLabel.length} remaining of {totalFormulas})..."
+    IO.println
+        s!"Resuming from formula {cliArgs.resumeFrom} ({formulasToLabel.length} remaining of \
+            {totalFormulas})..."
   let parallelMode := cliArgs.parallelThreads > 0
   if parallelMode then
-    IO.println s!"Labeling {formulasToLabel.length} formulas with {cliArgs.parallelThreads} parallel threads..."
+    IO.println
+        s!"Labeling {formulasToLabel.length} formulas with {cliArgs.parallelThreads} parallel \
+            threads..."
   else
     IO.println s!"Labeling and streaming {formulasToLabel.length} formulas to {cliArgs.output}..."
   IO.println s!"[label] Starting labeling of {formulasToLabel.length} formulas..."
@@ -1112,7 +1145,8 @@ def main (args : List String) : IO Unit := do
         let idx := batchStart + i
         match formulaArr[idx]? with
         | some φ =>
-          let task ← IO.asTask (labelFormulaWithCache exportCache φ fc cliArgs.wallclockTimeoutMs genMode pool) .dedicated
+          let task ← IO.asTask (labelFormulaWithCache exportCache φ fc cliArgs.wallclockTimeoutMs
+              genMode pool) .dedicated
           tasks := tasks.push task
         | none => pure ()
       -- Wait for all tasks and collect results
@@ -1126,7 +1160,9 @@ def main (args : List String) : IO Unit := do
         | .ok labeled =>
           -- Write JSONL line (serialized: only one writer)
           if labeled.metrics.decisionTimeMs > 1000 then
-            IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
+            IO.eprintln
+                s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took \
+                    {labeled.metrics.decisionTimeMs}ms"
           let splitName := assignSplit labeled.formula.prettyPrint
           let record := labeledToRecord (count + 1) splitName labeled fcName genModeStr
           writeRecordJSONL handle record
@@ -1158,14 +1194,18 @@ def main (args : List String) : IO Unit := do
             let etaSecRem := etaSecs % 60
             s!"{etaMin}m {etaSecRem}s"
           else "unknown"
-        IO.println s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
+        IO.println
+            s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% \
+                timeout, {rate} formulas/sec, ETA: {etaStr}"
   else
     -- Sequential labeling (original path, with cache)
     for φ in formulasToLabel do
       let labeled ← labelFormulaWithCache exportCache φ fc cliArgs.wallclockTimeoutMs genMode pool
       -- Slow-formula warning for post-run analysis
       if labeled.metrics.decisionTimeMs > 1000 then
-        IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
+        IO.eprintln
+            s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took \
+                {labeled.metrics.decisionTimeMs}ms"
       -- Write JSONL line immediately (no accumulation)
       let splitName := assignSplit labeled.formula.prettyPrint
       let record := labeledToRecord (count + 1) splitName labeled fcName genModeStr
@@ -1199,7 +1239,9 @@ def main (args : List String) : IO Unit := do
             let etaSecRem := etaSecs % 60
             s!"{etaMin}m {etaSecRem}s"
           else "unknown"
-        IO.println s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
+        IO.println
+            s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% \
+                timeout, {rate} formulas/sec, ETA: {etaStr}"
 
   -- Print cache statistics after labeling
   let finalCacheStats ← exportCache.atomically do return (← get)
@@ -1210,11 +1252,16 @@ def main (args : List String) : IO Unit := do
   let labelElapsedMs := labelEndMs - startTime
   let labelElapsedSecs := labelElapsedMs / 1000
   let labeledThisRun := count - cliArgs.resumeFrom
-  let finalRate := if labelElapsedMs > 0 then labeledThisRun * 1000 / labelElapsedMs else labeledThisRun
+  let finalRate := if labelElapsedMs > 0 then labeledThisRun * 1000 / labelElapsedMs else
+      labeledThisRun
   if cliArgs.resumeFrom > 0 then
-    IO.println s!"[label] Labeling complete: {labeledThisRun} formulas in {labelElapsedSecs}s ({finalRate} formulas/sec), total {count} of {totalFormulas}"
+    IO.println
+        s!"[label] Labeling complete: {labeledThisRun} formulas in {labelElapsedSecs}s \
+            ({finalRate} formulas/sec), total {count} of {totalFormulas}"
   else
-    IO.println s!"[label] Labeling complete: {count} formulas in {labelElapsedSecs}s ({finalRate} formulas/sec)"
+    IO.println
+        s!"[label] Labeling complete: {count} formulas in {labelElapsedSecs}s ({finalRate} \
+            formulas/sec)"
 
   -- Step 4b: Log peak memory usage (Linux /proc/self/status)
   let statusContent ← IO.FS.readFile ⟨"/proc/self/status"⟩ |>.toBaseIO
@@ -1231,10 +1278,15 @@ def main (args : List String) : IO Unit := do
   let avgComplexity := if labeledThisRun > 0 then totalComplexity / labeledThisRun else 0
   IO.println ""
   IO.println s!"Batch Statistics{if cliArgs.resumeFrom > 0 then " (this run)" else ""}:"
-  IO.println s!"  Labeled: {labeledThisRun}{if cliArgs.resumeFrom > 0 then s!" (total in file: {count})" else ""}"
-  IO.println s!"  Valid: {validCount} ({if labeledThisRun > 0 then validCount * 100 / labeledThisRun else 0}%)"
+  IO.println s!"  Labeled: {labeledThisRun}{if cliArgs.resumeFrom > 0 then s!"
+      (total in file: {count})" else ""}"
+  IO.println
+      s!"  Valid: {validCount} \
+          ({if labeledThisRun > 0 then validCount * 100 / labeledThisRun else 0}%)"
   IO.println s!"  Invalid: {invalidCount}"
-  IO.println s!"  Timeout: {timeoutCount} ({if labeledThisRun > 0 then timeoutCount * 100 / labeledThisRun else 0}%)"
+  IO.println
+      s!"  Timeout: {timeoutCount} \
+          ({if labeledThisRun > 0 then timeoutCount * 100 / labeledThisRun else 0}%)"
   IO.println s!"  Avg decision time: {avgTimeMs}ms"
   IO.println ""
 
@@ -1258,7 +1310,9 @@ def main (args : List String) : IO Unit := do
     generationMode := genModeStr
   }
   writeMetadata outputPath metadata
-  IO.println s!"  Wrote {labeledThisRun} records to {cliArgs.output}{if cliArgs.resumeFrom > 0 then s!" (appended, total: {count})" else ""}"
+  IO.println
+      s!"  Wrote {labeledThisRun} records to {cliArgs.output}{if cliArgs.resumeFrom > 0 then s!"
+          (appended, total: {count})" else ""}"
   IO.println s!"  Wrote metadata file"
 
   -- Step 6b: Clean up checkpoint file on successful completion

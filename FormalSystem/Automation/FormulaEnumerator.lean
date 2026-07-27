@@ -169,7 +169,8 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
         -- Unary: box φ (child has exact complexity childBudget)
         -- box adds 1 to modal depth, so child must fit within modalBudget - 1
         let (boxes, cache1) := if modalBudget > 0 then
-          let (children, c) := enumExactHelper atoms (modalBudget - 1) temporalBudget childBudget cache
+          let (children, c) := enumExactHelper atoms (modalBudget - 1) temporalBudget childBudget
+              cache
           -- Filter out box(box(φ)) since □□φ ≡ □φ under S5
           let boxed := children.foldl (fun (acc : Array Formula) child =>
             let f := Formula.box child
@@ -183,7 +184,8 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
           let dOverhead := 1
           let (dFormulas, cd) := if sizeBudget > dOverhead then
             let childSize := sizeBudget - dOverhead
-            let (children, c) := enumExactHelper atoms (modalBudget - 1) temporalBudget childSize cache1
+            let (children, c) := enumExactHelper atoms (modalBudget - 1) temporalBudget childSize
+                cache1
             let filtered := children.foldl (fun (acc : Array Formula) child =>
               let f := Formula.diamond child
               if structurallyTrivial f then acc else acc.push f
@@ -201,7 +203,8 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
           let fOverhead := 1
           let (fFormulas, c1) := if sizeBudget > fOverhead then
             let childSize := sizeBudget - fOverhead
-            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize cache1d
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize
+                cache1d
             (children.map Formula.someFuture, c)
           else (#[], cache1d)
           -- P(child): somePast child, overhead = 1, child complexity = sizeBudget - 1
@@ -261,7 +264,8 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c9
             (children.map Formula.weakPast, c)
           else (#[], c9)
-          (fFormulas ++ pFormulas ++ gFormulas ++ hFormulas ++ alwaysFormulas ++ sometimesFormulas ++ nextFormulas ++ prevFormulas ++ weakFutureFormulas ++ weakPastFormulas, c10)
+          (fFormulas ++ pFormulas ++ gFormulas ++ hFormulas ++ alwaysFormulas ++ sometimesFormulas
+              ++ nextFormulas ++ prevFormulas ++ weakFutureFormulas ++ weakPastFormulas, c10)
         else (#[], cache1d)
         -- Binary constructors: distribute childBudget between left and right
         -- Each child gets exact complexity >= 1, left + right = childBudget
@@ -284,8 +288,10 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
               ) (Array.mkEmpty (lefts.size * rights.size))
               -- untl/snce: temporal depth + 1 for the whole formula
               let (temporalBinaries, c3) := if temporalBudget > 0 then
-                let (tLefts, c2a) := enumExactHelper atoms modalBudget (temporalBudget - 1) leftSize c2
-                let (tRights, c2b) := enumExactHelper atoms modalBudget (temporalBudget - 1) rightSize c2a
+                let (tLefts, c2a) := enumExactHelper atoms modalBudget (temporalBudget - 1)
+                    leftSize c2
+                let (tRights, c2b) := enumExactHelper atoms modalBudget (temporalBudget - 1)
+                    rightSize c2a
                 let untls := tLefts.foldl (fun (acc : Array Formula) l =>
                   tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.untl l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
@@ -293,24 +299,31 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
                   tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.snce l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let releases := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.release l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.release l r))
+                      acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let weakUntils := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weakUntil l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weakUntil l r))
+                      acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let triggers := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.trigger l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.trigger l r))
+                      acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let weakSinces := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weakSince l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weakSince l r))
+                      acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let strongReleases := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strongRelease l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push
+                      (Formula.strongRelease l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let strongTriggers := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strongTrigger l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push
+                      (Formula.strongTrigger l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
-                (untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces ++ strongReleases ++ strongTriggers, c2b)
+                (untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces ++
+                    strongReleases ++ strongTriggers, c2b)
               else (#[], c2)
               (accArr ++ imps ++ temporalBinaries, c3)
           ) (#[], cache1a))
@@ -410,13 +423,15 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     --   0 = atom/bot, 1 = imp
     --   modal (if modalBudget > 0): box, diamond
     --   temporal primitive (if temporalBudget > 0): untl/snce
-    --   derived unary temporal (if hasDerived): F/P, G/H, always/sometimes, next/prev, weakFuture/weakPast
+    --   derived unary temporal (if hasDerived): F/P, G/H, always/sometimes, next/prev,
+    -- weakFuture/weakPast
     let hasModal := modalBudget > 0
     let hasTemporal := temporalBudget > 0
     let hasDerived := hasTemporal && sizeBudget > 1
     let modalSlots := if hasModal then 2 else 0     -- box + diamond
     let tempSlots := if hasTemporal then 1 else 0   -- untl/snce
-    let derivedUnarySlots := if hasDerived then 5 else 0  -- F/P, G/H, always/sometimes, next/prev, weakFuture/weakPast
+    let derivedUnarySlots := if hasDerived then 5 else 0  -- F/P, G/H, always/sometimes, next/prev,
+    -- weakFuture/weakPast
     let derivedBinarySlots := if hasDerived then 1 else 0  -- binary derived temporal
     let numChoices := 2 + modalSlots + tempSlots + derivedUnarySlots + derivedBinarySlots
     let (rng1, choice) := rng.randBound numChoices
@@ -438,7 +453,8 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
         | some a => (r', Formula.atom a)
         | none => (r', Formula.bot)
     -- Helper: generate a binary formula splitting sizeBudget
-    let mkBinary (r : LCGState) (mB tB : Nat) (mk : Formula → Formula → Formula) : LCGState × Formula :=
+    let mkBinary (r : LCGState) (mB tB : Nat) (mk : Formula → Formula → Formula) : LCGState ×
+        Formula :=
       let childBudget := sizeBudget - 1
       if childBudget < 2 then mkBase r
       else
@@ -832,7 +848,8 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
     let numChoices := 2  -- atom/bot + imp always available
                      + (if hasModal then 2 else 0)  -- box + diamond
                      + (if maxTemporal > 0 then 2 else 0)  -- untl + snce
-                     + (if hasTemporal then 5 else 0)  -- F/P, G/H, always/sometimes, next/prev, weakFuture/weakPast
+                     + (if hasTemporal then 5 else 0)  -- F/P, G/H, always/sometimes, next/prev,
+                     -- weakFuture/weakPast
                      + (if hasTemporal then 1 else 0)  -- binary derived temporal
     let choice ← IO.rand 0 (numChoices - 1)
     -- Map choice to constructor. We use a running offset to dispatch.
@@ -1259,7 +1276,8 @@ def schemaMinFrameClass (idx : Nat) : FrameClass :=
   | _ => .Base
 
 /-- Build a random axiom witness for a given schema index. -/
-def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO (Option (Σ φ, Axiom φ)) := do
+def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO
+    (Option (Σ φ, Axiom φ)) := do
   match idx with
   | 0 => do
     let φ ← randomSubFormula atoms maxParamSize
@@ -1424,7 +1442,8 @@ Only returns axioms whose `minFrameClass` is compatible with the requested
 `FrameClass`. Returns `none` if the generated axiom is incompatible (should
 not happen when using `pickSchemaIdx`).
 -/
-def instantiateAxiomWithWitness (atoms : List Atom) (maxParamSize : Nat) (fc : FrameClass := .Base) : IO (Option (Σ φ, Axiom φ)) := do
+def instantiateAxiomWithWitness (atoms : List Atom) (maxParamSize : Nat) (fc : FrameClass := .Base)
+    : IO (Option (Σ φ, Axiom φ)) := do
   let idx ← pickSchemaIdx atoms maxParamSize fc
   let result ← mkAxiomAtIdx atoms maxParamSize idx
   match result with
@@ -1524,7 +1543,8 @@ private def theoremSeedFormulas : List Formula :=
     -- Bimodal interactions mixing box with G/H/F/P
     p.box.imp p.box.allPast,                                  -- boxToBoxPast (duplicate check ok)
     p.box.imp p.always,                                        -- perpetuity_1 (duplicate check ok)
-    p.sometimes.imp p.diamond,                                 -- perpetuity_2_alt (sometimes -> diamond)
+    p.sometimes.imp p.diamond,                                 -- perpetuity_2_alt (sometimes ->
+    -- diamond)
     -- Deep temporal chains
     p.imp (p.somePast.someFuture.allPast.allFuture)        -- connectFutureChain(p)
   ]
@@ -1564,7 +1584,9 @@ partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
     if seedIdx % progressInterval == 0 then
       let elapsedMs ← IO.monoMsNow
       let elapsedSecs := (elapsedMs - batchStartMs) / 1000
-      IO.println s!"[valid] Seeding: {seedIdx}/{seedCount} axiom instances, pool: {poolArr.size} unique, {elapsedSecs}s elapsed"
+      IO.println
+          s!"[valid] Seeding: {seedIdx}/{seedCount} axiom instances, pool: {poolArr.size} unique, \
+              {elapsedSecs}s elapsed"
   -- Add theorem seed formulas
   for φ in theoremSeedFormulas do
     let (s', a') := addToPool poolSet poolArr φ
@@ -1636,7 +1658,9 @@ partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
     let growthRate := if prevSize > 0 then growth * 100 / prevSize else 100
     let closureElapsedMs ← IO.monoMsNow
     let closureElapsedSecs := (closureElapsedMs - batchStartMs) / 1000
-    IO.println s!"[valid] Closure round {round}: pool {prevSize} -> {poolArr.size} (+{growth}, {growthRate}% growth), {closureElapsedSecs}s elapsed"
+    IO.println
+        s!"[valid] Closure round {round}: pool {prevSize} -> {poolArr.size} (+{growth}, \
+            {growthRate}% growth), {closureElapsedSecs}s elapsed"
     if growthRate < 1 then
       IO.println s!"[valid] Closure converged at round {round} ({growthRate}% growth < 1%)"
       break
@@ -1843,8 +1867,12 @@ private def enumerateWithProgress (params : EnumParams) : IO (List Formula) := d
     let remainingLevels := params.maxComplexity - level
     let avgMsPerLevel := if level > resumeLevel then elapsed / (level - resumeLevel) else 0
     let etaSecs := remainingLevels * avgMsPerLevel / 1000
-    let dedupStr := if params.canonicalDedup then s!" (raw: {rawCount}, deduped: {levelFormulas.size})" else ""
-    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {levelFormulas.size} formulas{dedupStr} (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec, ETA: {etaSecs}s"
+    let dedupStr := if params.canonicalDedup then
+        s!" (raw: {rawCount}, deduped: {levelFormulas.size})" else ""
+    IO.println
+        s!"[enum] Level {level}/{params.maxComplexity}: {levelFormulas.size} formulas{dedupStr} \
+            (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec, ETA:
+                {etaSecs}s"
     -- Write JSONL output and checkpoint marker if checkpoint dir is set
     match params.checkpointDir with
     | some dir =>
@@ -1892,7 +1920,9 @@ private def enumerateStratifiedWithProgress (params : EnumParams) : IO (List For
       | some 0 => " [exhaustive]"
       | some q => s!" [quota: {q}, from {filtered.size}]"
       | none => " [exhaustive]"
-    IO.println s!"[enum] Level {level}/{params.maxComplexity}: {levelFormulas.size} formulas{quotaStr} (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
+    IO.println
+        s!"[enum] Level {level}/{params.maxComplexity}: {levelFormulas.size} formulas{quotaStr} \
+            (cumulative: {totalCount}), {elapsedSecs}s elapsed, {rate} formulas/sec"
     if params.maxFormulas > 0 && totalCount ≥ params.maxFormulas then
       break
   let result := allFormulas.toList
@@ -1916,7 +1946,9 @@ partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
     | .random => "random"
     | .hybrid => "hybrid"
     | .stratified => "stratified"
-  IO.println s!"[gen] Starting formula enumeration ({modeStr} mode, max complexity {params.maxComplexity})..."
+  IO.println
+      s!"[gen] Starting formula enumeration ({modeStr} mode, max complexity \
+          {params.maxComplexity})..."
   -- Step 1: Generate formulas from the selected sampling mode
   let enumStartMs ← IO.monoMsNow
   let enumerated ← match params.samplingMode with
@@ -1944,7 +1976,8 @@ partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
     let seeds ← generateValidBatch params.validSeedCount params.maxComplexity params.atoms
     let seedEndMs ← IO.monoMsNow
     let seedElapsed := (seedEndMs - seedStartMs) / 1000
-    IO.println s!"[gen] Valid-seed generation complete: {seeds.length} valid formulas in {seedElapsed}s"
+    IO.println
+        s!"[gen] Valid-seed generation complete: {seeds.length} valid formulas in {seedElapsed}s"
     pure seeds
   else
     pure []
@@ -1979,16 +2012,23 @@ private def hasDerivedTemporal : Formula → Bool
   | .bot => false
   | .box a => hasDerivedTemporal a
   -- always(φ) = H(φ) ∧ φ ∧ G(φ)
-  | .imp (.imp (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) (.imp (.imp (.imp _ (.imp (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot) .bot)) .bot => true
+  | .imp (.imp (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot)
+      (.imp (.imp (.imp _ (.imp (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot)
+          .bot)) .bot => true
   -- sometimes(φ) = ¬always(¬φ)
-  | .imp (.imp (.imp (.imp (.snce (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot) (.imp (.imp (.imp (.imp _ .bot) (.imp (.imp (.untl (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot) .bot)) .bot) .bot)) .bot) .bot => true
+  | .imp (.imp (.imp (.imp (.snce (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot)
+      (.imp (.imp (.imp (.imp _ .bot) (.imp
+          (.imp (.untl (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot) .bot)) .bot) .bot)) .bot)
+              .bot => true
   -- weakFuture(φ) = φ ∧ G(φ)
   | .imp (.imp _ (.imp (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot => true
   -- weakPast(φ) = φ ∧ H(φ)
   | .imp (.imp _ (.imp (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot => true
   -- Weak Until / Weak Since patterns
-  | .imp (.imp (.untl _ _) .bot) (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WU pattern
-  | .imp (.imp (.snce _ _) .bot) (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WS pattern
+  | .imp (.imp (.untl _ _) .bot) (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WU
+  -- pattern
+  | .imp (.imp (.snce _ _) .bot) (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WS
+  -- pattern
   -- diamond(φ) = ¬□¬φ
   | .imp (.box (.imp _ .bot)) .bot => true
   -- Check for G/H patterns: ¬F(¬φ) or ¬P(¬φ)
@@ -2058,13 +2098,16 @@ increases at c4 and c5 relative to the pre-derived-operator baseline. -/
 #eval (generateBimodalSlice defaultAtoms 2 2 [5]).1.length
 
 -- Verify diamond(p) appears in c2 enumeration
-#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.diamond (.atom (Atom.mkBase "p")))
+#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any
+    (· == Formula.diamond (.atom (Atom.mkBase "p")))
 
 -- Verify next(p) appears in c2 enumeration
-#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.next (.atom (Atom.mkBase "p")))
+#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any
+    (· == Formula.next (.atom (Atom.mkBase "p")))
 
 -- Verify prev(p) appears in c2 enumeration
-#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.prev (.atom (Atom.mkBase "p")))
+#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any
+    (· == Formula.prev (.atom (Atom.mkBase "p")))
 
 -- Verify release(p,q) appears in c3 enumeration (re-added binary derived)
 #guard (enumExactHelper defaultAtoms 2 2 3 {}).1.toList.any
@@ -2159,7 +2202,8 @@ private def partitionCrossProduct (atoms : List Atom) (modalBudget temporalBudge
       let strongTriggers := tLefts.foldl (fun (acc : Array Formula) l =>
         tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strongTrigger l r)) acc
       ) (Array.mkEmpty (tLefts.size * tRights.size))
-      untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces ++ strongReleases ++ strongTriggers
+      untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces ++ strongReleases ++
+          strongTriggers
     else #[]
     imps ++ temporal
 
@@ -2202,7 +2246,8 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
     let mut tasks : Array (Task (Except IO.Error (Array Formula))) := #[]
     for (leftSize, rightSize) in partitions do
       let task ← IO.asTask (prio := .dedicated) do
-        pure (partitionCrossProduct atoms modalBudget temporalBudget leftSize rightSize immutableCache)
+        pure (partitionCrossProduct atoms modalBudget temporalBudget leftSize rightSize
+            immutableCache)
       tasks := tasks.push task
     -- Collect results from all tasks
     let mut binaryFormulas : Array Formula := #[]
@@ -2213,7 +2258,8 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
       partIdx := partIdx + 1
     -- Unary: box formulas (sequential, fast)
     let boxes := if modalBudget > 0 then
-      let (children, _) := enumExactHelper atoms (modalBudget - 1) temporalBudget childBudget immutableCache
+      let (children, _) := enumExactHelper atoms (modalBudget - 1) temporalBudget childBudget
+          immutableCache
       children.foldl (fun (acc : Array Formula) child =>
         let f := Formula.box child
         if structurallyTrivial f then acc else acc.push f
@@ -2222,7 +2268,8 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
     -- Diamond (derived modal unary, sequential, fast)
     let diamonds := if modalBudget > 0 && level > 1 then
       let childSize := level - 1
-      let (children, _) := enumExactHelper atoms (modalBudget - 1) temporalBudget childSize immutableCache
+      let (children, _) := enumExactHelper atoms (modalBudget - 1) temporalBudget childSize
+          immutableCache
       children.foldl (fun (acc : Array Formula) child =>
         let f := Formula.diamond child
         if structurallyTrivial f then acc else acc.push f
@@ -2231,7 +2278,8 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
     -- Derived temporal unary operators (sequential, fast)
     let derivedTemporal := if temporalBudget > 0 && level > 1 then
       let childSize := level - 1
-      let (children, _) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize immutableCache
+      let (children, _) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize
+          immutableCache
       children.map Formula.someFuture
         ++ children.map Formula.somePast
         ++ children.map Formula.allFuture
@@ -2285,8 +2333,12 @@ def enumerateWithPipeline (params : EnumParams) (parallelConfig : ParallelEnumCo
     let levelElapsed := levelEndMs - levelStartMs
     let elapsedSecs := (levelEndMs - startMs) / 1000
     let rate := if elapsedSecs > 0 then totalCount / elapsedSecs else totalCount
-    let dedupStr := if params.canonicalDedup then s!" (raw: {rawCount}, deduped: {levelFormulas.size})" else ""
-    IO.println s!"[parallel] Level {level}/{params.maxComplexity}: {levelFormulas.size} formulas{dedupStr} (cumulative: {totalCount}), {levelElapsed}ms this level, {elapsedSecs}s total, {rate} formulas/sec"
+    let dedupStr := if params.canonicalDedup then
+        s!" (raw: {rawCount}, deduped: {levelFormulas.size})" else ""
+    IO.println
+        s!"[parallel] Level {level}/{params.maxComplexity}: {levelFormulas.size} \
+            formulas{dedupStr} (cumulative: {totalCount}), {levelElapsed}ms this level,
+                {elapsedSecs}s total, {rate} formulas/sec"
     -- Fire pipeline overlap callback
     onLevelComplete { level, formulas := levelFormulas, elapsedMs := levelElapsed }
     -- Write checkpoint if enabled

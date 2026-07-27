@@ -118,7 +118,8 @@ syntax modalSearchParam := "(" ident " := " num ")"
 syntax "modal_search" modalSearchParam* : tactic
 
 /-- Parse named parameter value from TSyntax -/
-def parseSearchParam (stx : TSyntax `FormalSystem.Automation.modalSearchParam) : TacticM (String × Nat) := do
+def parseSearchParam (stx : TSyntax `FormalSystem.Automation.modalSearchParam) : TacticM
+    (String × Nat) := do
   match stx with
   | `(modalSearchParam| ( $name:ident := $val:num )) =>
     return (name.getId.toString, val.getNat)
@@ -152,7 +153,9 @@ def runModalSearch (cfg : SearchConfig) : TacticM Unit := do
   let counter ← IO.mkRef cfg.visitLimit
   let found ← searchProof counter goal cfg.depth
   if !found then
-    throwError "modal_search: no proof found within depth {cfg.depth} (visitLimit {cfg.visitLimit}) for goal {goalType}"
+    throwError
+        "modal_search: no proof found within depth {cfg.depth} (visitLimit {cfg.visitLimit}) for \
+            goal {goalType}"
 
 elab_rules : tactic
   | `(tactic| modal_search $[$d]?) => do
@@ -200,7 +203,9 @@ def runTemporalSearch (cfg : SearchConfig) : TacticM Unit := do
   let counter ← IO.mkRef cfg.visitLimit
   let found ← searchProof counter goal cfg.depth
   if !found then
-    throwError "temporal_search: no proof found within depth {cfg.depth} (visitLimit {cfg.visitLimit}) for goal {goalType}"
+    throwError
+        "temporal_search: no proof found within depth {cfg.depth} (visitLimit {cfg.visitLimit}) \
+            for goal {goalType}"
 
 elab_rules : tactic
   | `(tactic| temporal_search $[$d]?) => do
@@ -251,13 +256,16 @@ def runPropositionalSearch (cfg : SearchConfig) : TacticM Unit := do
 
   -- Validate goal type
   let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
-    | throwError "propositional_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
+    | throwError
+        "propositional_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
   -- Attempt recursive proof search (visitLimit-bounded)
   let counter ← IO.mkRef cfg.visitLimit
   let found ← searchProof counter goal cfg.depth
   if !found then
-    throwError "propositional_search: no proof found within depth {cfg.depth} (visitLimit {cfg.visitLimit}) for goal {goalType}"
+    throwError
+        "propositional_search: no proof found within depth {cfg.depth} (visitLimit \
+            {cfg.visitLimit}) for goal {goalType}"
 
 elab_rules : tactic
   | `(tactic| propositional_search $[$d]?) => do
@@ -449,19 +457,23 @@ Grouped by layer following the axiom classification in Axioms.lean.
 
 -- Layer 3: BX Temporal — monotonicity
 -- Test 29: left_mono_until_G: G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
-example (p q r : Formula) : ⊢ (p.imp q).allFuture.imp ((Formula.untl r p).imp (Formula.untl r q)) := by
+example (p q r : Formula) : ⊢ (p.imp q).allFuture.imp
+    ((Formula.untl r p).imp (Formula.untl r q)) := by
   modal_search
 
 -- Test 30: left_mono_since_H: H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
-example (p q r : Formula) : ⊢ (p.imp q).allPast.imp ((Formula.snce r p).imp (Formula.snce r q)) := by
+example (p q r : Formula) : ⊢ (p.imp q).allPast.imp
+    ((Formula.snce r p).imp (Formula.snce r q)) := by
   modal_search
 
 -- Test 31: right_mono_until: G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
-example (p q r : Formula) : ⊢ (p.imp q).allFuture.imp ((Formula.untl p r).imp (Formula.untl q r)) := by
+example (p q r : Formula) : ⊢ (p.imp q).allFuture.imp
+    ((Formula.untl p r).imp (Formula.untl q r)) := by
   modal_search
 
 -- Test 32: right_mono_since: H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
-example (p q r : Formula) : ⊢ (p.imp q).allPast.imp ((Formula.snce p r).imp (Formula.snce q r)) := by
+example (p q r : Formula) : ⊢ (p.imp q).allPast.imp
+    ((Formula.snce p r).imp (Formula.snce q r)) := by
   modal_search
 
 -- Layer 3: BX Temporal — connectedness
@@ -496,11 +508,13 @@ example (p q : Formula) : ⊢ (Formula.snce q p).imp
   modal_search
 
 -- Test 39: absorb_until: U(φ ∧ U(ψ,φ), φ) → U(ψ,φ)
-example (p q : Formula) : ⊢ (Formula.untl (Formula.and p (Formula.untl q p)) p).imp (Formula.untl q p) := by
+example (p q : Formula) : ⊢ (Formula.untl (Formula.and p (Formula.untl q p)) p).imp
+    (Formula.untl q p) := by
   modal_search
 
 -- Test 40: absorb_since: S(φ ∧ S(ψ,φ), φ) → S(ψ,φ)
-example (p q : Formula) : ⊢ (Formula.snce (Formula.and p (Formula.snce q p)) p).imp (Formula.snce q p) := by
+example (p q : Formula) : ⊢ (Formula.snce (Formula.and p (Formula.snce q p)) p).imp
+    (Formula.snce q p) := by
   modal_search
 
 -- Layer 3: BX Temporal — linearity
@@ -547,11 +561,13 @@ example (p q : Formula) : ⊢ (Formula.and (Formula.somePast p) (Formula.somePas
   modal_search
 
 -- Test 47: F_until_equiv: F(φ) → U(φ, ⊤)
-example (p : Formula) : ⊢ (Formula.someFuture p).imp (Formula.untl p (Formula.bot.imp Formula.bot)) := by
+example (p : Formula) : ⊢ (Formula.someFuture p).imp
+    (Formula.untl p (Formula.bot.imp Formula.bot)) := by
   modal_search
 
 -- Test 48: P_since_equiv: P(φ) → S(φ, ⊤)
-example (p : Formula) : ⊢ (Formula.somePast p).imp (Formula.snce p (Formula.bot.imp Formula.bot)) := by
+example (p : Formula) : ⊢ (Formula.somePast p).imp
+    (Formula.snce p (Formula.bot.imp Formula.bot)) := by
   modal_search
 
 -- Layer 5: Uniformity — discrete structure (FrameClass.Base, no parameters)
@@ -664,7 +680,8 @@ example (p q : Formula) : ⊢ p.imp ((p.imp q).imp q) := by
 -- Tier 2: Modal and temporal derived theorems
 
 -- Test 71: temporalKDistDerived: G(φ→ψ) → (Gφ→Gψ)
-noncomputable example (p q : Formula) : ⊢ (p.imp q).allFuture.imp (p.allFuture.imp q.allFuture) := by
+noncomputable example (p q : Formula) : ⊢ (p.imp q).allFuture.imp
+    (p.allFuture.imp q.allFuture) := by
   modal_search
 
 -- Test 72: temporal4Derived: Gφ → GGφ
