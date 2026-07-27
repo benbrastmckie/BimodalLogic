@@ -562,32 +562,64 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 
 ---
 
-### Phase 6: Part B - single-pass declaration rewrite [NOT STARTED]
+### Phase 6: Part B - single-pass declaration rewrite [COMPLETED]
 
 - **Goal:** Apply all target names in one computed pass and return the tree to green.
   6.1 and 6.2 are a **paired unit**: 6.1 ends with a red build by construction and must be followed
   immediately by 6.2. Do not commit 6.1's output to `main` as a standalone state.
 
-#### Phase 6.1: Apply the rewrite from a single snapshot [NOT STARTED]
+#### Phase 6.1: Apply the rewrite from a single snapshot [COMPLETED]
 
 - **Goal:** One edit set, one pass, one snapshot.
 - **Tasks:**
-  - [ ] `bash .claude/scripts/git-snapshot.sh 402` before starting.
-  - [ ] `lake clean && lake build` to produce a fresh, complete `.ilean` corpus. Confirm no `.ilean`
-        exists whose module lacks a source file.
-  - [ ] Run `rename.py` over **all** rows of `target-names.tsv` against **that one snapshot**,
+  - [x] `bash .claude/scripts/git-snapshot.sh 402` before starting.
+  - [x] `lake clean && lake build` to produce a fresh, complete `.ilean` corpus. Confirm no `.ilean`
+        exists whose module lacks a source file. *(deviation: altered — three corrections. (1)
+        `lake clean` with no argument deletes the build directory of EVERY package in the
+        workspace, Mathlib included; the scoped `lake clean Logos` was used instead. (2) `lake
+        build` alone builds only `@[default_target] lean_lib FormalSystem`, whose glob is its
+        root module's import closure — measured, that leaves **22 source files with no `.ilean`
+        at all**, including `Automation/ProofStepExport.lean`, which Phase 7.1 names as
+        load-bearing. Those files are invisible to BOTH the rewriter and the build meant to
+        catch what the rewriter missed, so a rename would have broken them silently. `lake build
+        BimodalTest` plus all 12 `lean_exe` roots closes the gap; captured as
+        `tools/build-all.sh`, now the standard build command for the rest of the migration.
+        (3) Two files remain uncovered — `Tests/BimodalTest/Semantics/SemanticBenchmark.lean`
+        and `Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean` — because they DO NOT
+        COMPILE on the unmodified tree (verified at HEAD before any edit: type mismatches,
+        missing cases, `List.get!` removed upstream). Pre-existing breakage in orphan modules,
+        recorded, not caused here.)* Final corpus: **329 live `.ilean`, 0 stale, 212,900
+        recorded ranges** — versus 269 files had the plan's literal command been used.
+  - [x] Run `rename.py` over **all** rows of `target-names.tsv` against **that one snapshot**,
         emitting the full edit set before applying anything. Apply per file, per line,
-        right-to-left.
-  - [ ] Write `specs/402_.../guard-rejections.md`: every range whose extracted text did not end with
+        right-to-left. **845 targets, 284 files, 25,640 spans, 0 overlap conflicts.**
+  - [x] Write `specs/402_.../guard-rejections.md`: every range whose extracted text did not end with
         the expected old final component. Expected volume ~0.2%, dominated by wildcard `_` holes and
         keyword/anonymous declarations - both of which **must stay rejected**. Classify each
-        rejection; an unclassifiable rejection blocks 6.2.
-  - [ ] `lake build`, capture the full error list to `build-errors-initial.txt`. These are the
+        rejection; an unclassifiable rejection blocks 6.2. *(deviation: altered — **0 rejections**,
+        not ~0.2%. The 234 mismatching ranges the self-test finds all belong to declarations
+        OUTSIDE the rename map, so no rejection was reachable. `guard-rejections.md` records
+        the zero. The self-test remains the evidence that the guard works: 128,083 / 128,317 =
+        **99.8176%** exact suffix over the full corpus, five known buckets, no unknown bucket.)*
+  - [x] `lake build`, capture the full error list to `build-errors-initial.txt`. These are the
         `.ilean` coverage gap - expect `Unknown identifier` at `have ⟨pat⟩ : … := by` type
         ascriptions, the class the experiment exposed at
-        `Metalogic/SoundnessLemmas/DenseValidity.lean`.
-  - [ ] Record the actual gap rate against the projected ~1.6% / ~390 sites (the projection is Low
-        confidence, extrapolated from one declaration).
+        `Metalogic/SoundnessLemmas/DenseValidity.lean`. *(completed — the predicted class
+        appeared at exactly the predicted file: eight `have ⟨s1, hs1t, h_φs1⟩ : ∃ s, … ∧ truth_at
+        …` sites in `DenseValidity.lean`.)*
+  - [x] Record the actual gap rate against the projected ~1.6% / ~390 sites (the projection is Low
+        confidence, extrapolated from one declaration). *(completed — the projection was
+        **~13x too pessimistic**. Measured: **30 gap sites**, 0.117% of the 25,640 rewritten
+        spans, against a projected ~390 / 1.6%. Five structural classes, none anticipated in
+        full: (1) intra-`structure` field references — a later field's type mentioning an
+        earlier field carries no `.ilean` range, 6 sites in `Semantics/TaskFrame.lean`;
+        (2) `have ⟨pat⟩ : T := by` type ascriptions, 8 sites, the predicted class;
+        (3) dot-notation projections `φ.swap_temporal` reported as `Invalid field`, 4 sites;
+        (4) identifiers inside a `macro` syntax quotation, reported at the USE site with a
+        hygiene dagger `deduction_theorem✝` while the defect is at the macro definition, 1 site
+        (`Automation/Tactics/Deduction.lean`); (5) ordinary unrecorded term references, 11
+        sites. Classes 3 and 4 required extending `fixloop.py` mid-loop; class 4 was fixed by
+        hand because the reported position is not the position that needs editing.)*
 - **Estimated output:** ~100 lines of orchestration plus a very large generated diff and two report
   artifacts
 - **Done when:** the edit set is applied, `guard-rejections.md` is written and every rejection
@@ -596,24 +628,57 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 - **Timing:** 1.5-2 hours
 - **Depends on:** 5
 
-#### Phase 6.2: Build-fix loop to green, commits sub-staged by defining module [NOT STARTED]
+#### Phase 6.2: Build-fix loop to green, commits sub-staged by defining module [COMPLETED]
 
 - **Goal:** Close the `.ilean` coverage gap and return to green, committing in module-sized slices.
 - **Tasks:**
-  - [ ] Write a small fix-loop driver: parse `Unknown identifier X` (and related resolution errors)
+  - [x] Write a small fix-loop driver: parse `Unknown identifier X` (and related resolution errors)
         out of `lake build` output, look `X` up in `target-names.tsv`, apply the mapped name at the
         reported position, rebuild. Loop until green. Hand-editing ~390 sites is not the plan.
-  - [ ] Any error that is *not* a name-resolution failure is a genuine defect - stop and diagnose
-        rather than patching it into silence.
-  - [ ] Once green: `lake build` full, `BimodalTest` green, sorry count = 1 located by content
-        (`theorem countermodel_discrete` - it will have moved from line 1242).
-  - [ ] **Sub-stage the commits by defining module**, largest first, matching the research's
+        *(deviation: altered — `tools/fixloop.py` needed three extensions the plan did not
+        foresee, each added only after the build produced an error shape the tool could not
+        parse. (a) Lean 4.33 writes ``Unknown identifier `x` `` with BACKTICKS, not the
+        `unknown identifier 'x'` single quotes the plan's wording implies. (b) Dot-notation
+        failures arrive as ``Invalid field `swap_temporal`: the environment does not contain
+        `FormalSystem.Syntax.Formula.swap_temporal` `` — a different message with the
+        fully-qualified old name in it, and the edit must anchor on the DOT, not on an
+        identifier boundary. (c) Hygiene daggers (`deduction_theorem✝`) must be stripped
+        before map lookup. The driver applies a fix only when the name resolves to exactly ONE
+        target; ambiguity is reported, never guessed.)*
+  - [x] Any error that is *not* a name-resolution failure is a genuine defect - stop and diagnose
+        rather than patching it into silence. *(completed — the loop halted twice on
+        unclassifiable errors rather than guessing. Both halts were correct and neither was a
+        defect: the first was the unparsed `Invalid field` shape, the second the macro-quotation
+        site whose reported position is in a different file from the edit it needs. **Zero
+        genuine defects were introduced**; every error traced to a name the rewriter could not
+        see.)*
+  - [x] Once green: `lake build` full, `BimodalTest` green, sorry count = 1 located by content
+        (`theorem countermodel_discrete` - it will have moved from line 1242). *(completed —
+        2,725 jobs green via `build-all.sh`; `check-sorry.sh` reports 1 live sorry, located by
+        content in `Metalogic/WeakCanonical/Transfer.lean`; `scripts/check-module-invariants.sh`
+        ALL CHECKS PASSED; all six `Bimodal*` identifiers intact; 0 new axioms; 0 new
+        `@[deprecated]` aliases — the sole one in the tree predates this task, dated
+        2025-12-14 at `Theorems/Propositional/Core.lean`.)*
+  - [x] **Sub-stage the commits by defining module**, largest first, matching the research's
         directory distribution: `Metalogic` (599), `Theorems` (135), `Automation` (73), `Syntax`
         (31), `Semantics` (17), `FrameConditions` (5), `ProofSystem` (1). The *edit set* is not
-        sub-staged - only the commits are.
-  - [ ] Run the linter masked and unmasked; record both. The unmasked count will still be nonzero
+        sub-staged - only the commits are. *(deviation: altered — five commits, not seven.
+        `Syntax`/`Semantics`/`FrameConditions`/`ProofSystem`/`Examples` were staged together;
+        splitting five directories touching 21 files into five commits adds no history value,
+        and every commit before the last is red regardless, since a rename is not divisible.)*
+  - [x] Run the linter masked and unmasked; record both. The unmasked count will still be nonzero
         because `nolints.json` entries now name declarations that no longer exist - that is expected
-        and is resolved in Phase 8.
+        and is resolved in Phase 8. *(completed — **unmasked `defsWithUnderscore`: 861 -> 20**.
+        Every other category is EXACTLY at the Phase 1 unmasked baseline: `unusedArguments` 124,
+        `LINTER FAILED` 115, `docBlame` 39, `tacticDocs` 4, `structureInType` 1. No regression.
+        The 20 are the 18 `tactic*` syntax declarations plus two the Phase 5.1 exclusion list
+        got wrong, both now Phase 8's problem: `Automation.LemmaDB.Parser.Attr.tm_lemma` (an
+        attribute declaration, no `.ilean` entry) and
+        `Separation.sNestingAboveU.S_nesting_above_U_inner` — the Phase 5.2 table excluded this
+        as a "parent-derived auxiliary" on the theory that Lean regenerates its name from the
+        parent's; **that theory is false**. Renaming the parent moved only the NAMESPACE
+        component (`S_nesting_above_U.` -> `sNestingAboveU.`); the final component is spelled
+        literally in source and survived untouched.)*
 - **Estimated output:** ~150 lines of fix-loop tooling plus the residual diff
 - **Done when:** `lake build` green; `BimodalTest` green; sorry count 1; all commits landed;
   the true `.ilean` gap rate recorded.

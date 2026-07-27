@@ -1,0 +1,156 @@
+{
+ "total": 128317,
+ "ok": 128083,
+ "rate": 0.9981763912809682,
+ "buckets": {
+  "keyword/anon-decl": 134,
+  "wildcard-_": 94,
+  "guillemet-escaped": 4,
+  "compiler-aux-decl": 1,
+  "binder-ascription-span": 1
+ },
+ "samples": {
+  "keyword/anon-decl": [
+   {
+    "file": "Tests/BimodalTest/Automation/DeductionTest.lean",
+    "line": 43,
+    "text": "example",
+    "name": "BimodalTest.Automation.DeductionTest._example"
+   },
+   {
+    "file": "Tests/BimodalTest/Automation/EdgeCaseTest.lean",
+    "line": 43,
+    "text": "example",
+    "name": "BimodalTest.Automation.EdgeCase._example"
+   },
+   {
+    "file": "Tests/BimodalTest/Automation/FormulaMutatorTest.lean",
+    "line": 37,
+    "text": "example",
+    "name": "BimodalTest.Automation._example"
+   },
+   {
+    "file": "Tests/BimodalTest/Automation/LemmaDBTest.lean",
+    "line": 61,
+    "text": "example",
+    "name": "BimodalTest.Automation.LemmaDBTest._example"
+   },
+   {
+    "file": "Tests/BimodalTest/Automation/NormalizationTest.lean",
+    "line": 50,
+    "text": "example",
+    "name": "BimodalTest.Automation.NormalizationTest._example"
+   },
+   {
+    "file": "Tests/BimodalTest/Automation/ProofSearchTest.lean",
+    "line": 19,
+    "text": "example",
+    "name": "BimodalTest.Automation._example"
+   },
+   {
+    "file": "Tests/BimodalTest/Automation/TacticsTest.lean",
+    "line": 68,
+    "text": "example",
+    "name": "BimodalTest.Automation._example"
+   },
+   {
+    "file": "Tests/BimodalTest/Automation/WeakeningSearchTest.lean",
+    "line": 40,
+    "text": "example",
+    "name": "BimodalTest.Automation.WeakeningSearch._example"
+   }
+  ],
+  "wildcard-_": [
+   {
+    "file": "FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean",
+    "line": 226,
+    "text": "_",
+    "name": "FormalSystem.Syntax.Formula.imp"
+   },
+   {
+    "file": "FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean",
+    "line": 226,
+    "text": "_",
+    "name": "FormalSystem.Syntax.Formula.box"
+   },
+   {
+    "file": "FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean",
+    "line": 226,
+    "text": "_",
+    "name": "FormalSystem.Syntax.Formula.atom"
+   },
+   {
+    "file": "FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean",
+    "line": 226,
+    "text": "_",
+    "name": "FormalSystem.Syntax.Formula.bot"
+   },
+   {
+    "file": "FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean",
+    "line": 226,
+    "text": "_",
+    "name": "FormalSystem.Syntax.Formula.snce"
+   },
+   {
+    "file": "FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean",
+    "line": 295,
+    "text": "_",
+    "name": "FormalSystem.Syntax.Formula.imp"
+   },
+   {
+    "file": "FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean",
+    "line": 295,
+    "text": "_",
+    "name": "FormalSystem.Syntax.Formula.box"
+   },
+   {
+    "file": "FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean",
+    "line": 295,
+    "text": "_",
+    "name": "FormalSystem.Syntax.Formula.untl"
+   }
+  ],
+  "guillemet-escaped": [
+   {
+    "file": "FormalSystem/Metalogic/Core/MaximalConsistent.lean",
+    "line": 168,
+    "text": "«axiom»",
+    "name": "FormalSystem.ProofSystem.DerivationTree.axiom"
+   },
+   {
+    "file": "FormalSystem/Metalogic/Soundness.lean",
+    "line": 1059,
+    "text": "«axiom»",
+    "name": "FormalSystem.ProofSystem.DerivationTree.axiom"
+   },
+   {
+    "file": "FormalSystem/Metalogic/Soundness.lean",
+    "line": 1228,
+    "text": "«axiom»",
+    "name": "FormalSystem.ProofSystem.DerivationTree.axiom"
+   },
+   {
+    "file": "FormalSystem/Metalogic/Soundness.lean",
+    "line": 1371,
+    "text": "«axiom»",
+    "name": "FormalSystem.ProofSystem.DerivationTree.axiom"
+   }
+  ],
+  "compiler-aux-decl": [
+   {
+    "file": "FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+    "line": 2004,
+    "text": "inferInstanceAs (DecidableEq Unit)",
+    "name": "FormalSystem.Metalogic.WeakCanonical.Kamp.instDecidableEqPredsSigCex._aux_1"
+   }
+  ],
+  "binder-ascription-span": [
+   {
+    "file": "FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean",
+    "line": 357,
+    "text": "(serialityFormulas : Finset Formula)",
+    "name": "FormalSystem.Syntax.serialityFormulas"
+   }
+  ]
+ }
+}

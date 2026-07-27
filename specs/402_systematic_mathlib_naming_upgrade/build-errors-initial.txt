@@ -1,0 +1,374 @@
+ℹ [680/825] Replayed FormalSystem.Syntax.Formula
+info: FormalSystem/Syntax/Formula.lean:239:0: 2
+info: FormalSystem/Syntax/Formula.lean:242:0: 2
+info: FormalSystem/Syntax/Formula.lean:245:0: 2
+info: FormalSystem/Syntax/Formula.lean:248:0: 2
+info: FormalSystem/Syntax/Formula.lean:251:0: 3
+info: FormalSystem/Syntax/Formula.lean:254:0: 3
+info: FormalSystem/Syntax/Formula.lean:255:0: 3
+info: FormalSystem/Syntax/Formula.lean:505:0: 3
+info: FormalSystem/Syntax/Formula.lean:508:0: 3
+info: FormalSystem/Syntax/Formula.lean:511:0: 3
+info: FormalSystem/Syntax/Formula.lean:514:0: 3
+info: FormalSystem/Syntax/Formula.lean:517:0: 4
+info: FormalSystem/Syntax/Formula.lean:520:0: 4
+info: FormalSystem/Syntax/Formula.lean:557:0: 2
+info: FormalSystem/Syntax/Formula.lean:560:0: 2
+info: FormalSystem/Syntax/Formula.lean:563:0: 2
+info: FormalSystem/Syntax/Formula.lean:566:0: 2
+info: FormalSystem/Syntax/Formula.lean:569:0: 2
+info: FormalSystem/Syntax/Formula.lean:572:0: 2
+info: FormalSystem/Syntax/Formula.lean:575:0: 2
+ℹ [731/825] Replayed FormalSystem.Automation.Normalization
+info: FormalSystem/Automation/Normalization.lean:239:0: neg_unfold : ∀ (φ : Formula), φ.neg = φ.imp bot
+info: FormalSystem/Automation/Normalization.lean:240:0: top_unfold : top = bot.imp bot
+info: FormalSystem/Automation/Normalization.lean:241:0: next_unfold : ∀ (φ : Formula), φ.next = φ.untl bot
+info: FormalSystem/Automation/Normalization.lean:242:0: prev_unfold : ∀ (φ : Formula), φ.prev = φ.snce bot
+info: FormalSystem/Automation/Normalization.lean:243:0: and_unfold : ∀ (φ ψ : Formula), φ.and ψ = (φ.imp (ψ.imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:244:0: or_unfold : ∀ (φ ψ : Formula), φ.or ψ = (φ.imp bot).imp ψ
+info: FormalSystem/Automation/Normalization.lean:245:0: diamond_unfold : ∀ (φ : Formula), φ.diamond = (φ.imp bot).box.imp bot
+info: FormalSystem/Automation/Normalization.lean:246:0: some_future_unfold : ∀ (φ : Formula), φ.someFuture = φ.untl (bot.imp bot)
+info: FormalSystem/Automation/Normalization.lean:247:0: some_past_unfold : ∀ (φ : Formula), φ.somePast = φ.snce (bot.imp bot)
+info: FormalSystem/Automation/Normalization.lean:248:0: all_future_unfold : ∀ (φ : Formula), φ.allFuture = ((φ.imp bot).untl (bot.imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:249:0: all_past_unfold : ∀ (φ : Formula), φ.allPast = ((φ.imp bot).snce (bot.imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:250:0: weak_future_unfold : ∀ (φ : Formula),
+  φ.weakFuture = (φ.imp ((((φ.imp bot).untl (bot.imp bot)).imp bot).imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:251:0: weak_past_unfold : ∀ (φ : Formula), φ.weakPast = (φ.imp ((((φ.imp bot).snce (bot.imp bot)).imp bot).imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:252:0: always_unfold : ∀ (φ : Formula), △φ = φ.allPast.and (φ.and φ.allFuture)
+info: FormalSystem/Automation/Normalization.lean:253:0: sometimes_unfold : ∀ (φ : Formula), ▽φ = (△φ.neg).neg
+info: FormalSystem/Automation/Normalization.lean:254:0: strong_release_unfold : ∀ (φ ψ : Formula), φ.strongRelease ψ = (ψ.and φ).untl ψ
+info: FormalSystem/Automation/Normalization.lean:255:0: strong_trigger_unfold : ∀ (φ ψ : Formula), φ.strongTrigger ψ = (ψ.and φ).snce ψ
+info: FormalSystem/Automation/Normalization.lean:613:0: FormalSystem.Automation.Normalization.EnrichedFormula.neg
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:620:0: FormalSystem.Automation.Normalization.EnrichedFormula.top
+info: FormalSystem/Automation/Normalization.lean:627:0: FormalSystem.Automation.Normalization.EnrichedFormula.diamond
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:634:0: FormalSystem.Automation.Normalization.EnrichedFormula.and_
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:641:0: FormalSystem.Automation.Normalization.EnrichedFormula.imp
+  (FormalSystem.Automation.Normalization.EnrichedFormula.neg
+    (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:648:0: FormalSystem.Automation.Normalization.EnrichedFormula.some_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:655:0: FormalSystem.Automation.Normalization.EnrichedFormula.some_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:661:0: FormalSystem.Automation.Normalization.EnrichedFormula.all_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:667:0: FormalSystem.Automation.Normalization.EnrichedFormula.all_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:673:0: FormalSystem.Automation.Normalization.EnrichedFormula.next
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:679:0: FormalSystem.Automation.Normalization.EnrichedFormula.prev
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:686:0: [(true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.neg
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.top)), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.imp
+    (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.and_
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.imp
+    (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+    (FormalSystem.Syntax.Formula.bot))
+  (FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none }), FormalSystem.Automation.Normalization.EnrichedFormula.imp
+  (FormalSystem.Automation.Normalization.EnrichedFormula.neg
+    (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.box
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.diamond
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.untl
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot)), FormalSystem.Automation.Normalization.EnrichedFormula.some_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.snce
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot)), FormalSystem.Automation.Normalization.EnrichedFormula.some_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.untl
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot))
+    (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.all_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.snce
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot))
+    (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.all_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.untl
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.next
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.snce
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.prev
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })))]
+info: FormalSystem/Automation/Normalization.lean:707:0: FormalSystem.Automation.Normalization.EnrichedFormula.weak_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:713:0: FormalSystem.Automation.Normalization.EnrichedFormula.weak_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:719:0: FormalSystem.Automation.Normalization.EnrichedFormula.always
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:725:0: FormalSystem.Automation.Normalization.EnrichedFormula.sometimes
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:731:0: [(true, FormalSystem.Automation.Normalization.EnrichedFormula.always
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })), (true, FormalSystem.Automation.Normalization.EnrichedFormula.sometimes
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })), (true, FormalSystem.Automation.Normalization.EnrichedFormula.weak_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })), (true, FormalSystem.Automation.Normalization.EnrichedFormula.weak_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))]
+info: FormalSystem/Automation/Normalization.lean:910:0: "Round-trip test: ALL PASS (21 formulas tested)"
+info: FormalSystem/Automation/Normalization.lean:1127:0: "{\"tag\": \"neg\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1133:0: "{\"tag\": \"diamond\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1139:0: "{\"tag\": \"diamond\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1145:0: "△p"
+info: FormalSystem/Automation/Normalization.lean:1151:0: "(and (atom \"p\") (atom \"q\"))"
+info: FormalSystem/Automation/Normalization.lean:1157:0: "{\"tag\": \"always\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1163:0: "(<>p → Gq)"
+✔ [1627/1821] Built FormalSystem.ProofSystem.LinearityDerivedFacts (862ms)
+✖ [1628/1821] Building FormalSystem.Semantics.TaskFrame (1.1s)
+trace: .> LEAN_PATH=/home/benjamin/Projects/BimodalLogic/.lake/packages/Cli/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/batteries/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/Qq/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/aesop/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/importGraph/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/plausible/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/mathlib/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean /home/benjamin/.elan/toolchains/leanprover--lean4---v4.33.0-rc1/bin/lean /home/benjamin/Projects/BimodalLogic/FormalSystem/Semantics/TaskFrame.lean -o /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Semantics/TaskFrame.olean -i /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Semantics/TaskFrame.ilean -c /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Semantics/TaskFrame.c --setup /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Semantics/TaskFrame.setup.json --json
+error: FormalSystem/Semantics/TaskFrame.lean:110:28: Unknown identifier `task_rel`
+
+Note: It is not possible to treat `task_rel` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:120:46: Unknown identifier `task_rel`
+
+Note: It is not possible to treat `task_rel` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:120:63: Unknown identifier `task_rel`
+
+Note: It is not possible to treat `task_rel` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:120:80: Unknown identifier `task_rel`
+
+Note: It is not possible to treat `task_rel` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:128:22: Unknown identifier `task_rel`
+
+Note: It is not possible to treat `task_rel` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:128:39: Unknown identifier `task_rel`
+
+Note: It is not possible to treat `task_rel` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:139:21: Unknown identifier `TaskFrame`
+
+Note: It is not possible to treat `TaskFrame` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:149:27: Unknown identifier `TaskFrame`
+
+Note: It is not possible to treat `TaskFrame` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:174:4: Unknown identifier `TaskFrame`
+
+Note: It is not possible to treat `TaskFrame` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:188:4: Unknown identifier `TaskFrame`
+
+Note: It is not possible to treat `TaskFrame` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:220:4: Unknown identifier `TaskFrame`
+
+Note: It is not possible to treat `TaskFrame` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:294:12: Unknown identifier `TaskFrame`
+error: FormalSystem/Semantics/TaskFrame.lean:294:12: `sorryAx` is not a structure
+
+Hint: This error is possibly due to a change in the `structure` syntax. Now the syntax is `structure S : Type extends P` rather than `structure S extends P : Type`.
+
+The purpose of the change is to accommodate `structure S extends toP : P` syntax for naming parent projections.
+error: FormalSystem/Semantics/TaskFrame.lean:306:16: Unknown identifier `FiniteTaskFrame`
+
+Note: It is not possible to treat `FiniteTaskFrame` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: FormalSystem/Semantics/TaskFrame.lean:306:36: Unknown identifier `TaskFrame`
+
+Note: It is not possible to treat `TaskFrame` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Lean exited with code 1
+✔ [1629/1824] Built FormalSystem.Syntax.SubformulaClosure.NestingDepth (1.3s)
+✔ [1633/1837] Built FormalSystem.ProofSystem.Derivable (1.6s)
+✔ [1644/1883] Built FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF (1.6s)
+✔ [1648/1883] Built FormalSystem.Theorems.Combinators (2.0s)
+✔ [1649/1883] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Translation (1.7s)
+✔ [1654/1883] Built FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation (1.5s)
+✔ [1655/1883] Built FormalSystem.ProofSystem (1.2s)
+✔ [1658/1883] Built FormalSystem.Metalogic.WeakCanonical.EFGames.Defs (1.8s)
+✔ [1659/1883] Built FormalSystem.Metalogic.WeakCanonical.Kamp.IntervalType (1.5s)
+✔ [1660/1883] Built FormalSystem.Syntax.SubformulaClosure.TemporalFormulas (2.1s)
+✔ [1663/1883] Built FormalSystem.Metalogic.WeakCanonical.Kamp.ESigmaCapture (1.6s)
+✔ [1664/1883] Built FormalSystem.Theorems.Perpetuity.Helpers (1.5s)
+✔ [1665/1883] Built FormalSystem.Metalogic.Core.DeductionTheorem (2.2s)
+✔ [1666/1883] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Prop35ExistsForall (1.3s)
+✔ [1669/1883] Built FormalSystem.Metalogic.WeakCanonical.Kamp.PerFormulaRender (1.5s)
+✔ [1670/1883] Built FormalSystem.Syntax (1.3s)
+✔ [1671/1883] Built FormalSystem.Metalogic.WeakCanonical.Kamp.PerFormulaExistsForall (1.6s)
+✔ [1672/1883] Built FormalSystem.Metalogic.Decidability.SignedFormula (2.2s)
+✔ [1673/1883] Built FormalSystem.Metalogic.WeakCanonical.Kamp.ZetaPriorTransfer (1.6s)
+✔ [1674/1926] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Prop35Chain (2.1s)
+⚠ [1676/1926] Replayed BimodalTest.Syntax.ContextTest
+warning: Tests/BimodalTest/Syntax/ContextTest.lean:49:2: Try this: intro x h
+✔ [1997/2679] Built FormalSystem.Theorems.Propositional.Core (2.2s)
+✔ [1998/2679] Built FormalSystem.Automation.AtomCanonicalization (1.5s)
+✔ [2408/2679] Built FormalSystem.Metalogic.WeakCanonical.EFGames.TypeFormulas (3.4s)
+✔ [2409/2679] Built FormalSystem.Syntax.SubformulaClosure.NestingDepth:c.o (202ms)
+✔ [2412/2695] Built FormalSystem.Automation.SuccessPatterns (1.7s)
+✔ [2415/2695] Built FormalSystem.Syntax.SubformulaClosure.TemporalFormulas:c.o (208ms)
+✔ [2417/2695] Built FormalSystem.Theorems.Perpetuity.Helpers:c.o (102ms)
+✔ [2418/2695] Built FormalSystem.Theorems.Combinators:c.o (185ms)
+✔ [2419/2695] Built FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAFormula (6.0s)
+✔ [2420/2695] Built FormalSystem.Automation.AtomCanonicalization:c.o (546ms)
+✔ [2422/2695] Built FormalSystem.Metalogic.WeakCanonical.Kamp.ExistsForallLemmas (2.1s)
+✔ [2424/2695] Built FormalSystem.Metalogic.Core.DeductionTheorem:c.o (382ms)
+⚠ [2425/2698] Built BimodalTest.Theorems.PropositionalTest (1.5s)
+warning: Tests/BimodalTest/Theorems/PropositionalTest.lean:85:51: `FormalSystem.Theorems.Propositional.negImp` has been deprecated: Use `FormalSystem.Theorems.Propositional.impOfNeg` instead
+warning: Tests/BimodalTest/Theorems/PropositionalTest.lean:89:2: `FormalSystem.Theorems.Propositional.negImp` has been deprecated: Use `FormalSystem.Theorems.Propositional.impOfNeg` instead
+warning: Tests/BimodalTest/Theorems/PropositionalTest.lean:93:2: `FormalSystem.Theorems.Propositional.negImp` has been deprecated: Use `FormalSystem.Theorems.Propositional.impOfNeg` instead
+warning: Tests/BimodalTest/Theorems/PropositionalTest.lean:184:51: `FormalSystem.Theorems.Propositional.negImp` has been deprecated: Use `FormalSystem.Theorems.Propositional.impOfNeg` instead
+✔ [2429/2698] Built FormalSystem.Theorems.Propositional.Core:c.o (353ms)
+✔ [2430/2698] Built FormalSystem.Automation.Normalization:c.o (1.9s)
+✔ [2431/2698] Built FormalSystem.Metalogic.Decidability.Tableau (3.2s)
+✔ [2432/2698] Built FormalSystem.Theorems.Propositional.Connectives (2.6s)
+✔ [2433/2698] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Prop42Contentful (1.9s)
+✔ [2435/2703] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Prop42Vacuity (1.7s)
+✔ [2436/2703] Built FormalSystem.Theorems.ContextualProofs (2.3s)
+✔ [2437/2703] Built FormalSystem.Theorems.Propositional.Connectives:c.o (145ms)
+✔ [2440/2706] Built FormalSystem.Theorems.ContextualProofs:c.o (370ms)
+✔ [2441/2706] Built FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation (3.8s)
+✔ [2445/2712] Built FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure (3.0s)
+✔ [2450/2712] Built FormalSystem.Theorems.GeneralizedNecessitation (1.6s)
+✔ [2451/2712] Built FormalSystem.Metalogic.WeakCanonical.Kamp.ConjInterleave (2.9s)
+✔ [2452/2712] Built FormalSystem.Theorems.Propositional.Reasoning (1.8s)
+✔ [2455/2715] Built FormalSystem.Metalogic.Decidability.Tableau:c.o (3.6s)
+✔ [2465/2719] Built FormalSystem.Theorems.GeneralizedNecessitation:c.o (89ms)
+✔ [2466/2719] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA (2.0s)
+✔ [2467/2719] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegation (3.0s)
+✔ [2468/2719] Built FormalSystem.Theorems.Perpetuity.Principles (2.1s)
+✔ [2469/2722] Built FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAConjFull (2.5s)
+✔ [2481/2725] Built FormalSystem.Theorems.TemporalDerived (2.2s)
+✔ [2482/2725] Built FormalSystem.Theorems.Perpetuity.Principles:c.o (220ms)
+✔ [2484/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Prop35Assembly (4.3s)
+✔ [2485/2725] Built FormalSystem.Metalogic.Decidability.Propositional.Kalmar (2.1s)
+✔ [2488/2725] Built FormalSystem.Theorems.TemporalDerived:c.o (272ms)
+✔ [2490/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.VecEADecomp (2.7s)
+✔ [2492/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.LiftPair (3.7s)
+✔ [2496/2725] Built FormalSystem.Metalogic.WeakCanonical.EFGames.GapDetection (13s)
+✔ [2497/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationClosure (2.8s)
+✔ [2500/2725] Built FormalSystem.Theorems.Perpetuity.MonotonicityDuality (1.9s)
+✔ [2502/2725] Built FormalSystem.Automation.AesopRules (1.9s)
+⚠ [2503/2725] Built BimodalTest.ProofSystem.DerivationTest (1.8s)
+warning: Tests/BimodalTest/ProofSystem/DerivationTest.lean:224:9: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Tests/BimodalTest/ProofSystem/DerivationTest.lean:237:9: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [2506/2725] Built FormalSystem.Theorems.Perpetuity.MonotonicityDuality:c.o (160ms)
+✔ [2507/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfZoneDepthK (1.8s)
+✔ [2508/2725] Built BimodalTest.ProofSystem.AxiomsTest (1.9s)
+✔ [2509/2725] Built FormalSystem.Theorems.Perpetuity (1.6s)
+✔ [2558/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.OnBuilder (2.2s)
+✔ [2559/2725] Built BimodalTest.Theorems.PerpetuityTest (1.6s)
+✔ [2560/2725] Built FormalSystem.Theorems.ModalS5 (2.1s)
+✔ [2561/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Lemma53 (1.8s)
+✔ [2562/2725] Built FormalSystem.Theorems.ModalS5:c.o (105ms)
+✔ [2563/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.BoundedFix (1.9s)
+✔ [2564/2725] Built FormalSystem.Theorems.ModalS4 (1.4s)
+✔ [2565/2725] Built BimodalTest.Theorems.ModalS5Test (1.3s)
+✔ [2566/2725] Built FormalSystem.Metalogic.WeakCanonical.EFGames.CustomGame (6.2s)
+✔ [2567/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.DedekindINF (1.4s)
+✔ [2570/2725] Built FormalSystem.Theorems.ModalS4:c.o (80ms)
+✔ [2571/2725] Built BimodalTest.Theorems.ModalS4Test (1.3s)
+✔ [2572/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.BoundedFixAnchored (1.6s)
+✔ [2573/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.ConcatPin (1.6s)
+✔ [2574/2725] Built FormalSystem.Theorems (1.5s)
+✔ [2575/2725] Built FormalSystem.Automation.Tactics.Helpers (3.2s)
+✔ [2576/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized (12s)
+✔ [2577/2725] Built FormalSystem.Metalogic.WeakCanonical.EFGames.Decomposition (1.6s)
+✔ [2578/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.NegFixOne (1.6s)
+✔ [2579/2725] Built FormalSystem.Automation.Tactics.PropDecide (2.4s)
+✔ [2580/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfZoneFlattenNavigable (1.3s)
+✔ [2581/2725] Built FormalSystem.Automation.Tactics.Deduction (2.3s)
+✔ [2582/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfEFold (1.9s)
+ℹ [2583/2725] Built FormalSystem.Automation.FormulaEnumerator (25s)
+info: FormalSystem/Automation/FormulaEnumerator.lean:2052:0: 7852
+info: FormalSystem/Automation/FormulaEnumerator.lean:2055:0: 75914
+info: FormalSystem/Automation/FormulaEnumerator.lean:2058:0: 45111
+info: FormalSystem/Automation/FormulaEnumerator.lean:2061:0: true
+info: FormalSystem/Automation/FormulaEnumerator.lean:2064:0: true
+info: FormalSystem/Automation/FormulaEnumerator.lean:2067:0: true
+✔ [2584/2725] Built FormalSystem.Metalogic.WeakCanonical.EFGameTactics (4.1s)
+✔ [2585/2725] Built BimodalTest.Metalogic.PropDecideTest (1.7s)
+✔ [2586/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.NegFix (2.3s)
+✖ [2589/2725] Building BimodalTest.Automation.DeductionTest (1.5s)
+trace: .> LEAN_PATH=/home/benjamin/Projects/BimodalLogic/.lake/packages/Cli/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/batteries/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/Qq/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/aesop/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/importGraph/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/plausible/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/mathlib/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean /home/benjamin/.elan/toolchains/leanprover--lean4---v4.33.0-rc1/bin/lean /home/benjamin/Projects/BimodalLogic/Tests/BimodalTest/Automation/DeductionTest.lean -o /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/BimodalTest/Automation/DeductionTest.olean -i /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/BimodalTest/Automation/DeductionTest.ilean -c /home/benjamin/Projects/BimodalLogic/.lake/build/ir/BimodalTest/Automation/DeductionTest.c --setup /home/benjamin/Projects/BimodalLogic/.lake/build/ir/BimodalTest/Automation/DeductionTest.setup.json --json
+error: Tests/BimodalTest/Automation/DeductionTest.lean:105:2: Unknown identifier `FormalSystem.Metalogic.Core.deduction_theorem✝`
+error: Tests/BimodalTest/Automation/DeductionTest.lean:109:2: Unknown identifier `FormalSystem.Metalogic.Core.deduction_theorem✝`
+error: Lean exited with code 1
+✔ [2594/2725] Built FormalSystem.Automation.Tactics.Commands (2.9s)
+✔ [2619/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base (2.6s)
+✔ [2620/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK (1.9s)
+✔ [2623/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix.VecEANegFix (1.8s)
+ℹ [2624/2725] Built BimodalTest.Automation.TacticsTest_Simple (1.2s)
+info: Tests/BimodalTest/Automation/TacticsTest_Simple.lean:28:0: FormalSystem.Automation.isBoxFormula : Formula → Bool
+info: Tests/BimodalTest/Automation/TacticsTest_Simple.lean:29:0: FormalSystem.Automation.isFutureFormula : Formula → Bool
+info: Tests/BimodalTest/Automation/TacticsTest_Simple.lean:30:0: FormalSystem.Automation.extractFromBox : Formula → Option Formula
+info: Tests/BimodalTest/Automation/TacticsTest_Simple.lean:31:0: FormalSystem.Automation.extractFromFuture : Formula → Option Formula
+✔ [2625/2725] Built FormalSystem.Metalogic.WeakCanonical.EFGames.StaviCompleteness (5.1s)
+✔ [2626/2725] Built BimodalTest.Automation.LemmaDBTest (1.8s)
+✔ [2627/2725] Built FormalSystem.Metalogic.WeakCanonical.EFGames.Composition (9.1s)
+✔ [2628/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK (1.8s)
+✔ [2629/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix (1.4s)
+✔ [2630/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Section5Correspondence (1.5s)
+✔ [2631/2725] Built FormalSystem.Metalogic.WeakCanonical.EFGames.CharacteristicFormula (1.8s)
+✔ [2632/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorAmbientDeepAnchorK (1.3s)
+✔ [2633/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V (4.6s)
+✔ [2634/2725] Built FormalSystem.Metalogic.WeakCanonical.Expressiveness.Claim1 (2.6s)
+✔ [2635/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Prop42ExistsForall (3.1s)
+✔ [2636/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv (1.5s)
+✔ [2637/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface (1.9s)
+✔ [2638/2725] Built FormalSystem.Metalogic.WeakCanonical.Expressiveness.DConsistencyTransport (2.9s)
+✔ [2639/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.VVecEA2Collapse (2.4s)
+✔ [2640/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket (1.2s)
+✔ [2641/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2 (1.0s)
+✔ [2642/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Prop42NegationGeneral (5.2s)
+✔ [2643/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EFSatNegation (1.6s)
+✔ [2644/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.EFSatNegationGeneral (2.1s)
+✔ [2645/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.VeeSatNegation (1.3s)
+✔ [2646/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2V (5.7s)
+✔ [2647/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.Prop43Translate (1.9s)
+✔ [2648/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.NavigatedSpine (1.3s)
+✔ [2649/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Slots (2.4s)
+✔ [2650/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.ZetaUniformExtract (2.6s)
+✔ [2651/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.OrderGate (3.4s)
+✔ [2652/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Carrier (1.7s)
+✔ [2653/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Completeness (2.1s)
+✔ [2654/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.EngineInputs (2.0s)
+✔ [2655/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Soundness (2.2s)
+✔ [2656/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.DisjunctionSpikes (1.6s)
+✔ [2657/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Assembly (3.6s)
+✔ [2658/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.KitFold (9.9s)
+✔ [2659/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.FragmentFoldRight (9.3s)
+✔ [2660/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness (911ms)
+✔ [2661/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorZoneTriage (1.2s)
+✔ [2662/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGate (1.4s)
+✔ [2663/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.ExteriorNegation (4.1s)
+✔ [2664/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.ExteriorNegationPast (2.4s)
+✔ [2665/2725] Built FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracket (2.7s)
+✖ [2666/2725] Building FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketK (1.7s)
+trace: .> LEAN_PATH=/home/benjamin/Projects/BimodalLogic/.lake/packages/Cli/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/batteries/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/Qq/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/aesop/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/importGraph/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/plausible/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/mathlib/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean /home/benjamin/.elan/toolchains/leanprover--lean4---v4.33.0-rc1/bin/lean /home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketK.lean -o /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketK.olean -i /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketK.ilean -c /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketK.c --setup /home/benjamin/Projects/BimodalLogic/.lake/build/ir/FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketK.setup.json --json
+error: FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketK.lean:263:20: Unknown identifier `nf_eval_nf`
+error: Lean exited with code 1
+✔ [2691/2725] Built FormalSystem.Syntax.Formula:c.o (158s)
+✔ [2695/2725] Built FormalSystem.Metalogic.WeakCanonical.Expressiveness.SplitPoint (148s)
+✔ [2696/2725] Built FormalSystem.Metalogic.WeakCanonical.Expressiveness.CaseAnalysis (15s)
+✔ [2697/2725] Built FormalSystem.Metalogic.WeakCanonical.Expressiveness.Theorem6 (1.4s)
+✔ [2716/2725] Built FormalSystem.Automation.FormulaEnumerator:c.o (368s)
+Some required targets logged failures:
+- FormalSystem.Semantics.TaskFrame
+- BimodalTest.Automation.DeductionTest
+- FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketK
+error: build failed

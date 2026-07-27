@@ -1,0 +1,49 @@
+--- round 1: 9 errors
+resolution fixes planned: 9
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:562  truth_at -> TruthAt
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:565  truth_at -> TruthAt
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:586  truth_at -> TruthAt
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:589  truth_at -> TruthAt
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:875  truth_at -> TruthAt
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:879  truth_at -> TruthAt
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:907  truth_at -> TruthAt
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:911  truth_at -> TruthAt
+    FormalSystem/Metalogic/Bundle/BFMCS.lean:122  eval_family -> evalFamily
+unresolved errors:        0
+applied 9 edits (0 skipped)
+--- round 2: 5 errors
+resolution fixes planned: 1
+    FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean:122  root_point -> rootPoint
+unresolved errors:        4
+       4  not-a-name-resolution-error
+applied 1 edits (0 skipped)
+--- round 3: 11 errors
+resolution fixes planned: 6
+    FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean:1173  equiv_at -> EquivAt
+    FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean:1176  equiv_at -> EquivAt
+    FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean:1176  equiv_at -> EquivAt
+    FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean:1178  equiv_at -> EquivAt
+    FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean:1184  equiv_at -> EquivAt
+    FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean:1185  equiv_at -> EquivAt
+unresolved errors:        5
+       4  not-a-name-resolution-error
+       1  no-map-entry
+applied 6 edits (1 skipped)
+--- round 4: 4 errors
+resolution fixes planned: 0
+unresolved errors:        4
+       4  not-a-name-resolution-error
+no further automatic fixes; remaining errors need diagnosis
+  UNRESOLVED FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean 562 Invalid field `swap_temporal`: The environment does not contain `FormalSystem.Syntax.Formula.swap_temporal`, so it is not possible to project the field `swap_temporal` from an expression | not-a-name-resolution-error
+  UNRESOLVED FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean 565 Invalid field `swap_temporal`: The environment does not contain `FormalSystem.Syntax.Formula.swap_temporal`, so it is not possible to project the field `swap_temporal` from an expression | not-a-name-resolution-error
+  UNRESOLVED FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean 586 Invalid field `swap_temporal`: The environment does not contain `FormalSystem.Syntax.Formula.swap_temporal`, so it is not possible to project the field `swap_temporal` from an expression | not-a-name-resolution-error
+  UNRESOLVED FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean 589 Invalid field `swap_temporal`: The environment does not contain `FormalSystem.Syntax.Formula.swap_temporal`, so it is not possible to project the field `swap_temporal` from an expression | not-a-name-resolution-error
+--- round 1: 4 errors
+resolution fixes planned: 4
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:562  swap_temporal -> swapTemporal  [field]
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:565  swap_temporal -> swapTemporal  [field]
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:586  swap_temporal -> swapTemporal  [field]
+    FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean:589  swap_temporal -> swapTemporal  [field]
+unresolved errors:        0
+applied 4 edits (0 skipped)
+round 2: BUILD GREEN
