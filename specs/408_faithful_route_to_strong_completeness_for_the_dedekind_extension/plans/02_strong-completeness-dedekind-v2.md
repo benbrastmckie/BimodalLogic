@@ -970,7 +970,54 @@ point of the v2 revision — the false agreement lemma that sank v1 has no desce
 family set can be built as `{fam.toRealShift δ | fam ∈ B.families, δ : ℝ}` without any further
 construction at the `FMCS` layer. `limitSetAbove` remains unused; confirmed again this phase.
 
-### Phase 6.1: The BFMCS real bundle, box time-stability, and restricted temporal coherence [NOT STARTED]
+### Phase 6.1: The BFMCS real bundle, box time-stability, and restricted temporal coherence [BLOCKED]
+
+**BLOCKER** (Phase 6.1, last task only — the first five tasks are `[COMPLETED]` and sorry-free):
+
+- **What failed**: `BFMCS.toRealBundle_restricted_temporally_coherent` cannot be proved from
+  `B.RestrictedTemporallyCoherent root` alone. Its `someFuture` half at an **unselected** real
+  point is not a consequence of the rational bundle's restricted coherence. The plan's stated
+  check — "checking `t < s' - δ` from `p < s'` and `p < t + δ`" — does not go through: `p < s'`
+  and `p < t + δ` are jointly satisfied by any `s' ∈ (p, t + δ)`, which yields a witness
+  *below* `t`, not above it.
+- **Counterexample** (four-element defect bar; recorded in full in the docstring of
+  `BFMCS.LimitFutureWitness` in `Bundle/RealExtensionBundle.lean`): let `φ` be an atom, `r`
+  irrational, and let a rational family carry `φ` exactly at a strictly increasing sequence of
+  rationals converging to `r`, with `¬φ` at every rational above `r`.
+  - *Current behaviour*: every rational `q < r` has a `φ`-point in `(q, r)`, so `F φ ∈ m q` is
+    consistent for every `q < r` and the family can satisfy `RestrictedTemporallyCoherent` in
+    full. `{q | F φ ∈ m q}` then contains every rational below `r`, so it lies in
+    `limitFilterBelow r` and hence in the ultrafilter: `F φ ∈ limitMCSBelow m r`.
+  - *Required behaviour*: some real `s > r - δ` of the extension must carry `φ`. Selection makes
+    that need a rational `u > r` with `φ ∈ m u` (none exists by construction), and the limit
+    branch is impossible too, since for `z ∈ (r, s + δ)` the interval `(z, s + δ)` belongs to
+    the ultrafilter at `s + δ` and is disjoint from `{u | φ ∈ m u}`.
+  - *Isolation*: nothing in the argument uses the extension's own fields. The obstruction is a
+    property of the rational family alone — its `φ`-points accumulate at `r` from below and stop
+    there — so no strengthening of the real-shift closure, and no change to the extension, can
+    repair it.
+- **What was tried**: (i) the plan's threshold arithmetic, refuted above; (ii) sharpening the
+  descent threshold `z` in `limitMCSBelow_cofinal_below` toward `t + δ` — the witnesses creep up
+  but stay below `t + δ`; (iii) landing the witness at a *real* point above `t` via the limit
+  branch — refuted by the ultrafilter computation above; (iv) recovering `G ¬φ` at `t` from the
+  absence of witnesses via `restricted_temporal_backward_G` — circular, that lemma consumes the
+  very `forward_F` being proved.
+- **Why stuck**: `RestrictedTemporallyCoherent` for the `Rat` bundle is strictly weaker than what
+  the `ℝ` extension needs. The missing content is a *no-left-accumulation* property of
+  deferral-closure witnesses, which the plan does not identify anywhere and which does not
+  follow from any field of `FMCS` or `BFMCS`.
+- **What is needed**: discharge `BFMCS.LimitFutureWitness root` for `cantorBfmcsDense`
+  (`ChronicleToCountermodelBasic.lean`), or replace it with a property of the Cantor
+  back-and-forth chronicle that implies it. This is a research obligation, not a proof-engineering
+  one, and it is a prerequisite for Phase 8's terminus, which consumes the transported coherence.
+- **Landed instead** (explicitly hypothesised, never hidden):
+  `BFMCS.toRealBundle_restricted_temporally_coherent` takes `B.LimitFutureWitness root` as a
+  named extra hypothesis and is otherwise sorry-free. The `somePast` half is proved
+  **unconditionally** — the extension limits from below, so a past witness at a rational `p < r`
+  lies below `r` automatically. The asymmetry is intrinsic to the below-only limit.
+- **Prohibited**: no `sorry`, no `def X := True`, no `modal_past` axiom was introduced. Full
+  `lake build` green; live sorries outside `Boneyard/` unchanged at exactly
+  `WeakCanonical/Transfer.lean:1242`.
 
 - **Goal:** Assemble `BFMCS (fc := fc) Rat → BFMCS (fc := fc) ℝ` with a family set closed under
   real shifts, and transport `RestrictedTemporallyCoherent`.
@@ -980,7 +1027,7 @@ construction at the `FMCS` layer. `limitSetAbove` remains unused; confirmed agai
   (box time-stability, itself resting on an S5 negative-introspection derivation) that Phase 6
   does not need at all, and the combined output exceeds one agent run.
 - **Tasks:**
-  - [ ] Prove `box_stable_in_fmcs {D} [LinearOrder D] (f : FMCS (fc := fc) D) (s t : D)
+  - [x] Prove `box_stable_in_fmcs {D} [LinearOrder D] (f : FMCS (fc := fc) D) (s t : D)
         (φ : Formula) : Formula.box φ ∈ f.mcs s ↔ Formula.box φ ∈ f.mcs t`.
         Forward-in-time direction: `temporalFutureDerived` (`Combinators.lean:654`, `fc`-generic,
         `□φ → G(□φ)`) + `theorem_in_mcs` + `SetMaximalConsistent.implication_property` +
@@ -992,20 +1039,20 @@ construction at the `FMCS` layer. `limitSetAbove` remains unused; confirmed agai
         `f.forward_G` and convert with MCS negation-completeness. If negative introspection is
         not already a named theorem, land it here as an `fc`-generic derived theorem.
         Trichotomy on `s` vs `t` needs `LinearOrder`, which both `Rat` and `ℝ` supply.
-  - [ ] Prove `box_mem_realLimitMCS_iff (hstab : ∀ s t φ, box φ ∈ m s ↔ box φ ∈ m t) :
+  - [x] Prove `box_mem_realLimitMCS_iff (hstab : ∀ s t φ, box φ ∈ m s ↔ box φ ∈ m t) :
         Formula.box φ ∈ realLimitMCS m δ x ↔ ∀ q : Rat, Formula.box φ ∈ m q`. Selected points
         are immediate from `realLimitMCS_of_rat`; at unselected points, membership in the limit
         set yields the property at *some* rational, and time-stability spreads it to all.
         This is the lemma that makes both modal fields case-free.
-  - [ ] Define `BFMCS.toRealBundle (B : BFMCS (fc := fc) Rat) : BFMCS (fc := fc) ℝ` with
+  - [x] Define `BFMCS.toRealBundle (B : BFMCS (fc := fc) Rat) : BFMCS (fc := fc) ℝ` with
         `families := {G | ∃ fam ∈ B.families, ∃ δ : ℝ, G = fam.toRealShift δ}`,
         `evalFamily := B.evalFamily.toRealShift 0`. `nonempty` and `eval_family_mem` are
         immediate (`δ := 0`).
-  - [ ] Prove `modal_forward`. Via `box_mem_realLimitMCS_iff`, reduce to `box φ ∈ fam.mcs q` for
+  - [x] Prove `modal_forward`. Via `box_mem_realLimitMCS_iff`, reduce to `box φ ∈ fam.mcs q` for
         every rational `q`; the `Rat` bundle's `modal_forward` then gives `φ ∈ fam'.mcs q` for
         every `q` and every `fam'`, which lands in the target family's value whether that value
         is a selected `m q` or a limit set (the latter with any threshold).
-  - [ ] Prove `modal_backward`. **This is the field that forces the real-shift closure.**
+  - [x] Prove `modal_backward`. **This is the field that forces the real-shift closure.**
         Contrapositive: if `box φ` is absent from the target family's value at `t`, then by
         `box_mem_realLimitMCS_iff` it is absent from `fam.mcs q` for every rational `q`; fix any
         rational `q`; the `Rat` bundle's `modal_backward` contrapositive yields `fam' ∈
@@ -1023,12 +1070,54 @@ construction at the `FMCS` layer. `limitSetAbove` remains unused; confirmed agai
         unselected `t` obtain the membership at a rational `p` near `t + δ` from the limit set,
         take the rational witness `s' > p`, and return `s' - δ`, checking `t < s' - δ` from
         `p < s'` and `p < t + δ`. `somePast` is the mirror.
-  - [ ] `lake build FormalSystem.Metalogic.Bundle.RealExtensionBundle`.
+        *(deviation: altered — the `somePast` half landed unconditionally; the `someFuture`
+        half is proved only under the added named hypothesis `B.LimitFutureWitness root`,
+        because the stated threshold check is refuted by the counterexample in the BLOCKER
+        block above. Raised as a blocker, not silently substituted.)*
+  - [x] `lake build FormalSystem.Metalogic.Bundle.RealExtensionBundle`.
 - **Estimated output:** ~280 lines.
 - **Done when:** `BFMCS.toRealBundle` and the restricted-temporal-coherence transport are
   sorry-free and the module builds.
 - **Timing:** 4 hours.
 - **Depends on:** 6
+
+**PHASE 6.1 OUTCOME (recorded at implementation time)**
+
+`FormalSystem/Metalogic/Bundle/RealExtensionBundle.lean` (334 lines, 7 declarations) is
+sorry-free and builds; full `lake build` green (1895 jobs); all seven declarations have axioms
+exactly `[propext, Classical.choice, Quot.sound]` (`negBoxIntrospection` needs only `propext`).
+
+*Box time-stability came in cheaper than budgeted, and the plan's routing was right.* The
+backward-in-time direction needs no past-side principle at all: `negBoxIntrospection`
+(`fc`-generic, from `Axiom.modal_5_collapse` plus contraposition and double-negation
+elimination, built at `Base` and lifted through `FrameClass.base_le`) turns `¬□φ` into `□¬□φ`,
+`temporalFutureDerived` and `forward_G` push it forward, and `Axiom.modal_t` recovers `¬□φ`
+at the later point. `forward_G` is the only `FMCS` field used in either direction; the shared
+step factored out as `box_forward_in_fmcs`. Note for the record: `Axiom.modal_future` is *not*
+needed on top of `temporalFutureDerived`, which already packages it. S5 negative introspection
+does exist in the tree (`negBoxToBoxNegBox`, `BXCanonical/Frame.lean`) but only at
+`FrameClass.Base` and in a module *above* `Bundle/` in the import graph, so the `fc`-generic
+form was landed here as the plan's fallback clause allows.
+
+*Both modal fields are case-free, as predicted.* `box_mem_realLimitMCS_iff` reduces each to
+`□φ ∈ fam.mcs q` for every rational `q`; at unselected points its forward direction is one
+`limitMCSBelow_cofinal_below` call at threshold `x + δ - 1` followed by stability. The
+real-shift closure did exactly the work the Revision Rationale predicted: `modal_backward`
+positions `fam'.toRealShift ((q:ℝ) - t)`, whose value at `t` is `fam'.mcs q` by
+`realLimitMCS_of_rat` at `(q:ℝ) = t + ((q:ℝ) - t)`, and no threshold argument appears anywhere
+in the field. The direct (non-contrapositive) form was shorter than the plan's contrapositive
+phrasing and is what landed.
+
+*The temporal-coherence transport is where v2 has a defect.* See the BLOCKER block above. The
+`somePast` half transports unconditionally; the `someFuture` half at unselected points is
+refuted as a consequence of `RestrictedTemporallyCoherent` and now carries the named hypothesis
+`BFMCS.LimitFutureWitness`. Discharging that predicate for `cantorBfmcsDense` is a new
+prerequisite of Phase 8 and is not covered by any existing phase.
+
+*Ordering note for Phase 7.* Nothing in Phase 7's Until/Since transport depends on the blocked
+half, so Phase 7 can proceed; but it should expect the *same* asymmetry, since
+`forward_until_since_coherent` also demands a witness strictly **above** the evaluation point
+and the extension limits only from below.
 
 ### Phase 7: Restricted forward and backward Until/Since coherence at ℝ [NOT STARTED]
 
