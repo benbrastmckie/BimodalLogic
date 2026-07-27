@@ -116,7 +116,7 @@ All status claims in this document can be verified by inspecting the source code
 ```bash
 # Count sorry placeholders in Metalogic
 grep -n "sorry" Theories/Bimodal/Metalogic/Soundness.lean
-grep -n "sorry" Theories/Bimodal/Metalogic/DeductionTheorem.lean
+grep -n "sorry" Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean
 grep -n "sorry" Theories/Bimodal/Metalogic/Completeness.lean
 
 # Count sorry placeholders in Theorems

@@ -31,7 +31,7 @@ combinatorial core of the expressive completeness proof.
 ## Dependencies
 
 - **Imports from**: `Bimodal.Syntax`, `Bimodal.Semantics`, `Bimodal.Metalogic.WeakCanonical.NEquivalence`
-- **Imported by**: `Bimodal.Metalogic.WeakCanonical.ExpressiveCompleteness`, `Bimodal.Metalogic.WeakCanonical.Separation`
+- **Imported by**: `Bimodal.Metalogic.WeakCanonical.Expressiveness`, `Bimodal.Metalogic.WeakCanonical.Separation`
 
 ## Related Documentation
 

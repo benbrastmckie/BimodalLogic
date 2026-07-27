@@ -37,7 +37,7 @@ Test individual functions and definitions in isolation.
 -- Tests/BimodalTest/Syntax/FormulaTest.lean
 import Bimodal.Syntax.Formula
 
-namespace Bimodal.Tests.Syntax
+namespace BimodalTest.Syntax
 
 open Bimodal.Syntax
 
@@ -56,7 +56,7 @@ example : neg (Formula.atom "p") = (Formula.atom "p").imp Formula.bot := rfl
 /-- Test diamond definition -/
 example : diamond (Formula.atom "p") = neg (Formula.box (neg (Formula.atom "p"))) := rfl
 
-end Bimodal.Tests.Syntax
+end BimodalTest.Syntax
 ```
 
 ### Example-Based Tests
@@ -67,7 +67,7 @@ Test that example proofs compile and type-check.
 -- Tests/BimodalTest/Theorems/PerpetuityTest.lean
 import Bimodal
 
-namespace Bimodal.Tests.Theorems
+namespace BimodalTest.Theorems
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -85,7 +85,7 @@ example (P Q : Formula) : [P.imp Q, P] ⊢ Q := by
   · apply Derivable.assumption; simp
   · apply Derivable.assumption; simp
 
-end Bimodal.Tests.Theorems
+end BimodalTest.Theorems
 ```
 
 ### Property Tests
@@ -96,7 +96,7 @@ Test properties that should hold for all inputs.
 -- Tests/BimodalTest/Metalogic/SoundnessTest.lean
 import Bimodal
 
-namespace Bimodal.Tests.Metalogic
+namespace BimodalTest.Metalogic
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -114,7 +114,7 @@ theorem test_soundness_empty (φ : Formula) :
 theorem test_weakening (Γ Δ : Context) (φ : Formula) (h1 : Γ ⊢ φ) (h2 : Γ ⊆ Δ) :
   Δ ⊢ φ := Derivable.weakening Γ Δ φ h1 h2
 
-end Bimodal.Tests.Metalogic
+end BimodalTest.Metalogic
 ```
 
 ### Regression Tests
@@ -125,7 +125,7 @@ Test specific bugs that were fixed.
 -- Tests/BimodalTest/ProofSystem/RegressionTest.lean
 import Bimodal
 
-namespace Bimodal.Tests.Regression
+namespace BimodalTest.ProofSystem
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -136,7 +136,7 @@ example : ⊢ ((Formula.box (Formula.box (Formula.atom "p"))).imp
   apply Derivable.axiom
   apply Axiom.modal_t
 
-end Bimodal.Tests.Regression
+end BimodalTest.ProofSystem
 ```
 
 ## 3. Test Naming Conventions
@@ -165,12 +165,12 @@ theorem test_completeness_maximal_consistency : ...
 
 ### Namespace Organization
 
-Tests live in `Bimodal.Tests.<Category>.<Module>`:
+Tests live in `BimodalTest.<Category>.<Module>`:
 
 ```lean
-namespace Bimodal.Tests.Syntax
-namespace Bimodal.Tests.Metalogic
-namespace Bimodal.Tests.Theorems
+namespace BimodalTest.Syntax
+namespace BimodalTest.Metalogic
+namespace BimodalTest.Theorems
 ```
 
 ## 4. Coverage Requirements
@@ -406,7 +406,7 @@ Unit tests for the Formula type defined in Bimodal.Syntax.Formula.
 These tests achieve 95% coverage of Formula.lean.
 -/
 
-namespace Bimodal.Tests.Syntax
+namespace BimodalTest.Syntax
 
 /-- Test that atom complexity is 1.
 Atoms are the simplest formulas with no subformulas. -/

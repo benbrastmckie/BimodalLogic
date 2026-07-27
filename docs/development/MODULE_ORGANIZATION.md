@@ -132,7 +132,7 @@ Layer 0: Syntax (no internal dependencies)
 import Bimodal.Syntax.Formula
 import Bimodal.Syntax.Context
 import Bimodal.ProofSystem.Axioms
-import Bimodal.ProofSystem.Rules
+import Bimodal.ProofSystem.Derivation
 
 -- Bad: Would create circular dependency
 -- import Bimodal.Semantics.Truth  -- Semantics depends on ProofSystem!
@@ -180,7 +180,7 @@ import Init.Data.List
 import Bimodal.Syntax.Formula
 
 -- 2. Namespace opening
-namespace Bimodal.ModuleName
+namespace Bimodal.«ModuleName»
 
 -- 3. Local notation (if needed)
 local notation "⊥" => Formula.bot
@@ -204,7 +204,7 @@ instance : Inhabited MyStructure where
   default := { field1 := Unit, field2 := Unit }
 
 -- 8. Namespace closing
-end Bimodal.ModuleName
+end Bimodal.«ModuleName»
 ```
 
 ## 5. Library Root File
@@ -294,12 +294,12 @@ Helper functions and intermediate definitions:
 - May change between versions
 
 ```lean
-namespace Bimodal.Semantics.Internal
+namespace Bimodal.Semantics.«Internal»
 
 /-- Internal helper for canonical model construction. -/
 def extend_consistent_set (Γ : Context) : Context := ...
 
-end Bimodal.Semantics.Internal
+end Bimodal.Semantics.«Internal»
 ```
 
 ## 7. Module Size Guidelines

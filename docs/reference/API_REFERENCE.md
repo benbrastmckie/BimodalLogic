@@ -600,9 +600,9 @@ Soundness theorem: derivability implies semantic consequence.
 
 ---
 
-### DeductionTheorem (`Bimodal.Metalogic.DeductionTheorem`)
+### DeductionTheorem (`Bimodal.Metalogic.Core.DeductionTheorem`)
 
-**Module**: `Theories/Bimodal/Metalogic/DeductionTheorem.lean`
+**Module**: `Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean`
 
 Deduction theorem for TM logic.
 

@@ -41,6 +41,7 @@ Directory structure and documentation patterns:
 | Document | Description |
 |----------|-------------|
 | [MODULE_ORGANIZATION.md](MODULE_ORGANIZATION.md) | Directory structure and namespace patterns |
+| [MODULE_INVARIANTS.md](MODULE_INVARIANTS.md) | The scripted structural gate: what `scripts/check-module-invariants.sh` checks and how to extend it |
 | [DIRECTORY_README_STANDARD.md](DIRECTORY_README_STANDARD.md) | README documentation standard for directories |
 | [PHASED_IMPLEMENTATION.md](PHASED_IMPLEMENTATION.md) | Implementation roadmap with execution waves |
 

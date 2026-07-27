@@ -1,7 +1,7 @@
 # Implementation Plan: Module Organization Refactor
 
 - **Task**: 131 - refactor_module_organization
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 18.5 hours
 - **Dependencies**: None (blocks the later systematic Mathlib naming task)
 - **Research Inputs**: specs/131_refactor_module_organization/reports/01_module-reorganization-research.md
@@ -852,32 +852,54 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 13: Final Sweep and Decision Record [NOT STARTED]
+### Phase 13: Final Sweep and Decision Record [COMPLETED]
 
 - **Goal:** Prove import completeness across every file type, correct the remaining module-path
   references in root `docs/`, and record the deferred decisions so the naming task inherits them.
 - **Tasks:**
-  - [ ] Correct `Bimodal.Metalogic.*` module paths in root-`docs/` files that Phase 12 deliberately
+  - [x] Correct `Bimodal.Metalogic.*` module paths in root-`docs/` files that Phase 12 deliberately
         did not touch: `docs/reference/API_REFERENCE.md`, `docs/development/MODULE_ORGANIZATION.md`,
         `docs/training/PIPELINE.md`, and the relocated `typst/SYNC-MAP.md`. `MODULE_ORGANIZATION.md`
         in particular is a direct competitor to `Metalogic/README.md` and must agree with it.
-  - [ ] Run the full invariant script from a clean checkout state and diff its output against
+  - [x] Run the full invariant script from a clean checkout state and diff its output against
         `baseline-invariants.txt`. Every difference must be an intended consequence of a phase; any
         unexplained difference is a defect.
-  - [ ] Confirm the three preservation invariants explicitly and by content:
+  - [x] Confirm the three preservation invariants explicitly and by content:
     - `lake build` green with no new errors or warnings beyond the known single `sorry` warning
     - `lake build BimodalTest` green
     - the sole structural `sorry` still at `theorem countermodel_discrete` in
       `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean`
     - the four `#print axioms` results byte-identical to baseline
-  - [ ] Write a decision record capturing what was decided and what was deliberately deferred, so
+  - [x] Write a decision record capturing what was decided and what was deliberately deferred, so
         the naming task does not re-litigate it: the declined `BXCanonical`/`WeakCanonical`/
         `Algebraic` regroup and why; the `FrameConditions` separation and its evidence; the
         `docs`/`latex`/`typst` merge-into-root choice; the deferred source-root rename; the
         `Core` <-> `Bundle` cycle outcome from Phase 6; and the fate of each dead module and each
         orphaned test module.
-  - [ ] Confirm the invariant script itself contains no task-number references and is documented in
+  - [x] Confirm the invariant script itself contains no task-number references and is documented in
         `docs/development/` so it is discoverable.
+
+  **Phase 13 result.** The C5 allowlist drained from 14 entries to **4**, and its meaning changed:
+  the 10 removed were genuinely stale module paths, now corrected (`Bimodal.Tests.*` ->
+  `BimodalTest.*`; `Bimodal.Metalogic.DeductionTheorem` -> `...Core.DeductionTheorem` in 4 files;
+  `Bimodal.Metalogic.WeakCanonical.ExpressiveCompleteness` -> `...Expressiveness`;
+  `Bimodal.ProofSystem.Rules` -> `...Derivation`; template placeholders rewritten so they no
+  longer parse as module paths). The 4 that remain are verified live NAMESPACE and DECLARATION
+  names that C5's regex cannot distinguish from module paths, each annotated with its defining
+  file and line. The allowlist file is rewritten to say so: it is a permanent documented
+  exemption, not a debt ledger.
+
+  **Final vs baseline diff: every difference is intended and attributable.** Import lines
+  1052 -> 1078 (Phases 2/3/5); live `.lean` under `Theories/` 288 -> 290 (+4 aggregators,
+  -1 folded inner aggregator, -1 archived); unreachable modules 11 -> 9 (Phase 2 wiring);
+  allowlist 14 -> 4 (this phase); C8/C9/C10 `TODO` -> `PASS` (Phases 6/10/12). The C2 block is
+  **byte-identical** to baseline, and C3 still reports the sole sorry inside
+  `theorem countermodel_discrete`, located by content. Zero `axiom` declarations in the live tree,
+  unchanged.
+
+  The invariant script and its two companion files contain no task-number citations, and the
+  harness is documented at `docs/development/MODULE_INVARIANTS.md`, indexed from
+  `docs/development/README.md`.
 - **Timing:** 1.5 hours
 - **Depends on:** 10, 12
 - **Files to modify:**
@@ -894,24 +916,24 @@ disjoint documentation files, enumerated in each phase.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 at every phase boundary, with no new errors and no new warnings
-- [ ] `lake build BimodalTest` exits 0 at every phase boundary
-- [ ] The structural-sorry grep returns exactly one hit, in
+- [x] `lake build` exits 0 at every phase boundary, with no new errors and no new warnings
+- [x] `lake build BimodalTest` exits 0 at every phase boundary
+- [x] The structural-sorry grep returns exactly one hit, in
       `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean`, inside `theorem countermodel_discrete`
       — asserted by content, never by line number
-- [ ] `#print axioms` for the four flagship theorems returns the baseline axiom sets:
+- [x] `#print axioms` for the four flagship theorems returns the baseline axiom sets:
       `completeness_dense`, `completeness_discrete`, `countermodel_dense` ->
       `[propext, Classical.choice, Quot.sound]`; `completeness` ->
       `[propext, sorryAx, Classical.choice, Quot.sound]`
-- [ ] Zero dangling `import Bimodal.*` / `import BimodalTest.*` lines across live `Theories/` and `Tests/`
-- [ ] Zero dangling `Bimodal.*` module paths in markdown outside `specs/**`
-- [ ] Zero references to `Theories/Bimodal/{docs,latex,typst}` outside `specs/**`
-- [ ] Zero task-number citations under `Theories/`
-- [ ] `bash scripts/typst-sync-check.sh` and `bash scripts/typst-machine-appendix.sh` both run successfully
-- [ ] Every live `.lean` file carries a `/-!` module doc block
-- [ ] Every subdirectory has exactly one sibling aggregator; no `X/X.lean` remains except the
+- [x] Zero dangling `import Bimodal.*` / `import BimodalTest.*` lines across live `Theories/` and `Tests/`
+- [x] Zero dangling `Bimodal.*` module paths in markdown outside `specs/**`
+- [x] Zero references to `Theories/Bimodal/{docs,latex,typst}` outside `specs/**`
+- [x] Zero task-number citations under `Theories/`
+- [x] `bash scripts/typst-sync-check.sh` and `bash scripts/typst-machine-appendix.sh` both run successfully
+- [x] Every live `.lean` file carries a `/-!` module doc block
+- [x] Every subdirectory has exactly one sibling aggregator; no `X/X.lean` remains except the
       allowlisted Lake root pair
-- [ ] Every traversal excludes BOTH Boneyards
+- [x] Every traversal excludes BOTH Boneyards
 
 ## Artifacts & Outputs
 

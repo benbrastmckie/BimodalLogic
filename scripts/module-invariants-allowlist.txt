@@ -1,32 +1,26 @@
-# Pre-existing unresolved module paths in non-specs markdown (C5).
+# Dotted names in markdown that C5 must not treat as module paths.
 #
-# C5 fails on any module-shaped `Bimodal.*` / `BimodalTest.*` path in markdown
-# that does not resolve to a real module file or directory. The entries below
-# predate the module reorganization: they name modules that were renamed,
-# archived, or never existed. They are allowlisted so that C5 fails loudly on
-# NEW breakage introduced by a file move, rather than drowning it in known noise.
+# C5 flags any `Bimodal.*` / `BimodalTest.*` path in non-specs markdown whose
+# components are all capitalized and which does not resolve to a real module file
+# or directory. That shape is indistinguishable from a fully-qualified NAMESPACE
+# or DECLARATION name, which is what every entry below is. They are correct as
+# written; the check simply cannot tell them apart from a module path.
 #
-# This file is a debt ledger, not a permanent exemption: every entry should be
-# removed as its referring documentation is corrected. C5 reports allowlist
-# entries that no longer occur so stale exemptions get pruned.
-# One module path per line; `#` starts a comment.
+# This is a permanent, documented exemption, not a debt ledger. Only add an entry
+# after verifying with `grep -rn` that the name really is a live namespace or
+# declaration. A genuinely stale MODULE path must be fixed, never allowlisted.
+#
+# One name per line; `#` starts a comment.
 
-# `Bimodal.Tests.*` -- the test root is `BimodalTest`, not `Bimodal.Tests`.
-Bimodal.Tests
-Bimodal.Tests.Metalogic
-Bimodal.Tests.Regression
-Bimodal.Tests.Syntax
-Bimodal.Tests.Theorems
-
-# Placeholder used in README/docstring templates, not a real module.
-Bimodal.ModuleName
-
-# Modules that no longer exist under these names.
-Bimodal.Automation.DataExport.RuleProfile
+# `namespace Bimodal.Automation.Enriched` -- Automation/EnrichedCountermodel.lean:48
 Bimodal.Automation.Enriched
+
+# `structure PatternKey` in namespace Bimodal.Automation -- Automation/SuccessPatterns.lean:101
 Bimodal.Automation.PatternKey
+
+# `structure RuleProfile` in namespace Bimodal.Automation.DataExport -- Automation/DataExport.lean:294
+Bimodal.Automation.DataExport.RuleProfile
+
+# `structure SimpleCountermodel` in namespace Bimodal.Metalogic.Decidability
+# -- Metalogic/Decidability/CountermodelExtraction.lean:70
 Bimodal.Metalogic.Decidability.SimpleCountermodel
-Bimodal.Metalogic.DeductionTheorem
-Bimodal.Metalogic.WeakCanonical.ExpressiveCompleteness
-Bimodal.ProofSystem.Rules
-Bimodal.Semantics.Internal
