@@ -1,4 +1,8 @@
 {
+  "sources/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics.md": {
+    "backed_up_at": "2026-07-27T10:56:10Z",
+    "sha256": "19e86429fb7b0ce381221db09a4762a186e7b15077804a754fb88d677054d12b"
+  },
   "sources/bacon_2018_broadest-necessity/bacon_2018_broadest-necessity.md": {
     "backed_up_at": "2026-07-27T10:45:54Z",
     "sha256": "ccd31f9f3d155dfc01265612f500400932cf7741eb3faf67893b29411e4e06d5"
@@ -50,5 +54,45 @@
   "sources/baier_katoen_2008/Baier_Katoen_2008_part12.md": {
     "backed_up_at": "2026-07-27T10:46:21Z",
     "sha256": "9cb68308d28b77340b9a4775748154c59fa9bb604c7b602cca7b98f947ad7328"
+  },
+  "sources/courcoubetis_1992/Courcoubetis_1992_Memory_Efficient_Verification.md": {
+    "backed_up_at": "2026-07-27T10:56:10Z",
+    "sha256": "0e3afc49c1b3834a87445a4bc72fb50aaf73ce6c479de82e3ebb458786a81944"
+  },
+  "sources/kupferman_vardi_2001/Kupferman_Vardi_2001_Weak_Alternating_Automata.md": {
+    "backed_up_at": "2026-07-27T10:56:11Z",
+    "sha256": "96b7346e5225b5f191e492bfd35a1c78b32aa163864ae334d8456371dc966280"
+  },
+  "sources/libkin_2004_ch3_ch7/Libkin_2004_Elements_Finite_Model_Theory_ch3_ch7.md": {
+    "backed_up_at": "2026-07-27T10:52:42Z",
+    "sha256": "565b4aeb2e4c1781114eccdae93d6476b6273b631fec8842d4de4031e6f70948"
+  },
+  "sources/massacci_2000_single_step_tableaux_for_modal_logics/massacci_2000_single_step_tableaux_for_modal_logics.md": {
+    "backed_up_at": "2026-07-27T10:56:11Z",
+    "sha256": "c74c530b43d06d8201a5e23b00b11bdaed324ea409115ada38eef3b77f24428e"
+  },
+  "sources/pacheco_2024_collapsingconstructiveandintuitionisticmodallogics/pacheco_2024_collapsingconstructiveandintuitionisticmodallogics.md": {
+    "backed_up_at": "2026-07-27T10:56:12Z",
+    "sha256": "4595db1f9009176c5eb81eb0098dc2c5cebdd5525643fff10dc6b557cc810647"
+  },
+  "sources/piterman_2007/Piterman_2007_Buchi_Streett_Parity.md": {
+    "backed_up_at": "2026-07-27T10:56:12Z",
+    "sha256": "a765b42cf773d12b8208beb0545f90fb62040bacfc54c78fcb676e204807dd4a"
+  },
+  "sources/schewe_2009/Schewe_2009_Buchi_Complementation.md": {
+    "backed_up_at": "2026-07-27T10:56:13Z",
+    "sha256": "71de8d0f99372fee920831f7b95a0f8eaf9db4b63d88d97c299250e9d433c07a"
+  },
+  "sources/schwoon_esparza_2005/Schwoon_Esparza_2005_Note_OnTheFly_Verification.md": {
+    "backed_up_at": "2026-07-27T10:56:13Z",
+    "sha256": "159de87c7bc55c42a7e5c22b702301b52e57a7c3a38acbf0fb8ee363e50637d3"
+  },
+  "sources/venema_1993/sec01_derivation-rules-as-anti-axioms-in-modal.md": {
+    "backed_up_at": "2026-07-27T10:54:14Z",
+    "sha256": "0a6078f80f1905d25ede16210fc0e20d5230a0b682045c44d9f1b35d0fd19250"
+  },
+  "sources/yan_2008/Yan_2008_Lower_Bounds_Complementation.md": {
+    "backed_up_at": "2026-07-27T10:56:13Z",
+    "sha256": "9be947cce6ccce933a40bbf19262faa16f715063b6121a3000751dd2aa677728"
   }
 }

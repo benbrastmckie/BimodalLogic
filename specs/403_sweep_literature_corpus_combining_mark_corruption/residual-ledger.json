@@ -6980,5 +6980,464 @@
     "reason": "unrecognized_gap",
     "context": "and a gap g of T\nwith t ∈g, s ̸∈g, such that (i) ψ holds ever",
     "dir": "venema_1993_since"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 41936,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "we deﬁne\nXG\n#\ns =\n(\nXG\n#\nif 4 ̸∈X\n(XG\n# \\ {4◦, 4•}) ∪{s4◦, s4",
+    "dir": "arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 4912,
+    "base_char": "|",
+    "signature": "glyph_six",
+    "reason": "overlapping_edit",
+    "context": "e have w0 |= ♦(a1 ∨a2) and w0 ̸|= ♦a1 ∨♦a2.\n• k4: W = {w0, w1",
+    "md_file": "/home/benjamin/Projects/Literature/sources/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics.md",
+    "md_gap_start": 6338,
+    "md_gap_end": 6436,
+    "dir": "arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 5058,
+    "base_char": "|",
+    "signature": "glyph_six",
+    "reason": "overlapping_edit",
+    "context": "We have w0 |= ♦a1 ⊃\u001fa2 and w0 ̸|= \u001f(a1 ⊃a2).\n• k5: W = {w0, u",
+    "md_file": "/home/benjamin/Projects/Literature/sources/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics.md",
+    "md_gap_start": 6338,
+    "md_gap_end": 6436,
+    "dir": "arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics"
+  },
+  {
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 21907,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= 0, Q := ∅.\n2. Loop: while S ̸= ∅do\nbegin\nv := top(S);\nif M[",
+    "dir": "courcoubetis_1992"
+  },
+  {
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 22272,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= ∅, M := 0.\n2. Loop: while Q ̸= ∅do\nbegin\nf := head(Q);\nremo",
+    "dir": "courcoubetis_1992"
+  },
+  {
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 22339,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "rom Q;\npush f into S;\nwhile S ̸= ∅do\nbegin\nv := top(S);\nif f ",
+    "dir": "courcoubetis_1992"
+  },
+  {
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 25607,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "∅, M1 := M2 := 0.\n2. while S1 ̸= ∅do\nbegin\nx := top(S1);\nif t",
+    "dir": "courcoubetis_1992"
+  },
+  {
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 25836,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "egin\npush x into S2;\nwhile S2 ̸= ∅do begin\nv := top(S2);\nif x",
+    "dir": "courcoubetis_1992"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 14517,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " and r accepts w iﬀInf (r) ∩α ̸= ∅.\n• co-B¨uchi automata, whe",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 27070,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "even,\nconsider a vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemm",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 27087,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemma’s requirement f",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 27309,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " odd, consider a vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemm",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 27326,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemma’s\nrequirement f",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 44013,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " and σ ∈Σ, as\nfollows.\n• If O ̸= ∅, then\nδ′(⟨S, O⟩, σ) = {⟨S′",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 48200,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(⟨S, O⟩, σ) as follows.\n◦If O ̸= ∅, then\nδ′(⟨S, O⟩, σ) = {\n⟨S",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 53759,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " = 2n and gin(q) = ⊥for all q ̸= qin. Thus, the odd ranking t",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 53937,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(⟨g, P⟩, σ) as follows.\n◦If P ̸= ∅, then\nδ′(⟨g, P⟩, σ) = { ⟨g",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 85802,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " A}\nσ : ¬2A ∈B and ∀C σ.n : C ̸∈B B\nπ\n−→B ∪{σ.n : ¬A}\nB. Proo",
+    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 89142,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nd σ.m. It can be that\nn1 = n ̸= m = n2 and A ̸= B and thus B",
+    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 89158,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e that\nn1 = n ̸= m = n2 and A ̸= B and thus B1 ̸= B2.\nThen we",
+    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 90232,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ed formulae such\nthat h12(σ1) ̸= σ2. Let Br\n1 be the reductio",
+    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 12516,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ψ ∈Γ, then ϕ ∈Γ or ψ ∈Γ;\nand ⊥̸∈Γ. If X is a set of formulas,",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 14575,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "that: Γ ⊆Υ, Υ□⊆Σ, Σ ⊆Υ♦, and ⊥̸∈Υ. Suppose ϕ ∨ψ ∈Θ.\nThen if ϕ",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 15398,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ise □ϕ ∈Γ. We also have that ⊥̸∈Φ. Suppose otherwise, then th",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 17316,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "a contradiction. Therefore ψ2 ̸∈Υ. By Zorn’s Lemma, we can bu",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 17384,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "heory Σ such that Υ ⊆Σ and ψ2 ̸∈Σ. By the induction hypothesi",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 17727,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " Σ such that Γ ⪯c ∆∼c Σ and ϕ ̸∈Σ. By the induction hypothesi",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 17767,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e induction hypothesis,\nMc, Σ ̸|= ϕ. Therefore Mc, Γ ̸|= □ϕ.\n",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 18382,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "he induction\nhypothesis, Mc, ∆̸|= ψ. Therefore Mc, Γ ̸|= ♦ψ.\n",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 15728,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nf (r) ∩Ei = ∅and inf (r) ∩Fi ̸= ∅. That is, the run visits ﬁ",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 16557,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "me even i we have inf (r) ∩Fi ̸= ∅and for all i′ < i we have ",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 23032,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "with label S′ such that S′ ∩α ̸= ∅, create a new node v′ ∈V ′",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 28423,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "with label S′ such that S′ ∩α ̸= ∅, create a new son v′ /∈N o",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 29604,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "r every node v such that l(v) ̸= ∅we change the name of v to\n",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 37946,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "very j ∈J we have inf (r) ∩Rj ̸= ∅and for every j /∈J we\nhave",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 43287,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "If v is a leaf such that h(v) ̸= ∅, add to v a new son v′ ∈V ",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 49822,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "If v is a leaf such that h(v) ̸= ∅, add to v a new son v′. Se",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 51724,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "r every node v such that l(v) ̸= ∅we change the name of v to ",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 12448,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "dd(f ′), f ′\u0001\n| f ′ ≤S\nσ f, O ̸= ∅\n\t\n∪\n\b\u0000δ(S, σ), δ(S, σ) ∖od",
+    "dir": "schewe_2009"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 19971,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "no state of ρ′ is accepting (∅̸= Si /∈F ′ for all i ∈ω). Let ",
+    "dir": "schewe_2009"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 22206,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " α(j)\n\u0001\n∩f −1\nj+1(ij+1) if Oj ̸= ∅, respectively, for all j >",
+    "dir": "schewe_2009"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 23167,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "adicts the assumption that Ok ̸= ∅\nis non-empty for all k > j",
+    "dir": "schewe_2009"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 28489,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": ", O, f, i), σ\n\u0001\n, O′′ = ∅, i′ ̸= 0 ∨O′ = ∅, and\ng′(q) = g(q) ",
+    "dir": "schewe_2009"
+  },
+  {
+    "pdf_file": "Yan_2008_Lower_Bounds_Complementation.pdf",
+    "pdf_char_offset": 9431,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": " ρ\nis\nsu  essful\nif\nInf(ρ) ∩F ̸= ∅.\n4\nQ.\nY\nAN\n•\ngener\nalize\nd",
+    "dir": "yan_2008"
+  },
+  {
+    "pdf_file": "Yan_2008_Lower_Bounds_Complementation.pdf",
+    "pdf_char_offset": 18751,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "\nthat ˆqT1 = ˆqT2\nfor\nsome T1 ̸= T2\n.\nW.l.o.g.\nthere\nis\na\nsta",
+    "dir": "yan_2008"
+  },
+  {
+    "pdf_file": "Yan_2008_Lower_Bounds_Complementation.pdf",
+    "pdf_char_offset": 29376,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "f Q(m)-rankings\nsu \nh\nthat fi ̸= fj\nfor\nall i ̸= j, 0 ≤i, j <",
+    "dir": "yan_2008"
+  },
+  {
+    "pdf_file": "Yan_2008_Lower_Bounds_Complementation.pdf",
+    "pdf_char_offset": 29392,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "su \nh\nthat fi ̸= fj\nfor\nall i ̸= j, 0 ≤i, j < L ,\nand fi = fj",
+    "dir": "yan_2008"
+  },
+  {
+    "pdf_file": "Yan_2008_Lower_Bounds_Complementation.pdf",
+    "pdf_char_offset": 44596,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "}\nand\nstate p ∈S′\nn\nwith g(p) ̸= i\nsu \nh\nthat c(i, p)\nequals\n",
+    "dir": "yan_2008"
+  },
+  {
+    "pdf_file": "Yan_2008_Lower_Bounds_Complementation.pdf",
+    "pdf_char_offset": 44763,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "f(p) = r\n,\nand\nde\u001cne:\nur =\nY\ni̸=g(p),1≤i≤k\ns=c(i,p)\n\u0014\n⊕p →s ,",
+    "dir": "yan_2008"
+  },
+  {
+    "pdf_file": "Yan_2008_Lower_Bounds_Complementation.pdf",
+    "pdf_char_offset": 48331,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "narrow_failed",
+    "context": "F\\Fg2(p),!Fg2(p)\np .\nAs g1(p) ̸= g2(p), p\nwk1\n1 wk2\n2\n−−−−−→\n",
+    "md_file": "/home/benjamin/Projects/Literature/sources/yan_2008/Yan_2008_Lower_Bounds_Complementation.md",
+    "md_gap_start": 62132,
+    "md_gap_end": 62252,
+    "dir": "yan_2008"
   }
 ]

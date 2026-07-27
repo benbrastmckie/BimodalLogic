@@ -1,0 +1,36 @@
+{
+  "phase": 7,
+  "phase_name": "Repair the 6= glyph-substitution class",
+  "started_at": "2026-07-27T06:00:00Z",
+  "last_updated": "2026-07-27T06:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "Repair all 9 glyph-six documents", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Enforce PDF-anchored-only safety property", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Digit-6-adjacent-relation delta verification per document", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Append residual ledger", "status": "done",
+     "files_touched": [
+       "specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json",
+       "specs/403_sweep_literature_corpus_combining_mark_corruption/backup-manifests/combining-repair-2026-07-27-manifest.json"
+     ]}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [
+    {"approach": "Use a literal digit-6-adjacent-relation-char count delta as the sole before/after safety check", "result": "failed", "reason": "conflates glyph_six repairs (which do involve literal 6) with absent/control_char repairs in the same document (which do not); replaced with a per-document precomposed-count-increase + whole-file word-count-delta=0 check, a stronger and more precise confirmation"}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "7.3",
+      "description": "Plan's literal 6-adjacent-relation delta check does not equal repair count for mixed-signature documents (e.g. schewe_2009: 6 repairs, only 4 glyph_six)",
+      "type": "altered",
+      "reason": "The literal digit-6 count is only a valid proxy for the glyph_six subset, not the full repair count when a document also has control_char/absent occurrences",
+      "annotation": "*(deviation: altered — verification substituted with precomposed-count-increase + word-count-delta=0 check per document)*"
+    }
+  ],
+  "corpus_mutation_record": {
+    "documents_repaired": 9,
+    "total_occurrences_repaired": 64,
+    "total_occurrences_of_114": "64 of 114 (schwoon_esparza_2005 fully clean; 8 others partial, residual in ledger)",
+    "backup_manifest_total_entries": 24
+  }
+}
