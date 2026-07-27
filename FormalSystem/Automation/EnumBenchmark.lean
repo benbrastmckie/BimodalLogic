@@ -202,7 +202,7 @@ def main (args : List String) : IO Unit := do
   let benchArgs := parseBenchmarkArgs args
   let parallelThreads := benchArgs.parallelThreads
   let cacheSize := benchArgs.cacheSize
-  let atoms := [Atom.mk_base "p", Atom.mk_base "q", Atom.mk_base "r"]
+  let atoms := [Atom.mkBase "p", Atom.mkBase "q", Atom.mkBase "r"]
   IO.println "=== Enumerator Benchmark ==="
   if parallelThreads > 0 then
     IO.println s!"Parallel threads: {parallelThreads}"

@@ -365,11 +365,11 @@ example (p q : Formula) : [p.box, q.box] ⊢ p.box := by
   modal_search 3
 
 -- Test 13: Temporal K - simple case: [Fp] ⊢ Fp
-example (p : Formula) : [p.all_future] ⊢ p.all_future := by
+example (p : Formula) : [p.allFuture] ⊢ p.allFuture := by
   modal_search 3
 
 -- Test 14: Temporal K with assumption: [Fp, Fq] ⊢ Fp
-example (p q : Formula) : [p.all_future, q.all_future] ⊢ p.all_future := by
+example (p q : Formula) : [p.allFuture, q.allFuture] ⊢ p.allFuture := by
   modal_search 3
 
 -- Test 15: Manual verification that generalized_modal_k works as expected
@@ -377,12 +377,12 @@ example (p q : Formula) : [p.all_future, q.all_future] ⊢ p.all_future := by
 -- Note: noncomputable because generalized_modal_k uses deduction_theorem
 noncomputable example (p : Formula) : [p.box] ⊢ p.box := by
   have h : [p] ⊢ p := DerivationTree.assumption [p] p (by simp)
-  exact Theorems.generalized_modal_k [p] p h
+  exact Theorems.generalizedModalK [p] p h
 
 -- Test 16: Manual verification that generalized_temporal_k works as expected
-noncomputable example (p : Formula) : [p.all_future] ⊢ p.all_future := by
+noncomputable example (p : Formula) : [p.allFuture] ⊢ p.allFuture := by
   have h : [p] ⊢ p := DerivationTree.assumption [p] p (by simp)
-  exact Theorems.generalized_temporal_k [p] p h
+  exact Theorems.generalizedTemporalK [p] p h
 
 /-!
 ### Phase 1.6 Tests: Configuration Syntax
@@ -449,28 +449,28 @@ Grouped by layer following the axiom classification in Axioms.lean.
 
 -- Layer 3: BX Temporal — monotonicity
 -- Test 29: left_mono_until_G: G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
-example (p q r : Formula) : ⊢ (p.imp q).all_future.imp ((Formula.untl r p).imp (Formula.untl r q)) := by
+example (p q r : Formula) : ⊢ (p.imp q).allFuture.imp ((Formula.untl r p).imp (Formula.untl r q)) := by
   modal_search
 
 -- Test 30: left_mono_since_H: H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
-example (p q r : Formula) : ⊢ (p.imp q).all_past.imp ((Formula.snce r p).imp (Formula.snce r q)) := by
+example (p q r : Formula) : ⊢ (p.imp q).allPast.imp ((Formula.snce r p).imp (Formula.snce r q)) := by
   modal_search
 
 -- Test 31: right_mono_until: G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
-example (p q r : Formula) : ⊢ (p.imp q).all_future.imp ((Formula.untl p r).imp (Formula.untl q r)) := by
+example (p q r : Formula) : ⊢ (p.imp q).allFuture.imp ((Formula.untl p r).imp (Formula.untl q r)) := by
   modal_search
 
 -- Test 32: right_mono_since: H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
-example (p q r : Formula) : ⊢ (p.imp q).all_past.imp ((Formula.snce p r).imp (Formula.snce q r)) := by
+example (p q r : Formula) : ⊢ (p.imp q).allPast.imp ((Formula.snce p r).imp (Formula.snce q r)) := by
   modal_search
 
 -- Layer 3: BX Temporal — connectedness
 -- Test 33: connect_future: φ → G(P(φ))
-example (p : Formula) : ⊢ p.imp (p.some_past.all_future) := by
+example (p : Formula) : ⊢ p.imp (p.somePast.allFuture) := by
   modal_search
 
 -- Test 34: connect_past: φ → H(F(φ))
-example (p : Formula) : ⊢ p.imp (p.some_future.all_past) := by
+example (p : Formula) : ⊢ p.imp (p.someFuture.allPast) := by
   modal_search
 
 -- Layer 3: BX Temporal — enrichment
@@ -524,34 +524,34 @@ example (p q r s : Formula) : ⊢ (Formula.and (Formula.snce q p) (Formula.snce 
 
 -- Layer 3: BX Temporal — eventuality
 -- Test 43: until_F: U(ψ,φ) → F(ψ)
-example (p q : Formula) : ⊢ (Formula.untl q p).imp (Formula.some_future q) := by
+example (p q : Formula) : ⊢ (Formula.untl q p).imp (Formula.someFuture q) := by
   modal_search
 
 -- Test 44: since_P: S(ψ,φ) → P(ψ)
-example (p q : Formula) : ⊢ (Formula.snce q p).imp (Formula.some_past q) := by
+example (p q : Formula) : ⊢ (Formula.snce q p).imp (Formula.somePast q) := by
   modal_search
 
 -- Layer 3b: BX Temporal — additional
 -- Test 45: temp_linearity: F(φ) ∧ F(ψ) → F(φ∧ψ) ∨ F(φ∧F(ψ)) ∨ F(F(φ)∧ψ)
-example (p q : Formula) : ⊢ (Formula.and (Formula.some_future p) (Formula.some_future q)).imp
-    (Formula.or (Formula.some_future (Formula.and p q))
-      (Formula.or (Formula.some_future (Formula.and p (Formula.some_future q)))
-        (Formula.some_future (Formula.and (Formula.some_future p) q)))) := by
+example (p q : Formula) : ⊢ (Formula.and (Formula.someFuture p) (Formula.someFuture q)).imp
+    (Formula.or (Formula.someFuture (Formula.and p q))
+      (Formula.or (Formula.someFuture (Formula.and p (Formula.someFuture q)))
+        (Formula.someFuture (Formula.and (Formula.someFuture p) q)))) := by
   modal_search
 
 -- Test 46: temp_linearity_past: P(φ) ∧ P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
-example (p q : Formula) : ⊢ (Formula.and (Formula.some_past p) (Formula.some_past q)).imp
-    (Formula.or (Formula.some_past (Formula.and p q))
-      (Formula.or (Formula.some_past (Formula.and p (Formula.some_past q)))
-        (Formula.some_past (Formula.and (Formula.some_past p) q)))) := by
+example (p q : Formula) : ⊢ (Formula.and (Formula.somePast p) (Formula.somePast q)).imp
+    (Formula.or (Formula.somePast (Formula.and p q))
+      (Formula.or (Formula.somePast (Formula.and p (Formula.somePast q)))
+        (Formula.somePast (Formula.and (Formula.somePast p) q)))) := by
   modal_search
 
 -- Test 47: F_until_equiv: F(φ) → U(φ, ⊤)
-example (p : Formula) : ⊢ (Formula.some_future p).imp (Formula.untl p (Formula.bot.imp Formula.bot)) := by
+example (p : Formula) : ⊢ (Formula.someFuture p).imp (Formula.untl p (Formula.bot.imp Formula.bot)) := by
   modal_search
 
 -- Test 48: P_since_equiv: P(φ) → S(φ, ⊤)
-example (p : Formula) : ⊢ (Formula.some_past p).imp (Formula.snce p (Formula.bot.imp Formula.bot)) := by
+example (p : Formula) : ⊢ (Formula.somePast p).imp (Formula.snce p (Formula.bot.imp Formula.bot)) := by
   modal_search
 
 -- Layer 5: Uniformity — discrete structure (FrameClass.Base, no parameters)
@@ -567,12 +567,12 @@ example : ⊢ (Formula.snce (Formula.bot.imp Formula.bot) Formula.bot).imp
 
 -- Test 51: discrete_propagate_fwd: U(⊤,⊥) → G(U(⊤,⊥))
 example : ⊢ (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
-    (Formula.all_future (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)) := by
+    (Formula.allFuture (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)) := by
   modal_search
 
 -- Test 52: discrete_propagate_bwd: U(⊤,⊥) → H(U(⊤,⊥))
 example : ⊢ (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
-    (Formula.all_past (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)) := by
+    (Formula.allPast (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)) := by
   modal_search
 
 -- Test 53: discrete_box_necessity: U(⊤,⊥) → □(U(⊤,⊥))
@@ -582,21 +582,21 @@ example : ⊢ (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
 
 -- Layer 6: Prior axioms — discrete (FrameClass.Discrete)
 -- Test 54: prior_UZ: F(φ) → U(φ, ¬φ) (requires FrameClass.Discrete)
-example (p : Formula) : ⊢[FrameClass.Discrete] p.some_future.imp (Formula.untl p p.neg) := by
+example (p : Formula) : ⊢[FrameClass.Discrete] p.someFuture.imp (Formula.untl p p.neg) := by
   modal_search
 
 -- Test 55: prior_SZ: P(φ) → S(φ, ¬φ) (requires FrameClass.Discrete)
-example (p : Formula) : ⊢[FrameClass.Discrete] p.some_past.imp (Formula.snce p p.neg) := by
+example (p : Formula) : ⊢[FrameClass.Discrete] p.somePast.imp (Formula.snce p p.neg) := by
   modal_search
 
 -- Test 56: z1: G(Gφ→φ) → (FGφ→Gφ) (requires FrameClass.Discrete)
 example (p : Formula) : ⊢[FrameClass.Discrete]
-    (p.all_future.imp p).all_future.imp (p.all_future.some_future.imp p.all_future) := by
+    (p.allFuture.imp p).allFuture.imp (p.allFuture.someFuture.imp p.allFuture) := by
   modal_search
 
 -- Layer 8: Density (FrameClass.Dense)
 -- Test 57: density: GGφ → Gφ (requires FrameClass.Dense)
-example (p : Formula) : ⊢[FrameClass.Dense] p.all_future.all_future.imp p.all_future := by
+example (p : Formula) : ⊢[FrameClass.Dense] p.allFuture.allFuture.imp p.allFuture := by
   modal_search
 
 -- Test 58: dense_indicator: ¬U(⊤,⊥) (requires FrameClass.Dense)
@@ -664,19 +664,19 @@ example (p q : Formula) : ⊢ p.imp ((p.imp q).imp q) := by
 -- Tier 2: Modal and temporal derived theorems
 
 -- Test 71: temp_k_dist_derived: G(φ→ψ) → (Gφ→Gψ)
-noncomputable example (p q : Formula) : ⊢ (p.imp q).all_future.imp (p.all_future.imp q.all_future) := by
+noncomputable example (p q : Formula) : ⊢ (p.imp q).allFuture.imp (p.allFuture.imp q.allFuture) := by
   modal_search
 
 -- Test 72: temp_4_derived: Gφ → GGφ
-noncomputable example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
+noncomputable example (p : Formula) : ⊢ p.allFuture.imp p.allFuture.allFuture := by
   modal_search
 
 -- Test 73: H_distribution: H(φ→ψ) → (Hφ→Hψ)
-noncomputable example (p q : Formula) : ⊢ (p.imp q).all_past.imp (p.all_past.imp q.all_past) := by
+noncomputable example (p q : Formula) : ⊢ (p.imp q).allPast.imp (p.allPast.imp q.allPast) := by
   modal_search
 
 -- Test 74: H_transitivity: Hφ → HHφ
-noncomputable example (p : Formula) : ⊢ p.all_past.imp p.all_past.all_past := by
+noncomputable example (p : Formula) : ⊢ p.allPast.imp p.allPast.allPast := by
   modal_search
 
 -- Test 75: t_box_to_diamond: □A → ◇A
@@ -696,11 +696,11 @@ example (p : Formula) : ⊢ p.diamond.imp p.diamond.box := by
   modal_search
 
 -- Test 79: box_to_future: □φ → Gφ
-example (p : Formula) : ⊢ p.box.imp p.all_future := by
+example (p : Formula) : ⊢ p.box.imp p.allFuture := by
   modal_search
 
 -- Test 80: box_to_past: □φ → Hφ
-example (p : Formula) : ⊢ p.box.imp p.all_past := by
+example (p : Formula) : ⊢ p.box.imp p.allPast := by
   modal_search
 
 -- Test 81: formula_or_comm: (A ∨ B) → (B ∨ A)
@@ -716,7 +716,7 @@ noncomputable example (p q : Formula) : ⊢ (p.imp q).imp ((p.neg.imp q).imp q) 
   modal_search
 
 -- Test 84: temp_future_derived (migrated from tryAxiomMatch): □φ → G□φ
-example (p : Formula) : ⊢ p.box.imp p.box.all_future := by
+example (p : Formula) : ⊢ p.box.imp p.box.allFuture := by
   modal_search
 
 end FormalSystem.Automation

@@ -367,7 +367,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- modal_future: □φ → □(Gφ)
       <|> (match lhs, rhs with
-           | .box phi, .box (.all_future phi') =>
+           | .box phi, .box (.allFuture phi') =>
                if phi = phi' then
                  some ⟨_, Axiom.modal_future phi⟩
                else none
@@ -397,13 +397,13 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- serial_future: ⊤ → F(⊤)
       <|> (match lhs, rhs with
-           | .imp .bot .bot, .some_future (.imp .bot .bot) =>
+           | .imp .bot .bot, .someFuture (.imp .bot .bot) =>
                some ⟨_, Axiom.serial_future⟩
            | _, _ => none)
 
       -- serial_past: ⊤ → P(⊤)
       <|> (match lhs, rhs with
-           | .imp .bot .bot, .some_past (.imp .bot .bot) =>
+           | .imp .bot .bot, .somePast (.imp .bot .bot) =>
                some ⟨_, Axiom.serial_past⟩
            | _, _ => none)
 
@@ -421,13 +421,13 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- discrete_propagate_fwd: U(⊤,⊥) → G(U(⊤,⊥))
       <|> (match lhs, rhs with
-           | .untl (.imp .bot .bot) .bot, .all_future (.untl (.imp .bot .bot) .bot) =>
+           | .untl (.imp .bot .bot) .bot, .allFuture (.untl (.imp .bot .bot) .bot) =>
                some ⟨_, Axiom.discrete_propagate_fwd⟩
            | _, _ => none)
 
       -- discrete_propagate_bwd: U(⊤,⊥) → H(U(⊤,⊥))
       <|> (match lhs, rhs with
-           | .untl (.imp .bot .bot) .bot, .all_past (.untl (.imp .bot .bot) .bot) =>
+           | .untl (.imp .bot .bot) .bot, .allPast (.untl (.imp .bot .bot) .bot) =>
                some ⟨_, Axiom.discrete_propagate_bwd⟩
            | _, _ => none)
 
@@ -449,7 +449,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- connect_future (BX4): φ → G(P(φ))
       <|> (match lhs, rhs with
-           | phi, .all_future (.some_past phi') =>
+           | phi, .allFuture (.somePast phi') =>
                if phi = phi' then
                  some ⟨_, Axiom.connect_future phi⟩
                else none
@@ -457,7 +457,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- connect_past (BX4'): φ → H(F(φ))
       <|> (match lhs, rhs with
-           | phi, .all_past (.some_future phi') =>
+           | phi, .allPast (.someFuture phi') =>
                if phi = phi' then
                  some ⟨_, Axiom.connect_past phi⟩
                else none
@@ -465,7 +465,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- F_until_equiv (BX12): F(φ) → U(φ, ⊤)
       <|> (match lhs, rhs with
-           | .some_future phi, .untl phi' (.imp .bot .bot) =>
+           | .someFuture phi, .untl phi' (.imp .bot .bot) =>
                if phi = phi' then
                  some ⟨_, Axiom.F_until_equiv phi⟩
                else none
@@ -473,7 +473,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- P_since_equiv (BX12'): P(φ) → S(φ, ⊤)
       <|> (match lhs, rhs with
-           | .some_past phi, .snce phi' (.imp .bot .bot) =>
+           | .somePast phi, .snce phi' (.imp .bot .bot) =>
                if phi = phi' then
                  some ⟨_, Axiom.P_since_equiv phi⟩
                else none
@@ -481,8 +481,8 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- z1: G(Gφ→φ) → (F(Gφ)→Gφ)
       <|> (match lhs, rhs with
-           | .all_future (.imp (.all_future phi) phi'),
-             .imp (.some_future (.all_future phi'')) (.all_future phi''') =>
+           | .allFuture (.imp (.allFuture phi) phi'),
+             .imp (.someFuture (.allFuture phi'')) (.allFuture phi''') =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' then
                  some ⟨_, Axiom.z1 phi⟩
                else none
@@ -490,7 +490,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- density: GGφ → Gφ
       <|> (match lhs, rhs with
-           | .all_future (.all_future phi), .all_future phi' =>
+           | .allFuture (.allFuture phi), .allFuture phi' =>
                if phi = phi' then
                  some ⟨_, Axiom.density phi⟩
                else none
@@ -534,7 +534,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- until_F (BX10): U(ψ,φ) → F(ψ)
       <|> (match lhs, rhs with
-           | .untl psi _phi, .some_future psi' =>
+           | .untl psi _phi, .someFuture psi' =>
                if psi = psi' then
                  some ⟨_, Axiom.until_F _phi psi⟩
                else none
@@ -542,7 +542,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- since_P (BX10'): S(ψ,φ) → P(ψ)
       <|> (match lhs, rhs with
-           | .snce psi _phi, .some_past psi' =>
+           | .snce psi _phi, .somePast psi' =>
                if psi = psi' then
                  some ⟨_, Axiom.since_P _phi psi⟩
                else none
@@ -550,10 +550,10 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- temp_linearity (BX11): F(φ)∧F(ψ) → F(φ∧ψ) ∨ F(φ∧F(ψ)) ∨ F(F(φ)∧ψ)
       <|> (match lhs, rhs with
-           | .and (.some_future phi) (.some_future psi),
-             .or (.some_future (.and phi' psi'))
-               (.or (.some_future (.and phi'' (.some_future psi'')))
-                 (.some_future (.and (.some_future phi''') psi'''))) =>
+           | .and (.someFuture phi) (.someFuture psi),
+             .or (.someFuture (.and phi' psi'))
+               (.or (.someFuture (.and phi'' (.someFuture psi'')))
+                 (.someFuture (.and (.someFuture phi''') psi'''))) =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
                   psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
                  some ⟨_, Axiom.temp_linearity phi psi⟩
@@ -562,10 +562,10 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- temp_linearity_past (BX11'): P(φ)∧P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
       <|> (match lhs, rhs with
-           | .and (.some_past phi) (.some_past psi),
-             .or (.some_past (.and phi' psi'))
-               (.or (.some_past (.and phi'' (.some_past psi'')))
-                 (.some_past (.and (.some_past phi''') psi'''))) =>
+           | .and (.somePast phi) (.somePast psi),
+             .or (.somePast (.and phi' psi'))
+               (.or (.somePast (.and phi'' (.somePast psi'')))
+                 (.somePast (.and (.somePast phi''') psi'''))) =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
                   psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
                  some ⟨_, Axiom.temp_linearity_past phi psi⟩
@@ -574,7 +574,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- prior_UZ: F(φ) → U(φ, ¬φ)
       <|> (match lhs, rhs with
-           | .some_future phi1, .untl phi2 (.neg phi3) =>
+           | .someFuture phi1, .untl phi2 (.neg phi3) =>
                if phi1 = phi2 ∧ phi2 = phi3 then
                  some ⟨_, Axiom.prior_UZ phi1⟩
                else none
@@ -582,7 +582,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- prior_SZ: P(φ) → S(φ, ¬φ)
       <|> (match lhs, rhs with
-           | .some_past phi1, .snce phi2 (.neg phi3) =>
+           | .somePast phi1, .snce phi2 (.neg phi3) =>
                if phi1 = phi2 ∧ phi2 = phi3 then
                  some ⟨_, Axiom.prior_SZ phi1⟩
                else none
@@ -594,7 +594,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- left_mono_until_G (BX2G): G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
       <|> (match lhs, rhs with
-           | .all_future (.imp phi chi),
+           | .allFuture (.imp phi chi),
              .imp (.untl psi phi') (.untl psi' chi') =>
                if phi = phi' ∧ chi = chi' ∧ psi = psi' then
                  some ⟨_, Axiom.left_mono_until_G phi chi psi⟩
@@ -603,7 +603,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- left_mono_since_H (BX2H): H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
       <|> (match lhs, rhs with
-           | .all_past (.imp phi chi),
+           | .allPast (.imp phi chi),
              .imp (.snce psi phi') (.snce psi' chi') =>
                if phi = phi' ∧ chi = chi' ∧ psi = psi' then
                  some ⟨_, Axiom.left_mono_since_H phi chi psi⟩
@@ -612,7 +612,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- right_mono_until (BX3): G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
       <|> (match lhs, rhs with
-           | .all_future (.imp phi psi),
+           | .allFuture (.imp phi psi),
              .imp (.untl phi' chi) (.untl psi' chi') =>
                if phi = phi' ∧ psi = psi' ∧ chi = chi' then
                  some ⟨_, Axiom.right_mono_until phi psi chi⟩
@@ -621,7 +621,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- right_mono_since (BX3'): H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
       <|> (match lhs, rhs with
-           | .all_past (.imp phi psi),
+           | .allPast (.imp phi psi),
              .imp (.snce phi' chi) (.snce psi' chi') =>
                if phi = phi' ∧ psi = psi' ∧ chi = chi' then
                  some ⟨_, Axiom.right_mono_since phi psi chi⟩
@@ -699,7 +699,7 @@ Delegates to `matchAxiom` and returns `true` on match, `false` otherwise.
 Covers all axiom constructors: propositional (4), modal (5), BX temporal (22),
 interaction (1), uniformity (5), prior (2), Z1 (1), density (2).
 -/
-def matches_axiom (φ : Formula) : Bool :=
+def matchesAxiom (φ : Formula) : Bool :=
   (matchAxiom φ).isSome
 
 /--
@@ -721,7 +721,7 @@ via modus ponens: if we want to prove φ and we have ψ → φ, we should try to
 - `find_implications_to [p.imp q, r.imp q] q` returns `[p, r]`
 - `find_implications_to [p, q] r` returns `[]`
 -/
-def find_implications_to (Γ : Context) (φ : Formula) : List Formula :=
+def findImplicationsTo (Γ : Context) (φ : Formula) : List Formula :=
   Γ.filterMap (fun f => match f with
     | Formula.imp ψ χ => if χ = φ then some ψ else none
     | _ => none)
@@ -743,7 +743,7 @@ This function applies the box operator to every formula in the context.
 - `box_context [Formula.atom_s "p", Formula.atom_s "q"]` returns
   `[Formula.box (Formula.atom_s "p"), Formula.box (Formula.atom_s "q")]`
 -/
-def box_context (Γ : Context) : Context :=
+def boxContext (Γ : Context) : Context :=
   Γ.map Formula.box
 
 /--
@@ -763,8 +763,8 @@ This function applies the all_future operator to every formula in the context.
 - `future_context [Formula.atom_s "p", Formula.atom_s "q"]` returns
   `[Formula.all_future (Formula.atom_s "p"), Formula.all_future (Formula.atom_s "q")]`
 -/
-def future_context (Γ : Context) : Context :=
-  Γ.map Formula.all_future
+def futureContext (Γ : Context) : Context :=
+  Γ.map Formula.allFuture
 
 /-!
 ## Domain-Specific Heuristics
@@ -784,7 +784,7 @@ Modal goals benefit from modal axioms (T, 4, 5, B) so we explore them earlier.
 - `-5` for diamond goals (◇φ)
 - `0` for non-modal goals
 -/
-def modal_heuristic_bonus (φ : Formula) : Int :=
+def modalHeuristicBonus (φ : Formula) : Int :=
   match φ with
   | .box _ => -5
   | .diamond _ => -5
@@ -803,12 +803,12 @@ Temporal goals benefit from temporal axioms (4, A, L) so we explore them earlier
 - `-5` for some_past goals (Pφ)
 - `0` for non-temporal goals
 -/
-def temporal_heuristic_bonus (φ : Formula) : Int :=
+def temporalHeuristicBonus (φ : Formula) : Int :=
   match φ with
-  | .all_future _ => -5
-  | .some_future _ => -5
-  | .all_past _ => -5
-  | .some_past _ => -5
+  | .allFuture _ => -5
+  | .someFuture _ => -5
+  | .allPast _ => -5
+  | .somePast _ => -5
   | _ => 0
 
 /--
@@ -824,7 +824,7 @@ Computes penalty based on formula structure:
 
 Higher penalty = lower priority (complex formulas are harder to prove).
 -/
-def structure_heuristic (φ : Formula) : Nat :=
+def structureHeuristic (φ : Formula) : Nat :=
   φ.complexity + 2 * φ.modalDepth + 2 * φ.temporalDepth + φ.countImplications
 
 /--
@@ -833,13 +833,13 @@ Compute heuristic score for a proof search branch (lower score = higher priority
 Scores are configurable via `HeuristicWeights` while keeping the default
 ordering used by bounded search.
 -/
-def heuristic_score (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formula) : Nat :=
-  if matches_axiom φ then
+def heuristicScore (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formula) : Nat :=
+  if matchesAxiom φ then
     weights.axiomWeight
   else if Γ.contains φ then
     weights.assumptionWeight
   else
-    let implications := find_implications_to Γ φ
+    let implications := findImplicationsTo Γ φ
     if implications.isEmpty then
       match φ with
       | Formula.box _ =>
@@ -869,11 +869,11 @@ Combines:
 
 **Returns**: Combined score (lower = higher priority). Score is clamped to 0 minimum.
 -/
-def advanced_heuristic_score (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formula) : Nat :=
-  let baseScore : Int := heuristic_score weights Γ φ
-  let modalBonus := modal_heuristic_bonus φ
-  let temporalBonus := temporal_heuristic_bonus φ
-  let structurePenalty : Int := structure_heuristic φ / 4  -- Damped to avoid overwhelming base score
+def advancedHeuristicScore (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formula) : Nat :=
+  let baseScore : Int := heuristicScore weights Γ φ
+  let modalBonus := modalHeuristicBonus φ
+  let temporalBonus := temporalHeuristicBonus φ
+  let structurePenalty : Int := structureHeuristic φ / 4  -- Damped to avoid overwhelming base score
   let combined := baseScore + modalBonus + temporalBonus + structurePenalty
   combined.toNat  -- Clamp to 0 if negative
 
@@ -885,7 +885,7 @@ Lower scores indicate higher priority (axioms/assumptions before complex modus p
 -/
 def orderSubgoalsByScore (weights : HeuristicWeights) (Γ : Context) (targets : List Formula) :
     List Formula :=
-  targets.mergeSort (fun φ ψ => heuristic_score weights Γ φ ≤ heuristic_score weights Γ ψ)
+  targets.mergeSort (fun φ ψ => heuristicScore weights Γ φ ≤ heuristicScore weights Γ ψ)
 
 /--
 Order candidate subgoals by advanced heuristic score (includes domain-specific bonuses).
@@ -895,7 +895,7 @@ Lower scores indicate higher priority. Includes modal/temporal bonuses and struc
 -/
 def orderSubgoalsByAdvancedScore (weights : HeuristicWeights) (Γ : Context) (targets : List Formula) :
     List Formula :=
-  targets.mergeSort (fun φ ψ => advanced_heuristic_score weights Γ φ ≤ advanced_heuristic_score weights Γ ψ)
+  targets.mergeSort (fun φ ψ => advancedHeuristicScore weights Γ φ ≤ advancedHeuristicScore weights Γ ψ)
 
 /-!
 ## Pattern-Aware Heuristic Scoring
@@ -918,10 +918,10 @@ for strategies that have worked on similar formulas.
 
 **Returns**: Combined score (lower = higher priority)
 -/
-def pattern_aware_score (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formula)
+def patternAwareScore (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formula)
     (patternDb : PatternDatabase := PatternDatabase.empty)
     (strategy : ProofStrategy := .ModusPonens) : Nat :=
-  let baseScore : Int := advanced_heuristic_score weights Γ φ
+  let baseScore : Int := advancedHeuristicScore weights Γ φ
   let patternBonus := patternDb.heuristicBonus φ strategy
   (baseScore + patternBonus).toNat  -- Clamp to 0 if negative
 
@@ -935,8 +935,8 @@ def orderSubgoalsByPatternScore (weights : HeuristicWeights) (Γ : Context)
     (targets : List Formula) (patternDb : PatternDatabase := PatternDatabase.empty) :
     List Formula :=
   targets.mergeSort (fun φ ψ =>
-    pattern_aware_score weights Γ φ patternDb .ModusPonens ≤
-    pattern_aware_score weights Γ ψ patternDb .ModusPonens)
+    patternAwareScore weights Γ φ patternDb .ModusPonens ≤
+    patternAwareScore weights Γ ψ patternDb .ModusPonens)
 
 /-!
 ## Search Functions
@@ -962,7 +962,7 @@ Bounded depth-first search for a derivation of `φ` from context `Γ`.
 
 **Complexity**: O(b^d) where b = branching factor, d = depth
 -/
-def bounded_search (Γ : Context) (φ : Formula) (depth : Nat)
+def boundedSearch (Γ : Context) (φ : Formula) (depth : Nat)
     (cache : ProofCache := ProofCache.empty)
     (visited : Visited := Visited.empty)
     (visits : Nat := 0)
@@ -985,13 +985,13 @@ def bounded_search (Γ : Context) (φ : Formula) (depth : Nat)
       | none =>
           let visited := visited.insert key
           let stats := {stats with misses := stats.misses + 1}
-          if matches_axiom φ then
+          if matchesAxiom φ then
             (true, cache.insert key true, visited, stats, visits)
           else if Γ.contains φ then
             (true, cache.insert key true, visited, stats, visits)
           else
             -- Try modus ponens: search for antecedents of implications
-            let implications := find_implications_to Γ φ
+            let implications := findImplicationsTo Γ φ
             let orderedTargets := orderSubgoalsByScore weights Γ implications
             -- Try each antecedent in order (simplified - no nested recursion)
             let tryAntecedent (state : Bool × ProofCache × Visited × SearchStats × Nat) (ψ : Formula) :
@@ -1000,7 +1000,7 @@ def bounded_search (Γ : Context) (φ : Formula) (depth : Nat)
               if found then state  -- Already found, skip
               else
                 let (result, cache', visited', stats', visits') :=
-                  bounded_search Γ ψ (depth - 1) cache visited visits visitLimit weights stats
+                  boundedSearch Γ ψ (depth - 1) cache visited visits visitLimit weights stats
                 (result, cache', visited', stats', visits')
             let (mpFound, cacheAfterMp, visitedAfterMp, statsAfterMp, visitsAfterMp) :=
               orderedTargets.foldl tryAntecedent (false, cache, visited, stats, visits)
@@ -1011,11 +1011,11 @@ def bounded_search (Γ : Context) (φ : Formula) (depth : Nat)
               match φ with
               | Formula.box ψ =>
                   let (found, cache', visited', stats', visits') :=
-                    bounded_search (box_context Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
+                    boundedSearch (boxContext Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
                   (found, cache'.insert key found, visited', stats', visits')
               | Formula.untl ψ _ =>
                   let (found, cache', visited', stats', visits') :=
-                    bounded_search (future_context Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
+                    boundedSearch (futureContext Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
                   (found, cache'.insert key found, visited', stats', visits')
               | _ => (false, cacheAfterMp.insert key false, visitedAfterMp, statsAfterMp, visitsAfterMp)
 termination_by depth
@@ -1043,25 +1043,25 @@ def matchDerived (φ : Formula) : Option (⊢ φ) :=
   | .imp lhs rhs =>
       -- TF (temp_future_derived): □φ → G(□φ) -- before box_to_future (more specific)
       (match lhs, rhs with
-       | .box phi, .all_future (.box phi') =>
+       | .box phi, .allFuture (.box phi') =>
            if h : phi = phi' then
-             some (h ▸ FormalSystem.Theorems.Combinators.temp_future_derived phi)
+             some (h ▸ FormalSystem.Theorems.Combinators.temporalFutureDerived phi)
            else none
        | _, _ => none)
 
       -- box_to_future: □φ → Gφ
       <|> (match lhs, rhs with
-           | .box phi, .all_future phi' =>
+           | .box phi, .allFuture phi' =>
                if h : phi = phi' then
-                 some (h ▸ FormalSystem.Theorems.Perpetuity.box_to_future phi)
+                 some (h ▸ FormalSystem.Theorems.Perpetuity.boxToFuture phi)
                else none
            | _, _ => none)
 
       -- box_to_past: □φ → Hφ
       <|> (match lhs, rhs with
-           | .box phi, .all_past phi' =>
+           | .box phi, .allPast phi' =>
                if h : phi = phi' then
-                 some (h ▸ FormalSystem.Theorems.Perpetuity.box_to_past phi)
+                 some (h ▸ FormalSystem.Theorems.Perpetuity.boxToPast phi)
                else none
            | _, _ => none)
 
@@ -1074,7 +1074,7 @@ def matchDerived (φ : Formula) : Option (⊢ φ) :=
       <|> (match lhs, rhs with
            | phi, .imp (.imp phi' .bot) .bot =>
                if h : phi = phi' then
-                 some (h ▸ FormalSystem.Theorems.Combinators.dni phi)
+                 some (h ▸ FormalSystem.Theorems.Combinators.notNotIntro phi)
                else none
            | _, _ => none)
   | _ => none
@@ -1111,7 +1111,7 @@ terms can be large. For performance-critical applications, use `bounded_search`
 to first check provability, then use this function to construct the proof.
 -/
 
-def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
+def boundedSearchWithProof (Γ : Context) (φ : Formula) (depth : Nat)
     (visited : Visited := Visited.empty)
     (visits : Nat := 0)
     (visitLimit : Nat := 500)
@@ -1162,7 +1162,7 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
             (some (DerivationTree.assumption Γ φ wit.proof), visited, visits)
         | none =>
           -- Try modus ponens: search for antecedents of implications (ψ → φ) in Γ
-          let implications := find_implications_to Γ φ
+          let implications := findImplicationsTo Γ φ
           -- Process implications iteratively (without nested let rec to simplify termination)
           let result := implications.foldl
             (fun acc antecedent =>
@@ -1174,7 +1174,7 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
                   | some wit_imp =>
                     -- Try to prove the antecedent
                     let (antResult, visited', visits') :=
-                      bounded_search_with_proof Γ antecedent (depth - 1) visited visits visitLimit
+                      boundedSearchWithProof Γ antecedent (depth - 1) visited visits visitLimit
                     match antResult with
                     | some antProof =>
                         -- Build modus ponens: we have proof of antecedent and (antecedent → φ) ∈ Γ
@@ -1224,7 +1224,7 @@ Guarantees finding shortest proof (minimum depth) if it exists.
 
 **Optimality**: Guaranteed to find shortest proof (minimum depth)
 -/
-def iddfs_search (Γ : Context) (φ : Formula) (maxDepth : Nat := 100)
+def iddfsSearch (Γ : Context) (φ : Formula) (maxDepth : Nat := 100)
     (visitLimit : Nat := 10000) (weights : HeuristicWeights := {})
     : Bool × ProofCache × Visited × SearchStats × Nat :=
   let rec iterate (depth : Nat) (cache : ProofCache) (stats : SearchStats)
@@ -1236,7 +1236,7 @@ def iddfs_search (Γ : Context) (φ : Formula) (maxDepth : Nat := 100)
     else
       -- Run bounded search at current depth, starting with fresh visited set
       let (found, cache', visited', stats', visits') :=
-        bounded_search Γ φ depth cache Visited.empty totalVisits visitLimit weights stats
+        boundedSearch Γ φ depth cache Visited.empty totalVisits visitLimit weights stats
 
       if found then
         (true, cache', visited', stats', visits')

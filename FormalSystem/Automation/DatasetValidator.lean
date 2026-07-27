@@ -53,13 +53,13 @@ open FormalSystem.Automation.DataExport
 -/
 
 /-- Atom formula for "p". -/
-private def p : Formula := Formula.atom_s "p"
+private def p : Formula := Formula.atomS "p"
 
 /-- Atom formula for "q". -/
-private def q : Formula := Formula.atom_s "q"
+private def q : Formula := Formula.atomS "q"
 
 /-- Atom formula for "r". -/
-private def r : Formula := Formula.atom_s "r"
+private def r : Formula := Formula.atomS "r"
 
 /-!
 ## Known Valid Formulas (BX Axiom Instances)
@@ -96,7 +96,7 @@ def knownValidFormulas : List Formula :=
                 (Formula.imp (Formula.box p) (Formula.box q))
   , -- Modal future (MF): □p → □(Gp)
     -- Note: Uses all_future which expands to neg (untl (neg p) top), verified to work
-    Formula.imp (Formula.box p) (Formula.box (Formula.all_future p))
+    Formula.imp (Formula.box p) (Formula.box (Formula.allFuture p))
   , -- Weakening variant: ⊥ → q
     Formula.imp Formula.bot q
   , -- Modal T on q: □q → q
@@ -126,9 +126,9 @@ def knownInvalidFormulas : List Formula :=
   , -- ◇p (not valid: p might not be possible) — uses diamond = ¬□¬p
     p.diamond
   , -- F(p) = U(p, ⊤) (not valid: p need not hold in the future)
-    Formula.some_future p
+    Formula.someFuture p
   , -- P(p) = S(p, ⊤) (not valid: p need not have held in the past)
-    Formula.some_past p
+    Formula.somePast p
   , -- p ∧ ¬p (contradiction) — uses and = ¬(p → ¬q)
     Formula.and p p.neg
   , -- □p → □q (no connection between p and q)

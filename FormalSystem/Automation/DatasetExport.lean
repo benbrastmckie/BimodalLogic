@@ -740,7 +740,7 @@ def parseSExprFormula (st : SExprPS) : (fuel : Nat) → Option (Formula × SExpr
           let st := st.skipWS
           -- Check for optional fresh index
           match st.peek with
-          | some ')' => some (Formula.atom (Atom.mk_base name), st.advance)
+          | some ')' => some (Formula.atom (Atom.mkBase name), st.advance)
           | some c =>
             if c.isDigit then
               match parseNatSExpr st with

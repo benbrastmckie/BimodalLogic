@@ -79,7 +79,7 @@ theorem isUnsatBotTemporal_not_truth
     {Omega : Set (WorldHistory F)}
     {τ : WorldHistory F} (hτ : τ ∈ Omega) {t : D}
     {φ : Formula} (h : isUnsatBotTemporal φ = true) :
-    ¬ truth_at M Omega τ t φ := by
+    ¬ TruthAt M Omega τ t φ := by
   induction φ generalizing τ t with
   | bot => exact Truth.bot_false Omega
   | untl event guard ih_event _ih_guard =>
@@ -117,8 +117,8 @@ theorem unfulfillable_until_not_truth
     {Omega : Set (WorldHistory F)}
     {τ : WorldHistory F} {t : D}
     {event guard : Formula}
-    (h_g_neg : truth_at M Omega τ t (Formula.all_future event.neg)) :
-    ¬ truth_at M Omega τ t (Formula.untl event guard) := by
+    (h_g_neg : TruthAt M Omega τ t (Formula.allFuture event.neg)) :
+    ¬ TruthAt M Omega τ t (Formula.untl event guard) := by
   rw [Truth.future_iff] at h_g_neg
   intro ⟨s, hts, h_event_s, _h_guard⟩
   have h_neg_event_s := h_g_neg s hts
@@ -138,8 +138,8 @@ theorem unfulfillable_since_not_truth
     {Omega : Set (WorldHistory F)}
     {τ : WorldHistory F} {t : D}
     {event guard : Formula}
-    (h_h_neg : truth_at M Omega τ t (Formula.all_past event.neg)) :
-    ¬ truth_at M Omega τ t (Formula.snce event guard) := by
+    (h_h_neg : TruthAt M Omega τ t (Formula.allPast event.neg)) :
+    ¬ TruthAt M Omega τ t (Formula.snce event guard) := by
   rw [Truth.past_iff] at h_h_neg
   intro ⟨s, hst, h_event_s, _h_guard⟩
   have h_neg_event_s := h_h_neg s hst
@@ -168,8 +168,8 @@ theorem false_consequent_not_truth
     {τ : WorldHistory F} (hτ : τ ∈ Omega) {t : D}
     {antecedent consequent : Formula}
     (h_false : isUnsatBotTemporal consequent = true)
-    (h_ante_true : truth_at M Omega τ t antecedent) :
-    ¬ truth_at M Omega τ t (Formula.imp antecedent consequent) := by
+    (h_ante_true : TruthAt M Omega τ t antecedent) :
+    ¬ TruthAt M Omega τ t (Formula.imp antecedent consequent) := by
   intro h_imp
   have h_conseq := h_imp h_ante_true
   exact isUnsatBotTemporal_not_truth hτ h_false h_conseq

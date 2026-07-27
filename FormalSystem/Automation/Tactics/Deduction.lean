@@ -68,7 +68,7 @@ def runDeductionTactic : TacticM Unit := do
   | .app (.app (.app (.const ``DerivationTree _) _fc) _context) _formula =>
     let newGoals ←
       try
-        goal.apply (mkConst ``FormalSystem.Metalogic.Core.deduction_theorem)
+        goal.apply (mkConst ``FormalSystem.Metalogic.Core.deductionTheorem)
       catch _ =>
         throwError "deduction: goal formula is not an implication (expected `Γ ⊢[fc] A → B`, got {goalType})"
     replaceMainGoal newGoals
@@ -126,7 +126,7 @@ noncomputable example (p : Formula) (h : [p] ⊢ Formula.bot) : ⊢ p.neg := by
 ```
 -/
 macro "undischarge" h:term : tactic =>
-  `(tactic| exact FormalSystem.Metalogic.Core.deduction_theorem _ _ _ $h)
+  `(tactic| exact FormalSystem.Metalogic.Core.deductionTheorem _ _ _ $h)
 
 /-! ## Smoke Tests
 

@@ -93,39 +93,39 @@ section UnfoldLemmas
 
 /-- Unfold some_future: `some_future φ = φ.untl (bot.imp bot)` -/
 @[simp] theorem some_future_unfold (φ : Formula) :
-    φ.some_future = φ.untl (bot.imp bot) := rfl
+    φ.someFuture = φ.untl (bot.imp bot) := rfl
 
 /-- Unfold some_past: `some_past φ = φ.snce (bot.imp bot)` -/
 @[simp] theorem some_past_unfold (φ : Formula) :
-    φ.some_past = φ.snce (bot.imp bot) := rfl
+    φ.somePast = φ.snce (bot.imp bot) := rfl
 
 /-! ### Level 3: Depend on Level 2 operators -/
 
 /-- Unfold all_future: `all_future φ = ((φ.imp bot).untl (bot.imp bot)).imp bot` -/
 @[simp] theorem all_future_unfold (φ : Formula) :
-    φ.all_future = ((φ.imp bot).untl (bot.imp bot)).imp bot := rfl
+    φ.allFuture = ((φ.imp bot).untl (bot.imp bot)).imp bot := rfl
 
 /-- Unfold all_past: `all_past φ = ((φ.imp bot).snce (bot.imp bot)).imp bot` -/
 @[simp] theorem all_past_unfold (φ : Formula) :
-    φ.all_past = ((φ.imp bot).snce (bot.imp bot)).imp bot := rfl
+    φ.allPast = ((φ.imp bot).snce (bot.imp bot)).imp bot := rfl
 
 /-! ### Level 4: Depend on Level 3 operators -/
 
 /-- Unfold weak_future: `weak_future φ = and φ (all_future φ)` expanded to primitives -/
 @[simp] theorem weak_future_unfold (φ : Formula) :
-    φ.weak_future =
+    φ.weakFuture =
       (φ.imp ((((φ.imp bot).untl (bot.imp bot)).imp bot).imp bot)).imp bot := rfl
 
 /-- Unfold weak_past: `weak_past φ = and φ (all_past φ)` expanded to primitives -/
 @[simp] theorem weak_past_unfold (φ : Formula) :
-    φ.weak_past =
+    φ.weakPast =
       (φ.imp ((((φ.imp bot).snce (bot.imp bot)).imp bot).imp bot)).imp bot := rfl
 
 /-! ### Level 5: Depend on Level 4 operators -/
 
 /-- Unfold always: `always φ = and (all_past φ) (and φ (all_future φ))` -/
 @[simp] theorem always_unfold (φ : Formula) :
-    φ.always = φ.all_past.and (φ.and φ.all_future) := rfl
+    φ.always = φ.allPast.and (φ.and φ.allFuture) := rfl
 
 /-! ### Level 6: Depend on Level 5 operators -/
 
@@ -137,11 +137,11 @@ section UnfoldLemmas
 
 /-- Unfold strong_release: `strong_release φ ψ = untl (and ψ φ) ψ` -/
 @[simp] theorem strong_release_unfold (φ ψ : Formula) :
-    Formula.strong_release φ ψ = Formula.untl (Formula.and ψ φ) ψ := rfl
+    Formula.strongRelease φ ψ = Formula.untl (Formula.and ψ φ) ψ := rfl
 
 /-- Unfold strong_trigger: `strong_trigger φ ψ = snce (and ψ φ) ψ` -/
 @[simp] theorem strong_trigger_unfold (φ ψ : Formula) :
-    Formula.strong_trigger φ ψ = Formula.snce (Formula.and ψ φ) ψ := rfl
+    Formula.strongTrigger φ ψ = Formula.snce (Formula.and ψ φ) ψ := rfl
 
 /-! ### Level 8: Release, Weak Until, Trigger, Weak Since (depend on Level 2/3 operators) -/
 
@@ -151,7 +151,7 @@ section UnfoldLemmas
 
 /-- Unfold weak_until: `weak_until φ ψ = or (untl φ ψ) (all_future ψ)` -/
 @[simp] theorem weak_until_unfold (φ ψ : Formula) :
-    Formula.weak_until φ ψ = ((φ.untl ψ).or ψ.all_future) := rfl
+    Formula.weakUntil φ ψ = ((φ.untl ψ).or ψ.allFuture) := rfl
 
 /-- Unfold trigger: `trigger φ ψ = neg (snce (neg φ) (neg ψ))` -/
 @[simp] theorem trigger_unfold (φ ψ : Formula) :
@@ -159,7 +159,7 @@ section UnfoldLemmas
 
 /-- Unfold weak_since: `weak_since φ ψ = or (snce φ ψ) (all_past ψ)` -/
 @[simp] theorem weak_since_unfold (φ ψ : Formula) :
-    Formula.weak_since φ ψ = ((φ.snce ψ).or ψ.all_past) := rfl
+    Formula.weakSince φ ψ = ((φ.snce ψ).or ψ.allPast) := rfl
 
 end UnfoldLemmas
 
@@ -256,7 +256,7 @@ section UnfoldTests
 
 -- Test: modal_norm reduces always (uses multiple unfold rounds)
 example (p : Atom) : (atom p).always =
-    (atom p).all_past.and ((atom p).and (atom p).all_future) := by
+    (atom p).allPast.and ((atom p).and (atom p).allFuture) := by
   simp only [always_unfold]
 
 -- Test: modal_norm reduces diamond to primitives
@@ -272,7 +272,7 @@ example (p : Atom) : (atom p).diamond = ((atom p).neg).box.neg := by
   rfl  -- diamond is definitionally neg(box(neg φ))
 
 -- Test: temporal_norm unfolds temporal operators
-example (p : Atom) : (atom p).some_future = (atom p).untl (bot.imp bot) := by
+example (p : Atom) : (atom p).someFuture = (atom p).untl (bot.imp bot) := by
   temporal_norm
 
 -- Test: modal_norm reduces conjunction
@@ -392,22 +392,22 @@ def toPrimitive : EnrichedFormula → Formula
   | .and_ φ ψ     => Formula.and φ.toPrimitive ψ.toPrimitive
   | .or_ φ ψ      => Formula.or φ.toPrimitive ψ.toPrimitive
   | .diamond φ    => Formula.diamond φ.toPrimitive
-  | .some_future φ => Formula.some_future φ.toPrimitive
-  | .some_past φ  => Formula.some_past φ.toPrimitive
-  | .all_future φ => Formula.all_future φ.toPrimitive
-  | .all_past φ   => Formula.all_past φ.toPrimitive
+  | .some_future φ => Formula.someFuture φ.toPrimitive
+  | .some_past φ  => Formula.somePast φ.toPrimitive
+  | .all_future φ => Formula.allFuture φ.toPrimitive
+  | .all_past φ   => Formula.allPast φ.toPrimitive
   | .next φ       => Formula.next φ.toPrimitive
   | .prev φ       => Formula.prev φ.toPrimitive
-  | .weak_future φ => Formula.weak_future φ.toPrimitive
-  | .weak_past φ  => Formula.weak_past φ.toPrimitive
+  | .weak_future φ => Formula.weakFuture φ.toPrimitive
+  | .weak_past φ  => Formula.weakPast φ.toPrimitive
   | .always φ     => Formula.always φ.toPrimitive
   | .sometimes φ  => Formula.sometimes φ.toPrimitive
-  | .strong_release φ ψ => Formula.strong_release φ.toPrimitive ψ.toPrimitive
-  | .strong_trigger φ ψ => Formula.strong_trigger φ.toPrimitive ψ.toPrimitive
+  | .strong_release φ ψ => Formula.strongRelease φ.toPrimitive ψ.toPrimitive
+  | .strong_trigger φ ψ => Formula.strongTrigger φ.toPrimitive ψ.toPrimitive
   | .release φ ψ  => Formula.release φ.toPrimitive ψ.toPrimitive
-  | .weak_until φ ψ => Formula.weak_until φ.toPrimitive ψ.toPrimitive
+  | .weak_until φ ψ => Formula.weakUntil φ.toPrimitive ψ.toPrimitive
   | .trigger φ ψ  => Formula.trigger φ.toPrimitive ψ.toPrimitive
-  | .weak_since φ ψ => Formula.weak_since φ.toPrimitive ψ.toPrimitive
+  | .weak_since φ ψ => Formula.weakSince φ.toPrimitive ψ.toPrimitive
 
 end EnrichedFormula
 
@@ -605,8 +605,8 @@ def _root_.FormalSystem.Syntax.Formula.foldFormulaFull (f : Formula) : EnrichedF
 section FoldTests
 
 -- Helper: create test atoms
-private def p_atom : Atom := Atom.mk_base "p"
-private def q_atom : Atom := Atom.mk_base "q"
+private def p_atom : Atom := Atom.mkBase "p"
+private def q_atom : Atom := Atom.mkBase "q"
 
 -- Test: foldFormula on neg
 -- `imp (atom p) bot` folds to `neg (atom p)`
@@ -646,26 +646,26 @@ private def q_atom : Atom := Atom.mk_base "q"
 -- Test: foldFormula on some_future
 -- `untl (atom p) (imp bot bot)` folds to `some_future (atom p)`
 #eval do
-  let f := Formula.some_future (Formula.atom p_atom)
+  let f := Formula.someFuture (Formula.atom p_atom)
   let r := f.foldFormula
   return repr r  -- should show some_future (atom ...)
 
 -- Test: foldFormula on some_past
 -- `snce (atom p) (imp bot bot)` folds to `some_past (atom p)`
 #eval do
-  let f := Formula.some_past (Formula.atom p_atom)
+  let f := Formula.somePast (Formula.atom p_atom)
   let r := f.foldFormula
   return repr r  -- should show some_past (atom ...)
 
 -- Test: foldFormula on all_future
 #eval do
-  let f := Formula.all_future (Formula.atom p_atom)
+  let f := Formula.allFuture (Formula.atom p_atom)
   let r := f.foldFormula
   return repr r  -- should show all_future (atom ...)
 
 -- Test: foldFormula on all_past
 #eval do
-  let f := Formula.all_past (Formula.atom p_atom)
+  let f := Formula.allPast (Formula.atom p_atom)
   let r := f.foldFormula
   return repr r  -- should show all_past (atom ...)
 
@@ -690,10 +690,10 @@ private def q_atom : Atom := Atom.mk_base "q"
     Formula.and (Formula.atom p_atom) (Formula.atom q_atom),
     Formula.or (Formula.atom p_atom) (Formula.atom q_atom),
     Formula.diamond (Formula.atom p_atom),
-    Formula.some_future (Formula.atom p_atom),
-    Formula.some_past (Formula.atom p_atom),
-    Formula.all_future (Formula.atom p_atom),
-    Formula.all_past (Formula.atom p_atom),
+    Formula.someFuture (Formula.atom p_atom),
+    Formula.somePast (Formula.atom p_atom),
+    Formula.allFuture (Formula.atom p_atom),
+    Formula.allPast (Formula.atom p_atom),
     Formula.next (Formula.atom p_atom),
     Formula.prev (Formula.atom p_atom)
   ]
@@ -705,13 +705,13 @@ private def q_atom : Atom := Atom.mk_base "q"
 
 -- Test: weak_future fold
 #eval do
-  let f := Formula.weak_future (Formula.atom p_atom)
+  let f := Formula.weakFuture (Formula.atom p_atom)
   let r := f.foldFormula
   return repr r  -- should show weak_future (atom ...)
 
 -- Test: weak_past fold
 #eval do
-  let f := Formula.weak_past (Formula.atom p_atom)
+  let f := Formula.weakPast (Formula.atom p_atom)
   let r := f.foldFormula
   return repr r  -- should show weak_past (atom ...)
 
@@ -732,8 +732,8 @@ private def q_atom : Atom := Atom.mk_base "q"
   let formulas : List Formula := [
     Formula.always (Formula.atom p_atom),
     Formula.sometimes (Formula.atom p_atom),
-    Formula.weak_future (Formula.atom p_atom),
-    Formula.weak_past (Formula.atom p_atom)
+    Formula.weakFuture (Formula.atom p_atom),
+    Formula.weakPast (Formula.atom p_atom)
   ]
   let results := formulas.map fun f =>
     let folded := Formula.foldFormulaFull f
@@ -745,25 +745,25 @@ private def q_atom : Atom := Atom.mk_base "q"
 -- Each assertion checks (a) the correct enriched tag and (b) round-trip identity.
 #guard Formula.foldFormulaFull (Formula.release (Formula.atom p_atom) (Formula.atom q_atom))
   == EnrichedFormula.release (.atom p_atom) (.atom q_atom)
-#guard Formula.foldFormulaFull (Formula.weak_until (Formula.atom p_atom) (Formula.atom q_atom))
+#guard Formula.foldFormulaFull (Formula.weakUntil (Formula.atom p_atom) (Formula.atom q_atom))
   == EnrichedFormula.weak_until (.atom p_atom) (.atom q_atom)
 #guard Formula.foldFormulaFull (Formula.trigger (Formula.atom p_atom) (Formula.atom q_atom))
   == EnrichedFormula.trigger (.atom p_atom) (.atom q_atom)
-#guard Formula.foldFormulaFull (Formula.weak_since (Formula.atom p_atom) (Formula.atom q_atom))
+#guard Formula.foldFormulaFull (Formula.weakSince (Formula.atom p_atom) (Formula.atom q_atom))
   == EnrichedFormula.weak_since (.atom p_atom) (.atom q_atom)
-#guard Formula.foldFormulaFull (Formula.strong_release (Formula.atom p_atom) (Formula.atom q_atom))
+#guard Formula.foldFormulaFull (Formula.strongRelease (Formula.atom p_atom) (Formula.atom q_atom))
   == EnrichedFormula.strong_release (.atom p_atom) (.atom q_atom)
-#guard Formula.foldFormulaFull (Formula.strong_trigger (Formula.atom p_atom) (Formula.atom q_atom))
+#guard Formula.foldFormulaFull (Formula.strongTrigger (Formula.atom p_atom) (Formula.atom q_atom))
   == EnrichedFormula.strong_trigger (.atom p_atom) (.atom q_atom)
 
 -- Round-trip: toPrimitive ∘ foldFormulaFull = id for all 6 binary operators.
 #guard [
     Formula.release (Formula.atom p_atom) (Formula.atom q_atom),
-    Formula.weak_until (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.weakUntil (Formula.atom p_atom) (Formula.atom q_atom),
     Formula.trigger (Formula.atom p_atom) (Formula.atom q_atom),
-    Formula.weak_since (Formula.atom p_atom) (Formula.atom q_atom),
-    Formula.strong_release (Formula.atom p_atom) (Formula.atom q_atom),
-    Formula.strong_trigger (Formula.atom p_atom) (Formula.atom q_atom)
+    Formula.weakSince (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.strongRelease (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.strongTrigger (Formula.atom p_atom) (Formula.atom q_atom)
   ].all (fun f => f == EnrichedFormula.toPrimitive (Formula.foldFormulaFull f))
 
 -- Regression (report §8 / plan risk): release(p, ⊥) still folds to all_future p,
@@ -812,11 +812,11 @@ section FoldLemmas
 
 /-- Fold some_future: `untl φ top = some_future φ` -/
 @[simp] theorem some_future_fold (φ : Formula) :
-    φ.untl (bot.imp bot) = some_future φ := rfl
+    φ.untl (bot.imp bot) = someFuture φ := rfl
 
 /-- Fold some_past: `snce φ top = some_past φ` -/
 @[simp] theorem some_past_fold (φ : Formula) :
-    φ.snce (bot.imp bot) = some_past φ := rfl
+    φ.snce (bot.imp bot) = somePast φ := rfl
 
 /-- Fold next: `untl φ bot = next φ` -/
 @[simp] theorem next_fold (φ : Formula) :
@@ -828,11 +828,11 @@ section FoldLemmas
 
 /-- Fold all_future: `(φ.neg.some_future).neg = all_future φ` -/
 @[simp] theorem all_future_fold (φ : Formula) :
-    ((φ.imp bot).untl (bot.imp bot)).imp bot = all_future φ := rfl
+    ((φ.imp bot).untl (bot.imp bot)).imp bot = allFuture φ := rfl
 
 /-- Fold all_past: `(φ.neg.some_past).neg = all_past φ` -/
 @[simp] theorem all_past_fold (φ : Formula) :
-    ((φ.imp bot).snce (bot.imp bot)).imp bot = all_past φ := rfl
+    ((φ.imp bot).snce (bot.imp bot)).imp bot = allPast φ := rfl
 
 end FoldLemmas
 
@@ -872,20 +872,20 @@ example (φ : Formula) : φ.diamond = φ.diamond := by modal_norm
 example (φ ψ : Formula) : Formula.and φ ψ = Formula.and φ ψ := by modal_norm
 
 -- Test: some_future/some_past round-trip
-example (φ : Formula) : some_future φ = some_future φ := by modal_norm
-example (φ : Formula) : some_past φ = some_past φ := by modal_norm
+example (φ : Formula) : someFuture φ = someFuture φ := by modal_norm
+example (φ : Formula) : somePast φ = somePast φ := by modal_norm
 
 -- Test: all_future/all_past round-trip
-example (φ : Formula) : all_future φ = all_future φ := by modal_norm
-example (φ : Formula) : all_past φ = all_past φ := by modal_norm
+example (φ : Formula) : allFuture φ = allFuture φ := by modal_norm
+example (φ : Formula) : allPast φ = allPast φ := by modal_norm
 
 -- Test: next/prev round-trip
 example (φ : Formula) : next φ = next φ := by modal_norm
 example (φ : Formula) : prev φ = prev φ := by modal_norm
 
 -- Test: weak_future/weak_past round-trip
-example (φ : Formula) : weak_future φ = weak_future φ := by modal_norm
-example (φ : Formula) : weak_past φ = weak_past φ := by modal_norm
+example (φ : Formula) : weakFuture φ = weakFuture φ := by modal_norm
+example (φ : Formula) : weakPast φ = weakPast φ := by modal_norm
 
 -- Test: always/sometimes round-trip
 example (φ : Formula) : always φ = always φ := by modal_norm
@@ -908,8 +908,8 @@ example (φ : Formula) :
 -- Test: foldFormula/toPrimitive round-trip for enumerated formulas at complexity <= 5
 -- (Uses `#eval` for computable verification)
 #eval do
-  let p := Atom.mk_base "p"
-  let q := Atom.mk_base "q"
+  let p := Atom.mkBase "p"
+  let q := Atom.mkBase "q"
   let testFormulas : List Formula := [
     Formula.atom p, Formula.bot,
     Formula.neg (Formula.atom p), Formula.top,
@@ -917,13 +917,13 @@ example (φ : Formula) :
     Formula.and (Formula.atom p) (Formula.atom q),
     Formula.or (Formula.atom p) (Formula.atom q),
     Formula.diamond (Formula.atom p),
-    Formula.some_future (Formula.atom p), Formula.some_past (Formula.atom p),
-    Formula.all_future (Formula.atom p), Formula.all_past (Formula.atom p),
+    Formula.someFuture (Formula.atom p), Formula.somePast (Formula.atom p),
+    Formula.allFuture (Formula.atom p), Formula.allPast (Formula.atom p),
     Formula.neg (Formula.neg (Formula.atom p)),
     Formula.diamond (Formula.diamond (Formula.atom p)),
     Formula.box (Formula.neg (Formula.atom p)),
     Formula.imp (Formula.atom p) (Formula.atom q),
-    Formula.weak_future (Formula.atom p), Formula.weak_past (Formula.atom p),
+    Formula.weakFuture (Formula.atom p), Formula.weakPast (Formula.atom p),
     Formula.always (Formula.atom p), Formula.sometimes (Formula.atom p)
   ]
   let results := testFormulas.map fun f =>
@@ -1074,7 +1074,7 @@ Uses parenthesized prefix notation:
 -/
 def toSExpr : EnrichedFormula → String
   | .atom a =>
-    let idx := match a.fresh_index with
+    let idx := match a.freshIndex with
       | none => ""
       | some n => " " ++ toString n
     "(atom \"" ++ escapeJson a.base ++ "\"" ++ idx ++ ")"
@@ -1125,44 +1125,44 @@ section SerializationTests
 
 -- Test: toJson on neg (atom p)
 #eval do
-  let f := EnrichedFormula.neg (.atom (Atom.mk_base "p"))
+  let f := EnrichedFormula.neg (.atom (Atom.mkBase "p"))
   return f.toJson
 -- Expected: {"tag": "neg", "child": {"tag": "atom", "name": "p"}}
 
 -- Test: toJson on diamond (atom p)
 #eval do
-  let f := EnrichedFormula.diamond (.atom (Atom.mk_base "p"))
+  let f := EnrichedFormula.diamond (.atom (Atom.mkBase "p"))
   return f.toJson
 -- Expected: {"tag": "diamond", "child": {"tag": "atom", "name": "p"}}
 
 -- Test: toEnrichedJson on diamond formula
 #eval do
-  let f := Formula.diamond (Formula.atom (Atom.mk_base "p"))
+  let f := Formula.diamond (Formula.atom (Atom.mkBase "p"))
   return f.toEnrichedJson
 -- Expected: {"tag": "diamond", "child": {"tag": "atom", "name": "p"}}
 
 -- Test: prettyPrint on always (atom p)
 #eval do
-  let f := EnrichedFormula.always (.atom (Atom.mk_base "p"))
+  let f := EnrichedFormula.always (.atom (Atom.mkBase "p"))
   return f.prettyPrint
 -- Expected: △p
 
 -- Test: toSExpr on and_ (atom p) (atom q)
 #eval do
-  let f := EnrichedFormula.and_ (.atom (Atom.mk_base "p")) (.atom (Atom.mk_base "q"))
+  let f := EnrichedFormula.and_ (.atom (Atom.mkBase "p")) (.atom (Atom.mkBase "q"))
   return f.toSExpr
 -- Expected: (and (atom "p") (atom "q"))
 
 -- Test: toEnrichedJson on always formula (full pipeline)
 #eval do
-  let f := Formula.always (Formula.atom (Atom.mk_base "p"))
+  let f := Formula.always (Formula.atom (Atom.mkBase "p"))
   return f.toEnrichedJson
 -- Expected: {"tag": "always", "child": {"tag": "atom", "name": "p"}}
 
 -- Test: prettyPrint on complex formula
 #eval do
-  let f := Formula.imp (Formula.diamond (Formula.atom (Atom.mk_base "p")))
-                        (Formula.all_future (Formula.atom (Atom.mk_base "q")))
+  let f := Formula.imp (Formula.diamond (Formula.atom (Atom.mkBase "p")))
+                        (Formula.allFuture (Formula.atom (Atom.mkBase "q")))
   return (Formula.foldFormulaFull f).prettyPrint
 -- Expected: (<>p → Gq)
 
@@ -1302,18 +1302,18 @@ def foldedCensus (fs : List Formula) : List String :=
 
 section CensusTests
 
-private def cp : Atom := Atom.mk_base "p"
-private def cq : Atom := Atom.mk_base "q"
+private def cp : Atom := Atom.mkBase "p"
+private def cq : Atom := Atom.mkBase "q"
 
 /-- Sample covering all 6 binary derived operators (atom operands) plus the `release(p,⊥)`
     collapse regression. -/
 private def censusSample : List Formula := [
   Formula.release (.atom cp) (.atom cq),
-  Formula.weak_until (.atom cp) (.atom cq),
+  Formula.weakUntil (.atom cp) (.atom cq),
   Formula.trigger (.atom cp) (.atom cq),
-  Formula.weak_since (.atom cp) (.atom cq),
-  Formula.strong_release (.atom cp) (.atom cq),
-  Formula.strong_trigger (.atom cp) (.atom cq),
+  Formula.weakSince (.atom cp) (.atom cq),
+  Formula.strongRelease (.atom cp) (.atom cq),
+  Formula.strongTrigger (.atom cp) (.atom cq),
   Formula.release (.atom cp) Formula.bot  -- collapses to all_future p: counted by neither
 ]
 

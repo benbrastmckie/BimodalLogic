@@ -202,7 +202,7 @@ inference rules or axioms.
 #eval is_box_formula (Formula.diamond (Formula.atom_s "p"))  -- false
 ```
 -/
-def is_box_formula : Formula → Bool
+def isBoxFormula : Formula → Bool
   | .box _ => true
   | _ => false
 
@@ -229,8 +229,8 @@ inference rules or axioms.
 #eval is_future_formula (Formula.box (Formula.atom_s "p"))         -- false
 ```
 -/
-def is_future_formula : Formula → Bool
-  | .all_future _ => true
+def isFutureFormula : Formula → Bool
+  | .allFuture _ => true
   | _ => false
 
 /--
@@ -257,7 +257,7 @@ rules like modal T (`□φ → φ`) or modal 4 (`□φ → □□φ`).
 #eval extract_from_box (Formula.diamond (Formula.atom_s "p"))  -- none
 ```
 -/
-def extract_from_box : Formula → Option Formula
+def extractFromBox : Formula → Option Formula
   | .box φ => some φ
   | _ => none
 
@@ -285,8 +285,8 @@ rules like temporal 4 (`Fφ → FFφ`) or temporal A (`φ → F(some_past φ)`).
 #eval extract_from_future (Formula.box (Formula.atom_s "p"))         -- none
 ```
 -/
-def extract_from_future : Formula → Option Formula
-  | .all_future φ => some φ
+def extractFromFuture : Formula → Option Formula
+  | .allFuture φ => some φ
   | _ => none
 
 /-!
@@ -362,7 +362,7 @@ example (p : Formula) : [p.box] ⊢ (p.box) := by
 **Implementation**: Uses `mkOperatorKTactic` factory for modal operator.
 -/
 elab "modal_k_tactic" : tactic =>
-  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Theorems.generalized_modal_k "□"
+  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Theorems.generalizedModalK "□"
 
 /--
 `temporal_k_tactic` applies the temporal K inference rule.
@@ -382,7 +382,7 @@ example (p : Formula) : [p.all_future] ⊢ (p.all_future) := by
 **Implementation**: Uses `mkOperatorKTactic` factory for temporal operator.
 -/
 elab "temporal_k_tactic" : tactic =>
-  mkOperatorKTactic "temporal_k_tactic" ``Formula.all_future ``Theorems.generalized_temporal_k "F"
+  mkOperatorKTactic "temporal_k_tactic" ``Formula.allFuture ``Theorems.generalizedTemporalK "F"
 
 /-!
 ## Phase 2: Modal Axiom Tactics (modal_4_tactic, modal_b_tactic)
@@ -957,7 +957,7 @@ def extractUnfuturedContext (ctx : Expr) : MetaM (Option (List Expr)) := do
   let mut unfutured : List Expr := []
   for f in ctxFormulas do
     match f with
-    | .app (.const ``Formula.all_future _) inner =>
+    | .app (.const ``Formula.allFuture _) inner =>
       unfutured := inner :: unfutured
     | _ => return none  -- Not all formulas are future
   return some unfutured.reverse
@@ -1008,7 +1008,7 @@ def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Na
     let subgoalMVar ← mkFreshExprMVar subgoalType
 
     -- Build the proof: generalized_modal_k unboxedCtx innerFormula subgoalMVar
-    let proof ← mkAppM ``Theorems.generalized_modal_k #[unboxedCtxExpr, innerFormula, subgoalMVar]
+    let proof ← mkAppM ``Theorems.generalizedModalK #[unboxedCtxExpr, innerFormula, subgoalMVar]
 
     -- Check that proof type matches goal type
     -- The result type is: (Context.map Formula.box unboxedCtx) ⊢ Formula.box innerFormula
@@ -1036,7 +1036,7 @@ applies `generalized_temporal_k` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
   -- Check if formula is Fχ
   let innerFormula ← match formula with
-    | .app (.const ``Formula.all_future _) inner => pure inner
+    | .app (.const ``Formula.allFuture _) inner => pure inner
     | _ => return false  -- Goal formula is not a future formula
 
   -- Check if context is all future formulas
@@ -1059,7 +1059,7 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
     let subgoalMVar ← mkFreshExprMVar subgoalType
 
     -- Build the proof: generalized_temporal_k unfuturedCtx innerFormula subgoalMVar
-    let proof ← mkAppM ``Theorems.generalized_temporal_k #[unfuturedCtxExpr, innerFormula, subgoalMVar]
+    let proof ← mkAppM ``Theorems.generalizedTemporalK #[unfuturedCtxExpr, innerFormula, subgoalMVar]
 
     -- Check that proof type matches goal type
     goal.assign proof

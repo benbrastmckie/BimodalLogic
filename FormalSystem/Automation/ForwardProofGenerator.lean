@@ -281,14 +281,14 @@ def applyNecessitation {fc : FrameClass} (pool : ProofPool fc) : ProofPool fc :=
 def applyTemporalNecessitation {fc : FrameClass} (pool : ProofPool fc) : ProofPool fc :=
   pool.entries.foldl (fun p σ =>
     match σ with
-    | ⟨φ, d⟩ => p.add (Formula.all_future φ) (DerivationTree.temporal_necessitation φ d)
+    | ⟨φ, d⟩ => p.add (Formula.allFuture φ) (DerivationTree.temporal_necessitation φ d)
   ) pool
 
 /-- Apply temporal duality to every formula in the pool. -/
 def applyTemporalDuality {fc : FrameClass} (pool : ProofPool fc) : ProofPool fc :=
   pool.entries.foldl (fun p σ =>
     match σ with
-    | ⟨φ, d⟩ => p.add (φ.swap_temporal) (DerivationTree.temporal_duality φ d)
+    | ⟨φ, d⟩ => p.add (φ.swapTemporal) (DerivationTree.temporal_duality φ d)
   ) pool
 
 /-- Apply all three unary rules in sequence, with progress logging. -/

@@ -395,7 +395,7 @@ Apply `all_future` n times to a formula: `iterG 0 φ = φ`, `iterG 3 φ = G(G(G(
 -/
 private def iterG : Nat → Formula → Formula
   | 0, φ => φ
-  | n + 1, φ => (iterG n φ).all_future
+  | n + 1, φ => (iterG n φ).allFuture
 
 /--
 Wrap a derivation tree with n layers of `temporal_necessitation`.

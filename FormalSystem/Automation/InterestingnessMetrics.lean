@@ -51,9 +51,9 @@ structure ProofData where
   /-- Maximum depth of the proof tree. -/
   height : Nat
   /-- Names of axiom schemata used (e.g., "modal_t", "prop_k"). -/
-  axioms_used : List String
+  axiomsUsed : List String
   /-- Names of inference rules applied (e.g., "modus_ponens", "necessitation"). -/
-  rules_applied : List String
+  rulesApplied : List String
   deriving Repr, Inhabited
 
 /-!
@@ -301,7 +301,7 @@ def proofDepthRatio (pt : ProofData) (φ : Formula) : Nat :=
 Proof rule diversity: count of distinct inference rules applied.
 -/
 def proofRuleDiversity (pt : ProofData) : Nat :=
-  pt.rules_applied.eraseDups.length
+  pt.rulesApplied.eraseDups.length
 
 /--
 Classify an axiom name into one of 4 layers.
@@ -332,7 +332,7 @@ Axiom layer diversity: count of distinct axiom layers used in a proof trace.
 Maximum possible value is 4 (propositional, modal, temporal, interaction).
 -/
 def axiomLayerDiversity (pt : ProofData) : Nat :=
-  let layers := pt.axioms_used.map classifyAxiomLayer |>.eraseDups
+  let layers := pt.axiomsUsed.map classifyAxiomLayer |>.eraseDups
   layers.length
 
 /--
@@ -360,7 +360,7 @@ the sole bridge principle connecting modal and temporal reasoning in TM.
 Proofs requiring this axiom exhibit genuine cross-modal interaction.
 -/
 def interactionAxiomDependency (pt : ProofData) : Bool :=
-  pt.axioms_used.any (· == "modal_future")
+  pt.axiomsUsed.any (· == "modal_future")
 
 /-!
 ## Tier 3: Composite Score and Tier Classification
@@ -376,19 +376,19 @@ Default weights are calibrated based on research recommendations:
 -/
 structure InterestingnessWeights where
   /-- Weight for Operator Diversity (normalized to 0-11 scale). -/
-  w_OD : Nat := 25
+  wOD : Nat := 25
   /-- Weight for Proof Depth Ratio. -/
-  w_PDR : Nat := 15
+  wPDR : Nat := 15
   /-- Weight for Proof Rule Diversity. -/
-  w_PRD : Nat := 10
+  wPRD : Nat := 10
   /-- Weight for Axiom Layer Diversity (max 4). -/
-  w_ALD : Nat := 20
+  wALD : Nat := 20
   /-- Weight for Interaction Axiom Dependency (0 or 1). -/
-  w_IAD : Nat := 15
+  wIAD : Nat := 15
   /-- Weight for Statement Simplicity. -/
-  w_SS : Nat := 5
+  wSS : Nat := 5
   /-- Weight for Proof Richness. -/
-  w_PR : Nat := 10
+  wPR : Nat := 10
   deriving Repr, Inhabited
 
 /-- Default interestingness weights. -/
@@ -529,12 +529,12 @@ def computeInterestingness (φ : Formula)
   let prNorm := min (pr * 10) 1000
 
   -- Weighted sum
-  let weightedSum := odNorm * weights.w_OD + pdrNorm * weights.w_PDR +
-    prdNorm * weights.w_PRD + aldNorm * weights.w_ALD +
-    iadNorm * weights.w_IAD + ssNorm * weights.w_SS +
-    prNorm * weights.w_PR
-  let totalWeight := weights.w_OD + weights.w_PDR + weights.w_PRD +
-    weights.w_ALD + weights.w_IAD + weights.w_SS + weights.w_PR
+  let weightedSum := odNorm * weights.wOD + pdrNorm * weights.wPDR +
+    prdNorm * weights.wPRD + aldNorm * weights.wALD +
+    iadNorm * weights.wIAD + ssNorm * weights.wSS +
+    prNorm * weights.wPR
+  let totalWeight := weights.wOD + weights.wPDR + weights.wPRD +
+    weights.wALD + weights.wIAD + weights.wSS + weights.wPR
 
   -- Composite score = gate * weightedSum / (1000 * totalWeight)
   let compositeScore := if totalWeight == 0 then 0

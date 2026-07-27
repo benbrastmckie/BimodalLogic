@@ -86,7 +86,7 @@ structure EnumConfig where
 
 /-- Default atom pool: p, q, r, s, t. -/
 def defaultAtomPool : List Atom :=
-  ["p", "q", "r", "s", "t"].map Atom.mk_base
+  ["p", "q", "r", "s", "t"].map Atom.mkBase
 
 /-- Small config: depth 2, size 8, 3 atoms. Suitable for exhaustive enumeration. -/
 def smallConfig : EnumConfig :=
@@ -202,28 +202,28 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
           let (fFormulas, c1) := if sizeBudget > fOverhead then
             let childSize := sizeBudget - fOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize cache1d
-            (children.map Formula.some_future, c)
+            (children.map Formula.someFuture, c)
           else (#[], cache1d)
           -- P(child): some_past child, overhead = 1, child complexity = sizeBudget - 1
           let pOverhead := 1
           let (pFormulas, c2) := if sizeBudget > pOverhead then
             let childSize := sizeBudget - pOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c1
-            (children.map Formula.some_past, c)
+            (children.map Formula.somePast, c)
           else (#[], c1)
           -- G(child): all_future child, overhead = 1, child complexity = sizeBudget - 1
           let gOverhead := 1
           let (gFormulas, c3) := if sizeBudget > gOverhead then
             let childSize := sizeBudget - gOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c2
-            (children.map Formula.all_future, c)
+            (children.map Formula.allFuture, c)
           else (#[], c2)
           -- H(child): all_past child, overhead = 1, child complexity = sizeBudget - 1
           let hOverhead := 1
           let (hFormulas, c4) := if sizeBudget > hOverhead then
             let childSize := sizeBudget - hOverhead
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c3
-            (children.map Formula.all_past, c)
+            (children.map Formula.allPast, c)
           else (#[], c3)
           -- always(child): always child = H(child) ∧ child ∧ G(child), overhead = 1
           let (alwaysFormulas, c5) := if sizeBudget > 1 then
@@ -253,13 +253,13 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
           let (weakFutureFormulas, c9) := if sizeBudget > 1 then
             let childSize := sizeBudget - 1
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c8
-            (children.map Formula.weak_future, c)
+            (children.map Formula.weakFuture, c)
           else (#[], c8)
           -- weak_past(child): weak_past child = child ∧ H(child), overhead = 1
           let (weakPastFormulas, c10) := if sizeBudget > 1 then
             let childSize := sizeBudget - 1
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c9
-            (children.map Formula.weak_past, c)
+            (children.map Formula.weakPast, c)
           else (#[], c9)
           (fFormulas ++ pFormulas ++ gFormulas ++ hFormulas ++ alwaysFormulas ++ sometimesFormulas ++ nextFormulas ++ prevFormulas ++ weakFutureFormulas ++ weakPastFormulas, c10)
         else (#[], cache1d)
@@ -296,19 +296,19 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
                   tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.release l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let weakUntils := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weak_until l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weakUntil l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let triggers := tLefts.foldl (fun (acc : Array Formula) l =>
                   tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.trigger l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let weakSinces := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weak_since l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weakSince l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let strongReleases := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strong_release l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strongRelease l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let strongTriggers := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strong_trigger l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strongTrigger l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 (untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces ++ strongReleases ++ strongTriggers, c2b)
               else (#[], c2)
@@ -474,13 +474,13 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     else if hasDerived && choice == offDerivedFP then
       -- F/P (some_future/some_past)
       let (rng2, sub) := rng1.randBound 2
-      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.some_future
-      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.some_past
+      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.someFuture
+      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.somePast
     else if hasDerived && choice == offDerivedGH then
       -- G/H (all_future/all_past)
       let (rng2, sub) := rng1.randBound 2
-      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.all_future
-      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.all_past
+      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.allFuture
+      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.allPast
     else if hasDerived && choice == offAlwaysSometimes then
       -- always/sometimes
       let (rng2, sub) := rng1.randBound 2
@@ -494,18 +494,18 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     else if hasDerived && choice == offWeakFP then
       -- weak_future/weak_past
       let (rng2, sub) := rng1.randBound 2
-      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weak_future
-      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weak_past
+      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weakFuture
+      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weakPast
     else if hasDerived && choice == offBinaryDerived then
       -- derived binary temporal: R, WU, T, WS, SR, ST
       let (rng2, sub) := rng1.randBound 6
       match sub with
       | 0 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.release
-      | 1 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.weak_until
+      | 1 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.weakUntil
       | 2 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.trigger
-      | 3 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.weak_since
-      | 4 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.strong_release
-      | _ => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.strong_trigger
+      | 3 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.weakSince
+      | 4 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.strongRelease
+      | _ => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.strongTrigger
     else
       -- Fallback: implication
       mkBinary rng1 modalBudget temporalBudget Formula.imp
@@ -701,7 +701,7 @@ inductive SamplingMode where
 
 /-- Default atoms for formula generation: p, q, r. -/
 def defaultAtoms : List Atom :=
-  [Atom.mk_base "p", Atom.mk_base "q", Atom.mk_base "r"]
+  [Atom.mkBase "p", Atom.mkBase "q", Atom.mkBase "r"]
 
 /--
 Configuration parameters for formula enumeration (legacy API).
@@ -884,16 +884,16 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
       if choice == offset then
         let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
         let sub ← IO.rand 0 1
-        if sub == 0 then return child.some_future
-        else return child.some_past
+        if sub == 0 then return child.someFuture
+        else return child.somePast
       offset := offset + 1
     -- 7: G (all_future) or H (all_past)
     if hasTemporal then
       if choice == offset then
         let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
         let sub ← IO.rand 0 1
-        if sub == 0 then return child.all_future
-        else return child.all_past
+        if sub == 0 then return child.allFuture
+        else return child.allPast
       offset := offset + 1
     -- 8: always or sometimes
     if hasTemporal then
@@ -916,8 +916,8 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
       if choice == offset then
         let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
         let sub ← IO.rand 0 1
-        if sub == 0 then return .weak_future child
-        else return .weak_past child
+        if sub == 0 then return .weakFuture child
+        else return .weakPast child
       offset := offset + 1
     -- 11: derived binary temporal: R, WU, T, WS, SR, ST
     if hasTemporal then
@@ -928,11 +928,11 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let sub ← IO.rand 0 5
         match sub with
         | 0 => return .release left right
-        | 1 => return .weak_until left right
+        | 1 => return .weakUntil left right
         | 2 => return .trigger left right
-        | 3 => return .weak_since left right
-        | 4 => return .strong_release left right
-        | _ => return .strong_trigger left right
+        | 3 => return .weakSince left right
+        | 4 => return .strongRelease left right
+        | _ => return .strongTrigger left right
       -- offset := offset + 1  -- not needed: last branch
     -- Fallback to implication (should not normally reach here)
     let split ← IO.rand 1 (budget - 1)
@@ -970,7 +970,7 @@ Invalid formulas may or may not produce invalid duals.
 -/
 def enrichWithDuals (formulas : List Formula) : List Formula :=
   let withDuals := formulas.flatMap fun φ =>
-    let dual := φ.swap_temporal
+    let dual := φ.swapTemporal
     if dual == φ then [φ] else [φ, dual]
   withDuals.eraseDups
 
@@ -1080,19 +1080,19 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
     | 3 =>
       -- all_future (G(φ) = ¬F(¬φ)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
-      return child.all_future
+      return child.allFuture
     | 4 =>
       -- all_past (H(φ) = ¬P(¬φ)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
-      return child.all_past
+      return child.allPast
     | 5 =>
       -- some_future (F(φ) = untl(φ, ⊤)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
-      return child.some_future
+      return child.someFuture
     | 6 =>
       -- some_past (P(φ) = snce(φ, ⊤)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
-      return child.some_past
+      return child.somePast
     | 7 =>
       -- untl: binary temporal
       if maxSize < 3 then
@@ -1117,11 +1117,11 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
         let rtwsChoice ← IO.rand 0 5
         match rtwsChoice with
         | 0 => return .release left right
-        | 1 => return .weak_until left right
+        | 1 => return .weakUntil left right
         | 2 => return .trigger left right
-        | 3 => return .weak_since left right
-        | 4 => return .strong_release left right
-        | _ => return .strong_trigger left right
+        | 3 => return .weakSince left right
+        | 4 => return .strongRelease left right
+        | _ => return .strongTrigger left right
     | _ =>
       -- snce: binary temporal
       if maxSize < 3 then
@@ -1191,37 +1191,37 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
   -- Temporal axiom schemata (6 existing temporal schemata)
   | 8 => do
     -- serial_future: ⊤ → F(⊤)
-    return Formula.top.imp (Formula.some_future Formula.top)
+    return Formula.top.imp (Formula.someFuture Formula.top)
   | 9 => do
     -- serial_past: ⊤ → P(⊤)
-    return Formula.top.imp (Formula.some_past Formula.top)
+    return Formula.top.imp (Formula.somePast Formula.top)
   | 10 => do
     -- connect_future(φ): φ → G(P(φ))
     let φ ← randomSubFormula atoms maxParamSize
-    return φ.imp (φ.some_past.all_future)
+    return φ.imp (φ.somePast.allFuture)
   | 11 => do
     -- connect_past(φ): φ → H(F(φ))
     let φ ← randomSubFormula atoms maxParamSize
-    return φ.imp (φ.some_future.all_past)
+    return φ.imp (φ.someFuture.allPast)
   | 12 => do
     -- right_mono_until(φ, ψ, χ): G(φ → ψ) → ((φ U χ) → (ψ U χ))
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     let χ ← randomSubFormula atoms maxParamSize
-    return (φ.imp ψ).all_future.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ))
+    return (φ.imp ψ).allFuture.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ))
   | 13 => do
     -- F_until_equiv(φ): F(φ) → (φ U ⊤)
     let φ ← randomSubFormula atoms maxParamSize
-    return (Formula.some_future φ).imp (Formula.untl φ Formula.top)
+    return (Formula.someFuture φ).imp (Formula.untl φ Formula.top)
   -- Temporal-modal interaction schemata (8 schemata)
   | 14 => do
     -- modal_future(φ): □φ → G(□φ) (from temp_future_derived / box_to_future via MF+MT)
     let φ ← randomSubFormula atoms maxParamSize
-    return φ.box.imp φ.box.all_future
+    return φ.box.imp φ.box.allFuture
   | 15 => do
     -- modal_past(φ): □φ → H(□φ) (past dual of modal_future)
     let φ ← randomSubFormula atoms maxParamSize
-    return φ.box.imp φ.box.all_past
+    return φ.box.imp φ.box.allPast
   | 16 => do
     -- perpetuity_1(φ): □φ → always(φ)
     let φ ← randomSubFormula atoms maxParamSize
@@ -1234,12 +1234,12 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
     -- G_distribution(φ, ψ): G(φ → ψ) → (Gφ → Gψ)
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
-    return (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)
+    return (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture)
   | 19 => do
     -- H_distribution(φ, ψ): H(φ → ψ) → (Hφ → Hψ)
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
-    return (φ.imp ψ).all_past.imp (φ.all_past.imp ψ.all_past)
+    return (φ.imp ψ).allPast.imp (φ.allPast.imp ψ.allPast)
   | 20 => do
     -- always_to_present(φ): always(φ) → φ
     let φ ← randomSubFormula atoms maxParamSize
@@ -1464,9 +1464,9 @@ These are guaranteed valid and provide diverse structural patterns.
 Uses atoms p, q, r for concrete instantiation.
 -/
 private def theoremSeedFormulas : List Formula :=
-  let p := Formula.atom (Atom.mk_base "p")
-  let q := Formula.atom (Atom.mk_base "q")
-  let r := Formula.atom (Atom.mk_base "r")
+  let p := Formula.atom (Atom.mkBase "p")
+  let q := Formula.atom (Atom.mkBase "q")
+  let r := Formula.atom (Atom.mkBase "r")
   [
     -- Combinators (8)
     p.imp p,                                                  -- identity
@@ -1476,7 +1476,7 @@ private def theoremSeedFormulas : List Formula :=
     p.imp (q.imp ((p.imp (q.imp r)).imp r)),                 -- app2
     p.imp (q.imp (p.and q)),                                 -- pairing
     p.imp p.neg.neg,                                         -- dni
-    p.box.imp p.box.all_future,                              -- temp_future_derived
+    p.box.imp p.box.allFuture,                              -- temp_future_derived
     -- ModalS4 (2)
     p.box.diamond.box.imp p.box,                             -- s4_box_diamond_box
     p.diamond.imp p.box.diamond.diamond,                     -- s4_diamond_box_diamond
@@ -1488,45 +1488,45 @@ private def theoremSeedFormulas : List Formula :=
     p.box.diamond.imp p.box,                                 -- s5_diamond_box (simplified half)
     p.box.diamond.imp p,                                     -- s5_diamond_box_to_truth
     -- TemporalDerived (5 unique — 2 duplicates removed)
-    p.imp (p.some_past.all_future),                          -- connect_future_thm
-    p.imp (p.some_future.all_past),                          -- connect_past_thm
-    p.all_future.imp ((p.all_future.imp p.all_future).all_future),  -- G_implies_G_id
-    (Formula.untl q p).imp q.some_future,                    -- until_implies_some_future
-    (Formula.snce q p).imp q.some_past,                      -- since_implies_some_past
+    p.imp (p.somePast.allFuture),                          -- connect_future_thm
+    p.imp (p.someFuture.allPast),                          -- connect_past_thm
+    p.allFuture.imp ((p.allFuture.imp p.allFuture).allFuture),  -- G_implies_G_id
+    (Formula.untl q p).imp q.someFuture,                    -- until_implies_some_future
+    (Formula.snce q p).imp q.somePast,                      -- since_implies_some_past
     -- Helpers (3)
-    p.box.imp p.all_future,                                  -- box_to_future
-    p.box.imp p.all_past,                                    -- box_to_past
+    p.box.imp p.allFuture,                                  -- box_to_future
+    p.box.imp p.allPast,                                    -- box_to_past
     p.box.imp p,                                             -- box_to_present (= modal_t)
     -- Principles (10)
     p.box.imp p.always,                                      -- perpetuity_1
     p.diamond.diamond.imp p.diamond,                         -- diamond_4
     p.diamond.imp p.diamond.box,                             -- modal_5
     p.sometimes.diamond.imp p.diamond,                       -- perpetuity_2
-    p.box.imp p.all_past.box,                                -- box_to_box_past
+    p.box.imp p.allPast.box,                                -- box_to_box_past
     p.box.imp p.always.box,                                  -- perpetuity_3
     p.sometimes.diamond.imp p.diamond,                       -- perpetuity_4 (= perpetuity_2)
     p.imp p.diamond.box,                                     -- mb_diamond (= modal_b)
-    p.diamond.box.imp p.diamond.box.all_future,              -- box_diamond_to_future_box_diamond
-    p.diamond.box.imp p.diamond.box.all_past,                -- box_diamond_to_past_box_diamond
+    p.diamond.box.imp p.diamond.box.allFuture,              -- box_diamond_to_future_box_diamond
+    p.diamond.box.imp p.diamond.box.allPast,                -- box_diamond_to_past_box_diamond
     -- Bimodal interaction seeds (14)
     -- G/H distribution with concrete formulas
-    (p.imp q).all_future.imp (p.all_future.imp q.all_future),  -- G_distribution(p,q)
-    (p.imp q).all_past.imp (p.all_past.imp q.all_past),        -- H_distribution(p,q)
+    (p.imp q).allFuture.imp (p.allFuture.imp q.allFuture),  -- G_distribution(p,q)
+    (p.imp q).allPast.imp (p.allPast.imp q.allPast),        -- H_distribution(p,q)
     -- Conjunction elimination from compound temporal operators
     p.always.imp p,                                            -- always_to_present
     p.imp p.sometimes,                                         -- present_to_sometimes
-    p.weak_future.imp p,                                       -- weak_future_left
-    p.weak_future.imp p.all_future,                            -- weak_future_right
-    p.weak_past.imp p,                                         -- weak_past_left
-    p.weak_past.imp p.all_past,                                -- weak_past_right
-    p.always.imp p.all_future,                                 -- always_imp_all_future
-    p.always.imp p.all_past,                                   -- always_imp_all_past
+    p.weakFuture.imp p,                                       -- weak_future_left
+    p.weakFuture.imp p.allFuture,                            -- weak_future_right
+    p.weakPast.imp p,                                         -- weak_past_left
+    p.weakPast.imp p.allPast,                                -- weak_past_right
+    p.always.imp p.allFuture,                                 -- always_imp_all_future
+    p.always.imp p.allPast,                                   -- always_imp_all_past
     -- Bimodal interactions mixing box with G/H/F/P
-    p.box.imp p.box.all_past,                                  -- box_to_box_past (duplicate check ok)
+    p.box.imp p.box.allPast,                                  -- box_to_box_past (duplicate check ok)
     p.box.imp p.always,                                        -- perpetuity_1 (duplicate check ok)
     p.sometimes.imp p.diamond,                                 -- perpetuity_2_alt (sometimes -> diamond)
     -- Deep temporal chains
-    p.imp (p.some_past.some_future.all_past.all_future)        -- connect_future_chain(p)
+    p.imp (p.somePast.someFuture.allPast.allFuture)        -- connect_future_chain(p)
   ]
 
 /--
@@ -2058,21 +2058,21 @@ increases at c4 and c5 relative to the pre-derived-operator baseline. -/
 #eval (generateBimodalSlice defaultAtoms 2 2 [5]).1.length
 
 -- Verify diamond(p) appears in c2 enumeration
-#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.diamond (.atom (Atom.mk_base "p")))
+#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.diamond (.atom (Atom.mkBase "p")))
 
 -- Verify next(p) appears in c2 enumeration
-#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.next (.atom (Atom.mk_base "p")))
+#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.next (.atom (Atom.mkBase "p")))
 
 -- Verify prev(p) appears in c2 enumeration
-#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.prev (.atom (Atom.mk_base "p")))
+#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.prev (.atom (Atom.mkBase "p")))
 
 -- Verify release(p,q) appears in c3 enumeration (re-added binary derived)
 #guard (enumExactHelper defaultAtoms 2 2 3 {}).1.toList.any
-  (· == Formula.release (.atom (Atom.mk_base "p")) (.atom (Atom.mk_base "q")))
+  (· == Formula.release (.atom (Atom.mkBase "p")) (.atom (Atom.mkBase "q")))
 
 -- Verify weak_until(p,q) appears in c3 enumeration (re-added binary derived)
 #guard (enumExactHelper defaultAtoms 2 2 3 {}).1.toList.any
-  (· == Formula.weak_until (.atom (Atom.mk_base "p")) (.atom (Atom.mk_base "q")))
+  (· == Formula.weakUntil (.atom (Atom.mkBase "p")) (.atom (Atom.mkBase "q")))
 
 /-!
 ## Two-Phase Parallel Enumeration and Pipeline Overlap
@@ -2145,19 +2145,19 @@ private def partitionCrossProduct (atoms : List Atom) (modalBudget temporalBudge
         tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.release l r)) acc
       ) (Array.mkEmpty (tLefts.size * tRights.size))
       let weakUntils := tLefts.foldl (fun (acc : Array Formula) l =>
-        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weak_until l r)) acc
+        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weakUntil l r)) acc
       ) (Array.mkEmpty (tLefts.size * tRights.size))
       let triggers := tLefts.foldl (fun (acc : Array Formula) l =>
         tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.trigger l r)) acc
       ) (Array.mkEmpty (tLefts.size * tRights.size))
       let weakSinces := tLefts.foldl (fun (acc : Array Formula) l =>
-        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weak_since l r)) acc
+        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weakSince l r)) acc
       ) (Array.mkEmpty (tLefts.size * tRights.size))
       let strongReleases := tLefts.foldl (fun (acc : Array Formula) l =>
-        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strong_release l r)) acc
+        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strongRelease l r)) acc
       ) (Array.mkEmpty (tLefts.size * tRights.size))
       let strongTriggers := tLefts.foldl (fun (acc : Array Formula) l =>
-        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strong_trigger l r)) acc
+        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strongTrigger l r)) acc
       ) (Array.mkEmpty (tLefts.size * tRights.size))
       untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces ++ strongReleases ++ strongTriggers
     else #[]
@@ -2232,16 +2232,16 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
     let derivedTemporal := if temporalBudget > 0 && level > 1 then
       let childSize := level - 1
       let (children, _) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize immutableCache
-      children.map Formula.some_future
-        ++ children.map Formula.some_past
-        ++ children.map Formula.all_future
-        ++ children.map Formula.all_past
+      children.map Formula.someFuture
+        ++ children.map Formula.somePast
+        ++ children.map Formula.allFuture
+        ++ children.map Formula.allPast
         ++ children.map Formula.always
         ++ children.map Formula.sometimes
         ++ children.map Formula.next
         ++ children.map Formula.prev
-        ++ children.map Formula.weak_future
-        ++ children.map Formula.weak_past
+        ++ children.map Formula.weakFuture
+        ++ children.map Formula.weakPast
     else #[]
     let result := boxes ++ diamonds ++ derivedTemporal ++ binaryFormulas
     -- Store in cache for subsequent use

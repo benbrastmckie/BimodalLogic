@@ -290,42 +290,42 @@ def trySwapReleaseUntil : Formula → Option Formula
 
 /-- Match `some_future φ` (primitive: `untl φ top`) and return `all_future φ`. -/
 def trySwapFutureGlobally : Formula → Option Formula
-  | .untl φ (.imp .bot .bot) => some (Formula.all_future φ)
+  | .untl φ (.imp .bot .bot) => some (Formula.allFuture φ)
   | _ => none
 
 /-- Match `all_future φ` (primitive: `imp (untl (imp φ bot) top) bot`) and return `some_future φ`. -/
 def trySwapGloballyFuture : Formula → Option Formula
   | .imp (.untl (.imp inner .bot) (.imp .bot .bot)) .bot =>
-    some (Formula.some_future inner)
+    some (Formula.someFuture inner)
   | _ => none
 
 /-- Match `some_past φ` (primitive: `snce φ top`) and return `all_past φ`. -/
 def trySwapPastHistorically : Formula → Option Formula
-  | .snce φ (.imp .bot .bot) => some (Formula.all_past φ)
+  | .snce φ (.imp .bot .bot) => some (Formula.allPast φ)
   | _ => none
 
 /-- Match `all_past φ` (primitive: `imp (snce (imp φ bot) top) bot`) and return `some_past φ`. -/
 def trySwapHistoricallyPast : Formula → Option Formula
   | .imp (.snce (.imp inner .bot) (.imp .bot .bot)) .bot =>
-    some (Formula.some_past inner)
+    some (Formula.somePast inner)
   | _ => none
 
 /-- Match `weak_until φ ψ` and return `strong_release φ ψ`. -/
 def trySwapWeakUntilStrongRelease : Formula → Option Formula
   | .imp (.imp (.untl φ ψ1) .bot) (.imp (.untl (.imp ψ2 .bot) (.imp .bot .bot)) .bot) =>
-    if ψ1 == ψ2 then some (Formula.strong_release φ ψ1) else none
+    if ψ1 == ψ2 then some (Formula.strongRelease φ ψ1) else none
   | _ => none
 
 /-- Match `strong_release φ ψ` and return `weak_until φ ψ`. -/
 def trySwapStrongReleaseWeakUntil : Formula → Option Formula
   | .untl (.imp (.imp ψ1 (.imp φ .bot)) .bot) ψ2 =>
-    if ψ1 == ψ2 then some (Formula.weak_until φ ψ1) else none
+    if ψ1 == ψ2 then some (Formula.weakUntil φ ψ1) else none
   | _ => none
 
 /-- Match `trigger φ ψ` (primitive: `imp (snce (imp φ bot) (imp ψ bot)) bot`) and return `strong_trigger φ ψ`. -/
 def trySwapTriggerStrongTrigger : Formula → Option Formula
   | .imp (.snce (.imp φ .bot) (.imp ψ .bot)) .bot =>
-    some (Formula.strong_trigger φ ψ)
+    some (Formula.strongTrigger φ ψ)
   | _ => none
 
 /-- Match `strong_trigger φ ψ` and return `trigger φ ψ`. -/
@@ -386,10 +386,10 @@ Uses direct pattern matching on the primitive encoding rather than calling
 def weakenAllToSome : Formula → Formula
   -- G(inner) = imp (untl (imp inner bot) (imp bot bot)) bot → F(inner) = untl inner (imp bot bot)
   | .imp (.untl (.imp inner .bot) (.imp .bot .bot)) .bot =>
-    Formula.some_future (weakenAllToSome inner)
+    Formula.someFuture (weakenAllToSome inner)
   -- H(inner) = imp (snce (imp inner bot) (imp bot bot)) bot → P(inner) = snce inner (imp bot bot)
   | .imp (.snce (.imp inner .bot) (.imp .bot .bot)) .bot =>
-    Formula.some_past (weakenAllToSome inner)
+    Formula.somePast (weakenAllToSome inner)
   | .imp ψ χ => .imp (weakenAllToSome ψ) (weakenAllToSome χ)
   | .box ψ => .box (weakenAllToSome ψ)
   | .untl ψ χ => .untl (weakenAllToSome ψ) (weakenAllToSome χ)
@@ -547,7 +547,7 @@ def generateMutations (φ : Formula) : List (Formula × MutationType) :=
     else []
   let dualityMutation :=
     if hasTemporal φ then
-      let m := φ.swap_temporal
+      let m := φ.swapTemporal
       if m == φ then [] else [(m, MutationType.temporalDuality)]
     else []
   -- Single-occurrence mutations
@@ -638,7 +638,7 @@ def generateContrastivePairs (lf : LabeledFormula) : IO (List ContrastivePair) :
   | .invalid =>
     -- For invalid formulas, try temporal duality
     if hasTemporal lf.formula then
-      let dual := lf.formula.swap_temporal
+      let dual := lf.formula.swapTemporal
       if dual != lf.formula then
         let pair ← classifyMutation lf.formula lf.label none dual .temporalDuality
         return [pair]

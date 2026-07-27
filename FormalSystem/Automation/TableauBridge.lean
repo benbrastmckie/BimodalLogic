@@ -250,7 +250,7 @@ partial def pFormula (st : PState) : Except String (Formula × PState) := do
     | none => .error s!"missing field '{fname}' for tag '{tag}'"
 
   match tag with
-  | "atom" => return (Formula.atom_s name, st)
+  | "atom" => return (Formula.atomS name, st)
   | "bot" => return (Formula.bot, st)
   | "imp" =>
     let left ← getField "left"

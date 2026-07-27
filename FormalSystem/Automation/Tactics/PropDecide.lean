@@ -129,7 +129,7 @@ elab "prop_decide" : tactic => do
       let fExpr ← PropDecide.reify formula envRef
       let envExpr ← PropDecide.mkEnvExpr (← envRef.get)
       let isTautProof ← PropDecide.mkIsTautProof fExpr
-      let derivProof ← mkAppM ``tautology_derivable_fc' #[fExpr, isTautProof, envExpr, fc]
+      let derivProof ← mkAppM ``tautologyDerivableFc' #[fExpr, isTautProof, envExpr, fc]
       let finalProof ←
         if isNilContext ctx then
           pure derivProof

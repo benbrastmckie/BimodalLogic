@@ -76,44 +76,44 @@ Uses safe apply to let Aesop try each axiom pattern.
 
 /-- Modal T axiom as direct derivation. -/
 @[aesop safe apply]
-def axiom_modal_t (Γ : Context) (φ : Formula) {fc : FrameClass} :
+def axiomModalT (Γ : Context) (φ : Formula) {fc : FrameClass} :
     DerivationTree fc Γ ((Formula.box φ).imp φ) :=
   DerivationTree.axiom Γ ((Formula.box φ).imp φ) (Axiom.modal_t φ) trivial
 
 /-- Propositional K axiom as direct derivation. -/
 @[aesop safe apply]
-def axiom_prop_k (Γ : Context) (φ ψ χ : Formula) {fc : FrameClass} :
+def axiomPropK (Γ : Context) (φ ψ χ : Formula) {fc : FrameClass} :
     DerivationTree fc Γ ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) :=
   DerivationTree.axiom Γ _ (Axiom.prop_k φ ψ χ) trivial
 
 /-- Propositional S axiom as direct derivation. -/
 @[aesop safe apply]
-def axiom_prop_s (Γ : Context) (φ ψ : Formula) {fc : FrameClass} :
+def axiomPropS (Γ : Context) (φ ψ : Formula) {fc : FrameClass} :
     DerivationTree fc Γ (φ.imp (ψ.imp φ)) :=
   DerivationTree.axiom Γ _ (Axiom.prop_s φ ψ) trivial
 
 /-- Modal 4 axiom as direct derivation. -/
 @[aesop safe apply]
-def axiom_modal_4 (Γ : Context) (φ : Formula) {fc : FrameClass} :
+def axiomModal4 (Γ : Context) (φ : Formula) {fc : FrameClass} :
     DerivationTree fc Γ ((Formula.box φ).imp (Formula.box (Formula.box φ))) :=
   DerivationTree.axiom Γ _ (Axiom.modal_4 φ) trivial
 
 /-- Modal B axiom as direct derivation. -/
 @[aesop safe apply]
-def axiom_modal_b (Γ : Context) (φ : Formula) {fc : FrameClass} :
+def axiomModalB (Γ : Context) (φ : Formula) {fc : FrameClass} :
     DerivationTree fc Γ (φ.imp (Formula.box φ.diamond)) :=
   DerivationTree.axiom Γ _ (Axiom.modal_b φ) trivial
 
 /-- Temporal 4 axiom: G(φ) → G(G(φ)). Derived from BX3 + BX6. -/
 @[aesop safe apply]
-noncomputable def axiom_temp_4 (Γ : Context) (φ : Formula) :
-    Γ ⊢ ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ))) :=
-  DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temp_4_derived φ) (List.nil_subset Γ)
+noncomputable def axiomTemp4 (Γ : Context) (φ : Formula) :
+    Γ ⊢ ((Formula.allFuture φ).imp (Formula.allFuture (Formula.allFuture φ))) :=
+  DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived φ) (List.nil_subset Γ)
 
 /-- Connect future (BX4): φ → G(P(φ)). In BX axiom system. -/
 @[aesop safe apply]
-def axiom_temp_a (Γ : Context) (φ : Formula) {fc : FrameClass} :
-    DerivationTree fc Γ (φ.imp (Formula.all_future φ.some_past)) :=
+def axiomTempA (Γ : Context) (φ : Formula) {fc : FrameClass} :
+    DerivationTree fc Γ (φ.imp (Formula.allFuture φ.somePast)) :=
   DerivationTree.axiom Γ _ (Axiom.connect_future φ) trivial
 
 /-!
@@ -129,7 +129,7 @@ Forward chaining for Modal T axiom: `□φ → φ`.
 If we have `□φ` derivable, we can derive `φ` using modal T axiom and modus ponens.
 -/
 @[aesop safe forward]
-def modal_t_forward {Γ : Context} {φ : Formula} {fc : FrameClass} :
+def modalTForward {Γ : Context} {φ : Formula} {fc : FrameClass} :
     DerivationTree fc Γ (Formula.box φ) → DerivationTree fc Γ φ := by
   intro d
   exact DerivationTree.modus_ponens Γ (Formula.box φ) φ
@@ -141,7 +141,7 @@ Forward chaining for Modal 4 axiom: `□φ → □□φ`.
 If we have `□φ` derivable, we can derive `□□φ` using modal 4 axiom and modus ponens.
 -/
 @[aesop safe forward]
-def modal_4_forward {Γ : Context} {φ : Formula} {fc : FrameClass} :
+def modal4Forward {Γ : Context} {φ : Formula} {fc : FrameClass} :
     DerivationTree fc Γ (Formula.box φ) → DerivationTree fc Γ (Formula.box (Formula.box φ)) := by
   intro d
   exact DerivationTree.modus_ponens Γ (Formula.box φ) (Formula.box (Formula.box φ))
@@ -153,7 +153,7 @@ Forward chaining for Modal B axiom: `φ → □◇φ`.
 If we have `φ` derivable, we can derive `□◇φ` using modal B axiom and modus ponens.
 -/
 @[aesop safe forward]
-def modal_b_forward {Γ : Context} {φ : Formula} {fc : FrameClass} :
+def modalBForward {Γ : Context} {φ : Formula} {fc : FrameClass} :
     DerivationTree fc Γ φ → DerivationTree fc Γ (Formula.box φ.diamond) := by
   intro d
   exact DerivationTree.modus_ponens Γ φ (Formula.box φ.diamond)
@@ -165,11 +165,11 @@ Forward chaining for Temporal 4 axiom: `Fφ → FFφ`.
 If we have `Fφ` derivable, we can derive `FFφ` using temporal 4 axiom and modus ponens.
 -/
 @[aesop safe forward]
-noncomputable def temp_4_forward {Γ : Context} {φ : Formula} :
-    (Γ ⊢ Formula.all_future φ) →
-    (Γ ⊢ Formula.all_future (Formula.all_future φ)) := by
+noncomputable def temporal4Forward {Γ : Context} {φ : Formula} :
+    (Γ ⊢ Formula.allFuture φ) →
+    (Γ ⊢ Formula.allFuture (Formula.allFuture φ)) := by
   intro d
-  exact DerivationTree.modus_ponens Γ _ _ (axiom_temp_4 Γ φ) d
+  exact DerivationTree.modus_ponens Γ _ _ (axiomTemp4 Γ φ) d
 
 /--
 Forward chaining for Connect Future (BX4): `φ → G(P(φ))`.
@@ -178,10 +178,10 @@ If we have `φ` derivable, we can derive `G(P(φ))` using connect_future axiom
 and modus ponens.
 -/
 @[aesop safe forward]
-def temp_a_forward {Γ : Context} {φ : Formula} {fc : FrameClass} :
-    DerivationTree fc Γ φ → DerivationTree fc Γ (Formula.all_future φ.some_past) := by
+def temporalAForward {Γ : Context} {φ : Formula} {fc : FrameClass} :
+    DerivationTree fc Γ φ → DerivationTree fc Γ (Formula.allFuture φ.somePast) := by
   intro d
-  exact DerivationTree.modus_ponens Γ _ _ (axiom_temp_a Γ φ) d
+  exact DerivationTree.modus_ponens Γ _ _ (axiomTempA Γ φ) d
 
 /--
 Forward chaining for Propositional K axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`.
@@ -189,7 +189,7 @@ Forward chaining for Propositional K axiom: `(φ → (ψ → χ)) → ((φ → �
 This is the distribution axiom for implication.
 -/
 @[aesop safe forward]
-def prop_k_forward {Γ : Context} {φ ψ χ : Formula} {fc : FrameClass} :
+def propKForward {Γ : Context} {φ ψ χ : Formula} {fc : FrameClass} :
     DerivationTree fc Γ (φ.imp (ψ.imp χ)) → DerivationTree fc Γ ((φ.imp ψ).imp (φ.imp χ)) := by
   intro d
   exact DerivationTree.modus_ponens Γ (φ.imp (ψ.imp χ)) ((φ.imp ψ).imp (φ.imp χ))
@@ -201,7 +201,7 @@ Forward chaining for Propositional S axiom: `φ → (ψ → φ)`.
 This is the weakening axiom for implication.
 -/
 @[aesop safe forward]
-def prop_s_forward {Γ : Context} {φ ψ : Formula} {fc : FrameClass} :
+def propSForward {Γ : Context} {φ ψ : Formula} {fc : FrameClass} :
     DerivationTree fc Γ φ → DerivationTree fc Γ (ψ.imp φ) := by
   intro d
   exact DerivationTree.modus_ponens Γ φ (ψ.imp φ)
@@ -219,7 +219,7 @@ Modus ponens as safe apply rule.
 To prove `ψ`, if we can prove `φ → ψ` and `φ`, then we're done.
 -/
 @[aesop safe apply]
-def apply_modus_ponens {Γ : Context} {φ ψ : Formula} {fc : FrameClass} :
+def applyModusPonensRule {Γ : Context} {φ ψ : Formula} {fc : FrameClass} :
     DerivationTree fc Γ (φ.imp ψ) → DerivationTree fc Γ φ → DerivationTree fc Γ ψ :=
   DerivationTree.modus_ponens Γ φ ψ
 
@@ -229,9 +229,9 @@ Generalized Modal K rule as safe apply rule.
 To prove `□φ` from `□Γ`, if we can prove `φ` from `Γ`, then we're done.
 -/
 @[aesop safe apply]
-noncomputable def apply_modal_k {Γ : Context} {φ : Formula} :
+noncomputable def applyModalK {Γ : Context} {φ : Formula} :
     (Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ) :=
-  generalized_modal_k Γ φ
+  generalizedModalK Γ φ
 
 /--
 Generalized Temporal K rule as safe apply rule.
@@ -239,9 +239,9 @@ Generalized Temporal K rule as safe apply rule.
 To prove `Fφ` from `FΓ`, if we can prove `φ` from `Γ`, then we're done.
 -/
 @[aesop safe apply]
-noncomputable def apply_temporal_k {Γ : Context} {φ : Formula} :
-    (Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ) :=
-  generalized_temporal_k Γ φ
+noncomputable def applyTemporalK {Γ : Context} {φ : Formula} :
+    (Γ ⊢ φ) → ((Context.map Formula.allFuture Γ) ⊢ Formula.allFuture φ) :=
+  generalizedTemporalK Γ φ
 
 /-!
 ## Normalization Rules for Derived Operators
@@ -255,7 +255,7 @@ Normalize diamond operator to primitive negation and box.
 `◇φ` unfolds to `¬□¬φ`.
 -/
 @[aesop norm unfold]
-def normalize_diamond := @Formula.diamond
+def normalizeDiamond := @Formula.diamond
 
 /--
 Normalize always operator to primitive conjunction.
@@ -263,7 +263,7 @@ Normalize always operator to primitive conjunction.
 `△φ` unfolds to `Pφ ∧ φ ∧ Fφ`.
 -/
 @[aesop norm unfold]
-def normalize_always := @Formula.always
+def normalizeAlways := @Formula.always
 
 /--
 Normalize sometimes operator to primitive disjunction.
@@ -271,7 +271,7 @@ Normalize sometimes operator to primitive disjunction.
 `▽φ` unfolds to `¬Pφ ∨ φ ∨ ¬Fφ` (via De Morgan's law).
 -/
 @[aesop norm unfold]
-def normalize_sometimes := @Formula.sometimes
+def normalizeSometimes := @Formula.sometimes
 
 /--
 Normalize some_past operator to primitive negation.
@@ -279,6 +279,6 @@ Normalize some_past operator to primitive negation.
 `some_past φ` unfolds to `¬P¬φ`.
 -/
 @[aesop norm unfold]
-def normalize_some_past := @Formula.some_past
+def normalizeSomePast := @Formula.somePast
 
 end FormalSystem.Automation

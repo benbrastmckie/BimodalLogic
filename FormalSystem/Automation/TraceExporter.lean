@@ -145,7 +145,7 @@ where
       | [] => none
       | "atom" :: name :: rest2 =>
         match rest2 with
-        | ")" :: more => some (.atom_s name, more)
+        | ")" :: more => some (.atomS name, more)
         | _ => none
       | "bot" :: ")" :: more => some (.bot, more)
       | "imp" :: rest2 =>

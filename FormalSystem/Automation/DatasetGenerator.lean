@@ -108,16 +108,16 @@ structure ProofTrace where
   /-- Maximum depth of the proof tree. -/
   height : Nat
   /-- Names of axiom schemata used (e.g., "modal_t", "prop_k"). -/
-  axioms_used : List String
+  axiomsUsed : List String
   /-- Names of inference rules applied (e.g., "modus_ponens", "necessitation"). -/
-  rules_applied : List String
+  rulesApplied : List String
   deriving Repr, Inhabited
 
 /-- Convert a ProofTrace to ProofData for interestingness metrics. -/
 def ProofTrace.toProofData (pt : ProofTrace) : ProofData :=
   { height := pt.height
-  , axioms_used := pt.axioms_used
-  , rules_applied := pt.rules_applied }
+  , axiomsUsed := pt.axiomsUsed
+  , rulesApplied := pt.rulesApplied }
 
 /--
 Difficulty metrics for a formula, combining structural and computational measures.
@@ -317,38 +317,38 @@ def extractProofTrace {fc : FrameClass} {Γ : Context} {φ : Formula}
   match d with
   | .axiom _ _ ax _ =>
     { height := 0
-      axioms_used := [extractAxiomName ax]
-      rules_applied := [] }
+      axiomsUsed := [extractAxiomName ax]
+      rulesApplied := [] }
   | .assumption _ _ _ =>
     { height := 0
-      axioms_used := []
-      rules_applied := ["assumption"] }
+      axiomsUsed := []
+      rulesApplied := ["assumption"] }
   | .modus_ponens _ _ _ d1 d2 =>
     let t1 := extractProofTrace d1
     let t2 := extractProofTrace d2
     { height := 1 + max t1.height t2.height
-      axioms_used := (t1.axioms_used ++ t2.axioms_used).eraseDups
-      rules_applied := "modus_ponens" :: (t1.rules_applied ++ t2.rules_applied).eraseDups }
+      axiomsUsed := (t1.axiomsUsed ++ t2.axiomsUsed).eraseDups
+      rulesApplied := "modus_ponens" :: (t1.rulesApplied ++ t2.rulesApplied).eraseDups }
   | .necessitation _ d1 =>
     let t1 := extractProofTrace d1
     { height := 1 + t1.height
-      axioms_used := t1.axioms_used
-      rules_applied := "necessitation" :: t1.rules_applied }
+      axiomsUsed := t1.axiomsUsed
+      rulesApplied := "necessitation" :: t1.rulesApplied }
   | .temporal_necessitation _ d1 =>
     let t1 := extractProofTrace d1
     { height := 1 + t1.height
-      axioms_used := t1.axioms_used
-      rules_applied := "temporal_necessitation" :: t1.rules_applied }
+      axiomsUsed := t1.axiomsUsed
+      rulesApplied := "temporal_necessitation" :: t1.rulesApplied }
   | .temporal_duality _ d1 =>
     let t1 := extractProofTrace d1
     { height := 1 + t1.height
-      axioms_used := t1.axioms_used
-      rules_applied := "temporal_duality" :: t1.rules_applied }
+      axiomsUsed := t1.axiomsUsed
+      rulesApplied := "temporal_duality" :: t1.rulesApplied }
   | .weakening _ _ _ d1 _ =>
     let t1 := extractProofTrace d1
     { height := 1 + t1.height
-      axioms_used := t1.axioms_used
-      rules_applied := "weakening" :: t1.rules_applied }
+      axiomsUsed := t1.axiomsUsed
+      rulesApplied := "weakening" :: t1.rulesApplied }
 
 /--
 Compute difficulty metrics for a formula with optional decision time.
@@ -564,30 +564,30 @@ def isSubsumptionPattern (a c : Formula) : Option String :=
   match isAllFutureShape a with
   | some φ =>
     if c == φ then some "structural_subsumption_gt"
-    else if c == Formula.all_future (Formula.all_future φ) then some "structural_subsumption_g4"
-    else if c == Formula.some_future φ then some "structural_subsumption_gf"
+    else if c == Formula.allFuture (Formula.allFuture φ) then some "structural_subsumption_g4"
+    else if c == Formula.someFuture φ then some "structural_subsumption_gf"
     else none
   | none =>
   -- Hφ → φ, Hφ → H(Hφ), Hφ → Pφ
   match isAllPastShape a with
   | some φ =>
     if c == φ then some "structural_subsumption_ht"
-    else if c == Formula.all_past (Formula.all_past φ) then some "structural_subsumption_h4"
-    else if c == Formula.some_past φ then some "structural_subsumption_hp"
+    else if c == Formula.allPast (Formula.allPast φ) then some "structural_subsumption_h4"
+    else if c == Formula.somePast φ then some "structural_subsumption_hp"
     else none
   | none =>
   -- F(Fφ) → Fφ
   match isSomeFutureShape a with
   | some inner =>
     match isSomeFutureShape inner with
-    | some φ => if c == Formula.some_future φ then some "structural_subsumption_ff" else none
+    | some φ => if c == Formula.someFuture φ then some "structural_subsumption_ff" else none
     | none => none
   | none =>
   -- P(Pφ) → Pφ
   match isSomePastShape a with
   | some inner =>
     match isSomePastShape inner with
-    | some φ => if c == Formula.some_past φ then some "structural_subsumption_pp" else none
+    | some φ => if c == Formula.somePast φ then some "structural_subsumption_pp" else none
     | none => none
   | none => none
 
@@ -1008,39 +1008,39 @@ private def q_test : Formula := .atom ⟨"q", none⟩
   -- [p, q, p → p]
 
 -- isAllFutureShape / isSomeFutureShape / isAllPastShape / isSomePastShape
-#eval isAllFutureShape p_test.all_future                -- some p
-#eval isSomeFutureShape p_test.some_future             -- some p
-#eval isAllPastShape p_test.all_past                   -- some p
-#eval isSomePastShape p_test.some_past                 -- some p
+#eval isAllFutureShape p_test.allFuture                -- some p
+#eval isSomeFutureShape p_test.someFuture             -- some p
+#eval isAllPastShape p_test.allPast                   -- some p
+#eval isSomePastShape p_test.somePast                 -- some p
 
 -- S5 reflexive shortcutting
 #eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.box p_test) (Formula.neg p_test)) q_test)
   -- some (true, "structural_s5_reflexive_conflict")
 
 -- Temporal loop detection (until)
-#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.untl p_test q_test) (Formula.all_future (Formula.neg q_test))) (Formula.atom (Atom.mk_base "r")))
+#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.untl p_test q_test) (Formula.allFuture (Formula.neg q_test))) (Formula.atom (Atom.mkBase "r")))
   -- some (true, "structural_temporal_loop_until")
 
 -- Temporal loop detection (since)
-#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.snce p_test q_test) (Formula.all_past (Formula.neg q_test))) (Formula.atom (Atom.mk_base "r")))
+#eval structuralPrefilterWithAxiom (.imp (Formula.and (Formula.snce p_test q_test) (Formula.allPast (Formula.neg q_test))) (Formula.atom (Atom.mkBase "r")))
   -- some (true, "structural_temporal_loop_since")
 
 -- Subsumption rules
-#eval structuralPrefilterWithAxiom (.imp (p_test.all_future) p_test)
+#eval structuralPrefilterWithAxiom (.imp (p_test.allFuture) p_test)
   -- some (true, "structural_subsumption_gt")
-#eval structuralPrefilterWithAxiom (.imp (p_test.all_past) p_test)
+#eval structuralPrefilterWithAxiom (.imp (p_test.allPast) p_test)
   -- some (true, "structural_subsumption_ht")
-#eval structuralPrefilterWithAxiom (.imp (p_test.all_future) p_test.some_future)
+#eval structuralPrefilterWithAxiom (.imp (p_test.allFuture) p_test.someFuture)
   -- some (true, "structural_subsumption_gf")
-#eval structuralPrefilterWithAxiom (.imp (p_test.all_past) p_test.some_past)
+#eval structuralPrefilterWithAxiom (.imp (p_test.allPast) p_test.somePast)
   -- some (true, "structural_subsumption_hp")
-#eval structuralPrefilterWithAxiom (.imp (p_test.all_future) p_test.all_future.all_future)
+#eval structuralPrefilterWithAxiom (.imp (p_test.allFuture) p_test.allFuture.allFuture)
   -- some (true, "structural_subsumption_g4")
-#eval structuralPrefilterWithAxiom (.imp (p_test.all_past) p_test.all_past.all_past)
+#eval structuralPrefilterWithAxiom (.imp (p_test.allPast) p_test.allPast.allPast)
   -- some (true, "structural_subsumption_h4")
-#eval structuralPrefilterWithAxiom (.imp (p_test.some_future.some_future) p_test.some_future)
+#eval structuralPrefilterWithAxiom (.imp (p_test.someFuture.someFuture) p_test.someFuture)
   -- some (true, "structural_subsumption_ff")
-#eval structuralPrefilterWithAxiom (.imp (p_test.some_past.some_past) p_test.some_past)
+#eval structuralPrefilterWithAxiom (.imp (p_test.somePast.somePast) p_test.somePast)
   -- some (true, "structural_subsumption_pp")
 #eval structuralPrefilterWithAxiom (.imp (.box p_test) p_test)
   -- some (true, "structural_subsumption_modal_t")
@@ -1054,23 +1054,23 @@ private def r_test : Formula := .atom ⟨"r", none⟩
 private def s_test : Formula := .atom ⟨"s", none⟩
 
 -- U(p, q) → F(q): Until implies Future of event
-#eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) q_test.some_future)
+#eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) q_test.someFuture)
   -- some (true, "structural_until_implies_future")
 
 -- S(p, q) → P(q): Since implies Past of event
-#eval structuralPrefilterWithAxiom (.imp (.snce p_test q_test) q_test.some_past)
+#eval structuralPrefilterWithAxiom (.imp (.snce p_test q_test) q_test.somePast)
   -- some (true, "structural_since_implies_past")
 
 -- U(p, q) → F(p): NOT valid (Until does not guarantee F(guard) -- Y could hold immediately)
-#eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) p_test.some_future)
+#eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) p_test.someFuture)
   -- none
 
 -- G(p) → F(p): Always implies Sometimes (caught by isSubsumptionPattern as G→F)
-#eval structuralPrefilterWithAxiom (.imp p_test.all_future p_test.some_future)
+#eval structuralPrefilterWithAxiom (.imp p_test.allFuture p_test.someFuture)
   -- some (true, "structural_subsumption_gf")
 
 -- H(p) → P(p): Always-past implies Sometimes-past (caught by isSubsumptionPattern as H→P)
-#eval structuralPrefilterWithAxiom (.imp p_test.all_past p_test.some_past)
+#eval structuralPrefilterWithAxiom (.imp p_test.allPast p_test.somePast)
   -- some (true, "structural_subsumption_hp")
 
 -- U(p, q) → U(p, q): identity (caught by structural_identity)
@@ -1164,16 +1164,16 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 #eval isObviousSatisfiable p_test                                          -- false (not an implication)
 
 -- hasUnfulfillableEventuality: positive cases (invalid formulas)
-#eval hasUnfulfillableEventuality (.imp (Formula.all_future (Formula.neg p_test)) (.untl p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.allFuture (Formula.neg p_test)) (.untl p_test q_test))
   -- true  (G(¬p) → U(p,q): p never true in future, Until unfulfillable)
-#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.all_future (Formula.neg p_test)) r_test) (.untl p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.allFuture (Formula.neg p_test)) r_test) (.untl p_test q_test))
   -- true  (G(¬p) ∧ r → U(p,q): G(¬p) is a conjunct)
-#eval hasUnfulfillableEventuality (.imp (Formula.all_past (Formula.neg p_test)) (.snce p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.allPast (Formula.neg p_test)) (.snce p_test q_test))
   -- true  (H(¬p) → S(p,q): symmetric past case)
-#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.all_past (Formula.neg p_test)) r_test) (.snce p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.and (Formula.allPast (Formula.neg p_test)) r_test) (.snce p_test q_test))
   -- true  (H(¬p) ∧ r → S(p,q): H(¬p) is a conjunct)
 -- hasUnfulfillableEventuality: negative cases
-#eval hasUnfulfillableEventuality (.imp (Formula.all_future (Formula.neg q_test)) (.untl p_test q_test))
+#eval hasUnfulfillableEventuality (.imp (Formula.allFuture (Formula.neg q_test)) (.untl p_test q_test))
   -- false (G(¬q), not G(¬p) — wrong atom)
 #eval hasUnfulfillableEventuality (.imp p_test (.untl q_test r_test))
   -- false (no G(¬q) in antecedent)
@@ -1187,7 +1187,7 @@ private def s_test : Formula := .atom ⟨"s", none⟩
   -- some (false, "invalid_satisfiable_neg") — atom is trivially satisfiable
 #eval structuralInvalidPrefilter (.imp (.untl p_test q_test) (.untl .bot r_test))
   -- some (false, "invalid_false_consequent") — U(p,q) not trivially satisfiable, falls to Pattern 1
-#eval structuralInvalidPrefilter (.imp (Formula.all_future (Formula.neg p_test)) (.untl p_test q_test))
+#eval structuralInvalidPrefilter (.imp (Formula.allFuture (Formula.neg p_test)) (.untl p_test q_test))
   -- some (false, "invalid_unfulfillable_eventuality") — G(¬p) makes U(p,q) unfulfillable
 #eval structuralInvalidPrefilter (.imp p_test q_test)
   -- none (undetermined)
@@ -1831,9 +1831,9 @@ Example:
 ```
 -/
 def ProofTrace.toJson (pt : ProofTrace) : String :=
-  let axiomsArr := listToJsonArray (pt.axioms_used.map fun s =>
+  let axiomsArr := listToJsonArray (pt.axiomsUsed.map fun s =>
     "\"" ++ escapeJsonString s ++ "\"")
-  let rulesArr := listToJsonArray (pt.rules_applied.map fun s =>
+  let rulesArr := listToJsonArray (pt.rulesApplied.map fun s =>
     "\"" ++ escapeJsonString s ++ "\"")
   "{\"height\": " ++ toString pt.height
   ++ ", \"axioms_used\": " ++ axiomsArr
@@ -2007,8 +2007,8 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   let testFormulas : List Formula := [
     .imp p p,                              -- valid (identity)
     .imp (.box p) p,                       -- valid (T axiom)
-    .imp (.untl p q) q.some_future,        -- valid (U->F)
-    .imp (.snce p q) q.some_past,          -- valid (S->P)
+    .imp (.untl p q) q.someFuture,        -- valid (U->F)
+    .imp (.snce p q) q.somePast,          -- valid (S->P)
     .imp p q,                              -- invalid
     .imp (.untl p q) (.untl r q),          -- unknown/invalid
     .imp p (.imp q q),                     -- valid (tautological consequent)
@@ -2073,7 +2073,7 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
     (.imp p (.untl .bot q), "invalid_satisfiable_neg"), -- p → U(⊥,q): satisfiable + false consequent
     (.imp (.box p) .bot, "invalid_satisfiable_neg"),    -- □p → ⊥: box(atom) satisfiable
     (.imp (.untl p q) (.untl .bot r), "invalid_false_consequent"),  -- U(p,q) → U(⊥,r): false consequent
-    (.imp (Formula.all_future (Formula.neg p)) (.untl p q), "invalid_unfulfillable_eventuality")
+    (.imp (Formula.allFuture (Formula.neg p)) (.untl p q), "invalid_unfulfillable_eventuality")
       -- G(¬p) → U(p,q): unfulfillable eventuality
   ]
   let mut allPass := true
@@ -2154,10 +2154,10 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
     .imp p (.imp q q),                     -- tautological consequent
     .imp (.box p) p,                       -- T axiom
     .imp (.box p) (.box (.box p)),         -- 4 axiom
-    .imp p.all_future p,                   -- Gp → p
-    .imp p.all_future p.some_future,       -- Gp → Fp
-    .imp (.untl p q) q.some_future,        -- U(p,q) → F(q)
-    .imp (.snce p q) q.some_past,          -- S(p,q) → P(q)
+    .imp p.allFuture p,                   -- Gp → p
+    .imp p.allFuture p.someFuture,       -- Gp → Fp
+    .imp (.untl p q) q.someFuture,        -- U(p,q) → F(q)
+    .imp (.snce p q) q.somePast,          -- S(p,q) → P(q)
     .imp (.untl .bot p) (.untl .bot q)     -- U(⊥,p) → U(⊥,q): both always false, valid
   ]
   let mut allPass := true

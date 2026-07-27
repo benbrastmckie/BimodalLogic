@@ -69,7 +69,7 @@ def writeJsonl (records : List LabeledFormula) (path : System.FilePath) : IO Uni
 
 /-- Parse a comma-separated atom string into a list of `Atom`. -/
 def parseAtoms (s : String) : List Atom :=
-  s.splitOn "," |>.map Atom.mk_base
+  s.splitOn "," |>.map Atom.mkBase
 
 /-- Parse CLI arguments into a `ForwardConfig`. -/
 def parseForwardConfig (args : List String) : IO ForwardConfig := do

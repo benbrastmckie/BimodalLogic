@@ -404,7 +404,7 @@ def inferStrategy (φ : Formula) (depth : Nat) (contextSize : Nat) : ProofStrate
     match φ with
     | .imp (.box _) _ => .Axiom "modal_t"
     | .imp _ (.box (.box _)) => .Axiom "modal_4"
-    | .imp (.all_future _) _ => .Axiom "temp_k"
+    | .imp (.allFuture _) _ => .Axiom "temp_k"
     | _ =>
         if contextSize > 0 then .Assumption
         else .Axiom "prop"
@@ -412,7 +412,7 @@ def inferStrategy (φ : Formula) (depth : Nat) (contextSize : Nat) : ProofStrate
     -- Deeper search suggests MP or inference rules
     match φ with
     | .box _ => .ModalK
-    | .all_future _ => .TemporalK
+    | .allFuture _ => .TemporalK
     | _ => .ModusPonens
 
 /--

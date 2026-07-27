@@ -84,14 +84,14 @@ private def incrString (m : Std.HashMap String Nat) (k : String) (n : Nat) : Std
 
 /-- Check whether a proof trace uses any axiom from a given name list. -/
 private def usesAnyAxiom (pt : ProofTrace) (names : List String) : Bool :=
-  pt.axioms_used.any (fun ax => names.contains ax)
+  pt.axiomsUsed.any (fun ax => names.contains ax)
 
 /-- Compute all 8 corpus metrics from a labeled formula list. -/
 def computeCorpusMetrics (labeled : List LabeledFormula) (costMs : Nat := 0) : CorpusMetrics :=
   let valid := labeled.filter (fun (lf : LabeledFormula) => lf.label == .valid)
   let totalValid := valid.length
   -- Axiom diversity
-  let allAxioms := valid.filterMap (fun (lf : LabeledFormula) => lf.proofTrace.map (·.axioms_used)) |>.flatten
+  let allAxioms := valid.filterMap (fun (lf : LabeledFormula) => lf.proofTrace.map (·.axiomsUsed)) |>.flatten
   let uniqueAxioms := allAxioms.eraseDups.length
   let totalAxApps := valid.filterMap (fun (lf : LabeledFormula) => lf.ruleProfile.map (·.axiomCount)) |>.foldl (· + ·) 0
   let axDiv := if totalAxApps > 0 then Float.ofNat uniqueAxioms / Float.ofNat totalAxApps else 0.0
@@ -115,7 +115,7 @@ def computeCorpusMetrics (labeled : List LabeledFormula) (costMs : Nat := 0) : C
     let acc7 := incrString acc6 "weakeningCount" rp.weakeningCount
     acc7) {}
   -- Ex_falso dominance
-  let exFalsoCount := (traces.filter (fun pt => pt.axioms_used.contains "ex_falso")).length
+  let exFalsoCount := (traces.filter (fun pt => pt.axiomsUsed.contains "ex_falso")).length
   let exDom := if totalValid > 0 then Float.ofNat exFalsoCount / Float.ofNat totalValid else 0.0
   -- Operator diversity
   let categories := labeled.map (fun lf => goalCategory lf.formula)

@@ -51,12 +51,12 @@ open FormalSystem.Syntax
 /-- The canonical atom ordering used for renaming.
     First-seen atom maps to index 0 (p), second to index 1 (q), etc. -/
 def canonicalAtomNames : Array Atom :=
-  #[ Atom.mk_base "p"
-   , Atom.mk_base "q"
-   , Atom.mk_base "r"
-   , Atom.mk_base "s"
-   , Atom.mk_base "t"
-   , Atom.mk_base "u" ]
+  #[ Atom.mkBase "p"
+   , Atom.mkBase "q"
+   , Atom.mkBase "r"
+   , Atom.mkBase "s"
+   , Atom.mkBase "t"
+   , Atom.mkBase "u" ]
 
 /--
 Collect all distinct atoms from a formula in left-to-right DFS order.

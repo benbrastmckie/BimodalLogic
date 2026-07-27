@@ -93,13 +93,13 @@ Explores nodes in order of f-score (cost + heuristic), where:
 
 **Returns**: Same format as other search functions for compatibility
 -/
-def bestFirst_search (Γ : Context) (φ : Formula)
+def bestFirstSearch (Γ : Context) (φ : Formula)
     (maxExpansions : Nat := 10000)
     (weights : HeuristicWeights := {})
     (patternDb : PatternDatabase := PatternDatabase.empty)
     : Bool × ProofCache × Visited × SearchStats × Nat :=
   -- Initialize with start node
-  let initHeuristic := pattern_aware_score weights Γ φ patternDb .ModusPonens
+  let initHeuristic := patternAwareScore weights Γ φ patternDb .ModusPonens
   let initNode : SearchNode := { context := Γ, goal := φ, cost := 0, heuristic := initHeuristic }
   let initQueue := PriorityQueue.insert PriorityQueue.empty initNode
 
@@ -138,7 +138,7 @@ def bestFirst_search (Γ : Context) (φ : Formula)
                     let stats' := {stats' with misses := stats'.misses + 1}
 
                     -- Check if goal matches axiom
-                    if matches_axiom node.goal then
+                    if matchesAxiom node.goal then
                       (true, cache.insert key true, visited', stats', expansions + 1)
                     -- Check if goal is in context
                     else if node.context.contains node.goal then
@@ -147,24 +147,24 @@ def bestFirst_search (Γ : Context) (φ : Formula)
                       -- Expand node: generate successor nodes
 
                       -- 1. Modus ponens: find implications (ψ → goal) and add ψ as subgoal
-                      let implications := find_implications_to node.context node.goal
+                      let implications := findImplicationsTo node.context node.goal
                       let mpNodes := implications.map fun ψ =>
-                        let h := pattern_aware_score weights node.context ψ patternDb .ModusPonens
+                        let h := patternAwareScore weights node.context ψ patternDb .ModusPonens
                         { context := node.context, goal := ψ, cost := node.cost + 1, heuristic := h : SearchNode }
 
                       -- 2. Modal K rule: if goal is □ψ, add ψ with boxed context
                       let modalNodes := match node.goal with
                         | .box ψ =>
-                            let ctx' := box_context node.context
-                            let h := pattern_aware_score weights ctx' ψ patternDb .ModalK
+                            let ctx' := boxContext node.context
+                            let h := patternAwareScore weights ctx' ψ patternDb .ModalK
                             [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
                         | _ => []
 
                       -- 3. Temporal K rule: if goal is Gψ, add ψ with future context
                       let temporalNodes := match node.goal with
-                        | .all_future ψ =>
-                            let ctx' := future_context node.context
-                            let h := pattern_aware_score weights ctx' ψ patternDb .TemporalK
+                        | .allFuture ψ =>
+                            let ctx' := futureContext node.context
+                            let h := patternAwareScore weights ctx' ψ patternDb .TemporalK
                             [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
                         | _ => []
 
@@ -229,12 +229,12 @@ def search (Γ : Context) (φ : Formula)
     : Bool × ProofCache × Visited × SearchStats × Nat :=
   match strategy with
   | .BoundedDFS depth =>
-      bounded_search Γ φ depth ProofCache.empty Visited.empty 0 visitLimit weights {}
+      boundedSearch Γ φ depth ProofCache.empty Visited.empty 0 visitLimit weights {}
   | .IDDFS maxDepth =>
-      iddfs_search Γ φ maxDepth visitLimit weights
+      iddfsSearch Γ φ maxDepth visitLimit weights
   | .BestFirst maxExpansions =>
       -- Best-first search with priority queue
-      bestFirst_search Γ φ maxExpansions weights PatternDatabase.empty
+      bestFirstSearch Γ φ maxExpansions weights PatternDatabase.empty
 
 /--
 Heuristic-guided proof search prioritizing likely-successful branches.
@@ -243,9 +243,9 @@ Returns the result, updated cache/visited sets, and stats.
 **Note**: This function is preserved for backward compatibility.
 New code should use `search` with the appropriate `SearchStrategy`.
 -/
-def search_with_heuristics (Γ : Context) (φ : Formula) (depth : Nat)
+def searchWithHeuristics (Γ : Context) (φ : Formula) (depth : Nat)
     (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited × SearchStats × Nat :=
-  bounded_search Γ φ depth ProofCache.empty Visited.empty 0 visitLimit weights {}
+  boundedSearch Γ φ depth ProofCache.empty Visited.empty 0 visitLimit weights {}
 
 /--
 Cached proof search using memoization, visit limits, and stats.
@@ -253,9 +253,9 @@ Cached proof search using memoization, visit limits, and stats.
 Returns `(result, updated_cache, visited, stats, visits)` where `stats` exposes cache hits/misses,
 visited node count, and visit-limit prunes.
 -/
-def search_with_cache (cache : ProofCache := ProofCache.empty) (Γ : Context) (φ : Formula) (depth : Nat)
+def searchWithCache (cache : ProofCache := ProofCache.empty) (Γ : Context) (φ : Formula) (depth : Nat)
     (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited × SearchStats × Nat :=
-  bounded_search Γ φ depth cache Visited.empty 0 visitLimit weights {}
+  boundedSearch Γ φ depth cache Visited.empty 0 visitLimit weights {}
 
 /-!
 ## Learning-Enabled Search
@@ -307,7 +307,7 @@ let result1 := search_with_learning [] formula1
 let result2 := search_with_learning [] formula2 patternDb := result1.patternDb
 ```
 -/
-def search_with_learning (Γ : Context) (φ : Formula)
+def searchWithLearning (Γ : Context) (φ : Formula)
     (strategy : SearchStrategy := .IDDFS 100)
     (visitLimit : Nat := 10000)
     (weights : HeuristicWeights := {})
@@ -340,7 +340,7 @@ Later formulas benefit from patterns learned from earlier successes.
 
 **Returns**: List of results paired with final pattern database
 -/
-def batch_search_with_learning
+def batchSearchWithLearning
     (formulas : List (Context × Formula))
     (strategy : SearchStrategy := .IDDFS 100)
     (visitLimit : Nat := 10000)
@@ -350,7 +350,7 @@ def batch_search_with_learning
   let (results, finalDb) := formulas.foldl
     (fun (acc : List LearningSearchResult × PatternDatabase) (Γ, φ) =>
       let (results, currentDb) := acc
-      let result := search_with_learning Γ φ strategy visitLimit weights currentDb true
+      let result := searchWithLearning Γ φ strategy visitLimit weights currentDb true
       (results ++ [result], result.patternDb))
     ([], patternDb)
   (results, finalDb)
@@ -358,7 +358,7 @@ def batch_search_with_learning
 /--
 Get pattern learning statistics from a database.
 -/
-def pattern_stats (db : PatternDatabase) : String :=
+def patternStats (db : PatternDatabase) : String :=
   db.statistics
 
 /-!
@@ -368,8 +368,8 @@ These examples illustrate how proof search would work once implemented.
 -/
 
 /-- Example: Trivial search finds axiom immediately -/
-example : ∃ (_ : ⊢ ((Formula.atom_s "p").box.imp (Formula.atom_s "p"))), True :=
-  let p := Formula.atom_s "p"
+example : ∃ (_ : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p"))), True :=
+  let p := Formula.atomS "p"
   ⟨DerivationTree.axiom [] (p.box.imp p) (Axiom.modal_t p) trivial, trivial⟩
 
 /-- Example: Search with depth 2 for modus ponens application -/

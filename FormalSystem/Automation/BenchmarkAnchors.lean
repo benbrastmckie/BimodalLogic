@@ -59,13 +59,13 @@ open FormalSystem.Automation.DataExport
 -/
 
 /-- Atom formula for "p". -/
-private def p : Formula := Formula.atom_s "p"
+private def p : Formula := Formula.atomS "p"
 
 /-- Atom formula for "q". -/
-private def q : Formula := Formula.atom_s "q"
+private def q : Formula := Formula.atomS "q"
 
 /-- Atom formula for "r". -/
-private def r : Formula := Formula.atom_s "r"
+private def r : Formula := Formula.atomS "r"
 
 /-- Top formula (⊤ = ⊥ → ⊥). -/
 private def top' : Formula := Formula.top
@@ -78,8 +78,8 @@ def substitutionVocab : List Formula :=
   [ p, q, r
   , Formula.box p              -- □p
   , Formula.neg p              -- ¬p
-  , Formula.some_future p      -- F(p)
-  , Formula.all_future p       -- G(p)
+  , Formula.someFuture p      -- F(p)
+  , Formula.allFuture p       -- G(p)
   , Formula.untl p q           -- U(p,q)
   ]
 
@@ -119,9 +119,9 @@ These produce exactly one formula each.
 -/
 def groundAxiomInstances : List TaggedFormula :=
   -- Layer 3: BX Temporal ground axioms
-  [ { formula := (top'.imp (Formula.some_future top'))
+  [ { formula := (top'.imp (Formula.someFuture top'))
     , axiomName := "serial_future" }
-  , { formula := (top'.imp (Formula.some_past top'))
+  , { formula := (top'.imp (Formula.somePast top'))
     , axiomName := "serial_past" }
   -- Layer 5: Uniformity ground axioms
   , { formula := (Formula.untl top' Formula.bot).imp
@@ -131,10 +131,10 @@ def groundAxiomInstances : List TaggedFormula :=
         (Formula.untl top' Formula.bot)
     , axiomName := "discrete_symm_bwd" }
   , { formula := (Formula.untl top' Formula.bot).imp
-        (Formula.all_future (Formula.untl top' Formula.bot))
+        (Formula.allFuture (Formula.untl top' Formula.bot))
     , axiomName := "discrete_propagate_fwd" }
   , { formula := (Formula.untl top' Formula.bot).imp
-        (Formula.all_past (Formula.untl top' Formula.bot))
+        (Formula.allPast (Formula.untl top' Formula.bot))
     , axiomName := "discrete_propagate_bwd" }
   , { formula := (Formula.untl top' Formula.bot).imp
         (Formula.box (Formula.untl top' Formula.bot))
@@ -158,26 +158,26 @@ def oneParamInstances : List TaggedFormula :=
     , { formula := φ.imp (Formula.box φ.diamond), axiomName := "modal_b" }
     , { formula := φ.box.diamond.imp φ.box, axiomName := "modal_5_collapse" }
       -- Layer 3: BX Temporal (1-param)
-    , { formula := φ.imp (φ.some_past.all_future), axiomName := "connect_future" }
-    , { formula := φ.imp (φ.some_future.all_past), axiomName := "connect_past" }
-    , { formula := (φ.some_future).imp (Formula.untl φ top')
+    , { formula := φ.imp (φ.somePast.allFuture), axiomName := "connect_future" }
+    , { formula := φ.imp (φ.someFuture.allPast), axiomName := "connect_past" }
+    , { formula := (φ.someFuture).imp (Formula.untl φ top')
       , axiomName := "F_until_equiv" }
-    , { formula := (φ.some_past).imp (Formula.snce φ top')
+    , { formula := (φ.somePast).imp (Formula.snce φ top')
       , axiomName := "P_since_equiv" }
       -- Layer 4: Modal-Temporal Interaction
-    , { formula := (Formula.box φ).imp (Formula.box (Formula.all_future φ))
+    , { formula := (Formula.box φ).imp (Formula.box (Formula.allFuture φ))
       , axiomName := "modal_future" }
       -- Layer 6: Prior (discrete-only, but still valid instances)
-    , { formula := φ.some_future.imp (Formula.untl φ φ.neg)
+    , { formula := φ.someFuture.imp (Formula.untl φ φ.neg)
       , axiomName := "prior_UZ" }
-    , { formula := φ.some_past.imp (Formula.snce φ φ.neg)
+    , { formula := φ.somePast.imp (Formula.snce φ φ.neg)
       , axiomName := "prior_SZ" }
       -- Layer 7: Z1 (discrete-only)
-    , { formula := (φ.all_future.imp φ).all_future.imp
-          (φ.all_future.some_future.imp φ.all_future)
+    , { formula := (φ.allFuture.imp φ).allFuture.imp
+          (φ.allFuture.someFuture.imp φ.allFuture)
       , axiomName := "z1" }
       -- Layer 8: Density
-    , { formula := φ.all_future.all_future.imp φ.all_future
+    , { formula := φ.allFuture.allFuture.imp φ.allFuture
       , axiomName := "density" }
     ]
 
@@ -203,19 +203,19 @@ def twoParamInstances : List TaggedFormula :=
       , { formula := (Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ).imp
             (Formula.snce ψ φ)
         , axiomName := "absorb_since" }
-      , { formula := (Formula.untl ψ φ).imp (Formula.some_future ψ)
+      , { formula := (Formula.untl ψ φ).imp (Formula.someFuture ψ)
         , axiomName := "until_F" }
-      , { formula := (Formula.snce ψ φ).imp (Formula.some_past ψ)
+      , { formula := (Formula.snce ψ φ).imp (Formula.somePast ψ)
         , axiomName := "since_P" }
-      , { formula := Formula.and (Formula.some_future φ) (Formula.some_future ψ) |>.imp
-            (Formula.or (Formula.some_future (Formula.and φ ψ))
-              (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
-                (Formula.some_future (Formula.and (Formula.some_future φ) ψ))))
+      , { formula := Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
+            (Formula.or (Formula.someFuture (Formula.and φ ψ))
+              (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
+                (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))))
         , axiomName := "temp_linearity" }
-      , { formula := Formula.and (Formula.some_past φ) (Formula.some_past ψ) |>.imp
-            (Formula.or (Formula.some_past (Formula.and φ ψ))
-              (Formula.or (Formula.some_past (Formula.and φ (Formula.some_past ψ)))
-                (Formula.some_past (Formula.and (Formula.some_past φ) ψ))))
+      , { formula := Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
+            (Formula.or (Formula.somePast (Formula.and φ ψ))
+              (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
+                (Formula.somePast (Formula.and (Formula.somePast φ) ψ))))
         , axiomName := "temp_linearity_past" }
       ]
 
@@ -234,16 +234,16 @@ def threeParamInstances : List TaggedFormula :=
         , { formula := (φ.imp ψ).box.imp (φ.box.imp ψ.box)
           , axiomName := "modal_k_dist" }
           -- Layer 3: BX Temporal (3-param)
-        , { formula := (φ.imp χ).all_future.imp
+        , { formula := (φ.imp χ).allFuture.imp
               ((Formula.untl ψ φ).imp (Formula.untl ψ χ))
           , axiomName := "left_mono_until_G" }
-        , { formula := (φ.imp χ).all_past.imp
+        , { formula := (φ.imp χ).allPast.imp
               ((Formula.snce ψ φ).imp (Formula.snce ψ χ))
           , axiomName := "left_mono_since_H" }
-        , { formula := (φ.imp ψ).all_future.imp
+        , { formula := (φ.imp ψ).allFuture.imp
               ((Formula.untl φ χ).imp (Formula.untl ψ χ))
           , axiomName := "right_mono_until" }
-        , { formula := (φ.imp ψ).all_past.imp
+        , { formula := (φ.imp ψ).allPast.imp
               ((Formula.snce φ χ).imp (Formula.snce ψ χ))
           , axiomName := "right_mono_since" }
         , { formula := Formula.and χ (Formula.untl ψ φ) |>.imp
@@ -354,8 +354,8 @@ def labelViaAxiomMatch (tf : TaggedFormula) : Option LabeledFormula :=
       -- Base axiom: label as valid with proof trace
       let trace : ProofTrace := {
         height := 0
-        axioms_used := [tf.axiomName]
-        rules_applied := ["axiom_match"]
+        axiomsUsed := [tf.axiomName]
+        rulesApplied := ["axiom_match"]
       }
       some {
         formula := φ

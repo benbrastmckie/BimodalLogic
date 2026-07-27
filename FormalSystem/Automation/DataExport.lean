@@ -86,7 +86,7 @@ Examples:
 -/
 def _root_.FormalSystem.Syntax.Atom.toJson (a : Atom) : String :=
   let baseStr := escapeJsonString a.base
-  let idxStr := match a.fresh_index with
+  let idxStr := match a.freshIndex with
     | none   => "null"
     | some n => toString n
   "{\"base\": \"" ++ baseStr ++ "\", \"fresh_index\": " ++ idxStr ++ "}"
@@ -151,7 +151,7 @@ Canonical parenthesized prefix notation using constructor names as heads:
 -/
 def _root_.FormalSystem.Syntax.Formula.toSExpr : Formula → String
   | .atom a   =>
-    let idx := match a.fresh_index with
+    let idx := match a.freshIndex with
       | none => ""
       | some n => " " ++ toString n
     "(atom \"" ++ escapeJsonString a.base ++ "\"" ++ idx ++ ")"
