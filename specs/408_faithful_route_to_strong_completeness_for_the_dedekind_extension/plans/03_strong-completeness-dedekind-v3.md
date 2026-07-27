@@ -1393,7 +1393,7 @@ organising principle of the Phase 7 split — 7a is everything that avoids the a
 asymmetry itself. Phase 7a is nonetheless ordered after 6.2 because two of its chronicle
 instances consume 6.2's discharge.)*
 
-### Phase 6.2: The definable-gap discharge of LimitFutureWitness [IN PROGRESS]
+### Phase 6.2: The definable-gap discharge of LimitFutureWitness [COMPLETED]
 
 **This phase is the first place in the plan where the Dedekind axiom layer is used.** Everything
 before it is `fc`-generic. `Axiom.prior_U_gap` has `minFrameClass = .Dedekind`
@@ -1403,7 +1403,11 @@ That is the intended shape, not a compromise.
 - **Goal:** Repair `BFMCS.LimitFutureWitness` to its true statement and discharge it for
   `cantorBfmcsDense`, closing Phase 6.1's residual hypothesis.
 - **Owns:** `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleLimitGapWitness.lean` (new),
-  `FormalSystem/Metalogic/BXCanonical/Chronicle.lean` (import line only),
+  `FormalSystem/Metalogic/BXCanonical/Chronicle.lean` (import line only)
+  *(deviation: altered — no `Chronicle.lean` aggregator exists in this tree; the actual
+  aggregator for the `Chronicle/` directory is `FormalSystem/Metalogic/BXCanonical.lean`, and
+  the one import line was added there. Path correction only; the plan's intent — one import
+  line in the aggregator that pulls the new module into the default target — is met exactly.)*,
   and **exactly two lines** of `FormalSystem/Metalogic/Bundle/RealExtensionBundle.lean` (the
   `LimitFutureWitness` binder list at `:271-274` and the single call site at `:306`), plus that
   predicate's docstring.
@@ -1422,7 +1426,7 @@ That is the intended shape, not a compromise.
   `¬R`." The obligation being discharged is Burgess 1984's prophecy-at-a-gap claim, **printed
   pp.109-110**. Cite all three by PDF page in the module docstring; never by `md:NN`.
 - **Tasks:**
-  - [ ] **Predicate repair (Statement 1).** In `Bundle/RealExtensionBundle.lean`, replace the
+  - [x] **Predicate repair (Statement 1).** In `Bundle/RealExtensionBundle.lean`, replace the
         definition at `:271` with exactly:
         ```lean
         def BFMCS.LimitFutureWitness {fc : FrameClass} (B : BFMCS (fc := fc) Rat) (root : Formula) :
@@ -1435,20 +1439,20 @@ That is the intended shape, not a compromise.
         `r : ℝ` including rationals, and at `r = (p : ℝ)` with `p = max {q | φ ∈ m q}` the
         hypothesis holds while the conclusion fails. Irrationality of `r` is used exactly twice in
         the proof of Statement 2 (Step A and Step D's first bullet).
-  - [ ] **Call-site line.** The predicate's only consumer is
+  - [x] **Call-site line.** The predicate's only consumer is
         `BFMCS.toRealBundle_restricted_temporally_coherent` (`RealExtensionBundle.lean:306`),
         already inside the `hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ` branch of its `by_cases`. The call
         becomes `h_lfw fam hfam (t + δ) hx φ hdc hFφ'`. `hx` is already in the exact shape the new
         binder wants; if binder-name or defeq friction appears, `by simpa using hx` — do not
         restructure the proof script, and change **nothing else** in that file.
-  - [ ] **Docstring amendment.** Retain the existing counterexample paragraph verbatim (it is
+  - [x] **Docstring amendment.** Retain the existing counterexample paragraph verbatim (it is
         still valid, and it is what makes the `fc`-conditional route necessary). Add one
         paragraph recording (i) that the all-`r` form is refutable at a selected `r` where `S_φ`
         attains a maximum, hence the unselectedness hypothesis; and (ii) that the predicate is
         **discharged** at `fc = FrameClass.Dedekind` because the obstruction is exactly a
         definable gap for `Fφ` and `Axiom.prior_U_gap` excludes those (Reynolds 1992, printed
         p.176). No task-number citations.
-  - [ ] **Statement 2 — the general gap lemma.** In the new module, prove exactly:
+  - [x] **Statement 2 — the general gap lemma.** In the new module, prove exactly:
         ```lean
         theorem limitFutureWitness_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
             (m : Rat → Set Formula) (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q))
@@ -1490,7 +1494,7 @@ That is the intended shape, not a compromise.
           plus MCS double-negation. Contradiction.
         Land each of Steps A-D as its own named `have` (or private lemma) so the case analysis
         stays reviewable, exactly as Phase 5 required of its `exists_rat_btwn` interpolations.
-  - [ ] **Statement 3 — the chronicle instantiation.** In the same module, prove exactly:
+  - [x] **Statement 3 — the chronicle instantiation.** In the same module, prove exactly:
         ```lean
         theorem cantor_bfmcs_dense_limit_future_witness (fc : FrameClass)
             (hfc : FrameClass.Dedekind ≤ fc) (A : Set Formula)
@@ -1515,14 +1519,31 @@ That is the intended shape, not a compromise.
         (`Syntax/SubformulaClosure/Closure.lean:42`). **No chronicle declaration is modified and
         no chronicle-level proof is written.** If the self-root instantiation does not elaborate,
         that is a signature discrepancy to report, not a licence to edit `_fuc`/`_buc`.
-  - [ ] Module docstring: cite Reynolds 1992 printed p.176 (Theorem 3's Prior-U contradiction) and
+  - [x] Module docstring: cite Reynolds 1992 printed p.176 (Theorem 3's Prior-U contradiction) and
         p.178 (Lemma 3's pattern) and Burgess 1984 printed pp.109-110 (the obligation's origin);
         record that the discharge is `fc`-conditional and why; record the self-root discovery in
         one sentence so a future reader does not re-derive it.
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGapWitness` and
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGapWitness` and
         `lake build FormalSystem.Metalogic.Bundle.RealExtensionBundle`, then full `lake build`.
-  - [ ] `#print axioms limitFutureWitness_of_priorU` and
+  - [x] `#print axioms limitFutureWitness_of_priorU` and
         `#print axioms cantor_bfmcs_dense_limit_future_witness`; record the results.
+- **OUTCOME (2026-07-27): phase closed, both statements landed sorry-free on the first build.**
+  `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleLimitGapWitness.lean` is 209 lines and
+  contains `limitFutureWitness_of_priorU` and `cantor_bfmcs_dense_limit_future_witness`, both in
+  namespace `FormalSystem.Metalogic.BXCanonical.Chronicle`. `#print axioms` on each reports
+  exactly `[propext, Classical.choice, Quot.sound]`. Full `lake build` green (1900 jobs); live
+  sorries outside `Boneyard/` remain exactly one, at `WeakCanonical/Transfer.lean:1242`; no new
+  axioms and no vacuous definitions. The four-step decomposition landed as written — Step A
+  (`χ` below the gap) and Step B (`¬χ` above it) as named `have`s, Step C assembling the Prior-U
+  antecedent through `conj_mcs` + `theorem_in_mcs (DerivationTree.axiom … hfc)` +
+  `implication_property`, Step D deriving the `K⁺(¬χ)` contradiction at the Until witness.
+  Irrationality of `r` was consumed at exactly the two predicted places. The self-root
+  instantiation of `cantor_bfmcs_dense_restricted_fuc`/`_buc` elaborated with no signature
+  friction and no chronicle declaration was touched. Two small additions beyond the task list,
+  both forced and neither a design change: a local `htop` (`⊤ ∈ m q` via
+  `identity (fc := fc) Formula.bot`) since `⊤`-guards are needed at four call sites, and a pair
+  of `hSFf`/`hSFb` specialisations of `hUf`/`hUb` to `someFuture`, which is what Steps A-C
+  actually use. `push Not` replaced the deprecated `push_neg`.
 - **Estimated output:** ~180-220 lines in the new module (Statement 2 ~140-180, Statement 3 ~25,
   docstring the rest), plus ~15 lines of docstring and exactly 2 changed lines in
   `RealExtensionBundle.lean`. **One agent run (H8).**

@@ -236,12 +236,33 @@ engine.**
 Given a single-formula completeness engine for `ValidDedekindDense`, semantic consequence from
 an arbitrary finite context is derivable at `FrameClass.Dedekind`.
 
-This is *not* strong completeness: with `Γ : Context = List Formula` it is inter-derivable
-with weak completeness through the deduction theorem, and genuine strong completeness
-(infinite `Set Formula` premise sets) is unavailable for this class because its consequence
-relation is not compact — see the module docstring. The finite-context form is still the right
-statement to carry, because it matches the arbitrary-`Γ` shape of `soundness_dedekind`
-exactly.
+**This is *not* strong completeness, and the gap is not one of degree.** Infinitary strong
+completeness — `Γ ⊨ φ → Γ ⊢ φ` for an arbitrary, possibly infinite `Γ : Set Formula` — is a
+*strictly different statement*, and three separate facts should be held apart:
+
+1. *This theorem is inter-derivable with weak completeness.* `Context` is `List Formula`, so
+   every `Γ` here is finite, and the deduction theorem turns the finite-context form into the
+   single-formula form and back. Nothing is gained over `completeness_dedekind` beyond the
+   convenience of the arbitrary-`Γ` shape, which is exactly the shape of `soundness_dedekind`.
+2. *The infinitary statement is provably out of reach for any finitary proof system, by
+   non-compactness.* A derivation is a finite object and can cite only finitely many premises,
+   so strong completeness for a finitary derivability relation entails compactness of the
+   class consequence relation. The consequence relation over dense Dedekind-complete flows is
+   not compact — an infinite premise set can be unsatisfiable while every finite subset has a
+   model — so no strengthening of the countermodel construction, and no reformulation of this
+   theorem, can reach it. It is refuted, not merely unproved. (The same obstruction rules the
+   statement out at `FrameClass.Discrete`; see the module docstring for both counterexamples.)
+3. *The infinitary statement is not even expressible in this tree.* `Context := List Formula`
+   (`Syntax/Context.lean`) is the premise type of `Derivable`, `DerivationTree`, and
+   `SemanticConsequenceDedekindDense` alike, so there is no `Γ : Set Formula` to quantify over
+   without first introducing a set-based derivability relation
+   (`∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ`) that no declaration in this
+   development defines. Reading this theorem as "strong completeness" therefore mistakes a
+   statement about finite lists for one about arbitrary sets, of a kind the type signature
+   cannot express.
+
+The finite-context form is still the right statement to carry, for the reason in (1): it
+matches the arbitrary-`Γ` shape of `soundness_dedekind` exactly.
 
 The engine hypothesis is deliberate. It fixes the target of the Dedekind route *before* the
 countermodel construction exists, and it records the exact interface the construction must
