@@ -208,7 +208,7 @@ The core infrastructure (top row) feeds into the central \emph{Representation Th
 
   % Completeness layer (bottom)
   \node[box, fill=orange!15] (weak) at (1.5,0) {Weak Completeness\\{\scriptsize\texttt{semantic\_weak\_completeness}}};
-  \node[box, fill=orange!15] (strong) at (7.5,0) {Strong Completeness\\{\scriptsize\texttt{main\_strong\_completeness}}};
+  \node[box, fill=orange!15] (strong) at (7.5,0) {Consequence Completeness\\{\scriptsize\texttt{consequence\_completeness\_*}}};
 
   % Arrows from Core to Representation
   \draw[arrow] (deduct.south) -- ++(0,-0.4) -| (repr.north west);
@@ -224,7 +224,7 @@ The core infrastructure (top row) feeds into the central \emph{Representation Th
 \end{figure}
 
 The three foundational components---the \emph{Deduction Theorem}, \emph{Lindenbaum's Lemma}, and \emph{Maximal Consistent Sets}---provide the infrastructure for the \emph{Representation Theorem}.
-Both weak and strong completeness then follow as direct corollaries via contrapositive arguments.
+Both weak and consequence completeness then follow as direct corollaries via contrapositive arguments.
 
 \subsection{Completeness as Corollary}
 
@@ -246,25 +246,23 @@ The proof proceeds by contraposition:
 \end{enumerate}
 By contraposition, validity implies provability.
 
-\subsubsection{Strong Completeness}
+\subsubsection{Consequence Completeness}
 
-\subsubsection{Note on Infinite Contexts}
+Contexts are finite lists (\texttt{Context = List Formula}), so completeness for consequence
+from a context is inter-derivable with weak completeness through the \emph{Deduction Theorem}:
+$\context \satisfies \varphi$ iff the iterated implication
+$\psi_1 \imp (\psi_2 \imp \cdots (\psi_n \imp \varphi))$ is valid.
+We therefore call the arbitrary-context statement \emph{consequence completeness}.
+The name \emph{strong completeness} is reserved for the infinite-premise statement discussed in
+the next subsection, which is a genuinely different result --- and one that is provably
+unavailable for some of the frame classes treated here.
 
-The current implementation uses list-based finite contexts (\texttt{Context = List Formula}).
-This makes the compactness theorem trivial: if every finite subset of $\Gamma$ is satisfiable, then $\Gamma$ is satisfiable (since $\Gamma$ is already finite).
-
-A true compactness result for infinite sets would require:
-\begin{enumerate}
-  \item Migrating from \texttt{List Formula} to \texttt{Set Formula} contexts
-  \item Ensuring derivability is finitary (derivations use finitely many premises)
-  \item Proving: if $\Gamma \models \varphi$, then finite $\Delta \subseteq \Gamma$ with $\Delta \models \varphi$
-\end{enumerate}
-
-This is a standard result in modal logic but is not required for the current completeness proof.
-See \texttt{Boneyard/Metalogic\_v2/Applications/Compactness.lean} for the trivial version with list-based contexts.
-
-\begin{theorem}[Strong Completeness]
-If $\context \satisfies \varphi$, then $\context \proves \varphi$.\footnote{This is proven as \texttt{main\_strong\_completeness} with bridge sorries for the generalization.}
+\begin{theorem}[Consequence Completeness]
+If $\context \satisfies \varphi$, then $\context \proves \varphi$.\footnote{The landed pattern
+is \texttt{consequence\_completeness\_dedekind} in
+\texttt{FormalSystem/Metalogic/StrongCompleteness.lean}, stated there modulo its single-formula
+completeness engine; the Base, Dense, and Discrete instances follow the same three-declaration
+shape against their own validity predicates.}
 \end{theorem}
 
 The proof extends weak completeness using an implication chain technique:
@@ -276,7 +274,46 @@ The proof extends weak completeness using an implication chain technique:
   \item Unfold the chain with repeated modus ponens applications to obtain $\context \proves \varphi$.
 \end{enumerate}
 
-% TODO: it would be better to state this in the strong formulation with contexts behind each turnstile. Both in the latex and lean code, the strong formulations should be the real focus, introducing the weak formulations only where it is useful.
+Weak completeness is recovered as the $\context = []$ instance, so the weak form has exactly
+one proof, as a corollary of the consequence form.
+
+\subsubsection{Strong Completeness and Compactness}
+
+\emph{Strong completeness} proper is completeness for consequence from an arbitrary ---
+possibly infinite --- set of premises: $\Gamma \subseteq \mathsf{Form}$, with the finitary
+derivability relation $\Gamma \proves \varphi$ iff $\Delta \proves \varphi$ for some finite
+$\Delta \subseteq \Gamma$.
+Because derivations use only finitely many premises, strong completeness entails compactness of
+the semantic consequence relation, so it is available exactly for those frame classes whose
+consequence relation is compact.
+The classes treated in this development split as follows:
+
+\begin{itemize}
+  \item \textbf{Base and Dense}: open.
+    Neither class imposes Archimedean structure, so no known non-compactness counterexample
+    applies.
+    Establishing strong completeness would require migrating premises to \texttt{Set Formula}
+    and proving a \emph{model-existence} theorem --- every consistent set of formulas is
+    satisfiable in a frame of the class --- which does not follow from the single-formula
+    countermodel constructions.
+    The set-level consistency layer (\texttt{SetConsistent}, \texttt{SetMaximalConsistent},
+    \texttt{set\_lindenbaum} in \texttt{FormalSystem/Metalogic/Core/MaximalConsistent.lean}) is
+    already finitary and in place.
+  \item \textbf{Discrete}: provably unavailable.
+    On discrete orders the next-step operator $X\varphi = U(\varphi, \bot)$ is genuine, so the
+    premise set $\{F p\} \cup \{\lneg X^n p : n \in \mathbb{N}\}$ is expressible; it is
+    finitely satisfiable over $\mathbb{Z}$ (place $p$ far enough out) yet unsatisfiable over
+    every Archimedean discrete order, since the $F p$ witness would lie at some finite
+    successor distance.
+    The consequence relation is therefore not compact, and weak completeness is the strongest
+    form for this class.
+  \item \textbf{Dedekind}: provably unavailable.
+    Completeness over real-flowed (Dedekind complete) time is \emph{weak} in Reynolds' sense
+    (Reynolds 1992, Theorem 7), and the restriction is genuine: the consequence relation over
+    Dedekind complete flows is not compact.
+    Weak completeness, with its finite-context consequence corollary, is the strongest form for
+    this class.
+\end{itemize}
 
 \begin{theorem}[Provable iff Valid]
 $\proves \varphi \iff \satisfies{\varphi}$.\footnote{This is proven as \texttt{main\_provable\_iff\_valid}, establishing completeness of \textbf{TM}.}
@@ -407,7 +444,7 @@ The following diagram illustrates the import structure of the active codebase.
   \node[dirbox, fill=green!15] (repr) at (2.5,1.5) {Representation/\\{\scriptsize Canonical, Truth, Representation}};
 
   % Completeness layer
-  \node[dirbox, fill=orange!15] (compl) at (0,3) {Completeness/\\{\scriptsize Weak, Strong}};
+  \node[dirbox, fill=orange!15] (compl) at (0,3) {Completeness/\\{\scriptsize Weak, Consequence}};
 
   % FMP hub
   \node[dirbox, fill=yellow!20] (fmp) at (5,3) {FMP.lean\\{\scriptsize Central Hub}};
@@ -433,7 +470,7 @@ The following diagram illustrates the import structure of the active codebase.
   \item \textbf{\texttt{Core/}}: Foundational definitions including provability (\texttt{Derivable}), deduction theorem, and maximal consistent sets (\texttt{Consistent}).
   \item \textbf{\texttt{Soundness/}}: Validity proofs for all 15 axiom schemata and the main soundness theorem.
   \item \textbf{\texttt{Representation/}}: Canonical model construction, truth lemma, and the central representation theorems.
-  \item \textbf{\texttt{Completeness/}}: Weak and strong completeness theorems derived from representation.
+  \item \textbf{\texttt{Completeness/}}: Weak and consequence completeness theorems derived from representation.
   \item \textbf{\texttt{Applications/}}: Compactness theorem (trivial for list-based contexts).
   \item \textbf{\texttt{Decidability/}}: Tableau-based decision procedure with proof/countermodel extraction.
 \end{itemize}
@@ -487,7 +524,7 @@ IndexedMCSFamily & Proven & \texttt{IndexedMCSFamily} \\
 Truth Lemma & Proven & \texttt{truth\_lemma} \\
 Representation Theorem & Proven & \texttt{representation\_theorem} \\
 Weak Completeness & Proven & \texttt{semantic\_weak\_completeness} \\
-Strong Completeness & Proven* & \texttt{main\_strong\_completeness} \\
+Consequence Completeness & Proven* & \texttt{consequence\_completeness\_*} \\
 Provable iff Valid & Proven & \texttt{main\_provable\_iff\_valid} \\
 Finite Model Property & Statement & \texttt{finite\_model\_property} \\
 Decidability Soundness & Proven & \texttt{decide\_sound} \\
@@ -496,7 +533,10 @@ Decidability Soundness & Proven & \texttt{decide\_sound} \\
 \end{center}
 
 \noindent
-* Strong completeness uses the weak completeness result, which is fully proven.
+* Consequence completeness is the deduction-theorem transport of the weak completeness result
+(finite contexts); genuine strong completeness over infinite premise sets is a separate
+statement, unavailable for the Discrete and Dedekind classes (see \emph{Strong Completeness and
+Compactness}).
 The three sorries listed above affect only the finite model property path.
 
 \end{document}
