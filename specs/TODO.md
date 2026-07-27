@@ -11,7 +11,7 @@ next_project_number: 404
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,378,390,403 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,378,390 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296,391 | 193,231,298,361,390 | completeness, formula-refactor, dataset-enhancement, ... |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -52,10 +52,6 @@ next_project_number: 404
   └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
-### Literature
-
-403 [NOT STARTED] — Corpus-wide follow-up from task 389's Rabinovich 2014 repair. Tas
-
 ### Reference Book
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
@@ -76,10 +72,13 @@ next_project_number: 404
 ## Tasks
 
 ### 403. Sweep literature corpus combining mark corruption
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 389
+- **Research**: [403_sweep_literature_corpus_combining_mark_corruption/reports/01_sweep-combining-mark-corruption.md]
+- **Plan**: [403_sweep_literature_corpus_combining_mark_corruption/plans/01_sweep-combining-mark-corruption.md]
+- **Summary**: [403_sweep_literature_corpus_combining_mark_corruption/summaries/01_sweep-combining-mark-corruption-summary.md]
 
 **Description**: Corpus-wide follow-up from task 389's Rabinovich 2014 repair. Task 389 Phase 9's cheap detection sweep for bare U+0338 (COMBINING LONG SOLIDUS OVERLAY) survivors across ~/Projects/Literature/sources/**/*.md found 667 documents with surviving bare combining marks in the U+0300-U+036F range (not just Rabinovich, and not limited to U+0338 -- the sweep counted the whole combining-diacritics block). This means the Rabinovich-class defect (PyMuPDF's PRIMARY pymupdf4llm tier silently dropping a combining overlay mark, producing a semantically-inverted but readable '=' instead of '≠') may recur across a wide swath of the corpus wherever the same TeX-descended PDF toolchain produced the source. Task 389 Phase 2 already added a `compose_combining_overlays()` fix to the shared `.claude/scripts/literature-convert.sh` normalizer, but that only protects FUTURE conversions -- it does not retroactively repair the 667 already-converted documents. This task should: (1) re-run the sweep with a narrower U+0338-specific filter (the 667 figure sweeps the whole combining-diacritics block, which includes benign combining marks on accented Latin letters -- e.g. 'e'+U+0301 in Rabinovich's corrected doc; the true blast radius for the DANGEROUS negation-specific defect is likely much smaller and needs isolating); (2) for documents in the narrowed set, determine via spot-check whether the combining mark survives bare (relatively benign, just a rendering nuisance) or was silently dropped/inverted (dangerous, Rabinovich-class); (3) prioritize re-conversion (using the now-fixed `literature-convert.sh`) for any genuinely affected, load-bearing documents; (4) as a related but distinct improvement recorded by task 389's research: `literature-fidelity-audit.sh`'s word-ratio heuristic is structurally blind to character-level semantic inversions (it is what mis-certified Rabinovich as 'verified_conversion' in the first place) -- consider whether a cheap combining-mark/glyph-substitution detector could be added to that audit tool as a targeted, low-cost second signal, without expanding its scope into a full corpus-wide re-conversion.
 

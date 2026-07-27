@@ -1012,7 +1012,7 @@
     {
       "project_number": 403,
       "project_name": "sweep_literature_corpus_combining_mark_corruption",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "general",
       "topic": "literature",
       "priority": "medium",
@@ -1021,12 +1021,29 @@
         389
       ],
       "created": "2026-07-26T00:00:00Z",
-      "last_updated": "2026-07-26T00:00:00Z",
-      "session_id": "sess_1785103409_6af9e1_389",
+      "last_updated": "2026-07-27T11:13:00Z",
+      "session_id": "sess_1785145751_ad171e",
       "file_scope": [
         "~/Projects/Literature/sources/",
         "~/Projects/Literature/index.json",
         ".claude/scripts/literature-fidelity-audit.sh"
+      ],
+      "artifacts": [
+        {
+          "path": "specs/403_sweep_literature_corpus_combining_mark_corruption/reports/01_sweep-combining-mark-corruption.md",
+          "type": "report",
+          "summary": ""
+        },
+        {
+          "path": "specs/403_sweep_literature_corpus_combining_mark_corruption/plans/01_sweep-combining-mark-corruption.md",
+          "type": "plan",
+          "summary": ""
+        },
+        {
+          "path": "specs/403_sweep_literature_corpus_combining_mark_corruption/summaries/01_sweep-combining-mark-corruption-summary.md",
+          "type": "summary",
+          "summary": ""
+        }
       ]
     }
   ],
