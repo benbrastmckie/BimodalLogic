@@ -943,19 +943,26 @@
     {
       "project_number": 390,
       "project_name": "dedekind_carrier_construction_research",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "high",
       "description": "Research task: determine how a Dedekind-complete carrier can be produced for the canonical-model construction. This is the mathematical crux of the Dedekind-complete completeness effort and MUST resolve before any implementation plan is written.\n\nTHE OBSTRUCTION. specs/ROADMAP.md:1477 describes the chronicle limit domain X as a COUNTABLE linear order (sparse X subset of Rat for Base, Rat for Dense, order-isomorphic to Int for Discrete). But a Dedekind-complete, densely ordered, unbounded linear order is order-isomorphic to the reals, hence uncountable. So the existing chronicle / canonical-model route cannot directly yield a Dedekind-complete carrier.\nCorroborating anchors: specs/ROADMAP.md:317-320 warns that dense domains such as Rat are WRONG for general completeness (GGp -> Gp is valid on Rat but not derivable in BX; Burgess uses a sparse X subset of Rat). specs/ROADMAP.md:1414's \"Representation Theorem Goal\" enumerates D' = Rat (base), Rat (dense), Int (discrete) and has NO reals row. Theories/Bimodal/Metalogic/WeakCanonical/Kamp/DedekindINF.lean:44 states flatly that no reals OrderedMonadicStructure is constructed here or anywhere in this tree.\n\nQUESTIONS TO ANSWER, with literature grounding (see the Dedekind literature-remediation task):\n1. Does the intended semantics quantify over Dedekind-complete ORDERS, or over Dedekind-complete orders arising as duration groups? The live validity predicates take instance binders on a duration type D (Theories/Bimodal/Semantics/Validity.lean:73 valid, :162 valid_dense, :180 valid_discrete). Establish what the Dedekind analogue's binder list must be.\n2. Is a Dedekind completion of the countable limit domain sound for the truth lemma -- i.e. does adding limit points preserve the coherence conditions the BFMCS bundle requires? If not, why not, and what is the obstruction precisely.\n3. What does the literature actually do? Reynolds 1992 axiomatizes Until/Since over the reals; GHR94 Ch.10 section 10.3 treats separation over Dedekind-complete flows. Extract the construction each uses for the carrier and state whether it is a completion, a direct construction, or a representation argument.\n4. Is the target completeness result even true for the intended axiom set, and what axiom characterizes Dedekind completeness? No candidate exists in the Axiom inductive today.\n\nCONSTRAINTS. Standing ROADMAP anti-patterns apply: do NOT attempt a direct IsSuccArchimedean proof bypassing chronicle_gap_contradiction; do NOT attempt the \"discrete bypass\"; decidability-based completeness is explicitly excluded as a path to the representation theorem.\nReusable scaffolding that a solution must plug into (all live, sorry-free, generic in the duration type D and the frame class fc): ParametricCanonicalTaskFrame (Algebraic/ParametricCanonical.lean:200), ParametricCanonicalTaskModel (Algebraic/ParametricTruthLemma.lean:101), parametric_canonical_truth_lemma (:226), restricted_parametric_shifted_truth_lemma (Algebraic/RestrictedParametricTruthLemma.lean:109), and the single funnel both live countermodels go through, fully_restricted_parametric_completeness_from_neg_membership (:394). Also neg_consistent_of_not_derivable (Metalogic/BXCanonical/Completeness.lean:66, generic in fc) and mcs_mixed_case_absurd (Chronicle/MCSMixedCase.lean:34, takes fc explicitly). structure Gap (Metalogic/WeakCanonical/EFGames/Defs.lean:230) is the existing object with the right shape for phrasing \"no Dedekind gaps\" as a frame condition.\nRelated warning from the existing tree: Metalogic/BXCanonical/Completeness.lean:168-179 documents why the general completeness theorem still carries sorryAx -- a Base-MCS is not automatically Discrete-consistent, so the sorry-free Reynolds pipeline cannot be reused. A Dedekind variant will hit the structurally identical problem and must build a countermodel from an MCS of its own class.\nDELIVERABLE: a research report with a GO / NO-GO recommendation and, if GO, the carrier construction to be formalized. Dispatch with --lit.",
       "effort": "large",
       "created": "2026-07-25T14:46:25Z",
-      "last_updated": "2026-07-25T14:46:25Z",
+      "last_updated": "2026-07-27T16:07:05Z",
       "dependencies": [
         389
       ],
-      "artifacts": [],
-      "file_scope": []
+      "artifacts": [
+        {
+          "path": "specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md",
+          "type": "report",
+          "summary": "Hard-mode Tier 1 research report: GO/NO-GO verdict on the Dedekind-complete carrier, 8 findings, Tier 1 lemma mapping table with stable PDF page anchors, Mathlib survey with verified presences and explicitly stated absences, 9-phase decomposition, and full H4 adversarial self-verification section."
+        }
+      ],
+      "file_scope": [],
+      "session_id": "sess_1785167491_0e2961"
     },
     {
       "project_number": 391,

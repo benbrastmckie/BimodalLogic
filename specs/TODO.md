@@ -21,7 +21,7 @@ next_project_number: 405
 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
-390 [NOT STARTED] — Research task: determine how a Dedekind-complete carrier can be p
+390 [RESEARCHED] — Research task: determine how a Dedekind-complete carrier can be p
   └─ 391 [NOT STARTED] — Design and land the frame-class scaffolding for a Dedekind-comple
 
 ### Formula Refactor
@@ -218,10 +218,11 @@ TEMPLATE TO FOLLOW. All three live completeness theorems sit in Metalogic/BXCano
 
 ### 390. Dedekind carrier construction research
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 389
+- **Research**: [390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md]
 
 **Description**: Research task: determine how a Dedekind-complete carrier can be produced for the canonical-model construction. This is the mathematical crux of the Dedekind-complete completeness effort and MUST resolve before any implementation plan is written.
 
