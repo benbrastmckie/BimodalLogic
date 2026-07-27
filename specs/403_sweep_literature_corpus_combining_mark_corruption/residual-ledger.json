@@ -1,5 +1,68 @@
 [
   {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 41936,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "we deﬁne\nXG\n#\ns =\n(\nXG\n#\nif 4 ̸∈X\n(XG\n# \\ {4◦, 4•}) ∪{s4◦, s4",
+    "dir": "arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 4912,
+    "base_char": "|",
+    "signature": "glyph_six",
+    "reason": "overlapping_edit",
+    "context": "e have w0 |= ♦(a1 ∨a2) and w0 ̸|= ♦a1 ∨♦a2.\n• k4: W = {w0, w1",
+    "md_file": "/home/benjamin/Projects/Literature/sources/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics.md",
+    "md_gap_start": 6338,
+    "md_gap_end": 6436,
+    "dir": "arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 5058,
+    "base_char": "|",
+    "signature": "glyph_six",
+    "reason": "overlapping_edit",
+    "context": "We have w0 |= ♦a1 ⊃\u001fa2 and w0 ̸|= \u001f(a1 ⊃a2).\n• k5: W = {w0, u",
+    "md_file": "/home/benjamin/Projects/Literature/sources/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics.md",
+    "md_gap_start": 6338,
+    "md_gap_end": 6436,
+    "dir": "arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics"
+  },
+  {
+    "pdf_file": "Bacon - 2018 - The Broadest Necessity.pdf",
+    "pdf_char_offset": 108297,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "age.\nδ1\nA = B →δABCD = C\nδ2\nA ̸= B →δABCD = D\nThese principle",
+    "dir": "bacon_2018_broadest-necessity"
+  },
+  {
+    "pdf_file": "Bacon - 2018 - The Broadest Necessity.pdf",
+    "pdf_char_offset": 108655,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "1\nL(A = B →δABCD = C)\nLδ2\nL(A ̸= B →δABCD = D)\nThe above stre",
+    "dir": "bacon_2018_broadest-necessity"
+  },
+  {
+    "pdf_file": "Bacon - 2018 - The Broadest Necessity.pdf",
+    "pdf_char_offset": 109939,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "narrow_failed",
+    "context": "and δ2:\n1.\nA = ⊤→L′A = ⊤\n2.\nA ̸= ⊤→L′A = ⊥\nIn particular the ",
+    "md_file": "/home/benjamin/Projects/Literature/sources/bacon_2018_broadest-necessity/bacon_2018_broadest-necessity.md",
+    "md_gap_start": 114699,
+    "md_gap_end": 114758,
+    "dir": "bacon_2018_broadest-necessity"
+  },
+  {
     "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
     "pdf_char_offset": 124038,
     "base_char": "=",
@@ -4431,34 +4494,517 @@
     "dir": "baier_katoen_2008"
   },
   {
-    "pdf_file": "Bacon - 2018 - The Broadest Necessity.pdf",
-    "pdf_char_offset": 108297,
+    "pdf_file": "Caleiro_Vigano_Volpe_2013_Mosaic_Method_Tense_Modal.pdf",
+    "pdf_char_offset": 57240,
     "base_char": "=",
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
-    "context": "age.\nδ1\nA = B →δABCD = C\nδ2\nA ̸= B →δABCD = D\nThese principle",
-    "dir": "bacon_2018_broadest-necessity"
+    "context": " that G⊥∈Γ, (Γ, Δ) ∈\nSH and Γ ̸= Δ. Then there exists A ∈Δ su",
+    "dir": "caleiro_2013"
   },
   {
-    "pdf_file": "Bacon - 2018 - The Broadest Necessity.pdf",
-    "pdf_char_offset": 108655,
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 21907,
     "base_char": "=",
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
-    "context": "1\nL(A = B →δABCD = C)\nLδ2\nL(A ̸= B →δABCD = D)\nThe above stre",
-    "dir": "bacon_2018_broadest-necessity"
+    "context": "= 0, Q := ∅.\n2. Loop: while S ̸= ∅do\nbegin\nv := top(S);\nif M[",
+    "dir": "courcoubetis_1992"
   },
   {
-    "pdf_file": "Bacon - 2018 - The Broadest Necessity.pdf",
-    "pdf_char_offset": 109939,
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 22272,
     "base_char": "=",
-    "signature": "control_char",
-    "reason": "narrow_failed",
-    "context": "and δ2:\n1.\nA = ⊤→L′A = ⊤\n2.\nA ̸= ⊤→L′A = ⊥\nIn particular the ",
-    "md_file": "/home/benjamin/Projects/Literature/sources/bacon_2018_broadest-necessity/bacon_2018_broadest-necessity.md",
-    "md_gap_start": 114699,
-    "md_gap_end": 114758,
-    "dir": "bacon_2018_broadest-necessity"
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= ∅, M := 0.\n2. Loop: while Q ̸= ∅do\nbegin\nf := head(Q);\nremo",
+    "dir": "courcoubetis_1992"
+  },
+  {
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 22339,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "rom Q;\npush f into S;\nwhile S ̸= ∅do\nbegin\nv := top(S);\nif f ",
+    "dir": "courcoubetis_1992"
+  },
+  {
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 25607,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "∅, M1 := M2 := 0.\n2. while S1 ̸= ∅do\nbegin\nx := top(S1);\nif t",
+    "dir": "courcoubetis_1992"
+  },
+  {
+    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
+    "pdf_char_offset": 25836,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "egin\npush x into S2;\nwhile S2 ̸= ∅do begin\nv := top(S2);\nif x",
+    "dir": "courcoubetis_1992"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 9824,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "(W, { Ri : i ∈I }, W) where W ̸= ∅,\nRi ⊆W ρ(i)+1, and W ⊆Sb(W",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 12008,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": ", V ), w0 |= ¬φ iﬀ(F, V ), w0 ̸|= φ; (F, V ), w0 |= φ ∧ψ iﬀbo",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 27905,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\n(α)\n∀u∀v∀w\n\u0010\n(u ∼0 v ∼1 w ∧v ̸= w) →∃x(¬Dx ∧u ∼1 x ∧(x ∼0 v ",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 27982,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\n∀u∀v∀w\n\u0010\n(Du ∧u ∼0 v ∼1 w ∧v ̸= w) →∃x(¬Dx ∧u ∼1 x ∼0 w)\n\u0011\n.",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 28112,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " frames:\nFigure 2: α\nw\nv\nu\nx (̸∈D)\nr\nr\nr\nr\n1,̸=\n0\n1\nHHHH\nH\nH\n",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 28127,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " 2: α\nw\nv\nu\nx (̸∈D)\nr\nr\nr\nr\n1,̸=\n0\n1\nHHHH\nH\nH\nH\nH\n0\n\b\b\b\b\n\b\n\b\n",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 28189,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\n\b\n0\nFigure 3: α′\nw\nv\nu ∈D\nx (̸∈D)\nD\nr\nr\nr\nr\n1,̸=\n0\n0\n1\n\u0000\u0000\u0000\u0000\u0000",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 28206,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\nw\nv\nu ∈D\nx (̸∈D)\nD\nr\nr\nr\nr\n1,̸=\n0\n0\n1\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000Proposition 4.3",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 30211,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "1∀y2\n\u0010\n(x ∼0 y1 ∧y1 ∼1 y2 ∧y1 ̸= y2) →∃z1(x ∼1 z1 ∧¬Dz1 ∧(z1 ",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 30800,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "s in F with u ∼0 v ∼1 w\nand v ̸= w. We have to ﬁnd an x with ",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 30833,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "w. We have to ﬁnd an x with x ̸∈D, u ∼1 x such that x is in t",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31024,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "red x, with x ∼0 w.\nCase 2: u ̸∈D.\nThen u itself is the desir",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31202,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\nwith u ∈D, u ∼0 v ∼1 w and v ̸= w, and set ourselves the tas",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31254,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "s the task to ﬁnd an x with x ̸∈D and\nu ∼1 x ∼0 w, viz. Figur",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31317,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "3.\nSince F |= α, there is a y ̸∈D with u ∼1 y and y ∼0 v or y",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31551,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "re 4.\nw\nv\nu\nz\ny\nD\nr\nr\nr\nr\nr\n1,̸=\n0\n0\n1\n1\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\b\b\b\n\b\n\b\n\b\n\b\n",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31625,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " r\nv r\nu = z\nr\ny\nr\nD\n\u0000\u0000\u0000\u0000\u0000\u0000\u00001,̸=\n0\n1\n@\n@\n@\n@\n@\n@\n@@\n0\n\b\b\b\b\n\b\n",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31688,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "\b\n\b\n0\nDistinguish\nCase 2.1: z ̸∈D.\nAgain we are ﬁnished: take",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 40985,
+    "base_char": "L",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ditions).\nLT TC\nPredicativist\n̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 40989,
+    "base_char": "T",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ons).\nLT TC\nPredicativist\n̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\n",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 41004,
+    "base_char": "L",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "dicativist\n̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\nExtremist\nImpre",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 41006,
+    "base_char": "T",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "cativist\n̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\nExtremist\nImpredi",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 41015,
+    "base_char": "T",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\nExtremist\nImpredicativist\n",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 41017,
+    "base_char": "C",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "T ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\nExtremist\nImpredicativist\n8 ",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 59881,
+    "base_char": "L",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "C\nPredicativist\nStrong Kleene\n̸LT ̸TC\nCompromise\nWeak Kleene\n",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 59885,
+    "base_char": "T",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "edicativist\nStrong Kleene\n̸LT ̸TC\nCompromise\nWeak Kleene\n̸L̸T",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 59912,
+    "base_char": "L",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "LT ̸TC\nCompromise\nWeak Kleene\n̸L̸T TC\nSupervaluational\nLT ̸T̸",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 59914,
+    "base_char": "T",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " ̸TC\nCompromise\nWeak Kleene\n̸L̸T TC\nSupervaluational\nLT ̸T̸C\n",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 59940,
+    "base_char": "T",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "e\n̸L̸T TC\nSupervaluational\nLT ̸T̸C\nExtremist\nImpredicativist\n",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "euclid.ndjfl.1273002112.pdf",
+    "pdf_char_offset": 59942,
+    "base_char": "C",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "̸L̸T TC\nSupervaluational\nLT ̸T̸C\nExtremist\nImpredicativist\n11",
+    "dir": "fine_2010_some-puzzles-of-ground"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 24672,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "∈I⟩∈A to be σ(a) = {i ∈I :\nai ̸= 0}. Finally, for µ ∈A+, deﬁn",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 25469,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "then a/D ∈f, so Q\nD Ai |=\na/D ̸= 0. This implies that σ(a) ∈D",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 32909,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": " B ∈K.\nThen Aσ ∼= T +, so T + ̸|= ρ and T + ∈V as V is a cano",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 33354,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "itive in τ, or the negation u ̸= 0 of an equation, in which c",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 33481,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "f τ into T + so\nthat (T +, h) ̸|= t = 0 when t is positive an",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 34042,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "∈h(t) ∩Bt\n+ =\nht(t), so ht(t) ̸= 0. Then if t1, . . . tn are ",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 34320,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "ll negative u in τ and h′(ti) ̸= 0 for all\npositive ti. This ",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 34359,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "all\npositive ti. This shows B ̸|= τ, and hence ρ fails in B.\n",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 35248,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "hile at/∼∈ht\n∼(t), so ht\n∼(t) ̸= 0.\nClearly, S+\nt\nis ﬁnite. I",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 40069,
+    "base_char": ">",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "t |G+\nn | ≥2|Gn| and χ(G+\nn ) ̸> cn, a contradiction. So\nn ∈X",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 40477,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Y ⊆ω \\ 2 are distinct then VX ̸= VY .\nSo {VX : X ⊆ω\\2, X inﬁn",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 45962,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ating Γi from Γj. Let ψi = V\nj̸=i γij. Then for all i, j < n,",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 14517,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " and r accepts w iﬀInf (r) ∩α ̸= ∅.\n• co-B¨uchi automata, whe",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 27070,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "even,\nconsider a vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemm",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 27087,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemma’s requirement f",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 27309,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " odd, consider a vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemm",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 27326,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemma’s\nrequirement f",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 44013,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " and σ ∈Σ, as\nfollows.\n• If O ̸= ∅, then\nδ′(⟨S, O⟩, σ) = {⟨S′",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 48200,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(⟨S, O⟩, σ) as follows.\n◦If O ̸= ∅, then\nδ′(⟨S, O⟩, σ) = {\n⟨S",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 53759,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " = 2n and gin(q) = ⊥for all q ̸= qin. Thus, the odd ranking t",
+    "dir": "kupferman_vardi_2001"
+  },
+  {
+    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
+    "pdf_char_offset": 53937,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(⟨g, P⟩, σ) as follows.\n◦If P ̸= ∅, then\nδ′(⟨g, P⟩, σ) = { ⟨g",
+    "dir": "kupferman_vardi_2001"
   },
   {
     "pdf_file": "Libkin_2004_Elements_Finite_Model_Theory_ch3_ch7.pdf",
@@ -6108,130 +6654,274 @@
     "dir": "marinmoralesstrassburger_2021_fully_labelled_proof_system_intuitionistic_modal"
   },
   {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 40985,
-    "base_char": "L",
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 85802,
+    "base_char": "∈",
     "signature": "unanchored",
     "reason": "anchor_not_found",
-    "context": "ditions).\nLT TC\nPredicativist\n̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸",
-    "dir": "fine_2010_some-puzzles-of-ground"
+    "context": " A}\nσ : ¬2A ∈B and ∀C σ.n : C ̸∈B B\nπ\n−→B ∪{σ.n : ¬A}\nB. Proo",
+    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
   },
   {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 40989,
-    "base_char": "T",
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 89142,
+    "base_char": "=",
     "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "ons).\nLT TC\nPredicativist\n̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\n",
-    "dir": "fine_2010_some-puzzles-of-ground"
+    "reason": "ambiguous_anchor",
+    "context": "nd σ.m. It can be that\nn1 = n ̸= m = n2 and A ̸= B and thus B",
+    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
   },
   {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 41004,
-    "base_char": "L",
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 89158,
+    "base_char": "=",
     "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "dicativist\n̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\nExtremist\nImpre",
-    "dir": "fine_2010_some-puzzles-of-ground"
+    "reason": "ambiguous_anchor",
+    "context": "e that\nn1 = n ̸= m = n2 and A ̸= B and thus B1 ̸= B2.\nThen we",
+    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
   },
   {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 41006,
-    "base_char": "T",
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 90232,
+    "base_char": "=",
     "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "cativist\n̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\nExtremist\nImpredi",
-    "dir": "fine_2010_some-puzzles-of-ground"
+    "reason": "ambiguous_anchor",
+    "context": "ed formulae such\nthat h12(σ1) ̸= σ2. Let Br\n1 be the reductio",
+    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
   },
   {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 41015,
-    "base_char": "T",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "̸LT ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\nExtremist\nImpredicativist\n",
-    "dir": "fine_2010_some-puzzles-of-ground"
-  },
-  {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 41017,
-    "base_char": "C",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "T ̸TC\nCompromise\n̸L̸T TC\nLT ̸T̸C\nExtremist\nImpredicativist\n8 ",
-    "dir": "fine_2010_some-puzzles-of-ground"
-  },
-  {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 59881,
-    "base_char": "L",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "C\nPredicativist\nStrong Kleene\n̸LT ̸TC\nCompromise\nWeak Kleene\n",
-    "dir": "fine_2010_some-puzzles-of-ground"
-  },
-  {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 59885,
-    "base_char": "T",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "edicativist\nStrong Kleene\n̸LT ̸TC\nCompromise\nWeak Kleene\n̸L̸T",
-    "dir": "fine_2010_some-puzzles-of-ground"
-  },
-  {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 59912,
-    "base_char": "L",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "LT ̸TC\nCompromise\nWeak Kleene\n̸L̸T TC\nSupervaluational\nLT ̸T̸",
-    "dir": "fine_2010_some-puzzles-of-ground"
-  },
-  {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 59914,
-    "base_char": "T",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": " ̸TC\nCompromise\nWeak Kleene\n̸L̸T TC\nSupervaluational\nLT ̸T̸C\n",
-    "dir": "fine_2010_some-puzzles-of-ground"
-  },
-  {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 59940,
-    "base_char": "T",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "e\n̸L̸T TC\nSupervaluational\nLT ̸T̸C\nExtremist\nImpredicativist\n",
-    "dir": "fine_2010_some-puzzles-of-ground"
-  },
-  {
-    "pdf_file": "euclid.ndjfl.1273002112.pdf",
-    "pdf_char_offset": 59942,
-    "base_char": "C",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "̸L̸T TC\nSupervaluational\nLT ̸T̸C\nExtremist\nImpredicativist\n11",
-    "dir": "fine_2010_some-puzzles-of-ground"
-  },
-  {
-    "pdf_file": "Venema_2001_Temporal_Logic_Survey.pdf",
-    "pdf_char_offset": 16123,
-    "base_char": "⊩",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "t 0. This shows that indeed Z ̸⊩Fq →FFq. We can\nin fact gener",
-    "dir": "venema_2001"
-  },
-  {
-    "pdf_file": "Venema_2001_Temporal_Logic_Survey.pdf",
-    "pdf_char_offset": 24056,
+    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
+    "pdf_char_offset": 26540,
     "base_char": "=",
     "signature": "unanchored",
     "reason": "unrecognized_gap",
-    "context": "that\nCs ≺Ct if and only if Cs ̸= Ct and Rst.\nThe key idea is ",
-    "dir": "venema_2001"
+    "context": "ff ∃φ, ˜φ ⊆X ∧[G]φ ∈s,\nwhen G ̸= N\nV C is the usual valuation",
+    "dir": "obendrauf_2024"
+  },
+  {
+    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
+    "pdf_char_offset": 37259,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "cause ⊢ϕSf and ∀s, t ∈SC′, sf ̸= tf ⇒⊢ϕsf →¬ϕtf .\n6. ∃t ∈SC, ",
+    "dir": "obendrauf_2024"
+  },
+  {
+    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
+    "pdf_char_offset": 37923,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " that ⊢ϕSf and ∀s, t ∈SC′, sf ̸= tf ⇒\n⊢ϕsf →¬ϕtf .\nIn Lean th",
+    "dir": "obendrauf_2024"
+  },
+  {
+    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
+    "pdf_char_offset": 41573,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": " unique_s_f where we prove sf ̸= tf by contradiction, based o",
+    "dir": "obendrauf_2024"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 12516,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ψ ∈Γ, then ϕ ∈Γ or ψ ∈Γ;\nand ⊥̸∈Γ. If X is a set of formulas,",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 14575,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "that: Γ ⊆Υ, Υ□⊆Σ, Σ ⊆Υ♦, and ⊥̸∈Υ. Suppose ϕ ∨ψ ∈Θ.\nThen if ϕ",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 15398,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ise □ϕ ∈Γ. We also have that ⊥̸∈Φ. Suppose otherwise, then th",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 17316,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "a contradiction. Therefore ψ2 ̸∈Υ. By Zorn’s Lemma, we can bu",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 17384,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "heory Σ such that Υ ⊆Σ and ψ2 ̸∈Σ. By the induction hypothesi",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 17727,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " Σ such that Γ ⪯c ∆∼c Σ and ϕ ̸∈Σ. By the induction hypothesi",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 17767,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e induction hypothesis,\nMc, Σ ̸|= ϕ. Therefore Mc, Γ ̸|= □ϕ.\n",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "source.pdf",
+    "pdf_char_offset": 18382,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "he induction\nhypothesis, Mc, ∆̸|= ψ. Therefore Mc, Γ ̸|= ♦ψ.\n",
+    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 15728,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nf (r) ∩Ei = ∅and inf (r) ∩Fi ̸= ∅. That is, the run visits ﬁ",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 16557,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "me even i we have inf (r) ∩Fi ̸= ∅and for all i′ < i we have ",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 23032,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "with label S′ such that S′ ∩α ̸= ∅, create a new node v′ ∈V ′",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 28423,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "with label S′ such that S′ ∩α ̸= ∅, create a new son v′ /∈N o",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 29604,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "r every node v such that l(v) ̸= ∅we change the name of v to\n",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 37946,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "very j ∈J we have inf (r) ∩Rj ̸= ∅and for every j /∈J we\nhave",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 43287,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "If v is a leaf such that h(v) ̸= ∅, add to v a new son v′ ∈V ",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 49822,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "If v is a leaf such that h(v) ̸= ∅, add to v a new son v′. Se",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
+    "pdf_char_offset": 51724,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "r every node v such that l(v) ̸= ∅we change the name of v to ",
+    "dir": "piterman_2007"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 12448,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "dd(f ′), f ′\u0001\n| f ′ ≤S\nσ f, O ̸= ∅\n\t\n∪\n\b\u0000δ(S, σ), δ(S, σ) ∖od",
+    "dir": "schewe_2009"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 19971,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "no state of ρ′ is accepting (∅̸= Si /∈F ′ for all i ∈ω). Let ",
+    "dir": "schewe_2009"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 22206,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " α(j)\n\u0001\n∩f −1\nj+1(ij+1) if Oj ̸= ∅, respectively, for all j >",
+    "dir": "schewe_2009"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 23167,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "adicts the assumption that Ok ̸= ∅\nis non-empty for all k > j",
+    "dir": "schewe_2009"
+  },
+  {
+    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
+    "pdf_char_offset": 28489,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": ", O, f, i), σ\n\u0001\n, O′′ = ∅, i′ ̸= 0 ∨O′ = ∅, and\ng′(q) = g(q) ",
+    "dir": "schewe_2009"
   },
   {
     "pdf_file": "van_Doorn_2015_Propositional_Calculus_Coq.pdf",
@@ -6244,13 +6934,6 @@
     "md_gap_start": 4066,
     "md_gap_end": 4098,
     "dir": "van_doorn_2015"
-  },
-  {
-    "dir": "troelstra_schwichtenberg_lectures",
-    "signature": null,
-    "reason": "not_yet_converted",
-    "base_char": null,
-    "context": "Directory holds only source.pdf and PROVENANCE.txt; no converted markdown and no matching index.json id. Per plan Non-Goals, not converted as part of this task."
   },
   {
     "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
@@ -6532,6 +7215,15 @@
     "dir": "venema_1993"
   },
   {
+    "pdf_file": "Venema_1993_Since_and_Until.pdf",
+    "pdf_char_offset": 5956,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "and a gap g of T\nwith t ∈g, s ̸∈g, such that (i) ψ holds ever",
+    "dir": "venema_1993_since"
+  },
+  {
     "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
     "pdf_char_offset": 7443,
     "base_char": "≤",
@@ -6667,712 +7359,58 @@
     "dir": "venema_1997"
   },
   {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 9824,
+    "pdf_file": "Venema_2001_Temporal_Logic_Survey.pdf",
+    "pdf_char_offset": 16123,
+    "base_char": "⊩",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "t 0. This shows that indeed Z ̸⊩Fq →FFq. We can\nin fact gener",
+    "dir": "venema_2001"
+  },
+  {
+    "pdf_file": "Venema_2001_Temporal_Logic_Survey.pdf",
+    "pdf_char_offset": 24056,
     "base_char": "=",
     "signature": "unanchored",
     "reason": "unrecognized_gap",
-    "context": "(W, { Ri : i ∈I }, W) where W ̸= ∅,\nRi ⊆W ρ(i)+1, and W ⊆Sb(W",
-    "dir": "derijke_1995"
+    "context": "that\nCs ≺Ct if and only if Cs ̸= Ct and Rst.\nThe key idea is ",
+    "dir": "venema_2001"
   },
   {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 12008,
-    "base_char": "|",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": ", V ), w0 |= ¬φ iﬀ(F, V ), w0 ̸|= φ; (F, V ), w0 |= φ ∧ψ iﬀbo",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 27905,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "\n(α)\n∀u∀v∀w\n\u0010\n(u ∼0 v ∼1 w ∧v ̸= w) →∃x(¬Dx ∧u ∼1 x ∧(x ∼0 v ",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 27982,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "\n∀u∀v∀w\n\u0010\n(Du ∧u ∼0 v ∼1 w ∧v ̸= w) →∃x(¬Dx ∧u ∼1 x ∼0 w)\n\u0011\n.",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 28112,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": " frames:\nFigure 2: α\nw\nv\nu\nx (̸∈D)\nr\nr\nr\nr\n1,̸=\n0\n1\nHHHH\nH\nH\n",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 28127,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": " 2: α\nw\nv\nu\nx (̸∈D)\nr\nr\nr\nr\n1,̸=\n0\n1\nHHHH\nH\nH\nH\nH\n0\n\b\b\b\b\n\b\n\b\n",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 28189,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "\n\b\n0\nFigure 3: α′\nw\nv\nu ∈D\nx (̸∈D)\nD\nr\nr\nr\nr\n1,̸=\n0\n0\n1\n\u0000\u0000\u0000\u0000\u0000",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 28206,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "\nw\nv\nu ∈D\nx (̸∈D)\nD\nr\nr\nr\nr\n1,̸=\n0\n0\n1\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000Proposition 4.3",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 30211,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "1∀y2\n\u0010\n(x ∼0 y1 ∧y1 ∼1 y2 ∧y1 ̸= y2) →∃z1(x ∼1 z1 ∧¬Dz1 ∧(z1 ",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 30800,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "s in F with u ∼0 v ∼1 w\nand v ̸= w. We have to ﬁnd an x with ",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 30833,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "w. We have to ﬁnd an x with x ̸∈D, u ∼1 x such that x is in t",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 31024,
+    "pdf_file": "Verbrugge_2004_Completeness_by_construction.pdf",
+    "pdf_char_offset": 20062,
     "base_char": "∈",
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
-    "context": "red x, with x ∼0 w.\nCase 2: u ̸∈D.\nThen u itself is the desir",
-    "dir": "derijke_1995"
+    "context": "any u with ¬Gϕ ∈Γu.\n(b) ¬G¬Gϕ ̸∈Γl.\nThis can have two reasons",
+    "dir": "verbrugge_2004"
   },
   {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 31202,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "\nwith u ∈D, u ∼0 v ∼1 w and v ̸= w, and set ourselves the tas",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 31254,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "s the task to ﬁnd an x with x ̸∈D and\nu ∼1 x ∼0 w, viz. Figur",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 31317,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "3.\nSince F |= α, there is a y ̸∈D with u ∼1 y and y ∼0 v or y",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 31551,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "re 4.\nw\nv\nu\nz\ny\nD\nr\nr\nr\nr\nr\n1,̸=\n0\n0\n1\n1\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\b\b\b\n\b\n\b\n\b\n\b\n",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 31625,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": " r\nv r\nu = z\nr\ny\nr\nD\n\u0000\u0000\u0000\u0000\u0000\u0000\u00001,̸=\n0\n1\n@\n@\n@\n@\n@\n@\n@@\n0\n\b\b\b\b\n\b\n",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
-    "pdf_char_offset": 31688,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "\b\n\b\n0\nDistinguish\nCase 2.1: z ̸∈D.\nAgain we are ﬁnished: take",
-    "dir": "derijke_1995"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 24672,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "∈I⟩∈A to be σ(a) = {i ∈I :\nai ̸= 0}. Finally, for µ ∈A+, deﬁn",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 25469,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "then a/D ∈f, so Q\nD Ai |=\na/D ̸= 0. This implies that σ(a) ∈D",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 32909,
-    "base_char": "|",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": " B ∈K.\nThen Aσ ∼= T +, so T + ̸|= ρ and T + ∈V as V is a cano",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 33354,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "itive in τ, or the negation u ̸= 0 of an equation, in which c",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 33481,
-    "base_char": "|",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "f τ into T + so\nthat (T +, h) ̸|= t = 0 when t is positive an",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 34042,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "∈h(t) ∩Bt\n+ =\nht(t), so ht(t) ̸= 0. Then if t1, . . . tn are ",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 34320,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "ll negative u in τ and h′(ti) ̸= 0 for all\npositive ti. This ",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 34359,
-    "base_char": "|",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "all\npositive ti. This shows B ̸|= τ, and hence ρ fails in B.\n",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 35248,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "hile at/∼∈ht\n∼(t), so ht\n∼(t) ̸= 0.\nClearly, S+\nt\nis ﬁnite. I",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 40069,
-    "base_char": ">",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "t |G+\nn | ≥2|Gn| and χ(G+\nn ) ̸> cn, a contradiction. So\nn ∈X",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 40477,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "Y ⊆ω \\ 2 are distinct then VX ̸= VY .\nSo {VX : X ⊆ω\\2, X inﬁn",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
-    "pdf_char_offset": 45962,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "ating Γi from Γj. Let ψi = V\nj̸=i γij. Then for all i, j < n,",
-    "dir": "goldblatt_2003"
-  },
-  {
-    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
-    "pdf_char_offset": 26540,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "ff ∃φ, ˜φ ⊆X ∧[G]φ ∈s,\nwhen G ̸= N\nV C is the usual valuation",
-    "dir": "obendrauf_2024"
-  },
-  {
-    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
-    "pdf_char_offset": 37259,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "cause ⊢ϕSf and ∀s, t ∈SC′, sf ̸= tf ⇒⊢ϕsf →¬ϕtf .\n6. ∃t ∈SC, ",
-    "dir": "obendrauf_2024"
-  },
-  {
-    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
-    "pdf_char_offset": 37923,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": " that ⊢ϕSf and ∀s, t ∈SC′, sf ̸= tf ⇒\n⊢ϕsf →¬ϕtf .\nIn Lean th",
-    "dir": "obendrauf_2024"
-  },
-  {
-    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
-    "pdf_char_offset": 41573,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": " unique_s_f where we prove sf ̸= tf by contradiction, based o",
-    "dir": "obendrauf_2024"
-  },
-  {
-    "pdf_file": "Venema_1993_Since_and_Until.pdf",
-    "pdf_char_offset": 5956,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "unrecognized_gap",
-    "context": "and a gap g of T\nwith t ∈g, s ̸∈g, such that (i) ψ holds ever",
-    "dir": "venema_1993_since"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 41936,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "we deﬁne\nXG\n#\ns =\n(\nXG\n#\nif 4 ̸∈X\n(XG\n# \\ {4◦, 4•}) ∪{s4◦, s4",
-    "dir": "arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 4912,
-    "base_char": "|",
-    "signature": "glyph_six",
-    "reason": "overlapping_edit",
-    "context": "e have w0 |= ♦(a1 ∨a2) and w0 ̸|= ♦a1 ∨♦a2.\n• k4: W = {w0, w1",
-    "md_file": "/home/benjamin/Projects/Literature/sources/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics.md",
-    "md_gap_start": 6338,
-    "md_gap_end": 6436,
-    "dir": "arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 5058,
-    "base_char": "|",
-    "signature": "glyph_six",
-    "reason": "overlapping_edit",
-    "context": "We have w0 |= ♦a1 ⊃\u001fa2 and w0 ̸|= \u001f(a1 ⊃a2).\n• k5: W = {w0, u",
-    "md_file": "/home/benjamin/Projects/Literature/sources/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics/arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics.md",
-    "md_gap_start": 6338,
-    "md_gap_end": 6436,
-    "dir": "arisakadasstrassburger_2015_onnestedsequentsforconstructivemodallogics"
-  },
-  {
-    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
-    "pdf_char_offset": 21907,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "= 0, Q := ∅.\n2. Loop: while S ̸= ∅do\nbegin\nv := top(S);\nif M[",
-    "dir": "courcoubetis_1992"
-  },
-  {
-    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
-    "pdf_char_offset": 22272,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "= ∅, M := 0.\n2. Loop: while Q ̸= ∅do\nbegin\nf := head(Q);\nremo",
-    "dir": "courcoubetis_1992"
-  },
-  {
-    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
-    "pdf_char_offset": 22339,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "rom Q;\npush f into S;\nwhile S ̸= ∅do\nbegin\nv := top(S);\nif f ",
-    "dir": "courcoubetis_1992"
-  },
-  {
-    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
-    "pdf_char_offset": 25607,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "∅, M1 := M2 := 0.\n2. while S1 ̸= ∅do\nbegin\nx := top(S1);\nif t",
-    "dir": "courcoubetis_1992"
-  },
-  {
-    "pdf_file": "Courcoubetis_1992_Memory_Efficient_Verification.pdf",
-    "pdf_char_offset": 25836,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "egin\npush x into S2;\nwhile S2 ̸= ∅do begin\nv := top(S2);\nif x",
-    "dir": "courcoubetis_1992"
-  },
-  {
-    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
-    "pdf_char_offset": 14517,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": " and r accepts w iﬀInf (r) ∩α ̸= ∅.\n• co-B¨uchi automata, whe",
-    "dir": "kupferman_vardi_2001"
-  },
-  {
-    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
-    "pdf_char_offset": 27070,
+    "pdf_file": "Verbrugge_2004_Completeness_by_construction.pdf",
+    "pdf_char_offset": 20287,
     "base_char": "∈",
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
-    "context": "even,\nconsider a vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemm",
-    "dir": "kupferman_vardi_2001"
+    "context": "adiction\nwith (P2).\n8\n•\n¬G¬Gϕ ̸∈Σ. This can only be because f",
+    "dir": "verbrugge_2004"
   },
   {
-    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
-    "pdf_char_offset": 27087,
+    "pdf_file": "Verbrugge_2004_Completeness_by_construction.pdf",
+    "pdf_char_offset": 34502,
     "base_char": "∈",
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
-    "context": "vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemma’s requirement f",
-    "dir": "kupferman_vardi_2001"
+    "context": "our assumption\nthat ¬Gψ ≡G¬Gχ ̸∈Γr.\n3. HFψ ̸∈Σ and ψ is of th",
+    "dir": "verbrugge_2004"
   },
   {
-    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
-    "pdf_char_offset": 27309,
+    "pdf_file": "Verbrugge_2004_Completeness_by_construction.pdf",
+    "pdf_char_offset": 34515,
     "base_char": "∈",
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
-    "context": " odd, consider a vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemm",
-    "dir": "kupferman_vardi_2001"
-  },
-  {
-    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
-    "pdf_char_offset": 27326,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "vertex ⟨q, l⟩̸∈Gi+1. If ⟨q, l⟩̸∈Gi, the lemma’s\nrequirement f",
-    "dir": "kupferman_vardi_2001"
-  },
-  {
-    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
-    "pdf_char_offset": 44013,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": " and σ ∈Σ, as\nfollows.\n• If O ̸= ∅, then\nδ′(⟨S, O⟩, σ) = {⟨S′",
-    "dir": "kupferman_vardi_2001"
-  },
-  {
-    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
-    "pdf_char_offset": 48200,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "(⟨S, O⟩, σ) as follows.\n◦If O ̸= ∅, then\nδ′(⟨S, O⟩, σ) = {\n⟨S",
-    "dir": "kupferman_vardi_2001"
-  },
-  {
-    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
-    "pdf_char_offset": 53759,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": " = 2n and gin(q) = ⊥for all q ̸= qin. Thus, the odd ranking t",
-    "dir": "kupferman_vardi_2001"
-  },
-  {
-    "pdf_file": "Kupferman_Vardi_2001_Weak_Alternating_Automata.pdf",
-    "pdf_char_offset": 53937,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "(⟨g, P⟩, σ) as follows.\n◦If P ̸= ∅, then\nδ′(⟨g, P⟩, σ) = { ⟨g",
-    "dir": "kupferman_vardi_2001"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 85802,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": " A}\nσ : ¬2A ∈B and ∀C σ.n : C ̸∈B B\nπ\n−→B ∪{σ.n : ¬A}\nB. Proo",
-    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 89142,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "nd σ.m. It can be that\nn1 = n ̸= m = n2 and A ̸= B and thus B",
-    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 89158,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "e that\nn1 = n ̸= m = n2 and A ̸= B and thus B1 ̸= B2.\nThen we",
-    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 90232,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "ed formulae such\nthat h12(σ1) ̸= σ2. Let Br\n1 be the reductio",
-    "dir": "massacci_2000_single_step_tableaux_for_modal_logics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 12516,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "ψ ∈Γ, then ϕ ∈Γ or ψ ∈Γ;\nand ⊥̸∈Γ. If X is a set of formulas,",
-    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 14575,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "that: Γ ⊆Υ, Υ□⊆Σ, Σ ⊆Υ♦, and ⊥̸∈Υ. Suppose ϕ ∨ψ ∈Θ.\nThen if ϕ",
-    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 15398,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "ise □ϕ ∈Γ. We also have that ⊥̸∈Φ. Suppose otherwise, then th",
-    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 17316,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "a contradiction. Therefore ψ2 ̸∈Υ. By Zorn’s Lemma, we can bu",
-    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 17384,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "heory Σ such that Υ ⊆Σ and ψ2 ̸∈Σ. By the induction hypothesi",
-    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 17727,
-    "base_char": "∈",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": " Σ such that Γ ⪯c ∆∼c Σ and ϕ ̸∈Σ. By the induction hypothesi",
-    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 17767,
-    "base_char": "|",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "e induction hypothesis,\nMc, Σ ̸|= ϕ. Therefore Mc, Γ ̸|= □ϕ.\n",
-    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
-  },
-  {
-    "pdf_file": "source.pdf",
-    "pdf_char_offset": 18382,
-    "base_char": "|",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "he induction\nhypothesis, Mc, ∆̸|= ψ. Therefore Mc, Γ ̸|= ♦ψ.\n",
-    "dir": "pacheco_2024_collapsingconstructiveandintuitionisticmodallogics"
-  },
-  {
-    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
-    "pdf_char_offset": 15728,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "nf (r) ∩Ei = ∅and inf (r) ∩Fi ̸= ∅. That is, the run visits ﬁ",
-    "dir": "piterman_2007"
-  },
-  {
-    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
-    "pdf_char_offset": 16557,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "me even i we have inf (r) ∩Fi ̸= ∅and for all i′ < i we have ",
-    "dir": "piterman_2007"
-  },
-  {
-    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
-    "pdf_char_offset": 23032,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "with label S′ such that S′ ∩α ̸= ∅, create a new node v′ ∈V ′",
-    "dir": "piterman_2007"
-  },
-  {
-    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
-    "pdf_char_offset": 28423,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "with label S′ such that S′ ∩α ̸= ∅, create a new son v′ /∈N o",
-    "dir": "piterman_2007"
-  },
-  {
-    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
-    "pdf_char_offset": 29604,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "r every node v such that l(v) ̸= ∅we change the name of v to\n",
-    "dir": "piterman_2007"
-  },
-  {
-    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
-    "pdf_char_offset": 37946,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "very j ∈J we have inf (r) ∩Rj ̸= ∅and for every j /∈J we\nhave",
-    "dir": "piterman_2007"
-  },
-  {
-    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
-    "pdf_char_offset": 43287,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "If v is a leaf such that h(v) ̸= ∅, add to v a new son v′ ∈V ",
-    "dir": "piterman_2007"
-  },
-  {
-    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
-    "pdf_char_offset": 49822,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "If v is a leaf such that h(v) ̸= ∅, add to v a new son v′. Se",
-    "dir": "piterman_2007"
-  },
-  {
-    "pdf_file": "Piterman_2007_Buchi_Streett_Parity.pdf",
-    "pdf_char_offset": 51724,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "r every node v such that l(v) ̸= ∅we change the name of v to ",
-    "dir": "piterman_2007"
-  },
-  {
-    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
-    "pdf_char_offset": 12448,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "dd(f ′), f ′\u0001\n| f ′ ≤S\nσ f, O ̸= ∅\n\t\n∪\n\b\u0000δ(S, σ), δ(S, σ) ∖od",
-    "dir": "schewe_2009"
-  },
-  {
-    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
-    "pdf_char_offset": 19971,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": "no state of ρ′ is accepting (∅̸= Si /∈F ′ for all i ∈ω). Let ",
-    "dir": "schewe_2009"
-  },
-  {
-    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
-    "pdf_char_offset": 22206,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": " α(j)\n\u0001\n∩f −1\nj+1(ij+1) if Oj ̸= ∅, respectively, for all j >",
-    "dir": "schewe_2009"
-  },
-  {
-    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
-    "pdf_char_offset": 23167,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "ambiguous_anchor",
-    "context": "adicts the assumption that Ok ̸= ∅\nis non-empty for all k > j",
-    "dir": "schewe_2009"
-  },
-  {
-    "pdf_file": "Schewe_2009_Buchi_Complementation.pdf",
-    "pdf_char_offset": 28489,
-    "base_char": "=",
-    "signature": "unanchored",
-    "reason": "anchor_not_found",
-    "context": ", O, f, i), σ\n\u0001\n, O′′ = ∅, i′ ̸= 0 ∨O′ = ∅, and\ng′(q) = g(q) ",
-    "dir": "schewe_2009"
+    "context": "n\nthat ¬Gψ ≡G¬Gχ ̸∈Γr.\n3. HFψ ̸∈Σ and ψ is of the form Hχ, so",
+    "dir": "verbrugge_2004"
   },
   {
     "pdf_file": "Yan_2008_Lower_Bounds_Complementation.pdf",
@@ -7439,5 +7477,40 @@
     "md_gap_start": 62132,
     "md_gap_end": 62252,
     "dir": "yan_2008"
+  },
+  {
+    "dir": "troelstra_schwichtenberg_lectures",
+    "signature": null,
+    "reason": "not_yet_converted",
+    "base_char": null,
+    "context": "Directory holds only source.pdf and PROVENANCE.txt; no converted markdown and no matching index.json id. Per plan Non-Goals, not converted as part of this task."
+  },
+  {
+    "dir": "*",
+    "signature": null,
+    "reason": "no_source_pdf_permanent_scope_boundary",
+    "base_char": null,
+    "context": "64 of 131 corpus source directories have no on-disk PDF and cannot be checked by the PDF-vs-markdown methodology this task uses at all. Their combining-mark status is permanently unknown absent PDF re-acquisition. See research report Risks section and plan Non-Goals."
+  },
+  {
+    "dir": "baier_katoen_2008",
+    "signature": null,
+    "reason": "residual_finding_non_negation_control_chars",
+    "base_char": null,
+    "context": "8,514 control characters across 24 distinct code points remain in this document beyond the U+0338 negation subset (an entire symbol font mapped onto control codes). Only negation was in scope for this task; recorded here as a residual finding for a separate task per the plan Non-Goals."
+  },
+  {
+    "dir": "baier_katoen_2008",
+    "signature": null,
+    "reason": "chunks_not_regenerated",
+    "base_char": null,
+    "context": "The underlying markdown IS repaired (339 of 819 occurrences), but chunk_*.md/chunks.json were NOT regenerated for this document: literature-chunk.sh always starts fresh at chunk_0001.md and has no multi-file-continuation mode, and the original 1265-chunk manifest (all under one shared doc_id across 12 part files) was evidently built via a concatenate-then-chunk process this task could not confidently reverse-engineer without risking a large, hard-to-verify corpus regression. Deferred as a follow-up task recommendation rather than attempted on uncertain footing."
+  },
+  {
+    "dir": "venema_1993",
+    "signature": null,
+    "reason": "chunks_not_regenerated",
+    "base_char": null,
+    "context": "Same multi-file-chunking limitation as baier_katoen_2008 (9 section files sharing one doc_id across 9 chunks); only 1 of 38 occurrences was repaired in the underlying markdown, and chunks were not regenerated for this document."
   }
 ]

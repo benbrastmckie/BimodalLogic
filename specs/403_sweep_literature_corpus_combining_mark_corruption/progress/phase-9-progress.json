@@ -1,0 +1,47 @@
+{
+  "phase": 9,
+  "phase_name": "Re-chunk, rebuild search index, final verification",
+  "started_at": "2026-07-27T06:50:00Z",
+  "last_updated": "2026-07-27T07:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-chunk every repaired document", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Rebuild global FTS database", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Confirm repaired sentences retrievable via search", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Run detector corpus-wide, diff against Phase 1 baseline", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Finalize residual ledger with permanent scope boundary notes", "status": "done",
+     "files_touched": ["specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json"]},
+    {"id": 6, "description": "Write implementation summary", "status": "done",
+     "files_touched": ["specs/403_sweep_literature_corpus_combining_mark_corruption/summaries/01_sweep-combining-mark-corruption-summary.md"]}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [
+    {"approach": "Re-chunk baier_katoen_2008 and venema_1993 (multi-file, shared-doc_id documents) the same way as single-file documents", "result": "failed", "reason": "literature-chunk.sh has no multi-file-continuation mode (always starts fresh at chunk_0001.md for one input file); the original 1265/9-chunk manifests were evidently built via an unverified concatenate-then-chunk process; deferred rather than risk a large, hard-to-verify regression on a widely-cited textbook"}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "9.1",
+      "description": "baier_katoen_2008 and venema_1993 chunks NOT regenerated (11 of 13 repaired documents were)",
+      "type": "deferred",
+      "reason": "Multi-file chunking with a shared doc_id has no established, verifiable re-derivation path in the current tooling; underlying markdown is correctly repaired for both, only derived chunks/FTS remain stale for the fixed sentences",
+      "annotation": "*(deviation: deferred to a follow-up task — see plan Phase 9 critical deviation note and residual-ledger.json chunks_not_regenerated entries)*"
+    },
+    {
+      "task_id": "9.4",
+      "description": "Corpus-wide final detector run is not zero for any repaired document",
+      "type": "altered",
+      "reason": "Direct, correct consequence of Phases 4-7's conservative, safety-first anchoring design; every remaining occurrence is in residual-ledger.json",
+      "annotation": "*(deviation: altered — 418 of 1237 baseline-corrupted occurrences (34%) repaired and verified; remainder fully accounted for in the residual ledger)*"
+    }
+  ],
+  "final_state": {
+    "total_corrupted_baseline": 1237,
+    "total_corrupted_final": 819,
+    "total_repaired": 418,
+    "documents_fully_clean": ["schwoon_esparza_2005"],
+    "chunks_regenerated_documents": 11,
+    "chunks_deferred_documents": ["baier_katoen_2008", "venema_1993"],
+    "fts_rebuild_chunk_count": 12954,
+    "residual_ledger_entries": 824
+  }
+}

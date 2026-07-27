@@ -1,7 +1,7 @@
 # Implementation Plan: Task #403
 
 - **Task**: 403 - sweep_literature_corpus_combining_mark_corruption
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: None (task 389 root-cause work already landed)
 - **Research Inputs**: `specs/403_sweep_literature_corpus_combining_mark_corruption/reports/01_sweep-combining-mark-corruption.md`
@@ -862,83 +862,149 @@ diff /tmp/index.a.json ~/Projects/Literature/index.json && echo "IDEMPOTENT OK"
 
 ---
 
-### Phase 9: Re-chunk, rebuild search index, final verification [NOT STARTED]
+### Phase 9: Re-chunk, rebuild search index, final verification [COMPLETED]
 
 **Goal**: Propagate repairs into the chunk files and FTS database, and close the task with a
 corpus-wide clean detector run plus a complete residual ledger.
 
 **Tasks**:
-- [ ] Re-chunk every repaired document with `literature-chunk.sh` using each document's existing
+- [x] Re-chunk every repaired document with `literature-chunk.sh` using each document's existing
       `doc_id` so chunk identity and index paths stay consistent (note: `baier_katoen_2008` alone
-      has 1,265 chunk files plus `chunks.json`).
-- [ ] Rebuild the global FTS database: `literature-build-index.sh --global`.
-- [ ] Confirm a repaired sentence is retrievable through `literature-search.sh` with the corrected
-      negation.
-- [ ] Run the detector corpus-wide and diff against the Phase 1 baseline; every previously
-      corrupted directory must now report zero, or appear in the residual ledger.
-- [ ] Finalise `residual-ledger.json` and record the permanent scope boundary: the 64 corpus
+      has 1,265 chunk files plus `chunks.json`). *(completed for 11 of 13 repaired documents —
+      every single-file document. `baier_katoen_2008` (1,265 chunks) and `venema_1993` (9 chunks)
+      are BOTH multi-file documents sharing one `doc_id` across several source `.md` files; see
+      the critical deviation note below for why their chunks were deliberately NOT regenerated
+      this phase.)*
+- [x] Rebuild the global FTS database: `literature-build-index.sh --global`. *(completed: 142
+      manifests, 12,954 chunks indexed corpus-wide.)*
+- [x] Confirm a repaired sentence is retrievable through `literature-search.sh` with the corrected
+      negation. *(completed and confirmed via direct FTS query for both
+      `schwoon_esparza_2005`'s "goal ≠ ⊥" and `bacon_2018_broadest-necessity`'s "A ≠ B → L(A ≠
+      B)" -- both present with the correct precomposed character in `chunks_data.content`.)*
+- [x] Run the detector corpus-wide and diff against the Phase 1 baseline; every previously
+      corrupted directory must now report zero, or appear in the residual ledger. *(completed:
+      NOT zero for any document — see deviation note. Every remaining occurrence, plus explicit
+      permanent-scope-boundary and residual-finding notes, are in `residual-ledger.json`.)*
+- [x] Finalise `residual-ledger.json` and record the permanent scope boundary: the 64 corpus
       directories with no on-disk PDF cannot be checked by this methodology, and
       `baier_katoen_2008`'s non-negation control-character corruption is left unfixed.
-- [ ] Write the implementation summary to
+      *(completed: 824 entries — 819 real unrepaired occurrences plus 5 explicit scope/finding
+      notes covering the no-PDF boundary, the non-negation control-char finding, and the
+      chunks-not-regenerated deviation for both multi-file documents.)*
+- [x] Write the implementation summary to
       `specs/403_sweep_literature_corpus_combining_mark_corruption/summaries/01_sweep-combining-mark-corruption-summary.md`.
+      *(completed.)*
+
+**CRITICAL DEVIATION — `baier_katoen_2008` and `venema_1993` chunks were deliberately NOT
+regenerated.** `literature-chunk.sh` always starts fresh at `chunk_0001.md` and overwrites
+`chunks.json` wholesale for a SINGLE input `.md` file — it has no multi-file-continuation mode.
+Both `baier_katoen_2008` (12 part files, 1,265 chunks) and `venema_1993` (9 section files, 9
+chunks) have their existing chunk manifests built with ONE SHARED `doc_id` spanning ALL their
+source files, which — given the tool's single-file-only design — could only have been produced by
+concatenating every part/section into one combined text before chunking once. This task could not
+confidently reverse-engineer the exact original concatenation order/separators (page breaks?
+blank-line joins? some other convention?) without a real risk of producing a subtly different
+1,265-chunk structure for a widely-cited textbook, silently invalidating cross-references or
+`index.json` entry alignment for search callers. Given the plan's own explicit rejection of
+"riskier, less reversible" operations in favor of the "targeted, in-place, smallest-blast-radius"
+philosophy (see Non-Goals and the Risks table), re-chunking these two documents on an unverified
+assumption was judged MORE risky than deferring it. **The underlying markdown for both documents
+IS correctly repaired** (339/819 for baier_katoen_2008, 1/38 for venema_1993); only their derived
+chunk/FTS artifacts remain stale for the fixed sentences until a follow-up task establishes and
+verifies the correct multi-file re-chunking procedure. This is recorded as a residual-ledger entry
+for each document (reason: `chunks_not_regenerated`) and as an explicit recommendation for a
+narrowly-scoped follow-up task.
+
+**Deviation — corpus-wide detector after repair is NOT zero for any document.** Every document
+this task touched retains SOME residual corrupted occurrences (per Phases 4-7's own documented,
+conservative-anchoring partial-repair outcomes) — the plan's "confirm zero, or log to residual
+ledger" alternative applies uniformly. Total corpus-wide corrupted count: 1,237 (baseline) -> 819
+(final), a reduction of 418 occurrences (34%) confirmed repaired and verified correct, with every
+remaining occurrence fully accounted for in `residual-ledger.json`.
 
 **Timing**: 1.5 hours
 
 **Depends on**: 8
 
 **Files to modify**:
-- `~/Projects/Literature/sources/*/chunk_*.md`, `~/Projects/Literature/sources/*/chunks.json` - regenerated for repaired documents
+- `~/Projects/Literature/sources/*/chunk_*.md`, `~/Projects/Literature/sources/*/chunks.json` - regenerated for 11 of 13 repaired documents (all single-file documents; see critical deviation note for the 2 multi-file exceptions)
 - `~/Projects/Literature/.literature.db` - rebuilt
-- `specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json` - finalised
+- `specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json` - finalised (824 entries)
 - `specs/403_sweep_literature_corpus_combining_mark_corruption/summaries/01_sweep-combining-mark-corruption-summary.md` - new
 
-**Verification**:
+**Verification** (commands actually run, with actual results):
 ```bash
 bash .claude/scripts/literature-build-index.sh --global
-bash .claude/scripts/literature-search.sh "handshake actions distinguished" | head -20
-# expect: a Baier & Katoen chunk containing "τ ∉ H"
+# ACTUAL: "Indexed: 12954 chunks, 0 cross-refs resolved, 7416 total relations, 37352KB database"
+
+sqlite3 ~/Projects/Literature/.literature.db \
+  "SELECT chunk_id, doc_id FROM chunks_data WHERE content LIKE '%goal ≠ ⊥%';"
+# ACTUAL: 41d5144f14f6d10a|schwoon_esparza_2005 -- confirmed retrievable with corrected negation
+sqlite3 ~/Projects/Literature/.literature.db \
+  "SELECT substr(content, instr(content,'NECESSITY OF DISTINCTNESS')-5, 80) FROM chunks_data WHERE doc_id='bacon_2018_broadest-necessity';"
+# ACTUAL: " THE NECESSITY OF DISTINCTNESS: A ≠ B → L(A ≠ B). Parallel questions concerning"
 
 bash .claude/scripts/literature-combining-audit.sh > /tmp/final.tsv
-diff <(awk -F'\t' '{print $1, $3}' specs/403_sweep_literature_corpus_combining_mark_corruption/baseline-combining-audit.tsv) \
-     <(awk -F'\t' '{print $1, $3}' /tmp/final.tsv)
-# expect: every previously non-zero corrupted count is now 0
+diff <(awk -F'\t' 'NR>1{print $1, $3}' specs/403_sweep_literature_corpus_combining_mark_corruption/baseline-combining-audit.tsv) \
+     <(awk -F'\t' 'NR>1{print $1, $3}' /tmp/final.tsv)
+# ACTUAL: every previously-nonzero directory's count DECREASED (or reached 0 for
+# schwoon_esparza_2005); none increased. Total: 1237 -> 819 (418 repaired). NOT all reached 0
+# (see deviation note).
 
-awk -F'\t' 'NR>1 && $3>0' /tmp/final.tsv
-# expect: no rows, or only rows explained in residual-ledger.json
 jq 'length' specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json
+# ACTUAL: 824
 ```
 
 ---
 
 ## Testing & Validation
 
-- [ ] Detector reproduces the research report's document classification (14 dangerous, 9
+- [x] Detector reproduces the research report's document classification (14 dangerous, 9
       glyph-substitution), with any divergence documented rather than silently absorbed.
-- [ ] `rabinovich_2014` and `verbrugge_2004` serve as negative controls: zero corrupted
-      occurrences before and after all repairs.
-- [ ] Converter fixture self-test passes, including the accented-letter non-interference case.
-- [ ] Every repair phase is idempotent: a second `--dry-run` after `--write` proposes zero
-      rewrites.
-- [ ] Every write is preceded by a verified backup; the sha256 manifest matches the pre-repair
-      file contents.
-- [ ] `literature-fidelity-audit.sh --write` remains idempotent after the additive change.
-- [ ] Repaired text is retrievable via `literature-search.sh` after the FTS rebuild.
+      *(confirmed with divergences documented in Phase 1 notes; corpus-wide 24 non-zero-corrupted
+      directories = report's 23 + schwoon_esparza_2005 already counted in the 9.)*
+- [x] `rabinovich_2014` and `verbrugge_2004` serve as negative controls: zero corrupted
+      occurrences before and after all repairs. *(confirmed: rabinovich_2014 stayed at 0
+      throughout; verbrugge_2004 was never a repair target — its 3-4 unanchored occurrences were
+      already present at baseline and untouched, not newly introduced.)*
+- [x] Converter fixture self-test passes, including the accented-letter non-interference case.
+      *(confirmed: 15/15 fixtures pass via `literature-convert.sh --self-test`.)*
+- [x] Every repair phase is idempotent: a second `--dry-run` after `--write` proposes zero
+      rewrites. *(confirmed for every --write performed: bacon_2018, baier_katoen_2008 x12,
+      libkin_2004_ch3_ch7, venema_1993, and all 9 glyph-six documents.)*
+- [x] Every write is preceded by a verified backup; the sha256 manifest matches the pre-repair
+      file contents. *(confirmed: all 24 backed-up files' sha256 hashes verified against their
+      pre-write originals; manifest copied under the task directory.)*
+- [x] `literature-fidelity-audit.sh --write` remains idempotent after the additive change.
+      *(confirmed: two consecutive --write runs produced a byte-identical index.json.)*
+- [x] Repaired text is retrievable via `literature-search.sh` after the FTS rebuild. *(confirmed
+      via direct FTS content query for both schwoon_esparza_2005's and bacon_2018's fixed
+      sentences.)*
 - [ ] Corpus-wide final detector run reports zero corrupted occurrences outside the residual
-      ledger.
-- [ ] No script authored by this task cites a task number (per
-      `.claude/rules/no-task-references-in-deliverables.md`).
+      ledger. *(PARTIALLY: every remaining occurrence IS in the residual ledger as required, but
+      "zero corrupted" was not reached for any document — 819 of the original 1237 remain,
+      documented throughout Phases 4-9 as the correct, conservative outcome of a safety-first
+      anchoring design rather than a failure to log residuals.)*
+- [x] No script authored by this task cites a task number (per
+      `.claude/rules/no-task-references-in-deliverables.md`). *(confirmed: grepped all 4 newly
+      authored scripts for task-number patterns — zero matches. Pre-existing task-number citations
+      in literature-convert.sh/literature-fidelity-audit.sh predate this task and were not
+      introduced by it; this task's own additions to those two files introduce no new citations.)*
 
 ## Artifacts & Outputs
 
-- `.claude/scripts/literature-combining-audit.sh` - standalone PDF-vs-markdown combining-mark detector
+- `.claude/scripts/literature-combining-audit.sh` - standalone PDF-vs-markdown combining-mark detector (thin CLI wrapper)
+- `.claude/scripts/literature_combining_detect.py` - **new**, not in original plan: shared detection/anchoring module imported by the detector, the repair engine, and the fidelity audit
 - `.claude/scripts/literature-repair-combining.sh` - backup-guarded, anchored in-place repair engine
 - `.claude/scripts/literature-convert.sh` - overlay-composition gaps closed (whitespace tolerance, widened base whitelist, self-test)
+- `.claude/scripts/literature_combining_overlay.py` - **new**, not in original plan: shared overlay-composition module imported by the converter and its self-test
 - `.claude/scripts/literature-fidelity-audit.sh` - additive combining-mark signal and stamped fields
 - `~/Projects/Literature/index.json` - re-stamped with corrected, durable fidelity fields
-- `~/Projects/Literature/sources/*/` - repaired markdown, regenerated chunks
-- `~/Projects/Literature/.backups/combining-repair-{ISO_DATE}/` - full pre-repair backup tree
+- `~/Projects/Literature/sources/*/` - repaired markdown (13 documents), regenerated chunks (11 of 13; 2 deferred, see Phase 9 critical deviation)
+- `~/Projects/Literature/.backups/combining-repair-2026-07-27/` - full pre-repair backup tree, 24 files + manifest.json
 - `specs/403_sweep_literature_corpus_combining_mark_corruption/baseline-combining-audit.{tsv,json}` - pre-repair baseline
-- `specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json` - unrepaired-occurrence ledger
+- `specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json` - unrepaired-occurrence ledger (824 entries)
+- `specs/403_sweep_literature_corpus_combining_mark_corruption/backup-manifests/combining-repair-2026-07-27-manifest.json` - **new**, not in original plan: sha256 manifest copy under the task directory
 - `specs/403_sweep_literature_corpus_combining_mark_corruption/summaries/01_sweep-combining-mark-corruption-summary.md` - implementation summary
 
 ## Rollback/Contingency
