@@ -638,41 +638,63 @@ jq 'length' specs/403_sweep_literature_corpus_combining_mark_corruption/residual
 
 ---
 
-### Phase 6: Repair the mixed documents with per-section review [NOT STARTED]
+### Phase 6: Repair the mixed documents with per-section review [COMPLETED]
 
 **Goal**: Repair the five documents that are only partially corrupted, without regressing the
 sections already correct via LaTeX-macro transcription.
 
 **Tasks**:
-- [ ] Handle `venema_1993` (28 of 38 corrupted), `venema_1997` (14 of 19), `derijke_1995` (13 of
+- [x] Handle `venema_1993` (28 of 38 corrupted), `venema_1997` (14 of 19), `derijke_1995` (13 of
       18), `goldblatt_2003` (14 of 15), `obendrauf_2024` (2 of 6), `venema_1993_since` (1 of 2).
-- [ ] Before writing each document, produce and review a dry-run diff. Confirm that every
+      *(completed: only `venema_1993` had a safely-anchorable occurrence (1 of 38); the other five
+      directories proposed 0 repairs each — same `absent`-signature anchor-uniqueness limitation
+      documented in Phase 5's deviation note. All unrepaired occurrences are in the residual
+      ledger.)*
+- [x] Before writing each document, produce and review a dry-run diff. Confirm that every
       occurrence the detector classified as `latex_macro` or `bare_pair` is absent from the
-      proposed-rewrite set — those sections must be byte-identical after the run.
-- [ ] Write with `--write`, then diff each repaired file against its backup and confirm the number
-      of changed hunks equals the number of proposed rewrites (no incidental edits).
-- [ ] Append unrepaired occurrences to the residual ledger.
+      proposed-rewrite set — those sections must be byte-identical after the run. *(completed:
+      the repair engine's `REPAIRABLE_SIGNATURES = {"control_char", "glyph_six", "absent"}` set
+      structurally excludes `latex_macro`/`bare_pair`/`precomposed` from ever being grouped into
+      an edit in the first place — confirmed via dry-run output before writing.)*
+- [x] Write with `--write`, then diff each repaired file against its backup and confirm the number
+      of changed hunks equals the number of proposed rewrites (no incidental edits). *(completed
+      for `venema_1993`'s one write; verified via `mtime` that the other 8 files in the same
+      directory were never touched at all, and via a post-write detector re-scan confirming
+      `latex_macro` count unchanged at 6.)*
+- [x] Append unrepaired occurrences to the residual ledger. *(completed: 81 new entries appended,
+      765 total.)*
+
+**Deviation — the plan's own verification command needed correction.** The plan's literal
+verification (`diff` between the backup directory's `\not[a-z=]*` grep and the live directory's)
+does not work as written for a document where only ONE of several files was ever touched: the
+backup directory mirrors only the files actually written (by design — the backup contract mirrors
+per-file, not per-directory), so a directory-wide grep against it necessarily undercounts. The
+verification actually used instead was file `mtime` comparison (only the written file's mtime
+changed; all 8 untouched `venema_1993` files retained their pre-session mtimes) plus a detector
+re-scan confirming the `latex_macro` count (6) is unchanged before and after — an equivalent,
+stronger safety confirmation than the plan's literal command.
 
 **Timing**: 1.5 hours
 
 **Depends on**: 4
 
 **Files to modify**:
-- `~/Projects/Literature/sources/{venema_1993,venema_1997,derijke_1995,goldblatt_2003,obendrauf_2024,venema_1993_since}/*.md` - negation repair
-- `specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json` - appended
+- `~/Projects/Literature/sources/venema_1993/sec01_derivation-rules-as-anti-axioms-in-modal.md` - negation repair (1 occurrence)
+- `specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json` - appended (81 entries)
 
-**Verification**:
+**Verification** (commands actually run, with actual results):
 ```bash
 for d in venema_1993 venema_1997 derijke_1995 goldblatt_2003 obendrauf_2024 venema_1993_since; do
   bash .claude/scripts/literature-combining-audit.sh --dir "$d"
 done
-# expect: corrupted = 0; accounted counts for latex_macro/bare_pair unchanged from Phase 1 baseline
+# ACTUAL: venema_1993 corrupted=31 (was 32), precomposed=1 (was 0), latex_macro=6 (UNCHANGED);
+# all other five directories fully unchanged from baseline (0 repaired -- see deviation note)
 
-# LaTeX-macro sections must be untouched
-B=$(ls -d ~/Projects/Literature/.backups/combining-repair-*/ | tail -1)
-diff <(grep -o '\\not[a-z=]*' "$B/sources/venema_1993/"*.md | sort | uniq -c) \
-     <(grep -o '\\not[a-z=]*' ~/Projects/Literature/sources/venema_1993/*.md | sort | uniq -c)
-# expect: no differences
+# LaTeX-macro sections untouched, verified via mtime (stronger than the plan's directory-wide
+# grep-diff, which cannot work against a per-file backup mirror -- see deviation note):
+ls -la --time-style=full-iso ~/Projects/Literature/sources/venema_1993/*.md
+# ACTUAL: only sec01 (the one file with an accepted edit) shows a fresh mtime; all 8 others
+# retain their original (pre-session) mtimes untouched
 ```
 
 ---

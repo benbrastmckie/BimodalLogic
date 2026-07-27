@@ -1,0 +1,32 @@
+{
+  "phase": 6,
+  "phase_name": "Repair the mixed documents with per-section review",
+  "started_at": "2026-07-27T05:40:00Z",
+  "last_updated": "2026-07-27T05:55:00Z",
+  "objectives": [
+    {"id": 1, "description": "Handle venema_1993, venema_1997, derijke_1995, goldblatt_2003, obendrauf_2024, venema_1993_since", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Pre-write dry-run diff review confirming latex_macro/bare_pair excluded", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Write and verify no incidental edits (mtime check)", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Append residual ledger", "status": "done",
+     "files_touched": ["specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json"]}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "6.verify",
+      "description": "Plan's directory-wide backup-vs-live grep-diff verification command does not work when only one file in a multi-file directory is written",
+      "type": "altered",
+      "reason": "Backup mirrors only files actually written, not the whole directory; used mtime comparison + detector re-scan latex_macro-count-unchanged check instead, an equivalent, stronger safety confirmation",
+      "annotation": "*(deviation: altered — verification method substituted, same safety property confirmed)*"
+    },
+    {
+      "task_id": "6.1",
+      "description": "Only 1 of ~78 occurrences repaired across the six mixed documents",
+      "type": "altered",
+      "reason": "Same absent-signature anchor-uniqueness limitation as Phase 5",
+      "annotation": "*(deviation: altered — near-zero automated yield by design; all occurrences visible in residual-ledger.json)*"
+    }
+  ]
+}

@@ -6251,5 +6251,734 @@
     "reason": "not_yet_converted",
     "base_char": null,
     "context": "Directory holds only source.pdf and PROVENANCE.txt; no converted markdown and no matching index.json id. Per plan Non-Goals, not converted as part of this task."
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 9824,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "es not occur in φ, we write p ̸∈φ.\nFor an operator ∇, we abbr",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 24156,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ", . . . , pn−1) →φ ⇒⊢φ, if ⃗p ̸∈φ.\nIf Λ is a derivation syste",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 39222,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ndard if\nRD = {(s, t) ∈2W | s ̸= t}.\nAs abbreviations we use ",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 39361,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "s of standard frames in K by K̸=.\n13\nWhen referring to standa",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 39742,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ndard’ for the frames with RD ̸= {(s, t) ∈2W | s ̸= t}.\nNote ",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 39761,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "es with RD ̸= {(s, t) ∈2W | s ̸= t}.\nNote that in a standard ",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 39833,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ve\nM, w |= Dφ\niﬀ\nthere is a v ̸= w with M, v |= φ,\nM, w |= Oφ",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 40962,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "for D:\n(IRD)\n⊢Op →φ ⇒⊢φ, if p ̸∈φ.\nInstead of K{D} (the minim",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 42723,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "\noccurrence of RD replaced by ̸=.\nAs an example, the Sahlqvis",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 42825,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "1 →RDx0x1), but\n∀x1(Rx0x1 →x0 ̸= x1), (or even better: ¬Rx0x0",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 43417,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "y sound and complete w.r.t. Fr̸=\nΣ.\nIn the next section we wi",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 44368,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " complete with respect to Frt,̸=\nσ .\n15\nRecall that KtD+σ has",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 44688,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "for D:\n(IRD)\n⊢Op →φ ⇒⊢φ, if p ̸∈φ.\nNote that the above theore",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 47214,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "φ.\nW(χ, ψ, q)\n=\nq (provided ψ ̸= q)\nW(χ, ψ, ψ)\n=\nχ ∧ψ\nW(χ, ψ,",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 52945,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "uccessor of ∆,\nwhile clearly ∆̸= ∆′. This inspires the follow",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 54778,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ctedness of Fd implies that Γ ̸= ∆⇒Rd\nDΓ∆. The fact that ever",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 56440,
+    "base_char": "⊢",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": ".\nFor completeness, suppose Σ ̸⊢φ, then Σ ∪{¬φ} is consistent",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 56699,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " ψ ∈Σ ∪{¬φ}.\nSo we obtained Σ ̸|=Frt,̸=\nσ\nφ.\n2\n6\nUni-directio",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 56706,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "{¬φ}.\nSo we obtained Σ ̸|=Frt,̸=\nσ\nφ.\n2\n6\nUni-directional Com",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 58733,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "stent, for we have\nLemma 6.2 K̸=\nρ′ = ∅.\nProof.\nIt suﬃces to ",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 59092,
+    "base_char": "⊢",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "es again:\nLemma 6.3 KF D+(ρ′) ̸⊢⊥.\nProof.\nConsider the follow",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 59268,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": " | F, w0 |= φ}.\nClearly then ⊥̸∈∆.\nWe show that ∆contains the",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 62246,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " = (F, A) such that G |= γ,\nF ̸|= γ.\nProof.\nLet γ be the form",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 63077,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ny X ⊆W, mF (X) is\nﬁnite if x ̸∈X, coﬁnite if x ∈X. In order ",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 70036,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "s idea to operators of rank r ̸= 2. For example, for the mona",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 70753,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "gly sound and complete for Kv,̸=\nΣ .\nProof.\nFor notational si",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 72944,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "tics, note that the class Frv,̸=\n(Σ,−Ξ) is deﬁned as the clas",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 73042,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "th\nF |= σ\nfor all σ in Σ\nF, w ̸|= ξ\nfor all w in F, ξ in Ξ\n26",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 73207,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "qvist\nformulas too), then Frv,̸=\n(Σ,−Ξ) is elementary, as we ",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 73557,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "ly sound and complete for Frv,̸=\n(Σ,−Ξ).\nProof.\nWe can use a ",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1993_Derivation_Rules_Anti_Axioms.pdf",
+    "pdf_char_offset": 80399,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "So assume ⊢¬ξ(⃗p) →φ where ⃗p ̸∈φ. By (i) there is an interpo",
+    "dir": "venema_1993"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 7443,
+    "base_char": "≤",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ws:\n1. AO = AD ≤AC < AE\n2. AD ̸≤AX ̸≤AC\nThis theorem should b",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 7448,
+    "base_char": "≤",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": ". AO = AD ≤AC < AE\n2. AD ̸≤AX ̸≤AC\nThis theorem should be rea",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 11847,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "= (A, +, −, 0) is a element 0 ̸= a ∈A for which there is no e",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 15688,
+    "base_char": "≃",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "atomic algebras\nA such that A ̸≃(At A)+. It may be instructiv",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 18388,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "for, consider\na coﬁnite set X ̸= Z. Then f(X) = Z, while in Z",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 18590,
+    "base_char": "↣",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": " Z such that Z ≃At C, while Z◦̸↣C ̸↣Z+. In Proposition 5.1 we",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 18594,
+    "base_char": "↣",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "uch that Z ≃At C, while Z◦̸↣C ̸↣Z+. In Proposition 5.1 we wil",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 24912,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "deﬁnition:\nσpi\n:=\nPix\nσ0\n:=\nx ̸= x\nσ−t\n:=\n¬σt\nσt1·t2\n:=\nσt1 ∧",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 27667,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "he universe of) F◦, we have\nu ̸∈s◦(a1, . . . , an). Since F◦i",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 27733,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "ubalgebra of F+, this gives\nu ̸∈s+(a1, . . . , an).\nBy deﬁnit",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 28213,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "of δ(s,⃗t), we clearly have\nF ̸|= δ(s,⃗t),\n11\nwhich implies\nF",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 28292,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ther direction, assume that F ̸|= ∆s. It follows that for som",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 28436,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ",1, . . . , vn,mn such that\nF ̸|= σs⟨α1\nt1/P1⟩. . . ⟨αn\ntn/P1",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 28738,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " Lemma 4.2(2) to prove that\nu ̸∈s◦(a1, . . . , an).\nBut now i",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "Venema_1997_Atom_Structures_Sahlqvist.pdf",
+    "pdf_char_offset": 28791,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ut now it is immediate that F◦̸|= s = 1, which is what we des",
+    "dir": "venema_1997"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 9824,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "(W, { Ri : i ∈I }, W) where W ̸= ∅,\nRi ⊆W ρ(i)+1, and W ⊆Sb(W",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 12008,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": ", V ), w0 |= ¬φ iﬀ(F, V ), w0 ̸|= φ; (F, V ), w0 |= φ ∧ψ iﬀbo",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 27905,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\n(α)\n∀u∀v∀w\n\u0010\n(u ∼0 v ∼1 w ∧v ̸= w) →∃x(¬Dx ∧u ∼1 x ∧(x ∼0 v ",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 27982,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\n∀u∀v∀w\n\u0010\n(Du ∧u ∼0 v ∼1 w ∧v ̸= w) →∃x(¬Dx ∧u ∼1 x ∼0 w)\n\u0011\n.",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 28112,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " frames:\nFigure 2: α\nw\nv\nu\nx (̸∈D)\nr\nr\nr\nr\n1,̸=\n0\n1\nHHHH\nH\nH\n",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 28127,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " 2: α\nw\nv\nu\nx (̸∈D)\nr\nr\nr\nr\n1,̸=\n0\n1\nHHHH\nH\nH\nH\nH\n0\n\b\b\b\b\n\b\n\b\n",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 28189,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\n\b\n0\nFigure 3: α′\nw\nv\nu ∈D\nx (̸∈D)\nD\nr\nr\nr\nr\n1,̸=\n0\n0\n1\n\u0000\u0000\u0000\u0000\u0000",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 28206,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\nw\nv\nu ∈D\nx (̸∈D)\nD\nr\nr\nr\nr\n1,̸=\n0\n0\n1\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000Proposition 4.3",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 30211,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "1∀y2\n\u0010\n(x ∼0 y1 ∧y1 ∼1 y2 ∧y1 ̸= y2) →∃z1(x ∼1 z1 ∧¬Dz1 ∧(z1 ",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 30800,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "s in F with u ∼0 v ∼1 w\nand v ̸= w. We have to ﬁnd an x with ",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 30833,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "w. We have to ﬁnd an x with x ̸∈D, u ∼1 x such that x is in t",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31024,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "red x, with x ∼0 w.\nCase 2: u ̸∈D.\nThen u itself is the desir",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31202,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\nwith u ∈D, u ∼0 v ∼1 w and v ̸= w, and set ourselves the tas",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31254,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "s the task to ﬁnd an x with x ̸∈D and\nu ∼1 x ∼0 w, viz. Figur",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31317,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "3.\nSince F |= α, there is a y ̸∈D with u ∼1 y and y ∼0 v or y",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31551,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "re 4.\nw\nv\nu\nz\ny\nD\nr\nr\nr\nr\nr\n1,̸=\n0\n0\n1\n1\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\b\b\b\n\b\n\b\n\b\n\b\n",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31625,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " r\nv r\nu = z\nr\ny\nr\nD\n\u0000\u0000\u0000\u0000\u0000\u0000\u00001,̸=\n0\n1\n@\n@\n@\n@\n@\n@\n@@\n0\n\b\b\b\b\n\b\n",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "deRijke_Venema_1995_Sahlqvist_BAOs.pdf",
+    "pdf_char_offset": 31688,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "\b\n\b\n0\nDistinguish\nCase 2.1: z ̸∈D.\nAgain we are ﬁnished: take",
+    "dir": "derijke_1995"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 24672,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "∈I⟩∈A to be σ(a) = {i ∈I :\nai ̸= 0}. Finally, for µ ∈A+, deﬁn",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 25469,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "then a/D ∈f, so Q\nD Ai |=\na/D ̸= 0. This implies that σ(a) ∈D",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 32909,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": " B ∈K.\nThen Aσ ∼= T +, so T + ̸|= ρ and T + ∈V as V is a cano",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 33354,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "itive in τ, or the negation u ̸= 0 of an equation, in which c",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 33481,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "f τ into T + so\nthat (T +, h) ̸|= t = 0 when t is positive an",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 34042,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "∈h(t) ∩Bt\n+ =\nht(t), so ht(t) ̸= 0. Then if t1, . . . tn are ",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 34320,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "ll negative u in τ and h′(ti) ̸= 0 for all\npositive ti. This ",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 34359,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "all\npositive ti. This shows B ̸|= τ, and hence ρ fails in B.\n",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 35248,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "hile at/∼∈ht\n∼(t), so ht\n∼(t) ̸= 0.\nClearly, S+\nt\nis ﬁnite. I",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 40069,
+    "base_char": ">",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "t |G+\nn | ≥2|Gn| and χ(G+\nn ) ̸> cn, a contradiction. So\nn ∈X",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 40477,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Y ⊆ω \\ 2 are distinct then VX ̸= VY .\nSo {VX : X ⊆ω\\2, X inﬁn",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.pdf",
+    "pdf_char_offset": 45962,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ating Γi from Γj. Let ψi = V\nj̸=i γij. Then for all i, j < n,",
+    "dir": "goldblatt_2003"
+  },
+  {
+    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
+    "pdf_char_offset": 26540,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "ff ∃φ, ˜φ ⊆X ∧[G]φ ∈s,\nwhen G ̸= N\nV C is the usual valuation",
+    "dir": "obendrauf_2024"
+  },
+  {
+    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
+    "pdf_char_offset": 37259,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "cause ⊢ϕSf and ∀s, t ∈SC′, sf ̸= tf ⇒⊢ϕsf →¬ϕtf .\n6. ∃t ∈SC, ",
+    "dir": "obendrauf_2024"
+  },
+  {
+    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
+    "pdf_char_offset": 37923,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " that ⊢ϕSf and ∀s, t ∈SC′, sf ̸= tf ⇒\n⊢ϕsf →¬ϕtf .\nIn Lean th",
+    "dir": "obendrauf_2024"
+  },
+  {
+    "pdf_file": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.pdf",
+    "pdf_char_offset": 41573,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": " unique_s_f where we prove sf ̸= tf by contradiction, based o",
+    "dir": "obendrauf_2024"
+  },
+  {
+    "pdf_file": "Venema_1993_Since_and_Until.pdf",
+    "pdf_char_offset": 5956,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "and a gap g of T\nwith t ∈g, s ̸∈g, such that (i) ψ holds ever",
+    "dir": "venema_1993_since"
   }
 ]
