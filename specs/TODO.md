@@ -22,7 +22,7 @@ next_project_number: 409
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
-408 [NOT STARTED] — Identify the most faithful and mathematically correct route to ST
+408 [RESEARCHED] — Identify the most faithful and mathematically correct route to ST
 
 ### Formula Refactor
 
@@ -63,10 +63,11 @@ next_project_number: 409
 ## Tasks
 
 ### 408. Faithful route to strong completeness for the dedekind extension
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
+- **Research**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/01_faithful-route-strong-completeness.md]
 
 **Description**: Identify the most faithful and mathematically correct route to STRONG completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics), with weak completeness obtained as a corollary rather than as the target.
 

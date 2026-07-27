@@ -1,18 +1,18 @@
 {
   "version": 1,
-  "updated": "2026-07-26T00:00:00Z",
+  "updated": "2026-07-27T21:09:16Z",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
-      "reason": "Task 305: primary source \u2014 A Proof of Kamp Theorem (Prop 4.3, Cor 5.4, F_i chains)",
-      "citation_rule": "Cite by structural label PLUS printed PDF page, e.g. \"Lemma 5.1 (PDF p.3, p.6, p.8)\" or \"Def 3.1 (PDF pp.2-3)\" \u2014 the scheme actually used by the 89 re-anchored citations in SharedWitness.lean as of task 389 Phase 5. NEVER cite md:NN line numbers (re-conversion invalidates them; this is exactly what happened here).",
-      "hazard": "RESOLVED 2026-07-26 (task 389). Root cause: the PDF encodes \u2260 (U+2260) as a decomposed pair (combining U+0338 LONG SOLIDUS OVERLAY plus a base '='), and the pipeline's PRIMARY conversion tier (pymupdf4llm) silently dropped the combining mark, so every inequality in the .md read as an equality \u2014 the case split at old md:199/:201 (Prop 4.2 / Section 5) read 'k = m' in BOTH branches instead of 'k = m' / 'k \u2260 m'. The mis-detection was compounded by index.json falsely certifying the corrupt extract 'verified_conversion'. Fix: (1) de-certified the false stamp; (2) added a `compose_combining_overlays()` normalizer to the shared `.claude/scripts/literature-convert.sh` (protects the whole corpus, not just this document); (3) re-converted via the fallback tier (also fixed the co-occurring dropped-displayed-equations defect, 2721\u21927312 tokens) and manually spot-checked the corrected `k \u2260 m` sentences word-for-word against PyMuPDF doc[6] (printed p.7); (4) re-chunked, rebuilt FTS5, and restored `provenance_fidelity: verified_conversion` on the strength of that manual spot-check (never on the automated word-ratio alone); (5) re-anchored all 89 `SharedWitness.lean` citations from volatile `md:NN` line numbers to the citation_rule above. The corrected `.md` and its predecessors are preserved as timestamped backups (see Rollback section of specs/389_repair_dedekind_literature_corpus/plans/01_repair-literature-corpus.md).",
+      "reason": "Task 305: primary source — A Proof of Kamp Theorem (Prop 4.3, Cor 5.4, F_i chains)",
+      "citation_rule": "Cite by structural label PLUS printed PDF page, e.g. \"Lemma 5.1 (PDF p.3, p.6, p.8)\" or \"Def 3.1 (PDF pp.2-3)\" — the scheme actually used by the 89 re-anchored citations in SharedWitness.lean as of task 389 Phase 5. NEVER cite md:NN line numbers (re-conversion invalidates them; this is exactly what happened here).",
+      "hazard": "RESOLVED 2026-07-26 (task 389). Root cause: the PDF encodes ≠ (U+2260) as a decomposed pair (combining U+0338 LONG SOLIDUS OVERLAY plus a base '='), and the pipeline's PRIMARY conversion tier (pymupdf4llm) silently dropped the combining mark, so every inequality in the .md read as an equality — the case split at old md:199/:201 (Prop 4.2 / Section 5) read 'k = m' in BOTH branches instead of 'k = m' / 'k ≠ m'. The mis-detection was compounded by index.json falsely certifying the corrupt extract 'verified_conversion'. Fix: (1) de-certified the false stamp; (2) added a `compose_combining_overlays()` normalizer to the shared `.claude/scripts/literature-convert.sh` (protects the whole corpus, not just this document); (3) re-converted via the fallback tier (also fixed the co-occurring dropped-displayed-equations defect, 2721→7312 tokens) and manually spot-checked the corrected `k ≠ m` sentences word-for-word against PyMuPDF doc[6] (printed p.7); (4) re-chunked, rebuilt FTS5, and restored `provenance_fidelity: verified_conversion` on the strength of that manual spot-check (never on the automated word-ratio alone); (5) re-anchored all 89 `SharedWitness.lean` citations from volatile `md:NN` line numbers to the citation_rule above. The corrected `.md` and its predecessors are preserved as timestamped backups (see Rollback section of specs/389_repair_dedekind_literature_corpus/plans/01_repair-literature-corpus.md).",
       "known_corrections": [
         "Lemma 3.2 (p.4) is prefaced 'It is clear that' and has NO PRINTED PROOF anywhere in the 16 pages. Do not attribute any mechanism to 'the proof of Lemma 3.2(1)'.",
         "The tie-collapse (coincident witnesses merge to one slot whose type is the CONJUNCTION of the tied types) is FORCED BY Definition 3.1 (p.4): the witness chain is strict (xn > ... > x0) and the pinning indices i0..im in {0..n} carry no distinctness requirement. Corroborated by the k=m case split (p.7) and Def 7.5 (p.13).",
         "Mandated citation form: 'the construction forced by Def 3.1 (p.4), corroborated by the k=m split (p.7) and Def 7.5 (p.13); Lemma 3.2(1) (p.4) states the closure without printed proof.'",
         "Def 7.5 (p.13) is NOT a half-open interval restriction; it is a 3-alternative definition including z0 > z1 and z0 = z1.",
-        "HISTORICAL (superseded 2026-07-26, task 389): the .md previously in place (pre-Phase-3) was a corrupt PDF extract in which every '\u2260' read as '=' \u2014 including at what was then md:199/:201, the Prop 4.2 case split. If any artifact predating task 389 cites 'k = m, k = m' for that split, it is describing the KNOWN CORRUPT version; the correct reading is 'k = m' in the first case and 'k \u2260 m' in the second (w.l.o.g. m < k)."
+        "HISTORICAL (superseded 2026-07-26, task 389): the .md previously in place (pre-Phase-3) was a corrupt PDF extract in which every '≠' read as '=' — including at what was then md:199/:201, the Prop 4.2 case split. If any artifact predating task 389 cites 'k = m, k = m' for that split, it is describing the KNOWN CORRUPT version; the correct reading is 'k = m' in the first case and 'k ≠ m' in the second (w.l.o.g. m < k)."
       ],
       "audits": [
         "specs/342_rework_kve2_sep_arrangement_carrier_with_interiorrestricted_owner_index_and_tieadmitting_weak_orders/reports/01_rabinovich-fidelity-audit.md",
@@ -26,33 +26,33 @@
     },
     {
       "doc_id": "gabbay_1994_ch10_sec02",
-      "reason": "Intended model class: separation over DEDEKIND COMPLETE flows. Decisive for whether (Q,<) \u2014 the non-vacuity witness of all three seam refutations \u2014 is even in classical Kamp's target class. Route C hinges on this.",
-      "hazard": "RESOLVED: provenance_fidelity is now verified_conversion (manually spot-checked against source PDF p.375/378, PyMuPDF doc[8]/doc[11], Gabbay_Hodkinson_Reynolds_1994...ch10.pdf). This entry now covers ONLY \u00a710.3.1 Introduction \u2014 its \u00a710.3.2 content was split out into the new sibling entry gabbay_1994_ch10_sec05 (see below). Cite by PDF page, never md:NN line numbers."
+      "reason": "Intended model class: separation over DEDEKIND COMPLETE flows. Decisive for whether (Q,<) — the non-vacuity witness of all three seam refutations — is even in classical Kamp's target class. Route C hinges on this.",
+      "hazard": "RESOLVED: provenance_fidelity is now verified_conversion (manually spot-checked against source PDF p.375/378, PyMuPDF doc[8]/doc[11], Gabbay_Hodkinson_Reynolds_1994...ch10.pdf). This entry now covers ONLY §10.3.1 Introduction — its §10.3.2 content was split out into the new sibling entry gabbay_1994_ch10_sec05 (see below). Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "gabbay_1994_ch10_sec05",
-      "reason": "\u00a710.3.2 Pre-eliminations \u2014 the negation-lemma machinery (Lemma 10.3.5) and identities for \u00acU(A,B) / \u00acS(A,B) over Dedekind complete flows. Directly load-bearing for the separation argument this effort depends on; previously entirely unregistered (split out of gabbay_1994_ch10_sec02, which had merged \u00a710.3.1 and \u00a710.3.2 content under one entry).",
-      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF p.378, PyMuPDF doc[11] (Lemma 10.3.5, Lemma 10.3.6 part 1). Source notation uses \u223c (tilde) for negation; the .md normalizes this to \u00ac \u2014 a notational, non-semantic substitution, confirmed consistent throughout. Cite by PDF page, never md:NN line numbers."
+      "reason": "§10.3.2 Pre-eliminations — the negation-lemma machinery (Lemma 10.3.5) and identities for ¬U(A,B) / ¬S(A,B) over Dedekind complete flows. Directly load-bearing for the separation argument this effort depends on; previously entirely unregistered (split out of gabbay_1994_ch10_sec02, which had merged §10.3.1 and §10.3.2 content under one entry).",
+      "hazard": "provenance_fidelity is verified_conversion — manually spot-checked against source PDF p.378, PyMuPDF doc[11] (Lemma 10.3.5, Lemma 10.3.6 part 1). Source notation uses ∼ (tilde) for negation; the .md normalizes this to ¬ — a notational, non-semantic substitution, confirmed consistent throughout. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "gabbay_1994_ch09_sec02",
       "reason": "Separation == expressive completeness: canonical structure of the exclusion obligation. Informs Route B.",
-      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+      "hazard": "provenance_fidelity is null in the global index — conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "gabbay_1994_ch09_sec03",
       "reason": "Generalized separation property. Informs Route B exclusion rework.",
-      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+      "hazard": "provenance_fidelity is null in the global index — conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "gabbay_1993_sec03",
       "reason": "Until/Since INSUFFICIENCY for gapped time. Tests the reframing hypothesis: are the seam refutations a genuine expressive gap rather than a proof bug?",
-      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+      "hazard": "provenance_fidelity is null in the global index — conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "gabbay_1993_sec05",
       "reason": "Expressive completeness of U,S + STAVI connectives over linear time. The classical fix if the gap is real (scope change beyond routes A/B/C).",
-      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+      "hazard": "provenance_fidelity is null in the global index — conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "gabbay_1993",
@@ -60,47 +60,112 @@
     },
     {
       "doc_id": "reynolds_1992_sec06",
-      "reason": "\u00a75 Expressive and Dedekind Completeness \u2014 the monadic/temporal correspondence ('table' of a formula) underlying the expressive-completeness framework Reynolds 1992 builds on. Split out of reynolds_1992_sec02, which had merged \u00a73-5 under a \u00a73-4-only title.",
-      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF p.174, PyMuPDF doc[9]. Cite by PDF page, never md:NN line numbers."
+      "reason": "§5 Expressive and Dedekind Completeness — the monadic/temporal correspondence ('table' of a formula) underlying the expressive-completeness framework Reynolds 1992 builds on. Split out of reynolds_1992_sec02, which had merged §3-5 under a §3-4-only title.",
+      "hazard": "provenance_fidelity is verified_conversion — manually spot-checked against source PDF p.174, PyMuPDF doc[9]. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "reynolds_1992_sec07",
-      "reason": "\u00a79 Completeness (Theorem 7: US/R sound and weakly complete over real flow) \u2014 the weak-completeness capstone the separation/expressive-completeness machinery (\u00a7\u00a73-8) builds toward. Split out of reynolds_1992_sec04, which had merged \u00a77-9 under a \u00a77-8-only title.",
-      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF p.189, PyMuPDF doc[24] (same page \u00a710 begins on). Cite by PDF page, never md:NN line numbers."
+      "reason": "§9 Completeness (Theorem 7: US/R sound and weakly complete over real flow) — the weak-completeness capstone the separation/expressive-completeness machinery (§§3-8) builds toward. Split out of reynolds_1992_sec04, which had merged §7-9 under a §7-8-only title.",
+      "hazard": "provenance_fidelity is verified_conversion — manually spot-checked against source PDF p.189, PyMuPDF doc[24] (same page §10 begins on). Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "burgess_1982_i",
-      "reason": "Burgess's ALTERNATIVE Kamp proof via Since/Until axioms \u2014 exclusion machinery that may avoid the refutable .mp transport. Reference design for Route B."
+      "reason": "Burgess's ALTERNATIVE Kamp proof via Since/Until axioms — exclusion machinery that may avoid the refutable .mp transport. Reference design for Route B."
     },
     {
       "doc_id": "burgess_1984_sec04",
       "reason": "Chronicles and Killing Lemma: Burgess's completeness mechanism, single-witness in structure.",
-      "hazard": "Naming-convention note (task 389 Phase 8): the doc_id suffix 'sec04' is a CHUNK-SEQUENCE number, not the paper's own section number \u2014 this entry is the paper's \u00a71 (Completeness for Basic Tense Logic), not \u00a74. Do not assume 'secNN' <-> paper section N anywhere in this document's entries; see burgess_1984_sec08 below for the entry that actually IS the paper's \u00a74."
+      "hazard": "Naming-convention note (task 389 Phase 8): the doc_id suffix 'sec04' is a CHUNK-SEQUENCE number, not the paper's own section number — this entry is the paper's §1 (Completeness for Basic Tense Logic), not §4. Do not assume 'secNN' <-> paper section N anywhere in this document's entries; see burgess_1984_sec08 below for the entry that actually IS the paper's §4."
     },
     {
       "doc_id": "burgess_1984_sec08",
-      "reason": "Burgess \u00a74 Temporal Conjunctions and Adverbs (Eliminability of J) \u2014 Kamp's Eliminability Theorem (4.11). RESOLVED cross-reference: this replaces the stale pointer that used to be burgess_1984_sec07 for this content. Investigation (task 389 Phase 8) found the previously-registered burgess_1984_sec07 was a severely under-converted stub (982 tokens/11 pages) because most of the paper's actual \u00a74 content was merged, unlabeled, into the TAIL of burgess_1984_sec06 (titled '\u00a73 Decidability'). Split sec06 at its internal '4.1. DEFINITION' heading and combined that tail with sec07's non-\u00a75 content into this new, complete sec08 entry (3938 tokens). sec07 itself was trimmed down to its true, narrower scope: the paper's \u00a75 'Time Periods' (see burgess_1984_sec07 below).",
-      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF pp.116/122/124, PyMuPDF doc[37]/doc[43]/doc[45]. Cite by PDF page, never md:NN line numbers."
+      "reason": "Burgess §4 Temporal Conjunctions and Adverbs (Eliminability of J) — Kamp's Eliminability Theorem (4.11). RESOLVED cross-reference: this replaces the stale pointer that used to be burgess_1984_sec07 for this content. Investigation (task 389 Phase 8) found the previously-registered burgess_1984_sec07 was a severely under-converted stub (982 tokens/11 pages) because most of the paper's actual §4 content was merged, unlabeled, into the TAIL of burgess_1984_sec06 (titled '§3 Decidability'). Split sec06 at its internal '4.1. DEFINITION' heading and combined that tail with sec07's non-§5 content into this new, complete sec08 entry (3938 tokens). sec07 itself was trimmed down to its true, narrower scope: the paper's §5 'Time Periods' (see burgess_1984_sec07 below).",
+      "hazard": "provenance_fidelity is verified_conversion — manually spot-checked against source PDF pp.116/122/124, PyMuPDF doc[37]/doc[43]/doc[45]. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "burgess_1984_sec07",
-      "reason": "Burgess \u00a75 Time Periods (RETITLED \u2014 see burgess_1984_sec08 above for what this pointer used to mean before task 389 Phase 8's split; it now covers only the actual, narrower \u00a75 content).",
-      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF p.124, PyMuPDF doc[45]. Cite by PDF page, never md:NN line numbers."
+      "reason": "Burgess §5 Time Periods (RETITLED — see burgess_1984_sec08 above for what this pointer used to mean before task 389 Phase 8's split; it now covers only the actual, narrower §5 content).",
+      "hazard": "provenance_fidelity is verified_conversion — manually spot-checked against source PDF p.124, PyMuPDF doc[45]. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "thomas_1997",
       "reason": "EF games / composition method: WHY homogeneous structures (no definable points) force the automorphism-transport obstruction. Tests whether Route A (w-indexing) is model-theoretically coherent.",
-      "hazard": "provenance_fidelity: no_source_pdf \u2014 no PDF exists to verify against. Treat as PROVISIONAL/orienting only; do not use for load-bearing claims."
+      "hazard": "provenance_fidelity: no_source_pdf — no PDF exists to verify against. Treat as PROVISIONAL/orienting only; do not use for load-bearing claims."
     },
     {
       "doc_id": "hodkinson_2006",
-      "reason": "Modern survey chapter covering axiomatizations, completeness, filtration, and finite model property for temporal logic \u2014 orienting/context material, not primary source.",
-      "hazard": "RESIDUAL GAP (task 389 Phase 8, acquisition blocker): the corpus PDF is only 3 pages (TOC + the start of the Introduction, cutting off mid-sentence) \u2014 Sections 2-6 / pp.658-712, the bulk of the chapter, were never acquired. Time-boxed (30 min) acquisition attempt: WebSearch located the chapter's official free-hosting URL (https://cgi.csc.liv.ac.uk/~frank/MLHandbook/11.pdf, the Handbook of Modal Logic project site) and downloaded it; byte-for-byte identical to the existing 3-page corpus PDF (confirmed via diff) \u2014 this is the publisher's own truncated preview, not a workaround. No complete free copy was found. Reactivation condition: a complete scan/PDF of Handbook of Modal Logic Ch.11 (pp.655-720) becomes available (e.g. via institutional access or a future OUP/Elsevier open release)."
+      "reason": "Modern survey chapter covering axiomatizations, completeness, filtration, and finite model property for temporal logic — orienting/context material, not primary source.",
+      "hazard": "RESIDUAL GAP (task 389 Phase 8, acquisition blocker): the corpus PDF is only 3 pages (TOC + the start of the Introduction, cutting off mid-sentence) — Sections 2-6 / pp.658-712, the bulk of the chapter, were never acquired. Time-boxed (30 min) acquisition attempt: WebSearch located the chapter's official free-hosting URL (https://cgi.csc.liv.ac.uk/~frank/MLHandbook/11.pdf, the Handbook of Modal Logic project site) and downloaded it; byte-for-byte identical to the existing 3-page corpus PDF (confirmed via diff) — this is the publisher's own truncated preview, not a workaround. No complete free copy was found. Reactivation condition: a complete scan/PDF of Handbook of Modal Logic Ch.11 (pp.655-720) becomes available (e.g. via institutional access or a future OUP/Elsevier open release)."
     },
     {
       "doc_id": "gabbay_2000",
-      "reason": "Volume 2 of Temporal Logic: Mathematical Foundations and Computational Aspects \u2014 much axiomatization-over-real-flows material relevant to this effort is believed to live here, per task 389's research report.",
-      "hazard": "RESIDUAL GAP (task 389 Phase 8, source-scan-quality blocker): the corpus PDF exists but its OCR text layer is genuine Tesseract garbage (conversion attempt produced a rejected zero-token .md, preserved as .md.rejected) \u2014 not a pipeline bug, a bad source scan. Time-boxed (30 min) acquisition attempt: WebSearch found only commercial listings (Amazon, OUP, ResearchGate/Academia.edu abstract pages) for this 2000 hardcover; no freely-available better-quality scan was found. provenance_fidelity remains not_yet_converted (already correct) \u2014 do NOT re-run the conversion pipeline against the same scan, per the research's finding that it will fail the quality gate identically. Reactivation condition: a better-quality scan or a purchased/institutional-access copy becomes available."
+      "reason": "Volume 2 of Temporal Logic: Mathematical Foundations and Computational Aspects — much axiomatization-over-real-flows material relevant to this effort is believed to live here, per task 389's research report.",
+      "hazard": "RESIDUAL GAP (task 389 Phase 8, source-scan-quality blocker): the corpus PDF exists but its OCR text layer is genuine Tesseract garbage (conversion attempt produced a rejected zero-token .md, preserved as .md.rejected) — not a pipeline bug, a bad source scan. Time-boxed (30 min) acquisition attempt: WebSearch found only commercial listings (Amazon, OUP, ResearchGate/Academia.edu abstract pages) for this 2000 hardcover; no freely-available better-quality scan was found. provenance_fidelity remains not_yet_converted (already correct) — do NOT re-run the conversion pipeline against the same scan, per the research's finding that it will fail the quality gate identically. Reactivation condition: a better-quality scan or a purchased/institutional-access copy becomes available."
+    },
+    {
+      "doc_id": "reynolds_1992_sec04",
+      "reason": "Task 408: §7-8 Doets-theorem machinery (Lemmas 10-13, printed pp.184-188) that Theorem 7's weak-completeness proof invokes by name — direct dependency of the already-registered reynolds_1992_sec07.",
+      "hazard": "Cite by PDF page, never md:NN line numbers."
+    },
+    {
+      "doc_id": "burgess_1984_sec05",
+      "reason": "Task 408: Burgess §2 Completeness for Discrete and Dedekind-Complete Time (printed pp.108-115) — direct historical completeness proof over Dedekind-complete/gap-free orders; alternative-route candidate and cross-check.",
+      "hazard": "doc_id suffix is a CHUNK-SEQUENCE number, not the paper's own section number (see burgess_1984_sec04 hazard) — this entry is the paper's §2. Cite by PDF page."
+    },
+    {
+      "doc_id": "doets_1989_sec01",
+      "reason": "Task 408: Doets 1989 (NDJFL 30) — canonical original source for Doets' transfer theorem (countable dense model → reals), the primary source behind Reynolds §8's restatement."
+    },
+    {
+      "doc_id": "doets_1989_sec02",
+      "reason": "Task 408: Doets 1989 continuation — transfer theorem proof body."
+    },
+    {
+      "doc_id": "doets_1989_sec03",
+      "reason": "Task 408: Doets 1989 continuation — transfer theorem proof body."
+    },
+    {
+      "doc_id": "doets_1987_sec01",
+      "reason": "Task 408: Doets 1987 thesis — Ehrenfeucht-Fraïssé game background and Segerberg Z-time completeness, supporting the Doets transfer machinery."
+    },
+    {
+      "doc_id": "doets_1987_sec02",
+      "reason": "Task 408: Doets 1987 thesis continuation."
+    },
+    {
+      "doc_id": "doets_1987_sec03",
+      "reason": "Task 408: Doets 1987 thesis continuation."
+    },
+    {
+      "doc_id": "venema_2001_sec01",
+      "reason": "Task 408: Venema Handbook survey Temporal Logic — modern authoritative orienting source; completeness landscape for Since/Until."
+    },
+    {
+      "doc_id": "venema_2001_sec02",
+      "reason": "Task 408: Venema survey continuation."
+    },
+    {
+      "doc_id": "venema_2001_sec03",
+      "reason": "Task 408: Venema survey continuation."
+    },
+    {
+      "doc_id": "venema_2001_sec04",
+      "reason": "Task 408: Venema survey §4 Since and Until — the completeness-landscape section most relevant to the Dedekind route."
+    },
+    {
+      "doc_id": "venema_1993_since_sec01",
+      "reason": "Task 408: Venema, Completeness via Completeness: Since and Until (Diamonds and Defaults) — alternative completeness proof technique extending Burgess/Xu.",
+      "hazard": "provenance_fidelity unverified (null) in global index — verify against source PDF before any load-bearing citation."
+    },
+    {
+      "doc_id": "venema_1993_since_sec02",
+      "reason": "Task 408: Venema 1993 continuation.",
+      "hazard": "provenance_fidelity field missing in global index — verify against source PDF before any load-bearing citation."
+    },
+    {
+      "doc_id": "goldblatt_2023_strong-completeness-real-time",
+      "reason": "Task 408: the only published source directly on STRONG completeness over real-flowed time (arXiv:2310.20069). Propositional TL over the reals is finitely axiomatizable; the first-order counterpart is not recursively axiomatizable; strong completeness only via restricted admissible-models semantics. Decision-relevant cross-check for the finite-context strong-completeness verdict.",
+      "hazard": "provenance_fidelity: unverified_conversion — converted via the PyMuPDF fallback tier after the primary tier failed the sentence-boundary-glue quality gate; chunks are auto-segmented (chunk_NNNN, no section titles). Spot-check against the source PDF (in the same sources dir) before any load-bearing citation. Result is for FIRST-ORDER temporal logic; applicability to the propositional bimodal TM must be argued, not assumed."
     }
   ]
 }
