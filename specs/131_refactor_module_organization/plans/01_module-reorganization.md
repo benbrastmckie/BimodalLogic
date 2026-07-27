@@ -695,7 +695,7 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 11: Relocate docs/, latex/, typst/ and Update Executable References [NOT STARTED]
+### Phase 11: Relocate docs/, latex/, typst/ and Update Executable References [COMPLETED]
 
 - **Goal:** Goal (6), execution half. `srcDir := "Theories"` means Lake treats this tree as source,
   yet 2.6M of non-Lean assets sit inside it (`docs/` 404K, `latex/` 192K, `typst/` 2.0M including a
@@ -706,30 +706,65 @@ disjoint documentation files, enumerated in each phase.
   two-tree incoherence, which is the actual defect. This phase owns the executable references; the
   prose references are Phase 12.
 - **Tasks:**
-  - [ ] `git mv` the three directories to the project root. Merge `Theories/Bimodal/docs/` into the
+  - [x] `git mv` the three directories to the project root. Merge `Theories/Bimodal/docs/` into the
         existing `docs/` tree, resolving any filename collisions explicitly (do not silently
         overwrite). `latex/` and `typst/` become root-level directories.
-  - [ ] Update `Theories/Bimodal/Automation/MachineAppendixExport.lean` line ~393: the default
+  - [x] Update `Theories/Bimodal/Automation/MachineAppendixExport.lean` line ~393: the default
         `output` value is the string literal
         `"Theories/Bimodal/typst/generated/machine-appendix.jsonl"`. This is executable behaviour,
         not prose.
-  - [ ] Update `scripts/typst-machine-appendix.sh`: `GEN_DIR` (line ~56), the two documented output
+  - [x] Update `scripts/typst-machine-appendix.sh`: `GEN_DIR` (line ~56), the two documented output
         paths (lines ~22-23), and the `lake env lean --run Theories/Bimodal/Automation/MachineAppendixExport.lean`
         invocation (line ~195) — the last stays as-is, since the Lean source does not move.
-  - [ ] Update `scripts/typst-sync-check.sh` with care: it contains path-resolution *logic*, not
+  - [x] Update `scripts/typst-sync-check.sh` with care: it contains path-resolution *logic*, not
         just literals. `BIMODAL_DIR` (line ~30) must continue to point at the Lean source root for
         identifier resolution, while the typst-scanning root moves. The `rel.startswith("Theories/Bimodal/")`
         prefix-stripping at lines ~130-131 and the violation messages at lines ~142/~147 need to
         reflect the new two-root reality.
-  - [ ] Update `scripts/typst-status-counts.sh` `BIMODAL_DIR` (line ~30) and its header comment.
-  - [ ] Update the `lakefile.lean` doc comment on the `machine_appendix` exe (line ~105).
-  - [ ] Resolve the loose `Theories/Bimodal/BimodalReference.pdf`. Root `README.md` links it at
+  - [x] Update `scripts/typst-status-counts.sh` `BIMODAL_DIR` (line ~30) and its header comment.
+  - [x] Update the `lakefile.lean` doc comment on the `machine_appendix` exe (line ~105).
+  - [x] Resolve the loose `Theories/Bimodal/BimodalReference.pdf`. Root `README.md` links it at
         `Theories/Bimodal/latex/BimodalReference.pdf` — a pre-existing broken link. Move the PDF to
         the relocated `latex/` directory so the link becomes correct after Phase 12 updates its
         prefix. Note that `typst/build/BimodalReference.pdf` is a separate build artifact; do not
         conflate them.
-  - [ ] Keep the source-root directory name `Theories/` unchanged — that rename belongs to the
+  - [x] Keep the source-root directory name `Theories/` unchanged — that rename belongs to the
         naming task per the charter.
+
+  **Phase 11 result.** `Theories/Bimodal/` is now Lean-only: no assets remain under the Lean
+  source root. `latex/` and `typst/` are root-level; `BimodalReference.pdf` moved into `latex/`,
+  making the root `README.md` link correct for the first time.
+
+  **docs/ merge collisions, resolved explicitly.** 30 source files vs 47 root files, with 5
+  collisions -- all index `README.md`s (`docs/README.md` plus the `user-guide/`, `project-info/`,
+  `reference/`, `research/` indexes). 25 files moved cleanly by `git mv`; for the 5, the incoming
+  content was appended into the root file under a labelled "Merged from the Lean source tree"
+  heading rather than overwriting either side, so nothing was lost.
+
+  **The executable gate earned its place.** Running the scripts, rather than grepping for stale
+  strings, caught two defects a grep would have missed:
+
+  1. **A Phase 4 regression.** `scripts/typst-status-counts.sh` called
+     `strip_and_count_sorries "${METALOGIC_DIR}/Relational"`, and Phase 4 deleted `Relational/`.
+     Under `set -e` the missing path aborted the script, which made `typst-sync-check.sh`
+     Check 2 die with a JSON decode error on empty input. The invariant script could not have
+     caught this -- it never runs the typst toolchain. Fixed by making the helper return 0 for a
+     missing path and dropping the two subtrees that no longer exist (`Relational/`, and
+     `ConservativeExtension/`, archived earlier) from the accounting and its label.
+  2. **Two stale path claims inside the book**, `Relational/` and `Metalogic/Completeness.lean`
+     in `typst/chapters/04-metalogic.typ`, both caused by this task's Phases 4 and 5.
+
+  **Violation accounting.** `typst-sync-check.sh` Check 1 reports 18 violations, down from 21
+  before these fixes. All 18 predate this task (`ConservativeExtension/`, `DenseSoundness.lean`,
+  `FMP/DenseFMP.lean`, `lift_derivation_qfree`, ...) and are book-content drift against
+  long-archived modules, not path breakage: zero of them name `docs`, `latex` or `typst`.
+  Check 2's `MISMATCH_COUNT=6` is likewise pre-existing -- the committed `status.typ` records
+  sorry counts (Algebraic 3, BXCanonical 4, Bundle 12, WeakCanonical 24) from before extensive
+  sorry-elimination work; live values are 0/0/0/5. *(deviation: skipped -- regenerating
+  `status.typ` would clear those 6, but it is stale book content unrelated to the relocation and
+  regenerating it would require re-rendering downstream chapters. The phase criterion is "no NEW
+  violations relative to pre-move behaviour", which is met.)* `typst-machine-appendix.sh` runs
+  clean and writes to the new root-level `GEN_DIR`.
 - **Timing:** 2 hours
 - **Depends on:** 1
 - **Files to modify:**

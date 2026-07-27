@@ -3,7 +3,7 @@
 # typst-status-counts.sh
 #
 # Single-source-of-truth generator for the volatile counts cited in
-# Theories/Bimodal/typst/ (sorry totals, axiom-constructor count, rule
+# typst/ (sorry totals, axiom-constructor count, rule
 # count). Reproduces the SYNC-MAP.md "Ground-Truth Counts" (Phase 1)
 # methodology so that no hand-copied number ever needs to survive in
 # chapter prose (task 313 Phase 2).
@@ -27,8 +27,10 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# BIMODAL_DIR is the LEAN SOURCE root, which does not move. The typst tree it
+# writes into now lives at the project root, so the two are no longer nested.
 BIMODAL_DIR="${REPO_ROOT}/Theories/Bimodal"
-OUT_TYP="${BIMODAL_DIR}/typst/generated/status.typ"
+OUT_TYP="${REPO_ROOT}/typst/generated/status.typ"
 
 JSON_ONLY=0
 if [[ "${1:-}" == "--json" ]]; then
@@ -69,7 +71,14 @@ RULE_COUNT=$(awk '
 # ---------------------------------------------------------------------------
 strip_and_count_sorries() {
   # $1 = directory or file glob (find-compatible path)
+  # A missing path counts as 0 rather than aborting: subtrees legitimately
+  # disappear when they are archived or removed, and a counting script must
+  # report that as "no sorries here", not die under `set -e`.
   local path="$1"
+  if [[ ! -e "${path}" ]]; then
+    echo 0
+    return 0
+  fi
   find "${path}" -name '*.lean' -type f 2>/dev/null | while read -r f; do
     python3 - "$f" << 'PYEOF'
 import re, sys
@@ -114,12 +123,12 @@ print(total)
 PYEOF
 )
 SORRY_CORE=$(strip_and_count_sorries "${METALOGIC_DIR}/Core")
-SORRY_CONSERVATIVE=$(strip_and_count_sorries "${METALOGIC_DIR}/ConservativeExtension")
 SORRY_DECIDABILITY=$(strip_and_count_sorries "${METALOGIC_DIR}/Decidability")
-SORRY_RELATIONAL=$(strip_and_count_sorries "${METALOGIC_DIR}/Relational")
 SORRY_SOUNDNESSLEMMAS=$(strip_and_count_sorries "${METALOGIC_DIR}/SoundnessLemmas")
 
-SORRY_OTHER=$((SORRY_OTHER_TOP + SORRY_CORE + SORRY_CONSERVATIVE + SORRY_DECIDABILITY + SORRY_RELATIONAL + SORRY_SOUNDNESSLEMMAS))
+# ConservativeExtension/ and Relational/ no longer exist (archived and removed
+# respectively) and are no longer summed here.
+SORRY_OTHER=$((SORRY_OTHER_TOP + SORRY_CORE + SORRY_DECIDABILITY + SORRY_SOUNDNESSLEMMAS))
 
 SORRY_TOTAL_INCL_BONEYARD=$((SORRY_ALGEBRAIC + SORRY_BXCANONICAL + SORRY_BUNDLE + SORRY_WEAKCANONICAL_ALL + SORRY_OTHER))
 SORRY_TOTAL_EXCL_BONEYARD=$((SORRY_ALGEBRAIC + SORRY_BXCANONICAL + SORRY_BUNDLE + SORRY_WEAKCANONICAL_EXCL + SORRY_OTHER))
@@ -193,7 +202,7 @@ cat > "${OUT_TYP}" << EOF
   ("BXCanonical/", ${SORRY_BXCANONICAL}),
   ("Bundle/", ${SORRY_BUNDLE}),
   ("WeakCanonical/", ${SORRY_WEAKCANONICAL_ALL}),
-  ("Core/, ConservativeExtension/, Decidability/, Relational/, SoundnessLemmas/, top-level", ${SORRY_OTHER}),
+  ("Core/, Decidability/, SoundnessLemmas/, top-level", ${SORRY_OTHER}),
 )
 EOF
 

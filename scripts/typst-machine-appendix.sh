@@ -19,8 +19,8 @@
 # interpreter.
 #
 # Artifacts (BOTH committed; data/ is gitignored, generated/ is not):
-#   Theories/Bimodal/typst/generated/machine-appendix.jsonl
-#   Theories/Bimodal/typst/generated/machine-appendix.typ
+#   typst/generated/machine-appendix.jsonl
+#   typst/generated/machine-appendix.typ
 #
 # Usage:
 #   scripts/typst-machine-appendix.sh
@@ -53,7 +53,8 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-GEN_DIR="${REPO_ROOT}/Theories/Bimodal/typst/generated"
+# typst/ lives at the project root; the Lean source root (Theories/) does not move.
+GEN_DIR="${REPO_ROOT}/typst/generated"
 JSONL="${GEN_DIR}/machine-appendix.jsonl"
 OUT_TYP="${GEN_DIR}/machine-appendix.typ"
 

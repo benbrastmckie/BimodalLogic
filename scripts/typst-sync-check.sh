@@ -2,7 +2,7 @@
 # ============================================================================
 # typst-sync-check.sh
 #
-# Mechanical drift detector for Theories/Bimodal/typst/. Three checks:
+# Mechanical drift detector for typst/. Three checks:
 #   1. Name resolution   -- every backticked span in typst/**/*.typ resolves
 #                           against live Lean source (excl. Boneyard/) or
 #                           the whitelist.
@@ -27,8 +27,11 @@
 set -uo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Two independent roots since the asset relocation: BIMODAL_DIR is the LEAN
+# SOURCE root, used for identifier and path resolution, and does NOT move.
+# TYPST_DIR is the typst tree being scanned, which now sits at the project root.
 BIMODAL_DIR="${REPO_ROOT}/Theories/Bimodal"
-TYPST_DIR="${BIMODAL_DIR}/typst"
+TYPST_DIR="${REPO_ROOT}/typst"
 WHITELIST="${TYPST_DIR}/sync-check-whitelist.txt"
 MAIN_FILE="${TYPST_DIR}/BimodalReference.typ"
 STATUS_TYP="${TYPST_DIR}/generated/status.typ"
@@ -139,12 +142,12 @@ for cand, files in sorted(candidates.items()):
             continue
         if suffix_search(rel, repo_root, allow_boneyard):
             continue
-        violations.append((cand, files, "path does not exist under Theories/Bimodal/ (excl. Boneyard/ unless the candidate itself names it) or repo root"))
+        violations.append((cand, files, "path does not exist under the Lean source root Theories/Bimodal/ (excl. Boneyard/ unless the candidate itself names it) nor under the repo root"))
         continue
     # Bare identifier / dotted qualified name
     if grep_lean(cand):
         continue
-    violations.append((cand, files, "identifier not found in any *.lean file under Theories/Bimodal/ (excl. Boneyard/)"))
+    violations.append((cand, files, "identifier not found in any *.lean file under the Lean source root Theories/Bimodal/ (excl. Boneyard/)"))
 
 if violations:
     for cand, files, reason in violations:

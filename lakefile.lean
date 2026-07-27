@@ -102,7 +102,7 @@ lean_exe proof_first_generator where
   supportInterpreter := true
 
 /-- Machine-readable axiomatization appendix exporter (Task 316).
-    Run with: lake exe machine_appendix -- --output Theories/Bimodal/typst/generated/machine-appendix.jsonl --stamp-commit SHA --stamp-date DATE
+    Run with: lake exe machine_appendix -- --output typst/generated/machine-appendix.jsonl --stamp-commit SHA --stamp-date DATE
     Normally invoked via scripts/typst-machine-appendix.sh (injects git stamps). -/
 lean_exe machine_appendix where
   root := `Bimodal.Automation.MachineAppendixExport

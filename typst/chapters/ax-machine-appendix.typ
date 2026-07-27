@@ -17,7 +17,7 @@
 #heading(numbering: none)[Appendix: The Machine-Readable Axiomatization] <machine-appendix>
 
 This appendix ships the complete *TM* axiomatization in machine-readable form: the #machine-axiom-count axiom schemata, the #machine-rule-count inference rules of `DerivationTree`, and the #machine-derived-op-count derived-operator definitions.
-The raw artifact is a JSONL file committed alongside this book at `Theories/Bimodal/typst/generated/machine-appendix.jsonl`; the tables below are *rendered from that artifact* (via `scripts/typst-machine-appendix.sh`), never hand-copied.
+The raw artifact is a JSONL file committed alongside this book at `typst/generated/machine-appendix.jsonl`; the tables below are *rendered from that artifact* (via `scripts/typst-machine-appendix.sh`), never hand-copied.
 It is intended for the AI-practitioner audience of @sec:dataset-pipeline: an agent or pipeline can consume the axiomatization directly, in the same formula encoding as the training datasets.
 
 Each JSONL line is one JSON object tagged by a `kind` field: one `metadata` line (generator, version, commit stamps, counts), then one line per axiom (`kind: "axiom"`), inference rule (`kind: "inference_rule"`), and derived operator (`kind: "derived_operator"`).

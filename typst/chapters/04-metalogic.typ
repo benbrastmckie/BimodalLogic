@@ -73,7 +73,7 @@ This property is essential for canonical constructions, as it ensures that every
 === Lindenbaum's Lemma
 
 #lemma("Lindenbaum")[
-  Every consistent set of formulas extends to a maximal consistent set.#footnote[Proven as `set_lindenbaum` in `Metalogic/Completeness.lean`.]
+  Every consistent set of formulas extends to a maximal consistent set.#footnote[Proven as `set_lindenbaum` in `Metalogic/Core/MaximalConsistent.lean`.]
 ]
 
 The proof applies Zorn's lemma to the partially ordered collection of consistent supersets of the given set.
@@ -139,7 +139,6 @@ The live metalogic code is organized as follows (`Theories/Bimodal/Metalogic/`):
     [`WeakCanonical/`], [Reynolds/Doets discrete completeness path; `Separation/`; Kamp-style expressiveness modules],
     [`ConservativeExtension/`], [Conservative extension results],
     [`Decidability/`], [Tableau decision procedure; `FMP/` finite model property],
-    [`Relational/`], [Relational semantics bridges],
     [`SoundnessLemmas/`], [Per-axiom validity lemmas, dense/discrete variants],
     [`Soundness.lean`], [Soundness theorem (sorry-free)],
     [`DenseSoundness.lean`, `DiscreteSoundness.lean`], [Frame-class soundness (sorry-free)],

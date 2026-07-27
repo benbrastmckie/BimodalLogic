@@ -21,7 +21,7 @@ LaTeX source for the Bimodal TM Logic reference document.
 ## Building
 
 ```bash
-cd Theories/Bimodal/latex
+cd latex
 latexmk -pdf BimodalReference.tex
 ```
 

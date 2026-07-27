@@ -9,14 +9,14 @@ automated-reasoning and training-data tooling.
 ### Development (with live preview)
 
 ```bash
-cd Theories/Bimodal/typst
+cd typst
 typst watch BimodalReference.typ build/BimodalReference.pdf
 ```
 
 ### Production build
 
 ```bash
-cd Theories/Bimodal/typst
+cd typst
 typst compile BimodalReference.typ build/BimodalReference.pdf
 ```
 
@@ -113,7 +113,7 @@ The remaining in-progress chapters are completed by follow-up tasks:
 
 ## Relationship to LaTeX Version
 
-This directory began as a parallel port of `Theories/Bimodal/latex/`.
+This directory began as a parallel port of `latex/`.
 **As of 2026-07-06 the LaTeX mirror is stale and the Typst version is
 authoritative**: the typst chapters were re-synchronized against the live Lean
 source, while `latex/BimodalReference.tex` still describes an older

@@ -104,7 +104,7 @@ The pipeline's second tier therefore comprises two components: the theorem-minin
 
 == Shipped Machine-Readable Axiomatization
 
-The axiomatization itself -- every axiom schema, inference rule, and derived-operator definition -- is shipped with this book as a machine-readable JSONL artifact at `Theories/Bimodal/typst/generated/machine-appendix.jsonl`, rendered as tables in the back-matter appendix (#link(<machine-appendix>)[_Appendix: The Machine-Readable Axiomatization_]).
+The axiomatization itself -- every axiom schema, inference rule, and derived-operator definition -- is shipped with this book as a machine-readable JSONL artifact at `typst/generated/machine-appendix.jsonl`, rendered as tables in the back-matter appendix (#link(<machine-appendix>)[_Appendix: The Machine-Readable Axiomatization_]).
 The formula encoding is the same `Formula.toJson` tag schema emitted by `dataset_generator`, so the shipped axiomatization and the training datasets above share one encoding.
 The artifact is regenerated commit-stamped via `scripts/typst-machine-appendix.sh` (which wraps `lake exe machine_appendix`, extracting each schema from the `Axiom` type index rather than transcribing it), and `scripts/typst-sync-check.sh` enforces its freshness against live Lean source.
 

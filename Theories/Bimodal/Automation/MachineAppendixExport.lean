@@ -390,7 +390,7 @@ def allDerivedOpEntries : List DerivedOpEntry :=
 
 /-- CLI configuration for the exporter. -/
 structure Config where
-  output : String := "Theories/Bimodal/typst/generated/machine-appendix.jsonl"
+  output : String := "typst/generated/machine-appendix.jsonl"
   stampCommit : String := "unstamped"
   stampDate : String := "unstamped"
 

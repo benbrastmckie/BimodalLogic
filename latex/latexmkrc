@@ -5,7 +5,7 @@
 # All style files are located in the local assets/ directory.
 #
 # USAGE:
-#   cd Theories/Bimodal/latex/
+#   cd latex/
 #   latexmk BimodalReference.tex
 #
 # USER SETTINGS:
@@ -47,7 +47,7 @@ $bibtex_use = 2;
 # Search Paths Configuration
 # Compute absolute paths at config load time for reliable path resolution.
 use Cwd qw(abs_path cwd);
-my $source_dir = cwd();  # Theories/Bimodal/latex/
+my $source_dir = cwd();  # latex/
 
 # BIBINPUTS for finding .bib files in source directory
 ensure_path('BIBINPUTS', "$source_dir//");
