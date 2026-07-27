@@ -269,7 +269,7 @@ theorem closure_box (phi psi : Formula)
 Inner formula of all_past is in closure.
 -/
 theorem closure_all_past (phi psi : Formula)
-    (h : Formula.all_past psi ∈ subformulaClosure phi) :
+    (h : Formula.allPast psi ∈ subformulaClosure phi) :
     psi ∈ subformulaClosure phi := by
   unfold subformulaClosure at h ⊢
   simp only [List.mem_toFinset] at h ⊢
@@ -279,7 +279,7 @@ theorem closure_all_past (phi psi : Formula)
 Inner formula of all_future is in closure.
 -/
 theorem closure_all_future (phi psi : Formula)
-    (h : Formula.all_future psi ∈ subformulaClosure phi) :
+    (h : Formula.allFuture psi ∈ subformulaClosure phi) :
     psi ∈ subformulaClosure phi := by
   unfold subformulaClosure at h ⊢
   simp only [List.mem_toFinset] at h ⊢
@@ -334,7 +334,7 @@ If P(chi) = psi.neg for psi in subformulaClosure, then psi = H(neg chi), so we e
 similarly.
 -/
 theorem some_past_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Formula)
-    (h : Formula.some_past chi ∈ closureWithNeg phi) :
+    (h : Formula.somePast chi ∈ closureWithNeg phi) :
     chi ∈ subformulaClosure phi := by
   unfold closureWithNeg at h
   simp only [Finset.mem_union, Finset.mem_image] at h
@@ -348,7 +348,7 @@ theorem some_past_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Formul
     -- Actually psi.neg = Formula.imp psi Formula.bot
     -- some_past chi = Formula.snce chi Formula.top = Formula.snce chi (Formula.bot.imp Formula.bot)
     -- So imp psi bot = snce chi (bot.imp bot) is impossible by constructor discrimination
-    unfold Formula.some_past Formula.top at h_psi_neg_eq
+    unfold Formula.somePast Formula.top at h_psi_neg_eq
     exact absurd h_psi_neg_eq (by intro h; cases h)
 
 /--
@@ -358,7 +358,7 @@ Symmetric to some_past_in_closureWithNeg_inner_in_subformulaClosure.
 F(chi) = neg(G(neg chi)) = (G(neg chi)).imp bot.
 -/
 theorem some_future_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Formula)
-    (h : Formula.some_future chi ∈ closureWithNeg phi) :
+    (h : Formula.someFuture chi ∈ closureWithNeg phi) :
     chi ∈ subformulaClosure phi := by
   unfold closureWithNeg at h
   simp only [Finset.mem_union, Finset.mem_image] at h
@@ -367,7 +367,7 @@ theorem some_future_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Form
     exact closure_untl_left phi _ _ h_sub
   · -- Case: F(chi) = psi.neg for some psi in subformulaClosure phi
     -- psi.neg = imp psi bot, some_future chi = untl chi top: constructor mismatch
-    unfold Formula.some_future Formula.top at h_psi_neg_eq
+    unfold Formula.someFuture Formula.top at h_psi_neg_eq
     exact absurd h_psi_neg_eq (by intro h; cases h)
 
 

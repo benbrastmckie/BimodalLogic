@@ -144,7 +144,7 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   See `FormalSystem.Theorems.GeneralizedNecessitation` for the derivation.
   -/
   | temporal_necessitation (φ : Formula)
-      (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.all_future φ)
+      (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.allFuture φ)
   /--
   Temporal duality rule: Swapping past and future in theorems.
 
@@ -153,7 +153,7 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   This rule only applies to theorems (proofs from no assumptions).
   -/
   | temporal_duality (φ : Formula)
-      (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.swap_temporal
+      (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.swapTemporal
   /--
   Weakening rule: Adding unused assumptions.
 
@@ -374,7 +374,7 @@ example (p : Atom) (ψ : Formula) : [ψ] ⊢ (Formula.box (Formula.atom p)).imp 
 /--
 Example: Density axiom is derivable at `.Dense` frame class.
 -/
-example (φ : Formula) : ⊢[FrameClass.Dense] φ.all_future.all_future.imp φ.all_future :=
+example (φ : Formula) : ⊢[FrameClass.Dense] φ.allFuture.allFuture.imp φ.allFuture :=
   .axiom _ _ (Axiom.density _) trivial
 
 /--

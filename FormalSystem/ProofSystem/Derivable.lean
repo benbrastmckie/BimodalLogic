@@ -163,7 +163,7 @@ Temporal necessitation: If `|-![fc] p` then `|-![fc] Gp` (Prop-valued).
 -/
 @[aesop safe apply]
 theorem Derivable.temp_nec {fc : FrameClass} {p : Formula}
-    (h : Derivable fc [] p) : Derivable fc [] (Formula.all_future p) := by
+    (h : Derivable fc [] p) : Derivable fc [] (Formula.allFuture p) := by
   obtain ⟨d⟩ := h
   exact Nonempty.intro (DerivationTree.temporal_necessitation p d)
 
@@ -172,7 +172,7 @@ Temporal duality: If `|-![fc] p` then `|-![fc] swap_temporal p` (Prop-valued).
 -/
 @[aesop safe apply]
 theorem Derivable.temp_dual {fc : FrameClass} {p : Formula}
-    (h : Derivable fc [] p) : Derivable fc [] p.swap_temporal := by
+    (h : Derivable fc [] p) : Derivable fc [] p.swapTemporal := by
   obtain ⟨d⟩ := h
   exact Nonempty.intro (DerivationTree.temporal_duality p d)
 

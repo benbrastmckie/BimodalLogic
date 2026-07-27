@@ -111,41 +111,41 @@ inductive Axiom : Formula → Type where
   /-- Serial future: `⊤ → F(⊤)` (future seriality).
   Under irreflexive semantics, every time point has a strict future. -/
   | serial_future :
-    Axiom ((Formula.bot.imp Formula.bot).imp (Formula.some_future (Formula.bot.imp Formula.bot)))
+    Axiom ((Formula.bot.imp Formula.bot).imp (Formula.someFuture (Formula.bot.imp Formula.bot)))
   /-- Serial past: `⊤ → P(⊤)` (past seriality).
   Under irreflexive semantics, every time point has a strict past. -/
   | serial_past :
-    Axiom ((Formula.bot.imp Formula.bot).imp (Formula.some_past (Formula.bot.imp Formula.bot)))
+    Axiom ((Formula.bot.imp Formula.bot).imp (Formula.somePast (Formula.bot.imp Formula.bot)))
   /-- BX2G: Guard monotonicity of Until under G (Burgess convention: untl(event, guard)):
   `G(φ→χ) → ((ψ U φ) → (ψ U χ))`.
   Under open guard (t,s): G(φ→χ) covers all r > t, which includes (t,s).
   Unlike BX2, the pointwise (φ→χ) at t is not needed since t ∉ (t,s). -/
   | left_mono_until_G (φ χ ψ : Formula) :
-      Axiom ((φ.imp χ).all_future.imp ((Formula.untl ψ φ).imp (Formula.untl ψ χ)))
+      Axiom ((φ.imp χ).allFuture.imp ((Formula.untl ψ φ).imp (Formula.untl ψ χ)))
   /-- BX2H: Guard monotonicity of Since under H (Burgess convention: snce(event, guard)):
   `H(φ→χ) → ((ψ S φ) → (ψ S χ))`.
   Under open guard (s,t): H(φ→χ) covers all r < t, which includes (s,t).
   Unlike BX2', the pointwise (φ→χ) at t is not needed since t ∉ (s,t). -/
   | left_mono_since_H (φ χ ψ : Formula) :
-      Axiom ((φ.imp χ).all_past.imp ((Formula.snce ψ φ).imp (Formula.snce ψ χ)))
+      Axiom ((φ.imp χ).allPast.imp ((Formula.snce ψ φ).imp (Formula.snce ψ χ)))
   /-- BX3: Event monotonicity of Until (Burgess convention: untl(event, guard)):
   `G(φ → ψ) → ((φ U χ) → (ψ U χ))`.
   If φ implies ψ at all times, then U(φ,χ) implies U(ψ,χ). -/
   | right_mono_until (φ ψ χ : Formula) :
-      Axiom ((φ.imp ψ).all_future.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ)))
+      Axiom ((φ.imp ψ).allFuture.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ)))
   /-- BX3': Event monotonicity of Since (Burgess convention: snce(event, guard)):
   `H(φ → ψ) → ((φ S χ) → (ψ S χ))`. -/
   | right_mono_since (φ ψ χ : Formula) :
-      Axiom ((φ.imp ψ).all_past.imp ((Formula.snce φ χ).imp (Formula.snce ψ χ)))
+      Axiom ((φ.imp ψ).allPast.imp ((Formula.snce φ χ).imp (Formula.snce ψ χ)))
   /-- BX4: Temporal connectedness (future): `φ → G(P(φ))`.
   If φ holds now, then at all future times, P(φ) holds — the present is
   always in the past of the future. -/
   | connect_future (φ : Formula) :
-      Axiom (φ.imp (φ.some_past.all_future))
+      Axiom (φ.imp (φ.somePast.allFuture))
   /-- BX4': Temporal connectedness (past): `φ → H(F(φ))`.
   Mirror of BX4: the present is always in the future of the past. -/
   | connect_past (φ : Formula) :
-      Axiom (φ.imp (φ.some_future.all_past))
+      Axiom (φ.imp (φ.someFuture.allPast))
   /-- BX13: Until-Since enrichment (Burgess A3a, Xu axiom (3)):
   Burgess: `p ∧ U(α, β) → U(α ∧ S(p, β), β)`.
   In our Burgess convention (untl(event, guard)):
@@ -224,48 +224,48 @@ inductive Axiom : Formula → Type where
   `U(ψ, φ) → F(ψ)`.
   U(ψ,φ) at t has witness s > t with ψ(s), so F(ψ) holds. -/
   | until_F (φ ψ : Formula) :
-      Axiom ((Formula.untl ψ φ).imp (Formula.some_future ψ))
+      Axiom ((Formula.untl ψ φ).imp (Formula.someFuture ψ))
   /-- BX10': Since implies past eventuality (Burgess convention: snce(event, guard)):
   `S(ψ, φ) → P(ψ)`.
   Mirror of BX10 for the past direction. -/
   | since_P (φ ψ : Formula) :
-      Axiom ((Formula.snce ψ φ).imp (Formula.some_past ψ))
+      Axiom ((Formula.snce ψ φ).imp (Formula.somePast ψ))
   -- Layer 3b: Additional BX Temporal (4 = 2 axioms x 2 directions)
   /-- BX11: Temporal linearity:
   `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)`.
   Future witnesses are linearly ordered. Uses linearity of the underlying temporal order.
   This axiom is NOT derivable from BX1-BX10 (see LinearityDerivedFacts.lean counterexample). -/
   | temp_linearity (φ ψ : Formula) :
-      Axiom (Formula.and (Formula.some_future φ) (Formula.some_future ψ) |>.imp
-        (Formula.or (Formula.some_future (Formula.and φ ψ))
-          (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
-            (Formula.some_future (Formula.and (Formula.some_future φ) ψ)))))
+      Axiom (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
+        (Formula.or (Formula.someFuture (Formula.and φ ψ))
+          (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
+            (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ)))))
   /-- BX11': Temporal linearity (past):
   `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)`.
   Past dual of BX11. -/
   | temp_linearity_past (φ ψ : Formula) :
-      Axiom (Formula.and (Formula.some_past φ) (Formula.some_past ψ) |>.imp
-        (Formula.or (Formula.some_past (Formula.and φ ψ))
-          (Formula.or (Formula.some_past (Formula.and φ (Formula.some_past ψ)))
-            (Formula.some_past (Formula.and (Formula.some_past φ) ψ)))))
+      Axiom (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
+        (Formula.or (Formula.somePast (Formula.and φ ψ))
+          (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
+            (Formula.somePast (Formula.and (Formula.somePast φ) ψ)))))
   /-- BX12: F-Until equivalence (Burgess convention: untl(event, guard)):
   `F(φ) → U(φ, ⊤)`.
   Every future eventuality can be witnessed by an Until formula with vacuous guard.
   Here ⊤ = ¬⊥ = ⊥ → ⊥. Bridges F-formulas to Until-formulas. -/
   | F_until_equiv (φ : Formula) :
-      Axiom ((Formula.some_future φ).imp (Formula.untl φ (Formula.bot.imp Formula.bot)))
+      Axiom ((Formula.someFuture φ).imp (Formula.untl φ (Formula.bot.imp Formula.bot)))
   /-- BX12': P-Since equivalence (Burgess convention: snce(event, guard)):
   `P(φ) → S(φ, ⊤)`.
   Past dual of BX12. -/
   | P_since_equiv (φ : Formula) :
-      Axiom ((Formula.some_past φ).imp (Formula.snce φ (Formula.bot.imp Formula.bot)))
+      Axiom ((Formula.somePast φ).imp (Formula.snce φ (Formula.bot.imp Formula.bot)))
   -- NOTE: Layer 3c (until_guard/since_guard) removed -- unsound under open guard (t,s).
   -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.
 
   -- Layer 4: Modal-Temporal Interaction (1)
   -- Note: TF (□φ → G□φ) is now derived from MF + T + Modal 4 in Theorems/Combinators.lean.
   /-- Modal-Future: `□φ → □(Gφ)`. Necessary truths remain necessary in the future. -/
-  | modal_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.box (Formula.all_future φ)))
+  | modal_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.box (Formula.allFuture φ)))
   -- Layer 5: Uniformity Axioms (5)
   -- These encode the uniformity of discreteness in ordered abelian groups.
   -- U(⊤,⊥) = "next top" witnesses an immediate successor (gap of size d > 0).
@@ -286,13 +286,13 @@ inductive Axiom : Formula → Type where
   exists at every future point s > t (translate by s-t). -/
   | discrete_propagate_fwd :
       Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
-        (Formula.all_future (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
+        (Formula.allFuture (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
   /-- Discrete propagation backward: U(⊤,⊥) → H(U(⊤,⊥)).
   If there is a gap of size d at t, then by translation invariance the same gap
   exists at every past point s < t. -/
   | discrete_propagate_bwd :
       Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
-        (Formula.all_past (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
+        (Formula.allPast (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
   /-- Discrete box necessity: U(⊤,⊥) → □(U(⊤,⊥)).
   If there is a gap of size d at t (discreteness witness), then by translation
   invariance the same gap exists at every accessible world at time t. Since box
@@ -313,12 +313,12 @@ inductive Axiom : Formula → Type where
   Prior axiom, valid on all discrete well-founded-upward orders.
   Equivalent to Venema's axiom (W): every definable future set has a least element. -/
   | prior_UZ (φ : Formula) :
-      Axiom (φ.some_future.imp (Formula.untl φ φ.neg))
+      Axiom (φ.someFuture.imp (Formula.untl φ φ.neg))
   /-- Prior-SZ: `P(φ) → S(φ, ¬φ)`.
   Past dual of Prior-UZ. If φ held at some past time, then there is a nearest past
   time where φ held, with ¬φ holding at all intermediate points. -/
   | prior_SZ (φ : Formula) :
-      Axiom (φ.some_past.imp (Formula.snce φ φ.neg))
+      Axiom (φ.somePast.imp (Formula.snce φ φ.neg))
   -- Layer 7: Z1 Axiom (IsSuccArchimedean characteristic axiom)
   -- Z1: G(Gφ→φ) → (FGφ→Gφ)
   -- Valid on all IsSuccArchimedean discrete linear orders (e.g. ℤ).
@@ -330,7 +330,7 @@ inductive Axiom : Formula → Type where
   characteristic axiom of IsSuccArchimedean frames: backward induction from any
   reachable Gφ-witness yields Gφ everywhere. -/
   | z1 (φ : Formula) :
-      Axiom ((φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future))
+      Axiom ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture))
   -- Layer 8: Density Axiom (1)
   -- Valid on densely ordered frames (DenselyOrdered). Not valid on discrete frames.
   -- GGφ → Gφ: if φ holds at all times strictly after all strict-future times,
@@ -341,7 +341,7 @@ inductive Axiom : Formula → Type where
   t' > t, density provides t'' with t < t'' < t', and GGφ at t gives Gφ at t'',
   which gives φ at t'. This axiom is NOT valid on discrete frames (ℤ has gaps). -/
   | density (φ : Formula) :
-      Axiom (φ.all_future.all_future.imp φ.all_future)
+      Axiom (φ.allFuture.allFuture.imp φ.allFuture)
   /-- Dense indicator: `¬U(⊤,⊥)`.
   On a densely ordered frame, `U(⊤,⊥)` ("there exists an immediate successor") is
   false at every point, since for any s > t, density provides r with t < r < s,

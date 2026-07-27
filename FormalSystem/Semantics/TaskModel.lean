@@ -62,13 +62,13 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F 
 /--
 Simple model where all atoms are false everywhere.
 -/
-def all_false : TaskModel F where
+def allFalse : TaskModel F where
   valuation := fun _ _ => False
 
 /--
 Simple model where all atoms are true everywhere.
 -/
-def all_true : TaskModel F where
+def allTrue : TaskModel F where
   valuation := fun _ _ => True
 
 /--
@@ -77,8 +77,8 @@ Model where specific atoms have specific truth values.
 Helper function to construct models for testing.
 Takes a list of atom base names (without fresh indices) for backward compatibility.
 -/
-def from_list (trueAtoms : List String) : TaskModel F where
-  valuation := fun _ p => p.base ∈ trueAtoms ∧ p.fresh_index.isNone
+def fromList (trueAtoms : List String) : TaskModel F where
+  valuation := fun _ p => p.base ∈ trueAtoms ∧ p.freshIndex.isNone
 
 end TaskModel
 

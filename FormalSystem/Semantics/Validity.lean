@@ -81,7 +81,7 @@ def valid (φ : Formula) : Prop :=
     (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
     (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    truth_at M Omega τ t φ
+    TruthAt M Omega τ t φ
 
 /--
 Notation for validity: `⊨ φ` means `valid φ`.
@@ -100,18 +100,18 @@ all `x ∈ D` (all times in the temporal order), not just times in dom(τ).
 
 Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 -/
-def semantic_consequence (Γ : Context) (φ : Formula) : Prop :=
+def SemanticConsequence (Γ : Context) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
     (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) →
-    truth_at M Omega τ t φ
+    (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) →
+    TruthAt M Omega τ t φ
 
 /--
 Notation for semantic consequence: `Γ ⊨ φ`.
 -/
-notation:50 Γ:50 " ⊨ " φ:50 => semantic_consequence Γ φ
+notation:50 Γ:50 " ⊨ " φ:50 => SemanticConsequence Γ φ
 
 /--
 A context is satisfiable in temporal type `D` if there exists a model where all formulas
@@ -130,12 +130,12 @@ def satisfiable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid
     Prop :=
   ∃ (F : TaskFrame D) (M : TaskModel F) (Omega : Set (WorldHistory F))
     (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    ∀ φ ∈ Γ, truth_at M Omega τ t φ
+    ∀ φ ∈ Γ, TruthAt M Omega τ t φ
 
 /--
 A context is absolutely satisfiable if it is satisfiable in some temporal type.
 -/
-def satisfiable_abs (Γ : Context) : Prop :=
+def SatisfiableAbs (Γ : Context) : Prop :=
   ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D), satisfiable D Γ
 
 /--
@@ -151,11 +151,11 @@ to the existence of finite models.
 **Relationship to Context Satisfiability**:
 `formula_satisfiable φ ↔ satisfiable Int [φ]` (for Int time, but holds for any D)
 -/
-def formula_satisfiable (φ : Formula) : Prop :=
+def FormulaSatisfiable (φ : Formula) : Prop :=
   ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
     (F : TaskFrame D) (M : TaskModel F) (Omega : Set (WorldHistory F))
     (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    truth_at M Omega τ t φ
+    TruthAt M Omega τ t φ
 
 /--
 A formula is valid over dense temporal orders if it is true in all models where D is
@@ -166,13 +166,13 @@ frame condition for the density axiom DN: `F(phi) -> F(F(phi))`.
 
 **Notation**: `⊨_dense φ`
 -/
-def valid_dense (φ : Formula) : Prop :=
+def ValidDense (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
     (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    truth_at M Omega τ t φ
+    TruthAt M Omega τ t φ
 
 /--
 A formula is valid over discrete temporal orders if it is true in all models where D
@@ -184,27 +184,27 @@ capturing the frame condition for the discreteness axioms DF/DP.
 
 **Notation**: `⊨_discrete φ`
 -/
-def valid_discrete (φ : Formula) : Prop :=
+def ValidDiscrete (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
     [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
     (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    truth_at M Omega τ t φ
+    TruthAt M Omega τ t φ
 
 namespace Validity
 
 /--
 Validity implies validity over dense orders: every valid formula is valid_dense.
 -/
-theorem valid_implies_valid_dense {φ : Formula} (h : valid φ) : valid_dense φ := by
+theorem valid_implies_valid_dense {φ : Formula} (h : valid φ) : ValidDense φ := by
   intro D _ _ _ _ _ F M Omega h_sc τ h_mem t
   exact h D F M Omega h_sc τ h_mem t
 
 /--
 Validity implies validity over discrete orders: every valid formula is valid_discrete.
 -/
-theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : valid_discrete φ :=
+theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : ValidDiscrete φ :=
   fun D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
 
 /--
@@ -267,7 +267,7 @@ theorem unsatisfiable_implies_all_fixed {D : Type*} [AddCommGroup D] [LinearOrde
     ¬satisfiable D Γ → ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega)
-      (t : D), (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ := by
+      (t : D), (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ := by
   intro h_unsat F M Omega _h_sc τ h_mem t h_all
   exfalso
   apply h_unsat
@@ -285,7 +285,7 @@ If G(φ) is valid, then φ is valid.
 Proof: G(φ) at time t means ∀ s ≥ t, truth_at φ at s. Since t ≤ t (reflexive),
 this gives truth_at φ at t.
 -/
-theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.all_future φ)) :
+theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.allFuture φ)) :
     valid φ := by
   intro D _ _ _ _ F M Omega h_sc τ h_mem t
   -- G(φ) valid means ∀ t, ∀ s > t, φ(s). Pick r < t, then G(φ)(r) gives φ(t).
@@ -298,7 +298,7 @@ theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.all_future 
 /--
 If H(φ) is valid, then φ is valid.
 -/
-theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.all_past φ)) :
+theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.allPast φ)) :
     valid φ := by
   intro D _ _ _ _ F M Omega h_sc τ h_mem t
   -- H(φ) valid at all times. Pick s > t, then H(φ)(s) gives φ(t) since t < s.

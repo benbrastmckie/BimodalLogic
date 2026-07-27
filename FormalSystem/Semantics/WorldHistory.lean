@@ -101,7 +101,7 @@ structure WorldHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAd
   This ensures the history is consistent with possible task executions.
   -/
   respects_task : ∀ (s t : D) (hs : domain s) (ht : domain t),
-    s ≤ t → F.task_rel (states s hs) (t - s) (states t ht)
+    s ≤ t → F.TaskRel (states s hs) (t - s) (states t ht)
 
 namespace WorldHistory
 
@@ -138,7 +138,7 @@ use the frame-specific constructors `universal_trivialFrame` or `universal_natFr
 - `h_refl`: Proof that the frame is reflexive at state `w` for all durations
 -/
 def universal (F : TaskFrame D) (w : F.WorldState)
-    (h_refl : ∀ d : D, F.task_rel w d w) : WorldHistory F where
+    (h_refl : ∀ d : D, F.TaskRel w d w) : WorldHistory F where
   domain := fun _ => True
   convex := by
     intros x z hx hz y hxy hyz
@@ -157,7 +157,7 @@ Since trivial frame's task relation is always true, this always works.
 The full domain is convex.
 -/
 def trivial {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
-    WorldHistory (TaskFrame.trivial_frame (D := D)) where
+    WorldHistory (TaskFrame.trivialFrame (D := D)) where
   domain := fun _ => True
   convex := by
     intros x z hx hz y hxy hyz
@@ -176,9 +176,9 @@ This is a variant of `trivial` that allows specifying the constant state
 Since trivialFrame's task relation is always true, any constant history respects the task relation.
 The full domain is convex.
 -/
-def universal_trivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    (w : (TaskFrame.trivial_frame (D := D)).WorldState) :
-    WorldHistory (TaskFrame.trivial_frame (D := D)) where
+def universalTrivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (w : (TaskFrame.trivialFrame (D := D)).WorldState) :
+    WorldHistory (TaskFrame.trivialFrame (D := D)) where
   domain := fun _ => True
   convex := by
     intros x z hx hz y hxy hyz
@@ -197,9 +197,9 @@ satisfies `respects_task` because `n = n` holds (right disjunct).
 This demonstrates that frames with `nullity_identity` admit constant histories
 as long as zero-duration relates identical states. The full domain is convex.
 -/
-def universal_natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (n :
+def universalNatFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (n :
       Nat) :
-    WorldHistory (TaskFrame.nat_frame (D := D)) where
+    WorldHistory (TaskFrame.natFrame (D := D)) where
   domain := fun _ => True
   convex := by
     intros x z hx hz y hxy hyz
@@ -215,7 +215,7 @@ def universal_natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAd
 /--
 Get the state at a time (helper function that bundles membership proof).
 -/
-def state_at (τ : WorldHistory F) (t : D) (h : τ.domain t) : F.WorldState :=
+def stateAt (τ : WorldHistory F) (t : D) (h : τ.domain t) : F.WorldState :=
   τ.states t h
 
 /-! ## Time-Shift Construction
@@ -243,7 +243,7 @@ so does the shifted history, because:
 1. Task relation only depends on duration (t - s), preserved under translation
 2. Convexity is preserved under translation by group structure
 -/
-def time_shift (σ : WorldHistory F) (Δ : D) : WorldHistory F where
+def timeShift (σ : WorldHistory F) (Δ : D) : WorldHistory F where
   domain := fun z => σ.domain (z + Δ)
   convex := by
     intros x z hx hz y hxy hyz
@@ -272,15 +272,15 @@ Time-shift preserves domain membership (forward direction).
 If z is in the shifted domain, then z + Δ is in the original domain.
 -/
 theorem time_shift_domain_iff (σ : WorldHistory F) (Δ z : D) :
-    (time_shift σ Δ).domain z ↔ σ.domain (z + Δ) := by
+    (timeShift σ Δ).domain z ↔ σ.domain (z + Δ) := by
   rfl
 
 /--
 Inverse time-shift: shifting by -Δ undoes shifting by Δ on the domain.
 -/
 theorem time_shift_inverse_domain (σ : WorldHistory F) (Δ : D) (z : D) :
-    (time_shift (time_shift σ Δ) (-Δ)).domain z ↔ σ.domain z := by
-  simp only [time_shift]
+    (timeShift (timeShift σ Δ) (-Δ)).domain z ↔ σ.domain z := by
+  simp only [timeShift]
   constructor
   · intro h
     have : z + -Δ + Δ = z := by
@@ -313,9 +313,9 @@ It shows that shifting by Δ and then by -Δ returns to the original states.
 -/
 theorem time_shift_time_shift_states (σ : WorldHistory F) (Δ : D) (t : D)
     (ht : σ.domain t)
-    (ht' : (time_shift (time_shift σ Δ) (-Δ)).domain t) :
-    (time_shift (time_shift σ Δ) (-Δ)).states t ht' = σ.states t ht := by
-  simp only [time_shift]
+    (ht' : (timeShift (timeShift σ Δ) (-Δ)).domain t) :
+    (timeShift (timeShift σ Δ) (-Δ)).states t ht' = σ.states t ht := by
+  simp only [timeShift]
   have h_eq : t + -Δ + Δ = t := by
     rw [add_assoc, neg_add_cancel, add_zero]
   exact states_eq_of_time_eq σ (t + -Δ + Δ) t h_eq _ ht
@@ -324,7 +324,7 @@ theorem time_shift_time_shift_states (σ : WorldHistory F) (Δ : D) (t : D)
 Extensionality lemma for time_shift: shifting by equal amounts gives equal histories.
 -/
 theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : D) (h : Δ₁ = Δ₂) :
-    time_shift σ Δ₁ = time_shift σ Δ₂ := by
+    timeShift σ Δ₁ = timeShift σ Δ₂ := by
   subst h
   rfl
 
@@ -332,15 +332,15 @@ theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : D) (h : Δ₁ = Δ
 Domain membership for time_shift by zero is equivalent to original domain.
 -/
 theorem time_shift_zero_domain_iff (σ : WorldHistory F) (z : D) :
-    (time_shift σ 0).domain z ↔ σ.domain z := by
-  simp only [time_shift, add_zero]
+    (timeShift σ 0).domain z ↔ σ.domain z := by
+  simp only [timeShift, add_zero]
 
 /--
 Domain membership for double time-shift with opposite amounts equals original.
 -/
 theorem time_shift_time_shift_neg_domain_iff (σ : WorldHistory F) (Δ : D) (z : D) :
-    (time_shift (time_shift σ Δ) (-Δ)).domain z ↔ σ.domain z := by
-  simp only [time_shift]
+    (timeShift (timeShift σ Δ) (-Δ)).domain z ↔ σ.domain z := by
+  simp only [timeShift]
   have h : z + -Δ + Δ = z := by
     rw [add_assoc, neg_add_cancel, add_zero]
   constructor
@@ -351,9 +351,9 @@ theorem time_shift_time_shift_neg_domain_iff (σ : WorldHistory F) (Δ : D) (z :
 States at double time-shift with opposite amounts equals original states.
 -/
 theorem time_shift_time_shift_neg_states (σ : WorldHistory F) (Δ : D) (t : D)
-    (ht : σ.domain t) (ht' : (time_shift (time_shift σ Δ) (-Δ)).domain t) :
-    (time_shift (time_shift σ Δ) (-Δ)).states t ht' = σ.states t ht := by
-  simp only [time_shift]
+    (ht : σ.domain t) (ht' : (timeShift (timeShift σ Δ) (-Δ)).domain t) :
+    (timeShift (timeShift σ Δ) (-Δ)).states t ht' = σ.states t ht := by
+  simp only [timeShift]
   have h_eq : t + -Δ + Δ = t := by
     rw [add_assoc, neg_add_cancel, add_zero]
   exact states_eq_of_time_eq σ (t + -Δ + Δ) t h_eq _ ht

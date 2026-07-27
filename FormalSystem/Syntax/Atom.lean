@@ -76,7 +76,7 @@ structure Atom where
   /-- The base name of the atom (e.g., "p", "q") -/
   base : String
   /-- Optional fresh index: `none` for ordinary atoms, `some n` for fresh variants -/
-  fresh_index : Option Nat
+  freshIndex : Option Nat
   deriving Repr, DecidableEq, BEq, Hashable
 
 /-!
@@ -114,30 +114,30 @@ instance : LawfulBEq Atom where
 namespace Atom
 
 /-- Create a base atom from a string (no fresh index). -/
-def mk_base (s : String) : Atom := ⟨s, none⟩
+def mkBase (s : String) : Atom := ⟨s, none⟩
 
 /-- Create a fresh atom with the given base and index. -/
-def mk_fresh (s : String) (n : Nat) : Atom := ⟨s, some n⟩
+def mkFresh (s : String) (n : Nat) : Atom := ⟨s, some n⟩
 
 /-- The empty-string base atom, useful as a canonical fresh source. -/
-def fresh_base : Atom := mk_fresh "" 0
+def freshBase : Atom := mkFresh "" 0
 
 /-- Two atoms with the same base but different indices are distinct. -/
-theorem mk_fresh_injective (s : String) : Function.Injective (mk_fresh s) := by
+theorem mk_fresh_injective (s : String) : Function.Injective (mkFresh s) := by
   intro n m h
-  simp only [mk_fresh, Atom.mk.injEq] at h
+  simp only [mkFresh, Atom.mk.injEq] at h
   exact Option.some_injective _ h.2
 
 /-- Base atoms with different strings are distinct. -/
-theorem mk_base_injective : Function.Injective mk_base := by
+theorem mk_base_injective : Function.Injective mkBase := by
   intro s t h
-  simp only [mk_base, Atom.mk.injEq] at h
+  simp only [mkBase, Atom.mk.injEq] at h
   exact h.1
 
 /-- mk_base and mk_fresh produce different atoms. -/
-theorem mk_base_ne_mk_fresh (s t : String) (n : Nat) : mk_base s ≠ mk_fresh t n := by
+theorem mk_base_ne_mk_fresh (s t : String) (n : Nat) : mkBase s ≠ mkFresh t n := by
   intro h
-  simp only [mk_base, mk_fresh, Atom.mk.injEq] at h
+  simp only [mkBase, mkFresh, Atom.mk.injEq] at h
   cases h.2
 
 end Atom
@@ -151,7 +151,7 @@ and both `String` and `Option Nat` are countable.
 
 /-- Equivalence between Atom and String × Option Nat. -/
 def atomEquiv : Atom ≃ String × Option Nat where
-  toFun a := (a.base, a.fresh_index)
+  toFun a := (a.base, a.freshIndex)
   invFun p := ⟨p.1, p.2⟩
   left_inv a := by cases a; rfl
   right_inv p := by cases p; rfl
@@ -175,12 +175,12 @@ Atom is infinite because we can inject Nat into it via fresh indices.
 -/
 
 /-- Injection from Nat to Atom via fresh indices with empty base. -/
-def natToAtom (n : Nat) : Atom := Atom.mk_fresh "" n
+def natToAtom (n : Nat) : Atom := Atom.mkFresh "" n
 
 /-- The injection is indeed injective. -/
 theorem natToAtom_injective : Function.Injective natToAtom := by
   intro n m h
-  simp only [natToAtom, Atom.mk_fresh, Atom.mk.injEq] at h
+  simp only [natToAtom, Atom.mkFresh, Atom.mk.injEq] at h
   exact Option.some_injective _ h.2
 
 /-- Atom is infinite via injection from Nat. -/
@@ -204,11 +204,11 @@ theorem Atom.freshness (S : Finset Atom) : ∃ a : Atom, a ∉ S :=
 
 /-- Given a finite set of atoms, construct a specific fresh atom.
 Uses the maximum fresh index + 1 with empty base. -/
-noncomputable def Atom.fresh_for (S : Finset Atom) : Atom :=
+noncomputable def Atom.freshFor (S : Finset Atom) : Atom :=
   Classical.choose (Atom.exists_fresh S)
 
 /-- The atom returned by `fresh_for` is indeed not in the set. -/
-theorem Atom.fresh_for_not_mem (S : Finset Atom) : Atom.fresh_for S ∉ S :=
+theorem Atom.fresh_for_not_mem (S : Finset Atom) : Atom.freshFor S ∉ S :=
   Classical.choose_spec (Atom.exists_fresh S)
 
 end FormalSystem.Syntax

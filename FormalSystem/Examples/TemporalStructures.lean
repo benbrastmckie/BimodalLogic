@@ -71,7 +71,7 @@ Discrete time steps with integer arithmetic. WorldState is Unit (trivial).
 -/
 def intTimeFrame : TaskFrame Int where
   WorldState := Unit
-  task_rel := fun _ _ _ => True
+  TaskRel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
   forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
@@ -84,7 +84,7 @@ to satisfy nullity_identity while remaining permissive for non-zero durations.
 -/
 def intNatFrame : TaskFrame Int where
   WorldState := Nat
-  task_rel := fun w d u => d ≠ 0 ∨ w = u
+  TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
     constructor
     · intro h
@@ -150,7 +150,7 @@ This demonstrates ProofChecker's polymorphic design. WorldState is Unit (trivial
 -/
 def genericTimeFrame : TaskFrame D where
   WorldState := Unit
-  task_rel := fun _ _ _ => True
+  TaskRel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
   forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
@@ -162,7 +162,7 @@ Task relation is `d ≠ 0 ∨ w = u` to satisfy nullity_identity.
 -/
 def genericNatFrame : TaskFrame D where
   WorldState := Nat
-  task_rel := fun w d u => d ≠ 0 ∨ w = u
+  TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
     constructor
     · intro h
@@ -226,14 +226,14 @@ example : (genericTimeFrame Int).WorldState = Unit := rfl
 /--
 Demonstrates that generic and specific Int frames have the same task relation behavior.
 -/
-example : (genericTimeFrame Int).task_rel = intTimeFrame.task_rel := rfl
+example : (genericTimeFrame Int).TaskRel = intTimeFrame.TaskRel := rfl
 
 /-! ## Properties -/
 
 /--
 Integer time satisfies the nullity constraint (derived from nullity_identity).
 -/
-theorem int_nullity_example : intTimeFrame.task_rel () 0 () :=
+theorem int_nullity_example : intTimeFrame.TaskRel () 0 () :=
   TaskFrame.nullity intTimeFrame ()
 
 /--
@@ -241,15 +241,15 @@ Generic time satisfies the nullity constraint (polymorphic proof, derived from n
 -/
 theorem generic_nullity_example (D : Type*) [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] :
-    (genericTimeFrame D).task_rel () 0 () :=
+    (genericTimeFrame D).TaskRel () 0 () :=
   TaskFrame.nullity (genericTimeFrame D) ()
 
 /--
 Integer time forward compositionality example: 1 + 2 = 3 duration composition.
 -/
 theorem int_compositionality_example :
-    intTimeFrame.task_rel () 3 () := by
-  change intTimeFrame.task_rel () (1 + 2) ()
+    intTimeFrame.TaskRel () 3 () := by
+  change intTimeFrame.TaskRel () (1 + 2) ()
   exact intTimeFrame.forward_comp () () () 1 2
     (by omega : 0 ≤ (1 : Int))
     (by omega : 0 ≤ (2 : Int))
@@ -264,7 +264,7 @@ to a task of duration `x + y`.
 -/
 theorem generic_compositionality (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (x y : D) (hx : 0 ≤ x) (hy : 0 ≤ y) :
-    (genericTimeFrame D).task_rel () (x + y) () :=
+    (genericTimeFrame D).TaskRel () (x + y) () :=
   (genericTimeFrame D).forward_comp () () () x y hx hy
     (TaskFrame.nullity (genericTimeFrame D) ())
     (TaskFrame.nullity (genericTimeFrame D) ())

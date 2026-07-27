@@ -60,7 +60,7 @@ theorem soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAdd
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
   fun F M Omega h_sc τ h_mem t h_ctx =>
     soundness Γ φ d D F M Omega h_sc τ h_mem t h_ctx
 
@@ -78,7 +78,7 @@ theorem soundness_linear {Γ : Context} {φ : Formula} (d : DerivationTree Frame
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
   soundness_over D Γ φ d
 
 /--
@@ -93,7 +93,7 @@ theorem soundness_dense {Γ : Context} {φ : Formula} (d : DerivationTree FrameC
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
   fun F M Omega h_sc τ h_mem t h_ctx =>
     Metalogic.soundness_dense Γ φ d D F M Omega h_sc τ h_mem t h_ctx
 
@@ -110,7 +110,7 @@ theorem soundness_discrete {Γ : Context} {φ : Formula} (d : DerivationTree Fra
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
   fun F M Omega h_sc τ h_mem t h_ctx =>
     Metalogic.soundness_discrete Γ φ d D F M Omega h_sc τ h_mem t h_ctx
 
@@ -123,7 +123,7 @@ theorem axiom_base_valid_linear {φ : Formula} (ax : Axiom φ)
     (h_fc : ax.minFrameClass ≤ FrameClass.Base)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [LinearTemporalFrame D] :
-    valid_over D φ := by
+    ValidOver D φ := by
   intro F M Omega h_sc τ h_mem t
   exact axiom_valid ax h_fc D F M Omega h_sc τ h_mem t
 
@@ -135,7 +135,7 @@ theorem axiom_dense_valid_fc {φ : Formula} (ax : Axiom φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
     [DenseTemporalFrame D] :
-    valid_over D φ := by
+    ValidOver D φ := by
   intro F M Omega h_sc τ h_mem t
   exact axiom_dense_valid ax h_fc D F M Omega h_sc τ h_mem t
 
@@ -147,7 +147,7 @@ theorem axiom_discrete_valid_fc {φ : Formula} (ax : Axiom φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D]
     [DiscreteTemporalFrame D] :
-    valid_over D φ := by
+    ValidOver D φ := by
   intro F M Omega h_sc τ h_mem t
   -- Use axiom_discrete_valid from Soundness.lean
   have h := axiom_discrete_valid ax h_fc
@@ -164,7 +164,7 @@ theorem soundness_Int {Γ : Context} {φ : Formula} (d : DerivationTree FrameCla
     ∀ (F : TaskFrame Int) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Int),
-      (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
   fun F M Omega h_sc τ h_mem t h_ctx =>
     Metalogic.soundness_discrete Γ φ d Int F M Omega h_sc τ h_mem t h_ctx
 

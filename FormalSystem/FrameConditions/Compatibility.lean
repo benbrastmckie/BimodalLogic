@@ -73,7 +73,7 @@ theorem foo [AxiomLinearCompatible ax] : ... := ...
 class AxiomLinearCompatible {φ : Formula} (ax : Axiom φ) : Prop where
   /-- The axiom is valid over all linear temporal frames -/
   valid : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-            [Nontrivial D] [LinearTemporalFrame D], valid_over D φ
+            [Nontrivial D] [LinearTemporalFrame D], ValidOver D φ
 
 /--
 Axiom compatible with dense temporal frames.
@@ -82,7 +82,7 @@ class AxiomDenseCompatible {φ : Formula} (ax : Axiom φ) : Prop where
   /-- The axiom is valid over all dense temporal frames -/
   valid : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
             [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
-            [DenseTemporalFrame D], valid_over D φ
+            [DenseTemporalFrame D], ValidOver D φ
 
 /--
 Axiom compatible with discrete temporal frames.
@@ -92,7 +92,7 @@ class AxiomDiscreteCompatible {φ : Formula} (ax : Axiom φ) : Prop where
   valid : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
             [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D]
               [IsSuccArchimedean D]
-            [DiscreteTemporalFrame D], valid_over D φ
+            [DiscreteTemporalFrame D], ValidOver D φ
 
 /-! ## Monotonicity: Linear → Dense/Discrete -/
 

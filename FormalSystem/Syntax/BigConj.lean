@@ -40,7 +40,7 @@ def bigconj : List Formula → Formula
   | φ :: ψ :: rest => Formula.and φ (bigconj (ψ :: rest))
 
 /-- Negated big conjunction. -/
-def neg_bigconj (L : List Formula) : Formula := (bigconj L).neg
+def negBigconj (L : List Formula) : Formula := (bigconj L).neg
 
 @[simp] theorem bigconj_nil : bigconj [] = Formula.bot.neg := rfl
 
@@ -50,6 +50,6 @@ def neg_bigconj (L : List Formula) : Formula := (bigconj L).neg
     bigconj (φ :: ψ :: rest) = Formula.and φ (bigconj (ψ :: rest)) := rfl
 
 @[simp] theorem neg_bigconj_def (L : List Formula) :
-    neg_bigconj L = (bigconj L).neg := rfl
+    negBigconj L = (bigconj L).neg := rfl
 
 end FormalSystem.Syntax

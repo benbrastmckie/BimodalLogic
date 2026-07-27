@@ -61,10 +61,10 @@ example (φ : Formula) : ⊢ φ.box.imp φ.always := perpetuity_1 φ
 example (φ : Formula) : ⊢ φ.box.imp (△φ) := perpetuity_1 φ
 
 /-- P1 applied to atomic formula (dot notation) -/
-example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").always := perpetuity_1 _
+example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").always := perpetuity_1 _
 
 /-- P1 applied to atomic formula (triangle notation) -/
-example : ⊢ (Formula.atom_s "p").box.imp (△(Formula.atom_s "p")) := perpetuity_1 _
+example : ⊢ (Formula.atomS "p").box.imp (△(Formula.atomS "p")) := perpetuity_1 _
 
 /-!
 ## P2: Sometimes Implies Possible
@@ -91,16 +91,16 @@ What is necessary is necessarily always true.
 -/
 
 /-- P3 with dot notation: necessity of perpetuity -/
-example (φ : Formula) : ⊢ φ.box.imp φ.always.box := perpetuity_3 φ
+example (φ : Formula) : ⊢ φ.box.imp φ.always.box := perpetuity3 φ
 
 /-- P3 with triangle notation: □φ → □△φ -/
-example (φ : Formula) : ⊢ φ.box.imp (△φ).box := perpetuity_3 φ
+example (φ : Formula) : ⊢ φ.box.imp (△φ).box := perpetuity3 φ
 
 /-- P3 demonstrates modal-temporal nesting -/
-example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").always.box := perpetuity_3 _
+example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").always.box := perpetuity3 _
 
 /-- P3 with triangle shows combined operators: □△p -/
-example : ⊢ (Formula.atom_s "p").box.imp (△(Formula.atom_s "p")).box := perpetuity_3 _
+example : ⊢ (Formula.atomS "p").box.imp (△(Formula.atomS "p")).box := perpetuity3 _
 
 /-!
 ## P4: Possibility of Occurrence
@@ -109,16 +109,16 @@ If it's possible that φ happens sometime, then φ is possible.
 -/
 
 /-- P4 with dot notation: possibility of occurrence -/
-example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond := perpetuity_4 φ
+example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond := perpetuity4 φ
 
 /-- P4 with triangle notation: ◇▽φ → ◇φ -/
-example (φ : Formula) : ⊢ (▽φ).diamond.imp φ.diamond := perpetuity_4 φ
+example (φ : Formula) : ⊢ (▽φ).diamond.imp φ.diamond := perpetuity4 φ
 
 /-- P4 shows modal-temporal interaction -/
-example (p : Formula) : ⊢ p.sometimes.diamond.imp p.diamond := perpetuity_4 _
+example (p : Formula) : ⊢ p.sometimes.diamond.imp p.diamond := perpetuity4 _
 
 /-- P4 with triangle shows combined diamond-temporal: ◇▽p -/
-example (p : Formula) : ⊢ (▽p).diamond.imp p.diamond := perpetuity_4 _
+example (p : Formula) : ⊢ (▽p).diamond.imp p.diamond := perpetuity4 _
 
 /-!
 ## P5: Persistent Possibility
@@ -127,16 +127,16 @@ If it's possible that φ happens sometime, then it's always possible.
 -/
 
 /-- P5 with dot notation: persistent possibility -/
-noncomputable example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always := perpetuity_5 φ
+noncomputable example (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond.always := perpetuity5 φ
 
 /-- P5 with triangle notation: ◇▽φ → △◇φ -/
-noncomputable example (φ : Formula) : ⊢ (▽φ).diamond.imp (△(φ.diamond)) := perpetuity_5 φ
+noncomputable example (φ : Formula) : ⊢ (▽φ).diamond.imp (△(φ.diamond)) := perpetuity5 φ
 
 /-- P5 demonstrates complex modal-temporal nesting -/
-noncomputable example (p : Formula) : ⊢ p.sometimes.diamond.imp p.diamond.always := perpetuity_5 _
+noncomputable example (p : Formula) : ⊢ p.sometimes.diamond.imp p.diamond.always := perpetuity5 _
 
 /-- P5 with triangles shows symmetric structure: ◇▽ → △◇ -/
-noncomputable example (p : Formula) : ⊢ (▽p).diamond.imp (△(p.diamond)) := perpetuity_5 _
+noncomputable example (p : Formula) : ⊢ (▽p).diamond.imp (△(p.diamond)) := perpetuity5 _
 
 /-!
 ## P6: Occurrent Necessity is Perpetual
@@ -145,16 +145,16 @@ If necessity occurs at some future time, then it's always necessary.
 -/
 
 /-- P6 with dot notation: occurrent necessity perpetual -/
-noncomputable example (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := perpetuity_6 φ
+noncomputable example (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := perpetuity6 φ
 
 /-- P6 with triangle notation: ▽□φ → □△φ -/
-noncomputable example (φ : Formula) : ⊢ (▽(φ.box)).imp (△φ).box := perpetuity_6 φ
+noncomputable example (φ : Formula) : ⊢ (▽(φ.box)).imp (△φ).box := perpetuity6 φ
 
 /-- P6 applied to atomic formula -/
-noncomputable example (p : Formula) : ⊢ p.box.sometimes.imp p.always.box := perpetuity_6 _
+noncomputable example (p : Formula) : ⊢ p.box.sometimes.imp p.always.box := perpetuity6 _
 
 /-- P6 with triangle shows box-temporal interaction: ▽□ → □△ -/
-noncomputable example (p : Formula) : ⊢ (▽(p.box)).imp (△p).box := perpetuity_6 _
+noncomputable example (p : Formula) : ⊢ (▽(p.box)).imp (△p).box := perpetuity6 _
 
 /-!
 ## Notation Equivalence Examples
@@ -181,13 +181,13 @@ Examples showing readable mixed notation usage.
 -/
 
 /-- Mixed pattern 1: box with triangle -/
-example (p : Formula) : ⊢ p.box.imp (△p).box := perpetuity_3 p
+example (p : Formula) : ⊢ p.box.imp (△p).box := perpetuity3 p
 
 /-- Mixed pattern 2: diamond with triangle -/
-example (p : Formula) : ⊢ (▽p).diamond.imp p.diamond := perpetuity_4 p
+example (p : Formula) : ⊢ (▽p).diamond.imp p.diamond := perpetuity4 p
 
 /-- Mixed pattern 3: complex nesting -/
-noncomputable example (p : Formula) : ⊢ (▽(p.box)).imp (△p).box := perpetuity_6 p
+noncomputable example (p : Formula) : ⊢ (▽(p.box)).imp (△p).box := perpetuity6 p
 
 /-- Recommendation: Prefer prefix triangle notation for temporal, dot for modal -/
 example (p : Formula) : ⊢ p.box.imp (△p) := perpetuity_1 p
@@ -200,11 +200,11 @@ Demonstrations of realistic modal-temporal reasoning.
 
 /-- If p is necessarily true, then p is necessarily always true -/
 example (p : Formula) : ⊢ p.box.imp (△p).box :=
-  perpetuity_3 p
+  perpetuity3 p
 
 /-- If p might eventually hold, then p is possible -/
 example (p : Formula) : ⊢ (▽p).diamond.imp p.diamond :=
-  perpetuity_4 p
+  perpetuity4 p
 
 /-!
 ## Perpetuity Automation Examples
@@ -215,11 +215,11 @@ proof discovery for modal-temporal interactions.
 -/
 
 /-- Automated proof of modal T axiom using modal_search -/
-example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
+example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") := by
   modal_search
 
 /-- Automated proof of modal 4 axiom using modal_search -/
-example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box := by
+example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").box.box := by
   modal_search
 
 -- BX1 removed under irreflexive semantics. Disabled test.
@@ -227,7 +227,7 @@ example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box := by
 --   temporal_search
 
 /-- Automated proof combining modal and temporal reasoning -/
-example (φ : Formula) : ⊢ φ.box.imp φ.all_future.box := by
+example (φ : Formula) : ⊢ φ.box.imp φ.allFuture.box := by
   modal_search
 
 /-!
