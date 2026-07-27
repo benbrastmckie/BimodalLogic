@@ -1,7 +1,7 @@
 # Implementation Plan: Systematic Mathlib Naming Upgrade
 
 - **Task**: 402 - systematic_mathlib_naming_upgrade
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 25 hours (8 phases, 12 dispatch units)
 - **Dependencies**: None
 - **Research Inputs**:
@@ -243,46 +243,46 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 
 ---
 
-### Phase 1: Baseline capture and rewriter harness [NOT STARTED]
+### Phase 1: Baseline capture and rewriter harness [COMPLETED]
 
 - **Goal:** Produce the two tools the whole migration depends on, prove the rewriter's guard against
   the full reference corpus, freeze the numeric baseline, and resolve the two `[UNVERIFIED]` research
   claims - all before any source file is touched.
 - **Tasks:**
-  - [ ] `lake clean && lake build`; confirm green and record the job count. This eliminates the 5
+  - [x] `lake clean && lake build`; confirm green and record the job count. This eliminates the 5
         stale `.ilean` files (`Bimodal.Metalogic.Metalogic`, `Bimodal.Metalogic.Completeness`,
         `Bimodal.Metalogic.BXCanonical.BXCanonical`,
-        `Bimodal.Metalogic.WeakCanonical.WeakCanonical`, `Bimodal.Automation.EFGameTactics`).
-  - [ ] Recover `runlinter.py` from `specs/archive/400_clear_lean_v433_deprecation_warnings/tools/`
+        `Bimodal.Metalogic.WeakCanonical.WeakCanonical`, `Bimodal.Automation.EFGameTactics`). *(deviation: altered — build was already green at 1884 jobs and fully cached; the five stale `.ilean` files were deleted directly and `ilean.py` skips any `.ilean` whose module has no source, achieving constraint 11 without discarding a valid build. A full clean rebuild is forced by Phase 2 regardless.)*
+  - [x] Recover `runlinter.py` from `specs/archive/400_clear_lean_v433_deprecation_warnings/tools/`
         into `specs/402_.../tools/`. Repair its `ROW` regex to strip the pretty-printer's leading
         `@`. Preserve its documented trap handling: the header regex opens `/-` not `/--`;
         `LINTER FAILED` has two row shapes and appears mid-message; raw `lean` emits
         `PATH:L:C: severity: msg` while lake emits `severity: PATH:L:C: msg`.
-  - [ ] Capture baseline into `specs/402_.../baseline/`: masked linter run (expect
+  - [x] Capture baseline into `specs/402_.../baseline/`: masked linter run (expect
         `defsWithUnderscore = 1`, 247 rows); `nolints.json` moved aside, unmasked run (expect 861,
         1107 rows); restore `nolints.json` and byte-verify it identical (860 entries). Record the
         other categories (`unusedArguments` 124, `simpNF` 78, `docBlame` 39, `tacticDocs` 4,
         `structureInType` 1) so Phase 8 can prove no regression outside the target category.
-  - [ ] Record the sole live `sorry` by content: `theorem countermodel_discrete` in
+  - [x] Record the sole live `sorry` by content: `theorem countermodel_discrete` in
         `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean`. Write a `check-sorry.sh` that
         locates it by theorem name and asserts the repository-wide live count is 1.
-  - [ ] Write `tools/ilean.py`: load all project `.ilean` files (v5 schema, `references` keyed by
+  - [x] Write `tools/ilean.py`: load all project `.ilean` files (v5 schema, `references` keyed by
         `{"c":{"m":module,"n":name}}`, 0-indexed lines, UTF-16 code-unit columns); skip any `.ilean`
         whose module has no source file.
-  - [ ] Write `tools/rename.py` (seed: the reverted experiment in
+  - [x] Write `tools/rename.py` (seed: the reverted experiment in
         `specs/402_.../working-progress-1785114897.patch` / `git stash@{0}` / tag
         `git-snapshot-1785114897`): for each recorded range, extract the source text; **guard** that
         it ends with the old final component; replace only the trailing final-component sub-span;
         reject and report everything else. Apply per file, per line, right-to-left. Must handle
         `_root_.`-qualified refs and parenthesized spans via the suffix rule, and `«»`-escaped
         identifiers explicitly.
-  - [ ] Run the round-trip self-test over all recorded ranges for project declarations.
+  - [x] Run the round-trip self-test over all recorded ranges for project declarations.
         **Acceptance bar**: >= 99.7% exact suffix match (research measured 99.77% of 129,611), and
         the mismatch taxonomy must reproduce the four known buckets (wildcard `_`, keyword/anon,
         `_root_.`, `«»`). Any new bucket blocks the phase.
-  - [ ] Resolve `[UNVERIFIED]` claim 1: inspect all 20 active `cud` tokens; classify each as
+  - [x] Resolve `[UNVERIFIED]` claim 1: inspect all 20 active `cud` tokens; classify each as
         comment or code. Record the verdict.
-  - [ ] Resolve `[UNVERIFIED]` claim 2: execute the archived harnesses from
+  - [x] Resolve `[UNVERIFIED]` claim 2: execute the archived harnesses from
         `specs/archive/399_.../tools/` and `specs/archive/400_.../tools/` against the current tree.
         Record which run and which are reference-only.
 - **Estimated output:** ~300 lines (Python tooling + baseline JSON + a short findings note)

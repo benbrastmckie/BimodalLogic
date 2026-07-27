@@ -1,0 +1,1990 @@
+[
+[
+"defsWithUnderscore",
+"Theories/Bimodal/ProofSystem/LinearityDerivedFacts.lean",
+74,
+"Bimodal.ProofSystem.temp_linearity_derivation The definition `Bimodal.ProofSystem.temp_linearity_derivation` contains an underscore. This almost surely violates mathlib's naming convention; use lowerCamelCase or UpperCamelCase instead.",
+"Bimodal.ProofSystem.temp_linearity_derivation"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/DataExport.lean",
+295,
+"Bimodal.Automation.DataExport.RuleProfile.axiomCount definition missing documentation string",
+"Bimodal.Automation.DataExport.RuleProfile.axiomCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/DataExport.lean",
+296,
+"Bimodal.Automation.DataExport.RuleProfile.assumptionCount definition missing documentation string",
+"Bimodal.Automation.DataExport.RuleProfile.assumptionCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/DataExport.lean",
+297,
+"Bimodal.Automation.DataExport.RuleProfile.mpCount definition missing documentation string",
+"Bimodal.Automation.DataExport.RuleProfile.mpCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/DataExport.lean",
+298,
+"Bimodal.Automation.DataExport.RuleProfile.necessitationCount definition missing documentation string",
+"Bimodal.Automation.DataExport.RuleProfile.necessitationCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/DataExport.lean",
+299,
+"Bimodal.Automation.DataExport.RuleProfile.temporalNecessitationCount definition missing documentation string",
+"Bimodal.Automation.DataExport.RuleProfile.temporalNecessitationCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/DataExport.lean",
+300,
+"Bimodal.Automation.DataExport.RuleProfile.temporalDualityCount definition missing documentation string",
+"Bimodal.Automation.DataExport.RuleProfile.temporalDualityCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/DataExport.lean",
+301,
+"Bimodal.Automation.DataExport.RuleProfile.weakeningCount definition missing documentation string",
+"Bimodal.Automation.DataExport.RuleProfile.weakeningCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/DatasetGenerator.lean",
+1220,
+"Bimodal.Automation.DecideCacheKey.formula definition missing documentation string",
+"Bimodal.Automation.DecideCacheKey.formula"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/DatasetGenerator.lean",
+1221,
+"Bimodal.Automation.DecideCacheKey.frameClass definition missing documentation string",
+"Bimodal.Automation.DecideCacheKey.frameClass"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/EnrichedCountermodel.lean",
+69,
+"Bimodal.Automation.Enriched.EnrichedCountermodel.simple definition missing documentation string",
+"Bimodal.Automation.Enriched.EnrichedCountermodel.simple"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/EnrichedCountermodel.lean",
+70,
+"Bimodal.Automation.Enriched.EnrichedCountermodel.branchFormulas definition missing documentation string",
+"Bimodal.Automation.Enriched.EnrichedCountermodel.branchFormulas"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/EnrichedCountermodel.lean",
+71,
+"Bimodal.Automation.Enriched.EnrichedCountermodel.modalFormulas definition missing documentation string",
+"Bimodal.Automation.Enriched.EnrichedCountermodel.modalFormulas"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/EnrichedCountermodel.lean",
+72,
+"Bimodal.Automation.Enriched.EnrichedCountermodel.temporalFormulas definition missing documentation string",
+"Bimodal.Automation.Enriched.EnrichedCountermodel.temporalFormulas"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/EnrichedCountermodel.lean",
+73,
+"Bimodal.Automation.Enriched.EnrichedCountermodel.branchLength definition missing documentation string",
+"Bimodal.Automation.Enriched.EnrichedCountermodel.branchLength"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/FormulaEnumerator.lean",
+553,
+"Bimodal.Automation.OperatorDistribution.atomCount definition missing documentation string",
+"Bimodal.Automation.OperatorDistribution.atomCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/FormulaEnumerator.lean",
+554,
+"Bimodal.Automation.OperatorDistribution.botCount definition missing documentation string",
+"Bimodal.Automation.OperatorDistribution.botCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/FormulaEnumerator.lean",
+555,
+"Bimodal.Automation.OperatorDistribution.impCount definition missing documentation string",
+"Bimodal.Automation.OperatorDistribution.impCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/FormulaEnumerator.lean",
+556,
+"Bimodal.Automation.OperatorDistribution.boxCount definition missing documentation string",
+"Bimodal.Automation.OperatorDistribution.boxCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/FormulaEnumerator.lean",
+557,
+"Bimodal.Automation.OperatorDistribution.untlCount definition missing documentation string",
+"Bimodal.Automation.OperatorDistribution.untlCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/FormulaEnumerator.lean",
+558,
+"Bimodal.Automation.OperatorDistribution.snceCount definition missing documentation string",
+"Bimodal.Automation.OperatorDistribution.snceCount"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofSearch/Core.lean",
+1230,
+"Bimodal.Automation.iddfs_search.iterate definition missing documentation string",
+"Bimodal.Automation.iddfs_search.iterate"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofSearch/Strategies.lean",
+57,
+"Bimodal.Automation.PriorityQueue.insert.insertSorted definition missing documentation string",
+"Bimodal.Automation.PriorityQueue.insert.insertSorted"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofSearch/Strategies.lean",
+107,
+"Bimodal.Automation.bestFirst_search.searchLoop definition missing documentation string",
+"Bimodal.Automation.bestFirst_search.searchLoop"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+139,
+"Bimodal.Automation.ProofStepExtractor.ProofStep.theoremName definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.ProofStep.theoremName"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+140,
+"Bimodal.Automation.ProofStepExtractor.ProofStep.stepIndex definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.ProofStep.stepIndex"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+141,
+"Bimodal.Automation.ProofStepExtractor.ProofStep.context definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.ProofStep.context"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+142,
+"Bimodal.Automation.ProofStepExtractor.ProofStep.goal definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.ProofStep.goal"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+143,
+"Bimodal.Automation.ProofStepExtractor.ProofStep.goal_folded_json definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.ProofStep.goal_folded_json"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+144,
+"Bimodal.Automation.ProofStepExtractor.ProofStep.rule definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.ProofStep.rule"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+145,
+"Bimodal.Automation.ProofStepExtractor.ProofStep.axiomName definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.ProofStep.axiomName"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+146,
+"Bimodal.Automation.ProofStepExtractor.ProofStep.subgoals definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.ProofStep.subgoals"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+147,
+"Bimodal.Automation.ProofStepExtractor.ProofStep.frameClass definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.ProofStep.frameClass"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+342,
+"Bimodal.Automation.ProofStepExtractor.TheoremEntry.name definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.TheoremEntry.name"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/ProofStepExtractor.lean",
+343,
+"Bimodal.Automation.ProofStepExtractor.TheoremEntry.extract definition missing documentation string",
+"Bimodal.Automation.ProofStepExtractor.TheoremEntry.extract"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/Tactics/Commands.lean",
+117,
+"Bimodal.Automation.modalSearchParam definition missing documentation string",
+"Bimodal.Automation.modalSearchParam"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/Tactics/Commands.lean",
+118,
+"Bimodal.Automation.tacticModal_search__1 definition missing documentation string",
+"Bimodal.Automation.tacticModal_search__1"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/Tactics/Commands.lean",
+188,
+"Bimodal.Automation.tacticTemporal_search__1 definition missing documentation string",
+"Bimodal.Automation.tacticTemporal_search__1"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/Tactics/Commands.lean",
+245,
+"Bimodal.Automation.tacticPropositional_search__1 definition missing documentation string",
+"Bimodal.Automation.tacticPropositional_search__1"
+],
+[
+"docBlame",
+"Theories/Bimodal/Automation/Tactics/Commands.lean",
+296,
+"Bimodal.Automation.tacticTm_auto_ definition missing documentation string",
+"Bimodal.Automation.tacticTm_auto_"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+68,
+"Bimodal.Automation.Normalization.neg_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.neg_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+71,
+"Bimodal.Automation.Normalization.top_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.top_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+74,
+"Bimodal.Automation.Normalization.next_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.next_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+77,
+"Bimodal.Automation.Normalization.prev_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.prev_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+82,
+"Bimodal.Automation.Normalization.and_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.and_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+86,
+"Bimodal.Automation.Normalization.or_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.or_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+90,
+"Bimodal.Automation.Normalization.diamond_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.diamond_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+94,
+"Bimodal.Automation.Normalization.some_future_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.some_future_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+98,
+"Bimodal.Automation.Normalization.some_past_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.some_past_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+104,
+"Bimodal.Automation.Normalization.all_future_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.all_future_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+108,
+"Bimodal.Automation.Normalization.all_past_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.all_past_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+114,
+"Bimodal.Automation.Normalization.weak_future_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.weak_future_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+119,
+"Bimodal.Automation.Normalization.weak_past_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.weak_past_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+126,
+"Bimodal.Automation.Normalization.always_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.always_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+132,
+"Bimodal.Automation.Normalization.sometimes_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.sometimes_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+138,
+"Bimodal.Automation.Normalization.strong_release_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.strong_release_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+142,
+"Bimodal.Automation.Normalization.strong_trigger_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.strong_trigger_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+148,
+"Bimodal.Automation.Normalization.release_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.release_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+152,
+"Bimodal.Automation.Normalization.weak_until_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.weak_until_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+156,
+"Bimodal.Automation.Normalization.trigger_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.trigger_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+160,
+"Bimodal.Automation.Normalization.weak_since_unfold LINTER FAILED:",
+"Bimodal.Automation.Normalization.weak_since_unfold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+799,
+"Bimodal.Automation.Normalization.neg_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.neg_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+802,
+"Bimodal.Automation.Normalization.top_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.top_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+805,
+"Bimodal.Automation.Normalization.and_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.and_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+809,
+"Bimodal.Automation.Normalization.diamond_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.diamond_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+813,
+"Bimodal.Automation.Normalization.some_future_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.some_future_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+817,
+"Bimodal.Automation.Normalization.some_past_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.some_past_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+821,
+"Bimodal.Automation.Normalization.next_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.next_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+825,
+"Bimodal.Automation.Normalization.prev_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.prev_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+829,
+"Bimodal.Automation.Normalization.all_future_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.all_future_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Automation/Normalization.lean",
+833,
+"Bimodal.Automation.Normalization.all_past_fold LINTER FAILED:",
+"Bimodal.Automation.Normalization.all_past_fold"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/Bundle/CanonicalTaskRelation.lean",
+82,
+"Bimodal.Metalogic.Bundle.iter_F_succ LINTER FAILED:",
+"Bimodal.Metalogic.Bundle.iter_F_succ"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/Bundle/CanonicalTaskRelation.lean",
+713,
+"Bimodal.Metalogic.Bundle.iter_P_succ LINTER FAILED:",
+"Bimodal.Metalogic.Bundle.iter_P_succ"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean",
+118,
+"@Bimodal.Metalogic.Bundle.mem_g_content_iff LINTER FAILED:",
+"Bimodal.Metalogic.Bundle.mem_g_content_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean",
+122,
+"@Bimodal.Metalogic.Bundle.mem_h_content_iff LINTER FAILED:",
+"Bimodal.Metalogic.Bundle.mem_h_content_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean",
+126,
+"@Bimodal.Metalogic.Bundle.mem_f_content_iff LINTER FAILED:",
+"Bimodal.Metalogic.Bundle.mem_f_content_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean",
+130,
+"@Bimodal.Metalogic.Bundle.mem_p_content_iff LINTER FAILED:",
+"Bimodal.Metalogic.Bundle.mem_p_content_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/Decidability/Propositional/Kalmar.lean",
+87,
+"Bimodal.Metalogic.Decidability.Propositional.litCtx_cons LINTER FAILED:",
+"Bimodal.Metalogic.Decidability.Propositional.litCtx_cons"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/Decidability/Propositional/Kalmar.lean",
+98,
+"Bimodal.Metalogic.Decidability.Propositional.litDenote_var LINTER FAILED:",
+"Bimodal.Metalogic.Decidability.Propositional.litDenote_var"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+61,
+"Bimodal.Metalogic.WeakCanonical.Separation.int_truth_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.int_truth_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+71,
+"Bimodal.Metalogic.WeakCanonical.Separation.int_truth_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.int_truth_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+81,
+"Bimodal.Metalogic.WeakCanonical.Separation.int_truth_some_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.int_truth_some_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+90,
+"Bimodal.Metalogic.WeakCanonical.Separation.int_truth_some_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.int_truth_some_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+110,
+"Bimodal.Metalogic.WeakCanonical.Separation.formula_atoms_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.formula_atoms_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+115,
+"Bimodal.Metalogic.WeakCanonical.Separation.formula_atoms_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.formula_atoms_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+181,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_U_free_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_U_free_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+186,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_U_free_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_U_free_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+191,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_S_free_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_S_free_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+196,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_S_free_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_S_free_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+222,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_syntactically_separated_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_syntactically_separated_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+227,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_syntactically_separated_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_syntactically_separated_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+255,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_future_only_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_future_only_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+260,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_future_only_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_future_only_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+276,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_past_only_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_past_only_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+281,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_past_only_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_past_only_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+302,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_properly_separated_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_properly_separated_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+307,
+"Bimodal.Metalogic.WeakCanonical.Separation.is_properly_separated_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.is_properly_separated_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+358,
+"Bimodal.Metalogic.WeakCanonical.Separation.junction_depth_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.junction_depth_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+363,
+"Bimodal.Metalogic.WeakCanonical.Separation.junction_depth_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.junction_depth_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+473,
+"Bimodal.Metalogic.WeakCanonical.Separation.no_S_nested_in_U_all_past LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.no_S_nested_in_U_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean",
+478,
+"Bimodal.Metalogic.WeakCanonical.Separation.no_S_nested_in_U_all_future LINTER FAILED:",
+"Bimodal.Metalogic.WeakCanonical.Separation.no_S_nested_in_U_all_future"
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.temp_linearity_past.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.self_accum_since.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.linear_since.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.enrichment_until.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.temp_linearity.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.modal_b.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.prior_UZ.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.discrete_propagate_fwd.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.linear_until.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.right_mono_until.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.right_mono_since.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.absorb_until.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.z1.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.serial_past.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.dense_indicator.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.left_mono_since_H.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.left_mono_until_G.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.absorb_since.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.discrete_box_necessity.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.connect_past.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.P_since_equiv.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.until_F.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.connect_future.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.modal_5_collapse.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.F_until_equiv.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.prior_SZ.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.density.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.discrete_symm_fwd.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.modal_future.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.self_accum_until.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.since_P.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.enrichment_since.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.discrete_propagate_bwd.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.serial_future.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check Bimodal.ProofSystem.Axiom.discrete_symm_bwd.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check @Bimodal.ProofSystem.DerivationTree.temporal_necessitation.sizeOf_spec /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"(#check form)",
+0,
+"#check @Bimodal.ProofSystem.DerivationTree.temporal_necessitation.injEq /- LINTER FAILED:",
+""
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Semantics/Truth.lean",
+216,
+"@Bimodal.Semantics.Truth.some_future_iff LINTER FAILED:",
+"Bimodal.Semantics.Truth.some_future_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Semantics/Truth.lean",
+235,
+"@Bimodal.Semantics.Truth.some_past_iff LINTER FAILED:",
+"Bimodal.Semantics.Truth.some_past_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Semantics/Truth.lean",
+254,
+"@Bimodal.Semantics.Truth.future_iff LINTER FAILED:",
+"Bimodal.Semantics.Truth.future_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Semantics/Truth.lean",
+274,
+"@Bimodal.Semantics.Truth.past_iff LINTER FAILED:",
+"Bimodal.Semantics.Truth.past_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Semantics/Truth.lean",
+294,
+"@Bimodal.Semantics.Truth.strong_release_iff LINTER FAILED:",
+"Bimodal.Semantics.Truth.strong_release_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Semantics/Truth.lean",
+310,
+"@Bimodal.Semantics.Truth.strong_trigger_iff LINTER FAILED:",
+"Bimodal.Semantics.Truth.strong_trigger_iff"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/BigConj.lean",
+45,
+"Bimodal.Syntax.bigconj_nil LINTER FAILED:",
+"Bimodal.Syntax.bigconj_nil"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/BigConj.lean",
+49,
+"Bimodal.Syntax.bigconj_cons_cons LINTER FAILED:",
+"Bimodal.Syntax.bigconj_cons_cons"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/BigConj.lean",
+52,
+"Bimodal.Syntax.neg_bigconj_def LINTER FAILED:",
+"Bimodal.Syntax.neg_bigconj_def"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/Formula.lean",
+637,
+"Bimodal.Syntax.Formula.swap_temporal_some_future LINTER FAILED:",
+"Bimodal.Syntax.Formula.swap_temporal_some_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/Formula.lean",
+643,
+"Bimodal.Syntax.Formula.swap_temporal_some_past LINTER FAILED:",
+"Bimodal.Syntax.Formula.swap_temporal_some_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/Formula.lean",
+649,
+"Bimodal.Syntax.Formula.swap_temporal_all_future LINTER FAILED:",
+"Bimodal.Syntax.Formula.swap_temporal_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/Formula.lean",
+655,
+"Bimodal.Syntax.Formula.swap_temporal_all_past LINTER FAILED:",
+"Bimodal.Syntax.Formula.swap_temporal_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/SubformulaClosure/NestingDepth.lean",
+68,
+"Bimodal.Syntax.f_nesting_depth_all_past LINTER FAILED:",
+"Bimodal.Syntax.f_nesting_depth_all_past"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/SubformulaClosure/NestingDepth.lean",
+73,
+"Bimodal.Syntax.f_nesting_depth_all_future LINTER FAILED:",
+"Bimodal.Syntax.f_nesting_depth_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/SubformulaClosure/NestingDepth.lean",
+152,
+"Bimodal.Syntax.p_nesting_depth_all_future LINTER FAILED:",
+"Bimodal.Syntax.p_nesting_depth_all_future"
+],
+[
+"LINTER FAILED",
+"Theories/Bimodal/Syntax/SubformulaClosure/NestingDepth.lean",
+158,
+"Bimodal.Syntax.p_nesting_depth_all_past LINTER FAILED:",
+"Bimodal.Syntax.p_nesting_depth_all_past"
+],
+[
+"structureInType",
+"Theories/Bimodal/Automation/ProofSearch/Core.lean",
+213,
+"Bimodal.Automation.MembershipWitness all fields are propositional but the structure isn't.",
+"Bimodal.Automation.MembershipWitness"
+],
+[
+"tacticDocs",
+"Theories/Bimodal/Automation/Tactics/Commands.lean",
+118,
+"Bimodal.Automation.tacticModal_search__1 tactic `modal_search` missing documentation string",
+"Bimodal.Automation.tacticModal_search__1"
+],
+[
+"tacticDocs",
+"Theories/Bimodal/Automation/Tactics/Commands.lean",
+188,
+"Bimodal.Automation.tacticTemporal_search__1 tactic `temporal_search` missing documentation string",
+"Bimodal.Automation.tacticTemporal_search__1"
+],
+[
+"tacticDocs",
+"Theories/Bimodal/Automation/Tactics/Commands.lean",
+245,
+"Bimodal.Automation.tacticPropositional_search__1 tactic `propositional_search` missing documentation string",
+"Bimodal.Automation.tacticPropositional_search__1"
+],
+[
+"tacticDocs",
+"Theories/Bimodal/Automation/Tactics/Commands.lean",
+296,
+"Bimodal.Automation.tacticTm_auto_ tactic `tm_auto` missing documentation string",
+"Bimodal.Automation.tacticTm_auto_"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/FrameConditions/Soundness.lean",
+69,
+"@Bimodal.FrameConditions.soundness_linear 1 unused argument:",
+"Bimodal.FrameConditions.soundness_linear"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/FrameConditions/Soundness.lean",
+84,
+"@Bimodal.FrameConditions.soundness_dense 1 unused argument:",
+"Bimodal.FrameConditions.soundness_dense"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/FrameConditions/Soundness.lean",
+100,
+"@Bimodal.FrameConditions.soundness_discrete 1 unused argument:",
+"Bimodal.FrameConditions.soundness_discrete"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/FrameConditions/Soundness.lean",
+119,
+"@Bimodal.FrameConditions.axiom_base_valid_linear 1 unused argument:",
+"Bimodal.FrameConditions.axiom_base_valid_linear"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/FrameConditions/Soundness.lean",
+130,
+"@Bimodal.FrameConditions.axiom_dense_valid_fc 1 unused argument:",
+"Bimodal.FrameConditions.axiom_dense_valid_fc"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/FrameConditions/Soundness.lean",
+142,
+"@Bimodal.FrameConditions.axiom_discrete_valid_fc 1 unused argument:",
+"Bimodal.FrameConditions.axiom_discrete_valid_fc"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean",
+711,
+"@Bimodal.Metalogic.SoundnessLemmas.prior_UZ_is_valid 2 unused arguments:",
+"Bimodal.Metalogic.SoundnessLemmas.prior_UZ_is_valid"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean",
+752,
+"@Bimodal.Metalogic.SoundnessLemmas.prior_SZ_is_valid 2 unused arguments:",
+"Bimodal.Metalogic.SoundnessLemmas.prior_SZ_is_valid"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean",
+791,
+"@Bimodal.Metalogic.SoundnessLemmas.z1_is_valid 2 unused arguments:",
+"Bimodal.Metalogic.SoundnessLemmas.z1_is_valid"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean",
+853,
+"@Bimodal.Metalogic.SoundnessLemmas.z1_past_is_valid 2 unused arguments:",
+"Bimodal.Metalogic.SoundnessLemmas.z1_past_is_valid"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean",
+111,
+"@Bimodal.Metalogic.WeakCanonical.sf_disj_truth_mu 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.sf_disj_truth_mu"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean",
+182,
+"@Bimodal.Metalogic.WeakCanonical.rank_type_separator 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.rank_type_separator"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean",
+214,
+"@Bimodal.Metalogic.WeakCanonical.nf_profile 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.nf_profile"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean",
+569,
+"@Bimodal.Metalogic.WeakCanonical.sf_untl_truth_mu 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.sf_untl_truth_mu"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean",
+581,
+"@Bimodal.Metalogic.WeakCanonical.sf_snce_truth_mu 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.sf_snce_truth_mu"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean",
+673,
+"@Bimodal.Metalogic.WeakCanonical.formula_transfer_rank_embed 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.formula_transfer_rank_embed"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Composition.lean",
+236,
+"@Bimodal.Metalogic.WeakCanonical.ghr93_strategy_compose.compose_wc 8 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.ghr93_strategy_compose.compose_wc"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Composition.lean",
+450,
+"@Bimodal.Metalogic.WeakCanonical.ghr93_strategy_compose.compose_wc_right 8 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.ghr93_strategy_compose.compose_wc_right"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Defs.lean",
+494,
+"@Bimodal.Metalogic.WeakCanonical.gap_cut_succ_closed 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.gap_cut_succ_closed"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Defs.lean",
+515,
+"@Bimodal.Metalogic.WeakCanonical.gap_complement_pred_closed 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.gap_complement_pred_closed"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Defs.lean",
+532,
+"@Bimodal.Metalogic.WeakCanonical.discrete_no_gaps 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.discrete_no_gaps"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean",
+1370,
+"@Bimodal.Metalogic.WeakCanonical.nf_t_consistent 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.nf_t_consistent"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Claim1.lean",
+35,
+"@Bimodal.Metalogic.WeakCanonical.base_case_M_eq 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.base_case_M_eq"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Claim1.lean",
+56,
+"@Bimodal.Metalogic.WeakCanonical.base_case_N_eq 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.base_case_N_eq"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Claim1.lean",
+96,
+"@Bimodal.Metalogic.WeakCanonical.cont_holds 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.cont_holds"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Claim1.lean",
+111,
+"@Bimodal.Metalogic.WeakCanonical.cont_holds_cross 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.cont_holds_cross"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Claim1.lean",
+180,
+"@Bimodal.Metalogic.WeakCanonical.inf_carrier_cut 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.inf_carrier_cut"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Claim1.lean",
+541,
+"@Bimodal.Metalogic.WeakCanonical.nf_determines_stavi_truth 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.nf_determines_stavi_truth"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Claim1.lean",
+605,
+"@Bimodal.Metalogic.WeakCanonical.nf_determines_stavi_truth_depth 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.nf_determines_stavi_truth_depth"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean",
+90,
+"Bimodal.Metalogic.WeakCanonical.k_equiv_of_iso 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.k_equiv_of_iso"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean",
+250,
+"Bimodal.Metalogic.WeakCanonical.subinterval_finite_of_succ_archimedean 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.subinterval_finite_of_succ_archimedean"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+95,
+"@Bimodal.Metalogic.WeakCanonical.temporal_truth_neg_iff_not 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.temporal_truth_neg_iff_not"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+115,
+"@Bimodal.Metalogic.WeakCanonical.prior_UZ_first_transition 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.prior_UZ_first_transition"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+182,
+"@Bimodal.Metalogic.WeakCanonical.prior_SZ_last_transition 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.prior_SZ_last_transition"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+280,
+"Bimodal.Metalogic.WeakCanonical.contemp_equiv_succ_closed_of_no_boundary 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.contemp_equiv_succ_closed_of_no_boundary"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+358,
+"@Bimodal.Metalogic.WeakCanonical.predicate_accessible 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.predicate_accessible"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean",
+396,
+"@Bimodal.Metalogic.WeakCanonical.cut_succ_closed 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.cut_succ_closed"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsNoGaps.lean",
+114,
+"@Bimodal.Metalogic.WeakCanonical.gap_of_not_succ_archimedean 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.gap_of_not_succ_archimedean"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean",
+217,
+"Bimodal.Metalogic.WeakCanonical.OrderedMonadicStructure.hoSubinterval 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.OrderedMonadicStructure.hoSubinterval"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean",
+303,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_futSpikeEnd 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_futSpikeEnd"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+153,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_2var_exist_depth0_tl_fn 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_2var_exist_depth0_tl_fn"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+215,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kampPrior_site_env_bridge 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kampPrior_site_env_bridge"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+840,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kampPrior_site_perQnf_seam 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kampPrior_site_perQnf_seam"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+1505,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kampPrior_fChain_realize_cons 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kampPrior_fChain_realize_cons"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
+66,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nfPredAtPos 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nfPredAtPos"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
+104,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_depth0_pair_cycle_empty' 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_depth0_pair_cycle_empty'"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
+181,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.mergeNF 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.mergeNF"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
+1776,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.atomKind_arity1_is_pred 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.atomKind_arity1_is_pred"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
+1799,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_quant_clause_tl_correct 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_quant_clause_tl_correct"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfEFold.lean",
+60,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.zoneHolds 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.zoneHolds"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfEFold.lean",
+71,
+"Bimodal.Metalogic.WeakCanonical.Kamp.EAtomDom 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.EAtomDom"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfEFold.lean",
+162,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf0_zoneSpec 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf0_zoneSpec"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfEFold.lean",
+172,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf0_projFresh 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf0_projFresh"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfEFold.lean",
+190,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf0_assemble 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf0_assemble"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfEFold.lean",
+613,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_eval_nf_atom_layer 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_eval_nf_atom_layer"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateHookDischarge.lean",
+313,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.aggBracket_extract 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.aggBracket_extract"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateHookDischarge.lean",
+370,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.aggBracket_construct 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.aggBracket_construct"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+175,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_char2_diag_exist_tl 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_char2_diag_exist_tl"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+238,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_char2_atom_part 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_char2_atom_part"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+353,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf2_locus 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf2_locus"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+574,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.zoneEnv3_arity_invariant 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.zoneEnv3_arity_invariant"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+618,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_char2_zone_split5 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_char2_zone_split5"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+634,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_char3_deeper_split 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_char3_deeper_split"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+707,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_flatten_navigable 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_flatten_navigable"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+1096,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf3_locus0 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf3_locus0"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+1127,
+"Bimodal.Metalogic.WeakCanonical.Kamp.EndCharCarrier 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.EndCharCarrier"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+1715,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_eval_nf_step_unfold 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_eval_nf_step_unfold"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+1812,
+"Bimodal.Metalogic.WeakCanonical.Kamp.EndCharMotive 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.EndCharMotive"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+1867,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nfN_locus0 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nfN_locus0"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+1977,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.endCharN0_correct_world_local_obstruction 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.endCharN0_correct_world_local_obstruction"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean",
+53,
+"Bimodal.Metalogic.WeakCanonical.Kamp.BracketEndCharCarrier 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.BracketEndCharCarrier"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean",
+379,
+"Bimodal.Metalogic.WeakCanonical.Kamp.BracketEndCharCarrierV 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.BracketEndCharCarrierV"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean",
+781,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.k1v_bracket_extract_mono 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.k1v_bracket_extract_mono"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean",
+2153,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.VVecEA2.singleton_holds 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.VVecEA2.singleton_holds"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierKv.lean",
+57,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.atomKind_castLE 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.atomKind_castLE"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberK.lean",
+278,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_minPick 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_minPick"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationK.lean",
+317,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_futChainDestructG 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_futChainDestructG"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationPastK.lean",
+316,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_pastMaxPick 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_pastMaxPick"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationPastK.lean",
+440,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_pastChainDestructG 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_pastChainDestructG"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean",
+274,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.igGate 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.igGate"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean",
+294,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.igCharP 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.igCharP"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean",
+1499,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.igGateFib 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.igGateFib"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean",
+1518,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.igCharPFib 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.igCharPFib"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+152,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.VVecEA2.disjList_holds 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.VVecEA2.disjList_holds"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+182,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.reflatten_neg_step 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.reflatten_neg_step"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+248,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.VVecEA2.holds_flatMap_map 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.VVecEA2.holds_flatMap_map"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+281,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zPastX_sound 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zPastX_sound"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+297,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zFutT_sound 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zFutT_sound"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+312,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtX_sound 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtX_sound"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+324,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtT_sound 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtT_sound"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+336,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtW_sound 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtW_sound"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+369,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zPastX_complete 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zPastX_complete"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+383,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zFutT_complete 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zFutT_complete"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+397,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtX_complete 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtX_complete"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+408,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtT_complete 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtT_complete"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean",
+418,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtW_complete 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtW_complete"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Completeness.lean",
+433,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepAnchorVal 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepAnchorVal"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/KitFold.lean",
+621,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sep_locate_witness 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sep_locate_witness"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/OrderGate.lean",
+452,
+"Bimodal.Metalogic.WeakCanonical.Kamp.KvE2SepWeakOrder 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.KvE2SepWeakOrder"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/OrderGate.lean",
+1020,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepOrderTypes_mem_aux' 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepOrderTypes_mem_aux'"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Slots.lean",
+129,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepProj4 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepProj4"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Slots.lean",
+138,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepProj3 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepProj3"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Soundness.lean",
+169,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepCastBracket_holds 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepCastBracket_holds"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Soundness.lean",
+178,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepBracket_split_at 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepBracket_split_at"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Soundness.lean",
+321,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepBracketN_construct 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepBracketN_construct"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean",
+67,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.navigated_bracket_reaches_exterior_future 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.navigated_bracket_reaches_exterior_future"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean",
+90,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.navigated_bracket_reaches_exterior_past 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.navigated_bracket_reaches_exterior_past"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean",
+170,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.exterior_future_zone_eval_shape 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.exterior_future_zone_eval_shape"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean",
+203,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_exists_trichotomy_k1 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_exists_trichotomy_k1"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean",
+368,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.A_past_correct 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.A_past_correct"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean",
+423,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.A_future_correct 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.A_future_correct"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean",
+79,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.exists_piFinset_forall_iff 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.exists_piFinset_forall_iff"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
+38,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_y_proj 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_y_proj"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
+45,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_x_proj3 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_x_proj3"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
+52,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_t_proj3 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_t_proj3"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
+472,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.sinceWitnessPred 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.sinceWitnessPred"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
+505,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.untilWitnessPred 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.untilWitnessPred"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
+814,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_3var_eq_yt 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_3var_eq_yt"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
+843,
+"@Bimodal.Metalogic.WeakCanonical.Kamp.nf_3var_eq_yx 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.Kamp.nf_3var_eq_yx"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean",
+96,
+"Bimodal.Metalogic.WeakCanonical.atomKind_fintype 1 unused argument:",
+"Bimodal.Metalogic.WeakCanonical.atomKind_fintype"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
+320,
+"@Bimodal.Metalogic.WeakCanonical.k_equiv_preserves_sentence 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.k_equiv_preserves_sentence"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
+401,
+"@Bimodal.Metalogic.WeakCanonical.chronicle_temporal_truth 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.chronicle_temporal_truth"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
+743,
+"@Bimodal.Metalogic.WeakCanonical.no_r_definable_gaps_of_no_gaps 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.no_r_definable_gaps_of_no_gaps"
+],
+[
+"unusedArguments",
+"Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean",
+755,
+"@Bimodal.Metalogic.WeakCanonical.all_points_of_no_gaps 2 unused arguments:",
+"Bimodal.Metalogic.WeakCanonical.all_points_of_no_gaps"
+]
+]
