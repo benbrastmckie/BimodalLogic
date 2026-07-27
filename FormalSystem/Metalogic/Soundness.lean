@@ -1455,10 +1455,47 @@ dense Dedekind-complete duration group.
 -- deferred because the actual argument is a supremum construction over the φ-region whose
 -- attempt count is open-ended, making it a division point rather than a bounded proof step;
 -- follow-up: task 405. -/
+private theorem exists_isGLB_of_lub {D : Type} [LinearOrder D]
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    {B : Set D} (hne : B.Nonempty) (hbdd : BddBelow B) : ∃ x, IsGLB B x := by
+  obtain ⟨a, ha⟩ := hne
+  obtain ⟨x, hx⟩ := h_lub (lowerBounds B) hbdd ⟨a, fun _ hb => hb ha⟩
+  exact ⟨x, isLUB_lowerBounds.mp hx⟩
+
 theorem prior_U_gap_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.untl Formula.top φ) φ.neg.someFuture).imp
       (Formula.untl (Formula.or φ.neg (Formula.kPlus φ.neg)) φ)) := by
-  sorry
+  intro D _ _ _ _ _ h_lub F M Omega h_sc τ h_mem t h_ant
+  simp only [TruthAt, Formula.and, Formula.neg, Formula.someFuture, Formula.top] at h_ant
+  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+  obtain ⟨s0, hts0, -, hp0⟩ := h1
+  obtain ⟨v, htv, hnpv, -⟩ := h2
+  set A : Set D := {u : D | t < u ∧ ∀ r : D, t < r → r < u → TruthAt M Omega τ r φ} with hA
+  have hs0A : s0 ∈ A := ⟨hts0, hp0⟩
+  have hAbdd : BddAbove A := by
+    refine ⟨v, ?_⟩
+    intro u hu
+    by_contra hvu
+    exact hnpv (hu.2 v htv (lt_of_not_ge hvu))
+  obtain ⟨s, hs⟩ := h_lub A ⟨s0, hs0A⟩ hAbdd
+  have hts : t < s := lt_of_lt_of_le hts0 (hs.1 hs0A)
+  have hguard : ∀ r : D, t < r → r < s → TruthAt M Omega τ r φ := by
+    intro r htr hrs
+    obtain ⟨u, huA, hru, -⟩ := hs.exists_between hrs
+    exact huA.2 r htr hru
+  simp only [TruthAt, Formula.or, Formula.neg, Formula.kPlus, Formula.top]
+  refine ⟨s, hts, ?_, hguard⟩
+  intro hnn
+  rintro ⟨w, hsw, -, hw⟩
+  have hps : TruthAt M Omega τ s φ := Classical.byContradiction hnn
+  have hwA : w ∈ A := by
+    refine ⟨lt_trans hts hsw, ?_⟩
+    intro r htr hrw
+    rcases lt_trichotomy r s with h | h | h
+    · exact hguard r htr h
+    · exact h ▸ hps
+    · exact Classical.byContradiction (hw r h hrw)
+  exact absurd (hs.1 hwA) (not_le_of_gt hsw)
 
 /-- **Prior-S gap axiom validity**: `S(⊤,φ) ∧ P(¬φ) → S(¬φ ∨ K⁻(¬φ), φ)`, the past dual.
 
@@ -1469,7 +1506,37 @@ theorem prior_U_gap_valid (φ : Formula) :
 theorem prior_S_gap_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.snce Formula.top φ) φ.neg.somePast).imp
       (Formula.snce (Formula.or φ.neg (Formula.kMinus φ.neg)) φ)) := by
-  sorry
+  intro D _ _ _ _ _ h_lub F M Omega h_sc τ h_mem t h_ant
+  simp only [TruthAt, Formula.and, Formula.neg, Formula.somePast, Formula.top] at h_ant
+  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+  obtain ⟨s0, hs0t, -, hp0⟩ := h1
+  obtain ⟨v, hvt, hnpv, -⟩ := h2
+  set B : Set D := {u : D | u < t ∧ ∀ r : D, u < r → r < t → TruthAt M Omega τ r φ} with hB
+  have hs0B : s0 ∈ B := ⟨hs0t, hp0⟩
+  have hBbdd : BddBelow B := by
+    refine ⟨v, ?_⟩
+    intro u hu
+    by_contra huv
+    exact hnpv (hu.2 v (lt_of_not_ge huv) hvt)
+  obtain ⟨s, hs⟩ := exists_isGLB_of_lub h_lub ⟨s0, hs0B⟩ hBbdd
+  have hst : s < t := lt_of_le_of_lt (hs.1 hs0B) hs0t
+  have hguard : ∀ r : D, s < r → r < t → TruthAt M Omega τ r φ := by
+    intro r hsr hrt
+    obtain ⟨u, huB, -, hur⟩ := hs.exists_between hsr
+    exact huB.2 r hur hrt
+  simp only [TruthAt, Formula.or, Formula.neg, Formula.kMinus, Formula.top]
+  refine ⟨s, hst, ?_, hguard⟩
+  intro hnn
+  rintro ⟨w, hws, -, hw⟩
+  have hps : TruthAt M Omega τ s φ := Classical.byContradiction hnn
+  have hwB : w ∈ B := by
+    refine ⟨lt_trans hws hst, ?_⟩
+    intro r hwr hrt
+    rcases lt_trichotomy r s with h | h | h
+    · exact Classical.byContradiction (hw r hwr h)
+    · exact h ▸ hps
+    · exact hguard r h hrt
+  exact absurd (hs.1 hwB) (not_le_of_gt hws)
 
 /-- **Sep axiom validity**: `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)` is valid on real flow.
 
