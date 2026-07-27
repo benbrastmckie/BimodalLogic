@@ -213,7 +213,7 @@ LaTeX documentation builds could be added as a separate CI job if needed:
 ```yaml
 # Example (not implemented)
 - name: Build LaTeX docs
-  run: cd Theories/Bimodal/latex && latexmk -pdf BimodalReference.tex
+  run: cd latex && latexmk -pdf BimodalReference.tex
 ```
 
 ### Automated Mathlib Updates

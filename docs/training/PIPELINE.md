@@ -7,7 +7,7 @@
 
 ## Overview
 
-**Canonical narrative: `Theories/Bimodal/typst/BimodalReference.typ` Part IV, "The BMLogic Dataset Pipeline"** (task 313 Phase 10). This file is an operational quick-reference (build/run commands, config knobs, schemas) for users of the pipeline; the dual-signal architecture description, the module-count discrepancy note, the Tier-1 feasibility gate results, and the Tier-2 theorem-mining recommendation live in the book chapter, not here, to avoid maintaining two divergent copies.
+**Canonical narrative: `typst/BimodalReference.typ` Part IV, "The BMLogic Dataset Pipeline"** (task 313 Phase 10). This file is an operational quick-reference (build/run commands, config knobs, schemas) for users of the pipeline; the dual-signal architecture description, the module-count discrepancy note, the Tier-1 feasibility gate results, and the Tier-2 theorem-mining recommendation live in the book chapter, not here, to avoid maintaining two divergent copies.
 
 The BimodalLogic repository contains a Lean-native training data pipeline for the TM bimodal logic: it enumerates formulas, decides their validity using the formal decision procedure, extracts proof traces and countermodels, and exports the results as JSONL or structured JSON files, consumed by [BimodalHarness](https://github.com/benbrastmckie/BimodalHarness) (artifact-only integration -- see the book chapter and the Sync Mechanism section below).
 

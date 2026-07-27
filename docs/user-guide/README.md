@@ -12,7 +12,7 @@ The primary working system is **Bimodal**, which has complete soundness and comp
 
 | Theory | Status | Quick Start | Additional Guides |
 |--------|--------|-------------|-------------------|
-| **Bimodal** | Complete | [Quick Start](../../Theories/Bimodal/docs/user-guide/quickstart.md) | [Tutorial](../../Theories/Bimodal/docs/user-guide/tutorial.md), [Examples](../../Theories/Bimodal/docs/user-guide/examples.md), [Proof Patterns](../../Theories/Bimodal/docs/user-guide/proof-patterns.md) |
+| **Bimodal** | Complete | [Quick Start](quickstart.md) | [Tutorial](tutorial.md), [Examples](examples.md), [Proof Patterns](proof-patterns.md) |
 
 **Recommendation**: Start with Bimodal for a production-ready modal-temporal logic implementation.
 
@@ -45,12 +45,12 @@ This directory contains integration guides applicable across all theories:
 
 **Start with Bimodal** - the complete, verified implementation:
 
-1. [Bimodal Quick Start](../../Theories/Bimodal/docs/user-guide/quickstart.md) - Get started with proofs
-2. [Bimodal Tutorial](../../Theories/Bimodal/docs/user-guide/tutorial.md) - Step-by-step introduction
-3. [Bimodal Examples](../../Theories/Bimodal/docs/user-guide/examples.md) - Worked examples
+1. [Bimodal Quick Start](quickstart.md) - Get started with proofs
+2. [Bimodal Tutorial](tutorial.md) - Step-by-step introduction
+3. [Bimodal Examples](examples.md) - Worked examples
 
 For advanced tactic development:
-- [Tactic Development](../../Theories/Bimodal/docs/user-guide/tactic-development.md) - Custom tactics for Bimodal
+- [Tactic Development](tactic-development.md) - Custom tactics for Bimodal
 
 ## Related Documentation
 
@@ -67,9 +67,9 @@ For advanced tactic development:
 
 ## Merged from the Lean source tree
 
-The `Theories/Bimodal/docs/` tree was folded into this one. Previously the repository
+The `docs/` tree was folded into this one. Previously the repository
 carried two parallel `docs/` trees, and this file cross-linked into the other via
-`../Theories/Bimodal/docs/...` — an incoherence that the merge removes. The index below
+`docs/...` — an incoherence that the merge removes. The index below
 came from the source-tree copy of this file; its entries now refer to files in this
 directory.
 

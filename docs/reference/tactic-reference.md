@@ -173,4 +173,4 @@ example (p : Formula) : ⊢ p.box.imp p := by
 
 - [Axiom Reference](axiom-reference.md) - Axiom schemas used by tactics
 - [Proof Patterns](../user-guide/proof-patterns.md) - Manual proof strategies
-- [Automation README](../../Automation/README.md) - Automation implementation
+- [Automation README](../../Theories/Bimodal/Automation/README.md) - Automation implementation

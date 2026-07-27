@@ -784,7 +784,7 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 12: Update Prose References to the Relocated Directories [NOT STARTED]
+### Phase 12: Update Prose References to the Relocated Directories [COMPLETED]
 
 - **Goal:** Goal (6), reference-completeness half. ~50 references across ~20 files point at the old
   locations; leaving any behind reproduces exactly the dangling-reference defect the charter warns
@@ -792,22 +792,53 @@ disjoint documentation files, enumerated in each phase.
   `Theories/Bimodal/{docs,latex,typst}`). Module-path (`Bimodal.Metalogic.*`) corrections in
   `docs/` belong to Phase 13.
 - **Tasks:**
-  - [ ] Update all markdown references, working from a fresh measurement rather than this list:
+  - [x] Update all markdown references, working from a fresh measurement rather than this list:
         `docs/README.md` (~17), `README.md` (~5), `docs/user-guide/README.md` (~5),
         `docs/research/README.md` (~3), `docs/project-info/MAINTENANCE.md` (~3),
         `docs/reference/README.md` (~2), `docs/project-info/README.md` (~2), and one each in
         `docs/training/PIPELINE.md`, `docs/research/BIMODAL_LOGIC.md`,
         `docs/project-info/IMPLEMENTATION_STATUS.md`, `docs/project-info/FEATURE_REGISTRY.md`,
         `docs/development/CONTRIBUTING.md`, `docs/development/CI_CD_PROCESS.md`.
-  - [ ] Update the references inside the moved trees themselves: `typst/README.md` (~3),
+  - [x] Update the references inside the moved trees themselves: `typst/README.md` (~3),
         `latex/README.md` (~1), and the relocated `docs/reference/readme-standard.md` (~1).
-  - [ ] Fix the relative-path direction: root `docs/` previously reached the source tree via
+  - [x] Fix the relative-path direction: root `docs/` previously reached the source tree via
         `../Theories/Bimodal/docs/...`. After the merge these become intra-`docs/` links.
-  - [ ] Confirm root `README.md`'s `BimodalReference.pdf` link now resolves (Phase 11 moved the file
+  - [x] Confirm root `README.md`'s `BimodalReference.pdf` link now resolves (Phase 11 moved the file
         to make this true).
-  - [ ] Extend `scripts/check-module-invariants.sh` with a check (C10) that zero references to
+  - [x] Extend `scripts/check-module-invariants.sh` with a check (C10) that zero references to
         `Theories/Bimodal/{docs,latex,typst}` remain anywhere outside `specs/**`.
-  - [ ] Leave `specs/**` untouched — historical task artifacts legitimately record the old paths.
+  - [x] Leave `specs/**` untouched — historical task artifacts legitimately record the old paths.
+        *(deviation: altered -- C10 was authored in Phase 1 behind `ENFORCE_C10`; this phase flips
+        the default to 1. See Phase 1.)*
+
+  **Phase 12 result.** 58 stale references across 14 files, now **0**; all ten checks C1-C10 pass.
+  The rewrite was done by recomputing each path rather than by string substitution: a match inside
+  a markdown link target `](...)` becomes a path relative to the *containing file*, while a match
+  in prose becomes the repo-root-relative path. A flat `s/Theories\/Bimodal\/docs/docs/` would
+  have produced links that are textually clean and still broken, since the moved files sit at a
+  different depth than they did.
+
+  **Link audit.** 104 relative markdown links under `docs/`, `latex/`, `typst/` and the root
+  `README.md` do not resolve. Exactly **5** of those were caused by the move -- links that pointed
+  from inside the old `Theories/Bimodal/docs/` *into* the Lean source tree
+  (`../../Syntax/Formula.lean`, `../../ProofSystem/Axioms.lean`, `../../Automation/README.md`,
+  and `../../Examples/` twice) and needed a `Theories/Bimodal/` segment re-inserted once the
+  files moved to the root `docs/`. All 5 are fixed, identified by differential check: broken from
+  the new location AND resolvable from the old one.
+
+  Three further root-`README.md` links were fixed opportunistically: the `BimodalReference.pdf`
+  link (the loose PDF moved into `latex/`, and this reference lacked the `latex/` segment so the
+  bulk rewrite did not match it), plus two case-mismatched targets
+  (`docs/research/bimodal-logic.md` and `docs/training/pipeline.md`, whose real filenames are
+  SCREAMING_SNAKE). The root `README.md` now has zero broken links.
+
+  *(deviation: skipped -- the phase criterion "every relative markdown link in `docs/` resolves"
+  is not met and was not achievable. The remaining ~96 broken links are pre-existing rot in files
+  that never moved: they point at a `Development/` directory that no longer exists, a `Logos/`
+  tree from a previous repository layout, `../../TODO.md`, and similar. Verified pre-existing by
+  the same differential check -- they resolve from neither the old nor the new location. Fixing
+  them is a documentation-rot task with no bearing on the relocation, and doing it silently here
+  would hide its size.)*
 - **Timing:** 1 hour
 - **Depends on:** 11
 - **Files to modify:**

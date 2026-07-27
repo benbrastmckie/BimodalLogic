@@ -11,7 +11,7 @@ Project-wide research documents applicable to ProofChecker.
 | **Bimodal** | Complete | Production-ready with soundness/completeness proofs |
 
 > **Theory-Specific Research**: For research specific to the bimodal logic theory, see:
-> - [Theories/Bimodal/docs/research/](../../Theories/Bimodal/docs/research/) - Proof search automation (complete implementation)
+> - [docs/research/](.) - Proof search automation (complete implementation)
 
 ## Project-Wide Research
 
@@ -100,7 +100,7 @@ Research specific to Bimodal has been moved to the theory directory:
 
 ### Bimodal Research
 
-Located in [Theories/Bimodal/docs/research/](../../Theories/Bimodal/docs/research/):
+Located in [docs/research/](.):
 
 - **modal-temporal-proof-search.md** - Proof search architecture
 - **proof-search-automation.md** - Automation strategies
@@ -124,7 +124,7 @@ Located in [Theories/Bimodal/docs/research/](../../Theories/Bimodal/docs/researc
 ## Navigation
 
 - **Up**: [docs/](../README.md)
-- **Bimodal Research**: [Theories/Bimodal/docs/research/](../../Theories/Bimodal/docs/research/)
+- **Bimodal Research**: [docs/research/](.)
 
 ---
 
@@ -134,9 +134,9 @@ _Last updated: March 2026_
 
 ## Merged from the Lean source tree
 
-The `Theories/Bimodal/docs/` tree was folded into this one. Previously the repository
+The `docs/` tree was folded into this one. Previously the repository
 carried two parallel `docs/` trees, and this file cross-linked into the other via
-`../Theories/Bimodal/docs/...` — an incoherence that the merge removes. The index below
+`docs/...` — an incoherence that the merge removes. The index below
 came from the source-tree copy of this file; its entries now refer to files in this
 directory.
 

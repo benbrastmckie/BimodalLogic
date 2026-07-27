@@ -12,7 +12,7 @@ Most reference materials are theory-specific. See:
 
 | Theory | Key References |
 |--------|----------------|
-| **Bimodal** | [Axioms](../../Theories/Bimodal/docs/reference/axiom-reference.md), [Operators](../../Theories/Bimodal/docs/reference/operators.md), [Tactics](../../Theories/Bimodal/docs/reference/tactic-reference.md) |
+| **Bimodal** | [Axioms](axiom-reference.md), [Operators](operators.md), [Tactics](tactic-reference.md) |
 
 ## Project-Wide Reference
 
@@ -25,7 +25,7 @@ Most reference materials are theory-specific. See:
 ### Looking for a Symbol?
 
 See theory-specific operator references:
-- **Bimodal**: [Operators](../../Theories/Bimodal/docs/reference/operators.md) - Modal, temporal, propositional operators
+- **Bimodal**: [Operators](operators.md) - Modal, temporal, propositional operators
 
 ### Looking for API Details?
 
@@ -48,9 +48,9 @@ See [API_REFERENCE.md](API_REFERENCE.md) for the project-wide API:
 
 ## Merged from the Lean source tree
 
-The `Theories/Bimodal/docs/` tree was folded into this one. Previously the repository
+The `docs/` tree was folded into this one. Previously the repository
 carried two parallel `docs/` trees, and this file cross-linked into the other via
-`../Theories/Bimodal/docs/...` — an incoherence that the merge removes. The index below
+`docs/...` — an incoherence that the merge removes. The index below
 came from the source-tree copy of this file; its entries now refer to files in this
 directory.
 

@@ -49,7 +49,7 @@ For implementation status by module, see [implementation-status.md](implementati
 - **Status**: Active
 - **Description**: Custom Lean 4 tactics for TM modal-temporal reasoning.
 - **Key File**: `Theories/Bimodal/Automation/Tactics.lean`
-- **Theory-Specific Registry**: See [Theories/Bimodal/docs/project-info/tactic-registry.md](../../Theories/Bimodal/docs/project-info/tactic-registry.md)
+- **Theory-Specific Registry**: See [docs/project-info/tactic-registry.md](tactic-registry.md)
 
 ### Proof Search
 

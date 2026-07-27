@@ -6,7 +6,7 @@
 
 > **Scope Note**: This file tracks project-wide implementation status. For the authoritative
 > module-by-module status of the Bimodal theory, see:
-> [Theories/Bimodal/docs/project-info/implementation-status.md](../../Theories/Bimodal/docs/project-info/implementation-status.md)
+> [docs/project-info/implementation-status.md](implementation-status.md)
 
 ## Implementation Overview
 

@@ -15,7 +15,7 @@ ProofChecker implements TM bimodal logic (Tense and Modality) in Lean 4 with ver
 
 **Bimodal** is the production-ready implementation providing a complete propositional intensional logic combining S5 modal and linear temporal operators. The implementation includes fully verified soundness, completeness, deduction theorem, and decidability results.
 
-**Getting Started**: See the [Bimodal documentation](../Theories/Bimodal/docs/) for tutorials, examples, and reference materials.
+**Getting Started**: See the [Bimodal documentation](.) for tutorials, examples, and reference materials.
 
 ## Theory-Specific Documentation
 
@@ -23,16 +23,16 @@ For documentation specific to the bimodal logic theory, see:
 
 | Theory | Status | Description | Documentation |
 |--------|--------|-------------|---------------|
-| **Bimodal** | Complete | Propositional intensional logic with soundness/completeness proofs | [Bimodal/docs/](../Theories/Bimodal/docs/) |
+| **Bimodal** | Complete | Propositional intensional logic with soundness/completeness proofs | [Bimodal/docs/](.) |
 
 ### Quick Access by Need
 
 | Need | Bimodal (Complete) |
 |------|-------------------|
-| Quick start | [Quick Start](../Theories/Bimodal/docs/user-guide/quickstart.md) |
-| Axiom reference | [Axioms](../Theories/Bimodal/docs/reference/axiom-reference.md) |
-| Implementation status | [Status](../Theories/Bimodal/docs/project-info/implementation-status.md) |
-| Known limitations | [Limitations](../Theories/Bimodal/docs/project-info/known-limitations.md) |
+| Quick start | [Quick Start](user-guide/quickstart.md) |
+| Axiom reference | [Axioms](reference/axiom-reference.md) |
+| Implementation status | [Status](project-info/implementation-status.md) |
+| Known limitations | [Limitations](project-info/known-limitations.md) |
 
 **Theory research**: [research/BIMODAL_LOGIC.md](research/BIMODAL_LOGIC.md) - Bimodal logic foundations and theory
 
@@ -64,7 +64,7 @@ Project-wide user documentation:
 - [INTEGRATION.md](user-guide/INTEGRATION.md) - Integration with model checkers and other tools
 - [MCP_INTEGRATION.md](user-guide/MCP_INTEGRATION.md) - MCP server integration (advanced)
 
-> **Theory-specific guides**: See [Theories/Bimodal/docs/user-guide/](../Theories/Bimodal/docs/user-guide/)
+> **Theory-specific guides**: See [docs/user-guide/](user-guide)
 > for tutorials, examples, and architecture documentation.
 
 **Audience**: Users integrating ProofChecker with external tools
@@ -82,7 +82,7 @@ Project-wide research documents:
 - [PROPERTY_BASED_TESTING_LEAN4.md](research/PROPERTY_BASED_TESTING_LEAN4.md) - Property-based testing research
 - [competitive-landscape.md](research/competitive-landscape.md) - BMLogic-Bench competitive analysis (13-dimension matrix, 12 benchmarks)
 
-> **Theory-specific research**: See [Theories/Bimodal/docs/research/](../Theories/Bimodal/docs/research/).
+> **Theory-specific research**: See [docs/research/](research).
 
 **Audience**: Researchers, architects
 
@@ -130,7 +130,7 @@ Project-wide reference materials:
 - [README.md](reference/README.md) - Directory overview and quick lookup guide
 - [API_REFERENCE.md](reference/API_REFERENCE.md) - API documentation
 
-> **Theory-specific reference**: See [Theories/Bimodal/docs/reference/](../Theories/Bimodal/docs/reference/)
+> **Theory-specific reference**: See [docs/reference/](reference)
 > for TM operators and axioms.
 
 **Audience**: All users looking up APIs
@@ -162,8 +162,8 @@ Training data pipeline documentation:
 
 1. [Installation](installation/README.md) - Set up ProofChecker
 2. [Basic Installation](installation/BASIC_INSTALLATION.md) - Step-by-step setup guide
-3. [Bimodal Tutorial](../Theories/Bimodal/docs/user-guide/tutorial.md) - Start writing proofs
-4. [TM Architecture](../Theories/Bimodal/docs/user-guide/architecture.md) - Understand TM logic
+3. [Bimodal Tutorial](user-guide/tutorial.md) - Start writing proofs
+4. [TM Architecture](user-guide/architecture.md) - Understand TM logic
 
 ### For Contributors
 
@@ -188,7 +188,7 @@ Training data pipeline documentation:
 
 ### Quick Reference
 
-- [TM Operators](../Theories/Bimodal/docs/reference/operators.md) - Symbol notation guide
+- [TM Operators](reference/operators.md) - Symbol notation guide
 
 ## By Use Case
 
@@ -196,16 +196,16 @@ Training data pipeline documentation:
 
 **Start with**:
 1. [Project README](../README.md) - Project overview and motivations
-2. [Bimodal Architecture](../Theories/Bimodal/docs/user-guide/architecture.md) - The complete, verified system
+2. [Bimodal Architecture](user-guide/architecture.md) - The complete, verified system
 3. [Bimodal Logic](research/BIMODAL_LOGIC.md) - Theoretical foundations
 
 ### I want to write proofs
 
 **Start with Bimodal** (complete implementation):
-1. [Bimodal Quick Start](../Theories/Bimodal/docs/user-guide/quickstart.md) - Get started
-2. [Bimodal Tutorial](../Theories/Bimodal/docs/user-guide/tutorial.md) - Step-by-step guide
+1. [Bimodal Quick Start](user-guide/quickstart.md) - Get started
+2. [Bimodal Tutorial](user-guide/tutorial.md) - Step-by-step guide
 3. [LEAN Style Guide](development/LEAN_STYLE_GUIDE.md) - Coding conventions
-4. [Bimodal Examples](../Theories/Bimodal/docs/user-guide/examples.md) - Worked examples
+4. [Bimodal Examples](user-guide/examples.md) - Worked examples
 
 ### I want to integrate with external tools
 
@@ -227,7 +227,7 @@ Training data pipeline documentation:
 When updating documentation:
 
 1. **Theory-specific changes**: Update theory docs/ directories
-   - Bimodal changes -> Theories/Bimodal/docs/
+   - Bimodal changes -> docs/
    - New features/tutorials -> theory user-guide/
    - Operators/axioms -> theory reference/
 
@@ -294,9 +294,9 @@ _Last updated: March 2026_
 
 ## Merged from the Lean source tree
 
-The `Theories/Bimodal/docs/` tree was folded into this one. Previously the repository
+The `docs/` tree was folded into this one. Previously the repository
 carried two parallel `docs/` trees, and this file cross-linked into the other via
-`../Theories/Bimodal/docs/...` — an incoherence that the merge removes. The index below
+`docs/...` — an incoherence that the merge removes. The index below
 came from the source-tree copy of this file; its entries now refer to files in this
 directory.
 

@@ -128,7 +128,7 @@ bash scripts/check-module-invariants.sh --no-build   # C5 catches dangling modul
 
 ## File Naming Convention
 
-All `.md` files in `Theories/Bimodal/docs/` must use **lowercase kebab-case**.
+All `.md` files in `docs/` must use **lowercase kebab-case**.
 
 ### Rule
 

@@ -47,7 +47,7 @@ RUN_BUILD=1
 # make a gate pass; that is what the flag exists to prevent.
 ENFORCE_C8=${ENFORCE_C8:-1}   # aggregator convention (enforced)
 ENFORCE_C9=${ENFORCE_C9:-1}   # no task-number citations under Theories/ (enforced)
-ENFORCE_C10=${ENFORCE_C10:-0} # no stale docs/latex/typst paths
+ENFORCE_C10=${ENFORCE_C10:-1} # no stale docs/latex/typst paths (enforced)
 
 FAILURES=0
 pass() { printf 'PASS  %-4s %s\n' "$1" "$2"; }

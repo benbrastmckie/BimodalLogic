@@ -14,7 +14,7 @@ For theory-specific implementation status, see:
 
 | Theory | Status Documents |
 |--------|------------------|
-| **Bimodal** | [Implementation Status](../../Theories/Bimodal/docs/project-info/implementation-status.md), [Known Limitations](../../Theories/Bimodal/docs/project-info/known-limitations.md) |
+| **Bimodal** | [Implementation Status](implementation-status.md), [Known Limitations](known-limitations.md) |
 
 ## Documentation Overview
 
@@ -38,7 +38,7 @@ Registry of features:
 |----------|-------------|
 | [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md) | Feature tracking and capability documentation |
 
-> **Theory-specific tactics**: See [Theories/Bimodal/docs/project-info/tactic-registry.md](../../Theories/Bimodal/docs/project-info/tactic-registry.md)
+> **Theory-specific tactics**: See [docs/project-info/tactic-registry.md](tactic-registry.md)
 > for tactic implementation status and usage patterns.
 
 ## Workflow Documentation
@@ -91,9 +91,9 @@ See [MAINTENANCE.md](MAINTENANCE.md) for the complete workflow for updating thes
 
 ## Merged from the Lean source tree
 
-The `Theories/Bimodal/docs/` tree was folded into this one. Previously the repository
+The `docs/` tree was folded into this one. Previously the repository
 carried two parallel `docs/` trees, and this file cross-linked into the other via
-`../Theories/Bimodal/docs/...` — an incoherence that the merge removes. The index below
+`docs/...` — an incoherence that the merge removes. The index below
 came from the source-tree copy of this file; its entries now refer to files in this
 directory.
 

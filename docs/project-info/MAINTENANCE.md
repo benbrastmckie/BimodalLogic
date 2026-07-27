@@ -12,8 +12,8 @@ This document describes the workflow for maintaining TODO.md and related project
 - [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md) - Feature tracking and capability documentation
 - [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
 
-**Theory-Specific Documents** (in Theories/Bimodal/docs/project-info/):
-- [tactic-registry.md](../../Theories/Bimodal/docs/project-info/tactic-registry.md) - Custom tactic documentation and usage
+**Theory-Specific Documents** (in docs/project-info/):
+- [tactic-registry.md](tactic-registry.md) - Custom tactic documentation and usage
 
 ---
 
@@ -132,7 +132,7 @@ Update these files in order:
 | 2 | implementation-status.md | Module %, sorry counts, Known Limitations section |
 | 3 | FEATURE_REGISTRY.md | Add new features, update feature status |
 | 4 | SORRY_REGISTRY.md | Remove resolved items |
-| 5 | tactic-registry.md | Add/update custom tactics (in Theories/Bimodal/docs/) |
+| 5 | tactic-registry.md | Add/update custom tactics (in docs/) |
 | 6 | TODO.md | Remove task, update counts |
 | 7 | Git commit | Comprehensive message |
 
