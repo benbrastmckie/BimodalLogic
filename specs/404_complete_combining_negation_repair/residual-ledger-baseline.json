@@ -2422,35 +2422,11 @@
   },
   {
     "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1018940,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "sses under ≈TS If s →s′ and s ̸≈s′, there is a transition fro",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 57297,
-    "md_gap_end": 57326,
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
     "pdf_char_offset": 1019307,
     "base_char": "≈",
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
     "context": "• →≈is deﬁned by s\nα\n−−→s′ ∧s ̸≈s′\n[s]≈\nτ\n−→≈[s′]≈\n,\n• L≈([s]",
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1021468,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "y transition s1 →s′\n1 with s1 ̸≈s′\n1 can be simulated by a pa",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 60386,
-    "md_gap_end": 60404,
     "dir": "baier_katoen_2008"
   },
   {
@@ -2563,18 +2539,6 @@
   },
   {
     "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1030211,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "on page 545, s0 ≈TS s2 but s0 ̸≈div\nTS s2.\nLemma 7.113.\n≈div ",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 71996,
-    "md_gap_end": 72037,
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
     "pdf_char_offset": 1030923,
     "base_char": "≈",
     "signature": "unanchored",
@@ -2611,18 +2575,6 @@
   },
   {
     "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1035456,
-    "base_char": "≈",
-    "signature": "absent",
-    "reason": "unmapped_base_char",
-    "context": "i,2 ≈div\nTS\nsj−1,1\nand\nsj−1,1 ̸≈div\nTS\nsj,1.\nAs si,2\n≈div\nTS\n",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 77479,
-    "md_gap_end": 77582,
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
     "pdf_char_offset": 1037572,
     "base_char": "≈",
     "signature": "unanchored",
@@ -2641,30 +2593,6 @@
   },
   {
     "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1041512,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "e\nL(s3) ̸= L(s0), and thus s3 ̸≈n\nTS s0. In order for case (N",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 86799,
-    "md_gap_end": 86817,
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1053493,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "s2 and s′\n1 ∈Post(s1) with s1 ̸≈div\nTS\ns′\n1 we deﬁne ν(s′\n1, ",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 101613,
-    "md_gap_end": 101658,
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
     "pdf_char_offset": 1053658,
     "base_char": "=",
     "signature": "unanchored",
@@ -2679,18 +2607,6 @@
     "signature": "unanchored",
     "reason": "unrecognized_gap",
     "context": "ences and Abstraction\n• If s1 ̸≈div\nTS\ns′\n1, then either [s′\n",
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1056269,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "r ≈div.\nMoreover, to show TS1 ̸≈div TS2 it suﬃces to provide ",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 105424,
-    "md_gap_end": 105452,
     "dir": "baier_katoen_2008"
   },
   {
@@ -2794,47 +2710,11 @@
   },
   {
     "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1086926,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": " s2,\ns′\n1 ∈PostTS(s1), and s1 ̸≈TS s′\n1. Thus, there exists a",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 144622,
-    "md_gap_end": 144648,
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
     "pdf_char_offset": 1087057,
     "base_char": "=",
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
     "context": "un\nand\ns′\n1 ≈TS s′\n2.\nAs s′\n1 ̸= sdiv, we have s′\n2 ̸= sdiv. ",
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1087609,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "\nsdiv ∈PostTS(s′\n1), and s′\n1 ̸≈TS sdiv. Hence, there exists ",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 145370,
-    "md_gap_end": 145392,
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1089329,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "\nAll transitions s →s′ with s ̸≈div\nTS\ns′ are lifted to\ntrans",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 147330,
-    "md_gap_end": 147356,
     "dir": "baier_katoen_2008"
   },
   {
@@ -2925,30 +2805,6 @@
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
     "context": "1 . . .3 } × { 1 . . . 3 }, i ̸= j, determine whether TSi ≈TS",
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1105974,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "rmine whether TSi ≈TSj or TSi ̸≈TSj. Justify\nyour answer.\nExe",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 170406,
-    "md_gap_end": 170433,
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1108633,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": " Exercise 7.22.\nShow that TS1 ̸≈TS2 and TS1 ≈obs TS2.\nExercis",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 174080,
-    "md_gap_end": 174112,
     "dir": "baier_katoen_2008"
   },
   {
@@ -3372,18 +3228,6 @@
     "signature": "unanchored",
     "reason": "ambiguous_anchor",
     "context": "ct, we have\nβ(s0) ̸≈div γ(s0) ̸≈div α(s0)\nas β(s0) can reach ",
-    "dir": "baier_katoen_2008"
-  },
-  {
-    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
-    "pdf_char_offset": 1223080,
-    "base_char": "≈",
-    "signature": "control_char",
-    "reason": "unmapped_base_char",
-    "context": "(or any equivalent state),\nTS ̸≈div\nˆ\nTS.\nSince s0 ≈div α(s0)",
-    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part08.md",
-    "md_gap_start": 147383,
-    "md_gap_end": 147401,
     "dir": "baier_katoen_2008"
   },
   {
@@ -4357,8 +4201,8 @@
     "reason": "overlapping_edit",
     "context": "e\nFϕ1 U ϕ2 = { B ∈Q | ϕ1 U ϕ2 ̸∈B or ϕ2 ∈B }.\nThe transition ",
     "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 140639,
-    "md_gap_end": 140665,
+    "md_gap_start": 140633,
+    "md_gap_end": 140659,
     "dir": "baier_katoen_2008"
   },
   {
@@ -4369,8 +4213,8 @@
     "reason": "overlapping_edit",
     "context": "I, AP ∪{ div }, L)\nwhere sdiv ̸∈S, →extends the transition re",
     "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
-    "md_gap_start": 140644,
-    "md_gap_end": 140653,
+    "md_gap_start": 140638,
+    "md_gap_end": 140647,
     "dir": "baier_katoen_2008"
   },
   {
@@ -7483,34 +7327,34 @@
     "signature": null,
     "reason": "not_yet_converted",
     "base_char": null,
-    "context": "Directory holds only source.pdf and PROVENANCE.txt; no converted markdown and no matching index.json id. Per plan Non-Goals, not converted as part of this task. Carried forward unchanged from the 403 baseline (re-verified: directory listing unchanged)."
+    "context": "Carried forward unchanged from the 403 baseline."
   },
   {
     "dir": "*",
     "signature": null,
     "reason": "no_source_pdf_permanent_scope_boundary",
     "base_char": null,
-    "context": "64 of 131 corpus source directories have no on-disk PDF and cannot be checked by the PDF-vs-markdown methodology this task uses at all. Their combining-mark status is permanently unknown absent PDF re-acquisition. Carried forward unchanged from the 403 baseline."
+    "context": "Carried forward unchanged from the 403 baseline."
   },
   {
     "dir": "baier_katoen_2008",
     "signature": null,
     "reason": "residual_finding_non_negation_control_chars",
     "base_char": null,
-    "context": "8,514 control characters across 24 distinct code points remain in this document beyond the U+0338 negation subset (an entire symbol font mapped onto control codes). Only negation is in scope for this task; recorded here as a residual finding for a separate task. Carried forward unchanged from the 403 baseline."
+    "context": "Carried forward unchanged from the 403 baseline."
   },
   {
     "dir": "baier_katoen_2008",
     "signature": null,
     "reason": "chunks_not_regenerated",
     "base_char": null,
-    "context": "chunk_*.md/chunks.json not yet regenerated for this document as of this baseline snapshot -- Phase 9 of this plan addresses it via concatenate-then-chunk, licensed by Phase 5's all-boundaries contiguity verification. Carried forward from the 403 baseline pending Phase 9."
+    "context": "Still not regenerated as of end of phase 2 -- Phase 9 addresses this."
   },
   {
     "dir": "venema_1993",
     "signature": null,
     "reason": "chunks_not_regenerated",
     "base_char": null,
-    "context": "chunks.json not yet regenerated for this document as of this baseline snapshot -- Phase 9 of this plan confirms venema's chunks.json already points directly at the secNN_*.md section files (no chunk_*.md exist), so this note is expected to resolve via index-rebuild-only, not re-chunking. Carried forward from the 403 baseline pending Phase 9 confirmation."
+    "context": "Still not regenerated as of end of phase 2 -- Phase 9 addresses this."
   }
 ]

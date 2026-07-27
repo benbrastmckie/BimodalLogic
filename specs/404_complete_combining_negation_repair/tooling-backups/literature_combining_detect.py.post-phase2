@@ -1,0 +1,400 @@
+"""literature_combining_detect.py - shared PDF-vs-markdown combining-mark (U+0338)
+ground-truth detection and anchoring logic for the ~/Projects/Literature corpus.
+
+Imported by BOTH `literature-combining-audit.sh` (the read-only corpus-wide
+detector) and `literature-repair-combining.sh` (the backup-guarded repair
+engine) so the two tools locate and classify occurrences IDENTICALLY -- the
+repair engine only ever acts on an occurrence using the exact same anchor
+logic the detector used to report it, never a second, independently-drifting
+implementation.
+
+See literature-combining-audit.sh's header comment for the full rationale
+(why a bare-U+0338 grep cannot find the dangerous "silent drop" defect class,
+why PyMuPDF -- not pdftotext -- must be the ground-truth extractor, etc).
+"""
+
+import glob
+import os
+import re
+
+MARK = "\u0338"  # COMBINING LONG SOLIDUS OVERLAY
+
+# base character -> precomposed negated codepoint (extend as new bases are found)
+PRECOMPOSED = {
+    "=": "\u2260",   # -> NOT EQUAL TO
+    "\u2208": "\u2209",  # elem-of -> not an element of
+    "\u2286": "\u2288",  # subset-or-eq -> neither subset of nor equal to
+    "\u2282": "\u2284",  # subset -> not a subset of
+    "\u2283": "\u2285",  # superset -> not a superset of
+    "\u2287": "\u2289",  # superset-or-eq -> neither superset of nor equal to
+    "<": "\u226e",   # -> not less-than
+    ">": "\u226f",   # -> not greater-than
+    "\u2261": "\u2262",  # identical-to -> not identical to
+    "\u223c": "\u2241",  # tilde operator -> not tilde
+    "\u2264": "\u2270",  # <= -> neither less-than nor equal to
+    "\u2265": "\u2271",  # >= -> neither greater-than nor equal to
+    "|": "\u2224",   # -> does not divide
+    "\u22a2": "\u22ac",  # right tack (proves) -> does not prove
+    "\u227a": "\u2280",  # precedes -> does not precede
+    "\u2192": "\u219b",  # rightwards arrow -> rightwards arrow with stroke
+    "\u2248": "\u2249",  # almost equal to -> NOT ALMOST EQUAL TO (task 404 phase 2:
+                         # confirmed 13/13 unmapped_base_char entries + up to 7
+                         # unrecognized_gap entries carry base_char "\u2248")
+    "\u22a9": "\u22ae",  # forces -> DOES NOT FORCE (task 404 phase 2: unrecognized_gap
+                         # base_char "\u22a9", 4 entries)
+}
+
+# Base characters with NO Unicode precomposed negated codepoint at all (verified via
+# unicodedata.decomposition(): neither "\u225c" nor "\u21a3" has ANY character in Unicode whose
+# canonical decomposition is base + U+0338 -- Unicode simply never encoded "NOT
+# DELTA-EQUAL-TO" or "RIGHTWARDS ARROW WITH TAIL AND STROKE" as their own codepoints).
+# Policy decision (task 404 phase 2, plan-mandated): repair these by emitting the
+# canonical DECOMPOSED combining sequence (base char immediately followed by U+0338)
+# rather than skipping them as unrepairable. This is not a special case invented for
+# the repair engine -- it is exactly the form `compose_combining_overlays()` in
+# literature_combining_overlay.py already leaves an uncomposable base+mark pair in
+# (both "\u225c" and "\u21a3" are in that module's _OVERLAY_BASES whitelist; NFC normalization
+# of a pair with no composed target is a no-op that leaves the two codepoints as-is).
+# So a freshly-converted, uncorrupted occurrence of either relation already looks like
+# this in the markdown -- classify_gap_text() below classifies it `bare_pair`
+# ("accounted", no action needed) purely from the literal base_char + MARK adjacency
+# check, with no dependency on this dict at all. This dict exists only to tell
+# literature-repair-combining.sh WHAT TO WRITE when the mark was corrupted away
+# (control_char/glyph_six/absent) for one of these two bases; the classification path
+# needs no change. Re-scanning a repaired occurrence therefore reclassifies as
+# `bare_pair` on the next run, preserving idempotence the same way PRECOMPOSED entries
+# do via the `precomposed` signature.
+NO_PRECOMPOSED_FORM = {
+    "\u225c": "\u225c" + MARK,  # DELTA EQUAL TO -> delta-equal-to + combining mark
+    "\u21a3": "\u21a3" + MARK,  # RIGHTWARDS ARROW WITH TAIL -> same + combining mark
+}
+
+# Combined base_char -> replacement-to-write mapping the repair engine consumes: for
+# bases with a true Unicode precomposed negation (PRECOMPOSED), the replacement is
+# that single codepoint; for bases with none (NO_PRECOMPOSED_FORM), the replacement is
+# the two-codepoint decomposed sequence. classify_gap_text's "precomposed" signature
+# check intentionally consults PRECOMPOSED alone (not REPLACEMENTS) -- see its
+# docstring -- so this merged dict is for the repair engine's write-time lookup only.
+REPLACEMENTS = {**PRECOMPOSED, **NO_PRECOMPOSED_FORM}
+
+CHUNK_RE = re.compile(r"^chunk_\d+\.md$")
+LATEX_MACRO_RE = re.compile(
+    r"\\not\s*(=|\\[a-zA-Z]+)"
+    r"|\\n(?:vdash|equiv|sim|prec|succ|leq|geq|less|gtr|rightarrow|in|subseteq|subset|supseteq|supset)\b"
+)
+WS_RE = re.compile(r"\s+")
+
+
+def strip_ws(text):
+    return WS_RE.sub("", text)
+
+
+def find_base(text, idx):
+    """Locate the base character a combining mark at `idx` modifies. Empirically,
+    PyMuPDF's extraction order for this corpus's font/CMap most often emits the mark
+    BEFORE its base (mark, [optional horizontal whitespace], base) -- prefer the
+    'after' side -- but fall back to the 'before' side (base, [ws], mark) if that
+    fails. Never skip a newline: a mark and its base are only ever tolerated on the
+    same line."""
+    n = len(text)
+
+    def skip_ws(pos, direction, max_skip=3):
+        skipped = 0
+        while 0 <= pos < n and text[pos] in (" ", "\t") and skipped < max_skip:
+            pos += direction
+            skipped += 1
+        return pos if 0 <= pos < n else None
+
+    def valid(c):
+        return c is not None and c != "\n" and c != MARK and not c.isspace()
+
+    after_pos = skip_ws(idx + 1, 1)
+    before_pos = skip_ws(idx - 1, -1)
+    after_char = text[after_pos] if after_pos is not None else None
+    before_char = text[before_pos] if before_pos is not None else None
+
+    if valid(after_char):
+        return after_char, after_pos
+    if valid(before_char):
+        return before_char, before_pos
+    return None, None
+
+
+WORD_RE = re.compile(r"[A-Za-z]{4,}")
+
+
+def _find_word_in_window(text, pos, direction, scan):
+    # Prefer PROXIMITY over length: a short but nearby word (e.g. "goal") is a
+    # more reliable landmark than a longer word further away that also
+    # happens to recur nearby (e.g. a repeated local variable name like
+    # "lowlink" appearing on both sides of the target) -- verified necessary
+    # against schwoon_esparza_2005's "s.lowlink, t.lowlink}; ... if goal <MARK>"
+    # where a longest-wins policy picked the wrong, non-unique "lowlink".
+    # Length still breaks ties between equally-near candidates.
+    if direction > 0:
+        window = text[pos:pos + scan]
+        candidates = list(WORD_RE.finditer(window))
+        if not candidates:
+            return None
+        best = min(candidates, key=lambda m: (m.start(), -len(m.group(0))))
+        return (best.group(0), best.start(), pos + best.start(), pos + best.end())
+    else:
+        base = max(0, pos - scan)
+        window = text[base:pos]
+        candidates = list(WORD_RE.finditer(window))
+        if not candidates:
+            return None
+        best = max(candidates, key=lambda m: (m.end(), len(m.group(0))))
+        return (best.group(0), pos - (base + best.end()), base + best.start(), base + best.end())
+
+
+def nearest_word(text, pos, direction, scan=90, extended_scan=260):
+    """Find a distinctive run of >=4 plain ASCII letters near `pos` in `text`,
+    searching outward in `direction` (+1/-1) up to `scan` characters, falling
+    back to a wider `extended_scan` window when the primary window (math-heavy
+    formula stretches are often word-sparse) has no candidate at all. Plain-
+    word landmarks are used (rather than adjacent symbol characters) because
+    this corpus's defect frequently corrupts SEVERAL adjacent math/relation
+    symbols at once (e.g. a parallel-composition bar or a prime mark alongside
+    the negation overlay) -- an immediate-symbol anchor breaks on those, but
+    ordinary prose words are reliably preserved. Among candidates, prefer the
+    LONGEST (more specific, less likely to produce an ambiguous multi-match
+    downstream) rather than simply the nearest short common word (e.g.
+    "general", "have"). Ties broken by proximity to `pos`. Returns (word,
+    distance, word_start, word_end) or None if nothing found in either
+    window. distance is measured from `pos` to the word's NEAR edge (the edge
+    facing `pos`)."""
+    found = _find_word_in_window(text, pos, direction, scan)
+    if found is not None:
+        return found
+    return _find_word_in_window(text, pos, direction, extended_scan)
+
+
+def classify_gap_text(gap, base_char):
+    """Inspect a short md-side substring expected to carry the base character
+    (or its precomposed replacement) plus at most one adjacent corruption
+    artifact, and classify its signature. Returns None if unrecognized."""
+    if base_char in PRECOMPOSED and PRECOMPOSED[base_char] in gap:
+        return "precomposed"
+    if base_char not in gap:
+        return None
+    bi = gap.index(base_char)
+    neighbors = gap[:bi] + gap[bi + 1:]
+    if MARK in neighbors:
+        return "bare_pair"
+    if "6" in neighbors:
+        return "glyph_six"
+    if any(ord(c) < 0x20 and c not in ("\t", "\n") for c in neighbors):
+        return "control_char"
+    return "absent"
+
+
+def classify_occurrence(pdf_text, idx, base_char, base_pos, md_texts_raw, md_concat_raw, pdf_len):
+    """Returns (signature, reason, match_detail). match_detail is
+    {"file_index": i, "gap_start": s, "gap_end": e} identifying exactly where
+    in md_texts_raw[i] the classified gap lives, when signature came from a
+    unique anchor match (the only case a repair engine can safely act on);
+    otherwise None."""
+    complex_start = min(idx, base_pos)
+    complex_end = max(idx, base_pos) + 1
+
+    wb = nearest_word(pdf_text, complex_start, -1, scan=90)
+    wa = nearest_word(pdf_text, complex_end, 1, scan=90)
+
+    total_matches = 0
+    gaps = []          # list of (gap_text, file_index, gap_start, gap_end)
+
+    # Distances are measured in WHITESPACE-NORMALIZED space (all runs of
+    # whitespace collapsed to a single character), not raw PDF character
+    # counts: the markdown pipeline dehyphenates and rejoins soft-wrapped
+    # lines (see literature-convert.sh's rejoin_soft_wraps()/dehyphenate()),
+    # which changes raw newline/whitespace counts substantially whenever an
+    # anchor word and the corruption site straddle a PDF line break. Comparing
+    # normalized distances keeps the expected-gap estimate stable across that
+    # reflow instead of drowning in spurious slack.
+    if wb is not None and wa is not None:
+        word_before, _, wb_start, wb_end = wb
+        word_after, _, wa_start, wa_end = wa
+        dist_before = len(WS_RE.sub(" ", pdf_text[wb_end:complex_start]))
+        dist_after = len(WS_RE.sub(" ", pdf_text[complex_end:wa_start]))
+        expected_gap = dist_before + 2 + dist_after
+        # Asymmetric slack: a repair engine consuming this same classification
+        # can only ever SHRINK the markdown between an anchor word and the
+        # target (a control-char/glyph-six fix removes 1-2 characters; it
+        # never adds any) -- verified necessary for idempotence when multiple
+        # corrupted occurrences share one word-landmark window and several of
+        # them get fixed before this one is re-scanned, cumulatively shrinking
+        # the actual gap well below the original PDF-measured estimate.
+        # Widening is asymmetric (generous downward, modest upward) rather
+        # than just increasing a symmetric slack, to avoid reintroducing the
+        # ambiguous-match risk a large symmetric window would cause.
+        slack_low = 90
+        slack_high = 15
+        gap_min = max(0, expected_gap - slack_low)
+        gap_max = expected_gap + slack_high
+        pattern = re.compile(
+            re.escape(word_before) + r"(.{%d,%d}?)" % (gap_min, gap_max) + re.escape(word_after),
+            re.DOTALL,
+        )
+        for fi, raw in enumerate(md_texts_raw):
+            for m in pattern.finditer(raw):
+                total_matches += 1
+                gaps.append((m.group(1), fi, m.start(1), m.end(1)))
+    elif wa is not None:
+        word_after, _, wa_start, _ = wa
+        dist_after = len(WS_RE.sub(" ", pdf_text[complex_end:wa_start]))
+        pattern = re.compile(r"(.{0,%d}?)" % (dist_after + 10) + re.escape(word_after), re.DOTALL)
+        for fi, raw in enumerate(md_texts_raw):
+            for m in pattern.finditer(raw):
+                total_matches += 1
+                gaps.append((m.group(1), fi, m.start(1), m.end(1)))
+    elif wb is not None:
+        word_before, _, _, wb_end = wb
+        dist_before = len(WS_RE.sub(" ", pdf_text[wb_end:complex_start]))
+        pattern = re.compile(re.escape(word_before) + r"(.{0,%d}?)" % (dist_before + 10), re.DOTALL)
+        for fi, raw in enumerate(md_texts_raw):
+            for m in pattern.finditer(raw):
+                total_matches += 1
+                gaps.append((m.group(1), fi, m.start(1), m.end(1)))
+
+    # A gap that plausibly explains this occurrence must still carry the base
+    # character or its precomposed replacement somewhere in it -- filtering on
+    # this before deciding ambiguity throws out coincidental word-pair matches
+    # elsewhere in the document that happen to satisfy the length window but
+    # have nothing to do with this relation at all (verified necessary: e.g. an
+    # unrelated "components ... Interleaving" span elsewhere in the same
+    # document matched the same anchor words/length as the true occurrence).
+    target_chars = base_char + PRECOMPOSED.get(base_char, "")
+    plausible_gaps = [g for g in gaps if any(c in g[0] for c in target_chars)]
+    if len(plausible_gaps) >= 1:
+        gaps = plausible_gaps
+        total_matches = len(plausible_gaps)
+
+    if total_matches == 1:
+        gap_text, fi, gs, ge = gaps[0]
+        sig = classify_gap_text(gap_text, base_char)
+        match_detail = {"file_index": fi, "gap_start": gs, "gap_end": ge}
+        if sig is not None:
+            return sig, "matched", match_detail
+        return "unanchored", "unrecognized_gap", None
+
+    if total_matches == 0:
+        # Secondary heuristic: hand-transcribed LaTeX-macro sections read
+        # differently around the negation than the PDF's rendered glyph context,
+        # so the exact-anchor match above structurally cannot find them. Look for
+        # a \not-family macro in the approximate corresponding neighborhood of the
+        # concatenated markdown instead of declaring this unanchored outright.
+        if md_concat_raw and pdf_len > 0:
+            frac = idx / pdf_len
+            center = int(frac * len(md_concat_raw))
+            lo = max(0, center - 800)
+            hi = min(len(md_concat_raw), center + 800)
+            if LATEX_MACRO_RE.search(md_concat_raw[lo:hi]):
+                return "latex_macro", "fuzzy_window", None
+        return "unanchored", "anchor_not_found", None
+
+    return "unanchored", "ambiguous_anchor", None
+
+
+def find_md_paths(dirpath):
+    return sorted(
+        p for p in glob.glob(os.path.join(dirpath, "*.md"))
+        if not CHUNK_RE.match(os.path.basename(p))
+    )
+
+
+def find_pdf_paths(dirpath):
+    return sorted(glob.glob(os.path.join(dirpath, "*.pdf")))
+
+
+def scan_directory(dirpath, dirname, on_no_markdown=None):
+    """Scan one sources/<dirname>/ directory. Returns None if the directory has
+    no PDF, or no non-chunk markdown (calling on_no_markdown(dirname) in the
+    latter case, if provided, so callers can surface a visible notice). On
+    success, returns a dict with pdf_occurrences/corrupted_count/
+    accounted_count/signature_counts/occurrences (each occurrence carries
+    base_char, signature, reason, pdf_char_offset, context, and -- when
+    signature came from a unique anchor match -- md_file (path),
+    md_gap_start/md_gap_end for a repair engine to act on)."""
+    import fitz  # local import: only this function needs it
+    import sys
+
+    pdf_paths = find_pdf_paths(dirpath)
+    md_paths = find_md_paths(dirpath)
+    if not pdf_paths:
+        return None
+    if not md_paths:
+        if on_no_markdown is not None:
+            on_no_markdown(dirname)
+        return None
+
+    md_texts = []
+    for p in md_paths:
+        try:
+            with open(p, "r", encoding="utf-8", errors="replace") as f:
+                md_texts.append((p, f.read()))
+        except Exception as e:
+            print(f"[warn] failed reading {p}: {e}", file=sys.stderr)
+
+    md_paths_ok = [p for p, _ in md_texts]
+    md_texts_raw = [t for _, t in md_texts]
+    md_concat_raw = "\n".join(md_texts_raw)
+
+    signature_counts = {
+        "precomposed": 0, "bare_pair": 0, "latex_macro": 0,
+        "control_char": 0, "glyph_six": 0, "absent": 0, "unanchored": 0,
+    }
+    occurrences = []
+
+    for pdf_path in pdf_paths:
+        try:
+            doc = fitz.open(pdf_path)
+        except Exception as e:
+            print(f"[warn] failed opening {pdf_path}: {e}", file=sys.stderr)
+            continue
+        pdf_text = "".join(page.get_text("text") for page in doc)
+        pdf_len = len(pdf_text)
+        idxs = [i for i, c in enumerate(pdf_text) if c == MARK]
+        for idx in idxs:
+            base_char, base_pos = find_base(pdf_text, idx)
+            if base_char is None:
+                signature_counts["unanchored"] += 1
+                occurrences.append({
+                    "pdf_file": os.path.basename(pdf_path),
+                    "pdf_char_offset": idx,
+                    "base_char": None,
+                    "signature": "unanchored",
+                    "reason": "unmapped_base",
+                    "context": pdf_text[max(0, idx - 30):idx + 30],
+                })
+                continue
+            sig, reason, match_detail = classify_occurrence(
+                pdf_text, idx, base_char, base_pos, md_texts_raw, md_concat_raw, pdf_len
+            )
+            signature_counts[sig] += 1
+            occ = {
+                "pdf_file": os.path.basename(pdf_path),
+                "pdf_char_offset": idx,
+                "base_char": base_char,
+                "signature": sig,
+                "reason": reason,
+                "context": pdf_text[max(0, min(idx, base_pos) - 30):max(idx, base_pos) + 30],
+            }
+            if match_detail is not None:
+                occ["md_file"] = md_paths_ok[match_detail["file_index"]]
+                occ["md_gap_start"] = match_detail["gap_start"]
+                occ["md_gap_end"] = match_detail["gap_end"]
+            occurrences.append(occ)
+
+    pdf_occurrences = sum(signature_counts.values())
+    accounted = signature_counts["precomposed"] + signature_counts["bare_pair"] + signature_counts["latex_macro"]
+    corrupted = signature_counts["control_char"] + signature_counts["glyph_six"] + signature_counts["absent"] + signature_counts["unanchored"]
+
+    return {
+        "dir": dirname,
+        "pdf_occurrences": pdf_occurrences,
+        "corrupted_count": corrupted,
+        "accounted_count": accounted,
+        "signature_counts": signature_counts,
+        "occurrences": occurrences,
+    }

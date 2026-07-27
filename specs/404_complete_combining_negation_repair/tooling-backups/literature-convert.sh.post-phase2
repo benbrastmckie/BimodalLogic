@@ -1,0 +1,903 @@
+#!/usr/bin/env bash
+# literature-convert.sh - Convert PDF or DJVU to structured markdown
+#
+# Usage:
+#   literature-convert.sh <input.pdf|input.djvu> <output_dir>
+#
+# Output:
+#   {output_dir}/{doc_id}.md  — markdown with heading markers from TOC (or from
+#                               heuristic detection when no embedded TOC exists)
+#   {output_dir}/{doc_id}.md.rejected — written INSTEAD of the .md on quality-gate
+#                               failure (exit 3); never both.
+#
+# Engine tiers (task #831 BUG 1 fix — engine selection is explicit and logged,
+# never a silent fallthrough to a layout-destroying tool):
+#   1. PRIMARY:  pymupdf4llm.to_markdown() via a pinned, auto-provisioned uv venv
+#                (see literature-pyenv-provision.sh). Correct multi-column
+#                reading order, markdown structure, ligatures pre-resolved.
+#   2. FALLBACK: zero-dependency PyMuPDF page.get_text("blocks") column-clustering
+#                + reading-order reconstruction (this script). Mandatory and
+#                always available (system PyMuPDF `fitz` is a hard prerequisite
+#                of this whole pipeline). Used automatically whenever the primary
+#                tier is unavailable or fails, WITH A LOGGED NOTICE naming which
+#                tier ran and why.
+#   pdftotext's layout-preserving flag and PyMuPDF's row-major whole-page-sort
+#   text-extraction option are NEVER used anywhere in this script — both were
+#   verified (task #831 research) to glue side-by-side multi-column text onto
+#   single lines (a row-major whole-page sort is wrong for multi-column
+#   layout). `marker`/`marker_single`/docling/nougat were evaluated
+#   and rejected (task #831 research: heavy deps, OpenRAIL-licensed weights,
+#   GPU-oriented, no CPU-viable install on this machine) — they are not offered
+#   as options here; do not silently reintroduce a "prefer marker" auto-path.
+#
+# Environment:
+#   LITERATURE_CONVERTER — 'auto' (default: primary tier, auto fallback to the
+#                          mandatory PyMuPDF column-clustering tier if primary
+#                          is unavailable/fails), 'pymupdf4llm' (primary tier
+#                          ONLY — fails loudly with exit 2 rather than silently
+#                          falling back if unavailable), 'pymupdf'/'fallback'
+#                          (force the column-clustering fallback tier only,
+#                          skipping the primary tier — also used by the Phase 6
+#                          forced-fallback test), 'pdftotext' (explicit,
+#                          best-effort last resort: plain pdftotext with NO
+#                          layout-preserving flag, no heading detection —
+#                          manual escape hatch only, not used by 'auto').
+#   LITERATURE_PYENV_DIR — override the pymupdf4llm venv location (see
+#                          literature-pyenv-provision.sh).
+#
+# Exit codes:
+#   0 — success, quality gate passed
+#   1 — input file missing or unsupported type
+#   2 — all converters failed (no engine produced usable output)
+#   3 — conversion succeeded but the quality gate FAILED (column-interleaving,
+#       page-coverage shortfall, unresolved ligatures, or unresolved
+#       hyphen-linebreaks). Output is written to a `.rejected` sibling, NOT to
+#       the final `.md` path — callers must treat exit 3 distinctly from exit 0
+#       and must never mistake a `.rejected` file for a successful conversion.
+#
+# Quality metrics (reported to stderr on success; NOT a correctness signal by
+# themselves — the quality gate above is the correctness signal):
+#   Headings: count of # markers in output
+#   Words: approximate word count
+#   Math blocks: count of $$ or \begin{ environments
+#   Engine: which tier actually produced the output (pymupdf4llm /
+#           pymupdf-fallback-toc / pymupdf-fallback-heuristic / pdftotext)
+
+set -uo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# --- Self-test: fixture-based check of compose_combining_overlays() (the
+# overlay-composition logic shared with the live conversion pipeline via
+# literature_combining_overlay.py). Runs no PDF conversion at all. ---
+if [ "${1:-}" = "--self-test" ]; then
+  LITERATURE_CONVERT_SCRIPT_DIR="$SCRIPT_DIR" python3 <<'PYEOF'
+import os
+import sys
+import unicodedata
+
+sys.path.insert(0, os.environ["LITERATURE_CONVERT_SCRIPT_DIR"])
+from literature_combining_overlay import compose_combining_overlays
+
+MARK = "̸"  # COMBINING LONG SOLIDUS OVERLAY
+failures = []
+
+
+def check(name, given, expect):
+    got = compose_combining_overlays(given)
+    if got != expect:
+        failures.append(
+            f"{name}: input={given!r} expected={expect!r} got={got!r}"
+        )
+    else:
+        print(f"[self-test] PASS: {name}")
+
+
+# 1. mark immediately before base (the original, already-supported case)
+check("mark-immediately-before-base", MARK + "=", "≠")
+
+# 2. mark separated from its base by intervening horizontal whitespace (the
+#    gap this phase's fix closes -- verified real: PDF extraction of this
+#    corpus produces "TS(PG1 ||| PG2)" + MARK + " " + "=")
+check("mark-space-before-base", MARK + " =", "≠")
+check("mark-tab-before-base", MARK + "\t=", "≠")
+
+# 3. base already before mark (canonical NFC order) -- must compose correctly
+#    without the reorder regex ever needing to fire.
+check("mark-after-base-canonical-order", "=" + MARK, "≠")
+
+# 4. ordinary accented Latin letter must NEVER be touched by the
+#    whitelist-restricted reorder step (only relation-symbol bases are
+#    eligible), and must still NFC-compose normally.
+check("accented-letter-non-interference", "e" + "́", "\xe9")  # -> "é"
+
+# 5. a mark-space-base pair spanning a NEWLINE must NOT be reordered (the
+#    plan's explicit safety constraint: only horizontal whitespace tolerated).
+newline_input = MARK + "\n="
+newline_result = compose_combining_overlays(newline_input)
+if newline_result == "≠":
+    failures.append(
+        f"newline-must-not-reorder: input={newline_input!r} incorrectly "
+        f"composed to {newline_result!r} -- a mark/base pair separated by a "
+        f"newline must be left alone"
+    )
+else:
+    print("[self-test] PASS: newline-must-not-reorder")
+
+# 6. a newly added base from the corpus-wide audit (plan-mandated: turnstile,
+#    precedes, rightwards-arrow, divides)
+check("new-base-turnstile", MARK + "⊢", "⊬")  # ⊢ -> ⊬
+check("new-base-precedes", MARK + "≺", "⊀")   # ≺ -> ⊀
+check("new-base-arrow", MARK + "→", "↛")      # → -> ↛
+check("new-base-divides", MARK + "|", "∤")         # | -> ∤
+
+# 8. task 404 phase 2: PRECOMPOSED map extension (almost-equal-to, forces) --
+#    both have a genuine Unicode precomposed negated codepoint reachable via
+#    plain NFC composition once the mark is reordered after the base, so this
+#    is exercised through the SAME reorder-then-NFC path as fixture set 6,
+#    proving the conversion-time half of the phase 2 fix (repair-engine-side
+#    PRECOMPOSED dict entries are exercised separately by
+#    literature-repair-combining.sh, which has no fixture harness of its own --
+#    see specs/404_.../progress/phase-2-progress.json for that verification).
+check("new-base-almost-equal", MARK + "≈", "≉")  # ≈ -> ≉ (NOT ALMOST EQUAL TO)
+check("new-base-forces", MARK + "⊩", "⊮")        # ⊩ -> ⊮ (DOES NOT FORCE)
+
+# 9. task 404 phase 2: no-precomposed-form policy (delta-equal-to,
+#    rightwards-arrow-with-tail) -- Unicode has NO codepoint whose canonical
+#    decomposition is either of these bases + U+0338, so NFC composition
+#    cannot and must not produce a single output character. The correct,
+#    policy-mandated result is the REORDERED but still-decomposed two-
+#    codepoint sequence (base immediately followed by the combining mark,
+#    canonical order) -- proving the reorder step still fires even when there
+#    is nothing for NFC to compose it into afterwards.
+check("no-precomposed-delta-equal", MARK + "≜", "≜" + MARK)
+check("no-precomposed-arrow-tail", MARK + "↣", "↣" + MARK)
+
+# 10. idempotence: composing twice equals composing once, across every
+#    fixture used above.
+for name, given in [
+    ("mark-immediately-before-base", MARK + "="),
+    ("mark-space-before-base", MARK + " ="),
+    ("mark-after-base-canonical-order", "=" + MARK),
+    ("accented-letter-non-interference", "e" + "́"),
+    ("new-base-turnstile", MARK + "⊢"),
+    ("new-base-almost-equal", MARK + "≈"),
+    ("new-base-forces", MARK + "⊩"),
+    ("no-precomposed-delta-equal", MARK + "≜"),
+    ("no-precomposed-arrow-tail", MARK + "↣"),
+]:
+    once = compose_combining_overlays(given)
+    twice = compose_combining_overlays(once)
+    if once != twice:
+        failures.append(
+            f"idempotence[{name}]: once={once!r} twice={twice!r} -- composing "
+            f"twice must equal composing once"
+        )
+    else:
+        print(f"[self-test] PASS: idempotence[{name}]")
+
+if failures:
+    print("\n[self-test] FAILURES:", file=sys.stderr)
+    for f in failures:
+        print(f"  - {f}", file=sys.stderr)
+    print(f"\n[self-test] {len(failures)} failure(s)", file=sys.stderr)
+    sys.exit(1)
+
+print(f"\n[self-test] All fixtures passed.")
+PYEOF
+  exit $?
+fi
+
+# --- Arguments ---
+INPUT="${1:-}"
+OUTPUT_DIR="${2:-}"
+
+if [ -z "$INPUT" ] || [ -z "$OUTPUT_DIR" ]; then
+  echo "[convert] Usage: $0 <input.pdf|input.djvu> <output_dir>" >&2
+  echo "       $0 --self-test   (run the combining-overlay fixture self-test)" >&2
+  exit 1
+fi
+
+if [ ! -f "$INPUT" ]; then
+  echo "[convert] Input file not found: $INPUT" >&2
+  exit 1
+fi
+
+# --- Derive doc_id from filename ---
+BASENAME=$(basename "$INPUT")
+DOC_ID="${BASENAME%.*}"
+DOC_ID=$(echo "$DOC_ID" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cs '[:alnum:]_.-' '_')
+DOC_ID="${DOC_ID%_}"  # Remove trailing underscore
+
+# --- Determine file type ---
+EXT="${BASENAME##*.}"
+EXT="${EXT,,}"  # lowercase
+
+case "$EXT" in
+  pdf) FILE_TYPE="pdf" ;;
+  djvu) FILE_TYPE="djvu" ;;
+  *)
+    echo "[convert] Unsupported file type: $EXT (supported: pdf, djvu)" >&2
+    exit 1
+    ;;
+esac
+
+mkdir -p "$OUTPUT_DIR"
+OUTPUT_MD="$OUTPUT_DIR/${DOC_ID}.md"
+CONVERTER="${LITERATURE_CONVERTER:-auto}"
+
+log() { echo "[convert] $*" >&2; }
+
+# SCRIPT_DIR already computed at the top of the script (before the --self-test
+# branch, which needs it too).
+# shellcheck source=./literature-pyenv-provision.sh
+source "$SCRIPT_DIR/literature-pyenv-provision.sh"
+
+# --- Resolve engine mode from CONVERTER override ---
+case "$CONVERTER" in
+  auto)          ENGINE_MODE="auto" ;;
+  pymupdf4llm)   ENGINE_MODE="primary_only" ;;
+  pymupdf|fallback) ENGINE_MODE="fallback_only" ;;
+  pdftotext)     ENGINE_MODE="pdftotext_explicit" ;;
+  *)
+    log "Unknown LITERATURE_CONVERTER='$CONVERTER'; using 'auto' (primary tier with automatic fallback)"
+    ENGINE_MODE="auto"
+    ;;
+esac
+
+# --- Unified PyMuPDF-family engine: primary (pymupdf4llm) + mandatory fallback
+#     (column-clustering) + normalization + quality gate, all in one Python
+#     process so engine selection, normalization, and the gate share one
+#     consistent code path regardless of which tier actually ran. ---
+run_unified_engine() {
+  local input="$1" output="$2" mode="$3"
+
+  local py_bin="python3"
+  local ld_prefix=""
+
+  if [ "$mode" != "fallback_only" ]; then
+    literature_pyenv_ensure || true
+    local venv_py
+    venv_py="$(literature_pyenv_python || true)"
+    if [ -n "$venv_py" ]; then
+      py_bin="$venv_py"
+      ld_prefix="$(literature_pyenv_shim_prefix)"
+      log "pymupdf4llm venv available: $venv_py"
+    else
+      if [ "$mode" == "primary_only" ]; then
+        log "LITERATURE_CONVERTER=pymupdf4llm requested but the primary engine is unavailable (venv missing or provisioning failed) — refusing to silently substitute a different engine."
+        return 2
+      fi
+      log "pymupdf4llm venv unavailable — will use the mandatory PyMuPDF column-clustering fallback tier (system python3)"
+    fi
+  else
+    log "Fallback tier forced (LITERATURE_CONVERTER=pymupdf/fallback) — skipping primary tier"
+  fi
+
+  LITERATURE_CONVERT_INPUT="$input" \
+  LITERATURE_CONVERT_OUTPUT="$output" \
+  LITERATURE_CONVERT_MODE="$mode" \
+  LITERATURE_CONVERT_SCRIPT_DIR="$SCRIPT_DIR" \
+  LD_LIBRARY_PATH="$ld_prefix" \
+  "$py_bin" << 'PYEOF'
+import sys
+import os
+import re
+import unicodedata
+from collections import Counter
+
+sys.path.insert(0, os.environ["LITERATURE_CONVERT_SCRIPT_DIR"])
+from literature_combining_overlay import compose_combining_overlays  # noqa: E402
+
+pdf_path = os.environ["LITERATURE_CONVERT_INPUT"]
+out_path = os.environ["LITERATURE_CONVERT_OUTPUT"]
+mode = os.environ.get("LITERATURE_CONVERT_MODE", "auto")
+rejected_path = out_path + ".rejected"
+
+try:
+    import fitz
+except ImportError as e:
+    print(f"[convert] PyMuPDF (fitz) not available in this interpreter: {e}", file=sys.stderr)
+    sys.exit(2)
+
+# ============================================================
+# Normalization (BUG 4): targeted ligature fold, keep-hyphen
+# dehyphenation, and block-local soft-wrap rejoining. Deliberately
+# NOT blanket NFKC (verified to corrupt math-italic/blackboard-bold
+# Unicode such as U+1D400-U+1D7FF, ℝ, ℕ).
+# ============================================================
+
+LIGATURE_MAP = {
+    "ﬀ": "ff", "ﬁ": "fi", "ﬂ": "fl",
+    "ﬃ": "ffi", "ﬄ": "ffl", "ﬅ": "st", "ﬆ": "st",
+}
+_LIGATURE_RE = re.compile("[" + "".join(LIGATURE_MAP) + "]")
+
+
+def fold_ligatures(text):
+    return _LIGATURE_RE.sub(lambda m: LIGATURE_MAP[m.group(0)], text)
+
+
+def dehyphenate(text):
+    # word-\nword -> word-word : rejoin across the line break, KEEP the hyphen
+    # (never guess-delete it). Only when lowercase on both sides of the break.
+    return re.sub(r"(?<=[a-z])-\n(?=[a-z])", "-", text)
+
+
+def rejoin_soft_wraps(text):
+    # Collapse mid-paragraph single newlines (word\nword -> word word) while
+    # preserving blank-line paragraph breaks. Callers apply this per-unit
+    # (per PyMuPDF block or per markdown paragraph) so it never crosses a
+    # column/block boundary — that boundary-crossing rejoin is exactly BUG 1's
+    # signature and must never be reintroduced here.
+    paras = re.split(r"\n\s*\n", text)
+    joined = [re.sub(r"\n+", " ", p) for p in paras]
+    return "\n\n".join(joined)
+
+
+# compose_combining_overlays() is imported from literature_combining_overlay.py
+# (see the sys.path.insert/import near the top of this heredoc) so the live
+# conversion pipeline and its fixture self-test (--self-test) share exactly one
+# definition of the reorder regex and base whitelist -- never two hand-maintained
+# copies that could drift.
+
+
+def normalize_unit(text):
+    text = compose_combining_overlays(text)
+    text = fold_ligatures(text)
+    text = dehyphenate(text)
+    text = rejoin_soft_wraps(text)
+    text = re.sub(r"[ \t]+", " ", text)
+    return text.strip()
+
+
+def normalize_document(md_text):
+    # Whole-document normalization for the primary tier: pymupdf4llm already
+    # produces correctly-ordered, already-rejoined markdown (verified: no raw
+    # mid-sentence single newlines survive its own extraction), so applying
+    # normalize_unit() per paragraph here is a safe, idempotent cleanup pass
+    # rather than a first-time column-boundary rejoin.
+    paras = re.split(r"\n\s*\n", md_text)
+    return "\n\n".join(normalize_unit(p) for p in paras if p.strip())
+
+
+# ============================================================
+# PRIMARY TIER: pymupdf4llm
+# ============================================================
+
+def try_pymupdf4llm():
+    try:
+        import pymupdf4llm
+    except ImportError as e:
+        print(f"[convert] pymupdf4llm not importable in this interpreter: {e}", file=sys.stderr)
+        return None
+    try:
+        md = pymupdf4llm.to_markdown(pdf_path, page_chunks=False)
+    except Exception as e:
+        print(f"[convert] pymupdf4llm.to_markdown() raised: {e}", file=sys.stderr)
+        return None
+    if not md or not md.strip():
+        print("[convert] pymupdf4llm produced empty output", file=sys.stderr)
+        return None
+    return normalize_document(md)
+
+
+# ============================================================
+# MANDATORY FALLBACK TIER: PyMuPDF column-clustering reading order
+# ============================================================
+
+FULL_WIDTH_THRESHOLD = 0.6  # fraction of page width -> "spans both columns"
+HIST_BIN_WIDTH = 5.0        # pt; x-axis occupancy histogram bin width
+
+
+def order_blocks_by_column(blocks, page_width, rotation):
+    """Reorder blocks (dicts with 'bbox' and 'text') into left-to-right,
+    top-to-bottom column reading order. Never uses a whole-page row-major
+    sort (that is the exact bug this fixes: both of the removed extraction
+    options did a row-major sort and glued side-by-side columns onto one
+    line)."""
+    if not blocks:
+        return []
+
+    if rotation != 0:
+        # Rotated page (e.g. a landscape figure/table insert): coordinates
+        # from get_text() are pre-rotation, so column-clustering assumptions
+        # don't hold here. Use a simple "no columns assumed" top-to-bottom
+        # sort rather than risk misapplying the column algorithm.
+        return sorted(blocks, key=lambda b: (b["bbox"][1], b["bbox"][0]))
+
+    def is_full_width(b):
+        x0, _, x1, _ = b["bbox"]
+        return (x1 - x0) > FULL_WIDTH_THRESHOLD * page_width
+
+    all_sorted = sorted(blocks, key=lambda b: b["bbox"][1])
+
+    segments = []  # list of ("full", [block]) | ("multi", [blocks...])
+    current = []
+    for b in all_sorted:
+        if is_full_width(b):
+            if current:
+                segments.append(("multi", current))
+                current = []
+            segments.append(("full", [b]))
+        else:
+            current.append(b)
+    if current:
+        segments.append(("multi", current))
+
+    ordered = []
+    for kind, blks in segments:
+        if kind == "full":
+            ordered.extend(blks)
+            continue
+
+        # x-axis occupancy histogram -> contiguous occupied-bin runs = column bands
+        occupied_bins = set()
+        for blk in blks:
+            x0, _, x1, _ = blk["bbox"]
+            b0 = int(x0 // HIST_BIN_WIDTH)
+            b1 = int(x1 // HIST_BIN_WIDTH)
+            for bi in range(b0, b1 + 1):
+                occupied_bins.add(bi)
+
+        bands = []
+        run_start = None
+        prev = None
+        for bi in sorted(occupied_bins):
+            if run_start is None:
+                run_start = bi
+            elif bi != prev + 1:
+                bands.append((run_start, prev))
+                run_start = bi
+            prev = bi
+        if run_start is not None:
+            bands.append((run_start, prev))
+
+        band_ranges = sorted(
+            (b0 * HIST_BIN_WIDTH, (b1 + 1) * HIST_BIN_WIDTH) for b0, b1 in bands
+        )
+
+        if not band_ranges:
+            ordered.extend(sorted(blks, key=lambda b: b["bbox"][1]))
+            continue
+
+        def overlap(blk, band):
+            x0, _, x1, _ = blk["bbox"]
+            return max(0, min(x1, band[1]) - max(x0, band[0]))
+
+        band_blocks = [[] for _ in band_ranges]
+        for blk in blks:
+            best_i = max(range(len(band_ranges)), key=lambda i: overlap(blk, band_ranges[i]))
+            band_blocks[best_i].append(blk)
+
+        for bb in band_blocks:
+            bb.sort(key=lambda b: b["bbox"][1])
+            ordered.extend(bb)
+
+    return ordered
+
+
+def extract_blocks_mode(page):
+    """page.get_text('blocks') extraction for the TOC-driven path: cheap,
+    sufficient when no font-size heading detection is needed."""
+    result = []
+    for b in page.get_text("blocks"):
+        x0, y0, x1, y1, text = b[0], b[1], b[2], b[3], b[4]
+        block_type = b[6] if len(b) > 6 else 0
+        if block_type == 1:
+            result.append({"bbox": (x0, y0, x1, y1), "text": "[figure omitted]", "is_image": True})
+        elif text.strip():
+            result.append({"bbox": (x0, y0, x1, y1), "text": text, "is_image": False})
+    return result
+
+
+def extract_dict_mode(page):
+    """page.get_text('dict') extraction for the no-TOC path: needed for
+    per-span font-size/bold metadata to drive heading candidate detection."""
+    result = []
+    for block in page.get_text("dict")["blocks"]:
+        if block.get("type") == 1:
+            bbox = block.get("bbox")
+            if bbox:
+                result.append({"bbox": bbox, "text": "[figure omitted]", "is_image": True, "first_line_spans": []})
+            continue
+        if "lines" not in block or not block["lines"]:
+            continue
+        lines_text = []
+        first_line_spans = block["lines"][0]["spans"] if block["lines"] else []
+        for line in block["lines"]:
+            lines_text.append("".join(s["text"] for s in line["spans"]))
+        text = "\n".join(lines_text)
+        if not text.strip():
+            continue
+        result.append({"bbox": block["bbox"], "text": text, "is_image": False, "first_line_spans": first_line_spans})
+    return result
+
+
+def derive_toc_markdown(doc):
+    """TOC-present path. Uses the embedded outline for heading structure and
+    the column-clustering reading order for body text. BUG 2 FIX: the section
+    page range below is the full `range(start_page, end_page)` — the previous
+    3-page cap on every TOC section (unbounded silent data loss) is gone."""
+    toc = doc.get_toc()
+    md_lines = []
+
+    meta = doc.metadata or {}
+    title = (meta.get("title") or "").strip()
+    author = (meta.get("author") or "").strip()
+    if title:
+        md_lines.append(f"# {title}\n")
+        if author:
+            md_lines.append(f"**Author(s)**: {author}\n")
+
+    toc_extended = []
+    for i, entry in enumerate(toc):
+        level, heading_title, start_page = entry
+        end_page = toc[i + 1][2] if i + 1 < len(toc) else len(doc) + 1
+        toc_extended.append((level, heading_title, start_page, end_page))
+
+    for level, heading_title, start_page, end_page in toc_extended:
+        marker = "#" * min(level + 1, 4)
+        md_lines.append(f"\n{marker} {heading_title}\n")
+
+        section_units = []
+        # BUG 2 fix: full page range for this TOC section, not capped at 3 pages.
+        for pg_num in range(start_page, end_page):
+            if pg_num < 1 or pg_num > len(doc):
+                continue
+            page = doc[pg_num - 1]
+            blocks = extract_blocks_mode(page)
+            ordered = order_blocks_by_column(blocks, page.rect.width, page.rotation)
+            for blk in ordered:
+                if blk["is_image"]:
+                    section_units.append("[figure omitted]")
+                    continue
+                text = blk["text"]
+                # Drop a leading line that's just a verbatim repeat of the heading
+                lines = [l for l in text.split("\n") if l.strip()]
+                if lines and heading_title.strip() and heading_title.strip() in lines[0]:
+                    lines = lines[1:]
+                cleaned = "\n".join(lines)
+                if cleaned.strip():
+                    section_units.append(normalize_unit(cleaned))
+
+        if section_units:
+            md_lines.append("\n\n".join(section_units))
+            md_lines.append("\n")
+
+    return "\n".join(md_lines)
+
+
+def is_heading_candidate(line_text, spans, body_size):
+    """Tightened no-TOC heading heuristic (BUG 3 upstream cause fix): require
+    bold/large-font AND not ending in terminal punctuation AND short AND not a
+    sentence continuation. A candidate failing any check is rejected — a
+    document with no surviving candidates gets NO heading markers rather than
+    a low-confidence sentence-fragment guess (which is what produced the
+    `indeterminacy. > indeterminacy.` corpus defect)."""
+    stripped = line_text.strip()
+    if not stripped or len(stripped) > 80:
+        return False
+    if stripped[-1] in ".,;":
+        return False
+    if not spans:
+        return False
+    max_size = max((s.get("size", 0) for s in spans), default=0)
+    if max_size < body_size * 1.15:
+        return False
+    is_bold = any(
+        (int(s.get("flags", 0)) & (1 << 4)) or "bold" in str(s.get("font", "")).lower()
+        for s in spans
+    )
+    if not is_bold:
+        return False
+    return True
+
+
+def derive_heuristic_markdown(doc):
+    """No-TOC path: font-size + bold + punctuation/length heading heuristic,
+    combined with the same column-clustering reading order used by the
+    TOC path (never a page-wide row-major sort)."""
+    all_sizes = []
+    for page in doc:
+        for block in page.get_text("dict")["blocks"]:
+            if "lines" not in block:
+                continue
+            for line in block["lines"]:
+                for span in line["spans"]:
+                    if span["text"].strip() and len(span["text"].strip()) > 2:
+                        all_sizes.append(span["size"])
+
+    body_size = Counter(all_sizes).most_common(1)[0][0] if all_sizes else 10.0
+
+    md_lines = []
+    for page in doc:
+        blocks = extract_dict_mode(page)
+        ordered = order_blocks_by_column(blocks, page.rect.width, page.rotation)
+
+        for blk in ordered:
+            if blk["is_image"]:
+                md_lines.append("[figure omitted]")
+                continue
+            text = blk["text"]
+            lines = text.split("\n")
+            first_line = lines[0] if lines else ""
+            first_line_spans = blk.get("first_line_spans", [])
+
+            if is_heading_candidate(first_line, first_line_spans, body_size):
+                md_lines.append(f"\n## {first_line.strip()}\n")
+                rest = "\n".join(lines[1:])
+                if rest.strip():
+                    md_lines.append(normalize_unit(rest))
+            else:
+                md_lines.append(normalize_unit(text))
+
+    return "\n\n".join(l for l in md_lines if l and l.strip())
+
+
+def try_pymupdf_fallback():
+    doc = fitz.open(pdf_path)
+    try:
+        if doc.get_toc():
+            return derive_toc_markdown(doc), "pymupdf-fallback-toc"
+        return derive_heuristic_markdown(doc), "pymupdf-fallback-heuristic"
+    finally:
+        doc.close()
+
+
+# ============================================================
+# QUALITY GATE (loud-failure contract, exit code 3)
+# ============================================================
+
+def column_interleaving_flagged(text):
+    lines = [l for l in text.split("\n") if l.strip()]
+    if not lines:
+        return False, 0.0
+    glue_re = re.compile(r"\S\s{4,}\S")
+    glued = [l for l in lines if glue_re.search(l)]
+    non_glued = [l for l in lines if not glue_re.search(l)]
+    frac = len(glued) / len(lines)
+    avg_glued_len = (sum(len(l) for l in glued) / len(glued)) if glued else 0
+
+    # Baseline for "conspicuously long": the median length of the NON-glued
+    # lines specifically, not all lines. Comparing against the whole
+    # document's median fails on the exact worst-case (and most important)
+    # scenario this check exists to catch: when column-gluing affects the
+    # MAJORITY of a document, glued lines themselves dominate the overall
+    # median, so "avg glued length > 1.5x overall median" can never fire —
+    # empirically verified against the real corrupted Alur SyGuS corpus
+    # document (task #831), which the document-wide-median formulation
+    # failed to flag (79% of lines glued, yet ratio stayed ~1.0x). Falling
+    # back to the whole-document median only when every line is glued (no
+    # non-glued baseline exists at all).
+    baseline_lengths = non_glued if non_glued else lines
+    baseline_sorted = sorted(len(l) for l in baseline_lengths)
+    baseline_len = baseline_sorted[len(baseline_sorted) // 2] if baseline_sorted else 0
+
+    long_enough = baseline_len > 0 and avg_glued_len > 1.5 * baseline_len
+    return (frac > 0.15 and long_enough), frac
+
+
+def sentence_boundary_glue_count(text):
+    """Secondary word-fusion signal, added during task #831 Phase 6
+    test-harness verification. Deliberately period-ONLY (`[a-z]\\.[A-Z]`),
+    NOT comma/semicolon: an earlier comma/semicolon-inclusive version was
+    empirically found to false-positive heavily on legitimate math tuple/
+    list notation (`(x,Y)`, `a,B,c` are extremely common in this math-heavy
+    corpus and are not defects).
+
+    Found via a REAL corpus PDF, not a synthetic fixture (a synthetic
+    two-column fixture also seemed to trigger this during early Phase 6
+    testing, but that turned out to be an artifact of an unrealistic first
+    version of the fixture — see generate-test-fixtures.py's docstring —
+    and no longer reproduces once the fixture uses column-width-constrained
+    wrapped text like a real PDF): pymupdf4llm was observed to drop
+    inter-word spaces entirely around some `<sup>`/`<sub>` markdown spans on
+    Goldblatt/Hodkinson/Venema 2003 (a real corpus document, read via a
+    fresh in-process conversion, never by reading/reconverting the corpus
+    itself), producing fused runs like "Thesecondlinefollowsby" — a
+    genuine, previously-undetected correctness defect this check catches.
+    Verified at 0-1 occurrences across a random sample of 60 real corpus
+    markdown files (read-only, not reconverted) with the period-only
+    pattern; the threshold below (>=3) sits well above that baseline."""
+    return len(re.findall(r"[a-z]\.[A-Z]", text))
+
+
+def run_quality_gate(content, doc):
+    reasons = []
+
+    flagged, frac = column_interleaving_flagged(content)
+    if flagged:
+        reasons.append(
+            f"column-interleaving: {frac:.1%} of non-blank lines contain a mid-line "
+            f"4+-space glue run with above-median length (threshold 15%)"
+        )
+
+    glue_count = sentence_boundary_glue_count(content)
+    if glue_count >= 3:
+        reasons.append(
+            f"sentence-boundary-glue: {glue_count} zero-space word/sentence-fusion "
+            f"transition(s) found (threshold 3) — a distinct extraction-corruption "
+            f"signature, independent of the whitespace-gap column-interleaving check"
+        )
+
+    src_words = sum(len(page.get_text().split()) for page in doc)
+    out_words = len(content.split())
+    coverage = (out_words / src_words) if src_words else 1.0
+    if src_words > 0 and coverage < 0.40:
+        reasons.append(
+            f"page-coverage: extracted {out_words} words vs {src_words} words in "
+            f"{len(doc)} source pages ({coverage:.1%}, threshold 40%)"
+        )
+
+    ligature_count = len(re.findall(r"[ﬀ-ﬆ]", content))
+    if ligature_count > 0:
+        reasons.append(f"ligature-scan: {ligature_count} unresolved U+FB00-FB06 ligature(s) remain")
+
+    dehyph_count = len(re.findall(r"[a-z]-\n[a-z]", content))
+    if dehyph_count > 0:
+        reasons.append(f"dehyphenation-check: {dehyph_count} unresolved hyphen-linebreak(s) remain")
+
+    return reasons
+
+
+# ============================================================
+# MAIN
+# ============================================================
+
+content = None
+engine_used = None
+
+if mode != "fallback_only":
+    content = try_pymupdf4llm()
+    if content is not None:
+        engine_used = "pymupdf4llm"
+    elif mode == "primary_only":
+        print("[convert] LITERATURE_CONVERTER=pymupdf4llm requested but the primary tier failed — refusing to silently substitute a different engine.", file=sys.stderr)
+        sys.exit(2)
+
+if content is None:
+    log_reason = "forced" if mode == "fallback_only" else "primary tier unavailable/failed"
+    print(f"[convert] Using mandatory PyMuPDF column-clustering fallback tier ({log_reason})", file=sys.stderr)
+    content, engine_used = try_pymupdf_fallback()
+
+if not content or not content.strip():
+    print("[convert] All engine tiers produced empty output", file=sys.stderr)
+    sys.exit(2)
+
+print(f"[convert] Engine used: {engine_used}", file=sys.stderr)
+
+gate_doc = fitz.open(pdf_path)
+try:
+    gate_reasons = run_quality_gate(content, gate_doc)
+finally:
+    gate_doc.close()
+
+if gate_reasons:
+    with open(rejected_path, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"[convert] QUALITY GATE FAILED ({engine_used}): " + "; ".join(gate_reasons), file=sys.stderr)
+    print(f"[convert] Rejected output written to: {rejected_path} (final .md NOT written)", file=sys.stderr)
+    sys.exit(3)
+
+with open(out_path, "w", encoding="utf-8") as f:
+    f.write(content)
+
+heading_count = content.count("\n#")
+word_count = len(content.split())
+math_count = content.count(r"\$\$") + content.count(r"\begin{")
+print("[convert] Quality gate: PASSED", file=sys.stderr)
+print(f"[convert] Metrics: headings={heading_count} words={word_count} math={math_count} engine={engine_used}", file=sys.stderr)
+print(f"[convert] Output: {out_path}", file=sys.stderr)
+sys.exit(0)
+PYEOF
+  return $?
+}
+
+# Explicit, best-effort, NOT part of 'auto': plain pdftotext with no
+# layout-preserving flag. No heading detection. Manual escape hatch only
+# (e.g. PyMuPDF itself broken).
+try_pdftotext_explicit() {
+  local input="$1" output="$2"
+
+  if ! command -v pdftotext >/dev/null 2>&1; then
+    log "pdftotext: not available"
+    return 1
+  fi
+
+  log "Trying pdftotext (plain, no layout-preserving flag — explicit override only)..."
+  if pdftotext "$input" - 2>/dev/null > "$output"; then
+    local title tmp
+    title=$(basename "$input" .pdf | tr '_' ' ')
+    tmp=$(mktemp)
+    { echo "# $title"; echo ""; cat "$output"; } > "$tmp"
+    mv "$tmp" "$output"
+    log "pdftotext: success (no heading detection)"
+    return 0
+  fi
+  return 1
+}
+
+# DJVU conversion via djvutxt, or djvups | ps2pdf chain into the unified engine
+try_djvu() {
+  local input="$1" output="$2"
+
+  if command -v djvutxt >/dev/null 2>&1; then
+    log "Converting DJVU with djvutxt..."
+    if djvutxt "$input" "$output" 2>/dev/null; then
+      log "djvutxt: success"
+      return 0
+    fi
+  fi
+
+  if command -v djvups >/dev/null 2>&1 && command -v ps2pdf >/dev/null 2>&1; then
+    local tmp_pdf
+    tmp_pdf=$(mktemp --suffix=.pdf)
+    log "Converting DJVU via djvups | ps2pdf..."
+    if djvups "$input" | ps2pdf - "$tmp_pdf" 2>/dev/null; then
+      if run_unified_engine "$tmp_pdf" "$output" "$ENGINE_MODE"; then
+        rm -f "$tmp_pdf"
+        return 0
+      fi
+    fi
+    rm -f "$tmp_pdf"
+  fi
+
+  log "DJVU conversion: all methods failed"
+  return 1
+}
+
+# --- Main conversion logic ---
+log "Converting: $INPUT -> $OUTPUT_MD"
+
+CONVERTED=0
+GATE_FAILED=0
+
+if [ "$FILE_TYPE" == "djvu" ]; then
+  if try_djvu "$INPUT" "$OUTPUT_MD"; then
+    CONVERTED=1
+  fi
+else
+  if [ "$ENGINE_MODE" == "pdftotext_explicit" ]; then
+    try_pdftotext_explicit "$INPUT" "$OUTPUT_MD" && CONVERTED=1 || true
+  else
+    run_unified_engine "$INPUT" "$OUTPUT_MD" "$ENGINE_MODE"
+    ENGINE_EXIT=$?
+    case "$ENGINE_EXIT" in
+      0) CONVERTED=1 ;;
+      3) GATE_FAILED=1 ;;
+      *) : ;;  # 2 (or any other) — all tiers failed; CONVERTED stays 0
+    esac
+  fi
+fi
+
+if [ "$GATE_FAILED" -eq 1 ]; then
+  # Loud-failure contract: quality gate rejected the output. Do NOT write the
+  # final .md; the .rejected sibling was already written by the Python engine.
+  exit 3
+fi
+
+if [ "$CONVERTED" -eq 0 ]; then
+  log "All converters failed for: $INPUT"
+  exit 2
+fi
+
+# Report quality metrics (informational only — NOT a correctness signal; the
+# quality gate above is the correctness signal and already passed if we reach
+# this line with CONVERTED=1 via run_unified_engine, or ran an explicit-override
+# tier that has no gate of its own).
+if [ -f "$OUTPUT_MD" ]; then
+  # grep -c always prints a numeric count (0 included) even on no match, and
+  # wc -w always succeeds on a readable file — no `|| echo 0` fallback needed;
+  # that pattern previously double-printed "0\n0" when a count was zero
+  # (grep -c's own zero line, THEN the OR-fallback echo, both captured by the
+  # command substitution) and garbled this log line.
+  HEADING_COUNT=$(grep -cE '^#{1,4} ' "$OUTPUT_MD" 2>/dev/null)
+  WORD_COUNT=$(wc -w < "$OUTPUT_MD" 2>/dev/null | tr -d ' ')
+  MATH_COUNT=$(grep -cE '\$\$|\\begin\{' "$OUTPUT_MD" 2>/dev/null)
+  log "Metrics: headings=$HEADING_COUNT words=$WORD_COUNT math=$MATH_COUNT"
+fi
+
+log "Success: $OUTPUT_MD (doc_id: $DOC_ID)"
+echo "$DOC_ID"  # stdout: the derived doc_id for use by caller
+exit 0

@@ -210,7 +210,14 @@ contract meets the task's non-negotiables before any write.
       written file and its backup fresh from disk and requiring an exact match on word delta, byte
       delta, written-matches-intended, and backup-matches-pre-edit; any mismatch triggers automatic
       rollback. A test-only `LITERATURE_REPAIR_TEST_INJECT_CORRUPTION=1` hook was added to make the
-      rollback path empirically provable — see next task.)*
+      rollback path empirically provable — see next task. *(deviation: altered post-hoc — Phase 2's
+      first real-corpus write exposed that this initial design's rollback TARGET was the on-disk
+      day-start backup, which is only safe for a file's first write of the UTC day; on a file
+      already legitimately written earlier the same day this would roll back past that legitimate
+      edit. Corrected in Phase 2 to always roll back to the invocation's own captured pre-edit
+      read instead. See Phase 2's Deviations note for the full incident and fix; this Phase 1
+      checklist item and its scratch-test verification below remain independently valid since all
+      of Phase 1's own tests happened to be single-session cases where the two targets coincide.)*)*
 - [x] Verify `literature-convert.sh --self-test` passes as a regression baseline. *(completed: 15/15
       fixtures pass.)*
 - [x] Verify engine idempotence empirically: re-run `--write` over an already-repaired directory
@@ -236,24 +243,51 @@ contract meets the task's non-negotiables before any write.
 
 ---
 
-### Phase 2: Extend the composition map; decide the no-precomposed-form policy [NOT STARTED]
+### Phase 2: Extend the composition map; decide the no-precomposed-form policy [COMPLETED]
 
 **Goal**: Clear the pure composition-map gaps and settle how bases with no Unicode precomposed
 negation are repaired.
 
 **Tasks**:
-- [ ] Add `≈ -> ≉` (`≈` -> `≉`, NOT ALMOST EQUAL TO) to `PRECOMPOSED`. Expected reach:
+- [x] Add `≈ -> ≉` (`≈` -> `≉`, NOT ALMOST EQUAL TO) to `PRECOMPOSED`. Expected reach:
       all 13 `unmapped_base_char` entries plus up to 7 `unrecognized_gap` entries carrying
-      `base_char: "≈"`.
-- [ ] Add `⊩ -> ⊮` (`⊩` -> `⊮`, DOES NOT FORCE) to `PRECOMPOSED`. Expected reach: 4.
-- [ ] Decide and implement the policy for `≜` (U+225C) and `↣` (U+21A3), which have **no**
+      `base_char: "≈"`. *(completed: all 13 unmapped_base_char cleared. The 7 unrecognized_gap
+      "up to" contribution did NOT materialize -- re-triage confirms zero of those 7 entries had a
+      gap containing the base char or precomposed form; they remain ambiguous_anchor/
+      anchor_not_found for other reasons, correctly left for Phases 3/7. This is the plan's own
+      hedged "plausibly clears up to 20, not 13" language resolving to exactly 13 in this corpus.)*
+- [x] Add `⊩ -> ⊮` (`⊩` -> `⊮`, DOES NOT FORCE) to `PRECOMPOSED`. Expected reach: 4.
+      *(completed: dict entry added; zero real-corpus unmapped_base_char entries existed for ⊩
+      specifically (all 4 unrecognized_gap ⊩ entries are ambiguous/gap-window failures, not
+      composition-map gaps) -- verified via retriage, correctly deferred to Phases 3/7.)*
+- [x] Decide and implement the policy for `≜` (U+225C) and `↣` (U+21A3), which have **no**
       precomposed negated codepoint: emit the canonical combining sequence `base + U+0338` rather
       than skipping. Record the decision and its rationale in the script's header comment so a
-      future reader does not mistake it for an unmapped base. Expected reach: 4.
-- [ ] Add `--self-test` fixtures for each new mapping and for the combining-sequence policy,
+      future reader does not mistake it for an unmapped base. Expected reach: 4. *(completed: new
+      `NO_PRECOMPOSED_FORM` dict + merged `REPLACEMENTS` mapping added to
+      literature_combining_detect.py with full rationale in the header comment; end-to-end proven
+      via a scratch fixture — see progress file. Zero real-corpus unmapped_base_char entries
+      existed for ≜/↣ either; their unrecognized_gap entries are gap-window failures, correctly
+      deferred.)*
+- [x] Add `--self-test` fixtures for each new mapping and for the combining-sequence policy,
       including an idempotence fixture (repairing an already-repaired sequence is a no-op).
-- [ ] Run the engine `--dry-run` over the affected directories; review the proposed-edit diff.
-- [ ] Run `--write`; confirm the post-write backup comparison from Phase 1 passes on every file.
+      *(completed: 8 new fixtures — new-base-almost-equal, new-base-forces,
+      no-precomposed-delta-equal, no-precomposed-arrow-tail, plus their idempotence counterparts —
+      added to literature-convert.sh --self-test; 21/21 total fixtures pass.)*
+- [x] Run the engine `--dry-run` over the affected directories; review the proposed-edit diff.
+      *(completed: baier_katoen_2008, marinmoralesstrassburger_2021_..., venema_1997, venema_2001
+      — the 4 directories with ≈/⊩/≜/↣ occurrences per the ledger. Only baier_katoen_2008 had any
+      unmapped_base_char (13, all ≈) to write.)*
+- [x] Run `--write`; confirm the post-write backup comparison from Phase 1 passes on every file.
+      *(completed with a significant correction — see Deviations below: the first --write attempt
+      on baier_katoen_2008 correctly caught and rolled back on a stale same-day backup rather than
+      silently mis-writing, which exposed a real defect in the Phase 1 rollback-target logic
+      (rolling back to the on-disk day-start backup instead of this invocation's own pre-edit
+      read). Fixed literature-repair-combining.sh to always use the invocation's own captured
+      pre-edit content as both the delta baseline and the rollback target, re-verified via a new
+      multi-session scratch regression test, then re-ran --write successfully: 86 occurrences
+      written across part07/part08 with 0 rolled back, idempotent on re-run, 0 proposed rewrites
+      corpus-wide afterward.)*
 
 **Timing**: 1.5 hours
 
@@ -267,9 +301,30 @@ negation are repaired.
 **Verification**:
 - `--self-test` passes with the new fixtures.
 - Re-triage shows `unmapped_base_char` at 0 and `unrecognized_gap` reduced by the `≈`/`⊩`/`≜`/`↣`
-  contribution.
-- Post-write word/byte delta verification passes on every touched file.
-- Second `--write` run over the same directories proposes zero edits.
+  contribution. *(confirmed: unmapped_base_char is 0 corpus-wide. unrecognized_gap for these 4
+  bases is unchanged at 15 -- the "reduced by" language was conditional/hedged in the plan itself
+  and did not materialize for this corpus's actual gap contents; documented, not a defect.)*
+- Post-write word/byte delta verification passes on every touched file. *(confirmed, after the
+  rollback-target fix described above.)*
+- Second `--write` run over the same directories proposes zero edits. *(confirmed corpus-wide: 0
+  proposed rewrites across all 60 PDF+markdown directories after this phase's write.)*
+
+**Deviations**:
+- **Rollback-target defect found and fixed mid-phase** (see progress file `deviations` for full
+  detail): the Phase 1 post-write verification's rollback target was `backup_on_disk`, which is
+  only correct when a file receives its FIRST write of the UTC day. baier_katoen_2008's part07/
+  part08 had already been legitimately written once earlier the same day (by the preceding sweep
+  task), so the day-start backup predated that edit. The first --write attempt this phase
+  correctly detected the resulting delta mismatch and refused/rolled back rather than silently
+  mis-writing -- but the rollback itself used the stale backup as its restore target, which
+  reverted part07/part08 all the way to their pre-earlier-repair state before this phase's own
+  edit was even applied. No data was lost: the repair engine is deterministic given the same
+  input and current code, so re-running --write against the (now correctly pre-edit) files
+  reproduced the earlier repairs plus this phase's new ≈ fix in one clean, verified pass (86
+  occurrences, 0 rolled back). The underlying rollback-target logic was corrected to always use
+  the invocation's own captured pre-edit read as both the delta baseline and the restore target,
+  never the potentially-stale day-level backup, and this was proven via a new scratch multi-session
+  regression test before retrying the real-corpus write.
 
 ---
 
