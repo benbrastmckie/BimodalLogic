@@ -943,7 +943,7 @@
     {
       "project_number": 402,
       "project_name": "systematic_mathlib_naming_upgrade",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "publication-quality",
@@ -954,7 +954,7 @@
         394
       ],
       "created": "2026-07-26T00:00:00Z",
-      "last_updated": "2026-07-27T05:59:57Z",
+      "last_updated": "2026-07-27T08:37:23Z",
       "file_scope": [
         "Theories/Bimodal/",
         "FormalSystem/",
@@ -975,6 +975,11 @@
           "path": "specs/402_systematic_mathlib_naming_upgrade/plans/01_mathlib-naming-upgrade-migration.md",
           "type": "plan",
           "summary": "8-phase hard-mode migration plan with postmortem constraints, H7 territory contracts, H3 source-to-implementation mapping (grounding tier: code), preserved-assets accounting, and a fully declared dependency wave map with one genuine parallel wave (7.1 / 7.2)."
+        },
+        {
+          "path": "specs/402_systematic_mathlib_naming_upgrade/summaries/01_mathlib-naming-upgrade-summary.md",
+          "type": "summary",
+          "summary": "Execution summary: all 8 phases; defsWithUnderscore 861 -> 0 by genuine conformance with nolints.json deleted; 845 declarations renamed across 25,640 resolved-reference spans in 284 files."
         }
       ],
       "memory_candidates": [
@@ -982,7 +987,8 @@
         "Lean's built-in LSP workspace rename (Watchdog.lean handleRename) writes newName verbatim into every reference range, so it destroys namespace-qualified and dot-notation references; reuse its reference data, never its edit rule.",
         "batteries runLinter reads scripts/nolints.json relative to cwd and its entries are fully-qualified declaration names, so any namespace rename silently invalidates the entire suppression list.",
         "The Mathlib defsWithUnderscore linter wants UpperCamelCase for Prop-valued definitions (def Foo : a -> Prop); such definitions cannot be converted to theorem because a -> Prop has type Type, not Prop."
-      ]
+      ],
+      "completion_summary": "Repository migrated to Mathlib naming conventions. Part A: Theories/Bimodal/ -> FormalSystem/ with root namespace rename (1521 imports). Part B: 845 declarations renamed across 25,640 resolved-reference spans in 284 files via .ilean-driven position-anchored rewriting, 0 guard rejections; defsWithUnderscore 861 -> 0 by genuine conformance with scripts/nolints.json deleted. Part C: semantic renames plus Bridge.lean -> MonotonicityDuality.lean structural cleanup. Build green (2725 jobs), sole live sorry unchanged at 1, 0 new axioms, module invariants pass."
     },
     {
       "project_number": 403,

@@ -11,9 +11,9 @@ next_project_number: 404
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,231,257,298,318,361,377,378,390,402,403 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 169,170,180,193,219,282,296,391 | 231,298,361,390,402 | completeness, publication-quality, automation, ... |
-| 3 | 177,178,362 | 169,170,193 | formula-refactor, strong_completeness |
+| 1 | 95,125,127,128,165,179,180,193,231,257,298,318,361,377,378,390,403 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 169,170,177,178,219,282,296,391 | 193,231,298,361,390 | completeness, formula-refactor, dataset-enhancement, ... |
+| 3 | 362 | 169,170 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -40,8 +40,7 @@ next_project_number: 404
 
 ### Publication Quality
 
-402 [IMPLEMENTING] — Systematically upgrade the repository to Mathlib naming conventio
-  └─ 180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance
+180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance
 
 ### Automation
 
@@ -91,12 +90,13 @@ next_project_number: 404
 ---
 
 ### 402. Systematic mathlib naming upgrade
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 341, Task 131, Task 394
 - **Research**: [402_systematic_mathlib_naming_upgrade/reports/01_mathlib-naming-upgrade-mechanism.md]
 - **Plan**: [402_systematic_mathlib_naming_upgrade/plans/01_mathlib-naming-upgrade-migration.md]
+- **Summary**: [402_systematic_mathlib_naming_upgrade/summaries/01_mathlib-naming-upgrade-summary.md]
 
 **Description**: Systematically upgrade the repository to Mathlib naming conventions. This task COMBINES two previously-separate renames because they rewrite the SAME reference graph and must share one tooling pass, one verification strategy, and one set of green-build checkpoints. Doing them separately means paying a 24,000+ site rewrite and its verification twice, with each pass invalidating the other's baseline.
 
