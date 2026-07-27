@@ -46,7 +46,8 @@ example : ⊢ p.imp (Formula.box p.diamond) := by modal_search
 
 -- Temporal axioms with empty context
 -- Note: Gp → GGp is now resolved by tryDerivedMatch (temporal4Derived), which is noncomputable
-noncomputable example : ⊢ (Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)) := by temporal_search
+noncomputable example : ⊢ (Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)) := by
+    temporal_search
 example : ⊢ p.imp (Formula.allFuture (Formula.somePast p)) := by temporal_search
 
 -- Propositional axioms with empty context
@@ -87,7 +88,8 @@ Test formulas with deeply nested modal/temporal operators.
     ((Formula.box p).imp p, "□p → p"),
     ((Formula.box (Formula.box p)).imp (Formula.box p), "□□p → □p"),
     ((Formula.box (Formula.box (Formula.box p))).imp (Formula.box (Formula.box p)), "□□□p → □□p"),
-    ((Formula.box (Formula.box (Formula.box (Formula.box p)))).imp (Formula.box (Formula.box (Formula.box p))), "□□□□p → □□□p")
+    ((Formula.box (Formula.box (Formula.box (Formula.box p)))).imp
+        (Formula.box (Formula.box (Formula.box p))), "□□□□p → □□□p")
   ]
   let mut passed := 0
   for (formula, desc) in tests do
@@ -105,8 +107,11 @@ Test formulas with deeply nested modal/temporal operators.
   IO.println "=== Deep Temporal Nesting Tests ==="
   let tests := [
     ((Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)), "Gp → GGp"),
-    ((Formula.allFuture (Formula.allFuture p)).imp (Formula.allFuture (Formula.allFuture (Formula.allFuture p))), "GGp → GGGp"),
-    ((Formula.allFuture (Formula.allFuture (Formula.allFuture p))).imp (Formula.allFuture (Formula.allFuture (Formula.allFuture (Formula.allFuture p)))), "GGGp → GGGGp")
+    ((Formula.allFuture (Formula.allFuture p)).imp
+        (Formula.allFuture (Formula.allFuture (Formula.allFuture p))), "GGp → GGGp"),
+    ((Formula.allFuture (Formula.allFuture (Formula.allFuture p))).imp
+        (Formula.allFuture (Formula.allFuture (Formula.allFuture (Formula.allFuture p)))),
+            "GGGp → GGGGp")
   ]
   let mut passed := 0
   for (formula, desc) in tests do
@@ -121,11 +126,13 @@ Test formulas with deeply nested modal/temporal operators.
 
 -- Deep modal nesting with tactics
 example : ⊢ (Formula.box (Formula.box p)).imp (Formula.box p) := by modal_search
-example : ⊢ (Formula.box (Formula.box (Formula.box p))).imp (Formula.box (Formula.box p)) := by modal_search
+example : ⊢ (Formula.box (Formula.box (Formula.box p))).imp (Formula.box (Formula.box p)) := by
+    modal_search
 
 -- Deep temporal nesting with tactics
 -- Note: GGp → GGGp is now resolved by tryDerivedMatch (temporal4Derived), which is noncomputable
-noncomputable example : ⊢ (Formula.allFuture (Formula.allFuture p)).imp (Formula.allFuture (Formula.allFuture (Formula.allFuture p))) := by temporal_search
+noncomputable example : ⊢ (Formula.allFuture (Formula.allFuture p)).imp
+    (Formula.allFuture (Formula.allFuture (Formula.allFuture p))) := by temporal_search
 
 /-!
 ## Section 3: Large Context Tests
@@ -142,14 +149,16 @@ Test with contexts containing many formulas.
   IO.println s!"Context size 5: found={found5}, visited={stats5.visited}"
 
   -- Context with 10 formulas
-  let ctx10 := [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q, p.imp (q.imp p)]
+  let ctx10 := [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q, p.imp
+      (q.imp p)]
   let (found10, _, _, stats10, _) := search ctx10 p (.IDDFS 5) 100
   IO.println s!"Context size 10: found={found10}, visited={stats10.visited}"
 
   -- Context with 15 formulas
   let ctx15 := [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q,
                 p.imp (q.imp p), Formula.box q, Formula.box r, Formula.allFuture p,
-                (Formula.box p).imp p, (Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p))]
+                (Formula.box p).imp p, (Formula.allFuture p).imp
+                    (Formula.allFuture (Formula.allFuture p))]
   let (found15, _, _, stats15, _) := search ctx15 p (.IDDFS 5) 100
   IO.println s!"Context size 15: found={found15}, visited={stats15.visited}"
 
@@ -161,7 +170,8 @@ Test with contexts containing many formulas.
 -- Tactic tests with large context
 example : [p, q, r, s, p.imp q] ⊢ p := by modal_search
 example : [p, q, r, s, p.imp q, q.imp r] ⊢ p := by modal_search
-example : [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q, p.imp (q.imp p)] ⊢ p := by modal_search
+example : [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q, p.imp
+    (q.imp p)] ⊢ p := by modal_search
 
 /-!
 ## Section 4: Complex Formula Tests
@@ -176,7 +186,8 @@ Test with mixed modal/temporal/propositional operators.
   let mixedFormulas := [
     ((Formula.box p).imp (Formula.allFuture (Formula.box p)), "□p → G□p (temporalFutureDerived)"),
     ((Formula.box p).imp (Formula.box (Formula.allFuture p)), "□p → □Gp (modal_future)"),
-    ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)), "□(p→q) → (□p → □q) (modal_k)")
+    ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)),
+        "□(p→q) → (□p → □q) (modal_k)")
   ]
 
   let mut passed := 0

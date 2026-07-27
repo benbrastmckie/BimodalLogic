@@ -244,19 +244,22 @@ Verify that derived operator patterns are correctly detected.
 -- Test tier boundary: 700 -> interesting
 #eval do
   let t := InterestingnessTier.fromScore 700
-  if t.toString != "interesting" then throw (IO.userError s!"Score 700: expected interesting, got {t}")
+  if t.toString != "interesting" then throw (IO.userError
+      s!"Score 700: expected interesting, got {t}")
   IO.println "PASS: Score 700 -> interesting"
 
 -- Test tier boundary: 850 -> remarkable
 #eval do
   let t := InterestingnessTier.fromScore 850
-  if t.toString != "remarkable" then throw (IO.userError s!"Score 850: expected remarkable, got {t}")
+  if t.toString != "remarkable" then throw (IO.userError
+      s!"Score 850: expected remarkable, got {t}")
   IO.println "PASS: Score 850 -> remarkable"
 
 -- Test tier boundary: 1000 -> remarkable
 #eval do
   let t := InterestingnessTier.fromScore 1000
-  if t.toString != "remarkable" then throw (IO.userError s!"Score 1000: expected remarkable, got {t}")
+  if t.toString != "remarkable" then throw (IO.userError
+      s!"Score 1000: expected remarkable, got {t}")
   IO.println "PASS: Score 1000 -> remarkable"
 
 /-!
@@ -303,7 +306,9 @@ Verify that derived operator patterns are correctly detected.
     throw (IO.userError s!"Expected SNT>=2 for bimodal, got {result.sntGate}")
   if !result.interactionAxiomDep then
     throw (IO.userError "Expected interaction axiom dependency for proof using modal_future")
-  IO.println s!"PASS: bimodal score={result.compositeScore}, tier={result.tier}, snt={result.sntGate}, od={result.operatorDiversity}, ald={result.axiomLayerDiversity}"
+  IO.println
+      s!"PASS: bimodal score={result.compositeScore}, tier={result.tier}, snt={result.sntGate}, \
+          od={result.operatorDiversity}, ald={result.axiomLayerDiversity}"
 
 /-!
 ## Section 7: JSON Serialization

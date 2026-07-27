@@ -34,17 +34,22 @@ open FormalSystem.Theorems.TemporalDerived
 
 -- Test: Propositional K on atoms
 example : Axiom (((Formula.atomS "p").imp ((Formula.atomS "q").imp (Formula.atomS "r"))).imp
-                  (((Formula.atomS "p").imp (Formula.atomS "q")).imp ((Formula.atomS "p").imp (Formula.atomS "r")))) :=
+                  (((Formula.atomS "p").imp (Formula.atomS "q")).imp
+                      ((Formula.atomS "p").imp (Formula.atomS "r")))) :=
   Axiom.prop_k (Formula.atomS "p") (Formula.atomS "q") (Formula.atomS "r")
 
 -- Test: Propositional K with complex formulas
-example : Axiom ((((Formula.atomS "p").box).imp (((Formula.atomS "q").allFuture).imp (Formula.atomS "r"))).imp
-                  ((((Formula.atomS "p").box).imp ((Formula.atomS "q").allFuture)).imp (((Formula.atomS "p").box).imp (Formula.atomS "r")))) :=
+example : Axiom ((((Formula.atomS "p").box).imp
+    (((Formula.atomS "q").allFuture).imp (Formula.atomS "r"))).imp
+                  ((((Formula.atomS "p").box).imp ((Formula.atomS "q").allFuture)).imp
+                      (((Formula.atomS "p").box).imp (Formula.atomS "r")))) :=
   Axiom.prop_k ((Formula.atomS "p").box) ((Formula.atomS "q").allFuture) (Formula.atomS "r")
 
 -- Test: Propositional K with nested implications
-example : Axiom (((Formula.atomS "p").imp (((Formula.atomS "q").imp (Formula.atomS "r")).imp (Formula.atomS "s"))).imp
-                  (((Formula.atomS "p").imp ((Formula.atomS "q").imp (Formula.atomS "r"))).imp ((Formula.atomS "p").imp (Formula.atomS "s")))) :=
+example : Axiom (((Formula.atomS "p").imp
+    (((Formula.atomS "q").imp (Formula.atomS "r")).imp (Formula.atomS "s"))).imp
+                  (((Formula.atomS "p").imp ((Formula.atomS "q").imp (Formula.atomS "r"))).imp
+                      ((Formula.atomS "p").imp (Formula.atomS "s")))) :=
   Axiom.prop_k (Formula.atomS "p") ((Formula.atomS "q").imp (Formula.atomS "r")) (Formula.atomS "s")
 
 -- ============================================================
@@ -56,12 +61,14 @@ example : Axiom ((Formula.atomS "p").imp ((Formula.atomS "q").imp (Formula.atomS
   Axiom.prop_s (Formula.atomS "p") (Formula.atomS "q")
 
 -- Test: Propositional S with box formula
-example : Axiom (((Formula.atomS "p").box).imp ((Formula.atomS "q").imp ((Formula.atomS "p").box))) :=
+example : Axiom (((Formula.atomS "p").box).imp
+    ((Formula.atomS "q").imp ((Formula.atomS "p").box))) :=
   Axiom.prop_s ((Formula.atomS "p").box) (Formula.atomS "q")
 
 -- Test: Propositional S with complex formulas
 example : Axiom ((((Formula.atomS "p").imp (Formula.atomS "q"))).imp
-                  (((Formula.atomS "r").allFuture).imp ((Formula.atomS "p").imp (Formula.atomS "q")))) :=
+                  (((Formula.atomS "r").allFuture).imp
+                      ((Formula.atomS "p").imp (Formula.atomS "q")))) :=
   Axiom.prop_s ((Formula.atomS "p").imp (Formula.atomS "q")) ((Formula.atomS "r").allFuture)
 
 -- ============================================================
@@ -69,10 +76,12 @@ example : Axiom ((((Formula.atomS "p").imp (Formula.atomS "q"))).imp
 -- ============================================================
 
 -- Test: Modal T axiom on atom
-example : Axiom ((Formula.atomS "p").box.imp (Formula.atomS "p")) := Axiom.modal_t (Formula.atomS "p")
+example : Axiom ((Formula.atomS "p").box.imp (Formula.atomS "p")) := Axiom.modal_t
+    (Formula.atomS "p")
 
 -- Test: Modal T axiom on complex formula
-example : Axiom ((Formula.atomS "p" |>.imp (Formula.atomS "q")).box.imp (Formula.atomS "p" |>.imp (Formula.atomS "q"))) :=
+example : Axiom ((Formula.atomS "p" |>.imp (Formula.atomS "q")).box.imp
+    (Formula.atomS "p" |>.imp (Formula.atomS "q"))) :=
   Axiom.modal_t (Formula.atomS "p" |>.imp (Formula.atomS "q"))
 
 -- Test: Modal T axiom on nested box
@@ -84,10 +93,12 @@ example : Axiom ((Formula.atomS "p").box.box.imp (Formula.atomS "p").box) :=
 -- ============================================================
 
 -- Test: Modal 4 axiom on atom
-example : Axiom ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := Axiom.modal_4 (Formula.atomS "p")
+example : Axiom ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := Axiom.modal_4
+    (Formula.atomS "p")
 
 -- Test: Modal 4 axiom on implication
-example : Axiom (((Formula.atomS "p").imp (Formula.atomS "q")).box.imp ((Formula.atomS "p").imp (Formula.atomS "q")).box.box) :=
+example : Axiom (((Formula.atomS "p").imp (Formula.atomS "q")).box.imp
+    ((Formula.atomS "p").imp (Formula.atomS "q")).box.box) :=
   Axiom.modal_4 ((Formula.atomS "p").imp (Formula.atomS "q"))
 
 -- ============================================================
@@ -95,10 +106,12 @@ example : Axiom (((Formula.atomS "p").imp (Formula.atomS "q")).box.imp ((Formula
 -- ============================================================
 
 -- Test: Modal B axiom on atom
-example : Axiom ((Formula.atomS "p").imp (Formula.atomS "p").diamond.box) := Axiom.modal_b (Formula.atomS "p")
+example : Axiom ((Formula.atomS "p").imp (Formula.atomS "p").diamond.box) := Axiom.modal_b
+    (Formula.atomS "p")
 
 -- Test: Modal B axiom on box formula
-example : Axiom ((Formula.atomS "p").box.imp (Formula.atomS "p").box.diamond.box) := Axiom.modal_b (Formula.atomS "p").box
+example : Axiom ((Formula.atomS "p").box.imp (Formula.atomS "p").box.diamond.box) := Axiom.modal_b
+    (Formula.atomS "p").box
 
 -- ============================================================
 -- Modal 5 Collapse Tests: ◇□φ → □φ
@@ -109,7 +122,8 @@ example : Axiom ((Formula.atomS "p").box.diamond.imp (Formula.atomS "p").box) :=
   Axiom.modal_5_collapse (Formula.atomS "p")
 
 -- Test: Modal 5 Collapse on complex formula
-example : Axiom (((Formula.atomS "p").imp (Formula.atomS "q")).box.diamond.imp ((Formula.atomS "p").imp (Formula.atomS "q")).box) :=
+example : Axiom (((Formula.atomS "p").imp (Formula.atomS "q")).box.diamond.imp
+    ((Formula.atomS "p").imp (Formula.atomS "q")).box) :=
   Axiom.modal_5_collapse ((Formula.atomS "p").imp (Formula.atomS "q"))
 
 -- ============================================================
@@ -133,15 +147,18 @@ example : Axiom (Formula.bot.imp (((Formula.atomS "p").imp (Formula.atomS "q")).
 -- ============================================================
 
 -- Test: Peirce on atoms
-example : Axiom ((((Formula.atomS "p").imp (Formula.atomS "q")).imp (Formula.atomS "p")).imp (Formula.atomS "p")) :=
+example : Axiom ((((Formula.atomS "p").imp (Formula.atomS "q")).imp (Formula.atomS "p")).imp
+    (Formula.atomS "p")) :=
   Axiom.peirce (Formula.atomS "p") (Formula.atomS "q")
 
 -- Test: Peirce on complex formulas
-example : Axiom (((((Formula.atomS "p").box).imp (Formula.atomS "q")).imp ((Formula.atomS "p").box)).imp ((Formula.atomS "p").box)) :=
+example : Axiom (((((Formula.atomS "p").box).imp (Formula.atomS "q")).imp
+    ((Formula.atomS "p").box)).imp ((Formula.atomS "p").box)) :=
   Axiom.peirce ((Formula.atomS "p").box) (Formula.atomS "q")
 
 -- Test: Peirce with bot (used in DNE derivation)
-example : Axiom ((((Formula.atomS "p").imp Formula.bot).imp (Formula.atomS "p")).imp (Formula.atomS "p")) :=
+example : Axiom ((((Formula.atomS "p").imp Formula.bot).imp (Formula.atomS "p")).imp
+    (Formula.atomS "p")) :=
   Axiom.peirce (Formula.atomS "p") Formula.bot
 
 -- ============================================================
@@ -150,11 +167,13 @@ example : Axiom ((((Formula.atomS "p").imp Formula.bot).imp (Formula.atomS "p"))
 -- ============================================================
 
 -- Test: Temporal 4 derived theorem on atom
-noncomputable example : ⊢ ((Formula.atomS "p").allFuture.imp (Formula.atomS "p").allFuture.allFuture) :=
+noncomputable example : ⊢ ((Formula.atomS "p").allFuture.imp
+    (Formula.atomS "p").allFuture.allFuture) :=
   temporal4Derived (Formula.atomS "p")
 
 -- Test: Temporal 4 derived theorem on complex formula
-noncomputable example : ⊢ ((Formula.atomS "p").box.allFuture.imp (Formula.atomS "p").box.allFuture.allFuture) :=
+noncomputable example : ⊢ ((Formula.atomS "p").box.allFuture.imp
+    (Formula.atomS "p").box.allFuture.allFuture) :=
   temporal4Derived (Formula.atomS "p").box
 
 -- ============================================================
@@ -171,7 +190,8 @@ example : Axiom ((Formula.atomS "p").neg.imp ((Formula.atomS "p").neg.somePast.a
   Axiom.connect_future (Formula.atomS "p").neg
 
 -- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
--- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
+-- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
+-- summary.
 -- -- ============================================================
 -- -- Temporal L Axiom Tests: △φ → FPφ (always implies future-past)
 -- -- Note: Axiom.temp_l was removed in a prior task. This property can be derived.
@@ -186,10 +206,12 @@ example : Axiom ((Formula.atomS "p").neg.imp ((Formula.atomS "p").neg.somePast.a
 -- ============================================================
 
 -- Test: Modal-Future axiom on atom
-example : Axiom ((Formula.atomS "p").box.imp (Formula.atomS "p").allFuture.box) := Axiom.modal_future (Formula.atomS "p")
+example : Axiom ((Formula.atomS "p").box.imp (Formula.atomS "p").allFuture.box) :=
+    Axiom.modal_future (Formula.atomS "p")
 
 -- Test: Modal-Future axiom on implication
-example : Axiom (((Formula.atomS "p").imp (Formula.atomS "q")).box.imp ((Formula.atomS "p").imp (Formula.atomS "q")).allFuture.box) :=
+example : Axiom (((Formula.atomS "p").imp (Formula.atomS "q")).box.imp
+    ((Formula.atomS "p").imp (Formula.atomS "q")).allFuture.box) :=
   Axiom.modal_future ((Formula.atomS "p").imp (Formula.atomS "q"))
 
 -- ============================================================
@@ -201,8 +223,10 @@ example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").box.allFuture :=
   FormalSystem.Theorems.Combinators.temporalFutureDerived (Formula.atomS "p")
 
 -- Test: Temporal-Future derived theorem on complex formula
-example : ⊢ ((Formula.atomS "p").and (Formula.atomS "q")).box.imp ((Formula.atomS "p").and (Formula.atomS "q")).box.allFuture :=
-  FormalSystem.Theorems.Combinators.temporalFutureDerived ((Formula.atomS "p").and (Formula.atomS "q"))
+example : ⊢ ((Formula.atomS "p").and (Formula.atomS "q")).box.imp
+    ((Formula.atomS "p").and (Formula.atomS "q")).box.allFuture :=
+  FormalSystem.Theorems.Combinators.temporalFutureDerived
+      ((Formula.atomS "p").and (Formula.atomS "q"))
 
 -- ============================================================
 -- Modal K Distribution Axiom Tests: □(φ → ψ) → (□φ → □ψ)
@@ -228,7 +252,8 @@ example (A B : Formula) :
 -- Double Negation Elimination: Now Derived (not an axiom)
 -- ============================================================
 
--- Note: DNE is now derived from EFQ + Peirce (see FormalSystem.Theorems.Propositional.doubleNegation)
+-- Note: DNE is now derived from EFQ + Peirce (see
+-- FormalSystem.Theorems.Propositional.doubleNegation)
 -- The following tests have been removed as DNE is no longer an axiom:
 -- - Double negation elimination on atom
 -- - Double negation elimination on box formula

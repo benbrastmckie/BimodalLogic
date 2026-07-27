@@ -24,11 +24,15 @@ example : matchesAxiom ((Formula.box p).imp p) = true := rfl
 example : matchesAxiom ((Formula.box p).imp (Formula.box (Formula.box p))) = true := rfl
 example : matchesAxiom (p.imp (Formula.box p.diamond)) = true := rfl
 example : matchesAxiom ((Formula.box p).diamond.imp (Formula.box p)) = true := rfl
-example : matchesAxiom ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q))) = true := rfl
-example : matchesAxiom ((Formula.allFuture (p.imp q)).imp ((Formula.allFuture p).imp (Formula.allFuture q))) = false := rfl
-example : matchesAxiom ((Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p))) = false := rfl
+example : matchesAxiom ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q))) =
+    true := rfl
+example : matchesAxiom ((Formula.allFuture (p.imp q)).imp
+    ((Formula.allFuture p).imp (Formula.allFuture q))) = false := rfl
+example : matchesAxiom ((Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p))) =
+    false := rfl
 example : matchesAxiom (p.imp (Formula.allFuture (Formula.somePast p))) = true := rfl
-example : matchesAxiom ((Formula.always p).imp (Formula.allFuture (Formula.allPast p))) = false := rfl
+example : matchesAxiom ((Formula.always p).imp (Formula.allFuture (Formula.allPast p))) = false :=
+    rfl
 example : matchesAxiom ((Formula.box p).imp (Formula.box (Formula.allFuture p))) = true := rfl
 example : matchesAxiom ((Formula.box p).imp (Formula.allFuture (Formula.box p))) = false := rfl
 
@@ -45,7 +49,8 @@ Verify that non-derivable formulas are correctly rejected by the search.
 -- Additional negative axiom matching tests
 example : matchesAxiom (Formula.box p) = false := rfl  -- Just □p, not an axiom
 example : matchesAxiom p = false := rfl  -- Just atom, not an axiom
-example : matchesAxiom ((p.imp q).imp r) = false := rfl  -- Random implication chain (not any standard axiom)
+example : matchesAxiom ((p.imp q).imp r) = false := rfl  -- Random implication chain (not any
+-- standard axiom)
 example : matchesAxiom (Formula.allFuture p) = false := rfl  -- Just Gp
 example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- □Gp
 
@@ -476,7 +481,8 @@ abbrev s : Formula := .atomS "s"
   let variants := [
     ((p.imp (q.imp r)).imp ((p.imp q).imp (p.imp r)), "p,q,r"),
     ((q.imp (r.imp s)).imp ((q.imp r).imp (q.imp s)), "q,r,s"),
-    (((Formula.box p).imp (q.imp r)).imp (((Formula.box p).imp q).imp ((Formula.box p).imp r)), "□p,q,r")
+    (((Formula.box p).imp (q.imp r)).imp (((Formula.box p).imp q).imp ((Formula.box p).imp r)),
+        "□p,q,r")
   ]
   IO.println "=== prop_k Completeness ==="
   for (formula, desc) in variants do
@@ -606,7 +612,8 @@ abbrev s : Formula := .atomS "s"
   let variants := [
     ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)), "p,q"),
     ((Formula.box (q.imp r)).imp ((Formula.box q).imp (Formula.box r)), "q,r"),
-    ((Formula.box ((Formula.box p).imp q)).imp ((Formula.box (Formula.box p)).imp (Formula.box q)), "□p,q")
+    ((Formula.box ((Formula.box p).imp q)).imp ((Formula.box (Formula.box p)).imp (Formula.box q)),
+        "□p,q")
   ]
   IO.println "=== modal_k Completeness ==="
   for (formula, desc) in variants do
@@ -672,7 +679,8 @@ abbrev s : Formula := .atomS "s"
   let variants := [
     ((Formula.allFuture (p.imp q)).imp ((Formula.allFuture p).imp (Formula.allFuture q)), "p,q"),
     ((Formula.allFuture (q.imp r)).imp ((Formula.allFuture q).imp (Formula.allFuture r)), "q,r"),
-    ((Formula.allFuture ((Formula.box p).imp q)).imp ((Formula.allFuture (Formula.box p)).imp (Formula.allFuture q)), "□p,q")
+    ((Formula.allFuture ((Formula.box p).imp q)).imp
+        ((Formula.allFuture (Formula.box p)).imp (Formula.allFuture q)), "□p,q")
   ]
   IO.println "=== temp_k Completeness ==="
   for (formula, desc) in variants do
@@ -724,21 +732,46 @@ abbrev s : Formula := .atomS "s"
   let axioms : List (String × List Formula) := [
     ("prop_k", [(p.imp (q.imp r)).imp ((p.imp q).imp (p.imp r)),
                 (q.imp (r.imp s)).imp ((q.imp r).imp (q.imp s)),
-                ((Formula.box p).imp (q.imp r)).imp (((Formula.box p).imp q).imp ((Formula.box p).imp r))]),
+                ((Formula.box p).imp (q.imp r)).imp
+                    (((Formula.box p).imp q).imp ((Formula.box p).imp r))]),
     ("prop_s", [p.imp (q.imp p), q.imp (r.imp q), (Formula.box p).imp (q.imp (Formula.box p))]),
-    ("prop_exfalso", [Formula.bot.imp p, Formula.bot.imp (Formula.box q), Formula.bot.imp (p.imp q)]),
-    ("prop_peirce", [((p.imp q).imp p).imp p, ((q.imp r).imp q).imp q, (((Formula.box p).imp q).imp (Formula.box p)).imp (Formula.box p)]),
-    ("modal_t", [(Formula.box p).imp p, (Formula.box q).imp q, (Formula.box (p.imp q)).imp (p.imp q)]),
-    ("modal_4", [(Formula.box p).imp (Formula.box (Formula.box p)), (Formula.box q).imp (Formula.box (Formula.box q)), (Formula.box (p.imp q)).imp (Formula.box (Formula.box (p.imp q)))]),
-    ("modal_b", [p.imp (Formula.box p.diamond), q.imp (Formula.box q.diamond), (p.imp q).imp (Formula.box (p.imp q).diamond)]),
-    ("modal5", [(Formula.box p).diamond.imp (Formula.box p), (Formula.box q).diamond.imp (Formula.box q), (Formula.box (p.imp q)).diamond.imp (Formula.box (p.imp q))]),
-    ("modal_k", [(Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)), (Formula.box (q.imp r)).imp ((Formula.box q).imp (Formula.box r)), (Formula.box ((Formula.box p).imp q)).imp ((Formula.box (Formula.box p)).imp (Formula.box q))]),
-    ("temp_4", [(Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)), (Formula.allFuture q).imp (Formula.allFuture (Formula.allFuture q)), (Formula.allFuture (p.imp q)).imp (Formula.allFuture (Formula.allFuture (p.imp q)))]),
-    ("temp_a", [p.imp (Formula.allFuture (Formula.somePast p)), q.imp (Formula.allFuture (Formula.somePast q)), (p.imp q).imp (Formula.allFuture (Formula.somePast (p.imp q)))]),
-    ("temp_l", [(Formula.always p).imp (Formula.allFuture (Formula.allPast p)), (Formula.always q).imp (Formula.allFuture (Formula.allPast q)), (Formula.always (p.imp q)).imp (Formula.allFuture (Formula.allPast (p.imp q)))]),
-    ("temp_k", [(Formula.allFuture (p.imp q)).imp ((Formula.allFuture p).imp (Formula.allFuture q)), (Formula.allFuture (q.imp r)).imp ((Formula.allFuture q).imp (Formula.allFuture r)), (Formula.allFuture ((Formula.box p).imp q)).imp ((Formula.allFuture (Formula.box p)).imp (Formula.allFuture q))]),
-    ("modal_future", [(Formula.box p).imp (Formula.box (Formula.allFuture p)), (Formula.box q).imp (Formula.box (Formula.allFuture q)), (Formula.box (p.imp q)).imp (Formula.box (Formula.allFuture (p.imp q)))]),
-    ("temp_future", [(Formula.box p).imp (Formula.allFuture (Formula.box p)), (Formula.box q).imp (Formula.allFuture (Formula.box q)), (Formula.box (p.imp q)).imp (Formula.allFuture (Formula.box (p.imp q)))])
+    ("prop_exfalso", [Formula.bot.imp p, Formula.bot.imp (Formula.box q), Formula.bot.imp
+        (p.imp q)]),
+    ("prop_peirce", [((p.imp q).imp p).imp p, ((q.imp r).imp q).imp q,
+        (((Formula.box p).imp q).imp (Formula.box p)).imp (Formula.box p)]),
+    ("modal_t", [(Formula.box p).imp p, (Formula.box q).imp q, (Formula.box (p.imp q)).imp
+        (p.imp q)]),
+    ("modal_4", [(Formula.box p).imp (Formula.box (Formula.box p)), (Formula.box q).imp
+        (Formula.box (Formula.box q)), (Formula.box (p.imp q)).imp
+            (Formula.box (Formula.box (p.imp q)))]),
+    ("modal_b", [p.imp (Formula.box p.diamond), q.imp (Formula.box q.diamond), (p.imp q).imp
+        (Formula.box (p.imp q).diamond)]),
+    ("modal5", [(Formula.box p).diamond.imp (Formula.box p), (Formula.box q).diamond.imp
+        (Formula.box q), (Formula.box (p.imp q)).diamond.imp (Formula.box (p.imp q))]),
+    ("modal_k", [(Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)),
+        (Formula.box (q.imp r)).imp ((Formula.box q).imp (Formula.box r)),
+            (Formula.box ((Formula.box p).imp q)).imp
+                ((Formula.box (Formula.box p)).imp (Formula.box q))]),
+    ("temp_4", [(Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)),
+        (Formula.allFuture q).imp (Formula.allFuture (Formula.allFuture q)),
+            (Formula.allFuture (p.imp q)).imp (Formula.allFuture (Formula.allFuture (p.imp q)))]),
+    ("temp_a", [p.imp (Formula.allFuture (Formula.somePast p)), q.imp
+        (Formula.allFuture (Formula.somePast q)), (p.imp q).imp
+            (Formula.allFuture (Formula.somePast (p.imp q)))]),
+    ("temp_l", [(Formula.always p).imp (Formula.allFuture (Formula.allPast p)),
+        (Formula.always q).imp (Formula.allFuture (Formula.allPast q)),
+            (Formula.always (p.imp q)).imp (Formula.allFuture (Formula.allPast (p.imp q)))]),
+    ("temp_k", [(Formula.allFuture (p.imp q)).imp
+        ((Formula.allFuture p).imp (Formula.allFuture q)), (Formula.allFuture (q.imp r)).imp
+            ((Formula.allFuture q).imp (Formula.allFuture r)),
+                (Formula.allFuture ((Formula.box p).imp q)).imp
+                    ((Formula.allFuture (Formula.box p)).imp (Formula.allFuture q))]),
+    ("modal_future", [(Formula.box p).imp (Formula.box (Formula.allFuture p)), (Formula.box q).imp
+        (Formula.box (Formula.allFuture q)), (Formula.box (p.imp q)).imp
+            (Formula.box (Formula.allFuture (p.imp q)))]),
+    ("temp_future", [(Formula.box p).imp (Formula.allFuture (Formula.box p)), (Formula.box q).imp
+        (Formula.allFuture (Formula.box q)), (Formula.box (p.imp q)).imp
+            (Formula.allFuture (Formula.box (p.imp q)))])
   ]
   let mut passed := 0
   let mut failed := 0

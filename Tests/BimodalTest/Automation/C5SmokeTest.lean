@@ -208,7 +208,9 @@ Verify that labeled formulas have non-null metrics fields.
     let ok := m.complexity > 0
     if ok then
       passed := passed + 1
-      IO.println s!"  [PASS] complexity={m.complexity} modal={m.modalDepth} temporal={m.temporalDepth} imp={m.impCount} atom={m.atomCount} tier={m.difficultyTier}"
+      IO.println
+          s!"  [PASS] complexity={m.complexity} modal={m.modalDepth} temporal={m.temporalDepth} \
+              imp={m.impCount} atom={m.atomCount} tier={m.difficultyTier}"
     else
       failed := failed + 1
       IO.println s!"  [FAIL] metrics incomplete for formula"

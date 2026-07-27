@@ -8,8 +8,9 @@
   "linter.unusedSimpArgs": 3,
   "linter.unusedVariables": 14
  },
- "copyright_files": 330,
+ "copyright_files": 331,
  "decls": {
+  "FormalSystem.lean": [],
   "FormalSystem/Automation.lean": [],
   "FormalSystem/Automation/AesopRules.lean": [
    "def axiomModalT",
@@ -6718,7 +6719,7 @@
   ]
  },
  "jobs": 1923,
- "live_files": 330,
+ "live_files": 331,
  "live_files_by_root": {
   "FormalSystem": 288,
   "Tests": 42

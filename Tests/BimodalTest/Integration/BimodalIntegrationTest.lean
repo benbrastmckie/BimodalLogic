@@ -244,7 +244,8 @@ example : True := by
 
   -- Step 2: F□p → FF□p using Temporal 4
   let ax2 : Γ ⊢ ((p.box.allFuture).imp ((p.box.allFuture).allFuture)) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p.box) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p.box)
+        (List.nil_subset _)
   let d2 : Γ ⊢ ((p.box.allFuture).allFuture) :=
     DerivationTree.modus_ponens Γ (p.box.allFuture)
       ((p.box.allFuture).allFuture) ax2 d1
@@ -323,7 +324,8 @@ example : True := by
   -- Step 3: F□Fp → FF□Fp (Temporal 4)
   let ax3 : Γ ⊢ (((p.allFuture.box).allFuture).imp
                   (((p.allFuture.box).allFuture).allFuture)) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived (p.allFuture.box)) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived
+        (p.allFuture.box)) (List.nil_subset _)
   let d3 : Γ ⊢ (((p.allFuture.box).allFuture).allFuture) :=
     DerivationTree.modus_ponens Γ ((p.allFuture.box).allFuture)
       (((p.allFuture.box).allFuture).allFuture) ax3 d2

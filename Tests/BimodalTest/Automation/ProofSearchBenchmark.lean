@@ -99,7 +99,8 @@ def runBenchmarkTimed (name : String) (ctx : Context) (goal : Formula)
 /-- Print benchmark result. -/
 def printResult (result : BenchmarkResult) : IO Unit :=
   let timeStr := if result.timeNs > 0 then s!", time={formatNanos result.timeNs}" else ""
-  IO.println s!"{result.name}: found={result.found}, visits={result.visits}, hits={result.hits}{timeStr}"
+  IO.println
+      s!"{result.name}: found={result.found}, visits={result.visits}, hits={result.hits}{timeStr}"
 
 /-!
 ## Modal Axiom Benchmarks
@@ -129,9 +130,11 @@ def runModalBenchmarks (config : BenchmarkConfig := {}) : IO (List BenchmarkResu
 
 /-- Temporal axiom benchmarks. -/
 def temporalBenchmarks : List (String × Context × Formula) := [
-  ("Temporal 4 (Gp → GGp)", [], (Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p))),
+  ("Temporal 4 (Gp → GGp)", [], (Formula.allFuture p).imp
+      (Formula.allFuture (Formula.allFuture p))),
   ("Temporal A (p → GHp)", [], p.imp (Formula.allFuture (Formula.somePast p))),
-  ("Temporal K dist", [], (Formula.allFuture (p.imp q)).imp ((Formula.allFuture p).imp (Formula.allFuture q)))
+  ("Temporal K dist", [], (Formula.allFuture (p.imp q)).imp
+      ((Formula.allFuture p).imp (Formula.allFuture q)))
 ]
 
 def runTemporalBenchmarks (config : BenchmarkConfig := {}) : IO (List BenchmarkResult) := do
@@ -356,14 +359,16 @@ def runLearningBenchmarks (benchmarks : List (String × Context × Formula))
   let mut firstPassFound := 0
 
   for (name, ctx, goal) in benchmarks do
-    let result := searchWithLearning ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights db true
+    let result := searchWithLearning ctx goal (.IDDFS config.maxDepth) config.visitLimit
+        config.weights db true
     if result.found then
       firstPassFound := firstPassFound + 1
       db := result.patternDb
     firstPassVisits := firstPassVisits + result.visits
     IO.println s!"{name}: found={result.found}, visits={result.visits}"
 
-  IO.println s!"\nFirst pass total: {firstPassFound}/{benchmarks.length} found, {firstPassVisits} visits"
+  IO.println
+      s!"\nFirst pass total: {firstPassFound}/{benchmarks.length} found, {firstPassVisits} visits"
   IO.println s!"Patterns learned: {db.totalPatterns}"
 
   -- Second pass: with learned patterns
@@ -372,12 +377,15 @@ def runLearningBenchmarks (benchmarks : List (String × Context × Formula))
   let mut secondPassFound := 0
 
   for (name, ctx, goal) in benchmarks do
-    let result := searchWithLearning ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights db false
+    let result := searchWithLearning ctx goal (.IDDFS config.maxDepth) config.visitLimit
+        config.weights db false
     if result.found then secondPassFound := secondPassFound + 1
     secondPassVisits := secondPassVisits + result.visits
     IO.println s!"{name}: found={result.found}, visits={result.visits}"
 
-  IO.println s!"\nSecond pass total: {secondPassFound}/{benchmarks.length} found, {secondPassVisits} visits"
+  IO.println
+      s!"\nSecond pass total: {secondPassFound}/{benchmarks.length} found, {secondPassVisits} \
+          visits"
 
   -- Report improvement
   if firstPassVisits > 0 then
@@ -403,7 +411,8 @@ def compareIDDFSvsBestFirst (config : BenchmarkConfig := {}) : IO Unit := do
     let mut iddfsVisits := 0
     let mut iddfsFound := 0
     for (_, ctx, goal) in benchmarks do
-      let (found, _, _, _, visits) := search ctx goal (.IDDFS config.maxDepth) config.visitLimit config.weights
+      let (found, _, _, _, visits) := search ctx goal (.IDDFS config.maxDepth) config.visitLimit
+          config.weights
       iddfsVisits := iddfsVisits + visits
       if found then iddfsFound := iddfsFound + 1
 
@@ -411,7 +420,8 @@ def compareIDDFSvsBestFirst (config : BenchmarkConfig := {}) : IO Unit := do
     let mut bfVisits := 0
     let mut bfFound := 0
     for (_, ctx, goal) in benchmarks do
-      let (found, _, _, _, visits) := search ctx goal (.BestFirst config.visitLimit) config.visitLimit config.weights
+      let (found, _, _, _, visits) := search ctx goal (.BestFirst config.visitLimit)
+          config.visitLimit config.weights
       bfVisits := bfVisits + visits
       if found then bfFound := bfFound + 1
 

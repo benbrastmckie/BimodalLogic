@@ -61,6 +61,15 @@ def is_exempt(line):
     return any(line.startswith(p) for p in IMPORT_PREFIXES)
 
 
+# The `lean_lib FormalSystem` root aggregator lives at the REPOSITORY ROOT, not inside
+# `FormalSystem/`.  Walking the two source directories alone silently omits it.  It happens to
+# carry zero violations, so including it changes no count in this task -- but a counter whose
+# correctness rests on "the file we forgot to look at happened to be clean" is exactly the
+# defect class this harness exists to eliminate, so it is scanned explicitly.
+# `scripts/check-module-invariants.sh` (C7) counts it the same way.
+ROOT_AGGREGATORS = ('FormalSystem.lean',)
+
+
 def lean_files(repo, roots=LIVE_ROOTS):
     out = []
     for top in roots:
@@ -72,6 +81,7 @@ def lean_files(repo, roots=LIVE_ROOTS):
             for fn in files:
                 if fn.endswith('.lean'):
                     out.append(os.path.relpath(os.path.join(root, fn), repo))
+    out += [f for f in ROOT_AGGREGATORS if os.path.isfile(os.path.join(repo, f))]
     return sorted(out)
 
 

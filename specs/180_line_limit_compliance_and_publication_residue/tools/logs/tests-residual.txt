@@ -1,0 +1,49 @@
+Tests/ hand-fix residual after the Phase 6 mechanical sweep.
+Enumerated from count_long_lines.py; its length MUST equal the measured area count.
+
+count: 18
+
+All three files sit OUTSIDE `lake build BimodalTest`. Tests/BimodalTest.lean documents
+the exclusions and scripts/module-invariants-manifest.txt tracks them, so this is a
+known, first-class property of the tree rather than something this task discovered:
+
+  ProofSystem/DerivationBenchmark.lean, Semantics/SemanticBenchmark.lean
+    manifested `broken:` -- they do not compile at all (they pass String where Atom is
+    now required). The sweep refused both with `file had errors BEFORE sweep`, which is
+    the correct behaviour. They cannot be gated on compilation, so the honest invariant
+    is that their PRE-EXISTING diagnostic multiset must not grow; captured in
+    logs/broken-baseline-*.txt (SemanticBenchmark 23 diagnostics / 7 shapes,
+    DerivationBenchmark 38 / 17, line numbers normalised out).
+
+  Automation/ProofFirstTests.lean
+    compiles in isolation but cannot be imported into the test root (it pulls in an
+    executable root that defines `main`, and the environment already has one). It IS
+    compile-checked by scripts/check-module-invariants.sh C6, which is its gate.
+    The sweep applied 9 breaks, then REVERTED the file on
+      97:99 / 138:99  unexpected identifier; expected '}'
+    -- a structure-instance brace split, not covered by any existing guard.
+
+Tests/BimodalTest/Automation/ProofFirstTests.lean  (9 site(s))
+  :80  (102 codepoints)  let d_imp := DerivationTree.axiom [] (φ.imp (ψ.imp φ)) (Axiom.prop_s φ ψ) (FrameClass.base_le .B
+  :96  (136 codepoints)  let cfg : ForwardConfig := { atoms := atoms, seedCount := 200, maxDepth := 1, maxPoolSize := 500
+  :136  (121 codepoints)  let cfg : ForwardConfig := { atoms := atoms, seedCount := 100, maxDepth := 1, maxPoolSize := 500
+  :191  (128 codepoints)  formula := p, label := FormulaLabel.valid, proofTrace := some { height := 0, axiomsUsed := ["pro
+  :192  (251 codepoints)  countermodel := none, metrics := default, patternKey := default, ruleProfile := some { axiomCoun
+  :193  (171 codepoints)  decisionMethod := "proof_first", countermodelConsistent := none, enrichedCountermodel := none, s
+  :195  (128 codepoints)  formula := q, label := FormulaLabel.valid, proofTrace := some { height := 0, axiomsUsed := ["pro
+  :196  (251 codepoints)  countermodel := none, metrics := default, patternKey := default, ruleProfile := some { axiomCoun
+  :197  (171 codepoints)  decisionMethod := "proof_first", countermodelConsistent := none, enrichedCountermodel := none, s
+
+Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean  (3 site(s))
+  :104  (107 codepoints)  def mkTemp4 : DerivationTree [] ((Formula.all_future p).imp (Formula.all_future (Formula.all_fut
+  :202  (131 codepoints)  def mkTemporalDuality : DerivationTree [] ((Formula.all_future p).imp (Formula.all_future (Formu
+  :335  (121 codepoints)  "{" ++ s!"\"name\":\"{r.name}\",\"height\":{r.treeHeight},\"timeNs\":{r.constructionTimeNs},\"va
+
+Tests/BimodalTest/Semantics/SemanticBenchmark.lean  (6 site(s))
+  :78  (116 codepoints)  s!"{r.name}: expected={r.expectedResult}, actual={r.actualResult}, time={formatNanos r.evaluatio
+  :117  (101 codepoints)  return { name, expectedResult := expected, actualResult := result, evaluationTimeNs := medianTim
+  :227  (124 codepoints)  let r5 ← runBenchmark "p → (q → p) (true)" ((Formula.atom_s "p").imp ((Formula.atom_s "q").imp (
+  :244  (106 codepoints)  let r1 ← runBenchmark "□p → p (true)" ((Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p
+  :249  (106 codepoints)  let r2 ← runBenchmark "p → □p (true)" ((Formula.atom_s "p").imp (Formula.box (Formula.atom_s "p"
+  :317  (157 codepoints)  "{" ++ s!"\"name\":\"{r.name}\",\"expected\":{r.expectedResult},\"actual\":{r.actualResult},\"ti
+

@@ -88,7 +88,8 @@ example : True := by
   
   -- Fp → FFp
   let ax : Γ ⊢ (p.allFuture.imp p.allFuture.allFuture) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p)
+        (List.nil_subset _)
   
   -- Fp (assumption)
   let ass : Γ ⊢ p.allFuture :=
@@ -115,7 +116,8 @@ example : True := by
   
   -- Step 1: Fp → FFp, Fp ⊢ FFp
   let ax1 : Γ ⊢ (p.allFuture.imp p.allFuture.allFuture) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p)
+        (List.nil_subset _)
   let ass : Γ ⊢ p.allFuture :=
     DerivationTree.assumption Γ p.allFuture (List.Mem.head _)
   let d1 : Γ ⊢ p.allFuture.allFuture :=
@@ -123,7 +125,8 @@ example : True := by
   
   -- Step 2: FFp → FFFp, FFp ⊢ FFFp
   let ax2 : Γ ⊢ (p.allFuture.allFuture.imp p.allFuture.allFuture.allFuture) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p.allFuture) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived
+        p.allFuture) (List.nil_subset _)
   let d2 : Γ ⊢ p.allFuture.allFuture.allFuture :=
     DerivationTree.modus_ponens Γ p.allFuture.allFuture
       p.allFuture.allFuture.allFuture ax2 d1
@@ -203,7 +206,8 @@ section TemporalLIntegration
 -- Test 6: Temporal L axiom derivation and soundness.
 
 -- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
--- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
+-- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
+-- summary.
 -- Verifies △p → F(Pp) is derivable and sound.
 -- -/
 -- example : True := by
@@ -225,7 +229,8 @@ section TemporalLIntegration
 -- Test 7: Temporal L with modus ponens.
 
 -- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
--- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
+-- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
+-- summary.
 -- From [△p], derive F(Pp).
 -- -/
 -- example : True := by
@@ -292,7 +297,8 @@ example : True := by
   
   -- F(p → q) → (Fp → Fq)
   let ax : Γ ⊢ ((p.imp q).allFuture.imp (p.allFuture.imp q.allFuture)) :=
-    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived p q) (List.nil_subset _)
+    DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived p
+        q) (List.nil_subset _)
   
   -- F(p → q) (assumption)
   let ass1 : Γ ⊢ (p.imp q).allFuture :=
@@ -438,7 +444,8 @@ section MixedPastFutureDerivations
 -- Test 14: Combining past and future operators.
 
 -- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
--- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
+-- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
+-- summary.
 -- Derive properties involving both past and future.
 -- -/
 -- example : True := by

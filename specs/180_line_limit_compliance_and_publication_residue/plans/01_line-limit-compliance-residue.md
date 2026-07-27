@@ -446,13 +446,13 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 
 ---
 
-### Phase 6: `Tests/` Mechanical Sweep (231 sites, 24 files) [NOT STARTED]
+### Phase 6: `Tests/` Mechanical Sweep (231 sites, 24 files) [COMPLETED]
 
 - **Goal:** Drive the mechanical fixer across `Tests/` — never in any prior sweep's scope — and
   reduce it to its hand-fix residual.
 
 - **Tasks:**
-  - [ ] Run `sweep.py` over the 24 files in descending order:
+  - [x] Run `sweep.py` over the 24 files in descending order:
         `Automation/TacticsTest.lean` (73), `ProofSystem/AxiomsTest.lean` (25),
         `Automation/ProofSearchTest.lean` (22), `Theorems/PerpetuityTest.lean` (13),
         `Automation/EdgeCaseTest.lean` (10), `Integration/AutomationProofSystemTest.lean` (10),
@@ -466,13 +466,15 @@ Phases within the same wave can execute in parallel. Territory contracts for the
         `Automation/NormalizationTest.lean` (2), `ProofSystem/DerivationPropertyTest.lean` (2),
         `Integration/BimodalIntegrationTest.lean` (2), `Automation/C5SmokeTest.lean` (1),
         `Semantics/TruthTest.lean` (1) — all under `Tests/BimodalTest/`.
-  - [ ] Gate every file on `lake build BimodalTest`, not `lake build`. The suite has **no
+  - [x] Gate every file on `lake build BimodalTest`, not `lake build`. The suite has **no
         `main`**: `BimodalTest` is a `lean_lib` aggregator of **758 compile-time `#guard` /
         `example` checks**, so that build **is** the test run and `lake test` reduces to it.
-  - [ ] Enumerate the residual for Phase 7. Expect higher residual density than `Automation/`:
+  - [x] Enumerate the residual for Phase 7. Expect higher residual density than `Automation/`:
         two thirds of `Tests/` violations touch a string literal (98 code-with-string,
-        58 string-dominated, 19 line comments).
-  - [ ] Commit.
+        58 string-dominated, 19 line comments). *(completed: `tools/logs/tests-residual.txt`,
+        18 entries. The string-gap breaker meant string density was NOT the limiting factor —
+        every residual site is a structure-instance brace or a non-compiling file.)*
+  - [x] Commit.
 
 - **Timing:** 1.5 hours
 - **Depends on:** 2
@@ -480,14 +482,57 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 - **Files to modify:** the 24 `Tests/BimodalTest/` `.lean` files listed above; plus
   `specs/180_.../tools/logs/tests-residual.txt` (new).
 
+- **Phase 6 measured result:** 21 of 24 files swept clean (`TacticsTest` 73/73, `AxiomsTest`
+  25/25, `ProofSearchTest` 22/22, `PerpetuityTest` 13/13, …). Three failed, and all three are
+  files that sit **outside `lake build BimodalTest`** — a first-class documented property of
+  this tree (`Tests/BimodalTest.lean` names all four exclusions;
+  `scripts/module-invariants-manifest.txt` tracks them), not something this phase broke:
+  - `Semantics/SemanticBenchmark.lean`, `ProofSystem/DerivationBenchmark.lean` — manifested
+    `broken:`; they do not compile at all (they pass `String` where `Atom` is now required).
+    The sweep refused both with `file had errors BEFORE sweep`, which is the correct behaviour,
+    and left them byte-identical.
+  - `Automation/ProofFirstTests.lean` — compiles in isolation but cannot be imported (it pulls
+    in an executable root defining `main`). The sweep applied 9 breaks then reverted the file on
+    `97:99 / 138:99 unexpected identifier; expected '}'`, a structure-instance brace split no
+    existing guard covers.
+
+  Area total **231 → 18**, in exactly those three files.
+
+- **Scope correction made in this phase (carried back into Phase 1's harness):**
+  `scripts/check-module-invariants.sh` C7 counts **331** live `.lean` files, one more than the
+  harness's 330. The extra is the `lean_lib FormalSystem` root aggregator `FormalSystem.lean`,
+  which lives at the **repository root**, not inside `FormalSystem/` — so walking the two source
+  directories silently omitted it. It carries **zero** violations, so no violation count in this
+  plan changes; but a counter whose correctness rests on "the file we forgot to look at happened
+  to be clean" is precisely the defect class Phase 1 exists to eliminate. `count_long_lines.py`
+  now scans it explicitly and `gate.py:lean_files()` delegates to that one walk rather than
+  keeping a second notion of "the live tree". The baseline was re-derived against a throwaway
+  worktree of the pre-task commit: **live files 330 → 331, copyright 330/330 → 331/331**,
+  `long_lines` unchanged at **598**, categories unchanged. The plan's and the task description's
+  330/277 denominators were both simply older, smaller ones.
+
 - **Verification:**
-  - `count_long_lines.py` reports the `Tests/` area strictly below 231, matching the enumerated
-    residual length exactly.
-  - `lake build BimodalTest` green, **≥ 1923 jobs**, exit 0, zero errors. A broken `#guard`
+  - [x] `count_long_lines.py` reports the `Tests/` area strictly below 231 — **18** — matching
+    the enumerated residual length (`tools/logs/tests-residual.txt`, 18 entries) exactly.
+  - [x] `lake build BimodalTest` green, **1923 jobs**, exit 0, zero errors. A broken `#guard`
     surfaces here as a build error — this is the substantive check that no reformatting changed
     a test's meaning.
-  - `lake build` still green, ≥ 1883 jobs.
-  - Declaration inventory unchanged; frozen categories unchanged by equality.
+  - [x] `lake build` still green, **1883 jobs**.
+  - [x] Declaration inventory unchanged; frozen categories unchanged by equality
+    (`gate.py check` → **GATE PASSED**, against the re-derived baseline).
+  - [x] `bash scripts/check-module-invariants.sh` exits 0 with every check passing — including
+    **C6** ("all 7 manifested module(s) still compile in isolation"), which is the gate for
+    `Automation/FormulaMutatorTest.lean`, a file this phase modified that `lake build
+    BimodalTest` does **not** cover; **C2** (all four flagship axiom sets match baseline) and
+    **C3** (sole structural sorry is `countermodel_discrete`).
+  - [x] Compile-time check count in `Tests/` unchanged: **757** before and after, measured
+    identically on both sides against a worktree of the pre-task commit (748 `example` + 7
+    `#guard` + 2 `#guard_msgs`). The plan's "758" used a marginally different counting rule;
+    what the invariant needs is baseline == current, and it holds.
+  - [x] Pre-existing diagnostic baselines captured for the two non-compiling benchmarks, so
+    Phase 7 can prove it did not make them worse: `logs/broken-baseline-SemanticBenchmark.txt`
+    (23 diagnostics, 7 distinct shapes) and `logs/broken-baseline-DerivationBenchmark.txt`
+    (38 / 17), with line numbers normalised out.
 
 ---
 

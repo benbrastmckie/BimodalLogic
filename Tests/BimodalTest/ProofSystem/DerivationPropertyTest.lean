@@ -237,7 +237,8 @@ example (φ : Formula) : ⊢ (φ.imp (Formula.allFuture φ.somePast)) :=
   DerivationTree.axiom [] (φ.imp (Formula.allFuture φ.somePast)) (Axiom.connect_future φ) trivial
 
 -- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
--- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
+-- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task
+-- summary.
 -- /--
 -- Test: Temporal L axiom is derivable.
 -- -/
@@ -248,7 +249,8 @@ example (φ : Formula) : ⊢ (φ.imp (Formula.allFuture φ.somePast)) :=
 Test: Modal-Future axiom is derivable.
 -/
 example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))) :=
-  DerivationTree.axiom [] ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))) (Axiom.modal_future φ) trivial
+  DerivationTree.axiom [] ((Formula.box φ).imp (Formula.box (Formula.allFuture φ)))
+      (Axiom.modal_future φ) trivial
 
 /-!
 Test: Temporal-Future is derivable (derived from MF + T + Modal 4).

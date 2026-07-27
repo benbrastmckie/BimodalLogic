@@ -49,7 +49,8 @@ example : ¬(TruthAt testModel Set.univ testHistory (0 : Int) (Formula.atomS "q"
 
 -- Test: Implication basic behavior
 -- p → p is true
-example : (TruthAt testModel Set.univ testHistory (0 : Int) ((Formula.atomS "p").imp (Formula.atomS "p"))) := by
+example : (TruthAt testModel Set.univ testHistory (0 : Int)
+    ((Formula.atomS "p").imp (Formula.atomS "p"))) := by
   intro h
   exact h
 

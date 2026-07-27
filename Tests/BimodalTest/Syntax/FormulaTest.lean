@@ -255,13 +255,17 @@ example : (Formula.strongTrigger p q).complexity = 4 := rfl
 
 -- Test: swapTemporal on strongRelease
 example (φ ψ : Formula) :
-    (Formula.strongRelease φ ψ).swapTemporal = Formula.strongTrigger φ.swapTemporal ψ.swapTemporal := by
-  simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.swapTemporal, Formula.swap_temporal_neg]
+    (Formula.strongRelease φ ψ).swapTemporal = Formula.strongTrigger φ.swapTemporal
+        ψ.swapTemporal := by
+  simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.swapTemporal,
+      Formula.swap_temporal_neg]
 
 -- Test: swapTemporal on strongTrigger
 example (φ ψ : Formula) :
-    (Formula.strongTrigger φ ψ).swapTemporal = Formula.strongRelease φ.swapTemporal ψ.swapTemporal := by
-  simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.swapTemporal, Formula.swap_temporal_neg]
+    (Formula.strongTrigger φ ψ).swapTemporal = Formula.strongRelease φ.swapTemporal
+        ψ.swapTemporal := by
+  simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.swapTemporal,
+      Formula.swap_temporal_neg]
 
 -- Test: strongRelease modal depth
 example : (Formula.strongRelease p q).modalDepth = 0 := rfl

@@ -44,7 +44,8 @@ example (A : Formula) : ⊢ A.or A.neg := em A
 example : ⊢ (Formula.atomS "p").or (Formula.atomS "p").neg := em (Formula.atomS "p")
 
 /-- Test LEM with complex formula -/
-example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "q")).or ((Formula.atomS "p").imp (Formula.atomS "q")).neg :=
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "q")).or
+    ((Formula.atomS "p").imp (Formula.atomS "q")).neg :=
   em ((Formula.atomS "p").imp (Formula.atomS "q"))
 
 /-!
@@ -59,7 +60,8 @@ example : [Formula.atomS "p", (Formula.atomS "p").neg] ⊢ Formula.atomS "q" :=
   botOfAndNeg (Formula.atomS "p") (Formula.atomS "q")
 
 /-- Test ECQ deriving complex formula from contradiction -/
-example : [Formula.atomS "p", (Formula.atomS "p").neg] ⊢ (Formula.atomS "q").imp (Formula.atomS "r") :=
+example : [Formula.atomS "p", (Formula.atomS "p").neg] ⊢ (Formula.atomS "q").imp
+    (Formula.atomS "r") :=
   botOfAndNeg (Formula.atomS "p") ((Formula.atomS "q").imp (Formula.atomS "r"))
 
 /-!
@@ -89,7 +91,8 @@ example : ⊢ (Formula.atomS "p").neg.imp ((Formula.atomS "p").imp (Formula.atom
   negImp (Formula.atomS "p") (Formula.atomS "q")
 
 /-- Test EFQ with complex formula -/
-example : ⊢ ((Formula.atomS "p").diamond).neg.imp (((Formula.atomS "p").diamond).imp (Formula.atomS "q")) :=
+example : ⊢ ((Formula.atomS "p").diamond).neg.imp
+    (((Formula.atomS "p").diamond).imp (Formula.atomS "q")) :=
   negImp (Formula.atomS "p").diamond (Formula.atomS "q")
 
 /-!
@@ -129,7 +132,8 @@ example : [(Formula.atomS "r").box] ⊢
 -/
 
 /-- Test RCP type signature: (Γ ⊢ ¬A → ¬B) → (Γ ⊢ B → A) -/
-example (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := impOfNegImpNeg Γ A B h
+example (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := impOfNegImpNeg Γ A
+    B h
 
 /-- Test RCP with empty context and atomic formulas -/
 example (A B : Formula) (h : ⊢ A.neg.imp B.neg) : ⊢ B.imp A := impOfNegImpNeg [] A B h

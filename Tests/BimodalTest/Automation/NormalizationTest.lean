@@ -188,7 +188,8 @@ using computable equality.
     normalizeFormula f == f
   let allPass := results.all id
   let failCount := results.filter (! ·) |>.length
-  return s!"normalizeFormula identity test: {if allPass then "ALL PASS" else s!"FAILURES: {failCount}"} ({formulas.length} formulas tested)"
+  return s!"normalizeFormula identity test: {if allPass then "ALL PASS" else s!"FAILURES:
+      {failCount}"} ({formulas.length} formulas tested)"
 
 /-!
 ## Section 6: Decision Procedure Integration Tests
@@ -248,6 +249,7 @@ No timeouts, confirming zero performance regression from normalization.
     else if result.isInvalid then (v, i + 1, t)
     else (v, i, t + 1)
   ) (0, 0, 0)
-  return s!"Benchmark: {sample.length} formulas decided (valid={counts.1}, invalid={counts.2.1}, timeout={counts.2.2})"
+  return s!"Benchmark: {sample.length} formulas decided (valid={counts.1}, invalid={counts.2.1}, \
+      timeout={counts.2.2})"
 
 end BimodalTest.Automation.NormalizationTest

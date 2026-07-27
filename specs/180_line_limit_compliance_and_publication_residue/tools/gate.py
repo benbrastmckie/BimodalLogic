@@ -21,6 +21,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import lintlib  # noqa: E402
 import count_long_lines  # noqa: E402
 
+# REPO is module-level state so that `--root` can point the whole gate at a throwaway git
+# worktree of the pre-task commit.  That is what makes the final zero MEANINGFUL: the same
+# unchanged counter must still report 598/65 against the baseline tree, proving it reached zero
+# because the tree changed and not because the counter broke.
 REPO = lintlib.REPO
 EXPECTED_SORRY_DECL = 'countermodel_discrete'
 EXPECTED_SORRY_FILE = 'FormalSystem/Metalogic/WeakCanonical/Transfer.lean'
@@ -31,20 +35,19 @@ DECL_RE = re.compile(
     r'([A-Za-z_][A-Za-z0-9_.\'!?]*)')
 
 
-def lean_files():
-    """Every LIVE `.lean` file: both source roots, Boneyard pruned."""
-    out = []
-    for top in lintlib.LIVE_ROOTS:
-        for root, dirs, files in os.walk(os.path.join(REPO, top)):
-            dirs[:] = [d for d in dirs if d != 'Boneyard']
-            for fn in files:
-                if fn.endswith('.lean'):
-                    out.append(os.path.relpath(os.path.join(root, fn), REPO))
+def lean_files(repo=None):
+    """Every LIVE `.lean` file -- delegated to the canonical counter's own file walk.
+
+    Both source roots plus the repository-root `FormalSystem.lean` aggregator, Boneyard
+    pruned.  Sharing one walk with `count_long_lines` is the point: two independent notions of
+    "the live tree" is how a file gets silently left out of a compliance claim.
+    """
+    out = count_long_lines.lean_files(repo or REPO)
     if not out:
         raise RuntimeError(
-            f'lean_files() found 0 files under {lintlib.LIVE_ROOTS!r} in {REPO} -- '
+            f'lean_files() found 0 files under {lintlib.LIVE_ROOTS!r} in {repo or REPO} -- '
             'refusing to gate against a vacuous empty tree')
-    return sorted(out)
+    return out
 
 
 def decl_inventory():
@@ -182,7 +185,12 @@ def _report(s):
 
 
 if __name__ == '__main__':
-    mode = sys.argv[1]
+    argv = sys.argv[1:]
+    if argv and argv[0] == '--root':
+        REPO = os.path.abspath(argv[1])
+        argv = argv[2:]
+    mode = argv[0]
+    sys.argv = ['gate.py'] + argv
     if mode == 'snap':
         json.dump(snapshot(sys.argv[2]), open(sys.argv[3], 'w'), indent=1, sort_keys=True)
         s = json.load(open(sys.argv[3]))

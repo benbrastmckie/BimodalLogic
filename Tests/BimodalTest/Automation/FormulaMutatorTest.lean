@@ -122,25 +122,29 @@ example : tryRemoveRightConjunct (Formula.and p q) = some p := rfl
 example : trySwapWeakUntilStrongRelease p = none := rfl
 
 -- trySwapWeakUntilStrongRelease on weakUntil p q
-example : trySwapWeakUntilStrongRelease (Formula.weakUntil p q) = some (Formula.strongRelease p q) := rfl
+example : trySwapWeakUntilStrongRelease (Formula.weakUntil p q) = some
+    (Formula.strongRelease p q) := rfl
 
 -- trySwapStrongReleaseWeakUntil returns none on atom
 example : trySwapStrongReleaseWeakUntil p = none := rfl
 
 -- trySwapStrongReleaseWeakUntil on strongRelease p q
-example : trySwapStrongReleaseWeakUntil (Formula.strongRelease p q) = some (Formula.weakUntil p q) := rfl
+example : trySwapStrongReleaseWeakUntil (Formula.strongRelease p q) = some
+    (Formula.weakUntil p q) := rfl
 
 -- trySwapTriggerStrongTrigger returns none on atom
 example : trySwapTriggerStrongTrigger p = none := rfl
 
 -- trySwapTriggerStrongTrigger on trigger p q
-example : trySwapTriggerStrongTrigger (Formula.trigger p q) = some (Formula.strongTrigger p q) := rfl
+example : trySwapTriggerStrongTrigger (Formula.trigger p q) = some (Formula.strongTrigger p q) :=
+    rfl
 
 -- trySwapStrongTriggerTrigger returns none on atom
 example : trySwapStrongTriggerTrigger p = none := rfl
 
 -- trySwapStrongTriggerTrigger on strongTrigger p q
-example : trySwapStrongTriggerTrigger (Formula.strongTrigger p q) = some (Formula.trigger p q) := rfl
+example : trySwapStrongTriggerTrigger (Formula.strongTrigger p q) = some (Formula.trigger p q) :=
+    rfl
 
 /-!
 ## MutationType Serialization Tests

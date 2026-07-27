@@ -49,9 +49,11 @@ Verify that a JSON string has the expected structural form:
 def checkJsonObject (s : String) (key : String) (label : String) : IO Bool := do
   let trimmed := s.trimAscii.toString
   if not (trimmed.startsWith "{") then
-    IO.println s!"FAIL {label}: does not start with curly-brace (got: {trimmed.take 30})" ; return false
+    IO.println s!"FAIL {label}: does not start with curly-brace (got: {trimmed.take 30})" ;
+        return false
   if not (trimmed.endsWith "}") then
-    IO.println s!"FAIL {label}: does not end with curly-brace (got: ...{trimmed.takeRight 30})" ; return false
+    IO.println s!"FAIL {label}: does not end with curly-brace (got: ...{trimmed.takeRight 30})" ;
+        return false
   -- The key should appear as `"key":` in the string
   let keyPattern := "\"" ++ key ++ "\":"
   if not (trimmed.contains keyPattern) then
@@ -82,7 +84,8 @@ def runTraceExportTests : IO Bool := do
   else failed := failed + 1
 
   -- Test 4: empty certificate has 'axiom_fingerprint' key
-  if ← checkJsonObject s0 "axiom_fingerprint" "Test 4: empty certificate has 'axiom_fingerprint' key" then
+  if ← checkJsonObject s0 "axiom_fingerprint"
+      "Test 4: empty certificate has 'axiom_fingerprint' key" then
     passed := passed + 1
   else failed := failed + 1
 
@@ -100,14 +103,16 @@ def runTraceExportTests : IO Bool := do
   match r6 with
   | .success cert =>
       let s6 := proofCertificateToJsonString cert
-      if ← checkJsonObject s6 "outcome" "Test 6: decideWithTrace on tautology has 'outcome' key" then
+      if ← checkJsonObject s6 "outcome" "Test 6: decideWithTrace on tautology has 'outcome' key"
+          then
         passed := passed + 1
       else failed := failed + 1
       if s6.contains "rule_fired" then
         IO.println "PASS Test 6b: tautology trace contains 'rule_fired' events"
         passed := passed + 1
       else
-        IO.println s!"FAIL Test 6b: tautology trace missing 'rule_fired' events (got: {s6.take 200})"
+        IO.println
+            s!"FAIL Test 6b: tautology trace missing 'rule_fired' events (got: {s6.take 200})"
         failed := failed + 1
   | .failure _ =>
       IO.println "FAIL Test 6: decideWithTrace on tautology should succeed"

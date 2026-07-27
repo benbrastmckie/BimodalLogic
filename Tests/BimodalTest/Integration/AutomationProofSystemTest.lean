@@ -362,7 +362,8 @@ Test 33: temp_4_tactic produces sound derivations.
 Specific tactic applications should be valid via soundness.
 -/
 example (p : Formula) : [] ⊨ (p.allFuture.imp p.allFuture.allFuture) := by
-  have deriv : ⊢ (p.allFuture.imp p.allFuture.allFuture) := FormalSystem.Theorems.TemporalDerived.temporal4Derived _
+  have deriv : ⊢ (p.allFuture.imp p.allFuture.allFuture) :=
+      FormalSystem.Theorems.TemporalDerived.temporal4Derived _
   exact soundness [] _ deriv
 
 /--
@@ -371,7 +372,8 @@ Test 34: temp_a_tactic produces sound derivations.
 Specific tactic applications should be valid via soundness.
 -/
 example (p : Formula) : [] ⊨ (p.imp (p.somePast.allFuture)) := by
-  have deriv : ⊢ (p.imp (p.somePast.allFuture)) := DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
+  have deriv : ⊢ (p.imp (p.somePast.allFuture)) := DerivationTree.axiom _ _
+      (Axiom.connect_future _) trivial
   exact soundness [] _ deriv
 
 /--
@@ -395,7 +397,9 @@ section CombinedAutomationTests
 -- /--
 -- Test 36: tm_auto with Modal T and modus ponens.
 
--- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
+-- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring
+-- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
+-- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- Automation should handle combined reasoning.
 -- -/
 -- example (p : String) : [(Formula.atomS p).box] ⊢ (Formula.atomS p) := by
@@ -448,7 +452,9 @@ section AesopRuleIntegrationTests
 -- /--
 -- Test 41: Aesop forward rule for Modal T.
 
--- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
+-- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring
+-- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
+-- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The modalTForward rule should work with tm_auto.
 -- -/
 -- example (φ : Formula) : [φ.box] ⊢ φ := by
@@ -457,7 +463,9 @@ section AesopRuleIntegrationTests
 -- /--
 -- Test 42: Aesop forward rule for Modal 4.
 
--- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
+-- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring
+-- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
+-- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The modal4Forward rule should work with tm_auto.
 -- -/
 -- example (φ : Formula) : [φ.box] ⊢ φ.box.box := by
@@ -466,7 +474,9 @@ section AesopRuleIntegrationTests
 -- /--
 -- Test 43: Aesop forward rule for Modal B.
 
--- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
+-- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring
+-- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
+-- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The modalBForward rule should work with tm_auto.
 -- -/
 -- example (φ : Formula) : [φ] ⊢ φ.diamond.box := by
@@ -475,7 +485,9 @@ section AesopRuleIntegrationTests
 -- /--
 -- Test 44: Aesop forward rule for Temporal 4.
 
--- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
+-- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring
+-- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
+-- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The temporal4Forward rule should work with tm_auto.
 -- -/
 -- example (φ : Formula) : [φ.allFuture] ⊢ φ.allFuture.allFuture := by
@@ -484,7 +496,9 @@ section AesopRuleIntegrationTests
 -- /--
 -- Test 45: Aesop forward rule for Temporal A.
 
--- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
+-- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring
+-- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
+-- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- The temporalAForward rule should work with tm_auto.
 -- -/
 -- example (φ : Formula) : [φ] ⊢ (Formula.allFuture φ.somePast) := by
@@ -525,7 +539,9 @@ example (φ ψ : Formula) : ⊢ (φ.imp (ψ.imp φ)) := by
 -- /--
 -- Test 50: Aesop with complex goal.
 
--- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
+-- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring
+-- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
+-- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- Aesop should handle moderately complex goals.
 -- -/
 -- example (p : Formula) : [p.box] ⊢ p := by
@@ -610,7 +626,9 @@ example : True := by
 -- /--
 -- Test 57: Automation with context.
 
--- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
+-- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring
+-- goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a
+-- sorry; the underlying axioms/derivations remain tested elsewhere.
 -- Automation should work with non-empty contexts.
 -- -/
 -- example : True := by

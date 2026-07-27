@@ -42,7 +42,8 @@ example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.atomS "p") :=
   DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 -- Test: Modal 4 is derivable from any context
-example : [Formula.atomS "q"] ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.box (Formula.box (Formula.atomS "p"))) :=
+example : [Formula.atomS "q"] ⊢ (Formula.box (Formula.atomS "p")).imp
+    (Formula.box (Formula.box (Formula.atomS "p"))) :=
   DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 -- Test: Modal B is derivable
@@ -50,7 +51,8 @@ example : ⊢ (Formula.atomS "p").imp (Formula.box (Formula.atomS "p").diamond) 
   DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
 
 -- Test: Temporal 4 is derivable (now a derived theorem, no longer an axiom constructor)
-noncomputable example : ⊢ (Formula.allFuture (Formula.atomS "p")).imp (Formula.allFuture (Formula.allFuture (Formula.atomS "p"))) :=
+noncomputable example : ⊢ (Formula.allFuture (Formula.atomS "p")).imp
+    (Formula.allFuture (Formula.allFuture (Formula.atomS "p"))) :=
   FormalSystem.Theorems.TemporalDerived.temporal4Derived (Formula.atomS "p")
 
 -- Test: connect_future is derivable (φ → G(P(φ)), BX4)
@@ -62,11 +64,13 @@ example : ⊢ (Formula.atomS "p").imp (Formula.allPast (Formula.atomS "p").someF
   DerivationTree.axiom _ _ (Axiom.connect_past _) trivial
 
 -- Test: Modal-Future is derivable
-example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.box (Formula.allFuture (Formula.atomS "p"))) :=
+example : ⊢ (Formula.box (Formula.atomS "p")).imp
+    (Formula.box (Formula.allFuture (Formula.atomS "p"))) :=
   DerivationTree.axiom _ _ (Axiom.modal_future _) trivial
 
 -- Test: Temporal-Future is derivable (derived from MF + T + Modal 4)
-example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.allFuture (Formula.box (Formula.atomS "p"))) :=
+example : ⊢ (Formula.box (Formula.atomS "p")).imp
+    (Formula.allFuture (Formula.box (Formula.atomS "p"))) :=
   FormalSystem.Theorems.Combinators.temporalFutureDerived (Formula.atomS "p")
 
 -- ============================================================
@@ -160,7 +164,8 @@ example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.atomS "p") :=
 
 -- Test: Temporal duality swaps allPast/allFuture
 -- If ⊢ φ then ⊢ swapTemporal φ (using connect_future as the base derivation)
-example : ⊢ ((Formula.atomS "p").imp (Formula.allFuture (Formula.atomS "p").somePast)).swapTemporal :=
+example : ⊢ ((Formula.atomS "p").imp (Formula.allFuture
+    (Formula.atomS "p").somePast)).swapTemporal :=
   DerivationTree.temporal_duality _ (DerivationTree.axiom [] _ (Axiom.connect_future _) trivial)
 
 -- The above should derive: ⊢ p → H(F(p)) (swapped from p → G(P(p)))

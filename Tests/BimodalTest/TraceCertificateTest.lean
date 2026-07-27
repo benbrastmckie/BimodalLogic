@@ -93,7 +93,8 @@ def testTraceContainsRuleFired : IO Bool := do
       IO.println s!"PASS Test 4: tautology trace has rule_fired events (count: {cert.trace.length})"
       return true
     else
-      IO.println s!"FAIL Test 4: tautology trace has no rule_fired events (count: {cert.trace.length})"
+      IO.println
+          s!"FAIL Test 4: tautology trace has no rule_fired events (count: {cert.trace.length})"
       return false
   | .failure f =>
     IO.println s!"FAIL Test 4: tautology returned failure: {repr f}"
@@ -145,7 +146,9 @@ def testLowFuelFailure : IO Bool := do
     return true
   | .failure (.outOfFuel trace _) =>
     if trace.length > 0 then
-      IO.println s!"PASS Test 7: low-fuel formula returned failure with non-empty trace (length: {trace.length})"
+      IO.println
+          s!"PASS Test 7: low-fuel formula returned failure with non-empty trace (length: \
+              {trace.length})"
       return true
     else
       IO.println "FAIL Test 7: low-fuel formula returned failure with empty trace"
@@ -164,7 +167,8 @@ def testTotalStepsMonotonic : IO Bool := do
       IO.println s!"PASS Test 8: totalSteps equals trace length: {cert.totalSteps}"
       return true
     else
-      IO.println s!"FAIL Test 8: totalSteps ({cert.totalSteps}) != trace length ({cert.trace.length})"
+      IO.println
+          s!"FAIL Test 8: totalSteps ({cert.totalSteps}) != trace length ({cert.trace.length})"
       return false
   | .failure _ =>
     IO.println "FAIL Test 8: tautology returned failure"
