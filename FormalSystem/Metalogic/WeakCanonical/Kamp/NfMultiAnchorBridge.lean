@@ -273,6 +273,28 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.BoundedFi
 -- in this file's transitive closure above, plus `Mathlib.Data.Real.Basic` /
 -- `Mathlib.Tactic.Linarith` for the probe's carrier.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixOneFaithful
+-- NOTE: `import ...Kamp.EANegationFixFaithful.NegFixListFaithful` lands the import edge for
+-- LEMMA 5.1's RECURSION over the faithful carrier (Rabinovich 2014, PDF pp.10-11):
+-- `negFixListFaithful` with `negFixListFaithful_nil_iff` and `negFixListFaithful_iff`, plus the
+-- `VVecEA2` pinned-DNF machinery (`VecPinnedItem`, `vecPinnedConj`, `vecPinnedConjAll`,
+-- `vecPinnedListToV`) that the `VBracketFormula` version at `EANegationFix/NegFix.lean:298`-`:426`
+-- has no lift for. This is the inductive step of the very argument `NegFixOneFaithful` settles at
+-- one witness, and unlike that module it IS the landed attained formulation with the carrier
+-- swapped: `negFixList`'s Case 2 / Case 3 disjuncts and the whole carrier-free `Aᵢ`/`Bᵢ` split
+-- (`splitsAt` / `bracketOf_splitsAt_iff`, PDF pp.10-11) are reused unchanged. What the faithful
+-- carrier ADDS is a third, top-level disjunct — Case 1, `K⁺(¬β₁)(z₀)` (PDF p.9) — because
+-- `HasDedekindINF.first_occ` preserves Rabinovich's printed disjunction where the attained
+-- `firstNegPin_or_all` (`EANegationFix/NegFix.lean:137`) collapses it to a two-way dichotomy. The
+-- edge also protects `negFixListFaithful_case1_is_indispensable`, which machine-checks that under
+-- `K⁺(¬β₁)(z₀)` the other two disjuncts are both UNSATISFIABLE, so the added gate is load-bearing
+-- rather than dead syntax admitted for type-checking — an exclusion artifact of the same class as
+-- `prior_makes_disjunct2_unreachable`. Carrier result: `HasDedekindINF` ALONE, where
+-- `negFixList_iff` (`EANegationFix/NegFix.lean:520`) needs `HasAttainedINF` AND `HasAttainedSUP`.
+-- Nothing in `EANegationFix/` is edited; `negFixList` and `negFixList_iff` stay live and consumed.
+-- The module contains no sorries and every declaration is axiom-clean. Cycle-free: it imports only
+-- `Kamp.EANegationFix.NegFix` and `Kamp.EANegationFixFaithful.NegFixOneFaithful`, both already in
+-- this file's transitive closure above.
+import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixListFaithful
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge

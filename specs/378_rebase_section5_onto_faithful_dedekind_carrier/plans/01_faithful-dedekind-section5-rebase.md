@@ -972,7 +972,26 @@ Cases 3a/3b/3c.
 
 ---
 
-### Phase 7: `negFixListFaithful` — the recursion [NOT STARTED]
+### Phase 7: `negFixListFaithful` — the recursion [COMPLETED]
+
+**Outcome (measured, dispatch `sess_1785164194_b6cbfb`):** `lake build` EXIT 0 at **1890 jobs**
+(baseline re-measured this dispatch: **1889** — delta **+1**, as specified). Live modules
+**275 → 276** (delta **+1**) by transitive `import` walk from `FormalSystem.lean`;
+`Kamp.EANegationFixFaithful.NegFixListFaithful` confirmed LIVE,
+`NfMultiAnchorBridge.AggregateOffDiagK1` still LIVE and still building explicitly at **1098 jobs,
+EXIT 0**. Tactic-position sorry census on `Kamp/` unchanged at **4 dead / 0 live** (all four under
+`Kamp/Boneyard/`); the new module is **0**. All 18 new declarations axiom-clean — no `sorryAx`, no
+new `axiom` declarations. `EANegationFix/NegFix.lean` not edited (`git status` clean on it).
+
+**The carrier result: `HasDedekindINF` ALONE.** `negFixListFaithful_iff` carries one carrier
+hypothesis where the attained `negFixList_iff` (`NegFix.lean:520`) carries two (`HasAttainedINF`
+**and** `HasAttainedSUP`).
+
+**SIZING: the cost centre did NOT overrun.** Phase 7 closed in one agent run; the mandatory
+7a/7b/7c re-split boundaries were held in reserve and never reached. The three-strikes sizing guard
+did not fire and the plan is **not** re-split. The reason the 681-line estimate did not
+materialize is recorded under "Why this was smaller than planned" below, because it is a fact about
+the migration and not luck.
 
 - **THE COST CENTRE. This is the one phase this plan expects to overrun a single agent run, and it
   says so up front.** `negFixList` (`NegFix.lean:449`, with `negFixList_iff` at `:520`) is a
@@ -981,13 +1000,59 @@ Cases 3a/3b/3c.
 - **Goal:** The faithful `VVecEA2` analogue of the `Aᵢ`/`Bᵢ` split and closing induction.
 - **Source correspondence:** PDF pp.10-11, including the two displayed equivalences on p.11.
 - **Tasks:**
-  - [ ] Read PDF pp.10-11 directly. **PDF only.**
-  - [ ] Define `negFixListFaithful` and prove `negFixListFaithful_iff`, following `NegFix.lean`
+  - [x] Read PDF pp.10-11 directly. **PDF only.** *(completed — the corrupt companion `.md` was
+        never opened. Two readings were settled from the PDF and are load-bearing: (i) `Bᵢ⁺`'s
+        spelling, which the inline definition on p.10 typesets as `[βᵢ, αᵢβ_{i+1}α_{i+1},…]` with
+        one `βᵢ` lost — **Figure 1**'s caption on the same page prints it unambiguously as
+        `B₂ := [α₀,β₁,α₁,β₂,β₂](z₀,z) ∧ [β₂,β₂,α₂,β₃,α₃](z,z₁)`, i.e. `βᵢ` occurs twice, as the
+        point type at `z` and as the segment type just above it; (ii) p.11's clauses (d) and (e),
+        which are the two boundary items of the `Bᵢ` range and are exactly the two placements the
+        landed `splitsAt` already absorbs.)*
+  - [x] Define `negFixListFaithful` and prove `negFixListFaithful_iff`, following `NegFix.lean`
         step-by-step. **Prefer generalizing the existing proof over rewriting it** — the structure is
         Rabinovich's and is already proved; only the carrier and the type change.
-  - [ ] Reuse Phase 3's `VVecEA2.concatPin` and the landed pinned `conjFull`; the `Aᵢ`/`Bᵢ` split is
-        **already formalized** and needs re-carrying, not re-deriving.
-  - [ ] Additions only; `NegFix.lean` is not edited.
+        *(deviation: altered — the proof IS the generalization of `negFixList_iff`, step for step,
+        with three carrier consumptions swapped and nothing re-derived; but the definition carries
+        **one disjunct more** than `negFixList` does. See Deviation 1 below. This is the third gate
+        the phase's own Verification bullet anticipates, landed in a different shape than that
+        bullet predicts, so it is REPORTED rather than annotated-and-passed.)*
+  - [x] Reuse Phase 3's `VVecEA2.concatPin` and the landed pinned `conjFull`; the `Aᵢ`/`Bᵢ` split is
+        **already formalized** and needs re-carrying, not re-deriving. *(completed — `splitsAt`,
+        `bracketOf_splitsAt_iff` and `splitsAt_rightPairs_length_le` (`NegFix.lean:180`/`:216`/`:191`)
+        are imported and used unchanged, including as the termination measure; the split is
+        carrier-free, so nothing about it changed. Phase 3's `VVecEA2.concatPin` and
+        `VVecEA2.conjEverywhere` and the landed `VVecEA2.conjFull` are all three consumed, inside
+        `VecPinnedItem.toV` and `VecPinnedItem.conj`.)*
+  - [x] Additions only; `NegFix.lean` is not edited. *(completed — `git status` shows
+        `EANegationFix/NegFix.lean` unmodified; the new module imports it. `negFixList`,
+        `negFixList_iff` and `firstNegPin_or_all` stay live and consumed.)*
+  - [x] *(addition beyond the task list, strict superset)* Land
+        `negFixListFaithful_case1_is_indispensable`, the machine-checked artifact discharging the
+        phase's non-vacuity requirement, and `negFixListFaithful_iff_of_attained`, the
+        attained → faithful shim mirroring `negFixOneFaithful_iff_of_attained`. *(completed)*
+
+**Phase 7 deviations** (one, REPORTED not annotated-and-passed; no listed task was skipped,
+narrowed, substituted, or deferred):
+
+1. *Altered (strict superset) — `negFixListFaithful` has THREE disjuncts per cons step where
+   `negFixList` has two, and the limit gate landed in a different SHAPE than the phase's
+   Verification bullet predicts.* The bullet says *"for each of Case 2 and Case 3, state the three
+   gates explicitly"*, i.e. it anticipated a third gate **inside each** of the two existing cases.
+   What the carrier actually forces is different and simpler:
+   - The attained `firstNegPin_or_all` (`NegFix.lean:137`) is a **two**-way dichotomy: `β₁`
+     everywhere, or an attained first-`¬β₁` point. `HasDedekindINF.first_occ` does not collapse
+     Rabinovich's printed disjunction, so its `TemporalPred` wrapper is a **three**-way split:
+     `K⁺(¬β₁)(z₀)` / no `¬β₁`-point at all / the eq (5.3) pin. The limit alternative is therefore
+     a **top-level third disjunct** (Case 1, PDF p.9), not a third gate nested in Cases 2 and 3.
+   - Inside Case 3 the limit alternative does appear a second time, but as the pin's own **point
+     type** `infPinPoint β₁ = ¬β₁(r₀) ∨ K⁺(¬β₁)(r₀)` (eq (5.3)'s third conjunct, PDF p.10) — a
+     two-alternative point predicate, not a separate gate. Case 2 has no limit alternative at all,
+     because "`β₁` holds along `(z₀,z₁)`" admits no limit reading.
+   - Nothing was invented for this: Case 1 is Rabinovich's printed Case 1 on PDF p.9, and it is
+     carried by `kplusLeftBlock` (`Lemma53Faithful.lean:189`), landed in Phase 1 and until now
+     unconsumed outside `negChainOnFaithful` and `negFixOneCase1`.
+   Reported here rather than annotated silently because the plan predicted a shape and the paper
+   produced another; the difference is recorded, not smoothed over.
 - **Mandatory internal re-split boundaries.** If this phase does not close in one agent run, **stop
   and re-split at the next boundary below** — do not dispatch again on the same whole target
   (three-strikes sizing guard). The boundaries, in order, each a legitimate stopping point with a
@@ -1009,6 +1074,98 @@ Cases 3a/3b/3c.
     explicitly and confirm the third (limit) gate is **reachable in the proof**, not dead syntax
     admitted for type-checking. If a gate is provably unreachable, say so and say why — that is the
     same class of finding as `prior_makes_disjunct2_unreachable` and must be recorded, not hidden.
+
+**Phase 7 measured outcome** (actual, not asserted):
+
+| Gate | Before | After | Verdict |
+|---|---|---|---|
+| `lake build` exit | 0 | **0** | pass |
+| Jobs | 1889 | **1890** | +1, as specified |
+| Live modules from `FormalSystem.lean` | 275 | **276** | +1, as specified |
+| Tactic-position sorries in `Kamp/` | 4 dead / 0 live | **4 dead / 0 live** | unchanged |
+| Tactic-position sorries in the new module | — | **0** | pass |
+| Real `axiom` declarations in `FormalSystem/` | 0 | **0** | unchanged |
+| `NfMultiAnchorBridge/AggregateOffDiagK1.lean` | builds | **builds (1098 jobs, EXIT 0)** | no regression |
+
+Census is tactic-position via `.claude/scripts/lean-sorry-census.sh`, never `grep -c`. The four dead
+sorries are unchanged and all under `Kamp/Boneyard/`: `EndpointNegation.lean:164`,
+`FOToVEA.lean:122`, `EANegationVBracketBackward.lean:452`, `:611`. Liveness was decided by a
+transitive `import` walk from `FormalSystem.lean`; `lake build BoneyardArchive` was never run or
+cited. The bare `grep -c '^axiom ' FormalSystem/` count is 2 and unchanged — both hits are prose
+continuation lines inside `Boneyard/` comments (`Boneyard/DiscreteXY/Discreteness.lean:40`;
+`Boneyard/StrictSemanticsLegacy/Bundle/SuccChainFMCS.lean:1233`), neither is a declaration.
+
+`#print axioms` on all **18** new declarations: **no `sorryAx` anywhere.** Exactly
+`[propext, Classical.choice, Quot.sound]` for `negFixListFaithful_iff`,
+`negFixListFaithful_nil_iff`, `negFixListFaithful_case1_is_indispensable`,
+`negFixListFaithful_iff_of_attained`, `vecPinnedListToV_holds_iff`, `vecPinnedConjAll_holdsAt_iff`,
+`vecPinnedConj_holdsAt_iff`, `VecPinnedItem.conj_holdsAt_iff`; strict subsets for
+`witness_absurd_of_kplusLeft` (`[propext]`), `VecPinnedItem.unit` (none), and the eight remaining
+definitions/wrappers (`[propext, Quot.sound]`).
+
+**Non-vacuity, in the specific form this phase requires.**
+
+The three gates, stated explicitly, with the exact carrier consumption of each:
+
+| gate | condition | source | carrier consumed | limit alternative? |
+|---|---|---|---|---|
+| **Case 1** | `K⁺(¬β₁)(z₀)` — the infimum is at the left endpoint | PDF p.9 Case 1; p.8 "Subcase `r₀ = z₀`" | **none** (`kplusLeftBlock_holds` and `witness_absurd_of_kplusLeft` are both carrier-free) | **this IS the limit gate** |
+| **Case 2** | `β₁` along `(z₀,z₁)`, plus `Form₂` = anchored Cor 5.4(2) | PDF p.10 Case 2 | `HasDedekindINF`, via `negBoundedLeftFixAnchoredFaithful_iff` | none — "`β₁` everywhere" has no limit reading |
+| **Case 3** | the eq (5.3) pin `r₀`, point type `¬β₁(r₀) ∨ K⁺(¬β₁)(r₀)` | PDF p.10, eq (5.3) | `HasDedekindINF`, via `first_occ_tp` and (in the `A`-failure item) `negBoundedLeftFixAnchoredFaithful_iff` | **yes** — the `K⁺(¬β₁)(r₀)` alternative of `infPinPoint` |
+
+**Both limit alternatives are reachable in the proof, not dead syntax.** Machine-checked, not
+argued:
+
+1. *Case 1 is not absorbable.* `negFixListFaithful_case1_is_indispensable` proves that under
+   `K⁺(¬β₁)(z₀)` **both** other disjuncts are unsatisfiable: the Case 2 disjunct asserts `β₁` at
+   every interior point and `K⁺(¬β₁)(z₀)` produces a `¬β₁`-point in `(z₀,z₁)`; the Case 3 disjunct
+   asserts a pin `r₀ ∈ (z₀,z₁)` with `β₁` on all of `(z₀,r₀)` and `K⁺(¬β₁)(z₀)` produces a
+   `¬β₁`-point in `(z₀,r₀)`. So on any structure where `K⁺(¬β₁)(z₀)` is satisfiable, deleting Case 1
+   makes `negFixListFaithful_iff` **false** — the bracket fails while the survivors are
+   unsatisfiable. The theorem is carrier-free: no `HasDedekind*`/`HasAttained*` hypothesis appears.
+   This is the same class of artifact as `prior_makes_disjunct2_unreachable`, taken one step
+   further: that one exhibits *where* the limit case is unreachable, this one shows *why it cannot
+   be absorbed by its neighbours*.
+2. *Both are live proof branches.* Case 1 is produced in the cover direction from
+   `first_occ_tp`'s left disjunct and consumed in the soundness direction by
+   `witness_absurd_of_kplusLeft`; the pin's `K⁺` alternative is consumed in the soundness direction
+   by `bracketOne_witness_le_infPin`'s second branch, discharged by **density** rather than by
+   producing a witness point — which is precisely why no attainment is needed.
+3. *Honest statement of where the limit gate IS unreachable.* On Prior structures and on any
+   attained-INF structure it is dead, for the same reason recorded in Phases 1 and 2: `kplus P t`
+   requires `¬P(t)` together with `P`-points accumulating from the right, which attainment refutes
+   (`hasDefinableINF_excludes_kplus`, `Lemma53.lean:290`). So Case 1 is contentful mathematics
+   whose content is **not yet observable from any live consumer** — exactly as with disjunct (2) of
+   Lemma 5.3 and the `K⁻` boundary disjunct. Observability arrives only with a genuinely
+   non-attained Dedekind-complete frame class, which this tree does not construct. Stated rather
+   than hidden.
+
+**Neither arm re-introduces attainment.** The only carrier hypothesis in `negFixListFaithful_iff`
+is `HasDedekindINF`. `HasAttainedINF` appears in exactly one statement of the module —
+`negFixListFaithful_iff_of_attained`, the deliberate attained → faithful shim, whose entire content
+is "the attained hypothesis still reaches this result" and which routes through
+`HasAttainedINF.toHasDedekindINF`. `HasAttainedSUP`, `HasDefinableINF`, `HasDefinableSUP` and
+`HasDedekindSUP` appear in **no** statement of the module at all. Checkable from the signatures.
+
+**`HasDedekindSUP` remains unconsumed — FOURTH consecutive phase.** Phase 6's assessment is
+confirmed rather than revisited: Rabinovich's Lemma 5.1 induction on pp.10-11 uses no `K⁻`, no
+supremum and no last-occurrence point. Every gate above is INF-side. No use was contrived. Phases 8
+and 9 are lifts, so no remaining phase is a plausible consumer either; Phase 2's mirror stands on
+its own independent value (`kminusFormula`/`kminus_formula_correct`, absent from the tree before,
+plus the right-end chain primitives and the SUP-side exclusion theorem).
+
+**Why this was smaller than planned** (recorded because it is a fact about the migration, not
+luck). The plan sized Phase 7 off `negFixList`'s 681 lines and expected a re-split. The actual work
+was ~200 lines of new proof because three things the estimate treated as work were already done:
+(i) the `Aᵢ`/`Bᵢ` split (`splitsAt` / `bracketOf_splitsAt_iff`) is **carrier-free** and imported
+unchanged, including as the termination measure; (ii) `bracketOne_witness_le_infPin`, landed in
+Phase 6, is stated about a bare `β₁`-prefix condition rather than about `bracketOne`, so it is the
+confinement step at **every** peel with no generalization needed — the single most valuable thing
+Phase 6 handed forward; (iii) `negBoundedLeftFixAnchoredFaithful_iff` (Phase 5) is a drop-in for
+`negBoundedLeftFixAnchored_iff` at both of its call sites. The remaining bulk is the `VVecEA2`
+mirror of the `PinnedItem` DNF machinery, which is mechanical. The sizing estimate was wrong in the
+safe direction and the re-split boundaries were never needed.
+
 - **Green commit:** `task 378 phase 7: faithful negFixList recursion at VVecEA2 (pp.10-11)`
   (or `task 378 phase 7a: …` etc. after a re-split)
 - **Done when:** `negFixListFaithful_iff` is live, sorry-free, axiom-clean — or a bounded stop at a
