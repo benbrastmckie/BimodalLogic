@@ -211,6 +211,14 @@ recorded rather than silently reconciled:
   `schwoon_esparza_2005` itself, already counted in the report's 9-document glyph-six list, so
   this is consistent, not a discrepancy).
 
+**Post-hoc update (during Phase 3)**: the detector's core anchoring logic (`literature_combining_
+detect.py`, extracted from this script's earlier inline implementation) was retuned during Phase 3
+to fix a real idempotence bug (see Phase 3's verification notes: an asymmetric slack widening,
+`slack_low=90`/`slack_high=15`, was needed so re-scanning an already-repaired file with several
+nearby fixes doesn't misclassify correctly-fixed occurrences as `unanchored`). The baseline
+artifacts above were regenerated with this final tuning rather than left as the earlier, less-
+tuned snapshot, so Phase 9's final-vs-baseline diff compares like-for-like methodology.
+
 **Deviation from the plan's minimum signature set**: added an eighth reported value,
 `unanchored`, beyond the plan's six (`precomposed`/`bare_pair`/`latex_macro`/`control_char`/
 `glyph_six`/`absent`). This is additive, not a substitution: it is folded into the "corrupted,
@@ -326,36 +334,83 @@ EOF
 
 ---
 
-### Phase 3: Repair engine (validated dry-run only) [NOT STARTED]
+### Phase 3: Repair engine (validated dry-run only) [COMPLETED]
 
 **Goal**: Build the in-place repair tool that consumes the Phase 1 detector's JSON and rewrites
 corrupted occurrences under backup, and validate it end-to-end without writing to the corpus.
 
 **Tasks**:
-- [ ] Write `.claude/scripts/literature-repair-combining.sh`. Default mode is `--dry-run`; writing
-      requires an explicit `--write`.
-- [ ] Backup contract: before any write to a file, mirror it to
+- [x] Write `.claude/scripts/literature-repair-combining.sh`. Default mode is `--dry-run`; writing
+      requires an explicit `--write`. *(completed)*
+- [x] Backup contract: before any write to a file, mirror it to
       `$LITERATURE_DIR/.backups/combining-repair-{ISO_DATE}/sources/<dir>/<file>` preserving
       layout; never overwrite an existing backup of the same file; refuse `--write` for any file
-      whose backup could not be created. Emit a sha256 manifest.
-- [ ] Anchoring contract: for each corrupted occurrence, build a context window from the PDF text
+      whose backup could not be created. Emit a sha256 manifest. *(completed: manifest at
+      `.../combining-repair-{ISO_DATE}/manifest.json`, merged across runs, never overwriting an
+      existing entry's hash.)*
+- [x] Anchoring contract: for each corrupted occurrence, build a context window from the PDF text
       (leading context + base character + trailing context), strip all whitespace, and search the
       whitespace-stripped target markdown while maintaining an offset map back to original
       character positions. Rewrite **only** on exactly one match. Zero matches or multiple matches
       are never written — they are emitted to the residual ledger with their context.
-- [ ] Rewrite action by signature: `control_char` -> delete the control character and replace the
+      *(completed via a different but equivalent-safety mechanism — see deviation note below.)*
+- [x] Rewrite action by signature: `control_char` -> delete the control character and replace the
       base with its precomposed negated codepoint; `glyph_six` -> delete the literal `6` and
       replace the base; `absent` -> replace the base character in place with the precomposed
       codepoint. Use one shared base->precomposed map (`=`->`≠`, `∈`->`∉`, `⊆`->`⊈`, `<`->`≮`,
       `>`->`≯`, `≡`->`≢`, `∼`->`≁`, `≤`->`≰`, `≥`->`≱`, `|`->`∤`, `⊢`->`⊬`, `≺`->`⊀`, `→`->`↛`,
-      extended as the detector's base tally requires).
-- [ ] Idempotence: a second run over an already-repaired file must find zero corrupted occurrences
-      and write nothing.
-- [ ] Emit a per-run residual ledger JSON (unrepaired occurrences with reason:
-      `ambiguous_anchor` / `anchor_not_found` / `unmapped_base`).
-- [ ] Validate against `bacon_2018_broadest-necessity` (18 occurrences, single markdown file) in
+      extended as the detector's base tally requires). *(completed; shared map lives in
+      `literature_combining_detect.py` as `PRECOMPOSED`, imported by both the detector and the
+      repair engine.)*
+- [x] Idempotence: a second run over an already-repaired file must find zero corrupted occurrences
+      and write nothing. *(completed by construction: a repaired occurrence re-classifies as
+      `precomposed` — accounted, no action — on re-scan; verified directly, see below.)*
+- [x] Emit a per-run residual ledger JSON (unrepaired occurrences with reason:
+      `ambiguous_anchor` / `anchor_not_found` / `unmapped_base`). *(completed via `--ledger-json`;
+      reason vocabulary extended — see Phase 1's `unanchored`-bucket deviation note plus two new
+      repair-specific reasons, `unmapped_base_char` and `overlapping_edit` — documented below.)*
+- [x] Validate against `bacon_2018_broadest-necessity` (18 occurrences, single markdown file) in
       dry-run only. Confirm the proposed rewrite of the named axiom reads
-      `THE NECESSITY OF DISTINCTNESS: A ≠ B → L(A ≠ B)`.
+      `THE NECESSITY OF DISTINCTNESS: A ≠ B → L(A ≠ B)`. *(completed and confirmed byte-for-byte;
+      16 of 18 occurrences proposed for rewrite, 2 remain genuinely ambiguous — see deviation
+      note.)*
+
+**Implementation deviations**:
+
+1. **Anchoring mechanism differs from the plan's literal description, at equivalent safety.** The
+   plan describes a literal-adjacent-character context window with a whitespace-stripped offset
+   map. Phase 1's own notes already recorded why that literal approach fails on this corpus
+   (adjacent math symbols are frequently ALSO corrupted, breaking literal-context matching) and why
+   a whitespace-normalized-distance, plain-word-landmark anchor was adopted instead — that decision
+   carries forward into this repair engine unchanged, since it reuses `literature_combining_detect
+   .classify_occurrence()` directly rather than re-implementing anchoring a second time (avoiding
+   exactly the two-hand-maintained-copies risk flagged in Phase 2). The safety property the plan
+   actually cares about — **rewrite only on exactly one confident match; zero or ambiguous matches
+   are never written** — holds identically.
+2. **New residual-ledger reasons**: `unmapped_base_char` (a corrupted occurrence's base character
+   has no entry in `PRECOMPOSED` — never observed in practice so far, but guarded rather than
+   assumed) and `overlapping_edit` (two occurrences in the same file computed overlapping rewrite
+   spans). `overlapping_edit` needed a further refinement, described next.
+3. **Shared-span refinement (new, not in the original plan).** Multiple close-together negations in
+   the same sentence can independently anchor to the IDENTICAL word-landmark-bracketed span, since
+   there is no distinguishing word between them (verified real: bacon_2018's own named axiom, "A
+   <mark>= B ->L(A <mark>= B)", and its "∃pqr(p<mark>=q ∧ q<mark>=r ∧ p<mark>=r)" sentence, three
+   occurrences sharing one span). Before treating identical spans as an unresolvable conflict, the
+   engine now looks inside the shared span for exactly as many distinct literal corruption
+   instances (control-char/base or base/control-char, tolerating up to 2 intervening whitespace
+   characters, mirroring Phase 2's converter fix) as there are occurrences claiming it, and splits
+   them out in left-to-right order. Without this refinement, bacon_2018_broadest-necessity's own
+   validation target — the named axiom — would have been REFUSED as an unresolvable overlap; with
+   it, both instances resolve correctly (verified: `A ≠ B → L(A ≠ B)`, byte-for-byte). A genuine
+   count mismatch still falls through to the ordinary overlap-conflict path.
+4. **`bacon_2018_broadest-necessity` proposes 16, not 18, rewrites.** 2 of the 18 PDF occurrences
+   (a `δ1`/`δ2` axiom-schema pair: "A = B →δABCD = C" / "A ̸= B →δABCD = D") have MULTIPLE "="
+   tokens close together, one of which is not corrupted at all — the anchor cannot disambiguate
+   which "=" is the true corruption site, and correctly refuses to guess, reporting
+   `ambiguous_anchor` instead. This is the conservative behavior the plan's own risk table
+   requires ("ambiguous...occurrences are never written — they go to the residual ledger"), not a
+   defect; the two remaining occurrences are visible in the residual ledger for manual review in a
+   later phase if desired (out of this phase's validation scope).
 
 **Timing**: 2 hours
 
@@ -363,16 +418,46 @@ corrupted occurrences under backup, and validate it end-to-end without writing t
 
 **Files to modify**:
 - `.claude/scripts/literature-repair-combining.sh` - new repair engine
+- `.claude/scripts/literature_combining_detect.py` - **new** shared detection/anchoring module
+  (extracted from `literature-combining-audit.sh`, not in the original plan's file list — the
+  audit script was refactored into a thin CLI wrapper importing this module so the detector and
+  the repair engine share exactly one anchoring implementation)
 
-**Verification**:
+**Verification** (commands actually run, with actual results):
 ```bash
 bash .claude/scripts/literature-repair-combining.sh --dir bacon_2018_broadest-necessity --dry-run
-# expect: 18 proposed rewrites, 0 ambiguous, 0 not-found, NO files written
+# ACTUAL: "16 proposed rewrite(s) across 1 file(s); 2 residual (unrepaired) occurrence(s)"
+# (18 expected per plan; 2 are a genuinely ambiguous δ1/δ2 axiom-schema pair -- see deviation
+# note 4 above -- NO files written either way)
+
 grep -c $'\x0f' ~/Projects/Literature/sources/bacon_2018_broadest-necessity/bacon_2018_broadest-necessity.md
-# expect: unchanged from baseline (dry-run must not write)
+# ACTUAL: 14 -- unchanged from baseline (dry-run did not write)
+
 ls ~/Projects/Literature/.backups/ 2>/dev/null
-# expect: no backup directory created by a dry-run
+# ACTUAL: (nothing; exit 2) -- no backup directory created by a dry-run, confirmed
+
+# idempotence + named-axiom correctness, verified end-to-end against a throwaway copy
+# (never against the live corpus) in .../scratchpad/idem-test/:
+#   1st --write: 16 rewritten, 2 residual
+#   2nd --dry-run over the written copy: 0 proposed, confirming idempotence
+#   detector re-scan of the written copy: precomposed=16, unanchored=2 (same 2 as above)
+#   axiom line reads exactly: "THE NECESSITY OF DISTINCTNESS: A ≠ B → L(A ≠ B)."
 ```
+
+**Idempotence tuning discovered during this verification**: the first idempotence attempt
+revealed a real bug, not just a documentation gap -- re-scanning an ALREADY-REPAIRED file with
+several nearby fixes produced false `unanchored` results for occurrences that were, in fact,
+correctly repaired. Root cause: each control-char/glyph-six fix shrinks the markdown by 1-2
+characters, and when several such fixes land within one word-landmark window, the cumulative
+shrinkage pushed later occurrences' PDF-measured expected-gap estimate outside the (then-symmetric
+±12) slack tolerance. Fixed by widening the tolerance ASYMMETRICALLY in
+`literature_combining_detect.py` (`slack_low=90` downward / `slack_high=15` upward) -- a repair
+can only ever shrink text, never grow it, so only the downward direction needed real headroom.
+Re-verified this did not reintroduce ambiguous-match regressions across all six previously-checked
+directories (baier_katoen_2008, rabinovich_2014, verbrugge_2004, schwoon_esparza_2005,
+bacon_2018_broadest-necessity, venema_1993, goldblatt_2003) before proceeding. The Phase 1 baseline
+artifacts were regenerated with this final tuning (see Phase 1 notes) so Phase 9's final-vs-
+baseline diff compares like-for-like methodology, not an earlier, less-tuned detector pass.
 
 ---
 
