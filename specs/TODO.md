@@ -11,7 +11,7 @@ next_project_number: 405
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,390,404 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,378,390,404 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296,391 | 193,231,298,361,390 | completeness, formula-refactor, dataset-enhancement, ... |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -63,6 +63,7 @@ next_project_number: 405
 ### Kamp Completeness
 
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
+378 [IMPLEMENTING] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 
 ### Strong Completeness
 
@@ -243,7 +244,7 @@ DELIVERABLE: a research report with a GO / NO-GO recommendation and, if GO, the 
 
 ### 378. Rebase section5 onto faithful dedekind carrier
 - **Effort**: large
-- **Status**: [COMPLETED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: Task 341
