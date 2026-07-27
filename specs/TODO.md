@@ -40,7 +40,7 @@ next_project_number: 404
 
 ### Publication Quality
 
-402 [PLANNED] — Systematically upgrade the repository to Mathlib naming conventio
+402 [IMPLEMENTING] — Systematically upgrade the repository to Mathlib naming conventio
   └─ 180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance
 
 ### Automation
@@ -91,7 +91,7 @@ next_project_number: 404
 ---
 
 ### 402. Systematic mathlib naming upgrade
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 341, Task 131, Task 394
