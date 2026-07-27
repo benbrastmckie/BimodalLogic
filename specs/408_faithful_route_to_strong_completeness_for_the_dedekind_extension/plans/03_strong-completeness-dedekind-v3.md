@@ -1555,7 +1555,7 @@ That is the intended shape, not a compromise.
 - **Timing:** 3 hours.
 - **Depends on:** 6.1
 
-### Phase 7.1: Until/Since transport at ℝ — the mechanical cases (7a) [NOT STARTED]
+### Phase 7.1: Until/Since transport at ℝ — the mechanical cases (7a) [IN PROGRESS]
 
 - **Goal:** Land everything in the Until/Since transport that does not meet the below-only
   asymmetry: the backward direction, the shared guard lemma, forward case A, the `snce` mirrors,
