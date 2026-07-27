@@ -11,7 +11,7 @@ next_project_number: 404
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,180,193,231,257,298,318,361,377,378,390,403 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,378,390,403 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296,391 | 193,231,298,361,390 | completeness, formula-refactor, dataset-enhancement, ... |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -37,10 +37,6 @@ next_project_number: 404
 ### Algebraic Representation
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
-
-### Publication Quality
-
-180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance
 
 ### Automation
 
@@ -464,10 +460,13 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 ---
 
 ### 180. Line limit compliance and publication residue
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 292, Task 402
+- **Research**: [180_line_limit_compliance_and_publication_residue/reports/01_line-limit-compliance-residue.md]
+- **Plan**: [180_line_limit_compliance_and_publication_residue/plans/01_line-limit-compliance-residue.md]
+- **Summary**: [180_line_limit_compliance_and_publication_residue/summaries/01_line-limit-compliance-residue-summary.md]
 
 **Description**: Close out the publication-quality residue: line-length compliance in Automation/, plus a post-rename re-verification sweep.
 
