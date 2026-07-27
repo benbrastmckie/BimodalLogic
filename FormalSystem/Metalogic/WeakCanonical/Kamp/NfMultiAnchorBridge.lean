@@ -250,6 +250,29 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.BoundedFi
 -- `Kamp.EANegationFixFaithful.BoundedFixFaithful`, both already in this file's transitive closure
 -- above; nothing in that closure imports this aggregator.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.BoundedFixAnchoredFaithful
+-- NOTE: `import ...Kamp.EANegationFixFaithful.NegFixOneFaithful` lands the import edge for LEMMA
+-- 5.1 AT ONE WITNESS over the faithful carrier (Rabinovich 2014, PDF pp.9-10): `negFixOneFaithful`
+-- with its cover and `_iff`, plus `HasDedekindINF.first_occ_tp` and the eq (5.3) pieces
+-- (`infPinPoint`, `allSeg`, `somePointBlock`). Unlike the two anchored/unanchored Cor 5.4 modules
+-- above, this one is NOT the landed attained formulation with the carrier swapped: `negFixOne`
+-- (`EANegationFix/NegFixOne.lean:90`) is a six-disjunct list `{A,B1,B2,B3,B4,B4′}` of the tree's
+-- own devising whose cover pins FOUR attained points, none of which occurs in the paper, whereas
+-- Rabinovich's Lemma 5.1 proof is a three-case split pinning exactly one point — the eq (5.3)
+-- infimum of `¬β₁`, which is eq (5.2) of p.8 read at `P := ¬β₁`. The module therefore transcribes
+-- the paper's cases and drops BOTH attained hypotheses: `HasDedekindINF` alone, where
+-- `negFixOne_iff` (`EANegationFix/NegFixOne.lean:353`) needs `HasAttainedINF` AND `HasAttainedSUP`.
+-- The edge also protects `NegFixOneFaithfulGateProbe`, the `ℝ` counterexample proving the
+-- six-disjunct list is not a cover once attainment is dropped (the structure discharges the
+-- faithful eq (5.2) obligation at the pinned predicate and refutes the attained one) — an
+-- exclusion theorem of the same class as `prior_makes_disjunct2_unreachable`, which would rot
+-- invisibly under `Kamp/Boneyard/`. Nothing in `EANegationFix/` is edited: `negFixOne`,
+-- `negFixOne_cover`, `negFixOne_iff` and the `ℤ` probe `NegFixGateProbe` stay live and consumed
+-- (`NfMultiAnchorBridge/Base.lean:1416` cites them). The module contains no sorries and every
+-- declaration is axiom-clean. Cycle-free: it imports `Kamp.EANegationFix.NegFixOne`,
+-- `Kamp.EANegationFixFaithful.BoundedFixAnchoredFaithful` and `Kamp.VecEACombinators`, all already
+-- in this file's transitive closure above, plus `Mathlib.Data.Real.Basic` /
+-- `Mathlib.Tactic.Linarith` for the probe's carrier.
+import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixOneFaithful
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge

@@ -859,19 +859,82 @@ proof-state iteration — attributable to Phase 4's head construction applying d
 
 ---
 
-### Phase 6: `negFixOneFaithful` — Lemma 5.1 at `n = 1` [NOT STARTED]
+### Phase 6: `negFixOneFaithful` — Lemma 5.1 at `n = 1` [COMPLETED]
+
+**Outcome (measured, dispatch `sess_1785150996_3c6f1f_378`):** `lake build` EXIT 0 at **1889 jobs**
+(baseline re-measured this dispatch: **1888** — delta **+1**, as specified). Live modules
+**274 → 275** (delta **+1**) by transitive `import` walk from `FormalSystem.lean`;
+`Kamp.EANegationFixFaithful.NegFixOneFaithful` confirmed LIVE,
+`NfMultiAnchorBridge.AggregateOffDiagK1` still LIVE and still building explicitly at **1098 jobs,
+EXIT 0**. Tactic-position sorry census on `Kamp/` unchanged at **4 dead / 0 live** (all four under
+`Kamp/Boneyard/`). All 15 new declarations axiom-clean — no `sorryAx`, no new `axiom` declarations
+anywhere in the tree. `EANegationFix/NegFixOne.lean` not edited (`git status` clean on it).
+
+**The carrier result: `HasDedekindINF` ALONE.** `negFixOneFaithful_iff` carries one carrier
+hypothesis where the attained `negFixOne_iff` carries two (`HasAttainedINF` **and**
+`HasAttainedSUP`). `HasDedekindSUP` is **not consumed** — see Deviation 2.
 
 - **Goal:** The `n = 1` case of Lemma 5.1 at `VVecEA2` over the faithful carriers, following
   `NegFixOne.lean` structurally.
 - **Source correspondence:** PDF pp.9-10, Lemma 5.1 base case; eq (5.3) `INF^{¬β₁}`.
 - **Tasks:**
-  - [ ] Read PDF pp.9-10 directly, including Figure 1 (p.10) and eq (5.3). **PDF only.**
-  - [ ] Define `negFixOneFaithful` and prove its cover/`_iff` lemmas, mirroring
+  - [x] Read PDF pp.9-10 directly, including Figure 1 (p.10) and eq (5.3). **PDF only.**
+        *(completed — the corrupt companion `.md` was never opened. Figure 1 settled the reading of
+        the bracket notation that the whole phase turns on: the `α`'s are POINT types and the `β`'s
+        are SEGMENT types, so `bracketOne s0 p s1` is the paper's `[⊤, s0, p, s1, ⊤]`.)*
+  - [x] Define `negFixOneFaithful` and prove its cover/`_iff` lemmas, mirroring
         `NegFixOne.lean:224`/`:243`/`:272`/`:276`, which currently call `h_INF.first_occ_tp` and
         `h_SUP.last_occ_tp` at the attained carriers — these become `HasDedekindINF.first_occ` (via
         the Phase 1 pattern) and Phase 2's `HasDedekindSUP.last_occ_tp`.
-  - [ ] Additions only; `NegFixOne.lean` is not edited.
-  - [ ] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`.
+        *(deviation: altered — `negFixOneFaithful`, `negFixOneFaithful_cover` and
+        `negFixOneFaithful_iff` are landed as specified, but as Rabinovich's three-case split
+        rather than as the six-disjunct attained list with the carriers swapped, and only one of
+        the four call sites has a faithful counterpart. See Deviations 1 and 2 below. The four line
+        numbers were re-confirmed independently before editing and had NOT drifted.)*
+  - [x] Additions only; `NegFixOne.lean` is not edited. *(completed — `git status` shows
+        `EANegationFix/NegFixOne.lean` unmodified; the new module imports it.)*
+  - [x] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`. *(completed — one import
+        plus a NOTE comment in the established style.)*
+  - [x] *(addition beyond the task list, strict superset)* Land `NegFixOneFaithfulGateProbe`, the
+        `ℝ` counterexample that machine-checks why Deviation 1 was forced. *(completed)*
+
+**Phase 6 deviations** (both are REPORTED, not annotated-and-passed; neither narrows or drops a
+listed task):
+
+1. *Altered (substantive) — the faithful `n = 1` negation is Rabinovich's three-case split, not the
+   six-disjunct attained list with the carriers swapped.* The task line prescribes "mirroring
+   `NegFixOne.lean:224`/`:243`/`:272`/`:276`". That was not executable, and the phase's own
+   **Source correspondence** line — "PDF pp.9-10, Lemma 5.1 base case; **eq (5.3) `INF^{¬β₁}`**" —
+   is what decides it, exactly as in Phase 4 where two plan statements conflicted and the
+   higher-level contract won:
+   - `negFixOne`'s six disjuncts `{A,B1,B2,B3,B4,B4′}` are the tree's own formulation. Rabinovich's
+     Lemma 5.1 proof (PDF p.9) is a three-case split — Case 1 `K⁺(¬β₁)(z₀)`; Case 2 `β₁` along
+     `(z₀,z₁)`, discharged through Cor 5.4(2); Case 3 the eq (5.3) pin `r₀` — and it pins exactly
+     **one** point. Eq (5.3) appears nowhere in the six-disjunct route, so the task line and the
+     source-correspondence line cannot both be followed.
+   - The prescribed route is not merely different, it is **impossible**:
+     `NegFixOneFaithfulGateProbe` (in the new module, axiom-clean) exhibits an `ℝ` structure on
+     which `bracketOne` fails on `(0,10)` and **all six disjuncts fail**, while that structure
+     *discharges* the faithful eq (5.2) obligation at the predicate the attained cover pins
+     (`MR_dedekind_shape_at_pR`, via the `K⁺` alternative) and *refutes* the attained one
+     (`MR_not_hasAttainedINF`). The six-disjunct list is therefore not re-provable at the faithful
+     carrier by any argument.
+   - Faithfulness is Binding Constraint 1 and the user's primary constraint. Following the task
+     line literally would have required inventing a cover the paper does not print and that is
+     false at the plan's own carrier.
+
+2. *Substantive — `HasDedekindSUP` is not consumed. THIRD consecutive phase.* Phases 4 and 5 each
+   dropped it and each named Phase 6 as its expected consumer, because `NegFixOne.lean:243` and
+   `:276` call `h_SUP.last_occ_tp`. Verified here against the actual proof obligations rather than
+   inherited: **Rabinovich's Lemma 5.1 proof uses no `K⁻`, no supremum and no last-occurrence point
+   anywhere on pp.9-10.** Its only pinned point is the eq (5.3) *infimum*, and its Case 2 hands the
+   whole `s1` side to Cor 5.4(2), which Phase 5 proved needs `HasDedekindINF` alone. The two
+   `h_SUP` call sites are artifacts of the tree's six-disjunct formulation, not of the paper. This
+   is now a fact about the plan's carrier model, not about this phase: `HasDedekindSUP` and
+   `orderedPointsExist_combine_kminus` (Phase 2) remain **unconsumed by any phase so far**, and no
+   remaining phase is a plausible consumer on Lemma 5.1 grounds — Phase 7's recursion is the
+   continuation of the same Case 3 induction, and Phases 8-9 are lifts. Recorded rather than
+   papered over; no use was contrived for them.
 - **Files to create/modify:**
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixOneFaithful.lean` — new, live
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` — one import + NOTE
@@ -882,6 +945,25 @@ proof-state iteration — attributable to Phase 4's head construction applying d
     (`NegFixOne.lean:224`, `:243`, `:272`, `:276`) each faithful counterpart replaces, and confirm
     each now consumes only a faithful carrier. Any site that still needs attainment is a
     strengthening and must be reported, not silently kept.
+
+**Non-vacuity statement — the four-call-site mapping (measured, line numbers re-confirmed, no
+drift).** Exactly one of the four attained call sites has a faithful counterpart; the other three
+are *eliminated*, not weakened, because Rabinovich's proof has nothing at those places.
+
+| attained site | what it pins | faithful counterpart | carrier consumed |
+|---|---|---|---|
+| `:224` `h_INF.first_occ_tp p` | attained FIRST `p`-point | **none — eliminated.** `p`'s first occurrence plays no role on pp.9-10 | — |
+| `:243` `h_SUP.last_occ_tp p` | attained LAST `p`-point | **none — eliminated.** No supremum anywhere in the paper's Lemma 5.1 | — |
+| `:272` `h_SUP.last_occ_tp s1.neg` | attained LAST `¬s1`-point | **none — eliminated.** Replaced by a classical case split at the pin (`hQ`, `hs1r`) and by Cor 5.4(2) in Case 2 | — |
+| `:276` `h_INF.first_occ_tp s0.neg` | attained FIRST `¬s0`-point | `HasDedekindINF.first_occ_tp s0.neg` — Rabinovich's eq (5.3) `INF^{¬β₁}` | `HasDedekindINF` |
+
+Every faithful site consumes **only** `HasDedekindINF`. No site still needs attainment.
+`HasAttainedINF`, `HasAttainedSUP`, `HasDefinableINF`, `HasDefinableSUP` and `HasDedekindSUP`
+appear in **no** statement of the new module except `negFixOneFaithful_iff_of_attained` (the
+deliberate attained → faithful shim) and `MR_not_hasAttainedINF` (the probe's refutation) —
+checkable from the signatures. Both `first_occ_tp` disjuncts are live proof branches of
+`negFixOneFaithful_cover`: the `kplus` one produces Case 1, the eq (5.2)/(5.3) one produces
+Cases 3a/3b/3c.
 - **Green commit:** `task 378 phase 6: faithful Lemma 5.1 base case at VVecEA2 (pp.9-10)`
 - **Done when:** `negFixOneFaithful` and its lemmas are live, sorry-free, axiom-clean under the
   faithful carriers only.
