@@ -223,6 +223,19 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix
 -- both already in this file's transitive closure above; nothing in that closure imports
 -- this aggregator.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEACombinators
+-- NOTE: `import ...Kamp.EANegationFixFaithful.BoundedFixFaithful` lands the import edge for
+-- Rabinovich's Cor 5.4(1)/(2) as printed on PDF p.9 — `¬F₀(z₀) ∨ Oₙ(F₁,…,Fₙ,z₀,z₁)` and its
+-- mirror — at `VVecEA2` over the faithful `HasDedekindINF` carrier. The head disjunct is the
+-- paper's endpoint condition carried in `VecEA2.endpointLeft`/`endpointRight`, NOT the
+-- attained-first/last-`¬β` interval encoding (`rightPinBracket`/`leftPinBracket`) that the
+-- endpoint-free `VBracketFormula` result type of `EANegationFix/BoundedFix.lean` forces. That is
+-- what drops `HasAttainedINF` to `HasDedekindINF` in Cor 5.4(1) and drops `HasAttainedSUP`
+-- entirely from Cor 5.4(2). Nothing in `EANegationFix/` is edited: `negBoundedRightFix(_iff)` and
+-- `negBoundedLeftFix(_iff)` stay live and consumed, and the attained hypotheses still reach these
+-- statements through `HasAttainedINF.toHasDedekindINF`. Cycle-free: the module imports only
+-- `Kamp.EANegationFix.BoundedFix` and `Kamp.Lemma53Faithful`, both already in this file's
+-- transitive closure above; nothing in that closure imports this aggregator.
+import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.BoundedFixFaithful
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge

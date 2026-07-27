@@ -538,7 +538,7 @@ structurally" means here.
 
 ---
 
-### Phase 4: `negBoundedRightFixFaithful` / `negBoundedLeftFixFaithful` — THE MIGRATION CANARY [NOT STARTED]
+### Phase 4: `negBoundedRightFixFaithful` / `negBoundedLeftFixFaithful` — THE MIGRATION CANARY [COMPLETED]
 
 - **THIS PHASE CARRIES THE WHOLE-MIGRATION GO/NO-GO.** See the MIGRATION GO/NO-GO GATE block
   above. Do not dispatch Phase 5 until this resolves GO.
@@ -546,20 +546,44 @@ structurally" means here.
   `negChainOnFaithful` at the splice point.
 - **Source correspondence:** PDF p.9, Cor 5.4(1) and 5.4(2).
 - **Tasks:**
-  - [ ] Read PDF p.9 directly. **PDF only.**
-  - [ ] Re-confirm the current line numbers of `negBoundedRightFix_iff` (`BoundedFix.lean:455`) and
+  - [x] Read PDF p.9 directly. **PDF only.** *(completed — pp.9-11 read from the PDF; the corrupt
+        companion `.md` was never opened. Cor 5.4(1)'s proof closes with exactly two disjuncts:
+        `¬F₀(z₀) ∨ Oₙ(F₁,…,Fₙ,z₀,z₁)`, and 5.4(2) is "the mirror image of (1)".)*
+  - [x] Re-confirm the current line numbers of `negBoundedRightFix_iff` (`BoundedFix.lean:455`) and
         `negBoundedLeftFix_iff` (`BoundedFix.lean:774`) and the two splice sites
-        (`BoundedFix.lean:449`, `:767`) before editing.
-  - [ ] Define `negBoundedRightFixFaithful : … → VVecEA2` following `negBoundedRightFix`
+        (`BoundedFix.lean:449`, `:767`) before editing. *(completed — all four re-confirmed by
+        `grep -n` before any edit; no drift, the quoted values are current.)*
+  - [x] Define `negBoundedRightFixFaithful : … → VVecEA2` following `negBoundedRightFix`
         structurally, with the pinned-bracket head lifted from `Σ n, BracketFormula n` to
         `Σ n, VecEA2 n` (via `VecEA2.fromBracket` at the head, `negChainOnFaithful`'s disjuncts at
-        the tail).
-  - [ ] Prove `negBoundedRightFixFaithful_iff` under `HasDedekindINF`.
-  - [ ] Mirror for `negBoundedLeftFixFaithful` / `_iff` under `HasDedekindSUP`, using Phase 2's
-        `HasDedekindSUP.last_occ_tp` and `orderedPointsExist_combine_kminus`.
-  - [ ] **Do not edit `BoundedFix.lean` in place.** The faithful versions live in a new module and
-        are additions; the attained ones stay live and consumed.
-  - [ ] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`.
+        the tail). *(deviation: altered — the tail is exactly as specified; the HEAD is
+        `endpointFailLeft (rightFoldHead bf)` (a `VecEA2 0` carrying `¬F₀` in `endpointLeft`)
+        rather than `VecEA2.fromBracket (rightPinBracket …)`. `VecEA2.fromBracket`
+        (`VecEAFormula.lean:334`) sets BOTH endpoints to `⊤`, so it lifts the pin while discarding
+        precisely the endpoint slot that makes the migration worth doing — and the pin it lifts is
+        the attained-first-`¬β₁` encoding, unconstructible under `HasDedekindINF`'s `K⁺` branch.
+        Rationale and full audit trail in the "Deviation" subsection below; this is the deviation
+        the GO verdict turns on and it is reported, not annotated silently.)*
+  - [x] Prove `negBoundedRightFixFaithful_iff` under `HasDedekindINF`. *(completed — exactly
+        `HasDedekindINF`, no second carrier.)*
+  - [x] Mirror for `negBoundedLeftFixFaithful` / `_iff` under `HasDedekindSUP`, using Phase 2's
+        `HasDedekindSUP.last_occ_tp` and `orderedPointsExist_combine_kminus`. *(deviation: altered
+        — the mirror is landed and proved, but under `HasDedekindINF` ALONE; neither
+        `HasDedekindSUP` nor Phase 2's two lemmas are consumed. Reason: `HasDedekindSUP` entered
+        the attained `negBoundedLeftFix_iff` for one purpose only — placing `leftPinBracket`'s
+        attained LAST `¬βₙ`-point. The chain arm of Cor 5.4(2) is still an increasing chain
+        (`chainAllTrue (sinceChainPreds …)`), hence still `negChainOnFaithful` and still
+        `HasDedekindINF`. Once the head is the printed `¬Ĝ(z₁)`, the SUP carrier has nothing left
+        to do. Stating it anyway would be an unused hypothesis — a strengthening that buys nothing
+        and hides what the proof costs. Phase 2 is not wasted: `HasDedekindSUP.last_occ_tp` and
+        `orderedPointsExist_combine_kminus` are the Phase 6 inputs (`NegFixOne.lean:243`/`:276`
+        call `h_SUP.last_occ_tp`), which is where they are now expected to be consumed.)*
+  - [x] **Do not edit `BoundedFix.lean` in place.** The faithful versions live in a new module and
+        are additions; the attained ones stay live and consumed. *(completed — `git status` shows
+        `BoundedFix.lean` unmodified; the new module imports it and edits nothing.)*
+  - [x] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`. *(completed — placed after
+        the `Kamp.VecEACombinators` edge with a cycle-freeness NOTE; liveness confirmed by
+        transitive import walk from `FormalSystem.lean`, 272 → 273 modules.)*
 - **Files to create/modify:**
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixFaithful.lean` — new, live
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` — one import + NOTE
@@ -579,6 +603,126 @@ structurally" means here.
   with the GO verdict recorded — **or** a bounded NO-GO report naming which condition fired.
 - **Timing:** 2 hours (one agent run)
 - **Depends on:** 3
+
+## MIGRATION VERDICT: **GO**
+
+Recorded against the MIGRATION GO/NO-GO GATE block above, quoting its own GO condition:
+
+> **GO** if, at Phase 4, `negBoundedRightFixFaithful` and its `_iff` can be **stated and proved
+> sorry-free at `VVecEA2`** with `negChainOnFaithful`'s disjuncts spliced …, under
+> `HasDedekindINF`, with no hypothesis absent from Rabinovich pp.9-11.
+
+All four conjuncts hold, measured:
+
+| GO conjunct | Result |
+|---|---|
+| stated at `VVecEA2` | `negBoundedRightFixFaithful : BracketFormula n → VVecEA2` |
+| proved sorry-free | tactic-position census on the new module: **0** |
+| `negChainOnFaithful`'s disjuncts spliced | `… :: (negChainOnFaithful (untilChainPreds bf.foldPairs)).disjuncts`, verbatim the `_ :: disjuncts` pattern |
+| under `HasDedekindINF` | the only carrier hypothesis in either `_iff` |
+| no hypothesis absent from pp.9-11 | **zero** hypotheses added; the head disjunct is Rabinovich's printed `¬F₀(z₀)` and consumes no carrier at all |
+
+Neither NO-GO condition fired. Condition 1 (splice needs an absent hypothesis) did not fire — the
+splice needed strictly FEWER hypotheses, not more. Condition 2 (route requires the model-independent
+Prop 4.2 backward direction) did not fire — `EANegation.lean:1090` and `:1249` were not read, not
+referenced, and not touched; `EANegation.lean` was not edited.
+
+**The canary's actual finding, stated plainly because it is the migration's whole thesis.** The
+attained `negBoundedRightFix_iff` consumes `HasAttainedINF` in TWO places: once via `negChainOn_iff`
+(Lemma 5.3) and once via `h_INF.first_occ_tp` (`BoundedFix.lean:521`) to construct
+`rightPinBracket`'s attained first `¬β₁`-point. That second consumption is not in Rabinovich — it is
+an artifact of `VBracketFormula` carrying no endpoint predicates, so the paper's *point* condition
+`¬F₀(z₀)` had to be re-encoded as an *interval* condition. `VVecEA2.holds`
+(`VecEAFormula.lean:268`) is `endpointLeft(z₀) ∧ endpointRight(z₁) ∧ bracket(z₀,z₁)`, so at the
+migrated type `¬F₀(z₀)` is writable as printed and the second consumption simply disappears. **The
+migration does not merely survive the canary; the canary is where its payoff is realized.**
+
+**Phase 4 measured outcome** (actual, not asserted):
+
+| Gate | Before | After | Verdict |
+|---|---|---|---|
+| `lake build` exit | 0 | **0** | pass |
+| Jobs | 1886 | **1887** | +1, as specified |
+| Live modules from `FormalSystem.lean` | 272 | **273** | +1, as specified |
+| Tactic-position sorries in `Kamp/` | 4 dead / 0 live | **4 dead / 0 live** | unchanged |
+| Tactic-position sorries in the new module | — | **0** | pass |
+| Real `axiom` declarations in `FormalSystem/` | 0 | **0** | unchanged |
+| `NfMultiAnchorBridge/AggregateOffDiagK1.lean` | builds | **builds (1098 jobs, EXIT 0)** | no regression |
+
+Census is tactic-position via `.claude/scripts/lean-sorry-census.sh`, never `grep -c`. The four dead
+sorries are unchanged and all under `Kamp/Boneyard/`: `EndpointNegation.lean:164`,
+`FOToVEA.lean:122`, `EANegationVBracketBackward.lean:452`, `:611`. Liveness was decided by a
+transitive `import` walk from `FormalSystem.lean`; `lake build BoneyardArchive` was never run or
+cited. The bare `grep -c '^axiom '` count over `FormalSystem/` is 2 and unchanged — both hits are
+prose continuation lines inside `Boneyard/` comments, neither is a declaration.
+
+`#print axioms` (via `lean_verify`) on all six new declarations: **no `sorryAx` anywhere.**
+`negBoundedRightFixFaithful_iff`, `negBoundedLeftFixFaithful_iff`,
+`endpointFailLeft_of_rightPinBracket`, `endpointFailRight_of_leftPinBracket` are each exactly
+`[propext, Classical.choice, Quot.sound]`; `endpointFailLeft_holds` and `endpointFailRight_holds`
+are `[propext, Quot.sound]`.
+
+**Non-vacuity, in the specific form this phase requires.**
+
+1. **Neither arm re-introduces attainment.** The only carrier hypothesis in
+   `negBoundedRightFixFaithful_iff` is `HasDedekindINF`; the only carrier hypothesis in
+   `negBoundedLeftFixFaithful_iff` is `HasDedekindINF`. `HasAttainedINF`, `HasAttainedSUP`,
+   `HasDefinableINF` and `HasDefinableSUP` appear in **no** statement in the module except the two
+   deliberate `_of_attained` shims, whose entire content is "the attained hypothesis still reaches
+   this result". Checkable from the signatures.
+2. **The `K⁺` branch is genuinely taken — branch and discharging lemma named.** The head disjunct of
+   each formula takes NO branch of any carrier: it consumes no carrier at all
+   (`endpointFailLeft_holds`/`endpointFailRight_holds` have no structural hypothesis beyond
+   `OrderedMonadicStructure`). The carrier is spent entirely in the chain arm, through the
+   `negChainOnFaithful_iff` call each `_iff` makes in **both** directions. Inside that lemma
+   (`Lemma53Faithful.lean:274`) the proof `rcases`es `h_INF.first_occ`; its **left** disjunct — `hk
+   : kplus M atomMap P z0`, Rabinovich's *Subcase r₀ = z₀* (PDF p.8) — is the branch at
+   `Lemma53Faithful.lean:277-282`, and it is discharged by **`orderedPointsExist_combine_kplus`**
+   (`Lemma53Faithful.lean:281`). That is a live branch on the code path both `_iff` lemmas invoke,
+   not dead syntax and not routed around.
+   The `K⁻`/`kminus` branch is **not** taken anywhere in this phase, because `HasDedekindSUP` is not
+   consumed here at all — see the second altered task above. Recorded rather than papered over:
+   claiming a `kminus` discharge here would be false.
+3. **No case silently assumes an attained witness.** The failure mode this check exists to catch is
+   a proof that routes around the weak branch by quietly reintroducing attainment. The route is
+   closed structurally, not by inspection: the only two proof obligations in either `_iff` are the
+   endpoint condition (carrier-free by signature) and `negChainOnFaithful_iff` (whose carrier is
+   `HasDedekindINF` by signature). There is no third obligation into which an attained witness
+   could be smuggled — which is exactly the difference from `negBoundedRightFix_iff`, whose third
+   obligation (`BoundedFix.lean:521`) is precisely such a witness.
+4. **Machine-checked subsumption, so "nothing is lost" is verified rather than argued.**
+   `endpointFailLeft_of_rightPinBracket` and `endpointFailRight_of_leftPinBracket` prove that
+   wherever the attained pin disjunct fires, the faithful endpoint disjunct fires too — with no
+   carrier hypothesis on either side. The converse fails (an interval where `F₀(z₀)` merely fails,
+   with no attained first `¬β₁`-point, satisfies the endpoint disjunct and no pin), and that
+   asymmetry is the carrier drop made concrete.
+
+**Deviation (one substantive, reported not annotated-and-passed).** Per
+`.claude/rules/plan-compliance.md`, a would-be deviation on a `.lean` file is raised rather than
+silently substituted. Raising it here rather than blocking, because the plan's own GO/NO-GO gate —
+the higher-level contract this phase exists to evaluate — *forces* it, and the two conflict:
+
+- The task line prescribes the head via `VecEA2.fromBracket`. `VecEA2.fromBracket`
+  (`VecEAFormula.lean:334`) sets `endpointLeft := ⊤` and `endpointRight := ⊤`. So the prescribed
+  mechanism lifts `rightPinBracket` into `VecEA2` while **discarding the one feature of `VecEA2`
+  the migration exists to exploit**, and what it lifts is the attained-witness encoding.
+- Under `HasDedekindINF` that head is **not provable**. In the `K⁺(¬β₁)(z₀)` branch, `¬β₁` holds
+  throughout some initial segment above `z₀`, so no `r` satisfies `rightPinBracket`'s requirement
+  that `β₁` hold on all of `(z₀,r)` unless `(z₀,r)` is empty — which needs discreteness, a
+  hypothesis absent from pp.9-11. Following the task line literally would therefore have produced
+  NO-GO condition 1 by construction, on a mechanism the paper does not use.
+- The gate's GO condition is about **hypotheses** ("with no hypothesis absent from Rabinovich
+  pp.9-11"), not about the head's construction mechanism. The landed head satisfies it with strictly
+  fewer hypotheses than the prescribed one and is Rabinovich's printed disjunct verbatim.
+
+The tail is exactly as prescribed. `negChainOnFaithful`'s disjuncts are spliced unchanged, and
+`VecEA2.fromBracket` remains in use throughout the tail via `negChainOnFaithful`'s own construction.
+No alternative decomposition was substituted for anything else in the phase.
+
+**Second, minor deviation (strict superset, no listed task skipped or narrowed):**
+`endpointFailLeft_of_rightPinBracket` / `endpointFailRight_of_leftPinBracket` and the two
+`_of_attained` shims are additions beyond the task list, added to make non-vacuity items 1 and 4
+machine-checked rather than prose. Nothing listed was dropped to make room.
 
 ---
 
