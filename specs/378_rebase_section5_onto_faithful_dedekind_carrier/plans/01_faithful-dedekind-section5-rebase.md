@@ -1,7 +1,7 @@
 # Implementation Plan: Re-base Rabinovich Section 5 onto the faithful Dedekind carrier
 
 - **Task**: 378 - Re-base Rabinovich's Section 5 onto the FAITHFUL Dedekind carrier
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours (9 phases; Phase 7 is the one phase expected to need a re-split)
 - **Dependencies**: None (task 377 Phase 6 is CONFIRMED DONE and landed live)
 - **Research Inputs**:
