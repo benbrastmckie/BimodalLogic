@@ -1534,7 +1534,7 @@ That is the intended shape, not a compromise.
 - **Timing:** 3 hours.
 - **Depends on:** 6.1
 
-### Phase 7a: Until/Since transport at ℝ — the mechanical cases [NOT STARTED]
+### Phase 7.1: Until/Since transport at ℝ — the mechanical cases (7a) [NOT STARTED]
 
 - **Goal:** Land everything in the Until/Since transport that does not meet the below-only
   asymmetry: the backward direction, the shared guard lemma, forward case A, the `snce` mirrors,
@@ -1590,7 +1590,7 @@ That is the intended shape, not a compromise.
 - **Timing:** 4 hours.
 - **Depends on:** 6.2
 
-### Phase 7b: Forward case B — a two-outcome probe [NOT STARTED]
+### Phase 7.2: Forward case B — a two-outcome probe (7b) [NOT STARTED]
 
 **This phase has two acceptable outcomes and a refutation is not a failure.** The blocker research
 constructed a candidate family in which Prior-U applied to `untl α β` is satisfied *locally* with
