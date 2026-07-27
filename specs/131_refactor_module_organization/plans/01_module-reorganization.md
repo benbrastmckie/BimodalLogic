@@ -472,36 +472,49 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 7: Rewrite the Metalogic Architecture Map [NOT STARTED]
+### Phase 7: Rewrite the Metalogic Architecture Map [COMPLETED]
 
 - **Goal:** Goal (1)'s primary deliverable. `Metalogic/README.md` currently maps a repository that
   no longer exists — it documents eight non-existent files, draws its dependency flowcharts over
   them, calls `WeakCanonical/Separation/` "11+ files" (it has 3), and omits `Kamp/` entirely.
 - **Tasks:**
-  - [ ] Rewrite `Theories/Bimodal/Metalogic/README.md` from the Phase 6 edge table. Remove every
+  - [x] Rewrite `Theories/Bimodal/Metalogic/README.md` from the Phase 6 edge table. Remove every
         reference to `Core/Core.lean`, `Bundle/SuccExistence.lean`, `Bundle/Completeness.lean`,
         `Bundle/TruthLemma.lean`, `Bundle/BFMCSTruth.lean`, `Algebraic/AlgebraicCompleteness.lean`,
         `Decidability/FMP.lean`, and `WeakCanonical/ExpressiveCompleteness/`.
-  - [ ] Add the `Kamp/` subtree to the map: 99 live files / 71,246 lines, with its two large
+  - [x] Add the `Kamp/` subtree to the map: 99 live files / 71,246 lines, with its two large
         sub-subtrees `NfMultiAnchorBridge/` (43 files / 41,859 lines) and `EANegationFix/` (7 files
         / 3,227 lines), and its own local Boneyard.
-  - [ ] Document the three-way relationship explicitly, which is the charter's central organizing
+  - [x] Document the three-way relationship explicitly, which is the charter's central organizing
         question:
     - `BXCanonical` — the chronicle construction route to completeness.
     - `WeakCanonical` — the Kamp/Reynolds route, including the `Kamp/` machinery.
     - `Algebraic` — the parametric/algebraic route.
     - The genuinely layered core beneath all three: `Core -> Bundle -> {Algebraic, BXCanonical, WeakCanonical}`.
-  - [ ] Document the two directory-level cycles as **named, measured exceptions**, with their exact
+  - [x] Document the two directory-level cycles as **named, measured exceptions**, with their exact
         constituent edges, and state plainly why directory nesting cannot express the relationship:
         `WeakCanonical/{ChronicleExtraction,ReflexiveCanonical,Transfer}.lean` reach into
         `BXCanonical`, while `BXCanonical/Completeness.lean` and
         `BXCanonical/Chronicle/ChronicleToCountermodel.lean` reach back into `WeakCanonical`. Lean
         permits this because the cycle is at directory granularity while the module DAG is acyclic.
-  - [ ] Record the declined regroup as a decision with its evidence: `WeakCanonical` is 581 import
+  - [x] Record the declined regroup as a decision with its evidence: `WeakCanonical` is 581 import
         lines across 137 files, the largest partial-move risk in the tree, and no nesting resolves a
         mutual dependency.
-  - [ ] Redraw any dependency flowcharts over modules that actually exist.
-  - [ ] No task-number references anywhere in this file.
+  - [x] Redraw any dependency flowcharts over modules that actually exist.
+  - [x] No task-number references anywhere in this file.
+
+  **Phase 7 result.** Full rewrite, drawn from `edge-table-post-structural.txt`. All eight
+  non-existent files the old map documented are gone, and every remaining relative link and
+  module path was checked to resolve. `Kamp/` is now mapped at three levels (99 files / 71,246
+  lines, with `NfMultiAnchorBridge/` 43/41,859 and `EANegationFix/` 7/3,227, plus its local
+  Boneyard), and `Separation/` is corrected from "11+ files" to its measured 3.
+
+  Two things the plan did not anticipate are recorded in the map because leaving them out would
+  reproduce the same stale-map defect: (a) `BXCanonical` imports from BOTH other routes (2 lines
+  each), so the three routes are not independent alternatives -- all three are live; and (b) the
+  four `Decidability -> Automation` upward edges from Phase 4, documented as a named known
+  wrinkle. The map also carries the counting guidance, since every count in it is wrong if
+  either Boneyard is missed.
 - **Timing:** 1.5 hours
 - **Depends on:** 6
 - **Files to modify:**
