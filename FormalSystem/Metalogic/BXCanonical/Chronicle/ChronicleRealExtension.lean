@@ -45,20 +45,85 @@ half-finished.
 
 ## Refutations
 
-Two of the four Until/Since obligations at `ℝ` are **false**, with the counterexamples recorded
-at `toRealBundle_backward_since_selected_is_refuted` and
-`toRealBundle_backward_until_unselected_is_refuted`. Both exhibit a genuine model over `ℝ`,
-restrict its theories to `ℚ`, and observe that the real bundle's value at a gap — a limit from
-below — disagrees with the real model's own theory there. Consequently
-`BFMCS.toRealBundle_restricted_backward_until_since` (and therefore
-`cantor_bfmcs_dense_real_restricted_buc`) is not a theorem in the generic form, and neither is
-stated here.
+The generic backward transport
+
+> `B.RestrictedBackwardUntilSinceCoherent root →`
+> `(B.toRealBundle).RestrictedBackwardUntilSinceCoherent root`
+
+is **false**, and is therefore not stated in this module; nor is the chronicle instance that
+would be obtained by composing it with the rational backward instance. Two independent
+counterexample families are recorded below. Both are built the same way — take a genuine model
+`M` over the flow `ℝ`, set `m q := {χ | M, q ⊨ χ}` for rational `q`, and observe that the real
+bundle's value at a gap is a limit **from below** and so disagrees with `M`'s own theory at that
+gap. Taking theories of a real model makes every `m q` maximal consistent at
+`FrameClass.Dedekind` for free, and makes `forward_G`/`backward_H` hold semantically, so each
+family really is an `FMCS (fc := FrameClass.Dedekind) Rat`; the one-family bundle over it has
+both modal fields, with `□χ ↔ χ` at a single modal world.
+
+### Refutation 1 — backward `snce`, at a *selected* target
+
+Fix an irrational `g` with `0 < g < 5`. Let `V(φ) = (0, g)` and `V(ψ) = (g, 5)`, and take
+`root := snce φ ψ`, `δ := 0`.
+
+*The hypothesis holds.* The only Until/Since formula in `subformulaClosure root` is `snce φ ψ`
+itself, and the rational antecedent is never satisfied: a rational `u` with `φ ∈ m u` lies in
+`(0, g)`, so the rationals of `(u, t)` include rationals of `(u, g)`, where `ψ` fails. Rational
+restricted backward coherence therefore holds vacuously.
+
+*The real witness pattern holds* at the selected target `t := 5` with the unselected witness
+`s := g`. First, `φ ∈ realLimitMCS m 0 g`, because `{q | φ ∈ m q} ⊇ (0, g) ∩ ℚ` is a
+`limitFilterBelow g` generator, so `φ ∈ limitSetBelow m g ⊆ limitMCSBelow m g`. Second, the guard
+holds at every real of `(g, 5)`: directly at a selected one, and at an unselected one because
+every rational of `(g, r)` carries `ψ`.
+
+*The conclusion fails.* `snce φ ψ ∉ m 5`, since a real `u < 5` with `M, u ⊨ φ` lies in `(0, g)`
+and `ψ` then fails throughout `(u, g]`.
+
+*Isolation.* Nothing above uses the modal dimension, the ultrafilter's choice, or the difference
+between the deferral and subformula closures. The single load-bearing fact is that the real
+bundle at the gap `g` contains `φ` because `φ` is *eventually true from below* there, while `M`'s
+own point `g` does not satisfy `φ`. The real bundle's witness pattern can thus be met by a
+witness the rational family cannot supply — and for `snce` the witness lies *below* the target,
+so descending from it (the move that rescues `untl`) leaves the guarded interval rather than
+entering it. This is exactly the asymmetry noted at
+`toRealBundle_backward_since_selected_of_rat_witness`.
+
+### Refutation 2 — backward `untl`, at an *unselected* target
+
+Fix an irrational `g` with `0 < g < 2 < 3`, rationals `t_n ↗ g`, and rationals
+`α_n ∈ (t_n, t_{n+1})`. Let `V(ψ) = (⋃ n, (t_n, α_n)) ∪ (g, 3)` and `V(φ) = (g, 3)`, and take
+`root := untl φ ψ`, `δ := 0`.
+
+*The hypothesis holds.* Again `untl φ ψ` is the only Until/Since formula in the closure. At a
+rational `t < g` the antecedent fails, since any `φ`-point is above `g` and the rationals of
+`(t, g)` include `¬ψ` points from the intervals `(α_n, t_{n+1})`. At a rational `t ∈ (g, 3)` the
+antecedent's conclusion is true in `M` anyway. At `t ≥ 3` there is no `φ`-point above `t`.
+
+*The real witness pattern holds* at the unselected target `t := g`, with the selected witness
+`s := 2`: `φ ∈ m 2` and the guard holds at every real of `(g, 2)`.
+
+*The conclusion fails.* No rational below `g` carries `untl φ ψ`, and `{q : ℚ | (q : ℝ) < g}` is
+a `limitFilterBelow g` generator, so the complement of `{q | untl φ ψ ∈ m q}` is large and
+`untl φ ψ ∉ limitMCSBelow m g`.
+
+### What these do and do not settle
+
+They refute the transport theorem **as stated above**, whose only hypothesis on the rational
+bundle is restricted backward coherence. They do **not** settle the chronicle instance. Neither
+family satisfies the *unrestricted* rational forward Until coherence that `cantorBfmcsDense`
+enjoys: in Refutation 1 the formula `untl φ.neg φ` holds at rationals of `(0, g)` with the
+irrational witness `g` and no rational witness, and in Refutation 2 the same happens for the
+definable gap of `φ.neg` at `g`. Deciding whether a transport strengthened by those hypotheses
+(equivalently, by a `BFMCS.LimitFutureWitness`-style gap discharge applied to the *witness*
+rather than to `someFuture`) is provable is gap-facing work of exactly the kind that this
+module's forward case B counterpart owns, and it is deliberately not attempted here.
 
 ## Main results
 
 - `guard_transport_realLimitMCS`, `exists_rat_witness_of_realLimitMCS`.
 - `toRealBundle_forward_until_selected`, `toRealBundle_forward_since_selected`.
-- `toRealBundle_backward_until_selected`.
+- `toRealBundle_backward_until_selected`,
+  `toRealBundle_backward_since_selected_of_rat_witness`.
 - `cantor_bfmcs_dense_real_restricted_tc`.
 -/
 
