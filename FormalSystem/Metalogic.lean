@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 -- Re-export commonly used modules for convenience
 import FormalSystem.Metalogic.Soundness
+import FormalSystem.Metalogic.StrongCompleteness
 import FormalSystem.Metalogic.Decidability
 import FormalSystem.Metalogic.BXCanonical
 import FormalSystem.Metalogic.WeakCanonical

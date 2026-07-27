@@ -348,7 +348,7 @@ declared parallel pair in the engine.
 - **Timing:** 2 hours.
 - **Depends on:** none
 
-### Phase 2: SemanticConsequenceDedekindDense, the semantic deduction lemma, and the terminus statement [NOT STARTED]
+### Phase 2: SemanticConsequenceDedekindDense, the semantic deduction lemma, and the terminus statement [COMPLETED]
 
 - **Goal:** Land `strong_completeness_dedekind` — the task's terminus — **with the
   single-formula engine as an explicit hypothesis**, so the target is fixed and sorry-free
@@ -356,33 +356,57 @@ declared parallel pair in the engine.
 - **Owns:** `FormalSystem/Metalogic/StrongCompleteness.lean` (new),
   `FormalSystem/Metalogic.lean` (import line only).
 - **Tasks:**
-  - [ ] Define `SemanticConsequenceDedekindDense (Γ : Context) (φ : Formula) : Prop` by taking
+  - [x] Define `SemanticConsequenceDedekindDense (Γ : Context) (φ : Formula) : Prop` by taking
         the binder list of `ValidDedekindDense` (`Validity.lean:255-262`) verbatim and adding
         the hypothesis `(∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) →` before the conclusion. This is
         exactly the hypothesis-and-conclusion shape of `soundness_dedekind`
         (`Soundness.lean:1910`) packaged as a definition. Do not reuse `SemanticConsequence`
         (`Validity.lean:103`) — it quantifies over all `D` and cannot express Dedekind-class
         consequence.
-  - [ ] Prove `semantic_deduction_dedekind_dense (Γ : Context) (φ : Formula) :
+  - [x] Prove `semantic_deduction_dedekind_dense (Γ : Context) (φ : Formula) :
         SemanticConsequenceDedekindDense Γ φ ↔ ValidDedekindDense (Γ.foldr Formula.imp φ)`.
         Induction on the list against `Truth.lean:132`
         (`TruthAt … (φ.imp ψ) = (TruthAt … φ → TruthAt … ψ)`). No frame-condition reasoning
-        enters.
-  - [ ] Prove `strong_completeness_dedekind_of_engine`: given
+        enters. *(deviation: altered — the list induction was factored out into a reusable
+        pointwise lemma `truthAt_foldr_imp`, stated at the bare `TaskModel` binder set with no
+        Dedekind hypotheses, so the Base/Dense/Discrete sections can reuse it verbatim; the
+        named iff is then two transports of it. No frame-condition reasoning enters, as
+        specified.)*
+  - [x] Prove `strong_completeness_dedekind_of_engine`: given
         `(engine : ∀ ψ, ValidDedekindDense ψ → Derivable FrameClass.Dedekind [] ψ)`, conclude
         `SemanticConsequenceDedekindDense Γ φ → Derivable FrameClass.Dedekind Γ φ`, via the
         deduction lemma plus iterated `Derivable.deduction` / `deductionConverse`
         (`DeductionTheorem.lean:447,467`), both already generic in `fc`.
-  - [ ] Structure the file with named sections so the Base / Dense / Discrete instances of the
+        *(deviation: altered — the iteration was factored into the `fc`-generic pair
+        `derivable_of_derivable_foldr_imp` / `derivable_foldr_imp_of_derivable` and packaged as
+        `derivable_foldr_imp_iff`, so the terminus is a two-line composition. Each
+        `deductionConverse` step needs a membership-based `Derivable.weaken` to permute the
+        accumulated heads back into order, since the converse pushes formulas onto the front in
+        reverse.)*
+  - [x] Two additions beyond the phase task list, both anti-drift guards, both sorry-free:
+        `soundness_dedekind_consequence` (`Derivable .Dedekind Γ φ → SemanticConsequenceDedekindDense Γ φ`,
+        proving the new relation is exactly the conclusion block of `soundness_dedekind`, hence
+        that the terminus is non-vacuous) and `completeness_dedekind_of_engine` (weak
+        completeness exhibited as the `Γ = []` instance, so the weak form has exactly one proof
+        in the tree and it is a corollary — consistent with the Postmortem Constraint against
+        proving `completeness_dedekind` independently). These require importing
+        `FormalSystem.Metalogic.Soundness` into the new module; no import cycle, since
+        `Soundness.lean` does not import `StrongCompleteness`.
+  - [x] Structure the file with named sections so the Base / Dense / Discrete instances of the
         same shape drop in later without restructuring. Header comments only — **no `sorry`,
         no vacuous definitions, no placeholder declarations** for those three classes.
-  - [ ] Module docstring: record (i) that the terminus is strong and weak completeness is the
+  - [x] Module docstring: record (i) that the terminus is strong and weak completeness is the
         `Γ = []` instance; (ii) that Reynolds' Theorem 7 (§9, printed p.189) is *weak* and why
         that does not bite at `Context = List Formula`; (iii) the Goldblatt point — propositional
         temporal logic over `(ℝ,<)` is finitely axiomatizable (Bull), and Scott's
         non-axiomatizability result is first-order — marked `[UNVERIFIED - unverified_conversion]`
-        and re-read against the PDF before the quotation is committed.
-  - [ ] `lake build FormalSystem.Metalogic.StrongCompleteness`.
+        and re-read against the PDF before the quotation is committed. *(deviation: altered —
+        no quotation was committed. `literature-search.sh` returned `degraded: true` with zero
+        results for the Bull/Scott query and an empty TOC for `goldblatt_2023`, so the source
+        could not be re-read. The docstring states the point as paraphrase, records that the
+        corpus search found nothing to corroborate it, and notes explicitly that no declaration
+        in the file depends on it.)*
+  - [x] `lake build FormalSystem.Metalogic.StrongCompleteness`.
 - **Estimated output:** ~200 lines.
 - **Done when:** all three declarations are sorry-free and the module builds. The terminus
   statement exists in the tree from this point on.
