@@ -1181,15 +1181,15 @@
     {
       "project_number": 404,
       "project_name": "complete_combining_negation_repair",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "general",
       "topic": "literature",
       "priority": "high",
       "description": "Drive the combining-mark (U+0338) negation repair of the ~/Projects/Literature corpus to full coverage. The preceding repair pass restored 418 of 1,237 baseline-corrupted occurrences (34%) and stopped there by design, because its repair engine refused to act on any occurrence whose markdown anchor it could not resolve unambiguously. That conservatism was correct as a safety posture for a first pass -- an earlier build of the same engine used an over-wide anchor span as its literal edit region and deleted 137 words from bacon_2018 and 84 from Baier_Katoen part01 before being caught and rolled back from backup -- but 34% coverage is not an acceptable terminal state. 819 semantically-inverted negations remain live in the corpus, each one a passage that reads as a true equality/membership/entailment where the source asserts its negation.\n\nThe decisive fact making full coverage tractable: the residual ledger at specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json (824 entries) already records PDF ground truth for every skipped occurrence -- the source pdf_file, the exact pdf_char_offset, the base character, and a context window that shows the correct reading verbatim (e.g. \"A != B\", \"4 !in X\", \"TS !|= Psafe\", \"s !~ s'\"). What blocked repair was never uncertainty about what the text should say; it was the engine's inability to map a known-correct PDF position onto a markdown edit region it could bound safely. This task is therefore an anchoring problem, not a transcription problem.\n\nResidual occurrences by declared reason (819 repairable + 5 notes):\n  428  ambiguous_anchor            -- anchor resolved to multiple candidate sites\n  286  anchor_not_found            -- no markdown candidate matched the PDF context\n   69  unrecognized_gap            -- gap detected but base char pattern unhandled (e.g. base \"|\" in \"!|=\")\n   17  overlapping_edit            -- edit region collided with another pending edit\n   13  unmapped_base_char          -- base char absent from the composition map (e.g. \"~\"/U+2248)\n    6  narrow_failed               -- sub-span narrowing could not bound a safe region\n    2  chunks_not_regenerated      -- deferred re-chunking (see below)\n    3  scope/provenance notes      -- no source PDF, not yet converted, non-negation control chars\n\nConcentration by document: baier_katoen_2008 (484), libkin_2004_ch3_ch7 (167), venema_1993 (32), derijke_1995 (18), marinmoralesstrassburger_2021 (16), venema_1997 (15), fine_2010 (12), goldblatt_2003 (12), then a long tail. Two documents hold 79% of the remainder, so document-specific handling is likely to pay off more than further generic tuning.\n\nThe two smallest categories are pure configuration gaps and should be cleared first as a fast, low-risk win: unmapped_base_char (13) needs the composition map extended, and unrecognized_gap (69) needs the base-character pattern set widened to cover the relational forms it currently ignores. Together those are 82 occurrences -- 10% of the remainder -- with no new anchoring logic required.\n\nThe two large categories (ambiguous_anchor, anchor_not_found; 714 combined) need a genuinely stronger anchoring strategy than the first pass used. Candidate directions, to be evaluated rather than assumed: exploit the fact that markdown files derive from the PDF in document order, so a monotonic global alignment between PDF offsets and markdown offsets can disambiguate candidates that local context alone cannot; use the surrounding ground-truth context window as a longer, higher-entropy match key; and for the multi-file documents, resolve which part file a given PDF offset falls in before searching within it. Where several candidate sites remain genuinely indistinguishable, prefer repairing all of them when every candidate is itself a corrupted occurrence of the same relation, since that case has no wrong answer.\n\nNon-negotiable safety requirements, carried forward unchanged from the first pass and non-optional here:\n  - Every write backed up first, with a sha256 manifest, under $LITERATURE_DIR/.backups/\n  - Precise sub-span edit regions -- never the anchor search window as the edit region\n  - Per-edit size cap and whole-file circuit breaker, both retained\n  - Word-count and byte-delta sanity check per file after every write, compared against its backup, with automatic rollback on any delta that the intended repairs do not fully account for\n  - Dry-run default; --write must be explicit\n  - Idempotent: re-running over an already-repaired file is a no-op\n  - Every edit anchored to a confirmed ground-truth position; the engine must still refuse rather than guess\n\nDefinition of done: either every one of the 819 residual occurrences is repaired and verified, or each unrepaired occurrence carries a specific, individually-justified, human-reviewable reason that a reader can check against the cited PDF offset -- not a category label. \"Ambiguous\" alone is not a sufficient justification at this stage; if an occurrence is genuinely unrepairable, the ledger entry must say what was tried and why it could not be bounded safely. Target is 100%; a residual that survives this bar must be small and each case individually defensible.\n\nAlso in scope, because it gates whether any of the repairs are actually retrievable: the deferred re-chunking of baier_katoen_2008 (1,265 chunks) and venema_1993. Both are multi-file documents whose existing chunk manifests were produced by a concatenation process the chunking tool does not natively support, which is why the first pass declined to regenerate them. Until they are re-chunked, repairs to those two documents are invisible to FTS retrieval -- and baier_katoen_2008 alone accounts for 59% of the remaining work. Establish a verified re-chunking path for the multi-file layout, regenerate both, and confirm repaired sentences are retrievable through literature-search.sh. After re-chunking, rebuild the global FTS index and re-stamp index.json's combining_mark_* fields so the recorded fidelity metadata matches the repaired state.\n\nTooling note: the repair engine, detector, shared modules, and the fidelity-audit second signal currently exist only in this repository's gitignored .claude/scripts/ deploy artifact. A separate upstream task ports them into the literature extension source store. If that port has already landed when this task runs, work against the deployed copies and ensure any engine improvements made here are carried back to the extension source rather than left in the disposable tree -- do not let this task recreate the same divergence.",
       "dependencies": [],
       "created": "2026-07-27T00:00:00Z",
-      "last_updated": "2026-07-27T00:00:00Z",
-      "session_id": "sess_1785145751_ad171e",
+      "last_updated": "2026-07-27T20:32:48Z",
+      "session_id": "sess_1785176081_86bc94_404",
       "file_scope": [
         "~/Projects/Literature/sources/",
         "~/Projects/Literature/index.json",
@@ -1197,12 +1197,29 @@
         ".claude/scripts/literature_combining_detect.py",
         ".claude/scripts/literature_combining_overlay.py",
         ".claude/scripts/literature-combining-audit.sh"
+      ],
+      "artifacts": [
+        {
+          "path": "specs/404_complete_combining_negation_repair/reports/01_combining-negation-repair.md",
+          "type": "report",
+          "summary": "Root-cause verification for all residual-ledger categories against the live corpus and ledger: config-only quick wins (unmapped_base_char, most of unrecognized_gap), baier_katoen_2008's part-file-scoping fix for ambiguous_anchor, a confirmed compound-base (|=) gap in the anchor model, libkin_2004_ch3_ch7's document-fidelity finding (not an anchoring bug), and a verified-feasible re-chunking path for baier_katoen_2008 plus an open question for venema_1993. Includes a recommended phased implementation order for the planner."
+        },
+        {
+          "path": "specs/404_complete_combining_negation_repair/plans/01_combining-negation-repair.md",
+          "type": "plan",
+          "summary": "10-phase implementation plan organized by residual root cause, each write phase its own backup/rollback boundary. Includes an explicit Non-Goals section stating what is not repaired and why, a re-derived residual accounting table, and a definition-of-done ledger requiring per-occurrence justifications rather than category labels."
+        },
+        {
+          "path": "specs/404_complete_combining_negation_repair/plans/01_combining-negation-repair.md",
+          "type": "summary",
+          "summary": ""
+        }
       ]
     },
     {
       "project_number": 405,
       "project_name": "prove_semantic_validity_of_the_prioru_and_priors_gap_axioms_over_dense_dedekindcomplete_duration_groups",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Discharge two strategic sorries left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `prior_U_gap_valid` and `prior_S_gap_valid`.\n\nSTATEMENTS (Reynolds 1992, printed p.168, read verbatim from /home/benjamin/Projects/Literature/sources/reynolds_1992/sec01_an-axiomatization-for-until-and-since-ov.md, provenance_fidelity: verified_conversion):\n  Prior-U:  U(T, p) AND F(not p) -> U(not p OR K+(not p), p)\n  Prior-S:  S(T, p) AND P(not p) -> S(not p OR K-(not p), p)\nwith K+A = not U(T, not A) and K-A = not S(T, not A) (Reynolds abbreviation table p.168; corroborated by GHR 1994 section 10.3.1).\n\nTARGET: both lemmas are stated over the `ValidDedekindDense` binder set -- [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D] [Nontrivial D] plus the Prop-valued least-upper-bound hypothesis. They must NOT be restated over `ValidDedekind` (no DenselyOrdered): task 391's plan documents the SETTLED reason -- Z is also conditionally complete, and the density axioms these lemmas sit beside are false on Z.\n\nWHY DEFERRED: Reynolds asserts validity over the reals without proof (\"It is clear that all these axioms are valid over the reals\", printed p.168). The actual argument is a supremum/infimum construction over the p-region and has no fixed attempt budget, so it was made a strategic-sorry division point rather than a bounded phase in task 391.\n\nSCOPE NOTE: this is soundness only. Completeness (the Reynolds route: a rational-flowed Prior/Sep model, Reynolds Theorems 4/5 = D1/D2, the Doets real-flow transfer, and completeness_dedekind) is explicitly out of scope -- see specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md phases 6-9.\n\nTRAP: do not confuse these with the tree's existing `prior_UZ` / `prior_SZ` (FormalSystem/ProofSystem/Axioms.lean:315, :320), which are the INTEGER well-ordering axioms F(phi) -> U(phi, not phi) at FrameClass.Discrete. Different axioms, confusingly similar names.\n\nDONE WHEN: `lake build` green, both lemmas sorry-free, and the sorry count drops by exactly 2 from the task-391 exit baseline.",
       "effort": "large",
@@ -1211,14 +1228,31 @@
         391
       ],
       "created": "2026-07-27T16:49:49Z",
-      "last_updated": "2026-07-27T00:00:00Z",
-      "artifacts": [],
-      "topic": "cleanup"
+      "last_updated": "2026-07-27T18:47:31Z",
+      "artifacts": [
+        {
+          "path": "specs/405_prove_semantic_validity_of_the_prioru_and_priors_gap_axioms_over_dense_dedekindcomplete_duration_groups/reports/01_prior-gap-axiom-validity.md",
+          "type": "report",
+          "summary": "Verified-compiling proofs of both Prior gap axioms, with the Reynolds 1992 p.168 step map, an 8-row source-to-tree encoding check, the Mathlib lemma table (IsLUB.exists_between, isLUB_lowerBounds), the settled ValidDedekindDense binder rationale, the prior_UZ/prior_SZ trap check, build evidence, and a single-phase plan shape."
+        },
+        {
+          "path": "specs/405_prove_semantic_validity_of_the_prioru_and_priors_gap_axioms_over_dense_dedekindcomplete_duration_groups/plans/01_discharge-prior-gap-sorries.md",
+          "type": "plan",
+          "summary": "Two-phase plan discharging prior_U_gap_valid and prior_S_gap_valid from verified proof text, with prose repair and file-scope constraints."
+        },
+        {
+          "path": "specs/405_prove_semantic_validity_of_the_prioru_and_priors_gap_axioms_over_dense_dedekindcomplete_duration_groups/summaries/01_discharge-prior-gap-sorries-summary.md",
+          "type": "summary",
+          "summary": ""
+        }
+      ],
+      "topic": "cleanup",
+      "session_id": "sess_1785176081_86bc94_405"
     },
     {
       "project_number": 406,
       "project_name": "prove_semantic_validity_of_the_sep_axiom_over_real_flow_reynolds_1992_section_7_lemma_10",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Discharge the two Sep strategic sorries left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `sep_valid` AND its temporal dual `sep_swap_valid`.\n\nTWO LEMMAS, ONE BODY OF WORK. `(sep phi).swapTemporal` exchanges K+/K- and U/S and is NOT an instance of Axiom.sep, so it is a genuinely separate semantic fact and carries its own lemma (matching the tree's swap_axiom_*_valid convention in SoundnessLemmas/DenseValidity.lean, nine instances, none bundled). But Reynolds discharges Sep and its dual TOGETHER in lemma 10 of his section 7, so both belong to this one task -- do not split them across tasks. They were briefly stated as a single conjunction during task 391; that was reverted, since the two are consumed at different call sites (axiom_dedekind_valid and axiom_dedekind_swap_valid) and a conjunction misreports two obligations as one.\n\nSTATEMENT (Reynolds 1992, printed p.168, read verbatim from /home/benjamin/Projects/Literature/sources/reynolds_1992/sec01_an-axiomatization-for-until-and-since-ov.md, provenance_fidelity: verified_conversion):\n  Sep:  K+p AND not K+(p AND U(p, not p)) -> K+(K+p AND K-p)\nwith K+A = not U(T, not A) and K-A = not S(T, not A).\n\nTARGET: stated over the `ValidDedekindDense` binder set, matching the other two new-axiom validity lemmas.\n\nWHY DEFERRED: the primary source itself defers the proof. Reynolds, printed p.168: \"Axiom Sep is based on Sep in [8] but is a neater version developed by Ian Hodkinson in [12]. It is associated with the separability of R ... We investigate this axiom in more detail in section 7 and defer proving its validity in R until lemma 10 there.\" This is genuinely research-grade work with no fixed attempt budget.\n\nSTARTING POINT: Reynolds 1992 section 7, lemma 10 -- available as the local chunk /home/benjamin/Projects/Literature/sources/reynolds_1992/sec04_7-separability.md. Note Reynolds' own caveat (section 7) that Sep does NOT characterize separability -- the long line also satisfies it -- so the proof must not be routed through a separability characterization.\n\nCONSIDER FIRST: whether the bimodal setting (TaskFrame / WorldHistory / Omega / ShiftClosed) admits Reynolds' plain-temporal-structure argument unchanged, or whether the history-indexed semantics needs an adaptation. Research task 390 flagged this graft as genuinely new work not present in any source read.\n\nDONE WHEN: `lake build` AND `lake build BimodalTest` both green, `sep_valid` and `sep_swap_valid` both sorry-free, and the sorry count drops by exactly 2 from the task-391 exit baseline of 5 (= 1 pre-existing + 4 strategic). Note `lake build` alone is NOT sufficient evidence: Metalogic/Decidability/TraceExport.lean sits outside the default target's import closure.",
       "effort": "large",
@@ -1227,30 +1261,64 @@
         391
       ],
       "created": "2026-07-27T16:49:49Z",
-      "last_updated": "2026-07-27T00:00:00Z",
-      "artifacts": [],
-      "topic": "cleanup"
+      "last_updated": "2026-07-27T19:29:08Z",
+      "artifacts": [
+        {
+          "path": "specs/406_prove_semantic_validity_of_the_sep_axiom_over_real_flow_reynolds_1992_section_7_lemma_10/reports/01_sep-axiom-validity-real-flow.md",
+          "type": "report",
+          "summary": "Verbatim Reynolds §7 lemma 10 step map; proof that the bimodal graft is trivial; binder-set analysis showing the group binders are load-bearing (with counterexample); Mathlib findings table; full verified proof text for Phase A (separability), Phase B (nested-interval core + OrderDual mirror), Phase C (the two validity lemmas); fidelity note on the deliberate deviation from Reynolds' cardinality route; verification evidence table; 3-phase plan shape."
+        },
+        {
+          "path": "specs/406_prove_semantic_validity_of_the_sep_axiom_over_real_flow_reynolds_1992_section_7_lemma_10/plans/01_sep-validity-transcription.md",
+          "type": "plan",
+          "summary": "3-phase plan: transcribe verified proofs into a new Separability.lean, then discharge both Sep sorries in Soundness.lean. Front-loads the order-only-is-false trap, the corrected sorry arithmetic (3 to 1), the lean_run_code untrustworthiness, the mandatory lake build BimodalTest gate, the required fidelity-deviation docstring, and anchor-text-only editing."
+        },
+        {
+          "path": "specs/406_prove_semantic_validity_of_the_sep_axiom_over_real_flow_reynolds_1992_section_7_lemma_10/summaries/01_sep-validity-transcription-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary covering all three phases, the verification matrix, the recorded fidelity deviation, and two annotated plan deviations."
+        }
+      ],
+      "topic": "cleanup",
+      "session_id": "sess_1785176081_86bc94_406"
     },
     {
       "project_number": 407,
       "project_name": "retire_unwired_arity4_char_stack",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "cleanup",
       "priority": "low",
       "description": "Excise or Boneyard the unwired arity-4 characteristic-formula stack in FormalSystem/Metalogic/WeakCanonical/Kamp/. This is dead-code removal, not mathematics: the routing question it belonged to is SETTLED.\n\nBACKGROUND. Task 377's Phase 9 adjudication (specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md, section 6 item 3) found this stack \"landed, unwired, circular, fiber-refuted\" and directed that it \"be excised or Boneyarded, not consumed\". The competing route won: task 379 (commits 9b3bfa100, 10fe1d939) discharged the KampPrior k>=2 residual via the zeta wire (kampArm_zeta, Kamp/ZetaUniformExtract.lean) using Rabinovich's faithful UNARY E[Sigma]-atom encoding (Def 4.1 p.5) with structural Prop 4.3 composition (p.6), keeping charF arity-1 end-to-end. completeness_discrete is now sorryAx-free. The arity-4 stack is the losing branch and has no consumer.\n\nCRITICAL SCOPING TRAP -- \"Fib\" IS AMBIGUOUS IN THIS TREE. A blind grep for *Fib will delete LIVE code. There are 49 live *Fib declarations under Kamp/ and they split into two unrelated families:\n  (a) DEAD -- the arity-4 CHARACTERISTIC-FORMULA stack, recognizable by being parameterized over `charFib : (j : Nat) -> NormalForm sig j 4 -> Formula` (note: `charFib` is a BINDER, not a definition -- do not search for its declaration). Members include igPtWFib, igEpLFib, igEpRFib, igFoldBitFib, igCharPFib, igSegLFib, igSegRFib, igSLFib, igSRFib, igBodyFib, igMkDisjunctFib, igGateFib, igOffFiber, bracketEndCharKvFib, bracketEndCharKvExtFib, kampPrior_site_rungKFib_gate_match, and the bracketEndChar_kvFib_*/kvExtFib_* theorem family.\n  (b) LIVE -- general \"fiber\" machinery that merely shares the suffix, e.g. kvEFiber and the kvE_deepOnFiber_* family, consumed across ExteriorFiberK.lean, ExteriorNegationK.lean, ExteriorNegationPastK.lean, and ExteriorPinnedConverseK.lean. DO NOT TOUCH THESE.\nPhase 1 must therefore be a reachability audit from the live roots, not a name-pattern sweep.\n\nALREADY DONE, DO NOT REDO: kampPrior_hreal_supply is already retired to Boneyard/InteriorHrealSupplyK.lean. Only a prose comment at NfMultiAnchorBridge/InteriorGateGeneralK.lean:1653 still names it (recording the machine-confirmed circularity). Leave or update the comment; there is no live declaration to remove.\n\nSUGGESTED PHASING:\n1. Reachability audit. Compute the set of declarations transitively reachable from the live roots (kampPriorExpressiveCompleteness, completeness_discrete, and anything else exported from Kamp/). Anything in family (a) that is unreachable is the excision set; write it down explicitly before deleting anything. Confirm family (b) is reachable and excluded.\n2. Excise or Boneyard the audited dead set, following the tree's existing Boneyard convention (Kamp/Boneyard/ already holds prior retirements, including three of this stack's own members).\n3. Verify.\n\nNON-GOALS (each repeats an abandoned effort):\n- Do NOT wire, repair, complete, or find a consumer for the arity-4 stack. Task 376 was abandoned for exactly that.\n- Do NOT build an arity-4 realization engine. Rabinovich has no arity-4 object in 16 pages (Def 3.1 p.4: one variable; Lemma 3.2(2) p.4: <=2 free variables; Def 4.1 p.5: unary E[Sigma]).\n- Do NOT reach for Feferman-Vaught. Prop 4.3 makes composition structural, so Rabinovich never needs it; reaching for it is novel mathematics and is prohibited.\n\nDONE WHEN: `lake build` AND `lake build BimodalTest` both exit 0; `#print axioms` on FormalSystem.Metalogic.BXCanonical.completeness_discrete and FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness both still report exactly [propext, Classical.choice, Quot.sound] with NO sorryAx; the repo-wide sorry census is unchanged at 5 (4 in Metalogic/Soundness.lean, 1 at WeakCanonical/Transfer.lean:1225); and the excision set from phase 1 is recorded in the summary.\n\nVERIFICATION NOTE: do not trust mcp__lean-lsp__lean_run_code for existence or axiom claims in this repository -- it has reported success for deliberately bogus identifiers. Use `lake env lean` on a probe file and always include a bogus-identifier control that must error with unknownIdentifier.",
       "effort": "medium",
       "created": "2026-07-27T00:00:00Z",
-      "last_updated": "2026-07-27T00:00:00Z",
+      "last_updated": "2026-07-27T18:58:46Z",
       "dependencies": [],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/407_retire_unwired_arity4_char_stack/reports/01_arity4-char-stack-reachability-audit.md",
+          "type": "report",
+          "summary": "Verified dead-code reachability audit: the 30-declaration excision set with per-declaration consumer evidence, exact contiguous deletion ranges for all four in-scope files, the LIVE family-(b) exclusion list (kvEFiber/kvE_deepOnFiber/igOffFiber/igFoldBit), two prose-record relocation obligations, a Boneyard-over-raw-excise recommendation with rationale, measured verification baselines, and a five-phase implementation sequence."
+        },
+        {
+          "path": "specs/407_retire_unwired_arity4_char_stack/plans/01_boneyard-arity4-char-stack.md",
+          "type": "plan",
+          "summary": "Six-phase plan: Phase 1 captures the pre-state baseline (including C3's already-red status, so it is not misread as a regression); Phase 2 lands Boneyard/Arity4CharStackK.lean carrying all 30 declarations plus both prose records verbatim; Phase 3 deletes the four verified line blocks with an absolute prohibition on name-driven sweeps and explicit live-survivor assertions for igOffFiber and igFoldBit; Phase 4 relocates condensed circularity and M1/F1 fold-loss notes beside igFoldBit_realize_iff and bracketEndCharKv; Phase 5 verifies against the Phase 1 baseline (green-to-red comparison, not all-green); Phase 6 updates the Boneyard README inventory."
+        },
+        {
+          "path": "specs/407_retire_unwired_arity4_char_stack/summaries/01_boneyard-arity4-char-stack-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the full 30-declaration excision set enumerated by origin block, a baseline-vs-post comparison table covering both build exit codes, both flagship axiom sets, the sorry census, every B0/C1-C10 check and the readme-lint exit, the live-survivor and negative-control probe results, and a Plan Deviations section."
+        }
+      ],
       "file_scope": [
         "FormalSystem/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
         "FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorGateAssembleK.lean",
         "FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean",
         "FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierKv.lean",
         "FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/"
-      ]
+      ],
+      "session_id": "sess_1785176081_86bc94_407"
     }
   ],
   "artifacts": [

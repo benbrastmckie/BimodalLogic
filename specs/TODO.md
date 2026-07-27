@@ -11,7 +11,7 @@ next_project_number: 408
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,361,390,404,405,406,407 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,361,390 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296 | 193,231,298,361 | formula-refactor, dataset-enhancement, strong_completeness |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -51,10 +51,6 @@ next_project_number: 408
   └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
-### Literature
-
-404 [NOT STARTED] — Drive the combining-mark (U+0338) negation repair of the ~/Projec
-
 ### Strong Completeness
 
 361 [NOT STARTED] — Research + scoping for finite-context strong completeness (Contex
@@ -63,20 +59,17 @@ next_project_number: 408
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
-### Cleanup
-
-405 [NOT STARTED] — Discharge two strategic sorries left by task 391 phase 8 in Forma
-406 [NOT STARTED] — Discharge the two Sep strategic sorries left by task 391 phase 8 
-407 [NOT STARTED] — Excise or Boneyard the unwired arity-4 characteristic-formula sta
-
 ## Tasks
 
 ### 407. Retire unwired arity4 char stack
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: cleanup
 - **Dependencies**: None
+- **Research**: [407_retire_unwired_arity4_char_stack/reports/01_arity4-char-stack-reachability-audit.md]
+- **Plan**: [407_retire_unwired_arity4_char_stack/plans/01_boneyard-arity4-char-stack.md]
+- **Summary**: [407_retire_unwired_arity4_char_stack/summaries/01_boneyard-arity4-char-stack-summary.md]
 
 **Description**: Excise or Boneyard the unwired arity-4 characteristic-formula stack in FormalSystem/Metalogic/WeakCanonical/Kamp/. This is dead-code removal, not mathematics: the routing question it belonged to is SETTLED.
 
@@ -107,10 +100,13 @@ VERIFICATION NOTE: do not trust mcp__lean-lsp__lean_run_code for existence or ax
 
 ### 406. Prove semantic validity of the sep axiom over real flow reynolds 1992 section 7 lemma 10
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: cleanup
 - **Dependencies**: Task 391
+- **Research**: [406_prove_semantic_validity_of_the_sep_axiom_over_real_flow_reynolds_1992_section_7_lemma_10/reports/01_sep-axiom-validity-real-flow.md]
+- **Plan**: [406_prove_semantic_validity_of_the_sep_axiom_over_real_flow_reynolds_1992_section_7_lemma_10/plans/01_sep-validity-transcription.md]
+- **Summary**: [406_prove_semantic_validity_of_the_sep_axiom_over_real_flow_reynolds_1992_section_7_lemma_10/summaries/01_sep-validity-transcription-summary.md]
 
 **Description**: Discharge the two Sep strategic sorries left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `sep_valid` AND its temporal dual `sep_swap_valid`.
 
@@ -134,10 +130,13 @@ DONE WHEN: `lake build` AND `lake build BimodalTest` both green, `sep_valid` and
 
 ### 405. Prove semantic validity of the prioru and priors gap axioms over dense dedekindcomplete duration groups
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: cleanup
 - **Dependencies**: Task 391
+- **Research**: [405_prove_semantic_validity_of_the_prioru_and_priors_gap_axioms_over_dense_dedekindcomplete_duration_groups/reports/01_prior-gap-axiom-validity.md]
+- **Plan**: [405_prove_semantic_validity_of_the_prioru_and_priors_gap_axioms_over_dense_dedekindcomplete_duration_groups/plans/01_discharge-prior-gap-sorries.md]
+- **Summary**: [405_prove_semantic_validity_of_the_prioru_and_priors_gap_axioms_over_dense_dedekindcomplete_duration_groups/summaries/01_discharge-prior-gap-sorries-summary.md]
 
 **Description**: Discharge two strategic sorries left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `prior_U_gap_valid` and `prior_S_gap_valid`.
 
@@ -159,10 +158,13 @@ DONE WHEN: `lake build` green, both lemmas sorry-free, and the sorry count drops
 ---
 
 ### 404. Complete combining negation repair
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
+- **Research**: [404_complete_combining_negation_repair/reports/01_combining-negation-repair.md]
+- **Plan**: [404_complete_combining_negation_repair/plans/01_combining-negation-repair.md]
+- **Summary**: [404_complete_combining_negation_repair/plans/01_combining-negation-repair.md]
 
 **Description**: Drive the combining-mark (U+0338) negation repair of the ~/Projects/Literature corpus to full coverage. The preceding repair pass restored 418 of 1,237 baseline-corrupted occurrences (34%) and stopped there by design, because its repair engine refused to act on any occurrence whose markdown anchor it could not resolve unambiguously. That conservatism was correct as a safety posture for a first pass -- an earlier build of the same engine used an over-wide anchor span as its literal edit region and deleted 137 words from bacon_2018 and 84 from Baier_Katoen part01 before being caught and rolled back from backup -- but 34% coverage is not an acceptable terminal state. 819 semantically-inverted negations remain live in the corpus, each one a passage that reads as a true equality/membership/entailment where the source asserts its negation.
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #405
 
 - **Task**: 405 - Prove semantic validity of the Prior-U and Prior-S gap axioms over dense Dedekind-complete duration groups
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.25 hours
 - **Dependencies**: 391 (complete — supplied the strategic sorries and the settled binder-set decision)
 - **Research Inputs**: `specs/405_prove_semantic_validity_of_the_prioru_and_priors_gap_axioms_over_dense_dedekindcomplete_duration_groups/reports/01_prior-gap-axiom-validity.md`
