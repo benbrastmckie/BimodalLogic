@@ -1,0 +1,4463 @@
+[
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 124038,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " we have\nTS1 ∥H (TS2 ∥H′ TS3) ̸= (TS1 ∥H TS2) ∥H′ TS3\nfor H ̸",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 124068,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "̸= (TS1 ∥H TS2) ∥H′ TS3\nfor H ̸= H′.\nHowever, for a ﬁxed set ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 125150,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "es:\n• for α ∈Acti \\ ( \n0<j⩽n\ni̸=j\nHi,j) and 0 < i ⩽n:\nsi\nα\n−−",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 142516,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " . . . vk](c′) =\n\t ξ(c′)\nif c ̸= c′\nv1 . . . vk\nif c = c′.\nTh",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 168593,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n(x, expr), η)(y) = η(y) if y ̸= x and Eﬀect(assign(x, expr),",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 169325,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " applies:\nstmt1\ng:α\n\n→stmt′\n1 ̸= exit\nstmt1; stmt2\ng:α\n\n→stmt",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 170891,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ng rules:\nstmti\nh:α\n\n→stmt′\ni ̸= exit\nloop\ngi∧h:α\n\n→stmt′\ni; ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 194157,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "3: wait until ((y1−i = 0) ∨(s ̸= i));\nl4: Critical section\nl5",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 196141,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ";\ny[j] := i;\nwait until (y[j] ̸= i) ∨\n\u0011\u0012\n0<k⩽n,k̸=i p[k] < j\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 196159,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "until (y[j] ̸= i) ∨\n\u0011\u0012\n0<k⩽n,k̸=i p[k] < j\n\u0013\nod\n. . . critica",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 240090,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n R satisfy Φ *)\nwhile (I \\ R ̸= ∅∧b) do\nlet s ∈I \\ R;\n(* cho",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 244735,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= Φ, . . . , An−1 |= Φ and An ̸|= Φ constitute the minimal ba",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 245432,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " σ = A0 A1 . . . | Aj ⊆AP ∧Aj ̸= ∅}.\nThe bad preﬁxes are ﬁnit",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 248128,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(Psafe) = ∅and assume that\nTS ̸|= Psafe. Then, trace(π) /∈Psa",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 252786,
+    "base_char": "⊆",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "esign TS such that\nTraces(TS) ̸⊆Traces(TS′),\nthen the LT prop",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 258541,
+    "base_char": "⊆",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "lt to observe that\nTraces(TS) ̸⊆Traces(TS′)\nand\nTracesﬁn(TS) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 280961,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "r whenever\n\u0011 ∞\n∃j. Act(sj) ∩A ̸= ∅\n\u0013\n=⇒\n\u0011 ∞\n∃j. αj ∈A\n\u0013\n.\n3. ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 281039,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "r whenever\n\u0011 ∞\n∀j. Act(sj) ∩A ̸= ∅\n\u0013\n=⇒\n\u0011 ∞\n∃j. αj ∈A\n\u0013\n.\nHer",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 300637,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "chable state s: FairPathsF(s) ̸= ∅.\n140\nLinear-Time Propertie",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 302481,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "S) and assume σ /∈Psafe. As σ ̸∈Psafe,\nthere is a bad preﬁx o",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 310533,
+    "base_char": "⊆",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "deterministic, but\nTraces(TS) ̸⊆Traces(TS′) and Tracesﬁn(TS) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 325656,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ":\nL(A) = {w ∈Σ∗| δ∗(q0, w) ∩F ̸= ∅for some q0 ∈Q0}.\nIt can be",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 327466,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " Q0, F) be an NFA. Then, L(A) ̸= ∅if and only if there exists",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 336260,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s A0 A1 . . . An such that Ai ̸|= Φ for some 0 ⩽i ⩽n.\nSuch la",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 336490,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "r the set of all A ⊆AP with\nA ̸|= Φ, while true means the set",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 337323,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "r A ⊆AP = { a, b }, we have A ̸|= a ∨¬b if and only if A = { ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 350234,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "d (c), we show\n(c) =⇒(a) : TS ̸|= Psafe\nimplies\nTS ⊗A ̸|= Pin",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 350292,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Pinv(A)\nand\n(b) =⇒(c) : TS ⊗A ̸|= Pinv(A)\nimplies\nTracesﬁn(TS",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 350331,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "A)\nimplies\nTracesﬁn(TS) ∩L(A) ̸= ∅.\nProof of “(c) =⇒(a)”: If ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 350365,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ".\nProof of “(c) =⇒(a)”: If TS ̸|= Psafe, then there is a ﬁnit",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 350781,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "F.\nIt thus follows that TS ⊗A ̸|= Pinv(A).\nProof of “(b) =⇒(c",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 373289,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Fω\n1 + . . . + En.Fω\nn with ε ̸∈Fi. This works as\nfollows. As",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 376931,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "in A, we get\nδ∗(qik−1, wk) ∩F ̸= ∅. This yields wk ∈L(A) for ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 378969,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " ∪Q′\n0\nif q ∈Q and δ(q, A) ∩F ̸= ∅\nδ′(q, A)\nif q ∈Q′\nIt is no",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 382318,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nts are equivalent:\n(a) Lω(A) ̸= ∅,\n(b) There exists a reacha",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 402746,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "out loss of generality that F ̸= ∅. Let F = {F1, . . . , Fk} ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 403559,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "{ ⟨q′, i⟩| q′ ∈δ(q, A) }\nif q ̸∈Fi\n{ ⟨q′, i+1⟩| q′ ∈δ(q, A) }",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 408204,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\nNote that:\nTraces(TS) ∩Lω(A) ̸= ∅\nif and only if\nTraces(TS) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 408238,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\nif and only if\nTraces(TS) ∩P ̸= ∅\nif and only if\nTraces(TS) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 408281,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nly if\nTraces(TS) ∩(2AP)ω \\ P ̸= ∅\nif and only if\nTraces(TS) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 412809,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "his\nwe show\nTraces(TS) ∩Lω(A) ̸= ∅if and only if TS ⊗A ̸|= Pp",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 412834,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ω(A) ̸= ∅if and only if TS ⊗A ̸|= Ppers(A).\n”⇐”: Assume TS ⊗A",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 412866,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= Ppers(A).\n”⇐”: Assume TS ⊗A ̸|= Ppers(A). Let π′ = ⟨s0, q1⟩",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 412943,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " a path in TS ⊗A such\nthat\nπ′ ̸|= Ppers(A).\nThen there are in",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 413505,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "), and thus Traces(TS) ∩Lω(A) ̸= ∅.\n”⇒”: Assume that Traces(T",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 416262,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "̸= ∅, and thus\nPedTrLight’ ⊗A ̸|= “eventually forever” ¬q1\nan",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 416312,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ver” ¬q1\nand thus\nPedTrLight′ ̸|= “inﬁnitely often green”.\nMo",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 417051,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "nite\ntransition system TS:\nTS ̸|= Ppers\nwhere Ppers is a pers",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 417935,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " an\ninitial state in TS and s ̸|= Φ. As s is reachable, TS ha",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 418253,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "inﬁnitely often. But then, TS ̸|= Ppers.\nThis is exempliﬁed i",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 419145,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " error indication whenever\nTS ̸|= Ppers. Let \u0014π = u0 u1 u2 . ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 420001,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " I, AP).\n(a) =⇒(b): Assume TS ̸|= Ppers, i.e., there exists a",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 420145,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "y many indices i such that si ̸|= Φ. Since TS is\nﬁnite, there",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 420202,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "here is a state s with s = si ̸|= Φ for inﬁnitely many i. As ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 420734,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " . .\nis a path in TS. Since s ̸|= Φ, it follows that π does n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 421577,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "eachable state, e.g., ⟨s2, q1⟩̸|= ¬q1, that lies on a cycle. ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 421629,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "a cycle. Thus:\nPedTrLight’ ⊗A ̸|= “eventually forever” ¬q1.\nT",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 428190,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ost(s′) ⊆R then\npop(U);\nif s′ ̸|= Φ then R¬Φ := R¬Φ ∪{ s′ }; ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 429054,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "stack *)\nelse\nif Post(s′) \\ T ̸= ∅then\nlet s′′ ∈Post(s′) \\ T ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 429842,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " found := false;\nwhile (I \\ R ̸= ∅∧¬cycle found) do\nlet s ∈I ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 430235,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s′ := top(U);\nif Post(s′) \\ R ̸= ∅then\nlet s′′ ∈Post(s′) \\ R;",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 436144,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "answer ”no” if and only if TS ̸|= Ppers.\nProof:\n⇒: This follo",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 436365,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " ∈I and\ns ̸|= Φ. But then, TS ̸|= Ppers.\n⇐: To establish this",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 436578,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s′\n0, s′\n1, . . . , s′\nk } ∩T ̸= ∅\nand\ns ∈{ s′\n0, . . . , s′\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 437366,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(+) For all states \u0014s with \u0014s ̸|= Φ where cycle check(\u0014s) has",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 452719,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "rovide a counterexample if TS ̸|= Psafe.\nExercise 4.7.\nProve ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 456880,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "l bad preﬁxes such that\nLω(A) ̸=\n\u0016\n2AP\u0017ω \\ Psafe\nwhen A is vi",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 474362,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " ϕ1 and σ |= ϕ2\nσ\n|=\n¬ ϕ\niﬀ\nσ ̸|= ϕ\nσ\n|=\n⃝ϕ\niﬀ\nσ[1 . . .] = A",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 474977,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "] |= ¬ϕ\niﬀ\n¬∃j ⩾0. σ[j . . .] ̸|= ϕ\niﬀ\n∀j ⩾0. σ[j . . .] |= ϕ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 477965,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Post(s2), s3 ∈Post(s3) and s3 ̸|= a ∧b.\nThis yields TS ̸|= ⃝(",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 477990,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "d s3 ̸|= a ∧b.\nThis yields TS ̸|= ⃝(a ∧b) as s3 is an initial",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 478192,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "¬b in s3 is true. However,\nTS ̸|= b U (a ∧¬b),\nsince the init",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 478425,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "holds π |= ϕ if and only if π ̸|= ¬ϕ. This is due to the fact",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 478646,
+    "base_char": "⊆",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "te that\nTS ̸|= ϕ\niﬀTraces(TS) ̸⊆Words(ϕ)\niﬀTraces(TS) \\ Words",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 478681,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ds(ϕ)\niﬀTraces(TS) \\ Words(ϕ) ̸= ∅\niﬀTraces(TS) ∩Words(¬ϕ) ̸=",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 479114,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "P =\n{ a }. It follows that TS ̸|= ♦a, since the initial path ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 479259,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "s1)ω |= ♦a, and thus, s0(s1)ω ̸|= ¬♦a.\n{ a }\ns1\n∅\ns0\n∅\ns2\nFig",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 480238,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ﬁnitely often. However,\nTSSem ̸|= □♦crit1 ∧□♦crit2,\nsince—in ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 487263,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n\u0011 !\n1⩽i⩽N\nleaderi ∧\n\u001b\n1⩽j⩽N\nj̸=i\n¬ leaderj\n\u0013\n.\n244\nLinear Te",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 487834,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n\u0011 !\n1⩽i⩽N\nleaderi ∧\n\u001b\n1⩽j⩽N\nj̸=i\n¬ leaderj\n\u0013\n.\nProblematic, ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 488338,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n\u001b\n1⩽i⩽N\n\u0011\nleaderi →\n\u001b\n1⩽j⩽N\nj̸=i\n¬ leaderj\n\u0013\n• “There will b",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 496967,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": ". . |= ¬ ⃝ϕ\niﬀ\nA0 A1 A2 . . . ̸|= ⃝ϕ\niﬀ\nA1 A2 . . . ̸|= ϕ\niﬀ\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 496989,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "2 . . . ̸|= ⃝ϕ\niﬀ\nA1 A2 . . . ̸|= ϕ\niﬀ\nA1 A2 . . . |= ¬ϕ\niﬀ\nA",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 497621,
+    "base_char": "≡",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ersal quantiﬁcation):\n♦(a ∧b) ̸≡♦a ∧♦b\nand\n□(a ∨b) ̸≡□a\n∨\n□b.",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 497642,
+    "base_char": "≡",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n♦(a ∧b) ̸≡♦a ∧♦b\nand\n□(a ∨b) ̸≡□a\n∨\n□b.\nThe formula ♦(a ∧b) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 509080,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "f negation *)\n¬∃j ⩾0. (σ[j..] ̸|= ψ ∧∀i < j. σ[i..] ̸|= ϕ)\niﬀ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 509102,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "(σ[j..] ̸|= ψ ∧∀i < j. σ[i..] ̸|= ϕ)\niﬀ\n(* duality of ∃and ∀*",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 509153,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "of ∃and ∀*)\n∀j ⩾0. ¬\n\u0011\nσ[j..] ̸|= ψ ∧∀i < j. σ[i..] ̸|= ϕ\n\u0013\ni",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 509175,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "\nσ[j..] ̸|= ψ ∧∀i < j. σ[i..] ̸|= ϕ\n\u0013\niﬀ\n(* de Morgan’s law *",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 509226,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "an’s law *)\n∀j ⩾0.\n\u0011\n¬(σ[j..] ̸|= ψ) ∨¬∀i < j. σ[i..] ̸|= ϕ\n\u0013",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 509250,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "[j..] ̸|= ψ) ∨¬∀i < j. σ[i..] ̸|= ϕ\n\u0013\niﬀ\n(* semantics of nega",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 514949,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ored. Thus:\nTS1 ∥Arbiter ∥TS2 ̸|= □♦crit1.\nIf a coin is assum",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 515743,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " enabled. It follows\nthat\nABP ̸|= □♦start\nLinear Temporal Log",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 541317,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ial, it may be assumed that ϕ ̸= true.\nAutomata-Based LTL Mod",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 545235,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "l\nconsistency, we have\nϕ1, ϕ2 ̸∈B\nimplies\nϕ1 U ϕ2 /∈B.\nHence,",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 545277,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ϕ1 U ϕ2 /∈B.\nHence, if ϕ1, ϕ2 ̸∈B then { ¬ϕ1, ¬ϕ2, ¬(ϕ1 U ϕ2)",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 545835,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "B ⇔ϕ1 ∈B and ϕ2 ∈B\n• ψ ∈B ⇒¬ψ ̸∈B\n• true ∈closure(ϕ) ⇒true ∈B",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 546006,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "1 U ϕ2 ∈B\n• ϕ1 U ϕ2 ∈B and ϕ2 ̸∈B ⇒ϕ1 ∈B.\n3. B is maximal, i.",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 546454,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ince a U (¬a ∧b) ∈B and ¬a ∧b ̸∈B, but a ̸∈B. This\nmeans that",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 546465,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "a ∧b) ∈B and ¬a ∧b ̸∈B, but a ̸∈B. This\nmeans that\nπ |= ¬a,\nπ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 547741,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "× 2AP →2Q is given by:\n• If A ̸= B ∩AP, then δ(B, A) = ∅.\n• I",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 550498,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "|= ψ }, it follows that if Bi ̸∈Fj, then:\nAi Ai+1 . . . |= ϕ1",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 550557,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ϕ1,j U ϕ2,j\nand\nAi Ai+1 . . . ̸|= ϕ2,j.\nThus, Ak Ak+1 . . . |",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 551023,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "∅\nfor all pairs (B, A) with A ̸= B ∩AP,\nit follows that Ai = ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 552607,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " ϕ2. This remains the case ϕ2 ̸∈B0. Then\nϕ1 ∈B0 and ϕ1 U ϕ2 ∈",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 553162,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "On the other hand, we have\nϕ2 ̸∈Bj\nand\nϕ1 U ϕ2 ∈Bj\n\u0005\n\u0006\u0007\n\b\niﬀ\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 553195,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "j\nand\nϕ1 U ϕ2 ∈Bj\n\u0005\n\u0006\u0007\n\b\niﬀ\nBj̸∈Fϕ1 U ϕ2\nfor all j. Contradic",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 554513,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ect successor B′ of B we have\n̸=⃝ψ ∈B if and only if ψ ̸∈B′.\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 554538,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "have\n̸=⃝ψ ∈B if and only if ψ ̸∈B′.\n(This follows by the deﬁn",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 556804,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ny successor B′ of B:\nϕ1 U ϕ2 ̸∈B\niﬀ\nϕ2 ̸∈B ∧(ϕ1 ̸∈B ∨ϕ1 U ϕ2",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 556814,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "or B′ of B:\nϕ1 U ϕ2 ̸∈B\niﬀ\nϕ2 ̸∈B ∧(ϕ1 ̸∈B ∨ϕ1 U ϕ2 ̸∈B′).\n(T",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 556823,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "B:\nϕ1 U ϕ2 ̸∈B\niﬀ\nϕ2 ̸∈B ∧(ϕ1 ̸∈B ∨ϕ1 U ϕ2 ̸∈B′).\n(The proof ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 556836,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "B\niﬀ\nϕ2 ̸∈B ∧(ϕ1 ̸∈B ∨ϕ1 U ϕ2 ̸∈B′).\n(The proof of this fact ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 568443,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "tonian path if and only if\nTS ̸|= ϕ.\n⇐: Assume TS ̸|= ϕ. Then",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 568463,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nly if\nTS ̸|= ϕ.\n⇐: Assume TS ̸|= ϕ. Then there exists a path",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 574122,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(q, A, i) where q ∈Q (i.e., q ̸= ∗) and A ∈Σ, 0 < i ⩽P(n). Th",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 574292,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "(n)\n\u0011\n⃝2i−1ΦQ\n−→\n\u0012\n1⩽j⩽P (n)\nj̸=i\n⃝2j−1¬ΦQ\n\u0013\ncharacterize any",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 575278,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": ",L) is deﬁned as\n\u001b\n1⩽j⩽P (n)\nj̸=i,C∈Σ\n(⃝2j−1C ↔⃝2j−1+2P (n)+1",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 593205,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "path π ∈Paths(TS) such that π ̸|= ϕi.\nϕ1\n= ♦□c\nϕ2\n= □♦c\nϕ3\n= ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 598067,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ther TS |=fair ϕi. In case TS ̸|=fair ϕi, indicate a path π ∈",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 616594,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "3\n(a)\n{ x = 0 }\n{ x = 0 }\n{ x ̸= 0 }\n{ x = 1, x ̸= 0 }\nFigure",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 616612,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "x = 0 }\n{ x ̸= 0 }\n{ x = 1, x ̸= 0 }\nFigure 6.1: (a) A transi",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 633217,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "alid in these states. Since a ̸∈L(s2) there is no path starti",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 634573,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "( ¬ a U b)) since a ∈L(s0), a ̸∈L(s2), and b ∈L(s1). For stat",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 637288,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " s (i.e., s0 = s)\nsuch that\nπ ̸|= (Φ ∧¬Ψ) U (¬Φ ∧¬Ψ).\nSuch pa",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 637471,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "8\nComputation Tree Logic\n– sj ̸|= Φ ∧¬Ψ and sj ̸|= ¬Φ ∧¬Ψ, i.",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 637488,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e Logic\n– sj ̸|= Φ ∧¬Ψ and sj ̸|= ¬Φ ∧¬Ψ, i.e., sj |= Ψ, and\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 638020,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "gation\nFor state s, we have s ̸|= Φ if and only if s |= ¬Φ. T",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 638332,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "d s′\n0 ̸|= Φ. Furthermore:\nTS ̸|= ¬∃ϕ iﬀthere exists a path π",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 638683,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n initial\nstate s0 ∈I with s0 ̸|= ¬∃ϕ, i.e., s0 |= ∃ϕ. On the",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 643355,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "h s (s′′)ω |= ♦a but s (s′′)ω ̸|= ♦b. Thus, s ̸|= ∀♦b. By a s",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 643445,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ath s (s′)ω it follows that s ̸|= ∀♦a. Thus, s ̸|= ∀♦a ∨∀♦b. ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 649907,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "old in s0, since we have sω\n0 ̸|= ♦∀□a (as s0 ̸|= ∀□a).\nThis ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 649923,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " we have sω\n0 ̸|= ♦∀□a (as s0 ̸|= ∀□a).\nThis is due to the fa",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 650152,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "cordingly, it follows that\ns0 ̸|= ∀♦∀□a.\nGiven that the CTL f",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 653753,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ion of TSn and TS′\nn that\nTSn ̸|= ♦□a\nand\nTS′\nn |= ♦□a\nfor al",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 655004,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " one hand, it follows from TS ̸|= ♦□a and TS′ |= ♦□a that\nTS ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 655035,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "|= ♦□a and TS′ |= ♦□a that\nTS ̸|= Φ and TS′ |= Φ.\nOn the othe",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 656136,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "and thus TS′ |= ϕ. However, s ̸|= ∀□∃♦a,\nsince ∃♦a is never v",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 656209,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "he only path sω, and thus TS′ ̸|= ∀□∃♦a. This is a\ncontradict",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 662406,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Φ) = { s ∈S | Post(s) ∩Sat(Φ) ̸= ∅},\n(f) Sat(∃(Φ U Ψ)) is the",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 662519,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " (2) s ∈Sat(Φ) and Post(s) ∩T ̸= ∅implies s ∈T,\n(g) Sat(∃□Φ) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 663318,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "guish between s ∈Sat(Ψ)\nand s ̸∈Sat(Ψ). If s ∈Sat(Ψ), it foll",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 666999,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(Ψ) ∪{ s ∈Sat(Φ) | Post(s) ∩T ̸= ∅}.\n(l) Sat(∀(Φ W Ψ)) is the",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 668193,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "turn { s ∈S | Post(s) ∩Sat(Ψ) ̸= ∅};\n∃(Φ1 U Φ2)\n:\nT := Sat(Φ2",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 668301,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "{ s ∈Sat(Φ1) \\ T | Post(s) ∩T ̸= ∅} ̸= ∅do\nlet s ∈{ s ∈Sat(Φ1",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 668307,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "at(Φ1) \\ T | Post(s) ∩T ̸= ∅} ̸= ∅do\nlet s ∈{ s ∈Sat(Φ1) \\ T ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 668351,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "{ s ∈Sat(Φ1) \\ T | Post(s) ∩T ̸= ∅};\nT := T ∪{ s };\nod;\nretur",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 668476,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "hile { s ∈T | Post(s) ∩T = ∅} ̸= ∅do\nlet s ∈{ s ∈T | Post(s) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 668722,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(2) (s ∈Sat(Φ) and Post(s) ∩T ̸= ∅) ⇒s ∈T.\n(6.1)\nThis charact",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 669396,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Tj ∪{ s ∈Sat(Φ) | Post(s) ∩Tj ̸= ∅}\nand, hence:\n{ s ∈Sat(Φ) |",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 669440,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ce:\n{ s ∈Sat(Φ) | Post(s) ∩Tj ̸= ∅} ⊆Tj.\nHence, Tj satisﬁes p",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 671031,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ula ∃♦Φ with Φ = ((a = c) ∧(a ̸= b)). Recall that ∃♦Φ = ∃(tru",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 672361,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "with s |= ∃(Φ U Ψ) *)\nwhile E ̸= ∅do\nlet s′ ∈E;\nE := E \\ { s′",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 672876,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Ti ∩{ s ∈Sat(Φ) | Post(s) ∩Ti ̸= ∅}.\nThen, for all j ⩾0, it h",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 673798,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ns any not visited s′ with s′ ̸|= ∃□Φ *)\nT := Sat(Φ);\n(* T co",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 673977,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ialize array count *)\nwhile E ̸= ∅do\n(* loop invariant: count",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 674054,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "∩(T ∪E) | *)\nlet s′ ∈E;\n(* s′ ̸|= Φ *)\nE := E \\ { s′ };\n(* s′",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 685295,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "358\nComputation Tree Logic\nTS ̸|= ¬Φn\niﬀ\nthere is an initial ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 685352,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ial state s of TS for which s ̸|= ¬Φn\niﬀ\nthere is an initial ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 693093,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "a ⇒∀♦b) is invalid, hence:\nTS ̸|= ∀□(a ⇒∀♦b).\nUsually, though",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 697657,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "¬a\n:\nSatfair(Ψ) := { s ∈S | a ̸∈L(s) };\n∃⃝a\n:\nSatfair(Ψ) := S",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 699584,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "true) = { s ∈S | FairPaths(s) ̸= ∅}\n366\nComputation Tree Logi",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 701890,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "t(bi) ∩{ s′\n1, . . . , s′\nr } ̸= ∅for all 1 ⩽i ⩽k.\nProof: ⇐: ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 702707,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " ∈IN such that sn = s′ and s′ ̸∈{ s0, s1, . . . , sn−1 }. Tha",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 702918,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n+1, . . . , sr−1, sr }.\n2. π ̸|= □♦ai. Then there exists an ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 702988,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "uch that sn, sn+1, sn+2 . . . ̸∈Sat(ai). As-\nsume without los",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 703748,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "es (s, s′)\nfor which either s ̸|= a or s′ ̸|= a. (Thus, G[a] ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 703760,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "or which either s ̸|= a or s′ ̸|= a. (Thus, G[a] is the state",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 704239,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\nD ∩Sat(ai) = ∅\nor\nD ∩Sat(bi) ̸= ∅.\nLet T be the union of all",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 705750,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "of G[a]\nsatisfying C ∩Sat(bi) ̸= ∅for all 1 ⩽i ⩽k. It now fol",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 705836,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "f and only if\nReachG[a](s) ∩T ̸= ∅.\nFairness in CTL\n369\nThe f",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 706364,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s3, s4 } such\nthat C ∩Sat(b1) ̸= ∅and C ∩Sat(b2) ̸= ∅. We thu",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 706383,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "C ∩Sat(b1) ̸= ∅and C ∩Sat(b2) ̸= ∅. We thus have s0 |=sfair ∃",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 706590,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n0 ̸|=sfair ∃□a and hence TS′ ̸|=sfair ∃□a.\nStrong Fairness w",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 707471,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "turn { s ∈S | ReachG[a](s) ∩T ̸= ∅}\n(* e.g., backwards reacha",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 708936,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\nD ∩Sat(ai) = ∅\nor\nD ∩Sat(bi) ̸= ∅.\nAlgorithm 18 on page 370 ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 709988,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ealize the condition\n\u001b\n0<i⩽k\ni̸=j\nsfair i ∧□¬aj\nin C. For thi",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 711752,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "∈{ 1, . . . , k }. C ∩Sat(bj) ̸= ∅then\nreturn true\n(*\n\u0012\n1⩽i⩽k",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 714395,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "iently long preﬁx of π with π ̸|= ϕ\nprovides—as in LTL—suﬃcie",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 715296,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "long preﬁx of a path π with π ̸|= ϕ is a counterexample for t",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 716967,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "of initial states s0 where s0 ̸|= ∃ϕ.\nThis\ninformation could ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 720049,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\nand s′ ∈Post(s) such that s′ ̸|= Φ. A witness of ϕ = ⃝Φ is a",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 721380,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "rminal SCC\nC = { s′ }\nwith\ns′ ̸|= Ψ\nprovides a counterexample",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 724062,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " ϕ a CTL- path\nformula.\nIf TS ̸|= ∀ϕ, then a counterexample f",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 724706,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= s0 s1 s2 . . . in TS with π ̸|= ⃝a. As\nπ is fair and π ̸|= ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 725822,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "t(bi) ∩{ s′\n1, . . . , s′\nr } ̸= ∅.\nA witness can be computed",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 726327,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "with k conjuncts such that TS ̸|=fair ∀ϕ, a counterexample fo",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 745486,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n\n\u0011\nΔi(x i, x ′\ni) ∧\n\u001b\n1⩽j⩽m\ni̸=j\nx j = x ′\nj\n\u0013\nwhere for x j",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 748278,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "f states s ∈S with\nPost(s) ∩B ̸= ∅is obtained by\n∃x′. ( Δ(x, ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 756105,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Var = {z1, . . . , zm} and zi ̸= zj for 1 ⩽i < j ⩽m. We write",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 768948,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "b(u) =\n\t succb(u)\nif succb(u) ̸= v\nw\nif succb(u) = v\nfor b = ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 770737,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "or all nodes v, w ∈Vi where v ̸= w.\nHere, Vi denotes the set ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 771320,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "r all nodes v, w ∈Vi+1\nwith v ̸= w (induction hypothesis). Su",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 771393,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "are two nodes v, w ∈Vi with v ̸= w\nand fv = fw. At least one ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 780981,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n trivial for ROBDDs, since f ̸= 0 if and\nonly if the ℘-ROBDD",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 783657,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " 1} and (2) v ̸= w implies fv ̸= fw, where the switching func",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 817361,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " ϕ1 and π |= ϕ2,\nπ |= ¬ϕ\niﬀ\nπ ̸|= ϕ,\nπ |= ⃝ϕ\niﬀ\nπ[1..] |= ϕ,\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 820657,
+    "base_char": "≡",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "tion and conjunction:\n∀(ϕ ∨ψ) ̸≡∀ϕ ∨∀ψ\nand\n∃(ϕ ∧ψ) ̸≡∃ϕ ∧∃ψ.\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 820678,
+    "base_char": "≡",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\n∀(ϕ ∨ψ) ̸≡∀ϕ ∨∀ψ\nand\n∃(ϕ ∧ψ) ̸≡∃ϕ ∧∃ψ.\nPath quantiﬁer elimin",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 820771,
+    "base_char": "≡",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "with care. For instance,\n∀♦□ϕ ̸≡∀♦∀□ϕ\nand\n∃□♦Φ ̸≡∃□∃♦ϕ.\nFinal",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 820788,
+    "base_char": "≡",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "stance,\n∀♦□ϕ ̸≡∀♦∀□ϕ\nand\n∃□♦Φ ̸≡∃□∃♦ϕ.\nFinally, we remark tha",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 824349,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "a results! Since\ns |= ∃ϕ\niﬀ\ns ̸|= ∀¬ϕ\n\u0005\n\u0006\u0007\n\b\nCTL∗semantics\niﬀ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 824383,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "∀¬ϕ\n\u0005\n\u0006\u0007\n\b\nCTL∗semantics\niﬀ\ns ̸|= ¬ϕ\n\u0005\n\u0006\u0007\n\b\nLTL semantics\n,\ni",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 845972,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "3: wait until ((y1−i = 0) ∨(s ̸= i));\nl4: Critical section\nl5",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 853690,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "egin b[i] := false;\nLi : if k ̸= i then begin c[i] := true;\ni",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 853805,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "lse;\nfor j := 1 to n do\nif (j ̸= i ∧¬ (c[j])) then goto Li\nen",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 873018,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "C ∈(S1 ⊎S2)/ ∼TS1⊕TS2 . I1 ∩C ̸= ∅\niﬀ\nI2 ∩C ̸= ∅\n.\nHere, (S1 ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 873032,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "TS1⊕TS2 . I1 ∩C ̸= ∅\niﬀ\nI2 ∩C ̸= ∅\n.\nHere, (S1 ⊎S2)/∼TS1⊕TS2d",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 893298,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "formula Φ with s1 |= Φ and s2 ̸|= Φ. This follows from\nthe de",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 893422,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ula Φ with (i) s1 |= Φ\nand s2 ̸|= Φ or (ii) s1 ̸|= Φ and s2 |",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 893439,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " |= Φ\nand s2 ̸|= Φ or (ii) s1 ̸|= Φ and s2 |= Φ. In case (ii)",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 896976,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ence classes C, D ∈S/R\nwith C ̸= D, let CTL formula ΦC,D be s",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 897246,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "Equivalence\n471\nΦC\n=\n\u0012\nD∈S/R\nD̸=C\nΦC,D .\nClearly, condition (",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 899726,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ulae for the form ΦC,D with C ̸= D. As CTL only allows for\nﬁn",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 900501,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "us,\nPost(s1) = {tA | A ⊆AP, A ̸= AP} and Post(s2) = {tA | A ⊆",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 902444,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "j such that\ns′\n1 |= Ψj\nand\ntj ̸|= Ψj for 0 < j ⩽k.\nNow consid",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 904093,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "Ψ, one obtains\ns1 |= ¬Ψ\niﬀ\ns1 ̸|= Ψ\niﬀ\ns2 ̸|= Ψ\niﬀ\ns2 |= ¬Ψ.\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 904105,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ns\ns1 |= ¬Ψ\niﬀ\ns1 ̸|= Ψ\niﬀ\ns2 ̸|= Ψ\niﬀ\ns2 |= ¬Ψ.\nCase 3: Φ = ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 905174,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "o ψ and obtain\nπ1 |= ¬ψ\niﬀ\nπ1 ̸|= ψ\niﬀ\nπ2 ̸|= ψ\niﬀ\nπ2 |= ¬ψ.\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 905186,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "in\nπ1 |= ¬ψ\niﬀ\nπ1 ̸|= ψ\niﬀ\nπ2 ̸|= ψ\niﬀ\nπ2 |= ¬ψ.\nCase 4: ϕ = ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 907055,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "∧∃⃝soda)\nas TS1 |= Φ, but TS2 ̸|= Φ.\n476\nEquivalences and Abs",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 908659,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nite transition system with S ̸= ∅.\nDeﬁnition 7.29.\nPartition",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 908771,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "{B1, . . . , Bk} such that Bi ̸= ∅(for 0 < i ⩽k), Bi ∩Bj = ∅\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 908825,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Bj = ∅\n(for 0 < i, j ⩽k and i ̸= j), and S = \n0<i⩽k Bi.\nBi ∈Π",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 915356,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " Pre(C) = { s ∈S | Post(s) ∩C ̸= ∅} denotes the set of states",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 916653,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "states s1, s2 ∈B with [s1]ΠAP ̸= [s2]ΠAP. Then, L(s1) ̸= L(s2",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 916790,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "f Π.\nWe assume that B ∩Pre(C)\n̸=\n∅and show that\nB ⊆Pre(C). As",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 916832,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " that\nB ⊆Pre(C). As B ∩Pre(C) ̸= ∅, there exists a state s1 ∈",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 916881,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "a state s1 ∈B with Post(s1)∩C ̸= ∅.\nLet s′\n1 ∈Post(s1) ∩C and",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 917458,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Cℓof Π. Assume that B ∩Pre(C) ̸= ∅\nand B ̸⊆Pre(C).\nThen, ther",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 920564,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "s a block B ∈Π with B ∩Pre(C) ̸= ∅and\nB \\ Pre(C) ̸= ∅.\n484\nEq",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 920583,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " B ∩Pre(C) ̸= ∅and\nB \\ Pre(C) ̸= ∅.\n484\nEquivalences and Abst",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 920810,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "litter for Π if and only if Π ̸= Reﬁne(Π, C), that is, if and",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 938524,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n TS)\n• Σ = 2AP ∪{ τ } with τ ̸∈2AP\nBisimulation-Quotienting ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 938670,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n⎪\n⎩\nPost(s)\nif s ∈S, Post(s) ̸= ∅and L(s) = A\n{ t }\nif (s ∈S",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 945258,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "erse does not hold, i.e., TS2 ̸⪯TS1, since there is no state ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 957065,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ample\nwhere TS1 ⪯TS2, but TS2 ̸⪯TS1, was provided in Example ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 962292,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "oes not imply that Post(s) ∩C ̸= ∅for any s ∈B. Thus, in\ngene",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 964666,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " ⪯2 ⪯3 ⪯. . .\nwhile state n+1 ̸⪯n for all n ∈IN. For instance",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 971616,
+    "base_char": "⊆",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ave TS1 ⪯TS2, but Traces(TS1) ̸⊆Traces(TS2) since { a } ∅∈Tra",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 971667,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " a } ∅∈Traces(TS1) but { a } ∅̸∈\nTraces(TS1). This is due to ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 971852,
+    "base_char": "⊆",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "26: TS1 ⪯TS2, but Traces(TS1) ̸⊆Traces(TS2).\nnot. (Note that ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 976888,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "formula Φ of L:\ns1 |= Φ\n=⇒\ns1 ̸|= ¬Φ\n=⇒\ns2 ̸|= ¬Φ\n=⇒\ns2 |= Φ.",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 976901,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "L:\ns1 |= Φ\n=⇒\ns1 ̸|= ¬Φ\n=⇒\ns2 ̸|= ¬Φ\n=⇒\ns2 |= Φ.\nHence, s2 ⪯T",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 983316,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "oop in the initial state, TS2 ̸⪯TS1. This can also be establi",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 983823,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "igure 7.28: TS1 ⪯TS2, but TS2 ̸⪯TS1.\nHere, ϕ is an arbitrary ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 989179,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "air of states (s1, s2);\n(* s1 ̸⪯TS s2 *)\nSim(s1) := Sim(s1) \\",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 992194,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Note\nthat Post(s2) ∩Sim(s′\n1) ̸= ∅if and only if s2 ∈Pre(Sim(",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 993198,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n2 ∈Sim(s′\n1).\nThis yields s1 ̸⪯TS s2. Therefore, s2 can be r",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 993464,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s →t with\nt ∈Sim(s1). Thus, u ̸⪯TS s. Hence, if in a later it",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 994680,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e s′\n1 such that Remove(s′\n1) ̸= ∅;\nfor all s2 ∈Remove(s′\n1) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 995554,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(s′\n1),\n• Post(s2) ∩Sim(s′\n1) ̸= ∅for all s′\n1 ∈Post(s1).\nFro",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1006448,
+    "base_char": "⊆",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "1 ≜TS2.\nNote that Traces(TS2) ̸⊆Traces(TS1), as e.g., a2∅. . ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1006541,
+    "base_char": "⊴",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e of\nTS1. It follows that\nTS1 ̸ ⊴TS3 and TS2 ̸ ⊴TS3,\nas TS1 an",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1006556,
+    "base_char": "⊴",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "llows that\nTS1 ̸ ⊴TS3 and TS2 ̸ ⊴TS3,\nas TS1 and TS2 have trac",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1007490,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "B B . . . with\nA, B ⊆AP and A ̸= B. Clearly,\nσ1 ≜σ2\nbut\nσ1 |=",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1007532,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "y,\nσ1 ≜σ2\nbut\nσ1 |= ⃝b\nand\nσ2 ̸|= ⃝b for b ∈B \\ A.\nStated in ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1012080,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "′\n1 ∈Post(s1) with (s′\n1, s2) ̸∈R, then there exists a ﬁnite ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1012247,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "′\n2 ∈Post(s2) with (s1, s′\n2) ̸∈R, then there exists a ﬁnite ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1014606,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "pleted to\n↓\ns′\n1\n...\n(with s1 ̸≈TS s′\n1)\n↓\ns1\n≈TS\nun\n↓\n↓\ns′\n1",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1015289,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " that\n⟨c1, n2, x=2⟩\n\u0005\n\u0006\u0007\n\b\ns1\n̸≈TS\n⟨c1, w2, x=1⟩\n\u0005\n\u0006\u0007\n\b\ns2\n.\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1018940,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "sses under ≈TS If s →s′ and s ̸≈s′, there is a transition fro",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 57297,
+    "md_gap_end": 57326,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1019307,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "• →≈is deﬁned by s\nα\n−−→s′ ∧s ̸≈s′\n[s]≈\nτ\n−→≈[s′]≈\n,\n• L≈([s]",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1021468,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "y transition s1 →s′\n1 with s1 ̸≈s′\n1 can be simulated by a pa",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 60386,
+    "md_gap_end": 60404,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1021734,
+    "base_char": "≜",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "Paths(s1). ∀π2 ∈Paths(s2). π1 ̸≜π2.\nStutter Bisimulation\n543\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1021903,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "}\n{ c }\n∅\n{ a }\n{ b }\n{ c }\n≜\n̸≈\n∅\n{ a }\n∅\n{ a }\n̸≜\n≈\nTS1\nTS2",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1021922,
+    "base_char": "≜",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " }\n{ c }\n≜\n̸≈\n∅\n{ a }\n∅\n{ a }\n̸≜\n≈\nTS1\nTS2\nTS3\nTS4\nFigure 7.3",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1022111,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "S2, we have\nTS1 ≜TS2, but TS1 ̸≈TS2.\n(In fact, we have Traces",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1022248,
+    "base_char": "≜",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ", we have TS3 ≈TS4, while TS3 ̸≜TS4. The fact that the transi",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1022802,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "2\nand TS2 |= ♦a. However, TS1 ̸|= ♦a since the path sω\n0 viol",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1026819,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " inﬁnitely often. Thus:\nTSABP ̸|= ∀□♦(s mode = 0)\n∧\n∀□♦(s mod",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1027750,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "s s0 and s1 are not.\nThus, s2 ̸≈div\nTS s0 and s2 ̸≈div\nTS s1.",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1027769,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": ".\nThus, s2 ̸≈div\nTS s0 and s2 ̸≈div\nTS s1.\nAs a second exampl",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1027909,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "dicated by the grey scale. s1 ̸≈div\nTS s2 as u3 and u1, u2 ar",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1028125,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "u3\n{ b }\nv3\n∅\nFigure 7.42: s1 ̸≈div\nTS s2.\nTS1 ≈div\nTS2 if an",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1028780,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "div is deﬁned by\ns\nα\n−−→s′ ∧s ̸≈div s′\n[s]div\nτ\n−→div [s′]div",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1030211,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "on page 545, s0 ≈TS s2 but s0 ̸≈div\nTS s2.\nLemma 7.113.\n≈div ",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 71996,
+    "md_gap_end": 72037,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1030923,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "s. Thus,\nst ≈TS spd,\nwhile st ̸≈div\nTS spd\nwhere st is a term",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1033902,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "itions si,1 →si+1,1\nwith si,1 ̸≈div\nTS si+1,1 to ﬁnite path f",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1034773,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "istinguish two cases:\n1. si,1 ̸≈div\nTS\nsi+1,1.\nSince si,1 ≈di",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1035270,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "ts an index j > i+1 with si,1 ̸≈div\nTS\nsj,1.\nWithout loss of ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1035456,
+    "base_char": "≈",
+    "signature": "absent",
+    "reason": "unmapped_base_char",
+    "context": "i,2 ≈div\nTS\nsj−1,1\nand\nsj−1,1 ̸≈div\nTS\nsj,1.\nAs si,2\n≈div\nTS\n",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 77479,
+    "md_gap_end": 77582,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1037572,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "teps yields TS1 ≜TS2, but TS1 ̸≈div TS2.\n552\nEquivalences and",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1041320,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Thus, s0 ≈n\nTS s1.\nWe have s1 ̸≈n\nTS s2. This can be seen as ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1041512,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "e\nL(s3) ̸= L(s0), and thus s3 ̸≈n\nTS s0. In order for case (N",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 86799,
+    "md_gap_end": 86817,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1053493,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "s2 and s′\n1 ∈Post(s1) with s1 ̸≈div\nTS\ns′\n1 we deﬁne ν(s′\n1, ",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 101613,
+    "md_gap_end": 101658,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1053658,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ". . , n\n– [s′\n1]div ∩Post(un) ̸= ∅, where [s]div denotes the ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1054394,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "ences and Abstraction\n• If s1 ̸≈div\nTS\ns′\n1, then either [s′\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1056269,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "r ≈div.\nMoreover, to show TS1 ̸≈div TS2 it suﬃces to provide ",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 105424,
+    "md_gap_end": 105452,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1059145,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ΦC be deﬁned by\nΦC\n=\n\u001b\nD∈S/R\nD̸=C\nΦC,D\nwhere ΦC,D is a CTL\\⃝f",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1059294,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e classes C, D under R with C ̸= D. This yields\nSat(ΦC) = C.\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1059658,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ") /∈R, say C = [s′\n1]R with B ̸= C. Then:\ns1 |= ∃(ΦB U ΦC)\nas",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1062675,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e in TSABP/ ≈for which s mode ̸= r mode\nneeds to be decompose",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1064304,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "to n {\nwait until (buﬀer[out] ̸= ⊥) {\nej := buﬀer[out];\nbuﬀer",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1066572,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Observe that\nTSabstract(m, n) ̸|= ∀□∀♦prod and cons .\nAs this",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1066905,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "he fact that TSabstract(n, m) ̸|= ∀□∀♦prod and cons can easil",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1076464,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "C) ̸= ∅and Bottom(B) \\ Pre(C) ̸= ∅.\nThen,\nthere exist states ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1076777,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Π-splitter, it follows that B ̸= C\nand s ∈B ∩Pre(C) for some ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1076849,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ns to show that B \\ Pre∗\nΠ(C) ̸= ∅implies\nBottom(B)\\Pre(C) ̸=",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1085886,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " then s′\n1 ∈PostTS(s1) and s1 ̸≈div\nTS\ns′\n1. Since s1 ≈div\nTS",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1086926,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": " s2,\ns′\n1 ∈PostTS(s1), and s1 ̸≈TS s′\n1. Thus, there exists a",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 144622,
+    "md_gap_end": 144648,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1087057,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "un\nand\ns′\n1 ≈TS s′\n2.\nAs s′\n1 ̸= sdiv, we have s′\n2 ̸= sdiv. ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1087609,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "\nsdiv ∈PostTS(s′\n1), and s′\n1 ̸≈TS sdiv. Hence, there exists ",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 145370,
+    "md_gap_end": 145392,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1089329,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "\nAll transitions s →s′ with s ̸≈div\nTS\ns′ are lifted to\ntrans",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 147330,
+    "md_gap_end": 147356,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1098669,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " Φ such that\nTSi |= Φ and TSj ̸|= Φ.\nExercise 7.2.\nLet TS be ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1101468,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "AP such that TS1 |= Φ\nand TS2 ̸|= Φ.\ns1\ns2\ns3\ns4\ns5\ns6\ns7\ns8\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1103069,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Sj |= Φ and\nTSi ̸|= Φ (if TSi ̸⪯TSj).\nExercise 7.12.\nConsider",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1103259,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(TS2, TS1).\n(b) Show that TS1 ̸⪯TS2 by providing a ∀CTL formu",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1103330,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " ∃CTL formula Φ∃such that\nTS1 ̸|= Φ∀, but TS2 |= Φ∀and TS1 |=",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1103374,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "2 |= Φ∀and TS1 |= Φ∃, but TS2 ̸|= Φ∃.\n∅\n{a}\ns1\nt1\nv1\ns2\nt2\nv2",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1103459,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "igure 7.56: TS2 ⪯TS1, but TS1 ̸⪯TS2 (Exercise 7.12).\nExercise",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1105492,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "{ 1 . . . 3 }×{ 1 . . .3 }, i ̸= j, determine whether TSi ∼= ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1105544,
+    "base_char": "⊑",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "r TSi ∼= TSj, TSi ⊑TSj or TSi ̸⊑TSj.\nJustify your answer.\nExe",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1105934,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "1 . . .3 } × { 1 . . . 3 }, i ̸= j, determine whether TSi ≈TS",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1105974,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "rmine whether TSi ≈TSj or TSi ̸≈TSj. Justify\nyour answer.\nExe",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 170406,
+    "md_gap_end": 170433,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1108633,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": " Exercise 7.22.\nShow that TS1 ̸≈TS2 and TS1 ≈obs TS2.\nExercis",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 174080,
+    "md_gap_end": 174112,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1111137,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "′\n1 ∈Post(s1) with (s1, s′\n1) ̸∈R, then there exists a ﬁnite ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1111573,
+    "base_char": "⪯",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "S2 such that TS1 ⊴TS2 and TS1 ̸⪯st TS2.\n(c) Provide an exampl",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1111742,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ystems TS1, TS2 such that TS1 ̸≈TS2, while TS1⪯stTS2\nand TS2⪯",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1112234,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ystems TS1, TS2 such that TS1 ̸≈div TS2, while TS1⪯div\nst TS2",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1121982,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ion system with α, β ∈\nAct, α ̸= β.\n1. α and β are independen",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1130143,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "\n−−−−−→⟨. . . , x = 2v⟩\nfor v ̸= 0 are not. Action α is a stu",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1139349,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " s = ρ0[m]\nα\n−−→ρ0[m+1] for\nα ̸∈ample(s). Execution ρ0 thus c",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1139564,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "1 β2 . . ., say, such that β1 ̸∈ample(s):\nρ0 = u\nγ1⇒. . .\nγm⇒",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1139661,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "2 . . .\n\u0005\n\u0006\u0007\n\b\nsuﬃx ρ with β1 ̸∈ample(s)\nfor m ⩾0.\nExecution ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1142499,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n(A1) Nonemptiness condition\n∅̸= ample(s) ⊆Act(s)\nThe ﬁrst co",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1144066,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " does not occur in ˆ\nTS as β1 ̸∈ample(s), then a stutter-\nequ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1144480,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Stutter condition\nIf ample(s) ̸= Act(s) then any α ∈ample(s) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1145413,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n(A1) Nonemptiness condition\n∅̸= ample(s) ⊆Act(s)\n(A2) Depend",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1145628,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Stutter condition\nIf ample(s) ̸= Act(s) then any α ∈ample(s) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1146377,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " s2 s2 with α ∈Act(s2),\nbut α ̸∈ample(s2). Thus, we select am",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1152177,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ": for any s ∈ˆS with ample(s) ̸= Act(s), any\nα ∈ample(s) is i",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1153486,
+    "base_char": "≜",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "2′) but not (A2).\nHowever, TS ̸≜ˆ\nTS since, e.g.,\nˆ\nTS |= □¬a",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1153565,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ontain any a-state), while\nTS ̸|= □¬a. Thus, condition (A2′) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1156727,
+    "base_char": "≜",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "es( ˆ\nTS) = { ∅ω }. Hence, TS ̸≜ˆ\nTS. (This can\nalso be seen ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1164775,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "t holds that β ∈Act(si) and β ̸∈ample(sk) for all 0 < k ⩽n. C",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1165125,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "cular, αi is independent of β ̸∈ample(si). But then, β ∈Act(α",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1165181,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Act(αi(si)) = Act(si+1).\nAs β ̸∈ample(si+1), it follows by a ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1168255,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n R satisfy Φ *)\nwhile (I \\ R ̸= ∅∧b) do\nlet s ∈I \\ R;\n(* cho",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1168975,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "* mark α as taken *)\nif α(s′) ̸∈R then\npush(α(s′), U);\nR := R",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1173792,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " found := false;\nwhile (I \\ R ̸= ∅∧¬cycle found) do\nlet s ∈I ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1174457,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "* mark α as taken *)\nif α(s′) ̸∈R then\npush(α(s′), U);\nR := R",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1177857,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "x /∈Var(α) for any\nα ∈\n1⩽j⩽n\nj̸=i\nActj.\nLet Acti(s) = Act(s) ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1185625,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "on, it\nfollows that if (α, β) ̸∈D, then α and β are independe",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1186216,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "here is no state in TS with\ny ̸= 0 in which both actions are ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1188035,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " independent of Acti(s) for i ̸= j.\n632\nPartial Order Reducti",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1189720,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ons β ∈Acti \\ Act(s) and γ ∈\nj̸=i Actj and states\ns′ = ⟨. . .",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1190207,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ach\n633\nin PGi and PGj with i ̸= j such that ℓ′\nj is reachabl",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1191566,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": ", i.e.:\nβ1, . . . , βm−1 ∈\n\u0004\nj̸=i\nActj \\ Acti\nand\nβm ∈Acti\nSi",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1192704,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ti(s) is possible *)\nif (Acti ̸= ∅and Acti(s) only contains s",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1192763,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " stutter actions) then\nif (∃j ̸= i. Acti(s) × Actj(s) ∩D = ∅)",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1195265,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "in TS\nwith α ∈Act(s) and L(s) ̸= L(α(s)). Let Vis denote the ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1195870,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " Sticky condition\nIf ample(s) ̸= Act(s), then ample(s) ∩Astic",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1198751,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "β in some\nprogram graph PGj, i̸=j, (α, β) /∈D and variables m",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1207602,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\u0014η(amplei) = true, we have\n\u0014η ̸|= f. Thus, for 1 ⩽j < i, none",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1210852,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ":\nif { α1, . . . , αm } ∩Actj ̸= ∅, then the PGj-projection i",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1213983,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "r each j ∈{ 1, . . . , r }, j ̸= k,\nthe eﬀect of αj on x is e",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1216827,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " there is no action in PGj, i ̸= j with an opposite eﬀect on ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1220771,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " must be another action βh, h ̸= i, on this cycle with an opp",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1222727,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "a}{c}ω }.\nAs ˆ\nTS |= Φ and TS ̸|= Φ, we get TS ̸≈div\nˆ\nTS. In",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1222744,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " |= Φ and TS ̸|= Φ, we get TS ̸≈div\nˆ\nTS. In fact, we have\nβ(",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1222779,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\nˆ\nTS. In fact, we have\nβ(s0) ̸≈div γ(s0) ̸≈div α(s0)\nas β(s0",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1222791,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ct, we have\nβ(s0) ̸≈div γ(s0) ̸≈div α(s0)\nas β(s0) can reach ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1223080,
+    "base_char": "≈",
+    "signature": "control_char",
+    "reason": "unmapped_base_char",
+    "context": "(or any equivalent state),\nTS ̸≈div\nˆ\nTS.\nSince s0 ≈div α(s0)",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part08.md",
+    "md_gap_start": 147383,
+    "md_gap_end": 147401,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1224489,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "anching condition\nIf ample(s) ̸= Act(s), then |ample(s)| = 1.",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1225446,
+    "base_char": "≈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " Figure 8.21. Observe that TS ̸≈div\nˆ\nTS since ˆ\nTS does not ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1225653,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\n(A1) Nonemptiness condition\n∅̸= ample(s) ⊆Act(s)\n(A2) Depend",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1225868,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Stutter condition\nIf ample(s) ̸= Act(s), then any α ∈ample(s)",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1226108,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "anching condition\nIf ample(s) ̸= Act(s), then |ample(s)| = 1.",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1247670,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "0:\nx := x+y\n\u0005\n\u0006\u0007\n\b\naction `\ny ̸= 0:\ny := y+1\n\u0005\n\u0006\u0007\n\b\naction _\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1254117,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nd (ii) hold:\n(i) If ample(s) ̸= Act(s), then ample(s) = Acti",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1254207,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "}.\n(ii) If ample(s) = Acti(s) ̸= Act(s), then ample(s) ∩\n\u0016 \n1",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1254244,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "s), then ample(s) ∩\n\u0016 \n1⩽j⩽n\nj̸=i\nActj\n\u0017\n= ∅.\nn1\nℓ1\ny := y−1;",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1256527,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e action, i.e., ample(s)∩\nVis ̸= ∅and ample(s) \\ Vis ̸= ∅.\n(A",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1256550,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ")∩\nVis ̸= ∅and ample(s) \\ Vis ̸= ∅.\n(A8) If s is not fully ex",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1256661,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "r action, i.e., ample(s)\\\nVis ̸= ∅.\nShow that TS and ˆ\nTS are",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1276202,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": ",D1∪D2\n\n→⟨ℓ′\n1, ℓ′\n2⟩\n• for α ̸∈H:\nℓ1\ng:α,D\n\n→1 ℓ′\n1\n⟨ℓ1, ℓ2⟩",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1281255,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= x ⩽c\niﬀη(x) ⩽c\nη |= ¬ g\niﬀη ̸|= g\nη |= g ∧g′\niﬀη |= g ∧η |=",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1281599,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "eset x in η)(y) =\n\t η(y)\nif y ̸= x\n0\nif y = x.\nFor the clock ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1312133,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "Switch3 |= ∃♦<1oﬀ\nand Switch3 ̸|= ∀♦(on ∧(x ∈J))\n704\nTimed Au",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1313672,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "\u0007\n\b\nTCTL semantics\nand\nTS(TA) ̸|=CTL Φ\n\u0005\n\u0006\u0007\n\b\nCTL semantics\n.",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1313725,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "antics\n.\nThe fact that TS(TA) ̸|=CTL Φ results from the exist",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1342343,
+    "base_char": "∼",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "9.42), this is avoided and s1 ̸∼= s2.\nTheorem 9.50 ensures th",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1349169,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s a state region ⟨ℓ, r⟩with r ̸= r∞and an index j such that\ns",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1350076,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s a state region ⟨ℓ, r⟩with r ̸= r∞and some j such that si ∈⟨",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1357709,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n a state region ⟨ℓ, r⟩with r ̸= r∞do not\noccur in π. Then\nπ′",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1361680,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " of the form ∃(Φ UJ Ψ) with J ̸= [0, ∞)\nand such that Φ and Ψ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1394126,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ιinit(s) = 0 for\nall states s ̸= s0. The states 1, 2, 3, 4, 5",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1422075,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " that s ∈C \\ B and Post(s) ∩X ̸= ∅implies s ∈X. Finally, if s",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1423988,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= C U B) = 0 if and only if s ̸|= ∃(C U B)\nwhere ∃(C U B) is ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1426434,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "vector such that Ax = x and x ̸= 0. Since M is ﬁnite, the\nmax",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1426635,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " = { s ∈S? | |xs| = x }.\nAs x ̸= 0, it follows that x > 0.\nFu",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1427258,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "h B. Therefore,\nT ⊆{ s ∈S | s ̸|= ∃(C U B) } ⊆S=0.\nMarkov Cha",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1431912,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "d PB(s, t) = 0\nfor s ∈B and s ̸= t. It then follows for any s",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1444747,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s |= ♦B) = 1.\n(b) Post∗(t) ∩B ̸= ∅for each state t ∈Post∗(s).",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1445189,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ch u ∈S and C ⊆S,\nPost∗(u) ∩C ̸= ∅if and only if u ∈Pre∗(C). ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1445238,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "u ∈Pre∗(C). Thus:\nPost∗(t) ∩B ̸= ∅for any state t ∈Post∗(s)\ni",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1445411,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "(b) =⇒(a): Assume Post∗(t) ∩B ̸= ∅for any successor t of s. B",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1449647,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "a) Pr(s |= □♦B) = 1.\n(b) T ∩B ̸= ∅for each BSCC T that is rea",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1450563,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " all BSCCs T (in M) with T ∩B ̸= ∅. Then:\nPr(s |= □♦B) = Pr(s",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1458363,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "|= a\niﬀ\na ∈L(s),\ns |= ¬Φ\niﬀ\ns ̸|= Φ,\ns |= Φ ∧Ψ\niﬀ\ns |= Φ and ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1465551,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "reachability properties. If s ̸|= P⩽p(♦Ψ), then Pr(s |= ♦Ψ) >",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1465695,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": ". . . sn such that s0 = s,\nsi ̸|= Ψ for 0 ⩽i < n and sn |= Ψ ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1470549,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": " ♦a. Thus:\ns |= P=1(♦a)\nbut\ns ̸|= ∀♦a.\nHowever, for certain p",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1471843,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s follows:\ns |= ¬P>0(♦¬a) iﬀs ̸|= P>0(♦¬a) iﬀs ̸|= ∃♦¬a iﬀs |",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1471860,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "P>0(♦¬a) iﬀs ̸|= P>0(♦¬a) iﬀs ̸|= ∃♦¬a iﬀs |= ¬∃♦¬a\n\u0005 \u0006\u0007 \b\n=∀",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1479929,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "). As Post∗(t) = T, T ∩Sat(a) ̸= ∅. Hence, almost all\npaths π",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1480150,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "yields\n\u0015\nT ∈BSCC(M)\nT ∩Sat(a) ̸= ∅\nPrs{π ∈Paths(s) | π |= ♦T}",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1480328,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "of all BSCCs T with T ∩Sat(a) ̸= ∅is a subset of Sat(P=1(♦a))",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1482069,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ome T ∈BSCC(M) with T ∩Sat(a) ̸= ∅}\n=\nPr( s |= ♦Sat(P=1(□♦a))",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1482870,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " t ∈T, and (ii) if\nT \\ Sat(a) ̸= ∅, then Pr(t |= ♦□a) = 0 for",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1487060,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ths(s) | pref(trace(π)) ∩L(A) ̸= ∅}\n=\nPrM\ns { π ∈Paths(s) | t",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1489380,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "hsM(s) | pref(trace(π)) ∩L(A) ̸= ∅},\nthe set Π+ is the set of",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1502384,
+    "base_char": "∈",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "h fragments in M such that qj ̸∈Li for n <\nj ⩽m+1 for the ind",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1521529,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "∩U = ∅. Deﬁne:\nΦT =\n\u001b\nU∈S/∼M\nU̸=T\nΦT,U.\nPCTL∗and Probabilisti",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1544225,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "f s ∈B, then xs,r = 1;\n• if s ̸|= ∃(C U B) or s /∈B ∧rew(s) >",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1576651,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "α2\n−−→. . .\nαn\n−−→sn where αi ̸= S(s0 s1 . . . si)\nfor some i",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1595320,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " If s ∈B, then xs = 1.\n• If s ̸|= ∃♦B, then xs = 0.\n• If s /∈",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1597875,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "state s for which B ∩Post∗(s) ̸= ∅. This simpliﬁcation of\nM d",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1598608,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " If s ∈B, then ys = 1.\n• If s ̸|= ∃♦B, then ys = 0.\n• If s /∈",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1602017,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " If s ∈B, then xs = 1.\n• If s ̸|= ∃♦B, then xs = 0.\n• If s /∈",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1606941,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "e requirement that no state t ̸|= ∃♦B is reachable from\ns in ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1608665,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "∃♦B };\nrepeat\nR := U;\nwhile R ̸= ∅do\nlet u ∈R;\nR := R \\ { u }",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1614197,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ition of Tn, Tn−1 ∩Post(s, α) ̸= ∅. Let t ∈Tn−1 ∩Post(s, α).\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1615432,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= 0 }\nT := B;\nR := B;\nwhile R ̸= ∅do\nlet t ∈R;\nR := R \\ { t }",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1618234,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "ude that\nSmin\n=1\n= { s ∈S | s ̸|= ∃(¬B) U T } = S \\ Sat(∃((¬B",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1621077,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " |= a\niﬀ\na ∈L(s)\ns |= ¬Φ\niﬀ\ns ̸|= Φ\ns |= Φ1 ∧Φ2\niﬀ\ns |= Φ1 an",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1629122,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " of M is a pair\n(T, A) where ∅̸= T ⊆S and A : T →2Act is a fu",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1629174,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "t is a function such that:\n• ∅̸= A(s) ⊆Act(s) for all states ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1637994,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "om s, it holds that T ∩Sat(a) ̸= ∅\niﬀ\ns ̸|= ∃♦VP with P = □♦a",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1638004,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "olds that T ∩Sat(a) ̸= ∅\niﬀ\ns ̸|= ∃♦VP with P = □♦a\niﬀ\nPrmin(",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1639943,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " A2), say, such that (T1, A1) ̸= (T2, A2) and\nT1∩T2 ̸= ∅. How",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1639965,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "T1, A1) ̸= (T2, A2) and\nT1∩T2 ̸= ∅. However, for certain limi",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1640319,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nt\n(T ′, A′) such that (T, A) ̸= (T ′, A′) and T ⊆T ′ and A(s",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1640600,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "1) and (T2, A2) with (T1, A1) ̸= (T2, A2)\nand T1 ∩T2 ̸= ∅is a",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1640623,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "1, A1) ̸= (T2, A2)\nand T1 ∩T2 ̸= ∅is an end component. Here, ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1641606,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "\nU□♦B =\n\u0004\n(T, A) ∈MEC(M)\nT ∩B ̸= ∅\nT.\nNote that an analogous ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1642264,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "t(s) such that Post(s, α) \\ B ̸= ∅.\nIf state s in M\nonly has ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1646237,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": " := R ∪{ s };\nﬁ\nod\nod\nwhile R ̸= ∅do\nlet s ∈R\nremove s from R",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1646412,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " i = 1, . . . , k do\nif T ∩Ti ̸= ∅then\nMECnew := MECnew ∪{T ∩",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1647348,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nt (T ′, A′) of M with T ∩T ′ ̸=\n∅is contained in (T, A), the",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1647474,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "A(s) such that\nPost(s, α) \\ C ̸= ∅, there is no end component",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1647612,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nt (T ′, A′) of M with T ′ ∩T ̸= ∅is\ncontained in the sub-MDP",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1647862,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nt (T ′, A′) of M with\nT ′ ∩T ̸= ∅is contained in the sub-MDP",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1649884,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "here exists i\nsuch that T ∩Ci ̸= ∅and T ∩Bi = ∅. Hence, VP ar",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1649991,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "s (T, A) of M□¬Bi where T ∩Ci ̸= ∅. Here, M□¬Bi is the MDP ob",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1676711,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "anchor_not_found",
+    "context": "thout fairness requires\nPrS(s ̸|= fair) + PrS(s |= fair ∧ϕ) ⩾",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1676874,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n, then s |=fair P⩾p(ϕ)\nand s ̸|= P⩾p(fair →ϕ) is possible. A",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1677062,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "duler,\ns |=fair P=1(ϕ), but s ̸|= P=1(fair →ϕ). However, the ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1695368,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= ∀□a\n(b) Pr(s |= ♦a) < 1 iﬀs ̸|= ∀♦a\n(c) Pr(s |= □a) > 0 iﬀs",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1695542,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "b)\n(f) Pr(s |= a U b) = 0 iﬀs ̸|= ∃(a U b)\nExercise 10.5.\nCom",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1696939,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": " Ψ)\n=\nPrM\ns { π ∈Paths(s) | π ̸|= ¬Φ U ¬Ψ }.\nExercise 10.10.\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1699058,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "mula Φ such that\nC |= Φ and D ̸|= Φ.\nExercise 10.18.\nLet (M, ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1709013,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "Ry iﬀ[x]R = [y]R iﬀ[x]R ∩[y]R ̸= ∅.\nSo the quotient space con",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1721288,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "|= a\niﬀ\nμ(a) = 1\nμ |= ¬Φ\niﬀ\nμ ̸|= Φ\nμ |= Φ ∧Ψ\niﬀ\nμ |= Φ and μ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1721758,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "if μ |= Φ, and μ(Φ) = 0, if μ ̸|= Φ, is used, too. The\nvalue ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1721988,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "unrecognized_gap",
+    "context": "|= Φ or μ |= Ψ\nμ |= Φ →Ψ\niﬀ\nμ ̸|= Φ or μ |= Ψ\niﬀ\nμ |= Φ impli",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1722624,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "0 and\nμ(b) = μ(c) = 1, then μ ̸|= a ∧¬b and μ |= c, and thus,",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1722803,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "= μ∅(b) = μ∅(c) = 0. Due to μ∅̸|= Φ (where Φ = (a ∧¬b) ∨c as ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1724903,
+    "base_char": "|",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "ously:\nΦ is unsatisﬁable\niﬀ\nμ ̸|= Φ for all evaluations μ\niﬀ\n",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1732635,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "is tagged as taken *)\nwhile U ̸= ∅do\nlet v ∈U;\n(* choose some",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1734285,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "n (multi-)set {v0} *)\nwhile U ̸= ε do\nv := top(U);\n(* choose ",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1736114,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "nected vertex set D ⊆V with C ̸= D.\nSCC C is called trivial i",
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 408312,
+    "base_char": "⊆",
+    "signature": "control_char",
+    "reason": "narrow_failed",
+    "context": "= ∅\nif and only if\nTraces(TS) ̸⊆P\nif and only if\nTS ̸|= P.\nMo",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part02.md",
+    "md_gap_start": 86125,
+    "md_gap_end": 86156,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 428456,
+    "base_char": "|",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "m TS and state s in TS with s ̸|= Φ\nOutput: true if s lies on",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part03.md",
+    "md_gap_start": 101669,
+    "md_gap_end": 101678,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1174840,
+    "base_char": "|",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "Input: state s in ˆ\nTS with s ̸|= Φ\nOutput: true if s belongs",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part03.md",
+    "md_gap_start": 101669,
+    "md_gap_end": 101678,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 437140,
+    "base_char": "|",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "ch that\ns′\n0 = s′\nk = s\nand\ns ̸|= Φ\nand\n{ s′\n0, s′\n1, . . . ,",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part04.md",
+    "md_gap_start": 172280,
+    "md_gap_end": 172294,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 437182,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "s′\n0, s′\n1, . . . , s′\nk } ∩T ̸= ∅.\nWithout loss of generalit",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part04.md",
+    "md_gap_start": 172280,
+    "md_gap_end": 172294,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1498074,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "narrow_failed",
+    "context": "∩(S × Li) = ∅\nand\nT ∩(S × Ki) ̸= ∅.\nStated in words, there is",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part04.md",
+    "md_gap_start": 173274,
+    "md_gap_end": 173311,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 547665,
+    "base_char": "∈",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "e\nFϕ1 U ϕ2 = { B ∈Q | ϕ1 U ϕ2 ̸∈B or ϕ2 ∈B }.\nThe transition ",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 140639,
+    "md_gap_end": 140665,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1084297,
+    "base_char": "∈",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "I, AP ∪{ div }, L)\nwhere sdiv ̸∈S, →extends the transition re",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part07.md",
+    "md_gap_start": 140644,
+    "md_gap_end": 140653,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 770700,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "how by induction\non i that\nfv ̸= fw for all nodes v, w ∈Vi wh",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part05.md",
+    "md_gap_start": 141105,
+    "md_gap_end": 141123,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 771282,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": " (m ⩾i ⩾0) we suppose that fv ̸= fw for all nodes v, w ∈Vi+1\n",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part05.md",
+    "md_gap_start": 141105,
+    "md_gap_end": 141123,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 981677,
+    "base_char": "∈",
+    "signature": "absent",
+    "reason": "overlapping_edit",
+    "context": " of all formulae Φu,t where t ̸∈u↓:\nΦu =\n\u001b\nt∈S\n(t,u)̸∈R\nΦu,t\n",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part06.md",
+    "md_gap_start": 145592,
+    "md_gap_end": 145631,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 981699,
+    "base_char": "∈",
+    "signature": "absent",
+    "reason": "overlapping_edit",
+    "context": "where t ̸∈u↓:\nΦu =\n\u001b\nt∈S\n(t,u)̸∈R\nΦu,t\nAs TS is ﬁnite, Φu ari",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part06.md",
+    "md_gap_start": 145592,
+    "md_gap_end": 145631,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1069388,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "litter for B if and only if\nB ̸= C\nand\nB ∩Pre(C) ̸= ∅\nand\nB \\",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part06.md",
+    "md_gap_start": 121407,
+    "md_gap_end": 121462,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1069407,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": " only if\nB ̸= C\nand\nB ∩Pre(C) ̸= ∅\nand\nB \\ Pre∗\nΠ(C) ̸= ∅.\n2.",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part06.md",
+    "md_gap_start": 121407,
+    "md_gap_end": 121462,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1069430,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "Pre(C) ̸= ∅\nand\nB \\ Pre∗\nΠ(C) ̸= ∅.\n2. Π is C-stable if there",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part06.md",
+    "md_gap_start": 121407,
+    "md_gap_end": 121462,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1192995,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": "′\nj\nh:γ\n\n→ℓ′′\nj in PGj with j ̸= i and ℓj \n→∗ℓ′\nj do\nif (η ̸|",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part08.md",
+    "md_gap_start": 103659,
+    "md_gap_end": 103716,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1193024,
+    "base_char": "|",
+    "signature": "control_char",
+    "reason": "overlapping_edit",
+    "context": " ̸= i and ℓj \n→∗ℓ′\nj do\nif (η ̸|= g and γ modiﬁes some variab",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part08.md",
+    "md_gap_start": 103659,
+    "md_gap_end": 103716,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Baier_Katoen_2008_Principles_Model_Checking.pdf",
+    "pdf_char_offset": 1525433,
+    "base_char": "∼",
+    "signature": "glyph_six",
+    "reason": "narrow_failed",
+    "context": " 10.12. It\nfollows that s4,10 ̸∼M s6,8, since there exists a ",
+    "md_file": "/home/benjamin/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part10.md",
+    "md_gap_start": 153823,
+    "md_gap_end": 153841,
+    "dir": "baier_katoen_2008"
+  },
+  {
+    "pdf_file": "Bacon - 2018 - The Broadest Necessity.pdf",
+    "pdf_char_offset": 108297,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "age.\nδ1\nA = B →δABCD = C\nδ2\nA ̸= B →δABCD = D\nThese principle",
+    "dir": "bacon_2018_broadest-necessity"
+  },
+  {
+    "pdf_file": "Bacon - 2018 - The Broadest Necessity.pdf",
+    "pdf_char_offset": 108655,
+    "base_char": "=",
+    "signature": "unanchored",
+    "reason": "ambiguous_anchor",
+    "context": "1\nL(A = B →δABCD = C)\nLδ2\nL(A ̸= B →δABCD = D)\nThe above stre",
+    "dir": "bacon_2018_broadest-necessity"
+  },
+  {
+    "pdf_file": "Bacon - 2018 - The Broadest Necessity.pdf",
+    "pdf_char_offset": 109939,
+    "base_char": "=",
+    "signature": "control_char",
+    "reason": "narrow_failed",
+    "context": "and δ2:\n1.\nA = ⊤→L′A = ⊤\n2.\nA ̸= ⊤→L′A = ⊥\nIn particular the ",
+    "md_file": "/home/benjamin/Projects/Literature/sources/bacon_2018_broadest-necessity/bacon_2018_broadest-necessity.md",
+    "md_gap_start": 114699,
+    "md_gap_end": 114758,
+    "dir": "bacon_2018_broadest-necessity"
+  }
+]

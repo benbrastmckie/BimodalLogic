@@ -1,0 +1,47 @@
+{
+  "phase": 4,
+  "phase_name": "Repair the control-character class",
+  "started_at": "2026-07-27T04:35:00Z",
+  "last_updated": "2026-07-27T05:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Write bacon_2018_broadest-necessity first, then baier_katoen_2008", "status": "done",
+     "files_touched": [
+       "specs/403_sweep_literature_corpus_combining_mark_corruption/backup-manifests/combining-repair-2026-07-27-manifest.json"
+     ],
+     "note": "Live corpus files repaired: ~/Projects/Literature/sources/bacon_2018_broadest-necessity/bacon_2018_broadest-necessity.md and ~/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part01..12.md (outside this git repo, not staged/committed here)"},
+    {"id": 2, "description": "Confirm backups exist and sha256 manifest recorded under task dir", "status": "done",
+     "files_touched": ["specs/403_sweep_literature_corpus_combining_mark_corruption/backup-manifests/combining-repair-2026-07-27-manifest.json"]},
+    {"id": 3, "description": "Verify four sentence-level spot-checks", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Record remaining non-negation control-char count as residual finding", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Re-run detector, confirm zero or log to residual ledger", "status": "done",
+     "files_touched": ["specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json"]}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [
+    {"approach": "Use the word-landmark-anchored gap span directly as the literal edit region for every occurrence", "result": "failed", "reason": "CRITICAL BUG: the gap only needs to CONTAIN corruption evidence for classification, it is not guaranteed to equal the corruption complex exactly; the first --write on both bacon_2018 and baier_katoen_2008 deleted real surrounding content (bacon_2018 lost 137 words across 16 fixes, baier_katoen part01 lost 84 words across 7 fixes). Caught via word-count sanity check immediately after the write; both files restored byte-for-byte from verified backups before any further action. Fixed by narrowing every edit to a precise sub-span, adding a per-edit span cap (>6 chars refused), and a whole-file word-count circuit breaker."}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "4.1",
+      "description": "Repair coverage far below full: 336/819 (41%) for baier_katoen_2008, 15/18 (83%) for bacon_2018",
+      "type": "altered",
+      "reason": "Conservative anchor-uniqueness requirement and the new per-edit safety caps correctly refuse ambiguous/oversized edits rather than guess; all unrepaired occurrences are in residual-ledger.json with reasons",
+      "annotation": "*(deviation: altered — partial repair by design, not a shortfall to fix by relaxing safety; see plan Phase 4 deviation note)*"
+    },
+    {
+      "task_id": "4.3",
+      "description": "3 of 4 spot-check sentences confirmed correct; the TS1 ∥H (TS2 ∥H′ TS3) sentence remains unrepaired",
+      "type": "altered",
+      "reason": "Two close-together = tokens make this occurrence genuinely ambiguous to anchor; correctly logged to residual ledger rather than guessed",
+      "annotation": "*(deviation: altered — 3/4 spot-checks pass; 4th documented as residual)*"
+    }
+  ],
+  "corpus_mutation_record": {
+    "backup_root": "/home/benjamin/Projects/Literature/.backups/combining-repair-2026-07-27",
+    "files_backed_up": 13,
+    "files_written": 13,
+    "bug_incident": "First --write attempt corrupted both target files by deleting real content beyond the intended fix; caught immediately via word-count sanity check, both files restored byte-for-byte from verified backups before the corrected engine was re-run for real. No corruption persists in the live corpus.",
+    "final_state_verified": "All 13 backups hash-match their pre-write originals; both live documents' spot-check sentences read correctly; idempotence confirmed via a second --dry-run proposing 0 rewrites."
+  }
+}

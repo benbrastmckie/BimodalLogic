@@ -461,24 +461,80 @@ baseline diff compares like-for-like methodology, not an earlier, less-tuned det
 
 ---
 
-### Phase 4: Repair the control-character class [NOT STARTED]
+### Phase 4: Repair the control-character class [COMPLETED]
 
 **Goal**: Repair `baier_katoen_2008` (12 markdown parts) and `bacon_2018_broadest-necessity` —
 835 of the 1,163 dangerous occurrences, 72% of total blast radius — and prove the repair engine
 correct on the highest-evidence case before widening.
 
+**CRITICAL BUG FOUND AND FIXED DURING THIS PHASE** (full transparency, since this touched the
+live corpus): the first `--write` attempt on both documents used a version of
+`literature-repair-combining.sh` that took the word-landmark-anchored "gap" span directly as the
+literal edit region. That gap is only guaranteed to CONTAIN evidence of the corruption signature
+for classification purposes — it is not guaranteed to equal the 1-2 character corruption complex
+exactly, and in practice it was often much wider. The first `--write` run silently deleted real
+surrounding content (verified: "with τ [ctrl]∈ H. Only" collapsed to "with∉Only", losing "τ", "H",
+"."; bacon_2018 lost 137 words across 16 "fixes", baier_katoen_2008 part01 lost 84 words across 7
+"fixes"). **This was caught before moving on**, via a word-count sanity check on the written
+files, immediately after the first `--write`. Both documents were restored byte-for-byte from
+their (independently verified, hash-matching) Phase-4-taken backups before any further action.
+The repair engine was then fixed: every edit (not just multi-occurrence conflicts) is now narrowed
+to the precise sub-span containing just the corruption artifact plus its base character (tolerating
+up to 2 whitespace chars), with a hard per-edit span cap (>6 chars = refused) and a whole-file
+word-count circuit breaker as defense in depth. The corrected engine was verified end-to-end
+against throwaway scratchpad copies (never the live corpus) before being re-run for real. See
+`.claude/scripts/literature-repair-combining.sh`'s updated header comment and inline comments for
+the permanent record of this bug and its fix.
+
 **Tasks**:
-- [ ] Run the repair engine with `--write` for `bacon_2018_broadest-necessity` first (smallest,
-      fully spot-checked in research), verify, then for `baier_katoen_2008`.
-- [ ] Confirm backups exist and the sha256 manifest is recorded under the task directory.
-- [ ] Verify the four sentence-level spot-checks from the research report now read correctly:
+- [x] Run the repair engine with `--write` for `bacon_2018_broadest-necessity` first (smallest,
+      fully spot-checked in research), verify, then for `baier_katoen_2008`. *(completed, after the
+      bug fix above; bacon_2018: 15 of 18 occurrences repaired, 3 residual; baier_katoen_2008: 336
+      of 819 occurrences repaired across all 12 parts, 483 residual — see deviation note below for
+      why this is far short of "819 repaired" and why that is the correct, conservative outcome.)*
+- [x] Confirm backups exist and the sha256 manifest is recorded under the task directory.
+      *(completed: all 13 files' backups verified byte-identical to their pre-write originals via
+      independent sha256 comparison; manifest copied to
+      `specs/403_.../backup-manifests/combining-repair-2026-07-27-manifest.json`.)*
+- [x] Verify the four sentence-level spot-checks from the research report now read correctly:
       the `TS(PG1 ||| PG2) ≠ ...` inequality, the `τ ∉ H` membership, the two-inequality
-      `TS1 ∥H (TS2 ∥H′ TS3) ≠ ... for H ≠ H′` sentence, and the Bacon named axiom.
-- [ ] Record, without fixing, the count of remaining non-negation control characters in
+      `TS1 ∥H (TS2 ∥H′ TS3) ≠ ... for H ≠ H′` sentence, and the Bacon named axiom. *(3 of 4
+      confirmed correct on the live corpus; the fourth remains unrepaired and correctly logged to
+      the residual ledger — see deviation note below.)*
+- [x] Record, without fixing, the count of remaining non-negation control characters in
       `baier_katoen_2008` (expected ~6,900 across ~23 further code points) as a residual finding
-      for a separate task.
-- [ ] Re-run the detector for both directories and confirm zero corrupted occurrences remain, or
-      log each exception to the residual ledger.
+      for a separate task. *(completed: actual count is 8,514 control characters across 24
+      distinct code points remaining post-repair — see Findings note below; order-of-magnitude
+      consistent with the report's informal estimate, not identical, as expected for a spot-check
+      vs. exhaustive count.)*
+- [x] Re-run the detector for both directories and confirm zero corrupted occurrences remain, or
+      log each exception to the residual ledger. *(completed: NOT zero for either document — the
+      plan's own "or log each exception" alternative applies. 482 residual occurrences for
+      baier_katoen_2008, 3 for bacon_2018_broadest-necessity, all recorded in
+      `specs/403_.../residual-ledger.json`.)*
+
+**Deviation — repair coverage far below the plan's implicit full-repair expectation.** Only 336 of
+819 baier_katoen_2008 occurrences (41%) and 15 of 18 bacon_2018 occurrences (83%) were repaired.
+This is NOT a shortfall to fix by relaxing safety constraints — it is the direct, correct
+consequence of two conservative properties the plan itself mandates: (1) the anchor must uniquely
+locate an occurrence before it is touched (many of baier_katoen's remaining occurrences sit in
+extremely dense, word-landmark-sparse math-formula passages where a confident unique anchor is not
+achievable at the exhaustive-script level — e.g. the `TS1 ∥H (TS2 ∥H′ TS3) ≠ ... for H ≠ H′`
+spot-check sentence has two "=" tokens close together and remains genuinely ambiguous, correctly
+refused rather than guessed); (2) the new per-edit span cap and whole-file word-count circuit
+breaker introduced by this phase's bug fix refuse any edit that cannot be narrowed to a precise,
+small span. Every unrepaired occurrence is visible in the residual ledger with its reason
+(`ambiguous_anchor` / `anchor_not_found` / `unrecognized_gap` / `narrow_failed` /
+`overlapping_edit` / `unmapped_base_char`) for a future, more targeted pass if desired — this
+phase's job was to prove the engine correct and safe on the highest-evidence case, which it does.
+
+**Findings note (residual, not fixed by this task)**: `baier_katoen_2008` carries 8,514 control
+characters across 24 distinct code points post-repair (U+0003: 3,032; U+0005: 1,237; U+000C: 993;
+U+0002: 652; U+000F: 470 [the negation mark's own remaining unrepaired instances]; U+0006: 320;
+U+0007: 312; U+0004: 265; U+0008: 264; U+0014: 250; plus 14 further code points at lower counts) —
+confirming the plan's finding #2 (an entire symbol font mapped onto control codes). Only the
+U+0338 negation subset was in scope for this task; the remainder is recorded here as a residual
+finding for a separate task, per the plan's explicit Non-Goals.
 
 **Timing**: 1.5 hours
 
@@ -487,21 +543,29 @@ correct on the highest-evidence case before widening.
 **Files to modify**:
 - `~/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part01..12.md` - negation repair
 - `~/Projects/Literature/sources/bacon_2018_broadest-necessity/bacon_2018_broadest-necessity.md` - negation repair
-- `specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json` - created/appended
+- `specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json` - created
+- `specs/403_sweep_literature_corpus_combining_mark_corruption/backup-manifests/combining-repair-2026-07-27-manifest.json` - **new**, not in original plan (manifest copy under the task directory)
 
-**Verification**:
+**Verification** (commands actually run, with actual results):
 ```bash
 bash .claude/scripts/literature-combining-audit.sh --dir baier_katoen_2008
+# ACTUAL: pdf_occurrences=819 corrupted_count=482 accounted_count=337 (337 precomposed)
 bash .claude/scripts/literature-combining-audit.sh --dir bacon_2018_broadest-necessity
-# expect for both: corrupted = 0
+# ACTUAL: pdf_occurrences=18 corrupted_count=3 accounted_count=15 (15 precomposed)
+# NOT zero for either -- see deviation note above; both counts are fully accounted for in
+# residual-ledger.json
 
 grep -c 'TS(PG1 ||| PG2 ) ≠ TS(PG1 )' ~/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part01.md
+# ACTUAL: 1 (confirmed correct)
 grep -c 'τ ∉ H' ~/Projects/Literature/sources/baier_katoen_2008/Baier_Katoen_2008_part01.md
+# ACTUAL: 3 (confirmed correct; the report's spot-check line and 2 further un-spot-checked ones)
 grep -c 'NECESSITY OF DISTINCTNESS' ~/Projects/Literature/sources/bacon_2018_broadest-necessity/bacon_2018_broadest-necessity.md
-# and read that line: must contain "A ≠ B" twice, not "A = B"
+# ACTUAL: 1; line reads "THE NECESSITY OF DISTINCTNESS: A ≠ B → L(A ≠ B)." -- confirmed correct
 
-ls ~/Projects/Literature/.backups/combining-repair-*/sources/baier_katoen_2008/ | wc -l   # expect 12
-bash .claude/scripts/literature-repair-combining.sh --dir baier_katoen_2008 --dry-run     # expect 0 proposed (idempotent)
+ls ~/Projects/Literature/.backups/combining-repair-*/sources/baier_katoen_2008/ | wc -l
+# ACTUAL: 12 (confirmed)
+bash .claude/scripts/literature-repair-combining.sh --dir baier_katoen_2008 --dry-run
+# ACTUAL: "0 proposed rewrite(s)" -- confirmed idempotent
 ```
 
 ---
