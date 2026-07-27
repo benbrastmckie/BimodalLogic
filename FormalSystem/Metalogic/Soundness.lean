@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.Semantics.Validity
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
+import FormalSystem.Metalogic.SoundnessLemmas.Separability
 
 /-!
 # Soundness - Soundness Theorem for TM Logic
@@ -1439,13 +1440,8 @@ lemmas below cover both directions. Sep's dual is by contrast a genuinely separa
 fact and so carries its own `sep_swap_valid`; that pair is stated as two lemmas because they are
 two obligations, consumed at different call sites.
 
-The two Prior gap lemmas are proved below, by the supremum construction described in their
-docstrings. Two lemmas remain outstanding -- `sep_valid` and `sep_swap_valid` -- and they are
-the ONLY debt in the Dedekind soundness chain: everything else, including the dispatcher, the
-swap dispatcher, and both soundness theorems covering all 45 axiom constructors, is sorry-free.
-Reynolds discharges Sep and its dual together in lemma 10 of his §7, so the two are a single
-body of deferred work rather than two. This paragraph can be deleted outright once they are
-discharged.
+The Dedekind soundness chain is now sorry-free end to end: both Prior gap lemmas, both Sep
+lemmas, both dispatchers, and both soundness theorems covering all 45 axiom constructors.
 -/
 
 /-- A greatest lower bound from a least-upper-bound hypothesis: `inf B` is recovered as the
@@ -1569,17 +1565,84 @@ theorem prior_S_gap_valid (φ : Formula) :
 
 /-- **Sep axiom validity**: `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)` is valid on real flow.
 
--- sorry: assumes Sep is semantically valid on real flow;
--- deferred because the PRIMARY SOURCE ITSELF defers it -- Reynolds 1992, printed p.168: "we
--- investigate this axiom in more detail in section 7 and defer proving its validity in ℝ until
--- lemma 10 there". The argument turns on the separability of ℝ (countable dense suborder), and
--- Reynolds notes Sep does not characterize separability (the long line satisfies it too);
--- follow-up: task 406. -/
+Reynolds 1992 defers this at his printed p.168 -- "we investigate this axiom in more detail in
+section 7 and defer proving its validity in ℝ until lemma 10 there" -- so the source for the
+argument below is his §7 lemma 10.
+
+**The separability input.** Sep is FALSE on an arbitrary densely ordered Dedekind-complete linear
+order: the lexicographic square `[0,1] ×ₗₑₓ [0,1]` refutes it. The `ValidDedekindDense` algebraic
+binders are therefore load-bearing here, in sharp contrast to the two Prior gap lemmas above,
+which consume only the linear order and the least-upper-bound hypothesis. `AddCommGroup`,
+`IsOrderedAddMonoid`, `DenselyOrdered` and `Nontrivial` together with the LUB hypothesis force
+the flow to be Archimedean and hence separable; `SoundnessLemmas.exists_countable_order_dense`
+extracts the countable order-dense `Q` that the argument runs on. Do not attempt to weaken the
+binder set to `ValidDedekind`.
+
+**Shape of the proof.** Negating the implication gives, at `t`: (i) φ accumulates at `t` from the
+right, (ii) no φ-point just above `t` begins a φ-free gap (Reynolds' relative-density condition),
+and (iii) every point of some right-neighbourhood of `t` fails `K⁺φ ∧ K⁻φ`, i.e. carries a
+φ-free interval on one side -- Reynolds' adjacent intervals `I_u`. `SoundnessLemmas.sep_order`
+derives the contradiction: `S := φ-region ∩ (t, s)` is dense in itself by (ii), and (iii) assigns
+each `u` a point of `Q` separating `S` below `u` from `S` above it, which is impossible.
+
+**Fidelity note -- one deliberate, bounded deviation from the source.** Reynolds' own endgame
+(his step 7) thins `S` to a countable subset, invokes Cantor's theorem that a countable dense
+linear order without endpoints is isomorphic to ℚ, counts the uncountably many gaps of ℚ, and
+concludes by cardinal comparison. That endgame is replaced here by an equivalent Baire-style
+nested-interval construction over ℕ (`SoundnessLemmas.nested_core`). Everything through
+Reynolds' step 6 is followed as written; only the final move is restructured. The substitution
+uses the *same* essential input -- separability -- repackaged as "each `I_u` contains a point of
+a fixed countable dense `Q`", which is precisely the standard proof of Reynolds' cardinality
+step. It is adopted because the `≅ ℚ` route needs Cantor's back-and-forth theorem (a substantial
+development absent from this tree) and would drag `Cardinal` into the soundness chain; Reynolds'
+"no last point" condition is dropped with it, since it exists only to secure order type ℚ. A
+reader comparing this proof against Reynolds §7 should expect no `S ≅ ℚ` step and find
+`nested_core` in its place. -/
 theorem sep_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.kPlus φ)
         (Formula.kPlus (Formula.and φ (Formula.untl φ φ.neg))).neg).imp
         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))) := by
-  sorry
+  intro D _ _ _ _ _ h_lub F M Omega h_sc τ h_mem t h_ant
+  obtain ⟨Q, hQc, hQd⟩ := SoundnessLemmas.exists_countable_order_dense h_lub
+  simp only [TruthAt, Formula.and, Formula.neg, Formula.kPlus, Formula.kMinus,
+    Formula.top] at h_ant ⊢
+  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+  rintro ⟨s₂, hts₂, -, hno⟩
+  have hK : ∀ v, t < v → ∃ u, t < u ∧ u < v ∧ TruthAt M Omega τ u φ := by
+    intro v htv
+    by_contra hc
+    refine h1 ⟨v, htv, fun hb => hb, ?_⟩
+    intro r htr hrv hrφ
+    exact hc ⟨r, htr, hrv, hrφ⟩
+  have h2' : ∃ s₁, t < s₁ ∧ (True) ∧ ∀ u, t < u → u < s₁ →
+      (TruthAt M Omega τ u φ → TruthAt M Omega τ u (Formula.untl φ φ.neg) → False) := by
+    refine Classical.byContradiction (fun hc => h2 ?_)
+    intro hbad
+    exact hc (by
+      obtain ⟨s₁, hts₁, -, hu⟩ := hbad
+      exact ⟨s₁, hts₁, trivial, fun u htu hus => Classical.byContradiction (hu u htu hus)⟩)
+  obtain ⟨s₁, hts₁, -, hstart⟩ := h2'
+  refine SoundnessLemmas.sep_order h_lub Q hQc hQd {u | TruthAt M Omega τ u φ} t s₁ s₂
+    hts₁ hts₂ hK ?_ ?_
+  · rintro u htu hus₁ huP ⟨v, huv, hvP, hfree⟩
+    exact hstart u htu hus₁ huP ⟨v, huv, hvP, fun r hur hrv => hfree r hur hrv⟩
+  · intro u htu hus₂
+    have hAB : TruthAt M Omega τ u (Formula.kPlus φ) →
+        TruthAt M Omega τ u (Formula.kMinus φ) → False := by
+      intro ha hb
+      exact hno u htu hus₂ (fun k => k ha hb)
+    by_cases hR : ∃ v, u < v ∧ ∀ w, u < w → w < v → ¬ TruthAt M Omega τ w φ
+    · exact Or.inl hR
+    · refine Or.inr ?_
+      have ha : TruthAt M Omega τ u (Formula.kPlus φ) := by
+        simp only [TruthAt, Formula.kPlus, Formula.neg, Formula.top]
+        rintro ⟨v, huv, -, hw⟩
+        exact hR ⟨v, huv, fun w huw hwv => hw w huw hwv⟩
+      have hb := hAB ha
+      refine Classical.byContradiction (fun hns => hb ?_)
+      simp only [TruthAt, Formula.kMinus, Formula.neg, Formula.top]
+      rintro ⟨v, hvu, -, hw⟩
+      exact hns ⟨v, hvu, fun w hvw hwu => hw w hvw hwu⟩
 
 /-- **Sep⁻ validity**: the temporal dual of `sep_valid`, needed by `temporal_duality`.
 
@@ -1594,22 +1657,66 @@ Stated separately from `sep_valid` rather than folded into a conjunction with it
 consumed at different call sites (`axiom_dedekind_valid` and `axiom_dedekind_swap_valid`), and a
 conjunction would misreport two independent obligations as one.
 
--- sorry: assumes the temporal dual of Sep is semantically valid on real flow;
--- deferred for the same reason as `sep_valid` -- Reynolds discharges Sep and its dual together
--- in lemma 10 of his §7, so this is the same body of deferred work, not a second one;
--- follow-up: task 406. -/
+The proof reuses the forward order-theoretic core rather than mirroring it by hand:
+`SoundnessLemmas.sep_order_mirror` is `SoundnessLemmas.sep_order` instantiated at `Dᵒᵈ`, so the
+~130-line nested-interval argument is written once. (The Prior pair took the opposite route
+because its dualised body is only ~25 lines.) `swapTemporal` distributes through `imp` and `bot`,
+hence through `neg` and `and`, exchanges `U`/`S` and fixes `top`; so the swapped Sep is the exact
+past mirror with `ψ := φ.swapTemporal`, and a single `simp only` performs the whole unfolding.
+See `sep_valid` for the separability input and the recorded fidelity deviation from Reynolds. -/
 theorem sep_swap_valid (φ : Formula) :
     ValidDedekindDense (((Formula.and (Formula.kPlus φ)
         (Formula.kPlus (Formula.and φ (Formula.untl φ φ.neg))).neg).imp
         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))).swapTemporal) := by
-  sorry
+  intro D _ _ _ _ _ h_lub F M Omega h_sc τ h_mem t h_ant
+  obtain ⟨Q, hQc, hQd⟩ := SoundnessLemmas.exists_countable_order_dense h_lub
+  simp only [Formula.and, Formula.neg, Formula.kPlus, Formula.kMinus, Formula.top,
+    Formula.swapTemporal, TruthAt] at h_ant ⊢
+  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+  rintro ⟨s₂, hs₂t, -, hno⟩
+  have hK : ∀ v, v < t → ∃ u, v < u ∧ u < t ∧ TruthAt M Omega τ u φ.swapTemporal := by
+    intro v hvt
+    by_contra hc
+    refine h1 ⟨v, hvt, fun hb => hb, ?_⟩
+    intro r hvr hrt hrφ
+    exact hc ⟨r, hvr, hrt, hrφ⟩
+  have h2' : ∃ s₁, s₁ < t ∧ (True) ∧ ∀ u, u < t → s₁ < u →
+      (TruthAt M Omega τ u φ.swapTemporal →
+        TruthAt M Omega τ u (Formula.snce φ.swapTemporal φ.swapTemporal.neg) → False) := by
+    refine Classical.byContradiction (fun hc => h2 ?_)
+    intro hbad
+    exact hc (by
+      obtain ⟨s₁, hs₁t, -, hu⟩ := hbad
+      exact ⟨s₁, hs₁t, trivial, fun u hut hs₁u => Classical.byContradiction (hu u hs₁u hut)⟩)
+  obtain ⟨s₁, hs₁t, -, hstart⟩ := h2'
+  refine SoundnessLemmas.sep_order_mirror h_lub Q hQc hQd
+    {u | TruthAt M Omega τ u φ.swapTemporal} t s₁ s₂ hs₁t hs₂t hK ?_ ?_
+  · rintro u hut hs₁u huP ⟨v, hvu, hvP, hfree⟩
+    exact hstart u hut hs₁u huP ⟨v, hvu, hvP, fun r hvr hru => hfree r hvr hru⟩
+  · intro u hut hs₂u
+    have hAB : TruthAt M Omega τ u (Formula.kMinus φ.swapTemporal) →
+        TruthAt M Omega τ u (Formula.kPlus φ.swapTemporal) → False := by
+      intro ha hb
+      exact hno u hs₂u hut (fun k => k ha hb)
+    by_cases hL : ∃ v, v < u ∧ ∀ w, v < w → w < u → ¬ TruthAt M Omega τ w φ.swapTemporal
+    · exact Or.inl hL
+    · refine Or.inr ?_
+      have ha : TruthAt M Omega τ u (Formula.kMinus φ.swapTemporal) := by
+        simp only [TruthAt, Formula.kMinus, Formula.neg, Formula.top]
+        rintro ⟨v, hvu, -, hw⟩
+        exact hL ⟨v, hvu, fun w hvw hwu => hw w hvw hwu⟩
+      have hb := hAB ha
+      refine Classical.byContradiction (fun hns => hb ?_)
+      simp only [TruthAt, Formula.kPlus, Formula.neg, Formula.top]
+      rintro ⟨v, huv, -, hw⟩
+      exact hns ⟨v, huv, fun w huw hwv => hw w huw hwv⟩
 
 /-- All Dedekind-compatible axioms are valid on dense Dedekind-complete frames.
 
 Dispatch: the 37 Base axioms route through `valid_implies_validDedekindDense`; the 2 Dense
 axioms (`density`, `dense_indicator`) are admissible here because `Dense ≤ Dedekind`, and are
 valid because the binder set carries `DenselyOrdered`; the 3 Discrete axioms are eliminated by
-`Discrete ≰ Dedekind`; the 3 Reynolds axioms route to the strategic-sorry lemmas above.
+`Discrete ≰ Dedekind`; the 3 Reynolds axioms route to the validity lemmas above.
 
 This theorem is itself sorry-free. -/
 theorem axiom_dedekind_valid {φ : Formula} (h : Axiom φ)
@@ -1669,7 +1776,7 @@ theorem axiom_dedekind_valid {φ : Formula} (h : Axiom φ)
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  -- The three Reynolds Dedekind axioms: the only debt in this theorem.
+  -- The three Reynolds Dedekind axioms, each with its own validity lemma above.
   | prior_U_gap φ => exact prior_U_gap_valid φ
   | prior_S_gap φ => exact prior_S_gap_valid φ
   | sep φ => exact sep_valid φ

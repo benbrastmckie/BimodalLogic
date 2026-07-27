@@ -13,6 +13,7 @@ lemmas for the Dense and Discrete frame classes.
 | `Core.lean` | 106 | Core soundness lemmas valid on all linear temporal orders |
 | `DenseValidity.lean` | 1338 | Soundness lemmas for densely-ordered frames (Dense TM variant) |
 | `FrameClassVariants.lean` | 971 | Soundness lemmas for frame-class-specific axioms; axiom-to-class mapping |
+| `Separability.lean` | 346 | Separability of dense Dedekind-complete duration groups and the order-theoretic core of the Sep axiom (Reynolds 1992, §7 lemma 10) |
 
 ## Key Results
 
@@ -33,4 +34,4 @@ lemmas for the Dense and Discrete frame classes.
 
 ---
 
-*Last verified: 2026-05-29*
+*Last verified: 2026-07-27*

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #406
 
 - **Task**: 406 - Prove semantic validity of the Sep axiom over real flow (Reynolds 1992 section 7, lemma 10)
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 3 hours
 - **Dependencies**: 391 (parent), 405 (landed)
 - **Research Inputs**: `specs/406_prove_semantic_validity_of_the_sep_axiom_over_real_flow_reynolds_1992_section_7_lemma_10/reports/01_sep-axiom-validity-real-flow.md`
@@ -281,25 +281,29 @@ mirror, with no reference to formulas or truth.
 
 ---
 
-### Phase 3: The two validity lemmas, and comment cleanup [IN PROGRESS]
+### Phase 3: The two validity lemmas, and comment cleanup [COMPLETED]
 
 **Goal**: Discharge both `sorry` bodies in `Soundness.lean` and remove every comment that the
 discharge falsifies.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Metalogic.SoundnessLemmas.Separability` to `Soundness.lean`'s
+- [x] Add `import FormalSystem.Metalogic.SoundnessLemmas.Separability` to `Soundness.lean`'s
       import block (anchor: the existing
       `import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants` line). **This task DOES
       change `Soundness.lean`'s imports** — unlike task 405, which touched none.
-- [ ] Replace the `sorry` body of `sep_valid` with the proof from research report **§7.4**,
-      transcribed verbatim. Anchor on the theorem statement, not the line number. **The theorem
+- [x] Replace the `sorry` body of `sep_valid` with the proof from research report **§7.4**,
+      transcribed verbatim. *(deviation: altered — the three cross-module references are written
+      `SoundnessLemmas.exists_countable_order_dense` / `SoundnessLemmas.sep_order` /
+      `SoundnessLemmas.sep_order_mirror` rather than bare, since Phases 1-2 landed in a separate
+      module as this plan directed while the report's verification file was single-namespace. No
+      tactic text changed.)* Anchor on the theorem statement, not the line number. **The theorem
       statement is unchanged** — do not touch the signature.
-- [ ] Replace the `sorry` body of `sep_swap_valid` with the proof from report §7.4, verbatim.
+- [x] Replace the `sorry` body of `sep_swap_valid` with the proof from report §7.4, verbatim.
       Statement unchanged. Keep it a **separate lemma**; do not merge with `sep_valid`.
-- [ ] Neither call site needs an edit: `axiom_dedekind_valid`'s `| sep φ => exact sep_valid φ`
+- [x] Neither call site needs an edit: `axiom_dedekind_valid`'s `| sep φ => exact sep_valid φ`
       and `axiom_dedekind_swap_valid`'s `| sep ψ => exact sep_swap_valid ψ` already typecheck.
       Confirm they are untouched.
-- [ ] **Docstring rewrite — `sep_valid`.** Delete the whole `-- sorry: assumes Sep is
+- [x] **Docstring rewrite — `sep_valid`.** Delete the whole `-- sorry: assumes Sep is
       semantically valid on real flow; ... follow-up: task 406.` block (anchor:
       `-- sorry: assumes Sep is semantically valid`). Replace with proof-summary prose that MUST
       record all of:
@@ -309,24 +313,24 @@ discharge falsifies.
       - **the deliberate fidelity deviation** (see below).
       Follow the shape task 405 used for the Prior docstrings. **No task-number citations** —
       `.claude/rules/no-task-references-in-deliverables.md` applies to `.lean` files.
-- [ ] **Docstring rewrite — `sep_swap_valid`.** Delete its `-- sorry: assumes the temporal dual
+- [x] **Docstring rewrite — `sep_swap_valid`.** Delete its `-- sorry: assumes the temporal dual
       ... follow-up: task 406.` block (anchor: `-- sorry: assumes the temporal dual of Sep`).
       Keep the existing prose above it explaining why the swap is a genuinely separate semantic
       fact and why it is not folded into a conjunction — that paragraph is still true and still
       wanted. Add a sentence recording that the proof reuses the forward core via
       `sep_order_mirror`, i.e. `sep_order` at `Dᵒᵈ`.
-- [ ] **Section-comment cleanup.** Delete the trailing debt paragraph of the section comment
+- [x] **Section-comment cleanup.** Delete the trailing debt paragraph of the section comment
       (anchor: `The two Prior gap lemmas are proved below` through
       `This paragraph can be deleted outright once they are discharged.`). Task 405's implementer
       wrote it as a self-contained block naming `sep_valid`/`sep_swap_valid` specifically so it
       could be deleted wholesale rather than edited around. **Delete it wholesale.** Replace with
       a single sentence recording that the Dedekind soundness chain is now sorry-free.
-- [ ] **Two now-false comments.** Fix both:
+- [x] **Two now-false comments.** Fix both:
       - anchor `the 3 Reynolds axioms route to the strategic-sorry lemmas above` — they no longer
         route to strategic sorries;
       - anchor `-- The three Reynolds Dedekind axioms: the only debt in this theorem.` — there is
         no debt in this theorem any more.
-- [ ] Update `FormalSystem/Metalogic/SoundnessLemmas/README.md`: add the `Separability.lean` row
+- [x] Update `FormalSystem/Metalogic/SoundnessLemmas/README.md`: add the `Separability.lean` row
       to the Modules table with its line count and a one-line description, and refresh the
       `*Last verified*` date.
 
@@ -386,19 +390,19 @@ is where that is recorded.
 
 ## Testing & Validation
 
-- [ ] `lake build` green.
-- [ ] `lake build BimodalTest` green.
-- [ ] In-closure `sorry` count is exactly 1 (`WeakCanonical/Transfer.lean:1242`).
-- [ ] `#print axioms` on both target lemmas shows no `sorryAx`.
-- [ ] Both `sep_valid` and `sep_swap_valid` still exist as two separate theorems with unchanged
+- [x] `lake build` green.
+- [x] `lake build BimodalTest` green.
+- [x] In-closure `sorry` count is exactly 1 (`WeakCanonical/Transfer.lean:1242`).
+- [x] `#print axioms` on both target lemmas shows no `sorryAx`.
+- [x] Both `sep_valid` and `sep_swap_valid` still exist as two separate theorems with unchanged
       statements; both call sites unedited.
-- [ ] No `sorry` and no `axiom` introduced in `Separability.lean`.
-- [ ] `grep -niE 'task [0-9]|tasks [0-9]' FormalSystem/Metalogic/Soundness.lean
+- [x] No `sorry` and no `axiom` introduced in `Separability.lean`.
+- [x] `grep -niE 'task [0-9]|tasks [0-9]' FormalSystem/Metalogic/Soundness.lean
       FormalSystem/Metalogic/SoundnessLemmas/Separability.lean` returns nothing (the
       no-task-references rule applies outside `specs/**`).
-- [ ] The section-comment debt paragraph is gone, and neither of the two now-false comments
+- [x] The section-comment debt paragraph is gone, and neither of the two now-false comments
       survives.
-- [ ] `FormalSystem/Metalogic/WeakCanonical/` is untouched (`git status --short` shows no file
+- [x] `FormalSystem/Metalogic/WeakCanonical/` is untouched (`git status --short` shows no file
       under it).
 
 ## Artifacts & Outputs
