@@ -1434,7 +1434,14 @@ private theorem validDedekindDense_of_validDense {φ : Formula} (h : ValidDense 
 
 /-! ### Strategic sorries: semantic validity of the three Reynolds axioms
 
-These three lemmas are the ONLY debt in the Dedekind soundness chain. Everything else below --
+Four lemmas for three axioms: `prior_U_gap` and `prior_S_gap` are each other's temporal dual
+definitionally, so two lemmas cover both directions, but Sep's dual is a genuinely separate
+semantic fact and so carries its own `sep_swap_valid`. All four are the same body of deferred
+work (Reynolds discharges Sep and its dual together in lemma 10 of his §7) and share the two
+follow-up tasks; they are stated separately because they are separate obligations, consumed at
+different call sites.
+
+These four lemmas are the ONLY debt in the Dedekind soundness chain. Everything else below --
 the dispatcher, the swap dispatcher, and both soundness theorems, covering all 45 axiom
 constructors -- is sorry-free.
 -/
@@ -1464,15 +1471,9 @@ theorem prior_S_gap_valid (φ : Formula) :
       (Formula.snce (Formula.or φ.neg (Formula.kMinus φ.neg)) φ)) := by
   sorry
 
-/-- **Sep axiom validity**, together with its temporal dual.
+/-- **Sep axiom validity**: `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)` is valid on real flow.
 
-`Formula.swapTemporal` maps `prior_U_gap` onto `prior_S_gap` definitionally (verified by `rfl`),
-so those two lemmas cover each other's swap. Sep is self-referential under the swap: its dual
-`Sep⁻` (with `K⁺`/`K⁻` and `U`/`S` exchanged) is NOT an instance of `Axiom.sep`. Rather than
-introduce a fourth, unplanned division point, both directions are stated here as one lemma --
-they are the same deferred content in Reynolds, discharged together by lemma 10 of his §7.
-
--- sorry: assumes Sep and its temporal dual are semantically valid on real flow;
+-- sorry: assumes Sep is semantically valid on real flow;
 -- deferred because the PRIMARY SOURCE ITSELF defers it -- Reynolds 1992, printed p.168: "we
 -- investigate this axiom in more detail in section 7 and defer proving its validity in ℝ until
 -- lemma 10 there". The argument turns on the separability of ℝ (countable dense suborder), and
@@ -1481,8 +1482,28 @@ they are the same deferred content in Reynolds, discharged together by lemma 10 
 theorem sep_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.kPlus φ)
         (Formula.kPlus (Formula.and φ (Formula.untl φ φ.neg))).neg).imp
-        (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ))))
-    ∧ ValidDedekindDense (((Formula.and (Formula.kPlus φ)
+        (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))) := by
+  sorry
+
+/-- **Sep⁻ validity**: the temporal dual of `sep_valid`, needed by `temporal_duality`.
+
+Unlike the Prior pair -- where `Formula.swapTemporal` carries `prior_U_gap` onto `prior_S_gap`
+definitionally (verified by `rfl`), so those two lemmas cover each other's swap -- Sep is not
+self-covering under the swap: `(sep φ).swapTemporal` exchanges `K⁺`/`K⁻` and `U`/`S`, and the
+result is NOT an instance of `Axiom.sep`. It is therefore a genuinely separate semantic fact and
+gets its own lemma, matching the tree's `swap_axiom_*_valid` convention in
+`SoundnessLemmas/DenseValidity.lean` (nine instances, none bundled with its unswapped partner).
+
+Stated separately from `sep_valid` rather than folded into a conjunction with it: the two are
+consumed at different call sites (`axiom_dedekind_valid` and `axiom_dedekind_swap_valid`), and a
+conjunction would misreport two independent obligations as one.
+
+-- sorry: assumes the temporal dual of Sep is semantically valid on real flow;
+-- deferred for the same reason as `sep_valid` -- Reynolds discharges Sep and its dual together
+-- in lemma 10 of his §7, so this is the same body of deferred work, not a second one;
+-- follow-up: task 406. -/
+theorem sep_swap_valid (φ : Formula) :
+    ValidDedekindDense (((Formula.and (Formula.kPlus φ)
         (Formula.kPlus (Formula.and φ (Formula.untl φ φ.neg))).neg).imp
         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))).swapTemporal) := by
   sorry
@@ -1555,15 +1576,15 @@ theorem axiom_dedekind_valid {φ : Formula} (h : Axiom φ)
   -- The three Reynolds Dedekind axioms: the only debt in this theorem.
   | prior_U_gap φ => exact prior_U_gap_valid φ
   | prior_S_gap φ => exact prior_S_gap_valid φ
-  | sep φ => exact (sep_valid φ).1
+  | sep φ => exact sep_valid φ
 
 /-- Swap-validity for Dedekind-compatible axioms, needed by the `temporal_duality` case.
 
 Base and Dense axioms delegate to `SoundnessLemmas.axiom_swap_valid`, which is already proved
 for every axiom with `minFrameClass ≤ .Dense` on densely ordered frames. The three Reynolds
 axioms are handled by duality: `swapTemporal` carries `prior_U_gap` to `prior_S_gap` (and back)
-definitionally, so those two reuse each other; Sep's dual is the second conjunct of
-`sep_valid`. -/
+definitionally, so those two reuse each other; Sep's dual has its own lemma,
+`sep_swap_valid`. -/
 theorem axiom_dedekind_swap_valid {φ : Formula} (h : Axiom φ)
     (h_fc : h.minFrameClass ≤ FrameClass.Dedekind) :
     ValidDedekindDense φ.swapTemporal := by
@@ -1576,7 +1597,7 @@ theorem axiom_dedekind_swap_valid {φ : Formula} (h : Axiom φ)
       exact prior_S_gap_valid ψ.swapTemporal
     | prior_S_gap ψ =>
       exact prior_U_gap_valid ψ.swapTemporal
-    | sep ψ => exact (sep_valid ψ).2
+    | sep ψ => exact sep_swap_valid ψ
     -- Discrete axioms: `Discrete ≰ Dedekind`, so `h_fc` is absurd. They need explicit arms
     -- rather than the catch-all below, which discharges via `trivial : minFrameClass ≤ Dense`
     -- and so only covers the Base and Dense constructors.

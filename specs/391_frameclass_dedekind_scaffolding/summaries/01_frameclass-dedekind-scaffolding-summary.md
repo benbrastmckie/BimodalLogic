@@ -4,8 +4,8 @@
 - **Type**: lean4
 - **Plan**: `specs/391_frameclass_dedekind_scaffolding/plans/01_frameclass-dedekind-scaffolding.md`
 - **Phases**: 8 of 8 completed
-- **Status**: implemented, with declared strategic debt (3 sorries) and two material deviations
-  flagged for review
+- **Status**: implemented, with declared strategic debt (4 sorries) and two material deviations
+  reviewed and resolved
 - **Date**: 2026-07-27
 
 ---
@@ -16,7 +16,7 @@ All eight plan phases landed. `lake build` and `lake build BimodalTest` both exi
 `FrameClass` now carries a fourth constructor `.Dedekind` with a genuine `Base < Dense <
 Dedekind` chain; Reynolds' three definable-gap axioms are `Axiom` constructors mapped to
 `.Dedekind`; `ValidDedekind` / `ValidDedekindDense` and their bridges exist; and
-`soundness_dedekind` typechecks with debt confined to exactly three named, documented lemmas.
+`soundness_dedekind` typechecks with debt confined to exactly four named, documented lemmas.
 
 The `Axiom` inductive went from 42 to 45 constructors.
 
@@ -26,8 +26,8 @@ The `Axiom` inductive went from 42 to 45 constructors.
 |---|---|
 | `lake build` | exit 0 |
 | `lake build BimodalTest` | exit 0 |
-| Sorry count | 4 = `SORRY_BASELINE` (1) + 3 planned |
-| New sorries name | `prior_U_gap_valid` (`Soundness.lean:1451`), `prior_S_gap_valid` (`:1462`), `sep_valid` (`:1481`) |
+| Sorry count | 5 = `SORRY_BASELINE` (1) + 4 strategic (3 planned + the Sep dual split out on review) |
+| New sorries name | `prior_U_gap_valid` (`Soundness.lean:1458`), `prior_S_gap_valid` (`:1469`), `sep_valid` (`:1482`), `sep_swap_valid` (`:1505`) |
 | New `axiom` declarations | 0 |
 | Vacuous definitions introduced | 0 |
 | `#print axioms soundness_dedekind` | `[propext, sorryAx, Classical.choice, Quot.sound]` — sorries real and reached |
@@ -44,8 +44,9 @@ The plan's baseline command `lake build 2>&1 | grep -c "declaration uses 'sorry'
 quotes; Lean 4.33 emits backticks (``declaration uses `sorry` ``). The plan's literal command
 reports `0` and would have masked any regression. With the corrected pattern,
 **`SORRY_BASELINE = 1`** — the pre-existing `countermodel_discrete` sorry at
-`FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1225`. Final count is 4, exactly
-baseline + 3.
+`FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1225`. Final count is 5: baseline + 4,
+the fourth being `sep_swap_valid`, split out of the `sep_valid` conjunction on user review
+(see Plan Deviations §1).
 
 ### typst-sync-check was already failing before this task
 
@@ -87,7 +88,7 @@ Lifting.lean`, `Metalogic/DenseSoundness.lean`) and absent identifiers (`rabinov
 
 - `axiom_dedekind_valid` (45 enumerated cases), `axiom_dedekind_swap_valid`,
   `derivable_valid_and_swap_valid_dedekind`, `soundness_dedekind_valid`, `soundness_dedekind`.
-  All sorry-free; the three strategic sorries live only in the three named lemma bodies.
+  All sorry-free; the four strategic sorries live only in the four named lemma bodies.
 
 ### Blast radius actually repaired
 
@@ -117,12 +118,31 @@ other — but that `(sep φ).swapTemporal` is the past-dual `Sep⁻`, not an ins
 
 Options were (a) a fourth sorried lemma, exceeding the plan's declared three-sorry budget and
 adding an unplanned division point, or (b) stating `sep_valid` as a conjunction over `sep φ` and
-its swap — one lemma, one sorry, one division point. Chose (b): smaller deviation, budget held
-at exactly three, and Reynolds discharges Sep together with its dual in the same deferred lemma
-10 of his §7.
+its swap — one lemma, one sorry, one division point. Chose (b) initially: smaller deviation,
+budget held at exactly three, and Reynolds discharges Sep together with its dual in the same
+deferred lemma 10 of his §7.
 
-**Review question for the user**: is folding the `Sep⁻` obligation into `sep_valid` acceptable,
-or should it be split into a separate fourth division point with its own follow-up task?
+**RESOLVED — reverted to option (a) on user review.** The conjunction was split into `sep_valid`
+and `sep_swap_valid` (`Soundness.lean:1482` and `:1505`). Three findings made the split correct:
+
+1. **It contradicted an established house convention.** `SoundnessLemmas/DenseValidity.lean`
+   carries nine `swap_axiom_*_valid` theorems (`swap_axiom_mt_valid`, `swap_axiom_m4_valid`,
+   `swap_axiom_mb_valid`, …), and not one is bundled into a conjunction with its unswapped
+   partner. The structural precedent for a non-Base frame class needing swap coverage is
+   `axiom_swap_valid_discrete` (`FrameClassVariants.lean:916`), which proves Prior-UZ/SZ
+   directly rather than conjoining.
+2. **The conjunction was already being consumed as two lemmas** — `.1` in `axiom_dedekind_valid`,
+   `.2` in `axiom_dedekind_swap_valid`. It never functioned as a single fact.
+3. **The motive was bookkeeping, not mathematics.** Holding a declared sorry count at three by
+   packing two independent obligations into one statement understates the real debt. Four
+   obligations are now reported as four.
+
+The follow-up task was **not** split: Reynolds discharges Sep and its dual together in lemma 10
+of his §7, so it is one body of work. Task 406 was widened to name both lemmas and to require a
+sorry-count drop of 2, with an explicit "do not split these across tasks" note.
+
+Post-split verification: `lake build` and `lake build BimodalTest` both green; sorry count 5
+(= 1 pre-existing baseline + 4 strategic).
 
 ### 2. Two `scripts/` files repaired, outside the plan's declared file scope (MATERIAL)
 
@@ -179,7 +199,7 @@ is covered; the test target must be built too.
 |---|---|---|---|
 | `prior_U_gap_valid` | `Soundness.lean:1451` | Reynolds asserts validity over ℝ without proof (printed p.168); the argument is an open-ended supremum construction over the φ-region | task 405 |
 | `prior_S_gap_valid` | `Soundness.lean:1462` | Infimum dual of the above; same unbounded attempt surface | task 405 |
-| `sep_valid` (and its temporal dual) | `Soundness.lean:1481` | The primary source itself defers it — Reynolds printed p.168 defers validity in ℝ to lemma 10 of §7; turns on separability of ℝ | task 406 |
+| `sep_valid` / `sep_swap_valid` | `Soundness.lean:1482` / `:1505` | The primary source itself defers it — Reynolds printed p.168 defers validity in ℝ to lemma 10 of §7; turns on separability of ℝ | task 406 |
 
 Each body carries the mandated three-part `-- sorry: assumes X; deferred because Y; follow-up:
 task NNN` comment.
