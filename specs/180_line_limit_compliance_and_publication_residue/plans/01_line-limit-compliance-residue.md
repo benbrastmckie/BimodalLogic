@@ -1,7 +1,7 @@
 # Implementation Plan: Line-Limit Compliance and Publication Residue
 
 - **Task**: 180 - line_limit_compliance_and_publication_residue
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: 292, 402 (both complete)
 - **Research Inputs**: `specs/180_line_limit_compliance_and_publication_residue/reports/01_line-limit-compliance-residue.md`
@@ -626,18 +626,19 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 
 ---
 
-### Phase 8: Final Gate, Verified-No-Work Record, and Summary [NOT STARTED]
+### Phase 8: Final Gate, Verified-No-Work Record, and Summary [COMPLETED]
 
 - **Goal:** Prove the end state against every acceptance criterion, and record the two no-work
   items as **verified at completion time**, not as work performed.
 
 - **Tasks:**
-  - [ ] Run the full `gate.py` end-state gate and capture its output into the summary.
-  - [ ] Re-confirm and record the copyright invariant: every live `.lean` file carries a
+  - [x] Run the full `gate.py` end-state gate and capture its output into the summary.
+        *(captured verbatim in `tools/logs/final-gate.txt`)*
+  - [x] Re-confirm and record the copyright invariant: every live `.lean` file carries a
         `Copyright` line within its first three lines. Record it as **verified, no work
         performed**, and note the correction that the task description's "277 of 277" was simply
         an older, smaller denominator — the invariant held, the file count grew.
-  - [ ] Re-confirm and record the universe-polymorphism finding as an **empty set**: zero
+  - [x] Re-confirm and record the universe-polymorphism finding as an **empty set**: zero
         `universe` declarations in the live tree. This check must **strip comments first** — a
         raw `grep -E '^\s*universe\s'` returns 3 hits, all of which are line-wrapped English
         prose inside docstrings (`SoundnessLemmas/Core.lean:30`,
@@ -645,10 +646,10 @@ Phases within the same wave can execute in parallel. Territory contracts for the
         `Decidability/CountermodelExtraction.lean:166`). Record that `Semantics/` uses `Type*` in
         34 places and that `Validity.lean:77,101` document a deliberate monomorphization.
         **Do not manufacture work here.**
-  - [ ] Write `summaries/01_line-limit-compliance-residue-summary.md` with the before/after
+  - [x] Write `summaries/01_line-limit-compliance-residue-summary.md` with the before/after
         census, the harness repairs, the string-gap breaker's measured effect, the hand-fix
         inventory, and the two verified-no-work records.
-  - [ ] Commit.
+  - [x] Commit.
 
 - **Timing:** 1 hour
 - **Depends on:** 3, 5, 7
@@ -657,85 +658,49 @@ Phases within the same wave can execute in parallel. Territory contracts for the
   - `specs/180_.../summaries/01_line-limit-compliance-residue-summary.md` — new
   - No `.lean` files.
 
-- **Verification** — all six acceptance criteria, each producing a number, none satisfiable by a
-  vacuous zero:
-  1. `count_long_lines.py` reports **0 total across 0 files** for the live tree — **and** the
-     same script, run unchanged against the pre-task baseline commit in a throwaway
-     `git worktree`, still reports **598 / 65**. This second half is what makes the zero
-     meaningful: it proves the counter reached zero because the tree changed, not because the
-     counter broke — the precise failure mode the stale `Theories/` regex would have produced.
-  2. `lake build` → green, **≥ 1883 jobs**, exit 0, zero errors.
-  3. `lake build BimodalTest` → green, **≥ 1923 jobs**, exit 0, zero errors.
-  4. Comment-stripped `sorry` count over the live tree = **exactly 1**, declaration
-     `countermodel_discrete`, in `FormalSystem/Metalogic/WeakCanonical/Transfer.lean` (located by
-     content, never by line — the line has already drifted). A naive `grep -c sorry` returning
-     ~287 is expected and is not the check.
-  5. Declaration inventory unchanged versus the Phase 1 baseline (`gate.py` `DECL_RE` census) —
-     no rename, no `def`→`theorem` flip.
-  6. Sibling-owned frozen linter categories unchanged **by equality**, not merely "not
-     increased" — a reduction is trespass, not a bonus.
-  - Plus the two recorded invariants: copyright **330 / 330** live files; **0** `universe`
-    declarations after comment stripping.
+- **Phase 8 measured result — all six acceptance criteria, each producing a number, none
+  satisfiable by a vacuous zero:**
+
+  | # | Criterion | Result |
+  |---|---|---|
+  | 1 | `count_long_lines.py` = 0 total / 0 files | **0 / 0**, all three areas 0 |
+  | 1b | *the same unchanged script* against the pre-task commit `b3accb114` in a throwaway worktree | still **598 / 65** (327 / 231 / 40) |
+  | 2 | `lake build` green, ≥ 1883 jobs, exit 0, zero errors | **green, 1883, exit 0, 0 errors** |
+  | 3 | `lake build BimodalTest` green, ≥ 1923 jobs, exit 0, zero errors | **green, 1923, exit 0, 0 errors** |
+  | 4 | live `sorry` = exactly 1, `countermodel_discrete`, by content | **1**, `countermodel_discrete`, `Transfer.lean` |
+  | 5 | declaration inventory unchanged vs baseline | unchanged — `gate.py check … 0` → **GATE PASSED** |
+  | 6 | frozen sibling categories unchanged **by equality** | all seven identical to baseline |
+
+  Criterion 1b is the load-bearing half. A zero from a broken counter is indistinguishable from
+  a zero from a clean tree — precisely how the inherited harness would have failed. Getting 598
+  back from the finished counter run against the pre-task tree proves it reached zero because
+  the tree changed.
+
+  Plus the project's own gate, `bash scripts/check-module-invariants.sh`: exit 0, with B0 and
+  C1-C10 all passing (including **C9**, "zero task-number citations under `FormalSystem/`").
+
+- **The two recorded invariants** (`tools/publication_invariants.py`, which carries a positive
+  control so neither can pass vacuously):
+
+  - **Copyright — 331/331 live files, no work performed.** The plan's "330/330" and the task
+    description's "277 of 277" were both simply older, smaller denominators; the invariant held
+    throughout and the file count grew. The 330 → 331 correction is the root-level
+    `FormalSystem.lean` aggregator (see the Phase 6 scope correction). It was already 331/331 at
+    the pre-task commit.
+  - **Universe polymorphism — the empty set, no work performed.** **0** declarations after
+    comment stripping, against **3** raw `grep -E '^\s*universe\s'` hits — all three
+    line-wrapped English prose inside docstrings, exactly as the plan predicted
+    (`Decidability/CountermodelExtraction.lean:166`, `SoundnessLemmas/Core.lean:30`,
+    `Kamp/NfMultiAnchorBridge/ExteriorNegationK.lean:369`). Also recorded and unchanged:
+    `FormalSystem/Semantics/` uses `Type*` in **34** places across 5 files, and
+    `Semantics/Validity.lean:77,101` document a deliberate monomorphization ("Uses `Type` (not
+    `Type*`) to avoid universe level issues in proofs"). No work was manufactured.
 
 ---
 
-## Testing & Validation
+## Implementation Outcome
 
-- [ ] `lake build` green, ≥ 1883 jobs, exit 0, zero errors — after every phase that touches
-      `FormalSystem/`.
-- [ ] `lake build BimodalTest` green, ≥ 1923 jobs, exit 0, zero errors — after every phase that
-      touches `Tests/`. This build **is** the test run (758 compile-time checks, no `main`).
-- [ ] `count_long_lines.py` = 0 across the live tree at completion; per-area = 0 at the end of
-      Phases 3, 5, and 7 respectively.
-- [ ] Comment-stripped live `sorry` count = 1 (`countermodel_discrete`) at every phase boundary.
-- [ ] Declaration inventory unchanged at every phase boundary.
-- [ ] Sibling-owned linter categories unchanged by equality at every phase boundary.
-- [ ] Copyright 330/330 and zero `universe` declarations re-confirmed at completion.
-
-**Explicitly not a valid gate**: the `linter.style.longLine` category count in a `lake build` log.
-`lake build` does not enable the Mathlib style linters, so that count is always zero and gating on
-it proves nothing. Count from source by codepoint, or lint with
-`-Dlinter.mathlibStandardSet=true`.
-
-**Also not a valid gate**: `awk 'length>100'`. In a C/POSIX locale it counts bytes, and this
-codebase is dense in multi-byte notation (`□ ◇ △ ▽ φ ψ → ⊥ ∈ ⟨⟩`) — it reports 2116 against a true
-codepoint count of 598.
-
-## Artifacts & Outputs
-
-- `specs/180_.../plans/01_line-limit-compliance-residue.md` (this file)
-- `specs/180_.../tools/` — task-owned repaired harness (`lintlib.py`, `fixers.py`, `sweep.py`,
-  `gate.py`, `runlinter.py`, `sites.py`, re-derived `baseline_snapshot.json`,
-  `baseline_categories.json`)
-- `specs/180_.../tools/count_long_lines.py` — the canonical codepoint counter
-- `specs/180_.../tools/logs/automation-residual.txt`, `tests-residual.txt` — hand-fix inventories
-- 65 reformatted `.lean` files across `FormalSystem/` and `Tests/`
-- `specs/180_.../summaries/01_line-limit-compliance-residue-summary.md`
-
-## Rollback/Contingency
-
-- **Per-file**: `sweep.py` reverts a file automatically on build error or category increase, and
-  records the failure in its completion log; the log is also the resume point for an interrupted
-  run.
-- **Per-phase**: each phase is a separate commit. Revert the phase commit to undo it — the
-  phases are ordered so that reverting a later one never invalidates an earlier one.
-- **Mid-phase**: run `bash .claude/scripts/git-snapshot.sh` before any destructive git operation
-  on a dirty tree; never `git reset --hard` or `git checkout --` over uncommitted work otherwise.
-- **If the string-gap breaker proves unsafe** (Phase 2 round-trip check fails): drop it, revert
-  the `fixers.py` change, and absorb the larger residual by hand in Phases 5 and 7. The plan
-  still reaches zero, at higher hand-fix cost.
-- **If a phase cannot reach zero for its area**, mark it `[PARTIAL]`, leave the enumerated
-  residual checked in, and commit the green partial rather than reverting the whole area — the
-  build invariants matter more than the count.
-
-## Constraints
-
-- **MUST NOT** edit anything under `specs/archive/`.
-- **MUST NOT** add, remove, or rename any declaration; no `def`→`theorem` conversions.
-- **MUST NOT** add a `sorry`, an `axiom`, or a `set_option ... false` suppression to reach a gate.
-  The line limit is met by breaking lines, never by silencing the linter.
-- **MUST NOT** reduce a sibling-owned linter category, including the pre-existing
-  `linter.unusedVariables` warnings.
-- **MUST NOT** touch `Boneyard` trees.
-- **MUST NOT** write task-number references into any `.lean` file or any deliverable outside
-  `specs/**` (`.claude/rules/no-task-references-in-deliverables.md`).
+All 8 phases complete. **598 → 0** violations across 65 files; diff is
+`65 files changed, 1324 insertions(+), 598 deletions(-)` — the 598 deletions are exactly the 598
+offending lines. Mechanical sweeps took **581 of 598** sites (97%); 17 were hand-fixed.
+Summary: `summaries/01_line-limit-compliance-residue-summary.md`.
