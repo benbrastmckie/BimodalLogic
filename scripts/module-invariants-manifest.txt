@@ -1,0 +1,42 @@
+# Known-unreachable live modules (C6 rot guard).
+#
+# A module listed here is NOT reachable from any Lake target root
+# (`lean_lib Bimodal`, `lean_lib BimodalTest`, or any `lean_exe` root), so
+# `lake build` never compiles it and a broken import inside it would go
+# unnoticed. C6 compile-checks each entry in isolation with `lake env lean`.
+#
+# Rules:
+#   - C6 FAILS if an unreachable live module is missing from this file.
+#   - C6 FAILS if an entry names a module that no longer exists.
+#   - Wiring a module into the build graph means DELETING its line here.
+# One module path per line; `#` starts a comment.
+
+# --- Automation ------------------------------------------------------------
+# Benchmark harness; its only importer is BimodalTest.Automation.ProofFirstTests,
+# itself unreachable from the BimodalTest root.
+Bimodal.Automation.ProofFirstBenchmark
+
+# --- Metalogic -------------------------------------------------------------
+# Superseded completeness development; the live completeness results are in
+# Metalogic/BXCanonical/ and Metalogic/WeakCanonical/.
+Bimodal.Metalogic.Completeness
+
+# --- ProofSystem -----------------------------------------------------------
+# Cited in prose by ProofSystem/Axioms.lean as the non-derivability
+# counterexample, and listed in ProofSystem/README.md, but not imported.
+Bimodal.ProofSystem.LinearityDerivedFacts
+
+# --- Tests -----------------------------------------------------------------
+# Orphaned test modules: present under Tests/ but not imported by
+# Tests/BimodalTest.lean, so `lake build BimodalTest` never compiles them.
+BimodalTest.Automation.FormulaMutatorTest
+BimodalTest.Automation.InterestingnessTest
+BimodalTest.Automation.ProofFirstTests
+# These two do not compile: they pass `String` where `Atom` is now expected,
+# i.e. they predate the Atom type change and were never updated because nothing
+# builds them. Recorded rather than re-discovered on every run.
+broken: BimodalTest.ProofSystem.DerivationBenchmark
+broken: BimodalTest.Semantics.SemanticBenchmark
+BimodalTest.TraceCertificateTest
+BimodalTest.TraceExportTest
+BimodalTest.TraceExporterE2ETest

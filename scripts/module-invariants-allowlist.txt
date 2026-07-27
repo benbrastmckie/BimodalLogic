@@ -1,0 +1,32 @@
+# Pre-existing unresolved module paths in non-specs markdown (C5).
+#
+# C5 fails on any module-shaped `Bimodal.*` / `BimodalTest.*` path in markdown
+# that does not resolve to a real module file or directory. The entries below
+# predate the module reorganization: they name modules that were renamed,
+# archived, or never existed. They are allowlisted so that C5 fails loudly on
+# NEW breakage introduced by a file move, rather than drowning it in known noise.
+#
+# This file is a debt ledger, not a permanent exemption: every entry should be
+# removed as its referring documentation is corrected. C5 reports allowlist
+# entries that no longer occur so stale exemptions get pruned.
+# One module path per line; `#` starts a comment.
+
+# `Bimodal.Tests.*` -- the test root is `BimodalTest`, not `Bimodal.Tests`.
+Bimodal.Tests
+Bimodal.Tests.Metalogic
+Bimodal.Tests.Regression
+Bimodal.Tests.Syntax
+Bimodal.Tests.Theorems
+
+# Placeholder used in README/docstring templates, not a real module.
+Bimodal.ModuleName
+
+# Modules that no longer exist under these names.
+Bimodal.Automation.DataExport.RuleProfile
+Bimodal.Automation.Enriched
+Bimodal.Automation.PatternKey
+Bimodal.Metalogic.Decidability.SimpleCountermodel
+Bimodal.Metalogic.DeductionTheorem
+Bimodal.Metalogic.WeakCanonical.ExpressiveCompleteness
+Bimodal.ProofSystem.Rules
+Bimodal.Semantics.Internal
