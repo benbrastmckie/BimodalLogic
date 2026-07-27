@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 405,
+  "next_project_number": 407,
   "active_projects": [
     {
       "project_number": 298,
@@ -979,25 +979,123 @@
     {
       "project_number": 391,
       "project_name": "frameclass_dedekind_scaffolding",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "medium",
       "description": "Design and land the frame-class scaffolding for a Dedekind-complete extension. The carrier-construction research is COMPLETE and returned GO on the carrier question -- see specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md, which also carries a nine-phase decomposition a planner should start from. The carrier needs no construction at all: the live parametric canonical scaffolding was compile-verified to instantiate at the reals with zero modifications. What remains is the frame-class and axiom scaffolding below.\n\nPROBLEM 1 -- the frame-class order does not admit a Dedekind tier. FormalSystem/ProofSystem/Axioms.lean:378-382 defines \"inductive FrameClass where | Base | Dense | Discrete\". The LE instance at :384 gives Base <= everything, with Dense and Discrete reflexive-only and mutually incomparable; DecidableRel is at :391 and PartialOrder at :394. A Dedekind-complete order is a fortiori DENSE, so it validates both the density axiom (Axioms.lean:343) and dense_indicator (:354). A Dedekind constructor therefore sits ABOVE Dense, which the current three-element order does not anticipate: adding it is not a fresh incomparable leaf but a genuine change to the order's shape. FrameClass occurs 1460 times across 96 live files (grep -ro FrameClass FormalSystem/ --include=*.lean, excluding Boneyard/; 1735 occurrences across 120 files if Boneyard is counted), and the gate ax.minFrameClass <= fc is enforced structurally in DerivationTree's axiom constructor (FormalSystem/ProofSystem/Derivation.lean:98), upstream of every derivation and soundness proof.\n\nExpect the LE and PartialOrder proofs to need real work, not just an extra case. The actual instances at Axioms.lean:384-398 are:\n\n  instance : LE FrameClass where\n    le a b := match a, b with\n      | .Base, _ => True\n      | .Dense, .Dense => True\n      | .Discrete, .Discrete => True\n      | _, _ => False\n\n  instance : DecidableRel (LE.le : FrameClass → FrameClass → Prop) :=\n    fun a b => by cases a <;> cases b <;> simp only [LE.le] <;> infer_instance\n\n  instance : PartialOrder FrameClass where\n    le := (· ≤ ·)\n    le_refl := by intro a; cases a <;> simp [LE.le]\n    le_trans := by intro a b c hab hbc; cases a <;> cases b <;> cases c <;> simp_all [LE.le]\n    le_antisymm := by intro a b hab hba; cases a <;> cases b <;> simp_all [LE.le]\n\nNote le_trans is a THREE-way case split (cases a <;> cases b <;> cases c), so a fourth constructor takes it from 27 cases to 64. le_antisymm and DecidableRel are two-way splits, going from 9 cases to 16 each. Beyond the case counts, the LE match itself needs a genuine Base < Dense < Dedekind chain arm rather than another reflexive-only row, so the existing simp [LE.le] / simp_all [LE.le] closes may well not survive unmodified.\n\nPROBLEM 2 -- there is no axiom characterizing Dedekind completeness, AND THERE CANNOT BE ONE. This is now RESOLVED by the carrier research, negatively. Dedekind completeness is not modally/temporally definable: Reynolds 1992 (printed p.169) states that the Prior axioms enforce only a *definably* Dedekind-complete model -- \"there may be gaps in the order but ... you wouldn't know that just looking at the behaviour of temporal formulas\". The single characterizing axiom this task originally set out to land therefore does not exist as such.\n\nThe available axiomatic proxy is definable gap-freeness, given by Reynolds' three axioms (printed p.168), none of which is currently in the Axiom inductive:\n\n  Prior-U:  U(T, p) & F(not p) -> U(not p or K+(not p), p)\n  Prior-S:  S(T, p) & P(not p) -> S(not p or K-(not p), p)\n  Sep:      K+p & not K+(p & U(p, not p)) -> K+(K+p & K-p)\n\nK+ and K- are definable from U/S (GHR94 section 10.3.1), so no new Formula constructors are needed. Suggested constructor names: prior_U_gap, prior_S_gap, sep.\n\nCRITICAL TRAP -- the tree's existing prior_UZ / prior_SZ (Axioms.lean:315, :320) are the *integer well-ordering* Prior axioms of the form F(phi) -> U(phi, not phi), NOT Reynolds' Prior-U / Prior-S gap axioms. The names are confusingly similar, the forms differ, and the frame classes differ (.Discrete vs Dedekind). Do not reuse, rename, or generalize prior_UZ / prior_SZ; add fresh constructors.\n\nAxiom.minFrameClass (Axioms.lean:412) remains the single source of truth for axiom-frame-class compatibility, currently mapping density and dense_indicator to Dense (:413-414) and prior_UZ / prior_SZ / z1 to Discrete (:415-417).\n\nSCOPE (each item is a phase boundary, size accordingly):\n1. FrameClass.Dedekind constructor plus reworked LE / DecidableRel / PartialOrder instances, with Dedekind ABOVE Dense, preserving the minFrameClass <= fc invariant. Full build green. The research places this in its low-risk, immediately-actionable band despite the wide blast radius -- the work is mechanical but broad.\n2. The three proxy axioms above as new Axiom constructors plus their minFrameClass rows (all mapping to .Dedekind), and the corresponding AxiomNames.lean updates. There is no single \"the characterizing axiom\" to land; see PROBLEM 2.\n3. ValidDedekind in FormalSystem/Semantics/Validity.lean alongside valid (:79), ValidDense (:169), ValidDiscrete (:187), plus the valid -> ValidDedekind bridge mirroring valid_implies_valid_dense (:200) and valid_implies_valid_discrete (:207). NOTE the live predicates are named ValidDense / ValidDiscrete, not valid_dense / valid_discrete. This item is DE-RISKED: the research compile-verified the binder list and proved the bridge sorry-free. Use Variant B -- a Prop-valued least-upper-bound hypothesis that keeps the tree's existing [LinearOrder D] binder -- rather than swapping in [ConditionallyCompleteLinearOrder D], because it is strictly less invasive and every downstream [LinearOrder D]-indexed lemma continues to apply without instance-unification risk:\n\n  def ValidDedekind (phi : Formula) : Prop :=\n    forall (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]\n      (_ : forall s : Set D, s.Nonempty -> BddAbove s -> exists x, IsLUB s x)\n      (F : TaskFrame D) (M : TaskModel F)\n      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)\n      (tau : WorldHistory F) (_ : tau in Omega) (t : D),\n      TruthAt M Omega tau t phi\n\n  theorem valid_implies_validDedekind {phi : Formula} (h : valid phi) : ValidDedekind phi :=\n    fun D _ _ _ _ _ F M Omega hO tau htau t => h D F M Omega hO tau htau t\n\nOMIT DenselyOrdered from the binder list. The integers are also conditionally complete (Mathlib's ConditionallyCompleteLinearOrder instance on Int), so including density silently narrows the frame class to the reals alone. If real flow specifically is wanted, target a separate ValidDedekindDense and say so in the docstring.\n4. Optionally a DedekindTemporalFrame marker class in FormalSystem/FrameConditions/FrameClass.lean alongside LinearTemporalFrame (:88), SerialFrame (:103), DenseTemporalFrame (:124), DiscreteTemporalFrame (:148). NOTE these marker classes are a side-car: the live completeness and soundness theorems do NOT consume them, they consume the raw instance-binder validity predicates in Semantics/Validity.lean. Do not mistake the side-car for the load-bearing layer.\n5. soundness_dedekind plus per-axiom validity lemmas in FormalSystem/Metalogic/Soundness.lean, alongside soundness (:1050), soundness_dense (:1218), soundness_discrete (:1361). axiom_swap_valid_general (FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:40) is frame-class-free and directly reusable.\n\nThe completeness theorem itself is NOT in this task's scope, and the research now says why concretely rather than conditionally: the Reynolds route needs (a) a rational-flowed model validating Prior-U / Prior-S / Sep, which the tree's countermodel_dense_enriched does not supply since it targets the different Dense axiom set, and (b) a dense-flow analogue of the tree's integer-specialized Doets machinery in Metalogic/WeakCanonical/IntegerModel/. Those are the research report's phases 6-9, are its highest-risk items, and are separate work. Note also that Reynolds Theorem 7 delivers only WEAK completeness over real flow.\n\nTEMPLATE TO FOLLOW. All three live completeness theorems sit in FormalSystem/Metalogic/BXCanonical/Completeness.lean (completeness :196, completeness_dense :255, completeness_discrete :296) and share one five-move contrapositive: by_contra into neg_consistent_of_not_derivable (:72, generic in fc); set_lindenbaum to an MCS; split on box(not U(top,bot)) via negation_complete; a frame-class-specific countermodel in the matching branch; and a frame-class-specific proof-theoretic elimination of the non-matching branch. Step 5 is where a frame class \"pays for itself\" -- completeness_dense closes its non-dense branch from dense_indicator (:268-276), while completeness_discrete derives U(top,bot) across its dense-case branch (:305-355) from prior_UZ (:319) plus left_mono_until_G (:337) plus Modal-T (:351). Note discrete_box_necessity (Axioms.lean:301) is a BASE axiom, which is what lets mcs_mixed_case_absurd work at any frame class -- a Dedekind class inherits it free. Finally, Completeness.lean:173-193 documents that general completeness carries sorryAx because a Base-MCS is not automatically Discrete-consistent; a Dedekind variant hits the structurally identical problem (a Base-MCS need not validate Prior-U / Prior-S / Sep), so its countermodel must be built from an MCS of its own class.",
       "effort": "large",
       "created": "2026-07-25T14:46:25Z",
-      "last_updated": "2026-07-25T14:46:25Z",
+      "last_updated": "2026-07-27T16:50:04Z",
       "dependencies": [
         390,
         291
       ],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/391_frameclass_dedekind_scaffolding/plans/01_frameclass-dedekind-scaffolding.md",
+          "summary": "Hard-mode 8-phase skeleton plan for FrameClass.Dedekind, Reynolds gap/separation axioms, ValidDedekind predicates, and soundness_dedekind",
+          "created": "2026-07-27T16:50:19Z"
+        }
+      ],
       "file_scope": [
         "FormalSystem/ProofSystem/Axioms.lean",
         "FormalSystem/ProofSystem/Derivation.lean",
         "FormalSystem/Semantics/Validity.lean",
         "FormalSystem/Metalogic/Soundness.lean",
         "FormalSystem/FrameConditions/FrameClass.lean"
+      ],
+      "session_id": "sess_1785170125_be7010",
+      "plan_metadata": {
+        "skeleton": true,
+        "follow_up_tasks": [
+          405,
+          406
+        ]
+      },
+      "memory_candidates": [
+        {
+          "title": "FrameClass Dedekind must sit above Dense, and soundness must target the dense predicate",
+          "content": "In FormalSystem/ProofSystem/Axioms.lean, placing FrameClass.Dedekind above Dense makes `density` (GGphi -> Gphi) and `dense_indicator` (not U(top,bot)) admissible in DerivationTree .Dedekind. Both are FALSE on the integers (for density, take phi true exactly at >= t+2: GGphi holds, Gphi fails; for dense_indicator, U(top,bot) holds on Z by immediate successor), and Z carries a Mathlib ConditionallyCompleteLinearOrder instance. Therefore a soundness_dedekind targeting a DenselyOrdered-free ValidDedekind is refutable; it must target ValidDedekindDense. The frame-class placement itself is justified by primary source: Reynolds 1992 (printed p.168) lists 'axioms for density and no end points: K+T, K-T, FT, PT' in US/R, and K+T unfolds to exactly the tree's dense_indicator.",
+          "keywords": [
+            "FrameClass",
+            "Dedekind",
+            "soundness",
+            "DenselyOrdered",
+            "ConditionallyCompleteLinearOrder",
+            "Reynolds"
+          ],
+          "tags": [
+            "lean4",
+            "design-decision",
+            "correctness-trap"
+          ]
+        },
+        {
+          "title": "Two name-collision traps around Reynolds' Prior and K-plus in this tree",
+          "content": "(1) Axioms.lean:315,:320 `prior_UZ`/`prior_SZ` are the INTEGER well-ordering axioms F(phi) -> U(phi, not phi) at FrameClass.Discrete, NOT Reynolds' definable-gap Prior-U/Prior-S (U(T,p) AND F(not p) -> U(not p OR K+(not p), p), printed p.168). Different form, different frame class, confusingly similar name. (2) FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean:93 `kplusFormula P` is `P.neg AND not(top U P.neg)` -- it carries an extra `not P` conjunct ('P holds arbitrarily soon after t, but not at t itself'). Reynolds and GHR 1994 section 10.3.1 both define K+A = not U(T, not A) with NO such conjunct. Reusing either would silently transcribe the wrong axiom.",
+          "keywords": [
+            "prior_UZ",
+            "prior_U_gap",
+            "kplusFormula",
+            "kPlus",
+            "Reynolds",
+            "GHR"
+          ],
+          "tags": [
+            "lean4",
+            "literature-fidelity",
+            "naming-trap"
+          ]
+        },
+        {
+          "title": "Adding an Axiom constructor touches four independent name lists plus a committed appendix",
+          "content": "The `Axiom` inductive in FormalSystem/ProofSystem/Axioms.lean has 42 constructors, and adding one requires updating: FormalSystem/Automation/AxiomNames.lean (`allAxiomNames`, the canonical list); FormalSystem/Automation/ProofStepExport.lean:1520 (a SECOND, duplicated `allAxiomNames` that does not import the canonical one); FormalSystem/Automation/MachineAppendixExport.lean (`allAxiomEntries` plus exact-count assertions at :427-434); FormalSystem/Automation/BenchmarkAnchors.lean (coverage filter :310, iteration :541); and the committed typst/generated/machine-appendix.{jsonl,typ}, regenerated via `bash scripts/typst-machine-appendix.sh`. `bash scripts/typst-sync-check.sh` Check 3A recounts constructors from live source and fails on any mismatch. Note a naive `grep -c '^  | [a-z]'` undercounts to 40 because F_until_equiv and P_since_equiv start uppercase.",
+          "keywords": [
+            "Axiom",
+            "allAxiomNames",
+            "machine-appendix",
+            "typst-sync-check",
+            "blast-radius"
+          ],
+          "tags": [
+            "lean4",
+            "repo-structure",
+            "maintenance"
+          ]
+        },
+        {
+          "title": "FrameClass order reasoning is concentrated in exactly four files despite 1460 occurrences",
+          "content": "`grep -ro FrameClass FormalSystem/ --include=*.lean` (excluding Boneyard) returns 1460 hits across 96 files, but almost all are type annotations like `{fc : FrameClass}` that are unaffected by adding a constructor. Actual order REASONING -- sites matching `LE.le]`, i.e. `simp [LE.le]` / `simp_all [LE.le]` closes -- numbers 42 and lives in exactly four files: Metalogic/Soundness.lean, Metalogic/SoundnessLemmas/FrameClassVariants.lean, Metalogic/SoundnessLemmas/DenseValidity.lean, ProofSystem/Axioms.lean. Since FrameClass derives DecidableEq and has a DecidableRel instance, `by decide` is a total fallback for every closed order goal when a `simp [LE.le]` close stops working.",
+          "keywords": [
+            "FrameClass",
+            "LE.le",
+            "decide",
+            "blast-radius",
+            "DecidableRel"
+          ],
+          "tags": [
+            "lean4",
+            "repo-structure",
+            "estimation"
+          ]
+        },
+        {
+          "title": "lean_run_code MCP tool is unreliable in this repository",
+          "content": "`mcp__lean-lsp__lean_run_code` returned `success: true, diagnostics: []` for a deliberately bogus identifier during task 390 research, causing a whole batch of 'verified' Mathlib existence claims to be discarded. Verify Lean claims with `lake env lean` on a probe file instead, always including a bogus-identifier control to confirm the harness actually reports `unknownIdentifier`.",
+          "keywords": [
+            "lean_run_code",
+            "lake env lean",
+            "verification",
+            "MCP"
+          ],
+          "tags": [
+            "lean4",
+            "tooling",
+            "verification-method"
+          ]
+        }
       ]
     },
     {
@@ -1107,6 +1205,36 @@
         ".claude/scripts/literature_combining_overlay.py",
         ".claude/scripts/literature-combining-audit.sh"
       ]
+    },
+    {
+      "project_number": 405,
+      "project_name": "prove_semantic_validity_of_the_prioru_and_priors_gap_axioms_over_dense_dedekindcomplete_duration_groups",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Discharge two strategic sorries left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `prior_U_gap_valid` and `prior_S_gap_valid`.\n\nSTATEMENTS (Reynolds 1992, printed p.168, read verbatim from /home/benjamin/Projects/Literature/sources/reynolds_1992/sec01_an-axiomatization-for-until-and-since-ov.md, provenance_fidelity: verified_conversion):\n  Prior-U:  U(T, p) AND F(not p) -> U(not p OR K+(not p), p)\n  Prior-S:  S(T, p) AND P(not p) -> S(not p OR K-(not p), p)\nwith K+A = not U(T, not A) and K-A = not S(T, not A) (Reynolds abbreviation table p.168; corroborated by GHR 1994 section 10.3.1).\n\nTARGET: both lemmas are stated over the `ValidDedekindDense` binder set -- [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D] [Nontrivial D] plus the Prop-valued least-upper-bound hypothesis. They must NOT be restated over `ValidDedekind` (no DenselyOrdered): task 391's plan documents the SETTLED reason -- Z is also conditionally complete, and the density axioms these lemmas sit beside are false on Z.\n\nWHY DEFERRED: Reynolds asserts validity over the reals without proof (\"It is clear that all these axioms are valid over the reals\", printed p.168). The actual argument is a supremum/infimum construction over the p-region and has no fixed attempt budget, so it was made a strategic-sorry division point rather than a bounded phase in task 391.\n\nSCOPE NOTE: this is soundness only. Completeness (the Reynolds route: a rational-flowed Prior/Sep model, Reynolds Theorems 4/5 = D1/D2, the Doets real-flow transfer, and completeness_dedekind) is explicitly out of scope -- see specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md phases 6-9.\n\nTRAP: do not confuse these with the tree's existing `prior_UZ` / `prior_SZ` (FormalSystem/ProofSystem/Axioms.lean:315, :320), which are the INTEGER well-ordering axioms F(phi) -> U(phi, not phi) at FrameClass.Discrete. Different axioms, confusingly similar names.\n\nDONE WHEN: `lake build` green, both lemmas sorry-free, and the sorry count drops by exactly 2 from the task-391 exit baseline.",
+      "effort": "large",
+      "parent_task": 391,
+      "dependencies": [
+        391
+      ],
+      "created": "2026-07-27T16:49:49Z",
+      "last_updated": "2026-07-27T16:49:49Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 406,
+      "project_name": "prove_semantic_validity_of_the_sep_axiom_over_real_flow_reynolds_1992_section_7_lemma_10",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Discharge the third strategic sorry left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `sep_valid`.\n\nSTATEMENT (Reynolds 1992, printed p.168, read verbatim from /home/benjamin/Projects/Literature/sources/reynolds_1992/sec01_an-axiomatization-for-until-and-since-ov.md, provenance_fidelity: verified_conversion):\n  Sep:  K+p AND not K+(p AND U(p, not p)) -> K+(K+p AND K-p)\nwith K+A = not U(T, not A) and K-A = not S(T, not A).\n\nTARGET: stated over the `ValidDedekindDense` binder set, matching the other two new-axiom validity lemmas.\n\nWHY DEFERRED: the primary source itself defers the proof. Reynolds, printed p.168: \"Axiom Sep is based on Sep in [8] but is a neater version developed by Ian Hodkinson in [12]. It is associated with the separability of R ... We investigate this axiom in more detail in section 7 and defer proving its validity in R until lemma 10 there.\" This is genuinely research-grade work with no fixed attempt budget.\n\nSTARTING POINT: Reynolds 1992 section 7, lemma 10 -- available as the local chunk /home/benjamin/Projects/Literature/sources/reynolds_1992/sec04_7-separability.md. Note Reynolds' own caveat (section 7) that Sep does NOT characterize separability -- the long line also satisfies it -- so the proof must not be routed through a separability characterization.\n\nCONSIDER FIRST: whether the bimodal setting (TaskFrame / WorldHistory / Omega / ShiftClosed) admits Reynolds' plain-temporal-structure argument unchanged, or whether the history-indexed semantics needs an adaptation. Research task 390 flagged this graft as genuinely new work not present in any source read.\n\nDONE WHEN: `lake build` green, `sep_valid` sorry-free, and the sorry count drops by exactly 1 from the task-391 exit baseline.",
+      "effort": "large",
+      "parent_task": 391,
+      "dependencies": [
+        391
+      ],
+      "created": "2026-07-27T16:49:49Z",
+      "last_updated": "2026-07-27T16:49:49Z",
+      "artifacts": []
     }
   ],
   "artifacts": [

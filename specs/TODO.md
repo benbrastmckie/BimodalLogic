@@ -1,5 +1,5 @@
 ---
-next_project_number: 405
+next_project_number: 407
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 405
 |------|-------|------------|--------|
 | 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,390,404 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296,391 | 193,231,298,361,390 | completeness, formula-refactor, dataset-enhancement, ... |
-| 3 | 362 | 169,170 | strong_completeness |
+| 3 | 362,405,406 | 169,170,391 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -22,7 +22,9 @@ next_project_number: 405
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
-  └─ 391 [NOT STARTED] — Design and land the frame-class scaffolding for a Dedekind-comple
+  └─ 391 [PLANNED] — Design and land the frame-class scaffolding for a Dedekind-comple
+    └─ 405 [NOT STARTED] — Discharge two strategic sorries left by task 391 phase 8 in Forma
+    └─ 406 [NOT STARTED] — Discharge the third strategic sorry left by task 391 phase 8 in F
 
 ### Formula Refactor
 
@@ -72,7 +74,58 @@ next_project_number: 405
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
+### Uncategorized
+
 ## Tasks
+
+### 406. Prove semantic validity of the sep axiom over real flow reynolds 1992 section 7 lemma 10
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 391
+
+**Description**: Discharge the third strategic sorry left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `sep_valid`.
+
+STATEMENT (Reynolds 1992, printed p.168, read verbatim from /home/benjamin/Projects/Literature/sources/reynolds_1992/sec01_an-axiomatization-for-until-and-since-ov.md, provenance_fidelity: verified_conversion):
+  Sep:  K+p AND not K+(p AND U(p, not p)) -> K+(K+p AND K-p)
+with K+A = not U(T, not A) and K-A = not S(T, not A).
+
+TARGET: stated over the `ValidDedekindDense` binder set, matching the other two new-axiom validity lemmas.
+
+WHY DEFERRED: the primary source itself defers the proof. Reynolds, printed p.168: "Axiom Sep is based on Sep in [8] but is a neater version developed by Ian Hodkinson in [12]. It is associated with the separability of R ... We investigate this axiom in more detail in section 7 and defer proving its validity in R until lemma 10 there." This is genuinely research-grade work with no fixed attempt budget.
+
+STARTING POINT: Reynolds 1992 section 7, lemma 10 -- available as the local chunk /home/benjamin/Projects/Literature/sources/reynolds_1992/sec04_7-separability.md. Note Reynolds' own caveat (section 7) that Sep does NOT characterize separability -- the long line also satisfies it -- so the proof must not be routed through a separability characterization.
+
+CONSIDER FIRST: whether the bimodal setting (TaskFrame / WorldHistory / Omega / ShiftClosed) admits Reynolds' plain-temporal-structure argument unchanged, or whether the history-indexed semantics needs an adaptation. Research task 390 flagged this graft as genuinely new work not present in any source read.
+
+DONE WHEN: `lake build` green, `sep_valid` sorry-free, and the sorry count drops by exactly 1 from the task-391 exit baseline.
+
+---
+
+### 405. Prove semantic validity of the prioru and priors gap axioms over dense dedekindcomplete duration groups
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 391
+
+**Description**: Discharge two strategic sorries left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `prior_U_gap_valid` and `prior_S_gap_valid`.
+
+STATEMENTS (Reynolds 1992, printed p.168, read verbatim from /home/benjamin/Projects/Literature/sources/reynolds_1992/sec01_an-axiomatization-for-until-and-since-ov.md, provenance_fidelity: verified_conversion):
+  Prior-U:  U(T, p) AND F(not p) -> U(not p OR K+(not p), p)
+  Prior-S:  S(T, p) AND P(not p) -> S(not p OR K-(not p), p)
+with K+A = not U(T, not A) and K-A = not S(T, not A) (Reynolds abbreviation table p.168; corroborated by GHR 1994 section 10.3.1).
+
+TARGET: both lemmas are stated over the `ValidDedekindDense` binder set -- [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D] [Nontrivial D] plus the Prop-valued least-upper-bound hypothesis. They must NOT be restated over `ValidDedekind` (no DenselyOrdered): task 391's plan documents the SETTLED reason -- Z is also conditionally complete, and the density axioms these lemmas sit beside are false on Z.
+
+WHY DEFERRED: Reynolds asserts validity over the reals without proof ("It is clear that all these axioms are valid over the reals", printed p.168). The actual argument is a supremum/infimum construction over the p-region and has no fixed attempt budget, so it was made a strategic-sorry division point rather than a bounded phase in task 391.
+
+SCOPE NOTE: this is soundness only. Completeness (the Reynolds route: a rational-flowed Prior/Sep model, Reynolds Theorems 4/5 = D1/D2, the Doets real-flow transfer, and completeness_dedekind) is explicitly out of scope -- see specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md phases 6-9.
+
+TRAP: do not confuse these with the tree's existing `prior_UZ` / `prior_SZ` (FormalSystem/ProofSystem/Axioms.lean:315, :320), which are the INTEGER well-ordering axioms F(phi) -> U(phi, not phi) at FrameClass.Discrete. Different axioms, confusingly similar names.
+
+DONE WHEN: `lake build` green, both lemmas sorry-free, and the sorry count drops by exactly 2 from the task-391 exit baseline.
+
+---
 
 ### 404. Complete combining negation repair
 - **Status**: [NOT STARTED]
@@ -193,10 +246,11 @@ SCOPE DISCIPLINE: do not re-open the naming policy -- full Mathlib conformance i
 
 ### 391. Frameclass dedekind scaffolding
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 390, Task 291
+- **Plan**: [391_frameclass_dedekind_scaffolding/plans/01_frameclass-dedekind-scaffolding.md]
 
 **Description**: Design and land the frame-class scaffolding for a Dedekind-complete extension. The carrier-construction research is COMPLETE and returned GO on the carrier question -- see specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md, which also carries a nine-phase decomposition a planner should start from. The carrier needs no construction at all: the live parametric canonical scaffolding was compile-verified to instantiate at the reals with zero modifications. What remains is the frame-class and axiom scaffolding below.
 
