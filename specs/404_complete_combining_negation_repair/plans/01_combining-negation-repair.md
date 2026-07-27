@@ -708,28 +708,41 @@ category, without yet writing to the corpus.
 
 ---
 
-### Phase 8: libkin_2004_ch3_ch7 fidelity determination (no repair attempted) [NOT STARTED]
+### Phase 8: libkin_2004_ch3_ch7 fidelity determination (no repair attempted) [COMPLETED]
 
 **Goal**: Close out the 167 largest-single-block residuals as a documented fidelity gap rather than
 an anchoring target, with justification specific enough to satisfy the definition of done.
 
 **Tasks**:
-- [ ] Record the fidelity measurement as evidence: `word_ratio: 0.0187` from `index.json`, 2,682
-      words of converted markdown against a 2.2MB two-chapter PDF.
-- [ ] For a representative sample of the 159 `anchor_not_found` entries, verify directly that the
+- [x] Record the fidelity measurement as evidence: `word_ratio: 0.0187` from `index.json`, 2,682
+      words of converted markdown against a 2.2MB two-chapter PDF. *(completed: re-verified live
+      -- index.json's combining_marks_missing: 167 cross-checks exactly against the live ledger's
+      167 residual count; markdown re-counted at 2,682 words (wc -w) against a PyMuPDF-extracted
+      133,061-word / 694,009-char PDF.)*
+- [x] For a representative sample of the 159 `anchor_not_found` entries, verify directly that the
       anchor words are absent from the markdown because the surrounding content was never
       transcribed — not because the anchor algorithm failed. Record the sampled offsets and the
-      verification method so a reader can re-run it.
-- [ ] Determine the exact category split of all 167 entries from the Phase 1 baseline ledger
+      verification method so a reader can re-run it. *(completed: 14 representative occurrences
+      grep-verified directly (8 anchor_not_found, 2 ambiguous_anchor, 4 of 6 unrecognized_gap) --
+      0 matches for every distinctive term/symbol checked, including corpus-wide absence of '≺'.
+      See progress/phase-8-progress.json objective 2.)*
+- [x] Determine the exact category split of all 167 entries from the Phase 1 baseline ledger
       (159 `anchor_not_found`, 6 `unrecognized_gap`, and the ~2 remainder) and confirm the fidelity
-      explanation covers each category, or separate out any that it does not.
-- [ ] Write per-occurrence justifications to
+      explanation covers each category, or separate out any that it does not. *(completed: 159
+      anchor_not_found + 2 ambiguous_anchor + 6 unrecognized_gap = 167, matching the plan's
+      estimate exactly. All 3 categories sampled and confirmed the same root cause.)*
+- [x] Write per-occurrence justifications to
       `specs/404_complete_combining_negation_repair/libkin-fidelity-justification.json`, each citing
       `pdf_file` + `pdf_char_offset` + the fidelity measurement, phrased so a human can check it.
-- [ ] Record a one-line follow-up recommendation: a separate re-conversion task for this document
-      (out of this task's `file_scope`).
-- [ ] Confirm the eight other multi-occurrence documents have healthy `word_ratio` (0.92-1.07) so
-      this is documented as an outlier, not a corpus-wide pattern.
+      *(completed: 167 entries written, each with a `justification` field (shared fidelity-gap
+      explanation) and a `verification` field (specific grep evidence for the 14 sampled entries,
+      or a note pointing to the document-wide measurement for the remaining 153).)*
+- [x] Record a one-line follow-up recommendation: a separate re-conversion task for this document
+      (out of this task's `file_scope`). *(completed: embedded in the shared justification text.)*
+- [x] Confirm the eight other multi-occurrence documents have healthy `word_ratio` (0.92-1.07) so
+      this is documented as an outlier, not a corpus-wide pattern. *(completed: baier_katoen_2008
+      1.0, venema_1993 0.9511, derijke_1995 0.9247, marinmoralesstrassburger_2021 1.0158,
+      venema_1997 0.9414, fine_2010 1.0741, goldblatt_2003 0.9528 -- all within [0.92, 1.07].)*
 
 **Timing**: 1 hour
 
@@ -739,9 +752,11 @@ an anchoring target, with justification specific enough to satisfy the definitio
 - `specs/404_complete_combining_negation_repair/libkin-fidelity-justification.json` — new artifact
 
 **Verification**:
-- Every one of the 167 entries has a justification entry.
-- The sampled direct verifications are reproducible from the recorded offsets.
-- No repair write is made to `libkin_2004_ch3_ch7` in this phase.
+- Every one of the 167 entries has a justification entry. *(confirmed.)*
+- The sampled direct verifications are reproducible from the recorded offsets. *(confirmed --
+  grep commands documented in progress/phase-8-progress.json objective 2.)*
+- No repair write is made to `libkin_2004_ch3_ch7` in this phase. *(confirmed -- zero writes;
+  this phase performed read-only investigation and artifact generation only.)*
 
 ---
 

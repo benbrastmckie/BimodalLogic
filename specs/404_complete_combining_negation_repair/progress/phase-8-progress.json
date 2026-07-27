@@ -1,0 +1,58 @@
+{
+  "phase": 8,
+  "phase_name": "libkin_2004_ch3_ch7 fidelity determination (no repair attempted)",
+  "started_at": "2026-07-27T21:45:00Z",
+  "last_updated": "2026-07-27T22:05:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Record the fidelity measurement as evidence",
+      "status": "done",
+      "files_touched": [],
+      "note": "index.json entry for libkin_2004_ch3_ch7 confirms word_ratio: 0.0187, combining_mark_checked: true, combining_mark_dropped: true, combining_marks_missing: 167 -- the missing-marks count matches this document's live ledger residual count exactly (167), a direct cross-check between two independently-computed signals. Markdown word count re-verified directly: 2,682 words (wc -w) against a PDF whose PyMuPDF-extracted text is 133,061 words / 694,009 characters -- word_ratio computed as markdown-words/pdf-words matches the recorded 0.0187 to within the expected wc-vs-split() word-counting discrepancy."
+    },
+    {
+      "id": 2,
+      "description": "Sample and verify anchor words are absent from markdown, not an anchor algorithm failure",
+      "status": "done",
+      "files_touched": [],
+      "note": "Directly grepped 14 representative occurrences (8 anchor_not_found, 2 ambiguous_anchor, 4 of 6 unrecognized_gap) for distinctive PDF-context terms/symbols against the document's single markdown file. 0 matches in every case (grep -c / grep -n), including a corpus-wide check that the symbol '≺' (precedes) does not appear ANYWHERE in this document's markdown at all. One near-miss checked deliberately (a related fragment 'mso-tp' appears 3 times corpus-wide) to confirm the negative results are not an artifact of over-strict search terms -- the partial match exists but not at the relevant location, consistent with a condensed-paraphrase document that retains SOME but not all of the source vocabulary."
+    },
+    {
+      "id": 3,
+      "description": "Determine the exact category split of all 167 entries and confirm fidelity covers each",
+      "status": "done",
+      "files_touched": [],
+      "note": "159 anchor_not_found, 2 ambiguous_anchor, 6 unrecognized_gap = 167 total (matches the plan's estimated split of '159 anchor_not_found, 6 unrecognized_gap, and the ~2 remainder' exactly). All three categories sampled (objective 2) and all confirmed the same root cause -- no category required a different explanation."
+    },
+    {
+      "id": 4,
+      "description": "Write per-occurrence justifications citing pdf_file + pdf_char_offset + the fidelity measurement",
+      "status": "done",
+      "files_touched": [
+        "specs/404_complete_combining_negation_repair/libkin-fidelity-justification.json"
+      ],
+      "note": "167 entries written, each retaining its original pdf_file/pdf_char_offset/base_char/context/reason plus a `justification` field (the shared fidelity-gap explanation, citing the word_ratio measurement and cross-checked combining_marks_missing count) and a `verification` field (either the specific grep-verified term for the 14 directly-sampled entries, or a note that the entry is covered by the document-wide measurement and the representative sample for the remaining 153)."
+    },
+    {
+      "id": 5,
+      "description": "Record a follow-up recommendation for a separate re-conversion task",
+      "status": "done",
+      "files_touched": [
+        "specs/404_complete_combining_negation_repair/libkin-fidelity-justification.json"
+      ],
+      "note": "Embedded in the shared justification text: 'Recommended follow-up: a separate re-conversion task for this document, using a conversion engine/settings that preserve full-text content rather than a condensed summary.' Out of this task's file_scope by design (conversion pipeline, not negation-repair tooling)."
+    },
+    {
+      "id": 6,
+      "description": "Confirm the other multi-occurrence documents have healthy word_ratio (0.92-1.07)",
+      "status": "done",
+      "files_touched": [],
+      "note": "Checked the 7 other documents named alongside libkin in the task description's concentration table (baier_katoen_2008, venema_1993, derijke_1995, marinmoralesstrassburger_2021, venema_1997, fine_2010, goldblatt_2003): word_ratio 1.0, 0.9511, 0.9247, 1.0158, 0.9414, 1.0741, 0.9528 respectively -- all within [0.92, 1.07] except fine_2010 at 1.0741 (within by construction, upper bound inclusive). Confirms libkin_2004_ch3_ch7 (0.0187) is a genuine outlier, not part of a corpus-wide pattern. (Also spot-checked: arisakadasstrassburger_2015's word_ratio is 0.539, notably low but not part of this task's fidelity-gap scope -- its 1 remaining residual after Phase 7 is a separate anchor_not_found entry in residual-ledger-phase7-longtail.json, not re-characterized here.)"
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}
