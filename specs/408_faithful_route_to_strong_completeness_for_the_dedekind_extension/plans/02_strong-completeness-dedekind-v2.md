@@ -859,7 +859,7 @@ directions are not symmetric and Phase 6 must budget for both:
 This phase did not write those four variants: the plan's task list for Phase 5 names exactly six
 lemmas, all stated about `limitSetBelow`, and this dispatch's mandate was Phase 5 only.
 
-### Phase 6: The FMCS real extension by rational selection [NOT STARTED]
+### Phase 6: The FMCS real extension by rational selection [COMPLETED]
 
 - **Goal:** Assemble `FMCS (fc := fc) Rat → FMCS (fc := fc) ℝ` under rational selection, with
   its three fields discharged across the case matrix.
@@ -871,20 +871,30 @@ lemmas, all stated about `limitSetBelow`, and this dispatch's mandate was Phase 
   makes agreement definitional, and carries a real offset `δ` from the start because Phase 6.1's
   `modal_backward` needs the family set closed under real shifts.
 - **Tasks:**
-  - [ ] Define `realLimitMCS (m : Rat → Set Formula) (δ : ℝ) : ℝ → Set Formula := fun x =>
+  - [x] Define `realLimitMCS (m : Rat → Set Formula) (δ : ℝ) : ℝ → Set Formula := fun x =>
         if h : ∃ q : Rat, (q:ℝ) = x + δ then m h.choose else limitSetBelow m (x + δ)`.
         This is `noncomputable` and needs `open Classical` (or `by classical`) for the
         `Decidable` instance on the existential. **Do not** attempt a computable variant.
-  - [ ] Prove the selection lemma `realLimitMCS_of_rat (h : (q:ℝ) = x + δ) :
+        *(deviation: altered — the unselected branch is `limitMCSBelow m (x + δ)`, the
+        ultrafilter limit, not `limitSetBelow m (x + δ)`. Forced: `limitSetBelow` is consistent
+        but not negation-complete, so it cannot discharge `FMCS.is_mcs`; `limitMCSBelow_is_mcs`
+        can. This is the Phase 4 route election arriving where Phase 5's OUTCOME block said it
+        would arrive. `by classical` was used for the `Decidable` instance.)*
+  - [x] Prove the selection lemma `realLimitMCS_of_rat (h : (q:ℝ) = x + δ) :
         realLimitMCS m δ x = m q`. `dif_pos` gives `m h'.choose`; `h'.choose_spec` and the
         hypothesis both cast to `x + δ`, so `Rat.cast_injective` identifies `h'.choose = q`.
         **This lemma is the entire point of the revision** — it is the definitional replacement
         for the false `limitSetBelow_of_rat` agreement claim.
-  - [ ] Prove `realLimitMCS_of_not_rat (h : ¬ ∃ q : Rat, (q:ℝ) = x + δ) :
+  - [x] Prove `realLimitMCS_of_not_rat (h : ¬ ∃ q : Rat, (q:ℝ) = x + δ) :
         realLimitMCS m δ x = limitSetBelow m (x + δ)` (`dif_neg`).
-  - [ ] Prove `realLimitMCS_is_mcs`: case split on the selection condition. Selected points use
+        *(deviation: altered — conclusion is `limitMCSBelow m (x + δ)`, per the definition
+        change above.)*
+  - [x] Prove `realLimitMCS_is_mcs`: case split on the selection condition. Selected points use
         the rational family's `is_mcs`; unselected points use Phase 4's `limitSetBelow_is_mcs`.
-  - [ ] Prove `realLimitMCS_forward_G`: for `x < y` in `ℝ`, `allFuture φ ∈ realLimitMCS m δ x →
+        *(deviation: altered — unselected points use `limitMCSBelow_is_mcs`. There is no
+        `limitSetBelow_is_mcs` in the tree and there cannot be: `limitSetBelow` is not
+        negation-complete, which is the whole reason Phase 4 built the ultrafilter limit.)*
+  - [x] Prove `realLimitMCS_forward_G`: for `x < y` in `ℝ`, `allFuture φ ∈ realLimitMCS m δ x →
         φ ∈ realLimitMCS m δ y`. **Four cases**, on whether `x + δ` and `y + δ` are selected:
         - selected/selected → the rational family's `forward_G` field (Phase 5, case G3);
         - selected/unselected → `limitSetBelow_forward_G_rat_source` (G1);
@@ -892,25 +902,73 @@ lemmas, all stated about `limitSetBelow`, and this dispatch's mandate was Phase 
         - unselected/unselected → `limitSetBelow_forward_G_limit` (G4).
         In every case the order hypothesis transports by `add_lt_add_right … δ`; state that
         transport once as a `have` and reuse it.
-  - [ ] Prove `realLimitMCS_backward_H` by the mirrored four-case split, consuming
+        *(deviations: altered ×2. (i) The unselected-source cases G2 and G4 consume the
+        `limitMCSBelow`-source variants `limitMCSBelow_forward_G_rat_target` and
+        `limitMCSBelow_forward_G_limit`, added to `LimitMCSCoherence.lean` by this phase per
+        Phase 5's OUTCOME recipe, not the `limitSetBelow`-source lemmas named here — the
+        hypothesis at an unselected source is now an ultrafilter membership. (ii) The transport
+        is `by linarith`, not `add_lt_add_right hxy δ`: in this Mathlib `add_lt_add_right`
+        resolves to the left-addition form `δ + x < δ + y`, a genuine type mismatch against the
+        needed `x + δ < y + δ`.)*
+  - [x] Prove `realLimitMCS_backward_H` by the mirrored four-case split, consuming
         `limitSetBelow_backward_H_rat_source` (H1), `_rat_target` (H2), `_limit` (H4), and the
         rational family's `backward_H` field (H3).
-  - [ ] Bundle these into `FMCS.toRealShift (f : FMCS (fc := fc) Rat) (δ : ℝ) :
+        *(deviation: altered — H2 and H4 consume `limitMCSBelow_backward_H_rat_target` and
+        `limitMCSBelow_backward_H_limit`, for the same reason as G2/G4. H1 is consumed as
+        specified, with `le_of_lt` supplying its non-strict `t ≤ (q:ℝ)` hypothesis exactly as
+        Phase 5's deviation note predicted.)*
+  - [x] Bundle these into `FMCS.toRealShift (f : FMCS (fc := fc) Rat) (δ : ℝ) :
         FMCS (fc := fc) ℝ` with `mcs := realLimitMCS f.mcs δ` and the three fields above.
-  - [ ] Define `FMCS.toReal (f : FMCS (fc := fc) Rat) : FMCS (fc := fc) ℝ := f.toRealShift 0`
+  - [x] Define `FMCS.toReal (f : FMCS (fc := fc) Rat) : FMCS (fc := fc) ℝ := f.toRealShift 0`
         and prove `FMCS.toReal_at_rat (q : Rat) : (f.toReal).mcs (q:ℝ) = f.mcs q` — the
         "extends rather than replaces" property, now a one-line corollary of
         `realLimitMCS_of_rat` with `add_zero`.
-  - [ ] Module docstring: state that rational selection is forced, cite the counterexample by
+  - [x] Module docstring: state that rational selection is forced, cite the counterexample by
         naming `Bundle/LimitMCS.lean`'s docstring (**not** a task number), and record that
         `limitSetAbove` is deliberately unused on this route.
-  - [ ] `lake build FormalSystem.Metalogic.Bundle.RealExtension`.
-- **Estimated output:** ~220 lines.
+  - [x] `lake build FormalSystem.Metalogic.Bundle.RealExtension`.
+- **Estimated output:** ~220 lines. *(Actual: 227 lines in `RealExtension.lean`, 9 declarations,
+  plus 4 declarations / ~90 lines added to `LimitMCSCoherence.lean`. Sorry-free.)*
 - **Done when:** `FMCS.toRealShift`, `FMCS.toReal`, and `FMCS.toReal_at_rat` are sorry-free and
   the module builds. No `sorry`, no vacuous definition; if a case cannot be closed, mark the
   phase `[BLOCKED]` with the exact goal state for that case.
 - **Timing:** 4 hours.
 - **Depends on:** 4, 5
+
+**PHASE 6 OUTCOME (recorded at implementation time)**
+
+`FMCS.toRealShift`, `FMCS.toReal` and `FMCS.toReal_at_rat` landed sorry-free in
+`FormalSystem/Metalogic/Bundle/RealExtension.lean`, with the four `limitMCSBelow`-source
+coherence variants added to `LimitMCSCoherence.lean` first. Both modules built green on their
+first attempt except for one type mismatch (`add_lt_add_right`, recorded as a deviation above).
+Full `lake build` green (1895 jobs); live sorries outside `Boneyard/` unchanged at exactly
+`WeakCanonical/Transfer.lean:1242`; all thirteen new declarations have axioms exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+*Phase 5's transposition recipe was exact.* All four `limitMCSBelow`-source variants are one
+`limitMCSBelow_cofinal_below` call plus the family's coherence field, at exactly the thresholds
+Phase 5 predicted (`s - 1` for G2 and G4, `(p:ℝ)` for H2, `t` for H4), and the `max`-based bounds
+of the H-side `limitSetBelow` proofs vanished as predicted. The conclusion side was free in one
+`limitSetBelow_subset_limitMCSBelow` step, also as predicted. Nothing in the recipe needed
+correction.
+
+*The `limitSetBelow` → `limitMCSBelow` swap in the definition is the load-bearing change.* The
+plan's Phase 6 bullets place `limitSetBelow` at unselected points and name a
+`limitSetBelow_is_mcs` for the maximality field. That lemma does not exist and cannot: the limit
+set is consistent (`limitSetBelow_consistent`) but not negation-complete, which is precisely why
+Phase 4 built the ultrafilter limit in the first place. The extension therefore takes
+`limitMCSBelow` at unselected points and discharges `is_mcs` by `limitMCSBelow_is_mcs`. Nothing
+else about the phase's shape changed: the selection branch, the four-case splits, and the
+definitional agreement at rationals are all as planned.
+
+*Agreement at rationals is now definitional, as intended.* `FMCS.toReal_at_rat` is
+`realLimitMCS_of_rat` at `δ = 0`, and `realLimitMCS_of_rat` is `dif_pos` plus injectivity of the
+cast `Rat → ℝ`. No limit-interchange step appears anywhere in the module, which is the whole
+point of the v2 revision — the false agreement lemma that sank v1 has no descendant here.
+
+*Note for Phase 6.1.* `FMCS.toRealShift` is already the shift-parameterised form, so the real
+family set can be built as `{fam.toRealShift δ | fam ∈ B.families, δ : ℝ}` without any further
+construction at the `FMCS` layer. `limitSetAbove` remains unused; confirmed again this phase.
 
 ### Phase 6.1: The BFMCS real bundle, box time-stability, and restricted temporal coherence [NOT STARTED]
 
