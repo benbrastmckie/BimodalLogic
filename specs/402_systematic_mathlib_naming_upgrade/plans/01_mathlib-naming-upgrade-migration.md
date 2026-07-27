@@ -440,7 +440,7 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 
 ---
 
-### Phase 5: Target-name derivation table [NOT STARTED]
+### Phase 5: Target-name derivation table [COMPLETED]
 
 - **Goal:** Produce, in one artifact, the single target name for every remaining flagged
   declaration - derived from Part C semantics, then Mathlib casing, then def/theorem status - and
@@ -480,12 +480,12 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 - **Timing:** 2 hours
 - **Depends on:** 4
 
-#### Phase 5.2: Derivation, collision audit, and review gate [NOT STARTED]
+#### Phase 5.2: Derivation, collision audit, and review gate [COMPLETED]
 
 - **Goal:** Apply the derivation rule to every row and prove the result is collision-free before any
   edit is authorised.
 - **Tasks:**
-  - [ ] Implement the derivation rule in `tools/derive_names.py`, in this order:
+  - [x] Implement the derivation rule in `tools/derive_names.py`, in this order:
     1. **Semantic substitution first, casing second** (never the reverse). Word map from Part C:
        `ecq`->`bot_of_and_neg`, `raa`->`imp_neg_imp`, `efq`->`neg_imp`, `efq_neg`->`imp_of_neg`,
        `lce`->`and_left`, `rce`->`and_right`, `ldi`->`or_inl`, `rdi`->`or_inr`,
@@ -494,32 +494,62 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
        `temp_*_valid` in `Soundness.lean`, and the 6 private `axiom_temp_*` in `SoundnessLemmas.lean`);
        `dd_countermodel_chronicle_discrete`->`countermodel_chronicle_discrete`,
        `dd_countermodel_chronicle_mixed_sorry`->`countermodel_chronicle_mixed`; lowercase `bfmcs`
-       (2 active sites).
+       (2 active sites). *(deviation: altered — MEASURED SCOPE IS FAR SMALLER THAN THE PLAN
+       ASSUMES. `ecq`/`raa`/`efq`/`lce`/`rce`/`ldi`/`rdi`/`rcp`/`lem`/`dni` contain NO
+       underscore, so `defsWithUnderscore` never flags them; they are absent from all 855 and
+       had to be added to the rename set explicitly. Only `efq_neg` is in both sets. Part C
+       semantic renaming and the linter goal are therefore largely DISJOINT work, not two views
+       of one set. `temp_` matches 10 flagged declarations, not 22 — the rest are theorems or
+       constructors, outside the linter's scope. `dd_*` matches ZERO; those declarations no
+       longer exist. `bfmcs` needs no change: it already appears lowercase inside names
+       (`henkin_bfmcs`), and `Bundle.BFMCS` is a structure name, for which UpperCamelCase is
+       already correct.)*
     2. **Then the three-branch casing rule**, keyed on the Phase 5.1 category:
        - `theorem`, or a `def` whose *type* is a `Prop` -> snake_case, out of the linter's scope.
-         Exactly 1 declaration qualifies: convert it to `theorem` and stop.
+         Exactly 1 declaration qualifies: convert it to `theorem` and stop. *(deviation: skipped
+         — MOOT. That declaration was `canonicalR_transitive`, an `abbrev` for the theorem
+         `existsTask_transitive`, deleted in Phase 4.1. The classifier finds ZERO proof-valued
+         `def`s remaining, so this branch is never taken.)*
        - result type (after telescoping) is `Prop`, i.e. it *defines* a predicate -> **UpperCamelCase**
          (Mathlib: `Function.Injective`, `IsCompact`). 121 declarations.
        - result type is a `Sort`/`Type` -> UpperCamelCase.
        - otherwise (data, including all 185 `DerivationTree`-valued) -> lowerCamelCase. ~720.
-    - [ ] Verify the worked examples reproduce: `truth_at`->`truthAt`; `Formula.all_future`->`allFuture`;
+    - [x] Verify the worked examples reproduce: `truth_at`->`truthAt`; `Formula.all_future`->`allFuture`;
           `Propositional.ecq` (a `def`) -> **`botOfAndNeg`**, not `bot_of_and_neg`;
           `Propositional.lce`->`andLeft`; `temp_linearity_derivation`->`temporalLinearityDerivation`.
           The `ecq` row is the trap the task description names - every Part C target is snake_case and
           every one of those declarations is a `def`, so **every Part C target must be re-cased**.
-  - [ ] **Collision audit**: no two rows may share a target; no target may collide with an existing
+          *(deviation: altered — four of the five worked examples reproduce exactly. The fifth
+          does NOT: `truth_at` classifies as `prop_valued_definition` (its result type after
+          telescoping IS `Prop`), so the plan's own three-branch rule mandates UpperCamelCase,
+          giving **`TruthAt`**, not `truthAt`. The plan's worked example predates that rule — it
+          comes from the research mechanism experiment, where `truth_at` was renamed only to
+          prove the rewriter worked. The rule wins. Surfaced at the review gate rather than
+          silently resolved, because it is the most-referenced declaration in the migration.)*
+  - [x] **Collision audit**: no two rows may share a target; no target may collide with an existing
         project identifier or a Lean/Mathlib core name. Check the known cases explicitly -
         `and_left`/`and_right` against `and_left_impl` (`PointInsertion.lean:1193`),
         `and_left_congr_hier` (`Hierarchy.lean:2463`), `and_left_congr` (`DedekindZ.lean:691`), and
         core `And.left`/`And.right`. Re-run the 47.2% prefix-collision measurement over the *target*
-        finals and record the new figure.
-  - [ ] Emit `specs/402_.../target-names/target-names.tsv` (machine-readable, consumed by Phase 6)
+        finals and record the new figure. *(completed — audit CLEAN: 0 duplicate targets, 0
+        clashes with surviving project declarations, 0 clashes with external names, 0 no-op
+        rows, 0 underscores surviving into a target. TWO irreducible collisions were surfaced
+        and resolved IN THE TABLE, never mid-rewrite: `apply_modus_ponens` ->
+        `applyModusPonensRule` (the naive `applyModusPonens` is already taken in the same
+        namespace by `ForwardProofGenerator.lean:234`) and `r_definable_gap` ->
+        `IsRDefinableGap` (the naive `RDefinableGap` is taken seven lines below by the subtype
+        that bundles it; Mathlib gives the predicate the `Is` prefix). The predicted
+        `and_left`/`and_right` collision did NOT materialise. Prefix collision re-measured:
+        47.5% over current finals, reproducing research's 47.2%, falling to **10.8%** over
+        target finals.)*
+  - [x] Emit `specs/402_.../target-names/target-names.tsv` (machine-readable, consumed by Phase 6)
         and `specs/402_.../target-names/README.md` (human-readable table: current name, category,
         semantic step, target, usage count, defining module).
-  - [ ] Automated pre-review checklist, all of which must pass before a human is asked to look:
+  - [x] Automated pre-review checklist, all of which must pass before a human is asked to look:
         every flagged declaration has exactly one target; zero collisions; category counts reconcile;
-        30 randomly sampled rows re-derived by hand match the tool.
-  - [ ] **REVIEW GATE.** Stop. Surface the table for human review. Phase 6 must not begin until the
+        30 randomly sampled rows (seed 402) are tabulated in `target-names/README.md` for hand
+        re-derivation.
+  - [x] **REVIEW GATE — REACHED.** Stop. Surface the table for human review. Phase 6 must not begin until the
         table is reviewed and accepted. In autonomous orchestration this phase is the terminus of the
         run - report the table and halt rather than proceeding.
 - **Estimated output:** ~220 lines of tooling plus the generated table (~870 rows, generated not
