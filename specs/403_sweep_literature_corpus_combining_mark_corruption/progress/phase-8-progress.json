@@ -1,0 +1,39 @@
+{
+  "phase": 8,
+  "phase_name": "Wire the detector into the fidelity audit and re-stamp the index",
+  "started_at": "2026-07-27T06:25:00Z",
+  "last_updated": "2026-07-27T06:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add combining-mark check via shared module import, distinct from pdftotext word count", "status": "done",
+     "files_touched": [".claude/scripts/literature-fidelity-audit.sh"]},
+    {"id": 2, "description": "Add combining_mark_checked/dropped/missing fields, no changes to ratio gate or enum", "status": "done",
+     "files_touched": [".claude/scripts/literature-fidelity-audit.sh"]},
+    {"id": 3, "description": "Add new TSV columns and population summary section", "status": "done",
+     "files_touched": [".claude/scripts/literature-fidelity-audit.sh"]},
+    {"id": 4, "description": "Verify idempotence of --write", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Backup index.json, dry-run review, then write", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Review index.json diff for unintended provenance_fidelity changes", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "8.6",
+      "description": "Only 1 of 14 dangerous-class documents reaches combining_mark_dropped: false (schwoon_esparza_2005); the rest correctly show true with an honest residual count",
+      "type": "altered",
+      "reason": "Direct consequence of Phases 4-7's conservative partial-repair outcomes, not a Phase 8 defect; the additive signal now honestly reports remaining residuals rather than a false all-clean picture",
+      "annotation": "*(deviation: altered — signal correctly reflects actual partial-repair state; see plan Phase 8 deviation note)*"
+    }
+  ],
+  "corpus_mutation_record": {
+    "index_json_backups": [
+      "/home/benjamin/Projects/Literature/index.json.bak.20260727-110031",
+      "/home/benjamin/Projects/Literature/index.json.bak.20260727-110053",
+      "/home/benjamin/Projects/Literature/index.json.bak.20260727-110125"
+    ],
+    "entries_with_provenance_fidelity_change": 0,
+    "entries_with_word_ratio_change": 1,
+    "idempotence_verified": true
+  }
+}

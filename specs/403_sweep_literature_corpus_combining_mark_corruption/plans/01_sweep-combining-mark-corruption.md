@@ -773,28 +773,56 @@ grep -c '6=' ~/Projects/Literature/sources/schwoon_esparza_2005/*.md
 
 ---
 
-### Phase 8: Wire the detector into the fidelity audit and re-stamp the index [NOT STARTED]
+### Phase 8: Wire the detector into the fidelity audit and re-stamp the index [COMPLETED]
 
 **Goal**: Add the combining-mark signal to `literature-fidelity-audit.sh` as an additive,
 recomputed field, and correct the now-known-false `provenance_fidelity` picture durably.
 
 **Tasks**:
-- [ ] Add a combining-mark check to `literature-fidelity-audit.sh` that reuses the Phase 1
+- [x] Add a combining-mark check to `literature-fidelity-audit.sh` that reuses the Phase 1
       detector's logic via its own PyMuPDF-based extraction path, kept **distinct** from the
       existing `pdf_word_count()` `pdftotext -layout` call (pdftotext itself substitutes `6` for
-      the overlay and cannot serve as ground truth).
-- [ ] Surface the result as new fields stamped alongside `provenance_fidelity` — do not modify the
+      the overlay and cannot serve as ground truth). *(completed via direct import of
+      `literature_combining_detect.scan_directory()`, not a re-implementation — same module the
+      standalone detector and repair engine use.)*
+- [x] Surface the result as new fields stamped alongside `provenance_fidelity` — do not modify the
       `ratio >= RATIO_THRESHOLD` gate, the six-value enum, or any downstream banner logic:
       `combining_mark_checked` (bool), `combining_mark_dropped` (bool),
-      `combining_marks_missing` (int).
-- [ ] Add the new columns to the TSV report output and to the `--dry-run` population summary.
-- [ ] Preserve the script's idempotence contract: a second `--write` over an unchanged corpus must
-      produce no diff.
-- [ ] Back up `index.json`, run `--dry-run` and review, then run `--write`.
-- [ ] Review the resulting `index.json` diff: confirm the 14 previously-false `verified_conversion`
+      `combining_marks_missing` (int). *(completed; `classify_dir()`'s existing `ratio`/enum logic
+      untouched.)*
+- [x] Add the new columns to the TSV report output and to the `--dry-run` population summary.
+      *(completed; population summary gained a new "Combining-mark signal" stderr section.)*
+- [x] Preserve the script's idempotence contract: a second `--write` over an unchanged corpus must
+      produce no diff. *(completed and verified: two consecutive `--write` runs after the first
+      produced a byte-identical `index.json`.)*
+- [x] Back up `index.json`, run `--dry-run` and review, then run `--write`. *(completed; the
+      script's own pre-existing backup-then-verify mechanism, unmodified, handled this.)*
+- [x] Review the resulting `index.json` diff: confirm the 14 previously-false `verified_conversion`
       entries now carry `combining_mark_dropped: false` with `combining_marks_missing: 0` (the
       stamp is now *true*), and that no `provenance_fidelity` value changed unexpectedly. Note
       that `libkin_2004_ch3_ch7`'s inconsistent stamp will be recomputed as a side effect.
+      *(completed with a significant, expected deviation — see below. `provenance_fidelity`
+      changed for exactly 0 entries system-wide; `word_ratio` changed for exactly 1 entry
+      (`bacon_2018_broadest-necessity`: 1.0 -> 0.9995, a natural side effect of removing a handful
+      of corrupted characters, still far above `RATIO_THRESHOLD`) — confirming no unintended
+      `provenance_fidelity` transitions occurred anywhere in the 321-entry index.)*
+
+**Deviation — only 1 of 14 dangerous-class documents reaches `combining_mark_dropped: false`,
+not all 14.** This is the direct, correct consequence of Phases 4-7's own documented partial-
+repair outcomes (residual-ledger-driven, conservative-anchoring design), not a Phase 8 defect:
+`schwoon_esparza_2005` is the only one of the 14+9 originally-dangerous/glyph-six documents fully
+repaired (`combining_marks_missing: 0`). Every other document this task touched now carries an
+HONEST, accurate `combining_marks_missing` count reflecting its actual remaining residual (e.g.
+`baier_katoen_2008: 482`, `bacon_2018_broadest-necessity: 3`) rather than the false `0`/
+`verified_conversion`-implies-clean picture that existed before this task. This is the intended
+outcome: the additive signal now correctly reports "still has known dropped marks" for the
+majority of partially-repaired documents, which is a strict improvement over the pre-task state
+(all 14 stamped with NO combining-mark information at all) even though it is not the "all clean"
+result the plan's verification block anticipated for a fully-successful repair sweep.
+`libkin_2004_ch3_ch7`'s `word_ratio: 0.0187` / `verified_conversion` inconsistency was recomputed
+as expected and remains unchanged (still `verified_conversion` despite the low ratio, per its
+existing disclosure/proof-completeness path) — confirmed, not separately investigated, per the
+plan's own Non-Goals.
 
 **Timing**: 2 hours
 
@@ -805,21 +833,31 @@ recomputed field, and correct the now-known-false `provenance_fidelity` picture 
   fields, report columns, header documentation
 - `~/Projects/Literature/index.json` - re-stamped (backed up first)
 
-**Verification**:
+**Verification** (commands actually run, with actual results):
 ```bash
 cp ~/Projects/Literature/index.json /tmp/index.pre.json
 bash .claude/scripts/literature-fidelity-audit.sh --dry-run > /tmp/audit.tsv 2>/tmp/audit.err
-head -1 /tmp/audit.tsv    # expect new combining_* columns present
-awk -F'\t' 'NR>1 && $NF>0' /tmp/audit.tsv | wc -l   # expect 0 remaining dropped-mark directories
+head -1 /tmp/audit.tsv
+# ACTUAL: "...disclosed  proof_fraction  combining_mark_checked  combining_mark_dropped
+# combining_marks_missing" -- new columns present
+# Population summary (stderr): 60 directories checked, 23 with dropped marks remaining
+# (down from the Phase 1 baseline's 24 non-zero-corrupted directories by exactly the one fully
+# repaired -- schwoon_esparza_2005)
 
 bash .claude/scripts/literature-fidelity-audit.sh --write
 jq -r '.entries[] | select(.id|startswith("baier_katoen_2008")) | "\(.id) \(.provenance_fidelity) \(.combining_mark_dropped) \(.combining_marks_missing)"' ~/Projects/Literature/index.json
-# expect: verified_conversion false 0   (for all 12 parts)
+# ACTUAL: "baier_katoen_2008_partNN verified_conversion true 482" for all 12 parts -- NOT
+# "false 0" as the plan anticipated for a fully-successful sweep; see deviation note above
+
+jq -r '.entries[] | select(.id=="schwoon_esparza_2005_onthefly") | "\(.id) \(.provenance_fidelity) \(.combining_mark_dropped) \(.combining_marks_missing)"' ~/Projects/Literature/index.json
+# ACTUAL: "schwoon_esparza_2005_onthefly verified_conversion false 0" -- exactly the plan's
+# expected pattern, for the one document that WAS fully repaired
 
 # idempotence
 cp ~/Projects/Literature/index.json /tmp/index.a.json
 bash .claude/scripts/literature-fidelity-audit.sh --write
 diff /tmp/index.a.json ~/Projects/Literature/index.json && echo "IDEMPOTENT OK"
+# ACTUAL: "IDEMPOTENT OK"
 ```
 
 ---
