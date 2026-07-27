@@ -1,7 +1,7 @@
 # Implementation Plan: FrameClass Dedekind Scaffolding
 
 - **Task**: 391 - frameclass_dedekind_scaffolding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 17 hours (8 phases)
 - **Dependencies**: Task 390 (research, COMPLETE)
 - **Research Inputs**: `specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md`
@@ -361,17 +361,22 @@ exits at `SORRY_BASELINE + 3`, and the three new warnings must point at exactly
 
 ---
 
-### Phase 1: FrameClass.Dedekind constructor and order instance rework [NOT STARTED]
+### Phase 1: FrameClass.Dedekind constructor and order instance rework [COMPLETED]
 
 - **Goal:** `FrameClass` has a fourth constructor `.Dedekind` with a genuine `Base < Dense <
   Dedekind` chain, and the `LE` / `DecidableRel` / `PartialOrder` instances plus `base_le` all
   build.
 - **Owns:** `FormalSystem/ProofSystem/Axioms.lean`, region `:358-422` only.
 - **Tasks:**
-  - [ ] Capture `SORRY_BASELINE` via the command above; record it in the phase completion note.
-  - [ ] Add `| Dedekind` to `inductive FrameClass` (`:378-382`), keeping the
+  - [x] Capture `SORRY_BASELINE` via the command above; record it in the phase completion note.
+        *(deviation: altered — the plan's grep pattern `"declaration uses 'sorry'"` uses straight
+        quotes, but Lean 4.33 emits backticks: ``declaration uses `sorry` ``. With the corrected
+        pattern, **SORRY_BASELINE = 1**, the pre-existing live sorry at
+        `FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1225` (`countermodel_discrete`).
+        The plan's literal command reports 0 and would have masked a regression.)*
+  - [x] Add `| Dedekind` to `inductive FrameClass` (`:378-382`), keeping the
         `deriving Repr, DecidableEq, Inhabited, BEq, Hashable` clause.
-  - [ ] Rewrite the `LE` instance (`:384-389`) to:
+  - [x] Rewrite the `LE` instance (`:384-389`) to:
         ```lean
         instance : LE FrameClass where
           le a b := match a, b with
@@ -382,16 +387,16 @@ exits at `SORRY_BASELINE + 3`, and the three new warnings must point at exactly
             | .Discrete, .Discrete => True
             | _, _ => False
         ```
-  - [ ] Repair `DecidableRel` (`:391`, 9 → 16 cases) and `PartialOrder` (`:394`: `le_refl` 4
+  - [x] Repair `DecidableRel` (`:391`, 9 → 16 cases) and `PartialOrder` (`:394`: `le_refl` 4
         cases, `le_trans` 27 → 64, `le_antisymm` 9 → 16). Try the existing tactic first; on
         failure escalate within the phase to
         `<;> first | trivial | simp_all [LE.le] | decide`.
-  - [ ] Verify `FrameClass.base_le` (`:421-422`, `cases fc <;> trivial`) still closes.
-  - [ ] Update the frame-class docstring diagram (`:358-377`) to show
+  - [x] Verify `FrameClass.base_le` (`:421-422`, `cases fc <;> trivial`) still closes.
+  - [x] Update the frame-class docstring diagram (`:358-377`) to show
         `Base < Dense < Dedekind` with `Discrete` incomparable, and cite Reynolds 1992 printed
         p.168 ("axioms for density and no end points": `K⁺⊤` = the tree's `dense_indicator`) as
         the reason `Dedekind` is above `Dense`.
-  - [ ] Confirm the three preserved order facts by `#guard`/`example`: `¬(Dedekind ≤ Dense)`,
+  - [x] Confirm the three preserved order facts by `#guard`/`example`: `¬(Dedekind ≤ Dense)`,
         `¬(Discrete ≤ Dedekind)`, `¬(Dedekind ≤ Discrete)`.
 - **Verification (green criterion):** `lake build FormalSystem.ProofSystem.Axioms` exits 0.
   Then run full `lake build`, expect failures, and **write the enumerated failure list to the
@@ -403,7 +408,7 @@ exits at `SORRY_BASELINE + 3`, and the three new warnings must point at exactly
 - **Timing:** ~2 hours.
 - **Depends on:** none
 
-### Phase 2: FrameClass order-rework downstream repair to full green [NOT STARTED]
+### Phase 2: FrameClass order-rework downstream repair to full green [COMPLETED]
 
 - **Goal:** `lake build` fully green after the order rework; no behaviour change to any existing
   theorem.
@@ -412,16 +417,16 @@ exits at `SORRY_BASELINE + 3`, and the three new warnings must point at exactly
   `FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean`, plus any file the Phase 1 failure
   list names.
 - **Tasks:**
-  - [ ] Work the Phase 1 failure list top-down. The expected population is the 42 `LE.le]`
+  - [x] Work the Phase 1 failure list top-down. The expected population is the 42 `LE.le]`
         reasoning sites across the four files identified in planning (`Soundness.lean`,
         `FrameClassVariants.lean`, `DenseValidity.lean`, `Axioms.lean`).
-  - [ ] The dominant pattern to repair is the incomparable-case elimination
+  - [x] The dominant pattern to repair is the incomparable-case elimination
         `exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])`
         (`Soundness.lean:1270-1272` and siblings). Prefer `by decide` where `simp` no longer
         closes; do not restructure the surrounding proof.
-  - [ ] Add any newly-required `| Dedekind => …` arms to `match fc` sites. At this point no axiom
+  - [x] Add any newly-required `| Dedekind => …` arms to `match fc` sites. At this point no axiom
         maps to `.Dedekind`, so such arms are vacuous/absurd-eliminable.
-  - [ ] Do NOT touch `Axiom.minFrameClass` rows — that is Phase 5.
+  - [x] Do NOT touch `Axiom.minFrameClass` rows — that is Phase 5.
 - **Verification (green criterion):** `lake build` exits 0; sorry count equals `SORRY_BASELINE`;
   `git diff --stat` shows no file outside this phase's owned set.
 - **Estimated output:** ~120-260 lines of edits.
@@ -429,6 +434,24 @@ exits at `SORRY_BASELINE + 3`, and the three new warnings must point at exactly
   the phase starts. Stopping condition = full build exits 0.
 - **Timing:** ~3 hours.
 - **Depends on:** 1
+
+**Phase 1-2 completion note.** The Phase 1 full-build failure list was **2 errors, not the 42
+`LE.le]` sites the plan anticipated** — both `Missing cases: FrameClass.Dedekind` in exhaustive
+`match fc` sites, and both in `Automation/` rather than `Metalogic/`:
+
+| Site | Repair |
+|---|---|
+| `FormalSystem/Automation/FormulaEnumerator.lean:1428` (`pickSchemaIdx`) | added `| .Dedekind => (List.range 37) ++ [40, 41]` (Base + Dense schemas, since `Dense ≤ Dedekind`) |
+| `FormalSystem/Automation/ProofStepExtractor.lean:200` (`frameClassToString`) | added `| .Dedekind => "Dedekind"` |
+
+**Zero** `simp [LE.le]` / `simp_all [LE.le]` sites in `Soundness.lean`,
+`FrameClassVariants.lean`, or `DenseValidity.lean` broke. The plan's central Phase 2 risk did
+not materialise: those closes are all discharging goals about `Base`/`Dense`/`Discrete` only,
+and adding a constructor plus one new `LE` arm left every one of them provable by the same
+tactic. The `PartialOrder` rework itself needed only `trivial` for the 64-case `le_trans`
+(`simp_all`/`decide` fallbacks were flagged unreachable by the linter and removed) and
+`first | rfl | simp_all [LE.le]` for the 16-case `le_antisymm`.
+
 - **Commit here** (`task 391 phase 2: FrameClass.Dedekind constructor and order rework`) — first
   full-green milestone.
 

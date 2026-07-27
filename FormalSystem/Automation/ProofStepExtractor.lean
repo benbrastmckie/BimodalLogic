@@ -201,6 +201,7 @@ def frameClassToString : FrameClass → String
   | .Base => "Base"
   | .Dense => "Dense"
   | .Discrete => "Discrete"
+  | .Dedekind => "Dedekind"
 
 /-!
 ## Step Extraction

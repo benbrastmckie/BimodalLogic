@@ -1429,6 +1429,8 @@ def pickSchemaIdx (_atoms : List Atom) (_maxParamSize : Nat) (fc : FrameClass) :
     | .Base => List.range 37  -- indices 0-36 are Base
     | .Dense => (List.range 37) ++ [40, 41]
     | .Discrete => (List.range 37) ++ [37, 38, 39]
+    -- `Dedekind` sits strictly above `Dense`, so it admits the Base and Dense schemas.
+    | .Dedekind => (List.range 37) ++ [40, 41]
   let idx ← IO.rand 0 (allowed.length - 1)
   match allowed[idx]? with
   | some i => return i

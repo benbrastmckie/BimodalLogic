@@ -358,18 +358,40 @@ inductive Axiom : Formula → Type where
 /--
 Frame class classification for axiom validity.
 
-The three frame classes form a partial order:
+The four frame classes form a partial order:
 ```
-    Dense     Discrete
-      ↑         ↑
-       \       /
-        Base
+              Dedekind
+                 ↑
+    Dense --------'      Discrete
+      ↑                     ↑
+       \___________________/
+                |
+               Base
 ```
 
 - `Base` is the bottom element: all base axioms are valid on all linear orders.
-- `Dense` extends Base with the density axiom (GGφ → Gφ), valid on densely ordered frames.
+- `Dense` extends Base with the density axiom (GGφ → Gφ) and `dense_indicator` (¬U(⊤,⊥)),
+  valid on densely ordered frames.
 - `Discrete` extends Base with Prior-UZ/SZ and Z1, valid on discrete (SuccArchimedean) frames.
+- `Dedekind` extends **Dense** with Reynolds' definable-gap axioms Prior-U, Prior-S and Sep,
+  valid on dense Dedekind-complete frames (paradigmatically ℝ).
 - Dense and Discrete are incomparable: density contradicts discreteness.
+- Discrete and Dedekind are likewise incomparable, and `Dedekind ≰ Dense`.
+
+**Why `Dedekind` sits strictly above `Dense` rather than being a fourth incomparable leaf.**
+This is a primary-source placement, not an intuition. Reynolds 1992 (printed p.168) lists,
+as part of the axiomatization US/R for real flow, "axioms for density and no end points:
+`K⁺⊤`, `K⁻⊤`, `F⊤`, `P⊤`". Unfolding the abbreviation `K⁺A = ¬U(⊤,¬A)` gives
+`K⁺⊤ = ¬U(⊤,¬⊤) = ¬U(⊤,⊥)`, which is *literally* this tree's `dense_indicator`
+(see `Axiom.dense_indicator` above). So Reynolds' Dedekind/real axiom set genuinely contains
+the tree's density axiom, and a Dedekind derivation must be allowed to use it. Making
+`Dedekind` a fresh incomparable leaf would render `density` and `dense_indicator`
+inadmissible in `DerivationTree .Dedekind` and so could not host Reynolds' system at all.
+
+**Soundness caveat.** Because `density` and `dense_indicator` are admissible at `.Dedekind`
+and both are FALSE on ℤ (which is nonetheless conditionally complete), the soundness theorem
+for this class must target the *dense* Dedekind predicate `ValidDedekindDense`, not the
+density-free `ValidDedekind`. See `FormalSystem/Semantics/Validity.lean`.
 
 The key invariant is `ax.minFrameClass ≤ fc`: an axiom `ax` can appear in a derivation
 parameterized by frame class `fc` only when `ax`'s minimum frame class is at most `fc`.
@@ -379,12 +401,15 @@ inductive FrameClass where
   | Base
   | Dense
   | Discrete
+  | Dedekind
   deriving Repr, DecidableEq, Inhabited, BEq, Hashable
 
 instance : LE FrameClass where
   le a b := match a, b with
     | .Base, _ => True
     | .Dense, .Dense => True
+    | .Dense, .Dedekind => True
+    | .Dedekind, .Dedekind => True
     | .Discrete, .Discrete => True
     | _, _ => False
 
@@ -394,8 +419,32 @@ instance : DecidableRel (LE.le : FrameClass → FrameClass → Prop) :=
 instance : PartialOrder FrameClass where
   le := (· ≤ ·)
   le_refl := by intro a; cases a <;> simp [LE.le]
-  le_trans := by intro a b c hab hbc; cases a <;> cases b <;> cases c <;> simp_all [LE.le]
-  le_antisymm := by intro a b hab hba; cases a <;> cases b <;> simp_all [LE.le]
+  -- 4 constructors ⇒ le_trans is a 64-case split and le_antisymm a 16-case split.
+  -- `trivial` discharges every `le_trans` case (each is either `True` or an absurd
+  -- `False` hypothesis); `le_antisymm` needs `simp_all [LE.le]` for the asymmetric
+  -- `Dense`/`Dedekind` pair. `by decide` remains a total fallback for any closed
+  -- order goal, since `FrameClass` is finite with `DecidableEq` and the `DecidableRel`
+  -- instance above.
+  le_trans := by
+    intro a b c hab hbc
+    cases a <;> cases b <;> cases c <;> trivial
+  le_antisymm := by
+    intro a b hab hba
+    cases a <;> cases b <;> first | rfl | simp_all [LE.le]
+
+/-! ### Order-shape regression checks
+
+These `example`s pin the exact shape of the `FrameClass` order so that a future edit to the
+`LE` instance cannot silently change which axioms are admissible in which derivations. -/
+
+example : FrameClass.Base ≤ FrameClass.Dedekind := by decide
+example : FrameClass.Dense ≤ FrameClass.Dedekind := by decide
+example : FrameClass.Dedekind ≤ FrameClass.Dedekind := by decide
+example : ¬(FrameClass.Dedekind ≤ FrameClass.Dense) := by decide
+example : ¬(FrameClass.Dedekind ≤ FrameClass.Discrete) := by decide
+example : ¬(FrameClass.Discrete ≤ FrameClass.Dedekind) := by decide
+example : ¬(FrameClass.Dense ≤ FrameClass.Discrete) := by decide
+example : ¬(FrameClass.Discrete ≤ FrameClass.Dense) := by decide
 
 /--
 Minimum frame class for each axiom constructor.
