@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.BXCanonical.Frame
 import FormalSystem.Metalogic.BXCanonical.TruthLemma
 import FormalSystem.Metalogic.BXCanonical.Completeness
+import FormalSystem.Metalogic.BXCanonical.CompletenessDedekind
 import FormalSystem.Metalogic.BXCanonical.Quasimodel.SubformulaClosure
 import FormalSystem.Metalogic.BXCanonical.Quasimodel.HintikkaPoint
 import FormalSystem.Metalogic.BXCanonical.Quasimodel.Construction

@@ -1,7 +1,7 @@
 # Implementation Plan: Strong Completeness for FrameClass.Dedekind
 
 - **Task**: 408 - faithful_route_to_strong_completeness_for_the_dedekind_extension
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 28 hours
 - **Dependencies**: None (coordinates with, but is not blocked by, the strong-completeness
   architecture and finite-context strong-completeness efforts — neither has artifacts on disk)
@@ -309,33 +309,37 @@ declared parallel pair in the engine.
 
 ---
 
-### Phase 1: D := ℝ instantiation probe and the Dedekind box-dense branch lemma [NOT STARTED]
+### Phase 1: D := ℝ instantiation probe and the Dedekind box-dense branch lemma [COMPLETED]
 
 - **Goal:** De-risk the entire route with one build, and land the mechanical half of the
   Dedekind completeness branch structure.
 - **Owns:** `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean` (new),
   `FormalSystem/Metalogic/BXCanonical.lean` (import line only).
 - **Tasks:**
-  - [ ] Re-run report 390's probe as a scratch `example`: confirm
+  - [x] Re-run report 390's probe as a scratch `example`: confirm
         `ParametricCanonicalTaskFrame (fc := fc) ℝ` and
         `ParametricCanonicalTaskModel (fc := fc) ℝ` elaborate with zero errors.
-  - [ ] Extend the probe: confirm
+        *(deviation: altered — the probes were landed as permanent `noncomputable example`s in
+        the module's `CarrierProbe` section rather than discarded scratch, so a future binder
+        regression fails the build. `noncomputable` is required because `Real.linearOrder` is
+        noncomputable; this is a codegen annotation, not an elaboration weakening.)*
+  - [x] Extend the probe: confirm
         `fully_restricted_parametric_completeness_from_neg_membership` typechecks at `D := ℝ`
         against a hypothesised `(B : BFMCS (fc := fc) ℝ)`. Record the exact goal state if it
-        does not.
-  - [ ] Confirm `ℝ` discharges every binder of `ValidDedekindDense` (`Validity.lean:255-262`):
+        does not. *(PASSED — elaborated on the first attempt with no binder failure.)*
+  - [x] Confirm `ℝ` discharges every binder of `ValidDedekindDense` (`Validity.lean:255-262`):
         `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`, `DenselyOrdered`, `Nontrivial`,
         and the lub hypothesis via `Real.instConditionallyCompleteLinearOrder`. Land this as a
         named sorry-free lemma `real_lub_of_bddAbove`, not as a comment.
-  - [ ] Create `CompletenessDedekind.lean` and land `dedekind_box_dense_mem`: for any
+  - [x] Create `CompletenessDedekind.lean` and land `dedekind_box_dense_mem`: for any
         `A` with `SetMaximalConsistent (fc := FrameClass.Dedekind) A`,
         `Chronicle.nextTop.neg.box ∈ A`. Transcribe the non-dense branch of `completeness_dense`
         (`Completeness.lean:268-276`) with `.Dense` replaced by `.Dedekind`; admissibility holds
         because `Axiom.dense_indicator.minFrameClass = .Dense` and
         `FrameClass.Dense ≤ FrameClass.Dedekind`.
-  - [ ] Module docstring cites Reynolds 1992 §1, printed p.169 (definably-Dedekind-complete
+  - [x] Module docstring cites Reynolds 1992 §1, printed p.169 (definably-Dedekind-complete
         scoping) by PDF page.
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.CompletenessDedekind`.
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.CompletenessDedekind`.
 - **Estimated output:** ~120 lines.
 - **Done when:** the module builds sorry-free; `dedekind_box_dense_mem` and
   `real_lub_of_bddAbove` are proved; the probe outcome (pass or exact failure) is recorded in the
