@@ -255,6 +255,7 @@ Covers all constructors in `FormalSystem.ProofSystem.Axiom`:
 - Layer 6: Prior (prior_UZ, prior_SZ)
 - Layer 7: Z1
 - Layer 8: Density (density, dense_indicator)
+- Layer 9: Reynolds Dedekind (prior_U_gap, prior_S_gap, sep)
 -/
 def extractAxiomName {φ : Formula} (ax : Axiom φ) : String :=
   match ax with
@@ -300,6 +301,10 @@ def extractAxiomName {φ : Formula} (ax : Axiom φ) : String :=
   | .z1 _ => "z1"
   | .density _ => "density"
   | .dense_indicator => "dense_indicator"
+  -- Layer 9: Reynolds Dedekind (3)
+  | .prior_U_gap _ => "prior_U_gap"
+  | .prior_S_gap _ => "prior_S_gap"
+  | .sep _ => "sep"
 
 /--
 Extract a simplified proof trace from a DerivationTree.

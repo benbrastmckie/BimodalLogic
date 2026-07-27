@@ -544,14 +544,14 @@ DedekindTemporalFrame Int` was added, per the plan's explicit instruction.
 
 - **Commit after wave 3** (`task 391 phase 3-4: ValidDedekind predicates and Dedekind marker class`).
 
-### Phase 5: Formula.kPlus/kMinus and the three Reynolds axiom constructors [NOT STARTED]
+### Phase 5: Formula.kPlus/kMinus and the three Reynolds axiom constructors [COMPLETED]
 
 - **Goal:** `Formula.kPlus`/`Formula.kMinus` land faithfully; `Axiom.prior_U_gap`,
   `Axiom.prior_S_gap`, `Axiom.sep` exist and map to `.Dedekind` in `Axiom.minFrameClass`.
 - **Owns:** `FormalSystem/Syntax/Formula.lean`, `FormalSystem/ProofSystem/Axioms.lean`
   (regions `:84-356` and `:412-418`). **Runs alone in its wave** — it leaves the tree red.
 - **Tasks:**
-  - [ ] In `Syntax/Formula.lean`, beside `allFuture` (`:151`), add:
+  - [x] In `Syntax/Formula.lean`, beside `allFuture` (`:151`), add:
         ```lean
         /-- `K⁺A = ¬U(⊤, ¬A)` — "A will be true arbitrarily soon" (Reynolds 1992, printed p.168;
             GHR 1994 §10.3.1). NOT the same as `Metalogic`'s `kplusFormula`, which carries an
@@ -562,11 +562,11 @@ DedekindTemporalFrame Int` was added, per the plan's explicit instruction.
         def kMinus (φ : Formula) : Formula := (Formula.snce Formula.top φ.neg).neg
         ```
         Both docstrings MUST carry the `kplusFormula` collision warning.
-  - [ ] Probe-elaborate the three axiom bodies in a scratch file under `lake env lean` (with a
+  - [x] Probe-elaborate the three axiom bodies in a scratch file under `lake env lean` (with a
         bogus-identifier control) BEFORE editing `Axioms.lean`. `Formula.and` is
         `(φ.imp ψ.neg).neg` (`:401`) and `Formula.or` is `φ.neg.imp ψ` (`:406`) — confirm both
         unfold as expected.
-  - [ ] Add a new "Layer 9: Reynolds Dedekind Axioms (3)" block at the end of `inductive Axiom`
+  - [x] Add a new "Layer 9: Reynolds Dedekind Axioms (3)" block at the end of `inductive Axiom`
         (immediately before `deriving Repr`, `:356`), following the existing per-constructor
         docstring style:
         ```lean
@@ -583,9 +583,9 @@ DedekindTemporalFrame Int` was added, per the plan's explicit instruction.
         ```
         Each docstring MUST cite "Reynolds 1992, printed p.168" and MUST state that this is NOT
         `prior_UZ`/`prior_SZ` (`:315`, `:320`), which are the integer well-ordering axioms.
-  - [ ] Add three rows to `Axiom.minFrameClass` (`:412`), before the `| _ => .Base` catch-all:
+  - [x] Add three rows to `Axiom.minFrameClass` (`:412`), before the `| _ => .Base` catch-all:
         `| prior_U_gap _ => .Dedekind`, `| prior_S_gap _ => .Dedekind`, `| sep _ => .Dedekind`.
-  - [ ] Update the `minFrameClass` docstring counts (`:400-411`): Base 37, Dense 2, Discrete 3,
+  - [x] Update the `minFrameClass` docstring counts (`:400-411`): Base 37, Dense 2, Discrete 3,
         Dedekind 3; total 45.
 - **Verification (green criterion):** `lake build FormalSystem.Syntax.Formula` and
   `lake build FormalSystem.ProofSystem.Axioms` both exit 0. Then run full `lake build`, expect
@@ -597,7 +597,7 @@ DedekindTemporalFrame Int` was added, per the plan's explicit instruction.
 - **Timing:** ~2 hours.
 - **Depends on:** 2
 
-### Phase 6: Axiom-constructor downstream repair — Metalogic territory [NOT STARTED]
+### Phase 6: Axiom-constructor downstream repair — Metalogic territory [COMPLETED]
 
 - **Goal:** Every exhaustive `cases h_ax with` / `match` over `Axiom` in `Metalogic/` covers the
   three new constructors.
@@ -605,19 +605,19 @@ DedekindTemporalFrame Int` was added, per the plan's explicit instruction.
   `SoundnessLemmas/FrameClassVariants.lean`, `SoundnessLemmas/DenseValidity.lean`,
   `Decidability/Tableau.lean`, `Decidability/Saturation.lean`.
 - **Tasks:**
-  - [ ] Work the `Metalogic/` partition of the Phase 5 failure list. Known exhaustive sites:
+  - [x] Work the `Metalogic/` partition of the Phase 5 failure list. Known exhaustive sites:
         `Soundness.lean:839, 889, 947, 1061, 1229`.
-  - [ ] In `axiom_valid` (Base), `axiom_dense_valid` (`:887`) and `axiom_discrete_valid`
+  - [x] In `axiom_valid` (Base), `axiom_dense_valid` (`:887`) and `axiom_discrete_valid`
         (`:944`), and in `soundness_dense`'s inline split (`:1229`), the three new cases are
         **eliminated by frame-class incomparability**, exactly like the existing
         `| prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])` at `:1270`.
         `Dedekind ≰ Base`, `Dedekind ≰ Dense`, `Dedekind ≰ Discrete` all hold by SETTLED decision
         1, so this is the correct and only disposition. Use `by decide` if `simp` does not close.
-  - [ ] In `FrameClassVariants.lean:40` `axiom_swap_valid_general`, the three new cases are
+  - [x] In `FrameClassVariants.lean:40` `axiom_swap_valid_general`, the three new cases are
         likewise eliminated (`h_fc : h.minFrameClass ≤ FrameClass.Base`).
-  - [ ] For non-proof matches (`Decidability/`), add whatever arms the build demands; keep them
+  - [x] For non-proof matches (`Decidability/`), add whatever arms the build demands; keep them
         behaviourally neutral and do not invent tableau rules for the new axioms.
-  - [ ] Do NOT touch `Automation/` — that is Phase 7's territory.
+  - [x] Do NOT touch `Automation/` — that is Phase 7's territory.
 - **Verification (green criterion):** `lake build FormalSystem.Metalogic` exits 0 (full
   `lake build` may still fail on `Automation/` until Phase 7 lands — that is expected and
   in-contract); sorry count `= SORRY_BASELINE`.
@@ -627,29 +627,29 @@ DedekindTemporalFrame Int` was added, per the plan's explicit instruction.
 - **Timing:** ~3 hours.
 - **Depends on:** 5
 
-### Phase 7: Axiom-constructor downstream repair — Automation and machine appendix [NOT STARTED]
+### Phase 7: Axiom-constructor downstream repair — Automation and machine appendix [COMPLETED]
 
 - **Goal:** All four independent axiom-name/coverage lists updated to 45, and the committed
   machine appendix regenerated and consistent.
 - **Owns:** `FormalSystem/Automation/**`, `typst/generated/**` (exclusive).
 - **Tasks:**
-  - [ ] `FormalSystem/Automation/AxiomNames.lean`: append `"prior_U_gap", "prior_S_gap", "sep"`
+  - [x] `FormalSystem/Automation/AxiomNames.lean`: append `"prior_U_gap", "prior_S_gap", "sep"`
         to `allAxiomNames` (`:33`) in `Axioms.lean` source order; update the module docstring and
         the `/-- All 42 axiom constructor names -/` comment to 45.
-  - [ ] `FormalSystem/Automation/ProofStepExport.lean:1520`: this is a **second, duplicated**
+  - [x] `FormalSystem/Automation/ProofStepExport.lean:1520`: this is a **second, duplicated**
         `allAxiomNames` that does not import the canonical one. Update it too, and add a comment
         cross-referencing `Automation/AxiomNames.lean` so the duplication is at least visible.
-  - [ ] `FormalSystem/Automation/MachineAppendixExport.lean`: add a `layerReynoldsDedekind`
+  - [x] `FormalSystem/Automation/MachineAppendixExport.lean`: add a `layerReynoldsDedekind`
         layer name and three `mkAxiomEntry` rows to `allAxiomEntries` (`:184`), applying the real
         constructors (never transcribing the schema formula); update the "42" assertions and
         docstrings at `:39`, `:72`, `:181`, `:427-434`.
-  - [ ] `FormalSystem/Automation/BenchmarkAnchors.lean`: update the coverage filter (`:310`),
+  - [x] `FormalSystem/Automation/BenchmarkAnchors.lean`: update the coverage filter (`:310`),
         the iteration at `:541`, and the `:302` note.
-  - [ ] Work the `Automation/` partition of the Phase 5 failure list for any remaining
+  - [x] Work the `Automation/` partition of the Phase 5 failure list for any remaining
         `dense_indicator`-adjacent enumeration in `Tactics/Helpers.lean`, `Tactics/Commands.lean`,
         `ProofSearch/Core.lean`, `FormulaEnumerator.lean`, `InterestingnessMetrics.lean`,
         `DatasetGenerator.lean`, `ForwardProofGenerator.lean`, `ProofStepExtractor.lean`.
-  - [ ] Regenerate the appendix: `bash scripts/typst-machine-appendix.sh`. Do NOT hand-edit
+  - [x] Regenerate the appendix: `bash scripts/typst-machine-appendix.sh`. Do NOT hand-edit
         `typst/generated/machine-appendix.jsonl` or `.typ` — Check 3B proves the `.typ` is
         derived by re-rendering byte-for-byte.
 - **Verification (green criterion):** full `lake build` exits 0;
@@ -662,6 +662,67 @@ DedekindTemporalFrame Int` was added, per the plan's explicit instruction.
   condition = `typst-sync-check.sh` exits 0.
 - **Timing:** ~2 hours.
 - **Depends on:** 5
+
+**Phase 5-7 completion note.**
+
+*Phase 5 failure list* (full `lake build` after the constructors landed), partitioned as the
+plan required:
+
+| Partition | Sites |
+|---|---|
+| `Metalogic/` | `SoundnessLemmas/DenseValidity.lean:296, :962`; then, once those cleared, `SoundnessLemmas/FrameClassVariants.lean:43, :381, :925, :941`; then `Soundness.lean:839, :889, :947, :1061, :1229` |
+| `Automation/` | `ProofStepExtractor.lean:68`; `DatasetGenerator.lean:260`; then `MachineAppendixExport.lean:118` |
+
+Note the Metalogic list only became fully visible incrementally — `lake` stops a module at its
+first error, so `FrameClassVariants` and `Soundness` failures were masked until `DenseValidity`
+was repaired. All five `Soundness.lean` sites the plan predicted were confirmed exactly.
+
+*Phase 6 deviation (altered)*: `FrameClassVariants.lean:925` and `:941` were NOT
+missing-alternative errors but `Application type mismatch` errors, which the plan did not
+anticipate. Both sites sit inside a `by_cases hbase` whose catch-all arm is
+`| _ => exact absurd trivial hbase` — that discharges via `trivial : minFrameClass ≤ Base`,
+which holds only for Base axioms. The three new constructors have `minFrameClass = .Dedekind`,
+so they needed explicit `absurd h_fc` arms placed *before* the catch-all rather than being
+allowed to fall through. Same disposition as the plan intended, different error shape.
+
+*Phase 7 deviations (altered — scope beyond the plan's four named list sites)*: the plan named
+four independent name/coverage lists. Seven further `Automation/` sites carried a hard-coded
+`42` or an axiom enumeration and would have silently under-covered:
+`ProofStepExtractor.lean` (`Axiom.toName`, plus the "49-action space" figure, now 52),
+`DatasetGenerator.lean` (`extractAxiomName`), `MachineAppendixExport.lean`
+(`frameClassToString`, a 3-case `FrameClass` match), `FormulaEnumerator.lean`
+(`instantiateAxiomWithWitness` indices 42-44 and `pickSchemaIdx`'s `.Dedekind` arm),
+`ForwardProofGenerator.lean` (`schemaNames`, the `Layer` inductive, `schemaLayer`),
+`TableauProofStepPipeline.lean` (`totalAxioms`), and `BenchmarkAnchors.lean`'s
+`nonBaseAxiomNames` (5 → 8 entries). Without the `FormulaEnumerator`/`ForwardProofGenerator`
+additions, `lake exe benchmark_anchors` would have reported 42/45 coverage.
+
+*Phase 7 deviation (altered — outside the plan's declared file scope)*: two `scripts/` files
+needed repair, neither anticipated by the plan.
+`scripts/typst-status-counts.sh` computed `BASE_COUNT = AXIOM_COUNT - DENSE - DISCRETE` with no
+Dedekind term, so it reported `base-count = 40` instead of `37` — a wrong published number
+caused directly by this task. Added `DEDEKIND_ONLY_COUNT` and a `dedekind-only-count` field to
+`status.typ`; `scripts/typst-sync-check.sh` gained the matching `scalar_fields` entry.
+Regenerating `status.typ` then surfaced a **pre-existing** latent bug: the checker's expected
+`sorry-table` row label still named `ConservativeExtension/` and `Relational/`, which the
+generator had already dropped. That drift had been masked only because the committed
+`status.typ` was stale (last stamped 2026-07-07). Corrected the checker's label.
+
+*Correction to the plan's Definition of Done*: `bash scripts/typst-sync-check.sh` **was already
+failing before this task** — verified by running it in a clean worktree at the pre-task commit
+`833f249b0`, where it exits 1 with `TOTAL_VIOLATIONS=20`, `MISMATCH_COUNT=6`. The plan's "green"
+criterion was therefore unattainable as written. Measured effect of this task: violations went
+**20 → 19** and mismatches **6 → 0**; a set-diff of the two runs shows this task **removed 8
+violations and added none**. Check 2 (count freshness) and Check 3 (machine appendix, including
+Check 3A's independent live recount reporting **45**) are both fully green. The residual 19
+Check 1 violations are stale prose in `typst/chapters/**` referencing removed files
+(`Metalogic/ConservativeExtension/Lifting.lean`, `Metalogic/DenseSoundness.lean`) and absent
+identifiers (`rabinovich_translate`, `lift_derivation_qfree`) — all unrelated to this task.
+
+*Verification*: `lake exe machine_appendix` wrote 45 axioms / 7 rules / 21 derived operators
+with its coverage assertion passing; `lake exe benchmark_anchors` reports
+`Axiom coverage: 45/45 constructors`, no missing.
+
 - **Commit after wave 5** (`task 391 phase 5-7: Reynolds Dedekind axiom constructors`) — full-green
   milestone with sorry count still at baseline.
 

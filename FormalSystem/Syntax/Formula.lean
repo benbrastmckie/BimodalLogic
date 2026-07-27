@@ -161,6 +161,38 @@ This means: φ holds at all strictly past times.
 def allPast (φ : Formula) : Formula := (somePast φ.neg).neg
 
 /--
+Reynolds' `K⁺` operator: `K⁺A = ¬U(⊤, ¬A)` — "A holds arbitrarily soon in the future",
+i.e. A is true throughout some initial segment of the future, or equivalently there is no
+future point at which ¬A holds with ⊤ holding until then.
+
+**Source**: Reynolds 1992, abbreviation table, printed p.168; corroborated by
+Gabbay-Hodkinson-Reynolds 1994 §10.3.1, which defines `K⁺q = ¬U(⊤, ¬q)`.
+
+**NAME-COLLISION WARNING.** This is NOT the same operator as `kplusFormula` in
+`FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean`. That one is
+`P.neg ∧ ¬(⊤ U P.neg)` — it carries an extra `¬P` conjunct ("P holds arbitrarily soon after
+`t`, *but not at `t` itself*"). Reynolds' and GHR's `K⁺` has no such conjunct. Substituting one
+for the other silently transcribes a different axiom. `kplusFormula` also lives in `Metalogic/`,
+downstream of `ProofSystem/`, so it is not importable from `Axioms.lean` in any case.
+
+Used to state `Axiom.prior_U_gap` and `Axiom.sep`.
+-/
+def kPlus (φ : Formula) : Formula := (Formula.untl Formula.top φ.neg).neg
+
+/--
+Reynolds' `K⁻` operator: `K⁻A = ¬S(⊤, ¬A)` — the past dual of `kPlus`, "A held arbitrarily
+recently in the past".
+
+**Source**: Reynolds 1992, abbreviation table, printed p.168; GHR 1994 §10.3.1
+(`K⁻q = ¬S(⊤, ¬q)`).
+
+Same name-collision caveat as `kPlus`: do not confuse with `Metalogic`'s `kminusFormula`.
+
+Used to state `Axiom.prior_S_gap` and `Axiom.sep`.
+-/
+def kMinus (φ : Formula) : Formula := (Formula.snce Formula.top φ.neg).neg
+
+/--
 Structural complexity of a formula (number of connectives + 1).
 
 Useful for well-founded recursion and proof complexity analysis.

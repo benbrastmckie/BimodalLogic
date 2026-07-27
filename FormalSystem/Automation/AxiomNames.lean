@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 /-!
-# Axiom Names - Canonical 42-Constructor Name List
+# Axiom Names - Canonical 45-Constructor Name List
 
 The canonical list of all `FormalSystem.ProofSystem.Axiom` constructor names, in
 `Axioms.lean` source order.
@@ -29,7 +29,7 @@ The mismatch is caught mechanically:
 
 namespace FormalSystem.Automation
 
-/-- All 42 axiom constructor names, in `Axioms.lean` source order. -/
+/-- All 45 axiom constructor names, in `Axioms.lean` source order. -/
 def allAxiomNames : List String :=
   [ "prop_k", "prop_s", "ex_falso", "peirce"
   , "modal_t", "modal_4", "modal_b", "modal_5_collapse", "modal_k_dist"
@@ -51,6 +51,7 @@ def allAxiomNames : List String :=
   , "prior_UZ", "prior_SZ"
   , "z1"
   , "density", "dense_indicator"
+  , "prior_U_gap", "prior_S_gap", "sep"
   ]
 
 end FormalSystem.Automation

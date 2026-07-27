@@ -13,7 +13,7 @@ import FormalSystem.ProofSystem.Axioms
 /-!
 # Benchmark Anchors: Axiom Instance Generator for BMLogic-Bench
 
-This module generates concrete formula instances of all 42 BX axiom schemata
+This module generates concrete formula instances of all 45 BX axiom schemata
 with varied substitutions, labels them via the decision procedure, and exports
 them as JSONL records for the BMLogic-Bench benchmark.
 
@@ -42,7 +42,7 @@ axioms are excluded since the benchmark uses FrameClass.Base throughout.
 - `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`
 - `DataExport.lean`: JSON serialization primitives
 - `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`, JSON serialization methods
-- `Axioms.lean`: All 42 BX axiom constructors
+- `Axioms.lean`: All 45 BX axiom constructors
 -/
 
 set_option autoImplicit false
@@ -179,6 +179,17 @@ def oneParamInstances : List TaggedFormula :=
       -- Layer 8: Density
     , { formula := φ.allFuture.allFuture.imp φ.allFuture
       , axiomName := "density" }
+      -- Layer 9: Reynolds Dedekind (dense Dedekind-complete only)
+    , { formula := (Formula.and (Formula.untl top' φ) φ.neg.someFuture).imp
+          (Formula.untl (Formula.or φ.neg (Formula.kPlus φ.neg)) φ)
+      , axiomName := "prior_U_gap" }
+    , { formula := (Formula.and (Formula.snce top' φ) φ.neg.somePast).imp
+          (Formula.snce (Formula.or φ.neg (Formula.kMinus φ.neg)) φ)
+      , axiomName := "prior_S_gap" }
+    , { formula := (Formula.and (Formula.kPlus φ)
+          (Formula.kPlus (Formula.and φ (Formula.untl φ φ.neg))).neg).imp
+          (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))
+      , axiomName := "sep" }
     ]
 
 /--
@@ -299,7 +310,7 @@ def generateAllInstances : List TaggedFormula :=
 ## Axiom Coverage Verification
 -/
 
--- NOTE: `allAxiomNames` (the canonical 42-name list) moved to
+-- NOTE: `allAxiomNames` (the canonical 45-name list) moved to
 -- `FormalSystem.Automation.AxiomNames` so that `MachineAppendixExport.lean` can
 -- share it (this module declares a root-level `main` and cannot be imported
 -- by another executable). Resolved here via the parent namespace.
@@ -316,15 +327,17 @@ def checkCoverage (instances : List TaggedFormula) : List String × List String 
 
 /-- Names of axiom constructors that require non-Base frame classes. -/
 private def nonBaseAxiomNames : List String :=
-  ["prior_UZ", "prior_SZ", "z1", "density", "dense_indicator"]
+  ["prior_UZ", "prior_SZ", "z1", "density", "dense_indicator",
+   "prior_U_gap", "prior_S_gap", "sep"]
 
 /--
 Label a tagged formula via `matchAxiom` directly, bypassing the tableau decision procedure.
 
 For Base-class axioms (37 constructors): produces a valid label with proof trace
 referencing the matched axiom constructor.
-For non-Base axioms (5 constructors: prior_UZ, prior_SZ, z1, density, dense_indicator):
-produces an invalid label with a note about frame class incompatibility.
+For non-Base axioms (8 constructors: prior_UZ, prior_SZ, z1, density, dense_indicator,
+prior_U_gap, prior_S_gap, sep): produces an invalid label with a note about frame class
+incompatibility.
 
 Returns `none` if `matchAxiom` fails (shouldn't happen for well-formed instances).
 -/
@@ -458,7 +471,7 @@ Main entry point for the benchmark_anchors executable.
 Pipeline:
 1. Generate all axiom instances from the substitution vocabulary
 2. Select top-3 lowest-complexity instances per constructor (126 records)
-3. Check coverage of all 42 axiom constructors
+3. Check coverage of all 45 axiom constructors
 4. Label each instance via `matchAxiom` (direct axiom proof), falling back to
    `labelFormula`/`decideAuto` if `matchAxiom` fails
 5. Write JSONL output file with `axiom_name` preserved
@@ -481,11 +494,11 @@ def main (args : List String) : IO Unit := do
   -- Step 2: Select top-3 per constructor
   IO.println "Selecting top-3 lowest-complexity per constructor..."
   let instances := selectTopInstances allInstances 3
-  IO.println s!"  Selected {instances.length} instances (target: 126 = 42 x 3)"
+  IO.println s!"  Selected {instances.length} instances (target: 135 = 45 x 3)"
 
   -- Step 3: Check coverage
   let (covered, missing) := checkCoverage instances
-  IO.println s!"  Axiom coverage: {covered.length}/42 constructors"
+  IO.println s!"  Axiom coverage: {covered.length}/45 constructors"
   if !missing.isEmpty then
     IO.println s!"  WARNING: Missing axioms: {missing}"
 
@@ -543,7 +556,7 @@ def main (args : List String) : IO Unit := do
     let nameValid := nameRecords.filter (fun (_, lf) => lf.label == .valid) |>.length
     constructorCounts := constructorCounts ++ [(name, nameValid, nameRecords.length)]
   let constructorsWithValid := constructorCounts.filter (fun (_, v, _) => v > 0) |>.length
-  IO.println s!"  Constructors with valid instances: {constructorsWithValid}/42"
+  IO.println s!"  Constructors with valid instances: {constructorsWithValid}/45"
 
   -- Step 7: Ensure output directory exists
   let outFilePath : System.FilePath := ⟨outputPath⟩
@@ -574,7 +587,7 @@ def main (args : List String) : IO Unit := do
   IO.println s!"  Valid: {validCount}"
   IO.println s!"  Invalid: {invalidCount}"
   IO.println s!"  Timeout: {timeoutCount}"
-  IO.println s!"  Coverage: {covered.length}/42 axiom constructors"
+  IO.println s!"  Coverage: {covered.length}/45 axiom constructors"
   IO.println s!"  Axiom-matched: {axiomMatchCount} ({axiomMatchCount * 100 / instances.length}%)"
   IO.println ""
   IO.println "Done!"

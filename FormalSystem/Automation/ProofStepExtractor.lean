@@ -19,7 +19,7 @@ BimodalHarness AlphaZero-style training pipeline.
 
 ## Main Definitions
 
-- `Axiom.toName`: Maps all 42 axiom constructors to string names
+- `Axiom.toName`: Maps all 45 axiom constructors to string names
 - `ProofStep`: Structure containing (context, goal, rule, axiom_name, subgoals)
 - `ProofStep.toJson`: JSON serialization matching the `ProofStepRecord` schema
 - `extractStepSequence`: Recursive tree walker emitting ordered proof steps
@@ -28,8 +28,8 @@ BimodalHarness AlphaZero-style training pipeline.
 
 ## Design
 
-The 49-action space consists of:
-- 42 axiom constructors (via `Axiom.toName`)
+The 52-action space consists of:
+- 45 axiom constructors (via `Axiom.toName`)
 - 7 inference rules (axiom, assumption, modus_ponens, necessitation,
   temporal_necessitation, temporal_duality, weakening)
 
@@ -40,7 +40,7 @@ and what subgoals remain.
 ## References
 
 - `FormalSystem.ProofSystem.Derivation` — `DerivationTree` and constructors
-- `FormalSystem.ProofSystem.Axioms` — `Axiom` inductive with 42 constructors
+- `FormalSystem.ProofSystem.Axioms` — `Axiom` inductive with 45 constructors
 - `FormalSystem.Automation.DataExport` — JSON serialization helpers
 -/
 
@@ -53,13 +53,13 @@ open FormalSystem.Automation.DataExport
 /-!
 ## Axiom Name Mapping
 
-Maps all 42 axiom constructors to their string names for the action space.
+Maps all 45 axiom constructors to their string names for the action space.
 -/
 
 /--
 Map each axiom constructor to its canonical string name.
 
-This exhaustive 42-case pattern match provides the string representation
+This exhaustive 45-case pattern match provides the string representation
 of each axiom for the training data action space. The names match the
 constructor names in `FormalSystem.ProofSystem.Axiom`.
 -/
@@ -115,6 +115,10 @@ def _root_.FormalSystem.ProofSystem.Axiom.toName {φ : Formula} : Axiom φ → S
   -- Layer 8: Density Axioms (2)
   | .density _ => "density"
   | .dense_indicator => "dense_indicator"
+  -- Layer 9: Reynolds Dedekind (3)
+  | .prior_U_gap _ => "prior_U_gap"
+  | .prior_S_gap _ => "prior_S_gap"
+  | .sep _ => "sep"
 
 /-!
 ## ProofStep Structure

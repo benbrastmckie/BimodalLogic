@@ -374,6 +374,11 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  -- Reynolds Dedekind axioms: eliminated by frame-class incomparability
+  -- (`Dedekind ≰ Base`), exactly like the Dense and Discrete cases above.
+  | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
 
 /-- All base axioms are locally valid without DenselyOrdered frame constraints. -/
 private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : Axiom φ)
@@ -649,6 +654,11 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  -- Reynolds Dedekind axioms: eliminated by frame-class incomparability
+  -- (`Dedekind ≰ Base`), exactly like the Dense and Discrete cases above.
+  | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
 
 /-- Combined soundness for base derivations without frame-class constraints:
 derivability implies both validity and swap-validity. Identical to
@@ -922,6 +932,12 @@ private theorem axiom_swap_valid_discrete
       exact z1_past_is_valid φ.swapTemporal
     | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    -- Reynolds Dedekind axioms: `Dedekind ≰ Discrete`, so `h_fc` is absurd. These need
+    -- explicit arms rather than falling through to the catch-all below, because that arm
+    -- discharges via `trivial : minFrameClass ≤ Base`, which holds only for Base axioms.
+    | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | _ => exact absurd trivial hbase
 
 /-- All discrete-compatible axioms are locally valid on discrete orders. For base axioms,
@@ -938,6 +954,12 @@ private theorem axiom_locally_valid_discrete
     | z1 φ => exact z1_is_valid φ
     | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    -- Reynolds Dedekind axioms: `Dedekind ≰ Discrete`, so `h_fc` is absurd. These need
+    -- explicit arms rather than falling through to the catch-all below, because that arm
+    -- discharges via `trivial : minFrameClass ≤ Base`, which holds only for Base axioms.
+    | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | _ => exact absurd trivial hbase
 
 /-- Combined soundness on discrete frames: derivability implies both validity

@@ -250,7 +250,7 @@ the result would be refutable.
 
 The placement of `Dedekind` above `Dense` is itself primary-source: Reynolds 1992 (printed
 p.168) includes in US/R "axioms for density and no end points: `K⁺⊤`, `K⁻⊤`, `F⊤`, `P⊤`", and
-`K⁺⊤ = ¬U(⊤,¬⊤) = ¬U(⊤,⊥)` is literally this tree's `Axiom.dense_indicator`.
+`K⁺⊤ = ¬U(⊤,¬⊤)` normalises (`¬⊤ ↝ ⊥`) to `¬U(⊤,⊥)`, this tree's `Axiom.dense_indicator`.
 -/
 def ValidDedekindDense (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]

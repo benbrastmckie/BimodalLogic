@@ -188,11 +188,13 @@ with open(sys.argv[1], encoding="utf-8") as fh:
     text = fh.read()
 
 scalar_fields = ["axiom-count", "rule-count", "base-count", "dense-only-count",
-                  "discrete-only-count", "sorry-total", "sorry-total-excl-boneyard"]
+                  "discrete-only-count", "dedekind-only-count",
+                  "sorry-total", "sorry-total-excl-boneyard"]
 live_map = {
     "axiom-count": live["axiom_count"],
     "rule-count": live["rule_count"],
     "base-count": live["base_count"],
+    "dedekind-only-count": live["dedekind_only_count"],
     "dense-only-count": live["dense_only_count"],
     "discrete-only-count": live["discrete_only_count"],
     "sorry-total": live["sorry_total"],
@@ -216,7 +218,12 @@ expected_table = {
     "BXCanonical/": live["sorry_bxcanonical"],
     "Bundle/": live["sorry_bundle"],
     "WeakCanonical/": live["sorry_weakcanonical"],
-    "Core/, ConservativeExtension/, Decidability/, Relational/, SoundnessLemmas/, top-level": live["sorry_other"],
+    # Label must track typst-status-counts.sh's emitted row label exactly.
+    # ConservativeExtension/ and Relational/ were archived/removed and dropped
+    # from the generator's label and sum; this expectation was not updated at
+    # the time, and the drift stayed masked only because the committed
+    # status.typ was itself stale.
+    "Core/, Decidability/, SoundnessLemmas/, top-level": live["sorry_other"],
 }
 for k, v in expected_table.items():
     committed_v = committed_table.get(k, "MISSING")

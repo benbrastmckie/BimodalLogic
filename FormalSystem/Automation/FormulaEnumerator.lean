@@ -1420,6 +1420,15 @@ def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.density φ⟩
   | 41 => return some ⟨_, Axiom.dense_indicator⟩
+  | 42 => do
+    let φ ← randomSubFormula atoms maxParamSize
+    return some ⟨_, Axiom.prior_U_gap φ⟩
+  | 43 => do
+    let φ ← randomSubFormula atoms maxParamSize
+    return some ⟨_, Axiom.prior_S_gap φ⟩
+  | 44 => do
+    let φ ← randomSubFormula atoms maxParamSize
+    return some ⟨_, Axiom.sep φ⟩
   | _ => return none
 
 /-- Pick a random schema index compatible with the given FrameClass. -/
@@ -1429,8 +1438,9 @@ def pickSchemaIdx (_atoms : List Atom) (_maxParamSize : Nat) (fc : FrameClass) :
     | .Base => List.range 37  -- indices 0-36 are Base
     | .Dense => (List.range 37) ++ [40, 41]
     | .Discrete => (List.range 37) ++ [37, 38, 39]
-    -- `Dedekind` sits strictly above `Dense`, so it admits the Base and Dense schemas.
-    | .Dedekind => (List.range 37) ++ [40, 41]
+    -- `Dedekind` sits strictly above `Dense`, so it admits the Base and Dense schemas,
+    -- plus its own three Reynolds schemas at indices 42-44.
+    | .Dedekind => (List.range 37) ++ [40, 41, 42, 43, 44]
   let idx ← IO.rand 0 (allowed.length - 1)
   match allowed[idx]? with
   | some i => return i

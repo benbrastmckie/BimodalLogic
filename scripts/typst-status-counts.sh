@@ -45,11 +45,13 @@ cd "${BIMODAL_DIR}"
 AXIOM_COUNT=$(awk '/^inductive Axiom/,/deriving Repr/' ProofSystem/Axioms.lean | grep -c '^  | ')
 
 # Frame-class assignment breakdown (Axiom.minFrameClass, Axioms.lean):
-# Dense-only and Discrete-only counts come from explicit match arms; Base
-# is everything else (the `_ => .Base` catch-all).
+# Dense-only, Discrete-only and Dedekind-only counts come from explicit match
+# arms; Base is everything else (the `_ => .Base` catch-all). Every non-Base
+# tier MUST be subtracted here -- omitting one silently inflates base_count.
 DENSE_ONLY_COUNT=$(awk '/^def Axiom.minFrameClass/,/^theorem FrameClass.base_le/' ProofSystem/Axioms.lean | grep -c '=> \.Dense')
 DISCRETE_ONLY_COUNT=$(awk '/^def Axiom.minFrameClass/,/^theorem FrameClass.base_le/' ProofSystem/Axioms.lean | grep -c '=> \.Discrete')
-BASE_COUNT=$((AXIOM_COUNT - DENSE_ONLY_COUNT - DISCRETE_ONLY_COUNT))
+DEDEKIND_ONLY_COUNT=$(awk '/^def Axiom.minFrameClass/,/^theorem FrameClass.base_le/' ProofSystem/Axioms.lean | grep -c '=> \.Dedekind')
+BASE_COUNT=$((AXIOM_COUNT - DENSE_ONLY_COUNT - DISCRETE_ONLY_COUNT - DEDEKIND_ONLY_COUNT))
 
 # ---------------------------------------------------------------------------
 # DerivationTree rule count
@@ -149,6 +151,7 @@ JSON=$(cat << EOF
   "base_count": ${BASE_COUNT},
   "dense_only_count": ${DENSE_ONLY_COUNT},
   "discrete_only_count": ${DISCRETE_ONLY_COUNT},
+  "dedekind_only_count": ${DEDEKIND_ONLY_COUNT},
   "sorry_total": ${SORRY_TOTAL_INCL_BONEYARD},
   "sorry_total_excl_boneyard": ${SORRY_TOTAL_EXCL_BONEYARD},
   "sorry_algebraic": ${SORRY_ALGEBRAIC},
@@ -193,6 +196,7 @@ cat > "${OUT_TYP}" << EOF
 #let base-count = ${BASE_COUNT}
 #let dense-only-count = ${DENSE_ONLY_COUNT}
 #let discrete-only-count = ${DISCRETE_ONLY_COUNT}
+#let dedekind-only-count = ${DEDEKIND_ONLY_COUNT}
 
 #let sorry-total = ${SORRY_TOTAL_INCL_BONEYARD}
 #let sorry-total-excl-boneyard = ${SORRY_TOTAL_EXCL_BONEYARD}

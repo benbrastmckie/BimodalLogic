@@ -76,7 +76,7 @@ Source files for the 36 original theorems:
   temporal_necessitation (991, 9.8%), temporal_duality (63, 0.6%),
   necessitation (49, 0.5%)
 - Temporal rule coverage: 1103/10063 = 11.0% (target: >= 10%)
-- 31 of 42 axiom names present (up from 13)
+- 31 of 45 axiom names present (up from 13)
 - 5 of 7 inference rules present (assumption/weakening absent since
   all registered theorems derive from empty context)
 - lake build passes with no regressions
@@ -1512,11 +1512,17 @@ def theoremRegistry : List TheoremEntry := [
 /-!
 ## Coverage Tracking
 
-Canonical lists of all 42 axiom names and 7 inference rule names,
+Canonical lists of all 45 axiom names and 7 inference rule names,
 plus functions to compute and print coverage after extraction.
 -/
 
-/-- All 42 canonical axiom name strings, matching `Axiom.toName` output. -/
+/-- All 45 canonical axiom name strings, matching `Axiom.toName` output.
+
+**DUPLICATION WARNING**: this list is a second, independent copy of the canonical list in
+`FormalSystem/Automation/AxiomNames.lean`. This module is a `lean_exe` root and declares its
+own `main`, so it cannot import `BenchmarkAnchors.lean`; the copy exists for that reason but
+does not import `AxiomNames.lean` either. When a constructor is added to `inductive Axiom`,
+BOTH lists must be updated in the same change. -/
 def allAxiomNames : List String :=
   [ -- Layer 1: Propositional (4)
     "prop_k", "prop_s", "ex_falso", "peirce",
@@ -1546,7 +1552,9 @@ def allAxiomNames : List String :=
     -- Layer 7: Z1 Axiom (1)
     "z1",
     -- Layer 8: Density Axioms (2)
-    "density", "dense_indicator"
+    "density", "dense_indicator",
+    -- Layer 9: Reynolds Dedekind Axioms (3)
+    "prior_U_gap", "prior_S_gap", "sep"
   ]
 
 /-- All 7 canonical inference rule name strings. -/

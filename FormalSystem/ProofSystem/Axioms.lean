@@ -353,6 +353,52 @@ inductive Axiom : Formula → Type where
   but U(⊤,⊥) is true on ℤ). -/
   | dense_indicator :
       Axiom (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).neg
+  -- Layer 9: Reynolds Dedekind Axioms (3)
+  -- Reynolds' definable-gap-freeness axioms for real flow, printed p.168 of
+  -- "An axiomatization for Until and Since over the reals without the IRR rule" (1992).
+  -- These use the abbreviations `Formula.kPlus` / `Formula.kMinus`
+  -- (K⁺A = ¬U(⊤,¬A), K⁻A = ¬S(⊤,¬A)) defined in `Syntax/Formula.lean`.
+  --
+  -- These axioms do NOT characterize Dedekind completeness -- no temporal formula can.
+  -- Reynolds (printed p.169) is explicit that they enforce only a *definably*
+  -- Dedekind-complete model: "there may be gaps in the order but ... you wouldn't know
+  -- that just looking at the behaviour of temporal formulas". They are the axiomatic proxy.
+  /-- Prior-U (gap form): `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)`.
+  If φ holds throughout some initial future segment and ¬φ holds somewhere in the future,
+  then the φ-region has a definable upper endpoint: reading forward, `¬φ ∨ K⁺(¬φ)` holds
+  until φ. On a Dedekind-complete flow the supremum of the φ-region exists and witnesses
+  this; on a gappy flow it can fail.
+
+  **Source**: Reynolds 1992, printed p.168, axiom "Prior-U" of the system US/R.
+
+  **THIS IS NOT `prior_UZ`.** `Axiom.prior_UZ` (above) is the *integer well-ordering* Prior
+  axiom `F(φ) → U(φ,¬φ)` at `FrameClass.Discrete`. Different statement, different frame
+  class, confusingly similar name. Do not reuse, rename, generalize, or "unify" them. -/
+  | prior_U_gap (φ : Formula) :
+      Axiom ((Formula.and (Formula.untl Formula.top φ) φ.neg.someFuture).imp
+        (Formula.untl (Formula.or φ.neg (Formula.kPlus φ.neg)) φ))
+  /-- Prior-S (gap form): `S(⊤,φ) ∧ P(¬φ) → S(¬φ ∨ K⁻(¬φ), φ)`.
+  Past dual of `prior_U_gap`; the φ-region has a definable lower endpoint (an infimum).
+
+  **Source**: Reynolds 1992, printed p.168, axiom "Prior-S" of the system US/R.
+
+  **THIS IS NOT `prior_SZ`**, which is the integer well-ordering axiom
+  `P(φ) → S(φ,¬φ)` at `FrameClass.Discrete`. See the caveat on `prior_U_gap`. -/
+  | prior_S_gap (φ : Formula) :
+      Axiom ((Formula.and (Formula.snce Formula.top φ) φ.neg.somePast).imp
+        (Formula.snce (Formula.or φ.neg (Formula.kMinus φ.neg)) φ))
+  /-- Sep (separation): `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)`.
+  Reynolds' separation axiom. Its semantic validity over ℝ turns on the separability of the
+  reals (ℝ has a countable dense suborder), though Sep does not *characterize* separability —
+  Reynolds notes the long line satisfies it too.
+
+  **Source**: Reynolds 1992, printed p.168. Reynolds defers the validity proof there:
+  "we investigate this axiom in more detail in section 7 and defer proving its validity in
+  ℝ until lemma 10 there." -/
+  | sep (φ : Formula) :
+      Axiom ((Formula.and (Formula.kPlus φ)
+        (Formula.kPlus (Formula.and φ (Formula.untl φ φ.neg))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ))))
   deriving Repr
 
 /--
@@ -382,8 +428,11 @@ The four frame classes form a partial order:
 This is a primary-source placement, not an intuition. Reynolds 1992 (printed p.168) lists,
 as part of the axiomatization US/R for real flow, "axioms for density and no end points:
 `K⁺⊤`, `K⁻⊤`, `F⊤`, `P⊤`". Unfolding the abbreviation `K⁺A = ¬U(⊤,¬A)` gives
-`K⁺⊤ = ¬U(⊤,¬⊤) = ¬U(⊤,⊥)`, which is *literally* this tree's `dense_indicator`
-(see `Axiom.dense_indicator` above). So Reynolds' Dedekind/real axiom set genuinely contains
+`K⁺⊤ = ¬U(⊤,¬⊤)`, and normalising `¬⊤` to `⊥` gives `¬U(⊤,⊥)` — this tree's
+`dense_indicator` (see `Axiom.dense_indicator` above). (The two are equal after that
+normalisation, not syntactically identical: `Formula.top.neg` is `(⊥ → ⊥) → ⊥`, not `⊥`.)
+Likewise `F⊤` and `P⊤` are the tree's `serial_future` / `serial_past`. So Reynolds'
+Dedekind/real axiom set genuinely contains
 the tree's density axiom, and a Dedekind derivation must be allowed to use it. Making
 `Dedekind` a fresh incomparable leaf would render `density` and `dense_indicator`
 inadmissible in `DerivationTree .Dedekind` and so could not host Reynolds' system at all.
@@ -453,6 +502,14 @@ This is the single source of truth for axiom-frame-class compatibility:
 - Base (37 axioms): valid on all linear temporal orders
 - Dense (2 axioms: density, dense_indicator): valid on densely ordered frames
 - Discrete (3 axioms: prior_UZ, prior_SZ, z1): valid on discrete frames
+- Dedekind (3 axioms: prior_U_gap, prior_S_gap, sep): valid on dense
+  Dedekind-complete frames
+
+Total: 45 axiom constructors.
+
+Since `Dense ≤ Dedekind`, a `DerivationTree FrameClass.Dedekind` admits the Base axioms,
+the two Dense axioms, and the three Dedekind axioms — but not the Discrete ones
+(`Discrete` and `Dedekind` are incomparable).
 
 The constraint `ax.minFrameClass ≤ fc` in DerivationTree's axiom constructor
 ensures that only axioms compatible with frame class `fc` can appear in a
@@ -464,6 +521,9 @@ def Axiom.minFrameClass {φ : Formula} : Axiom φ → FrameClass
   | prior_UZ _ => .Discrete
   | prior_SZ _ => .Discrete
   | z1 _ => .Discrete
+  | prior_U_gap _ => .Dedekind
+  | prior_S_gap _ => .Dedekind
+  | sep _ => .Dedekind
   | _ => .Base
 
 /-- Base is the minimum frame class: `FrameClass.Base ≤ fc` for all `fc`. -/

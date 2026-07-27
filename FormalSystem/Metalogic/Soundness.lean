@@ -880,6 +880,10 @@ theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ Fr
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
+  | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
@@ -936,6 +940,10 @@ theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass 
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
+  | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -997,6 +1005,10 @@ theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc :
   | prior_UZ φ => exact prior_UZ_valid φ
   | prior_SZ φ => exact prior_SZ_valid φ
   | z1 φ => exact z1_valid φ
+  -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
+  | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
 
 /-! ## Full Derivation Soundness
 
@@ -1101,6 +1113,10 @@ theorem soundness (Γ : Context) (φ : Formula)
     | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
+    | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1269,6 +1285,10 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
+    | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>

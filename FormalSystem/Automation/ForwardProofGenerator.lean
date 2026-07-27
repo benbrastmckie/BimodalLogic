@@ -146,7 +146,7 @@ def ProofPool.filter {fc : FrameClass} (pool : ProofPool fc)
 /-! ## Axiom Instantiation with DerivationTree Witness -/
 
 /--
-List of human-readable schema names for all 42 axiom constructors,
+List of human-readable schema names for all 45 axiom constructors,
 in the same order as the indices used by `mkAxiomAtIdx`.
 -/
 def schemaNames : List String :=
@@ -167,7 +167,8 @@ def schemaNames : List String :=
       "discrete_box_necessity"
   , "prior_UZ", "prior_SZ"
   , "z1"
-  , "density", "dense_indicator" ]
+  , "density", "dense_indicator"
+  , "prior_U_gap", "prior_S_gap", "sep" ]
 
 /-- Layer classification for axiom schemata. -/
 inductive Layer where
@@ -179,6 +180,7 @@ inductive Layer where
   | Prior
   | Z1
   | Density
+  | ReynoldsDedekind
   deriving Inhabited, Repr, BEq
 
 /-- Map a schema index to its layer. -/
@@ -193,6 +195,7 @@ def schemaLayer (idx : Nat) : Layer :=
   | 37 | 38 => .Prior
   | 39 => .Z1
   | 40 | 41 => .Density
+  | 42 | 43 | 44 => .ReynoldsDedekind
   | _ => .Propositional
 
 /-- Pick a random schema name (for diversity tracking). Respects the frame class filter. -/

@@ -13,7 +13,7 @@ import FormalSystem.Automation.AxiomNames
 # Machine Appendix Export - Shipped Machine-Readable Axiomatization
 
 This module exports the complete TM axiomatization as a JSONL artifact shipped
-with the BimodalReference book: the 42 axiom schemata, the 7 inference rules of
+with the BimodalReference book: the 45 axiom schemata, the 7 inference rules of
 `DerivationTree`, and the derived-operator definitions, in the same formula
 encoding as the dataset pipeline (`Formula.toJson` tag schema).
 
@@ -35,7 +35,7 @@ and the rule *count* is cross-checked against the live source by
 ## Coverage Assertions
 
 `main` fails with a nonzero exit unless:
-- exactly 42 axiom entries are present, with name multiset equal to
+- exactly 45 axiom entries are present, with name multiset equal to
   `FormalSystem.Automation.allAxiomNames` (shared with `BenchmarkAnchors.lean` via
   `Automation/AxiomNames.lean`; no missing, no extra, no duplicates);
 - exactly 7 inference-rule entries are present.
@@ -66,10 +66,10 @@ Invoked by `scripts/typst-machine-appendix.sh`, which injects the git stamps
 
 ## References
 
-- `FormalSystem.ProofSystem.Axioms` — the 42 `Axiom` constructors and `FrameClass`
+- `FormalSystem.ProofSystem.Axioms` — the 45 `Axiom` constructors and `FrameClass`
 - `FormalSystem.ProofSystem.Derivation` — the 7 `DerivationTree` constructors
 - `FormalSystem.Automation.DataExport` — `Formula.toJson`, `prettyPrint`, escaping
-- `FormalSystem.Automation.AxiomNames` — `allAxiomNames` (canonical 42-name list)
+- `FormalSystem.Automation.AxiomNames` — `allAxiomNames` (canonical 45-name list)
 -/
 
 namespace FormalSystem.Automation.MachineAppendixExport
@@ -113,11 +113,12 @@ def strJson (s : String) : String :=
 def strListJson (ss : List String) : String :=
   listToJsonArray (ss.map strJson)
 
-/-- Explicit 3-case `FrameClass` serialization (no `Repr` output dependence). -/
+/-- Explicit 4-case `FrameClass` serialization (no `Repr` output dependence). -/
 def frameClassToString : FrameClass → String
   | .Base => "Base"
   | .Dense => "Dense"
   | .Discrete => "Discrete"
+  | .Dedekind => "Dedekind"
 
 /-!
 ## Axiom Entries (implicit-index extraction)
@@ -175,9 +176,11 @@ def layerPrior : String := "Prior"
 def layerZ1 : String := "Z1"
 /-- Layer name: Density (Layer 8, 2 axioms). -/
 def layerDensity : String := "Density"
+/-- Layer name: Reynolds Dedekind (Layer 9, 3 axioms). -/
+def layerReynoldsDedekind : String := "Reynolds Dedekind"
 
 /--
-All 42 axiom entries, in `Axioms.lean` source order (the same order as
+All 45 axiom entries, in `Axioms.lean` source order (the same order as
 `BenchmarkAnchors.allAxiomNames`). Each entry applies the real constructor to
 schematic atoms; the schema formula and frame class are extracted from the
 resulting `Axiom φ` witness, never transcribed.
@@ -246,6 +249,10 @@ def allAxiomEntries : List AxiomEntry :=
     -- Layer 8: Density (2)
   , mkAxiomEntry "density" layerDensity ["φ"] (Axiom.density phiS)
   , mkAxiomEntry "dense_indicator" layerDensity [] Axiom.dense_indicator
+    -- Layer 9: Reynolds Dedekind (3)
+  , mkAxiomEntry "prior_U_gap" layerReynoldsDedekind ["φ"] (Axiom.prior_U_gap phiS)
+  , mkAxiomEntry "prior_S_gap" layerReynoldsDedekind ["φ"] (Axiom.prior_S_gap phiS)
+  , mkAxiomEntry "sep" layerReynoldsDedekind ["φ"] (Axiom.sep phiS)
   ]
 
 /-!
@@ -424,7 +431,7 @@ def metadataLine (cfg : Config) (axCount ruleCount opCount : Nat) : String :=
 
 /--
 Coverage check mirroring `BenchmarkAnchors.checkCoverage`: the axiom entry
-names must be exactly the 42 names in `allAxiomNames` (no missing, no extra,
+names must be exactly the 45 names in `allAxiomNames` (no missing, no extra,
 no duplicates), and there must be exactly 7 rule entries. Returns diagnostics
 (empty list = pass).
 -/
@@ -433,8 +440,8 @@ def coverageDiagnostics : List String :=
   let missing := allAxiomNames.filter (fun n => !(names.contains n))
   let extra := names.filter (fun n => !(allAxiomNames.contains n))
   let dups := names.length - names.eraseDups.length
-  let d1 := if allAxiomEntries.length == 42 then []
-    else [s!"axiom entry count {allAxiomEntries.length} ≠ 42"]
+  let d1 := if allAxiomEntries.length == 45 then []
+    else [s!"axiom entry count {allAxiomEntries.length} ≠ 45"]
   let d2 := if missing.isEmpty then []
     else [s!"missing axiom entries: {missing}"]
   let d3 := if extra.isEmpty then []
@@ -447,7 +454,7 @@ def coverageDiagnostics : List String :=
 
 /--
 Entry point: verify coverage, then stream the JSONL artifact (metadata line
-first, then 42 axiom lines, 7 rule lines, and the derived-operator lines).
+first, then 45 axiom lines, 7 rule lines, and the derived-operator lines).
 Exits nonzero with diagnostics on any coverage mismatch.
 -/
 def main (args : List String) : IO UInt32 := do

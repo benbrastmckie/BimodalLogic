@@ -206,7 +206,7 @@ def computeCoverage (dist : StepDistribution) : Nat × Nat × Nat × Nat :=
   let totalRules := 7  -- axiom, assumption, modus_ponens, necessitation, temporal_necessitation,
   -- temporal_duality, weakening
   let axiomsCovered := dist.axiomHistogram.size
-  let totalAxioms := 42
+  let totalAxioms := 45
   (rulesCovered, totalRules, axiomsCovered, totalAxioms)
 
 /-!

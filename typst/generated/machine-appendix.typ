@@ -8,13 +8,13 @@
 // which is produced by the Lean exporter (interpreted via `lake env lean
 // --run`) with schema formulas extracted from the Axiom type index --
 // never hand-copied.
-// Stamped from live source at commit ccc006e0a (2026-07-27).
+// Stamped from live source at commit 39d9e8690 (2026-07-27).
 // ============================================================================
 
-#let stamp-commit = "ccc006e0a"
+#let stamp-commit = "39d9e8690"
 #let stamp-date = "2026-07-27"
 
-#let machine-axiom-count = 42
+#let machine-axiom-count = 45
 #let machine-rule-count = 7
 #let machine-derived-op-count = 21
 
@@ -61,6 +61,9 @@
   ("z1", "Z1", "φ", "Discrete", "((U((((U((φ → ⊥), (⊥ → ⊥)) → ⊥) → φ) → ⊥), (⊥ → ⊥)) → ⊥) → (U((U((φ → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → (U((φ → ⊥), (⊥ → ⊥)) → ⊥)))"),
   ("density", "Density", "φ", "Dense", "((U(((U((φ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (U((φ → ⊥), (⊥ → ⊥)) → ⊥))"),
   ("dense_indicator", "Density", "", "Dense", "(U((⊥ → ⊥), ⊥) → ⊥)"),
+  ("prior_U_gap", "Reynolds Dedekind", "φ", "Dedekind", "(((U((⊥ → ⊥), φ) → (U((φ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → U((((φ → ⊥) → ⊥) → (U((⊥ → ⊥), ((φ → ⊥) → ⊥)) → ⊥)), φ))"),
+  ("prior_S_gap", "Reynolds Dedekind", "φ", "Dedekind", "(((S((⊥ → ⊥), φ) → (S((φ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → S((((φ → ⊥) → ⊥) → (S((⊥ → ⊥), ((φ → ⊥) → ⊥)) → ⊥)), φ))"),
+  ("sep", "Reynolds Dedekind", "φ", "Dedekind", "((((U((⊥ → ⊥), (φ → ⊥)) → ⊥) → (((U((⊥ → ⊥), (((φ → (U(φ, (φ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((⊥ → ⊥), ((((U((⊥ → ⊥), (φ → ⊥)) → ⊥) → ((S((⊥ → ⊥), (φ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥))"),
 )
 
 #let rule-table = (
