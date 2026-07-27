@@ -413,29 +413,73 @@ declared parallel pair in the engine.
 - **Timing:** 3 hours.
 - **Depends on:** none
 
-### Phase 3: The limit set — definition and consistency [NOT STARTED]
+### Phase 3: The limit set — definition and consistency [PARTIAL]
 
 - **Goal:** Define the limit-MCS candidate at a real point and prove it consistent.
 - **Owns:** `FormalSystem/Metalogic/Bundle/LimitMCS.lean` (new),
   `FormalSystem/Metalogic/Bundle.lean` (import line only).
 - **Tasks:**
-  - [ ] Define `limitSetBelow (m : Rat → Set Formula) (r : ℝ) : Set Formula :=
+  - [x] Define `limitSetBelow (m : Rat → Set Formula) (r : ℝ) : Set Formula :=
         {A | ∃ z : ℝ, z < r ∧ ∀ q : Rat, z < (q:ℝ) → (q:ℝ) < r → A ∈ m q}` — "eventually true
         approaching `r` from below". Define the dual `limitSetAbove` for the past side.
-  - [ ] Prove `limitSetBelow_mono_directed`: the defining family is directed, so finite subsets
+        *(Landed verbatim as specified; `limitSetAbove` uses the mirrored witness `r < z`.)*
+  - [x] Prove `limitSetBelow_mono_directed`: the defining family is directed, so finite subsets
         of `limitSetBelow m r` share a common witness interval. Use `exists_rat_btwn` /
         `Rat.denselyOrdered` for the non-emptiness of `ℚ ∩ (z, r)`.
-  - [ ] Prove `limitSetBelow_consistent`: given `∀ q, SetMaximalConsistent (fc := fc) (m q)`,
+        *(Landed with its dual `limitSetAbove_mono_directed`; list induction taking `max`/`min`
+        of thresholds. `exists_rat_btwn` is used one step later, in the consistency proof, where
+        the non-emptiness of `ℚ ∩ (z, r)` is actually consumed.)*
+  - [x] Prove `limitSetBelow_consistent`: given `∀ q, SetMaximalConsistent (fc := fc) (m q)`,
         every finite subset of `limitSetBelow m r` is contained in a single `m q`, hence
         `SetConsistent (fc := fc) (limitSetBelow m r)`.
+        *(deviation: altered — the "contained in a single `m q`" step was factored out as its own
+        named lemma `limitSetBelow_finite_subset_mem` (plus dual), because Phases 6 and 7 need the
+        common-witness rational itself, not merely the consistency conclusion. Both duals landed.)*
   - [ ] Prove `limitSetBelow_of_rat`: for `r = (q : ℝ)` with `q : Rat`, the limit set agrees
         with `m q` on membership. (This is what makes the extension *extend* rather than replace;
         it consumes the `Rat`-family's own `forward_G`/`backward_H` coherence.)
-  - [ ] `lake build FormalSystem.Metalogic.Bundle.LimitMCS`.
+        *(deviation: BLOCKED as written — the agreement claim is false; see the BLOCKER block
+        below. A sorry-free `limitSetBelow_of_rat` was landed stating the coherence transfer that
+        is actually available, and the falsity of the stronger claim is documented in the module
+        docstring.)*
+  - [x] `lake build FormalSystem.Metalogic.Bundle.LimitMCS`.
 - **Estimated output:** ~200 lines.
 - **Done when:** all four declarations are sorry-free and the module builds.
 - **Timing:** 4 hours.
 - **Depends on:** 1
+
+**BLOCKER** (Phase 3, task 4 only — tasks 1-3 are complete and sorry-free):
+
+- **What failed**: `limitSetBelow_of_rat` as written — "for `r = (q : ℝ)` with `q : Rat`, the
+  limit set agrees with `m q` on membership". Neither inclusion is derivable, and neither is
+  true.
+- **Counterexample**: let `P` be an atom, and let the family `m` be the theory-family of a
+  genuine dense model in which `P` holds at every rational `p < 0` and fails at `0`. Every FMCS
+  field is satisfied (they are semantic consequences), yet `P ∈ limitSetBelow m 0` while
+  `P ∉ m 0`. The mirror construction (`P` at `0` only) refutes the other inclusion.
+- **Current behavior**: `FMCS.forward_G` and `FMCS.backward_H` (`Bundle/FMCSDef.lean:110,118`)
+  are both stated with **strict** inequalities, matching TM's strict temporal operators. Nothing
+  relates membership *at* `q` to membership *strictly below* `q`; there is no `H φ → φ` axiom to
+  appeal to, since `allPast` is the strict past operator.
+- **Required behavior**: what coherence does transfer is whole-past / whole-future content, and
+  that is what landed sorry-free: `limitSetBelow_of_rat` now reads
+  `allPast A ∈ m q → A ∈ limitSetBelow m (q : ℝ)` (consumes `backward_H`), with dual
+  `limitSetAbove_of_rat` reading `allFuture A ∈ m q → A ∈ limitSetAbove m (q : ℝ)`
+  (consumes `forward_G`). The coherence field is taken as an explicit hypothesis so the lemma is
+  usable before the real-carrier family is assembled.
+- **Isolation**: this is a defect in the plan step, not in the code. It does not touch tasks 1-3,
+  does not affect Phase 4 (whose subject is `limitMCS_no_oscillation` on a *fixed* real `r`, with
+  no appeal to rational agreement), and does not affect Phase 5.
+- **What is needed to unblock**: a Phase 6 design decision, since Phase 6 owns `FMCS.toReal`.
+  The extension must select `m q` **directly** at rational arguments rather than taking a
+  one-sided limit there — i.e. `mcs r := if h : ∃ q : Rat, (q : ℝ) = r then m h.choose else
+  limitSetBelow m r` (or the equivalent via `Rat.cast_injective`) — at which point genuine
+  agreement at rational points holds by definition and the "extend rather than replace" property
+  the plan step was reaching for is recovered. Phase 6's `forward_G`/`backward_H`/`modal_*`
+  obligations then acquire a rational/irrational case split that the plan's Phase 6 task list
+  does not currently anticipate.
+- **Prohibited**: no `sorry`, no `def X := True`, no vacuous placeholder was introduced; the
+  module is sorry-free and the live sorry census is unchanged.
 
 ### Phase 4: Negation-completeness of the limit set via Prior-U / Prior-S [NOT STARTED]
 
