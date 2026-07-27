@@ -455,12 +455,12 @@ tactic. The `PartialOrder` rework itself needed only `trivial` for the 64-case `
 - **Commit here** (`task 391 phase 2: FrameClass.Dedekind constructor and order rework`) — first
   full-green milestone.
 
-### Phase 3: ValidDedekind, ValidDedekindDense, and validity bridges [NOT STARTED]
+### Phase 3: ValidDedekind, ValidDedekindDense, and validity bridges [COMPLETED]
 
 - **Goal:** Two new semantic predicates and two forgetful bridges from `valid`, all sorry-free.
 - **Owns:** `FormalSystem/Semantics/Validity.lean` (exclusive).
 - **Tasks:**
-  - [ ] Add `ValidDedekind` after `ValidDiscrete` (`:187-193`), using research Variant B
+  - [x] Add `ValidDedekind` after `ValidDiscrete` (`:187-193`), using research Variant B
         verbatim (compile-verified in the research probe):
         ```lean
         def ValidDedekind (φ : Formula) : Prop :=
@@ -472,13 +472,13 @@ tactic. The `PartialOrder` rework itself needed only `trivial` for the 64-case `
             TruthAt M Omega τ t φ
         ```
         `DenselyOrdered` is deliberately absent — see SETTLED decision 2.
-  - [ ] Add `ValidDedekindDense`: identical, plus `[DenselyOrdered D]`.
-  - [ ] Docstring `ValidDedekind` with the Reynolds "definably Dedekind complete" transcription
+  - [x] Add `ValidDedekindDense`: identical, plus `[DenselyOrdered D]`.
+  - [x] Docstring `ValidDedekind` with the Reynolds "definably Dedekind complete" transcription
         (printed p.169) and an explicit note that `ℤ` satisfies these binders, that `density`
         and `dense_indicator` are FALSE on `ℤ`, and that therefore `soundness_dedekind` targets
         `ValidDedekindDense`, not this predicate.
-  - [ ] Docstring `ValidDedekindDense` as the real-flow predicate and the soundness target.
-  - [ ] Add both bridges in `namespace Validity` beside `valid_implies_valid_dense` (`:200`) and
+  - [x] Docstring `ValidDedekindDense` as the real-flow predicate and the soundness target.
+  - [x] Add both bridges in `namespace Validity` beside `valid_implies_valid_dense` (`:200`) and
         `valid_implies_valid_discrete` (`:207`). The first body was proved sorry-free in the
         research probe:
         ```lean
@@ -486,7 +486,7 @@ tactic. The `PartialOrder` rework itself needed only `trivial` for the 64-case `
           fun D _ _ _ _ _ F M Omega hO τ hτ t => h D F M Omega hO τ hτ t
         ```
         Add `valid_implies_validDedekindDense` with one extra `_` binder.
-  - [ ] Optionally add `validDedekindDense_of_validDedekind` (forgetting `DenselyOrdered` is a
+  - [x] Optionally add `validDedekindDense_of_validDedekind` (forgetting `DenselyOrdered` is a
         weakening in the wrong direction — check the binder order before asserting it; if it does
         not typecheck in one attempt, omit it rather than fighting it).
 - **Verification (green criterion):** `lake build FormalSystem.Semantics.Validity` exits 0, then
@@ -497,23 +497,23 @@ tactic. The `PartialOrder` rework itself needed only `trivial` for the 64-case `
 - **Timing:** ~1 hour.
 - **Depends on:** 2
 
-### Phase 4: DedekindTemporalFrame marker class [NOT STARTED]
+### Phase 4: DedekindTemporalFrame marker class [COMPLETED]
 
 - **Goal:** Side-car parity: a `DedekindTemporalFrame` marker class alongside the existing four.
 - **Owns:** `FormalSystem/FrameConditions/FrameClass.lean` (exclusive).
 - **Tasks:**
-  - [ ] Add `class DedekindTemporalFrame (D : Type) [AddCommGroup D] [LinearOrder D]
+  - [x] Add `class DedekindTemporalFrame (D : Type) [AddCommGroup D] [LinearOrder D]
         [IsOrderedAddMonoid D] : Prop` following the shape of `DiscreteTemporalFrame` (`:148`)
         and `DenseTemporalFrame` (`:124`), carrying the conditional-completeness field
         `lub_exists : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x`.
-  - [ ] Add the derivation `instance` in the style of `:129`/`:154` (from a
+  - [x] Add the derivation `instance` in the style of `:129`/`:154` (from a
         `ConditionallyCompleteLinearOrder D` instance where one is in scope).
-  - [ ] Add a `DedekindTemporalFrame.mk'` convenience theorem mirroring `DenseTemporalFrame.mk'`
+  - [x] Add a `DedekindTemporalFrame.mk'` convenience theorem mirroring `DenseTemporalFrame.mk'`
         (`:215`) and `DiscreteTemporalFrame.mk'` (`:223`).
-  - [ ] Docstring MUST open with the side-car warning: this class is NOT consumed by
+  - [x] Docstring MUST open with the side-car warning: this class is NOT consumed by
         `Soundness.lean` or `Completeness.lean`; those consume the instance-binder predicates in
         `Semantics/Validity.lean`.
-  - [ ] Do NOT add an `instance : DedekindTemporalFrame Int` next to `:203` unless it builds in a
+  - [x] Do NOT add an `instance : DedekindTemporalFrame Int` next to `:203` unless it builds in a
         single attempt — `ConditionallyCompleteLinearOrder ℤ` is noncomputable.
 - **Verification (green criterion):** `lake build FormalSystem.FrameConditions.FrameClass` exits
   0, then full `lake build` exits 0; sorry count `= SORRY_BASELINE`.
@@ -524,6 +524,24 @@ tactic. The `PartialOrder` rework itself needed only `trivial` for the 64-case `
   optional per SCOPE item 4 and must not expand.
 - **Timing:** ~1 hour.
 - **Depends on:** 2
+
+**Phase 3-4 completion note.** All four Phase 3 declarations landed, including the optional
+`validDedekindDense_of_validDedekind` — it typechecked on the first attempt, so the plan's
+"omit rather than fight it" escape was not needed. The plan's parenthetical worried the
+forgetting direction might be backwards; it is not. `ValidDedekind` quantifies over a *larger*
+class of `D` (no `DenselyOrdered` binder), so `ValidDedekind φ → ValidDedekindDense φ` is the
+correct and provable direction, by instantiating at a densely-ordered `D`.
+`#print axioms` on `valid_implies_validDedekind` reports `[propext]` — no `sorryAx`.
+
+Phase 4 landed the class, the `SerialFrame` derivation instance, `mk'`, and additionally
+`DedekindTemporalFrame.of_conditionallyComplete`. Two shape decisions worth recording:
+`DedekindTemporalFrame` does NOT take a `[DenselyOrdered D]` binder (mirroring `ValidDedekind`,
+not `ValidDedekindDense`), and `of_conditionallyComplete` takes
+`[ConditionallyCompleteLinearOrder D]` **in place of** `[LinearOrder D]` rather than beside it,
+so there is exactly one `LinearOrder` path and no instance diamond. It is a `theorem`, not an
+`instance`, for the noncomputability reason the plan flagged. No `instance :
+DedekindTemporalFrame Int` was added, per the plan's explicit instruction.
+
 - **Commit after wave 3** (`task 391 phase 3-4: ValidDedekind predicates and Dedekind marker class`).
 
 ### Phase 5: Formula.kPlus/kMinus and the three Reynolds axiom constructors [NOT STARTED]

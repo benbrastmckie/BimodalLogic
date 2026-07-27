@@ -192,6 +192,75 @@ def ValidDiscrete (φ : Formula) : Prop :=
     (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
     TruthAt M Omega τ t φ
 
+/--
+A formula is valid over **Dedekind-complete** temporal orders if it is true in all models
+whose temporal type `D` has the least-upper-bound property, for all shift-closed `Omega`,
+all histories in `Omega`, and all times.
+
+Dedekind completeness is expressed by the explicit Prop-valued hypothesis
+
+  `∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x`
+
+rather than by swapping the tree's `[LinearOrder D]` binder for
+`[ConditionallyCompleteLinearOrder D]`. This is deliberate and strictly less invasive: every
+downstream `[LinearOrder D]`-indexed lemma continues to apply with no instance-unification
+risk.
+
+**`DenselyOrdered` is deliberately ABSENT from this binder list.** The integers carry a
+Mathlib `ConditionallyCompleteLinearOrder` instance
+(`Mathlib/Data/Int/ConditionallyCompleteOrder.lean`), so `ℤ` satisfies every binder of
+`ValidDedekind`. Including density here would silently narrow the predicate to real flow
+alone; the density-carrying variant is the separate `ValidDedekindDense` below.
+
+**This predicate is NOT the target of `soundness_dedekind`, and that is not an oversight.**
+`FrameClass.Dedekind` sits strictly above `FrameClass.Dense` (see the `FrameClass` docstring
+in `FormalSystem/ProofSystem/Axioms.lean`), so `Axiom.density` (`GGφ → Gφ`) and
+`Axiom.dense_indicator` (`¬U(⊤,⊥)`) are admissible in `DerivationTree FrameClass.Dedekind`.
+Both are FALSE on `ℤ`: for `density`, take `φ` true exactly at times `≥ t + 2`, so `GGφ` holds
+at `t` while `Gφ` fails; for `dense_indicator`, `U(⊤,⊥)` is true on `ℤ` because every point has
+an immediate successor. Since `ℤ` also satisfies the binders above, a
+`soundness_dedekind : DerivationTree .Dedekind … → ValidDedekind` would be refutable.
+`soundness_dedekind` therefore targets `ValidDedekindDense`. This predicate is landed as the
+strictly weaker statement and as the target of the forgetful bridge from `valid`.
+
+**Source.** Reynolds 1992 (printed p.169) observes that the Prior axioms enforce only a
+*definably* Dedekind-complete model: "there may be gaps in the order but ... you wouldn't know
+that just looking at the behaviour of temporal formulas". So no single axiom characterises this
+class; `Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep` are the definable-gap proxy.
+-/
+def ValidDedekind (φ : Formula) : Prop :=
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (F : TaskFrame D) (M : TaskModel F)
+    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
+    TruthAt M Omega τ t φ
+
+/--
+A formula is valid over **dense Dedekind-complete** temporal orders: `ValidDedekind` with
+`[DenselyOrdered D]` added to the binder list. This is the real-flow predicate — `ℝ` is the
+paradigm model, and `ℤ` is excluded by the density binder.
+
+**This is the target of `soundness_dedekind`**, not `ValidDedekind`. The reason is spelled out
+in the `ValidDedekind` docstring above and is worth restating, because the weaker-looking
+predicate is the wrong one: `FrameClass.Dedekind` lies above `FrameClass.Dense`, so `density`
+and `dense_indicator` are admissible in a `.Dedekind` derivation, and both are false on `ℤ` —
+which is Dedekind-complete. Do not "simplify" `soundness_dedekind` to target `ValidDedekind`;
+the result would be refutable.
+
+The placement of `Dedekind` above `Dense` is itself primary-source: Reynolds 1992 (printed
+p.168) includes in US/R "axioms for density and no end points: `K⁺⊤`, `K⁻⊤`, `F⊤`, `P⊤`", and
+`K⁺⊤ = ¬U(⊤,¬⊤) = ¬U(⊤,⊥)` is literally this tree's `Axiom.dense_indicator`.
+-/
+def ValidDedekindDense (φ : Formula) : Prop :=
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
+    [Nontrivial D]
+    (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (F : TaskFrame D) (M : TaskModel F)
+    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
+    TruthAt M Omega τ t φ
+
 namespace Validity
 
 /--
@@ -206,6 +275,34 @@ Validity implies validity over discrete orders: every valid formula is ValidDisc
 -/
 theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : ValidDiscrete φ :=
   fun D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
+
+/--
+Validity implies validity over Dedekind-complete orders: every valid formula is
+`ValidDedekind`. The least-upper-bound hypothesis is simply discarded — `valid` already
+quantifies over every `D` satisfying the weaker binder set.
+-/
+theorem valid_implies_validDedekind {φ : Formula} (h : valid φ) : ValidDedekind φ :=
+  fun D _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
+
+/--
+Validity implies validity over dense Dedekind-complete orders: every valid formula is
+`ValidDedekindDense`.
+-/
+theorem valid_implies_validDedekindDense {φ : Formula} (h : valid φ) : ValidDedekindDense φ :=
+  fun D _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
+
+/--
+`ValidDedekind` is strictly stronger than `ValidDedekindDense`: adding the `DenselyOrdered`
+binder restricts the class of temporal types quantified over, so validity on all
+Dedekind-complete orders entails validity on the dense ones.
+
+This is the bridge that makes the SETTLED soundness target coherent: `soundness_dedekind`
+proves the weaker `ValidDedekindDense`, and anything genuinely established at
+`ValidDedekind` can be transported into it via this lemma.
+-/
+theorem validDedekindDense_of_validDedekind {φ : Formula} (h : ValidDedekind φ) :
+    ValidDedekindDense φ :=
+  fun D _ _ _ _ _ h_lub F M Omega h_sc τ h_mem t => h D h_lub F M Omega h_sc τ h_mem t
 
 /--
 Valid formulas are semantic consequences of empty context.

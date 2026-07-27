@@ -156,6 +156,41 @@ instance (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [DiscreteTemporalFrame D] : SerialFrame D :=
   DiscreteTemporalFrame.toSerialFrame
 
+/-! ## Dedekind Temporal Frame -/
+
+/--
+Dedekind temporal frame: a serial frame whose temporal order has the least-upper-bound
+property.
+
+**READ THIS FIRST — this class is a side-car, not the load-bearing layer.** Neither
+`FormalSystem/Metalogic/Soundness.lean` nor `FormalSystem/Metalogic/BXCanonical/Completeness.lean`
+consumes `DedekindTemporalFrame`, exactly as neither consumes `DenseTemporalFrame` or
+`DiscreteTemporalFrame`. Those theorems consume the raw instance-binder validity predicates in
+`FormalSystem/Semantics/Validity.lean` (`ValidDedekind`, `ValidDedekindDense`). This class
+exists for parity with the four markers above and for callers that want a named bundle; adding
+a field here changes nothing about what is provable.
+
+**Frame Condition**: every nonempty bounded-above subset of `D` has a least upper bound.
+
+Unlike `DenseTemporalFrame`, `DenselyOrdered D` is **not** required — matching the binder set
+of `ValidDedekind`. `ℤ` satisfies this condition (Mathlib gives it a
+`ConditionallyCompleteLinearOrder` instance). For the real-flow class, add `[DenselyOrdered D]`
+to the binders, which corresponds to `ValidDedekindDense`.
+
+**Source**: Reynolds 1992 (printed p.168-169), the axiomatization US/R for real flow.
+-/
+class DedekindTemporalFrame (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] : Prop where
+  /-- Every nonempty bounded-above subset has a least upper bound. -/
+  lub_exists : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x
+  toSerialFrame : SerialFrame D := {}
+  toSerialFrame' : LinearTemporalFrame D := {}
+
+instance (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] [NoMaxOrder D] [NoMinOrder D]
+    [DedekindTemporalFrame D] : SerialFrame D :=
+  DedekindTemporalFrame.toSerialFrame
+
 /-! ## Instance Relationships -/
 
 /--
@@ -223,5 +258,35 @@ this constructs a `DiscreteTemporalFrame` instance.
 theorem DiscreteTemporalFrame.mk' (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] :
     DiscreteTemporalFrame D := {}
+
+/--
+Given a type `D` with the required structures and an explicit least-upper-bound witness,
+this constructs a `DedekindTemporalFrame` instance.
+
+Unlike `DenseTemporalFrame.mk'` and `DiscreteTemporalFrame.mk'`, this cannot be `{}`: the
+`lub_exists` field carries real content and has no default, which is the whole point of the
+class.
+-/
+theorem DedekindTemporalFrame.mk' (D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] [NoMaxOrder D] [NoMinOrder D]
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) :
+    DedekindTemporalFrame D :=
+  { lub_exists := h_lub }
+
+/--
+Any type carrying Mathlib's `ConditionallyCompleteLinearOrder` is a `DedekindTemporalFrame`:
+`sSup` supplies the least upper bound directly.
+
+The `ConditionallyCompleteLinearOrder D` binder replaces `LinearOrder D` here rather than
+sitting beside it, so there is exactly one `LinearOrder` path and no instance diamond. This is
+stated as a `theorem` rather than an `instance` for the same reason the tree does not register
+`ConditionallyCompleteLinearOrder ℤ` eagerly: it is noncomputable, and forcing it into instance
+search would change elaboration for every `[LinearOrder D]`-indexed lemma downstream.
+-/
+theorem DedekindTemporalFrame.of_conditionallyComplete (D : Type) [AddCommGroup D]
+    [ConditionallyCompleteLinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] [NoMaxOrder D]
+    [NoMinOrder D] :
+    DedekindTemporalFrame D :=
+  { lub_exists := fun _ hne hbdd => ⟨_, isLUB_csSup hne hbdd⟩ }
 
 end FormalSystem.FrameConditions
