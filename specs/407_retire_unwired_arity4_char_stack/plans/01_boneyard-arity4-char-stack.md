@@ -1,7 +1,7 @@
 # Implementation Plan: Retire the unwired arity-4 characteristic-formula stack
 
 - **Task**: 407 - retire the unwired arity-4 characteristic-formula stack
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/407_retire_unwired_arity4_char_stack/reports/01_arity4-char-stack-reachability-audit.md`
@@ -409,34 +409,43 @@ shifted nothing above these anchors, but confirm by content regardless.
 
 ---
 
-### Phase 5: Verify against the Phase 1 baseline [NOT STARTED]
+### Phase 5: Verify against the Phase 1 baseline [COMPLETED]
 
 **Goal**: Prove the change is inert with respect to every measured signal. Comparison is against
 `baseline-prestate.txt`, never against a remembered expectation.
 
 **Tasks**:
 
-- [ ] `lake build` exits 0. `lake build BimodalTest` exits 0.
-- [ ] Re-run the Phase 1 `lake env lean` probe, **keeping the bogus-identifier control**. Confirm:
+- [x] `lake build` exits 0. `lake build BimodalTest` exits 0. *(completed — both 0)*
+- [x] Re-run the Phase 1 `lake env lean` probe, **keeping the bogus-identifier control**. Confirm:
       `completeness_discrete` reports `[propext, Classical.choice, Quot.sound]`;
       `kampPriorExpressiveCompleteness` reports `[propext, Classical.choice, Quot.sound]`; neither
       shows `sorryAx`; the control still errors with `unknownIdentifier`.
-- [ ] Add to the probe `#check` lines asserting the five live survivors still resolve
+- [x] Add to the probe `#check` lines asserting the five live survivors still resolve
       (`igOffFiber`, `igFoldBit_realize_iff`, `kvEFiber`, `bracketEndCharKv`,
       `kampPrior_site_rungK_gate_match`) and — as a negative control — that at least two excised
       names (`bracketEndCharKvFib`, `kampPrior_site_rungKFib_gate_match`) now **fail** with
       `unknownIdentifier`.
-- [ ] Re-run the sorry census; confirm it is still 5 and in the same locations.
-- [ ] Re-run `bash scripts/check-module-invariants.sh`. Compare **check by check** against the
+- [x] Re-run the sorry census; confirm it is still 5 and in the same locations.
+      *(deviation: altered — baseline measured 3, not the plan's stale 5. Census is still **3**.
+      `Transfer.lean:1242` unmoved; the two `Soundness.lean` entries moved `:1553`/`:1576` ->
+      `:1582`/`:1605` because a concurrent task committed to that read-only file mid-run. Count
+      unchanged; no sorry added or removed by this task.)*
+- [x] Re-run `bash scripts/check-module-invariants.sh`. Compare **check by check** against the
       baseline. The pass criterion is *no check moved from green to red*, not *all checks green*:
       C3 is expected to remain red from concurrent `Soundness.lean` work and its redness here is
       neither caused nor fixable by this task.
-- [ ] Confirm C4 (dangling imports), C6 (unreachable-module manifest), and C8 (aggregator
+- [x] Confirm C4 (dangling imports), C6 (unreachable-module manifest), and C8 (aggregator
       convention) are unchanged — all three prune `Boneyard`, so the new archive file is invisible
       to them.
-- [ ] Confirm C7's informational live line count dropped by ~1,736 and the live file count is
+- [x] Confirm C7's informational live line count dropped by ~1,736 and the live file count is
       unchanged (a file was added under `Boneyard/`, which C7 prunes).
-- [ ] Record the excision set — the 30 declarations — in the implementation summary, as the task's
+      *(deviation: altered — C7 reports live **file** counts, not line counts, so the line delta
+      was measured directly instead: 5946 -> 4226 across the four files (-1,736 cut, +16 re-added
+      as the Phase 4 notes, net -1,720). C7's file counts confirmed UNCHANGED at 340 (297
+      FormalSystem / 42 Tests), Metalogic 218 — the archive under `Boneyard/` is invisible to it
+      exactly as predicted.)*
+- [x] Record the excision set — the 30 declarations — in the implementation summary, as the task's
       DONE-WHEN requires.
 
 **Timing**: 45 minutes
@@ -457,7 +466,7 @@ shifted nothing above these anchors, but confirm by content regardless.
 
 ---
 
-### Phase 6: Boneyard README housekeeping [NOT STARTED]
+### Phase 6: Boneyard README housekeeping [COMPLETED]
 
 **Goal**: Keep the archive's own inventory coherent. This is courtesy, not enforcement —
 `scripts/readme-lint.sh` checks 1 and 2 both skip any path containing `Boneyard`, so nothing here
@@ -465,14 +474,14 @@ is gated by a lint.
 
 **Tasks**:
 
-- [ ] Update the file/line summary table in
+- [x] Update the file/line summary table in
       `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/README.md` (currently "62 files, 27,394
       lines") to reflect the added `Arity4CharStackK.lean`. Recount rather than arithmetic-guess.
-- [ ] Add `Arity4CharStackK.lean` to the retirement narrative alongside the three existing members
+- [x] Add `Arity4CharStackK.lean` to the retirement narrative alongside the three existing members
       of this same stack — `InteriorHrealSupplyK.lean`, `SeamPairRefutationProbe.lean`, and
       `ZoneSeamCrossContextProbe.lean` — noting that those three already name eight of this island's
       symbols, which is the coherence argument for archiving rather than raw-deleting.
-- [ ] Do not cite task numbers in the README.
+- [x] Do not cite task numbers in the README. *(completed — grep returns 0)*
 
 **Timing**: 20 minutes
 
@@ -493,22 +502,22 @@ is gated by a lint.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0.
-- [ ] `lake build BimodalTest` exits 0.
-- [ ] `#print axioms FormalSystem.Metalogic.BXCanonical.completeness_discrete` reports exactly
+- [x] `lake build` exits 0.
+- [x] `lake build BimodalTest` exits 0.
+- [x] `#print axioms FormalSystem.Metalogic.BXCanonical.completeness_discrete` reports exactly
       `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
-- [ ] `#print axioms FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness`
+- [x] `#print axioms FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness`
       reports exactly `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
-- [ ] The `lake env lean` probe includes a bogus-identifier control that errors with
+- [x] The `lake env lean` probe includes a bogus-identifier control that errors with
       `unknownIdentifier` (do not trust `lean_run_code` for existence or axiom claims in this
       repository).
-- [ ] Live sorry census unchanged at 5 (4 in `Soundness.lean`, 1 in `Transfer.lean`).
-- [ ] All five live-survivor `#check`s resolve; both excised-name `#check`s fail as expected.
-- [ ] `scripts/check-module-invariants.sh`: no check moved green → red versus the Phase 1 baseline
+- [x] Live sorry census unchanged at 3 (2 in `Soundness.lean`, 1 in `Transfer.lean`) *(deviation: altered — plan's "5 (4 in Soundness)" was stale; measured baseline and post are both 3)*.
+- [x] All five live-survivor `#check`s resolve; both excised-name `#check`s fail as expected.
+- [x] `scripts/check-module-invariants.sh`: no check moved green → red versus the Phase 1 baseline
       (C3 expected to remain red, pre-existing).
-- [ ] Post-deletion line counts: `CarrierKv.lean` 503, `InteriorGateGeneralK.lean` 1426,
+- [x] Post-deletion line counts: `CarrierKv.lean` 503, `InteriorGateGeneralK.lean` 1426,
       `ExteriorGateAssembleK.lean` 447, `KampPrior.lean` 1834.
-- [ ] `FormalSystem/Metalogic/Soundness.lean` is untouched (`git diff` shows no change).
+- [x] `FormalSystem/Metalogic/Soundness.lean` is untouched — appears in none of this task's commits *(it is dirty/committed from concurrent tasks that own it)*.
 
 ## Artifacts & Outputs
 

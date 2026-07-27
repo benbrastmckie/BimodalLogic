@@ -12,11 +12,11 @@ This directory is the **second**, easily-missed archive in the repository:
 | Boneyard | Files | Lines |
 |----------|------:|------:|
 | `FormalSystem/Boneyard/` | 93 | 59,010 |
-| `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` (this one) | 62 | 27,394 |
+| `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` (this one) | 63 | 29,256 |
 
 Because this one is nested five levels deep, a filter written as
 `-not -path 'FormalSystem/Boneyard/*'` — naming only the top-level archive —
-counts these 27,394 lines as live code. Use a pattern that matches both:
+counts these 29,256 lines as live code. Use a pattern that matches both:
 
 ```bash
 find FormalSystem -name '*.lean' -not -path '*/Boneyard/*'
@@ -122,6 +122,38 @@ sorry-free `VVecEA2.negFix_iff` (`Kamp/EANegationFix/VecEANegFix.lean`) and the
 model-dependent closure lemmas in `Kamp/EANegationClosure.lean`. Both
 Rabinovich provenance docstrings ("Lemma 5.1", "Corollary 5.4") are preserved
 verbatim.
+
+### Arity4CharStackK.lean (1,862 lines) -- retired arity-4 characteristic-formula stack
+
+The complete de-folded arity-4 branch, archived as one closed 30-declaration
+reference island: the sibling carrier `bracketEndCharKvFib` and its shared body
+`kvFib_body` (from `NfMultiAnchorBridge/CarrierKv.lean`), the interior gate
+replicas `igAllSubs` / `ig*Fib` and the `bracketEndChar_kvFib_*` theorems (from
+`NfMultiAnchorBridge/InteriorGateGeneralK.lean`), the exterior `*ExtFib`
+assembly (from `NfMultiAnchorBridge/ExteriorGateAssembleK.lean`), and the site
+gate-match `kampPrior_site_rungKFib_gate_match` (from `KampPrior.lean`). The
+file's header carries a provenance table giving each block's origin file and
+line range.
+
+Adjudicated **landed, unwired, circular, fiber-refuted**. It compiled and was
+sorry-free, but no live consumer ever took it: the competing zeta route won and
+keeps `charF` arity-1 end-to-end, which settled the routing question and left
+this branch with nothing to attach to. Do not wire, repair, complete, or hunt
+for a consumer for it; do not build an arity-4 realization engine from it. Each
+of those was attempted and abandoned.
+
+Archived rather than raw-deleted for coherence with the three members of this
+same stack already here -- `InteriorHrealSupplyK.lean`,
+`SeamPairRefutationProbe.lean`, and `ZoneSeamCrossContextProbe.lean`. Those
+three already name eight of this island's symbols, so raw-deleting it would
+have left them citing declarations that exist nowhere in the repository.
+
+Two prose records travelled here with their enclosing blocks and are preserved
+verbatim: the M1/F1 fold-information-loss record and the circularity record for
+`igFoldBit_realize_iff`. Both describe declarations that are still LIVE, so
+condensed notes pointing back to this file were also left beside
+`bracketEndCharKv` (`NfMultiAnchorBridge/CarrierKv.lean`) and
+`igFoldBit_realize_iff` (`NfMultiAnchorBridge/InteriorGateGeneralK.lean`).
 
 ### Pre-existing archived contents
 
