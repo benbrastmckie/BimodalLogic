@@ -5,6 +5,42 @@ Archived Lean files from the Kamp/Rabinovich expressive-completeness pipeline
 retired escalation paths, and superseded infrastructure that are no longer on
 any live proof path.
 
+## There Are TWO Boneyards
+
+This directory is the **second**, easily-missed archive in the repository:
+
+| Boneyard | Files | Lines |
+|----------|------:|------:|
+| `Theories/Bimodal/Boneyard/` | 93 | 59,010 |
+| `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` (this one) | 62 | 27,394 |
+
+Because this one is nested five levels deep, a filter written as
+`-not -path 'Theories/Bimodal/Boneyard/*'` — naming only the top-level archive —
+counts these 27,394 lines as live code. Use a pattern that matches both:
+
+```bash
+find Theories -name '*.lean' -not -path '*/Boneyard/*'
+```
+
+Or, preferably, the invariant script, which hardcodes the exclusion and asserts that
+it matches exactly two directories:
+
+```bash
+bash scripts/check-module-invariants.sh   # B0 self-test + C7 live inventory
+```
+
+See [`../../../../Boneyard/README.md`](../../../../Boneyard/README.md).
+
+## Archival Criterion
+
+A file belongs here when it is unreachable from every Lake target root and is not
+intended to become reachable. Merely-not-yet-wired modules belong in
+`scripts/module-invariants-manifest.txt` instead, which compile-checks them so they
+cannot rot silently. That distinction matters especially here: several modules under
+`Kamp/` exist specifically to hold an import edge keeping a transcription or a
+refutation inside the build graph, precisely because parking such a record in a
+Boneyard would let it rot invisibly.
+
 ## Build Policy: Never Compiled
 
 Boneyard code is never compiled. There is no lakefile target covering this

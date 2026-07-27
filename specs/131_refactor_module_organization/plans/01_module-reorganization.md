@@ -577,43 +577,51 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 9: Placement Decisions — FrameConditions and Boneyard [NOT STARTED]
+### Phase 9: Placement Decisions — FrameConditions and Boneyard [COMPLETED]
 
 - **Goal:** Goals (4) and (5). Record both decisions durably where a future reader will find them.
   Territory is disjoint from Phases 7 and 8.
 - **Tasks:**
-  - [ ] **Goal (4): keep `FrameConditions/` separate.** Record the measured evidence in
+  - [x] **Goal (4): keep `FrameConditions/` separate.** Record the measured evidence in
         `Theories/Bimodal/FrameConditions/README.md`: zero files under `Metalogic/` import
         `Bimodal.FrameConditions`; `FrameConditions/` imports `Bimodal.Metalogic.Soundness`,
         `Bimodal.ProofSystem.Axioms`, and `Bimodal.Semantics.Validity`; nothing outside the
         directory imports it except the library root. It is a 4-file / 816-line typeclass API layer
         that consumes Metalogic. Merging would invert the dependency direction and manufacture a new
         cycle. This is an evidence-based resolution, not a preference.
-  - [ ] Record the disambiguation the README must not get wrong: the 97 files referencing the
+  - [x] Record the disambiguation the README must not get wrong: the 97 files referencing the
         identifier `FrameClass` mean `Bimodal.ProofSystem.Axioms.FrameClass` (an `inductive`, used
         as `FrameClass.Base` / `FrameClass.Discrete`), which is a different thing from
         `FrameConditions/FrameClass.lean`'s typeclasses `LinearTemporalFrame`, `SerialFrame`,
         `DenseTemporalFrame`, `DiscreteTemporalFrame`. A name-based audit conflates them.
-  - [ ] **Goal (5): Boneyard audit.** Write or refresh a `README.md` in each of the two Boneyards
+  - [x] **Goal (5): Boneyard audit.** Write or refresh a `README.md` in each of the two Boneyards
         with a measured inventory. `Theories/Bimodal/Boneyard/` (92 files / 58,476 lines before this
         task's archival additions) and `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/`
         (62 files / 27,394 lines).
-  - [ ] Each Boneyard README states the archival criterion, the inventory, and — critically — that a
+  - [x] Each Boneyard README states the archival criterion, the inventory, and — critically — that a
         second Boneyard exists elsewhere, with its path. Every count in the repository currently
         misses the Kamp-local one.
-  - [ ] State the two-Boneyard fact prominently in `Theories/Bimodal/README.md` so any future
+  - [x] State the two-Boneyard fact prominently in `Theories/Bimodal/README.md` so any future
         counting exercise sees it, and point at `scripts/check-module-invariants.sh` as the correct
         way to count live files.
   - [x] No task-number references in any file touched here.
 
-  **Phase 8 result.** Module-doc coverage is 100% of 290 live files, so this phase was pure
-  accuracy repair. `Metalogic.lean`'s structure block now carries measured per-directory file
-  counts, shows `SoundnessLemmas` as the directory it is, includes `Kamp/` with its local
-  Boneyard flagged, and states that the top-level `Completeness.lean` is archived rather than
-  missing. `FrameConditions.lean` no longer advertises a `Completeness.lean` that never existed
-  there, and now carries the layering evidence. `Bimodal.lean`'s component list is corrected
-  (`Theorems` had 6 modules listed against 8 actual). All five new READMEs are written from
-  measurement, and every relative link in them was checked to resolve.
+  **Phase 9 result.** The `FrameConditions/README.md` rewrite found the directory's own
+  documentation asserting the dependency direction **backwards**: it claimed to be "imported by
+  `Bimodal.Metalogic.SoundnessLemmas`, `Bimodal.Metalogic.Soundness`" when those are among the
+  things it *imports*. Measured: 0 files under `Metalogic/` import `Bimodal.FrameConditions`;
+  its sole live importer is the library root `Bimodal.lean`. The README now states these as
+  measurements and ships the command to re-derive them. *(deviation: altered -- the plan's
+  "97 files referencing the identifier `FrameClass`" re-measures as 96 on the post-Phase-5 tree;
+  the README carries the measured 96.)*
+
+  Both Boneyard READMEs already existed and were substantive, so rather than replacing them each
+  gained a prominent two-Boneyard cross-reference with measured counts (93 files / 59,010 lines
+  and 62 / 27,394) plus an explicit archival criterion distinguishing "archived" from
+  "unreachable but manifested" -- a distinction that matters under `Kamp/`, where several modules
+  exist precisely to keep a transcription reachable. The same notice is now near the top of
+  `Theories/Bimodal/README.md`, pointing at the invariant script as the correct way to count.
+
 - **Timing:** 1 hour
 - **Depends on:** 6
 - **Files to modify:**

@@ -8,6 +8,34 @@ For the complete formal specification, see **BimodalReference** ([tex](latex/Bim
 
 This README provides an overview; BimodalReference contains the detailed specification of syntax, semantics, proof theory, and metalogic.
 
+## Counting Live Files: There Are TWO Boneyards
+
+Before running any `find` or `grep` over this tree, note that archived code lives in
+**two** places, not one:
+
+| Boneyard | Files | Lines |
+|----------|------:|------:|
+| [`Boneyard/`](Boneyard/README.md) | 93 | 59,010 |
+| [`Metalogic/WeakCanonical/Kamp/Boneyard/`](Metalogic/WeakCanonical/Kamp/Boneyard/README.md) | 62 | 27,394 |
+
+A filter naming only the top-level `Boneyard/` counts the 27,394 lines under
+`Kamp/Boneyard/` as live. That is not hypothetical: repeated past descriptions of this
+repository's size were wrong for exactly that reason.
+
+**Do not hand-roll the count.** Use the invariant script, which hardcodes
+`-not -path '*/Boneyard/*'` for every traversal and self-tests that the pattern matches
+exactly two directories:
+
+```bash
+bash scripts/check-module-invariants.sh              # B0 self-test, C7 live inventory
+bash scripts/check-module-invariants.sh --no-build   # structural checks, no build
+```
+
+It also verifies the build, the flagship axiom sets, the sole `sorry` (located by
+content, never by line number), dangling imports across every live `.lean`, dangling
+module paths in markdown, and the aggregator convention. It is the correct answer to
+"is this tree still consistent".
+
 ## About Bimodal Logic
 
 Bimodal is a **complete propositional intensional logic** implementing TM (Tense and Modality) with verified metalogic.

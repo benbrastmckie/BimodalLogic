@@ -4,6 +4,47 @@ This directory contains archived Lean code that is no longer part of the active
 development path. Files are preserved for historical reference, documentation of
 dead-end approaches, and potential future consultation.
 
+## There Are TWO Boneyards
+
+This is **not** the only archive directory in the repository:
+
+| Boneyard | Files | Lines |
+|----------|------:|------:|
+| `Theories/Bimodal/Boneyard/` (this one) | 93 | 59,010 |
+| `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` | 62 | 27,394 |
+
+Any `find` or `grep` filter that names only this directory silently counts the
+27,394 archived lines under `Kamp/Boneyard/` as **live code**. Several past counts of
+this repository were wrong for exactly that reason. The correct filter excludes both
+by pattern:
+
+```bash
+find Theories -name '*.lean' -not -path '*/Boneyard/*'
+```
+
+Better, do not hand-roll it — the invariant script hardcodes the two-Boneyard
+exclusion and self-tests that the pattern really matches two distinct directories:
+
+```bash
+bash scripts/check-module-invariants.sh              # B0 self-test + C7 live inventory
+bash scripts/check-module-invariants.sh --no-build   # structural checks only
+```
+
+See [`../Metalogic/WeakCanonical/Kamp/Boneyard/README.md`](../Metalogic/WeakCanonical/Kamp/Boneyard/README.md).
+
+## Archival Criterion
+
+A file belongs here when it is **unreachable from every Lake target root** — the
+`Bimodal` and `BimodalTest` libraries and every `lean_exe` root — and is not intended
+to become reachable. Unreachability alone is not sufficient: a module that is merely
+not-yet-wired belongs in `scripts/module-invariants-manifest.txt`, which compile-checks
+it so it cannot rot. Archiving is for code that is deliberately out of the development
+path.
+
+Archival does **not** require that a file be broken. Some entries here still compiled
+when archived; where that is true it is recorded in the subdirectory README, because
+once a file is inert nothing re-checks it and that fact survives nowhere else.
+
 ## Purpose
 
 The Boneyard serves three roles:
