@@ -5,7 +5,9 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Bundle.FMCSDef
+import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import Mathlib.Algebra.Order.Archimedean.Real.Basic
+import Mathlib.Order.Filter.Ultrafilter.Basic
 
 /-!
 # LimitMCS: the limit set of a rational MCS family at a real point
@@ -36,6 +38,56 @@ chronicle whose families this module consumes.
   (`Core/MaximalConsistent.lean`, `SetConsistent`).
 - `limitSetBelow_of_rat` / `limitSetAbove_of_rat`: what the rational family's own temporal
   coherence transfers into the limit set at a rational point.
+- `limitMCSBelow` and `limitMCSBelow_is_mcs`: a maximal consistent set *extending*
+  `limitSetBelow m r`, obtained as an ultrafilter limit of `m` along the left-neighbourhood
+  filter of `r`. See "Why the limit set itself is not maximal" below.
+- `limitMCSBelow_cofinal_below`: every member of `limitMCSBelow m r` is realised at rationals
+  arbitrarily close below `r`. This is the descent handle the extension's temporal coherence
+  needs, and it is the reason an ultrafilter limit is used rather than an arbitrary Lindenbaum
+  extension.
+- `limitMCSLindenbaum`: the arbitrary-extension variant, recorded for comparison.
+- `fc_theorem_true_in_parametric_model`: every theorem of `fc` is true at every point of the
+  parametric canonical model.
+
+## Why the limit set itself is not maximal
+
+`limitSetBelow m r` is consistent but **not** negation-complete, and no strengthening of the
+family's coherence conditions makes it so. Negation-completeness of the limit set says: for
+every formula `A` there is a threshold `z < r` past which `A` has a *constant* truth value on
+the rationals in `(z, r)`. A formula whose membership pattern is dense and co-dense in every
+left neighbourhood of `r` violates this while satisfying every coherence condition available,
+because the coherence conditions relate membership only along the strict order.
+
+It is tempting to read Reynolds' no-definable-gaps lemma as supplying eventual constancy. It
+does not, and the distinction is the crux of this module. Reynolds (1992, §5, printed p.176)
+defines `γ⁺(A)` to hold "exactly when `A` remains true for a while after now but only up until
+a gap after which `A` is arbitrarily soon false", and calls the indicated gap a *definable gap*;
+a Prior structure — one satisfying every substitution instance of Prior-U and Prior-S — has no
+definable gaps. The hypothesis of that lemma already requires `A` to be **constantly true on an
+interval abutting the gap**. Prior-U (`ProofSystem/Axioms.lean`, `Axiom.prior_U_gap`) makes the
+same requirement explicitly: its antecedent is `U(⊤, φ) ∧ F(¬φ)`, and `U(⊤, φ)` says `φ` holds
+throughout some initial future segment. So the axiom is vacuous on exactly the formulas that
+would refute negation-completeness — those with no interval of constancy at all. "No definable
+gaps" is therefore strictly weaker than "every formula is eventually constant approaching `r`",
+and cannot be used to derive it.
+
+A second, independent obstruction: Prior-U and Prior-S are statements about `untl` and `snce`.
+Turning membership of a Prior instance in `m q` into a fact about membership at *other*
+rationals requires Until/Since coherence for the family (`Bundle/TemporalCoherence.lean`,
+`BFMCS.ForwardUntilSinceCoherent` / `BFMCS.BackwardUntilSinceCoherent`), which is not among
+this module's hypotheses, and which the back-and-forth chronicle supplies only in its
+*Restricted* form, scoped to the deferral closure of a single root formula.
+
+**Route taken.** Maximality is therefore obtained by extending the consistent limit set, not by
+proving it maximal. Two extensions are provided. `limitMCSLindenbaum` is the bare
+`set_lindenbaum` extension; it is maximal but the choice is arbitrary, so nothing about the
+extension's members descends back to the rational family. `limitMCSBelow` — the one intended for
+consumers — takes the ultrafilter limit of the family along the left-neighbourhood filter of `r`
+(`limitFilterBelow`). It is maximal for the same reason any ultrafilter limit is, it contains
+`limitSetBelow m r` because the ultrafilter refines that filter, and, crucially, it retains the
+descent handle: every one of its members is realised at rationals arbitrarily close below `r`
+(`limitMCSBelow_cofinal_below`). Consumers that need to reason from a membership at an
+unselected real point back to the rational family must use `limitMCSBelow` and that lemma.
 
 ## Scope of the limit construction
 
@@ -219,5 +271,212 @@ theorem limitSetAbove_of_rat (m : Rat → Set Formula)
   refine ⟨(q : ℝ) + 1, by linarith, ?_⟩
   intro p _ hp2
   exact hG q p A (by exact_mod_cast hp2) hA
+
+/-! ## Maximality by arbitrary extension
+
+The bare `set_lindenbaum` extension of the limit set. It is maximal, but the choice is
+arbitrary: nothing relates a member of `limitMCSLindenbaum` back to the rational family beyond
+the members already in `limitSetBelow m r`. Recorded for comparison with the ultrafilter limit
+below, which is the extension consumers should use.
+-/
+
+/--
+An arbitrary maximal consistent extension of `limitSetBelow m r`, obtained from
+`set_lindenbaum` and the consistency of the limit set.
+-/
+noncomputable def limitMCSLindenbaum {fc : FrameClass} (m : Rat → Set Formula)
+    (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q)) (r : ℝ) : Set Formula :=
+  (set_lindenbaum (fc := fc) (limitSetBelow m r) (limitSetBelow_consistent m hm r)).choose
+
+theorem limitSetBelow_subset_limitMCSLindenbaum {fc : FrameClass} (m : Rat → Set Formula)
+    (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q)) (r : ℝ) :
+    limitSetBelow m r ⊆ limitMCSLindenbaum m hm r :=
+  (set_lindenbaum (fc := fc) (limitSetBelow m r) (limitSetBelow_consistent m hm r)).choose_spec.1
+
+theorem limitMCSLindenbaum_is_mcs {fc : FrameClass} (m : Rat → Set Formula)
+    (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q)) (r : ℝ) :
+    SetMaximalConsistent (fc := fc) (limitMCSLindenbaum m hm r) :=
+  (set_lindenbaum (fc := fc) (limitSetBelow m r) (limitSetBelow_consistent m hm r)).choose_spec.2
+
+/-! ## Maximality by ultrafilter limit
+
+The extension consumers should use. Its members are exactly the formulas whose membership set
+`{q | A ∈ m q}` is "large" for a fixed ultrafilter refining the left-neighbourhood filter of
+`r`, so maximality is immediate from the ultrafilter dichotomy while every member remains
+realised at rationals arbitrarily close below `r`.
+-/
+
+/--
+The **left-neighbourhood filter** of a real point `r` on the rationals: a set of rationals is
+large when it contains every rational in some interval `(z, r)` with `z < r`.
+
+The filter axioms are the same directedness argument as `limitSetBelow_mono_directed`, taking
+the maximum of two thresholds for intersections.
+-/
+def limitFilterBelow (r : ℝ) : Filter Rat where
+  sets := {S | ∃ z : ℝ, z < r ∧ ∀ q : Rat, z < (q : ℝ) → (q : ℝ) < r → q ∈ S}
+  univ_sets := ⟨r - 1, by linarith, fun _ _ _ => Set.mem_univ _⟩
+  sets_of_superset := by
+    rintro S T ⟨z, hz, hS⟩ hST
+    exact ⟨z, hz, fun q h1 h2 => hST (hS q h1 h2)⟩
+  inter_sets := by
+    rintro S T ⟨zS, hzS, hSm⟩ ⟨zT, hzT, hTm⟩
+    exact ⟨max zS zT, max_lt hzS hzT, fun q h1 h2 =>
+      ⟨hSm q (lt_of_le_of_lt (le_max_left _ _) h1) h2,
+        hTm q (lt_of_le_of_lt (le_max_right _ _) h1) h2⟩⟩
+
+/-- Membership in `limitFilterBelow` unfolded. -/
+theorem mem_limitFilterBelow {r : ℝ} {S : Set Rat} :
+    S ∈ limitFilterBelow r ↔ ∃ z : ℝ, z < r ∧ ∀ q : Rat, z < (q : ℝ) → (q : ℝ) < r → q ∈ S :=
+  Iff.rfl
+
+/--
+The left-neighbourhood filter is proper: every interval `(z, r)` with `z < r` contains a
+rational, by `exists_rat_btwn`.
+-/
+instance limitFilterBelow_neBot (r : ℝ) : (limitFilterBelow r).NeBot := by
+  rw [Filter.neBot_iff, Ne, ← Filter.empty_mem_iff_bot]
+  rintro ⟨z, hz, hmem⟩
+  obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn hz
+  exact hmem q hq1 hq2
+
+/-- A fixed ultrafilter refining the left-neighbourhood filter of `r`. -/
+noncomputable def limitUltrafilterBelow (r : ℝ) : Ultrafilter Rat :=
+  Ultrafilter.of (limitFilterBelow r)
+
+theorem limitFilterBelow_le (r : ℝ) {S : Set Rat} (hS : S ∈ limitFilterBelow r) :
+    S ∈ (limitUltrafilterBelow r : Filter Rat) :=
+  Ultrafilter.of_le (limitFilterBelow r) hS
+
+/--
+The **ultrafilter limit** of the rational family `m` at the real point `r`: the formulas whose
+membership set is large for `limitUltrafilterBelow r`.
+-/
+def limitMCSBelow (m : Rat → Set Formula) (r : ℝ) : Set Formula :=
+  {A | {q : Rat | A ∈ m q} ∈ (limitUltrafilterBelow r : Filter Rat)}
+
+theorem mem_limitMCSBelow {m : Rat → Set Formula} {r : ℝ} {A : Formula} :
+    A ∈ limitMCSBelow m r ↔ {q : Rat | A ∈ m q} ∈ (limitUltrafilterBelow r : Filter Rat) :=
+  Iff.rfl
+
+/--
+The ultrafilter limit **extends** the limit set: an "eventually true approaching `r` from
+below" formula has a membership set that is already large for the left-neighbourhood filter.
+-/
+theorem limitSetBelow_subset_limitMCSBelow (m : Rat → Set Formula) (r : ℝ) :
+    limitSetBelow m r ⊆ limitMCSBelow m r := by
+  rintro A ⟨z, hz, hA⟩
+  exact limitFilterBelow_le r ⟨z, hz, fun q h1 h2 => hA q h1 h2⟩
+
+/--
+**The descent handle.** Every member of the ultrafilter limit at `r` is realised at rationals
+arbitrarily close below `r`.
+
+This is what an arbitrary Lindenbaum extension cannot provide, and it is what lets a membership
+at a real point be traced back to the rational family. The proof is the ultrafilter's
+properness: the membership set and the interval `(z, r)` are both large, so they meet.
+-/
+theorem limitMCSBelow_cofinal_below (m : Rat → Set Formula) (r : ℝ) {A : Formula}
+    (hA : A ∈ limitMCSBelow m r) (z : ℝ) (hz : z < r) :
+    ∃ q : Rat, z < (q : ℝ) ∧ (q : ℝ) < r ∧ A ∈ m q := by
+  have hbasis : {q : Rat | z < (q : ℝ) ∧ (q : ℝ) < r} ∈ (limitUltrafilterBelow r : Filter Rat) :=
+    limitFilterBelow_le r ⟨z, hz, fun q h1 h2 => ⟨h1, h2⟩⟩
+  obtain ⟨q, hq⟩ := Filter.nonempty_of_mem (Filter.inter_mem hA hbasis)
+  exact ⟨q, hq.2.1, hq.2.2, hq.1⟩
+
+/--
+Every finite list drawn from the ultrafilter limit is contained in a single `m q`.
+
+The set of rationals carrying the whole list is a finite intersection of large sets, hence
+large, hence nonempty.
+-/
+theorem limitMCSBelow_finite_subset_mem (m : Rat → Set Formula) (r : ℝ) (L : List Formula)
+    (hL : ∀ A ∈ L, A ∈ limitMCSBelow m r) :
+    ∃ q : Rat, ∀ A ∈ L, A ∈ m q := by
+  have key : ∀ L : List Formula, (∀ A ∈ L, A ∈ limitMCSBelow m r) →
+      {q : Rat | ∀ A ∈ L, A ∈ m q} ∈ (limitUltrafilterBelow r : Filter Rat) := by
+    intro L
+    induction L with
+    | nil =>
+      intro _
+      have huniv : {q : Rat | ∀ A ∈ ([] : List Formula), A ∈ m q} = Set.univ := by
+        ext q; simp
+      rw [huniv]
+      exact Filter.univ_mem
+    | cons A L ih =>
+      intro hL'
+      have hA : {q : Rat | A ∈ m q} ∈ (limitUltrafilterBelow r : Filter Rat) := hL' A (by simp)
+      have hrest := ih (fun B hB => hL' B (List.mem_cons_of_mem _ hB))
+      refine Filter.mem_of_superset (Filter.inter_mem hA hrest) ?_
+      rintro q ⟨hq1, hq2⟩ B hB
+      rcases List.mem_cons.mp hB with rfl | hB'
+      · exact hq1
+      · exact hq2 B hB'
+  obtain ⟨q, hq⟩ := Filter.nonempty_of_mem (key L hL)
+  exact ⟨q, hq⟩
+
+/--
+**The ultrafilter limit is maximal consistent.**
+
+Consistency is the finite-subset argument above. Negation-completeness is the ultrafilter
+dichotomy: if `{q | A ∈ m q}` is not large then its complement is, and each `m q` in the
+complement carries `A.neg` by negation-completeness of `m q`.
+-/
+theorem limitMCSBelow_is_mcs {fc : FrameClass} (m : Rat → Set Formula)
+    (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q)) (r : ℝ) :
+    SetMaximalConsistent (fc := fc) (limitMCSBelow m r) := by
+  have hcons : SetConsistent (fc := fc) (limitMCSBelow m r) := by
+    intro L hL
+    obtain ⟨q, hq⟩ := limitMCSBelow_finite_subset_mem m r L hL
+    exact (hm q).1 L hq
+  refine ⟨hcons, ?_⟩
+  intro φ hφ hins
+  have hcompl : {q : Rat | φ ∈ m q}ᶜ ∈ (limitUltrafilterBelow r : Filter Rat) :=
+    (limitUltrafilterBelow r).compl_mem_iff_notMem.2 hφ
+  have hneg : Formula.neg φ ∈ limitMCSBelow m r := by
+    refine Filter.mem_of_superset hcompl ?_
+    intro q hq
+    exact ((hm q).negation_complete φ).resolve_left hq
+  exact set_consistent_not_both hins φ (Set.mem_insert _ _) (Set.mem_insert_of_mem _ hneg)
+
+/-! ## Theorems of the frame class are true in the parametric canonical model -/
+
+open FormalSystem.Metalogic.Algebraic.ParametricCanonical
+open FormalSystem.Metalogic.Algebraic.ParametricHistory
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+open FormalSystem.Semantics
+
+/--
+**Every theorem of `fc` inside the root's subformula closure is true at every point of the
+parametric canonical model.**
+
+The one-line composition of `theorem_in_mcs` (`Core/MaximalConsistent.lean`) with the forward
+direction of `fully_restricted_parametric_shifted_truth_lemma`
+(`Algebraic/RestrictedParametricTruthLemma.lean`). This is how a frame-class theorem — Prior-U,
+Prior-S or Sep, for instance — gets from membership in every maximal consistent set to truth in
+the model.
+
+The *fully restricted* truth lemma is used deliberately. Its unrestricted sibling
+`parametric_shifted_truth_lemma` (`Algebraic/ParametricTruthLemma.lean`) is stated at
+`BFMCS D`, whose `fc` argument takes its default value `FrameClass.Base`, so it is not
+available at `FrameClass.Dedekind`; and it demands unrestricted Until/Since coherence, which
+the back-and-forth chronicle does not supply. The price is the `h_sub` hypothesis: the theorem
+must lie in `subformulaClosure root`.
+-/
+theorem fc_theorem_true_in_parametric_model {fc : FrameClass} {D : Type*}
+    [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (B : BFMCS (fc := fc) D) (root : Formula)
+    (h_rtc : B.RestrictedTemporallyCoherent root)
+    (h_buc : B.RestrictedBackwardUntilSinceCoherent root)
+    (h_fuc : B.RestrictedForwardUntilSinceCoherent root)
+    (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
+    (h_deriv : DerivationTree fc [] φ)
+    (fam : FMCS (fc := fc) D) (hfam : fam ∈ B.families) (t : D) :
+    TruthAt (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+      (parametricToHistory fam) t φ :=
+  (fully_restricted_parametric_shifted_truth_lemma B root h_rtc h_buc h_fuc φ h_sub
+      fam hfam t).mp
+    (theorem_in_mcs (fam.is_mcs t) h_deriv)
 
 end FormalSystem.Metalogic.Bundle

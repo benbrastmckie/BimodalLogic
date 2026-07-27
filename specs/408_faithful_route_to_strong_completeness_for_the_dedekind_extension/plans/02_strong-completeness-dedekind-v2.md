@@ -627,7 +627,7 @@ none of them mentions or requires maximality, so Phase 5 does not depend on Phas
 - **Timing:** 4 hours.
 - **Depends on:** 1
 
-### Phase 4: Negation-completeness of the limit set via Prior-U / Prior-S [NOT STARTED]
+### Phase 4: Negation-completeness of the limit set via Prior-U / Prior-S [COMPLETED]
 
 **This is the crux and the only legitimate `[BLOCKED]` point in the plan. It is new
 mathematics, argued from Reynolds' no-definable-gaps lemma rather than transcribed from it.**
@@ -643,36 +643,100 @@ mathematics, argued from Reynolds' no-definable-gaps lemma rather than transcrib
   load-bearing** — the extension uses `limitSetBelow` for both `forward_G` and `backward_H`
   (verified case-by-case in Phase 5), so `limitSetAbove_is_mcs` is not required by the route.
 - **Tasks:**
-  - [ ] Re-read Reynolds 1992 §5, printed p.176 (chunk `reynolds_1992_sec06`) verbatim before
+  - [x] Re-read Reynolds 1992 §5, printed p.176 (chunk `reynolds_1992_sec06`) verbatim before
         writing anything: the `γ⁺` definition, the Prior-structure definition, and the one-line
         Prior-U contradiction. Cite by PDF page in the docstring.
   - [ ] State `limitMCS_no_oscillation`: for every `A : Formula` and `r : ℝ`, there is `z < r`
         such that either `A ∈ m q` for all rational `q ∈ (z, r)`, or `A.neg ∈ m q` for all
         rational `q ∈ (z, r)`. This is the MCS-membership analogue of "no definable gaps".
+        *(deviation: skipped — the statement is **not** the MCS analogue of no-definable-gaps;
+        it is strictly stronger, and mitigation (a) is refuted at the level of the source. See
+        the mitigation-(a) refutation recorded below and in the module docstring.)*
   - [ ] Prove it. The intended argument: `Axiom.prior_U_gap` instances are theorems of
         `FrameClass.Dedekind`, hence in every Dedekind-MCS by `theorem_in_mcs`
         (`MaximalConsistent.lean:491`); reuse the syntactic `kplusFormula`
         (`Kamp/PriorINF.lean:93`) for `K⁺`; derive a contradiction from an oscillating `A`
         exactly as Reynolds does. **Attempt the unrestricted form first** (see Risks).
+        *(deviation: skipped — see refutation below.)*
   - [ ] Prove `limitSetBelow_negation_complete`, then
         `limitSetBelow_is_mcs : SetMaximalConsistent (fc := fc) (limitSetBelow m r)`.
-  - [ ] **Fallback, if and only if the unrestricted form fails**: switch to consistency +
+        *(deviation: altered — `limitSetBelow` is not negation-complete, so maximality is
+        obtained by extension: `limitMCSBelow_is_mcs` together with
+        `limitSetBelow_subset_limitMCSBelow`.)*
+  - [x] **Fallback, if and only if the unrestricted form fails**: switch to consistency +
         `set_lindenbaum` (Risks, mitigation (b)) and state in the module docstring which route
         was taken and why. Do not silently switch. **(v2)** Before electing (b), read the v2
         sharpening in Risks: it forces Phase 5's six lemmas and Phase 6's `forward_G`/
         `backward_H` to be restated for the chosen extension. Report that cost in the handoff.
-  - [ ] Add a named corollary `fc_theorem_true_in_parametric_model` — "every `fc`-theorem is
+        *(deviation: altered — mitigation (b) elected and landed as `limitMCSLindenbaum` /
+        `limitMCSLindenbaum_is_mcs`, plus an additional **coherence-preserving refinement** of
+        (b), `limitMCSBelow`, which is the ultrafilter limit of `m` along the
+        left-neighbourhood filter of `r`. The refinement is the same move as (b) — extend the
+        consistent limit set to an MCS — with a canonical rather than arbitrary extension, and
+        it repairs the v2 sharpening's cost: `limitMCSBelow_cofinal_below` restores the descent
+        handle that an arbitrary Lindenbaum extension destroys. Route election and the
+        refutation of (a) are recorded in the module docstring.)*
+  - [x] Add a named corollary `fc_theorem_true_in_parametric_model` — "every `fc`-theorem is
         true at every point of the parametric canonical model" — as the one-line composition of
         `theorem_in_mcs` with `parametric_shifted_truth_lemma.mp`
         (`ParametricTruthLemma.lean:379`). It does not exist today and is load-bearing: it is how
         Prior-U/Prior-S get from MCS membership to model truth.
-  - [ ] `lake build FormalSystem.Metalogic.Bundle.LimitMCS`.
-- **Estimated output:** ~250 lines.
+        *(deviation: altered — composed with `fully_restricted_parametric_shifted_truth_lemma`
+        (`RestrictedParametricTruthLemma.lean:286`) instead. `parametric_shifted_truth_lemma`
+        is stated at `BFMCS D`, whose `fc` defaults to `FrameClass.Base`, so it is **not**
+        `fc`-generic and cannot be used at `FrameClass.Dedekind`; it also demands unrestricted
+        Until/Since coherence. The corollary therefore carries the extra hypothesis
+        `h_sub : φ ∈ subformulaClosure root`. See the Preserved-Assets correction below.)*
+  - [x] `lake build FormalSystem.Metalogic.Bundle.LimitMCS`.
+- **Estimated output:** ~250 lines. *(Actual: +190 lines, 14 new declarations, sorry-free.)*
 - **Done when:** `limitSetBelow_is_mcs` is proved sorry-free at an arbitrary real `r`, **or** the
   phase is marked `[BLOCKED]` with the exact goal state, the tactic attempts made, and which of
   mitigations (a)/(b) were tried. The `limitSetAbove` dual is **not** required; prove it only if
   it falls out for free. Do not report success on a `sorry` unless the contingency in Risks was
   explicitly elected by the orchestrator.
+
+**PHASE 4 OUTCOME (recorded at implementation time)**
+
+Mitigation (b) elected, in its ultrafilter-limit form. No sorry was taken; the contingency in
+Risks was **not** exercised, and the live sorry count outside `Boneyard/` is unchanged at
+exactly `WeakCanonical/Transfer.lean:1242`.
+
+*Mitigation (a) is refuted, not merely hard.* The refutation is at the level of the cited
+source, so no further attempt is warranted:
+
+- Reynolds (1992, §5, printed p.176) defines `γ⁺(A)` to hold "exactly when `A` remains true for
+  a while after now but only up until a gap after which `A` is arbitrarily soon false", and a
+  definable gap is one where some `γ⁺(A)` holds. The hypothesis already requires `A` to be
+  **constantly true on an interval abutting the gap**.
+- `Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:377`) encodes exactly that: its antecedent is
+  `U(⊤, φ) ∧ F(¬φ)`, and `U(⊤, φ)` asserts `φ` throughout an initial future segment.
+- Negation-completeness of `limitSetBelow m r` asserts that **every** formula is eventually
+  constant on the rationals below `r`. A formula whose membership pattern is dense and co-dense
+  in every left neighbourhood of `r` refutes it while making every Prior-U instance vacuous.
+  "No definable gaps" is therefore strictly weaker than what the phase task asked to derive
+  from it, and cannot yield it. `limitMCS_no_oscillation` as stated in the task list is false.
+- Independently: Prior-U/Prior-S are `untl`/`snce` statements, and converting a Prior instance
+  in `m q` into a fact at other rationals needs Until/Since coherence for `m`, which is not a
+  hypothesis at this level and which the chronicle supplies only in *Restricted* form.
+
+*Cost of (b), as the v2 sharpening requires reporting.* The bare Lindenbaum form
+(`limitMCSLindenbaum`) does carry the predicted cost — a membership at an unselected point has
+no descent path back to `m q`. The ultrafilter refinement `limitMCSBelow` removes that cost:
+`limitMCSBelow_cofinal_below` states that every member of `limitMCSBelow m r` lies in `m q` for
+rationals `q` arbitrarily close below `r`, which is exactly the handle Phase 5's
+unselected-source cases need. **Phases 5 and 6 must therefore use `limitMCSBelow`, not
+`limitMCSLindenbaum`, and not `limitSetBelow` alone.** Phase 5's six lemmas remain stated about
+`limitSetBelow` (they are unchanged, since `limitSetBelow ⊆ limitMCSBelow`), but each
+unselected-**source** case now routes through `limitMCSBelow_cofinal_below` rather than
+directly unfolding a `limitSetBelow` witness.
+
+*Preserved-Assets correction.* The Preserved Assets table lists
+`ParametricCanonical / ParametricHistory / ParametricTruthLemma:240,379` as "generic in `D` and
+`fc`". For `parametric_shifted_truth_lemma` (`ParametricTruthLemma.lean:379`) that is
+**inaccurate**: it is stated at `BFMCS D` with `fc` at its default `FrameClass.Base`. The
+`fc`-generic route is `RestrictedParametricTruthLemma.lean:286`
+(`fully_restricted_parametric_shifted_truth_lemma`), which is what
+`fc_theorem_true_in_parametric_model` composes with. Nothing was edited in either file.
 - **Timing:** 6 hours.
 - **Depends on:** 3
 
