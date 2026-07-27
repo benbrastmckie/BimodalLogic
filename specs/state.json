@@ -943,7 +943,7 @@
     {
       "project_number": 402,
       "project_name": "systematic_mathlib_naming_upgrade",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "publication-quality",
@@ -954,7 +954,7 @@
         394
       ],
       "created": "2026-07-26T00:00:00Z",
-      "last_updated": "2026-07-27T01:23:02Z",
+      "last_updated": "2026-07-27T02:00:24Z",
       "file_scope": [
         "Theories/Bimodal/",
         "FormalSystem/",
@@ -964,13 +964,24 @@
         "lakefile.lean",
         "README.md"
       ],
-      "session_id": "sess_1785113970_d0639d",
+      "session_id": "sess_1785117001_f7a6b0",
       "artifacts": [
         {
           "path": "specs/402_systematic_mathlib_naming_upgrade/reports/01_mathlib-naming-upgrade-mechanism.md",
           "type": "report",
           "summary": "Hard-mode lean4 research: measured baseline, experimentally validated .ilean-driven guarded rewrite mechanism, four-layer verification story, three-branch target-name derivation rule, staging and scope decisions, Part C re-verification, adversarial self-verification."
+        },
+        {
+          "path": "specs/402_systematic_mathlib_naming_upgrade/plans/01_mathlib-naming-upgrade-migration.md",
+          "type": "plan",
+          "summary": "8-phase hard-mode migration plan with postmortem constraints, H7 territory contracts, H3 source-to-implementation mapping (grounding tier: code), preserved-assets accounting, and a fully declared dependency wave map with one genuine parallel wave (7.1 / 7.2)."
         }
+      ],
+      "memory_candidates": [
+        "Lean .ilean v5 reference data is sound for position-anchored renaming (99.77% exact round-trip over 129,611 ranges) but import/namespace/open/end lines carry ZERO .ilean coverage and need a separate syntactic pass.",
+        "Lean's built-in LSP workspace rename (Watchdog.lean handleRename) writes newName verbatim into every reference range, so it destroys namespace-qualified and dot-notation references; reuse its reference data, never its edit rule.",
+        "batteries runLinter reads scripts/nolints.json relative to cwd and its entries are fully-qualified declaration names, so any namespace rename silently invalidates the entire suppression list.",
+        "The Mathlib defsWithUnderscore linter wants UpperCamelCase for Prop-valued definitions (def Foo : a -> Prop); such definitions cannot be converted to theorem because a -> Prop has type Type, not Prop."
       ]
     },
     {
