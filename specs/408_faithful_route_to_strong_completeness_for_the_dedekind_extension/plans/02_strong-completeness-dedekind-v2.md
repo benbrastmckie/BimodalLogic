@@ -740,7 +740,7 @@ directly unfolding a `limitSetBelow` witness.
 - **Timing:** 6 hours.
 - **Depends on:** 3
 
-### Phase 5: forward_G and backward_H across the rational/limit case matrix [NOT STARTED]
+### Phase 5: forward_G and backward_H across the rational/limit case matrix [COMPLETED]
 
 - **Goal:** Prove the two temporal-coherence properties as standalone lemmas that do not
   presuppose maximality, so this phase runs in parallel with the crux.
@@ -756,48 +756,108 @@ directly unfolding a `limitSetBelow` witness.
 - **Note on the offset `δ`.** Phase 6's families carry a real offset. The offset is absorbed by
   `add_lt_add_right`, so every lemma here is stated **without** `δ`, at bare real arguments.
 - **Tasks:**
-  - [ ] `limitSetBelow_forward_G_rat_source` (case G1, selected → unselected): for `q : Rat`
+  - [x] `limitSetBelow_forward_G_rat_source` (case G1, selected → unselected): for `q : Rat`
         and `t : ℝ` with `(q:ℝ) < t`, `Formula.allFuture φ ∈ m q → φ ∈ limitSetBelow m t`.
         Witness threshold `z := (q:ℝ)`; every rational `p ∈ (q, t)` satisfies `q < p`, so the
         rational family's own `forward_G` (`FMCSDef.lean:114`) delivers `φ ∈ m p`.
-  - [ ] `limitSetBelow_forward_G_rat_target` (case G2, unselected → selected): for `s : ℝ` and
+  - [x] `limitSetBelow_forward_G_rat_target` (case G2, unselected → selected): for `s : ℝ` and
         `p : Rat` with `s < (p:ℝ)`, `Formula.allFuture φ ∈ limitSetBelow m s → φ ∈ m p`.
         Take the membership's threshold `z < s`, pick `q ∈ (z, s)` rational by
         `exists_rat_btwn`, then `q < s < p` and `forward_G` applies.
-  - [ ] Case G3 (selected → selected) needs **no new lemma**: it is the rational family's
+  - [x] Case G3 (selected → selected) needs **no new lemma**: it is the rational family's
         `forward_G` field verbatim, modulo `Rat.cast_lt`. Record this in the module docstring so
         Phase 6 does not go looking for a lemma that deliberately does not exist.
-  - [ ] `limitSetBelow_forward_G_limit` (case G4, unselected → unselected): for `s < t` in `ℝ`,
+        *(Recorded in `LimitMCSCoherence.lean`'s "The two cases with no lemma" section, together
+        with H3, including the explicit instruction not to search for `..._forward_G_rat_rat`.)*
+  - [x] `limitSetBelow_forward_G_limit` (case G4, unselected → unselected): for `s < t` in `ℝ`,
         `Formula.allFuture φ ∈ limitSetBelow m s → φ ∈ limitSetBelow m t`. Pick a rational
         `q₀ ∈ (z, s)`; then `q₀` itself is a valid threshold for `t`, since every rational
         `p ∈ (q₀, t)` satisfies `q₀ < p`. *(This is v1's `limitSet_forward_G`.)*
-  - [ ] `limitSetBelow_backward_H_rat_source` (case H1, selected → unselected): for `q : Rat`
+  - [x] `limitSetBelow_backward_H_rat_source` (case H1, selected → unselected): for `q : Rat`
         and `t : ℝ` with `t < (q:ℝ)`, `Formula.allPast φ ∈ m q → φ ∈ limitSetBelow m t`.
         Threshold `z := t - 1`; every rational `p < t < q` satisfies `p < q`, so `backward_H`
         (`FMCSDef.lean:121`) applies. **Generalize Phase 3's `limitSetBelow_of_rat` into this
         lemma in place** — it is exactly the `t = (q:ℝ)` instance. Do not delete it; re-derive
         it as a one-line corollary if it has other consumers.
-  - [ ] `limitSetBelow_backward_H_rat_target` (case H2, unselected → selected): for `s : ℝ` and
+        *(deviation: altered — stated with `t ≤ (q:ℝ)` rather than `t < (q:ℝ)`. The two halves of
+        this bullet are unsatisfiable together under the strict form: `t = (q:ℝ)` is not an
+        instance of `t < (q:ℝ)`, so no strict-form lemma generalizes `limitSetBelow_of_rat` "in
+        place". The `≤` form makes both halves literally true — it covers case H1 and has
+        `limitSetBelow_of_rat` as its `t = (q:ℝ)` instance. The instantiation is exhibited as
+        `limitSetBelow_of_rat_of_backward_H_rat_source`. Phase 3's `limitSetBelow_of_rat` is
+        left byte-identical (it has no consumers outside its own module). Downstream cost: none
+        — Phase 6 passes `le_of_lt` at case H1. The `forward_G` mirror admits no such widening
+        and is stated strictly, as the plan specifies; the asymmetry is recorded in the module
+        docstring.)*
+  - [x] `limitSetBelow_backward_H_rat_target` (case H2, unselected → selected): for `s : ℝ` and
         `p : Rat` with `(p:ℝ) < s`, `Formula.allPast φ ∈ limitSetBelow m s → φ ∈ m p`. The
         rational must be picked above **both** thresholds: `max z (p:ℝ) < s` because `z < s` and
         `p < s`, so `exists_rat_btwn` on `(max z p, s)` yields `q` with `allPast φ ∈ m q` and
         `p < q`.
-  - [ ] `limitSetBelow_backward_H_limit` (case H4, unselected → unselected): for `t < s` in `ℝ`,
+  - [x] `limitSetBelow_backward_H_limit` (case H4, unselected → unselected): for `t < s` in `ℝ`,
         `Formula.allPast φ ∈ limitSetBelow m s → φ ∈ limitSetBelow m t`. Pick a rational
         `q₀ ∈ (max z t, s)`; then `t < q₀`, and `t - 1` is a valid threshold for `t` since every
         rational `p < t` satisfies `p < q₀`. *(This is v1's `limitSet_backward_H`.)*
-  - [ ] Case H3 (selected → selected) needs no new lemma; same note as G3.
-  - [ ] State every `exists_rat_btwn` interpolation as its own `have` so the case analysis stays
+  - [x] Case H3 (selected → selected) needs no new lemma; same note as G3.
+  - [x] State every `exists_rat_btwn` interpolation as its own `have` so the case analysis stays
         reviewable, and state each `max`-based bound as its own `have` for the same reason.
-  - [ ] `limitSetAbove` plays **no role** in this phase. Do not prove above-side duals; the
+  - [x] `limitSetAbove` plays **no role** in this phase. Do not prove above-side duals; the
         extension uses the below-limit for both temporal directions, and the Phase 3 above-side
         lemmas remain standing but unused assets.
-  - [ ] `lake build FormalSystem.Metalogic.Bundle.LimitMCSCoherence`.
-- **Estimated output:** ~260 lines.
+        *(Honoured: no above-side lemma was written; recorded in the module docstring.)*
+  - [x] `lake build FormalSystem.Metalogic.Bundle.LimitMCSCoherence`.
+- **Estimated output:** ~260 lines. *(Actual: 225 lines, 7 declarations, sorry-free.)*
 - **Done when:** all six lemmas are proved sorry-free, the two no-lemma cases are documented,
   and the module builds.
 - **Timing:** 5 hours.
 - **Depends on:** 3
+
+**PHASE 5 OUTCOME (recorded at implementation time)**
+
+All six lemmas landed sorry-free in `FormalSystem/Metalogic/Bundle/LimitMCSCoherence.lean`; G3
+and H3 are documented as deliberately lemma-free. Full `lake build` green (1895 jobs); live
+sorries outside `Boneyard/` unchanged at exactly `WeakCanonical/Transfer.lean:1242`; each of the
+seven declarations has axioms exactly `[propext, Classical.choice, Quot.sound]`.
+
+*The Phase 4 route election cost this phase nothing.* Phase 4's handoff predicted that
+unselected-**source** cases (G2, G4, H2, H4) would have to route through
+`limitMCSBelow_cofinal_below` instead of unfolding a `limitSetBelow` witness. That prediction
+does not bite at this layer: all six lemmas are stated with `limitSetBelow` on **both** sides,
+as the plan specifies, and an unselected-source hypothesis is therefore a `limitSetBelow`
+membership, which still unfolds directly to its threshold witness. `limitMCSBelow` is not
+mentioned in this module and `limitMCSBelow_cofinal_below` was not needed.
+
+**This does not discharge the Phase 4 correction — it relocates it to Phase 6.** Phase 6's
+`realLimitMCS` takes `limitMCSBelow m (x + δ)` at unselected points (so that `FMCS.is_mcs` is
+discharged by `limitMCSBelow_is_mcs`), *not* `limitSetBelow m (x + δ)`. The six lemmas below are
+therefore **not** directly composable at unselected points: each needs its hypothesis weakened
+from `limitSetBelow` to `limitMCSBelow` and its conclusion strengthened likewise. The two
+directions are not symmetric and Phase 6 must budget for both:
+
+- **Conclusion side (target unselected: G1, G4, H1, H4)** is free —
+  `limitSetBelow_subset_limitMCSBelow` (`Bundle/LimitMCS.lean`) upgrades the conclusion in one
+  step.
+- **Hypothesis side (source unselected: G2, G4, H2, H4)** is the real obligation, but all four
+  transpose, and the transposition was checked against the actual signature rather than inferred.
+  `limitMCSBelow_cofinal_below` (`Bundle/LimitMCS.lean`) reads
+  `(hA : A ∈ limitMCSBelow m r) (z : ℝ) (hz : z < r) : ∃ q : Rat, z < (q:ℝ) ∧ (q:ℝ) < r ∧ A ∈ m q`
+  — the threshold `z` is a **parameter**, not an output. So the caller chooses it, and each of
+  the four proofs below is the corresponding proof here with its `obtain ⟨z, hz, hmem⟩` step
+  replaced by one cofinality call at a chosen `z`. The `max`-based bounds disappear entirely,
+  because the bound that the `max` was there to clear can simply be passed as `z`:
+  - G2 variant: pass `z := s - 1`; get `q < s < p`, then `forward_G`.
+  - G4 variant: pass `z := s - 1`; the returned `q₀ < s < t` is the threshold at `t`.
+  - H2 variant: pass `z := (p : ℝ)` (legal since `(p:ℝ) < s`); get `p < q < s` directly, then
+    `backward_H`. No `max` needed.
+  - H4 variant: pass `z := t` (legal since `t < s`); get `t < q₀ < s`, then `t - 1` is the
+    threshold at `t`. No `max` needed.
+  **Phase 6 should therefore expect four short `limitMCSBelow`-source variants**, each a
+  composition of `limitMCSBelow_cofinal_below` with the family's coherence field, rather than a
+  reproof — and should add them to `LimitMCSCoherence.lean` rather than inlining them into
+  `RealExtension.lean`.
+
+This phase did not write those four variants: the plan's task list for Phase 5 names exactly six
+lemmas, all stated about `limitSetBelow`, and this dispatch's mandate was Phase 5 only.
 
 ### Phase 6: The FMCS real extension by rational selection [NOT STARTED]
 
