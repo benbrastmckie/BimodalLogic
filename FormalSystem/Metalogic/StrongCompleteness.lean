@@ -43,20 +43,32 @@ form follows from the weak one by the deduction theorem above. Extending to `Set
 contexts would require compactness of the Dedekind-class consequence relation, which is a
 separate question and is deliberately out of scope for this module.
 
+Stated plainly, so that the scope of the word "strong" in this file is not mistaken:
+*infinitary* strong completeness — a turnstile whose left-hand side ranges over arbitrary,
+possibly infinite sets of formulas — is a strictly different statement, it is provably out of
+reach for any finitary proof system because the consequence relation over Dedekind-complete
+flows is not compact (an infinite premise set can have no model while every finite subset has
+one, and a derivation can only use finitely many premises), and it is in any case
+*inexpressible* in this development: `Context` is defined as `List Formula`
+(`Syntax/Context.lean`), so both the derivability turnstile and the semantic-consequence
+relation are finitary by type. Nothing in this module either proves or purports to prove the
+infinitary statement.
+
 ## Axiomatisability of the real-line temporal logic
 
-Goldblatt (arXiv:2310.20069, Introduction) records that propositional temporal logic over
-`(ℝ, <)` is recursively — indeed finitely — axiomatisable, a result due to Bull, and that
+Goldblatt (arXiv:2310.20069v1, Introduction, p.1) records that propositional temporal logic
+over `(ℝ, <)` is recursively — indeed finitely — axiomatisable, a result due to Bull, and that
 Scott's non-axiomatisability theorem concerns *first-order* temporal logic rather than the
-propositional fragment. The "admissible models" restriction appearing in that paper is
-likewise a first-order device. So no known obstruction stands against a propositional
-completeness terminus over the reals.
+propositional fragment; Scott's argument is noted there to apply to any infinite Dedekind
+complete linear order, the integers included. The "admissible models" restriction appearing in
+that paper is likewise a first-order device, introduced to recover a completeness theorem for
+the first-order system. So no known obstruction stands against a propositional completeness
+terminus over the reals.
 `[UNVERIFIED - unverified_conversion]` — the local copy of this source is a machine conversion
-whose provenance has not been checked, and a full-text search of the local corpus returned no
-retrievable passage to corroborate the attribution. What appears above is therefore paraphrase,
-not quotation, and must be re-read against the published PDF before any quotation is committed.
-Nothing in this file depends on it: the claim is orientation for the reader, and no declaration
-below cites it.
+whose provenance has not been independently checked, so the marker stands; the Introduction was
+however read directly and does corroborate the attribution as paraphrased above. What appears
+here is paraphrase, not quotation. Nothing in this file depends on it: the claim is orientation
+for the reader, and no declaration below cites it.
 
 ## Contents
 
