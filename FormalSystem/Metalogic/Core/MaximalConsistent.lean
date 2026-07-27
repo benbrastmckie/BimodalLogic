@@ -44,7 +44,8 @@ as part of the boneyard archive.
 
 namespace FormalSystem.Metalogic.Core
 
-open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Semantics FormalSystem.Theorems.Combinators
+open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Semantics
+    FormalSystem.Theorems.Combinators
   FormalSystem.Theorems.Propositional
 
 /-!

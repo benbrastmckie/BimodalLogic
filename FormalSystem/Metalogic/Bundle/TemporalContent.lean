@@ -155,7 +155,8 @@ This reflects the definitional duality Fφ = ¬G¬φ lifted to content extractor
 - Backward: If G¬φ ∉ M, then ¬G¬φ ∈ M by negation completeness, so Fφ ∈ M
 -/
 theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
-    (h_mcs : SetMaximalConsistent (fc := FormalSystem.ProofSystem.FrameClass.Base) M) (phi : Formula) :
+    (h_mcs : SetMaximalConsistent (fc := FormalSystem.ProofSystem.FrameClass.Base) M)
+        (phi : Formula) :
     phi ∈ FContent M ↔ phi.neg ∉ GContent M := by
   simp only [mem_f_content_iff, mem_g_content_iff]
   -- Goal: someFuture phi ∈ M ↔ allFuture (phi.neg) ∉ M
@@ -209,7 +210,8 @@ This reflects the definitional duality Pφ = ¬H¬φ lifted to content extractor
 Symmetric to `f_content_iff_not_neg_in_g_content`.
 -/
 theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
-    (h_mcs : SetMaximalConsistent (fc := FormalSystem.ProofSystem.FrameClass.Base) M) (phi : Formula) :
+    (h_mcs : SetMaximalConsistent (fc := FormalSystem.ProofSystem.FrameClass.Base) M)
+        (phi : Formula) :
     phi ∈ PContent M ↔ phi.neg ∉ HContent M := by
   simp only [mem_p_content_iff, mem_h_content_iff]
   -- Goal: somePast phi ∈ M ↔ allPast (phi.neg) ∉ M

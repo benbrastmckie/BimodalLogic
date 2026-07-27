@@ -266,7 +266,8 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   -- Left intro: φ → φ ∨ (ψ ∧ χ)
   -- Using deduction theorem on orInl: [φ] ⊢ φ ∨ (ψ ∧ χ) implies ⊢ φ → φ ∨ (ψ ∧ χ)
   have di_left : ⊢ φ.imp Q :=
-    FormalSystem.Metalogic.Core.deductionTheorem [] φ Q (FormalSystem.Theorems.Propositional.orInl φ (ψ.and χ))
+    FormalSystem.Metalogic.Core.deductionTheorem [] φ Q
+        (FormalSystem.Theorems.Propositional.orInl φ (ψ.and χ))
   -- From context [P], derive φ ∨ ψ and φ ∨ χ
   -- Then derive: ¬φ → ψ (from φ ∨ ψ = ¬φ → ψ) and ¬φ → χ (from φ ∨ χ = ¬φ → χ)
   -- Combine: ¬φ → (ψ ∧ χ)

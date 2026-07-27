@@ -185,7 +185,8 @@ theorem size_rename {sig : MonadicSignature} :
 variable `i`, producing an `m`-ary formula. Realized as `rename` along `Fin.cons i id`
 (`0 ↦ i`, `j+1 ↦ j`). Used for existential witnesses `x = env i` (ties), which admit no
 strictly-monotone reordering. -/
-def _root_.FormalSystem.Metalogic.WeakCanonical.MonadicFormula.subst0 {sig : MonadicSignature} {m : Nat}
+def _root_.FormalSystem.Metalogic.WeakCanonical.MonadicFormula.subst0 {sig : MonadicSignature}
+    {m : Nat}
     (i : Fin m) (α : MonadicFormula sig (m + 1)) : MonadicFormula sig m :=
   α.rename (Fin.cons i (fun j => j))
 

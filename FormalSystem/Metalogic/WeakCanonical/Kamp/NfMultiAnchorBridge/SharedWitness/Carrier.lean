@@ -30,7 +30,8 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 /-- **`kvE2SepBody` — the joint separate-content shared-witness carrier** (O1,
     subsequently rewired). Model-independent: disjuncts enumerate the ORDER-TYPE
     DISJUNCTION `kvE2SepArr'` — one FLAT bracket per VALID weak order on the merged anchor set
-    (Lemma 3.2(1), PDF p.3), where each disjunct reads the zone bit appropriate to its own arrangement
+    (Lemma 3.2(1), PDF p.3), where each disjunct reads the zone bit appropriate to its own
+    arrangement
     (strict disjuncts the OPEN `zXU`/`zUW` bits, the coincidence disjunct the CLOSED `zAtX1L` bit;
     §5 meet-typed shared point, PDF p.6). The bracket (`kvE2SepDisjunct`) carries one shared
     `ptW`, per-σ E[Σ]-atom fresh slots, refined-conjunction segments, and the joint endpoint

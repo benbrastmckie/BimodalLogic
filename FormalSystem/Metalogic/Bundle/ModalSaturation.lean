@@ -251,7 +251,8 @@ noncomputable def dniTheorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (Form
   have h4 : [phi] ⊢ (phi.imp Formula.bot).imp Formula.bot :=
     FormalSystem.Metalogic.Core.deductionTheorem [phi] (phi.imp Formula.bot) Formula.bot h3
   -- Deduction theorem again: [] ⊢ φ → ((φ → ⊥) → ⊥)
-  exact FormalSystem.Metalogic.Core.deductionTheorem [] phi ((phi.imp Formula.bot).imp Formula.bot) h4
+  exact FormalSystem.Metalogic.Core.deductionTheorem [] phi ((phi.imp Formula.bot).imp Formula.bot)
+      h4
 
 /--
 Box distributes over double negation elimination: ⊢ Box(¬¬φ) → Box φ

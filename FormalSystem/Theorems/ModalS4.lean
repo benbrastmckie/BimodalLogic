@@ -37,7 +37,8 @@ All 4 theorems above are fully proven; this module is sorry-free.
 
 * [Perpetuity.lean](Perpetuity.lean) - Modal infrastructure
   (modal_t, modal_4, modal_b, boxMono, diamondMono)
-* [Propositional.lean](Propositional.lean) - Propositional infrastructure (botOfAndNeg, impNegImp, negImp, orInl, orInr)
+* [Propositional.lean](Propositional.lean) - Propositional infrastructure (botOfAndNeg, impNegImp,
+negImp, orInl, orInr)
 * [ModalS5.lean](ModalS5.lean) - S5 theorems (tBoxToDiamond, boxContrapose, tBoxConsistency)
 * [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata (modal_t, modal_4, modal_b, modal5)
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation

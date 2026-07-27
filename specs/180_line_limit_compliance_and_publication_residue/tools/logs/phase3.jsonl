@@ -1,0 +1,21 @@
+{"file": "FormalSystem/Metalogic/Bundle/CanonicalTaskRelation.lean", "ok": true, "applied": 4, "iters": 1, "before": {"linter.style.longLine": 4}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean", "ok": true, "applied": 4, "iters": 1, "before": {"linter.style.longLine": 4}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/Algebraic/ParametricTruthLemma.lean", "ok": true, "applied": 6, "iters": 1, "before": {"linter.style.longLine": 6}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/Algebraic/RestrictedParametricTruthLemma.lean", "ok": true, "applied": 3, "iters": 1, "before": {"linter.style.longLine": 3}, "after": {}, "skipped": []}
+{"file": "FormalSystem/FormalSystem.lean", "ok": true, "applied": 2, "iters": 1, "before": {"linter.style.longLine": 2}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean", "ok": true, "applied": 4, "iters": 1, "before": {"linter.style.longLine": 4}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/Bundle/TemporalContent.lean", "ok": true, "applied": 2, "iters": 1, "before": {"linter.style.longLine": 2}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/Algebraic/ParametricCompleteness.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/Algebraic/BooleanStructure.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Theorems/Propositional/Core.lean", "ok": true, "applied": 2, "iters": 1, "before": {"linter.style.longLine": 2}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/BXCanonical/Completeness.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/Bundle/ModalSaturation.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/Core/MaximalConsistent.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Carrier.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/ProofSystem.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/WeakCanonical/Kamp/Prop43Translate.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/OrderGate.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1, "linter.unusedDecidableInType": 2, "linter.unusedFintypeInType": 2, "unusedInstInType(union)": 2}, "after": {"linter.unusedDecidableInType": 2, "linter.unusedFintypeInType": 2, "unusedInstInType(union)": 2}, "skipped": []}
+{"file": "FormalSystem/Theorems/ModalS4.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Theorems/Perpetuity.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Theorems/TemporalDerived.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.style.longLine": 1}, "after": {}, "skipped": []}
+{"file": "FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean", "ok": true, "applied": 1, "iters": 1, "before": {"linter.unusedDecidableInType": 3, "linter.unusedFintypeInType": 2, "linter.style.longLine": 1, "unusedInstInType(union)": 3}, "after": {"linter.unusedDecidableInType": 3, "linter.unusedFintypeInType": 2, "unusedInstInType(union)": 3}, "skipped": []}

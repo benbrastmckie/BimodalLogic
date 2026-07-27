@@ -452,7 +452,8 @@ def kvE2SepSpikeOrderTypes : List KvE2SepSpikeOrderType :=
 /-- A k-owner weak order on the merged anchor set `A`: one entry per positive owner carrying BOTH
     its placement tag (relative to `w`, driving the F5 zone-bit read) AND its cross-owner **rank** —
     the position of the owner's fresh anchor in the merged ascending chain `{x1_σ, x1_τ, …}`
-    (Lemma 3.2(1), PDF p.3: one global order over the union of both owners' points). Two owners whose
+    (Lemma 3.2(1), PDF p.3: one global order over the union of both owners' points). Two owners
+    whose
     anchors interleave differently (`x1_σ < x1_τ` vs `x1_τ < x1_σ`) receive DISTINCT rank tuples, so
     they are now DISTINGUISHABLE — the cross-owner data the grouped `.holds` builder consumes. The
     placement tag stays the 3-value per-owner type (F5: strict→OPEN, coincident→CLOSED); the ℕ rank

@@ -54,7 +54,8 @@ private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
   have h_efq : DerivationTree FrameClass.Base [] (ψ.neg.imp (ψ.imp χ)) :=
     FormalSystem.Theorems.Propositional.impOfNeg ψ χ
   have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
-    FormalSystem.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
+    FormalSystem.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq
+        (by intro; simp)
   have h_neg_psi : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg :=
     FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
@@ -81,9 +82,11 @@ private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
 private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
     DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := by
   have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
-    FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.prop_s χ ψ) trivial
+    FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.prop_s χ ψ)
+        trivial
   have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
-    FormalSystem.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
+    FormalSystem.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s
+        (by intro; simp)
   have h_chi : [χ, (ψ.imp χ).neg] ⊢ χ :=
     FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_imp : [χ, (ψ.imp χ).neg] ⊢ ψ.imp χ :=

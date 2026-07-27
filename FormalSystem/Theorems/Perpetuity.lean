@@ -79,7 +79,8 @@ compatibility with existing code.
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
 * [Helpers.lean](Perpetuity/Helpers.lean) - Helper lemmas
 * [Principles.lean](Perpetuity/Principles.lean) - P1-P5 proofs
-* [MonotonicityDuality.lean](Perpetuity/MonotonicityDuality.lean) - duality/monotonicity lemmas and P6
+* [MonotonicityDuality.lean](Perpetuity/MonotonicityDuality.lean) - duality/monotonicity lemmas and
+P6
 -/
 
 -- Re-export all submodules to maintain backward compatibility

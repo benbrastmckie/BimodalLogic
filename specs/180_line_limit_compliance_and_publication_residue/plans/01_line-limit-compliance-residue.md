@@ -300,16 +300,18 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 
 ---
 
-### Phase 3: The 40 Rename Regressions (`FormalSystem/` non-`Automation/`) [NOT STARTED]
+### Phase 3: The 40 Rename Regressions (`FormalSystem/` non-`Automation/`) [COMPLETED]
 
 - **Goal:** Return the 21 `FormalSystem/` non-`Automation/` files from 40 violations to 0 —
   the regression introduced by the naming upgrade, and the cleanest slice (30 pure-code +
   10 docstring lines, **zero string literals**).
 
 - **Tasks:**
-  - [ ] If running concurrently with Phase 2, take the frozen harness copy first (see the Wave 2
-        territory contract above).
-  - [ ] Run the sweep over the 21 files, highest-count first:
+  - [x] If running concurrently with Phase 2, take the frozen harness copy first (see the Wave 2
+        territory contract above). *(deviation: skipped — not applicable. Phases 1-8 are being
+        run sequentially by a single agent, so Phase 2 was already complete and committed before
+        Phase 3 started; there is no in-flight harness to freeze against.)*
+  - [x] Run the sweep over the 21 files, highest-count first:
         `ParametricTruthLemma.lean` (6), `Chronicle/PointInsertion.lean` (4),
         `Chronicle/RRelation.lean` (4), `Bundle/CanonicalTaskRelation.lean` (4),
         `RestrictedParametricTruthLemma.lean` (3), `FormalSystem.lean` (2),
@@ -321,12 +323,14 @@ Phases within the same wave can execute in parallel. Territory contracts for the
         `NfMultiAnchorBridge/SharedWitness/Carrier.lean`,
         `NfMultiAnchorBridge/SharedWitness/OrderGate.lean`, `Bundle/ModalSaturation.lean`,
         `Theorems/ModalS4.lean`, `Theorems/Perpetuity.lean`, `Theorems/TemporalDerived.lean`).
-  - [ ] Note that 4 of these (`ProofSystem.lean`, `InteriorGateGeneralK.lean`,
+  - [x] Note that 4 of these (`ProofSystem.lean`, `InteriorGateGeneralK.lean`,
         `SharedWitness/OrderGate.lean`, `SharedWitness/Carrier.lean`) predate the rename; they
         are in scope all the same.
-  - [ ] Hand-fix any site the sweep declines. Research measured 40/40 applicable with 0 residual,
+  - [x] Hand-fix any site the sweep declines. Research measured 40/40 applicable with 0 residual,
         so any decline here is a signal that something changed — investigate before proceeding.
-  - [ ] Commit.
+        *(deviation: skipped — no hand-fix needed. The sweep applied 40/40 across 21/21 files
+        with 0 failures and 0 declines, exactly reproducing the research measurement.)*
+  - [x] Commit.
 
 - **Timing:** 1 hour
 - **Depends on:** 1
@@ -334,12 +338,18 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 - **Files to modify:** the 21 `FormalSystem/` non-`Automation/` `.lean` files listed above.
 
 - **Verification:**
-  - `count_long_lines.py` reports **0** for the `FormalSystem/` non-`Automation/` area, and the
-    global total drops 598 → **558**.
-  - `lake build` green, **≥ 1883 jobs**, exit 0, zero errors.
-  - Declaration inventory over the touched files unchanged (`gate.py` `DECL_RE` census).
-  - Comment-stripped live `sorry` count = 1 (`countermodel_discrete`).
-  - `git diff --stat` touches only `.lean` files in this phase's territory.
+  - [x] `count_long_lines.py` reports **0** for the `FormalSystem/` non-`Automation/` area, and
+    the global total drops 598 → **558** (Automation 327, Tests 231, other **0 / 0 files**).
+  - [x] `lake build` green, **1883 jobs**, exit 0, **zero** errors.
+  - [x] `lake build BimodalTest` green, 1923 jobs, exit 0 (run even though this phase does not
+    touch `Tests/`, as a cross-check that nothing downstream broke).
+  - [x] Declaration inventory over the touched files unchanged (`gate.py` `DECL_RE` census) —
+    `gate.py check` reports **GATE PASSED**, which covers this, the frozen-category equality,
+    the live-file count (330) and copyright (330/330) together.
+  - [x] Comment-stripped live `sorry` count = 1 (`countermodel_discrete`, located by content).
+  - [x] `git diff --stat` touches only `.lean` files in this phase's territory: exactly **21
+    files, +80 / -40**, and `git diff --name-only -- 'FormalSystem/Automation/*' 'Tests/*'`
+    returns **0** files.
 
 ---
 

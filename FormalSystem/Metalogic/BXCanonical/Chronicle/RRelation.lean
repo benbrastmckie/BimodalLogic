@@ -1422,8 +1422,10 @@ theorem burgessR_implies_burgessRSince (fc : FrameClass) {A C : Set Formula}
   -- ¬snce(β,α) ∧ snce(β,α) → ⊥ is derivable (propositional contradiction)
   have h_neg_event : DerivationTree fc [] ((Formula.snce α β).neg.and (Formula.snce α β)).neg :=
     liftBase fc
-      (let h1 := FormalSystem.Theorems.Propositional.lceImp (Formula.snce α β).neg (Formula.snce α β)
-       let h2 := FormalSystem.Theorems.Propositional.rceImp (Formula.snce α β).neg (Formula.snce α β)
+      (let h1 := FormalSystem.Theorems.Propositional.lceImp (Formula.snce α β).neg
+          (Formula.snce α β)
+       let h2 := FormalSystem.Theorems.Propositional.rceImp (Formula.snce α β).neg
+           (Formula.snce α β)
        let h3 := DerivationTree.axiom (fc := .Base) [] _
            (Axiom.prop_k ((Formula.snce α β).neg.and (Formula.snce α β)) (Formula.snce α β)
            Formula.bot) trivial
@@ -1486,8 +1488,10 @@ theorem burgessRSince_implies_burgessR (fc : FrameClass) {A C : Set Formula}
   -- ¬untl(β,γ) ∧ untl(β,γ) → ⊥ is derivable (propositional contradiction)
   have h_neg_event : DerivationTree fc [] ((Formula.untl γ β).neg.and (Formula.untl γ β)).neg :=
     liftBase fc
-      (let h1 := FormalSystem.Theorems.Propositional.lceImp (Formula.untl γ β).neg (Formula.untl γ β)
-       let h2 := FormalSystem.Theorems.Propositional.rceImp (Formula.untl γ β).neg (Formula.untl γ β)
+      (let h1 := FormalSystem.Theorems.Propositional.lceImp (Formula.untl γ β).neg
+          (Formula.untl γ β)
+       let h2 := FormalSystem.Theorems.Propositional.rceImp (Formula.untl γ β).neg
+           (Formula.untl γ β)
        let h3 := DerivationTree.axiom (fc := .Base) [] _
            (Axiom.prop_k ((Formula.untl γ β).neg.and (Formula.untl γ β)) (Formula.untl γ β)
            Formula.bot) trivial

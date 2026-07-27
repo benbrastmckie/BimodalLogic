@@ -144,7 +144,8 @@ Since fNestingDepth counts consecutive outermost F applications, and iterF
 applies F n times at the outermost level, the depth increases by n.
 -/
 lemma iter_F_f_nesting_depth (n : Nat) (phi : Formula) :
-    FormalSystem.Syntax.fNestingDepth (iterF n phi) = n + FormalSystem.Syntax.fNestingDepth phi := by
+    FormalSystem.Syntax.fNestingDepth (iterF n phi) = n + FormalSystem.Syntax.fNestingDepth
+        phi := by
   induction n with
   | zero => simp only [iter_F_zero, Nat.zero_add]
   | succ k ih =>
@@ -165,7 +166,8 @@ If n >= closureFBound(phi), then the fNestingDepth of iterF n phi
 exceeds max(maxFDepthInClosure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_F_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closureFBound phi) :
-    FormalSystem.Syntax.fNestingDepth (iterF n phi) > max (FormalSystem.Syntax.maxFDepthInClosure phi)
+    FormalSystem.Syntax.fNestingDepth (iterF n phi) > max
+        (FormalSystem.Syntax.maxFDepthInClosure phi)
         1 := by
   rw [iter_F_f_nesting_depth]
   unfold closureFBound at h
@@ -790,7 +792,8 @@ Since pNestingDepth counts consecutive outermost P applications, and iterP
 applies P n times at the outermost level, the depth increases by n.
 -/
 lemma iter_P_p_nesting_depth (n : Nat) (phi : Formula) :
-    FormalSystem.Syntax.pNestingDepth (iterP n phi) = n + FormalSystem.Syntax.pNestingDepth phi := by
+    FormalSystem.Syntax.pNestingDepth (iterP n phi) = n + FormalSystem.Syntax.pNestingDepth
+        phi := by
   induction n with
   | zero => simp only [iter_P_zero, Nat.zero_add]
   | succ k ih =>
@@ -811,7 +814,8 @@ If n >= closurePBound(phi), then the pNestingDepth of iterP n phi
 exceeds max(maxPDepthInClosure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_P_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closurePBound phi) :
-    FormalSystem.Syntax.pNestingDepth (iterP n phi) > max (FormalSystem.Syntax.maxPDepthInClosure phi)
+    FormalSystem.Syntax.pNestingDepth (iterP n phi) > max
+        (FormalSystem.Syntax.maxPDepthInClosure phi)
         1 := by
   rw [iter_P_p_nesting_depth]
   unfold closurePBound at h

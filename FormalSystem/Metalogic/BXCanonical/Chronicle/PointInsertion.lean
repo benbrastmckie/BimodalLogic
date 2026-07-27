@@ -383,7 +383,8 @@ theorem G_implies_F_mcs (fc : FrameClass) {A : Set Formula}
   have h_G_top_α : Formula.allFuture (Formula.imp top α) ∈ A := by
     have h1 := theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_weak)
     have h2 := theorem_in_mcs h_mcs
-      (liftBase fc (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived α (Formula.imp top α)))
+      (liftBase fc (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived α
+          (Formula.imp top α)))
     exact SetMaximalConsistent.implication_property h_mcs
       (SetMaximalConsistent.implication_property h_mcs h2 h1) h_G
   have h_top_in : top ∈ A :=
@@ -595,7 +596,8 @@ theorem dc_delta_B_controlled (fc : FrameClass) {B : Set Formula}
     · rw [hLB_empty] at d_imp
       have h_top_B : (Formula.bot.imp Formula.bot) ∈ B :=
         cud_contains_theorems h_dcs (FormalSystem.Theorems.Combinators.identity Formula.bot)
-      exact Or.inr ⟨Formula.bot.imp Formula.bot, h_top_B, ⟨FormalSystem.Theorems.Combinators.impTrans
+      exact Or.inr ⟨Formula.bot.imp Formula.bot, h_top_B,
+          ⟨FormalSystem.Theorems.Combinators.impTrans
         (FormalSystem.Theorems.Propositional.rceImp (Formula.bot.imp Formula.bot) delta) d_imp⟩⟩
     · have h_imp_B : delta.imp phi ∈ B := h_dcs L_B _ hLB_sub d_imp
       right
@@ -736,7 +738,8 @@ theorem xu_lemma_2_3_since_top (fc : FrameClass) {A B C : Set Formula}
     have h_G_flip := theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_flip)
     -- G(snce) → G(beta → beta ∧ snce) via temporal K distribution
     have h_temp_k2 :=
-      liftBase fc (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived (Formula.snce alpha top)
+      liftBase fc (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived
+          (Formula.snce alpha top)
           (beta.imp (Formula.and beta (Formula.snce alpha top))))
     have h_G_guard_str : (beta.imp (Formula.and beta (Formula.snce alpha top))).allFuture ∈ A :=
       SetMaximalConsistent.implication_property h_mcs_A
@@ -864,7 +867,8 @@ private theorem G_ex_falso_strengthen (fc : FrameClass) {A : Set Formula}
   have d_ef := ex_falso_from_assumption fc φ ψ
   exact SetMaximalConsistent.implication_property h_mcs_A
     (SetMaximalConsistent.implication_property h_mcs_A
-      (theorem_in_mcs h_mcs_A (liftBase fc (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived φ
+      (theorem_in_mcs h_mcs_A (liftBase fc
+          (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived φ
           (φ.neg.imp ψ))))
       (theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ d_ef)))
     h_Gφ

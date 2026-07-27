@@ -11,12 +11,14 @@ import FormalSystem.Metalogic.Core.DeductionTheorem
 import FormalSystem.Automation.LemmaDB
 
 /-!
-# Core Propositional Proof Combinators: LEM, negImp, botOfAndNeg, impNegImp, Disjunction Intro, Conjunction Elim
+# Core Propositional Proof Combinators: LEM, negImp, botOfAndNeg, impNegImp, Disjunction Intro,
+Conjunction Elim
 
 Core propositional reasoning combinators for the Hilbert-style proof system.
 Contains LEM, ex falso quodlibet (negImp), ex contradictione quodlibet (botOfAndNeg),
 reductio ad absurdum (impNegImp), left/right disjunction introduction (orInl, orInr),
-left/right conjunction elimination (andLeft, andRight), and right conjunction principle (impOfNegImpNeg).
+left/right conjunction elimination (andLeft, andRight), and right conjunction principle
+(impOfNegImpNeg).
 -/
 
 namespace FormalSystem.Theorems.Propositional

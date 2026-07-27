@@ -145,7 +145,8 @@ theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
     FormalSystem.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
     shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
     FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricToHistory fam₀,
-    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed
+        bfmcs
       ⟨fam₀, ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
     0, ?_⟩
   have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by

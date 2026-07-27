@@ -119,7 +119,8 @@ private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
   have h_efq : [] ⊢ (ψ.neg.imp (ψ.imp χ)) :=
     FormalSystem.Theorems.Propositional.impOfNeg ψ χ
   have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
-    FormalSystem.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
+    FormalSystem.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq
+        (by intro; simp)
   have h_neg_psi : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg :=
     FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
@@ -146,9 +147,11 @@ private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
 private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
     FormalSystem.ProofSystem.DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := by
   have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
-    FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.prop_s χ ψ) trivial
+    FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.prop_s χ ψ)
+        trivial
   have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
-    FormalSystem.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
+    FormalSystem.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s
+        (by intro; simp)
   have h_chi : [χ, (ψ.imp χ).neg] ⊢ χ :=
     FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)
   have h_imp : [χ, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
@@ -169,7 +172,8 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 
 /-- Past analog of TF axiom: Box phi -> H(Box phi), derived via temporal duality. -/
 private def past_tf_deriv (φ : Formula) :
-    FormalSystem.ProofSystem.DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).allPast) := by
+    FormalSystem.ProofSystem.DerivationTree fc []
+        ((Formula.box φ).imp (Formula.box φ).allPast) := by
   have h_tf_swap : FormalSystem.ProofSystem.DerivationTree fc [] _ :=
       FormalSystem.Theorems.Combinators.temporalFutureDerived (Formula.swapTemporal φ)
   have h_dual := FormalSystem.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
@@ -260,7 +264,8 @@ theorem parametric_canonical_truth_lemma
     · intro h_bot
       -- bot in MCS contradicts consistency
       have h_cons := (fam.is_mcs t).1
-      have h_deriv : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
+      have h_deriv : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [Formula.bot]
+          Formula.bot :=
         FormalSystem.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
       exact h_cons [Formula.bot] (fun psi hpsi => by simp only
           [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_bot) ⟨h_deriv⟩
@@ -393,7 +398,8 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
     · intro h_mem
       exfalso
       have h_cons := (fam.is_mcs t).1
-      have h_deriv : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
+      have h_deriv : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [Formula.bot]
+          Formula.bot :=
         FormalSystem.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
       exact h_cons [Formula.bot] (fun psi hpsi => by simp only
           [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩

@@ -25,9 +25,11 @@ with linear temporal logic.
 
 - `FormalSystem.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, allPast, allFuture)
   plus derived operators and context types
-- `FormalSystem.ProofSystem`: Hilbert-style proof system with 21 axiom schemata (base/dense/discrete)
+- `FormalSystem.ProofSystem`: Hilbert-style proof system with 21 axiom schemata
+(base/dense/discrete)
 and 7 inference rules
-- `FormalSystem.Semantics`: Task frame semantics with world histories, truth evaluation, and validity
+- `FormalSystem.Semantics`: Task frame semantics with world histories, truth evaluation, and
+validity
 - `FormalSystem.Metalogic`: Soundness, three completeness routes, and the tableau decision
   procedure. By far the largest component (210 live files); see `Metalogic/README.md` for
   the architecture map and the two-Boneyard counting caveat. Both Boneyard trees are excluded

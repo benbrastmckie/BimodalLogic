@@ -154,7 +154,8 @@ theorem not_provable_implies_neg_set_consistent (φ : Formula)
     rw [h_L_empty] at d
     -- From ⊢ ⊥, derive ⊢ phi via ex falso
     have d_efq : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] (Formula.bot.imp φ) :=
-      FormalSystem.ProofSystem.DerivationTree.axiom [] _ (FormalSystem.ProofSystem.Axiom.ex_falso φ) trivial
+      FormalSystem.ProofSystem.DerivationTree.axiom [] _
+          (FormalSystem.ProofSystem.Axiom.ex_falso φ) trivial
     have d_phi : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] φ :=
       FormalSystem.ProofSystem.DerivationTree.modus_ponens [] Formula.bot φ d_efq d
     exact h_not_prov ⟨d_phi⟩

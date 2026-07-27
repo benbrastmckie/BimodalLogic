@@ -580,7 +580,8 @@ Mirror of `gImpTrans` using `hDistribution` and `pastNecessitation`.
 -/
 noncomputable def hImpTrans (φ ψ χ : Formula) :
     ⊢ (φ.imp ψ).allPast.imp ((ψ.imp χ).allPast.imp (φ.imp χ).allPast) :=
-  let h_b := FormalSystem.Theorems.pastNecessitation _ (@bCombinator .Base (A := φ) (B := ψ) (C := χ))
+  let h_b := FormalSystem.Theorems.pastNecessitation _
+      (@bCombinator .Base (A := φ) (B := ψ) (C := χ))
   let step1 := mp h_b (hDistribution (ψ.imp χ) ((φ.imp ψ).imp (φ.imp χ)))
   let step2 := impTrans step1 (hDistribution (φ.imp ψ) (φ.imp χ))
   mp step2 (@theoremFlip .Base
