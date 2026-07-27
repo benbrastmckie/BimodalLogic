@@ -1,0 +1,79 @@
+{
+  "phase": 9,
+  "phase_name": "Regenerate baier_katoen_2008 chunks; confirm venema needs none; rebuild FTS",
+  "started_at": "2026-07-27T22:10:00Z",
+  "last_updated": "2026-07-27T22:45:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Confirm the venema_1993 finding before acting on it",
+      "status": "done",
+      "files_touched": [],
+      "note": "Directly inspected ~/Projects/Literature/sources/venema_1993/chunks.json: all 9 entries' source_path values (e.g. 'sec01_derivation-rules-as-anti-axioms-in-modal.md') resolve directly against the secNN_*.md files the repair engine edited in Phases 5-7; confirmed no chunk_*.md files exist in that directory (ls). literature-build-index.sh:171-179 reads FTS content via os.path.join(manifest_dir, source_path) -- confirmed by reading the script directly. Finding CONFIRMED: venema_1993 needs no re-chunking, only an index rebuild."
+    },
+    {
+      "id": 2,
+      "description": "Back up baier_katoen_2008's existing chunks.json and all 1,265 chunk_*.md files",
+      "status": "done",
+      "files_touched": [],
+      "note": "1266 files backed up (1265 chunk_*.md + chunks.json) with a sha256 manifest, final location $LITERATURE_DIR/.backups/chunk-regen-2026-07-27/sources/baier_katoen_2008/ (chunks.json renamed to chunks.json.bak so it does not match literature-build-index.sh's `find -name chunks.json` scan). IMPORTANT CORRECTION mid-phase, twice: the backup was FIRST placed under $LITERATURE_DIR/.backups/chunk-regen-2026-07-27/ WITHOUT renaming chunks.json, which polluted the first FTS rebuild attempt with a duplicate stale baier_katoen_2008 manifest -- relocated to the task directory's tooling-backups/ as a first fix; then, to avoid committing ~2,500 backup files to git (outside this task's established backup convention, which keeps corpus backups in $LITERATURE_DIR/.backups/, never in the git-tracked task directory), relocated a second time back to $LITERATURE_DIR/.backups/ with the manifest renamed to chunks.json.bak, which resolves the FTS-pollution problem without requiring git tracking. This file_touched list is intentionally empty: the final backup location is outside the git repository, exactly matching the convention every other phase's corpus backups use (LITERATURE_DIR/.backups/, not specs/404_.../tooling-backups/, which is reserved for the four in-scope .claude/scripts/ tooling files). Restorable via: $LITERATURE_DIR/.backups/chunk-regen-2026-07-27/sources/baier_katoen_2008/{chunks.json.bak,chunk_*.md,manifest.sha256}. See deviations."
+    },
+    {
+      "id": 3,
+      "description": "Regenerate baier's chunks via concatenate-then-chunk",
+      "status": "done",
+      "files_touched": [
+        "~/Projects/Literature/sources/baier_katoen_2008/chunks.json",
+        "~/Projects/Literature/sources/baier_katoen_2008/chunk_0001.md through chunk_1264.md"
+      ],
+      "note": "cat Baier_Katoen_2008_part{01..12}.md > $TMP/concat.md (367,827 words) then literature-chunk.sh $TMP/concat.md sources/baier_katoen_2008/ --doc-id baier_katoen_2008. Generated 1264 chunks (0 atomic, 218 over the 512-token target)."
+    },
+    {
+      "id": 4,
+      "description": "Sanity-check the regenerated manifest",
+      "status": "done",
+      "files_touched": [],
+      "note": "Chunk count 1264 vs prior 1265 (neighbourhood, -1). Total token coverage 574,530 vs prior 574,628 (99.98% match, consistent with ~75 repaired occurrences slightly shrinking gap widths). Single consistent doc_id ('baier_katoen_2008', all 1264 entries) confirmed. Chain integrity (prev_chunk_id/next_chunk_id): FOUND a confirmed chunk_id hash COLLISION (chunk_id is sha256(doc_id+section_path+first_64_chars_of_content)[:16] per literature-chunk.sh's own header comment) -- chunk_0425.md and chunk_0895.md both hash to 'e9c61604630eeea4' because this document restates the exact same 64-character opening sentence ('The interpretations for atomic propositions, negation, and conjunction are as usual') at two different points in the text. CRITICALLY: this SAME collision exists byte-for-byte in the BACKED-UP ORIGINAL 1265-chunk manifest (verified directly), with the identical chain-walk result (794 of 1265/1264 reachable from the single start) -- this is a confirmed PRE-EXISTING defect in literature-chunk.sh's chunk-ID scheme, NOT introduced by this phase's regeneration, and out of this task's file_scope to fix (chunking algorithm, not negation-repair tooling). Checked retrieval impact: the schema's chunks_data.chunk_id has a UNIQUE constraint and literature-build-index.sh uses INSERT OR REPLACE, so chunk_0895.md's content silently replaces chunk_0425.md's in the FTS index -- chunk_0425.md is invisible to search. Verified chunk_0425.md contains no negation symbol (grep for ∤/≠/∉/⊈/≁/⊮/≉ found only a bare, non-negated ⊆), so this pre-existing gap does not shadow any of this task's repaired content."
+    },
+    {
+      "id": 5,
+      "description": "Remove stale chunk_*.md files not referenced by the new manifest",
+      "status": "done",
+      "files_touched": ["~/Projects/Literature/sources/baier_katoen_2008/chunk_1265.md (removed)"],
+      "note": "Exactly 1 stale file (chunk_1265.md, the manifest's 1265th entry that the regenerated 1264-chunk manifest no longer references) -- removed after confirming it was the only stale file (set difference between on-disk chunk_*.md files and the new manifest's referenced source_path values)."
+    },
+    {
+      "id": 6,
+      "description": "Rebuild the global FTS index via literature-build-index.sh",
+      "status": "done",
+      "files_touched": ["~/Projects/Literature/.literature.db"],
+      "note": "Backed up the pre-rebuild database first (~/Projects/Literature/.backups/chunk-regen-2026-07-27/literature.db.pre-rebuild). First rebuild attempt (polluted by the misplaced backup, see objective 2) reported baier_katoen_2008 at 1348 chunks_data rows -- investigated and found TWO separate pollution sources: (a) this phase's own misplaced backup (fixed by relocating it outside LITERATURE_DIR), and (b) a SEPARATE, PRE-EXISTING orphaned legacy chunking artifact at sources/baier_katoen_2008/.chunks/section01..12/chunks.json (12 manifests, 1271 combined entries, file mtimes 2026-07-10 -- 17 days before this task, not referenced anywhere in index.json, superseded by the current top-level chunks.json+chunk_NNNN.md convention). Quarantined (moved, not deleted) the .chunks/ directory to $LITERATURE_DIR/.backups/quarantined-orphaned-chunks-2026-07-27/baier_katoen_2008_dot_chunks/ (each internal chunks.json renamed to chunks.json.bak) so it stops polluting literature-build-index.sh's recursive manifest scan while remaining recoverable, kept outside the git-tracked task directory per the established backup convention. Re-ran the rebuild: baier_katoen_2008 now shows exactly 1263 chunks_data rows (1264 manifest entries minus the 1 pre-existing chunk_id collision from objective 4), venema_1993 shows exactly 9 (matches its manifest exactly). Corpus-wide: 11,682 chunks processed, 11,241 unique rows survived (441 corpus-wide collisions from the same underlying chunk_id hash-truncation weakness, pre-existing and out of scope -- see deviations)."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "9.2",
+      "description": "Back up baier_katoen_2008's existing chunks.json and all 1,265 chunk_*.md files",
+      "type": "altered",
+      "reason": "The backup was initially placed under $LITERATURE_DIR/.backups/, which literature-build-index.sh's manifest discovery (`find $target_dir -name chunks.json`) scans recursively with no exclusion for .backups/ -- this polluted the FTS index with a duplicate stale baier_katoen_2008 manifest on the first rebuild attempt (reported 1348 chunks_data rows for baier instead of the expected ~1263). Corrected by relocating the entire backup tree to specs/404_complete_combining_negation_repair/tooling-backups/ (outside LITERATURE_DIR) before re-running the rebuild.",
+      "annotation": "*(deviation: altered -- backup location corrected mid-phase after discovering it polluted the FTS manifest scan; see progress file objective 2/6 for the full incident.)*"
+    },
+    {
+      "task_id": "9.4",
+      "description": "Sanity-check the regenerated manifest (chain integrity)",
+      "type": "altered",
+      "reason": "The plan's stated sanity check ('prev_chunk_id/next_chunk_id chain intact end to end') is not literally satisfiable for baier_katoen_2008: a confirmed PRE-EXISTING chunk_id hash collision (present byte-for-byte in the original 1265-chunk manifest, not introduced by this phase) breaks a single unbroken chain walk. This is a literature-chunk.sh chunking-algorithm defect (chunk_id is only a 16-hex-char/64-bit truncated hash of doc_id+section_path+first-64-chars-of-content, and this document happens to repeat an identical 64-char opening sentence at two points), out of this task's file_scope (which covers negation-repair tooling and the corpus files it edits, not the chunking algorithm). Verified the collision does not currently shadow any negation-repaired content (chunk_0425.md, the chunk silently dropped from the FTS index by the collision, contains no negation symbol). Documented as a discovered-but-out-of-scope pre-existing defect rather than fixed or silently ignored.",
+      "annotation": "*(deviation: altered -- chain-integrity check could not be fully satisfied due to a confirmed pre-existing defect in literature-chunk.sh unrelated to negation repair; verified no impact on repaired content; recommend a follow-up task to strengthen literature-chunk.sh's chunk_id scheme, e.g. incorporating chunk index/position into the hash input.)*"
+    },
+    {
+      "task_id": "9.6",
+      "description": "Rebuild the global FTS index",
+      "type": "altered",
+      "reason": "Discovered and quarantined a second, wholly pre-existing (2026-07-10, 17 days before this task) orphaned legacy chunking artifact at sources/baier_katoen_2008/.chunks/section01..12/ (12 manifests, 1271 entries) that was also polluting the FTS manifest scan -- not referenced by index.json, superseded by the current chunking convention. A THIRD, similar orphaned .chunks/ directory was found at sources/thomas_2003_reactive/.chunks/ during the corpus-wide check but was left untouched: thomas_2003_reactive has zero combining-mark residuals and is not part of this task's file_scope or residual set, so fixing its index pollution is a separate corpus-hygiene concern, flagged here as a follow-up rather than fixed under this task's scope.",
+      "annotation": "*(deviation: altered -- quarantined one pre-existing orphaned chunk-manifest directory that blocked accurate baier_katoen_2008 retrieval verification; left a second, unrelated one (thomas_2003_reactive) untouched as out of scope; recommend a corpus-wide orphaned-.chunks/-directory sweep as a follow-up task.)*"
+    }
+  ]
+}
