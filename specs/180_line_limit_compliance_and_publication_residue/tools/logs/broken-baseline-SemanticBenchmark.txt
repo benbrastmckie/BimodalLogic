@@ -1,7 +1,0 @@
-      1 : error: Aborting evaluation since the expression depends on the 'sorry' axiom, which can lead to runtime instability and crashes.
-      1 : error(lean.invalidField): Invalid field `get!`: The environment does not contain `List.get!`, so it is not possible to project the field `get!` from an expression
-      1 : error(lean.unknownIdentifier): Unknown constant `FormalSystem.Semantics.TaskFrame.trivial_frame`
-      1 : error(lean.unknownIdentifier): Unknown constant `FormalSystem.Syntax.Formula.all_future`
-      2 : error(lean.unknownIdentifier): Unknown constant `FormalSystem.Syntax.Formula.all_past`
-     13 : error(lean.unknownIdentifier): Unknown constant `FormalSystem.Syntax.Formula.atom_s`
-      4 : error: Type mismatch
