@@ -211,6 +211,18 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAConjFull
 -- and `Kamp.EANegation`, both already in this file's transitive closure; nothing in that
 -- closure imports this aggregator.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix
+-- NOTE: `import ...Kamp.VecEACombinators` lands the import edge for the two `VVecEA2`
+-- combinators the `VBracketFormula` layer already had and the `VVecEA2` layer did not:
+-- `VVecEA2.conjEverywhere`/`_holds_iff` (PDF p.6, Prop 4.2/4.3 conjunction closure) and
+-- `VVecEA2.concatPin`/`_holds_iff` (PDF p.9, the Case 3 pinned split of Lemma 5.1). The
+-- `concatPin` here differs from `VBracketFormula.concatPin` in the one way that matters:
+-- it carries `veaL.endpointRight` and `veaR.endpointLeft` THROUGH the pin point rather
+-- than discarding them, which is what makes its `_holds_iff` a biconditional. The module
+-- is carrier-neutral — it names no `HasDedekind*`/`HasAttained*` hypothesis. Cycle-free:
+-- `VecEACombinators` imports only `Kamp.VecEAConjFull` and `Kamp.EANegationFix.ConcatPin`,
+-- both already in this file's transitive closure above; nothing in that closure imports
+-- this aggregator.
+import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEACombinators
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge

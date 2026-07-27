@@ -440,7 +440,7 @@ evaluated as a whole:
 
 ---
 
-### Phase 3: The missing `VVecEA2` combinators [NOT STARTED]
+### Phase 3: The missing `VVecEA2` combinators [COMPLETED]
 
 - **Goal:** Close the combinator gap the migration needs. Measured absent: `VVecEA2.conjEverywhere`
   and `VVecEA2.concatPin`. (`VVecEA2.prependAllVec` — the endpoint-absorbing `prependAll` — is landed
@@ -451,16 +451,27 @@ evaluated as a whole:
 - **Source correspondence:** PDF p.6 (Prop 4.3 closure of `∨∃⃗∀` under conjunction, disjunction and
   existential quantification) and p.9 (the bracket concatenation the pinned form encodes).
 - **Tasks:**
-  - [ ] Re-confirm absence of `VVecEA2.conjEverywhere` and `VVecEA2.concatPin` by search before
-        writing.
-  - [ ] Define `VVecEA2.conjEverywhere` mirroring `VBracketFormula.conjEverywhere`
-        (`NegFix.lean:78`), and prove its `_holds`/`_iff` lemma.
-  - [ ] Define `VVecEA2.concatPin` mirroring `VBracketFormula.concatPin` (`ConcatPin.lean:97`), and
+  - [x] Re-confirm absence of `VVecEA2.conjEverywhere` and `VVecEA2.concatPin` by search before
+        writing. *(completed — tree-wide `grep` for both names returned only `BracketFormula.*` and
+        `VBracketFormula.*` hits; zero `VVecEA2.` hits. An enumeration of every `VVecEA2.` member
+        in the tree confirmed the layer had `disj`, `conjFull`, `trivialTrue`, `conjStruct`,
+        `disjList`, `singleton`, `enrichEndpoints`, `prependAllVec`, `negFix`, `holds*`,
+        `translate*`, `toVVecEA_m` — and neither of the two. Nothing was rebuilt.)*
+  - [x] Define `VVecEA2.conjEverywhere` mirroring `VBracketFormula.conjEverywhere`
+        (`NegFix.lean:78`), and prove its `_holds`/`_iff` lemma. *(completed)*
+  - [x] Define `VVecEA2.concatPin` mirroring `VBracketFormula.concatPin` (`ConcatPin.lean:97`), and
         prove its `_holds`/`_iff` lemma. The endpoint predicates must be carried through the pin
         point, not discarded — that carrying is the entire reason the `VVecEA2` version is needed.
-  - [ ] Follow the `VBracketFormula` proofs structurally; per `plan-compliance.md` do not substitute
-        a different decomposition.
-  - [ ] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`.
+        *(completed — the pinned point type is `(veaL.endpointRight ∧ pin) ∧ veaR.endpointLeft`;
+        the `mpr` direction of `VecEA2.concatPin_holds_iff` is the one that consumes both, and is
+        unprovable if either is dropped.)*
+  - [x] Follow the `VBracketFormula` proofs structurally; per `plan-compliance.md` do not substitute
+        a different decomposition. *(completed — both `VVecEA2`-level proofs are the same
+        disjunct-chase as `NegFix.lean:84` and `ConcatPin.lean:104`, with the `BracketFormula`-level
+        appeal replaced by the corresponding `VecEA2`-level one.)*
+  - [x] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`. *(completed — placed after
+        the `Kamp.EANegationFix` edge with a cycle-freeness NOTE; liveness confirmed by transitive
+        import walk from `FormalSystem.lean`, 271 → 272 modules.)*
 - **Files to create/modify:**
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/VecEACombinators.lean` — new, live
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` — one import + NOTE
@@ -476,6 +487,54 @@ evaluated as a whole:
   axiom-clean.
 - **Timing:** 1.5 hours (one agent run)
 - **Depends on:** 2
+
+**Phase 3 measured outcome** (actual, not asserted):
+
+| Gate | Before | After | Verdict |
+|---|---|---|---|
+| `lake build` exit | 0 | **0** | pass |
+| Jobs | 1885 | **1886** | +1, as specified |
+| Live modules from `FormalSystem.lean` | 271 | **272** | +1, as specified |
+| Tactic-position sorries in `Kamp/` | 4 dead / 0 live | **4 dead / 0 live** | unchanged |
+| Tactic-position sorries in the new module | — | **0** | pass |
+| Real `axiom` declarations in `FormalSystem/` | 0 | **0** | unchanged |
+
+`#print axioms` on all eight new declarations: **no `sorryAx` anywhere.** The four `_holds_iff`
+lemmas are each exactly `[propext, Classical.choice, Quot.sound]`; `VecEA2.concatPin` and
+`VVecEA2.concatPin` are `[propext, Quot.sound]`; `VecEA2.conjEverywhere` and
+`VVecEA2.conjEverywhere` depend on no axioms.
+
+**Non-vacuity, in the specific form this phase requires:**
+
+1. **Carrier-neutral.** No carrier is landed or weakened. `HasDedekindINF`, `HasDedekindSUP`,
+   `HasDefinableINF`/`SUP` and `HasAttainedINF`/`SUP` appear in **no** statement in the new module;
+   the only structural hypothesis anywhere is `OrderedMonadicStructure sig`. Recorded as prose in
+   the module docstring and checkable from the signatures.
+2. **Each `_holds_iff` is a genuine biconditional**, exact statements:
+   - `VecEA2.conjEverywhere_holds_iff`:
+     `(vea.conjEverywhere s).holds M atomMap z0 z1 ↔ vea.holds M atomMap z0 z1 ∧ ∀ y, z0 < y → y < z1 → s.EvalAt M atomMap y`
+   - `VVecEA2.conjEverywhere_holds_iff`:
+     `(v.conjEverywhere s).holds M atomMap z0 z1 ↔ v.holds M atomMap z0 z1 ∧ ∀ y, z0 < y → y < z1 → s.EvalAt M atomMap y`
+   - `VecEA2.concatPin_holds_iff`:
+     `(veaL.concatPin pin veaR).holds M atomMap z0 z1 ↔ ∃ r, z0 < r ∧ r < z1 ∧ veaL.holds M atomMap z0 r ∧ pin.EvalAt M atomMap r ∧ veaR.holds M atomMap r z1`
+   - `VVecEA2.concatPin_holds_iff`:
+     `(VL.concatPin pin VR).holds M atomMap z0 z1 ↔ ∃ r, z0 < r ∧ r < z1 ∧ VL.holds M atomMap z0 r ∧ pin.EvalAt M atomMap r ∧ VR.holds M atomMap r z1`
+
+   Both directions of both `VVecEA2` lemmas were exercised as `.mp`/`.mpr` in a compiled snippet,
+   and a third compiled example derives `veaL.endpointRight.EvalAt M atomMap r` **and**
+   `veaR.endpointLeft.EvalAt M atomMap r` from the forward direction alone — the fact an
+   endpoint-discarding `concatPin` could not produce, which is what makes the endpoint carrying
+   load-bearing rather than decorative.
+
+**Reading discipline (from this plan's own framing):** Phase 3 is a pure combinator addition at an
+existing type layer and cannot fail informatively. That it landed on the first build is **not**
+evidence the `VBracketFormula` → `VVecEA2` migration will succeed. The GO/NO-GO canary is Phase 4.
+
+**Phase 3 deviations:** none. No listed task was skipped, narrowed, substituted, or deferred.
+`VecEA2.conjEverywhere` and `VecEA2.concatPin` are not deviations: both source modules are
+two-layer (a `BracketFormula`-level operation plus its `V`-level lift), and reproducing that same
+two-layer shape one level up is what "mirror `VBracketFormula.conjEverywhere` / `.concatPin`
+structurally" means here.
 
 ---
 
