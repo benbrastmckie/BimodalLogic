@@ -279,7 +279,7 @@ does not need to build — but it should be faithful.
 
 ---
 
-### Phase 3: Delete the four blocks [NOT STARTED]
+### Phase 3: Delete the four blocks [COMPLETED]
 
 **Goal**: Excise the island from the live tree by exact line range, one file per edit. This is the
 highest-risk phase; it is deliberately mechanical.
@@ -290,27 +290,35 @@ suffix and are LIVE. Delete by verified line block only.
 
 **Tasks**:
 
-- [ ] For each file, immediately before cutting, re-confirm the range's first line and the first
+- [x] For each file, immediately before cutting, re-confirm the range's first line and the first
       retained line after the range by **content string match**, using the plan-time verification
       table. If either does not match, stop and report drift rather than guessing.
-- [ ] Delete `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierKv.lean`
+      *(completed — all four re-confirmed by an assert-or-abort script that additionally checked
+      each file's pre-cut line count. Zero drift; no line number was trusted without a content
+      match.)*
+- [x] Delete `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierKv.lean`
       lines 503-616 (114 lines). Retained after: `end FormalSystem.Metalogic.WeakCanonical.Kamp`.
-      File goes 617 → 503 lines.
-- [ ] Delete
+      File goes 617 → 503 lines. *(completed — 503 lines)*
+- [x] Delete
       `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean`
       lines 1424-2550 (1,127 lines). This is the file's entire tail below the arity-1 consumability
       `example` at :1417-1422. **Retain the `end` at old-2551** — it closes the `noncomputable
       section` opened at :197 — and the trailing namespace `end`. File goes 2553 → 1426 lines.
-- [ ] Delete
+      *(completed — 1426 lines; tail verified as `end` followed by
+      `end FormalSystem.Metalogic.WeakCanonical.Kamp`)*
+- [x] Delete
       `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorGateAssembleK.lean`
       lines 447-790 (344 lines). Retained after: `end FormalSystem.Metalogic.WeakCanonical.Kamp`.
-      File goes 791 → 447 lines.
-- [ ] Delete `FormalSystem/Metalogic/WeakCanonical/Kamp/KampPrior.lean` lines 1082-1232 (151 lines).
+      File goes 791 → 447 lines. *(completed — 447 lines)*
+- [x] Delete `FormalSystem/Metalogic/WeakCanonical/Kamp/KampPrior.lean` lines 1082-1232 (151 lines).
       Range begins at a `set_option maxHeartbeats 1600000 in`; retained after is the
       `/-- **F-i positive exhibit...` docstring. File goes 1985 → 1834 lines.
-- [ ] Run `lake build` and fix nothing but genuine fallout of the cut (a stray unused `import` or
+      *(completed — 1834 lines)*
+- [x] Run `lake build` and fix nothing but genuine fallout of the cut (a stray unused `import` or
       `open`). If the build reports a missing identifier that is NOT an island member, stop — that
-      means a live declaration was caught.
+      means a live declaration was caught. *(completed — `lake build` and `lake build BimodalTest`
+      both exit 0 on the first attempt. **Zero fixes were required**: no stray import, no stray
+      open, no missing identifier. The island was genuinely closed, confirming the audit.)*
 
 **Timing**: 1 hour
 
