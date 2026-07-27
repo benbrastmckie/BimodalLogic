@@ -726,19 +726,27 @@ machine-checked rather than prose. Nothing listed was dropped to make room.
 
 ---
 
-### Phase 5: The anchored mirrors [NOT STARTED]
+### Phase 5: The anchored mirrors [COMPLETED]
 
 - **Goal:** Faithful `VVecEA2` analogues of the anchored bounded-fix pair, covering the remaining
   two splice sites (`BoundedFixAnchored.lean:158`, `:385`).
 - **Source correspondence:** PDF p.9 (Cor 5.4 applied at an anchored endpoint) and p.10 (Figure 1's
   anchoring).
 - **Tasks:**
-  - [ ] Re-confirm the two splice sites' current line numbers before editing.
-  - [ ] Define and prove the anchored faithful analogues, following `BoundedFixAnchored.lean`
+  - [x] Re-confirm the two splice sites' current line numbers before editing. *(completed — NO
+        DRIFT: `negBoundedRightFixAnchored`'s `negChainOn` splice is at `BoundedFixAnchored.lean:158`
+        and `negBoundedLeftFixAnchored`'s at `:385`, exactly as the plan records. Verified by direct
+        read, not inherited from Phase 4's `BoundedFix.lean` check.)*
+  - [x] Define and prove the anchored faithful analogues, following `BoundedFixAnchored.lean`
         structurally, reusing Phase 4's construction rather than re-deriving it. Where Phase 4's
-        lemma applies directly, apply it — do not restate.
-  - [ ] Additions only; do not edit `BoundedFixAnchored.lean` in place.
-  - [ ] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`.
+        lemma applies directly, apply it — do not restate. *(completed — `endpointFailLeft` /
+        `endpointFailRight` and their `_holds` characterizations are parametric in the point
+        predicate, so they were APPLIED at the anchored heads unchanged, not restated. Both `_iff`
+        proofs compiled on the first attempt with no proof-state iteration.)*
+  - [x] Additions only; do not edit `BoundedFixAnchored.lean` in place. *(completed — `git status`
+        shows `BoundedFixAnchored.lean` unmodified; the new module imports it.)*
+  - [x] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`. *(completed — import +
+        NOTE added; liveness confirmed by transitive import walk from `FormalSystem.lean`.)*
 - **Files to create/modify:**
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixAnchoredFaithful.lean` — new, live
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` — one import + NOTE
@@ -751,6 +759,103 @@ machine-checked rather than prose. Nothing listed was dropped to make room.
 - **Done when:** the anchored faithful pair is live, sorry-free, axiom-clean.
 - **Timing:** 1.5 hours (one agent run)
 - **Depends on:** 4
+
+**MEASURED OUTCOME** (actual, not asserted):
+
+| Gate | After Phase 4 | After Phase 5 | Verdict |
+|---|---|---|---|
+| `lake build` exit | 0 | **0** | pass |
+| Jobs | 1887 | **1888** | +1, as specified |
+| Live modules from `FormalSystem.lean` | 273 | **274** | +1, as specified |
+| Tactic-position sorries in `Kamp/` | 4 dead / 0 live | **4 dead / 0 live** | unchanged |
+| Tactic-position sorries in `EANegationFixFaithful/` | 0 | **0** | pass |
+| Real `axiom` declarations in `FormalSystem/` | 0 | **0** | unchanged |
+| `NfMultiAnchorBridge/AggregateOffDiagK1.lean` explicit build | 1098 jobs, EXIT 0 | **1098 jobs, EXIT 0** | no regression |
+
+Sorry census is tactic-position via `.claude/scripts/lean-sorry-census.sh`, never `grep -c`. The four
+dead sorries are unchanged and all under `Kamp/Boneyard/`. Liveness was decided by a transitive
+`import` walk from `FormalSystem.lean`, never by `lake build <target>`; `lake build BoneyardArchive`
+was never run or cited.
+
+Axiom gate (`lean_verify`, all six new declarations): **no `sorryAx` anywhere**; every one is
+exactly `[propext, Classical.choice, Quot.sound]` — `negBoundedRightFixAnchoredFaithful_iff`,
+`negBoundedLeftFixAnchoredFaithful_iff`, both `_of_attained` shims, and both
+`endpointFail*Anchored_of_*PinBracket` subsumption lemmas.
+
+**Source correspondence check (PDF pp.9-10, read directly from the PDF; the corrupt companion `.md`
+was never opened):** p.9 defines the Cor 5.4(1) fold chain as `Fₙ := αₙ`,
+`F_{i-1} := α_{i-1} ∧ (β_i Until F_i)` — the innermost fold goal is **already a point type in the
+paper**, so `untilFoldAnchored`/`sinceFoldAnchored` are Rabinovich's own construction read at
+`αₙ := α`, not a tree-invented generalization. p.10's Figure 1
+(`B₂(z₀,z,z₁) := [α₀,β₁,α₁,β₂,β₂](z₀,z) ∧ [β₂,β₂,α₂,β₃,α₃](z,z₁)`) is the anchored endpoint in use:
+the split point `z` carries point types handed to it by both adjacent brackets. No hypothesis absent
+from those pages was added.
+
+**NON-VACUITY (the specific form required):**
+
+*(a) No anchored arm re-introduces attainment.* The only carrier hypothesis in
+`negBoundedRightFixAnchoredFaithful_iff` is `HasDedekindINF`; likewise for
+`negBoundedLeftFixAnchoredFaithful_iff`. `HasAttainedINF` occurs **only** in the two deliberate
+`_of_attained` shims; `HasAttainedSUP`, `HasDefinableINF`, `HasDefinableSUP` occur in **no**
+statement in the module. Checkable from the signatures.
+
+*(b) Carrier branch genuinely taken, named, with its discharging lemma.* The head disjunct of each
+anchored formula consumes **no carrier at all** — `endpointFailLeft_holds` / `endpointFailRight_holds`
+carry no structural hypothesis beyond `OrderedMonadicStructure`. The carrier is spent entirely in the
+chain arm, through the `negChainOnFaithful_iff` (`Lemma53Faithful.lean:228`) call each `_iff` makes in
+**both** the `mp` and the `mpr` direction. Inside that lemma the proof `rcases`es `h_INF.first_occ`
+(`Lemma53Faithful.lean:274`); its **left** disjunct `hk : kplus M atomMap P z0` — Rabinovich's
+*Subcase `r₀ = z₀`* (PDF p.8) — is the branch at `Lemma53Faithful.lean:277-282`, discharged by
+**`orderedPointsExist_combine_kplus`** (`Lemma53Faithful.lean:281`). Live branch on the invoked path
+in both directions of both lemmas; not dead syntax, not routed around.
+
+*(c) No case silently assumes an attained witness — closed structurally, not by inspection.* Each
+`_iff` has exactly two proof obligations: the endpoint condition (carrier-free **by signature**) and
+`negChainOnFaithful_iff` (carrier `HasDedekindINF` **by signature**). There is no third obligation
+into which an attained witness could be smuggled. That is exactly the difference from the attained
+anchored pair, whose third obligation *is* such a witness (`BoundedFixAnchored.lean:237` for
+`first_occ_tp`, `:468` for `last_occ_tp`).
+
+*(d) Subsumption is machine-checked, not argued.* `endpointFailLeftAnchored_of_rightPinBracket` and
+`endpointFailRightAnchored_of_leftPinBracket` prove that wherever the attained anchored pin disjunct
+fires, the anchored faithful endpoint disjunct fires too — **with no carrier hypothesis on either
+side**. The converse fails, and that asymmetry is the carrier drop made concrete.
+
+**PHASE 5 DEVIATIONS:**
+
+*Deviation 1 (substantive, and a repeat of the Phase 4 finding — reported, not silently omitted).*
+**`HasDedekindSUP` is not consumed in Phase 5 either, and neither is the `K⁻`/`kminus` branch.** The
+dispatch's non-vacuity clause names "HasDedekindINF / HasDedekindSUP" as the permitted carriers; only
+the first is actually spent. `HasAttainedSUP` entered `negBoundedLeftFixAnchored_iff`
+(`BoundedFixAnchored.lean:394`) for exactly one purpose — placing `leftPinBracket`'s attained *last*
+`¬βₙ`-point at `:468`. Once the head is the printed `¬Ĝ(z₁)`, the SUP carrier has nothing left to do:
+the chain arm of anchored Cor 5.4(2) is still an **increasing** chain
+(`chainAllTrue (sinceChainPredsAnchored …)`), hence still `negChainOnFaithful` and still
+`HasDedekindINF`. Claiming a `kminus` discharge here would be false. Stating an unused
+`HasDedekindSUP` would be a strengthening that buys nothing and hides what the proof costs. Phase 2's
+`HasDedekindSUP.last_occ_tp` and `orderedPointsExist_combine_kminus` remain Phase 6 inputs
+(`NegFixOne.lean:243`, `:276`); Phase 6 must **verify** that rather than assume it.
+
+*Deviation 2 (minor, strict superset — nothing listed was dropped).* Four declarations beyond the
+task list: the two `_of_attained` shims and the two `endpointFail*Anchored_of_*PinBracket`
+subsumption lemmas, added so non-vacuity (a) and (d) are machine-checked rather than prose.
+
+*No deviation on the head construction.* Unlike Phase 4 — whose task line prescribed
+`VecEA2.fromBracket` and had to be departed from — the Phase 5 task line directs reuse of Phase 4's
+construction, and `endpointFailLeft`/`endpointFailRight` are exactly that. The tail is likewise as
+prescribed: `negChainOnFaithful`'s disjuncts spliced unchanged over the **anchored** chain-predicate
+lists, mirroring how `BoundedFixAnchored.lean:158`/`:385` splice `negChainOn`.
+
+**Constraints observed:** zero sorries added; zero axioms added; `BoundedFixAnchored.lean` not
+edited (`git status` shows it unmodified) and its declarations stay live and consumed; no file
+deleted, no declaration excised or weakened; `EANegation.lean:1090`/`:1249` not touched, not read,
+not referenced (three-strikes prohibition), and `EANegation.lean` not edited at all; Rabinovich cited
+by PDF page only; landed live via the `NfMultiAnchorBridge.lean` import edge; no task-number
+reference in either touched `.lean` file (grep: 0 hits).
+
+**Sizing:** Phase 5 closed in **one agent run**. The three-strikes sizing guard did not fire and no
+re-split boundary was needed. Both new-module builds compiled on the first attempt with no
+proof-state iteration — attributable to Phase 4's head construction applying directly at the anchor.
 
 ---
 
