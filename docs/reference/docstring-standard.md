@@ -137,7 +137,7 @@ should have term-level docstrings (`/-- ... -/`):
 
 ```lean
 /-- The main inductive type for TM bimodal logic formulas.
-    Constructors: `atom`, `bot`, `imp`, `box`, `all_past`, `all_future`. -/
+    Constructors: `atom`, `bot`, `imp`, `box`, `allPast`, `allFuture`. -/
 inductive Formula : Type where
   ...
 ```

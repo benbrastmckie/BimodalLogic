@@ -58,10 +58,10 @@ A **BFMCS** (Bundled Family of Maximal Consistent Sets) represents a single comp
 structure BFMCS where
   mcs : Int -> Set Formula           -- MCS at each time point
   is_mcs : forall t, SetMaximalConsistent (mcs t)
-  forward_G : forall t t' phi, t < t' -> Formula.all_future phi ∈ mcs t -> phi ∈ mcs t'
-  backward_H : forall t t' phi, t' < t -> Formula.all_past phi ∈ mcs t -> phi ∈ mcs t'
-  forward_F : forall t phi, Formula.some_future phi ∈ mcs t -> exists s, t < s /\ phi ∈ mcs s
-  backward_P : forall t phi, Formula.some_past phi ∈ mcs t -> exists s, s < t /\ phi ∈ mcs s
+  forward_G : forall t t' phi, t < t' -> Formula.allFuture phi ∈ mcs t -> phi ∈ mcs t'
+  backward_H : forall t t' phi, t' < t -> Formula.allPast phi ∈ mcs t -> phi ∈ mcs t'
+  forward_F : forall t phi, Formula.someFuture phi ∈ mcs t -> exists s, t < s /\ phi ∈ mcs s
+  backward_P : forall t phi, Formula.somePast phi ∈ mcs t -> exists s, s < t /\ phi ∈ mcs s
 ```
 
 **Semantic interpretation**:
@@ -94,15 +94,15 @@ structure BMCS where
     Formula.box phi ∈ fam.mcs t -> forall fam' in families, phi ∈ fam'.mcs t
   modal_backward : forall fam in families, forall phi t,
     (forall fam' in families, phi ∈ fam'.mcs t) -> Formula.box phi ∈ fam.mcs t
-  eval_family : BFMCS                -- Distinguished evaluation point
-  eval_family_mem : eval_family ∈ families
+  evalFamily : BFMCS                -- Distinguished evaluation point
+  eval_family_mem : evalFamily ∈ families
 ```
 
 **Semantic interpretation**:
 - `families`: Set of possible world histories
 - `modal_forward`: Box(phi) at time t in any history means phi at time t in ALL histories
 - `modal_backward`: phi at time t in ALL histories means Box(phi) at time t in each history
-- `eval_family`: The "actual" world history used for evaluation
+- `evalFamily`: The "actual" world history used for evaluation
 
 **Visual representation**:
 ```
@@ -136,10 +136,10 @@ TM logic has both **modal operators** (Box, Diamond) and **temporal operators** 
 
 ```lean
 def GContent (M : Set Formula) : Set Formula :=
-  {phi | Formula.all_future phi ∈ M}
+  {phi | Formula.allFuture phi ∈ M}
 
 def HContent (M : Set Formula) : Set Formula :=
-  {phi | Formula.all_past phi ∈ M}
+  {phi | Formula.allPast phi ∈ M}
 ```
 
 **Construction mechanism**:
@@ -189,10 +189,10 @@ This is the core challenge addressed by the dovetailing construction.
 
 | Operator | Name | Type | Propagation | Mechanism | Status |
 |----------|------|------|-------------|-----------|--------|
-| G | all_future | Universal | Automatic | GContent seeding + 4_G axiom | **Proven** |
-| H | all_past | Universal | Automatic | HContent seeding + 4_H axiom | **Proven** |
-| F | some_future | Existential | Explicit tracking | Dovetailing enumeration | **Sorry** |
-| P | some_past | Existential | Explicit tracking | Dovetailing enumeration | **Sorry** |
+| G | allFuture | Universal | Automatic | GContent seeding + 4_G axiom | **Proven** |
+| H | allPast | Universal | Automatic | HContent seeding + 4_H axiom | **Proven** |
+| F | someFuture | Existential | Explicit tracking | Dovetailing enumeration | **Sorry** |
+| P | somePast | Existential | Explicit tracking | Dovetailing enumeration | **Sorry** |
 
 ---
 
@@ -207,7 +207,7 @@ This is the **key enabling lemma** for F/P witness construction.
 **Statement**:
 ```lean
 theorem temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
+    (psi : Formula) (h_F : Formula.someFuture psi ∈ M) :
     SetConsistent (TemporalWitnessSeed M psi)
 ```
 
@@ -223,7 +223,7 @@ Where `TemporalWitnessSeed M psi = {psi} ∪ GContent(M)`.
 **Symmetric lemma** (from `DovetailingChain.lean`, lines 301-353):
 ```lean
 theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
+    (psi : Formula) (h_P : Formula.somePast psi ∈ M) :
     SetConsistent (PastTemporalWitnessSeed M psi)
 ```
 

@@ -216,12 +216,12 @@ Locations abbreviated: PS = ProofSystem, SEM = Semantics, ML = Metalogic, TH = T
 |------|-------|---------|------------------------------|
 | 15 | `Formula` | verified | Syntax/Formula.lean:76 |
 | 16 | primitives {atom,⊥,→,□,H,G} | stale | {atom, bot, imp, box, untl, snce} (Formula.lean:76-92) |
-| 17 | `String` atoms | stale | `Atom` structured type (Syntax/Atom.lean); `atom_s` helper for strings |
-| 29-34 | `atom s`,`bot`,`imp`,`box`,`all_past`,`all_future` as primitives | partly stale | all_past/all_future are derived defs (Formula.lean:141-155) |
+| 17 | `String` atoms | stale | `Atom` structured type (Syntax/Atom.lean); `atomS` helper for strings |
+| 29-34 | `atom s`,`bot`,`imp`,`box`,`allPast`,`allFuture` as primitives | partly stale | allPast/allFuture are derived defs (Formula.lean:141-155) |
 | 61-63 | `neg`,`and`,`or` | verified | Formula.lean |
 | 84 | `pos` | stale name | `diamond` (Formula.lean, def diamond) |
-| 108-111 | `some_past`,`some_future`,`always`,`sometimes` | verified | Formula.lean:118-132, 157+ |
-| 119 | `swap_temporal` | verified | Formula.lean:570 (defined on untl/snce) |
+| 108-111 | `somePast`,`someFuture`,`always`,`sometimes` | verified | Formula.lean:118-132, 157+ |
+| 119 | `swapTemporal` | verified | Formula.lean:570 (defined on untl/snce) |
 
 ### 02-semantics.typ
 
@@ -237,12 +237,12 @@ Locations abbreviated: PS = ProofSystem, SEM = Semantics, ML = Metalogic, TH = T
 |------|-------|---------|------------------------------|
 | 12 | "14 axiom schemata" | stale | 42 constructors, 8 layers |
 | 91-99 | `Axiom.prop_k/prop_s/ex_falso/peirce/modal_t/modal_4/modal_b/modal_5_collapse/modal_k_dist` | verified | PS/Axioms.lean:80-108 |
-| 100 | `Axiom.temp_k_dist` | stale | derived: `temp_k_dist_derived` (TH/TemporalDerived.lean:184) |
-| 101 | `Axiom.temp_4` | stale | derived: `temp_4_derived` (TH/TemporalDerived.lean:239) |
+| 100 | `Axiom.temp_k_dist` | stale | derived: `temporalKDistDerived` (TH/TemporalDerived.lean:184) |
+| 101 | `Axiom.temp_4` | stale | derived: `temporal4Derived` (TH/TemporalDerived.lean:239) |
 | 102 | `Axiom.temp_a` | stale | axiom renamed: `connect_future` (BX4, Axioms.lean:152) |
 | 103 | `Axiom.temp_l` (stated as △φ→GHφ) | stale (name and formula) | `temp_linearity` (BX11, Axioms.lean:262); paper TL is future-linearity (possible_worlds.tex:1103) |
 | 104 | `Axiom.modal_future` | verified | Axioms.lean:297 |
-| 105 | `Axiom.temp_future` | stale | derived: `temp_future_derived` (TH/Combinators.lean:661) |
+| 105 | `Axiom.temp_future` | stale | derived: `temporalFutureDerived` (TH/Combinators.lean:661) |
 | 165-171 | `DerivationTree.*` 7 rule constructors | verified | PS/Derivation.lean (axiom rule now takes `h_fc : h.minFrameClass ≤ fc`) |
 | 182 | `DerivationTree Gamma phi` | stale signature | `DerivationTree fc Γ φ` with FrameClass parameter (Derivation.lean:85) |
 
@@ -258,7 +258,7 @@ Locations abbreviated: PS = ProofSystem, SEM = Semantics, ML = Metalogic, TH = T
 | 148,151,419 | `IndexedMCSFamily` | not-found | removed |
 | 162 | `truth_lemma` in `Metalogic/Representation/TruthLemma.lean` | stale path | live truth-lemma work: BXCanonical/TruthLemma.lean, WeakCanonical/TruthLemma.lean |
 | 172,186 | `representation_theorem`, `strong_representation_theorem` | not-found | removed |
-| 207 | `deduction_theorem` | verified | ML/Core/ (Core/Deduction) |
+| 207 | `deductionTheorem` | verified | ML/Core/ (Core/Deduction) |
 | 210,104 | `set_lindenbaum` | verified | ML/Completeness.lean, Core |
 | 213 | `MaximalConsistent` | verified | ML/Core (SetMaximalConsistent variant used at set level) |
 | 229,284 | `main_strong_completeness` | not-found | removed |
@@ -279,7 +279,7 @@ Locations abbreviated: PS = ProofSystem, SEM = Semantics, ML = Metalogic, TH = T
 
 | Line | Claim | Verdict | Live location / replacement |
 |------|-------|---------|------------------------------|
-| 49-54 | `perpetuity_1`..`perpetuity_6` | verified | TH/Perpetuity/Principles.lean (+Bridge.lean for P6); sorry-free |
+| 49-54 | `perpetuity_1`..`perpetuity6` | verified | TH/Perpetuity/Principles.lean (+Bridge.lean for P6); sorry-free |
 | 187 | `Perpetuity.lean` | verified (re-export) | TH/Perpetuity.lean + Perpetuity/ subdir (Principles, Bridge, Helpers) |
 | 188-189 | `ModalS5.lean`, `ModalS4.lean` | verified | TH/ |
 | 190 | `Propositional.lean` | stale | `Propositional/` subdir (Core, Connectives, Reasoning) |

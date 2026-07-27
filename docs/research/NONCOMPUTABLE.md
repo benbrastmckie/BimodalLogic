@@ -130,7 +130,7 @@ Induction on infinite or non-constructive types:
 ```lean
 -- Non-computable: structural induction on derivation trees
 -- (which can be arbitrarily large and non-canonical)
-noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
+noncomputable def deductionTheorem (Γ : Context) (A B : Formula)
     (h : (A :: Γ) ⊢ B) : Γ ⊢ A.imp B := by
   match h with  -- Pattern matching on derivation structure
   | DerivationTree.axiom ... => ...
@@ -154,9 +154,9 @@ noncomputable def f (x : Nat) : Nat :=
 ```
 
 This is exactly what happens in task 192:
-- `deduction_theorem` is `noncomputable` (uses structural induction + classical reasoning)
-- `generalized_modal_k` calls `deduction_theorem`
-- Therefore `generalized_modal_k` MUST be `noncomputable`
+- `deductionTheorem` is `noncomputable` (uses structural induction + classical reasoning)
+- `generalizedModalK` calls `deductionTheorem`
+- Therefore `generalizedModalK` MUST be `noncomputable`
 
 ---
 
@@ -168,10 +168,10 @@ This is exactly what happens in task 192:
 
 **Errors**:
 ```
-Error (Line 66): fail to show termination for generalized_modal_k
+Error (Line 66): fail to show termination for generalizedModalK
 depends on 'Logos.Core.Metalogic.deduction_theorem', which has no executable code
 
-Error (Line 101): fail to show termination for generalized_temporal_k
+Error (Line 101): fail to show termination for generalizedTemporalK
 depends on 'Logos.Core.Metalogic.deduction_theorem', which has no executable code
 ```
 
@@ -179,26 +179,26 @@ depends on 'Logos.Core.Metalogic.deduction_theorem', which has no executable cod
 
 **Current Definitions** (Lines 66, 101):
 ```lean
-def generalized_modal_k : (Γ : Context) → (φ : Formula) →
+def generalizedModalK : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ)
   | [], φ, h => DerivationTree.necessitation φ h
   | A :: Γ', φ, h =>
-    let h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h  -- CALLS noncomputable
+    let h_deduction : Γ' ⊢ A.imp φ := deductionTheorem Γ' A φ h  -- CALLS noncomputable
     ...
 ```
 
 **Dependency Chain**:
-1. `deduction_theorem` (DeductionTheorem.lean:332) is `noncomputable`
-2. `generalized_modal_k` calls `deduction_theorem` at line 71
-3. `generalized_temporal_k` calls `deduction_theorem` at line 105
+1. `deductionTheorem` (DeductionTheorem.lean:332) is `noncomputable`
+2. `generalizedModalK` calls `deductionTheorem` at line 71
+3. `generalizedTemporalK` calls `deductionTheorem` at line 105
 4. Both functions inherit the non-computability
 
-### Why `deduction_theorem` is Non-Computable
+### Why `deductionTheorem` is Non-Computable
 
 From `DeductionTheorem.lean`:
 
 ```lean
-noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
+noncomputable def deductionTheorem (Γ : Context) (A B : Formula)
     (h : (A :: Γ) ⊢ B) : Γ ⊢ A.imp B := by
   match h with
   | DerivationTree.axiom _ φ h_ax => ...
@@ -236,26 +236,26 @@ noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
 **Required Changes**:
 ```lean
 -- Line 66: Add noncomputable
-noncomputable def generalized_modal_k : (Γ : Context) → (φ : Formula) →
+noncomputable def generalizedModalK : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ)
   | [], φ, h => DerivationTree.necessitation φ h
   | A :: Γ', φ, h =>
-    let h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h
+    let h_deduction : Γ' ⊢ A.imp φ := deductionTheorem Γ' A φ h
     ...
 
 -- Line 101: Add noncomputable
-noncomputable def generalized_temporal_k : (Γ : Context) → (φ : Formula) →
-    (h : Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ)
+noncomputable def generalizedTemporalK : (Γ : Context) → (φ : Formula) →
+    (h : Γ ⊢ φ) → ((Context.map Formula.allFuture Γ) ⊢ Formula.allFuture φ)
   | [], φ, h => DerivationTree.temporal_necessitation φ h
   | A :: Γ', φ, h =>
-    let h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h
+    let h_deduction : Γ' ⊢ A.imp φ := deductionTheorem Γ' A φ h
     ...
 ```
 
 **Why This Works**:
 - Marking functions as `noncomputable` tells Lean: "Don't try to compile this"
 - Lean skips code generation but still type-checks and allows proof usage
-- The dependency on `noncomputable deduction_theorem` is now properly declared
+- The dependency on `noncomputable deductionTheorem` is now properly declared
 - No change to logical correctness, only computability annotation
 
 ---
@@ -303,14 +303,14 @@ From the codebase:
 
 1. **DeductionTheorem.lean** (2 definitions):
    - `deduction_with_mem` (line 206): Helper using structural recursion
-   - `deduction_theorem` (line 332): Main theorem using classical logic
+   - `deductionTheorem` (line 332): Main theorem using classical logic
 
 2. **Propositional.lean** (1 definition):
-   - `de` (disjunction elimination): Uses `deduction_theorem`, inherits non-computability
+   - `de` (disjunction elimination): Uses `deductionTheorem`, inherits non-computability
 
 3. **GeneralizedNecessitation.lean** (after fix, 2 definitions):
-   - `generalized_modal_k`: Depends on `deduction_theorem`
-   - `generalized_temporal_k`: Depends on `deduction_theorem`
+   - `generalizedModalK`: Depends on `deductionTheorem`
+   - `generalizedTemporalK`: Depends on `deductionTheorem`
 
 ### Pattern in Metalogic Modules
 
@@ -447,18 +447,18 @@ For theorem proving (ProofChecker's use case), we typically prefer classical con
 
 **Good**:
 ```lean
-noncomputable def deduction_theorem ... := ...
+noncomputable def deductionTheorem ... := ...
 
 noncomputable def uses_deduction ... :=
-  deduction_theorem ...  -- Explicitly noncomputable
+  deductionTheorem ...  -- Explicitly noncomputable
 ```
 
 **Bad** (causes errors):
 ```lean
-noncomputable def deduction_theorem ... := ...
+noncomputable def deductionTheorem ... := ...
 
 def uses_deduction ... :=  -- ERROR: depends on noncomputable
-  deduction_theorem ...
+  deductionTheorem ...
 ```
 
 ### 2. Document Why Noncomputable
@@ -471,7 +471,7 @@ The deduction theorem is noncomputable because it uses:
 - Structural induction on derivation trees (non-canonical form)
 - Well-founded recursion on semantic height measure
 -/
-noncomputable def deduction_theorem ... := ...
+noncomputable def deductionTheorem ... := ...
 ```
 
 ### 3. Minimize Scope
@@ -501,18 +501,18 @@ noncomputable def main_theorem ... :=
 ```lean
 noncomputable section DeductionTheorems
 
-def deduction_theorem ... := ...
-def reverse_deduction ... := ...
-def deduction_mp ... := ...
+def deductionTheorem ... := ...
+def reverseDeduction ... := ...
+def deductionMp ... := ...
 
 end DeductionTheorems
 ```
 
 **Equivalent to**:
 ```lean
-noncomputable def deduction_theorem ... := ...
-noncomputable def reverse_deduction ... := ...
-noncomputable def deduction_mp ... := ...
+noncomputable def deductionTheorem ... := ...
+noncomputable def reverseDeduction ... := ...
+noncomputable def deductionMp ... := ...
 ```
 
 ---
@@ -529,20 +529,20 @@ consider marking definition as 'noncomputable'
 ```
 
 **Diagnosis**:
-1. Function `generalized_modal_k` is marked `def` (computable)
-2. It calls `deduction_theorem` which is `noncomputable`
+1. Function `generalizedModalK` is marked `def` (computable)
+2. It calls `deductionTheorem` which is `noncomputable`
 3. Computable functions cannot depend on non-computable functions
 
 **Fix**: Mark caller as `noncomputable`:
 ```lean
-noncomputable def generalized_modal_k ... := ...
+noncomputable def generalizedModalK ... := ...
 ```
 
 ### Error: "fail to show termination"
 
 **Message**:
 ```
-error: fail to show termination for generalized_modal_k
+error: fail to show termination for generalizedModalK
 with errors
 failed to compile definition, compiler IR check failed ...
 ```
@@ -589,9 +589,9 @@ def factorial (n : Nat) : Nat := ...
 
 **Non-Computable**:
 ```lean
-noncomputable def deduction_theorem ... := ...
+noncomputable def deductionTheorem ... := ...
 
-#eval deduction_theorem ...  -- ERROR
+#eval deductionTheorem ...  -- ERROR
 ```
 
 For ProofChecker, we don't need code extraction (only proof verification), so `noncomputable` is fine.
@@ -614,8 +614,8 @@ For ProofChecker, we don't need code extraction (only proof verification), so `n
 - Propagates through dependency chains
 
 **Why needed in Task 192**:
-- `deduction_theorem` uses classical logic → noncomputable
-- `generalized_modal_k` and `generalized_temporal_k` call `deduction_theorem`
+- `deductionTheorem` uses classical logic → noncomputable
+- `generalizedModalK` and `generalizedTemporalK` call `deductionTheorem`
 - Must mark callers as `noncomputable` to satisfy dependency constraint
 
 **Impact**:

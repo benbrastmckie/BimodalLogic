@@ -241,9 +241,9 @@ match formula with
   -- innerFormula : Expr (formula inside box)
   ...
 
--- Match all_past: `Hφ`
-| .app (.const ``Formula.all_past _) innerFormula =>
-  -- innerFormula : Expr (formula inside all_past operator)
+-- Match allPast: `Hφ`
+| .app (.const ``Formula.allPast _) innerFormula =>
+  -- innerFormula : Expr (formula inside allPast operator)
   ...
 ```
 

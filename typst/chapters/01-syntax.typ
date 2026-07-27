@@ -16,7 +16,7 @@ Formulas are defined inductively with six primitive constructors, with *Until* a
 #definition("Formula")[
   The type `Formula` is defined by:
   $ phi.alt, psi ::= p | bot | phi.alt arrow.r psi | square.stroked phi.alt | U(phi.alt, psi) | S(phi.alt, psi) $
-  where $p$ ranges over sentence letters (type `Atom`).#footnote[`Atom` (`Syntax/Atom.lean`) pairs a base string with an optional freshness index, so that a fresh atom exists outside any finite set of atoms; `Formula.atom_s` builds an atom formula directly from a string.]
+  where $p$ ranges over sentence letters (type `Atom`).#footnote[`Atom` (`Syntax/Atom.lean`) pairs a base string with an optional freshness index, so that a fresh atom exists outside any finite set of atoms; `Formula.atomS` builds an atom formula directly from a string.]
 ]
 
 The binary temporal operators follow the *Burgess convention* @burgess1982axioms (`Syntax/Formula.lean`): in $U(phi.alt, psi)$ the first argument $phi.alt$ is the *event*, true at some strictly future witness time, and the second argument $psi$ is the *guard*, true at all times strictly between now and the witness.
@@ -118,10 +118,10 @@ The following operators are defined in terms of the primitives; each equation is
       [*Symbol*], [*Name*], [*Lean*], [*Reading*],
     ),
     table.hline(),
-    [$F phi.alt$], [Sometime future], [`some_future`], ["it is going to be that $phi.alt$"],
-    [$P phi.alt$], [Sometime past], [`some_past`], ["it has been that $phi.alt$"],
-    [$G phi.alt$], [Always future], [`all_future`], ["it is always going to be that $phi.alt$"],
-    [$H phi.alt$], [Always past], [`all_past`], ["it has always been that $phi.alt$"],
+    [$F phi.alt$], [Sometime future], [`someFuture`], ["it is going to be that $phi.alt$"],
+    [$P phi.alt$], [Sometime past], [`somePast`], ["it has been that $phi.alt$"],
+    [$G phi.alt$], [Always future], [`allFuture`], ["it is always going to be that $phi.alt$"],
+    [$H phi.alt$], [Always past], [`allPast`], ["it has always been that $phi.alt$"],
     [$triangle.stroked.t phi.alt$], [Always], [`always`], ["always $phi.alt$"],
     [$triangle.stroked.b phi.alt$], [Sometimes], [`sometimes`], ["sometimes $phi.alt$"],
     table.hline(),
@@ -133,7 +133,7 @@ Because $F$, $P$, $G$, and $H$ are `def` abbreviations rather than constructors,
 
 == Temporal Duality
 
-The `swap_temporal` function exchanges past and future operators.
+The `swapTemporal` function exchanges past and future operators.
 
 #definition("Temporal Swap")[
   The function $chevron.l S chevron.r : "Formula" arrow.r "Formula"$ is defined by recursion on the primitive constructors (`Syntax/Formula.lean`):

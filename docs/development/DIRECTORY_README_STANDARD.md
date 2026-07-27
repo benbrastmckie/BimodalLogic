@@ -403,7 +403,7 @@ The detailed documentation of `Formula` belongs in the docstring in `Formula.lea
 ```markdown
 ## Functions
 
-### `truth_at`
+### `TruthAt`
 Evaluates truth of a formula at a model, history, and time.
 
 **Parameters**:
@@ -415,11 +415,11 @@ Evaluates truth of a formula at a model, history, and time.
 **Returns**: `Prop` - Truth value
 ```
 
-**Why Bad**: This exact information should be in the docstring of `truth_at` in the `.lean` file.
+**Why Bad**: This exact information should be in the docstring of `TruthAt` in the `.lean` file.
 
 **Fix**: Remove duplication. If you want to guide users, write:
 ```markdown
-For truth evaluation details, see `truth_at` in [Semantics/Truth.lean](Semantics/Truth.lean).
+For truth evaluation details, see `TruthAt` in [Semantics/Truth.lean](Semantics/Truth.lean).
 ```
 
 ### Anti-pattern 2: Stale Documentation

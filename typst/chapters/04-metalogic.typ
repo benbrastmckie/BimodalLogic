@@ -38,7 +38,7 @@ The proof proceeds by induction on the derivation structure:
 - *Weakening*: Adding premises preserves semantic consequence
 
 The axiom validity lemmas live in `Metalogic/SoundnessLemmas/` (with `Core.lean`, `DenseValidity.lean`, and `FrameClassVariants.lean`), and the frame-condition semantics for the Base/Dense/Discrete classes is developed in the top-level `FrameConditions/` directory.
-The modal-temporal interaction axiom MF uses time-shift invariance (via `time_shift` on world histories) to relate truth at different times.
+The modal-temporal interaction axiom MF uses time-shift invariance (via `timeShift` on world histories) to relate truth at different times.
 
 == Core Infrastructure
 
@@ -47,7 +47,7 @@ The completeness proof requires three foundational components: the deduction the
 === Deduction Theorem
 
 #theorem("Deduction Theorem")[
-  If $A :: Gamma tack.r B$ then $Gamma tack.r A arrow.r B$.#footnote[Proven in `Metalogic/Core/`; see `deduction_theorem`.]
+  If $A :: Gamma tack.r B$ then $Gamma tack.r A arrow.r B$.#footnote[Proven in `Metalogic/Core/`; see `deductionTheorem`.]
 ]
 
 The proof uses well-founded induction on derivation height, handling each of the following rules:

@@ -62,7 +62,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `Completeness.lean` | 🔶 | Dense/discrete frame classes proven sorry-free; general Base-frame case has one residual sorryAx (dead pipeline dependency) |
 
 **Soundness** (✅):
-- Full soundness proof: `derivable Γ φ → semantic_consequence Γ φ` (all 21 axiom schemas: 17 base + 1 dense + 3 discrete)
+- Full soundness proof: `derivable Γ φ → SemanticConsequence Γ φ` (all 21 axiom schemas: 17 base + 1 dense + 3 discrete)
 
 **Completeness** (🔶 Mostly Complete):
 - Type definitions complete

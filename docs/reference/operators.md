@@ -115,46 +115,46 @@ Modal possibility operator from S5 modal logic - expresses metaphysical possibil
 
 ## Temporal Operators
 
-### H (all_past / universal past)
+### H (allPast / universal past)
 Universal past operator - expresses that a formula held at all past times.
 
 **Formal Definition**: Primitive temporal operator quantifying over past times
-**LEAN Code**: `Formula.all_past φ`
+**LEAN Code**: `Formula.allPast φ`
 **Alternative Notation**: `H` (from "Historically" or "Has always been")
 **Semantics**: `M,h,t ⊨ H φ` iff for all times t' < t in domain(h), `M,h,t' ⊨ φ`
-**See also**: [P (some_past)](#p-some_past--existential-past), [G (all_future)](#g-all_future--universal-future)
+**See also**: [P (somePast)](#p-somePast--existential-past), [G (allFuture)](#g-allFuture--universal-future)
 **Examples**: `H p` means "p has always been true (in the past)"
 
-### P (some_past / existential past)
+### P (somePast / existential past)
 Existential past operator - expresses that a formula held at some past time.
 
 **Formal Definition**: `P φ := ¬H¬φ` (dual of universal past)
-**LEAN Code**: Defined via `Formula.all_past` and negation as `some_past`
+**LEAN Code**: Defined via `Formula.allPast` and negation as `somePast`
 **Alternative Notation**: `P` (from "Previously" or "Past occurrence")
 **Semantics**: `M,h,t ⊨ P φ` iff there exists time t' < t in domain(h) such that `M,h,t' ⊨ φ`
-**See also**: [H (all_past)](#h-all_past--universal-past), [F (some_future)](#f-some_future--existential-future)
+**See also**: [H (allPast)](#h-allPast--universal-past), [F (someFuture)](#f-someFuture--existential-future)
 **Duality**: `P φ ↔ ¬H¬φ`
 **Examples**: `P □p` means "at some past time, p was necessary"
 
-### G (all_future / universal future)
+### G (allFuture / universal future)
 Universal future operator - expresses that a formula will hold at all future times.
 
 **Formal Definition**: Primitive temporal operator quantifying over future times
-**LEAN Code**: `Formula.all_future φ`
+**LEAN Code**: `Formula.allFuture φ`
 **Alternative Notation**: `G` (from "Globally" or "Going to always be")
 **Semantics**: `M,h,t ⊨ G φ` iff for all times t' > t in domain(h), `M,h,t' ⊨ φ`
 **Axioms**: T4 (`G φ → G G φ`), TA (`φ → G P φ`)
-**See also**: [F (some_future)](#f-some_future--existential-future), [H (all_past)](#h-all_past--universal-past)
+**See also**: [F (someFuture)](#f-someFuture--existential-future), [H (allPast)](#h-allPast--universal-past)
 **Examples**: `G p` means "p will always be true (in the future)"
 
-### F (some_future / existential future)
+### F (someFuture / existential future)
 Existential future operator - expresses that a formula will hold at some future time.
 
 **Formal Definition**: `F φ := ¬G¬φ` (dual of universal future)
-**LEAN Code**: Defined via `Formula.all_future` and negation as `some_future`
+**LEAN Code**: Defined via `Formula.allFuture` and negation as `someFuture`
 **Alternative Notation**: `F` (from "Future occurrence" or "Finally")
 **Semantics**: `M,h,t ⊨ F φ` iff there exists time t' > t in domain(h) such that `M,h,t' ⊨ φ`
-**See also**: [G (all_future)](#g-all_future--universal-future), [P (some_past)](#p-some_past--existential-past)
+**See also**: [G (allFuture)](#g-allFuture--universal-future), [P (somePast)](#p-somePast--existential-past)
 **Duality**: `F φ ↔ ¬G¬φ`
 **Examples**: `F ◇p` means "at some future time, p will be possible"
 
@@ -166,7 +166,7 @@ Temporal operator - expresses that a formula holds at all times (past, present, 
 **LEAN Code**: `Formula.always`, notation `prefix:80 "△" => Formula.always`
 **Semantics**: `M,h,t ⊨ always φ` iff for all times t' in domain(h), `M,h,t' ⊨ φ`
 **Note**: This is "eternal truth" (all past, present, and future times), not "henceforth" (from now onwards)
-**See also**: [sometimes](#sometimes-occurrence-at-some-time), [H (all_past)](#h-all_past--universal-past), [G (all_future)](#g-all_future--universal-future)
+**See also**: [sometimes](#sometimes-occurrence-at-some-time), [H (allPast)](#h-allPast--universal-past), [G (allFuture)](#g-allFuture--universal-future)
 **Perpetuity**: Used in P1-P6 to connect necessity and temporal truth
 **Examples**: `always □p` or `△□p` means "at all times, p is necessary"
 
@@ -178,7 +178,7 @@ Temporal operator - expresses that a formula holds at some time (past, present, 
 **LEAN Code**: `Formula.sometimes`, notation `prefix:80 "▽" => Formula.sometimes`
 **Semantics**: `M,h,t ⊨ sometimes φ` iff there exists time t' in domain(h) such that `M,h,t' ⊨ φ`
 **Note**: This is "at some time" (past, present, or future), dual to "eternal truth"
-**See also**: [always](#always-eternal-truth--omnitemporality), [P (some_past)](#p-some_past--existential-past), [F (some_future)](#f-some_future--existential-future)
+**See also**: [always](#always-eternal-truth--omnitemporality), [P (somePast)](#p-somePast--existential-past), [F (someFuture)](#f-someFuture--existential-future)
 **Perpetuity**: Used in P2, P4, P5, P6 perpetuity principles
 **Duality**: `sometimes φ ↔ ¬always¬φ` or equivalently `▽φ ↔ ¬△¬φ`
 **Examples**: `sometimes □p` or `▽□p` means "at some time, p is necessary"
@@ -276,7 +276,7 @@ The perpetuity principles (P1-P6) are key derived theorems in TM logic connectin
 ### P3: Necessity of Perpetuity
 **Statement**: `□φ → □always φ`
 **Natural Language**: Necessity implies the necessity of perpetuity.
-**LEAN Code**: `perpetuity_3 φ : ⊢ (φ.box.imp (always φ).box)`
+**LEAN Code**: `perpetuity3 φ : ⊢ (φ.box.imp (always φ).box)`
 **Proof Strategy**: From S5 axiom M4 (□φ → □□φ) and P1
 **Intuition**: If φ is necessary, then it's necessarily true that φ holds always
 **See also**: [P1 (necessity implies perpetuity)](#p1-necessity-implies-perpetuity)
@@ -284,7 +284,7 @@ The perpetuity principles (P1-P6) are key derived theorems in TM logic connectin
 ### P4: Possibility of Occurrence
 **Statement**: `◇sometimes φ → ◇φ`
 **Natural Language**: The possibility of occurrence implies possibility.
-**LEAN Code**: `perpetuity_4 φ : ⊢ ((sometimes φ).dia.imp φ.dia)`
+**LEAN Code**: `perpetuity4 φ : ⊢ ((sometimes φ).dia.imp φ.dia)`
 **Proof Strategy**: From modal-temporal interaction and P2
 **Intuition**: If it's possible that φ occurs at some time, then φ is possible
 **See also**: [P2 (occurrence implies possibility)](#p2-occurrence-implies-possibility)
@@ -292,7 +292,7 @@ The perpetuity principles (P1-P6) are key derived theorems in TM logic connectin
 ### P5: Persistent Possibility
 **Statement**: `◇sometimes φ → always ◇φ`
 **Natural Language**: Possible occurrence implies persistent possibility.
-**LEAN Code**: `perpetuity_5 φ : ⊢ ((sometimes φ).dia.imp (always φ.dia))`
+**LEAN Code**: `perpetuity5 φ : ⊢ ((sometimes φ).dia.imp (always φ.dia))`
 **Proof Strategy**: From S5 Brouwersche axiom MB and temporal semantics
 **Intuition**: If φ possibly occurs, it remains possible at all times
 **See also**: [P6 (occurrent necessity is perpetual)](#p6-occurrent-necessity-is-perpetual)
@@ -300,7 +300,7 @@ The perpetuity principles (P1-P6) are key derived theorems in TM logic connectin
 ### P6: Occurrent Necessity is Perpetual
 **Statement**: `sometimes □φ → □always φ`
 **Natural Language**: If φ is necessary at some time, it is necessarily perpetual.
-**LEAN Code**: `perpetuity_6 φ : ⊢ ((sometimes φ.box).imp (always φ).box)`
+**LEAN Code**: `perpetuity6 φ : ⊢ ((sometimes φ.box).imp (always φ).box)`
 **Proof Strategy**: From modal axioms and temporal interaction axioms (MF, TF)
 **Intuition**: Necessity doesn't vary across time - if necessary once, necessary always
 **See also**: [P3 (necessity of perpetuity)](#p3-necessity-of-perpetuity)

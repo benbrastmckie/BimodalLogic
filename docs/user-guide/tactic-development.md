@@ -437,13 +437,13 @@ theorem diamond_diamond_eq_diamond (φ : Formula) :
 -- Temporal simplifications (linear time structure)
 @[aesop norm simp [TMLogic]]
 theorem future_future_eq_future (φ : Formula) :
-  Formula.all_future (Formula.all_future φ) = Formula.all_future φ := by
+  Formula.allFuture (Formula.allFuture φ) = Formula.allFuture φ := by
   sorry  -- Requires proving T4 temporal axiom
 
 -- Bimodal interactions (MF/TF axioms)
 @[aesop norm simp [TMLogic]]
 theorem box_future_comm (φ : Formula) :
-  Formula.box (Formula.all_future φ) = Formula.all_future (Formula.box φ) := by
+  Formula.box (Formula.allFuture φ) = Formula.allFuture (Formula.box φ) := by
   sorry  -- Requires proving MF/TF axioms establish commutativity
 ```
 
@@ -462,8 +462,8 @@ theorem modal_k_forward (φ ψ : Formula) (h1 : Derivable Γ (Formula.box (φ.im
   exact Derivable.modal_k h1 h2
 
 @[aesop safe forward [TMLogic]]
-theorem temporal_k_forward (φ ψ : Formula) (h1 : Derivable Γ (Formula.all_future (φ.imp ψ)))
-    (h2 : Derivable Γ (Formula.all_future φ)) : Derivable Γ (Formula.all_future ψ) := by
+theorem temporal_k_forward (φ ψ : Formula) (h1 : Derivable Γ (Formula.allFuture (φ.imp ψ)))
+    (h2 : Derivable Γ (Formula.allFuture φ)) : Derivable Γ (Formula.allFuture ψ) := by
   exact Derivable.temporal_k h1 h2
 ```
 
@@ -525,12 +525,12 @@ Simp lemmas must reduce formulas toward a normal form to guarantee termination:
 ```lean
 -- Idempotence: `GGφ = Gφ` (all-future collapse)
 @[simp] theorem future_future_eq_future (φ : Formula) :
-  Formula.all_future (Formula.all_future φ) = Formula.all_future φ := by
+  Formula.allFuture (Formula.allFuture φ) = Formula.allFuture φ := by
   sorry  -- Prove using T4 temporal axiom
 
 -- Idempotence: `HHφ = Hφ` (all-past collapse)
 @[simp] theorem past_past_eq_past (φ : Formula) :
-  Formula.all_past (Formula.all_past φ) = Formula.all_past φ := by
+  Formula.allPast (Formula.allPast φ) = Formula.allPast φ := by
   sorry  -- Prove using temporal duality and T4
 ```
 
@@ -541,12 +541,12 @@ Simp lemmas must reduce formulas toward a normal form to guarantee termination:
 ```lean
 -- Commutativity: `□Gφ = G□φ` (necessity distributes over all-future)
 @[simp] theorem box_future_eq_future_box (φ : Formula) :
-  Formula.box (Formula.all_future φ) = Formula.all_future (Formula.box φ) := by
+  Formula.box (Formula.allFuture φ) = Formula.allFuture (Formula.box φ) := by
   sorry  -- Prove using MF/TF axioms
 
 -- Commutativity: `□Hφ = H□φ` (necessity distributes over all-past)
 @[simp] theorem box_past_eq_past_box (φ : Formula) :
-  Formula.box (Formula.all_past φ) = Formula.all_past (Formula.box φ) := by
+  Formula.box (Formula.allPast φ) = Formula.allPast (Formula.box φ) := by
   sorry  -- Prove using temporal duality of MF/TF
 ```
 

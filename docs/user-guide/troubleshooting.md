@@ -173,12 +173,12 @@ example (φ : Formula) : [ψ] ⊢ φ.box := by
 example (φ : Formula) (h : ⊢ φ) : ⊢ φ.box :=
   DerivationTree.necessitation φ h
 
--- For non-empty context, use weakening or generalized_modal_k
+-- For non-empty context, use weakening or generalizedModalK
 import FormalSystem.Theorems.GeneralizedNecessitation
 
 noncomputable example (φ : Formula) : [φ.box] ⊢ φ.box.box := by
   have h : [φ] ⊢ φ.box := ...
-  exact Theorems.generalized_modal_k [φ] φ.box h
+  exact Theorems.generalizedModalK [φ] φ.box h
 ```
 
 ### 3.2 "cannot apply 'DerivationTree.temporal_duality': context is not empty"

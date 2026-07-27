@@ -13,7 +13,7 @@ import FormalSystem.Metalogic.WeakCanonical.EFGames.StaviCompleteness
 Independent construction of the characteristic formula X_t (GHR93 Definition 8.8)
 and the interval type formula A = X_{(t,u)} without using `nf_characterizable_by_stavi`
 from StaviCompleteness.lean. This avoids putting the bridge lemma sorry onto the
-bx_completeness critical path.
+`completeness_discrete` critical path.
 
 ## Mathematical Background
 

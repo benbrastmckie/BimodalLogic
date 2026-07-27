@@ -766,19 +766,47 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 - **Timing:** 2-3 hours
 - **Depends on:** 6
 
-#### Phase 7.2: Documentation trees [NOT STARTED]
+#### Phase 7.2: Documentation trees [COMPLETED]
 
 - **Goal:** Update declaration-name references outside the Lean tree.
 - **Territory:** `docs/`, `typst/`, `latex/`, `README.md`. Must not touch any `.lean` file.
 - **Tasks:**
-  - [ ] `docs/`: 695 hits across 56 files. `typst/`: 94 hits across 21 files. `latex/`: 3 hits.
-  - [ ] Correct the `bx_completeness` references - the name does not exist in source; the real
+  - [x] `docs/`: 695 hits across 56 files. `typst/`: 94 hits across 21 files. `latex/`: 3 hits.
+        *(completed — **816 occurrences across 47 files**, close to the projected 792 total.
+        Same map-driven tool as 7.1 (`prose_sweep.py --mode docs`), 0 ambiguous finals, and a
+        re-run reports **0 residual**. Heaviest: `docs/development/NONCOMPUTABLE_GUIDE.md` 115,
+        `docs/user-guide/examples.md` 109, `docs/user-guide/architecture.md` 105.)*
+  - [x] Correct the `bx_completeness` references - the name does not exist in source; the real
         theorem is `completeness_discrete` (`Metalogic/BXCanonical/Completeness.lean:302`). This is a
-        documentation fix, not a rename.
-  - [ ] The ~812 single-backtick `` `Name `` occurrences in doc text are markdown inline code -
-        cosmetic but user-facing; drive from the rename map.
-  - [ ] These files are outside `specs/**`, so per `.claude/rules/no-task-references-in-deliverables.md`
-        they must carry **no task-number citations**. Cite durable anchors instead.
+        documentation fix, not a rename. *(deviation: altered — **there are no `bx_completeness`
+        references left in `docs/`, `typst/`, `latex/`, or `README.md`**; the one the research
+        counted was already repaired by the Phase 3 non-Lean sweep. The only surviving live
+        occurrence is a prose comment in a **Lean** file,
+        `Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean:16`, which this phase's
+        territory contract forbids touching. Fixed anyway, as a one-line comment edit, because
+        the plan assigns this correction to 7.2 and leaving it would mean the item is recorded
+        done while the defect survives; the alternative reading — silently dropping it because
+        of a territory boundary — is worse. The two remaining occurrences are under
+        `Boneyard/`, out of scope by Non-Goals. Verified `theorem completeness_discrete` exists
+        at `Metalogic/BXCanonical/Completeness.lean:295`, three lines from the cited 302.)*
+  - [x] The ~812 single-backtick `` `Name `` occurrences in doc text are markdown inline code -
+        cosmetic but user-facing; drive from the rename map. *(completed — covered by the same
+        map-driven pass; in `docs/` there is no code/prose distinction to preserve, so the
+        rewrite is unconditional rather than lexer-masked as in 7.1.)*
+  - [x] These files are outside `specs/**`, so per `.claude/rules/no-task-references-in-deliverables.md`
+        they must carry **no task-number citations**. Cite durable anchors instead. *(deviation:
+        altered — the done-when test ("no task-number citations **introduced**") is satisfied
+        exactly: **159 before, 159 after** across the files this phase touched. But the stronger
+        reading — purge all existing ones — was NOT executed, deliberately. There are **178
+        citations across 18 files**, and they are not incidental: `IMPLEMENTATION_STATUS.md`,
+        `SORRY_REGISTRY.md`, and `docs/research/README.md` are changelog-shaped documents whose
+        content largely *is* the task history, so "cite a durable anchor instead" has no
+        mechanical answer. Worse, `docs/training/PIPELINE.md` uses "Task 4: Tokenizer",
+        "Task 7: PyTorch Dataset" to name **ML-pipeline work items, not agent-system tasks** — a
+        different referent entirely, which a blanket purge would silently corrupt. Rewriting
+        178 citations with per-site editorial judgement is not a rename and does not belong
+        inside a naming migration; recorded in `phase7-docs-sweep.md` for follow-up alongside
+        the 112 equivalent citations found in `Tests/` during 7.1.)*
 - **Estimated output:** ~200 lines of diff
 - **Done when:** a whole-word search for old final components across `docs/`, `typst/`, `latex/`,
   `README.md` returns only deliberately-retained hits; no task-number citations introduced.

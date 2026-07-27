@@ -126,5 +126,5 @@ This is why LTL can afford to be a future-only language.
 == The Formalization Frontier
 
 A machine-checked Kamp theorem is an open problem.
-`Metalogic/WeakCanonical/Kamp/` develops the Rabinovich proof chain @rabinovich2014 toward it: the target statement `kamp_prior_expressive_completeness` says that every `MonadicFormula` with one free variable has an Until/Since-equivalent formula on Prior structures, with the translation implemented as `rabinovich_translate`.
+`Metalogic/WeakCanonical/Kamp/` develops the Rabinovich proof chain @rabinovich2014 toward it: the target statement `kampPriorExpressiveCompleteness` says that every `MonadicFormula` with one free variable has an Until/Since-equivalent formula on Prior structures, with the translation implemented as `rabinovich_translate`.
 The end-to-end theorem remains open.

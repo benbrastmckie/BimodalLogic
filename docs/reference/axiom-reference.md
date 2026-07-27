@@ -226,7 +226,7 @@ DerivationTree.temporalNecessitation : DerivationTree [] φ →
 example (p : Formula) : ⊢ p.box.imp p.diamond := by
   have h1 := modal_t p         -- □p → p
   have h2 := dia_intro p       -- p → ◇p (derived)
-  exact imp_trans h1 h2
+  exact impTrans h1 h2
 ```
 
 ### Example 2: Derive `□(p → q) → □p → □q`

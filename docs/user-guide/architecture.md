@@ -29,35 +29,35 @@ The core language implements the bimodal logic TM (Tense and Modality) from the 
 
 ```lean
 -- Layer 0: Core formula type with extensional, modal, and temporal operators
--- Language BL = ⟨SL, ⊥, →, □, all_past, all_future⟩
+-- Language BL = ⟨SL, ⊥, →, □, allPast, allFuture⟩
 inductive Formula : Type
   | atom : String → Formula                   -- Sentence letters (p_i)
   | bot : Formula                             -- Falsity (⊥)
   | imp : Formula → Formula → Formula         -- Material implication (→)
   | box : Formula → Formula                   -- Metaphysical necessity (□)
-  | all_past : Formula → Formula              -- Universal past (H)
-  | all_future : Formula → Formula            -- Universal future (G)
+  | allPast : Formula → Formula              -- Universal past (H)
+  | allFuture : Formula → Formula            -- Universal future (G)
 
 -- Derived operators as abbreviations (not constructors)
 def neg (φ : Formula) : Formula := φ.imp Formula.bot
 def and (φ ψ : Formula) : Formula := neg (φ.imp (neg ψ))
 def or (φ ψ : Formula) : Formula := (neg φ).imp ψ
 def diamond (φ : Formula) : Formula := neg (Formula.box (neg φ))
-def some_past (φ : Formula) : Formula := neg (Formula.all_past (neg φ))
-def some_future (φ : Formula) : Formula := neg (Formula.all_future (neg φ))
+def somePast (φ : Formula) : Formula := neg (Formula.allPast (neg φ))
+def someFuture (φ : Formula) : Formula := neg (Formula.allFuture (neg φ))
 -- 'always' is eternal truth: φ holds at all times (past, present, and future)
-def always (φ : Formula) : Formula := (Formula.all_past φ).and (φ.and (Formula.all_future φ))
+def always (φ : Formula) : Formula := (Formula.allPast φ).and (φ.and (Formula.allFuture φ))
 -- 'sometimes' is dual of 'always': φ holds at some time (past, present, or future)
 def sometimes (φ : Formula) : Formula := neg (always (neg φ))
 
--- Temporal duality: swap all_past and all_future operators
-def swap_temporal : Formula → Formula
+-- Temporal duality: swap allPast and allFuture operators
+def swapTemporal : Formula → Formula
   | Formula.atom p => Formula.atom p
   | Formula.bot => Formula.bot
-  | Formula.imp φ ψ => (swap_temporal φ).imp (swap_temporal ψ)
-  | Formula.box φ => (swap_temporal φ).box
-  | Formula.all_past φ => (swap_temporal φ).all_future
-  | Formula.all_future φ => (swap_temporal φ).all_past
+  | Formula.imp φ ψ => (swapTemporal φ).imp (swapTemporal ψ)
+  | Formula.box φ => (swapTemporal φ).box
+  | Formula.allPast φ => (swapTemporal φ).allFuture
+  | Formula.allFuture φ => (swapTemporal φ).allPast
 
 -- DSL syntax support for more readable formula construction
 syntax "atom" str : term
@@ -68,10 +68,10 @@ syntax term "|" term : term                   -- Disjunction
 syntax term "->" term : term                  -- Implication
 syntax "□" term : term                        -- Necessity
 syntax "◇" term : term                        -- Possibility
-syntax "H" term : term                        -- Universal past (all_past)
-syntax "G" term : term                        -- Universal future (all_future)
-syntax "P" term : term                        -- Existential past (some_past)
-syntax "F" term : term                        -- Existential future (some_future)
+syntax "H" term : term                        -- Universal past (allPast)
+syntax "G" term : term                        -- Universal future (allFuture)
+syntax "P" term : term                        -- Existential past (somePast)
+syntax "F" term : term                        -- Existential future (someFuture)
 syntax "always" term : term                   -- Always (at all times)
 syntax "sometimes" term : term                -- Sometimes (at some time)
 prefix:80 "△" => Formula.always               -- Triangle notation for always
@@ -86,8 +86,8 @@ def Formula.complexity : Formula → Nat
   | Formula.bot => 1
   | Formula.imp φ ψ => φ.complexity + ψ.complexity + 1
   | Formula.box φ => φ.complexity + 1
-  | Formula.all_past φ => φ.complexity + 1
-  | Formula.all_future φ => φ.complexity + 1
+  | Formula.allPast φ => φ.complexity + 1
+  | Formula.allFuture φ => φ.complexity + 1
 ```
 
 #### Layer 1 Language Extension (Future Work)
@@ -173,17 +173,17 @@ inductive Axiom : Formula → Prop
 
   -- Temporal Axioms
   | temp_4 (φ : Formula) :
-      Axiom ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)))  -- T4: `Gφ → GGφ`
+      Axiom ((Formula.allFuture φ).imp (Formula.allFuture (Formula.allFuture φ)))  -- T4: `Gφ → GGφ`
   | temp_a (φ : Formula) :
-      Axiom (φ.imp (Formula.all_future (some_past φ)))                    -- TA: `φ → G(Pφ)`
+      Axiom (φ.imp (Formula.allFuture (somePast φ)))                    -- TA: `φ → G(Pφ)`
   | temp_l (φ : Formula) :
-      Axiom ((always φ).imp (Formula.all_future (Formula.all_past φ)))    -- TL: `△φ → G(Hφ)`
+      Axiom ((always φ).imp (Formula.allFuture (Formula.allPast φ)))    -- TL: `△φ → G(Hφ)`
 
   -- Bimodal Interaction Axioms
   | modal_future (φ : Formula) :
-      Axiom (φ.box.imp (Formula.box (Formula.all_future φ)))              -- MF: `□φ → □Gφ`
+      Axiom (φ.box.imp (Formula.box (Formula.allFuture φ)))              -- MF: `□φ → □Gφ`
   | temp_future (φ : Formula) :
-      Axiom (φ.box.imp (Formula.all_future φ.box))                        -- TF: `□φ → G□φ`
+      Axiom (φ.box.imp (Formula.allFuture φ.box))                        -- TF: `□φ → G□φ`
 
 -- Layer 1 Derivation trees for system TM
 -- Note: DerivationTree is a Type (not Prop), enabling pattern matching and computable functions
@@ -195,10 +195,10 @@ inductive DerivationTree : Context → Formula → Type
   | necessitation (Γ : Context) (φ : Formula)
       (h : DerivationTree (Γ.map Formula.box) φ) : DerivationTree Γ (φ.box)         -- MK: If `□Γ ⊢ φ` then `Γ ⊢ □φ`
   | temporalNecessitation (Γ : Context) (φ : Formula)
-      (h : DerivationTree (Γ.map Formula.all_future) φ) :
-      DerivationTree Γ (Formula.all_future φ)                                   -- TK: If `GΓ ⊢ φ` then `Γ ⊢ Gφ`
+      (h : DerivationTree (Γ.map Formula.allFuture) φ) :
+      DerivationTree Γ (Formula.allFuture φ)                                   -- TK: If `GΓ ⊢ φ` then `Γ ⊢ Gφ`
   | temporalDuality (φ : Formula)
-      (h : DerivationTree [] φ) : DerivationTree [] (swap_temporal φ)               -- TD: If `⊢ φ` then `⊢ φ_{⟨H|G⟩}`
+      (h : DerivationTree [] φ) : DerivationTree [] (swapTemporal φ)               -- TD: If `⊢ φ` then `⊢ φ_{⟨H|G⟩}`
   | weakening (Γ Δ : Context) (φ : Formula)
       (h1 : DerivationTree Γ φ) (h2 : Γ ⊆ Δ) : DerivationTree Δ φ
 
@@ -224,16 +224,16 @@ theorem perpetuity_1 (φ : Formula) : ⊢ (φ.box.imp (always φ)) := by sorry
 theorem perpetuity_2 (φ : Formula) : ⊢ ((sometimes φ).imp (diamond φ)) := by sorry
 
 -- P3: `□φ → □always φ` (necessity of perpetuity)
-theorem perpetuity_3 (φ : Formula) : ⊢ (φ.box.imp ((always φ).box)) := by sorry
+theorem perpetuity3 (φ : Formula) : ⊢ (φ.box.imp ((always φ).box)) := by sorry
 
 -- P4: `◇sometimes φ → ◇φ` (possibility of occurrence)
-theorem perpetuity_4 (φ : Formula) : ⊢ ((diamond (sometimes φ)).imp (diamond φ)) := by sorry
+theorem perpetuity4 (φ : Formula) : ⊢ ((diamond (sometimes φ)).imp (diamond φ)) := by sorry
 
 -- P5: `◇sometimes φ → always ◇φ` (persistent possibility)
-theorem perpetuity_5 (φ : Formula) : ⊢ ((diamond (sometimes φ)).imp (always (diamond φ))) := by sorry
+theorem perpetuity5 (φ : Formula) : ⊢ ((diamond (sometimes φ)).imp (always (diamond φ))) := by sorry
 
 -- P6: `sometimes □φ → □always φ` (occurrent necessity is perpetual)
-theorem perpetuity_6 (φ : Formula) : ⊢ ((sometimes φ.box).imp ((always φ).box)) := by sorry
+theorem perpetuity6 (φ : Formula) : ⊢ ((sometimes φ.box).imp ((always φ).box)) := by sorry
 ```
 
 **Status note**: This section sketches the target proof system from scratch for pedagogical
@@ -277,7 +277,7 @@ def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
 The deduction theorem uses well-founded recursion on derivation height:
 
 ```lean
-theorem deduction_theorem (Γ : Context) (φ ψ : Formula) :
+theorem deductionTheorem (Γ : Context) (φ ψ : Formula) :
   (φ :: Γ) ⊢ ψ → Γ ⊢ (φ.imp ψ) := by
   intro d
   -- Induction on height of d (enabled by Type-based derivations)
@@ -318,7 +318,7 @@ inductive ExtendedAxiom : ExtendedFormula → Prop
 #### Derived Rules and Tactics
 ```lean
 -- Derived inference rules
-theorem deduction_theorem (Γ : Context) (φ ψ : Formula) :
+theorem deductionTheorem (Γ : Context) (φ ψ : Formula) :
   (φ :: Γ) ⊢ ψ → Γ ⊢ (φ.imp ψ) := by
   sorry -- Implementation
 
@@ -463,15 +463,15 @@ that requires "a totally ordered abelian group T = ⟨T, +, ≤⟩". Standard in
 -- Layer 1: Task frame for bimodal logic TM (polymorphic over temporal type T)
 structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
   WorldState : Type                                          -- Set of world states (W)
-  task_rel : WorldState → T → WorldState → Prop              -- Task relation (⇒)
+  TaskRel : WorldState → T → WorldState → Prop              -- Task relation (⇒)
 
   -- Task relation constraints
-  nullity : ∀ w, task_rel w 0 w                              -- w ⇒₀ w (0 from typeclass)
+  nullity : ∀ w, TaskRel w 0 w                              -- w ⇒₀ w (0 from typeclass)
   compositionality : ∀ w u v x y,
-    task_rel w x u → task_rel u y v → task_rel w (x + y) v   -- w ⇒ₓ u ∧ u ⇒ᵧ v → w ⇒ₓ₊ᵧ v
+    TaskRel w x u → TaskRel u y v → TaskRel w (x + y) v   -- w ⇒ₓ u ∧ u ⇒ᵧ v → w ⇒ₓ₊ᵧ v
 
 -- Notation for task relation
-notation w " ⇒[" x "] " v => TaskFrame.task_rel w x v
+notation w " ⇒[" x "] " v => TaskFrame.TaskRel w x v
 
 -- Example: Instantiate with Int for discrete time
 #check TaskFrame Int           -- TaskFrame using integer time
@@ -490,7 +490,7 @@ structure WorldHistory {T : Type*} [LinearOrderedAddCommGroup T] (F : TaskFrame 
     ∀ y, x ≤ y → y ≤ z → domain y                           -- X is convex (no temporal gaps)
   states : (t : T) → domain t → F.WorldState                 -- τ : X → W
   respects_task : ∀ s t (hs : domain s) (ht : domain t),
-    s ≤ t → F.task_rel (states s hs) (t - s) (states t ht)  -- τ(s) ⇒_{t-s} τ(t)
+    s ≤ t → F.TaskRel (states s hs) (t - s) (states t ht)  -- τ(s) ⇒_{t-s} τ(t)
 
 -- Notation for world history evaluation
 notation τ "(" t ")" => WorldHistory.states τ t
@@ -504,31 +504,31 @@ structure TaskModel {T : Type*} [LinearOrderedAddCommGroup T] (F : TaskFrame T) 
   valuation : F.WorldState → String → Prop                   -- Which propositions hold at each state
 
 -- Truth at model-history-time triple (polymorphic over T)
-def truth_at {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
+def TruthAt {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
     (M : TaskModel F) (τ : WorldHistory F) (t : T) (ht : τ.domain t) : Formula → Prop
   | Formula.atom p =>
       M.valuation (τ.states t ht) p                          -- Atomic truth
   | Formula.bot =>
       False                                                   -- Falsity never true
   | Formula.imp φ ψ =>
-      truth_at M τ t ht φ → truth_at M τ t ht ψ              -- Implication
+      TruthAt M τ t ht φ → TruthAt M τ t ht ψ              -- Implication
   | Formula.box φ =>
       ∀ (σ : WorldHistory F) (hs : σ.domain t),
-        truth_at M σ t hs φ                                   -- Necessity: all histories at t
-  | Formula.all_past φ =>
+        TruthAt M σ t hs φ                                   -- Necessity: all histories at t
+  | Formula.allPast φ =>
       ∀ (s : T) (hs : τ.domain s), s < t →
-        truth_at M τ s hs φ                                   -- Universal past (H)
-  | Formula.all_future φ =>
+        TruthAt M τ s hs φ                                   -- Universal past (H)
+  | Formula.allFuture φ =>
       ∀ (s : T) (hs : τ.domain s), t < s →
-        truth_at M τ s hs φ                                   -- Universal future (G)
+        TruthAt M τ s hs φ                                   -- Universal future (G)
 
-notation M ", " τ ", " t " ⊨ " φ => truth_at M τ t φ
+notation M ", " τ ", " t " ⊨ " φ => TruthAt M τ t φ
 
 -- Time-shift invariance (critical theorem for temporal reasoning)
 theorem time_shift_preserves_truth {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
     (M : TaskModel F) (τ : WorldHistory F) (t : T) (Δ : T) (φ : Formula)
-    (ht : τ.domain t) (ht' : (time_shift τ Δ).domain (t + Δ)) :
-  truth_at M τ t ht φ ↔ truth_at M (time_shift τ Δ) (t + Δ) ht' φ := by sorry
+    (ht : τ.domain t) (ht' : (timeShift τ Δ).domain (t + Δ)) :
+  TruthAt M τ t ht φ ↔ TruthAt M (timeShift τ Δ) (t + Δ) ht' φ := by sorry
 ```
 
 #### Layer 2 Extended Task Semantics (Future Work)
@@ -554,7 +554,7 @@ structure ExtendedTaskModel (F : TaskFrame) extends TaskModel F where
 def extended_truth_at (M : ExtendedTaskModel F) (τ : WorldHistory F) (t : F.Time) :
   ExtendedFormula → Prop
   | ExtendedFormula.core φ =>
-      truth_at M.toTaskModel τ t φ                                         -- Embed Layer 1
+      TruthAt M.toTaskModel τ t φ                                         -- Embed Layer 1
   | ExtendedFormula.boxright φ ψ =>
       ∀ σ ∈ M.counterfactual_selection (τ(t)) (to_core_formula φ),
         extended_truth_at M σ t ψ                                          -- Counterfactual
@@ -579,11 +579,11 @@ def valid_in_model (M : TaskModel F) (φ : Formula) : Prop :=
   ∀ (τ : WorldHistory F) (t : F.Time), M, τ, t ⊨ φ
 
 -- Semantic consequence
-def semantic_consequence (Γ : Context) (φ : Formula) : Prop :=
+def SemanticConsequence (Γ : Context) (φ : Formula) : Prop :=
   ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Time),
     (∀ ψ ∈ Γ, M, τ, t ⊨ ψ) → M, τ, t ⊨ φ
 
-notation Γ " ⊨ " φ => semantic_consequence Γ φ
+notation Γ " ⊨ " φ => SemanticConsequence Γ φ
 notation " ⊨ " φ => valid φ
 
 -- Satisfiability
@@ -624,7 +624,7 @@ def canonical_frame : TaskFrame := {
   WorldState := CanonicalWorldState,  -- Set-based, not list-based
   Time := ℤ,
   time_group := Int.orderedAddCommGroup,
-  task_rel := λ S n T =>
+  TaskRel := λ S n T =>
     -- Define task relation via set membership
     (∀ φ, □φ ∈ S.val → φ ∈ T.val) ∧           -- Modal transfer
     (n > 0 → ∀ φ, Fφ ∈ S.val → φ ∈ T.val) ∧   -- Future transfer
@@ -650,8 +650,8 @@ lemma modal_saturation (S : CanonicalWorldState) (φ : Formula) :
 
 -- Temporal consistency lemma (set-based)
 lemma temporal_consistency (S : CanonicalWorldState) (ψ : Formula) :
-  (Formula.all_future ψ) ∈ S.val →
-  SetConsistent ({ψ} ∪ {χ | Formula.all_future χ ∈ S.val} ∪ {φ | (some_past φ) ∈ S.val}) := by
+  (Formula.allFuture ψ) ∈ S.val →
+  SetConsistent ({ψ} ∪ {χ | Formula.allFuture χ ∈ S.val} ∪ {φ | (somePast φ) ∈ S.val}) := by
   sorry
 ```
 
@@ -719,11 +719,11 @@ theorem soundness (Γ : Context) (φ : Formula) :
 lemma modal_t_valid (φ : Formula) : valid (φ.box.imp φ) := by sorry
 lemma modal_4_valid (φ : Formula) : valid (φ.box.imp φ.box.box) := by sorry
 lemma modal_b_valid (φ : Formula) : valid (φ.imp (diamond φ).box) := by sorry
-lemma temp_4_valid (φ : Formula) : valid ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ))) := by sorry
-lemma temp_a_valid (φ : Formula) : valid (φ.imp (Formula.all_future (some_past φ))) := by sorry
-lemma temp_l_valid (φ : Formula) : valid ((always φ).imp (Formula.all_future (Formula.all_past φ))) := by sorry
-lemma modal_future_valid (φ : Formula) : valid (φ.box.imp (Formula.box (Formula.all_future φ))) := by sorry
-lemma temp_future_valid (φ : Formula) : valid (φ.box.imp (Formula.all_future φ.box)) := by sorry
+lemma temp_4_valid (φ : Formula) : valid ((Formula.allFuture φ).imp (Formula.allFuture (Formula.allFuture φ))) := by sorry
+lemma temp_a_valid (φ : Formula) : valid (φ.imp (Formula.allFuture (somePast φ))) := by sorry
+lemma temp_l_valid (φ : Formula) : valid ((always φ).imp (Formula.allFuture (Formula.allPast φ))) := by sorry
+lemma modal_future_valid (φ : Formula) : valid (φ.box.imp (Formula.box (Formula.allFuture φ))) := by sorry
+lemma temp_future_valid (φ : Formula) : valid (φ.box.imp (Formula.allFuture φ.box)) := by sorry
 
 -- Derived soundness corollaries
 corollary valid_if_provable (φ : Formula) : ⊢ φ → ⊨ φ := by
@@ -753,7 +753,7 @@ theorem set_lindenbaum (S : Set Formula) (hS : SetConsistent S) :
   -- Proven in Completeness.lean (lines 342-391)
 
 -- Truth lemma for canonical model (key completeness lemma, set-based)
--- States: φ ∈ S.val ↔ truth_at canonical_model (canonical_history S) 0 φ
+-- States: φ ∈ S.val ↔ TruthAt canonical_model (canonical_history S) 0 φ
 lemma truth_lemma (S : CanonicalWorldState) (φ : Formula) :
   φ ∈ S.val := by  -- Placeholder for full biconditional
   -- By induction on formula structure:
@@ -761,7 +761,7 @@ lemma truth_lemma (S : CanonicalWorldState) (φ : Formula) :
   -- bot: ⊥ ∉ S by SetConsistent
   -- imp: By set-based maximal consistent implication property
   -- box: By modal saturation for set-based maximal consistent sets
-  -- all_past/all_future: By temporal consistency properties
+  -- allPast/allFuture: By temporal consistency properties
   sorry
 
 -- Weak completeness: valid implies provable
@@ -778,7 +778,7 @@ theorem weak_completeness (φ : Formula) :
 
 -- Strong completeness: semantic consequence implies derivability
 theorem strong_completeness (Γ : Context) (φ : Formula) :
-  semantic_consequence Γ φ → DerivationTree Γ φ := by
+  SemanticConsequence Γ φ → DerivationTree Γ φ := by
   -- Proof sketch:
   -- 1. Assume Γ ⊨ φ but ¬(Γ ⊢ φ)
   -- 2. contextToSet(Γ) ∪ {¬φ} is SetConsistent
@@ -1120,7 +1120,7 @@ example (P : Formula) : ⊢ (P.box.imp P) := by
   apply Axiom.modal_t
 
 -- Example 2: Prove a temporal tautology using TA axiom
-example (P : Formula) : ⊢ (P.imp (Formula.all_future (some_past P))) := by
+example (P : Formula) : ⊢ (P.imp (Formula.allFuture (somePast P))) := by
   apply Derivable.axiom
   apply Axiom.temp_a
 
@@ -1139,18 +1139,18 @@ example (P Q : Formula) : [P.imp Q, P] ⊢ Q := by
 -- Example: Derive P1 (□φ → always φ) using MF, MT, TD
 theorem derive_perpetuity_1 (φ : Formula) : ⊢ (φ.box.imp (always φ)) := by
   -- Step 1: □φ → □Gφ (from MF)
-  have h1 : ⊢ (φ.box.imp (Formula.box (Formula.all_future φ))) := by
+  have h1 : ⊢ (φ.box.imp (Formula.box (Formula.allFuture φ))) := by
     apply Derivable.axiom
     apply Axiom.modal_future
   -- Step 2: □Gφ → Gφ (from MT)
-  have h2 : ⊢ ((Formula.box (Formula.all_future φ)).imp (Formula.all_future φ)) := by
+  have h2 : ⊢ ((Formula.box (Formula.allFuture φ)).imp (Formula.allFuture φ)) := by
     apply Derivable.axiom
     apply Axiom.modal_t
   -- Step 3: Combine to get □φ → Gφ
-  have h3 : ⊢ (φ.box.imp (Formula.all_future φ)) := by
+  have h3 : ⊢ (φ.box.imp (Formula.allFuture φ)) := by
     sorry -- Apply transitivity
   -- Step 4: By TD, get □φ → Hφ
-  have h4 : ⊢ (φ.box.imp (Formula.all_past φ)) := by
+  have h4 : ⊢ (φ.box.imp (Formula.allPast φ)) := by
     sorry -- Apply temporal duality to h3
   -- Step 5: Combine with MT to get always φ
   sorry
@@ -1166,15 +1166,15 @@ example (P : Formula) : [P.box] ⊢ (always P) := by
 ### 7.3 Temporal Reasoning
 
 ```lean
--- Example: Reasoning with all_future and all_past operators
+-- Example: Reasoning with allFuture and allPast operators
 example (P Q : Formula) :
-  [Formula.all_future P, Formula.all_future Q] ⊢ Formula.all_future (P.and Q) := by
+  [Formula.allFuture P, Formula.allFuture Q] ⊢ Formula.allFuture (P.and Q) := by
   -- Use TK rule and propositional reasoning
   sorry
 
 -- Example: Time-shift invariance application
 example (P : Formula) (d : ℤ) :
-  ⊢ (Formula.all_future P) → ⊢ (Formula.all_future P) := by
+  ⊢ (Formula.allFuture P) → ⊢ (Formula.allFuture P) := by
   intro h
   -- Apply time-shift invariance theorem
   sorry
@@ -1195,7 +1195,7 @@ example : [Formula.box (Formula.atom "P")] ⊨ Formula.atom "P" := by
   sorry
 
 -- Verify TM-consistency of formula set
-#eval consistent [Formula.atom "P", Formula.all_future (Formula.atom "Q")]
+#eval consistent [Formula.atom "P", Formula.allFuture (Formula.atom "Q")]
 ```
 
 ### 7.5 Layer 2 Extension Examples (Future Work)
@@ -1260,7 +1260,7 @@ This section maps Logos operators to their Logos LEAN 4 implementations and unde
 
 **Temporal Operators** (Linear Time):
 - **Logos Operators**: `H`, `P`, `G`, `F` (past/future operators), `△` (always), `▽` (sometimes)
-- **Logos Implementation**: `all_past`, `all_future`, `some_past`, `some_future`, `always`, `sometimes` in Syntax/Formula.lean
+- **Logos Implementation**: `allPast`, `allFuture`, `somePast`, `someFuture`, `always`, `sometimes` in Syntax/Formula.lean
 - **Semantic System**: Linear temporal logic component of TM with bimodal interaction axioms (MF, TF)
 
 **Explanatory Extension (Layer 1) Operators** - Planned:

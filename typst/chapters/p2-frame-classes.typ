@@ -57,7 +57,7 @@ The frame-condition *semantics* for dense and discrete orders lives elsewhere: `
 - `DenseTemporalFrame D` -- adds `DenselyOrdered D`.
 - `DiscreteTemporalFrame D` -- adds `SuccOrder D`, `PredOrder D`, `IsSuccArchimedean D`.
 
-`FrameConditions/Validity.lean` defines frame-relative validity over this hierarchy (`valid_over`, `valid_linear`, `valid_dense_fc`, `valid_discrete_fc`, and the concrete abbreviation `valid_over_Int`).
+`FrameConditions/Validity.lean` defines frame-relative validity over this hierarchy (`ValidOver`, `ValidLinear`, `ValidDenseFc`, `ValidDiscreteFc`, and the concrete abbreviation `ValidOverInt`).
 `FrameConditions/Soundness.lean` and `Compatibility.lean` bridge this semantic layer to the syntactic `FrameClass`/`Axiom.minFrameClass` classification above (`soundness_linear`, `soundness_dense`, `soundness_discrete`, and the `AxiomLinearCompatible`/`AxiomDenseCompatible`/`AxiomDiscreteCompatible` typeclasses with per-axiom instances) -- this is the machinery underlying the frame-class soundness theorems already stated in @sec:notes.
 All four `FrameConditions/` files are sorry-free.#footnote[The prose doc comments inside `Soundness.lean` and `Compatibility.lean` cite axiom counts from an earlier stage of the axiom system; the counts used in this book are regenerated directly from source by `scripts/typst-status-counts.sh`.]
 

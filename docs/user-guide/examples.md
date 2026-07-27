@@ -17,13 +17,13 @@ import Logos.Core.Automation.ProofSearch
 /-- Automated proof of modal T axiom: □φ → φ -/
 example : Bool :=
   let goal := (Formula.atom "p").box.imp (Formula.atom "p")
-  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 3
+  let (found, _, _, _, _) := ProofSearch.boundedSearch [] goal 3
   found  -- Returns true (axiom match)
 
 /-- Search with performance statistics -/
 example : ProofSearch.SearchStats :=
   let goal := (Formula.atom "p").box.imp (Formula.atom "p")
-  let (_, _, _, stats, _) := ProofSearch.search_with_heuristics [] goal 10
+  let (_, _, _, stats, _) := ProofSearch.searchWithHeuristics [] goal 10
   stats  -- Shows: hits, misses, visited, prunedByLimit
 
 /-- Custom heuristic strategies -/
@@ -33,8 +33,8 @@ example : Nat × Nat :=
   let weights_mp_first : ProofSearch.HeuristicWeights :=
     { axiomWeight := 10, mpBase := 0 }
   let goal := (Formula.atom "p").box.imp (Formula.atom "p")
-  let score1 := ProofSearch.heuristic_score weights_axiom_first [] goal
-  let score2 := ProofSearch.heuristic_score weights_mp_first [] goal
+  let score1 := ProofSearch.heuristicScore weights_axiom_first [] goal
+  let score2 := ProofSearch.heuristicScore weights_mp_first [] goal
   (score1, score2)  -- (0, 10) - axiom-first prefers this goal
 ```
 
@@ -143,21 +143,21 @@ import Logos.Core.Automation.ProofSearch
 
 /-- Automated proof of temporal 4 axiom: Gφ → GGφ -/
 example : Bool :=
-  let goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
-  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 5
+  let goal := (Formula.atom "p").allFuture.imp (Formula.atom "p").allFuture.allFuture
+  let (found, _, _, _, _) := ProofSearch.boundedSearch [] goal 5
   found  -- Returns true (axiom match)
 
 /-- Temporal context transformations -/
 example : Context :=
   let Γ := [Formula.atom "p", Formula.atom "q"]
-  ProofSearch.future_context Γ  -- Returns [Gp, Gq]
+  ProofSearch.futureContext Γ  -- Returns [Gp, Gq]
 
 /-- Temporal formulas require higher depth than modal -/
 example : Bool × Bool :=
-  let temporal_goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
+  let temporal_goal := (Formula.atom "p").allFuture.imp (Formula.atom "p").allFuture.allFuture
   let modal_goal := (Formula.atom "p").box.imp (Formula.atom "p").box.box
-  let (temp_found, _, _, _, _) := ProofSearch.bounded_search [] temporal_goal 3
-  let (modal_found, _, _, _, _) := ProofSearch.bounded_search [] modal_goal 3
+  let (temp_found, _, _, _, _) := ProofSearch.boundedSearch [] temporal_goal 3
+  let (modal_found, _, _, _, _) := ProofSearch.boundedSearch [] modal_goal 3
   (temp_found, modal_found)  -- Both should succeed with depth 3
 ```
 
@@ -170,7 +170,7 @@ Temporal Context Transformations).
 
 ```lean
 /-- All-future iterates: what will always be will always always be -/
-example (P : Formula) : ⊢ ((Formula.all_future P).imp (Formula.all_future (Formula.all_future P))) := by
+example (P : Formula) : ⊢ ((Formula.allFuture P).imp (Formula.allFuture (Formula.allFuture P))) := by
   apply DerivationTree.axiom
   apply Axiom.temp_4
 ```
@@ -179,7 +179,7 @@ example (P : Formula) : ⊢ ((Formula.all_future P).imp (Formula.all_future (For
 
 ```lean
 /-- Present implies future past: now will have been -/
-example (P : Formula) : ⊢ (P.imp (Formula.all_future (some_past P))) := by
+example (P : Formula) : ⊢ (P.imp (Formula.allFuture (somePast P))) := by
   apply DerivationTree.axiom
   apply Axiom.temp_a
 ```
@@ -188,7 +188,7 @@ example (P : Formula) : ⊢ (P.imp (Formula.all_future (some_past P))) := by
 
 ```lean
 /-- Linearity: if always, then future has past -/
-example (P : Formula) : ⊢ ((always P).imp (Formula.all_future (Formula.all_past P))) := by
+example (P : Formula) : ⊢ ((always P).imp (Formula.allFuture (Formula.allPast P))) := by
   apply DerivationTree.axiom
   apply Axiom.temp_l
 ```
@@ -197,26 +197,26 @@ example (P : Formula) : ⊢ ((always P).imp (Formula.all_future (Formula.all_pas
 
 ```lean
 /-- Universal past (H): P holds at all past times -/
-example (P : Formula) : Formula := Formula.all_past P
+example (P : Formula) : Formula := Formula.allPast P
 
 /-- Universal future (G): P holds at all future times -/
-example (P : Formula) : Formula := Formula.all_future P
+example (P : Formula) : Formula := Formula.allFuture P
 
 /-- Existential past (P): P held at some past time -/
-example (P : Formula) : Formula := some_past P  -- ¬H¬P
+example (P : Formula) : Formula := somePast P  -- ¬H¬P
 
 /-- Existential future (F): P will hold at some future time -/
-example (P : Formula) : Formula := some_future P  -- ¬G¬P
+example (P : Formula) : Formula := someFuture P  -- ¬G¬P
 ```
 
 ### Temporal Properties
 
 ```lean
 /-- Always operator: Hφ ∧ φ ∧ Gφ -/
-example (P : Formula) : always P = and (and (Formula.all_past P) P) (Formula.all_future P) := rfl
+example (P : Formula) : always P = and (and (Formula.allPast P) P) (Formula.allFuture P) := rfl
 
 /-- Sometimes operator: Pφ ∨ φ ∨ Fφ -/
-example (P : Formula) : sometimes P = or (or (some_past P) P) (some_future P) := rfl
+example (P : Formula) : sometimes P = or (or (somePast P) P) (someFuture P) := rfl
 
 /-- From always, derive present -/
 example (P : Formula) : [always P] ⊢ P := by
@@ -224,12 +224,12 @@ example (P : Formula) : [always P] ⊢ P := by
   -- Extract φ from the conjunction
   sorry
 
-/-- From always, derive all_past -/
-example (P : Formula) : [always P] ⊢ Formula.all_past P := by
+/-- From always, derive allPast -/
+example (P : Formula) : [always P] ⊢ Formula.allPast P := by
   sorry
 
-/-- From always, derive all_future -/
-example (P : Formula) : [always P] ⊢ Formula.all_future P := by
+/-- From always, derive allFuture -/
+example (P : Formula) : [always P] ⊢ Formula.allFuture P := by
   sorry
 ```
 
@@ -239,12 +239,12 @@ example (P : Formula) : [always P] ⊢ Formula.all_future P := by
 
 ```lean
 /-- What is necessary will always be necessary -/
-example (P : Formula) : ⊢ (P.box.imp (Formula.box (Formula.all_future P))) := by
+example (P : Formula) : ⊢ (P.box.imp (Formula.box (Formula.allFuture P))) := by
   apply DerivationTree.axiom
   apply Axiom.modal_future
 
 /-- Derive □Gp from □p -/
-example (P : Formula) : [P.box] ⊢ Formula.box (Formula.all_future P) := by
+example (P : Formula) : [P.box] ⊢ Formula.box (Formula.allFuture P) := by
   apply DerivationTree.modusPonens
   · apply DerivationTree.axiom; apply Axiom.modal_future
   · apply DerivationTree.assumption; simp
@@ -254,12 +254,12 @@ example (P : Formula) : [P.box] ⊢ Formula.box (Formula.all_future P) := by
 
 ```lean
 /-- What is necessary will remain necessary -/
-example (P : Formula) : ⊢ (P.box.imp (Formula.all_future P.box)) := by
+example (P : Formula) : ⊢ (P.box.imp (Formula.allFuture P.box)) := by
   apply DerivationTree.axiom
   apply Axiom.temp_future
 
 /-- Derive G□p from □p -/
-example (P : Formula) : [P.box] ⊢ Formula.all_future P.box := by
+example (P : Formula) : [P.box] ⊢ Formula.allFuture P.box := by
   apply DerivationTree.modusPonens
   · apply DerivationTree.axiom; apply Axiom.temp_future
   · apply DerivationTree.assumption; simp
@@ -269,7 +269,7 @@ example (P : Formula) : [P.box] ⊢ Formula.all_future P.box := by
 
 ```lean
 /-- From `□p`, derive both `□Gp` and `G□p` -/
-example (P : Formula) : [P.box] ⊢ and (Formula.box (Formula.all_future P)) (Formula.all_future P.box) := by
+example (P : Formula) : [P.box] ⊢ and (Formula.box (Formula.allFuture P)) (Formula.allFuture P.box) := by
   -- Use MF for first conjunct, TF for second
   sorry
 
@@ -293,29 +293,29 @@ import Logos.Core.Automation.ProofSearch
 /-- Automated discovery of P1: □φ → △φ -/
 example : Bool :=
   let goal := (Formula.atom "p").box.imp (△(Formula.atom "p"))
-  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 10
+  let (found, _, _, _, _) := ProofSearch.boundedSearch [] goal 10
   found  -- Returns true, discovering P1 automatically
 
 /-- Automated discovery of P2: ▽φ → ◇φ -/
 example : Bool :=
   let goal := (▽(Formula.atom "p")).imp (Formula.atom "p").diamond
-  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 10
+  let (found, _, _, _, _) := ProofSearch.boundedSearch [] goal 10
   found  -- Returns true, discovering P2 automatically
 
 /-- Combined modal-temporal search -/
 example : Bool :=
-  let goal := (Formula.atom "p").box.imp (Formula.atom "p").all_future.box
-  let (found, _, _, _, _) := ProofSearch.bounded_search [] goal 10
+  let goal := (Formula.atom "p").box.imp (Formula.atom "p").allFuture.box
+  let (found, _, _, _, _) := ProofSearch.boundedSearch [] goal 10
   found  -- Searches through modal-temporal interaction axioms
 
 /-- Bimodal search depth requirements comparison -/
 example : Nat × Nat × Nat :=
   let modal_goal := (Formula.atom "p").box.imp (Formula.atom "p")
-  let temporal_goal := (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future
+  let temporal_goal := (Formula.atom "p").allFuture.imp (Formula.atom "p").allFuture.allFuture
   let bimodal_goal := (Formula.atom "p").box.imp (△(Formula.atom "p"))
-  let (_, _, _, modal_stats, _) := ProofSearch.bounded_search [] modal_goal 5
-  let (_, _, _, temporal_stats, _) := ProofSearch.bounded_search [] temporal_goal 5
-  let (_, _, _, bimodal_stats, _) := ProofSearch.bounded_search [] bimodal_goal 10
+  let (_, _, _, modal_stats, _) := ProofSearch.boundedSearch [] modal_goal 5
+  let (_, _, _, temporal_stats, _) := ProofSearch.boundedSearch [] temporal_goal 5
+  let (_, _, _, bimodal_stats, _) := ProofSearch.boundedSearch [] bimodal_goal 10
   (modal_stats.visited, temporal_stats.visited, bimodal_stats.visited)
   -- Bimodal formulas typically visit more nodes due to operator interaction
 ```
@@ -423,13 +423,13 @@ example (P : Formula) : ¬consistent [P.box, diamond (neg P)] := by
 ### Temporal Duality Example
 
 ```lean
-/-- Temporal duality: swapping all_past and all_future preserves provability -/
-example (P : Formula) (h : ⊢ P) : ⊢ (swap_temporal P) := by
+/-- Temporal duality: swapping allPast and allFuture preserves provability -/
+example (P : Formula) (h : ⊢ P) : ⊢ (swapTemporal P) := by
   apply DerivationTree.temporalDuality
   exact h
 
 /-- Example: if ⊢ Gp → GGp, then ⊢ Hp → HHp -/
-example (P : Formula) : ⊢ (Formula.all_past P).imp (Formula.all_past (Formula.all_past P)) := by
+example (P : Formula) : ⊢ (Formula.allPast P).imp (Formula.allPast (Formula.allPast P)) := by
   -- By TD applied to T4
   apply DerivationTree.temporalDuality
   apply DerivationTree.axiom
@@ -453,15 +453,15 @@ example (P : Formula) : [P.box.box.box] ⊢ P := by
 
 The `Logos.Core.Automation.ProofSearch` module provides:
 
-- **`bounded_search`**: Depth-bounded search with caching and statistics
+- **`boundedSearch`**: Depth-bounded search with caching and statistics
   - Returns: `(Bool, ProofCache, Visited, SearchStats, Nat)`
   - Parameters: context, goal, depth, cache, visited, visits, visitLimit, weights, stats
   
-- **`search_with_heuristics`**: Heuristic-guided search with default parameters
+- **`searchWithHeuristics`**: Heuristic-guided search with default parameters
   - Returns: `(Bool, ProofCache, Visited, SearchStats, Nat)`
   - Parameters: context, goal, depth, visitLimit, weights
   
-- **`search_with_cache`**: Cached search with memoization
+- **`searchWithCache`**: Cached search with memoization
   - Returns: `(Bool, ProofCache, Visited, SearchStats, Nat)`
   - Parameters: cache, context, goal, depth, visitLimit, weights
 
@@ -472,8 +472,8 @@ The `Logos.Core.Automation.ProofSearch` module provides:
   - Fields: hits (cache hits), misses (cache misses), visited (nodes explored), prunedByLimit (pruned by visit limit)
 
 - **Context Transformations**:
-  - `box_context`: Applies `□` to all formulas in context (for modal K rule)
-  - `future_context`: Applies `G` to all formulas in context (for temporal K rule)
+  - `boxContext`: Applies `□` to all formulas in context (for modal K rule)
+  - `futureContext`: Applies `G` to all formulas in context (for temporal K rule)
 
 For detailed usage examples and performance analysis, see:
 - `Archive/ModalProofs.lean` - Modal automation examples
@@ -544,7 +544,7 @@ metalogical proofs like the deduction theorem:
 
 ```lean
 /-- Deduction theorem uses well-founded recursion on derivation height -/
-theorem deduction_theorem (Γ : Context) (φ ψ : Formula) :
+theorem deductionTheorem (Γ : Context) (φ ψ : Formula) :
   (φ :: Γ) ⊢ ψ → Γ ⊢ (φ.imp ψ) := by
   intro d
   -- Proof proceeds by induction on height of d
@@ -659,11 +659,11 @@ example (P : Formula) : ⊢ P.box.imp P.diamond := by
     DerivationTree.axiom [] _ (Axiom.modal_t P.diamond)
 
   -- Chain: □P → P → □◇P → ◇P
-  have step1 := imp_trans t_axiom b_axiom  -- □P → □◇P
-  exact imp_trans step1 t_on_diamond       -- □P → ◇P
+  have step1 := impTrans t_axiom b_axiom  -- □P → □◇P
+  exact impTrans step1 t_on_diamond       -- □P → ◇P
 ```
 
-**Explanation**: We chain three implications: T axiom gives `□P → P`, B axiom gives `P → □◇P`, and T on `◇P` gives `□◇P → ◇P`. Composing these via `imp_trans` yields `□P → ◇P`.
+**Explanation**: We chain three implications: T axiom gives `□P → P`, B axiom gives `P → □◇P`, and T on `◇P` gives `□◇P → ◇P`. Composing these via `impTrans` yields `□P → ◇P`.
 </details>
 
 ---
@@ -697,7 +697,7 @@ example (P : Formula) : ⊢ P.diamond.diamond.imp P.diamond :=
 
 The `always` operator is defined as a conjunction of past and future necessity. Extract P from it.
 
-**Hint 1**: `always P` is defined as `P.all_past.and P.all_future`. You need conjunction elimination.
+**Hint 1**: `always P` is defined as `P.allPast.and P.allFuture`. You need conjunction elimination.
 
 **Hint 2**: First extract `HP` (always was P), then use temporal T axiom `HP → P`.
 
@@ -710,23 +710,23 @@ import FormalSystem.Theorems.Propositional.Core
 open FormalSystem.Theorems.Propositional
 
 example (P : Formula) : [P.always] ⊢ P := by
-  -- always P = HP ∧ GP where H = all_past, G = all_future
+  -- always P = HP ∧ GP where H = allPast, G = allFuture
   -- Need to extract HP from HP ∧ GP, then use temporal T: HP → P
 
   -- Get HP ∧ GP from context
   have conj : [P.always] ⊢ P.always := DerivationTree.assumption _ _ (by simp)
 
   -- Left conjunction elimination: (HP ∧ GP) → HP
-  have lce : ⊢ P.always.imp P.all_past := lce_imp P.all_past P.all_future
+  have andLeft : ⊢ P.always.imp P.allPast := lceImp P.allPast P.allFuture
 
   -- Apply to get HP
-  have hp : [P.always] ⊢ P.all_past := by
+  have hp : [P.always] ⊢ P.allPast := by
     apply DerivationTree.modusPonens
-    · exact DerivationTree.weakening [] [P.always] _ lce (by simp)
+    · exact DerivationTree.weakening [] [P.always] _ andLeft (by simp)
     · exact conj
 
   -- Temporal T axiom: HP → P
-  have temp_t : ⊢ P.all_past.imp P := DerivationTree.axiom [] _ (Axiom.temp_t P)
+  have temp_t : ⊢ P.allPast.imp P := DerivationTree.axiom [] _ (Axiom.temp_t P)
 
   -- Apply to get P
   apply DerivationTree.modusPonens
@@ -734,7 +734,7 @@ example (P : Formula) : [P.always] ⊢ P := by
   · exact hp
 ```
 
-**Explanation**: The `always` operator is the conjunction of "always was" (`all_past`) and "always will be" (`all_future`). We use left conjunction elimination to get `HP`, then apply the temporal T axiom (`HP → P`) to extract P.
+**Explanation**: The `always` operator is the conjunction of "always was" (`allPast`) and "always will be" (`allFuture`). We use left conjunction elimination to get `HP`, then apply the temporal T axiom (`HP → P`) to extract P.
 </details>
 
 ---
@@ -785,7 +785,7 @@ noncomputable example (P Q : Formula) : [P.box, Q.box] ⊢ (P.and Q).box := by
     DerivationTree.axiom [] _ (Axiom.modal_k_dist Q (P.and Q))
 
   -- Chain: □P → □(Q → P ∧ Q) → (□Q → □(P ∧ Q))
-  have step2 : ⊢ P.box.imp (Q.box.imp (P.and Q).box) := imp_trans step1 k2
+  have step2 : ⊢ P.box.imp (Q.box.imp (P.and Q).box) := impTrans step1 k2
 
   -- Now apply to our assumptions
   have boxP : [P.box, Q.box] ⊢ P.box := DerivationTree.assumption _ _ (by simp)
@@ -830,19 +830,19 @@ example (P : Formula) : ⊢ P.box.imp P.always := by
   -- We have interaction axioms: □P → HP and □P → GP
 
   -- Interaction axiom 1: □φ → Hφ (necessity implies always-was)
-  have int1 : ⊢ P.box.imp P.all_past :=
+  have int1 : ⊢ P.box.imp P.allPast :=
     DerivationTree.axiom [] _ (Axiom.int_1 P)
 
   -- Interaction axiom 2: □φ → Gφ (necessity implies always-will-be)
-  have int2 : ⊢ P.box.imp P.all_future :=
+  have int2 : ⊢ P.box.imp P.allFuture :=
     DerivationTree.axiom [] _ (Axiom.int_2 P)
 
   -- Combine: □P → HP and □P → GP implies □P → (HP ∧ GP)
-  -- Using combine_imp_conj from Combinators
-  exact combine_imp_conj int1 int2
+  -- Using combineImpConj from Combinators
+  exact combineImpConj int1 int2
 ```
 
-**Explanation**: The TM logic includes interaction axioms that connect modal necessity with temporal operators. `int_1` says necessity implies "always was" (past eternity), and `int_2` says necessity implies "always will be" (future eternity). The `combine_imp_conj` combinator merges two implications with the same antecedent into a conjunction in the consequent.
+**Explanation**: The TM logic includes interaction axioms that connect modal necessity with temporal operators. `int_1` says necessity implies "always was" (past eternity), and `int_2` says necessity implies "always will be" (future eternity). The `combineImpConj` combinator merges two implications with the same antecedent into a conjunction in the consequent.
 </details>
 
 ---
@@ -871,9 +871,9 @@ open FormalSystem.Theorems.Propositional
 example (P : Formula) : ⊢ P.box.always.imp P.box := by
   -- always □P = H□P ∧ G□P
   -- Use temporal T: H□P → □P
-  have lce : ⊢ P.box.always.imp P.box.all_past := lce_imp P.box.all_past P.box.all_future
-  have temp_t : ⊢ P.box.all_past.imp P.box := DerivationTree.axiom [] _ (Axiom.temp_t P.box)
-  exact imp_trans lce temp_t
+  have andLeft : ⊢ P.box.always.imp P.box.allPast := lceImp P.box.allPast P.box.allFuture
+  have temp_t : ⊢ P.box.allPast.imp P.box := DerivationTree.axiom [] _ (Axiom.temp_t P.box)
+  exact impTrans andLeft temp_t
 
 -- Backward direction: □P → always □P (using P1 pattern)
 example (P : Formula) : ⊢ P.box.imp P.box.always := by
@@ -882,28 +882,28 @@ example (P : Formula) : ⊢ P.box.imp P.box.always := by
   have modal_4 : ⊢ P.box.imp P.box.box := DerivationTree.axiom [] _ (Axiom.modal_4 P)
 
   -- Then □□P → always □P by P1
-  have int1 : ⊢ P.box.box.imp P.box.all_past := DerivationTree.axiom [] _ (Axiom.int_1 P.box)
-  have int2 : ⊢ P.box.box.imp P.box.all_future := DerivationTree.axiom [] _ (Axiom.int_2 P.box)
-  have p1 : ⊢ P.box.box.imp P.box.always := combine_imp_conj int1 int2
+  have int1 : ⊢ P.box.box.imp P.box.allPast := DerivationTree.axiom [] _ (Axiom.int_1 P.box)
+  have int2 : ⊢ P.box.box.imp P.box.allFuture := DerivationTree.axiom [] _ (Axiom.int_2 P.box)
+  have p1 : ⊢ P.box.box.imp P.box.always := combineImpConj int1 int2
 
-  exact imp_trans modal_4 p1
+  exact impTrans modal_4 p1
 
 -- Full biconditional
 noncomputable example (P : Formula) : ⊢ P.box.always.iff P.box := by
   -- iff = (A → B) ∧ (B → A)
   have fwd : ⊢ P.box.always.imp P.box := by
-    have lce : ⊢ P.box.always.imp P.box.all_past := lce_imp P.box.all_past P.box.all_future
-    have temp_t : ⊢ P.box.all_past.imp P.box := DerivationTree.axiom [] _ (Axiom.temp_t P.box)
-    exact imp_trans lce temp_t
+    have andLeft : ⊢ P.box.always.imp P.box.allPast := lceImp P.box.allPast P.box.allFuture
+    have temp_t : ⊢ P.box.allPast.imp P.box := DerivationTree.axiom [] _ (Axiom.temp_t P.box)
+    exact impTrans andLeft temp_t
 
   have bwd : ⊢ P.box.imp P.box.always := by
     have modal_4 : ⊢ P.box.imp P.box.box := DerivationTree.axiom [] _ (Axiom.modal_4 P)
-    have int1 : ⊢ P.box.box.imp P.box.all_past := DerivationTree.axiom [] _ (Axiom.int_1 P.box)
-    have int2 : ⊢ P.box.box.imp P.box.all_future := DerivationTree.axiom [] _ (Axiom.int_2 P.box)
-    have p1 : ⊢ P.box.box.imp P.box.always := combine_imp_conj int1 int2
-    exact imp_trans modal_4 p1
+    have int1 : ⊢ P.box.box.imp P.box.allPast := DerivationTree.axiom [] _ (Axiom.int_1 P.box)
+    have int2 : ⊢ P.box.box.imp P.box.allFuture := DerivationTree.axiom [] _ (Axiom.int_2 P.box)
+    have p1 : ⊢ P.box.box.imp P.box.always := combineImpConj int1 int2
+    exact impTrans modal_4 p1
 
-  exact combine_imp_conj fwd bwd
+  exact combineImpConj fwd bwd
 ```
 
 **Explanation**: The forward direction uses temporal T (`HP → P` applied to `□P`). The backward direction uses modal 4 (`□P → □□P`) to get double necessity, then applies the P1 pattern to `□P` instead of `P`. This demonstrates the deep connection between modal and temporal operators in TM.

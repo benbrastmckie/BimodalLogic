@@ -33,8 +33,8 @@ inductive Formula : Type where
   | bot : Formula
   | imp : Formula → Formula → Formula
   | box : Formula → Formula
-  | all_past : Formula → Formula
-  | all_future : Formula → Formula
+  | allPast : Formula → Formula
+  | allFuture : Formula → Formula
 ```
 
 #### Primitive Operators
@@ -45,8 +45,8 @@ inductive Formula : Type where
 | `bot` | `Formula.bot` | Bottom (⊥, falsum, contradiction) |
 | `imp` | `φ.imp ψ` | Implication (φ → ψ) |
 | `box` | `φ.box` | Modal necessity (□φ, "necessarily φ") |
-| `all_past` | `φ.all_past` | Universal past (Hφ, "φ has always been true") |
-| `all_future` | `φ.all_future` | Universal future (Gφ, "φ will always be true") |
+| `allPast` | `φ.allPast` | Universal past (Hφ, "φ has always been true") |
+| `allFuture` | `φ.allFuture` | Universal future (Gφ, "φ will always be true") |
 
 #### Derived Operators
 
@@ -56,10 +56,10 @@ inductive Formula : Type where
 | `and` | `(φ.imp ψ.neg).neg` | Conjunction (φ ∧ ψ) |
 | `or` | `φ.neg.imp ψ` | Disjunction (φ ∨ ψ) |
 | `diamond` | `φ.neg.box.neg` | Modal possibility (◇φ) |
-| `always` | `φ.all_past.and (φ.and φ.all_future)` | Eternal truth (△φ) |
+| `always` | `φ.allPast.and (φ.and φ.allFuture)` | Eternal truth (△φ) |
 | `sometimes` | `φ.neg.always.neg` | Sometime (▽φ) |
-| `some_past` | `φ.neg.all_past.neg` | Existential past (Pφ) |
-| `some_future` | `φ.neg.all_future.neg` | Existential future (Fφ) |
+| `somePast` | `φ.neg.allPast.neg` | Existential past (Pφ) |
+| `someFuture` | `φ.neg.allFuture.neg` | Existential future (Fφ) |
 
 #### Key Functions
 
@@ -73,7 +73,7 @@ complexity (atom "p") = 1
 complexity (p.imp q) = 1 + complexity p + complexity q
 ```
 
-##### `swap_temporal : Formula → Formula`
+##### `swapTemporal : Formula → Formula`
 
 Swap temporal operators (past ↔ future) in a formula. Used in the temporal duality inference rule (TD).
 
@@ -81,8 +81,8 @@ Swap temporal operators (past ↔ future) in a formula. Used in the temporal dua
 
 **Example**:
 ```lean
-swap_temporal (p.all_past) = p.all_future
-swap_temporal (p.all_future) = p.all_past
+swapTemporal (p.allPast) = p.allFuture
+swapTemporal (p.allFuture) = p.allPast
 ```
 
 ---
@@ -130,9 +130,9 @@ Task frame structure for TM semantics, defining the fundamental semantic structu
 ```lean
 structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
   WorldState : Type
-  task_rel : WorldState → T → WorldState → Prop
-  nullity : ∀ w, task_rel w 0 w
-  compositionality : ∀ w u v x y, task_rel w x u → task_rel u y v → task_rel w (x + y) v
+  TaskRel : WorldState → T → WorldState → Prop
+  nullity : ∀ w, TaskRel w 0 w
+  compositionality : ∀ w u v x y, TaskRel w x u → TaskRel u y v → TaskRel w (x + y) v
 ```
 
 **Type Parameters**:
@@ -140,7 +140,7 @@ structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
 
 **Fields**:
 - `WorldState`: Type of world states
-- `task_rel w x u`: World state `u` is reachable from `w` by task of duration `x`
+- `TaskRel w x u`: World state `u` is reachable from `w` by task of duration `x`
 - `nullity`: Zero-duration task is identity (reflexivity)
 - `compositionality`: Tasks compose with time addition (transitivity)
 
@@ -178,7 +178,7 @@ World histories representing functions from convex time intervals to world state
 structure WorldHistory (F : TaskFrame T) where
   domain : ConvexSet T
   history : ∀ t ∈ domain, F.WorldState
-  task_coherence : ∀ t s ∈ domain, F.task_rel (history t) (s - t) (history s)
+  task_coherence : ∀ t s ∈ domain, F.TaskRel (history t) (s - t) (history s)
 ```
 
 **Fields**:
@@ -275,8 +275,8 @@ inductive DerivationTree : Context → Formula → Prop where
   | assumption : φ ∈ Γ → DerivationTree Γ φ
   | modus_ponens : DerivationTree Γ (φ.imp ψ) → DerivationTree Γ φ → DerivationTree Γ ψ
   | modal_k : DerivationTree (Γ.map box) φ → DerivationTree Γ (φ.box)
-  | temporal_k : DerivationTree (Γ.map all_future) φ → DerivationTree Γ (φ.all_future)
-  | temporal_dual : DerivationTree Γ φ → DerivationTree Γ (φ.swap_temporal)
+  | temporal_k : DerivationTree (Γ.map allFuture) φ → DerivationTree Γ (φ.allFuture)
+  | temporal_dual : DerivationTree Γ φ → DerivationTree Γ (φ.swapTemporal)
 ```
 
 **Notation**: `Γ ⊢ φ` means `DerivationTree Γ φ`
@@ -394,13 +394,13 @@ Unified search interface with configurable strategy.
 
 **Returns**: `(found, cache, visited, stats, visits)`
 
-##### `search_with_learning : Context → Formula → SearchStrategy → PatternDatabase → LearningSearchResult`
+##### `searchWithLearning : Context → Formula → SearchStrategy → PatternDatabase → LearningSearchResult`
 
 Search with pattern learning for repeated proofs.
 
 **Returns**: `LearningSearchResult` with updated `patternDb` for future searches.
 
-##### `bestFirst_search : Context → Formula → Nat → HeuristicWeights → PatternDatabase → SearchResult`
+##### `bestFirstSearch : Context → Formula → Nat → HeuristicWeights → PatternDatabase → SearchResult`
 
 Priority queue-based best-first search with pattern-aware heuristics.
 
@@ -411,7 +411,7 @@ Priority queue-based best-first search with pattern-aware heuristics.
 4. Add child nodes with updated costs
 5. Repeat until goal proven or expansion limit reached
 
-##### `batch_search_with_learning : List (String × Context × Formula) → PatternDatabase → LearningSearchResult`
+##### `batchSearchWithLearning : List (String × Context × Formula) → PatternDatabase → LearningSearchResult`
 
 Batch search that accumulates patterns across multiple goals.
 
@@ -473,7 +473,7 @@ Database of successful proof patterns with methods:
 
 ```lean
 -- Search with pattern learning
-let result := search_with_learning Γ φ (.IDDFS 100)
+let result := searchWithLearning Γ φ (.IDDFS 100)
 let db' := result.patternDb  -- Updated pattern database
 
 -- Query patterns for hints
@@ -509,16 +509,16 @@ Key propositional theorems in Hilbert-style proof calculus.
 
 | Theorem | Statement | Description |
 |---------|-----------|-------------|
-| `ecq` | `[A, ¬A] ⊢ B` | Ex Contradictione Quodlibet |
-| `raa` | `⊢ A → (¬A → B)` | Reductio ad Absurdum |
-| `efq` | `⊢ ¬A → (A → B)` | Ex Falso Quodlibet |
-| `lce` | `[A ∧ B] ⊢ A` | Left Conjunction Elimination |
-| `rce` | `[A ∧ B] ⊢ B` | Right Conjunction Elimination |
-| `ldi` | `[A] ⊢ A ∨ B` | Left Disjunction Introduction |
-| `rdi` | `[B] ⊢ A ∨ B` | Right Disjunction Introduction |
-| `rcp` | `(Γ ⊢ ¬A → ¬B) → (Γ ⊢ B → A)` | Reverse Contraposition |
-| `lem` | `⊢ A ∨ ¬A` | Law of Excluded Middle |
-| `double_negation` | `⊢ ¬¬φ → φ` | Double Negation Elimination |
+| `botOfAndNeg` | `[A, ¬A] ⊢ B` | Ex Contradictione Quodlibet |
+| `impNegImp` | `⊢ A → (¬A → B)` | Reductio ad Absurdum |
+| `negImp` | `⊢ ¬A → (A → B)` | Ex Falso Quodlibet |
+| `andLeft` | `[A ∧ B] ⊢ A` | Left Conjunction Elimination |
+| `andRight` | `[A ∧ B] ⊢ B` | Right Conjunction Elimination |
+| `orInl` | `[A] ⊢ A ∨ B` | Left Disjunction Introduction |
+| `orInr` | `[B] ⊢ A ∨ B` | Right Disjunction Introduction |
+| `impOfNegImpNeg` | `(Γ ⊢ ¬A → ¬B) → (Γ ⊢ B → A)` | Reverse Contraposition |
+| `em` | `⊢ A ∨ ¬A` | Law of Excluded Middle |
+| `doubleNegation` | `⊢ ¬¬φ → φ` | Double Negation Elimination |
 
 **Status**: Phase 1 complete (8 theorems proven, zero sorry)
 
@@ -559,11 +559,11 @@ Combinator infrastructure for proof construction.
 | Combinator | Statement | Description |
 |------------|-----------|-------------|
 | `identity` | `⊢ φ → φ` | Identity combinator |
-| `imp_trans` | `(Γ ⊢ φ → ψ) → (Γ ⊢ ψ → χ) → (Γ ⊢ φ → χ)` | Implication transitivity |
-| `b_combinator` | `⊢ (ψ → χ) → ((φ → ψ) → (φ → χ))` | B combinator |
-| `theorem_flip` | `(Γ ⊢ φ → (ψ → χ)) → (Γ ⊢ ψ → (φ → χ))` | Flip arguments |
+| `impTrans` | `(Γ ⊢ φ → ψ) → (Γ ⊢ ψ → χ) → (Γ ⊢ φ → χ)` | Implication transitivity |
+| `bCombinator` | `⊢ (ψ → χ) → ((φ → ψ) → (φ → χ))` | B combinator |
+| `theoremFlip` | `(Γ ⊢ φ → (ψ → χ)) → (Γ ⊢ ψ → (φ → χ))` | Flip arguments |
 | `pairing` | `(Γ ⊢ φ) → (Γ ⊢ ψ) → (Γ ⊢ φ ∧ ψ)` | Conjunction introduction |
-| `dni` | `⊢ φ → ¬¬φ` | Double negation introduction |
+| `notNotIntro` | `⊢ φ → ¬¬φ` | Double negation introduction |
 
 ---
 
@@ -606,7 +606,7 @@ Soundness theorem: derivability implies semantic consequence.
 
 Deduction theorem for TM logic.
 
-**Main Theorem**: `deduction_theorem : (φ :: Γ) ⊢ ψ → Γ ⊢ (φ → ψ)`
+**Main Theorem**: `deductionTheorem : (φ :: Γ) ⊢ ψ → Γ ⊢ (φ → ψ)`
 
 **Note**: Currently has build errors (type class instance problems).
 
@@ -658,11 +658,11 @@ open FormalSystem.Automation
 
 -- Bounded search for derivation
 def search_example : Bool :=
-  bounded_search [] (p.box.imp p) 5
+  boundedSearch [] (p.box.imp p) 5
 
 -- Search with heuristics
 def heuristic_example : Bool :=
-  search_with_heuristics [] (p.box.imp p) 10
+  searchWithHeuristics [] (p.box.imp p) 10
 ```
 
 ### Semantic Evaluation
@@ -675,7 +675,7 @@ open FormalSystem.Semantics
 -- Define a task frame
 def example_frame : TaskFrame Int := {
   WorldState := Nat
-  task_rel := fun w x u => u = w + x.natAbs
+  TaskRel := fun w x u => u = w + x.natAbs
   nullity := by simp
   compositionality := by simp [Int.natAbs_add]
 }

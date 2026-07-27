@@ -65,7 +65,7 @@ This registry provides a high-level view of tactic implementation status across 
 - `modal_t_valid` - Modal T axiom validity
 - `modal_4_derivable` - Modal 4 axiom derivability
 - `modal_b_derivable` - Modal B axiom derivability
-- `perpetuity_1` through `perpetuity_6` - Perpetuity principles: theorems fully proven
+- `perpetuity_1` through `perpetuity6` - Perpetuity principles: theorems fully proven
   (sorry-free), not yet registered as Aesop safe rules (📋 Planned integration)
 
 **Normalization Rules** (preprocessing):

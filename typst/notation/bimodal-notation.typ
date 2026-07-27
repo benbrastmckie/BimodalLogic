@@ -96,8 +96,8 @@
 // Lean Identifier Commands
 // ============================================================================
 
-#let leanTaskRel = raw("task_rel")
-#let leanTimeShift = raw("time_shift")
+#let leanTaskRel = raw("TaskRel")
+#let leanTimeShift = raw("timeShift")
 #let leanRespTask = raw("respects_task")
 #let leanConvex = raw("convex")
 #let leanDomain = raw("domain")

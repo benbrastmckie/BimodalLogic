@@ -65,7 +65,7 @@ data/bmlogic_metadata.json data/eval_dataset.json
 |------|-----------|-------------|
 | `escapeJsonString` | `String -> String` | Escape `"` and `\` for JSON string values |
 | `listToJsonArray` | `List String -> String` | Wrap strings as a JSON array `[...]` |
-| `Atom.toJson` | `Atom -> String` | `{"base": "p", "fresh_index": null}` |
+| `Atom.toJson` | `Atom -> String` | `{"base": "p", "freshIndex": null}` |
 | `Formula.toJson` | `Formula -> String` | Recursive formula AST as JSON with `"tag"` field |
 | `Formula.prettyPrint` | `Formula -> String` | Human-readable notation (→, □, U, S) |
 | `GoalCategory.toJson` | `GoalCategory -> String` | Category name as quoted JSON string |
@@ -143,7 +143,7 @@ All serialization is pure string manipulation — no `import Json` or external d
 | `EnumParams` | `structure` | `maxComplexity`, `maxModalDepth`, `maxTemporalDepth`, `atoms`, `maxFormulas`, `samplingMode` |
 | `enumerateExhaustive` | `EnumParams -> List Formula` | Exhaustive via budget recursion |
 | `sampleRandom` | `EnumParams -> IO (List Formula)` | IO-based random generation |
-| `enrichWithDuals` | `List Formula -> List Formula` | Free 2x augmentation via `swap_temporal` |
+| `enrichWithDuals` | `List Formula -> List Formula` | Free 2x augmentation via `swapTemporal` |
 | `generateFormulas` | `EnumParams -> IO (List Formula)` | Dispatch by `SamplingMode` |
 | `DiversityReport` | `structure` | `GoalCategory` counts, modal/temporal depth buckets |
 | `computeDiversity` | `List Formula -> DiversityReport` | Legacy diversity computation |
@@ -167,7 +167,7 @@ All serialization is pure string manipulation — no `import Json` or external d
 
 | Name | Signature | Description |
 |------|-----------|-------------|
-| `ProofTrace` | `structure` | `height : Nat`, `axioms_used : List String`, `rules_applied : List String` |
+| `ProofTrace` | `structure` | `height : Nat`, `axiomsUsed : List String`, `rulesApplied : List String` |
 | `DifficultyMetrics` | `structure` | `complexity`, `modalDepth`, `temporalDepth`, `impCount`, `atomCount`, `decisionTimeMs`, `difficultyTier` |
 | `FormulaLabel` | `inductive` | `.valid` / `.invalid` / `.timeout` |
 | `LabeledFormula` | `structure` | `formula`, `label`, `proofTrace`, `countermodel`, `metrics`, `patternKey` |
@@ -280,7 +280,7 @@ For each formula, `labelFormula`:
       "formula_string": "(□p → p)",
       "features": {"modalDepth": 1, "temporalDepth": 0, "impCount": 1, "complexity": 3, "topOperator": "Implication"},
       "decision": "valid",
-      "proof": {"height": 0, "axioms_used": ["modal_t"], "rules_applied": []},
+      "proof": {"height": 0, "axiomsUsed": ["modal_t"], "rulesApplied": []},
       "countermodel": null,
       "metrics": {"complexity": 3, "modalDepth": 1, "temporalDepth": 0, "impCount": 1, "atomCount": 1, "decisionTimeMs": 2, "difficultyTier": "easy"}
     }
@@ -335,8 +335,8 @@ Each line of the output file is one JSON object:
   "label": "valid",
   "proof_trace": {
     "height": 0,
-    "axioms_used": ["modal_t"],
-    "rules_applied": []
+    "axiomsUsed": ["modal_t"],
+    "rulesApplied": []
   },
   "countermodel": null,
   "pattern_key": {"modalDepth": 1, "temporalDepth": 0, "impCount": 1, "complexity": 3, "topOperator": "Implication"},
@@ -417,7 +417,7 @@ lake exe dataset_generator -- [OPTIONS]
   --max-formulas N        Maximum formulas to generate (default: 5000)
   --output PATH           Output JSONL file path (default: data/bmlogic.jsonl)
   --mode MODE             Sampling mode: exhaustive|random|hybrid (default: exhaustive)
-  --include-duals         Include temporal dual augmentation via swap_temporal
+  --include-duals         Include temporal dual augmentation via swapTemporal
 ```
 
 **Output files** (both written by default):
@@ -531,7 +531,7 @@ Used by `lake exe dataset_generator` and consumed directly by BimodalHarness. Ea
 | `formula_ast` | object | Recursive tagged AST (see Formula JSON Schema above) |
 | `frame_class` | string | Always `"Base"` in current pipeline |
 | `label` | string | `"valid"` / `"invalid"` / `"timeout"` |
-| `proof_trace` | object or null | `{"height": N, "axioms_used": [...], "rules_applied": [...]}` for valid; null otherwise |
+| `proof_trace` | object or null | `{"height": N, "axiomsUsed": [...], "rulesApplied": [...]}` for valid; null otherwise |
 | `countermodel` | object or null | `{"trueAtoms": [...], "falseAtoms": [...], "formula": {...}}` for invalid; null otherwise |
 | `pattern_key` | object | `{"modalDepth": N, "temporalDepth": N, "impCount": N, "complexity": N, "topOperator": "..."}` |
 | `metrics` | object | `{"complexity": N, "modalDepth": N, "temporalDepth": N, "impCount": N, "atomCount": N, "decisionTimeMs": N, "difficultyTier": "..."}` |

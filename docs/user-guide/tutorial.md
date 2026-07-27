@@ -86,12 +86,12 @@ def necessary_p : Formula := Formula.box p      -- `□p`
 def possible_p : Formula := diamond p           -- `◇p` (defined as `¬□¬p`)
 
 -- Temporal operators
-def always_past : Formula := Formula.all_past p     -- Hφ (always in past)
-def always_future : Formula := Formula.all_future p -- Gφ (always in future)
+def always_past : Formula := Formula.allPast p     -- Hφ (always in past)
+def always_future : Formula := Formula.allFuture p -- Gφ (always in future)
 def always_p : Formula := p.always                  -- △φ (at all times: H ∧ present ∧ G)
 def sometimes_p : Formula := p.sometimes            -- ▽φ (at some time: P ∨ present ∨ F)
-def sometime_past_p : Formula := some_past p        -- Pφ (some time in past)
-def sometime_future_p : Formula := some_future p    -- Fφ (some time in future)
+def sometime_past_p : Formula := somePast p        -- Pφ (some time in past)
+def sometime_future_p : Formula := someFuture p    -- Fφ (some time in future)
 ```
 
 ### Derived Operators
@@ -208,8 +208,8 @@ example (φ : Formula) (h : [Formula.box (Formula.atom "p")] ⊢ φ) :
   sorry -- Requires necessitation rule application
 
 -- Temporal K (TK): If `GΓ ⊢ φ` then `Γ ⊢ Gφ`
-example (φ : Formula) (h : [Formula.all_future (Formula.atom "p")] ⊢ φ) :
-  [Formula.atom "p"] ⊢ Formula.all_future φ := by
+example (φ : Formula) (h : [Formula.allFuture (Formula.atom "p")] ⊢ φ) :
+  [Formula.atom "p"] ⊢ Formula.allFuture φ := by
   sorry -- Requires temporal necessitation rule application
 ```
 
@@ -300,7 +300,7 @@ structure TaskFrame where
   WorldState : Type                    -- Set of world states
   Time : Type                          -- Set of times
   time_group : OrderedAddCommGroup Time -- Times form ordered group
-  task_rel : WorldState → Time → WorldState → Prop  -- Task relation
+  TaskRel : WorldState → Time → WorldState → Prop  -- Task relation
 ```
 
 ### World Histories
@@ -331,14 +331,14 @@ Truth at a model-history-time triple:
 
 ```lean
 -- Evaluate formula truth
-def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) :
+def TruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) :
   Formula → Prop
   | Formula.atom p => t ∈ τ.domain ∧ τ(t) ∈ M.valuation p
   | Formula.bot => False
-  | Formula.imp φ ψ => truth_at M τ t φ → truth_at M τ t ψ
-  | Formula.box φ => ∀ σ : WorldHistory F, truth_at M σ t φ
-  | Formula.all_past φ => ∀ s < t, truth_at M τ s φ
-  | Formula.all_future φ => ∀ s > t, truth_at M τ s φ
+  | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
+  | Formula.box φ => ∀ σ : WorldHistory F, TruthAt M σ t φ
+  | Formula.allPast φ => ∀ s < t, TruthAt M τ s φ
+  | Formula.allFuture φ => ∀ s > t, TruthAt M τ s φ
 ```
 
 ### Validity
@@ -350,7 +350,7 @@ def valid (φ : Formula) : Prop :=
     M, τ, t ⊨ φ
 
 -- Semantic consequence
-def semantic_consequence (Γ : Context) (φ : Formula) : Prop :=
+def SemanticConsequence (Γ : Context) (φ : Formula) : Prop :=
   ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Time),
     (∀ ψ ∈ Γ, M, τ, t ⊨ ψ) → M, τ, t ⊨ φ
 ```
@@ -404,7 +404,7 @@ theorem perpetuity_2 (φ : Formula) : ⊢ ((▽φ).imp (diamond φ)) := by
 **Status note**: The `sorry` placeholders in this section are pedagogical stand-ins for a
 from-scratch walkthrough. In the actual library, `soundness` is fully proven,
 `completeness_dense`/`completeness_discrete` are fully proven (only the general Base-frame case
-has a residual debt), and `perpetuity_1`–`perpetuity_6` are all fully proven — see
+has a residual debt), and `perpetuity_1`–`perpetuity6` are all fully proven — see
 `Metalogic/Soundness.lean`, `Metalogic/BXCanonical/Completeness.lean`, and
 `Theorems/Perpetuity/{Principles,Bridge}.lean`.
 

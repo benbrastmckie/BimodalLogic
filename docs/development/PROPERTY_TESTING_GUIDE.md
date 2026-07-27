@@ -35,7 +35,7 @@ Property-based testing is a testing methodology that automatically generates tes
 
 ✅ **Use for**:
 - Universal invariants (e.g., `complexity ≥ 1`)
-- Algebraic properties (e.g., `swap_temporal` involution)
+- Algebraic properties (e.g., `swapTemporal` involution)
 - Structural properties (e.g., weakening, reflexivity)
 - Transformation correctness (e.g., derived operator definitions)
 
@@ -119,7 +119,7 @@ structure TaskModelProxy where
   frameProxy : Unit
   valuationSeed : Nat
 
-instance : SampleableExt (TaskModel (TaskFrame.nat_frame (T := Int))) where
+instance : SampleableExt (TaskModel (TaskFrame.natFrame (T := Int))) where
   proxy := TaskModelProxy
   interp p :=
     { valuation := fun w s =>
@@ -227,7 +227,7 @@ structure TaskModelProxy where
   valuationSeed : Nat  -- Seed for deterministic valuation
 
 -- Step 2: Implement SampleableExt
-instance : SampleableExt (TaskModel (TaskFrame.nat_frame (T := Int))) where
+instance : SampleableExt (TaskModel (TaskFrame.natFrame (T := Int))) where
   proxy := TaskModelProxy
   
   -- Step 3: Interpret proxy as actual value
@@ -293,7 +293,7 @@ Properties that hold for ALL values:
 #test ∀ φ : Formula, φ.complexity ≥ 1
 
 -- Frame nullity
-#test ∀ (F : TaskFrame Int) (w : F.WorldState), F.task_rel w 0 w
+#test ∀ (F : TaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w
 ```
 
 ### 2. Algebraic Properties
@@ -302,10 +302,10 @@ Properties expressing algebraic laws:
 
 ```lean
 -- Involution
-#test ∀ φ : Formula, φ.swap_temporal.swap_temporal = φ
+#test ∀ φ : Formula, φ.swapTemporal.swapTemporal = φ
 
 -- Distributivity
-#test ∀ φ : Formula, φ.diamond.swap_temporal = φ.swap_temporal.diamond
+#test ∀ φ : Formula, φ.diamond.swapTemporal = φ.swapTemporal.diamond
 
 -- Associativity
 #test ∀ x y z : Int, (x + y) + z = x + (y + z)
@@ -338,7 +338,7 @@ Properties about truth and validity:
 
 -- Truth conditions
 #test ∀ (M : TaskModel F) (w : F.WorldState) (φ ψ : Formula),
-  truth_at M w (φ.imp ψ) ↔ (truth_at M w φ → truth_at M w ψ)
+  TruthAt M w (φ.imp ψ) ↔ (TruthAt M w φ → TruthAt M w ψ)
 ```
 
 ### 5. Transformation Properties
@@ -640,10 +640,10 @@ example : Testable (∀ φ : Formula, φ.complexity ≥ 1) := by
 
 ```lean
 -- Property: Swapping temporal operators twice gives original
-example : Testable (∀ φ : Formula, φ.swap_temporal.swap_temporal = φ) := by
+example : Testable (∀ φ : Formula, φ.swapTemporal.swapTemporal = φ) := by
   infer_instance
 
-#eval Testable.check (∀ φ : Formula, φ.swap_temporal.swap_temporal = φ) {
+#eval Testable.check (∀ φ : Formula, φ.swapTemporal.swapTemporal = φ) {
   numInst := 100,
   maxSize := 50
 }
@@ -680,8 +680,8 @@ example : ∀ (Γ Δ : Context) (φ : Formula) (d : Γ ⊢ φ) (h : Γ ⊆ Δ),
 
 ```lean
 -- Property: Generated models have valid frames
-example : ∀ (M : TaskModel (TaskFrame.nat_frame (T := Int))) (w : Nat),
-    M.frame.task_rel w 0 w := by
+example : ∀ (M : TaskModel (TaskFrame.natFrame (T := Int))) (w : Nat),
+    M.frame.TaskRel w 0 w := by
   intro M w
   exact M.frame.nullity w
   where

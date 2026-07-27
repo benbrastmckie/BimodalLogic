@@ -72,8 +72,8 @@ example (A B C : Formula) : ⊢ (A.imp B).imp ((B.imp C).imp (A.imp C)) :=
 -- Build proof chains using implication transitivity
 example (A B C D : Formula)
     (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp C) (h3 : ⊢ C.imp D) : ⊢ A.imp D := by
-  have h12 : ⊢ A.imp C := imp_trans h1 h2
-  exact imp_trans h12 h3
+  have h12 : ⊢ A.imp C := impTrans h1 h2
+  exact impTrans h12 h3
 ```
 
 ## Pattern 6: Box-Diamond Duality

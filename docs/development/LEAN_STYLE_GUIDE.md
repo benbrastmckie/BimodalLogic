@@ -41,14 +41,14 @@ structure task_frame where      -- snake_case for type
 ```
 
 ### Functions, Definitions, and Theorems
-- **Functions**: snake_case (`truth_at`, `swap_temporal`, `canonical_history`)
-- **Definitions**: snake_case (`neg`, `diamond`, `always`, `some_past`, `some_future`)
+- **Functions**: snake_case (`TruthAt`, `swapTemporal`, `canonical_history`)
+- **Definitions**: snake_case (`neg`, `diamond`, `always`, `somePast`, `someFuture`)
 - **Theorems**: snake_case with descriptive name (`soundness`, `weak_completeness`)
 - **Lemmas**: snake_case, often prefixed by subject (`modal_saturation`, `truth_lemma`)
 
 ```lean
 -- Good
-def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) : Formula → Prop := ...
+def TruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) : Formula → Prop := ...
 theorem soundness (Γ : Context) (φ : Formula) : Γ ⊢ φ → Γ ⊨ φ := ...
 lemma modal_t_valid (φ : Formula) : valid (φ.box.imp φ) := ...
 
@@ -108,14 +108,14 @@ theorem strong_completeness (Γ : Context) (φ : Formula) : Γ ⊨ φ → Γ ⊢
 
 ```lean
 -- Good
-def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) :
+def TruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) :
   Formula → Prop
   | Formula.atom p => t ∈ τ.domain ∧ τ(t) ∈ M.valuation p
   | Formula.bot => False
-  | Formula.imp φ ψ => truth_at M τ t φ → truth_at M τ t ψ
-  | Formula.box φ => ∀ σ : WorldHistory F, truth_at M σ t φ
-  | Formula.all_past φ => ∀ s < t, truth_at M τ s φ
-  | Formula.all_future φ => ∀ s > t, truth_at M τ s φ
+  | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
+  | Formula.box φ => ∀ σ : WorldHistory F, TruthAt M σ t φ
+  | Formula.allPast φ => ∀ s < t, TruthAt M τ s φ
+  | Formula.allFuture φ => ∀ s > t, TruthAt M τ s φ
 
 theorem soundness (Γ : Context) (φ : Formula) :
   Γ ⊢ φ → Γ ⊨ φ := by
@@ -136,7 +136,7 @@ theorem soundness (Γ : Context) (φ : Formula) :
 -- Good
 def neg (φ : Formula) : Formula := φ.imp Formula.bot
 
-theorem deduction_theorem (Γ : Context) (φ ψ : Formula) :
+theorem deductionTheorem (Γ : Context) (φ ψ : Formula) :
   (φ :: Γ) ⊢ ψ → Γ ⊢ (φ.imp ψ) := by
   sorry
 
@@ -144,7 +144,7 @@ structure TaskFrame where
   WorldState : Type
   Time : Type
   time_group : OrderedAddCommGroup Time
-  task_rel : WorldState → Time → WorldState → Prop
+  TaskRel : WorldState → Time → WorldState → Prop
 ```
 
 ### Spacing
@@ -409,8 +409,8 @@ When renaming, create an alias pointing to the new name:
 
 ```lean
 -- Old name (deprecated)
-@[deprecated truth_at (since := "2025-01-15")]
-abbrev eval_at := truth_at
+@[deprecated TruthAt (since := "2025-01-15")]
+abbrev EvalAt := TruthAt
 ```
 
 ## 6. Code Examples (LEAN, not Python)
@@ -424,8 +424,8 @@ def complexity : Formula → Nat
   | Formula.bot => 1
   | Formula.imp φ ψ => φ.complexity + ψ.complexity + 1
   | Formula.box φ => φ.complexity + 1
-  | Formula.all_past φ => φ.complexity + 1
-  | Formula.all_future φ => φ.complexity + 1
+  | Formula.allPast φ => φ.complexity + 1
+  | Formula.allFuture φ => φ.complexity + 1
 
 -- Using `by` for tactic proofs
 theorem modal_t_implies_reflexive (φ : Formula) :
@@ -472,7 +472,7 @@ def very_complex := (fun x => (fun y => x + y + (if x > 0 then 1 else 0)) 3) 2  
 ProofChecker uses **classical logic** for metalogic theorems (like the deduction theorem). This makes certain definitions **noncomputable** (not executable). For comprehensive background, see [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) and [ADR-001-Classical-Logic-Noncomputable.md](../architecture/ADR-001-Classical-Logic-Noncomputable.md).
 
 **Mark a definition as `noncomputable` when**:
-1. It calls `deduction_theorem` or any other noncomputable function
+1. It calls `deductionTheorem` or any other noncomputable function
 2. It uses classical axioms like `Classical.propDecidable`, `Classical.em`, or `Classical.choice`
 3. Lean compiler reports: `depends on declaration 'X', which has no executable code`
 
@@ -486,15 +486,15 @@ ProofChecker uses **classical logic** for metalogic theorems (like the deduction
 
 ```lean
 -- Good: Single noncomputable definition
-noncomputable def generalized_modal_k (Γ : Context) (Γ' : Context) (A φ : Formula)
+noncomputable def generalizedModalK (Γ : Context) (Γ' : Context) (A φ : Formula)
     (h : (A :: Γ') ⊢ φ) : (A :: Γ' ++ Γ) ⊢ φ := by
-  let h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h
+  let h_deduction : Γ' ⊢ A.imp φ := deductionTheorem Γ' A φ h
   sorry
 
 -- Avoid: Missing noncomputable marker
-def generalized_modal_k (Γ : Context) (Γ' : Context) (A φ : Formula)
+def generalizedModalK (Γ : Context) (Γ' : Context) (A φ : Formula)
     (h : (A :: Γ') ⊢ φ) : (A :: Γ' ++ Γ) ⊢ φ := by
-  let h_deduction : Γ' ⊢ A.imp φ := deduction_theorem Γ' A φ h  -- ERROR!
+  let h_deduction : Γ' ⊢ A.imp φ := deductionTheorem Γ' A φ h  -- ERROR!
   sorry
 ```
 
@@ -504,24 +504,24 @@ def generalized_modal_k (Γ : Context) (Γ' : Context) (A φ : Formula)
 -- Good: Multiple noncomputable definitions in same file
 noncomputable section
 
-def lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
-  have h : [A.and B] ⊢ A := lce A B
-  exact deduction_theorem [] (A.and B) A h
+def lceImp (A B : Formula) : ⊢ (A.and B).imp A := by
+  have h : [A.and B] ⊢ A := andLeft A B
+  exact deductionTheorem [] (A.and B) A h
 
-def rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
-  have h : [A.and B] ⊢ B := rce A B
-  exact deduction_theorem [] (A.and B) B h
+def rceImp (A B : Formula) : ⊢ (A.and B).imp B := by
+  have h : [A.and B] ⊢ B := andRight A B
+  exact deductionTheorem [] (A.and B) B h
 
-def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
-  -- Uses deduction_theorem multiple times
+def classicalMerge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
+  -- Uses deductionTheorem multiple times
   sorry
 
 end -- noncomputable section
 
 -- Avoid: Marking each individually when many are noncomputable
-noncomputable def lce_imp ... := ...
-noncomputable def rce_imp ... := ...
-noncomputable def classical_merge ... := ...
+noncomputable def lceImp ... := ...
+noncomputable def rceImp ... := ...
+noncomputable def classicalMerge ... := ...
 -- (Too verbose; use section instead)
 ```
 
@@ -531,7 +531,7 @@ noncomputable def classical_merge ... := ...
 -- Good: Using classical logic with proper marker
 attribute [local instance] Classical.propDecidable
 
-noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
+noncomputable def deductionTheorem (Γ : Context) (A B : Formula)
     (h : (A :: Γ) ⊢ B) : Γ ⊢ (A.imp B) := by
   haveI : Decidable (A ∈ Γ) := Classical.propDecidable _
   by_cases h_mem : A ∈ Γ
@@ -541,7 +541,7 @@ noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
     sorry
 
 -- Avoid: Classical logic without noncomputable marker
-def deduction_theorem (Γ : Context) (A B : Formula)
+def deductionTheorem (Γ : Context) (A B : Formula)
     (h : (A :: Γ) ⊢ B) : Γ ⊢ (A.imp B) := by
   by_cases h_mem : A ∈ Γ  -- ERROR: No decidable instance!
   sorry
@@ -551,15 +551,15 @@ def deduction_theorem (Γ : Context) (A B : Formula)
 
 ```lean
 -- Good: Theorem using noncomputable function (no marker needed)
-theorem future_k_dist (A B : Formula) :
-    ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future) := by
+theorem futureKDist (A B : Formula) :
+    ⊢ (A.imp B).allFuture.imp (A.allFuture.imp B.allFuture) := by
   have step1 : ... := by sorry
-  have step2 : ... := deduction_theorem [(A.imp B).all_future] A.all_future B.all_future step1
+  have step2 : ... := deductionTheorem [(A.imp B).allFuture] A.allFuture B.allFuture step1
   exact step2
 
 -- Good: Definition calling noncomputable function (marker required)
 noncomputable def my_helper (A B : Formula) : ⊢ (A.imp B) := by
-  exact deduction_theorem [] A B proof
+  exact deductionTheorem [] A B proof
 ```
 
 ### Documentation Requirements
@@ -579,7 +579,7 @@ This theorem allows moving assumptions from context to implication.
 See [NONCOMPUTABLE_GUIDE.md](../../docs/development/NONCOMPUTABLE_GUIDE.md)
 for details on why classical logic is necessary for metalogic.
 -/
-noncomputable def deduction_theorem (Γ : Context) (A B : Formula) : ... := ...
+noncomputable def deductionTheorem (Γ : Context) (A B : Formula) : ... := ...
 ```
 
 ### Fixing Noncomputable Errors
@@ -594,19 +594,19 @@ consider marking definition as 'noncomputable'
 **Step-by-Step Fix**:
 
 1. **Identify the noncomputable dependency**:
-   - In this case: `deduction_theorem`
+   - In this case: `deductionTheorem`
    - Check [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) for catalog
 
 2. **Add `noncomputable` keyword**:
    ```lean
    -- Before:
    def my_function (Γ : Context) (A B : Formula) : Γ ⊢ A.imp B := by
-     let h := deduction_theorem Γ A B proof
+     let h := deductionTheorem Γ A B proof
      exact h
    
    -- After:
    noncomputable def my_function (Γ : Context) (A B : Formula) : Γ ⊢ A.imp B := by
-     let h := deduction_theorem Γ A B proof
+     let h := deductionTheorem Γ A B proof
      exact h
    ```
 
@@ -614,7 +614,7 @@ consider marking definition as 'noncomputable'
    ```lean
    /-- My function does X.
    
-   **Noncomputable**: Depends on `deduction_theorem`, which uses classical logic.
+   **Noncomputable**: Depends on `deductionTheorem`, which uses classical logic.
    -/
    noncomputable def my_function ...
    ```
@@ -629,7 +629,7 @@ consider marking definition as 'noncomputable'
 #### Scenario 1: Adding New Metalogic Theorem
 
 ```lean
--- If your theorem uses classical axioms or calls deduction_theorem:
+-- If your theorem uses classical axioms or calls deductionTheorem:
 
 /-- My metalogic theorem.
 
@@ -652,7 +652,7 @@ noncomputable section
 
 /-- My new propositional theorem.
 
-**Noncomputable**: Part of noncomputable section; may use `deduction_theorem`.
+**Noncomputable**: Part of noncomputable section; may use `deductionTheorem`.
 -/
 def my_prop_theorem (A B : Formula) : ⊢ (A.imp B) := by
   sorry
@@ -666,8 +666,8 @@ end -- noncomputable section
 -- Theorems in proof mode DON'T need noncomputable marker:
 
 theorem my_modal_theorem (φ : Formula) : ⊢ φ.box.imp φ.always := by
-  -- Can use deduction_theorem freely in proof
-  have h1 := deduction_theorem [] φ.box φ.always proof
+  -- Can use deductionTheorem freely in proof
+  have h1 := deductionTheorem [] φ.box φ.always proof
   exact h1
   -- No noncomputable marker needed!
 ```
@@ -676,7 +676,7 @@ theorem my_modal_theorem (φ : Formula) : ⊢ φ.box.imp φ.always := by
 
 When reviewing code that adds or modifies definitions:
 
-- [ ] If `def` calls `deduction_theorem`, is it marked `noncomputable`?
+- [ ] If `def` calls `deductionTheorem`, is it marked `noncomputable`?
 - [ ] If uses `Classical.propDecidable`, `Classical.em`, or `Classical.choice`, is it marked `noncomputable`?
 - [ ] Does docstring explain WHY it's noncomputable?
 - [ ] If multiple noncomputable definitions in same file, is `noncomputable section` used?
@@ -687,10 +687,10 @@ When reviewing code that adds or modifies definitions:
 **Q: Is it bad that we have noncomputable definitions?**  
 A: No. For proof assistants in classical logic, this is standard practice. See [ADR-001](../architecture/ADR-001-Classical-Logic-Noncomputable.md).
 
-**Q: Can I make `deduction_theorem` computable?**  
+**Q: Can I make `deductionTheorem` computable?**  
 A: No, not practically. It requires decidable equality on arbitrary formulas, which is complex and not worth implementing. See [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) § FAQ.
 
-**Q: Why doesn't my theorem need `noncomputable` even though it uses `deduction_theorem`?**  
+**Q: Why doesn't my theorem need `noncomputable` even though it uses `deductionTheorem`?**  
 A: Theorems (`theorem`) and proof terms (`by` blocks) can use noncomputable functions freely. Only definitions (`def`) that call noncomputable functions in their body require the marker.
 
 ### Related Documentation
@@ -882,18 +882,18 @@ When proving properties about formulas, distinguish between syntactic and semant
 - Validity, satisfiability, truth in models
 - May not preserve under transformations
 - Require semantic analysis and counterexample testing
-- Example: `is_valid` (Validity.lean)
+- Example: `IsValid` (Validity.lean)
 
 **Key Lesson**: The involution property `φ.swap.swap = φ` (syntactic) does NOT imply
-`is_valid φ.swap ↔ is_valid φ` (semantic) because swap exchanges past and future
+`IsValid φ.swap ↔ IsValid φ` (semantic) because swap exchanges past and future
 quantification, which are not equivalent in general models.
 
-**Counterexample**: φ = all_past(atom "p") in a model where p is true at all future times
-but false at some past time. Then is_valid φ.swap holds (p always true in future) but
-is_valid φ does not (p not always true in past).
+**Counterexample**: φ = allPast(atom "p") in a model where p is true at all future times
+but false at some past time. Then IsValid φ.swap holds (p always true in future) but
+IsValid φ does not (p not always true in past).
 
 **Derivable vs Valid**: Properties true for derivable formulas may be false for arbitrary
-valid formulas. The theorem `is_valid φ.swap → is_valid φ` is false for arbitrary formulas
+valid formulas. The theorem `IsValid φ.swap → IsValid φ` is false for arbitrary formulas
 but true for derivable formulas (due to temporal_duality rule). Always check whether a
 theorem requires derivability as a precondition.
 

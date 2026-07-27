@@ -26,7 +26,7 @@ This document defines quality targets, measurement methods, and compliance requi
 These functions MUST have 100% coverage:
 
 - `Derivable` inductive type (all constructors)
-- `truth_at` function (all formula cases)
+- `TruthAt` function (all formula cases)
 - `soundness` theorem (all axiom cases)
 - Axiom validity lemmas (all axioms)
 

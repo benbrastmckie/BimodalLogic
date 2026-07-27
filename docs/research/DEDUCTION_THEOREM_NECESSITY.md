@@ -1,15 +1,15 @@
-# Research Report: Is `deduction_theorem` Necessarily Noncomputable?
+# Research Report: Is `deductionTheorem` Necessarily Noncomputable?
 
 **Task**: 192 (Additional Research Question)  
 **Research Date**: 2025-12-28  
 **Researcher**: AI Assistant  
-**Question**: Is it necessary that the deduction_theorem is noncomputable? Are there any ways around this or is this to be expected?
+**Question**: Is it necessary that the deductionTheorem is noncomputable? Are there any ways around this or is this to be expected?
 
 ---
 
 ## Executive Summary
 
-**Answer**: Yes, `deduction_theorem` in ProofChecker is **necessarily noncomputable** given the current implementation approach. This is **expected and standard** for Hilbert-style proof systems using classical logic. There are theoretical alternatives (constructive approaches) but they would require fundamental architectural changes and are not practical for this codebase.
+**Answer**: Yes, `deductionTheorem` in ProofChecker is **necessarily noncomputable** given the current implementation approach. This is **expected and standard** for Hilbert-style proof systems using classical logic. There are theoretical alternatives (constructive approaches) but they would require fundamental architectural changes and are not practical for this codebase.
 
 **Key Findings**:
 1. **Why it's noncomputable**: Uses `Classical.propDecidable` for arbitrary proposition equality
@@ -20,12 +20,12 @@
 
 ---
 
-## Analysis: Why `deduction_theorem` is Noncomputable
+## Analysis: Why `deductionTheorem` is Noncomputable
 
 ### Current Implementation (DeductionTheorem.lean)
 
 ```lean
-noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
+noncomputable def deductionTheorem (Γ : Context) (A B : Formula)
     (h : (A :: Γ) ⊢ B) : Γ ⊢ A.imp B := by
   -- Uses Classical.propDecidable (line 41)
   attribute [local instance] Classical.propDecidable
@@ -125,7 +125,7 @@ def deduction_theorem_constructive (Γ : Context) (A B : Formula)
 **Why This Isn't Used in ProofChecker**:
 
 1. **Complexity**: Implementing decidable equality for `Formula` is non-trivial
-   - Must handle all formula constructors (atom, bot, imp, box, all_past, all_future)
+   - Must handle all formula constructors (atom, bot, imp, box, allPast, allFuture)
    - Requires recursive equality checks
    - Adds significant boilerplate code
 
@@ -193,10 +193,10 @@ def deduction_theorem_constructive (Γ : Context) (A B : Formula)
      match h with
      | DerivationTree.assumption _ φ h_mem =>
          if h_eq : φ = A then  -- Uses DecidableEq
-           deduction_assumption_same Γ φ
+           deductionAssumptionSame Γ φ
          else
            let h_tail := prove_mem_tail φ Γ h_mem h_eq
-           deduction_assumption_other Γ A φ h_tail
+           deductionAssumptionOther Γ A φ h_tail
      -- ... rest of proof
    ```
 
@@ -226,12 +226,12 @@ inductive DerivationTree : Context → Formula → Type where
 Use:
 ```lean
 def Provable (Γ : Context) (φ : Formula) := 
-  (interpretation : Valuation) → Γ.all_true interpretation → φ.eval interpretation
+  (interpretation : Valuation) → Γ.allTrue interpretation → φ.eval interpretation
 ```
 
 **Deduction Theorem Becomes Trivial**:
 ```lean
-def deduction_theorem (Γ : Context) (A B : Formula)
+def deductionTheorem (Γ : Context) (A B : Formula)
     (h : Provable (A :: Γ) B) : Provable Γ (A.imp B) := by
   intro interpretation h_Γ
   intro h_A  -- Assume A is true
@@ -378,7 +378,7 @@ def FormulaQuot := Quot Formula.equiv
 - Matches community expectations
 
 **Action**: 
-- Mark `generalized_modal_k` and `generalized_temporal_k` as `noncomputable`
+- Mark `generalizedModalK` and `generalizedTemporalK` as `noncomputable`
 - Document why in comments
 - Accept that metalogic theorems use classical logic
 
@@ -387,13 +387,13 @@ def FormulaQuot := Quot Formula.equiv
 /--
 Generalized modal K rule (derived theorem).
 
-This function is noncomputable because it depends on `deduction_theorem`,
+This function is noncomputable because it depends on `deductionTheorem`,
 which uses classical decidability (`by_cases` on arbitrary propositions).
 This is standard for Hilbert-style metalogic proofs in Lean 4.
 
 For theorem proving purposes, computability is not required.
 -/
-noncomputable def generalized_modal_k : ...
+noncomputable def generalizedModalK : ...
 ```
 
 ### Recommendation 2: Add Style Guide Note (Optional)
@@ -412,12 +412,12 @@ no computational content. For theorem proving, computability is unnecessary.
 **Pattern**:
 ```lean
 -- Good: Explicitly mark as noncomputable
-noncomputable def deduction_theorem ... := by
+noncomputable def deductionTheorem ... := by
   attribute [local instance] Classical.propDecidable
   ...
 
 -- Bad: Trying to make classical proofs computable
-def deduction_theorem [DecidableEq Formula] ... := by
+def deductionTheorem [DecidableEq Formula] ... := by
   -- Adds complexity for no benefit
   ...
 ```
@@ -468,7 +468,7 @@ For theorem proving purposes, this is acceptable and idiomatic.
 
 ### Summary of Answers
 
-**Q: Is it necessary that `deduction_theorem` is noncomputable?**
+**Q: Is it necessary that `deductionTheorem` is noncomputable?**
 - **A**: Yes, given the current Hilbert-style + classical logic design.
 
 **Q: Are there ways around this?**

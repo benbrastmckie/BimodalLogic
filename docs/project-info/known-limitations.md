@@ -47,7 +47,7 @@ longer reproduces.
 
 ### Impact
 
-None currently observed. `bounded_search` and related automation build cleanly as part of the
+None currently observed. `boundedSearch` and related automation build cleanly as part of the
 main build.
 
 ### Workaround
@@ -105,7 +105,7 @@ Resolved — no outstanding `sorry` placeholders found in `PerpetuityTest.lean` 
 ### Description
 
 `Theorems/ModalS4.lean` is sorry-free; all four of its theorems, including
-`s4_diamond_box_conj`, are fully proven.
+`s4DiamondBoxConj`, are fully proven.
 
 ### Impact
 
@@ -117,7 +117,7 @@ Not needed.
 
 ### Resolution
 
-Resolved — all Modal S4 theorems, including `s4_diamond_box_conj`, are fully proven and
+Resolved — all Modal S4 theorems, including `s4DiamondBoxConj`, are fully proven and
 sorry-free.
 
 ## Limitation 6: No Decidability Procedures

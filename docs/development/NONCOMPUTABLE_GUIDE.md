@@ -68,9 +68,9 @@ For architectural rationale, see [ADR-001-Classical-Logic-Noncomputable.md](../a
    - **Root Cause**: Classical case analysis on undecidable predicates
    - **Alternative**: None practical; constructive proof would require `DecidableEq Formula` and `DecidablePred (· ∈ Γ')`, which are not implementable for arbitrary formulas
 
-2. **`deduction_theorem`** (Line 332)
+2. **`deductionTheorem`** (Line 332)
    ```lean
-   noncomputable def deduction_theorem (Γ : Context) (A B : Formula)
+   noncomputable def deductionTheorem (Γ : Context) (A B : Formula)
    ```
    - **Why Noncomputable**:
      - Calls `deduction_with_mem` (Line 336)
@@ -103,50 +103,50 @@ end -- noncomputable section
 ```
 
 **Why Entire Section?**
-- Many theorems use `deduction_theorem` from `Metalogic.DeductionTheorem`
-- `deduction_theorem` is noncomputable, so all callers must be noncomputable
+- Many theorems use `deductionTheorem` from `Metalogic.DeductionTheorem`
+- `deductionTheorem` is noncomputable, so all callers must be noncomputable
 - Easier to mark entire section than individual definitions
 
 **Noncomputable Definitions** (32 total):
 
 | Line | Definition | Uses Deduction Theorem? | Classical Logic? |
 |------|------------|-------------------------|------------------|
-| 70 | `lem` | No | Indirect (via identity) |
-| 84 | `efq_axiom` | No | No (axiom wrapper) |
-| 94 | `peirce_axiom` | No | No (axiom wrapper) |
-| 140 | `double_negation` | No | Uses Peirce's Law |
-| 225 | `ecq` | No | No (direct proof) |
-| 285 | `raa` | No | No (direct proof) |
-| 359 | `efq_neg` | No | No (direct proof) |
-| 378 | `efq` | No | Alias for `efq_neg` |
-| 390 | `ldi` | No | No (direct proof) |
-| 453 | `rdi` | No | No (direct proof) |
-| 489 | `rcp` | No | No (direct proof) |
-| 579 | `lce` | No | No (direct proof) |
-| 658 | `rce` | No | No (direct proof) |
-| 737 | `lce_imp` | **Yes** | Line 740: `deduction_theorem [] (A.and B) A h` |
-| 755 | `rce_imp` | **Yes** | Line 758: `deduction_theorem [] (A.and B) B h` |
-| 785 | `classical_merge` | **Yes** | Lines 848, 853, 857 use `deduction_theorem` |
-| 971 | `iff_intro` | No | No (direct proof) |
-| 988 | `iff_elim_left` | No | No (direct proof) |
-| 1018 | `iff_elim_right` | No | No (direct proof) |
-| 1054 | `contrapose_imp` | No | No (direct proof) |
+| 70 | `em` | No | Indirect (via identity) |
+| 84 | `efqAxiom` | No | No (axiom wrapper) |
+| 94 | `peirceAxiom` | No | No (axiom wrapper) |
+| 140 | `doubleNegation` | No | Uses Peirce's Law |
+| 225 | `botOfAndNeg` | No | No (direct proof) |
+| 285 | `impNegImp` | No | No (direct proof) |
+| 359 | `impOfNeg` | No | No (direct proof) |
+| 378 | `negImp` | No | Alias for `impOfNeg` |
+| 390 | `orInl` | No | No (direct proof) |
+| 453 | `orInr` | No | No (direct proof) |
+| 489 | `impOfNegImpNeg` | No | No (direct proof) |
+| 579 | `andLeft` | No | No (direct proof) |
+| 658 | `andRight` | No | No (direct proof) |
+| 737 | `lceImp` | **Yes** | Line 740: `deductionTheorem [] (A.and B) A h` |
+| 755 | `rceImp` | **Yes** | Line 758: `deductionTheorem [] (A.and B) B h` |
+| 785 | `classicalMerge` | **Yes** | Lines 848, 853, 857 use `deductionTheorem` |
+| 971 | `iffIntro` | No | No (direct proof) |
+| 988 | `iffElimLeft` | No | No (direct proof) |
+| 1018 | `iffElimRight` | No | No (direct proof) |
+| 1054 | `contraposeImp` | No | No (direct proof) |
 | 1069 | `contraposition` | No | No (direct proof) |
-| 1091 | `contrapose_iff` | No | No (direct proof) |
-| 1128 | `iff_neg_intro` | No | No (direct proof) |
-| 1143 | `demorgan_conj_neg_forward` | No | No (direct proof) |
-| 1209 | `demorgan_conj_neg_backward` | **Yes** | Lines 1328, 1336 use `deduction_theorem` |
-| 1352 | `demorgan_conj_neg` | No | Calls `demorgan_conj_neg_forward/backward` |
-| 1370 | `demorgan_disj_neg_forward` | No | No (direct proof) |
-| 1439 | `demorgan_disj_neg_backward` | No | No (direct proof) |
-| 1477 | `demorgan_disj_neg` | No | Calls `demorgan_disj_neg_forward/backward` |
+| 1091 | `contraposeIff` | No | No (direct proof) |
+| 1128 | `iffNegIntro` | No | No (direct proof) |
+| 1143 | `demorganConjNegForward` | No | No (direct proof) |
+| 1209 | `demorganConjNegBackward` | **Yes** | Lines 1328, 1336 use `deductionTheorem` |
+| 1352 | `demorganConjNeg` | No | Calls `demorganConjNegForward/backward` |
+| 1370 | `demorganDisjNegForward` | No | No (direct proof) |
+| 1439 | `demorganDisjNegBackward` | No | No (direct proof) |
+| 1477 | `demorganDisjNeg` | No | Calls `demorganDisjNegForward/backward` |
 | 1507 | `ni` | No | No (direct proof) |
 | 1545 | `ci` | No | No (direct proof) |
-| 1614 | `de` | **Yes** | Disjunction elimination using `deduction_theorem` |
+| 1614 | `de` | **Yes** | Disjunction elimination using `deductionTheorem` |
 
 **Key Observations**:
-- **Direct Noncomputable Dependencies**: 6 definitions directly call `deduction_theorem`
-  - `lce_imp`, `rce_imp`, `classical_merge`, `demorgan_conj_neg_backward`, `de`
+- **Direct Noncomputable Dependencies**: 6 definitions directly call `deductionTheorem`
+  - `lceImp`, `rceImp`, `classicalMerge`, `demorganConjNegBackward`, `de`
 - **Indirect Dependencies**: Remaining 26 definitions are in noncomputable section for consistency
 - **Why Section Marker?**: Simplifies code maintenance; avoids marking each definition individually
 
@@ -155,7 +155,7 @@ end -- noncomputable section
 noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
   (A.or B :: Γ) ⊢ C
 ```
-- **Why**: Uses `deduction_theorem` multiple times to manipulate contexts
+- **Why**: Uses `deductionTheorem` multiple times to manipulate contexts
 - **Usage**: Core theorem for disjunction reasoning
 - **Impact**: Any theorem using disjunction elimination becomes noncomputable
 
@@ -167,25 +167,25 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
 
 **Definitions That Need Fixing**:
 
-1. **`generalized_modal_k`** (Line 66)
+1. **`generalizedModalK`** (Line 66)
    ```lean
-   def generalized_modal_k (Γ : Context) (Γ' : Context) (A φ : Formula)
+   def generalizedModalK (Γ : Context) (Γ' : Context) (A φ : Formula)
    ```
    - **Current Status**: Marked as `def` (computable)
-   - **Problem**: Calls `deduction_theorem` (Line 71) without being marked noncomputable
+   - **Problem**: Calls `deductionTheorem` (Line 71) without being marked noncomputable
    - **Error**: `failed to compile definition, compiler IR check failed at 'Logos.Core.Theorems.generalized_modal_k'. Error: depends on declaration 'Logos.Core.Metalogic.deduction_theorem', which has no executable code`
    - **Fix**: Add `noncomputable` keyword
-   - **Why Noncomputable**: Dependency on `deduction_theorem`
+   - **Why Noncomputable**: Dependency on `deductionTheorem`
 
-2. **`generalized_temporal_k`** (Line 101)
+2. **`generalizedTemporalK`** (Line 101)
    ```lean
-   def generalized_temporal_k (Γ : Context) (Γ' : Context) (A φ : Formula)
+   def generalizedTemporalK (Γ : Context) (Γ' : Context) (A φ : Formula)
    ```
    - **Current Status**: Marked as `def` (computable)
-   - **Problem**: Calls `deduction_theorem` (Line 105) without being marked noncomputable
+   - **Problem**: Calls `deductionTheorem` (Line 105) without being marked noncomputable
    - **Error**: `failed to compile definition, compiler IR check failed at 'Logos.Core.Theorems.generalized_temporal_k'. Error: depends on declaration 'Logos.Core.Metalogic.deduction_theorem', which has no executable code`
    - **Fix**: Add `noncomputable` keyword
-   - **Why Noncomputable**: Dependency on `deduction_theorem`
+   - **Why Noncomputable**: Dependency on `deductionTheorem`
 
 **Task Reference**: [Task 192](../../specs/192_fix_generalized_necessitation_termination/)
 
@@ -197,21 +197,21 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
 
 **Status**: ✅ No explicit `noncomputable` markers, but compiles successfully
 
-**Uses `deduction_theorem`**:
-- Line 707: `exact Logos.Core.Metalogic.deduction_theorem [(A.imp B).all_future] A.all_future B.all_future step3_reordered`
-- Line 711: `exact Logos.Core.Metalogic.deduction_theorem [] (A.imp B).all_future (A.all_future.imp B.all_future) step4`
+**Uses `deductionTheorem`**:
+- Line 707: `exact Logos.Core.Metalogic.deductionTheorem [(A.imp B).allFuture] A.allFuture B.allFuture step3_reordered`
+- Line 711: `exact Logos.Core.Metalogic.deductionTheorem [] (A.imp B).allFuture (A.allFuture.imp B.allFuture) step4`
 
 **Why It Compiles**:
 - These are used in **tactic proofs** (`by` blocks), not in definition bodies
-- The *theorem* itself (`future_k_dist`) is implicitly noncomputable but doesn't need the marker
+- The *theorem* itself (`futureKDist`) is implicitly noncomputable but doesn't need the marker
 - Lean 4 allows noncomputable calls in proof terms without marking the theorem noncomputable
 
 **Definitions** (All compile without `noncomputable`):
-- `perpetuity_1`, `diamond_4`, `modal_5`, `perpetuity_2`, `box_to_box_past`
-- `box_conj_intro`, `box_conj_intro_imp`, `box_conj_intro_imp_3`
-- `perpetuity_3`, `box_dne`, `perpetuity_4`, `mb_diamond`
-- `box_diamond_to_future_box_diamond`, `box_diamond_to_past_box_diamond`
-- `future_k_dist`, `past_k_dist`, `persistence`, `perpetuity_5`
+- `perpetuity_1`, `diamond4`, `modal5`, `perpetuity_2`, `boxToBoxPast`
+- `boxConjIntro`, `boxConjIntroImp`, `boxConjIntroImp3`
+- `perpetuity3`, `boxDne`, `perpetuity4`, `mbDiamond`
+- `boxDiamondToFutureBoxDiamond`, `boxDiamondToPastBoxDiamond`
+- `futureKDist`, `pastKDist`, `persistence`, `perpetuity5`
 
 **Key Insight**: Theorems in proof mode don't require `noncomputable` even if they use noncomputable functions in their proofs. Only `def` (definitions) that call noncomputable functions in their body require the marker.
 
@@ -221,18 +221,18 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
 
 **Status**: ✅ No explicit `noncomputable` markers, compiles successfully
 
-**Uses `deduction_theorem`**:
-- Line 508: `exact Logos.Core.Metalogic.deduction_theorem [] (A.and B) A h`
-- Line 515: `exact Logos.Core.Metalogic.deduction_theorem [] (A.and B) B h`
+**Uses `deductionTheorem`**:
+- Line 508: `exact Logos.Core.Metalogic.deductionTheorem [] (A.and B) A h`
+- Line 515: `exact Logos.Core.Metalogic.deductionTheorem [] (A.and B) B h`
 
 **Definitions**:
-- `dne`, `modal_duality_neg`, `modal_duality_neg_rev`
-- `box_mono`, `diamond_mono`, `future_mono`, `past_mono`
+- `dne`, `modalDualityNeg`, `modalDualityNegRev`
+- `boxMono`, `diamondMono`, `futureMono`, `pastMono`
 - `local_efq`, `local_lce`, `local_rce`
-- `lce_imp`, `rce_imp` (use `deduction_theorem`)
-- `always_to_past`, `always_to_present`, `always_to_future`
-- `past_present_future_to_always`, `always_dni`
-- `temporal_duality_neg`, `always_dne`, `temporal_duality_neg_rev`
+- `lceImp`, `rceImp` (use `deductionTheorem`)
+- `alwaysToPast`, `alwaysToPresent`, `alwaysToFuture`
+- `pastPresentFutureToAlways`, `alwaysDni`
+- `temporalDualityNeg`, `alwaysDne`, `temporalDualityNegRev`
 
 **Why It Compiles**: Same reason as `Principles.lean` - proof mode usage
 
@@ -243,20 +243,20 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
 ```
 Classical.propDecidable (Classical Axiom)
 └── deduction_with_mem (DeductionTheorem.lean:206)
-    └── deduction_theorem (DeductionTheorem.lean:332)
-        ├── generalized_modal_k (GeneralizedNecessitation.lean:66) ⚠️ NEEDS FIX
-        ├── generalized_temporal_k (GeneralizedNecessitation.lean:101) ⚠️ NEEDS FIX
+    └── deductionTheorem (DeductionTheorem.lean:332)
+        ├── generalizedModalK (GeneralizedNecessitation.lean:66) ⚠️ NEEDS FIX
+        ├── generalizedTemporalK (GeneralizedNecessitation.lean:101) ⚠️ NEEDS FIX
         └── Propositional.lean (noncomputable section)
-            ├── lce_imp (line 737)
-            ├── rce_imp (line 755)
-            ├── classical_merge (line 785)
-            ├── demorgan_conj_neg_backward (line 1209)
+            ├── lceImp (line 737)
+            ├── rceImp (line 755)
+            ├── classicalMerge (line 785)
+            ├── demorganConjNegBackward (line 1209)
             ├── de (line 1614) - Disjunction Elimination
             └── [26 other theorems in section, indirectly noncomputable]
 
 Perpetuity/ modules:
-├── Principles.lean - Uses deduction_theorem in proofs (OK, no marker needed)
-└── Bridge.lean - Uses deduction_theorem in proofs (OK, no marker needed)
+├── Principles.lean - Uses deductionTheorem in proofs (OK, no marker needed)
+└── Bridge.lean - Uses deductionTheorem in proofs (OK, no marker needed)
 ```
 
 **Propagation Rules**:
@@ -271,7 +271,7 @@ Perpetuity/ modules:
 ### When to Mark `noncomputable`
 
 ✅ **MUST mark** `noncomputable def`:
-- Definition calls `deduction_theorem` or any noncomputable function
+- Definition calls `deductionTheorem` or any noncomputable function
 - Definition uses `Classical.propDecidable`, `Classical.em`, or `Classical.choice`
 - Lean compiler reports: `depends on declaration 'X', which has no executable code`
 
@@ -292,12 +292,12 @@ consider marking definition as 'noncomputable'
 ```lean
 -- Before (causes error):
 def my_function (Γ : Context) (A B : Formula) : Γ ⊢ A.imp B := by
-  let h := deduction_theorem Γ A B proof
+  let h := deductionTheorem Γ A B proof
   exact h
 
 -- After (fixed):
 noncomputable def my_function (Γ : Context) (A B : Formula) : Γ ⊢ A.imp B := by
-  let h := deduction_theorem Γ A B proof
+  let h := deductionTheorem Γ A B proof
   exact h
 ```
 
@@ -331,7 +331,7 @@ If you add a new metalogic theorem that uses classical logic:
 ### Code Review Checklist
 
 When reviewing code:
-- [ ] Any `def` calling `deduction_theorem` marked `noncomputable`?
+- [ ] Any `def` calling `deductionTheorem` marked `noncomputable`?
 - [ ] Any classical axiom usage properly documented?
 - [ ] Build passes with no "no executable code" errors?
 - [ ] Docstring explains why definition is noncomputable?
@@ -347,7 +347,7 @@ When reviewing code:
 - **Expected** for metalogic and proof theory
 - **Appropriate** for mathematical objects that aren't meant to be executed
 
-### Q2: Can we make `deduction_theorem` computable?
+### Q2: Can we make `deductionTheorem` computable?
 
 **No, not practically**. To make it computable, we would need:
 1. `DecidableEq Formula` - deciding if two formulas are equal
@@ -364,7 +364,7 @@ This would require:
 
 ### Q3: Why doesn't `Principles.lean` need `noncomputable` markers?
 
-`Principles.lean` uses `deduction_theorem` in **proof mode** (`by` blocks), not in definition bodies. Lean 4 distinguishes:
+`Principles.lean` uses `deductionTheorem` in **proof mode** (`by` blocks), not in definition bodies. Lean 4 distinguishes:
 - **Definitions** (`def`): Must be computable unless marked `noncomputable`
 - **Theorems** (`theorem`) and **proof terms** (`by` blocks): Can use noncomputable functions freely
 
@@ -382,7 +382,7 @@ Fix by adding `noncomputable` keyword before `def`.
 ### Q5: Should I use `noncomputable section` or mark individual definitions?
 
 **Use `noncomputable section` when**:
-- Many definitions in the file depend on `deduction_theorem`
+- Many definitions in the file depend on `deductionTheorem`
 - Example: `Propositional.lean` (32 definitions)
 
 **Use individual markers when**:

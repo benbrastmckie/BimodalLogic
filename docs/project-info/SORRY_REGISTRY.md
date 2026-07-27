@@ -78,26 +78,26 @@ grep -rn "axiom " Bimodal/**/*.lean 2>/dev/null
 **ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN** (P1-P6) - Zero sorry in proof code.
 
 **P1 RESOLVED** (2025-12-08 Task 16): `perpetuity_1` fully proven using helper lemmas
-(`identity`, `pairing`, `combine_imp_conj`, `combine_imp_conj_3`, `box_to_future`,
-`box_to_past`, `box_to_present`). Key technique: temporal duality on `box_to_future` to derive `box_to_past`.
+(`identity`, `pairing`, `combineImpConj`, `combineImpConj3`, `boxToFuture`,
+`boxToPast`, `boxToPresent`). Key technique: temporal duality on `boxToFuture` to derive `boxToPast`.
 
 **P2 RESOLVED** (2025-12-08 Task 18 Phase 1): `perpetuity_2` fully proven via contraposition.
-Added `b_combinator` helper theorem, used to prove `contraposition` theorem (zero sorry).
+Added `bCombinator` helper theorem, used to prove `contraposition` theorem (zero sorry).
 P2 derived as contraposition of P1 applied to `¬φ`.
 
-**P3 RESOLVED** (2025-12-08 Task 16): `perpetuity_3` fully proven using axiomatic extension.
+**P3 RESOLVED** (2025-12-08 Task 16): `perpetuity3` fully proven using axiomatic extension.
 Added modal K distribution axiom (`modal_k_dist`) and necessitation rule to enable combining
-boxed conjuncts via `box_conj_intro_imp_3` helper lemma.
+boxed conjuncts via `boxConjIntroImp3` helper lemma.
 
-**P4 RESOLVED** (2025-12-08 Task 18 Phase 2): `perpetuity_4` fully proven via contraposition of P3.
-Added `dni` (double negation introduction) axiom for classical logic. P4 derived as contraposition
+**P4 RESOLVED** (2025-12-08 Task 18 Phase 2): `perpetuity4` fully proven via contraposition of P3.
+Added `notNotIntro` (double negation introduction) axiom for classical logic. P4 derived as contraposition
 of P3 applied to `¬φ` with DNI bridging double negation in formula structure.
 
-**P5 RESOLVED** (2025-12-09 Phase 6 Complete): `perpetuity_5` is FULLY PROVEN as a theorem.
-The persistence lemma was completed using `modal_5` (S5 characteristic diamond phi implies box diamond phi derived from MB + diamond_4).
-P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 phi) (persistence phi)`.
+**P5 RESOLVED** (2025-12-09 Phase 6 Complete): `perpetuity5` is FULLY PROVEN as a theorem.
+The persistence lemma was completed using `modal5` (S5 characteristic diamond phi implies box diamond phi derived from MB + diamond4).
+P5 is derived as `theorem perpetuity5 := impTrans (perpetuity4 phi) (persistence phi)`.
 
-**P6 RESOLVED** (2025-12-09): `perpetuity_6` FULLY PROVEN using double_contrapose chain via P5(neg phi) + bridge lemmas.
+**P6 RESOLVED** (2025-12-09): `perpetuity6` FULLY PROVEN using doubleContrapose chain via P5(neg phi) + bridge lemmas.
 
 **Active Sorry Placeholders**: None (0)
 
@@ -109,17 +109,17 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 phi) (persiste
 - `diamond_mono_imp` and `diamond_mono_conditional` were removed because they are semantically
   INVALID in modal logic (cannot be proven). The counter-model documentation is preserved as
   a comment block in ModalS5.lean (lines 67-87).
-- **Alternative**: Use `k_dist_diamond` (`□(A → B) → (◇A → ◇B)`) which IS valid and fully proven.
+- **Alternative**: Use `kDistDiamond` (`□(A → B) → (◇A → ◇B)`) which IS valid and fully proven.
 
 **RESOLVED (Plan 060)**:
-- **diamond_disj_iff**: `|- diamond(A or B) <-> (diamond A or diamond B)` [COMPLETE] (resolved 2025-12-09 via duality chain approach)
-- **k_dist_diamond**: `|- box(A -> B) -> (diamond A -> diamond B)` [COMPLETE] (NEW - valid K distribution for diamond)
+- **diamondDisjIff**: `|- diamond(A or B) <-> (diamond A or diamond B)` [COMPLETE] (resolved 2025-12-09 via duality chain approach)
+- **kDistDiamond**: `|- box(A -> B) -> (diamond A -> diamond B)` [COMPLETE] (NEW - valid K distribution for diamond)
 
 ### Bimodal/Theorems/ModalS4.lean (0 placeholders - Plan 060 COMPLETE)
 
 **ALL RESOLVED (Plan 060)**:
-- **s4_diamond_box_conj**: `|- (diamond A and box B) -> diamond(A and box B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_4)
-- **s5_diamond_conj_diamond**: `|- diamond(A and diamond B) <-> (diamond A and diamond B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_5)
+- **s4DiamondBoxConj**: `|- (diamond A and box B) -> diamond(A and box B)` [COMPLETE] (resolved 2025-12-09 using kDistDiamond + modal_4)
+- **s5DiamondConjDiamond**: `|- diamond(A and diamond B) <-> (diamond A and diamond B)` [COMPLETE] (resolved 2025-12-09 using kDistDiamond + modal5)
 
 ### Bimodal/Metalogic/Completeness.lean (0 sorry, 0 axioms)
 
@@ -150,15 +150,15 @@ The old monolithic Completeness.lean has been refactored into:
 ### Bimodal/Automation/ProofSearch.lean (3 documentation examples)
 
 **Documentation Examples** (3 total - actual sorry placeholders but for documentation):
-- **ProofSearch.lean:1348** - `bounded_search [] _ 1` example
+- **ProofSearch.lean:1348** - `boundedSearch [] _ 1` example
   - **Context**: Documentation example showing bounded search usage
   - **Status**: Documentation placeholder, not blocking functionality
 
-- **ProofSearch.lean:1353** - `bounded_search [] q 2` example
+- **ProofSearch.lean:1353** - `boundedSearch [] q 2` example
   - **Context**: Documentation example showing bounded search usage
   - **Status**: Documentation placeholder, not blocking functionality
 
-- **ProofSearch.lean:1358** - `bounded_search [p.box] p.box 3` example
+- **ProofSearch.lean:1358** - `boundedSearch [p.box] p.box 3` example
   - **Context**: Documentation example showing bounded search usage with modal formulas
   - **Status**: Documentation placeholder, not blocking functionality
 
@@ -174,9 +174,9 @@ The old monolithic Completeness.lean has been refactored into:
 **Active Sorry Placeholders** (1 total):
 - **SoundnessLemmas.lean:684** - `temporal_duality` soundness case
   - **Context**: Temporal duality rule soundness proof in derivable_implies_swap_valid
-  - **Goal**: Prove `is_valid T psi'.swap_past_future.swap_past_future` from `DerivationTree [] psi'`
+  - **Goal**: Prove `IsValid T psi'.swap_past_future.swap_past_future` from `DerivationTree [] psi'`
   - **Status**: Blocked by circular dependency with soundness theorem (task 213 analysis)
-  - **Circular Dependency**: Requires soundness (DerivationTree -> is_valid), but soundness imports this file
+  - **Circular Dependency**: Requires soundness (DerivationTree -> IsValid), but soundness imports this file
   - **Resolution**: Will be completed in Soundness.lean after main soundness theorem is proven
   - **Estimate**: 2-3 hours (depends on soundness theorem completion)
   - **Related**: Task 213 proved `is_valid_swap_involution` is semantically false for arbitrary formulas

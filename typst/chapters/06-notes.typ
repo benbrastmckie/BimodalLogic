@@ -56,8 +56,8 @@ The paper's schemata map to Lean as follows:
     [MT], [`Axiom.modal_t`], [Axiom],
     [M5], [`Axiom.modal_5_collapse`], [Axiom],
     [MF], [`Axiom.modal_future`], [Axiom],
-    [TK], [`temp_k_dist_derived`], [Derived theorem],
-    [T4], [`temp_4_derived`], [Derived theorem],
+    [TK], [`temporalKDistDerived`], [Derived theorem],
+    [T4], [`temporal4Derived`], [Derived theorem],
     [TB], [`Axiom.serial_future`], [Axiom],
     [TA], [`Axiom.connect_future`], [Axiom],
     [TL], [`Axiom.temp_linearity`], [Axiom],
@@ -67,7 +67,7 @@ The paper's schemata map to Lean as follows:
 )
 
 The Lean system additionally includes M4 (`Axiom.modal_4`) and MB (`Axiom.modal_b`) as primitive S5 axioms (derivable from the paper's core but convenient in Hilbert-style derivations), the full Burgess-Xu Until/Since layer with primed past mirrors, and the frame-class layers (uniformity, Prior, Z1, density) that the paper treats as extensions of *TM*.
-TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is derived as `temp_future_derived` (`Theorems/Combinators.lean`) from MF, MT, and M4.
+TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is derived as `temporalFutureDerived` (`Theorems/Combinators.lean`) from MF, MT, and M4.
 
 === Completeness Status
 

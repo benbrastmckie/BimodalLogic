@@ -389,7 +389,7 @@ example (A : Formula) : [A] ⊢ A := by
 -- Deduction theorem converts to implication
 noncomputable example (A B : Formula)
     (h : [A] ⊢ B) : ⊢ A.imp B := by
-  exact deduction_theorem [] A B h
+  exact deductionTheorem [] A B h
 \end{lstlisting}
 
 \vspace{0.3cm}
@@ -565,7 +565,7 @@ def two_plus_two_equals_four := atom "2+2=4"
 -- Mathematical truths are necessarily eternal
 example : ⊢ two_plus_two_equals_four.box.imp
             (△two_plus_two_equals_four).box :=
-  perpetuity_3 two_plus_two_equals_four
+  perpetuity3 two_plus_two_equals_four
 \end{lstlisting}
 
 \vspace{0.3cm}
@@ -587,7 +587,7 @@ $\sometimes\nec\varphi \imp \nec\always\varphi$
 -- If necessity ever occurs, it's necessarily eternal
 noncomputable example (truth : Formula) :
     ⊢ (▽(truth.box)).imp (△truth).box :=
-  perpetuity_6 truth
+  perpetuity6 truth
 \end{lstlisting}
 
 \vspace{0.3cm}

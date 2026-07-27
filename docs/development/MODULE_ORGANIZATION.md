@@ -78,8 +78,8 @@ inductive Formula : Type
   | bot : Formula
   | imp : Formula → Formula → Formula
   | box : Formula → Formula
-  | all_past : Formula → Formula
-  | all_future : Formula → Formula
+  | allPast : Formula → Formula
+  | allFuture : Formula → Formula
 
 namespace Formula
 
@@ -89,8 +89,8 @@ def complexity : Formula → Nat
   | bot => 1
   | imp φ ψ => φ.complexity + ψ.complexity + 1
   | box φ => φ.complexity + 1
-  | all_past φ => φ.complexity + 1
-  | all_future φ => φ.complexity + 1
+  | allPast φ => φ.complexity + 1
+  | allFuture φ => φ.complexity + 1
 
 end Formula
 

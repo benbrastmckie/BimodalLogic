@@ -85,25 +85,25 @@ Coverage is measured by checking whether each public definition in Bimodal/ appe
 
 Top 20 uncovered definitions that may benefit from direct tests:
 
-1. `Automation.AesopRules.axiom_modal_t`
-2. `Automation.AesopRules.axiom_prop_k`
-3. `Automation.AesopRules.axiom_prop_s`
+1. `Automation.AesopRules.axiomModalT`
+2. `Automation.AesopRules.axiomPropK`
+3. `Automation.AesopRules.axiomPropS`
 4. `Automation.ProofSearch.SearchResult`
 5. `Automation.ProofSearch.CacheKey`
 6. `Automation.ProofSearch.SearchStats`
-7. `Automation.ProofSearch.box_context`
-8. `Automation.ProofSearch.future_context`
+7. `Automation.ProofSearch.boxContext`
+8. `Automation.ProofSearch.futureContext`
 9. `Automation.SuccessPatterns.ConjIntro`
 10. `Automation.SuccessPatterns.DisjElim`
 11. `Automation.Tactics.modal_basics`
 12. `Automation.Tactics.temporal_basics`
 13. `Metalogic.DeductionTheorem.deduction_lemma`
-14. `Metalogic.DeductionTheorem.deduction_theorem`
+14. `Metalogic.DeductionTheorem.deductionTheorem`
 15. `Metalogic.SoundnessLemmas.valid_at_triple`
 16. `Semantics.Truth.truth_at_imp`
 17. `Semantics.Truth.truth_at_box`
 18. `Semantics.Validity.valid_at_world`
-19. `Theorems.Propositional.imp_trans`
+19. `Theorems.Propositional.impTrans`
 20. `Theorems.Propositional.double_neg`
 
 Run `./scripts/coverage-analysis.sh --verbose` for the complete list.
@@ -126,7 +126,7 @@ Cannot be resolved until source implementation completes:
 
 **Could Be Completed (2)**:
 Could be resolved with additional proof work:
-- `PerpetuityTest.lean:76` - `box_conj_intro` proof construction
+- `PerpetuityTest.lean:76` - `boxConjIntro` proof construction
 - `PropositionalTest.lean:193` - Requires deduction theorem
 
 ### Total: 5 sorry placeholders

@@ -247,7 +247,7 @@ structure TaskModelProxy where
   frameProxy : Unit
   valuationSeed : Nat
 
-instance : SampleableExt (TaskModel (TaskFrame.nat_frame (T := Int))) where
+instance : SampleableExt (TaskModel (TaskFrame.natFrame (T := Int))) where
   proxy := TaskModelProxy
   interp p := { valuation := fun w s =>
     (Nat.mix (Nat.mix p.valuationSeed w.toNat) s.length) % 2 = 0 }

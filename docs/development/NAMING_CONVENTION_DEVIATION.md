@@ -19,7 +19,7 @@ rather than suppressed — see [What was actually fixed](#what-was-actually-fixe
 
 ## Why the names are `snake_case` today
 
-The names read as mathematics. `box_conj_iff`, `perpetuity_5`, and `s4_box_diamond_box` are the
+The names read as mathematics. `boxConjIff`, `perpetuity5`, and `s4BoxDiamondBox` are the
 project's rendering of statements from the modal-logic literature, and the underscore is doing the
 same work a space does in prose. Under `lowerCamelCase` they become `boxConjIff`, `perpetuity5`,
 and `s4BoxDiamondBox`, which is a readability cost concentrated exactly in the layer where the
@@ -142,7 +142,7 @@ Three consequences follow, and each is a hard constraint on how the migration ma
 3. **The churn is concentrated in data names, not in the mathematical layer.** This inverts the
    intuition suggested by the architectural argument above. The 12 flagged names in
    `FormalSystem/Syntax/Formula.lean` carry **4,929** resolved usages — roughly 5× the entire
-   `Theorems/` layer, whose 135 flagged declarations account for 994. `all_future` alone has 1,647
+   `Theorems/` layer, whose 135 flagged declarations account for 994. `allFuture` alone has 1,647
    usages. Any migration should expect its cost to be dominated by a handful of `Formula`
    constructor-adjacent names, and should sequence accordingly.
 

@@ -65,7 +65,7 @@ pedagogical examples. All tasks are independent and can run simultaneously.
 
 ### Task 2: Add Propositional Axioms (10-15 hours) - Unblocks Wave 2 Task 6
 
-**Description**: Add K and S propositional axioms, prove `imp_trans` and
+**Description**: Add K and S propositional axioms, prove `impTrans` and
 `contraposition` helpers.
 
 **Parallelization**: Independent, but blocks Task 6 (Perpetuity P4-P6).
@@ -73,7 +73,7 @@ pedagogical examples. All tasks are independent and can run simultaneously.
 **Steps**:
 1. Add K axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`
 2. Add S axiom: `φ → (ψ → φ)`
-3. Prove `imp_trans` helper (Perpetuity.lean:88)
+3. Prove `impTrans` helper (Perpetuity.lean:88)
 4. Prove `contraposition` helper (Perpetuity.lean:139)
 5. Update ProofSystem/Derivation.lean
 6. Write tests in Tests/BimodalTest/ProofSystem/AxiomsTest.lean
@@ -427,7 +427,7 @@ work to maximize throughput.
 **High Risk** (could delay critical path):
 
 1. **Propositional axiom proof complexity** (Task 2):
-   - Risk: `imp_trans` and `contraposition` helpers harder than expected
+   - Risk: `impTrans` and `contraposition` helpers harder than expected
    - Mitigation: Allocate 15 hours (high estimate), study Hilbert-style proof
      techniques first
 
@@ -451,7 +451,7 @@ work to maximize throughput.
 
 **Opportunity 2**: Overlap Task 6 Start with Task 2 Completion
 - Task 6 only needs propositional helpers (Task 2 outputs)
-- Can start Task 6 as soon as `imp_trans` and `contraposition` proven (not full
+- Can start Task 6 as soon as `impTrans` and `contraposition` proven (not full
   Task 2)
 - Saves 1-2 weeks of synchronization delay
 

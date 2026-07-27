@@ -49,8 +49,8 @@ def export_to_smt_lib (φ : Formula) : String :=
   | Formula.bot => "(false)"
   | Formula.imp ψ χ => s!"(=> {export_to_smt_lib ψ} {export_to_smt_lib χ})"
   | Formula.box ψ => s!"(box {export_to_smt_lib ψ})"
-  | Formula.all_past ψ => s!"(all-past {export_to_smt_lib ψ})"
-  | Formula.all_future ψ => s!"(all-future {export_to_smt_lib ψ})"
+  | Formula.allPast ψ => s!"(all-past {export_to_smt_lib ψ})"
+  | Formula.allFuture ψ => s!"(all-future {export_to_smt_lib ψ})"
 
 /-- Export context and formula for validity check -/
 def export_validity_query (Γ : Context) (φ : Formula) : String :=
@@ -244,7 +244,7 @@ inductive Axiom : Formula → Prop
   | custom_axiom (φ : Formula) : Axiom (custom_op φ).imp φ
 
 -- 3. Semantic extension (in Semantics/Truth.lean)
-def truth_at : ... → Formula → Prop
+def TruthAt : ... → Formula → Prop
   | ...existing cases...
   | Formula.custom_op φ => -- Define truth condition
 

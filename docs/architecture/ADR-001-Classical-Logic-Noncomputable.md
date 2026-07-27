@@ -60,7 +60,7 @@ Specifically:
 
 ### Why Constructive Alternative is Impractical
 
-To make `deduction_theorem` computable, we would need:
+To make `deductionTheorem` computable, we would need:
 
 1. **`DecidableEq Formula`**: Decide if two formulas are syntactically equal
    - **Problem**: Formulas are recursive structures; decidability is complex to implement
@@ -91,10 +91,10 @@ To make `deduction_theorem` computable, we would need:
 **Dependency Propagation**:
 ```
 Classical.propDecidable
-└── deduction_theorem
-    ├── generalized_modal_k
-    ├── generalized_temporal_k
-    └── Propositional theorems (lce_imp, rce_imp, classical_merge, de, etc.)
+└── deductionTheorem
+    ├── generalizedModalK
+    ├── generalizedTemporalK
+    └── Propositional theorems (lceImp, rceImp, classicalMerge, de, etc.)
 ```
 
 **Build Impact**:
@@ -192,7 +192,7 @@ Classical.propDecidable
 
 ### Negative
 
-1. **Propagation**: Must mark all definitions calling `deduction_theorem` as `noncomputable`
+1. **Propagation**: Must mark all definitions calling `deductionTheorem` as `noncomputable`
 2. **Documentation**: Must document why each definition is noncomputable
 3. **Education**: Contributors must understand when to use `noncomputable`
 
@@ -212,8 +212,8 @@ Classical.propDecidable
 1. ✅ Research completed (comprehensive)
 2. ✅ Documentation created (this ADR + NONCOMPUTABLE_GUIDE.md)
 3. ⏳ Fix `GeneralizedNecessitation.lean`:
-   - Add `noncomputable` to `generalized_modal_k` (line 66)
-   - Add `noncomputable` to `generalized_temporal_k` (line 101)
+   - Add `noncomputable` to `generalizedModalK` (line 66)
+   - Add `noncomputable` to `generalizedTemporalK` (line 101)
 4. ⏳ Verify build passes
 
 ### Phase 2: Documentation (In Progress)

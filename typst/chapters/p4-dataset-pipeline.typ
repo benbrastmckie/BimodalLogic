@@ -25,7 +25,7 @@ This chapter is the canonical narrative home of that pipeline; `docs/training/PI
 
 For each enumerated formula, the decision procedure (`decide`, @sec:decidability-practice) yields exactly one of two supervisory signals:
 
-- *Positive signal -- proof traces (policy network)*: for a formula decided valid, a `ProofTrace` records derivation `height`, the `axioms_used`, and the `rules_applied`. "The policy network learns to predict *which axioms and rules to apply* at each step of a proof search."#footnote[`docs/training/PIPELINE.md:24-31`.]
+- *Positive signal -- proof traces (policy network)*: for a formula decided valid, a `ProofTrace` records derivation `height`, the `axiomsUsed`, and the `rulesApplied`. "The policy network learns to predict *which axioms and rules to apply* at each step of a proof search."#footnote[`docs/training/PIPELINE.md:24-31`.]
 - *Corrective signal -- countermodels (value network)*: for a formula decided invalid, a `SimpleCountermodel` records `trueAtoms`/`falseAtoms`/`formula`. "The value network learns to estimate the probability that a given proof state leads to a valid proof... they teach the network which formula shapes are *not* theorems."#footnote[`docs/training/PIPELINE.md:33-40`.]
 - *Enriched corrective signal (Tier 2)*: `EnrichedCountermodel.lean` retains the full saturated tableau branch (which modal/temporal subformulas held or failed); the module is implemented and tested, and its integration into the main export path belongs to the pipeline's second tier.#footnote[`docs/training/PIPELINE.md:42-44`; `Automation/EnrichedCountermodel.lean` (211 lines per `Automation/README.md`).]
 
@@ -47,14 +47,14 @@ A representative valid-formula record, abridged from the schema documented at th
   "formula_ast": {"tag": "imp", "left": {"tag": "box", ...}, "right": ...},
   "frame_class": "Base",
   "label": "valid",
-  "proof_trace": {"height": 0, "axioms_used": ["modal_t"], "rules_applied": []},
+  "proof_trace": {"height": 0, "axiomsUsed": ["modal_t"], "rulesApplied": []},
   "countermodel": null,
   "pattern_key": {"modalDepth": 1, ...},
   "metrics": {"complexity": 3, ...}
 }
 ```
 
-The record design encodes the dual-signal contract structurally: `proof_trace` (a `ProofTrace` of derivation `height`, `axioms_used`, `rules_applied`) is populated exactly when the label is `valid`, and `countermodel` (the `SimpleCountermodel` triple of `trueAtoms`/`falseAtoms`/`formula`) exactly when it is `invalid`.
+The record design encodes the dual-signal contract structurally: `proof_trace` (a `ProofTrace` of derivation `height`, `axiomsUsed`, `rulesApplied`) is populated exactly when the label is `valid`, and `countermodel` (the `SimpleCountermodel` triple of `trueAtoms`/`falseAtoms`/`formula`) exactly when it is `invalid`.
 The redundant formula encodings serve different consumers: `formula_str` for human inspection, `formula_ast` (the `Formula.toJson` tag schema) for tokenizer-free tree models, an S-expression and a prefix-notation token list for sequence models, and folded variants that restore derived-operator vocabulary ($not$, $and$, $or$, $diamond.stroked$) for models trained on the surface language.
 `pattern_key` mirrors the structural features the proof-search learning layer uses (@sec:proof-automation), and `metrics` records difficulty measures (complexity, modal depth, temporal depth) that support curriculum ordering and stratified splits downstream.
 

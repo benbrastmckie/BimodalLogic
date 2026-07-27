@@ -82,7 +82,7 @@ Truth is evaluated relative to a model $cal(M)$ providing the interpretation, a 
 Whereas the model fixes the interpretation of the language, the contextual parameters $tau$ and $x$ determine the truth value of every sentence of the language.
 
 #definition("Truth")[
-  For model $cal(M)$, history $tau : H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`truth_at` in `Semantics/Truth.lean`.]
+  For model $cal(M)$, history $tau : H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`.]
   $
     cal(M), tau, x tack.r.double p &#Iff x in "dom"(tau) "and" I(tau(x), p) \
     cal(M), tau, x tack.r.double.not bot \
