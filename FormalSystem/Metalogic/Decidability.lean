@@ -22,6 +22,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.BranchOrder
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Embed
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Carrier
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.Interpolate
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -45,6 +46,8 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Bridge.BranchOrder`: the finite linear order a gated saturated branch carries
 - `Verified.Bridge.Embed`: monotone placement of a finite order in a dense carrier or in `ℤ`
 - `Verified.Bridge.Carrier`: `TemporalCarrier fc D`, the per-frame-class carrier interface
+- `Verified.Bridge.Interpolate`: the region structure a placement cuts in the carrier, the
+  total-on-`D` extension operator, and the invariance induction's propositional and modal cases
 
 ## Status
 
