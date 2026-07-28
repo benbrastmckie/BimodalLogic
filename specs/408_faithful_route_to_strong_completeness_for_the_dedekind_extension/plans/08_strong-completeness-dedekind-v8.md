@@ -2367,65 +2367,180 @@ modules** as the genuine remainder. That is the number Phase 14.3 inherits.
 - **Timing**: 6 hours.
 - **BLOCK E CHECKPOINT**: Reynolds' step 1 is now available in the form Doets' theorem consumes.
 
-### Phase 17: Contemporaneous equivalence, `ρ`/`λ`, and Reynolds §6 Lemma 2 [NOT STARTED]
+### Phase 17: Contemporaneous equivalence, `ρ`/`λ`, and Reynolds §6 Lemma 2 [COMPLETED]
 
 - **Goal**: The vocabulary of Reynolds §6 at the dense instance, and Lemma 2 — the temporal formula
   `R` that holds exactly where a class ends in a gap on the right.
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean` (new).
 - **Tasks**:
-  - [ ] Define `ContempEquivDense`: a binary relation defined by a monadic `ε(x,y)` such that (i) it
+  - [x] Define `ContempEquivDense`: a binary relation defined by a monadic `ε(x,y)` such that (i) it
         is an equivalence relation, (ii) it partitions the carrier into intervals, and (iii)
         `M ⊨ ε(a,b) ↔ M|[a,b] ⊨ ε(a,b)`. Reynolds §6, printed p.176, states all three clauses
         verbatim; transcribe them. Compare with the landed `ContempEquiv`
         (`IntegerModel/GoodStructures.lean:729`) and **record** whether it can be reused as-is or
         needs a dense sibling — do not silently generalize the landed one.
-  - [ ] Define `rhoFormula ε` as the monadic
+  - [x] Define `rhoFormula ε` as the monadic
         `∃y>x ¬ε(x,y) ∧ ¬∃z(x<z ∧ ε(x,z) ∧ ∀y(x<y<z → ε(x,y)))`, verbatim from printed p.177, and
-        `lambdaFormula ε` dually.
-  - [ ] Prove **Lemma 2**: *"there is a `US`-formula `R` which holds in any Prior structure `N`
+        `lambdaFormula ε` dually. *(deviation: altered — the formula quoted in this task is the
+        LOCAL CORPUS' rendering, and the corpus is corrupted at this display formula. The printed
+        `ρ` has THREE conjuncts, not two: the middle conjunct `¬∃z(ε(x,z) ∧ ∀y>z ¬ε(x,y))` is
+        missing from the corpus, and the negation on `ε(x,z)` in the final conjunct was dropped.
+        Read off the page image of the source PDF, printed p.177 = PDF page index 12. `rhoFormula`
+        transcribes the printed three-conjunct form; see the module header's "CORRECTION TO THE
+        LOCAL CORPUS" section. `lambdaFormula` is landed and labelled as this tree's mirror, since
+        Reynolds prints no `λ`.)*
+  - [x] Prove **Lemma 2**: *"there is a `US`-formula `R` which holds in any Prior structure `N`
         exactly at those points whose `∼_N`-class ends in a gap on the right"*, by applying
         `uSExpressivelyCompleteOverDensePrior` (Phase 14) to `rhoFormula ε`. Dually `L`.
-  - [ ] Record, in the docstring, the uniformity Reynolds relies on: the same `R` works in *any*
+  - [x] Record, in the docstring, the uniformity Reynolds relies on: the same `R` works in *any*
         Prior structure, because expressive completeness is uniform over the class (§5, printed
         p.176: *"Note the uniformity of the translation over the whole of `S`"*). Lemma 9 uses
         exactly this.
-  - [ ] Docstrings: `Reynolds 1992, §6, printed pp.176-177` and `§6 Lemma 2, printed p.177`.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+  - [x] Docstrings: `Reynolds 1992, §6, printed pp.176-177` and `§6 Lemma 2, printed p.177`.
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
 - **Estimated output**: ~300 lines.
 - **Done when**: `ContempEquivDense`, `rhoFormula`, `lambdaFormula` and Lemma 2 (both directions) are
   sorry-free and axiom-clean; the `ContempEquiv`-reuse question is answered in the summary.
 - **Depends on**: 14, 16.
 - **Timing**: 6 hours.
 
-### Phase 18: Reynolds §6 Lemmas 3 and 4 — maximal `R`-intervals [NOT STARTED]
+#### Phase 17 addendum — chartered territory extension (D13, D16)
+
+**Authorized by**: the orchestrator, in the Phase 17 dispatch brief, on the basis of Phase 16's
+mechanical scan of the `Owns` list of every phase from 16 through 30, which established that no
+remaining phase owns either file. This addendum exists so a later reader does not read the two
+edits below as an unexplained territory violation.
+
+**Supersedes, for these two files only**: the instruction in the Phase 14.3 block above — *"Do not
+touch `Section5Correspondence.lean` (D13) or `PriorExpressiveness.lean` (D16)"*. That instruction
+was correct for Phases 14.3, 15 and 16, whose charters did not cover the two files. It is
+superseded here by explicit orchestrator authorization, and by nothing else.
+
+**Scope**: documentation only. No proof, statement, signature or declaration in either file was
+changed. The zero-edits-to-pre-existing-*declarations* streak is intact.
+
+- **D13 — RESOLVED.** `Kamp/Section5Correspondence.lean` (the file is at `Kamp/`, not
+  `Separation/`; the dispatch brief's path was approximate). The faithful re-base table was stale
+  in three ways, all corrected: (a) it described the chain as re-based onto `HasDedekindINF`
+  (`DedekindINF.lean:136`) when every chain member is in fact stated at the strictly weaker
+  `HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`) / `HasFaithfulDedekindSUP` (`:339`) —
+  verified declaration by declaration; (b) it named `prop42_contentful_of_dedekind` as the chain's
+  terminus when the terminus is `prop42_contentful_of_faithful` (`Prop42Faithful.lean:192`) and
+  `prop42_contentful_of_dedekind` (`:208`) is the retained previous pin, derived *from* it via
+  `HasDedekindINF.toHasFaithfulDedekindINF`; (c) nine of the eleven cited line numbers had moved.
+  Every cited name was re-located by grep before editing; the two that had not moved
+  (`VecEACombinators.lean:116` / `:201`) were left as they were. A new row was added for the
+  retained previous pin, and a "Carrier note" paragraph records what the old description got wrong,
+  so the next re-base has a stated baseline instead of a silently-refreshed table.
+
+- **D16 — CLOSED AS ALREADY CORRECT. No change made.** The ticket recorded (from Phase 14) that
+  *"`uSExpressivelyCompleteOverPrior`'s Reynolds Theorem 3 citation in `PriorExpressiveness.lean`
+  may need correcting"*. On inspection the premise is false: **there is no "Theorem 3" citation in
+  that file.** `uSExpressivelyCompleteOverPrior`'s References block cites *"Reynolds 1994, Theorem
+  5, pp.123-124"*, and that citation is correct. Reynolds 1994, printed p.123, reads verbatim:
+  *"**Theorem 5.** The language with `U` and `S` is expressively complete for the class of Prior
+  structures."* — which is exactly what the declaration states. The declaration's pinning at the
+  stronger `SemanticPriorUZ` / `SemanticPriorSZ` is also sanctioned on that same page: *"Note that
+  this result also holds for our stronger Prior axioms Prior-UZ and Prior-SZ (the weaker axioms are
+  useful in non-discrete structures)."* Verified against the page image, not the corpus text layer.
+  Per the dispatch's explicit instruction not to manufacture a correction in order to close a
+  ticket, `PriorExpressiveness.lean` was left byte-identical.
+
+  One residual imprecision, reported and deliberately **not** edited: Theorem 5's statement and
+  proof sit wholly on printed p.123, so the range *"pp.123-124"* is one page wide. This is a
+  page-range nicety, not a mis-citation, and correcting it was outside what the charter authorized.
+
+  Note there is no conflict with `PriorExpressivenessDense.lean`'s header, which says
+  `uSExpressivelyCompleteOverPrior` is *not* Reynolds' Theorem 3. That refers to Reynolds **1992**
+  §5 Theorem 3; `PriorExpressiveness.lean` cites Reynolds **1994** Theorem 5. Two papers, two
+  numberings, both citations correct.
+
+**Territory addition outside the `Owns` list, recorded**: one import line was added to
+`FormalSystem/Metalogic/WeakCanonical.lean` registering `DenseModelSurgery/Defs.lean`, with a
+comment following the precedent already set there for `ChronicleMonadicBridge`. Without it the new
+module is outside the `lake build` closure and would compile only when named explicitly. No other
+content in that file was touched.
+
+### Phase 18: Reynolds §6 Lemmas 3 and 4 — maximal `R`-intervals [COMPLETED]
 
 - **Goal**: *"The maximal intervals in which `R` holds are open intervals which, if bounded, have
   elements of `M` as their (excluded) end points"* (Lemma 3) and *"There is no last class and no
   first class in any maximal interval of `R`"* (Lemma 4).
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean` (new).
 - **Tasks**:
-  - [ ] Prove Lemma 3, transcribing Reynolds' three-case argument (printed p.177): `ρ` at `t` gives
+  - [x] Prove Lemma 3, transcribing Reynolds' three-case argument (printed p.177): `ρ` at `t` gives
         `R` for a while after `t`; if `R` does not hold forever after `t` then Prior-U applied to `R`
         gives either a last point of the `R`-stretch (impossible given `ρ`) or a first point of `¬R`;
         looking left, Prior-S gives three cases of which the third — a first point `s` of `R` with
         `R ∧ K⁻(¬R)` at `s` — is ruled out by the auxiliary formula `B` ("the class we are now in
         begins with a point satisfying `R ∧ K⁻(¬R)`"), which exists by expressive completeness and
-        contradicts Prior-U.
-  - [ ] Prove Lemma 4, transcribing printed p.177: the last class in a maximal `R`-interval would not
+        contradicts Prior-U. *(deviation: altered — page reference is p.178, not p.177; see the
+        deviation record below)*
+  - [x] Prove Lemma 4, transcribing printed p.177: the last class in a maximal `R`-interval would not
         end in a gap; and the temporal equivalent of `ρ(x) ∧ ∀y<x (y<z<x ∧ ε(y,z))` is true only in
         first classes, so a first class would give a formula true up to a gap and false arbitrarily
-        soon after, contradicting Prior-U.
-  - [ ] Each auxiliary formula obtained by expressive completeness is landed as a **named**
+        soon after, contradicting Prior-U. *(deviation: altered — the quoted formula is the corrupted
+        corpus rendering; the printed formula is `ρ(x) ∧ ∀y < x(¬ε(x,y) → ∃z(y < z < x ∧ ¬ρ(z)))`,
+        and that is what was transcribed. See the deviation record below)*
+  - [x] Each auxiliary formula obtained by expressive completeness is landed as a **named**
         definition with its defining monadic formula, not as an inline `obtain` — Phases 19-21 reuse
         the pattern and a named family is what makes them cheap.
-  - [ ] Docstrings: `Reynolds 1992, §6 Lemma 3 / Lemma 4, printed p.177`.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+  - [x] Docstrings: `Reynolds 1992, §6 Lemma 3 / Lemma 4, printed p.177`. *(deviation: altered —
+        docstrings say pp.178-179, the pages the lemmas are actually printed on)*
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
 - **Estimated output**: ~400 lines.
 - **Done when**: Lemmas 3 and 4 sorry-free and axiom-clean; the auxiliary-formula helpers are named
   and reusable.
 - **Depends on**: 17.
 - **Timing**: 7 hours.
 - **Decomposition protocol (R3)**: as Phase 11 — split at the Lemma 3 / Lemma 4 boundary if needed.
+
+**Deviation record (Phase 18)**
+
+*Deviation 1 — Lemma 4's displayed formula (literature-fidelity, plan premise wrong).* The plan's
+task list quotes Lemma 4's formula as `ρ(x) ∧ ∀y<x (y<z<x ∧ ε(y,z))`. That is the pre-segmented
+corpus chunk's rendering
+(`~/Projects/Literature/sources/reynolds_1992/sec03_6-no-gaps-between-equivalence-classes.md`) and
+it is corrupted in four independent places. The printed formula, read off the page image
+(PDF page index 15 = printed p.179), is
+
+```
+ρ(x) ∧ ∀y < x(¬ε(x, y) → ∃z(y < z < x ∧ ¬ρ(z)))
+```
+
+The corpus version drops the implication's antecedent entirely, drops the `∃z` binder (leaving `z`
+free, so the corpus text is not even a well-formed formula of one free variable), replaces the
+one-place `¬ρ(z)` with the two-place `ε(y,z)`, and consequently flattens the quantifier nesting.
+`pdftotext` is no help — that page's text layer renders the display as `p(x) A vy <    z(y < z < x
+A`, so the image is the only reliable witness. Only the printed formula *means* what Reynolds says
+it means (*"true only in the first classes of maximal intervals of `R`"*). Per the standing
+literature-fidelity directive the printed formula was transcribed and the plan premise is reported
+here rather than silently followed. This is the **second** corpus defect found in §6; the first,
+`ρ`'s missing middle conjunct, is recorded under Phase 17.
+
+*Deviation 2 — page references.* The plan says *"printed p.177"* for both lemmas. Lemma 3 and its
+proof are on printed p.178; Lemma 4's statement is on p.178 and its proof on p.179. Docstrings use
+the correct pages. Printed p.177 is where `ρ` and Lemma 2 sit — i.e. Phase 17's material.
+
+*Deviation 3 — renderings that are this tree's, not Reynolds' words.* Lemma 3's one printed
+sentence is landed as four named theorems plus an assembled `reynolds_lemma3`, with a table in the
+module header mapping each to the proof step it transcribes. "Open interval" is rendered as `R`
+holding on a two-sided neighbourhood; the left-hand half carries the proviso that `t` has some
+point below it at all, which is not a weakening but the case Reynolds flags with *"the end of the
+whole structure is not a gap"*. "If bounded, have elements of `M` as their (excluded) end points"
+is rendered as the pair `reynolds_lemma3_right` / `reynolds_lemma3_left`.
+
+*Addition beyond the task list.* `false_of_holds_throughout_class` isolates the *"holds up to a gap
+and is false arbitrarily soon after the gap, contradicting Prior-U"* step, which Reynolds runs
+verbatim at Lemma 3, Lemma 4 and again at Lemmas 5 and 7. Both Phase 18 uses go through it, so it
+is exercised twice already; Phases 20-21 should consume it rather than re-deriving it.
+
+*Territory addition outside the `Owns` list, recorded.* One import line was added to
+`FormalSystem/Metalogic/WeakCanonical.lean` registering `DenseModelSurgery/Lemma34.lean`, following
+the precedent set there by `Defs.lean` in Phase 17. The `Defs.lean` import line was **kept**
+alongside it rather than dropped as now-transitive, so that removing `Lemma34.lean` from the list
+could not silently drop the §6 vocabulary out of the build closure too. No other content in that
+file was touched.
 
 ### Phase 19: Reynolds §6 Lemma 5 — formula and elementary transfer across classes [NOT STARTED]
 
