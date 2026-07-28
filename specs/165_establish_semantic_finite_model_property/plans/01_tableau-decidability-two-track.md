@@ -1076,9 +1076,50 @@ zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-n
   cannot be at the engine's default `maxBranches`; the corollary needs a caller that fixes the
   budget. The `.split`/`.splitOrdered` arms remain outstanding, now isolated behind `NoSplit`
   rather than behind a sorry.)*
-- [ ] **4.3d T3 residuals** — three named, isolated obligations, none a sorry: `OrderDual` (the
-  `futureOf`/`pastOf` duality — discharge path recorded), the world dimension `W`, and the
-  branching arms (`resolveOpenArm`'s own `none`).
+- [ ] **4.3d T3 residuals** — *(residuals 1 and 2 discharged 2026-07-28f; residual 3 outstanding)*
+  three named, isolated obligations, none a sorry: `OrderDual` (the `futureOf`/`pastOf` duality —
+  **DONE**, `orderDual_holds`), the world dimension `W` (**DONE**, `worldFinset_card_le` /
+  `chain_le_worlds_bounded`), and the branching arms (`resolveOpenArm`'s own `none`) — **still
+  open**, and now the only residual of 4.3d.
+
+**4.3d residuals 1-2 landed (2026-07-28f).** Both in `Fuel.lean`, sorry-free, three green commits;
+`lake build FormalSystem.Metalogic.Decidability` (1054) and `lake build BimodalTest` (1949) green.
+
+1. **`OrderDual` is now a theorem, not a hypothesis.** `orderDual_holds` proves it for every
+   `TimeOrdering`, so `timeChain_of_linearity_saturated` and
+   `chain_le_worlds_of_linearity_saturated` both drop their `hd` parameter. Route was the recorded
+   one: `open private reachableForward reachableBackward from … SignedFormula` — pure consumption,
+   no engine edit, no wave-3 territory violation. The shared breadth-first shape is factored out
+   as `bfsClosure` and characterised by paths (`PathN`, `PathN.snoc`, `PathN.reverse`,
+   `mem_directFutureOf_iff`). As predicted, completeness was the hard half: it is **false** without
+   the visited-set invariant `BfsInv`, and it needs a *joint* induction over the frontier and
+   visited statements, since the visited statement at length `m+1` needs the frontier statement at
+   the same length. `orderDual_holds` needs only `propext` and `Quot.sound`.
+
+2. **The world dimension is bounded, and the bound is not 1.** Only `boxNeg`/`diamondPos` mint
+   fresh worlds, and neither self-guards; what stops re-firing is `findApplicableRule`'s
+   `witnessPresent` gate, whose *modal* arms quantify over `branch.knownWorlds` while its
+   *temporal* arms hold `world := l.world` fixed. That world-indifference is the S5 discipline
+   appearing as a termination fact: a minted world is identified by the sign, formula and time of
+   its witness, never by its own index. `WorldWitness C S b` records it as a branch invariant,
+   `worldFinset_card_le` counts it (`|S| + 2*|C|*|times|`, by injection into
+   `signedUniverse C b.timeLabels`), and `chain_le_worlds_bounded` discharges **both** cardinalities
+   — no `W`, no `hW`, no `OrderDual`. Three `#guard_msgs` rows run the engine's real
+   `witnessPresent` and confirm the world-indifference directly.
+
+**FINDING — `soundFuel'` is not the general fuel figure (2026-07-28f).** This is new, and it
+changes what 4.3's "Done when" can mean. `chain_le_soundFuel'` takes
+`hL : L.card ≤ 2 ^ (2 * C.card)` on the **label** set, but T2 bounds **times**, and a label is a
+world *and* a time. So `hL` asks for `|worlds| * |times|` to sit under the T2 *time* figure, which
+holds only in a single world. The theorem is not wrong — `hL` is a hypothesis, not a claim — but
+there is no route from T2 to `hL` once any `boxNeg`/`diamondPos` fires. With
+`|worlds| ≤ |S| + 2*|C|*2^(2*|C|)`, the honest figure is `chain_le_worlds_bounded`'s,
+which exceeds `soundFuel' φ = 2*n*2^(2*n)` by about `2*|C|*2^(2*|C|)`.
+`soundFuel'` was **not** redefined — that is a plan-level decision, deliberately left to a
+revision — and no claim in `Fuel.lean` now asserts it suffices in the presence of fresh worlds.
+**A plan revision should decide** whether to (a) redefine `soundFuel'` to carry a world factor,
+(b) keep it as the single-world figure and rename it accordingly, or (c) restate 4.3's deliverable
+against `chain_le_worlds_bounded`.
 
 **Two settled-design corrections, both forced by source inspection, both recorded in the module
 docstring rather than assumed:**
