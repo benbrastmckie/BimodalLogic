@@ -889,12 +889,12 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
 - **Timing:** ~8 dispatches, ~20 hours. **Order: 2.8 → 2.5 → 2.6 → 2.7 → 2.4.**
 - **Depends on:** 1
 
-### Phase 3: RuleSpec Gate — Self-Enforcing Frame-Class Composition [NOT STARTED]
+### Phase 3: RuleSpec Gate — Self-Enforcing Frame-Class Composition [COMPLETED]
 
 - **Goal:** The rule lattice is machine-tied to the axiom lattice, so mis-gating a rule breaks
   the build instead of drifting silently (the focus requirement's core mechanism, 02 §8.3).
 - **Tasks:**
-  - [ ] Create `Decidability/Verified/RuleSpec.lean`: `ruleFrameClass : TableauRule → FrameClass`,
+  - [x] Create `Decidability/Verified/RuleSpec.lean`: `ruleFrameClass : TableauRule → FrameClass`,
     `ruleAxioms : TableauRule → List (Σ φ, Axiom φ)` over the full post-Phase-2 constructor set
     (**36** — 34 today plus `serialityRule` from 2.6 and `timeLinearity` from 2.7), and the two
     GATE lemmas, both `by decide` over the finite product: `ruleAxioms_minFrameClass_le` and
@@ -910,6 +910,47 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
 - **Timing:** 1 dispatch, ~2.5 hours.
 - **Depends on:** 2
 - **Territory:** `Verified/RuleSpec.lean`, `Verified/README.md` only.
+
+**COMPLETION NOTE (2026-07-28, Phase 3).** Both planned gates landed `by decide` as specified,
+over the corrected constructor count of 36 and with the exclusion clause the revision called for
+— widened, on inspection, to cover `timeLinearity` as well as `serialityRule`, since 2.7 put the
+second rule outside `allRulesForFC` for exactly the same reason. Three things are worth recording
+for the phases that consume this file:
+
+1. **A third gate was added**, `ruleAxioms_covers_ruleFrameClass`: a rule gated above `.Base`
+   must name an axiom at exactly its own frame class. The two planned gates run
+   axiom-class → rule-class, and neither catches a rule that is gated high with nothing behind
+   it — which is precisely the failure mode 02 §8.3 names ("adding a Dedekind rule without an
+   accompanying Dedekind axiom breaks the build immediately"). GATE 3 is what makes that sentence
+   true, and it is what makes the empty `ruleAxioms` entries safe rather than a loophole.
+2. **`instance : LawfulBEq TableauRule` was needed** and lives in `RuleSpec.lean`. `TableauRule`
+   derives `DecidableEq` and `BEq` independently, and the core `Decidable (a ∈ l)` instance goes
+   through `LawfulBEq`; without it *no* gate is decidable, since every gate is a membership check.
+   The instance is `Prop`-valued and cannot change what the engine computes. It belongs beside
+   the `deriving` clause in `Tableau.lean` and should move there when a later phase owns that file.
+3. **One line outside territory**: `import ...Verified.RuleSpec` in
+   `Decidability/Metalogic/Decidability.lean`. Without it the new module is never built and the
+   gates are never checked. Corpus-neutral by construction — `TableauConformance.lean` imports
+   `Saturation` and `Tableau` directly, not the aggregator.
+
+**Done-criterion evidence (mis-gating controls).** Five deliberate mis-gatings were applied,
+built, and reverted; each gate is independently load-bearing rather than jointly redundant:
+
+| Control | Gates broken |
+|---------|--------------|
+| `densityRule` `.Dense` → `.Base` | GATE 1 + GATE 2 |
+| `priorUGap` `.Dedekind` → `.Discrete` | GATE 1 + GATE 2 + GATE 3 |
+| base rule `untlNeg` grounded in `Axiom.prior_U_gap` | GATE 1 only |
+| `ruleAxioms .sepRule` emptied | GATE 3 only |
+| `serialityRule` exclusion clause deleted from GATE 2 | GATE 2 only |
+
+The last row is the one the revision predicted: without the clause the gate fails, and it fails
+on the 8 rule/class pairs of the two scheduled rules with no indication of why.
+
+**Measured**: `lake build` and `lake build BimodalTest` both green; `RuleSpec.lean` elaborates in
+2.0 s (all 36 + 144 + 36 `decide` calls). Conformance corpus re-executed under a forced rebuild
+(59.2 s, matching the 2.7 baseline) with zero `#guard_msgs` movement. Zero new sorries, axioms or
+vacuous definitions.
 
 ### Phase 4: Termination (WP3: T1, T2, T3) [NOT STARTED]
 

@@ -15,6 +15,7 @@ import FormalSystem.Metalogic.Decidability.Correctness
 import FormalSystem.Metalogic.Decidability.Propositional.PropForm
 import FormalSystem.Metalogic.Decidability.Propositional.Kalmar
 import FormalSystem.Metalogic.Decidability.Propositional.Decidable
+import FormalSystem.Metalogic.Decidability.Verified.RuleSpec
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -31,6 +32,7 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `CountermodelExtraction`: Extract countermodel from open branch
 - `DecisionProcedure`: Main decide function with proof search optimization
 - `Correctness`: Soundness and completeness proofs
+- `Verified.RuleSpec`: rule/axiom frame-class gate lemmas
 
 ## Status
 
