@@ -26,6 +26,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.Interpolate
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Omega
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Valuation
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -59,6 +60,9 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Bridge.Valuation`: the countermodel's `TaskModel` — the branch's atoms at placed region
   codes, a parameter at gap codes — with the placed-point readback the truth lemma's atom case
   consumes, and the two theorems refuting the endpoint-copy gap policies
+- `Verified.Bridge.BoxSaturation`: `sat_box_temporal`, `sat_all_future_pos`, `sat_all_past_pos`
+  and their composition `sat_box_cross`, plus `BoxContextClosed` — the branch invariant that
+  turns the cross into the full grid of labels the `box` case needs
 
 ## Status
 
