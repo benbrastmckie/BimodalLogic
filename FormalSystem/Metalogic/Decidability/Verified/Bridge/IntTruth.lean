@@ -450,6 +450,7 @@ def Stepped (C : Type) [LinearOrder C] : Prop :=
   (∀ r : C, ∃ s : C, r < s ∧ ∀ u : C, r < u → ¬ u < s) ∧
   (∀ r : C, ∃ s : C, s < r ∧ ∀ u : C, u < r → ¬ s < u)
 
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /--
 **Contiguity, in the form the induction consumes it.** A carrier point strictly between two
 placed points is itself placed.
@@ -472,6 +473,7 @@ theorem isPlacedCode_of_between (hRO : RayOnly b f) (hRS : RaySplit b f)
   · exact absurd ((hRS u hu).1 h0 i) (asymm hiu)
   · exact absurd ((hRS u hu).2 hn j) (asymm huj)
 
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /--
 **The upper ray is upward-closed.** Everything strictly above an upper-ray point is itself on the
 upper ray, and so reads the same label.
@@ -500,6 +502,7 @@ theorem upperRay_of_gt (hRO : RayOnly b f) (hRS : RaySplit b f) {r s : D}
         (habove ⟨0, Nat.pos_of_ne_zero hlen⟩))) (lt_irrefl r)
   · exact hn'
 
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- **The lower ray is downward-closed**, the mirror. -/
 theorem lowerRay_of_lt (hRO : RayOnly b f) (hRS : RaySplit b f) {r s : D}
     (hr : ¬ IsPlacedCode f (regionCode f r))
@@ -740,11 +743,7 @@ witness in that case and drop only the guard.
 -/
 theorem branchTruthAt_untl_pos (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
     (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
-    (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
-    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
-    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
-    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
-    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (hTW : temporalWitnessCheck b ord = true) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
     b.hasPosAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
       TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
@@ -810,11 +809,7 @@ stated with `strictBefore ord t v` where row 9's is `strictBefore ord v t`.
 -/
 theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
     (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
-    (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
-    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
-    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
-    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
-    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (hTW : temporalWitnessCheck b ord = true) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
     b.hasPosAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
       TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
@@ -878,7 +873,7 @@ theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b or
     (hne : b.knownWorlds ≠ [])
     {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
     BranchTruthAt b ord f (Formula.untl φ ψ) := fun w r =>
-  ⟨branchTruthAt_untl_pos hf hOF hOR hRO hRS hSt hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ w r,
+  ⟨branchTruthAt_untl_pos hf hOF hOR hRO hRS hSt hTW hφ hψ w r,
     branchTruthAt_untl_neg hf hOR hRO hRS hV hCheck hTW hne hφ w r⟩
 
 /-- **Since case**, assembled from its two halves. The negative half is sorry-free. -/
@@ -891,7 +886,7 @@ theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b or
     (hne : b.knownWorlds ≠ [])
     {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
     BranchTruthAt b ord f (Formula.snce φ ψ) := fun w r =>
-  ⟨branchTruthAt_snce_pos hf hOF hOR hRO hRS hSt hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ w r,
+  ⟨branchTruthAt_snce_pos hf hOF hOR hRO hRS hSt hTW hφ hψ w r,
     branchTruthAt_snce_neg hf hOR hRO hRS hCheck hTW hne hφ w r⟩
 
 /-! ## The assembled induction
