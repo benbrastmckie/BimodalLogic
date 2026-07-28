@@ -35,9 +35,52 @@ this file are:
    `allRulesForFC`).
 4. **Phase 5.1 rewritten**: per-branch orderings behind the decidable `timeOrderTotal` gate;
    Mathlib linear extension recorded as a refuted non-goal.
-5. **Phase 7.1 hypothesis changed**: the certificate's saturation field becomes a disjunction
+5. ~~**Phase 7.1 hypothesis changed**: the certificate's saturation field becomes a disjunction
    (`findUnexpanded … = none ∨ blocked`), and the blocked disjunct is the *normal* case for open
-   branches once `serialityRule` lands.
+   branches once `serialityRule` lands.~~ **WITHDRAWN 2026-07-27b** — see revision item 5 of the
+   second revision note below. The disjunction is refuted by measurement; Phase 7.1 gains a
+   *documentation obligation* instead of a hypothesis change.
+
+## Revision (seriality performance + length lemma) — 2026-07-27b
+
+Second in-place revision, absorbing
+`reports/05_seriality-performance-and-length-lemma.md`, the blocker-resolution dispatch for
+sub-phase 2.6 and the `expandOnce_length_lt` residual. That report's "Recommended plan delta" is
+the settled design and overrides both the pre-revision text and, where they conflict, report 04's
+Phase-7-facing predictions. The changes it makes to this file:
+
+1. **2.6 unblocked, and its blocker note replaced by a resolution note.** The 70x+ blowup was
+   diagnosed as a *termination* defect, not a per-step cost: `ancestorTimes ord t = ord.pastOf t`
+   (`SignedFormula.lean:782-783`) is the sole source of blocking candidates, and a time minted by
+   `somePastPos` is a new global minimum whose `pastOf` is empty — so the past-directed serial
+   chain is unblockable by construction and runs to fuel exhaustion. The fix is the four-line
+   `blockCandidates` helper (order-related times filtered to strictly-earlier creation index;
+   fresh times are `maxTime + 1`, so numeric order **is** creation order). 2.6 now names
+   `blockCandidates` as part of the sub-phase, and the `.Discrete` `K2`/`K3` residual report 04
+   flagged **closes** rather than needing documentation. Measured: `…Decidability.Saturation`
+   590 s+ → 8.5 s; `BimodalTest.TableauConformance` 590 s+ → 35 s.
+2. **`expandOnce_length_lt` restated as `expandOnceUnblocked_length_lt`, with a companion.**
+   `expandBranchWithFuel` calls `expandOnceUnblockedWithApplied` (`Saturation.lean:407`) →
+   `expandOnceUnblocked` (`Tableau.lean:1929`); nothing on the proof path calls `expandOnce`. The
+   `filterMap` helper the previous revision called for is a **refuted** diagnosis — the
+   obstruction was `split at h` not seeing through `(if c then … else …).1`, dissolved by
+   `simp only [apply_ite Prod.fst] at h`, leaving `¬ l.isEmpty = true → l ≠ []`. Phase 4.3 is
+   pointed at the strictly stronger `expandOnceUnblocked_adds_new` (`b ⊆ nb ∧ ∃ g ∈ nb, g ∉ b`),
+   because `b.length < nb.length` alone cannot bound the step count (`nb = fs ++ b` may
+   duplicate); the length lemma is retained as a corollary and sanity lemma.
+3. **2.7's done-criterion baseline moves.** Unchanged in kind, but after 2.6 the W5/W6 controls
+   flip `total=true → false` (seriality mints times `timeLinearity` does not yet order), so the
+   criterion is now "**all seven** W-rows read `total=true`", not "W1-W4 flip".
+4. **2.4's certificate stays a single conjunct.** The `∨ (findBlockedTime …).isSome` disjunct is
+   deleted before it is written. `CertificateProbe` measures `fullySaturated=true applied=0
+   orphans=0` on genuinely-open rows (`G p → p`) with seriality on, because `serialityRule` is
+   deliberately outside `allRulesForFC` and hence outside `findUnexpanded`. The `fc` field repair
+   and the applied-set deletion are unaffected.
+5. **Phase 7.1 gains a documentation obligation, not a hypothesis change** (supersedes revision
+   item 5 above). The truth lemma must *state* that `findUnexpanded = none` means "no **ordinary**
+   rule applies", so a saturated branch may still be owed `T(F ⊤)`/`T(P ⊤)` at every label. These
+   are true at every point of any serial frame, so the extracted model is unaffected — but the gap
+   is named rather than assumed, and the certificate is not changed to hide it.
 
 ## Overview
 
@@ -286,7 +329,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
 - **Timing:** 3 dispatches, ~7 hours.
 - **Depends on:** none
 
-### Phase 2: Calculus Completion (R7, R2, R6, R5) [PARTIAL]
+### Phase 2: Calculus Completion (R7, R2, R6, R5) [IN PROGRESS]
 
 - **Goal:** The rule set is adequate and honestly reported: trichotomy branching exists, Dedekind
   rules exist, the `.timeout` conflation is split, and the open-branch certificate is strong
@@ -368,7 +411,9 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     (`remaining := b`, lines `1365, 1369`). Delete or demote the `…WithApplied` family
     (`1376-1435`) and drop `applied` threading from `expandBranchWithFuel`
     (`Saturation.lean:310-381`), the traced mirrors (`417-535`) and `CancellableExpansion.lean`.
-    Prove `saturated_downward_closed` and `expandOnce_length_lt` (report 04 §Q1.4) — these are
+    Prove `saturated_downward_closed` and `expandOnceUnblocked_length_lt` (report 04 §Q1.4;
+    **renamed 2026-07-27b** from `expandOnce_length_lt` — `expandOnce` has no proof-path caller,
+    `Saturation.lean:407` → `Tableau.lean:1929`), plus `expandOnceUnblocked_adds_new` — these are
     **mechanical unfolding lemmas** (`List.find?_eq_none`, `List.findSome?_eq_none_iff`), NOT an
     induction over `expandBranchWithFuel`. Estimated output: ~250-400 lines.
     **Done when**: the full corpus is unmoved (all 24 measured rows plus the existing
@@ -386,7 +431,17 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     "`filterMap` of an `ite` is non-nil, given the guard failed" goals; a helper of the shape
     `(∃ a ∈ l, p a = false) → (l.filterMap fun a => if p a then none else some (f a)) ≠ []`
     discharges them, but the unifier did not take it as stated and the remaining work is
-    finding the form it accepts. This is Phase 4.3's consumer, not Phase 7's.)*
+    finding the form it accepts. This is Phase 4.3's consumer, not Phase 7's.
+    **CORRECTION 2026-07-27b (report 05 §Q2.2, measured): the `filterMap`/unifier diagnosis in
+    the paragraph above is REFUTED.** `split at h` cannot see through the `Prod.fst` projection
+    in `(if c then … else …).1`, so the seven guard `ite`s were never opened and the surviving
+    goal only *looked* like a `filterMap` statement. Inserting `simp only [apply_ite Prod.fst]
+    at h` into the loop opens all of them and the residual obligation is `¬ l.isEmpty = true →
+    l ≠ []`, which plain `simp` closes — no helper of any shape is needed. A second, independent
+    trap explains "the helper compiles but does not fire": `first | simp_all | <fallback>` never
+    reaches the fallback, because `simp_all` reports success whenever it makes any progress, even
+    leaving the goal open. Landed 2026-07-27b as `expandOnceUnblocked_length_lt` (renamed) with
+    the companion `expandOnceUnblocked_adds_new`.)*
 
 **2.5 note — what landed, and the four deviations.**
 
@@ -485,17 +540,64 @@ the one `buildTableau` runs.
     `allRulesForFC`** entirely and give `expandOnce` a two-stage pick: ordinary rules first, and
     only when `findUnexpanded` returns `none` retry with `serialityRule` enabled. Add an in-code
     note contrasting this against the Dedekind **prepend** (`Tableau.lean:1295-1301`) — both are
-    scheduling lessons, in opposite directions. Estimated output: ~150-250 lines.
-    *(ATTEMPTED AND BACKED OUT — see the 2.6 blocker note below. The work is preserved verbatim
-    at `specs/165_establish_semantic_finite_model_property/2.6-serialityRule-wip.patch`.)*
+    scheduling lessons, in opposite directions. **Also part of this sub-phase (2026-07-27b,
+    report 05 §Q1.5)**: the `blockCandidates` helper in `Tableau.lean`, immediately before
+    `isTemporallyBlockedSaturated`, together with the one-line swap of `ancestorTimes ord t` for
+    `blockCandidates ord t` in that predicate. Without it the past-directed serial chain is
+    unblockable by construction and the engine is unbuildable; see the resolution note below.
+    Estimated output: ~150-250 lines.
     **Done when**: `S1`-`S5` and `K2`-`K6` are CLOSED in all four class tables at
     `conformanceFuel = 200`; every control row and counterexamples `A`/`B` hold; the `.Discrete`
-    `K2`/`K3` residual (report 04 §Q3.5) is either closed or documented with its cause isolated.
+    `K2`/`K3` residual (report 04 §Q3.5) is either closed or documented with its cause isolated
+    (**measured 2026-07-27b: it CLOSES** — `K2`-`K6` all read `CLOSED target=CLOSED` at
+    `.Discrete`, so no documentation of a residual is owed); `lake build
+    …Decidability.Saturation` ≤ 15 s with zero `FAIL` in its inline suite and `lake build
+    BimodalTest.TableauConformance` ≤ 45 s, exit 0.
     **Depends on 2.5** — the prototype that produced 24/24 has both changes; seriality on the
     destructive engine was not measured and must not be attempted separately.
 
-**BLOCKER** (Phase 2, task 2.6) — `serialityRule` is written and correct, and makes the engine
-too slow to build.
+**RESOLVED** (Phase 2, task 2.6) — the seriality blowup was a termination defect in the blocking
+predicate, not a per-step cost. *(Was: "**BLOCKER** — `serialityRule` is written and correct, and
+makes the engine too slow to build." Resolved 2026-07-27b per report 05 §Q1.)*
+
+**Root cause.** `isTemporallyBlockedSaturated` (`Tableau.lean:1649-1655`) draws its only blocking
+candidates from `ancestorTimes ord t`, which is `ord.pastOf t` (`SignedFormula.lean:782-783`) —
+past-directed, because blocking was written for the future-directed existentials. A time minted by
+`somePastPos` is placed strictly *before* everything on the branch, so its `pastOf` is empty and
+`(ancestorTimes ord t).any …` is `false` unconditionally: **the past-directed serial chain
+`T(P⊤)@t ⟶ t' ⟶ t'' ⟶ …` cannot be blocked at any depth**. Seriality serves the newest unblocked
+time, `somePastPos` mints its predecessor, and the loop runs to fuel exhaustion. Traced on the
+bare atom `p` at `.Base`: the blocked set grows `[1] → [2,1] → [3,2,1] → …` but *always* excludes
+the newest time, while the ordering grows `(3,2),(4,3),(5,4),…` without bound — 68 distinct times
+inside a 200-step budget. The future half works exactly as report 04 §Q3.5 described (time 1
+blocks at step 5); only the past half runs away. This is a **pre-existing latent defect that 2.6
+merely exposes**, invisible earlier because the prototype report 04 measured still carried the
+branch-level halt that sub-phase 2.5 had to remove.
+
+**The fix, four lines.** `blockCandidates ord t := ancestorTimes ord t ++ (ord.futureOf t).filter
+(fun t' => t' < t)`, swapped into `isTemporallyBlockedSaturated`. The `t' < t` filter is what keeps
+the added arm well-founded: fresh times are minted at `Branch.nextTime = maxTime + 1`
+(`SignedFormula.lean:363`), so numeric index order **is** creation order. `ancestorTimes` is
+retained unfiltered, so the arm is purely additive — and measured verdict-neutral with seriality
+off (whole four-class corpus, `CertificateProbe` and `TimeOrderProbe` unmoved).
+
+| | before 2.6 | 2.6 as patched | 2.6 + `blockCandidates` |
+|---|---|---|---|
+| `lake build …Decidability.Saturation` | ~8 s | > 590 s | **8.5 s** |
+| `lake build BimodalTest.TableauConformance` | 37 s | > 590 s | **35 s** |
+| row `C2 p` (`.Base`, fuel 200) | OPEN, 1 step | STALL, 200 steps, 87 819 ms | OPEN, 7 steps, 1 ms |
+| row `C3 Gp->p` | OPEN, 3 steps | STALL, 200 steps, 82 380 ms | OPEN, 11 steps, 3 ms |
+| row `Fp->FFp` | OPEN, 3 steps | STALL, 200 steps, 82 057 ms | OPEN, 13 steps, 5 ms |
+
+**Rejected alternatives, scored against measurement** (report 05 §Q1.7): caching `blockedTimes` is
+*correctly* identified as the per-step hotspot (26 ms/step at `len=81`, dominating both scans) but
+cannot bound a non-terminating loop — demoted from "the fix" to a quantified reserve if 2.7 or
+Phase 4 pushes cost back up. Firing seriality once per label does not bound the chain (each firing
+creates the next unserved label). Suppressing seriality where a successor exists does not
+terminate either (every new endpoint lacks one). Restricting seriality to `G`/`H`/`F`/`P` scope is
+refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient, unchanged.
+
+**Historical record — the blocked dispatch, retained for provenance:**
 
 - **What was built** (all of it, preserved in `2.6-serialityRule-wip.patch`): the
   `serialityRule` constructor; `isApplicable .serialityRule _ _ = true` keyed on the label;
@@ -550,16 +652,27 @@ too slow to build.
     counterexample B; it simply mints fresh witness times rather than ordering existing ones, so
     it is the formula-level companion, not a replacement. Estimated output: ~300-450 lines;
     split into 2.7a (plumbing, zero verdict movement) and 2.7b (the rule) if one dispatch is not
-    enough. **Done when**: `timeOrderTotal` holds of every open certificate in the corpus; the
-    W1-W7 rows pinned in 2.8 flip; no verdict moves except intended ones.
+    enough. **Done when**: `timeOrderTotal` holds of every open certificate in the corpus; **all
+    seven** W-rows pinned in 2.8 read `total=true`; no verdict moves except intended ones.
+    **Baseline moved by 2.6 (2026-07-27b, report 05 §Q1.6)**: seriality mints witness times that
+    `timeLinearity` does not yet order, so the controls W5/W6 flip `total=true → false` when 2.6
+    lands. The criterion is therefore "all seven flip to `total=true`", not "W1-W4 flip" —
+    W5/W6's regression is expected, benign, and 2.7's to repair.
   - [ ] **2.4 R5 — certificate strengthening** *(restated 2026-07-27; was BLOCKED)*
     (`Saturation.lean:50-59`): strengthen `ExpandedTableau.hasOpen` to carry `(fc : FrameClass)`
     and the proposition
 
     ```lean
     saturated : findUnexpanded openBranch (timeOrd := timeOrdering) (fc := fc) = none
-                ∨ (findBlockedTime openBranch timeOrdering tracker).isSome
     ```
+
+    **Single conjunct (2026-07-27b, report 05 Contradiction Log C1).** The previously-planned
+    `∨ (findBlockedTime openBranch timeOrdering tracker).isSome` disjunct is **deleted before it
+    is written**: `CertificateProbe` measures literal full saturation reachable on genuinely-open
+    branches with seriality on (`fullySaturated=true applied=0 orphans=0` for `◇p` *and*
+    `G p → p`), because `serialityRule` is kept out of `allRulesForFC` and therefore out of
+    `findUnexpanded`. The consequence for the truth lemma is a Phase 7.1 documentation
+    obligation, not a certificate change.
 
     and **delete the applied set from the certificate**. The `fc` field repairs a latent defect
     found in report 04 §Q1.3: `findUnexpandedWithApplied`'s `fc` argument defaults to `.Base` and
@@ -624,7 +737,12 @@ too slow to build.
     cover an exponential step count, 03 §4.3) and prove `buildTableau_isSome`. Keep capped
     `soundFuel` as the runtime default (constraint 11). This also separates the two open-branch
     populations: at `soundFuel'`, fuel exhaustion is impossible, so downstream phases handle
-    only genuinely-saturated branches (03 §4.4). Estimated output: ~200-400 lines. Done when:
+    only genuinely-saturated branches (03 §4.4). **Progress measure (2026-07-27b, report 05
+    §Q2.5)**: consume `expandOnceUnblocked_adds_new` (`b ⊆ nb ∧ ∃ g ∈ nb, g ∉ b`, landed in 2.5),
+    **not** `expandOnceUnblocked_length_lt`. Strict length increase does not bound the step count,
+    because `nb = fs ++ b` may re-add formulas already present, so `List.length` has no upper
+    bound; what bounds it is *set* growth against the finite signed closure × label set. The
+    length lemma is a corollary and sanity check only. Estimated output: ~200-400 lines. Done when:
     `buildTableau_isSome` sorry-free; `#eval` runtime behavior unchanged; build green.
 - **Timing:** 3 dispatches, ~9 hours.
 - **Depends on:** 2 (rule set final; blocking genuine since 1.3)
@@ -709,13 +827,24 @@ too slow to build.
     (report 01 F6 — verified sound); `ShiftClosed` via `time_shift_preserves_truth`
     (`Truth.lean:446`) per report 01 F9, `Set.univ_shift_closed` as fallback; prove
     `not_valid_of_hasOpen` generic in `TemporalCarrier`, consuming the `sat_*` family verbatim.
-    **Hypothesis change (2026-07-27, report 04 §Q3.5)**: `not_valid_of_hasOpen` consumes the
-    restated 2.4 certificate — `fc`-indexed saturation **or blocked** — plus `timeOrderTotal`.
-    Once `serialityRule` lands (2.6) no open branch is ever fully saturated in the
-    `findUnexpanded = none` sense (seriality always demands one more successor), so **the blocked
-    disjunct is the normal case for open branches**, not a corner case: the
-    loop-unwinding/identification argument (settled semantics: identification/deletion, never
-    edge) is on the critical path. Budget accordingly — the ~250-450 line estimate is a **floor**.
+    **Documentation obligation (2026-07-27b, report 05 Contradiction Log C1 — supersedes the
+    2026-07-27 hypothesis change, which rested on a prototype and is refuted)**:
+    `not_valid_of_hasOpen` consumes the restated 2.4 certificate — `fc`-indexed saturation as a
+    **single conjunct**, `findUnexpanded … = none` — plus `timeOrderTotal`. Report 04 §Q3.5's
+    claim that no open branch is ever fully saturated once `serialityRule` lands is **measured
+    false**: `CertificateProbe` reports `fullySaturated=true applied=0 orphans=0` for both `◇p`
+    and the genuinely-open `G p → p` with seriality on, because `serialityRule` is deliberately
+    outside `allRulesForFC` and `findUnexpanded` reads `allRulesForFC`. What Phase 7.1 must do
+    instead is **state, in the truth lemma's preamble, that `findUnexpanded = none` means "no
+    *ordinary* rule applies"** — so the branch it reads may still be owed `T(F ⊤)`/`T(P ⊤)` at
+    every label. Those formulas are true at every point of any serial frame, so the extracted
+    model is unaffected; the gap must be named, not assumed away, and the certificate must not be
+    weakened to hide it. The loop-unwinding/identification argument (settled semantics:
+    identification/deletion, never edge) is still on the critical path for blocked branches.
+    Note also that blocking is now **bidirectional** (`blockCandidates`, 2.6): the identification
+    argument gets a strictly decreasing *creation index* to induct on in both directions, since a
+    time may only be blocked by one created strictly earlier.
+    Budget accordingly — the ~250-450 line estimate is a **floor**.
     Demote `branchTruth` (`CountermodelExtraction.lean:263`) to a documented debugging aid or
     delete it — it must no longer appear in any proof path. Estimated output: ~250-450 lines
     (floor). Done when: theorem sorry-free at the abstract carrier; four class specializations
