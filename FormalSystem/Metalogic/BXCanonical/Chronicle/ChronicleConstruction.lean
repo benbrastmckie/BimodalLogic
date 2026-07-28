@@ -97,6 +97,27 @@ theorem singleton_f_zero (A : Set Formula) :
     (singletonChronicle A).f 0 = A := rfl
 
 /--
+**Stage 0 of the ω-chain satisfies the guard-accumulation invariant.**
+
+The base case for the stage induction carried by `omegaChain`. The singleton domain is `{0}`,
+so the conclusion is immediate from `noGuardAccumulation_of_finite`: a set ascending to a gap of
+a domain is infinite, and no infinite set fits in a one-point domain.
+
+Stated for the full guard set `Set.univ`, which is what the chain carries; the antitone lemma
+`noGuardAccumulation_mono_guards` specialises it to any smaller guard set.
+
+**Read the discharge honestly.** Like every finite-stage instance of this invariant, this one is
+free by finiteness rather than by anything about the construction, and chaining free per-stage
+facts bounds nothing at the limit. See `EliminationResult.guard_accum_preserved` for the full
+statement of what does and does not transport.
+
+**No source.** Original work.
+-/
+theorem singleton_no_guard_accumulation (A : Set Formula) :
+    NoGuardAccumulation (↑(singletonChronicle A).dom) (singletonChronicle A).f Set.univ :=
+  noGuardAccumulation_of_finite (Finset.finite_toSet _) _ _
+
+/--
 The singleton chronicle satisfies the full ChronicleInvariant (C0-C3) vacuously.
 All pair/triple conditions are vacuously true since {0} has no pairs.
 -/
@@ -261,13 +282,17 @@ since the limit domain is dense with no adjacent pairs.
 -/
 noncomputable def omegaChain (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) :
-    (n : Nat) → { χ : Chronicle // χ.c0 fc ∧ χ.c2' fc }
-  | 0 => ⟨singletonChronicle A, ⟨singleton_c0 h_mcs, singleton_c2' h_mcs⟩⟩
+    (n : Nat) →
+      { χ : Chronicle // χ.c0 fc ∧ χ.c2' fc ∧ NoGuardAccumulation (↑χ.dom) χ.f Set.univ }
+  | 0 =>
+    ⟨singletonChronicle A,
+      ⟨singleton_c0 h_mcs, singleton_c2' h_mcs, singleton_no_guard_accumulation A⟩⟩
   | n + 1 =>
     let prev := omegaChain fc A h_mcs n
     let pc := counterexampleEnum (Nat.unpair n).2
-    let elim := eliminatePotentialCounterexample fc prev.val prev.property.1 prev.property.2 pc
-    ⟨elim.val, ⟨elim.c0, elim.c2'⟩⟩
+    let elim :=
+      eliminatePotentialCounterexample fc prev.val prev.property.1 prev.property.2.1 pc
+    ⟨elim.val, ⟨elim.c0, elim.c2', elim.guard_accum_preserved Set.univ prev.property.2.2⟩⟩
 
 /--
 Extract the chronicle at step n.
@@ -291,7 +316,31 @@ theorem omega_chain_c2' (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (n : Nat) :
     (omegaChainVal fc A h_mcs n).c2' fc :=
-  (omegaChain fc A h_mcs n).property.2
+  (omegaChain fc A h_mcs n).property.2.1
+
+/--
+**The chronicle at step `n` satisfies the guard-accumulation invariant.**
+
+The stage-induction projection: established at stage 0 by `singleton_no_guard_accumulation` and
+carried across each successor by `EliminationResult.guard_accum_preserved`.
+
+**This projection is true at every `n` and is nevertheless not a bound on the limit.** Each
+`omegaChainVal fc A h_mcs n` has a `Finset` domain, so every instance of this statement is already
+a consequence of `noGuardAccumulation_of_finite` alone, with no input from the construction; the
+invariant only acquires content on an infinite domain. A limit-level claim obtained by chaining
+these instances would therefore be unsound, and the transport of the invariant to `LimitDom` needs
+a separate argument, uniform in the stage, resting on the interval data
+(`C5ForwardWalkResult.guard_interval`, `C5BackwardWalkResult.guard_interval`, and
+`omega_chain_g_sub_f_insert`) rather than on this projection.
+
+**No source.** Original work.
+-/
+theorem omega_chain_no_guard_accumulation (fc : FrameClass) (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (n : Nat) :
+    NoGuardAccumulation (↑(omegaChainVal fc A h_mcs n).dom)
+      (omegaChainVal fc A h_mcs n).f Set.univ :=
+  (omegaChain fc A h_mcs n).property.2.2
 
 /--
 The elimination result at step n (the intermediate chronicle before g-rebuild).
@@ -303,7 +352,7 @@ noncomputable def omegaChainElimResult (fc : FrameClass) (A : Set Formula)
   eliminatePotentialCounterexample fc
     (omegaChain fc A h_mcs n).val
     (omegaChain fc A h_mcs n).property.1
-    (omegaChain fc A h_mcs n).property.2
+    (omegaChain fc A h_mcs n).property.2.1
     (counterexampleEnum (Nat.unpair n).2)
    
 
