@@ -2289,16 +2289,29 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   `serialityRule` sits outside `allRulesForFC`. **Verification Tier**: `full`.
   Estimated output: ~300-450 lines. Done when: sorry-free at ℤ for both classes; **green milestone
   commit**.
-- [ ] **7.1d The dense milestone — `ValidDense` (ℚ) and `ValidDedekindDense` (ℝ).** The same
+- [ ] **7.1d The dense milestone — `ValidDense` (ℚ) and `ValidDedekindDense` (ℝ).** *(in progress
+  — two of its pieces landed 2026-07-28p: the assembly and the rank/cut-index bridge; the four
+  temporal halves are what remains. See the 2026-07-28p banner.)* The same
   induction with non-empty interior gap regions. This is where the `prior_U_gap`/`prior_S_gap`/`sep`
   content lives and where a single region label must meet *both* the `G`-content from the left and
   the `H`-content from the right. Consume `Interpolate`'s `exists_gt_sameRegion`/
   `exists_lt_sameRegion` (both need `DenselyOrdered` + `NoMaxOrder`/`NoMinOrder`, available at ℚ/ℝ).
   **Verification Tier**: `full`. Estimated output: ~250-400 lines. Done when: sorry-free for both
   classes; green milestone commit.
-- [ ] **7.1e Demote or delete `branchTruth`** (`CountermodelExtraction.lean:263`) — unchanged from
+- [x] **7.1e Demote or delete `branchTruth`** (`CountermodelExtraction.lean:263`) — unchanged from
   the original 7.1 text and unaffected by this decision; it must no longer appear on any proof path.
   **Verification Tier**: `local`. Estimated output: ~20-40 lines.
+  **COMPLETE (2026-07-28p) — deleted, not demoted, and the choice is evidence-backed.**
+  `branchTruth` and its only consumer `signedTruthInModel` are gone. The retirement note had
+  defended keeping the evaluator on the ground that it was "an executable debugging aid, useful
+  for `#eval`-inspecting what a branch claims". Measured rather than believed: `branchTruth` is
+  `Prop`-valued and carries no `Decidable` instance, so `Decidable (branchTruth cm w t f)` fails
+  to synthesise and `#eval` was never available on it. With that gone the definition was on no
+  proof path, could not be run, and its sole consumer was referenced nowhere in the project — so
+  "demote" had nothing left to demote to. The module docstring's stale "Semantic Correctness
+  Guarantee" section, which still advertised the long-retired `branchTruthLemma` as a key
+  theorem, was replaced by a pointer to where the truth lemma actually lives. Full `lake build`
+  green (1939 jobs).
 - [ ] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`, new) — **unchanged**: the
   `allClosed → valid` direction as ONE induction over `allRulesForFC fc`, using
   `mem_allRulesForFC_iff` from Phase 3. **Verification Tier**: `full`. Estimated output:
@@ -2567,6 +2580,93 @@ with `branchLT`'s equal-times disjunct vacuous because `b.knownTimes` is an `era
   `Bridge/TemporalSaturation.lean` and `Bridge/TemporalGate.lean`.
 - **Assuming the two `ℤ` rays are mirror images for the *positive* case.** Correction 12: the
   upper ray closes outright via `untlRay_self`; the lower ray is a strictly larger demand.
+
+**PHASE 7 STATUS (2026-07-28p) — 7.1e is CLOSED; 7.1d is started, with its assembly and its one
+new counting bridge landed sorry-free.** `lake build FormalSystem.Metalogic.Decidability` green
+(1116 jobs); **full `lake build` green (1939 jobs)**; sorry census over `Verified/` reports `0`,
+compiler cross-check MATCH; zero vacuous definitions, zero axioms. Three green commits, each
+verified by `git show --stat` for **content** and not merely for exit status. No engine file
+touched, and nothing belonging to the concurrent task-408 session staged.
+
+*What landed, in plan order.*
+
+1. **7.1d's assembly** — `Verified/Bridge/DenseTruth.lean` (new, registered).
+   `branchTruthAt_of_temporal` is the whole six-case induction with the `untl`/`snce` cases
+   abstracted into hypotheses and the other four discharged, unchanged, from `IntTruth.lean`.
+   This is the machine-checked form of the claim the last three banners made in prose — that
+   `atom`, `bot`, `imp` and `box` are generic in the carrier and the placement and so carry to
+   `ℚ`/`ℝ` verbatim. It compiled on the first attempt. It also **names the residual exactly**:
+   the only difference between the discrete and dense milestones is two hypotheses, so a reader
+   can see at a glance what 7.1d still owes. A second, unplanned finding fell out of the binder
+   list: `branchOrderValid` and `temporalWitnessCheck` do not appear in it at all, because no
+   non-temporal case consumes either.
+2. **7.1e** — `branchTruth` and `signedTruthInModel` deleted. See the sub-phase entry above; the
+   short version is that the justification for the intermediate "keep the evaluator" state was
+   measured and found false, which turned "demote or delete" into simply delete.
+3. **The rank/cut-index bridge** — `branchRank_lt_cutIndex`, with `branchRank_eq_card` and
+   `length_filter_finRange` under it. See below; this is the piece that makes the dense negative
+   case tractable.
+
+*A finding that shrinks 7.1d, obtained by reading the lemma rather than assuming its shape.*
+`regionLabel_untlNeg` and `regionLabel_snceNeg` (`Bridge/RegionLabel.lean`) are stated for an
+**arbitrary** region index `j ≤ n`, with side condition `branchRank b ord t < j`. They are not
+specialised to the rays. The `ℤ` development only ever called them at `j = n`, and the last
+banner's framing suggested an interior gap would need new region-label content — it does not. A
+non-placed point reads `regionLabel b ord w (cutIndex (regionCode f s))` whether it sits in an
+interior gap or on the upper ray, and the reaching lemma is the same in both cases. So the dense
+negative `untl` case has a leaf structure that is *simpler* than `ℤ`'s in one respect: the "`s`
+non-placed" leaf covers interior gaps and the upper ray **at once**, where `ℤ` split them.
+
+What that leaf needs is the side condition, and supplying it is the one genuinely new counting
+argument: `branchRank` is a `List.filter` length in the **branch** order while `cutIndex` is a
+`Finset.card` in the **carrier** order. `branchRank_lt_cutIndex` proves
+`f i < s → branchRank b ord (timeAt b i) < cutIndex (regionCode f s)` from `OrderFaithful` alone,
+with strictness coming from the one element that separates the two counts — `i` is below `s` and
+so is counted on the right, and `strictBefore` is irreflexive on a gated branch and so does not
+count `i` on the left. `branchRank_eq_card` moves the count off the list and onto the index type
+via `List.map_getElem_finRange`; that is where the argument actually happens, and it needs no
+injectivity, because the list and the index type are in *definitional* bijection.
+
+*What 7.1d still owes, and it is the bulk of it.* All four temporal halves at a dense carrier.
+The negative halves now have their reaching lemma and their side condition; the positive halves
+are the harder pair, because `Stepped`'s witness has to be replaced by density
+(`exists_gt_sameRegion`/`exists_lt_sameRegion`) and the residual leaf of Correction 12 has to be
+re-examined at a carrier where a region is inhabited. **The obligation the next dispatch should
+resolve before writing any proof** is whether the negative case's "`r` non-placed" leaf needs a
+new gate row: at `ℤ`, `r` on the lower ray was covered by row 5 (`untlNegRayLow`), whose reach is
+*every* known time, and whose scope is `j = 0` only. At `ℚ`/`ℝ`, `r` can sit in an interior
+region `j`, and `regionLabel b ord w j` is an arbitrary known time whose rank bears no relation
+to `j` — `regionLabel` picks the first eligible candidate, not the order-minimal one — so neither
+row 5 nor `untlNeg_spread` reaches. The natural generalisation is row 5 with `0` replaced by an
+arbitrary `j`, which would subsume it. **It must be measured on the corpus before it is stated**,
+in the exact form to be adopted and beside the row it strengthens; that is the process lesson
+that has changed the conclusion in eight consecutive dispatches, most sharply in the last one,
+where two already-"adoptable" rows both proved unusable as measured.
+
+*Environment.* The concurrent task-408 session was quiet this dispatch. Its untracked files
+(`WeakCanonical/DenseModelSurgery/TruthTransfer.lean`, and `Dual.lean` before it) were never
+staged; staging was by explicit path throughout. Worth recording as a change from the last
+banner: **both previously-red out-of-territory modules are now green** — the full `lake build`
+completes with 1939 jobs and zero errors, so `CounterexampleElimination.lean` and
+`BadIntervals.lean` are no longer masking anything.
+
+#### Additions to the Phase 7 DO-NOT-RE-ATTEMPT register (2026-07-28p)
+
+- **Re-proving `atom`/`bot`/`imp`/`box` for the dense carrier, or writing a second six-case
+  induction for it.** `branchTruthAt_of_temporal` is the shared assembly; the dense milestone
+  supplies two hypotheses to it and nothing else.
+- **Re-deriving `branchRank_lt_cutIndex`, `branchRank_eq_card` or `length_filter_finRange`.** All
+  landed sorry-free.
+- **Assuming an interior gap needs region-label content that the rays did not.**
+  `regionLabel_untlNeg`/`regionLabel_snceNeg` are `j`-generic; only the side condition had to be
+  supplied, and it now is.
+- **Keeping `branchTruth` as an "executable debugging aid".** It is `Prop`-valued with no
+  `Decidable` instance and was never `#eval`-able. It is deleted; do not reintroduce it.
+- **Searching for a Mathlib `List`-to-`Finset` counting lemma for this transfer.**
+  `List.finRange_map_getElem` does not exist; the name is `List.map_getElem_finRange`, and the
+  card transfer is `simp [Finset.univ, Fintype.elems, Finset.card, Finset.filter,
+  Multiset.filter]`, both recorded in `length_filter_finRange`.
+- Plus every prior entry, all carried forward unchanged.
 
 **PHASE 7 STATUS (2026-07-28o) — 7.1c is CLOSED. The truth lemma is sorry-free at every one of
 the six `Formula` constructors, and so are both headline results.** `lake build
