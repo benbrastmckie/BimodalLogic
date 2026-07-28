@@ -1387,6 +1387,83 @@ structure C5BackwardWalkResult (fc : FrameClass) (χ : Chronicle) (ξ η : Formu
   /-- The witness is always a new point, not in the original domain χ.dom.
   Mirror of C5ForwardWalkResult.witness_not_old for the Since direction. -/
   witness_not_old : witness ∉ χ.dom
+  /--
+  **Guard density on the whole result domain above the witness.**
+
+  Every point of the *extended* domain lying strictly between the witness and `start` carries the
+  guard `ξ`. This strengthens `domain_guard`, which speaks only about points of the *original*
+  domain `χ.dom`, to the domain the walk actually produces.
+
+  This is the Since-direction mirror of `C5ForwardWalkResult.guard_interval`, and the mirror is in
+  the *interval*, not in the invariant: the interval the walk carves out runs `(witness, start)`
+  rather than `(start, witness)`, and every rational inequality in its discharge reverses. What
+  does **not** mirror is the accumulation notion being targeted, which stays the
+  below-accumulation one throughout — see `guard_accum_preserved` below and the note on
+  `no_guard_failure_above_witness`.
+
+  Discharged in Burgess's three cases as follows. Base case (`start` is the minimum of the
+  domain): vacuous, since the only new point is the witness itself and no old point lies below
+  `start`. Condition-(i) case: the immediate predecessor `x''` carries `ξ` by `conj_left_mcs` from
+  the condition-(i) conjunction, points below `x''` are handled by the recursive instance of this
+  field, and no point of `val.dom` lies strictly between `x''` and `start` (old points by
+  adjacency, new points by `new_point_before` at `x''`). Split case: vacuous, since the witness is
+  the midpoint of the adjacent pair `(x'', start)`.
+
+  **No source.** Original work. ADAPTED-FROM Burgess 1982 I §2.10, printed pp.372-373 — the
+  fresh-point witness placement whose interval behaviour is recorded here; Burgess states no such
+  property because his construction never reaches a gap.
+  -/
+  guard_interval : ∀ w ∈ val.dom, witness < w → w < start → ξ ∈ val.f w
+  /--
+  **The guard-accumulation invariant is preserved across the walk.**
+
+  Stated for an arbitrary guard set `G`, in the form `NoGuardAccumulation` is given in
+  `ChronicleGuardAccumulation.lean`, with no restatement and no weakening — and, in particular,
+  **the same** statement as the forward walk's field of this name. The backward direction does
+  **not** switch to an above-accumulation notion: `NoGuardAccumulation` is phrased in terms of
+  sets ascending to a gap from below, and that is the only limit this route uses, in the `snce`
+  case exactly as in the `untl` case.
+
+  **Honest accounting of this field's strength.** A chronicle domain is a `Finset`, so at every
+  finite stage the conclusion holds outright by `noGuardAccumulation_of_finite` — a set ascending
+  to a gap is infinite and cannot fit in a finite domain. The hypothesis is therefore not used,
+  and this field carries **no content of its own at the stage level**. It is recorded because the
+  ω-chain's limit step needs a uniformly named preservation handle across the walks and the
+  elimination step, and because stating it here fixes the exact form that handle must have. The
+  content this walk actually contributes to the limit argument is `guard_interval`, not this
+  field.
+
+  **No source.** Original work.
+  -/
+  guard_accum_preserved : ∀ G : Set Formula,
+    NoGuardAccumulation (↑χ.dom) χ.f G → NoGuardAccumulation (↑val.dom) val.f G
+
+/--
+**No guard failure strictly between the witness and the start point.**
+
+The reading of `guard_interval` that the accumulation argument consumes: since every point of the
+result domain in the open interval `(witness, start)` carries `ξ`, and every `val.f w` is maximal
+consistent by `c0`, no such point carries `Formula.neg ξ`.
+
+In the vocabulary of `NoGuardAccumulation`, the walk guarantees that the set of `¬ξ`-points of
+the result domain misses the interval `(witness, start)` opened *below* the obligation point.
+"Above the witness" names where the interval sits relative to the witness; it does **not** name a
+different accumulation notion. The invariant being protected is the below-accumulation one in
+both directions, because `LimitGuardEventual`'s conclusion lands in `limitSetBelow` in its `snce`
+disjunct no less than in its `untl` disjunct.
+
+This is a statement about a single walk at a single stage; whether the intervals opened by
+successive stages can be squeezed into a gap is the limit question and is not settled here.
+
+**No source.** Original work. ADAPTED-FROM Burgess 1982 I §2.10, printed pp.372-373 (the
+placement being read); the accumulation reading is attributed to no one.
+-/
+theorem C5BackwardWalkResult.no_guard_failure_above_witness {fc : FrameClass} {χ : Chronicle}
+    {ξ η : Formula} {start : Rat} (r : C5BackwardWalkResult fc χ ξ η start)
+    (w : Rat) (hw : w ∈ r.val.dom) (h_lo : r.witness < w) (h_hi : w < start) :
+    Formula.neg ξ ∉ r.val.f w := by
+  intro h_neg
+  exact set_consistent_not_both (r.c0 w hw).1 ξ (r.guard_interval w hw h_lo h_hi) h_neg
 
 /--
 Recursive walk for C5 backward guard (Burgess 2.10' induction, Since direction).
@@ -1549,7 +1626,18 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
               -- No w ∈ χ.dom with w < pt exists (pt is min).
               intro w hw _ hws
               exact absurd (h_min_le w hw) (not_le.mpr (h_eq_min ▸ hws))
-            witness_not_old := hy_notin }
+            witness_not_old := hy_notin
+            guard_interval := by
+              -- Base case: the only new point is the witness `y` itself, and `pt = min(dom)`,
+              -- so the open interval `(y, pt)` of the extended domain is empty.
+              intro w hw hyw hws
+              change w ∈ insert y χ.dom at hw
+              simp only [Finset.mem_insert] at hw
+              rcases hw with rfl | hw
+              · exact absurd hyw (lt_irrefl _)
+              · exact absurd (h_min_le w hw) (not_le.mpr (h_eq_min ▸ hws))
+            guard_accum_preserved := fun G _ =>
+              noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G }
   · -- **RECURSIVE CASE**: pt > min_old. Find predecessor x''.
     have h_start_gt_min : min_old < pt := lt_of_le_of_ne (h_min_le pt h_start_mem)
         (Ne.symm h_eq_min)
@@ -1699,7 +1787,23 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
                 · -- w = x'', use condition (i)
                   rw [hwx'', r.f_agrees x'' hx''_dom]
                   exact conj_left_mcs fc h_mcs_x'' ξ (Formula.snce η ξ) h_cond_i.1
-              witness_not_old := r.witness_not_old }
+              witness_not_old := r.witness_not_old
+              guard_interval := by
+                -- Three regions for w ∈ r.val.dom with r.witness < w < pt.
+                --   w < x'' : the recursive instance of this very field.
+                --   w = x'' : condition (i) gives ξ ∧ (ξ S η) ∈ f(x''), hence ξ ∈ f(x'').
+                --   x'' < w : impossible. An old point there contradicts adjacency of (x'', pt);
+                --             a new point there contradicts `r.new_point_before` at x''.
+                intro w hw hwr hws
+                rcases lt_trichotomy w x'' with hwx'' | hwx'' | hwx''
+                · exact r.guard_interval w hw hwr hwx''
+                · rw [hwx'', r.f_agrees x'' hx''_dom]
+                  exact conj_left_mcs fc h_mcs_x'' ξ (Formula.snce η ξ) h_cond_i.1
+                · by_cases hw_old : w ∈ χ.dom
+                  · exact absurd ⟨hwx'', hws⟩ (h_adj_x''s.2.2.2 w hw_old)
+                  · exact absurd (r.new_point_before w hw hw_old) (not_lt.mpr (le_of_lt hwx''))
+              guard_accum_preserved := fun G _ =>
+                noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G }
     · -- **Not condition (i)**: split at (x'', pt)
       have h_split_result : ∃ B' D B'' : Set Formula,
           BurgessR3Maximal fc (χ.f x'') B' D ∧
@@ -1970,7 +2074,20 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
                 intro w hw hwz hws
                 exact absurd ⟨lt_trans hx''_lt_z hwz, hws⟩
                   (h_adj_x''s.2.2.2 w hw)
-              witness_not_old := hz_notin }
+              witness_not_old := hz_notin
+              guard_interval := by
+                -- Split case, ROUTE (a) — preservation as-is, Burgess's placement unchanged, and
+                -- the same route the forward walk took. The witness is the midpoint `z` of the
+                -- adjacent pair `(x'', pt)`, and the only new point is `z` itself, so the open
+                -- interval `(z, pt)` of the extended domain is empty: an old point in it would
+                -- contradict adjacency of `(x'', pt)`.
+                intro w hw hwz hws
+                simp only [val, Finset.mem_insert] at hw
+                rcases hw with rfl | hw
+                · exact absurd hwz (lt_irrefl _)
+                · exact absurd ⟨lt_trans hx''_lt_z hwz, hws⟩ (h_adj_x''s.2.2.2 w hw)
+              guard_accum_preserved := fun G _ =>
+                noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G }
 termination_by (χ.dom.filter (fun v => v < pt)).card
 decreasing_by
   all_goals simp_all only
