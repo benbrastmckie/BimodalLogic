@@ -28,6 +28,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Valuation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.PropSaturation
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.TemporalSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntGaps
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntTruth
@@ -71,6 +72,11 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Bridge.PropSaturation`: `sat_imp_pos`, the one member of the `sat_*` family
   `CountermodelExtraction.lean` does not carry, because `impPos` is the only *branching*
   propositional rule and the guard it fails is the arm-already-present test
+- `Verified.Bridge.TemporalSaturation`: `sat_untl_pos_future` and `sat_snce_pos_past` — the
+  positive temporal witnesses with the one fact `sat_untl_pos`/`sat_snce_pos` discard, namely
+  that the witness lies strictly after (resp. before) the formula's own time. Isolated here for
+  the reason `PropSaturation` is: both unfold `applyRule`. Also `orderDual_converse`, the
+  `pastOf → futureOf` direction of the closure duality
 - `Verified.Bridge.RegionLabel`: the gap arm of the atom clause, after three refuted policies —
   a region takes the atoms of a *chosen known label*, certified by the decidable gate
   `regionLabelCheck` in the family `timeOrderTotal` and `boxAnchoredCheck` belong to
