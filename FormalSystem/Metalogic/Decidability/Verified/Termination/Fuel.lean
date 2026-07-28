@@ -54,23 +54,20 @@ silence — the rule fires exactly while an incomparable pair remains, so its ex
 chain condition. On the 4.3c side, `expandBranchWithFuel_isSome_of_noSplit` proves totality with
 the branch budget quantified, ruling out all three sources of `none`.
 
+**Also landed (the closure duality).** `orderDual_holds` proves `OrderDual` for *every*
+`TimeOrdering`, so `timeChain_of_linearity_saturated` and `chain_le_worlds_of_linearity_saturated`
+no longer carry it as a hypothesis. The route is `open private` on
+`reachableForward`/`reachableBackward` — pure consumption, no engine edit — plus a path
+characterisation of the shared breadth-first shape (`bfsClosure`), whose completeness half needs
+the `BfsInv` visited-set invariant and a joint induction.
+
 Outstanding, and deliberately not claimed anywhere below:
 
-1. **The closure duality, `OrderDual`.** The one residual of the label dimension.
-   `firstIncomparablePair` records comparability as `futureOf`-membership; blocking reads it as
-   `ancestorTimes`, i.e. `pastOf`. The two are the forward and backward closures of the same
-   constraint list. It is a hypothesis rather than a theorem because `futureOf`/`pastOf` are
-   defined via the `private` `reachableForward`/`reachableBackward`, which cannot be inducted on
-   from this file without an engine edit (forbidden here) or an `open private … from …` import —
-   the latter being the recorded discharge path, and pure consumption. Five `#guard_msgs` rows
-   run the condition on the ordering shapes the engine builds, including after `identifyTime`.
-2. **The world dimension.** `chain_le_worlds_of_not_blocked` carries the world count as `W`. Its
-   argument is the S5 rules' fresh-world discipline and is a separate obligation from T3's two.
-3. **The branching arms.** Everything here covers `.extended` steps and the `NoSplit` invariant.
+1. **The branching arms.** Everything here covers `.extended` steps and the `NoSplit` invariant.
    `expandBranchWithFuel`'s `.split` / `.splitOrdered` arms fold over sub-branches and can report
    `none` through `resolveOpenArm` (`Saturation.lean:661-664, :686-689`), which is a distinct
    obligation from the step bound and from the budget guard.
-4. **`buildTableau_isSome` is false as an unconditional statement**, and this is a defect of the
+2. **`buildTableau_isSome` is false as an unconditional statement**, and this is a defect of the
    *statement*, not of the engine. `buildTableau` calls `expandBranchWithFuel` at the default
    `maxBranches := 50000` and returns `none` the moment that counter is hit, no matter how much
    fuel it was given; and its own last arm returns `none` when the branch is still unsaturated
@@ -82,6 +79,14 @@ Outstanding, and deliberately not claimed anywhere below:
 namespace FormalSystem.Metalogic.Decidability
 
 open FormalSystem.Syntax
+
+/- `futureOf`/`pastOf` are breadth-first searches over `reachableForward`/`reachableBackward`,
+and both helpers are `private` to `SignedFormula.lean`. Proving the two closures dual needs to
+induct on them, so they are imported by `open private` — pure consumption, no engine edit, no
+re-proof, and the same idiom this repository already uses in
+`Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean`. -/
+open private reachableForward reachableBackward from
+  FormalSystem.Metalogic.Decidability.SignedFormula
 
 /-! ## The progress measure in cardinality form -/
 
@@ -645,31 +650,240 @@ theorem comparable_of_firstIncomparablePair_none {b : Branch} {ord : TimeOrderin
   · rw [hf] at hnone
     exact absurd hnone (by simp)
 
+/-! ### The breadth-first closures, and their path characterisation
+
+`futureOf` and `pastOf` are the same breadth-first search run against `directFutureOf` and
+`directPastOf`. This section factors that shared shape out as `bfsClosure`, characterises it by
+paths in both directions, and uses the characterisation to prove the two closures dual.
+
+The soundness half is routine. The awkward half is **completeness**, because the visited set makes
+the naive statement false: a BFS whose `visited` was seeded with a node it never expanded can miss
+everything downstream of that node. What rules this out is `BfsInv` — every visited node is either
+still on the frontier or has already had all its successors recorded — which holds at the `[]`
+seed and is preserved by a layer step. Completeness is then a *joint* induction over the frontier
+and visited statements, because a path leaving a visited node either steps inside the
+already-expanded region (visited case, one edge shorter) or restarts from the frontier (frontier
+case, same length), and neither statement is provable without the other.
+-/
+
+namespace TimeOrdering
+
+/-- A path of exactly `n` edges in the step relation given by the successor function `f`. -/
+def PathN (f : TimeIndex → List TimeIndex) : Nat → TimeIndex → TimeIndex → Prop
+  | 0, a, b => a = b
+  | n + 1, a, b => ∃ c, c ∈ f a ∧ PathN f n c b
+
+/-- The breadth-first closure shared by `reachableForward` and `reachableBackward`, with the
+step relation abstracted. -/
+def bfsClosure (f : TimeIndex → List TimeIndex) (frontier visited : List TimeIndex) :
+    Nat → List TimeIndex
+  | 0 => visited
+  | fuel + 1 =>
+    let next := (frontier.flatMap f).eraseDups.filter fun t => !visited.contains t
+    if next.isEmpty then visited
+    else bfsClosure f next (visited ++ next) fuel
+
+theorem reachableForward_eq (ord : TimeOrdering) :
+    ∀ (fuel : Nat) (fr vis : List TimeIndex),
+      reachableForward ord fr vis fuel = bfsClosure ord.directFutureOf fr vis fuel := by
+  intro fuel
+  induction fuel with
+  | zero => intro fr vis; rfl
+  | succ n ih => intro fr vis; simp only [reachableForward, bfsClosure, ih]
+
+theorem reachableBackward_eq (ord : TimeOrdering) :
+    ∀ (fuel : Nat) (fr vis : List TimeIndex),
+      reachableBackward ord fr vis fuel = bfsClosure ord.directPastOf fr vis fuel := by
+  intro fuel
+  induction fuel with
+  | zero => intro fr vis; rfl
+  | succ n ih => intro fr vis; simp only [reachableBackward, bfsClosure, ih]
+
+/-- The next BFS layer: one hop off the frontier, minus what is already visited. -/
+def bfsNext (f : TimeIndex → List TimeIndex) (frontier visited : List TimeIndex) :
+    List TimeIndex :=
+  (frontier.flatMap f).eraseDups.filter fun t => !visited.contains t
+
+theorem mem_bfsNext {f : TimeIndex → List TimeIndex} {fr vis : List TimeIndex} {t : TimeIndex} :
+    t ∈ bfsNext f fr vis ↔ (∃ s ∈ fr, t ∈ f s) ∧ t ∉ vis := by
+  simp [bfsNext, List.mem_filter, List.mem_flatMap]
+
+theorem bfsClosure_succ (f : TimeIndex → List TimeIndex) (fr vis : List TimeIndex) (fuel : Nat) :
+    bfsClosure f fr vis (fuel + 1) =
+      if (bfsNext f fr vis).isEmpty then vis
+      else bfsClosure f (bfsNext f fr vis) (vis ++ bfsNext f fr vis) fuel := by
+  simp only [bfsClosure, bfsNext]
+  rfl
+
+/-- Everything already visited survives to the result. -/
+theorem mem_bfsClosure_of_mem_visited (f : TimeIndex → List TimeIndex) :
+    ∀ (fuel : Nat) (fr vis : List TimeIndex) {t : TimeIndex},
+      t ∈ vis → t ∈ bfsClosure f fr vis fuel := by
+  intro fuel
+  induction fuel with
+  | zero => intro fr vis t ht; exact ht
+  | succ n ih =>
+    intro fr vis t ht
+    rw [bfsClosure_succ]
+    by_cases hE : (bfsNext f fr vis).isEmpty = true
+    · simp [hE, ht]
+    · simp only [hE, if_false, Bool.false_eq_true]
+      exact ih _ _ (List.mem_append_left _ ht)
+
+/-- **Soundness.** Anything the closure returns is either already visited, or joined to the
+frontier by a path of between one and `fuel` edges. The lower bound `1 ≤ n` is what makes the
+duality usable: without it, membership could be witnessed by the empty path, which says nothing. -/
+theorem bfsClosure_sound (f : TimeIndex → List TimeIndex) :
+    ∀ (fuel : Nat) (fr vis : List TimeIndex) {t : TimeIndex},
+      t ∈ bfsClosure f fr vis fuel →
+        t ∈ vis ∨ ∃ s ∈ fr, ∃ n, 1 ≤ n ∧ n ≤ fuel ∧ PathN f n s t := by
+  intro fuel
+  induction fuel with
+  | zero => intro fr vis t ht; exact Or.inl ht
+  | succ n ih =>
+    intro fr vis t ht
+    rw [bfsClosure_succ] at ht
+    by_cases hE : (bfsNext f fr vis).isEmpty = true
+    · rw [if_pos hE] at ht; exact Or.inl ht
+    · rw [if_neg hE] at ht
+      rcases ih _ _ ht with hv | ⟨s', hs', k, hk1, hk2, hpk⟩
+      · rcases List.mem_append.mp hv with hv | hv
+        · exact Or.inl hv
+        · obtain ⟨⟨s, hs, hfs⟩, _⟩ := mem_bfsNext.mp hv
+          exact Or.inr ⟨s, hs, 1, le_refl 1, by omega, ⟨t, by simpa [hv] using hfs, rfl⟩⟩
+      · obtain ⟨⟨s, hs, hfs⟩, _⟩ := mem_bfsNext.mp hs'
+        exact Or.inr ⟨s, hs, k + 1, by omega, by omega, ⟨s', hfs, hpk⟩⟩
+
+/-- The BFS well-formedness invariant: every visited node is either still on the frontier, or has
+already had all of its successors recorded. This is exactly what a hand-rolled `visited` set can
+violate, and exactly what completeness needs. -/
+def BfsInv (f : TimeIndex → List TimeIndex) (fr vis : List TimeIndex) : Prop :=
+  ∀ u ∈ vis, u ∈ fr ∨ ∀ v ∈ f u, v ∈ vis
+
+theorem BfsInv.step {f : TimeIndex → List TimeIndex} {fr vis : List TimeIndex}
+    (h : BfsInv f fr vis) : BfsInv f (bfsNext f fr vis) (vis ++ bfsNext f fr vis) := by
+  intro u hu
+  rcases List.mem_append.mp hu with hu | hu
+  · rcases h u hu with hf | hall
+    · refine Or.inr fun v hv => ?_
+      by_cases hvv : v ∈ vis
+      · exact List.mem_append_left _ hvv
+      · exact List.mem_append_right _ (mem_bfsNext.mpr ⟨⟨u, hf, hv⟩, hvv⟩)
+    · exact Or.inr fun v hv => List.mem_append_left _ (hall v hv)
+  · exact Or.inl hu
+
+/-- **Completeness**, as the joint induction the visited set forces. The frontier statement and
+the visited statement are proved in one induction on path length: the visited statement at length
+`m + 1` needs the frontier statement at the *same* length (a visited node still on the frontier
+restarts the search), while the frontier statement at `m + 1` only ever needs the visited
+statement at `m`. -/
+theorem bfsClosure_complete_aux (f : TimeIndex → List TimeIndex) (m : Nat) :
+    (∀ (fuel : Nat) (fr vis : List TimeIndex), BfsInv f fr vis →
+        ∀ s ∈ fr, ∀ t, PathN f m s t → 1 ≤ m → m ≤ fuel → t ∈ bfsClosure f fr vis fuel)
+    ∧ (∀ (fuel : Nat) (fr vis : List TimeIndex), BfsInv f fr vis →
+        ∀ s ∈ vis, ∀ t, PathN f m s t → m ≤ fuel → t ∈ bfsClosure f fr vis fuel) := by
+  induction m with
+  | zero =>
+    refine ⟨fun _ _ _ _ _ _ _ _ h1 _ => absurd h1 (by omega), ?_⟩
+    intro fuel fr vis _ s hs t hp _
+    exact (hp ▸ mem_bfsClosure_of_mem_visited f fuel fr vis hs)
+  | succ m ih =>
+    have hA : ∀ (fuel : Nat) (fr vis : List TimeIndex), BfsInv f fr vis →
+        ∀ s ∈ fr, ∀ t, PathN f (m + 1) s t → 1 ≤ m + 1 → m + 1 ≤ fuel →
+          t ∈ bfsClosure f fr vis fuel := by
+      intro fuel fr vis hinv s hs t hp _ hle
+      obtain ⟨c, hc, hpc⟩ := hp
+      cases fuel with
+      | zero => omega
+      | succ fuel' =>
+        by_cases hcv : c ∈ vis
+        · exact ih.2 (fuel' + 1) fr vis hinv c hcv t hpc (by omega)
+        · have hcn : c ∈ bfsNext f fr vis := mem_bfsNext.mpr ⟨⟨s, hs, hc⟩, hcv⟩
+          have hE : ¬ (bfsNext f fr vis).isEmpty = true := by
+            simp only [List.isEmpty_iff]
+            intro hnil
+            simp [hnil] at hcn
+          rw [bfsClosure_succ, if_neg hE]
+          exact ih.2 fuel' _ _ hinv.step c (List.mem_append_right _ hcn) t hpc (by omega)
+    refine ⟨hA, ?_⟩
+    intro fuel fr vis hinv s hs t hp hle
+    rcases hinv s hs with hsf | hall
+    · exact hA fuel fr vis hinv s hsf t hp (by omega) hle
+    · obtain ⟨c, hc, hpc⟩ := hp
+      exact ih.2 fuel fr vis hinv c (hall c hc) t hpc (by omega)
+
+/-- Completeness at the `[]`-seeded call shape both `futureOf` and `pastOf` use. -/
+theorem bfsClosure_complete (f : TimeIndex → List TimeIndex) {s t : TimeIndex} {n fuel : Nat}
+    (hp : PathN f n s t) (h1 : 1 ≤ n) (hle : n ≤ fuel) :
+    t ∈ bfsClosure f [s] [] fuel :=
+  (bfsClosure_complete_aux f n).1 fuel [s] [] (fun _ hu => absurd hu (by simp)) s
+    (by simp) t hp h1 hle
+
+/-- Extending a path by one edge at the far end. This is what makes reversal an induction on
+length rather than a structural rewrite: `PathN` peels edges from the source, so reversing needs
+to attach them at the target. -/
+theorem PathN.snoc {f : TimeIndex → List TimeIndex} :
+    ∀ {n : Nat} {a b c : TimeIndex}, PathN f n a b → c ∈ f b → PathN f (n + 1) a c := by
+  intro n
+  induction n with
+  | zero => intro a b c hab hc; exact ⟨c, hab ▸ hc, rfl⟩
+  | succ n ih =>
+    intro a b c hab hc
+    obtain ⟨d, hd, hdb⟩ := hab
+    exact ⟨d, hd, ih hdb hc⟩
+
+/-- Converse step relations give reversed paths of the same length. -/
+theorem PathN.reverse {f g : TimeIndex → List TimeIndex}
+    (hfg : ∀ x y, y ∈ f x ↔ x ∈ g y) :
+    ∀ {n : Nat} {a b : TimeIndex}, PathN f n a b → PathN g n b a := by
+  intro n
+  induction n with
+  | zero => intro a b h; exact h.symm
+  | succ n ih =>
+    intro a b h
+    obtain ⟨c, hc, hcb⟩ := h
+    exact PathN.snoc (ih hcb) ((hfg a c).mp hc)
+
+/-- The forward and backward one-step relations are converses: both say
+`(x, y) ∈ ord.constraints`. -/
+theorem mem_directFutureOf_iff (ord : TimeOrdering) (x y : TimeIndex) :
+    y ∈ ord.directFutureOf x ↔ x ∈ ord.directPastOf y := by
+  simp [directFutureOf, directPastOf, List.mem_filterMap]
+
+end TimeOrdering
+
 /--
 **The one residual of the label dimension: the two closures are duals.**
 
 `firstIncomparablePair` records comparability as "`t₂` is in `t₁`'s `futureOf`", while
 `isTemporallyBlocked` — and hence `blocking_fires_of_card_lt` — reads it as "`t₁` is in `t₂`'s
 `ancestorTimes`", which is `pastOf`. The two are the forward and backward transitive closures of
-the *same* constraint list, so this holds; it is stated as a hypothesis rather than proved
-because proving it is a statement about `TimeOrdering.futureOf`/`pastOf` and nothing else, and it
-needs a path characterisation of the breadth-first search those two are defined by.
+the *same* constraint list.
 
-**Why it is not discharged here, precisely.** `futureOf` and `pastOf` are defined via
-`reachableForward` / `reachableBackward` (`SignedFormula.lean:741,751`), which are `private`, so
-the induction cannot even be *stated* from this file without either an engine edit — forbidden by
-the wave-3 territory contract — or an `open private … from …` import of the two helpers, which is
-the route this repository already uses elsewhere for exactly this situation (see
-`Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean:687`). That is the discharge path, and it is
-pure consumption: no engine edit, no re-proof.
-
-The obligation itself is: forward BFS membership yields a constraint path, and backward BFS from
-the far end recovers the near end within the same number of layers. Both closures run at the same
-default fuel (`100`), so no fuel mismatch is hiding in the statement. The probes below run the
-condition on the ordering shapes the engine actually builds.
+The condition is kept as a named `def` rather than inlined because it is the precise interface
+between the two readings, and because the duality probes below evaluate it directly. It is
+**no longer a hypothesis**: `orderDual_holds` discharges it for every `TimeOrdering`.
 -/
 def OrderDual (ord : TimeOrdering) : Prop :=
   ∀ t₁ t₂ : TimeIndex, t₂ ∈ ord.futureOf t₁ → t₁ ∈ ord.pastOf t₂
+
+/--
+**The duality holds, for every ordering.** Forward BFS membership yields a constraint path of
+between one and `100` edges (`bfsClosure_sound`); reversing it edge-by-edge against
+`mem_directFutureOf_iff` gives a backward path of the same length (`PathN.reverse`); and backward
+BFS at the same default fuel finds it (`bfsClosure_complete`). Both closures run at fuel `100`, so
+the path length that soundness bounds is exactly the one completeness can spend.
+-/
+theorem orderDual_holds (ord : TimeOrdering) : OrderDual ord := by
+  intro t₁ t₂ h
+  rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [t₁] [] h with hv | ⟨s, hs, n, hn1, hn2, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hs
+    subst hs
+    rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq]
+    exact TimeOrdering.bfsClosure_complete _
+      (TimeOrdering.PathN.reverse (TimeOrdering.mem_directFutureOf_iff ord) hp) hn1 hn2
 
 /--
 **The chain invariant, established.** A branch whose linearity stage is exhausted has all its
@@ -680,24 +894,24 @@ incomparable pair remains, so its silence *is* the chain condition, and `TimeCha
 `blocking_fires_of_card_lt` needs.
 -/
 theorem timeChain_of_linearity_saturated {b : Branch} {ord : TimeOrdering}
-    (hd : OrderDual ord) (h : firstIncomparablePair b ord = none) : TimeChain b ord := by
+    (h : firstIncomparablePair b ord = none) : TimeChain b ord := by
   intro t₁ h₁ t₂ h₂ hne
   rcases comparable_of_firstIncomparablePair_none h h₁ h₂ (Ne.symm hne) with hfut | hpast
-  · exact Or.inl (hd t₁ t₂ hfut)
+  · exact Or.inl (orderDual_holds ord t₁ t₂ hfut)
   · exact Or.inr hpast
 
 /--
 **The label dimension, composed.** An unbranched run whose final branch is linearity-saturated and
 carries no blocked time is bounded by `2 * |C| * (W * 2 ^ (2 * |C|))`, with `W` the world count.
 
-Every hypothesis here is either discharged elsewhere in this file (`BranchStock`, via T1 iterated)
-or is a named, isolated side condition: `OrderDual` (the closure duality above), `hev` (the
+Every hypothesis here is either discharged elsewhere in this file (`BranchStock`, via T1 iterated;
+and the closure duality, now `orderDual_holds`) or is a named, isolated side condition: `hev` (the
 eventuality guard, vacuous for the empty tracker), `hnb` (the run has not yet blocked), and `hW`
-(the world dimension, whose argument is the S5 fresh-world discipline and is not T3's business).
+(the world dimension, discharged for the S5 rule set by `worldFinset_card_le` below).
 -/
 theorem chain_le_worlds_of_linearity_saturated {C : Finset Formula} {ord : TimeOrdering}
     {tracker : EventualityTracker} {W : Nat}
-    (hC : TableauClosed C) (hT : TrichStock C) (hd : OrderDual ord)
+    (hC : TableauClosed C) (hT : TrichStock C)
     (run : Nat → Branch) (n : Nat)
     (h0 : BranchStock C (run 0))
     (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1)))
@@ -708,15 +922,16 @@ theorem chain_le_worlds_of_linearity_saturated {C : Finset Formula} {ord : TimeO
     (hW : (run n).worldFinset.card ≤ W) :
     n ≤ 2 * C.card * (W * 2 ^ (2 * C.card)) :=
   chain_le_worlds_of_not_blocked hC hT run n h0 hstep
-    (timeChain_of_linearity_saturated hd hlin) hev hnb hW
+    (timeChain_of_linearity_saturated hlin) hev hnb hW
 
 /-! ### Duality probes
 
-`OrderDual` is a hypothesis, so it is committed together with executable rows that run it on the
-ordering shapes the engine builds: a chain (`addFuture` repeated), a fork, a diamond, and a chain
-put through `identifyTime` — the one operation that rewrites constraints rather than adding them,
-and hence the one most likely to break a duality. A hypothesis nobody has ever evaluated is not
-evidence of anything; these rows are what keep it from being a silent assumption.
+`OrderDual` is now discharged by `orderDual_holds`, but the rows are kept: they are what caught
+the condition being true before the proof existed, and they remain the cheapest check that the
+*statement* still says what it should on the shapes the engine actually builds: a chain
+(`addFuture` repeated), a fork, a diamond, and a chain put through `identifyTime` — the one
+operation that rewrites constraints rather than adding them, and hence the one most likely to
+break a duality.
 -/
 
 section DualityProbes
