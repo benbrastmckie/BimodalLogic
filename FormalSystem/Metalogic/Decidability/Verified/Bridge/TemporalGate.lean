@@ -284,15 +284,81 @@ def snceRayUpGuard (b : Branch) (ord : TimeOrdering) : Bool :=
         else true
     | _, _ => true
 
+/-- **Row 11.** A positive until asserted at **any** region's label has a witness, either in that
+region itself or at a known time above it, with the guard carried wherever the interval reaches.
+
+Rows 3 and 9 are the two `ℤ` leaves of this: row 3 is the upper ray, where the witness must be the
+region's own label because every point above reads it, and row 9 is the lower ray, where the
+witness is a known time. At `ℚ`/`ℝ` the point sits in an arbitrary region, and — crucially —
+`Stepped` is false, so the upper-ray trick of stepping to a successor with an *empty* guard
+interval is unavailable. The witness comes from `exists_gt_sameRegion` instead, and the guard is
+then **carried across the region** rather than vanished: that is what the `self` disjunct's
+`b.hasPosAt ψ` is for, and it is the one demand `ℤ` never had to make.
+
+The `known` disjunct's two guard clauses are the two shapes a point of the interval `(r, f k)` can
+have, and their side conditions are the branch-side readings of the two counting lemmas in
+`Bridge/DenseTruth.lean`: `j ≤ branchRank u` for a placed point (`cutIndex_le_branchRank`), and
+`j ≤ j' ≤ branchRank v` for a non-placed one (`cutIndex_mono` above, `cutIndex_le_branchRank`
+below).
+
+This row does **not** subsume rows 3, 9 and 10 — its `self` disjunct is an escape they do not
+offer — so it is adopted beside them. Measured in this exact form
+(`Tests/BimodalTest/TemporalWitnessProbe.lean`, column `uPR`) beside `uRD` and beside the `self`
+disjunct alone: `true` on all eight rows the gate accepts, and the `self` column shows the
+disjunction is load-bearing rather than decorative. -/
+def untlPosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .untl φ ψ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            (b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)) ||
+            (b.knownTimes.any fun v =>
+              (decide (j ≤ branchRank b ord v) && b.hasPosAt φ ⟨sf.label.world, v⟩) &&
+                (ψ == Formula.top ||
+                  ((b.knownTimes.all fun u =>
+                      if j ≤ branchRank b ord u ∧ strictBefore ord u v = true then
+                        b.hasPosAt ψ ⟨sf.label.world, u⟩
+                      else true) &&
+                   ((List.range (b.knownTimes.length + 1)).all fun j' =>
+                      if j ≤ j' ∧ j' ≤ branchRank b ord v then
+                        b.hasPosAt ψ ⟨sf.label.world, regionLabel b ord sf.label.world j'⟩
+                      else true))))
+          else true
+    | _, _ => true
+
+/-- **Row 12.** The past-directed mirror of row 11, with the interval below the region. -/
+def sncePosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .snce φ ψ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            (b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)) ||
+            (b.knownTimes.any fun v =>
+              (decide (branchRank b ord v < j) && b.hasPosAt φ ⟨sf.label.world, v⟩) &&
+                (ψ == Formula.top ||
+                  ((b.knownTimes.all fun u =>
+                      if branchRank b ord u < j ∧ strictBefore ord v u = true then
+                        b.hasPosAt ψ ⟨sf.label.world, u⟩
+                      else true) &&
+                   ((List.range (b.knownTimes.length + 1)).all fun j' =>
+                      if j' ≤ j ∧ branchRank b ord v < j' then
+                        b.hasPosAt ψ ⟨sf.label.world, regionLabel b ord sf.label.world j'⟩
+                      else true))))
+          else true
+    | _, _ => true
+
 /--
 **The gate.** Carried on an open-branch certificate exactly as `timeOrderTotal`,
-`boxAnchoredCheck` and `regionLabelCheck` are, and consumed only through the ten lemmas below.
+`boxAnchoredCheck` and `regionLabelCheck` are, and consumed only through the lemmas below.
 -/
 def temporalWitnessCheck (b : Branch) (ord : TimeOrdering) : Bool :=
   untlNegFuture b ord && snceNegPast b ord && untlRaySelf b ord && snceRaySelf b ord &&
     untlNegRegionUp b ord && snceNegRegionDn b ord &&
     untlPosGuardedWitness b ord && sncePosGuardedWitness b ord &&
-    untlRayDnGuard b ord && snceRayUpGuard b ord
+    untlRayDnGuard b ord && snceRayUpGuard b ord &&
+    untlPosRegion b ord && sncePosRegion b ord
 
 theorem untlNegFuture_of_check (h : temporalWitnessCheck b ord = true) :
     untlNegFuture b ord = true := by
@@ -460,19 +526,27 @@ theorem snceNegRay_up (h : temporalWitnessCheck b ord = true)
 
 theorem untlPosGuardedWitness_of_check (h : temporalWitnessCheck b ord = true) :
     untlPosGuardedWitness b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.1.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 theorem sncePosGuardedWitness_of_check (h : temporalWitnessCheck b ord = true) :
     sncePosGuardedWitness b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 theorem untlRayDnGuard_of_check (h : temporalWitnessCheck b ord = true) :
     untlRayDnGuard b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 theorem snceRayUpGuard_of_check (h : temporalWitnessCheck b ord = true) :
     snceRayUpGuard b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
+
+theorem untlPosRegion_of_check (h : temporalWitnessCheck b ord = true) :
+    untlPosRegion b ord = true := by
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
+
+theorem sncePosRegion_of_check (h : temporalWitnessCheck b ord = true) :
+    sncePosRegion b ord = true := by
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 /-- **The guarded witness.** A positive until has a witness strictly after its own time, with the
 guard at every known time strictly between the two — the `⊤` case exempted from the guard but
@@ -558,5 +632,86 @@ theorem snceRayUp_witness (h : temporalWitnessCheck b ord = true)
     have hv' := List.all_eq_true.mp hguard v hv
     rw [hvt] at hv'
     simpa using hv'
+
+
+/-! ## The interior-region positive witness, unpacked
+
+Rows 11 and 12 are the only rows whose consumption is a **disjunction**, so their unpacking is
+given a name rather than inlined: the dense positive case branches on it, and both branches are
+live at every region.
+-/
+
+/-- What row 11 hands the dense positive `untl` case at region `j`: a witness inside the region,
+or a witness at a known time above it with the guard carried across the interval. -/
+def UntlPosRegionWitness (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : Nat)
+    (φ ψ : Formula) : Prop :=
+  (b.hasPosAt φ ⟨w, regionLabel b ord w j⟩ = true ∧
+      (ψ = Formula.top ∨ b.hasPosAt ψ ⟨w, regionLabel b ord w j⟩ = true)) ∨
+    ∃ v ∈ b.knownTimes, j ≤ branchRank b ord v ∧ b.hasPosAt φ ⟨w, v⟩ = true ∧
+      (ψ = Formula.top ∨
+        ((∀ u ∈ b.knownTimes, j ≤ branchRank b ord u → strictBefore ord u v = true →
+            b.hasPosAt ψ ⟨w, u⟩ = true) ∧
+          (∀ j', j ≤ j' → j' ≤ branchRank b ord v → j' ≤ b.knownTimes.length →
+            b.hasPosAt ψ ⟨w, regionLabel b ord w j'⟩ = true)))
+
+/-- The mirror: what row 12 hands the dense positive `snce` case at region `j`. -/
+def SncePosRegionWitness (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : Nat)
+    (φ ψ : Formula) : Prop :=
+  (b.hasPosAt φ ⟨w, regionLabel b ord w j⟩ = true ∧
+      (ψ = Formula.top ∨ b.hasPosAt ψ ⟨w, regionLabel b ord w j⟩ = true)) ∨
+    ∃ v ∈ b.knownTimes, branchRank b ord v < j ∧ b.hasPosAt φ ⟨w, v⟩ = true ∧
+      (ψ = Formula.top ∨
+        ((∀ u ∈ b.knownTimes, branchRank b ord u < j → strictBefore ord v u = true →
+            b.hasPosAt ψ ⟨w, u⟩ = true) ∧
+          (∀ j', j' ≤ j → branchRank b ord v < j' → j' ≤ b.knownTimes.length →
+            b.hasPosAt ψ ⟨w, regionLabel b ord w j'⟩ = true)))
+
+/-- **Row 11, consumed.** -/
+theorem untlPosRegion_witness (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {j : Nat} (hj : j ≤ b.knownTimes.length)
+    (hmem : (⟨.pos, .untl φ ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
+    UntlPosRegionWitness b ord w j φ ψ := by
+  have hrow := List.all_eq_true.mp (untlPosRegion_of_check h) _ hmem
+  simp only at hrow
+  have hj' := List.all_eq_true.mp hrow j (List.mem_range.mpr (Nat.lt_succ_of_le hj))
+  simp only [beq_self_eq_true, if_true, Bool.or_eq_true, Bool.and_eq_true, beq_iff_eq] at hj'
+  rcases hj' with ⟨hφ, hg⟩ | hk
+  · exact Or.inl ⟨hφ, hg⟩
+  · rw [List.any_eq_true] at hk
+    obtain ⟨v, hv, hvc⟩ := hk
+    simp only [Bool.and_eq_true, decide_eq_true_iff, Bool.or_eq_true, beq_iff_eq] at hvc
+    obtain ⟨⟨hrk, hvφ⟩, hg⟩ := hvc
+    refine Or.inr ⟨v, hv, hrk, hvφ, ?_⟩
+    rcases hg with hg | hg
+    · exact Or.inl hg
+    · refine Or.inr ⟨fun u hu hru hlt => ?_, fun j' hjj hjv hjn => ?_⟩
+      · have := List.all_eq_true.mp hg.1 u hu
+        simpa [hru, hlt] using this
+      · have := List.all_eq_true.mp hg.2 j' (List.mem_range.mpr (Nat.lt_succ_of_le hjn))
+        simpa [hjj, hjv] using this
+
+/-- **Row 12, consumed**, the mirror. -/
+theorem sncePosRegion_witness (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {j : Nat} (hj : j ≤ b.knownTimes.length)
+    (hmem : (⟨.pos, .snce φ ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
+    SncePosRegionWitness b ord w j φ ψ := by
+  have hrow := List.all_eq_true.mp (sncePosRegion_of_check h) _ hmem
+  simp only at hrow
+  have hj' := List.all_eq_true.mp hrow j (List.mem_range.mpr (Nat.lt_succ_of_le hj))
+  simp only [beq_self_eq_true, if_true, Bool.or_eq_true, Bool.and_eq_true, beq_iff_eq] at hj'
+  rcases hj' with ⟨hφ, hg⟩ | hk
+  · exact Or.inl ⟨hφ, hg⟩
+  · rw [List.any_eq_true] at hk
+    obtain ⟨v, hv, hvc⟩ := hk
+    simp only [Bool.and_eq_true, decide_eq_true_iff, Bool.or_eq_true, beq_iff_eq] at hvc
+    obtain ⟨⟨hrk, hvφ⟩, hg⟩ := hvc
+    refine Or.inr ⟨v, hv, hrk, hvφ, ?_⟩
+    rcases hg with hg | hg
+    · exact Or.inl hg
+    · refine Or.inr ⟨fun u hu hru hlt => ?_, fun j' hjj hjv hjn => ?_⟩
+      · have := List.all_eq_true.mp hg.1 u hu
+        simpa [hru, hlt] using this
+      · have := List.all_eq_true.mp hg.2 j' (List.mem_range.mpr (Nat.lt_succ_of_le hjn))
+        simpa [hjj, hjv] using this
 
 end FormalSystem.Metalogic.Decidability.Verified.Bridge
