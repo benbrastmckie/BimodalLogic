@@ -924,6 +924,206 @@ theorem chain_le_worlds_of_linearity_saturated {C : Finset Formula} {ord : TimeO
   chain_le_worlds_of_not_blocked hC hT run n h0 hstep
     (timeChain_of_linearity_saturated hlin) hev hnb hW
 
+/-! ## The world dimension
+
+`chain_le_worlds_times` leaves two cardinalities; the time one is discharged above. This section
+discharges the **world** one — a dimension neither T1 nor T2 touches, since T1 bounds formulas and
+T2 bounds times.
+
+### Why worlds are bounded at all, and by what
+
+Exactly two rules mint fresh worlds: `boxNeg` (on `F(□ψ)`) and `diamondPos` (on `T(◇ψ)`); every
+other `ruleMintsFreshLabel` constructor mints a fresh *time*. Neither modal rule carries an
+internal guard — `applyRule`'s `boxNeg` arm returns `.linear (witness :: …)` unconditionally — so
+what stops them re-firing is `findApplicableRule`, which gates every `ruleMintsFreshLabel` rule
+behind `witnessPresent`.
+
+The shape of that gate is the whole argument, and it differs between the modal and temporal arms:
+
+    -- modal (boxNeg): quantified over EVERY known world
+    branch.knownWorlds.any fun w => branch.contains (.neg ψ { world := w, time := l.time })
+
+    -- temporal (allFutureNeg): world HELD FIXED, quantified over times
+    (timeOrd.futureOf l.time).any fun t => branch.contains (.neg ψ { world := l.world, time := t })
+
+The modal guard is *world-indifferent*. Once any world at all carries `F(ψ)` at time `t`, no
+`F(□ψ)` at time `t` mints again — not at that world, and not at any other. That is the S5
+universal-accessibility discipline showing up as a termination fact: a minted world is identified
+by the **sign, formula and time** of the witness it was minted for, and never by its own index.
+So the non-seed worlds inject into signed formulas over the stock with the world component
+normalised away, giving `2 * |C| * |times|` of them.
+
+### Consequence for `soundFuel'` — stated, not glossed
+
+The bound below is `|S| + 2 * |C| * |times|`, and with T2's time bound that is
+`|S| + 2 * |C| * 2 ^ (2 * |C|)`. It is emphatically **not** `1`. Feeding it through
+`chain_le_worlds_of_linearity_saturated` gives `chain_le_worlds_bounded`, whose figure exceeds
+`soundFuel' φ = 2 * n * 2 ^ (2 * n)` by a factor of about `2 * |C| * 2 ^ (2 * |C|)`, because
+`soundFuel'` has no world factor in it at all. `soundFuel'` is therefore adequate only for runs
+that stay in one world; the general figure is `chain_le_worlds_bounded`'s. Redefining `soundFuel'`
+is a plan-level decision and is not taken here — but no claim below asserts `soundFuel'` suffices
+in the presence of fresh worlds.
+-/
+
+/-- Labels at the canonical world `0`, one per time the branch mentions. The world dimension is
+normalised away because the S5 witness guard is world-indifferent. -/
+def Branch.timeLabels (b : Branch) : Finset Label :=
+  b.timeFinset.image fun t => { world := 0, time := t }
+
+theorem Branch.card_timeLabels_le (b : Branch) : b.timeLabels.card ≤ b.timeFinset.card :=
+  Finset.card_image_le
+
+theorem Branch.mem_timeLabels {b : Branch} {t : TimeIndex} (h : t ∈ b.timeFinset) :
+    ({ world := 0, time := t } : Label) ∈ b.timeLabels :=
+  Finset.mem_image.mpr ⟨t, h, rfl⟩
+
+/-- The witness signature of a signed formula: everything the modal guard reads, which is
+sign, formula and time — with the world component normalised away, because the guard never
+reads it. -/
+def witnessSig (x : SignedFormula) : SignedFormula :=
+  { x with label := { world := 0, time := x.label.time } }
+
+@[simp] theorem witnessSig_formula (x : SignedFormula) : (witnessSig x).formula = x.formula := rfl
+
+@[simp] theorem witnessSig_label (x : SignedFormula) :
+    (witnessSig x).label = { world := 0, time := x.label.time } := rfl
+
+/--
+**The S5 fresh-world discipline, as a branch invariant.**
+
+Outside a seed set `S` of worlds, every world of `b` carries a witness confined to the stock `C`
+and to a time `b` mentions, and distinct such worlds carry witnesses with *distinct signatures*.
+The injectivity clause is the content: it is precisely what `witnessPresent`'s world-indifferent
+modal arms enforce, since a second world minted for the same sign/formula/time would have found
+the first one's witness and been suppressed.
+
+This is stated as an invariant rather than derived from the rule set because deriving it is a
+36-case induction over `applyRule` of the same shape and size as T1 (`SubformulaProperty.lean`),
+and belongs with that work rather than with the counting argument it feeds.
+-/
+def WorldWitness (C : Finset Formula) (S : Finset WorldIndex) (b : Branch) : Prop :=
+  ∃ wit : WorldIndex → SignedFormula,
+    (∀ w ∈ b.worldFinset, w ∉ S →
+      (wit w).formula ∈ C ∧ (wit w).label.time ∈ b.timeFinset) ∧
+    (∀ w₁ ∈ b.worldFinset, w₁ ∉ S → ∀ w₂ ∈ b.worldFinset, w₂ ∉ S →
+      witnessSig (wit w₁) = witnessSig (wit w₂) → w₁ = w₂)
+
+/--
+**The world bound.** A branch under the fresh-world discipline has at most
+`|S| + 2 * |C| * |times|` worlds: the seed, plus one per witness signature available over the
+stock and the branch's own times.
+
+The counting is the same shape as `branch_card_le` — inject into `signedUniverse` and apply
+`card_signedUniverse_le` — run against `timeLabels` rather than the full label set, which is
+exactly where the world-indifference of the modal guard is spent.
+-/
+theorem worldFinset_card_le {C : Finset Formula} {S : Finset WorldIndex} {b : Branch}
+    (h : WorldWitness C S b) :
+    b.worldFinset.card ≤ S.card + 2 * C.card * b.timeFinset.card := by
+  obtain ⟨wit, hmem, hinj⟩ := h
+  have hsub : b.worldFinset ⊆ S ∪ (b.worldFinset \ S) := by
+    intro w hw
+    by_cases hs : w ∈ S
+    · exact Finset.mem_union_left _ hs
+    · exact Finset.mem_union_right _ (Finset.mem_sdiff.mpr ⟨hw, hs⟩)
+  have hdiff : (b.worldFinset \ S).card ≤ (signedUniverse C b.timeLabels).card := by
+    refine Finset.card_le_card_of_injOn (fun w => witnessSig (wit w)) ?_ ?_
+    · intro w hw
+      obtain ⟨hw₁, hw₂⟩ := Finset.mem_sdiff.mp hw
+      obtain ⟨hC, hT⟩ := hmem w hw₁ hw₂
+      exact mem_signedUniverse hC (Branch.mem_timeLabels hT)
+    · intro w₁ hw₁ w₂ hw₂ heq
+      obtain ⟨ha₁, ha₂⟩ := Finset.mem_sdiff.mp hw₁
+      obtain ⟨hb₁, hb₂⟩ := Finset.mem_sdiff.mp hw₂
+      exact hinj w₁ ha₁ ha₂ w₂ hb₁ hb₂ heq
+  calc b.worldFinset.card
+      ≤ (S ∪ (b.worldFinset \ S)).card := Finset.card_le_card hsub
+    _ ≤ S.card + (b.worldFinset \ S).card := Finset.card_union_le _ _
+    _ ≤ S.card + (signedUniverse C b.timeLabels).card := Nat.add_le_add_left hdiff _
+    _ ≤ S.card + 2 * C.card * b.timeLabels.card :=
+        Nat.add_le_add_left (card_signedUniverse_le C b.timeLabels) _
+    _ ≤ S.card + 2 * C.card * b.timeFinset.card :=
+        Nat.add_le_add_left (Nat.mul_le_mul_left _ (Branch.card_timeLabels_le b)) _
+
+/--
+**The step bound with *both* cardinalities discharged.** No `W` parameter, no `hW`, no
+`OrderDual`: an unbranched run out of a stock-confined seed, whose linearity stage is exhausted,
+whose eventuality guard holds and which has not blocked, and which obeys the S5 fresh-world
+discipline out of a seed world set `S`, runs for at most
+
+    2 * |C| * ((|S| + 2 * |C| * 2 ^ (2 * |C|)) * 2 ^ (2 * |C|))
+
+steps. This is the honest fuel figure in the presence of fresh worlds; see the world-dimension
+preamble for why it is not `soundFuel' φ` and by how much they differ.
+-/
+theorem chain_le_worlds_bounded {C : Finset Formula} {S : Finset WorldIndex}
+    {ord : TimeOrdering} {tracker : EventualityTracker}
+    (hC : TableauClosed C) (hT : TrichStock C)
+    (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0))
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1)))
+    (hlin : firstIncomparablePair (run n) ord = none)
+    (hev : ∀ t₁ ∈ (run n).knownTimes, ∀ t₂ ∈ (run n).knownTimes,
+      allEventualitiesFulfilledOrDuplicated tracker t₁ t₂ = true)
+    (hnb : findBlockedTime (run n) ord tracker = none)
+    (hww : WorldWitness C S (run n)) :
+    n ≤ 2 * C.card * ((S.card + 2 * C.card * 2 ^ (2 * C.card)) * 2 ^ (2 * C.card)) := by
+  have htime : (run n).timeFinset.card ≤ 2 ^ (2 * C.card) :=
+    timeFinset_card_le_of_not_blocked (branchStock_chain hC hT run n h0 hstep).mem
+      (timeChain_of_linearity_saturated hlin) hev hnb
+  refine chain_le_worlds_of_linearity_saturated hC hT run n h0 hstep hlin hev hnb ?_
+  exact le_trans (worldFinset_card_le hww)
+    (Nat.add_le_add_left (Nat.mul_le_mul_left _ htime) _)
+
+/-! ### World-discipline probes
+
+`WorldWitness` is an invariant rather than a theorem, so it ships with executable rows, on the
+same principle as the duality probes: an unevaluated hypothesis is not evidence. The rows below
+run the engine's *actual* guard, `witnessPresent`, and check the one property the whole world
+bound rests on — that its modal arms ignore the world they are asked about.
+-/
+
+section WorldProbes
+
+/-- The discipline is satisfiable. Degenerately so at `S := b.worldFinset`, where the bound reads
+`|worlds| ≤ |worlds| + …` — sound, but empty. The content is in taking `S` to be the *seed's*
+worlds, which is what makes the second summand the real bound. This row exists to show the
+definition is not accidentally unsatisfiable. -/
+theorem worldWitness_self (C : Finset Formula) (b : Branch) : WorldWitness C b.worldFinset b := by
+  refine ⟨fun _ => ⟨Sign.pos, .bot, { world := 0, time := 0 }⟩, ?_, ?_⟩
+  · intro w hw hns; exact absurd hw hns
+  · intro w₁ hw₁ hns₁ _ _ _ _; exact absurd hw₁ hns₁
+
+-- A witness at world `7` suppresses `boxNeg` asked at world `3`: the guard is
+-- world-indifferent, which is the S5 fact the world bound is built on.
+/-- info: true -/
+#guard_msgs in
+#eval witnessPresent .boxNeg
+  (SignedFormula.neg (.box .bot) { world := 3, time := 0 })
+  [SignedFormula.neg .bot { world := 7, time := 0 }]
+  TimeOrdering.empty
+
+-- Same shape, witness at a different *time*: not suppressed. Time is the dimension the modal
+-- guard does read, which is why the world bound is proportional to the time count.
+/-- info: false -/
+#guard_msgs in
+#eval witnessPresent .boxNeg
+  (SignedFormula.neg (.box .bot) { world := 3, time := 0 })
+  [SignedFormula.neg .bot { world := 7, time := 1 }]
+  TimeOrdering.empty
+
+-- The temporal mirror, for contrast: `allFutureNeg`'s guard holds the world fixed, so a witness
+-- at another world does *not* suppress it. This is exactly why times need
+-- `blocking_fires_of_card_lt` and worlds do not.
+/-- info: false -/
+#guard_msgs in
+#eval witnessPresent .allFutureNeg
+  (SignedFormula.neg (.allFuture .bot) { world := 3, time := 0 })
+  [SignedFormula.neg .bot { world := 7, time := 1 }]
+  ⟨[(0, 1)]⟩
+
+end WorldProbes
+
 /-! ### Duality probes
 
 `OrderDual` is now discharged by `orderDual_holds`, but the rows are kept: they are what caught
