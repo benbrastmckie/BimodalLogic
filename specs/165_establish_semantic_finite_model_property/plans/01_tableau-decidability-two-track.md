@@ -8,10 +8,36 @@
   - reports/02_tableau-decidability-hard-research.md (PRIMARY — hard-mode audit; trust its §9 H4 tables over the charter where they conflict)
   - reports/03_cslib-tableau-survey.md (supplementary — cslib patterns and anti-lessons)
   - reports/01_semantic-fmp-research.md (background only; semantic-FMP route out of scope; F4/F5/F6/F8/F9 remain valid and are reused)
+  - reports/04_blocker-resolution-r5-branchorder-seriality.md (AUTHORITATIVE for Phase 2.4-2.8, Phase 5.1 and Phase 7.1 — its "Recommended plan delta" is settled design and overrides the pre-revision text of those phases)
 - **Artifacts**: plans/01_tableau-decidability-two-track.md (this file)
 - **Standards**: .claude/context/formats/plan-format.md; .claude/rules/plan-format-enforcement.md; .claude/rules/artifact-formats.md; .claude/rules/state-management.md; .claude/context/formats/status-markers reference in plan-format.md
 - **Type**: lean4
 - **Plan Metadata**: `skeleton: true` (Stage 4a escape valve — full scope exceeds the 8-phase hard-mode ceiling); `follow_up_tasks: [410, 411, 412]` (allocated by skill postflight); `dependency_waves: [[1],[2],[3,4,5],[6],[7],[8]]`
+
+## Revision (blocker research) — 2026-07-27
+
+This plan was revised in place (no new plan version) to absorb
+`reports/04_blocker-resolution-r5-branchorder-seriality.md`, the blocker-resolution dispatch for
+Phase 2.4. That report's "Recommended plan delta" is the settled design; the changes it makes to
+this file are:
+
+1. **Phase 2.4 restated** and its `**BLOCKER**` block replaced by a resolution note. The blocker's
+   own diagnosis was **refuted by source inspection**: all thirteen `.persistent` return sites in
+   `applyRule` are already branch-guarded, so persistent-rule re-firing is not the cycle driver;
+   **source destruction** (`Tableau.lean:1365, 1369, 1428, 1431`) is. `AppliedRedundant` was
+   further measured **false** on four formulas (`◇(p ∧ q)`, `◇◇p`, `◇¬¬p`, `◇(□(p∧q) ∧ ¬p)`), so
+   the previously-proposed "prove `AppliedRedundant` invariant" sub-phase is deleted rather than
+   scheduled (report 04 §Q1.2, Contradiction Log C1/C2).
+2. **Four new sub-phases** 2.5 / 2.6 / 2.7 / 2.8 added, all inside Phase 2's existing engine
+   territory, so the wave structure is unchanged. **Execution order: 2.8 → 2.5 → 2.6 → 2.7 → 2.4.**
+3. **Phase 3** constructor count corrected from ~34 to **36**, with an explicit
+   `mem_allRulesForFC_iff` exclusion clause for `serialityRule` (deliberately not in
+   `allRulesForFC`).
+4. **Phase 5.1 rewritten**: per-branch orderings behind the decidable `timeOrderTotal` gate;
+   Mathlib linear extension recorded as a refuted non-goal.
+5. **Phase 7.1 hypothesis changed**: the certificate's saturation field becomes a disjunction
+   (`findUnexpanded … = none ∨ blocked`), and the blocked disjunct is the *normal* case for open
+   branches once `serialityRule` lands.
 
 ## Overview
 
@@ -106,7 +132,19 @@ plan exists for this task; rules derive from research risk factors and cross-rep
 9. **Do NOT spend effort re-litigating the Dedekind gating.** `Discrete ≰ Dedekind` is correct
    (terminus is `ValidDedekindDense`); the gap is the missing D5 rules, nothing else (02 C3).
 10. **Do NOT size case analyses against the charter's "28 rules".** `allRules` has 25 entries,
-    30 constructors total; after R2 (+1) and R6 (+3) the case count is ~34 (02 §1.2, §9).
+    30 constructors total; after R2 (+1) and R6 (+3) the case count is ~34 (02 §1.2, §9), and
+    after 2.6 (`serialityRule`, +1) and 2.7 (`timeLinearity`, +1) it is **36** (04 §Q2.4, Phase 3
+    delta). `serialityRule` is deliberately absent from `allRulesForFC`, so any `by decide` gate
+    over that list needs an explicit exclusion clause for it.
+13. **Do NOT attempt the refuted routes recorded in report 04.** Specifically: (a) proving
+    `AppliedRedundant` invariant under `expandBranchWithFuel` — the predicate is measured *false*
+    on `◇(p ∧ q)`, `◇◇p`, `◇¬¬p`, `◇(□(p∧q) ∧ ¬p)` (§Q1.2); (b) a transitive/recursive
+    strengthening of `appliedEntryRedundant` — `findApplicableRule`'s `.persistent` output set
+    grows with the branch, so the predicate is not monotone and the induction step fails (§Q1.2);
+    (c) Mathlib `extend_partialOrder` / `LinearExtension` on the branch order — unsound, measured
+    counterexample (§Q2.3); (d) scheduling `serialityRule` at the head or per-formula-last of the
+    priority list — both measured to regress control rows (§Q3.4, "Recommendations modified after
+    verification").
 11. **Do NOT let `soundFuel` uncapping degrade the runtime procedure.** Keep the capped
     `soundFuel` as the `#eval` default; introduce uncapped `soundFuel'` used only in theorems
     (02 §10). Plan the fuel form jointly with calculus repair, never after (03 §4.3).
@@ -248,7 +286,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
 - **Timing:** 3 dispatches, ~7 hours.
 - **Depends on:** none
 
-### Phase 2: Calculus Completion (R7, R2, R6, R5) [PARTIAL]
+### Phase 2: Calculus Completion (R7, R2, R6, R5) [IN PROGRESS]
 
 - **Goal:** The rule set is adequate and honestly reported: trichotomy branching exists, Dedekind
   rules exist, the `.timeout` conflation is split, and the open-branch certificate is strong
@@ -294,43 +332,93 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     consumable Until/Since rules), and the Dedekind arm is **prepended** to `allRulesForFC`
     rather than appended, since appending leaves the rules dead. `Discrete <= Dedekind` is
     preserved: the arm is base + dense + dedekind.)*
-  - [ ] **2.4 R5 — certificate strengthening** *(deviation: BLOCKED — see below)* (`Saturation.lean:50-59`): strengthen
-    `ExpandedTableau.hasOpen` to certify `findUnexpanded … = none` (or restate against the
-    applied-set predicate with a proved semantic-redundancy lemma — pick ONE, record the choice);
-    fix the D4 orphan situation so a truth lemma's hypothesis is actually met by the pipeline
-    (witness: `◇p`). Estimated output: ~150-300 lines. Done when: a `#eval` shows the pipeline's
-    open certificate satisfies the strengthened predicate on `◇p`; build green.
+  - [ ] **2.8 (new, cheap — land FIRST) — the `timeOrderTotal` gate**
+    (`Saturation.lean` + `Tests/BimodalTest/TableauConformance.lean`). Add the decidable predicate
 
-**BLOCKER** (Phase 2, task 2.4):
-- **What failed**: neither of the two offered repairs completes. Certifying
-  `findUnexpanded ... = none` is unavailable: the applied set is the only thing preventing an
-  unbounded persistent/consumable cycle in `expandBranchWithFuel`, so requiring it would stop
-  the pipeline producing a certificate for any formula whose expansion uses a persistent rule.
-  The applied-set route needs a *proved* semantic-redundancy lemma, and the obvious statement
-  (`every applied entry is on the branch` implies `findUnexpanded = none`) is false: several
-  persistent rules return `.persistent fs` even when every element of `fs` is already on the
-  branch, so `findApplicableRule` still finds them.
-- **What was tried**: measured the D4 orphan situation on the plan's named witness. For
-  `buildTableau (diamond p) 200 .Base` the certificate has 3 applied-set entries, all 3
-  orphaned off the branch (`T(not p)`, `T(G p)`, `T(H p)` at `(0,0)`, each consumed by
-  `negPos`), and `findUnexpanded` returns `T(box (not p)) @ (0,0)`. Each orphan is present on
-  the branch in decomposed form (`F(p)`, `F(U(not p, top))`, `F(S(not p, top))`).
-- **Why stuck**: the correct hypothesis is weaker than full saturation and stronger than the
-  current field — "every applied entry is redundant on the branch". Proving the pipeline
-  always establishes it is an induction over `expandBranchWithFuel`, which is a sub-phase of
-  its own, not a step inside this one.
-- **What is needed**: either a 2.5 sub-phase proving
-  `AppliedRedundant` invariant under `expandBranchWithFuel` (then `hasOpen` can carry it as a
-  field), or a plan revision that reassigns the D4 repair.
-- **Landed instead (non-vacuous, green)**: the choice is recorded in `Saturation.lean`'s new
-  "Certificate Strength (R5)" section with the orphan table; `appliedEntryRedundant` /
-  `AppliedRedundant` define the strengthened predicate executably; and two `#guard_msgs`
-  probes in the conformance corpus pin the measurement — `◇p` gives
-  `fullySaturated=false applied=3 orphans=3 appliedRedundant=true`, and the persistent-rule-free
-  contrast case `G p -> p` gives `fullySaturated=true applied=0 orphans=0 appliedRedundant=true`.
-- **Prohibited**: no `sorry`, no vacuous placeholder was introduced; `FormalSystem/` remains
-  sorry-free apart from the pre-existing `countermodel_discrete`.
-- **Timing:** 4 dispatches, ~10 hours.
+    ```lean
+    def timeOrderTotal (b : Branch) (ord : TimeOrdering) : Bool :=
+      b.knownTimes.all fun t₁ => b.knownTimes.all fun t₂ =>
+        t₁ == t₂ || (ord.futureOf t₁).contains t₂ || (ord.futureOf t₂).contains t₁
+    ```
+
+    and pin rows W1–W7 in the corpus as currently-failing `#guard_msgs` rows, so 2.7 has a
+    measurable done-criterion and the regression signal exists *before* the change. The measured
+    W-rows (report 04 §Q2.1, fuel-insensitive at 200 and 2000) are `¬(F(G p) ∧ F(¬p))`,
+    `¬(F p ∧ F q)`, `¬(F(G p) ∧ F(G q))`, `¬(F(¬p) ∧ F(G p))` (each `knownTimes=[2,1]`,
+    `constraints=[(0,2),(0,1)]`, `incomparable=[(1,2)]`), plus the comparable controls
+    `¬(F p ∧ P q)` and `F p → F F p`. Estimated output: ~60-100 lines.
+    Done when: the predicate elaborates; W1–W7 pinned with their current (mostly `false`)
+    verdicts; `lake build` and `lake build BimodalTest` green.
+  - [ ] **2.5 (new) — branch-guarded non-destructive expansion** (`Tableau.lean`, with
+    `applied`-threading removal in `Saturation.lean` / `CancellableExpansion.lean`).
+    Add `ruleMintsFreshLabel` and `witnessPresent` (8 arms: `boxNeg`, `diamondPos`,
+    `allFutureNeg`, `allPastNeg`, `someFuturePos`, `somePastPos`, `untlPos`, `sncePos` —
+    `densityRule` already carries its own `existingIntermediates` guard at `Tableau.lean:1074-1076`);
+    guard the `.linear` and `.branching` results in `findApplicableRule` (`1308-1317`) exactly as
+    the `.persistent` arms already guard themselves; make `expandOnce` **non-destructive**
+    (`remaining := b`, lines `1365, 1369`). Delete or demote the `…WithApplied` family
+    (`1376-1435`) and drop `applied` threading from `expandBranchWithFuel`
+    (`Saturation.lean:310-381`), the traced mirrors (`417-535`) and `CancellableExpansion.lean`.
+    Prove `saturated_downward_closed` and `expandOnce_length_lt` (report 04 §Q1.4) — these are
+    **mechanical unfolding lemmas** (`List.find?_eq_none`, `List.findSome?_eq_none_iff`), NOT an
+    induction over `expandBranchWithFuel`. Estimated output: ~250-400 lines.
+    **Done when**: the full corpus is unmoved (all 24 measured rows plus the existing
+    `#guard_msgs` tables); every open certificate reports `findUnexpanded … = none`;
+    `lake build` and `lake build BimodalTest` green.
+  - [ ] **2.6 (new) — `serialityRule` with globally-last scheduling** (`Tableau.lean` +
+    `Saturation.lean`). Add the `serialityRule` constructor with
+    `isApplicable .serialityRule _ _ = true` (keyed on the *label*, not the formula shape) and the
+    `applyRule` arm emitting `T(F ⊤)` / `T(P ⊤)` at the label, self-suppressing once both are
+    present — the tableau images of `Axiom.serial_future` / `Axiom.serial_past`
+    (`Axioms.lean:113,117`), hence sound for every frame class. Keep it **out of
+    `allRulesForFC`** entirely and give `expandOnce` a two-stage pick: ordinary rules first, and
+    only when `findUnexpanded` returns `none` retry with `serialityRule` enabled. Add an in-code
+    note contrasting this against the Dedekind **prepend** (`Tableau.lean:1295-1301`) — both are
+    scheduling lessons, in opposite directions. Estimated output: ~150-250 lines.
+    **Done when**: `S1`-`S5` and `K2`-`K6` are CLOSED in all four class tables at
+    `conformanceFuel = 200`; every control row and counterexamples `A`/`B` hold; the `.Discrete`
+    `K2`/`K3` residual (report 04 §Q3.5) is either closed or documented with its cause isolated.
+    **Depends on 2.5** — the prototype that produced 24/24 has both changes; seriality on the
+    destructive engine was not measured and must not be attempted separately.
+  - [ ] **2.7 (new) — per-branch time orderings + `timeLinearity`** (`Tableau.lean` +
+    `Saturation.lean` + `CancellableExpansion.lean`). Additive
+    `RuleResult.branchingOrdered (branches : List (List SignedFormula × TimeOrdering))` and
+    `ExpansionResult.split (branches : List (Branch × TimeOrdering))`; plumbing per report 04
+    §Q2.4's table (`expandOnce`, `expandBranchWithFuel` `.split` arm at `Saturation.lean:375`,
+    `saturateBlocked`, the traced mirrors, `CancellableExpansion.lean`). Existing rules are
+    unaffected: `.branching bss` translates to `bss.map (·, newOrd)`, the current behaviour
+    verbatim, so no conformance verdict can move from the plumbing alone. Add
+    `Branch.identifyTime` / `TimeOrdering.identifyTime` and the `timeLinearity` base rule with
+    **three** arms — `ord.addFuture t₁ t₂`, `ord.addFuture t₂ t₁`, and the identification arm
+    (arm 3 cannot be dropped: the two-arm version forces distinctness and loses models in which
+    one instant witnesses both existentials). Keep `orderTrichotomy` — it is sound and fixed
+    counterexample B; it simply mints fresh witness times rather than ordering existing ones, so
+    it is the formula-level companion, not a replacement. Estimated output: ~300-450 lines;
+    split into 2.7a (plumbing, zero verdict movement) and 2.7b (the rule) if one dispatch is not
+    enough. **Done when**: `timeOrderTotal` holds of every open certificate in the corpus; the
+    W1-W7 rows pinned in 2.8 flip; no verdict moves except intended ones.
+  - [ ] **2.4 R5 — certificate strengthening** *(restated 2026-07-27; was BLOCKED)*
+    (`Saturation.lean:50-59`): strengthen `ExpandedTableau.hasOpen` to carry `(fc : FrameClass)`
+    and the proposition
+
+    ```lean
+    saturated : findUnexpanded openBranch (timeOrd := timeOrdering) (fc := fc) = none
+                ∨ (findBlockedTime openBranch timeOrdering tracker).isSome
+    ```
+
+    and **delete the applied set from the certificate**. The `fc` field repairs a latent defect
+    found in report 04 §Q1.3: `findUnexpandedWithApplied`'s `fc` argument defaults to `.Base` and
+    is supplied at neither `hasOpen` nor the two `buildTableau` sites (`Saturation.lean:667, 676`)
+    nor `BranchListResult.foundOpen` (`155-158`), so the certificate currently certifies `.Base`
+    saturation for all four classes. Keep the "Certificate Strength (R5)" section
+    (`Saturation.lean:76-113`) but **rewrite** it: record that `AppliedRedundant` was *refuted*
+    (cite the four failing formulas) and record the corrected diagnosis — destruction, not
+    persistent-rule re-firing. Retire `appliedEntryRedundant` / `AppliedRedundant` or demote them
+    to documented historical predicates; nothing may depend on them.
+    Estimated output: ~150-300 lines. **Done when**: `hasOpen` carries `fc` and the disjunction;
+    the pipeline's certificate is constructible for `◇p`; the R5 section reflects the refutation;
+    build green. **Depends on 2.5 and 2.6.**
+- **Timing:** ~8 dispatches, ~20 hours. **Order: 2.8 → 2.5 → 2.6 → 2.7 → 2.4.**
 - **Depends on:** 1
 
 ### Phase 3: RuleSpec Gate — Self-Enforcing Frame-Class Composition [NOT STARTED]
@@ -340,9 +428,14 @@ engine edits complete in waves 1-2. Reads are unrestricted.
 - **Tasks:**
   - [ ] Create `Decidability/Verified/RuleSpec.lean`: `ruleFrameClass : TableauRule → FrameClass`,
     `ruleAxioms : TableauRule → List (Σ φ, Axiom φ)` over the full post-Phase-2 constructor set
-    (~34), and the two GATE lemmas, both `by decide` over the finite product:
-    `ruleAxioms_minFrameClass_le` and `mem_allRulesForFC_iff`. Include a `Verified/README.md`
-    stub describing the 02 §8.2 layout.
+    (**36** — 34 today plus `serialityRule` from 2.6 and `timeLinearity` from 2.7), and the two
+    GATE lemmas, both `by decide` over the finite product: `ruleAxioms_minFrameClass_le` and
+    `mem_allRulesForFC_iff`. Both new rules gate to `.Base`: `serialityRule` to
+    `Axiom.serial_future` / `Axiom.serial_past`, `timeLinearity` to `Axiom.temp_linearity` (same
+    as `orderTrichotomy`). Because `serialityRule` is deliberately **not** in `allRulesForFC`
+    (its scheduling is the two-stage pick in `expandOnce`, 2.6), `mem_allRulesForFC_iff` needs an
+    explicit **exclusion clause** for it — without one the `by decide` gate fails confusingly.
+    Include a `Verified/README.md` stub describing the 02 §8.2 layout.
 - **Estimated output:** ~150-250 lines.
 - **Done when:** both gates proved `by decide`; deliberately mis-gating one rule locally (then
   reverting) is confirmed to fail the build — evidence in the phase summary.
@@ -356,10 +449,13 @@ engine edits complete in waves 1-2. Reads are unrestricted.
   about real blocking (possible only now that Phase 1.3 made blocking genuine).
 - **Tasks:**
   - [ ] **4.1 T1 — `applyRule_subformula_closed`** (`Verified/Termination/SubformulaProperty.lean`,
-    new): the generalized signed subformula property over all ~34 rule cases against the signed,
+    new): the generalized signed subformula property over all **36** rule cases against the signed,
     negation-closed closure — `closureWithNeg` for the Discrete rules (constraint 7;
     `priorUZ` emits `U(φ, ¬φ)`); `untlPos` branch 2 re-emits `U(e,g)` itself so no
-    Fischer-Ladner unwinding is needed. Estimated output: ~300-500 lines (mechanical cases).
+    Fischer-Ladner unwinding is needed. The two new cases are mechanical: `serialityRule` emits
+    `F⊤`/`P⊤` and `⊤ = ⊥ → ⊥`, so `closureWithNeg` already contains it; `timeLinearity` emits
+    **no formulas** in arms 1-2 and only relabels in arm 3 (which must be shown label-only).
+    Estimated output: ~300-500 lines (mechanical cases).
     Done when: theorem sorry-free; the `priorUZ`/`priorSZ` and `densityRule` cases have explicit
     comments; build green.
   - [ ] **4.2 T2 — pigeonhole** (`Verified/Termination/TimeTypeBound.lean`, new):
@@ -385,12 +481,24 @@ engine edits complete in waves 1-2. Reads are unrestricted.
   into each class's concrete carrier through one abstract interface — the only place the four
   classes genuinely diverge (02 §8.4).
 - **Tasks:**
-  - [ ] **5.1 `Verified/Bridge/BranchOrder.lean`** (new): from a saturated branch (trichotomy
-    now guarantees totality) package `BranchOrder b ord : LinearOrder (Fin n)`,
-    `n = b.knownTimes.length`. Record in-code the SETTLED blocking semantics decision
-    (identification/deletion, never edge — constraint 4) that the unwinding of blocked loops
-    will use. Estimated output: ~150-300 lines. Done when: `BranchOrder` sorry-free with a
-    totality proof consuming the R2 saturation facts; build green.
+  - [ ] **5.1 `Verified/Bridge/BranchOrder.lean`** (new) *(rewritten 2026-07-27; the original
+    "trichotomy now guarantees totality" premise was refuted by measurement — report 04 §Q2.1)*:
+    from a saturated branch **carrying `timeOrderTotal`** (the decidable gate landed in 2.8 and
+    discharged by `timeLinearity` in 2.7) package `BranchOrder b ord : LinearOrder (Fin n)`.
+    Index `Fin n` over the times occurring in `ord` **union** `b.knownTimes` — or note that 2.5's
+    non-destructive expansion keeps the root time in `knownTimes` and makes the simple
+    `n = b.knownTimes.length` indexing correct. (Pre-2.5, destruction emptied the root time, so
+    `constraints = [(0,2),(0,1)]` with `knownTimes = [2,1]` induced the **empty** order on
+    `knownTimes` — report 04 §Q2.2.) **Non-goal, explicitly**: do NOT attempt a Mathlib linear
+    extension of a partial branch order (`extend_partialOrder` / `LinearExtension`). It is
+    **unsound**, with a measured counterexample: in `¬(F(G p) ∧ F(¬p))` the incomparable siblings
+    carry `T(G p)` and `F(p)`, so exactly one of the two extensions is a model and the branch does
+    not record which (report 04 §Q2.3). The same argument kills "propagate universals to
+    incomparable times". Record in-code the SETTLED blocking semantics decision
+    (identification/deletion, never edge — constraint 4) that the unwinding of blocked loops will
+    use; `identifyTime` now arrives from 2.7 and is shared. Estimated output: ~150-300 lines.
+    Done when: `BranchOrder` sorry-free with a totality proof consuming `timeOrderTotal`;
+    build green.
   - [ ] **5.2 `Verified/Bridge/Embed.lean` + `Verified/Bridge/Carrier.lean`** (new):
     `class TemporalCarrier (fc) (D)` with `embed_finite` and `frame_condition` fields (02 §8.4);
     instances `.Base ℚ`, `.Dense ℚ`, `.Discrete ℤ`, `.Dedekind ℝ`. ℚ/ℝ `embed_finite` via
@@ -446,9 +554,17 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     (report 01 F6 — verified sound); `ShiftClosed` via `time_shift_preserves_truth`
     (`Truth.lean:446`) per report 01 F9, `Set.univ_shift_closed` as fallback; prove
     `not_valid_of_hasOpen` generic in `TemporalCarrier`, consuming the `sat_*` family verbatim.
+    **Hypothesis change (2026-07-27, report 04 §Q3.5)**: `not_valid_of_hasOpen` consumes the
+    restated 2.4 certificate — `fc`-indexed saturation **or blocked** — plus `timeOrderTotal`.
+    Once `serialityRule` lands (2.6) no open branch is ever fully saturated in the
+    `findUnexpanded = none` sense (seriality always demands one more successor), so **the blocked
+    disjunct is the normal case for open branches**, not a corner case: the
+    loop-unwinding/identification argument (settled semantics: identification/deletion, never
+    edge) is on the critical path. Budget accordingly — the ~250-450 line estimate is a **floor**.
     Demote `branchTruth` (`CountermodelExtraction.lean:263`) to a documented debugging aid or
-    delete it — it must no longer appear in any proof path. Estimated output: ~250-450 lines.
-    Done when: theorem sorry-free at the abstract carrier; four class specializations elaborate.
+    delete it — it must no longer appear in any proof path. Estimated output: ~250-450 lines
+    (floor). Done when: theorem sorry-free at the abstract carrier; four class specializations
+    elaborate.
   - [ ] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`, new): the `allClosed → valid`
     direction as ONE induction over `allRulesForFC fc` (each rule preserves satisfiability),
     using `mem_allRulesForFC_iff` from Phase 3 — no per-class re-proof (SETTLED
