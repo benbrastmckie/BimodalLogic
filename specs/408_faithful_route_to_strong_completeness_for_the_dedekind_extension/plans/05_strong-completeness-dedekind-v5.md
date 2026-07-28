@@ -2919,7 +2919,7 @@ route; do not look for one.
 - **Timing:** 3 hours.
 - **Depends on:** 7.2
 
-### Phase 7.4: The bounded witness, `LimitGuardEventual`, and BOTH unselected forward cases (R3b + R3c) [NOT STARTED]
+### Phase 7.4: The bounded witness, `LimitGuardEventual`, and BOTH unselected forward cases (R3b + R3c) [IN PROGRESS]
 
 **This phase repairs v4's CHARTER GAP.** `fully_restricted_parametric_completeness_from_neg_membership`
 (`Metalogic/Algebraic/RestrictedParametricTruthLemma.lean:417-422`) consumes three coherence

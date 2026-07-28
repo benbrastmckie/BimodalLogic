@@ -327,6 +327,52 @@ def BFMCS.LimitGuardBelow {fc : FrameClass} (B : BFMCS (fc := fc) Rat) : Prop :=
     ψ ∈ limitSetBelow fam.mcs r
 
 /--
+**The guard-eventuality obligation at unselected reals.**
+
+Whenever an `untl` or an `snce` formula survives into the ultrafilter limit at an **unselected**
+real `r`, its guard `ψ` is not merely cofinally but *eventually* true below `r`: it lies in
+`limitSetBelow fam.mcs r`, i.e. it holds at every rational of some interval abutting `r` from
+below.
+
+*The reading.* This is exactly the failure of Reynolds' `γ⁺` at the guard. Reynolds defines the
+connective by saying that "`γ⁺(A)` holds exactly when `A` remains true for a while after now but
+only up until a gap after which `A` is arbitrarily soon false", and calls the indicated gap an
+`A` **left gap** (Reynolds 1992, printed p.175). The predicate here says the guard `ψ` of a
+surviving `untl`/`snce` has no *accumulating* left approach at `r` — its truth region abuts `r`
+from below as an interval rather than as a merely cofinal set.
+
+*Why this is the whole residual, and why it is necessary as well as sufficient.* Sufficiency:
+together with the guard-reach lemma above a gap it discharges both unselected forward cases (see
+`toRealBundle_forward_until_unselected` and `toRealBundle_forward_since_unselected`). Necessity:
+the forward `untl` obligation's own conclusion quantifies the guard over **all** reals of an
+interval `(t, s)`, whose selected members are precisely the rationals of `(t + δ, s + δ)`; feeding
+that rational guard interval back through `BFMCS.LimitGuardBelow` returns exactly this predicate's
+conclusion. So the obligation entails the predicate, and there is no weaker sufficient condition to
+look for.
+
+*Why there is no closure hypothesis, and no `root` argument.* For the identical reason recorded for
+`BFMCS.LimitGuardBelow`: the consumers apply this predicate to the *guard* `ψ` of an
+`untl φ ψ ∈ subformulaClosure root`, and such a guard need not lie in `deferralClosure root`, so a
+mirrored closure hypothesis would be an unprovable side condition at every call site. With no
+closure hypothesis there is nothing for a `root` parameter to constrain, so the predicate takes
+none.
+
+*Discharge.* Unlike `BFMCS.LimitFutureWitness` and `BFMCS.LimitGuardBelow`, this predicate is **not**
+discharged from a Dedekind axiom: `Axiom.prior_U_gap`'s antecedent `U(⊤, χ)` *is* the below-gap
+interval it would have to produce, `Axiom.prior_S_gap` consumes an above-gap interval and so yields
+only the necessity direction, and `Axiom.sep` lives entirely inside `K⁺`/`K⁻`. Its discharge is
+therefore deferred, and it has no source in the corpus — Reynolds reaches ℝ by the separability
+route instead (printed pp.177-178), and Burgess 1984 runs the completion argument only in the
+`F`/`G` fragment, where the gap witness is placed on the far side with no bound whatever and no
+guard to carry (printed pp.109-110).
+-/
+def BFMCS.LimitGuardEventual {fc : FrameClass} (B : BFMCS (fc := fc) Rat) : Prop :=
+  ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ φ ψ : Formula,
+    (Formula.untl φ ψ ∈ limitMCSBelow fam.mcs r ∨
+     Formula.snce φ ψ ∈ limitMCSBelow fam.mcs r) →
+    ψ ∈ limitSetBelow fam.mcs r
+
+/--
 **Transport of restricted temporal coherence to the real bundle.**
 
 Both halves split on selection of the shifted coordinate. At a selected point the rational
