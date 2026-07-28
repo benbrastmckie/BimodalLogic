@@ -1002,9 +1002,8 @@ the deviation in the phase summary.
         kplusOpen P t → TemporalTruth t P ∨ kplus P t` (the true direction, and the one the shim
         lattice needs), plus `kplusOpen_not_implied_by_truth_at`, the machine-checked witness that
         the stated direction fails — `denseClosedRayFlow` at `t = 0`. Nothing is weakened; one
-        arrow is turned around and its failure is proved.)* (a point where `P` holds and `P`
-        does *not* occur arbitrarily soon after). The pair is what makes the trichotomy's weakness
-        precise rather than asserted.
+        arrow is turned around and its failure is proved.)* The pair is what makes the
+        trichotomy's weakness precise rather than asserted.
   - [x] Define `HasFaithfulDedekindINF` — `HasDedekindINF`'s `first_occ` field character-for-character
         **except** that the left disjunct is `kplusOpen M atomMap P z0` in place of
         `kplus M atomMap P z0` — and `HasFaithfulDedekindSUP` dually. **Rule 6**: state what the
