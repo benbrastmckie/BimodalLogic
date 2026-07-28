@@ -1511,7 +1511,7 @@ four `.toHasFaithfulDedekindINF` suffixes (the build enforces this) and should c
 weakening stays type-correct under any carrier. It is marked in-file with an explicit
 SCHEDULED FOR REMOVAL comment for exactly that reason.
 
-### Phase 12.1: Rabinovich Lemma 5.1, list form — `NegFixListFaithful` [NOT STARTED]
+### Phase 12.1: Rabinovich Lemma 5.1, list form — `NegFixListFaithful` [COMPLETED]
 
 > **The second hard site.** `negFixListFaithful_iff` (`NegFixListFaithful.lean:446`) is
 > by-cases-reached with the same case structure and the same absence of a slot for an endpoint case.
@@ -1522,26 +1522,74 @@ SCHEDULED FOR REMOVAL comment for exactly that reason.
   (584 lines; hypothesis site `:335`; destructure site `:446`). **`EANegationFix/NegFixList.lean`
   is read, not edited.**
 - **Tasks**:
-  - [ ] Swap the hypothesis binder at `:335` and re-prove `negFixListFaithful_iff` (`:446`) at the
+  - [x] Swap the hypothesis binder at `:335` and re-prove `negFixListFaithful_iff` (`:446`) at the
         faithful carrier, consuming Phase 12's re-based `negFixOneFaithful_cover`.
-  - [ ] Preserve the case numbering and the per-case citations, as in Phase 12.
-  - [ ] Re-point this module's own Case 1 block: `kplusLeftBlock s.neg` (`:279`) and its
+  - [x] Preserve the case numbering and the per-case citations, as in Phase 12.
+  - [x] Re-point this module's own Case 1 block: `kplusLeftBlock s.neg` (`:279`) and its
         `kplusLeftBlock_holds` uses (`:360`, `:452`) — the same move Phase 12 made at
         `negFixOneCase1`. Note `witness_absurd_of_kplusLeft` (`:236`) and
         `negFixList_gate_probe`-adjacent statements bind `kplus` directly; decide per declaration
         whether to re-point or retain-and-derive, and record which, as Phase 11 did.
+        *(per-declaration decisions recorded: `witness_absurd_of_kplusLeft` **re-pointed** to
+        `kplusOpen` — the two are comparable, not incomparable, so retaining would duplicate;
+        `negFixListFaithful_case1_is_indispensable` **re-pointed**, since an indispensability
+        artifact must be stated at the gate the definition actually carries. Those two are the
+        ONLY `kplus`-binding statements this module had. Deviation D8: no `negFixList_gate_probe`
+        declaration exists anywhere in the tree, and this module contains no gate probe at all —
+        the two that exist are `NegFixGateProbe` (`EANegationFix/NegFixOne.lean:402`, a frozen
+        read-only module) and `NegFixOneFaithfulGateProbe` (`NegFixOneFaithful.lean:695`, Phase
+        12's territory, already handled there). The item is vacuous for this phase, recorded
+        rather than silently skipped.)*
   - [ ] **Remove D4's `kplusOpen_of_kplus` at `:468`.** Unlike D3's four coercions the build will
         NOT enforce this one — the weakening stays type-correct under either carrier — so it is
         marked with an in-file `SCHEDULED FOR REMOVAL` comment. Grep for that comment.
-  - [ ] Verify every pre-existing declaration is present with its conclusion unweakened.
-  - [ ] Docstring: `Rabinovich 2014, Lemma 5.1, PDF pp.9-10`; `ADAPTED-FROM` naming the previous pin.
-  - [ ] `#print axioms`; regression canaries; scoped build green; full `lake build` green.
+        *(deviation D7: **not executable as written — the item's premise is false.** The coercion
+        is not a mixed-carrier artifact; it is structurally required under EITHER carrier, because
+        `HasFaithfulDedekindINF.first_occ` (`KPlusFaithful.lean:325`) weakens only its LEFT
+        disjunct and deliberately keeps the tree's `kplus` in its RIGHT disjunct — its own
+        docstring at `:302` records this as intentional, so the two carriers' right disjuncts stay
+        syntactically identical. Removing the coercion makes the build RED. Phase 12 kept the
+        identical coercion at `NegFixOneFaithful.lean:583` for the identical reason. Action taken:
+        coercion retained; the `SCHEDULED FOR REMOVAL` comment replaced by one explaining why it
+        is permanent.)*
+  - [x] Verify every pre-existing declaration is present with its conclusion unweakened.
+        *(mechanically diffed: inventory byte-identical, 0 additions / 0 removals / 0 renames.)*
+  - [x] Docstring: `Rabinovich 2014, Lemma 5.1, PDF pp.9-10`; `ADAPTED-FROM` naming the previous pin.
+  - [x] `#print axioms`; regression canaries; scoped build green; full `lake build` green.
 - **Estimated output**: ~220 lines changed.
 - **Done when**: the module compiles with all declarations preserved, sorry-free and axiom-clean at
   the faithful carrier; canaries unchanged; `EANegationFix/NegFixList.lean` byte-identical.
+  **MET**, with the one exception recorded as D7 above.
 - **Depends on**: 12.
 - **Timing**: 6 hours.
-- **Decomposition protocol** and **Fallback (R11)**: as Phase 12.
+- **Decomposition protocol** and **Fallback (R11)**: as Phase 12. **R11 not triggered.**
+
+**Outcome: the second hard site held, and it held more cheaply than the first.** The banner above
+predicted `negFixListFaithful_iff` would be "by-cases-reached with the same case structure and the
+same absence of a slot for an endpoint case." Correct on both counts, and the consequence was that
+**no proof step changed at all**. The entire code-bearing delta inside the theorem is the binder
+type, four dropped `.toHasFaithfulDedekindINF` suffixes, and two `kplusLeftBlock_holds` →
+`kplusOpenLeftBlock_holds` rewrites. The `rcases … with hk | ⟨r0, …⟩` remains a two-arm split; the
+`by_cases hsev` wrapping it is carrier-free and untouched; the `Aᵢ`/`Bᵢ` recursion, its
+`vecPinnedConjAll` DNF, and the `x ≤ r` / `x = r` / `x < r` peel are all textually unchanged.
+Scoped build green on the FIRST attempt, zero failed proof attempts, no proof-search tool invoked.
+
+**Standing consequence for Phase 13 — the two-edge cascade fired again, one site per edge.**
+Phase 12's generalized warning ("a re-base cascades along two independent edges — moved binders and
+moved definitions — and a probe or grep aimed at one will not reveal the other") is now confirmed
+by a second, independent instance, and this time **both** edges fired, in Phase 13's own territory:
+- *Binder edge*: `VecEANegFixFaithful.lean:109` needed `.toHasFaithfulDedekindINF`. Marked
+  `SCHEDULED FOR REMOVAL`; the build WILL delete it when `:105`'s binder is swapped.
+- *Definition edge*: `VecEANegFixFaithful.lean:295` read `kplusLeftBlock_holds` off
+  `negFixListFaithful`'s Case 1 disjunct and needed `kplusOpenLeftBlock_holds` plus a one-token
+  weakening. The build DID enforce this one — unlike D4's, because the block identifier changed
+  rather than merely the argument type.
+
+Phase 13 should also re-point `VecEA2.negFixFaithful_carries_limit_gate`'s `hk : kplus` hypothesis
+to `kplusOpen`. Deliberately left alone here as out-of-territory (a statement change is more than a
+cascade repair); the statement is still true and still load-bearing, but it now certifies the limit
+gate at a hypothesis one conjunct stronger than the gate the definition carries. An in-file note
+records this.
 
 ### Phase 13: Rabinovich Prop 4.2 re-based — `VecEANegFixFaithful` + `Prop42Faithful` [NOT STARTED]
 
