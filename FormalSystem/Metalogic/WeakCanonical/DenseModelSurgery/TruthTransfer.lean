@@ -588,4 +588,219 @@ theorem reynolds_lemma8_untl_backward (atomMap : Formula → sig.preds)
 
 end Lemma8
 
+/-! ## *"`S(A,B)` is similar"*
+
+Printed p.181, the single sentence with which Reynolds discharges the `S` half of Lemma 8's
+induction. Following `Dual.lean`'s standing policy — *"no later phase should derive a third
+mirror by hand when an instantiation at `(dual M, dualize ε)` will do"* — the `S` cases are
+**not** re-transcribed. They are the `U` cases run at the order-dual, transported back along
+`temporalTruth_dual'` and a structure isomorphism.
+
+Two bridges are new here and are the whole cost of the mirror:
+
+* `temporalTruth_iso` — `Dual.lean` proved `eval` invariant along a `StructIso` but never lifted
+  that to `TemporalTruth`. The lift is `table_correctness` on both sides of `eval_iso`.
+* `surgeredDualIso` — the surgered structure commutes with the dual only up to the rewriting of
+  its domain predicate by `contempEquivDense_dual`, exactly as `subintervalDualIso` handles the
+  subinterval's conjunct exchange. Same points, same order, same interpretations.
+
+Nothing in `Dual.lean` or `BadIntervals.lean` is removed, renamed or weakened by any of this. -/
+
+section Mirror
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- **`TemporalTruth` is invariant along a structure isomorphism.**
+
+`eval_iso` (`Dual.lean:351`) with `table_correctness` (`Table.lean:254`) on both sides. This is
+the lemma `Dual.lean` stopped one step short of; it is stated for an arbitrary `StructIso`, so it
+is reusable for any later carrier transport. -/
+theorem temporalTruth_iso {M N : OrderedMonadicStructure sig} (e : StructIso M N)
+    (atomMap : Formula → sig.preds) (x : M.carrier) (A : Formula) :
+    TemporalTruth N atomMap (e.toEquiv x) A ↔ TemporalTruth M atomMap x A := by
+  rw [← table_correctness N atomMap (e.toEquiv x) A, ← table_correctness M atomMap x A]
+  exact eval_iso e (fun _ : Fin 1 => x) (table sig atomMap A)
+
+variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2} {Q : M.carrier → Prop}
+  {t : M.carrier}
+
+/-- **The surgered structure commutes with the dual**, up to the rewriting of its domain
+predicate: the two structures have literally the same points, order and interpretations, and
+their `Subtype` predicates differ only in `ContempEquivDense (dual M) (dualize ε)` versus
+`ContempEquivDense M ε`, which `contempEquivDense_dual` identifies. -/
+def surgeredDualEquiv (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (Q : M.carrier → Prop) (t : M.carrier) :
+    (dual (surgeredStructure M ε Q t)).carrier ≃
+      (surgeredStructure (dual M) (dualize ε) Q (d t)).carrier where
+  toFun x := ⟨d x.val, x.property.imp id fun h => (contempEquivDense_dual ε t x.val).mpr h⟩
+  invFun x := ⟨x.val, x.property.imp id fun h => (contempEquivDense_dual ε t x.val).mp h⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+/-- **The commutation is a structure isomorphism**, on the model of `subintervalDualIso`
+(`Dual.lean:444`): both order and interpretation are preserved definitionally. -/
+def surgeredDualIso (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (Q : M.carrier → Prop) (t : M.carrier) :
+    StructIso (dual (surgeredStructure M ε Q t))
+      (surgeredStructure (dual M) (dualize ε) Q (d t)) where
+  toEquiv := surgeredDualEquiv M ε Q t
+  map_lt _ _ := Iff.rfl
+  map_interp _ _ := Iff.rfl
+
+/-- **Bad points are bad points in the dual**, with `R` and `L` exchanged — printed p.179's
+*"`R ∨ L`"* is symmetric in its two disjuncts, which is why the notion survives duality
+unchanged. -/
+theorem isBadPoint_dual (ε : MonadicFormula sig 2) (u : M.carrier) :
+    IsBadPoint (dual M) (dualize ε) (d u) ↔ IsBadPoint M ε u :=
+  (or_congr (endsInGapOnRight_dual (M := M) ε u) (endsInGapOnLeft_dual (M := M) ε u)).trans
+    Or.comm
+
+/-- **The interiority package transports**, with the two bounds exchanged.
+
+`ClassInteriorToBadInterval` asks for `R` *and* `L` throughout, so it is symmetric under the
+exchange: the dual's `R` half is the original's `L` half and conversely. -/
+theorem classInteriorToBadInterval_dual {a p b : M.carrier}
+    (h : ClassInteriorToBadInterval M ε a p b) :
+    ClassInteriorToBadInterval (dual M) (dualize ε) (d b) (d p) (d a) where
+  toR :=
+    { left_lt := h.toR.lt_right
+      lt_right := h.toR.left_lt
+      left_out := fun hc => h.toR.right_out ((contempEquivDense_dual (M := M) ε p b).mp hc)
+      right_out := fun hc => h.toR.left_out ((contempEquivDense_dual (M := M) ε p a).mp hc)
+      rThroughout := fun q h₁ h₂ =>
+        (endsInGapOnRight_dual (M := M) ε q).mpr (h.lThroughout q h₂ h₁) }
+  lThroughout := fun q h₁ h₂ =>
+    (endsInGapOnLeft_dual (M := M) ε q).mpr (h.toR.rThroughout q h₂ h₁)
+
+/-- **The surgery set-up transports to the dual.**
+
+Every clause is its own mirror: *"non-empty"* is unchanged, *"`R ∨ L` throughout"* is
+`isBadPoint_dual`, *"interval"* and *"maximal"* reverse their two bounds, and the interiority
+witnesses exchange. -/
+theorem isBadIntervalSurgery_dual (hS : IsBadIntervalSurgery M ε Q t) :
+    IsBadIntervalSurgery (dual M) (dualize ε) Q (d t) where
+  isBad :=
+    { nonempty := hS.isBad.nonempty
+      bad := fun u hu => (isBadPoint_dual (M := M) ε u).mpr (hS.isBad.bad u hu)
+      convex := fun a b c hab hbc ha hc => hS.isBad.convex c b a hbc hab hc ha
+      saturated := fun a u ha hbad =>
+        hS.isBad.saturated a u ha fun q h₁ h₂ =>
+          (isBadPoint_dual (M := M) ε q).mp (hbad q h₂ h₁) }
+  mem := hS.mem
+  interior := fun p u hp hu => by
+    obtain ⟨a, b, hau, hub, hint⟩ := hS.interior p u hp hu
+    exact ⟨d b, d a, hub, hau, classInteriorToBadInterval_dual hint⟩
+
+/-- **The induction hypotheses transport across the mirror.**
+
+An `N`-versus-`M` agreement at `C` becomes an `N'`-versus-`dual M` agreement at `swapUS C`, where
+`N'` is the surgered dual. Both sides move at once: the base side by `temporalTruth_dual'`, the
+surgered side by `temporalTruth_dual'` followed by `temporalTruth_iso`. -/
+theorem snce_mirror_ih (atomMap : Formula → sig.preds) {C : Formula}
+    (ih : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val C ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y C) :
+    ∀ y : (surgeredStructure (dual M) (dualize ε) Q (d t)).carrier,
+      TemporalTruth (dual M) atomMap y.val (swapUS C) ↔
+        TemporalTruth (surgeredStructure (dual M) (dualize ε) Q (d t)) atomMap y (swapUS C) := by
+  intro y
+  obtain ⟨y₀, rfl⟩ := (surgeredDualEquiv M ε Q t).surjective y
+  exact ((temporalTruth_dual' (M := M) atomMap y₀.val C).trans (ih y₀)).trans
+    ((temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap y₀ C).symm.trans
+      (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap y₀ (swapUS C)).symm)
+
+/-- **Reynolds 1992, §6 Lemma 8, printed p.181 — the `S` case, forward direction.**
+
+> Now consider `U(A,B)`: `S(A,B)` is similar.
+
+Obtained by instantiating `reynolds_lemma8_untl_forward` at `(dual M, dualize ε)`. -/
+theorem reynolds_lemma8_snce_forward (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) (A B : Formula)
+    (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
+    (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
+    (x : (surgeredStructure M ε Q t).carrier)
+    (h : TemporalTruth M atomMap x.val (.snce A B)) :
+    TemporalTruth (surgeredStructure M ε Q t) atomMap x (.snce A B) := by
+  refine (temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap x (.snce A B)).mp ?_
+  refine (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x)
+    (swapUS (.snce A B))).mp ?_
+  exact reynolds_lemma8_untl_forward atomMap h_surj (isContempEquivDense_dualize hε)
+    (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U)
+    (isBadIntervalSurgery_dual hS) (swapUS A) (swapUS B)
+    (snce_mirror_ih atomMap ihA) (snce_mirror_ih atomMap ihB)
+    ((surgeredDualIso M ε Q t).toEquiv (d x))
+    ((temporalTruth_dual' (M := M) atomMap x.val (.snce A B)).mpr h)
+
+/-- **Reynolds 1992, §6 Lemma 8, printed p.182 — the `S` case, backward direction.**
+
+The instantiation of `reynolds_lemma8_untl_backward` at `(dual M, dualize ε)`. -/
+theorem reynolds_lemma8_snce_backward (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) (A B : Formula)
+    (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
+    (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
+    (x : (surgeredStructure M ε Q t).carrier)
+    (h : TemporalTruth (surgeredStructure M ε Q t) atomMap x (.snce A B)) :
+    TemporalTruth M atomMap x.val (.snce A B) := by
+  refine (temporalTruth_dual' (M := M) atomMap x.val (.snce A B)).mp ?_
+  refine reynolds_lemma8_untl_backward atomMap h_surj (isContempEquivDense_dualize hε)
+    (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U)
+    (isBadIntervalSurgery_dual hS) (swapUS A) (swapUS B)
+    (snce_mirror_ih atomMap ihA) (snce_mirror_ih atomMap ihB)
+    ((surgeredDualIso M ε Q t).toEquiv (d x)) ?_
+  exact (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x) (swapUS (.snce A B))).mpr
+    ((temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap x (.snce A B)).mpr h)
+
+/-! ## Lemma 8
+
+*"We proceed by induction on the construction of `A`. The cases of atomic and boolean `A` are
+immediate."* — printed p.181.
+
+*Immediate* is exact here: `surgeredStructure` inherits `M.interp p x.val` definitionally, so the
+`atom` and `box` cases are `Iff.rfl`, as is `bot`; `imp` is a congruence. `box` is atomic in this
+reading because `TemporalTruth` sends a box-subformula to `atomMap (.box φ)` rather than
+recursing — the same reason `swapUS` leaves `.box` opaque. -/
+
+/-- **Reynolds 1992, §6 Lemma 8, printed pp.181-182.**
+
+> **LEMMA 8** *For all temporal formulas `A`, for all `t ∈ N`,*
+>
+> `M ⊨ A(t)` *iff* `N ⊨ A(t)`
+
+`N` is `M` with a whole bad interval `Q₀` replaced by one of its `∼`-classes `I`.
+
+**Conditional**, as every §6 result below Lemma 2 is: `IsContempEquivDense ε` and semantic
+Prior-U / Prior-S are hypotheses, and this tree can exhibit no non-trivial `ε` satisfying them
+until the anti-vacuity instance lands with Lemma 9 and Theorem 4. This lemma is therefore not
+discharged in the unconditional sense, and must not be described as such. -/
+theorem reynolds_lemma8 (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
+    ∀ (A : Formula) (x : (surgeredStructure M ε Q t).carrier),
+      TemporalTruth M atomMap x.val A ↔
+        TemporalTruth (surgeredStructure M ε Q t) atomMap x A := by
+  intro A
+  induction A with
+  | atom _ => exact fun _ => Iff.rfl
+  | bot => exact fun _ => Iff.rfl
+  | box _ => exact fun _ => Iff.rfl
+  | imp φ ψ ihφ ihψ => exact fun x => imp_congr (ihφ x) (ihψ x)
+  | untl φ ψ ihφ ihψ =>
+      exact fun x =>
+        ⟨reynolds_lemma8_untl_forward atomMap h_surj hε h_prior_U h_prior_S hS φ ψ ihφ ihψ x,
+          reynolds_lemma8_untl_backward atomMap h_surj hε h_prior_U h_prior_S hS φ ψ ihφ ihψ x⟩
+  | snce φ ψ ihφ ihψ =>
+      exact fun x =>
+        ⟨reynolds_lemma8_snce_forward atomMap h_surj hε h_prior_U h_prior_S hS φ ψ ihφ ihψ x,
+          reynolds_lemma8_snce_backward atomMap h_surj hε h_prior_U h_prior_S hS φ ψ ihφ ihψ x⟩
+
+end Mirror
+
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
