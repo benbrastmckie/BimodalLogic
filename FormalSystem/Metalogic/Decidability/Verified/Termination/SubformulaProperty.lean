@@ -699,4 +699,226 @@ theorem applyRule_somePastNeg_closed (hC : TableauClosed C) (hsf : sf.formula �
 
 end PersistentUniversal
 
+/--
+Every propagation block of the fresh-witness rules emits a **subformula** of a branch formula.
+
+That single observation is what makes those rules tractable. Their blocks differ in shape — some
+match on the trigger's connective first (`boxProps`, `gProps`), some guard on a time (`fNegProps`),
+some only relabel (`tempGProps`) — but in every case the emitted formula is either a component of
+the source formula or the source formula itself, and `subformulas` is reflexive
+(`Formula.self_mem_subformulas`). Routing through `sub` therefore replaces a per-block choice of
+component-extraction lemma with one uniform obligation that `simp [Formula.subformulas]` closes,
+and the obligation is discharged in a context with the 900-line `applyRule` term cleared away.
+-/
+theorem mem_filterMap_sub {C : Finset Formula} {b : Branch} {P : SignedFormula → Bool}
+    {F : SignedFormula → Option SignedFormula} {g : SignedFormula} (hC : TableauClosed C)
+    (hb : ∀ x ∈ b, x.formula ∈ C)
+    (hF : ∀ x y, F x = some y → y.formula ∈ Formula.subformulas x.formula)
+    (h : g ∈ (b.filter P).filterMap F) : g.formula ∈ C := by
+  obtain ⟨x, hx, hxg⟩ := List.mem_filterMap.mp h
+  exact hC.of_sub (hb x (List.mem_of_mem_filter hx)) (hF x g hxg)
+
+
+section FreshWitness
+
+-- The fresh-witness rules are the propagation-heavy ones; several sit late in the match.
+set_option maxHeartbeats 4000000
+
+variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+
+/-! ### The fresh-witness family
+
+These rules mint a fresh world or time, put a witness there, and then drag every universal
+already on the branch across to it. Their statements carry `hb` as well as `hsf`, because the
+propagation blocks read formulas back off the branch.
+
+The proofs share one shape. After the split cascade, `hg` is a membership in a nest of
+`::`/`++`/`flatten`, `repeat' rcases` peels it into one goal per block, and a three-alternative
+`first` chain closes them: the witness goal by a component lemma applied to `hsf` (`rcases` has
+already substituted `g`, which is why that alternative must come first and must not mention
+`hg`), each propagation block by `mem_filterMap_sub`, and the `boxDiamondPersistence` block by
+`mem_boxDiamondPersistence`. The chain is three alternatives long, not thirty, and its expensive
+alternative runs only after `clear` has removed the unfolded `applyRule` term from the context —
+both of those are what keep this inside the memory ceiling described above.
+-/
+
+theorem applyRule_boxNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .boxNeg sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.boxPosFormulas, Branch.diamondNegFormulas, Branch.allFuturePosAtTime,
+    Branch.allPastPosAtTime, Branch.someFutureNegAtTime, Branch.somePastNegAtTime,
+    Branch.untlNegAtTime, Branch.snceNegAtTime,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hC.box_inner hsf
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+
+theorem applyRule_diamondPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .diamondPos sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asDiamond?_eq_iff, reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.boxPosFormulas, Branch.diamondNegFormulas, Branch.allFuturePosAtTime,
+    Branch.allPastPosAtTime, Branch.someFutureNegAtTime, Branch.somePastNegAtTime,
+    Branch.untlNegAtTime, Branch.snceNegAtTime,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hC.diamond_inner hsf
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+
+theorem applyRule_allFutureNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .allFutureNeg sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hC.allFuture_inner hsf
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+
+theorem applyRule_allPastNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .allPastNeg sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.allPastPosFormulas, Branch.somePastNegFormulas,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hC.allPast_inner hsf
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+
+theorem applyRule_someFuturePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .someFuturePos sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asSomeFuture?_eq_iff, reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hC.untl_left hsf
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+
+theorem applyRule_somePastPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .somePastPos sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asSomePast?_eq_iff, reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.allPastPosFormulas, Branch.somePastNegFormulas,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hC.snce_left hsf
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+end FreshWitness
+
 end FormalSystem.Metalogic.Decidability
