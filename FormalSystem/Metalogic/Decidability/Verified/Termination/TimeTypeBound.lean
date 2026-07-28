@@ -1085,10 +1085,10 @@ theorem subConfining_untl {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubCo
         intro x hx
         simp only [Finset.mem_union, Finset.mem_insert, Finset.mem_singleton] at hx
         rcases hx with (rfl | hx | hx) | rfl
-        · simp [h]
+        · simp
         · exact Finset.mem_union_right _ (hsubψ hx)
         · exact Finset.mem_union_right _ (hsubtop hx)
-        · simp
+        · simp [h]
       · rw [emissions_untl_of_ne h]
         intro x hx
         simp only [Finset.mem_insert, Finset.mem_union] at hx
@@ -1156,10 +1156,10 @@ theorem subConfining_snce {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubCo
         intro x hx
         simp only [Finset.mem_union, Finset.mem_insert, Finset.mem_singleton] at hx
         rcases hx with (rfl | hx | hx) | rfl
-        · simp [h]
+        · simp
         · exact Finset.mem_union_right _ (hsubψ hx)
         · exact Finset.mem_union_right _ (hsubtop hx)
-        · simp
+        · simp [h]
       · rw [emissions_snce_of_ne h]
         intro x hx
         simp only [Finset.mem_insert, Finset.mem_union] at hx
