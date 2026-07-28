@@ -19,6 +19,9 @@ import FormalSystem.Metalogic.Decidability.Verified.RuleSpec
 import FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProperty
 import FormalSystem.Metalogic.Decidability.Verified.Termination.TimeTypeBound
 import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.BranchOrder
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.Embed
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.Carrier
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -39,6 +42,9 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Termination.SubformulaProperty`: T1, the signed subformula property (per rule)
 - `Verified.Termination.TimeTypeBound`: T2, the `2 ^ (2 * |C|)` time-type bound and pigeonhole
 - `Verified.Termination.Fuel`: T3, the set-growth progress measure and the uncapped fuel figure
+- `Verified.Bridge.BranchOrder`: the finite linear order a gated saturated branch carries
+- `Verified.Bridge.Embed`: monotone placement of a finite order in a dense carrier or in `ℤ`
+- `Verified.Bridge.Carrier`: `TemporalCarrier fc D`, the per-frame-class carrier interface
 
 ## Status
 
