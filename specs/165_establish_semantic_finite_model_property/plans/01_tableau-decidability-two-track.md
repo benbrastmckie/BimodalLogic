@@ -1727,7 +1727,12 @@ arm surfaces as `none`/`STALLED` rather than as a closure. `not_valid_of_hasOpen
 - **Goal:** **Headline result 1**: `not_valid_of_hasOpen` generic in the carrier, semantic rule
   soundness, and `Decidable` instances for all four frame classes. On completion this task has
   delivered standalone publishable value regardless of Track B's fate.
-- **Tasks:**
+- **Verification Tier**: `full` (7.3 runs the conformance corpus); sub-phases 7.1a–7.1e declare
+  their own tiers in the RECORDED DECISION block below.
+- **Tasks:** **SUPERSEDED — the 7.1/7.2/7.3 bullets below are the original decomposition and are
+  retained as the record. The task list in force is the one inside the RECORDED DECISION
+  (2026-07-28j, report 07) at the end of this phase.** 7.2 and 7.3 survive that decision
+  essentially unchanged; 7.1 is replaced by 7.1a–7.1e.
   - [ ] **7.1 `Verified/Bridge/Omega.lean` + `Verified/Bridge/TruthLemma.lean`** (new)
     *(in progress — handoff; O1 and O3 landed sorry-free, and the 2026-07-28g banner corrects both
     residuals the 2026-07-28f banner named — `BoxContextClosed` → `BoxTemporalSpread`, `GapDemands`
@@ -2109,7 +2114,213 @@ labels, where the branch dictates the valuation and no gap point is involved.
 - Re-deriving `sat_imp_pos` inside the induction, or adding it to `CountermodelExtraction.lean` —
   it exists, in `Bridge/PropSaturation.lean`, deliberately isolated.
 
-### Phase 8: Hygiene — Vacuous Theorems and Documentation [NOT STARTED]
+**RECORDED DECISION — the gap arm is a REGION LABELLING, not a synthesised policy and not an MCS
+bridge (2026-07-28j, report 07).** Resolves the "two candidate routes, neither probed yet" left
+open by the 2026-07-28i banner. Adopted: the **model-side** candidate, in a specific form. The
+"branch → BFMCS → existing parametric truth lemma" pivot was adjudicated and is **rejected**.
+
+*The decision, in one sentence.* A region of the carrier takes the **atom content of a known branch
+label**, chosen per region and certified by a decidable branch-level gate — not a policy synthesised
+from the region's forced set, and not an MCS.
+
+*Why the pivot is rejected — three independent grounds, first one decisive.*
+
+1. **Its step 1 is inter-derivable with the goal.** `set_lindenbaum`
+   (`Core/MaximalConsistent.lean:303`) is gated on `SetConsistent`. Write G for the Phase 7 goal
+   `hasOpen → ¬ valid φ` and P for `hasOpen → SetConsistent {φ.neg}`. **P ⟹ G is already free**:
+   `exists_mcs_with_negation` (`Decidability/FMP/FMP.lean:63`) plus `countermodel_dense`
+   (`Chronicle/ChronicleToCountermodelBasic.lean:829`, which takes an MCS `A` with `φ.neg ∈ A` and
+   `□¬U(⊤,⊥) ∈ A` and **no branch at all**) deliver the countermodel, so the pivot's steps 2–4 are
+   not work, they are work already done for a different input. **G ⟹ P** holds by in-tree
+   soundness. So P is not a weaker obligation than G; contrapositively P demands `⊢ φ ⟹ the tableau
+   closes`, i.e. completeness of the tableau relative to the Hilbert calculus, whose only
+   non-circular proof here runs through the model existence Phase 7 is trying to build. (A second
+   obstacle sits on the same step: `countermodel_dense` also needs `□¬U(⊤,⊥) ∈ A`, so the Lindenbaum
+   seed is a *pair* whose consistency the pivot never mentions.)
+2. **Its step 3 names an obligation that does not exist.** `FMCS` (`Bundle/FMCSDef.lean:103`) has
+   exactly four fields — `mcs`, `is_mcs`, `forward_G`, `backward_H`. `forward_F`/`backward_P` live in
+   `BFMCS.RestrictedTemporallyCoherent` (`Bundle/TemporalCoherence.lean:308`), which **both** truth
+   lemmas take as `_h_rtc` — leading underscore, unused in the proof body
+   (`RestrictedParametricTruthLemma.lean:119`, `ParametricTruthLemma.lean:379`). `Formula` has no
+   `G`/`H`/`F`/`P` constructors (`allFuture φ := (untl φ.neg ⊤).neg`), so the induction has six
+   cases and every temporal obligation lands on `h_buc`/`h_fuc`
+   (`TemporalCoherence.lean:489,541`) — which are strictly *stronger* than `forward_F`
+   (`someFuture φ = untl φ ⊤`).
+3. **No theorem in `Algebraic/` is applicable, and Chronicle has no finite seed.** Both truth lemmas
+   hardwire `ParametricCanonicalTaskModel`, whose world states are `{M : Set Formula //
+   SetMaximalConsistent M}` (`ParametricCanonical.lean:70,207`); the branch model's are
+   `W × (Set ι × Set ι)`. And `omegaChain`'s base case is hard-wired to `singletonChronicle A`
+   (`ChronicleConstruction.lean:70,283`) with no `omegaChainFrom` anywhere — and a seed chronicle's
+   `f` must be MCS-valued regardless, so ground 1 applies unchanged.
+
+*Why the region labelling escapes `gapAdequate_insufficient`.* That refutation is a fact about
+**forced sets**, not about **label contents**. A saturated branch is propositionally closed *at each
+label* — that is exactly `sat_imp_pos` (`Bridge/PropSaturation.lean:91`) — and `sat_box_grid_of_check`
+(`Bridge/BoxSaturation.lean:566`) puts the box content at every label. On the refuting shape itself:
+`T(□p)` and `T(□(p→q))` put `T(p)` and `T(p→q)` at every label, `sat_imp_pos` then forces `F(p)` or
+`T(q)`, and openness rules out `F(p)` — so `T(q)` sits at every label and a region carrying a label's
+atoms makes `p → q` **true**. The 2026-07-28i ban on "any atom-wise gap policy read off the branch's
+`T(G·)`/`T(H·)`/`T(□·)` facts" stands verbatim: this policy is read off a *chosen label*, not off
+those facts, and is not either refuted copy policy (those choose the source by *position*, which is
+what breaks the non-reflexive `G`/`H` demands; this chooses by *content*, validated by a check).
+
+*Measured before adopted, per this task's own process lesson.* Two unregistered probe files
+(contents in report 07 §6, re-runnable via `lake env lean`) evaluated, on branches the engine
+actually builds:
+
+- **Stationary labels** (`T(Gχ)@l ⟹ T(χ)@l`, dually for `H`): rows `(□p ∧ ◇q) → r`,
+  `(□p ∧ ◇Gq) → r`, the same at `.Dense`, `(□p ∧ □(p→q)) → r`, `Gp → p`, `¬(Fp → p)` report
+  `stationary = 14/14, 13/14, 20/20, 4/4, 3/4, 4/4`. Row `Gp → p` is the discriminator: exactly the
+  label carrying `T(Gp)` without `T(p)` fails, so the check is not vacuous.
+- **Region fill** (a label absorbing every `G`-, `H`- and `□`-demand of its world, carrying no `F(·)`
+  of any, and G/H-reflexive — strong enough to state *every* non-placed point of its world at once):
+  `fillPerWorld = [7,7], [7,3], [10,10], [4], [2], [4]`. Every world of every open branch measured
+  has **at least two**. The refuting shape has all four of its labels qualifying against 28 demands.
+
+**Honest bound**: `absorbs` uses branch-wide demands (an over-approximation), checks no `untl`/`snce`
+guard condition, and is not a proof that a gate of this shape suffices. It establishes the route is
+not dead on arrival on the branches that killed the previous two interfaces. Sub-phase 7.1a exists
+precisely because that is not the same as sufficiency.
+
+*A strictly easier first milestone.* `valid` quantifies over the carrier
+(`Semantics/Validity.lean:79`), so one carrier refutes it; and `finOrderEmbInt`
+(`Bridge/Embed.lean:76`) is the `Nat`-cast, so `finiteOrderEmbInt` places `n` branch times at
+`0,…,n-1` — **contiguous**. A contiguous ℤ placement has *empty* interior gap regions: the only
+non-placed points are the two rays. `valid`/`ValidDiscrete` therefore lose the dense-gap problem
+entirely, while `ValidDense` (ℚ) and `ValidDedekindDense` (ℝ) keep it. These are different problems
+and the plan no longer treats them as one milestone. **Caveat verified and corrected**: only
+`TemporalCarrier` instances for `Base ℚ`, `Dense ℚ`, `Discrete ℤ`, `Dedekind ℝ` are registered
+(`Bridge/Carrier.lean:136-164`); a `Base ℤ` instance does not exist and is explicit work in 7.1c.
+
+*Assets.* Nothing is deleted and no signature changes — `branchModel`'s `gapVal` **parameter**
+survives; only the inhabitant `branchGapVal` is retired. Load-bearing: all of `Termination/`,
+`BranchOrder`, `Embed`, `Carrier`, all of `Interpolate` (region-constancy is exactly what a
+per-region label state delivers), `Omega`, `Valuation`'s `placedCode`/`regionValuation`/
+`regionModel`/`branchPlacedVal`/`branchModel`/`truthAt_atom_placed`/`truthAt_atom_gap`, the whole
+`sat_*` family with `boxAnchoredCheck`/`sat_box_grid_of_check`/`timeOrderConverse`, and `sat_imp_pos`
+(promoted: it is *why* a label's content is propositionally closed). Retired but **kept as refutation
+documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`/
+`branchGapVal_gapAdequate`, `leftCopyGap`/`rightCopyGap` and their refutations,
+`gapAdequate_insufficient`.
+
+#### Phase 7 task list in force (supersedes the 7.1/7.2/7.3 bullets above)
+
+- [x] **7.1a Probe the gate before stating it** (new scratch probe rows only; no `Verified/` edit).
+  **DONE (2026-07-28k)** — `Tests/BimodalTest/RegionGateProbe.lean`, registered in
+  `Tests/BimodalTest.lean`, `lake build BimodalTest` green (1973 jobs). All nine rows report
+  `total=true gate=true`: the six report-07 shapes at `.Base` plus three at `.Dense`. Both
+  additions the sub-phase demanded were made and both fire: the `untl`/`snce` straddling guards
+  (`T(U(φ,ψ))` below the region demands `ψ`, `T(S(φ,ψ))` above demands `ψ`) and the `F`-side
+  demands (`F(U(φ,ψ))` below demands `¬φ`), the latter *subsuming* report 07's `G`/`H` demands
+  rather than sitting beside them, since `T(Gχ)` is `F(U(¬χ,⊤))` on a saturated branch. The gate
+  is measured non-vacuous three ways: `regionGate_refutable`'s two-label synthetic branch reports
+  `gate=false`; row A excludes 4 of its 7 labels per region; row E (`G p → p`) discriminates
+  exactly as it did in report 07, its interior regions admitting 2 labels rather than 3.
+  Extend the two report-07 probes to the *per-region* demand — for each gap region and each ray,
+  the `G`-demands from placed points below and `H`-demands from placed points above only — and add
+  the two checks report 07 did not make: (i) the `untl`/`snce` guard conditions a region state must
+  meet, (ii) the `F`-side (negative) demands at the chosen label. Report per-row `Bool`s for the
+  same six shapes plus at least three `.Dense` rows. **Verification Tier**: `local`.
+  Estimated output: ~120-200 lines, in `Tests/BimodalTest/`. Done when: the rows are `#guard_msgs`-
+  pinned; **if any row reports `false`, STOP and record a DO-NOT-RE-ATTEMPT entry rather than
+  proceeding to 7.1b** — that is the whole point of this sub-phase.
+- [ ] **7.1b `Bridge/RegionLabel.lean`** (new module): `regionLabel`, the per-region choice; the
+  decidable gate `regionLabelCheck b timeOrd : Bool` in the family `timeOrderTotal` and
+  `boxAnchoredCheck` already belong to; `branchRegionVal b regionLabel : WorldIndex → Set (BranchTime b)
+  × Set (BranchTime b) → Atom → Prop` (**the existing `branchModel` gapVal type, unchanged**); and the
+  consumption lemmas the induction will want, stated as *branch fact ⟹ model truth at gap points*
+  in the corrected direction `GapAdequate` established (branch fact as hypothesis, never model truth).
+  **Verification Tier**: `interface`. Estimated output: ~200-350 lines. Done when: sorry-free; the
+  gate evaluates `true` on the 7.1a corpus; `lake build FormalSystem.Metalogic.Decidability` green.
+- [ ] **7.1c The ℤ milestone — `not_valid_of_hasOpen` for `valid` and `ValidDiscrete`.** Add the
+  missing `TemporalCarrier FrameClass.Base ℤ` instance; use `finiteOrderEmbInt`'s contiguity to show
+  interior gap regions are empty, so only the two ray regions carry a `regionLabel`; run the
+  six-case induction (`atom`, `bot`, `imp`, `box`, `untl`, `snce` — `Formula` has no `G`/`H`/`F`/`P`
+  constructors, so there are exactly six) consuming `branchPlacedVal`, `branchRegionVal`,
+  `sat_box_grid_of_check`, `sat_imp_pos` and `Interpolate`'s `InterpInvariant*`. **Write the `box`
+  case first, then `untl`** — the 2026-07-28i lesson: the case that tests the interface goes first.
+  The preamble must state that `findUnexpanded = none` means "no *ordinary* rule applies", since
+  `serialityRule` sits outside `allRulesForFC`. **Verification Tier**: `full`.
+  Estimated output: ~300-450 lines. Done when: sorry-free at ℤ for both classes; **green milestone
+  commit**.
+- [ ] **7.1d The dense milestone — `ValidDense` (ℚ) and `ValidDedekindDense` (ℝ).** The same
+  induction with non-empty interior gap regions. This is where the `prior_U_gap`/`prior_S_gap`/`sep`
+  content lives and where a single region label must meet *both* the `G`-content from the left and
+  the `H`-content from the right. Consume `Interpolate`'s `exists_gt_sameRegion`/
+  `exists_lt_sameRegion` (both need `DenselyOrdered` + `NoMaxOrder`/`NoMinOrder`, available at ℚ/ℝ).
+  **Verification Tier**: `full`. Estimated output: ~250-400 lines. Done when: sorry-free for both
+  classes; green milestone commit.
+- [ ] **7.1e Demote or delete `branchTruth`** (`CountermodelExtraction.lean:263`) — unchanged from
+  the original 7.1 text and unaffected by this decision; it must no longer appear on any proof path.
+  **Verification Tier**: `local`. Estimated output: ~20-40 lines.
+- [ ] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`, new) — **unchanged**: the
+  `allClosed → valid` direction as ONE induction over `allRulesForFC fc`, using
+  `mem_allRulesForFC_iff` from Phase 3. **Verification Tier**: `full`. Estimated output:
+  ~250-450 lines. Done when: sorry-free for all four classes via the single induction; build green.
+- [ ] **7.3 `valid_iff_allClosed` + `Decidable` instances** — **unchanged in content, split in
+  delivery**: the `valid`/`ValidDiscrete` pair may land after 7.1c without waiting for 7.1d.
+  **Verification Tier**: `full`. Estimated output: ~150-300 lines. Done when: all four instances
+  sorry-free; conformance corpus green with zero expected-failure rows remaining for validity
+  verdicts; **green milestone commit**.
+
+**Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
+
+#### Phase 7 DO-NOT-RE-ATTEMPT register (consolidated; all prior entries carried forward verbatim)
+
+*From 2026-07-28e:*
+- `Ω := Set.univ` — the empty history falsifies every `□`.
+- A universal `TaskRel` — `nullity_identity` is an iff and forbids it.
+- Discharging `∀ τ ∈ Ω, RegionConstant f τ` by building the history through `regionExtend`, or by
+  any other means — refuted and machine-witnessed.
+- Copying a gap region's valuation from an adjacent placed point — the refuted half-open partition
+  wearing a different hat.
+
+*From 2026-07-28f:*
+- Defining the gap valuation by copying an adjacent placed point, in *either* direction — both
+  halves machine-refuted (`not_leftCopy_gapAdequate`, `not_rightCopy_gapAdequate`).
+- Trying to obtain cross-world *and* cross-time `T(□φ)` propagation from `findUnexpanded = none`.
+- Adding the O3 lemmas to `CountermodelExtraction.lean` — they live in `Bridge/BoxSaturation.lean`.
+
+*From 2026-07-28g:*
+- `BoxContextClosed` as a construction invariant — refuted on two independent counts.
+- `GapDemands` as the gap obligation — machine-proved vacuous (`gapDemands_trivial`).
+- Folding the `U`/`S` straddling guards into the gap *policy* — they are compound-formula
+  obligations of the induction, not degrees of freedom of `gapVal`.
+
+*From 2026-07-28h:*
+- `TimeOrderConverse` as an open obligation — already proved as `orderDual_holds`.
+- `BoxTemporalSpread` as a construction invariant *or* as a saturated-branch fact — machine-refuted
+  on `(□p ∧ ◇q) → r`; use `BoxAnchored`.
+- A construction induction for the box invariant as a *prerequisite* for the truth lemma —
+  `boxAnchoredCheck` discharges it the way `timeOrderTotal` already is.
+
+*From 2026-07-28i:*
+- The truth-lemma induction against `GapAdequate`, with `branchGapVal` or any other policy —
+  machine-refuted by `gapAdequate_insufficient`. The `box` case is where it fails, so an induction
+  that leaves `box` for last will look healthy until the last case and then be unclosable.
+- Any *atom-wise gap policy read off the branch's `T(G ·)`/`T(H ·)`/`T(□ ·)` facts* — the closure
+  argument rules out the whole family. **Scope note (2026-07-28j)**: the ban is on policies read off
+  the region's *forced set*; a policy reading a *chosen known label's* atoms is outside it, because a
+  label's content is propositionally closed by `sat_imp_pos` while a forced set is not.
+- The union of the two copy policies ("left-or-right") as a rehabilitation of either.
+- Re-deriving `sat_imp_pos` inside the induction, or adding it to `CountermodelExtraction.lean`.
+
+*Added by this decision (2026-07-28j):*
+- **Branch labels → MCSs via `set_lindenbaum`**, in any form, as a route to the truth lemma — the
+  consistency hypothesis is inter-derivable with the goal. Bans the whole family, not just the
+  four-step version adjudicated in report 07.
+- **Seeding Chronicle from the branch** (a finite `Chronicle`, an `omegaChainFrom`, a finite
+  prescribed-order family of MCSs) — same refutation; the seed must be MCS-valued.
+- **Treating `forward_F`/`RestrictedTemporallyCoherent` as an obligation to discharge** — it is
+  passed as `_h_rtc` and unused. Budgeting for it is budgeting for nothing; the obligations are
+  `h_buc`/`h_fuc`.
+- **Applying `parametric_shifted_truth_lemma` or `restricted_parametric_shifted_truth_lemma` to a
+  branch model** — both hardwire `ParametricCanonicalTaskModel`, whose world states are MCS
+  subtypes. Reuse the *shape*, never the theorem.
+- **Treating all four `Decidable` instances as one milestone** — ℤ placements are contiguous and
+  have empty interior gaps; ℚ/ℝ placements do not.
+
+### Phase 8: Hygiene — Vacuous Theorems and Documentation [IN PROGRESS]
 
 - **Goal:** No vacuous theorems remain in `Decidability/`; documentation matches reality.
 - **Tasks:**
