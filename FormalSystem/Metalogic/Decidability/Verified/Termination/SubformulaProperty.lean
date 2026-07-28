@@ -551,6 +551,152 @@ theorem applyRule_denseIndicatorClosure_closed :
   all_goals (try simp only [RuleResult.emitted] at hg)
   all_goals simp_all only [List.not_mem_nil, SignedFormula.pos, SignedFormula.neg, reduceCtorEq]
 
+/--
+`serialityRule` takes no trigger at all, so `hsf` is absent from the statement: `T(F⊤)` and
+`T(P⊤)` come from the `serialFuture`/`serialPast` fields alone.
+
+The extra `simp only … at hg` after the `simp_all only` is not redundant. `serialityRule` is arm
+35 of 36, and the arm that survives carries the whole cascade of "rule ≠ …" hypotheses the
+splitter accumulated; `simp_all` declines to rewrite `hg` in that context, leaving `hg` in its
+raw `List.filter` form. Rewriting `hg` on its own afterwards is what makes the two closers apply.
+-/
+theorem applyRule_serialityRule_closed (hC : TableauClosed C) :
+    ∀ g ∈ (applyRule .serialityRule sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [List.mem_filter, List.mem_cons, List.not_mem_nil, or_false,
+    Bool.not_eq_eq_eq_not, Bool.not_true, SignedFormula.pos, reduceCtorEq])
+  all_goals (try simp only [List.mem_filter, List.mem_cons, List.not_mem_nil, or_false] at hg)
+  all_goals (try (obtain ⟨hg, -⟩ := hg))
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hC.serialFuture
+    | exact hC.serialPast
+
+/--
+`timeLinearity` is the only `.branchingOrdered` rule, so its conclusion is about the whole
+post-rule branch rather than about additions; the hypothesis is correspondingly `hb`, not `hsf`.
+Arms 1 and 2 carry `b` verbatim and arm 3 carries `b.identifyTime t₂ t₁`, which
+`identifyTime_formula_mem` shows is formula-preserving.
+
+The three-way `rcases hg with hg | hg | hg` is deliberately *not* `repeat' rcases hg with hg | hg`
+as in the propositional cases. Here the disjuncts are themselves `List.Mem` proofs, and `repeat'`
+happily carries on destructing those into `head`/`tail`, shredding `b` into a cons-cell pattern
+and leaving goals that `hb` no longer applies to.
+-/
+theorem applyRule_timeLinearity_closed (hb : ∀ g ∈ b, g.formula ∈ C) :
+    ∀ g ∈ (applyRule .timeLinearity sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_append, List.not_mem_nil, or_false, reduceCtorEq])
+  all_goals (try simp only [List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_append, List.not_mem_nil, or_false] at hg)
+  all_goals (try (rcases hg with hg | hg | hg))
+  all_goals first
+    | (apply hb; assumption)
+    | (apply identifyTime_formula_mem hb; assumption)
+
 end NonAnalytic
+
+section PersistentUniversal
+
+-- These six sit between arms 6 and 27 of the match, so they are cheaper than the non-analytic
+-- block above, but still well past the default heartbeat budget.
+set_option maxHeartbeats 1000000
+
+variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+
+/-! ### The persistent-universal family
+
+`boxPos`, `diamondNeg`, `allFuturePos`, `allPastPos`, `someFutureNeg` and `somePastNeg` all have
+the same body: a `List.filterMap` over `knownWorlds`, `futureOf`, or `pastOf` whose function is
+`fun x => if branch.contains (prop x) then none else some (prop x)`. `mem_filterMap_guarded`
+collapses that to `g = prop x` in one step, so each proof is the split cascade followed by a
+single component-extraction lemma. The label varies with `x`, but the *formula* does not — which
+is exactly why one closer suffices for the whole filterMap.
+-/
+
+theorem applyRule_boxPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .boxPos sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [List.not_mem_nil, reduceCtorEq])
+  all_goals (try (obtain ⟨-, -, rfl⟩ := mem_filterMap_guarded hg))
+  all_goals exact hC.box_inner hsf
+
+theorem applyRule_diamondNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .diamondNeg sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asDiamond?_eq_iff, List.not_mem_nil, reduceCtorEq])
+  all_goals (try (obtain ⟨-, -, rfl⟩ := mem_filterMap_guarded hg))
+  all_goals exact hC.diamond_inner hsf
+
+theorem applyRule_allFuturePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .allFuturePos sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [List.not_mem_nil, reduceCtorEq])
+  all_goals (try (obtain ⟨-, -, rfl⟩ := mem_filterMap_guarded hg))
+  all_goals exact hC.allFuture_inner hsf
+
+theorem applyRule_allPastPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .allPastPos sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [List.not_mem_nil, reduceCtorEq])
+  all_goals (try (obtain ⟨-, -, rfl⟩ := mem_filterMap_guarded hg))
+  all_goals exact hC.allPast_inner hsf
+
+theorem applyRule_someFutureNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .someFutureNeg sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asSomeFuture?_eq_iff, List.not_mem_nil, reduceCtorEq])
+  all_goals (try (obtain ⟨-, -, rfl⟩ := mem_filterMap_guarded hg))
+  all_goals exact hC.untl_left hsf
+
+theorem applyRule_somePastNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .somePastNeg sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asSomePast?_eq_iff, List.not_mem_nil, reduceCtorEq])
+  all_goals (try (obtain ⟨-, -, rfl⟩ := mem_filterMap_guarded hg))
+  all_goals exact hC.snce_left hsf
+
+end PersistentUniversal
 
 end FormalSystem.Metalogic.Decidability
