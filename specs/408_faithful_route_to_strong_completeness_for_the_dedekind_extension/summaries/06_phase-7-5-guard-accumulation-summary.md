@@ -161,7 +161,8 @@ No task-number citations appear in any deliverable file.
 | Check | Result |
 |---|---|
 | `lake build …Chronicle.ChronicleGuardAccumulation` | green |
-| full `lake build` | green |
+| `lake build FormalSystem.Metalogic.BXCanonical` | `Build completed successfully (1838 jobs)` |
+| full `lake build` | green on evidence; see note below |
 | new `sorry` | 0 |
 | live sorries outside `Boneyard/` | unchanged: exactly `WeakCanonical/Transfer.lean:1242` |
 | vacuous definitions (`:= True` / `:= trivial` / `:= Unit`) | 0 |
@@ -170,6 +171,15 @@ No task-number citations appear in any deliverable file.
 | `#print axioms familyQ_violates_noGuardAccumulation` | `[propext, Classical.choice, Quot.sound]` |
 | `#print axioms noGuardAccumulation_transport` | `[propext, Classical.choice, Quot.sound]` |
 | `#print axioms noGuardAccumulation_singleton` | `[propext, Classical.choice, Quot.sound]` |
+
+**Note on the full build, stated exactly.** Two full `lake build` runs went to completion emitting
+zero `error:` lines (a failing lake build always emits them). A third run, launched only to capture
+the literal `Build completed successfully` line, hit a 580s timeout without emitting any error — it
+did not fail, it did not finish. The cause is environmental and outside this phase's territory: a
+concurrent session is continuously re-editing `FormalSystem/Metalogic/Decidability` and
+`FormalSystem/Automation`, so every full build re-does that subtree. The sanctioned scoped fallback
+was run instead and printed the explicit success line for the entire `BXCanonical` subtree, which
+is where all of this phase's work lives.
 
 ## What 7.6 inherits
 

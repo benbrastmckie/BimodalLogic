@@ -3732,10 +3732,12 @@ verbatim** in the summary so 7.6-7.9 can be held to it.
         for the `γ⁺` statement being discharged, and nothing else as a source. **No task-number
         citations.**
   - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleGuardAccumulation`, then
-        full `lake build`. *(both green; the full build emitted zero `error:`/`✖` lines. A
-        confirmation re-run was left contending with a concurrent session rebuilding
-        `Decidability/` and `Automation/`, which are outside this phase's territory and were not
-        modified here.)*
+        full `lake build`. *(deviation: altered — module build green; two full builds ran to
+        completion emitting zero `error:` lines, but no literal `Build completed successfully` line
+        was captured for the full tree because a concurrent session is continuously re-editing
+        `Decidability/` and `Automation/`. The sanctioned scoped fallback
+        `lake build FormalSystem.Metalogic.BXCanonical` printed
+        `Build completed successfully (1838 jobs)`, covering the whole subtree this phase touches.)*
   - [x] `#print axioms` on each new declaration; record the results. *(all
         `[propext, Classical.choice, Quot.sound]` — recorded in the summary.)*
 - **Estimated output:** ~250-350 lines in the new module. **One agent run (H8).**
