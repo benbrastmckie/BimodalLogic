@@ -271,6 +271,97 @@ theorem lt_or_gt_of_not_mem (hS : IsBadIntervalSurgery M ε Q t) {x : M.carrier}
   · exact absurd (h ▸ hS.mem) hx
   · exact Or.inr h
 
+/-- **A bad interval has no first point** — printed p.180, Lemma 6's third clause read from
+inside: the interiority witness `a` below `u` is joined to `u` by bad points, so saturation puts
+it in `Q₀`. This is what makes *"`B` holds for a while into `Q₀`"* (forward case 2) a statement
+about the start of an actual class of `Q₀`. -/
+theorem exists_mem_lt (hS : IsBadIntervalSurgery M ε Q t) {u : M.carrier} (hu : Q u) :
+    ∃ p : M.carrier, Q p ∧ p < u := by
+  obtain ⟨a, b, hau, hub, hint⟩ := hS.interior u u hu hu
+  refine ⟨a, ?_, hint.toR.left_lt⟩
+  refine hS.isBad.saturated u a hu (fun r hr₁ hr₂ => IsBadPoint.of_right ?_)
+  refine hint.toR.rThroughout r (le_trans (le_min hint.toR.left_lt.le le_rfl) hr₁) ?_
+  exact le_trans hr₂ (max_le hub (le_trans hint.toR.left_lt.le hub))
+
+/-- **A bad interval has no last point** — the mirror of `exists_mem_lt`. -/
+theorem exists_mem_gt (hS : IsBadIntervalSurgery M ε Q t) {u : M.carrier} (hu : Q u) :
+    ∃ p : M.carrier, Q p ∧ u < p := by
+  obtain ⟨a, b, hau, hub, hint⟩ := hS.interior u u hu hu
+  refine ⟨b, ?_, hint.toR.lt_right⟩
+  refine hS.isBad.saturated u b hu (fun r hr₁ hr₂ => IsBadPoint.of_right ?_)
+  refine hint.toR.rThroughout r ?_ (le_trans hr₂ (max_le hub le_rfl))
+  exact le_trans (le_min hau (le_trans hau hub)) hr₁
+
+/-! ### Lemma 7, re-indexed from a segment to the whole bad interval
+
+Reynolds states Lemma 7 about *"a bad interval"*; the landed `reynolds_lemma7` family is stated
+about a segment `[a, b]` straddling a class in the interior. The four re-indexings below are the
+only bridge this module adds, and each is a single application of the corresponding landed half
+at the segment supplied by `IsBadIntervalSurgery.interior`. No Prior axiom is applied outside
+these four calls. -/
+
+section Lemma7Wide
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- **Lemma 7, first statement, start half, over the whole bad interval** — printed pp.180-181:
+*"If a formula `B` is true for a while at the start of a `∼`-class in a bad interval then it
+holds throughout the bad interval."* -/
+theorem lemma7_start_wide (hS : IsBadIntervalSurgery M ε Q t) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (B : Formula) {p : M.carrier} (hp : Q p)
+    (hstart : ∃ x : M.carrier, ContempEquivDense M ε p x ∧
+      ∀ q : M.carrier, ContempEquivDense M ε p q → q < x → TemporalTruth M atomMap q B)
+    {u : M.carrier} (hu : Q u) : TemporalTruth M atomMap u B := by
+  obtain ⟨a, b, hau, hub, hint⟩ := hS.interior p u hp hu
+  exact reynolds_lemma7_start atomMap h_surj hε M h_prior_U h_prior_S B hint.toR hstart hau hub
+
+/-- **Lemma 7, first statement, end half, over the whole bad interval** — printed pp.180-181:
+*"Similarly at the end."* -/
+theorem lemma7_end_wide (hS : IsBadIntervalSurgery M ε Q t) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (B : Formula) {p : M.carrier} (hp : Q p)
+    (hend : ∃ x : M.carrier, ContempEquivDense M ε p x ∧
+      ∀ q : M.carrier, ContempEquivDense M ε p q → x < q → TemporalTruth M atomMap q B)
+    {u : M.carrier} (hu : Q u) : TemporalTruth M atomMap u B := by
+  obtain ⟨a, b, hau, hub, hint⟩ := hS.interior p u hp hu
+  exact reynolds_lemma7_end atomMap h_surj hε M h_prior_U h_prior_S B hint hend hau hub
+
+/-- **Lemma 7, second statement, left half, over the whole bad interval** — printed p.181: *"If
+a formula is true anywhere in a bad interval it is true arbitrarily close to each end of each
+class in the interval."* -/
+theorem lemma7_close_left_wide (hS : IsBadIntervalSurgery M ε Q t)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {p : M.carrier} (hp : Q p)
+    (hsome : ∃ w : M.carrier, Q w ∧ TemporalTruth M atomMap w A)
+    {x : M.carrier} (hxc : ContempEquivDense M ε p x) :
+    ∃ q : M.carrier, ContempEquivDense M ε p q ∧ q < x ∧ TemporalTruth M atomMap q A := by
+  obtain ⟨w, hw, hAw⟩ := hsome
+  obtain ⟨a, b, haw, hwb, hint⟩ := hS.interior p w hp hw
+  exact reynolds_lemma7_close_to_left atomMap h_surj hε M h_prior_U h_prior_S A hint.toR
+    ⟨w, haw, hwb, hAw⟩ x hxc
+
+/-- **Lemma 7, second statement, right half, over the whole bad interval** — printed p.181, the
+*"arbitrarily close to the end"* half that forward case 5 consumes by name. -/
+theorem lemma7_close_right_wide (hS : IsBadIntervalSurgery M ε Q t)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {p : M.carrier} (hp : Q p)
+    (hsome : ∃ w : M.carrier, Q w ∧ TemporalTruth M atomMap w A)
+    {x : M.carrier} (hxc : ContempEquivDense M ε p x) :
+    ∃ q : M.carrier, ContempEquivDense M ε p q ∧ x < q ∧ TemporalTruth M atomMap q A := by
+  obtain ⟨w, hw, hAw⟩ := hsome
+  obtain ⟨a, b, haw, hwb, hint⟩ := hS.interior p w hp hw
+  exact reynolds_lemma7_close_to_right atomMap h_surj hε M h_prior_U h_prior_S A hint
+    ⟨w, haw, hwb, hAw⟩ x hxc
+
+end Lemma7Wide
+
 end IsBadIntervalSurgery
 
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
