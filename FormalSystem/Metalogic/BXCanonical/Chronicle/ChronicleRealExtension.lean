@@ -903,3 +903,218 @@ theorem forward_until_unselected_eventuality_of_priorU {fc : FrameClass}
     exact limitFutureWitness_of_priorU hfc fam.mcs (fun q => fam.is_mcs q) hUf hUb (t + δ) hx φ hF
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle
+
+namespace FormalSystem.Metalogic.Bundle
+
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Metalogic.Core
+
+/-! ## The bounded witness -/
+
+/--
+**A cofinal witness below a gap is already a witness inside any interval abutting it from above.**
+
+If `φ` holds at rationals arbitrarily close below an **unselected** real `r`, then for *every*
+rational bound `c > r` there is a rational `w` with `r < w < c` carrying `φ`. The witness is
+bounded — that is the whole content, and it is what turns an unguarded witness somewhere above the
+gap into one inside the guarded interval.
+
+*The proof.* Contrapositively, if `φ` failed at every rational of `(r, c)`, then `¬φ` would guard
+that whole interval, and the guard-reach lemma below a gap (`limitGuardBelow_of_priorS`, from
+`Axiom.prior_S_gap`, whence `hfc`) would push `¬φ` to an interval abutting `r` from *below* — where
+the cofinal hypothesis puts a `φ`-point. Maximal consistency at that point is the contradiction.
+
+*Provenance.* Burgess 1984 §2.7 (printed pp.109-110) places the gap witness on the far side with
+**no bound whatsoever**, licensed by `A7a`; no bound is needed there because `F`/`G` carries no
+guard. Here the bound is precisely what makes the guard interval finite, and it is bought with the
+Since-side gap axiom rather than assumed.
+-/
+theorem boundedWitness_of_limitGuardBelow {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
+    (m : Rat → Set Formula) (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q))
+    (hSf : ∀ (t : Rat) (α β : Formula), Formula.snce α β ∈ m t →
+      ∃ s : Rat, s < t ∧ α ∈ m s ∧ ∀ p : Rat, s < p → p < t → β ∈ m p)
+    (hSb : ∀ (t : Rat) (α β : Formula),
+      (∃ s : Rat, s < t ∧ α ∈ m s ∧ ∀ p : Rat, s < p → p < t → β ∈ m p) →
+      Formula.snce α β ∈ m t)
+    (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (φ : Formula)
+    (hcof : ∀ z : ℝ, z < r → ∃ w : Rat, z < (w : ℝ) ∧ (w : ℝ) < r ∧ φ ∈ m w)
+    (c : Rat) (hc : r < (c : ℝ)) :
+    ∃ w : Rat, r < (w : ℝ) ∧ (w : ℝ) < (c : ℝ) ∧ φ ∈ m w := by
+  by_contra hcon
+  push_neg at hcon
+  have hguard : ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → φ.neg ∈ m q := by
+    intro q h1 h2
+    rcases SetMaximalConsistent.negation_complete (hm q) φ with h | h
+    · exact absurd h (hcon q h1 h2)
+    · exact h
+  obtain ⟨z, hz, hall⟩ :=
+    FormalSystem.Metalogic.BXCanonical.Chronicle.limitGuardBelow_of_priorS hfc m hm hSf hSb r hr
+      φ.neg c hc hguard
+  obtain ⟨w, hzw, hwr, hphi⟩ := hcof z hz
+  exact SetMaximalConsistent.neg_excludes (hm w) φ (hall w hzw hwr) hphi
+
+/-! ## Forward `untl` at an unselected target -/
+
+/--
+**Forward `untl` at an unselected real, in full.**
+
+The residual left open by `toRealBundle_forward_until_unselected_dichotomy` is closed here, by the
+six-step chain the guard-eventuality predicate makes available. Given the predicate's conclusion
+`ψ ∈ limitSetBelow fam.mcs (t + δ)`:
+
+- the guard-reach lemma **above** a gap (`h_lga`, Prior-U applied to the guard `ψ`) turns it into a
+  rational bound `c > t + δ` with `ψ` at every rational of `(t + δ, c)`;
+- `boundedWitness_of_limitGuardBelow` at that `c`, fed the dichotomy's cofinal `φ`-points, produces
+  a rational `w` with `t + δ < w < c` and `φ ∈ fam.mcs w`;
+- `(w : ℝ) - δ` is the real witness, and `guard_transport_realLimitMCS` on `(t + δ, w)` — a
+  subinterval of `(t + δ, c)` — transports the guard to every real strictly between.
+
+The guard-reach hypothesis `h_lga` is written out rather than named as a predicate: its chronicle
+discharge is `cantor_bfmcs_dense_limit_guard_above`, and the module owning that lemma is not
+extended here.
+-/
+theorem toRealBundle_forward_until_unselected {fc : FrameClass}
+    (hfc : FrameClass.Dedekind ≤ fc) (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
+    (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families)
+    (hSf : ∀ (t : Rat) (α β : Formula), Formula.snce α β ∈ fam.mcs t →
+      ∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p)
+    (hSb : ∀ (t : Rat) (α β : Formula),
+      (∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p) →
+      Formula.snce α β ∈ fam.mcs t)
+    (h_lga : ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ χ : Formula,
+      χ ∈ limitSetBelow fam.mcs r →
+      ∃ c : Rat, r < (c : ℝ) ∧ ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → χ ∈ fam.mcs q)
+    (h_lge : B.LimitGuardEventual)
+    (δ t : ℝ) (φ ψ : Formula)
+    (hsub : Formula.untl φ ψ ∈ subformulaClosure root)
+    (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
+    (hU : Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
+      ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r := by
+  have hUlim : Formula.untl φ ψ ∈ limitMCSBelow fam.mcs (t + δ) := by
+    rwa [realLimitMCS_of_not_rat fam.mcs δ t hx] at hU
+  rcases toRealBundle_forward_until_unselected_dichotomy B root h_rfuc fam hfam δ t φ ψ hsub hx hU
+    with hleft | hcof
+  · exact hleft
+  · have hev : ψ ∈ limitSetBelow fam.mcs (t + δ) :=
+      h_lge fam hfam (t + δ) hx φ ψ (Or.inl hUlim)
+    obtain ⟨c, hTc, hguardAbove⟩ := h_lga (t + δ) hx ψ hev
+    obtain ⟨w, hTw, hwc, hφw⟩ :=
+      boundedWitness_of_limitGuardBelow hfc fam.mcs fam.is_mcs hSf hSb (t + δ) hx φ hcof c hTc
+    refine ⟨(w : ℝ) - δ, by linarith, ?_, ?_⟩
+    · rw [realLimitMCS_of_rat fam.mcs δ ((w : ℝ) - δ) w (by ring)]
+      exact hφw
+    · intro r hr1 hr2
+      refine guard_transport_realLimitMCS fam.mcs δ (t + δ) ((w : ℝ)) ψ ?_ r (by linarith)
+        (by linarith)
+      intro q hq1 hq2
+      exact hguardAbove q hq1 (by linarith)
+
+/-! ## Forward `snce` at an unselected target -/
+
+/--
+**Forward `snce` at an unselected real, in full — and it needs no gap axiom at all.**
+
+This is the half of `h_fuc` that no earlier phase chartered. It is also the cheap half: the
+obligation asks for a real `s < t` with `φ` at `s` and `ψ` guarding `(s, t)`, i.e. for `ψ` on the
+rationals abutting `t + δ` from *below* — which is verbatim what
+`ψ ∈ limitSetBelow fam.mcs (t + δ)` says. So the guard-eventuality predicate discharges the guard
+directly, with no appeal to Prior-U, no bounded witness, and no guard-reach lemma above the gap.
+
+Only the witness needs work, and it comes from the same cofinal descent used everywhere on the
+unselected side: `limitMCSBelow_cofinal_below` produces a rational `p` inside the predicate's own
+guard interval still carrying `snce φ ψ`, and rational forward coherence at `p` yields the witness
+`s'` below it. The guard on `(s', t + δ)` is then covered piecewise — by rational coherence below
+`p`, by the predicate at and above `p` — which is exactly why `p` is chosen above the predicate's
+threshold `z`.
+
+An implementer reaching for `limitGuardAbove_of_priorU` here has misread the obligation's
+direction: nothing above the gap is ever asked about.
+-/
+theorem toRealBundle_forward_since_unselected {fc : FrameClass}
+    (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
+    (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families)
+    (h_lge : B.LimitGuardEventual)
+    (δ t : ℝ) (φ ψ : Formula)
+    (hsub : Formula.snce φ ψ ∈ subformulaClosure root)
+    (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
+    (hS : Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    ∃ s : ℝ, s < t ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
+      ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r := by
+  rw [realLimitMCS_of_not_rat fam.mcs δ t hx] at hS
+  obtain ⟨z, hzT, hzguard⟩ := h_lge fam hfam (t + δ) hx φ ψ (Or.inr hS)
+  obtain ⟨p, hzp, hpT, hSp⟩ := limitMCSBelow_cofinal_below fam.mcs (t + δ) hS z hzT
+  obtain ⟨s', hs'p, hφ, hguard⟩ := (h_rfuc fam hfam).2 p φ ψ hsub hSp
+  have hs'pR : (s' : ℝ) < (p : ℝ) := by exact_mod_cast hs'p
+  refine ⟨(s' : ℝ) - δ, by linarith, ?_, ?_⟩
+  · rw [realLimitMCS_of_rat fam.mcs δ ((s' : ℝ) - δ) s' (by ring)]
+    exact hφ
+  · intro r hr1 hr2
+    refine guard_transport_realLimitMCS fam.mcs δ ((s' : ℝ)) (t + δ) ψ ?_ r (by linarith)
+      (by linarith)
+    intro q hq1 hq2
+    by_cases hqp : (q : ℝ) < (p : ℝ)
+    · exact hguard q (by exact_mod_cast hq1) (by exact_mod_cast hqp)
+    · exact hzguard q (by have := not_lt.mp hqp; linarith) hq2
+
+/-! ## The forward transport -/
+
+/--
+**Transport of restricted forward Until/Since coherence to the real bundle.**
+
+Both halves split on selection of the shifted coordinate, and each of the four cases is a landed
+lemma: `toRealBundle_forward_until_selected` and `toRealBundle_forward_since_selected` at a
+selected target, `toRealBundle_forward_until_unselected` and `toRealBundle_forward_since_unselected`
+at an unselected one.
+
+*The residual, named once.* Everything the unselected cases need beyond rational coherence is
+`BFMCS.LimitGuardEventual` — one predicate, necessary as well as sufficient, and undischarged here.
+It appears as a hypothesis of this composition only; no chronicle instance is stated from it and it
+is threaded onto no terminus.
+
+*Binder note.* The composition carries three hypotheses beyond the two coherence predicates and the
+guard-eventuality one. `hfc`, `hSf` and `hSb` are the ingredients of the bounded witness, and
+`h_lga` is the conclusion of the guard-reach lemma above a gap, written out rather than named
+because the module owning that lemma is not extended here. All four are discharged at a chronicle
+call site by `cantor_bfmcs_dense_limit_guard_above` and by self-root instantiation of the rational
+Since coherence, in the same way `cantor_bfmcs_dense_limit_guard_above` discharges its own. The
+backward transport needs none of them because its guard obligations are consumed rather than
+produced.
+-/
+theorem BFMCS.toRealBundle_restricted_forward_until_since {fc : FrameClass}
+    (hfc : FrameClass.Dedekind ≤ fc) (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
+    (hSf : ∀ fam ∈ B.families, ∀ (t : Rat) (α β : Formula), Formula.snce α β ∈ fam.mcs t →
+      ∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p)
+    (hSb : ∀ fam ∈ B.families, ∀ (t : Rat) (α β : Formula),
+      (∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p) →
+      Formula.snce α β ∈ fam.mcs t)
+    (h_lga : ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ χ : Formula,
+      χ ∈ limitSetBelow fam.mcs r →
+      ∃ c : Rat, r < (c : ℝ) ∧ ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → χ ∈ fam.mcs q)
+    (h_lge : B.LimitGuardEventual) :
+    (B.toRealBundle).RestrictedForwardUntilSinceCoherent root := by
+  rintro G ⟨fam, hfam, δ, rfl⟩
+  constructor
+  · intro t φ ψ hsub hU
+    have hU' : Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t := hU
+    show ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
+      ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r
+    by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
+    · obtain ⟨p, hp⟩ := hx
+      exact toRealBundle_forward_until_selected B root h_rfuc fam hfam δ t φ ψ hsub p hp hU'
+    · exact toRealBundle_forward_until_unselected hfc B root h_rfuc fam hfam (hSf fam hfam)
+        (hSb fam hfam) (h_lga fam hfam) h_lge δ t φ ψ hsub hx hU'
+  · intro t φ ψ hsub hS
+    have hS' : Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t := hS
+    show ∃ s : ℝ, s < t ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
+      ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r
+    by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
+    · obtain ⟨p, hp⟩ := hx
+      exact toRealBundle_forward_since_selected B root h_rfuc fam hfam δ t φ ψ hsub p hp hS'
+    · exact toRealBundle_forward_since_unselected B root h_rfuc fam hfam h_lge δ t φ ψ hsub hx hS'
+
+end FormalSystem.Metalogic.Bundle
