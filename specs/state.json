@@ -289,24 +289,14 @@
       "session_id": "sess_1785198629_c14175",
       "artifacts": [
         {
-          "path": "specs/165_establish_semantic_finite_model_property/reports/01_semantic-fmp-research.md",
-          "type": "report",
-          "summary": "Semantic FMP research: compiled filtration construction and six-constructor truth lemma, verified Infinite D and free class-transfer findings, H3 mapping table, H4 adversarial verification with contradiction log, and a seven-phase implementation plan."
-        },
-        {
-          "path": "specs/165_establish_semantic_finite_model_property/reports/02_tableau-decidability-hard-research.md",
-          "type": "report",
-          "summary": "Hard-mode lean4 research: WP1 audit verdict (calculus NOT adequate, 3 machine-verified defects with counterexample branches), WP2-WP4 designs, H3 mapping table, frame-class-composable architecture, hygiene findings, 19-phase plan."
-        },
-        {
-          "path": "specs/165_establish_semantic_finite_model_property/reports/03_cslib-tableau-survey.md",
-          "type": "report",
-          "summary": "Supplementary cslib survey: portable Foundations tableau kernel, RuleApplicationSpec two-tier pattern, four latent-defect anti-lessons, conformance harness method, reusability matrix for WP1-WP4."
-        },
-        {
           "path": "specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md",
           "type": "plan",
           "summary": "Skeleton implementation plan: Track A to green milestone in 8 phases (20 sub-phase dispatch units, 6 waves), Track B deferred via follow-up tasks 410-412"
+        },
+        {
+          "path": "specs/165_establish_semantic_finite_model_property/reports/06_soundfuel-decision.md",
+          "type": "report",
+          "summary": "soundFuel' adjudication: single-world figure retained; general worldFuel' added; 4.3 Done-when restated"
         }
       ],
       "plan_metadata": {
