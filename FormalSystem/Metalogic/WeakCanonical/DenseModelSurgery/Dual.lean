@@ -219,6 +219,16 @@ theorem temporalTruth_dual {M : OrderedMonadicStructure sig} (atomMap : Formula 
       · rintro ⟨s, hts, hφ, hψ⟩
         exact ⟨d s, hts, (ihφ s).mpr hφ, fun r h₁ h₂ => (ihψ r).mpr (hψ r h₂ h₁)⟩
 
+/-- **The `TemporalTruth` transport, stated at the formula one actually starts from.** Truth of
+`A` in `M` is truth of `swapUS A` in the dual — the `swapUS_involutive` rearrangement of
+`temporalTruth_dual`, which is the form every instantiation below consumes. -/
+theorem temporalTruth_dual' {M : OrderedMonadicStructure sig} (atomMap : Formula → sig.preds)
+    (t : M.carrier) (A : Formula) :
+    TemporalTruth (dual M) atomMap (d t) (swapUS A) ↔ TemporalTruth M atomMap t A := by
+  have h := temporalTruth_dual (M := M) atomMap t (swapUS A)
+  rw [swapUS_involutive] at h
+  exact h
+
 /-! ## The Prior hypotheses
 
 `SemanticPriorU` and `SemanticPriorS` (`PriorDefsDense.lean:119`, `:138`) are exact mirrors of

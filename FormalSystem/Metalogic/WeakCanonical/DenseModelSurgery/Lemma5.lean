@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Lemma34
+import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Dual
 
 /-!
 # Reynolds §6 Lemma 5: formula and elementary transfer across classes
@@ -816,5 +817,62 @@ theorem reynolds_lemma5 {atomMap : Formula → sig.preds}
     fun φ => reynolds_lemma5_second h_surj hε M h_prior_U h_prior_S φ hIcc⟩
 
 end Second
+
+/-! ## Lemma 5 over maximal intervals of `λ`
+
+Reynolds states Lemma 5 over maximal intervals of `R` only, and prints no dual. The `λ`-side
+statement below is therefore **unstated by Reynolds**: it is licensed by the duality convention
+he sets at printed **p.178** — *"Dually we can define `λ(x)` about left ends."* — and it is
+required by the appeal to *"previous results"* in Lemma 6's closing sentence at printed **p.180**
+(*"using mirror images of the above and previous results we get our proof"*). It is not
+attributed to the source as a printed statement, because it is not one.
+
+It is obtained by **instantiation**, not by a second proof: `reynolds_lemma5_first` at
+`(dual M, dualize ε)`, rewritten through `Dual.lean`'s transport lemmas. That is what makes it
+a formalization of Reynolds' sentence rather than of a proof he did not write.
+
+The standing §6 caveat applies unchanged: this result, like everything in §6 below Lemma 2, is
+**conditional** on `IsContempEquivDense ε` together with Prior-U/Prior-S, and has no live
+non-trivial instance yet. -/
+
+section FirstLeft
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- **Reynolds 1992, §6 Lemma 5, printed p.179 — the first statement over maximal intervals of
+`λ` rather than of `R`.**
+
+> *If a temporal formula holds somewhere in one `∼`-class in a maximal interval of `R`, then it
+> holds somewhere in each `∼`-class in the interval.*
+
+with `R` replaced by `L` throughout. **Reynolds prints no such statement**; see the section
+header for what licenses it and for why it is not attributed to him.
+
+Proved by instantiating `reynolds_lemma5_first` at `(dual M, dualize ε)` and at `swapUS A`. -/
+theorem reynolds_lemma5_first_left {atomMap : Formula → sig.preds}
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {t t' : M.carrier}
+    (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnLeft M ε q)
+    (hA : ∃ w : M.carrier, ContempEquivDense M ε t w ∧ TemporalTruth M atomMap w A) :
+    ∃ w : M.carrier, ContempEquivDense M ε t' w ∧ TemporalTruth M atomMap w A := by
+  -- The `R`-side statement, at the dual structure and the dualized `ε`.
+  have hIcc' : ∀ q : (dual M).carrier,
+      min (d t) (d t') ≤ q → q ≤ max (d t) (d t') → EndsInGapOnRight (dual M) (dualize ε) q := by
+    intro q h₁ h₂
+    exact (endsInGapOnRight_dual (M := M) ε q).mpr (hIcc q h₂ h₁)
+  have hA' : ∃ w : (dual M).carrier,
+      ContempEquivDense (dual M) (dualize ε) (d t) w ∧
+        TemporalTruth (dual M) atomMap w (swapUS A) := by
+    obtain ⟨w, hcw, hAw⟩ := hA
+    exact ⟨d w, (contempEquivDense_dual (M := M) ε t w).mpr hcw,
+      (temporalTruth_dual' (M := M) atomMap w A).mpr hAw⟩
+  obtain ⟨w, hcw, hAw⟩ :=
+    reynolds_lemma5_first h_surj (isContempEquivDense_dualize hε) (dual M)
+      (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U) (swapUS A) hIcc' hA'
+  exact ⟨w, (contempEquivDense_dual (M := M) ε t' w).mp hcw, (temporalTruth_dual' (M := M) atomMap w A).mp hAw⟩
+
+end FirstLeft
 
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
