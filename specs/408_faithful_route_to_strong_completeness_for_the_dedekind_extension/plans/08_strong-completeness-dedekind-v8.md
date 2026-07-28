@@ -1087,7 +1087,22 @@ the deviation in the phase summary.
   handoff's `route_critical_findings`, and flag that Phases 12 and 12.1 must take the trichotomy
   fallback. Do **not** dispatch Phase 11 without the orchestrator having read that finding.
 
-### Phase 11: Faithful-carrier re-base, base layer — `Lemma53Faithful` + `Lemma53FaithfulPast` [IN PROGRESS]
+### Phase 11: Faithful-carrier re-base, base layer — `Lemma53Faithful` + `Lemma53FaithfulPast` [COMPLETED]
+
+> **R11's consumer-level verdict: the two-arm shape HELD, machine-checked.** At
+> `negChainOnFaithful_iff` the `rcases h_INF.first_occ … with hk | ⟨r0, …⟩` split is unchanged;
+> only `hk`'s type moved, `kplus P z₀` → `kplusOpen P z₀`. No new branch, no endpoint case, no
+> `by_cases` added. The mirror at `HasFaithfulDedekindSUP.last_occ_tp` is likewise two-arm. Both
+> scoped builds were green on the **first** attempt with zero failed proof attempts. The chartered
+> R11 fallback is **not** triggered.
+>
+> **One survey gap found, and it is the material input to Phase 11.1.** Re-basing
+> `negChainOnFaithful_iff`'s binder reddens **eight** call sites in Phase 11.1's territory, which
+> this phase may not edit. Machine-measured by disabling the shim and rebuilding: exactly four
+> `Application type mismatch` errors at `BoundedFixFaithful.lean:215,227,281,290` and four at
+> `BoundedFixAnchoredFaithful.lean:181,193,257,266`, and **no other errors anywhere**. A labelled
+> `Coe` shim (`Lemma53Faithful.lean:596`) closes the window; Phase 11.1 swaps the four binders and
+> **must delete the shim in the same change**.
 
 > **v7's charter for this phase is withdrawn as factually wrong about the tree.** v7 chartered the
 > construction of a new `EANegationFix/OnBuilderFaithful.lean`, ~350 lines. `Lemma53Faithful.lean`
@@ -1106,7 +1121,7 @@ the deviation in the phase summary.
   **`Lemma53.lean`, `DedekindINF.lean`, `PriorINF.lean`, `EANegationFix/**` and
   `EANegationFixFaithful/**` are read, not edited.**
 - **Tasks**:
-  - [ ] Re-point the `K⁺` primitives in `Lemma53Faithful.lean`: land `kplusOpenPred` beside
+  - [x] Re-point the `K⁺` primitives in `Lemma53Faithful.lean`: land `kplusOpenPred` beside
         `kplusPred` (`:81`) as `⟨Formula.kPlus P.formula⟩` — **the object-language spelling already
         exists and needs no new formula** — with `kplusOpenPred_eval` from Phase 10.1's bridge;
         `kplusOpenLeftBlock` beside `kplusLeftBlock`; and
@@ -1114,34 +1129,86 @@ the deviation in the phase summary.
         **The last is expected to be nearly free**: the landed proof opens its hypothesis as
         `obtain ⟨-, hdense⟩ := hk`, discarding exactly the conjunct being dropped. Prove the landed
         `kplus` versions **from** the `kplusOpen` ones so nothing is duplicated in substance.
-  - [ ] Re-base `negChainOnFaithful` and `negChainOnFaithful_iff` (`:230` binder, `:274` destructure)
+        *(All five landed at `:140`, `:145`, `:304`, `:309`, `:208`. The prediction was exact: the
+        only proof-body change in `orderedPointsExist_combine_kplusOpen` is line 1,
+        `obtain ⟨-, hdense⟩ := hk` → `have hdense := hk`; the remaining 21 lines are the landed
+        proof byte-identical. `orderedPointsExist_combine_kplus` (`:245`) is now a one-line
+        derivation via `kplusOpen_of_kplus`.)*
+  - [x] Re-base `negChainOnFaithful` and `negChainOnFaithful_iff` (`:230` binder, `:274` destructure)
         onto `HasFaithfulDedekindINF`, keeping the printed three-disjunct `Oₙ₊₁` — disjunct (2) now
         gated on the **source-exact** `K⁺`, which is Rabinovich's own *"`K⁺(P₁)(z₀) ∧
         Oₙ(P₂,…,Pₙ,z₀,z₁)`"* (PDF p.9, corpus `chunk_0016.md:3`) rather than a strictly stronger
         proxy. **The two-arm `rcases … with hk | ⟨r0, …⟩` shape is expected to survive unchanged**;
         only `hk`'s type moves.
-  - [ ] Re-base `lemma53Faithful` (the `∃ O, ∀ M …` form) onto the faithful carrier.
-  - [ ] Re-base `HasDedekindSUP.last_occ_tp` (`Lemma53FaithfulPast.lean:181`, an unconditional
+        *(**R11 consumer-level verdict: HELD.** `negChainOnFaithful` `:340` changed by one
+        identifier; `negChainOnFaithful_iff` `:365` changed by its binder plus two tactic-line
+        renames. The `rcases` at the old `:274` is structurally unchanged. Disjunct (3)'s point
+        type deliberately stays at `kplusPred`: the faithful carrier's right disjunct is literally
+        `HasDedekindINF`'s, so nothing at `r₀` needed to move.)*
+  - [x] Re-base `lemma53Faithful` (the `∃ O, ∀ M …` form) onto the faithful carrier.
+        *(`:460`; binder-type only, proof byte-identical.)*
+  - [x] Re-base `HasDedekindSUP.last_occ_tp` (`Lemma53FaithfulPast.lean:181`, an unconditional
         wrapper) and the `kminus` primitives (`kminusFormula`, `kminus_formula_correct`,
         `kminusPred`, `kminusPred_eval`, `orderedPointsExist_combine_kminus`) onto the mirror.
-  - [ ] **Preserve `prior_makes_disjunct2_unreachable` (`Lemma53Faithful.lean:382`) and
+        *(deviation: altered — additive at `last_occ_tp` rather than in place.
+        `HasFaithfulDedekindSUP.last_occ_tp` landed at `:254`, and `HasDedekindSUP.last_occ_tp`
+        `:221` is **kept unchanged**. Reason, machine-forced: the faithful carrier can only supply
+        `kminusOpen P z₁` in the left disjunct, and `kminusOpen ↛ kminus`, so re-basing that
+        wrapper in place would strictly **weaken a landed conclusion** — which "every declaration
+        preserved with its conclusion unweakened" forbids. The two are incomparable (weaker
+        hypothesis **and** weaker conclusion); neither has a live consumer, so keeping both costs
+        nothing. `kminusOpenPred`/`_eval` landed at `:199`/`:203`;
+        `orderedPointsExist_combine_kminusOpen` at `:343` with `_kminus` `:380` derived from it.
+        `kminusFormula`/`kminus_formula_correct`/`kminusPred`/`kminusPred_eval` needed no change
+        and are byte-identical.)*
+  - [x] **Preserve `prior_makes_disjunct2_unreachable` (`Lemma53Faithful.lean:382`) and
         `prior_makes_kminus_disjunct_unreachable` (`Lemma53FaithfulPast.lean:355`)**, and land their
         faithful-carrier analogues or record why the analogue does not hold. These two are the
         tree's machine-checked statement that the discrete pipeline cannot observe disjunct (2); if
         the faithful carrier changes that, **say so** — it is exactly the observability the dense
         route needs.
-  - [ ] **THE MEASUREMENT (binding, and the input to Phases 11.1-13).** Record in the summary, per
+        *(Both preserved verbatim in statement, at `:556` and `:482`, and both now **derived** from
+        their new faithful analogues `prior_makes_faithful_disjunct2_unreachable` `:537` and
+        `prior_makes_faithful_kminus_disjunct_unreachable` `:464`. **The analogues hold**: the
+        faithful carrier does **not** make disjunct (2) observable on Prior structures. This was
+        the live risk — `kplus → kplusOpen`, so a weaker gate could have fired where the stronger
+        one cannot — and it is resolved against observability. Attainment kills `kplusOpen P z₀`
+        outright: an attained first occurrence `r₀ > z₀` with `¬P` on `(z₀,r₀)` contradicts `P`
+        occurring in every `(z₀,s)`. Observability still requires a genuinely non-attained
+        Dedekind-complete frame class, which the tree does not construct.)*
+  - [x] **THE MEASUREMENT (binding, and the input to Phases 11.1-13).** Record in the summary, per
         remaining module and per declaration, whether the re-base was (a) binder-type only,
         (b) binder + a projection/name fix, or (c) genuinely new proof. Give counts and file:line.
         **Phases 11.1, 12, 12.1 and 13 are scheduled against this measurement, not against this
         plan's estimate.** In particular state plainly whether the two-arm shape survived — that is
         R11's verdict at the smallest site.
-  - [ ] Docstrings: `Rabinovich 2014, Lemma 5.3 and eq (5.2), PDF pp.8-9`, with an `ADAPTED-FROM`
+        *(Recorded in the summary and in `.orchestrator-handoff.json`'s `binding_measurement`.
+        Headline: **0 declarations in class (c) attributable to the re-base**; 2 class-(a),
+        4 class-(b), 6 mechanical new spelling-level primitives, 4 retained-and-derived, 2 new
+        exclusion theorems (class (c), but new content the honesty charter demanded, not re-base
+        cost), 1 original-glue shim. Zero failed proof attempts; both scoped builds green first
+        try.)*
+  - [x] Docstrings: `Rabinovich 2014, Lemma 5.3 and eq (5.2), PDF pp.8-9`, with an `ADAPTED-FROM`
         note naming the previous `HasDedekindINF` pin and one clause on what changed (the left
         disjunct moved from the tree's `kplus` to the source's `K⁺`). Cite Rabinovich's printed
         `Oₙ₊₁` disjunct list verbatim so a reader can check the transcription disjunct by disjunct.
-  - [ ] `#print axioms` on every re-based declaration; regression canaries.
-  - [ ] Scoped build green; full `lake build` green; sorry census unchanged.
+        *(Module-level `ADAPTED-FROM` sections in both files; per-declaration `ADAPTED-FROM`
+        clauses on every moved declaration; the printed `Oₙ₊₁` disjunct list and the printed
+        subcase split quoted verbatim on `negChainOnFaithful_iff`.)*
+  - [x] `#print axioms` on every re-based declaration; regression canaries.
+        *(24 declarations checked; all `[propext, Classical.choice, Quot.sound]` or a subset, no
+        `sorryAx`. `completeness_dense`, `completeness_discrete`,
+        `countermodel_discrete_reynolds_v2` all unchanged at
+        `[propext, Classical.choice, Quot.sound]`.)*
+  - [x] Scoped build green; full `lake build` green; sorry census unchanged.
+        *(Both scoped builds green first attempt; full `lake build` green, 1919 jobs; sole live
+        sorry outside `Boneyard/` remains `Transfer.lean:1242`.)*
+  - [x] **Unplanned, and the material input to Phase 11.1 — the compatibility shim.** Not
+        anticipated by the Faithful-Subtree Survey: re-basing `negChainOnFaithful_iff`'s binder
+        reddens eight call sites in Phase 11.1's territory, which this phase may not edit. Closed
+        with `coeHasDedekindINFToFaithful` (`Lemma53Faithful.lean:596`), a labelled `Coe` wrapper
+        around the landed `HasDedekindINF.toHasFaithfulDedekindINF`. **Phase 11.1 must delete it**
+        in the same change that swaps the four binders.
 - **Estimated output**: ~280 lines changed/added across the two modules.
 - **Done when**: both modules compile with every pre-existing declaration present, sorry-free,
   axiom-clean and with its conclusion unweakened; `negChainOnFaithful_iff` and `last_occ_tp` are
@@ -1173,8 +1240,22 @@ the deviation in the phase summary.
 - **Tasks**:
   - [ ] Swap the four hypothesis binders to `HasFaithfulDedekindINF` and re-point every downstream
         application at Phase 11's re-based primitives.
+        **Phase 11 measured the exact work**: with the compatibility shim disabled, the only errors
+        anywhere in the tree are eight `Application type mismatch` on the carrier argument, at
+        `BoundedFixFaithful.lean:215`, `:227`, `:281`, `:290` and
+        `BoundedFixAnchoredFaithful.lean:181`, `:193`, `:257`, `:266`. No other error surfaced, and
+        neither module has a destructure site. This is a **four-token binder swap**, confirmed by
+        machine rather than by inspection.
+  - [ ] **DELETE `coeHasDedekindINFToFaithful` (`Lemma53Faithful.lean:596`) in the same change.**
+        Phase 11 landed it as declared, scheduled-for-removal original glue solely to keep the tree
+        green across the module boundary. Leaving it would let a later reader pass a needlessly
+        strong carrier without seeing that they had. **This makes `Lemma53Faithful.lean` a
+        one-declaration exception to this phase's "read, not edited" territory**, and the deletion
+        is the only edit permitted to it.
   - [ ] Confirm by inspection — and record — that neither module opens the carrier. If either does,
         that is a survey miss: record it with file:line and treat it under the Phase 11 fallback.
+        *(Phase 11's shim-disabled probe already gives strong evidence of "no": an opened carrier
+        would have produced a projection error, not a bare application-type mismatch.)*
   - [ ] Verify every pre-existing declaration is present with its conclusion unweakened.
   - [ ] Docstrings: `Rabinovich 2014, Corollary 5.4(1)/(2), PDF p.9`, with `ADAPTED-FROM` naming the
         previous pin and the one-clause change.

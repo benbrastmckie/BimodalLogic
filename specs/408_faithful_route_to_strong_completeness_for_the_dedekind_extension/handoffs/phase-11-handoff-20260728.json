@@ -1,0 +1,164 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "task_number": 408,
+  "session_id": "sess_1785243543_9dde88",
+  "agent_type": "lean-implementation-hard-agent",
+  "orchestrator_mode": true,
+  "effort_flag": "hard",
+  "lit_flag": true,
+  "phase_number": "11",
+  "phase_title": "Faithful-carrier re-base, base layer — Lemma53Faithful + Lemma53FaithfulPast",
+  "phase_status": "COMPLETED",
+  "phases_completed": 4,
+  "phases_total": 25,
+  "summary": "Phase 11 complete. Lemma53Faithful.lean (391 -> 601 lines) and Lemma53FaithfulPast.lean (364 -> 491 lines) re-based onto Phase 10.1's faithful carriers. negChainOnFaithful's disjunct (2) is now gated on the source-exact K+ (Formula.kPlus at the object level, kplusOpen at the Prop level) rather than the tree's conjunct-carrying kplus; negChainOnFaithful_iff and lemma53Faithful bind HasFaithfulDedekindINF; HasFaithfulDedekindSUP.last_occ_tp landed on the SUP mirror. Every pre-existing declaration is present with its conclusion unweakened, sorry-free and axiom-clean. THE CONSUMER-LEVEL R11 MEASUREMENT RAN AND THE TWO-ARM SHAPE HELD. Full lake build green (1919 jobs). Sorry census outside Boneyard/ unchanged at exactly Transfer.lean:1242. All three canaries unchanged. All frozen assets byte-identical.",
+
+  "consumer_level_r11": {
+    "verdict": "two-arm shape held",
+    "detail": "At negChainOnFaithful_iff (Lemma53Faithful.lean, declaration now at :365) the rcases h_INF.first_occ ... with hk | <r0, hr0a, hr0b, hnone, hPr0> split is STRUCTURALLY UNCHANGED under HasFaithfulDedekindINF. Only hk's type moved: kplus M atomMap P.formula z0 -> kplusOpen M atomMap P.formula z0. No third arm, no endpoint by_cases, no added hypothesis. The 66-line proof is otherwise byte-identical apart from two tactic-line renames -- kplusLeftBlock_holds -> kplusOpenLeftBlock_holds in the rw chain, and orderedPointsExist_combine_kplus -> orderedPointsExist_combine_kplusOpen in the boundary-subcase arm. Disjunct (3)'s point type deliberately stays at kplusPred, because HasFaithfulDedekindINF's right disjunct is literally HasDedekindINF's, so nothing at r0 needed to move. The SUP mirror HasFaithfulDedekindSUP.last_occ_tp (Lemma53FaithfulPast.lean:254) is likewise two-arm. The chartered R11 fallback -- re-base onto HasDenseDedekindINF with explicit P(z0) branches -- is NOT triggered. Corroborating effort datum: ZERO failed proof attempts, both scoped builds green on the FIRST attempt, and no proof-search tool (lean_multi_attempt, lean_state_search, lean_hammer_premise) was invoked at any point in the phase.",
+    "scope_limit": "This settles the two BASE-LAYER destructure sites only: Lemma53Faithful.lean's negChainOnFaithful_iff and Lemma53FaithfulPast.lean's last_occ_tp wrapper. It does NOT settle negFixOneFaithful_cover (NegFixOneFaithful.lean:422) or negFixListFaithful_iff (NegFixListFaithful.lean:446), whose Case1/Case2/Case3a/b/c shape is not a two-arm shape. Phase 11's evidence transfers to Phases 12 and 12.1 as ENCOURAGEMENT, NOT PROOF; they must still transcribe Rabinovich's exhaustive case split (Lemma 5.1, PDF p.9) rather than assume it collapses."
+  },
+
+  "binding_measurement": {
+    "note": "Phases 11.1, 12, 12.1 and 13 are scheduled against this measurement, not against the plan's estimates.",
+    "destructure_sites_rebased": "2 of 2, both retaining their arm count",
+    "failed_proof_attempts": 0,
+    "scoped_builds_green_first_try": 2,
+    "counts": {
+      "class_a_binder_type_only": 2,
+      "class_b_binder_plus_projection_or_name_fix": 4,
+      "class_c_new_proof_attributable_to_the_rebase": 0,
+      "class_c_new_proof_new_content_honesty_charter": 2,
+      "mechanical_new_spelling_level_primitives": 6,
+      "retained_and_derived_statement_verbatim": 4,
+      "original_glue": 1
+    },
+    "per_declaration": [
+      {"file": "Lemma53Faithful.lean", "decl": "kplusOpenPred", "line": 140, "class": "new primitive", "detail": "<Formula.kPlus P.formula>; the object-language spelling already existed, no new formula needed"},
+      {"file": "Lemma53Faithful.lean", "decl": "kplusOpenPred_eval", "line": 145, "class": "new primitive", "detail": "one-liner via kPlus_formula_correct"},
+      {"file": "Lemma53Faithful.lean", "decl": "orderedPointsExist_combine_kplusOpen", "line": 208, "class": "b", "detail": "binder + ONE proof line: 'obtain <-, hdense> := hk' -> 'have hdense := hk'; remaining 21 lines byte-identical. The plan's prediction that this would be nearly free was exact"},
+      {"file": "Lemma53Faithful.lean", "decl": "orderedPointsExist_combine_kplus", "line": 245, "class": "retained+derived", "detail": "statement verbatim; proof now a 1-line term via kplusOpen_of_kplus"},
+      {"file": "Lemma53Faithful.lean", "decl": "kplusOpenLeftBlock", "line": 304, "class": "new primitive", "detail": "shape clone of kplusLeftBlock"},
+      {"file": "Lemma53Faithful.lean", "decl": "kplusOpenLeftBlock_holds", "line": 309, "class": "new primitive", "detail": "shape clone with kplusOpenPred_eval substituted"},
+      {"file": "Lemma53Faithful.lean", "decl": "negChainOnFaithful", "line": 340, "class": "b", "detail": "ONE identifier changed: kplusLeftBlock -> kplusOpenLeftBlock"},
+      {"file": "Lemma53Faithful.lean", "decl": "negChainOnFaithful_iff", "line": 365, "class": "b", "detail": "binder + 2 tactic-line renames; two-arm rcases unchanged"},
+      {"file": "Lemma53Faithful.lean", "decl": "lemma53Faithful", "line": 460, "class": "a", "detail": "binder-type only; proof byte-identical"},
+      {"file": "Lemma53Faithful.lean", "decl": "lemma53Faithful_perPoint_is_VACUOUS", "line": 496, "class": "untouched", "detail": "the failed-vacuity control, unchanged"},
+      {"file": "Lemma53Faithful.lean", "decl": "prior_makes_faithful_disjunct2_unreachable", "line": 537, "class": "c-new-content", "detail": "5-line new proof; the faithful analogue HOLDS"},
+      {"file": "Lemma53Faithful.lean", "decl": "prior_makes_disjunct2_unreachable", "line": 556, "class": "retained+derived", "detail": "statement verbatim; now derived from the faithful analogue so the pair cannot drift apart"},
+      {"file": "Lemma53Faithful.lean", "decl": "coeHasDedekindINFToFaithful", "line": 596, "class": "original glue", "detail": "3 lines; SCHEDULED FOR DELETION in Phase 11.1"},
+      {"file": "Lemma53FaithfulPast.lean", "decl": "kminusOpenPred", "line": 199, "class": "new primitive", "detail": "<Formula.kMinus P.formula>"},
+      {"file": "Lemma53FaithfulPast.lean", "decl": "kminusOpenPred_eval", "line": 203, "class": "new primitive", "detail": "one-liner via kMinus_formula_correct"},
+      {"file": "Lemma53FaithfulPast.lean", "decl": "HasDedekindSUP.last_occ_tp", "line": 221, "class": "untouched", "detail": "KEPT unchanged; see deviation D1"},
+      {"file": "Lemma53FaithfulPast.lean", "decl": "HasFaithfulDedekindSUP.last_occ_tp", "line": 254, "class": "a", "detail": "same 6-line unconditional two-arm proof at the faithful carrier"},
+      {"file": "Lemma53FaithfulPast.lean", "decl": "orderedPointsExist_combine_kminusOpen", "line": 343, "class": "b", "detail": "binder + the same one-line projection fix"},
+      {"file": "Lemma53FaithfulPast.lean", "decl": "orderedPointsExist_combine_kminus", "line": 380, "class": "retained+derived", "detail": "1-line term via kminusOpen_of_kminus"},
+      {"file": "Lemma53FaithfulPast.lean", "decl": "prior_makes_faithful_kminus_disjunct_unreachable", "line": 464, "class": "c-new-content", "detail": "5-line new proof; the mirrored analogue HOLDS"},
+      {"file": "Lemma53FaithfulPast.lean", "decl": "prior_makes_kminus_disjunct_unreachable", "line": 482, "class": "retained+derived", "detail": "statement verbatim"}
+    ],
+    "untouched_and_still_needed_downstream": [
+      "Lemma53Faithful.lean: kplusPred, kplusPred_eval, kplusLeftBlock, kplusLeftBlock_holds, VVecEA2.prependAllVec(_holds), orderedPointsExist_widen_left",
+      "Lemma53FaithfulPast.lean: kminusFormula, kminus_formula_correct, kminusPred, kminusPred_eval, orderedPointsExist_combine_right, orderedPointsExist_widen_right, HasAttainedSUP.toHasDefinableSUP, hasDefinableSUP_excludes_kminus"
+    ],
+    "schedules_downstream": {
+      "phase_11_1": "MACHINE-MEASURED, not estimated. Disabling the shim and rebuilding produced EXACTLY eight 'Application type mismatch' errors on the carrier argument and NO OTHER ERROR ANYWHERE in the tree: BoundedFixFaithful.lean:215, :227, :281, :290 and BoundedFixAnchoredFaithful.lean:181, :193, :257, :266. Neither module opens the carrier -- an opened carrier would have produced a projection error, not a bare application-type mismatch, so the v8 survey's 'no destructure sites' finding is corroborated by machine. Work = swap 4 binders (BoundedFixFaithful.lean:188, :258; BoundedFixAnchoredFaithful.lean:150, :230) to HasFaithfulDedekindINF, plus DELETE coeHasDedekindINFToFaithful (Lemma53Faithful.lean:596). The plan's 4-hour estimate is generous by a wide margin; this is well under one agent run.",
+      "phase_12_and_12_1": "The K+ PRIMITIVE COST IS ALREADY PAID. kplusOpenLeftBlock (:304) and kplusOpenPred (:140) are landed, and Rabinovich Lemma 5.1's Case 1 sites -- NegFixOneFaithful.lean:265 (negFixOneCase1) and NegFixListFaithful.lean:279 -- need only re-point at them. kplusLeftBlock and kplusPred were DELIBERATELY RETAINED for exactly this and are unchanged, so nothing there is red today. Residual risk sits entirely in the Case1/Case2/Case3a/b/c exhaustiveness argument at NegFixOneFaithful.lean:422 and NegFixListFaithful.lean:446, which Phase 11 does not touch and does not settle.",
+      "phase_13": "VecEANegFixFaithful.lean:295 and Prop42Faithful consume kplusLeftBlock_holds, retained and unchanged. Remains a pure signature swap."
+    }
+  },
+
+  "route_critical_findings": [
+    {
+      "severity": "resolved",
+      "finding": "CONSUMER-LEVEL R11 HELD at the smallest site. The faithful dichotomy collapses nothing and adds no branch at negChainOnFaithful_iff. Block D proceeds on the PRIMARY charter."
+    },
+    {
+      "severity": "resolved",
+      "finding": "The faithful re-base does NOT make disjunct (2) observable on Prior structures. This was the live risk of weakening the gate: kplus implies kplusOpen, so a weaker gate could in principle have fired where the stronger one cannot, and the module's own exclusion claim would have quietly become false. It does not. prior_makes_faithful_disjunct2_unreachable (Lemma53Faithful.lean:537) and prior_makes_faithful_kminus_disjunct_unreachable (Lemma53FaithfulPast.lean:464) prove BOTH K+ spellings dead under SemanticPriorUZ/SemanticPriorSZ, because attainment kills kplusOpen P z0 outright: an attained first occurrence r0 > z0 with no P on (z0,r0) contradicts P occurring in every (z0,s). Observability of the faithful carrier still requires a genuinely non-attained Dedekind-complete frame class, which this tree does not construct. The two landed exclusion theorems are now DERIVED from these stronger ones, so the pair cannot drift apart."
+    },
+    {
+      "severity": "plan_amendment_applied",
+      "finding": "SURVEY GAP, and it is the material input to Phase 11.1. The Faithful-Subtree Survey did not anticipate that re-basing negChainOnFaithful_iff's BINDER reddens eight call sites inside Phase 11.1's territory, which Phase 11 may not edit. Without a shim, 'full lake build green' and 'EANegationFixFaithful/** read, not edited' are jointly unsatisfiable. Closed with coeHasDedekindINFToFaithful, and Phase 11.1's task list now carries the deletion as an explicit checklist item plus a one-declaration territory exception."
+    }
+  ],
+
+  "deviations": [
+    {
+      "id": "D1",
+      "site": "Lemma53FaithfulPast.lean:221 / :254",
+      "kind": "altered",
+      "what": "HasDedekindSUP.last_occ_tp re-based ADDITIVELY rather than in place: HasFaithfulDedekindSUP.last_occ_tp landed beside a kept, unchanged HasDedekindSUP.last_occ_tp.",
+      "why": "Forced, not chosen. The faithful carrier can only supply kminusOpen P z1 in the left disjunct, and kminusOpen does not imply kminus. An in-place re-base would therefore have strictly WEAKENED a landed conclusion, which the phase's own 'Done when' forbids. The two wrappers are incomparable -- weaker hypothesis AND weaker conclusion -- so neither subsumes the other, and neither has a live consumer to disturb (the only last_occ_tp call sites in the tree resolve to HasAttainedSUP.last_occ_tp in EANegationFix/BoundedFix.lean:72, a different declaration)."
+    },
+    {
+      "id": "D2",
+      "site": "Lemma53Faithful.lean:596",
+      "kind": "unplanned addition",
+      "what": "coeHasDedekindINFToFaithful, a Coe instance wrapping the landed HasDedekindINF.toHasFaithfulDedekindINF (KPlusFaithful.lean:364).",
+      "why": "See the survey-gap finding above. The shim runs in the safe direction only (strong carrier => faithful carrier); the reverse edge does not exist and is not creatable (KPlusFaithful.lean:434-440). It weakens nothing and adds no axiom. It is documented in-file as declared original glue under a section header naming it as such, with an explicit deletion charter, and its load-bearing status was verified by machine rather than assumed."
+    }
+  ],
+
+  "sorry_inventory": [],
+
+  "blockers": [],
+
+  "files_touched": [
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53Faithful.lean",
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53FaithfulPast.lean",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/08_strong-completeness-dedekind-v8.md",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/08_phase-11-faithful-rebase-base-layer-summary.md",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/.orchestrator-handoff.json",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/handoffs/phase-11-handoff-20260728.json",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/.return-meta.json"
+  ],
+
+  "verification": {
+    "scoped_build_lemma53faithful": "green (first attempt)",
+    "scoped_build_lemma53faithfulpast": "green (first attempt)",
+    "full_lake_build": "green, 1919 jobs; no scoped-aggregator fallback needed",
+    "build_passed": true,
+    "sorry_count_outside_boneyard": 1,
+    "sorry_baseline": "Transfer.lean:1242, unchanged",
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "axiom_check": "21 territory declarations checked plus 3 canaries; all [propext, Classical.choice, Quot.sound] or a subset; no sorryAx anywhere",
+    "canaries": {
+      "completeness_dense": "[propext, Classical.choice, Quot.sound] — unchanged",
+      "completeness_discrete": "[propext, Classical.choice, Quot.sound] — unchanged",
+      "countermodel_discrete_reynolds_v2": "[propext, Classical.choice, Quot.sound] — unchanged"
+    },
+    "ci_chain_nfmultianchorbridge": "green",
+    "byte_identical_confirmed": [
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/KPlusFaithful.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINF.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINFDense.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/PriorDefsDense.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFix/**",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/**",
+      "FormalSystem/Syntax/Formula.lean",
+      "FormalSystem/ProofSystem/Axioms.lean",
+      "FormalSystem/Metalogic/StrongCompleteness.lean"
+    ],
+    "pinned_terminus_unchanged": "consequence_completeness_dedekind_of_engine (StrongCompleteness.lean:274-279) untouched",
+    "territory_respected": "No file under FormalSystem/Metalogic/Decidability/ or FormalSystem/Automation/ was edited or staged (concurrent task-165)."
+  },
+
+  "commits": [
+    {"sha": "4e98b8b7c", "subject": "task 408 phase 11: Lemma53Faithful re-based onto HasFaithfulDedekindINF"},
+    {"sha": "59c349a61", "subject": "task 408 phase 11: Lemma53FaithfulPast mirrored onto the faithful SUP carrier"}
+  ],
+
+  "next_dispatch_target": {
+    "phase": "11.1",
+    "name": "Faithful-carrier re-base — BoundedFixFaithful + BoundedFixAnchoredFaithful",
+    "immediate_next_action": "Change the carrier binder from HasDedekindINF to HasFaithfulDedekindINF at BoundedFixFaithful.lean:188 and :258 and BoundedFixAnchoredFaithful.lean:150 and :230, then DELETE coeHasDedekindINFToFaithful at Lemma53Faithful.lean:596 in the same change, then rebuild.",
+    "note": "Lemma53Faithful.lean is otherwise read-not-edited for Phase 11.1; the shim deletion is the ONE permitted edit to it. Both target modules' docstrings also need ADAPTED-FROM clauses naming the previous HasDedekindINF pin."
+  },
+
+  "continuation_path": null,
+  "continuation_context": null
+}
