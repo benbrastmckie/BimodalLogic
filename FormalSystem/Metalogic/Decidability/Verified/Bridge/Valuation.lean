@@ -39,18 +39,14 @@ of the placement into injectivity of `i ↦ regionCode f (f i)`, via `placed_ne_
 Every monotone placement (`Bridge/Embed.lean`, `Bridge/Carrier.lean`) is injective, so this is a
 hypothesis the carrier route already pays for.
 
-`gapVal` is left as an explicit parameter rather than being given a definition, because the choice
-is not free — see below — and a wrong concrete choice would be worse than an honest parameter.
-
-## O2 — what the gap valuation still owes
+## O2 — the gap policy
 
 The gap value is unconstrained by any *atomic* branch fact (a gap region contains no label) and
-totally constrained by the *universally quantified* ones. `GapDemands` below is that constraint
-set written out: at a gap point `r`,
+constrained only by the *universally quantified* ones: at a gap point `r`,
 
-1. every `φ` with `T(G φ) @ (w, t)` and `f t < r` must be true,
-2. every `φ` with `T(H φ) @ (w, t)` and `r < f t` must be true,
-3. every `φ` with `T(□ φ)` anywhere must be true (`truthAt_box_iff_base`: `□` is the universal
+1. every `p` with `T(G p) @ (w, t)` and `f t < r` must be true,
+2. every `p` with `T(H p) @ (w, t)` and `r < f t` must be true,
+3. every `p` with `T(□ p)` anywhere must be true (`truthAt_box_iff_base`: `□` is the universal
    modality once `Ω` is shift-closed), and
 4. the guard of every `T(U(φ,ψ))`/`T(S(φ,ψ))` whose witness straddles `r` must be true.
 
@@ -63,10 +59,25 @@ policy — "a gap takes the value of the placed point below it", i.e. the half-o
 the truth lemma's valuation. This is the "half-open partition" the Phase 6 banner refutes, stated
 against the actual model rather than against region-constancy.
 
-What remains is to exhibit a `gapVal` satisfying `GapDemands` for every gated saturated branch.
-That is the mathematical content still owed; it is the one obligation on the Phase 7 critical path
-that is not mechanical, and the engine's `denseRules` (the `prior_U_gap`/`prior_S_gap`/`sep`
-family) are what must be consumed to discharge it.
+**`GapDemands` states the obligation backwards and is vacuous.** Its hypothesis is *model* truth
+of `G φ` at a placed point, which `Truth.future_iff` makes definitionally equivalent to its own
+conclusion. `gapDemands_trivial` proves that every policy whatsoever satisfies it — including the
+two refuted above. It is retained only so the mistake stays visible; `GapAdequate` replaces it,
+taking the *branch* fact as hypothesis and delivering model truth at gap points.
+
+**The policy, defined outright.** `branchGapVal` is conditions 1-3 read as a definition: at a gap
+code `c`, the atom `p` holds when some index in `c.1` (the placed points below the gap) carries
+`T(G p)`, or some index in `c.2` (those above) carries `T(H p)`, or `T(□ p)` is on the branch at
+all. It reads only the region code and the branch — nothing is imported from an endpoint, so it is
+neither copy policy. `branchGapVal_gapAdequate` discharges all three `GapAdequate` fields.
+
+*What is still owed.* Condition 4, the `U`/`S` straddling guards, is the `denseRules`
+(`prior_U_gap`/`prior_S_gap`/`sep`) content and is not part of `GapAdequate`: it is not a
+constraint on the gap *policy* — a guard is in general compound, and a compound formula's value at
+a gap point is fixed by the truth-lemma induction, not by `gapVal`. Its discharge belongs to that
+induction, where the branch's `T(U(φ,ψ))` witness (a placed point, minted by `untlPos`) and the
+dense rules' intermediate guards are available. The remaining Phase 7.1 work is therefore the
+induction itself, with `branchGapVal` fixed as the atom clause's gap arm.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.Verified.Bridge
@@ -373,6 +384,130 @@ theorem not_rightCopy_gapAdequate (p : Atom) :
   exact h1
 
 end CopyRefuted
+
+/-! ## `GapDemands` is stated backwards, and this is the proof
+
+`GapDemands` takes *model* truth of `G φ` at a placed point as its hypothesis. But
+`Semantics.future_iff` is an `iff`: `TruthAt M Ω τ x φ.allFuture ↔ ∀ s > x, TruthAt M Ω τ s φ`.
+The hypothesis therefore already *is* the conclusion, and `GapDemands` holds of every policy —
+including the two this file refutes. `gapDemands_trivial` below proves exactly that, so the
+vacuity is recorded as a theorem rather than discovered again.
+
+What the truth lemma actually owes is the other direction: the *branch* asserts `T(G φ)` at a
+label, and the model must make `φ` true at every later carrier point, gaps included.
+`not_leftCopy_gapAdequate` is stated against that reading and is unaffected — it refutes the
+left-copy policy by showing the model's `G p` is false where the branch may assert it.
+`GapAdequate` below is the corrected obligation.
+-/
+
+section GapDemandsVacuous
+
+variable {W ι : Type} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+
+/--
+**`GapDemands` constrains nothing.** Both fields are instances of `future_iff`/`past_iff` read
+left to right, so every `gapVal` whatsoever satisfies them.
+-/
+theorem gapDemands_trivial (f : ι → D) (placedVal : W → ι → Atom → Prop)
+    (gapVal : W → Set ι × Set ι → Atom → Prop) : GapDemands f placedVal gapVal where
+  future := fun _ _ φ h r hr => (Truth.future_iff _ φ).mp h r hr
+  past := fun _ _ φ h r hr => (Truth.past_iff _ φ).mp h r hr
+
+end GapDemandsVacuous
+
+/-! ## O2: the gap policy, defined outright
+
+The gap value cannot be imported from an endpoint (`not_leftCopy_gapAdequate`,
+`not_rightCopy_gapAdequate`), so it is defined outright, from the branch, as the union the Phase 7
+banner names:
+
+* `{p : T(G p)` at a placed point **below** the gap`}` — everything the past forces forward,
+* `{p : T(H p)` at a placed point **above** the gap`}` — everything the future forces backward,
+* `{p : T(□ p)` anywhere`}` — `□` is the universal modality over the whole model once `Ω` is
+  shift-closed (`truthAt_box_iff_base`), so its content is forced at every point of every world.
+
+A gap region carries no label, so no *atomic* branch fact contradicts the assignment: the three
+disjuncts are the only constraints there are, and taking their union is the largest — hence the
+most permissive — policy consistent with them. Nothing is copied: the policy reads only the
+region *code*, which is the pair of sets of placed indices below and above the gap
+(`regionCode f r = ({i | f i < r}, {i | r < f i})`), and the branch.
+
+`GapAdequate` states the three survival conditions against the assembled model, with the *branch*
+fact as hypothesis — the direction `GapDemands` had backwards — and `branchGapVal_gapAdequate`
+discharges all three.
+-/
+
+section GapPolicy
+
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+
+/--
+**The branch's gap policy.** At a gap code `c`, an atom holds when the branch forces it there:
+some placed index below the gap carries `T(G p)`, or some placed index above it carries `T(H p)`,
+or `T(□ p)` appears anywhere at all.
+
+`c.1` is exactly the set of placed indices below the gap and `c.2` the set above, so the two
+temporal disjuncts are readable off the code with no reference to the carrier.
+-/
+def branchGapVal (b : Branch) (w : WorldIndex)
+    (c : Set (BranchTime b) × Set (BranchTime b)) (p : Atom) : Prop :=
+  (∃ i ∈ c.1, b.hasPosAt (Formula.allFuture (Formula.atom p)) ⟨w, timeAt b i⟩ = true) ∨
+  (∃ j ∈ c.2, b.hasPosAt (Formula.allPast (Formula.atom p)) ⟨w, timeAt b j⟩ = true) ∨
+  (∃ l : Label, (⟨.pos, Formula.box (Formula.atom p), l⟩ : SignedFormula) ∈ b)
+
+/--
+**The corrected gap obligation.** Each field takes a *branch* fact and delivers *model* truth at a
+gap point — the direction `GapDemands` reverses. Stated for atoms, because that is the only place
+a gap policy has any freedom: at every compound formula the value is fixed by the induction.
+-/
+structure GapAdequate (b : Branch) (f : BranchTime b → D)
+    (gapVal : WorldIndex → Set (BranchTime b) × Set (BranchTime b) → Atom → Prop) : Prop where
+  /-- `T(G p)` at a placed label makes `p` true at every gap point above it. -/
+  future : ∀ (w : WorldIndex) (i : BranchTime b) (p : Atom),
+    b.hasPosAt (Formula.allFuture (Formula.atom p)) ⟨w, timeAt b i⟩ = true →
+    ∀ r : D, f i < r → ¬ IsPlacedCode f (regionCode f r) →
+      TruthAt (branchModel b f gapVal) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.atom p)
+  /-- `T(H p)` at a placed label makes `p` true at every gap point below it. -/
+  past : ∀ (w : WorldIndex) (j : BranchTime b) (p : Atom),
+    b.hasPosAt (Formula.allPast (Formula.atom p)) ⟨w, timeAt b j⟩ = true →
+    ∀ r : D, r < f j → ¬ IsPlacedCode f (regionCode f r) →
+      TruthAt (branchModel b f gapVal) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.atom p)
+  /-- `T(□ p)` anywhere makes `p` true at every gap point of every world. -/
+  box : ∀ (l : Label) (p : Atom),
+    (⟨.pos, Formula.box (Formula.atom p), l⟩ : SignedFormula) ∈ b →
+    ∀ (w : WorldIndex) (r : D), ¬ IsPlacedCode f (regionCode f r) →
+      TruthAt (branchModel b f gapVal) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.atom p)
+
+/--
+**O2's atomic half, discharged.** The policy defined outright meets all three survival conditions,
+by construction and with no appeal to any adjacent placed value.
+-/
+theorem branchGapVal_gapAdequate (b : Branch) (f : BranchTime b → D) :
+    GapAdequate b f (branchGapVal b) where
+  future := by
+    intro w i p hG r hr hgap
+    rw [show (branchModel b f (branchGapVal b)) =
+      regionModel f (branchPlacedVal b) (branchGapVal b) from rfl, truthAt_atom_gap hgap]
+    exact Or.inl ⟨i, hr, hG⟩
+  past := by
+    intro w j p hH r hr hgap
+    rw [show (branchModel b f (branchGapVal b)) =
+      regionModel f (branchPlacedVal b) (branchGapVal b) from rfl, truthAt_atom_gap hgap]
+    exact Or.inr (Or.inl ⟨j, hr, hH⟩)
+  box := by
+    intro l p hbox w r hgap
+    rw [show (branchModel b f (branchGapVal b)) =
+      regionModel f (branchPlacedVal b) (branchGapVal b) from rfl, truthAt_atom_gap hgap]
+    exact Or.inr (Or.inr ⟨l, hbox⟩)
+
+/-- The gap policy is not either copy policy: it reads the whole region code, not one endpoint. -/
+example (b : Branch) (f : BranchTime b → D) : GapAdequate b f (branchGapVal b) :=
+  branchGapVal_gapAdequate b f
+
+end GapPolicy
 
 /-! ## Sanity checks -/
 

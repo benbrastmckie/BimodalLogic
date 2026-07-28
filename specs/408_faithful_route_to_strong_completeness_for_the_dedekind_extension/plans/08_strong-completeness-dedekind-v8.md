@@ -945,7 +945,7 @@ the deviation in the phase summary.
 
 ---
 
-### Phase 10.1: The source-exact `K⁺`, its missing bridge, and the faithful dichotomy carrier [NOT STARTED]
+### Phase 10.1: The source-exact `K⁺`, its missing bridge, and the faithful dichotomy carrier [COMPLETED]
 
 > **This phase is a probe as much as a construction, and it is chartered to be falsifiable in one
 > dispatch.** v8's central bet (R11) is that the sources' conjunct-free `K⁺` turns Phase 10's
@@ -968,10 +968,10 @@ the deviation in the phase summary.
   **`DedekindINF.lean`, `Lemma53.lean`, `Syntax/Formula.lean`, `ProofSystem/Axioms.lean` and all
   eight faithful modules are read, not edited, in this phase.**
 - **Tasks**:
-  - [ ] **Task 0 — existence check (binding, from the v8 postmortem rule).** `find`/`grep` for
+  - [x] **Task 0 — existence check (binding, from the v8 postmortem rule).** `find`/`grep` for
         `KPlusFaithful`, `kplusOpen`, `HasFaithfulDedekindINF` and any Prop-level conjunct-free `K⁺`
         before writing a line. If any exists, consume it and record the finding instead of building.
-  - [ ] **Task 1 — the `.1` audit (R12).** Repository-wide, outside `Boneyard/`: every site that
+  - [x] **Task 1 — the `.1` audit (R12).** Repository-wide, outside `Boneyard/`: every site that
         projects the first component of a `kplus` / `kminus` hypothesis. The survey at this revision
         found **exactly three**, all inside `DedekindINFDense.lean`'s own refutation machinery
         (`:467`, `:486`, `:609`), and confirmed that
@@ -980,28 +980,36 @@ the deviation in the phase summary.
         (`Lemma53FaithfulPast.lean:339`) all discard it. **Re-run the audit and record the result in
         the summary.** Any site the survey missed is recorded and keeps the strong carrier via a
         shim rather than being weakened.
-  - [ ] Define `kplusOpen M atomMap P t : Prop :=
+  - [x] Define `kplusOpen M atomMap P t : Prop :=
         ∀ s, t < s → ∃ r, t < r ∧ r < s ∧ TemporalTruth M atomMap r P`, and `kminusOpen` dually.
         **State in the docstring that this is `kplus` minus its first conjunct, and that the first
         conjunct is the tree's addition, not the sources'.**
-  - [ ] **Land the missing bridge**: `kPlus_formula_correct :
+  - [x] **Land the missing bridge**: `kPlus_formula_correct :
         TemporalTruth M atomMap t (Formula.kPlus P) ↔ kplusOpen M atomMap P t`, and the `kMinus`
         mirror. **The tree has had `Formula.kPlus` and `kplusFormula` side by side with a
         name-collision warning and no bridge to either's semantics.** This lemma is the phase's
         second deliverable and is independently valuable: `Axiom.prior_U_gap`, `Axiom.prior_S_gap`
         and `Axiom.sep` are all stated with `Formula.kPlus`/`kMinus`, and nothing in the tree could
         previously read them semantically.
-  - [ ] Land the relating lemmas: `kplus M atomMap P t ↔ ¬TemporalTruth M atomMap t P ∧
+  - [x] Land the relating lemmas: `kplus M atomMap P t ↔ ¬TemporalTruth M atomMap t P ∧
         kplusOpen M atomMap P t`; `kplus … → kplusOpen …`; and
         `(TemporalTruth M atomMap t P ∨ kplus M atomMap P t) → kplusOpen M atomMap P t` **together
-        with a machine-checked witness that the converse fails** (a point where `P` holds and `P`
+        with a machine-checked witness that the converse fails**
+        *(deviation: altered — the arrow as written is **not a theorem**: `P(t)` does not imply
+        `kplusOpen P t`. The plan's own parenthetical ("a point where `P` holds and `P` does not
+        occur arbitrarily soon after") specifies the counterexample to exactly that direction, so
+        the intended content is unambiguous and was landed in full: `truth_or_kplus_of_kplusOpen :
+        kplusOpen P t → TemporalTruth t P ∨ kplus P t` (the true direction, and the one the shim
+        lattice needs), plus `kplusOpen_not_implied_by_truth_at`, the machine-checked witness that
+        the stated direction fails — `denseClosedRayFlow` at `t = 0`. Nothing is weakened; one
+        arrow is turned around and its failure is proved.)* (a point where `P` holds and `P`
         does *not* occur arbitrarily soon after). The pair is what makes the trichotomy's weakness
         precise rather than asserted.
-  - [ ] Define `HasFaithfulDedekindINF` — `HasDedekindINF`'s `first_occ` field character-for-character
+  - [x] Define `HasFaithfulDedekindINF` — `HasDedekindINF`'s `first_occ` field character-for-character
         **except** that the left disjunct is `kplusOpen M atomMap P z0` in place of
         `kplus M atomMap P z0` — and `HasFaithfulDedekindSUP` dually. **Rule 6**: state what the
         carrier excludes.
-  - [ ] Prove `prior_hasFaithfulDedekindINF_dense : SemanticPriorU M atomMap →
+  - [x] Prove `prior_hasFaithfulDedekindINF_dense : SemanticPriorU M atomMap →
         HasFaithfulDedekindINF M atomMap`, and the `SemanticPriorS` mirror.
         **Proof skeleton (paper-derived at this revision; transcribe and verify, do not treat as
         established).** Fix `P`, `z₀ < z₁`, `P` occurring in `(z₀,z₁)`. `by_cases` on whether some
@@ -1015,14 +1023,14 @@ the deviation in the phase summary.
         **The case split is on the interval, never on `z₀`** — which is why no guard appears.
         Note that `P(r₀) ∨ kplusOpen P r₀` and `P(r₀) ∨ kplus P r₀` are interderivable as
         *disjunctions*, so the right disjunct is literally `HasDedekindINF`'s.
-  - [ ] Land the shim lattice, and state which directions are **not** available and why:
+  - [x] Land the shim lattice, and state which directions are **not** available and why:
         `HasDedekindINF.toHasFaithfulDedekindINF` (weakening — keeps every current supplier,
         including the whole discrete pipeline via `HasAttainedINF.toHasDedekindINF`);
         `HasFaithfulDedekindINF.toHasDenseDedekindINF` (the faithful carrier supplies the
         trichotomy, since `kplusOpen → kplus ∨ P(z₀)`); and a recorded note that
         `HasDenseDedekindINF → HasFaithfulDedekindINF` is **not** available, because `P(z₀)` does
         not imply `r₀ = z₀`. Mirrors for `SUP`.
-  - [ ] **THE PROBE (R11's falsification, and this phase's most important task).** Re-run the
+  - [x] **THE PROBE (R11's falsification, and this phase's most important task).** Re-run the
         interval-witness refutation against the conjunct-free antecedent: attempt
         `hasFaithfulDedekindINF_of_interval_witness` — i.e. show that at `denseWindowFlow` with
         `z₀ = 1/2`, `z₁ = 1`, the point at which `denseWindow_endpoint_disjunct_forced` forces the
@@ -1031,13 +1039,13 @@ the deviation in the phase summary.
         either *"the guard/trichotomy apparatus is a repair for the tree's `kplus` and is not needed
         by a source-exact carrier"*, or *"the refutation survives the conjunct-free antecedent"* —
         the latter falsifies R11 and triggers the chartered fallback.
-  - [ ] **Anti-vacuity, positive.** Instantiate `prior_hasFaithfulDedekindINF_dense` at Phase 9's
+  - [x] **Anti-vacuity, positive.** Instantiate `prior_hasFaithfulDedekindINF_dense` at Phase 9's
         `denseWindowFlow` and land the resulting `HasFaithfulDedekindINF` as a named lemma.
-  - [ ] **Anti-vacuity, re-base corollary (v8).** Exhibit a structure satisfying
+  - [x] **Anti-vacuity, re-base corollary (v8).** Exhibit a structure satisfying
         `HasFaithfulDedekindINF` that does **not** satisfy `HasDedekindINF` — `denseWindowFlow` is
         the intended witness and `hasDedekindINF_fails_on_dense_window` already supplies the second
         half. Without this the "weakening" may be an equivalence in disguise.
-  - [ ] **Docstring correction 1 — `PriorINF.lean`, comment bytes only.** Record on `kplus` that it
+  - [x] **Docstring correction 1 — `PriorINF.lean`, comment bytes only.** Record on `kplus` that it
         is **not** Reynolds' or Rabinovich's `K⁺`: quote both source definitions
         (`¬U(⊤,¬A)` / `¬((¬F)UntilTrue)`, and *"`K+(F)` holds at `t` iff
         `t = inf({t′ | t′ > t and F holds at t′})`"*), name `Formula.kPlus` (`Syntax/Formula.lean:180`)
@@ -1045,24 +1053,24 @@ the deviation in the phase summary.
         the collision warning at `Formula.lean:163-179`. **Resolve the unresolved doubt already in
         the file at `:75-81`** (*"Actually wait, the Rabinovich paper uses the notation
         differently"*) rather than leaving it. **No statement or proof byte changes.**
-  - [ ] **Docstring correction 2 — `DedekindINFDense.lean`, comment bytes only.** Withdraw the claim
+  - [x] **Docstring correction 2 — `DedekindINFDense.lean`, comment bytes only.** Withdraw the claim
         that Rabinovich's *"`r₀ = z₀` iff `K⁺(P₁)(z₀)`"* is false read literally; replace it with the
         accurate statement (the biconditional is a definitional restatement under his Definition (3);
         the tree's `kplus` carries an extra conjunct neither source has). Complete the honesty-charter
         Rule 4 label already present on the guard/trichotomy apparatus by recording **what it is glue
         for**. **No statement or proof byte changes; every landed theorem stays exactly as it is.**
-  - [ ] **Verify both corrections are comment-only**: `git diff -U0` on the two files shows changes
+  - [x] **Verify both corrections are comment-only**: `git diff -U0` on the two files shows changes
         only inside `/-` … `-/` or `--` lines; re-run `#print axioms` on
         `prior_hasDenseDedekindINF_dense` and `hasDedekindINF_fails_of_interval_witness` and confirm
         unchanged.
-  - [ ] Docstrings on all new declarations per the honesty charter: `Rabinovich 2014, K⁺ definition
+  - [x] Docstrings on all new declarations per the honesty charter: `Rabinovich 2014, K⁺ definition
         and Lemma 5.3 eq (5.2), PDF pp.3 and 8`; `Reynolds 1992, K⁺ abbreviation and Prior-U,
         printed p.168` — **re-verify both printed pages against the PDF and record any correction**.
-  - [ ] `#print axioms` on every new declaration; regression canaries `completeness_dense`,
+  - [x] `#print axioms` on every new declaration; regression canaries `completeness_dense`,
         `completeness_discrete`, `countermodel_discrete_reynolds_v2`.
-  - [ ] Add the aggregator import edge for CI protection, matching Phases 9 and 10's practice
+  - [x] Add the aggregator import edge for CI protection, matching Phases 9 and 10's practice
         (`WeakCanonical.lean`).
-  - [ ] Scoped build green; full `lake build` green; sorry census unchanged.
+  - [x] Scoped build green; full `lake build` green; sorry census unchanged.
 - **Estimated output**: ~320 lines (new module), plus ~40 lines of corrected comments across two
   files.
 - **Done when**: `kplusOpen`, `kminusOpen`, **the `Formula.kPlus`/`kMinus` bridge lemmas**,
@@ -1080,7 +1088,7 @@ the deviation in the phase summary.
   handoff's `route_critical_findings`, and flag that Phases 12 and 12.1 must take the trichotomy
   fallback. Do **not** dispatch Phase 11 without the orchestrator having read that finding.
 
-### Phase 11: Faithful-carrier re-base, base layer — `Lemma53Faithful` + `Lemma53FaithfulPast` [NOT STARTED]
+### Phase 11: Faithful-carrier re-base, base layer — `Lemma53Faithful` + `Lemma53FaithfulPast` [IN PROGRESS]
 
 > **v7's charter for this phase is withdrawn as factually wrong about the tree.** v7 chartered the
 > construction of a new `EANegationFix/OnBuilderFaithful.lean`, ~350 lines. `Lemma53Faithful.lean`

@@ -1,0 +1,188 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "task_number": 408,
+  "session_id": "sess_1785243543_9dde88",
+  "agent_type": "lean-implementation-hard-agent",
+  "orchestrator_mode": true,
+  "effort_flag": "hard",
+  "lit_flag": true,
+  "phase_number": "10.1",
+  "phase_title": "The source-exact K+, its missing bridge, and the faithful dichotomy carrier",
+  "phase_status": "COMPLETED",
+  "phases_completed": 3,
+  "phases_total": 25,
+  "summary": "Phase 10.1 complete. Landed Kamp/KPlusFaithful.lean (710 lines, 33 declarations, sorry-free, axiom-clean): kplusOpen/kminusOpen as the Prop-level reading of the already-existing Formula.kPlus/kMinus; the bridge lemmas kPlus_formula_correct/kMinus_formula_correct that the tree has never had; HasFaithfulDedekindINF/SUP (Rabinovich eq (5.2) with its left disjunct at the source's conjunct-free K+); prior_hasFaithfulDedekindINF_dense/SUP from SemanticPriorU/SemanticPriorS with NO guard and NO endpoint disjunct; the one-way shim lattice with the missing edge recorded and witnessed; and both anti-vacuity halves including v8's re-base corollary. THE PROBE RAN AND R11 HELD. Also landed the two chartered comment-bytes-only attribution corrections, verified comment-only by a nesting-aware comment stripper. Full lake build green (1919 jobs). Sorry census outside Boneyard/ unchanged at exactly Transfer.lean:1242. All three canaries unchanged. All frozen assets byte-identical.",
+
+  "r11_outcome": {
+    "verdict": "held",
+    "detail": "hasFaithfulDedekindINF_survives_interval_witness (Kamp/KPlusFaithful.lean) takes EXACTLY the hypotheses of hasDedekindINF_fails_of_interval_witness (DedekindINFDense.lean:455) -- densely ordered flow, P true at z0, P true throughout (z0,z1) -- and concludes `kplusOpen M atomMap P z0 AND NOT HasDedekindINF M atomMap`. Sorry-free, axioms [propext]. The interval-witness refutation therefore does NOT survive the conjunct-free antecedent: at the very configuration that refutes the tree's carrier, the source-exact carrier's left disjunct HOLDS, so there is no failure to refute. The general fact is isolated as kplusOpen_of_interval_witness and is STRONGER than the probe required -- TemporalTruth M atomMap z0 P is not used at all; density plus 'P throughout (z0,z1)' already yields kplusOpen P z0. Concretely: denseWindow_kplusOpen_at_half and denseWindow_probe_verdict establish, at denseWindowFlow with z0=1/2, z1=1 (the exact point where denseWindow_endpoint_disjunct_forced, DedekindINFDense.lean:595, proves P(z0) holds and BOTH of HasDedekindINF's disjuncts fail), that the structure satisfies SemanticPriorU, SemanticPriorS, P(1/2), kplusOpen P (1/2), and NOT HasDedekindINF. In the plan's own words: 'the guard/trichotomy apparatus is a repair for the tree's kplus and is not needed by a source-exact carrier.'",
+    "consequence_for_phase_11_and_12": "The chartered trichotomy fallback is NOT triggered. Phases 12 and 12.1 do NOT need explicit endpoint branches at NegFixOneFaithful.lean:422 / NegFixListFaithful.lean:446, and Block D proceeds on the PRIMARY charter: re-base the eight faithful modules onto HasFaithfulDedekindINF/SUP by hypothesis swap, in import-chain order, one bounded unit per phase. IMPORTANT SCOPE LIMIT, stated so it is not over-read: R11 as landed here settles the CARRIER-level claim (the faithful carrier is a genuine dichotomy on exactly the configuration that broke the two-disjunct form). It does NOT yet prove the CONSUMER-level claim that negChainOnFaithful_iff (Lemma53Faithful.lean:274) keeps its two-arm shape under the swap. That measurement remains Phase 11's first deliverable exactly as chartered by the plan. The evidence carried into it is unchanged and now stronger: the R12 audit was re-run and confirmed (no faithful-family consumer projects kplus's .1), and HasDedekindINF.toHasFaithfulDedekindINF keeps every existing supplier -- including the whole discrete pipeline via HasAttainedINF.toHasDedekindINF -- working through the swap."
+  },
+
+  "route_critical_findings": [
+    {
+      "severity": "resolved",
+      "finding": "R11 HELD. The source-exact, conjunct-free K+ turns Phase 10's trichotomy back into a two-arm dichotomy at the carrier level. The guard, the third disjunct P(z0) and the trichotomy are a formalization-level repair for this tree's kplus, machine-checked, not dense-case mathematical content."
+    },
+    {
+      "severity": "resolved",
+      "finding": "R12 re-audited and confirmed. Exactly three sites outside Boneyard/ project a kplus/kminus hypothesis's first component -- DedekindINFDense.lean:467, :486, :609 -- all inside that module's own refutation machinery, i.e. inside the apparatus that exists BECAUSE of the conjunct. Every faithful-family consumer discards it. Anchor drift recorded: orderedPointsExist_combine_kplus's destructure is at Lemma53Faithful.lean:143, not :137 as the v8 survey states; Lemma53.lean:296 and Lemma53FaithfulPast.lean:339 confirmed exactly."
+    },
+    {
+      "severity": "informational",
+      "finding": "The tree now has ZERO unbridged K+ spellings. Formula.kPlus/kMinus stood since they were written with a name-collision warning and no lemma relating either to a truth condition, while Axiom.prior_U_gap (Axioms.lean:377), Axiom.prior_S_gap (:387) and Axiom.sep (:390) are all stated with them. kPlus_formula_correct / kMinus_formula_correct close that gap and are independently valuable to any later phase -- notably Phase 23, where Axiom.sep becomes load-bearing for the first time."
+    },
+    {
+      "severity": "plan_text_correction",
+      "finding": "The plan's Phase 10.1 task list states the relating lemma `(TemporalTruth M atomMap t P OR kplus M atomMap P t) -> kplusOpen M atomMap P t`. That arrow is NOT a theorem: P(t) does not imply kplusOpen P t. The plan's own parenthetical on the same line ('a machine-checked witness that the converse fails (a point where P holds and P does not occur arbitrarily soon after)') describes the counterexample to exactly that direction, so the intended content is unambiguous and was landed in full: truth_or_kplus_of_kplusOpen (the true direction, kplusOpen -> P(t) OR kplus P t, which the shim lattice needs) plus kplusOpen_not_implied_by_truth_at (the machine-checked failure of the stated direction, at denseClosedRayFlow, t=0). Nothing weakened, nothing skipped. Annotated inline in the plan and reported here rather than absorbed silently. A future plan revision should turn the arrow around."
+    },
+    {
+      "severity": "attention_orchestrator",
+      "finding": "OBSERVED ANOMALY, NOT ACTED ON. plans/08_strong-completeness-dedekind-v8.md carries an UNCOMMITTED working-tree change, present before this dispatch began and made by another actor, flipping Phase 11's heading from [NOT STARTED] to [IN PROGRESS]. No Phase 11 work exists in the tree: Lemma53Faithful.lean and Lemma53FaithfulPast.lean are byte-identical to the pre-phase HEAD. The marker appears spurious. It was LEFT UNTOUCHED because it is outside this phase's territory. Phase 10.1's own charter states Phase 11 must not be dispatched before the orchestrator has read the R11 outcome -- which is this handoff. The orchestrator should reconcile that heading before dispatching."
+    },
+    {
+      "severity": "outstanding_rule_2_item",
+      "finding": "HONEST RECORD on the Reynolds printed-page attribution. The abbreviation table was read VERBATIM from the corpus (~/Projects/Literature/sources/reynolds_1992/sec01_an-axiomatization-for-until-and-since-ov.md): 'K^+ A | for not U(top, not A) | A will be true arbitrarily soon', with K^- A for not S(top, not A), and U/S truth clauses matching Formula.untl/snce's argument order. CONFIRMED. But the corpus markdown carries NO per-page markers; the only page datum is the article's printed range, Studia Logica 51: 165-193, 1992. So 'printed p.168' could not be re-derived from the corpus at this revision. It is inherited from the tree's own prior verification at Syntax/Formula.lean:163-179 and from the plan's Source-to-Implementation Mapping -- consistent with the range and with two independent prior attestations, but NOT re-verified against the PDF itself in this dispatch. Recorded, not silently passed."
+    }
+  ],
+
+  "sorry_inventory": [],
+
+  "blockers": [],
+
+  "continuation_path": null,
+  "continuation_context": null,
+
+  "files_touched": [
+    {
+      "path": "FormalSystem/Metalogic/WeakCanonical/Kamp/KPlusFaithful.lean",
+      "change": "created",
+      "lines": 710,
+      "declarations": 33
+    },
+    {
+      "path": "FormalSystem/Metalogic/WeakCanonical.lean",
+      "change": "one import line added (CI protection edge, matching Phases 9 and 10 practice)"
+    },
+    {
+      "path": "FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
+      "change": "COMMENT BYTES ONLY -- attribution correction 1. Machine-verified comment-only."
+    },
+    {
+      "path": "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINFDense.lean",
+      "change": "COMMENT BYTES ONLY -- attribution correction 2. Machine-verified comment-only."
+    },
+    {
+      "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/08_strong-completeness-dedekind-v8.md",
+      "change": "Phase 10.1 heading marked [COMPLETED]; all 18 checklist items checked; one inline deviation annotation"
+    },
+    {
+      "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/08_phase-10.1-kplus-faithful-summary.md",
+      "change": "created"
+    }
+  ],
+
+  "declarations_landed": [
+    "kplusOpen", "kminusOpen",
+    "kPlus_formula_correct", "kMinus_formula_correct",
+    "kplus_iff_not_and_kplusOpen", "kminus_iff_not_and_kminusOpen",
+    "kplusOpen_of_kplus", "kminusOpen_of_kminus",
+    "truth_or_kplus_of_kplusOpen", "truth_or_kminus_of_kminusOpen",
+    "denseClosedRayFlow", "kplusOpen_not_implied_by_truth_at",
+    "HasFaithfulDedekindINF", "HasFaithfulDedekindSUP",
+    "HasDedekindINF.toHasFaithfulDedekindINF", "HasDedekindSUP.toHasFaithfulDedekindSUP",
+    "HasAttainedINF.toHasFaithfulDedekindINF", "HasAttainedSUP.toHasFaithfulDedekindSUP",
+    "HasFaithfulDedekindINF.toHasDenseDedekindINF", "HasFaithfulDedekindSUP.toHasDenseDedekindSUP",
+    "HasFaithfulDedekindINF.toHasGuardedDedekindINF", "HasFaithfulDedekindSUP.toHasGuardedDedekindSUP",
+    "prior_hasFaithfulDedekindINF_dense", "prior_hasFaithfulDedekindSUP_dense",
+    "kplusOpen_of_interval_witness", "kminusOpen_of_interval_witness",
+    "hasFaithfulDedekindINF_survives_interval_witness",
+    "denseWindow_kplusOpen_at_half", "denseWindow_probe_verdict",
+    "hasFaithfulDedekindINF_of_dense_window", "hasFaithfulDedekindSUP_of_dense_window",
+    "hasFaithfulDedekindINF_not_implies_hasDedekindINF", "hasFaithfulDedekindSUP_not_implies_hasDedekindSUP"
+  ],
+
+  "verification": {
+    "scoped_build_passed": true,
+    "full_lake_build_passed": true,
+    "full_lake_build_jobs": 1919,
+    "scoped_aggregator_fallback_used": false,
+    "sorry_count_outside_boneyard": 1,
+    "sorry_baseline_location": "FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242",
+    "sorry_baseline_unchanged": true,
+    "vacuous_definitions_introduced": 0,
+    "new_axioms_introduced": 0,
+    "axioms_all_new_declarations": "[propext, Classical.choice, Quot.sound] or a subset; several are [propext] alone. No sorryAx anywhere.",
+    "canaries": {
+      "completeness_dense": "[propext, Classical.choice, Quot.sound] -- unchanged",
+      "completeness_discrete": "[propext, Classical.choice, Quot.sound] -- unchanged",
+      "countermodel_discrete_reynolds_v2": "[propext, Classical.choice, Quot.sound] -- unchanged"
+    },
+    "phase_10_declarations_unchanged_after_comment_edit": {
+      "prior_hasDenseDedekindINF_dense": "[propext, Classical.choice, Quot.sound]",
+      "prior_hasDenseDedekindSUP_dense": "[propext, Classical.choice, Quot.sound]",
+      "hasDedekindINF_fails_of_interval_witness": "[propext]",
+      "hasDedekindINF_fails_on_dense_window": "[propext, Classical.choice, Quot.sound]"
+    },
+    "pinned_terminus": {
+      "declaration": "FormalSystem.Metalogic.consequence_completeness_dedekind_of_engine",
+      "axioms": "[propext, Classical.choice, Quot.sound]",
+      "file_byte_identical": true
+    },
+    "comment_only_verification": {
+      "method": "nesting-aware Lean comment stripper (handles nested /- -/ and --) applied to the HEAD version and the working-tree version of each file, with whitespace normalised, then diffed",
+      "PriorINF.lean": "COMMENT-ONLY OK -- stripped sources byte-identical",
+      "DedekindINFDense.lean": "COMMENT-ONLY OK -- stripped sources byte-identical"
+    },
+    "frozen_files_byte_identical": [
+      "FormalSystem/Metalogic/WeakCanonical/PriorDefsDense.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINF.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53.lean",
+      "FormalSystem/Syntax/Formula.lean",
+      "FormalSystem/ProofSystem/Axioms.lean",
+      "FormalSystem/Metalogic/StrongCompleteness.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53Faithful.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53FaithfulPast.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Prop42Faithful.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/ (all five modules)",
+      "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean",
+      "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean"
+    ],
+    "territory_respected": "FormalSystem/Metalogic/Decidability/ and FormalSystem/Automation/ never touched or staged (concurrent task-165)."
+  },
+
+  "commits": [
+    {
+      "sha": "1e1f15aec",
+      "message": "task 408 phase 10.1: source-exact K+, the missing bridge, and the faithful dichotomy carrier",
+      "files": ["FormalSystem/Metalogic/WeakCanonical/Kamp/KPlusFaithful.lean", "FormalSystem/Metalogic/WeakCanonical.lean"]
+    },
+    {
+      "sha": "b8554cff1",
+      "message": "task 408 phase 10.1: the two attribution corrections (comment bytes only)",
+      "files": ["FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean", "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINFDense.lean"]
+    }
+  ],
+
+  "next_dispatch_target": {
+    "phase": "11",
+    "title": "Faithful-carrier re-base, base layer -- Lemma53Faithful + Lemma53FaithfulPast",
+    "status": "NOT STARTED (see attention_orchestrator finding: the working tree carries a spurious [IN PROGRESS] marker from another actor)",
+    "precondition_now_satisfied": "Phase 10.1's charter forbade dispatching Phase 11 before the orchestrator had read the R11 outcome. That outcome is r11_outcome above: HELD. The precondition is met.",
+    "owns": [
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53Faithful.lean (in-place carrier re-base; the narrowed in-place constraint applies)",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53FaithfulPast.lean (same; ABSENT from the Phase 10 handoff's list -- do not omit it)"
+    ],
+    "consumes": [
+      "HasFaithfulDedekindINF / HasFaithfulDedekindSUP (Kamp/KPlusFaithful.lean, this phase)",
+      "HasDedekindINF.toHasFaithfulDedekindINF and the SUP mirror (keeps every existing supplier)",
+      "kplusOpen / truth_or_kplus_of_kplusOpen (for anything that needs to reach the trichotomy)"
+    ],
+    "first_deliverable": "Swap the HasDedekindINF hypothesis at Lemma53Faithful.lean:230 and inside lemma53Faithful (~:318) for HasFaithfulDedekindINF, then MEASURE whether negChainOnFaithful_iff (:274) keeps its two-arm case split. That is the consumer-level half of R11 and it is still open. The kplus primitives (kplusPred :81, kplusPred_eval :83, kplusLeftBlock ~:186, orderedPointsExist_combine_kplus :137/:143) all live in this module and are re-pointed once. orderedPointsExist_combine_kplus already discards the conjunct (obtain <-, hdense> := hk), so the re-base should be a signature change there.",
+    "estimated_output_lines": 200,
+    "timing_hours": 4
+  },
+
+  "next_action_hint": "Dispatch Phase 11 with skill-lean-implementation-hard. R11 HELD at the carrier level, so the PRIMARY charter applies and the trichotomy fallback is off the table for Phases 12/12.1 unless Phase 11's consumer-level measurement contradicts it. Before dispatching, reconcile the spurious [IN PROGRESS] marker on Phase 11's heading in plans/08 (see the attention_orchestrator finding). Phase 15 remains parallel-eligible with Block D (disjoint territory) if budget allows."
+}
