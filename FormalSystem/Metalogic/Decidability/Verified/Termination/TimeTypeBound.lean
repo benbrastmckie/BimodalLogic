@@ -378,6 +378,63 @@ private def stabilisesAt (φ : Formula) (fuel : Nat) : Option (Nat × Nat) :=
     (Formula.neg (Formula.kPlus
       (Formula.and (probeAtom "p") (Formula.untl (probeAtom "p") (probeAtom "p").neg))))) 8
 
+/-! #### Cascade rows
+
+The rows above start from formulas whose emission triggers are all visible in the seed. The rows
+below are the adversarial ones: they are *built* so that a trigger only appears **after** a round
+of closure, which is the shape that could in principle make the operator run away.
+
+`probeGapBody g` is the raw implication whose negation is exactly the `priorUGap` trigger
+`U(⊤, g) ∧ F(¬g)`. So `F (probeGapBody g)` carries no trigger at all in its subformulas, but
+`priorUZ` emits `U(probeGapBody g, ¬probeGapBody g)`, and that emission's second component *is*
+the trigger — one round late. Nesting `probeGapBody` inside itself stacks the construction, and
+putting a `□` on top routes it through `allFuture` (whose `U(_, ⊤)` subformula is itself a
+`priorUZ` trigger) as well.
+
+The measured answer is the reason the confinement route below is worth pursuing: **the round count
+stays at 4 no matter how deep the nesting goes**, while only `|C|` grows. Delaying a trigger does
+not compound, because the delayed trigger's own emission introduces no further trigger.
+-/
+
+/-- The raw implication whose negation is the `priorUGap` trigger `U(⊤, g) ∧ F(¬g)`. -/
+private def probeGapBody (g : Formula) : Formula :=
+  Formula.imp (Formula.untl Formula.top g) (Formula.neg (Formula.someFuture g.neg))
+
+-- `F(U(⊤,p) → ¬F(¬p))` — the trigger appears only after `priorUZ` fires.
+/-- info: some (4, 22) -/
+#guard_msgs in
+#eval stabilisesAt (Formula.untl (probeGapBody (probeAtom "p")) Formula.top) 8
+
+-- The same construction nested twice: still round 4.
+/-- info: some (4, 33) -/
+#guard_msgs in
+#eval stabilisesAt
+  (Formula.untl (probeGapBody (probeGapBody (probeAtom "p"))) Formula.top) 8
+
+-- Nested three deep: still round 4. Depth of delay does not compound.
+/-- info: some (4, 44) -/
+#guard_msgs in
+#eval stabilisesAt
+  (Formula.untl (probeGapBody (probeGapBody (probeGapBody (probeAtom "p")))) Formula.top) 8
+
+-- `□` routes the same delayed trigger through `allFuture`.
+/-- info: some (4, 28) -/
+#guard_msgs in
+#eval stabilisesAt (Formula.box (probeGapBody (probeAtom "p"))) 8
+
+-- `□` on top of the doubly-nested delay.
+/-- info: some (4, 42) -/
+#guard_msgs in
+#eval stabilisesAt
+  (Formula.box (Formula.untl (probeGapBody (probeGapBody (probeAtom "p"))) Formula.top)) 8
+
+-- The degenerate `g = ⊤` gap, where the emission `U(X, ⊤)` is itself a `priorUZ` trigger.
+/-- info: some (3, 19) -/
+#guard_msgs in
+#eval stabilisesAt
+  (Formula.and (Formula.untl Formula.top Formula.top)
+    (Formula.someFuture Formula.top.neg)) 8
+
 end Probes
 
 /-! ## 4.2d — the closure operator terminates, given a bound
@@ -473,5 +530,184 @@ theorem exists_tableauClosed_closureIter {seed M : Finset Formula}
     ∃ n, TableauClosed (closureIter n seed) := by
   obtain ⟨n, hn⟩ := exists_closureStep_subset hseed hM
   exact ⟨n, tableauClosed_of_closureStep_subset hn⟩
+
+/-! ### Confinement: the surviving half, and its algebra
+
+`exists_tableauClosed_closureIter` reduces everything to *confinement*: exhibit a finite
+`M ⊇ seed` with `closureStep M ⊆ M`. This section develops that obligation rather than assuming
+it, in three moves.
+
+1. **Confinement is an algebra.** `Confining` sets are closed under union
+   (`Confining.union`), because `closureStep` distributes over union (`closureStep_union`).
+   That is the structural fact that makes the obligation decomposable at all: a confining stock
+   can be *assembled* out of independently-confining pieces instead of being verified in one
+   go. `Confining.extendEmissions` is the working form — bolt a batch `A` onto a confining `B`,
+   checking only `A`'s own emissions.
+2. **Confinement reduces to single formulas.** `exists_confining_of_forall` turns the
+   seed-level obligation into a formula-level one (`ConfinesFormula`), by induction on the seed
+   with `constCore` as the base. This is the reduction that makes the remaining work a
+   structural induction on *one* formula rather than a statement about arbitrary finite sets.
+3. **Confinement is computable for any concrete seed.** `stableAt` searches for the first stable
+   iterate and `exists_confining_of_stableAt` converts a successful search into the confining
+   stock. So no consumer with a concrete input is blocked: the hypothesis discharges by
+   computation, and the `#guard_msgs` rows above are exactly that computation being run.
+
+What is still open is the *uniform* statement `∀ φ, ConfinesFormula φ`. The probe rows say the
+round count is 4 regardless of nesting depth, and the reason is structural: a delayed trigger's
+emission introduces no further trigger. Turning that into a proof is a structural induction whose
+cases are the six emission templates; the algebra in this section is what makes those cases
+independent of one another.
+-/
+
+/-- A stock that one round of closure cannot leave. -/
+def Confining (M : Finset Formula) : Prop := closureStep M ⊆ M
+
+/-- `closureStep` distributes over union — the fact that makes confinement compositional. -/
+theorem closureStep_union (A B : Finset Formula) :
+    closureStep (A ∪ B) = closureStep A ∪ closureStep B := by
+  ext φ
+  simp only [closureStep, Finset.mem_union, Finset.mem_biUnion, Finset.mem_insert,
+    Finset.mem_singleton]
+  constructor
+  · rintro ((h | ⟨ψ, hψ, hem⟩) | h)
+    · exact h.imp (fun h => Or.inl (Or.inl h)) (fun h => Or.inl (Or.inl h))
+    · rcases hψ with hψ | hψ
+      · exact Or.inl (Or.inl (Or.inr ⟨ψ, hψ, hem⟩))
+      · exact Or.inr (Or.inl (Or.inr ⟨ψ, hψ, hem⟩))
+    · exact Or.inl (Or.inr h)
+  · rintro (((h | ⟨ψ, hψ, hem⟩) | h) | ((h | ⟨ψ, hψ, hem⟩) | h))
+    · exact Or.inl (Or.inl (Or.inl h))
+    · exact Or.inl (Or.inr ⟨ψ, Or.inl hψ, hem⟩)
+    · exact Or.inr h
+    · exact Or.inl (Or.inl (Or.inr h))
+    · exact Or.inl (Or.inr ⟨ψ, Or.inr hψ, hem⟩)
+    · exact Or.inr h
+
+/-- Confining stocks are closed under union. -/
+theorem Confining.union {A B : Finset Formula} (hA : Confining A) (hB : Confining B) :
+    Confining (A ∪ B) := by
+  intro φ hφ
+  rw [closureStep_union] at hφ
+  rcases Finset.mem_union.mp hφ with h | h
+  · exact Finset.mem_union_left _ (hA h)
+  · exact Finset.mem_union_right _ (hB h)
+
+/-- Grow a confining stock by a batch whose own closure round already lands inside the result. -/
+theorem Confining.extend {A B : Finset Formula} (hB : Confining B)
+    (hA : closureStep A ⊆ A ∪ B) : Confining (A ∪ B) := by
+  intro φ hφ
+  rw [closureStep_union] at hφ
+  rcases Finset.mem_union.mp hφ with h | h
+  · exact hA h
+  · exact Finset.mem_union_right _ (hB h)
+
+/-- The iteration is monotone in the round count. -/
+theorem closureIter_subset_mono {m n : Nat} (h : m ≤ n) (C : Finset Formula) :
+    closureIter m C ⊆ closureIter n C := by
+  induction n with
+  | zero => simp [Nat.le_zero.mp h]
+  | succ k ih =>
+      rcases Nat.lt_or_ge m (k + 1) with hlt | hge
+      · exact subset_trans (ih (Nat.lt_succ_iff.mp hlt)) (closureIter_subset_succ k C)
+      · simp [Nat.le_antisymm h hge]
+
+/--
+The constant core: the closure of the *empty* stock. Every confining stock contains it, because
+`closureStep` adds the two seriality formulas unconditionally. It is the base case of the
+seed induction, and it is confining by kernel computation — seven formulas, checked, not assumed.
+-/
+def constCore : Finset Formula := closureIter 3 (∅ : Finset Formula)
+
+theorem confining_constCore : Confining constCore := by
+  show closureStep constCore ⊆ constCore
+  decide
+
+/-- Search for the first stable iterate, up to `fuel` rounds. -/
+def stableAt : Nat → Finset Formula → Option Nat
+  | 0, _ => none
+  | k + 1, C => if closureStep C ⊆ C then some 0 else (stableAt k (closureStep C)).map (· + 1)
+
+/-- A successful search is a proof: the reported round is a fixed point of `closureStep`. -/
+theorem closureStep_closureIter_of_stableAt :
+    ∀ (fuel : Nat) (C : Finset Formula) (n : Nat), stableAt fuel C = some n →
+      closureStep (closureIter n C) ⊆ closureIter n C := by
+  intro fuel
+  induction fuel with
+  | zero => intro C n h; exact absurd h (by simp [stableAt])
+  | succ k ih =>
+      intro C n h
+      rw [stableAt] at h
+      by_cases hc : closureStep C ⊆ C
+      · rw [if_pos hc] at h
+        obtain rfl : n = 0 := by simpa using h.symm
+        simpa [closureIter] using hc
+      · rw [if_neg hc, Option.map_eq_some_iff] at h
+        obtain ⟨m, hm, rfl⟩ := h
+        exact ih (closureStep C) m hm
+
+/-- **Confinement by computation.** Any concrete seed whose search succeeds gets its confining
+stock, so the `exists_tableauClosed_closureIter` hypothesis is never a barrier in practice. -/
+theorem exists_confining_of_stableAt {seed : Finset Formula} {fuel n : Nat}
+    (h : stableAt fuel seed = some n) : ∃ M, seed ⊆ M ∧ Confining M :=
+  ⟨closureIter n seed, by simpa [closureIter] using closureIter_subset_mono (Nat.zero_le n) seed,
+    closureStep_closureIter_of_stableAt fuel seed n h⟩
+
+/-- Every confining stock carries the future seriality formula. -/
+theorem serialFuture_mem_of_confining {B : Finset Formula} (hB : Confining B) :
+    Formula.top.someFuture ∈ B :=
+  hB (Finset.mem_union_right _ (by simp))
+
+/-- Every confining stock carries the past seriality formula. -/
+theorem serialPast_mem_of_confining {B : Finset Formula} (hB : Confining B) :
+    Formula.top.somePast ∈ B :=
+  hB (Finset.mem_union_right _ (by simp))
+
+/-- The working form of `Confining.extend`: only the batch's emissions need checking, since the
+seriality pair is already in any confining `B`. -/
+theorem Confining.extendEmissions {A B : Finset Formula} (hB : Confining B)
+    (h : ∀ φ ∈ A, emissions φ ⊆ A ∪ B) : Confining (A ∪ B) := by
+  refine hB.extend ?_
+  intro φ hφ
+  simp only [closureStep, Finset.mem_union, Finset.mem_biUnion] at hφ
+  rcases hφ with (hφ | ⟨ψ, hψ, hem⟩) | hφ
+  · exact Finset.mem_union_left _ hφ
+  · exact h ψ hψ hem
+  · refine Finset.mem_union_right _ ?_
+    rcases Finset.mem_insert.mp hφ with rfl | hφ
+    · exact serialFuture_mem_of_confining hB
+    · rw [Finset.mem_singleton] at hφ
+      subst hφ
+      exact serialPast_mem_of_confining hB
+
+/-- Confinement of a single formula: the unit the seed-level obligation decomposes into. -/
+def ConfinesFormula (φ : Formula) : Prop := ∃ M, φ ∈ M ∧ Confining M
+
+/-- **Confinement is compositional.** A finite seed is confined as soon as each of its formulas
+is, because confining stocks are closed under union. This is what reduces the remaining T2
+obligation from a statement about arbitrary finite sets to a structural induction on one
+formula. -/
+theorem exists_confining_of_forall :
+    ∀ seed : Finset Formula, (∀ φ ∈ seed, ConfinesFormula φ) → ∃ M, seed ⊆ M ∧ Confining M := by
+  classical
+  intro seed
+  induction seed using Finset.induction_on with
+  | empty => exact fun _ => ⟨constCore, by simp, confining_constCore⟩
+  | insert a s ha ih =>
+      intro h
+      obtain ⟨M₁, hM₁, hc₁⟩ := h a (Finset.mem_insert_self a s)
+      obtain ⟨M₂, hM₂, hc₂⟩ := ih (fun φ hφ => h φ (Finset.mem_insert_of_mem hφ))
+      refine ⟨M₁ ∪ M₂, ?_, hc₁.union hc₂⟩
+      intro φ hφ
+      rcases Finset.mem_insert.mp hφ with rfl | hφ
+      · exact Finset.mem_union_left _ hM₁
+      · exact Finset.mem_union_right _ (hM₂ hφ)
+
+/-- Atoms emit only themselves. -/
+theorem emissions_atom (a : Atom) : emissions (Formula.atom a) = {Formula.atom a} := by
+  simp [emissions, subformulasFinset, Formula.subformulas, asAnd?]
+
+/-- `⊥` emits only itself. -/
+theorem emissions_bot : emissions Formula.bot = {Formula.bot} := by
+  simp [emissions, subformulasFinset, Formula.subformulas, asAnd?]
 
 end FormalSystem.Metalogic.Decidability
