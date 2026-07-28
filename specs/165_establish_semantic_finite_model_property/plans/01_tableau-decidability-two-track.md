@@ -432,6 +432,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     `(∃ a ∈ l, p a = false) → (l.filterMap fun a => if p a then none else some (f a)) ≠ []`
     discharges them, but the unifier did not take it as stated and the remaining work is
     finding the form it accepts. This is Phase 4.3's consumer, not Phase 7's.
+    **RESOLVED 2026-07-27b: landed.**
     **CORRECTION 2026-07-27b (report 05 §Q2.2, measured): the `filterMap`/unifier diagnosis in
     the paragraph above is REFUTED.** `split at h` cannot see through the `Prod.fst` projection
     in `(if c then … else …).1`, so the seven guard `ite`s were never opened and the surviving
@@ -531,7 +532,7 @@ Also resynced in passing: `expandOnceWithAppliedTracedImpl` was still *destroyin
 picking via `findUnexpandedWithApplied`, so traced runs were reporting on a different engine from
 the one `buildTableau` runs.
 
-  - [ ] **2.6 (new) — `serialityRule` with globally-last scheduling** (`Tableau.lean` +
+  - [x] **2.6 (new) — `serialityRule` with globally-last scheduling** (`Tableau.lean` +
     `Saturation.lean`). Add the `serialityRule` constructor with
     `isApplicable .serialityRule _ _ = true` (keyed on the *label*, not the formula shape) and the
     `applyRule` arm emitting `T(F ⊤)` / `T(P ⊤)` at the label, self-suppressing once both are
@@ -553,6 +554,23 @@ the one `buildTableau` runs.
     `.Discrete`, so no documentation of a residual is owed); `lake build
     …Decidability.Saturation` ≤ 15 s with zero `FAIL` in its inline suite and `lake build
     BimodalTest.TableauConformance` ≤ 45 s, exit 0.
+    *(done 2026-07-27b. The preserved WIP applied unchanged; `blockCandidates` is the whole
+    additional fix. Measured: `…Decidability.Saturation` 6.8 s with 34 `PASS` and zero `FAIL`;
+    `BimodalTest.TableauConformance` 35 s, exit 0; `lake build` and `lake build BimodalTest`
+    both exit 0. Exactly 11 `#guard_msgs` blocks moved — the four class tables (`S1`-`S5`,
+    `K2`-`K6` only) and the seven `TimeOrderProbe` rows. Every control, both counterexamples,
+    `CertificateProbe`, `BX*`, `R*` unmoved. Fuel stays 200 with no new per-row override.
+    **Unplanned but forced deviation, recorded here and raised in the handoff**:
+    `saturateBlockedCancellable` (`CancellableExpansion.lean`) still called `expandOnce` where
+    the pure `saturateBlocked` calls `expandOnceNoFresh`. That mirror drift was benign before
+    seriality and immediately fatal after it — `expandOnce` picks over *all* times and carries
+    the seriality stage, so on an open branch it never reports `.saturated`, and
+    `buildTableauCancellable`'s closing check returned `none`. Measured: every invalid formula
+    in `C5SmokeTest` (`p`, `⊥`, `p → q`, `□p`, `U(p,q)`, …) reported `timeout` at every fuel
+    from 7 to 500 while the pure engine answered `OPEN` at all of them; 27 assertions failed in
+    a file that was green at baseline. Resynced to `expandOnceNoFresh`. Neither report 04 nor
+    report 05 measured this consumer — both stopped at `Saturation` and
+    `TableauConformance`.)*
     **Depends on 2.5** — the prototype that produced 24/24 has both changes; seriality on the
     destructive engine was not measured and must not be attempted separately.
 
