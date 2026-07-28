@@ -19,11 +19,10 @@ the original formula, providing a witness for invalidity.
 - `SimpleCountermodel`: Simple countermodel description (atoms true/false)
 - `SemanticCountermodel`: Full semantic countermodel with world states, time domain,
   temporal ordering, and atom valuation
-- `branchTruth`: Recursive truth evaluation on the semantic countermodel
 - `extractSimpleCountermodel`: Build simple countermodel from saturated branch
 - `extractSemanticCountermodel`: Build semantic countermodel from saturated branch
-- `branchTruthLemma`: Key correctness theorem — every signed formula in a saturated
-  open branch is semantically satisfied in the extracted countermodel
+- the `sat_*` family: the Hintikka conditions a saturated open branch satisfies, each read
+  directly off the guard that suppressed a rule
 
 ## Two-Layer Architecture
 
@@ -33,21 +32,18 @@ the original formula, providing a witness for invalidity.
 2. **SemanticCountermodel** (Layer 1): Full finite model with worlds, times,
    temporal ordering, and valuation. Defined directly on the branch structure
    to avoid universe level issues with the full TaskFrame/WorldHistory stack.
-   The `branchTruthLemma` proves semantic correctness of this model.
 
-## Semantic Correctness Guarantee
+## Where semantic correctness actually lives
 
-The `branchTruthLemma` establishes that for a saturated open branch `b`:
-- If `T(φ)` at `(w, t)` is in `b`, then `φ` is true at `(w, t)` in the model
-- If `F(φ)` at `(w, t)` is in `b`, then `φ` is false at `(w, t)` in the model
+**Not here.** This file extracts countermodel *data* and proves the `sat_*` Hintikka conditions;
+it does not prove a truth lemma, and no longer contains a definition purporting to evaluate truth
+on the extracted structure. The truth lemma is `Verified/Bridge/IntTruth.lean`'s `branchTruthAt`,
+stated against the real `TaskModel`/`WorldHistory` semantics over a carrier, with
+`Verified/Bridge/DenseTruth.lean` carrying it to the dense carriers.
 
-The proof proceeds by structural induction on formulas and uses saturation
-invariants that derive properties of the branch from `findUnexpanded b = none`
-(saturation) and `findClosure b fc = none` (openness). The `branchTruth`
-definition uses direct-successor semantics for Until/Since (rather than
-transitive-closure semantics), matching the tableau's branching decomposition
-and enabling a clean inductive proof via the `sat_untl_neg`/`sat_snce_neg`
-saturation invariants.
+See "Branch Truth Lemma — Retired", below, for what used to be claimed here, why it was
+withdrawn, and why the recursive `branchTruth` evaluator that survived that withdrawal has now
+been deleted too.
 
 ## References
 
@@ -237,58 +233,6 @@ def timesBetween (ord : TimeOrdering) (t1 t2 : TimeIndex)
     (allTimes : List TimeIndex) : List TimeIndex :=
   allTimes.filter fun t =>
     isTimeOrderedBefore ord t1 t && isTimeOrderedBefore ord t t2
-
-/-!
-### Branch Truth Evaluation
-
-`branchTruth` defines truth of a formula at a `(world, time)` pair in the
-semantic countermodel. This is defined by structural recursion on the formula.
-
-- `atom p`: true iff `atomValuation w t p = true`
-- `bot`: always false
-- `imp φ ψ`: `φ` true implies `ψ` true (material conditional)
-- `box φ`: `φ` true at all worlds in the model (S5 universal accessibility)
-- `untl event guard`: there exists a direct future time `t'` (in `futureOf t`)
-  where both `event` and `guard` are true. This uses direct-successor semantics
-  rather than transitive-closure semantics, which suffices for the truth lemma
-  since T(U(event,guard)) is consumed in saturated branches.
-- `snce event guard`: there exists a direct past time `t'` (in `pastOf t`)
-  where both `event` and `guard` are true. Mirror of untl.
--/
-
-/--
-Evaluate truth of a formula at a `(world, time)` pair in the semantic
-countermodel. Defined by structural recursion on the formula.
--/
-def branchTruth (cm : SemanticCountermodel) (w : WorldIndex) (t : TimeIndex)
-    : Formula → Prop
-  | .atom p => cm.atomValuation w t p = true
-  | .bot => False
-  | .imp φ ψ => branchTruth cm w t φ → branchTruth cm w t ψ
-  | .box φ => ∀ w' ∈ cm.worlds, branchTruth cm w' t φ
-  | .untl event guard =>
-      -- Direct-successor semantics: there exists a direct future time where
-      -- both event and guard hold. This is weaker than the standard transitive-
-      -- closure Until semantics, but sufficient for the truth lemma because
-      -- T(U(event,guard)) is always consumed in saturated branches (so the
-      -- positive case is vacuous), while the negative case matches the
-      -- untlNeg rule's branching decomposition: at each future time, either
-      -- F(event) or F(guard) is in the branch.
-      ∃ t' ∈ cm.timeOrdering.futureOf t,
-        branchTruth cm w t' event ∧ branchTruth cm w t' guard
-  | .snce event guard =>
-      -- Mirror of untl: direct-predecessor semantics for Since.
-      ∃ t' ∈ cm.timeOrdering.pastOf t,
-        branchTruth cm w t' event ∧ branchTruth cm w t' guard
-
-/--
-Signed truth in the semantic countermodel: positive formulas must be true,
-negative formulas must be false.
--/
-def signedTruthInModel (cm : SemanticCountermodel) (sf : SignedFormula) : Prop :=
-  match sf.sign with
-  | .pos => branchTruth cm sf.label.world sf.label.time sf.formula
-  | .neg => ¬branchTruth cm sf.label.world sf.label.time sf.formula
 
 /-!
 ### Semantic Countermodel Extraction
@@ -955,12 +899,21 @@ theorem sat_snce_neg (b : Branch) (timeOrd : TimeOrdering)
 /-!
 ## Branch Truth Lemma — Retired
 
-`branchTruth` (above) remains as an executable debugging aid: it is a recursive truth
-evaluation on the extracted countermodel, useful for `#eval`-inspecting what a branch claims.
-It is **no longer on any proof path**, and the `branchTruthLemma` that used to live here has
-been retired rather than repaired.
+The `branchTruthLemma` that used to live here was retired rather than repaired, and the
+recursive `branchTruth` evaluator it ran on — together with its only consumer,
+`signedTruthInModel` — has now been **deleted**.
 
-The reason is worth recording, because the retirement is a gain rather than a loss. That lemma
+The deletion is recorded rather than done silently, because the justification for the
+intermediate state (keep the evaluator, retire only the lemma) turned out not to hold. That
+state was defended on the ground that `branchTruth` remained "an executable debugging aid,
+useful for `#eval`-inspecting what a branch claims". It was not executable: `branchTruth` is
+`Prop`-valued and carries no `Decidable` instance, so
+`Decidable (branchTruth cm w t f)` fails to synthesise and `#eval` was never available on it.
+With that gone the definition had no remaining role — it was on no proof path, it could not be
+run, and `signedTruthInModel`, its sole consumer, was itself referenced nowhere in the project.
+
+The reason for retiring the lemma is unaffected by any of that, and is worth recording, because
+the retirement is a gain rather than a loss. That lemma
 proved its `imp`, `untl` and `snce` cases *vacuously*, via helper lemmas asserting that
 `T(ψ → χ)`, `T(U(e,g))` and `T(S(e,g))` "cannot occur on a saturated branch at all". Those
 helpers were true only of the unguarded, destructive engine, where every such formula was
