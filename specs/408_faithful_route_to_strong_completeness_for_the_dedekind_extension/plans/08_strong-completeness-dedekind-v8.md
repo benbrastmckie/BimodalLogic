@@ -2632,7 +2632,7 @@ carried forward.
 `Transfer.lean:1225`. It is at **`Transfer.lean:1242`** — the plan's original figure was right and
 the correction was not. Re-measured, not assumed.
 
-### Phase 20: Reynolds §6 Lemmas 6 and 7 — bad points and bad intervals [NOT STARTED]
+### Phase 20: Reynolds §6 Lemmas 6 and 7 — bad points and bad intervals [PARTIAL]
 
 - **Goal**: *"Bad points only occur in non-singleton bad intervals. In any bad interval both `R` and
   `L` hold throughout. Any bad interval, if bounded, has excluded end points in `M`"* (Lemma 6);
@@ -2641,23 +2641,118 @@ the correction was not. Re-measured, not assumed.
   it is true arbitrarily close to each end of each class in the interval"* (Lemma 7).
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean` (new).
 - **Tasks**:
-  - [ ] Define *bad point* (`R ∨ L` holds) and *bad interval* (non-empty maximal interval in which
-        `R ∨ L` holds throughout), verbatim from printed p.178.
+  - [x] Define *bad point* (`R ∨ L` holds) and *bad interval* (non-empty maximal interval in which
+        `R ∨ L` holds throughout), verbatim from printed p.178. *(deviation: altered — the
+        definition is on printed p.179, not p.178; see the deviation record)*
   - [ ] Prove Lemma 6, transcribing printed pp.178-179: `L` holds wherever `R` does, via the case
         analysis on whether a class includes its left endpoint or begins just after a point of `M`,
         closed by the formula `B` true at times which are not left endpoints of their classes,
-        against Prior-U. Then mirror images.
-  - [ ] Prove Lemma 7, transcribing printed p.179: for `γ < δ` gaps with `(γ,δ)` a class in a bad
+        against Prior-U. Then mirror images. *(deviation: three of four halves landed — `L` wherever
+        `R`, non-singleton, excluded end points. The `R`-wherever-`L` mirror is BLOCKED on a
+        missing mirror of Lemma 5 over maximal `λ`-intervals; see the deviation record. Page is
+        p.180, not pp.178-179)*
+  - [x] Prove Lemma 7, transcribing printed p.179: for `γ < δ` gaps with `(γ,δ)` a class in a bad
         interval, the formula `C` true only at points within a class after some `¬B` in that class is
         false at the start and true at the end of each class, hence true up to the gap and false
         arbitrarily soon after — contradicting Prior-U. Second part by applying the first to `¬B`.
-  - [ ] Docstrings: `Reynolds 1992, §6 Lemma 6 / Lemma 7, printed pp.178-179`.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+        *(deviation: altered — pages pp.180-181, not p.179; and Reynolds' *"Similarly at the end"*
+        needed a full Prior-S mirror, plus a THIRD gap-crossing form that neither Phase 18's nor
+        Phase 19's theorem supplies. See the deviation record)*
+  - [x] Docstrings: `Reynolds 1992, §6 Lemma 6 / Lemma 7, printed pp.178-179`. *(deviation:
+        altered — docstrings say pp.179-181, the pages the material is actually printed on)*
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
 - **Estimated output**: ~400 lines.
 - **Done when**: both lemmas sorry-free and axiom-clean.
 - **Depends on**: 19.
 - **Timing**: 7 hours.
 - **Decomposition protocol**: as Phase 18 — split at the Lemma 6 / Lemma 7 boundary if needed.
+
+**BLOCKER** (Phase 20, Lemma 6's fourth half only — everything else landed and green):
+
+- **What failed**: `R` holds wherever `L` does — Reynolds' *"Using mirror images of the above and
+  previous results we get our proof"* (printed p.180).
+- **What was tried**: the forward direction (`endsInGapOnLeft_of_endsInGapOnRight`) was landed in
+  full and its shape inspected for mirroring. It routes through `reynolds_lemma5_first`
+  (`Lemma5.lean:591`), whose interval hypothesis is
+  `hIcc : ∀ q, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q`.
+- **Why stuck**: mirroring the argument requires Lemma 5 stated over maximal intervals of `λ`
+  (`EndsInGapOnLeft`), which is what Reynolds means by *"previous results"* read in the mirror.
+  Phase 19 landed the `ρ` side only. This is not a tactic failure — the mirrored statement does
+  not exist in the tree, and manufacturing it is a module-sized job (`Lemma5.lean` is 820 lines),
+  not a step inside Phase 20.
+- **What is needed**: a Lemma 5 mirror (`reynolds_lemma5_first_left` over `EndsInGapOnLeft`), then
+  ~180 lines mirroring `not_endsInGapOnRight_of_immediatePredecessor`,
+  `false_of_allClassesHaveLeftEnd` and `exists_leftEnd_throughout`. Best sized as its own sub-phase
+  (20.4) or folded into whichever phase first needs `R`-from-`L`.
+- **Not needed by Phase 21**: Lemma 8's thirteen cases consume **Lemma 7**, which is complete on
+  both sides. Lemma 6's fourth half is not on Lemma 8's critical path.
+- **Prohibited**: no `sorry`, no `def X := True`, no vacuous placeholder was used. The gap is
+  recorded in the module header and here, and the tree is green.
+
+**Deviation record (Phase 20)**
+
+*Deviation 1 — page references, again, and a measured page map.* The plan puts the *bad point* /
+*bad interval* definition and Lemma 6 at pp.178-179 and Lemma 7 at p.179. Measured against the page
+images, printed page = PDF page (1-based) + 164 throughout §6:
+
+| Material | PDF page | Printed page | Plan says |
+| --- | --- | --- | --- |
+| `ρ`, Lemma 2 | 13 | 177 | 177 ✓ |
+| Lemma 3, Lemma 4 statement | 14 | 178 | 177 ✗ |
+| Lemma 4 proof, Lemma 5, *bad point* / *bad interval* | 15 | 179 | 178 ✗ |
+| Lemma 6, Lemma 7 statement + proof opening | 16 | 180 | 178-179 ✗ |
+| Lemma 7 proof close, surgery set-up, Lemma 8 | 17 | 181 | 179 ✗ |
+
+Docstrings use the measured pages. Reported, not silently followed. This extends the Phase 18 and
+Phase 19 drift records; Phase 21's Lemma 8 is on **pp.181-182**, not pp.179-180.
+
+*Deviation 2 — corpus is clean here; the §6 defect count stands at two.* Lemmas 6 and 7 and the
+*bad point* / *bad interval* definition contain **no displayed formula at all**. Both recorded §6
+corpus defects sat at displays, so neither has an analogue. Every sentence block-quoted in the
+module header was read off the page image and agrees with the corpus chunk word for word, with one
+printer's typo preserved in the module (*"Its not hard"* on the page; the corpus normalises it to
+*"It's not hard"*). The standing display warning is unchanged.
+
+*Deviation 3 — Lemma 7 licenses NEITHER landed gap-crossing form.* The standing instruction was to
+determine which of `false_of_holds_throughout_class` (Phase 18) and
+`false_of_holds_throughout_class_bounded` (Phase 19) Lemma 7 consumes before using either. The
+answer is neither, and Reynolds' own sentence says why: *"`C` will be false for a while at the
+beginning of each class and then true for a while at the end."* Phase 18's form needs the auxiliary
+formula true **throughout** the class and false at **every** later point outside it; `C` fails both.
+Phase 19's form weakens only the second. `false_of_holds_throughout_class_from_bounded` weakens
+both — `hin` only from `s` onwards inside the class, `hout` only *"false arbitrarily soon after the
+gap"* (a failure point at or below each given point beyond the class, not failure everywhere).
+Both earlier forms are left in place unweakened and unrenamed; every existing consumer is untouched.
+
+*Deviation 4 — *"Similarly at the end"* is a full mirror, not a one-liner.* Lemma 7's second half
+needed Prior-S rather than Prior-U, and pulled in four assets the task list did not anticipate:
+`endsInGapOnLeft_congr` (`λ` is a class property — `Lemma34.lean` had only the `ρ` side),
+`exists_contemp_lt`, `false_of_holds_throughout_class_upto_bounded`, and the mirror auxiliary
+formula family `beforeNotHoldsInClass*`. It does **not** hit the Lemma-5-mirror obstruction that
+blocks Lemma 6's fourth half, because a bad interval carries both `R` and `L` throughout
+(`ClassInteriorToBadInterval`), so the past-directed argument can still appeal to the `R`-side
+Lemma 5.
+
+*Rendering 1 — *"a maximal interval of `R`"*.* Rendered as `ClassInteriorToRInterval M ε a t b`:
+two points `a < t < b` outside `t`'s class with `R` throughout `[a,b]`. That is what Lemma 4 (*"no
+last class and no first class"*) plus convexity of a maximal interval supply. This is this tree's
+rendering, not Reynolds' words.
+
+*Rendering 2 — *"non-empty and maximal one in which `R ∨ L` holds throughout"*.* Rendered as
+`IsBadInterval`, whose maximality clause is in **saturation** form. `IsBadInterval.maximal_among`
+derives the maximal-among-bad-intervals reading from it, so the rendering is checked rather than
+asserted.
+
+*Territory addition outside the `Owns` list, recorded.* One import line was added to
+`FormalSystem/Metalogic/WeakCanonical.lean` registering `DenseModelSurgery/BadIntervals.lean`,
+following the precedent of `Defs.lean` (Phase 17), `Lemma34.lean` (Phase 18) and `Lemma5.lean`
+(Phase 19). The three earlier import lines were **kept** rather than dropped as now-transitive. No
+other content in that file was touched.
+
+*Honest caveat, unchanged and carried forward.* Every §6 lemma below Lemma 2 remains **conditional**:
+`IsContempEquivDense ε` plus Prior-U/Prior-S are hypotheses, and the only `ε` the tree can exhibit
+satisfying them is `epsTop`, for which `EndsInGapOnRight` is empty. Nothing in this phase is
+discharged at a non-trivial instance. These results are not to be described as discharged.
 
 ### Phase 21: Reynolds §6 Lemma 8 — truth preservation under bad-interval surgery [NOT STARTED]
 
