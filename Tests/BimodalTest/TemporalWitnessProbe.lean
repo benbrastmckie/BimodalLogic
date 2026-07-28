@@ -121,6 +121,21 @@ both reaches are unrestricted and the first conjunct is row 5 verbatim, so adopt
 rows 5 and 6 rather than adding beside them. See "The interior-region negative demand" at the
 foot of this file.
 
+**8. The interior-region generalisation of the positive rows is adoptable, but only as a
+disjunction, and it does not subsume the rows it generalises.** At `ℤ` a non-placed evaluation
+point is on a ray: the lower one takes its witness from the known times (row 9) and the upper one
+from its own region, with `Stepped` emptying the guard interval (row 3). At `ℚ` and `ℝ` the point
+sits in an arbitrary region and `Stepped` is false, so the guard must be *carried* across a region
+rather than vanished. `untlPosRegion` merges both leaves: a witness in the point's own region
+(guard obligation at that region's label only) **or** a known time of rank at or above the region
+(guard obligation at the placed points and the region labels the interval meets). Both are `true`
+on all eight rows the gate accepts; every `false` sits on H, J, M or N, which `regionLabelCheck`
+already rejects. The `self` diagnostic column shows why the disjunction is not decoration: `self`
+alone is `false` on every genuine-until row, and the `known` disjunct alone is unsatisfiable at
+the top region, where no known time has rank `n`. Because the `self` disjunct is an escape rows 9
+and 10 do not offer, this row does **not** subsume them and is adopted beside them as rows 11 and
+12 rather than in their place. See "The interior-region positive demand" at the foot of this file.
+
 **A finding outside this file's scope, recorded because it is load-bearing elsewhere.**
 `regionLabelCheck` is `false` on rows H, J, M and N — the branches the engine builds for
 `U(p,q) → q` and `S(p,q) → q`. `regionLabelCheck b ord = true` is a *hypothesis* of
@@ -948,5 +963,166 @@ def probe5 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 /-- info: "N gen=true check=false uNRU=false [k=false r=false uRL=false] sNRD=true [k=true r=true sRU=true]" -/
 #guard_msgs in
 #eval "N " ++ probe5 (.imp p (.untl p q)) 200 .Discrete
+
+/-! ## The interior-region positive demand — the dense carrier's other residual, measured
+
+The positive halves at `ℤ` split a non-placed evaluation point into the two rays: the lower one is
+row 9 (`untlRayDnGuard`, witness among the known times) and the upper one is row 3
+(`untlRaySelf`) plus `Stepped` (witness in the point's own region, guard interval empty). At `ℚ`
+and `ℝ` neither split survives — the point sits in an arbitrary region `j`, and `Stepped` is false,
+so the "empty guard interval" is never available and the guard has to be *carried* across a
+region instead of vanished.
+
+The candidate below merges both `ℤ` leaves and generalises them to an arbitrary `j`. Its two
+disjuncts are the two places a witness can be:
+
+* **self** — a point of `r`'s own region, supplied by `exists_gt_sameRegion` rather than by a
+  step. The whole guard interval then lies inside that one region (`sameRegion_convex`), so the
+  only guard obligation is at the region's own label;
+* **known** — a known time `v` whose placed point lies above the region, which is exactly
+  `j ≤ branchRank b ord v`. The guard interval then meets placed points (known times `u` with
+  `j ≤ branchRank u` and `u` before `v`) and non-placed points (regions `j'` with `j ≤ j'` and
+  `j' ≤ branchRank v`), and the row has to carry the guard at both — the two bounds being
+  `cutIndex_mono` and `cutIndex_le_branchRank` read off as branch facts.
+
+The `⊤` exemption sits inside each disjunct, exempting the guard and keeping the witness, exactly
+as rows 7-10 do: `TruthAt … (untl φ ⊤)` still demands a witness.
+
+Unlike the negative candidate this one does **not** subsume the rows it generalises — its `self`
+disjunct is an escape rows 9 and 10 do not offer — so rows 3, 9 and 10 stay, and this is measured
+beside them rather than as a replacement for them.
+-/
+
+/-- The interior-region positive `untl` candidate, in the exact form the dense case consumes. -/
+private def untlPosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .untl φ ψ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            (b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)) ||
+            (b.knownTimes.any fun v =>
+              (decide (j ≤ branchRank b ord v) && b.hasPosAt φ ⟨sf.label.world, v⟩) &&
+                (ψ == Formula.top ||
+                  ((b.knownTimes.all fun u =>
+                      if j ≤ branchRank b ord u ∧ strictBefore ord u v = true then
+                        b.hasPosAt ψ ⟨sf.label.world, u⟩
+                      else true) &&
+                   ((List.range (b.knownTimes.length + 1)).all fun j' =>
+                      if j ≤ j' ∧ j' ≤ branchRank b ord v then
+                        b.hasPosAt ψ ⟨sf.label.world, regionLabel b ord sf.label.world j'⟩
+                      else true))))
+          else true
+    | _, _ => true
+
+/-- The past-directed mirror. -/
+private def sncePosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .snce φ ψ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            (b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)) ||
+            (b.knownTimes.any fun v =>
+              (decide (branchRank b ord v < j) && b.hasPosAt φ ⟨sf.label.world, v⟩) &&
+                (ψ == Formula.top ||
+                  ((b.knownTimes.all fun u =>
+                      if branchRank b ord u < j ∧ strictBefore ord v u = true then
+                        b.hasPosAt ψ ⟨sf.label.world, u⟩
+                      else true) &&
+                   ((List.range (b.knownTimes.length + 1)).all fun j' =>
+                      if j' ≤ j ∧ branchRank b ord v < j' then
+                        b.hasPosAt ψ ⟨sf.label.world, regionLabel b ord sf.label.world j'⟩
+                      else true))))
+          else true
+    | _, _ => true
+
+/-- The `self` disjunct alone, and the `known` disjunct alone, for diagnosis. -/
+private def untlPosRegionSelf (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .untl φ ψ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)
+          else true
+    | _, _ => true
+
+/-- The mirror of the `self`-only variant. -/
+private def sncePosRegionSelf (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .snce φ ψ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)
+          else true
+    | _, _ => true
+
+/-- Report the interior-region positive candidates beside the rows they generalise. -/
+def probe6 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String :=
+  match buildTableau φ fuel fc with
+  | none => "STALLED"
+  | some (.allClosed _) => "CLOSED"
+  | some (.hasOpen ob ord _ _) =>
+      s!"gen={hasGenuine ob} check={regionLabelCheck ob ord} " ++
+      s!"uPR={untlPosRegion ob ord} [self={untlPosRegionSelf ob ord} uRD={untlRayDnGuard ob ord}] " ++
+      s!"sPR={sncePosRegion ob ord} [self={sncePosRegionSelf ob ord} sRU={snceRayUpGuard ob ord}]"
+
+/-- info: "A gen=false check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+#guard_msgs in
+#eval "A " ++ probe6 (.imp (Formula.someFuture p) p)
+
+/-- info: "B gen=false check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+#guard_msgs in
+#eval "B " ++ probe6 (.imp (Formula.somePast p) p)
+
+/-- info: "C gen=false check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+#guard_msgs in
+#eval "C " ++ probe6 (.imp (.allFuture p) p)
+
+/-- info: "D gen=false check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+#guard_msgs in
+#eval "D " ++ probe6 (.imp (andF (.box p) (dia q)) r)
+
+/-- info: "E gen=false check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+#guard_msgs in
+#eval "E " ++ probe6 (.imp (andF (.box p) (.box (.imp p q))) r)
+
+/-- info: "F gen=false check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+#guard_msgs in
+#eval "F " ++ probe6 (.imp (Formula.someFuture p) p) 200 .Dense
+
+/-- info: "H gen=true check=false uPR=false [self=false uRD=true] sPR=true [self=false sRU=true]" -/
+#guard_msgs in
+#eval "H " ++ probe6 (.imp (.untl p q) q)
+
+-- I. The row that matters: a genuine until on a branch the gate accepts. Both candidates and
+-- both `self` diagnostics hold.
+/-- info: "I gen=true check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+#guard_msgs in
+#eval "I " ++ probe6 (.imp p (.untl p q))
+
+-- J. The disjunction earns its place here: `self` is `false` and `uPR` is `true` anyway, carried
+-- by the `known` disjunct. Neither disjunct alone would do — `self` fails on the genuine-until
+-- rows and `known` is unsatisfiable at the top region, where no known time has rank `n`.
+/-- info: "J gen=true check=false uPR=true [self=false uRD=true] sPR=false [self=false sRU=true]" -/
+#guard_msgs in
+#eval "J " ++ probe6 (.imp (.snce p q) q)
+
+/-- info: "K gen=true check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+#guard_msgs in
+#eval "K " ++ probe6 (.imp p (.snce p q))
+
+/-- info: "M gen=true check=false uPR=false [self=false uRD=true] sPR=true [self=false sRU=true]" -/
+#guard_msgs in
+#eval "M " ++ probe6 (.imp (.untl p q) q) 200 .Dense
+
+-- N. Every `false` in this block sits on H, J, M or N — the four rows `regionLabelCheck`
+-- already rejects. On all eight rows the gate accepts, both adopted forms report `true`, which is
+-- the acceptance standard rows 1-10 met.
+/-- info: "N gen=true check=false uPR=false [self=false uRD=false] sPR=false [self=false sRU=false]" -/
+#guard_msgs in
+#eval "N " ++ probe6 (.imp p (.untl p q)) 200 .Discrete
 
 end BimodalTest.TemporalWitnessProbe
