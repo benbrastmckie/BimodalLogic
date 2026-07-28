@@ -1,0 +1,140 @@
+{
+  "status": "blocked",
+  "skeleton": false,
+  "phase_number": "7.9",
+  "summary": "Phase 7.9 is BLOCKED at step 1, the stage-to-limit transport, and the blocker is now a landed theorem rather than a report of failure. The target NoGuardAccumulation (LimitDom) (LimitF) Set.univ is NOT derivable from the data the limit chronicle exports: an explicit family over the rationals satisfies the permanent-guard forward and backward Until/Since conditions and both counterexample-elimination conditions on all of the rationals while realizing FamilyQShape and refuting the invariant. The two gate-releasing declarations (cantor_bfmcs_dense_limit_guard_eventual, cantor_bfmcs_dense_real_restricted_fuc) did NOT land and cannot land on this route. Phase 8 is NOT dispatchable. Zero sorries introduced; full lake build green (1908 jobs); frozen files byte-identical.",
+  "phases_completed": 17,
+  "phases_total": 19,
+  "sorry_inventory": [],
+  "blockers": [
+    {
+      "phase": "7.9",
+      "step": "step 1 -- stage to limit transport",
+      "goal_state": "After `intro psi _ phi S0 hasc hfail; rcases hcof with hu | hs` on `NoGuardAccumulation (LimitDom fc A h_mcs) (LimitF fc A h_mcs) Set.univ`, take q0 below the gap carrying `untl phi psi` and let y be its `limit_satisfies_c5_strong` witness. Residual goal `False` with `hq0 : exists b in S0, q0 < b`, `hy : exists b in S0, y < b`, `hguard : forall w in LimitDom, q0 < w -> w < y -> psi in LimitF w`, `hphi : phi in LimitF y`, and no hypothesis relating y to the next S0 point. Iterating cofinality yields q0 < y0 < q1 < y1 < ... all below the gap: an ascending sequence, not a contradiction.",
+      "what_was_tried": [
+        "The lever 7.8 nominated (omega_chain_g_sub_f_insert + the walks' guard_interval). Dead end and mis-identified: that lever is already fully cashed out at the limit as limit_satisfies_c5_strong (ChronicleConstruction.lean:1531) and limit_satisfies_c5'_strong (:1575), landed long before this arc, whose conclusion is the permanent guard `xi in LimitG fc A h_mcs x y`. There is no unextracted content in the interval datum.",
+        "Case split on the witness: closes when the witness is an upper bound of S0 (an S0 point then lies inside the permanent guard interval and carries both psi and neg psi, refuted by set_consistent_not_both); does not close when the witness stays below the gap.",
+        "Enlarging the hypothesis set to everything the limit exports, both strong C5 directions plus limit_satisfies_c4 (:825) and limit_satisfies_c4' (:861). Still no contradiction -- and this is where the attempt turned into a refutation."
+      ],
+      "why_stuck": "The four exported conditions do not entail the invariant. Proved: noGuardAccumulation_not_implied_by_limit_data.",
+      "what_is_needed": "Content about the maximal-consistent-set VALUES the construction assigns to freshly inserted points, not about the order or the interval datum. The obvious repair (apply Axiom.prior_U_gap / Axiom.prior_S_gap at the gap) does not reach it -- see finding_prior_axioms below.",
+      "route_level": true,
+      "points_back_at": "Phase 7.5 (the invariant's shape)"
+    }
+  ],
+  "files_touched": [
+    "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleGuardAccumulation.lean",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/06_strong-completeness-dedekind-v6.md"
+  ],
+  "new_declarations": [
+    "C5StrongData",
+    "C5BackwardStrongData",
+    "C4Data",
+    "C4BackwardData",
+    "gapApproach",
+    "gapApproach_lt",
+    "gapApproach_mono",
+    "gapApproach_cofinal",
+    "guardAccumFamily",
+    "guardAccumFamily_mem_cases",
+    "guardAccumFamily_untl_mem",
+    "guardAccumFamily_atom_mem",
+    "guardAccumFamily_negneg_mem",
+    "guardAccumFamily_neg_mem",
+    "guardAccumFamily_c5Strong",
+    "guardAccumFamily_c5BackwardStrong",
+    "guardAccumFamily_c4",
+    "guardAccumFamily_c4Backward",
+    "guardAccumFamily_familyQShape",
+    "noGuardAccumulation_not_implied_by_limit_data"
+  ],
+  "gate_declarations_landed": {
+    "Chronicle.cantor_bfmcs_dense_limit_guard_eventual": false,
+    "cantor_bfmcs_dense_real_restricted_fuc": false
+  },
+  "adversarial_check_familyQ": "FAILS OPEN -- and this is the phase's principal result. At 7.8 the target passed only vacuously. It now passes non-vacuously in the wrong direction: guardAccumFamily_familyQShape constructs a FamilyQShape whose carrier simultaneously satisfies C5StrongData, C5BackwardStrongData, C4Data and C4BackwardData on all of the rationals. The squeezed-intervals failure mode is therefore REALIZABLE against the full structural data, not excluded by it. Per the dispatch instruction this was treated as a defect to fix rather than a note to file; the fix is not available at this phase's scope because the missing content is at the MCS-value level, so the phase is reported BLOCKED rather than closed.",
+  "finding_prior_axioms": {
+    "claim": "Axiom.prior_U_gap / Axiom.prior_S_gap (Reynolds' Prior-U / Prior-S) do not discharge BFMCS.LimitGuardEventual.",
+    "verification_status": "HAND-CHECKED, NOT FORMALIZED. Formalizing needs a rational-flow semantics module this tree does not have. Recorded as unverified-in-Lean rather than asserted.",
+    "prior_U_from_below": "Satisfied by the accumulating pattern: at t below the gap the antecedent U(top,psi) and F(neg psi) both hold, and the conclusion U(neg psi or K+(neg psi), psi) is discharged by the next guard-failure point, which the pattern supplies at every stage.",
+    "prior_S_from_above": "Kills the ONE-SIDED pattern (guard failing cofinally below the gap while holding on an interval above it) but is silent on the TWO-SIDED one: if the guard also fails cofinally above the gap, Prior-S's antecedent S(top,psi) never holds near the gap. The two-sided accumulation satisfies Prior-U and Prior-S at every rational and has no definable gap in Reynolds' sense, yet BFMCS.LimitGuardEventual still fails at it.",
+    "consistent_with": "BFMCS.LimitGuardEventual's own docstring, which already states its discharge is deferred and has no source in the corpus. This finding supplies the reason."
+  },
+  "literature_grounding": [
+    {
+      "source": "Reynolds 1992",
+      "printed_page": "176",
+      "quote": "Call a linear temporal structure a Prior structure if it satisfies all substitution instances of Prior-U and Prior-S. It is easy to see that then there are no definable gaps. Note that this result does not hold for the original Prior axioms in the language of F and P.",
+      "bearing": "The Burgess-style F/P axiom (A7a) that powers his gap Lemma provably does not transfer to the Until/Since language; a strictly stronger axiom is required."
+    },
+    {
+      "source": "Reynolds 1992",
+      "printed_page": "168",
+      "quote": "Prior-U:  U(T, p) & F~p -> U(~p v K+(~p), p) ; Prior-S:  S(T, p) & P~p -> S(~p v K-(~p), p)",
+      "bearing": "These are the repo's Axiom.prior_U_gap / Axiom.prior_S_gap; they are where the missing content would have to come from, and they do not suffice (see finding_prior_axioms)."
+    },
+    {
+      "source": "Burgess 1984",
+      "printed_page": "109",
+      "quote": "we can define a coherent chronicle T* on (X*, R*) by taking T*(w(Y, Z)) to be some MCS extending C(Y, Z).",
+      "bearing": "C(Y,Z) is built from P-alpha and F-alpha only -- purely existential, with NO interval datum. His limit object carries no analogue of g(w,w'), so the guard obligation cannot even be posed in his construction. ADAPTED-FROM citation, as chartered."
+    },
+    {
+      "source": "Burgess 1984",
+      "printed_page": "116",
+      "quote": "All the systems discussed so far have been based on the primitives ~, &, G, H.",
+      "bearing": "The completion argument of section 2.7 runs entirely before Until/Since enter the language, confirming this plan's own literature note at the page."
+    },
+    {
+      "source": "Reynolds 1992",
+      "printed_page": "171",
+      "quote": "Both proofs then finish off by applying a result of Kees Doets in [4] for finding a real-flowed model of the formula.",
+      "bearing": "Both established routes to real-flow completeness for Until/Since stop at a rational model and invoke Doets' theorem. Neither completes the rational model by inserting limit points at gaps, so neither incurs this obligation."
+    },
+    {
+      "source": "Reynolds 1992",
+      "printed_page": "189",
+      "quote": "We have a temporal structure R, with flow of time the reals, satisfying the same monadic sentences of quantifier depth at most k as M does.",
+      "bearing": "The real-flowed structure is a DIFFERENT structure, only elementarily-equivalent up to quantifier depth k; no point of it is a limit of rational points."
+    },
+    {
+      "source": "Reynolds 1992",
+      "printed_page": "169",
+      "quote": "in the case of U and S over the reals, there can be no strongly complete axiomatization ... because the compactness property fails",
+      "bearing": "Bears on this task's terminus. Flagged for the orchestrator; NOT acted on in this phase."
+    }
+  ],
+  "verification": {
+    "build": "full `lake build` green: Build completed successfully (1908 jobs)",
+    "scoped_builds": [
+      "lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleGuardAccumulation -- green (1097 jobs)"
+    ],
+    "sorries_introduced": 0,
+    "live_tree_sorry_baseline": "unchanged: exactly FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242 outside Boneyard directories (census total 161, all others under FormalSystem/Boneyard/ or FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/, none built)",
+    "vacuous_definitions": 0,
+    "axioms_added": 0,
+    "print_axioms": {
+      "noGuardAccumulation_not_implied_by_limit_data": "[propext, Classical.choice, Quot.sound]",
+      "guardAccumFamily_c5Strong": "[propext, Classical.choice, Quot.sound]",
+      "guardAccumFamily_familyQShape": "[propext, Classical.choice, Quot.sound]",
+      "gapApproach_lt": "[propext, Classical.choice, Quot.sound]",
+      "gapApproach_mono": "[propext, Classical.choice, Quot.sound]",
+      "gapApproach_cofinal": "[propext, Classical.choice, Quot.sound]"
+    },
+    "frozen_files_byte_identical": [
+      "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean",
+      "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean"
+    ],
+    "frozen_statements_unchanged": true,
+    "cantorIsoDense_untouched": true,
+    "walk_and_elimination_regions_untouched": true,
+    "chronicleConstruction_untouched": true,
+    "territory_respected": "FormalSystem/Metalogic/Decidability/ and FormalSystem/Automation/ were neither read for edit nor staged; the concurrent session's modification to Decidability/Verified/Termination/Fuel.lean was left unstaged."
+  },
+  "commits": [
+    "667a3d007 task 408 phase 7.9: the limit-level chronicle data does not imply the invariant"
+  ],
+  "next_dispatch_target": "NOT Phase 8. Phase 8's precondition is unmet and remains unmet. The decision belongs to the orchestrator and is between (a) revising the invariant at 7.5 to carry axiom-level content about the MCS values assigned to fresh points -- noting that the two-sided accumulation defeats the obvious Prior-S repair -- and (b) abandoning completion-by-limits for the Doets route the literature actually uses, which entails weak rather than strong completeness and therefore reopens this task's terminus.",
+  "continuation_path": null,
+  "continuation_context": null
+}

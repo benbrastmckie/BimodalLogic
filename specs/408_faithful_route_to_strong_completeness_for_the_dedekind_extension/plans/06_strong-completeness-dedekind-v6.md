@@ -4057,7 +4057,129 @@ only as the *guard-set* argument — so no limit-level claim exists on disk.
 - **Timing:** 6 hours.
 - **Depends on:** 7.6, 7.7
 
-### Phase 7.9: Limit transport, the cantor-side discharge, and `_fuc` (R3d-5) [NOT STARTED]
+### Phase 7.9: Limit transport, the cantor-side discharge, and `_fuc` (R3d-5) [BLOCKED]
+
+**BLOCKER** (Phase 7.9) — **Outcome B fired, at exactly the predicted place (step 1), and harder
+than predicted.**
+
+- **What failed.** Step 1, the stage → limit transport. The target was
+  `NoGuardAccumulation (LimitDom fc A h_mcs) (LimitF fc A h_mcs) Set.univ`, which is what
+  `noGuardAccumulation_transport` needs as input and what
+  `limitGuardEventual_of_noGuardAccumulation` ultimately consumes. It is **not derivable from the
+  data the limit chronicle exports**, and this is now a landed theorem rather than a report of
+  failure — see the FINDING below.
+- **What was tried, and the goal state at each.**
+  1. *The lever 7.8 nominated* (`omega_chain_g_sub_f_insert` + the two walks' `guard_interval`).
+     Dead end, and for a reason that is checkable on disk: that lever is **already fully cashed
+     out at the limit**, as `limit_satisfies_c5_strong` (`ChronicleConstruction.lean:1531`) and
+     `limit_satisfies_c5'_strong` (`:1575`), landed long before this arc. Their conclusion is the
+     permanent guard: `ξ ∈ LimitG fc A h_mcs x y`, i.e. `∀ w ∈ LimitDom, x < w → w < y →
+     ξ ∈ LimitF w`, closed under every subsequent insertion. There is no further content in the
+     interval datum to extract; 7.8's carry-forward mis-identified an already-landed result as an
+     unexploited lever.
+  2. *The case split on the witness.* Given `S₀` ascending to a gap of `LimitDom` with
+     `Formula.neg ψ ∈ LimitF q` for `q ∈ S₀`, and `CofinalBelowGap` for `untl φ ψ`: take
+     `q₀` below the gap carrying the obligation and let `y` be its `limit_satisfies_c5_strong`
+     witness. If `y` is an upper bound of `S₀` the argument closes — some `a ∈ S₀` lies in
+     `(q₀, y)` and carries both `ψ` (permanent guard) and `Formula.neg ψ`, refuted by
+     `set_consistent_not_both`. **If `y` is below the gap, nothing closes.** The residual goal is
+     `False` with hypotheses `hq₀ : ∃ b ∈ S₀, q₀ < b`, `hy : ∃ b ∈ S₀, y < b`, `hguard : ∀ w ∈
+     LimitDom, q₀ < w → w < y → ψ ∈ LimitF w`, `hφ : φ ∈ LimitF y` — and no hypothesis relating
+     `y` to the next `S₀` point. Iterating the cofinality produces `q₀ < y₀ < q₁ < y₁ < ⋯`, all
+     below the gap: an ascending sequence, not a contradiction.
+  3. *Enlarging the hypothesis set to everything the limit exports* — both strong C5 directions,
+     both C4 directions (`limit_satisfies_c4` `:825`, `limit_satisfies_c4'` `:861`). Still no
+     contradiction, and this is the point at which the attempt turned into a refutation.
+- **Why stuck (proved, not conjectured).** The four exported conditions do **not** entail the
+  invariant. `noGuardAccumulation_not_implied_by_limit_data`
+  (`ChronicleGuardAccumulation.lean`) exhibits a family over `ℚ` satisfying `C5StrongData`,
+  `C5BackwardStrongData`, `C4Data` and `C4BackwardData` on all of `ℚ` which realizes
+  `FamilyQShape` and therefore refutes `NoGuardAccumulation Set.univ _ Set.univ`. So the
+  falsification target 7.5 set is no longer merely unrefuted: it is **realizable against the whole
+  of the available structural data**, and any derivation of the invariant from that data alone
+  would be unsound.
+- **What is needed.** Content about the maximal-consistent-set *values* the construction assigns,
+  not about the order or the interval datum. See the FINDING for where the literature places that
+  content and why the obvious repair does not reach it.
+- **Prohibited, and observed:** no `sorry` was introduced; no vacuous placeholder; no weakening of
+  `BFMCS.LimitGuardEventual`; no edit to `cantorIsoDense` or to `ChronicleToCountermodelBasic.lean`
+  (byte-identical); the six frozen statements are unchanged. Phase 8 is **not** dispatchable and
+  was not touched.
+
+**FINDING (Phase 7.9 — where the missing content lives, and why the obvious repair does not
+reach it).**
+
+1. **The invariant's shape is not the problem; its *silence about the axioms* is.**
+   `NoGuardAccumulation` was deliberately stated in purely order-theoretic terms (7.5, choice 2)
+   so that it would transport along `cantorIsoDense` without re-proof. That decision is exactly
+   what makes it underdetermined by the construction: an order-theoretic predicate cannot be
+   entailed by order-theoretic data that a counter-family also satisfies. The transport step
+   (step 2) is fine and remains available; the input to it is what does not exist.
+
+2. **The literature places the missing content in Reynolds' `Prior-U`/`Prior-S`, and states in
+   terms that the Burgess-style axiom cannot supply it.** Verified verbatim against the local
+   corpus:
+   - Reynolds 1992, **printed p.176**: *"Call a linear temporal structure a Prior structure if it
+     satisfies all substitution instances of Prior-U and Prior-S. It is easy to see that then
+     there are no definable gaps. Note that this result does not hold for the original Prior
+     axioms in the language of F and P."*
+   - Reynolds 1992, **printed p.168**: *"Prior-U: U(⊤, p) ∧ F¬p → U(¬p ∨ K⁺(¬p), p)"*,
+     *"Prior-S: S(⊤, p) ∧ P¬p → S(¬p ∨ K⁻(¬p), p)"*.
+   - Burgess 1984, **printed p.109**, the completion-at-a-gap step: *"we can define a coherent
+     chronicle T\* on (X\*, R\*) by taking T\*(w(Y, Z)) to be some MCS extending C(Y, Z)"*, where
+     `C(Y,Z) = {Pα : ∃y ∈ Y(α ∈ T(y))} ∪ {Fα : ∃z ∈ Z(α ∈ T(z))}` — purely existential, **no
+     interval datum at all**, and powered by A7a (**printed p.93**: *"(A7) (a) Fp ∧ FG¬p →
+     F(HFp ∧ G¬p)"*). Burgess 1984, **printed p.116**, opening the Until/Since section: *"All the
+     systems discussed so far have been based on the primitives ¬, ∧, G, H."* His completion runs
+     entirely before `U`/`S` enter, which is why the obligation discharged here does not arise for
+     him — as this plan's own literature-grounding note already stated, and which is now
+     confirmed at the page.
+
+3. **The obvious repair — apply `Axiom.prior_U_gap`/`Axiom.prior_S_gap` at the gap — does not
+   close it.** Hand-checked, **not** formalized (formalizing it needs a `ℚ`-flow semantics module
+   this tree does not have; recorded as unverified-in-Lean rather than asserted):
+   - *Prior-U from below is satisfied by the accumulating pattern.* At `t` below the gap the
+     antecedent `U(⊤,ψ) ∧ F(¬ψ)` holds, and the conclusion `U(¬ψ ∨ K⁺(¬ψ), ψ)` is discharged by
+     the next guard-failure point — which is precisely what the accumulating pattern provides. The
+     axiom asks for a *first* failure point and the pattern has one at every stage.
+   - *Prior-S from above kills the one-sided pattern but not the two-sided one.* If the guard
+     fails cofinally below the gap and holds throughout an interval **above** it, `Prior-S` at a
+     point above the gap is violated, so that configuration is excluded. But if the guard also
+     fails cofinally **above** the gap, `Prior-S`'s antecedent `S(⊤,ψ)` never holds near the gap
+     and the axiom is silent. The two-sided accumulation satisfies `Prior-U` and `Prior-S` at
+     every rational and has no definable gap in Reynolds' sense, while `BFMCS.LimitGuardEventual`
+     still fails at it.
+   - Consequently `BFMCS.LimitGuardEventual` is not a consequence of the Dedekind axioms — which
+     is what its own docstring already says (*"Its discharge is therefore deferred, and it has no
+     source in the corpus"*), now with the reason.
+
+4. **The established route does not incur this obligation at all**, which is the route-level
+   reading of the blocker. Reynolds 1992, **printed p.171**: *"Both proofs then finish off by
+   applying a result of Kees Doets in [4] for finding a real-flowed model of the formula."* And
+   **printed p.189**: *"We have a temporal structure ℛ, with flow of time the reals, satisfying
+   the same monadic sentences of quantifier depth at most k as M does."* The real-flowed structure
+   is a **different** structure, only `≡ₖ`-equivalent to the rational one; no point of it is a
+   limit of rational points, and the guard obligation never arises. Reynolds also records
+   (**printed p.169**) that *"in the case of U and S over the reals, there can be no strongly
+   complete axiomatization … because the compactness property fails"* — which bears directly on
+   this task's terminus and is flagged for the orchestrator rather than acted on here.
+
+5. **What this does and does not settle.** It settles that R3d's step 1 cannot be closed on the
+   construction's order-and-interval content, and it settles it with a machine-checked witness. It
+   does **not** show `NoGuardAccumulation` false for the actual chronicle: the refuting family is a
+   bare `Rat → Set Formula`, not a family of maximal consistent sets, and whether the pattern is
+   realizable at `FrameClass.Dedekind` remains the open Ehrenfeucht-Fraïssé question 7.5 recorded.
+   The finding points back at 7.5 exactly as this phase's Outcome B trigger anticipated, and the
+   decision it forces — repair the invariant with axiom-level content, or abandon
+   completion-by-limits for the Doets route — belongs to the orchestrator.
+
+**Delivered green in this phase (sorry-free, full `lake build` green at 1908 jobs):**
+`C5StrongData`, `C5BackwardStrongData`, `C4Data`, `C4BackwardData`, `gapApproach` with its three
+properties, `guardAccumFamily` with its five membership lemmas, `guardAccumFamily_c5Strong`,
+`guardAccumFamily_c5BackwardStrong`, `guardAccumFamily_c4`, `guardAccumFamily_c4Backward`,
+`guardAccumFamily_familyQShape`, `noGuardAccumulation_not_implied_by_limit_data`.
+**Not delivered (gated by the blocker):** `Chronicle.cantor_bfmcs_dense_limit_guard_eventual`,
+`cantor_bfmcs_dense_real_restricted_fuc`. Phase 8 remains undispatchable.
 
 **The last obligation on the route.** This phase carries the stage invariant to `LimitDom`,
 transports it through `cantorIsoDense`, discharges `BFMCS.LimitGuardEventual` for
@@ -4132,20 +4254,31 @@ precondition is met and nothing else stands between the tree and the uncondition
         appended to `ChronicleConstruction.lean`. **Do not modify `limit_F_resolution` (`:722`),
         `limit_satisfies_c4` (`:776`) or `limit_satisfies_c5_strong` (`:1482`)** — their statements
         are frozen by Amendment 2's proviso. Append; do not restructure.
+        *(deviation: BLOCKED — not derivable from the exported data; refuted instead by
+        `noGuardAccumulation_not_implied_by_limit_data`. `ChronicleConstruction.lean` was left
+        untouched, since the negative result belongs beside the invariant. See BLOCKER above.)*
   - [ ] Transport through `cantorIsoDense` (step 2), consuming its `≃o` structure and
         `.symm.strictMono` (`ChronicleToCountermodelBasic.lean:293` exhibits the pattern). **No edit
-        to that file.**
+        to that file.** *(deviation: not reached — step 1 supplies its input.
+        `noGuardAccumulation_transport` remains landed and correct; nothing about step 2 is in
+        doubt.)*
   - [ ] Prove `cantor_bfmcs_dense_limit_guard_eventual` by composing the transport with 7.5's
-        payoff implication.
+        payoff implication. *(deviation: not reached — gated by step 1.)*
   - [ ] Prove `cantor_bfmcs_dense_real_restricted_fuc` from the landed
         `BFMCS.toRealBundle_restricted_forward_until_since` at the signature quoted above.
-  - [ ] Docstrings per the honesty charter on every new declaration: the no-source statement and
+        *(deviation: not reached — gated by the previous item. The landed binder list was read and
+        is confirmed as quoted; v5's draft binder list is indeed not the one on disk.)*
+  - [x] Docstrings per the honesty charter on every new declaration: the no-source statement and
         ADAPTED-FROM citations with printed pages. Record, in the module docstring, that this
         closes the last obligation and that the construction it rests on is original. **No
-        task-number citations.**
-  - [ ] `#print axioms cantor_bfmcs_dense_limit_guard_eventual` and
+        task-number citations.** *(deviation: altered — the module-docstring sentence records what
+        the phase actually established, namely that the obligation is **not** closed on this data,
+        rather than that it is.)*
+  - [x] `#print axioms cantor_bfmcs_dense_limit_guard_eventual` and
         `#print axioms cantor_bfmcs_dense_real_restricted_fuc`; record the results.
-  - [ ] Full `lake build`.
+        *(deviation: altered — those two do not exist. `#print axioms` was run on the six new
+        load-bearing declarations instead; all are `[propext, Classical.choice, Quot.sound]`.)*
+  - [x] Full `lake build` — `Build completed successfully (1908 jobs)`.
 - **Estimated output:** ~250-400 lines. **One agent run (H8).** Step 1 is the bulk; if the phase
   overruns, the sanctioned split is step 1 alone, then steps 2+3 — **report the split**.
 - **Done when:** both `Chronicle.cantor_bfmcs_dense_limit_guard_eventual` and

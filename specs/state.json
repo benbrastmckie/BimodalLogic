@@ -843,7 +843,7 @@
     {
       "project_number": 408,
       "project_name": "faithful_route_to_strong_completeness_for_the_dedekind_extension",
-      "status": "implementing",
+      "status": "partial",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "high",
