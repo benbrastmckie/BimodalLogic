@@ -1175,4 +1175,175 @@ theorem subConfining_snce {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubCo
     · exact ⟨Finset.mem_union_right _ (hcψ ζ hζ).1, Finset.mem_union_right _ (hcψ ζ hζ).2⟩
     · exact ⟨Finset.mem_union_right _ (hcχ ζ hζ).1, Finset.mem_union_right _ (hcχ ζ hζ).2⟩
 
+theorem emissions_imp_of_asAnd {ψ χ a b : Formula} (h : asAnd? (Formula.imp ψ χ) = some (a, b)) :
+    emissions (Formula.imp ψ χ)
+      = insert (Formula.imp ψ χ) (subformulasFinset ψ ∪ subformulasFinset χ)
+        ∪ conjEmissions a b := by
+  simp [emissions, subformulasFinset_imp, h]
+
+theorem subformulasFinset_or (a b : Formula) :
+    subformulasFinset (Formula.or a b)
+      = insert (Formula.or a b) (subformulasFinset a.neg ∪ subformulasFinset b) := by
+  rw [Formula.or, subformulasFinset_imp]
+
+theorem subformulasFinset_kPlus (a : Formula) :
+    subformulasFinset (Formula.kPlus a)
+      = insert (Formula.kPlus a)
+          (subformulasFinset (Formula.untl Formula.top a.neg) ∪ {Formula.bot}) := by
+  rw [Formula.kPlus, subformulasFinset_neg]
+
+theorem subformulasFinset_kMinus (a : Formula) :
+    subformulasFinset (Formula.kMinus a)
+      = insert (Formula.kMinus a)
+          (subformulasFinset (Formula.snce Formula.top a.neg) ∪ {Formula.bot}) := by
+  rw [Formula.kMinus, subformulasFinset_neg]
+
+/--
+**The `priorUGap` batch.** The conclusion `U(¬g ∨ K⁺¬g, g)` is the one emission strictly bigger
+than its trigger, so it is where a runaway chain would have to start. It does not start: the six
+formulas the conclusion drags in close under `emissions`.
+
+Two syntactic facts do the work, both checked by `rfl` below. First, `¬(¬g ∨ K⁺¬g)` *is* a
+conjunction — `asAnd?` reads it as `¬¬g ∧ U(⊤, ¬¬g)` — but no Dedekind arm fires on it, because
+the left conjunct is an implication rather than a `U`, an `S`, or a raw `K⁺`. Second,
+`¬¬g ≠ ⊤`, so `U(⊤, ¬¬g)` is not a `priorUZ` trigger. Together: the conclusion emits nothing new,
+which is exactly what the `#guard_msgs` cascade rows measure.
+-/
+theorem exists_confining_gapU {g : Formula} {B : Finset Formula} (hB : Confining B)
+    (hcg : Carries B g) (hcgn : Carries B g.neg) :
+    ∃ M, Confining M ∧ B ⊆ M ∧
+      Formula.untl (Formula.or g.neg (Formula.kPlus g.neg)) g ∈ M := by
+  classical
+  have hbot := bot_mem_of_confining hB
+  have hsubg := hcg.subformulas_subset
+  have hsubnn : subformulasFinset g.neg.neg ⊆ B := subformulasFinset_neg_subset hcgn hbot
+  have hsubtop := subformulasFinset_top_subset hB
+  have hnn : g.neg.neg ≠ Formula.top := by simp [Formula.neg, Formula.top]
+  have hYne : (Formula.or g.neg (Formula.kPlus g.neg)).neg ≠ Formula.top := by
+    simp [Formula.neg, Formula.top, Formula.or]
+  -- the three `emissions` splits, folded through definitional equality
+  have eX : emissions (Formula.or g.neg (Formula.kPlus g.neg))
+      = insert (Formula.or g.neg (Formula.kPlus g.neg))
+          (subformulasFinset g.neg.neg ∪ subformulasFinset (Formula.kPlus g.neg)) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have eK : emissions (Formula.kPlus g.neg)
+      = insert (Formula.kPlus g.neg)
+          (subformulasFinset (Formula.untl Formula.top g.neg.neg)
+            ∪ subformulasFinset Formula.bot) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have eY : emissions (Formula.or g.neg (Formula.kPlus g.neg)).neg
+      = insert (Formula.or g.neg (Formula.kPlus g.neg)).neg
+          (subformulasFinset (Formula.or g.neg (Formula.kPlus g.neg))
+            ∪ subformulasFinset Formula.bot)
+        ∪ conjEmissions g.neg.neg (Formula.untl Formula.top g.neg.neg) :=
+    emissions_imp_of_asAnd rfl
+  have hconj : conjEmissions g.neg.neg (Formula.untl Formula.top g.neg.neg) = ∅ := rfl
+  have sX : subformulasFinset (Formula.or g.neg (Formula.kPlus g.neg))
+      = insert (Formula.or g.neg (Formula.kPlus g.neg))
+          (subformulasFinset g.neg.neg ∪ subformulasFinset (Formula.kPlus g.neg)) :=
+    subformulasFinset_imp _ _
+  have sK : subformulasFinset (Formula.kPlus g.neg)
+      = insert (Formula.kPlus g.neg)
+          (subformulasFinset (Formula.untl Formula.top g.neg.neg)
+            ∪ subformulasFinset Formula.bot) :=
+    subformulasFinset_imp _ _
+  have sY : subformulasFinset (Formula.or g.neg (Formula.kPlus g.neg)).neg
+      = insert (Formula.or g.neg (Formula.kPlus g.neg)).neg
+          (subformulasFinset (Formula.or g.neg (Formula.kPlus g.neg))
+            ∪ subformulasFinset Formula.bot) :=
+    subformulasFinset_imp _ _
+  set A : Finset Formula :=
+    {Formula.untl (Formula.or g.neg (Formula.kPlus g.neg)) g,
+      Formula.or g.neg (Formula.kPlus g.neg),
+      Formula.kPlus g.neg,
+      Formula.untl Formula.top g.neg.neg,
+      (Formula.or g.neg (Formula.kPlus g.neg)).neg,
+      Formula.untl (Formula.or g.neg (Formula.kPlus g.neg))
+        (Formula.or g.neg (Formula.kPlus g.neg)).neg} with hAdef
+  have hsubK : subformulasFinset (Formula.kPlus g.neg) ⊆ A ∪ B := by
+    rw [sK, subformulasFinset_untl, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | (rfl | hx | hx) | rfl
+    · simp [hAdef]
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubnn hx)
+    · exact Finset.mem_union_right _ hbot
+  have hsubXm : subformulasFinset (Formula.or g.neg (Formula.kPlus g.neg)) ⊆ A ∪ B := by
+    rw [sX]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubnn hx)
+    · exact hsubK hx
+  have hsubYm : subformulasFinset (Formula.or g.neg (Formula.kPlus g.neg)).neg ⊆ A ∪ B := by
+    rw [sY, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubXm hx
+    · exact Finset.mem_union_right _ hbot
+  refine ⟨A ∪ B, hB.extendEmissions ?_, Finset.subset_union_right, by simp [hAdef]⟩
+  intro θ hθ
+  rw [hAdef] at hθ
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hθ
+  rcases hθ with rfl | rfl | rfl | rfl | rfl | rfl
+  · by_cases h : g = Formula.top
+    · subst h
+      rw [emissions_untl_top]
+      intro x hx
+      simp only [Finset.mem_union, Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with (rfl | hx | hx) | rfl
+      · simp [hAdef]
+      · exact hsubXm hx
+      · exact Finset.mem_union_right _ (hsubtop hx)
+      · simp [hAdef]
+    · rw [emissions_untl_of_ne h]
+      intro x hx
+      simp only [Finset.mem_insert, Finset.mem_union] at hx
+      rcases hx with rfl | hx | hx
+      · simp [hAdef]
+      · exact hsubXm hx
+      · exact Finset.mem_union_right _ (hsubg hx)
+  · rw [eX]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubnn hx)
+    · exact hsubK hx
+  · rw [eK, subformulasFinset_untl, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | (rfl | hx | hx) | rfl
+    · simp [hAdef]
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubnn hx)
+    · exact Finset.mem_union_right _ hbot
+  · rw [emissions_untl_of_ne hnn]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubnn hx)
+  · rw [eY, hconj, Finset.union_empty, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubXm hx
+    · exact Finset.mem_union_right _ hbot
+  · rw [emissions_untl_of_ne hYne]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact hsubXm hx
+    · exact hsubYm hx
+
 end FormalSystem.Metalogic.Decidability
