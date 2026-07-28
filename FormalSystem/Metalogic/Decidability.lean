@@ -30,6 +30,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.PropSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntGaps
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntTruth
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
