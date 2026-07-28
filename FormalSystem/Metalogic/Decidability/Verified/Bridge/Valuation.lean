@@ -509,6 +509,128 @@ example (b : Branch) (f : BranchTime b → D) : GapAdequate b f (branchGapVal b)
 
 end GapPolicy
 
+/-! ## `GapAdequate` is necessary but NOT sufficient — the compound-`□` refutation
+
+`branchGapVal` meets `GapAdequate` (proved just above) and yet **cannot** be the truth lemma's
+atom clause. `GapAdequate` constrains the policy at *atoms* only, on the stated ground that "at
+every compound formula the value is fixed by the induction". That ground is false for `□`.
+
+`truthAt_box_iff_base` makes `□` the universal modality over **every point of every base
+history**, gaps included, and `regionHistory` has total domain — so a branch fact `T(□χ)` with
+`χ` compound is a demand on the gap points' *induced* values, which the atom policy alone must
+already satisfy. Take `χ := p → q`. A branch may carry `T(□p)` and `T(□(p → q))` and no `T(□q)`,
+no `T(G q)` and no `T(H q)` anywhere — the engine never emits `T(□q)`, since `boxPos` copies a box
+formula's *content* and no rule closes the box context under modus ponens. At any gap point
+`branchGapVal` then makes `p` true (third disjunct, via `T(□p)`) and `q` false (no disjunct
+applies), so `p → q` is **false** there and `□(p → q)` is false at every point of the model, while
+the branch asserts it.
+
+`not_truthLemma_branchGapVal` is that refutation, on the two-formula branch `refuteBoxBranch`. It
+needs no engine run and no saturation hypothesis: it refutes the *interface*, showing
+`GapAdequate` is too weak to be the truth lemma's gap obligation, not merely that this policy is
+the wrong one.
+
+**What this rules out, and what it leaves open.** No atom-wise policy read off the branch's
+`T(G ·)`/`T(H ·)`/`T(□ ·)` facts can work, because the required gap state must be closed under the
+propositional consequences of the forced set and the branch is not: the same argument runs on the
+lower ray with `T(H(p → q))`, `T(H p)` and `F(q)` at the earliest known time, which is satisfiable
+and forces `q` on the ray with nothing on the branch to name it. What a correct gap clause must
+supply is a *state* realising the forced set
+`{χ : T(Gχ) below} ∪ {χ : T(Hχ) above} ∪ {χ : T(□χ)}` — i.e. a realisability condition on the
+branch, in the same decidable-check family as `timeOrderTotal` and `boxAnchoredCheck`, rather than
+a degree of freedom of `gapVal`. Note the two copy policies are *not* rehabilitated by this: they
+remain refuted for atoms (`not_leftCopy_gapAdequate`, `not_rightCopy_gapAdequate`), and their
+union — left-or-right — dies on the rays, where one endpoint is missing and the other's own value
+is unconstrained by the `H`-demand that reaches past it.
+-/
+
+section BoxCompoundRefuted
+
+/--
+The refuting branch: `T(□p)` and `T(□(p → q))` at the single label `⟨0, 0⟩`, and nothing else.
+
+Deliberately a literal, not an engine run: the refutation is of the *interface*, so it must not
+depend on saturation, openness, or any rule firing. `Tests/BimodalTest/BoxSpreadProbe.lean` carries
+the companion row showing the engine does produce branches of this shape.
+-/
+def refuteBoxBranch (p q : Atom) : Branch :=
+  [⟨.pos, Formula.box (Formula.atom p), ⟨0, 0⟩⟩,
+   ⟨.pos, Formula.box ((Formula.atom p).imp (Formula.atom q)), ⟨0, 0⟩⟩]
+
+/-- Both formulas sit at one label, so the branch has exactly one known time. -/
+theorem refuteBoxBranch_knownTimes (p q : Atom) : (refuteBoxBranch p q).knownTimes = [0] := rfl
+
+/-- Its single branch time. -/
+def refuteBoxTime (p q : Atom) : BranchTime (refuteBoxBranch p q) :=
+  ⟨0, by rw [refuteBoxBranch_knownTimes]; norm_num⟩
+
+/-- The one-point placement of that time, at the origin of `ℚ`. -/
+def refuteBoxPlacement (p q : Atom) : BranchTime (refuteBoxBranch p q) → ℚ := fun _ => 0
+
+/-- `1` is a gap point of the one-point placement. -/
+theorem refuteBox_gap (p q : Atom) :
+    ¬ IsPlacedCode (refuteBoxPlacement p q)
+      (regionCode (refuteBoxPlacement p q) (1 : ℚ)) := by
+  rintro ⟨i, hi⟩
+  have hmem : refuteBoxTime p q ∈ (regionCode (refuteBoxPlacement p q) (1 : ℚ)).1 := by
+    simp only [regionCode, refuteBoxPlacement, Set.mem_setOf_eq]; norm_num
+  rw [← hi] at hmem
+  simp only [placedCode, regionCode, refuteBoxPlacement, Set.mem_setOf_eq] at hmem
+  exact absurd hmem (lt_irrefl 0)
+
+/--
+**`GapAdequate` is not the truth lemma's gap obligation.** On `refuteBoxBranch` the branch asserts
+`T(□(p → q))`, yet the model built with `branchGapVal` — a policy this file proves `GapAdequate` —
+makes `□(p → q)` false. So the truth lemma's `box` case cannot be closed from `GapAdequate`, and
+the residual is a condition on the branch, not on the policy. See the section preamble.
+-/
+theorem not_truthLemma_branchGapVal (p q : Atom) (hpq : p ≠ q) :
+    (⟨.pos, Formula.box ((Formula.atom p).imp (Formula.atom q)), ⟨0, 0⟩⟩ : SignedFormula)
+        ∈ refuteBoxBranch p q ∧
+    ¬ TruthAt (branchModel (refuteBoxBranch p q) (refuteBoxPlacement p q)
+          (branchGapVal (refuteBoxBranch p q)))
+        (regionOmega (refuteBoxPlacement p q))
+        (regionHistory (refuteBoxPlacement p q) 0 (0 : ℚ)) (0 : ℚ)
+        (Formula.box ((Formula.atom p).imp (Formula.atom q))) := by
+  refine ⟨by simp [refuteBoxBranch], ?_⟩
+  intro h
+  have hgap := refuteBox_gap p q
+  have hmodel : branchModel (refuteBoxBranch p q) (refuteBoxPlacement p q)
+      (branchGapVal (refuteBoxBranch p q)) =
+      regionModel (refuteBoxPlacement p q) (branchPlacedVal (refuteBoxBranch p q))
+        (branchGapVal (refuteBoxBranch p q)) := rfl
+  -- `□` is the universal modality: the inner formula must hold at *every* point, gaps included.
+  have himp := (truthAt_box_iff_base _ _ _ _ _).mp h 0 (1 : ℚ)
+  -- `p` is true at the gap, forced by `T(□p)`.
+  have hp : TruthAt (branchModel (refuteBoxBranch p q) (refuteBoxPlacement p q)
+      (branchGapVal (refuteBoxBranch p q))) (regionOmega (refuteBoxPlacement p q))
+      (regionHistory (refuteBoxPlacement p q) 0 (0 : ℚ)) (1 : ℚ) (Formula.atom p) := by
+    rw [hmodel, truthAt_atom_gap hgap]
+    exact Or.inr (Or.inr ⟨⟨0, 0⟩, by simp [refuteBoxBranch]⟩)
+  -- so `q` must be true at the gap — and no disjunct of the policy supplies it.
+  have hq := himp hp
+  rw [hmodel, truthAt_atom_gap hgap] at hq
+  rcases hq with ⟨i, _, hG⟩ | ⟨j, hj, _⟩ | ⟨l, hl⟩
+  · simp only [Branch.hasPosAt, Branch.contains, refuteBoxBranch, SignedFormula.pos,
+      List.any_cons, List.any_nil, Bool.or_false, Bool.or_eq_true, beq_iff_eq,
+      SignedFormula.mk.injEq, Formula.allFuture, Formula.someFuture, Formula.neg,
+      Formula.top] at hG
+    exact hG.elim (fun hx => Formula.noConfusion hx.2.1) (fun hx => Formula.noConfusion hx.2.1)
+  · simp only [regionCode, refuteBoxPlacement, Set.mem_setOf_eq] at hj
+    exact absurd hj (by norm_num)
+  · rcases List.mem_cons.mp hl with heq | hl2
+    · injection heq with _ hf _
+      injection hf with hf'
+      injection hf' with hqp
+      exact hpq hqp.symm
+    · rcases List.mem_cons.mp hl2 with heq | hnil
+      · injection heq with _ hf _
+        injection hf with hf'
+        exact Formula.noConfusion hf'
+      · exact absurd hnil (by simp)
+
+end BoxCompoundRefuted
+
 /-! ## Sanity checks -/
 
 section Checks
