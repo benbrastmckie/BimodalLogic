@@ -2142,7 +2142,7 @@ attempt is to be made to prove them unrealizable directly — their unrealizabil
   also repaired a dangling reference to the never-existing
   `toRealBundle_backward_since_selected_is_refuted`, now pointing at the relocation lemma.
 
-### Phase 7.2: Forward case B — a two-outcome probe [NOT STARTED]
+### Phase 7.2: Forward case B — a two-outcome probe [IN PROGRESS]
 
 **This phase has two acceptable outcomes and a refutation is not a failure.** The blocker research
 constructed a candidate family in which Prior-U applied to `untl α β` is satisfied *locally* with

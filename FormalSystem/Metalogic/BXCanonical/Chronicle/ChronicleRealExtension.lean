@@ -587,6 +587,82 @@ theorem BFMCS.toRealBundle_restricted_backward_until_since {fc : FrameClass}
     · exact toRealBundle_backward_since_unselected B root h_rbuc h_lgb fam hfam δ t φ ψ hsub hx s
         hst hφ hguard
 
+/-! ## Forward case B, part one: a rational witness pattern straddling the gap -/
+
+/--
+**A rational witness pattern that straddles the target already gives the real one.**
+
+If `p` lies strictly below the shifted target `t + δ`, the rational `s'` lies strictly above it,
+`φ ∈ m s'`, and `ψ` guards every rational of `(p, s')`, then the real witness `(s' : ℝ) - δ` and
+the transported guard discharge the forward `untl` obligation at `t` — with no assumption
+whatever on whether `t + δ` is selected.
+
+The guard is the only step that needs an argument, and it is `guard_transport_realLimitMCS`
+applied on the *sub*interval `(t + δ, s')`: the rational guard on `(p, s')` covers it because
+`p < t + δ`, and every real of `(t, (s' : ℝ) - δ)` has its shifted coordinate inside it. The
+point `t + δ` itself is never asked about, which is why selectedness is irrelevant here.
+-/
+theorem forward_until_witness_of_straddling_rat (m : Rat → Set Formula) (δ t : ℝ) (φ ψ : Formula)
+    (p s' : Rat) (hpt : (p : ℝ) < t + δ) (hts' : t + δ < (s' : ℝ))
+    (hφ : φ ∈ m s') (hguard : ∀ q : Rat, p < q → q < s' → ψ ∈ m q) :
+    ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS m δ s ∧
+      ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS m δ r := by
+  refine ⟨(s' : ℝ) - δ, by linarith, ?_, ?_⟩
+  · rw [realLimitMCS_of_rat m δ ((s' : ℝ) - δ) s' (by ring)]
+    exact hφ
+  · intro r hr1 hr2
+    refine guard_transport_realLimitMCS m δ (t + δ) ((s' : ℝ)) ψ ?_ r (by linarith) (by linarith)
+    intro q hq1 hq2
+    exact hguard q (by exact_mod_cast hpt.trans hq1) (by exact_mod_cast hq2)
+
+/--
+**Forward `untl` at an unselected target: the descent dichotomy.**
+
+At an unselected `t` the membership `untl φ ψ ∈ realLimitMCS m δ t` is a statement about the
+rationals *below* `t + δ`, and `exists_rat_witness_of_realLimitMCS` turns it into rationals
+`p ↗ t + δ` each carrying `untl φ ψ`. Rational forward coherence gives each such `p` a witness
+`s'` and a guard on `(p, s')`. Exactly two things can happen, and this lemma is that case split
+made explicit:
+
+- **Case (a)** — some witness lands strictly above `t + δ`. Then
+  `forward_until_witness_of_straddling_rat` closes the obligation outright: the *left* disjunct.
+- **Case (b)** — every witness stays below `t + δ`. Since `t + δ` is unselected no witness can
+  equal it, so each witness is a `φ`-point strictly between its own `p` and `t + δ`; as the `p`
+  are cofinal below `t + δ`, so are the `φ`-points: the *right* disjunct.
+
+The right disjunct is therefore not a failure report but the precise residual: forward case B
+reduces to the situation where `φ` holds cofinally below the gap and the eventuality is met
+arbitrarily late, leaving the interval `(t + δ, ·)` with no guard at all. Nothing in this lemma
+attempts to guard that interval, and nothing in it assumes the guard can be had.
+-/
+theorem toRealBundle_forward_until_unselected_dichotomy {fc : FrameClass}
+    (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
+    (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
+    (hsub : Formula.untl φ ψ ∈ subformulaClosure root)
+    (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
+    (hU : Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    (∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
+        ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r) ∨
+      ∀ z : ℝ, z < t + δ → ∃ w : Rat, z < (w : ℝ) ∧ (w : ℝ) < t + δ ∧ φ ∈ fam.mcs w := by
+  by_cases hcase : ∃ p s' : Rat, (p : ℝ) < t + δ ∧ t + δ < (s' : ℝ) ∧ φ ∈ fam.mcs s' ∧
+      ∀ q : Rat, p < q → q < s' → ψ ∈ fam.mcs q
+  · obtain ⟨p, s', hpt, hts', hφ, hguard⟩ := hcase
+    exact Or.inl
+      (forward_until_witness_of_straddling_rat fam.mcs δ t φ ψ p s' hpt hts' hφ hguard)
+  · refine Or.inr ?_
+    intro z hz
+    obtain ⟨p, hzp, hpt, hUp⟩ :=
+      exists_rat_witness_of_realLimitMCS fam.mcs δ t (Formula.untl φ ψ) hU z hz
+    have hptlt : (p : ℝ) < t + δ := lt_of_le_of_ne hpt (fun h => hx ⟨p, h⟩)
+    obtain ⟨s', hps', hφ, hguard⟩ := (h_rfuc fam hfam).1 p φ ψ hsub hUp
+    have hs'le : (s' : ℝ) ≤ t + δ := by
+      by_contra hcon
+      exact hcase ⟨p, s', hptlt, lt_of_not_ge hcon, hφ, hguard⟩
+    have hs'lt : (s' : ℝ) < t + δ := lt_of_le_of_ne hs'le (fun h => hx ⟨s', h⟩)
+    have hps'R : (p : ℝ) < (s' : ℝ) := by exact_mod_cast hps'
+    exact ⟨s', by linarith, hs'lt, hφ⟩
+
 end FormalSystem.Metalogic.Bundle
 
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle
