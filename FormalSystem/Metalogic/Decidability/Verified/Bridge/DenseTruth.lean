@@ -182,6 +182,153 @@ theorem branchRank_lt_cutIndex (hV : branchOrderValid b ord = true) (hOF : Order
     rw [irrefl_of_valid hV (timeAt_mem b i)] at this
     exact absurd this (by simp)
 
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
+/--
+**The cut index is monotone in the carrier point.**
+
+Free of every gate and of the branch order: `{i | f i < r} ⊆ {i | f i < s}` when `r < s`, and the
+cut index is that set's cardinality. This is the side condition of the leaf where *both* the
+evaluation point and the witness are non-placed — the leaf `ℤ` never had, because `RayOnly`
+forbids two distinct inhabited regions strictly between placed points.
+-/
+theorem cutIndex_mono {r s : D} (hrs : r < s) :
+    cutIndex (regionCode f r) ≤ cutIndex (regionCode f s) := by
+  classical
+  rw [cutIndex, cutIndex]
+  refine Finset.card_le_card fun k hk => ?_
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk ⊢
+  exact lt_trans hk hrs
+
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
+/--
+**A placed point above a region has rank at least that region's cut index.**
+
+The companion of `branchRank_lt_cutIndex` and its exact converse in force: that one says a placed
+point *below* `s` has rank strictly below `s`'s cut index, this one says a placed point *above*
+`r` has rank at least `r`'s. Together they make `j ≤ branchRank b ord v` the faithful branch-side
+reading of "`v`'s placed point lies above every point of region `j`", which is what row 5's first
+reach is stated in.
+
+Note which direction of the placement each needs: `branchRank_lt_cutIndex` runs on
+`OrderFaithful`, this one on `OrderReflecting`. The inequality is non-strict here because no
+element separates the two counts — `r` is not placed, so nothing is gained at the boundary.
+-/
+theorem cutIndex_le_branchRank (hOR : OrderReflecting b ord f)
+    {r : D} {j : BranchTime b} (hrj : r < f j) :
+    cutIndex (regionCode f r) ≤ branchRank b ord (timeAt b j) := by
+  classical
+  rw [branchRank_eq_card, cutIndex]
+  refine Finset.card_le_card fun k hk => ?_
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk ⊢
+  exact hOR k j (lt_trans hk hrj)
+
 end Bridge
+
+/-! ## The two negative temporal halves, at a dense carrier
+
+`ℤ`'s negative halves are seven leaves apiece, three of them vacuous by `RaySplit`. The dense ones
+are **four leaves and none vacuous**, which is fewer rather than more, and the reason is the
+`j`-genericity of `regionLabel_untlNeg`: a non-placed point reads
+`regionLabel … (cutIndex (regionCode f s))` whether it sits in an interior gap or on a ray, so the
+case split is simply *placed or not*, twice, with no ray analysis anywhere. `RayOnly`, `RaySplit`
+and `isPlacedCode_of_between` do not appear.
+
+What replaces the ray analysis is arithmetic on the cut index, and all four side conditions are
+instances of the three counting lemmas above:
+
+| leaf | reaching lemma | side condition |
+|------|----------------|----------------|
+| `r` placed, `s` placed | `untlNeg_spread` | `OrderReflecting` |
+| `r` placed, `s` not | `regionLabel_untlNeg` | `branchRank_lt_cutIndex` |
+| `r` not, `s` placed | `untlNegRegion_up` | `cutIndex_le_branchRank` |
+| `r` not, `s` not | `untlNegRegion_label` | `cutIndex_mono` |
+
+The bottom two rows are what row 5's generalisation bought, and the fourth is the one `ℤ` could
+not state at all.
+-/
+
+section Dense
+
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
+
+/--
+**Until case, negative half, at a dense carrier.**
+
+Binder list against `IntTruth.branchTruthAt_untl_neg`: `RayOnly` and `RaySplit` are **gone**, and
+`OrderFaithful` has entered, because `branchRank_lt_cutIndex` reads the placement forwards where
+`untlNeg_spread` reads it backwards. Nothing else moved.
+-/
+theorem branchTruthAt_untl_neg_dense (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hOR : OrderReflecting b ord f) (hV : branchOrderValid b ord = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (w : WorldIndex) (r : D) :
+    b.hasNegAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
+      ¬ TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.untl φ ψ) := by
+  intro hn hT
+  obtain ⟨s, hrs, hsφ, -⟩ := hT
+  have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
+  have hmem : (⟨.neg, .untl φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+    (hasNegAt_iff_mem b _ _).mp hn
+  refine (hφ w s).2 ?_ hsφ
+  by_cases hr : IsPlacedCode f (regionCode f r)
+  · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
+    rw [stateLabel_placed hf w hi] at hmem
+    by_cases hs : IsPlacedCode f (regionCode f s)
+    · obtain ⟨j, hj⟩ := exists_eq_of_isPlacedCode hs
+      rw [stateLabel_placed hf w hj]
+      exact untlNeg_spread hTW hmem (timeAt_mem b j) (hOR i j (by rw [hi, hj]; exact hrs))
+    · rw [stateLabel_gap w hs, hasNegAt_iff_mem]
+      exact regionLabel_untlNeg hCheck hw' (cutIndex_le b _) hmem
+        (branchRank_lt_cutIndex hV hOF (by rw [hi]; exact hrs))
+  · rw [stateLabel_gap w hr] at hmem
+    by_cases hs : IsPlacedCode f (regionCode f s)
+    · obtain ⟨j, hj⟩ := exists_eq_of_isPlacedCode hs
+      rw [stateLabel_placed hf w hj]
+      exact untlNegRegion_up hTW (cutIndex_le b _) hmem (timeAt_mem b j)
+        (cutIndex_le_branchRank hOR (by rw [hj]; exact hrs))
+    · rw [stateLabel_gap w hs]
+      exact untlNegRegion_label hTW (cutIndex_le b _) (cutIndex_le b _) hmem (cutIndex_mono hrs)
+
+/-- **Since case, negative half, at a dense carrier.** The past-directed mirror, leaf for leaf,
+with the two counting lemmas swapping roles: `cutIndex_le_branchRank` supplies
+`regionLabel_snceNeg`'s `j ≤ branchRank` where the `untl` half used `branchRank_lt_cutIndex`, and
+conversely. -/
+theorem branchTruthAt_snce_neg_dense (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hOR : OrderReflecting b ord f) (hV : branchOrderValid b ord = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (w : WorldIndex) (r : D) :
+    b.hasNegAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
+      ¬ TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.snce φ ψ) := by
+  intro hn hT
+  obtain ⟨s, hsr, hsφ, -⟩ := hT
+  have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
+  have hmem : (⟨.neg, .snce φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+    (hasNegAt_iff_mem b _ _).mp hn
+  refine (hφ w s).2 ?_ hsφ
+  by_cases hr : IsPlacedCode f (regionCode f r)
+  · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
+    rw [stateLabel_placed hf w hi] at hmem
+    by_cases hs : IsPlacedCode f (regionCode f s)
+    · obtain ⟨j, hj⟩ := exists_eq_of_isPlacedCode hs
+      rw [stateLabel_placed hf w hj]
+      exact snceNeg_spread hTW hmem (timeAt_mem b j) (hOR j i (by rw [hi, hj]; exact hsr))
+    · rw [stateLabel_gap w hs, hasNegAt_iff_mem]
+      exact regionLabel_snceNeg hCheck hw' (cutIndex_le b _) hmem
+        (cutIndex_le_branchRank hOR (by rw [hi]; exact hsr))
+  · rw [stateLabel_gap w hr] at hmem
+    by_cases hs : IsPlacedCode f (regionCode f s)
+    · obtain ⟨j, hj⟩ := exists_eq_of_isPlacedCode hs
+      rw [stateLabel_placed hf w hj]
+      exact snceNegRegion_dn hTW (cutIndex_le b _) hmem (timeAt_mem b j)
+        (branchRank_lt_cutIndex hV hOF (by rw [hj]; exact hsr))
+    · rw [stateLabel_gap w hs]
+      exact snceNegRegion_label hTW (cutIndex_le b _) (cutIndex_le b _) hmem (cutIndex_mono hsr)
+
+end Dense
 
 end FormalSystem.Metalogic.Decidability.Verified.Bridge
