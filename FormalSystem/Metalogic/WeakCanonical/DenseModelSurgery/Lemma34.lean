@@ -342,4 +342,136 @@ theorem reynolds_lemma3_right (atomMap : Formula → sig.preds)
 
 end RightEnd
 
+/-! ## `ρ` at an arbitrary variable
+
+Reynolds' auxiliary formulas quantify over points and then assert `ρ` (equivalently `R`) of the
+bound variable. `rhoAt` places `ρ`'s single free variable at a chosen De Bruijn index, exactly as
+`epsAt` (`Defs.lean:197`) does for `ε`'s two. -/
+
+/-- `ρ` with its free variable reindexed to `i`. -/
+def rhoAt {n : Nat} (ε : MonadicFormula sig 2) (i : Fin n) : MonadicFormula sig n :=
+  (rhoFormula ε).rename ![i]
+
+/-- Evaluating a reindexed `ρ` is *"the class ends in a gap on the right"* at the reindexed
+point. -/
+@[simp] theorem eval_rhoAt {n : Nat} (M : OrderedMonadicStructure sig)
+    (ε : MonadicFormula sig 2) (env : Fin n → M.carrier) (i : Fin n) :
+    eval M env (rhoAt ε i) ↔ EndsInGapOnRight M ε (env i) := by
+  unfold rhoAt
+  rw [Kamp.eval_rename]
+  have h : env ∘ ![i] = (fun _ : Fin 1 => env i) := by
+    funext k; fin_cases k; rfl
+  rw [h, rhoFormula_eval]
+
+/-! ## Environment lookups
+
+The auxiliary formulas below sit under up to three nested binders; these are the index lookups
+that `simp` needs in order to check each transcription against its intended meaning. -/
+
+section EnvLookup
+
+variable {α : Type*}
+
+private theorem c2_one (x t : α) : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → α) 1 = t := rfl
+
+private theorem c3_one (y x t : α) :
+    (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → α) 1 = x := rfl
+
+private theorem c3_two (y x t : α) :
+    (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → α) 2 = t := rfl
+
+private theorem c4_one (z y x t : α) :
+    (Fin.cons z (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t))) : Fin 4 → α) 1 = y := rfl
+
+private theorem c4_two (z y x t : α) :
+    (Fin.cons z (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t))) : Fin 4 → α) 2 = x := rfl
+
+private theorem c4_three (z y x t : α) :
+    (Fin.cons z (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t))) : Fin 4 → α) 3 = t := rfl
+
+end EnvLookup
+
+/-! ## Lemma 3's auxiliary formula `B`
+
+*"Let `B` be the temporal formula saying that the `∼`-class we are now in begins with a point
+satisfying `R ∧ K⁻(¬R)`. `B` exists by expressive completeness."* (printed p.178)
+
+Reynolds names `B` and leaves it at that. Written out, *"the class we are now in begins with `w`"*
+is *"`w` is in `x`'s class and nothing in `x`'s class is below `w`"*, and `K⁻(¬R)(w)` — `¬R`
+accumulating from below at `w` — is monadically `∀u < w ∃r(u < r < w ∧ ¬ρ(r))`, since `R` and `ρ`
+agree in every Prior structure by Lemma 2. So `B`'s monadic source is
+
+```
+∃w( ε(x,w) ∧ ∀v(ε(x,v) → ¬ v < w) ∧ ρ(w) ∧ ∀u(u < w → ∃r(u < r ∧ r < w ∧ ¬ρ(r))) )
+```
+
+and `B` itself is its temporal equivalent. The three displayed conjuncts inside the scope of `∃w`
+are, in order, *"`w` is in our class"*, *"`w` begins it"*, and *"`R ∧ K⁻(¬R)` holds at `w`"*.
+
+This is landed as a named definition with a named semantic reading and a checked `eval` theorem,
+rather than being produced inline inside Lemma 3's proof: Lemmas 5-8 (Phases 19-21) each need
+formulas of exactly this shape, and `classBeginsAtGapStartFormula` is the pattern they follow. -/
+
+/-- **Lemma 3's `B`, as a monadic formula** — *"the `∼`-class we are now in begins with a point
+satisfying `R ∧ K⁻(¬R)`"* (printed p.178).
+
+De Bruijn layout: free variable `0` is `x`. Under `∃w` the indices are `0 = w`, `1 = x`; under a
+further `∀v` (or `∀u`) they are `0 = v`, `1 = w`, `2 = x`; under `∃r` inside `∀u` they are
+`0 = r`, `1 = u`, `2 = w`, `3 = x`. -/
+def classBeginsAtGapStartFormula (ε : MonadicFormula sig 2) : MonadicFormula sig 1 :=
+  .ex
+    (.and (epsAt ε 1 0)
+      (.and (.all (.imp (epsAt ε 2 0) (.not (.lt 0 1))))
+        (.and (rhoAt ε 0)
+          (.all (.imp (.lt 0 1)
+            (.ex (.and (.lt 1 0) (.and (.lt 0 2) (.not (rhoAt ε 0))))))))))
+
+/-- **What `B` says** — the semantic reading of `classBeginsAtGapStartFormula`, in Reynolds'
+words: `t`'s class has a least element `w`, and `R ∧ K⁻(¬R)` holds at `w`.
+
+*"Begins with `w`"* is rendered as the printed `¬ v < w` rather than as `w ≤ v`; on a linear order
+the two agree, and the negated form is what the monadic transcription literally contains. -/
+def ClassBeginsAtGapStart (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (t : M.carrier) : Prop :=
+  ∃ w : M.carrier, ContempEquivDense M ε t w ∧
+    (∀ v : M.carrier, ContempEquivDense M ε t v → ¬ v < w) ∧
+    EndsInGapOnRight M ε w ∧
+    (∀ u : M.carrier, u < w → ∃ r : M.carrier, u < r ∧ r < w ∧ ¬ EndsInGapOnRight M ε r)
+
+/-- **The `B` transcription is correct**: checked, not asserted, exactly as `rhoFormula_eval`
+checks `ρ`. -/
+theorem classBeginsAtGapStartFormula_eval (M : OrderedMonadicStructure sig)
+    (ε : MonadicFormula sig 2) (t : M.carrier) :
+    eval M (fun _ => t) (classBeginsAtGapStartFormula ε) ↔ ClassBeginsAtGapStart M ε t := by
+  simp only [classBeginsAtGapStartFormula, ClassBeginsAtGapStart, eval, eval_imp, eval_epsAt,
+    eval_rhoAt, Fin.cons_zero, c2_one, c3_one, c3_two, c4_one, c4_two, c4_three, and_imp]
+
+section BTemporal
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- **Lemma 3's `B`, as a temporal formula.** *"`B` exists by expressive completeness"* — this is
+that application, to `classBeginsAtGapStartFormula`.
+
+As with `gapRightFormula` (`Defs.lean:367`), `B` is produced before any structure is supplied, so
+one `B` serves every Prior structure. -/
+noncomputable def classBeginsAtGapStartTemporal (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ε : MonadicFormula sig 2) : Formula :=
+  (uSExpressivelyCompleteOverDensePrior atomMap h_surj (classBeginsAtGapStartFormula ε)).val
+
+/-- **`B` holds exactly where the class begins with a point satisfying `R ∧ K⁻(¬R)`**, in every
+Prior structure. -/
+theorem classBeginsAtGapStartTemporal_spec (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ε : MonadicFormula sig 2) (M : OrderedMonadicStructure sig)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    (t : M.carrier) :
+    TemporalTruth M atomMap t (classBeginsAtGapStartTemporal atomMap h_surj ε) ↔
+      ClassBeginsAtGapStart M ε t :=
+  ((uSExpressivelyCompleteOverDensePrior atomMap h_surj (classBeginsAtGapStartFormula ε)).property
+    M h_prior_U h_prior_S t).symm.trans (classBeginsAtGapStartFormula_eval M ε t)
+
+end BTemporal
+
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
