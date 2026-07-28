@@ -96,6 +96,17 @@ Correction 12's negative residual, and it and its mirror `snceNegRayUp` are now 
 `Bridge/TemporalGate.lean`'s `temporalWitnessCheck`. See the "lower-ray negative demand" section
 at the foot of this file.
 
+**6. The two positive rows are adoptable only in strengthened forms, and both strengthenings are
+free.** `gw` and `rdG` are measured but neither is usable as it stands. `gw` exempts the *whole*
+row when `ψ = ⊤`, so it says nothing on the `someFuture` fragment — where the positive case still
+needs a witness — and `rdG` permits the escape "the event sits at the ray's own label", which does
+not close the lower-ray leaf because the ray label is a known time with placed points below it,
+all of them inside the guard interval. `uGW` and `uRD` (and their mirrors) move the `⊤` exemption
+inside the witness and delete the escape; both are `true` on all eight rows the gate accepts, and
+neither ever differs from the weaker form it strengthens anywhere in the twelve. See "The positive
+rows, in the exact form the proof consumes them" at the foot of this file. These are rows 7-10 of
+`Bridge/TemporalGate.lean`'s `temporalWitnessCheck`.
+
 **A finding outside this file's scope, recorded because it is load-bearing elsewhere.**
 `regionLabelCheck` is `false` on rows H, J, M and N — the branches the engine builds for
 `U(p,q) → q` and `S(p,q) → q`. `regionLabelCheck b ord = true` is a *hypothesis* of
@@ -625,5 +636,154 @@ def probe3 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 /-- info: "N gen=true check=false uRL=false uRLs=false sRU=true sRUs=true" -/
 #guard_msgs in
 #eval "N " ++ probe3 (.imp p (.untl p q)) 200 .Discrete
+
+/-! ## The positive rows, in the exact form the proof consumes them
+
+`gw` and `rdG` above are measured, but neither is in the shape the positive case can use, and the
+difference is not cosmetic in either instance. Both strengthenings are measured here **before**
+being stated in `Verified/`, and each is reported beside the weaker form it strengthens so that a
+`false` says which part failed.
+
+*The `⊤` exemption has to move inside the witness.* `untlPosGuardedWitness` exempts the whole row
+when `ψ = ⊤`, so on the `someFuture` fragment it asserts nothing at all — and the positive case
+still needs a witness there, because `TruthAt … (untl φ ⊤)` demands one. The adopted form asks for
+a future known time carrying the event **always**, and attaches the guard obligation only when
+`ψ ≠ ⊤`. Pointwise on each signed formula that is exactly `gw`'s body when `ψ ≠ ⊤` and `wit`'s
+body when `ψ = ⊤`, and `wit` is `true` on all twelve rows above; `uGW` measures the conjunction
+directly rather than inferring it.
+
+*The ray row's first disjunct is unusable and is dropped.* `untlRayDnGuard` permits the escape
+`b.hasPosAt φ l` — the event at the ray's own label, with no guard obligation at all. That does
+not close the case: the ray label is a *known time*, so the point placing it has placed points
+strictly below it, and every one of those is strictly above the lower-ray evaluation point and
+inside the guard interval. `regionLabel` picks the first eligible candidate, not the order-minimal
+one, so nothing rules them out. The adopted form deletes the escape and keeps the guarded-witness
+disjunct alone, again with the `⊤` exemption inside rather than outside.
+-/
+
+/-- **Row 7 as adopted.** A future known time carries the event, and — unless the guard is `⊤` —
+every known time strictly between carries the guard. -/
+private def untlPosWitGuard (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .untl φ ψ =>
+        (futTimes b ord sf.label.time).any fun t =>
+          b.hasPosAt φ ⟨sf.label.world, t⟩ &&
+            (ψ == Formula.top ||
+              (futTimes b ord sf.label.time).all fun v =>
+                !strictBefore ord v t || b.hasPosAt ψ ⟨sf.label.world, v⟩)
+    | _, _ => true
+
+/-- **Row 8 as adopted**, the mirror. -/
+private def sncePosWitGuard (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .snce φ ψ =>
+        (pastTimes b ord sf.label.time).any fun t =>
+          b.hasPosAt φ ⟨sf.label.world, t⟩ &&
+            (ψ == Formula.top ||
+              (pastTimes b ord sf.label.time).all fun v =>
+                !strictBefore ord t v || b.hasPosAt ψ ⟨sf.label.world, v⟩)
+    | _, _ => true
+
+/-- **Row 9 as adopted.** At the lower-ray label: some known time carries the event, and — unless
+the guard is `⊤` — the ray's own label carries the guard and so does every known time strictly
+below the witness. Branch-major, as rows 5 and 6 are. -/
+private def untlRayDnWit (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .untl φ ψ =>
+        if sf.label.time == regionLabel b ord sf.label.world 0 then
+          b.knownTimes.any fun t =>
+            b.hasPosAt φ ⟨sf.label.world, t⟩ &&
+              (ψ == Formula.top ||
+                (b.hasPosAt ψ sf.label &&
+                  b.knownTimes.all fun v =>
+                    !strictBefore ord v t || b.hasPosAt ψ ⟨sf.label.world, v⟩))
+        else true
+    | _, _ => true
+
+/-- **Row 10 as adopted**, the mirror at the upper ray. -/
+private def snceRayUpWit (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .snce φ ψ =>
+        if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
+          b.knownTimes.any fun t =>
+            b.hasPosAt φ ⟨sf.label.world, t⟩ &&
+              (ψ == Formula.top ||
+                (b.hasPosAt ψ sf.label &&
+                  b.knownTimes.all fun v =>
+                    !strictBefore ord t v || b.hasPosAt ψ ⟨sf.label.world, v⟩))
+        else true
+    | _, _ => true
+
+/-- Report the four adopted rows beside the weaker forms they strengthen. -/
+def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String :=
+  match buildTableau φ fuel fc with
+  | none => "STALLED"
+  | some (.allClosed _) => "CLOSED"
+  | some (.hasOpen ob ord _ _) =>
+      s!"gen={hasGenuine ob} check={regionLabelCheck ob ord} " ++
+      s!"uGW={untlPosWitGuard ob ord} [gw={untlPosGuardedWitness ob ord} wit={untlPosWitness ob ord}] " ++
+      s!"sGW={sncePosWitGuard ob ord} [gw={sncePosGuardedWitness ob ord} wit={sncePosWitness ob ord}] " ++
+      s!"uRD={untlRayDnWit ob ord} [rdG={untlRayDnGuard ob ord}] " ++
+      s!"sRU={snceRayUpWit ob ord} [ruG={snceRayUpGuard ob ord}]"
+
+/-- info: "A gen=false check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "A " ++ probe4 (.imp (Formula.someFuture p) p)
+
+/-- info: "B gen=false check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "B " ++ probe4 (.imp (Formula.somePast p) p)
+
+/-- info: "C gen=false check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "C " ++ probe4 (.imp (.allFuture p) p)
+
+/-- info: "D gen=false check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "D " ++ probe4 (.imp (andF (.box p) (dia q)) r)
+
+/-- info: "E gen=false check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "E " ++ probe4 (.imp (andF (.box p) (.box (.imp p q))) r)
+
+/-- info: "F gen=false check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "F " ++ probe4 (.imp (Formula.someFuture p) p) 200 .Dense
+
+/-- info: "H gen=true check=false uGW=false [gw=false wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "H " ++ probe4 (.imp (.untl p q) q)
+
+-- I. The row that matters for the positive `untl` case: a genuine until on a branch the gate
+-- accepts.
+/-- info: "I gen=true check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "I " ++ probe4 (.imp p (.untl p q))
+
+/-- info: "J gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "J " ++ probe4 (.imp (.snce p q) q)
+
+/-- info: "K gen=true check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "K " ++ probe4 (.imp p (.snce p q))
+
+/-- info: "M gen=true check=false uGW=false [gw=false wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+#guard_msgs in
+#eval "M " ++ probe4 (.imp (.untl p q) q) 200 .Dense
+
+-- N. Every `false` in this block sits on this row and on H, J and M — all four of them rows
+-- `regionLabelCheck` already rejects. On all eight rows the gate accepts, the four adopted forms
+-- report `true`, which is the acceptance standard rows 1-6 met. Beside each adopted column is
+-- the weaker measured form it strengthens: `uRD`/`sRU` never differ from `rdG`/`ruG` anywhere in
+-- the corpus, so deleting the `b.hasPosAt φ l` escape costs nothing, and `uGW`/`sGW` never differ
+-- from `gw` either, since `wit` is `true` on all twelve rows.
+/-- info: "N gen=true check=false uGW=true [gw=true wit=true] sGW=false [gw=false wit=true] uRD=false [rdG=false] sRU=false [ruG=false]" -/
+#guard_msgs in
+#eval "N " ++ probe4 (.imp p (.untl p q)) 200 .Discrete
 
 end BimodalTest.TemporalWitnessProbe
