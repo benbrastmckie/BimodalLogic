@@ -466,4 +466,150 @@ theorem surgeredContempEquiv_of_base (hε : IsContempEquivDense ε)
 
 end Contemporaneity
 
+/-! ## Lemma 9
+
+> **LEMMA 9** *In fact there can't have been any bad points anyway.*
+
+The proof is a reductio run on the surgery of Lemma 8, and it is transcribed step by step below.
+Reynolds' six sentences become six named lemmas; the last of them closes the contradiction.
+
+**The hypothesis Reynolds does not name.** His *"by lemma 6 begins with a point `q`"* is the third
+clause of Lemma 6, which in this tree is `reynolds_lemma6_right_endpoint`
+(`BadIntervals.lean:1281`). That declaration carries an explicit hypothesis `hbadR` — *"every bad
+point at or above `t` is an `R`-point"* — because Reynolds' *"plainly impossible given `ρ`"* step
+inside it needs Lemma 6's **first** clause (*"in any bad interval both `R` and `L` hold
+throughout"*) at the boundary point, and the landed development declined to assume that silently.
+`hbadR` is therefore carried here too, at the point where it is genuinely consumed, rather than
+being smuggled into `IsBadIntervalSurgery`. Inside `Q₀` it is free — `endsInGapOnRight_of_mem`
+below proves it from the interiority witnesses — but Reynolds' argument applies Lemma 6 at a point
+of `Q⁺`, outside `Q₀`, and there it is a real assumption. See `## Conditionality after Theorem 4`
+for what this costs. -/
+
+section Lemma9
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
+  {Q : M.carrier → Prop} {t : M.carrier}
+
+/-- **`t` itself survives its own surgery** — the designated point of `I`, seen in `N`. -/
+def surgeryBase (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (Q : M.carrier → Prop) (t : M.carrier) (h : ContempEquivDense M ε t t) :
+    (surgeredStructure M ε Q t).carrier :=
+  ⟨t, Or.inr h⟩
+
+/-- **`R` holds throughout the bad interval in `M`** — Lemma 6's first clause, in the form the
+interiority witnesses already carry. -/
+theorem endsInGapOnRight_of_mem (hS : IsBadIntervalSurgery M ε Q t) {u : M.carrier} (hu : Q u) :
+    EndsInGapOnRight M ε u := by
+  obtain ⟨a, b, _, _, hint⟩ := hS.interior u u hu hu
+  exact hint.toR.rThroughout u hint.toR.left_lt.le hint.toR.lt_right.le
+
+/-- **A stretch of bad points above `t` lies inside `Q₀`** — maximality of the bad interval,
+used twice below. -/
+theorem mem_of_badStretch (hS : IsBadIntervalSurgery M ε Q t) {r : M.carrier} (htr : t < r)
+    (hbad : ∀ z : M.carrier, t < z → z ≤ r → IsBadPoint M ε z) : Q r := by
+  refine hS.isBad.saturated t r hS.mem fun z hz₁ hz₂ => ?_
+  rw [min_eq_left htr.le] at hz₁
+  rw [max_eq_right htr.le] at hz₂
+  rcases eq_or_lt_of_le hz₁ with h | h
+  · exact h ▸ hS.badPoint hS.mem
+  · exact hbad z h hz₂
+
+variable (atomMap : Formula → sig.preds)
+  (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+
+include h_surj
+
+/-- **"By lemma 8, `R` holds in `I` in `N`"** — printed p.182.
+
+Three moves: `R` holds at `t` in `M` because `t` is in the bad interval (Lemma 6's first clause);
+Lemma 8 carries `R` to `t` in `N`; and Lemma 2 read **at `N`** — legitimate exactly because Lemma
+2 quantifies `∃ R` before `∀ N`, and because `N` is a Prior structure — turns that back into a
+statement about `∼_N`. -/
+theorem reynolds_lemma9_R_in_N (hε : IsContempEquivDense ε)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    (hS : IsBadIntervalSurgery M ε Q t) :
+    EndsInGapOnRight (surgeredStructure M ε Q t) ε
+      (surgeryBase M ε Q t ((hε.equiv M).refl t)) := by
+  have hR : TemporalTruth M atomMap t (gapRightFormula atomMap h_surj ε) :=
+    (gapRightFormula_spec atomMap h_surj ε M h_prior_U h_prior_S t).mpr
+      (endsInGapOnRight_of_mem hS hS.mem)
+  have hN := (reynolds_lemma8 atomMap h_surj hε h_prior_U h_prior_S hS
+    (gapRightFormula atomMap h_surj ε) (surgeryBase M ε Q t ((hε.equiv M).refl t))).mp hR
+  exact (gapRightFormula_spec atomMap h_surj ε (surgeredStructure M ε Q t)
+    (surgeredSemanticPriorU atomMap h_surj hε h_prior_U h_prior_S hS)
+    (surgeredSemanticPriorS atomMap h_surj hε h_prior_U h_prior_S hS)
+    (surgeryBase M ε Q t ((hε.equiv M).refl t))).mp hN
+
+/-- **"`R` is true of this class so that it is bounded above amongst other things. Thus `Q⁺` is
+non-empty"** — printed p.182.
+
+The first conjunct of `EndsInGapOnRight` in `N` is *"the class does not extend forever to the
+right"*: some surviving point above `t` is outside the class. A surviving point outside the class
+is outside `Q₀`, since the only points of `Q₀` that survive are those of `I`. -/
+theorem reynolds_lemma9_exists_after (hε : IsContempEquivDense ε)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    (hS : IsBadIntervalSurgery M ε Q t) :
+    ∃ y : M.carrier, t < y ∧ ¬ Q y := by
+  obtain ⟨y, hty, hny⟩ :=
+    (reynolds_lemma9_R_in_N atomMap h_surj hε h_prior_U h_prior_S hS).1
+  refine ⟨y.val, hty, fun hQ => hny ?_⟩
+  exact surgeredContempEquiv_of_base hε ((hε.equiv M).refl t) (y.property.resolve_left (· hQ))
+
+omit h_surj in
+/-- **A non-bad point above `t`** — the input Lemma 6's third clause needs, extracted from
+`Q⁺` being non-empty by maximality of `Q₀`. -/
+theorem exists_not_isBadPoint_gt (hS : IsBadIntervalSurgery M ε Q t) {y : M.carrier}
+    (hty : t < y) (hny : ¬ Q y) : ∃ u : M.carrier, t < u ∧ ¬ IsBadPoint M ε u := by
+  by_contra hcon
+  push_neg at hcon
+  exact hny (mem_of_badStretch hS hty fun z hz _ => hcon z hz)
+
+/-- **Reynolds 1992, §6 Lemma 9, printed p.182.**
+
+> **LEMMA 9** *In fact there can't have been any bad points anyway.*
+
+Stated as the reductio his proof actually runs: a bad interval carrying the surgery set-up of
+Lemma 8, together with Lemma 6's first clause above `t`, is contradictory. *"There can't have been
+any bad points"* is the informal reading of that — a bad point is what produces the interval.
+
+The closing contradiction is the **third** conjunct of `EndsInGapOnRight` at `I` in `N`: that
+conjunct says there is no first point after the class, and `q` is exactly one. Reynolds' *"Thus
+the class ends just before `q`"* is that sentence, and his *"`R` can not have been true in this
+class after all"* is the `False` this returns. -/
+theorem reynolds_lemma9 (hε : IsContempEquivDense ε)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    (hS : IsBadIntervalSurgery M ε Q t)
+    (hbadR : ∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q) :
+    False := by
+  have hgapN := reynolds_lemma9_R_in_N atomMap h_surj hε h_prior_U h_prior_S hS
+  obtain ⟨y, hty, hny⟩ := reynolds_lemma9_exists_after atomMap h_surj hε h_prior_U h_prior_S hS
+  -- *"Thus `Q⁺` is non-empty and by lemma 6 begins with a point `q` say."*
+  obtain ⟨q, htq, hbelow, hqnb⟩ :=
+    reynolds_lemma6_right_endpoint atomMap h_surj hε M h_prior_U h_prior_S
+      (endsInGapOnRight_of_mem hS hS.mem) hbadR (exists_not_isBadPoint_gt hS hty hny)
+  have hqQ : ¬ Q q := fun h => hqnb (hS.badPoint h)
+  -- *"Also by lemma 6 `¬R` holds at `q` in `M` and so in `N`."*
+  have hqnRN : ¬ EndsInGapOnRight (surgeredStructure M ε Q t) ε ⟨q, Or.inl hqQ⟩ := by
+    intro hcon
+    refine hqnb (IsBadPoint.of_right ?_)
+    refine (gapRightFormula_spec atomMap h_surj ε M h_prior_U h_prior_S q).mp ?_
+    refine (reynolds_lemma8 atomMap h_surj hε h_prior_U h_prior_S hS
+      (gapRightFormula atomMap h_surj ε) ⟨q, Or.inl hqQ⟩).mpr ?_
+    exact (gapRightFormula_spec atomMap h_surj ε (surgeredStructure M ε Q t)
+      (surgeredSemanticPriorU atomMap h_surj hε h_prior_U h_prior_S hS)
+      (surgeredSemanticPriorS atomMap h_surj hε h_prior_U h_prior_S hS)
+      ⟨q, Or.inl hqQ⟩).mpr hcon
+  -- *"Clearly `q` is not in the class of `I` in `N`."*
+  refine hgapN.2.2 ⟨⟨q, Or.inl hqQ⟩, htq, fun hc => hqnRN ?_, ?_⟩
+  · exact (endsInGapOnRight_congr hε (surgeredStructure M ε Q t) hc).mp hgapN
+  -- *"Thus the class ends just before `q`"*: everything of `N` between is still in `I`.
+  · intro z hz₁ hz₂
+    have hzQ : Q z.val :=
+      mem_of_badStretch hS hz₁ fun w hw₁ hw₂ => hbelow w hw₁ (lt_of_le_of_lt hw₂ hz₂)
+    exact surgeredContempEquiv_of_base hε ((hε.equiv M).refl t)
+      (z.property.resolve_left (· hzQ))
+
+end Lemma9
+
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
