@@ -1729,9 +1729,10 @@ arm surfaces as `none`/`STALLED` rather than as a closure. `not_valid_of_hasOpen
   delivered standalone publishable value regardless of Track B's fate.
 - **Tasks:**
   - [ ] **7.1 `Verified/Bridge/Omega.lean` + `Verified/Bridge/TruthLemma.lean`** (new)
-    *(in progress — handoff; both files landed sorry-free and build green, see the PHASE 7 STATUS
-    banner below for what landed, the two forced design corrections, and the three obligations
-    O1-O3 that remain)*: build
+    *(in progress — handoff; O1 and O3 landed sorry-free, and the 2026-07-28g banner corrects both
+    residuals the 2026-07-28f banner named — `BoxContextClosed` → `BoxTemporalSpread`, `GapDemands`
+    → `GapAdequate` + `branchGapVal`. See the PHASE 7 STATUS banners below, latest last, for what
+    landed and what is owed)*: build
     `WorldHistory`/`Omega` with total `domain := fun _ => True` and universal `TaskRel`
     (report 01 F6 — verified sound); `ShiftClosed` via `time_shift_preserves_truth`
     (`Truth.lean:446`) per report 01 F9, `Set.univ_shift_closed` as fallback; prove
@@ -1905,6 +1906,75 @@ has its interface; only the invariant's proof is owed.
   Measured impossible above; use `BoxContextClosed` instead.
 - Adding the O3 lemmas to `CountermodelExtraction.lean` — they live in `Bridge/BoxSaturation.lean`
   precisely so an `applyRule`-unfolding timeout cannot take down the green prefix.
+
+**PHASE 7 STATUS (2026-07-28g) — still PARTIAL after a third dispatch. Both residuals named by the
+2026-07-28f banner were mis-stated; both are now corrected and the corrections are sorry-free and
+green** (`lake build FormalSystem.Metalogic.Decidability`, `lake build BimodalTest`); every new
+theorem verifies on `propext`/`Classical.choice`/`Quot.sound` only. 7.2 and 7.3 are still not
+started. Both files remain purely additive; no engine file was touched.
+
+*Correction 5 — `BoxContextClosed` is not a construction invariant, and `BoxTemporalSpread` is.*
+The 2026-07-28f banner named `BoxContextClosed` ("`T(□φ)` at every known label") on the strength of
+`boxDiamondPersistence` (`Tableau.lean:434`). Reading the six call sites refutes it on two
+independent counts. First, every call site passes `boxDiamondPersistence branch l.world l.time
+freshTime`, and that function reads `branch.boxPosAtWorldTime l.world l.time` — the box formulas at
+the *triggering* label only, so a `T(□φ)` at another world is not copied to the fresh time. Second,
+the world-minting rules copy box formulas' **contents**, not the formulas: `boxNeg`/`diamondPos`
+(`Tableau.lean:541`, `:583`) run `branch.boxPosFormulas.filterMap` with the arm
+`| .box inner => SignedFormula.pos inner {world := freshWorld, ...}`, so a fresh world receives
+`T(B)` and never `T(□B)` — `BoxContextClosed` fails at the first minted world whenever any `T(□φ)`
+is on the branch, which is exactly the case it was introduced to serve. Saturation does not repair
+it either: `witnessPresent` (`Tableau.lean:1670`) suppresses `boxNeg`/`diamondPos` on the
+*witness* alone (`F(ψ)`, resp. `T(ψ)`, at some known world), so the auto-propagation outputs are
+outside the applicability test.
+The replacement is `BoxTemporalSpread` (`Bridge/BoxSaturation.lean`): `T(□φ)` anywhere puts
+`T(Gφ)` and `T(Hφ)` at **every known world** at the box formula's own time. That *is* maintained by
+the world-minting rules, which copy `allFuturePosAtTime l.time` / `allPastPosAtTime l.time` — all
+worlds — onto the fresh world. It is strictly weaker than `BoxContextClosed`
+(`boxTemporalSpread_of_boxContextClosed`, so nothing is lost), and it is enough: `sat_box_grid`
+derives the full grid from it plus saturation and `timeOrderTotal`, with no case needing `T(□φ)`
+anywhere other than where it was found. Also landed: `mem_knownWorlds_of_mem`,
+`mem_knownTimes_of_mem`, `mem_directFutureOf_iff_mem_constraints`,
+`mem_directPastOf_iff_mem_constraints`, `mem_directFutureOf_iff_mem_directPastOf` (the one-step
+converse), `TimeOrderConverse`, `knownTime_trichotomy`.
+
+*Correction 6 — `GapDemands` was stated backwards and is vacuous; `GapAdequate` and `branchGapVal`
+replace it, and O2's atomic half is discharged.* `GapDemands.future` takes *model* truth of
+`G φ` at a placed point as its hypothesis, and `Truth.future_iff` (`Semantics/Truth.lean:264`) is an
+`iff` making that hypothesis definitionally its own conclusion. `gapDemands_trivial`
+(`Bridge/Valuation.lean`) proves every policy satisfies it — including `leftCopyGap` and
+`rightCopyGap`, which the same file refutes. `GapDemands` is retained only so the mistake stays
+visible. `GapAdequate` is the corrected obligation: *branch* fact as hypothesis, model truth at gap
+points as conclusion, in three fields (`T(G p)` survives upward, `T(H p)` downward, `T(□ p)`
+everywhere). `branchGapVal` defines the policy outright — at a gap code `c`, the atom `p` holds
+when some index in `c.1` (placed points below the gap) carries `T(G p)`, or some index in `c.2`
+(above) carries `T(H p)`, or `T(□ p)` is on the branch at all — reading only the region code and
+the branch, so it imports nothing from an endpoint and is neither refuted copy policy.
+`branchGapVal_gapAdequate` discharges all three fields.
+
+*What remains in 7.1.*
+- **`BoxTemporalSpread` for constructed branches** — the induction over tableau construction, now
+  over an invariant the construction actually maintains. `sat_box_grid` consumes it; only the
+  invariant's proof is owed.
+- **`TimeOrderConverse`** — `t' ∈ futureOf t → t ∈ pastOf t'`. The one-step case is proved
+  (`mem_directFutureOf_iff_mem_directPastOf`: both sides say the constraint list carries the edge);
+  the closure case is a fuel-bounded BFS duality (forward and backward shortest-path depths agree,
+  so equal fuel suffices) and is carried as an explicit hypothesis by every consumer. Small,
+  self-contained, no engine dependency.
+- **The truth-lemma induction itself**, with `branchGapVal` fixed as the atom clause's gap arm.
+  Condition 4 of the O2 list — the `U`/`S` straddling guards, the `prior_U_gap`/`prior_S_gap`/`sep`
+  content — is *not* a constraint on the gap policy: a guard is in general compound and a compound
+  formula's value at a gap point is fixed by the induction, not by `gapVal`. It is discharged
+  inside the induction, where the `untlPos`-minted witness (a placed point) and the dense rules'
+  intermediate guards are available.
+
+**DO NOT RE-ATTEMPT (added by this dispatch):**
+- `BoxContextClosed` as a construction invariant — refuted above on two independent counts; use
+  `BoxTemporalSpread`.
+- `GapDemands` as the gap obligation — machine-proved vacuous (`gapDemands_trivial`); use
+  `GapAdequate`.
+- Folding the `U`/`S` straddling guards into the gap *policy* — they are compound-formula
+  obligations of the induction, not degrees of freedom of `gapVal`.
 
 ### Phase 8: Hygiene — Vacuous Theorems and Documentation [NOT STARTED]
 
