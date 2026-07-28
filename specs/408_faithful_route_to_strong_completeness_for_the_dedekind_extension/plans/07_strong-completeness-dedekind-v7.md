@@ -1,5 +1,21 @@
 # Implementation Plan: Weak + Finite-Context Consequence Completeness for FrameClass.Dedekind (v7 — the Doets route)
 
+> **SUPERSEDED BY v8** — `plans/08_strong-completeness-dedekind-v8.md`.
+>
+> This file is retained as the historical record and is **not** the dispatch target. v8 is a
+> targeted **Block-D-and-consumers** revision forced by Phase 10's landed findings; **the Doets
+> route, this file's Revision Rationale (v6 → v7), the Preserved/Amputated asset ledgers, the
+> postmortem constraints and Blocks E-I are carried into v8 unchanged**. What v8 corrects:
+> (i) this file's Phases 11-13 were chartered as a from-scratch construction of modules that
+> **already exist on disk** (an `EANegationFixFaithful/` subtree plus `Lemma53Faithful.lean`,
+> `Lemma53FaithfulPast.lean` and `Prop42Faithful.lean` — eight modules, 3,388 lines, sorry-free and
+> CI-protected, already consuming `HasDedekindINF`); (ii) the downstream carrier is hypothesis-free,
+> not guarded; and (iii) this tree's `kplus` (`PriorINF.lean:86`) carries a `¬P(t)` conjunct that
+> neither Reynolds' nor Rabinovich's `K⁺` has, which is the origin of the endpoint guard and the
+> trichotomy. **Phases 9 and 10 remain `[COMPLETED]` here and their records below are the
+> authoritative execution history**; v8 reproduces them in compressed form and adds nothing to them.
+> Nothing in this file is edited by v8 apart from this note.
+
 > **REFRAMING NOTE (carried forward unchanged from v1, applies to the whole plan)**: "Strong
 > completeness" is reserved, project-wide, for the genuine infinite-premise statement
 > (`Γ : Set Formula` with finitary set-derivability), which is **provably unavailable** for the
