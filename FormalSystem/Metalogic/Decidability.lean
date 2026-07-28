@@ -30,6 +30,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.PropSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.TemporalSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.TemporalGate
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntGaps
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntTruth
 
@@ -80,6 +81,12 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Bridge.RegionLabel`: the gap arm of the atom clause, after three refuted policies —
   a region takes the atoms of a *chosen known label*, certified by the decidable gate
   `regionLabelCheck` in the family `timeOrderTotal` and `boxAnchoredCheck` belong to
+- `Verified.Bridge.TemporalGate`: `temporalWitnessCheck`, a fourth decidable branch gate in the
+  family `timeOrderTotal`/`boxAnchoredCheck`/`regionLabelCheck` belongs to, carrying the four
+  demands the `untl`/`snce` cases make and the region gate does not: the negative spread in each
+  direction and the two ray self-witnesses. Every row measured on an extended engine corpus
+  before being stated (`Tests/BimodalTest/TemporalWitnessProbe.lean`); two further candidates
+  were refuted there and are deliberately absent
 - `Verified.Bridge.IntGaps`: the `ℤ` placement is contiguous, so a non-placed integer lies on one
   of the two rays and there is no interior gap — the reason the `ℤ` milestone is strictly easier
   than the `ℚ`/`ℝ` one
