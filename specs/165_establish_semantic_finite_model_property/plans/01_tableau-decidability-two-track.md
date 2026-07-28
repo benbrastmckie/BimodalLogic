@@ -329,7 +329,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
 - **Timing:** 3 dispatches, ~7 hours.
 - **Depends on:** none
 
-### Phase 2: Calculus Completion (R7, R2, R6, R5) [IN PROGRESS]
+### Phase 2: Calculus Completion (R7, R2, R6, R5) [PARTIAL]
 
 - **Goal:** The rule set is adequate and honestly reported: trichotomy branching exists, Dedekind
   rules exist, the `.timeout` conflation is split, and the open-branch certificate is strong
@@ -655,6 +655,20 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
 - **Prohibited**: no `sorry`, no vacuous placeholder, and no axiom was introduced. The tree was
   returned to the last green commit rather than left un-buildable.
 
+  - [x] **2.7a — additive per-branch ordering plumbing** *(done 2026-07-28)*.
+    `RuleResult.branchingOrdered` and `ExpansionResult.splitOrdered` added as new constructors;
+    `.branching` / `.split` unchanged. Arms added at every enumerated consumer, plus the ordered
+    analogues `tryBranchOrdered_inr` / `foldlOrdered_preserves_findClosure` carrying the
+    `expandBranchWithFuel_sound` invariant through the ordered fold. Measured: `lake build`
+    green, `lake build BimodalTest` green at 39 s (baseline 39 s), **zero** `#guard_msgs`
+    movement — the plumbing is verdict-neutral exactly as the plan predicted.
+  - [ ] **2.7b — `timeLinearity`** *(BLOCKED 2026-07-28: rule built and committed, scheduling
+    withheld. See the blocker below.)* `Branch.identifyTime` / `TimeOrdering.identifyTime`, the
+    `TableauRule.timeLinearity` constructor with its three-arm `applyRule` case,
+    `firstIncomparablePair`, `linearityRules` / `findApplicableLinearityRule` /
+    `findUnexpandedLinearity`, the two stage lemmas and the `ruleToString` entry are all landed
+    and green. Phase 3's **36**-constructor expectation is met. The third expansion stage is
+    *not* wired into `expandOnce` / `expandOnceUnblocked`.
   - [ ] **2.7 (new) — per-branch time orderings + `timeLinearity`** (`Tableau.lean` +
     `Saturation.lean` + `CancellableExpansion.lean`). Additive
     `RuleResult.branchingOrdered (branches : List (List SignedFormula × TimeOrdering))` and
@@ -733,6 +747,51 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
     type — `Branch` is an `abbrev` for `List SignedFormula` (`SignedFormula.lean:240`), so
     `List (List SignedFormula × TimeOrdering)` and `List (Branch × TimeOrdering)` are the same
     type — and arms 1 and 2 simply pass `branch` through unchanged.
+
+    **BLOCKER** (sub-phase 2.7b, 2026-07-28) — raised rather than silently annotated, per
+    `.claude/rules/plan-compliance.md`.
+
+    - **What failed**: with the third stage wired in, `lake build BimodalTest` moves a corpus
+      row it must not move. `.Base` row **C4 `Fp->FFp`** flips `OPEN` → `CLOSED` against
+      `target=OPEN`. That is a soundness regression: there is no density over an arbitrary
+      linear order, and ℤ with `p` true only at `1` is a countermodel. (The same wiring also
+      *repairs* C4 at `.Dense` and `.Dedekind`, where it flips `OPEN [DEFECT]` → `CLOSED`
+      matching `target=CLOSED` — but that repair cannot be banked while `.Base` is unsound.)
+      Rows W2/W5/W7 do flip to `total=true incomparable=[]` as intended; W1/W3/W4 read
+      `STALLED` at the pinned fuel 200 and W6 reads `CLOSED`.
+    - **What was tried**: the arms were varied one at a time and the result measured each time.
+      Identification arm **alone** → `OPEN`, with the total order `5 < 0 < 1 < 2 < 4`, which is
+      a genuine countermodel (`p` at `1`, nothing after it). Arms 2+3 → `OPEN`, likewise total.
+      Arms 1+2 → `CLOSED`. Arms 1+3 → `CLOSED`. All three → `CLOSED`. So every variant
+      containing arm 1 closes, and arm 1 is *sound* — `F(F p)` really is on the branch at every
+      known future of the root, so an ordering that puts a serial witness strictly between the
+      root and the `p`-witness really does force `F(p)` at the `p`-witness.
+    - **Why stuck — the defect is not in this rule.** Replacing `buildTableau` with a direct
+      `expandBranchWithFuel` call in a probe shows the fuel loop returns `.inr openBranch` for
+      a branch whose `findUnexpanded ≠ none`: saturated only in the *unblocked* sense. The
+      split fold in `expandBranchWithFuel` short-circuits on the first sub-branch that comes
+      back `.inr` and never explores the remaining arms; `buildTableau` (`Saturation.lean:853`)
+      then runs `saturateBlocked` on that branch, which **closes** it, and returns
+      `.allClosed` — so the sibling arms the fold abandoned are silently counted as closed.
+      The bug is in the open-branch contract between the split fold and the post-blocking
+      pass. It is pre-existing; it needs a rule whose arms come back open-but-not-saturated,
+      and before `timeLinearity` no corpus row produced one. This is the same shape as 2.6's
+      stale `saturateBlockedCancellable` mirror: a latent drift that a new rule made fatal.
+    - **What is needed**: one dedicated dispatch to repair the split/post-blocking contract —
+      either the fold must not accept a sub-branch as open while siblings are unexplored and
+      the branch is not `findUnexpanded`-saturated, or a `saturateBlocked` closure of the
+      returned branch must send the search back to the abandoned siblings. That changes what
+      `expandBranchWithFuel` may return, which Phases 5 and 7 consume, so it is deliberately
+      **not** attempted inside 2.7. Once repaired, re-enabling 2.7b is two `match` arms in
+      `expandOnce` / `expandOnceUnblocked` plus the third-stage cases in
+      `expandOnceUnblocked_pick_ne_nil` / `_adds_new`, for which the two stage lemmas
+      (`findApplicableLinearityRule_not_linear` / `_not_persistent`) are already in the tree.
+      The W-row cost question (W1/W3/W4 `STALLED` at fuel 200 under three-way splitting) must
+      be re-measured after the repair, not before — the STALLs may be an artifact of arms being
+      re-explored under the broken contract.
+    - **Prohibited**: no `sorry`, no axiom, no vacuous placeholder was introduced, and the tree
+      was left green rather than red. The rule itself is landed and reviewable rather than
+      reverted, so the repair dispatch has only the contract to fix.
   - [x] **2.4 R5 — certificate strengthening** *(restated 2026-07-27; was BLOCKED)*
     (`Saturation.lean:50-59`): strengthen `ExpandedTableau.hasOpen` to carry `(fc : FrameClass)`
     and the proposition
