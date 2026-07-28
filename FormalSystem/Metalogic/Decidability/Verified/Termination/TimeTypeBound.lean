@@ -710,4 +710,109 @@ theorem emissions_atom (a : Atom) : emissions (Formula.atom a) = {Formula.atom a
 theorem emissions_bot : emissions Formula.bot = {Formula.bot} := by
   simp [emissions, subformulasFinset, Formula.subformulas, asAnd?]
 
+/-! ### Structural bookkeeping for the confinement induction
+
+`emissions` splits three ways, so the induction's cases need the three splits available as
+equations rather than as folded `match`es. These are those equations, plus the monotonicity of
+the operator and the fact that `constCore` sits inside every confining stock.
+-/
+
+theorem subformulasFinset_atom (a : Atom) :
+    subformulasFinset (Formula.atom a) = {Formula.atom a} := by
+  simp [subformulasFinset, Formula.subformulas]
+
+theorem subformulasFinset_bot : subformulasFinset Formula.bot = {Formula.bot} := by
+  simp [subformulasFinset, Formula.subformulas]
+
+theorem subformulasFinset_box (ψ : Formula) :
+    subformulasFinset (Formula.box ψ) = insert (Formula.box ψ) (subformulasFinset ψ) := by
+  simp [subformulasFinset, Formula.subformulas]
+
+theorem subformulasFinset_imp (ψ χ : Formula) :
+    subformulasFinset (Formula.imp ψ χ)
+      = insert (Formula.imp ψ χ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
+  simp [subformulasFinset, Formula.subformulas]
+
+theorem subformulasFinset_untl (ψ χ : Formula) :
+    subformulasFinset (Formula.untl ψ χ)
+      = insert (Formula.untl ψ χ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
+  simp [subformulasFinset, Formula.subformulas]
+
+theorem subformulasFinset_snce (ψ χ : Formula) :
+    subformulasFinset (Formula.snce ψ χ)
+      = insert (Formula.snce ψ χ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
+  simp [subformulasFinset, Formula.subformulas]
+
+theorem closureStep_mono {A B : Finset Formula} (h : A ⊆ B) : closureStep A ⊆ closureStep B := by
+  intro φ hφ
+  simp only [closureStep, Finset.mem_union, Finset.mem_biUnion] at hφ ⊢
+  rcases hφ with (hφ | ⟨ψ, hψ, hem⟩) | hφ
+  · exact Or.inl (Or.inl (h hφ))
+  · exact Or.inl (Or.inr ⟨ψ, h hψ, hem⟩)
+  · exact Or.inr hφ
+
+theorem closureIter_mono {A B : Finset Formula} (h : A ⊆ B) (n : Nat) :
+    closureIter n A ⊆ closureIter n B := by
+  induction n generalizing A B with
+  | zero => exact h
+  | succ k ih => exact ih (closureStep_mono h)
+
+/-- Every confining stock contains the constant core. -/
+theorem constCore_subset_of_confining {B : Finset Formula} (hB : Confining B) : constCore ⊆ B :=
+  subset_trans (closureIter_mono (Finset.empty_subset B) 3)
+    (closureIter_subset_of_closed (Finset.Subset.refl B) hB 3)
+
+theorem bot_mem_of_confining {B : Finset Formula} (hB : Confining B) : Formula.bot ∈ B :=
+  constCore_subset_of_confining hB (by decide)
+
+theorem top_mem_of_confining {B : Finset Formula} (hB : Confining B) : Formula.top ∈ B :=
+  constCore_subset_of_confining hB (by decide)
+
+/-- `M` carries every subformula of `φ` together with each subformula's negation.
+
+The negations are carried because they are *needed*: `□ψ` emits `Gψ = ¬F(¬ψ)`, whose own
+`priorUZ` trigger `U(¬ψ, ⊤)` mentions `¬ψ`, which is not a subformula of `□ψ`. Strengthening the
+induction to carry negations is what keeps that case from needing a second induction. -/
+def Carries (M : Finset Formula) (φ : Formula) : Prop :=
+  ∀ ζ ∈ subformulasFinset φ, ζ ∈ M ∧ ζ.neg ∈ M
+
+/-- The single-formula confinement obligation, in the form the induction proves. -/
+def SubConfining (φ : Formula) : Prop := ∃ M, Confining M ∧ Carries M φ
+
+theorem confinesFormula_of_subConfining {φ : Formula} (h : SubConfining φ) :
+    ConfinesFormula φ := by
+  obtain ⟨M, hM, hc⟩ := h
+  exact ⟨M, (hc φ (by simp [subformulasFinset, Formula.self_mem_subformulas])).1, hM⟩
+
+theorem subConfining_bot : SubConfining Formula.bot := by
+  refine ⟨constCore, confining_constCore, ?_⟩
+  intro ζ hζ
+  rw [subformulasFinset_bot, Finset.mem_singleton] at hζ
+  subst hζ
+  exact ⟨by decide, by decide⟩
+
+theorem subConfining_atom (a : Atom) : SubConfining (Formula.atom a) := by
+  refine ⟨{Formula.atom a, (Formula.atom a).neg} ∪ constCore,
+    confining_constCore.extendEmissions ?_, ?_⟩
+  · intro θ hθ
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hθ
+    rcases hθ with rfl | rfl
+    · rw [emissions_atom]
+      intro x hx
+      rw [Finset.mem_singleton] at hx
+      subst hx
+      simp
+    · intro x hx
+      simp only [emissions, Formula.neg, subformulasFinset_imp, subformulasFinset_atom,
+        subformulasFinset_bot, asAnd?, Finset.union_empty, Finset.mem_insert,
+        Finset.mem_union, Finset.mem_singleton] at hx
+      rcases hx with rfl | rfl | rfl
+      · simp [Formula.neg]
+      · simp
+      · exact Finset.mem_union_right _ (by decide)
+  · intro ζ hζ
+    rw [subformulasFinset_atom, Finset.mem_singleton] at hζ
+    subst hζ
+    exact ⟨by simp, by simp⟩
+
 end FormalSystem.Metalogic.Decidability
