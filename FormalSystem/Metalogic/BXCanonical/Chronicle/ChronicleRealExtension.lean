@@ -57,7 +57,9 @@ forward case B — is a separate obligation with its own probe; there the guard 
 `BFMCS.LimitGuardBelow` needs, and the backward completion above does not reach it. Its absence
 is not an oversight and does not mean the module is half-finished. How far the forward side does
 get, and exactly where it stops, is settled below and recorded in
-`forward_until_unselected_eventuality_of_priorU`.
+`forward_until_unselected_eventuality_of_priorU`; the *transport*
+`BFMCS.toRealBundle_restricted_forward_until_since` is nevertheless complete, and the section
+"The forward side, reduced to one predicate" states exactly what it rests on.
 
 ## Forward case B: what is settled
 
@@ -89,6 +91,43 @@ Reynolds records the same limitation at the same point of his own development (�
 gaps in a model. To show that our model can be made into a model over the reals we actually need
 a stronger result." Burgess 1984 runs the completion route only in the `F`/`G` fragment
 (**printed pp.109-110**) and says nothing about `U`/`S` at a gap.
+
+## The forward side, reduced to one predicate
+
+Both unselected forward cases are now landed — `toRealBundle_forward_until_unselected` and
+`toRealBundle_forward_since_unselected` — and `BFMCS.toRealBundle_restricted_forward_until_since`
+composes them with the two selected cases into the full transport. **The entire remaining content
+of forward Until/Since coherence at ℝ is the single predicate `BFMCS.LimitGuardEventual`**, and it
+is undischarged.
+
+The predicate says the guard `ψ` of an `untl`/`snce` surviving into the limit at an unselected real
+is *eventually*, not merely cofinally, true below it. That is precisely the negation of Reynolds'
+`γ⁺` at the guard: he defines the connective by saying that "`γ⁺(A)` holds exactly when `A` remains
+true for a while after now but only up until a gap after which `A` is arbitrarily soon false", and
+calls the indicated gap an `A` *left gap* (**printed p.175**).
+
+Three things about it are worth recording, because each of them closes off a search a later reader
+would otherwise repeat.
+
+1. **It is necessary as well as sufficient.** Sufficiency is the two lemmas named above.
+   Necessity: the forward `untl` obligation's own conclusion guards *every real* of an interval
+   `(t, s)`, whose selected members are exactly the rationals of `(t + δ, s + δ)`; feeding that
+   rational guard interval back through `BFMCS.LimitGuardBelow` returns the predicate's conclusion
+   verbatim. There is no weaker sufficient condition to look for, and no third route.
+2. **Given it, nothing else is missing.** The two ingredients the `untl` half adds are both landed
+   assets: the guard-reach lemma above a gap (Prior-U applied to the guard, discharged for the
+   chronicle by `cantor_bfmcs_dense_limit_guard_above`) and `boundedWitness_of_limitGuardBelow`,
+   which converts a cofinal witness below the gap into one *inside* the guarded interval. The
+   `snce` half adds nothing at all — it reads its guard straight off the predicate.
+3. **Its discharge has no source in the corpus.** It is not derivable from a Dedekind axiom:
+   `Axiom.prior_U_gap`'s antecedent `U(⊤, χ)` *is* the below-gap interval it would have to produce,
+   `Axiom.prior_S_gap` consumes an above-gap interval and so yields only the necessity direction,
+   and `Axiom.sep` lives entirely inside `K⁺`/`K⁻`, which is the negation of "holds on an interval".
+   Reynolds reaches ℝ by the separability route instead (**printed pp.177-178**), and Burgess 1984's
+   completion argument stays in the `F`/`G` fragment, where the gap witness is placed on the far
+   side with no bound whatever and no guard to carry (**printed pp.109-110**). Its discharge is
+   therefore deferred to a phase that is gated on explicit authorization, and
+   `cantor_bfmcs_dense_real_restricted_fuc` remains absent from this module until then.
 
 ### Refutation 3 — forward `untl`, at an *unselected* target
 

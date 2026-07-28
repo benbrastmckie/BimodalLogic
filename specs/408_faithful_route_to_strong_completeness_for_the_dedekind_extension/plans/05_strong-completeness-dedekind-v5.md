@@ -2919,7 +2919,7 @@ route; do not look for one.
 - **Timing:** 3 hours.
 - **Depends on:** 7.2
 
-### Phase 7.4: The bounded witness, `LimitGuardEventual`, and BOTH unselected forward cases (R3b + R3c) [IN PROGRESS]
+### Phase 7.4: The bounded witness, `LimitGuardEventual`, and BOTH unselected forward cases (R3b + R3c) [COMPLETED]
 
 **This phase repairs v4's CHARTER GAP.** `fully_restricted_parametric_completeness_from_neg_membership`
 (`Metalogic/Algebraic/RestrictedParametricTruthLemma.lean:417-422`) consumes three coherence
@@ -2969,7 +2969,7 @@ named discharge phase"). Here the named discharge phase is 7.5.
   6. `(w : ℝ) - δ` is the real witness; the **landed** `guard_transport_realLimitMCS` (`:283`)
      carries the guard on `(x, e)` to every real strictly between.
 - **Tasks:**
-  - [ ] **Statement 1 — the bounded witness. TRANSCRIBE, do not re-derive.** This proof is already
+  - [x] **Statement 1 — the bounded witness. TRANSCRIBE, do not re-derive.** This proof is already
         verified sorry-free against the real tree; reproduce it as written in report 05 §3:
         ```lean
         theorem boundedWitness_of_limitGuardBelow {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
@@ -2995,7 +2995,7 @@ named discharge phase"). Here the named discharge phase is 7.5.
         Phase 6.3 at the forward-case-B call site**, which Amendment 1 permits and requires; it is
         **not** the prohibited bounded-witness *route* (do not attempt to derive it from
         `BFMCS.LimitFutureWitness` — finding (i) shows it is not derivable).
-  - [ ] **Statement 2 — the bundle predicate.** Append to `Bundle/RealExtensionBundle.lean`:
+  - [x] **Statement 2 — the bundle predicate.** Append to `Bundle/RealExtensionBundle.lean`:
         ```lean
         def BFMCS.LimitGuardEventual {fc : FrameClass} (B : BFMCS (fc := fc) Rat) : Prop :=
           ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ φ ψ : Formula,
@@ -3010,12 +3010,12 @@ named discharge phase"). Here the named discharge phase is 7.5.
         the closure-free decision with its reason, **and — in one sentence — that this predicate is
         necessary as well as sufficient** (report 05 §3), so a later reader does not go looking for
         a weaker one. **No task-number citations.**
-  - [ ] **Statement 3 — forward `untl` at an unselected target.**
+  - [x] **Statement 3 — forward `untl` at an unselected target.**
         `toRealBundle_forward_until_unselected`, by the six-step chain above, consuming Phase 7.3's
         `limitGuardAbove_of_priorU` for steps 1-4, Statement 1 for step 5, and the landed
         `guard_transport_realLimitMCS` for step 6. Consume the landed forward case A
         (`forward_until_witness_of_straddling_rat`) and the dichotomy rather than re-deriving them.
-  - [ ] **Statement 4 — forward `snce` at an unselected target (THE CHARTER GAP).**
+  - [x] **Statement 4 — forward `snce` at an unselected target (THE CHARTER GAP).**
         `toRealBundle_forward_since_unselected`. **This half needs no Prior-U step at all**: the
         obligation is `∃ s < t` with `φ` at `s` and `ψ` on `(s, t)`, i.e. `ψ` on rationals abutting
         `t + δ` **from below** — which *is* `ψ ∈ limitSetBelow m (t+δ)`, verbatim, straight from
@@ -3023,7 +3023,9 @@ named discharge phase"). Here the named discharge phase is 7.5.
         (`limitMCSBelow_cofinal_below`). It is the **cheaper** of the two cases. Do not mirror
         Statement 3's machinery here — an implementer invoking `limitGuardAbove_of_priorU` in this
         statement has misread the obligation's direction.
-  - [ ] **Statement 5 — the composition.**
+  - [x] **Statement 5 — the composition.** *(deviation: altered — the binder list below is not
+        provable as written; see the DEVIATION note at the end of this phase for the landed
+        signature and why the change is forced.)*
         ```lean
         theorem BFMCS.toRealBundle_restricted_forward_until_since {fc : FrameClass}
             (B : BFMCS (fc := fc) Rat) (root : Formula)
@@ -3042,13 +3044,13 @@ named discharge phase"). Here the named discharge phase is 7.5.
         discharging `LimitGuardEventual`, which is Phase 7.5's deliverable and is user-gated. A
         chronicle instance stated with `LimitGuardEventual` as an *undischarged argument* is
         permitted only as a phase-internal composition, never as a step toward the terminus.
-  - [ ] Module docstring: record that the forward side is now reduced to exactly one named
+  - [x] Module docstring: record that the forward side is now reduced to exactly one named
         predicate, that the predicate is **necessary as well as sufficient**, and that its
         discharge is deferred to a user-gated phase because it **has no source in the corpus**.
         Cite Reynolds printed pp.175-176 and Burgess 1984 printed pp.109-110 by printed page.
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension` and
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension` and
         `lake build FormalSystem.Metalogic.Bundle.RealExtensionBundle`, then full `lake build`.
-  - [ ] `#print axioms` on all five new declarations; record the results.
+  - [x] `#print axioms` on all five new declarations; record the results.
 - **Estimated output:** ~200-240 lines appended to `ChronicleRealExtension.lean`, plus ~15 lines
   appended to `RealExtensionBundle.lean` for Statement 2 and its docstring. **One agent run (H8).**
   If the run overruns, the sanctioned split is Statements 1+2+4 in one dispatch and Statements 3+5
@@ -3067,6 +3069,47 @@ named discharge phase"). Here the named discharge phase is 7.5.
   phase `[BLOCKED]` with the exact goal state.
 - **Timing:** 4 hours.
 - **Depends on:** 7.3
+
+**DEVIATION (Statement 5's binder list, recorded by the 7.4 dispatch).** The signature drafted
+above is **not provable as written**, and the reason is structural rather than tactical. The
+chartered six-step chain consumes two things that neither `h_rfuc`, `h_rbuc`, `h_lgb` nor `h_lge`
+can supply:
+
+- **Steps 1-4** are `limitGuardAbove_of_priorU`, whose hypotheses are `FrameClass.Dedekind ≤ fc`
+  plus *unrestricted* Until coherence in both directions. Restricted-at-`root` coherence does not
+  give it: the lemma applies Prior-U at `ψ`, `⊤` and `¬ψ ∨ K⁺(¬ψ)`, none of which lie in
+  `subformulaClosure root`. Per this dispatch's territory (`ChronicleLimitGuardAbove.lean` is not
+  extended, and no `BFMCS.LimitGuardAbove` predicate may be added), its **conclusion is written out
+  explicitly** as the binder `h_lga`.
+- **Step 5** is Statement 1, transcribed verbatim as the plan requires, and it consumes
+  `limitGuardBelow_of_priorS` directly — hence `hfc`, `hSf`, `hSb`. `h_lgb` is the *packaged
+  conclusion* of that lemma and cannot stand in for its ingredients without re-deriving Statement 1
+  at the bundle level, which "TRANSCRIBE, do not re-derive" forbids.
+
+Landed signature (sorry-free, axioms exactly `[propext, Classical.choice, Quot.sound]`):
+
+```lean
+theorem BFMCS.toRealBundle_restricted_forward_until_since {fc : FrameClass}
+    (hfc : FrameClass.Dedekind ≤ fc) (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
+    (hSf : ∀ fam ∈ B.families, ∀ (t : Rat) (α β : Formula), Formula.snce α β ∈ fam.mcs t → …)
+    (hSb : ∀ fam ∈ B.families, ∀ (t : Rat) (α β : Formula), … → Formula.snce α β ∈ fam.mcs t)
+    (h_lga : ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ χ : Formula,
+      χ ∈ limitSetBelow fam.mcs r →
+      ∃ c : Rat, r < (c : ℝ) ∧ ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → χ ∈ fam.mcs q)
+    (h_lge : B.LimitGuardEventual) :
+    (B.toRealBundle).RestrictedForwardUntilSinceCoherent root
+```
+
+`h_rbuc` and `h_lgb` are **dropped**: the forward composition consumes neither. Backward coherence
+enters nowhere (the eventuality route through `limitSetBelow_someFuture_of_cofinal` is not needed —
+`limitGuardAbove_of_priorU` already absorbs its case internally), and the below-gap guard is
+consumed only inside Statement 1, through `hSf`/`hSb`. At a chronicle call site every added binder
+is discharged from assets that already exist: `h_lga` by `cantor_bfmcs_dense_limit_guard_above`, and
+`hSf`/`hSb` by the same self-root instantiation of `cantor_bfmcs_dense_restricted_fuc`/`_buc` that
+`cantor_bfmcs_dense_limit_guard_above` and `cantor_bfmcs_dense_limit_guard_below` already use. So
+the deviation adds **no new obligation** to the route; `BFMCS.LimitGuardEventual` remains the sole
+undischarged residual, exactly as this phase's Goal states.
 
 ### Phase 7.5: The chronicle discharge of `LimitGuardEventual` (R3d) [USER GATED]
 
