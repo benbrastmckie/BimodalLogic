@@ -2793,7 +2793,7 @@ did not show it unrealizable. Budget this as a probe, not as proof engineering.
   edited, no closure enlarged, no witness-aware selection. Phase marked `[COMPLETED]` in v5 per
   the RESOLUTION block above.
 
-### Phase 7.3: The guard gap lemma, above — `limitGuardAbove_of_priorU` (R3a) [IN PROGRESS]
+### Phase 7.3: The guard gap lemma, above — `limitGuardAbove_of_priorU` (R3a) [COMPLETED]
 
 **This is the Prior-U mirror of Phase 6.3 and the third place in the plan where the Dedekind axiom
 layer is used.** `Axiom.prior_U_gap` has `minFrameClass = .Dedekind` (`Axioms.lean:524` block), so
@@ -2835,7 +2835,7 @@ route; do not look for one.
   dependency: `ψ` is a hypothesis binder, not a constructed formula. Only the Prior-U appeal is
   copied, never the machinery around it.
 - **Tasks:**
-  - [ ] **Statement 1 — the general gap lemma.** In the new module, prove exactly (this statement
+  - [x] **Statement 1 — the general gap lemma.** In the new module, prove exactly (this statement
         was verified to elaborate against the tree in the report-05 dispatch; do not restate it):
         ```lean
         theorem limitGuardAbove_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
@@ -2884,7 +2884,7 @@ route; do not look for one.
         Land each case and each interpolation as its own named `have` (or private lemma), exactly
         as Phases 5, 6.2 and 6.3 required. **Unselectedness is used exactly once**; a proof using
         it twice, or wrapping the whole argument in a `by_contra`, has drifted into copying 6.2.
-  - [ ] **Statement 2 — the chronicle discharge.** In the same new module, a verbatim clone of
+  - [x] **Statement 2 — the chronicle discharge.** In the same new module, a verbatim clone of
         `cantor_bfmcs_dense_limit_guard_below` (`ChronicleLimitGuardWitness.lean`) with `.2 → .1`
         and `root := Formula.untl α β`:
         ```lean
@@ -2900,14 +2900,14 @@ route; do not look for one.
         chronicle-level proof is written, and no closure is enlarged.** If the self-root
         instantiation does not elaborate, that is a signature discrepancy to report, **not** a
         licence to edit `_fuc`/`_buc`.
-  - [ ] Module docstring: cite Reynolds 1992 **printed p.176** (Theorem 3 — the Prior-U
+  - [x] Module docstring: cite Reynolds 1992 **printed p.176** (Theorem 3 — the Prior-U
         contradiction pattern this lemma is), **printed p.175** (`γ⁺` / left gaps — the pattern
         excluded), **printed p.178** (Lemma 3), and Burgess 1982 I **printed p.369** (no Dedekind
         variant, which is why the axiom is needed here at all). Record the
         expressive-completeness non-inheritance caveat above. **No task-number citations.**
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGuardAbove`, then
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGuardAbove`, then
         full `lake build`.
-  - [ ] `#print axioms limitGuardAbove_of_priorU` and
+  - [x] `#print axioms limitGuardAbove_of_priorU` and
         `#print axioms cantor_bfmcs_dense_limit_guard_above`; record the results.
 - **Estimated output:** ~180-220 lines in the new module. **One agent run (H8).**
 - **Done when:** both statements are sorry-free, full `lake build` is green, live sorries outside
