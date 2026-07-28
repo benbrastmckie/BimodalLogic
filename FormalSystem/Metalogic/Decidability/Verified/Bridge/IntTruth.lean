@@ -522,99 +522,80 @@ theorem lowerRay_of_lt (hRO : RayOnly b f) (hRS : RaySplit b f) {r s : D}
         (((hRS s hs).2 hn' ⟨0, Nat.pos_of_ne_zero hlen⟩).trans hsr)) (lt_irrefl r)
 
 
-/-! ## The temporal cases — OWED, and precisely bounded
+/-! ## The temporal cases — LANDED, and here is what each direction runs on
 
-These are the two cases this dispatch does **not** close, and they are stated rather than omitted
-so that the remaining obligation is exactly two named lemmas with a fixed hypothesis bundle,
-rather than an unscoped "run the induction". Everything else in this file is sorry-free and the
-build is green.
+All four halves are sorry-free. `branchTruthAt_untl` is `fun w r => ⟨pos w r, neg w r⟩`, and
+likewise for `snce`; splitting the theorem before proving any of it is what let the two directions
+stop depending on each other, and neither has since needed anything the other proved.
 
-### Two of the four items are now landed; here is what each turned into
+### The design decisions that survived, and the two that did not
 
-1. **`sat_untl_pos` discards the ordering — LANDED.** `Bridge/TemporalSaturation.lean` supplies
-   `sat_untl_pos_future` and `sat_snce_pos_past`, which are the existing proofs with the
-   `futureOf`/`pastOf` membership kept instead of bound to `_`, reported as `strictBefore`. The
-   file also carries `orderDual_converse`, the `pastOf → futureOf` direction of the closure
-   duality, which the `snce` mirror needs and `Fuel.lean`'s `orderDual_holds` does not give.
-2. **The witness has to be the *earliest* one — STILL OWED, and now bounded.** `TruthAt …
-   (untl φ ψ)` demands `ψ` at every point strictly between the evaluation point and the witness;
-   contiguity turns that into "at every known time strictly between", so an earliest-witness
-   iteration on `b.knownTimes.length - branchRank b ord t'` is still the shape. What the probe
-   changed is what the guard may be read off: see "the `⊤` trap" below.
-3. **The ray self-demand — LANDED, and joined by three more rows.**
-   `Bridge/TemporalGate.lean`'s `temporalWitnessCheck` carries it as `untlRaySelf`/`snceRaySelf`
-   together with `untlNegFuture`/`snceNegPast`, and exports four consumption lemmas. Every row
-   was measured on an engine corpus **extended for the purpose** — the six rows
-   `RayRegionProbe.lean` uses contain no genuine until at all, since every until in them is
-   guard-`⊤` and the branching `untlPos`/`untlNeg` arms never fire.
-4. **Region invariance is unavailable at `ℤ`** — unchanged. `interpInvariantAt`
-   (`Bridge/TruthLemma.lean`) needs `DenselyOrdered D`, and `not_exists_gt_sameRegion_int`
-   (`Bridge/Interpolate.lean`) is the machine witness that the `untl` case's
-   `exists_gt_sameRegion` step genuinely fails at `ℤ`. The two rays are infinite regions whose
-   points must be handled one at a time.
+1. **`sat_untl_pos` discards the ordering.** `Bridge/TemporalSaturation.lean`'s
+   `sat_untl_pos_future` and `sat_snce_pos_past` keep the witness's position. In the event they
+   are **not called**: row 7 keeps the witness in the guard-`⊤` case too, which is the only place
+   the older design needed them.
+2. **The witness has to be the *earliest* one — dropped.** No earliest-witness iteration appears
+   anywhere. Row 7 hands back a witness *together with* the guard below it, so the branch does the
+   minimisation once, decidably, instead of the proof redoing it. This is what the row shapes were
+   measured for and it is why the placed leaf is six lines.
+3. **The ray self-demand.** `untlRaySelf`/`snceRaySelf` (rows 3 and 4) close the leaf where the
+   evaluation point looks along its own ray, `untl` upward and `snce` downward.
+4. **Region invariance is unavailable at `ℤ`** — unchanged, and it is why the rays are handled a
+   point at a time. `interpInvariantAt` needs `DenselyOrdered D`, and
+   `not_exists_gt_sameRegion_int` is the machine witness that `exists_gt_sameRegion` genuinely
+   fails here.
 
-### The `⊤` trap, which governs the rest of the design
+### The `⊤` trap, which governed the design and still does
 
-`Tests/BimodalTest/TemporalWitnessProbe.lean` refutes the obvious guard row — "every known time
-after the until carries `T(φ)` or `T(ψ)`" — on nine of twelve rows, **including rows with no
-genuine until in them**. The cause is not about untils at all: the guard of a `someFuture` is
-`⊤`, and the engine never writes `T(⊤)` on a branch, because `⊤` is true at every point of every
-model without any branch fact saying so. So *any* row asking the branch to assert a guard fails
-on the whole `someFuture`/`somePast` fragment. The `ψ = ⊤` case has to be split off and
-discharged semantically — which is the split `sat_untl_pos` itself already makes
-(`by_cases hg : guard = Formula.top`).
+`Tests/BimodalTest/TemporalWitnessProbe.lean` refutes any row asking the branch to *assert* a
+guard on nine of twelve rows, **including rows with no genuine until in them**: the guard of a
+`someFuture` is `⊤` and the engine never writes `T(⊤)`. So `ψ = ⊤` splits off at every leaf and is
+discharged semantically — `⊤` is true at every point of every model. What the positive halves
+changed is *where* the exemption sits: rows 7 and 9 exempt `ψ = ⊤` from the **guard** only and
+keep the witness, because `TruthAt … (untl φ ⊤)` still demands one. A row exempting itself
+entirely there asserts nothing on the whole `someFuture`/`somePast` fragment.
 
-### What the positive halves still need, precisely
+### The negative case tree
 
-At a **placed** point the witness is a placed point and the intervening carrier points are
-exactly the placed points between, so item 2's iteration plus a genuine-guard row closes it. At
-an **upper-ray** point `untlRay_self` closes it outright: every point above reads the same label,
-so the witness is that label and the guard interval is empty. The **lower ray** is the residual
-shape: a point below every placed point reaches a placed witness across the whole lower ray *and*
-every placed point below the witness, so it needs the guard at the ray's own label **and** at
-every known time below the witness — a strictly larger demand than the placed case, and one no
-row of `temporalWitnessCheck` currently carries.
+Four live leaves and three vacuous ones. Write `r` for the evaluation point and `s` for the
+witness the semantics hands back, so `r < s`.
 
-### The negative halves — LANDED, and here is the case tree they run on
-
-Each case is now its own theorem, `branchTruthAt_untl_neg` and `branchTruthAt_snce_neg`, and
-`branchTruthAt_untl` is `fun w r => ⟨pos w r, neg w r⟩`. Splitting first is what let the negative
-halves land while the positive ones are still owed: nothing in the negative direction depends on
-the earliest-witness iteration or on the guard at all.
-
-The `untl` tree has four live leaves and three vacuous ones. Write `r` for the evaluation point
-and `s` for the witness the semantics hands back, so `r < s`.
-
-* `r` **placed**, `s` **placed** — `OrderReflecting` turns `f i < f j` back into a
-  `strictBefore` fact and `untlNeg_spread` denies `φ` there.
-* `r` **placed**, `s` on the **upper ray** — `s` reads `regionLabel … n`, and
-  `regionLabel_untlNeg` reaches it, its "strictly below region `j`" side condition being
-  `branchRank_lt_length` at `j = n`.
+* `r` **placed**, `s` **placed** — `OrderReflecting` turns `f i < f j` back into a `strictBefore`
+  fact and `untlNeg_spread` denies `φ` there.
+* `r` **placed**, `s` on the **upper ray** — `s` reads `regionLabel … n`, and `regionLabel_untlNeg`
+  reaches it, its "strictly below region `j`" side condition being `branchRank_lt_length`.
 * `r` **placed**, `s` on the **lower ray** — vacuous: `RaySplit` puts `s` below `r`.
-* `r` on the **lower ray** — one leaf for all three shapes of `s`. Every label any point reads is
-  a known time (`stateTime_mem_knownTimes`), and that is exactly the reach of row 5,
-  `untlNegRay_low`. This is the leaf Correction 12 named and the one the new row was measured for.
-* `r` on the **upper ray** — then `n ≠ 0`, so `BranchTime b` is inhabited. `s` placed and `s` on
-  the lower ray are both vacuous by `RaySplit`; `s` on the upper ray reads `r`'s own label, and
-  `regionLabel_untlNeg` closes it against itself.
+* `r` on the **lower ray** — one leaf for all three shapes of `s`, and that is exactly the reach of
+  row 5, `untlNegRay_low`, because every label any point reads is a known time.
+* `r` on the **upper ray** — `s` placed and `s` on the lower ray are vacuous; `s` on the upper ray
+  reads `r`'s own label and `regionLabel_untlNeg` closes it against itself.
 
-The `snce` tree is the mirror with one asymmetry inherited from the gate's region indexing:
-where `untl` needs row 5 at the lower ray, `snce` needs row 6 at the *upper* one, and the leaf
-`untl` closes with `regionLabel_untlNeg` at `j = n` its mirror closes with `regionLabel_snceNeg`
-at `j = 0`, whose side condition `0 ≤ branchRank` is free.
+### The positive case tree, and the obstruction it exposed
 
-### What the positive halves still need, precisely
+Three live leaves, one row each, and no vacuous ones — the positive direction chooses its witness
+rather than being handed one, so nothing is ruled out for it.
 
-At a **placed** point the witness is a placed point and the intervening carrier points are
-exactly the placed points between, so item 2's iteration plus a genuine-guard row closes it. At
-an **upper-ray** point `untlRay_self` closes it outright: every point above reads the same label,
-so the witness is that label and the guard interval is empty. The **lower ray** is the residual
-shape: a point below every placed point reaches a placed witness across the whole lower ray *and*
-every placed point below the witness, so it needs the guard at the ray's own label **and** at
-every known time below the witness — a strictly larger demand than the placed case, and one no
-row of `temporalWitnessCheck` currently carries. `untlPosGuardedWitness` and `untlRayDnGuard` are
-already measured `true` on every corpus row the region gate accepts, so the row shapes are known;
-what is not yet written is the iteration that consumes them.
+* `r` **placed** — row 7. `isPlacedCode_of_between` makes every carrier point of the guard interval
+  placed and `OrderReflecting` reads its time back as strictly between, which is the row's reach.
+* `r` on the **lower ray** (`untl`; the **upper** ray for `snce`) — row 9, Correction 12's residual.
+  The reach has to be all of `b.knownTimes`: the interval holds placed points below the witness
+  *and* ray points reading the evaluation point's own label, and `regionLabel` picks the first
+  eligible candidate rather than the order-minimal one.
+* `r` on the **upper ray** (`untl`; the **lower** ray for `snce`) — `untlRay_self`, plus `Stepped`.
+
+That last leaf is where the design was incomplete and the incompleteness was invisible until the
+negative halves were written. "The guard interval is empty" needs *some* `s > r` to be empty
+between, and neither `RayOnly` nor `RaySplit` says anything about inhabitance above the upper ray.
+`Stepped` is the minimal repair; `upperRay_of_gt` and `lowerRay_of_lt` supply the other half of
+that leaf — that every point above an upper-ray point reads the ray's label — and they are
+**derived** from `RayOnly` and `RaySplit` rather than assumed.
+
+### What the positive halves do not need
+
+Neither positive half references `branchOrderValid`, the frame class, `findUnexpanded`,
+`findClosure`, `timeOrderTotal`, `boxAnchoredCheck`, `regionLabelCheck` or the non-empty-worlds
+hypothesis. The positive direction is carried by the placement geometry and rows 3, 7, 9 and 10
+alone. The negative direction is where `regionLabelCheck` is load-bearing.
 
 None of the above touches an engine file, the region labelling, or any interface already landed.
 -/
@@ -863,7 +844,7 @@ theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful 
       exact ⟨s, hsr, (hφ w s).1 (by rw [stateLabel_gap w hs, hs0]; exact hev),
         fun u hsu hur => absurd hsu (hgap u hur)⟩
 
-/-- **Until case**, assembled from its two halves. The negative half is sorry-free. -/
+/-- **Until case**, assembled from its two halves, both sorry-free. -/
 theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
     (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
@@ -876,7 +857,7 @@ theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b or
   ⟨branchTruthAt_untl_pos hf hOF hOR hRO hRS hSt hTW hφ hψ w r,
     branchTruthAt_untl_neg hf hOR hRO hRS hV hCheck hTW hne hφ w r⟩
 
-/-- **Since case**, assembled from its two halves. The negative half is sorry-free. -/
+/-- **Since case**, assembled from its two halves, both sorry-free. -/
 theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
     (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)

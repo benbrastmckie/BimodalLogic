@@ -50,6 +50,19 @@ upper ray, and puts **nothing** strictly between consecutive placed points.
   in the corpus.
 * `snceNegRayUp` — the mirror, at the **upper** ray. The rays swap between the two operators:
   `untl` needs its extra row below and `snce` needs its above.
+* `untlPosGuardedWitness` — a **positive** until has a witness strictly after its own time, with
+  the guard at every known time strictly between. This is what the positive `untl` case needs at a
+  **placed** point, and it is what replaced the earliest-witness iteration the design once owed:
+  the branch minimises once, decidably, and the row hands back witness and guard together.
+* `untlRayDnGuard` — Correction 12's **positive** residual, at the **lower** ray, with the same
+  whole-of-`b.knownTimes` reach and for the same reason as row 5.
+* `sncePosGuardedWitness`, `snceRayUpGuard` — the past-directed mirrors, the second at the upper
+  ray.
+
+The `⊤` exemption in rows 7-10 sits **inside** the witness, not outside the row. A row exempting
+itself entirely when `ψ = ⊤` asserts nothing on the `someFuture`/`somePast` fragment, and the
+positive case still needs a witness there, because `TruthAt … (untl φ ⊤)` demands one; only the
+*guard* may be dropped, and it is dropped because `⊤` is true at every point of every model.
 
 ## What is deliberately **not** here
 
@@ -57,12 +70,16 @@ upper ray, and puts **nothing** strictly between consecutive placed points.
   `untlNegSubjects` already demands the subject of every `F(U(φ,ψ))` asserted **strictly below** a
   region, and `regionLabel_untlNeg` consumes it. The candidate row that drops that side condition
   is refuted on the corpus (rows C and I, both gate-accepted).
-* *A row asking the branch to assert a guard at intervening times.* Refuted, and for a reason that
-  governs the whole design: the guard of a `someFuture` is `⊤`, and **the engine never writes
-  `T(⊤)` on a branch**. Any row demanding `b.hasPosAt ψ` fails on the entire
-  `someFuture`/`somePast` fragment for reasons that have nothing to do with untils. The `⊤` case
-  must be split off and discharged semantically, which is the split `sat_untl_pos` itself makes
-  (`by_cases hg : guard = Formula.top`).
+* *A row asking the branch to assert a guard at intervening times **without exempting `ψ = ⊤`**.*
+  Refuted, and for a reason that governs the whole design: the guard of a `someFuture` is `⊤`, and
+  **the engine never writes `T(⊤)` on a branch**. Any such row fails on the entire
+  `someFuture`/`somePast` fragment for reasons that have nothing to do with untils. Rows 7-10 do
+  demand `b.hasPosAt ψ`, but only where `ψ ≠ ⊤`; the `⊤` case is discharged semantically.
+* *An escape permitting the event at the lower ray's own label with no guard obligation.* An
+  earlier measured shape of row 9 allowed it. It does not close the leaf: the ray label is itself
+  a known time, so the point placing it has placed points strictly below it, and every one of
+  those is strictly above the lower-ray evaluation point and inside the guard interval. Deleting
+  the escape costs nothing on the corpus, which is measured (column `uRD` beside `rdG`).
 
 ## A reformulation, recorded so the measurement still applies
 
