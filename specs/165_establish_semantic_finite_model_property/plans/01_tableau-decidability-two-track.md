@@ -981,7 +981,9 @@ vacuous definitions.
     trichotomy rule increases branching but not the time-type count, so the bound is R2-stable
     (02 §4.4). Estimated output: ~150-300 lines. Done when: theorem sorry-free; build green.
   - [ ] **4.3 T3 — justified fuel** *(in progress — `soundFuel'` and the set-growth progress
-    measure landed 2026-07-28c; `buildTableau_isSome` outstanding)*
+    measure landed 2026-07-28c; the branch invariant, the signed-formula universe and the
+    unbranched step bound `chain_le_stock`/`chain_le_soundFuel'` landed 2026-07-28d;
+    `buildTableau_isSome` outstanding and **restated**, see the 4.3b blocker note below)*
     (`Verified/Termination/Fuel.lean`, new): define uncapped
     `soundFuel'` (exponential closed form tied to the T2 bound — a quadratic constant cannot
     cover an exponential step count, 03 §4.3) and prove `buildTableau_isSome`. Keep capped
@@ -1032,11 +1034,24 @@ zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-n
   `expandOnceUnblocked_adds_new` exactly as the 2026-07-27b note directs, **not** the length
   lemma), `card_le_of_subset_universe`, uncapped `soundFuel'`, and `soundFuel_le_soundFuel'`
   (the capped runtime default never runs past the justified bound).
-- [ ] **4.3b T3 `buildTableau_isSome`** — outstanding. Its two dimensions are now separately
-  available: formulas by T1, labels by `blocking_fires_of_card_lt`. What remains is composing
-  them and carrying `TrichClosed C b` through the fuel loop's branch invariant (preservation is
-  favourable: `orderTrichotomy` adds only positive disjuncts, so it never enlarges the set of
-  branch-side negated disjuncts `TrichClosed` quantifies over).
+- [x] **4.3b T3 branch invariant, universe, and the unbranched step bound** *(deviation: altered —
+  the sub-phase's named deliverable `buildTableau_isSome` is **not** landed; see the 4.3b blocker
+  note below, which refutes its unconditional statement. What landed is the whole composition up
+  to the two dimensions it needs.)* — `Fuel.lean` gains: `TrichStock` and
+  `trichClosed_of_trichStock` (the 4.2a deferred cost, isolated into one decidable stock-side
+  condition rather than a sorry); `BranchStock` (the fuel loop's branch invariant);
+  `findApplicableRule_applyRule_eq` / `findApplicableSerialRule_applyRule_eq` /
+  `findApplicableLinearityRule_applyRule_eq` (one extraction lemma per pick stage, turning the
+  pick back into the `applyRule` equation T1 speaks about); `pick_result_mem`;
+  `expandOnceUnblocked_extended_mem` and `expandOnceUnblocked_extended_stock` (**T1 iterated** —
+  the invariant survives a step); `signedUniverse`, `mem_signedUniverse`,
+  `card_signedUniverse_le`, `branch_card_le`; `ExtendStep`, `card_lt_of_extendStep`,
+  `chain_card_le`, `branchStock_chain`, `chain_le_card_universe`; and the two headline bounds
+  `chain_le_stock` (an unbranched run out of a stock-confined branch takes at most `2·|C|·|L|`
+  steps) and `chain_le_soundFuel'` (at the T2 label figure `2^(2|C|)` that bound *is* `soundFuel'`,
+  so the fuel figure is earned rather than stated). Zero sorries.
+- [ ] **4.3c T3 `buildTableau_isSome`** — outstanding, with a corrected statement. See the 4.3b
+  blocker note below for the three residuals and the refutation of the current statement.
 
 **Two settled-design corrections, both forced by source inspection, both recorded in the module
 docstring rather than assumed:**
@@ -1105,7 +1120,55 @@ decision:
 - **Still prohibited**: do not widen `C` to absorb the chains — they are strictly size-increasing,
   so no cardinality bound survives widening. Do not weaken T1 to dodge this.
 
-### Phase 5: Bridge Infrastructure (BranchOrder, Embed, Carrier) [NOT STARTED]
+**BLOCKER (4.3b -> 4.3c) — `buildTableau_isSome` as written is FALSE (2026-07-28d).** Raised as a
+blocker rather than annotated as a deviation, per `.claude/rules/plan-compliance.md`: the plan step
+cannot be executed as written, and the reason is a property of the engine's signature rather than
+a proof difficulty.
+
+- **What failed**: the sub-phase's named deliverable, `buildTableau_isSome`, i.e.
+  `∀ φ fc, (buildTableau φ (soundFuel' φ) fc).isSome`.
+- **Why it is false, from source**: `buildTableau` (`Saturation.lean:928-951`) calls
+  `expandBranchWithFuel initialBranch fuel TimeOrdering.empty fc` at the **default**
+  `maxBranches := 50000` (`Saturation.lean:590`), and that function's very first line is
+  `if branchesUsed >= maxBranches then none` (`:594`). The counter increments once per extending
+  step and by `branches.length` per split (`:624, :646, :675`), so a formula whose expansion
+  explores more than 50000 branches returns `none` **at any fuel whatsoever**, including
+  `soundFuel'`. Independently, `buildTableau`'s own last arm returns `none` when the branch is
+  still unsaturated after the post-blocking pass (`:950`). Neither `none` is a fuel exhaustion,
+  so no fuel figure can rule them out.
+- **What is needed (4.3c)**: state the theorem over an explicit branch budget —
+  `expandBranchWithFuel_isSome` with `maxBranches` universally quantified and a hypothesis bounding
+  `branchesUsed`, then a `buildTableau`-level corollary at a `maxBranches` large enough. Do **not**
+  edit the engine's default to dodge this: `maxBranches = 50000` is a deliberate runtime guard and
+  the wave-3 territory contract forbids engine edits.
+- **The two remaining mathematical residuals**, both now isolated behind named hypotheses in
+  `Fuel.lean` rather than behind a sorry:
+  1. **The label dimension.** `chain_le_stock` takes `∀ x ∈ run n, x.label ∈ L` as a hypothesis.
+     `blocking_fires_of_card_lt` (4.2b) is what supplies it, but *its* `hchain` hypothesis — the
+     times counted are totally ordered by `ancestorTimes` — is a run-level invariant nothing yet
+     establishes. `timeLinearity` is what makes the ordering total, so the missing piece is an
+     invariant tying `timeLinearity`'s effect to `ancestorTimes`. This is the single largest
+     remaining piece of T3 and should be its own sub-phase.
+  2. **The branching arms.** `chain_le_stock` covers `.extended` steps only. The `.split` /
+     `.splitOrdered` arms fold over sub-branches and can report `none` through `resolveOpenArm`
+     (`Saturation.lean:661-664, :686-689`), which is a separate obligation from the step bound.
+- **A third residual, of a different kind — `TrichStock`.** The 4.2a decision deferred to 4.3 the
+  cost of carrying `TrichClosed C b` through the loop. Measurement here **corrects that note's
+  optimism**: `TrichClosed` is *anti*-monotone in the branch, so it cannot be transported forward
+  at all, and the note's reason for optimism (`orderTrichotomy` emits only positive disjuncts) is
+  true but insufficient — `negPos` fired on a branch formula `¬F(A ∧ B)` puts a *negated*
+  `F(A ∧ B)` on the branch, and nothing in `TableauClosed` then supplies the other two disjuncts of
+  that triple. `Fuel.lean` therefore re-establishes `TrichClosed` at each step from a stock-side
+  hypothesis `TrichStock C`, which is exactly the C-only condition 4.2a rejected as a
+  `TableauClosed` *field*. As a hypothesis it is sound and decidable, and it holds outright of any
+  stock containing no `F(A ∧ B)`; as a field it would still make `TableauClosed` unsatisfiable, so
+  **do not move it into `TableauClosed`**. Discharging it in general requires bounding the
+  *negatively signed* formulas of a run more tightly than `C` does — showing a negated `F(A ∧ B)`
+  reaches the branch only for the finitely many `A ∧ B` in the seed's trichotomy completion.
+- **Prohibited**: do not use `sorry`, `def X := True`, or a vacuous placeholder for any of the
+  above; do not weaken `tableauClosed_of_closureStep_subset`; do not edit the engine.
+
+### Phase 5: Bridge Infrastructure (BranchOrder, Embed, Carrier) [IN PROGRESS]
 
 **ENGINE CONTRACT CHANGE (2026-07-28b, from sub-phase 2.7c) — read before consuming
 `expandBranchWithFuel`.** What the fuel loop may return while sibling branches are unexplored
