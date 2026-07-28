@@ -51,12 +51,29 @@ inductive ExpandedTableau : Type where
   /-- All branches are closed (formula is valid). -/
   | allClosed (closedBranches : List ClosedBranch)
   /-- At least one branch is open/saturated (formula is invalid).
-      Carries the `TimeOrdering` and `AppliedSet` for countermodel extraction.
-      Saturation is verified using the applied-set-aware check. -/
-  | hasOpen (openBranch : Branch) (timeOrdering : TimeOrdering)
-      (appliedSet : AppliedSet)
-      (saturated : findUnexpandedWithApplied openBranch (timeOrd := timeOrdering)
-                     (applied := appliedSet) = none)
+
+      Carries the `TimeOrdering` for countermodel extraction, the `FrameClass` the tableau was
+      built for, and applied-set-**free** saturation: `findUnexpanded … = none`.
+
+      **The applied set is deliberately not carried** (R5, see the section below). It was here
+      only because saturation had to be stated applied-set-aware, and that in turn was forced by
+      the destructive `.linear`/`.branching` arms of `expandOnce`. With those arms guarded and
+      non-destructive, nothing is orphaned, the applied set is inert, and the certificate states
+      the predicate a truth lemma can actually consume, with no auxiliary invariant.
+
+      **The `fc` field repairs a latent defect.** The saturation check's `fc` argument defaults
+      to `.Base`; it was supplied at neither this constructor nor either `buildTableau` site, so
+      the certificate previously certified `.Base` saturation for all four frame classes.
+
+      **What `findUnexpanded = none` does and does not mean.** It reads `findApplicableRule`,
+      which reads `allRulesForFC`, and `serialityRule` is deliberately outside `allRulesForFC`
+      (it is scheduled by the two-stage pick, not gated by frame class). So this field says "no
+      *ordinary* rule applies", and a certified branch may still be owed `T(F ⊤)`/`T(P ⊤)` at
+      every label. Those are true at every point of any serial frame, so the extracted model is
+      unaffected — but the truth lemma must *state* the gap rather than assume it away, and the
+      certificate is deliberately not weakened to a disjunction to hide it. -/
+  | hasOpen (openBranch : Branch) (timeOrdering : TimeOrdering) (fc : FrameClass)
+      (saturated : findUnexpanded openBranch (timeOrd := timeOrdering) (fc := fc) = none)
   deriving Repr
 
 namespace ExpandedTableau
@@ -76,8 +93,30 @@ end ExpandedTableau
 /-!
 ## Certificate Strength (R5)
 
-**Status: the gap this section was written to record is closed; the predicates below are
-retained as history and nothing may depend on them.**
+**Status: closed, and the certificate has been changed accordingly.** `ExpandedTableau.hasOpen`
+no longer carries the applied set at all; it carries the `FrameClass` and applied-set-free
+saturation, `findUnexpanded openBranch (timeOrd := timeOrdering) (fc := fc) = none`. The
+predicates below are retained as history only, and nothing depends on them.
+
+Three things were decided by measurement rather than argument, and each is recorded in place:
+
+1. **The certificate is a single conjunct, not a disjunction.** It was predicted that once
+   `serialityRule` landed no open branch would ever be fully saturated in the
+   `findUnexpanded = none` sense — seriality always demands one more successor — so the field
+   would have to weaken to `findUnexpanded … = none ∨ (findBlockedTime …).isSome`. Measured
+   false: `serialityRule` is deliberately outside `allRulesForFC`, `findUnexpanded` reads
+   `allRulesForFC`, and the corpus's `CertificateProbe` certifies both `◇p` and the
+   genuinely-open `G p → p` with seriality on. The disjunction was deleted before it was
+   written.
+2. **What the field therefore means, exactly.** "No *ordinary* rule applies." A certified branch
+   may still be owed `T(F ⊤)`/`T(P ⊤)` at every label. Those hold at every point of any serial
+   frame, so the extracted model is unaffected — but the truth lemma must state that gap rather
+   than assume it away. Weakening the certificate to hide it was the alternative, and was
+   rejected.
+3. **The `fc` field repairs a latent defect.** The saturation check's `fc` argument defaults to
+   `.Base` and was supplied at neither the constructor nor either `buildTableau` site, so the
+   certificate certified `.Base` saturation for all four frame classes. Both sites now pass the
+   tableau's own class. No corpus verdict moved when they started doing so.
 
 The gap was this. `hasOpen` certified `findUnexpandedWithApplied … = none`, not
 `findUnexpanded … = none`, and the two differed by the D4 orphan situation: the applied set
@@ -735,17 +774,20 @@ def buildTableau (φ : Formula) (fuel : Nat := 1000)
   | some (.inl closedBr) => some (.allClosed [closedBr])
   | some (.inr (openBr, ord, appliedSet)) =>
       -- Use applied-set-aware saturation check
-      match h : findUnexpandedWithApplied openBr (timeOrd := ord) (applied := appliedSet) with
-      | none => some (.hasOpen openBr ord appliedSet h)
+      -- Applied-set-**free** saturation, at the tableau's own frame class (R5). Both changes
+      -- from the previous `findUnexpandedWithApplied … (applied := appliedSet)` are deliberate:
+      -- the applied set is inert under non-destructive expansion, and its `fc` defaulted to
+      -- `.Base` here, so the certificate certified `.Base` saturation for all four classes.
+      match h : findUnexpanded openBr (timeOrd := ord) (fc := fc) with
+      | none => some (.hasOpen openBr ord fc h)
       | some _ =>
           -- Branch is blocked but not fully saturated.
           -- Continue expanding non-time-generating rules.
           match saturateBlocked openBr fuel ord fc with
           | some (.inl closedBr) => some (.allClosed [closedBr])
           | some (.inr (satBr, satOrd)) =>
-              match h2 :
-                findUnexpandedWithApplied satBr (timeOrd := satOrd) (applied := appliedSet) with
-              | none => some (.hasOpen satBr satOrd appliedSet h2)
+              match h2 : findUnexpanded satBr (timeOrd := satOrd) (fc := fc) with
+              | none => some (.hasOpen satBr satOrd fc h2)
               | some _ => none  -- Still not saturated after post-blocking pass
           | none => none  -- Should not happen
 

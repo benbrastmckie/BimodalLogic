@@ -204,7 +204,7 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
                   -- behaviour) claimed the procedure was undecided about a formula it
                   -- had in fact settled.
                   .extractionFailed
-          | .hasOpen openBranch _ord _applied hSat =>
+          | .hasOpen openBranch _ord _fc hSat =>
               -- Formula is invalid, extract countermodel
               .invalid (extractCountermodelSimple φ_n openBranch hSat)
 

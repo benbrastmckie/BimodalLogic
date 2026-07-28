@@ -190,15 +190,14 @@ def buildTableauCancellable (abortRef : IO.Ref Bool) (φ : Formula)
   | none => return none  -- out of fuel or aborted
   | some (.inl closedBr) => return some (.allClosed [closedBr])
   | some (.inr (openBr, ord, appliedSet)) =>
-      match h : findUnexpandedWithApplied openBr (timeOrd := ord) (applied := appliedSet) with
-      | none => return some (.hasOpen openBr ord appliedSet h)
+      match h : findUnexpanded openBr (timeOrd := ord) (fc := fc) with
+      | none => return some (.hasOpen openBr ord fc h)
       | some _ =>
           match ← saturateBlockedCancellable abortRef openBr fuel ord fc with
           | some (.inl closedBr) => return some (.allClosed [closedBr])
           | some (.inr (satBr, satOrd)) =>
-              match h2 :
-                findUnexpandedWithApplied satBr (timeOrd := satOrd) (applied := appliedSet) with
-              | none => return some (.hasOpen satBr satOrd appliedSet h2)
+              match h2 : findUnexpanded satBr (timeOrd := satOrd) (fc := fc) with
+              | none => return some (.hasOpen satBr satOrd fc h2)
               | some _ => return none  -- still not saturated after post-blocking pass
           | none => return none  -- aborted (or the pure "should not happen")
 
@@ -248,7 +247,7 @@ def decideCancellable (abortRef : IO.Ref Bool) (φ : Formula)
               | .success proof => return .valid (h_norm ▸ proof)
               -- Closed tableau, no proof term: valid but unreconstructed, never undecided.
               | .incomplete _ => return .extractionFailed
-          | .hasOpen openBranch _ord _applied hSat =>
+          | .hasOpen openBranch _ord _fc hSat =>
               return .invalid (extractCountermodelSimple φ_n openBranch hSat)
 
 /--

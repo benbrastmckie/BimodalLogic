@@ -663,11 +663,25 @@ orphaned off the branch — a consumable rule had deleted formulas a persistent 
 the persistent rule was then suppressed by the applied set, and the branch was reported
 saturated while `findUnexpanded` still found work.
 
-Branch-guarded non-destructive expansion removes the mechanism. Nothing is deleted, so nothing
-is orphaned; the applied set has nothing to suppress and is inert. `◇p` now reports
-`fullySaturated=true applied=0 orphans=0`: the applied-set-free saturation predicate — the one
-a truth lemma actually needs — is *reachable* on the pipeline's own output. A regression that
-re-orphans an entry, or that makes full saturation unreachable again, breaks this file.
+Branch-guarded non-destructive expansion removed the mechanism. Nothing is deleted, so nothing
+is orphaned; the applied set had nothing to suppress and was inert. That measurement
+(`fullySaturated=true applied=0 orphans=0` on `◇p`) is what licensed R5's final step: the
+applied set has now been **deleted from the certificate** and `ExpandedTableau.hasOpen` states
+applied-set-free saturation, `findUnexpanded … = none`, at the tableau's own `FrameClass`.
+
+So these rows no longer measure orphans — there is no applied set left to orphan. What they
+measure now is the property whose failure would undo R5: that the *stronger* predicate is still
+**reachable** on the pipeline's own output. `buildTableau` returns `none` rather than a
+certificate whenever it is not, so a row flipping to `STALLED` is the regression signal, and the
+pinned branch shape catches a silent change in what gets certified.
+
+The genuinely-open row `G p → p` is the load-bearing one. It refutes the prediction that once
+`serialityRule` landed no open branch would ever be fully saturated: seriality is deliberately
+outside `allRulesForFC`, and `findUnexpanded` reads `allRulesForFC`, so full saturation stays
+reachable and the certificate did **not** have to become a disjunction. The price is a
+documentation obligation on the truth lemma, not a weaker certificate — a certified branch may
+still be owed `T(F ⊤)`/`T(P ⊤)` at every label, which is harmless over a serial frame but must
+be stated.
 -/
 
 namespace CertificateProbe
@@ -676,28 +690,37 @@ open FormalSystem.Metalogic.Decidability
 
 private def diaP : Formula := Formula.diamond p
 
-/-- The pipeline's own certificate for `◇p`, reduced to the three numbers that matter:
-whether the applied-set-free check is also satisfied (it is not — that is D4), how many
-applied-set entries are orphaned off the branch (all of them), and whether every orphan is
-nonetheless present in decomposed form, which is the strengthened predicate the truth lemma
-is to consume. -/
+/-- Printable name for the class the certificate records. -/
+private def fcName : FrameClass → String
+  | .Base => "Base"
+  | .Dense => "Dense"
+  | .Discrete => "Discrete"
+  | .Dedekind => "Dedekind"
+
+/-- The pipeline's own certificate, reduced to what still carries information after R5.
+
+`saturated` re-checks the certificate's own field against the branch it carries, so it is `true`
+by construction — printing it is the point: were the stronger predicate ever unreachable again,
+this row would read `STALLED` instead, because `buildTableau` cannot build the certificate.
+`fc` catches the repaired latent defect (the check's `fc` used to default to `.Base` for all
+four classes), and the branch shape catches a silent change in what gets certified. -/
 def certProbe (φ : Formula) (fc : FrameClass) (fuel : Nat := conformanceFuel) : String :=
   match buildTableau φ fuel fc with
-  | some (.hasOpen b ord applied _) =>
-      let orphans := applied.toList.filter fun f => !b.contains f
-      s!"fullySaturated={(findUnexpanded b ord fc).isNone} \
-applied={applied.size} orphans={orphans.length} \
-appliedRedundant={AppliedRedundant b ord fc applied}"
+  | some (.hasOpen b ord fcCert _) =>
+      s!"certified fc={fcName fcCert} \
+saturated={(findUnexpanded b ord fcCert).isNone} \
+formulas={b.length} times={b.knownTimes.length}"
   | some (.allClosed _) => "CLOSED"
   | none => "STALLED"
 
-/-- info: fullySaturated=true applied=0 orphans=0 appliedRedundant=true -/
+/-- info: certified fc=Base saturated=true formulas=51 times=4 -/
 #guard_msgs in
 #eval IO.print (certProbe diaP FrameClass.Base)
 
--- The contrast case: a branch whose expansion used no persistent rule has an empty applied
--- set, so the two saturation checks agree and there is nothing for R5 to justify.
-/-- info: fullySaturated=true applied=0 orphans=0 appliedRedundant=true -/
+-- The load-bearing case: `G p → p` is genuinely open (`G` is strict, so the root need not
+-- satisfy `p`), and it certifies. This is the row that refuted the "no open branch is ever
+-- fully saturated once seriality lands" prediction.
+/-- info: certified fc=Base saturated=true formulas=19 times=4 -/
 #guard_msgs in
 #eval IO.print (certProbe (im (G p) p) FrameClass.Base)
 

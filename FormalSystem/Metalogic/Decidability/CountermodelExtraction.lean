@@ -141,8 +141,8 @@ def SimpleCountermodel.display (cm : SimpleCountermodel) : String :=
 Extract a simple countermodel from an open saturated branch.
 -/
 def extractCountermodelSimple (φ : Formula) (b : Branch)
-    {ord : TimeOrdering} {applied : AppliedSet}
-    (_hSaturated : findUnexpandedWithApplied b (timeOrd := ord) (applied := applied) = none)
+    {ord : TimeOrdering} {fc : FrameClass}
+    (_hSaturated : findUnexpanded b (timeOrd := ord) (fc := fc) = none)
     : SimpleCountermodel :=
   extractSimpleCountermodel φ b
 
@@ -153,7 +153,7 @@ def extractCountermodelFromTableau (φ : Formula) (tableau : ExpandedTableau)
     (_fc : FrameClass := .Base) : Option SimpleCountermodel :=
   match tableau with
   | .allClosed _ => none  -- No countermodel, formula is valid
-  | .hasOpen openBranch _ord _applied hSaturated =>
+  | .hasOpen openBranch _ord _fc hSaturated =>
       some (extractCountermodelSimple φ openBranch hSaturated)
 
 /-!
@@ -1012,7 +1012,7 @@ def findCountermodel (φ : Formula) (fuel : Nat := 1000)
   match buildTableau φ fuel fc with
   | none => .failed "Tableau construction timeout"
   | some (.allClosed _) => .valid
-  | some (.hasOpen openBranch _ord _applied hSat) =>
+  | some (.hasOpen openBranch _ord _fc hSat) =>
       .found (extractCountermodelSimple φ openBranch hSat)
 
 /--
@@ -1026,7 +1026,7 @@ def findSemanticCountermodel (φ : Formula) (fuel : Nat := 1000)
   match buildTableau φ fuel fc with
   | none => .failed "Tableau construction timeout"
   | some (.allClosed _) => .valid
-  | some (.hasOpen openBranch ord _applied hSat) =>
+  | some (.hasOpen openBranch ord _fc hSat) =>
       let simple := extractCountermodelSimple φ openBranch hSat
       let semantic := extractSemanticCountermodel φ openBranch ord
       .found simple semantic
@@ -1039,7 +1039,7 @@ def extractCountermodelsFromTableau (φ : Formula) (tableau : ExpandedTableau)
     : Option (SimpleCountermodel × SemanticCountermodel) :=
   match tableau with
   | .allClosed _ => none
-  | .hasOpen openBranch ord _applied hSaturated =>
+  | .hasOpen openBranch ord _fc hSaturated =>
       let simple := extractCountermodelSimple φ openBranch hSaturated
       let semantic := extractSemanticCountermodel φ openBranch ord
       some (simple, semantic)

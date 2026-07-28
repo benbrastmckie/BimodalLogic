@@ -676,7 +676,7 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
     `timeLinearity` does not yet order, so the controls W5/W6 flip `total=true → false` when 2.6
     lands. The criterion is therefore "all seven flip to `total=true`", not "W1-W4 flip" —
     W5/W6's regression is expected, benign, and 2.7's to repair.
-  - [ ] **2.4 R5 — certificate strengthening** *(restated 2026-07-27; was BLOCKED)*
+  - [x] **2.4 R5 — certificate strengthening** *(restated 2026-07-27; was BLOCKED)*
     (`Saturation.lean:50-59`): strengthen `ExpandedTableau.hasOpen` to carry `(fc : FrameClass)`
     and the proposition
 
@@ -701,9 +701,28 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
     (cite the four failing formulas) and record the corrected diagnosis — destruction, not
     persistent-rule re-firing. Retire `appliedEntryRedundant` / `AppliedRedundant` or demote them
     to documented historical predicates; nothing may depend on them.
-    Estimated output: ~150-300 lines. **Done when**: `hasOpen` carries `fc` and the disjunction;
-    the pipeline's certificate is constructible for `◇p`; the R5 section reflects the refutation;
-    build green. **Depends on 2.5 and 2.6.**
+    Estimated output: ~150-300 lines. **Done when**: `hasOpen` carries `fc` and the single
+    conjunct; the pipeline's certificate is constructible for `◇p`; the R5 section reflects the
+    refutation; build green. **Depends on 2.5 and 2.6.**
+    *(done 2026-07-27b. `hasOpen` now reads `(openBranch) (timeOrdering) (fc)
+    (saturated : findUnexpanded openBranch (timeOrd := timeOrdering) (fc := fc) = none)` — the
+    applied set is gone from the certificate and both `buildTableau` sites, plus their
+    `buildTableauCancellable` mirrors, pass the tableau's own frame class. `extractCountermodelSimple`
+    takes the stronger hypothesis, which is the same one the `sat_*` family already wanted.
+    Measured: **no verdict moved anywhere** — the four class tables, all seven `TimeOrderProbe`
+    rows, every control, both counterexamples and the `BX*`/`R*` families are unmoved; the only
+    `#guard_msgs` blocks that changed are the two `CertificateProbe` rows, which were rewritten
+    because there is no applied set left to count. Both now read
+    `certified fc=Base saturated=true`, including the genuinely-open `G p → p`. `AppliedRedundant`
+    and `appliedEntryRedundant` are retained as history with zero dependents (verified by grep).
+    **Ordering deviation, raised rather than silently annotated** (`.claude/rules/plan-compliance.md`):
+    2.4 was executed **before** 2.7, reversing the plan's `2.6 → 2.7 → 2.4`. 2.4's declared
+    dependency is "Depends on 2.5 and 2.6", both of which landed in this dispatch, and nothing in
+    2.4 reads 2.7's output; report 05 §Q3's stated reason for ordering 2.4 last was that its design
+    is simplified by 2.6, which is satisfied. The reason for the swap is budget: 2.7 is a 57-site
+    refactor of `RuleResult`/`ExpansionResult` across six files and could not be completed **and
+    verified green** in the remaining dispatch, whereas 2.4 could. Starting 2.7 and abandoning it
+    mid-refactor would have left the tree red; 2.7 is left untouched and fully scoped instead.)*
 - **Timing:** ~8 dispatches, ~20 hours. **Order: 2.8 → 2.5 → 2.6 → 2.7 → 2.4.**
 - **Depends on:** 1
 

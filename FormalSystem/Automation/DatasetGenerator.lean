@@ -416,7 +416,7 @@ def extractCountermodelData (φ : Formula) (fuel : Nat := soundFuel φ) :
   match buildTableau φ fuel with
   | none => (none, none)
   | some (.allClosed _) => (none, none)  -- Shouldn't happen for invalid formula
-  | some (.hasOpen openBranch ord _applied _hSat) =>
+  | some (.hasOpen openBranch ord _fc _hSat) =>
       let ecm := extractEnrichedCountermodel φ openBranch
       let scm := extractSemanticCountermodel φ openBranch ord
       let summary := SemanticCountermodelSummary.fromSemanticCountermodel scm
@@ -435,7 +435,7 @@ def extractCountermodelDataCancellable (abortRef : IO.Ref Bool) (φ : Formula)
   match ← buildTableauCancellable abortRef φ fuel with
   | none => return (none, none)
   | some (.allClosed _) => return (none, none)  -- Shouldn't happen for invalid formula
-  | some (.hasOpen openBranch ord _applied _hSat) =>
+  | some (.hasOpen openBranch ord _fc _hSat) =>
       let ecm := extractEnrichedCountermodel φ openBranch
       let scm := extractSemanticCountermodel φ openBranch ord
       let summary := SemanticCountermodelSummary.fromSemanticCountermodel scm
