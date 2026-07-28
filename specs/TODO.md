@@ -58,7 +58,7 @@ next_project_number: 418
 
 ### Paper Refactor
 
-414 [RESEARCHING] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
+414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
   └─ 415 [RESEARCHING] — Completeness under the refactored (Omega-free, maximal-history) s
   └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
 416 [RESEARCHING] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revise
@@ -115,10 +115,11 @@ next_project_number: 418
 
 ### 414. Refactor semantics to maximal history validity
 - **Effort**: large
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
+- **Research**: [414_refactor_semantics_to_maximal_history_validity/reports/01_maximal-history-validity-refactor.md]
 
 **Description**: DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; revised 2026-07-28: change the basic definitions, no bridge lemmas). Make maximal-history validity THE validity of the repo, eliminating the Omega parameter from the semantics core. (1) Define the extension order on WorldHistory (sigma extends tau iff tau.domain subset-of sigma.domain and states agree on tau.domain), the Maximal predicate, and prove: every history extends to a maximal one (Zorn) and maximality is preserved by time-shift — the paper re-verified both. (2) Refactor TruthAt, valid, satisfiable, and semantic consequence to quantify over MAXIMAL histories of the frame, removing Omega and ShiftClosed hypotheses everywhere; the false Set.univ-equivalence docstrings (Semantics/Validity.lean:33,70-71) disappear with the parameter. (3) Propagate through Soundness (expected to survive verbatim via Zorn extension + shift-preservation). NO compatibility shims, aliases, or parallel validity notions: one uniform Omega-free API. Downstream metalogic rebasing is task 415; 417 restates against this semantics.
 

@@ -942,15 +942,21 @@
     {
       "project_number": 414,
       "project_name": "refactor_semantics_to_maximal_history_validity",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; revised 2026-07-28: change the basic definitions, no bridge lemmas). Make maximal-history validity THE validity of the repo, eliminating the Omega parameter from the semantics core. (1) Define the extension order on WorldHistory (sigma extends tau iff tau.domain subset-of sigma.domain and states agree on tau.domain), the Maximal predicate, and prove: every history extends to a maximal one (Zorn) and maximality is preserved by time-shift — the paper re-verified both. (2) Refactor TruthAt, valid, satisfiable, and semantic consequence to quantify over MAXIMAL histories of the frame, removing Omega and ShiftClosed hypotheses everywhere; the false Set.univ-equivalence docstrings (Semantics/Validity.lean:33,70-71) disappear with the parameter. (3) Propagate through Soundness (expected to survive verbatim via Zorn extension + shift-preservation). NO compatibility shims, aliases, or parallel validity notions: one uniform Omega-free API. Downstream metalogic rebasing is task 415; 417 restates against this semantics.",
       "effort": "large",
       "dependencies": null,
       "parent_task": null,
-      "artifacts": null,
+      "artifacts": [
+        {
+          "path": "specs/414_refactor_semantics_to_maximal_history_validity/reports/01_maximal-history-validity-refactor.md",
+          "type": "report",
+          "summary": "Tier 1 research report: 5-column lemma mapping table, verified ~85-line sorry-free prototype (extension order, isMax_timeShift, chainSup, exists_maximal_extension, isMax_of_total, emptyHistory), exact pinned-Mathlib Zorn API, new Omega-free TruthAt/valid/satisfiable signatures, exhaustive Group A/B/C blast-radius worklist with declaration counts, adversarial verification table, and 7-phase plan recommendation."
+        }
+      ],
       "created": "2026-07-28T22:51:10Z",
-      "last_updated": "2026-07-28T23:13:53Z",
+      "last_updated": "2026-07-28T23:28:27Z",
       "topic": "paper-refactor",
       "session_id": "sess_1785280411_23b0e6_414"
     },
