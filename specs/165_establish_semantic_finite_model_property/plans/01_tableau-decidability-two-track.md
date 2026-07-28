@@ -329,7 +329,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
 - **Timing:** 3 dispatches, ~7 hours.
 - **Depends on:** none
 
-### Phase 2: Calculus Completion (R7, R2, R6, R5) [PARTIAL]
+### Phase 2: Calculus Completion (R7, R2, R6, R5) [IN PROGRESS]
 
 - **Goal:** The rule set is adequate and honestly reported: trichotomy branching exists, Dedekind
   rules exist, the `.timeout` conflation is split, and the open-branch certificate is strong
@@ -696,6 +696,43 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
       right baseline to diff against.*
     - *`Phase 3` expects **36** constructors including `timeLinearity`; 2.7 is what supplies it.
       Until then the `mem_allRulesForFC_iff` gate cannot be written.)*
+
+    **DESIGN FORK RESOLVED — ADDITIVE (2026-07-28).** The prior dispatch raised a conflict: the
+    2.7 text above labels the change "Additive" yet writes `ExpansionResult.split (branches :
+    List (Branch × TimeOrdering))`, which is a *breaking* payload change. Report 04 §Q2.4 writes
+    the same breaking line for `.split` (04:378) while its own recommendation sentence (04:367)
+    and its "Existing rules are unaffected" paragraph (04:392-393) both require additivity. The
+    decision is **additive**: `RuleResult.branchingOrdered` and `ExpansionResult.splitOrdered`
+    are added as new constructors; `.branching` and `.split` keep their payloads and their
+    meaning verbatim.
+
+    *Rationale, verified at the sites rather than assumed.* The enumerated consumers are
+    `RuleResult` matches at `Saturation.lean:171,541`, `CountermodelExtraction.lean:714,779,857,
+    923`, `Tableau.lean:1562,1805,1844,1883,2064` and `TableauConformance.lean:565`, and
+    `ExpansionResult` matches at `Saturation.lean:447,452,614,619,720,726,1405,1413` and
+    `CancellableExpansion.lean:91,96,153,159`. Under the breaking reading every one of those
+    sites changes *and* every `.split branches` consumer must be re-plumbed to destructure a
+    pair, including the four `CountermodelExtraction.lean` `.branching` arms that are *proof*
+    arms (`857`, `923` discharge `ruleSelfGuarded` contradictions) — so the diff would carry
+    proof risk for zero semantic gain, since no existing rule has a per-branch ordering to
+    supply. Under the additive reading every existing site is byte-identical and the compiler
+    enumerates the missing arms, so a partial pass is a *compile error*, not a silent behaviour
+    change, and each commit boundary can be green. The additive reading is therefore both the
+    smaller diff and the one report 04's Phase 5.1 constraint ("per-branch orderings, introduced
+    additively, staged behind a decidable gate") actually names. No refutation was found at any
+    site: nothing consumes `.split` in a way that *needs* the ordering to be intrinsic to the
+    constructor rather than carried by a sibling constructor.
+
+    *One clarification the report's arm list forces.* Report 04:400-402 gives arm payloads
+    `([], ord.addFuture t₁ t₂)` / `([], ord.addFuture t₂ t₁)` / identification, and 04:404-408
+    notes arm 3 needs `Branch.identifyTime` because `TimeOrdering` cannot express equality. A
+    *delta* payload cannot express arm 3 — identifying `t₂` with `t₁` must **remove** `t₂` from
+    `Branch.knownTimes`, which no list of added formulas can do, and if `t₂` survives then
+    `timeOrderTotal` still fails and the done-criterion cannot be met. `branchingOrdered`
+    therefore carries **replacement** branches, not deltas. This needs no change to the declared
+    type — `Branch` is an `abbrev` for `List SignedFormula` (`SignedFormula.lean:240`), so
+    `List (List SignedFormula × TimeOrdering)` and `List (Branch × TimeOrdering)` are the same
+    type — and arms 1 and 2 simply pass `branch` through unchanged.
   - [x] **2.4 R5 — certificate strengthening** *(restated 2026-07-27; was BLOCKED)*
     (`Saturation.lean:50-59`): strengthen `ExpandedTableau.hasOpen` to carry `(fc : FrameClass)`
     and the proposition
