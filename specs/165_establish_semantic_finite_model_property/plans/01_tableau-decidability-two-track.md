@@ -2224,7 +2224,26 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   Estimated output: ~120-200 lines, in `Tests/BimodalTest/`. Done when: the rows are `#guard_msgs`-
   pinned; **if any row reports `false`, STOP and record a DO-NOT-RE-ATTEMPT entry rather than
   proceeding to 7.1b** — that is the whole point of this sub-phase.
-- [ ] **7.1b `Bridge/RegionLabel.lean`** (new module): `regionLabel`, the per-region choice; the
+- [x] **7.1b `Bridge/RegionLabel.lean`** (new module):
+  **DONE (2026-07-28k)** — sorry-free; `lake build FormalSystem.Metalogic.Decidability` green
+  (1111 jobs); registered in `FormalSystem/Metalogic/Decidability.lean`. Delivered: `branchRank`;
+  the six demand lists with a membership lemma each; `regionMeets`; `regionLabelCandidates`;
+  `regionLabelCheck`; `regionLabel`; the four gate-unpacking lemmas; six consumption lemmas
+  (`regionLabel_box`, `regionLabel_diaNeg`, `regionLabel_untlGuard`, `regionLabel_snceGuard`,
+  `regionLabel_untlNeg`, `regionLabel_snceNeg`), every one stated **branch fact ⟹ branch fact at
+  the chosen label**, with model truth never a hypothesis; `cutIndex`/`cutIndex_le`;
+  `branchRegionVal` at the **unchanged** `branchModel` gapVal type; and the two model-side
+  readbacks `truthAt_atom_branch_region` and `truthAt_atom_gap_of_box`. The last is the
+  atom-level instance of the case that killed `GapAdequate`, and it goes the right way.
+  Axiom audit: `propext`/`Classical.choice`/`Quot.sound` only. **Gate evaluates `true` on the
+  7.1a corpus**: `RegionGateProbe.lean` now reports both its own `gate` and the library's
+  `check` on every row, and the two agree on all ten (nine engine rows `true`, the synthetic
+  row `false`) — an independent cross-check, since the probe's copy was written first and
+  separately.
+  *(deviation: altered — the gate's `F`-side row is the general `F(U(φ,ψ)) ⟹ ¬φ` rather than a
+  separate `G`/`H` row. This subsumes rather than adds: `T(Gχ)` is `F(U(¬χ,⊤))` on a saturated
+  branch, so the `G`/`H` demands are the `ψ = ⊤` instance. Measured equivalent in 7.1a.)*
+  Original text: `regionLabel`, the per-region choice; the
   decidable gate `regionLabelCheck b timeOrd : Bool` in the family `timeOrderTotal` and
   `boxAnchoredCheck` already belong to; `branchRegionVal b regionLabel : WorldIndex → Set (BranchTime b)
   × Set (BranchTime b) → Atom → Prop` (**the existing `branchModel` gapVal type, unchanged**); and the

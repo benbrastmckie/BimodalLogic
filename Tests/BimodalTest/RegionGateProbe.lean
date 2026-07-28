@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
 
 /-!
 # Region-gate probes: measuring the region labelling before it is stated
@@ -166,7 +166,12 @@ private def candidateGrid (b : Branch) (ord : TimeOrdering) : List (List Nat) :=
 private def regionGate (b : Branch) (ord : TimeOrdering) : Bool :=
   (candidateGrid b ord).all fun row => row.all fun c => c > 0
 
-/-- Run the engine and report the gate on the resulting open branch. -/
+/-- Run the engine and report the gate on the resulting open branch.
+
+`gate` is this file's own copy, written before `Bridge/RegionLabel.lean` existed; `check` is the
+library's `regionLabelCheck`. Reporting both on every row makes the two an independent
+cross-check of each other, so a later edit to either that changes what is being measured shows
+up as a disagreement rather than silently. -/
 def probe (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String :=
   match buildTableau φ fuel fc with
   | none => "STALLED"
@@ -174,7 +179,7 @@ def probe (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String
   | some (.hasOpen ob ord _ _) =>
       s!"OPEN |W|={ob.knownWorlds.length} |T|={ob.knownTimes.length} " ++
       s!"total={timeOrderTotal ob ord} gate={regionGate ob ord} " ++
-      s!"cands={candidateGrid ob ord}"
+      s!"check={regionLabelCheck ob ord} cands={candidateGrid ob ord}"
 
 /-! ## Non-vacuity: a branch the gate rejects
 
@@ -193,10 +198,11 @@ private def refuteBranch : Branch :=
   , SignedFormula.pos p ⟨0, 0⟩
   , SignedFormula.pos p ⟨0, 1⟩ ]
 
-/-- info: "total=true gate=false cands=[[2, 0, 0]]" -/
+/-- info: "total=true gate=false check=false cands=[[2, 0, 0]]" -/
 #guard_msgs in
 #eval s!"total={timeOrderTotal refuteBranch refuteTimes} " ++
   s!"gate={regionGate refuteBranch refuteTimes} " ++
+  s!"check={regionLabelCheck refuteBranch refuteTimes} " ++
   s!"cands={candidateGrid refuteBranch refuteTimes}"
 
 /-! ## The rows
@@ -206,51 +212,51 @@ then three at `.Dense`. Read each as: the branch's time order is total, every re
 world has an eligible label, and the per-region counts show which labels the demands exclude. -/
 
 -- A. The minimal witness: one box, one diamond, an unrelated consequent.
-/-- info: "OPEN |W|=2 |T|=7 total=true gate=true cands=[[3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 3, 3, 3, 3]]" -/
+/-- info: "OPEN |W|=2 |T|=7 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 3, 3, 3, 3]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
 
 -- B. The witness world carries a temporal universal of its own. Its regions fall to a single
 -- eligible label from rank 4 up — the `G q` in the minted world biting.
-/-- info: "OPEN |W|=2 |T|=7 total=true gate=true cands=[[3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 1, 1, 1, 1]]" -/
+/-- info: "OPEN |W|=2 |T|=7 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 1, 1, 1, 1]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r)
 
 -- C. The same shape under `.Dense`, where the density rules mint further times.
-/-- info: "OPEN |W|=2 |T|=10 total=true gate=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]]" -/
+/-- info: "OPEN |W|=2 |T|=10 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r) 200 .Dense
 
 -- D. The shape that refutes `GapAdequate` (`gapAdequate_insufficient`). Every region has
 -- three eligible labels, which is the concrete form of report 07's argument that a *label's*
 -- content is propositionally closed where a *forced set* is not.
-/-- info: "OPEN |W|=1 |T|=4 total=true gate=true cands=[[3, 3, 3, 3, 3]]" -/
+/-- info: "OPEN |W|=1 |T|=4 total=true gate=true check=true cands=[[3, 3, 3, 3, 3]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (.box (.imp p q))) r)
 
 -- E. `G p → p`, report 07's discriminating row: the interior regions admit two labels, not
 -- three, because a label carrying `T(G p)` without `T(p)` is ineligible above rank 0.
-/-- info: "OPEN |W|=1 |T|=4 total=true gate=true cands=[[3, 3, 2, 2, 2]]" -/
+/-- info: "OPEN |W|=1 |T|=4 total=true gate=true check=true cands=[[3, 3, 2, 2, 2]]" -/
 #guard_msgs in
 #eval probe (.imp (.allFuture p) p)
 
 -- F. `¬(F p → p)`.
-/-- info: "OPEN |W|=1 |T|=4 total=true gate=true cands=[[3, 3, 2, 2, 2]]" -/
+/-- info: "OPEN |W|=1 |T|=4 total=true gate=true check=true cands=[[3, 3, 2, 2, 2]]" -/
 #guard_msgs in
 #eval probe (.imp (.imp (Formula.someFuture p) p) .bot)
 
 -- G. Row E under `.Dense`: one more minted time, same discrimination.
-/-- info: "OPEN |W|=1 |T|=5 total=true gate=true cands=[[3, 3, 2, 2, 2, 2]]" -/
+/-- info: "OPEN |W|=1 |T|=5 total=true gate=true check=true cands=[[3, 3, 2, 2, 2, 2]]" -/
 #guard_msgs in
 #eval probe (.imp (.allFuture p) p) 200 .Dense
 
 -- H. Row B under `.Dense`: the single-candidate stretch survives the extra minted times.
-/-- info: "OPEN |W|=2 |T|=10 total=true gate=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1]]" -/
+/-- info: "OPEN |W|=2 |T|=10 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r) 200 .Dense
 
 -- I. Row F under `.Dense`.
-/-- info: "OPEN |W|=1 |T|=4 total=true gate=true cands=[[3, 3, 2, 2, 2]]" -/
+/-- info: "OPEN |W|=1 |T|=4 total=true gate=true check=true cands=[[3, 3, 2, 2, 2]]" -/
 #guard_msgs in
 #eval probe (.imp (.imp (Formula.someFuture p) p) .bot) 200 .Dense
 

@@ -28,6 +28,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Valuation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.PropSaturation
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -68,6 +69,9 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Bridge.PropSaturation`: `sat_imp_pos`, the one member of the `sat_*` family
   `CountermodelExtraction.lean` does not carry, because `impPos` is the only *branching*
   propositional rule and the guard it fails is the arm-already-present test
+- `Verified.Bridge.RegionLabel`: the gap arm of the atom clause, after three refuted policies —
+  a region takes the atoms of a *chosen known label*, certified by the decidable gate
+  `regionLabelCheck` in the family `timeOrderTotal` and `boxAnchoredCheck` belong to
 
 ## Status
 
