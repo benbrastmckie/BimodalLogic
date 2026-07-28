@@ -1174,9 +1174,21 @@ end DualityProbes
 say the figure is stated rather than earned. This is the theorem that earns it, for unbranched
 runs: with `C` the formula stock and the label count at the T2 figure `2 ^ (2 * |C|)`, the step
 bound `chain_le_stock` delivers is exactly `soundFuel'` at any `φ` whose closure has `|C|`
-members. The two hypotheses that remain are the same two the module docstring's Status section
-lists: `hl` (labels confined) and `hL` (their count at the T2 figure), both of which
-`blocking_fires_of_card_lt` exists to supply once the run-level chain invariant is available.
+members. The two hypotheses that remain are `hl` (labels confined) and `hL` (their count at the
+T2 figure).
+
+**`hL` is not dischargeable in general, and this is where that becomes visible.** T2 bounds
+*times* by `2 ^ (2 * |C|)` (`timeFinset_card_le_of_not_blocked`), but `L` here is a set of
+**labels**, and a label is a world *and* a time. So `hL` asks for `|worlds| * |times|` to sit
+under the T2 *time* figure, which holds only when the run stays in a single world. The world
+count is bounded — `worldFinset_card_le` gives `|S| + 2 * |C| * |times|` — but it is not `1`, so
+`hL` fails as soon as any `boxNeg` or `diamondPos` fires.
+
+The theorem is still true as stated; `hL` is a hypothesis, not a claim. What is *not* available
+is a route from T2 to `hL` in the presence of fresh worlds, and therefore `soundFuel'` is not the
+general fuel figure. `chain_le_worlds_bounded` is: it takes the world dimension as a dimension
+rather than assuming it away, and its figure exceeds `soundFuel' φ` by about
+`2 * |C| * 2 ^ (2 * |C|)`.
 -/
 theorem chain_le_soundFuel' {C : Finset Formula} {L : Finset Label} {φ : Formula}
     (hC : TableauClosed C) (hT : TrichStock C) (run : Nat → Branch) (n : Nat)
