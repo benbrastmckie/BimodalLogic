@@ -460,7 +460,12 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
             rw [infPinPoint_holds]
             rcases h_disj with hns | hkr
             · exact Or.inl ((TemporalPred.eval_at_neg' M atomMap s r0).mp hns)
-            · exact Or.inr hkr
+            -- SCHEDULED FOR REMOVAL by the phase that re-bases this module: `infPinPoint` now
+            -- carries the source's conjunct-free `K⁺` (`NegFixOneFaithful.lean`), while the
+            -- `HasDedekindINF` carrier this module still binds supplies the tree's `kplus` here.
+            -- `kplusOpen_of_kplus` (`KPlusFaithful.lean:212`) drops the extra conjunct. Argument
+            -- position only; no binder, statement or other proof step in this file was touched.
+            · exact Or.inr (kplusOpen_of_kplus hkr)
           refine Or.inr (Or.inr ((vecPinnedListToV_holds_iff M atomMap _ s (infPinPoint s)
             z0 z1).mpr ⟨r0, hr00, hr01, hsev0, hpin, ?_⟩))
           rw [vecPinnedConjAll_holdsAt_iff]
