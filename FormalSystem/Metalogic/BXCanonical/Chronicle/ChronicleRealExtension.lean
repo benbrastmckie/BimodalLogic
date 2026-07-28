@@ -36,13 +36,26 @@ unselected real is information about the rationals *underneath* it:
   witness `s` sits *above* the target, so descending from it (`limitMCSBelow_cofinal_below`, via
   `exists_rat_witness_of_realLimitMCS`) moves *towards* the target and lands inside the guarded
   interval. That is the whole reason this case closes.
-- **Backward `snce`, and backward `untl` at an unselected target** — refuted; see the
-  `Refutations` section below.
+- **Backward `snce`, and backward `untl` at an unselected target** — these are the cases the
+  guard-free transport cannot have, and the `Refutations` section below says why. They are
+  nevertheless *available*, at the cost of one further hypothesis on the rational bundle:
+  `BFMCS.LimitGuardBelow`, which says a formula guarding an interval that abuts a gap from above
+  already guards an interval abutting it from below. With it, `toRealBundle_backward_until_unselected`
+  runs the guard down through the gap, and
+  `exists_rat_since_witness_below_of_limitGuardBelow` relocates the `snce` witness to a rational
+  **below** the gap, where `limitMCSBelow_cofinal_below` can reach it.
 
-`cantor_bfmcs_dense_real_restricted_fuc` is **deliberately absent** from this module. Forward
-`untl` from a membership at an *unselected* target — forward case B — is a separate obligation
-with its own probe, and its absence here is not an oversight and does not mean the module is
-half-finished.
+**The backward side is complete.** `BFMCS.toRealBundle_restricted_backward_until_since` covers
+all four cases, and `cantor_bfmcs_dense_real_restricted_buc` is its chronicle instance, obtained
+by composing with `cantor_bfmcs_dense_restricted_buc` and the guard-reach discharge
+`cantor_bfmcs_dense_limit_guard_below`.
+
+`cantor_bfmcs_dense_real_restricted_fuc` is **deliberately absent** from this module, and its
+absence is the module's only gap. Forward `untl` from a membership at an *unselected* target —
+forward case B — is a separate obligation with its own probe; there the guard is the
+*conclusion* rather than a hypothesis, so nothing supplies the antecedent that
+`BFMCS.LimitGuardBelow` needs, and the backward completion above does not reach it. Its absence
+is not an oversight and does not mean the module is half-finished.
 
 ## Refutations
 
@@ -110,14 +123,40 @@ a `limitFilterBelow g` generator, so the complement of `{q | untl φ ψ ∈ m q}
 ### What these do and do not settle
 
 They refute the transport theorem **as stated above**, whose only hypothesis on the rational
-bundle is restricted backward coherence. They do **not** settle the chronicle instance. Neither
-family satisfies the *unrestricted* rational forward Until coherence that `cantorBfmcsDense`
-enjoys: in Refutation 1 the formula `untl φ.neg φ` holds at rationals of `(0, g)` with the
-irrational witness `g` and no rational witness, and in Refutation 2 the same happens for the
-definable gap of `φ.neg` at `g`. Deciding whether a transport strengthened by those hypotheses
-(equivalently, by a `BFMCS.LimitFutureWitness`-style gap discharge applied to the *witness*
-rather than to `someFuture`) is provable is gap-facing work of exactly the kind that this
-module's forward case B counterpart owns, and it is deliberately not attempted here.
+bundle is restricted backward coherence — and that refutation is permanent. They do **not**
+settle the chronicle instance, and in fact both families are excluded by a *guard-side* gap
+hypothesis that the chronicle bundle satisfies: `BFMCS.LimitGuardBelow`.
+
+- *Refutation 1.* `ψ` is true at every rational of `(g, 5)` and at **no** rational below `g`.
+  That is a `ψ`-**right gap** at `g` in Reynolds' sense — the connective `γ⁻`, dual to the `γ⁺`
+  that marks left gaps (Reynolds 1992, printed p.175) — and `Axiom.prior_S_gap` excludes exactly
+  that configuration. (Independently, this family also violates the already-discharged
+  `BFMCS.LimitFutureWitness`: `someFuture φ ∈ m q` for every rational `q < g`, hence in
+  `limitSetBelow m g ⊆ limitMCSBelow m g`, yet `V(φ) = (0, g)` gives no rational `s > g` with
+  `φ ∈ m s`.)
+- *Refutation 2.* `ψ` is uninterruptedly true on `(g, 3)` and false arbitrarily recently below
+  `g`, by the oscillation — again verbatim the `γ⁻` pattern, so `BFMCS.LimitGuardBelow` fails at
+  `r := g`. Once `ψ` is known on an interval `(a, g)`, rational backward coherence puts
+  `untl φ ψ` in `m q` for every rational `q ∈ (a, g)`, hence in
+  `limitSetBelow m g ⊆ limitMCSBelow m g`, and the refutation's conclusion-failure step
+  evaporates.
+
+*A correction.* An earlier version of this paragraph asserted that neither family satisfies the
+*unrestricted* rational **forward** Until coherence that `cantorBfmcsDense` enjoys, "in
+Refutation 2 the same happens for the definable gap of `φ.neg` at `g`". That claim is unsupported
+for Refutation 2, and no forward violation is constructible there: for every candidate
+`untl α β` at a rational `q < g`, a rational witness is available either below `g` or inside
+`(g, 3)`, because `V(φ) = (g, 3)` is entered immediately above `g` and the `θ`-points `{αₙ}` are
+themselves rational. What Refutation 2's family *does* fail is unrestricted rational **backward**
+Until coherence, via the separating formula `β := ψ ∨ ¬K⁻ψ ∨ ¬K⁺ψ`: `β` holds at every rational
+of `(q, s)` for `q < g < s < 3` — at `αₙ` because `¬K⁺ψ` holds there, inside `(αₙ, tₙ₊₁)` because
+`¬K⁻ψ` holds, and above `g` because `ψ` holds — but fails at the real `g`, where `ψ` is false and
+both `K⁻ψ` and `K⁺ψ` are true. The guard-side exclusion above supersedes both readings and is the
+one the transport actually consumes.
+
+The strengthened transport `BFMCS.toRealBundle_restricted_backward_until_since` therefore stands,
+and with it the chronicle instance `cantor_bfmcs_dense_real_restricted_buc`. The refuted,
+guard-free signature is not to be re-attempted.
 
 ## Main results
 
@@ -125,7 +164,12 @@ module's forward case B counterpart owns, and it is deliberately not attempted h
 - `toRealBundle_forward_until_selected`, `toRealBundle_forward_since_selected`.
 - `toRealBundle_backward_until_selected`,
   `toRealBundle_backward_since_selected_of_rat_witness`.
-- `cantor_bfmcs_dense_real_restricted_tc`.
+- `toRealBundle_backward_until_unselected`,
+  `exists_rat_since_witness_below_of_limitGuardBelow`,
+  `toRealBundle_backward_since_selected_of_gap_witness`,
+  `toRealBundle_backward_since_unselected`.
+- `BFMCS.toRealBundle_restricted_backward_until_since`.
+- `cantor_bfmcs_dense_real_restricted_tc`, `cantor_bfmcs_dense_real_restricted_buc`.
 -/
 
 namespace FormalSystem.Metalogic.Bundle
@@ -266,7 +310,8 @@ The real witness `s` is interpolated to a rational `u` with `p < u ≤ s + δ`
 This is the one backward case that survives. `exists_rat_witness_of_realLimitMCS` descends from
 the witness, and here the witness is *above* the target, so the descent stays inside the guarded
 interval `(t, s)`. The `snce` mirror has the witness below the target and the same descent leaves
-the guarded interval — see `toRealBundle_backward_since_selected_is_refuted`.
+the guarded interval — which is why that case needs `BFMCS.LimitGuardBelow` to extend the guard
+past the gap first; see `exists_rat_since_witness_below_of_limitGuardBelow`.
 -/
 theorem toRealBundle_backward_until_selected {fc : FrameClass} (B : BFMCS (fc := fc) Rat)
     (root : Formula) (h_rbuc : B.RestrictedBackwardUntilSinceCoherent root)
@@ -296,7 +341,9 @@ shifted coordinate `w` assumed rational rather than obtained by interpolation. T
 not a convenience: for `snce` the witness lies *below* the target, so
 `exists_rat_witness_of_realLimitMCS` — which descends — would produce a rational strictly below
 `w`, outside the guarded interval `(s, t)`, where nothing is known about `ψ`. The Refutations
-section of this module's docstring exhibits a family where exactly that failure is fatal.
+section of this module's docstring exhibits a family where exactly that failure is fatal. The
+companion `toRealBundle_backward_since_selected_of_gap_witness` covers the excluded case, by
+paying for the descent with `BFMCS.LimitGuardBelow` rather than with a rational witness.
 
 With `w` rational the proof is the mirror image of the `untl` case and uses no limit reasoning at
 all: every rational `q` with `w < q < p` has `(q : ℝ) - δ` strictly between `s` and `t`, so the

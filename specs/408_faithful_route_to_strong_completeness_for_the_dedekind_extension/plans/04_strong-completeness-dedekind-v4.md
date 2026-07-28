@@ -1979,7 +1979,7 @@ file. An analysis-only dispatch is a failed dispatch.
 - **Depends on:** 6.2
 - **Outcome:** All three statements landed sorry-free on the first build. `limitGuardBelow_of_priorS` and `cantor_bfmcs_dense_limit_guard_below` in the new module `Chronicle/ChronicleLimitGuardWitness.lean` (207 lines); `BFMCS.LimitGuardBelow` appended to `Bundle/RealExtensionBundle.lean` (closure-free, no `root` argument, as specified); one import line added to `Metalogic/BXCanonical.lean`. Full `lake build` green; live sorries outside `Boneyard/` unchanged at exactly `WeakCanonical/Transfer.lean:1242`; `#print axioms` on both new theorems is `[propext, Classical.choice, Quot.sound]`. No deviations from the specified statements or proof decomposition.
 
-### Phase 7.1: Until/Since transport at ℝ — the three unlanded backward cases (7.1′) [NOT STARTED]
+### Phase 7.1: Until/Since transport at ℝ — the three unlanded backward cases (7.1′) [COMPLETED]
 
 **RESOLUTION (v4).** The `[BLOCKED]` marker this phase carried in v3 is retired. The blocker was
 real and the refutation stands — **the `fc`-generic backward transport whose only rational-side
@@ -2054,7 +2054,7 @@ attempt is to be made to prove them unrealizable directly — their unrealizabil
   | 4 | `snce`, `T` unselected | **OPEN.** First obtain a rational `u < T` with `φ ∈ m u` and `ψ` on all rationals of `(u,T)` — directly if `S` is selected, else by 3′'s two steps; then `h_rbuc` at **every** rational `q ∈ (u,T)` with the same witness `u` gives `snce φ ψ ∈ m q`, so `snce φ ψ ∈ limitSetBelow m T` with threshold `(u:ℝ)`; conclude by `limitSetBelow_subset_limitMCSBelow`. **No gap lemma is needed at the target itself.** |
 
 - **Tasks:**
-  - [ ] Prove `BFMCS.toRealBundle_restricted_backward_until_since` at the **strengthened**
+  - [x] Prove `BFMCS.toRealBundle_restricted_backward_until_since` at the **strengthened**
         signature — the only change from the refuted v3 statement is the added `h_lgb`:
         ```lean
         theorem BFMCS.toRealBundle_restricted_backward_until_since {fc : FrameClass}
@@ -2069,7 +2069,7 @@ attempt is to be made to prove them unrealizable directly — their unrealizabil
         analysis stays reviewable. Expect friction at the `δ`-shift casts and at
         `exists_rat_witness_of_realLimitMCS`'s `≤` (not `<`) upper bound — that is elaboration
         work, not a mathematical gap.
-  - [ ] Land `cantor_bfmcs_dense_real_restricted_buc` — the phase's deliverable — exactly as:
+  - [x] Land `cantor_bfmcs_dense_real_restricted_buc` — the phase's deliverable — exactly as:
         ```lean
         theorem cantor_bfmcs_dense_real_restricted_buc (fc : FrameClass)
             (hfc : FrameClass.Dedekind ≤ fc) (A : Set Formula)
@@ -2084,7 +2084,7 @@ attempt is to be made to prove them unrealizable directly — their unrealizabil
         Signature parity with the landed `cantor_bfmcs_dense_real_restricted_tc`: same `hfc`
         threading, same non-modification of `cantor_bfmcs_dense_restricted_buc` (`:680`). **Do not
         modify that theorem.**
-  - [ ] **Docstring correction (defect logged by report 04).** The module's "What these do and do
+  - [x] **Docstring correction (defect logged by report 04).** The module's "What these do and do
         not settle" paragraph currently claims that *neither* refuting family satisfies the
         unrestricted rational **forward** Until coherence that `cantorBfmcsDense` enjoys, "in
         Refutation 2 the same happens for the definable gap of `φ.neg` at `g`". That claim is
@@ -2101,13 +2101,13 @@ attempt is to be made to prove them unrealizable directly — their unrealizabil
         Reynolds printed p.175), and drop the unsupported forward-coherence claim rather than
         defending it.** Do not attempt to construct a forward violation. Cite by printed PDF page;
         no task-number citations.
-  - [ ] Update the module docstring's absence note: `cantor_bfmcs_dense_real_restricted_fuc`
+  - [x] Update the module docstring's absence note: `cantor_bfmcs_dense_real_restricted_fuc`
         remains deliberately absent and is Phase 7.2's sole deliverable. Record that the backward
         side is now complete and by which lemma, so a reader does not conclude the module is
         half-finished by accident.
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension`, then
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension`, then
         full `lake build`.
-  - [ ] `#print axioms BFMCS.toRealBundle_restricted_backward_until_since` and
+  - [x] `#print axioms BFMCS.toRealBundle_restricted_backward_until_since` and
         `#print axioms cantor_bfmcs_dense_real_restricted_buc`; record the results.
 - **Preserved from the Phase 7.1 dispatch (consumed, never rewritten):**
   `guard_transport_realLimitMCS` (`:153`), `exists_rat_witness_of_realLimitMCS` (`:183`),
@@ -2128,6 +2128,19 @@ attempt is to be made to prove them unrealizable directly — their unrealizabil
   bounded-witness attempt.
 - **Timing:** 4 hours.
 - **Depends on:** 6.3
+- **Outcome (landed).** All six new declarations sorry-free, axioms exactly
+  `[propext, Classical.choice, Quot.sound]`, full `lake build` green, live non-`Boneyard/` sorries
+  unchanged at exactly `WeakCanonical/Transfer.lean:1242`. Case 2 is
+  `toRealBundle_backward_until_unselected`; cases 3′ and 4 share the relocation lemma
+  `exists_rat_since_witness_below_of_limitGuardBelow` (which handles selected and unselected
+  witnesses uniformly, needing no case split on the target) and land as
+  `toRealBundle_backward_since_selected_of_gap_witness` and
+  `toRealBundle_backward_since_unselected`. Cases 1 and 3 consume the landed selected-case lemmas
+  unmodified. One deviation, mechanical: the module gained an
+  `import …Chronicle.ChronicleLimitGuardWitness` line, required to see the Phase 6.3 discharge;
+  that module's import set is disjoint from this one's, so no cycle. The docstring correction
+  also repaired a dangling reference to the never-existing
+  `toRealBundle_backward_since_selected_is_refuted`, now pointing at the relocation lemma.
 
 ### Phase 7.2: Forward case B — a two-outcome probe [NOT STARTED]
 
