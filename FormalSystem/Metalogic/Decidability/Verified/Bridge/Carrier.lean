@@ -143,6 +143,25 @@ instance : TemporalCarrier FrameClass.Dense ℚ where
   frame_condition := PLift.up inferInstance
 
 /--
+`.Base` is also carried by `ℤ`, and this instance is what makes the `ℤ` milestone available to
+`valid` and not only to `ValidDiscrete`.
+
+`valid` (`Semantics/Validity.lean`) quantifies over *every* carrier, so **one** carrier refutes
+it — and `ℤ` is the easy one, because `finOrderEmbInt` (`Bridge/Embed.lean`) is the `Nat`-cast
+and therefore places `n` branch times *contiguously* at `0, …, n-1`. A contiguous `ℤ` placement
+has no integers strictly between consecutive placed points, so its interior gap regions are
+**empty** and only the two rays carry a region state. `ℚ` and `ℝ` keep the genuinely dense
+interior gaps; these are different problems, and treating all four `Decidable` instances as one
+milestone is on this plan's do-not-re-attempt register.
+
+Noncomputable for the same reason the `.Discrete ℤ` instance below is: `embed_finite_to_int`
+routes through `Fintype.ofFinite`.
+-/
+noncomputable instance : TemporalCarrier FrameClass.Base ℤ where
+  embed_finite T := embed_finite_to_int T
+  frame_condition := PUnit.unit
+
+/--
 `.Discrete` is carried by `ℤ`, and this is the instance that cannot reuse the dense embedding:
 `ℤ` is not densely ordered, so `embed_finite` here comes from the hand-rolled `Fin n ↪o ℤ`
 (`Bridge/Embed.lean`). The four discreteness components are Mathlib instances
@@ -198,6 +217,7 @@ here rather than in Phase 7.
 section Checks
 
 example : TemporalCarrier FrameClass.Base ℚ := inferInstance
+noncomputable example : TemporalCarrier FrameClass.Base ℤ := inferInstance
 example : TemporalCarrier FrameClass.Dense ℚ := inferInstance
 noncomputable example : TemporalCarrier FrameClass.Discrete ℤ := inferInstance
 example : TemporalCarrier FrameClass.Dedekind ℝ := inferInstance

@@ -2251,7 +2251,27 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   in the corrected direction `GapAdequate` established (branch fact as hypothesis, never model truth).
   **Verification Tier**: `interface`. Estimated output: ~200-350 lines. Done when: sorry-free; the
   gate evaluates `true` on the 7.1a corpus; `lake build FormalSystem.Metalogic.Decidability` green.
-- [ ] **7.1c The ℤ milestone — `not_valid_of_hasOpen` for `valid` and `ValidDiscrete`.** Add the
+- [ ] **7.1c The ℤ milestone — `not_valid_of_hasOpen` for `valid` and `ValidDiscrete`.**
+  **PREREQUISITES DONE (2026-07-28k); the induction itself is NOT started.** Landed sorry-free,
+  `lake build FormalSystem.Metalogic.Decidability` green (1112 jobs), `lake build BimodalTest`
+  green (1975 jobs):
+  - the missing `TemporalCarrier FrameClass.Base ℤ` instance (`Bridge/Carrier.lean`, noncomputable
+    like its `.Discrete ℤ` sibling, with a by-name sanity check alongside the other four);
+  - `Bridge/IntGaps.lean` (new module, registered): `placedCount`, `finiteOrderEmbInt_nonneg`,
+    `finiteOrderEmbInt_lt_card`, `exists_preimage_finiteOrderEmbInt` (the contiguity itself),
+    `isPlacedCode_finiteOrderEmbInt`, **`ray_of_gap_finiteOrderEmbInt`** — the dichotomy the
+    induction consumes, "a non-placed integer lies on the lower ray or the upper ray, there is no
+    third case" — plus `regionCode_fst_eq_empty_of_neg`/`regionCode_fst_eq_univ_of_card_le` and
+    `cutIndex_eq_zero`/`cutIndex_eq_length`, which identify the two rays as region `0` and region
+    `n` of `regionLabelCheck`'s indexing.
+  **Import-closure findings, both real and both worked around rather than papered over**: neither
+  `Set.ncard` nor `Nat.card` is in this project's Mathlib closure. `cutIndex`
+  (`Bridge/RegionLabel.lean`) uses a `Finset.univ.filter` card under `open Classical`, and
+  `placedCount` (`Bridge/IntGaps.lean`) is `@Fintype.card T (Fintype.ofFinite T)` written out —
+  pinned to the very instance `finiteOrderEmbInt` itself computes with, so the bound cannot drift
+  from the definition. A future dispatch adding either Mathlib import may simplify both; neither
+  is blocked on it.
+  **What remains of 7.1c**: the six-case induction. Original text: Add the
   missing `TemporalCarrier FrameClass.Base ℤ` instance; use `finiteOrderEmbInt`'s contiguity to show
   interior gap regions are empty, so only the two ray regions carry a `regionLabel`; run the
   six-case induction (`atom`, `bot`, `imp`, `box`, `untl`, `snce` — `Formula` has no `G`/`H`/`F`/`P`

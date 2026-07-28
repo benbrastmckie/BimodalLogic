@@ -29,6 +29,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.Valuation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.PropSaturation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntGaps
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -72,6 +73,9 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Bridge.RegionLabel`: the gap arm of the atom clause, after three refuted policies —
   a region takes the atoms of a *chosen known label*, certified by the decidable gate
   `regionLabelCheck` in the family `timeOrderTotal` and `boxAnchoredCheck` belong to
+- `Verified.Bridge.IntGaps`: the `ℤ` placement is contiguous, so a non-placed integer lies on one
+  of the two rays and there is no interior gap — the reason the `ℤ` milestone is strictly easier
+  than the `ℚ`/`ℝ` one
 
 ## Status
 
