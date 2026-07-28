@@ -40,7 +40,9 @@ Landed: the progress measure, the fuel figure, the branch invariant (`BranchStoc
 one-step preservation (`expandOnceUnblocked_extended_stock` — T1 iterated), the signed-formula
 universe and its cardinality, and the step bound `chain_le_stock`: **an unbranched run out of a
 branch the stock confines takes at most `2 * |C| * |L|` steps.** The formula dimension is fully
-discharged there; the label dimension enters as a hypothesis.
+discharged there; the label dimension enters as a hypothesis. `chain_le_soundFuel'` puts that
+bound at the T2 label figure and lands on `soundFuel'` itself, so the fuel figure this file
+defines is earned rather than merely stated — in the unbranched dimension.
 
 Outstanding, and deliberately not claimed anywhere below:
 
@@ -439,5 +441,28 @@ theorem chain_le_stock {C : Finset Formula} {L : Finset Label}
   have h1 := chain_card_le run n hstep
   have h2 := branch_card_le (C := C) (L := L) hb.mem hl
   omega
+
+/--
+**The fuel figure is justified in the dimension proved.**
+
+`soundFuel'` was *defined* in this file as `2 * n * 2 ^ (2 * n)`, and its docstring is careful to
+say the figure is stated rather than earned. This is the theorem that earns it, for unbranched
+runs: with `C` the formula stock and the label count at the T2 figure `2 ^ (2 * |C|)`, the step
+bound `chain_le_stock` delivers is exactly `soundFuel'` at any `φ` whose closure has `|C|`
+members. The two hypotheses that remain are the same two the module docstring's Status section
+lists: `hl` (labels confined) and `hL` (their count at the T2 figure), both of which
+`blocking_fires_of_card_lt` exists to supply once the run-level chain invariant is available.
+-/
+theorem chain_le_soundFuel' {C : Finset Formula} {L : Finset Label} {φ : Formula}
+    (hC : TableauClosed C) (hT : TrichStock C) (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0)) (hl : ∀ x ∈ run n, x.label ∈ L)
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1)))
+    (hL : L.card ≤ 2 ^ (2 * C.card))
+    (hφ : C.card = (FormalSystem.Syntax.subformulaClosure φ).card) :
+    n ≤ soundFuel' φ := by
+  have hstep' := chain_le_stock hC hT run n h0 hl hstep
+  have : 2 * C.card * L.card ≤ 2 * C.card * 2 ^ (2 * C.card) :=
+    Nat.mul_le_mul_left _ hL
+  simpa [soundFuel', ← hφ] using le_trans hstep' this
 
 end FormalSystem.Metalogic.Decidability
