@@ -2251,17 +2251,14 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   in the corrected direction `GapAdequate` established (branch fact as hypothesis, never model truth).
   **Verification Tier**: `interface`. Estimated output: ~200-350 lines. Done when: sorry-free; the
   gate evaluates `true` on the 7.1a corpus; `lake build FormalSystem.Metalogic.Decidability` green.
-- [ ] **7.1c The ℤ milestone — `not_valid_of_hasOpen` for `valid` and `ValidDiscrete`.**
-  **PARTIAL (2026-07-28n) — four of the six cases landed sorry-free, and both temporal cases are
-  now split into halves with both NEGATIVE halves landed sorry-free. The two remaining sorries
-  are `branchTruthAt_untl_pos` and `branchTruthAt_snce_pos` and nothing else.** Items 1 and 3 of
-  the four enumerated in the 2026-07-28l banner landed at 2026-07-28m; the geometry step and the
-  lower-ray negative demand landed at 2026-07-28n, closing the negative direction outright. See
-  the 2026-07-28n STATUS banner below.
-  *(deviation: altered — the induction is assembled and both headline results
-  (`not_valid_of_hasOpen_int`, `not_validDiscrete_of_hasOpen_int`) are in tree and complete
-  **modulo** `branchTruthAt_untl`/`branchTruthAt_snce`. The sub-phase's "done when: sorry-free at
-  ℤ for both classes" is therefore NOT met and 7.1c stays unchecked.)*
+- [x] **7.1c The ℤ milestone — `not_valid_of_hasOpen` for `valid` and `ValidDiscrete`.**
+  **COMPLETE (2026-07-28o) — all six cases of `branchTruthAt` are sorry-free, both temporal cases
+  in both directions, and the sorry census over `Verified/` reports `0`.** The negative halves
+  landed at 2026-07-28n; the positive halves landed at 2026-07-28o together with rows 7-10 of
+  `temporalWitnessCheck` and `Stepped`, which is the resolution of the witness-existence
+  obstruction that banner identified. `not_valid_of_hasOpen_int` and
+  `not_validDiscrete_of_hasOpen_int` are sorry-free, and the sub-phase's "done when: sorry-free at
+  ℤ for both classes" is met. See the 2026-07-28o STATUS banner below.
   **PREREQUISITES DONE (2026-07-28k); the induction itself is NOT started.** Landed sorry-free,
   `lake build FormalSystem.Metalogic.Decidability` green (1112 jobs), `lake build BimodalTest`
   green (1975 jobs):
@@ -2570,6 +2567,90 @@ with `branchLT`'s equal-times disjunct vacuous because `b.knownTimes` is an `era
   `Bridge/TemporalSaturation.lean` and `Bridge/TemporalGate.lean`.
 - **Assuming the two `ℤ` rays are mirror images for the *positive* case.** Correction 12: the
   upper ray closes outright via `untlRay_self`; the lower ray is a strictly larger demand.
+
+**PHASE 7 STATUS (2026-07-28o) — 7.1c is CLOSED. The truth lemma is sorry-free at every one of
+the six `Formula` constructors, and so are both headline results.** `lake build
+FormalSystem.Metalogic.Decidability` green (1115 jobs), no `declaration uses sorry` anywhere, no
+warnings from either file touched; `lean-sorry-census.sh` over `Verified/` reports **0**. Five
+green commits. No engine file touched.
+
+*Measured before stated, for the seventh consecutive dispatch — and this time the measurement
+changed the rows.* `gw` and `rdG` were already measured and the prior banner called them
+"adoptable"; walking the proof showed **neither is usable as measured**, in two independent ways.
+`untlPosGuardedWitness` exempts the *whole row* when `ψ = ⊤`, so it asserts nothing at all on the
+`someFuture`/`somePast` fragment — where the positive case still needs a witness, because
+`TruthAt … (untl φ ⊤)` demands one. And `untlRayDnGuard` permitted the escape "the event sits at
+the ray's own label, with no guard obligation", which does not close the lower-ray leaf: the ray
+label is itself a known time, so placed points sit strictly below it, and every one of those is
+strictly above the lower-ray evaluation point and inside the guard interval. Both strengthenings
+were measured in the exact adopted form as `probe4`'s `uGW`/`sGW`/`uRD`/`sRU`, each beside the
+weaker form it strengthens: all four are `true` on all eight rows the region gate accepts, and
+neither ever differs from its weaker neighbour anywhere in the twelve. Adopted as rows 7-10 with
+four consumption lemmas.
+
+*Obstruction 1 is resolved by option 1, in its minimal form.* `Stepped` — every carrier point has
+an immediate successor and an immediate predecessor — discharged at `ℤ` by `r + 1` and `r - 1`. It
+is a property of the **carrier**, not of the placement, because that is all the upper-ray leaf
+needs: a witness to exist and a guard interval it can empty. The other half of what the banner
+said might be needed — "everything strictly above an upper-ray point is itself upper-ray" — is
+**derived**, not assumed: `upperRay_of_gt` gets it from `RayOnly` and `RaySplit` alone, since a
+point above an upper-ray point can be neither placed nor lower-ray. `lowerRay_of_lt` mirrors it.
+`Stepped` is false at `ℚ`/`ℝ`, but so are `RayOnly` and `RaySplit`, and all three are used only by
+the temporal cases, so 7.1d pays nothing it was not already paying.
+
+*The earliest-witness iteration was never written, and is now known not to be needed.* It had been
+the standing shape of item 2 since the 2026-07-28l banner. Row 7 hands back the witness *and* the
+guard below it in one step, so the branch performs the minimisation once, decidably, instead of
+the proof redoing it — and `sat_untl_pos_future` is consequently **not called** by either positive
+half. The placed leaf is six lines.
+
+*A trimming that is a finding, not a tidy-up.* Neither positive half references `branchOrderValid`,
+the frame class, `findUnexpanded`, `findClosure`, `timeOrderTotal`, `boxAnchoredCheck`,
+`regionLabelCheck`, or the non-empty-worlds hypothesis. The whole positive direction is carried by
+the placement geometry plus rows 3, 7, 9 and 10. `regionLabelCheck` is load-bearing in the
+**negative** direction only — which sharpens the 7.3 obligation below rather than removing it.
+
+*The rays swap in the positive direction too, and the same way round as in the negative one.*
+`untl` closes its **upper** ray by `untlRay_self` + `Stepped` and carries Correction 12's residual
+at the **lower** one; `snce` is the exact mirror.
+
+*Carried forward, unchanged and still live.* `regionLabelCheck` reports **false** on the branches
+the engine builds for `U(p,q) → q` and `S(p,q) → q` (probe rows H, J, M, N). It is a *hypothesis*
+wherever used, so nothing proved is affected — but 7.3 has to discharge it for real engine
+branches, and `temporalWitnessCheck`, now **ten** rows, needs the same treatment.
+
+*An environment hazard, recorded because it cost this dispatch real time.* A concurrent session
+working task 408 in this same clone moved the shared worktree to a detached `HEAD` five commits
+back, and separately stashed this task's in-progress `TemporalGate.lean` edit (stash message:
+"re-stashed by t408-p20.4 after accidental pop of git-snapshot-1785279640"). Nothing was lost —
+the commit was recovered from `main` and the edit from the stash — but a commit of this task's
+that appeared to succeed had in fact captured only part of the intended diff, and the omission was
+visible only as an "unknown identifier" at the *consumer*. Verify committed **content**, not just
+commit exit status, while another session shares the clone.
+
+#### Additions to the Phase 7 DO-NOT-RE-ATTEMPT register (2026-07-28o)
+
+- **Re-deriving the positive temporal halves**, `Stepped`, `stepped_int`, `upperRay_of_gt`,
+  `lowerRay_of_lt`, rows 7-10 of `temporalWitnessCheck`, or their four consumption lemmas
+  (`untlPos_witness`, `sncePos_witness`, `untlRayDn_witness`, `snceRayUp_witness`). All landed
+  sorry-free.
+- **An earliest-witness iteration on `b.knownTimes.length - branchRank b ord t'`.** Not needed and
+  not written. Row 7 supplies the witness together with the guard below it; the minimisation
+  belongs in the decidable row, not in the proof.
+- **Calling `sat_untl_pos_future`/`sat_snce_pos_past` from the positive halves.** They are not
+  used. Their only role in the older design was the guard-`⊤` case, which row 7 now covers because
+  its exemption drops the guard and keeps the witness.
+- **A gate row that exempts the whole row when `ψ = ⊤`** (as the originally measured `gw`/`rdG`
+  did). It asserts nothing on the `someFuture`/`somePast` fragment, where a witness is still owed.
+  The exemption must sit inside the witness.
+- **A lower-ray positive row permitting the escape `b.hasPosAt φ` at the ray's own label.** It does
+  not close the leaf; see the banner above.
+- **Assuming that "everything above an upper-ray point is upper-ray" needs to be a hypothesis.**
+  It is derivable from `RayOnly` + `RaySplit` (`upperRay_of_gt`). Only the *successor* had to be
+  assumed.
+- **Adding `regionLabelCheck`, saturation, or the other branch gates back to the positive halves'
+  binder lists.** Measured unused; the trim is deliberate.
+- Plus every prior entry, all carried forward unchanged.
 
 **PHASE 7 STATUS (2026-07-28n) — still PARTIAL after a ninth dispatch, but the temporal residual
 is now HALVED and the remaining half is one direction, not two.** Both **negative** temporal
