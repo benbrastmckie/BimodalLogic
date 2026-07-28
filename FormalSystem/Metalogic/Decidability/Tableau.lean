@@ -147,6 +147,18 @@ inductive TableauRule : Type where
   /-- Discrete: when both T(G(G(φ) → φ)) and T(F(G(φ))) at same label,
       add T(G(φ)). Z1 backward induction axiom. Only when fc >= .Discrete. -/
   | z1Rule
+  /-- Dedekind: Prior-U (gap form). When `T(U(⊤,φ) ∧ F(¬φ))` at `(w,t)`, add
+      `T(U(¬φ ∨ K⁺(¬φ), φ))` at `(w,t)` — the φ-region has a definable right endpoint.
+      Tableau counterpart of `Axiom.prior_U_gap`. Only when `fc >= .Dedekind`.
+      NOT `priorUZ`, which is the integer well-ordering axiom at `.Discrete`. -/
+  | priorUGap
+  /-- Dedekind: Prior-S (gap form). Past dual of `priorUGap`: from
+      `T(S(⊤,φ) ∧ P(¬φ))` add `T(S(¬φ ∨ K⁻(¬φ), φ))`.
+      Tableau counterpart of `Axiom.prior_S_gap`. NOT `priorSZ`. -/
+  | priorSGap
+  /-- Dedekind: separation. From `T(K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)))` add
+      `T(K⁺(K⁺φ ∧ K⁻φ))`. Tableau counterpart of `Axiom.sep`. -/
+  | sepRule
   deriving Repr, DecidableEq, BEq, Hashable
 
 /-!
@@ -327,6 +339,16 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula)
   | .priorUZ, .pos, φ => decide (FrameClass.Discrete ≤ fc) && (asSomeFuture? φ).isSome
   | .priorSZ, .pos, φ => decide (FrameClass.Discrete ≤ fc) && (asSomePast? φ).isSome
   | .z1Rule, .pos, .allFuture _ => decide (FrameClass.Discrete ≤ fc)
+  -- Dedekind (R6). All three trigger on the axiom's *antecedent conjunction* rather than on
+  -- one of its conjuncts. Triggering on a conjunct loses a race: the conjuncts of
+  -- `U(⊤,φ) ∧ F(¬φ)` are produced one expansion step apart, and the base rule that owns the
+  -- first one (`untlPos`, `someFuturePos`) is consumable, so it destroys the antecedent
+  -- before the other conjunct exists. The conjunction itself is what the branch actually
+  -- carries at a single moment, and matching it makes each rule a 1:1 transcription of its
+  -- axiom.
+  | .priorUGap, .pos, φ => decide (FrameClass.Dedekind ≤ fc) && (asAnd? φ).isSome
+  | .priorSGap, .pos, φ => decide (FrameClass.Dedekind ≤ fc) && (asAnd? φ).isSome
+  | .sepRule, .pos, φ => decide (FrameClass.Dedekind ≤ fc) && (asAnd? φ).isSome
   | _, _, _ => false
 
 /--
@@ -1108,6 +1130,61 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           else (.notApplicable, timeOrd)
         else (.notApplicable, timeOrd)
       | _ => (.notApplicable, timeOrd)
+  -- Dedekind: Prior-U (gap form), `Axiom.prior_U_gap`.
+  -- `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)`: the φ-region ends, and its right endpoint is
+  -- definable by `K⁺` ("¬φ holds arbitrarily soon after"). The rule adds the consequent and
+  -- keeps its trigger, so the base rules still decompose the conjunction normally.
+  | .priorUGap, .pos, χ =>
+      match asAnd? χ with
+      | some (a, b) =>
+          match a with
+          | .untl e g =>
+              if e == Formula.top
+                  && b == Formula.someFuture (Formula.neg g) then
+                let concl :=
+                  Formula.untl (Formula.or (Formula.neg g) (Formula.kPlus (Formula.neg g))) g
+                let newSf := SignedFormula.pos concl l
+                if branch.contains newSf then (.notApplicable, timeOrd)
+                else (.persistent [newSf], timeOrd)
+              else (.notApplicable, timeOrd)
+          | _ => (.notApplicable, timeOrd)
+      | none => (.notApplicable, timeOrd)
+  -- Dedekind: Prior-S (gap form), `Axiom.prior_S_gap`. Past dual of `priorUGap`.
+  | .priorSGap, .pos, χ =>
+      match asAnd? χ with
+      | some (a, b) =>
+          match a with
+          | .snce e g =>
+              if e == Formula.top
+                  && b == Formula.somePast (Formula.neg g) then
+                let concl :=
+                  Formula.snce (Formula.or (Formula.neg g) (Formula.kMinus (Formula.neg g))) g
+                let newSf := SignedFormula.pos concl l
+                if branch.contains newSf then (.notApplicable, timeOrd)
+                else (.persistent [newSf], timeOrd)
+              else (.notApplicable, timeOrd)
+          | _ => (.notApplicable, timeOrd)
+      | none => (.notApplicable, timeOrd)
+  -- Dedekind: separation, `Axiom.sep`.
+  -- `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)`. `K⁺ψ` unfolds to
+  -- `(U(⊤, ¬ψ)) → ⊥`, which is the shape matched on `a` below; matching `Formula.top`
+  -- as an equality rather than as a pattern keeps this independent of how `top` is defined.
+  | .sepRule, .pos, χ =>
+      match asAnd? χ with
+      | some (a, b) =>
+          match a with
+          | .imp (.untl e (.imp ψ .bot)) .bot =>
+              if e == Formula.top
+                  && b == Formula.neg
+                        (Formula.kPlus (Formula.and ψ (Formula.untl ψ (Formula.neg ψ)))) then
+                let concl :=
+                  Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ))
+                let newSf := SignedFormula.pos concl l
+                if branch.contains newSf then (.notApplicable, timeOrd)
+                else (.persistent [newSf], timeOrd)
+              else (.notApplicable, timeOrd)
+          | _ => (.notApplicable, timeOrd)
+      | none => (.notApplicable, timeOrd)
   | _, _, _ => (.notApplicable, timeOrd)
 
 /--
@@ -1193,6 +1270,19 @@ def discreteRules : List TableauRule := [
 ]
 
 /--
+Dedekind-specific rules (R6), included only when fc >= .Dedekind.
+
+The tableau counterparts of `Axiom.prior_U_gap`, `Axiom.prior_S_gap` and `Axiom.sep`
+(`Axioms.lean:377,387,398`) — the three axioms whose gap/separation content no other rule
+touches, and the reason `Discrete ≰ Dedekind` is the correct gating rather than a defect:
+the Dedekind terminus consumes `ValidDedekindDense`, so its arm is base + dense + dedekind
+and never includes the Discrete rules.
+-/
+def dedekindRules : List TableauRule := [
+  .priorUGap, .priorSGap, .sepRule
+]
+
+/--
 All tableau rules for a given frame class, in priority order.
 Base rules are always included; Dense/Discrete rules are appended
 when the frame class supports them.
@@ -1201,7 +1291,15 @@ def allRulesForFC (fc : FrameClass := .Base) : List TableauRule :=
   let base := allRules
   let dense := if decide (FrameClass.Dense ≤ fc) then denseRules else []
   let discrete := if decide (FrameClass.Discrete ≤ fc) then discreteRules else []
-  base ++ dense ++ discrete
+  let dedekind := if decide (FrameClass.Dedekind ≤ fc) then dedekindRules else []
+  -- The Dedekind rules come FIRST, ahead of the base rules. They are persistent, they fire
+  -- at most once per label (each checks `branch.contains` on its own conclusion), and they
+  -- trigger on a conjunction that the consumable propositional rules destroy on their very
+  -- next step. Appending them, as the Dense and Discrete arms are appended, would mean
+  -- `negPos` decomposes `T(U(⊤,φ) ∧ F(¬φ))` before `priorUGap` is ever consulted and the
+  -- rules would be dead code. Nothing else depends on their position: a persistent rule
+  -- that adds one formula and then reports `notApplicable` cannot pre-empt any other rule.
+  dedekind ++ base ++ dense ++ discrete
 
 /--
 Find a rule that applies to a signed formula.

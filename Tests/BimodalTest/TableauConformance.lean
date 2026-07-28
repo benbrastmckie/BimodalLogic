@@ -306,21 +306,26 @@ def discreteRows : List Row :=
     ++ serialityRows ++ seriesRows ++ counterexampleRows ++ untilSinceRows
     ++ discreteExtraRows
 
-/-- The three Dedekind axiom instances with no tableau counterpart today: `allRulesForFC`
-has no `dedekindRules` arm, so nothing in the engine can discharge them. They are the
-regression target of the Dedekind rule work. `kPlus`/`kMinus` are Reynolds' `K⁺`/`K⁻`
-(`Formula.lean:180,193`); no current rule touches either. -/
+/-- The three Dedekind axiom instances. `allRulesForFC` now has a `dedekindRules` arm
+(`priorUGap`, `priorSGap`, `sepRule`), and all three close. `kPlus`/`kMinus` are Reynolds'
+`K⁺`/`K⁻` (`Formula.lean:180,193`), which those three rules are the only consumers of.
+
+Each rule triggers on its axiom's antecedent *conjunction* and adds the consequent
+persistently, so a row closes by contradiction between the added consequent and the negated
+consequent the row's implication puts on the branch. That is a faithful transcription of the
+axiom, not a proof of it: the admissibility burden — that the rule is derivable in the
+Hilbert system — is Track B's, deliberately deferred. -/
 def dedekindExtraRows : List Row :=
   [ { id := "R1 prior-U-gap"
     , formula := im (an (U tp p) (F (nt p))) (U (orr (nt p) (Formula.kPlus (nt p))) p)
-    , target := "CLOSED", note := "prior_U_gap; no dedekindRules arm exists" }
+    , target := "CLOSED", note := "prior_U_gap; discharged by the priorUGap rule" }
   , { id := "R2 prior-S-gap"
     , formula := im (an (S tp p) (P (nt p))) (S (orr (nt p) (Formula.kMinus (nt p))) p)
-    , target := "CLOSED", note := "prior_S_gap; no dedekindRules arm exists" }
+    , target := "CLOSED", note := "prior_S_gap; discharged by the priorSGap rule" }
   , { id := "R3 sep"
     , formula := im (an (Formula.kPlus p) (nt (Formula.kPlus (an p (U p (nt p))))))
         (Formula.kPlus (an (Formula.kPlus p) (Formula.kMinus p)))
-    , target := "CLOSED", note := "sep; no dedekindRules arm exists" }
+    , target := "CLOSED", note := "sep; discharged by the sepRule rule" }
   ]
 
 /-- `.Dedekind`, scored against `ValidDedekindDense φ` — dense *and* conditionally
@@ -454,9 +459,9 @@ BX10 U->F          CLOSED   target=CLOSED          until_F
 BX10' S->P         CLOSED   target=CLOSED          since_P
 BX7 lin-until      CLOSED   target=CLOSED          linear_until instance
 BX7' lin-since     CLOSED   target=CLOSED          linear_since instance
-R1 prior-U-gap     STALLED  target=CLOSED  [DEFECT] prior_U_gap; no dedekindRules arm exists
-R2 prior-S-gap     STALLED  target=CLOSED  [DEFECT] prior_S_gap; no dedekindRules arm exists
-R3 sep             STALLED  target=CLOSED  [DEFECT] sep; no dedekindRules arm exists
+R1 prior-U-gap     CLOSED   target=CLOSED          prior_U_gap; discharged by the priorUGap rule
+R2 prior-S-gap     CLOSED   target=CLOSED          prior_S_gap; discharged by the priorSGap rule
+R3 sep             CLOSED   target=CLOSED          sep; discharged by the sepRule rule
 -/
 #guard_msgs in
 #eval IO.print (report .Dedekind dedekindRows)

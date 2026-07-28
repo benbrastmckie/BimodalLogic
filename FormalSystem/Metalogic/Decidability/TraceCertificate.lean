@@ -231,6 +231,9 @@ def ruleToString : TableauRule → String
   | .priorUZ                 => "priorUZ"
   | .priorSZ                 => "priorSZ"
   | .z1Rule                  => "z1Rule"
+  | .priorUGap               => "priorUGap"
+  | .priorSGap               => "priorSGap"
+  | .sepRule                 => "sepRule"
 
 /--
 Compute the depth of a trace entry (used for `maxDepth`).
