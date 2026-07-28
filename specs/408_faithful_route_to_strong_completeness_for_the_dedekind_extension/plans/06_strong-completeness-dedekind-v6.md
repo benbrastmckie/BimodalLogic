@@ -67,9 +67,9 @@
   - .claude/rules/no-task-references-in-deliverables.md
 - **Type**: lean4
 - **Phases**: **19 total** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, **7.5, 7.6, 7.7,
-  7.8, 7.9**, 8) — **13 `[COMPLETED]`** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4),
-  **6 `[NOT STARTED]`** (7.5, 7.6, 7.7, 7.8, 7.9, 8). Next dispatch target: **Phase 7.5**.
-  **Counting convention (v6)**: `phases_total = 19`, `phases_completed = 13`,
+  7.8, 7.9**, 8) — **15 `[COMPLETED]`** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6),
+  **4 `[NOT STARTED]`** (7.7, 7.8, 7.9, 8). Next dispatch target: **Phase 7.7**.
+  **Counting convention (v6)**: `phases_total = 19`, `phases_completed = 15`,
   `phases_dispatchable = 6`, `phases_user_gated = 0`. **`[USER GATED]` no longer exists in this
   plan** — the R3d gate was resolved by explicit user authorization at this revision, so every
   remaining phase is `[NOT STARTED]` and dispatchable in heading order. `19 = 13 completed +
@@ -178,8 +178,8 @@ and 4 amend, and each of those is amended by exactly the drafted text, no more.*
    for a phase awaiting a user decision. The decision has been made, so the marker has no referent
    and every phase heading in v6 uses the standard vocabulary from
    `.claude/rules/plan-format-enforcement.md`. **v6 contains no format deviations.**
-10. **Phase counts.** v6 has **19 phases**, of which **13 are `[COMPLETED]`** (1, 2, 3, 4, 5, 6,
-    6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4) and **6 are `[NOT STARTED]`** (7.5, 7.6, 7.7, 7.8, 7.9, 8).
+10. **Phase counts.** v6 has **19 phases**, of which **15 are `[COMPLETED]`** (1, 2, 3, 4, 5, 6,
+    6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6) and **4 are `[NOT STARTED]`** (7.7, 7.8, 7.9, 8).
 
 **What v6 does NOT change, stated so no dispatch reads authorization as a general relaxation.**
 R3d is authorized; nothing else is. The statements of `cantor_bfmcs_dense_restricted_tc` / `_buc` /
@@ -641,9 +641,9 @@ green; `#print axioms consequence_completeness_dedekind` shows exactly `[propext
 Quot.sound]`.
 
 **Phase inventory (v6)**: **19 phases** — 1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4,
-**7.5, 7.6, 7.7, 7.8, 7.9**, 8. **13 are `[COMPLETED]`** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1,
-7.2, 7.3, 7.4); **6 are `[NOT STARTED]`** (7.5, 7.6, 7.7, 7.8, 7.9, 8). `phases_total = 19`,
-`phases_completed = 13`, `phases_dispatchable = 6`, `phases_user_gated = 0`.
+**7.5, 7.6, 7.7, 7.8, 7.9**, 8. **15 are `[COMPLETED]`** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1,
+7.2, 7.3, 7.4, 7.5, 7.6); **4 are `[NOT STARTED]`** (7.7, 7.8, 7.9, 8). `phases_total = 19`,
+`phases_completed = 15`, `phases_dispatchable = 4`, `phases_user_gated = 0`.
 
 **Counting convention (v6, explicit)**: `19 = 13 completed + 6 dispatchable`. **There is no
 `[USER GATED]` phase in this plan** — v5's single format deviation is retired, because the gate it
@@ -3756,7 +3756,7 @@ verbatim** in the summary so 7.6-7.9 can be held to it.
 - **Timing:** 4 hours.
 - **Depends on:** 7.4 + the R3d authorization.
 
-### Phase 7.6: Invariant preservation across `c5_forward_walk` (R3d-2) [NOT STARTED]
+### Phase 7.6: Invariant preservation across `c5_forward_walk` (R3d-2) [COMPLETED]
 
 **The first construction surgery, and the first place family `Q` can bite.** Burgess's forward
 Until-witness walk is transcribed verbatim in the tree; this phase asks whether its placement
@@ -3789,20 +3789,20 @@ not.
   constraint this phase adds is therefore **original work adapting his placement**, and every
   docstring must say so.
 - **Tasks:**
-  - [ ] **Add the preservation field to `C5ForwardWalkResult`** (`:646`), stating that the walk's
+  - [x] **Add the preservation field to `C5ForwardWalkResult`** (`:646`), stating that the walk's
         result satisfies 7.5's invariant given that its input chronicle does. Mirror the binder
         style of the existing fields (`g_sub_f_insert :660`, `dom_new_unique :664`,
         `new_point_after :667`, `domain_guard :673`, `witness_not_old :678`).
-  - [ ] **Discharge it in the base case** (`start = max dom`; witness inserted beyond via
+  - [x] **Discharge it in the base case** (`start = max dom`; witness inserted beyond via
         `exists_rat_gt_finset` / `lemma_2_4_with_guard`, `PointInsertion.lean:3455`). A witness
         placed beyond the current maximum cannot contribute to accumulation at a point below it;
         this should be the cheapest case. Land it as its own named `have` or private lemma.
-  - [ ] **Discharge it in the condition-(i) recursion case** (both `η ∧ U(ξ,η) ∈ f(x')` and
+  - [x] **Discharge it in the condition-(i) recursion case** (both `η ∧ U(ξ,η) ∈ f(x')` and
         `η ∈ g(x,x')`, so the walk reduces to `x'` and composes the guard). No new point is
         inserted in the reduction step itself, so the obligation is compositional; the content is
         threading the invariant through the recursion, which is where an induction-measure mismatch
         will show up if the field is stated wrongly.
-  - [ ] **Discharge it in the split case** — the midpoint `z = (x + x')/2`, via
+  - [x] **Discharge it in the split case** — the midpoint `z = (x + x')/2`, via
         `lemma_2_7`/`lemma_2_8`/`lemma_2_6` (`PointInsertion.lean:2267`/`:2570`/`:318`). **This is
         the hard case and the one family `Q` targets**: repeated midpoint insertions into a
         shrinking interval are exactly the pattern that accumulates, and `counterexampleEnum` is
@@ -3823,10 +3823,26 @@ not.
         deviation in the phase summary.
         **Do NOT silently change the placement** — route (b) is permitted, undocumented route (b)
         is a defect.
-  - [ ] Docstrings on the new field and every new lemma: the no-source statement, plus
+        **ROUTE TAKEN: (a), preservation as-is.** Burgess's midpoint placement is unchanged; no
+        `PointInsertion.lean` edit, no `h_actual`-style witness reuse, no placement rule added.
+        The split case discharges `guard_interval` *vacuously*: the witness is the midpoint of the
+        adjacent pair `(start, x')`, so the open interval `(start, witness)` of the extended
+        domain contains no old point (adjacency) and no new point (the midpoint is the only
+        insertion and equals the witness).
+  - [x] **Deviation of substance, recorded per the plan's escalation discipline** — the plan's
+        Task-1 field (`guard_accum_preserved`, literal `NoGuardAccumulation` preservation) is
+        **free at every finite stage**: `Chronicle.dom` is a `Finset`, and 7.5's
+        `noGuardAccumulation_of_finite` discharges the conclusion outright without using the
+        hypothesis. It is landed as the plan specifies, with the finiteness discharge stated
+        plainly in its docstring, and a second, non-free field `guard_interval` is landed
+        alongside it to carry this walk's actual content to the limit step. No plan step was
+        skipped, altered, or substituted; this is an addition plus an honesty note. The
+        consequence for the arc is the one 7.5's handoff already flagged: the residual risk stays
+        concentrated in 7.8/7.9.
+  - [x] Docstrings on the new field and every new lemma: the no-source statement, plus
         ADAPTED-FROM citations with printed pages per the honesty charter. Record which route
         (a)/(b) was taken. **No task-number citations.**
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.CounterexampleElimination`, then
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.CounterexampleElimination`, then
         full `lake build`.
 - **Estimated output:** ~300-450 lines. **One agent run (H8).** If it overruns, report the exact
   remaining case and its goal state; **do not silently re-dispatch against the same target** (H6).
