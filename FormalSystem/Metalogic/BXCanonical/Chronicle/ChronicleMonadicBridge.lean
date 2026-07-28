@@ -8,6 +8,10 @@ import FormalSystem.Metalogic.WeakCanonical.Transfer
 import FormalSystem.Metalogic.WeakCanonical.Table
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsBridge
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
+import FormalSystem.Metalogic.WeakCanonical.PriorDefsDense
+import FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
+import FormalSystem.Metalogic.WeakCanonical.PriorExpressivenessDense
+import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic
 
 /-!
 # The Dense Monadic Bridge: Chronicle to `OrderedMonadicStructure` over `ℚ`
@@ -577,5 +581,536 @@ theorem chronicleMonadic_truth_correspondence_eval (fc : FrameClass) (A : Set Fo
     (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense root)
     (cantorBfmcsDense fc A h_mcs h_box_dense).evalFamily
     (cantorBfmcsDense fc A h_mcs h_box_dense).eval_family_mem φ h_sub q
+
+/-! ## Part 5: Unrestricted Until/Since coherence for the dense chronicle
+
+Reynolds §4 Corollary 1 clause 3 — *"all substitution instances of the axioms Prior-U, Prior-S
+and Sep are valid in `M`"* — quantifies over **all** substitution instances, not only over the
+subformulas of the root. Part 4's truth correspondence is closure-bounded, so Part 6 below
+re-runs it unrestricted; that needs unrestricted Until/Since coherence.
+
+It is available for free. `cantor_bfmcs_dense_restricted_fuc` / `_buc`
+(`ChronicleToCountermodelBasic.lean:755` / `:680`) are polymorphic in `root` and **discard**
+their closure-membership argument (their proofs open with `intro t φ ψ _`), so instantiating at
+`root := Formula.untl α β` — respectively `Formula.snce α β` — and discharging with
+`self_mem_subformulaClosure` recovers the unrestricted statement. This is the same **self-root
+instantiation** already used by `cantor_bfmcs_dense_limit_guard_above`
+(`ChronicleLimitGuardAbove.lean:203`) and `_below` (`ChronicleLimitGuardWitness.lean:198`); no
+chronicle declaration is modified, and the restricted originals are retained unweakened.
+
+No source: this is a Lean-level packaging step. -/
+
+/-- Unrestricted forward Until/Since coherence for `cantorBfmcsDense`, by self-root
+instantiation of `cantor_bfmcs_dense_restricted_fuc`. -/
+theorem cantor_bfmcs_dense_fuc (fc : FrameClass) (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_box_dense : Formula.box nextTop.neg ∈ A) :
+    (cantorBfmcsDense fc A h_mcs h_box_dense).ForwardUntilSinceCoherent := by
+  intro fam hfam
+  refine ⟨fun t α β h => ?_, fun t α β h => ?_⟩
+  · exact (cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense
+      (Formula.untl α β) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+  · exact (cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense
+      (Formula.snce α β) fam hfam).2 t α β (self_mem_subformulaClosure _) h
+
+/-- Unrestricted backward Until/Since coherence for `cantorBfmcsDense`, by self-root
+instantiation of `cantor_bfmcs_dense_restricted_buc`. -/
+theorem cantor_bfmcs_dense_buc (fc : FrameClass) (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_box_dense : Formula.box nextTop.neg ∈ A) :
+    (cantorBfmcsDense fc A h_mcs h_box_dense).BackwardUntilSinceCoherent := by
+  intro fam hfam
+  refine ⟨fun t α β h => ?_, fun t α β h => ?_⟩
+  · exact (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense
+      (Formula.untl α β) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+  · exact (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense
+      (Formula.snce α β) fam hfam).2 t α β (self_mem_subformulaClosure _) h
+
+/-! ## Part 6: The unrestricted (effective) truth correspondence
+
+Part 4's `chronicleMonadic_truth_correspondence` is bounded by `subformulaClosure root`: outside
+the closure an atom of `φ` need not be a predicate symbol of `mkSigFrom root`, so `TemporalTruth`
+cannot read it back as membership of `φ` itself. Reynolds' clause 3 needs *all* substitution
+instances, so this part removes the bound the only way it can be removed — by replacing `φ` on
+the MCS side with its **effective formula** `effectiveFormula` (`Transfer.lean:1004`), which
+rewrites each atom and each box-subformula through the signature round trip and leaves the
+temporal skeleton alone.
+
+This is `chronicle_temporal_truth_effective` (`Transfer.lean:1024`) transposed from
+`ChronicleAsPriorModel` over an arbitrary domain to a `BFMCS` family over `ℚ`. The five cases are
+the ones Part 4 already discharges; only the atom and box cases change (they become `Iff.rfl`,
+since the effective formula is *defined* to be the round trip), and the Until/Since cases now
+draw on Part 5 rather than on the restricted hypotheses.
+
+**ADAPTED-FROM**: `FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1024`
+(`chronicle_temporal_truth_effective`). No source: original work, like the rest of the bridge. -/
+
+/-- The chronicle bridge's effective-formula operator: `effectiveFormula` at this structure's own
+atom maps, `mkAtomMap root` (`Transfer.lean:161`, which is `Subtype.val`) and `mkAtomMapFwd root`
+(`:300`).
+
+On `subformulaClosure root` it is the identity in the sense that matters — `mkAtomMapFwd_section`
+makes the round trip identity on `root.predFormulas`, and Part 2 puts every closure atom and
+closure box-formula there — so Part 4 is the special case of Part 6 where the rewriting does
+nothing. Off the closure it renames the atoms `mkSigFrom root` cannot see, which is exactly
+Reynolds' "ignoring all the atoms which don't appear in `A₀`" (§9) applied to a substitution
+instance rather than to `A₀`. -/
+noncomputable abbrev chronicleEff (root : Formula) : Formula → Formula :=
+  effectiveFormula (mkAtomMap root) (mkAtomMapFwd root)
+
+section ChronicleEffEqs
+
+variable (root a b : Formula)
+
+@[simp] theorem chronicleEff_bot : chronicleEff root Formula.bot = Formula.bot := rfl
+
+@[simp] theorem chronicleEff_imp :
+    chronicleEff root (a.imp b) = (chronicleEff root a).imp (chronicleEff root b) := rfl
+
+@[simp] theorem chronicleEff_untl :
+    chronicleEff root (Formula.untl a b)
+      = Formula.untl (chronicleEff root a) (chronicleEff root b) := rfl
+
+@[simp] theorem chronicleEff_snce :
+    chronicleEff root (Formula.snce a b)
+      = Formula.snce (chronicleEff root a) (chronicleEff root b) := rfl
+
+/-- `chronicleEff` fixes `⊤`, since `Formula.top` is `⊥ → ⊥`. -/
+@[simp] theorem chronicleEff_top : chronicleEff root Formula.top = Formula.top := rfl
+
+/-- `chronicleEff` commutes with negation, since `Formula.neg` is `· → ⊥`. -/
+@[simp] theorem chronicleEff_neg : chronicleEff root a.neg = (chronicleEff root a).neg := rfl
+
+/-- `chronicleEff` commutes with conjunction. -/
+@[simp] theorem chronicleEff_and :
+    chronicleEff root (Formula.and a b)
+      = Formula.and (chronicleEff root a) (chronicleEff root b) := rfl
+
+/-- `chronicleEff` commutes with disjunction. -/
+@[simp] theorem chronicleEff_or :
+    chronicleEff root (Formula.or a b)
+      = Formula.or (chronicleEff root a) (chronicleEff root b) := rfl
+
+/-- `chronicleEff` commutes with `F`, since `Formula.someFuture` is `U(·,⊤)`. -/
+@[simp] theorem chronicleEff_someFuture :
+    chronicleEff root a.someFuture = (chronicleEff root a).someFuture := rfl
+
+/-- `chronicleEff` commutes with `P`, since `Formula.somePast` is `S(·,⊤)`. -/
+@[simp] theorem chronicleEff_somePast :
+    chronicleEff root a.somePast = (chronicleEff root a).somePast := rfl
+
+/-- `chronicleEff` commutes with `K⁺`, since `Formula.kPlus` is `¬U(⊤,¬·)`
+(`Syntax/Formula.lean:180`). This is what lets the `Axiom.prior_U_gap` and `Axiom.sep` instances
+be taken at the effective formula rather than at the original. -/
+@[simp] theorem chronicleEff_kPlus :
+    chronicleEff root (Formula.kPlus a) = Formula.kPlus (chronicleEff root a) := rfl
+
+/-- `chronicleEff` commutes with `K⁻`, since `Formula.kMinus` is `¬S(⊤,¬·)`
+(`Syntax/Formula.lean:193`). -/
+@[simp] theorem chronicleEff_kMinus :
+    chronicleEff root (Formula.kMinus a) = Formula.kMinus (chronicleEff root a) := rfl
+
+end ChronicleEffEqs
+
+/--
+**Unrestricted truth correspondence for the dense monadic bridge.**
+
+For **every** formula `φ` — no closure hypothesis — temporal truth of `φ` at `q` in
+`chronicleMonadicStructureOf root fam` holds exactly when the *effective* formula
+`chronicleEff root φ` is in `fam.mcs q`.
+
+This is what Part 4 cannot give and what Reynolds' clause 3 requires. Part 4 remains the
+statement later phases use when they are inside the closure, since there the effective rewriting
+is invisible; this is the statement Parts 7 and 8 use.
+-/
+theorem chronicleMonadic_truth_effective {fc : FrameClass}
+    (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_fuc : B.ForwardUntilSinceCoherent)
+    (h_buc : B.BackwardUntilSinceCoherent)
+    (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families)
+    (φ : Formula) (q : Rat) :
+    TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) q φ ↔
+      chronicleEff root φ ∈ fam.mcs q := by
+  induction φ generalizing q with
+  | atom a => exact Iff.rfl
+  | bot =>
+    simp only [TemporalTruth, chronicleEff_bot]
+    constructor
+    · intro h; exact h.elim
+    · intro h_mem
+      exfalso
+      have h_cons := (fam.is_mcs q).1
+      have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
+        DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+      exact h_cons [Formula.bot] (fun psi hpsi => by
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hpsi
+        rw [hpsi]; exact h_mem) ⟨h_deriv⟩
+  | imp ψ χ ihψ ihχ =>
+    simp only [TemporalTruth, chronicleEff_imp]
+    have h_mcs := fam.is_mcs q
+    constructor
+    · intro h_truth_imp
+      rcases SetMaximalConsistent.negation_complete h_mcs
+          ((chronicleEff root ψ).imp (chronicleEff root χ)) with h_imp | h_neg_imp
+      · exact h_imp
+      · exfalso
+        have h_ψ_mcs : chronicleEff root ψ ∈ fam.mcs q :=
+          SetMaximalConsistent.closed_under_derivation h_mcs
+            [((chronicleEff root ψ).imp (chronicleEff root χ)).neg]
+            (by simp [h_neg_imp])
+            (DerivationTree.modus_ponens _ _ _
+              (DerivationTree.weakening [] _ _
+                (neg_imp_antecedent (chronicleEff root ψ) (chronicleEff root χ))
+                (by intro; simp))
+              (DerivationTree.assumption _ _ (by simp)))
+        have h_neg_χ_mcs : (chronicleEff root χ).neg ∈ fam.mcs q :=
+          SetMaximalConsistent.closed_under_derivation h_mcs
+            [((chronicleEff root ψ).imp (chronicleEff root χ)).neg]
+            (by simp [h_neg_imp])
+            (DerivationTree.modus_ponens _ _ _
+              (DerivationTree.weakening [] _ _
+                (neg_imp_neg_consequent (chronicleEff root ψ) (chronicleEff root χ))
+                (by intro; simp))
+              (DerivationTree.assumption _ _ (by simp)))
+        have h_χ_mcs : chronicleEff root χ ∈ fam.mcs q :=
+          (ihχ q).mp (h_truth_imp ((ihψ q).mpr h_ψ_mcs))
+        exact set_consistent_not_both (fam.is_mcs q).1 _ h_χ_mcs h_neg_χ_mcs
+    · intro h_imp h_ψ_true
+      exact (ihχ q).mpr
+        (SetMaximalConsistent.implication_property h_mcs h_imp ((ihψ q).mp h_ψ_true))
+  | box ψ _ih => exact Iff.rfl
+  | untl α β ihα ihβ =>
+    simp only [TemporalTruth, chronicleEff_untl]
+    obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
+    obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
+    constructor
+    · rintro ⟨s, h_qs, h_α_s, h_β_guard⟩
+      exact h_bwd_U q _ _ ⟨s, h_qs, (ihα s).mp h_α_s,
+        fun r h_qr h_rs => (ihβ r).mp (h_β_guard r h_qr h_rs)⟩
+    · intro h_U
+      obtain ⟨s, h_qs, h_α_s, h_β_guard⟩ := h_fwd_U q _ _ h_U
+      exact ⟨s, h_qs, (ihα s).mpr h_α_s,
+        fun r h_qr h_rs => (ihβ r).mpr (h_β_guard r h_qr h_rs)⟩
+  | snce α β ihα ihβ =>
+    simp only [TemporalTruth, chronicleEff_snce]
+    obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
+    obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
+    constructor
+    · rintro ⟨s, h_sq, h_α_s, h_β_guard⟩
+      exact h_bwd_S q _ _ ⟨s, h_sq, (ihα s).mp h_α_s,
+        fun r h_sr h_rq => (ihβ r).mp (h_β_guard r h_sr h_rq)⟩
+    · intro h_S
+      obtain ⟨s, h_sq, h_α_s, h_β_guard⟩ := h_fwd_S q _ _ h_S
+      exact ⟨s, h_sq, (ihα s).mpr h_α_s,
+        fun r h_sr h_rq => (ihβ r).mpr (h_β_guard r h_sr h_rq)⟩
+
+/-! ## Part 7: Reynolds §4 Corollary 1 clause 3 — Prior-U, Prior-S and Sep
+
+The corollary is quoted here character-for-character from the local corpus
+(`reynolds_1992/sec02_3-irr.md`, "**Corollary 1.**"; the plan records this as printed p.174):
+
+> Because it says so in $\Gamma$, all the substitution instances of the other axioms hold
+> everywhere so we have...
+>
+> **Corollary 1.** *For every **US/R**-consistent set $\Gamma$ of formulas, there is a temporal
+> structure $M$ such that*
+>
+> 1. *the flow of time of $M$ is the rationals,*
+> 2. *for all $A \in \Gamma$, $M \models A(0)$ and*
+> 3. *all substitution instances of the axioms Prior-U, Prior-S and Sep are valid in $M$.*
+
+Clause 1 is `chronicleMonadicStructureOf`'s carrier. Clause 3 is this part. The route is
+Reynolds' own one-sentence justification, *"Because it says so in `Γ`, all the substitution
+instances of the other axioms hold everywhere"*, executed in Lean:
+
+1. `Axiom.prior_U_gap`, `Axiom.prior_S_gap` and `Axiom.sep` each have
+   `minFrameClass = FrameClass.Dedekind` (`Axioms.lean:524-526`), so under
+   `hfc : FrameClass.Dedekind ≤ fc` every substitution instance is a `DerivationTree fc []`
+   theorem;
+2. `theorem_in_mcs` (`Core/MaximalConsistent.lean:491`) puts it in the family's MCS at *every*
+   rational — Reynolds' "hold everywhere";
+3. Part 6 reads it back semantically, and `kPlus_formula_correct` / `kMinus_formula_correct`
+   (`Kamp/KPlusFaithful.lean:150` / `:170`) read the `K⁺` / `K⁻` the axioms are stated with.
+
+Step 3's bridge lemma is the one the plan names: `Axiom.prior_U_gap` is stated with
+`Formula.kPlus` (`Axioms.lean:377`; `Syntax/Formula.lean:180`), and `kPlus_formula_correct` is
+what reads it semantically. `kplusFormula` (`Kamp/PriorINF.lean:~93`) is **not** substituted for
+it — the two differ by a conjunct and the name-collision warning at `Formula.lean:163-179` says
+so.
+
+Reynolds gives no argument beyond the quoted sentence, so the Lean execution of steps 1-3 is
+original glue on a sourced statement. -/
+
+/-- **Semantic Sep** — Reynolds 1992, printed p.168:
+
+```
+Sep:   K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)
+```
+
+the semantic reading of `Axiom.sep` (`ProofSystem/Axioms.lean:398`), in the idiom
+`PriorDefsDense.lean` uses for `SemanticPriorU` / `SemanticPriorS`. Reynolds defers its validity
+proof: *"we investigate this axiom in more detail in section 7 and defer proving its validity in
+ℝ until lemma 10 there"* (printed p.168, quoted in the `Axiom.sep` docstring). **Lemma 10 is not
+re-derived here** — this development obtains Sep the way Corollary 1 obtains it, from the axiom's
+membership in the MCS, not from a validity argument over ℝ.
+
+Each `K⁺` / `K⁻` is read at `kplusOpen` / `kminusOpen` (`Kamp/KPlusFaithful.lean`), the faithful
+`Prop`-level reading of `Formula.kPlus` / `Formula.kMinus` that `kPlus_formula_correct` /
+`kMinus_formula_correct` certify — **not** at this tree's stronger `kplus` / `kminus`, which
+carry an extra conjunct that is in neither Reynolds nor Rabinovich.
+
+**This is `Axiom.sep`'s first consumer on any completeness route in this repository.** -/
+def SemanticSep {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds) : Prop :=
+  ∀ (t : M.carrier) (p : Formula),
+    Kamp.kplusOpen M atomMap p t →
+    ¬ Kamp.kplusOpen M atomMap (Formula.and p (Formula.untl p p.neg)) t →
+    Kamp.kplusOpen M atomMap (Formula.and (Formula.kPlus p) (Formula.kMinus p)) t
+
+/-- **The bridge structure satisfies Prior-U** — Reynolds §4 Corollary 1 clause 3, first
+conjunct: *"all substitution instances of the axioms Prior-U ... are valid in `M`"*.
+
+Every substitution instance of `Axiom.prior_U_gap` is an `fc`-theorem for `fc ≥ Dedekind`, hence
+in `fam.mcs t` for every rational `t`; Part 6 reads it back as `SemanticPriorU`. The instance is
+taken at the **effective** formula `chronicleEff root p`, which is what makes the statement hold
+for every `p` rather than only for `p ∈ subformulaClosure root`. -/
+theorem chronicleMonadic_semanticPriorU {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
+    (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_fuc : B.ForwardUntilSinceCoherent)
+    (h_buc : B.BackwardUntilSinceCoherent)
+    (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) :
+    SemanticPriorU (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) := by
+  have corr := chronicleMonadic_truth_effective B root h_fuc h_buc fam hfam
+  intro t p h_stretch h_future
+  obtain ⟨s₀, hts₀, h_p_on⟩ := h_stretch
+  obtain ⟨u₀, htu₀, h_np_u₀⟩ := h_future
+  -- The antecedent `U(⊤,p) ∧ F¬p`, semantically.
+  have h_ant : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
+      (Formula.and (Formula.untl Formula.top p) p.neg.someFuture) := by
+    rw [Kamp.temporal_truth_and]
+    refine ⟨⟨s₀, hts₀, Kamp.temporal_truth_top _ _ _, h_p_on⟩,
+      ⟨u₀, htu₀, (Kamp.temporal_truth_neg _ _ _ _).mpr h_np_u₀,
+        fun r _ _ => Kamp.temporal_truth_top _ _ _⟩⟩
+  -- ... transported to the MCS at `t`.
+  have h_ant_mcs : Formula.and (Formula.untl Formula.top (chronicleEff root p))
+      (chronicleEff root p).neg.someFuture ∈ fam.mcs t := by
+    have h := (corr _ t).mp h_ant
+    simpa using h
+  -- The axiom instance, at the effective formula.
+  have h_thm : Formula.untl (Formula.or (chronicleEff root p).neg
+      (Formula.kPlus (chronicleEff root p).neg)) (chronicleEff root p) ∈ fam.mcs t :=
+    SetMaximalConsistent.implication_property (fam.is_mcs t)
+      (theorem_in_mcs (fam.is_mcs t)
+        (DerivationTree.axiom [] _ (Axiom.prior_U_gap (chronicleEff root p)) hfc))
+      h_ant_mcs
+  -- ... read back semantically.
+  have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
+      (Formula.untl (Formula.or p.neg (Formula.kPlus p.neg)) p) := by
+    refine (corr _ t).mpr ?_
+    simpa using h_thm
+  obtain ⟨s, hts, h_disj, h_guard⟩ := h_truth
+  refine ⟨s, hts, h_guard, ?_⟩
+  rcases (Kamp.temporal_truth_or _ _ _ _ _).mp h_disj with h_neg | h_kp
+  · exact Or.inl ((Kamp.temporal_truth_neg _ _ _ _).mp h_neg)
+  · -- `K⁺(¬p)(s)`: `¬p` accumulates from above at `s`. Split on whether `p` holds at `s`.
+    have h_open : Kamp.kplusOpen (chronicleMonadicStructureOf root fam)
+        (mkAtomMapFwd root) p.neg s := (Kamp.kPlus_formula_correct _ _ _ _).mp h_kp
+    by_cases h_ps : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) s p
+    · refine Or.inr ⟨h_ps, fun u hsu => ?_⟩
+      obtain ⟨r, hsr, hru, hr⟩ := h_open u hsu
+      exact ⟨r, hsr, hru, (Kamp.temporal_truth_neg _ _ _ _).mp hr⟩
+    · exact Or.inl h_ps
+
+/-- **The bridge structure satisfies Prior-S** — Reynolds §4 Corollary 1 clause 3, second
+conjunct. The past mirror of `chronicleMonadic_semanticPriorU`, at `Axiom.prior_S_gap` and
+`kMinus_formula_correct`. -/
+theorem chronicleMonadic_semanticPriorS {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
+    (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_fuc : B.ForwardUntilSinceCoherent)
+    (h_buc : B.BackwardUntilSinceCoherent)
+    (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) :
+    SemanticPriorS (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) := by
+  have corr := chronicleMonadic_truth_effective B root h_fuc h_buc fam hfam
+  intro t p h_stretch h_past
+  obtain ⟨s₀, hs₀t, h_p_on⟩ := h_stretch
+  obtain ⟨u₀, hu₀t, h_np_u₀⟩ := h_past
+  have h_ant : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
+      (Formula.and (Formula.snce Formula.top p) p.neg.somePast) := by
+    rw [Kamp.temporal_truth_and]
+    refine ⟨⟨s₀, hs₀t, Kamp.temporal_truth_top _ _ _, h_p_on⟩,
+      ⟨u₀, hu₀t, (Kamp.temporal_truth_neg _ _ _ _).mpr h_np_u₀,
+        fun r _ _ => Kamp.temporal_truth_top _ _ _⟩⟩
+  have h_ant_mcs : Formula.and (Formula.snce Formula.top (chronicleEff root p))
+      (chronicleEff root p).neg.somePast ∈ fam.mcs t := by
+    have h := (corr _ t).mp h_ant
+    simpa using h
+  have h_thm : Formula.snce (Formula.or (chronicleEff root p).neg
+      (Formula.kMinus (chronicleEff root p).neg)) (chronicleEff root p) ∈ fam.mcs t :=
+    SetMaximalConsistent.implication_property (fam.is_mcs t)
+      (theorem_in_mcs (fam.is_mcs t)
+        (DerivationTree.axiom [] _ (Axiom.prior_S_gap (chronicleEff root p)) hfc))
+      h_ant_mcs
+  have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
+      (Formula.snce (Formula.or p.neg (Formula.kMinus p.neg)) p) := by
+    refine (corr _ t).mpr ?_
+    simpa using h_thm
+  obtain ⟨s, hst, h_disj, h_guard⟩ := h_truth
+  refine ⟨s, hst, h_guard, ?_⟩
+  rcases (Kamp.temporal_truth_or _ _ _ _ _).mp h_disj with h_neg | h_km
+  · exact Or.inl ((Kamp.temporal_truth_neg _ _ _ _).mp h_neg)
+  · have h_open : Kamp.kminusOpen (chronicleMonadicStructureOf root fam)
+        (mkAtomMapFwd root) p.neg s := (Kamp.kMinus_formula_correct _ _ _ _).mp h_km
+    by_cases h_ps : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) s p
+    · refine Or.inr ⟨h_ps, fun u hus => ?_⟩
+      obtain ⟨r, hur, hrs, hr⟩ := h_open u hus
+      exact ⟨r, hur, hrs, (Kamp.temporal_truth_neg _ _ _ _).mp hr⟩
+    · exact Or.inl h_ps
+
+/-- **The bridge structure satisfies Sep** — Reynolds §4 Corollary 1 clause 3, third conjunct:
+*"all substitution instances of the axioms ... and Sep are valid in `M`"*.
+
+Same route as Prior-U and Prior-S. `Axiom.sep`'s soundness is already landed
+(`Axioms.lean:398`, `minFrameClass = Dedekind`); Reynolds' Lemma 10 (printed p.184) is **not**
+re-derived — this obtains Sep from the axiom's membership in the MCS, exactly as Corollary 1
+does. -/
+theorem chronicleMonadic_semanticSep {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
+    (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_fuc : B.ForwardUntilSinceCoherent)
+    (h_buc : B.BackwardUntilSinceCoherent)
+    (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) :
+    SemanticSep (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) := by
+  have corr := chronicleMonadic_truth_effective B root h_fuc h_buc fam hfam
+  intro t p h_kp h_not_kp
+  -- The antecedent `K⁺p ∧ ¬K⁺(p ∧ U(p,¬p))`, semantically.
+  have h_ant : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
+      (Formula.and (Formula.kPlus p)
+        (Formula.kPlus (Formula.and p (Formula.untl p p.neg))).neg) := by
+    rw [Kamp.temporal_truth_and]
+    refine ⟨(Kamp.kPlus_formula_correct _ _ _ _).mpr h_kp, ?_⟩
+    rw [Kamp.temporal_truth_neg]
+    exact fun h => h_not_kp ((Kamp.kPlus_formula_correct _ _ _ _).mp h)
+  have h_ant_mcs : Formula.and (Formula.kPlus (chronicleEff root p))
+      (Formula.kPlus (Formula.and (chronicleEff root p)
+        (Formula.untl (chronicleEff root p) (chronicleEff root p).neg))).neg ∈ fam.mcs t := by
+    have h := (corr _ t).mp h_ant
+    simpa using h
+  have h_thm : Formula.kPlus (Formula.and (Formula.kPlus (chronicleEff root p))
+      (Formula.kMinus (chronicleEff root p))) ∈ fam.mcs t :=
+    SetMaximalConsistent.implication_property (fam.is_mcs t)
+      (theorem_in_mcs (fam.is_mcs t)
+        (DerivationTree.axiom [] _ (Axiom.sep (chronicleEff root p)) hfc))
+      h_ant_mcs
+  have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
+      (Formula.kPlus (Formula.and (Formula.kPlus p) (Formula.kMinus p))) := by
+    refine (corr _ t).mpr ?_
+    simpa using h_thm
+  exact (Kamp.kPlus_formula_correct _ _ _ _).mp h_truth
+
+/-! ## Part 8: The packaged dense Prior-Sep structure
+
+Reynolds' §9 hands Doets' theorem one object: *"The flow of time of `M` is countable, dense and
+without end points and D1 and D2 follow from the theorems 4 and 5"* (§9, quoted in the module
+docstring), where `M` carries Corollary 1 clause 3. `IsDensePriorSepStructure` is that object,
+and `chronicleIsDensePriorSepStructure` is the chronicle's instance of it — the exact input
+Blocks F, G and H consume. -/
+
+/-- **A countable, dense, endpointless Prior structure satisfying Sep** — the conjunction
+Reynolds' §9 hands to Theorems 4 and 5 (D1 and D2): clause 1 of Corollary 1 (countable dense
+endpointless flow, §9: *"The flow of time of `M` is countable, dense and without end points"*)
+together with clause 3 (Prior-U, Prior-S, Sep).
+
+`Countable` / `DenselyOrdered` / `NoMaxOrder` / `NoMinOrder` are carried as fields rather than as
+instance hypotheses so that the whole package is one `Prop` that later phases can name, pass and
+destructure without instance-resolution games on `OrderedMonadicStructure.carrierOrder`. -/
+structure IsDensePriorSepStructure {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) : Prop where
+  /-- Reynolds §9: the flow is countable. -/
+  countable : Countable M.carrier
+  /-- Reynolds §9: the flow is dense. -/
+  denselyOrdered : DenselyOrdered M.carrier
+  /-- Reynolds §9: the flow has no last point. -/
+  noMax : NoMaxOrder M.carrier
+  /-- Reynolds §9: the flow has no first point. -/
+  noMin : NoMinOrder M.carrier
+  /-- Reynolds §4 Corollary 1 clause 3: all substitution instances of Prior-U are valid. -/
+  priorU : SemanticPriorU M atomMap
+  /-- Reynolds §4 Corollary 1 clause 3: all substitution instances of Prior-S are valid. -/
+  priorS : SemanticPriorS M atomMap
+  /-- Reynolds §4 Corollary 1 clause 3: all substitution instances of Sep are valid. -/
+  sep : SemanticSep M atomMap
+
+/-- **The chronicle bridge is a countable dense endpointless Prior structure satisfying Sep.**
+
+Reynolds §4 Corollary 1 in full, at this repository's realization of it: clause 1 from `ℚ`,
+clause 3 from Part 7. Clause 2 (*"for all `A ∈ Γ`, `M ⊨ A(0)`"*) is Part 4's truth
+correspondence at `q = 0` and is not repeated here.
+
+The Until/Since coherence hypotheses are discharged at the chronicle by Part 5, so this
+statement's only hypotheses are the ones `cantorBfmcsDense` itself needs plus
+`hfc : FrameClass.Dedekind ≤ fc`, which is exactly the frame class at which the three axioms
+become available. -/
+theorem chronicleIsDensePriorSepStructure {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula) :
+    IsDensePriorSepStructure
+      (chronicleMonadicStructure fc A h_mcs h_box_dense root) (mkAtomMapFwd root) where
+  countable := chronicleMonadic_carrier_countable root _
+  denselyOrdered := chronicleMonadic_carrier_denselyOrdered root _
+  noMax := chronicleMonadic_carrier_noMaxOrder root _
+  noMin := chronicleMonadic_carrier_noMinOrder root _
+  priorU := chronicleMonadic_semanticPriorU hfc _ root
+    (cantor_bfmcs_dense_fuc fc A h_mcs h_box_dense)
+    (cantor_bfmcs_dense_buc fc A h_mcs h_box_dense) _
+    (cantorBfmcsDense fc A h_mcs h_box_dense).eval_family_mem
+  priorS := chronicleMonadic_semanticPriorS hfc _ root
+    (cantor_bfmcs_dense_fuc fc A h_mcs h_box_dense)
+    (cantor_bfmcs_dense_buc fc A h_mcs h_box_dense) _
+    (cantorBfmcsDense fc A h_mcs h_box_dense).eval_family_mem
+  sep := chronicleMonadic_semanticSep hfc _ root
+    (cantor_bfmcs_dense_fuc fc A h_mcs h_box_dense)
+    (cantor_bfmcs_dense_buc fc A h_mcs h_box_dense) _
+    (cantorBfmcsDense fc A h_mcs h_box_dense).eval_family_mem
+
+/-! ### Anti-vacuity: the witness Phase 14's hypothesis wanted
+
+`uSExpressivelyCompleteOverDensePrior` (`WeakCanonical/PriorExpressivenessDense.lean:302`) is
+Reynolds §5 Theorem 3 relativized to the *dense* Prior hypotheses: its witness formula's
+correctness clause binds `SemanticPriorU M atomMap` and `SemanticPriorS M atomMap`. Until this
+part, the only structures known to satisfy that pair were Phase 9's `denseWindowFlow` and the
+Dedekind-complete flows of `semanticPriorU_of_flowGLB` — none of them the countable dense
+chronicle the completeness route actually runs on.
+
+The application below closes that gap: the chronicle bridge satisfies the hypothesis pair, so
+expressive completeness is available *at the structure Reynolds' §6 lemmas will be run on*.
+Phases 17-22 consume it in exactly this form.
+
+**Naming note.** The plan cites this development's expressive-completeness result as
+`kampDedekindExpressiveCompleteness`. **No declaration of that name exists in the tree.** The
+landed names are `KampFaithfulExpressiveCompleteness` (the obligation type,
+`PriorExpressivenessDense.lean:170`) and `kampFaithfulExpressiveCompleteness_open` (its
+inhabitant, `:277`), composed into `uSExpressivelyCompleteOverDensePrior` (`:302`), which is what
+is used here. -/
+
+/-- **Expressive completeness at the chronicle bridge** — `uSExpressivelyCompleteOverDensePrior`
+with its two hypotheses discharged by Part 7.
+
+For every monadic formula `psi` of one free variable over the finite signature `mkSigFrom root`
+there is a temporal formula `A` true at exactly the points where `psi` is satisfied, *in the
+chronicle structure itself*. This is the form Reynolds' §6 Lemma 2 applies to `rhoFormula ε`. -/
+noncomputable def chronicleMonadic_expressiveCompleteness {fc : FrameClass}
+    (hfc : FrameClass.Dedekind ≤ fc)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula)
+    (psi : MonadicFormula (mkSigFrom root) 1) :
+    { F : Formula //
+      ∀ t : (chronicleMonadicStructure fc A h_mcs h_box_dense root).carrier,
+        eval (chronicleMonadicStructure fc A h_mcs h_box_dense root) (fun _ => t) psi ↔
+        TemporalTruth (chronicleMonadicStructure fc A h_mcs h_box_dense root)
+          (mkAtomMapFwd root) t F } :=
+  let H := uSExpressivelyCompleteOverDensePrior (mkAtomMapFwd root)
+    (mkAtomMapFwd_surj root) psi
+  let hpack := chronicleIsDensePriorSepStructure hfc A h_mcs h_box_dense root
+  ⟨H.val, fun t => H.property _ hpack.priorU hpack.priorS t⟩
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle

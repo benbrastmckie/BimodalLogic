@@ -2313,7 +2313,7 @@ modules** as the genuine remainder. That is the number Phase 14.3 inherits.
 - **Depends on**: — (may run in parallel with Phase 10.1).
 - **Timing**: 7 hours.
 
-### Phase 16: The chronicle structure is a dense Prior structure satisfying Sep [NOT STARTED]
+### Phase 16: The chronicle structure is a dense Prior structure satisfying Sep [COMPLETED]
 
 - **Goal**: Reynolds §4 Corollary 1 clause 3 (printed p.174), in the monadic idiom: *"all
   substitution instances of the axioms Prior-U, Prior-S and Sep are valid in `M`"* — for the
@@ -2321,7 +2321,7 @@ modules** as the genuine remainder. That is the number Phase 14.3 inherits.
 - **Owns**: `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean` (extends
   Phase 15).
 - **Tasks**:
-  - [ ] Prove `chronicleMonadic_semanticPriorU`: the structure satisfies `SemanticPriorU`. Route:
+  - [x] Prove `chronicleMonadic_semanticPriorU`: the structure satisfies `SemanticPriorU`. Route:
         `Axiom.prior_U_gap` has `minFrameClass = .Dedekind`, so at `fc := FrameClass.Dedekind` every
         substitution instance is a theorem, hence in every MCS (`theorem_in_mcs`,
         `MaximalConsistent.lean:491`), hence true at every point by Phase 15's truth correspondence.
@@ -2329,19 +2329,37 @@ modules** as the genuine remainder. That is the number Phase 14.3 inherits.
         `Formula.kPlus` (`Axioms.lean:377`; `Syntax/Formula.lean:180`), and Phase 10.1's bridge
         lemma is what reads it semantically. Cite the bridge by name; do not substitute
         `kplusFormula`.**
-  - [ ] Prove `chronicleMonadic_semanticPriorS` from `Axiom.prior_S_gap`, dually.
-  - [ ] Define `SemanticSep` (the semantic reading of `Axiom.sep`, `Axioms.lean:390`) and prove
+        *(deviation: altered — the plan's route ends "hence true at every point by Phase 15's truth
+        correspondence", but `chronicleMonadic_truth_correspondence` is bounded by
+        `subformulaClosure root` while `SemanticPriorU` quantifies over ALL formulas, so it cannot
+        close the step. The plan's three-move route — axiom at `.Dedekind` → `theorem_in_mcs` →
+        semantics — is executed unchanged; what was added is the machinery the last move needed:
+        `cantor_bfmcs_dense_fuc`/`_buc` (unrestricted Until/Since coherence, by self-root
+        instantiation of the existing restricted theorems, which discard their closure argument)
+        and `chronicleMonadic_truth_effective` (the same correspondence at `effectiveFormula`,
+        `Transfer.lean:1004`, with no closure bound). No named declaration was skipped, renamed or
+        substituted; Phase 15's closure-bounded correspondence is retained unweakened.)*
+  - [x] Prove `chronicleMonadic_semanticPriorS` from `Axiom.prior_S_gap`, dually.
+  - [x] Define `SemanticSep` (the semantic reading of `Axiom.sep`, `Axioms.lean:390`) and prove
         `chronicleMonadic_semanticSep` the same way. **This is `Axiom.sep`'s first consumer on any
         completeness route in this repository.** Its soundness is already landed; Reynolds' Lemma 10
         (printed p.184) is **not** re-derived.
-  - [ ] Land the packaged `chronicleIsDensePriorSepStructure` bundling all three plus countability,
+  - [x] Land the packaged `chronicleIsDensePriorSepStructure` bundling all three plus countability,
         density and endpointlessness — the exact input Blocks F, G and H consume.
-  - [ ] Docstrings cite `Reynolds 1992, §4 Corollary 1, printed p.174` and `Sep, printed p.168`
-        (character-for-character, as the landed `Axiom.sep` docstring already does).
-  - [ ] **Anti-vacuity**: this phase's output *is* the witness Phase 14's hypothesis wanted. Record
+  - [x] Docstrings cite `Reynolds 1992, §4 Corollary 1, printed p.174` and `Sep, printed p.168`
+        (character-for-character, as the landed `Axiom.sep` docstring already does). Corollary 1
+        clauses 1-3 are block-quoted verbatim from the local corpus
+        (`reynolds_1992/sec02_3-irr.md`) in the Part 7 section docstring.
+  - [x] **Anti-vacuity**: this phase's output *is* the witness Phase 14's hypothesis wanted. Record
         the cross-reference explicitly; if Phase 14 has landed, land the application as a named lemma
-        here.
-  - [ ] `#print axioms`; frozen files byte-identical; full `lake build` green.
+        here. *(landed as `chronicleMonadic_expressiveCompleteness`; note the plan's
+        `kampDedekindExpressiveCompleteness` does not exist in the tree — the landed names are
+        `KampFaithfulExpressiveCompleteness` / `kampFaithfulExpressiveCompleteness_open`, composed
+        into `uSExpressivelyCompleteOverDensePrior`, which is what the application uses)*
+  - [x] `#print axioms`; frozen files byte-identical; full `lake build` green. *(all eight new
+        top-level declarations at `[propext, Classical.choice, Quot.sound]`; `sorryAx` absent
+        despite the `Transfer.lean` import. Only `ChronicleMonadicBridge.lean` modified. Full
+        `lake build` green at 1927 jobs.)*
 - **Estimated output**: ~350 lines.
 - **Done when**: all four declarations sorry-free and axiom-clean; the cross-reference to Phase 14's
   hypothesis is landed or explicitly deferred with a reason; frozen files byte-identical.
