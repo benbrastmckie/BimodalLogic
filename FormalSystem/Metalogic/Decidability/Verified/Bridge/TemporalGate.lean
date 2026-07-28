@@ -38,18 +38,20 @@ upper ray, and puts **nothing** strictly between consecutive placed points.
   at that same label. Every carrier point above an upper-ray point is on the same ray and reads
   the same label, so the witness has nowhere else to be. This is `RayRegionProbe.lean`'s `rayUp`.
 * `snceNegPast`, `snceRaySelf` — the past-directed mirrors, at the lower ray.
-* `untlNegRayLow` — a **negative** until asserted at its world's **lower-ray** label denies its
-  event at *every* known time. This is Correction 12's negative residual, and it is the one row
-  here whose reach is the whole of `b.knownTimes` rather than a slice of it. It has to be: a
-  point below every placed point sees, above it, placed points and both rays' labels, and all
-  three of those are known times, whereas `untlNegFuture` reaches only the known times strictly
-  *after* the ray label — not all of them, because `regionLabel` picks the first eligible
-  candidate and not the order-minimal one. Measured `true` on eleven of twelve rows, the single
-  `false` sitting on a row `regionLabelCheck` already rejects; the strictly weaker "at its own
-  label only" variant fails on exactly that same row, so the full reach costs nothing anywhere
-  in the corpus.
-* `snceNegRayUp` — the mirror, at the **upper** ray. The rays swap between the two operators:
-  `untl` needs its extra row below and `snce` needs its above.
+* `untlNegRegionUp` — a **negative** until asserted at **any** region's label denies its event
+  everywhere that region can see above itself: at the known times whose rank puts them at or above
+  the region, and at the labels of the regions at or above it. This is Correction 12's negative
+  residual, generalised from the lower ray to an arbitrary region, and it is the one row here
+  whose reach is not a `strictBefore` slice. It has to be: `untlNegFuture` reaches only the known
+  times strictly *after* the label, which is not all of them, because `regionLabel` picks the
+  first eligible candidate and not the order-minimal one. The two reaches are separate because a
+  region label's rank says nothing about its region index. Measured in the exact adopted form
+  (column `uNRU`) beside the `uRL` it subsumes: `true` on all eight rows the gate accepts, its
+  single `false` sitting on the row where `uRL` already fails and `regionLabelCheck` already
+  rejects — so generalising from `j = 0` costs nothing anywhere in the corpus.
+* `snceNegRegionDn` — the mirror, reaching **below** the region. The rays swap between the two
+  operators: the `untl` row's free instance is the lower ray (`j = 0`, rank condition vacuous) and
+  the `snce` row's is the upper ray (`j = n`, rank condition derived from `branchRank_lt_length`).
 * `untlPosGuardedWitness` — a **positive** until has a witness strictly after its own time, with
   the guard at every known time strictly between. This is what the positive `untl` case needs at a
   **placed** point, and it is what replaced the earliest-witness iteration the design once owed:
@@ -153,32 +155,57 @@ def snceRaySelf (b : Branch) (ord : TimeOrdering) : Bool :=
         else true
     | _, _ => true
 
-/-- **Row 5.** A negative until asserted at its world's **lower-ray** label denies its event at
-*every* known time of that world — its own label included.
+/-- **Row 5.** A negative until asserted at *any* region label of its world denies its event
+everywhere that region can see above itself.
 
-This is Correction 12's negative residual, and the "every known time" is not slack. A carrier
-point below every placed point reads `regionLabel … 0`; each point above it is a placed point,
-another lower-ray point (same label), or an upper-ray point (`regionLabel … n`), and all three of
-those are known times. `untlNegFuture` reaches only the known times *strictly after* the ray
-label, which is not all of them: `regionLabel` picks the first eligible candidate, not the
-order-minimal one. -/
-def untlNegRayLow (b : Branch) (ord : TimeOrdering) : Bool :=
+This is Correction 12's negative residual, generalised from the lower ray to an arbitrary region.
+The two reaches are the two shapes a point above a non-placed evaluation point can have, and they
+are separate because a region label's *rank* says nothing about its region *index*:
+
+* a **placed** point above region `j` — its time `v` satisfies `j ≤ branchRank b ord v`, which is
+  exactly "`v` lies above every point of region `j`" (`branchRank_lt_cutIndex`, contrapositive);
+* a **non-placed** point above region `j` — it sits in some region `j' ≥ j` and reads
+  `regionLabel … j'`, whose rank bears no relation to `j'`, because `regionLabel` picks the first
+  eligible candidate and not the order-minimal one.
+
+At `j = 0` both reaches are unrestricted, so the first conjunct alone is the old lower-ray row
+verbatim and `untlNegRay_low` below is recovered as its `j = 0` instance — this row **subsumes**
+that one rather than sitting beside it, which is why the gate is still ten rows. `untlNegFuture`
+(row 1) reaches only the known times *strictly after* the label, which is not all of them.
+
+Measured in this exact form (`Tests/BimodalTest/TemporalWitnessProbe.lean`, column `uNRU`) beside
+the `uRL` it strengthens, with the two reaches also reported separately: `true` on all eight rows
+the gate accepts, and its single `false` is the row on which `uRL` already fails. -/
+def untlNegRegionUp (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
     | .neg, .untl φ _ =>
-        if sf.label.time == regionLabel b ord sf.label.world 0 then
-          b.knownTimes.all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
-        else true
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            (b.knownTimes.all fun v =>
+              if j ≤ branchRank b ord v then b.hasNegAt φ ⟨sf.label.world, v⟩ else true) &&
+            ((List.range (b.knownTimes.length + 1)).all fun j' =>
+              if j ≤ j' then
+                b.hasNegAt φ ⟨sf.label.world, regionLabel b ord sf.label.world j'⟩
+              else true)
+          else true
     | _, _ => true
 
-/-- **Row 6.** The mirror: a negative since at its world's **upper-ray** label. -/
-def snceNegRayUp (b : Branch) (ord : TimeOrdering) : Bool :=
+/-- **Row 6.** The mirror: a negative since at a region label denies its event at everything that
+region can see **below** itself. Recovers the old upper-ray row as its `j = n` instance. -/
+def snceNegRegionDn (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
     | .neg, .snce φ _ =>
-        if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
-          b.knownTimes.all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
-        else true
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            (b.knownTimes.all fun v =>
+              if branchRank b ord v < j then b.hasNegAt φ ⟨sf.label.world, v⟩ else true) &&
+            ((List.range (b.knownTimes.length + 1)).all fun j' =>
+              if j' ≤ j then
+                b.hasNegAt φ ⟨sf.label.world, regionLabel b ord sf.label.world j'⟩
+              else true)
+          else true
     | _, _ => true
 
 /-- **Row 7.** A positive until has a **guarded witness**: some known time strictly after its own
@@ -263,7 +290,7 @@ def snceRayUpGuard (b : Branch) (ord : TimeOrdering) : Bool :=
 -/
 def temporalWitnessCheck (b : Branch) (ord : TimeOrdering) : Bool :=
   untlNegFuture b ord && snceNegPast b ord && untlRaySelf b ord && snceRaySelf b ord &&
-    untlNegRayLow b ord && snceNegRayUp b ord &&
+    untlNegRegionUp b ord && snceNegRegionDn b ord &&
     untlPosGuardedWitness b ord && sncePosGuardedWitness b ord &&
     untlRayDnGuard b ord && snceRayUpGuard b ord
 
@@ -283,12 +310,12 @@ theorem snceRaySelf_of_check (h : temporalWitnessCheck b ord = true) :
     snceRaySelf b ord = true := by
   simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
-theorem untlNegRayLow_of_check (h : temporalWitnessCheck b ord = true) :
-    untlNegRayLow b ord = true := by
+theorem untlNegRegionUp_of_check (h : temporalWitnessCheck b ord = true) :
+    untlNegRegionUp b ord = true := by
   simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
-theorem snceNegRayUp_of_check (h : temporalWitnessCheck b ord = true) :
-    snceNegRayUp b ord = true := by
+theorem snceNegRegionDn_of_check (h : temporalWitnessCheck b ord = true) :
+    snceNegRegionDn b ord = true := by
   simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 /-! ## Consumption
@@ -335,27 +362,101 @@ theorem snceRay_self (h : temporalWitnessCheck b ord = true)
   have hrow := List.all_eq_true.mp (snceRaySelf_of_check h) _ hmem
   simpa using hrow
 
-/-- **The lower-ray negative spread.** A negative until at the lower ray's own label denies its
-event at every known time — which is every label any point above a lower-ray point can read. -/
+/-- Row 5, unpacked at one region index: both reaches at once. -/
+private theorem untlNegRegion_raw (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {j : Nat} (hj : j ≤ b.knownTimes.length)
+    (hmem : (⟨.neg, .untl φ ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
+    (b.knownTimes.all fun v =>
+        if j ≤ branchRank b ord v then b.hasNegAt φ ⟨w, v⟩ else true) = true ∧
+      ((List.range (b.knownTimes.length + 1)).all fun j' =>
+        if j ≤ j' then b.hasNegAt φ ⟨w, regionLabel b ord w j'⟩ else true) = true := by
+  have hrow := List.all_eq_true.mp (untlNegRegionUp_of_check h) _ hmem
+  simp only at hrow
+  have hj' := List.all_eq_true.mp hrow j (List.mem_range.mpr (Nat.lt_succ_of_le hj))
+  simp only [beq_self_eq_true, if_true, Bool.and_eq_true] at hj'
+  exact hj'
+
+/-- **The negative `untl` region spread, at a placed point above the region.** A negative until at
+region `j`'s label denies its event at every known time whose rank puts it at or above `j`. -/
+theorem untlNegRegion_up (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {j : Nat} {v : TimeIndex} (hj : j ≤ b.knownTimes.length)
+    (hmem : (⟨.neg, .untl φ ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
+    (hv : v ∈ b.knownTimes) (hrk : j ≤ branchRank b ord v) :
+    b.hasNegAt φ ⟨w, v⟩ = true := by
+  have := List.all_eq_true.mp (untlNegRegion_raw h hj hmem).1 _ hv
+  simpa [hrk] using this
+
+/-- **The negative `untl` region spread, at a non-placed point above the region.** The witness
+reads region `j'`'s label for some `j' ≥ j`, and that label's *rank* says nothing about `j'` —
+which is exactly why this is a separate reach and not a corollary of the one above. -/
+theorem untlNegRegion_label (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {j j' : Nat} (hj : j ≤ b.knownTimes.length)
+    (hj' : j' ≤ b.knownTimes.length)
+    (hmem : (⟨.neg, .untl φ ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
+    (hle : j ≤ j') :
+    b.hasNegAt φ ⟨w, regionLabel b ord w j'⟩ = true := by
+  have := List.all_eq_true.mp (untlNegRegion_raw h hj hmem).2 j'
+    (List.mem_range.mpr (Nat.lt_succ_of_le hj'))
+  simpa [hle] using this
+
+/-- **The lower-ray negative spread**, recovered as the `j = 0` instance of row 5 rather than
+carried as a row of its own: at region `0` the rank side condition is vacuous, so the reach is
+every known time — which is every label any point above a lower-ray point can read. -/
 theorem untlNegRay_low (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {v : TimeIndex}
     (hmem : (⟨.neg, .untl φ ψ, ⟨w, regionLabel b ord w 0⟩⟩ : SignedFormula) ∈ b)
     (hv : v ∈ b.knownTimes) :
-    b.hasNegAt φ ⟨w, v⟩ = true := by
-  have hrow := List.all_eq_true.mp (untlNegRayLow_of_check h) _ hmem
-  simp only [beq_self_eq_true, if_true] at hrow
-  exact List.all_eq_true.mp hrow _ hv
+    b.hasNegAt φ ⟨w, v⟩ = true :=
+  untlNegRegion_up h (Nat.zero_le _) hmem hv (Nat.zero_le _)
 
-/-- **The upper-ray negative spread**, the mirror. -/
+/-- Row 6, unpacked at one region index, the mirror. -/
+private theorem snceNegRegion_raw (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {j : Nat} (hj : j ≤ b.knownTimes.length)
+    (hmem : (⟨.neg, .snce φ ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
+    (b.knownTimes.all fun v =>
+        if branchRank b ord v < j then b.hasNegAt φ ⟨w, v⟩ else true) = true ∧
+      ((List.range (b.knownTimes.length + 1)).all fun j' =>
+        if j' ≤ j then b.hasNegAt φ ⟨w, regionLabel b ord w j'⟩ else true) = true := by
+  have hrow := List.all_eq_true.mp (snceNegRegionDn_of_check h) _ hmem
+  simp only at hrow
+  have hj' := List.all_eq_true.mp hrow j (List.mem_range.mpr (Nat.lt_succ_of_le hj))
+  simp only [beq_self_eq_true, if_true, Bool.and_eq_true] at hj'
+  exact hj'
+
+/-- **The negative `snce` region spread, at a placed point below the region**, the mirror. -/
+theorem snceNegRegion_dn (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {j : Nat} {v : TimeIndex} (hj : j ≤ b.knownTimes.length)
+    (hmem : (⟨.neg, .snce φ ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
+    (hv : v ∈ b.knownTimes) (hrk : branchRank b ord v < j) :
+    b.hasNegAt φ ⟨w, v⟩ = true := by
+  have := List.all_eq_true.mp (snceNegRegion_raw h hj hmem).1 _ hv
+  simpa [hrk] using this
+
+/-- **The negative `snce` region spread, at a non-placed point below the region**, the mirror. -/
+theorem snceNegRegion_label (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {j j' : Nat} (hj : j ≤ b.knownTimes.length)
+    (hj' : j' ≤ b.knownTimes.length)
+    (hmem : (⟨.neg, .snce φ ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
+    (hle : j' ≤ j) :
+    b.hasNegAt φ ⟨w, regionLabel b ord w j'⟩ = true := by
+  have := List.all_eq_true.mp (snceNegRegion_raw h hj hmem).2 j'
+    (List.mem_range.mpr (Nat.lt_succ_of_le hj'))
+  simpa [hle] using this
+
+/-- **The upper-ray negative spread**, recovered as the `j = n` instance of row 6.
+
+The asymmetry with `untlNegRay_low` is real and is recorded here rather than hidden: at region `0`
+the rank side condition `0 ≤ branchRank v` is *vacuous*, so the lower-ray reach is free, whereas at
+region `n` the condition `branchRank v < n` has to be **derived** from `branchRank_lt_length`,
+which needs `branchOrderValid`. That derivation lives at the call site in `Bridge/IntTruth.lean`
+rather than here, because `branchRank_lt_length` is downstream of this file. -/
 theorem snceNegRay_up (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {v : TimeIndex}
     (hmem :
       (⟨.neg, .snce φ ψ, ⟨w, regionLabel b ord w b.knownTimes.length⟩⟩ : SignedFormula) ∈ b)
-    (hv : v ∈ b.knownTimes) :
-    b.hasNegAt φ ⟨w, v⟩ = true := by
-  have hrow := List.all_eq_true.mp (snceNegRayUp_of_check h) _ hmem
-  simp only [beq_self_eq_true, if_true] at hrow
-  exact List.all_eq_true.mp hrow _ hv
+    (hv : v ∈ b.knownTimes) (hrk : branchRank b ord v < b.knownTimes.length) :
+    b.hasNegAt φ ⟨w, v⟩ = true :=
+  snceNegRegion_dn h (le_refl _) hmem hv hrk
 
 theorem untlPosGuardedWitness_of_check (h : temporalWitnessCheck b ord = true) :
     untlPosGuardedWitness b ord = true := by

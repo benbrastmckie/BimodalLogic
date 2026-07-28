@@ -656,7 +656,7 @@ theorem branchTruthAt_untl_neg (hf : Function.Injective f) (hOR : OrderReflectin
 /-- **Since case, negative half.** The past-directed mirror, closing at the upper ray by row 6
 and at the lower ray by `regionLabel_snceNeg`'s free `0 ≤ branchRank` side condition. -/
 theorem branchTruthAt_snce_neg (hf : Function.Injective f) (hOR : OrderReflecting b ord f)
-    (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hRO : RayOnly b f) (hRS : RaySplit b f) (hV : branchOrderValid b ord = true)
     (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (w : WorldIndex) (r : D) :
@@ -685,6 +685,7 @@ theorem branchTruthAt_snce_neg (hf : Function.Injective f) (hOR : OrderReflectin
     by_cases hu : cutIndex (regionCode f r) = b.knownTimes.length
     · rw [hu] at hmem
       exact snceNegRay_up hTW hmem (stateTime_mem_knownTimes hf hCheck hne w s)
+        (branchRank_lt_length hV (stateTime_mem_knownTimes hf hCheck hne w s))
     · have hz : cutIndex (regionCode f r) = 0 := (hRO r hr).resolve_right hu
       have hlen : 0 < b.knownTimes.length := by omega
       rw [hz] at hmem
@@ -868,7 +869,7 @@ theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b or
     {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
     BranchTruthAt b ord f (Formula.snce φ ψ) := fun w r =>
   ⟨branchTruthAt_snce_pos hf hOF hOR hRO hRS hSt hTW hφ hψ w r,
-    branchTruthAt_snce_neg hf hOR hRO hRS hCheck hTW hne hφ w r⟩
+    branchTruthAt_snce_neg hf hOR hRO hRS hV hCheck hTW hne hφ w r⟩
 
 /-! ## The assembled induction
 
