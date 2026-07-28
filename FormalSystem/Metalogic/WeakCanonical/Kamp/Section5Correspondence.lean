@@ -45,46 +45,63 @@ Every entry above is landed and sorry-free. `prop42_contentful_of_attained` belo
 entries compose to: the contentful Proposition 4.2 target stated in `Prop42Contentful.lean`,
 discharged by **wiring**, not by new transcription.
 
-## The faithful re-base table — the same chain at the Dedekind carrier
+## The faithful re-base table — the same chain at the faithful eq (5.2) carrier
 
 Every row above assumes `HasAttainedINF`/`HasAttainedSUP`. The rows below are the mirror chain
-re-based onto `HasDedekindINF` (`DedekindINF.lean:136`), which is what Rabinovich's "over Dedekind
-complete chains" actually licenses. **Nothing above was deleted, weakened or renamed to make room
-for them** — the attained stack in `EANegationFix/` stays live and consumed, and each faithful
-module mirrors its attained counterpart declaration for declaration.
+re-based onto `HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`) and its `Since`-dual
+`HasFaithfulDedekindSUP` (`:339`) — Rabinovich's own eq (5.2) dichotomy, PDF p.8, rather than this
+tree's `kplus`. **Nothing above was deleted, weakened or renamed to make room for them** — the
+attained stack in `EANegationFix/` stays live and consumed, and each faithful module mirrors its
+attained counterpart declaration for declaration.
+
+**Carrier note.** An earlier version of this table described the chain as re-based onto
+`HasDedekindINF` (`DedekindINF.lean:136`). That understated it by one carrier step: `HasDedekindINF`
+is the *previous* pin, retained unweakened at the terminus (see the last row), and every chain
+member below is in fact stated at the strictly weaker `HasFaithfulDedekindINF`. The two are
+comparable in one direction only — `HasDedekindINF.toHasFaithfulDedekindINF`
+(`KPlusFaithful.lean:364`) — and `prop42_faithful_covers_what_dedekind_excludes`
+(`Prop42Faithful.lean`) exhibits a structure inside the faithful carrier and outside the Dedekind
+one, so the gap is real rather than notational.
 
 | Rabinovich (PDF page) | Faithful in-tree name | Location |
 |---|---|---|
 | Lemma 5.3 — printed **three**-disjunct `Oₙ₊₁`, disjunct (2) `K⁺(P₁)(z₀)` restored (p.8) |
-`negChainOnFaithful_iff` / `lemma53Faithful` | `Lemma53Faithful.lean:228` / `:318` |
-| Lemma 5.3 — the `HasDedekindSUP` / Since mirror, `K⁻` primitives (p.8) |
-`HasDedekindSUP.last_occ_tp`, `kminusFormula` | `Lemma53FaithfulPast.lean:171` / `:117` |
+`negChainOnFaithful_iff` / `lemma53Faithful` | `Lemma53Faithful.lean:365` / `:460` |
+| Lemma 5.3 — the `Since` mirror, `K⁻` primitives (p.8) |
+`HasFaithfulDedekindSUP.last_occ_tp`, `kminusFormula` | `Lemma53FaithfulPast.lean:254` / `:147` |
 | Lemma 3.4 / Cor 5.4 plumbing — the `VVecEA2` combinators the faithful chain needs (pp.6, 9) |
 `VVecEA2.conjEverywhere_holds_iff`, `VVecEA2.concatPin_holds_iff` | `VecEACombinators.lean:116` /
 `:201` |
 | Cor 5.4 — `Fₙ := αₙ`, `F₍ᵢ₋₁₎ := α₍ᵢ₋₁₎ ∧ (βᵢ Until Fᵢ)`, and the Since mirror (p.9) |
 `negBoundedRightFixFaithful_iff` / `negBoundedLeftFixFaithful_iff` |
-`EANegationFixFaithful/BoundedFixFaithful.lean:186` / `:256` |
+`EANegationFixFaithful/BoundedFixFaithful.lean:202` / `:275` |
 | Cor 5.4 — the anchored bounded-fix mirrors (pp.9-10) |
 `negBoundedRightFixAnchoredFaithful_iff` / `negBoundedLeftFixAnchoredFaithful_iff` |
-`EANegationFixFaithful/BoundedFixAnchoredFaithful.lean:148` / `:228` |
+`EANegationFixFaithful/BoundedFixAnchoredFaithful.lean:163` / `:246` |
 | Lemma 5.1 — base case at `n = 1` (pp.9-10) | `negFixOneFaithful_iff` |
-`EANegationFixFaithful/NegFixOneFaithful.lean:486` |
+`EANegationFixFaithful/NegFixOneFaithful.lean:636` |
 | Lemma 5.1 — `Aᵢ`/`Bᵢ` split + closing induction (pp.10-11) | `negFixListFaithful_iff` |
-`EANegationFixFaithful/NegFixListFaithful.lean:333` |
+`EANegationFixFaithful/NegFixListFaithful.lean:392` |
 | Prop 4.2 / 4.3 De Morgan fold (p.6) | `VVecEA2.negFixFaithful_iff` |
-`EANegationFixFaithful/VecEANegFixFaithful.lean:232` |
-| **Prop 4.2 itself, at the faithful carrier (p.6)** | `prop42_contentful_of_dedekind` |
-`Prop42Faithful.lean` |
+`EANegationFixFaithful/VecEANegFixFaithful.lean:244` |
+| **Prop 4.2 itself, at the faithful carrier (p.6)** | `prop42_contentful_of_faithful` |
+`Prop42Faithful.lean:192` |
+| Prop 4.2 at the **previous** pin, retained unweakened (p.6) | `prop42_contentful_of_dedekind` |
+`Prop42Faithful.lean:208` |
 
-Every entry is landed, sorry-free and axiom-clean. `prop42_contentful_of_dedekind`
-(`Prop42Faithful.lean`) is what they compose to: the **same** `Prop42Contentful` target discharged
-below at `HasAttainedINF` + `HasAttainedSUP`, discharged there from `HasDedekindINF` **alone**.
+Every entry is landed, sorry-free and axiom-clean. `prop42_contentful_of_faithful`
+(`Prop42Faithful.lean:192`) is what they compose to: the **same** `Prop42Contentful` target
+discharged below at `HasAttainedINF` + `HasAttainedSUP`, discharged there from
+`HasFaithfulDedekindINF` **alone**. `prop42_contentful_of_dedekind` (`:208`) is the chain's
+former terminus, kept as a one-line corollary through
+`HasDedekindINF.toHasFaithfulDedekindINF` so that every consumer written against the Dedekind pin
+still typechecks; it is a corollary of the faithful terminus, not the chain's endpoint.
 
 `Prop42Faithful.lean` also carries the re-base's cumulative exclusion statement
-(`prop42_faithful_unobservable_on_prior`) and the failed-vacuity control re-run against the final
-statement (`prop42Faithful_perPoint_is_VACUOUS`). Read those before citing any faithful row above
-as coverage of a structure the attained rows miss — on every Prior structure they provably do not.
+(`prop42_faithful_unobservable_on_prior`, `:355`) and the failed-vacuity control re-run against the
+final statement (`prop42Faithful_perPoint_is_VACUOUS`, `:276`). Read those before citing any
+faithful row above as coverage of a structure the attained rows miss — on every Prior structure
+they provably do not.
 
 ## What the carrier EXCLUDES — read this before citing the theorem below
 

@@ -32,6 +32,10 @@ import FormalSystem.Metalogic.WeakCanonical.Transfer
 -- graph despite living in the `BXCanonical/Chronicle/` directory, so no Chronicle aggregator can
 -- reach it. Listed here, next to its lowest dependency, so it cannot rot out of the build closure.
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleMonadicBridge
+-- CI edge only: `DenseModelSurgery/Defs.lean` (Reynolds §6 vocabulary and Lemma 2) is a leaf with
+-- no consumer yet — Lemmas 3 onwards are still to be built on top of it. Listed here so it stays
+-- inside the `lake build` closure rather than compiling only when named explicitly.
+import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Defs
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness
