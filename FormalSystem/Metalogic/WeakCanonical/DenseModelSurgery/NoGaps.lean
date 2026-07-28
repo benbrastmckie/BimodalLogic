@@ -242,6 +242,127 @@ theorem semanticPriorU_iff_forall :
       ∀ (t : M.carrier) (p : Formula), TemporalTruth M atomMap t (priorUFormula p) :=
   forall_congr' fun t => forall_congr' fun p => (temporalTruth_priorUFormula t p).symm
 
+/-! ### The past mirror
+
+Written out rather than obtained by instantiation at `dual M`. `Dual.lean`'s `swapUS` does give
+`swapUS (priorUFormula p) = priorSFormula (swapUS p)`, but the transport it feeds
+(`semanticPriorS_dual`) runs `SemanticPriorU M → SemanticPriorS (dual M)` and the direction
+needed here is the other one, at `M` itself; supplying it would be more new work than the
+transcription below.
+
+The transcription is not a *mirror* in the sense `Dual.lean` exists to avoid, either: Reynolds
+prints `S(⊤,p) ∧ P¬p → S(¬p ∨ K⁻(¬p), p)` in his own abbreviation table on p.168, next to
+Prior-U, so both schemes are quoted rather than one being invented from the other. Every step
+below is a definitional unfolding against a landed helper. -/
+
+/-- `S(⊤, p)` at `t`: *"`p` holds throughout some final stretch below `t`"*. -/
+theorem temporalTruth_snce_top (t : M.carrier) (p : Formula) :
+    TemporalTruth M atomMap t (.snce .top p) ↔
+      ∃ s : M.carrier, s < t ∧ ∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r p :=
+  ⟨fun ⟨s, hst, _, h⟩ => ⟨s, hst, h⟩,
+    fun ⟨s, hst, h⟩ => ⟨s, hst, Kamp.temporal_truth_top M atomMap s, h⟩⟩
+
+/-- `P ¬p` at `t`, i.e. `S(¬p, ⊤)`: *"`¬p` held somewhere below `t`"*. -/
+theorem temporalTruth_somePast_neg (t : M.carrier) (p : Formula) :
+    TemporalTruth M atomMap t (.snce p.neg .top) ↔
+      ∃ u : M.carrier, u < t ∧ ¬ TemporalTruth M atomMap u p :=
+  ⟨fun ⟨u, hut, hu, _⟩ => ⟨u, hut, (Kamp.temporal_truth_neg M atomMap u p).mp hu⟩,
+    fun ⟨u, hut, hu⟩ => ⟨u, hut, (Kamp.temporal_truth_neg M atomMap u p).mpr hu,
+      fun r _ _ => Kamp.temporal_truth_top M atomMap r⟩⟩
+
+/-- `K⁻(¬p)` at `s`, through the landed `kMinus_formula_correct` and `kminusOpen`. -/
+theorem temporalTruth_kMinus_neg (s : M.carrier) (p : Formula) :
+    TemporalTruth M atomMap s (Formula.kMinus p.neg) ↔
+      ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ TemporalTruth M atomMap r p := by
+  rw [Kamp.kMinus_formula_correct]
+  exact forall_congr' fun u => forall_congr' fun _ =>
+    exists_congr fun r => and_congr_right fun _ => and_congr_right fun _ =>
+      Kamp.temporal_truth_neg M atomMap r p
+
+/-- `S(¬p ∨ K⁻(¬p), p)` at `t`, in the form `SemanticPriorS`'s consequent is written. -/
+theorem temporalTruth_snce_stop (t : M.carrier) (p : Formula) :
+    TemporalTruth M atomMap t (.snce (.or p.neg (Formula.kMinus p.neg)) p) ↔
+      ∃ s : M.carrier, s < t ∧
+        (∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r p) ∧
+        (¬ TemporalTruth M atomMap s p ∨
+          (TemporalTruth M atomMap s p ∧
+            ∀ u : M.carrier, u < s →
+              ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ TemporalTruth M atomMap r p)) := by
+  classical
+  constructor
+  · rintro ⟨s, hst, hs, hbelow⟩
+    refine ⟨s, hst, hbelow, ?_⟩
+    rcases (Kamp.temporal_truth_or M atomMap s p.neg (Formula.kMinus p.neg)).mp hs with hns | hk
+    · exact Or.inl ((Kamp.temporal_truth_neg M atomMap s p).mp hns)
+    · by_cases hp : TemporalTruth M atomMap s p
+      · exact Or.inr ⟨hp, (temporalTruth_kMinus_neg s p).mp hk⟩
+      · exact Or.inl hp
+  · rintro ⟨s, hst, hbelow, hcase⟩
+    refine ⟨s, hst, ?_, hbelow⟩
+    refine (Kamp.temporal_truth_or M atomMap s p.neg (Formula.kMinus p.neg)).mpr ?_
+    rcases hcase with hns | ⟨_, hk⟩
+    · exact Or.inl ((Kamp.temporal_truth_neg M atomMap s p).mpr hns)
+    · exact Or.inr ((temporalTruth_kMinus_neg s p).mpr hk)
+
+/-- **The `priorSFormula` transcription is correct** — the past mirror of
+`temporalTruth_priorUFormula`. -/
+theorem temporalTruth_priorSFormula (t : M.carrier) (p : Formula) :
+    TemporalTruth M atomMap t (priorSFormula p) ↔
+      ((∃ s : M.carrier, s < t ∧ ∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r p) →
+        (∃ u : M.carrier, u < t ∧ ¬ TemporalTruth M atomMap u p) →
+        ∃ s : M.carrier, s < t ∧
+          (∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r p) ∧
+          (¬ TemporalTruth M atomMap s p ∨
+            (TemporalTruth M atomMap s p ∧
+              ∀ u : M.carrier, u < s →
+                ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ TemporalTruth M atomMap r p))) := by
+  show (TemporalTruth M atomMap t _ → TemporalTruth M atomMap t _) ↔ _
+  rw [Kamp.temporal_truth_and, temporalTruth_snce_top, temporalTruth_somePast_neg,
+    temporalTruth_snce_stop]
+  exact ⟨fun h h₁ h₂ => h ⟨h₁, h₂⟩, fun h ⟨h₁, h₂⟩ => h h₁ h₂⟩
+
+/-- **Prior-S as a scheme of temporal formulas** — the past mirror of
+`semanticPriorU_iff_forall`. -/
+theorem semanticPriorS_iff_forall :
+    SemanticPriorS M atomMap ↔
+      ∀ (t : M.carrier) (p : Formula), TemporalTruth M atomMap t (priorSFormula p) :=
+  forall_congr' fun t => forall_congr' fun p => (temporalTruth_priorSFormula t p).symm
+
 end PriorScheme
+
+/-! ## *"`N` is a Prior structure"*, discharged
+
+With the two schemes in formula form, Reynolds' subordinate clause is exactly one application of
+Lemma 8 per instance. Note which way the implication runs: an instance holds at every point of
+`N` **because** it holds at the corresponding point of `M`, which is his *"any counterexample
+point in `N` is also one in `M`"* read contrapositively. -/
+
+section PriorStructure
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
+  {Q : M.carrier → Prop} {t : M.carrier}
+
+/-- **Prior-U survives the surgery.** -/
+theorem surgeredSemanticPriorU (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
+    SemanticPriorU (surgeredStructure M ε Q t) atomMap := by
+  refine semanticPriorU_iff_forall.mpr fun x p => ?_
+  refine (reynolds_lemma8 atomMap h_surj hε h_prior_U h_prior_S hS (priorUFormula p) x).mp ?_
+  exact semanticPriorU_iff_forall.mp h_prior_U x.val p
+
+/-- **Prior-S survives the surgery.** -/
+theorem surgeredSemanticPriorS (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
+    SemanticPriorS (surgeredStructure M ε Q t) atomMap := by
+  refine semanticPriorS_iff_forall.mpr fun x p => ?_
+  refine (reynolds_lemma8 atomMap h_surj hε h_prior_U h_prior_S hS (priorSFormula p) x).mp ?_
+  exact semanticPriorS_iff_forall.mp h_prior_S x.val p
+
+end PriorStructure
 
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
