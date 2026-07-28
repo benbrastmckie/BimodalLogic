@@ -1740,4 +1740,235 @@ theorem exists_confining_sep {ψ₀ : Formula} {B : Finset Formula} (hB : Confin
       · exact Finset.mem_union_right _ (hsubtop hx)
       · exact Finset.mem_union_right _ (hsubψn hx)
 
+/-- `emissions` of an implication, in the form the `→` case of the induction consumes: the
+subformula part and the Dedekind part are checked separately. -/
+theorem emissions_imp_subset {ψ χ : Formula} {M : Finset Formula}
+    (hsub : insert (Formula.imp ψ χ) (subformulasFinset ψ ∪ subformulasFinset χ) ⊆ M)
+    (hcon : ∀ a b, asAnd? (Formula.imp ψ χ) = some (a, b) → conjEmissions a b ⊆ M) :
+    emissions (Formula.imp ψ χ) ⊆ M := by
+  cases h : asAnd? (Formula.imp ψ χ) with
+  | none => rw [emissions_imp_of_asAnd_eq_none h]; exact hsub
+  | some p =>
+      obtain ⟨a, b⟩ := p
+      rw [emissions_imp_of_asAnd h]
+      exact Finset.union_subset hsub (hcon a b h)
+
+/--
+**The Dedekind dispatcher.** `conjEmissions` fires on exactly three trigger shapes, and each has
+its batch lemma above. Everything else is `∅`, decided by the outermost constructor — which is
+why the twenty-odd `triv` lines below are all `rfl`.
+-/
+theorem exists_confining_conjEmissions {a b : Formula} {B : Finset Formula} (hB : Confining B)
+    (hca : Carries B a) (hcb : Carries B b) :
+    ∃ M, Confining M ∧ B ⊆ M ∧ conjEmissions a b ⊆ M := by
+  classical
+  have triv : ∀ c d : Formula, conjEmissions c d = ∅ →
+      ∃ M, Confining M ∧ B ⊆ M ∧ conjEmissions c d ⊆ M :=
+    fun c d h => ⟨B, hB, Finset.Subset.refl B, by rw [h]; exact Finset.empty_subset B⟩
+  cases a with
+  | atom c => exact triv _ _ rfl
+  | bot => exact triv _ _ rfl
+  | box p => exact triv _ _ rfl
+  | untl e g =>
+      by_cases h : e = Formula.top ∧ b = Formula.someFuture g.neg
+      · obtain ⟨rfl, rfl⟩ := h
+        have hcg : Carries B g :=
+          hca.sub (by rw [subformulasFinset_untl]; simp [self_mem_subformulasFinset])
+        have hcgn : Carries B g.neg :=
+          hcb.sub (by
+            rw [Formula.someFuture, subformulasFinset_untl]
+            simp [self_mem_subformulasFinset])
+        obtain ⟨M, hM, hs, hmem⟩ := exists_confining_gapU hB hcg hcgn
+        exact ⟨M, hM, hs, by simp [conjEmissions, hmem]⟩
+      · exact ⟨B, hB, Finset.Subset.refl B, by simp [conjEmissions, h]⟩
+  | snce e g =>
+      by_cases h : e = Formula.top ∧ b = Formula.somePast g.neg
+      · obtain ⟨rfl, rfl⟩ := h
+        have hcg : Carries B g :=
+          hca.sub (by rw [subformulasFinset_snce]; simp [self_mem_subformulasFinset])
+        have hcgn : Carries B g.neg :=
+          hcb.sub (by
+            rw [Formula.somePast, subformulasFinset_snce]
+            simp [self_mem_subformulasFinset])
+        obtain ⟨M, hM, hs, hmem⟩ := exists_confining_gapS hB hcg hcgn
+        exact ⟨M, hM, hs, by simp [conjEmissions, hmem]⟩
+      · exact ⟨B, hB, Finset.Subset.refl B, by simp [conjEmissions, h]⟩
+  | imp p q =>
+      cases p with
+      | atom c => exact triv _ _ rfl
+      | bot => exact triv _ _ rfl
+      | imp r t => exact triv _ _ rfl
+      | box r => exact triv _ _ rfl
+      | snce e r => exact triv _ _ rfl
+      | untl e r =>
+          cases r with
+          | atom c => exact triv _ _ rfl
+          | bot => exact triv _ _ rfl
+          | box t => exact triv _ _ rfl
+          | untl t u => exact triv _ _ rfl
+          | snce t u => exact triv _ _ rfl
+          | imp ψ₀ w =>
+              cases w with
+              | atom c => exact triv _ _ rfl
+              | imp t u => exact triv _ _ rfl
+              | box t => exact triv _ _ rfl
+              | untl t u => exact triv _ _ rfl
+              | snce t u => exact triv _ _ rfl
+              | bot =>
+                  cases q with
+                  | atom c => exact triv _ _ rfl
+                  | imp t u => exact triv _ _ rfl
+                  | box t => exact triv _ _ rfl
+                  | untl t u => exact triv _ _ rfl
+                  | snce t u => exact triv _ _ rfl
+                  | bot =>
+                      by_cases h : e = Formula.top ∧
+                          b = Formula.neg (Formula.kPlus
+                            (Formula.and ψ₀ (Formula.untl ψ₀ ψ₀.neg)))
+                      · obtain ⟨rfl, rfl⟩ := h
+                        have hcψn : Carries B ψ₀.neg :=
+                          hca.sub (by
+                            rw [subformulasFinset_imp, subformulasFinset_untl]
+                            simp [Formula.neg, self_mem_subformulasFinset])
+                        obtain ⟨M, hM, hs, hmem⟩ := exists_confining_sep hB hcψn
+                        exact ⟨M, hM, hs, by simp [conjEmissions, hmem]⟩
+                      · exact ⟨B, hB, Finset.Subset.refl B, by simp [conjEmissions, h]⟩
+
+/--
+The `→` case. Two conjunctions can appear: `ψ → χ` may itself be one (when `χ = ⊥`), and its
+negation may be one (when `χ` is a negation). Both are absorbed by the dispatcher before the
+formula and its negation are laid on top, and in both cases the Dedekind components are
+subformulas of `ψ` or `χ`, so the induction hypotheses already carry them.
+-/
+theorem subConfining_imp {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubConfining χ) :
+    SubConfining (Formula.imp ψ χ) := by
+  classical
+  obtain ⟨B₁, hB₁, hc₁⟩ := hψ
+  obtain ⟨B₂, hB₂, hc₂⟩ := hχ
+  have hB0 : Confining (B₁ ∪ B₂) := hB₁.union hB₂
+  have hcψ0 : Carries (B₁ ∪ B₂) ψ := hc₁.mono Finset.subset_union_left
+  have hcχ0 : Carries (B₁ ∪ B₂) χ := hc₂.mono Finset.subset_union_right
+  obtain ⟨B₃, hB₃, hs₃, hcon₃⟩ :
+      ∃ M, Confining M ∧ (B₁ ∪ B₂) ⊆ M ∧
+        ∀ a b, asAnd? (Formula.imp ψ χ) = some (a, b) → conjEmissions a b ⊆ M := by
+    cases hsplit : asAnd? (Formula.imp ψ χ) with
+    | none =>
+        exact ⟨B₁ ∪ B₂, hB0, Finset.Subset.refl _, by intro a b hab; simp at hab⟩
+    | some pr =>
+        obtain ⟨a, b⟩ := pr
+        have hshape := asAnd?_eq_iff.mp hsplit
+        have hψeq : ψ = Formula.imp a (Formula.imp b Formula.bot) := by
+          injection hshape with h1 _
+        have hca : Carries (B₁ ∪ B₂) a :=
+          hcψ0.sub (by rw [hψeq, subformulasFinset_imp]; simp [self_mem_subformulasFinset])
+        have hcb : Carries (B₁ ∪ B₂) b :=
+          hcψ0.sub (by
+            rw [hψeq, subformulasFinset_imp, subformulasFinset_imp]
+            simp [self_mem_subformulasFinset])
+        obtain ⟨M, hM, hs, hmem⟩ := exists_confining_conjEmissions hB0 hca hcb
+        refine ⟨M, hM, hs, ?_⟩
+        intro a' b' hab
+        simp only [Option.some.injEq, Prod.mk.injEq] at hab
+        obtain ⟨rfl, rfl⟩ := hab
+        exact hmem
+  obtain ⟨B₄, hB₄, hs₄, hcon₄⟩ :
+      ∃ M, Confining M ∧ B₃ ⊆ M ∧
+        ∀ a b, asAnd? (Formula.imp (Formula.imp ψ χ) Formula.bot) = some (a, b) →
+          conjEmissions a b ⊆ M := by
+    cases hsplit : asAnd? (Formula.imp (Formula.imp ψ χ) Formula.bot) with
+    | none =>
+        exact ⟨B₃, hB₃, Finset.Subset.refl _, by intro a b hab; simp at hab⟩
+    | some pr =>
+        obtain ⟨a, b⟩ := pr
+        have hshape := asAnd?_eq_iff.mp hsplit
+        have h1 : Formula.imp ψ χ = Formula.imp a (Formula.imp b Formula.bot) := by
+          injection hshape with h1 _
+        have hψeq : ψ = a := by injection h1 with h2 _
+        have hχeq : χ = Formula.imp b Formula.bot := by injection h1 with _ h3
+        have hca : Carries B₃ a := (hcψ0.mono hs₃).sub (by rw [← hψeq]; exact self_mem_subformulasFinset ψ)
+        have hcb : Carries B₃ b :=
+          (hcχ0.mono hs₃).sub (by rw [hχeq, subformulasFinset_imp]; simp [self_mem_subformulasFinset])
+        obtain ⟨M, hM, hs, hmem⟩ := exists_confining_conjEmissions hB₃ hca hcb
+        refine ⟨M, hM, hs, ?_⟩
+        intro a' b' hab
+        simp only [Option.some.injEq, Prod.mk.injEq] at hab
+        obtain ⟨rfl, rfl⟩ := hab
+        exact hmem
+  have hcψ : Carries B₄ ψ := (hcψ0.mono hs₃).mono hs₄
+  have hcχ : Carries B₄ χ := (hcχ0.mono hs₃).mono hs₄
+  have hbot : Formula.bot ∈ B₄ := bot_mem_of_confining hB₄
+  set A : Finset Formula := {Formula.imp ψ χ, (Formula.imp ψ χ).neg} with hAdef
+  refine ⟨A ∪ B₄, hB₄.extendEmissions ?_, ?_⟩
+  · intro θ hθ
+    rw [hAdef] at hθ
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hθ
+    rcases hθ with rfl | rfl
+    · refine emissions_imp_subset ?_ ?_
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_union] at hx
+        rcases hx with rfl | hx | hx
+        · simp [hAdef]
+        · exact Finset.mem_union_right _ (hcψ.subformulas_subset hx)
+        · exact Finset.mem_union_right _ (hcχ.subformulas_subset hx)
+      · intro a b hab
+        exact subset_trans (hcon₃ a b hab) (subset_trans hs₄ Finset.subset_union_right)
+    · refine emissions_imp_subset (ψ := Formula.imp ψ χ) (χ := Formula.bot) ?_ ?_
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_union] at hx
+        rcases hx with rfl | hx | hx
+        · simp [hAdef, Formula.neg]
+        · rw [subformulasFinset_imp] at hx
+          simp only [Finset.mem_insert, Finset.mem_union] at hx
+          rcases hx with rfl | hx | hx
+          · simp [hAdef]
+          · exact Finset.mem_union_right _ (hcψ.subformulas_subset hx)
+          · exact Finset.mem_union_right _ (hcχ.subformulas_subset hx)
+        · rw [subformulasFinset_bot, Finset.mem_singleton] at hx
+          subst hx
+          exact Finset.mem_union_right _ hbot
+      · intro a b hab
+        exact subset_trans (hcon₄ a b hab) Finset.subset_union_right
+  · intro ζ hζ
+    rw [subformulasFinset_imp] at hζ
+    simp only [Finset.mem_insert, Finset.mem_union] at hζ
+    rcases hζ with rfl | hζ | hζ
+    · exact ⟨by simp [hAdef], by simp [hAdef]⟩
+    · exact ⟨Finset.mem_union_right _ (hcψ ζ hζ).1, Finset.mem_union_right _ (hcψ ζ hζ).2⟩
+    · exact ⟨Finset.mem_union_right _ (hcχ ζ hζ).1, Finset.mem_union_right _ (hcχ ζ hζ).2⟩
+
+/-! ### 4.2d, discharged
+
+The six cases assemble into the structural induction, and the induction closes the confinement
+half. `exists_tableauClosed_closureIter_of_seed` is the unconditional form: no hypothesis, no
+`sorry`, no appeal to a stock the caller must invent.
+-/
+
+/-- Every formula has a confining carrier. -/
+theorem subConfining (φ : Formula) : SubConfining φ := by
+  induction φ with
+  | atom a => exact subConfining_atom a
+  | bot => exact subConfining_bot
+  | imp ψ χ ihψ ihχ => exact subConfining_imp ihψ ihχ
+  | box ψ ih => exact subConfining_box ih
+  | untl ψ χ ihψ ihχ => exact subConfining_untl ihψ ihχ
+  | snce ψ χ ihψ ihχ => exact subConfining_snce ihψ ihχ
+
+theorem confinesFormula (φ : Formula) : ConfinesFormula φ :=
+  confinesFormula_of_subConfining (subConfining φ)
+
+/-- **Confinement.** Every finite seed sits inside a finite emission-closed stock. -/
+theorem exists_confining (seed : Finset Formula) : ∃ M, seed ⊆ M ∧ Confining M :=
+  exists_confining_of_forall seed (fun φ _ => confinesFormula φ)
+
+/--
+**4.2d, unconditional.** The closure iteration from any finite seed reaches a `TableauClosed`
+stock. Confinement supplies the bound and `exists_closureStep_subset` finds the fixed point at or
+below it, so the T2 counting argument now runs against a stock the iteration computes rather than
+against one a caller must exhibit.
+-/
+theorem exists_tableauClosed_closureIter_of_seed (seed : Finset Formula) :
+    ∃ n, TableauClosed (closureIter n seed) := by
+  obtain ⟨M, hseed, hM⟩ := exists_confining seed
+  exact exists_tableauClosed_closureIter hseed hM
+
 end FormalSystem.Metalogic.Decidability
