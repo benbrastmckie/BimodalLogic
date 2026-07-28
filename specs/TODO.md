@@ -25,7 +25,7 @@ next_project_number: 413
   └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
   └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
-408 [PLANNING] — Identify the most faithful and mathematically correct route to ST
+408 [PLANNED] — Identify the most faithful and mathematically correct route to ST
 
 ### Formula Refactor
 
@@ -121,12 +121,16 @@ COORDINATION: task 362 leg D owns stating the genuine strong-completeness result
 ---
 
 ### 408. Faithful route to strong completeness for the dedekind extension
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
-- **Research**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/01_faithful-route-strong-completeness.md]
-- **Plan**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/01_strong-completeness-dedekind.md]
+- **Research**:
+  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/01_faithful-route-strong-completeness.md]
+  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/04_backward-transport-blocker.md]
+- **Plan**:
+  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/01_strong-completeness-dedekind.md]
+  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/04_strong-completeness-dedekind-v4.md]
 
 **Description**: Identify the most faithful and mathematically correct route to STRONG completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics), with weak completeness obtained as a corollary rather than as the target.
 
