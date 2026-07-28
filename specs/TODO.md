@@ -12,7 +12,7 @@ next_project_number: 418
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 95,125,127,128,165,179,193,231,257,298,361,390,408,409,413,414,416 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 169,170,177,178,219,282,296,410,411,412,415,417 | 165,193,231,298,361,414 | formula-refactor, dataset-enhancement, strong_completeness |
+| 2 | 169,170,177,178,219,282,296,410,411,412,415,417 | 165,193,231,298,361,414 | formula-refactor, dataset-enhancement, paper-refactor, ... |
 | 3 | 362 | 169,170 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -56,6 +56,13 @@ next_project_number: 418
   └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
+### Paper Refactor
+
+414 [RESEARCHING] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
+  └─ 415 [RESEARCHING] — Completeness under the refactored (Omega-free, maximal-history) s
+  └─ 417 [RESEARCHING] — Semantic FMP over a fixed carrier, stated against the refactored 
+416 [RESEARCHING] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revise
+
 ### Documentation
 
 409 [NOT STARTED] — Systematically reconcile the LaTeX reference (latex/subfiles/, es
@@ -70,17 +77,13 @@ next_project_number: 418
 
 ### Uncategorized
 
-414 [NOT STARTED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
-  └─ 415 [NOT STARTED] — Completeness under the refactored (Omega-free, maximal-history) s
-  └─ 417 [NOT STARTED] — Semantic FMP over a fixed carrier, stated against the refactored 
-416 [NOT STARTED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revise
-
 ## Tasks
 
 ### 417. Semantic fmp finite worldstate over z
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
+- **Topic**: paper-refactor
 - **Dependencies**: Task 414
 
 **Description**: Semantic FMP over a fixed carrier, stated against the refactored Omega-free maximal-history semantics of task 414 (PossibleWorlds Comments/fix.md C6; revised 2026-07-28): prove the TruthAt-connected finite model property the paper cor:tm-decidability proof text cites — any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z — replacing reliance on the syntactic closure-MCS FMP theorems (Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by task 165 redirect; the tableau programme (165/410-412) remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
@@ -89,8 +92,9 @@ next_project_number: 418
 
 ### 416. Adopt co axiom basis for dedekind class
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
+- **Topic**: paper-refactor
 - **Dependencies**: None
 
 **Description**: DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revised 2026-07-28: adopt the paper basis, no two-basis bridge). Replace the Reynolds-style prior_U_gap/prior_S_gap/sep axioms with the paper single completeness axiom CO (possible_worlds.tex line 3250) as the OFFICIAL Dedekind-class axiom basis. Where existing proofs (tasks 408, 411) consume the gap principles, re-derive them as internal THEOREMS from the CO basis — derived lemmas from one basis, not an equivalence bridge between two coexisting bases — and rebase 408/411 targets accordingly. Record the Hoelder classification (nontrivial Dedekind-complete totally ordered abelian group is Archimedean, hence order-iso to Z or R; dense+complete = R) as lemmas where cheap, else docs; align FrameClass docs with the paper TM_c / TM+_dc distinction, noting complete-but-discrete is exactly Z (Discrete class). Related: 390, 408, 411.
@@ -99,8 +103,9 @@ next_project_number: 418
 
 ### 415. Completeness over maximal history semantics
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
+- **Topic**: paper-refactor
 - **Dependencies**: Task 414
 
 **Description**: Completeness under the refactored (Omega-free, maximal-history) semantics of task 414 — INTERNALIZED, not bridged (PossibleWorlds Comments/fix.md B1/C2; revised 2026-07-28): restate and reprove WEAK completeness per frame class so the canonical/chronicle constructions deliver countermodels that are maximal-history models OUTRIGHT. The former singleton-Omega device (WeakCanonical/Transfer.lean:603-638) becomes: construct frames — deterministic frames are the lead, their maximal histories forming a single shift class — whose FULL maximal-history set is the required countermodel family; no transfer or realization lemmas in the final statements. Order: Discrete first (currently green under the old semantics), then Dense (task 170), Base (task 169), Dedekind (task 408), whose targets all rebase onto the new semantics. The mathematical content of realization is absorbed into the constructions; the headline theorems mention only the paper-aligned validity.
@@ -109,8 +114,9 @@ next_project_number: 418
 
 ### 414. Refactor semantics to maximal history validity
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
+- **Topic**: paper-refactor
 - **Dependencies**: None
 
 **Description**: DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; revised 2026-07-28: change the basic definitions, no bridge lemmas). Make maximal-history validity THE validity of the repo, eliminating the Omega parameter from the semantics core. (1) Define the extension order on WorldHistory (sigma extends tau iff tau.domain subset-of sigma.domain and states agree on tau.domain), the Maximal predicate, and prove: every history extends to a maximal one (Zorn) and maximality is preserved by time-shift — the paper re-verified both. (2) Refactor TruthAt, valid, satisfiable, and semantic consequence to quantify over MAXIMAL histories of the frame, removing Omega and ShiftClosed hypotheses everywhere; the false Set.univ-equivalence docstrings (Semantics/Validity.lean:33,70-71) disappear with the parameter. (3) Propagate through Soundness (expected to survive verbatim via Zorn extension + shift-preservation). NO compatibility shims, aliases, or parallel validity notions: one uniform Omega-free API. Downstream metalogic rebasing is task 415; 417 restates against this semantics.
@@ -190,6 +196,7 @@ COORDINATION: task 362 leg D owns stating the genuine strong-completeness result
   - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/04_strong-completeness-dedekind-v4.md]
   - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/05_strong-completeness-dedekind-v5.md]
   - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/06_strong-completeness-dedekind-v6.md]
+- **Summary**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/21_duality-transport-lemma6-fourth-half-summary.md]
 
 **Description**: Identify the most faithful and mathematically correct route to STRONG completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics), with weak completeness obtained as a corollary rather than as the target.
 
