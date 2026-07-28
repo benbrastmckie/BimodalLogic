@@ -42,6 +42,7 @@ import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Lemma34
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Dual
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Lemma5
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.BadIntervals
+import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.TruthTransfer
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness
