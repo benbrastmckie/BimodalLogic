@@ -54,6 +54,16 @@ silence — the rule fires exactly while an incomparable pair remains, so its ex
 chain condition. On the 4.3c side, `expandBranchWithFuel_isSome_of_noSplit` proves totality with
 the branch budget quantified, ruling out all three sources of `none`.
 
+**Also landed (the general fuel figure, §4.3e).** `soundFuel'` is the **single-world**
+(label-count) figure and is frozen as such; `worldFuel' φ s = (s + soundFuel' φ) * soundFuel' φ`
+is the general one, and `worldFuel'_eq` shows it is `chain_le_worlds_bounded`'s right-hand side
+*exactly*, by associativity and commutativity alone. `chain_le_worldFuel'` restates the chain
+bound at that name and `expandBranchWithFuel_isSome_at_worldFuel'` instantiates totality there.
+The two figures are a *squaring* apart, not a constant, which is why they are two names.
+Three obligations survive and are named in the statements rather than hidden inside the figure:
+`WorldWitness` (an invariant, not a theorem), `NoSplit` (the branching arms), and `maxBranches`
+(quantified — `buildTableau_isSome` at the engine default is false at any fuel).
+
 **Also landed (the closure duality).** `orderDual_holds` proves `OrderDual` for *every*
 `TimeOrdering`, so `timeChain_of_linearity_saturated` and `chain_le_worlds_of_linearity_saturated`
 no longer carry it as a hypothesis. The route is `open private` on
@@ -132,6 +142,15 @@ two dimensions the module docstring names — at most `2 * n` signed formulas pe
 
 The figure is *stated* here; the theorem that expansion cannot exhaust it
 (`buildTableau_isSome`) is the remaining T3 obligation and is not claimed by this definition.
+
+**This is the single-world (label-count) figure, and that is not a defect of the proof but the
+content of the name.** `chain_le_soundFuel'` earns it exactly — with no slack — under a hypothesis
+`hL` on the *label* count, and a label is a world *and* a time, so `hL` is reachable from T2 only
+while the run stays in one world. For the general case, where `boxNeg`/`diamondPos` have minted
+worlds, the figure is `worldFuel'` (this file, §4.3e), which is `soundFuel' φ * (|S| + soundFuel' φ)`
+— to a `+1` at the engine's singleton seed, the *square* of this one. `soundFuel'` is kept because
+it remains the true and quadratically-exponentially better bound whenever the world count is one,
+which for a modal-operator-free `φ` it always is.
 -/
 def soundFuel' (φ : Formula) : Nat :=
   let n := (FormalSystem.Syntax.subformulaClosure φ).card
@@ -1340,5 +1359,141 @@ theorem expandBranchWithFuel_nil_isSome (fuel : Nat) (ord : TimeOrdering)
     (fun _ hb x hx => absurd hx (by subst hb; simp)) fuel [] ord tr applied maxBranches
     branchesUsed rfl
     (by simp only [Finset.card_empty, List.toFinset_nil]; omega) hbud
+
+/-! ## 4.3e — the general fuel figure `worldFuel'`
+
+`soundFuel'` is the **single-world** figure: `chain_le_soundFuel'` earns it exactly, with no
+slack, but only under a label hypothesis `hL` that asks `|worlds| * |times|` to sit under the T2
+*time* bound — true only while the run stays in one world. Once any `boxNeg`/`diamondPos` mints a
+world, the honest bound is `chain_le_worlds_bounded`'s, and the arithmetic below shows the two
+differ by a *squaring*, not a constant: writing `F := soundFuel' φ` and `s := |S|`,
+
+    2 * |C| * ((s + 2 * |C| * 2 ^ (2 * |C|)) * 2 ^ (2 * |C|))  =  F * (s + F)
+
+on the nose, so at the engine's own seed (`buildTableau`'s
+`initialBranch = [SignedFormula.neg φ Label.initial]` — one world, one time, so `s = 1`) the
+general figure is `F * (F + 1)`. Two figures a squaring apart must not share a name, so
+`soundFuel'` is kept frozen — name *and* body — and the general figure gets its own name here.
+
+`s` is deliberately **not** specialised to `1` in the definition: `chain_le_worlds_bounded`
+quantifies the seed world set `S` universally, and `chain_le_worldFuel'` has to consume it in that
+form. The engine's singleton seed is a fact about one caller, not about the figure.
+
+**Three hypotheses survive into this section and are named in the statements rather than absorbed
+into the figure**, because a figure that hid them would let a later dispatch claim a world bound
+that assumes itself:
+
+* `WorldWitness` (`hww`) — an *invariant*, not a theorem (see its docstring: deriving it is a
+  36-case induction over `applyRule`). `chain_le_worldFuel'` carries it, as `chain_le_worlds_bounded`
+  does.
+* `NoSplit` — the branching arms are still confined, not discharged.
+* `maxBranches` — **quantified**, never the engine default. `buildTableau_isSome` at the default
+  `50000` is false at any fuel whatsoever, and nothing here reopens it.
+-/
+
+/--
+**The general fuel figure**, in the presence of fresh worlds.
+
+By `worldFuel'_eq` this is *definitionally* `chain_le_worlds_bounded`'s right-hand side, so
+`chain_le_worldFuel'` is a restatement rather than an estimate. `s` is the seed-world count.
+
+See `soundFuel'` for the single-world figure and the section preamble for why they are two names.
+-/
+def worldFuel' (φ : Formula) (s : Nat) : Nat :=
+  (s + soundFuel' φ) * soundFuel' φ
+
+/--
+**The figure is the chain bound, exactly.** Not an estimate: with
+`c := |subformulaClosure φ|` and `m := 2 ^ (2 * c)`,
+
+    2 * c * ((s + 2 * c * m) * m) = (2 * c * m) * (s + 2 * c * m) = soundFuel' φ * (s + soundFuel' φ)
+
+by associativity and commutativity alone. This is what lets `chain_le_worldFuel'` consume
+`chain_le_worlds_bounded` with no arithmetic slack.
+-/
+theorem worldFuel'_eq (φ : Formula) (s : Nat) :
+    worldFuel' φ s
+      = 2 * (FormalSystem.Syntax.subformulaClosure φ).card *
+          ((s + 2 * (FormalSystem.Syntax.subformulaClosure φ).card *
+              2 ^ (2 * (FormalSystem.Syntax.subformulaClosure φ).card)) *
+            2 ^ (2 * (FormalSystem.Syntax.subformulaClosure φ).card)) := by
+  simp only [worldFuel', soundFuel']
+  exact Nat.mul_left_comm _ _ _
+
+/-- Every formula is in its own subformula closure, so the closure is nonempty and the fuel
+figure is positive. -/
+theorem soundFuel'_pos (φ : Formula) : 0 < soundFuel' φ := by
+  have hn : 0 < (FormalSystem.Syntax.subformulaClosure φ).card :=
+    Finset.card_pos.mpr ⟨φ, FormalSystem.Syntax.self_mem_subformulaClosure φ⟩
+  simp only [soundFuel']
+  exact Nat.mul_pos (by omega) (Nat.pow_pos (by omega))
+
+/-- The general figure dominates the single-world one, so a caller who has budgeted for
+`worldFuel'` has budgeted for `soundFuel'` too. -/
+theorem soundFuel'_le_worldFuel' (φ : Formula) (s : Nat) : soundFuel' φ ≤ worldFuel' φ s := by
+  have hpos : 0 < s + soundFuel' φ := by have := soundFuel'_pos φ; omega
+  exact Nat.le_mul_of_pos_left _ hpos
+
+/--
+**The chain bound at the named general figure.** `chain_le_worlds_bounded`, restated so that
+downstream has a computable `Nat` to hand `expandBranchWithFuel` rather than a five-factor
+expression to re-inline.
+
+Hypotheses are unchanged from `chain_le_worlds_bounded` — **including `hww : WorldWitness C S
+(run n)`, which is an invariant and is not discharged here** — plus `hφ` identifying the stock's
+cardinality with the closure's, which is what turns the bound's `|C|` into `soundFuel' φ`'s `n`.
+-/
+theorem chain_le_worldFuel' {C : Finset Formula} {S : Finset WorldIndex} {φ : Formula}
+    {ord : TimeOrdering} {tracker : EventualityTracker}
+    (hC : TableauClosed C) (hT : TrichStock C)
+    (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0))
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1)))
+    (hlin : firstIncomparablePair (run n) ord = none)
+    (hev : ∀ t₁ ∈ (run n).knownTimes, ∀ t₂ ∈ (run n).knownTimes,
+      allEventualitiesFulfilledOrDuplicated tracker t₁ t₂ = true)
+    (hnb : findBlockedTime (run n) ord tracker = none)
+    (hww : WorldWitness C S (run n))
+    (hφ : C.card = (FormalSystem.Syntax.subformulaClosure φ).card) :
+    n ≤ worldFuel' φ S.card := by
+  have h := chain_le_worlds_bounded (S := S) (ord := ord) (tracker := tracker)
+    hC hT run n h0 hstep hlin hev hnb hww
+  rw [worldFuel'_eq, ← hφ]
+  exact h
+
+/--
+**The 4.3 terminus.** `expandBranchWithFuel_isSome_of_stock` instantiated at the general figure.
+
+This is instantiation, not new mathematics: the label-side hypothesis
+`|L| ≤ (s + 2*|C|*2^(2|C|)) * 2^(2|C|)` yields `2 * |C| * |L| ≤ worldFuel' φ s` by
+`worldFuel'_eq`'s identity, which is exactly what `expandBranchWithFuel_isSome_of_stock`'s
+`hfuel` wants.
+
+All three residuals stay visible in the statement, as the section preamble requires: `NoSplit`
+confines the branching arms, `maxBranches` is quantified with an explicit budget hypothesis, and
+the world dimension enters through the caller's `hL` — which `worldFinset_card_le` supplies only
+from a `WorldWitness` the caller must itself provide.
+-/
+theorem expandBranchWithFuel_isSome_at_worldFuel' {P : Branch → Prop}
+    {fc : ProofSystem.FrameClass} {C : Finset Formula} {L : Finset Label} {φ : Formula}
+    (hP : NoSplit P fc)
+    (hf : ∀ b, P b → ∀ x ∈ b, x.formula ∈ C) (hl : ∀ b, P b → ∀ x ∈ b, x.label ∈ L)
+    (s fuel : Nat) (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker)
+    (applied : AppliedSet) (maxBranches branchesUsed : Nat)
+    (hPb : P b)
+    (hφ : C.card = (FormalSystem.Syntax.subformulaClosure φ).card)
+    (hL : L.card ≤ (s + 2 * C.card * 2 ^ (2 * C.card)) * 2 ^ (2 * C.card))
+    (hfuel : worldFuel' φ s < fuel)
+    (hbud : branchesUsed + fuel ≤ maxBranches) :
+    (expandBranchWithFuel b fuel ord fc tr applied maxBranches branchesUsed).isSome = true := by
+  refine expandBranchWithFuel_isSome_of_stock hP hf hl fuel b ord tr applied
+    maxBranches branchesUsed hPb ?_ hbud
+  have hmul : 2 * C.card * L.card
+      ≤ 2 * C.card * ((s + 2 * C.card * 2 ^ (2 * C.card)) * 2 ^ (2 * C.card)) :=
+    Nat.mul_le_mul_left _ hL
+  have hid : worldFuel' φ s
+      = 2 * C.card * ((s + 2 * C.card * 2 ^ (2 * C.card)) * 2 ^ (2 * C.card)) := by
+    rw [worldFuel'_eq, hφ]
+  omega
 
 end FormalSystem.Metalogic.Decidability
