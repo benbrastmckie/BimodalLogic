@@ -532,4 +532,159 @@ theorem branchTruthAt_snce_pos_dense [DenselyOrdered D] [NoMinOrder D]
 
 end Dense
 
+
+/-! ## The assembled induction, and the `ℚ`/`ℝ` instantiation
+
+The assembly is `branchTruthAt_of_temporal` with the four halves above plugged in — one line per
+operator, no second induction, which is what isolating the assembly first bought.
+
+For the instantiation the placement is the `ℤ` one **cast**, not a new construction. Everything
+the temporal cases ask of a placement (`Function.Injective`, `OrderFaithful`, `OrderReflecting`)
+transports along any strictly monotone map, and `Int.cast` into an ordered field is one. What does
+*not* transport — and what makes this a separate milestone rather than a corollary — is
+`RayOnly`/`RaySplit`/`Stepped`: the cast image of a contiguous block is not contiguous in `ℚ`,
+which is exactly the content of `not_exists_gt_sameRegion_int` read the other way round.
+-/
+
+section Transport
+
+variable {D E : Type}
+variable [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable [AddCommGroup E] [LinearOrder E] [IsOrderedAddMonoid E]
+variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
+
+omit [AddCommGroup D] [IsOrderedAddMonoid D] [AddCommGroup E] [IsOrderedAddMonoid E] in
+/-- Order faithfulness transports along a strictly monotone map. -/
+theorem orderFaithful_comp {g : D → E} (hg : StrictMono g) (hOF : OrderFaithful b ord f) :
+    OrderFaithful b ord (g ∘ f) := fun i j hij => hg (hOF i j hij)
+
+omit [AddCommGroup D] [IsOrderedAddMonoid D] [AddCommGroup E] [IsOrderedAddMonoid E] in
+/-- Order reflection transports along a strictly monotone map. -/
+theorem orderReflecting_comp {g : D → E} (hg : StrictMono g) (hOR : OrderReflecting b ord f) :
+    OrderReflecting b ord (g ∘ f) := fun i j hij => hOR i j (hg.lt_iff_lt.mp hij)
+
+end Transport
+
+section Assembly
+
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
+
+/-- **The truth lemma at a dense carrier**, at every formula.
+
+Binder list against `IntTruth.branchTruthAt`: `RayOnly`, `RaySplit` and `Stepped` are gone and
+`[DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]` have taken their place. That is the whole of the
+difference between the two milestones. -/
+theorem branchTruthAt_dense [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]
+    (hf : Function.Injective f) (hOF : OrderFaithful b ord f) (hOR : OrderReflecting b ord f)
+    (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ []) (χ : Formula) : BranchTruthAt b ord f χ :=
+  branchTruthAt_of_temporal hf fc hSat hOpen hTot hBA hCheck hne
+    (fun _ _ hφ hψ w r =>
+      ⟨branchTruthAt_untl_pos_dense hf hOF hOR hV hCheck hTW hne hφ hψ w r,
+        branchTruthAt_untl_neg_dense hf hOF hOR hV hCheck hTW hne hφ w r⟩)
+    (fun _ _ hφ hψ w r =>
+      ⟨branchTruthAt_snce_pos_dense hf hOF hOR hV hCheck hTW hne hφ hψ w r,
+        branchTruthAt_snce_neg_dense hf hOF hOR hV hCheck hTW hne hφ w r⟩)
+    χ
+
+end Assembly
+
+section DenseCarrier
+
+variable {b : Branch} {ord : TimeOrdering}
+
+/--
+**The countermodel at an arbitrary dense carrier reached by a strictly monotone cast.**
+
+Stated once and applied twice, because the `ℚ` and `ℝ` headline results differ only in which
+binder list the validity predicate carries — the model, the placement and the truth lemma are the
+same objects, exactly as `not_valid_of_hasOpen_int` and `not_validDiscrete_of_hasOpen_int` are at
+`ℤ`.
+-/
+theorem exists_countermodel_dense (D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]
+    {g : ℤ → D} (hg : StrictMono g)
+    (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
+    (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) :
+    ∃ t : D, ¬ TruthAt (normModel b ord (g ∘ intPlace b ord hV))
+      (regionOmega (g ∘ intPlace b ord hV))
+      (regionHistory (g ∘ intPlace b ord hV) l₀.world (0 : D)) t χ := by
+  set f : BranchTime b → D := g ∘ intPlace b ord hV with hf_def
+  have hf : Function.Injective f := hg.injective.comp (intPlace_injective hV)
+  have hOF : OrderFaithful b ord f := orderFaithful_comp hg (orderFaithful_intPlace hV)
+  have hOR : OrderReflecting b ord f := orderReflecting_comp hg (orderReflecting_intPlace hV)
+  have hne : b.knownWorlds ≠ [] := fun hc => by rw [hc] at hw₀; exact absurd hw₀ (by simp)
+  obtain ⟨i, hi⟩ := exists_index_of_mem_knownTimes (mem_knownTimes_of_mem hroot)
+  have hlab : stateLabel b ord f l₀.world (f i) = l₀ := by
+    rw [stateLabel_placed hf l₀.world (rfl : f i = f i), normWorld_eq_self hw₀, hi]
+  have hneg : b.hasNegAt χ (stateLabel b ord f l₀.world (f i)) = true := by
+    rw [hlab, hasNegAt_iff_mem]; exact hroot
+  exact ⟨f i, (branchTruthAt_dense hf hOF hOR hV fc hSat hOpen hTot hBA hCheck hTW hne
+    χ l₀.world (f i)).2 hneg⟩
+
+/-- The cast `ℤ → ℚ` is strictly monotone. -/
+theorem strictMono_intCast_rat : StrictMono (fun z : ℤ => (z : ℚ)) :=
+  fun a c h => by show (a : ℚ) < (c : ℚ); exact_mod_cast h
+
+/-- The cast `ℤ → ℝ` is strictly monotone. -/
+theorem strictMono_intCast_real : StrictMono (fun z : ℤ => (z : ℝ)) :=
+  fun a c h => by show (a : ℝ) < (c : ℝ); exact_mod_cast h
+
+/-! ### Headline result, at `ℚ` -/
+
+/--
+**`not_validDense_of_hasOpen`.** A saturated open branch denying `χ` at one of its labels refutes
+`ValidDense χ`, the countermodel being carried by `ℚ`.
+
+`ℚ` is `DenselyOrdered`, `NoMaxOrder`, `NoMinOrder` and `Nontrivial`, which is `ValidDense`'s
+binder list plus the two end-point conditions the truth lemma needs and the predicate does not
+mention.
+-/
+theorem not_validDense_of_hasOpen (hV : branchOrderValid b ord = true)
+    (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
+    (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ ValidDense χ := by
+  intro hval
+  obtain ⟨t, ht⟩ := exists_countermodel_dense ℚ strictMono_intCast_rat hV fc hSat hOpen hTot hBA
+    hCheck hTW hw₀ hroot
+  exact ht (hval ℚ (regionFrame WorldIndex (BranchTime b) ℚ) _ _
+    (shiftClosed_regionOmega _) _ (regionHistory_mem_regionOmega _ _ _) t)
+
+/-! ### Headline result, at `ℝ` -/
+
+/--
+**`not_validDedekindDense_of_hasOpen`.** The same branch refutes `ValidDedekindDense χ`, the
+countermodel being carried by `ℝ`.
+
+This is the real-flow result, and it is the one `soundness_dedekind` targets. The extra binder
+`ValidDedekindDense` carries over `ValidDense` is the least-upper-bound property, discharged for
+`ℝ` by `isLUB_csSup`; nothing in the truth lemma consumes it.
+-/
+theorem not_validDedekindDense_of_hasOpen (hV : branchOrderValid b ord = true)
+    (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
+    (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ ValidDedekindDense χ := by
+  intro hval
+  obtain ⟨t, ht⟩ := exists_countermodel_dense ℝ strictMono_intCast_real hV fc hSat hOpen hTot hBA
+    hCheck hTW hw₀ hroot
+  exact ht (hval ℝ (fun s hs hb => ⟨sSup s, isLUB_csSup hs hb⟩)
+    (regionFrame WorldIndex (BranchTime b) ℝ) _ _
+    (shiftClosed_regionOmega _) _ (regionHistory_mem_regionOmega _ _ _) t)
+
+end DenseCarrier
+
 end FormalSystem.Metalogic.Decidability.Verified.Bridge
