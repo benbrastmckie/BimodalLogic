@@ -25,7 +25,7 @@ next_project_number: 413
   └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
   └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
-408 [PLANNED] — Identify the most faithful and mathematically correct route to ST
+408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
 
 ### Formula Refactor
 
@@ -121,7 +121,7 @@ COORDINATION: task 362 leg D owns stating the genuine strong-completeness result
 ---
 
 ### 408. Faithful route to strong completeness for the dedekind extension
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
