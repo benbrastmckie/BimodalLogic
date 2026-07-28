@@ -27,6 +27,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.Omega
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Valuation
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.PropSaturation
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -61,8 +62,12 @@ Tableau-based decision procedure returning proof terms or countermodels.
   codes, a parameter at gap codes — with the placed-point readback the truth lemma's atom case
   consumes, and the two theorems refuting the endpoint-copy gap policies
 - `Verified.Bridge.BoxSaturation`: `sat_box_temporal`, `sat_all_future_pos`, `sat_all_past_pos`
-  and their composition `sat_box_cross`, plus `BoxContextClosed` — the branch invariant that
-  turns the cross into the full grid of labels the `box` case needs
+  and their composition `sat_box_cross`, plus `BoxAnchored`/`boxAnchoredCheck` and
+  `sat_box_grid_of_check` — the branch condition that turns the cross into the full grid of
+  labels the `box` case needs
+- `Verified.Bridge.PropSaturation`: `sat_imp_pos`, the one member of the `sat_*` family
+  `CountermodelExtraction.lean` does not carry, because `impPos` is the only *branching*
+  propositional rule and the guard it fails is the arm-already-present test
 
 ## Status
 
