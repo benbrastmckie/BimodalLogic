@@ -87,12 +87,33 @@ Reynolds' proof steps, in printed order, against the declarations below.
 | *"`B` is true continuously in any class … `B` must be false arbitrarily soon after the gap contradicting Prior-U"* | `false_of_allClassesHaveLeftEnd` |
 | *"`L` holds wherever `R` does"* | `endsInGapOnLeft_of_endsInGapOnRight` |
 | *"Bad points only occur in non-singleton bad intervals"* | `reynolds_lemma6_nonsingleton` |
+| *"any bad interval, if bounded, has excluded end points in `M`"* | `reynolds_lemma6_right_endpoint` |
+| Lemma 6, the three clauses discharged here, assembled | `reynolds_lemma6` |
+| *"using mirror images of the above and previous results"* | **not discharged** — see below |
 | *"a temporal formula `C` which is true only at points within a `∼`-class after some `¬B` in that class"* | `afterNotHoldsInClassFormula` / `AfterNotHoldsInClass` / `afterNotHoldsInClassTemporal` (+ `_eval`, `_spec`) |
 | *"`C` is true for a while up to the gap at the end and false arbitrarily soon after the gap. This contradicts Prior-U"* | `false_of_holds_throughout_class_from_bounded` |
 | *"`C` will be false for a while at the beginning of each class"* | `exists_notAfterNotHolds_in_class` (via `reynolds_lemma5_first`) |
-| Lemma 7, first statement | `reynolds_lemma7_start` |
-| Lemma 7, second statement | `reynolds_lemma7_dense` |
+| Lemma 7, first statement, *"at the start"* | `reynolds_lemma7_start` |
+| Lemma 7, first statement, *"Similarly at the end"* | `reynolds_lemma7_end` (mirror: Prior-S, `λ`, `beforeNotHoldsInClassTemporal`) |
+| Lemma 7, second statement | `reynolds_lemma7_close_to_left` / `reynolds_lemma7_close_to_right` |
 | both statements assembled | `reynolds_lemma7` |
+
+## WHAT LEMMA 6 STILL OWES — the `R`-from-`L` mirror, and why it is not sorried
+
+Lemma 6's proof ends *"Using mirror images of the above and previous results we get our proof."*
+Three of its four halves are discharged below (`reynolds_lemma6`). The fourth — `R` holds wherever
+`L` does — is **not**, and no `sorry` stands in for it.
+
+The obstruction is concrete rather than a matter of effort. The forward direction routes through
+`reynolds_lemma5_first`, whose interval hypothesis is stated over `EndsInGapOnRight`
+(*"a maximal interval of `R`"*) because that is how Reynolds states Lemma 5. Its mirror — Lemma 5
+over maximal intervals of `λ` — is what Reynolds means by *"previous results"* in the mirrored
+sense, and Phase 19 landed the `ρ` side only. Mirroring Lemma 5 is a module-sized job of its own
+(`Lemma5.lean` is 820 lines), not a step inside this one.
+
+Note that Lemma 7's mirror **is** landed here in full, and does not run into this: a bad interval
+carries both `R` and `L` throughout (`ClassInteriorToBadInterval`), so its `Lemma 5` appeals can
+use the `R` side directly even in the past-directed argument.
 
 ## PAGE MAP — the plan's page references run one to two pages early
 
@@ -935,5 +956,388 @@ theorem reynolds_lemma7_close_to_left (atomMap : Formula → sig.preds)
     (Formula.imp A Formula.bot) hint ⟨x, hxc, fun q hq hqx => hcon q hq hqx⟩ hau hub hAu
 
 end Lemma7
+
+/-! ## The mirror: *"Similarly at the end"*
+
+Reynolds discharges the second half of Lemma 7's first statement with the single word *"Similarly"*
+(printed p.180). The mirror is not free: it runs on Prior-S rather than Prior-U, on `λ` rather than
+`ρ`, and on the mirror auxiliary formula *"before some `¬B` in that class"*. Everything it needs
+that the tree does not already have in mirrored form is landed below, with each declaration
+labelled as a mirror rather than a transcription — Reynolds prints no text for any of it.
+
+Lemma 5 is **not** mirrored, and does not need to be: `reynolds_lemma5_first` is already
+two-sided in its two points (its `hIcc` runs over `[min t t', max t t']`), and it is stated over
+`R`, which by Lemma 6 holds throughout a bad interval alongside `L`. That is why the hypothesis
+package below carries both. -/
+
+/-- **`λ` is a property of the `∼`-class**, the mirror of `endsInGapOnRight_congr`
+(`Lemma34.lean:242`). Reynolds uses it silently on both sides. -/
+theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) {t u : M.carrier}
+    (htu : ContempEquivDense M ε t u) : EndsInGapOnLeft M ε t ↔ EndsInGapOnLeft M ε u := by
+  have main : ∀ {p q : M.carrier}, ContempEquivDense M ε p q → EndsInGapOnLeft M ε p →
+      EndsInGapOnLeft M ε q := by
+    intro p q hpq h
+    obtain ⟨⟨y₀, hy₀p, hny₀⟩, h2, h3⟩ := h
+    have key : ∀ c : M.carrier, ContempEquivDense M ε p c ↔ ContempEquivDense M ε q c :=
+      fun _ => contemp_congr_left hε M hpq
+    refine ⟨⟨y₀, ?_, fun hc => hny₀ ((key y₀).mpr hc)⟩, ?_, ?_⟩
+    · by_contra hle
+      push_neg at hle
+      exact hny₀ ((key y₀).mpr
+        (contemp_of_between hε M hle hy₀p.le (contemp_symm hε M hpq)))
+    · rintro ⟨z, hz, hz2⟩
+      exact h2 ⟨z, (key z).mpr hz, fun y hy hc => hz2 y hy ((key y).mp hc)⟩
+    · rintro ⟨z, hzq, hnz, hall⟩
+      refine h3 ⟨z, ?_, fun hc => hnz ((key z).mp hc), ?_⟩
+      · by_contra hle
+        push_neg at hle
+        exact hnz ((key z).mp (contemp_of_between hε M hle hzq.le hpq))
+      · intro y hzy hyp
+        rcases lt_or_ge y q with hyq | hqy
+        · exact (key y).mpr (hall y hzy hyq)
+        · exact (key y).mpr
+            (contemp_of_between hε M hqy hyp.le (contemp_symm hε M hpq))
+  exact ⟨main htu, main (contemp_symm hε M htu)⟩
+
+/-- **The class has no first point**, the mirror of `exists_contemp_gt` (`Lemma34.lean:265`):
+`λ(t)`'s second conjunct at `z := t`, with reflexivity. -/
+theorem exists_contemp_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) {t : M.carrier} (h : EndsInGapOnLeft M ε t) :
+    ∃ y : M.carrier, y < t ∧ ContempEquivDense M ε t y := by
+  by_contra hcon
+  push_neg at hcon
+  exact h.2.1 ⟨t, contemp_refl hε M t, fun y hy => hcon y hy⟩
+
+/-- **`t`'s class lies in the interior of a bad interval** — printed p.180, Lemma 6: *"In any bad
+interval both `R` and `L` hold throughout."*
+
+The `R` half is `ClassInteriorToRInterval`; `lThroughout` is the `L` half, which
+`endsInGapOnLeft_of_endsInGapOnRight` supplies class by class. -/
+structure ClassInteriorToBadInterval (M : OrderedMonadicStructure sig)
+    (ε : MonadicFormula sig 2) (a t b : M.carrier) : Prop where
+  /-- The `R` half of *"both `R` and `L` hold throughout"*. -/
+  toR : ClassInteriorToRInterval M ε a t b
+  /-- The `L` half of *"both `R` and `L` hold throughout"*. -/
+  lThroughout : ∀ q : M.carrier, a ≤ q → q ≤ b → EndsInGapOnLeft M ε q
+
+/-- **The gap-crossing contradiction, up to `s` and bounded** — the past-directed mirror of
+`false_of_holds_throughout_class_from_bounded`, on Prior-S and `λ`. No printed source: Reynolds
+writes only *"Similarly at the end"*. -/
+theorem false_of_holds_throughout_class_upto_bounded {atomMap : Formula → sig.preds}
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_S : SemanticPriorS M atomMap)
+    {s : M.carrier} (hs : EndsInGapOnLeft M ε s) (P : Formula)
+    {b : M.carrier} (hbs : b < s) (hnb : ¬ ContempEquivDense M ε s b)
+    (hin : ∀ r : M.carrier, ContempEquivDense M ε s r → r ≤ s → TemporalTruth M atomMap r P)
+    (hout : ∀ u : M.carrier, u < s → b < u → ¬ ContempEquivDense M ε s u →
+      ∃ r : M.carrier, r < s ∧ u ≤ r ∧ ¬ TemporalTruth M atomMap r P) : False := by
+  have hu₀ : ∃ u : M.carrier, u < s ∧ b < u ∧ ¬ ContempEquivDense M ε s u := by
+    by_contra hcon
+    push_neg at hcon
+    exact hs.2.2 ⟨b, hbs, hnb, fun y h₁ h₂ => hcon y h₂ h₁⟩
+  obtain ⟨u₀, hu₀s, hbu₀, hnu₀⟩ := hu₀
+  obtain ⟨r₀, hr₀s, hu₀r₀, hnP₀⟩ := hout u₀ hu₀s hbu₀ hnu₀
+  obtain ⟨y, hys, hcy⟩ := exists_contemp_lt hε M hs
+  have hstretch : ∃ c : M.carrier, c < s ∧ ∀ r : M.carrier, c < r → r < s →
+      TemporalTruth M atomMap r P :=
+    ⟨y, hys, fun r h₁ h₂ => hin r
+      (contemp_trans hε M hcy
+        (contemp_of_between hε M h₁.le h₂.le (contemp_symm hε M hcy))) h₂.le⟩
+  obtain ⟨s₁, hs₁s, hbelow, hcase⟩ := h_prior_S s P hstretch ⟨r₀, hr₀s, hnP₀⟩
+  have hns₁ : ¬ ContempEquivDense M ε s s₁ := by
+    intro hc
+    rcases hcase with hn | ⟨_hb, hkminus⟩
+    · exact hn (hin s₁ hc hs₁s.le)
+    · obtain ⟨y', hy's₁, hcy'⟩ :=
+        exists_contemp_lt hε M ((endsInGapOnLeft_congr hε M hc).mp hs)
+      obtain ⟨r, hy'r, hrs₁, hnr⟩ := hkminus y' hy's₁
+      refine hnr (hin r (contemp_trans hε M hc ?_) (le_trans hrs₁.le hs₁s.le))
+      exact contemp_trans hε M hcy'
+        (contemp_of_between hε M hy'r.le hrs₁.le (contemp_symm hε M hcy'))
+  have hex : ∃ r : M.carrier, r < s ∧ s₁ < r ∧ ¬ ContempEquivDense M ε s r := by
+    by_contra hcon
+    push_neg at hcon
+    exact hs.2.2 ⟨s₁, hs₁s, hns₁, fun z h₁ h₂ => hcon z h₂ h₁⟩
+  obtain ⟨r, hrs, hs₁r, hnr⟩ := hex
+  rcases lt_or_ge s₁ r₀ with hlt | hge
+  · exact hnP₀ (hbelow r₀ hlt hr₀s)
+  · have hbr : b < r :=
+      lt_of_le_of_lt (le_trans hbu₀.le (le_trans hu₀r₀ hge)) hs₁r
+    obtain ⟨r', hr's, hrr', hnP'⟩ := hout r hrs hbr hnr
+    exact hnP' (hbelow r' (lt_of_lt_of_le hs₁r hrr') hr's)
+
+/-- **`C'`'s monadic form** — *"I am at a point within a `∼`-class before some `¬β` in that
+class"*, the mirror of `afterNotHoldsInClassFormula`.
+
+De Bruijn layout: free variable `0` is `x`; under `∃v` the indices are `0 = v`, `1 = x`. -/
+def beforeNotHoldsInClassFormula (ε : MonadicFormula sig 2) (β : MonadicFormula sig 1) :
+    MonadicFormula sig 1 :=
+  .ex (.and (epsAt ε 1 0) (.and (.lt 1 0) (.not (atVar β 0))))
+
+/-- **What `C'` says.** -/
+def BeforeNotHoldsInClass (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (P : M.carrier → Prop) (t : M.carrier) : Prop :=
+  ∃ v : M.carrier, ContempEquivDense M ε t v ∧ t < v ∧ ¬ P v
+
+/-- **The `C'` transcription is correct** — checked, not asserted. -/
+theorem beforeNotHoldsInClassFormula_eval (M : OrderedMonadicStructure sig)
+    (ε : MonadicFormula sig 2) (β : MonadicFormula sig 1) (t : M.carrier) :
+    eval M (fun _ => t) (beforeNotHoldsInClassFormula ε β) ↔
+      BeforeNotHoldsInClass M ε (fun v => eval M (fun _ => v) β) t := by
+  simp only [beforeNotHoldsInClassFormula, BeforeNotHoldsInClass, eval, eval_epsAt, eval_atVar,
+    Fin.cons_zero, b2_one]
+
+/-- **`C'` is downward closed in a class** — the mirror of `afterNotHoldsInClass_of_le`. -/
+theorem beforeNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (P : M.carrier → Prop) {t u : M.carrier}
+    (htu : ContempEquivDense M ε t u) (hle : u ≤ t) (ht : BeforeNotHoldsInClass M ε P t) :
+    BeforeNotHoldsInClass M ε P u := by
+  obtain ⟨v, hvc, htv, hnv⟩ := ht
+  exact ⟨v, contemp_trans hε M (contemp_symm hε M htu) hvc, lt_of_le_of_lt hle htv, hnv⟩
+
+section Lemma7Mirror
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- **Reynolds' `C'`** — the mirror of `afterNotHoldsInClassTemporal`. -/
+noncomputable def beforeNotHoldsInClassTemporal (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ε : MonadicFormula sig 2) (B : Formula) : Formula :=
+  (uSExpressivelyCompleteOverDensePrior atomMap h_surj
+    (beforeNotHoldsInClassFormula ε (temporalToMonadic atomMap B))).val
+
+/-- **What `C'` holds of**, in every Prior structure. -/
+theorem beforeNotHoldsInClassTemporal_spec (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ε : MonadicFormula sig 2) (B : Formula) (M : OrderedMonadicStructure sig)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    (t : M.carrier) :
+    TemporalTruth M atomMap t (beforeNotHoldsInClassTemporal atomMap h_surj ε B) ↔
+      BeforeNotHoldsInClass M ε (fun v => TemporalTruth M atomMap v B) t := by
+  refine ((uSExpressivelyCompleteOverDensePrior atomMap h_surj
+    (beforeNotHoldsInClassFormula ε (temporalToMonadic atomMap B))).property
+      M h_prior_U h_prior_S t).symm.trans ?_
+  rw [beforeNotHoldsInClassFormula_eval]
+  simp only [eval_temporalToMonadic]
+
+/-- **Reynolds 1992, §6 Lemma 7, printed p.180 — first statement, the *end* half.**
+
+> *… Similarly at the end.*
+
+The mirror of `reynolds_lemma7_start`, on Prior-S, `λ` and `C'`. Reynolds prints one word for it;
+everything below the statement is therefore this tree's mirror rather than a transcription. -/
+theorem reynolds_lemma7_end (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (B : Formula) {a t b : M.carrier}
+    (hint : ClassInteriorToBadInterval M ε a t b)
+    (hend : ∃ x : M.carrier, ContempEquivDense M ε t x ∧
+      ∀ q : M.carrier, ContempEquivDense M ε t q → x < q → TemporalTruth M atomMap q B)
+    {u : M.carrier} (hau : a ≤ u) (hub : u ≤ b) : TemporalTruth M atomMap u B := by
+  by_contra hnB
+  obtain ⟨x, hxc, hxB⟩ := hend
+  have hR := hint.toR
+  have ht : EndsInGapOnRight M ε t := hR.rThroughout t hR.left_lt.le hR.lt_right.le
+  set C := beforeNotHoldsInClassTemporal atomMap h_surj ε B with hCdef
+  have hCspec : ∀ z : M.carrier, TemporalTruth M atomMap z C ↔
+      BeforeNotHoldsInClass M ε (fun v => TemporalTruth M atomMap v B) z := fun z =>
+    beforeNotHoldsInClassTemporal_spec atomMap h_surj ε B M h_prior_U h_prior_S z
+  have hIcc : ∀ z w : M.carrier, a ≤ z → z ≤ b → a ≤ w → w ≤ b →
+      ∀ q : M.carrier, min z w ≤ q → q ≤ max z w → EndsInGapOnRight M ε q := by
+    intro z w hz₁ hz₂ hw₁ hw₂ q hq₁ hq₂
+    exact hR.rThroughout q (le_trans (le_min hz₁ hw₁) hq₁) (le_trans hq₂ (max_le hz₂ hw₂))
+  have hat : a ≤ t := hR.left_lt.le
+  have htb : t ≤ b := hR.lt_right.le
+  -- *"By lemma 5, `¬B` also holds somewhere in the class."*
+  obtain ⟨p, hpc, hpB⟩ :=
+    reynolds_lemma5_first h_surj hε M h_prior_U h_prior_S (Formula.imp B Formula.bot)
+      (hIcc u t hau hub hat htb) ⟨u, contemp_refl hε M u, hnB⟩
+  have hap : a < p := lt_of_classMate hε M hR.left_lt hR.left_out hpc
+  have hpb : p < b := classMate_lt hε M hR.lt_right hR.right_out hpc
+  have hLp : EndsInGapOnLeft M ε p := hint.lThroughout p hap.le hpb.le
+  obtain ⟨s, hsp, hpsc⟩ := exists_contemp_lt hε M hLp
+  have hts : ContempEquivDense M ε t s := contemp_trans hε M hpc hpsc
+  have has : a < s := lt_of_classMate hε M hR.left_lt hR.left_out hts
+  have hsb : s < b := classMate_lt hε M hR.lt_right hR.right_out hts
+  have hLs : EndsInGapOnLeft M ε s := hint.lThroughout s has.le hsb.le
+  have hnsa : ¬ ContempEquivDense M ε s a :=
+    fun hc => hR.left_out (contemp_trans hε M hts hc)
+  -- `hin`: `C'` holds throughout `s`'s class up to `s`.
+  have hin : ∀ r : M.carrier, ContempEquivDense M ε s r → r ≤ s →
+      TemporalTruth M atomMap r C := by
+    intro r hsr hle
+    refine (hCspec r).mpr (beforeNotHoldsInClass_of_le hε M _ hsr hle ?_)
+    exact ⟨p, contemp_trans hε M (contemp_symm hε M hts) hpc, hsp, hpB⟩
+  -- `hout`: `C'` is false arbitrarily soon *before* the gap at the left end.
+  have hnCx : ¬ BeforeNotHoldsInClass M ε (fun v => TemporalTruth M atomMap v B) x := by
+    rintro ⟨v, hvc, hxv, hnv⟩
+    exact hnv (hxB v (contemp_trans hε M hxc hvc) hxv)
+  have hout : ∀ w : M.carrier, w < s → a < w → ¬ ContempEquivDense M ε s w →
+      ∃ r : M.carrier, r < s ∧ w ≤ r ∧ ¬ TemporalTruth M atomMap r C := by
+    intro w hws haw hnsw
+    have hax : a < x := lt_of_classMate hε M hR.left_lt hR.left_out hxc
+    have hxb : x < b := classMate_lt hε M hR.lt_right hR.right_out hxc
+    obtain ⟨w', hw'c, hw'⟩ :=
+      reynolds_lemma5_first h_surj hε M h_prior_U h_prior_S (Formula.imp C Formula.bot)
+        (hIcc x w hax.le hxb.le haw.le (le_trans hws.le hsb.le))
+        ⟨x, contemp_refl hε M x, fun h => hnCx ((hCspec x).mp h)⟩
+    refine ⟨max w' w, ?_, le_max_right w' w, ?_⟩
+    · have hkey : ∀ z : M.carrier, ContempEquivDense M ε w z → z < s := by
+        intro z hwz
+        by_contra hcon
+        push_neg at hcon
+        have hws' : ContempEquivDense M ε w s :=
+          contemp_of_between hε M hws.le hcon hwz
+        exact hnsw (contemp_symm hε M hws')
+      rcases le_total w' w with h | h
+      · rw [max_eq_right h]; exact hkey w (contemp_refl hε M w)
+      · rw [max_eq_left h]; exact hkey w' hw'c
+    · rcases le_total w' w with h | h
+      · rw [max_eq_right h]
+        intro hCw
+        exact hw' ((hCspec w').mpr
+          (beforeNotHoldsInClass_of_le hε M _ hw'c h ((hCspec w).mp hCw)))
+      · rw [max_eq_left h]; exact hw'
+  exact false_of_holds_throughout_class_upto_bounded hε M h_prior_S hLs C has hnsa hin hout
+
+/-- **Reynolds 1992, §6 Lemma 7, printed p.181 — second statement, the *right end* half.** -/
+theorem reynolds_lemma7_close_to_right (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {a t b : M.carrier}
+    (hint : ClassInteriorToBadInterval M ε a t b)
+    (hsome : ∃ u : M.carrier, a ≤ u ∧ u ≤ b ∧ TemporalTruth M atomMap u A)
+    (x : M.carrier) (hxc : ContempEquivDense M ε t x) :
+    ∃ q : M.carrier, ContempEquivDense M ε t q ∧ x < q ∧ TemporalTruth M atomMap q A := by
+  by_contra hcon
+  push_neg at hcon
+  obtain ⟨u, hau, hub, hAu⟩ := hsome
+  exact reynolds_lemma7_end atomMap h_surj hε M h_prior_U h_prior_S
+    (Formula.imp A Formula.bot) hint ⟨x, hxc, fun q hq hxq => hcon q hq hxq⟩ hau hub hAu
+
+/-- **Reynolds 1992, §6 Lemma 7, printed pp.180-181 — both statements.**
+
+> *If a formula `B` is true for a while at the start of a `∼`-class in a bad interval then it
+> holds throughout the bad interval. Similarly at the end.*
+>
+> *If a formula is true anywhere in a bad interval it is true arbitrarily close to each end of
+> each class in the interval.*
+
+The four halves assembled, on one class in the interior of a bad interval. -/
+theorem reynolds_lemma7 (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {a t b : M.carrier}
+    (hint : ClassInteriorToBadInterval M ε a t b) :
+    (∀ B : Formula, (∃ x : M.carrier, ContempEquivDense M ε t x ∧
+        ∀ q : M.carrier, ContempEquivDense M ε t q → q < x → TemporalTruth M atomMap q B) →
+      ∀ u : M.carrier, a ≤ u → u ≤ b → TemporalTruth M atomMap u B) ∧
+    (∀ B : Formula, (∃ x : M.carrier, ContempEquivDense M ε t x ∧
+        ∀ q : M.carrier, ContempEquivDense M ε t q → x < q → TemporalTruth M atomMap q B) →
+      ∀ u : M.carrier, a ≤ u → u ≤ b → TemporalTruth M atomMap u B) ∧
+    (∀ A : Formula, (∃ u : M.carrier, a ≤ u ∧ u ≤ b ∧ TemporalTruth M atomMap u A) →
+      ∀ x : M.carrier, ContempEquivDense M ε t x →
+        (∃ q : M.carrier, ContempEquivDense M ε t q ∧ q < x ∧ TemporalTruth M atomMap q A) ∧
+        (∃ q : M.carrier, ContempEquivDense M ε t q ∧ x < q ∧
+          TemporalTruth M atomMap q A)) := by
+  refine ⟨fun B hstart u h₁ h₂ => reynolds_lemma7_start atomMap h_surj hε M h_prior_U h_prior_S
+      B hint.toR hstart h₁ h₂,
+    fun B hend u h₁ h₂ => reynolds_lemma7_end atomMap h_surj hε M h_prior_U h_prior_S
+      B hint hend h₁ h₂,
+    fun A hsome x hxc => ⟨?_, ?_⟩⟩
+  · exact reynolds_lemma7_close_to_left atomMap h_surj hε M h_prior_U h_prior_S A hint.toR
+      hsome x hxc
+  · exact reynolds_lemma7_close_to_right atomMap h_surj hε M h_prior_U h_prior_S A hint
+      hsome x hxc
+
+/-! ## *"Any bad interval, if bounded, has excluded end points in `M`"*
+
+Printed p.180, the third clause of Lemma 6's statement. This is Lemma 3's argument
+(`reynolds_lemma3_right`, `Lemma34.lean:308`) run on `R ∨ L` in place of `R`: Prior-U applied to
+the temporal formula `badPointFormula` produces a first non-bad point, which is an element of `M`
+excluded from the interval.
+
+Reynolds' *"plainly impossible given `ρ`"* step — the elimination of Prior-U's *last point of the
+stretch* disjunct — needs `R` at the boundary point, which is Lemma 6's own first clause. It is
+therefore taken as the hypothesis `hbadR` rather than silently assumed. -/
+
+/-- **Reynolds 1992, §6 Lemma 6, printed p.180 — third clause.**
+
+> *Any bad interval, if bounded, has excluded end points in `M` (neither `R` nor `L` holds at
+> these end points).*
+
+The right-hand end point. `hbadR` is Lemma 6's first clause (*"in any bad interval both `R` and
+`L` hold throughout"*) in the form this argument consumes. -/
+theorem reynolds_lemma6_right_endpoint (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t)
+    (hbadR : ∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q)
+    (hnot : ∃ u : M.carrier, t < u ∧ ¬ IsBadPoint M ε u) :
+    ∃ s : M.carrier, t < s ∧
+      (∀ r : M.carrier, t < r → r < s → IsBadPoint M ε r) ∧ ¬ IsBadPoint M ε s := by
+  have hspec : ∀ r : M.carrier,
+      TemporalTruth M atomMap r (badPointFormula atomMap h_surj ε) ↔ IsBadPoint M ε r :=
+    fun r => badPointFormula_spec atomMap h_surj ε M h_prior_U h_prior_S r
+  obtain ⟨y, hty, hy⟩ := endsInGapOnRight_forAWhile hε M ht
+  have hstretch : ∃ s : M.carrier, t < s ∧
+      ∀ r : M.carrier, t < r → r < s →
+        TemporalTruth M atomMap r (badPointFormula atomMap h_surj ε) :=
+    ⟨y, hty, fun r h₁ h₂ => (hspec r).mpr (IsBadPoint.of_right (hy r h₁ h₂.le))⟩
+  obtain ⟨u, htu, hnu⟩ := hnot
+  obtain ⟨s, hts, hbelow, hcase⟩ :=
+    h_prior_U t (badPointFormula atomMap h_surj ε) hstretch
+      ⟨u, htu, fun h => hnu ((hspec u).mp h)⟩
+  refine ⟨s, hts, fun r h₁ h₂ => (hspec r).mp (hbelow r h₁ h₂), ?_⟩
+  rcases hcase with hns | ⟨hs, hkplus⟩
+  · exact fun h => hns ((hspec s).mpr h)
+  · exfalso
+    have hRs : EndsInGapOnRight M ε s := hbadR s hts.le ((hspec s).mp hs)
+    obtain ⟨y', hsy', hy'⟩ := endsInGapOnRight_forAWhile hε M hRs
+    obtain ⟨r, hsr, hry', hnr⟩ := hkplus y' hsy'
+    exact hnr ((hspec r).mpr (IsBadPoint.of_right (hy' r hsr hry'.le)))
+
+/-- **Reynolds 1992, §6 Lemma 6, printed p.180 — the clauses this phase discharges.**
+
+> *Bad points only occur in non-singleton bad intervals.*
+>
+> *In any bad interval both `R` and `L` hold throughout. Any bad interval, if bounded, has
+> excluded end points in `M` (neither `R` nor `L` holds at these end points).*
+
+Three of the four halves, on a class in the interior of a maximal interval of `R`:
+
+1. the point is not an isolated bad point;
+2. `L` holds wherever `R` does — Reynolds' *"we first show that `L` holds wherever `R` does"*;
+3. the interval, if bounded on the right, has an excluded end point in `M`.
+
+The **fourth** half — Reynolds' *"using mirror images of the above and previous results"*, i.e.
+`R` wherever `L` holds — is **not** discharged here, and is not sorried either: it needs the
+mirror of **Lemma 5** over maximal intervals of `λ`, which the tree does not have (Phase 19
+landed the `ρ` side only). See the phase deviation record. -/
+theorem reynolds_lemma6 (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {a t b : M.carrier}
+    (hint : ClassInteriorToRInterval M ε a t b) :
+    (∃ y : M.carrier, t < y ∧ ∀ r : M.carrier, t < r → r ≤ y → IsBadPoint M ε r) ∧
+    EndsInGapOnLeft M ε t ∧
+    ((∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q) →
+      (∃ u : M.carrier, t < u ∧ ¬ IsBadPoint M ε u) →
+      ∃ s : M.carrier, t < s ∧
+        (∀ r : M.carrier, t < r → r < s → IsBadPoint M ε r) ∧ ¬ IsBadPoint M ε s) := by
+  have ht : EndsInGapOnRight M ε t :=
+    hint.rThroughout t hint.left_lt.le hint.lt_right.le
+  exact ⟨reynolds_lemma6_nonsingleton hε M ht,
+    endsInGapOnLeft_of_endsInGapOnRight atomMap h_surj hε M h_prior_U h_prior_S hint,
+    fun hbadR hnot =>
+      reynolds_lemma6_right_endpoint atomMap h_surj hε M h_prior_U h_prior_S ht hbadR hnot⟩
+
+end Lemma7Mirror
 
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
