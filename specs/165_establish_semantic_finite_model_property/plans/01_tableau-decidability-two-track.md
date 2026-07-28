@@ -1050,8 +1050,35 @@ zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-n
   `chain_le_stock` (an unbranched run out of a stock-confined branch takes at most `2·|C|·|L|`
   steps) and `chain_le_soundFuel'` (at the T2 label figure `2^(2|C|)` that bound *is* `soundFuel'`,
   so the fuel figure is earned rather than stated). Zero sorries.
-- [ ] **4.3c T3 `buildTableau_isSome`** — outstanding, with a corrected statement. See the 4.3b
-  blocker note below for the three residuals and the refutation of the current statement.
+- [x] **4.3c-prerequisite T3 label dimension** — landed 2026-07-28e. `Fuel.lean` gains
+  `Branch.labelFinset`/`worldFinset`/`timeFinset` with `card_labelFinset_le`;
+  `chain_le_own_labels` (taking `L` to be the run's *own* label set discharges `chain_le_stock`'s
+  `hl` outright and relocates the obligation to a cardinality) and `chain_le_worlds_times` (that
+  cardinality split into the two dimensions a `Label` has); `TimeChain` (the run-level chain
+  invariant, stated as exactly `blocking_fires_of_card_lt`'s `hchain` at `b.timeFinset`);
+  `timeFinset_card_le_of_not_blocked` and its empty-tracker variant (**T2 contraposed** — a branch
+  the run has not blocked has at most `2 ^ (2·|C|)` times); `chain_le_worlds_of_not_blocked`;
+  `comparable_of_firstIncomparablePair_none` (linearity saturation gives pairwise comparability);
+  `timeChain_of_linearity_saturated`; and `chain_le_worlds_of_linearity_saturated`. Zero sorries.
+  *(deviation: altered — the sub-phase does not fully discharge the label dimension. One residual,
+  `OrderDual`, remains as a named hypothesis; see the 4.3c-prerequisite note below.)*
+- [x] **4.3c T3 `expandBranchWithFuel_isSome`** — landed 2026-07-28e in the corrected form the
+  4.3b blocker note specified. `NoSplit` is the branch invariant under which the engine's step
+  never splits and which survives an extending step;
+  `expandBranchWithFuel_isSome_of_noSplit` rules out all three sources of `none` — the branch
+  budget guard by the hypothesis `branchesUsed + fuel ≤ maxBranches` (invariant along the run,
+  since each step increments one and decrements the other), fuel exhaustion by the T3 progress
+  measure (`U.card < b.toFinset.card + fuel`, contradictory at `fuel = 0`), and the split arms by
+  the invariant. `expandBranchWithFuel_isSome_of_stock` instantiates it at `signedUniverse C L`.
+  `expandOnceUnblocked_nil` / `noSplit_nil` / `expandBranchWithFuel_nil_isSome` supply a concrete
+  non-vacuity witness, so the invariant is demonstrably satisfiable rather than possibly empty.
+  The engine is untouched. *(deviation: altered — `buildTableau_isSome` itself is NOT landed and
+  cannot be at the engine's default `maxBranches`; the corollary needs a caller that fixes the
+  budget. The `.split`/`.splitOrdered` arms remain outstanding, now isolated behind `NoSplit`
+  rather than behind a sorry.)*
+- [ ] **4.3d T3 residuals** — three named, isolated obligations, none a sorry: `OrderDual` (the
+  `futureOf`/`pastOf` duality — discharge path recorded), the world dimension `W`, and the
+  branching arms (`resolveOpenArm`'s own `none`).
 
 **Two settled-design corrections, both forced by source inspection, both recorded in the module
 docstring rather than assumed:**
@@ -1167,6 +1194,48 @@ a proof difficulty.
   reaches the branch only for the finitely many `A ∧ B` in the seed's trichotomy completion.
 - **Prohibited**: do not use `sorry`, `def X := True`, or a vacuous placeholder for any of the
   above; do not weaken `tableauClosed_of_closureStep_subset`; do not edit the engine.
+
+**BLOCKER (4.3b -> 4.3c) RESOLVED (2026-07-28e).** Both residuals the note above listed are
+discharged in the sense it asked for, and the corrected `expandBranchWithFuel_isSome` is proved.
+`lake build FormalSystem.Metalogic.Decidability` (1054 jobs) and `lake build BimodalTest`
+(1949 jobs) green; zero sorries in `Verified/`; no new axioms
+(`propext`, `Classical.choice`, `Quot.sound` only); conformance corpus verdict-neutral; five new
+`#guard_msgs` rows added to the regression corpus.
+
+- **Residual 1 (label dimension) — resolved down to one named side condition.** The decisive
+  observation is that `chain_le_stock` universally quantifies `L`, so instantiating it at the
+  run's *own* label set makes `hl` a triviality and moves the entire obligation into a
+  **cardinality**. That cardinality then splits cleanly (worlds × times), and only the time factor
+  is T2's business. The chain invariant itself comes from `timeLinearity` being self-suppressing:
+  `firstIncomparablePair` scans for a pair neither of whose members is in the other's transitive
+  future or past, so the rule's silence *is* pairwise comparability.
+- **Residual 2 (branching arms) — isolated, not discharged.** Now carried by the `NoSplit`
+  predicate rather than by prose, and `expandBranchWithFuel_isSome_of_noSplit` is stated over it.
+- **The one NEW residual — `OrderDual`, and why it is a hypothesis.** `firstIncomparablePair`
+  records comparability as `futureOf`-membership; `isTemporallyBlocked`, and hence
+  `blocking_fires_of_card_lt`, reads it as `ancestorTimes` = `pastOf`. These are the forward and
+  backward transitive closures of the *same* constraint list, so the duality holds — but proving
+  it needs an induction on `reachableForward`/`reachableBackward` (`SignedFormula.lean:741,751`),
+  and **both are `private`**, so the statement cannot even be written from `Fuel.lean`. There are
+  exactly two routes: an engine edit (forbidden by the wave-3 territory contract), or
+  `open private reachableForward reachableBackward from …`, which this repository already uses for
+  precisely this situation (`Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean:687`) and which is
+  pure consumption — no engine edit, no re-proof. **Take the `open private` route.** The
+  mathematical content is: forward BFS membership yields a constraint path, and backward BFS from
+  the far end recovers the near end within the same number of layers; both closures run at the
+  same default fuel (`100`), so no fuel mismatch is hidden in the statement. Five committed
+  `#guard_msgs` rows (chain, fork, diamond, post-`identifyTime`, depth-30) witness it holding on
+  the ordering shapes the engine actually builds, so it is not a silent assumption.
+- **A dimension the earlier notes never named — worlds.** `chain_le_worlds_of_not_blocked` carries
+  the world count as a parameter `W`. T1 bounds formulas and T2 bounds times; **neither bounds
+  worlds**, and a `Label` has both components. The argument for `W` is the S5 rules' fresh-world
+  discipline and is a genuinely separate obligation. Do not assume `soundFuel'` covers it — as
+  defined, `soundFuel' = 2·n·2^(2n)` has no world factor at all.
+- **`buildTableau_isSome` remains unprovable at the engine's default**, exactly as the blocker
+  note said. `expandBranchWithFuel_isSome_of_noSplit`/`_of_stock` are the corrected statements; a
+  `buildTableau`-level corollary requires a caller that fixes `maxBranches`, which the current
+  signature's default does not permit without an engine edit. Do not re-attempt the unconditional
+  form.
 
 ### Phase 5: Bridge Infrastructure (BranchOrder, Embed, Carrier) [IN PROGRESS]
 

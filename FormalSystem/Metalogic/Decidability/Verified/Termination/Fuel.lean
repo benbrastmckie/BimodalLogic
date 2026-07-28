@@ -44,25 +44,39 @@ discharged there; the label dimension enters as a hypothesis. `chain_le_soundFue
 bound at the T2 label figure and lands on `soundFuel'` itself, so the fuel figure this file
 defines is earned rather than merely stated — in the unbranched dimension.
 
+**Also landed (the label dimension and the corrected 4.3c).** `chain_le_own_labels` discharges
+`chain_le_stock`'s label hypothesis by taking `L` to be the run's own label set, which relocates
+the whole obligation to a cardinality; `Branch.card_labelFinset_le` then splits that cardinality
+into the two dimensions a `Label` has. `TimeChain` is the run-level chain invariant,
+`timeFinset_card_le_of_not_blocked` is T2 contraposed into the direction the fuel argument
+consumes, and `timeChain_of_linearity_saturated` establishes the invariant from `timeLinearity`'s
+silence — the rule fires exactly while an incomparable pair remains, so its exhaustion *is* the
+chain condition. On the 4.3c side, `expandBranchWithFuel_isSome_of_noSplit` proves totality with
+the branch budget quantified, ruling out all three sources of `none`.
+
 Outstanding, and deliberately not claimed anywhere below:
 
-1. **The label dimension.** `chain_le_stock` takes `∀ x ∈ run n, x.label ∈ L` as a hypothesis.
-   Supplying it in general is what `blocking_fires_of_card_lt` (`TimeTypeBound.lean`) is for, but
-   that lemma's own `hchain` hypothesis — that the times it counts are totally ordered by
-   `ancestorTimes` — is an invariant of the run that nothing yet establishes. It is `timeLinearity`
-   that makes the ordering total, so the missing piece is a run-level invariant tying
-   `timeLinearity`'s effect to `ancestorTimes`.
-2. **The branching arms.** `chain_le_stock` covers `.extended` steps. `expandBranchWithFuel` also
-   has `.split` and `.splitOrdered` arms, and its `isSome` in those arms depends on the fold over
-   sub-branches, on `resolveOpenArm` (which can report `none`), and on the `branchesUsed >=
-   maxBranches` guard.
-3. **`buildTableau_isSome` is false as an unconditional statement**, and this is a defect of the
+1. **The closure duality, `OrderDual`.** The one residual of the label dimension.
+   `firstIncomparablePair` records comparability as `futureOf`-membership; blocking reads it as
+   `ancestorTimes`, i.e. `pastOf`. The two are the forward and backward closures of the same
+   constraint list. It is a hypothesis rather than a theorem because `futureOf`/`pastOf` are
+   defined via the `private` `reachableForward`/`reachableBackward`, which cannot be inducted on
+   from this file without an engine edit (forbidden here) or an `open private … from …` import —
+   the latter being the recorded discharge path, and pure consumption. Five `#guard_msgs` rows
+   run the condition on the ordering shapes the engine builds, including after `identifyTime`.
+2. **The world dimension.** `chain_le_worlds_of_not_blocked` carries the world count as `W`. Its
+   argument is the S5 rules' fresh-world discipline and is a separate obligation from T3's two.
+3. **The branching arms.** Everything here covers `.extended` steps and the `NoSplit` invariant.
+   `expandBranchWithFuel`'s `.split` / `.splitOrdered` arms fold over sub-branches and can report
+   `none` through `resolveOpenArm` (`Saturation.lean:661-664, :686-689`), which is a distinct
+   obligation from the step bound and from the budget guard.
+4. **`buildTableau_isSome` is false as an unconditional statement**, and this is a defect of the
    *statement*, not of the engine. `buildTableau` calls `expandBranchWithFuel` at the default
    `maxBranches := 50000` and returns `none` the moment that counter is hit, no matter how much
    fuel it was given; and its own last arm returns `none` when the branch is still unsaturated
-   after the post-blocking pass. Any true form of the theorem has to quantify over `maxBranches`
-   (or take the branch budget as a hypothesis) rather than use the default. Recorded here so the
-   next dispatch does not spend its budget proving something false.
+   after the post-blocking pass. The corrected statement, proved below, quantifies over the branch
+   budget instead. A `buildTableau`-level corollary needs a caller willing to fix `maxBranches`,
+   which the current signature's default does not permit without an engine edit.
 -/
 
 namespace FormalSystem.Metalogic.Decidability
