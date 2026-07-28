@@ -329,7 +329,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
 - **Timing:** 3 dispatches, ~7 hours.
 - **Depends on:** none
 
-### Phase 2: Calculus Completion (R7, R2, R6, R5) [IN PROGRESS]
+### Phase 2: Calculus Completion (R7, R2, R6, R5) [PARTIAL]
 
 - **Goal:** The rule set is adequate and honestly reported: trichotomy branching exists, Dedekind
   rules exist, the `.timeout` conflation is split, and the open-branch certificate is strong
@@ -676,6 +676,26 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
     `timeLinearity` does not yet order, so the controls W5/W6 flip `total=true → false` when 2.6
     lands. The criterion is therefore "all seven flip to `total=true`", not "W1-W4 flip" —
     W5/W6's regression is expected, benign, and 2.7's to repair.
+    *(NOT STARTED — the only sub-phase of Phase 2 still open. Deliberately not begun rather than
+    begun and abandoned: it is a 57-site refactor of `RuleResult`/`ExpansionResult` across
+    `Tableau.lean`, `Saturation.lean`, `CancellableExpansion.lean`, `CountermodelExtraction.lean`,
+    `Automation/DatasetExport.lean` and the corpus, and a partial pass leaves the tree red.
+    Scoping for the dedicated dispatch, measured 2026-07-27b:*
+    - *`ExpansionResult.split (branches : List Branch)` and `RuleResult.branching` are matched at
+      57 sites across those six files. Note the plan text above reads as though `.split`'s
+      **payload** changes; an additive `ExpansionResult.splitOrdered` /
+      `RuleResult.branchingOrdered` pair leaves every existing consumer's behaviour intact and
+      only requires each `match` to gain an arm, which the compiler enumerates. Choosing between
+      the two shapes is the dispatch's first decision and should be raised, not assumed.*
+    - *`pick_extended` and the whole `ProgressLemmas` chain in `Tableau.lean` match on
+      `ExpansionResult`/`RuleResult` and must be updated with it. They are `all_goals`-robust
+      sweeps, so a new constructor costs an arm apiece rather than a re-proof.*
+    - *The done-criterion baseline is already re-pinned: all seven `TimeOrderProbe` rows currently
+      read `total=false` and must all read `total=true`. Their current pinned values are in
+      `TableauConformance.lean` and were measured against the post-2.6 engine, so they are the
+      right baseline to diff against.*
+    - *`Phase 3` expects **36** constructors including `timeLinearity`; 2.7 is what supplies it.
+      Until then the `mem_allRulesForFC_iff` gate cannot be written.)*
   - [x] **2.4 R5 — certificate strengthening** *(restated 2026-07-27; was BLOCKED)*
     (`Saturation.lean:50-59`): strengthen `ExpandedTableau.hasOpen` to carry `(fc : FrameClass)`
     and the proposition
