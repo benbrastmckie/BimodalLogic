@@ -365,4 +365,105 @@ theorem surgeredSemanticPriorS (atomMap : Formula → sig.preds)
 
 end PriorStructure
 
+/-! ## *"By the contemporaneity of `ε`, `I` … is all in one `∼_N`-class"*
+
+> By the contemporaneity of `ε`, `I` as a subset of `N`, like `I` as a subset of `M`, is all in
+> one `∼_N`-class. Could the class be bigger now?
+
+The named appeal is to clause (iii) of `IsContempEquivDense`: `M ⊨ ε(a,b)` iff `M|[a,b] ⊨ ε(a,b)`.
+Two points of `I` have the whole `M`-interval between them inside `I`, by convexity of a class,
+and `I` survives the surgery — so `M|[a,b]` and `N|[a,b]` have *the same points*, and clause (iii)
+read at `M` and at `N` sandwiches the two readings of `ε` together.
+
+The construction is `isContempEquivDense_dualize`'s `contemporary` clause with
+`surgerySubintervalIso` in place of `subintervalDualIso`; the landed `contempEquivDense_iso` does
+the crossing in both.
+
+Reynolds' follow-up question, *"Could the class be bigger now?"*, is answered by Lemma 9 itself
+rather than here: this direction (`I` stays together) is all his argument uses, and the
+possibility that the `∼_N`-class properly contains `I` is exactly what the reductio goes on to
+refute. -/
+
+section Contemporaneity
+
+variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
+  {Q : M.carrier → Prop} {t : M.carrier}
+
+/-- `min` on a restricted carrier is computed pointwise. -/
+theorem restrict_val_min {D : M.carrier → Prop} (x y : (restrictStructure M D).carrier) :
+    (min x y).val = min x.val y.val := by
+  rcases le_total x y with h | h
+  · rw [min_eq_left h, min_eq_left (show x.val ≤ y.val from h)]
+  · rw [min_eq_right h, min_eq_right (show y.val ≤ x.val from h)]
+
+/-- `max` on a restricted carrier is computed pointwise. -/
+theorem restrict_val_max {D : M.carrier → Prop} (x y : (restrictStructure M D).carrier) :
+    (max x y).val = max x.val y.val := by
+  rcases le_total x y with h | h
+  · rw [max_eq_right h, max_eq_right (show x.val ≤ y.val from h)]
+  · rw [max_eq_left h, max_eq_left (show y.val ≤ x.val from h)]
+
+/-- **`M|[a,b]` and `N|[u,v]` have the same points** when the whole `M`-interval `[a,b]` survives
+the surgery, `u` and `v` being `a` and `b` seen in `N`. -/
+def surgerySubintervalEquiv (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (Q : M.carrier → Prop) (t : M.carrier)
+    {u v : (surgeredStructure M ε Q t).carrier} {a b : M.carrier}
+    (hu : u.val = a) (hv : v.val = b)
+    (hin : ∀ z : M.carrier, a ≤ z → z ≤ b → SurgeryDomain M ε Q t z) :
+    (M.subinterval sig a b).carrier ≃
+      ((surgeredStructure M ε Q t).subinterval sig u v).carrier where
+  toFun x := ⟨⟨x.val, hin x.val x.property.1 x.property.2⟩,
+    hu ▸ x.property.1, hv ▸ x.property.2⟩
+  invFun y := ⟨y.val.val, hu ▸ y.property.1, hv ▸ y.property.2⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+/-- **The same-points equivalence is a structure isomorphism.** Both the order and every
+predicate reading are the inherited ones on `M.carrier`, so both clauses are definitional. -/
+def surgerySubintervalIso (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (Q : M.carrier → Prop) (t : M.carrier)
+    {u v : (surgeredStructure M ε Q t).carrier} {a b : M.carrier}
+    (hu : u.val = a) (hv : v.val = b)
+    (hin : ∀ z : M.carrier, a ≤ z → z ≤ b → SurgeryDomain M ε Q t z) :
+    StructIso (M.subinterval sig a b)
+      ((surgeredStructure M ε Q t).subinterval sig u v) where
+  toEquiv := surgerySubintervalEquiv M ε Q t hu hv hin
+  map_lt _ _ := Iff.rfl
+  map_interp _ _ := Iff.rfl
+
+/-- **A class is convex, as a set of points**: anything between two members of `t`'s class is in
+`t`'s class. Clause (ii) of `IsContempEquivDense` with the base point moved to `t`. -/
+theorem contemp_of_mem_class_interval (hε : IsContempEquivDense ε) {x y z : M.carrier}
+    (hx : ContempEquivDense M ε t x) (hy : ContempEquivDense M ε t y)
+    (h₁ : min x y ≤ z) (h₂ : z ≤ max x y) : ContempEquivDense M ε t z := by
+  have hequiv := hε.equiv M
+  rcases le_total x y with hxy | hxy
+  · rw [min_eq_left hxy] at h₁
+    rw [max_eq_right hxy] at h₂
+    exact hequiv.trans hx (hε.convex M x z y h₁ h₂ (hequiv.trans (hequiv.symm hx) hy))
+  · rw [min_eq_right hxy] at h₁
+    rw [max_eq_left hxy] at h₂
+    exact hequiv.trans hy (hε.convex M y z x h₁ h₂ (hequiv.trans (hequiv.symm hy) hx))
+
+/-- **`I` is all in one `∼_N`-class** — printed p.182.
+
+Two survivors of the designated class `I` are `∼_N`-equivalent. -/
+theorem surgeredContempEquiv_of_base (hε : IsContempEquivDense ε)
+    {x y : (surgeredStructure M ε Q t).carrier}
+    (hx : ContempEquivDense M ε t x.val) (hy : ContempEquivDense M ε t y.val) :
+    ContempEquivDense (surgeredStructure M ε Q t) ε x y := by
+  have hequiv := hε.equiv M
+  have hin : ∀ z : M.carrier, min x.val y.val ≤ z → z ≤ max x.val y.val →
+      SurgeryDomain M ε Q t z :=
+    fun z h₁ h₂ => Or.inr (contemp_of_mem_class_interval hε hx hy h₁ h₂)
+  have hiso := contempEquivDense_iso
+    (surgerySubintervalIso M ε Q t (u := min x y) (v := max x y)
+      (restrict_val_min x y) (restrict_val_max x y) hin) ε
+    ⟨x.val, min_le_left x.val y.val, le_max_left x.val y.val⟩
+    ⟨y.val, min_le_right x.val y.val, le_max_right x.val y.val⟩
+  exact (hε.contemporary (surgeredStructure M ε Q t) x y).mpr
+    (hiso.mpr ((hε.contemporary M x.val y.val).mp (hequiv.trans (hequiv.symm hx) hy)))
+
+end Contemporaneity
+
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
