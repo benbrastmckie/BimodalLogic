@@ -442,6 +442,37 @@ private def boxDiamondPersistence (branch : Branch) (w : WorldIndex) (t : TimeIn
   boxProps ++ diaProps
 
 /--
+`boxDiamondPersistence` only ever relabels: everything it emits carries the formula of some
+signed formula already on the branch.
+
+Stated here, rather than where it is used, because `boxDiamondPersistence` is `private` and so is
+opaque outside this module — and it appears in the output of six rules, which makes it the one
+piece of `applyRule` the subformula property (`Verified/Termination/SubformulaProperty.lean`)
+cannot reach on its own. The lemma is `Prop`-valued and additive; it changes nothing the engine
+computes.
+-/
+theorem mem_boxDiamondPersistence {branch : Branch} {w : WorldIndex} {t ft : TimeIndex}
+    {g : SignedFormula} (h : g ∈ boxDiamondPersistence branch w t ft) :
+    ∃ s ∈ branch, g.formula = s.formula := by
+  unfold boxDiamondPersistence at h
+  simp only [List.mem_append] at h
+  rcases h with h | h
+  · obtain ⟨s, hs, hsg⟩ := List.mem_filterMap.mp h
+    unfold Branch.boxPosAtWorldTime at hs
+    refine ⟨s, List.mem_of_mem_filter hs, ?_⟩
+    by_cases hc : branch.contains { s with label := { s.label with time := ft } } = true <;>
+      simp only [hc, if_true, if_false, reduceIte] at hsg
+    · exact absurd hsg (by simp)
+    · rw [← Option.some_inj.mp hsg]
+  · obtain ⟨s, hs, hsg⟩ := List.mem_filterMap.mp h
+    unfold Branch.diamondNegAtWorldTime at hs
+    refine ⟨s, List.mem_of_mem_filter hs, ?_⟩
+    by_cases hc : branch.contains { s with label := { s.label with time := ft } } = true <;>
+      simp only [hc, if_true, if_false, reduceIte] at hsg
+    · exact absurd hsg (by simp)
+    · rw [← Option.some_inj.mp hsg]
+
+/--
 Apply a single tableau rule to a signed formula, in the context of the branch it
 belongs to and the time ordering accumulated so far.
 
