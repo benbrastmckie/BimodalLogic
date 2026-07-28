@@ -238,14 +238,37 @@ composition of already-landed parts. That re-base is under way and its **bottom 
   `Kamp.translate_uniformFin_faithful`. `Kamp.kampArm_zeta_faithful_covers_attained`
   machine-checks that the faithful wire re-supplies every consumer of the attained one, so the
   re-base is a weakening and not a sideways move.
-- **Open.** The spine *above* the wire is still pinned at `SemanticPriorUZ` / `SemanticPriorSZ`.
-  Measured inventory: **110 hypothesis-binder sites across 22 live modules** —
-  `Kamp/KampPrior.lean` (26) and fifteen `Kamp/NfMultiAnchorBridge/` modules (roughly 50 between
-  them) being the bulk. Only four of those sites *consume* the carrier
-  (`Lemma53Faithful.lean:545`, `Lemma53FaithfulPast.lean:472`,
-  `NfMultiAnchorBridge/AggregateOffDiagK1.lean:1288` and `:1381`); the other hundred-odd are pure
-  threading. The cost is therefore breadth of restatement, not proof difficulty — but it is
-  breadth on the scale of the `Kamp/EANegationFixFaithful/` re-base, not of a single module.
+- **Closed: the only substantive obligation above the wire.** The two sites that genuinely
+  *consume* the carrier on the correctness path — `aggPop1_correct` and `aggPop1F_correct`
+  (`NfMultiAnchorBridge/AggregateOffDiagK1.lean:1288`, `:1381`) — consume it identically, by
+  feeding `prior_hasAttained*` to `Kamp.aggOdPopFold_iff` (`:1226`). That lemma touches its carrier
+  hypotheses at exactly one step, the bit-false branch of its cons case (`:1253`), and that step is
+  `VVecEA2.negFix_iff` — for which `VVecEA2.negFixFaithful_iff` is the faithful counterpart, needing
+  `HasFaithfulDedekindINF` alone. `Kamp.aggOdPopFold_iff_faithful`
+  (`Kamp/NfMultiAnchorBridge/AggregateOffDiagK1Faithful.lean`) is landed sorry-free, with
+  `Kamp.aggOdPopFold_iff_faithful_covers_attained` machine-checking the weakening. **What remains
+  below therefore contains no proof content at all.**
+- **Closed: the two roots of the bridge's UZ/SZ subgraph.**
+  `Kamp/NfMultiAnchorBridge/PriorInterfaceFaithful.lean` restates the interface
+  (`ExistProvidersFaithful`, `BracketCarrierCorrectVPriorFaithful`, both `k ≤ 1` lifts) and
+  `Kamp/NfMultiAnchorBridge/OuterGateFaithful.lean` the k = 2 outer gate. These two modules are the
+  only bridge modules whose own imports mention no completeness carrier, so every other
+  UZ/SZ-carrying bridge module sits above them.
+- **Open.** The rest of the spine above the wire is still pinned at `SemanticPriorUZ` /
+  `SemanticPriorSZ`: **72 hypothesis-binder lines across 15 live modules**, of which
+  `Kamp/KampPrior.lean` alone carries 26. All of it is restatement. (The measurement is
+  `grep -cE '(_?h_UZ|hUZ) *: *SemanticPriorUZ'` over the live tree: 85 lines in total, less the 5
+  re-based here and the 8 that are not re-base targets — `PriorINF.lean` and `DedekindINF.lean` are
+  the *suppliers*, `ZetaPriorTransfer.lean` already has its faithful siblings, and
+  `Lemma53Faithful.lean:545`, `Lemma53FaithfulPast.lean:472` and `Prop42Faithful.lean` are the
+  exclusion results that consume `HasAttainedINF.first_occ`'s attained conclusion and provably do
+  **not** carry over.)
+- **What makes the remainder awkward is `private`, not difficulty.** A faithful sibling can live in
+  a new module only when the declarations it consumes are visible there. Seven of the fifteen
+  remaining modules carry `private` declarations on the carrier-consuming path —
+  `ExteriorBracket.lean`'s `kvE2_extGate_anyBit_iff` (`:837`) is the diagnosed case — and for those
+  the sibling must be added inside the original module. The other eight, **including
+  `KampPrior.lean`**, are `private`-free and re-basable with no edit to any existing file.
 
 **Why the assumption is safe to make in this shape**: it is the *only* gap. Every other step of
 the route is landed and sorry-free — `prior_hasFaithfulDedekindINF_dense` and its dual supply the

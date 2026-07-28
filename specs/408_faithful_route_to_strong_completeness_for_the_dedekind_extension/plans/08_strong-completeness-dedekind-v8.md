@@ -1944,7 +1944,105 @@ scale of the `Kamp/EANegationFixFaithful/` re-base, not of one dispatch.
 `kampFaithfulExpressiveCompleteness_open` therefore remains the single strategic sorry, with its
 docstring updated to record what the wire closed and what the inventory above leaves open.
 
-### Phase 14.2: the `kampPriorExpressiveCompleteness` spine at the faithful carrier [IN PROGRESS]
+### Phase 14.2: the `kampPriorExpressiveCompleteness` spine at the faithful carrier [PARTIAL]
+
+**GATE ANSWERED — the phase's first task, and it was a gate.** The question was whether
+`aggOdPopFold_iff` bottoms out at `VVecEA2.negFix_iff` (mechanical) or at some other attained-only
+consumer (`[BLOCKED]`). **It bottoms out at `VVecEA2.negFix_iff`**, verified by reading the proof
+rather than assumed: `aggOdPopFold_iff` (`AggregateOffDiagK1.lean:1226`) touches `h_INF`/`h_SUP` at
+exactly one step, the bit-false branch of its cons case (`:1253`), and that step is
+`VVecEA2.negFix_iff`. Its nil case, its `VVecEA2.conjFull_iff` cons rewrite and its bit-true branch
+are carrier-free. `VVecEA2.negFixFaithful_iff`
+(`EANegationFixFaithful/VecEANegFixFaithful.lean:244`) therefore supplies it directly, and needs
+`HasFaithfulDedekindINF` **alone** — the `SUP` half is not consumed at all, exactly as at the ζ
+wire. **The obligation is not merely answered but discharged**:
+`aggOdPopFold_iff_faithful` is landed and sorry-free
+(`NfMultiAnchorBridge/AggregateOffDiagK1Faithful.lean`). The spine re-base has **no remaining proof
+content** — everything left is restatement.
+
+**Landed this dispatch** (622 lines across three new modules, zero edits to any existing file,
+zero removals, zero renames, all eleven declarations axiom-clean at
+`[propext, Classical.choice, Quot.sound]`):
+
+| Module | Contents |
+|---|---|
+| `NfMultiAnchorBridge/PriorInterfaceFaithful.lean` | `ExistProvidersFaithful`, `.toExistProviders`, `BracketCarrierCorrectVPriorFaithful`, `.toBracketCarrierCorrectVPrior`, the two `k ≤ 1` lifts |
+| `NfMultiAnchorBridge/OuterGateFaithful.lean` | `bracketEndChar_kvE2_hck_faithful`, `_complete_two_prior_faithful`, `_correct_two_prior_frag_faithful`, `…_covers_prior` |
+| `NfMultiAnchorBridge/AggregateOffDiagK1Faithful.lean` | `aggOdPopFold_iff_faithful`, `…_covers_attained`, `…_on_prior` |
+
+`PriorInterface.lean` and `OuterGate.lean` were chosen because they are the **only two roots** of
+the bridge's UZ/SZ subgraph: `PriorInterface` imports only `CarrierKv` and `OuterGate` only
+`SharedWitness`, neither of which mentions a completeness carrier, while every other UZ/SZ-carrying
+bridge module sits above one of them.
+
+**Two findings worth recording.**
+
+1. **`bracketEndChar_kvE2_sound_two_prior_frag` (`OuterGate.lean:297`) is already carrier-free.**
+   Despite its `_prior` name it binds no `SemanticPriorUZ` at all — `hfrag` plus the four provider
+   obligations carry the whole ⇒ direction. It needs **no** faithful sibling and is reused verbatim
+   at `P.toExistProviders`. So this rung's re-base cost one lemma, not three.
+2. **`private` is the real obstruction to the new-modules-only strategy, and it is
+   module-specific.** `ExteriorBracket.lean`'s carrier-consuming path runs through
+   `kvE2_extGate_anyBit_iff` (`:837`), which is `private` — its faithful sibling therefore *cannot*
+   live in a new module and must be added inside `ExteriorBracket.lean` itself, duplicating roughly
+   265 lines of body. Measured across the remaining scope, `private` declarations exist in 7 of the
+   15 remaining modules (`ExteriorBracket` 10, `ExteriorPinnedConversePastK` 6,
+   `ExteriorPinnedConverseK` 5, `AggregateHookDischarge` 5, `ExteriorNegationPastK` 2,
+   `AggregateOffDiagK1` 2, `ExteriorGateAssembleK` 1) and are **absent** from the other 8 —
+   including **`KampPrior.lean`, the single biggest chunk at 26 UZ binder lines, which has zero
+   `private` declarations** and is therefore re-basable entirely by new modules.
+
+**Scope, re-measured with the plan's own grep** (`grep -cE '(_?h_UZ|hUZ) *: *SemanticPriorUZ'`,
+live tree, Boneyard excluded): the baseline is **85 binder lines**, not the 110 this plan recorded
+— the 110 figure is not reproducible by the grep the plan cites and should be treated as
+superseded. Of those 85: **5 re-based this dispatch** (PriorInterface 2, OuterGate 3), **8 are not
+re-base targets at all** (`PriorINF` 2 and `DedekindINF` 1 are the *suppliers*
+`prior_hasAttained*`/`prior_hasDedekind*`; `ZetaPriorTransfer` 2 already has faithful siblings in
+`ZetaUniformExtractFaithful.lean`; `Lemma53Faithful` 2, `Lemma53FaithfulPast` 1 and `Prop42Faithful`
+1 are the exclusion results that provably do **not** carry over), leaving **72 lines across 15
+modules** as the genuine remainder. That is the number Phase 14.3 inherits.
+
+### Phase 14.3: the remaining 72 binder lines of the spine re-base [NOT STARTED]
+
+- **Goal**: finish what 14.2 began — re-base the remaining 72 `SemanticPriorUZ`/`SemanticPriorSZ`
+  binder lines across 15 modules onto `HasFaithfulDedekindINF`/`SUP`, then discharge
+  `kampFaithfulExpressiveCompleteness_open`. **There is no remaining proof content**: 14.2's gate
+  discharged the only substantive obligation (`aggOdPopFold_iff_faithful`). Everything here is
+  restatement.
+- **Suggested order, by the `private` finding**: take the 8 `private`-free modules first, all as
+  new modules with zero edits to originals — `ExteriorFiberK` (3), `InteriorGateGeneralK` (5),
+  `ExteriorConverterK` (1), `ExteriorConverterPastK` (1), `ExteriorNegationK` (2),
+  `EndIntervalConsumerK` (2), `ExteriorBracketAssembleK` (4), and **`KampPrior.lean` (26)**. Note
+  that `ExteriorFiberK` / `InteriorGateGeneralK` sit on `ExteriorBracketK`, which sits on
+  `ExteriorBracket` — check per module whether the *carrier-consuming* path actually reaches
+  `ExteriorBracket`'s private lemma, or only its public rungs.
+- **The 7 `private`-bearing modules** (`ExteriorBracket` 2, `ExteriorPinnedConverseK` 10,
+  `ExteriorPinnedConversePastK` 4, `AggregateHookDischarge` 4, `AggregateOffDiagK1` 6,
+  `ExteriorNegationPastK` 1, `ExteriorGateAssembleK` 1) each need a decision recorded before any
+  edit: either add the faithful sibling **inside** the original module (duplicating the private
+  body — D11-compatible, since it is a new declaration and removes/renames nothing) or promote
+  nothing and route around it. `ExteriorBracket`'s case is already diagnosed above; the other six
+  are unexamined.
+- **Owns**: new `*Faithful.lean` modules beside each original; in-file additions only where a
+  `private` dependency forces it. D11 throughout: zero removals, zero renames, every attained/UZ
+  original byte-identical unless a private dependency forces an in-file addition, and then only an
+  addition.
+- **Do NOT**: swap `Lemma53Faithful.lean:545` or `Lemma53FaithfulPast.lean:472` — these consume
+  `HasAttainedINF.first_occ`'s attained conclusion and provably do not carry over. Do not touch
+  `PriorINF.lean`, `DedekindINF.lean` or `ZetaPriorTransfer.lean` — they are suppliers, not spine.
+  Do not touch `Section5Correspondence.lean` (D13) or `PriorExpressiveness.lean` (D16). Do not
+  attempt `Transfer.lean:1242`.
+- **Verification Tier**: full.
+- **Done when**: `kampFaithfulExpressiveCompleteness_open` is sorry-free, hence
+  `uSExpressivelyCompleteOverDensePrior` axiom-clean; census delta zero; every attained original
+  unmodified except for sanctioned in-file additions.
+- **Depends on**: 14.2.
+- **Note**: likely three or four dispatches. A natural seam is the 8 `private`-free bridge modules
+  first, then `KampPrior.lean`, then the 7 `private`-bearing modules last.
+
+<!-- superseded 14.2 heading retained below for the original charter text -->
+
+### Phase 14.2 (original charter): the `kampPriorExpressiveCompleteness` spine at the faithful carrier
 
 - **Goal**: Discharge `kampFaithfulExpressiveCompleteness_open` by re-basing the spine above the
   ζ wire onto `HasFaithfulDedekindINF`/`SUP`, consuming Phase 14.1's `kampArm_zeta_faithful`.
