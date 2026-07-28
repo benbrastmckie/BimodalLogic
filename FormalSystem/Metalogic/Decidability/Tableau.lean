@@ -159,6 +159,16 @@ inductive TableauRule : Type where
   /-- Dedekind: separation. From `T(K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)))` add
       `T(K⁺(K⁺φ ∧ K⁻φ))`. Tableau counterpart of `Axiom.sep`. -/
   | sepRule
+  /-- Seriality (BX1/BX1'). At any label, add `T(F ⊤)` and `T(P ⊤)` — the tableau images of
+      `Axiom.serial_future` and `Axiom.serial_past` (`Axioms.lean:113, 117`). Persistent, and
+      self-suppressing once both are on the branch at that label.
+
+      Base rule in the soundness sense — both are base axioms, so it is sound for every frame
+      class — but deliberately **absent from `allRulesForFC`**. It is keyed on the *label*, not
+      on the formula's shape, so it applies to every signed formula on the branch, and any
+      position in a per-formula priority list is the wrong one. See
+      `serialityRules` / `expandOnce` for the globally-last scheduling it requires instead. -/
+  | serialityRule
   deriving Repr, DecidableEq, BEq, Hashable
 
 /-!
@@ -349,6 +359,12 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula)
   | .priorUGap, .pos, φ => decide (FrameClass.Dedekind ≤ fc) && (asAnd? φ).isSome
   | .priorSGap, .pos, φ => decide (FrameClass.Dedekind ≤ fc) && (asAnd? φ).isSome
   | .sepRule, .pos, φ => decide (FrameClass.Dedekind ≤ fc) && (asAnd? φ).isSome
+  -- Seriality: keyed on the label, not on the formula. `T(F⊤)` and `T(P⊤)` are wanted at every
+  -- label of every branch regardless of what formula carries that label, so there is no shape
+  -- to gate on and no frame class to gate on either. The real suppression is in `applyRule`,
+  -- which filters its two outputs against the branch and reports `.notApplicable` when both are
+  -- already present. Scheduling — not applicability — is what keeps this rule in its place.
+  | .serialityRule, _, _ => true
   | _, _, _ => false
 
 /--
@@ -1205,6 +1221,17 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               else (.notApplicable, timeOrd)
           | _ => (.notApplicable, timeOrd)
       | none => (.notApplicable, timeOrd)
+  -- Seriality: `T(F ⊤)` and `T(P ⊤)` at this label, filtered against the branch.
+  -- Persistent and self-suppressing: once both are present the rule reports `.notApplicable`,
+  -- so it cannot re-fire at a label it has already served. Soundness is immediate from
+  -- `Axiom.serial_future` / `Axiom.serial_past`: both have antecedent `⊤`, so their consequents
+  -- hold at every label of every model, and adding them preserves satisfiability in both
+  -- directions.
+  | .serialityRule, _, _ =>
+      let outs := [SignedFormula.pos (Formula.someFuture Formula.top) l,
+                   SignedFormula.pos (Formula.somePast Formula.top) l].filter
+                    fun f => !branch.contains f
+      if outs.isEmpty then (.notApplicable, timeOrd) else (.persistent outs, timeOrd)
   | _, _, _ => (.notApplicable, timeOrd)
 
 /--
@@ -1320,6 +1347,50 @@ def allRulesForFC (fc : FrameClass := .Base) : List TableauRule :=
   -- rules would be dead code. Nothing else depends on their position: a persistent rule
   -- that adds one formula and then reports `notApplicable` cannot pre-empt any other rule.
   dedekind ++ base ++ dense ++ discrete
+
+/-!
+### Seriality is scheduled, not prioritised
+
+`serialityRule` is **not** in `allRulesForFC` and must not be added to it. It is keyed on the
+label rather than the formula, so it is applicable to *every* signed formula on the branch, and
+`findUnexpanded` returns the first formula for which *any* rule applies. Putting seriality last
+in the priority list therefore makes it last **per formula**, which is not what is wanted: if the
+first formula on the branch happens to have no other applicable rule, seriality fires there while
+real work is still pending further down, mints a time, and the resulting serial chain trips
+blocking before the closure is found.
+
+Measured on the corpus prototype at `.Base`: last-per-formula regresses `C5 K_G`, counterexample
+`A` and `S4` to open at fuel 300 *and* at fuel 3000 (so not a fuel artefact), while last-globally
+hits all 24 targets at fuel 3000 and at fuel 200.
+
+"Last globally" means: fire seriality only when *no* formula on the branch has any ordinary rule
+applicable. That is a property of the expansion step, not of a priority list, so it lives in
+`expandOnce` as an explicit two-stage pick and cannot be broken by a future edit to the list.
+
+**Contrast with the Dedekind arm above**, which is *prepended* for the opposite reason: those
+rules trigger on a conjunction that the consumable propositional rules destroy on their next
+step, so they must be consulted early or they are dead code. Both are scheduling lessons, in
+opposite directions, and neither is expressible as "put it in the right place in one list".
+-/
+
+/-- The second-stage rule set: seriality alone. Deliberately disjoint from `allRulesForFC`. -/
+def serialityRules : List TableauRule := [.serialityRule]
+
+/-- `findApplicableRule` over the seriality stage. Seriality is persistent and self-guarded, so
+this needs none of the `.linear`/`.branching` guard structure. -/
+def findApplicableSerialRule (sf : SignedFormula) (branch : Branch := [])
+    (timeOrd : TimeOrdering := TimeOrdering.empty) :
+    Option (TableauRule × RuleResult × TimeOrdering) :=
+  serialityRules.findSome? fun rule =>
+    let (result, newOrd) := applyRule rule sf branch timeOrd
+    match result with
+    | .notApplicable => none
+    | _ => some (rule, result, newOrd)
+
+/-- The first formula seriality can serve: one whose label lacks `T(F ⊤)` or `T(P ⊤)`. -/
+def findUnexpandedSerial (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty) :
+    Option SignedFormula :=
+  b.find? fun sf => (findApplicableSerialRule sf b timeOrd).isSome
 
 /-!
 ## Uniform Branch Guards
@@ -1569,16 +1640,40 @@ def timeSaturated (b : Branch) (t : TimeIndex)
   (b.formulasAtTime t).all fun sf => isExpanded sf b timeOrd fc
 
 /--
+The times `t` may be blocked *against*: order-related times that were created **earlier**.
+
+`ancestorTimes` alone is `ord.pastOf t` (`SignedFormula.lean:782`), which is the right candidate
+set only for chains that grow into the future. A time minted by `somePastPos` is placed strictly
+before everything on the branch, so its `pastOf` is empty and it can never be blocked — and
+`serialityRule` demands a predecessor at *every* label, so the past-directed chain
+`T(P⊤)@t ⟶ t' ⟶ t'' ⟶ …` runs to fuel exhaustion. Measured before this repair: the bare atom `p`
+at `.Base` consumed all 200 fuel, reaching 266 formulas over 68 times in 88 s; after it, 7 steps
+in 1 ms.
+
+The `t' < t` filter is what keeps the added arm well-founded: fresh times are minted at
+`Branch.nextTime = maxTime + 1` (`SignedFormula.lean:363`), so numeric index order **is** creation
+order, and a time can only be blocked by one created strictly before it. Without the filter a time
+and its own future witness could block each other.
+
+`ancestorTimes` is retained unfiltered, so this arm is purely additive: no candidate the previous
+predicate considered is dropped. (Measured: with this change and seriality *off*, the entire
+four-class corpus, `CertificateProbe` and `TimeOrderProbe` are unmoved.)
+-/
+def blockCandidates (ord : TimeOrdering) (t : TimeIndex) : List TimeIndex :=
+  ancestorTimes ord t ++ (ord.futureOf t).filter (fun t' => t' < t)
+
+/--
 `isTemporallyBlocked` with the ancestor-saturation side condition: `t` is blocked by `t_anc`
 only when `t_anc` itself has no applicable rule left.
 
 See the section docstring above for why the side condition belongs here and why it cannot make
-blocking fire more often.
+blocking fire more often. Candidates come from `blockCandidates`, not `ancestorTimes` — see that
+definition for why blocking has to be bidirectional once `serialityRule` is scheduled.
 -/
 def isTemporallyBlockedSaturated (b : Branch) (t : TimeIndex) (ord : TimeOrdering)
     (fc : FrameClass := .Base)
     (tracker : EventualityTracker := EventualityTracker.empty) : Bool :=
-  (ancestorTimes ord t).any fun t_anc =>
+  (blockCandidates ord t).any fun t_anc =>
     b.isSubsetBlocked t t_anc
       && allEventualitiesFulfilledOrDuplicated tracker t t_anc
       && timeSaturated b t_anc ord fc
@@ -1647,10 +1742,21 @@ and does not sit at a blocked time.
 This is the engine's real saturation test. `findUnexpanded` remains the *literal* one and is
 what the certificate probes and the truth-lemma statement read.
 -/
+def findUnexpandedUnblockedWith (b : Branch) (ord : TimeOrdering) (fc : FrameClass)
+    (blocked : List TimeIndex) : Option SignedFormula :=
+  b.find? fun sf => !blocked.contains sf.label.time && !isExpanded sf b ord fc
+
+/--
+`findUnexpandedUnblocked` computing its own blocked set.
+
+Callers that also need the blocked set — the expansion step does, for its seriality stage — should
+use `findUnexpandedUnblockedWith` and share one `blockedTimes` call. `blockedTimes` is the most
+expensive thing in the inner loop (a saturation test per candidate ancestor pair), and computing
+it twice per expansion step is the difference between a fast corpus run and a slow one.
+-/
 def findUnexpandedUnblocked (b : Branch) (ord : TimeOrdering) (fc : FrameClass := .Base)
     (tracker : EventualityTracker := EventualityTracker.empty) : Option SignedFormula :=
-  let blocked := blockedTimes b ord fc tracker
-  b.find? fun sf => !blocked.contains sf.label.time && !isExpanded sf b ord fc
+  findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tracker)
 
 /--
 Result of a single expansion step on a branch.
@@ -1682,11 +1788,16 @@ strict progress measure; and a time whose formulas were all consumed no longer d
 -/
 def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base) : ExpansionResult × TimeOrdering :=
-  match findUnexpanded b timeOrd fc with
-  | none => (.saturated, timeOrd)
-  | some sf =>
-      match findApplicableRule sf b timeOrd fc with
-      | none => (.saturated, timeOrd)  -- Shouldn't happen if findUnexpanded returned something
+  -- Two-stage pick: ordinary rules over the whole branch first, and only when *nothing* on the
+  -- branch has an ordinary rule left does seriality get a turn. See "Seriality is scheduled,
+  -- not prioritised".
+  match (match findUnexpanded b timeOrd fc with
+         | some sf => findApplicableRule sf b timeOrd fc
+         | none =>
+             match findUnexpandedSerial b timeOrd with
+             | some sf => findApplicableSerialRule sf b timeOrd
+             | none => none) with
+      | none => (.saturated, timeOrd)  -- Nothing applies in either stage
       | some (_, result, newOrd) =>
           match result with
           | .linear formulas =>
@@ -1713,10 +1824,19 @@ def expandOnceUnblocked (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.emp
     (fc : FrameClass := .Base)
     (tracker : EventualityTracker := EventualityTracker.empty)
     : ExpansionResult × TimeOrdering :=
-  match findUnexpandedUnblocked b timeOrd fc tracker with
-  | none => (.saturated, timeOrd)
-  | some sf =>
-      match findApplicableRule sf b timeOrd fc with
+  -- Same two-stage pick as `expandOnce`, with blocked times skipped in *both* stages. Skipping
+  -- them in the seriality stage is what keeps the serial chain finite: seriality demands one more
+  -- successor at every label, so without it the chain `T(F⊤)@t ⟶ t' ⟶ t'' ⟶ …` never stops.
+  -- Each new time carries the same type, so blocking catches it within a step or two, and the
+  -- rule then has no unblocked label left to serve.
+  let blocked := blockedTimes b timeOrd fc tracker
+  match (match findUnexpandedUnblockedWith b timeOrd fc blocked with
+         | some sf => findApplicableRule sf b timeOrd fc
+         | none =>
+             match b.find? (fun (sf : SignedFormula) => !blocked.contains sf.label.time
+                 && (findApplicableSerialRule sf b timeOrd).isSome) with
+             | some sf => findApplicableSerialRule sf b timeOrd
+             | none => none) with
       | none => (.saturated, timeOrd)
       | some (_, result, newOrd) =>
           match result with

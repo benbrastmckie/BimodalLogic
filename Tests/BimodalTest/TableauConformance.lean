@@ -197,13 +197,27 @@ def controlRows : List Row :=
 All five are valid here: `serial_future`/`serial_past` (`Axioms.lean:113,117`) are
 axioms of the system, so `F⊤` and `P⊤` are theorems and the rest follow.
 
-The engine answers OPEN on all five. This is the same failure mode the cslib survey
-recorded as its headline anti-lesson: a sorry-free, build-green tableau that answers OPEN
-on `F⊤`. The calculus has no rule that manufactures a successor time from nothing, so a
-branch containing only `F(F⊤)` saturates with no successor ever created. -/
+The engine used to answer OPEN on all five — the same failure mode the cslib survey recorded
+as its headline anti-lesson: a sorry-free, build-green tableau that answers OPEN on `F⊤`. The
+calculus had no rule that manufactures a successor time from nothing, so a branch containing
+only `F(F⊤)` saturated with no successor ever created.
+
+All five now read CLOSED, in all four frame classes, at `conformanceFuel = 200`. `serialityRule`
+supplies the missing successor: it is keyed on the *label* rather than a formula shape, emits
+`T(F ⊤)` / `T(P ⊤)` there, and self-suppresses once both are present. It is deliberately kept
+out of `allRulesForFC` and scheduled *globally last* — only when `findUnexpanded` returns `none`
+does the seriality stage run — which is the opposite of the Dedekind arm's **prepend**
+(`Tableau.lean`, `allRulesForFC`), where appending left the rules dead. Two scheduling lessons in
+opposite directions.
+
+Making this affordable also required repairing a latent defect in the blocking predicate:
+candidates came from `ancestorTimes = ord.pastOf`, so a time minted by `somePastPos` — a new
+global minimum with empty `pastOf` — could never be blocked, and the past-directed serial chain
+ran to fuel exhaustion (the bare atom `p` reached 266 formulas over 68 times in 88 s). See
+`Tableau.blockCandidates`. -/
 def serialityRows : List Row :=
   [ { id := "S1 F-top",      formula := F tp,       target := "CLOSED"
-    , note := "serial_future; no rule creates the required successor" }
+    , note := "serial_future; serialityRule creates the required successor" }
   , { id := "S2 not-G-bot",  formula := nt (G Formula.bot), target := "CLOSED"
     , note := "dual of S1" }
   , { id := "S3 Gp->Fp",     formula := im (G p) (F p), target := "CLOSED"
@@ -373,18 +387,18 @@ C2 p               OPEN     target=OPEN            atom is satisfiable and not v
 C3 Gp->p           OPEN     target=OPEN            G is strict: t is not in its own future
 C5 K_G             CLOSED   target=CLOSED          K axiom for G
 C4 Fp->FFp         OPEN     target=OPEN            no density over an arbitrary linear order
-S1 F-top           OPEN     target=CLOSED  [DEFECT] serial_future; no rule creates the required successor
-S2 not-G-bot       OPEN     target=CLOSED  [DEFECT] dual of S1
-S3 Gp->Fp          OPEN     target=CLOSED  [DEFECT] seriality turns the universal into an existential
-S4 Hp->Pp          OPEN     target=CLOSED  [DEFECT] past dual of S3
-S5 P-top           OPEN     target=CLOSED  [DEFECT] serial_past
+S1 F-top           CLOSED   target=CLOSED          serial_future; serialityRule creates the required successor
+S2 not-G-bot       CLOSED   target=CLOSED          dual of S1
+S3 Gp->Fp          CLOSED   target=CLOSED          seriality turns the universal into an existential
+S4 Hp->Pp          CLOSED   target=CLOSED          past dual of S3
+S5 P-top           CLOSED   target=CLOSED          serial_past
 K0 Fq->F^0-top     CLOSED   target=CLOSED          F^0(top) is a theorem by iterated seriality
 K1 Fq->F^1-top     CLOSED   target=CLOSED          F^1(top) is a theorem by iterated seriality
-K2 Fq->F^2-top     OPEN     target=CLOSED  [DEFECT] F^2(top) is a theorem by iterated seriality
-K3 Fq->F^3-top     OPEN     target=CLOSED  [DEFECT] F^3(top) is a theorem by iterated seriality
-K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by iterated seriality
-K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
-K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
+K2 Fq->F^2-top     CLOSED   target=CLOSED          F^2(top) is a theorem by iterated seriality
+K3 Fq->F^3-top     CLOSED   target=CLOSED          F^3(top) is a theorem by iterated seriality
+K4 Fq->F^4-top     CLOSED   target=CLOSED          F^4(top) is a theorem by iterated seriality
+K5 Fq->F^5-top     CLOSED   target=CLOSED          F^5(top) is a theorem by iterated seriality
+K6 Fq->F^6-top     CLOSED   target=CLOSED          F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
 B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
@@ -403,18 +417,18 @@ C2 p               OPEN     target=OPEN            atom is satisfiable and not v
 C3 Gp->p           OPEN     target=OPEN            G is strict: t is not in its own future
 C5 K_G             CLOSED   target=CLOSED          K axiom for G
 C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] density: a time strictly between t and the witness
-S1 F-top           OPEN     target=CLOSED  [DEFECT] serial_future; no rule creates the required successor
-S2 not-G-bot       OPEN     target=CLOSED  [DEFECT] dual of S1
-S3 Gp->Fp          OPEN     target=CLOSED  [DEFECT] seriality turns the universal into an existential
-S4 Hp->Pp          OPEN     target=CLOSED  [DEFECT] past dual of S3
-S5 P-top           OPEN     target=CLOSED  [DEFECT] serial_past
+S1 F-top           CLOSED   target=CLOSED          serial_future; serialityRule creates the required successor
+S2 not-G-bot       CLOSED   target=CLOSED          dual of S1
+S3 Gp->Fp          CLOSED   target=CLOSED          seriality turns the universal into an existential
+S4 Hp->Pp          CLOSED   target=CLOSED          past dual of S3
+S5 P-top           CLOSED   target=CLOSED          serial_past
 K0 Fq->F^0-top     CLOSED   target=CLOSED          F^0(top) is a theorem by iterated seriality
 K1 Fq->F^1-top     CLOSED   target=CLOSED          F^1(top) is a theorem by iterated seriality
-K2 Fq->F^2-top     OPEN     target=CLOSED  [DEFECT] F^2(top) is a theorem by iterated seriality
-K3 Fq->F^3-top     OPEN     target=CLOSED  [DEFECT] F^3(top) is a theorem by iterated seriality
-K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by iterated seriality
-K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
-K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
+K2 Fq->F^2-top     CLOSED   target=CLOSED          F^2(top) is a theorem by iterated seriality
+K3 Fq->F^3-top     CLOSED   target=CLOSED          F^3(top) is a theorem by iterated seriality
+K4 Fq->F^4-top     CLOSED   target=CLOSED          F^4(top) is a theorem by iterated seriality
+K5 Fq->F^5-top     CLOSED   target=CLOSED          F^5(top) is a theorem by iterated seriality
+K6 Fq->F^6-top     CLOSED   target=CLOSED          F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
 B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
@@ -433,18 +447,18 @@ C2 p               OPEN     target=OPEN            atom is satisfiable and not v
 C3 Gp->p           OPEN     target=OPEN            G is strict: t is not in its own future
 C5 K_G             CLOSED   target=CLOSED          K axiom for G
 C4 Fp->FFp         OPEN     target=OPEN            ZZ is not dense: no time strictly between t and t+1
-S1 F-top           OPEN     target=CLOSED  [DEFECT] serial_future; no rule creates the required successor
-S2 not-G-bot       OPEN     target=CLOSED  [DEFECT] dual of S1
-S3 Gp->Fp          OPEN     target=CLOSED  [DEFECT] seriality turns the universal into an existential
-S4 Hp->Pp          OPEN     target=CLOSED  [DEFECT] past dual of S3
-S5 P-top           OPEN     target=CLOSED  [DEFECT] serial_past
+S1 F-top           CLOSED   target=CLOSED          serial_future; serialityRule creates the required successor
+S2 not-G-bot       CLOSED   target=CLOSED          dual of S1
+S3 Gp->Fp          CLOSED   target=CLOSED          seriality turns the universal into an existential
+S4 Hp->Pp          CLOSED   target=CLOSED          past dual of S3
+S5 P-top           CLOSED   target=CLOSED          serial_past
 K0 Fq->F^0-top     CLOSED   target=CLOSED          F^0(top) is a theorem by iterated seriality
 K1 Fq->F^1-top     CLOSED   target=CLOSED          F^1(top) is a theorem by iterated seriality
-K2 Fq->F^2-top     OPEN     target=CLOSED  [DEFECT] F^2(top) is a theorem by iterated seriality
-K3 Fq->F^3-top     OPEN     target=CLOSED  [DEFECT] F^3(top) is a theorem by iterated seriality
-K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by iterated seriality
-K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
-K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
+K2 Fq->F^2-top     CLOSED   target=CLOSED          F^2(top) is a theorem by iterated seriality
+K3 Fq->F^3-top     CLOSED   target=CLOSED          F^3(top) is a theorem by iterated seriality
+K4 Fq->F^4-top     CLOSED   target=CLOSED          F^4(top) is a theorem by iterated seriality
+K5 Fq->F^5-top     CLOSED   target=CLOSED          F^5(top) is a theorem by iterated seriality
+K6 Fq->F^6-top     CLOSED   target=CLOSED          F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
 B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
@@ -465,18 +479,18 @@ C2 p               OPEN     target=OPEN            atom is satisfiable and not v
 C3 Gp->p           OPEN     target=OPEN            G is strict: t is not in its own future
 C5 K_G             CLOSED   target=CLOSED          K axiom for G
 C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] ValidDedekindDense includes density
-S1 F-top           OPEN     target=CLOSED  [DEFECT] serial_future; no rule creates the required successor
-S2 not-G-bot       OPEN     target=CLOSED  [DEFECT] dual of S1
-S3 Gp->Fp          OPEN     target=CLOSED  [DEFECT] seriality turns the universal into an existential
-S4 Hp->Pp          OPEN     target=CLOSED  [DEFECT] past dual of S3
-S5 P-top           OPEN     target=CLOSED  [DEFECT] serial_past
+S1 F-top           CLOSED   target=CLOSED          serial_future; serialityRule creates the required successor
+S2 not-G-bot       CLOSED   target=CLOSED          dual of S1
+S3 Gp->Fp          CLOSED   target=CLOSED          seriality turns the universal into an existential
+S4 Hp->Pp          CLOSED   target=CLOSED          past dual of S3
+S5 P-top           CLOSED   target=CLOSED          serial_past
 K0 Fq->F^0-top     CLOSED   target=CLOSED          F^0(top) is a theorem by iterated seriality
 K1 Fq->F^1-top     CLOSED   target=CLOSED          F^1(top) is a theorem by iterated seriality
-K2 Fq->F^2-top     OPEN     target=CLOSED  [DEFECT] F^2(top) is a theorem by iterated seriality
-K3 Fq->F^3-top     OPEN     target=CLOSED  [DEFECT] F^3(top) is a theorem by iterated seriality
-K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by iterated seriality
-K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
-K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
+K2 Fq->F^2-top     CLOSED   target=CLOSED          F^2(top) is a theorem by iterated seriality
+K3 Fq->F^3-top     CLOSED   target=CLOSED          F^3(top) is a theorem by iterated seriality
+K4 Fq->F^4-top     CLOSED   target=CLOSED          F^4(top) is a theorem by iterated seriality
+K5 Fq->F^5-top     CLOSED   target=CLOSED          F^5(top) is a theorem by iterated seriality
+K6 Fq->F^6-top     CLOSED   target=CLOSED          F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
 B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
@@ -696,9 +710,19 @@ not merely partially ordered. `Saturation.timeOrderTotal` is that requirement ma
 these rows measure it on the pipeline's own open certificates, *before* the rule that is meant
 to deliver it exists.
 
-Four of the seven rows are `false` today, and they are the gate: the order-level branching
-rule's done-criterion is that W1-W4 flip to `total=true` while W5-W7 stay `true`. Three
-further facts are pinned along with the verdict, because each one is load-bearing:
+**All seven** rows are `false` today, and they are the gate: the order-level branching rule's
+done-criterion is that **all seven** flip to `total=true`.
+
+That baseline moved when `serialityRule` landed. Before it, W1-W4 were `false` and the controls
+W5/W6 were already `true`, so the criterion read "W1-W4 flip while W5-W7 stay `true`". Seriality
+mints a witness successor and predecessor at every label, so every row now carries six or seven
+more times than it did, and the two controls regress `total=true → false`: the new times are
+exactly the ones `timeLinearity` has not been built to order yet. The regression is expected and
+benign — it is the order-level rule's job to repair it — but it must not be mistaken for the
+controls having been broken by seriality itself, and it is why the criterion is now uniform
+across all seven rows rather than split between gate rows and controls.
+
+Three further facts are pinned along with the verdict, because each one is load-bearing:
 
 - `knownTimes` used to omit any time whose formulas were all consumed, so in W1-W4 the
   *induced* order on `knownTimes` was empty even though `constraints` related both times to the
@@ -730,39 +754,43 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
   | none => "STALLED"
 
 -- W1. The named witness: siblings `1` and `2` carry `T(G p)` and `F(p)`.
-/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base)
 
 -- W2. Two bare future eventualities: the same shape with no universal involved.
-/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F p) (F q))) FrameClass.Base)
 
 -- W3. Two universals: incomparability is not caused by the negative conjunct.
-/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base)
 
 -- W4. W1 with the conjuncts swapped: the order the eventualities appear in does not matter.
-/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (nt p)) (F (G p)))) FrameClass.Base)
 
--- W5 (control). One future and one past witness: the root sits between them, so both known
--- times are comparable and totality already holds. No rule should move this row.
-/-- info: total=true knownTimes=[0, 2, 1] constraints=[(2, 0), (0, 1)] incomparable=[] -/
+-- W5 (control). One future and one past witness: the root sits between them, so before
+-- seriality both known times were comparable and totality already held (`total=true`,
+-- `knownTimes=[0, 2, 1]`). `serialityRule` mints six further times that `timeLinearity` does
+-- not yet order, so this row now reads `false` and is part of 2.7's seven-row done-criterion.
+/-- info: total=false knownTimes=[4, 5, 6, 8, 7, 1, 2, 3, 0] constraints=[(7, 8), (1, 7), (6, 2), (3, 5), (4, 0), (0, 3), (2, 0), (0, 1)] incomparable=[(4, 6), (5, 8), (5, 7), (1, 5), (1, 3), (2, 4), (3, 8), (3, 7)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F p) (P q))) FrameClass.Base)
 
--- W6 (control). A single witness time: totality is vacuous. No rule should move this row.
-/-- info: total=true knownTimes=[1, 0] constraints=[(0, 1)] incomparable=[] -/
+-- W6 (control). A single witness time: totality used to be vacuous here (`total=true`,
+-- `knownTimes=[1, 0]`). Seriality adds four more times, so this row too now reads `false` and
+-- is part of 2.7's seven-row done-criterion.
+/-- info: total=false knownTimes=[3, 4, 5, 0, 2, 1] constraints=[(5, 0), (2, 4), (3, 1), (1, 2), (0, 1)] incomparable=[(3, 5), (0, 3)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (im (F p) (F (F p))) FrameClass.Base)
 
 -- W7. W1 at ten times the fuel. Identical: incomparability is structural, not a budget
 -- artifact, so no fuel increase can be mistaken for a fix.
-/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base 2000)
 

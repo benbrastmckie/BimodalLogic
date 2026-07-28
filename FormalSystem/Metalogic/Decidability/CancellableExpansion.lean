@@ -135,7 +135,21 @@ def saturateBlockedCancellable (abortRef : IO.Ref Bool)
       match findClosure b fc with
       | some reason => return some (.inl ⟨b, reason⟩)
       | none =>
-          match expandOnce b timeOrd fc with
+          -- `expandOnceNoFresh`, not `expandOnce` — this is the pure function's choice and the
+          -- mirror had drifted from it. `expandOnceNoFresh` *skips* label-introducing candidates
+          -- rather than reporting the first one and forcing this pass to abandon the branch.
+          --
+          -- The drift was benign until `serialityRule` landed and then immediately fatal:
+          -- `expandOnce` picks over *all* times (it reads `findUnexpanded`, not the blocked-aware
+          -- `findUnexpandedUnblocked`) and carries the globally-last seriality stage, so on an
+          -- open branch it never reports `.saturated` — it serves a blocked time's `T(F ⊤)`, the
+          -- next step mints that time's successor, the `constraints.length` guard below rejects
+          -- it, and the branch comes back unsaturated. `buildTableauCancellable`'s closing check
+          -- then returns `none`, which surfaces as `.fuelExhausted`/`.timeout`. Measured: every
+          -- invalid formula in the C5 smoke test (`p`, `⊥`, `p → q`, `□p`, `U(p,q)`, …) reported
+          -- `timeout` at every fuel from 7 to 500, while the pure engine answered `OPEN` at all
+          -- of them.
+          match expandOnceNoFresh b timeOrd fc with
           | (.saturated, _) => return some (.inr (b, timeOrd))  -- fully saturated
           | (.extended newBranch, newOrd) =>
               if newOrd.constraints.length > timeOrd.constraints.length then
