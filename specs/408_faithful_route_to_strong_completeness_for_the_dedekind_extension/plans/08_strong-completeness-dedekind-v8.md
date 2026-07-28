@@ -1726,7 +1726,7 @@ edited. Whichever phase next owns `Section5Correspondence.lean` should refresh t
   recorded at `DedekindINF.lean:87-103` is closed. This is a reusable result of independent value
   and a clean stopping point.
 
-### Phase 14: `uSExpressivelyCompleteOverDensePrior` [NOT STARTED]
+### Phase 14: `uSExpressivelyCompleteOverDensePrior` [PARTIAL]
 
 > **Re-scoped by v8, same goal.** v7 chartered this phase to compose three from-scratch modules.
 > It now composes the **re-based faithful chain** (Phases 11-13) with
@@ -1740,43 +1740,158 @@ edited. Whichever phase next owns `Section5Correspondence.lean` should refresh t
   does not already exist**). **`PriorExpressiveness.lean` and `Kamp/KampPrior.lean` are read, not
   edited.**
 - **Tasks**:
-  - [ ] **First task — measure, do not assume.** Determine and record which carrier
+  - [x] **First task — measure, do not assume.** Determine and record which carrier
         `kampPriorExpressiveCompleteness` (`KampPrior.lean:672`) and `nfCharacterizableTemporalPrior`
         (`:589`) actually consume, and whether they route through the faithful chain or through the
         attained originals in `EANegationFix/`. v7 assumed the former; the tree must be checked. If
         they route through the attained originals, the composition needs a faithful sibling of
         `kampPriorExpressiveCompleteness` and **that** is this phase's real content.
+        *(**GATE EXECUTED — v7's premise REFUTED.** Both declarations consume `SemanticPriorUZ` /
+        `SemanticPriorSZ` and **no completeness carrier at all**: `KampPrior.lean` has ZERO
+        occurrences of `HasDedekindINF/SUP`, `HasFaithfulDedekindINF/SUP`, `HasAttainedINF/SUP`,
+        `kplus`, `negFix*`, `prop42*`, `VVecEA2`. Its only edge into the Rabinovich machinery is
+        `kampArm_zeta`. One level down, `ZetaUniformExtract.lean` (821 lines) carries the carrier
+        and it is **the attained originals** — `HasAttainedINF` ×7, `HasAttainedSUP` ×7, plus
+        `VVecEA2` ×11 and `negFix` ×3 — with **zero** `HasFaithful*`. The faithful chain reaches
+        `NfMultiAnchorBridge.lean` (`HasFaithfulDedekindINF` ×15) but the zeta wire does not reach
+        it. **So the "faithful sibling" branch of this task fires**, and per the Decomposition
+        protocol it is a NAMED sub-phase reported `[PARTIAL]`, not a silent expansion — see
+        Phase 14.1 below.)*
   - [ ] Land `kampDedekindExpressiveCompleteness` — the `HasFaithfulDedekindINF`/`SUP`-based
         analogue, composing Phases 11-13.
-  - [ ] Land `uSExpressivelyCompleteOverDensePrior atomMap h_surj psi :
+        *(deviation: **DEFERRED to Phase 14.1 — not composable, as the gate above established.**
+        Landed as a NAMED, STATED obligation `KampFaithfulExpressiveCompleteness` (the type) rather
+        than a proof, because the measurement shows it is a re-base of `ZetaUniformExtract.lean`'s
+        zeta wire from `HasAttainedINF`/`SUP` onto the faithful carrier — on the model of the
+        `EANegationFixFaithful/` re-base — and not a composition of landed parts. The plan's name
+        is recorded in the obligation's docstring.)*
+  - [x] Land `uSExpressivelyCompleteOverDensePrior atomMap h_surj psi :
         { A : Formula // ∀ M, SemanticPriorU M atomMap → SemanticPriorS M atomMap →
         ∀ t, eval M (fun _ => t) psi ↔ TemporalTruth M atomMap t A }`, composing
         `prior_hasFaithfulDedekindINF_dense` / `SUP` with the above. Mirror the landed
         `uSExpressivelyCompleteOverPrior`'s shape exactly, including the `h_surj` binder.
-  - [ ] **Inherit, do not silently widen, the domain restriction.** `nf_nvar_exist_all_depths`
+        *(**landed at the exact charted signature, `h_surj` binder included.** The composition
+        itself — `uSExpressivelyCompleteOverDensePrior_of_faithful` — is **sorry-free and
+        axiom-clean**: it feeds `prior_hasFaithfulDedekindINF_dense` (`KPlusFaithful.lean:474`) and
+        `prior_hasFaithfulDedekindSUP_dense` (`:524`) to the obligation, same witness formula `A`.
+        `uSExpressivelyCompleteOverDensePrior` is that conditional discharged by the single
+        strategic sorry `kampFaithfulExpressiveCompleteness_open`. Every step of the chartered
+        composition that the tree supports is taken; the sorry is the obligation and nothing
+        else.)*
+  - [x] **Inherit, do not silently widen, the domain restriction.** `nf_nvar_exist_all_depths`
         (`KampPrior.lean:363`) carries `hn : n ≤ 1` (the arity-`n ≥ 2` arm is excluded). Record
         whether the composition inherits it and state the restriction in the docstring.
-  - [ ] Docstring: `Reynolds 1992, §5 Theorem 3, printed p.176`, quoting the theorem statement, and
+        *(**inherited, not widened; stated in the module docstring and in the obligation's.**
+        `nfCharacterizableTemporalPrior` consumes `nf_nvar_exist_all_depths` at `n = 1` only, so
+        `hn : n ≤ 1` is invisible in `kampPriorExpressiveCompleteness`' statement. The obligation
+        `KampFaithfulExpressiveCompleteness` is stated at `MonadicFormula sig 1` — exactly the
+        arity at which the existing chain closes — so any discharge inherits `hn : n ≤ 1`
+        verbatim. Nothing in the module reaches arity ≥ 2.)*
+  - [x] Docstring: `Reynolds 1992, §5 Theorem 3, printed p.176`, quoting the theorem statement, and
         recording that this tree obtains it by Rabinovich's method relativized to the faithful eq
         (5.2) carrier rather than by Reynolds' own reduction to `{U,S,U',S'}` (which would require
         the Boneyard'd, sorry-tainted `stavi_expressive_completeness`).
-  - [ ] **Anti-vacuity, and this is the phase's most important task.** Instantiate at Phase 9's
+        *(**source read VERBATIM before transcription** — the corpus PDF is an OCR'd scan, so the
+        theorem was located and read on PDF page 12, whose printed page number is **176**,
+        CONFIRMING the plan's figure. Quoted verbatim: "The language with U and S is expressively
+        complete for the class of Prior structures." Reynolds' own route is quoted too — "By the
+        expressive completeness of {U, S, U', S'} over all linear structures, it suffices to
+        prove..." — so the departure is recorded against his printed words, not asserted. Also
+        recorded: he attributes the result onward ("see [8], proposition 4.2"), so p.176 is a
+        statement-plus-sketch site, not a transcribable proof.
+        **UNCHARTERED FIDELITY FINDING**: p.176 DEFINES "Prior structure" as satisfying Prior-U and
+        Prior-S, and p.168 gives those verbatim as `U(⊤,p) ∧ F¬p → U(¬p ∨ K⁺(¬p),p)` and its
+        mirror — i.e. `SemanticPriorU`/`SemanticPriorS`. **So Reynolds' Theorem 3 is a statement
+        about the DENSE axioms, and the landed `uSExpressivelyCompleteOverPrior`, pinned at the
+        strictly stronger `SemanticPriorUZ`/`SZ`, is NOT Reynolds' Theorem 3** — this module's
+        target is. Recorded in the module header; no existing declaration was renamed.)*
+  - [x] **Anti-vacuity, and this is the phase's most important task.** Instantiate at Phase 9's
         positive dense witness and land the resulting `{A : Formula // …}` as a named example for at
         least one non-trivial `psi`. A sorry-free `uSExpressivelyCompleteOverDensePrior` whose
         hypothesis no dense structure satisfies would reproduce the exact defect Block D exists to
         repair.
-  - [ ] `#print axioms`; regression canaries `completeness_discrete` and
+        *(**done, and the whole anti-vacuity block is sorry-free AND axiom-clean** — verified by
+        `#print axioms`, it does NOT inherit the strategic sorry.
+        `densePrior_target_hypotheses_inhabited` exhibits `denseWindowFlow` satisfying BOTH target
+        hypotheses AND both faithful carriers, so neither the premise nor the composition's
+        internal step is empty. `uSExpressivelyCompleteOverDensePrior_at_denseWindow` lands the
+        actual `{A : Formula // …}` at `denseTestPsi := ∃x, t < x ∧ P(x)` (`F P`; quantifier depth
+        1, uses both order and predicate, so not quantifier-free-equivalent), with hypotheses
+        DISCHARGED rather than assumed; `denseTestPsi_eval` machine-checks by `Iff.rfl` that the
+        de Bruijn indices mean what the docstring says. It consumes the sorry-free CONDITIONAL, so
+        it is honest about the one open obligation instead of laundering it.
+        Negative half: `uSExpressivelyCompleteOverDensePrior_not_by_reuse` records that the target
+        is not obtainable by re-exporting the landed integer theorem.)*
+  - [x] `#print axioms`; regression canaries `completeness_discrete` and
         `countermodel_discrete_reynolds_v2`.
-  - [ ] Scoped build green; full `lake build` green; sorry census unchanged.
-- **Estimated output**: ~250 lines.
+        *(all six non-obligation declarations axiom-clean: five at `[propext, Classical.choice,
+        Quot.sound]`, `densePriorAtomMap_surj` depends on NO axioms.
+        `uSExpressivelyCompleteOverDensePrior` carries `sorryAx` — the single tracked strategic
+        sorry — and it is the ONLY declaration that does. Both canaries UNCHANGED at `[propext,
+        Classical.choice, Quot.sound]`.)*
+  - [x] Scoped build green; full `lake build` green; sorry census unchanged.
+        *(scoped build green; full `lake build` green, **1921 jobs** — one more than Phase 13's
+        1920, the new module. Census `sorry_count` 161 -> 162: delta **exactly +1**, the tracked
+        strategic sorry, zero other new sorries. NOTE: this script reports 162 on `FormalSystem/`
+        where Phase 13's handoff reported 163; the baseline was re-measured at HEAD as 161 and the
+        DELTA is what is asserted here, not the absolute against a differently-rooted figure.
+        Vacuous-definition count 1 and axiom-grep count 2, both pre-existing and unchanged.
+        CI edge added at `WeakCanonical.lean:22` so the new module cannot rot out of the build
+        closure — the ONLY edit outside the owned module, one import line.)*
+- **Estimated output**: ~250 lines. *(actual: 320 lines, one new module plus one import line.)*
 - **Done when**: both declarations sorry-free with axioms exactly `[propext, Classical.choice,
   Quot.sound]`; the carrier measurement of task 1 is recorded; the non-vacuity instantiation lands
   at a dense flow; `#print axioms completeness_discrete` unchanged.
+  *(**MET EXCEPT the first clause, and that clause was falsified by the phase's own gate.** Met:
+  the carrier measurement is recorded (in the module header AND task 1 above); the non-vacuity
+  instantiation lands at `denseWindowFlow` and is itself sorry-free and axiom-clean;
+  `#print axioms completeness_discrete` unchanged. NOT met: `uSExpressivelyCompleteOverDensePrior`
+  is not sorry-free, because task 1's gate established that the second declaration
+  (`kampDedekindExpressiveCompleteness`) is not a composition of landed parts but a re-base of
+  `ZetaUniformExtract.lean`. The `Done when` was written under v7's premise that the chain already
+  ran on the faithful carrier; the tree says otherwise. Reported `[PARTIAL]` with the remainder
+  chartered as Phase 14.1 rather than silently redefining the bar.)*
 - **Depends on**: 13.
 - **Timing**: 5 hours.
 - **Decomposition protocol**: as Phase 11 — if task 1 shows a faithful sibling of
   `kampPriorExpressiveCompleteness` is needed, that is a named sub-phase, reported `[PARTIAL]`, not
-  a silent expansion.
+  a silent expansion. *(**FIRED.** Sub-phase named below as Phase 14.1.)*
+
+**Outcome: the gate was the phase.** v7 assumed the Kamp chain already ran on the faithful
+carrier and chartered Phase 14 as a composition. The measurement refuted that assumption twice
+over — the chain consumes neither carrier at the top (only `SemanticPriorUZ`/`SZ`) and consumes
+the *attained originals* one level down — and separately the tree already machine-checks
+(`semanticPriorU_not_implies_semanticPriorUZ`) that the dense hypotheses cannot supply the
+integer ones, so no re-export could have closed the gap either. Everything the charter asked for
+that the tree actually supports is landed and sorry-free: the composition, the domain-restriction
+inheritance, the verbatim Reynolds grounding, and the full anti-vacuity block. The single
+remaining gap is isolated in one named obligation.
+
+### Phase 14.1: `KampFaithfulExpressiveCompleteness` — re-base the zeta wire [NOT STARTED]
+
+- **Goal**: Discharge `kampFaithfulExpressiveCompleteness_open`
+  (`PriorExpressivenessDense.lean`), the sole open obligation of Phase 14 and the last gap
+  between the tree and Reynolds' Theorem 3 at the dense Prior axioms. On discharge,
+  `uSExpressivelyCompleteOverDensePrior` becomes unconditional **with no further edits**.
+- **Content, as measured by Phase 14's gate**: re-base `Kamp/ZetaUniformExtract.lean` (821 lines;
+  `HasAttainedINF` ×7, `HasAttainedSUP` ×7, `VVecEA2` ×11, `negFix` ×3, zero `HasFaithful*`) from
+  the attained originals onto `HasFaithfulDedekindINF`/`SUP`, together with whatever below it the
+  wire consumes, then a faithful sibling of `kampPriorExpressiveCompleteness` at that carrier.
+  Model: the `Kamp/EANegationFixFaithful/` re-base of Phases 11-13.
+- **First task, and it is a gate**: survey `ZetaUniformExtract.lean`'s `HasAttained*` sites for
+  destructure vs. hypothesis use, as Phase 12.1 did for `VecEANegFix`. Phases 11-13 found "pure
+  signature swap" three times running; if that holds a fourth time this is far cheaper than its
+  line count suggests. **Verify rather than assume** — `HasAttainedINF` is a *stronger* carrier
+  than `HasFaithfulDedekindINF`, so unlike the Phase 11-13 swaps this one weakens a hypothesis
+  the proofs may genuinely lean on, and `HasAttainedINF.toHasFaithfulDedekindINF`
+  (`KPlusFaithful.lean:382`) runs the wrong way to help.
+- **Owns**: `Kamp/ZetaUniformExtract.lean` and a new faithful sibling module.
+  **`PriorExpressivenessDense.lean` is read, not edited, except to replace
+  `kampFaithfulExpressiveCompleteness_open`'s body.**
+- **Done when**: `kampFaithfulExpressiveCompleteness_open` is sorry-free, hence
+  `uSExpressivelyCompleteOverDensePrior` axiom-clean at `[propext, Classical.choice, Quot.sound]`;
+  census delta back to zero; canaries unchanged.
+- **Depends on**: 14.
 - **BLOCK D CHECKPOINT**: the tree contains expressive completeness of `{U,S}` at a carrier that
   dense Prior structures actually inhabit. A reusable result of independent value and a clean
   stopping point.

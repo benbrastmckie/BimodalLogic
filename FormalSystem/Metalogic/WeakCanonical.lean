@@ -20,6 +20,7 @@ import FormalSystem.Metalogic.WeakCanonical.Table
 import FormalSystem.Metalogic.WeakCanonical.PriorDefsDense
 import FormalSystem.Metalogic.WeakCanonical.Kamp.DedekindINFDense
 import FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
+import FormalSystem.Metalogic.WeakCanonical.PriorExpressivenessDense
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsBridge
