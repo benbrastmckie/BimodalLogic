@@ -596,6 +596,148 @@ theorem chain_le_worlds_of_not_blocked {C : Finset Formula} {ord : TimeOrdering}
   exact Nat.mul_le_mul hW
     (timeFinset_card_le_of_not_blocked (branchStock_chain hC hT run n h0 hstep).mem hchain hev hnb)
 
+/-! ## The label dimension, part 3: where the chain comes from
+
+`TimeChain` is not an assumption about the world; it is what `timeLinearity` produces. That rule's
+trigger is `firstIncomparablePair`, which scans `Branch.knownTimes` for a pair neither of whose
+members is in the other's transitive future or past, and the rule is *self-suppressing*: it fires
+until no such pair remains. So a branch on which the linearity stage reports nothing has all its
+times pairwise comparable — which is `TimeChain` modulo the direction the comparability is
+recorded in.
+-/
+
+/--
+**Linearity saturation gives comparability.** If `timeLinearity` has no applicable instance, then
+any two distinct branch times are related by the transitive ordering in one direction or the other.
+
+This is the extraction step; turning the `futureOf` disjunct into the `ancestorTimes` form
+`blocking_fires_of_card_lt` wants is `TimeChain`'s remaining obligation, isolated as
+`OrderDual` below.
+-/
+theorem comparable_of_firstIncomparablePair_none {b : Branch} {ord : TimeOrdering}
+    (h : firstIncomparablePair b ord = none)
+    {t₁ t₂ : TimeIndex} (h₁ : t₁ ∈ b.knownTimes) (h₂ : t₂ ∈ b.knownTimes) (hne : t₂ ≠ t₁) :
+    t₂ ∈ ord.futureOf t₁ ∨ t₂ ∈ ord.pastOf t₁ := by
+  simp only [firstIncomparablePair] at h
+  have hnone := List.findSome?_eq_none_iff.mp h t₁ h₁
+  rcases hf : b.knownTimes.find? (fun t => t != t₁ && !(ord.futureOf t₁).contains t
+      && !(ord.pastOf t₁).contains t) with _ | t
+  · have hg := List.find?_eq_none.mp hf t₂ h₂
+    simp only [Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true',
+      List.contains_eq_mem, decide_eq_false_iff_not, not_and, not_not] at hg
+    by_cases hfut : t₂ ∈ ord.futureOf t₁
+    · exact Or.inl hfut
+    · exact Or.inr (hg ⟨hne, hfut⟩)
+  · rw [hf] at hnone
+    exact absurd hnone (by simp)
+
+/--
+**The one residual of the label dimension: the two closures are duals.**
+
+`firstIncomparablePair` records comparability as "`t₂` is in `t₁`'s `futureOf`", while
+`isTemporallyBlocked` — and hence `blocking_fires_of_card_lt` — reads it as "`t₁` is in `t₂`'s
+`ancestorTimes`", which is `pastOf`. The two are the forward and backward transitive closures of
+the *same* constraint list, so this holds; it is stated as a hypothesis rather than proved
+because proving it is a statement about `TimeOrdering.futureOf`/`pastOf` and nothing else, and it
+needs a path characterisation of the breadth-first search those two are defined by.
+
+**Why it is not discharged here, precisely.** `futureOf` and `pastOf` are defined via
+`reachableForward` / `reachableBackward` (`SignedFormula.lean:741,751`), which are `private`, so
+the induction cannot even be *stated* from this file without either an engine edit — forbidden by
+the wave-3 territory contract — or an `open private … from …` import of the two helpers, which is
+the route this repository already uses elsewhere for exactly this situation (see
+`Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean:687`). That is the discharge path, and it is
+pure consumption: no engine edit, no re-proof.
+
+The obligation itself is: forward BFS membership yields a constraint path, and backward BFS from
+the far end recovers the near end within the same number of layers. Both closures run at the same
+default fuel (`100`), so no fuel mismatch is hiding in the statement. The probes below run the
+condition on the ordering shapes the engine actually builds.
+-/
+def OrderDual (ord : TimeOrdering) : Prop :=
+  ∀ t₁ t₂ : TimeIndex, t₂ ∈ ord.futureOf t₁ → t₁ ∈ ord.pastOf t₂
+
+/--
+**The chain invariant, established.** A branch whose linearity stage is exhausted has all its
+times pairwise comparable in the ancestor order.
+
+This is the run-level invariant the T3 residual named: `timeLinearity` fires exactly while an
+incomparable pair remains, so its silence *is* the chain condition, and `TimeChain` is what
+`blocking_fires_of_card_lt` needs.
+-/
+theorem timeChain_of_linearity_saturated {b : Branch} {ord : TimeOrdering}
+    (hd : OrderDual ord) (h : firstIncomparablePair b ord = none) : TimeChain b ord := by
+  intro t₁ h₁ t₂ h₂ hne
+  rcases comparable_of_firstIncomparablePair_none h h₁ h₂ (Ne.symm hne) with hfut | hpast
+  · exact Or.inl (hd t₁ t₂ hfut)
+  · exact Or.inr hpast
+
+/--
+**The label dimension, composed.** An unbranched run whose final branch is linearity-saturated and
+carries no blocked time is bounded by `2 * |C| * (W * 2 ^ (2 * |C|))`, with `W` the world count.
+
+Every hypothesis here is either discharged elsewhere in this file (`BranchStock`, via T1 iterated)
+or is a named, isolated side condition: `OrderDual` (the closure duality above), `hev` (the
+eventuality guard, vacuous for the empty tracker), `hnb` (the run has not yet blocked), and `hW`
+(the world dimension, whose argument is the S5 fresh-world discipline and is not T3's business).
+-/
+theorem chain_le_worlds_of_linearity_saturated {C : Finset Formula} {ord : TimeOrdering}
+    {tracker : EventualityTracker} {W : Nat}
+    (hC : TableauClosed C) (hT : TrichStock C) (hd : OrderDual ord)
+    (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0))
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1)))
+    (hlin : firstIncomparablePair (run n) ord = none)
+    (hev : ∀ t₁ ∈ (run n).knownTimes, ∀ t₂ ∈ (run n).knownTimes,
+      allEventualitiesFulfilledOrDuplicated tracker t₁ t₂ = true)
+    (hnb : findBlockedTime (run n) ord tracker = none)
+    (hW : (run n).worldFinset.card ≤ W) :
+    n ≤ 2 * C.card * (W * 2 ^ (2 * C.card)) :=
+  chain_le_worlds_of_not_blocked hC hT run n h0 hstep
+    (timeChain_of_linearity_saturated hd hlin) hev hnb hW
+
+/-! ### Duality probes
+
+`OrderDual` is a hypothesis, so it is committed together with executable rows that run it on the
+ordering shapes the engine builds: a chain (`addFuture` repeated), a fork, a diamond, and a chain
+put through `identifyTime` — the one operation that rewrites constraints rather than adding them,
+and hence the one most likely to break a duality. A hypothesis nobody has ever evaluated is not
+evidence of anything; these rows are what keep it from being a silent assumption.
+-/
+
+section DualityProbes
+
+/-- The `OrderDual` condition, as a decidable check over a finite set of times. -/
+private def dualCheck (ord : TimeOrdering) (ts : List TimeIndex) : Bool :=
+  ts.all fun t₁ => (ord.futureOf t₁).all fun t₂ => (ord.pastOf t₂).contains t₁
+
+-- A chain `0 < 1 < 2 < 3`.
+/-- info: true -/
+#guard_msgs in
+#eval dualCheck ⟨[(0, 1), (1, 2), (2, 3)]⟩ [0, 1, 2, 3]
+
+-- A fork: `0 < 1`, `0 < 2`, `2 < 3`.
+/-- info: true -/
+#guard_msgs in
+#eval dualCheck ⟨[(0, 1), (0, 2), (2, 3)]⟩ [0, 1, 2, 3]
+
+-- A diamond: two incomparable middles rejoining.
+/-- info: true -/
+#guard_msgs in
+#eval dualCheck ⟨[(0, 1), (0, 2), (1, 3), (2, 3)]⟩ [0, 1, 2, 3]
+
+-- The chain after `identifyTime 2 1` — the arm of `timeLinearity` that rewrites constraints.
+/-- info: true -/
+#guard_msgs in
+#eval dualCheck ((⟨[(0, 1), (1, 2), (2, 3)]⟩ : TimeOrdering).identifyTime 2 1) [0, 1, 3]
+
+-- A long chain, well past the ordering depths the corpus produces.
+/-- info: true -/
+#guard_msgs in
+#eval dualCheck ⟨(List.range 30).map fun i => (i, i + 1)⟩ (List.range 31)
+
+end DualityProbes
+
 /--
 **The fuel figure is justified in the dimension proved.**
 
