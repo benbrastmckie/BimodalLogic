@@ -1885,6 +1885,248 @@ def expandOnceNoFresh (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty
       | .notApplicable => (.saturated, newOrd)
 
 /-!
+## Expansion Makes Progress
+
+The termination argument for `expandBranchWithFuel` needs to know that an `.extended` step is
+not a no-op. Two facts are proved here, in increasing strength:
+
+- `expandOnceUnblocked_length_lt` — `b.length < nb.length`. What the plan names, and a useful
+  sanity check on the guards.
+- `expandOnceUnblocked_adds_new` — `b ⊆ nb ∧ ∃ g ∈ nb, g ∉ b`. What the fuel bound can actually
+  consume. Strict length increase does **not** bound the step count on its own: expansion is
+  non-destructive, `nb = fs ++ b`, and `fs` may re-add formulas already present, so `List.length`
+  has no upper bound. Set growth against the finite signed closure × label set does bound it.
+
+Both reduce to the same question — can a rule that the guards let through return an empty
+result? — and the answer is per-rule. The chain below settles it once, at the `applyRule` level,
+and the two statements about `expandOnceUnblocked` then follow by destructuring its two-stage
+pick.
+
+**Tactic note, recorded because it cost four failed attempts.** `split at h` cannot see through
+a `Prod.fst` projection, so the seven `if newFormulas.isEmpty then …` guards inside `applyRule`
+survive `repeat' split at h` as unopened `(if c then … else …).1 = …` hypotheses, and the goal
+that remains *looks* like a statement about `filterMap` because the guard that discharges it is
+still sealed inside the `ite`. Interleaving `simp only [apply_ite Prod.fst] at h` opens all of
+them and leaves `¬ l.isEmpty = true → l ≠ []`, which `simp` closes. No `filterMap` lemma is
+needed. Relatedly, do not write the closer as `first | simp_all | <fallback>`: `simp_all` reports
+success whenever it makes *any* progress, even leaving the goal open, so the fallback is
+unreachable.
+-/
+
+section ProgressLemmas
+
+-- The three `applyRule`-level sweeps each analyse 36 constructors; measured at roughly 80 s of
+-- elaboration, which is above the default heartbeat budget but not the wall-clock budget.
+set_option maxHeartbeats 2000000
+
+/-- A `.persistent` result is never empty.
+
+The 14 `.persistent` return sites of `applyRule` divide into three kinds, and each is
+self-guarding: 7 sit behind `if newFormulas.isEmpty then .notApplicable else …`, 6 return a
+literal singleton `[newSf]`, and 1 (`densityRule`) returns a syntactic cons `witness :: gProps`.
+Post-seriality there is a 15th, of the first kind. -/
+theorem applyRule_persistent_ne_nil
+    {rule : TableauRule} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fs : List SignedFormula}
+    (h : (applyRule rule sf b ord).1 = RuleResult.persistent fs) : fs ≠ [] := by
+  unfold applyRule at h
+  repeat' first
+    | split at h
+    | simp only [apply_ite Prod.fst] at h
+  all_goals (try (injection h with h))
+  all_goals first
+    | (simp_all; done)
+    | (subst h; simp_all)
+
+/-- A `.linear` result of a fresh-label rule is never empty.
+
+All eight `ruleMintsFreshLabel` constructors return a syntactic cons whose head is the witness
+at the fresh label, so `List.cons_ne_nil` closes each. `cases rule` **before** unfolding is
+load-bearing: it discharges the 28 non-fresh constructors from `hfresh : false = true` and keeps
+`unfold applyRule` off them entirely. -/
+theorem applyRule_fresh_linear_ne_nil
+    {rule : TableauRule} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fs : List SignedFormula}
+    (hfresh : ruleMintsFreshLabel rule = true)
+    (h : (applyRule rule sf b ord).1 = RuleResult.linear fs) : fs ≠ [] := by
+  cases rule <;> simp only [ruleMintsFreshLabel] at hfresh <;>
+    (unfold applyRule at h
+     repeat' first
+       | split at h
+       | simp only [apply_ite Prod.fst] at h)
+  all_goals (try (injection h with h))
+  all_goals first
+    | (simp_all; done)
+    | (subst h; simp_all)
+
+/-- Every arm of a `.branching` result of a fresh-label rule is non-empty.
+
+The two branching fresh-label rules return `.branching [branch1 ++ autoProp, branch2 ++ autoProp]`
+with `branch1 = [SignedFormula.pos event freshLabel]`, so each arm is a cons. -/
+theorem applyRule_fresh_branching_ne_nil
+    {rule : TableauRule} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {bss : List (List SignedFormula)}
+    (hfresh : ruleMintsFreshLabel rule = true)
+    (h : (applyRule rule sf b ord).1 = RuleResult.branching bss) :
+    ∀ fs ∈ bss, fs ≠ [] := by
+  cases rule <;> simp only [ruleMintsFreshLabel] at hfresh <;>
+    (unfold applyRule at h
+     repeat' first
+       | split at h
+       | simp only [apply_ite Prod.fst] at h)
+  all_goals (try (injection h with h))
+  all_goals first
+    | (simp_all; done)
+    | (subst h; simp_all)
+
+/-- The ordinary-rule pick never returns an empty extension.
+
+Three details are load-bearing and were each found by measurement:
+`FrameClass` must be written `ProofSystem.FrameClass` here, or the binder resolves to the wrong
+constant; `List.exists_of_findSome?_eq_some` is the right entry point (`List.findSome?_eq_some_iff`
+also exists but yields a three-way list decomposition that is strictly more work); and
+`rcases h` must come **before** unfolding, so `res` is already `.linear fs` / `.persistent fs`
+when the splits run. `congrArg Prod.fst (by assumption)` is what converts the split's
+`applyRule rule sf b ord = (res, ord')` into the `.1`-form the `applyRule` lemmas want — `simp_all`
+cannot do it, because that equation is inaccessible-named. -/
+theorem findApplicableRule_extending_ne_nil
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering} {fc : ProofSystem.FrameClass}
+    {rule : TableauRule} {ord' : TimeOrdering} {fs : List SignedFormula}
+    (h : findApplicableRule sf b ord fc = some (rule, RuleResult.linear fs, ord')
+       ∨ findApplicableRule sf b ord fc = some (rule, RuleResult.persistent fs, ord')) :
+    fs ≠ [] := by
+  rcases h with h | h <;>
+    (unfold findApplicableRule at h
+     obtain ⟨r, _, hr⟩ := List.exists_of_findSome?_eq_some h
+     repeat' split at hr)
+  all_goals simp_all
+  all_goals first
+    | exact applyRule_fresh_linear_ne_nil (by assumption) (congrArg Prod.fst (by assumption))
+    | exact applyRule_persistent_ne_nil (congrArg Prod.fst (by assumption))
+    | (intro hnil; subst hnil; simp_all)
+
+/-- The seriality pick never returns an empty extension.
+
+`by_cases` rather than `split` here: the guard sits in a `match` *scrutinee*, which `split at h`
+does not reach. -/
+theorem findApplicableSerialRule_ne_nil
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {rule : TableauRule} {ord' : TimeOrdering} {fs : List SignedFormula}
+    (h : findApplicableSerialRule sf b ord = some (rule, RuleResult.persistent fs, ord')) :
+    fs ≠ [] := by
+  unfold findApplicableSerialRule serialityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil, applyRule] at h
+  by_cases hE : ([SignedFormula.pos Syntax.Formula.top.someFuture sf.label,
+                  SignedFormula.pos Syntax.Formula.top.somePast sf.label].filter
+                    (fun f => !b.contains f)).isEmpty = true
+  · simp only [hE, if_pos] at h; simp at h
+  · simp only [hE, if_false, Bool.false_eq_true] at h
+    simp at h
+    obtain ⟨-, hres, -⟩ := h
+    rw [← hres]
+    simpa using hE
+
+/-- The seriality pick never returns a `.linear` result.
+
+`serialityRule`'s `applyRule` arm returns `.notApplicable` or `.persistent outs` and nothing
+else, so the `.linear` arm of the pick is unreachable through it. Needed because
+`expandOnceUnblocked`'s result tail treats `.linear` and `.persistent` alike, so both have to be
+discharged when the seriality stage supplied the pick. -/
+theorem findApplicableSerialRule_not_linear
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {rule : TableauRule} {ord' : TimeOrdering} {fs : List SignedFormula}
+    (h : findApplicableSerialRule sf b ord = some (rule, RuleResult.linear fs, ord')) :
+    False := by
+  unfold findApplicableSerialRule serialityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil, applyRule] at h
+  by_cases hE : ([SignedFormula.pos Syntax.Formula.top.someFuture sf.label,
+                  SignedFormula.pos Syntax.Formula.top.somePast sf.label].filter
+                    (fun f => !b.contains f)).isEmpty = true
+  · simp only [hE, if_pos] at h; simp at h
+  · simp only [hE, if_false, Bool.false_eq_true] at h
+    simp at h
+
+/-- The result tail shared by `expandOnce`, `expandOnceUnblocked` and `expandOnceNoFresh`,
+factored out over an arbitrary pick.
+
+Reporting `.extended nb` means the pick supplied a `.linear` or `.persistent` result and `nb` is
+that result appended to `b`. Stating it over an abstract `pick` is what lets the two-stage
+seriality pick be destructured *afterwards*: a hypothesis about the two-stage `match` as a whole
+is not something the `findApplicableRule`-level lemmas can consume. -/
+theorem pick_extended
+    {b nb : Branch} {ord : TimeOrdering}
+    {pick : Option (TableauRule × RuleResult × TimeOrdering)}
+    (h : (match pick with
+          | none => (ExpansionResult.saturated, ord)
+          | some (_, result, newOrd) =>
+            match result with
+            | .linear fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .branching bss => (ExpansionResult.split (bss.map fun fs => fs ++ b), newOrd)
+            | .persistent fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .notApplicable => (ExpansionResult.saturated, newOrd)).1
+         = ExpansionResult.extended nb) :
+    ∃ r fs o, (pick = some (r, RuleResult.linear fs, o)
+                ∨ pick = some (r, RuleResult.persistent fs, o)) ∧ nb = fs ++ b := by
+  rcases pick with _ | ⟨r, res, o⟩
+  · simp at h
+  · cases res with
+    | notApplicable => simp at h
+    | branching bss => simp at h
+    | linear fs => exact ⟨r, fs, o, Or.inl rfl, by simpa using h.symm⟩
+    | persistent fs => exact ⟨r, fs, o, Or.inr rfl, by simpa using h.symm⟩
+
+/-- An `.extended` step of `expandOnceUnblocked` appends a non-empty list to the branch.
+
+The proof destructures the two-stage pick — ordinary rules first, seriality only when
+`findUnexpandedUnblockedWith` returns `none` — and hands each stage to its own non-emptiness
+lemma. `rw` rather than `simp` on the stage equations is deliberate: `simp` normalises
+`List.contains` to `decide (· ∈ ·)`, after which the equation for the seriality stage's `find?`
+no longer matches the form the `rcases` produced. -/
+theorem expandOnceUnblocked_pick_ne_nil
+    {b nb : Branch} {ord : TimeOrdering} {fc : ProofSystem.FrameClass}
+    {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.extended nb) :
+    ∃ fs, fs ≠ [] ∧ nb = fs ++ b := by
+  unfold expandOnceUnblocked at h
+  obtain ⟨r, fs, o, hp, rfl⟩ := pick_extended h
+  refine ⟨fs, ?_, rfl⟩
+  rcases hpick : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+  · rw [hpick] at hp
+    rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                             && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+    · rw [hser] at hp
+      simp only at hp
+      rcases hp with hp | hp <;> exact absurd hp (by simp)
+    · rw [hser] at hp
+      simp only at hp
+      rcases hp with hp | hp
+      · exact absurd hp (fun hc => findApplicableSerialRule_not_linear hc)
+      · exact findApplicableSerialRule_ne_nil hp
+  · rw [hpick] at hp
+    simp only at hp
+    rcases hp with hp | hp
+    · exact findApplicableRule_extending_ne_nil (Or.inl hp)
+    · exact findApplicableRule_extending_ne_nil (Or.inr hp)
+
+/-- An `.extended` step strictly lengthens the branch.
+
+This is the lemma the plan names (as `expandOnce_length_lt`; `expandOnce` has no proof-path
+caller, so it is stated here for the function `expandBranchWithFuel` actually calls). It is a
+sanity check on the guards rather than the termination measure — see the section docstring for
+why `List.length` cannot bound the step count on its own. -/
+theorem expandOnceUnblocked_length_lt
+    {b nb : Branch} {ord : TimeOrdering} {fc : ProofSystem.FrameClass}
+    {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.extended nb) :
+    b.length < nb.length := by
+  obtain ⟨fs, hne, rfl⟩ := expandOnceUnblocked_pick_ne_nil h
+  have : 0 < fs.length := List.length_pos_iff.mpr hne
+  simp only [List.length_append]
+  omega
+
+end ProgressLemmas
+
+/-!
 ## The Applied Set, Demoted
 
 The applied set existed to break the persistent/consumable cycle described in the
