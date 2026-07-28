@@ -1,0 +1,78 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "task_number": 408,
+  "phase": "7.4",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "session_id": "sess_1785194583_36a81a",
+  "orchestrator_mode": true,
+  "effort_flag": "hard",
+  "lit_flag": true,
+  "summary": "Phase 7.4 complete in one run. Five declarations landed sorry-free: boundedWitness_of_limitGuardBelow (transcribed verbatim from report 05 section 3, not re-derived); BFMCS.LimitGuardEventual (bundle predicate, closure-free, no root argument, appended beside LimitFutureWitness/LimitGuardBelow with nothing else in that file changed); toRealBundle_forward_until_unselected (the chartered six-step chain, consuming Phase 7.3's guard-above conclusion, Phase 7.2's dichotomy and guard_transport_realLimitMCS); toRealBundle_forward_since_unselected (v4's CHARTER GAP, closed with NO Prior-U step, straight off the predicate plus limitMCSBelow_cofinal_below); and BFMCS.toRealBundle_restricted_forward_until_since (the composition over all four cases). Full lake build green (1903 jobs). Both h_fuc sub-obligations are landed by name, so the Done-when criterion is met in full. cantor_bfmcs_dense_real_restricted_fuc NOT attempted; LimitGuardEventual NOT discharged; no chronicle declaration edited; no closure enlarged; no predicate threaded onto any terminus; ChronicleLimitGuardAbove.lean, ChronicleLimitGuardWitness.lean, ChronicleLimitGapWitness.lean, ChronicleConstruction.lean and CounterexampleElimination.lean untouched. No import line added anywhere (Phase 7.3's conclusion enters as a written-out binder rather than by importing its module).",
+  "phases_completed": 13,
+  "phases_total": 15,
+  "phases_dispatchable": 1,
+  "phases_user_gated": 1,
+  "phase_counting_convention": "Unchanged. [COMPLETED] = 13 (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4). [NOT STARTED] = 1 (8, hard-gated). [USER GATED] = 1 (7.5), neither completed nor dispatchable.",
+  "sorry_inventory": [],
+  "blockers": [],
+  "next_action_hint": "Phase 7.4 is COMPLETED. Re-present the R3d decision to the user. Phase 7.5 (the chronicle discharge of BFMCS.LimitGuardEventual) is [USER GATED]: it requires fresh, explicit user authorization AND Amendments 2-4 (drafted, NOT applied) before it may be dispatched, and report 05 records that it has no source in the corpus. Phase 8 remains hard-gated behind 7.5. Do NOT dispatch either autonomously.",
+  "next_dispatch_target": "none — user decision required (R3d gate)",
+  "hard_gates_still_binding": [
+    "Do NOT dispatch Phase 8 until BFMCS.LimitGuardEventual is discharged. Landing 7.3 and 7.4 does NOT unblock Phase 8.",
+    "Do NOT dispatch Phase 7.5. It is [USER GATED]; Amendments 2, 3 and 4 remain DRAFTED and NOT APPLIED.",
+    "No conditional terminus; the pinned engine signature carries forward unchanged. LimitGuardEventual appears only as a hypothesis of intermediate lemmas, never on countermodel_dedekind_dense, completeness_dedekind_engine, consequence_completeness_dedekind or completeness_dedekind.",
+    "ChronicleConstruction.lean, CounterexampleElimination.lean and ChronicleTypes.lean remain byte-identical (verified: untouched by this dispatch)."
+  ],
+  "verification": {
+    "build_passed": true,
+    "scoped_builds": [
+      "lake build FormalSystem.Metalogic.Bundle.RealExtensionBundle -> green (first attempt)",
+      "lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension -> green after one syntax repair (an `open ... in` placed between docstring and theorem; replaced by a fully-qualified reference)"
+    ],
+    "full_build": "lake build -> Build completed successfully (1903 jobs)",
+    "full_build_note": "One transient failure was observed first (FormalSystem.Metalogic.Decidability.CountermodelExtraction, 'no such file or directory') caused by the concurrent task-165 session editing Decidability/Saturation.lean mid-build. Re-running the same target and then the full build both succeeded with no change to this dispatch's files.",
+    "sorry_count_outside_boneyard": 1,
+    "sorry_locations_outside_boneyard": ["FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242"],
+    "sorry_baseline_unchanged": true,
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "print_axioms": {
+      "BFMCS.LimitGuardEventual": ["propext", "Classical.choice", "Quot.sound"],
+      "boundedWitness_of_limitGuardBelow": ["propext", "Classical.choice", "Quot.sound"],
+      "toRealBundle_forward_until_unselected": ["propext", "Classical.choice", "Quot.sound"],
+      "toRealBundle_forward_since_unselected": ["propext", "Classical.choice", "Quot.sound"],
+      "BFMCS.toRealBundle_restricted_forward_until_since": ["propext", "Classical.choice", "Quot.sound"]
+    }
+  },
+  "literature_verification": {
+    "mode": "verbatim corpus check before writing the predicate docstring, per the binding user directive",
+    "reynolds_gamma_plus_p175": "Verified verbatim at /home/benjamin/Projects/Literature/sources/reynolds_1992/sec06_5-expressive-dedekind-completeness.md:27 — 'Given a temporal formula A, we can define a connective gamma^+ by saying that gamma^+(A) holds exactly when A remains true for a while after now but only up until a gap after which A is arbitrarily soon false. If gamma^+(A) is true anywhere we call the indicated gap an A left gap and more generally a definable gap.' Quoted (in the predicate docstring and the module docstring) exactly as printed, cited by printed page.",
+    "reynolds_p176_stronger_result": "Already-landed citation left unchanged in the module docstring: '...we actually need a stronger result.' (sec06 opening).",
+    "burgess_1984_pp109_110": "Cited as the provenance of the bounded witness — the far-side gap witness placed with no bound whatsoever, licensed by A7a, in the F/G fragment where there is no guard to carry. The contrast (here the bound is what makes the guard interval finite) is recorded in boundedWitness_of_limitGuardBelow's docstring.",
+    "no_source_for_r3d": "Recorded in both the predicate docstring and the module docstring: LimitGuardEventual's discharge has no source in the corpus. Reynolds reaches R by the separability route instead (printed pp.177-178); Burgess 1984's completion argument stays in the F/G fragment."
+  },
+  "deviations": [
+    {
+      "target": "Statement 5 binder list (BFMCS.toRealBundle_restricted_forward_until_since)",
+      "kind": "altered",
+      "what": "Plan v5 drafted (B) (root) (h_rfuc) (h_rbuc) (h_lgb) (h_lge). Landed signature is (hfc) (B) (root) (h_rfuc) (hSf) (hSb) (h_lga) (h_lge): h_rbuc and h_lgb dropped as unused, hfc/hSf/hSb/h_lga added.",
+      "why": "The drafted signature is not provable as written. Steps 1-4 of the chartered chain are limitGuardAbove_of_priorU, whose hypotheses are FrameClass.Dedekind <= fc plus UNRESTRICTED Until coherence in both directions; restricted-at-root coherence cannot supply it, since the lemma applies Prior-U at psi, top and (neg psi or kPlus neg psi), none of which lie in subformulaClosure root. This phase's territory forbids extending ChronicleLimitGuardAbove.lean and forbids adding a BFMCS.LimitGuardAbove predicate, so 7.3's conclusion enters as the written-out binder h_lga, exactly as the dispatch brief directed. Step 5 is Statement 1, transcribed verbatim per the plan's explicit TRANSCRIBE-do-not-re-derive instruction, and it consumes limitGuardBelow_of_priorS directly, hence hfc/hSf/hSb; h_lgb is that lemma's packaged conclusion and cannot substitute for its ingredients without re-deriving Statement 1 at the bundle level.",
+      "impact": "None on the route. Every added binder is discharged at a chronicle call site from assets that already exist: h_lga by cantor_bfmcs_dense_limit_guard_above (Phase 7.3), hSf/hSb by the same self-root instantiation of cantor_bfmcs_dense_restricted_fuc/_buc that both landed guard discharges already use. BFMCS.LimitGuardEventual remains the sole undischarged residual, as the phase Goal requires. h_rbuc is genuinely unnecessary because limitGuardAbove_of_priorU absorbs the no-F(neg psi) case internally, so the eventuality route through limitSetBelow_someFuture_of_cofinal (which did need backward coherence) is never entered.",
+      "recorded_at": "plans/05_strong-completeness-dedekind-v5.md, DEVIATION block at the end of the Phase 7.4 section, and inline on the Statement 5 checklist item"
+    }
+  ],
+  "files_touched": [
+    "FormalSystem/Metalogic/Bundle/RealExtensionBundle.lean (+44 lines: BFMCS.LimitGuardEventual and its docstring; nothing else in the file changed)",
+    "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean (+~230 lines appended in a reopened Metalogic.Bundle namespace, plus a module-docstring section 'The forward side, reduced to one predicate'; no existing declaration modified)",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/05_strong-completeness-dedekind-v5.md (phase 7.4 marker, all 8 checklist items, DEVIATION block)"
+  ],
+  "commits": [
+    "777ca1c95 task 408 phase 7.4: BFMCS.LimitGuardEventual predicate",
+    "a3dbd0e0f task 408 phase 7.4: bounded witness and both unselected forward cases",
+    "9fc88e9dd task 408 phase 7.4: module docstring and plan status"
+  ],
+  "continuation_path": null,
+  "continuation_context": null
+}
