@@ -2542,7 +2542,7 @@ alongside it rather than dropped as now-transitive, so that removing `Lemma34.le
 could not silently drop the §6 vocabulary out of the build closure too. No other content in that
 file was touched.
 
-### Phase 19: Reynolds §6 Lemma 5 — formula and elementary transfer across classes [NOT STARTED]
+### Phase 19: Reynolds §6 Lemma 5 — formula and elementary transfer across classes [IN PROGRESS]
 
 - **Goal**: *"If a temporal formula holds somewhere in one `∼`-class in a maximal interval of `R`,
   then it holds somewhere in each `∼`-class in the interval. Furthermore, each pair of the
