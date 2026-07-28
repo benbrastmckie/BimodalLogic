@@ -320,6 +320,36 @@ theorem interpInvariantAt_regionHistory (f : ι → D) (M : TaskModel (regionFra
 
 end Countermodel
 
+/-! ## What the truth lemma still needs
+
+Recorded here because this is the file the next dispatch opens. Three obligations remain between
+the invariance above and `not_valid_of_hasOpen`; none of them is a gap in what is proved, and the
+first two are consequences of `truthAt_box_iff`, not of any choice made in this file.
+
+**O1 — the valuation.** `regionFrame`'s states are `W × (Set ι × Set ι)`, so a `TaskModel` over it
+is a predicate on (world, region code). At a *placed* code — one of the form `regionCode f (f i)` —
+the branch dictates the value: `b.hasPosAt (.atom p) ⟨worldAt w, timeAt b i⟩`. At a *gap* code the
+branch says nothing and the value is a free choice, which is exactly the choice `interpInvariantAt`
+leaves open and the choice the remaining two obligations constrain.
+
+**O2 — the gap policy is forced by the universal cases, not by the atoms.** `T(G φ) @ (w, t)`
+requires `φ` at *every* `r > f t`, gap points included, and `T(□ φ)` requires `φ` at every point of
+every base history (`truthAt_box_iff_base`). Region invariance transports truth between
+region-*mates*, and a gap region contains no placed point, so it cannot import a value from an
+endpoint — that is precisely the half-open partition the Phase 6 banner refutes. The gap valuation
+must therefore be defined so that every universally-quantified branch fact survives at it, and the
+consistency of that definition is the mathematical content still owed.
+
+**O3 — a missing branch-side closure fact.** The `sat_*` family (`CountermodelExtraction.lean`)
+has `sat_box_pos`: `T(□φ) @ (w,t)` propagates `T(φ)` to every known world **at the same time**.
+What the `box` case needs is propagation to every known *label*. The engine has it — `boxTemporal`
+(`Tableau.lean:635`) emits `T(Gφ)`, `T(Hφ)` at the same label, and the measured probes close
+`□p → □Gp`, `□p → □□p`, `□p → G□p` and `□p → ¬◇F¬p` — but there is no `sat_box_temporal` lemma to
+consume, and `sat_box_pos` alone does not reach a label differing in both coordinates. Proving it
+means unfolding `applyRule` (`sat_box_pos` needs `maxHeartbeats 1600000`), so it should be budgeted
+as its own sub-phase rather than attempted inside the truth-lemma induction.
+-/
+
 /-! ## Sanity checks -/
 
 section Checks

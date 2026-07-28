@@ -281,6 +281,56 @@ theorem truthAt_box_congr_history (M : TaskModel F) {Om : Set (WorldHistory F)}
 
 end BoxUniversal
 
+/-! ## Reduction to the base histories
+
+The offsets in `Ω` exist only to satisfy shift-closure. This section shows they carry no
+independent semantic content: every member of `Ω` is a time-shift of a base history, so every
+truth value in the model is a truth value at some `regionHistory f w 0`. `truthAt_box_iff_base`
+is the form the truth lemma's `box` case consumes.
+-/
+
+section BaseReduction
+
+variable {W ι D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+
+/-- Every region history is a time-shift of the base history of its world. -/
+theorem regionHistory_eq_timeShift (f : ι → D) (w : W) (Δ : D) :
+    regionHistory f w Δ = WorldHistory.timeShift (regionHistory f w (0 : D)) Δ := by
+  rw [timeShift_regionHistory, add_zero]
+
+/-- Truth at an offset history is truth at its base history, read at the offset time. -/
+theorem truthAt_regionHistory_offset (M : TaskModel (regionFrame W ι D)) (f : ι → D)
+    (w : W) (Δ r : D) (φ : Formula) :
+    TruthAt M (regionOmega f) (regionHistory f w Δ) r φ ↔
+      TruthAt M (regionOmega f) (regionHistory f w (0 : D)) (r + Δ) φ := by
+  have h := TimeShift.time_shift_preserves_truth M (regionOmega (W := W) f)
+    (shiftClosed_regionOmega f) (regionHistory f w (0 : D)) r (r + Δ) φ
+  rw [add_sub_cancel_left] at h
+  rw [regionHistory_eq_timeShift]
+  exact h
+
+/--
+**The `box` interface for the truth lemma.** `box φ` holds anywhere in the countermodel iff `φ`
+holds at every world's base history, at every point of the carrier.
+
+Both quantifiers are unavoidable and both are what the branch has to pay for: the world
+quantifier is discharged by `sat_box_pos` (the `boxPos` rule propagates to every known world),
+the time quantifier by the `boxTemporal` chain together with region invariance.
+-/
+theorem truthAt_box_iff_base (M : TaskModel (regionFrame W ι D)) (f : ι → D)
+    (τ : WorldHistory (regionFrame W ι D)) (x : D) (φ : Formula) :
+    TruthAt M (regionOmega f) τ x φ.box ↔
+      ∀ (w : W) (y : D), TruthAt M (regionOmega f) (regionHistory f w (0 : D)) y φ := by
+  rw [truthAt_box_iff M (shiftClosed_regionOmega f) τ x φ]
+  constructor
+  · intro h w y
+    exact h _ (regionHistory_mem_regionOmega f w 0) y
+  · intro h σ hσ y
+    obtain ⟨w, Δ, rfl⟩ := (mem_regionOmega_iff f σ).mp hσ
+    exact (truthAt_regionHistory_offset M f w Δ y φ).mpr (h w (y + Δ))
+
+end BaseReduction
+
 /-! ## Region-constancy: what holds, and what provably does not -/
 
 section RegionConstancy

@@ -1716,7 +1716,7 @@ shorter.
 - Serving `.Discrete ℤ` from `interpInvariant` — `ℤ` is not densely ordered, so the hypothesis is
   unsatisfiable there. A discrete-specific truth lemma is required.
 
-### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [IN PROGRESS]
+### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [PARTIAL]
 
 **ENGINE CONTRACT CHANGE (2026-07-28b, from sub-phase 2.7c).** See the identically-titled note
 under Phase 5 — it applies here verbatim. The short version: a `.inr` arm out of a split is now
@@ -1728,7 +1728,10 @@ arm surfaces as `none`/`STALLED` rather than as a closure. `not_valid_of_hasOpen
   soundness, and `Decidable` instances for all four frame classes. On completion this task has
   delivered standalone publishable value regardless of Track B's fate.
 - **Tasks:**
-  - [ ] **7.1 `Verified/Bridge/Omega.lean` + `Verified/Bridge/TruthLemma.lean`** (new): build
+  - [ ] **7.1 `Verified/Bridge/Omega.lean` + `Verified/Bridge/TruthLemma.lean`** (new)
+    *(in progress — handoff; both files landed sorry-free and build green, see the PHASE 7 STATUS
+    banner below for what landed, the two forced design corrections, and the three obligations
+    O1-O3 that remain)*: build
     `WorldHistory`/`Omega` with total `domain := fun _ => True` and universal `TaskRel`
     (report 01 F6 — verified sound); `ShiftClosed` via `time_shift_preserves_truth`
     (`Truth.lean:446`) per report 01 F9, `Set.univ_shift_closed` as fallback; prove
@@ -1769,6 +1772,78 @@ arm surfaces as `none`/`STALLED` rather than as a closure. `not_valid_of_hasOpen
     milestone commit** per wrap-up discipline.
 - **Timing:** 3 dispatches, ~9 hours.
 - **Depends on:** 3, 4, 6
+
+**PHASE 7 STATUS (2026-07-28e) — PARTIAL after one dispatch. 7.1 half landed, sorry-free, both
+builds green** (`lake build FormalSystem.Metalogic.Decidability`, `lake build BimodalTest`); every
+new theorem verifies on `propext`/`Classical.choice`/`Quot.sound` only. 7.2 and 7.3 not started.
+
+*What landed.* `Verified/Bridge/Omega.lean` (the countermodel's objects) and
+`Verified/Bridge/TruthLemma.lean` (the invariance induction the truth lemma runs on), both
+registered in `Decidability.lean`:
+- `regionFrame W ι D` — states `W × (Set ι × Set ι)` (branch world + region code), `TaskRel s d s'
+  := d = 0 → s = s'`. A **universal `TaskRel` is not available**: `nullity_identity` is an iff, so
+  `TaskRel w 0 u` must imply `w = u`. This is the weakest relation the axioms permit, which leaves
+  `respects_task` free for every history built on it.
+- `regionHistory f w Δ`, `regionOmega f` (a `Set.range`, not `Set.univ`), `shiftClosed_regionOmega`,
+  `mem_regionOmega_iff`, `regionOmega_total`, `worldHistory_ext`, `timeShift_regionHistory`.
+- `truthAt_box_iff` / `truthAt_box_congr` / `truthAt_box_iff_base`, `regionHistory_eq_timeShift`,
+  `truthAt_regionHistory_offset`, `regionConstant_regionHistory_zero`.
+- `InterpInvariantAt` with all cases and the assembled `interpInvariantAt`, plus
+  `interpInvariantAt_regionHistory` instantiating it at the countermodel's base histories, and
+  `interpInvariantAt_of_interpInvariant` recording that nothing from Phase 6 is lost.
+
+*Correction 1 — `Ω = Set.univ` is unusable, contrary to the 7.1 task text.* `Set.univ` is
+shift-closed but contains the empty history (`domain := fun _ => False`), at which every atom is
+false. `TruthAt … (box φ)` is a universal over `Ω`, so one such history falsifies `□p` outright
+and no branch carrying `T(□p)` could be satisfied. `Ω` is therefore an explicit range: the
+branch's worlds at every time offset. `Set.univ_shift_closed` is consequently NOT the fallback the
+plan names; `shiftClosed_regionOmega` replaces it.
+
+*Correction 2 — Phase 6's `∀ τ ∈ Ω, RegionConstant f τ` obligation is UNSATISFIABLE, and the
+interface moves to a per-history form.* This supersedes the Phase 6 handoff's "first obligation".
+A shift-closed `Ω` contains `timeShift τ Δ` for every `Δ`, whose state at `r` is `τ.states (r+Δ)`.
+Fix `r ≠ r'`; since `ι` is finite only finitely many `Δ` put a placed point between `r+Δ` and
+`r'+Δ`, so for cofinitely many `Δ` the two are region-mates and region-constancy of that translate
+forces `τ.states (r+Δ) = τ.states (r'+Δ)` — i.e. `τ.states` constant, and a constant-state history
+cannot separate two times, so no branch asserting `T(p) @ t₁` and `F(p) @ t₂` in one world is
+satisfiable. Machine witness in-tree: `not_regionConstant_regionHistory_one` (`D = ℚ`, one placed
+point at `0`, `Δ = 1`; the region-mates `-1/2` and `-2` have translates `1/2` and `-1` straddling
+it). The replacement is `InterpInvariantAt f M Om τ χ`, hypothesised on `RegionConstant f τ` for
+the single history plus `ShiftClosed Om`. **Building the history through `regionExtend` does not
+help and is not what landed** — the region code is carried in the state directly. Phase 6's file
+is untouched and all its region lemmas are consumed verbatim.
+
+*Why the swap costs nothing, and why the `box` case got easier.* For any shift-closed `Ω`,
+`time_shift_preserves_truth` upgrades the fixed-time universal into a universal over times:
+`TruthAt M Ω τ x (box φ) ↔ ∀ σ ∈ Ω, ∀ y, TruthAt M Ω σ y φ` (`truthAt_box_iff`). So `box` truth
+has no free evaluation point and its invariance case consumes **no** induction hypothesis — the
+one case that forced Phase 6's global formulation. The `untl`/`snce` cases were already
+single-history arguments and reproduce unchanged. Measured adequacy of this reading against the
+engine: `□p → □Gp`, `□p → □□p`, `□p → G□p`, `□p → ¬◇F¬p` all CLOSE, as do the seriality rows
+`Gp → Fp`, `¬(Gp ∧ G¬p)`, `¬(Hp ∧ H¬p)`, `F ⊤`, `P ⊤`, while the control `Fp → p` stays OPEN.
+
+*What remains in 7.1* (documented in `TruthLemma.lean`'s "What the truth lemma still needs"):
+- **O1 the valuation** — a `TaskModel (regionFrame …)` is a predicate on (world, region code);
+  at placed codes the branch dictates it, at gap codes it is free.
+- **O2 the gap policy** — `T(Gφ) @ (w,t)` needs `φ` at every `r > f t` and `T(□φ)` needs `φ` at
+  every point of every base history (`truthAt_box_iff_base`), while region invariance transports
+  only between region-*mates* and a gap region contains no placed point. Importing a value from an
+  endpoint is exactly the half-open partition Phase 6 refuted, so the gap valuation must be defined
+  outright and its consistency with every universal branch fact proved. This is the remaining
+  mathematical content.
+- **O3 a missing `sat_*` fact** — `sat_box_pos` propagates `T(□φ)` to every known world at the
+  *same* time; the `box` case needs every known *label*. The engine has it (`boxTemporal`,
+  `Tableau.lean:635`, plus the closed probes above) but there is no `sat_box_temporal` to consume.
+  Proving it unfolds `applyRule` (`sat_box_pos` already needs `maxHeartbeats 1600000`), so budget
+  it as its own sub-phase, not inside the truth-lemma induction.
+
+**DO NOT RE-ATTEMPT (added by this dispatch):**
+- `Ω := Set.univ` — the empty history falsifies every `□`.
+- A universal `TaskRel` — `nullity_identity` is an iff and forbids it.
+- Discharging `∀ τ ∈ Ω, RegionConstant f τ` by building the history through `regionExtend`, or by
+  any other means — refuted above and machine-witnessed.
+- Copying a gap region's valuation from an adjacent placed point — that is the refuted half-open
+  partition wearing a different hat.
 
 ### Phase 8: Hygiene — Vacuous Theorems and Documentation [NOT STARTED]
 
