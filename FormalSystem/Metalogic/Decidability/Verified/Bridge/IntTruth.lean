@@ -483,45 +483,205 @@ every placed point below the witness, so it needs the guard at the ray's own lab
 every known time below the witness — a strictly larger demand than the placed case, and one no
 row of `temporalWitnessCheck` currently carries.
 
-### What the negative halves still need
+### The negative halves — LANDED, and here is the case tree they run on
 
-`untlNeg_spread` settles every **placed** point above the evaluation point, and
-`regionLabel_untlNeg` (already landed, already consumed elsewhere) settles the non-placed ones —
-its "asserted strictly below region `j`" side condition is exactly right, and the candidate row
-that drops it is refuted on the corpus. Two gaps remain, both newly identified:
+Each case is now its own theorem, `branchTruthAt_untl_neg` and `branchTruthAt_snce_neg`, and
+`branchTruthAt_untl` is `fun w r => ⟨pos w r, neg w r⟩`. Splitting first is what let the negative
+halves land while the positive ones are still owed: nothing in the negative direction depends on
+the earliest-witness iteration or on the guard at all.
 
-* **the geometry step**, `f i < f j → strictBefore ord (timeAt b i) (timeAt b j)`, i.e. the
-  converse of `OrderFaithful`. It follows from the packaged order's totality plus
-  `le_intPlace_of_branchLE`, and `branchLT`'s second disjunct (equal times, distinct indices) is
-  vacuous because `b.knownTimes` is an `eraseDups` and so `timeAt` is injective;
-* **the lower-ray negative demand.** For an evaluation point below every placed point, the label
-  read is `regionLabel … 0`, and `untlNegFuture` reaches only the known times strictly after it —
-  which need not be all of them, since `regionLabel` chooses the *first eligible* candidate and
-  not the order-minimal one. Either a further measured row or a minimality condition on the ray
-  label is owed. **Measure before stating**: two candidate rows have already been refuted.
+The `untl` tree has four live leaves and three vacuous ones. Write `r` for the evaluation point
+and `s` for the witness the semantics hands back, so `r < s`.
+
+* `r` **placed**, `s` **placed** — `OrderReflecting` turns `f i < f j` back into a
+  `strictBefore` fact and `untlNeg_spread` denies `φ` there.
+* `r` **placed**, `s` on the **upper ray** — `s` reads `regionLabel … n`, and
+  `regionLabel_untlNeg` reaches it, its "strictly below region `j`" side condition being
+  `branchRank_lt_length` at `j = n`.
+* `r` **placed**, `s` on the **lower ray** — vacuous: `RaySplit` puts `s` below `r`.
+* `r` on the **lower ray** — one leaf for all three shapes of `s`. Every label any point reads is
+  a known time (`stateTime_mem_knownTimes`), and that is exactly the reach of row 5,
+  `untlNegRay_low`. This is the leaf Correction 12 named and the one the new row was measured for.
+* `r` on the **upper ray** — then `n ≠ 0`, so `BranchTime b` is inhabited. `s` placed and `s` on
+  the lower ray are both vacuous by `RaySplit`; `s` on the upper ray reads `r`'s own label, and
+  `regionLabel_untlNeg` closes it against itself.
+
+The `snce` tree is the mirror with one asymmetry inherited from the gate's region indexing:
+where `untl` needs row 5 at the lower ray, `snce` needs row 6 at the *upper* one, and the leaf
+`untl` closes with `regionLabel_untlNeg` at `j = n` its mirror closes with `regionLabel_snceNeg`
+at `j = 0`, whose side condition `0 ≤ branchRank` is free.
+
+### What the positive halves still need, precisely
+
+At a **placed** point the witness is a placed point and the intervening carrier points are
+exactly the placed points between, so item 2's iteration plus a genuine-guard row closes it. At
+an **upper-ray** point `untlRay_self` closes it outright: every point above reads the same label,
+so the witness is that label and the guard interval is empty. The **lower ray** is the residual
+shape: a point below every placed point reaches a placed witness across the whole lower ray *and*
+every placed point below the witness, so it needs the guard at the ray's own label **and** at
+every known time below the witness — a strictly larger demand than the placed case, and one no
+row of `temporalWitnessCheck` currently carries. `untlPosGuardedWitness` and `untlRayDnGuard` are
+already measured `true` on every corpus row the region gate accepts, so the row shapes are known;
+what is not yet written is the iteration that consumes them.
 
 None of the above touches an engine file, the region labelling, or any interface already landed.
 -/
 
-/-- **Until case — OWED.** See the section docstring for the four items this needs. -/
-theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
-    (hRO : RayOnly b f) (fc : ProofSystem.FrameClass)
+/--
+**Until case, negative half.** `F(U(φ,ψ))` at a point's label makes `U(φ,ψ)` false there.
+
+No guard reasoning appears: `untlNeg_spread` denies the *event* at every known later time
+outright, which is strictly more than the semantics asks for and is what makes this half
+independent of the `⊤` trap that governs the positive one.
+-/
+theorem branchTruthAt_untl_neg (hf : Function.Injective f) (hOR : OrderReflecting b ord f)
+    (hRO : RayOnly b f) (hRS : RaySplit b f) (hV : branchOrderValid b ord = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (w : WorldIndex) (r : D) :
+    b.hasNegAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
+      ¬ TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.untl φ ψ) := by
+  intro hn hT
+  obtain ⟨s, hrs, hsφ, -⟩ := hT
+  have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
+  have hmem : (⟨.neg, .untl φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+    (hasNegAt_iff_mem b _ _).mp hn
+  refine (hφ w s).2 ?_ hsφ
+  by_cases hr : IsPlacedCode f (regionCode f r)
+  · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
+    rw [stateLabel_placed hf w hi] at hmem
+    by_cases hs : IsPlacedCode f (regionCode f s)
+    · obtain ⟨j, hj⟩ := exists_eq_of_isPlacedCode hs
+      rw [stateLabel_placed hf w hj]
+      exact untlNeg_spread hTW hmem (timeAt_mem b j) (hOR i j (by rw [hi, hj]; exact hrs))
+    · rw [stateLabel_gap w hs]
+      rcases hRO s hs with h0 | hnn
+      · exact absurd (hi ▸ (hRS s hs).1 h0 i) (asymm hrs)
+      · rw [hnn, hasNegAt_iff_mem]
+        exact regionLabel_untlNeg hCheck hw' (le_refl _) hmem
+          (branchRank_lt_length hV (timeAt_mem b i))
+  · rw [stateLabel_gap w hr] at hmem
+    by_cases hz : cutIndex (regionCode f r) = 0
+    · rw [hz] at hmem
+      exact untlNegRay_low hTW hmem (stateTime_mem_knownTimes hf hCheck hne w s)
+    · have hnn : cutIndex (regionCode f r) = b.knownTimes.length := (hRO r hr).resolve_left hz
+      have hlen : 0 < b.knownTimes.length := by omega
+      rw [hnn] at hmem
+      have habove : ∀ i : BranchTime b, f i < r := (hRS r hr).2 hnn
+      by_cases hs : IsPlacedCode f (regionCode f s)
+      · obtain ⟨j, hj⟩ := exists_eq_of_isPlacedCode hs
+        exact absurd (hj ▸ habove j) (asymm hrs)
+      · rw [stateLabel_gap w hs]
+        rcases hRO s hs with h0 | hnn'
+        · exact absurd (hrs.trans (((hRS s hs).1 h0 ⟨0, hlen⟩).trans (habove ⟨0, hlen⟩)))
+            (lt_irrefl r)
+        · rw [hnn', hasNegAt_iff_mem]
+          exact regionLabel_untlNeg hCheck hw' (le_refl _) hmem
+            (branchRank_lt_length hV (regionLabel_mem_knownTimes hCheck hw' (le_refl _)))
+
+/-- **Since case, negative half.** The past-directed mirror, closing at the upper ray by row 6
+and at the lower ray by `regionLabel_snceNeg`'s free `0 ≤ branchRank` side condition. -/
+theorem branchTruthAt_snce_neg (hf : Function.Injective f) (hOR : OrderReflecting b ord f)
+    (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (w : WorldIndex) (r : D) :
+    b.hasNegAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
+      ¬ TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.snce φ ψ) := by
+  intro hn hT
+  obtain ⟨s, hsr, hsφ, -⟩ := hT
+  have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
+  have hmem : (⟨.neg, .snce φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+    (hasNegAt_iff_mem b _ _).mp hn
+  refine (hφ w s).2 ?_ hsφ
+  by_cases hr : IsPlacedCode f (regionCode f r)
+  · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
+    rw [stateLabel_placed hf w hi] at hmem
+    by_cases hs : IsPlacedCode f (regionCode f s)
+    · obtain ⟨j, hj⟩ := exists_eq_of_isPlacedCode hs
+      rw [stateLabel_placed hf w hj]
+      exact snceNeg_spread hTW hmem (timeAt_mem b j) (hOR j i (by rw [hi, hj]; exact hsr))
+    · rw [stateLabel_gap w hs]
+      rcases hRO s hs with h0 | hnn
+      · rw [h0, hasNegAt_iff_mem]
+        exact regionLabel_snceNeg hCheck hw' (Nat.zero_le _) hmem (Nat.zero_le _)
+      · exact absurd (hi ▸ (hRS s hs).2 hnn i) (asymm hsr)
+  · rw [stateLabel_gap w hr] at hmem
+    by_cases hu : cutIndex (regionCode f r) = b.knownTimes.length
+    · rw [hu] at hmem
+      exact snceNegRay_up hTW hmem (stateTime_mem_knownTimes hf hCheck hne w s)
+    · have hz : cutIndex (regionCode f r) = 0 := (hRO r hr).resolve_right hu
+      have hlen : 0 < b.knownTimes.length := by omega
+      rw [hz] at hmem
+      have hbelow : ∀ i : BranchTime b, r < f i := (hRS r hr).1 hz
+      by_cases hs : IsPlacedCode f (regionCode f s)
+      · obtain ⟨j, hj⟩ := exists_eq_of_isPlacedCode hs
+        exact absurd (hj ▸ hbelow j) (asymm hsr)
+      · rw [stateLabel_gap w hs]
+        rcases hRO s hs with h0 | hnn'
+        · rw [h0, hasNegAt_iff_mem]
+          exact regionLabel_snceNeg hCheck hw' (Nat.zero_le _) hmem (Nat.zero_le _)
+        · exact absurd (hsr.trans ((hbelow ⟨0, hlen⟩).trans ((hRS s hs).2 hnn' ⟨0, hlen⟩)))
+            (lt_irrefl s)
+
+/-- **Until case, positive half — OWED.** See "What the positive halves still need" above: the
+upper ray closes via `untlRay_self`, a placed point needs the earliest-witness iteration on
+`b.knownTimes.length - branchRank b ord t'`, and the lower ray is Correction 12's residual. -/
+theorem branchTruthAt_untl_pos (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
-    (hCheck : regionLabelCheck b ord = true) (hne : b.knownWorlds ≠ [])
-    {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
-    BranchTruthAt b ord f (Formula.untl φ ψ) := by
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
+    b.hasPosAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
+      TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.untl φ ψ) := by
   sorry
 
-/-- **Since case — OWED.** The past-directed mirror of `branchTruthAt_untl`. -/
-theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
-    (hRO : RayOnly b f) (fc : ProofSystem.FrameClass)
+/-- **Since case, positive half — OWED.** The past-directed mirror, with the *upper* ray as
+Correction 12's residual shape in place of the lower one. -/
+theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
-    (hCheck : regionLabelCheck b ord = true) (hne : b.knownWorlds ≠ [])
-    {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
-    BranchTruthAt b ord f (Formula.snce φ ψ) := by
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
+    b.hasPosAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
+      TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.snce φ ψ) := by
   sorry
+
+/-- **Until case**, assembled from its two halves. The negative half is sorry-free. -/
+theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ [])
+    {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
+    BranchTruthAt b ord f (Formula.untl φ ψ) := fun w r =>
+  ⟨branchTruthAt_untl_pos hf hOF hOR hRO hRS hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ w r,
+    branchTruthAt_untl_neg hf hOR hRO hRS hV hCheck hTW hne hφ w r⟩
+
+/-- **Since case**, assembled from its two halves. The negative half is sorry-free. -/
+theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ [])
+    {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
+    BranchTruthAt b ord f (Formula.snce φ ψ) := fun w r =>
+  ⟨branchTruthAt_snce_pos hf hOF hOR hRO hRS hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ w r,
+    branchTruthAt_snce_neg hf hOR hRO hRS hCheck hTW hne hφ w r⟩
 
 /-! ## The assembled induction
 
@@ -532,10 +692,12 @@ universal lands on the `untl`/`snce` cases through `imp`.
 
 /-- **The truth lemma**, at every formula, for any placement with no inhabited interior gap. -/
 theorem branchTruthAt (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
-    (hRO : RayOnly b f) (fc : ProofSystem.FrameClass)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
-    (hCheck : regionLabelCheck b ord = true) (hne : b.knownWorlds ≠ [])
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ [])
     (χ : Formula) : BranchTruthAt b ord f χ := by
   induction χ with
   | atom p => exact branchTruthAt_atom hf fc hOpen p
@@ -543,9 +705,9 @@ theorem branchTruthAt (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
   | imp φ ψ hφ hψ => exact branchTruthAt_imp hSat hφ hψ
   | box φ hφ => exact branchTruthAt_box hf hSat hTot hBA hCheck hne hφ
   | untl φ ψ hφ hψ =>
-      exact branchTruthAt_untl hf hOF hRO fc hSat hOpen hTot hBA hCheck hne hφ hψ
+      exact branchTruthAt_untl hf hOF hOR hRO hRS hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ
   | snce φ ψ hφ hψ =>
-      exact branchTruthAt_snce hf hOF hRO fc hSat hOpen hTot hBA hCheck hne hφ hψ
+      exact branchTruthAt_snce hf hOF hOR hRO hRS hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ
 
 end Model
 
@@ -672,7 +834,7 @@ theorem not_valid_of_hasOpen_int (hV : branchOrderValid b ord = true)
     (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
-    (hCheck : regionLabelCheck b ord = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
     (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ valid χ := by
   intro hval
@@ -684,8 +846,9 @@ theorem not_valid_of_hasOpen_int (hV : branchOrderValid b ord = true)
     rw [stateLabel_placed hf l₀.world (rfl : f i = f i), normWorld_eq_self hw₀, hi]
   have hneg : b.hasNegAt χ (stateLabel b ord f l₀.world (f i)) = true := by
     rw [hlab, hasNegAt_iff_mem]; exact hroot
-  exact (branchTruthAt hf (orderFaithful_intPlace hV) (rayOnly_intPlace hV) fc hSat hOpen hTot
-      hBA hCheck hne χ l₀.world (f i)).2 hneg
+  exact (branchTruthAt hf (orderFaithful_intPlace hV) (orderReflecting_intPlace hV)
+      (rayOnly_intPlace hV) (raySplit_intPlace hV) hV fc hSat hOpen hTot hBA hCheck hTW hne
+      χ l₀.world (f i)).2 hneg
     (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f) (regionOmega f)
       (shiftClosed_regionOmega f) (regionHistory f l₀.world (0 : ℤ))
       (regionHistory_mem_regionOmega f l₀.world 0) (f i))
@@ -699,7 +862,7 @@ theorem not_validDiscrete_of_hasOpen_int (hV : branchOrderValid b ord = true)
     (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
-    (hCheck : regionLabelCheck b ord = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
     (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ ValidDiscrete χ := by
   intro hval
@@ -711,8 +874,9 @@ theorem not_validDiscrete_of_hasOpen_int (hV : branchOrderValid b ord = true)
     rw [stateLabel_placed hf l₀.world (rfl : f i = f i), normWorld_eq_self hw₀, hi]
   have hneg : b.hasNegAt χ (stateLabel b ord f l₀.world (f i)) = true := by
     rw [hlab, hasNegAt_iff_mem]; exact hroot
-  exact (branchTruthAt hf (orderFaithful_intPlace hV) (rayOnly_intPlace hV) fc hSat hOpen hTot
-      hBA hCheck hne χ l₀.world (f i)).2 hneg
+  exact (branchTruthAt hf (orderFaithful_intPlace hV) (orderReflecting_intPlace hV)
+      (rayOnly_intPlace hV) (raySplit_intPlace hV) hV fc hSat hOpen hTot hBA hCheck hTW hne
+      χ l₀.world (f i)).2 hneg
     (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f) (regionOmega f)
       (shiftClosed_regionOmega f) (regionHistory f l₀.world (0 : ℤ))
       (regionHistory_mem_regionOmega f l₀.world 0) (f i))
