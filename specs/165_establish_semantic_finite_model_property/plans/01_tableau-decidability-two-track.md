@@ -952,7 +952,7 @@ on the 8 rule/class pairs of the two scheduled rules with no indication of why.
 (59.2 s, matching the 2.7 baseline) with zero `#guard_msgs` movement. Zero new sorries, axioms or
 vacuous definitions.
 
-### Phase 4: Termination (WP3: T1, T2, T3) [PARTIAL]
+### Phase 4: Termination (WP3: T1, T2, T3) [IN PROGRESS]
 
 - **Goal:** `buildTableau` totality at a justified, uncapped fuel; the pigeonhole argument is
   about real blocking (possible only now that Phase 1.3 made blocking genuine).
@@ -1042,28 +1042,36 @@ and are worth knowing before touching this file again:
   non-existent hypothesis inside a `first` alternative is a hard elaboration error rather than a
   backtrackable failure.
 
-**BLOCKER (4.2), measured on the landed definitions, not inferred:**
+**BLOCKER (4.2) RESOLVED (2026-07-28c).** The `TableauClosed` statement defect recorded above is
+repaired; `lake build` green, zero sorries. Two changes, one mechanical and one a recorded design
+decision:
 
-- **What failed**: `TimeTypeBound.lean` needs a *finite* `C` with `TableauClosed C`. No finite
-  non-trivial `C` exists, because three fields re-trigger on their own output at strictly
-  increasing formula size. Machine-checked against the landed `TableauClosed`:
-  `sep` applied twice typechecks (`hC.sep _ (hC.sep _ h)`); `gapU` yields
-  `U(⊤, ¬¬g) ∈ C` from `U(⊤, g) ∈ C` via `sub` through the `K⁺¬g` subformula; `trich` yields
-  `F(x ∧ FFy)` from `F(x ∧ y)` by reading its own second disjunct as a fresh operand pair.
-- **Why**: each of those fields is keyed on strictly *less* than the rule's real trigger.
-  `priorUGap` fires on `U(⊤,g) ∧ F¬g`, not on `U(⊤,g)`; `sepRule` fires on
-  `K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ,¬ψ))`, not on `K⁺ψ`; `orderTrichotomy` fires only when the branch carries
-  the *negation* of a disjunct at the common predecessor, which is what
-  `applyRule_orderTrichotomy_closed` reads out of the rule and what the field drops.
-- **What is needed**: re-key `gapU`, `gapS`, `sep` to the conjunctions, and decide where `trich`
-  belongs. The first three re-keyings are mechanical — the rule cases already carry the whole
-  conjunction in `hsf`, so their closers get *shorter* (`hC.gapU _ hsf` in place of
-  `hC.gapU _ (hC.and_left hsf)`). `trich` is the substantive one: its real guard is a statement
-  about the branch, not about `C`, so it may belong in the branch invariant `Fuel.lean` carries
-  rather than in `TableauClosed`.
-- **Prohibited**: do not widen `C` to try to absorb the chains — they are strictly increasing in
-  formula size, so no cardinality bound survives. Do not weaken T1 to dodge this; T1 is complete
-  and its 36 cases are what pin the field list to the real emissions.
+1. **Conjunctive re-keying of `gapU`/`gapS`/`sep`** (mechanical, as predicted). Each field is now
+   keyed on the rule's whole trigger — `U(⊤,g) ∧ F¬g`, `S(⊤,g) ∧ P¬g`,
+   `K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ,¬ψ))`. `sub` never produces a conjunction out of a conclusion, so none of
+   the three re-fires on its own output. The three rule closers shortened exactly as predicted
+   (`hC.gapU _ hsf` in place of `hC.gapU _ (hC.and_left hsf)`).
+
+2. **DECISION — `trich` leaves `TableauClosed` and becomes `TrichClosed C b`.** Options weighed:
+   (a) keep a `C`-only field — rejected, it is the field that admits no finite `C`, because
+   `F(x ∧ Fy)` is again of the form `F(x ∧ y′)`; (b) strengthen the rule's guard from
+   `ds.any` to `ds.all` so one branch-side negation implies all three — rejected, it is an engine
+   edit, and Phase 4's territory contract forbids engine edits in wave 3, and it could move
+   conformance verdicts; (c) **adopted** — state the condition where its guard actually lives.
+   `orderTrichotomy` fires only when `branch.contains (SignedFormula.neg d l0)` holds for one of
+   the three disjuncts, so the obligation is branch-relative by nature. `TrichClosed C b` is
+   defined in `SubformulaProperty.lean` with the rule's own disjunct order, so
+   `applyRule_orderTrichotomy_closed` discharges it by `exact hany` with no glue; that theorem no
+   longer needs `hC` or `hb` at all (it is analytic, as recorded in the 4.1 note), and
+   `applyRule_subformula_closed` gains one hypothesis `htrich`. **Rationale**: this is the only
+   option that keeps `TableauClosed` a finitely-satisfiable condition on `C` alone — which is what
+   `TimeTypeBound.lean` counts against — without touching the engine or weakening T1. **Cost
+   deferred to 4.3**: `Fuel.lean`'s branch invariant must carry and preserve `TrichClosed C b`.
+   Preservation is not free but is tractable: `orderTrichotomy` adds only *positive* disjuncts, so
+   it never enlarges the set of branch-side negated disjuncts that `TrichClosed` quantifies over.
+
+- **Still prohibited**: do not widen `C` to absorb the chains — they are strictly size-increasing,
+  so no cardinality bound survives widening. Do not weaken T1 to dodge this.
 
 ### Phase 5: Bridge Infrastructure (BranchOrder, Embed, Carrier) [NOT STARTED]
 

@@ -57,36 +57,39 @@ Three rules initially suspected of needing their own field turn out not to:
   `branch.identifyTime t₂ t₁` once, and identification is label-only (`identifyTime_formula_mem`
   below), so nothing leaves `C`.
 
-## What T2 must fix: no *finite* `C` satisfies `TableauClosed` as stated
+## Why the fields are keyed on the rules' *whole* triggers (the finiteness repair)
 
-T1 is an implication and is true and complete as proved below. But `TimeTypeBound.lean` needs a
-**finite** `C`, and three of the fields here re-trigger on their own output, each time on a
-strictly larger formula. All three were checked against these definitions rather than reasoned
-about informally:
+An earlier version of `TableauClosed` keyed `gapU`, `gapS` and `sep` on a *part* of each rule's
+trigger, and carried `orderTrichotomy`'s condition as a fourth field `trich`. That version was
+satisfied by **no finite `C`**, which would have left `TimeTypeBound.lean` with nothing to count.
+The three failures were machine-checked against these definitions rather than argued informally:
 
-* `sep` applies to its own conclusion. From `K⁺ψ ∈ C` it gives `K⁺(K⁺ψ ∧ K⁻ψ) ∈ C`, which is
-  again of the form `K⁺ψ′`, so `sep` fires again on `ψ′ = K⁺ψ ∧ K⁻ψ`, and so on.
-* `gapU` (and `gapS`) re-trigger through `sub`. From `U(⊤, g) ∈ C` the conclusion
-  `U(¬g ∨ K⁺¬g, g)` has `K⁺¬g = ¬U(⊤, ¬¬g)` as a subformula, so `U(⊤, ¬¬g) ∈ C`, and `gapU`
-  fires again on `¬¬g`.
-* `trich` re-triggers on its own second disjunct. `F(x ∧ Fy)` is itself of the form
-  `F(x ∧ y′)` with `y′ = Fy`, so the field yields `F(x ∧ FFy)`, then `F(x ∧ FFFy)`, …
+* `sep`, keyed on `K⁺ψ`, applied to its own conclusion — `hC.sep _ (hC.sep _ h)` typechecked,
+  since `K⁺(K⁺ψ ∧ K⁻ψ)` is again of the form `K⁺ψ′`.
+* `gapU`/`gapS`, keyed on `U(⊤, g)`, re-triggered through `sub`: the conclusion
+  `U(¬g ∨ K⁺¬g, g)` has `K⁺¬g = ¬U(⊤, ¬¬g)` as a subformula, so `U(⊤, ¬¬g) ∈ C` and the field
+  fired again on `¬¬g`.
+* `trich` re-triggered on its own second disjunct: `F(x ∧ Fy)` is itself of the form `F(x ∧ y′)`
+  with `y′ = Fy`, so the field yielded `F(x ∧ FFy)`, then `F(x ∧ FFFy)`, …
 
-The root cause is uniform: **each of these fields is keyed on strictly less than the rule's actual
-trigger.** `priorUGap` does not fire on `U(⊤,g)`; it fires on the conjunction
-`U(⊤,g) ∧ F¬g`. `sepRule` does not fire on `K⁺ψ`; it fires on
-`K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ,¬ψ))`. `orderTrichotomy` does not fire on a disjunct being present; it fires
-only when the branch carries the *negation* of a disjunct at the common predecessor — which is
-exactly what `applyRule_orderTrichotomy_closed` reads out of the rule below, and exactly what the
-field drops.
+Every chain strictly increases formula size, so widening `C` cannot absorb them. The root cause
+was uniform — **each field was keyed on strictly less than the rule's real trigger** — and so is
+the repair, in two shapes:
 
-So the T2 obligation is not "find a big enough closure"; it is **re-key `gapU`, `gapS`, `sep` and
-`trich` to the conjunctions and branch-side guards the rules actually test**, then show the
-resulting operator terminates. The three re-keyings are mechanical for `gapU`/`gapS`/`sep` (the
-rule cases already have the conjunction in `hsf`, so their closers shorten rather than lengthen).
-`trich` is the substantive one, because its real guard is a statement about the branch and not
-about `C`, which may mean `trich` should move out of `TableauClosed` and into the branch
-invariant that `Fuel.lean` carries.
+1. **Conjunctive re-keying** (`gapU`, `gapS`, `sep`). `priorUGap` fires on `U(⊤,g) ∧ F¬g`, not
+   on `U(⊤,g)`; `sepRule` fires on `K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ,¬ψ))`, not on `K⁺ψ`. The fields now say
+   so. `sub` never produces a conjunction from a conclusion, so none of the three re-fires. The
+   rule cases got *shorter*: `hC.gapU _ hsf` replaced `hC.gapU _ (hC.and_left hsf)`, because
+   after the `asAnd?` inversion `hsf` already carries the whole conjunction.
+2. **Migration to the branch** (`trich`). `orderTrichotomy` fires only when the branch carries
+   the *negation* of a disjunct at the common predecessor. That is a statement about the branch,
+   not about `C`, so no `C`-side field can express it faithfully, and the unfaithful
+   approximation is exactly what made `C` infinite. The condition now lives in `TrichClosed C b`
+   below and reaches `applyRule_subformula_closed` as a hypothesis, to be discharged by the
+   branch invariant `Fuel.lean` carries.
+
+`TableauClosed` is now a condition on `C` alone whose every field is triggered by a formula that
+its own conclusions never reproduce; `TimeTypeBound.lean` builds the concrete finite witness.
 
 ## The `.branchingOrdered` obligation
 
@@ -175,26 +178,63 @@ structure TableauClosed (C : Finset Formula) : Prop where
   priorU : ∀ ψ : Formula, ψ.someFuture ∈ C → Formula.untl ψ ψ.neg ∈ C
   /-- `priorSZ` (Discrete): `T(Pψ)` yields `T(S(ψ, ¬ψ))`. -/
   priorS : ∀ ψ : Formula, ψ.somePast ∈ C → Formula.snce ψ ψ.neg ∈ C
-  /-- `priorUGap` (Dedekind): the `U(⊤, g)` trigger yields `U(¬g ∨ K⁺(¬g), g)`. -/
-  gapU : ∀ g : Formula, Formula.untl Formula.top g ∈ C →
-    Formula.untl (Formula.or g.neg (Formula.kPlus g.neg)) g ∈ C
-  /-- `priorSGap` (Dedekind): the `S(⊤, g)` trigger yields `S(¬g ∨ K⁻(¬g), g)`. -/
-  gapS : ∀ g : Formula, Formula.snce Formula.top g ∈ C →
-    Formula.snce (Formula.or g.neg (Formula.kMinus g.neg)) g ∈ C
-  /-- `sepRule` (Dedekind): the `K⁺ψ` trigger yields `K⁺(K⁺ψ ∧ K⁻ψ)`. -/
-  sep : ∀ ψ : Formula, Formula.kPlus ψ ∈ C →
-    Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ)) ∈ C
   /--
-  `orderTrichotomy`: the three `temp_linearity` disjuncts on an operand pair stand or fall
-  together. The rule's own analyticity guard (restriction 3) fires only when the branch already
-  carries the negation of *one* of the three at the common predecessor, so this hypothesis is
-  always discharged from the branch rather than conjured; that is what keeps the closure finite
-  instead of iterating `F(F(x ∧ y) ∧ y')` without bound.
+  `priorUGap` (Dedekind): the trigger is the **conjunction** `U(⊤, g) ∧ F(¬g)`, which is what
+  the rule tests (`asAnd?` then `e == ⊤ && b == F(¬g)`), and it yields `U(¬g ∨ K⁺(¬g), g)`.
+
+  Keying on `U(⊤, g)` alone — the shape this field carried before — makes no finite `C` satisfy
+  the structure: the conclusion has `K⁺¬g = ¬U(⊤, ¬¬g)` as a subformula, so `sub` returns
+  `U(⊤, ¬¬g)` and the field re-fires on `¬¬g`, forever, at strictly increasing formula size.
+  The conjunction is not produced by `sub` from the conclusion, so the real trigger does not
+  re-fire.
   -/
-  trich : ∀ x y : Formula,
-    (Formula.someFuture (Formula.and x y) ∈ C
-      ∨ Formula.someFuture (Formula.and x y.someFuture) ∈ C
-      ∨ Formula.someFuture (Formula.and x.someFuture y) ∈ C) →
+  gapU : ∀ g : Formula,
+    Formula.and (Formula.untl Formula.top g) (Formula.someFuture g.neg) ∈ C →
+    Formula.untl (Formula.or g.neg (Formula.kPlus g.neg)) g ∈ C
+  /-- `priorSGap` (Dedekind): past dual of `gapU`, keyed on `S(⊤, g) ∧ P(¬g)`. -/
+  gapS : ∀ g : Formula,
+    Formula.and (Formula.snce Formula.top g) (Formula.somePast g.neg) ∈ C →
+    Formula.snce (Formula.or g.neg (Formula.kMinus g.neg)) g ∈ C
+  /--
+  `sepRule` (Dedekind): the trigger is `K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ, ¬ψ))`, yielding `K⁺(K⁺ψ ∧ K⁻ψ)`.
+
+  Keyed on `K⁺ψ` alone the field applied to its own conclusion (`hC.sep _ (hC.sep _ h)`
+  typechecks), so no finite `C` satisfied it. The conclusion is a bare `K⁺ψ′`, never the
+  conjunction, so the real trigger terminates.
+  -/
+  sep : ∀ ψ : Formula,
+    Formula.and (Formula.kPlus ψ)
+        (Formula.neg (Formula.kPlus (Formula.and ψ (Formula.untl ψ ψ.neg)))) ∈ C →
+    Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ)) ∈ C
+
+/--
+`orderTrichotomy`'s closure condition, stated where its guard actually lives.
+
+This is deliberately **not** a field of `TableauClosed`, and the reason is a measured one. As a
+`C`-only condition ("one disjunct present ⇒ all three present") it is satisfied by no finite
+`C`: the second disjunct `F(x ∧ F y)` is itself of the shape `F(x ∧ y′)` with `y′ = F y`, so it
+re-triggers on its own output and the chain `F(x ∧ y)`, `F(x ∧ F y)`, `F(x ∧ F F y)`, … grows
+without bound. Widening `C` cannot absorb that chain, because every step strictly increases
+formula size.
+
+The rule's real guard is restriction 4's last conjunct,
+`ds.any fun d => branch.contains (SignedFormula.neg d l0)`: the split fires only when the branch
+already carries the **negation** of one of the three disjuncts at the common predecessor. That is
+a statement about the branch, not about `C`, so it belongs to the branch invariant the fuel loop
+carries rather than to the formula stock. Stating it here keeps `TableauClosed` finitely
+satisfiable (that is what `TimeTypeBound.lean` needs) while leaving `applyRule` fully covered:
+`applyRule_orderTrichotomy_closed` consumes this predicate in place of the deleted field.
+
+The hypothesis is the disjunction the rule's `List.any` unfolds to, in the rule's own disjunct
+order, so the rule case discharges it by `exact`.
+-/
+def TrichClosed (C : Finset Formula) (b : Branch) : Prop :=
+  ∀ (x y : Formula) (l0 : Label),
+    (b.contains (SignedFormula.neg (Formula.someFuture (Formula.and x y)) l0)
+      ∨ b.contains
+          (SignedFormula.neg (Formula.someFuture (Formula.and x y.someFuture)) l0)
+      ∨ b.contains
+          (SignedFormula.neg (Formula.someFuture (Formula.and x.someFuture y)) l0)) →
     (Formula.someFuture (Formula.and x y) ∈ C
       ∧ Formula.someFuture (Formula.and x y.someFuture) ∈ C
       ∧ Formula.someFuture (Formula.and x.someFuture y) ∈ C)
@@ -1176,7 +1216,7 @@ theorem applyRule_priorUGap_closed (hC : TableauClosed C) (hsf : sf.formula ∈ 
   all_goals (try simp_all only [asAnd?_eq_iff, Bool.and_eq_true, beq_iff_eq, List.mem_cons,
     List.not_mem_nil, or_false, reduceCtorEq])
   all_goals (try subst hg)
-  all_goals exact hC.gapU _ (hC.and_left hsf)
+  all_goals exact hC.gapU _ hsf
 
 theorem applyRule_priorSGap_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .priorSGap sf b ord).1.emitted, g.formula ∈ C := by
@@ -1189,7 +1229,7 @@ theorem applyRule_priorSGap_closed (hC : TableauClosed C) (hsf : sf.formula ∈ 
   all_goals (try simp_all only [asAnd?_eq_iff, Bool.and_eq_true, beq_iff_eq, List.mem_cons,
     List.not_mem_nil, or_false, reduceCtorEq])
   all_goals (try subst hg)
-  all_goals exact hC.gapS _ (hC.and_left hsf)
+  all_goals exact hC.gapS _ hsf
 
 theorem applyRule_sepRule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .sepRule sf b ord).1.emitted, g.formula ∈ C := by
@@ -1202,7 +1242,7 @@ theorem applyRule_sepRule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
   all_goals (try simp_all only [asAnd?_eq_iff, Bool.and_eq_true, beq_iff_eq, List.mem_cons,
     List.not_mem_nil, or_false, reduceCtorEq])
   all_goals (try subst hg)
-  all_goals exact hC.sep _ (hC.and_left hsf)
+  all_goals exact hC.sep _ hsf
 
 theorem applyRule_densityRule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
@@ -1237,15 +1277,19 @@ theorem applyRule_densityRule_closed (hC : TableauClosed C) (hsf : sf.formula �
 /--
 `orderTrichotomy` is analytic, and this proof is where that shows up concretely.
 
-The rule's restriction 3 fires only when the branch already carries the *negation* of one of the
+The rule's restriction 4 fires only when the branch already carries the *negation* of one of the
 three `temp_linearity` disjuncts at the common predecessor. `List.find?_some` turns the surviving
 `candidates.find? fires = some (t₀, ψ)` into `fires (t₀, ψ) = true`, whose last conjunct is
-exactly that guard; `mem_of_branch_contains` and `hb` then put one disjunct in `C`, and the
-`trich` field carries the other two. Nothing here conjures a formula the branch did not already
-mention — which is what stops the closure iterating `F(F(x ∧ y) ∧ y′)` without bound.
+exactly that guard — and that guard is, verbatim, the hypothesis of `TrichClosed`. Nothing here
+conjures a formula the branch did not already mention.
+
+`TrichClosed` is a hypothesis rather than a `TableauClosed` field for the reason recorded at its
+definition: as a `C`-only condition it admits no finite `C`, because the second disjunct
+re-triggers on itself. The rule's own guard is branch-side, so the obligation travels with the
+branch invariant instead of with the formula stock.
 -/
-theorem applyRule_orderTrichotomy_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
-    (hb : ∀ x ∈ b, x.formula ∈ C) :
+theorem applyRule_orderTrichotomy_closed {C : Finset Formula} (hsf : sf.formula ∈ C)
+    (htrich : TrichClosed C b) :
     ∀ g ∈ (applyRule .orderTrichotomy sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
   unfold applyRule at hg
@@ -1255,14 +1299,10 @@ theorem applyRule_orderTrichotomy_closed (hC : TableauClosed C) (hsf : sf.formul
   all_goals (try simp only [RuleResult.emitted] at hg)
   all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
   have hfires := List.find?_some (by assumption)
-  simp only [Bool.and_eq_true, List.any_cons, List.any_nil, Bool.or_eq_true, Bool.or_false,
-    Bool.false_or] at hfires
+  simp only [Bool.and_eq_true, List.any_cons, List.any_nil, Bool.or_eq_true,
+    Bool.or_false] at hfires
   obtain ⟨-, hany⟩ := hfires
-  have htri := hC.trich _ _ (by
-    rcases hany with h | h | h
-    · exact Or.inl (hb _ (mem_of_branch_contains h))
-    · exact Or.inr (Or.inl (hb _ (mem_of_branch_contains h)))
-    · exact Or.inr (Or.inr (hb _ (mem_of_branch_contains h))))
+  have htri := htrich _ _ _ hany
   simp only [List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil, List.append_nil,
     List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hg
   repeat' rcases hg with hg | hg
@@ -1289,10 +1329,11 @@ already paid for, one declaration at a time, above.
 The hypotheses are the union of what the cases need. `hb` is genuinely required and not merely
 convenient: the propagation-heavy rules read universals back off the branch, and `timeLinearity`
 carries whole branches into its arms, so a statement about the trigger formula alone would be
-false for them.
+false for them. `htrich` is required by exactly one case, `orderTrichotomy`, whose guard is
+branch-side; see `TrichClosed` for why that obligation cannot live in `TableauClosed`.
 -/
 theorem applyRule_subformula_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
-    (hb : ∀ x ∈ b, x.formula ∈ C) (rule : TableauRule) :
+    (hb : ∀ x ∈ b, x.formula ∈ C) (htrich : TrichClosed C b) (rule : TableauRule) :
     ∀ g ∈ (applyRule rule sf b ord).1.emitted, g.formula ∈ C :=
   match rule with
   | .andPos => applyRule_andPos_closed hC hsf
@@ -1320,7 +1361,7 @@ theorem applyRule_subformula_closed (hC : TableauClosed C) (hsf : sf.formula ∈
   | .untlNeg => applyRule_untlNeg_closed hC hsf hb
   | .sncePos => applyRule_sncePos_closed hC hsf hb
   | .snceNeg => applyRule_snceNeg_closed hC hsf hb
-  | .orderTrichotomy => applyRule_orderTrichotomy_closed hC hsf hb
+  | .orderTrichotomy => applyRule_orderTrichotomy_closed hsf htrich
   | .denseIndicatorClosure => applyRule_denseIndicatorClosure_closed
   | .densityRule => applyRule_densityRule_closed hC hsf hb
   | .priorUZ => applyRule_priorUZ_closed hC hsf
