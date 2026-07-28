@@ -380,4 +380,98 @@ private def stabilisesAt (φ : Formula) (fuel : Nat) : Option (Nat × Nat) :=
 
 end Probes
 
+/-! ## 4.2d — the closure operator terminates, given a bound
+
+The outstanding piece of T2 is `∃ n, closureStep (closureIter n seed) ⊆ closureIter n seed` in
+general. It has two halves, and they are of very different difficulty:
+
+1. **stabilisation** — a `⊆`-increasing chain of `Finset`s confined to a fixed finite set has to
+   stop growing, and where it stops is a fixed point of `closureStep`;
+2. **confinement** — exhibiting a finite `M` with `closureStep M ⊆ M`.
+
+Half 1 is discharged here, unconditionally. It reduces the whole obligation to half 2: *any*
+finite emission-closed superset of the seed, however crude, yields the fixed point, and the
+iteration then finds one **at or below** it — which is what makes the reduction worth having
+rather than circular. (`closureStep M ⊆ M` would already give `TableauClosed M` directly via
+`tableauClosed_of_closureStep_subset`; the point of iterating from the seed is that
+`closureIter n seed` is the *smaller* stock, and it is `|C|` that T2's `2 ^ (2 * |C|)` is
+exponential in.)
+
+Half 2 is where the real work is, and the shape is known: the only chains that could diverge are
+`priorU`/`priorS` re-firing through a `someFuture` subformula of their own conclusion
+(`conjEmissions`' first two arms), and there the recursion descends. It remains outstanding, and
+as before it is carried as a hypothesis, never a `sorry`.
+-/
+
+/-- `closureIter` applies its step on the outside as well as the inside. Needed because the
+recursion is stated with `closureStep` under the recursive call, while the chain argument wants it
+on top. -/
+theorem closureIter_succ (n : Nat) (C : Finset Formula) :
+    closureIter (n + 1) C = closureStep (closureIter n C) := by
+  induction n generalizing C with
+  | zero => rfl
+  | succ m ih => simpa [closureIter] using ih (closureStep C)
+
+/-- The chain is `⊆`-increasing. -/
+theorem closureIter_subset_succ (n : Nat) (C : Finset Formula) :
+    closureIter n C ⊆ closureIter (n + 1) C := by
+  rw [closureIter_succ]
+  exact subset_closureStep _
+
+/-- Every iterate stays inside any emission-closed superset of the seed. -/
+theorem closureIter_subset_of_closed {seed M : Finset Formula}
+    (hseed : seed ⊆ M) (hM : closureStep M ⊆ M) (n : Nat) : closureIter n seed ⊆ M := by
+  induction n with
+  | zero => exact hseed
+  | succ m ih =>
+      rw [closureIter_succ]
+      refine subset_trans ?_ hM
+      intro φ hφ
+      simp only [closureStep, Finset.mem_union, Finset.mem_biUnion] at hφ ⊢
+      rcases hφ with (h | ⟨ψ, hψ, hem⟩) | h
+      · exact Or.inl (Or.inl (ih h))
+      · exact Or.inl (Or.inr ⟨ψ, ih hψ, hem⟩)
+      · exact Or.inr h
+
+/--
+**4.2d, reduced to a bound.** Given *any* finite emission-closed superset of the seed, the
+closure iteration reaches a fixed point — so `TableauClosed` is available at the iterate, by
+`tableauClosed_of_closureStep_subset`, with no further case analysis.
+
+The argument is the finite-monotone one: cardinalities are non-decreasing along the chain and
+capped by `|M|`, so a strict increase cannot persist for `|M| + 1` rounds; at the first round
+where the cardinality repeats, `Finset.eq_of_subset_of_card_le` upgrades the inclusion to an
+equality, and that equality *is* the fixed point.
+-/
+theorem exists_closureStep_subset {seed M : Finset Formula}
+    (hseed : seed ⊆ M) (hM : closureStep M ⊆ M) :
+    ∃ n, closureStep (closureIter n seed) ⊆ closureIter n seed := by
+  by_contra hcon
+  simp only [not_exists] at hcon
+  -- No fixed point means the cardinality strictly increases at every round.
+  have hstrict : ∀ n, (closureIter n seed).card < (closureIter (n + 1) seed).card := by
+    intro n
+    rcases lt_or_eq_of_le (Finset.card_le_card (closureIter_subset_succ n seed)) with h | h
+    · exact h
+    · exact absurd (by
+        rw [← closureIter_succ]
+        exact (Finset.eq_of_subset_of_card_le (closureIter_subset_succ n seed) h.ge).ge)
+        (hcon n)
+  -- Hence it exceeds any bound, contradicting confinement to `M`.
+  have hgrow : ∀ n, n ≤ (closureIter n seed).card := by
+    intro n
+    induction n with
+    | zero => exact Nat.zero_le _
+    | succ m ih => exact Nat.lt_of_le_of_lt ih (hstrict m)
+  have hbound : (closureIter (M.card + 1) seed).card ≤ M.card :=
+    Finset.card_le_card (closureIter_subset_of_closed hseed hM _)
+  exact absurd (hgrow (M.card + 1)) (by omega)
+
+/-- The packaged form: a bound yields `TableauClosed` at a stock the iteration computes. -/
+theorem exists_tableauClosed_closureIter {seed M : Finset Formula}
+    (hseed : seed ⊆ M) (hM : closureStep M ⊆ M) :
+    ∃ n, TableauClosed (closureIter n seed) := by
+  obtain ⟨n, hn⟩ := exists_closureStep_subset hseed hM
+  exact ⟨n, tableauClosed_of_closureStep_subset hn⟩
+
 end FormalSystem.Metalogic.Decidability
