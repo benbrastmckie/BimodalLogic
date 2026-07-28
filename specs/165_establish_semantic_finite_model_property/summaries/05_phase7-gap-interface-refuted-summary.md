@@ -1,6 +1,11 @@
 # Phase 7.1, fifth dispatch — the gap interface is refuted, and `sat_imp_pos` lands
 
 **Status**: Phase 7 remains `[PARTIAL]`. `phases_completed` stays at 6 of 8.
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 **Builds**: `lake build FormalSystem.Metalogic.Decidability` (1110 jobs, green);
 `lake build BimodalTest` (1962 jobs, green, all `#guard_msgs` rows pass).
 **Sorry census** over `FormalSystem/Metalogic/Decidability/Verified/`: `0`. Vacuous

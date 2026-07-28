@@ -1,6 +1,13 @@
 # Research Report: Seriality Performance Under Node-Level Blocking, and the `expandOnce_length_lt` Route
 
 - **Task**: 165 — establish_semantic_finite_model_property (tableau decidability)
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4
 - **Session**: sess_1785198629_c14175
 - **Mode**: `--hard` (H2 anti-analysis, H3 reference grounding, H4 adversarial self-verification)

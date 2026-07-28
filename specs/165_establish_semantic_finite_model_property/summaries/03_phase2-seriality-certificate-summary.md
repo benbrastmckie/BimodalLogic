@@ -1,6 +1,11 @@
 # Implementation Summary: Phase 2 — Seriality, Progress Lemmas, and the R5 Certificate
 
 - **Task**: 165 — establish_semantic_finite_model_property (tableau decidability)
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4
 - **Mode**: `--hard`
 - **Session**: sess_1785198629_c14175

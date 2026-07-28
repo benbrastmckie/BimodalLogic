@@ -1,6 +1,11 @@
 # Implementation Summary: Phase 1 — Conformance Harness and Mechanical Calculus Repairs
 
 - **Task**: 165 - establish_semantic_finite_model_property (tableau decidability rescope)
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Plan**: `plans/01_tableau-decidability-two-track.md`
 - **Phase**: 1 of 8 (R1, R3, R4) — `[COMPLETED]`
 - **Type**: lean4

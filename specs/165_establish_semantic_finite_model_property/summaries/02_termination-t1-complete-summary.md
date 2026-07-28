@@ -3,6 +3,11 @@
 **Date**: 2026-07-28 (Phase 4 dispatch 2)
 **Module**: `FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean`
 **Status**: 4.1 COMPLETED; 4.2 BLOCKED on a measured design defect; 4.3 not started.
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 
 ## What landed
 

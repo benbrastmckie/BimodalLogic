@@ -4,6 +4,10 @@
 - **Phase**: 4 (Termination, WP3), sub-phases 4.2a–4.2c and 4.3a
 - **Date**: 2026-07-28
 - **Status**: PARTIAL — 4.1 and 4.2 (less the general termination theorem) complete; 4.3 started
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Plan**: `specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md`
 
 ## What was done

@@ -1,6 +1,11 @@
 # Phase 2 Summary: Calculus Completion (R7, R2, R6, R5)
 
 - **Task**: 165 - establish_semantic_finite_model_property
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Plan**: plans/01_tableau-decidability-two-track.md
 - **Phase**: 2 — status `[PARTIAL]` (2.1, 2.2, 2.3 complete; 2.4 blocked)
 - **Verification**: `lake build` green, `lake build BimodalTest` green, zero new sorries,

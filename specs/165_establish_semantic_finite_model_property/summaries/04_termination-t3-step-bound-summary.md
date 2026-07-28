@@ -1,6 +1,11 @@
 # Summary: Phase 4.3b — T3 branch invariant and the unbranched step bound
 
 - **Task**: 165 — establish_semantic_finite_model_property
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Phase**: 4 (Termination, WP3) — sub-phase 4.3b
 - **Plan**: plans/01_tableau-decidability-two-track.md
 - **Status on exit**: Phase 4 remains `[PARTIAL]`

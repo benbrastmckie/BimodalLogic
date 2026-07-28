@@ -1,6 +1,13 @@
 # Blocker Resolution: R5 Certificate Strength, Per-Branch Time Ordering, Seriality
 
 - **Task**: 165 — establish_semantic_finite_model_property
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4 (hard mode, blocker research dispatch)
 - **Session**: sess_1785198629_c14175
 - **Plan under repair**: `specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md`

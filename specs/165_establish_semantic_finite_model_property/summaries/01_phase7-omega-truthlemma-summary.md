@@ -4,6 +4,10 @@
 - **Phase**: 7 (Truth Lemma and Track A Decidability — MILESTONE), left `[PARTIAL]`
 - **Plan**: `specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md`
 - **Status**: 7.1 half landed, sorry-free, both builds green; 7.2 and 7.3 not started
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 
 ## Phases executed
 

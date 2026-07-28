@@ -5,6 +5,10 @@
 - **Plan**: `plans/01_tableau-decidability-two-track.md`
 - **Commit**: `6ee047de4`
 - **Status**: `[COMPLETED]`
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 
 ## What the phase was for
 

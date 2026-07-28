@@ -3,6 +3,11 @@
 - **Plan**: `specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md`
 - **Phase**: 5 of 8 — `[COMPLETED]`
 - **Status**: sorry-free; `lake build FormalSystem.Metalogic.Decidability` and
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
   `lake build BimodalTest` both green
 - **Session**: `sess_1785244791_96fa7d`
 

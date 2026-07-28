@@ -1,6 +1,11 @@
 # Phase 4 — Termination (WP3): T1 design, infrastructure, and the first ten rule cases
 
 - **Task**: 165 — establish_semantic_finite_model_property
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Phase**: 4 (Termination: T1, T2, T3) — **[PARTIAL]**
 - **Plan**: `plans/01_tableau-decidability-two-track.md`
 - **Date**: 2026-07-28

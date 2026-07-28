@@ -1,6 +1,11 @@
 # Phase 4 — `worldFuel'`, the branching residual, and the closure reduction
 
 - **Task**: 165 (`establish_semantic_finite_model_property`), Phase 4 (T3 and T2 residuals)
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4, hard mode (H2 anti-analysis, H9 wrap-up)
 - **Session**: `sess_1785244791_96fa7d`
 - **Date**: 2026-07-28

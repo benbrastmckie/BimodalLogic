@@ -1,6 +1,11 @@
 # Phase 7 (second dispatch): the countermodel valuation and the modal-temporal saturation facts
 
 - **Task**: 165 — establish semantic finite model property
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Phase**: 7 (Truth Lemma and Track A Decidability) — still `[PARTIAL]`
 - **Plan**: `specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md`
 - **Session**: `sess_1785244791_96fa7d`

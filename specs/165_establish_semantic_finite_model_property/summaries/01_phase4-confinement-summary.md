@@ -1,6 +1,11 @@
 # Phase 4 Summary — Termination (T1, T2, T3): 4.2d Confinement Discharged
 
 - **Task**: 165 — establish_semantic_finite_model_property (tableau decidability, Track A)
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Phase**: 4 — Termination (WP3: T1, T2, T3) — now `[COMPLETED]`
 - **Date**: 2026-07-28i
 - **Territory**: `FormalSystem/Metalogic/Decidability/Verified/Termination/TimeTypeBound.lean`

@@ -1,6 +1,13 @@
 # Supplementary Research Report 03 — cslib Tableau & Decidability Survey
 
 **Task**: 165 — Establish semantic finite model property / verified decidability for the TM tableau
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 **Scope**: supplementary. Surveys `/home/benjamin/Projects/cslib/` only. A sibling dispatch covers
 the BimodalLogic repo itself; this report does not duplicate it.
 **Mode**: hard (H2 grounding, H3 Tier 3 implementation-backed, H4 adversarial verification)

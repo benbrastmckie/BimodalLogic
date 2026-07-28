@@ -1,6 +1,13 @@
 # `soundFuel'` — Plan-Level Decision (T3 general fuel figure)
 
 - **Task**: 165 (`establish_semantic_finite_model_property`), Phase 4 sub-phase 4.3
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4, hard mode (H2/H3/H4 contracts active; H5 not triggered)
 - **Session**: `sess_1785244791_96fa7d`
 - **Date**: 2026-07-28

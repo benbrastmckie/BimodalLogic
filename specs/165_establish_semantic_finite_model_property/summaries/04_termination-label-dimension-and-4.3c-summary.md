@@ -3,6 +3,10 @@
 - **Task**: 165, establish semantic finite model property
 - **Phase**: 4 (Termination, WP3: T1/T2/T3), sub-phases 4.3c-prerequisite and 4.3c
 - **Status**: Phase 4 remains `[PARTIAL]` — 4.2d and the three 4.3d residuals outstanding
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Territory**: `FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean` only
 - **Plan**: `specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md`
 
