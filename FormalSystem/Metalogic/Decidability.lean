@@ -25,6 +25,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.Carrier
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Interpolate
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Omega
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.Valuation
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -55,6 +56,9 @@ Tableau-based decision procedure returning proof terms or countermodels.
   modality once `Ω` is shift-closed
 - `Verified.Bridge.TruthLemma`: `InterpInvariantAt`, region invariance at a single history — the
   form a shift-closed `Ω` admits — and its instantiation at the countermodel's base histories
+- `Verified.Bridge.Valuation`: the countermodel's `TaskModel` — the branch's atoms at placed region
+  codes, a parameter at gap codes — with the placed-point readback the truth lemma's atom case
+  consumes, and the two theorems refuting the endpoint-copy gap policies
 
 ## Status
 

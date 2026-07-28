@@ -1716,7 +1716,7 @@ shorter.
 - Serving `.Discrete ℤ` from `interpInvariant` — `ℤ` is not densely ordered, so the hypothesis is
   unsatisfiable there. A discrete-specific truth lemma is required.
 
-### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [PARTIAL]
+### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [IN PROGRESS]
 
 **ENGINE CONTRACT CHANGE (2026-07-28b, from sub-phase 2.7c).** See the identically-titled note
 under Phase 5 — it applies here verbatim. The short version: a `.inr` arm out of a split is now
