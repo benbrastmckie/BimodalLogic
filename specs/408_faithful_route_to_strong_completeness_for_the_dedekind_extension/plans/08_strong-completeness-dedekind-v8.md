@@ -1944,7 +1944,7 @@ scale of the `Kamp/EANegationFixFaithful/` re-base, not of one dispatch.
 `kampFaithfulExpressiveCompleteness_open` therefore remains the single strategic sorry, with its
 docstring updated to record what the wire closed and what the inventory above leaves open.
 
-### Phase 14.2: the `kampPriorExpressiveCompleteness` spine at the faithful carrier [NOT STARTED]
+### Phase 14.2: the `kampPriorExpressiveCompleteness` spine at the faithful carrier [IN PROGRESS]
 
 - **Goal**: Discharge `kampFaithfulExpressiveCompleteness_open` by re-basing the spine above the
   ζ wire onto `HasFaithfulDedekindINF`/`SUP`, consuming Phase 14.1's `kampArm_zeta_faithful`.
