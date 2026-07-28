@@ -61,7 +61,7 @@ next_project_number: 418
 414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
   └─ 415 [RESEARCHED] — Completeness under the refactored (Omega-free, maximal-history) s
   └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
-416 [RESEARCHING] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revise
+416 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revise
 
 ### Documentation
 
@@ -93,10 +93,11 @@ next_project_number: 418
 
 ### 416. Adopt co axiom basis for dedekind class
 - **Effort**: large
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
+- **Research**: [416_adopt_co_axiom_basis_for_dedekind_class/reports/01_co-axiom-basis-adoption.md]
 
 **Description**: DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revised 2026-07-28: adopt the paper basis, no two-basis bridge). Replace the Reynolds-style prior_U_gap/prior_S_gap/sep axioms with the paper single completeness axiom CO (possible_worlds.tex line 3250) as the OFFICIAL Dedekind-class axiom basis. Where existing proofs (tasks 408, 411) consume the gap principles, re-derive them as internal THEOREMS from the CO basis — derived lemmas from one basis, not an equivalence bridge between two coexisting bases — and rebase 408/411 targets accordingly. Record the Hoelder classification (nontrivial Dedekind-complete totally ordered abelian group is Archimedean, hence order-iso to Z or R; dense+complete = R) as lemmas where cheap, else docs; align FrameClass docs with the paper TM_c / TM+_dc distinction, noting complete-but-discrete is exactly Z (Discrete class). Related: 390, 408, 411.
 
