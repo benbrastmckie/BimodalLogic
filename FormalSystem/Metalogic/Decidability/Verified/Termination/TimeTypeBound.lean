@@ -54,6 +54,9 @@ cannot be read off the branch:
 - `card_signedStock` — `|signedStock C| = 2 * |C|`.
 - `exists_ne_timeType_eq` — the pigeonhole: more than `2 ^ (2 * |C|)` times force a repeat.
 - `blocking_fires_of_card_lt` — a long enough chain of times makes `findBlockedTime` fire.
+- `tableauClosed_of_closureStep_subset` — `TableauClosed C` reduces to the decidable containment
+  `closureStep C ⊆ C`, so a caller exhibits a stock and runs a check instead of reproving seven
+  fields.
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -193,5 +196,188 @@ theorem blocking_fires_of_card_lt_empty {C : Finset Formula} {b : Branch} {ord :
   blocking_fires_of_card_lt hb ts hts hchain
     (fun _ _ _ _ => by simp [allEventualitiesFulfilledOrDuplicated,
       EventualityTracker.pendingAtTime, EventualityTracker.empty]) hcard
+
+/-! ## A concrete closure operator
+
+`blocking_fires_of_card_lt` counts against an arbitrary `TableauClosed C`. This section supplies
+the operator that produces one, and reduces "`C` is `TableauClosed`" to a single **decidable**
+containment, `closureStep C ⊆ C`.
+
+The split is deliberate. `TableauClosed` is a seven-field predicate whose fields quantify over
+formulas; `closureStep C ⊆ C` is a computation on a `Finset`. Reducing the former to the latter
+means a caller never has to reprove the seven fields — it exhibits a `C` and runs the check. It
+also makes the remaining termination obligation precise and isolated: *is there an `n` with
+`closureStep (closureIter n seed) ⊆ closureIter n seed`?* The `#eval` probes at the end of this
+section answer "yes, in one or two rounds" for concrete inputs, which is what keeps the
+development from resting on an operator nobody has ever seen halt.
+-/
+
+/-- The subformulas of `φ`, as a `Finset`. -/
+def subformulasFinset (φ : Formula) : Finset Formula := (Formula.subformulas φ).toFinset
+
+/--
+The two Dedekind emissions keyed on a conjunction `a ∧ b`, plus separation.
+
+Each arm reproduces the corresponding `applyRule` guard exactly: `priorUGap` tests
+`a = U(e, g)` with `e = ⊤` and `b = F(¬g)`; `priorSGap` is its past dual; `sepRule` tests
+`a = K⁺ψ` (whose raw shape is `¬U(⊤, ¬ψ)`) with `b = ¬K⁺(ψ ∧ U(ψ, ¬ψ))`. Every arm is a *whole*
+trigger, which is what makes the operator's output fail to re-trigger it — see the finiteness
+discussion in `SubformulaProperty.lean`.
+-/
+def conjEmissions (a b : Formula) : Finset Formula :=
+  match a with
+  | .untl e g =>
+      if e = Formula.top ∧ b = Formula.someFuture g.neg then
+        {Formula.untl (Formula.or g.neg (Formula.kPlus g.neg)) g}
+      else ∅
+  | .snce e g =>
+      if e = Formula.top ∧ b = Formula.somePast g.neg then
+        {Formula.snce (Formula.or g.neg (Formula.kMinus g.neg)) g}
+      else ∅
+  | .imp (.untl e (.imp ψ .bot)) .bot =>
+      if e = Formula.top ∧
+          b = Formula.neg (Formula.kPlus (Formula.and ψ (Formula.untl ψ ψ.neg))) then
+        {Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ))}
+      else ∅
+  | _ => ∅
+
+/--
+Everything one formula obliges the stock to contain: its subformulas, and the non-analytic
+emission of whichever rule it triggers.
+
+`boxTemporal` is keyed on `□ψ`; `priorUZ`/`priorSZ` on `Fψ = U(ψ, ⊤)` and `Pψ = S(ψ, ⊤)`; the
+three Dedekind rules on conjunctions, via `conjEmissions`. `serialityRule` has no trigger at all,
+so it contributes to `closureStep` rather than here.
+-/
+def emissions (φ : Formula) : Finset Formula :=
+  subformulasFinset φ
+    ∪ (match φ with
+       | .box ψ => {ψ.allFuture, ψ.allPast}
+       | .untl ψ χ => if χ = Formula.top then {Formula.untl ψ ψ.neg} else ∅
+       | .snce ψ χ => if χ = Formula.top then {Formula.snce ψ ψ.neg} else ∅
+       | _ => ∅)
+    ∪ (match asAnd? φ with
+       | some (a, b) => conjEmissions a b
+       | none => ∅)
+
+/-- One round of closure: everything the current stock obliges, plus the two seriality formulas. -/
+def closureStep (C : Finset Formula) : Finset Formula :=
+  C ∪ C.biUnion emissions ∪ {Formula.top.someFuture, Formula.top.somePast}
+
+/-- `n` rounds of closure. -/
+def closureIter : Nat → Finset Formula → Finset Formula
+  | 0, C => C
+  | n + 1, C => closureIter n (closureStep C)
+
+theorem subset_closureStep (C : Finset Formula) : C ⊆ closureStep C := by
+  intro φ hφ
+  exact Finset.mem_union_left _ (Finset.mem_union_left _ hφ)
+
+theorem mem_closureStep_of_mem_emissions {C : Finset Formula} {φ ψ : Formula}
+    (hφ : φ ∈ C) (hψ : ψ ∈ emissions φ) : ψ ∈ closureStep C :=
+  Finset.mem_union_left _ (Finset.mem_union_right _ (Finset.mem_biUnion.mpr ⟨φ, hφ, hψ⟩))
+
+/--
+**The satisfiability reduction.** A stock closed under one round of `closureStep` satisfies every
+field of `TableauClosed`.
+
+Each field is discharged by exhibiting its conclusion inside `emissions` of its own trigger, so
+the seven-way case analysis happens once, here, instead of at every use site.
+-/
+theorem tableauClosed_of_closureStep_subset {C : Finset Formula} (h : closureStep C ⊆ C) :
+    TableauClosed C where
+  sub φ hφ ψ hψ :=
+    h (mem_closureStep_of_mem_emissions hφ
+      (Finset.mem_union_left _ (Finset.mem_union_left _ (List.mem_toFinset.mpr hψ))))
+  boxTemp ψ hψ := by
+    refine ⟨h (mem_closureStep_of_mem_emissions hψ ?_), h (mem_closureStep_of_mem_emissions hψ ?_)⟩
+    · exact Finset.mem_union_left _ (Finset.mem_union_right _ (by simp))
+    · exact Finset.mem_union_left _ (Finset.mem_union_right _ (by simp))
+  serialFuture := h (Finset.mem_union_right _ (by simp))
+  serialPast := h (Finset.mem_union_right _ (by simp))
+  priorU ψ hψ :=
+    h (mem_closureStep_of_mem_emissions hψ
+      (Finset.mem_union_left _ (Finset.mem_union_right _ (by simp [Formula.someFuture]))))
+  priorS ψ hψ :=
+    h (mem_closureStep_of_mem_emissions hψ
+      (Finset.mem_union_left _ (Finset.mem_union_right _ (by simp [Formula.somePast]))))
+  gapU g hg :=
+    h (mem_closureStep_of_mem_emissions hg
+      (Finset.mem_union_right _ (by simp [conjEmissions, asAnd?, Formula.and,
+        Formula.neg, Formula.top])))
+  gapS g hg :=
+    h (mem_closureStep_of_mem_emissions hg
+      (Finset.mem_union_right _ (by simp [conjEmissions, asAnd?, Formula.and,
+        Formula.neg, Formula.top])))
+  sep ψ hψ :=
+    h (mem_closureStep_of_mem_emissions hψ
+      (Finset.mem_union_right _ (by simp [conjEmissions, asAnd?, Formula.and,
+        Formula.neg, Formula.top, Formula.kPlus])))
+
+/-- The `n`-round iterate is `TableauClosed` as soon as round `n + 1` adds nothing. -/
+theorem tableauClosed_closureIter {C : Finset Formula} {n : Nat}
+    (h : closureStep (closureIter n C) ⊆ closureIter n C) :
+    TableauClosed (closureIter n C) :=
+  tableauClosed_of_closureStep_subset h
+
+/-! ### Stabilisation probes
+
+A closure operator nobody has watched halt is not evidence of anything, so the reduction above is
+committed together with executable rows that run it. Each row reports the round at which
+`closureStep` stops adding formulas, starting from the subformula closure of `φ`, together with the
+resulting `|C|` — which is the exponent in the `2 ^ (2 * |C|)` bound.
+
+These are probes, not proofs: they witness that the operator halts on concrete inputs and that
+`tableauClosed_of_closureStep_subset` is therefore not vacuously stated. The general
+termination theorem is the remaining T2 obligation, tracked in the plan.
+-/
+
+section Probes
+
+private def probeAtom (s : String) : Formula := Formula.atom (Atom.mkBase s)
+
+/-- First round at which `closureStep` adds nothing, searching up to `fuel` rounds. -/
+private def stabilisesAt (φ : Formula) (fuel : Nat) : Option (Nat × Nat) :=
+  let rec go : Nat → Nat → Finset Formula → Option (Nat × Nat)
+    | 0, _, _ => none
+    | k + 1, n, C => if closureStep C ⊆ C then some (n, C.card) else go k (n + 1) (closureStep C)
+  go fuel 0 (subformulasFinset φ)
+
+-- `p`
+/-- info: some (3, 8) -/
+#guard_msgs in
+#eval stabilisesAt (probeAtom "p") 8
+
+-- `□p` — exercises `boxTemp`.
+/-- info: some (4, 17) -/
+#guard_msgs in
+#eval stabilisesAt (Formula.box (probeAtom "p")) 8
+
+-- `F p` — exercises `priorU`.
+/-- info: some (3, 11) -/
+#guard_msgs in
+#eval stabilisesAt (Formula.someFuture (probeAtom "p")) 8
+
+-- `G p` — `G` carries `F(¬p)` as a subformula, so this exercises `priorU` one level down.
+/-- info: some (3, 13) -/
+#guard_msgs in
+#eval stabilisesAt (Formula.allFuture (probeAtom "p")) 8
+
+-- `U(⊤, p) ∧ F(¬p)` — the real `priorUGap` trigger.
+/-- info: some (3, 20) -/
+#guard_msgs in
+#eval stabilisesAt
+  (Formula.and (Formula.untl Formula.top (probeAtom "p"))
+    (Formula.someFuture (probeAtom "p").neg)) 8
+
+-- `K⁺p ∧ ¬K⁺(p ∧ U(p, ¬p))` — the real `sepRule` trigger.
+/-- info: some (3, 30) -/
+#guard_msgs in
+#eval stabilisesAt
+  (Formula.and (Formula.kPlus (probeAtom "p"))
+    (Formula.neg (Formula.kPlus
+      (Formula.and (probeAtom "p") (Formula.untl (probeAtom "p") (probeAtom "p").neg))))) 8
+
+end Probes
 
 end FormalSystem.Metalogic.Decidability
