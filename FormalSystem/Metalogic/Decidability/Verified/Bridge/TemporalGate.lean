@@ -124,27 +124,64 @@ def snceRaySelf (b : Branch) (ord : TimeOrdering) : Bool :=
         else true
     | _, _ => true
 
+/-- **Row 5.** A negative until asserted at its world's **lower-ray** label denies its event at
+*every* known time of that world — its own label included.
+
+This is Correction 12's negative residual, and the "every known time" is not slack. A carrier
+point below every placed point reads `regionLabel … 0`; each point above it is a placed point,
+another lower-ray point (same label), or an upper-ray point (`regionLabel … n`), and all three of
+those are known times. `untlNegFuture` reaches only the known times *strictly after* the ray
+label, which is not all of them: `regionLabel` picks the first eligible candidate, not the
+order-minimal one. -/
+def untlNegRayLow (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .untl φ _ =>
+        if sf.label.time == regionLabel b ord sf.label.world 0 then
+          b.knownTimes.all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
+        else true
+    | _, _ => true
+
+/-- **Row 6.** The mirror: a negative since at its world's **upper-ray** label. -/
+def snceNegRayUp (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .snce φ _ =>
+        if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
+          b.knownTimes.all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
+        else true
+    | _, _ => true
+
 /--
 **The gate.** Carried on an open-branch certificate exactly as `timeOrderTotal`,
-`boxAnchoredCheck` and `regionLabelCheck` are, and consumed only through the four lemmas below.
+`boxAnchoredCheck` and `regionLabelCheck` are, and consumed only through the six lemmas below.
 -/
 def temporalWitnessCheck (b : Branch) (ord : TimeOrdering) : Bool :=
-  untlNegFuture b ord && snceNegPast b ord && untlRaySelf b ord && snceRaySelf b ord
+  untlNegFuture b ord && snceNegPast b ord && untlRaySelf b ord && snceRaySelf b ord &&
+    untlNegRayLow b ord && snceNegRayUp b ord
 
 theorem untlNegFuture_of_check (h : temporalWitnessCheck b ord = true) :
     untlNegFuture b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.1
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.1.1.1
 
 theorem snceNegPast_of_check (h : temporalWitnessCheck b ord = true) :
     snceNegPast b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.1.1.2
 
 theorem untlRaySelf_of_check (h : temporalWitnessCheck b ord = true) :
     untlRaySelf b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.1.2
 
 theorem snceRaySelf_of_check (h : temporalWitnessCheck b ord = true) :
     snceRaySelf b ord = true := by
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.2
+
+theorem untlNegRayLow_of_check (h : temporalWitnessCheck b ord = true) :
+    untlNegRayLow b ord = true := by
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.2
+
+theorem snceNegRayUp_of_check (h : temporalWitnessCheck b ord = true) :
+    snceNegRayUp b ord = true := by
   simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.2
 
 /-! ## Consumption
@@ -190,5 +227,27 @@ theorem snceRay_self (h : temporalWitnessCheck b ord = true)
     b.hasPosAt φ ⟨w, regionLabel b ord w 0⟩ = true := by
   have hrow := List.all_eq_true.mp (snceRaySelf_of_check h) _ hmem
   simpa using hrow
+
+/-- **The lower-ray negative spread.** A negative until at the lower ray's own label denies its
+event at every known time — which is every label any point above a lower-ray point can read. -/
+theorem untlNegRay_low (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {v : TimeIndex}
+    (hmem : (⟨.neg, .untl φ ψ, ⟨w, regionLabel b ord w 0⟩⟩ : SignedFormula) ∈ b)
+    (hv : v ∈ b.knownTimes) :
+    b.hasNegAt φ ⟨w, v⟩ = true := by
+  have hrow := List.all_eq_true.mp (untlNegRayLow_of_check h) _ hmem
+  simp only [beq_self_eq_true, if_true] at hrow
+  exact List.all_eq_true.mp hrow _ hv
+
+/-- **The upper-ray negative spread**, the mirror. -/
+theorem snceNegRay_up (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {v : TimeIndex}
+    (hmem :
+      (⟨.neg, .snce φ ψ, ⟨w, regionLabel b ord w b.knownTimes.length⟩⟩ : SignedFormula) ∈ b)
+    (hv : v ∈ b.knownTimes) :
+    b.hasNegAt φ ⟨w, v⟩ = true := by
+  have hrow := List.all_eq_true.mp (snceNegRayUp_of_check h) _ hmem
+  simp only [beq_self_eq_true, if_true] at hrow
+  exact List.all_eq_true.mp hrow _ hv
 
 end FormalSystem.Metalogic.Decidability.Verified.Bridge

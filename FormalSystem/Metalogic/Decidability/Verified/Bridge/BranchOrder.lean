@@ -240,6 +240,38 @@ def timeAt (b : Branch) (i : BranchTime b) : TimeIndex := b.knownTimes[i]
 theorem timeAt_mem (b : Branch) (i : BranchTime b) : timeAt b i ∈ b.knownTimes :=
   List.getElem_mem i.isLt
 
+/--
+`List.eraseDups` lists each element once.
+
+Proved here rather than imported: the import closure has `List.eraseDups_cons` and
+`List.mem_eraseDups` but **no** `Nodup` lemma for `eraseDups` at all (`List.dedup`, which
+Mathlib does supply `nodup_dedup` for, is a different function). The recursion is on the
+*filtered* tail rather than the tail, so it is a `length` recursion and not a structural one.
+-/
+theorem nodup_eraseDups {α : Type*} [BEq α] [LawfulBEq α] :
+    ∀ l : List α, l.eraseDups.Nodup
+  | [] => by simp
+  | a :: as => by
+      rw [List.eraseDups_cons]
+      refine List.nodup_cons.mpr ⟨fun hmem => ?_, nodup_eraseDups _⟩
+      rw [List.mem_eraseDups, List.mem_filter] at hmem
+      simp at hmem
+  termination_by l => l.length
+  decreasing_by exact Nat.lt_succ_of_le (List.length_filter_le _ _)
+
+/-- The branch's known times list each time once: `Branch.knownTimes` is an `eraseDups`. -/
+theorem knownTimes_nodup (b : Branch) : b.knownTimes.Nodup :=
+  nodup_eraseDups _
+
+/--
+**`timeAt` is injective.** This is what makes `branchLT`'s index-level tiebreak vacuous on a real
+branch, and it is what the temporal cases need in order to read a strict carrier inequality back
+as a strict `futureOf` fact rather than as a possible tie.
+-/
+theorem timeAt_injective (b : Branch) : Function.Injective (timeAt b) := by
+  intro i j hij
+  exact Fin.ext ((knownTimes_nodup b).getElem_inj_iff.mp hij)
+
 /-! ## The order relation -/
 
 /--

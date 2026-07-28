@@ -497,4 +497,123 @@ def probe2 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "K " ++ probe2 (.imp p (.snce p q))
 
+/-! ## The lower-ray negative demand — Correction 12's residual, measured
+
+The negative `untl` case at a **lower-ray** evaluation point is the one gap `untlNegFuture` plus
+`regionLabel_untlNeg` do not close. A point below every placed point reads the label
+`regionLabel … 0`; every carrier point above it is either a placed point, another lower-ray point
+(reading that same label), or an upper-ray point (reading `regionLabel … n`). All three of those
+labels are **known times**, and `untlNegFuture` reaches only the known times *strictly after* the
+ray label — which is not all of them, because `regionLabel` picks the first eligible candidate and
+not the order-minimal one.
+
+So the demand is: a negative until asserted **at a world's lower-ray label** denies its event at
+*every* known time of that world, its own label included. `snceNegRayUp` is the mirror at the
+upper ray. `…Self` is the strictly weaker "at its own label only" variant, measured alongside so
+that a `false` on the strong row says *which* part failed rather than merely that something did.
+-/
+
+/-- A negative until at its world's **lower-ray** label denies its event at every known time. -/
+private def untlNegRayLow (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .untl φ _ =>
+        if sf.label.time == regionLabel b ord sf.label.world 0 then
+          b.knownTimes.all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
+        else true
+    | _, _ => true
+
+/-- The mirror: a negative since at its world's **upper-ray** label. -/
+private def snceNegRayUp (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .snce φ _ =>
+        if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
+          b.knownTimes.all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
+        else true
+    | _, _ => true
+
+/-- The weaker "own label only" variant, for diagnosis. -/
+private def untlNegRayLowSelf (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .untl φ _ =>
+        if sf.label.time == regionLabel b ord sf.label.world 0 then
+          b.hasNegAt φ sf.label
+        else true
+    | _, _ => true
+
+/-- The mirror of the weaker variant. -/
+private def snceNegRayUpSelf (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .snce φ _ =>
+        if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
+          b.hasNegAt φ sf.label
+        else true
+    | _, _ => true
+
+/-- Report the lower/upper ray negative candidates. -/
+def probe3 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String :=
+  match buildTableau φ fuel fc with
+  | none => "STALLED"
+  | some (.allClosed _) => "CLOSED"
+  | some (.hasOpen ob ord _ _) =>
+      s!"gen={hasGenuine ob} check={regionLabelCheck ob ord} " ++
+      s!"uRL={untlNegRayLow ob ord} uRLs={untlNegRayLowSelf ob ord} " ++
+      s!"sRU={snceNegRayUp ob ord} sRUs={snceNegRayUpSelf ob ord}"
+
+/-- info: "A gen=false check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "A " ++ probe3 (.imp (Formula.someFuture p) p)
+
+/-- info: "B gen=false check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "B " ++ probe3 (.imp (Formula.somePast p) p)
+
+/-- info: "C gen=false check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "C " ++ probe3 (.imp (.allFuture p) p)
+
+/-- info: "D gen=false check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "D " ++ probe3 (.imp (andF (.box p) (dia q)) r)
+
+/-- info: "E gen=false check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "E " ++ probe3 (.imp (andF (.box p) (.box (.imp p q))) r)
+
+/-- info: "F gen=false check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "F " ++ probe3 (.imp (Formula.someFuture p) p) 200 .Dense
+
+/-- info: "H gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "H " ++ probe3 (.imp (.untl p q) q)
+
+-- I. The row that matters: a genuine **negative** until on a branch the gate accepts.
+/-- info: "I gen=true check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "I " ++ probe3 (.imp p (.untl p q))
+
+/-- info: "J gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "J " ++ probe3 (.imp (.snce p q) q)
+
+/-- info: "K gen=true check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "K " ++ probe3 (.imp p (.snce p q))
+
+/-- info: "M gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "M " ++ probe3 (.imp (.untl p q) q) 200 .Dense
+
+-- N. The single `false`, and it sits where every other `false` in this file sits: on a row
+-- `regionLabelCheck` already rejects. `uRLs` fails with `uRL`, so what fails is the *self*-denial
+-- at the ray label, not the extension to all known times — the strong row costs nothing over the
+-- weak one anywhere in the corpus.
+/-- info: "N gen=true check=false uRL=false uRLs=false sRU=true sRUs=true" -/
+#guard_msgs in
+#eval "N " ++ probe3 (.imp p (.untl p q)) 200 .Discrete
+
 end BimodalTest.TemporalWitnessProbe

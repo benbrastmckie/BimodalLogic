@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntGaps
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.TemporalGate
 
 /-!
 # The signed truth correspondence: every carrier point reads one branch label
@@ -105,6 +106,27 @@ See Correction 10 in the module docstring. `normWorld` is the identity on the wo
 knows and lands on `anchorWorld` elsewhere, so the model has no world whose atoms the branch has
 not dictated.
 -/
+
+/--
+A known time's rank is a genuine region index strictly below the top one: `branchRank` counts the
+known times strictly below `t`, and `t` is not one of them.
+
+This is what lets a **placed** evaluation point reach the **upper ray**'s label through
+`regionLabel_untlNeg`, whose side condition is "asserted strictly below region `j`" at `j = n`.
+-/
+theorem branchRank_lt_length {b : Branch} {ord : TimeOrdering}
+    (hV : branchOrderValid b ord = true) {t : TimeIndex} (ht : t ∈ b.knownTimes) :
+    branchRank b ord t < b.knownTimes.length := by
+  rw [branchRank]
+  rcases Nat.lt_or_ge (b.knownTimes.filter fun s => strictBefore ord s t).length
+    b.knownTimes.length with h | h
+  · exact h
+  · exfalso
+    have heq : (b.knownTimes.filter fun s => strictBefore ord s t) = b.knownTimes :=
+      List.filter_sublist.eq_of_length (le_antisymm (List.length_filter_le _ _) h)
+    have hmem : t ∈ b.knownTimes.filter fun s => strictBefore ord s t := by rw [heq]; exact ht
+    rw [List.mem_filter, irrefl_of_valid hV ht] at hmem
+    simp at hmem
 
 /-- The branch's first known world; junk (`0`) only on the empty branch. -/
 def anchorWorld (b : Branch) : WorldIndex := b.knownWorlds.headD 0
@@ -382,6 +404,32 @@ def RayOnly (b : Branch) (f : BranchTime b → D) : Prop :=
   ∀ r : D, ¬ IsPlacedCode f (regionCode f r) →
     cutIndex (regionCode f r) = 0 ∨ cutIndex (regionCode f r) = b.knownTimes.length
 
+/--
+The placement also **reflects** the branch's order: a strict inequality between two placed points
+is a strict `futureOf` fact between the times they place. The converse of `OrderFaithful`.
+
+This is what turns the semantic "the witness sits above the evaluation point" back into a branch
+fact, which is the only currency the gates trade in. It is a genuinely separate demand from
+`OrderFaithful`: faithfulness alone permits a placement that spreads incomparable times apart,
+and it is `timeAt`'s injectivity (`Bridge/BranchOrder.lean`) that rules out the remaining tie.
+-/
+def OrderReflecting (b : Branch) (ord : TimeOrdering) (f : BranchTime b → D) : Prop :=
+  ∀ i j : BranchTime b, f i < f j → strictBefore ord (timeAt b i) (timeAt b j) = true
+
+/--
+Each non-placed point lies **outside** the placed block, on the side its region index names:
+region `0` below every placed point, region `n` above every one.
+
+`RayOnly` says a non-placed point's region index is `0` or `n`; this says the index is not
+merely a label but a position. The temporal cases need both — the index to know which label the
+point reads, and the position to know which points lie above it.
+-/
+def RaySplit (b : Branch) (f : BranchTime b → D) : Prop :=
+  ∀ r : D, ¬ IsPlacedCode f (regionCode f r) →
+    (cutIndex (regionCode f r) = 0 → ∀ i : BranchTime b, r < f i) ∧
+    (cutIndex (regionCode f r) = b.knownTimes.length → ∀ i : BranchTime b, f i < r)
+
+
 /-! ## The temporal cases — OWED, and precisely bounded
 
 These are the two cases this dispatch does **not** close, and they are stated rather than omitted
@@ -552,6 +600,45 @@ theorem orderFaithful_intPlace (hV : branchOrderValid b ord = true) :
   have hne : i ≠ j := by rintro rfl; exact branchLT_irrefl hV i hlt
   exact lt_of_le_of_ne (le_intPlace_of_branchLE hV (Or.inr hlt))
     (fun hc => hne (intPlace_injective hV hc))
+
+/-- **Order reflection at `ℤ`**: the converse of `orderFaithful_intPlace`.
+
+The packaged order's totality leaves three cases at two known times. Comparability the right way
+round is the conclusion; the wrong way round contradicts faithfulness; and *equality of the two
+times* is where `timeAt_injective` earns its keep — it collapses the two indices, and a point is
+not strictly below itself. -/
+theorem orderReflecting_intPlace (hV : branchOrderValid b ord = true) :
+    OrderReflecting b ord (intPlace b ord hV) := by
+  intro i j hij
+  rcases total_of_valid hV (timeAt_mem b i) (timeAt_mem b j) with heq | hs | hs
+  · have hij' : i = j := timeAt_injective b heq
+    subst hij'
+    exact absurd hij (lt_irrefl _)
+  · exact hs
+  · exact absurd (orderFaithful_intPlace hV j i hs) (asymm hij)
+
+/-- **The rays sit outside the placed block at `ℤ`.** `ray_of_gap_finiteOrderEmbInt` puts a
+non-placed integer strictly below `0` or at-or-above `n`, and the placement is exactly `0, …,
+n-1`. The two cross terms are vacuous rather than false: a point below `0` has region index `0`,
+so demanding that its index be `n` forces `n = 0`, and then there is no placed point to compare
+it with. -/
+theorem raySplit_intPlace (hV : branchOrderValid b ord = true) :
+    RaySplit b (intPlace b ord hV) := by
+  letI := BranchOrder b ord hV
+  intro r hr
+  rcases ray_of_gap_finiteOrderEmbInt (BranchTime b) hr with hlo | hhi
+  · have hz : cutIndex (regionCode (intPlace b ord hV) r) = 0 :=
+      cutIndex_eq_zero (regionCode_fst_eq_empty_of_neg (BranchTime b) hlo)
+    refine ⟨fun _ i => lt_of_lt_of_le hlo (finiteOrderEmbInt_nonneg (BranchTime b) i),
+      fun hn i => ?_⟩
+    have hlen : b.knownTimes.length = 0 := by omega
+    exact absurd i.isLt (by omega)
+  · have hu : cutIndex (regionCode (intPlace b ord hV) r) = b.knownTimes.length :=
+      cutIndex_eq_length (regionCode_fst_eq_univ_of_card_le (BranchTime b) hhi)
+    refine ⟨fun hn i => ?_,
+      fun _ i => lt_of_lt_of_le (finiteOrderEmbInt_lt_card (BranchTime b) i) hhi⟩
+    have hlen : b.knownTimes.length = 0 := by omega
+    exact absurd i.isLt (by omega)
 
 /-- **No inhabited interior gap at `ℤ`**: `ray_of_gap_finiteOrderEmbInt` says a non-placed
 integer is on one of the two rays, and `cutIndex_eq_zero`/`cutIndex_eq_length` name those rays
