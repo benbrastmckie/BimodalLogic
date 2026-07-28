@@ -1845,4 +1845,107 @@ def totalUnexpandedComplexity (b : Branch) (timeOrd : TimeOrdering := TimeOrderi
   b.filter (fun sf => ¬isExpanded sf b timeOrd fc)
   |>.foldl (fun acc sf => acc + sf.complexity) 0
 
+/-!
+## What Saturation Says About Every Rule
+
+`findUnexpanded b ord fc = none` is the engine's own certificate that a branch is finished. The
+lemma below is what that certificate *means*, stated once for every rule rather than re-derived
+per formula: for each rule applicable to each formula on the branch, the guard in
+`findApplicableRule` that suppressed it must have held, and each guard is a statement about the
+branch's contents.
+
+This is deliberately a **mechanical unfolding lemma**, not an induction over
+`expandBranchWithFuel`. That is the payoff of moving the suppression condition out of the applied
+set and into `findApplicableRule`: the certificate can be read off `List.find?_eq_none` and
+`List.findSome?_eq_none_iff` with no invariant to carry through the fuel loop.
+
+The `sat_*` family in `CountermodelExtraction.lean` are its load-bearing instances; each of them
+predates it and each now follows the same three steps this proof performs once.
+-/
+
+/-- `findUnexpanded … = none` says exactly that every formula on the branch is expanded. -/
+theorem isExpanded_of_findUnexpanded_none {b : Branch} {ord : TimeOrdering} {fc : FrameClass}
+    (h : findUnexpanded b ord fc = none) {sf : SignedFormula} (hsf : sf ∈ b) :
+    findApplicableRule sf b ord fc = none := by
+  have hfind := List.find?_eq_none.mp h sf hsf
+  simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq,
+    Bool.not_eq_eq_eq_not, Bool.not_false, Bool.decide_eq_false, Bool.not_eq_false] at hfind
+  simpa [isExpanded, Option.isNone_iff_eq_none] using hfind
+
+/--
+**Downward closure of saturation.** On a saturated branch, every rule applicable to every formula
+present had its `findApplicableRule` guard hold, and this spells out what each guard gives:
+
+* a `.linear` result is either wholly on the branch (ordinary rules) or its witness already exists
+  (fresh-label rules);
+* a `.persistent` result cannot occur at all — that arm of `findApplicableRule` carries no guard
+  and returns `some` unconditionally, so a saturated branch simply has no applicable persistent
+  rule (each such arm of `applyRule` filters its own output and reports `.notApplicable` instead);
+* a `.branching` result has one arm wholly on the branch, or is a fresh-label rule whose witness
+  already exists.
+-/
+theorem saturated_downward_closed
+    {b : Branch} {ord : TimeOrdering} {fc : FrameClass}
+    (h : findUnexpanded b ord fc = none)
+    {sf : SignedFormula} (hsf : sf ∈ b)
+    {rule : TableauRule} (happ : isApplicable rule sf fc = true)
+    (hmem : rule ∈ allRulesForFC fc) :
+    (∀ fs, (applyRule rule sf b ord).1 = .linear fs →
+       (ruleMintsFreshLabel rule = false → ∀ g ∈ fs, b.contains g = true)
+       ∧ (ruleMintsFreshLabel rule = true → witnessPresent rule sf b ord = true))
+  ∧ (∀ fs, (applyRule rule sf b ord).1 = .persistent fs → ∀ g ∈ fs, b.contains g = true)
+  ∧ (∀ bss, (applyRule rule sf b ord).1 = .branching bss →
+       (∃ fs ∈ bss, ∀ g ∈ fs, b.contains g = true)
+       ∨ (ruleMintsFreshLabel rule = true ∧ witnessPresent rule sf b ord = true)) := by
+  have hExp := isExpanded_of_findUnexpanded_none h hsf
+  unfold findApplicableRule at hExp
+  rw [List.findSome?_eq_none_iff] at hExp
+  have hr := hExp rule hmem
+  rw [if_pos happ] at hr
+  -- Destructure the rule application once, so the three clauses can rewrite the `match`.
+  cases hres : applyRule rule sf b ord with
+  | mk res o =>
+  rw [hres] at hr
+  dsimp only at hr
+  refine ⟨?_, ?_, ?_⟩
+  · intro fs hfs
+    dsimp only at hfs
+    subst hfs
+    dsimp only at hr
+    by_cases hfresh : ruleMintsFreshLabel rule
+    · refine ⟨fun hc => absurd hc (by simp [hfresh]), fun _ => ?_⟩
+      by_contra hw
+      simp only [hfresh, if_true, Bool.not_eq_true] at hr
+      rw [if_neg (by simpa using hw)] at hr
+      exact absurd hr (by simp)
+    · refine ⟨fun _ g hg => ?_, fun hc => absurd hc (by simp [hfresh])⟩
+      simp only [hfresh, Bool.false_eq_true, if_false] at hr
+      by_cases hall : fs.all b.contains
+      · exact List.all_eq_true.mp hall g hg
+      · rw [if_neg hall] at hr; exact absurd hr (by simp)
+  · intro fs hfs
+    -- The `.persistent` arm of `findApplicableRule` is unguarded, so this case is unreachable.
+    dsimp only at hfs
+    subst hfs
+    exact absurd hr (by simp)
+  · intro bss hbss
+    dsimp only at hbss
+    subst hbss
+    dsimp only at hr
+    by_cases hself : ruleSelfGuarded rule
+    · simp only [hself, if_true] at hr; exact absurd hr (by simp)
+    · simp only [hself, Bool.false_eq_true, if_false] at hr
+      by_cases hfresh : ruleMintsFreshLabel rule
+      · refine Or.inr ⟨hfresh, ?_⟩
+        by_contra hw
+        simp only [hfresh, if_true] at hr
+        rw [if_neg (by simpa using hw)] at hr
+        exact absurd hr (by simp)
+      · refine Or.inl ?_
+        simp only [hfresh, Bool.false_eq_true, if_false] at hr
+        by_cases hany : bss.any (fun fs => fs.all b.contains)
+        · obtain ⟨fs, hfs, hall⟩ := List.any_eq_true.mp hany
+          exact ⟨fs, hfs, fun g hg => List.all_eq_true.mp hall g hg⟩
+        · rw [if_neg hany] at hr; exact absurd hr (by simp)
+
 end FormalSystem.Metalogic.Decidability
