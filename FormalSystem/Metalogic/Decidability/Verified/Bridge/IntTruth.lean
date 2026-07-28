@@ -248,6 +248,114 @@ theorem truthAt_atom_state (hf : Function.Injective f) (w : WorldIndex) (r : D) 
         (fun w => branchRegionVal b ord (normWorld b w)) w p]
     rfl
 
+/-! ## The signed correspondence, and the four cases that are not temporal -/
+
+/--
+**The truth lemma's induction predicate**, at one formula.
+
+Signed and one-directional in each sign, which is exactly the strength a tableau branch has: a
+saturated branch asserts and denies formulas at labels, and decides neither every formula nor
+every label.
+-/
+def BranchTruthAt (b : Branch) (ord : TimeOrdering) (f : BranchTime b → D) (φ : Formula) : Prop :=
+  ∀ (w : WorldIndex) (r : D),
+    (b.hasPosAt φ (stateLabel b ord f w r) = true →
+      TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r φ) ∧
+    (b.hasNegAt φ (stateLabel b ord f w r) = true →
+      ¬ TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r φ)
+
+/--
+**Atom case.** The positive half is `truthAt_atom_state`; the negative half is that plus openness,
+which is the only thing that stops a branch from asserting and denying the same atom.
+-/
+theorem branchTruthAt_atom (hf : Function.Injective f) (fc : ProofSystem.FrameClass)
+    (hOpen : findClosure b fc = none) (p : Atom) :
+    BranchTruthAt b ord f (Formula.atom p) := by
+  intro w r
+  refine ⟨fun hp => (truthAt_atom_state hf w r p).mpr hp, fun hn hT => ?_⟩
+  exact sat_atom_consistent b fc hOpen p (stateLabel b ord f w r)
+    ⟨(truthAt_atom_state hf w r p).mp hT, hn⟩
+
+/-- **Bottom case.** `T(⊥)` closes a branch, and `⊥` is false at every point of every model. -/
+theorem branchTruthAt_bot (fc : ProofSystem.FrameClass) (hOpen : findClosure b fc = none) :
+    BranchTruthAt b ord f Formula.bot := by
+  intro w r
+  exact ⟨fun hp => absurd ((hasPosAt_iff_mem b _ _).mp hp) (sat_no_bot_pos b fc hOpen _),
+    fun _ hT => hT⟩
+
+/--
+**Implication case.** Both halves are saturation facts at the *same* label, so no gap point is
+involved and nothing about the placement is used. `sat_imp_pos` (`Bridge/PropSaturation.lean`) is
+the positive half — the only *branching* propositional rule, whose declined guard says literally
+`F(ψ) ∈ b ∨ T(χ) ∈ b`.
+-/
+theorem branchTruthAt_imp (hSat : findUnexpanded b (timeOrd := ord) = none)
+    {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
+    BranchTruthAt b ord f (φ.imp ψ) := by
+  intro w r
+  constructor
+  · intro hp
+    rcases sat_imp_pos b ord hSat φ ψ _ ((hasPosAt_iff_mem b _ _).mp hp) with hneg | hpos
+    · exact fun hTφ => absurd hTφ ((hφ w r).2 ((hasNegAt_iff_mem b _ _).mpr hneg))
+    · exact fun _ => (hψ w r).1 ((hasPosAt_iff_mem b _ _).mpr hpos)
+  · intro hn hT
+    obtain ⟨hφp, hψn⟩ := sat_imp_neg b ord hSat φ ψ _ ((hasNegAt_iff_mem b _ _).mp hn)
+    exact (hψ w r).2 ((hasNegAt_iff_mem b _ _).mpr hψn)
+      (hT ((hφ w r).1 ((hasPosAt_iff_mem b _ _).mpr hφp)))
+
+/--
+**Box case — written first, deliberately.**
+
+`truthAt_box_iff_base` turns `□φ` into a demand on `φ` at **every** world of the carrier and
+**every** point of it, with no evaluation point left free. That is the case that machine-refuted
+`GapAdequate` (`gapAdequate_insufficient`, `Bridge/Valuation.lean`), because a gap point's value at
+a *compound* `φ` is not something an atom-wise policy can supply. It closes here because the two
+halves of the demand are met by two facts of the same shape, both branch-fact-in and
+branch-fact-out:
+
+* at a **placed** point, `sat_box_grid_of_check` — `T(□φ)` anywhere reaches every known label;
+* at a **gap** point, `regionLabel_box` — the region's chosen label carries `T(φ)` because the
+  gate's box row demanded it.
+
+Both land the induction hypothesis at a *label*, never at a gap valuation, which is the whole
+content of the region-labelling decision.
+
+The negative half needs no gate at all: `sat_box_neg` mints a known world carrying `F(φ)` at the
+same time, and that time is placed, so the induction hypothesis applies at a placed point of that
+world's own history.
+-/
+theorem branchTruthAt_box (hf : Function.Injective f)
+    (hSat : findUnexpanded b (timeOrd := ord) = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hne : b.knownWorlds ≠ [])
+    {φ : Formula} (hφ : BranchTruthAt b ord f φ) :
+    BranchTruthAt b ord f φ.box := by
+  intro w r
+  constructor
+  · intro hp
+    have hmem := (hasPosAt_iff_mem b _ _).mp hp
+    rw [truthAt_box_iff_base]
+    intro w' y
+    refine (hφ w' y).1 ?_
+    rw [hasPosAt_iff_mem]
+    by_cases hy : IsPlacedCode f (regionCode f y)
+    · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hy
+      rw [stateLabel_placed hf w' hi]
+      exact sat_box_grid_of_check b ord hSat hTot hBA φ _ _ hmem
+        (normWorld b w') (normWorld_mem hne w') (timeAt b i) (timeAt_mem b i)
+    · rw [stateLabel_gap w' hy]
+      exact regionLabel_box hCheck (normWorld_mem hne w') (cutIndex_le b _) hmem
+  · intro hn hT
+    have hmem := (hasNegAt_iff_mem b _ _).mp hn
+    obtain ⟨w'', hw'', hmem'⟩ :=
+      sat_box_neg b ord hSat φ (stateLabel b ord f w r).world (stateLabel b ord f w r).time hmem
+    obtain ⟨i, hi⟩ :=
+      exists_index_of_mem_knownTimes (stateTime_mem_knownTimes hf hCheck hne w r)
+    rw [truthAt_box_iff_base] at hT
+    refine (hφ w'' (f i)).2 ?_ (hT w'' (f i))
+    rw [hasNegAt_iff_mem, stateLabel_placed hf w'' (rfl : f i = f i), normWorld_eq_self hw'', hi]
+    exact hmem'
+
 end Model
 
 end FormalSystem.Metalogic.Decidability.Verified.Bridge
