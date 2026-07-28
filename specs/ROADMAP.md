@@ -1585,6 +1585,40 @@ characterization.
 
 ---
 
+## Paper Alignment Programme (possible_worlds.tex, 2026-07-28)
+
+The JPL paper (PossibleWorlds/JPL/possible_worlds.tex) has settled its semantic-core
+decisions (PossibleWorlds/Comments/fix.md, Parts A-B): same-sign frame axioms with
+identity Nullity (already this repo's axiomatization: `nullity_identity`,
+`forward_comp`, `converse`), nontrivial `D` (already `[Nontrivial D]`), and — the
+load-bearing change — **official validity = maximal-history validity** (histories
+restricted to maximal ones), with Omega-relativized validity retained only as
+completeness scaffolding. The repo is to be adapted to the paper (not the paper
+scoped down to the repo). New tasks:
+
+- **414** — correct the false `valid` docstrings (Semantics/Validity.lean:33,70-71:
+  the Set.univ-equivalence claim is false); define `validUniv` and `validMaximal`
+  (maximal histories + ShiftClosed); instance lemmas `valid → validUniv/validMaximal`.
+- **415** (dep: 414) — **realization transfer**: upgrade weak completeness from
+  Omega-relativized to maximal-history validity per class (Discrete first; then
+  Dense/Base/Dedekind as 170/169/408 land). Lead: singleton-Omega countermodels
+  realizable as deterministic frames.
+- **416** — CO-axiom bridge (paper BX_c axiom CO vs repo prior_U_gap/prior_S_gap/sep)
+  + Hoelder classification docs (complete ⇒ ≅ ℤ or ℝ; dense+complete ⇒ ℝ; TM_c vs
+  TM+_dc naming alignment).
+- **417** — semantic FMP connected to TruthAt (finite WorldState over D = ℤ) +
+  decidable model checking there; the semantic-FMP follow-on descoped from 165.
+
+Existing tasks already carrying the alignment: **413** (TM conservativity bridge,
+paper thm:ConservativeExtension), **169/170/408/361/362** (completeness programme;
+paper cor:tm-completeness is scoped to WEAK completeness per the settled
+terminology), **165/410/411/412** (tableau decidability). Paper-side edits that
+remain regardless (paper's own mathematics): weak-completeness wording, the false
+non-Archimedean footnote (3252-3255), ℤ-time rescope of UZ/Z1 soundness, and the
+enumeration argument restated as finite W over ℤ.
+
+---
+
 ## Recommended Priority Order
 
 ### Critical Path: Single Sorry Chain
