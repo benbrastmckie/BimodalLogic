@@ -18,6 +18,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.ExistsForallLemmas
 import FormalSystem.Metalogic.WeakCanonical.OrderedSum
 import FormalSystem.Metalogic.WeakCanonical.Table
 import FormalSystem.Metalogic.WeakCanonical.PriorDefsDense
+import FormalSystem.Metalogic.WeakCanonical.Kamp.DedekindINFDense
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsBridge

@@ -50,13 +50,28 @@ in his prose. `HasGuardedDedekindINF` below carries it explicitly.
 `sorry` stands anywhere in this module, and the derivation is complete from `SemanticPriorU`
 alone.
 
-Consuming direction: `HasDedekindINF.toHasGuardedDedekindINF` shows the guarded carrier is
-*implied* by the unguarded one, so every landed supplier of `HasDedekindINF` — and hence, via
-`HasAttainedINF.toHasDedekindINF` / `HasDefinableINF.toHasDedekindINF` (`DedekindINF.lean:172`,
-`:185`), the whole discrete pipeline — supplies the guarded carrier too. A consumer written
-against `HasGuardedDedekindINF` therefore serves the discrete and the dense instance at once;
-`hasGuardedDedekindINF_not_implies_hasDedekindINF` records that the converse fails, so the
-guarded carrier is strictly the weaker of the two.
+## The headline result is the trichotomy, not the guarded form
+
+`HasGuardedDedekindINF` discharges its guard at the *call* site, and no existing consumer of
+`HasDedekindINF.first_occ` in this tree can discharge it: each reaches the call from a `by_cases`
+on whether `P` occurs at an **interior** point of `(z₀,z₁)`, with no hypothesis about `z₀` in
+scope. So the module's primary export is `prior_hasDenseDedekindINF_dense`, valued in
+`HasDenseDedekindINF` — the same statement with the endpoint case moved out of the hypothesis and
+into the conclusion as a third disjunct `P(z₀)`. It is hypothesis-free, so it asks nothing at a
+call site that `HasDedekindINF` did not already ask, and it is Rabinovich's own case split on
+`r₀ = inf{z ∈ (z₀,z₁) | P₁(z)}` with its first two cases kept apart rather than merged. The two
+forms are interderivable (`HasDenseDedekindINF.toHasGuardedDedekindINF` and its converse).
+
+Consuming direction: `HasDedekindINF.toHasDenseDedekindINF` and
+`HasDedekindINF.toHasGuardedDedekindINF` show both are *implied* by the unguarded carrier, so
+every landed supplier of `HasDedekindINF` — and hence, via `HasAttainedINF.toHasDedekindINF` /
+`HasDefinableINF.toHasDedekindINF` (`DedekindINF.lean:172`, `:185`), the whole discrete pipeline —
+supplies them too. A consumer re-based onto `HasDenseDedekindINF` therefore serves the discrete
+and the dense instance at once, at the cost of one extra case in its own proof — a case that is
+genuinely reachable on a dense flow (`denseWindow_endpoint_disjunct_forced` exhibits a point where
+it is the only disjunct that holds) and so cannot be avoided by any restatement.
+`hasGuardedDedekindINF_not_implies_hasDedekindINF` records that the converse fails, so both are
+strictly weaker than the unguarded carrier.
 
 ## What this carrier EXCLUDES (Rule 6)
 

@@ -1,0 +1,105 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "task_number": 408,
+  "phase_number": "10",
+  "session_id": "sess_1785243543_9dde88",
+  "agent_type": "lean-implementation-hard-agent",
+  "summary": "Phase 10 HELD: the route's single point of failure is discharged. Rabinovich eq (5.2) (PDF p.8) derived from Reynolds' Prior-U/Prior-S (printed p.168) at p := not-P, with no discreteness, no attainment and no flow completeness. The plan's skeleton steps 1-6 transcribed verbatim and the module built green on first compilation. Phase 9's finding is now a theorem on disk rather than a note: the unguarded HasDedekindINF is refuted on any densely ordered flow carrying a formula true at z0 and throughout (z0,z1). The exported form is the hypothesis-free trichotomy HasDenseDedekindINF (P(z0) as a third disjunct of the conclusion) rather than the anticipated guarded carrier, because a call-site survey established that the guard is dischargeable at no existing consumer.",
+  "phases_completed": 2,
+  "phases_total": 22,
+  "sorry_inventory": [],
+  "blockers": [],
+  "continuation_path": null,
+  "continuation_context": null,
+  "files_touched": [
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINFDense.lean (new, 420 lines, 32 declarations)",
+    "FormalSystem/Metalogic/WeakCanonical.lean (one import line added, for CI protection, matching Phase 9's practice)",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/07_strong-completeness-dedekind-v7.md (Phase 10 marked COMPLETED, tasks ticked with deviation annotations, outcome note added)",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/07_phase-10-dense-dedekind-inf-summary.md (new)"
+  ],
+  "frozen_files_verified_unchanged": [
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINF.lean",
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
+    "FormalSystem/Metalogic/WeakCanonical/PriorDefsDense.lean",
+    "FormalSystem/Metalogic/BXCanonical/StrongCompleteness.lean"
+  ],
+  "verification": {
+    "scoped_build_passed": true,
+    "scoped_build_output": "lake build FormalSystem.Metalogic.WeakCanonical.Kamp.DedekindINFDense -> Build completed successfully (1113 jobs), first attempt",
+    "build_passed": true,
+    "build_output": "lake build -> Build completed successfully (1913 jobs), no fallback used",
+    "sorry_count_new_module": 0,
+    "live_sorry_outside_boneyard": ["FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242"],
+    "live_sorry_baseline_unchanged": true,
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "axioms_clean": true,
+    "axioms_detail": "18 load-bearing declarations checked: [propext, Classical.choice, Quot.sound]; hasDedekindINF_fails_of_interval_witness, hasDedekindSUP_fails_of_interval_witness, HasDedekindINF.toHasDenseDedekindINF and HasDedekindSUP.toHasDenseDedekindSUP need only [propext]",
+    "canaries": {
+      "completeness_dense": "[propext, Classical.choice, Quot.sound] - unchanged",
+      "completeness_discrete": "[propext, Classical.choice, Quot.sound] - unchanged",
+      "countermodel_discrete_reynolds_v2": "[propext, Classical.choice, Quot.sound] - unchanged"
+    }
+  },
+  "declarations_landed": [
+    "HasGuardedDedekindINF", "HasGuardedDedekindSUP",
+    "HasDenseDedekindINF", "HasDenseDedekindSUP",
+    "prior_hasGuardedDedekindINF_dense", "prior_hasGuardedDedekindSUP_dense",
+    "prior_hasDenseDedekindINF_dense", "prior_hasDenseDedekindSUP_dense",
+    "HasDedekindINF.toHasGuardedDedekindINF", "HasDedekindSUP.toHasGuardedDedekindSUP",
+    "HasDedekindINF.toHasDenseDedekindINF", "HasDedekindSUP.toHasDenseDedekindSUP",
+    "HasDenseDedekindINF.toHasGuardedDedekindINF", "HasDenseDedekindSUP.toHasGuardedDedekindSUP",
+    "HasGuardedDedekindINF.toHasDenseDedekindINF", "HasGuardedDedekindSUP.toHasDenseDedekindSUP",
+    "HasAttainedINF.toHasGuardedDedekindINF", "HasAttainedSUP.toHasGuardedDedekindSUP",
+    "hasDedekindINF_fails_of_interval_witness", "hasDedekindSUP_fails_of_interval_witness",
+    "hasDedekindINF_fails_on_dense_window", "hasDedekindSUP_fails_on_dense_window",
+    "hasGuardedDedekindINF_not_implies_hasDedekindINF",
+    "hasDenseDedekindINF_of_dense_window", "hasDenseDedekindSUP_of_dense_window",
+    "hasGuardedDedekindINF_of_dense_window", "hasGuardedDedekindSUP_of_dense_window",
+    "denseWindowAtom", "denseWindow_kplus_at_zero", "denseWindow_kplus_fails_at_neg_one",
+    "denseWindow_endpoint_disjunct_forced", "denseWindow_guardedINF_right_disjunct"
+  ],
+  "deviations": [
+    {
+      "plan_item": "Prove prior_hasDedekindINF_dense / prior_hasDedekindSUP_dense concluding in HasDedekindINF / HasDedekindSUP",
+      "kind": "altered",
+      "what_changed": "Landed as HasGuardedDedekindINF (guard not-P(z0); conclusion character-for-character identical to HasDedekindINF's) plus HasDenseDedekindINF (hypothesis-free trichotomy, adding P(z0) as a third disjunct). The trichotomy is the exported form. Both are landed and are interderivable.",
+      "why": "The unguarded HasDedekindINF is FALSE on a dense Prior structure, and is now refuted on disk rather than in prose. A survey of every .first_occ/.last_occ call site outside Boneyard/ established that not-P(z0) is available at NONE of them, so a guarded carrier alone would have been formally correct and downstream-unusable. The trichotomy is Rabinovich's own case split on r0 = inf{z in (z0,z1) | P1(z)} with its first two subcases kept apart instead of merged; it is hypothesis-free and asks nothing at a call site that HasDedekindINF did not already ask.",
+      "authorized_by": "Plan v7's Phase 10 note (the Phase 9 input block) explicitly authorized a guarded sibling carrier, or supplying HasDedekindINF only where the endpoint case is excluded. The trichotomy is that family with the guard moved from hypothesis into conclusion so that it is actually consumable."
+    }
+  ],
+  "route_critical_findings": [
+    {
+      "severity": "resolved",
+      "finding": "THE SINGLE POINT OF FAILURE HELD. prior_hasDenseDedekindINF_dense and prior_hasDenseDedekindSUP_dense are sorry-free and axiom-clean from SemanticPriorU / SemanticPriorS alone, with no discreteness, no attainment and no flow completeness. This is not a blocker, not a strategic sorry, and not a conditional terminus."
+    },
+    {
+      "severity": "plan_amendment_needed",
+      "finding": "DOWNSTREAM CONSUMES THE TRICHOTOMY, NOT THE GUARDED FORM. Every .first_occ/.last_occ call site outside Boneyard/ reaches the call from a by_cases on interior occurrence of P in (z0,z1), with no hypothesis about z0 in scope. Phases 11+ must consume HasDenseDedekindINF and handle the P(z0) disjunct. That case is genuinely reachable - denseWindow_endpoint_disjunct_forced exhibits a point where it is the ONLY disjunct that holds - so no restatement can avoid it; it is real dense-case mathematical content the discrete route never had to face. HasDedekindINF.toHasDenseDedekindINF keeps the discrete pipeline supplying the new carrier, so a re-based consumer serves both instances at once. This is NOT a route-level blocker."
+    },
+    {
+      "severity": "plan_amendment_needed",
+      "finding": "UNPLANNED, MATERIAL TO PHASES 11-13: an EANegationFixFaithful/ subtree plus Lemma53Faithful.lean and Prop42Faithful.lean ALREADY EXIST in-tree and ALREADY consume HasDedekindINF - among them negChainOnFaithful_iff (Lemma53Faithful.lean:274), negFixOneFaithful_cover (NegFixOneFaithful.lean:422) and the list analogue (NegFixListFaithful.lean:446). DedekindINF.lean's docstring still describes this re-base as DEFERRED, and plan Phases 11-13 are written as though these modules do not exist. Because they are pinned at the UNGUARDED HasDedekindINF they cannot be instantiated at any dense Prior structure. Phases 11-13 should be re-scoped against what is actually on disk before dispatch: the work may be largely a hypothesis-swap onto HasDenseDedekindINF plus the new endpoint case, rather than the from-scratch construction the plan describes."
+    }
+  ],
+  "commits": [
+    {
+      "sha": "7619aef02",
+      "message": "task 408 phase 10: dense first-occurrence carrier from SemanticPriorU/S"
+    },
+    {
+      "sha": "PENDING",
+      "message": "task 408 phase 10: complete - import edge, plan, summary and handoff"
+    }
+  ],
+  "next_dispatch_target": {
+    "phase": "11",
+    "precondition": "Do NOT dispatch Phase 11 as written. Re-scope Phases 11-13 against (a) the existing EANegationFixFaithful/ subtree and (b) HasDenseDedekindINF as the carrier. A plan revision (v8) is the recommended next action rather than an implementation dispatch.",
+    "consumes": [
+      "prior_hasDenseDedekindINF_dense",
+      "prior_hasDenseDedekindSUP_dense",
+      "HasDedekindINF.toHasDenseDedekindINF"
+    ]
+  }
+}

@@ -844,7 +844,45 @@ the deviation in the phase summary. **No phase owns a file another phase owns in
 - **Depends on**: —
 - **Timing**: 4 hours.
 
-### Phase 10: `HasDedekindINF` / `HasDedekindSUP` from the dense Prior axioms [NOT STARTED]
+### Phase 10: `HasDedekindINF` / `HasDedekindSUP` from the dense Prior axioms [COMPLETED]
+
+> **OUTCOME — the single point of failure HELD.** The derivation from `SemanticPriorU` /
+> `SemanticPriorS` is complete, sorry-free and axiom-clean, with no discreteness, no attainment and
+> no flow completeness. Phase 9's finding was confirmed and is now **on disk as a theorem**, not a
+> note: `hasDedekindINF_fails_of_interval_witness` refutes the unguarded `HasDedekindINF` on *any*
+> densely ordered flow carrying a formula true at `z₀` and throughout `(z₀,z₁)`, and
+> `hasDedekindINF_fails_on_dense_window` instantiates it at `denseWindowFlow`.
+>
+> **The landed form is the trichotomy `HasDenseDedekindINF`, not the guarded sibling**, and this is
+> a deviation from the two options the Phase 9 note anticipated. Reason, measured rather than
+> assumed: a survey of every `.first_occ` / `.last_occ` call site outside `Boneyard/` found that
+> **`¬P(z₀)` is available at none of them** — each is reached from a `by_cases` on whether `P`
+> occurs at an *interior* point of `(z₀,z₁)`, with no hypothesis about `z₀` in scope. A guarded
+> carrier is therefore unconsumable downstream. `HasDenseDedekindINF` moves the endpoint case out
+> of the hypothesis and into the conclusion as a third disjunct `P(z₀)`, which is Rabinovich's own
+> case split on `r₀ = inf{z ∈ (z₀,z₁) | P₁(z)}` with its first two subcases kept apart instead of
+> merged under his construction's standing `¬P₁(z₀)`. It is hypothesis-free, so it asks nothing at
+> a call site that `HasDedekindINF` did not already ask. The guarded form is landed too and the two
+> are interderivable.
+>
+> **Consequence for Phase 11 and after — re-base target changes.** Downstream must consume
+> `HasDenseDedekindINF` and handle the `P(z₀)` disjunct. That case is genuinely reachable
+> (`denseWindow_endpoint_disjunct_forced` exhibits a point where it is the *only* disjunct that
+> holds), so no restatement can avoid it; it is real mathematical content the discrete route never
+> had to face, and it is the honest dense-case cost. `HasDedekindINF.toHasDenseDedekindINF` keeps
+> the discrete pipeline supplying the new carrier, so a re-based consumer serves both instances.
+>
+> **Second finding, unplanned and material to Phases 11-13.** An `EANegationFixFaithful/` subtree
+> plus `Lemma53Faithful.lean` and `Prop42Faithful.lean` **already exist in-tree and already consume
+> `HasDedekindINF`** — among them `negChainOnFaithful_iff` (`Lemma53Faithful.lean:274`),
+> `negFixOneFaithful_cover` (`NegFixOneFaithful.lean:422`) and the list analogue
+> (`NegFixListFaithful.lean:446`). `DedekindINF.lean`'s docstring describes this re-base as
+> DEFERRED, and the plan's Phases 11-13 are written as though these modules do not exist. They do.
+> Because they are pinned at the *unguarded* `HasDedekindINF`, **they cannot be instantiated at any
+> dense Prior structure** — the hypothesis is refutable there. Phases 11-13 should be re-scoped
+> against what is actually on disk before being dispatched: the work may be substantially a
+> hypothesis-swap onto `HasDenseDedekindINF` plus the new endpoint case, rather than the
+> from-scratch construction the plan describes.
 
 > **This is the route's crux and it is scheduled second on purpose.** Everything from Phase 11
 > onward is vacuous without it, the argument is short, and a failure here refutes the route cheaply.
@@ -911,21 +949,38 @@ the deviation in the phase summary. **No phase owns a file another phase owns in
   5. `r₀ < z₁` because `P` occurs in `(z₀,z₁)` and `¬P` holds on `(z₀,r₀)`.
   6. Steps 4-5 are **eq (5.2) verbatim** — `HasDedekindINF`'s right disjunct.
 - **Tasks**:
-  - [ ] Prove `prior_hasDedekindINF_dense`, following the skeleton above.
-  - [ ] Prove `prior_hasDedekindSUP_dense`, the `SemanticPriorS` mirror.
-  - [ ] Docstring: `Rabinovich 2014, Lemma 5.3 Case 2 and eq (5.2), PDF p.8` for the carrier, and
+  - [x] Prove `prior_hasDedekindINF_dense`, following the skeleton above. *(deviation: altered —
+        landed as `prior_hasGuardedDedekindINF_dense` (skeleton steps 1-6 verbatim, guard `¬P(z₀)`)
+        and `prior_hasDenseDedekindINF_dense` (the hypothesis-free trichotomy, the exported form).
+        The unguarded conclusion is unavailable and is refuted on disk — see the phase note.)*
+  - [x] Prove `prior_hasDedekindSUP_dense`, the `SemanticPriorS` mirror. *(deviation: altered —
+        same shape: `prior_hasGuardedDedekindSUP_dense` / `prior_hasDenseDedekindSUP_dense`.)*
+  - [x] Docstring: `Rabinovich 2014, Lemma 5.3 Case 2 and eq (5.2), PDF p.8` for the carrier, and
         `Reynolds 1992, Prior-U, printed p.168` for the derivation, with the instantiation
         `p := ¬P` stated in words. **Cite Rabinovich by PDF page only** — the `.md` conversion is
-        corrupt.
-  - [ ] Record explicitly, in the docstring, that this derivation **does not** route through
+        corrupt. *(done; the endpoint guard and the refutation are labelled original glue, and the
+        docstring states plainly that Rabinovich's "`r₀ = z₀` iff `K⁺(P₁)(z₀)`" is false read
+        literally and sound under his construction's standing `¬P₁(z₀)`.)*
+  - [x] Record explicitly, in the docstring, that this derivation **does not** route through
         `prior_hasAttainedINF` and therefore carries no discreteness — the whole point of the
-        phase.
-  - [ ] **Anti-vacuity**: instantiate at the positive witness from Phase 9 and land the resulting
+        phase. *(done, in the theorem docstring.)*
+  - [x] **Anti-vacuity**: instantiate at the positive witness from Phase 9 and land the resulting
         `HasDedekindINF` as a named `example` or lemma. Also record which of the two disjuncts the
         witness lands in; if it is always the right one, exhibit a structure landing in the left,
         to show `hasDedekindINF_admits_kplus_shape`'s case is reachable here too.
-  - [ ] `#print axioms` on both; regression: `#print axioms completeness_discrete`.
-  - [ ] Scoped build green; full `lake build` green.
+        *(`hasDenseDedekindINF_of_dense_window` / `hasGuardedDedekindINF_of_dense_window` and the
+        `SUP` mirrors. **All three disjuncts are reachable and each is exhibited**:
+        `denseWindow_kplus_at_zero` lands `K⁺` at `z₀ = 0`;
+        `denseWindow_guardedINF_right_disjunct` lands eq (5.2) at `z₀ = -1` via
+        `denseWindow_kplus_fails_at_neg_one`; `denseWindow_endpoint_disjunct_forced` lands the new
+        `P(z₀)` disjunct at `z₀ = 1/2` and proves the other two fail there.)*
+  - [x] `#print axioms` on both; regression: `#print axioms completeness_discrete`. *(all 18
+        declarations `[propext, Classical.choice, Quot.sound]`; the two exclusion lemmas and the
+        two `toHasDenseDedekind*` shims need only `[propext]`. Canaries unchanged:
+        `completeness_dense`, `completeness_discrete`, `countermodel_discrete_reynolds_v2`.)*
+  - [x] Scoped build green; full `lake build` green. *(both; `lake build` = "Build completed
+        successfully (1912 jobs)". Live sorry outside `Boneyard/` remains exactly
+        `Transfer.lean:1242`.)*
 - **Estimated output**: ~300 lines.
 - **Done when**: both theorems sorry-free with axioms exactly `[propext, Classical.choice,
   Quot.sound]`; the non-vacuity instantiation lands; `DedekindINF.lean` and `PriorINF.lean`
