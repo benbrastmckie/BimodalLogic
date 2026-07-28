@@ -60,7 +60,7 @@ next_project_number: 418
 
 414 [RESEARCHING] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
   └─ 415 [RESEARCHING] — Completeness under the refactored (Omega-free, maximal-history) s
-  └─ 417 [RESEARCHING] — Semantic FMP over a fixed carrier, stated against the refactored 
+  └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
 416 [RESEARCHING] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revise
 
 ### Documentation
@@ -81,10 +81,11 @@ next_project_number: 418
 
 ### 417. Semantic fmp finite worldstate over z
 - **Effort**: medium
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414
+- **Research**: [417_semantic_fmp_finite_worldstate_over_z/reports/01_semantic-fmp-finite-worldstate.md]
 
 **Description**: Semantic FMP over a fixed carrier, stated against the refactored Omega-free maximal-history semantics of task 414 (PossibleWorlds Comments/fix.md C6; revised 2026-07-28): prove the TruthAt-connected finite model property the paper cor:tm-decidability proof text cites — any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z — replacing reliance on the syntactic closure-MCS FMP theorems (Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by task 165 redirect; the tableau programme (165/410-412) remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
 
