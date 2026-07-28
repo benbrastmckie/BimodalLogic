@@ -952,7 +952,7 @@ on the 8 rule/class pairs of the two scheduled rules with no indication of why.
 (59.2 s, matching the 2.7 baseline) with zero `#guard_msgs` movement. Zero new sorries, axioms or
 vacuous definitions.
 
-### Phase 4: Termination (WP3: T1, T2, T3) [IN PROGRESS]
+### Phase 4: Termination (WP3: T1, T2, T3) [PARTIAL]
 
 - **Goal:** `buildTableau` totality at a justified, uncapped fuel; the pigeonhole argument is
   about real blocking (possible only now that Phase 1.3 made blocking genuine).
@@ -970,13 +970,19 @@ vacuous definitions.
     Estimated output: ~300-500 lines (mechanical cases).
     Done when: theorem sorry-free; the `priorUZ`/`priorSZ` and `densityRule` cases have explicit
     comments; build green.
-  - [ ] **4.2 T2 — pigeonhole** (`Verified/Termination/TimeTypeBound.lean`, new):
+  - [x] **4.2 T2 — pigeonhole** *(deviation: altered — the plan's single deliverable split into a
+    counting half and a construction half; the counting half is complete, the construction half is
+    complete except for the general termination theorem, which is carried as an explicit hypothesis
+    rather than a sorry. See the 2026-07-28c note below.)*
+    (`Verified/Termination/TimeTypeBound.lean`, new):
     `blocking_fires_of_card_lt` via `Finset.exists_ne_map_eq_of_card_lt_of_maps_to` (verified
     to exist, 02 §4.3; `Fintype.exists_ne_map_eq_of_card_lt` does NOT exist — constraint 2
     applies to any further name checks). Bound `2^(2·|signedClosure φ|)` time-types; the
     trichotomy rule increases branching but not the time-type count, so the bound is R2-stable
     (02 §4.4). Estimated output: ~150-300 lines. Done when: theorem sorry-free; build green.
-  - [ ] **4.3 T3 — justified fuel** (`Verified/Termination/Fuel.lean`, new): define uncapped
+  - [ ] **4.3 T3 — justified fuel** *(in progress — `soundFuel'` and the set-growth progress
+    measure landed 2026-07-28c; `buildTableau_isSome` outstanding)*
+    (`Verified/Termination/Fuel.lean`, new): define uncapped
     `soundFuel'` (exponential closed form tied to the T2 bound — a quadratic constant cannot
     cover an exponential step count, 03 §4.3) and prove `buildTableau_isSome`. Keep capped
     `soundFuel` as the runtime default (constraint 11). This also separates the two open-branch
@@ -1003,8 +1009,34 @@ zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-n
   `negPos`, `negNeg`, `boxTemporal`, `denseIndicatorClosure`.
 - [x] **4.1c Rule cases, remaining 26** — landed 2026-07-28 (dispatch 2). All 36 rule cases
   sorry-free, plus the combined `applyRule_subformula_closed` by `cases rule`.
-- [ ] **4.2 T2 — pigeonhole** — not started.
-- [ ] **4.3 T3 — justified fuel** — not started.
+- [x] **4.2a Statement repair** — `TableauClosed` re-keyed, `trich` migrated to `TrichClosed`
+  (2026-07-28c, dispatch 3). See the resolved-blocker note below.
+- [x] **4.2b T2 counting** — `TimeTypeBound.lean`: `signedStock`, `card_signedStock`,
+  `Branch.timeTypeFinset`, `timeTypeFinset_subset_signedStock`, `exists_ne_timeType_eq`
+  (the `Finset.exists_ne_map_eq_of_card_lt_of_maps_to` pigeonhole against
+  `(signedStock C).powerset`, card `2 ^ (2 * |C|)`), `isSubsetBlocked_of_timeTypeFinset_subset`,
+  `isTemporallyBlocked_of_ancestor`, `blocking_fires_of_card_lt` and its empty-tracker corollary.
+- [x] **4.2c Concrete closure** — `conjEmissions`, `emissions`, `closureStep`, `closureIter`,
+  and `tableauClosed_of_closureStep_subset`: **all seven `TableauClosed` fields reduce to the
+  single decidable containment `closureStep C ⊆ C`**, so a caller exhibits a stock and runs a
+  check instead of reproving the fields. Six committed `#guard_msgs in #eval` stabilisation rows
+  (probe-first, constraint 1) show the operator halting from the subformula closure — round 3 for
+  `p` (|C| = 8), `F p` (11), `G p` (13), the real `priorUGap` trigger (20) and the real `sepRule`
+  trigger (30); round 4 for `□p` (17).
+- [ ] **4.2d T2 termination theorem** — the one piece outstanding: `∃ n, closureStep (closureIter
+  n seed) ⊆ closureIter n seed` in general. It is carried as an explicit hypothesis, never a
+  `sorry`, so nothing downstream is weakened by its absence — a consumer that supplies a stock
+  gets `TableauClosed` from a `decide`.
+- [x] **4.3a T3 progress measure and fuel figure** — `Fuel.lean`: `expandOnceUnblocked_card_lt`
+  (`Branch.toFinset` strictly grows along an extending step — the set-growth form, consuming
+  `expandOnceUnblocked_adds_new` exactly as the 2026-07-27b note directs, **not** the length
+  lemma), `card_le_of_subset_universe`, uncapped `soundFuel'`, and `soundFuel_le_soundFuel'`
+  (the capped runtime default never runs past the justified bound).
+- [ ] **4.3b T3 `buildTableau_isSome`** — outstanding. Its two dimensions are now separately
+  available: formulas by T1, labels by `blocking_fires_of_card_lt`. What remains is composing
+  them and carrying `TrichClosed C b` through the fuel loop's branch invariant (preservation is
+  favourable: `orderTrichotomy` adds only positive disjuncts, so it never enlarges the set of
+  branch-side negated disjuncts `TrichClosed` quantifies over).
 
 **Two settled-design corrections, both forced by source inspection, both recorded in the module
 docstring rather than assumed:**
