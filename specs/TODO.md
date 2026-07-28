@@ -59,7 +59,7 @@ next_project_number: 418
 ### Paper Refactor
 
 414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
-  └─ 415 [RESEARCHING] — Completeness under the refactored (Omega-free, maximal-history) s
+  └─ 415 [RESEARCHED] — Completeness under the refactored (Omega-free, maximal-history) s
   └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
 416 [RESEARCHING] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revise
 
@@ -104,10 +104,11 @@ next_project_number: 418
 
 ### 415. Completeness over maximal history semantics
 - **Effort**: large
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414
+- **Research**: [415_completeness_over_maximal_history_semantics/reports/01_completeness-maximal-history-rebase.md]
 
 **Description**: Completeness under the refactored (Omega-free, maximal-history) semantics of task 414 — INTERNALIZED, not bridged (PossibleWorlds Comments/fix.md B1/C2; revised 2026-07-28): restate and reprove WEAK completeness per frame class so the canonical/chronicle constructions deliver countermodels that are maximal-history models OUTRIGHT. The former singleton-Omega device (WeakCanonical/Transfer.lean:603-638) becomes: construct frames — deterministic frames are the lead, their maximal histories forming a single shift class — whose FULL maximal-history set is the required countermodel family; no transfer or realization lemmas in the final statements. Order: Discrete first (currently green under the old semantics), then Dense (task 170), Base (task 169), Dedekind (task 408), whose targets all rebase onto the new semantics. The mathematical content of realization is absorbed into the constructions; the headline theorems mention only the paper-aligned validity.
 
