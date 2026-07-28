@@ -98,4 +98,90 @@ theorem branchTruthAt_of_temporal (hf : Function.Injective f)
 
 end Model
 
+/-! ## Rank and cut index are the same count
+
+`branchRank b ord t` counts the branch's known times strictly before `t`, in the **branch**
+order, as a `List.filter` length. `cutIndex (regionCode f s)` counts the placed points strictly
+below `s`, in the **carrier** order, as a `Finset.card`. The dense negative temporal case needs
+to compare the two, because `regionLabel_untlNeg` reaches region `j` from a label of rank
+`< j` — and the region a witness sits in is named by its cut index.
+
+This is stated for an arbitrary carrier, and is the piece the discrete milestone never needed:
+at `ℤ` a witness in a gap is on a ray, so `j` was always `0` or `n` and `branchRank_lt_length`
+settled the side condition without any comparison of counts.
+-/
+
+section Counting
+
+/--
+Counting over `Fin n` by list filter and by `Finset` filter agree.
+
+`Finset.univ` on `Fin n` is `List.finRange n` with a nodup proof attached, so this is definitional
+once both sides are unfolded to a multiset length; it is stated separately because the unfolding
+is what a caller would otherwise have to repeat.
+-/
+theorem length_filter_finRange (n : Nat) (p : Fin n → Bool) :
+    (List.filter p (List.finRange n)).length
+      = (Finset.univ.filter (fun k : Fin n => p k = true)).card := by
+  classical
+  simp [Finset.univ, Fintype.elems, Finset.card, Finset.filter, Multiset.filter]
+
+/--
+**`branchRank`, counted over the index type instead of over the list.**
+
+`b.knownTimes` is the image of `timeAt b` over all of `BranchTime b`
+(`List.map_getElem_finRange`), so filtering the list and filtering the index type count the same
+elements. No injectivity is needed here: the list and the index type are in definitional
+bijection, not merely in bijection.
+-/
+theorem branchRank_eq_card (b : Branch) (ord : TimeOrdering) (t : TimeIndex) :
+    branchRank b ord t
+      = (Finset.univ.filter
+          (fun k : BranchTime b => strictBefore ord (timeAt b k) t = true)).card := by
+  rw [branchRank]
+  conv_lhs => rw [← List.map_getElem_finRange b.knownTimes]
+  rw [List.filter_map, List.length_map, Function.comp_def]
+  exact length_filter_finRange b.knownTimes.length
+    (fun k => strictBefore ord b.knownTimes[(k : Nat)] t)
+
+end Counting
+
+section Bridge
+
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
+
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
+/--
+**A placed point's rank is strictly below the cut index of anything above it.**
+
+This is the side condition of `regionLabel_untlNeg` (`Bridge/RegionLabel.lean`), supplied for an
+arbitrary region rather than only for the top one, and it is what lets the dense negative `untl`
+case treat an interior gap and the upper ray as **one** leaf: both are non-placed points, both
+read `regionLabel b ord w (cutIndex (regionCode f s))`, and the reaching lemma is `j`-generic.
+At `ℤ` this collapses — `RayOnly` forces `j ∈ {0, n}` — which is exactly why the discrete
+milestone got by with `branchRank_lt_length` instead.
+
+The count is strict for a reason worth naming: `i` itself is below `s` and so is counted on the
+right, while `strictBefore` is irreflexive on a gated branch and so does not count `i` on the
+left. Everything else transfers by `OrderFaithful` alone.
+-/
+theorem branchRank_lt_cutIndex (hV : branchOrderValid b ord = true) (hOF : OrderFaithful b ord f)
+    {i : BranchTime b} {s : D} (his : f i < s) :
+    branchRank b ord (timeAt b i) < cutIndex (regionCode f s) := by
+  classical
+  rw [branchRank_eq_card, cutIndex]
+  refine Finset.card_lt_card ⟨fun k hk => ?_, fun hsub => ?_⟩
+  · simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk ⊢
+    exact lt_trans (hOF k i hk) his
+  · have hi : i ∈ Finset.univ.filter (fun k : BranchTime b => k ∈ (regionCode f s).1) := by
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      exact his
+    have := hsub hi
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at this
+    rw [irrefl_of_valid hV (timeAt_mem b i)] at this
+    exact absurd this (by simp)
+
+end Bridge
+
 end FormalSystem.Metalogic.Decidability.Verified.Bridge
