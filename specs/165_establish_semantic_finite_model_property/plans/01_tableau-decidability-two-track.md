@@ -952,17 +952,31 @@ on the 8 rule/class pairs of the two scheduled rules with no indication of why.
 (59.2 s, matching the 2.7 baseline) with zero `#guard_msgs` movement. Zero new sorries, axioms or
 vacuous definitions.
 
-### Phase 4: Termination (WP3: T1, T2, T3) [PARTIAL]
+### Phase 4: Termination (WP3: T1, T2, T3) [COMPLETED]
 
-> **Status as of 2026-07-28h.** T1 complete, T2 complete except 4.2d's *confinement* half, **T3
-> complete** — 4.3 now satisfies all five criteria of its restated "Done when" (`worldFuel'`
-> defined, `chain_le_worldFuel'` and `expandBranchWithFuel_isSome_at_worldFuel'` sorry-free,
-> `WorldWitness`/`NoSplit`/branch-budget all named in the statements, `soundFuel'` frozen, `#eval`
-> unchanged, both builds green, zero sorries). The heading stays `[PARTIAL]` for **one** reason:
-> **4.2d confinement** is still open (exhibit a finite emission-closed superset of the seed). Its
-> stabilisation half landed here, so what remains is a single bounded obligation, not a research
-> question. Nothing else in Phase 4 is outstanding: residual 3's fuel half is *refuted as stated*
-> and recorded as an engine-policy finding, and residual 4 is a named hypothesis by design.
+> **Status as of 2026-07-28i — Phase 4 COMPLETE.** T1, T2 and T3 all complete. The last open
+> item, **4.2d confinement**, landed this dispatch: `exists_confining` builds a finite
+> emission-closed superset for *every* finite seed, so
+> `exists_tableauClosed_closureIter_of_seed : ∃ n, TableauClosed (closureIter n seed)` is now
+> **unconditional** — no hypothesis, no `sorry`, no stock the caller must invent. T3's five
+> restated "Done when" criteria were already met at 2026-07-28h and are untouched. Both builds
+> green, zero sorries, no new axioms.
+>
+> **Why the confinement proof looks the way it does.** The obligation reads like it wants a
+> well-founded measure, and provably has none: `priorUGap` maps `U(⊤,g) ∧ F(¬g)` to
+> `U(¬g ∨ K⁺¬g, g)`, which is strictly larger under every additive weighting of the
+> constructors, and any weighting light enough to make it non-increasing admits infinitely many
+> formulas below a bound. What replaces the measure is an **algebra**: `closureStep` distributes
+> over union (`closureStep_union`), so `Confining` stocks are union-closed, so a stock can be
+> assembled from independently-confining pieces. `exists_confining_of_forall` then reduces the
+> seed-level obligation to a formula-level one, and a six-case structural induction closes it.
+> The three Dedekind batch lemmas carry the content: each conclusion drags in six to ten
+> formulas, and each of those emits nothing new for reasons decided at the outermost differing
+> constructor.
+>
+> Residual 3's fuel half remains *refuted as stated* and recorded as an engine-policy finding;
+> residual 4 (`WorldWitness`) remains a named hypothesis by design — neither is a Phase 4
+> obligation.
 
 - **Goal:** `buildTableau` totality at a justified, uncapped fuel; the pigeonhole argument is
   about real blocking (possible only now that Phase 1.3 made blocking genuine).
@@ -1049,10 +1063,9 @@ zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-n
   (probe-first, constraint 1) show the operator halting from the subformula closure — round 3 for
   `p` (|C| = 8), `F p` (11), `G p` (13), the real `priorUGap` trigger (20) and the real `sepRule`
   trigger (30); round 4 for `□p` (17).
-- [ ] **4.2d T2 termination theorem** — `∃ n, closureStep (closureIter n seed) ⊆ closureIter n
-  seed` in general. It is carried as an explicit hypothesis, never a `sorry`, so nothing
-  downstream is weakened by its absence — a consumer that supplies a stock gets `TableauClosed`
-  from a `decide`. *(**Half landed 2026-07-28h.** `TimeTypeBound.lean` now splits the obligation
+- [x] **4.2d T2 termination theorem** — `∃ n, closureStep (closureIter n seed) ⊆ closureIter n
+  seed` in general. **COMPLETE 2026-07-28i, unconditional.** *(**Stabilisation half landed
+  2026-07-28h.** `TimeTypeBound.lean` now splits the obligation
   into **stabilisation** and **confinement** and discharges stabilisation unconditionally:
   `closureIter_succ` (step moves outside the recursion), `closureIter_subset_succ`,
   `closureIter_subset_of_closed`, `exists_closureStep_subset` (the finite-monotone argument —
@@ -1062,9 +1075,23 @@ zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-n
   exhibit *any* finite emission-closed superset `M` of the seed, however crude. The reduction is
   not circular — `closureStep M ⊆ M` alone would give `TableauClosed M` directly, but
   `closureIter n seed` is the **smaller** stock, and T2's `2 ^ (2·|C|)` is exponential in `|C|`,
-  so finding the fixed point at or below `M` is the point. Known shape unchanged: the only chains
-  that could diverge are `priorU`/`priorS` re-firing through a `someFuture` subformula of their
-  own conclusion (`conjEmissions`' first two arms), where the recursion descends.)*
+  so finding the fixed point at or below `M` is the point.
+  **Confinement half landed 2026-07-28i.** The measure route is refuted (see the Phase 4 status
+  banner); the route taken is the union algebra. Landed, all sorry-free: `closureStep_union`,
+  `Confining`/`.union`/`.extend`/`.extendEmissions`, `closureStep_mono`/`closureIter_mono`,
+  `constCore` (= `closureIter 3 ∅`, seven formulas, confining by kernel `decide`) and
+  `constCore_subset_of_confining`, `stableAt` + `closureStep_closureIter_of_stableAt` +
+  `exists_confining_of_stableAt` (confinement by computation for any concrete seed),
+  `Carries`/`SubConfining` (the induction is strengthened to carry each subformula's **negation**,
+  because `□ψ` emits `Gψ = ¬F(¬ψ)` whose `priorUZ` trigger `U(¬ψ, ⊤)` mentions `¬ψ`, which is not
+  a subformula of `□ψ`), the six induction cases `subConfining_atom`/`_bot`/`_box`/`_untl`/
+  `_snce`/`_imp`, the three Dedekind batches `exists_confining_gapU`/`_gapS`/`_sep`, the
+  dispatcher `exists_confining_conjEmissions`, and the finish `subConfining` →
+  `confinesFormula` → `exists_confining` → `exists_tableauClosed_closureIter_of_seed`.
+  Six new `#guard_msgs` cascade rows were committed first (probe-first, constraint 1): a trigger
+  delayed one round by `F(U(⊤,g) → ¬F(¬g))`, nested up to three deep, with and without a `□` on
+  top, all still stabilise at **round 4** — delay does not compound, which is the executable form
+  of the non-recurrence the proof establishes.)*
 - [x] **4.3a T3 progress measure and fuel figure** — `Fuel.lean`: `expandOnceUnblocked_card_lt`
   (`Branch.toFinset` strictly grows along an extending step — the set-growth form, consuming
   `expandOnceUnblocked_adds_new` exactly as the 2026-07-27b note directs, **not** the length
