@@ -57,6 +57,13 @@ actually consumes does not reach it. So the plan's "compose the re-based faithfu
 `prior_hasFaithfulDedekindINF_dense`" has nothing to compose *with* on the `KampPrior` side, and
 a faithful sibling of `kampPriorExpressiveCompleteness` is this module's real remaining content.
 
+**Update — the zeta wire now reaches the faithful chain.** The two paragraphs above record the
+measurement as it stood when this module was written, and are kept as the record of the
+refutation. They are superseded on one point: `Kamp/ZetaUniformExtractFaithful.lean` now carries
+`Kamp.kampArm_zeta_faithful`, the ζ wire at `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP`,
+sorry-free. What remains open is the spine *above* the wire; see
+`kampFaithfulExpressiveCompleteness_open`'s docstring for the measured remaining inventory.
+
 **And the obstruction is strictly worse than a missing composition.** The tree already
 machine-checks that the dense hypotheses do not supply the integer ones:
 `semanticPriorU_not_implies_semanticPriorUZ` (`PriorDefsDense.lean:372`) exhibits `denseRayFlow`
@@ -220,12 +227,25 @@ declaration, which is the named obligation and nothing else. -/
 `KampFaithfulExpressiveCompleteness`, the faithful sibling of
 `Kamp.kampPriorExpressiveCompleteness`.
 
-**Why it is not discharged here**: the carrier measurement recorded in this module's header. The
-existing chain's carrier enters at `Kamp.kampArm_zeta` in `Kamp/ZetaUniformExtract.lean` (821
-lines) and is `HasAttainedINF` / `HasAttainedSUP` throughout — the attained originals — with zero
-occurrences of the faithful carrier. Discharging this obligation is therefore a re-base of that
-wire and of everything it consumes, on the model of the `Kamp/EANegationFixFaithful/` re-base,
-not a composition of already-landed parts. It is out of scope for a phase chartered to compose.
+**Why it is not discharged here — and how much of the gap is now closed.** The obligation is a
+re-base of the whole `kampPriorExpressiveCompleteness` spine onto the faithful carrier, not a
+composition of already-landed parts. That re-base is under way and its **bottom rung is landed**:
+
+- **Closed.** The ζ wire, which is where the completeness carrier enters the chain, now exists at
+  the faithful carrier: `Kamp.kampArm_zeta_faithful`
+  (`Kamp/ZetaUniformExtractFaithful.lean`), sorry-free, together with the canonical-expansion
+  transfers `Kamp.canonExpand_hasFaithfulDedekindINF` / `SUP` and the faithful uniform translate
+  `Kamp.translate_uniformFin_faithful`. `Kamp.kampArm_zeta_faithful_covers_attained`
+  machine-checks that the faithful wire re-supplies every consumer of the attained one, so the
+  re-base is a weakening and not a sideways move.
+- **Open.** The spine *above* the wire is still pinned at `SemanticPriorUZ` / `SemanticPriorSZ`.
+  Measured inventory: **110 hypothesis-binder sites across 22 live modules** —
+  `Kamp/KampPrior.lean` (26) and fifteen `Kamp/NfMultiAnchorBridge/` modules (roughly 50 between
+  them) being the bulk. Only four of those sites *consume* the carrier
+  (`Lemma53Faithful.lean:545`, `Lemma53FaithfulPast.lean:472`,
+  `NfMultiAnchorBridge/AggregateOffDiagK1.lean:1288` and `:1381`); the other hundred-odd are pure
+  threading. The cost is therefore breadth of restatement, not proof difficulty — but it is
+  breadth on the scale of the `Kamp/EANegationFixFaithful/` re-base, not of a single module.
 
 **Why the assumption is safe to make in this shape**: it is the *only* gap. Every other step of
 the route is landed and sorry-free — `prior_hasFaithfulDedekindINF_dense` and its dual supply the

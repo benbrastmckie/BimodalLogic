@@ -1867,7 +1867,7 @@ that the tree actually supports is landed and sorry-free: the composition, the d
 inheritance, the verbatim Reynolds grounding, and the full anti-vacuity block. The single
 remaining gap is isolated in one named obligation.
 
-### Phase 14.1: `KampFaithfulExpressiveCompleteness` — re-base the zeta wire [NOT STARTED]
+### Phase 14.1: `KampFaithfulExpressiveCompleteness` — re-base the zeta wire [PARTIAL]
 
 - **Goal**: Discharge `kampFaithfulExpressiveCompleteness_open`
   (`PriorExpressivenessDense.lean`), the sole open obligation of Phase 14 and the last gap
@@ -1892,9 +1892,91 @@ remaining gap is isolated in one named obligation.
   `uSExpressivelyCompleteOverDensePrior` axiom-clean at `[propext, Classical.choice, Quot.sound]`;
   census delta back to zero; canaries unchanged.
 - **Depends on**: 14.
+- **Verification Tier**: full.
 - **BLOCK D CHECKPOINT**: the tree contains expressive completeness of `{U,S}` at a carrier that
   dense Prior structures actually inhabit. A reusable result of independent value and a clean
   stopping point.
+
+**Outcome: the gate answered, the wire landed, the spine measured.**
+
+The gate did *not* come back "pure signature swap" a fourth time, and it did not come back
+"the swap fails" either. Measured across `ZetaUniformExtract.lean`'s fourteen `HasAttained*`
+occurrences: `h_INF`/`h_SUP` are **consumed at exactly one site** (`:162`,
+`VVecEA2.negFix_iff` inside `prop42_efSat_negation_general_uniformFin`) and **constructed at
+two** (`:800`, `:802`). The other eleven are pure threading. So the re-base of the wire itself
+was one genuine content change plus mechanical restatement.
+
+**Landed, sorry-free, full build green at 1921 jobs** —
+`Kamp/ZetaUniformExtractFaithful.lean` (595 lines, new; zero edits to `ZetaUniformExtract.lean`):
+
+- `canonExpand_hasFaithfulDedekindINF` / `canonExpand_hasFaithfulDedekindSUP` — the faithful
+  carrier transfers to the canonical expansion. **No source**; original work modelled on
+  `canonExpand_hasAttainedINF`, and the docstring says so.
+- `prop42_efSat_negation_general_uniformFin_faithful` — the one substantive change: witness
+  `VVecEA2.negFixFaithful`, correctness `VVecEA2.negFixFaithful_iff`.
+- `efSat_negation_pair_uniformFin_faithful`, `efSat_negation_general_uniformFin_faithful`,
+  `veeSat_negation_uniformFin_faithful`, `translate_uniformFin_faithful` — proof bodies verbatim.
+- `kampArm_zeta_faithful` — the ζ wire at `HasFaithfulDedekindINF`/`SUP`.
+- `kampArm_zeta_faithful_covers_attained` — machine-checks the re-base is a weakening, not a
+  sideways move: every consumer of the attained wire is re-suppliable from the faithful one.
+
+**Two findings worth carrying forward.**
+
+1. **At the faithful carrier the `SUP` half is not consumed at all.** `VVecEA2.negFix_iff` needs
+   `HasAttainedINF` *and* `HasAttainedSUP`; `VVecEA2.negFixFaithful_iff` needs
+   `HasFaithfulDedekindINF` alone. `HasFaithfulDedekindSUP` is threaded through every new
+   statement (kept for shape-parallelism with the attained originals and with the consuming
+   obligation) but bound to `_h_SUP` and never used. Deleting it would strengthen the results;
+   that decision was deliberately not taken here.
+2. **One site genuinely needs the stronger carrier, exactly as warned.**
+   `Lemma53Faithful.lean:545` (`prior_makes_faithful_disjunct2_unreachable`) uses
+   `HasAttainedINF.first_occ`'s attained conclusion — `¬P` throughout `(z₀,r₀)` with no `kplus`
+   escape hatch — to derive `¬kplusOpen`. The faithful `first_occ` carries that escape hatch, so
+   this lemma is **not re-basable and must not be swapped**. It is an exclusion/anti-vacuity
+   result about Prior structures, not a step on the correctness path, so it does not block the
+   re-base — it simply does not carry over. Recorded so a later dispatch does not try.
+
+**Why [PARTIAL], not [COMPLETED]**: the charter's second clause — "then a faithful sibling of
+`kampPriorExpressiveCompleteness` at that carrier" — is the spine *above* the wire, and it was
+measured at **110 hypothesis-binder sites across 22 live modules**: `Kamp/KampPrior.lean` (26)
+and fifteen `Kamp/NfMultiAnchorBridge/` modules (~50 between them) being the bulk. That is the
+scale of the `Kamp/EANegationFixFaithful/` re-base, not of one dispatch.
+`kampFaithfulExpressiveCompleteness_open` therefore remains the single strategic sorry, with its
+docstring updated to record what the wire closed and what the inventory above leaves open.
+
+### Phase 14.2: the `kampPriorExpressiveCompleteness` spine at the faithful carrier [NOT STARTED]
+
+- **Goal**: Discharge `kampFaithfulExpressiveCompleteness_open` by re-basing the spine above the
+  ζ wire onto `HasFaithfulDedekindINF`/`SUP`, consuming Phase 14.1's `kampArm_zeta_faithful`.
+  On discharge `uSExpressivelyCompleteOverDensePrior` becomes unconditional with no further
+  edits — that composition is already landed and sorry-free.
+- **Content, as measured by Phase 14.1's gate**: 110 hypothesis-binder sites across 22 live
+  modules. Only **four** consume the carrier rather than thread it —
+  `Lemma53Faithful.lean:545`, `Lemma53FaithfulPast.lean:472`,
+  `NfMultiAnchorBridge/AggregateOffDiagK1.lean:1288` and `:1381`. The first two are the
+  exclusion results identified above and do **not** carry over; the remaining real proof
+  obligation is `aggOdPopFold_iff` (and whatever it bottoms out on) at the faithful carrier.
+  Everything else is mechanical restatement.
+- **First task, and it is a gate**: determine whether `aggOdPopFold_iff` bottoms out at
+  `VVecEA2.negFix_iff` — in which case `VVecEA2.negFixFaithful_iff` already supplies it and the
+  whole phase is mechanical — or at some other attained-only consumer. **Verify rather than
+  assume, and record the answer.** If it bottoms out on genuine attainment, report `[BLOCKED]`
+  with the exact dependency rather than forcing a swap.
+- **Owns**: `Kamp/KampPrior.lean`'s faithful siblings and the `Kamp/NfMultiAnchorBridge/`
+  faithful siblings (new declarations only — D11: zero removals, zero renames, every attained
+  original left byte-identical). **`PriorExpressivenessDense.lean` is read, not edited, except
+  to replace `kampFaithfulExpressiveCompleteness_open`'s body.**
+- **Scope Hypothesis**: 110 binder sites / 22 modules / 4 consuming sites, measured by
+  `grep -cE '(_?h_UZ|hUZ) *: *SemanticPriorUZ'` over the live tree at Phase 14.1's end.
+  Re-measure before starting; if the count has moved, the spine changed underneath.
+- **Verification Tier**: full.
+- **Done when**: `kampFaithfulExpressiveCompleteness_open` is sorry-free, hence
+  `uSExpressivelyCompleteOverDensePrior` axiom-clean at `[propext, Classical.choice, Quot.sound]`;
+  census delta back to zero; canaries unchanged; every attained original byte-identical.
+- **Depends on**: 14.1.
+- **Note**: likely needs splitting across dispatches — a natural seam is
+  `NfMultiAnchorBridge/` first (it is below `KampPrior.lean` and self-contained), then
+  `KampPrior.lean`.
 
 ---
 
