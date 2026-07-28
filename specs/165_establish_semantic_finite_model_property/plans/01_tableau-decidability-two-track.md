@@ -286,7 +286,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
 - **Timing:** 3 dispatches, ~7 hours.
 - **Depends on:** none
 
-### Phase 2: Calculus Completion (R7, R2, R6, R5) [IN PROGRESS]
+### Phase 2: Calculus Completion (R7, R2, R6, R5) [PARTIAL]
 
 - **Goal:** The rule set is adequate and honestly reported: trichotomy branching exists, Dedekind
   rules exist, the `.timeout` conflation is split, and the open-branch certificate is strong
@@ -358,7 +358,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     Deviation: the probe pins `knownTimes`/`constraints`/`incomparable` alongside the verdict
     rather than the verdict alone, so 2.5's expected `knownTimes` change is visible as a
     distinct signal from 2.7's expected `total` flip.)*
-  - [ ] **2.5 (new) — branch-guarded non-destructive expansion** (`Tableau.lean`, with
+  - [x] **2.5 (new) — branch-guarded non-destructive expansion** (`Tableau.lean`, with
     `applied`-threading removal in `Saturation.lean` / `CancellableExpansion.lean`).
     Add `ruleMintsFreshLabel` and `witnessPresent` (8 arms: `boxNeg`, `diamondPos`,
     `allFutureNeg`, `allPastNeg`, `someFuturePos`, `somePastPos`, `untlPos`, `sncePos` —
@@ -374,8 +374,19 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     **Done when**: the full corpus is unmoved (all 24 measured rows plus the existing
     `#guard_msgs` tables); every open certificate reports `findUnexpanded … = none`;
     `lake build` and `lake build BimodalTest` green.
-    *(PARTIAL — engine and proof work landed and green; one corpus row regressed. See the
-    2.5 note and BLOCKER below.)*
+    *(done, across two dispatches. The first landed the guards, non-destructive `expandOnce`,
+    `expandOnceNoFresh` and the reproved `sat_*` family, and regressed row B in the two dense
+    classes. The second repaired that regression (two defects, bisected — see the resolution
+    note replacing the BLOCKER below) and landed `saturated_downward_closed`.
+    **Deviation, recorded and escalated in the handoff**: `expandOnce_length_lt` is NOT landed.
+    It needs a per-rule output-nonemptiness fact — the guards give `fs ≠ []` for the
+    non-fresh-label `.linear` case only, and the `.persistent` and fresh-label `.linear` cases
+    are rule-by-rule. The automated route is mapped: `unfold applyRule at h; repeat' split at h`
+    plus `simp only [apply_ite Prod.fst] at h` reduces the whole thing to about seven uniform
+    "`filterMap` of an `ite` is non-nil, given the guard failed" goals; a helper of the shape
+    `(∃ a ∈ l, p a = false) → (l.filterMap fun a => if p a then none else some (f a)) ≠ []`
+    discharges them, but the unifier did not take it as stated and the remaining work is
+    finding the form it accepts. This is Phase 4.3's consumer, not Phase 7's.)*
 
 **2.5 note — what landed, and the four deviations.**
 
@@ -427,35 +438,44 @@ a per-rule argument (`denseIndicatorClosure` returns `.linear []`, suppressed by
 that is a rule-by-rule fact, not a generic one) — a bounded unit of its own, and Phase 4.3's
 consumer.
 
-**BLOCKER** (Phase 2, task 2.5) — one corpus row regressed:
-- **What failed**: counterexample row B (`(F p ∧ F q) → (F(p ∧ F q) ∨ F(p ∧ q) ∨ F(q ∧ F p))`)
-  reads `CLOSED` at `.Base` and `.Discrete` but `STALLED` at `.Dense` and `.Dedekind`. It read
-  `CLOSED` in all four before 2.5. The regression is committed and recorded as a `[DEFECT]` row
-  in those two class tables, with its measurement in-file.
-- **What was tried, with measurements**: (a) restoring source destruction while keeping the
-  guards — row B then stalls in **all four** classes, so non-destructive expansion is what
-  recovers `.Base`/`.Discrete` and is not the cause; (b) widening `orderTrichotomy`'s
-  first-witnesses-only restriction from `<= 1` to `<= 2` (the plan's Rollback/Contingency
-  stepwise widening) — no change; (c) `expandOnceNoFresh` in `saturateBlocked` — fixed a real
-  defect but did not recover row B; (d) raising fuel to 20000, 40000 and 120000 — no change, so
-  it is not a budget artifact.
-- **Why stuck**: measured cause is **eager time blocking**, not expansion. At `.Dense`, fuel
-  10000, the halted branch carries ordering `[(4,3),(0,4),(3,2),(0,3),(0,2),(0,1)]` — density
-  has interpolated times 3 and 4 into `0 < 2` — and `findUnexpanded` still points at
-  `T(G ¬(p ∧ F q)) @ (0,0)`. The interpolated times carry formula types that are subsets of
-  their ancestors', so `findBlockedTime` halts the branch with propagation outstanding. This is
-  postmortem constraint 3's "blocking is too eager" (C4), made visible rather than caused by
-  2.5: with destruction the intermediate times carried fewer formulas and the subset test read
-  differently.
-- **What is needed**: a bounded sub-phase against the blocking predicate — `isSubsetBlocked` /
-  `findBlockedTime` (`SignedFormula.lean:844-846`) — deciding whether a time whose type is a
-  subset of an ancestor's should still block when the ancestor is itself not saturated. That is
-  1.3's territory, not 2.5's, and it must not be phrased as "strengthen blocking" (constraint 3).
-- **Prohibited**: no `sorry`, no vacuous placeholder was introduced; the live tree remains
-  sorry-free apart from the pre-existing `countermodel_discrete`.
-- **Consequence for sequencing**: 2.6 depends on 2.5 (report 04's 24/24 measurement has both
-  changes). Landing `serialityRule` on top of a known-regressed dense corpus would confound the
-  two signals, so 2.6/2.7/2.4 are not started.
+**RESOLVED** (Phase 2, task 2.5) — the row B dense regression, and the two defects behind it.
+
+Row B (`(F p ∧ F q) → (F(p ∧ F q) ∨ F(p ∧ q) ∨ F(q ∧ F p))`) now reads `CLOSED` at `.Base`,
+`.Discrete`, `.Dense` and `.Dedekind`. It is the **only** row either repair moves; every other
+row in all four class tables, plus `CertificateProbe` and `TimeOrderProbe`, is unmoved.
+
+The bisection that separated the two defects, in the order it was run:
+
+1. *Blocking against an unsaturated ancestor.* `findBlockedTime` decides subset blocking from
+   formula content alone, and `type(t) ⊆ type(t_anc)` is only evidence of repetition once
+   `t_anc` has finished expanding. Added `timeSaturated` / `isTemporallyBlockedSaturated` /
+   `findBlockedTimeSaturated` (`Tableau.lean`, where `isExpanded` is in scope). **Measured: this
+   alone did not move row B** — the halting branch's block was against interpolated time 4,
+   which *is* saturated, so the side condition was satisfied.
+2. *Blocking halting the branch rather than the time.* The halting state was
+   `blockedSat=(some 3)` with `unexpanded=(some @time 0)`: one blocked interpolant was being
+   treated as a verdict on the whole branch, abandoning it with propagation outstanding at the
+   root, which has no ancestors and is therefore never blocked. Blocking now skips a blocked time
+   as an expansion **source** (`blockedTimes`, `findUnexpandedUnblocked`, `expandOnceUnblocked`)
+   and the branch counts as saturated only when no *unblocked* formula has an applicable rule.
+   The branch-level early exit is gone from `expandBranchWithFuel`, its traced mirror and
+   `CancellableExpansion`. **Measured: corpus completely unmoved** — necessary, not sufficient.
+3. *`densityRule` diverging.* Deleting `densityRule` from `denseRules` made row B read `CLOSED`
+   in all four classes, isolating it as the remaining cause. Its gap selection took the *head* of
+   `futureOf l.time` and gave up if that one gap was filled; filling a gap adds a time, changes
+   the head, and exposes a fresh unfilled gap, so it interpolated without bound *from the root* —
+   which node-level blocking cannot stop, because the root is never blocked. Gap targets are now
+   restricted to unfilled **maximal** elements of the source's future; an interpolant is never
+   maximal, so the admissible-gap set shrinks as gaps are filled. **Measured at `.Dense`:
+   `STALLED` at 30000 and 50000, `CLOSED` at 70000 and 100000** (before the guard, 120000 was
+   still `STALLED`). Row B's per-row corpus fuel is raised 10000 → 100000; the run costs about a
+   second per class, because fuel is a step budget and the proportional allocator hands most
+   sub-branches a small share.
+
+Also resynced in passing: `expandOnceWithAppliedTracedImpl` was still *destroying* its source and
+picking via `findUnexpandedWithApplied`, so traced runs were reporting on a different engine from
+the one `buildTableau` runs.
+
   - [ ] **2.6 (new) — `serialityRule` with globally-last scheduling** (`Tableau.lean` +
     `Saturation.lean`). Add the `serialityRule` constructor with
     `isApplicable .serialityRule _ _ = true` (keyed on the *label*, not the formula shape) and the
@@ -466,11 +486,55 @@ consumer.
     only when `findUnexpanded` returns `none` retry with `serialityRule` enabled. Add an in-code
     note contrasting this against the Dedekind **prepend** (`Tableau.lean:1295-1301`) — both are
     scheduling lessons, in opposite directions. Estimated output: ~150-250 lines.
+    *(ATTEMPTED AND BACKED OUT — see the 2.6 blocker note below. The work is preserved verbatim
+    at `specs/165_establish_semantic_finite_model_property/2.6-serialityRule-wip.patch`.)*
     **Done when**: `S1`-`S5` and `K2`-`K6` are CLOSED in all four class tables at
     `conformanceFuel = 200`; every control row and counterexamples `A`/`B` hold; the `.Discrete`
     `K2`/`K3` residual (report 04 §Q3.5) is either closed or documented with its cause isolated.
     **Depends on 2.5** — the prototype that produced 24/24 has both changes; seriality on the
     destructive engine was not measured and must not be attempted separately.
+
+**BLOCKER** (Phase 2, task 2.6) — `serialityRule` is written and correct, and makes the engine
+too slow to build.
+
+- **What was built** (all of it, preserved in `2.6-serialityRule-wip.patch`): the
+  `serialityRule` constructor; `isApplicable .serialityRule _ _ = true` keyed on the label;
+  the `applyRule` arm emitting `T(F ⊤)` / `T(P ⊤)` filtered against the branch and
+  self-suppressing once both are present; `serialityRules` / `findApplicableSerialRule` /
+  `findUnexpandedSerial` kept **out** of `allRulesForFC`; the globally-last two-stage pick in
+  both `expandOnce` and `expandOnceUnblocked` (blocked times skipped in *both* stages); the
+  `ruleToString` case; and the in-code note contrasting the scheduling against the Dedekind
+  prepend. `lake build FormalSystem.Metalogic.Decidability.Tableau` is green with all of it.
+- **What failed**: `lake build FormalSystem.Metalogic.Decidability.Saturation` — that file's own
+  inline `#eval` smoke suite — exceeds **590 s** (it takes about 8 s without the rule), and
+  `lake build BimodalTest.TableauConformance` likewise goes from 8 s to over 590 s. No verdict
+  could be measured, because nothing finishes.
+- **What was tried**: `blockedTimes` was being computed twice per expansion step (once inside
+  `findUnexpandedUnblocked`, once by the seriality stage); split into
+  `findUnexpandedUnblockedWith` so one call is shared. Real fix, no measurable effect here.
+- **Why stuck — and this is the substantive finding**: report 04 §Q3.5 states plainly that with
+  seriality on, "**every** genuinely-open row terminates as `OPEN-blocked` rather than
+  `OPEN-sat`". The 24/24 measurement therefore rests on the *branch-level* blocking halt: the
+  serial chain `T(F⊤)@t ⟶ t' ⟶ t'' ⟶ …` was terminated by the whole branch being handed back the
+  moment any time blocked. Sub-phase 2.5 had to **remove** that halt — it is defect (2) in the
+  resolution note above, the direct cause of the row B regression. So 2.6's measurement basis and
+  2.5's repair are in tension, and that tension was not visible in the report, which measured a
+  prototype carrying the old halt. Node-level blocking does bound the chain (each new time is
+  blocked within a step or two and the rule then has no unblocked label to serve), so this is a
+  cost problem, not a termination problem — but it is a cost problem large enough to stop the
+  build.
+- **What is needed**: a bounded dispatch that profiles the seriality-on engine and decides
+  between (a) making blocked times cheap enough to compute per step — `blockedTimes` runs a
+  `timeSaturated` test per surviving ancestor pair, and seriality roughly doubles branch length,
+  so the inner loop is the obvious suspect and caching the blocked set across steps of one
+  branch is the obvious fix; (b) suppressing seriality at labels that cannot contribute (its
+  outputs are only ever consumed by `someFuturePos` / `somePastPos`, so a label whose successor
+  already exists needs neither); or (c) re-measuring the report's 24/24 against the repaired
+  blocking to find what the real fuel requirement now is. Applying the patch is step 0 of that
+  dispatch; nothing needs re-deriving.
+- **Prohibited**: no `sorry`, no vacuous placeholder, and no axiom was introduced. The tree was
+  returned to the last green commit rather than left un-buildable.
+
   - [ ] **2.7 (new) — per-branch time orderings + `timeLinearity`** (`Tableau.lean` +
     `Saturation.lean` + `CancellableExpansion.lean`). Additive
     `RuleResult.branchingOrdered (branches : List (List SignedFormula × TimeOrdering))` and
