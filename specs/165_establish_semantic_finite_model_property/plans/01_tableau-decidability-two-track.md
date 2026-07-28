@@ -952,12 +952,15 @@ on the 8 rule/class pairs of the two scheduled rules with no indication of why.
 (59.2 s, matching the 2.7 baseline) with zero `#guard_msgs` movement. Zero new sorries, axioms or
 vacuous definitions.
 
-### Phase 4: Termination (WP3: T1, T2, T3) [NOT STARTED]
+### Phase 4: Termination (WP3: T1, T2, T3) [PARTIAL]
 
 - **Goal:** `buildTableau` totality at a justified, uncapped fuel; the pigeonhole argument is
   about real blocking (possible only now that Phase 1.3 made blocking genuine).
 - **Tasks:**
-  - [ ] **4.1 T1 — `applyRule_subformula_closed`** (`Verified/Termination/SubformulaProperty.lean`,
+  - [ ] **4.1 T1 — `applyRule_subformula_closed`** *(deviation: altered — landed as one theorem
+    per rule, `applyRule_<rule>_closed`, and against an abstract `TableauClosed` predicate rather
+    than `closureWithNeg`; see the 2026-07-28 note below for both reasons and for the 10-of-36
+    completion state)* (`Verified/Termination/SubformulaProperty.lean`,
     new): the generalized signed subformula property over all **36** rule cases against the signed,
     negation-closed closure — `closureWithNeg` for the Discrete rules (constraint 7;
     `priorUZ` emits `U(φ, ¬φ)`); `untlPos` branch 2 re-emits `U(e,g)` itself so no
@@ -988,6 +991,59 @@ vacuous definitions.
 - **Timing:** 3 dispatches, ~9 hours.
 - **Depends on:** 2 (rule set final; blocking genuine since 1.3)
 - **Territory:** `Verified/Termination/` only.
+
+**PARTIAL — 4.1 dispatch 1 of n (2026-07-28).** `lake build` and `lake build BimodalTest` green,
+zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-neutral. Landed:
+
+- [x] **4.1a Closure design and infrastructure** — `RuleResult.emitted`, `TableauClosed`, the
+  eight `as*?` inversion lemmas in `iff` form, fourteen one-step component-extraction lemmas on
+  `TableauClosed`, `mem_filterMap_guarded`, `identifyTime_formula_mem`, and (in `Tableau.lean`)
+  `mem_boxDiamondPersistence`.
+- [x] **4.1b Rule cases, 10 of 36** — `andPos`, `andNeg`, `orPos`, `orNeg`, `impPos`, `impNeg`,
+  `negPos`, `negNeg`, `boxTemporal`, `denseIndicatorClosure`.
+- [ ] **4.1c Rule cases, remaining 26** — see the blocker and per-family targets below.
+- [ ] **4.2 T2 — pigeonhole** — not started.
+- [ ] **4.3 T3 — justified fuel** — not started.
+
+**Two settled-design corrections, both forced by source inspection, both recorded in the module
+docstring rather than assumed:**
+
+1. **`closureWithNeg` is also too small.** Constraint 7 says plain `subformulaClosure` fails
+   because `priorUZ` emits `U(φ, ¬φ)`. True, but `closureWithNeg φ` contains `¬φ` and still not
+   `U(φ, ¬φ)`, which is what the rule actually emits. Seven rules emit formulas outside
+   `closureWithNeg` (`boxTemporal`, `serialityRule`, `priorUZ`, `priorSZ`, `priorUGap`,
+   `priorSGap`, `sepRule`, plus `orderTrichotomy`). T1 is therefore stated against an abstract
+   predicate `TableauClosed C` whose fields are exactly that census; T2 supplies a concrete `C`
+   with a cardinality. `z1Rule`, `densityRule` and `timeLinearity`, suspected of needing fields,
+   provably do not — `G inner` *is* a subformula of `G(G(inner) → inner)` under the `untl`
+   encoding, and `timeLinearity` emits nothing.
+2. **`orderTrichotomy` is analytic after all, and that is what keeps the closure finite.** Its
+   restriction 3 fires only when the branch already carries the negation of one of the three
+   `temp_linearity` disjuncts, so the `trich` field is an "all three or none" condition on an
+   operand pair already present — not a quadratic closure over `C × C`, which would iterate
+   `F(F(x ∧ y) ∧ y')` without bound.
+
+**BLOCKER** (4.1c), measured, not inferred:
+
+- **What failed**: a single theorem covering several rules at once is killed by `earlyoom`.
+  Journal line: `earlyoom: sending SIGTERM to process ... "lean" ... VmRSS 19204 MiB`. Reproduced
+  on `andPos` alone with a 30-alternative `first` chain, and on a 14-rule combined theorem.
+- **What was tried**, with the state at each: (a) one theorem, `cases rule` over all 32
+  non-Dedekind rules, `repeat' split` + broad `simp_all` — heartbeat exhaustion at 4M then OOM;
+  (b) the same content behind a `local macro` applied per `case` — OOM at ~19 GiB on `boxNeg`
+  alone, then on `andPos` alone; (c) targeted per-rule pipeline with `simp_all only [...]`
+  restricted to the case's own lemmas and a `first` chain of at most seven alternatives —
+  **4 s per rule, no OOM**. That is the shape that landed.
+- **Why stuck**: `unfold applyRule` inlines a 900-line, 36-constructor `match` into the
+  hypothesis. Every live goal holds a copy. Cost is driven by the number of goals alive at once
+  times the breadth of the closing tactic, and a bare `simp`/`simp_all` in a `first` alternative
+  is retried on every one of them.
+- **What is needed**: continue one rule per declaration with a case-specific `simp_all only`
+  list and a short `first` chain. Two rules already have a *verified* residual goal and only need
+  their closer repaired, and the rest are grouped by the propagation shape they use. Precise
+  targets are in the handoff.
+- **Prohibited**: no `sorry`, no `def X := True`, no combined `applyRule_subformula_closed`
+  asserted over rules whose case is not proved.
 
 ### Phase 5: Bridge Infrastructure (BranchOrder, Embed, Carrier) [NOT STARTED]
 
