@@ -612,4 +612,49 @@ def ordB : TimeOrdering := { constraints := [(0, 1)] }
 
 end BlockingProbe
 
+/-! ## R5 certificate-strength probe
+
+The open-branch certificate `ExpandedTableau.hasOpen` carries applied-set-aware saturation,
+not full `findUnexpanded` saturation. `Saturation.lean`'s "Certificate Strength (R5)"
+section records why (the D4 orphan situation) and which of the two available repairs this
+development takes. These probes pin the measurement that decision rests on, so that a change
+which closes the gap — or reopens it — breaks this file.
+
+`◇p` is the witness the audit named: its certificate has orphaned applied-set entries, and
+`findUnexpanded` still reports work.
+-/
+
+namespace CertificateProbe
+
+open FormalSystem.Metalogic.Decidability
+
+private def diaP : Formula := Formula.diamond p
+
+/-- The pipeline's own certificate for `◇p`, reduced to the three numbers that matter:
+whether the applied-set-free check is also satisfied (it is not — that is D4), how many
+applied-set entries are orphaned off the branch (all of them), and whether every orphan is
+nonetheless present in decomposed form, which is the strengthened predicate the truth lemma
+is to consume. -/
+def certProbe (φ : Formula) (fc : FrameClass) (fuel : Nat := conformanceFuel) : String :=
+  match buildTableau φ fuel fc with
+  | some (.hasOpen b ord applied _) =>
+      let orphans := applied.toList.filter fun f => !b.contains f
+      s!"fullySaturated={(findUnexpanded b ord fc).isNone} \
+applied={applied.size} orphans={orphans.length} \
+appliedRedundant={AppliedRedundant b ord fc applied}"
+  | some (.allClosed _) => "CLOSED"
+  | none => "STALLED"
+
+/-- info: fullySaturated=false applied=3 orphans=3 appliedRedundant=true -/
+#guard_msgs in
+#eval IO.print (certProbe diaP FrameClass.Base)
+
+-- The contrast case: a branch whose expansion used no persistent rule has an empty applied
+-- set, so the two saturation checks agree and there is nothing for R5 to justify.
+/-- info: fullySaturated=true applied=0 orphans=0 appliedRedundant=true -/
+#guard_msgs in
+#eval IO.print (certProbe (im (G p) p) FrameClass.Base)
+
+end CertificateProbe
+
 end BimodalTest.TableauConformance

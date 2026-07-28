@@ -74,6 +74,74 @@ def isInvalid : ExpandedTableau → Bool
 end ExpandedTableau
 
 /-!
+## Certificate Strength (R5)
+
+`hasOpen` certifies `findUnexpandedWithApplied … = none`, not `findUnexpanded … = none`.
+The two are genuinely different, and the gap is the D4 orphan situation: the applied set can
+record a formula that is no longer on the branch, because a *consumable* rule deleted a
+formula a *persistent* rule had produced. The persistent rule is then suppressed, the branch
+is reported saturated, and `findUnexpanded` — which does not consult the applied set — still
+finds work.
+
+**The choice, recorded.** Of the two repairs available (certify the applied-set-free
+predicate, or keep the applied-set predicate and justify it), this development takes the
+second. The first is not available: the applied set is the only thing standing between
+`expandBranchWithFuel` and an unbounded persistent/consumable cycle, so requiring
+`findUnexpanded … = none` would make the pipeline unable to produce a certificate at all for
+any formula whose expansion uses a persistent rule.
+
+**Measured, on `◇p`** (`buildTableau (Formula.diamond p) 200 .Base`). The certificate has
+three applied-set entries, all three orphaned — present in the applied set, absent from the
+branch:
+
+| orphan | why it is absent | what stands in for it |
+|---|---|---|
+| `T(¬p) @ (0,0)` | `negPos` consumed it | `F(p) @ (0,0)` |
+| `T(¬F(¬p)) @ (0,0)` (`T(G p)`) | `negPos` consumed it | `F(U(¬p,⊤)) @ (0,0)` |
+| `T(¬P(¬p)) @ (0,0)` (`T(H p)`) | `negPos` consumed it | `F(S(¬p,⊤)) @ (0,0)` |
+
+and `findUnexpanded` returns `T(□¬p) @ (0,0)` — the box rules would re-fire, producing
+exactly those three orphans again.
+
+So on this witness the orphans are not lost information: every one of them is on the branch
+in *decomposed* form. `AppliedRedundant` below is that observation made checkable, and it is
+the hypothesis a truth lemma should take rather than full `findUnexpanded` saturation.
+
+**What is not done here.** `AppliedRedundant` is stated and demonstrated on the pipeline's
+own output; it is not yet *proved* to hold of every certificate `buildTableau` produces.
+That proof is an induction over `expandBranchWithFuel`, and it is the remaining half of R5.
+-/
+
+/--
+One applied-set entry is redundant on a branch when the branch either still carries it or
+carries what its rule would produce.
+
+The `.branching` arm asks for *some* branch's outputs, not all: a branching rule's
+conclusion is a disjunction, and the branch under consideration took one disjunct.
+-/
+def appliedEntryRedundant (b : Branch) (ord : TimeOrdering) (fc : FrameClass)
+    (f : SignedFormula) : Bool :=
+  b.contains f ||
+    (match findApplicableRule f b ord fc with
+     | some (_, .linear fs, _) => fs.all b.contains
+     | some (_, .persistent fs, _) => fs.all b.contains
+     | some (_, .branching bss, _) => bss.any fun fs => fs.all b.contains
+     | _ => false)
+
+/--
+The strengthened open-branch certificate (R5): every applied-set entry is redundant on the
+branch, so nothing the applied set suppressed has been silently lost.
+
+Together with the `saturated` field already carried by `ExpandedTableau.hasOpen`, this is
+the hypothesis the truth lemma consumes. See the section docstring above for the choice
+between this and full `findUnexpanded` saturation, and for the `◇p` measurement.
+-/
+def AppliedRedundant (b : Branch) (ord : TimeOrdering) (fc : FrameClass)
+    (applied : AppliedSet) : Bool :=
+  applied.toList.all (appliedEntryRedundant b ord fc)
+
+
+/-!
 ## Branch List Operations
 -/
 
