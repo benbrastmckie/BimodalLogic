@@ -53,86 +53,6 @@ open FormalSystem.ProofSystem
 open FormalSystem.Automation
 
 /--
-Cancellable `IO` mirror of `expandBranchWithFuel` (Saturation.lean:228).
-
-Checks `abortRef` (and the task cancellation flag) at each recursive entry;
-returns `none` on abort, which upstream maps to `.fuelExhausted` — never to
-`.valid`/`.invalid`. The body mirrors the pure function line-for-line, with
-the split `foldl` rendered as a `for` loop with a mutable `acc` exactly as in
-`expandBranchWithFuelTracedImpl` (Saturation.lean:368).
-
-**Mirror of** `expandBranchWithFuel`; keep the two in sync.
--/
-def expandBranchWithFuelCancellable (abortRef : IO.Ref Bool)
-    (b : Branch) (fuel : Nat)
-    (timeOrd : TimeOrdering := TimeOrdering.empty)
-    (fc : FrameClass := .Base)
-    (tracker : EventualityTracker := EventualityTracker.empty)
-    (applied : AppliedSet := {})
-    (maxBranches : Nat := 50000)
-    (branchesUsed : Nat := 0)
-    : IO (Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))) := do
-  -- Observe the abort signal at every recursive entry.
-  if (← abortRef.get) || (← IO.checkCanceled) then return none
-  -- Global branch counter limit (mirrors expandBranchWithFuel).
-  if branchesUsed >= maxBranches then return none
-  else
-  match fuel with
-  | 0 => return none  -- Out of fuel
-  | fuel + 1 =>
-      match findClosure b fc with
-      | some reason => return some (.inl ⟨b, reason⟩)
-      | none =>
-          let tracker := registerEventualities b tracker
-          let tracker := fulfillEventualities b tracker
-          -- Mirrors `expandBranchWithFuel`: blocking is applied per time inside the expansion
-          -- step, never as a branch-level early exit.
-          match expandOnceUnblockedWithApplied b timeOrd fc tracker applied with
-          | (.saturated, _, _) => return some (.inr (b, timeOrd, applied))
-          | (.extended newBranch, newOrd, newAppliedFormulas) =>
-              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-              expandBranchWithFuelCancellable abortRef newBranch fuel newOrd fc tracker applied'
-                maxBranches (branchesUsed + 1)
-          | (.split branches, newOrd, newAppliedFormulas) =>
-              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-              -- Proportional fuel allocation (mirrors expandBranchWithFuel).
-              let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
-              -- Increment branch counter by number of new branches.
-              let branchesUsed' := branchesUsed + branches.length
-              let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
-                some (.inl ⟨b, .botPos Label.initial⟩)
-              for pair in branches.zip fuelAllocs do
-                match acc with
-                | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
-                | _ =>
-                    match ← expandBranchWithFuelCancellable abortRef pair.1 (min pair.2 fuel)
-                      newOrd fc tracker applied' maxBranches branchesUsed' with
-                    | none => acc := none
-                    | some (.inl _) => pure ()  -- closed; continue
-                    | some (.inr openBr) => acc := some (.inr openBr)
-              return acc
-          | (.splitOrdered branches, _, newAppliedFormulas) =>
-              -- Mirror of the `.split` arm; each sub-branch runs under its own ordering
-              -- (`pair.1.2`) rather than under a shared post-step `newOrd`.
-              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-              let fuelAllocs := allocateFuelProportionally (fuel + 1) (branches.map Prod.fst)
-              let branchesUsed' := branchesUsed + branches.length
-              let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
-                some (.inl ⟨b, .botPos Label.initial⟩)
-              for pair in branches.zip fuelAllocs do
-                match acc with
-                | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
-                | _ =>
-                    match ← expandBranchWithFuelCancellable abortRef pair.1.1 (min pair.2 fuel)
-                      pair.1.2 fc tracker applied' maxBranches branchesUsed' with
-                    | none => acc := none
-                    | some (.inl _) => pure ()  -- closed; continue
-                    | some (.inr openBr) => acc := some (.inr openBr)
-              return acc
-termination_by fuel
-decreasing_by all_goals simp_wf
-
-/--
 Cancellable `IO` mirror of `saturateBlocked` (Saturation.lean:495).
 
 Continues expanding a blocked branch, rejecting steps that introduce new
@@ -210,6 +130,126 @@ def saturateBlockedCancellable (abortRef : IO.Ref Bool)
                 return acc
 termination_by fuel
 decreasing_by all_goals simp_wf
+
+/--
+Cancellable `IO` mirror of `resolveOpenArm`.
+
+Settles a sub-branch that came back open before the enclosing split loop decides whether to
+keep exploring its siblings: `some (.inl _)` = the arm closes under post-blocking saturation,
+`some (.inr _)` = the arm is open *and* saturated, `none` = undecided (or aborted). As in the
+pure function, an arm that cannot be settled is never counted as closed.
+
+**Mirror of** `resolveOpenArm`; keep the two in sync.
+-/
+def resolveOpenArmCancellable (abortRef : IO.Ref Bool)
+    (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
+    (fuel : Nat) (fc : FrameClass) :
+    IO (Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))) := do
+  match findUnexpanded ob (timeOrd := ord) (fc := fc) with
+  | none => return some (.inr (ob, ord, ap))  -- already fully saturated
+  | some _ =>
+      match ← saturateBlockedCancellable abortRef ob fuel ord fc with
+      | none => return none  -- undecided (or aborted)
+      | some (.inl closedBr) => return some (.inl closedBr)
+      | some (.inr (satBr, satOrd)) =>
+          match findClosure satBr fc with
+          | some reason => return some (.inl ⟨satBr, reason⟩)
+          | none =>
+              match findUnexpanded satBr (timeOrd := satOrd) (fc := fc) with
+              | none => return some (.inr (satBr, satOrd, ap))
+              | some _ => return none  -- still not saturated: undecided, never "closed"
+
+/--
+Cancellable `IO` mirror of `expandBranchWithFuel` (Saturation.lean:228).
+
+Checks `abortRef` (and the task cancellation flag) at each recursive entry;
+returns `none` on abort, which upstream maps to `.fuelExhausted` — never to
+`.valid`/`.invalid`. The body mirrors the pure function line-for-line, with
+the split `foldl` rendered as a `for` loop with a mutable `acc` exactly as in
+`expandBranchWithFuelTracedImpl` (Saturation.lean:368).
+
+**Mirror of** `expandBranchWithFuel`; keep the two in sync.
+-/
+def expandBranchWithFuelCancellable (abortRef : IO.Ref Bool)
+    (b : Branch) (fuel : Nat)
+    (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base)
+    (tracker : EventualityTracker := EventualityTracker.empty)
+    (applied : AppliedSet := {})
+    (maxBranches : Nat := 50000)
+    (branchesUsed : Nat := 0)
+    : IO (Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))) := do
+  -- Observe the abort signal at every recursive entry.
+  if (← abortRef.get) || (← IO.checkCanceled) then return none
+  -- Global branch counter limit (mirrors expandBranchWithFuel).
+  if branchesUsed >= maxBranches then return none
+  else
+  match fuel with
+  | 0 => return none  -- Out of fuel
+  | fuel + 1 =>
+      match findClosure b fc with
+      | some reason => return some (.inl ⟨b, reason⟩)
+      | none =>
+          let tracker := registerEventualities b tracker
+          let tracker := fulfillEventualities b tracker
+          -- Mirrors `expandBranchWithFuel`: blocking is applied per time inside the expansion
+          -- step, never as a branch-level early exit.
+          match expandOnceUnblockedWithApplied b timeOrd fc tracker applied with
+          | (.saturated, _, _) => return some (.inr (b, timeOrd, applied))
+          | (.extended newBranch, newOrd, newAppliedFormulas) =>
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              expandBranchWithFuelCancellable abortRef newBranch fuel newOrd fc tracker applied'
+                maxBranches (branchesUsed + 1)
+          | (.split branches, newOrd, newAppliedFormulas) =>
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              -- Proportional fuel allocation (mirrors expandBranchWithFuel).
+              let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
+              -- Increment branch counter by number of new branches.
+              let branchesUsed' := branchesUsed + branches.length
+              let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
+                some (.inl ⟨b, .botPos Label.initial⟩)
+              for pair in branches.zip fuelAllocs do
+                match acc with
+                | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
+                | _ =>
+                    match ← expandBranchWithFuelCancellable abortRef pair.1 (min pair.2 fuel)
+                      newOrd fc tracker applied' maxBranches branchesUsed' with
+                    | none => acc := none
+                    | some (.inl _) => pure ()  -- closed; continue
+                    | some (.inr (ob, oOrd, oAp)) =>
+                        -- Settle the arm here, while the siblings are still reachable; an arm
+                        -- reported open may still close under post-blocking saturation.
+                        match ← resolveOpenArmCancellable abortRef ob oOrd oAp fuel fc with
+                        | none => acc := none  -- undecided; never counted as closed
+                        | some (.inl _) => pure ()  -- closed after post-blocking; continue
+                        | some (.inr openBr) => acc := some (.inr openBr)
+              return acc
+          | (.splitOrdered branches, _, newAppliedFormulas) =>
+              -- Mirror of the `.split` arm; each sub-branch runs under its own ordering
+              -- (`pair.1.2`) rather than under a shared post-step `newOrd`.
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              let fuelAllocs := allocateFuelProportionally (fuel + 1) (branches.map Prod.fst)
+              let branchesUsed' := branchesUsed + branches.length
+              let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
+                some (.inl ⟨b, .botPos Label.initial⟩)
+              for pair in branches.zip fuelAllocs do
+                match acc with
+                | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
+                | _ =>
+                    match ← expandBranchWithFuelCancellable abortRef pair.1.1 (min pair.2 fuel)
+                      pair.1.2 fc tracker applied' maxBranches branchesUsed' with
+                    | none => acc := none
+                    | some (.inl _) => pure ()  -- closed; continue
+                    | some (.inr (ob, oOrd, oAp)) =>
+                        -- Same arm-settling discipline as the `.split` loop above.
+                        match ← resolveOpenArmCancellable abortRef ob oOrd oAp fuel fc with
+                        | none => acc := none  -- undecided; never counted as closed
+                        | some (.inl _) => pure ()  -- closed after post-blocking; continue
+                        | some (.inr openBr) => acc := some (.inr openBr)
+              return acc
+termination_by fuel
+decreasing_by all_goals simp_wf
+
 
 /--
 Cancellable `IO` mirror of `buildTableau` (Saturation.lean:555).

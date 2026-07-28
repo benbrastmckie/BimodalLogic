@@ -399,6 +399,175 @@ theorem allocateFuelProportionally_le (fuel : Nat) (branches : List Branch)
   obtain ⟨d, _, rfl⟩ := h
   exact Nat.min_le_right _ _
 
+/-!
+## Post-Blocking Saturation
+
+When `expandBranchWithFuel` returns a blocked open branch, the branch
+may still contain unexpanded formulas (propositional, modal, or
+persistent temporal formulas that don't create new time points).
+
+`saturateBlocked` continues expansion on such branches, rejecting any
+expansion step that would introduce new time ordering constraints.
+This ensures the branch reaches full saturation or closure without
+generating new time points that would bypass blocking.
+-/
+
+/--
+Continue expanding a blocked branch until saturated or closed,
+rejecting any expansion step that introduces new time constraints.
+Uses fuel to ensure termination.
+
+Each step either:
+- Closes the branch (new formulas create a contradiction)
+- Applies a non-time-generating rule (propositional, modal, persistent with no new times)
+- Reaches saturation (no more applicable non-time-generating rules)
+
+Since no new time points are created, the expansion terminates
+when all propositional/modal formulas are processed.
+
+Mirrored by `saturateBlockedCancellable` (CancellableExpansion.lean);
+keep the two in sync.
+-/
+def saturateBlocked (b : Branch) (fuel : Nat)
+    (timeOrd : TimeOrdering) (fc : FrameClass := .Base)
+    : Option (ClosedBranch ⊕ (Branch × TimeOrdering)) :=
+  match fuel with
+  | 0 => some (.inr (b, timeOrd))  -- Return as-is if fuel exhausted (still blocked/open)
+  | fuel + 1 =>
+      -- Check if now closed (expanding propositional formulas may create contradictions)
+      match findClosure b fc with
+      | some reason => some (.inl ⟨b, reason⟩)
+      | none =>
+          -- Try to expand, using only steps that introduce no new world or time.
+          -- `expandOnceNoFresh` *skips* label-introducing candidates rather than reporting
+          -- the first one and forcing this pass to abandon the branch; see its docstring.
+          -- The `constraints.length` guards below are therefore now unreachable, and are
+          -- retained only as a belt-and-braces check on that invariant.
+          match expandOnceNoFresh b timeOrd fc with
+          | (.saturated, _) => some (.inr (b, timeOrd))  -- No label-free work remains
+          | (.extended newBranch, newOrd) =>
+              if newOrd.constraints.length > timeOrd.constraints.length then
+                some (.inr (b, timeOrd))  -- Reject: would create new time point
+              else
+                saturateBlocked newBranch fuel timeOrd fc
+          | (.split branches, newOrd) =>
+              if newOrd.constraints.length > timeOrd.constraints.length then
+                some (.inr (b, timeOrd))  -- Reject: would create new time point
+              else
+              -- For splits, check if ALL sub-branches close or saturate
+              let tryBranch := fun acc newBranch =>
+                match acc with
+                | some (.inr openBr) => some (.inr openBr)  -- Already found open
+                | _ =>
+                    match saturateBlocked newBranch fuel timeOrd fc with
+                    | some (.inl _) => acc  -- Sub-branch closed, continue
+                    | some (.inr openBr) => some (.inr openBr)  -- Found open
+                    | none => none  -- Should not happen (saturateBlocked always returns some)
+              branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
+          | (.splitOrdered branches, newOrd) =>
+              if newOrd.constraints.length > timeOrd.constraints.length then
+                some (.inr (b, timeOrd))  -- Reject: would create new time point
+              else
+              -- Mirror of the `.split` arm; each sub-branch keeps its own ordering. In practice
+              -- this arm is unreachable from `expandOnceNoFresh`, whose pick rejects any rule
+              -- that lengthens the constraint list and every ordered split does exactly that;
+              -- it is written out rather than collapsed so the invariant stays checkable.
+              let tryBranch := fun acc (pair : Branch × TimeOrdering) =>
+                match acc with
+                | some (.inr openBr) => some (.inr openBr)  -- Already found open
+                | _ =>
+                    match saturateBlocked pair.1 fuel pair.2 fc with
+                    | some (.inl _) => acc  -- Sub-branch closed, continue
+                    | some (.inr openBr) => some (.inr openBr)  -- Found open
+                    | none => none
+              branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
+termination_by fuel
+
+-- Note: `saturateBlocked` correctness theorems (isSome, soundness) are
+-- deferred. The function is used in `buildTableau` for practical improvement
+-- of blocked-branch handling. Formal verification requires:
+-- 1. `saturateBlocked_isSome`: always returns `some` (follows from fuel=0 base case)
+-- 2. `saturateBlocked_sound`: preserves `findClosure = none` (requires precondition from caller)
+
+/-!
+## Resolving an Open Sub-Branch Inside a Split
+
+A sub-branch that comes back `.inr` from `expandBranchWithFuel` is open in the *unblocked*
+sense only: `expandOnceUnblockedWithApplied` found no applicable rule on an unblocked time,
+which is weaker than `findUnexpanded = none`. Such a branch may still close once the
+post-blocking pass (`saturateBlocked`) runs the label-free rules that blocking skipped.
+
+That weaker notion is what made the split fold unsound. The fold short-circuited on the first
+sub-branch reported `.inr` and abandoned the remaining arms; `buildTableau` then ran
+`saturateBlocked` on the returned branch, closed it, and reported `.allClosed` — counting the
+abandoned siblings as closed. A verdict of *valid* was then produced for an invalid formula.
+
+The repair is to settle each arm **where the siblings are still in scope**, rather than
+handing a not-yet-settled branch up to a caller that has forgotten them. `resolveOpenArm`
+performs exactly the resolution `buildTableau` used to perform, and reports it in a form the
+fold can act on:
+
+- `some (.inl _)` — this arm is genuinely closed; the fold continues with its siblings;
+- `some (.inr r)` — this arm is genuinely open **and saturated** (`findUnexpanded = none`),
+  so it is a real countermodel witness and short-circuiting on it is sound;
+- `none` — undecided: the arm is neither closed nor saturated (post-blocking ran out of
+  fuel, or left work outstanding). Reporting `none` propagates as fuel exhaustion, which is
+  the honest answer; it is never converted into a closure.
+
+The last case is the one that keeps the repair sound rather than merely different: an arm
+that cannot be settled must not be silently counted as closed.
+-/
+
+/--
+Settle a sub-branch that `expandBranchWithFuel` returned as open, before the enclosing split
+fold decides whether to keep exploring its siblings.
+
+Returns `some (.inl _)` if the arm actually closes under post-blocking saturation,
+`some (.inr _)` if it is open *and* fully saturated, and `none` if it cannot be settled.
+
+`resolveOpenArm_inr` records the invariant the soundness proof needs: whenever this reports
+an open branch, that branch has no closure reason.
+-/
+def resolveOpenArm (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
+    (fuel : Nat) (fc : FrameClass) :
+    Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
+  match findUnexpanded ob (timeOrd := ord) (fc := fc) with
+  | none => some (.inr (ob, ord, ap))  -- Already fully saturated: a genuine open branch
+  | some _ =>
+      -- Blocked but not saturated: run the same post-blocking pass `buildTableau` runs,
+      -- here, while the sibling arms are still reachable.
+      match saturateBlocked ob fuel ord fc with
+      | none => none  -- Undecided
+      | some (.inl closedBr) => some (.inl closedBr)  -- Arm closed after all
+      | some (.inr (satBr, satOrd)) =>
+          match findClosure satBr fc with
+          | some reason => some (.inl ⟨satBr, reason⟩)
+          | none =>
+              match findUnexpanded satBr (timeOrd := satOrd) (fc := fc) with
+              | none => some (.inr (satBr, satOrd, ap))
+              | some _ => none  -- Still not saturated: undecided, never "closed"
+
+/--
+`resolveOpenArm` never reports an open branch that has a closure reason.
+
+The two ways it can report open are covered separately: the already-saturated case returns the
+input branch unchanged, so the caller's invariant carries over (`h_ob`); the post-blocking case
+returns a branch it has just checked with `findClosure` itself.
+-/
+theorem resolveOpenArm_inr (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
+    (fuel : Nat) (fc : FrameClass) (ob' : Branch) (o' : TimeOrdering) (a' : AppliedSet)
+    (h_ob : findClosure ob fc = none)
+    (h : resolveOpenArm ob ord ap fuel fc = some (.inr (ob', o', a'))) :
+    findClosure ob' fc = none := by
+  unfold resolveOpenArm at h
+  repeat' split at h
+  all_goals
+    first
+      | (simp only [Option.some.injEq, Sum.inr.injEq, Prod.mk.injEq] at h
+         obtain ⟨rfl, rfl, rfl⟩ := h
+         first | exact h_ob | assumption)
+      | simp at h
+
 /--
 Expand a single branch until closed or saturated.
 Uses fuel to ensure termination (refinement of well-founded approach).
@@ -485,7 +654,14 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
                       newOrd fc tracker applied' maxBranches branchesUsed' with
                     | none => none  -- Out of fuel
                     | some (.inl _) => acc  -- This branch closed, continue
-                    | some (.inr openBr) => some (.inr openBr)  -- Found open
+                    | some (.inr (ob, oOrd, oAp)) =>
+                        -- An arm reported open is *not* yet a reason to stop: it may be open
+                        -- only in the unblocked sense and close under post-blocking. Settle it
+                        -- here, while the siblings are still reachable. See `resolveOpenArm`.
+                        match resolveOpenArm ob oOrd oAp fuel fc with
+                        | none => none  -- Undecided: never counted as closed
+                        | some (.inl _) => acc  -- Arm closed after post-blocking, continue
+                        | some (.inr openBr) => some (.inr openBr)  -- Genuinely open
               (branches.zip fuelAllocs).foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
           | (.splitOrdered branches, _, newAppliedFormulas) =>
               -- Identical to the `.split` arm above except for the one thing this constructor
@@ -505,7 +681,12 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
                       pair.1.2 fc tracker applied' maxBranches branchesUsed' with
                     | none => none  -- Out of fuel
                     | some (.inl _) => acc  -- This branch closed, continue
-                    | some (.inr openBr) => some (.inr openBr)  -- Found open
+                    | some (.inr (ob, oOrd, oAp)) =>
+                        -- Same arm-settling discipline as the `.split` fold above.
+                        match resolveOpenArm ob oOrd oAp fuel fc with
+                        | none => none  -- Undecided: never counted as closed
+                        | some (.inl _) => acc  -- Arm closed after post-blocking, continue
+                        | some (.inr openBr) => some (.inr openBr)  -- Genuinely open
               (branches.zip fuelAllocs).foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
   termination_by fuel
 decreasing_by all_goals simp_wf
@@ -722,95 +903,6 @@ def expandBranchesWithFuel (branches : List Branch) (fuel : Nat)
           | none => .foundOpen openBr ord appliedSet h
           | some _ => .pending (openBr :: rest)
 
-/-!
-## Post-Blocking Saturation
-
-When `expandBranchWithFuel` returns a blocked open branch, the branch
-may still contain unexpanded formulas (propositional, modal, or
-persistent temporal formulas that don't create new time points).
-
-`saturateBlocked` continues expansion on such branches, rejecting any
-expansion step that would introduce new time ordering constraints.
-This ensures the branch reaches full saturation or closure without
-generating new time points that would bypass blocking.
--/
-
-/--
-Continue expanding a blocked branch until saturated or closed,
-rejecting any expansion step that introduces new time constraints.
-Uses fuel to ensure termination.
-
-Each step either:
-- Closes the branch (new formulas create a contradiction)
-- Applies a non-time-generating rule (propositional, modal, persistent with no new times)
-- Reaches saturation (no more applicable non-time-generating rules)
-
-Since no new time points are created, the expansion terminates
-when all propositional/modal formulas are processed.
-
-Mirrored by `saturateBlockedCancellable` (CancellableExpansion.lean);
-keep the two in sync.
--/
-def saturateBlocked (b : Branch) (fuel : Nat)
-    (timeOrd : TimeOrdering) (fc : FrameClass := .Base)
-    : Option (ClosedBranch ⊕ (Branch × TimeOrdering)) :=
-  match fuel with
-  | 0 => some (.inr (b, timeOrd))  -- Return as-is if fuel exhausted (still blocked/open)
-  | fuel + 1 =>
-      -- Check if now closed (expanding propositional formulas may create contradictions)
-      match findClosure b fc with
-      | some reason => some (.inl ⟨b, reason⟩)
-      | none =>
-          -- Try to expand, using only steps that introduce no new world or time.
-          -- `expandOnceNoFresh` *skips* label-introducing candidates rather than reporting
-          -- the first one and forcing this pass to abandon the branch; see its docstring.
-          -- The `constraints.length` guards below are therefore now unreachable, and are
-          -- retained only as a belt-and-braces check on that invariant.
-          match expandOnceNoFresh b timeOrd fc with
-          | (.saturated, _) => some (.inr (b, timeOrd))  -- No label-free work remains
-          | (.extended newBranch, newOrd) =>
-              if newOrd.constraints.length > timeOrd.constraints.length then
-                some (.inr (b, timeOrd))  -- Reject: would create new time point
-              else
-                saturateBlocked newBranch fuel timeOrd fc
-          | (.split branches, newOrd) =>
-              if newOrd.constraints.length > timeOrd.constraints.length then
-                some (.inr (b, timeOrd))  -- Reject: would create new time point
-              else
-              -- For splits, check if ALL sub-branches close or saturate
-              let tryBranch := fun acc newBranch =>
-                match acc with
-                | some (.inr openBr) => some (.inr openBr)  -- Already found open
-                | _ =>
-                    match saturateBlocked newBranch fuel timeOrd fc with
-                    | some (.inl _) => acc  -- Sub-branch closed, continue
-                    | some (.inr openBr) => some (.inr openBr)  -- Found open
-                    | none => none  -- Should not happen (saturateBlocked always returns some)
-              branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
-          | (.splitOrdered branches, newOrd) =>
-              if newOrd.constraints.length > timeOrd.constraints.length then
-                some (.inr (b, timeOrd))  -- Reject: would create new time point
-              else
-              -- Mirror of the `.split` arm; each sub-branch keeps its own ordering. In practice
-              -- this arm is unreachable from `expandOnceNoFresh`, whose pick rejects any rule
-              -- that lengthens the constraint list and every ordered split does exactly that;
-              -- it is written out rather than collapsed so the invariant stays checkable.
-              let tryBranch := fun acc (pair : Branch × TimeOrdering) =>
-                match acc with
-                | some (.inr openBr) => some (.inr openBr)  -- Already found open
-                | _ =>
-                    match saturateBlocked pair.1 fuel pair.2 fc with
-                    | some (.inl _) => acc  -- Sub-branch closed, continue
-                    | some (.inr openBr) => some (.inr openBr)  -- Found open
-                    | none => none
-              branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
-termination_by fuel
-
--- Note: `saturateBlocked` correctness theorems (isSome, soundness) are
--- deferred. The function is used in `buildTableau` for practical improvement
--- of blocked-branch handling. Formal verification requires:
--- 1. `saturateBlocked_isSome`: always returns `some` (follows from fuel=0 base case)
--- 2. `saturateBlocked_sound`: preserves `findClosure = none` (requires precondition from caller)
 
 /-!
 ## Main Expansion Function
@@ -1363,35 +1455,51 @@ private theorem tryBranch_inr
             newOrd fc tracker applied' maxBranches branchesUsed' with
           | none => none
           | some (.inl _) => acc
-          | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap))) :
+          | some (.inr (ob0, oOrd, oAp)) =>
+              match resolveOpenArm ob0 oOrd oAp fuelBound fc with
+              | none => none
+              | some (.inl _) => acc
+              | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap))) :
     findClosure ob fc = none := by
+  -- The `acc = some (.inr _)` case is settled by `h_acc`; the other two run the same nested
+  -- case analysis, now one layer deeper because an expanded arm is passed through
+  -- `resolveOpenArm` before it may be reported open.
+  have key : ∀ (acc' : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))),
+      (∀ ob' ord' ap', acc' = some (.inr (ob', ord', ap')) → findClosure ob' fc = none) →
+      (match expandBranchWithFuel pair.1 (min pair.2 fuelBound)
+            newOrd fc tracker applied' maxBranches branchesUsed' with
+          | none => none
+          | some (.inl _) => acc'
+          | some (.inr (ob0, oOrd, oAp)) =>
+              match resolveOpenArm ob0 oOrd oAp fuelBound fc with
+              | none => none
+              | some (.inl _) => acc'
+              | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap)) →
+      findClosure ob fc = none := by
+    intro acc' h_acc' h'
+    split at h'
+    · exact absurd h' (by simp)
+    · exact h_acc' ob ord ap h'
+    · rename_i ob0 oOrd oAp h_exp
+      have h_ob0 : findClosure ob0 fc = none :=
+        ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
+          pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob0 oOrd oAp h_exp
+      split at h'
+      · exact absurd h' (by simp)
+      · exact h_acc' ob ord ap h'
+      · rename_i openBr h_res
+        simp only [Option.some.injEq, Sum.inr.injEq] at h'
+        subst h'
+        exact resolveOpenArm_inr ob0 oOrd oAp fuelBound fc _ _ _ h_ob0 h_res
   cases acc with
-  | none =>
-    simp only at h_result
-    split at h_result
-    · exact absurd h_result (by simp)
-    · exact absurd h_result (by simp)
-    · simp only [Option.some.injEq, Sum.inr.injEq] at h_result
-      obtain ⟨rfl, rfl, rfl⟩ := h_result
-      rename_i openBr h_exp
-      exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
-        pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
+  | none => exact key none (by simp) h_result
   | some val =>
     cases val with
     | inr p =>
       simp only [Option.some.injEq, Sum.inr.injEq] at h_result
       obtain ⟨rfl, rfl, rfl⟩ := h_result
       exact h_acc ob ord ap rfl
-    | inl cb =>
-      simp only at h_result
-      split at h_result
-      · exact absurd h_result (by simp)
-      · exact absurd h_result (by simp)
-      · simp only [Option.some.injEq, Sum.inr.injEq] at h_result
-        obtain ⟨rfl, rfl, rfl⟩ := h_result
-        rename_i openBr h_exp
-        exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
-          pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
+    | inl cb => exact key (some (.inl cb)) (by simp) h_result
 
 /--
 Helper: `List.foldl` with the tryBranch step preserves the findClosure invariant.
@@ -1419,7 +1527,11 @@ private theorem foldl_preserves_findClosure
             newOrd fc tracker applied' maxBranches branchesUsed' with
           | none => none
           | some (.inl _) => acc
-          | some (.inr openBr) => some (.inr openBr)) init = some (.inr (ob, ord, ap))) :
+          | some (.inr (ob0, oOrd, oAp)) =>
+              match resolveOpenArm ob0 oOrd oAp fuelBound fc with
+              | none => none
+              | some (.inl _) => acc
+              | some (.inr openBr) => some (.inr openBr)) init = some (.inr (ob, ord, ap))) :
     findClosure ob fc = none := by
   induction pairs generalizing init with
   | nil => exact h_init ob ord ap h_result
@@ -1459,35 +1571,48 @@ private theorem tryBranchOrdered_inr
             pair.1.2 fc tracker applied' maxBranches branchesUsed' with
           | none => none
           | some (.inl _) => acc
-          | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap))) :
+          | some (.inr (ob0, oOrd, oAp)) =>
+              match resolveOpenArm ob0 oOrd oAp fuelBound fc with
+              | none => none
+              | some (.inl _) => acc
+              | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap))) :
     findClosure ob fc = none := by
+  have key : ∀ (acc' : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))),
+      (∀ ob' ord' ap', acc' = some (.inr (ob', ord', ap')) → findClosure ob' fc = none) →
+      (match expandBranchWithFuel pair.1.1 (min pair.2 fuelBound)
+            pair.1.2 fc tracker applied' maxBranches branchesUsed' with
+          | none => none
+          | some (.inl _) => acc'
+          | some (.inr (ob0, oOrd, oAp)) =>
+              match resolveOpenArm ob0 oOrd oAp fuelBound fc with
+              | none => none
+              | some (.inl _) => acc'
+              | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap)) →
+      findClosure ob fc = none := by
+    intro acc' h_acc' h'
+    split at h'
+    · exact absurd h' (by simp)
+    · exact h_acc' ob ord ap h'
+    · rename_i ob0 oOrd oAp h_exp
+      have h_ob0 : findClosure ob0 fc = none :=
+        ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
+          pair.1.1 pair.1.2 fc tracker applied' maxBranches branchesUsed' ob0 oOrd oAp h_exp
+      split at h'
+      · exact absurd h' (by simp)
+      · exact h_acc' ob ord ap h'
+      · rename_i openBr h_res
+        simp only [Option.some.injEq, Sum.inr.injEq] at h'
+        subst h'
+        exact resolveOpenArm_inr ob0 oOrd oAp fuelBound fc _ _ _ h_ob0 h_res
   cases acc with
-  | none =>
-    simp only at h_result
-    split at h_result
-    · exact absurd h_result (by simp)
-    · exact absurd h_result (by simp)
-    · simp only [Option.some.injEq, Sum.inr.injEq] at h_result
-      obtain ⟨rfl, rfl, rfl⟩ := h_result
-      rename_i openBr h_exp
-      exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
-        pair.1.1 pair.1.2 fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
+  | none => exact key none (by simp) h_result
   | some val =>
     cases val with
     | inr p =>
       simp only [Option.some.injEq, Sum.inr.injEq] at h_result
       obtain ⟨rfl, rfl, rfl⟩ := h_result
       exact h_acc ob ord ap rfl
-    | inl cb =>
-      simp only at h_result
-      split at h_result
-      · exact absurd h_result (by simp)
-      · exact absurd h_result (by simp)
-      · simp only [Option.some.injEq, Sum.inr.injEq] at h_result
-        obtain ⟨rfl, rfl, rfl⟩ := h_result
-        rename_i openBr h_exp
-        exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
-          pair.1.1 pair.1.2 fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
+    | inl cb => exact key (some (.inl cb)) (by simp) h_result
 
 /-- Ordered-split analogue of `foldl_preserves_findClosure`. -/
 private theorem foldlOrdered_preserves_findClosure
@@ -1512,7 +1637,11 @@ private theorem foldlOrdered_preserves_findClosure
             pair.1.2 fc tracker applied' maxBranches branchesUsed' with
           | none => none
           | some (.inl _) => acc
-          | some (.inr openBr) => some (.inr openBr)) init = some (.inr (ob, ord, ap))) :
+          | some (.inr (ob0, oOrd, oAp)) =>
+              match resolveOpenArm ob0 oOrd oAp fuelBound fc with
+              | none => none
+              | some (.inl _) => acc
+              | some (.inr openBr) => some (.inr openBr)) init = some (.inr (ob, ord, ap))) :
     findClosure ob fc = none := by
   induction pairs generalizing init with
   | nil => exact h_init ob ord ap h_result
