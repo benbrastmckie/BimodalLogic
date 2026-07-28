@@ -106,7 +106,12 @@ theorem BracketFormula.negFixFaithful_iff {sig : MonadicSignature}
     {n : Nat} (bf : BracketFormula n) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     bf.negFixFaithful.holds M atomMap z0 z1 ↔ ¬ bf.holds M atomMap z0 z1 := by
   unfold BracketFormula.negFixFaithful
-  exact (negFixListFaithful_iff M atomMap h_INF bf.foldPairs.length bf.foldPairs
+  -- SCHEDULED FOR REMOVAL by the phase that re-bases this module: `negFixListFaithful_iff` now
+  -- binds `HasFaithfulDedekindINF` while the `h_INF` above is still `HasDedekindINF`.
+  -- `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`) bridges the gap. When
+  -- `:105`'s binder is swapped the build will delete this suffix for you. Argument position only.
+  exact (negFixListFaithful_iff M atomMap h_INF.toHasFaithfulDedekindINF
+    bf.foldPairs.length bf.foldPairs
     (bf.segmentTypes ⟨0, Nat.succ_pos n⟩) z0 z1 (Nat.le_refl _) h_lt).trans
     (not_congr (BracketFormula.holds_iff_bracketOf M atomMap n bf z0 z1).symm)
 
@@ -269,11 +274,20 @@ theorem VecEA2.negFixFaithful_of_bracket {sig : MonadicSignature}
   exact ⟨d, VecEA2.mem_negFixFaithful_disjuncts vea d hmem, hh⟩
 
 /-- **The limit gate survives the lift.** The disjunct the faithful recursion adds and the attained
-    one cannot have — Case 1, `K⁺(¬β₁)(z₀)`, PDF p.9, carried by `kplusLeftBlock`
-    (`Lemma53Faithful.lean:189`) — still forces `vea.negFixFaithful` at the top of the chain.
+    one cannot have — Case 1, `K⁺(¬β₁)(z₀)`, PDF p.9, carried by `kplusOpenLeftBlock`
+    (`Lemma53Faithful.lean:304`) — still forces `vea.negFixFaithful` at the top of the chain.
 
     Carrier-free: the hypothesis is `kplus` at `z₀` itself, not a carrier assumption that would
-    produce it. This is the Phase-8 counterpart of `negFixListFaithful_case1_is_indispensable`
+    produce it. Note it is the *tree's* `kplus`, one conjunct stronger than the `kplusOpen` that
+    Case 1's block now reads; that is sufficient (`kplusOpen_of_kplus`) so the statement stays
+    true and load-bearing, but the phase that re-bases this module should consider re-pointing
+    the hypothesis to `kplusOpen`, exactly as `negFixListFaithful_case1_is_indispensable` was
+    re-pointed — an indispensability artifact reads best when it is stated at the gate the
+    definition actually carries. Deliberately NOT done here: this declaration is outside the
+    territory of the phase that re-based `NegFixListFaithful.lean`, and changing a statement is
+    more than a cascade repair.
+
+    This is the Phase-8 counterpart of `negFixListFaithful_case1_is_indispensable`
     (`NegFixListFaithful.lean:542`): that one shows the limit disjunct cannot be absorbed by its
     neighbours *inside* the recursion, this one shows it is not quietly discarded *by the lift*.
     Together they exclude the two ways a three-disjunct recursion degrades into a two-disjunct one
@@ -292,7 +306,7 @@ theorem VecEA2.negFixFaithful_carries_limit_gate {sig : MonadicSignature}
   rw [hpairs]
   simp only [negFixListFaithful]
   refine (VVecEA2.disj_holds M atomMap _ _ z0 z1).mpr (Or.inl ?_)
-  exact (kplusLeftBlock_holds M atomMap _ z0 z1).mpr hk
+  exact (kplusOpenLeftBlock_holds M atomMap _ z0 z1).mpr (kplusOpen_of_kplus hk)
 
 /-! ## Availability shim (attained → faithful, never the reverse) -/
 
