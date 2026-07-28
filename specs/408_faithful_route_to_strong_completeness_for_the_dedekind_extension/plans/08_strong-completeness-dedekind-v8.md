@@ -1591,7 +1591,7 @@ cascade repair); the statement is still true and still load-bearing, but it now 
 gate at a hypothesis one conjunct stronger than the gate the definition carries. An in-file note
 records this.
 
-### Phase 13: Rabinovich Prop 4.2 re-based — `VecEANegFixFaithful` + `Prop42Faithful` [NOT STARTED]
+### Phase 13: Rabinovich Prop 4.2 re-based — `VecEANegFixFaithful` + `Prop42Faithful` [COMPLETED]
 
 - **Goal**: The top of the faithful chain re-based: `VVecEA2.negFixFaithful_iff` and the Prop 4.2
   per-disjunct lemmas, plus `Prop42Faithful.lean`'s contentfulness guard, all at the faithful
@@ -1602,34 +1602,121 @@ records this.
   `FormalSystem/Metalogic/WeakCanonical/Kamp/Prop42Faithful.lean` (283 lines; sites `:142`, `:167`).
   **`EANegationFix/VecEANegFix.lean` and `Kamp/Section5Correspondence.lean` are read, not edited.**
 - **Tasks**:
-  - [ ] Swap the six hypothesis binders and re-point the shim use at `VecEANegFixFaithful.lean:312`
+  - [x] Swap the six hypothesis binders and re-point the shim use at `VecEANegFixFaithful.lean:312`
         from `HasAttainedINF.toHasDedekindINF` to the composed
         `HasAttainedINF.toHasDedekindINF |> HasDedekindINF.toHasFaithfulDedekindINF` (or the direct
         composite, landed by name in Phase 10.1 if cleaner) — **so the attained/discrete pipeline
         keeps supplying the faithful carrier unchanged**. Record which composite is used.
-  - [ ] Land `prop42_contentful_of_faithful` — the contentfulness guard at the faithful carrier.
+        *(**Composite used: the direct `HasAttainedINF.toHasFaithfulDedekindINF`**,
+        `KPlusFaithful.lean:382`, landed by name in Phase 10.1 — cleaner, so taken. Used at both
+        shim sites: `VVecEA2.negFixFaithful_iff_of_attained` and
+        `prop42_contentful_of_attained_inf_only`.)*
+        *(deviation D11: **five of the six binders swapped in place; the sixth handled
+        differently, because swapping it in place is jointly unsatisfiable with two other items in
+        this same phase.** Site `Prop42Faithful.lean:167` is `prop42_contentful_of_dedekind`, whose
+        NAME asserts its carrier. Swapping its binder would (a) leave the name asserting something
+        false in a tree whose vocabulary separates `HasDedekindINF` from `HasFaithfulDedekindINF`
+        as two distinct structures with two distinct shims, and (b) leave the next item — "land
+        `prop42_contentful_of_faithful`" — with nothing to be except a duplicate alias. Action
+        taken: `prop42_contentful_of_faithful` landed at `HasFaithfulDedekindINF` as the honest
+        re-based headline, and `prop42_contentful_of_dedekind` retained at `HasDedekindINF`,
+        unweakened, as its one-line corollary via `HasDedekindINF.toHasFaithfulDedekindINF`. Every
+        pre-existing declaration is preserved (0 removals, 0 renames), every consumer keeps
+        working, and no name asserts a carrier it does not bind. Flagged for orchestrator review
+        rather than silently annotated.)*
+  - [x] Land `prop42_contentful_of_faithful` — the contentfulness guard at the faithful carrier.
         `Section5Correspondence.lean`'s existing `prop42_contentful_of_attained` exists precisely to
         stop this correspondence rotting; the faithful sibling must carry the same guard or the
         re-base is unprotected. **The guard must be non-vacuous**: state what it excludes (Rule 6)
         and exhibit the exclusion.
-  - [ ] Verify every pre-existing declaration is present with its conclusion unweakened.
-  - [ ] **CI-edge audit (chain closure).** Confirm `NfMultiAnchorBridge.lean`'s import edges
+        *(landed at `Prop42Faithful.lean`, axiom-clean. Rule 6 exclusion **stated** in its
+        docstring and **exhibited** by the companion
+        `prop42_faithful_covers_what_dedekind_excludes`, which produces `denseWindowFlow` — a
+        dense Prior structure satisfying `HasFaithfulDedekindINF`
+        (`hasFaithfulDedekindINF_of_dense_window`) and **refuting** `HasDedekindINF`
+        (`hasDedekindINF_fails_on_dense_window`) — together with `∀ v, Prop42Contentful` at that
+        structure. So Prop 4.2 is available there from the new carrier and unavailable from the
+        old: the weakening is strict, and the guard names `Prop42Contentful` itself, so a future
+        weakening of the negation chain breaks this declaration and not merely the carrier
+        lemmas.)*
+  - [x] Verify every pre-existing declaration is present with its conclusion unweakened.
+        *(mechanically diffed against the phase base `9dc3466f9`: `VecEANegFixFaithful.lean` and
+        `NfMultiAnchorBridge.lean` byte-identical inventories, 0/0/0; `Prop42Faithful.lean` 2
+        additions, 0 removals, 0 renames. No conclusion weakened anywhere. Four hypotheses
+        weakened by design (the binder swaps) and two indispensability artifacts re-pointed
+        `kplus → kplusOpen`, which weakens their hypotheses and therefore strengthens them.)*
+  - [x] **CI-edge audit (chain closure).** Confirm `NfMultiAnchorBridge.lean`'s import edges
         (`:7-18`, `:238`, `:252`, `:275`, `:297`, `:320`, `:345`) still reach every re-based module,
         and that `WeakCanonical.lean:20-21` still reaches `PriorDefsDense`/`DedekindINFDense`. Add an
         edge for `KPlusFaithful.lean` if Phase 10.1 did not. **Record the audit** — a faithful module
         that falls out of CI rots invisibly, which is the failure `DedekindINF.lean:98-103` names.
-  - [ ] Update `NfMultiAnchorBridge.lean`'s `NOTE` comment blocks where they describe the carrier as
+        *(**AUDIT RECORDED — PASSES, no edge needed.** Method: the transitive `import` closure of
+        the default target's root `FormalSystem.lean` was computed mechanically (306 modules; the
+        `lean_lib FormalSystem` target declares `roots := #[FormalSystem]` and no `globs`, so this
+        closure IS what `lake build` builds). All thirteen probed modules are inside it:
+        `NfMultiAnchorBridge`, `Prop42Faithful`, `EANegationFixFaithful/{VecEANegFixFaithful,
+        NegFixListFaithful, NegFixOneFaithful, BoundedFixFaithful, BoundedFixAnchoredFaithful}`,
+        `Lemma53Faithful`, `Lemma53FaithfulPast`, `KPlusFaithful`, `PriorDefsDense`,
+        `DedekindINFDense`, `Section5Correspondence`. The six deep aggregator edges named by the
+        plan (`:238`, `:252`, `:275`, `:297`, `:320`, `:345`) are real `import` lines — each
+        preceded by its long `--` NOTE block — not comments, and all still resolve. The
+        `KPlusFaithful` edge was already landed by Phase 10.1 at `WeakCanonical.lean:22`, so
+        nothing had to be added. `WeakCanonical.lean:20-21` still reaches `PriorDefsDense` and
+        `DedekindINFDense`.)*
+  - [x] Update `NfMultiAnchorBridge.lean`'s `NOTE` comment blocks where they describe the carrier as
         `HasDedekindINF`, so the aggregator's own prose stays true. **Comment bytes only.**
-  - [ ] Docstrings: `Rabinovich 2014, Prop 4.2, PDF p.6` (*"Proposition 4.2. (Closure under
+        *(twelve NOTE passages corrected across six edges. Verified comment-bytes-only: a `-U0`
+        diff filtered to non-`--` lines is empty, and the declaration inventory is byte-identical.
+        The largest correction is the `DedekindINF` edge's **DEFERRED note**, which asserted
+        "Lemma 5.1 / Prop 4.2 remain DEFERRED, not done" — false as of this phase. It now records
+        that the deferral is closed, that the chain landed one step BELOW `HasDedekindINF` at
+        `HasFaithfulDedekindINF`, and that exactly one step remains open (deriving the carrier
+        from order completeness alone).)*
+  - [x] Docstrings: `Rabinovich 2014, Prop 4.2, PDF p.6` (*"Proposition 4.2. (Closure under
         negation) The negation of ∃⃗∀-formulas with at most two free variables is equivalent over
         Dedekind complete chains to a disjunction of ∃⃗∀-formulas."*); `ADAPTED-FROM` naming the
         previous pin.
-  - [ ] `#print axioms`; regression canaries; scoped build green; full `lake build` green.
+        *(source read VERBATIM from the PDF, p.6, before transcription — the Prop 4.2 statement
+        and the Prop 4.3 **Negation:** case both quoted. The Prop 4.2 sentence is now quoted
+        verbatim in `prop42_contentful_of_faithful`'s docstring and in
+        `VVecEA2.negFixFaithful_iff`'s. `ADAPTED-FROM` blocks naming the previous pin
+        `HasDedekindINF` (`DedekindINF.lean:136`) added to `VecEANegFixFaithful.lean`'s module
+        docstring and to `prop42_contentful_of_faithful`.)*
+  - [x] `#print axioms`; regression canaries; scoped build green; full `lake build` green.
+        *(all twelve touched/added declarations axiom-clean at `[propext, Classical.choice,
+        Quot.sound]`. Both canaries unchanged at the same three axioms: `completeness_discrete`
+        and `countermodel_discrete_reynolds_v2`. Both scoped builds green on the FIRST attempt,
+        zero failed proof attempts, no proof-search tool invoked. Full `lake build` green, 1920
+        jobs — the same count as Phase 12.1. Sorry census unchanged at 163, none in this phase's
+        territory; vacuous-definition count 1 and axiom-grep count 2, both pre-existing, both
+        outside this territory and untouched.)*
 - **Estimated output**: ~200 lines changed/added.
 - **Done when**: both modules compile with all declarations preserved, sorry-free and axiom-clean at
   the faithful carrier; `prop42_contentful_of_faithful` is landed and non-vacuous; the CI-edge audit
   is recorded; canaries unchanged; `EANegationFix/VecEANegFix.lean` and
-  `Section5Correspondence.lean` byte-identical.
+  `Section5Correspondence.lean` byte-identical. **MET in full**, with the one method choice
+  recorded as D11 above. `EANegationFix/`, `Section5Correspondence.lean`, `KPlusFaithful.lean` and
+  `NegFixListFaithful.lean` all verified byte-identical against the phase base `9dc3466f9`.
+
+**Outcome: the surveyed "pure signature swap" verdict held exactly, and the cascade did not fire
+a third time.** Phase 12.1 predicted both of this phase's cascade sites in advance and both
+behaved as predicted: swapping `VecEANegFixFaithful.lean:105`'s binder deleted the
+`SCHEDULED FOR REMOVAL` coercion automatically, and the definition-edge repair at `:295` had
+already been applied. Beyond those, **no proof step in either module changed**. The entire
+code-bearing delta is six binder/shim tokens, two `kplus → kplusOpen` hypothesis re-points with
+their one retired coercion, and two new declarations. Both scoped builds were green on the first
+attempt with no proof-search tool invoked at any point in the dispatch.
+
+**Standing note for Phase 14 — one frozen asset is now stale prose, deliberately not edited.**
+`Section5Correspondence.lean`'s "faithful re-base table" (`:48-82`) still describes the mirror
+chain as "re-based onto `HasDedekindINF`", cites `VVecEA2.negFixFaithful_iff` at a line number
+that has moved, and names `prop42_contentful_of_dedekind` as the chain's terminus rather than
+`prop42_contentful_of_faithful`. Every row is still TRUE as a statement about a landed
+declaration — `prop42_contentful_of_dedekind` is retained and still discharges the target from
+`HasDedekindINF` — but the table now understates the chain by one carrier step. This phase's
+`Done when` requires that file byte-identical, so it was left untouched rather than silently
+edited. Whichever phase next owns `Section5Correspondence.lean` should refresh the table.
+
 - **Depends on**: 12.1.
 - **Timing**: 5 hours.
 - **Decomposition protocol**: as Phase 11 — split at the module boundary.
