@@ -1,0 +1,145 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "task_number": 408,
+  "session_id": "sess_1785243543_9dde88",
+  "agent_type": "lean-implementation-hard-agent",
+  "orchestrator_mode": true,
+  "effort_flag": "hard",
+  "lit_flag": true,
+  "phase_number": "12",
+  "phase_title": "Rabinovich Lemma 5.1 re-based — NegFixOneFaithful",
+  "phase_status": "COMPLETED",
+  "phases_completed": 6,
+  "phases_total": 25,
+
+  "summary": "Phase 12 complete. THE FIRST OF THE TWO GENUINELY HARD SITES HELD. negFixOneFaithful_cover's Case1/Case2/Case3a/b/c split survived the re-base onto HasFaithfulDedekindINF with no case introduced, merged or removed and with its branch structure textually unchanged: a carrier-free by_cases on occurrence wrapping a TWO-ARM rcases on the carrier, Case 3's three arms untouched. The chartered R11 fallback is NOT triggered. Zero failed proof attempts; scoped build green on the FIRST attempt; no proof-search tool invoked at any point. The plan's mandated first task -- transcribing Rabinovich's Lemma 5.1 case enumeration (PDF p.9) and the eq (5.3) use-site guard printed twice (PDF p.10) into the module docstring, stating which K+ makes the split exhaustive -- was landed as the dispatch's FIRST edit, before any tactic was touched, with both p.10 printings re-confirmed verbatim against the corpus. HasFaithfulDedekindINF.first_occ_tp added ADDITIVELY beside a retained, unweakened HasDedekindINF.first_occ_tp (the two are incomparable). negFixOneCase1 -> kplusOpenLeftBlock and infPinPoint -> kplusOpenPred. D3's coercion at :253 removed as chartered. Full lake build green (1919 jobs, 0 errors), sorry-free, axiom-clean, all three canaries unchanged, all frozen assets byte-identical.",
+
+  "hard_site_verdict": {
+    "site": "negFixOneFaithful_cover",
+    "shape": "two-arm held",
+    "detail": "Under HasFaithfulDedekindINF the cover's structure is UNCHANGED: `by_cases h_occ` (carrier-free, the paper's Case 2 against the rest) wrapping `rcases h_INF.first_occ_tp s0.neg ... with hk | <r0, ...>` -- exactly TWO arms, no third disjunct, no endpoint by_cases, no added hypothesis -- with Case 3's `by_cases hQ` / `by_cases hs1r` sub-split (arms 3a/3b/3c) textually untouched. The entire code-bearing delta inside the cover is four tokens: the binder type; `kplusLeftBlock_holds` -> `kplusOpenLeftBlock_holds` in the Case 1 arm; and `Or.inr h` -> `Or.inr (kplusOpen_of_kplus h)` in the pin construction, where the carrier's right disjunct still prints the tree's `kplus` (it is literally HasDedekindINF's) while eq (5.3)'s pin type now reads the source's K+. That last insertion is a WEAKENING, so nothing is assumed there that the carrier did not already supply. negFixOneFaithful_sound took the mirror-image change in its Case 1 arm: `obtain <-, hdense> := h1` collapses to applying h1 directly, kplusOpen having no first conjunct to discard -- the same class-b pattern Phase 11 measured at orderedPointsExist_combine_kplusOpen.",
+    "why_it_held_not_luck": "Rabinovich's enumeration is exhaustive BECAUSE his K+ is conjunct-free. He prints the governing implication twice on PDF p.10 -- as the guard on r0's existence and as Case 3's closed form -- and both say `not-K+(not-b1)(z0)` plus an occurrence yields the pin; contrapositively, an occurrence yields `K+(not-b1)(z0)` OR the pin, a DICHOTOMY. Under the tree's kplus the split is NOT exhaustive: where not-b1 holds at z0 and recurs arbitrarily soon, the source's K+ fires Case 1 while kplus fails at its first conjunct and the infimum is not strictly inside, forcing a third endpoint disjunct `not-b1(z0)` -- literally HasDenseDedekindINF's shape (DedekindINFDense.lean:222) -- for which the paper has no case. This is now transcribed in the module docstring and grounded on three landed declarations (kplusOpen_not_implied_by_truth_at, HasDenseDedekindINF's shape, hasFaithfulDedekindINF_survives_interval_witness), not asserted.",
+    "r11_fallback_triggered": false,
+    "scope_limit": "This settles the ONE-WITNESS hard site. It does NOT settle negFixListFaithful_iff (NegFixListFaithful.lean:333/:446 region), whose list-form induction is Phase 12.1's territory. Evidence transfers as STRONG ENCOURAGEMENT -- the same carrier, the same case names, and now a same-shaped site already landed -- but still NOT PROOF; 12.1 must transcribe rather than assume."
+  },
+
+  "transitive_cascade": {
+    "fired": true,
+    "sites": ["FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixListFaithful.lean:463 (pre-edit), now :468"],
+    "how_handled": "Deviation D4: `Or.inr hkr` -> `Or.inr (kplusOpen_of_kplus hkr)` at the argument position only, plus a five-line SCHEDULED FOR REMOVAL comment. Nothing else in that module changed -- not one binder, statement, docstring or other proof step; its declaration inventory is byte-identical. Its h_INF binder remains HasDedekindINF, so Phase 12.1 re-bases it exactly as planned.",
+    "warning_performance": "11.1's standing warning was CORRECT that the cascade recurs, and its prescribed check found the site. But the SHAPE it predicted (an argument-position .toHasFaithfulDedekindINF, as in D3) was not the shape that fired. What fired came from the DEFINITION move (infPinPoint -> kplusOpenPred), not the binder move; D3's four existing coercions at :368, :421, :437, :500 stayed green and untouched, because this phase did not re-base negBoundedLeftFixAnchoredFaithful_iff.",
+    "generalized_warning_for_12_1_and_13": "A re-base cascades along TWO INDEPENDENT EDGES -- moved binders and moved definitions -- and a probe or grep aimed at one will not reveal the other. Here the binder edge cost nothing downstream and the definition edge cost one site. Additionally: unlike D3's coercions, D4's will NOT be enforced away by the build, since the weakening stays type-correct under either carrier. It is marked in-file with SCHEDULED FOR REMOVAL and a checklist item was added to Phase 12.1."
+  },
+
+  "deviations": [
+    {
+      "id": "D4",
+      "kind": "chartered-scope expansion, out of declared territory, 6 lines",
+      "site": "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixListFaithful.lean:468 (Phase 12.1 territory)",
+      "what": "One token plus a five-line removal-scheduling comment. See transitive_cascade above.",
+      "why_forced": "infPinPoint now carries the source's conjunct-free K+, while the HasDedekindINF carrier that module still binds supplies the tree's kplus at the pin. The hpin construction needs the one-token weakening kplusOpen_of_kplus.",
+      "why_not_blocked": "Same reasoning as D3: no ambiguity to escalate, no settled design reopened, the fix is forced and mechanical and verified green."
+    },
+    {
+      "id": "D5",
+      "kind": "method choice within charter, recorded for visibility",
+      "what": "The plan's 'Re-point HasDedekindINF.first_occ_tp onto the faithful carrier' was executed ADDITIVELY (add HasFaithfulDedekindINF.first_occ_tp, retain the original unweakened) rather than by rename.",
+      "why": "The two are INCOMPARABLE -- the old assumes the stronger carrier and concludes the stronger kplus at z0; the new assumes the weaker and concludes the weaker kplusOpen -- so neither is derivable from the other and a rename would have deleted a statement, violating the phase's own 'every pre-existing declaration present' checklist item. This follows Phase 11's D1 precedent (both SUP wrappers kept, incomparable). A rename was also unnecessary: dot notation on the re-based h_INF resolves to the faithful wrapper automatically at the cover's call site."
+    },
+    {
+      "id": "D6",
+      "kind": "plan-item observation, recorded rather than absorbed",
+      "what": "The plan groups 'infPinPoint, allSeg, somePointBlock' as the eq (5.3) pieces to re-point at kplusOpenPred. Only infPinPoint contains any K+ occurrence; allSeg (= trivialTrue.conjEverywhere s) and somePointBlock (a bare BracketFormula.prepend block) contain none, so the item is vacuous for them.",
+      "why_recorded": "The v8 Faithful-Subtree Survey's three-piece grouping was one piece too wide. Silently doing nothing for two of three named targets would have hidden a small survey inaccuracy."
+    }
+  ],
+
+  "declaration_preservation": {
+    "inventory_diff": "Exactly ONE addition (HasFaithfulDedekindINF.first_occ_tp), zero removals, zero renames in NegFixOneFaithful.lean. NegFixListFaithful.lean's inventory is byte-identical.",
+    "hypotheses": "No hypothesis strengthened anywhere. Five binders weakened HasDedekindINF -> HasFaithfulDedekindINF; one argument position moved toHasDedekindINF -> toHasFaithfulDedekindINF.",
+    "conclusions_honest_statement": "Two DEFINITIONS moved to the source's operator as this phase's charter directs -- negFixOneCase1 (kplusLeftBlock -> kplusOpenLeftBlock) and infPinPoint (kplusPred -> kplusOpenPred) -- which makes negFixOneFaithful a formally weaker VVecEA2. Taken singly this STRENGTHENS _sound (weaker hypothesis) and WEAKENS _cover (weaker conclusion). But _iff is preserved AS AN IFF with its right-hand side `not (bracketOne s0 p s1).holds` textually unchanged, now proved from a strictly weaker carrier, so the deliverable -- a disjunctive-exists-forall formula equivalent to the bracket's negation -- is strictly stronger than before. Stated this way rather than glossed as 'no conclusion changed', which would have been false at the definition level.",
+    "gate_probe_left_at_the_stronger_shape": "MR_dedekind_shape_at_pR still states the HasDedekindINF shape (kplus in the LEFT disjunct). That IMPLIES the faithful carrier's obligation (kplusOpen_of_kplus), and the proof takes Or.inr so the left disjunct is not what is exhibited. Weakening it to match the new carrier would have discarded a theorem to gain nothing. Recorded in its docstring."
+  },
+
+  "sorry_inventory": [],
+
+  "blockers": [],
+
+  "files_touched": [
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixOneFaithful.lean",
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixListFaithful.lean",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/08_strong-completeness-dedekind-v8.md",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/10_phase-12-lemma51-one-witness-faithful-summary.md",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/.orchestrator-handoff.json",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/handoffs/phase-12-handoff-20260728.json",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/.return-meta.json"
+  ],
+
+  "verification": {
+    "scoped_build": "green, FIRST attempt (1123 jobs); zero failed proof attempts; no proof-search tool invoked at any point in the phase",
+    "scoped_build_consumer_chain": "green (1192 jobs) -- NegFixListFaithful, VecEANegFixFaithful, Prop42Faithful, NfMultiAnchorBridge",
+    "full_lake_build": "green, 1919 jobs, 0 errors; no scoped-aggregator fallback needed",
+    "build_passed": true,
+    "sorry_count_outside_boneyard": 1,
+    "sorry_baseline": "WeakCanonical/Transfer.lean:1242, UNCHANGED. All other census hits are under Boneyard/.",
+    "new_sorries": 0,
+    "vacuous_count": 0,
+    "vacuous_note": "The single tree-wide grep hit (Examples/TemporalStructures.lean:277) is pre-existing and outside this territory.",
+    "axiom_count_delta": 0,
+    "axiom_note": "The two `grep '^axiom '` hits are prose inside Boneyard/ comments, not declarations. Zero real axioms, unchanged.",
+    "axiom_check": "12 re-based/retained/probe declarations plus 3 canaries plus the pinned terminus. HasFaithfulDedekindINF.first_occ_tp and HasDedekindINF.first_occ_tp: [propext]. All others: [propext, Classical.choice, Quot.sound]. No sorryAx anywhere.",
+    "canaries": {
+      "completeness_dense": "[propext, Classical.choice, Quot.sound] -- unchanged",
+      "completeness_discrete": "[propext, Classical.choice, Quot.sound] -- unchanged",
+      "countermodel_discrete_reynolds_v2": "[propext, Classical.choice, Quot.sound] -- unchanged"
+    },
+    "pinned_terminus_unchanged": "consequence_completeness_dedekind_of_engine untouched; [propext, Classical.choice, Quot.sound]",
+    "byte_identical_confirmed": [
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFix/** (the attained originals -- read, not edited; NegFixOne.lean byte-identical)",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53Faithful.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53FaithfulPast.lean (D1 left exactly as landed, not cleaned up)",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/KPlusFaithful.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINF.lean",
+      "FormalSystem/Metalogic/StrongCompleteness.lean"
+    ],
+    "line_length_regressions": "none; >100-char line counts are 2 in each touched file, identical to the prior commit",
+    "line_counts": "NegFixOneFaithful.lean 726 -> 881; NegFixListFaithful.lean 587 -> 592",
+    "ci_chain_nfmultianchorbridge": "green (covered by both the scoped consumer build and the full build)",
+    "territory_respected": "No file under FormalSystem/Metalogic/Decidability/ or FormalSystem/Automation/ was edited or staged (concurrent task-165 work is present and untouched in the working tree). Staging was path-explicit, never `git add -A`.",
+    "literature_fidelity": "Both PDF p.10 guard printings re-read from corpus chunk_0018.md and confirmed verbatim before transcription; the p.9 enumeration confirmed against chunk_0017.md. Every in-file Rabinovich citation is by PDF page; the corrupt .md conversion is never cited as ground truth."
+  },
+
+  "known_stale_not_repaired": [
+    {
+      "site": "FormalSystem/Metalogic/WeakCanonical/Kamp/Section5Correspondence.lean:71",
+      "what": "Pins negFixOneFaithful_iff at NegFixOneFaithful.lean:486; this phase's docstring additions shifted that declaration, so the line pin is stale.",
+      "why_not_fixed": "Out of this phase's territory, and the row's CONTENT (the Lemma 5.1 to negFixOneFaithful_iff correspondence) is still correct. Left rather than edited out of scope or re-guessed. Flagged for whichever phase next owns that file."
+    },
+    {
+      "site": "FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean:255",
+      "what": "Inventory comment names HasDedekindINF.first_occ_tp. This remains ACCURATE -- that declaration is retained -- merely incomplete, since it does not yet name the added faithful wrapper.",
+      "why_not_fixed": "Out of territory and not incorrect. No edit made."
+    }
+  ],
+
+  "commits": [
+    {"sha": "184ff2eb5", "subject": "task 408 phase 12: Lemma 5.1 at one witness re-based onto the faithful carrier"}
+  ],
+
+  "next_dispatch_target": {
+    "phase": "12.1",
+    "name": "Rabinovich Lemma 5.1, list form -- NegFixListFaithful",
+    "immediate_next_action": "Swap the h_INF binder at NegFixListFaithful.lean:335 to HasFaithfulDedekindINF and re-prove negFixListFaithful_iff (:333/:446 region) at the faithful carrier, consuming Phase 12's re-based negFixOneFaithful_cover, preserving the case numbering and per-case citations.",
+    "notes": [
+      "REMOVE D3's four .toHasFaithfulDedekindINF suffixes at :368, :421, :437, :500 -- the build enforces these.",
+      "REMOVE D4's kplusOpen_of_kplus at :468 -- the build does NOT enforce this one, since the weakening stays type-correct under either carrier. Grep for the in-file `SCHEDULED FOR REMOVAL` comment.",
+      "This module has its OWN Case 1 block still at the tree's kplus: kplusLeftBlock s.neg (:279) with kplusLeftBlock_holds uses at :360 and :452, plus witness_absurd_of_kplusLeft (:236) which binds kplus directly. Decide per declaration whether to re-point or retain-and-derive, and record which, as Phase 11 did with orderedPointsExist_combine_kplus.",
+      "Phase 12's cover held with zero new branches. That is strong encouragement for the list form -- same carrier, same case names, and now a same-shaped site already landed -- but it is still NOT PROOF. Transcribe Rabinovich's induction rather than assuming it collapses.",
+      "Check BOTH cascade edges before declaring done: moved binders AND moved definitions. Phase 12 found that a check aimed at one edge does not reveal the other."
+    ]
+  },
+
+  "continuation_path": null,
+  "continuation_context": null
+}

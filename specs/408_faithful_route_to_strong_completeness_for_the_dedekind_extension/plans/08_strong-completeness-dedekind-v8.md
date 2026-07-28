@@ -1337,7 +1337,28 @@ More important: **assume the same one-module-further cascade will recur.** Befor
 phase done, grep the tree for transitive consumers of every re-based `_iff`, not just the sites a
 shim-disabled probe reddens.
 
-### Phase 12: Rabinovich Lemma 5.1 re-based — `NegFixOneFaithful` [NOT STARTED]
+### Phase 12: Rabinovich Lemma 5.1 re-based — `NegFixOneFaithful` [COMPLETED]
+
+> **HARD-SITE VERDICT: two-arm shape held. R11's bet is settled at the first of the two hard
+> sites.** `negFixOneFaithful_cover`'s `Case1 / Case2 / Case3a/b/c` split survived the re-base
+> with **no case introduced, merged, or removed**, and with its branch structure textually
+> unchanged: a carrier-free `by_cases h_occ` (the paper's Case 2 against the rest) wrapping a
+> two-arm `rcases` on the carrier (Case 1 against Case 3), with Case 3's three arms unchanged.
+> The chartered R11 fallback — fall back to the trichotomy and add endpoint branches — is **NOT
+> triggered**. The whole code-bearing delta in the cover is four tokens: the binder type, two
+> `kplusLeftBlock_holds → kplusOpenLeftBlock_holds` renames, and one `kplusOpen_of_kplus`
+> insertion where the carrier's right disjunct (still `kplus`, being literally `HasDedekindINF`'s)
+> meets the re-spelled pin type. Corroborating effort datum, matching Phases 11 and 11.1: **zero
+> failed proof attempts, scoped build green on the FIRST attempt, and no proof-search tool
+> (`lean_multi_attempt`, `lean_state_search`, `lean_hammer_premise`) invoked at any point.**
+>
+> **Why it held, stated as the transcription rather than as luck.** Rabinovich's enumeration is
+> exhaustive *because* his `K⁺` is conjunct-free. He prints the implication twice on PDF p.10 —
+> as the guard on `r₀`'s existence and as Case 3's closed form — and both printings say
+> `¬K⁺(¬β₁)(z₀)` plus an occurrence yields the pin, i.e. contrapositively a **dichotomy**. A
+> carrier at the tree's `kplus` would need a third endpoint disjunct `¬β₁(z₀)` — literally
+> `HasDenseDedekindINF`'s shape — for which the paper has no case. That argument is now
+> transcribed and cited in the module docstring, not merely asserted here.
 
 > **The first of the two genuinely hard sites.** `negFixOneFaithful_cover`
 > (`NegFixOneFaithful.lean:422`) is by-cases-reached with no left-endpoint hypothesis in scope, and
@@ -1355,7 +1376,7 @@ shim-disabled probe reddens.
   (726 lines; hypothesis sites `:156`, `:247`, `:339`, `:403`, `:488`; destructure sites `:164`,
   `:422`). **`EANegationFix/NegFixOne.lean` is read, not edited.**
 - **Tasks**:
-  - [ ] **First task — transcribe the negation-chain discipline, from the source, before touching a
+  - [x] **First task — transcribe the negation-chain discipline, from the source, before touching a
         tactic.** Record in the module docstring, verbatim and cited, Rabinovich's Lemma 5.1 case
         enumeration (PDF p.9): *"Case 1: `¬α₀(z₀)` or `K⁺(¬β₁)(z₀)`. Case 2: `α₀(z₀)`, and `β₁`
         holds along `(z₀,z₁)`. Case 3: (1) `α₀(z₀) ∧ ¬K⁺(¬β₁)(z₀)`, and (2) there is `x ∈ (z₀,z₁)`
@@ -1364,25 +1385,89 @@ shim-disabled probe reddens.
         `r₀` exists …)"* and *"Case 3 is described by `α₀(z₀) ∧ ¬K⁺(¬β₁)(z₀) ∧ (∃z)^{<z₁}_{>z₀}
         INF_{¬β₁}(z₀,z,z₁)`"*. **State explicitly which `K⁺` makes the split exhaustive** — the
         source's conjunct-free one — and that the tree's `kplus` would not.
-  - [ ] Re-point `HasDedekindINF.first_occ_tp` (`:164`, unconditional wrapper) onto the faithful
+        *(Done, and done first: it is the first edit of the dispatch, landed before any tactic was
+        touched. Both p.10 guard printings were re-read from the corpus and confirmed verbatim
+        against `chunk_0018.md` before transcription; the p.9 enumeration was already present and
+        was confirmed against `chunk_0017.md`. New module-docstring section "The negation-chain
+        discipline: which `K⁺` makes the split exhaustive" carries both printings, the
+        contrapositive reading that makes the split a dichotomy, the `kplusOpen`-vs-`kplus`
+        difference with its source citations (Rabinovich Definition (3), PDF p.3; Reynolds'
+        abbreviation table, printed p.168), and the concrete failure of the `kplus` reading —
+        grounded on three landed declarations rather than asserted:
+        `kplusOpen_not_implied_by_truth_at`, `HasDenseDedekindINF`'s literal trichotomy shape, and
+        `hasFaithfulDedekindINF_survives_interval_witness`.)*
+  - [x] Re-point `HasDedekindINF.first_occ_tp` (`:164`, unconditional wrapper) onto the faithful
         carrier.
-  - [ ] Re-point the eq (5.3) pieces (`infPinPoint`, `allSeg`, `somePointBlock`) at
+        *(Done **additively**, following Phase 11's D1 precedent rather than by rename:
+        `HasFaithfulDedekindINF.first_occ_tp` is added and `HasDedekindINF.first_occ_tp` is
+        retained unweakened. The two are **incomparable** — the old assumes the stronger carrier
+        and concludes the stronger `kplus` at `z₀`; the new assumes the weaker and concludes the
+        weaker `kplusOpen` — so neither is derivable from the other and a rename would have
+        deleted a statement. A rename was also unnecessary: dot notation on the re-based `h_INF`
+        resolves to the faithful one automatically at the cover's call site. Recorded in
+        non-vacuity note 3.)*
+  - [x] Re-point the eq (5.3) pieces (`infPinPoint`, `allSeg`, `somePointBlock`) at
         `Formula.kPlus` / `kplusOpenPred` via Phase 10.1's bridge and Phase 11's primitives.
-  - [ ] Re-prove `negFixOneFaithful_cover` (`:422`) and `negFixOneFaithful_iff` at the faithful
+        *(Done for `infPinPoint` — `kplusPred β.neg → kplusOpenPred β.neg`, with
+        `infPinPoint_holds` re-stated at `kplusOpen`. **For `allSeg` and `somePointBlock` the item
+        is vacuous and this is recorded rather than absorbed**: neither definition contains any
+        `K⁺` occurrence at all (`allSeg s = trivialTrue.conjEverywhere s`; `somePointBlock` is a
+        bare `BracketFormula.prepend` block), so there was nothing to re-point. The v8 survey's
+        three-piece grouping was one piece too wide.)*
+  - [x] Re-prove `negFixOneFaithful_cover` (`:422`) and `negFixOneFaithful_iff` at the faithful
         carrier, preserving Rabinovich's case numbering in the proof structure and in the docstring
         so the transcription is checkable case by case. **Do not merge a case without a stated
         reason; do not close a case by hand-waving.**
-  - [ ] Swap the remaining hypothesis binders (`:156`, `:247`, `:339`, `:403`, `:488`).
-  - [ ] Verify every pre-existing declaration is present with its conclusion unweakened.
-  - [ ] Docstrings: `Rabinovich 2014, Lemma 5.1 and eq (5.3), PDF pp.9-10`, cited by **PDF page
+        *(Done. **No case was introduced, merged, or removed, and no branch was restructured.** The
+        cover's delta is: the binder type; `kplusLeftBlock_holds → kplusOpenLeftBlock_holds` in
+        Case 1's arm; and `Or.inr h → Or.inr (kplusOpen_of_kplus h)` in the pin construction, where
+        the carrier's right disjunct still prints the tree's `kplus` — it is literally
+        `HasDedekindINF`'s — while eq (5.3)'s pin type is now at the source's `K⁺`. That last
+        insertion is a **weakening**, so nothing is assumed there that the carrier did not already
+        supply; it carries an inline comment saying so. Every per-case comment and citation is
+        preserved. `negFixOneFaithful_sound`'s Case 1 arm took the mirror-image change
+        (`obtain ⟨-, hdense⟩ := h1` → `h1` applied directly, `kplusOpen` having no first conjunct
+        to discard) — the same class-b pattern Phase 11 measured at
+        `orderedPointsExist_combine_kplusOpen`.)*
+  - [x] Swap the remaining hypothesis binders (`:156`, `:247`, `:339`, `:403`, `:488`).
+        *(Done at all five as measured — `:156` becoming the new faithful wrapper's binder with the
+        original retained beside it. Deviation D3's `.toHasFaithfulDedekindINF` at `:253` is
+        **removed** as the charter required; the build enforced it, exactly as 11.1 predicted.
+        `negFixOneFaithful_iff_of_attained`'s `h_INF.toHasDedekindINF` became
+        `h_INF.toHasFaithfulDedekindINF` — one further argument position the site list did not
+        count.)*
+  - [x] Verify every pre-existing declaration is present with its conclusion unweakened.
+        *(Declaration-inventory diff vs the prior commit: **exactly one addition**
+        (`HasFaithfulDedekindINF.first_occ_tp`), zero removals, zero renames; `NegFixListFaithful`
+        inventory byte-identical. No hypothesis was strengthened anywhere. Two **definitions**
+        moved to the source's operator as this phase's charter directs — `negFixOneCase1` and
+        `infPinPoint` — which makes `negFixOneFaithful` a formally weaker `VVecEA2`; this
+        strengthens `_sound` (weaker hypothesis) and weakens `_cover` (weaker conclusion) taken
+        singly, while `_iff` is preserved **as an `iff`, with its right-hand side
+        `¬(bracketOne s0 p s1).holds` textually unchanged**, now proved from a strictly weaker
+        carrier. The deliverable — a `∨∃⃗∀` formula equivalent to `¬bracketOne` — is therefore
+        strictly stronger than before, and the phase's stated goal was precisely to move those two
+        definitions. Recorded here rather than glossed as "no conclusion changed".)*
+  - [x] Docstrings: `Rabinovich 2014, Lemma 5.1 and eq (5.3), PDF pp.9-10`, cited by **PDF page
         only** (the `.md` conversion is corrupt for displayed equations); `ADAPTED-FROM` naming the
         previous pin.
-  - [ ] `#print axioms`; regression canaries; scoped build green; full `lake build` green.
+        *(Done at module level and on `negFixOneTail_iff`, `negFixOneCase1`, `infPinPoint`,
+        `negFixOneFaithful_sound`, `negFixOneFaithful_cover`, `negFixOneFaithful_iff` and the new
+        wrapper. Every Rabinovich citation is by PDF page; the corpus `chunk_NNNN.md` files were
+        used to confirm wording and are not cited as ground truth. Three now-stale in-file claims
+        this phase invalidated were corrected: the carrier tables, non-vacuity notes 1-3 and 5, and
+        the gate probe's shape docstring.)*
+  - [x] `#print axioms`; regression canaries; scoped build green; full `lake build` green.
 - **Estimated output**: ~330 lines changed/added.
+- **Actual output**: 155 lines added to `NegFixOneFaithful.lean` (726 → 881), of which the large
+  majority is the mandated transcription and the ADAPTED-FROM/non-vacuity prose; the code-bearing
+  delta is 1 added theorem, 2 definition bodies, 5 binder types, and 6 tactic-line tokens. Plus 6
+  lines in `NegFixListFaithful.lean` (D4 below). Well under one agent run, as Phases 11 and 11.1
+  predicted for this class of work.
 - **Done when**: `NegFixOneFaithful.lean` compiles with every declaration preserved, sorry-free and
   axiom-clean at the faithful carrier; the negation-chain discipline is transcribed and cited in the
   docstring; the case numbering is preserved; canaries unchanged; `EANegationFix/NegFixOne.lean`
-  byte-identical.
+  byte-identical. **MET.**
 - **Depends on**: 11.1.
 - **Timing**: 7 hours.
 - **Decomposition protocol**: as Phase 11 — the `first_occ_tp` + eq (5.3) primitives and the
@@ -1391,7 +1476,40 @@ shim-disabled probe reddens.
 - **Fallback (R11)**: if the faithful dichotomy does not collapse the split here, fall back to the
   trichotomy and add the endpoint branches Rabinovich's enumeration has no slot for. **That is a
   genuinely new sub-argument, not a transcription**: record it as such, label it original glue under
-  honesty-charter Rule 4, and split under R2 rather than absorbing the cost.
+  honesty-charter Rule 4, and split under R2 rather than absorbing the cost. **NOT TRIGGERED** — the
+  faithful dichotomy did collapse the split, with zero new branches.
+
+#### Deviation D4 — the one-module-further cascade recurred, as 11.1 warned, 6 lines
+
+**What.** One call site outside this phase's declared territory was edited:
+`NegFixListFaithful.lean:463` pre-edit, now `:468` (Phase 12.1 territory). `Or.inr hkr` became
+`Or.inr (kplusOpen_of_kplus hkr)`, plus a five-line comment marking it scheduled for removal.
+**Nothing else in that module changed** — not one binder, statement, docstring or proof step, and
+its declaration inventory is byte-identical. Its `h_INF` binder remains `HasDedekindINF`, so
+Phase 12.1 re-bases it exactly as planned.
+
+**Why it was forced.** `infPinPoint` now carries the source's conjunct-free `K⁺`, while the
+`HasDedekindINF` carrier that module still binds supplies the tree's `kplus` at the pin. The
+`hpin` construction there therefore needs the one-token weakening `kplusOpen_of_kplus`.
+
+**How 11.1's standing warning performed.** It was correct that the cascade recurs, and its
+prescribed check found the site — but the *shape* it predicted (an argument-position
+`.toHasFaithfulDedekindINF` coercion, as in D3) was not the shape that fired. What fired came
+from the **definition** move, not the binder move: the `.toHasFaithfulDedekindINF` sites D3 left
+at `NegFixListFaithful.lean:368`, `:421`, `:437`, `:500` stayed green and untouched, because this
+phase did not re-base `negBoundedLeftFixAnchoredFaithful_iff`. Generalized warning for Phase 12.1
+and Phase 13: **a re-base cascades along two independent edges — moved binders and moved
+definitions — and a probe or grep aimed at one will not reveal the other.** Here the binder edge
+cost nothing downstream and the definition edge cost one site.
+
+**Why not `[BLOCKED]`.** Same reasoning as D3: no ambiguity to escalate, no settled design
+reopened, the fix is forced and mechanical and verified green.
+
+**Standing consequence for Phase 12.1.** When it swaps its own `h_INF` binder, it removes D3's
+four `.toHasFaithfulDedekindINF` suffixes (the build enforces this) and should collapse this
+`kplusOpen_of_kplus` too — though note the build will **not** enforce that one, since the
+weakening stays type-correct under any carrier. It is marked in-file with an explicit
+SCHEDULED FOR REMOVAL comment for exactly that reason.
 
 ### Phase 12.1: Rabinovich Lemma 5.1, list form — `NegFixListFaithful` [NOT STARTED]
 
@@ -1407,6 +1525,14 @@ shim-disabled probe reddens.
   - [ ] Swap the hypothesis binder at `:335` and re-prove `negFixListFaithful_iff` (`:446`) at the
         faithful carrier, consuming Phase 12's re-based `negFixOneFaithful_cover`.
   - [ ] Preserve the case numbering and the per-case citations, as in Phase 12.
+  - [ ] Re-point this module's own Case 1 block: `kplusLeftBlock s.neg` (`:279`) and its
+        `kplusLeftBlock_holds` uses (`:360`, `:452`) — the same move Phase 12 made at
+        `negFixOneCase1`. Note `witness_absurd_of_kplusLeft` (`:236`) and
+        `negFixList_gate_probe`-adjacent statements bind `kplus` directly; decide per declaration
+        whether to re-point or retain-and-derive, and record which, as Phase 11 did.
+  - [ ] **Remove D4's `kplusOpen_of_kplus` at `:468`.** Unlike D3's four coercions the build will
+        NOT enforce this one — the weakening stays type-correct under either carrier — so it is
+        marked with an in-file `SCHEDULED FOR REMOVAL` comment. Grep for that comment.
   - [ ] Verify every pre-existing declaration is present with its conclusion unweakened.
   - [ ] Docstring: `Rabinovich 2014, Lemma 5.1, PDF pp.9-10`; `ADAPTED-FROM` naming the previous pin.
   - [ ] `#print axioms`; regression canaries; scoped build green; full `lake build` green.
