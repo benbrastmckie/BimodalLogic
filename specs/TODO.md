@@ -1,5 +1,5 @@
 ---
-next_project_number: 410
+next_project_number: 413
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 410
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 95,125,127,128,165,179,193,231,257,298,361,390,408,409 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 169,170,177,178,219,282,296 | 193,231,298,361 | formula-refactor, dataset-enhancement, strong_completeness |
+| 2 | 169,170,177,178,219,282,296,410,411,412 | 165,193,231,298,361 | formula-refactor, dataset-enhancement, strong_completeness |
 | 3 | 362 | 169,170 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -20,9 +20,12 @@ next_project_number: 410
 ### Completeness
 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
-165 [RESEARCHED] — Establish verified decidability of TM bimodal logic for all four 
+165 [PLANNED] — Establish verified decidability of TM bimodal logic for all four 
+  └─ 410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
+  └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
-408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
+408 [PLANNING] — Identify the most faithful and mathematically correct route to ST
 
 ### Formula Refactor
 
@@ -64,7 +67,39 @@ next_project_number: 410
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
 
+### Uncategorized
+
 ## Tasks
+
+### 412. Prove refutation core and decidability of provability with completeness corollaries
+- **Effort**: 10-15 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 165
+
+**Description**: Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi; discharge the pre-existing sorry countermodel_discrete at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242; and supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense). Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.
+
+---
+
+### 411. Prove hard admissibility lemmas for until since trichotomy discrete and dedekind rules
+- **Effort**: 15-20 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 165
+
+**Description**: Track B part 2 for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.2-3.3 and 10). First run a /literature acquisition pass for Reynolds 1992 and Reynolds 2003 (the untlNeg co-decomposition and the Dedekind gap axioms; report 02 section 10 flags in-repo literature as thin). Then prove the hard admissibility block in Verified/Refutation/Rules/{UntilSince,Trichotomy,Discrete,Dense,Dedekind}.lean: untlPos (branch 1 via until_F, branch 2 via self_accum_until — follow the axiom literally), untlNeg (Reynolds co-decomposition via absorb_until + left_mono_until_G; the single largest lemma — budget it its own dispatch), sncePos/snceNeg duals, orderTrichotomy (one-liner if Phase 2.2 kept branches syntactically equal to temp_linearity disjuncts — verify, do not assume), z1Rule (two-premise instance of z1 + two modus ponens, relies on same-label internalization from the predecessor task), densityRule/denseIndicatorClosure via density/dense_indicator, and the Dedekind rules via prior_U_gap/prior_S_gap/sep. Acceptance: all admissibility lemmas sorry-free; lake build green.
+
+---
+
+### 410. Internalize tableau branches and prove routine rule admissibility
+- **Effort**: 12-18 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 165
+
+**Description**: Track B part 1 for the TM tableau decidability program (parent: task 165, plan plans/01_tableau-decidability-two-track.md, research reports/02_tableau-decidability-hard-research.md sections 3.1-3.4). Create FormalSystem/Metalogic/Decidability/Verified/Internalize.lean defining Branch.internalize (world labels via box/diamond nesting, time labels via U/S guards realizing the branch TimeOrdering; SETTLED constraints: internalization design over substitution — no cut or uniform-substitution admissibility exists in the tree — and z1Rule's two premises must stay at the same label). Then prove the routine admissibility lemmas in Verified/Refutation/Rules/{Propositional,Modal,Temporal}.lean (~21 lemmas: 8 propositional, 4 S5 modal, 1 boxTemporal, 8 temporal universal/existential), each stated as rule_admissible per report 02 section 3.1 with hypothesis ruleFrameClass r <= fc, reusing Combinators.lean, ModalS5.lean, TemporalDerived.lean, GeneralizedNecessitation.lean, and DeductionTheorem.lean via DerivationTree.lift. Acceptance: all lemmas sorry-free, lake build green, RuleSpec GATE lemmas still green.
+
+---
 
 ### 409. Reconcile latex metalogic docs with live tree
 - **Effort**: medium
@@ -86,7 +121,7 @@ COORDINATION: task 362 leg D owns stating the genuine strong-completeness result
 ---
 
 ### 408. Faithful route to strong completeness for the dedekind extension
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -427,7 +462,7 @@ ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the
 ---
 
 ### 165. Establish semantic finite model property
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -435,6 +470,7 @@ ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the
   - [165_establish_semantic_finite_model_property/reports/01_semantic-fmp-research.md]
   - [165_establish_semantic_finite_model_property/reports/02_tableau-decidability-hard-research.md]
   - [165_establish_semantic_finite_model_property/reports/03_cslib-tableau-survey.md]
+- **Plan**: [165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md]
 
 **Description**: Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.
 

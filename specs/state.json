@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 410,
+  "next_project_number": 413,
   "active_projects": [
     {
       "project_number": 409,
@@ -279,14 +279,14 @@
     {
       "project_number": 165,
       "project_name": "establish_semantic_finite_model_property",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.\n\nCURRENT STATE (sound-only). The tableau stack exists and builds: a 28-rule calculus in Tableau.lean (23 base rules in allRules, 2 in denseRules, 3 in discreteRules), fuel-based saturation with blocking plus AppliedSet and EventualityTracker (Saturation.lean), per-frame-class closure detection (Closure.lean), and the entry point `decide` (DecisionProcedure.lean:128). Valid answers do carry proof terms, but the stack is sound only, and three gaps block any decidability theorem: (a) closed-tableau proof extraction (`extractProof`, ProofExtraction.lean:258) is a best-effort runtime search over 5 strategies that can fail, returning `.timeout` even on a genuinely closed tableau; (b) there is NO termination theorem -- `soundFuel` (Saturation.lean:627) caps at `min bound 100000` with nothing proved about it, and the original `blocking_terminates` was found FALSE (see the status discussion at Saturation.lean:1028-1060); (c) countermodel extraction proves `branchTruthLemma` (CountermodelExtraction.lean:1044) only over a bespoke `branchTruth` semantics (CountermodelExtraction.lean:263 -- direct-successor Until/Since, box quantified over a finite world list) that is NOT connected to the repository's real `TruthAt`/`valid`.\n\nWORK PACKAGES, in recommended order.\n\nWP1 -- Adversarial calculus-adequacy probe (must come first; top risk). The branch's `TimeOrdering` is a partial order while real TM time is linear, and the calculus appears to lack an ordering-trichotomy/linearity branching rule for freshly introduced times. Probe whether an open saturated branch can fail to admit any linear model. Also probe Until-guard interpolation at times not present on the branch, and blocking-vs-truth-lemma compatibility (blocked branches will need an unwinding argument). This package comes first because a negative result forces rule additions, which would invalidate every downstream proof in WP2-WP4.\n\nWP2 -- Refutation meta-theorem (closed tableau to Derivable). Replace runtime proof extraction with a theorem of the form `allClosed tableau -> Derivable fc [] phi`, established via per-rule admissibility lemmas in the Hilbert system across all ~28 rules. The untlPos/untlNeg Reynolds decomposition and z1Rule are the hard cases. The existing runtime strategies in ProofExtraction.lean are retained only as fast paths, no longer as the correctness story.\n\nWP3 -- Termination theorem. Prove a generalized subformula property covering every rule in `applyRule` (the current `subformula_property` at Saturation.lean:1014 covers only the initial branch), then a pigeonhole argument on at most 2^(2n) distinct time types showing that blocking must fire, and finally an uncapped, justified fuel function with a theorem of the form `buildTableau phi (soundFuel' phi) fc = some _`.\n\nWP4 -- Semantic bridge (open saturated branch to not-valid). This is the mathematical core, comparable in weight to a canonical-model completeness proof. Embed the finite branch time order into an actual temporal type D (arbitrary, Q, Z, or R according to frame class), interpolate valuations so that the real Until/Since guard conditions hold at in-between times, construct genuine WorldHistories and a shift-closed Omega, and prove `not TruthAt` -- thereby replacing the bespoke `branchTruth` semantics with the real one.\n\nASSEMBLY AND PAYOFF. WP2 + WP3 + WP4 together yield `Decidable (Derivable fc [] phi)` and decidability of validity for each frame class. As a corollary they also yield completeness for all four classes, which discharges the repository's single live sorry -- `countermodel_discrete` at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242, which currently taints Base `completeness` -- and supplies the missing Dedekind engine required by `completeness_dedekind_of_engine` (StrongCompleteness.lean:308, via `consequence_completeness_dedekind_of_engine` at :274).\n\nDEDEKIND CAVEAT. `allRulesForFC` (Tableau.lean:1067) gates dense rules on `Dense <= fc` and discrete rules on `Discrete <= fc`; since the FrameClass order (Axioms.lean:456-463) makes `Dense <= Dedekind` true but `Discrete <= Dedekind` false, the Dedekind class receives only the Base + Dense rules. Adequacy for Dedekind must therefore be proved rather than assumed: finite branch models do embed into R, but this requires an actual theorem.\n\nHYGIENE SUBTASK. Delete or replace the two vacuous theorems `validity_decidable` and `validity_has_decision_procedure` (Decidability/Correctness.lean:78 and :91 -- both are mere `Classical.em`/`by_cases` tautologies), and the `and True`-padded `filtered_world_bound` and `fmp_size_bound` (Decidability/FMP/FMP.lean:183 and :237). Also correct the LaTeX and Typst documentation that currently cites the unproven 2^|cl(phi)| bound as an established result.",
       "created": "2026-05-18T18:06:02Z",
-      "last_updated": "2026-07-28T00:09:06Z",
+      "last_updated": "2026-07-28T00:22:04Z",
       "topic": "completeness",
       "file_scope": null,
-      "session_id": "sess_1785196144_a9bbd7",
+      "session_id": "sess_1785197572_8af668",
       "artifacts": [
         {
           "path": "specs/165_establish_semantic_finite_model_property/reports/01_semantic-fmp-research.md",
@@ -302,8 +302,21 @@
           "path": "specs/165_establish_semantic_finite_model_property/reports/03_cslib-tableau-survey.md",
           "type": "report",
           "summary": "Supplementary cslib survey: portable Foundations tableau kernel, RuleApplicationSpec two-tier pattern, four latent-defect anti-lessons, conformance harness method, reusability matrix for WP1-WP4."
+        },
+        {
+          "path": "specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md",
+          "type": "plan",
+          "summary": "Skeleton implementation plan: Track A to green milestone in 8 phases (20 sub-phase dispatch units, 6 waves), Track B deferred via follow-up tasks 410-412"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "skeleton": true,
+        "follow_up_tasks": [
+          410,
+          411,
+          412
+        ]
+      }
     },
     {
       "project_number": 161,
@@ -830,14 +843,14 @@
     {
       "project_number": 408,
       "project_name": "faithful_route_to_strong_completeness_for_the_dedekind_extension",
-      "status": "implementing",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "high",
       "description": "Identify the most faithful and mathematically correct route to STRONG completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics), with weak completeness obtained as a corollary rather than as the target.\n\nTARGET IS SETTLED, NOT AN OPEN QUESTION: strong completeness is the goal. Weak completeness is to fall out as a corollary. Do not produce a plan whose terminus is weak completeness.\n\nWHY THIS IS NOT MERELY \"EXECUTE THE 390 PLAN\": the route proposed in specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md is Reynolds' transfer argument, and Reynolds 1992 Theorem 7 delivers explicitly WEAK completeness (\"sound and weakly complete\", printed p.189). That report names this itself and states that if the target is strong completeness \"this route does not reach it and the verdict changes.\" The verdict has now changed. The central question of this task is therefore whether the Reynolds route extends to strong completeness, or whether a different construction is the faithful one.\n\nDESIGN CONSTRAINT FROM THE USER: avoid needless bridges. Prefer the construction that is faithful to the mathematics over one that accumulates intermediate scaffolding, adapter lemmas, or bespoke bridge predicates. If a proposed step exists only to connect two artifacts the tree happens to already have, that is evidence the route is wrong, not evidence a bridge is needed. This applies specifically to the phase-5 gap-freeness bridge (Gap-free <-> conditionally complete for the dense case), which was NOT authorized as standalone work and should only appear if the faithful route genuinely requires it.\n\nCURRENT STATE (verified 2026-07-27, do not re-derive from stale notes):\n- Soundness is COMPLETE. FrameClass.Dedekind exists (ProofSystem/Axioms.lean:453) with the Base < Dense < Dedekind chain; the three Reynolds axioms prior_U_gap/prior_S_gap/sep exist (:377,:387,:398) with minFrameClass at :524-526; ValidDedekind and ValidDedekindDense exist (Semantics/Validity.lean:231,:255); all three axioms and the sep temporal dual are proved valid; soundness_dedekind is assembled at Metalogic/Soundness.lean:1910. Soundness.lean is at ZERO sorries.\n- Completeness is NOT STARTED. `completeness_dedekind` does not exist anywhere in the tree. completeness_dense and completeness_discrete exist and are sorryAx-free (Metalogic/BXCanonical/Completeness.lean:255,:296).\n- The only live sorry outside Boneyard is Metalogic/WeakCanonical/Transfer.lean:1242, on the DISCRETE countermodel branch (a Base-MCS -> Discrete-MCS gap). It blocks general `completeness` and is not on the Dedekind route.\n\nTHREE KNOWN OBSTRUCTIONS the research must address explicitly:\n1. The input model does not exist. Reynolds' step 1 needs a Q-flowed model validating Prior-U/Prior-S/Sep. The tree's countermodel_dense_enriched (Metalogic/BXCanonical/Completeness.lean:133) produces a Q model for FrameClass.Dense (density + dense_indicator) -- a different axiom set.\n2. TRAP -- the Base-MCS problem applies verbatim. Completeness.lean:178-193 documents why general `completeness` carries sorryAx: a Base-MCS is not automatically Discrete-consistent. A Dedekind variant hits the structurally identical problem, since a Base-MCS need not validate Prior-U/Prior-S/Sep. Any countermodel must be built from an MCS of its own class. A proof that reuses the dense pipeline's MCS will look complete and be unsound at the seam.\n3. The transfer engine is Z-specialized. Metalogic/WeakCanonical/IntegerModel/ has the right primitives (good, VeryGood, ContempEquiv, k_equiv_of_iso, KEquiv, orderedSumPt) but its engine is subinterval_finite_of_succ_archimedean -- a FINITENESS argument with no dense analogue.\n\nDO NOT ASSUME THE BIMODAL GRAFT IS FREE. The recently-completed sep_valid work found the bimodal graft trivial for SOUNDNESS, because Sep's operators are all temporal evaluated at a fixed history, so the statement reduced to pure order theory. That result does NOT transfer to completeness, where the construction must PRODUCE histories rather than evaluate at one. Research task 390 flagged grafting a monadic-FO transfer argument onto TaskFrame/WorldHistory/Omega/ShiftClosed semantics as genuinely new work not present in any source read.\n\nCOORDINATE WITH the existing strong-completeness axis: tasks 361 (strong_completeness_architecture_and_weak_terminus_gap_analysis) and 362 (completeness_capstone_consequence_all_classes_strong_where_compact). If the faithful Dedekind route is a special case of, or is subsumed by, the architecture those tasks establish, say so plainly rather than proposing a parallel construction.\n\nLITERATURE: run with --lit. Primary sources already local: /home/benjamin/Projects/Literature/sources/reynolds_1992/ (all sections; sec04 is the separability section). GHR 1994 chapter 10 treats Dedekind completeness as a HYPOTHESIS rather than deriving it, per 390's Finding 3. Doets' theorem is reached via Reynolds section 8 (printed pp.184-188, lemmas 11-13). Read verbatim; do not reconstruct statements from memory.\n\nDONE WHEN: a research report that (a) gives an explicit, argued verdict on whether strong completeness for FrameClass.Dedekind is reachable and by which construction; (b) names the faithful route and justifies it against at least one rejected alternative; (c) states honestly if the answer is that it is not currently reachable, and what would have to change; (d) identifies which existing tree assets are genuinely reused versus which would be needless bridges; (e) does NOT propose a phase decomposition whose terminus is weak completeness.\n\nREFRAMING ADDENDUM (2026-07-27, supersedes the \"TARGET IS SETTLED\" paragraph above): project-wide, \"strong completeness\" is now reserved for consequence from possibly-infinite premise sets (Γ : Set Formula) with finitary set-derivability. The Dedekind-class consequence relation is NOT compact (Reynolds 1992 Theorem 7 is weak-only and the restriction is genuine), so genuine strong completeness is provably unreachable for this class. The task's proof obligations are unchanged in mathematical content but renamed: the class HEADLINE is weak completeness `completeness_dedekind`, together with the finite-context consequence form `consequence_completeness_dedekind` (formerly \"strong_completeness_dedekind\"), the two being inter-derivable via the deduction theorem. Plan v1 and FormalSystem/Metalogic/StrongCompleteness.lean have been reframed and the identifiers renamed accordingly (see the plan's Reframing Note and the module docstring's per-class programme). Do NOT reintroduce the \"strong\" name for any finite-context result, and do NOT read the earlier \"do not produce a plan whose terminus is weak completeness\" directive as forbidding the weak headline — that directive predates the terminology settlement and is superseded.",
       "created": "2026-07-27T20:47:13Z",
-      "last_updated": "2026-07-27",
-      "session_id": "sess_1785185422_12eddc",
+      "last_updated": "2026-07-28T00:12:55Z",
+      "session_id": "sess_1785194583_36a81a",
       "artifacts": [
         {
           "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/01_faithful-route-strong-completeness.md",
@@ -850,6 +863,51 @@
           "summary": "8-phase risk-first plan; terminus strong_completeness_dedekind, weak as Γ=[] corollary"
         }
       ]
+    },
+    {
+      "project_number": 410,
+      "project_name": "internalize_tableau_branches_and_prove_routine_rule_admissibility",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Track B part 1 for the TM tableau decidability program (parent: task 165, plan plans/01_tableau-decidability-two-track.md, research reports/02_tableau-decidability-hard-research.md sections 3.1-3.4). Create FormalSystem/Metalogic/Decidability/Verified/Internalize.lean defining Branch.internalize (world labels via box/diamond nesting, time labels via U/S guards realizing the branch TimeOrdering; SETTLED constraints: internalization design over substitution — no cut or uniform-substitution admissibility exists in the tree — and z1Rule's two premises must stay at the same label). Then prove the routine admissibility lemmas in Verified/Refutation/Rules/{Propositional,Modal,Temporal}.lean (~21 lemmas: 8 propositional, 4 S5 modal, 1 boxTemporal, 8 temporal universal/existential), each stated as rule_admissible per report 02 section 3.1 with hypothesis ruleFrameClass r <= fc, reusing Combinators.lean, ModalS5.lean, TemporalDerived.lean, GeneralizedNecessitation.lean, and DeductionTheorem.lean via DerivationTree.lift. Acceptance: all lemmas sorry-free, lake build green, RuleSpec GATE lemmas still green.",
+      "effort": "12-18 hours",
+      "parent_task": 165,
+      "dependencies": [
+        165
+      ],
+      "created": "2026-07-28T00:21:55Z",
+      "last_updated": "2026-07-28T00:21:55Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 411,
+      "project_name": "prove_hard_admissibility_lemmas_for_until_since_trichotomy_discrete_and_dedekind_rules",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Track B part 2 for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.2-3.3 and 10). First run a /literature acquisition pass for Reynolds 1992 and Reynolds 2003 (the untlNeg co-decomposition and the Dedekind gap axioms; report 02 section 10 flags in-repo literature as thin). Then prove the hard admissibility block in Verified/Refutation/Rules/{UntilSince,Trichotomy,Discrete,Dense,Dedekind}.lean: untlPos (branch 1 via until_F, branch 2 via self_accum_until — follow the axiom literally), untlNeg (Reynolds co-decomposition via absorb_until + left_mono_until_G; the single largest lemma — budget it its own dispatch), sncePos/snceNeg duals, orderTrichotomy (one-liner if Phase 2.2 kept branches syntactically equal to temp_linearity disjuncts — verify, do not assume), z1Rule (two-premise instance of z1 + two modus ponens, relies on same-label internalization from the predecessor task), densityRule/denseIndicatorClosure via density/dense_indicator, and the Dedekind rules via prior_U_gap/prior_S_gap/sep. Acceptance: all admissibility lemmas sorry-free; lake build green.",
+      "effort": "15-20 hours",
+      "parent_task": 165,
+      "dependencies": [
+        165
+      ],
+      "created": "2026-07-28T00:21:55Z",
+      "last_updated": "2026-07-28T00:21:55Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 412,
+      "project_name": "prove_refutation_core_and_decidability_of_provability_with_completeness_corollaries",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi; discharge the pre-existing sorry countermodel_discrete at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242; and supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense). Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.",
+      "effort": "10-15 hours",
+      "parent_task": 165,
+      "dependencies": [
+        165
+      ],
+      "created": "2026-07-28T00:21:55Z",
+      "last_updated": "2026-07-28T00:21:55Z",
+      "artifacts": []
     }
   ],
   "artifacts": [
