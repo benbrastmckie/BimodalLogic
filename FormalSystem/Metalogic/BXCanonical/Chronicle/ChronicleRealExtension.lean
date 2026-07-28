@@ -663,6 +663,32 @@ theorem toRealBundle_forward_until_unselected_dichotomy {fc : FrameClass}
     have hps'R : (p : ℝ) < (s' : ℝ) := by exact_mod_cast hps'
     exact ⟨s', by linarith, hs'lt, hφ⟩
 
+/--
+**Cofinal `φ`-points below a real make `F φ` eventually true below it.**
+
+The right disjunct of `toRealBundle_forward_until_unselected_dichotomy` says `φ` holds at
+rationals arbitrarily close below `T`. Backward Until coherence at `untl φ ⊤ = F φ` then puts
+`F φ` in `m q` for **every** rational `q < T`, so `F φ` is not merely cofinally true below `T` but
+eventually true there — `limitSetBelow m T`, the strongest of the three grades of "true below `T`".
+
+This is the step that converts the residual into an input for `BFMCS.LimitFutureWitness`, whose
+whole point is to move an `F` from the limit at a gap to a rational strictly above it. The
+conversion is available because `F φ`'s truth region below `T` is an *interval*, `(-∞, T)`, even
+when `φ`'s own is a merely accumulating set — the same interval-versus-accumulation distinction
+that governs which formula Prior-U may be applied to (Reynolds 1992, printed p.176).
+-/
+theorem limitSetBelow_someFuture_of_cofinal (m : Rat → Set Formula) (T : ℝ) (φ : Formula)
+    (hUb : ∀ (t : Rat) (α β : Formula),
+      (∃ s : Rat, t < s ∧ α ∈ m s ∧ ∀ p : Rat, t < p → p < s → β ∈ m p) →
+      Formula.untl α β ∈ m t)
+    (htop : ∀ q : Rat, Formula.top ∈ m q)
+    (hcof : ∀ z : ℝ, z < T → ∃ w : Rat, z < (w : ℝ) ∧ (w : ℝ) < T ∧ φ ∈ m w) :
+    Formula.someFuture φ ∈ limitSetBelow m T := by
+  refine ⟨T - 1, by linarith, ?_⟩
+  intro q _ hqT
+  obtain ⟨w, hqw, hwT, hφ⟩ := hcof (q : ℝ) hqT
+  exact hUb q φ Formula.top ⟨w, by exact_mod_cast hqw, hφ, fun p _ _ => htop p⟩
+
 end FormalSystem.Metalogic.Bundle
 
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle
@@ -720,5 +746,75 @@ theorem cantor_bfmcs_dense_real_restricted_buc (fc : FrameClass)
   BFMCS.toRealBundle_restricted_backward_until_since _ root
     (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense root)
     (cantor_bfmcs_dense_limit_guard_below fc hfc A h_mcs h_box_dense)
+
+/-! ## Forward case B, part two: how far Prior-U reaches -/
+
+/--
+**Forward `untl` at an unselected target: the eventuality is available, the guard is not.**
+
+This is the exact reach of the Prior-U technique on forward case B, and it is stated so that the
+residual is a theorem rather than a description. Either the obligation is discharged outright
+(left disjunct, via `toRealBundle_forward_until_unselected_dichotomy` and case A), or there is a
+rational `w` strictly **above** the shifted target with `φ ∈ fam.mcs w` — a witness with **no
+guard whatever** on the rationals between `t + δ` and `w` (right disjunct).
+
+*The route.* The dichotomy's right disjunct gives `φ`-points cofinal below `T := t + δ`;
+`limitSetBelow_someFuture_of_cofinal` upgrades them to `F φ ∈ limitSetBelow fam.mcs T`; and
+`limitFutureWitness_of_priorU` — Prior-U applied at `F φ`, exactly as in
+`ChronicleLimitGapWitness.lean` — moves that across the gap. `Axiom.prior_U_gap` is consumed
+there, whence `hfc`.
+
+*Why the right disjunct cannot be improved to the full obligation, stated as the probe demands.*
+A `ψ`-guard on an interval abutting `T` from above can be produced by Prior-U only by applying it
+to `ψ` itself: the consequent of `Axiom.prior_U_gap` at `χ`, namely `U(¬χ ∨ K⁺(¬χ), χ)`, guards
+with `χ` and with nothing else, so obtaining a `ψ`-guard requires either `χ = ψ` or `χ ⊢ ψ`. Its
+antecedent is `U(⊤, χ)` — `χ` true *uninterruptedly* on an interval abutting `T` from below — and
+under `χ ⊢ ψ` that already forces `ψ` to hold uninterruptedly on that interval. **The antecedent
+is therefore available exactly when the conclusion's below-gap analogue already holds**, and
+nothing in forward case B supplies it: the hypothesis `untl φ ψ ∈ limitMCSBelow fam.mcs T` yields
+`ψ` only on the intervals `(p, s'_p)` produced by the descent, each closing strictly below `T`,
+so `ψ` is cofinally but not eventually true below `T`.
+
+This is the precise sense in which the forward direction is not the mirror of the backward one.
+`BFMCS.LimitGuardBelow` moves a guard from above a gap to below it, and its Prior-S antecedent
+`S(⊤, ψ)` is free *because that predicate's own hypothesis hands it the interval*. Here the guard
+is the **conclusion**, so there is no hypothesis to hand over, and `BFMCS.LimitGuardBelow` has no
+antecedent to consume. Reynolds states the same limitation directly (§6 opening, printed p.176):
+"We know that the Prior axioms ensure that there will not be any definable gaps in a model. To
+show that our model can be made into a model over the reals we actually need a stronger result."
+Burgess 1984 runs the completion route only in the `F`/`G` fragment (printed pp.109-110) and says
+nothing about `U`/`S` at a gap.
+
+Accordingly `cantor_bfmcs_dense_real_restricted_fuc` is **not** stated in this module, and no
+guard-supplying predicate is hypothesised in its place.
+-/
+theorem forward_until_unselected_eventuality_of_priorU {fc : FrameClass}
+    (hfc : FrameClass.Dedekind ≤ fc)
+    (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
+    (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families)
+    (hUf : ∀ (t : Rat) (α β : Formula), Formula.untl α β ∈ fam.mcs t →
+      ∃ s : Rat, t < s ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, t < p → p < s → β ∈ fam.mcs p)
+    (hUb : ∀ (t : Rat) (α β : Formula),
+      (∃ s : Rat, t < s ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, t < p → p < s → β ∈ fam.mcs p) →
+      Formula.untl α β ∈ fam.mcs t)
+    (δ t : ℝ) (φ ψ : Formula)
+    (hsub : Formula.untl φ ψ ∈ subformulaClosure root)
+    (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
+    (hU : Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    (∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
+        ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r) ∨
+      ∃ w : Rat, t + δ < (w : ℝ) ∧ φ ∈ fam.mcs w := by
+  rcases toRealBundle_forward_until_unselected_dichotomy B root h_rfuc fam hfam δ t φ ψ hsub hx hU
+    with hleft | hcof
+  · exact Or.inl hleft
+  · refine Or.inr ?_
+    have htop : ∀ q : Rat, Formula.top ∈ fam.mcs q := fun q =>
+      theorem_in_mcs (fam.is_mcs q) (FormalSystem.Theorems.Combinators.identity
+        (fc := fc) Formula.bot)
+    have hF : Formula.someFuture φ ∈ limitMCSBelow fam.mcs (t + δ) :=
+      limitSetBelow_subset_limitMCSBelow fam.mcs (t + δ)
+        (limitSetBelow_someFuture_of_cofinal fam.mcs (t + δ) φ hUb htop hcof)
+    exact limitFutureWitness_of_priorU hfc fam.mcs (fun q => fam.is_mcs q) hUf hUb (t + δ) hx φ hF
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle
