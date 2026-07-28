@@ -954,6 +954,16 @@ vacuous definitions.
 
 ### Phase 4: Termination (WP3: T1, T2, T3) [PARTIAL]
 
+> **Status as of 2026-07-28h.** T1 complete, T2 complete except 4.2d's *confinement* half, **T3
+> complete** — 4.3 now satisfies all five criteria of its restated "Done when" (`worldFuel'`
+> defined, `chain_le_worldFuel'` and `expandBranchWithFuel_isSome_at_worldFuel'` sorry-free,
+> `WorldWitness`/`NoSplit`/branch-budget all named in the statements, `soundFuel'` frozen, `#eval`
+> unchanged, both builds green, zero sorries). The heading stays `[PARTIAL]` for **one** reason:
+> **4.2d confinement** is still open (exhibit a finite emission-closed superset of the seed). Its
+> stabilisation half landed here, so what remains is a single bounded obligation, not a research
+> question. Nothing else in Phase 4 is outstanding: residual 3's fuel half is *refuted as stated*
+> and recorded as an engine-policy finding, and residual 4 is a named hypothesis by design.
+
 - **Goal:** `buildTableau` totality at a justified, uncapped fuel; the pigeonhole argument is
   about real blocking (possible only now that Phase 1.3 made blocking genuine).
 - **Tasks:**
@@ -980,7 +990,9 @@ vacuous definitions.
     applies to any further name checks). Bound `2^(2·|signedClosure φ|)` time-types; the
     trichotomy rule increases branching but not the time-type count, so the bound is R2-stable
     (02 §4.4). Estimated output: ~150-300 lines. Done when: theorem sorry-free; build green.
-  - [ ] **4.3 T3 — justified fuel** *(in progress — `soundFuel'` and the set-growth progress
+  - [x] **4.3 T3 — justified fuel** *(**COMPLETE 2026-07-28h** against the restated 5-criteria
+    "Done when" below — `worldFuel'` and all six 4.3e targets landed sorry-free, both builds green.
+    `soundFuel'` and the set-growth progress
     measure landed 2026-07-28c; the branch invariant, the signed-formula universe and the
     unbranched step bound `chain_le_stock`/`chain_le_soundFuel'` landed 2026-07-28d;
     `buildTableau_isSome` outstanding and **restated**, see the 4.3b blocker note below)*
@@ -994,8 +1006,20 @@ vacuous definitions.
     **not** `expandOnceUnblocked_length_lt`. Strict length increase does not bound the step count,
     because `nb = fs ++ b` may re-add formulas already present, so `List.length` has no upper
     bound; what bounds it is *set* growth against the finite signed closure × label set. The
-    length lemma is a corollary and sanity check only. Estimated output: ~200-400 lines. Done when:
-    `buildTableau_isSome` sorry-free; `#eval` runtime behavior unchanged; build green.
+    length lemma is a corollary and sanity check only. Estimated output: ~200-400 lines.
+    **Done when (RESTATED 2026-07-28g — supersedes the original "`buildTableau_isSome` sorry-free"
+    criterion, which the 4.3b blocker note refuted and the `soundFuel'` decision below re-anchors):**
+    1. `worldFuel'` is defined and `chain_le_worldFuel'` is sorry-free — the general fuel figure is
+       *named* and the chain bound lands on it definitionally, not by estimate;
+    2. `expandBranchWithFuel_isSome_at_worldFuel'` is sorry-free — totality at the named general
+       figure, with `maxBranches` **quantified** (never the engine default);
+    3. the three surviving hypotheses are *named in the theorem statement*, not hidden inside a
+       figure: `WorldWitness` (residual 4), `NoSplit` (residual 3), and the branch budget;
+    4. `soundFuel'` is unchanged in name and body, and `soundFuel_le_soundFuel'` /
+       `chain_le_soundFuel'` are untouched;
+    5. `#eval` runtime behavior unchanged (constraint 11); build green; zero sorries.
+    **Explicitly NOT required**: `buildTableau_isSome` in any unconditional form — see the
+    4.3b blocker note, which stands.
 - **Timing:** 3 dispatches, ~9 hours.
 - **Depends on:** 2 (rule set final; blocking genuine since 1.3)
 - **Territory:** `Verified/Termination/` only.
@@ -1025,10 +1049,22 @@ zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-n
   (probe-first, constraint 1) show the operator halting from the subformula closure — round 3 for
   `p` (|C| = 8), `F p` (11), `G p` (13), the real `priorUGap` trigger (20) and the real `sepRule`
   trigger (30); round 4 for `□p` (17).
-- [ ] **4.2d T2 termination theorem** — the one piece outstanding: `∃ n, closureStep (closureIter
-  n seed) ⊆ closureIter n seed` in general. It is carried as an explicit hypothesis, never a
-  `sorry`, so nothing downstream is weakened by its absence — a consumer that supplies a stock
-  gets `TableauClosed` from a `decide`.
+- [ ] **4.2d T2 termination theorem** — `∃ n, closureStep (closureIter n seed) ⊆ closureIter n
+  seed` in general. It is carried as an explicit hypothesis, never a `sorry`, so nothing
+  downstream is weakened by its absence — a consumer that supplies a stock gets `TableauClosed`
+  from a `decide`. *(**Half landed 2026-07-28h.** `TimeTypeBound.lean` now splits the obligation
+  into **stabilisation** and **confinement** and discharges stabilisation unconditionally:
+  `closureIter_succ` (step moves outside the recursion), `closureIter_subset_succ`,
+  `closureIter_subset_of_closed`, `exists_closureStep_subset` (the finite-monotone argument —
+  cardinalities non-decreasing and capped by `|M|`, so a strict increase cannot persist past
+  `|M|` rounds, and `Finset.eq_of_subset_of_card_le` upgrades the inclusion at the first repeat),
+  and the packaged `exists_tableauClosed_closureIter`. **What remains is confinement only**:
+  exhibit *any* finite emission-closed superset `M` of the seed, however crude. The reduction is
+  not circular — `closureStep M ⊆ M` alone would give `TableauClosed M` directly, but
+  `closureIter n seed` is the **smaller** stock, and T2's `2 ^ (2·|C|)` is exponential in `|C|`,
+  so finding the fixed point at or below `M` is the point. Known shape unchanged: the only chains
+  that could diverge are `priorU`/`priorS` re-firing through a `someFuture` subformula of their
+  own conclusion (`conjEmissions`' first two arms), where the recursion descends.)*
 - [x] **4.3a T3 progress measure and fuel figure** — `Fuel.lean`: `expandOnceUnblocked_card_lt`
   (`Branch.toFinset` strictly grows along an extending step — the set-growth form, consuming
   `expandOnceUnblocked_adds_new` exactly as the 2026-07-27b note directs, **not** the length
@@ -1075,12 +1111,77 @@ zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-n
   The engine is untouched. *(deviation: altered — `buildTableau_isSome` itself is NOT landed and
   cannot be at the engine's default `maxBranches`; the corollary needs a caller that fixes the
   budget. The `.split`/`.splitOrdered` arms remain outstanding, now isolated behind `NoSplit`
-  rather than behind a sorry.)*
-- [ ] **4.3d T3 residuals** — *(residuals 1 and 2 discharged 2026-07-28f; residual 3 outstanding)*
-  three named, isolated obligations, none a sorry: `OrderDual` (the `futureOf`/`pastOf` duality —
-  **DONE**, `orderDual_holds`), the world dimension `W` (**DONE**, `worldFinset_card_le` /
-  `chain_le_worlds_bounded`), and the branching arms (`resolveOpenArm`'s own `none`) — **still
-  open**, and now the only residual of 4.3d.
+  rather than behind a sorry.)* **Scope note (2026-07-28g):** what landed here is the
+  **single-world** instantiation — `expandBranchWithFuel_isSome_of_stock` is stated at the abstract
+  `2 * |C| * |L|`, and `chain_le_soundFuel'` identifies that with `soundFuel'` only under a
+  single-world label count. The **general-figure** instantiation is 4.3e below. Do **not** re-open,
+  re-prove, restate or rename anything in 4.3c to get there — 4.3e consumes it exactly as landed.
+- [x] **4.3d T3 residuals** — *(residuals 1 and 2 discharged 2026-07-28f; residual 3's **budget**
+  half discharged 2026-07-28h with its **fuel** half converted into a recorded engine-policy
+  finding — see the FINDING below; residual 4 remains a named hypothesis by design, which is what
+  the restated "Done when" criterion 3 asks for)* named, isolated obligations, none a sorry: `OrderDual` (the `futureOf`/`pastOf`
+  duality — **DONE**, `orderDual_holds`), the world dimension `W` (**DONE**, `worldFinset_card_le` /
+  `chain_le_worlds_bounded`), and:
+  - **Residual 3 — the branching arms** (`.split` / `.splitOrdered`, and `resolveOpenArm`'s own
+    `none`). **Still open.** *(target corrected 2026-07-28g — report 06 §4; read before starting.)*
+    The budget invariant to generalise to is **linear with a branching-factor coefficient, not
+    tree-shaped**: `branchesUsed + β * fuel ≤ maxBranches`. Source basis: in both split arms
+    `branchesUsed'` is a `let` bound **once, before** the fold (`Saturation.lean:646, :675`) and the
+    **same** value is passed to every sibling (`:654, :681`), while the fold's accumulator carries
+    only the `Option` result and no counter (`:647-664, :676-690`). Sibling usage is therefore
+    **not** accumulated: `branchesUsed` at a node is the sum, along one root-to-node **path**, of
+    `1` per extending step and `branches.length` per split. Preservation is one line per arm, since
+    every recursive call receives `≤ fuel₀ - 1` (`min pair.2 fuel`, `:653, :680`, against the
+    matched `fuel + 1`); the guard needs `β * fuel ≥ 1`, which the T3 fuel hypothesis already gives.
+    **State `β` as a hypothesis on `branches.length`, not as the literal `3`** — `3` is the
+    currently *measured* maximum (`orderTrichotomy`'s three `disjuncts`,
+    `Tableau.lean:1119-1122, :1161`; `timeLinearity`'s three arms, `:1351-1354`; every other
+    `.branching` construction site is a 2-element literal), and a census is not a theorem.
+    `branchesUsed + β * fuel ≤ maxBranches` **implies** the landed `branchesUsed + fuel ≤
+    maxBranches`, so `expandBranchWithFuel_isSome_of_noSplit` needs no weakening. This residual is
+    **orthogonal to the fuel figure** — do not entangle the two.
+  - **Residual 4 — `WorldWitness` is an invariant, not a theorem.** *(newly named 2026-07-28g;
+    previously unnamed.)* `worldFinset_card_le`, and hence `chain_le_worlds_bounded`, carry
+    `hww : WorldWitness C S (run n)` as a hypothesis; `Fuel.lean:1000-1003` records that deriving it
+    is a 36-case induction over `applyRule` of the same shape and size as T1. The general fuel
+    figure inherits it. **It must remain visible in every statement that depends on it** — a "Done
+    when" that lets it hide inside a named figure would let a later dispatch claim a world bound
+    that assumes itself. Discharging it is out of scope for 4.3 and belongs with the T1 work.
+- [x] **4.3e T3 general fuel figure** — *(**LANDED 2026-07-28h**, all six targets sorry-free, both
+  builds green, `#eval` behaviour unchanged, fourteen `#guard_msgs` regression rows still matching
+  plus three new arm-fuel probes. `worldFuel'_eq` needed `Nat.mul_left_comm` rather than `ring` —
+  `Mathlib.Tactic.Ring` is not in `Fuel.lean`'s import surface, and the identity is pure
+  associativity/commutativity so no ring machinery is warranted; `soundFuel'_pos` uses
+  `Nat.pow_pos`, not the non-existent `Nat.pos_pow_of_pos`.)* *(created 2026-07-28g by the RECORDED
+  DECISION below; report 06.)* `Fuel.lean`, **additions only**, engine untouched:
+  - `worldFuel' (φ : Formula) (s : Nat) : Nat := (s + soundFuel' φ) * soundFuel' φ` — the general
+    figure, `s` the seed-world count. **Do not specialise `s` to `1` in the definition**:
+    `chain_le_worlds_bounded` quantifies `S` universally and the restatement must consume it. (The
+    engine's own seed *is* a singleton — `buildTableau`'s
+    `initialBranch = [SignedFormula.neg φ Label.initial]`, `Saturation.lean:930` — record that as a
+    note, not as the definition.)
+  - `worldFuel'_eq` — the arithmetic identity `worldFuel' φ s = 2 * c * ((s + 2*c*m) * m)` at
+    `c = (subformulaClosure φ).card`, `m = 2 ^ (2*c)`. It is an **identity, not an estimate**:
+    `2*c*((s + 2*c*m)*m) = (2*c*m)*(s + 2*c*m) = soundFuel' φ * (s + soundFuel' φ)`.
+  - `soundFuel'_pos : 0 < soundFuel' φ` — via `Finset.card_pos` and
+    `FormalSystem.Syntax.self_mem_subformulaClosure` (`Closure.lean:42`, verified to exist).
+  - `soundFuel'_le_worldFuel' : soundFuel' φ ≤ worldFuel' φ s` — via
+    `Nat.le_mul_of_pos_left : {n : ℕ} (m : ℕ) (h : 0 < n) : m ≤ n * m` (`Init.Data.Nat.Lemmas`;
+    signature verified by loogle) and `soundFuel'_pos`.
+  - `chain_le_worldFuel'` — `chain_le_worlds_bounded` restated at the named figure: same
+    hypotheses (**including `hww`** — residual 4) plus `hφ : C.card = (subformulaClosure φ).card`,
+    concluding `n ≤ worldFuel' φ S.card`.
+  - `expandBranchWithFuel_isSome_at_worldFuel'` — the 4.3 terminus:
+    `expandBranchWithFuel_isSome_of_stock` instantiated at the general figure. The label-side
+    hypothesis is `|L| ≤ (s + 2*|C|*2^(2|C|)) * 2^(2|C|)`, which yields
+    `2 * |C| * |L| ≤ worldFuel' φ s` by the same identity — so this step is **instantiation, not new
+    mathematics**. `maxBranches` stays quantified, with the branch-budget hypothesis.
+  - One docstring sentence on `soundFuel'` naming it the single-world (label-count) figure and
+    pointing at `worldFuel'`; a module-docstring status update.
+  **Do NOT** redefine `soundFuel'`, rename it, or restate `soundFuel_le_soundFuel'` /
+  `chain_le_soundFuel'` — see the RECORDED DECISION below for why each is rejected.
+  Estimated output: ~120-200 lines. Done when: the six items above sorry-free; `#eval` behaviour
+  unchanged (constraint 11); build green.
 
 **4.3d residuals 1-2 landed (2026-07-28f).** Both in `Fuel.lean`, sorry-free, three green commits;
 `lake build FormalSystem.Metalogic.Decidability` (1054) and `lake build BimodalTest` (1949) green.
@@ -1119,7 +1220,93 @@ which exceeds `soundFuel' φ = 2*n*2^(2*n)` by about `2*|C|*2^(2*|C|)`.
 revision — and no claim in `Fuel.lean` now asserts it suffices in the presence of fresh worlds.
 **A plan revision should decide** whether to (a) redefine `soundFuel'` to carry a world factor,
 (b) keep it as the single-world figure and rename it accordingly, or (c) restate 4.3's deliverable
-against `chain_le_worlds_bounded`.
+against `chain_le_worlds_bounded`. **RESOLVED — see the RECORDED DECISION immediately below.**
+
+**RECORDED DECISION — the general fuel figure is `worldFuel'`; `soundFuel'` is frozen
+(2026-07-28g, report 06).** Resolves the FINDING above. Adopted: **(b) + (c) in combination,
+without a rename**. Verified first: the arithmetic. With `c := |C|`, `m := 2^(2c)`, `s := |S|` and
+`F := soundFuel' φ = 2·c·m` (valid under `hφ`), `chain_le_worlds_bounded`'s figure factors
+**exactly**:
+
+    2·c·((s + 2·c·m)·m) = (2·c·m)·(s + 2·c·m) = F·(s + F) = s·F + F²
+
+So the general figure is *exactly* `soundFuel' φ · (|S| + soundFuel' φ)`, and the ratio to
+`soundFuel'` is *exactly* `|S| + 2·|C|·2^(2|C|)` — the FINDING's "roughly a factor of
+2·|C|·2^(2|C|)" is confirmed and sharpened to an identity. At the engine's own seed (`|S| = 1`,
+`Saturation.lean:930`) the general figure is `soundFuel' φ · (soundFuel' φ + 1)`: to a `+1`, the
+**square** of the single-world figure. Two figures that differ by a squaring must not share a name.
+
+- **Adopted.** Keep `soundFuel'`'s name *and* body frozen, re-documented as the explicitly
+  **single-world (label-count)** figure; add a new named general figure
+  `worldFuel' φ s := (s + soundFuel' φ) * soundFuel' φ`, defined so that it is *definitionally*
+  `chain_le_worlds_bounded`'s RHS; restate 4.3's "Done when" against `worldFuel'` plus a quantified
+  branch budget. Execution is sub-phase **4.3e** above.
+- **(a) redefine `soundFuel'` — REJECTED**, four reasons, in weight order. (i) It silently
+  destroys a landed theorem's content: `chain_le_soundFuel'`'s docstring claims "this is the
+  theorem that earns it", and the content of that claim is that `chain_le_stock`'s bound
+  `2·|C|·|L|` *equals* `soundFuel' φ` with no slack. Redefining turns it into a loose inequality
+  with a factor `s+F` of slack and makes the docstring false — a green build with a lying
+  docstring, the worst failure mode available here. (ii) It is a semantic change under a stable
+  name, explained as `2n·2^(2n)` in the module docstring, in `soundFuel_le_soundFuel'`, and in 17
+  places in this plan. (iii) The single-world figure is independently useful and would be lost:
+  only `boxNeg`/`diamondPos` mint worlds (`Fuel.lean:935`), so for modal-operator-free `φ` the
+  world count *is* 1 and `soundFuel'` is the true, quadratically-exponentially better bound —
+  redefining forecloses the "modal-free ⟹ single world" corollary Track A will want.
+  (iv) It saves no call-site churn: `grep -rn "soundFuel'" --include=*.lean` finds **no consumer
+  outside `Fuel.lean`**.
+- **(b)'s rename half — REJECTED.** Renaming forces renaming two landed, green, sorry-free
+  theorems (`soundFuel_le_soundFuel'`, `chain_le_soundFuel'`) plus 17 plan references, for zero
+  mathematical content. The misreading a rename would prevent is prevented better by the
+  docstring — which `Fuel.lean:1180-1191` already contains in the sharpest available form. The
+  remedy for a name that is right-but-narrow is documentation, not churn.
+- **(c) alone — REJECTED as insufficient** (its *substance* is adopted, as the restated "Done
+  when"). `chain_le_worlds_bounded` is a **chain-length** bound; 4.3's deliverable is a **fuel
+  figure**, a `Nat` a caller hands to `expandBranchWithFuel`. `expandBranchWithFuel_isSome_of_stock`
+  takes `hfuel : 2 * C.card * L.card < fuel`, so a caller needs a named computable `Nat`; against a
+  bare five-factor expression every downstream consumer re-inlines it, and a "Done when" phrased
+  against an inline expression is not mechanically checkable — which is the failure mode that
+  produced this blocker. Since there are no `.lean` consumers yet, the naming decision must be made
+  **now**, before Phase 7 hard-codes an expression.
+- **What the decision does *not* do.** It does not discharge `WorldWitness` (4.3d residual 4), does
+  not discharge the branching arms (residual 3), and does not make `buildTableau_isSome` provable
+  at the engine default — `Saturation.lean:590, :594, :931` are unchanged and the 4.3b blocker note
+  stands. All three stay **named hypotheses**, never `sorry`, never a vacuous placeholder.
+- **Prohibited**: redefining or renaming `soundFuel'`; restating or re-proving anything in 4.3b /
+  4.3c; any engine edit (wave-3 territory contract); baking `|S| = 1` into `worldFuel'`; letting
+  `hww` disappear into the figure.
+
+**FINDING — the split arms multiply the fuel figure; residual 3 is *not* orthogonal to it
+(2026-07-28h).** Report 06 §4's correction of the budget shape is confirmed by re-reading the
+source and is now a landed theorem: `branchesUsed'` is a `let` bound once before each fold
+(`Saturation.lean:646, :675`), the same value reaches every sibling (`:654, :681`), and the
+accumulator carries no counter, so the budget is **path-shaped**. `splitBudget_preserved`,
+`extendBudget_preserved` and `budget_le_of_betaBudget` land the linear invariant
+`branchesUsed + β·fuel ≤ maxBranches` with `β` a hypothesis on `branches.length`, not the literal
+`3`, and confirm it implies the landed `branchesUsed + fuel ≤ maxBranches` so nothing is weakened.
+
+**But the budget was never the binding constraint in the split arms — the fuel is, and that half
+does *not* compose orthogonally.** Source: `estimateBranchDifficulty` (`Saturation.lean:360-364`)
+is `1 + 3·tempCount + 2·modCount + len/4`, hence **always ≥ 1**, so no arm is starved to zero
+(`allocateFuelProportionally_pos` proves the floor). But `allocateFuelProportionally (fuel+1)`
+(`:378-388`) hands each arm `min (max 1 (fuel.succ * d / max 1 total)) fuel` — a **proportional
+share** — and the arms recurse at `min pair.2 fuel` (`:653, :680`). So `k` arms of equal
+difficulty each get about `fuel / k`, and the progress-measure hypothesis
+`U.card < b.toFinset.card + fuel` that `expandBranchWithFuel_isSome_of_noSplit` consumes is **not**
+re-established at the arms by any parent fuel merely exceeding `U.card`. Adequate fuel for a
+splitting run scales like `β ^ depth * worldFuel'`, and `depth` is bounded by nothing proved so
+far. Three committed `#guard_msgs` rows run the real allocator and show it: `1000` units across
+three arms gives `[333, 333, 333]`, and a second split inside an arm gives `[111, 111, 111]` — a
+ninth of the original.
+
+This is the same **class** of fact as the 4.3b blocker (`buildTableau_isSome` is false at the
+engine default `maxBranches`): a real property of a deliberate engine policy, not a gap in a
+proof. The proportional allocator exists for `#eval` reasons and the wave-3 territory contract
+forbids editing it. **Consequence for the plan**: `NoSplit` stays the named hypothesis confining
+the arms — which is exactly what restated criterion 3 requires — and any future unconditional
+split-arm totality theorem must either (i) assume a split-depth bound and a fuel figure
+exponential in it, or (ii) be preceded by an engine-side change to the allocation policy, which is
+a *separate task* with its own conformance risk, not a Phase 4 sub-phase. Do **not** re-attempt
+residual 3's fuel half as stated; it is refuted in that form.
 
 **Two settled-design corrections, both forced by source inspection, both recorded in the module
 docstring rather than assumed:**
