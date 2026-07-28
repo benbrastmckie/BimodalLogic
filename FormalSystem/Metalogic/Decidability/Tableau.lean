@@ -123,6 +123,13 @@ inductive TableauRule : Type where
   | sncePos
   /-- F(S(event,guard)) → Reynolds co-decomposition at known past times (persistent) -/
   | snceNeg
+  /-- Order trichotomy (R2, repairs D2). A positive witness `T(φ)` at a time `t1` and a
+      positive `T(ψ)` at an incomparable sibling time `t2` (both after a common `t0`, same
+      world) branch on the relative order of `t1` and `t2`, syntactically the three
+      `temp_linearity` (BX11) disjuncts at `t0`:
+      `T(F(φ ∧ ψ)) | T(F(φ ∧ F ψ)) | T(F(F φ ∧ ψ))`.
+      Base rule: BX11 is a base axiom, so this is sound for every frame class. -/
+  | orderTrichotomy
   /-- Dense: close branch when T(U(⊤,⊥)) appears (since ¬U(⊤,⊥) is a Dense axiom,
       asserting U(⊤,⊥) leads to contradiction on dense frames). Only applicable when fc >= .Dense.
       -/
@@ -305,6 +312,12 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula)
   | .untlNeg, .neg, φ => (asUntil? φ).isSome
   | .sncePos, .pos, φ => (asSince? φ).isSome
   | .snceNeg, .neg, φ => (asSince? φ).isSome
+  -- Order trichotomy: shape gate only. The real restriction (an incomparable sibling
+  -- time under a common predecessor, carrying a formula the branch already constrains) is
+  -- in `applyRule`, which has the branch and the ordering; `isApplicable` sees only the
+  -- signed formula. Same split of labour as `z1Rule`. Conjunctions are excluded here
+  -- because they are exactly this rule's own output.
+  | .orderTrichotomy, .pos, φ => (asAnd? φ).isNone
   -- Dense-specific rules (gated by fc >= .Dense)
   | .denseIndicatorClosure, .pos, .untl (.imp .bot .bot) .bot =>
       decide (FrameClass.Dense ≤ fc)
@@ -902,6 +915,122 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
                            SignedFormula.neg (.snce event guard) targetLabel, sf]
           (.branching [branch1, branch2], timeOrd)
       | none => (.notApplicable, timeOrd)
+  -- Order trichotomy (R2, repairs D2): branch on the relative order of two incomparable
+  -- times that share a common past.
+  --
+  -- **Why the branches are syntactically the BX11 disjuncts.** `temp_linearity`
+  -- (`Axioms.lean:238`) is `F φ ∧ F ψ → F(φ ∧ ψ) ∨ F(φ ∧ F ψ) ∨ F(F φ ∧ ψ)`, and those three
+  -- disjuncts *are* the trichotomy on two future witnesses: they coincide, the φ-witness
+  -- comes first, or the ψ-witness comes first. Emitting them verbatim rather than as fresh
+  -- ordering constraints keeps the rule's admissibility obligation a single appeal to BX11
+  -- instead of a semantic argument about `TimeOrdering`, and it is the form the Phase 3
+  -- `RuleSpec` gate maps to `Axiom.temp_linearity`.
+  --
+  -- **Why the trigger is a witness formula and not the eventuality.** The obvious trigger —
+  -- `T(F φ)` with a partner `T(F ψ)` at the same label — never fires in practice, because
+  -- `someFuturePos` is consumable: on `F φ ∧ F ψ → …` the branch reaches
+  -- `T(F φ) @ t0` while `T(F ψ) @ t0` is still buried inside an undecomposed conjunction,
+  -- `someFuturePos` consumes `T(F φ)` immediately, and the pair never coexists. The rule
+  -- therefore triggers on the *witness*: a positive formula `T(φ) @ (w, t1)` looks back for
+  -- a common predecessor `t0` and sideways for an incomparable sibling `t2` carrying
+  -- `T(ψ)`, which is exactly the D2 configuration (two fresh times, both after `t0`, with
+  -- no order between them).
+  --
+  -- **Branching restriction (the `3^k` containment).**
+  --
+  -- 1. *Incomparable time pairs.* `t1 ≠ t2`, neither is in the other's transitive future or
+  --    past, and both lie in `futureOf t0`. The common predecessor is required because the
+  --    BX11 instance being used is the one *at* `t0`: without it there is no point at which
+  --    `F φ ∧ F ψ` holds and the split is not an axiom instance at all.
+  -- 2. *Shared world.* `t1`, `t2` and `t0` are read at `l.world` throughout. Times are
+  --    world-indexed here, so a pair drawn across two worlds is not a temporal-order
+  --    question.
+  -- 3. *Shared temporal formula (analytic restriction).* The split fires only when the
+  --    branch already carries, at `(w, t0)`, the negation of at least one of the three
+  --    disjuncts. This is what makes the rule analytic with respect to the branch: it never
+  --    introduces a BX11 instance that no formula on the branch is about, so the branching
+  --    is bounded by the negated eventualities present rather than by the square of the
+  --    formulas at incomparable times. It is a genuine restriction, and it is the one the
+  --    plan's Risk 1 flags for re-examination: if a conformance row that should CLOSE stays
+  --    OPEN, this guard is the first suspect.
+  -- 4. *No re-firing, in two halves.* A split must not repeat for a pair whose order the
+  --    branch has already fixed, and the evidence for "already fixed" changes shape as the
+  --    branch grows, so both halves are needed:
+  --      (a) one of the three disjuncts is still present, positive, at some time of this
+  --          world — the split fired and its conclusion has not yet been decomposed;
+  --      (b) the conclusion *has* been decomposed: `someFuturePos` consumed the disjunct
+  --          and left witnesses, so some φ-time and some ψ-time after `t0` are now equal
+  --          or ordered. This is the half that makes the rule terminate. Guard (a) alone
+  --          is not enough precisely because `someFuturePos` is consumable: the disjunct
+  --          it removes was the only record that the pair had been split, so the trigger
+  --          recurs at the freshly created time and the branch regresses without bound.
+  --          Measured with only (a): counterexample B and the plain `F p ∧ F q` corpus
+  --          rows STALLED at fuel 20000, the trace showing `orderTrichotomy` firing once
+  --          per newly created time. Guard (b) is also the exact statement of what the
+  --          rule is for — once the two witness sets are comparable, the trichotomy has
+  --          been decided and there is nothing left to branch on.
+  --    Guards (a) and (b) together still leave a window: the split's conclusion can be
+  --    consumed by `someFuturePos` and its witness only *partly* decomposed, so that for a
+  --    step or two neither (a) nor (b) holds and the pair re-fires at the newly created
+  --    time. The third half closes it — *first witnesses only*: the pair fires only while
+  --    each operand has at most one witness after `t0`. A second φ-witness can only exist
+  --    because something already produced one, which is precisely the state the split was
+  --    meant to reach. This is what makes the branch count finite: without it the trace
+  --    shows `orderTrichotomy` firing at time 2, 3, 4, … forever, one new direct successor
+  --    of `t0` per firing.
+  --
+  -- Neither operand may be a conjunction: every formula this rule produces has a
+  -- conjunction under the `F`, so that restriction is exactly "the rule does not consume
+  -- its own output".
+  --
+  -- The trigger formula is re-added to each branch (`.branching` deletes the expanded
+  -- formula, and a witness atom must survive to close the branch against its negation).
+  | .orderTrichotomy, .pos, φ =>
+      if (asAnd? φ).isSome then (.notApplicable, timeOrd)
+      else
+        let disjuncts : Formula → Formula → List Formula := fun x y =>
+          [ Formula.someFuture (Formula.and x y)
+          , Formula.someFuture (Formula.and x (Formula.someFuture y))
+          , Formula.someFuture (Formula.and (Formula.someFuture x) y) ]
+        -- Positive, non-conjunctive formulas carried by a sibling time.
+        let carriedAt : TimeIndex → List Formula := fun t =>
+          branch.filterMap fun sf' =>
+            match sf'.sign with
+            | .pos =>
+                if sf'.label.world == l.world && sf'.label.time == t
+                    && (asAnd? sf'.formula).isNone then some sf'.formula else none
+            | _ => none
+        let futs := timeOrd.futureOf l.time
+        let pasts := timeOrd.pastOf l.time
+        -- Restriction 1+2: incomparable siblings under a common predecessor, same world.
+        let candidates : List (TimeIndex × Formula) :=
+          pasts.flatMap fun t0 =>
+            let siblings := (timeOrd.futureOf t0).filter fun t2 =>
+              t2 != l.time && !futs.contains t2 && !pasts.contains t2
+            siblings.flatMap fun t2 => (carriedAt t2).map fun ψ => (t0, ψ)
+        -- Restriction 4a: the split's own output is still on the branch, unconsumed.
+        let firedAlready : Formula → Bool := fun d =>
+          branch.any fun sf' =>
+            sf'.sign == Sign.pos && sf'.label.world == l.world && sf'.formula == d
+        -- Restriction 4b: the split's output has been consumed but its witnesses survive —
+        -- some φ-time and ψ-time after `t0` are now ordered or identical.
+        let witnessesOf : TimeIndex → Formula → List TimeIndex := fun t0 χ =>
+          (timeOrd.futureOf t0).filter fun t =>
+            branch.contains (SignedFormula.pos χ { world := l.world, time := t })
+        let settled : TimeIndex → Formula → Bool := fun t0 ψ =>
+          (witnessesOf t0 φ).any fun a => (witnessesOf t0 ψ).any fun b =>
+            a == b || (timeOrd.futureOf a).contains b || (timeOrd.pastOf a).contains b
+        let fires : TimeIndex × Formula → Bool := fun (t0, ψ) =>
+          let l0 : Label := { world := l.world, time := t0 }
+          let ds := disjuncts φ ψ
+          !(ds.any firedAlready) && !settled t0 ψ
+            && (witnessesOf t0 φ).length <= 1 && (witnessesOf t0 ψ).length <= 1
+            && (ds.any fun d => branch.contains (SignedFormula.neg d l0))
+        match candidates.find? fires with
+        | none => (.notApplicable, timeOrd)
+        | some (t0, ψ) =>
+            let l0 : Label := { world := l.world, time := t0 }
+            (.branching ((disjuncts φ ψ).map fun d => [SignedFormula.pos d l0, sf]), timeOrd)
   -- Dense: T(U(⊤,⊥)) closes the branch on dense frames
   -- U(⊤,⊥) asserts "⊥ holds until ⊤" which requires an immediate successor,
   -- but ¬U(⊤,⊥) is a Dense axiom (no immediate successors on dense frames).
@@ -1040,7 +1169,11 @@ def allRules : List TableauRule := [
   .untlPos, .untlNeg,             -- Until (genuine, not someFuture)
   .sncePos, .snceNeg,             -- Since (genuine, not somePast)
   .impPos,               -- Branching implication
-  .andNeg, .orPos        -- Branching compound
+  .andNeg, .orPos,       -- Branching compound
+  -- Order trichotomy last: it triggers on witness formulas (typically atoms, which no
+  -- other rule touches), so every cheaper decomposition is exhausted before a 3-way
+  -- linearity split is considered.
+  .orderTrichotomy
 ]
 
 /--

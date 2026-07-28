@@ -225,6 +225,7 @@ def ruleToString : TableauRule → String
   | .untlNeg                 => "untlNeg"
   | .sncePos                 => "sncePos"
   | .snceNeg                 => "snceNeg"
+  | .orderTrichotomy         => "orderTrichotomy"
   | .denseIndicatorClosure   => "denseIndicatorClosure"
   | .densityRule             => "densityRule"
   | .priorUZ                 => "priorUZ"

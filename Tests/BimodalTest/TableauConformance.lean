@@ -46,9 +46,11 @@ over any dense order, so it targets OPEN at `.Base`/`.Discrete` and CLOSED at
 
 - `CLOSED` — `buildTableau` returned `.allClosed`; the engine claims validity.
 - `OPEN` — `buildTableau` returned `.hasOpen`; the engine claims a countermodel.
-- `STALLED` — `buildTableau` returned `none`. Today this conflates fuel exhaustion with
-  the post-blocking non-saturation dead end. Splitting it is a separate repair
-  (`.fuelExhausted` / `.extractionFailed`).
+- `STALLED` — `buildTableau` returned `none`: fuel exhausted, or the post-blocking pass
+  left the branch unsaturated. At the `DecisionResult` level this is `.fuelExhausted`,
+  which R7 split off from `.extractionFailed` (a closed tableau whose proof term could not
+  be reconstructed); the tableau-level adapter never sees the latter, since it reads
+  `buildTableau` before extraction is attempted.
 
 The adapter returns a `String` rather than using `decide`/`native_decide`/`rfl` because
 the tableau is fuel-driven: a kernel-level decision procedure over it either stalls on
@@ -93,17 +95,6 @@ private def iterF : Nat → Formula → Formula
 
 /-! ## Corpus row type and verdict adapter -/
 
-/-- One conformance row: a formula, the verdict semantics requires, and a note. -/
-structure Row where
-  /-- Short stable identifier, used as the row label in the printed table. -/
-  id : String
-  /-- The formula handed to `buildTableau`. -/
-  formula : Formula
-  /-- The verdict required by the semantic target of the class this row is listed under. -/
-  target : String
-  /-- Human-readable justification of `target`, or the defect the row witnesses. -/
-  note : String
-
 /--
 Fuel used by the whole corpus.
 
@@ -114,8 +105,33 @@ the branch can never saturate), which more fuel does not fix; the audit confirme
 re-running counterexample A at fuel 100000 and getting the same `none`. Second, a fixed
 bound keeps the table's `STALLED` entries comparable across commits, which a
 formula-dependent bound would not.
+
+**Per-row override.** `Row.fuel` defaults to this bound; a row that genuinely needs more
+states its own. `expandBranchWithFuel` splits its fuel proportionally across the branches
+of a split, so `orderTrichotomy`'s three-way split divides the budget available to
+everything below it, and counterexample B needs roughly 10000 to close (measured: `STALLED`
+at 200, 500, 2000, 3000, 4000 and 6000; `CLOSED` at 10000). Raising the *corpus-wide*
+bound to 10000 instead was tried and rejected: several rows that answer `OPEN` today
+explore for minutes at that bound, which would make this file the slowest in the suite for
+no gain on any row but the one.
 -/
 def conformanceFuel : Nat := 200
+
+/-- One conformance row: a formula, the verdict semantics requires, and a note. -/
+structure Row where
+  /-- Short stable identifier, used as the row label in the printed table. -/
+  id : String
+  /-- The formula handed to `buildTableau`. -/
+  formula : Formula
+  /-- The verdict required by the semantic target of the class this row is listed under. -/
+  target : String
+  /-- Human-readable justification of `target`, or the defect the row witnesses. -/
+  note : String
+  /-- Fuel for this row. Defaults to `conformanceFuel`; see its docstring for when and why
+  a row overrides it. -/
+  fuel : Nat := conformanceFuel
+
+
 
 /--
 Reduce `buildTableau` to a printable verdict. See the module docstring.
@@ -131,8 +147,8 @@ calculus, not about the proof-extraction pipeline. `OPEN` corresponds to `.inval
 engine decided nothing — which is exactly the honesty property R7 makes statable at the
 `DecisionResult` level.
 -/
-def verdict (φ : Formula) (fc : FrameClass) : String :=
-  match buildTableau φ conformanceFuel fc with
+def verdict (φ : Formula) (fc : FrameClass) (fuel : Nat := conformanceFuel) : String :=
+  match buildTableau φ fuel fc with
   | some (.allClosed _) => "CLOSED"
   | some (.hasOpen _ _ _ _) => "OPEN"
   | none => "STALLED"
@@ -144,7 +160,7 @@ private def pad (s : String) (n : Nat) : String :=
 /-- Run one row and render it, appending a `[DEFECT]` marker when the engine disagrees
 with the semantic target. -/
 def runRow (fc : FrameClass) (r : Row) : String :=
-  let v := verdict r.formula fc
+  let v := verdict r.formula fc r.fuel
   let marker := if v == r.target then "        " else s!"[DEFECT] "
   s!"{pad r.id 18} {pad v 8} target={pad r.target 7} {marker}{r.note}"
 
@@ -211,8 +227,12 @@ linear model, and each is the direct regression target of one calculus repair.
 
 Row A now closes: transitive `futureOf` gives `G p @ t0` its reach to `t2`, and genuine
 blocking lets the branch reach a verdict at all instead of being handed back as
-"blocked open". Row B is still open and stays that way until a rule branches on the
-relative order of two incomparable fresh times. -/
+"blocked open". Row B now closes too: `orderTrichotomy` splits on the relative order of the
+two incomparable fresh times, syntactically as the `temp_linearity` disjuncts, and the three
+resulting branches close — two against a negated disjunct directly, the third through the
+ordinary `someFutureNeg`/conjunction machinery, which is why a single orientation of the
+pair suffices even though row B's disjuncts are a permutation drawn from both orientations.
+Row B carries a raised `fuel`; see `conformanceFuel`. -/
 def counterexampleRows : List Row :=
   [ { id := "A Gp->GGp",     formula := im (G p) (G (G p)), target := "CLOSED"
     , note := "was D1; closes now that futureOf is a transitive closure" }
@@ -220,7 +240,8 @@ def counterexampleRows : List Row :=
     , formula := im (an (F p) (F q))
         (orr (F (an p (F q))) (orr (F (an p q)) (F (an q (F p)))))
     , target := "CLOSED"
-    , note := "D2: no rule branches on the order of two incomparable fresh times" }
+    , note := "was D2; closes now that orderTrichotomy splits on the witness order"
+    , fuel := 10000 }
   ]
 
 /-- Until/Since linearity rows plus the exact axiom instances the permuted counterexample
@@ -334,7 +355,7 @@ K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by ite
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
-B lin-perm         OPEN     target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
+B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -364,7 +385,7 @@ K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by ite
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
-B lin-perm         OPEN     target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
+B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -394,7 +415,7 @@ K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by ite
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
-B lin-perm         OPEN     target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
+B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -426,7 +447,7 @@ K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by ite
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
-B lin-perm         OPEN     target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
+B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
