@@ -17,7 +17,7 @@ obligations, and the proofs stay free of the engine's performance knobs.
 | `Internalize.lean` | `Branch.internalize`, label-to-modality encoding | planned |
 | `Refutation/Core.lean` | the generic `allClosed → Derivable` induction, parameterized by the rule spec | planned |
 | `Refutation/Rules/*.lean` | one admissibility lemma per rule, grouped by rule family | planned |
-| `Termination/SubformulaProperty.lean` | T1, the generalized signed subformula property (one theorem per rule): `RuleResult.emitted`, the `TableauClosed` closure census, the `as*?` inversions, and 10 of 36 rule cases | partial |
+| `Termination/SubformulaProperty.lean` | T1, the generalized signed subformula property (one theorem per rule): `RuleResult.emitted`, the `TableauClosed` closure census, the `as*?` inversions, all 36 rule cases, and the assembled `applyRule_subformula_closed` | complete |
 | `Termination/TimeTypeBound.lean` | T2, the pigeonhole bound on time-types | planned |
 | `Termination/Fuel.lean` | T3, uncapped `soundFuel'` and `buildTableau_isSome` | planned |
 | `Bridge/Carrier.lean` | `class TemporalCarrier`, the four carrier instances (Base/Dense to Q, Discrete to Z, Dedekind to R) | planned |

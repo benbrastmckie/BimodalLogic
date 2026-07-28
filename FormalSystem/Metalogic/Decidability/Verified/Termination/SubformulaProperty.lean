@@ -57,6 +57,37 @@ Three rules initially suspected of needing their own field turn out not to:
   `branch.identifyTime t₂ t₁` once, and identification is label-only (`identifyTime_formula_mem`
   below), so nothing leaves `C`.
 
+## What T2 must fix: no *finite* `C` satisfies `TableauClosed` as stated
+
+T1 is an implication and is true and complete as proved below. But `TimeTypeBound.lean` needs a
+**finite** `C`, and three of the fields here re-trigger on their own output, each time on a
+strictly larger formula. All three were checked against these definitions rather than reasoned
+about informally:
+
+* `sep` applies to its own conclusion. From `K⁺ψ ∈ C` it gives `K⁺(K⁺ψ ∧ K⁻ψ) ∈ C`, which is
+  again of the form `K⁺ψ′`, so `sep` fires again on `ψ′ = K⁺ψ ∧ K⁻ψ`, and so on.
+* `gapU` (and `gapS`) re-trigger through `sub`. From `U(⊤, g) ∈ C` the conclusion
+  `U(¬g ∨ K⁺¬g, g)` has `K⁺¬g = ¬U(⊤, ¬¬g)` as a subformula, so `U(⊤, ¬¬g) ∈ C`, and `gapU`
+  fires again on `¬¬g`.
+* `trich` re-triggers on its own second disjunct. `F(x ∧ Fy)` is itself of the form
+  `F(x ∧ y′)` with `y′ = Fy`, so the field yields `F(x ∧ FFy)`, then `F(x ∧ FFFy)`, …
+
+The root cause is uniform: **each of these fields is keyed on strictly less than the rule's actual
+trigger.** `priorUGap` does not fire on `U(⊤,g)`; it fires on the conjunction
+`U(⊤,g) ∧ F¬g`. `sepRule` does not fire on `K⁺ψ`; it fires on
+`K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ,¬ψ))`. `orderTrichotomy` does not fire on a disjunct being present; it fires
+only when the branch carries the *negation* of a disjunct at the common predecessor — which is
+exactly what `applyRule_orderTrichotomy_closed` reads out of the rule below, and exactly what the
+field drops.
+
+So the T2 obligation is not "find a big enough closure"; it is **re-key `gapU`, `gapS`, `sep` and
+`trich` to the conjunctions and branch-side guards the rules actually test**, then show the
+resulting operator terminates. The three re-keyings are mechanical for `gapU`/`gapS`/`sep` (the
+rule cases already have the conjunction in `hsf`, so their closers shorten rather than lengthen).
+`trich` is the substantive one, because its real guard is a statement about the branch and not
+about `C`, which may mean `trich` should move out of `TableauClosed` and into the branch
+invariant that `Fuel.lean` carries.
+
 ## The `.branchingOrdered` obligation
 
 `timeLinearity` is the only rule returning `.branchingOrdered`, and its arms carry *whole

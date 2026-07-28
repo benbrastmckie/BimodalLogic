@@ -957,7 +957,7 @@ vacuous definitions.
 - **Goal:** `buildTableau` totality at a justified, uncapped fuel; the pigeonhole argument is
   about real blocking (possible only now that Phase 1.3 made blocking genuine).
 - **Tasks:**
-  - [ ] **4.1 T1 — `applyRule_subformula_closed`** *(deviation: altered — landed as one theorem
+  - [x] **4.1 T1 — `applyRule_subformula_closed`** *(deviation: altered — landed as one theorem
     per rule, `applyRule_<rule>_closed`, and against an abstract `TableauClosed` predicate rather
     than `closureWithNeg`; see the 2026-07-28 note below for both reasons and for the 10-of-36
     completion state)* (`Verified/Termination/SubformulaProperty.lean`,
@@ -1001,7 +1001,8 @@ zero sorries, no new axioms or vacuous definitions, conformance corpus verdict-n
   `mem_boxDiamondPersistence`.
 - [x] **4.1b Rule cases, 10 of 36** — `andPos`, `andNeg`, `orPos`, `orNeg`, `impPos`, `impNeg`,
   `negPos`, `negNeg`, `boxTemporal`, `denseIndicatorClosure`.
-- [ ] **4.1c Rule cases, remaining 26** — see the blocker and per-family targets below.
+- [x] **4.1c Rule cases, remaining 26** — landed 2026-07-28 (dispatch 2). All 36 rule cases
+  sorry-free, plus the combined `applyRule_subformula_closed` by `cases rule`.
 - [ ] **4.2 T2 — pigeonhole** — not started.
 - [ ] **4.3 T3 — justified fuel** — not started.
 
@@ -1023,27 +1024,46 @@ docstring rather than assumed:**
    operand pair already present — not a quadratic closure over `C × C`, which would iterate
    `F(F(x ∧ y) ∧ y')` without bound.
 
-**BLOCKER** (4.1c), measured, not inferred:
+**4.1 COMPLETE (2026-07-28, dispatch 2).** All 36 rule cases sorry-free; `lake build` and
+`lake build BimodalTest` green; conformance corpus verdict-neutral; no new axioms or vacuous
+definitions. The 4.1c blocker recorded by dispatch 1 (a combined theorem is OOM-killed at
+~19.2 GiB) is resolved as predicted by keeping one rule per declaration; the surviving 26 cases
+landed in four green batches. Three reusable pieces made the propagation-heavy rules tractable
+and are worth knowing before touching this file again:
 
-- **What failed**: a single theorem covering several rules at once is killed by `earlyoom`.
-  Journal line: `earlyoom: sending SIGTERM to process ... "lean" ... VmRSS 19204 MiB`. Reproduced
-  on `andPos` alone with a 30-alternative `first` chain, and on a 14-rule combined theorem.
-- **What was tried**, with the state at each: (a) one theorem, `cases rule` over all 32
-  non-Dedekind rules, `repeat' split` + broad `simp_all` — heartbeat exhaustion at 4M then OOM;
-  (b) the same content behind a `local macro` applied per `case` — OOM at ~19 GiB on `boxNeg`
-  alone, then on `andPos` alone; (c) targeted per-rule pipeline with `simp_all only [...]`
-  restricted to the case's own lemmas and a `first` chain of at most seven alternatives —
-  **4 s per rule, no OOM**. That is the shape that landed.
-- **Why stuck**: `unfold applyRule` inlines a 900-line, 36-constructor `match` into the
-  hypothesis. Every live goal holds a copy. Cost is driven by the number of goals alive at once
-  times the breadth of the closing tactic, and a bare `simp`/`simp_all` in a `first` alternative
-  is retried on every one of them.
-- **What is needed**: continue one rule per declaration with a case-specific `simp_all only`
-  list and a short `first` chain. Two rules already have a *verified* residual goal and only need
-  their closer repaired, and the rest are grouped by the propagation shape they use. Precise
-  targets are in the handoff.
-- **Prohibited**: no `sorry`, no `def X := True`, no combined `applyRule_subformula_closed`
-  asserted over rules whose case is not proved.
+- `mem_filterMap_sub` — every propagation block emits a *subformula* of a branch formula, so the
+  per-block obligation is one uniform `subformulas` membership rather than a per-block choice of
+  component lemma, and it is discharged after `clear` has removed the unfolded `applyRule` term
+  from the context.
+- `mem_of_branch_contains` — `Branch.contains` is `List.any` with `BEq`, not `List.contains`, so
+  `List.contains_iff_mem` does not apply. `orderTrichotomy` is the only case that needs it.
+- Closer-chain ordering is load-bearing: the witness alternative must come first and must not
+  mention `hg`, because `rcases` has already substituted `g` in that goal, and naming a
+  non-existent hypothesis inside a `first` alternative is a hard elaboration error rather than a
+  backtrackable failure.
+
+**BLOCKER (4.2), measured on the landed definitions, not inferred:**
+
+- **What failed**: `TimeTypeBound.lean` needs a *finite* `C` with `TableauClosed C`. No finite
+  non-trivial `C` exists, because three fields re-trigger on their own output at strictly
+  increasing formula size. Machine-checked against the landed `TableauClosed`:
+  `sep` applied twice typechecks (`hC.sep _ (hC.sep _ h)`); `gapU` yields
+  `U(⊤, ¬¬g) ∈ C` from `U(⊤, g) ∈ C` via `sub` through the `K⁺¬g` subformula; `trich` yields
+  `F(x ∧ FFy)` from `F(x ∧ y)` by reading its own second disjunct as a fresh operand pair.
+- **Why**: each of those fields is keyed on strictly *less* than the rule's real trigger.
+  `priorUGap` fires on `U(⊤,g) ∧ F¬g`, not on `U(⊤,g)`; `sepRule` fires on
+  `K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ,¬ψ))`, not on `K⁺ψ`; `orderTrichotomy` fires only when the branch carries
+  the *negation* of a disjunct at the common predecessor, which is what
+  `applyRule_orderTrichotomy_closed` reads out of the rule and what the field drops.
+- **What is needed**: re-key `gapU`, `gapS`, `sep` to the conjunctions, and decide where `trich`
+  belongs. The first three re-keyings are mechanical — the rule cases already carry the whole
+  conjunction in `hsf`, so their closers get *shorter* (`hC.gapU _ hsf` in place of
+  `hC.gapU _ (hC.and_left hsf)`). `trich` is the substantive one: its real guard is a statement
+  about the branch, not about `C`, so it may belong in the branch invariant `Fuel.lean` carries
+  rather than in `TableauClosed`.
+- **Prohibited**: do not widen `C` to try to absorb the chains — they are strictly increasing in
+  formula size, so no cardinality bound survives. Do not weaken T1 to dodge this; T1 is complete
+  and its 36 cases are what pin the field list to the real emissions.
 
 ### Phase 5: Bridge Infrastructure (BranchOrder, Embed, Carrier) [NOT STARTED]
 
