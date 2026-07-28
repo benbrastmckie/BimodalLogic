@@ -798,8 +798,16 @@ theorem branchTruthAt_untl_pos (hf : Function.Injective f) (hOF : OrderFaithful 
       exact ⟨s, hrs, (hφ w s).1 (by rw [stateLabel_gap w hs, hsn]; exact hev),
         fun u hru hus => absurd hus (hgap u hru)⟩
 
-/-- **Since case, positive half — OWED.** The past-directed mirror, with the *upper* ray as
-Correction 12's residual shape in place of the lower one. -/
+/--
+**Since case, positive half.** The past-directed mirror, with the rays swapped.
+
+`snceRay_self` closes the **lower** ray by `Stepped`'s predecessor, and row 10
+(`snceRayUp_witness`) carries Correction 12's residual at the **upper** one — the same asymmetry
+the negative halves show, running the same way round. Everything else transposes verbatim:
+`sncePos_witness` for `untlPos_witness`, `lowerRay_of_lt` for `upperRay_of_gt`, and the guard
+interval `(s,r)` sitting *above* the witness rather than below it, which is why row 10's reach is
+stated with `strictBefore ord t v` where row 9's is `strictBefore ord v t`.
+-/
 theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
     (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
@@ -811,7 +819,54 @@ theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful 
     b.hasPosAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
       TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
         (Formula.snce φ ψ) := by
-  sorry
+  intro hp
+  have hmem : (⟨.pos, .snce φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+    (hasPosAt_iff_mem b _ _).mp hp
+  by_cases hr : IsPlacedCode f (regionCode f r)
+  · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
+    rw [stateLabel_placed hf w hi] at hmem
+    obtain ⟨t', ht'mem, ht'lt, ht'φ, hguard⟩ := sncePos_witness hTW hmem
+    obtain ⟨j, hj⟩ := exists_index_of_mem_knownTimes ht'mem
+    refine ⟨f j, by rw [← hi]; exact hOF j i (by rw [hj]; exact ht'lt), ?_, ?_⟩
+    · exact (hφ w (f j)).1 (by rw [stateLabel_placed hf w (rfl : f j = f j), hj]; exact ht'φ)
+    · intro u hju hur
+      rcases hguard with hg | hg
+      · subst hg; exact id
+      · obtain ⟨k, hk⟩ :=
+          exists_eq_of_isPlacedCode
+            (isPlacedCode_of_between hRO hRS hju (by rw [hi]; exact hur : u < f i))
+        refine (hψ w u).1 ?_
+        rw [stateLabel_placed hf w hk]
+        exact hg (timeAt b k) (timeAt_mem b k) (hOR k i (by rw [hi, hk]; exact hur))
+          (by rw [← hj]; exact hOR j k (by rw [hk]; exact hju))
+  · rw [stateLabel_gap w hr] at hmem
+    by_cases hn : cutIndex (regionCode f r) = b.knownTimes.length
+    · rw [hn] at hmem
+      have habove : ∀ i : BranchTime b, f i < r := (hRS r hr).2 hn
+      obtain ⟨t, htmem, htφ, hguard⟩ := snceRayUp_witness hTW hmem
+      obtain ⟨j, hj⟩ := exists_index_of_mem_knownTimes htmem
+      refine ⟨f j, habove j, ?_, ?_⟩
+      · exact (hφ w (f j)).1 (by rw [stateLabel_placed hf w (rfl : f j = f j), hj]; exact htφ)
+      · intro u hju hur
+        rcases hguard with hg | ⟨hl, hg⟩
+        · subst hg; exact id
+        · refine (hψ w u).1 ?_
+          by_cases hu : IsPlacedCode f (regionCode f u)
+          · obtain ⟨k, hk⟩ := exists_eq_of_isPlacedCode hu
+            rw [stateLabel_placed hf w hk]
+            exact hg (timeAt b k) (timeAt_mem b k)
+              (by rw [← hj]; exact hOR j k (by rw [hk]; exact hju))
+          · rw [stateLabel_gap w hu]
+            rcases hRO u hu with h0 | hnn
+            · exact absurd ((hRS u hu).1 h0 j) (asymm hju)
+            · rw [hnn]; exact hl
+    · have hz : cutIndex (regionCode f r) = 0 := (hRO r hr).resolve_right hn
+      rw [hz] at hmem
+      have hev := snceRay_self hTW hmem
+      obtain ⟨s, hsr, hgap⟩ := hSt.2 r
+      obtain ⟨hs, hs0⟩ := lowerRay_of_lt hRO hRS hr hz hsr
+      exact ⟨s, hsr, (hφ w s).1 (by rw [stateLabel_gap w hs, hs0]; exact hev),
+        fun u hsu hur => absurd hsu (hgap u hur)⟩
 
 /-- **Until case**, assembled from its two halves. The negative half is sorry-free. -/
 theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
