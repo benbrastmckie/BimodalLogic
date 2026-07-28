@@ -329,7 +329,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
 - **Timing:** 3 dispatches, ~7 hours.
 - **Depends on:** none
 
-### Phase 2: Calculus Completion (R7, R2, R6, R5) [PARTIAL]
+### Phase 2: Calculus Completion (R7, R2, R6, R5) [COMPLETED]
 
 - **Goal:** The rule set is adequate and honestly reported: trichotomy branching exists, Dedekind
   rules exist, the `.timeout` conflation is split, and the open-branch certificate is strong
@@ -662,14 +662,29 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
     `expandBranchWithFuel_sound` invariant through the ordered fold. Measured: `lake build`
     green, `lake build BimodalTest` green at 39 s (baseline 39 s), **zero** `#guard_msgs`
     movement — the plumbing is verdict-neutral exactly as the plan predicted.
-  - [ ] **2.7b — `timeLinearity`** *(BLOCKED 2026-07-28: rule built and committed, scheduling
-    withheld. See the blocker below.)* `Branch.identifyTime` / `TimeOrdering.identifyTime`, the
-    `TableauRule.timeLinearity` constructor with its three-arm `applyRule` case,
-    `firstIncomparablePair`, `linearityRules` / `findApplicableLinearityRule` /
-    `findUnexpandedLinearity`, the two stage lemmas and the `ruleToString` entry are all landed
-    and green. Phase 3's **36**-constructor expectation is met. The third expansion stage is
-    *not* wired into `expandOnce` / `expandOnceUnblocked`.
-  - [ ] **2.7 (new) — per-branch time orderings + `timeLinearity`** (`Tableau.lean` +
+  - [x] **2.7b — `timeLinearity`** *(done 2026-07-28b; was BLOCKED, blocker resolved below)*.
+    `Branch.identifyTime` / `TimeOrdering.identifyTime`, the `TableauRule.timeLinearity`
+    constructor with its three-arm `applyRule` case, `firstIncomparablePair`, `linearityRules` /
+    `findApplicableLinearityRule` / `findUnexpandedLinearity`, the two stage lemmas and the
+    `ruleToString` entry are all landed and green; Phase 3's **36**-constructor expectation is
+    met. The third expansion stage is now wired into `expandOnce` / `expandOnceUnblocked`, after
+    seriality, and the third-stage cases in `expandOnceUnblocked_pick_ne_nil` / `_adds_new` are
+    discharged by the two existing stage lemmas. **All seven** W-rows read
+    `total=true incomparable=[]` — 2.7's done-criterion, met. C4 stays `OPEN` at `.Base`.
+  - [x] **2.7c — split/post-blocking open-arm contract repair** *(done 2026-07-28b; the
+    prerequisite the blocker below called for)*. `Saturation.resolveOpenArm` settles each
+    sub-branch that comes back `.inr` **while its siblings are still in scope**, reporting
+    closed / genuinely-saturated-open / undecided; an arm that cannot be settled propagates as
+    fuel exhaustion and is never converted into a closure. `saturateBlocked` moved above
+    `expandBranchWithFuel` for definition order; `saturateBlockedCancellable` moved likewise and
+    `resolveOpenArmCancellable` added so the `IO` mirror stays a line-for-line transcription.
+    `resolveOpenArm_inr` carries the `findClosure = none` invariant through the new layer, so
+    `expandBranchWithFuel_sound` and `blocking_sound` are unchanged in statement. Measured
+    **verdict-neutral on its own**: with the stage still unwired, `lake build` and
+    `lake build BimodalTest` green at 38.6 s (baseline 39 s) with **zero** `#guard_msgs`
+    movement.
+  - [x] **2.7 (new) — per-branch time orderings + `timeLinearity`** *(done 2026-07-28b via
+    2.7a + 2.7c + 2.7b)* (`Tableau.lean` +
     `Saturation.lean` + `CancellableExpansion.lean`). Additive
     `RuleResult.branchingOrdered (branches : List (List SignedFormula × TimeOrdering))` and
     `ExpansionResult.split (branches : List (Branch × TimeOrdering))`; plumbing per report 04
@@ -690,8 +705,10 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
     `timeLinearity` does not yet order, so the controls W5/W6 flip `total=true → false` when 2.6
     lands. The criterion is therefore "all seven flip to `total=true`", not "W1-W4 flip" —
     W5/W6's regression is expected, benign, and 2.7's to repair.
-    *(NOT STARTED — the only sub-phase of Phase 2 still open. Deliberately not begun rather than
-    begun and abandoned: it is a 57-site refactor of `RuleResult`/`ExpansionResult` across
+    *(Historical scoping note, retained for the record. It was accurate: the change was split
+    across three dispatches (2.7a plumbing, 2.7c contract repair, 2.7b scheduling) exactly as
+    the "split if one dispatch is not enough" clause anticipated. Deliberately not begun in one
+    pass rather than begun and abandoned: it is a 57-site refactor of `RuleResult`/`ExpansionResult` across
     `Tableau.lean`, `Saturation.lean`, `CancellableExpansion.lean`, `CountermodelExtraction.lean`,
     `Automation/DatasetExport.lean` and the corpus, and a partial pass leaves the tree red.
     Scoping for the dedicated dispatch, measured 2026-07-27b:*
@@ -748,8 +765,38 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
     `List (List SignedFormula × TimeOrdering)` and `List (Branch × TimeOrdering)` are the same
     type — and arms 1 and 2 simply pass `branch` through unchanged.
 
-    **BLOCKER** (sub-phase 2.7b, 2026-07-28) — raised rather than silently annotated, per
-    `.claude/rules/plan-compliance.md`.
+    **BLOCKER — RESOLVED 2026-07-28b.** Raised 2026-07-28 rather than silently annotated, per
+    `.claude/rules/plan-compliance.md`; the diagnosis below was correct and is retained
+    verbatim. The repair is 2.7c above (`Saturation.resolveOpenArm`), landed before the stage
+    was re-wired. Post-repair measurements, replacing every forecast in the entry below:
+
+    - **C4 at `.Base` stays `OPEN`.** The countermodel survives with the stage wired. This is
+      the gate the blocker existed to protect and it is met.
+    - **All seven W-rows read `total=true incomparable=[]`.** W1-W4 need a per-row fuel of 400
+      (`linearityFuel` in the corpus): the three-way split divides the budget proportionally and
+      these rows order eight to ten times each. The boundary is measured, not guessed — `STALLED`
+      at 200/250/280, W2 flips at 280, W4 at 350, all four at 400, stable through 800/1200/2000.
+      W5/W6 clear at `conformanceFuel` and are left on it. W7 (W1 at 2000, five times its own
+      fuel) is identical, so the flip is the rule firing and not the budget. The blocker's
+      suspicion was right: the `STALL`s were partly an artifact of arms being re-explored under
+      the broken contract, and what remained was a plain budget shortfall.
+    - **W6's `CLOSED` is gone** — it was the same unsoundness as C4, and the contract repair
+      removed both.
+    - **The `.Dense`/`.Dedekind` C4 repair did not materialise.** The blocker recorded that the
+      broken-contract wiring also flipped C4 at `.Dense`/`.Dedekind` from `OPEN [DEFECT]` to
+      `CLOSED` (matching target). Under the repaired contract those rows stay `OPEN [DEFECT]`.
+      That apparent repair was an artifact of the same abandoned-sibling defect, so it was never
+      bankable; the two rows remain open defects for their own scheduled work. No regression —
+      they were `OPEN [DEFECT]` before this sub-phase and are `OPEN [DEFECT]` after.
+    - **One cost regression, not a verdict regression.** `□p → □q` now takes 1473 ms, over the
+      dataset labeller's 1000 ms wall clock, and was reported `.timeout` instead of `.invalid`.
+      Every other smoke-corpus row still decides correctly and all but that one finish in ≤ 19 ms.
+      Fixed by `labelWallclockTimeoutMs = 3000`, replacing four scattered `1000` defaults.
+      Exceeding the budget yields `.timeout`, the conservative label, never a wrong verdict.
+    - **Suite cost.** `TableauConformance` 36 s → 59 s and `lake build BimodalTest` 39 s → 61 s.
+      That is the price of a third splitting stage; it is recorded rather than absorbed silently.
+
+    The original entry follows.
 
     - **What failed**: with the third stage wired in, `lake build BimodalTest` moves a corpus
       row it must not move. `.Base` row **C4 `Fp->FFp`** flips `OPEN` → `CLOSED` against
@@ -903,6 +950,35 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
 
 ### Phase 5: Bridge Infrastructure (BranchOrder, Embed, Carrier) [NOT STARTED]
 
+**ENGINE CONTRACT CHANGE (2026-07-28b, from sub-phase 2.7c) — read before consuming
+`expandBranchWithFuel`.** What the fuel loop may return while sibling branches are unexplored
+has changed, and this phase consumes it.
+
+*Before*: `expandBranchWithFuel` could return `.inr openBranch` for a branch that was open only
+in the *unblocked* sense (`findUnexpanded openBranch ≠ none`), reached by short-circuiting a
+split fold on its first `.inr` arm and abandoning that arm's siblings. `buildTableau` was then
+responsible for the post-blocking pass — and, because it had lost the siblings, could report
+`.allClosed` on the strength of a branch it had closed while untried arms remained.
+
+*After*: each arm is settled inside the fold by `Saturation.resolveOpenArm`, which runs the
+post-blocking pass while the siblings are still in scope. Consequences to rely on:
+
+1. **A `.inr` result from a split arm is fully saturated** — `findUnexpanded = none` — not merely
+   unblocked-saturated. The top-level `.saturated` path (no split above it) can still hand back
+   an unsaturated branch, which is why `buildTableau` retains its own `saturateBlocked` call.
+2. **`.allClosed` now means every sub-branch genuinely closed.** It is no longer reachable by
+   abandoning siblings.
+3. **An arm that can be settled neither way propagates as `none`** (fuel exhaustion / `STALLED`),
+   never as a closure. Downstream reasoning may treat `none` as "the engine decided nothing" and
+   must not read it as a negative answer.
+4. `expandBranchWithFuel_sound` / `blocking_sound` are unchanged in statement; the invariant
+   travels through the new layer via `resolveOpenArm_inr`.
+
+`saturateBlockedCancellable` and the new `resolveOpenArmCancellable` mirror this line-for-line
+in `CancellableExpansion.lean`; the `_tracedImpl` mirror in `Saturation.lean` does **not** yet
+carry the repair (it feeds trace certificates only, and no corpus row consumes it for a verdict)
+— if a later phase starts reading verdicts off the traced mirror, sync it first.
+
 - **Goal:** A saturated branch's time structure is packaged as a finite total order and embedded
   into each class's concrete carrier through one abstract interface — the only place the four
   classes genuinely diverge (02 §8.4).
@@ -970,6 +1046,12 @@ refuted by report 04 §Q3.2's `K2` measurement. Fuel 200 is confirmed sufficient
 - **Territory:** `Verified/Bridge/Interpolate.lean` only.
 
 ### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [NOT STARTED]
+
+**ENGINE CONTRACT CHANGE (2026-07-28b, from sub-phase 2.7c).** See the identically-titled note
+under Phase 5 — it applies here verbatim. The short version: a `.inr` arm out of a split is now
+fully saturated, `.allClosed` now means every sub-branch genuinely closed, and an unsettleable
+arm surfaces as `none`/`STALLED` rather than as a closure. `not_valid_of_hasOpen` consumes the
+`hasOpen` certificate, so point 1 is the one that matters most here.
 
 - **Goal:** **Headline result 1**: `not_valid_of_hasOpen` generic in the carrier, semantic rule
   soundness, and `Decidable` instances for all four frame classes. On completion this task has

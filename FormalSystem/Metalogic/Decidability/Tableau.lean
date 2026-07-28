@@ -1483,40 +1483,39 @@ def findUnexpandedSerial (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.em
   b.find? fun sf => (findApplicableSerialRule sf b timeOrd).isSome
 
 /-!
-### Time linearity: built, gated, NOT YET SCHEDULED
+### Time linearity: the third stage, and the engine defect scheduling it exposed
 
-**Read this before wiring the stage below into `expandOnce`.** `timeLinearity`, its stage
-helpers and `Branch`/`TimeOrdering.identifyTime` are complete and reviewable, but the third
-stage is deliberately **not** wired into `expandOnce` / `expandOnceUnblocked`. Wiring it makes
-the engine report `F p → F(F p)` as CLOSED at `.Base` (conformance row C4, `target=OPEN`:
-there is no density over an arbitrary linear order, and ℤ with `p` true only at `1` is a
-countermodel). That is a real unsoundness, and it is **not** a defect in this rule.
+`timeLinearity` is now wired into `expandOnce` / `expandOnceUnblocked` as the third stage, and
+all seven `TimeOrderProbe` rows read `total=true incomparable=[]`. The history below is kept
+because it identifies a live invariant of the engine that this rule was merely the first thing
+to test.
 
-*What actually goes wrong*, isolated by running C4 at `.Base` with the arms varied and by
-calling `expandBranchWithFuel` directly instead of `buildTableau`:
+Scheduling this stage against the *old* `expandBranchWithFuel` made the engine report
+`F p → F(F p)` as CLOSED at `.Base` (conformance row C4, `target=OPEN`: there is no density
+over an arbitrary linear order, and ℤ with `p` true only at `1` is a countermodel). That was a
+real unsoundness, and it was **not** a defect in this rule:
 
 - identification arm alone → OPEN, with a genuinely total order (`5 < 0 < 1 < 2 < 4`) that is a
   correct countermodel; arms 2+3 → OPEN likewise. Any variant containing arm 1 → CLOSED.
-- Calling `expandBranchWithFuel` directly shows it returns `.inr openBranch` — an **open**
-  branch — for which `findUnexpanded ≠ none`. So the fuel loop hands back a branch that is
-  saturated only in the *unblocked* sense.
-- `expandBranchWithFuel`'s split fold short-circuits on the first sub-branch that comes back
-  `.inr` and never explores the remaining arms. `buildTableau` (`Saturation.lean`) then runs
-  `saturateBlocked` on that branch, which closes it, and reports `.allClosed` — so the
-  abandoned sibling arms are silently counted as closed.
+- Calling `expandBranchWithFuel` directly showed it returning `.inr openBranch` — an **open**
+  branch — for which `findUnexpanded ≠ none`. The fuel loop was handing back a branch saturated
+  only in the *unblocked* sense.
+- Its split fold short-circuited on the first sub-branch that came back `.inr` and never
+  explored the remaining arms. `buildTableau` then ran `saturateBlocked` on that branch, which
+  closed it, and reported `.allClosed` — so the abandoned sibling arms were silently counted as
+  closed.
 
-The defect is therefore in the open-branch contract between the split fold and
-`buildTableau`'s post-blocking pass, not in the trichotomy. It is pre-existing and merely
-*exposed* here: it needs a rule whose arms come back open-but-not-saturated, and before
-`timeLinearity` no corpus row produced one. Repairing it changes what `expandBranchWithFuel`
-may return while siblings remain unexplored, which Phases 5 and 7 consume, so it is out of this
-sub-phase's scope.
+The defect was in the open-branch contract between the split fold and the post-blocking pass,
+not in the trichotomy: pre-existing, and merely *exposed* here, because it needs a rule whose
+arms come back open-but-not-saturated and no corpus row produced one before. It is repaired in
+`Saturation.resolveOpenArm`, which settles each arm while its siblings are still in scope. With
+that in place C4 stays OPEN and the stage is sound to schedule.
 
-Everything below is the finished rule, kept so the repair dispatch has only to re-wire the two
-`match` arms in `expandOnce`/`expandOnceUnblocked` (and restore the third-stage cases in
-`expandOnceUnblocked_pick_ne_nil` / `_adds_new`, which the two stage lemmas already supply).
+**The invariant to preserve.** Any future rule whose arms can come back open-but-not-saturated
+is subject to the same contract: an arm that cannot be settled must propagate as fuel
+exhaustion, never as a closure. `resolveOpenArm` is where that is enforced.
 
-### When it is scheduled, it goes third, after seriality
+### It goes third, after seriality
 
 `timeLinearity` is not in `allRulesForFC` either, for the same reason as `serialityRule` — it is
 keyed on the branch's time structure rather than on any formula's shape — but its stage belongs
