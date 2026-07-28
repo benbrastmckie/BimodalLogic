@@ -474,4 +474,223 @@ theorem classBeginsAtGapStartTemporal_spec (atomMap : Formula → sig.preds)
 
 end BTemporal
 
+/-! ## Lemma 3, the left-hand end point
+
+*"Now look to the left of `t`. Looking back from just after `t` we can use Prior-S and see that
+either `R` is true always before `t`, there is a last point of `¬R` just before this stretch of `R`
+or there is no last point of `¬R`, but instead a first point of `R`. We must rule out the third
+case."* (printed p.178)
+
+The third case is `reynolds_lemma3_no_first_point`; it is where `B` is used and where the whole of
+Reynolds' remaining Lemma 3 paragraph is discharged, step for step. -/
+
+section LeftEnd
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- **A point at which `¬R` accumulates from below begins its own class.**
+
+*"Suppose, for contradiction, that `s` is this first point of `R` so that
+`M ⊨ (R ∧ K⁻(¬R))(s)`"* — the hypothesis `hk` is that `K⁻(¬R)` clause. A class-mate `v < s` would
+put a whole interval `(v, s)` inside the class, where `R` holds, leaving no room for the `¬R`
+points `K⁻(¬R)` demands. -/
+theorem contemp_not_lt_of_kminus {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) {s : M.carrier} (hs : EndsInGapOnRight M ε s)
+    (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ EndsInGapOnRight M ε r)
+    {v : M.carrier} (hv : ContempEquivDense M ε s v) : ¬ v < s := by
+  intro hvs
+  obtain ⟨r, hvr, hrs, hnr⟩ := hk v hvs
+  have hvs' : ContempEquivDense M ε v s := contemp_symm hε M hv
+  have hvr' : ContempEquivDense M ε v r := contemp_of_between hε M hvr.le hrs.le hvs'
+  exact hnr ((endsInGapOnRight_congr hε M (contemp_trans hε M hv hvr')).mp hs)
+
+/-- **Reynolds 1992, printed p.178**: *"Thus there are other classes in this interval continuing on
+the other side of the gap which ends `s`'s. And for a while after the gap `R` continues to be true:
+we have not reached the end of the interval yet."*
+
+Rendered as: above `s` there is a point `u` outside `s`'s class with `R` holding throughout the
+whole of `[s, u]`. The proof is Reynolds' own case split. Either `R` holds forever after `s`, and
+the point `ρ`'s first conjunct supplies works; or it does not, and `reynolds_lemma3_right` produces
+the interval's excluded right end point `s'`, at which point either some point of `(s, s')` already
+lies outside the class — that one works — or `s'` is *"the first point after the class"*, which is
+exactly what `ρ`'s third conjunct forbids. That last branch is Reynolds' *"neither can it stretch
+to the end of the maximal interval of `R` as it would again not end at a gap"*. -/
+theorem exists_gt_notContemp_holds (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    {s : M.carrier} (hs : EndsInGapOnRight M ε s) :
+    ∃ u : M.carrier, s < u ∧ ¬ ContempEquivDense M ε s u ∧
+      ∀ q : M.carrier, s ≤ q → q ≤ u → EndsInGapOnRight M ε q := by
+  obtain ⟨y₀, hsy₀, hny₀⟩ := hs.1
+  by_cases hforever : ∀ q : M.carrier, s < q → EndsInGapOnRight M ε q
+  · refine ⟨y₀, hsy₀, hny₀, fun q hsq _ => ?_⟩
+    rcases eq_or_lt_of_le hsq with rfl | h
+    · exact hs
+    · exact hforever q h
+  · push_neg at hforever
+    obtain ⟨s', hss', hbelow, hns'⟩ :=
+      reynolds_lemma3_right atomMap h_surj hε M h_prior_U h_prior_S hs hforever
+    by_cases hall : ∀ y : M.carrier, s < y → y < s' → ContempEquivDense M ε s y
+    · exact absurd
+        ⟨s', hss', fun hc => hns' ((endsInGapOnRight_congr hε M hc).mp hs), hall⟩ hs.2.2
+    · push_neg at hall
+      obtain ⟨u, hsu, hus', hnu⟩ := hall
+      refine ⟨u, hsu, hnu, fun q hsq hqu => ?_⟩
+      rcases eq_or_lt_of_le hsq with rfl | h
+      · exact hs
+      · exact hbelow q h (lt_of_le_of_lt hqu hus')
+
+/-- **Reynolds 1992, printed p.178**: *"Thus `R ∧ K⁻(¬R)` does not hold at the left hand end of any
+of these classes."*
+
+Rendered as: `B` fails at any point `u` outside `s`'s class with `R` throughout `[s, u]`. If `B`
+held at `u`, its witness `w` — the least element of `u`'s class — would lie strictly above `s`, and
+the `K⁻(¬R)` clause at `w` would demand a `¬R` point between `s` and `w`, where `R` in fact holds
+throughout. -/
+theorem not_classBeginsAtGapStart {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) {s u : M.carrier} (hsu : s < u)
+    (hnu : ¬ ContempEquivDense M ε s u)
+    (hIcc : ∀ q : M.carrier, s ≤ q → q ≤ u → EndsInGapOnRight M ε q) :
+    ¬ ClassBeginsAtGapStart M ε u := by
+  rintro ⟨w, huw, hmin, _hrw, hk⟩
+  have hwu : w ≤ u := not_lt.mp (hmin u (contemp_refl hε M u))
+  have hsw : s < w := by
+    by_contra hle
+    push_neg at hle
+    have hwu' : ContempEquivDense M ε w u := contemp_symm hε M huw
+    have hws : ContempEquivDense M ε w s := contemp_of_between hε M hle hsu.le hwu'
+    exact hnu (contemp_trans hε M (contemp_symm hε M hws) hwu')
+  obtain ⟨r, hsr, hrw, hnr⟩ := hk s hsw
+  exact hnr (hIcc r hsr.le (le_trans hrw.le hwu))
+
+/-- **Reynolds 1992, printed p.178**: *"`B` holds in `s`'s class"* — with `s` itself as the witness
+that the class begins with a point satisfying `R ∧ K⁻(¬R)`. -/
+theorem classBeginsAtGapStart_of_contemp {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) {s t : M.carrier} (hs : EndsInGapOnRight M ε s)
+    (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ EndsInGapOnRight M ε r)
+    (hst : ContempEquivDense M ε s t) : ClassBeginsAtGapStart M ε t :=
+  ⟨s, contemp_symm hε M hst,
+    fun _ hv => contemp_not_lt_of_kminus hε M hs hk (contemp_trans hε M hst hv),
+    hs, hk⟩
+
+/-- **Reynolds 1992, §6 Lemma 3, printed p.178 — the third case is ruled out.**
+
+> *We must rule out the third case. … Suppose, for contradiction, that `s` is this first point of
+> `R` so that `M ⊨ (R ∧ K⁻(¬R))(s)`. … Let `B` be the temporal formula saying that the `∼`-class we
+> are now in begins with a point satisfying `R ∧ K⁻(¬R)`. `B` exists by expressive completeness.
+> `B` holds in `s`'s class up to the gap and is false arbitrarily soon after the gap. This
+> contradicts Prior-U applied to `B`.*
+
+There is no *first point of `R`*: no point at which `R` holds while `¬R` accumulates from below.
+
+Reynolds' *"this contradicts Prior-U"* is the last third of the proof below. Prior-U applied to `B`
+at `s` produces a boundary point `s₁` for the stretch on which `B` holds. `s₁` cannot lie in `s`'s
+class, because the class has no last point and `B` holds throughout it. So `s₁` lies above the
+class — and then `(s, s₁)` cannot be contained in the class either, since `s₁` would be *"the first
+point after the class"*, which `ρ(s)`'s third conjunct forbids. The point of `(s, s₁)` outside the
+class then has `B` true (it is inside Prior-U's stretch) and `B` false (it is outside the class
+with `R` throughout below it). That is the contradiction. -/
+theorem reynolds_lemma3_no_first_point (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    {s : M.carrier} (hs : EndsInGapOnRight M ε s)
+    (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧
+      ¬ EndsInGapOnRight M ε r) : False := by
+  have hBspec : ∀ r : M.carrier,
+      TemporalTruth M atomMap r (classBeginsAtGapStartTemporal atomMap h_surj ε) ↔
+        ClassBeginsAtGapStart M ε r :=
+    fun r => classBeginsAtGapStartTemporal_spec atomMap h_surj ε M h_prior_U h_prior_S r
+  obtain ⟨u₀, hsu₀, hnu₀, hIcc₀⟩ :=
+    exists_gt_notContemp_holds atomMap h_surj hε M h_prior_U h_prior_S hs
+  have hnB₀ : ¬ ClassBeginsAtGapStart M ε u₀ :=
+    not_classBeginsAtGapStart hε M hsu₀ hnu₀ hIcc₀
+  -- Prior-U's `U(⊤,B)` antecedent: `B` holds throughout `s`'s class, which is non-degenerate.
+  obtain ⟨y, hsy, hcy⟩ := exists_contemp_gt hε M hs
+  have hstretch : ∃ b : M.carrier, s < b ∧ ∀ r : M.carrier, s < r → r < b →
+      TemporalTruth M atomMap r (classBeginsAtGapStartTemporal atomMap h_surj ε) :=
+    ⟨y, hsy, fun r h₁ h₂ => (hBspec r).mpr
+      (classBeginsAtGapStart_of_contemp hε M hs hk (contemp_of_between hε M h₁.le h₂.le hcy))⟩
+  have hfail : ∃ u : M.carrier, s < u ∧
+      ¬ TemporalTruth M atomMap u (classBeginsAtGapStartTemporal atomMap h_surj ε) :=
+    ⟨u₀, hsu₀, fun h => hnB₀ ((hBspec u₀).mp h)⟩
+  obtain ⟨s₁, hss₁, hbelow, hcase⟩ :=
+    h_prior_U s (classBeginsAtGapStartTemporal atomMap h_surj ε) hstretch hfail
+  -- `s₁` is not in `s`'s class: `B` holds throughout the class, which has no last point.
+  have hns₁ : ¬ ContempEquivDense M ε s s₁ := by
+    intro hc
+    rcases hcase with hn | ⟨_hb, hkplus⟩
+    · exact hn ((hBspec s₁).mpr (classBeginsAtGapStart_of_contemp hε M hs hk hc))
+    · obtain ⟨y', hs₁y', hcy'⟩ :=
+        exists_contemp_gt hε M ((endsInGapOnRight_congr hε M hc).mp hs)
+      obtain ⟨r, hs₁r, hry', hnr⟩ := hkplus y' hs₁y'
+      exact hnr ((hBspec r).mpr (classBeginsAtGapStart_of_contemp hε M hs hk
+        (contemp_trans hε M hc (contemp_of_between hε M hs₁r.le hry'.le hcy'))))
+  -- `(s, s₁)` is not inside the class either: `s₁` would then be a first point after it.
+  have hex : ∃ r : M.carrier, s < r ∧ r < s₁ ∧ ¬ ContempEquivDense M ε s r := by
+    by_contra hcon
+    push_neg at hcon
+    exact hs.2.2 ⟨s₁, hss₁, hns₁, fun y h₁ h₂ => hcon y h₁ h₂⟩
+  obtain ⟨r, hsr, hrs₁, hnr⟩ := hex
+  rcases lt_or_ge u₀ s₁ with hlt | hge
+  · exact hnB₀ ((hBspec u₀).mp (hbelow u₀ hsu₀ hlt))
+  · exact not_classBeginsAtGapStart hε M hsr hnr
+      (fun q h₁ h₂ => hIcc₀ q h₁ (le_trans h₂ (le_trans hrs₁.le hge)))
+      ((hBspec r).mp (hbelow r hsr hrs₁))
+
+/-- **Reynolds 1992, §6 Lemma 3, printed p.178 — the left-hand end point.**
+
+If `R` holds at `t` and fails somewhere below `t`, then there is a point `s` of `M` with `R`
+throughout `(s, t)` and `¬R` at `s`: *"a last point of `¬R` just before this stretch of `R`"*.
+
+Prior-S is applied *"looking back from just after `t`"*, exactly as printed: at a point `y` of the
+`R`-stretch above `t`, which is what supplies the `S(⊤,R)` antecedent — `R` is not yet known to
+hold anywhere below `t`, so Prior-S could not be applied at `t` itself. Its third case,
+*"a first point of `R`"*, is closed by `reynolds_lemma3_no_first_point`. -/
+theorem reynolds_lemma3_left (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    {t : M.carrier} (ht : EndsInGapOnRight M ε t)
+    (hnot : ∃ u : M.carrier, u < t ∧ ¬ EndsInGapOnRight M ε u) :
+    ∃ s : M.carrier, s < t ∧
+      (∀ r : M.carrier, s < r → r < t → EndsInGapOnRight M ε r) ∧
+      ¬ EndsInGapOnRight M ε s := by
+  have hspec : ∀ r : M.carrier,
+      TemporalTruth M atomMap r (gapRightFormula atomMap h_surj ε) ↔ EndsInGapOnRight M ε r :=
+    fun r => gapRightFormula_spec atomMap h_surj ε M h_prior_U h_prior_S r
+  -- *"Looking back from just after `t`"*: `y` is a point of the `R`-stretch above `t`.
+  obtain ⟨y, hty, hy⟩ := endsInGapOnRight_forAWhile hε M ht
+  have hstretch : ∃ s : M.carrier, s < y ∧ ∀ r : M.carrier, s < r → r < y →
+      TemporalTruth M atomMap r (gapRightFormula atomMap h_surj ε) :=
+    ⟨t, hty, fun r h₁ h₂ => (hspec r).mpr (hy r h₁ h₂.le)⟩
+  obtain ⟨u, hut, hnu⟩ := hnot
+  have hfail : ∃ u : M.carrier, u < y ∧
+      ¬ TemporalTruth M atomMap u (gapRightFormula atomMap h_surj ε) :=
+    ⟨u, lt_trans hut hty, fun h => hnu ((hspec u).mp h)⟩
+  obtain ⟨s, hsy, hbelow, hcase⟩ :=
+    h_prior_S y (gapRightFormula atomMap h_surj ε) hstretch hfail
+  have hns : ¬ EndsInGapOnRight M ε s := by
+    rcases hcase with hn | ⟨hb, hkminus⟩
+    · exact fun h => hn ((hspec s).mpr h)
+    · -- *"a first point of `R`"* — the third case, ruled out.
+      exact absurd
+        (reynolds_lemma3_no_first_point atomMap h_surj hε M h_prior_U h_prior_S ((hspec s).mp hb)
+          (fun v hv => by
+            obtain ⟨r, h₁, h₂, h₃⟩ := hkminus v hv
+            exact ⟨r, h₁, h₂, fun h => h₃ ((hspec r).mpr h)⟩))
+        not_false
+  have hst : s < t := by
+    rcases lt_trichotomy s t with h | rfl | h
+    · exact h
+    · exact absurd ht hns
+    · exact absurd (hy s h hsy.le) hns
+  exact ⟨s, hst, fun r h₁ h₂ => (hspec r).mp (hbelow r h₁ (lt_trans h₂ hty)), hns⟩
+
+end LeftEnd
+
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
