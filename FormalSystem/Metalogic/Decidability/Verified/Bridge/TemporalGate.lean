@@ -174,27 +174,27 @@ def temporalWitnessCheck (b : Branch) (ord : TimeOrdering) : Bool :=
 
 theorem untlNegFuture_of_check (h : temporalWitnessCheck b ord = true) :
     untlNegFuture b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.1.1.1
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 theorem snceNegPast_of_check (h : temporalWitnessCheck b ord = true) :
     snceNegPast b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.1.1.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 theorem untlRaySelf_of_check (h : temporalWitnessCheck b ord = true) :
     untlRaySelf b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.1.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 theorem snceRaySelf_of_check (h : temporalWitnessCheck b ord = true) :
     snceRaySelf b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 theorem untlNegRayLow_of_check (h : temporalWitnessCheck b ord = true) :
     untlNegRayLow b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 theorem snceNegRayUp_of_check (h : temporalWitnessCheck b ord = true) :
     snceNegRayUp b ord = true := by
-  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.2
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; tauto
 
 /-! ## Consumption
 
