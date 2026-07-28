@@ -74,13 +74,13 @@ loop's invariant is about branches, not deltas.
 
 T1 is landed **one rule at a time**, as `applyRule_<rule>_closed`: if the trigger formula (and,
 where the rule reads the branch, every branch formula) lies in a `TableauClosed` set, so does
-everything that rule emits. Ten of the thirty-six rules are proved here; the section note above
-`applyRule_andPos_closed` explains why one-rule-per-declaration is forced rather than stylistic,
-and `Verified/README.md` records which rules remain and what each needs.
+everything that rule emits. All thirty-six rules are proved here; the section note above
+`applyRule_andPos_closed` explains why one-rule-per-declaration is forced rather than stylistic.
 
-There is deliberately **no** combined `applyRule_subformula_closed` yet. Stating it would mean
-either asserting the property for rules whose case is not proved, or carrying a hypothesis
-enumerating the ten — neither is worth having before the remaining twenty-six land.
+`applyRule_subformula_closed` then assembles them by `cases rule`. That assembly is deliberately
+last rather than first: stating it before the cases existed would have meant either asserting the
+property for unproved rules or carrying a hypothesis enumerating the proved ones, and `cases rule`
+does not unfold `applyRule`, so the combined statement costs nothing once the cases are in hand.
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -350,6 +350,18 @@ The rules' auto-propagation blocks read formulas back off the branch through `Li
 selectors and `List.filterMap`, then relabel them. All three steps are formula-preserving or
 formula-shrinking, and the lemmas here are what let the 36 cases say so in one step each.
 -/
+
+/--
+`Branch.contains` is `List.any` with `BEq`, not `List.contains`, so `List.contains_iff_mem` does
+not apply to it. `orderTrichotomy` is the only rule case that has to read a formula *off* the
+branch through this predicate — its analyticity guard is stated with `Branch.contains` — and this
+is the bridge that turns that guard into a membership `hb` can consume.
+-/
+theorem mem_of_branch_contains {b : Branch} {x : SignedFormula} (h : b.contains x = true) :
+    x ∈ b := by
+  simp only [Branch.contains, List.any_eq_true] at h
+  obtain ⟨y, hy, hxy⟩ := h
+  exact beq_iff_eq.mp hxy ▸ hy
 
 /-- The relabelled copies produced by `identifyTime` carry branch formulas verbatim. -/
 theorem identifyTime_formula_mem {b : Branch} {src tgt : TimeIndex} {C : Finset Formula}
@@ -919,6 +931,376 @@ theorem applyRule_somePastPos_closed (hC : TableauClosed C) (hsf : sf.formula �
          | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
              Formula.self_mem_subformulas]))
     | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+/-! ### Until and Since
+
+`untlPos`/`sncePos` split into an event branch and a guard-and-continue branch; `untlNeg`/`snceNeg`
+run the Reynolds co-decomposition, and both of their arms re-include the trigger `sf` itself. That
+re-inclusion is why these four need the `(simp_all only []; done)` alternative: `simp_all` has by
+then rewritten `hsf` through the `asUntil?`/`asSince?` inversion, so `hsf` no longer *says*
+`sf.formula ∈ C` even though the surviving arm equation still proves it. The `done` is what keeps
+that alternative from silently accepting a goal it only partly simplified.
+-/
+
+theorem applyRule_untlPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .untlPos sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asUntil?_eq_iff, reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, Branch.untlNegFormulas,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hsf
+    | exact hC.untl_left hsf
+    | exact hC.untl_right hsf
+    | (simp_all only []; done)
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+
+theorem applyRule_sncePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .sncePos sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asSince?_eq_iff, reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.allPastPosFormulas, Branch.somePastNegFormulas, Branch.snceNegFormulas,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hsf
+    | exact hC.snce_left hsf
+    | exact hC.snce_right hsf
+    | (simp_all only []; done)
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+
+theorem applyRule_untlNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .untlNeg sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asUntil?_eq_iff, reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, Branch.untlNegFormulas,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hsf
+    | exact hC.untl_left hsf
+    | exact hC.untl_right hsf
+    | (simp_all only []; done)
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+
+theorem applyRule_snceNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .snceNeg sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asSince?_eq_iff, reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.allPastPosFormulas, Branch.somePastNegFormulas, Branch.snceNegFormulas,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hsf
+    | exact hC.snce_left hsf
+    | exact hC.snce_right hsf
+    | (simp_all only []; done)
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+
 end FreshWitness
+
+section FrameClass
+
+-- The frame-class rules sit at positions 27-34 of the match.
+set_option maxHeartbeats 4000000
+
+variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+
+/-! ### The frame-class rules
+
+Five of these consume a dedicated `TableauClosed` field and nothing else can close them:
+`priorUZ`/`priorSZ` take `priorU`/`priorS`, `priorUGap`/`priorSGap` take `gapU`/`gapS`, and
+`sepRule` takes `sep`. The three `and_left` uses are the same step in each: the Dedekind rules
+trigger on a conjunction, and it is the conjunction's *left* operand — `U(⊤, g)`, `S(⊤, g)`,
+`K⁺ψ` — that the field is stated about. `beq_iff_eq` is what turns the rules' own `e == ⊤` guard
+into the equation that makes `e` and `⊤` the same term.
+
+`z1Rule` and `densityRule` are analytic despite their setting, as the module docstring records.
+`z1Rule`'s closer needs `Formula.someFuture`, `Formula.neg` and `Formula.top` in its `simp` set
+alongside `Formula.allFuture`: `simp` normalises `G ψ` to `¬F¬ψ`, while `split` leaves the
+trigger in raw `imp`/`untl` form, and without unfolding both spellings down to constructors the
+two sides of the subformula goal never meet.
+-/
+
+theorem applyRule_priorUZ_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .priorUZ sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asSomeFuture?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
+    reduceCtorEq])
+  all_goals (try subst hg)
+  all_goals exact hC.priorU _ hsf
+
+theorem applyRule_priorSZ_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .priorSZ sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asSomePast?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
+    reduceCtorEq])
+  all_goals (try subst hg)
+  all_goals exact hC.priorS _ hsf
+
+theorem applyRule_z1Rule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .z1Rule sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [List.mem_cons, List.not_mem_nil, or_false, reduceCtorEq])
+  all_goals (try subst hg)
+  all_goals (exact hC.of_sub hsf (by simp [SignedFormula.pos, Formula.allFuture,
+    Formula.someFuture, Formula.neg, Formula.top, Formula.subformulas,
+    Formula.self_mem_subformulas]))
+
+theorem applyRule_priorUGap_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .priorUGap sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asAnd?_eq_iff, Bool.and_eq_true, beq_iff_eq, List.mem_cons,
+    List.not_mem_nil, or_false, reduceCtorEq])
+  all_goals (try subst hg)
+  all_goals exact hC.gapU _ (hC.and_left hsf)
+
+theorem applyRule_priorSGap_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .priorSGap sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asAnd?_eq_iff, Bool.and_eq_true, beq_iff_eq, List.mem_cons,
+    List.not_mem_nil, or_false, reduceCtorEq])
+  all_goals (try subst hg)
+  all_goals exact hC.gapS _ (hC.and_left hsf)
+
+theorem applyRule_sepRule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
+    ∀ g ∈ (applyRule .sepRule sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [asAnd?_eq_iff, Bool.and_eq_true, beq_iff_eq, List.mem_cons,
+    List.not_mem_nil, or_false, reduceCtorEq])
+  all_goals (try subst hg)
+  all_goals exact hC.sep _ (hC.and_left hsf)
+
+theorem applyRule_densityRule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .densityRule sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
+  all_goals (try simp only [
+    Branch.allFuturePosFormulas,
+    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg)
+  all_goals (try (repeat' rcases hg with hg | hg))
+  all_goals first
+    | exact hC.allFuture_inner hsf
+    | (simp_all only []; done)
+    | (refine mem_filterMap_sub hC hb ?_ hg
+       clear hg hsf hC hb
+       intro x y hy
+       repeat' first
+         | split at hy
+         | simp only [Option.some.injEq] at hy
+       all_goals first
+         | exact absurd hy (by simp)
+         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+             Formula.self_mem_subformulas]))
+
+
+/--
+`orderTrichotomy` is analytic, and this proof is where that shows up concretely.
+
+The rule's restriction 3 fires only when the branch already carries the *negation* of one of the
+three `temp_linearity` disjuncts at the common predecessor. `List.find?_some` turns the surviving
+`candidates.find? fires = some (t₀, ψ)` into `fires (t₀, ψ) = true`, whose last conjunct is
+exactly that guard; `mem_of_branch_contains` and `hb` then put one disjunct in `C`, and the
+`trich` field carries the other two. Nothing here conjures a formula the branch did not already
+mention — which is what stops the closure iterating `F(F(x ∧ y) ∧ y′)` without bound.
+-/
+theorem applyRule_orderTrichotomy_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ g ∈ (applyRule .orderTrichotomy sf b ord).1.emitted, g.formula ∈ C := by
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
+  have hfires := List.find?_some (by assumption)
+  simp only [Bool.and_eq_true, List.any_cons, List.any_nil, Bool.or_eq_true, Bool.or_false,
+    Bool.false_or] at hfires
+  obtain ⟨-, hany⟩ := hfires
+  have htri := hC.trich _ _ (by
+    rcases hany with h | h | h
+    · exact Or.inl (hb _ (mem_of_branch_contains h))
+    · exact Or.inr (Or.inl (hb _ (mem_of_branch_contains h)))
+    · exact Or.inr (Or.inr (hb _ (mem_of_branch_contains h))))
+  simp only [List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil, List.append_nil,
+    List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hg
+  repeat' rcases hg with hg | hg
+  all_goals first
+    | exact hsf
+    | exact htri.1
+    | exact htri.2.1
+    | exact htri.2.2
+
+end FrameClass
+
+section Combined
+
+variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+
+/--
+T1, assembled: **no rule of the calculus emits a formula outside a `TableauClosed` set.**
+
+This is the form `Fuel.lean` consumes, and it costs nothing to state now that every case is
+proved: `cases rule` does not unfold `applyRule`, so the 900-line match never enters a goal here
+and the whole theorem elaborates in the time of thirty-six `exact`s. The expensive work is
+already paid for, one declaration at a time, above.
+
+The hypotheses are the union of what the cases need. `hb` is genuinely required and not merely
+convenient: the propagation-heavy rules read universals back off the branch, and `timeLinearity`
+carries whole branches into its arms, so a statement about the trigger formula alone would be
+false for them.
+-/
+theorem applyRule_subformula_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
+    (hb : ∀ x ∈ b, x.formula ∈ C) (rule : TableauRule) :
+    ∀ g ∈ (applyRule rule sf b ord).1.emitted, g.formula ∈ C :=
+  match rule with
+  | .andPos => applyRule_andPos_closed hC hsf
+  | .andNeg => applyRule_andNeg_closed hC hsf
+  | .orPos => applyRule_orPos_closed hC hsf
+  | .orNeg => applyRule_orNeg_closed hC hsf
+  | .impPos => applyRule_impPos_closed hC hsf
+  | .impNeg => applyRule_impNeg_closed hC hsf
+  | .negPos => applyRule_negPos_closed hC hsf
+  | .negNeg => applyRule_negNeg_closed hC hsf
+  | .boxPos => applyRule_boxPos_closed hC hsf
+  | .boxNeg => applyRule_boxNeg_closed hC hsf hb
+  | .diamondPos => applyRule_diamondPos_closed hC hsf hb
+  | .diamondNeg => applyRule_diamondNeg_closed hC hsf
+  | .boxTemporal => applyRule_boxTemporal_closed hC hsf
+  | .allFuturePos => applyRule_allFuturePos_closed hC hsf
+  | .allFutureNeg => applyRule_allFutureNeg_closed hC hsf hb
+  | .allPastPos => applyRule_allPastPos_closed hC hsf
+  | .allPastNeg => applyRule_allPastNeg_closed hC hsf hb
+  | .someFuturePos => applyRule_someFuturePos_closed hC hsf hb
+  | .someFutureNeg => applyRule_someFutureNeg_closed hC hsf
+  | .somePastPos => applyRule_somePastPos_closed hC hsf hb
+  | .somePastNeg => applyRule_somePastNeg_closed hC hsf
+  | .untlPos => applyRule_untlPos_closed hC hsf hb
+  | .untlNeg => applyRule_untlNeg_closed hC hsf hb
+  | .sncePos => applyRule_sncePos_closed hC hsf hb
+  | .snceNeg => applyRule_snceNeg_closed hC hsf hb
+  | .orderTrichotomy => applyRule_orderTrichotomy_closed hC hsf hb
+  | .denseIndicatorClosure => applyRule_denseIndicatorClosure_closed
+  | .densityRule => applyRule_densityRule_closed hC hsf hb
+  | .priorUZ => applyRule_priorUZ_closed hC hsf
+  | .priorSZ => applyRule_priorSZ_closed hC hsf
+  | .z1Rule => applyRule_z1Rule_closed hC hsf
+  | .priorUGap => applyRule_priorUGap_closed hC hsf
+  | .priorSGap => applyRule_priorSGap_closed hC hsf
+  | .sepRule => applyRule_sepRule_closed hC hsf
+  | .serialityRule => applyRule_serialityRule_closed hC
+  | .timeLinearity => applyRule_timeLinearity_closed hb
+
+end Combined
 
 end FormalSystem.Metalogic.Decidability
