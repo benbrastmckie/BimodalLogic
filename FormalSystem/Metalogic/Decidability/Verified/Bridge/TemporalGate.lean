@@ -164,13 +164,91 @@ def snceNegRayUp (b : Branch) (ord : TimeOrdering) : Bool :=
         else true
     | _, _ => true
 
+/-- **Row 7.** A positive until has a **guarded witness**: some known time strictly after its own
+time carries the event, and — unless the guard is `⊤` — every known time strictly between the two
+carries the guard.
+
+The `⊤` exemption sits *inside* the witness, not outside the row, and that placement is the whole
+content of the row on the `someFuture`/`somePast` fragment. `⊤` is never written on a branch, so a
+row exempting itself entirely when `ψ = ⊤` asserts nothing there — while the positive case still
+needs a witness, because `TruthAt … (untl φ ⊤)` demands one. Measured in this exact form
+(`Tests/BimodalTest/TemporalWitnessProbe.lean`, column `uGW`) beside the weaker `gw` and `wit` it
+is the pointwise conjunction of. -/
+def untlPosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .untl φ ψ =>
+        (futureKnown b ord sf.label.time).any fun t =>
+          b.hasPosAt φ ⟨sf.label.world, t⟩ &&
+            (ψ == Formula.top ||
+              (futureKnown b ord sf.label.time).all fun v =>
+                !strictBefore ord v t || b.hasPosAt ψ ⟨sf.label.world, v⟩)
+    | _, _ => true
+
+/-- **Row 8.** The past-directed mirror of row 7. -/
+def sncePosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .snce φ ψ =>
+        (pastKnown b ord sf.label.time).any fun t =>
+          b.hasPosAt φ ⟨sf.label.world, t⟩ &&
+            (ψ == Formula.top ||
+              (pastKnown b ord sf.label.time).all fun v =>
+                !strictBefore ord t v || b.hasPosAt ψ ⟨sf.label.world, v⟩)
+    | _, _ => true
+
+/-- **Row 9.** Correction 12's *positive* residual, at the **lower** ray. A positive until
+asserted at its world's lower-ray label has a witness among the known times — any of them, not
+only those after the ray label — and, unless the guard is `⊤`, the guard sits at the ray's own
+label **and** at every known time strictly below the witness.
+
+Both extensions past row 7 are forced by the geometry. A carrier point below every placed point
+reaches its witness across the whole of the lower ray, whose points all read the ray label, and
+across *every* placed point below the witness — not merely those after the ray label, since
+`regionLabel` picks the first eligible candidate and not the order-minimal one. The measured
+`rdG` additionally permitted the escape "the event is at the ray's own label"; that escape is
+deleted here, because the ray label is itself a known time with placed points below it, every one
+of them inside the guard interval. Measured in this exact form (column `uRD`) beside `rdG`, from
+which it never differs on the corpus. -/
+def untlRayDnGuard (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .untl φ ψ =>
+        if sf.label.time == regionLabel b ord sf.label.world 0 then
+          b.knownTimes.any fun t =>
+            b.hasPosAt φ ⟨sf.label.world, t⟩ &&
+              (ψ == Formula.top ||
+                (b.hasPosAt ψ sf.label &&
+                  b.knownTimes.all fun v =>
+                    !strictBefore ord v t || b.hasPosAt ψ ⟨sf.label.world, v⟩))
+        else true
+    | _, _ => true
+
+/-- **Row 10.** The mirror, at the **upper** ray. The rays swap between the two operators in the
+positive direction exactly as they do in the negative one, and the same way round. -/
+def snceRayUpGuard (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .pos, .snce φ ψ =>
+        if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
+          b.knownTimes.any fun t =>
+            b.hasPosAt φ ⟨sf.label.world, t⟩ &&
+              (ψ == Formula.top ||
+                (b.hasPosAt ψ sf.label &&
+                  b.knownTimes.all fun v =>
+                    !strictBefore ord t v || b.hasPosAt ψ ⟨sf.label.world, v⟩))
+        else true
+    | _, _ => true
+
 /--
 **The gate.** Carried on an open-branch certificate exactly as `timeOrderTotal`,
-`boxAnchoredCheck` and `regionLabelCheck` are, and consumed only through the six lemmas below.
+`boxAnchoredCheck` and `regionLabelCheck` are, and consumed only through the ten lemmas below.
 -/
 def temporalWitnessCheck (b : Branch) (ord : TimeOrdering) : Bool :=
   untlNegFuture b ord && snceNegPast b ord && untlRaySelf b ord && snceRaySelf b ord &&
-    untlNegRayLow b ord && snceNegRayUp b ord
+    untlNegRayLow b ord && snceNegRayUp b ord &&
+    untlPosGuardedWitness b ord && sncePosGuardedWitness b ord &&
+    untlRayDnGuard b ord && snceRayUpGuard b ord
 
 theorem untlNegFuture_of_check (h : temporalWitnessCheck b ord = true) :
     untlNegFuture b ord = true := by
@@ -261,5 +339,106 @@ theorem snceNegRay_up (h : temporalWitnessCheck b ord = true)
   have hrow := List.all_eq_true.mp (snceNegRayUp_of_check h) _ hmem
   simp only [beq_self_eq_true, if_true] at hrow
   exact List.all_eq_true.mp hrow _ hv
+
+theorem untlPosGuardedWitness_of_check (h : temporalWitnessCheck b ord = true) :
+    untlPosGuardedWitness b ord = true := by
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.1.2
+
+theorem sncePosGuardedWitness_of_check (h : temporalWitnessCheck b ord = true) :
+    sncePosGuardedWitness b ord = true := by
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.1.2
+
+theorem untlRayDnGuard_of_check (h : temporalWitnessCheck b ord = true) :
+    untlRayDnGuard b ord = true := by
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.1.2
+
+theorem snceRayUpGuard_of_check (h : temporalWitnessCheck b ord = true) :
+    snceRayUpGuard b ord = true := by
+  simp only [temporalWitnessCheck, Bool.and_eq_true] at h; exact h.2
+
+/-- **The guarded witness.** A positive until has a witness strictly after its own time, with the
+guard at every known time strictly between the two — the `⊤` case exempted from the guard but
+**not** from the witness. -/
+theorem untlPos_witness (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {t : TimeIndex}
+    (hmem : (⟨.pos, .untl φ ψ, ⟨w, t⟩⟩ : SignedFormula) ∈ b) :
+    ∃ t' ∈ b.knownTimes, strictBefore ord t t' = true ∧ b.hasPosAt φ ⟨w, t'⟩ = true ∧
+      (ψ = Formula.top ∨ ∀ v ∈ b.knownTimes, strictBefore ord t v = true →
+        strictBefore ord v t' = true → b.hasPosAt ψ ⟨w, v⟩ = true) := by
+  have hrow := List.all_eq_true.mp (untlPosGuardedWitness_of_check h) _ hmem
+  simp only at hrow
+  obtain ⟨t', ht', hbody⟩ := List.any_eq_true.mp hrow
+  rw [futureKnown, List.mem_filter] at ht'
+  simp only [Bool.and_eq_true, Bool.or_eq_true, beq_iff_eq] at hbody
+  refine ⟨t', ht'.1, ht'.2, hbody.1, ?_⟩
+  rcases hbody.2 with hg | hguard
+  · exact Or.inl hg
+  · refine Or.inr fun v hv hvt hvt' => ?_
+    have hv' := List.all_eq_true.mp hguard v (mem_futureKnown hv hvt)
+    rw [hvt'] at hv'
+    simpa using hv'
+
+/-- **The guarded witness**, past-directed mirror. -/
+theorem sncePos_witness (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex} {t : TimeIndex}
+    (hmem : (⟨.pos, .snce φ ψ, ⟨w, t⟩⟩ : SignedFormula) ∈ b) :
+    ∃ t' ∈ b.knownTimes, strictBefore ord t' t = true ∧ b.hasPosAt φ ⟨w, t'⟩ = true ∧
+      (ψ = Formula.top ∨ ∀ v ∈ b.knownTimes, strictBefore ord v t = true →
+        strictBefore ord t' v = true → b.hasPosAt ψ ⟨w, v⟩ = true) := by
+  have hrow := List.all_eq_true.mp (sncePosGuardedWitness_of_check h) _ hmem
+  simp only at hrow
+  obtain ⟨t', ht', hbody⟩ := List.any_eq_true.mp hrow
+  rw [pastKnown, List.mem_filter] at ht'
+  simp only [Bool.and_eq_true, Bool.or_eq_true, beq_iff_eq] at hbody
+  refine ⟨t', ht'.1, ht'.2, hbody.1, ?_⟩
+  rcases hbody.2 with hg | hguard
+  · exact Or.inl hg
+  · refine Or.inr fun v hv hvt hvt' => ?_
+    have hv' := List.all_eq_true.mp hguard v (mem_pastKnown hv hvt)
+    rw [hvt'] at hv'
+    simpa using hv'
+
+/-- **The lower-ray guarded witness.** A positive until at the lower ray's own label reaches a
+witness among *all* the known times, with the guard at the ray label itself and at every known
+time strictly below the witness. -/
+theorem untlRayDn_witness (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex}
+    (hmem : (⟨.pos, .untl φ ψ, ⟨w, regionLabel b ord w 0⟩⟩ : SignedFormula) ∈ b) :
+    ∃ t ∈ b.knownTimes, b.hasPosAt φ ⟨w, t⟩ = true ∧
+      (ψ = Formula.top ∨
+        (b.hasPosAt ψ ⟨w, regionLabel b ord w 0⟩ = true ∧
+          ∀ v ∈ b.knownTimes, strictBefore ord v t = true → b.hasPosAt ψ ⟨w, v⟩ = true)) := by
+  have hrow := List.all_eq_true.mp (untlRayDnGuard_of_check h) _ hmem
+  simp only [beq_self_eq_true, if_true] at hrow
+  obtain ⟨t, ht, hbody⟩ := List.any_eq_true.mp hrow
+  simp only [Bool.and_eq_true, Bool.or_eq_true, beq_iff_eq] at hbody
+  refine ⟨t, ht, hbody.1, ?_⟩
+  rcases hbody.2 with hg | ⟨hl, hguard⟩
+  · exact Or.inl hg
+  · refine Or.inr ⟨hl, fun v hv hvt => ?_⟩
+    have hv' := List.all_eq_true.mp hguard v hv
+    rw [hvt] at hv'
+    simpa using hv'
+
+/-- **The upper-ray guarded witness**, the mirror. -/
+theorem snceRayUp_witness (h : temporalWitnessCheck b ord = true)
+    {φ ψ : Formula} {w : WorldIndex}
+    (hmem :
+      (⟨.pos, .snce φ ψ, ⟨w, regionLabel b ord w b.knownTimes.length⟩⟩ : SignedFormula) ∈ b) :
+    ∃ t ∈ b.knownTimes, b.hasPosAt φ ⟨w, t⟩ = true ∧
+      (ψ = Formula.top ∨
+        (b.hasPosAt ψ ⟨w, regionLabel b ord w b.knownTimes.length⟩ = true ∧
+          ∀ v ∈ b.knownTimes, strictBefore ord t v = true → b.hasPosAt ψ ⟨w, v⟩ = true)) := by
+  have hrow := List.all_eq_true.mp (snceRayUpGuard_of_check h) _ hmem
+  simp only [beq_self_eq_true, if_true] at hrow
+  obtain ⟨t, ht, hbody⟩ := List.any_eq_true.mp hrow
+  simp only [Bool.and_eq_true, Bool.or_eq_true, beq_iff_eq] at hbody
+  refine ⟨t, ht, hbody.1, ?_⟩
+  rcases hbody.2 with hg | ⟨hl, hguard⟩
+  · exact Or.inl hg
+  · refine Or.inr ⟨hl, fun v hv hvt => ?_⟩
+    have hv' := List.all_eq_true.mp hguard v hv
+    rw [hvt] at hv'
+    simpa using hv'
 
 end FormalSystem.Metalogic.Decidability.Verified.Bridge
