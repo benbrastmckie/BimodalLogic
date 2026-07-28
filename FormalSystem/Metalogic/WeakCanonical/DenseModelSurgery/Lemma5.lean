@@ -628,4 +628,193 @@ theorem reynolds_lemma5_first {atomMap : Formula → sig.preds}
 
 end First
 
+/-! ## Lemma 5, second statement: relativization to a `∼`-class
+
+*"Given a monadic sentence `φ`, we relativise it by restricting quantifiers to where `ε(x, −)`
+holds. We get a formula `φ(x)` of one free variable. By expressive completeness this is equivalent
+to a temporal formula. This is true exactly throughout `∼`-classes which model `φ`. Then, by the
+first part of the lemma, it can't be true somewhere and false elsewhere in the interval."*
+(printed p.179)
+
+**Rendering of "taken as substructures of `M`".** A `∼`-class is convex but need not be an
+interval with end points in `M` — Lemma 3 is precisely the statement that maximal `R`-intervals
+have *excluded* end points, and by `ρ` the classes inside them end in gaps. So `M.subinterval`
+(`MonadicFO.lean:215`), which needs two carrier points, cannot name a class. The induced
+substructure is therefore named the standard equivalent way, by **relativized satisfaction**:
+`evalOn M S` is `eval` with every quantifier restricted to `S`, and *"the class of `t` models
+`φ`"* is `evalOn` at `S = ContempEquivDense M ε t`. Reynolds' relativization step is then exactly
+the syntactic counterpart, `relativizeToClass`, and `eval_relativizeAt` is the theorem that the
+two agree. -/
+
+/-- **Satisfaction relativized to a subset `S` of the carrier** — `eval` (`MonadicFO.lean:306`)
+with both quantifiers restricted to `S`. This is the induced substructure's satisfaction relation,
+named without having to build the substructure. -/
+def evalOn (M : OrderedMonadicStructure sig) (S : M.carrier → Prop) :
+    {n : Nat} → (Fin n → M.carrier) → MonadicFormula sig n → Prop
+  | _, env, .atom p i => M.interp p (env i)
+  | _, env, .lt i j => env i < env j
+  | _, env, .not α => ¬ evalOn M S env α
+  | _, env, .and α β => evalOn M S env α ∧ evalOn M S env β
+  | _, env, .all α => ∀ y : M.carrier, S y → evalOn M S (Fin.cons y env) α
+  | _, env, .ex α => ∃ y : M.carrier, S y ∧ evalOn M S (Fin.cons y env) α
+
+/-- **Reynolds' relativization** — *"we relativise it by restricting quantifiers to where
+`ε(x, −)` holds"* (printed p.179), at arbitrary arity.
+
+One fresh free variable is appended at index `Fin.last n`: that is Reynolds' `x`, the point whose
+class the quantifiers are restricted to. Every pre-existing free variable keeps its index, via
+`Fin.castSucc`.
+
+Landed at arbitrary arity, not only for sentences, because the induction that verifies it has to
+pass through subformulas with free variables — and because Lemma 12 needs the same operator
+applied to a two-variable `γ(z,t)`. -/
+def relativizeAt (ε : MonadicFormula sig 2) :
+    {n : Nat} → MonadicFormula sig n → MonadicFormula sig (n + 1)
+  | _, .atom p i => .atom p i.castSucc
+  | _, .lt i j => .lt i.castSucc j.castSucc
+  | _, .not α => .not (relativizeAt ε α)
+  | _, .and α β => .and (relativizeAt ε α) (relativizeAt ε β)
+  | n, .all α => .all (.imp (epsAt ε (Fin.last (n + 1)) 0) (relativizeAt ε α))
+  | n, .ex α => .ex (.and (epsAt ε (Fin.last (n + 1)) 0) (relativizeAt ε α))
+
+/-- **`φ'`, the one-free-variable relativization of a monadic sentence `φ`** — *"We get a formula
+`φ(x)` of one free variable"* (printed p.179). This is the `n = 0` case of `relativizeAt`. -/
+def relativizeToClass (ε : MonadicFormula sig 2) (φ : MonadicFormula sig 0) :
+    MonadicFormula sig 1 :=
+  relativizeAt ε φ
+
+section Relativize
+
+variable {α : Type*}
+
+private theorem consSnoc_last {n : Nat} (y x : α) (env : Fin n → α) :
+    (Fin.cons y (Fin.snoc env x) : Fin (n + 2) → α) (Fin.last (n + 1)) = x := by
+  rw [← Fin.succ_last, Fin.cons_succ, Fin.snoc_last]
+
+private theorem snoc_elim0 (x : α) : (Fin.snoc (Fin.elim0) x : Fin 1 → α) = fun _ => x := by
+  funext k
+  rfl
+
+end Relativize
+
+/-- **The relativization is correct**: evaluating `relativizeAt ε φ` with `x` in the fresh slot is
+evaluating `φ` in the substructure carried by `x`'s `∼`-class. Checked, not asserted. -/
+theorem eval_relativizeAt (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (x : M.carrier) :
+    ∀ {n : Nat} (φ : MonadicFormula sig n) (env : Fin n → M.carrier),
+      eval M (Fin.snoc env x) (relativizeAt ε φ) ↔
+        evalOn M (ContempEquivDense M ε x) env φ := by
+  intro n φ
+  induction φ with
+  | atom p i => intro env; simp [relativizeAt, eval, evalOn, Fin.snoc_castSucc]
+  | lt i j => intro env; simp [relativizeAt, eval, evalOn, Fin.snoc_castSucc]
+  | not α ih => intro env; simp only [relativizeAt, eval, evalOn, ih]
+  | and α β ihα ihβ => intro env; simp only [relativizeAt, eval, evalOn, ihα, ihβ]
+  | all α ih =>
+      intro env
+      simp only [relativizeAt, eval, eval_imp, evalOn, eval_epsAt, consSnoc_last, Fin.cons_zero]
+      refine forall_congr' fun y => ?_
+      rw [Fin.cons_snoc_eq_snoc_cons, ih (Fin.cons y env)]
+  | ex α ih =>
+      intro env
+      simp only [relativizeAt, eval, evalOn, eval_epsAt, consSnoc_last, Fin.cons_zero]
+      refine exists_congr fun y => ?_
+      rw [Fin.cons_snoc_eq_snoc_cons, ih (Fin.cons y env)]
+
+/-- **"The `∼`-class of `t` models the monadic sentence `φ`"**, as relativized satisfaction. -/
+def ClassModels (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (t : M.carrier) (φ : MonadicFormula sig 0) : Prop :=
+  evalOn M (ContempEquivDense M ε t) Fin.elim0 φ
+
+/-- Modelling `φ` is a property of the class, not of the point — the classes of two class-mates are
+the same set, so the relativized satisfaction relations coincide. -/
+theorem classModels_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) {a c : M.carrier} (hac : ContempEquivDense M ε a c)
+    (φ : MonadicFormula sig 0) : ClassModels M ε a φ ↔ ClassModels M ε c φ := by
+  have h : ContempEquivDense M ε a = ContempEquivDense M ε c := by
+    funext z
+    exact propext (contemp_congr_left hε M hac)
+  unfold ClassModels
+  rw [h]
+
+/-- **`relativizeToClass` is correct**: `φ'` holds at `t` exactly when `t`'s class models `φ`. -/
+theorem eval_relativizeToClass (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (φ : MonadicFormula sig 0) (t : M.carrier) :
+    eval M (fun _ => t) (relativizeToClass ε φ) ↔ ClassModels M ε t φ := by
+  have h := eval_relativizeAt M ε t φ Fin.elim0
+  rwa [snoc_elim0] at h
+
+section Second
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- **Reynolds' `φ'` as a temporal formula** — *"By expressive completeness this is equivalent to a
+temporal formula"* (printed p.179). -/
+noncomputable def classModelsTemporal (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ε : MonadicFormula sig 2) (φ : MonadicFormula sig 0) : Formula :=
+  (uSExpressivelyCompleteOverDensePrior atomMap h_surj (relativizeToClass ε φ)).val
+
+/-- *"This is true exactly throughout `∼`-classes which model `φ`."* (printed p.179) -/
+theorem classModelsTemporal_spec (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ε : MonadicFormula sig 2) (φ : MonadicFormula sig 0) (M : OrderedMonadicStructure sig)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    (t : M.carrier) :
+    TemporalTruth M atomMap t (classModelsTemporal atomMap h_surj ε φ) ↔ ClassModels M ε t φ :=
+  ((uSExpressivelyCompleteOverDensePrior atomMap h_surj
+    (relativizeToClass ε φ)).property M h_prior_U h_prior_S t).symm.trans
+      (eval_relativizeToClass M ε φ t)
+
+/-- **Reynolds 1992, §6 Lemma 5, printed p.179 — second statement.**
+
+> *Furthermore, each pair of the `∼`-classes in a maximal interval of `R` are elementarily
+> equivalent (taken as substructures of `M`).*
+
+*"Elementarily equivalent taken as substructures of `M`"* is: they satisfy the same monadic
+sentences under relativized satisfaction (see the section header for why the substructures are
+named this way rather than through `M.subinterval`).
+
+*"Then, by the first part of the lemma, it can't be true somewhere and false elsewhere in the
+interval"* is the appeal to `reynolds_lemma5_first` below, applied to the temporal equivalent of
+`φ'`; class-invariance of `ClassModels` is what turns *"holds somewhere in the class"* back into
+*"holds throughout the class"*. -/
+theorem reynolds_lemma5_second {atomMap : Formula → sig.preds}
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (φ : MonadicFormula sig 0) {t t' : M.carrier}
+    (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q) :
+    ClassModels M ε t φ ↔ ClassModels M ε t' φ := by
+  have key : ∀ a c : M.carrier,
+      (∀ q : M.carrier, min a c ≤ q → q ≤ max a c → EndsInGapOnRight M ε q) →
+      ClassModels M ε a φ → ClassModels M ε c φ := by
+    intro a c hac hφ
+    obtain ⟨w, hcw, hw⟩ :=
+      reynolds_lemma5_first h_surj hε M h_prior_U h_prior_S
+        (classModelsTemporal atomMap h_surj ε φ) hac
+        ⟨a, contemp_refl hε M a,
+          (classModelsTemporal_spec atomMap h_surj ε φ M h_prior_U h_prior_S a).mpr hφ⟩
+    exact (classModels_congr hε M hcw φ).mpr
+      ((classModelsTemporal_spec atomMap h_surj ε φ M h_prior_U h_prior_S w).mp hw)
+  refine ⟨key t t' hIcc, key t' t ?_⟩
+  intro q h₁ h₂
+  exact hIcc q (by rwa [min_comm]) (by rwa [max_comm])
+
+/-- **Reynolds 1992, §6 Lemma 5, printed p.179**, both statements. -/
+theorem reynolds_lemma5 {atomMap : Formula → sig.preds}
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {t t' : M.carrier}
+    (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q) :
+    (∀ A : Formula, (∃ w : M.carrier, ContempEquivDense M ε t w ∧
+        TemporalTruth M atomMap w A) →
+      ∃ w : M.carrier, ContempEquivDense M ε t' w ∧ TemporalTruth M atomMap w A) ∧
+    (∀ φ : MonadicFormula sig 0, ClassModels M ε t φ ↔ ClassModels M ε t' φ) :=
+  ⟨fun A hA => reynolds_lemma5_first h_surj hε M h_prior_U h_prior_S A hIcc hA,
+    fun φ => reynolds_lemma5_second h_surj hε M h_prior_U h_prior_S φ hIcc⟩
+
+end Second
+
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery

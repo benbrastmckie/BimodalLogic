@@ -2542,7 +2542,7 @@ alongside it rather than dropped as now-transitive, so that removing `Lemma34.le
 could not silently drop the §6 vocabulary out of the build closure too. No other content in that
 file was touched.
 
-### Phase 19: Reynolds §6 Lemma 5 — formula and elementary transfer across classes [IN PROGRESS]
+### Phase 19: Reynolds §6 Lemma 5 — formula and elementary transfer across classes [COMPLETED]
 
 - **Goal**: *"If a temporal formula holds somewhere in one `∼`-class in a maximal interval of `R`,
   then it holds somewhere in each `∼`-class in the interval. Furthermore, each pair of the
@@ -2550,24 +2550,87 @@ file was touched.
   `M`)."*
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean` (new).
 - **Tasks**:
-  - [ ] Prove the first statement, transcribing printed p.178: find `B` true at points only if `A`
+  - [x] Prove the first statement, transcribing printed p.178: find `B` true at points only if `A`
         occurs somewhere in their class (expressive completeness + `ε`); use `¬B` if necessary; the
         `B`-to-`¬B` transition point `s` is a left endpoint; Prior-U forbids `B` arbitrarily soon
         after the gap; then `C` ("we are now in a class whose left hand end point is also in the
         class and at that point `K⁻(B)` holds") is true in `s`'s class and false afterwards,
-        contradicting Prior-U.
-  - [ ] Prove the second statement: relativize a monadic sentence `φ` to `ε(x,−)`, obtain `φ'` of one
+        contradicting Prior-U. *(deviation: altered — the page is p.179, not p.178; and two named
+        assets the task list did not anticipate were required, `temporalToMonadic` and
+        `false_of_holds_throughout_class_bounded`. See the deviation record below)*
+  - [x] Prove the second statement: relativize a monadic sentence `φ` to `ε(x,−)`, obtain `φ'` of one
         free variable, apply expressive completeness, and conclude by the first statement.
-  - [ ] Land the **relativization operator** `relativizeToClass ε φ` as a named, reusable definition
-        — Phase 25 (Lemma 12) needs exactly the same operator for `γ(z,t)`.
-  - [ ] Docstring: `Reynolds 1992, §6 Lemma 5, printed p.178`.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+        *(deviation: altered — the printed formula name is `φ(x)`, not the corpus' `φ'`; and
+        "substructures of `M`" is rendered as relativized satisfaction. See below)*
+  - [x] Land the **relativization operator** `relativizeToClass ε φ` as a named, reusable definition
+        — Phase 25 (Lemma 12) needs exactly the same operator for `γ(z,t)`. *(landed at arbitrary
+        arity as `relativizeAt`, with `relativizeToClass` its sentence case, so Lemma 12's
+        two-variable `γ(z,t)` is already covered)*
+  - [x] Docstring: `Reynolds 1992, §6 Lemma 5, printed p.178`. *(deviation: altered — docstrings say
+        p.179, the page the lemma is actually printed on)*
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
 - **Estimated output**: ~380 lines.
 - **Done when**: both statements sorry-free and axiom-clean; `relativizeToClass` is named and
   reusable.
 - **Depends on**: 18.
 - **Timing**: 7 hours.
 - **Decomposition protocol**: as Phase 18.
+
+**Deviation record (Phase 19)**
+
+*Deviation 1 — page reference.* The plan says *"printed p.178"* for Lemma 5. Lemma 5's statement
+**and its whole proof** are on printed p.179 (PDF page index 15); printed p.180 opens with Lemma 6.
+Docstrings use p.179. This is the same drift Phase 18 recorded for Lemmas 3-4.
+
+*Deviation 2 — `φ'` vs `φ(x)`, and the corpus is clean here.* Lemma 5 contains **no displayed
+formula**, which is where both earlier §6 corpus defects sat, and its inline text checks out
+against the page image. The single difference: the corpus (and the plan, which follows it) writes
+*"We get a formula `φ'` of one free variable"* where the page prints *"a formula `φ(x)`"*. Nothing
+turns on it; the module quotes the printed form.
+
+*Addition 1 — the temporal-to-monadic direction of expressive completeness.* Reynolds' *"using
+expressive completeness and `ε`, find `B` which is true at points only if `A` occurs somewhere in
+their `∼`-class"* builds `B` from `A`'s **monadic** form. The tree lands only the hard direction of
+§5 Theorem 3 (`uSExpressivelyCompleteOverDensePrior`, monadic → temporal). The easy converse is
+landed here as `temporalAt` / `temporalToMonadic` with a checked soundness theorem
+`eval_temporalAt`. It is available at all only because `TemporalTruth` (`Table.lean:188`) reads
+`.box φ` off `M.interp (atomMap (.box φ))`, i.e. as a monadic atom.
+
+*Addition 2 — `false_of_holds_throughout_class` could not be reused as it stands.* Phase 18's
+theorem requires the auxiliary formula to fail at **every** point outside the class reachable with
+`R` throughout in between. Lemma 5's `C` does not satisfy that and cannot: with classes
+`C₀ ⊨ ¬B`, `C₁ ⊨ B`, `C₂ ⊨ ¬B` in a row, `C₂`'s left end point does carry `K⁻(B)`, so `C` is true
+again at `C₂`. Reynolds claims only *"false **afterwards**"*, licensed by the preceding paragraph
+(*"for a while after this class `B` stays false"*, landed as `exists_bound_notHolds`).
+`false_of_holds_throughout_class_bounded` is that weaker hypothesis, and is a genuine
+strengthening: the unbounded form does not imply it. Phase 18's theorem is left in place,
+unweakened and unrenamed, and its two Phase 18 consumers are untouched.
+
+*Addition 3 — two reusable auxiliary-formula families.* `classBeginsWithFormula` (*"we are now in a
+class whose left hand end point is also in the class and at that point … holds"*) and
+`kMinusFormula` (`K⁻`), each with a named semantic reading and a checked `..._eval`, following the
+Phase 18 pattern. `Lemma34.lean`'s `classBeginsAtGapStartFormula` is the same family with
+`R ∧ K⁻(¬R)` in the payload slot; it was **not** refactored to route through them — zero removals,
+zero renames — and the relationship is recorded in the new docstring instead.
+
+*Rendering 1 — "in the same maximal interval of `R`".* Rendered as `R` holding throughout the
+closed segment between the two points, which is what lying in one maximal (hence convex)
+`R`-interval amounts to for two of its points. This is this tree's rendering, not Reynolds' words.
+
+*Rendering 2 — "elementarily equivalent (taken as substructures of `M`)".* A `∼`-class is convex
+but need not be an interval with end points in `M` — by `ρ` the classes inside a maximal
+`R`-interval end in gaps — so `M.subinterval` cannot name one. The induced substructure is named
+the standard equivalent way, by relativized satisfaction (`evalOn`), and `eval_relativizeAt` is the
+theorem that Reynolds' syntactic relativization agrees with it.
+
+*Honest caveat, unchanged.* Every §6 lemma below Lemma 2 is still **conditional**. The only `ε`
+this tree can exhibit satisfying `IsContempEquivDense` is `epsTop`, for which `EndsInGapOnRight` is
+empty, so Lemma 5 has no live non-trivial instance yet. It is recorded in the module header and
+carried forward.
+
+*Correction to a carry-forward.* The dispatch brief said the repository's sole live `sorry` sits at
+`Transfer.lean:1225`. It is at **`Transfer.lean:1242`** — the plan's original figure was right and
+the correction was not. Re-measured, not assumed.
 
 ### Phase 20: Reynolds §6 Lemmas 6 and 7 — bad points and bad intervals [NOT STARTED]
 
