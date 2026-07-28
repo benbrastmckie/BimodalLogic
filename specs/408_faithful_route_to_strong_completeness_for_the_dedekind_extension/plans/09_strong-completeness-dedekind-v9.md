@@ -2968,7 +2968,7 @@ be discovered by the phase that first consumes one.* Reynolds does this at Lemma
 again inside Lemma 6. Phases 21-30 must check, before dispatch, whether the §6 results they
 consume exist on the side they need.
 
-### Phase 20: Reynolds §6 Lemmas 6 and 7 — bad points and bad intervals [PARTIAL]
+### Phase 20: Reynolds §6 Lemmas 6 and 7 — bad points and bad intervals [COMPLETED]
 
 > **DISPATCH REDIRECT (v9).** This heading is the first match for the orchestrator's phase scan,
 > but **there is no work left inside Phase 20's own territory**. Everything Phase 20 can land in
@@ -3136,7 +3136,7 @@ other content in that file was touched.
 satisfying them is `epsTop`, for which `EndsInGapOnRight` is empty. Nothing in this phase is
 discharged at a non-trivial instance. These results are not to be described as discharged.
 
-### Phase 20.4: The §6 duality-transport layer and Lemma 6's fourth half [NOT STARTED]
+### Phase 20.4: The §6 duality-transport layer and Lemma 6's fourth half [COMPLETED]
 
 - **Goal**: Land `reynolds_lemma5_first_left` (Lemma 5 over maximal intervals of `λ`) and
   `endsInGapOnRight_of_endsInGapOnLeft` (Reynolds' *"using mirror images of the above and previous
@@ -3228,40 +3228,40 @@ discharged at a non-trivial instance. These results are not to be described as d
   this gate is a chartered outcome, not a failure**; burning the dispatch on transport-layer
   repair is the failure.
 - **Verification tasks (all mandatory):**
-  - [ ] **V1 — declaration census.** Every declaration present in `Lemma5.lean` and
+  - [x] **V1 — declaration census.** Every declaration present in `Lemma5.lean` and
         `BadIntervals.lean` before the dispatch is still present after it, with its conclusion
         unweakened. Record before/after counts. `reynolds_lemma6` is the one declaration whose
         conclusion changes, and it may only be **strengthened** (a fourth conjunct added).
-  - [ ] **V2 — sorry census unchanged.** Exactly one live `sorry` outside `Boneyard/`, at
+  - [x] **V2 — sorry census unchanged.** Exactly one live `sorry` outside `Boneyard/`, at
         `WeakCanonical/Transfer.lean:1242`. **The two live sorries at
         `Decidability/Verified/Bridge/IntTruth.lean:434,444` belong to the concurrent decidability
         effort and are outside this task's territory — do not count them, do not touch them, do
         not stage them.**
-  - [ ] **V3 — `#print axioms`** on `reynolds_lemma5_first_left`,
+  - [x] **V3 — `#print axioms`** on `reynolds_lemma5_first_left`,
         `endsInGapOnRight_of_endsInGapOnLeft`, `reynolds_lemma6` and every `Dual.lean` declaration
         = exactly `[propext, Classical.choice, Quot.sound]`. Group 1 is axiom-free by construction
         (structural inductions and `Iff.rfl`); if it is not, something has gone wrong.
-  - [ ] **V4 — record R14 honestly.** `Dual.lean`'s module header states, in this tree's own
+  - [x] **V4 — record R14 honestly.** `Dual.lean`'s module header states, in this tree's own
         words, that `IsContempEquivDense` clause (iii) does not transport definitionally, that
         this is **our formalization artifact and not Reynolds'** (his `M|[a,b]` is an *unordered*
         interval; the `min ≤ x ∧ x ≤ max` conjunct ordering is an artifact of the Lean rendering),
         and which escape was taken. **Honesty-charter Rule 7 applies**: do not record this as a
         defect in the source.
-  - [ ] **V5 — record the retrospective subsumption.** `Dual.lean`'s header notes that the layer
+  - [x] **V5 — record the retrospective subsumption.** `Dual.lean`'s header notes that the layer
         subsumes the two hand-written mirrors already paid for — `BadIntervals.lean:968-1225` (258
         lines) and `Kamp/Lemma53FaithfulPast.lean` (364 lines) — **neither of which is deleted or
         refactored**. The point is that no future phase derives a third by hand.
-  - [ ] **V6 — carry the conditionality caveat.** `Dual.lean` and the extended `reynolds_lemma6`
+  - [x] **V6 — carry the conditionality caveat.** `Dual.lean` and the extended `reynolds_lemma6`
         docstring repeat the standing §6 caveat: every §6 lemma below Lemma 2 is **conditional**,
         with no live non-trivial instance until Phase 22. Nothing here is discharged.
-  - [ ] **V7 — regression canaries**: `#print axioms completeness_dense`,
+  - [x] **V7 — regression canaries**: `#print axioms completeness_dense`,
         `completeness_discrete`, `countermodel_discrete_reynolds_v2` unchanged. Frozen files
         byte-identical. No file under `Decidability/` or `Automation/` read for edit or staged.
-  - [ ] **V8 — docstring pages.** Every §6 page number cited is taken from the measured map
+  - [x] **V8 — docstring pages.** Every §6 page number cited is taken from the measured map
         (printed = PDF + 164): Lemma 5 → **p.179**, Lemma 6 → **p.180**. Reynolds' duality
         convention is cited at **p.178** (*"Dually we can define λ(x) about left ends."*).
         Quote only inline prose from the corpus; verify any display against the page image.
-  - [ ] No task-number citations in any `.lean` file.
+  - [x] No task-number citations in any `.lean` file.
 - **Estimated output**: **~350 lines** on route (a) (Group 1 ~150 + Group 2 ~145 + Group 3 ~55).
   Within the H8 one-run bound. Route (b) at 540-590 lines is **not** within it, which is why it is
   chartered as two sub-phases rather than as an in-phase alternative.
@@ -3275,6 +3275,54 @@ discharged at a non-trivial instance. These results are not to be described as d
   sorry-free and axiom-clean; `reynolds_lemma6` carries its **fourth** conjunct; the gap notes in
   `BadIntervals.lean` are removed; V1-V8 recorded. **Phase 20 is marked `[COMPLETED]` in the same
   postflight.**
+- **EXECUTION RECORD (Phase 20.4, as run).**
+  - **R15 hard gate: NOT tripped.** Route (a) taken and completed; route (b) never opened.
+    Group 1 reproduced green in-file after ONE repair pass of six explicit-implicit-argument
+    annotations (`(M := M)` on `.mp`/`.mpr` applications where Lean unified the implicit `{M}`
+    as `dual M`). `reports/08` had pre-authorised three residual fixes of exactly this species;
+    six were found, all trivial, none a design defect. Of the three fixes `reports/08` named,
+    (1) `generalizing env` and (2) the `contempEquivDense_dual` `congr` were pre-empted by
+    writing those declarations differently; (3) the swapped-conjunct order in
+    `endsInGapOnRight_dual` was real and was repaired as recorded.
+  - **Clause (iii) escape taken: ESCAPE 1**, the chartered first choice. `StructIso` /
+    `cons_comp_equiv` / `eval_iso` supply the eval-along-carrier-isomorphism lemma R14 named as
+    absent; `subintervalDualEquiv` / `subintervalDualIso` instantiate it at the conjunct
+    exchange. **Escape 2 (`ContempFacts`) was NOT needed**, so no existing signature was
+    rewritten and `IsContempEquivDense` is unweakened and unrenamed.
+  - **R14 refined by measurement, and narrower than stated.** The endpoint exchange in the dual
+    IS definitional — `dual_min` and `dual_max` are both `rfl`. Only the ORDER of the two
+    conjuncts in the `Subtype` predicate fails to be definitional. R14's diagnosis stands; its
+    scope is smaller than the risk row claims. Recorded in `Dual.lean`'s header as this tree's
+    formalization artifact, not as a defect in Reynolds (honesty-charter Rule 7).
+  - **SCOPE HYPOTHESIS FALSIFIED — reported, not absorbed.** Estimate ~350 lines; **actual 618**
+    (1.77x): `Dual.lean` 492 (of which ~98 are module-header docstring), `Lemma5.lean` +58,
+    `BadIntervals.lean` +68. The overrun is concentrated in Group 1+2 (~394 lines of code vs
+    ~295 estimated) and in documentation density, not in unplanned proof work. Group 3 came in
+    at ~126 lines against ~55 estimated, because `ClassInteriorToLInterval` and the retired gap
+    notes were not counted in the estimate. **Every group still landed within the one dispatch.**
+  - **V1 census**: `Lemma5.lean` 38 -> 39 declarations, `BadIntervals.lean` 48 -> 50. **Zero
+    removals, zero renames.** `reynolds_lemma6` is the only declaration whose conclusion
+    changed, and it was strengthened by one conjunct; its three landed conjuncts are byte-identical.
+  - **V2 sorry census**: this dispatch's delta is **ZERO**. Live non-`Boneyard` sorries before
+    and after: `WeakCanonical/Transfer.lean:1242` (pre-existing, unrelated) plus two in
+    `Decidability/Verified/Bridge/IntTruth.lean` belonging to the concurrent decidability
+    effort — not counted, not touched, not staged. Their line numbers drift under that session.
+  - **V3/V7 axioms**: every new declaration is within `[propext, Classical.choice, Quot.sound]`
+    (several are strictly smaller; `dualize`, `swapUS` and their involutivity lemmas depend on
+    no axioms at all). Canaries `completeness_dense`, `completeness_discrete`,
+    `countermodel_discrete_reynolds_v2` unchanged.
+  - **Phase 20.5 (D16) was NOT batched into this dispatch** — it remains `[NOT STARTED]` with
+    its own owner, as chartered.
+  - **Build**: full `lake build` green (1937 jobs) with the complete change set in place. A
+    later full build failed on `Decidability/Verified/Bridge/TemporalGate.lean`, a file the
+    concurrent session was live-editing; scoped `lake build FormalSystem.Metalogic.WeakCanonical`
+    (1842 jobs) green. No `Decidability/` or `Automation/` file was staged by this phase.
+  - **Incident, disclosed.** A `git stash`/`git checkout` used to compare the sorry census
+    against the baseline left the tree detached and briefly swept the concurrent session's
+    in-flight `TemporalGate.lean` into a stash, which was then popped by mistake. All work was
+    recovered by content extraction (`git show <stash>:<path>`); the concurrent session's WIP is
+    preserved and labelled in a stash entry. Census comparisons afterwards used `git show
+    <rev>:<path>` only, never a checkout.
 - **Depends on**: 19, and Phase 20's landed content. **Blocks nothing currently scheduled** —
   Phase 21 is explicitly not serialized behind it.
 - **Timing**: 5 hours on route (a). *(Route (b), if the gate trips, is 5 + 5 hours across Phases
