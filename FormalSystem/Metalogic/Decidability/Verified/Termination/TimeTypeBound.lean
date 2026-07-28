@@ -1346,4 +1346,398 @@ theorem exists_confining_gapU {g : Formula} {B : Finset Formula} (hB : Confining
     · exact hsubXm hx
     · exact hsubYm hx
 
+/--
+**The `priorSGap` batch**, the past-directed mirror of `exists_confining_gapU`.
+The conclusion `S(¬g ∨ K⁻¬g, g)` is the one emission strictly bigger
+than its trigger, so it is where a runaway chain would have to start. It does not start: the six
+formulas the conclusion drags in close under `emissions`.
+
+Two syntactic facts do the work, both checked by `rfl` below. First, `¬(¬g ∨ K⁻¬g)` *is* a
+conjunction — `asAnd?` reads it as `¬¬g ∧ S(⊤, ¬¬g)` — but no Dedekind arm fires on it, because
+the left conjunct is an implication rather than a `U`, an `S`, or a raw `K⁻`. Second,
+`¬¬g ≠ ⊤`, so `S(⊤, ¬¬g)` is not a `priorSZ` trigger. Together: the conclusion emits nothing new,
+which is exactly what the `#guard_msgs` cascade rows measure.
+-/
+theorem exists_confining_gapS {g : Formula} {B : Finset Formula} (hB : Confining B)
+    (hcg : Carries B g) (hcgn : Carries B g.neg) :
+    ∃ M, Confining M ∧ B ⊆ M ∧
+      Formula.snce (Formula.or g.neg (Formula.kMinus g.neg)) g ∈ M := by
+  classical
+  have hbot := bot_mem_of_confining hB
+  have hsubg := hcg.subformulas_subset
+  have hsubnn : subformulasFinset g.neg.neg ⊆ B := subformulasFinset_neg_subset hcgn hbot
+  have hsubtop := subformulasFinset_top_subset hB
+  have hnn : g.neg.neg ≠ Formula.top := by simp [Formula.neg, Formula.top]
+  have hYne : (Formula.or g.neg (Formula.kMinus g.neg)).neg ≠ Formula.top := by
+    simp [Formula.neg, Formula.top, Formula.or]
+  -- the three `emissions` splits, folded through definitional equality
+  have eX : emissions (Formula.or g.neg (Formula.kMinus g.neg))
+      = insert (Formula.or g.neg (Formula.kMinus g.neg))
+          (subformulasFinset g.neg.neg ∪ subformulasFinset (Formula.kMinus g.neg)) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have eK : emissions (Formula.kMinus g.neg)
+      = insert (Formula.kMinus g.neg)
+          (subformulasFinset (Formula.snce Formula.top g.neg.neg)
+            ∪ subformulasFinset Formula.bot) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have eY : emissions (Formula.or g.neg (Formula.kMinus g.neg)).neg
+      = insert (Formula.or g.neg (Formula.kMinus g.neg)).neg
+          (subformulasFinset (Formula.or g.neg (Formula.kMinus g.neg))
+            ∪ subformulasFinset Formula.bot)
+        ∪ conjEmissions g.neg.neg (Formula.snce Formula.top g.neg.neg) :=
+    emissions_imp_of_asAnd rfl
+  have hconj : conjEmissions g.neg.neg (Formula.snce Formula.top g.neg.neg) = ∅ := rfl
+  have sX : subformulasFinset (Formula.or g.neg (Formula.kMinus g.neg))
+      = insert (Formula.or g.neg (Formula.kMinus g.neg))
+          (subformulasFinset g.neg.neg ∪ subformulasFinset (Formula.kMinus g.neg)) :=
+    subformulasFinset_imp _ _
+  have sK : subformulasFinset (Formula.kMinus g.neg)
+      = insert (Formula.kMinus g.neg)
+          (subformulasFinset (Formula.snce Formula.top g.neg.neg)
+            ∪ subformulasFinset Formula.bot) :=
+    subformulasFinset_imp _ _
+  have sY : subformulasFinset (Formula.or g.neg (Formula.kMinus g.neg)).neg
+      = insert (Formula.or g.neg (Formula.kMinus g.neg)).neg
+          (subformulasFinset (Formula.or g.neg (Formula.kMinus g.neg))
+            ∪ subformulasFinset Formula.bot) :=
+    subformulasFinset_imp _ _
+  set A : Finset Formula :=
+    {Formula.snce (Formula.or g.neg (Formula.kMinus g.neg)) g,
+      Formula.or g.neg (Formula.kMinus g.neg),
+      Formula.kMinus g.neg,
+      Formula.snce Formula.top g.neg.neg,
+      (Formula.or g.neg (Formula.kMinus g.neg)).neg,
+      Formula.snce (Formula.or g.neg (Formula.kMinus g.neg))
+        (Formula.or g.neg (Formula.kMinus g.neg)).neg} with hAdef
+  have hsubK : subformulasFinset (Formula.kMinus g.neg) ⊆ A ∪ B := by
+    rw [sK, subformulasFinset_snce, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | (rfl | hx | hx) | rfl
+    · simp [hAdef]
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubnn hx)
+    · exact Finset.mem_union_right _ hbot
+  have hsubXm : subformulasFinset (Formula.or g.neg (Formula.kMinus g.neg)) ⊆ A ∪ B := by
+    rw [sX]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubnn hx)
+    · exact hsubK hx
+  have hsubYm : subformulasFinset (Formula.or g.neg (Formula.kMinus g.neg)).neg ⊆ A ∪ B := by
+    rw [sY, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubXm hx
+    · exact Finset.mem_union_right _ hbot
+  refine ⟨A ∪ B, hB.extendEmissions ?_, Finset.subset_union_right, by simp [hAdef]⟩
+  intro θ hθ
+  rw [hAdef] at hθ
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hθ
+  rcases hθ with rfl | rfl | rfl | rfl | rfl | rfl
+  · by_cases h : g = Formula.top
+    · subst h
+      rw [emissions_snce_top]
+      intro x hx
+      simp only [Finset.mem_union, Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with (rfl | hx | hx) | rfl
+      · simp [hAdef]
+      · exact hsubXm hx
+      · exact Finset.mem_union_right _ (hsubtop hx)
+      · simp [hAdef]
+    · rw [emissions_snce_of_ne h]
+      intro x hx
+      simp only [Finset.mem_insert, Finset.mem_union] at hx
+      rcases hx with rfl | hx | hx
+      · simp [hAdef]
+      · exact hsubXm hx
+      · exact Finset.mem_union_right _ (hsubg hx)
+  · rw [eX]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubnn hx)
+    · exact hsubK hx
+  · rw [eK, subformulasFinset_snce, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | (rfl | hx | hx) | rfl
+    · simp [hAdef]
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubnn hx)
+    · exact Finset.mem_union_right _ hbot
+  · rw [emissions_snce_of_ne hnn]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubnn hx)
+  · rw [eY, hconj, Finset.union_empty, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubXm hx
+    · exact Finset.mem_union_right _ hbot
+  · rw [emissions_snce_of_ne hYne]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact hsubXm hx
+    · exact hsubYm hx
+
+/--
+**The `sepRule` batch.** The conclusion `K⁺(K⁺ψ ∧ K⁻ψ)` unfolds to ten formulas. The one that
+could re-fire is the conjunction `K⁺ψ ∧ K⁻ψ` itself, which `asAnd?` does read as a conjunction
+with a raw `K⁺` on the left — the exact shape `sepRule` keys on. It does not fire: the rule also
+demands the right conjunct be `¬K⁺(ψ ∧ U(ψ, ¬ψ))`, and `K⁻ψ` is an `S`-formula under a negation,
+not that. The `rfl` for `conjEmissions (K⁺ψ) (K⁻ψ) = ∅` below is that comparison, decided at the
+outermost differing constructor.
+-/
+theorem exists_confining_sep {ψ₀ : Formula} {B : Finset Formula} (hB : Confining B)
+    (hcψn : Carries B ψ₀.neg) :
+    ∃ M, Confining M ∧ B ⊆ M ∧
+      Formula.kPlus (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)) ∈ M := by
+  classical
+  have hbot := bot_mem_of_confining hB
+  have hsubψn : subformulasFinset ψ₀.neg ⊆ B := hcψn.subformulas_subset
+  have hsubtop := subformulasFinset_top_subset hB
+  have hFtn : Formula.untl Formula.top Formula.top.neg ∈ B :=
+    constCore_subset_of_confining hB (by decide)
+  have hPtn : Formula.snce Formula.top Formula.top.neg ∈ B :=
+    constCore_subset_of_confining hB (by decide)
+  have hCne : (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg ≠ Formula.top := by
+    simp [Formula.neg, Formula.top, Formula.and]
+  have hconjPQ : conjEmissions (Formula.kPlus ψ₀) (Formula.kMinus ψ₀) = ∅ := rfl
+  have eO : emissions (Formula.kPlus (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)))
+      = insert (Formula.kPlus (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)))
+          (subformulasFinset (Formula.untl Formula.top
+              (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg)
+            ∪ subformulasFinset Formula.bot) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have eCn : emissions (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg
+      = insert (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg
+          (subformulasFinset (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀))
+            ∪ subformulasFinset Formula.bot) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have eC : emissions (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀))
+      = insert (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀))
+          (subformulasFinset (Formula.imp (Formula.kPlus ψ₀) (Formula.kMinus ψ₀).neg)
+            ∪ subformulasFinset Formula.bot)
+        ∪ conjEmissions (Formula.kPlus ψ₀) (Formula.kMinus ψ₀) :=
+    emissions_imp_of_asAnd rfl
+  have ePQ : emissions (Formula.imp (Formula.kPlus ψ₀) (Formula.kMinus ψ₀).neg)
+      = insert (Formula.imp (Formula.kPlus ψ₀) (Formula.kMinus ψ₀).neg)
+          (subformulasFinset (Formula.kPlus ψ₀) ∪ subformulasFinset (Formula.kMinus ψ₀).neg) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have eP : emissions (Formula.kPlus ψ₀)
+      = insert (Formula.kPlus ψ₀)
+          (subformulasFinset (Formula.untl Formula.top ψ₀.neg) ∪ subformulasFinset Formula.bot) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have eQ : emissions (Formula.kMinus ψ₀)
+      = insert (Formula.kMinus ψ₀)
+          (subformulasFinset (Formula.snce Formula.top ψ₀.neg) ∪ subformulasFinset Formula.bot) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have eQn : emissions (Formula.kMinus ψ₀).neg
+      = insert (Formula.kMinus ψ₀).neg
+          (subformulasFinset (Formula.kMinus ψ₀) ∪ subformulasFinset Formula.bot) :=
+    emissions_imp_of_asAnd_eq_none rfl
+  have sP : subformulasFinset (Formula.kPlus ψ₀)
+      = insert (Formula.kPlus ψ₀)
+          (subformulasFinset (Formula.untl Formula.top ψ₀.neg) ∪ subformulasFinset Formula.bot) :=
+    subformulasFinset_imp _ _
+  have sQ : subformulasFinset (Formula.kMinus ψ₀)
+      = insert (Formula.kMinus ψ₀)
+          (subformulasFinset (Formula.snce Formula.top ψ₀.neg) ∪ subformulasFinset Formula.bot) :=
+    subformulasFinset_imp _ _
+  have sQn : subformulasFinset (Formula.kMinus ψ₀).neg
+      = insert (Formula.kMinus ψ₀).neg
+          (subformulasFinset (Formula.kMinus ψ₀) ∪ subformulasFinset Formula.bot) :=
+    subformulasFinset_imp _ _
+  have sPQ : subformulasFinset (Formula.imp (Formula.kPlus ψ₀) (Formula.kMinus ψ₀).neg)
+      = insert (Formula.imp (Formula.kPlus ψ₀) (Formula.kMinus ψ₀).neg)
+          (subformulasFinset (Formula.kPlus ψ₀) ∪ subformulasFinset (Formula.kMinus ψ₀).neg) :=
+    subformulasFinset_imp _ _
+  have sC : subformulasFinset (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀))
+      = insert (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀))
+          (subformulasFinset (Formula.imp (Formula.kPlus ψ₀) (Formula.kMinus ψ₀).neg)
+            ∪ subformulasFinset Formula.bot) :=
+    subformulasFinset_imp _ _
+  have sCn : subformulasFinset (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg
+      = insert (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg
+          (subformulasFinset (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀))
+            ∪ subformulasFinset Formula.bot) :=
+    subformulasFinset_imp _ _
+  set A : Finset Formula :=
+    {Formula.kPlus (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)),
+      Formula.untl Formula.top (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg,
+      (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg,
+      Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀),
+      Formula.imp (Formula.kPlus ψ₀) (Formula.kMinus ψ₀).neg,
+      Formula.kPlus ψ₀, Formula.kMinus ψ₀, (Formula.kMinus ψ₀).neg,
+      Formula.untl Formula.top ψ₀.neg, Formula.snce Formula.top ψ₀.neg} with hAdef
+  have hsubP : subformulasFinset (Formula.kPlus ψ₀) ⊆ A ∪ B := by
+    rw [sP, subformulasFinset_untl, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | (rfl | hx | hx) | rfl
+    · simp [hAdef]
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubψn hx)
+    · exact Finset.mem_union_right _ hbot
+  have hsubQ : subformulasFinset (Formula.kMinus ψ₀) ⊆ A ∪ B := by
+    rw [sQ, subformulasFinset_snce, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | (rfl | hx | hx) | rfl
+    · simp [hAdef]
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubψn hx)
+    · exact Finset.mem_union_right _ hbot
+  have hsubQn : subformulasFinset (Formula.kMinus ψ₀).neg ⊆ A ∪ B := by
+    rw [sQn, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubQ hx
+    · exact Finset.mem_union_right _ hbot
+  have hsubPQ : subformulasFinset (Formula.imp (Formula.kPlus ψ₀) (Formula.kMinus ψ₀).neg)
+      ⊆ A ∪ B := by
+    rw [sPQ]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact hsubP hx
+    · exact hsubQn hx
+  have hsubC : subformulasFinset (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀))
+      ⊆ A ∪ B := by
+    rw [sC, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubPQ hx
+    · exact Finset.mem_union_right _ hbot
+  have hsubCn : subformulasFinset (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg
+      ⊆ A ∪ B := by
+    rw [sCn, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubC hx
+    · exact Finset.mem_union_right _ hbot
+  refine ⟨A ∪ B, hB.extendEmissions ?_, Finset.subset_union_right, by simp [hAdef]⟩
+  intro θ hθ
+  rw [hAdef] at hθ
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hθ
+  rcases hθ with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+  · rw [eO, subformulasFinset_untl, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | (rfl | hx | hx) | rfl
+    · simp [hAdef]
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact hsubCn hx
+    · exact Finset.mem_union_right _ hbot
+  · rw [emissions_untl_of_ne hCne]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact hsubCn hx
+  · rw [eCn, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubC hx
+    · exact Finset.mem_union_right _ hbot
+  · rw [eC, hconjPQ, Finset.union_empty, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubPQ hx
+    · exact Finset.mem_union_right _ hbot
+  · rw [ePQ]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union] at hx
+    rcases hx with rfl | hx | hx
+    · simp [hAdef]
+    · exact hsubP hx
+    · exact hsubQn hx
+  · rw [eP, subformulasFinset_untl, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | (rfl | hx | hx) | rfl
+    · simp [hAdef]
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubψn hx)
+    · exact Finset.mem_union_right _ hbot
+  · rw [eQ, subformulasFinset_snce, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | (rfl | hx | hx) | rfl
+    · simp [hAdef]
+    · simp [hAdef]
+    · exact Finset.mem_union_right _ (hsubtop hx)
+    · exact Finset.mem_union_right _ (hsubψn hx)
+    · exact Finset.mem_union_right _ hbot
+  · rw [eQn, subformulasFinset_bot]
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hx
+    rcases hx with rfl | hx | rfl
+    · simp [hAdef]
+    · exact hsubQ hx
+    · exact Finset.mem_union_right _ hbot
+  · by_cases h : ψ₀.neg = Formula.top
+    · rw [h, emissions_untl_top]
+      intro x hx
+      simp only [Finset.mem_union, Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with (rfl | hx | hx) | rfl
+      · simp [hAdef, h]
+      · exact Finset.mem_union_right _ (hsubtop hx)
+      · exact Finset.mem_union_right _ (hsubtop hx)
+      · exact Finset.mem_union_right _ hFtn
+    · rw [emissions_untl_of_ne h]
+      intro x hx
+      simp only [Finset.mem_insert, Finset.mem_union] at hx
+      rcases hx with rfl | hx | hx
+      · simp [hAdef]
+      · exact Finset.mem_union_right _ (hsubtop hx)
+      · exact Finset.mem_union_right _ (hsubψn hx)
+  · by_cases h : ψ₀.neg = Formula.top
+    · rw [h, emissions_snce_top]
+      intro x hx
+      simp only [Finset.mem_union, Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with (rfl | hx | hx) | rfl
+      · simp [hAdef, h]
+      · exact Finset.mem_union_right _ (hsubtop hx)
+      · exact Finset.mem_union_right _ (hsubtop hx)
+      · exact Finset.mem_union_right _ hPtn
+    · rw [emissions_snce_of_ne h]
+      intro x hx
+      simp only [Finset.mem_insert, Finset.mem_union] at hx
+      rcases hx with rfl | hx | hx
+      · simp [hAdef]
+      · exact Finset.mem_union_right _ (hsubtop hx)
+      · exact Finset.mem_union_right _ (hsubψn hx)
+
 end FormalSystem.Metalogic.Decidability
