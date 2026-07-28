@@ -364,4 +364,228 @@ end Lemma7Wide
 
 end IsBadIntervalSurgery
 
+/-! ## Lemma 8, the `U` cases
+
+Printed pp.181-182. Seven cases forward and six backward, transcribed in the disjoint form
+described in the module header: the position of `t` is fixed first, then the position of `s`.
+
+Two of the seven forward cases and three of the six backward cases consume Lemma 7; the rest are
+Reynolds' *"apply the induction hypothesis to `A` and `B` at `s` and at all points in between"*,
+which is the shared helper immediately below. -/
+
+section Lemma8
+
+variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2} {Q : M.carrier → Prop}
+  {t : M.carrier}
+
+/-- **Reynolds' *"apply the induction hypothesis to `A` and `B` at `s` and at all points in
+between"***, printed p.181 (forward cases 1 and 7) and p.182 (backward case 1 and 6).
+
+The forward form: when the witness `s` itself survives the surgery, it is still a witness in `N`,
+because every point of `N` strictly between `x` and `s` is a point of `M` strictly between them
+and so is covered by the hypothesis. -/
+theorem untl_forward_of_mem {atomMap : Formula → sig.preds} {A B : Formula}
+    {x : (surgeredStructure M ε Q t).carrier} {s : M.carrier}
+    (hsD : SurgeryDomain M ε Q t s)
+    (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
+    (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
+    (hxs : x.val < s) (hA : TemporalTruth M atomMap s A)
+    (hB : ∀ r : M.carrier, x.val < r → r < s → TemporalTruth M atomMap r B) :
+    TemporalTruth (surgeredStructure M ε Q t) atomMap x (.untl A B) :=
+  ⟨⟨s, hsD⟩, hxs, (ihA ⟨s, hsD⟩).mp hA, fun r hxr hrs => (ihB r).mp (hB r.val hxr hrs)⟩
+
+/-- The backward form of the same step: when no point of `M` strictly between `x` and the `N`
+witness `s` has been removed by the surgery, the `N` witness is already an `M` witness. -/
+theorem untl_backward_of_between {atomMap : Formula → sig.preds} {A B : Formula}
+    {x s : (surgeredStructure M ε Q t).carrier}
+    (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
+    (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
+    (hxs : x.val < s.val) (hA : TemporalTruth (surgeredStructure M ε Q t) atomMap s A)
+    (hB : ∀ r : (surgeredStructure M ε Q t).carrier, x < r → r < s →
+      TemporalTruth (surgeredStructure M ε Q t) atomMap r B)
+    (hbetween : ∀ r : M.carrier, x.val < r → r < s.val → SurgeryDomain M ε Q t r) :
+    TemporalTruth M atomMap x.val (.untl A B) :=
+  ⟨s.val, hxs, (ihA s).mpr hA, fun r hxr hrs =>
+    (ihB ⟨r, hbetween r hxr hrs⟩).mpr (hB ⟨r, hbetween r hxr hrs⟩ hxr hrs)⟩
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- **Reynolds 1992, §6 Lemma 8, printed p.181 — the `U` case, forward direction.**
+
+> `(⇒)`: Consider then when `M ⊨ U(A,B)(t)` with `t ∈ N`. … There are several cases.
+
+All seven printed cases, in the disjoint ordering fixed in the module header. Cases 2 and 5 are
+the ones that consume Lemma 7; Reynolds also names Lemma 7 in case 3, where in this rendering
+his remark that *"`B` holds throughout `I`"* is the observation that `I` lies inside the open
+interval `(t, s)`, so the hypothesis already covers it and no appeal is needed. -/
+theorem reynolds_lemma8_untl_forward (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) (A B : Formula)
+    (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
+    (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
+    (x : (surgeredStructure M ε Q t).carrier)
+    (h : TemporalTruth M atomMap x.val (.untl A B)) :
+    TemporalTruth (surgeredStructure M ε Q t) atomMap x (.untl A B) := by
+  obtain ⟨s, hxs, hA, hB⟩ := h
+  rcases x.property with hxQ | hxI
+  · -- `t ∉ Q₀`: either `t ∈ Q⁻` or `t ∈ Q⁺`.
+    rcases hS.lt_or_gt_of_not_mem hxQ with hxt | htx
+    · -- `t ∈ Q⁻`.
+      by_cases hsQ : Q s
+      · -- **Forward case 2**: `t ∈ Q⁻` and `s ∈ Q₀`.
+        -- *"`B` holds for a while into `Q₀` so, by lemma 7, holds everywhere in `Q₀`."*
+        obtain ⟨p, hp, hps⟩ := hS.exists_mem_lt hsQ
+        have hBQ : ∀ u : M.carrier, Q u → TemporalTruth M atomMap u B := by
+          intro u hu
+          refine hS.lemma7_start_wide atomMap h_surj hε h_prior_U h_prior_S B hp
+            ⟨p, contemp_refl hε M p, ?_⟩ hu
+          intro q hq hqp
+          exact hB q (hS.lt_of_before hxQ hxt (hS.mem_of_contemp hε hp hq)) (lt_trans hqp hps)
+        -- *"`A` holds somewhere in `Q₀` so somewhere in `I` (by lemma 7)."*
+        obtain ⟨q, hqc, _, hAq⟩ := hS.lemma7_close_right_wide atomMap h_surj hε h_prior_U
+          h_prior_S A hS.mem ⟨s, hsQ, hA⟩ (contemp_refl hε M t)
+        have hqQ : Q q := hS.mem_of_contemp_base hε hqc
+        refine ⟨⟨q, Or.inr hqc⟩, hS.lt_of_before hxQ hxt hqQ, (ihA _).mp hAq, ?_⟩
+        intro r hxr hrq
+        refine (ihB r).mp ?_
+        rcases r.property with hrQ | hrI
+        · -- `r` survives outside `Q₀` and lies below `q ∈ Q₀`, so `r ∈ Q⁻`.
+          have hrt : r.val < t := by
+            rcases hS.lt_or_gt_of_not_mem hrQ with hr | hr
+            · exact hr
+            · exact absurd (hS.lt_of_after hrQ hr hqQ) (not_lt.mpr (le_of_lt hrq))
+          exact hB r.val hxr (hS.lt_of_before hrQ hrt hsQ)
+        · exact hBQ r.val (hS.mem_of_contemp_base hε hrI)
+      · -- **Forward cases 1 and 3**: `s ∉ Q₀`, so `s` survives and is its own witness.
+        exact untl_forward_of_mem (Or.inl hsQ) ihA ihB hxs hA hB
+    · -- **Forward case 7**: `t ∈ Q⁺`, so everything above `t` is also in `Q⁺`.
+      have hsQ : ¬ Q s := fun hq => absurd (hS.lt_of_after hxQ htx hq) (not_lt.mpr (le_of_lt hxs))
+      exact untl_forward_of_mem (Or.inl hsQ) ihA ihB hxs hA hB
+  · -- `t ∈ I`.
+    by_cases hsQ : Q s
+    · by_cases hsI : ContempEquivDense M ε t s
+      · -- **Forward case 4**: `t < s ∈ I`.
+        exact untl_forward_of_mem (Or.inr hsI) ihA ihB hxs hA hB
+      · -- **Forward case 5**: `t ∈ I` and `s` later in `Q₀`.
+        -- `s` lies above the whole of `I`: a point of `Q₀` between two class-mates is a
+        -- class-mate.
+        have hIs : ∀ y : M.carrier, ContempEquivDense M ε t y → y < s := by
+          intro y hy
+          by_contra hcon
+          push_neg at hcon
+          exact hsI (contemp_trans hε M hxI
+            (contemp_of_between hε M (le_of_lt hxs) hcon
+              (contemp_trans hε M (contemp_symm hε M hxI) hy)))
+        -- *"Again by lemma 7 we have `B` true throughout `I` in `M` and so in `N`."*
+        have hBQ : ∀ u : M.carrier, Q u → TemporalTruth M atomMap u B := by
+          intro u hu
+          refine hS.lemma7_end_wide atomMap h_surj hε h_prior_U h_prior_S B hS.mem
+            ⟨x.val, hxI, ?_⟩ hu
+          intro q hq hxq
+          exact hB q hxq (hIs q hq)
+        -- *"lemma 7 tells us that `A` is true arbitrarily close to the end of `I`."*
+        obtain ⟨q, hqc, hxq, hAq⟩ := hS.lemma7_close_right_wide atomMap h_surj hε h_prior_U
+          h_prior_S A hS.mem ⟨s, hsQ, hA⟩ hxI
+        refine ⟨⟨q, Or.inr hqc⟩, hxq, (ihA _).mp hAq, ?_⟩
+        intro r hxr hrq
+        refine (ihB r).mp (hBQ r.val (hS.mem_of_contemp_base hε ?_))
+        -- `r` lies between two class-mates of `t`, hence is one.
+        exact contemp_trans hε M hxI
+          (contemp_of_between hε M (le_of_lt hxr) (le_of_lt hrq)
+            (contemp_trans hε M (contemp_symm hε M hxI) hqc))
+    · -- **Forward case 6**: `t ∈ I` and `s ∈ Q⁺`.
+      exact untl_forward_of_mem (Or.inl hsQ) ihA ihB hxs hA hB
+
+/-- **Reynolds 1992, §6 Lemma 8, printed p.182 — the `U` case, backward direction.**
+
+> `(⇐)`: Consider then when `N ⊨ U(A,B)(t)`. … Again there are several cases.
+
+All six printed cases. One fewer than the forward direction because `N` has no `Q₀ \ I` for `s`
+to land in. Cases 2, 3 and 5 consume Lemma 7 to recover `B` at the points the surgery removed —
+the only points where the `N` witness could fail to be an `M` witness. -/
+theorem reynolds_lemma8_untl_backward (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) (A B : Formula)
+    (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
+    (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
+      TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
+    (x : (surgeredStructure M ε Q t).carrier)
+    (h : TemporalTruth (surgeredStructure M ε Q t) atomMap x (.untl A B)) :
+    TemporalTruth M atomMap x.val (.untl A B) := by
+  obtain ⟨s, hxs, hA, hB⟩ := h
+  -- The `M`-points strictly between `x` and `s` that the surgery removed are exactly the points
+  -- of `Q₀ \ I` there; every case below either shows there are none, or supplies `B` at all of
+  -- `Q₀` by Lemma 7.
+  have key : (∀ r : M.carrier, x.val < r → r < s.val → Q r → TemporalTruth M atomMap r B) →
+      TemporalTruth M atomMap x.val (.untl A B) := by
+    intro hQB
+    refine ⟨s.val, hxs, (ihA s).mpr hA, ?_⟩
+    intro r hxr hrs
+    by_cases hrQ : Q r
+    · exact hQB r hxr hrs hrQ
+    · exact (ihB ⟨r, Or.inl hrQ⟩).mpr (hB ⟨r, Or.inl hrQ⟩ hxr hrs)
+  rcases x.property with hxQ | hxI
+  · rcases hS.lt_or_gt_of_not_mem hxQ with hxt | htx
+    · -- `t ∈ Q⁻`.
+      rcases s.property with hsQ | hsI
+      · -- **Backward cases 1 and 3**: `s ∈ Q⁻` or `s ∈ Q⁺`.
+        rcases hS.lt_or_gt_of_not_mem hsQ with hst | hts
+        · -- **Backward case 1**: `s ∈ Q⁻`; nothing between was removed.
+          refine key (fun r hxr hrs hrQ => absurd (hS.lt_of_before hsQ hst hrQ) ?_)
+          exact not_lt.mpr (le_of_lt hrs)
+        · -- **Backward case 3**: `t ∈ Q⁻` and `s ∈ Q⁺`.
+          -- *"`B` holds throughout `I` in `N` and so in `M`. Lemma 7 tells us `B` holds
+          -- throughout `Q₀` in `M`."*
+          refine key (fun r _ _ hrQ => ?_)
+          refine hS.lemma7_start_wide atomMap h_surj hε h_prior_U h_prior_S B hS.mem
+            ⟨t, contemp_refl hε M t, ?_⟩ hrQ
+          intro q hq _
+          have hqQ : Q q := hS.mem_of_contemp_base hε hq
+          exact (ihB ⟨q, Or.inr hq⟩).mpr
+            (hB ⟨q, Or.inr hq⟩ (hS.lt_of_before hxQ hxt hqQ) (hS.lt_of_after hsQ hts hqQ))
+      · -- **Backward case 2**: `t ∈ Q⁻` and `s ∈ I`.
+        -- *"`B` holds at the beginning of `I` in `N` and so in `M`. By lemma 7 `B` holds
+        -- throughout `Q₀`."*
+        refine key (fun r _ _ hrQ => ?_)
+        refine hS.lemma7_start_wide atomMap h_surj hε h_prior_U h_prior_S B hS.mem
+          ⟨s.val, hsI, ?_⟩ hrQ
+        intro q hq hqs
+        exact (ihB ⟨q, Or.inr hq⟩).mpr
+          (hB ⟨q, Or.inr hq⟩ (hS.lt_of_before hxQ hxt (hS.mem_of_contemp_base hε hq)) hqs)
+    · -- **Backward case 6**: `t ∈ Q⁺`; nothing between was removed.
+      exact key (fun r hxr _ hrQ =>
+        absurd (hS.lt_of_after hxQ htx hrQ) (not_lt.mpr (le_of_lt hxr)))
+  · rcases s.property with hsQ | hsI
+    · -- **Backward case 5**: `t ∈ I` and `s ∈ Q⁺`.
+      -- *"`B` is true throughout `I` and we have our result."*
+      have hts : t < s.val := hS.lt_of_after hsQ
+        (by rcases hS.lt_or_gt_of_not_mem hsQ with h | h
+            · exact absurd (hS.lt_of_before hsQ h (hS.mem_of_contemp_base hε hxI))
+                (not_lt.mpr (le_of_lt hxs))
+            · exact h) hS.mem
+      refine key (fun r _ _ hrQ => ?_)
+      refine hS.lemma7_end_wide atomMap h_surj hε h_prior_U h_prior_S B hS.mem
+        ⟨x.val, hxI, ?_⟩ hrQ
+      intro q hq hxq
+      exact (ihB ⟨q, Or.inr hq⟩).mpr
+        (hB ⟨q, Or.inr hq⟩ hxq (hS.lt_of_after hsQ hts (hS.mem_of_contemp_base hε hq)))
+    · -- **Backward case 4**: `t < s ∈ I`; every point between two class-mates is a class-mate,
+      -- so nothing between was removed.
+      refine key (fun r hxr hrs _ => ?_)
+      have hrI : ContempEquivDense M ε t r :=
+        contemp_trans hε M hxI (contemp_of_between hε M (le_of_lt hxr) (le_of_lt hrs)
+          (contemp_trans hε M (contemp_symm hε M hxI) hsI))
+      exact (ihB ⟨r, Or.inr hrI⟩).mpr (hB ⟨r, Or.inr hrI⟩ hxr hrs)
+
+end Lemma8
+
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
