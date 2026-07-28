@@ -28,6 +28,10 @@ import FormalSystem.Metalogic.WeakCanonical.StaviConnectives
 import FormalSystem.Metalogic.WeakCanonical.EFGames.StaviCompleteness
 import FormalSystem.Metalogic.WeakCanonical.Expressiveness.Theorem6
 import FormalSystem.Metalogic.WeakCanonical.Transfer
+-- CI edge only: `Chronicle/ChronicleMonadicBridge.lean` sits ABOVE `Transfer.lean` in the import
+-- graph despite living in the `BXCanonical/Chronicle/` directory, so no Chronicle aggregator can
+-- reach it. Listed here, next to its lowest dependency, so it cannot rot out of the build closure.
+import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleMonadicBridge
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness

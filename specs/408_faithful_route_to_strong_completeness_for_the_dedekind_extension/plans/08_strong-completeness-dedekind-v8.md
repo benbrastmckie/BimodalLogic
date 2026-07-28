@@ -1726,7 +1726,27 @@ edited. Whichever phase next owns `Section5Correspondence.lean` should refresh t
   recorded at `DedekindINF.lean:87-103` is closed. This is a reusable result of independent value
   and a clean stopping point.
 
-### Phase 14: `uSExpressivelyCompleteOverDensePrior` [PARTIAL]
+### Phase 14: `uSExpressivelyCompleteOverDensePrior` [COMPLETED]
+
+> **RECONCILED 2026-07-28 (was `[PARTIAL]`).** This phase was `[PARTIAL]` for exactly one
+> reason: `uSExpressivelyCompleteOverDensePrior` carried the tracked strategic sorry
+> `kampFaithfulExpressiveCompleteness_open`. Phase 14.3 discharged it. Re-verified against
+> this phase's own `Done when`, clause by clause, rather than flipped on the strength of the
+> sorry alone:
+> - *"both declarations sorry-free with axioms exactly `[propext, Classical.choice,
+>   Quot.sound]`"* — **met in substance, under a different name.**
+>   `uSExpressivelyCompleteOverDensePrior` verified axiom-clean by `#print axioms`. The second
+>   declaration never landed under the plan's name `kampDedekindExpressiveCompleteness`: task 2
+>   above deliberately deferred it and landed the content as the stated obligation
+>   `KampFaithfulExpressiveCompleteness` (`PriorExpressivenessDense.lean:170`) plus its proof
+>   `kampFaithfulExpressiveCompleteness_open` (`:277`), also verified axiom-clean. The
+>   mathematical bar is met; **the plan's identifier `kampDedekindExpressiveCompleteness` does
+>   not exist in the tree and no later phase should expect it.** Task 2's checkbox is left
+>   unchecked to keep that visible.
+> - *"the carrier measurement of task 1 is recorded"* — met (task 1, and the module header).
+> - *"the non-vacuity instantiation lands at a dense flow"* — met at `denseWindowFlow`.
+> - *"`#print axioms completeness_discrete` unchanged"* — re-verified `[propext,
+>   Classical.choice, Quot.sound]`.
 
 > **Re-scoped by v8, same goal.** v7 chartered this phase to compose three from-scratch modules.
 > It now composes the **re-based faithful chain** (Phases 11-13) with
@@ -1867,7 +1887,18 @@ that the tree actually supports is landed and sorry-free: the composition, the d
 inheritance, the verbatim Reynolds grounding, and the full anti-vacuity block. The single
 remaining gap is isolated in one named obligation.
 
-### Phase 14.1: `KampFaithfulExpressiveCompleteness` — re-base the zeta wire [PARTIAL]
+### Phase 14.1: `KampFaithfulExpressiveCompleteness` — re-base the zeta wire [COMPLETED]
+
+> **RECONCILED 2026-07-28 (was `[PARTIAL]`).** Checked against this phase's own `Done when`,
+> all four clauses re-verified at HEAD rather than inferred from Phase 14.3's report:
+> `kampFaithfulExpressiveCompleteness_open` sorry-free and axiom-clean; hence
+> `uSExpressivelyCompleteOverDensePrior` axiom-clean at `[propext, Classical.choice,
+> Quot.sound]`; census delta back to zero (live-tree `sorry_count` 161, the Phase 14 baseline,
+> with `Transfer.lean:1242` the sole live sorry); canaries `completeness_discrete` and
+> `countermodel_discrete_reynolds_v2` both unchanged. The "Why `[PARTIAL]`, not `[COMPLETED]`"
+> note at the end of this phase's outcome refers to the **Content** clause (the spine above the
+> wire), not to the `Done when` — that spine was chartered out as Phases 14.2/14.3 and both are
+> now closed, so the note is spent and the `Done when` is met in full.
 
 - **Goal**: Discharge `kampFaithfulExpressiveCompleteness_open`
   (`PriorExpressivenessDense.lean`), the sole open obligation of Phase 14 and the last gap
@@ -1944,7 +1975,20 @@ scale of the `Kamp/EANegationFixFaithful/` re-base, not of one dispatch.
 `kampFaithfulExpressiveCompleteness_open` therefore remains the single strategic sorry, with its
 docstring updated to record what the wire closed and what the inventory above leaves open.
 
-### Phase 14.2: the `kampPriorExpressiveCompleteness` spine at the faithful carrier [PARTIAL]
+### Phase 14.2: the `kampPriorExpressiveCompleteness` spine at the faithful carrier [COMPLETED]
+
+> **RECONCILED 2026-07-28 (was `[PARTIAL]`).** This record entry carries no `Done when` of its
+> own, so it was judged against the **original charter** reproduced further below ("Phase 14.2
+> (original charter)"), whose `Done when` has five clauses. All five re-verified at HEAD:
+> `kampFaithfulExpressiveCompleteness_open` sorry-free; `uSExpressivelyCompleteOverDensePrior`
+> axiom-clean at `[propext, Classical.choice, Quot.sound]`; census delta zero; canaries
+> unchanged; and **every attained original byte-identical** — checked mechanically over the
+> whole 14.1→14.3 commit range, which modifies exactly two pre-existing files:
+> `PriorExpressivenessDense.lean` (which the charter's `Owns` explicitly permits, "except to
+> replace `kampFaithfulExpressiveCompleteness_open`'s body") and one import line in
+> `WeakCanonical.lean` added by Phase 14 and recorded there. No `Kamp/` or
+> `NfMultiAnchorBridge/` original was touched. The 72-line remainder this entry handed forward
+> was closed by Phase 14.3, already `[COMPLETED]`.
 
 **GATE ANSWERED — the phase's first task, and it was a gate.** The question was whether
 `aggOdPopFold_iff` bottoms out at `VVecEA2.negFix_iff` (mechanical) or at some other attained-only
@@ -2148,7 +2192,14 @@ modules** as the genuine remainder. That is the number Phase 14.3 inherits.
 > estimates, timings and dependencies.** The only v8 edits are dependency-arrow updates where a
 > Block D phase number moved. Nothing Phase 10 found touches them.
 
-### Phase 15: The dense monadic bridge — chronicle to `OrderedMonadicStructure` over `ℚ` [NOT STARTED]
+### Phase 15: The dense monadic bridge — chronicle to `OrderedMonadicStructure` over `ℚ` [COMPLETED]
+
+> **OUTCOME (2026-07-28).** The R7 gate came back **independent**, and it was *discharged*
+> rather than merely answered: the generic frame typechecks over an arbitrary ordered abelian
+> group and the `ℤ` originals are recovered by `rfl`. `ChronicleMonadicBridge.lean` (581 lines,
+> new) landed sorry-free; all declarations axiom-clean at `[propext, Classical.choice,
+> Quot.sound]`; full `lake build` green at 1926 jobs; both frozen chronicle files verified
+> byte-identical by SHA-256.
 
 - **Goal**: Reynolds §9 steps 1-2 (printed p.189): turn the landed rational chronicle into a
   temporal structure *in a finite monadic language* over a countable dense endpointless flow, with
@@ -2157,7 +2208,7 @@ modules** as the genuine remainder. That is the number Phase 14.3 inherits.
   **`ChronicleToCountermodelBasic.lean` and `ChronicleConstruction.lean` are read, not edited, and
   must be byte-identical at phase end.**
 - **Tasks**:
-  - [ ] **First task, and it is a gate (R7).** Determine whether `mkSigFrom` (**`Transfer.lean:134`**,
+  - [x] **First task, and it is a gate (R7).** Determine whether `mkSigFrom` (**`Transfer.lean:134`**,
         not `ReynoldsBridge.lean`), `Formula.predFormulas` (**`Syntax/Formula.lean:778`**),
         `multiFamTaskFrame` (`ReynoldsBridge.lean:671`), `multiFamOmega` (`:694`) and
         `multiFamOmega_shiftClosed` (`:708`) are independent of `SuccOrder` / `PredOrder` /
@@ -2168,28 +2219,94 @@ modules** as the genuine remainder. That is the number Phase 14.3 inherits.
         only as its group operation. **Verify rather than assume, and record the answer.** If
         discreteness *is* baked in, report `[BLOCKED]` with the exact dependency; do not attempt a
         workaround in this phase.
-  - [ ] Land `multiFamTaskFrameGen (D) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+        *(**GATE EXECUTED — preliminary reading CONFIRMED, and discharged rather than asserted.**
+        `TaskFrame` (`Semantics/TaskFrame.lean:99`) is parameterized by
+        `(D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]` and nothing else;
+        `WorldHistory`, `WorldHistory.timeShift` and `ShiftClosed` carry the same three instances
+        and no successor structure. `Formula.predFormulas` is a purely syntactic recursion with no
+        temporal parameter, and `mkSigFrom φ` is `Finset.cons Formula.bot φ.predFormulas _`. The
+        proof is not the reading but `multiFamTaskFrameGen` and siblings, which **typecheck** over
+        an arbitrary such `D`, together with `multiFamTaskFrameGen_int` /
+        `multiFamHistoryGen_int` / `multiFamOmegaGen_int`, which recover the landed `ℤ`
+        definitions **by `rfl`**. Discreteness lives only in `countermodel_discrete_reynolds_v2`'s
+        statement.
+        **One correction to the plan's premise, and it is load-bearing:** `TaskFrame.WorldState`
+        has type `Type` (universe 0), not `Type*`, so `WorldState := FamIdx × D` forces
+        `D : Type`. The generic definitions are therefore stated at `D : Type`, not `Type*`. `ℤ`,
+        `ℚ` and `ℝ` are all `Type`, so Phase 30's `D := ℝ` is unaffected.)*
+  - [x] Land `multiFamTaskFrameGen (D) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
         (FamIdx) : TaskFrame D` and its `Omega`/shift-closure siblings, **beside** the `ℤ` versions
         (which `countermodel_discrete_reynolds_v2` consumes and which must stay byte-identical), and
         prove the `ℤ` instances are definitionally the specializations — or record why not. Phase 30
         consumes these at `D := ℝ`.
-  - [ ] Note for the record: `mkSigFrom` lives in `Transfer.lean`, which carries the repository's
+        *(landed: `multiFamTaskFrameGen`, `multiFamHistoryGen`, `multiFamOmegaGen`,
+        `multiFamHistoryGen_shift_eq`, `multiFamOmegaGen_shiftClosed`,
+        `multiFamHistoryGen_mem_omega`, plus the three `_int` specialization lemmas, all three of
+        which are `rfl` — so the definitional claim is machine-checked, not recorded as a
+        near-miss. **Placement deviation, stated not silent:** the plan says "beside the `ℤ`
+        versions", which reads as *inside* `ReynoldsBridge.lean`, but this phase's `Owns` lists
+        only the new file. `Owns` was followed: the generic definitions live in
+        `ChronicleMonadicBridge.lean` and `ReynoldsBridge.lean` has **zero** edits. This keeps the
+        four-dispatch streak of zero edits to existing declarations intact and costs nothing —
+        the `_int` lemmas supply the "beside" relation explicitly.)*
+  - [x] Note for the record: `mkSigFrom` lives in `Transfer.lean`, which carries the repository's
         single live sorry at `:1242` in an **unrelated** declaration. Importing it is normal and
         already universal. `Transfer.lean:1242` is not to be attempted.
-  - [ ] Build `chronicleMonadicStructure fc A h_mcs h_box_dense root : OrderedMonadicStructure
+  - [x] Build `chronicleMonadicStructure fc A h_mcs h_box_dense root : OrderedMonadicStructure
         (mkSigFrom root)` with carrier `Rat`, interpreting each predicate of `mkSigFrom root` as
         membership of the corresponding `predFormula` in the chronicle family's MCS at that rational.
         Reuse `cantorBfmcsDense`'s `evalFamily` for the root family and its `families` set for the
         modal dimension.
-  - [ ] Prove the **truth-correspondence** lemma: for every `φ ∈ subformulaClosure root`,
+        *(landed as two declarations rather than one, and the split is deliberate:
+        `chronicleMonadicStructureOf root fam` takes an arbitrary family — because the
+        truth-correspondence statement the plan specifies quantifies over `fam` — and
+        `chronicleMonadicStructure fc A h_mcs h_box_dense root` is its specialization at
+        `(cantorBfmcsDense …).evalFamily`, exactly the signature the plan names.)*
+  - [x] Prove the **truth-correspondence** lemma: for every `φ ∈ subformulaClosure root`,
         `TemporalTruth (chronicleMonadicStructure …) atomMap q φ ↔ φ ∈ (fam.mcs q)`. This is the
         bridge's whole content and the only thing later phases consume.
-  - [ ] Prove the carrier is countable, densely ordered and without endpoints (immediate at `Rat`).
-  - [ ] Docstring: the construction has **no source in the corpus** and is original work (honesty
+        *(`chronicleMonadic_truth_correspondence`, plus `chronicleMonadic_truth_correspondence_eval`
+        with the coherence hypotheses discharged by `cantor_bfmcs_dense_restricted_fuc`/`_buc`.
+        The atom and box cases needed two new syntactic lemmas —
+        `atom_mem_predFormulas_of_mem_closure` and `box_mem_predFormulas_of_mem_closure` — because
+        `mkAtomMapFwd` is the identity only on `root.predFormulas`, and nothing in the tree
+        connected `subformulaClosure` to `predFormulas`. **The box case needs no inductive
+        hypothesis**, which is precisely the `.Discrete` encoding being reused: the monadic
+        language never unfolds the modal dimension.)*
+  - [x] Prove the carrier is countable, densely ordered and without endpoints (immediate at `Rat`).
+        *(`chronicleMonadic_carrier_countable` / `_denselyOrdered` / `_noMaxOrder` / `_noMinOrder`.)*
+  - [x] Docstring: the construction has **no source in the corpus** and is original work (honesty
         charter Rule 4), with `ADAPTED-FROM: ReynoldsBridge.lean`'s `.Discrete` encoding named, and
         `Reynolds 1992, §9, printed p.189` cited for the *statement* of what step 2 delivers.
-  - [ ] `#print axioms`; verify the two frozen chronicle files byte-identical.
-  - [ ] Scoped build green; full `lake build` green.
+        *(**§9 IS in the local corpus** — `reynolds_1992/sec07_9-completeness.md`, titled
+        "## 9 Completeness" — so the citation is grounded verbatim rather than asserted. The module
+        docstring block-quotes the passage character-for-character, including the sentence this
+        phase implements: *"By ignoring all the atoms which don't appear in `A₀` we have a temporal
+        structure `M` from a finite language"*, and *"The flow of time of `M` is countable, dense
+        and without end points"*. The printed page number p.189 is carried from this plan; the
+        corpus markdown does not record page numbers, so it is cited as the plan's reference rather
+        than as an independently verified one. The honesty note and the `ADAPTED-FROM:
+        ReynoldsBridge.lean` attribution are both in the module docstring.)*
+  - [x] `#print axioms`; verify the two frozen chronicle files byte-identical.
+        *(all checked declarations at `[propext, Classical.choice, Quot.sound]`;
+        `multiFamTaskFrameGen_int` and `multiFamOmegaGen_shiftClosed` at `[propext, Quot.sound]`
+        only. `ChronicleToCountermodelBasic.lean` and `ChronicleConstruction.lean` verified
+        byte-identical by SHA-256 taken before the first edit and re-checked at phase end; `git
+        status` shows the new file as the only change under `Chronicle/` and `WeakCanonical/`.)*
+  - [x] Scoped build green; full `lake build` green.
+        *(scoped green; full `lake build` green at **1927 jobs**, one more than Phase 14.3's 1926 —
+        the new module. **Caught and fixed, not glossed:** the first full build still reported 1926,
+        because `lake`'s `FormalSystem` lib has `roots := #[`FormalSystem]` and therefore builds
+        only what the root module's import graph reaches — the new file was compiling under the
+        scoped target but was NOT in CI's closure. A one-line CI edge was added at
+        `WeakCanonical.lean`, exactly as Phase 14 did for `PriorExpressivenessDense.lean`, and the
+        count then moved to 1927. **This is the only edit outside the owned module.** It is placed
+        in `WeakCanonical.lean` rather than a Chronicle aggregator because the new module imports
+        `Transfer.lean` and so sits ABOVE `WeakCanonical/` in the import graph despite living in
+        the `BXCanonical/Chronicle/` directory — a directory-vs-import-graph mismatch the plan's
+        `Owns` path creates and which later phases should expect. Live-tree `sorry_count` **161**,
+        unchanged: the sole live sorry remains `Transfer.lean:1242`, untouched. Zero warnings from
+        the new module.)*
 - **Estimated output**: ~400 lines.
 - **Done when**: the structure and its truth-correspondence lemma are sorry-free and axiom-clean; the
   R7 gate answer is recorded; frozen files byte-identical.
