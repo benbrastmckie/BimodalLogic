@@ -365,8 +365,8 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
       · -- Case 2: `β₁` everywhere, no anchored tail instance (PDF p.10).
         obtain ⟨h2n, _hsev⟩ :=
           (VVecEA2.conjEverywhere_holds_iff M atomMap _ s z0 z1).mp h2
-        have hnex := (negBoundedLeftFixAnchoredFaithful_iff M atomMap h_INF a
-          (bracketOf b qs) z0 z1 h_lt).mp h2n
+        have hnex := (negBoundedLeftFixAnchoredFaithful_iff M atomMap
+          h_INF.toHasFaithfulDedekindINF a (bracketOf b qs) z0 z1 h_lt).mp h2n
         intro hb
         obtain ⟨x, hx0, hx1, _hpre, hax, htail⟩ :=
           (bracketOf_cons_holds_iff M atomMap s a b qs z0 z1).mp hb
@@ -418,7 +418,8 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
           simp only [List.mem_cons, List.not_mem_nil, or_false] at hit
           rcases hit with rfl | rfl | rfl
           · -- `A`-failure: contradicts the witness `x`
-            have hnA := (negBoundedLeftFixAnchoredFaithful_iff M atomMap h_INF a
+            have hnA := (negBoundedLeftFixAnchoredFaithful_iff M atomMap
+              h_INF.toHasFaithfulDedekindINF a
               (bracketOf e.leftSeg e.leftPairs) z0 r hr0).mp hh.1
             exact hnA ⟨x, hx0, hxlt, hax, heL⟩
           · -- pin-type failure: contradicts the entry's point type
@@ -434,7 +435,8 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
       by_cases hsev : ∀ y : M.carrier, z0 < y → y < z1 → s.EvalAt M atomMap y
       · -- Case 2: `β₁` everywhere (PDF p.10)
         refine Or.inr (Or.inl ((VVecEA2.conjEverywhere_holds_iff M atomMap _ s
-          z0 z1).mpr ⟨(negBoundedLeftFixAnchoredFaithful_iff M atomMap h_INF a
+          z0 z1).mpr ⟨(negBoundedLeftFixAnchoredFaithful_iff M atomMap
+            h_INF.toHasFaithfulDedekindINF a
             (bracketOf b qs) z0 z1 h_lt).mpr ?_, hsev⟩))
         rintro ⟨x, hx0, hx1, hax, htail⟩
         exact hnb ((bracketOf_cons_holds_iff M atomMap s a b qs z0 z1).mpr
@@ -497,7 +499,8 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
                   TemporalPred.top, VVecEA2.trivialTrue⟩, by simp,
                 ?_, TemporalPred.eval_at_top M atomMap r0,
                 VVecEA2.trivialTrue_holds M atomMap r0 z1⟩
-              rw [negBoundedLeftFixAnchoredFaithful_iff M atomMap h_INF a
+              rw [negBoundedLeftFixAnchoredFaithful_iff M atomMap
+                h_INF.toHasFaithfulDedekindINF a
                 (bracketOf e.leftSeg e.leftPairs) z0 r0 hr00]
               rintro ⟨x, hx0, hxr, hax, hxL⟩
               have heR : (bracketOf e.rightSeg e.rightPairs).holds M atomMap

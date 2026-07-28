@@ -562,40 +562,4 @@ theorem prior_makes_disjunct2_unreachable {sig : MonadicSignature}
   prior_makes_faithful_disjunct2_unreachable M atomMap h_UZ P z0 z1 h_lt h_occ
     (kplusOpen_of_kplus hk)
 
-/-! ## Re-base compatibility shim — ORIGINAL GLUE, and scheduled for removal
-
-**This section is not mathematics and is not attributable to any source.** It exists for exactly
-one reason, stated plainly.
-
-`negChainOnFaithful_iff` and `lemma53Faithful` now bind `HasFaithfulDedekindINF`. Their four live
-call sites — `EANegationFixFaithful/BoundedFixFaithful.lean:215`, `:227`, `:281`, `:290` and
-`EANegationFixFaithful/BoundedFixAnchoredFaithful.lean:181`, `:193`, `:257`, `:266` — pass a
-`HasDedekindINF` drawn from their own binders (`BoundedFixFaithful.lean:188`, `:258`;
-`BoundedFixAnchoredFaithful.lean:150`, `:230`). Those two modules are **not** this module's
-territory: their carrier binders are re-based in their own phase, one module-boundary later in the
-import chain. Until that happens the four binders and the eight call sites would be red.
-
-The instance below closes that window. It is `HasDedekindINF.toHasFaithfulDedekindINF`
-(`KPlusFaithful.lean:364`) and nothing else — a landed, sorry-free, axiom-clean theorem, wrapped
-so Lean inserts it at an application site rather than requiring it to be written out.
-
-**Two things follow, and both are binding:**
-
-1. **It weakens nothing and hides nothing mathematically.** The coercion runs in the safe
-   direction only (strong carrier ⇒ faithful carrier). The reverse edge does not exist and is not
-   creatable: `HasDenseDedekindINF → HasFaithfulDedekindINF` fails for the reason recorded at
-   `KPlusFaithful.lean:434-440`.
-2. **It is scheduled for deletion, not for keeping.** The phase that re-bases
-   `BoundedFixFaithful` and `BoundedFixAnchoredFaithful` swaps those four binders to
-   `HasFaithfulDedekindINF` and must then delete this instance in the same change. Leaving it in
-   place would let a later reader pass a needlessly strong carrier without seeing that they had. -/
-
-/-- Compatibility coercion, `HasDedekindINF ⇒ HasFaithfulDedekindINF`. See the section note
-    above: original glue, semantically just `HasDedekindINF.toHasFaithfulDedekindINF`, and to be
-    deleted when the `EANegationFixFaithful/` binders are re-based. -/
-instance coeHasDedekindINFToFaithful {sig : MonadicSignature}
-    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} :
-    Coe (HasDedekindINF M atomMap) (HasFaithfulDedekindINF M atomMap) :=
-  ⟨HasDedekindINF.toHasFaithfulDedekindINF⟩
-
 end FormalSystem.Metalogic.WeakCanonical.Kamp

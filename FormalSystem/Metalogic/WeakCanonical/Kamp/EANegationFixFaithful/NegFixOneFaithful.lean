@@ -250,8 +250,8 @@ theorem negFixOneTail_iff {sig : MonadicSignature}
     ¬ ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ p.EvalAt M atomMap x ∧
       ∀ y : M.carrier, x < y → y < z1 → s1.EvalAt M atomMap y := by
   rw [negFixOneTail,
-    negBoundedLeftFixAnchoredFaithful_iff M atomMap h_INF p (BracketFormula.trivial s1)
-      z0 z1 h_lt]
+    negBoundedLeftFixAnchoredFaithful_iff M atomMap h_INF.toHasFaithfulDedekindINF p
+      (BracketFormula.trivial s1) z0 z1 h_lt]
   simp only [BracketFormula.trivial_holds]
 
 /-! ## The three cases of PDF p.9, as `VVecEA2` disjuncts -/

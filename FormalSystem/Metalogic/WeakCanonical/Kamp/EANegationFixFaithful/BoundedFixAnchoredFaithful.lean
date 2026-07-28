@@ -51,9 +51,9 @@ attainment consumption simply disappears — exactly as in the unanchored case.
 | | attained anchored, `VBracketFormula` | faithful anchored, `VVecEA2` (here) |
 |---|---|---|
 | Cor 5.4(1) head | `rightPinBracket` (attained first `¬β₁`) | `¬F₀(z₀)`, as printed |
-| Cor 5.4(1) carrier | `HasAttainedINF` | `HasDedekindINF` |
+| Cor 5.4(1) carrier | `HasAttainedINF` | `HasFaithfulDedekindINF` |
 | Cor 5.4(2) head | `leftPinBracket` (attained last `¬βₙ`) | `¬Ĝ(z₁)`, as printed |
-| Cor 5.4(2) carrier | `HasAttainedINF` **and** `HasAttainedSUP` | `HasDedekindINF` alone |
+| Cor 5.4(2) carrier | `HasAttainedINF` **and** `HasAttainedSUP` | `HasFaithfulDedekindINF` alone |
 
 The head construction is reused verbatim from `BoundedFixFaithful.lean`: `endpointFailLeft` /
 `endpointFailRight` and their `_holds` characterizations are parametric in the point predicate, so
@@ -63,8 +63,15 @@ predicate lists, spliced exactly as the attained anchored definitions splice `ne
 
 Nothing in `EANegationFix/` is deleted, weakened, or edited. `negBoundedRightFixAnchored`,
 `negBoundedLeftFixAnchored` and their `_iff` lemmas stay live and stay consumed; everything below is
-a pure addition, and the attained carriers reach the faithful ones through the landed shim
-`HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`).
+a pure addition, and the attained carriers reach the faithful ones through the landed shims
+`HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`) and
+`HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`).
+
+`ADAPTED-FROM`: both `_iff` statements below were first pinned at `HasDedekindINF`. Re-basing
+`negChainOnFaithful_iff` (`Lemma53Faithful.lean`) onto `HasFaithfulDedekindINF` moved the two
+carrier binders here, and nothing else: neither statement below opens the carrier — `h_INF` is
+handed to `negChainOnFaithful_iff` and to nothing else, in all four uses — so there is no
+destructure to re-shape. The change is one clause per binder.
 
 Cite Rabinovich by **PDF page only**:
 `~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
@@ -74,8 +81,9 @@ ground truth.
 ## Non-vacuity — what these statements exclude, and where the carrier is actually spent
 
 1. **Neither anchored arm re-introduces attainment.** The only carrier hypothesis in
-   `negBoundedRightFixAnchoredFaithful_iff` is `HasDedekindINF`, and the only carrier hypothesis in
-   `negBoundedLeftFixAnchoredFaithful_iff` is `HasDedekindINF`. `HasAttainedINF`, `HasAttainedSUP`,
+   `negBoundedRightFixAnchoredFaithful_iff` is `HasFaithfulDedekindINF`, and the only carrier
+   hypothesis in `negBoundedLeftFixAnchoredFaithful_iff` is `HasFaithfulDedekindINF`.
+   `HasAttainedINF`, `HasAttainedSUP`,
    `HasDefinableINF` and `HasDefinableSUP` occur in **no** statement in this module except the two
    deliberate `_of_attained` shims, whose entire content is that the attained hypothesis still
    reaches the faithful result. Checkable from the signatures, not merely asserted here.
@@ -84,13 +92,13 @@ ground truth.
    anchored formula consumes **no carrier at all** — it is a point condition discharged by
    `endpointFailLeft_holds` / `endpointFailRight_holds` (`BoundedFixFaithful.lean:121`, `:144`),
    which have no structural hypothesis beyond `OrderedMonadicStructure`. The carrier is spent
-   entirely in the chain arm, through the `negChainOnFaithful_iff` (`Lemma53Faithful.lean:228`) call
+   entirely in the chain arm, through the `negChainOnFaithful_iff` (`Lemma53Faithful.lean`) call
    each `_iff` below makes in **both** the `mp` and the `mpr` direction. Inside that lemma the proof
-   `rcases`es `h_INF.first_occ` (`Lemma53Faithful.lean:274`) and its **left** disjunct —
-   `hk : kplus M atomMap P z0`, Rabinovich's *Subcase `r₀ = z₀`* (PDF p.8) — is the branch at
-   `Lemma53Faithful.lean:277-282`, discharged by `orderedPointsExist_combine_kplus`
-   (`Lemma53Faithful.lean:281`). That is the `K⁺` branch the attained carrier deletes, and it is on
-   the invoked code path in both directions of both lemmas below.
+   `rcases`es `h_INF.first_occ` and its **left** disjunct —
+   `hk : kplusOpen M atomMap P z0`, Rabinovich's *Subcase `r₀ = z₀`* (PDF p.8) — is discharged by
+   `orderedPointsExist_combine_kplusOpen` (`Lemma53Faithful.lean`), at the source's conjunct-free
+   `K⁺`. That is the `K⁺` branch the attained carrier deletes, and it is on the invoked code path
+   in both directions of both lemmas below.
 
 3. **The `K⁻`/`kminus` branch is NOT taken here, and `HasDedekindSUP` is not consumed.** Stated
    rather than papered over. `HasAttainedSUP` entered `negBoundedLeftFixAnchored_iff`
@@ -98,7 +106,7 @@ ground truth.
    `leftPinBracket`'s attained *last* `¬βₙ`-point at `:468`. Once the head is the printed `¬Ĝ(z₁)`,
    the SUP carrier has nothing left to do — the chain arm of anchored Cor 5.4(2) is still an
    **increasing** chain of points (`chainAllTrue (sinceChainPredsAnchored …)`), so it is still
-   `negChainOnFaithful` and still `HasDedekindINF`. `negBoundedLeftFixAnchoredFaithful_iff`
+   `negChainOnFaithful` and still `HasFaithfulDedekindINF`. `negBoundedLeftFixAnchoredFaithful_iff`
    therefore carries strictly fewer hypotheses than its attained counterpart rather than the
    mirrored-carrier pair one might expect. Declining to state an unused `HasDedekindSUP` is
    deliberate: an unused hypothesis is a strengthening that buys nothing and hides what the proof
@@ -126,7 +134,7 @@ noncomputable def rightFoldHeadAnchored (α : TemporalPred) {n : Nat}
   TemporalPred.untl (untilFoldAnchored α bf.foldPairs) (bf.segmentTypes ⟨0, Nat.succ_pos n⟩)
 
 /-- **Anchored Cor 5.4(1), faithful form** (Rabinovich 2014, PDF pp.9-10): the `VVecEA2` formula
-    equivalent to `¬∃ z ∈ (z₀,z₁), α(z) ∧ bf.holds z₀ z` over `HasDedekindINF`.
+    equivalent to `¬∃ z ∈ (z₀,z₁), α(z) ∧ bf.holds z₀ z` over `HasFaithfulDedekindINF`.
 
     Disjuncts, exactly the two the paper prints on p.9:
     1. `¬F₀(z₀)` — as a left-endpoint predicate, needing no carrier;
@@ -141,13 +149,20 @@ noncomputable def negBoundedRightFixAnchoredFaithful (α : TemporalPred) {n : Na
   ⟨⟨0, endpointFailLeft (rightFoldHeadAnchored α bf)⟩ ::
     (negChainOnFaithful (untilChainPredsAnchored α bf.foldPairs)).disjuncts⟩
 
-/-- **Anchored Cor 5.4(1) iff, faithful** (PDF pp.9-10). The carrier is `HasDedekindINF` alone —
-    Rabinovich's eq (5.2) hypothesis as stated in `DedekindINF.lean:136` — where the attained
-    counterpart `negBoundedRightFixAnchored_iff` (`EANegationFix/BoundedFixAnchored.lean:164`)
-    needs `HasAttainedINF`, spending it a second time at `:237` on `first_occ_tp`. -/
+/-- **Anchored Cor 5.4(1) iff, faithful** (PDF pp.9-10). The carrier is `HasFaithfulDedekindINF`
+    alone — Rabinovich's eq (5.2) hypothesis read with the source's own conjunct-free `K⁺`
+    (`KPlusFaithful.lean`) — where the attained counterpart `negBoundedRightFixAnchored_iff`
+    (`EANegationFix/BoundedFixAnchored.lean:164`) needs `HasAttainedINF`, spending it a second time
+    at `:237` on `first_occ_tp`.
+
+    `ADAPTED-FROM`: the previous pin of this same statement bound `HasDedekindINF`. The one clause
+    that changed is the carrier binder; the statement and the proof are otherwise unchanged. The
+    swap is forced by `negChainOnFaithful_iff` (`Lemma53Faithful.lean`), which now binds the
+    faithful carrier, and it strictly weakens the hypothesis:
+    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`) runs one way only. -/
 theorem negBoundedRightFixAnchoredFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_INF : HasDedekindINF M atomMap) (α : TemporalPred)
+    (h_INF : HasFaithfulDedekindINF M atomMap) (α : TemporalPred)
     {n : Nat} (bf : BracketFormula n) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     (negBoundedRightFixAnchoredFaithful α bf).holds M atomMap z0 z1 ↔
     ¬ ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
@@ -207,7 +222,7 @@ noncomputable def leftFoldHeadAnchored (α : TemporalPred) {n : Nat}
     (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)
 
 /-- **Anchored Cor 5.4(2), faithful form** (Rabinovich 2014, PDF pp.9-10): the `VVecEA2` formula
-    equivalent to `¬∃ z ∈ (z₀,z₁), α(z) ∧ bf.holds z z₁` over `HasDedekindINF`.
+    equivalent to `¬∃ z ∈ (z₀,z₁), α(z) ∧ bf.holds z z₁` over `HasFaithfulDedekindINF`.
 
     Disjuncts, mirroring `negBoundedRightFixAnchoredFaithful`:
     1. `¬Ĝ(z₁)` — as a right-endpoint predicate, needing no carrier;
@@ -220,14 +235,17 @@ noncomputable def negBoundedLeftFixAnchoredFaithful (α : TemporalPred) {n : Nat
   ⟨⟨0, endpointFailRight (leftFoldHeadAnchored α bf)⟩ ::
     (negChainOnFaithful (sinceChainPredsAnchored α bf.foldPairsRev)).disjuncts⟩
 
-/-- **Anchored Cor 5.4(2) iff, faithful** (PDF pp.9-10). The carrier is `HasDedekindINF` alone,
-    where the attained counterpart `negBoundedLeftFixAnchored_iff`
+/-- **Anchored Cor 5.4(2) iff, faithful** (PDF pp.9-10). The carrier is `HasFaithfulDedekindINF`
+    alone, where the attained counterpart `negBoundedLeftFixAnchored_iff`
     (`EANegationFix/BoundedFixAnchored.lean:392`) needs `HasAttainedINF` **and** `HasAttainedSUP` —
     the latter only to place `leftPinBracket`'s attained last `¬βₙ`-point at `:468`, which the
-    printed endpoint disjunct does not require. -/
+    printed endpoint disjunct does not require.
+
+    `ADAPTED-FROM`: the previous pin bound `HasDedekindINF`; the carrier binder is the one clause
+    that changed. Mirror of the change recorded on `negBoundedRightFixAnchoredFaithful_iff`. -/
 theorem negBoundedLeftFixAnchoredFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_INF : HasDedekindINF M atomMap) (α : TemporalPred)
+    (h_INF : HasFaithfulDedekindINF M atomMap) (α : TemporalPred)
     {n : Nat} (bf : BracketFormula n) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     (negBoundedLeftFixAnchoredFaithful α bf).holds M atomMap z0 z1 ↔
     ¬ ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
@@ -274,7 +292,8 @@ anchored call sites lose nothing, while the converse direction is exactly what i
 
 /-- The anchored faithful Cor 5.4(1) is available wherever the attained anchored one is:
     `HasAttainedINF` reaches `HasDedekindINF` through `HasAttainedINF.toHasDedekindINF`
-    (`DedekindINF.lean:172`). -/
+    (`DedekindINF.lean:172`), and `HasDedekindINF` reaches the faithful carrier through
+    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`). -/
 theorem negBoundedRightFixAnchoredFaithful_iff_of_attained {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_INF : HasAttainedINF M atomMap) (α : TemporalPred)
@@ -282,7 +301,8 @@ theorem negBoundedRightFixAnchoredFaithful_iff_of_attained {sig : MonadicSignatu
     (negBoundedRightFixAnchoredFaithful α bf).holds M atomMap z0 z1 ↔
     ¬ ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
       bf.holds M atomMap z0 z :=
-  negBoundedRightFixAnchoredFaithful_iff M atomMap h_INF.toHasDedekindINF α bf z0 z1 h_lt
+  negBoundedRightFixAnchoredFaithful_iff M atomMap
+    h_INF.toHasDedekindINF.toHasFaithfulDedekindINF α bf z0 z1 h_lt
 
 /-- The anchored faithful Cor 5.4(2) is likewise available wherever the attained anchored one is —
     and needs only the INF half of the attained pair that `negBoundedLeftFixAnchored_iff`
@@ -294,7 +314,8 @@ theorem negBoundedLeftFixAnchoredFaithful_iff_of_attained {sig : MonadicSignatur
     (negBoundedLeftFixAnchoredFaithful α bf).holds M atomMap z0 z1 ↔
     ¬ ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
       bf.holds M atomMap z z1 :=
-  negBoundedLeftFixAnchoredFaithful_iff M atomMap h_INF.toHasDedekindINF α bf z0 z1 h_lt
+  negBoundedLeftFixAnchoredFaithful_iff M atomMap
+    h_INF.toHasDedekindINF.toHasFaithfulDedekindINF α bf z0 z1 h_lt
 
 /-! ## The anchored head disjunct SUBSUMES the anchored attained pin — machine-checked
 
