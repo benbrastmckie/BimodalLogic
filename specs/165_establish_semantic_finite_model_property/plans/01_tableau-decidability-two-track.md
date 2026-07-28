@@ -2045,6 +2045,70 @@ intermediate guards are available; the preamble must state that `findUnexpanded 
 - A construction induction for the box invariant as a *prerequisite* for the truth lemma —
   `boxAnchoredCheck` discharges it the same way `timeOrderTotal` is already discharged.
 
+**PHASE 7 STATUS (2026-07-28i) — still PARTIAL after a fifth dispatch. The 2026-07-28h banner's
+"one item remains, and it is the induction" reading is WRONG: O2 was not discharged, its
+*interface* is refuted, and the refutation is machine-checked. Sorry-free; both builds green**
+(`lake build FormalSystem.Metalogic.Decidability` — 1110 jobs; `lake build BimodalTest`); sorry
+census over `Verified/` reports `0`. 7.2 and 7.3 are still not started. No engine file was
+touched.
+
+*Correction 9 — `GapAdequate` is necessary but NOT sufficient, and the truth-lemma induction must
+not be started against it.* `gapAdequate_insufficient` (`Bridge/Valuation.lean`) proves three
+things at once, of one two-formula branch `refuteBoxBranch` = `[T(□p), T(□(p → q))]` at a single
+label: the policy `branchGapVal` **is** `GapAdequate` (that is `branchGapVal_gapAdequate`,
+unchanged); the branch asserts `T(□(p → q))`; and the assembled model makes `□(p → q)` **false**.
+The mechanism: `GapAdequate` constrains `gapVal` at *atoms* only, on the stated ground that "at
+every compound formula the value is fixed by the induction". `truthAt_box_iff_base` destroys that
+ground — `□` is the universal modality over every point of every base history, and
+`regionHistory` has total domain, so `T(□χ)` for **compound** `χ` is a demand on the gap points'
+*induced* values, which nothing but the atom policy can supply. With `T(□p)` on the branch and no
+`T(□q)`/`T(G q)`/`T(H q)` anywhere, every gap point gets `p` true and `q` false, so `p → q` is
+false there. The engine really builds branches of that shape: `Tests/BimodalTest/BoxSpreadProbe.lean`
+row D reports `OPEN boxP=true boxPQ=true boxQ=false Gq=false Hq=false` for
+`(□p ∧ □(p → q)) → r` at `.Base`. (Row E records that the same shape STALLS under `.Dense` at
+fuel 200 and again at 400 — pinned as measured, and a separate question from the gap policy.)
+
+*What the residual actually is.* Not a better `gapVal`. The gap's state must be closed under the
+propositional consequences of the forced set
+`{χ : T(Gχ) below} ∪ {χ : T(Hχ) above} ∪ {χ : T(□χ)}`, and a saturated branch is not closed under
+those consequences — the lower ray gives the same failure from `T(H(p → q))`, `T(H p)` and `F(q)`
+at the earliest known time, a perfectly satisfiable configuration that forces `q` on the ray with
+nothing on the branch naming it. So O2's replacement is a **realisability condition on the
+branch**, in the decidable-check family `timeOrderTotal` and `boxAnchoredCheck` already belong to.
+Two candidate routes, **neither probed yet** — and by this task's own repeatedly-paid process
+lesson, the next dispatch probes the engine before proving anything about either:
+
+- *Model-side.* Each gap region takes the atoms of a chosen known label, with a `Bool` check that
+  the chosen label's positive content contains the region's forced set. Cheap to check; costs a
+  restatement of the induction target, which becomes indexed by the label assigned to each
+  region, with the temporal cases re-derived at gap points rather than inherited.
+- *Branch-side.* The dense rules realise each gap as an actual minted label
+  (`prior_U_gap`/`prior_S_gap`/`sep` are already shaped for this) and those labels are placed in
+  the carrier, so no region is forced by facts it does not itself carry. Costlier, and it touches
+  the engine's rule set rather than the bridge.
+
+*What else landed, and survives the correction untouched.* `sat_imp_pos`
+(`Bridge/PropSaturation.lean`, new module): the one member of the `sat_*` family
+`CountermodelExtraction.lean` never carried. `impPos` is the only **branching** propositional rule,
+and `findApplicableRule`'s `.branching` arm declines a non-self-guarded, non-fresh-label rule
+exactly when `bss.any (fun fs => fs.all branch.contains)` — for `T(ψ → χ)` that is literally
+`F(ψ) ∈ b ∨ T(χ) ∈ b`. Isolated in its own module for the reason `BoxSaturation.lean` gives for
+its own: the proof unfolds `applyRule` and needs `maxHeartbeats 1600000`. Nothing in it depends on
+the gap policy, so the O2 refutation leaves it intact — the `imp` case needs it at *placed*
+labels, where the branch dictates the valuation and no gap point is involved.
+
+**DO NOT RE-ATTEMPT (added by this dispatch):**
+- The truth-lemma induction against `GapAdequate`, with `branchGapVal` or any other policy —
+  machine-refuted by `gapAdequate_insufficient`. The `box` case is where it fails, so an induction
+  that leaves `box` for last will look healthy until the last case and then be unclosable.
+- Any *atom-wise* gap policy read off the branch's `T(G ·)`/`T(H ·)`/`T(□ ·)` facts — the closure
+  argument above rules out the whole family, not just the three policies already refuted by name.
+- The union of the two copy policies ("left-or-right") as a rehabilitation of either — it dies on
+  the rays, where one endpoint is missing and the other's own value is unconstrained by the
+  `H`-demand that reaches past it.
+- Re-deriving `sat_imp_pos` inside the induction, or adding it to `CountermodelExtraction.lean` —
+  it exists, in `Bridge/PropSaturation.lean`, deliberately isolated.
+
 ### Phase 8: Hygiene — Vacuous Theorems and Documentation [NOT STARTED]
 
 - **Goal:** No vacuous theorems remain in `Decidability/`; documentation matches reality.
