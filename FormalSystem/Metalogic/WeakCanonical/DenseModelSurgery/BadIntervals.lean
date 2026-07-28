@@ -88,8 +88,8 @@ Reynolds' proof steps, in printed order, against the declarations below.
 | *"`L` holds wherever `R` does"* | `endsInGapOnLeft_of_endsInGapOnRight` |
 | *"Bad points only occur in non-singleton bad intervals"* | `reynolds_lemma6_nonsingleton` |
 | *"any bad interval, if bounded, has excluded end points in `M`"* | `reynolds_lemma6_right_endpoint` |
-| Lemma 6, the three clauses discharged here, assembled | `reynolds_lemma6` |
-| *"using mirror images of the above and previous results"* | **not discharged** — see below |
+| *"using mirror images of the above and previous results"* | `ClassInteriorToLInterval`, `endsInGapOnRight_of_endsInGapOnLeft` (via `Dual.lean`) |
+| Lemma 6, all four clauses, assembled | `reynolds_lemma6` |
 | *"a temporal formula `C` which is true only at points within a `∼`-class after some `¬B` in that class"* | `afterNotHoldsInClassFormula` / `AfterNotHoldsInClass` / `afterNotHoldsInClassTemporal` (+ `_eval`, `_spec`) |
 | *"`C` is true for a while up to the gap at the end and false arbitrarily soon after the gap. This contradicts Prior-U"* | `false_of_holds_throughout_class_from_bounded` |
 | *"`C` will be false for a while at the beginning of each class"* | `exists_notAfterNotHolds_in_class` (via `reynolds_lemma5_first`) |
@@ -98,22 +98,28 @@ Reynolds' proof steps, in printed order, against the declarations below.
 | Lemma 7, second statement | `reynolds_lemma7_close_to_left` / `reynolds_lemma7_close_to_right` |
 | both statements assembled | `reynolds_lemma7` |
 
-## WHAT LEMMA 6 STILL OWES — the `R`-from-`L` mirror, and why it is not sorried
+## LEMMA 6'S FOUR HALVES — all discharged, the fourth by duality transport
 
 Lemma 6's proof ends *"Using mirror images of the above and previous results we get our proof."*
-Three of its four halves are discharged below (`reynolds_lemma6`). The fourth — `R` holds wherever
-`L` does — is **not**, and no `sorry` stands in for it.
+All four of its halves are discharged below (`reynolds_lemma6`), and no `sorry` stands in for
+any of them.
 
-The obstruction is concrete rather than a matter of effort. The forward direction routes through
-`reynolds_lemma5_first`, whose interval hypothesis is stated over `EndsInGapOnRight`
-(*"a maximal interval of `R`"*) because that is how Reynolds states Lemma 5. Its mirror — Lemma 5
-over maximal intervals of `λ` — is what Reynolds means by *"previous results"* in the mirrored
-sense, and Phase 19 landed the `ρ` side only. Mirroring Lemma 5 is a module-sized job of its own
-(`Lemma5.lean` is 820 lines), not a step inside this one.
+The fourth — `R` holds wherever `L` does — is **not** a second proof. It is
+`endsInGapOnLeft_of_endsInGapOnRight` instantiated at `(dual M, dualize ε)` through
+`DenseModelSurgery/Dual.lean`, with the interval endpoints exchanged; the *"previous results"*
+the mirrored argument appeals to are supplied by `reynolds_lemma5_first_left`, itself an
+instantiation of `reynolds_lemma5_first` at the dual. An instantiation is what Reynolds' one
+sentence actually says; a hand-written mirror would formalize a proof he did not write.
 
-Note that Lemma 7's mirror **is** landed here in full, and does not run into this: a bad interval
-carries both `R` and `L` throughout (`ClassInteriorToBadInterval`), so its `Lemma 5` appeals can
-use the `R` side directly even in the past-directed argument.
+The `λ`-side interval hypothesis has no counterpart in the tree and is defined here as
+`ClassInteriorToLInterval`, the exact mirror of `ClassInteriorToRInterval`.
+
+Note that Lemma 7's mirror is landed here **by hand**, at `:968-1225`. It predates the transport
+layer and is left exactly as it is — nothing is deleted, refactored or deprecated — but it is the
+last mirror in this tree that should be written that way. It does not run into the `λ`-side
+Lemma 5 question at all: a bad interval carries both `R` and `L` throughout
+(`ClassInteriorToBadInterval`), so its Lemma 5 appeals use the `R` side directly even in the
+past-directed argument.
 
 ## PAGE MAP — the plan's page references run one to two pages early
 
@@ -1302,23 +1308,82 @@ theorem reynolds_lemma6_right_endpoint (atomMap : Formula → sig.preds)
     obtain ⟨r, hsr, hry', hnr⟩ := hkplus y' hsy'
     exact hnr ((hspec r).mpr (IsBadPoint.of_right (hy' r hsr hry'.le)))
 
-/-- **Reynolds 1992, §6 Lemma 6, printed p.180 — the clauses this phase discharges.**
+/-! ## *"Using mirror images of the above and previous results"* — the fourth half
+
+Reynolds closes Lemma 6 with that one sentence and no second proof. It is discharged here as an
+**instantiation** at `(dual M, dualize ε)` through `DenseModelSurgery/Dual.lean`, which is what
+that sentence formalizes: a hand-written mirror would formalize a proof he did not write.
+
+The `λ`-side interval hypothesis has no counterpart in the tree, so it is defined here as the
+exact mirror of `ClassInteriorToRInterval`. -/
+
+/-- **`t`'s class lies in the interior of a maximal interval of `L`** — the `λ`-side mirror of
+`ClassInteriorToRInterval`, with `EndsInGapOnLeft` in place of `EndsInGapOnRight` and everything
+else unchanged.
+
+Like its `ρ`-side original this is a *rendering* rather than a quotation: Reynolds names the
+interval and leaves the dual to his p.178 convention. -/
+structure ClassInteriorToLInterval (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (a t b : M.carrier) : Prop where
+  /-- `a` lies below `t`. -/
+  left_lt : a < t
+  /-- `b` lies above `t`. -/
+  lt_right : t < b
+  /-- `a` is outside `t`'s class. -/
+  left_out : ¬ ContempEquivDense M ε t a
+  /-- `b` is outside `t`'s class. -/
+  right_out : ¬ ContempEquivDense M ε t b
+  /-- `L` holds throughout `[a, b]`: the whole stretch is inside the one maximal interval. -/
+  lThroughout : ∀ q : M.carrier, a ≤ q → q ≤ b → EndsInGapOnLeft M ε q
+
+/-- **Reynolds 1992, §6 Lemma 6, printed p.180 — *"using mirror images of the above and previous
+results we get our proof"*: `R` holds wherever `L` does.**
+
+The exact mirror of `endsInGapOnLeft_of_endsInGapOnRight`, obtained by instantiating that theorem
+at `(dual M, dualize ε)` with the interval endpoints exchanged. The *"previous results"* the
+mirrored argument appeals to are supplied by `reynolds_lemma5_first_left`, itself an
+instantiation. -/
+theorem endsInGapOnRight_of_endsInGapOnLeft (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {a t b : M.carrier}
+    (hint : ClassInteriorToLInterval M ε a t b) :
+    EndsInGapOnRight M ε t := by
+  have hint' : ClassInteriorToRInterval (dual M) (dualize ε) (d b) (d t) (d a) :=
+    { left_lt := hint.lt_right
+      lt_right := hint.left_lt
+      left_out := fun h => hint.right_out ((contempEquivDense_dual (M := M) ε t b).mp h)
+      right_out := fun h => hint.left_out ((contempEquivDense_dual (M := M) ε t a).mp h)
+      rThroughout := fun q h₁ h₂ =>
+        (endsInGapOnRight_dual (M := M) ε q).mpr (hint.lThroughout q h₂ h₁) }
+  exact (endsInGapOnLeft_dual (M := M) ε t).mp
+    (endsInGapOnLeft_of_endsInGapOnRight atomMap h_surj (isContempEquivDense_dualize hε) (dual M)
+      (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U) hint')
+
+/-- **Reynolds 1992, §6 Lemma 6, printed p.180 — all four halves.**
 
 > *Bad points only occur in non-singleton bad intervals.*
 >
 > *In any bad interval both `R` and `L` hold throughout. Any bad interval, if bounded, has
 > excluded end points in `M` (neither `R` nor `L` holds at these end points).*
 
-Three of the four halves, on a class in the interior of a maximal interval of `R`:
+Four halves. The first three are read off a class in the interior of a maximal interval of `R`:
 
 1. the point is not an isolated bad point;
 2. `L` holds wherever `R` does — Reynolds' *"we first show that `L` holds wherever `R` does"*;
 3. the interval, if bounded on the right, has an excluded end point in `M`.
 
-The **fourth** half — Reynolds' *"using mirror images of the above and previous results"*, i.e.
-`R` wherever `L` holds — is **not** discharged here, and is not sorried either: it needs the
-mirror of **Lemma 5** over maximal intervals of `λ`, which the tree does not have (Phase 19
-landed the `ρ` side only). See the phase deviation record. -/
+The **fourth** is Reynolds' closing *"using mirror images of the above and previous results we get
+my proof"* — `R` wherever `L` holds. It takes the `λ`-side interval as its own hypothesis, since
+nothing about a maximal interval of `R` supplies one, and is discharged by
+`endsInGapOnRight_of_endsInGapOnLeft`.
+
+**Standing caveat.** Like every §6 result below Lemma 2 this is **conditional**:
+`IsContempEquivDense ε` together with Prior-U/Prior-S are hypotheses, and the only `ε` this tree
+can currently exhibit satisfying them is `epsTop`, for which `EndsInGapOnRight` is empty. There
+is no live non-trivial instance yet, and nothing here is discharged in the unconditional
+sense. -/
 theorem reynolds_lemma6 (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
@@ -1330,13 +1395,16 @@ theorem reynolds_lemma6 (atomMap : Formula → sig.preds)
     ((∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q) →
       (∃ u : M.carrier, t < u ∧ ¬ IsBadPoint M ε u) →
       ∃ s : M.carrier, t < s ∧
-        (∀ r : M.carrier, t < r → r < s → IsBadPoint M ε r) ∧ ¬ IsBadPoint M ε s) := by
+        (∀ r : M.carrier, t < r → r < s → IsBadPoint M ε r) ∧ ¬ IsBadPoint M ε s) ∧
+    (∀ a' b' : M.carrier, ClassInteriorToLInterval M ε a' t b' → EndsInGapOnRight M ε t) := by
   have ht : EndsInGapOnRight M ε t :=
     hint.rThroughout t hint.left_lt.le hint.lt_right.le
   exact ⟨reynolds_lemma6_nonsingleton hε M ht,
     endsInGapOnLeft_of_endsInGapOnRight atomMap h_surj hε M h_prior_U h_prior_S hint,
     fun hbadR hnot =>
-      reynolds_lemma6_right_endpoint atomMap h_surj hε M h_prior_U h_prior_S ht hbadR hnot⟩
+      reynolds_lemma6_right_endpoint atomMap h_surj hε M h_prior_U h_prior_S ht hbadR hnot,
+    fun _ _ hintL =>
+      endsInGapOnRight_of_endsInGapOnLeft atomMap h_surj hε M h_prior_U h_prior_S hintL⟩
 
 end Lemma7Mirror
 
