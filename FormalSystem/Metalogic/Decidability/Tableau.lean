@@ -1971,15 +1971,20 @@ strict progress measure; and a time whose formulas were all consumed no longer d
 -/
 def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base) : ExpansionResult × TimeOrdering :=
-  -- Two-stage pick: ordinary rules over the whole branch first, and only when *nothing* on the
-  -- branch has an ordinary rule left does seriality get a turn. See "Seriality is scheduled,
-  -- not prioritised".
+  -- Three-stage pick: ordinary rules over the whole branch first; only when *nothing* on the
+  -- branch has an ordinary rule left does seriality get a turn; and only when seriality is also
+  -- done does time linearity get one. See "Seriality is scheduled, not prioritised" and "When it
+  -- is scheduled, it goes third, after seriality" — seriality mints times, linearity orders the
+  -- times that exist, so linearity must run against a time structure nothing else will grow.
   match (match findUnexpanded b timeOrd fc with
          | some sf => findApplicableRule sf b timeOrd fc
          | none =>
              match findUnexpandedSerial b timeOrd with
              | some sf => findApplicableSerialRule sf b timeOrd
-             | none => none) with
+             | none =>
+                 match findUnexpandedLinearity b timeOrd with
+                 | some sf => findApplicableLinearityRule sf b timeOrd
+                 | none => none) with
       | none => (.saturated, timeOrd)  -- Nothing applies in either stage
       | some (_, result, newOrd) =>
           match result with
@@ -2010,7 +2015,7 @@ def expandOnceUnblocked (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.emp
     (fc : FrameClass := .Base)
     (tracker : EventualityTracker := EventualityTracker.empty)
     : ExpansionResult × TimeOrdering :=
-  -- Same two-stage pick as `expandOnce`, with blocked times skipped in *both* stages. Skipping
+  -- Same three-stage pick as `expandOnce`, with blocked times skipped in *every* stage. Skipping
   -- them in the seriality stage is what keeps the serial chain finite: seriality demands one more
   -- successor at every label, so without it the chain `T(F⊤)@t ⟶ t' ⟶ t'' ⟶ …` never stops.
   -- Each new time carries the same type, so blocking catches it within a step or two, and the
@@ -2022,7 +2027,11 @@ def expandOnceUnblocked (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.emp
              match b.find? (fun (sf : SignedFormula) => !blocked.contains sf.label.time
                  && (findApplicableSerialRule sf b timeOrd).isSome) with
              | some sf => findApplicableSerialRule sf b timeOrd
-             | none => none) with
+             | none =>
+                 match b.find? (fun (sf : SignedFormula) => !blocked.contains sf.label.time
+                     && (findApplicableLinearityRule sf b timeOrd).isSome) with
+                 | some sf => findApplicableLinearityRule sf b timeOrd
+                 | none => none) with
       | none => (.saturated, timeOrd)
       | some (_, result, newOrd) =>
           match result with
@@ -2318,8 +2327,19 @@ theorem expandOnceUnblocked_pick_ne_nil
     rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
                              && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
     · rw [hser] at hp
-      simp only at hp
-      rcases hp with hp | hp <;> exact absurd hp (by simp)
+      -- Third stage: time linearity. It can only report `.branchingOrdered`, so an `.extended`
+      -- step cannot have come from here; the two stage lemmas discharge both `pick_extended`
+      -- alternatives outright.
+      rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+      · rw [hlin] at hp
+        simp only at hp
+        rcases hp with hp | hp <;> exact absurd hp (by simp)
+      · rw [hlin] at hp
+        simp only at hp
+        rcases hp with hp | hp
+        · exact absurd hp (fun hc => findApplicableLinearityRule_not_linear hc)
+        · exact absurd hp (fun hc => findApplicableLinearityRule_not_persistent hc)
     · rw [hser] at hp
       simp only at hp
       rcases hp with hp | hp
@@ -2557,8 +2577,17 @@ theorem expandOnceUnblocked_pick_adds_new
     rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
                              && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
     · rw [hser] at hp
-      simp only at hp
-      rcases hp with hp | hp <;> exact absurd hp (by simp)
+      -- Third stage: time linearity, which only ever reports `.branchingOrdered`.
+      rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+      · rw [hlin] at hp
+        simp only at hp
+        rcases hp with hp | hp <;> exact absurd hp (by simp)
+      · rw [hlin] at hp
+        simp only at hp
+        rcases hp with hp | hp
+        · exact absurd hp (fun hc => findApplicableLinearityRule_not_linear hc)
+        · exact absurd hp (fun hc => findApplicableLinearityRule_not_persistent hc)
     · rw [hser] at hp
       simp only at hp
       rcases hp with hp | hp

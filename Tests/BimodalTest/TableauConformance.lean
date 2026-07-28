@@ -731,41 +731,60 @@ end CertificateProbe
 
 The bridge from an open branch to a countermodel needs the branch's times linearly ordered,
 not merely partially ordered. `Saturation.timeOrderTotal` is that requirement made decidable;
-these rows measure it on the pipeline's own open certificates, *before* the rule that is meant
-to deliver it exists.
+these rows measure it on the pipeline's own open certificates.
 
-**All seven** rows are `false` today, and they are the gate: the order-level branching rule's
-done-criterion is that **all seven** flip to `total=true`.
+**All seven** rows now read `total=true incomparable=[]`. That was the gate for the order-level
+branching rule, and `timeLinearity` — scheduled as the third expansion stage, after seriality —
+is what delivers it. The rows stay here as the regression barrier: any change that reintroduces
+an incomparable pair on an open certificate shows up as a `false` here.
 
-That baseline moved when `serialityRule` landed. Before it, W1-W4 were `false` and the controls
+The baseline moved twice on the way. Before `serialityRule`, W1-W4 were `false` and the controls
 W5/W6 were already `true`, so the criterion read "W1-W4 flip while W5-W7 stay `true`". Seriality
-mints a witness successor and predecessor at every label, so every row now carries six or seven
-more times than it did, and the two controls regress `total=true → false`: the new times are
-exactly the ones `timeLinearity` has not been built to order yet. The regression is expected and
-benign — it is the order-level rule's job to repair it — but it must not be mistaken for the
-controls having been broken by seriality itself, and it is why the criterion is now uniform
-across all seven rows rather than split between gate rows and controls.
+mints a witness successor and predecessor at every label, so every row gained six or seven more
+times and the two controls regressed `total=true → false`: the new times were exactly the ones
+`timeLinearity` had not yet been built to order. That regression was expected and benign, which
+is why the criterion became uniform across all seven rows rather than split between gate rows
+and controls — and it is the version of the criterion that has now been met.
 
 Three further facts are pinned along with the verdict, because each one is load-bearing:
 
 - `knownTimes` used to omit any time whose formulas were all consumed, so in W1-W4 the
   *induced* order on `knownTimes` was empty even though `constraints` related both times to the
   root. Non-destructive expansion fixed that: the root time now appears (`[0, 2, 1]` rather than
-  `[2, 1]`), so `constraints` and `knownTimes` agree and the remaining `total=false` is the
-  genuine article rather than an indexing artifact. That was the point of printing the fields
-  alongside the verdict, and it is now settled: `1` and `2` really are incomparable.
-- The verdicts are **fuel-insensitive**: W7 repeats W1 at fuel 2000 and is identical.
-  `orderTrichotomy` is present in `allRulesForFC .Base` and still does not fire here — its
-  branches are `temp_linearity` *formulas*, which mint fresh witness times rather than
-  ordering the two existing ones.
-- W1's two incomparable siblings carry `T(G p)` and `F(p)`. That is why an arbitrary linear
-  extension of the partial order is unsound and must not be attempted: one extension is a
-  model and the other is not, and the branch does not record which.
+  `[2, 1]`), so `constraints` and `knownTimes` agree and totality is measured against the real
+  time set rather than an indexing artifact. That was the point of printing the fields
+  alongside the verdict.
+- The verdicts are **not** bought with fuel. W7 repeats W1 at 2000 — five times W1's own
+  `linearityFuel` — and reports the same `total=true incomparable=[]`, so the flip is the rule
+  firing, not a budget artifact. What fuel *does* control here is whether the ordering work
+  finishes at all: below 400 these rows report `STALLED`, never a wrong order (see
+  `linearityFuel` for the measured boundary). `orderTrichotomy` remains present in
+  `allRulesForFC .Base` and remains inert on these rows — its branches are `temp_linearity`
+  *formulas*, which mint fresh witness times rather than ordering existing ones.
+- W1's two originally-incomparable siblings carry `T(G p)` and `F(p)`. That is why an arbitrary
+  linear extension of the partial order would have been unsound: one extension is a model and
+  the other is not, and the branch does not record which. `timeLinearity` does not extend
+  arbitrarily — it splits three ways on the pair (`before`, `after`, and identification, the
+  last of which *removes* a time from `knownTimes`), so each arm is a branch the search must
+  justify separately rather than a choice made silently on the branch's behalf.
 -/
 
 namespace TimeOrderProbe
 
 open FormalSystem.Metalogic.Decidability
+
+/-- Per-row fuel for the four rows whose ordering work does not fit `conformanceFuel`.
+
+`timeLinearity` fires as a **three-way** split and `expandBranchWithFuel` allocates fuel
+proportionally across a split's arms, so each firing divides the budget available below it.
+W1-W4 order eight to ten times each and exhaust `conformanceFuel = 200` before they finish.
+
+`400` is measured, not guessed, and is the smallest round bound that clears all four: at 200,
+250 and 280 all four read `STALLED`; at 280-350 only W2 (and, from 350, W4) reaches
+`total=true`; at 400 all four do, and the verdict is then stable through 800, 1200 and 2000.
+W5 and W6 order fewer times and still clear at `conformanceFuel`, so they are left on it —
+the override is confined to the rows that need it. -/
+def linearityFuel : Nat := 400
 
 /-- An open certificate's time order, reduced to the totality verdict plus the three fields
 that explain it. `CLOSED`/`STALLED` mean the row produced no open certificate to measure. -/
@@ -778,43 +797,44 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
   | none => "STALLED"
 
 -- W1. The named witness: siblings `1` and `2` carry `T(G p)` and `F(p)`.
-/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
+/-- info: total=true knownTimes=[9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (9, 3), (9, 5), (8, 9), (1, 8), (6, 8), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
-#eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base)
+#eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base linearityFuel)
 
 -- W2. Two bare future eventualities: the same shape with no universal involved.
-/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
+/-- info: total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
-#eval IO.print (orderProbe (nt (an (F p) (F q))) FrameClass.Base)
+#eval IO.print (orderProbe (nt (an (F p) (F q))) FrameClass.Base linearityFuel)
 
 -- W3. Two universals: incomparability is not caused by the negative conjunct.
-/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
+/-- info: total=true knownTimes=[10, 3, 4, 7, 9, 8, 1, 0] constraints=[(7, 3), (7, 10), (9, 7), (8, 9), (1, 8), (3, 10), (4, 0), (0, 3), (0, 8), (0, 1)] incomparable=[] -/
 #guard_msgs in
-#eval IO.print (orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base)
+#eval IO.print (orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base linearityFuel)
 
 -- W4. W1 with the conjuncts swapped: the order the eventualities appear in does not matter.
-/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
+/-- info: total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
-#eval IO.print (orderProbe (nt (an (F (nt p)) (F (G p)))) FrameClass.Base)
+#eval IO.print (orderProbe (nt (an (F (nt p)) (F (G p)))) FrameClass.Base linearityFuel)
 
 -- W5 (control). One future and one past witness: the root sits between them, so before
 -- seriality both known times were comparable and totality already held (`total=true`,
--- `knownTimes=[0, 2, 1]`). `serialityRule` mints six further times that `timeLinearity` does
--- not yet order, so this row now reads `false` and is part of 2.7's seven-row done-criterion.
-/-- info: total=false knownTimes=[4, 5, 6, 8, 7, 1, 2, 3, 0] constraints=[(7, 8), (1, 7), (6, 2), (3, 5), (4, 0), (0, 3), (2, 0), (0, 1)] incomparable=[(4, 6), (5, 8), (5, 7), (1, 5), (1, 3), (2, 4), (3, 8), (3, 7)] -/
+-- `knownTimes=[0, 2, 1]`). `serialityRule` minted six further times that regressed the row to
+-- `false`; `timeLinearity` orders them and restores it. Still on `conformanceFuel`.
+/-- info: total=true knownTimes=[4, 5, 6, 8, 7, 1, 2, 3, 0] constraints=[(2, 4), (6, 4), (8, 3), (8, 5), (7, 8), (1, 7), (6, 2), (3, 5), (4, 0), (0, 3), (2, 0), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F p) (P q))) FrameClass.Base)
 
 -- W6 (control). A single witness time: totality used to be vacuous here (`total=true`,
--- `knownTimes=[1, 0]`). Seriality adds four more times, so this row too now reads `false` and
--- is part of 2.7's seven-row done-criterion.
-/-- info: total=false knownTimes=[3, 4, 5, 0, 2, 1] constraints=[(5, 0), (2, 4), (3, 1), (1, 2), (0, 1)] incomparable=[(3, 5), (0, 3)] -/
+-- `knownTimes=[1, 0]`). Seriality adds four more times, which regressed the row to `false`;
+-- `timeLinearity` orders them and restores it. Still on `conformanceFuel`. This is also the
+-- row that read CLOSED — unsoundly — while the split fold's open-arm contract was broken.
+/-- info: total=true knownTimes=[3, 4, 5, 0, 2, 1] constraints=[(3, 0), (5, 3), (5, 0), (2, 4), (3, 1), (1, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (im (F p) (F (F p))) FrameClass.Base)
 
--- W7. W1 at ten times the fuel. Identical: incomparability is structural, not a budget
--- artifact, so no fuel increase can be mistaken for a fix.
-/-- info: total=false knownTimes=[4, 5, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[(5, 7), (5, 9), (5, 8), (5, 6), (7, 9), (7, 8), (1, 5), (1, 7), (1, 6), (1, 2), (1, 3), (6, 9), (6, 8), (2, 5), (2, 9), (2, 8), (2, 3), (3, 7), (3, 9), (3, 8), (3, 6)] -/
+-- W7. W1 at fuel 2000, five times W1's own `linearityFuel`. Identical, so the flip to
+-- `total=true` is `timeLinearity` firing and not a budget artifact.
+/-- info: total=true knownTimes=[9, 7, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (6, 8), (6, 9), (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base 2000)
 

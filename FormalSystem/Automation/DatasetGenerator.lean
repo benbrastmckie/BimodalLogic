@@ -1350,6 +1350,28 @@ def DecideCache.display (c : DecideCache) : String :=
       {c.entries.size} entries"
 
 /--
+Default wall-clock budget, in milliseconds, for one formula's decision leg.
+
+Raised from `1000` when `timeLinearity` was scheduled as the third expansion stage. That stage
+splits three ways on each incomparable pair of known times, and the times it has to order
+include the ones `serialityRule` mints at every label, so a formula with several labels now
+pays for ordering work it did not pay for before.
+
+Measured across the smoke corpus, at the adaptive fuel each formula actually receives, after
+the stage landed: every row still decides correctly, and all but one finish in at most 19 ms
+(`p` 3, `⊥` 2, `p → q` 2, `□p` 18, `□⊥` 19, `U(p,q)` 4, `S(p,q)` 3, `F p` 2, `p → F p` 3, and
+the two `□⊥ → _` rows 0, both on the structural fast path). The exception is `□p → □q` at
+1473 ms — two boxes, hence several worlds, each carrying seriality's minted times. It decided
+`invalid` comfortably inside the old budget before the stage and decides `invalid` now; only
+the time moved. `3000` clears it with roughly a factor of two in hand.
+
+Nothing about the *labels* depends on this number: exceeding it yields `.timeout`, which is the
+conservative outcome, never a wrong `valid`/`invalid`. What it buys is that a formula the engine
+can decide is not reported as undecided merely because the third stage made it slower.
+-/
+def labelWallclockTimeoutMs : Nat := 3000
+
+/--
 Label a single formula by running the decision procedure.
 
 1. Checks the structural pre-filter for known-valid patterns
@@ -1367,7 +1389,7 @@ construction exceeded sound fuel), not a masking of extraction failure.
 The `decideOptimized` retry path is no longer needed.
 -/
 def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
-    (wallclockTimeoutMs : Nat := 1000) : IO LabeledFormula := do
+    (wallclockTimeoutMs : Nat := labelWallclockTimeoutMs) : IO LabeledFormula := do
   -- Phase 1: Structural pre-filter with axiom attribution
   -- Check for known-valid patterns before invoking the decision procedure.
   -- Returns axiom pattern name alongside validity for dataset attribution.
@@ -1675,7 +1697,7 @@ def labelFormulaProofFirst (φ : Formula) (pool : ProofPool .Base)
 Label a single formula, dispatching on the generation mode.
 -/
 def labelFormula (φ : Formula) (fc : FrameClass := .Base)
-    (wallclockTimeoutMs : Nat := 1000)
+    (wallclockTimeoutMs : Nat := labelWallclockTimeoutMs)
     (mode : GenerationMode := .exhaustive)
     (proofFirstPool : Option (ProofPool .Base) := none) : IO LabeledFormula := do
   match mode, proofFirstPool with
@@ -1702,7 +1724,7 @@ Only the lookup and insert operations acquire the lock, keeping the
 critical section O(1) while the expensive decide computation runs unlocked.
 -/
 def labelFormulaWithCache (cache : Std.Mutex DecideCache) (φ : Formula)
-    (fc : FrameClass := .Base) (wallclockTimeoutMs : Nat := 1000)
+    (fc : FrameClass := .Base) (wallclockTimeoutMs : Nat := labelWallclockTimeoutMs)
     (mode : GenerationMode := .exhaustive)
     (proofFirstPool : Option (ProofPool .Base) := none)
     : IO LabeledFormula := do
@@ -1733,7 +1755,7 @@ Label a batch of formulas with progress reporting.
 Prints progress every 100 formulas processed.
 Returns the list of all labeled results.
 -/
-def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
+def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := labelWallclockTimeoutMs)
     (parallelThreads : Nat := 0)
     (mode : GenerationMode := .exhaustive)
     (proofFirstPool : Option (ProofPool .Base) := none)

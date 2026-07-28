@@ -521,7 +521,7 @@ structure CLIArgs where
       Prevents runaway formulas from stalling the pipeline.
       Reduced from 5000 to 1000 — bimodal timing distribution
       shows no formulas in the 1–5s range, so 1s captures all decidable cases. -/
-  wallclockTimeoutMs : Nat := 1000
+  wallclockTimeoutMs : Nat := labelWallclockTimeoutMs
   /-- Skip atom-permutation canonicalization and deduplication.
       When false (default), formulas are canonicalized and deduplicated
       before labeling, yielding ~4.58x reduction in labeling work. -/
