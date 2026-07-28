@@ -1716,7 +1716,7 @@ shorter.
 - Serving `.Discrete ℤ` from `interpInvariant` — `ℤ` is not densely ordered, so the hypothesis is
   unsatisfiable there. A discrete-specific truth lemma is required.
 
-### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [IN PROGRESS]
+### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [PARTIAL]
 
 **ENGINE CONTRACT CHANGE (2026-07-28b, from sub-phase 2.7c).** See the identically-titled note
 under Phase 5 — it applies here verbatim. The short version: a `.inr` arm out of a split is now
@@ -1844,6 +1844,67 @@ engine: `□p → □Gp`, `□p → □□p`, `□p → G□p`, `□p → ¬◇F
   any other means — refuted above and machine-witnessed.
 - Copying a gap region's valuation from an adjacent placed point — that is the refuted half-open
   partition wearing a different hat.
+
+**PHASE 7 STATUS (2026-07-28f) — still PARTIAL after a second dispatch. O1 and O3 landed
+sorry-free; both builds green** (`lake build FormalSystem.Metalogic.Decidability`,
+`lake build BimodalTest`); every new theorem verifies on `propext`/`Classical.choice`/`Quot.sound`
+only. O2 is the sole remaining content of 7.1; 7.2 and 7.3 are still not started.
+
+*What landed.* Two new files, both registered in `Decidability.lean`:
+
+- `Verified/Bridge/Valuation.lean` — **O1 discharged.** `placedCode f i := regionCode f (f i)`,
+  `IsPlacedCode`, and `placedCode_injective` (injectivity of the placement lifts to the codes, via
+  `placed_ne_of_sameRegion_ne`). `regionValuation f placedVal gapVal` is total on codes: placed
+  codes read `placedVal`, every other code reads the parameter `gapVal`. `regionModel` packages it
+  as a `TaskModel (regionFrame W ι D)`; `truthAt_atom_regionHistory` discharges the domain
+  existential in `TruthAt`'s atom clause outright (region histories are total), and
+  `truthAt_atom_placed` / `truthAt_atom_gap` are the two readbacks. `branchPlacedVal` /
+  `branchModel` instantiate the placed half at `b.hasPosAt (.atom p) ⟨w, timeAt b i⟩`, and
+  `truthAt_atom_branch_placed` is exactly the O1 statement the previous handoff asked for.
+- `Verified/Bridge/BoxSaturation.lean` — **O3 discharged as far as saturation can reach.**
+  `sat_box_temporal` (the lemma the previous handoff named as missing: `T(□φ) @ l` puts `T(Gφ) @ l`
+  and `T(Hφ) @ l` on a saturated branch), `sat_all_future_pos` / `sat_all_past_pos` (`T(Gφ) @ (w,t)`
+  puts `T(φ)` at every `t' ∈ timeOrd.futureOf t`, dually for `H`), and `sat_box_cross`. Kept in
+  their own module because each unfolds `applyRule`; all three carry `maxHeartbeats 1600000`.
+
+*Correction 3 — `gapVal` stays a parameter, and both endpoint-copy policies are now refuted in
+tree.* The refutation was previously prose plus a region-constancy witness. It is now stated
+against the actual model: `not_leftCopy_gapAdequate` and `not_rightCopy_gapAdequate`
+(`Valuation.lean`) exhibit `leftCopyGap` / `rightCopyGap` at one placed point on `ℚ` under which
+`G p` (resp. `H p`) is **false** at that point, although a branch carrying `T(G p)` together with
+`F(p)` at one label is perfectly consistent. `GapDemands` names the obligation a correct policy
+must meet (the `allFuture` and `allPast` survival conditions).
+
+*Correction 4 — O3 as stated is only half available, and the other half is not a saturation fact.*
+`sat_box_cross` reaches every label differing from `(w,t)` in **at most one** coordinate: other
+worlds at time `t` via `sat_box_pos`, other times in world `w` via `sat_box_temporal` then
+`sat_all_future_pos`/`sat_all_past_pos`. It does **not** reach `(w', t')` differing in both, and no
+strengthening of `findUnexpanded = none` will make it: `boxPos` emits `T(φ)`, never `T(□φ)`, so
+there is nothing at `(w', t)` for `boxTemporal` to act on. The engine still closes `□p → □Gp`,
+`□p → □□p`, `□p → G□p`, `□p → ¬◇F¬p`, and the mechanism is `boxDiamondPersistence`
+(`Tableau.lean:434`), which the six label-minting rules apply **at rule-application time**. The
+missing fact is therefore a *branch invariant*, `BoxContextClosed` (`BoxSaturation.lean`), whose
+proof is an induction over tableau construction, not over the rule table. `sat_box_all_labels`
+already derives the full grid from `BoxContextClosed` + saturation, so the truth lemma's `box` case
+has its interface; only the invariant's proof is owed.
+
+*What remains in 7.1.*
+- **O2, unchanged and now precisely bounded** — exhibit a `gapVal` satisfying `GapDemands` for
+  every gated saturated branch. This is the one non-mechanical obligation left on the Phase 7
+  critical path. It is the `denseRules` (`prior_U_gap`/`prior_S_gap`/`sep`) content: a gap region
+  between consecutive placed points must carry `{φ : T(Gφ)` at or below the left endpoint`}` ∪
+  `{ψ : T(Hψ)` at or above the right endpoint`}` ∪ the `□`-forced set ∪ the straddling `U`/`S`
+  guards, and the consistency of that union is what the dense rules must be shown to guarantee.
+- **`BoxContextClosed`** — the induction over tableau construction described above. Budget it as
+  its own sub-phase; it touches no engine file, only reads them.
+
+**DO NOT RE-ATTEMPT (added by this dispatch):**
+- Defining the gap valuation by copying an adjacent placed point, in *either* direction — both
+  halves are now machine-refuted (`not_leftCopy_gapAdequate`, `not_rightCopy_gapAdequate`).
+- Trying to obtain cross-world *and* cross-time `T(□φ)` propagation from `findUnexpanded = none`.
+  Measured impossible above; use `BoxContextClosed` instead.
+- Adding the O3 lemmas to `CountermodelExtraction.lean` — they live in `Bridge/BoxSaturation.lean`
+  precisely so an `applyRule`-unfolding timeout cannot take down the green prefix.
 
 ### Phase 8: Hygiene — Vacuous Theorems and Documentation [NOT STARTED]
 
