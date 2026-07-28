@@ -67,10 +67,10 @@
   - .claude/rules/no-task-references-in-deliverables.md
 - **Type**: lean4
 - **Phases**: **19 total** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, **7.5, 7.6, 7.7,
-  7.8, 7.9**, 8) — **15 `[COMPLETED]`** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6),
-  **4 `[NOT STARTED]`** (7.7, 7.8, 7.9, 8). Next dispatch target: **Phase 7.7**.
-  **Counting convention (v6)**: `phases_total = 19`, `phases_completed = 15`,
-  `phases_dispatchable = 6`, `phases_user_gated = 0`. **`[USER GATED]` no longer exists in this
+  7.8, 7.9**, 8) — **16 `[COMPLETED]`** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7),
+  **3 `[NOT STARTED]`** (7.8, 7.9, 8). Next dispatch target: **Phase 7.8**.
+  **Counting convention (v6)**: `phases_total = 19`, `phases_completed = 16`,
+  `phases_dispatchable = 3`, `phases_user_gated = 0`. **`[USER GATED]` no longer exists in this
   plan** — the R3d gate was resolved by explicit user authorization at this revision, so every
   remaining phase is `[NOT STARTED]` and dispatchable in heading order. `19 = 13 completed +
   6 dispatchable`. Phase 8 remains **hard-gated by its stated precondition** (the discharge of
@@ -178,8 +178,8 @@ and 4 amend, and each of those is amended by exactly the drafted text, no more.*
    for a phase awaiting a user decision. The decision has been made, so the marker has no referent
    and every phase heading in v6 uses the standard vocabulary from
    `.claude/rules/plan-format-enforcement.md`. **v6 contains no format deviations.**
-10. **Phase counts.** v6 has **19 phases**, of which **15 are `[COMPLETED]`** (1, 2, 3, 4, 5, 6,
-    6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6) and **4 are `[NOT STARTED]`** (7.7, 7.8, 7.9, 8).
+10. **Phase counts.** v6 has **19 phases**, of which **16 are `[COMPLETED]`** (1, 2, 3, 4, 5, 6,
+    6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7) and **3 are `[NOT STARTED]`** (7.8, 7.9, 8).
 
 **What v6 does NOT change, stated so no dispatch reads authorization as a general relaxation.**
 R3d is authorized; nothing else is. The statements of `cantor_bfmcs_dense_restricted_tc` / `_buc` /
@@ -641,9 +641,9 @@ green; `#print axioms consequence_completeness_dedekind` shows exactly `[propext
 Quot.sound]`.
 
 **Phase inventory (v6)**: **19 phases** — 1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4,
-**7.5, 7.6, 7.7, 7.8, 7.9**, 8. **15 are `[COMPLETED]`** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1,
-7.2, 7.3, 7.4, 7.5, 7.6); **4 are `[NOT STARTED]`** (7.7, 7.8, 7.9, 8). `phases_total = 19`,
-`phases_completed = 15`, `phases_dispatchable = 4`, `phases_user_gated = 0`.
+**7.5, 7.6, 7.7, 7.8, 7.9**, 8. **16 are `[COMPLETED]`** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1,
+7.2, 7.3, 7.4, 7.5, 7.6, 7.7); **3 are `[NOT STARTED]`** (7.8, 7.9, 8). `phases_total = 19`,
+`phases_completed = 16`, `phases_dispatchable = 3`, `phases_user_gated = 0`.
 
 **Counting convention (v6, explicit)**: `19 = 13 completed + 6 dispatchable`. **There is no
 `[USER GATED]` phase in this plan** — v5's single format deviation is retired, because the gate it
@@ -3864,7 +3864,7 @@ not.
 - **Timing:** 5 hours.
 - **Depends on:** 7.5
 
-### Phase 7.7: Invariant preservation across `c5_backward_walk` (R3d-3) [NOT STARTED]
+### Phase 7.7: Invariant preservation across `c5_backward_walk` (R3d-3) [COMPLETED]
 
 **The mirror of 7.6, and it is a mirror, not a copy.** The same three-case structure runs
 backwards: `y < pt`, the guard interval is `y ≤ a → b ≤ pt`, and the insertion primitives are the
@@ -3903,20 +3903,43 @@ wrong, as Phase 7.3 already recorded for a different mirror on this route.
   **ADAPTED-FROM: Burgess 1982 I §2.10, printed pp.372-373**, and the constraint added on top is
   original work with no source. Every docstring states the no-source fact.
 - **Tasks:**
-  - [ ] Add the preservation field to `C5BackwardWalkResult` (`:1254`), stated so that it targets
+  - [x] Add the preservation field to `C5BackwardWalkResult` (`:1254`), stated so that it targets
         the **same** below-accumulation invariant as 7.6 — not an above-accumulation mirror.
-  - [ ] Discharge it in the base case (witness below the minimum, `exists_rat_lt_finset` /
-        `lemma_2_4_since_with_guard`).
-  - [ ] Discharge it in the condition-(i) recursion case.
-  - [ ] Discharge it in the split case (midpoint, Since-side `lemma_2_7_since` / `lemma_2_8_since`),
+        Landed as two fields, mirroring 7.6's landed shape: `guard_accum_preserved` (statement
+        **byte-identical** to the forward field — verified, both read
+        `NoGuardAccumulation (↑χ.dom) χ.f G → NoGuardAccumulation (↑val.dom) val.f G`) and
+        `guard_interval`, whose interval reverses to `(witness, start)`. No `limitSetAbove`
+        occurs anywhere in the file.
+  - [x] Discharge it in the base case (witness below the minimum, `exists_rat_lt_finset` /
+        `lemma_2_4_since_with_guard`). Vacuous by minimality of `pt`, mirroring `domain_guard`.
+  - [x] Discharge it in the condition-(i) recursion case. Trichotomy on `w` vs the predecessor
+        `x''`: below `x''` by the recursive instance, at `x''` by `conj_left_mcs` from the
+        condition-(i) conjunction, above `x''` impossible (old points by adjacency of `(x'', pt)`,
+        new points by `new_point_before`). This is the branch that makes the field non-vacuous.
+  - [x] Discharge it in the split case (midpoint, Since-side `lemma_2_7_since` / `lemma_2_8_since`),
         taking the **same route (a) or (b) that 7.6 took** unless the backward direction genuinely
         forces a different one — and if it does, say so explicitly and justify it, because a
         forward/backward asymmetry in the placement discipline is a design smell that 7.8 will have
         to reconcile.
-  - [ ] Docstrings per the honesty charter: no-source statement + ADAPTED-FROM with printed pages;
+        **ROUTE TAKEN: (a), preservation as-is — the same route 7.6 took. No forward/backward
+        asymmetry.** Burgess's midpoint placement is unchanged; no `PointInsertion.lean` edit, no
+        witness reuse, no placement rule added. The split case discharges `guard_interval`
+        *vacuously*: the witness is the midpoint of the adjacent pair `(x'', pt)`, so the open
+        interval `(witness, pt)` of the extended domain contains no old point (adjacency) and no
+        new point (the midpoint is the only insertion and equals the witness).
+  - [x] Docstrings per the honesty charter: no-source statement + ADAPTED-FROM with printed pages;
         record the route taken and any forward/backward asymmetry. **No task-number citations.**
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.CounterexampleElimination`, then
-        full `lake build`.
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.CounterexampleElimination`, then
+        full `lake build`. Both green (scoped: 1108 jobs; full: 1908 jobs).
+  - [x] **Adversarial verification of the reversal (machine-checked), beyond the plan's task
+        list.** The substitution table names the interval reversal as the trap; this phase
+        checked it rather than asserting it. Probe A: the *mechanical copy* of 7.6's field,
+        interval `(start, witness)`, **is provable on the backward side from `witness_lt` alone** —
+        a mechanical transcription would therefore have landed a **vacuous field**, which this
+        phase's own prohibited list forbids. Probe B: the landed field, interval
+        `(witness, start)`, admits no such contradiction proof — the probe fails with
+        `r.witness_lt has type r.witness < start but is expected to have type start < r.witness`.
+        The reversal is load-bearing and the landed field is not vacuous.
 - **Estimated output:** ~250-400 lines. **One agent run (H8).**
 - **Done when:** `C5BackwardWalkResult` carries the preservation field targeting the
   below-accumulation invariant; all three cases discharge it sorry-free; full `lake build` green;
