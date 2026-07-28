@@ -33,7 +33,7 @@ DecisionProcedure.decideAuto(phi)
     |        v
     |    List ProofStep --> JSONL lines
     |
-    +--> .invalid / .timeout --> skip
+    +--> .invalid / .fuelExhausted / .extractionFailed --> skip
 ```
 
 ## Strategies
@@ -255,7 +255,8 @@ def StepDistribution.toJson (dist : StepDistribution) : String :=
 /--
 Process a single formula through `decideAuto` and `extractStepSequence`.
 
-Returns `some steps` if the formula is valid, `none` if invalid or timeout.
+Returns `some steps` if the formula is valid with a reconstructed proof term, `none` if
+invalid, fuel-exhausted, or the tableau closed without a recoverable proof term.
 -/
 def processFormula (φ : Formula) (name : String) : Option (List ProofStep) :=
   match decideAuto φ with
@@ -263,7 +264,11 @@ def processFormula (φ : Formula) (name : String) : Option (List ProofStep) :=
     let (steps, _) := extractStepSequence name "Base" 0 proof
     some steps
   | .invalid _ => none
-  | .timeout => none
+  -- Both undecided outcomes yield no step sequence: `fuelExhausted` decided nothing, and
+  -- `extractionFailed` means the tableau closed without producing the proof term the
+  -- step extractor consumes.
+  | .fuelExhausted => none
+  | .extractionFailed => none
 
 /--
 Generate a zero-padded formula name from an index with a prefix.

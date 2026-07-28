@@ -97,14 +97,47 @@ theorem validity_has_decision_procedure (φ : Formula) :
 
 /--
 Properties of the decision result.
+
+Post-R7 this is a four-way exclusivity statement: the former `timeout` constructor was split
+into `fuelExhausted` (validity genuinely undetermined) and `extractionFailed` (the tableau
+closed, so the formula is valid, but no proof term was reconstructed).
 -/
 theorem decide_result_exclusive (φ : Formula) (searchDepth tableauFuel : Nat)
     (fc : FrameClass := .Base) :
     let r := decide φ searchDepth tableauFuel fc
-    (r.isValid ∧ ¬r.isInvalid ∧ ¬r.isTimeout) ∨
-    (¬r.isValid ∧ r.isInvalid ∧ ¬r.isTimeout) ∨
-    (¬r.isValid ∧ ¬r.isInvalid ∧ r.isTimeout) := by
-  simp only [DecisionResult.isValid, DecisionResult.isInvalid, DecisionResult.isTimeout]
+    (r.isValid ∧ ¬r.isInvalid ∧ ¬r.isFuelExhausted ∧ ¬r.isExtractionFailed) ∨
+    (¬r.isValid ∧ r.isInvalid ∧ ¬r.isFuelExhausted ∧ ¬r.isExtractionFailed) ∨
+    (¬r.isValid ∧ ¬r.isInvalid ∧ r.isFuelExhausted ∧ ¬r.isExtractionFailed) ∨
+    (¬r.isValid ∧ ¬r.isInvalid ∧ ¬r.isFuelExhausted ∧ r.isExtractionFailed) := by
+  simp only [DecisionResult.isValid, DecisionResult.isInvalid,
+    DecisionResult.isFuelExhausted, DecisionResult.isExtractionFailed]
+  cases decide φ searchDepth tableauFuel fc <;> simp
+
+/--
+Honest reporting (R7): a closed tableau is never reported as undecided.
+
+`isUndecided` holds only of `fuelExhausted`; in particular `extractionFailed` — the case in
+which every tableau branch closed but proof-term reconstruction was incomplete — does not
+count as undecided. This is the property the pre-R7 single `timeout` constructor made
+unstatable.
+-/
+theorem not_undecided_of_extractionFailed (φ : Formula) (searchDepth tableauFuel : Nat)
+    (fc : FrameClass := .Base)
+    (h : (decide φ searchDepth tableauFuel fc).isExtractionFailed) :
+    ¬(decide φ searchDepth tableauFuel fc).isUndecided := by
+  revert h
+  simp only [DecisionResult.isExtractionFailed, DecisionResult.isUndecided]
+  cases decide φ searchDepth tableauFuel fc <;> simp
+
+/--
+Every `extractionFailed` result is a known-valid result: the tableau closed.
+-/
+theorem isKnownValid_of_extractionFailed (φ : Formula) (searchDepth tableauFuel : Nat)
+    (fc : FrameClass := .Base)
+    (h : (decide φ searchDepth tableauFuel fc).isExtractionFailed) :
+    (decide φ searchDepth tableauFuel fc).isKnownValid := by
+  revert h
+  simp only [DecisionResult.isExtractionFailed, DecisionResult.isKnownValid]
   cases decide φ searchDepth tableauFuel fc <;> simp
 
 /-!

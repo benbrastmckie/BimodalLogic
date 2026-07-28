@@ -1525,7 +1525,10 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
         interestingnessScore := some intResult.compositeScore
         interestingnessTier := some intResult.tier.toString
       }
-    | .timeout =>
+    -- Grouped for the same reason as the synchronous path below: the dataset's
+    -- `FormulaLabel.valid` carries a proof trace neither case can supply. `fuelTier`
+    -- (`adaptive_timeout` vs `adaptive_extraction_failed`) preserves the R7 distinction.
+    | .fuelExhausted | .extractionFailed =>
       let intResult := computeInterestingness φ none none
       return {
         formula := φ
@@ -1590,7 +1593,11 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
       interestingnessScore := some intResult.compositeScore
       interestingnessTier := some intResult.tier.toString
     }
-  | .timeout =>
+  -- `extractionFailed` is grouped with `fuelExhausted` here only because the dataset's
+  -- `FormulaLabel.valid` carries a proof trace this path cannot supply. The two are still
+  -- distinguishable downstream: `decideAutoAdaptive` tags them `adaptive_timeout` vs
+  -- `adaptive_extraction_failed`, and that tag is the recorded `decisionMethod`.
+  | .fuelExhausted | .extractionFailed =>
     -- Compute interestingness without proof data (syntactic metrics only)
     let intResult := computeInterestingness φ none none
     return {

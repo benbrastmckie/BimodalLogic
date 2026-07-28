@@ -117,7 +117,20 @@ formula-dependent bound would not.
 -/
 def conformanceFuel : Nat := 200
 
-/-- Reduce `buildTableau` to a printable verdict. See the module docstring. -/
+/--
+Reduce `buildTableau` to a printable verdict. See the module docstring.
+
+**Relation to the `DecisionResult` vocabulary (R7).** The adapter reads `buildTableau`
+directly rather than `decide`, so it sees the tableau outcome before proof-term extraction is
+attempted. The three verdicts therefore line up with the post-R7 constructors as follows:
+`CLOSED` is the tableau-level witness of validity — `decide` turns it into either `.valid`
+(term reconstructed) or `.extractionFailed` (term not reconstructed), and the corpus
+deliberately does not distinguish those, because a row's semantic target is about the
+calculus, not about the proof-extraction pipeline. `OPEN` corresponds to `.invalid`.
+`STALLED` corresponds to `.fuelExhausted` and is the *only* verdict here that means the
+engine decided nothing — which is exactly the honesty property R7 makes statable at the
+`DecisionResult` level.
+-/
 def verdict (φ : Formula) (fc : FrameClass) : String :=
   match buildTableau φ conformanceFuel fc with
   | some (.allClosed _) => "CLOSED"

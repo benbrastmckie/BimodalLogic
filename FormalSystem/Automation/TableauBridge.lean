@@ -437,7 +437,8 @@ Handle a `tableau_decide` command.
 Runs `decideAuto` on the formula and returns:
 - For valid: proof trace, rule profile, and metrics
 - For invalid: simple countermodel
-- For timeout: timeout status
+- For fuel exhaustion: timeout status; for a closed tableau with no proof term:
+  `valid_no_proof_term` status (R7 — a closed tableau is never reported undecided)
 -/
 def handleDecide (φ : Formula) (fc : FrameClass) : IO String := do
   let startTime ← IO.monoMsNow
@@ -460,8 +461,14 @@ def handleDecide (φ : Formula) (fc : FrameClass) : IO String := do
       ++ ", \"formula_string\": \"" ++ escapeJsonString φ.prettyPrint ++ "\""
       ++ ", \"time_ms\": " ++ toString elapsed
       ++ "}"
-  | .timeout =>
+  | .fuelExhausted =>
     return "{\"status\": \"timeout\""
+      ++ ", \"formula_string\": \"" ++ escapeJsonString φ.prettyPrint ++ "\""
+      ++ ", \"time_ms\": " ++ toString elapsed
+      ++ "}"
+  | .extractionFailed =>
+    -- Closed tableau, no proof term: valid, not undecided (R7).
+    return "{\"status\": \"valid_no_proof_term\""
       ++ ", \"formula_string\": \"" ++ escapeJsonString φ.prettyPrint ++ "\""
       ++ ", \"time_ms\": " ++ toString elapsed
       ++ "}"
@@ -492,9 +499,15 @@ def handleSteps (φ : Formula) (fc : FrameClass) : IO String := do
       ++ ", \"message\": \"Formula is invalid; no proof steps exist.\""
       ++ ", \"time_ms\": " ++ toString elapsed
       ++ "}"
-  | .timeout =>
+  | .fuelExhausted =>
     return "{\"status\": \"timeout\""
       ++ ", \"message\": \"Decision procedure timed out.\""
+      ++ ", \"time_ms\": " ++ toString elapsed
+      ++ "}"
+  | .extractionFailed =>
+    -- Closed tableau, no proof term: valid, not undecided (R7).
+    return "{\"status\": \"valid_no_proof_term\""
+      ++ ", \"message\": \"Tableau closed; proof term could not be reconstructed.\""
       ++ ", \"time_ms\": " ++ toString elapsed
       ++ "}"
 
@@ -537,9 +550,15 @@ def handleCountermodel (φ : Formula) (fc : FrameClass) : IO String := do
       ++ ", \"message\": \"Formula is valid; no countermodel exists.\""
       ++ ", \"time_ms\": " ++ toString elapsed
       ++ "}"
-  | .timeout =>
+  | .fuelExhausted =>
     return "{\"status\": \"timeout\""
       ++ ", \"message\": \"Decision procedure timed out.\""
+      ++ ", \"time_ms\": " ++ toString elapsed
+      ++ "}"
+  | .extractionFailed =>
+    -- Closed tableau, no proof term: valid, not undecided (R7).
+    return "{\"status\": \"valid_no_proof_term\""
+      ++ ", \"message\": \"Tableau closed; proof term could not be reconstructed.\""
       ++ ", \"time_ms\": " ++ toString elapsed
       ++ "}"
 

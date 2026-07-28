@@ -59,15 +59,30 @@ Result of the decision procedure for a formula.
 
 - `valid`: Formula is valid, with a proof term
 - `invalid`: Formula is invalid, with a countermodel description
-- `timeout`: Procedure ran out of resources
+- `fuelExhausted`: Tableau construction ran out of fuel — validity genuinely undetermined
+- `extractionFailed`: Tableau closed (so the formula *is* valid) but no proof term
+  could be reconstructed
+
+**Why `timeout` was split (R7).** The former single `timeout` constructor conflated two
+situations that are not epistemically alike. `buildTableau` returning `none` leaves validity
+open: nothing was decided. `buildTableau` returning `.allClosed` while `extractProof` returns
+`.incomplete` is *not* undecided — every branch of the tableau closed, which is exactly the
+tableau-level witness of validity; only the *proof-term reconstruction* failed. Reporting the
+second as a timeout made the procedure claim ignorance about formulas it had in fact refuted
+the negation of, and it made `decide_result_exclusive` unable to state that a closed tableau
+is never reported undecided. The two are now distinct constructors, and `isUndecided` holds
+of `fuelExhausted` only.
 -/
 inductive DecisionResult (φ : Formula) : Type where
   /-- Formula is valid, witnessed by a derivation tree. -/
   | valid (proof : ⊢ φ)
   /-- Formula is invalid, witnessed by a countermodel description. -/
   | invalid (counter : SimpleCountermodel)
-  /-- Decision procedure timed out (fuel exhausted). -/
-  | timeout
+  /-- Tableau fuel was exhausted before any verdict: validity is undetermined. -/
+  | fuelExhausted
+  /-- The tableau closed on every branch (the formula is valid) but proof-term
+  extraction was incomplete, so no `⊢ φ` witness is available. -/
+  | extractionFailed
   deriving Repr
 
 namespace DecisionResult
@@ -84,9 +99,35 @@ def isInvalid : DecisionResult φ → Bool
   | invalid _ => true
   | _ => false
 
-/-- Check if result timed out. -/
-def isTimeout : DecisionResult φ → Bool
-  | timeout => true
+/-- Check if the tableau ran out of fuel. -/
+def isFuelExhausted : DecisionResult φ → Bool
+  | fuelExhausted => true
+  | _ => false
+
+/-- Check if the tableau closed but proof extraction failed. -/
+def isExtractionFailed : DecisionResult φ → Bool
+  | extractionFailed => true
+  | _ => false
+
+/--
+Check if the result leaves validity genuinely undetermined.
+
+Only `fuelExhausted` qualifies: `extractionFailed` means the tableau closed, so the formula
+is valid even though no proof term was reconstructed. This is the honest-reporting half of
+R7 — a closed tableau is never reported as undecided.
+-/
+def isUndecided : DecisionResult φ → Bool
+  | fuelExhausted => true
+  | _ => false
+
+/--
+Check if the run established validity, whether or not a proof term was recovered.
+
+True for `valid` (term in hand) and `extractionFailed` (closed tableau, no term).
+-/
+def isKnownValid : DecisionResult φ → Bool
+  | valid _ => true
+  | extractionFailed => true
   | _ => false
 
 /-- Get the proof if valid. -/
@@ -123,7 +164,8 @@ Decide validity of a TM bimodal logic formula.
 **Returns**:
 - `valid proof`: Formula is valid with proof term
 - `invalid counter`: Formula is invalid with countermodel
-- `timeout`: Resources exhausted before decision
+- `fuelExhausted`: Tableau fuel ran out before any verdict
+- `extractionFailed`: Tableau closed (formula valid) but no proof term recovered
 -/
 def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
     (fc : FrameClass := .Base) : DecisionResult φ :=
@@ -149,7 +191,7 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
     | (none, _, _) =>
       -- Fall back to tableau method
       match buildTableau φ_n tableauFuel fc with
-      | none => .timeout
+      | none => .fuelExhausted
       | some tableau =>
           match tableau with
           | .allClosed _ =>
@@ -157,8 +199,11 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
               match extractProof φ_n tableau fc with
               | .success proof => .valid (h_norm ▸ proof)
               | .incomplete _ =>
-                  -- Extraction failed despite validity; genuine resource limitation
-                  .timeout
+                  -- The tableau closed, so the formula IS valid; only the proof-term
+                  -- reconstruction failed. Reporting this as a timeout (the pre-R7
+                  -- behaviour) claimed the procedure was undecided about a formula it
+                  -- had in fact settled.
+                  .extractionFailed
           | .hasOpen openBranch _ord _applied hSat =>
               -- Formula is invalid, extract countermodel
               .invalid (extractCountermodelSimple φ_n openBranch hSat)
@@ -200,13 +245,15 @@ timeouts are structural patterns handled by a pre-filter in `labelFormula`.
 Returns `(result, fuelTierUsed)` where fuelTierUsed is:
 - `"adaptive_500"` for decided formulas
 - `"adaptive_timeout"` if fuel exhausted
+- `"adaptive_extraction_failed"` if the tableau closed but no proof term was recovered
 -/
 def decideAutoAdaptive (φ : Formula) (fc : FrameClass := .Base)
     (fuel : Nat := 500)
     : DecisionResult φ × String :=
   let depth := 5 + φ.complexity / 2
   match decide φ depth fuel fc with
-  | .timeout => (.timeout, "adaptive_timeout")
+  | .fuelExhausted => (.fuelExhausted, "adaptive_timeout")
+  | .extractionFailed => (.extractionFailed, "adaptive_extraction_failed")
   | result => (result, s!"adaptive_{fuel}")
 
 /-!
@@ -221,8 +268,12 @@ structure BatchDecisionResult where
   validCount : Nat
   /-- Number of formulas decided invalid. -/
   invalidCount : Nat
-  /-- Number of formulas that timed out. -/
+  /-- Number of formulas left undecided by fuel exhaustion. -/
   timeoutCount : Nat
+  /-- Number of formulas whose tableau closed but whose proof term could not be
+  reconstructed. These are valid; they are counted apart from `timeoutCount` so a closed
+  tableau is never reported as undecided (R7). -/
+  extractionFailedCount : Nat
   /-- Total formulas processed. -/
   totalCount : Nat
   deriving Repr, Inhabited
@@ -237,10 +288,13 @@ def decideBatch (formulas : List Formula) (fuel : Nat := 1000)
     { acc with
       validCount := acc.validCount + (if result.isValid then 1 else 0)
       invalidCount := acc.invalidCount + (if result.isInvalid then 1 else 0)
-      timeoutCount := acc.timeoutCount + (if result.isTimeout then 1 else 0)
+      timeoutCount := acc.timeoutCount + (if result.isUndecided then 1 else 0)
+      extractionFailedCount :=
+        acc.extractionFailedCount + (if result.isExtractionFailed then 1 else 0)
       totalCount := acc.totalCount + 1
     }
-  ) { validCount := 0, invalidCount := 0, timeoutCount := 0, totalCount := 0 }
+  ) { validCount := 0, invalidCount := 0, timeoutCount := 0, extractionFailedCount := 0,
+      totalCount := 0 }
 
 /-!
 ## Integration with Proof Search
@@ -297,7 +351,8 @@ Display the decision result as a human-readable string.
 def DecisionResult.display {φ : Formula} : DecisionResult φ → String
   | .valid proof => s!"Valid (proof height: {proof.height})"
   | .invalid _ => s!"Invalid (countermodel found)"
-  | .timeout => "Timeout (resources exhausted)"
+  | .fuelExhausted => "Undecided (tableau fuel exhausted)"
+  | .extractionFailed => "Valid (tableau closed); proof term not reconstructed"
 
 /-!
 ## Trace-Instrumented Decision Procedure

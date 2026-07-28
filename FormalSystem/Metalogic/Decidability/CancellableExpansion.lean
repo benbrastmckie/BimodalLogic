@@ -14,7 +14,7 @@ This module provides **runtime-only** `IO` mirrors of the pure tableau core
 (`expandBranchWithFuel` → `saturateBlocked` → `buildTableau` → `decide` →
 `decideAutoAdaptive`). Each mirror checks an `IO.Ref Bool` abort flag (plus
 `IO.checkCanceled` as belt-and-braces) at every recursive step and maps an
-observed abort to `none`, which upstream maps to `.timeout` — an aborted run
+observed abort to `none`, which upstream maps to `.fuelExhausted` — an aborted run
 can never yield `.valid`/`.invalid`.
 
 ## Why a parallel implementation?
@@ -40,7 +40,7 @@ against the pure function on sample formulas.
 ## No new proof obligations
 
 The mirrors feed only dataset labels / JSON output. The convention that abort
-maps to `none` (and thence to `.timeout`) keeps labels conservative by
+maps to `none` (and thence to `.fuelExhausted`) keeps labels conservative by
 construction, so no soundness theorems are required. Each mirror closes
 termination with the identical `termination_by fuel` / `decreasing_by
 all_goals simp_wf` already discharged for `_tracedImpl`.
@@ -56,7 +56,7 @@ open FormalSystem.Automation
 Cancellable `IO` mirror of `expandBranchWithFuel` (Saturation.lean:228).
 
 Checks `abortRef` (and the task cancellation flag) at each recursive entry;
-returns `none` on abort, which upstream maps to `.timeout` — never to
+returns `none` on abort, which upstream maps to `.fuelExhausted` — never to
 `.valid`/`.invalid`. The body mirrors the pure function line-for-line, with
 the split `foldl` rendered as a `for` loop with a mutable `acc` exactly as in
 `expandBranchWithFuelTracedImpl` (Saturation.lean:368).
@@ -120,7 +120,7 @@ Cancellable `IO` mirror of `saturateBlocked` (Saturation.lean:495).
 
 Continues expanding a blocked branch, rejecting steps that introduce new
 time constraints, until saturated or closed. Returns `none` only on abort
-(the pure function never returns `none`; upstream maps `none` to `.timeout`).
+(the pure function never returns `none`; upstream maps `none` to `.fuelExhausted`).
 
 **Mirror of** `saturateBlocked`; keep the two in sync.
 -/
@@ -165,7 +165,7 @@ decreasing_by all_goals simp_wf
 Cancellable `IO` mirror of `buildTableau` (Saturation.lean:555).
 
 Builds a complete tableau for `¬φ` using the two cancellable helpers; an
-observed abort surfaces as `none` (→ `.timeout` upstream).
+observed abort surfaces as `none` (→ `.fuelExhausted` upstream).
 
 **Mirror of** `buildTableau`; keep the two in sync.
 -/
@@ -195,14 +195,14 @@ def buildTableauCancellable (abortRef : IO.Ref Bool) (φ : Formula)
 These wrap the cancellable tableau core into decision-level entry points that
 reuse the pure fast paths (`tryAxiomProof`, `buildCompositionalProof`,
 `boundedSearchWithProof` — cheap and bounded) and map an observed abort
-(surfacing as a `none` tableau) to `.timeout`, never `.valid`/`.invalid`.
+(surfacing as a `none` tableau) to `.fuelExhausted`, never `.valid`/`.invalid`.
 -/
 
 /--
 Cancellable `IO` mirror of `decide` (DecisionProcedure.lean:122).
 
 Reuses the pure fast paths unchanged and calls `buildTableauCancellable` for
-the expensive tableau leg. An aborted tableau (`none`) maps to `.timeout`.
+the expensive tableau leg. An aborted tableau (`none`) maps to `.fuelExhausted`.
 
 **Mirror of** `decide`; keep the two in sync.
 -/
@@ -227,13 +227,14 @@ def decideCancellable (abortRef : IO.Ref Bool) (φ : Formula)
     | (none, _, _) =>
       -- Expensive leg: cancellable tableau. Abort/fuel exhaustion → none.
       match ← buildTableauCancellable abortRef φ_n tableauFuel fc with
-      | none => return .timeout
+      | none => return .fuelExhausted
       | some tableau =>
           match tableau with
           | .allClosed _ =>
               match extractProof φ_n tableau fc with
               | .success proof => return .valid (h_norm ▸ proof)
-              | .incomplete _ => return .timeout
+              -- Closed tableau, no proof term: valid but unreconstructed, never undecided.
+              | .incomplete _ => return .extractionFailed
           | .hasOpen openBranch _ord _applied hSat =>
               return .invalid (extractCountermodelSimple φ_n openBranch hSat)
 
@@ -241,7 +242,7 @@ def decideCancellable (abortRef : IO.Ref Bool) (φ : Formula)
 Cancellable `IO` mirror of `decideAutoAdaptive` (DecisionProcedure.lean:198).
 
 Runs `decideCancellable` at the single fuel tier and tags the result. An
-aborted run returns `(.timeout, "adaptive_timeout")`.
+aborted run returns `(.fuelExhausted, "adaptive_timeout")`.
 
 **Mirror of** `decideAutoAdaptive`; keep the two in sync.
 -/
@@ -250,7 +251,8 @@ def decideAutoAdaptiveCancellable (abortRef : IO.Ref Bool) (φ : Formula)
     : IO (DecisionResult φ × String) := do
   let depth := 5 + φ.complexity / 2
   match ← decideCancellable abortRef φ depth fuel fc with
-  | .timeout => return (.timeout, "adaptive_timeout")
+  | .fuelExhausted => return (.fuelExhausted, "adaptive_timeout")
+  | .extractionFailed => return (.extractionFailed, "adaptive_extraction_failed")
   | result => return (result, s!"adaptive_{fuel}")
 
 end FormalSystem.Metalogic.Decidability
