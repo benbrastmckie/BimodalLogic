@@ -442,6 +442,78 @@ theorem chain_le_stock {C : Finset Formula} {L : Finset Label}
   have h2 := branch_card_le (C := C) (L := L) hb.mem hl
   omega
 
+/-! ## The label dimension, part 1: the hypothesis `hl` costs nothing
+
+`chain_le_stock` takes `hl : ∀ x ∈ run n, x.label ∈ L` and `L` is universally quantified, so the
+caller is free to take `L` to be the run's *own* label set, at which point `hl` is a triviality.
+That is not a dodge — it relocates the whole label obligation to where it actually lives, namely
+in the **cardinality** of that set. The section below performs that relocation and then splits
+the cardinality into the two independent dimensions a label has: worlds and times.
+
+Doing this first matters, because the two dimensions have completely different arguments. The
+world dimension is bounded by the S5 rules' fresh-world discipline; the time dimension is what
+blocking (T2) bounds. Keeping them fused inside an opaque `L` hid the fact that only one of the
+two is what `blocking_fires_of_card_lt` is about.
+-/
+
+/-- The labels the branch actually mentions. -/
+def Branch.labelFinset (b : Branch) : Finset Label := (b.map (·.label)).toFinset
+
+/-- The worlds the branch actually mentions, as a `Finset`. -/
+def Branch.worldFinset (b : Branch) : Finset WorldIndex := b.knownWorlds.toFinset
+
+/-- The times the branch actually mentions, as a `Finset`. -/
+def Branch.timeFinset (b : Branch) : Finset TimeIndex := b.knownTimes.toFinset
+
+theorem Branch.mem_labelFinset {b : Branch} {x : SignedFormula} (h : x ∈ b) :
+    x.label ∈ b.labelFinset :=
+  List.mem_toFinset.mpr (List.mem_map_of_mem h)
+
+theorem Branch.mem_worldFinset {b : Branch} {x : SignedFormula} (h : x ∈ b) :
+    x.label.world ∈ b.worldFinset :=
+  List.mem_toFinset.mpr (List.mem_eraseDups.mpr (List.mem_map_of_mem h))
+
+theorem Branch.mem_timeFinset {b : Branch} {x : SignedFormula} (h : x ∈ b) :
+    x.label.time ∈ b.timeFinset :=
+  List.mem_toFinset.mpr (List.mem_eraseDups.mpr (List.mem_map_of_mem h))
+
+/-- A label is its two components, so the branch's labels inject into worlds × times. -/
+theorem Branch.card_labelFinset_le (b : Branch) :
+    b.labelFinset.card ≤ b.worldFinset.card * b.timeFinset.card := by
+  rw [← Finset.card_product]
+  refine Finset.card_le_card_of_injOn (fun l => (l.world, l.time)) ?_ ?_
+  · intro l hl
+    obtain ⟨x, hx, rfl⟩ := List.mem_map.mp (List.mem_toFinset.mp hl)
+    exact Finset.mem_product.mpr ⟨Branch.mem_worldFinset hx, Branch.mem_timeFinset hx⟩
+  · intro l₁ _ l₂ _ h
+    cases l₁; cases l₂
+    simpa [Prod.ext_iff] using h
+
+/--
+**The step bound with the label hypothesis discharged.**
+
+`chain_le_stock` at `L := (run n).labelFinset`. Nothing about the bound weakens: what was a
+hypothesis about an abstract `L` is now a statement about a set the run determines, and the
+residual obligation is a pure cardinality question about that set — which is what the rest of
+this file's label work attacks.
+-/
+theorem chain_le_own_labels {C : Finset Formula}
+    (hC : TableauClosed C) (hT : TrichStock C) (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0))
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1))) :
+    n ≤ 2 * C.card * (run n).labelFinset.card :=
+  chain_le_stock hC hT run n h0 (fun _ hx => Branch.mem_labelFinset hx) hstep
+
+/-- The step bound in the two dimensions a label has. The time factor is what T2 bounds; the
+world factor is separate and is bounded by the S5 fresh-world discipline. -/
+theorem chain_le_worlds_times {C : Finset Formula}
+    (hC : TableauClosed C) (hT : TrichStock C) (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0))
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1))) :
+    n ≤ 2 * C.card * ((run n).worldFinset.card * (run n).timeFinset.card) :=
+  le_trans (chain_le_own_labels hC hT run n h0 hstep)
+    (Nat.mul_le_mul_left _ (Branch.card_labelFinset_le _))
+
 /--
 **The fuel figure is justified in the dimension proved.**
 
