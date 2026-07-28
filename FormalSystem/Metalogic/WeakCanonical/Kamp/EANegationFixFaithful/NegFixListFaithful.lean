@@ -43,8 +43,9 @@ it is imported and used unchanged.
 What does change is the **gate** in front of it. `negFixList` (`EANegationFix/NegFix.lean:449`)
 gates its Case 3 on an *attained* first-`¬β₁` point, supplied by `firstNegPin_or_all`
 (`:137`) from `HasAttainedINF`. That dichotomy is a two-way split (`β₁` everywhere, or an attained
-`¬β₁`-point). The faithful carrier `HasDedekindINF` gives a **three**-way split instead, because
-`HasDedekindINF.first_occ` preserves Rabinovich's printed disjunction rather than collapsing it:
+`¬β₁`-point). The faithful carrier `HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`) gives a
+**three**-way split instead, because `HasFaithfulDedekindINF.first_occ` preserves Rabinovich's
+printed disjunction rather than collapsing it:
 
 | gate | condition at the top of the recursion | source |
 |---|---|---|
@@ -55,6 +56,39 @@ gates its Case 3 on an *attained* first-`¬β₁` point, supplied by `firstNegPi
 Case 1 is the disjunct the attained formulation cannot have and does not need; it is the **limit
 gate**, and `negFixListFaithful_case1_is_indispensable` below machine-checks that neither of the
 other two disjuncts can cover it.
+
+**Which `K⁺`, and why the three cases are exhaustive.** The `K⁺` in that table is Rabinovich's
+own, conjunct-free Definition (3) (PDF p.3), not this tree's `kplus`. He states the governing
+implication in the Case 3 paragraph on PDF p.10, parenthetically and verbatim:
+
+> *"(If `¬K⁺(¬β₁)` holds at `z₀` and there is `x ∈ (z₀,z₁)` such that `¬β₁(x)`, then such `r₀`
+> exists because we deal with Dedekind complete chains.)"*
+
+Contrapositively: an occurrence of `¬β₁` inside `(z₀,z₁)` yields `K⁺(¬β₁)(z₀)` **or** the eq (5.3)
+pin — a dichotomy, at his `K⁺`. That is character-for-character
+`HasFaithfulDedekindINF.first_occ_tp` (`NegFixOneFaithful.lean:262`), and it is why Case 1
+together with Case 3 covers everything Case 2 does not, with no endpoint case left over. Under
+the tree's `kplus` the same enumeration is **not** exhaustive — `kplus` adds a `¬β₁(z₀)` conjunct
+the source never prints, so where `¬β₁` holds at `z₀` and recurs arbitrarily soon the source's
+`K⁺` fires Case 1 while `kplus` fails, forcing a fourth disjunct the paper has no case for. See
+`NegFixOneFaithful.lean`'s module docstring, which grounds this on three landed declarations
+rather than asserting it.
+
+**ADAPTED-FROM.** Every carrier-bearing statement below previously bound `HasDedekindINF`
+(`DedekindINF.lean:136`) and read the tree's `kplus` at the left endpoint. Two clauses changed
+and nothing else: the carrier (`HasDedekindINF` → `HasFaithfulDedekindINF`) and, with it, the
+endpoint operator at the one place this module reads it —
+`kplusLeftBlock`/`kplus` → `kplusOpenLeftBlock`/`kplusOpen` in Case 1's gate
+(`negFixListFaithful`'s first disjunct, `witness_absurd_of_kplusLeft`, and
+`negFixListFaithful_case1_is_indispensable`). This is a **hypothesis weakening** —
+`HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`) — so every previous supplier
+still supplies. Not one case of the recursion was added, merged, or removed, and the `Aᵢ`/`Bᵢ`
+split is untouched. The eq (5.3) pin's *own* `K⁺` moved one phase earlier, with `infPinPoint`
+(`NegFixOneFaithful.lean:295`).
+
+Cite Rabinovich by **PDF page only**:
+`~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
+The companion `.md` conversion is corrupt and is never ground truth.
 
 Inside Case 3 the limit alternative appears a second time, in the pin's own point type:
 eq (5.3)'s third conjunct is `¬β₁(z) ∨ K⁺(¬β₁)(z)` (`infPinPoint`, `NegFixOneFaithful.lean:175`),
@@ -73,7 +107,7 @@ possibly-unattained infimum suffices here.
 2. `witness_absurd_of_kplusLeft` — the Case 1 consumer, carrier-free.
 3. `negFixListFaithful` — the recursion, three disjuncts per cons step.
 4. `negFixListFaithful_nil_iff`, `negFixListFaithful_iff` — the biconditional, over
-   `HasDedekindINF` **alone**.
+   `HasFaithfulDedekindINF` **alone**.
 5. `negFixListFaithful_case1_is_indispensable` — the non-vacuity artifact: under `K⁺(¬β₁)(z₀)`,
    the Case 2 and Case 3 disjuncts are both *unsatisfiable*, so the limit gate is load-bearing.
 
@@ -232,28 +266,41 @@ theorem vecPinnedListToV_holds_iff {sig : MonadicSignature}
     The companion of `bracketOne_witness_le_infPin` (`NegFixOneFaithful.lean:317`) at the *left
     endpoint*: there the pin sits strictly inside `(z₀,z₁)` and confines the witness to `(z₀,r₀]`;
     here it sits at `z₀` itself and leaves no room at all. Like that lemma, the `K⁺` alternative is
-    discharged by density, so this consumes **no carrier**. -/
+    discharged by density, so this consumes **no carrier**.
+
+    ADAPTED-FROM the `kplus` spelling this statement previously carried (its previous pin). What
+    changed is the hypothesis only: `kplus` → `kplusOpen`, the source's conjunct-free `K⁺`
+    (Rabinovich Definition (3), PDF p.3), which is what `kplusOpenLeftBlock` now delivers at
+    Case 1. This is a **re-point rather than a retain-and-derive**, and the choice is recorded
+    here because the two are *not* incomparable: the previous statement is the immediate
+    consequence `fun hk => witness_absurd_of_kplusLeft … (kplusOpen_of_kplus hk) …`, so retaining
+    it beside this one would duplicate rather than preserve content. The conclusion (`False`) is
+    unchanged and the hypothesis is strictly weaker, so every previous supplier still supplies.
+    Contrast `HasFaithfulDedekindINF.first_occ_tp` (`NegFixOneFaithful.lean:262`), which *was*
+    landed additively precisely because there the two forms are incomparable. -/
 theorem witness_absurd_of_kplusLeft {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (s : TemporalPred) {z0 x : M.carrier} (hx0 : z0 < x)
-    (hk : kplus M atomMap s.neg.formula z0)
+    (hk : kplusOpen M atomMap s.neg.formula z0)
     (hpre : ∀ y : M.carrier, z0 < y → y < x → s.EvalAt M atomMap y) : False := by
-  obtain ⟨-, hdense⟩ := hk
-  obtain ⟨q, hq1, hq2, hq3⟩ := hdense x hx0
+  obtain ⟨q, hq1, hq2, hq3⟩ := hk x hx0
   exact ((TemporalPred.eval_at_neg' M atomMap s q).mp hq3) (hpre q hq1 hq2)
 
 /-! ## The faithful recursion (PDF pp.10-11) -/
 
 /-- **Lemma 5.1's recursion, faithful list form** (Rabinovich 2014, PDF pp.10-11).
 
-    `negFixListFaithful s ps` is a `VVecEA2` whose semantics over `HasDedekindINF` is
+    `negFixListFaithful s ps` is a `VVecEA2` whose semantics over `HasFaithfulDedekindINF` is
     `¬ (bracketOf s ps).holds`.
 
     * `ps = []`: the negation of "`β₁` everywhere" is "`¬β₁` at some interior point"
       (`somePointBlock`). Rabinovich's *"The basis is trivial."* (PDF p.10). No carrier.
-    * `ps = (a,b) :: qs`: the three gates of the faithful `HasDedekindINF` trichotomy.
-      1. **Case 1** (PDF p.9): `K⁺(¬β₁)(z₀)`, carried by `kplusLeftBlock`
-         (`Lemma53Faithful.lean:189`) as a pure left-endpoint predicate. `Form₁ = True`.
+    * `ps = (a,b) :: qs`: the three gates of the faithful `HasFaithfulDedekindINF` trichotomy.
+      1. **Case 1** (PDF p.9): `K⁺(¬β₁)(z₀)`, carried by `kplusOpenLeftBlock`
+         (`Lemma53Faithful.lean:304`) as a pure left-endpoint predicate. `Form₁ = True`.
+         ADAPTED-FROM the `kplusLeftBlock` spelling this disjunct previously carried; the `K⁺` of
+         PDF p.10's Case 3 parenthetical is the source's conjunct-free one, and it is what makes
+         the enumeration exhaustive (module docstring).
       2. **Case 2** (PDF p.10): `β₁` along `(z₀,z₁)` (via `VVecEA2.conjEverywhere`), conjoined
          with `Form₂` = the anchored Corollary 5.4(2) `negBoundedLeftFixAnchoredFaithful`
          (`BoundedFixAnchoredFaithful.lean:218`) — *"there is no `z ∈ (z₀,z₁)` such that
@@ -276,7 +323,7 @@ noncomputable def negFixListFaithful : TemporalPred →
     List (TemporalPred × TemporalPred) → VVecEA2
   | s, [] => somePointBlock s.neg
   | s, (a, b) :: qs =>
-      (kplusLeftBlock s.neg).disj
+      (kplusOpenLeftBlock s.neg).disj
       ((((negBoundedLeftFixAnchoredFaithful a (bracketOf b qs)).conjEverywhere s)).disj
         (vecPinnedListToV
           (vecPinnedConjAll
@@ -319,20 +366,32 @@ theorem negFixListFaithful_nil_iff {sig : MonadicSignature}
     obtain ⟨y, hy0, hy1, hys⟩ := hex
     exact ⟨y, hy0, hy1, (TemporalPred.eval_at_neg' M atomMap s y).mpr hys⟩
 
-/-- **Lemma 5.1's recursion, faithful `iff`** (Rabinovich 2014, PDF pp.10-11): over
-    `HasDedekindINF` **alone**, `negFixListFaithful s ps` holds on `(z₀,z₁)` iff the list-form
-    bracket `bracketOf s ps` fails there. Strong induction on the pair-list length, exactly as
-    `negFixList_iff` (`EANegationFix/NegFix.lean:520`) — which needs `HasAttainedINF` **and**
-    `HasAttainedSUP`.
+/-- **Lemma 5.1's recursion, faithful `iff`** (Rabinovich 2014, Lemma 5.1, PDF pp.9-10, with the
+    inductive step's `Aᵢ`/`Bᵢ` bookkeeping on pp.10-11): over `HasFaithfulDedekindINF` **alone**,
+    `negFixListFaithful s ps` holds on `(z₀,z₁)` iff the list-form bracket `bracketOf s ps` fails
+    there. Strong induction on the pair-list length, exactly as `negFixList_iff`
+    (`EANegationFix/NegFix.lean:520`) — which needs `HasAttainedINF` **and** `HasAttainedSUP`.
 
     The three places the attained proof consumes a carrier become, respectively: the top-level
-    trichotomy `HasDedekindINF.first_occ_tp` at `P := ¬β₁` (replacing `firstNegPin_or_all`, whose
-    two-way dichotomy is the attained collapse of it); `negBoundedLeftFixAnchoredFaithful_iff`
+    trichotomy `HasFaithfulDedekindINF.first_occ_tp` at `P := ¬β₁` (replacing `firstNegPin_or_all`,
+    whose two-way dichotomy is the attained collapse of it); `negBoundedLeftFixAnchoredFaithful_iff`
     (replacing `negBoundedLeftFixAnchored_iff`, which is where `HasAttainedSUP` entered); and the
-    witness-confinement step, which becomes the carrier-free `bracketOne_witness_le_infPin`. -/
+    witness-confinement step, which becomes the carrier-free `bracketOne_witness_le_infPin` —
+    PDF p.11's clause **(d)**, *"because if `INF^{¬β₁}(z)`, then for no `x > z`, `β₁` holds along
+    `[z,x)`"*.
+
+    The pinned-DNF shape of Case 3 is p.11's displayed reduction, read at `φ := INF^{¬β₁}`: for
+    every `φ`, `(∃z)^{<z₁}_{>z₀} φ(z) ∧ ¬[α₀,β₁,α₁,…,β_{n+1},α_{n+1}](z₀,z₁)` is equivalent to
+    `(∃z)^{<z₁}_{>z₀}(φ(z) ∧ ⋀_{i=1}^{n} ¬Aᵢ ∧ ⋀_{i=1}^{n+1} ¬Bᵢ)`. The existential pin is
+    `vecPinnedListToV`'s `r`, the gate pair is `(s, infPinPoint s)` — eq (5.3)'s second and third
+    conjuncts — and the `⋀ ¬Aᵢ ∧ ⋀ ¬Bᵢ` product is `vecPinnedConjAll`.
+
+    ADAPTED-FROM the `HasDedekindINF` binder this statement previously carried, with the four
+    `negBoundedLeftFixAnchoredFaithful_iff` call sites' `.toHasFaithfulDedekindINF` coercions
+    dropped as a consequence. Conclusion textually unchanged; hypothesis strictly weaker. -/
 theorem negFixListFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_INF : HasDedekindINF M atomMap) :
+    (h_INF : HasFaithfulDedekindINF M atomMap) :
     ∀ (N : Nat) (ps : List (TemporalPred × TemporalPred))
       (s : TemporalPred) (z0 z1 : M.carrier), ps.length ≤ N → z0 < z1 →
     ((negFixListFaithful s ps).holds M atomMap z0 z1 ↔
@@ -357,7 +416,7 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
     · -- some gated disjunct holds → the bracket fails
       rintro (h1 | h2 | h3)
       · -- Case 1: `K⁺(¬β₁)(z₀)`. No first witness can exist at all (PDF p.9).
-        rw [kplusLeftBlock_holds] at h1
+        rw [kplusOpenLeftBlock_holds] at h1
         intro hb
         obtain ⟨x, hx0, -, hpre, -, -⟩ :=
           (bracketOf_cons_holds_iff M atomMap s a b qs z0 z1).mp hb
@@ -366,7 +425,7 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
         obtain ⟨h2n, _hsev⟩ :=
           (VVecEA2.conjEverywhere_holds_iff M atomMap _ s z0 z1).mp h2
         have hnex := (negBoundedLeftFixAnchoredFaithful_iff M atomMap
-          h_INF.toHasFaithfulDedekindINF a (bracketOf b qs) z0 z1 h_lt).mp h2n
+          h_INF a (bracketOf b qs) z0 z1 h_lt).mp h2n
         intro hb
         obtain ⟨x, hx0, hx1, _hpre, hax, htail⟩ :=
           (bracketOf_cons_holds_iff M atomMap s a b qs z0 z1).mp hb
@@ -419,7 +478,7 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
           rcases hit with rfl | rfl | rfl
           · -- `A`-failure: contradicts the witness `x`
             have hnA := (negBoundedLeftFixAnchoredFaithful_iff M atomMap
-              h_INF.toHasFaithfulDedekindINF a
+              h_INF a
               (bracketOf e.leftSeg e.leftPairs) z0 r hr0).mp hh.1
             exact hnA ⟨x, hx0, hxlt, hax, heL⟩
           · -- pin-type failure: contradicts the entry's point type
@@ -436,7 +495,7 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
       · -- Case 2: `β₁` everywhere (PDF p.10)
         refine Or.inr (Or.inl ((VVecEA2.conjEverywhere_holds_iff M atomMap _ s
           z0 z1).mpr ⟨(negBoundedLeftFixAnchoredFaithful_iff M atomMap
-            h_INF.toHasFaithfulDedekindINF a
+            h_INF a
             (bracketOf b qs) z0 z1 h_lt).mpr ?_, hsev⟩))
         rintro ⟨x, hx0, hx1, hax, htail⟩
         exact hnb ((bracketOf_cons_holds_iff M atomMap s a b qs z0 z1).mpr
@@ -449,7 +508,7 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
           ⟨w, hw0, hw1, (TemporalPred.eval_at_neg' M atomMap s w).mpr hws⟩ with
           hk | ⟨r0, hr00, hr01, h_none, h_disj⟩
         · -- Case 1: the infimum sits at the left endpoint, as `K⁺(¬β₁)(z₀)` (PDF p.9)
-          exact Or.inl ((kplusLeftBlock_holds M atomMap s.neg z0 z1).mpr hk)
+          exact Or.inl ((kplusOpenLeftBlock_holds M atomMap s.neg z0 z1).mpr hk)
         · -- Case 3: the eq (5.3) pin realizes every failure item (PDF p.10)
           have hsev0 : ∀ y : M.carrier, z0 < y → y < r0 → s.EvalAt M atomMap y := by
             intro y hy0 hy1
@@ -460,11 +519,17 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
             rw [infPinPoint_holds]
             rcases h_disj with hns | hkr
             · exact Or.inl ((TemporalPred.eval_at_neg' M atomMap s r0).mp hns)
-            -- SCHEDULED FOR REMOVAL by the phase that re-bases this module: `infPinPoint` now
-            -- carries the source's conjunct-free `K⁺` (`NegFixOneFaithful.lean`), while the
-            -- `HasDedekindINF` carrier this module still binds supplies the tree's `kplus` here.
-            -- `kplusOpen_of_kplus` (`KPlusFaithful.lean:212`) drops the extra conjunct. Argument
-            -- position only; no binder, statement or other proof step in this file was touched.
+            -- NOT removable, and this replaces the earlier SCHEDULED FOR REMOVAL note. The
+            -- re-base to `HasFaithfulDedekindINF` does **not** retire this coercion, because the
+            -- faithful carrier's *right* disjunct still delivers the tree's `kplus` at `r₀` by
+            -- deliberate design: `HasFaithfulDedekindINF.first_occ` (`KPlusFaithful.lean:325`)
+            -- weakens only the LEFT disjunct, and its docstring (`:302`) records that the right
+            -- disjunct is kept "literally `HasDedekindINF`'s, `kplus` included" so the two
+            -- carriers' right disjuncts stay syntactically identical. Meanwhile `infPinPoint`
+            -- carries the source's conjunct-free `K⁺`, so the one-token weakening
+            -- `kplusOpen_of_kplus` (`KPlusFaithful.lean:212`) is structurally required here under
+            -- *either* carrier. `NegFixOneFaithful.lean:583` keeps the identical coercion at the
+            -- identical spot for the identical reason.
             · exact Or.inr (kplusOpen_of_kplus hkr)
           refine Or.inr (Or.inr ((vecPinnedListToV_holds_iff M atomMap _ s (infPinPoint s)
             z0 z1).mpr ⟨r0, hr00, hr01, hsev0, hpin, ?_⟩))
@@ -505,7 +570,7 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
                 ?_, TemporalPred.eval_at_top M atomMap r0,
                 VVecEA2.trivialTrue_holds M atomMap r0 z1⟩
               rw [negBoundedLeftFixAnchoredFaithful_iff M atomMap
-                h_INF.toHasFaithfulDedekindINF a
+                h_INF a
                 (bracketOf e.leftSeg e.leftPairs) z0 r0 hr00]
               rintro ⟨x, hx0, hxr, hax, hxL⟩
               have heR : (bracketOf e.rightSeg e.rightPairs).holds M atomMap
@@ -546,12 +611,21 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
     two exhibit *where* the limit case is and is not reachable; this one shows *why it cannot be
     absorbed* by its neighbours.
 
-    Carrier-free: no `HasDedekind*`/`HasAttained*` hypothesis appears. -/
+    Carrier-free: no `HasDedekind*`/`HasAttained*` hypothesis appears.
+
+    ADAPTED-FROM the `kplus` spelling this statement previously carried. **Re-pointed, not
+    retained-and-derived**, for the same reason as `witness_absurd_of_kplusLeft` above and for one
+    more that is specific to this declaration: its whole job is to certify that *the Case 1
+    disjunct actually present in `negFixListFaithful`* cannot be absorbed by its neighbours, and
+    after the re-base that disjunct is gated on `kplusOpen`. Left at `kplus` the artifact would
+    still compile while silently certifying a gate the definition no longer has — the precise
+    failure mode this declaration exists to prevent. The hypothesis is strictly weaker and both
+    conclusions are unchanged. -/
 theorem negFixListFaithful_case1_is_indispensable {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (s a b : TemporalPred) (qs : List (TemporalPred × TemporalPred))
     (z0 z1 : M.carrier) (h_lt : z0 < z1)
-    (hk : kplus M atomMap s.neg.formula z0) :
+    (hk : kplusOpen M atomMap s.neg.formula z0) :
     ¬ (((negBoundedLeftFixAnchoredFaithful a (bracketOf b qs)).conjEverywhere s).holds
         M atomMap z0 z1) ∧
     ¬ ((vecPinnedListToV
@@ -576,9 +650,13 @@ theorem negFixListFaithful_case1_is_indispensable {sig : MonadicSignature}
     exact witness_absurd_of_kplusLeft M atomMap s hr0 hk hsev
 
 /-- The faithful recursion is available wherever the attained one is, and needs only the INF half:
-    `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`) supplies the carrier, and
+    `HasAttainedINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:382`) supplies the carrier, and
     `HasAttainedSUP` is not required at all. The shim mirrors
-    `negFixOneFaithful_iff_of_attained` (`NegFixOneFaithful.lean:498`). -/
+    `negFixOneFaithful_iff_of_attained` (`NegFixOneFaithful.lean:498`).
+
+    ADAPTED-FROM the previous routing through `HasAttainedINF.toHasDedekindINF`
+    (`DedekindINF.lean:172`). The statement is unchanged; only the composite that reaches the
+    now-weaker carrier moved, so the attained/discrete pipeline keeps supplying this module. -/
 theorem negFixListFaithful_iff_of_attained {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_INF : HasAttainedINF M atomMap)
@@ -586,7 +664,7 @@ theorem negFixListFaithful_iff_of_attained {sig : MonadicSignature}
     (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     (negFixListFaithful s ps).holds M atomMap z0 z1 ↔
     ¬ (bracketOf s ps).holds M atomMap z0 z1 :=
-  negFixListFaithful_iff M atomMap h_INF.toHasDedekindINF ps.length ps s z0 z1
+  negFixListFaithful_iff M atomMap h_INF.toHasFaithfulDedekindINF ps.length ps s z0 z1
     (Nat.le_refl _) h_lt
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp
