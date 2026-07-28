@@ -107,6 +107,20 @@ neither ever differs from the weaker form it strengthens anywhere in the twelve.
 rows, in the exact form the proof consumes them" at the foot of this file. These are rows 7-10 of
 `Bridge/TemporalGate.lean`'s `temporalWitnessCheck`.
 
+**7. The interior-region generalisation of rows 5 and 6 is adoptable, and it subsumes them.** At
+`ℤ` a non-placed point's region index is `0` or `n` (`RayOnly`), so rows 5 and 6 covered every
+non-placed evaluation point. At `ℚ` and `ℝ` it can be interior, and `regionLabel b ord w j` for an
+interior `j` is an arbitrary known time whose rank bears no relation to `j`, so neither row 5 nor
+`untlNeg_spread` reaches from it. `untlNegRegionUp` is row 5 with `0` replaced by an arbitrary
+`j`, narrowed to the two reaches the dense case consumes — the known times `v` with
+`j ≤ branchRank b ord v`, and the labels of the regions `j' ≥ j`. It is `true` on all eight rows
+the gate accepts; its single `false` is row N, where row 5 itself already reports `false` and
+`regionLabelCheck` already rejects the branch. Both reaches fail together with the row they
+subsume, so the generalisation costs **nothing** over row 5 anywhere in the corpus. At `j = 0`
+both reaches are unrestricted and the first conjunct is row 5 verbatim, so adopting this retires
+rows 5 and 6 rather than adding beside them. See "The interior-region negative demand" at the
+foot of this file.
+
 **A finding outside this file's scope, recorded because it is load-bearing elsewhere.**
 `regionLabelCheck` is `false` on rows H, J, M and N — the branches the engine builds for
 `U(p,q) → q` and `S(p,q) → q`. `regionLabelCheck b ord = true` is a *hypothesis* of
@@ -785,5 +799,154 @@ def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 /-- info: "N gen=true check=false uGW=true [gw=true wit=true] sGW=false [gw=false wit=true] uRD=false [rdG=false] sRU=false [ruG=false]" -/
 #guard_msgs in
 #eval "N " ++ probe4 (.imp p (.untl p q)) 200 .Discrete
+
+/-! ## The interior-region negative demand — the dense carrier's residual, measured
+
+Rows 5 and 6 (`untlNegRayLow`/`snceNegRayUp`) reach *every* known time, but their scope is
+`j = 0` and `j = n` only. At `ℤ` that is the whole of it: `RayOnly` says a non-placed point's
+region index is `0` or `n`, so the negative temporal case never meets an interior region. At `ℚ`
+and `ℝ` it does, and `regionLabel b ord w j` for an interior `j` is an arbitrary known time whose
+rank bears no relation to `j` — `regionLabel` picks the first eligible candidate, not the
+order-minimal one — so neither row 5 nor `untlNeg_spread` reaches from it.
+
+The candidate below is row 5 with `0` replaced by an arbitrary `j`, **narrowed to what the dense
+`untl` case actually consumes**, which is two reaches and not one:
+
+* the known times `v` at or above region `j` — `j ≤ branchRank b ord v` is exactly "`v`'s placed
+  point lies above every point of region `j`", by `branchRank_lt_cutIndex`;
+* the *labels* `regionLabel b ord w j'` of the regions `j' ≥ j` — a non-placed witness above a
+  non-placed evaluation point reads one of these, and its rank says nothing about `j'`.
+
+At `j = 0` both reaches are unrestricted (`0 ≤ branchRank v` always, and every `j'` qualifies) and
+every region label is a known time, so the first conjunct alone is row 5 verbatim: the candidate
+**subsumes** row 5 rather than sitting beside it. That is why it is measured here in the exact
+form to be adopted, beside `uRL` — the row it would strengthen — and with its two conjuncts also
+reported separately, so that a `false` says *which* reach failed.
+-/
+
+/-- The first reach: known times at or above region `j`. -/
+private def untlNegRegionUpK (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .untl φ _ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            b.knownTimes.all fun v =>
+              if j ≤ branchRank b ord v then b.hasNegAt φ ⟨sf.label.world, v⟩ else true
+          else true
+    | _, _ => true
+
+/-- The second reach: the labels of the regions at or above `j`. -/
+private def untlNegRegionUpR (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .untl φ _ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            (List.range (b.knownTimes.length + 1)).all fun j' =>
+              if j ≤ j' then
+                b.hasNegAt φ ⟨sf.label.world, regionLabel b ord sf.label.world j'⟩
+              else true
+          else true
+    | _, _ => true
+
+/-- **The candidate, in the exact form the dense negative `untl` case would consume it.** -/
+private def untlNegRegionUp (b : Branch) (ord : TimeOrdering) : Bool :=
+  untlNegRegionUpK b ord && untlNegRegionUpR b ord
+
+/-- The mirror's first reach: known times strictly below region `j`. -/
+private def snceNegRegionDnK (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .snce φ _ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            b.knownTimes.all fun v =>
+              if branchRank b ord v < j then b.hasNegAt φ ⟨sf.label.world, v⟩ else true
+          else true
+    | _, _ => true
+
+/-- The mirror's second reach: the labels of the regions at or below `j`. -/
+private def snceNegRegionDnR (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .snce φ _ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          if sf.label.time == regionLabel b ord sf.label.world j then
+            (List.range (b.knownTimes.length + 1)).all fun j' =>
+              if j' ≤ j then
+                b.hasNegAt φ ⟨sf.label.world, regionLabel b ord sf.label.world j'⟩
+              else true
+          else true
+    | _, _ => true
+
+/-- **The mirror candidate.** -/
+private def snceNegRegionDn (b : Branch) (ord : TimeOrdering) : Bool :=
+  snceNegRegionDnK b ord && snceNegRegionDnR b ord
+
+/-- Report the interior-region negative candidates beside the rows they would subsume. -/
+def probe5 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String :=
+  match buildTableau φ fuel fc with
+  | none => "STALLED"
+  | some (.allClosed _) => "CLOSED"
+  | some (.hasOpen ob ord _ _) =>
+      s!"gen={hasGenuine ob} check={regionLabelCheck ob ord} " ++
+      s!"uNRU={untlNegRegionUp ob ord} " ++
+      s!"[k={untlNegRegionUpK ob ord} r={untlNegRegionUpR ob ord} uRL={untlNegRayLow ob ord}] " ++
+      s!"sNRD={snceNegRegionDn ob ord} " ++
+      s!"[k={snceNegRegionDnK ob ord} r={snceNegRegionDnR ob ord} sRU={snceNegRayUp ob ord}]"
+
+/-- info: "A gen=false check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "A " ++ probe5 (.imp (Formula.someFuture p) p)
+
+/-- info: "B gen=false check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "B " ++ probe5 (.imp (Formula.somePast p) p)
+
+/-- info: "C gen=false check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "C " ++ probe5 (.imp (.allFuture p) p)
+
+/-- info: "D gen=false check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "D " ++ probe5 (.imp (andF (.box p) (dia q)) r)
+
+/-- info: "E gen=false check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "E " ++ probe5 (.imp (andF (.box p) (.box (.imp p q))) r)
+
+/-- info: "F gen=false check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "F " ++ probe5 (.imp (Formula.someFuture p) p) 200 .Dense
+
+/-- info: "H gen=true check=false uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "H " ++ probe5 (.imp (.untl p q) q)
+
+-- I. The row that matters: a genuine **negative** until on a branch the gate accepts.
+/-- info: "I gen=true check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "I " ++ probe5 (.imp p (.untl p q))
+
+/-- info: "J gen=true check=false uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "J " ++ probe5 (.imp (.snce p q) q)
+
+/-- info: "K gen=true check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "K " ++ probe5 (.imp p (.snce p q))
+
+/-- info: "M gen=true check=false uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "M " ++ probe5 (.imp (.untl p q) q) 200 .Dense
+
+-- N. The single `false`, and it sits exactly where `uRL` already fails — a row
+-- `regionLabelCheck` already rejects, and the same row on which rows 5 and 9-10 already report
+-- `false`. Both reaches fail together with the row they subsume, so the generalisation from
+-- `j = 0` to an arbitrary `j` costs **nothing** over row 5 anywhere in the corpus.
+/-- info: "N gen=true check=false uNRU=false [k=false r=false uRL=false] sNRD=true [k=true r=true sRU=true]" -/
+#guard_msgs in
+#eval "N " ++ probe5 (.imp p (.untl p q)) 200 .Discrete
 
 end BimodalTest.TemporalWitnessProbe
