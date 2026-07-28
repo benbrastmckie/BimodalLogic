@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixLis
 # The Prop 4.2 / 4.3 lift chain over the faithful carrier (Rabinovich, PDF p.6 and pp.10-11)
 
 This module is the three-step lift that carries Lemma 5.1's recursion up to the disjunction level,
-over `HasDedekindINF` **alone**:
+over `HasFaithfulDedekindINF` **alone**:
 
 ```
 BracketFormula.negFixFaithful  →  VecEA2.negFixFaithful  →  VVecEA2.negFixFaithful
@@ -39,9 +39,10 @@ and, immediately below it, the De Morgan fold:
 
 The two-free-variable case those steps invoke is Proposition 4.2 itself — stated on the same page
 as holding **over Dedekind complete chains**, which is precisely the carrier this module's `_iff`
-lemmas are anchored to (via `HasDedekindINF`) rather than the strictly stronger attainment the
-landed chain assumes. Lemma 5.1's recursion, PDF **pp.10-11**, supplies the bracket leg and is
-consumed opaquely here through `negFixListFaithful_iff` (`NegFixListFaithful.lean:333`).
+lemmas are anchored to (via `HasFaithfulDedekindINF`, `KPlusFaithful.lean:320`) rather than the
+strictly stronger attainment the landed chain assumes. Lemma 5.1's recursion, PDF **pp.10-11**,
+supplies the bracket leg and is consumed opaquely here through `negFixListFaithful_iff`
+(`NegFixListFaithful.lean:333`).
 
 ## What the migrated type buys at the lift
 
@@ -63,11 +64,18 @@ deleting the paper's limit case; that is the failure mode these two declarations
 
 ## Carrier discipline
 
-Every `_iff` lemma here assumes `HasDedekindINF` and nothing else — no `HasDedekindSUP`, no
-`HasAttained*`. The only shim used is `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`),
-in the attained → faithful direction, in `VVecEA2.negFixFaithful_iff_of_attained`. There is no use
-of a faithful → attained shim anywhere in this module; such a use would be a strengthening, not a
-lift.
+Every `_iff` lemma here assumes `HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`) and nothing
+else — no `HasDedekindSUP`, no `HasAttained*`. That is Rabinovich's eq (5.2) dichotomy at the
+*source's* `K⁺`, one strengthening step weaker than the `HasDedekindINF` this module assumed
+before the re-base. The only shim used is `HasAttainedINF.toHasFaithfulDedekindINF`
+(`KPlusFaithful.lean:382`, the direct composite landed with the faithful carrier), in the
+attained → faithful direction, in `VVecEA2.negFixFaithful_iff_of_attained`. There is no use of a
+faithful → attained shim anywhere in this module; such a use would be a strengthening, not a lift.
+
+**ADAPTED-FROM**: the same declarations at the previous pin `HasDedekindINF`
+(`DedekindINF.lean:136`). Nothing was added, removed or renamed here; four hypothesis binders
+moved to the weaker carrier, the shim moved to the direct composite, and one indispensability
+artifact moved its `kplus` hypothesis to the `kplusOpen` the definition actually reads.
 
 ## References
 
@@ -94,23 +102,19 @@ noncomputable def BracketFormula.negFixFaithful {n : Nat} (bf : BracketFormula n
   negFixListFaithful (bf.segmentTypes ⟨0, Nat.succ_pos n⟩) bf.foldPairs
 
 /-- **Lemma 5.1, general fixed formula, faithful** (Rabinovich 2014, PDF pp.10-11): over
-    `HasDedekindINF` **alone**, `bf.negFixFaithful` holds on `(z₀,z₁)` iff the bracket `bf` fails
-    there. Mirror of `BracketFormula.negFix_iff` (`EANegationFix/NegFix.lean:694`), which needs
-    `HasAttainedINF` **and** `HasAttainedSUP`.
+    `HasFaithfulDedekindINF` **alone**, `bf.negFixFaithful` holds on `(z₀,z₁)` iff the bracket
+    `bf` fails there. Mirror of `BracketFormula.negFix_iff` (`EANegationFix/NegFix.lean:694`),
+    which needs `HasAttainedINF` **and** `HasAttainedSUP`.
 
     Both are carrier-anchored, and the anchor is what makes the direction go through; neither is a
     model-independent negation result. -/
 theorem BracketFormula.negFixFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_INF : HasDedekindINF M atomMap)
+    (h_INF : HasFaithfulDedekindINF M atomMap)
     {n : Nat} (bf : BracketFormula n) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     bf.negFixFaithful.holds M atomMap z0 z1 ↔ ¬ bf.holds M atomMap z0 z1 := by
   unfold BracketFormula.negFixFaithful
-  -- SCHEDULED FOR REMOVAL by the phase that re-bases this module: `negFixListFaithful_iff` now
-  -- binds `HasFaithfulDedekindINF` while the `h_INF` above is still `HasDedekindINF`.
-  -- `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`) bridges the gap. When
-  -- `:105`'s binder is swapped the build will delete this suffix for you. Argument position only.
-  exact (negFixListFaithful_iff M atomMap h_INF.toHasFaithfulDedekindINF
+  exact (negFixListFaithful_iff M atomMap h_INF
     bf.foldPairs.length bf.foldPairs
     (bf.segmentTypes ⟨0, Nat.succ_pos n⟩) z0 z1 (Nat.le_refl _) h_lt).trans
     (not_congr (BracketFormula.holds_iff_bracketOf M atomMap n bf z0 z1).symm)
@@ -135,12 +139,12 @@ noncomputable def VecEA2.negFixFaithful {n : Nat} (vea : VecEA2 n) : VVecEA2 :=
             bracket := BracketFormula.trivial TemporalPred.top }⟩ ::
       vea.bracket.negFixFaithful.disjuncts }
 
-/-- **Prop 4.2 per-disjunct iff, faithful** (PDF p.6): over `HasDedekindINF` alone,
+/-- **Prop 4.2 per-disjunct iff, faithful** (PDF p.6): over `HasFaithfulDedekindINF` alone,
     `vea.negFixFaithful` holds on `(z₀,z₁)` iff the disjunct `vea` fails there. The bracket leg
     reduces to `BracketFormula.negFixFaithful_iff`. -/
 theorem VecEA2.negFixFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_INF : HasDedekindINF M atomMap)
+    (h_INF : HasFaithfulDedekindINF M atomMap)
     {n : Nat} (vea : VecEA2 n) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     vea.negFixFaithful.holds M atomMap z0 z1 ↔ ¬ vea.holds M atomMap z0 z1 := by
   have hbr := BracketFormula.negFixFaithful_iff M atomMap h_INF vea.bracket z0 z1 h_lt
@@ -209,7 +213,7 @@ noncomputable def VVecEA2.negFixFaithful (v : VVecEA2) : VVecEA2 :=
     Mirror of `vecEANegFixFold_iff` (`EANegationFix/VecEANegFix.lean:160`). -/
 theorem vecEANegFixFaithfulFold_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_INF : HasDedekindINF M atomMap)
+    (h_INF : HasFaithfulDedekindINF M atomMap)
     (z0 z1 : M.carrier) (h_lt : z0 < z1) (l : List (Σ n, VecEA2 n)) :
     (l.foldr (fun d acc => d.2.negFixFaithful.conjFull acc)
       VVecEA2.trivialTrue).holds M atomMap z0 z1 ↔
@@ -227,16 +231,19 @@ theorem vecEANegFixFaithfulFold_iff {sig : MonadicSignature}
         VecEA2.negFixFaithful_iff M atomMap h_INF d.2 z0 z1 h_lt, ih,
         List.forall_mem_cons]
 
-/-- **Prop 4.2 / 4.3, faithful** (Rabinovich 2014, PDF p.6): over `HasDedekindINF` **alone**, the
-    De Morgan fold `v.negFixFaithful` holds on `(z₀,z₁)` iff the `VVecEA2` disjunction `v` fails
-    there. Mirror of `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`), which needs
+/-- **Prop 4.2 / 4.3, faithful** (Rabinovich 2014, PDF p.6): over `HasFaithfulDedekindINF`
+    **alone**, the De Morgan fold `v.negFixFaithful` holds on `(z₀,z₁)` iff the `VVecEA2`
+    disjunction `v` fails there. Mirror of `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`), which needs
     `HasAttainedINF` **and** `HasAttainedSUP`.
 
-    Rabinovich states Proposition 4.2 over **Dedekind complete chains** (p.6); this is the
-    statement one strengthening step away from that, where the landed attained version is three. -/
+    Rabinovich states Proposition 4.2 over **Dedekind complete chains** (p.6) — verbatim, PDF p.6:
+    *"Proposition 4.2. (Closure under negation) The negation of ∃⃗∀-formulas with at most two free
+    variables is equivalent over Dedekind complete chains to a disjunction of ∃⃗∀-formulas."* This
+    is that statement one strengthening step away, at the carrier that reproduces his eq (5.2)
+    dichotomy at the source's own `K⁺`; the landed attained version is three steps away. -/
 theorem VVecEA2.negFixFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_INF : HasDedekindINF M atomMap)
+    (h_INF : HasFaithfulDedekindINF M atomMap)
     (v : VVecEA2) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     v.negFixFaithful.holds M atomMap z0 z1 ↔ ¬ v.holds M atomMap z0 z1 := by
   refine (vecEANegFixFaithfulFold_iff M atomMap h_INF z0 z1 h_lt v.disjuncts).trans ?_
@@ -277,15 +284,16 @@ theorem VecEA2.negFixFaithful_of_bracket {sig : MonadicSignature}
     one cannot have — Case 1, `K⁺(¬β₁)(z₀)`, PDF p.9, carried by `kplusOpenLeftBlock`
     (`Lemma53Faithful.lean:304`) — still forces `vea.negFixFaithful` at the top of the chain.
 
-    Carrier-free: the hypothesis is `kplus` at `z₀` itself, not a carrier assumption that would
-    produce it. Note it is the *tree's* `kplus`, one conjunct stronger than the `kplusOpen` that
-    Case 1's block now reads; that is sufficient (`kplusOpen_of_kplus`) so the statement stays
-    true and load-bearing, but the phase that re-bases this module should consider re-pointing
-    the hypothesis to `kplusOpen`, exactly as `negFixListFaithful_case1_is_indispensable` was
-    re-pointed — an indispensability artifact reads best when it is stated at the gate the
-    definition actually carries. Deliberately NOT done here: this declaration is outside the
-    territory of the phase that re-based `NegFixListFaithful.lean`, and changing a statement is
-    more than a cascade repair.
+    Carrier-free: the hypothesis is `kplusOpen` at `z₀` itself, not a carrier assumption that
+    would produce it. The hypothesis is stated at the **source's** `K⁺` — Rabinovich's Definition
+    (3), PDF p.3 — because `kplusOpenLeftBlock` (`Lemma53Faithful.lean:304`) is what Case 1's
+    disjunct actually reads. It previously bound the tree's `kplus`, one conjunct stronger; that
+    version stayed true only via `kplusOpen_of_kplus`, and an indispensability artifact stated at
+    a gate strictly stronger than the one the definition carries certifies less than it appears
+    to. Re-pointed here for the same reason `negFixListFaithful_case1_is_indispensable`
+    (`NegFixListFaithful.lean:542`) was re-pointed: the two are comparable, so re-pointing
+    strengthens rather than duplicates. Every consumer holding the old `kplus` form recovers this
+    one by `kplusOpen_of_kplus`.
 
     This is the Phase-8 counterpart of `negFixListFaithful_case1_is_indispensable`
     (`NegFixListFaithful.lean:542`): that one shows the limit disjunct cannot be absorbed by its
@@ -298,7 +306,7 @@ theorem VecEA2.negFixFaithful_carries_limit_gate {sig : MonadicSignature}
     (qs : List (TemporalPred × TemporalPred))
     (hpairs : vea.bracket.foldPairs = (a, b) :: qs)
     (z0 z1 : M.carrier)
-    (hk : kplus M atomMap (vea.bracket.segmentTypes ⟨0, Nat.succ_pos n⟩).neg.formula z0) :
+    (hk : kplusOpen M atomMap (vea.bracket.segmentTypes ⟨0, Nat.succ_pos n⟩).neg.formula z0) :
     vea.negFixFaithful.holds M atomMap z0 z1 := by
   refine VecEA2.negFixFaithful_of_bracket M atomMap vea z0 z1 ?_
   show (negFixListFaithful (vea.bracket.segmentTypes ⟨0, Nat.succ_pos n⟩)
@@ -306,12 +314,12 @@ theorem VecEA2.negFixFaithful_carries_limit_gate {sig : MonadicSignature}
   rw [hpairs]
   simp only [negFixListFaithful]
   refine (VVecEA2.disj_holds M atomMap _ _ z0 z1).mpr (Or.inl ?_)
-  exact (kplusOpenLeftBlock_holds M atomMap _ z0 z1).mpr (kplusOpen_of_kplus hk)
+  exact (kplusOpenLeftBlock_holds M atomMap _ z0 z1).mpr hk
 
 /-! ## Availability shim (attained → faithful, never the reverse) -/
 
 /-- The faithful fold is available wherever the attained one is, and needs only the INF half:
-    `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`) supplies the carrier, and
+    `HasAttainedINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:382`) supplies the carrier, and
     `HasAttainedSUP` — which `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`) requires —
     is not needed at all. Mirrors `negFixListFaithful_iff_of_attained`
     (`NegFixListFaithful.lean:574`).
@@ -323,6 +331,6 @@ theorem VVecEA2.negFixFaithful_iff_of_attained {sig : MonadicSignature}
     (h_INF : HasAttainedINF M atomMap)
     (v : VVecEA2) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     v.negFixFaithful.holds M atomMap z0 z1 ↔ ¬ v.holds M atomMap z0 z1 :=
-  VVecEA2.negFixFaithful_iff M atomMap h_INF.toHasDedekindINF v z0 z1 h_lt
+  VVecEA2.negFixFaithful_iff M atomMap h_INF.toHasFaithfulDedekindINF v z0 z1 h_lt
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp
