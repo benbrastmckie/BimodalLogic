@@ -39,7 +39,8 @@ import Mathlib.Data.List.Permutation
 -- LEMMA 5.3 (Rabinovich 2014, PDF p.8): `negChainOnFaithful` / `negChainOnFaithful_iff` and
 -- `lemma53Faithful`, which restore the paper's printed disjunct (2) `K⁺(P₁)(z₀) ∧ Oₙ(rest)` that
 -- the landed `negChainOn` (`EANegationFix/OnBuilder.lean:179`) truncates away, over the faithful
--- `HasDedekindINF` carrier rather than `HasAttainedINF`. The edge exists for the same reason as
+-- `HasFaithfulDedekindINF` carrier (`KPlusFaithful.lean:320`) rather than `HasAttainedINF`.
+-- The edge exists for the same reason as
 -- the `DedekindINF` edge below: parking it in `Kamp/Boneyard/` would put it under no glob and in
 -- no CI build, so the faithful transcription — and, worse, the two NON-VACUITY declarations that
 -- make it auditable (`lemma53Faithful_perPoint_is_VACUOUS`, the failed-vacuity control, and
@@ -50,17 +51,24 @@ import Mathlib.Data.List.Permutation
 -- NOTE: `import ...Kamp.DedekindINF` lands the import edge for the FAITHFUL DEDEKIND CARRIER
 -- (Rabinovich 2014, eq (5.2), PDF p.8): `HasDedekindINF`/`HasDedekindSUP`, the four compatibility
 -- shims from the landed carriers, `prior_hasDedekindINF`/`prior_hasDedekindSUP` (the live-path
--- boundary), and the machine-checked strictness delta against `HasDefinableINF`. Of the re-base
--- onto that carrier, **Lemma 5.3 is DONE** — see the `Lemma53Faithful` edge above — while
--- **Lemma 5.1 / Prop 4.2 remain DEFERRED, not done**. Both the landed part and the deferred part
--- are still unobservable to every current consumer, because the live chain is Prior structures
--- where attainment holds outright (`prior_makes_disjunct2_unreachable` proves exactly that).
--- This edge exists for the same reason as the Section5Correspondence
--- and Prop42Vacuity edges below, and one more: the DEFERRED note itself must be reachable.
--- Parking the carrier in `Kamp/Boneyard/` would put it under no glob and in no CI build, so both
--- the carrier and the record of what remains undone would rot invisibly — the exact failure mode
--- those two guards were created to prevent. The module contains **no sorries**; the deferred
--- targets are recorded as prose and in the follow-up task, never as `sorry`-bodied theorems.
+-- boundary), and the machine-checked strictness delta against `HasDefinableINF`. **The deferral
+-- this NOTE used to record is now CLOSED**: Lemma 5.3 (`Lemma53Faithful` edge above), Lemma 5.1
+-- at one witness and in list form, and Prop 4.2 are all landed — and they are landed one step
+-- BELOW this carrier, at `HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`), which states
+-- Rabinovich's eq (5.2) dichotomy at the SOURCE'S OWN `K⁺` (his Definition (3), PDF p.3) rather
+-- than at this tree's extra-conjunct `kplus`. `HasDedekindINF` remains landed, consumed and
+-- supplied — `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`) is the edge
+-- that keeps every existing supplier working — but it is no longer the faithful chain's carrier.
+-- The whole re-base is still unobservable to every current consumer, because the live chain is
+-- Prior structures where attainment holds outright (`prior_makes_disjunct2_unreachable` proves
+-- exactly that); `prop42_faithful_unobservable_on_prior` (`Prop42Faithful.lean`) states that limit
+-- as a theorem. This edge exists for the same reason as the Section5Correspondence and
+-- Prop42Vacuity edges below, and one more: the record of what remains undone must be reachable.
+-- What remains undone is now exactly one step — deriving the carrier from order completeness
+-- alone. Parking the carrier in `Kamp/Boneyard/` would put it under no glob and in no CI build,
+-- so both the carrier and that record would rot invisibly — the exact failure mode those two
+-- guards were created to prevent. The module contains **no sorries**; the one remaining target is
+-- recorded as prose and in the follow-up task, never as a `sorry`-bodied theorem.
 -- Cycle-free: DedekindINF imports `...Kamp.PriorINF` and `...Kamp.Lemma53`, both already in this
 -- file's transitive closure.
 -- NOTE: `import ...Kamp.Section5Correspondence` lands the import edge for the SECTION 5
@@ -225,14 +233,14 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEACombinators
 -- NOTE: `import ...Kamp.EANegationFixFaithful.BoundedFixFaithful` lands the import edge for
 -- Rabinovich's Cor 5.4(1)/(2) as printed on PDF p.9 — `¬F₀(z₀) ∨ Oₙ(F₁,…,Fₙ,z₀,z₁)` and its
--- mirror — at `VVecEA2` over the faithful `HasDedekindINF` carrier. The head disjunct is the
--- paper's endpoint condition carried in `VecEA2.endpointLeft`/`endpointRight`, NOT the
+-- mirror — at `VVecEA2` over the faithful `HasFaithfulDedekindINF` carrier. The head disjunct is
+-- the paper's endpoint condition carried in `VecEA2.endpointLeft`/`endpointRight`, NOT the
 -- attained-first/last-`¬β` interval encoding (`rightPinBracket`/`leftPinBracket`) that the
 -- endpoint-free `VBracketFormula` result type of `EANegationFix/BoundedFix.lean` forces. That is
--- what drops `HasAttainedINF` to `HasDedekindINF` in Cor 5.4(1) and drops `HasAttainedSUP`
+-- what drops `HasAttainedINF` to `HasFaithfulDedekindINF` in Cor 5.4(1) and drops `HasAttainedSUP`
 -- entirely from Cor 5.4(2). Nothing in `EANegationFix/` is edited: `negBoundedRightFix(_iff)` and
 -- `negBoundedLeftFix(_iff)` stay live and consumed, and the attained hypotheses still reach these
--- statements through `HasAttainedINF.toHasDedekindINF`. Cycle-free: the module imports only
+-- statements through `HasAttainedINF.toHasFaithfulDedekindINF`. Cycle-free: the module imports only
 -- `Kamp.EANegationFix.BoundedFix` and `Kamp.Lemma53Faithful`, both already in this file's
 -- transitive closure above; nothing in that closure imports this aggregator.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.BoundedFixFaithful
@@ -242,24 +250,26 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.BoundedFi
 -- peeled outermost point type, and the shape Figure 1 (PDF p.10) puts to work at its split point.
 -- Same head redesign as the unanchored module — the printed endpoint condition in
 -- `VecEA2.endpointLeft`/`endpointRight` instead of the `rightPinBracket`/`leftPinBracket` attained
--- encoding — which drops `HasAttainedINF` to `HasDedekindINF` in anchored Cor 5.4(1) and drops
--- `HasAttainedSUP` entirely from anchored Cor 5.4(2). Nothing in `EANegationFix/` is edited:
+-- encoding — which drops `HasAttainedINF` to `HasFaithfulDedekindINF` in anchored Cor 5.4(1) and
+-- drops `HasAttainedSUP` entirely from anchored Cor 5.4(2). Nothing in `EANegationFix/` is edited:
 -- `negBoundedRightFixAnchored(_iff)` and `negBoundedLeftFixAnchored(_iff)` stay live and consumed,
--- and the attained hypotheses still reach these statements through `HasAttainedINF.toHasDedekindINF`.
+-- and the attained hypotheses still reach these statements through
+-- `HasAttainedINF.toHasFaithfulDedekindINF`.
 -- Cycle-free: the module imports only `Kamp.EANegationFix.BoundedFixAnchored` and
 -- `Kamp.EANegationFixFaithful.BoundedFixFaithful`, both already in this file's transitive closure
 -- above; nothing in that closure imports this aggregator.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.BoundedFixAnchoredFaithful
 -- NOTE: `import ...Kamp.EANegationFixFaithful.NegFixOneFaithful` lands the import edge for LEMMA
 -- 5.1 AT ONE WITNESS over the faithful carrier (Rabinovich 2014, PDF pp.9-10): `negFixOneFaithful`
--- with its cover and `_iff`, plus `HasDedekindINF.first_occ_tp` and the eq (5.3) pieces
+-- with its cover and `_iff`, plus `HasFaithfulDedekindINF.first_occ_tp` (and the retained,
+-- INCOMPARABLE `HasDedekindINF.first_occ_tp` beside it) and the eq (5.3) pieces
 -- (`infPinPoint`, `allSeg`, `somePointBlock`). Unlike the two anchored/unanchored Cor 5.4 modules
 -- above, this one is NOT the landed attained formulation with the carrier swapped: `negFixOne`
 -- (`EANegationFix/NegFixOne.lean:90`) is a six-disjunct list `{A,B1,B2,B3,B4,B4′}` of the tree's
 -- own devising whose cover pins FOUR attained points, none of which occurs in the paper, whereas
 -- Rabinovich's Lemma 5.1 proof is a three-case split pinning exactly one point — the eq (5.3)
 -- infimum of `¬β₁`, which is eq (5.2) of p.8 read at `P := ¬β₁`. The module therefore transcribes
--- the paper's cases and drops BOTH attained hypotheses: `HasDedekindINF` alone, where
+-- the paper's cases and drops BOTH attained hypotheses: `HasFaithfulDedekindINF` alone, where
 -- `negFixOne_iff` (`EANegationFix/NegFixOne.lean:353`) needs `HasAttainedINF` AND `HasAttainedSUP`.
 -- The edge also protects `NegFixOneFaithfulGateProbe`, the `ℝ` counterexample proving the
 -- six-disjunct list is not a cover once attainment is dropped (the structure discharges the
@@ -283,12 +293,12 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixOne
 -- swapped: `negFixList`'s Case 2 / Case 3 disjuncts and the whole carrier-free `Aᵢ`/`Bᵢ` split
 -- (`splitsAt` / `bracketOf_splitsAt_iff`, PDF pp.10-11) are reused unchanged. What the faithful
 -- carrier ADDS is a third, top-level disjunct — Case 1, `K⁺(¬β₁)(z₀)` (PDF p.9) — because
--- `HasDedekindINF.first_occ` preserves Rabinovich's printed disjunction where the attained
+-- `HasFaithfulDedekindINF.first_occ` preserves Rabinovich's printed disjunction where the attained
 -- `firstNegPin_or_all` (`EANegationFix/NegFix.lean:137`) collapses it to a two-way dichotomy. The
 -- edge also protects `negFixListFaithful_case1_is_indispensable`, which machine-checks that under
 -- `K⁺(¬β₁)(z₀)` the other two disjuncts are both UNSATISFIABLE, so the added gate is load-bearing
 -- rather than dead syntax admitted for type-checking — an exclusion artifact of the same class as
--- `prior_makes_disjunct2_unreachable`. Carrier result: `HasDedekindINF` ALONE, where
+-- `prior_makes_disjunct2_unreachable`. Carrier result: `HasFaithfulDedekindINF` ALONE, where
 -- `negFixList_iff` (`EANegationFix/NegFix.lean:520`) needs `HasAttainedINF` AND `HasAttainedSUP`.
 -- Nothing in `EANegationFix/` is edited; `negFixList` and `negFixList_iff` stay live and consumed.
 -- The module contains no sorries and every declaration is axiom-clean. Cycle-free: it imports only
@@ -309,7 +319,8 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixLis
 -- dropped or `⊤`-erased at the lift) and `VecEA2.negFixFaithful_carries_limit_gate` (the added
 -- Case 1 `K⁺(¬β₁)(z₀)` disjunct, PDF p.9, still forces the top of the chain). A lift that silently
 -- collapsed the faithful recursion's three disjuncts to two would prove the same biconditionals,
--- so those three are the non-vacuity content here. Carrier result: `HasDedekindINF` ALONE, where
+-- so those three are the non-vacuity content here. Carrier result: `HasFaithfulDedekindINF`
+-- ALONE, where
 -- `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`) needs `HasAttainedINF` AND
 -- `HasAttainedSUP`; the only shim used runs attained → faithful
 -- (`VVecEA2.negFixFaithful_iff_of_attained`), never the reverse. Nothing in `EANegationFix/` is
@@ -319,13 +330,20 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixLis
 -- directly above.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.VecEANegFixFaithful
 -- NOTE: `import ...Kamp.Prop42Faithful` lands the import edge for the TERMINUS OF THE FAITHFUL
--- RE-BASE (Rabinovich 2014, Proposition 4.2, PDF p.6): `prop42_contentful_of_dedekind`, which
+-- RE-BASE (Rabinovich 2014, Proposition 4.2, PDF p.6): `prop42_contentful_of_faithful`, which
 -- discharges the SAME contentful target `Prop42Contentful` (`Prop42Contentful.lean:151`) that
--- `prop42_contentful_of_attained` (`Section5Correspondence.lean:128`) discharges, but from
--- `HasDedekindINF` ALONE where that one needs `HasAttainedINF` AND `HasAttainedSUP`. p.6 states
--- Prop 4.2 "over Dedekind complete chains" in the statement itself, which is the fidelity point
--- the whole re-base turns on. `prop42_contentful_of_attained_inf_only` records the consequence:
--- the landed attained theorem is now a corollary whose `HasAttainedSUP` argument is unused.
+-- `prop42_contentful_of_attained` (`Section5Correspondence.lean:185`) discharges, but from
+-- `HasFaithfulDedekindINF` ALONE where that one needs `HasAttainedINF` AND `HasAttainedSUP`. p.6
+-- states Prop 4.2 "over Dedekind complete chains" in the statement itself, which is the fidelity
+-- point the whole re-base turns on. Two corollaries record the consequence and preserve every
+-- prior consumer: `prop42_contentful_of_dedekind` (the previous `HasDedekindINF` pin, retained
+-- unweakened because its NAME asserts its carrier) and `prop42_contentful_of_attained_inf_only`
+-- (the landed attained theorem, now a corollary whose `HasAttainedSUP` argument is unused).
+-- The edge additionally protects `prop42_faithful_covers_what_dedekind_excludes`, the guard that
+-- makes the last step non-vacuous: `denseWindowFlow` is a dense Prior structure that SATISFIES
+-- `HasFaithfulDedekindINF` and REFUTES `HasDedekindINF`, so Prop 4.2 is available there from the
+-- new carrier and unavailable from the old one. The weakening is strict, exhibited rather than
+-- asserted (honesty charter Rule 6).
 -- The edge also protects the three declarations that make the result AUDITABLE, which is why it
 -- cannot be parked in `Kamp/Boneyard/` (no glob, no CI, silent rot):
 -- `prop42Faithful_perPoint_is_VACUOUS` (the failed-vacuity control re-run against the FINAL

@@ -58,8 +58,8 @@ Proposition 4.2 one strengthening step away from the paper, where the attained v
 `kplus` (`PriorINF.lean:86`) carries and that neither Rabinovich's `K⁺` (Definition (3), PDF p.3)
 nor Reynolds' has. It is a **strict** weakening, and the gain is exhibited at a concrete structure
 by `prop42_faithful_covers_what_dedekind_excludes` below: `denseWindowFlow` is a dense Prior
-structure satisfying `HasFaithfulDedekindINF` and refuting `HasDedekindINF`, so Proposition 4.2 is
-available there from the new carrier and unavailable from the old one.
+model satisfying the former and refuting the latter, so Proposition 4.2 is available there from
+the new carrier and unavailable from the old one.
 
 What the remaining gap costs is recorded concretely rather than as prose:
 `hasDefinableINF_excludes_kplus` (`Lemma53.lean:290`) machine-refutes the *weaker*
