@@ -1818,7 +1818,7 @@ That is the intended shape, not a compromise.
 - **Timing:** 3 hours.
 - **Depends on:** 6.1
 
-### Phase 6.3: The guard gap lemma — the definable-right-gap discharge of the Until/Since guard [NOT STARTED]
+### Phase 6.3: The guard gap lemma — the definable-right-gap discharge of the Until/Since guard [COMPLETED]
 
 **This is the Prior-S mirror of Phase 6.2 and the second place in the plan where the Dedekind
 axiom layer is used.** `Axiom.prior_S_gap` has `minFrameClass = .Dedekind` (`Axioms.lean:524`
@@ -1864,7 +1864,7 @@ file. An analysis-only dispatch is a failed dispatch.
   hypothesis binder, not a constructed formula. Only the Prior-S appeal is copied, never the
   machinery around it.
 - **Tasks:**
-  - [ ] **Statement 1 — the general gap lemma.** In the new module, prove exactly:
+  - [x] **Statement 1 — the general gap lemma.** In the new module, prove exactly:
         ```lean
         theorem limitGuardBelow_of_priorS {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
             (m : Rat → Set Formula) (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q))
@@ -1915,7 +1915,7 @@ file. An analysis-only dispatch is a failed dispatch.
         as Phase 6.2 and Phase 5 required. **There is no outer `by_contra` and no Step-D
         double-negation dance** — an implementer writing one has drifted into copying 6.2 rather
         than proving 6.3.
-  - [ ] **Statement 2 — the bundle predicate.** Append to `Bundle/RealExtensionBundle.lean`,
+  - [x] **Statement 2 — the bundle predicate.** Append to `Bundle/RealExtensionBundle.lean`,
         beside `BFMCS.LimitFutureWitness`:
         ```lean
         def BFMCS.LimitGuardBelow {fc : FrameClass} (B : BFMCS (fc := fc) Rat) : Prop :=
@@ -1931,7 +1931,7 @@ file. An analysis-only dispatch is a failed dispatch.
         predicate takes no `root` argument either. Docstring: record the `γ⁻` reading, the
         `fc`-conditionality, and this closure-free decision with its reason, in one paragraph. No
         task-number citations.
-  - [ ] **Statement 3 — the chronicle discharge.** In the new module, prove exactly:
+  - [x] **Statement 3 — the chronicle discharge.** In the new module, prove exactly:
         ```lean
         theorem cantor_bfmcs_dense_limit_guard_below (fc : FrameClass)
             (hfc : FrameClass.Dedekind ≤ fc) (A : Set Formula)
@@ -1955,16 +1955,16 @@ file. An analysis-only dispatch is a failed dispatch.
         no chronicle-level proof is written, and no closure is enlarged.** If the self-root
         instantiation does not elaborate, that is a signature discrepancy to report, not a licence
         to edit `_fuc`/`_buc`.
-  - [ ] Module docstring: cite Reynolds 1992 **printed p.175** (`γ⁻` / right gaps), **p.176**
+  - [x] Module docstring: cite Reynolds 1992 **printed p.175** (`γ⁻` / right gaps), **p.176**
         (Theorem 3's Prior-S/Prior-U contradiction pattern), **p.178** (Lemma 3), Burgess 1982 I
         **printed pp.369, 372** (no Dedekind variant; the `g(x,y)` interval datum whose loss is the
         structural root of the obligation), and Burgess 1984 **printed pp.109-110** (the sibling
         obligation's origin). Record in one sentence that `Axiom.prior_S_gap` was present and sound
         in the tree but consumed nowhere on the completeness route before this module, and record
         the expressive-completeness non-inheritance caveat above.
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGuardWitness` and
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGuardWitness` and
         `lake build FormalSystem.Metalogic.Bundle.RealExtensionBundle`, then full `lake build`.
-  - [ ] `#print axioms limitGuardBelow_of_priorS` and
+  - [x] `#print axioms limitGuardBelow_of_priorS` and
         `#print axioms cantor_bfmcs_dense_limit_guard_below`; record the results.
 - **Estimated output:** ~180-220 lines in the new module (Statement 1 ~130-170 — *smaller* than
   6.2's 209 because there is no outer `by_contra` and no Step-D dance; Statement 3 ~25; docstring
@@ -1977,6 +1977,7 @@ file. An analysis-only dispatch is a failed dispatch.
   goal state for that step.
 - **Timing:** 3 hours.
 - **Depends on:** 6.2
+- **Outcome:** All three statements landed sorry-free on the first build. `limitGuardBelow_of_priorS` and `cantor_bfmcs_dense_limit_guard_below` in the new module `Chronicle/ChronicleLimitGuardWitness.lean` (207 lines); `BFMCS.LimitGuardBelow` appended to `Bundle/RealExtensionBundle.lean` (closure-free, no `root` argument, as specified); one import line added to `Metalogic/BXCanonical.lean`. Full `lake build` green; live sorries outside `Boneyard/` unchanged at exactly `WeakCanonical/Transfer.lean:1242`; `#print axioms` on both new theorems is `[propext, Classical.choice, Quot.sound]`. No deviations from the specified statements or proof decomposition.
 
 ### Phase 7.1: Until/Since transport at ℝ — the three unlanded backward cases (7.1′) [NOT STARTED]
 
@@ -2243,7 +2244,7 @@ did not show it unrealizable. Budget this as a probe, not as proof engineering.
   the interval-failure family above stands unrefuted. Only the dependency line moved, from the old
   Phase 7.1 to 7.1′. Do not read Phase 6.3's success as licence to reopen it as determined work.
 
-### Phase 8: The Dedekind countermodel on ℝ and the unconditional terminus [NOT STARTED]
+### Phase 8: The Dedekind countermodel on ℝ and the unconditional terminus [IN PROGRESS]
 
 - **Goal:** Discharge the engine hypothesis of Phase 2 and land `consequence_completeness_dedekind`
   unconditionally, with `completeness_dedekind` as its `Γ = []` corollary.

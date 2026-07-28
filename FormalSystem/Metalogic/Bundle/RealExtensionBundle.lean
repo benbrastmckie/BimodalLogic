@@ -296,6 +296,37 @@ def BFMCS.LimitFutureWitness {fc : FrameClass} (B : BFMCS (fc := fc) Rat) (root 
     Formula.someFuture φ ∈ limitMCSBelow fam.mcs r → ∃ s : Rat, r < (s : ℝ) ∧ φ ∈ fam.mcs s
 
 /--
+**The guard-reach obligation at unselected reals.**
+
+Whenever a formula `ψ` holds at every rational of an interval `(r, c)` abutting an **unselected**
+real `r` from above, `ψ` already lies in `limitSetBelow fam.mcs r` — that is, it holds throughout
+some interval abutting `r` from below.
+
+*The reading.* This says exactly that the `ψ`-region has no definable **right gap** at `r`, in
+Reynolds' sense: `γ⁻(ψ)` would hold at a point whose `ψ`-stretch runs down to a gap below which
+`¬ψ` is arbitrarily recently true (Reynolds 1992, printed p.175). Prior's Since axiom in gap form,
+`Axiom.prior_S_gap` — `S(⊤,ψ) ∧ P(¬ψ) → S(¬ψ ∨ K⁻(¬ψ), ψ)` — excludes precisely that
+configuration. Applying it to the **guard** `ψ` rather than to a witness is what makes the
+antecedent `S(⊤, ψ)` free: the hypothesis of this predicate supplies `ψ` uninterruptedly on a whole
+interval abutting `r`. The discharge is therefore **`fc`-conditional**, requiring
+`FrameClass.Dedekind ≤ fc`, and is carried out in
+`BXCanonical/Chronicle/ChronicleLimitGuardWitness.lean` as `limitGuardBelow_of_priorS`.
+
+*Why there is no closure hypothesis, and no `root` argument.* Its sibling `LimitFutureWitness`
+carries `φ ∈ deferralClosure root`, and its chronicle discharge discards that argument. Mirroring
+it here would be worse than redundant — it would be **actively wrong**. The consumers of this
+predicate apply it to the *guard* `ψ` of an `untl φ ψ ∈ subformulaClosure root`, and such a guard
+need not lie in `deferralClosure root`; the mirrored hypothesis would be an unprovable side
+condition at every call site. The asymmetry with `LimitFutureWitness` is deliberate and is not to
+be "fixed". With no closure hypothesis there is nothing for a `root` parameter to constrain, so
+the predicate takes none.
+-/
+def BFMCS.LimitGuardBelow {fc : FrameClass} (B : BFMCS (fc := fc) Rat) : Prop :=
+  ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ ψ : Formula, ∀ c : Rat,
+    r < (c : ℝ) → (∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → ψ ∈ fam.mcs q) →
+    ψ ∈ limitSetBelow fam.mcs r
+
+/--
 **Transport of restricted temporal coherence to the real bundle.**
 
 Both halves split on selection of the shifted coordinate. At a selected point the rational
