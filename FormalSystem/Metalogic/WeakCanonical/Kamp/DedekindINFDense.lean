@@ -37,13 +37,31 @@ there for structural reasons:
   holds throughout `(z₀,z₁)`.
 
 The situation is Rabinovich's `r₀ = z₀` subcase with `P` true at `z₀`, which this tree's `kplus`
-cannot express. The repair is to state the hypothesis under which the source's own claim is
-correct. Rabinovich writes (PDF p.8) *"Note that `r₀ = z₀` iff `K⁺(P₁)(z₀)`"*; read literally
-that biconditional is false — its left-to-right direction needs `¬P₁(z₀)`, since `K⁺` carries
-`¬P₁(z₀)` in its first conjunct while `r₀ = inf{z ∈ (z₀,z₁) | P₁(z)} = z₀` does not. In
-Rabinovich's Lemma 5.3 the infimum is always taken at a point of the negation chain at which the
-relevant predicate fails, so the hypothesis is discharged by his construction and never appears
-in his prose. `HasGuardedDedekindINF` below carries it explicitly.
+cannot express. The repair is to state the hypothesis under which the claim, **read through this
+tree's `kplus`**, is correct.
+
+**Correction (this claim is withdrawn).** An earlier revision of this docstring said that
+Rabinovich's *"Note that `r₀ = z₀` iff `K⁺(P₁)(z₀)`"* (PDF p.8) is *false read literally*. **It is
+not.** Under his own Definition (3) — *"`K+(F)` holds at a moment `t` iff
+`t = inf({t′ | t′ > t and F holds at t′})`"*, PDF p.3 — the biconditional is a **definitional
+restatement**, true verbatim; and Reynolds' `K⁺A` for `¬U(⊤,¬A)` (printed p.168) is the same
+operator. **Neither source's `K⁺` carries a `¬A` conjunct at the point of evaluation.** What is
+true is that *this tree's* `kplus` (`PriorINF.lean:86`) does carry one, and so is strictly
+stronger than the operator either paper defines; read through `kplus`, the left-to-right direction
+of the biconditional acquires a `¬P₁(z₀)` obligation the source's own `K⁺` never had. The tree's
+source-exact spellings are `Formula.kPlus` (`Syntax/Formula.lean:180`, with the name-collision
+warning at `:163-179`) and, at the `Prop` level, `kplusOpen` (`Kamp/KPlusFaithful.lean`).
+
+In Rabinovich's Lemma 5.3 the infimum is in any case always taken at a point of the negation chain
+at which the relevant predicate fails, so nothing in his construction turns on the difference.
+`HasGuardedDedekindINF` below carries the `kplus`-induced obligation explicitly.
+
+**Nothing in this module is deleted, weakened or restated by that correction**, and every theorem
+below is exactly as it was: they are true theorems about `kplus`. What changed is the attribution.
+`Kamp/KPlusFaithful.lean` lands the source-exact carrier `HasFaithfulDedekindINF` beside these,
+proves it from `SemanticPriorU` with **no guard and no third disjunct**, and keeps this module's
+carriers supplied through `HasFaithfulDedekindINF.toHasDenseDedekindINF` /
+`.toHasGuardedDedekindINF`.
 
 **The guard is a hypothesis, not a weakening of the conclusion.** The conclusion is
 `HasDedekindINF`'s disjunction verbatim, character for character. Nothing is softened, no
@@ -76,12 +94,18 @@ strictly weaker than the unguarded carrier.
 ## What this carrier EXCLUDES (Rule 6)
 
 `HasGuardedDedekindINF` says nothing whatever about intervals whose left endpoint satisfies `P`.
-On a dense flow that is not a gap in the transcription but the true state of affairs: there is no
-first occurrence to name, `K⁺` is definitionally inapplicable, and
-`hasDedekindINF_fails_of_interval_witness` proves that *no* carrier of `HasDedekindINF`'s exact
-shape can cover that case. Any downstream consumer must therefore establish `¬P(z₀)` at its call
-site — for the negation-chain construction of Rabinovich Lemma 5.3 this is the construction's own
-invariant, not a new obligation.
+On a dense flow there is no first occurrence to name, **this tree's** `kplus` is definitionally
+inapplicable there (its first conjunct fails), and `hasDedekindINF_fails_of_interval_witness`
+proves that *no* carrier of `HasDedekindINF`'s exact shape can cover that case. A consumer of the
+guarded form must therefore establish `¬P(z₀)` at its call site — for the negation-chain
+construction of Rabinovich Lemma 5.3 this is the construction's own invariant, not a new
+obligation.
+
+**This is a limitation of the `kplus`-shaped carriers only, not of the mathematics.** At the
+source's conjunct-free `K⁺` the left disjunct holds outright on exactly these intervals
+(`kplusOpen_of_interval_witness`, `Kamp/KPlusFaithful.lean`), so `HasFaithfulDedekindINF` covers
+the case with no guard and no third disjunct. Downstream consumers take that carrier; this
+module's carriers remain landed, supplied and unedited.
 
 ## Non-vacuity
 
@@ -104,9 +128,17 @@ alternative is dead weight.
   (Prior-U's first antecedent `U(⊤,¬P)`), and the occurrence of `P` inside `(z₀,z₁)` is
   Prior-U's second antecedent `F¬¬P`; Prior-U's conclusion `U(P ∨ K⁺(P), ¬P)(z₀)` is then eq
   (5.2) verbatim.*
-- The endpoint guard itself, and the refutation of the unguarded statement, are **original glue**:
-  they are a formalization-level correction to the biconditional quoted above, prompted by a
-  machine-checked counterexample, and appear in neither source.
+- The endpoint guard itself, the third disjunct `P(z₀)`, the trichotomy `HasDenseDedekindINF` and
+  the `hasDedekindINF_fails_*` exclusion family are **original glue** and appear in neither
+  source. **What they are glue for** (honesty charter Rule 4, completed): they repair a
+  *formalization-level deviation in this tree*, namely that `kplus` (`PriorINF.lean:86`) carries
+  a `¬P(t)` conjunct that Rabinovich's `K⁺` (PDF p.3, Definition (3)) and Reynolds' (printed
+  p.168, `¬U(⊤,¬A)`) do not. They are **not** dense-case mathematical content, and they are not a
+  correction to either source. The point is machine-checked at
+  `hasFaithfulDedekindINF_survives_interval_witness` (`Kamp/KPlusFaithful.lean`): under exactly
+  the hypotheses of `hasDedekindINF_fails_of_interval_witness` below, the source-exact carrier's
+  left disjunct **holds**, so there is no failure to refute and no guard to add. Stated at the
+  source's `K⁺`, the carrier is a two-disjunct dichotomy with no endpoint case at all.
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
@@ -120,9 +152,12 @@ open FormalSystem.Metalogic.WeakCanonical
 
     Identical to `HasDedekindINF` (`DedekindINF.lean:136`) except for the added hypothesis
     `¬P(z₀)`. That hypothesis is exactly what makes the paper's *"`r₀ = z₀` iff `K⁺(P₁)(z₀)`"*
-    true: `kplus` (`PriorINF.lean:86`) carries `¬P(z₀)` in its first conjunct, so without the
-    guard the `r₀ = z₀` subcase with `P` true at `z₀` is expressible by neither disjunct — see
-    `hasDedekindINF_fails_of_interval_witness`.
+    true **when `K⁺` is read as this tree's `kplus`**: `kplus` (`PriorINF.lean:86`) carries
+    `¬P(z₀)` in its first conjunct — a conjunct neither Rabinovich's nor Reynolds' `K⁺` has, see
+    this module's docstring correction — so without the guard the `r₀ = z₀` subcase with `P` true
+    at `z₀` is expressible by neither disjunct; see `hasDedekindINF_fails_of_interval_witness`.
+    Read at the source's own `K⁺` the biconditional needs no guard, and the source-exact carrier
+    `HasFaithfulDedekindINF` (`Kamp/KPlusFaithful.lean`) carries none.
 
     The conclusion is `HasDedekindINF.first_occ`'s disjunction verbatim. -/
 structure HasGuardedDedekindINF {sig : MonadicSignature}

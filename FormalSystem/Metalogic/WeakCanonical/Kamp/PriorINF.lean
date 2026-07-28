@@ -49,40 +49,66 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 
-/-! ## K+ operator (holds arbitrarily soon after)
+/-! ## `kplus` — this tree's operator, and how it differs from the sources' `K⁺`
 
-Rabinovich eq (5.2): K+(P)(t) = ¬P(t) ∧ ¬(⊤ U ¬P)(t)
-= "P does not hold at t, but P holds at points arbitrarily close above t"
-= "on every open interval (t, s), P holds somewhere (but not at t itself)"
+**This section's operator is NOT Reynolds' or Rabinovich's `K⁺`.** It is strictly stronger, by
+one added conjunct. The doubt recorded in earlier drafts of this comment block — *"the Rabinovich
+paper uses the notation differently"* — was correct, and is resolved here.
 
-In temporal logic terms: ¬P ∧ ¬F(¬P ... wait, that's G(P)).
-Actually: K+(P)(t) = ¬P(t) ∧ G(P)(t)... no.
-Let me re-derive: ¬(⊤ U ¬P) means "it's not the case that there exists s > t
-such that ¬P holds throughout (t, s)" = "for all s > t, P holds somewhere in (t, s)"
-= "P is dense above t". Combined with ¬P(t), this is K+(P)(t).
+**What the sources define**, read verbatim from the corpus:
 
-TL encoding: K+(P) = ¬P ∧ ¬(¬P U ⊤)... wait, let me be careful.
+* Rabinovich 2014, `K⁺` definition, PDF p.3: *"`K+(F)` (respectively, `K−(F)`) is an abbreviation
+  for `¬((¬F)UntilTrue)` (respectively, `¬((¬F)SinceTrue)`)"*, and semantically in the same
+  passage: *"(3) `K+(F)` holds at a moment `t` iff `t = inf({t′ | t′ > t and F holds at t′})`"*
+  (and *"(2) `K−(F)` holds at a moment `t` iff `t = sup({t′ | t′ < t and F holds at t′})`"*).
+* Reynolds 1992, abbreviation table §1, printed p.168: `K⁺A` — *"for `¬U(⊤, ¬A)`"* — reading
+  *"`A` will be true arbitrarily soon"*; `K⁻A` for `¬S(⊤,¬A)`. Corroborated by
+  Gabbay-Hodkinson-Reynolds 1994 §10.3.1 (`K⁺q = ¬U(⊤,¬q)`).
 
-(⊤ U ¬P)(t) = ∃ s > t, ⊤(s) ∧ ∀ r ∈ (t,s), ¬P(r)
-            = ∃ s > t, ∀ r ∈ (t,s), ¬P(r)
+Rabinovich's `Until` takes its eventuality as the *second* argument, so his `(¬F) Until True` is
+Reynolds' `U(⊤,¬F)`: the two abbreviations are the same operator under mirrored argument
+conventions. **Neither carries a `¬F` conjunct at the point of evaluation.**
 
-Hmm, that says "there exists a future point s such that ¬P holds throughout (t, s)".
-This is NOT the same as F(¬P). It's a "gap in P" condition.
+**Where the source-exact spellings live in this tree:**
 
-¬(⊤ U ¬P)(t) = ∀ s > t, ∃ r ∈ (t,s), P(r)
-             = "P is dense above t" (no gap in P starting from t)
+* `Formula.kPlus` / `Formula.kMinus` (`FormalSystem/Syntax/Formula.lean:180`, `:193`) — the
+  object-level source-exact spelling, `(untl ⊤ φ.neg).neg`, carrying the **name-collision
+  warning at `Formula.lean:163-179`** which says of `kplusFormula` below that *"substituting one
+  for the other silently transcribes a different axiom"*. `Axiom.prior_U_gap`
+  (`ProofSystem/Axioms.lean:377`), `Axiom.prior_S_gap` (`:387`) and `Axiom.sep` (`:390`) are
+  stated with these.
+* `kplusOpen` / `kminusOpen` (`Kamp/KPlusFaithful.lean`) — their `Prop`-level reading, together
+  with the bridge lemmas `kPlus_formula_correct` / `kMinus_formula_correct`. `kplusOpen` is
+  exactly `kplus` below **without** its first conjunct, and
+  `kplus_iff_not_and_kplusOpen` states the relation.
 
-So K+(P) = ¬P ∧ ¬(⊤ U ¬P) = "P doesn't hold here, but P holds somewhere
-in every interval (t, s) above t".
+**What `kplus` below is.** The unwinding recorded in earlier drafts of this comment is correct as
+arithmetic and is retained: `(⊤ U ¬P)(t) = ∃ s > t, ∀ r ∈ (t,s), ¬P(r)` — a *gap* in `P` above
+`t`, not `F(¬P)` — so `¬(⊤ U ¬P)(t) = ∀ s > t, ∃ r ∈ (t,s), P(r)`, "`P` is dense above `t`".
+That last formula **is** the sources' `K⁺`. `kplus` conjoins `¬P(t)` to it. The extra conjunct is
+this tree's addition; it is not attributable to either paper, and it is what
+`hasDedekindINF_fails_of_interval_witness` (`Kamp/DedekindINFDense.lean:455`) turns on.
 
-Actually wait, the Rabinovich paper uses the notation differently. Let me
-check: his equation (5.2) defines K+(P) as what is TL-definable. For the
-formal definition below, we use the semantic characterization directly.
+**`kplus` is not edited.** It is internally coherent with `kplusFormula` — `kplus_formula_correct`
+(`Kamp/Lemma53.lean:162`) proves them equivalent — and the discrete pipeline depends on both. The
+mismatch is external: the carrier apparatus built on `kplus` transcribes a different `K⁺` from the
+one the axioms are stated with. `Kamp/KPlusFaithful.lean` supplies the faithful carrier beside it
+and the shims relating the two; neither this file's statements nor its proofs change.
 -/
 
-/-- K+(P)(t): P holds arbitrarily soon after t, but not at t itself.
-    Semantically: ¬P(t) ∧ ∀ s > t, ∃ r ∈ (t, s), P(r).
-    This is TL-definable: K+(P) = P.neg ∧ ¬(⊤ U P.neg). -/
+/-- K+(P)(t) **as this tree defines it — not as the sources define it**: `P` holds arbitrarily
+    soon after `t`, **and** `P` does not hold at `t`.
+
+    Semantically: `¬P(t) ∧ ∀ s > t, ∃ r ∈ (t, s), P(r)`.
+    TL-definable as `kplusFormula P = P.neg ∧ ¬(⊤ U P.neg)`.
+
+    **The first conjunct is this tree's addition.** Rabinovich's `K⁺` (PDF p.3, Definition (3):
+    *"`K+(F)` holds at a moment `t` iff `t = inf({t′ | t′ > t and F holds at t′})`"*) and
+    Reynolds' (printed p.168: `K⁺A` for `¬U(⊤,¬A)`) are the second conjunct alone. The
+    source-exact operator is `kplusOpen` (`Kamp/KPlusFaithful.lean`), the `Prop`-level reading of
+    `Formula.kPlus` (`Syntax/Formula.lean:180`); see the name-collision warning at
+    `Formula.lean:163-179` and this section's comment block above. `kplus` is strictly stronger,
+    and `kplus_iff_not_and_kplusOpen` states the difference exactly. -/
 def kplus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (t : M.carrier) : Prop :=
@@ -93,8 +119,15 @@ def kplus {sig : MonadicSignature}
 noncomputable def kplusFormula (P : Formula) : Formula :=
   Formula.and P.neg (Formula.imp (Formula.untl Formula.top P.neg) Formula.bot)
 
-/-- K-(P)(t): dual of K+, for the Since direction.
-    P holds arbitrarily close before t, but not at t itself. -/
+/-- K-(P)(t) **as this tree defines it — not as the sources define it**: the dual of `kplus`,
+    for the Since direction. `P` holds arbitrarily close before `t`, **and** not at `t` itself.
+
+    Same caveat as `kplus`: the first conjunct is this tree's addition. Rabinovich's `K⁻`
+    (PDF p.3, Definition (2): *"`K−(F)` holds at a moment `t` iff
+    `t = sup({t′ | t′ < t and F holds at t′})`"*) and Reynolds' (printed p.168: `K⁻A` for
+    `¬S(⊤,¬A)`) are the second conjunct alone. The source-exact operator is `kminusOpen`
+    (`Kamp/KPlusFaithful.lean`), the `Prop`-level reading of `Formula.kMinus`
+    (`Syntax/Formula.lean:193`). -/
 def kminus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (t : M.carrier) : Prop :=
