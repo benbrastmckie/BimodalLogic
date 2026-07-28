@@ -332,7 +332,7 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     consumable Until/Since rules), and the Dedekind arm is **prepended** to `allRulesForFC`
     rather than appended, since appending leaves the rules dead. `Discrete <= Dedekind` is
     preserved: the arm is base + dense + dedekind.)*
-  - [ ] **2.8 (new, cheap — land FIRST) — the `timeOrderTotal` gate**
+  - [x] **2.8 (new, cheap — land FIRST) — the `timeOrderTotal` gate**
     (`Saturation.lean` + `Tests/BimodalTest/TableauConformance.lean`). Add the decidable predicate
 
     ```lean
@@ -349,6 +349,15 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     `¬(F p ∧ P q)` and `F p → F F p`. Estimated output: ~60-100 lines.
     Done when: the predicate elaborates; W1–W7 pinned with their current (mostly `false`)
     verdicts; `lake build` and `lake build BimodalTest` green.
+    *(done: `timeOrderTotal` and the `incomparableTimePairs` diagnostic added to
+    `Saturation.lean` with the refuted-linear-extension non-goal recorded in-code;
+    `TimeOrderProbe` pins W1–W7 in the corpus. Measured, reproducing report 04 §Q2.1 exactly:
+    W1–W4 `total=false knownTimes=[2,1] constraints=[(0,2),(0,1)] incomparable=[(1,2)]`;
+    controls W5 `¬(F p ∧ P q)` and W6 `F p → F F p` already `total=true`; W7 is W1 at fuel
+    2000 and is identical, so the incomparability is structural, not a fuel artifact.
+    Deviation: the probe pins `knownTimes`/`constraints`/`incomparable` alongside the verdict
+    rather than the verdict alone, so 2.5's expected `knownTimes` change is visible as a
+    distinct signal from 2.7's expected `total` flip.)*
   - [ ] **2.5 (new) — branch-guarded non-destructive expansion** (`Tableau.lean`, with
     `applied`-threading removal in `Saturation.lean` / `CancellableExpansion.lean`).
     Add `ruleMintsFreshLabel` and `witnessPresent` (8 arms: `boxNeg`, `diamondPos`,

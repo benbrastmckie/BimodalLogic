@@ -657,4 +657,82 @@ appliedRedundant={AppliedRedundant b ord fc applied}"
 
 end CertificateProbe
 
+/-! ## Time-order totality probe (W rows)
+
+The bridge from an open branch to a countermodel needs the branch's times linearly ordered,
+not merely partially ordered. `Saturation.timeOrderTotal` is that requirement made decidable;
+these rows measure it on the pipeline's own open certificates, *before* the rule that is meant
+to deliver it exists.
+
+Four of the seven rows are `false` today, and they are the gate: the order-level branching
+rule's done-criterion is that W1-W4 flip to `total=true` while W5-W7 stay `true`. Three
+further facts are pinned along with the verdict, because each one is load-bearing:
+
+- `knownTimes` omits any time whose formulas were all consumed, so in W1-W4 the *induced*
+  order on `knownTimes` is empty even though `constraints` relates both times to the root.
+  Non-destructive expansion should make `constraints` and `knownTimes` agree; if it lands and
+  these rows still read `false`, the incomparability is genuine rather than an indexing
+  artifact, and that distinction is exactly what the printed fields preserve.
+- The verdicts are **fuel-insensitive**: W7 repeats W1 at fuel 2000 and is identical.
+  `orderTrichotomy` is present in `allRulesForFC .Base` and still does not fire here — its
+  branches are `temp_linearity` *formulas*, which mint fresh witness times rather than
+  ordering the two existing ones.
+- W1's two incomparable siblings carry `T(G p)` and `F(p)`. That is why an arbitrary linear
+  extension of the partial order is unsound and must not be attempted: one extension is a
+  model and the other is not, and the branch does not record which.
+-/
+
+namespace TimeOrderProbe
+
+open FormalSystem.Metalogic.Decidability
+
+/-- An open certificate's time order, reduced to the totality verdict plus the three fields
+that explain it. `CLOSED`/`STALLED` mean the row produced no open certificate to measure. -/
+def orderProbe (φ : Formula) (fc : FrameClass) (fuel : Nat := conformanceFuel) : String :=
+  match buildTableau φ fuel fc with
+  | some (.hasOpen b ord _ _) =>
+      s!"total={timeOrderTotal b ord} knownTimes={b.knownTimes} \
+constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
+  | some (.allClosed _) => "CLOSED"
+  | none => "STALLED"
+
+-- W1. The named witness: siblings `1` and `2` carry `T(G p)` and `F(p)`.
+/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+#guard_msgs in
+#eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base)
+
+-- W2. Two bare future eventualities: the same shape with no universal involved.
+/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+#guard_msgs in
+#eval IO.print (orderProbe (nt (an (F p) (F q))) FrameClass.Base)
+
+-- W3. Two universals: incomparability is not caused by the negative conjunct.
+/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+#guard_msgs in
+#eval IO.print (orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base)
+
+-- W4. W1 with the conjuncts swapped: the order the eventualities appear in does not matter.
+/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+#guard_msgs in
+#eval IO.print (orderProbe (nt (an (F (nt p)) (F (G p)))) FrameClass.Base)
+
+-- W5 (control). One future and one past witness: the root sits between them, so both known
+-- times are comparable and totality already holds. No rule should move this row.
+/-- info: total=true knownTimes=[2, 1] constraints=[(2, 0), (0, 1)] incomparable=[] -/
+#guard_msgs in
+#eval IO.print (orderProbe (nt (an (F p) (P q))) FrameClass.Base)
+
+-- W6 (control). A single witness time: totality is vacuous. No rule should move this row.
+/-- info: total=true knownTimes=[1, 0] constraints=[(0, 1)] incomparable=[] -/
+#guard_msgs in
+#eval IO.print (orderProbe (im (F p) (F (F p))) FrameClass.Base)
+
+-- W7. W1 at ten times the fuel. Identical: incomparability is structural, not a budget
+-- artifact, so no fuel increase can be mistaken for a fix.
+/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+#guard_msgs in
+#eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base 2000)
+
+end TimeOrderProbe
+
 end BimodalTest.TableauConformance

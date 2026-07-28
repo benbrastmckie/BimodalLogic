@@ -140,6 +140,65 @@ def AppliedRedundant (b : Branch) (ord : TimeOrdering) (fc : FrameClass)
     (applied : AppliedSet) : Bool :=
   applied.toList.all (appliedEntryRedundant b ord fc)
 
+/-!
+## Time-Order Totality Gate
+
+The bridge from a saturated open branch to a countermodel needs the branch's times to carry
+a *linear* order, not merely the partial order the constraint list records. `timeOrderTotal`
+is that requirement made decidable, so it can be measured before it is delivered and pinned
+as a regression signal afterwards.
+
+**This is a gate, not a theorem.** It is currently `false` on a family of open certificates —
+`¬(F(G p) ∧ F(¬p))`, `¬(F p ∧ F q)`, `¬(F(G p) ∧ F(G q))`, `¬(F(¬p) ∧ F(G p))` all saturate
+with two incomparable sibling times, unchanged at fuel 200 and 2000. Those rows are pinned in
+`Tests/BimodalTest/TableauConformance.lean` (`TimeOrderProbe`) with their current verdicts;
+the rule that makes them `true` is the order-level branching rule, and flipping them is its
+done-criterion.
+
+**Why `orderTrichotomy` does not already deliver this.** `orderTrichotomy`'s branches are
+`temp_linearity` *formulas*, which mint fresh witness times rather than ordering the two
+existing incomparable ones. It is sound and it closed counterexample B; it is the
+formula-level companion to an order-level rule, not a substitute for one.
+
+**Do not try to repair this after the fact.** Taking the branch's partial order and extending
+it to a linear order — Mathlib's `extend_partialOrder`/`LinearExtension` — is *unsound* here.
+In `¬(F(G p) ∧ F(¬p))` the two incomparable siblings carry `T(G p)` and `F(p)`; the extension
+placing the `G p` time first forces `p` true exactly where the branch asserts `F(p)`. The
+formula is satisfiable, so one of the two extensions is a model and the other is not, and
+nothing on the branch records which. The calculus has to branch on the order; the model
+construction cannot choose it afterwards.
+
+A caveat on reading a `false` here: `Branch.knownTimes` is `(b.map (·.label.time)).eraseDups`,
+so a time mentioned only in `ord.constraints` — one whose formulas were all consumed — is not
+quantified over. In the four rows above the constraints are `[(0,2),(0,1)]` while
+`knownTimes = [2,1]`, so the *induced* order on `knownTimes` is empty and the incomparability
+is partly an artifact of destructive expansion. Non-destructive expansion keeps the root's
+formulas and hence the root time, which is why it should land first.
+-/
+
+/--
+Every pair of times known to the branch is comparable under the (transitive) ordering.
+
+Decidable by construction, so it can be carried as a field of an open-branch certificate and
+consumed as the totality hypothesis of a `LinearOrder` on the branch's times.
+-/
+def timeOrderTotal (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.knownTimes.all fun t₁ => b.knownTimes.all fun t₂ =>
+    t₁ == t₂ || (ord.futureOf t₁).contains t₂ || (ord.futureOf t₂).contains t₁
+
+/--
+The pairs of branch times that `timeOrderTotal` rejects, as a diagnostic. Each pair is
+listed once, in `knownTimes` order.
+-/
+def incomparableTimePairs (b : Branch) (ord : TimeOrdering) :
+    List (TimeIndex × TimeIndex) :=
+  let ts := b.knownTimes
+  ts.flatMap fun t₁ =>
+    ts.filterMap fun t₂ =>
+      if t₁ < t₂ && !((ord.futureOf t₁).contains t₂ || (ord.futureOf t₂).contains t₁) then
+        some (t₁, t₂)
+      else none
+
 
 /-!
 ## Branch List Operations
