@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.Saturation
+import FormalSystem.Metalogic.Decidability.Tableau
 
 /-!
 # Tableau Conformance Corpus
@@ -419,5 +420,66 @@ R3 sep             STALLED  target=CLOSED  [DEFECT] sep; no dedekindRules arm ex
 -/
 #guard_msgs in
 #eval IO.print (report .Dedekind dedekindRows)
+
+/-! ## Defect-level regression probes
+
+The tables above exercise the whole pipeline, which means a table row can stay red for a
+reason unrelated to the repair that was supposed to fix it. The probes below pin the
+individual defective components directly, at exactly the inputs the adversarial audit used
+to isolate them. Each probe is the acceptance evidence for one repair.
+-/
+
+section TransitivityProbe
+
+/-- The time ordering of the machine-produced open branch for `G p → G G p`:
+`t0 < t1 < t2`, recorded as two separate `addFuture` calls, hence two direct edges and no
+edge from `t0` to `t2`. -/
+def ordA : TimeOrdering := { constraints := [(1, 2), (0, 1)] }
+
+-- `futureOf` must reach `t2` from `t0`. Before the transitive-closure repair this was
+-- `[1]`, and `someFutureNeg` consequently propagated `F(¬p)` only as far as `t1`, leaving
+-- `p` unconstrained at `t2` — the open branch that no linear model satisfies.
+/-- info: [1, 2] -/
+#guard_msgs in
+#eval ordA.futureOf 0
+
+-- From `t1` the closure reaches only `t2`; nothing is invented.
+/-- info: [2] -/
+#guard_msgs in
+#eval ordA.futureOf 1
+
+-- The past direction must be transitive too, symmetrically: `t2` sees both `t1` and `t0`.
+-- `allPastPos`/`somePastNeg` consume this.
+/-- info: [1, 0] -/
+#guard_msgs in
+#eval ordA.pastOf 2
+
+-- A time with no incident forward edge has an empty future, and no time is its own
+-- ancestor. Guards against a closure that accidentally includes its own argument.
+/-- info: true -/
+#guard_msgs in
+#eval ordA.futureOf 2 == ([] : List TimeIndex) && ordA.pastOf 0 == ([] : List TimeIndex)
+
+-- A cyclic constraint list must terminate rather than run the fuel down: the visited set
+-- stops the walk after one lap.
+/-- info: true -/
+#guard_msgs in
+#eval (({ constraints := [(0, 1), (1, 0)] } : TimeOrdering).futureOf 0).length == 2
+
+-- The rule that consumes `futureOf`, at the audit's exact input: `F(F ¬p) @ (w0, t0)` on
+-- the counterexample-A ordering must now propagate `F(¬p)` to BOTH `t1` and `t2`. The
+-- result is `.persistent` (the source formula is universal, so it is kept), and the
+-- propagated labels are the payload.
+/-- info: "persistent -> times [1, 2]" -/
+#guard_msgs in
+#eval
+  let sf := SignedFormula.neg (F (nt p)) { world := 0, time := 0 }
+  match (applyRule .someFutureNeg sf [] ordA).1 with
+  | .persistent fs => s!"persistent -> times {fs.map (fun g : SignedFormula => g.label.time)}"
+  | .linear fs => s!"linear -> times {fs.map (fun g : SignedFormula => g.label.time)}"
+  | .branching _ => "branching"
+  | .notApplicable => "notApplicable"
+
+end TransitivityProbe
 
 end BimodalTest.TableauConformance

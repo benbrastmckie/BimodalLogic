@@ -672,15 +672,78 @@ def addFuture (ord : TimeOrdering) (t t_new : TimeIndex) : TimeOrdering :=
 def addPast (ord : TimeOrdering) (t t_new : TimeIndex) : TimeOrdering :=
   { constraints := (t_new, t) :: ord.constraints }
 
-/-- Find all times strictly after `t` (immediate successors in the ordering). -/
-def futureOf (ord : TimeOrdering) (t : TimeIndex) : List TimeIndex :=
+/-- Immediate successors of `t`: the `b` of every constraint `(t, b)`.
+
+One step only. Callers that need the temporal order itself want `futureOf`, which is the
+transitive closure of this relation; `directFutureOf` is exposed separately because the
+closure is computed from it and because a rule that genuinely means "one step" (there are
+none today) should say so explicitly. -/
+def directFutureOf (ord : TimeOrdering) (t : TimeIndex) : List TimeIndex :=
   ord.constraints.filterMap fun (a, b) =>
     if a == t then some b else none
 
-/-- Find all times strictly before `t` (immediate predecessors in the ordering). -/
-def pastOf (ord : TimeOrdering) (t : TimeIndex) : List TimeIndex :=
+/-- Immediate predecessors of `t`: the `a` of every constraint `(a, t)`. One step only;
+see `directFutureOf`. -/
+def directPastOf (ord : TimeOrdering) (t : TimeIndex) : List TimeIndex :=
   ord.constraints.filterMap fun (a, b) =>
     if b == t then some a else none
+
+/--
+Breadth-first forward reachability with a visited set.
+
+`frontier` is the current BFS layer, `visited` everything already reached. Each step takes
+one hop from the frontier, discards already-visited times, and recurses on what remains.
+`fuel` bounds the number of layers.
+
+The visited-set filter is what makes this safe on a cyclic constraint list: a cycle
+revisits an already-recorded time, the frontier empties, and the recursion stops early
+rather than running the fuel down. It also keeps the cost linear in the number of distinct
+times rather than exponential in the fuel, which a naive `flatMap`-and-recurse closure
+would be.
+-/
+private def reachableForward (ord : TimeOrdering) (frontier visited : List TimeIndex)
+    : Nat → List TimeIndex
+  | 0 => visited
+  | fuel + 1 =>
+    let next := (frontier.flatMap ord.directFutureOf).eraseDups.filter
+      fun t => !visited.contains t
+    if next.isEmpty then visited
+    else reachableForward ord next (visited ++ next) fuel
+
+/-- Breadth-first backward reachability. Past-directed mirror of `reachableForward`. -/
+private def reachableBackward (ord : TimeOrdering) (frontier visited : List TimeIndex)
+    : Nat → List TimeIndex
+  | 0 => visited
+  | fuel + 1 =>
+    let next := (frontier.flatMap ord.directPastOf).eraseDups.filter
+      fun t => !visited.contains t
+    if next.isEmpty then visited
+    else reachableBackward ord next (visited ++ next) fuel
+
+/--
+All times strictly after `t` in the temporal order: the transitive closure of the forward
+constraint edges, fuel-bounded.
+
+**This must not be the direct-edge filter.** The temporal rules that consume it
+(`allFuturePos`, `someFutureNeg` and their past mirrors) read it as "the times `G φ @ t`
+constrains", which is every time after `t`, not merely the successors recorded by a single
+`addFuture` call. With a direct-edge reading, `ord = [(0,1), (1,2)]` propagates `G p @ t0`
+to `t1` and stops, so `G p → G G p` — valid over any linear order — produces an open
+branch describing a model that does not exist. There is no compensating
+`T(Gφ) → T(G(Gφ))` rule to recover the missing reach.
+
+The fuel default matches the constraint-list depth the engine can produce before blocking
+fires; `reachableForward` terminates early via its visited set, so the bound is a
+safety net rather than the normal exit.
+-/
+def futureOf (ord : TimeOrdering) (t : TimeIndex) (fuel : Nat := 100) : List TimeIndex :=
+  reachableForward ord [t] [] fuel
+
+/-- All times strictly before `t` in the temporal order: the transitive closure of the
+backward constraint edges, fuel-bounded. Past-directed mirror of `futureOf`; the same
+transitivity argument applies to `allPastPos` and `somePastNeg`. -/
+def pastOf (ord : TimeOrdering) (t : TimeIndex) (fuel : Nat := 100) : List TimeIndex :=
+  reachableBackward ord [t] [] fuel
 
 /-- Count distinct time indices appearing in the ordering constraints.
     Each `addFuture`/`addPast` call introduces one new constraint.
