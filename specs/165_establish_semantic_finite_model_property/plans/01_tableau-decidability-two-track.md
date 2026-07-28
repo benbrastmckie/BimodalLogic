@@ -2289,9 +2289,9 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   `serialityRule` sits outside `allRulesForFC`. **Verification Tier**: `full`.
   Estimated output: ~300-450 lines. Done when: sorry-free at ℤ for both classes; **green milestone
   commit**.
-- [ ] **7.1d The dense milestone — `ValidDense` (ℚ) and `ValidDedekindDense` (ℝ).** *(in progress
-  — two of its pieces landed 2026-07-28p: the assembly and the rank/cut-index bridge; the four
-  temporal halves are what remains. See the 2026-07-28p banner.)* The same
+- [x] **7.1d The dense milestone — `ValidDense` (ℚ) and `ValidDedekindDense` (ℝ).** *(COMPLETE
+  2026-07-28q: all four temporal halves, the assembly, the ℚ/ℝ instantiation and both headline
+  results, sorry-free. See the 2026-07-28q banner.)* The same
   induction with non-empty interior gap regions. This is where the `prior_U_gap`/`prior_S_gap`/`sep`
   content lives and where a single region label must meet *both* the `G`-content from the left and
   the `H`-content from the right. Consume `Interpolate`'s `exists_gt_sameRegion`/
@@ -2580,6 +2580,106 @@ with `branchLT`'s equal-times disjunct vacuous because `b.knownTimes` is an `era
   `Bridge/TemporalSaturation.lean` and `Bridge/TemporalGate.lean`.
 - **Assuming the two `ℤ` rays are mirror images for the *positive* case.** Correction 12: the
   upper ray closes outright via `untlRay_self`; the lower ray is a strictly larger demand.
+
+**PHASE 7 STATUS (2026-07-28q) — 7.1d is CLOSED. The dense milestone is delivered: the truth
+lemma is sorry-free at every one of the six `Formula` constructors at `ℚ` and `ℝ`, and so are both
+headline results.** `lake build FormalSystem.Metalogic.Decidability` green (1116 jobs); **full
+`lake build` green (1939 jobs)**; sorry census over `Verified/` reports `0`, compiler cross-check
+MATCH; zero vacuous definitions, zero axioms. Six green commits, each verified by
+`git show --stat` for **content** and not merely for exit status. No engine file touched, and
+nothing belonging to the concurrent task-408/415 sessions staged.
+
+*What landed, in plan order.*
+
+1. **Two measured gate rows, each stated in the same step that consumes it.** The dispatch prompt
+   asked one question to be settled before any proof — whether the dense negative case's
+   non-placed evaluation point needs a new row — and the answer is **yes, and so does the positive
+   one**. Both were measured on the corpus in the exact adopted shape, beside the rows they
+   strengthen, before being written into `temporalWitnessCheck`.
+2. **Rows 5 and 6, generalised from the rays to an arbitrary region** (`untlNegRegionUp` /
+   `snceNegRegionDn`). Two reaches, not one, and they are separate for a reason worth naming: a
+   region label's *rank* says nothing about its region *index*, so the placed points above a
+   region (`j ≤ branchRank v`) and the labels of the regions above it (`j ≤ j'`) are reached by
+   different clauses. This row **subsumes** the two it replaces — at `j = 0` the rank condition is
+   vacuous and the first reach is old row 5 verbatim — so the gate stayed at ten rows here.
+   `untlNegRay_low` survives as the `j = 0` instance; `snceNegRay_up` survives as the `j = n`
+   instance, and its rank condition is *derived* (`branchRank_lt_length`) rather than vacuous,
+   which is why it now carries the side condition explicitly and `branchTruthAt_snce_neg` gained
+   `hV`. Measured `uNRU`: `true` on all eight gate-accepted rows, single `false` exactly where
+   `uRL` already fails.
+3. **Rows 11 and 12** (`untlPosRegion` / `sncePosRegion`), which do **not** subsume rows 3, 9 and
+   10 and are therefore adopted beside them, taking the gate to twelve rows. The `self` diagnostic
+   column is what settled that: `self` alone is `false` on every genuine-until row, and the
+   `known` disjunct alone is unsatisfiable at the top region, where no known time has rank `n`.
+   The disjunction is load-bearing, not decoration, and the measurement said so before the proof
+   did.
+4. **All four temporal halves at a dense carrier**, in `Verified/Bridge/DenseTruth.lean`. The
+   negative pair compiled on the first attempt.
+5. **The assembly, the instantiation and the headlines**: `branchTruthAt_dense`,
+   `exists_countermodel_dense`, `not_validDense_of_hasOpen` (ℚ) and
+   `not_validDedekindDense_of_hasOpen` (ℝ).
+
+*The finding that made the negative halves smaller than `ℤ`'s, not larger.* `ℤ`'s negative halves
+are seven leaves apiece with three vacuous; the dense ones are **four leaves and none vacuous**.
+The `j`-genericity of `regionLabel_untlNeg` (recorded in the 2026-07-28p banner) means a
+non-placed point reads `regionLabel … (cutIndex (regionCode f s))` whether it is in an interior
+gap or on a ray, so the case split is simply *placed or not*, twice, with no ray analysis at all.
+`RayOnly`, `RaySplit`, `Stepped`, `upperRay_of_gt`, `lowerRay_of_lt` and `isPlacedCode_of_between`
+appear nowhere in the dense file. What replaces the ray analysis is arithmetic on the cut index —
+three counting lemmas (`branchRank_lt_cutIndex` from the last dispatch, plus `cutIndex_mono` and
+`cutIndex_le_branchRank` from this one), one per side condition.
+
+*Where the positive halves genuinely differ, in one word.* At `ℤ` the upper-ray leaf **vanishes**
+its guard interval: `Stepped` supplies an immediate successor and there is nothing strictly
+between. At `ℚ`/`ℝ` no point has a successor, the interval is always inhabited, and the guard has
+to be **carried across a whole region** instead. That is precisely what row 11's `self` disjunct
+demands and what no `ℤ` row ever did — the one place the dense milestone genuinely costs more
+than the discrete one. `exists_gt_sameRegion` supplies the witness `Stepped` used to, and
+`sameRegion_convex` does the work `upperRay_of_gt` did.
+
+*A landed row consumed for the first time, at no cost.* `regionLabel_untlGuard` and
+`regionLabel_snceGuard` — `Bridge/RegionLabel.lean`'s straddling guards — close the sub-leaf where
+a placed-to-placed witness's guard interval meets a non-placed point. `ℤ` never called them
+because contiguity made that sub-leaf empty. Consuming them adds **no** obligation to 7.3:
+`untlGuards`/`snceGuards` are already rows of `regionLabelCheck`, which is already a hypothesis.
+Worth recording as a general principle — consuming an already-gated row is free, and is always
+preferable to adding a new one.
+
+*The instantiation is a cast, not a construction.* `ℚ`/`ℝ` reuse `intPlace` composed with
+`Int.cast`. `Function.Injective`, `OrderFaithful` and `OrderReflecting` all transport along any
+strictly monotone map (`orderFaithful_comp`, `orderReflecting_comp`); what does *not* transport is
+`RayOnly`/`RaySplit`/`Stepped`, which is `not_exists_gt_sameRegion_int` read the other way round
+and is exactly why this was a separate sub-phase rather than a corollary.
+
+*What Phase 7 still owes.* 7.2 and 7.3, in that order. 7.2 is 7.3's true prerequisite, since
+`valid_iff_allClosed` is an iff whose `allClosed → valid` direction *is* 7.2.
+
+*Environment.* Both concurrent sessions were quiet. Nothing under
+`WeakCanonical/DenseModelSurgery/**`, `specs/408_*/**` or `specs/415_*/**` was touched, staged,
+committed or reverted; staging was by explicit path throughout, and `git show --stat` after every
+commit matched the intended diff size.
+
+#### Additions to the Phase 7 DO-NOT-RE-ATTEMPT register (2026-07-28q)
+
+- **Re-deriving any of the four dense temporal halves**, `branchTruthAt_dense`,
+  `exists_countermodel_dense`, `not_validDense_of_hasOpen` or
+  `not_validDedekindDense_of_hasOpen`. All landed sorry-free.
+- **Re-deriving `cutIndex_mono`, `cutIndex_le_branchRank`, `lt_of_cutIndex_le_branchRank`,
+  `gt_of_branchRank_lt_cutIndex`, `stateLabel_sameRegion`, `orderFaithful_comp` or
+  `orderReflecting_comp`.**
+- **Re-measuring or restating rows 5, 6, 11 and 12**, or their consumption lemmas
+  (`untlNegRegion_up`, `untlNegRegion_label`, `snceNegRegion_dn`, `snceNegRegion_label`,
+  `untlPosRegion_witness`, `sncePosRegion_witness`). Measured, adopted, consumed.
+- **Using `RayOnly`, `RaySplit`, `Stepped`, `upperRay_of_gt`, `lowerRay_of_lt` or
+  `isPlacedCode_of_between` in anything dense.** All four are false at `ℚ`/`ℝ`; the dense file
+  uses none of them and needs none.
+- **Building a fresh `ℚ`/`ℝ` placement.** It is `intPlace` composed with `Int.cast`, and the three
+  placement facts transport along any strictly monotone map.
+- **Treating rows 11 and 12 as subsuming rows 3, 9 and 10.** They do not — the `self` disjunct is
+  an escape those rows do not offer — and the corpus measurement shows both disjuncts are needed.
+- **Adding a new gate row where a `regionLabelCheck` row already reaches.** `regionLabel_untlGuard`
+  closed the dense positive placed leaf at zero cost in gate strength.
+- Plus every prior entry, all carried forward unchanged.
 
 **PHASE 7 STATUS (2026-07-28p) — 7.1e is CLOSED; 7.1d is started, with its assembly and its one
 new counting bridge landed sorry-free.** `lake build FormalSystem.Metalogic.Decidability` green
