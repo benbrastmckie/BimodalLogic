@@ -6,7 +6,7 @@ next_project_number: 410
 
 ## Task Order
 
-*Updated 2026-07-27. Generated from state.json dependency graph.*
+*Updated 2026-07-28. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -431,7 +431,10 @@ ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
-- **Research**: [165_establish_semantic_finite_model_property/reports/01_semantic-fmp-research.md]
+- **Research**:
+  - [165_establish_semantic_finite_model_property/reports/01_semantic-fmp-research.md]
+  - [165_establish_semantic_finite_model_property/reports/02_tableau-decidability-hard-research.md]
+  - [165_establish_semantic_finite_model_property/reports/03_cslib-tableau-survey.md]
 
 **Description**: Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.
 
