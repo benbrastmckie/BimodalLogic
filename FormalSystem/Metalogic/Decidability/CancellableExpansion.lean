@@ -85,10 +85,9 @@ def expandBranchWithFuelCancellable (abortRef : IO.Ref Bool)
       | none =>
           let tracker := registerEventualities b tracker
           let tracker := fulfillEventualities b tracker
-          if (findBlockedTime b timeOrd tracker).isSome then
-            return some (.inr (b, timeOrd, applied))  -- Blocked: saturated open
-          else
-          match expandOnceWithApplied b timeOrd fc applied with
+          -- Mirrors `expandBranchWithFuel`: blocking is applied per time inside the expansion
+          -- step, never as a branch-level early exit.
+          match expandOnceUnblockedWithApplied b timeOrd fc tracker applied with
           | (.saturated, _, _) => return some (.inr (b, timeOrd, applied))
           | (.extended newBranch, newOrd, newAppliedFormulas) =>
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied

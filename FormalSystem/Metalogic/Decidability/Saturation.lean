@@ -391,16 +391,20 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
           -- Update eventuality tracker: register new eventualities and check fulfillment
           let tracker := registerEventualities b tracker
           let tracker := fulfillEventualities b tracker
-          -- Check temporal blocking: if any active time has its type
-          -- subsumed by an ancestor time, treat the branch as saturated.
-          -- This prevents infinite chains from Until/Since positive rules
-          -- re-introducing the same formula at fresh time points.
-          -- Pass tracker for eventuality-aware blocking
-          if (findBlockedTime b timeOrd tracker).isSome then
-            some (.inr (b, timeOrd, applied))  -- Blocked: treat as saturated open branch
-          else
-          -- Try to expand, using applied set to prevent persistent rule loops
-          match expandOnceWithApplied b timeOrd fc applied with
+          -- Temporal blocking is applied *inside* the expansion step, not as a branch-level
+          -- early exit. A time whose type is subsumed by a saturated ancestor is skipped as an
+          -- expansion source; the branch is saturated only when no unblocked formula has an
+          -- applicable rule. Both halves of that sentence are repairs:
+          --
+          --   * "saturated ancestor" — subsumption by an ancestor that still has an applicable
+          --     rule is an artifact of that ancestor not having been expanded yet;
+          --   * "skipped as a source", not "halt the branch" — the old early exit handed the
+          --     branch back as saturated-open with propagation still outstanding at the *root*,
+          --     which is never blocked.
+          --
+          -- See "Blocking Against Saturated Ancestors Only" and "Blocking Blocks a Time, Not
+          -- the Branch" in `Tableau.lean` for the measurements behind each.
+          match expandOnceUnblockedWithApplied b timeOrd fc tracker applied with
           | (.saturated, _, _) => some (.inr (b, timeOrd, applied))  -- Open saturated branch
           | (.extended newBranch, newOrd, newAppliedFormulas) =>
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
@@ -478,10 +482,14 @@ For each expansion:
   branch is saturated).
 -/
 def expandOnceWithAppliedTracedImpl (b : Branch) (timeOrd : TimeOrdering)
-    (fc : FrameClass) (_tracker : EventualityTracker)
+    (fc : FrameClass) (tracker : EventualityTracker)
     (applied : AppliedSet) : TraceM (ExpansionResult × TimeOrdering × List SignedFormula) := do
   let depth := b.length
-  match findUnexpandedWithApplied b timeOrd fc applied with
+  -- Mirrors `expandOnceUnblocked`: the source is picked from the *unblocked* times, and no arm
+  -- deletes the source. Both were drift against `expandOnce`, which stopped destroying sources
+  -- when the uniform branch guards landed; a traced run that still deleted them was reporting
+  -- on a different engine from the one `buildTableau` runs.
+  match findUnexpandedUnblocked b timeOrd fc tracker with
   | none => return (.saturated, timeOrd, [])
   | some sf =>
       match findApplicableRuleWithApplied sf b timeOrd fc applied with
@@ -490,12 +498,10 @@ def expandOnceWithAppliedTracedImpl (b : Branch) (timeOrd : TimeOrdering)
           match result with
           | .linear formulas =>
               TraceM.recordRuleFired rule sf.sign sf.formula sf.label formulas false depth
-              let remaining := b.filter (· != sf)
-              return (.extended (formulas ++ remaining), newOrd, [])
+              return (.extended (formulas ++ b), newOrd, [])
           | .branching branches =>
               TraceM.recordRuleFired rule sf.sign sf.formula sf.label [] false depth
-              let remaining := b.filter (· != sf)
-              let newBranches := branches.map fun newFormulas => newFormulas ++ remaining
+              let newBranches := branches.map fun newFormulas => newFormulas ++ b
               -- Record branchCreated events for each new sub-branch
               let cert ← TraceM.getCert
               for (_newBranch, idx) in newBranches.zip (List.range newBranches.length) do
@@ -554,41 +560,41 @@ def expandBranchWithFuelTracedImpl (b : Branch) (fuel : Nat)
       | none =>
           let tracker := registerEventualities b tracker
           let tracker := fulfillEventualities b tracker
-          match _h : findBlockedTime b timeOrd tracker with
+          -- Blocking is recorded, not acted on: the expansion step below already skips blocked
+          -- times as sources (see `expandOnceUnblocked`), so a blocked time is a trace event
+          -- rather than a branch-level exit. Recording it here keeps `blockingFired` in the
+          -- certificate for the times the loop actually declined to expand from.
+          match _h : findBlockedTimeSaturated b timeOrd fc tracker with
           | some blockedTime =>
-              -- Record blocking event (ancestorTime is the saturating time;
-              -- we use blockedTime as a placeholder since findBlockedTime
-              -- returns a single TimeIndex, not a pair).
               let cert ← TraceM.getCert
               TraceM.record (.blockingFired cert.totalSteps blockedTime blockedTime)
-              return some (.inr (b, timeOrd, applied))
-          | none =>
-              let (result, newOrd, newAppliedFormulas) ←
-                expandOnceWithAppliedTracedImpl b timeOrd fc tracker applied
-              match result with
-              | .saturated => return some (.inr (b, timeOrd, applied))
-              | .extended newBranch =>
-                  let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-                  expandBranchWithFuelTracedImpl newBranch fuel newOrd fc tracker applied'
-                    maxBranches (branchesUsed + 1)
-              | .split branches =>
-                  let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-                  -- Proportional fuel allocation (mirrors expandBranchWithFuel)
-                  let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
-                  -- Increment branch counter by number of new branches
-                  let branchesUsed' := branchesUsed + branches.length
-                  let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
-                    some (.inl ⟨b, .botPos Label.initial⟩)
-                  for pair in branches.zip fuelAllocs do
-                    match acc with
-                    | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
-                    | _ =>
-                        match ← expandBranchWithFuelTracedImpl pair.1 (min pair.2 fuel)
-                          newOrd fc tracker applied' maxBranches branchesUsed' with
-                        | none => acc := none
-                        | some (.inl _) => pure ()  -- closed; continue
-                        | some (.inr openBr) => acc := some (.inr openBr)
-                  return acc
+          | none => pure ()
+          let (result, newOrd, newAppliedFormulas) ←
+            expandOnceWithAppliedTracedImpl b timeOrd fc tracker applied
+          match result with
+          | .saturated => return some (.inr (b, timeOrd, applied))
+          | .extended newBranch =>
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              expandBranchWithFuelTracedImpl newBranch fuel newOrd fc tracker applied'
+                maxBranches (branchesUsed + 1)
+          | .split branches =>
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              -- Proportional fuel allocation (mirrors expandBranchWithFuel)
+              let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
+              -- Increment branch counter by number of new branches
+              let branchesUsed' := branchesUsed + branches.length
+              let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
+                some (.inl ⟨b, .botPos Label.initial⟩)
+              for pair in branches.zip fuelAllocs do
+                match acc with
+                | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
+                | _ =>
+                    match ← expandBranchWithFuelTracedImpl pair.1 (min pair.2 fuel)
+                      newOrd fc tracker applied' maxBranches branchesUsed' with
+                    | none => acc := none
+                    | some (.inl _) => pure ()  -- closed; continue
+                    | some (.inr openBr) => acc := some (.inr openBr)
+              return acc
 termination_by fuel
 decreasing_by all_goals simp_wf
 
@@ -1349,34 +1355,30 @@ private theorem expandBranchWithFuel_sound
         | some reason => simp [hfc] at h
         | none =>
           simp only [hfc] at h
-          -- Case split on eventuality-aware blocking check
-          by_cases hblock : (findBlockedTime b timeOrd
-              (fulfillEventualities b (registerEventualities b tracker))).isSome
-          · simp only [hblock, ↓reduceIte, Option.some.injEq, Sum.inr.injEq,
-              Prod.mk.injEq] at h
+          -- No blocking case split any more: blocking is applied inside the expansion step
+          -- (`expandOnceUnblockedWithApplied`) rather than as a branch-level early exit, so the
+          -- loop body has one fewer branch and the blocked case arrives as `.saturated`.
+          match hexp : expandOnceUnblockedWithApplied b timeOrd fc
+            (fulfillEventualities b (registerEventualities b tracker)) applied with
+          | ⟨.saturated, _, _⟩ =>
+            simp only [hexp, Option.some.injEq, Sum.inr.injEq, Prod.mk.injEq] at h
             obtain ⟨rfl, rfl, rfl⟩ := h
             exact hfc
-          · simp only [hblock, Bool.false_eq_true, ↓reduceIte] at h
-            match hexp : expandOnceWithApplied b timeOrd fc applied with
-            | ⟨.saturated, _, _⟩ =>
-              simp only [hexp, Option.some.injEq, Sum.inr.injEq, Prod.mk.injEq] at h
-              obtain ⟨rfl, rfl, rfl⟩ := h
-              exact hfc
-            | ⟨.extended newBranch, newOrd, newAppliedFormulas⟩ =>
-              simp only [hexp] at h
-              exact ih k (Nat.lt_succ_of_le le_rfl)
-                newBranch newOrd fc _ _ maxBranches _ ob ord ap h
-            | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
-              simp only [hexp] at h
-              -- Use foldl_preserves_findClosure for zipped pairs
-              -- Pass maxBranches and branchesUsed' through the foldl
-              exact foldl_preserves_findClosure k newOrd fc _ _ maxBranches
-                (branchesUsed + branches.length)
-                (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))
-                (branches.zip (allocateFuelProportionally (k + 1) branches))
-                (some (.inl ⟨b, .botPos Label.initial⟩))
-                (fun _ _ _ h' => by simp at h')
-                ob ord ap h
+          | ⟨.extended newBranch, newOrd, newAppliedFormulas⟩ =>
+            simp only [hexp] at h
+            exact ih k (Nat.lt_succ_of_le le_rfl)
+              newBranch newOrd fc _ _ maxBranches _ ob ord ap h
+          | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
+            simp only [hexp] at h
+            -- Use foldl_preserves_findClosure for zipped pairs
+            -- Pass maxBranches and branchesUsed' through the foldl
+            exact foldl_preserves_findClosure k newOrd fc _ _ maxBranches
+              (branchesUsed + branches.length)
+              (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))
+              (branches.zip (allocateFuelProportionally (k + 1) branches))
+              (some (.inl ⟨b, .botPos Label.initial⟩))
+              (fun _ _ _ h' => by simp at h')
+              ob ord ap h
 
 /--
 **Blocking soundness**: Subset blocking does not prematurely close any

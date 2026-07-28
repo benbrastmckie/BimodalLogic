@@ -1064,15 +1064,37 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   -- Dense: T(G(φ)) at (w,t) with known future time → introduce intermediate point
   -- On a dense frame, for any t' > t there exists t'' with t < t'' < t', so Gφ at t gives φ at t''.
   | .densityRule, .pos, .allFuture ψ =>
+      -- **Gap selection: maximal targets only.** The candidate gaps are `(l.time, t')` for `t'`
+      -- *maximal* in the source's future — no time lies after `t'` — and not already filled by
+      -- an intermediate.
+      --
+      -- The second half of that is the original `existingIntermediates` guard, kept verbatim in
+      -- meaning. The first half is new, and without it the rule diverges. The original picked
+      -- `t'` as the *head* of `futureOf l.time` and gave up if that one gap was filled. But
+      -- filling a gap adds a time, which changes the head, which exposes a fresh unfilled gap:
+      -- interpolating `3` into `0 < 2` leaves `0 < 3` unfilled, interpolating `5` there leaves
+      -- `0 < 5` unfilled, and so on without bound. The source of every one of those steps is the
+      -- *root*, which carries the `T(G ψ)` and is never blocked, so time-blocking cannot stop the
+      -- regress: blocking is a statement about expanding *from* a time, and this rule expands
+      -- from time 0 no matter how many interpolants pile up below it.
+      --
+      -- Restricting to maximal `t'` makes the admissible-gap set shrink as gaps are filled: an
+      -- interpolant is never maximal (it has the old target after it), so it cannot itself become
+      -- a target, and each maximal future time is split at most once. New gaps appear only when
+      -- some *other* rule mints a new witness time, and those rules carry their own guards.
+      --
+      -- **Measured.** Counterexample row B
+      -- (`(F p ∧ F q) → (F(p ∧ F q) ∨ F(p ∧ q) ∨ F(q ∧ F p))`) read `CLOSED` at `.Base`/`.Discrete`
+      -- and `STALLED` at `.Dense`/`.Dedekind`. Deleting `densityRule` from `denseRules` made all
+      -- four read `CLOSED`, isolating this rule as the sole cause; the fix keeps the rule and
+      -- bounds its gap selection.
       let futureTimes := timeOrd.futureOf l.time
-      match futureTimes with
-      | [] => (.notApplicable, timeOrd)  -- No future times to interpolate
+      let gapTargets := futureTimes.filter fun t' =>
+        (timeOrd.futureOf t').isEmpty
+          && !(futureTimes.any fun t'' => (timeOrd.futureOf t'').contains t')
+      match gapTargets with
+      | [] => (.notApplicable, timeOrd)  -- No unfilled maximal gap to interpolate into
       | t' :: _ =>
-        -- Check if we already have an intermediate time between l.time and t'
-        -- Only add if not already present (to avoid infinite loops)
-        let existingIntermediates := timeOrd.futureOf l.time |>.filter fun t'' =>
-          timeOrd.futureOf t'' |>.any (· == t')
-        if existingIntermediates.isEmpty then
           let freshTime := branch.nextTime
           let freshLabel : Label := { world := l.world, time := freshTime }
           -- Add t < freshTime < t' to the ordering
@@ -1089,8 +1111,6 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               else none
             | _ => none
           (.persistent (witness :: gProps), newOrd)
-        else
-          (.notApplicable, timeOrd)
   -- Discrete: T(F(φ)) → T(U(φ, ¬φ))
   -- On discrete frames, F(φ) implies there is a nearest φ-point reachable by Until
   | .priorUZ, .pos, φ =>
@@ -1498,6 +1518,140 @@ def findUnexpanded (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base) : Option SignedFormula :=
   b.find? (fun sf => ¬isExpanded sf b timeOrd fc)
 
+/-!
+## Blocking Against Saturated Ancestors Only
+
+`findBlockedTime` (`SignedFormula.lean`) decides subset blocking from formula *content* alone:
+time `t` is blocked by an ancestor `t_anc` when `type(t) ⊆ type(t_anc)` and every eventuality
+pending at `t` is duplicated at `t_anc`. Its soundness story is "everything available at `t` is
+already available at `t_anc`, so expanding `t` yields nothing new" — and that story is only true
+of the *finished* type at `t_anc`. While `t_anc` still has an applicable rule, `type(t_anc)` is
+a moving target: the containment being observed is an artifact of `t_anc` not having been
+expanded yet, not evidence of a repetition.
+
+Consuming that decision as "treat the whole branch as a saturated open branch"
+(`Saturation.lean`) is where it does damage: the branch is handed back with propagation
+outstanding, so a branch that would have closed instead reports open, or stalls.
+
+**Measured instance.** Counterexample row B (`(F p ∧ F q) → (F(p ∧ F q) ∨ F(p ∧ q) ∨
+F(q ∧ F p))`) at `.Dense`/`.Dedekind`: `densityRule` interpolates times 3 and 4 into `0 < 2`,
+giving ordering `[(4,3),(0,4),(3,2),(0,3),(0,2),(0,1)]`. The interpolated times carry types that
+are subsets of their ancestors' *because the ancestors have not finished expanding* —
+`findUnexpanded` still points at `T(G ¬(p ∧ F q)) @ (0,0)`, i.e. at the root, which is an
+ancestor of everything. Blocking fires against time 0 and the branch is abandoned. Under the
+destructive engine the intermediate times carried fewer formulas and the subset test read
+differently, which is why the defect only became visible with non-destructive expansion.
+
+**The repair is a side condition, not a strengthening.** Note the direction carefully: this
+predicate fires strictly *less* often than `findBlockedTime`, so it can only let expansion run
+longer. It does not widen what counts as blocked, and it does not add a new halting reason.
+The termination argument is unaffected — expansion remains fuel-bounded, and blocking was never
+what bounded it.
+
+**Why `t_anc` and not `t`.** The saturation demand is on the *ancestor*, the time whose type is
+standing in for the blocked time's. Demanding it of `t` instead would be a different (and
+wrong) predicate: `t`'s own unexpanded formulas are precisely what blocking is entitled to skip,
+since the ancestor subsumes them.
+-/
+
+/--
+Every formula on the branch at time `t` is fully expanded: no rule of `fc` applies to any of
+them against the current branch.
+
+This is `findUnexpanded` restricted to one time. It reads the same
+`findApplicableRule`-is-`none` condition, so it inherits the uniform branch guards: a rule whose
+conclusion the branch already carries does not count as applicable, and therefore does not keep
+a time perpetually unsaturated.
+-/
+def timeSaturated (b : Branch) (t : TimeIndex)
+    (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base) : Bool :=
+  (b.formulasAtTime t).all fun sf => isExpanded sf b timeOrd fc
+
+/--
+`isTemporallyBlocked` with the ancestor-saturation side condition: `t` is blocked by `t_anc`
+only when `t_anc` itself has no applicable rule left.
+
+See the section docstring above for why the side condition belongs here and why it cannot make
+blocking fire more often.
+-/
+def isTemporallyBlockedSaturated (b : Branch) (t : TimeIndex) (ord : TimeOrdering)
+    (fc : FrameClass := .Base)
+    (tracker : EventualityTracker := EventualityTracker.empty) : Bool :=
+  (ancestorTimes ord t).any fun t_anc =>
+    b.isSubsetBlocked t t_anc
+      && allEventualitiesFulfilledOrDuplicated tracker t t_anc
+      && timeSaturated b t_anc ord fc
+
+/--
+The first blocked time on the branch, blocking only against saturated ancestors.
+
+This is the predicate the fuel loop consumes; `findBlockedTime` is retained in
+`SignedFormula.lean` as the content-only core it is built from (and is still what the blocking
+*lemmas* there are stated against, since those lemmas are about the subset condition itself).
+
+The `&&` chain is short-circuiting, so the comparatively expensive `timeSaturated` call runs
+only for ancestor pairs that already passed the cheap subset and eventuality tests.
+-/
+def findBlockedTimeSaturated (b : Branch) (ord : TimeOrdering)
+    (fc : FrameClass := .Base)
+    (tracker : EventualityTracker := EventualityTracker.empty) : Option TimeIndex :=
+  b.knownTimes.find? fun t => isTemporallyBlockedSaturated b t ord fc tracker
+
+/-!
+## Blocking Blocks a Time, Not the Branch
+
+The ancestor-saturation side condition above is necessary but not sufficient, and the measurement
+says so. With it in place, row B at `.Dense` halts on a branch whose state is
+
+```
+len=35 times=[4,3,1,2,0] ord=[(4,3),(0,4),(3,2),(0,3),(0,2),(0,1)]
+blockedSat=(some 3) unexpanded=(some @time 0)
+```
+
+Time 3 is genuinely blocked — by the interpolated time 4, which really is saturated, so the
+side condition is satisfied and the block is legitimate *about time 3*. What is not legitimate
+is the conclusion the fuel loop drew from it: it treated one blocked time as a verdict on the
+whole branch and handed the branch back as "saturated open" with unexpanded work still sitting
+at time 0, the root.
+
+That is the eagerness. Blocking is a statement about a **time**: expanding *from* `t` cannot
+produce anything the ancestor does not already offer. It says nothing about times that are not
+blocked, and the root is never blocked (it has no ancestors). So a blocked time is skipped as an
+expansion **source**, and the branch is saturated only when no *unblocked* formula has an
+applicable rule.
+
+Two consequences worth stating explicitly, because both are load-bearing elsewhere:
+
+- **Termination is unchanged.** It was never blocking that bounded the loop — `expandBranchWithFuel`
+  is fuel-bounded and `maxBranches`-bounded, and both bounds are untouched. Blocking's job is to
+  let a branch *reach* a verdict sooner, and it still does that, one time at a time.
+- **The open certificate's saturation field is now a disjunction.** An open branch satisfies
+  `findUnexpandedUnblocked … = none`, which is `findUnexpanded … = none` only when nothing is
+  blocked. Any consumer that wants literal full saturation must either check for it or accept the
+  blocked disjunct and argue that the ancestor's type stands in for the blocked time's.
+-/
+
+/--
+The times on the branch that are blocked by a saturated ancestor. Computed once per expansion
+step and reused across the whole branch, rather than re-derived per formula.
+-/
+def blockedTimes (b : Branch) (ord : TimeOrdering) (fc : FrameClass := .Base)
+    (tracker : EventualityTracker := EventualityTracker.empty) : List TimeIndex :=
+  b.knownTimes.filter fun t => isTemporallyBlockedSaturated b t ord fc tracker
+
+/--
+`findUnexpanded` restricted to unblocked times: the first formula that has an applicable rule
+and does not sit at a blocked time.
+
+This is the engine's real saturation test. `findUnexpanded` remains the *literal* one and is
+what the certificate probes and the truth-lemma statement read.
+-/
+def findUnexpandedUnblocked (b : Branch) (ord : TimeOrdering) (fc : FrameClass := .Base)
+    (tracker : EventualityTracker := EventualityTracker.empty) : Option SignedFormula :=
+  let blocked := blockedTimes b ord fc tracker
+  b.find? fun sf => !blocked.contains sf.label.time && !isExpanded sf b ord fc
+
 /--
 Result of a single expansion step on a branch.
 -/
@@ -1542,6 +1696,35 @@ def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
           | .persistent formulas =>
               (.extended (formulas ++ b), newOrd)
           | .notApplicable => (.saturated, newOrd)  -- Shouldn't happen
+
+/--
+`expandOnce` with blocked times skipped as expansion sources.
+
+This is the step the fuel loop takes. It differs from `expandOnce` only in which formula it
+picks: `findUnexpandedUnblocked` rather than `findUnexpanded`. Reporting `.saturated` therefore
+means "no unblocked work remains", which is the branch-level reading of blocking that the
+per-time predicate actually supports — see "Blocking Blocks a Time, Not the Branch" above.
+
+A formula produced *at* a blocked time (the `allFuturePos` family propagates into every future
+time, blocked or not) is added to the branch as usual and then skipped as a source. It is not
+discarded, because the countermodel read off the branch has to describe that time too.
+-/
+def expandOnceUnblocked (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base)
+    (tracker : EventualityTracker := EventualityTracker.empty)
+    : ExpansionResult × TimeOrdering :=
+  match findUnexpandedUnblocked b timeOrd fc tracker with
+  | none => (.saturated, timeOrd)
+  | some sf =>
+      match findApplicableRule sf b timeOrd fc with
+      | none => (.saturated, timeOrd)
+      | some (_, result, newOrd) =>
+          match result with
+          | .linear formulas => (.extended (formulas ++ b), newOrd)
+          | .branching branches =>
+              (.split (branches.map fun newFormulas => newFormulas ++ b), newOrd)
+          | .persistent formulas => (.extended (formulas ++ b), newOrd)
+          | .notApplicable => (.saturated, newOrd)
 
 /--
 A single expansion step restricted to rules that introduce **no new label** — neither a fresh
@@ -1632,6 +1815,19 @@ def expandOnceWithApplied (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.e
     (fc : FrameClass := .Base) (_applied : AppliedSet := {})
     : ExpansionResult × TimeOrdering × List SignedFormula :=
   let (result, newOrd) := expandOnce b timeOrd fc
+  (result, newOrd, [])
+
+/--
+Deprecated in substance: delegates to `expandOnceUnblocked`, ignoring `applied` and always
+reporting an empty applied-set delta. This is the shape the fuel loop calls; the triple is kept
+only so the loop and its proofs can be moved off the applied set in a separate step.
+-/
+def expandOnceUnblockedWithApplied (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base)
+    (tracker : EventualityTracker := EventualityTracker.empty)
+    (_applied : AppliedSet := {})
+    : ExpansionResult × TimeOrdering × List SignedFormula :=
+  let (result, newOrd) := expandOnceUnblocked b timeOrd fc tracker
   (result, newOrd, [])
 
 /--

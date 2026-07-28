@@ -109,9 +109,13 @@ formula-dependent bound would not.
 **Per-row override.** `Row.fuel` defaults to this bound; a row that genuinely needs more
 states its own. `expandBranchWithFuel` splits its fuel proportionally across the branches
 of a split, so `orderTrichotomy`'s three-way split divides the budget available to
-everything below it, and counterexample B needs roughly 10000 to close (measured: `STALLED`
-at 200, 500, 2000, 3000, 4000 and 6000; `CLOSED` at 10000). Raising the *corpus-wide*
-bound to 10000 instead was tried and rejected: several rows that answer `OPEN` today
+everything below it, and counterexample B needs a large budget to close: `10000` at
+`.Base`/`.Discrete`, and `100000` in the two dense classes, where `densityRule` interpolates
+extra times before the closure is reached (measured at `.Dense`: `STALLED` at 30000 and 50000,
+`CLOSED` at 70000 and 100000; the row is pinned at 100000 so `.Dedekind` clears it too). The
+run costs well under a second per class despite the bound, because the fuel is a *step* budget
+and the proportional allocator hands most sub-branches a small share of it. Raising the
+*corpus-wide* bound instead was tried and rejected: several rows that answer `OPEN` today
 explore for minutes at that bound, which would make this file the slowest in the suite for
 no gain on any row but the one.
 -/
@@ -234,22 +238,27 @@ ordinary `someFutureNeg`/conjunction machinery, which is why a single orientatio
 pair suffices even though row B's disjuncts are a permutation drawn from both orientations.
 Row B carries a raised `fuel`; see `conformanceFuel`.
 
-**Row B regression at `.Dense` and `.Dedekind`.** Row B closes at `.Base` and `.Discrete` but
-reads `STALLED` in the two dense classes since branch-guarded non-destructive expansion landed.
-The cause is measured, and it is *not* the guards: restoring source destruction while keeping
-the guards makes row B stall in all four classes, so non-destructive expansion is what recovers
-`.Base` and `.Discrete`. Widening `orderTrichotomy`'s first-witnesses-only restriction from one
-witness to two was also tried, and changes nothing.
+**Row B at `.Dense` and `.Dedekind`: the regression and its repair.** Row B briefly read
+`STALLED` in the two dense classes while branch-guarded non-destructive expansion was landing.
+Two separate defects were involved, and the bisection that separated them is worth keeping:
 
-What the measurement shows is time-blocking firing before the closure is reached. At `.Dense`,
-fuel 10000, the halted branch has ordering `[(4,3),(0,4),(3,2),(0,3),(0,2),(0,1)]` — `densityRule`
-has interpolated times 3 and 4 into `0 < 2` — and `findUnexpanded` is left pointing at
-`T(G ¬(p ∧ F q)) @ (0,0)`. The interpolated times carry formula types that are subsets of their
-ancestors', so `findBlockedTime` halts the branch with propagation still outstanding. That is
-the known "blocking is too eager" defect, made visible rather than caused by this change: with
-destruction, the intermediate times carried fewer formulas and the subset test read differently.
+1. *Not* the expansion guards. Restoring source destruction while keeping the guards made row B
+   stall in all four classes, so non-destructive expansion is what recovers `.Base`/`.Discrete`.
+   Widening `orderTrichotomy`'s first-witnesses-only restriction from one witness to two changed
+   nothing, and neither did fuel at 20000/40000/120000.
+2. *Blocking halting the branch rather than the time.* At `.Dense` the halted branch had ordering
+   `[(4,3),(0,4),(3,2),(0,3),(0,2),(0,1)]` with `findUnexpanded` still pointing at
+   `T(G ¬(p ∧ F q)) @ (0,0)`: one blocked interpolant was being treated as a verdict on the whole
+   branch, abandoning it with propagation outstanding at the root, which is never blocked.
+3. *`densityRule` diverging.* Deleting `densityRule` from `denseRules` made row B read `CLOSED`
+   in all four classes, isolating it as the remaining cause. Its gap selection picked the *head*
+   of the source's future and gave up if that one gap was filled; filling a gap changes the head
+   and exposes a new unfilled gap, so it interpolated without bound from the root.
 
-Repairing it belongs with the blocking predicate, not with the expansion guards. -/
+Both (2) and (3) are fixed in `Tableau.lean` — blocking now skips a blocked time as an expansion
+*source* instead of halting the branch, and `densityRule` interpolates only into unfilled gaps
+whose upper endpoint is maximal in the source's future. Row B is the only row either change
+moves. -/
 def counterexampleRows : List Row :=
   [ { id := "A Gp->GGp",     formula := im (G p) (G (G p)), target := "CLOSED"
     , note := "was D1; closes now that futureOf is a transitive closure" }
@@ -258,7 +267,7 @@ def counterexampleRows : List Row :=
         (orr (F (an p (F q))) (orr (F (an p q)) (F (an q (F p)))))
     , target := "CLOSED"
     , note := "was D2; closes now that orderTrichotomy splits on the witness order"
-    , fuel := 10000 }
+    , fuel := 100000 }
   ]
 
 /-- Until/Since linearity rows plus the exact axiom instances the permuted counterexample
@@ -407,7 +416,7 @@ K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by ite
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
-B lin-perm         STALLED  target=CLOSED  [DEFECT] was D2; closes now that orderTrichotomy splits on the witness order
+B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -469,7 +478,7 @@ K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by ite
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
-B lin-perm         STALLED  target=CLOSED  [DEFECT] was D2; closes now that orderTrichotomy splits on the witness order
+B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
