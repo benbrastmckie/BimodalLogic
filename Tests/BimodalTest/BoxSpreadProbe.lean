@@ -85,4 +85,48 @@ needed — is true. -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r) 200 .Dense
 
+/-! ## The compound-`□` gap rows
+
+`Verified/Bridge/Valuation.lean`'s `not_truthLemma_branchGapVal` refutes `GapAdequate` as the
+truth lemma's gap obligation on a two-formula *literal* branch. These rows answer the only
+question that refutation leaves open — whether the engine actually produces branches of that
+shape — by running it on `(□p ∧ □(p → q)) → r` and reporting, on the open branch:
+
+* `boxP` / `boxPQ` — is `T(□p)` (resp. `T(□(p → q))`) on the branch at some label;
+* `boxQ` / `Gq` / `Hq` — is `T(□q)`, `T(G q)` or `T(H q)` on the branch *anywhere*.
+
+`boxQ=false Gq=false Hq=false` alongside `boxP=true boxPQ=true` is exactly the configuration the
+refutation needs: at a gap point `branchGapVal` makes `p` true and `q` false, so `p → q` is false
+there and the branch's own `T(□(p → q))` is falsified by the extracted model. -/
+
+/-- Is `T(□χ)` on the branch at some label? -/
+private def hasBoxPos (b : Branch) (χ : Formula) : Bool :=
+  b.any fun sf => sf.sign == .pos && sf.formula == Formula.box χ
+
+/-- Is `T(χ)` on the branch at some label? -/
+private def hasPosAnywhere (b : Branch) (χ : Formula) : Bool :=
+  b.any fun sf => sf.sign == .pos && sf.formula == χ
+
+/-- Run the engine and report the compound-`□` gap configuration on the open branch. -/
+def gapProbe (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String :=
+  match buildTableau φ fuel fc with
+  | none => "STALLED"
+  | some (.allClosed _) => "CLOSED"
+  | some (.hasOpen ob _ _ _) =>
+      s!"OPEN boxP={hasBoxPos ob p} boxPQ={hasBoxPos ob (.imp p q)} boxQ={hasBoxPos ob q} " ++
+      s!"Gq={hasPosAnywhere ob (.allFuture q)} Hq={hasPosAnywhere ob (.allPast q)}"
+
+-- D. The gap configuration, at `.Base`.
+/-- info: "OPEN boxP=true boxPQ=true boxQ=false Gq=false Hq=false" -/
+#guard_msgs in
+#eval gapProbe (.imp (andF (.box p) (.box (.imp p q))) r)
+
+-- E. The same shape under `.Dense` does NOT complete: measured `STALLED` at fuel 200 and again at
+-- fuel 400. Pinned as measured rather than dropped — the refutation rests on row D, and this row
+-- records that the dense route's fuel appetite on two stacked boxes is a separate open question,
+-- not evidence either way about the gap policy.
+/-- info: "STALLED" -/
+#guard_msgs in
+#eval gapProbe (.imp (andF (.box p) (.box (.imp p q))) r) 400 .Dense
+
 end BimodalTest.BoxSpreadProbe
