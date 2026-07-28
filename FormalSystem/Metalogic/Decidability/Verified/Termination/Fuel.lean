@@ -1360,6 +1360,116 @@ theorem expandBranchWithFuel_nil_isSome (fuel : Nat) (ord : TimeOrdering)
     branchesUsed rfl
     (by simp only [Finset.card_empty, List.toFinset_nil]; omega) hbud
 
+/-! ## 4.3d residual 3 — the branching arms: what the budget costs, and what the *fuel* costs
+
+The budget half of this residual is exactly as report 06 §4 describes, and the description is
+confirmed here: in both split arms `branchesUsed'` is a `let` bound **once, before** the fold
+(`Saturation.lean:646, :675`) and the *same* value reaches every sibling (`:654, :681`), while the
+fold's accumulator carries only the `Option` and no counter. Sibling usage is therefore not
+accumulated — the budget is **path-shaped**, and the linear invariant
+`branchesUsed + β * fuel ≤ maxBranches` is preserved by every arm. `splitBudget_preserved` below
+is that preservation, with `β` a hypothesis on `branches.length` rather than the literal `3`
+(`3` is the currently *measured* maximum — `orderTrichotomy`'s three disjuncts and
+`timeLinearity`'s three arms — and a census is not a theorem).
+
+**But the budget is not the binding constraint in the split arms, and the fuel is.** This is new,
+and it corrects the residual's "orthogonal to the fuel figure" framing. Source:
+
+* `estimateBranchDifficulty` (`Saturation.lean:360-364`) is `1 + 3*tempCount + 2*modCount + len/4`,
+  so it is **always ≥ 1** — no arm is ever starved to `0` by a zero difficulty.
+* `allocateFuelProportionally (fuel+1) branches` (`:378-388`) hands each arm
+  `min (max 1 (fuel.succ * d / max 1 totalDifficulty)) fuel` — a **proportional share**, and the
+  arms' difficulties sum to `totalDifficulty`, so `k` arms of equal difficulty each receive about
+  `fuel / k`, not `fuel`.
+* The split arms recurse at `min pair.2 fuel` (`:653, :680`).
+
+So a sub-branch that still needs `m` extending steps receives roughly `fuel / k` units, and the
+progress-measure hypothesis `U.card < b.toFinset.card + fuel` that
+`expandBranchWithFuel_isSome_of_noSplit` consumes is **not** re-established at the arms by any
+amount of parent fuel that is merely `> U.card`. Fuel adequate for a split run scales like
+`β ^ depth * worldFuel'`, and `depth` is not bounded by anything proved here. The split arms
+therefore **multiply** the fuel figure; they do not sit beside it.
+
+This is the same *class* of fact as the 4.3b blocker (`buildTableau_isSome` is false at the engine
+default `maxBranches`): a real property of a deliberate engine policy, not a gap in a proof. The
+engine is untouched — the wave-3 territory contract forbids editing `allocateFuelProportionally`,
+and the proportional policy is there for good `#eval` reasons. Accordingly `NoSplit` **stays** the
+named hypothesis confining the arms, exactly as `expandBranchWithFuel_isSome_of_stock` and
+`expandBranchWithFuel_isSome_at_worldFuel'` carry it. What is discharged here is the budget half,
+which is real and reusable; what is *named* is the arm-fuel shortfall, with executable rows so it
+is evidence rather than assertion.
+-/
+
+/--
+**Every arm gets at least one unit of fuel.** The allocation's `max 1` floor survives the `min`
+whenever the parent had at least two units, so no arm is starved outright — the shortfall
+documented above is proportional, not degenerate.
+-/
+theorem allocateFuelProportionally_pos (fuel : Nat) (branches : List Branch) (n : Nat)
+    (hf : 0 < fuel) (h : n ∈ allocateFuelProportionally (fuel + 1) branches) : 1 ≤ n := by
+  simp only [allocateFuelProportionally] at h
+  rw [List.mem_map] at h
+  obtain ⟨d, _, rfl⟩ := h
+  exact Nat.le_min.mpr ⟨Nat.le_max_left _ _, hf⟩
+
+/--
+**The path-shaped budget invariant is preserved by a split.** Entering with
+`branchesUsed + β * (fuel + 1) ≤ maxBranches` and splitting into at most `β` arms, every arm —
+which receives `branchesUsed + branches.length` and at most `fuel` units — still satisfies
+`branchesUsed' + β * fuel ≤ maxBranches`.
+
+`β` enters as a hypothesis on `branches.length`, not as the literal `3`: `3` is the measured
+maximum over the current rule set, and a rule added later could break it, so the coefficient is
+carried rather than baked in. Note this needs no fact about the *fold*, precisely because the
+siblings do not accumulate each other's usage.
+-/
+theorem splitBudget_preserved {branchesUsed maxBranches fuel β k : Nat}
+    (hβ : k ≤ β) (hbud : branchesUsed + β * (fuel + 1) ≤ maxBranches) :
+    branchesUsed + k + β * fuel ≤ maxBranches := by
+  have : β * (fuel + 1) = β * fuel + β := by rw [Nat.mul_succ]
+  omega
+
+/-- The same invariant is preserved by an extending step, which consumes one unit of budget and
+one of fuel. This is the `β`-general form of the step `expandBranchWithFuel_isSome_of_noSplit`
+already takes. -/
+theorem extendBudget_preserved {branchesUsed maxBranches fuel β : Nat} (hβ : 1 ≤ β)
+    (hbud : branchesUsed + β * (fuel + 1) ≤ maxBranches) :
+    branchesUsed + 1 + β * fuel ≤ maxBranches :=
+  splitBudget_preserved hβ hbud
+
+/-- The `β`-linear budget implies the linear one the landed totality theorems consume, so
+`expandBranchWithFuel_isSome_of_noSplit` needs no weakening to accept it. -/
+theorem budget_le_of_betaBudget {branchesUsed maxBranches fuel β : Nat} (hβ : 1 ≤ β)
+    (hbud : branchesUsed + β * fuel ≤ maxBranches) :
+    branchesUsed + fuel ≤ maxBranches :=
+  le_trans (Nat.add_le_add_left (Nat.le_mul_of_pos_left _ (by omega)) _) hbud
+
+/-! ### Arm-fuel probes
+
+The shortfall above is a claim about a `#eval`-able function, so it is checked by running it
+rather than by reading it — the same discipline as the duality and world-discipline rows.
+-/
+
+section SplitFuelProbes
+
+-- Three arms, a thousand units at the parent: each arm receives a *third*, not the whole.
+-- This is the shortfall, at the smallest branching factor the rule set produces.
+/-- info: [333, 333, 333] -/
+#guard_msgs in
+#eval allocateFuelProportionally 1000 [([] : Branch), [], []]
+
+-- The floor is real: two units at the parent leave one per arm, never zero.
+/-- info: [1, 1] -/
+#guard_msgs in
+#eval allocateFuelProportionally 2 [([] : Branch), []]
+
+-- And the shortfall compounds: a second split inside an arm leaves a ninth of the original.
+/-- info: [111, 111, 111] -/
+#guard_msgs in
+#eval allocateFuelProportionally 333 [([] : Branch), [], []]
+
+end SplitFuelProbes
+
 /-! ## 4.3e — the general fuel figure `worldFuel'`
 
 `soundFuel'` is the **single-world** figure: `chain_le_soundFuel'` earns it exactly, with no
