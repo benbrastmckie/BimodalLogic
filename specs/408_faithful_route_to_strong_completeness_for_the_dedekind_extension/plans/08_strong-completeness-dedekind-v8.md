@@ -1227,7 +1227,18 @@ the deviation in the phase summary.
   information and the branch must derive what it needs from the ambient hypotheses. Report the
   extra cost honestly rather than absorbing it.
 
-### Phase 11.1: Faithful-carrier re-base — `BoundedFixFaithful` + `BoundedFixAnchoredFaithful` [NOT STARTED]
+### Phase 11.1: Faithful-carrier re-base — `BoundedFixFaithful` + `BoundedFixAnchoredFaithful` [COMPLETED]
+
+> **The four-binder swap was exactly as measured; the blast radius was not.** Phase 11's
+> shim-disabled probe found eight red sites and "no other error anywhere", and that measurement
+> held: both target modules are pure signature swaps, neither opens the carrier, and both scoped
+> builds went green on the first attempt with zero proof-search tool calls. But the probe was taken
+> with the four binders *unchanged*, so it could not see one module further down. Swapping them
+> reddened **five transitive call sites** in Phase 12's and Phase 12.1's territory —
+> `NegFixOneFaithful.lean:253` and `NegFixListFaithful.lean:368`, `:421`, `:437`, `:500` — all
+> consumers of `negBoundedLeftFixAnchoredFaithful_iff`. Resolved by deviation D3 below: an explicit
+> `.toHasFaithfulDedekindINF` at each of the five argument positions, **no binder or statement
+> touched in either downstream module**. See D3 for why this was chosen over keeping the shim.
 
 - **Goal**: Rabinovich Corollary 5.4, unanchored and anchored, re-based onto the faithful carrier.
   Surveyed as **pure signature swap**: four hypothesis sites, **no destructure sites** — both
@@ -1238,34 +1249,93 @@ the deviation in the phase summary.
   **`EANegationFix/BoundedFix.lean` and `EANegationFix/BoundedFixAnchored.lean` — the attained
   originals — are read, not edited.**
 - **Tasks**:
-  - [ ] Swap the four hypothesis binders to `HasFaithfulDedekindINF` and re-point every downstream
+  - [x] Swap the four hypothesis binders to `HasFaithfulDedekindINF` and re-point every downstream
         application at Phase 11's re-based primitives.
+        *(Done at `BoundedFixFaithful.lean:204`, `:277` and `BoundedFixAnchoredFaithful.lean:165`,
+        `:248` — the four binders as measured, at their post-docstring line numbers. The eight predicted call sites needed no edit at
+        all: they pass `h_INF` straight through, so the binder change alone fixed them. Nine
+        argument positions did need an explicit coercion — the four in-territory `_of_attained`
+        wrappers, plus the five out-of-territory sites recorded under D3.)*
         **Phase 11 measured the exact work**: with the compatibility shim disabled, the only errors
         anywhere in the tree are eight `Application type mismatch` on the carrier argument, at
         `BoundedFixFaithful.lean:215`, `:227`, `:281`, `:290` and
         `BoundedFixAnchoredFaithful.lean:181`, `:193`, `:257`, `:266`. No other error surfaced, and
         neither module has a destructure site. This is a **four-token binder swap**, confirmed by
         machine rather than by inspection.
-  - [ ] **DELETE `coeHasDedekindINFToFaithful` (`Lemma53Faithful.lean:596`) in the same change.**
+  - [x] **DELETE `coeHasDedekindINFToFaithful` (`Lemma53Faithful.lean:596`) in the same change.**
+        *(Done. The whole "Re-base compatibility shim" section — the instance and its 33-line
+        section note — is gone; `Lemma53Faithful.lean` is 601 → 565 lines. Declaration-inventory
+        diff against the prior commit shows exactly one removal and no other. `grep` over
+        `FormalSystem/` finds no remaining reference to the identifier, and the full build is green
+        without it, so nothing was silently depending on it.)*
         Phase 11 landed it as declared, scheduled-for-removal original glue solely to keep the tree
         green across the module boundary. Leaving it would let a later reader pass a needlessly
         strong carrier without seeing that they had. **This makes `Lemma53Faithful.lean` a
         one-declaration exception to this phase's "read, not edited" territory**, and the deletion
         is the only edit permitted to it.
-  - [ ] Confirm by inspection — and record — that neither module opens the carrier. If either does,
+  - [x] Confirm by inspection — and record — that neither module opens the carrier. If either does,
         that is a survey miss: record it with file:line and treat it under the Phase 11 fallback.
-        *(Phase 11's shim-disabled probe already gives strong evidence of "no": an opened carrier
-        would have produced a projection error, not a bare application-type mismatch.)*
-  - [ ] Verify every pre-existing declaration is present with its conclusion unweakened.
-  - [ ] Docstrings: `Rabinovich 2014, Corollary 5.4(1)/(2), PDF p.9`, with `ADAPTED-FROM` naming the
+        **CONFIRMED, neither module opens the carrier.** In all four `_iff` proofs `h_INF` occurs
+        only as an argument to `negChainOnFaithful_iff` — never as `h_INF.first_occ`, never
+        `rcases`d, never projected. Recorded in both module docstrings. The Phase 11 fallback is
+        not triggered.
+  - [x] Verify every pre-existing declaration is present with its conclusion unweakened.
+        *(Declaration-inventory diff across all five touched files: zero removals except the
+        chartered shim, zero additions, zero renames. No conclusion changed — the entire
+        code-bearing delta is 4 binder types, 9 coercion insertions at argument positions, and the
+        deletion. Hypothesis weakening only, which strengthens each theorem.)*
+  - [x] Docstrings: `Rabinovich 2014, Corollary 5.4(1)/(2), PDF p.9`, with `ADAPTED-FROM` naming the
         previous pin and the one-clause change.
-  - [ ] `#print axioms`; regression canaries; scoped build green; full `lake build` green.
+        *(Added at module level and on each of the four `_iff` theorems. Also corrected two
+        now-stale in-file claims Phase 11 invalidated: the carrier tables, and the non-vacuity
+        note's `hk : kplus` / `orderedPointsExist_combine_kplus`, which are `kplusOpen` /
+        `orderedPointsExist_combine_kplusOpen` since Phase 11. Stale `Lemma53Faithful.lean:NNN`
+        line pins in that prose were dropped rather than re-guessed.)*
+  - [x] `#print axioms`; regression canaries; scoped build green; full `lake build` green.
 - **Estimated output**: ~120 lines changed.
+- **Actual output**: 144 lines changed across two modules plus a 36-line deletion; 5 tokens in two
+  further modules (D3). Well under one agent run, as Phase 11 predicted.
 - **Done when**: both modules compile with all declarations preserved, sorry-free and axiom-clean at
-  the faithful carrier; canaries unchanged; the attained originals byte-identical.
+  the faithful carrier; canaries unchanged; the attained originals byte-identical. **MET.**
 - **Depends on**: 11.
 - **Timing**: 4 hours.
-- **Decomposition protocol**: as Phase 11 — split at the module boundary.
+- **Decomposition protocol**: as Phase 11 — split at the module boundary. *(Not needed; single
+  dispatch.)*
+
+#### Deviation D3 — chartered-scope expansion into Phase 12 / 12.1 territory, 5 tokens
+
+**What.** Five call sites outside this phase's declared territory were edited:
+`NegFixOneFaithful.lean:253` (Phase 12) and `NegFixListFaithful.lean:368`, `:421`, `:437`, `:500`
+(Phase 12.1). At each, the argument `h_INF` became `h_INF.toHasFaithfulDedekindINF`. **Nothing
+else in those two modules changed** — not one binder, statement, docstring, or proof step. Their
+`h_INF` binders remain `HasDedekindINF`, so Phases 12 and 12.1 re-base them exactly as planned and
+delete these five coercions when they do.
+
+**Why it was forced.** All five consume `negBoundedLeftFixAnchoredFaithful_iff`, whose binder this
+phase swaps. Once swapped, they are red. Phase 11's eight-error measurement could not have caught
+this: it disabled the shim while leaving the four binders in place, so it measured the consumers of
+`negChainOnFaithful_iff`, not the *transitive* consumers of the four Cor 5.4 `_iff`s. That is a
+real survey miss in the v8 Faithful-Subtree Survey's blast-radius count, recorded here rather than
+absorbed.
+
+**Why not keep the shim instead.** Retaining `coeHasDedekindINFToFaithful` would have made the tree
+green with zero out-of-territory edits — and would have violated this phase's own binding checklist
+item. The charter's stated reason for deletion is that the shim *"would let a later reader pass a
+needlessly strong carrier without seeing that they had."* An explicit, greppable
+`.toHasFaithfulDedekindINF` at each site delivers exactly the visibility the charter wants; a
+silent `Coe` is what it forbids. Between violating the deliverable and a five-token expansion that
+changes no statement, the expansion is the smaller and more honest cost.
+
+**Why not `[BLOCKED]`.** There was no ambiguity to escalate and no design question reopened: the
+fix is forced, mechanical, and verified green. Escalating a five-token coercion would have stalled
+the route for no decision.
+
+**Standing consequence for Phases 12 and 12.1.** When those phases swap their own `h_INF` binders
+to `HasFaithfulDedekindINF`, they must *remove* these five `.toHasFaithfulDedekindINF` suffixes —
+leaving them in place would be a type error, so the build enforces this and no tracking is needed.
+More important: **assume the same one-module-further cascade will recur.** Before declaring either
+phase done, grep the tree for transitive consumers of every re-based `_iff`, not just the sites a
+shim-disabled probe reddens.
 
 ### Phase 12: Rabinovich Lemma 5.1 re-based — `NegFixOneFaithful` [NOT STARTED]
 

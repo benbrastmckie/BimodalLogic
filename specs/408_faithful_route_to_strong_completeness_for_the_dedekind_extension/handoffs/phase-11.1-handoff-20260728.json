@@ -1,0 +1,142 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "task_number": 408,
+  "session_id": "sess_1785243543_9dde88",
+  "agent_type": "lean-implementation-hard-agent",
+  "orchestrator_mode": true,
+  "effort_flag": "hard",
+  "lit_flag": true,
+  "phase_number": "11.1",
+  "phase_title": "Faithful-carrier re-base — BoundedFixFaithful + BoundedFixAnchoredFaithful",
+  "phase_status": "COMPLETED",
+  "phases_completed": 5,
+  "phases_total": 25,
+
+  "summary": "Phase 11.1 complete. Rabinovich Cor 5.4(1)/(2), unanchored and anchored, re-based onto HasFaithfulDedekindINF: four binders swapped at BoundedFixFaithful.lean:204,:277 and BoundedFixAnchoredFaithful.lean:165,:248, with not one proof step changed in any of the four. Phase 11's eight predicted call sites needed NO edit -- each passes h_INF straight through, so the binder change alone fixed them. THE CHARTERED SHIM IS DELETED: coeHasDedekindINFToFaithful and its 33-line section note are gone, Lemma53Faithful.lean 601 -> 565 lines, with no remaining reference anywhere in FormalSystem/ and the full build green without it. CONFIRMED neither module opens the carrier -- h_INF appears only as an argument to negChainOnFaithful_iff, never rcases'd or projected -- so the v8 survey's 'no destructure sites' finding holds and the Phase 11 fallback is not triggered. One real survey miss found and recorded as deviation D3: five transitive call sites one module further down went red and were fixed with an explicit coercion, no statement touched. Full lake build green (1919 jobs), sorry-free, axiom-clean, all three canaries unchanged.",
+
+  "shim_deletion": {
+    "confirmed": true,
+    "identifier": "coeHasDedekindINFToFaithful",
+    "was_at": "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53Faithful.lean:596",
+    "what_was_removed": "The instance (4 lines) plus the entire '## Re-base compatibility shim — ORIGINAL GLUE, and scheduled for removal' section note (32 lines). 36 lines total; Lemma53Faithful.lean 601 -> 565.",
+    "evidence": [
+      "Declaration-inventory diff of Lemma53Faithful.lean against the prior commit shows EXACTLY ONE removal ('instance coeHasDedekindINFToFaithful') and no other inventory change.",
+      "grep -rn 'coeHasDedekindINFToFaithful' over FormalSystem/ returns nothing.",
+      "Full lake build is green WITHOUT the instance, so no consumer was silently relying on the coercion firing implicitly."
+    ],
+    "territory_exception_honored": "Lemma53Faithful.lean received this deletion and nothing else. Phase 11's deviation D1 (the additive HasDedekindSUP.last_occ_tp pair in Lemma53FaithfulPast.lean) was left exactly as landed -- not 'cleaned up', per the dispatch instruction."
+  },
+
+  "carrier_not_opened": {
+    "verdict": "CONFIRMED for both modules",
+    "detail": "In all four _iff proofs h_INF occurs ONLY as an argument to negChainOnFaithful_iff. It is never rcases'd, never projected, never written h_INF.first_occ. The grep hits mentioning 'h_INF.first_occ' in these modules are docstring prose DESCRIBING what negChainOnFaithful_iff does internally, not code. Phase 11's inference was right: an opened carrier would have produced a projection error, not a bare application-type mismatch.",
+    "consequence": "The v8 Faithful-Subtree Survey's 'no destructure sites' finding for these two modules is confirmed by machine. The chartered Phase 11 fallback (re-base onto HasDenseDedekindINF with explicit endpoint branches) is NOT triggered."
+  },
+
+  "measurement_vs_prediction": {
+    "phase_11_predicted": "Exactly eight Application type mismatch errors on the carrier argument at BoundedFixFaithful.lean:215,:227,:281,:290 and BoundedFixAnchoredFaithful.lean:181,:193,:257,:266, and no other error anywhere.",
+    "held": "YES for the two target modules. Both are pure signature swaps; both scoped builds green on the FIRST attempt; zero failed proof attempts; no proof-search tool (lean_multi_attempt, lean_state_search, lean_hammer_premise) invoked at any point in the phase.",
+    "surprise": "The eight sites needed NO textual edit -- they pass h_INF straight through, so swapping the binder fixed all eight at once. What DID need editing was nine argument positions: the four in-territory _of_attained wrappers (which now compose h_INF.toHasDedekindINF.toHasFaithfulDedekindINF) and five out-of-territory transitive consumers (deviation D3).",
+    "why_the_probe_missed_d3": "Phase 11's probe disabled the shim while leaving the four binders IN PLACE. It therefore measured the consumers of negChainOnFaithful_iff, not the transitive consumers of the four Cor 5.4 _iff's. The latter only redden once the binders actually move. This is a genuine blast-radius gap in the survey's counting method, not a Phase 11 execution error."
+  },
+
+  "deviations": [
+    {
+      "id": "D3",
+      "kind": "chartered-scope expansion, out of declared territory",
+      "sites": [
+        "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixOneFaithful.lean:253 (Phase 12 territory)",
+        "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixListFaithful.lean:368 (Phase 12.1 territory)",
+        "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixListFaithful.lean:421 (Phase 12.1 territory)",
+        "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixListFaithful.lean:437 (Phase 12.1 territory)",
+        "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixListFaithful.lean:500 (Phase 12.1 territory)"
+      ],
+      "what": "At each site the argument h_INF became h_INF.toHasFaithfulDedekindINF. All five consume negBoundedLeftFixAnchoredFaithful_iff, whose binder this phase swapped. NOTHING ELSE in either module changed -- not one binder, statement, docstring or proof step. Both modules' own h_INF binders remain HasDedekindINF.",
+      "why_forced": "Once the binder moves, these five are red. The full build cannot be green without either editing them or retaining the shim.",
+      "why_not_keep_the_shim": "Retaining coeHasDedekindINFToFaithful would have made the tree green with zero out-of-territory edits AND would have violated this phase's own binding checklist item. The charter's stated reason for deletion is that the shim 'would let a later reader pass a needlessly strong carrier without seeing that they had'. An explicit, greppable .toHasFaithfulDedekindINF at each site delivers exactly that visibility; a silent Coe is what the charter forbids. Between violating the deliverable and a five-token expansion that changes no statement, the expansion is the smaller and more honest cost.",
+      "why_not_blocked": "No ambiguity to escalate and no settled design reopened. The fix is forced, mechanical, and verified green. Escalating a five-token coercion would have stalled the route for no decision.",
+      "impact_on_phases_12_and_12_1": "NONE to their planned work. When they swap their own h_INF binders to HasFaithfulDedekindINF they must REMOVE these five .toHasFaithfulDedekindINF suffixes -- leaving them would be a type error, so the build enforces it and no tracking is needed."
+    }
+  ],
+
+  "route_critical_findings": [
+    {
+      "severity": "advisory, carries forward",
+      "finding": "ASSUME THE ONE-MODULE-FURTHER CASCADE RECURS. A shim-disabled probe reveals the direct consumers of the declaration being re-based; it does not reveal the transitive consumers that redden only once binders actually move. Before declaring Phase 12 or 12.1 done, grep the tree for consumers of EVERY re-based _iff, not just the sites the probe reddened. This cost 5 extra edits here; at NegFixOne/NegFixList, whose consumers include the VecEANegFixFaithful and NfMultiAnchorBridge chain, it could cost more."
+    },
+    {
+      "severity": "resolved",
+      "finding": "R11 now holds at the Corollary 5.4 layer as well as the carrier and base-layer-consumer levels: four more consumers re-based with ZERO new proof branches and zero failed attempts. Block D continues on the PRIMARY charter."
+    },
+    {
+      "severity": "unchanged scope limit",
+      "finding": "This does NOT settle negFixOneFaithful_cover (NegFixOneFaithful.lean:422) or negFixListFaithful_iff (NegFixListFaithful.lean:446). Their Case1/Case2/Case3a/b/c shape is not a two-arm shape. Phases 12 and 12.1 must still transcribe Rabinovich's exhaustive case split (Lemma 5.1, PDF p.9) rather than assume it collapses. Evidence transfers as ENCOURAGEMENT, NOT PROOF."
+    }
+  ],
+
+  "sorry_inventory": [],
+
+  "blockers": [],
+
+  "files_touched": [
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixFaithful.lean",
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixAnchoredFaithful.lean",
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53Faithful.lean",
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixOneFaithful.lean",
+    "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixListFaithful.lean",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/08_strong-completeness-dedekind-v8.md",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/09_phase-11-1-faithful-rebase-bounded-fix-summary.md",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/.orchestrator-handoff.json",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/handoffs/phase-11.1-handoff-20260728.json",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/.return-meta.json"
+  ],
+
+  "verification": {
+    "scoped_build": "green, FIRST attempt (1119 jobs); zero failed proof attempts; no proof-search tool invoked",
+    "full_lake_build": "green, 1919 jobs; no scoped-aggregator fallback needed",
+    "build_passed": true,
+    "sorry_count_outside_boneyard": 1,
+    "sorry_baseline": "WeakCanonical/Transfer.lean:1242, unchanged. The other non-top-level-Boneyard hits are under Kamp/Boneyard/, which is Boneyard.",
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "axiom_check": "9 re-based/coerced declarations plus 3 canaries plus the pinned terminus: all [propext, Classical.choice, Quot.sound]. No sorryAx anywhere.",
+    "canaries": {
+      "completeness_dense": "[propext, Classical.choice, Quot.sound] — unchanged",
+      "completeness_discrete": "[propext, Classical.choice, Quot.sound] — unchanged",
+      "countermodel_discrete_reynolds_v2": "[propext, Classical.choice, Quot.sound] — unchanged"
+    },
+    "declaration_preservation": "Declaration-inventory diff across all five touched .lean files vs the prior commit: zero removals except the chartered shim, zero additions, zero renames.",
+    "conclusions_unweakened": "Zero conclusions changed. The entire code-bearing delta is 4 binder TYPES, 9 coercion insertions at ARGUMENT positions, and the shim deletion. Hypothesis weakening only, which strengthens each theorem.",
+    "ci_chain_nfmultianchorbridge": "green (covered by the full build)",
+    "line_length_regressions": "none; >100-char line counts in all touched files are identical to the prior commit",
+    "byte_identical_confirmed": [
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFix/** (the attained originals — read, not edited)",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53FaithfulPast.lean (D1 left exactly as landed)",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/KPlusFaithful.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINF.lean",
+      "FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53.lean",
+      "FormalSystem/Metalogic/StrongCompleteness.lean"
+    ],
+    "pinned_terminus_unchanged": "consequence_completeness_dedekind_of_engine untouched; axiom profile unchanged",
+    "territory_respected": "No file under FormalSystem/Metalogic/Decidability/ or FormalSystem/Automation/ was edited or staged (concurrent task-165). Staging was path-explicit, never `git add -A`."
+  },
+
+  "commits": [
+    {"sha": "253e47ca9", "subject": "task 408 phase 11.1: Cor 5.4 re-based onto the faithful carrier; compatibility shim deleted"}
+  ],
+
+  "next_dispatch_target": {
+    "phase": "12",
+    "name": "Rabinovich Lemma 5.1 re-based — NegFixOneFaithful",
+    "immediate_next_action": "Transcribe Rabinovich's Lemma 5.1 case enumeration (PDF p.9) and the eq (5.3) use-site guard (PDF p.10) into the NegFixOneFaithful.lean module docstring, verbatim and cited, stating explicitly which K+ makes the split exhaustive — BEFORE touching a tactic. Then re-point HasDedekindINF.first_occ_tp (:164) and the eq (5.3) pieces, and re-prove negFixOneFaithful_cover (:422) at the faithful carrier.",
+    "notes": [
+      "Phase 12 owns NegFixOneFaithful.lean, which already carries one out-of-territory edit from this phase: the .toHasFaithfulDedekindINF at :253 (deviation D3). Remove that suffix when re-basing the h_INF binder at :247 — the build will enforce it.",
+      "The K+ primitive cost is already paid: kplusOpenLeftBlock and kplusOpenPred are landed and kplusLeftBlock/kplusPred were deliberately retained, so negFixOneCase1 (:264) needs only re-pointing.",
+      "Before declaring Phase 12 done, grep for transitive consumers of every _iff it re-bases. This phase's D3 shows a shim-disabled probe does not reveal them."
+    ]
+  },
+
+  "continuation_path": null,
+  "continuation_context": null
+}
