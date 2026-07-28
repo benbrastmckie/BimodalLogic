@@ -2252,9 +2252,11 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   **Verification Tier**: `interface`. Estimated output: ~200-350 lines. Done when: sorry-free; the
   gate evaluates `true` on the 7.1a corpus; `lake build FormalSystem.Metalogic.Decidability` green.
 - [ ] **7.1c The ℤ milestone — `not_valid_of_hasOpen` for `valid` and `ValidDiscrete`.**
-  **PARTIAL (2026-07-28l) — four of the six cases landed sorry-free, `untl`/`snce` owed as two
-  tracked strategic sorries.** See the 2026-07-28l STATUS banner below for what landed, the two
-  corrections it forced, and the four enumerated items the temporal cases still need.
+  **PARTIAL (2026-07-28m) — four of the six cases landed sorry-free; `untl`/`snce` owed as two
+  tracked strategic sorries, on a residual now much smaller.** Items 1 and 3 of the four
+  enumerated in the 2026-07-28l banner are LANDED sorry-free
+  (`Bridge/TemporalSaturation.lean`, `Bridge/TemporalGate.lean`); items 2 and 4 remain, joined by
+  Correction 12's lower-ray demand and a geometry step. See the 2026-07-28m STATUS banner below.
   *(deviation: altered — the induction is assembled and both headline results
   (`not_valid_of_hasOpen_int`, `not_validDiscrete_of_hasOpen_int`) are in tree and complete
   **modulo** `branchTruthAt_untl`/`branchTruthAt_snce`. The sub-phase's "done when: sorry-free at
@@ -2471,6 +2473,102 @@ None of the four touches an engine file, the region labelling, or any interface 
 - **Treating the ray self-demand as a refutation of `regionLabelCheck`.** Measured `true` on all
   six engine rows (`Tests/BimodalTest/RayRegionProbe.lean`); it is a candidate additional gate
   row, not a reason to restate the region labelling for a fourth time.
+
+
+**PHASE 7 STATUS (2026-07-28m) — still PARTIAL after an eighth dispatch. Two of 7.1c's four
+enumerated items are LANDED sorry-free; the two temporal cases are still owed, on a residual that
+is now considerably smaller and fully enumerated.** `lake build
+FormalSystem.Metalogic.Decidability` green (1115 jobs); sorry census over `Verified/` reports `2`,
+the same two tracked temporal cases and no new ones. Four green commits. No engine file touched.
+
+*What landed.* Two new `Verified/Bridge/` modules, both registered in `Decidability.lean`, and one
+new probe registered in `Tests/BimodalTest.lean`:
+
+- **`Bridge/TemporalSaturation.lean`** — item 1, done. `sat_untl_pos_future` and
+  `sat_snce_pos_past`: the existing `sat_untl_pos`/`sat_snce_pos` proofs with the
+  `futureOf`/`pastOf` membership *kept* rather than bound to `_`, reported as `strictBefore`.
+  Also `orderDual_converse`, the `pastOf → futureOf` direction of the closure duality, which the
+  `snce` mirror needs and `Fuel.lean`'s `orderDual_holds` does not supply — same three steps
+  (backward BFS soundness, `PathN.reverse`, forward BFS completeness at the same fuel).
+- **`Bridge/TemporalGate.lean`** — item 3, done and enlarged. `temporalWitnessCheck`, a fourth
+  decidable branch gate in the family `timeOrderTotal`/`boxAnchoredCheck`/`regionLabelCheck`
+  belongs to, carrying four rows — `untlNegFuture`, `snceNegPast`, `untlRaySelf`, `snceRaySelf` —
+  with four consumption lemmas, every one branch-fact-in and branch-fact-out.
+- **`Tests/BimodalTest/TemporalWitnessProbe.lean`** — twelve rows, twelve conditions each, all
+  `#guard_msgs`-pinned.
+
+*Probed before proving, for the fifth consecutive dispatch, and it changed the conclusion three
+times.* The probe corpus had to be **extended** first, and that is the finding that made the rest
+possible: **not one of the six rows `RayRegionProbe.lean` measures contains a genuine until.**
+Every until in `F p → p`, `P p → p`, `G p → p` and the three modal shapes is guard-`⊤`, where the
+acting rules are the *linear* `someFuturePos`/`someFutureNeg`; the branching `untlPos`/`untlNeg`
+arms — the ones whose second arm is `T(guard) ∧ T(U)` resp. `F(guard) ∧ F(U)` — never fire. Four
+rows carrying genuine untils and sinces were added. Then:
+
+1. **The obvious guard row is refuted, and the reason governs the whole design.** "Every known
+   time after the until carries `T(φ)` or `T(ψ)`" is `false` on nine of twelve rows — *including
+   rows with no genuine until in them*. The cause has nothing to do with untils: the guard of a
+   `someFuture` is `⊤`, and **the engine never writes `T(⊤)` on a branch**, because `⊤` is true
+   everywhere without any branch fact saying so. Any row asking the branch to *assert* a guard
+   fails on the entire `someFuture`/`somePast` fragment. The `ψ = ⊤` case must be split off and
+   discharged semantically — the split `sat_untl_pos` itself makes.
+2. **A second candidate is refuted.** "Every region label of a world denies the event of every
+   negative until in that world" is `false` on two gate-*accepted* rows. It overreaches:
+   `untlNegSubjects`'s "asserted strictly below region `j`" side condition is correct, since a
+   region below the until's own time holds no point above the evaluation point.
+3. **`untlNegFuture` is much stronger than expected and holds everywhere.** `F(U(φ,ψ))` at `(w,t)`
+   denies `φ` at *every* known time after `t`, on all twelve rows including the four the region
+   gate rejects. That settles the negative case at placed points outright — no minimal-witness
+   argument, no reasoning about the guard interval — where `sat_untl_neg`'s
+   `F(φ)@t' ∨ F(ψ)@t'` settles nothing, since neither disjunct covers `s = t'`, the case whose
+   guard interval is empty.
+
+*Correction 12 — the `ℤ` rays are asymmetric, and the lower one is the residual.* At an
+**upper-ray** point the positive case closes outright: every point above reads the same label, so
+`untlRay_self` supplies the witness and the guard interval is empty. At a **placed** point the
+witness and the intervening points are all placed, so item 2's iteration plus a genuine-guard row
+closes it. The **lower ray** is neither: a point below every placed point reaches a placed witness
+across the whole lower ray *and* every placed point below the witness, so it demands the guard at
+the ray's own label **and** at every known time below the witness. `regionLabel` chooses the
+*first eligible* candidate, not the order-minimal one, so `untlNegFuture` does not reach past it
+either. This is a strictly larger demand than the placed case, it is not carried by any row of
+`temporalWitnessCheck`, and it is where 7.1c now stops.
+
+*A finding outside 7.1c, recorded because 7.3 will meet it.* `regionLabelCheck` reports **false**
+on the branches the engine builds for `U(p,q) → q` and `S(p,q) → q` (probe rows H, J, M, N).
+`regionLabelCheck b ord = true` is a *hypothesis* of `not_valid_of_hasOpen_int`, so nothing already
+proved is affected — but 7.3 has to discharge it for the branches the engine actually produces,
+and for these it cannot. Measured here rather than discovered there.
+
+*What remains in 7.1c.* The two positive halves, plus two named gaps in the negative halves:
+(i) the geometry step `f i < f j → strictBefore ord (timeAt b i) (timeAt b j)` — the converse of
+`OrderFaithful`, which follows from the packaged order's totality and `le_intPlace_of_branchLE`,
+with `branchLT`'s equal-times disjunct vacuous because `b.knownTimes` is an `eraseDups` and hence
+`timeAt` is injective; (ii) the lower-ray negative demand of Correction 12. Both are enumerated in
+`IntTruth.lean`'s "The temporal cases — OWED" section, which this dispatch rewrote in place.
+
+#### Additions to the Phase 7 DO-NOT-RE-ATTEMPT register (2026-07-28m)
+
+- **Any gate row asking the branch to *assert* a guard** (`b.hasPosAt ψ …`) without exempting
+  `ψ = ⊤`. Refuted on nine of twelve probe rows, including rows containing no genuine until: the
+  engine never writes `T(⊤)`. Split on `guard = Formula.top` and discharge that case
+  semantically, as `sat_untl_pos` does.
+- **"Every region label denies the event of every negative until in the world"** as a gate row.
+  Refuted on two gate-accepted rows. `untlNegSubjects`'s "strictly below region `j`" side
+  condition is correct and must not be dropped; consume `regionLabel_untlNeg` for the non-placed
+  points instead.
+- **Measuring temporal demands on the `RayRegionProbe.lean`/`RegionGateProbe.lean` corpus alone.**
+  Every until in those nine rows is guard-`⊤`, so the branching `untlPos`/`untlNeg` arms never
+  fire and any conclusion drawn about them is a conclusion about a case the corpus does not
+  contain. Use `TemporalWitnessProbe.lean`'s extended corpus.
+- **`sat_untl_neg`/`sat_snce_neg` for the negative temporal case.** `F(φ)@t' ∨ F(ψ)@t'` settles
+  neither half at `s = t'`, whose guard interval is empty. Consume `untlNeg_spread`/
+  `snceNeg_spread` from `Bridge/TemporalGate.lean` instead.
+- **Re-deriving `sat_untl_pos_future`, `sat_snce_pos_past`, `orderDual_converse`, or any row or
+  consumption lemma of `temporalWitnessCheck`.** All landed sorry-free in
+  `Bridge/TemporalSaturation.lean` and `Bridge/TemporalGate.lean`.
+- **Assuming the two `ℤ` rays are mirror images for the *positive* case.** Correction 12: the
+  upper ray closes outright via `untlRay_self`; the lower ray is a strictly larger demand.
 
 ### Phase 8: Hygiene — Vacuous Theorems and Documentation [IN PROGRESS]
 

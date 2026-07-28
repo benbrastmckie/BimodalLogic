@@ -389,38 +389,70 @@ so that the remaining obligation is exactly two named lemmas with a fixed hypoth
 rather than an unscoped "run the induction". Everything else in this file is sorry-free and the
 build is green.
 
-### What is missing, item by item
+### Two of the four items are now landed; here is what each turned into
 
-1. **`sat_untl_pos` discards the ordering.** It concludes `∃ t' ∈ b.knownTimes, T(event) @ t' ∨
-   (T(guard) @ t' ∧ T(U) @ t')` — with no relation between `t'` and the until's own time. The
-   ordering is present in the proof and thrown away: `witnessPresent` scans
-   `timeOrd.futureOf t`, and the existing proof binds that membership to `_` before replacing it
-   with `mem_knownTimes_of_mem`. A strengthened `sat_untl_pos_future` keeping
-   `strictBefore ord t t' = true` is the first item, and it is a re-run of the existing proof,
-   not a new argument. `sat_snce_pos` is the mirror.
-2. **The witness has to be the *earliest* one.** `TruthAt … (untl φ ψ)` demands `ψ` at every
-   point strictly between the evaluation point and the witness. The saturation fact's second
-   disjunct (`T(guard)` and the until again, at `t'`) is the step of an iteration, and the
-   iteration needs a decreasing measure: `b.knownTimes.length - branchRank b ord t'` is the
-   obvious one, and `branchRank` (`Bridge/RegionLabel.lean`) already exists for the gate.
-3. **The ray self-demand.** An upper-ray point has no point above it outside its own ray, so
-   `T(U(φ,ψ))` at the ray's chosen label needs `T(φ)` at that same label. No row of
-   `regionLabelCheck` asks for this. `Tests/BimodalTest/RayRegionProbe.lean` measures it on the
-   engine corpus **before** it is stated here: `rayUp` and `rayDn` are `true` on all six engine
-   rows alongside `check=true`, and row G is a synthetic branch with `check=true rayUp=false`, so
-   the condition is a real strengthening the engine happens to satisfy. It is therefore a
-   candidate additional gate row in the family `timeOrderTotal`/`boxAnchoredCheck`/
-   `regionLabelCheck` already belong to — not a refutation of the gate, and not a reason to
-   restate the region labelling.
-4. **Region invariance is unavailable at `ℤ`.** `interpInvariantAt` (`Bridge/TruthLemma.lean`)
-   needs `DenselyOrdered D`, and `not_exists_gt_sameRegion_int` (`Bridge/Interpolate.lean`) is
-   the machine witness that the `untl` case's `exists_gt_sameRegion` step genuinely fails at
-   `ℤ`. So the two rays are infinite regions whose points must be handled one at a time here,
-   where at `ℚ`/`ℝ` one invariance lemma handles each region wholesale. **This corrects the
-   premise on which `ℤ` was scheduled first**: contiguity empties the *interior*, and buys
-   nothing on the rays.
+1. **`sat_untl_pos` discards the ordering — LANDED.** `Bridge/TemporalSaturation.lean` supplies
+   `sat_untl_pos_future` and `sat_snce_pos_past`, which are the existing proofs with the
+   `futureOf`/`pastOf` membership kept instead of bound to `_`, reported as `strictBefore`. The
+   file also carries `orderDual_converse`, the `pastOf → futureOf` direction of the closure
+   duality, which the `snce` mirror needs and `Fuel.lean`'s `orderDual_holds` does not give.
+2. **The witness has to be the *earliest* one — STILL OWED, and now bounded.** `TruthAt …
+   (untl φ ψ)` demands `ψ` at every point strictly between the evaluation point and the witness;
+   contiguity turns that into "at every known time strictly between", so an earliest-witness
+   iteration on `b.knownTimes.length - branchRank b ord t'` is still the shape. What the probe
+   changed is what the guard may be read off: see "the `⊤` trap" below.
+3. **The ray self-demand — LANDED, and joined by three more rows.**
+   `Bridge/TemporalGate.lean`'s `temporalWitnessCheck` carries it as `untlRaySelf`/`snceRaySelf`
+   together with `untlNegFuture`/`snceNegPast`, and exports four consumption lemmas. Every row
+   was measured on an engine corpus **extended for the purpose** — the six rows
+   `RayRegionProbe.lean` uses contain no genuine until at all, since every until in them is
+   guard-`⊤` and the branching `untlPos`/`untlNeg` arms never fire.
+4. **Region invariance is unavailable at `ℤ`** — unchanged. `interpInvariantAt`
+   (`Bridge/TruthLemma.lean`) needs `DenselyOrdered D`, and `not_exists_gt_sameRegion_int`
+   (`Bridge/Interpolate.lean`) is the machine witness that the `untl` case's
+   `exists_gt_sameRegion` step genuinely fails at `ℤ`. The two rays are infinite regions whose
+   points must be handled one at a time.
 
-None of 1–4 touches an engine file, the region labelling, or any interface already landed.
+### The `⊤` trap, which governs the rest of the design
+
+`Tests/BimodalTest/TemporalWitnessProbe.lean` refutes the obvious guard row — "every known time
+after the until carries `T(φ)` or `T(ψ)`" — on nine of twelve rows, **including rows with no
+genuine until in them**. The cause is not about untils at all: the guard of a `someFuture` is
+`⊤`, and the engine never writes `T(⊤)` on a branch, because `⊤` is true at every point of every
+model without any branch fact saying so. So *any* row asking the branch to assert a guard fails
+on the whole `someFuture`/`somePast` fragment. The `ψ = ⊤` case has to be split off and
+discharged semantically — which is the split `sat_untl_pos` itself already makes
+(`by_cases hg : guard = Formula.top`).
+
+### What the positive halves still need, precisely
+
+At a **placed** point the witness is a placed point and the intervening carrier points are
+exactly the placed points between, so item 2's iteration plus a genuine-guard row closes it. At
+an **upper-ray** point `untlRay_self` closes it outright: every point above reads the same label,
+so the witness is that label and the guard interval is empty. The **lower ray** is the residual
+shape: a point below every placed point reaches a placed witness across the whole lower ray *and*
+every placed point below the witness, so it needs the guard at the ray's own label **and** at
+every known time below the witness — a strictly larger demand than the placed case, and one no
+row of `temporalWitnessCheck` currently carries.
+
+### What the negative halves still need
+
+`untlNeg_spread` settles every **placed** point above the evaluation point, and
+`regionLabel_untlNeg` (already landed, already consumed elsewhere) settles the non-placed ones —
+its "asserted strictly below region `j`" side condition is exactly right, and the candidate row
+that drops it is refuted on the corpus. Two gaps remain, both newly identified:
+
+* **the geometry step**, `f i < f j → strictBefore ord (timeAt b i) (timeAt b j)`, i.e. the
+  converse of `OrderFaithful`. It follows from the packaged order's totality plus
+  `le_intPlace_of_branchLE`, and `branchLT`'s second disjunct (equal times, distinct indices) is
+  vacuous because `b.knownTimes` is an `eraseDups` and so `timeAt` is injective;
+* **the lower-ray negative demand.** For an evaluation point below every placed point, the label
+  read is `regionLabel … 0`, and `untlNegFuture` reaches only the known times strictly after it —
+  which need not be all of them, since `regionLabel` chooses the *first eligible* candidate and
+  not the order-minimal one. Either a further measured row or a minimality condition on the ray
+  label is owed. **Measure before stating**: two candidate rows have already been refuted.
+
+None of the above touches an engine file, the region labelling, or any interface already landed.
 -/
 
 /-- **Until case — OWED.** See the section docstring for the four items this needs. -/
