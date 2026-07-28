@@ -1620,24 +1620,34 @@ reported `unknown identifier`, per constraint 2.
 - Reusing `embed_finite_to_dense` for `ℤ` — `ℤ` is not densely ordered under any weakening.
 - A `Prop`-valued `frame_condition` — `SuccOrder`/`PredOrder` are data.
 
-### Phase 6: Interpolation — the Mathematical Core (WP4 stage 3) [NOT STARTED]
+### Phase 6: Interpolation — the Mathematical Core (WP4 stage 3) [COMPLETED]
 
 - **Goal:** A total model on the carrier `D`, constant on half-open intervals between embedded
   branch times, with truth invariance on each interval — the countermodel's engine
   (`Verified/Bridge/Interpolate.lean`, new; 02 §5.2 stage 3).
 - **Tasks:**
-  - [ ] **6.1 Model construction + propositional/modal invariance**: define the constant-on-
+  - [x] **6.1 Model construction + propositional/modal invariance** *(deviation: altered — the
+    partition is singletons `{d_i}` plus OPEN gaps `(d_i, d_{i+1})` and the two open rays, NOT
+    the half-open `[d_i, d_{i+1})` the plan text specifies; forced by a measured counterexample,
+    see the PHASE 6 STATUS banner below)*: define the constant-on-
     `[d_i, d_{i+1})` valuation extension (total on `D` — never an island, constraint 6); prove
     `interp_invariance` for atoms, propositional connectives, and `box` (universal over `Omega`,
     no accessibility). Estimated output: ~200-350 lines. Done when: those cases of the induction
     are sorry-free with the temporal cases stated and the file structured so 6.2/6.3 fill them;
     intermediate `sorry`s here are FORBIDDEN — instead split the theorem into per-case lemmas so
     each sub-phase lands complete lemmas only.
-  - [ ] **6.2 Temporal universal/existential cases**: `allFuture`/`allPast`/`someFuture`/
+  - [x] **6.2 Temporal universal/existential cases** *(deviation: altered — the four derived
+    operators are definitionally `untl`/`snce` wrapped in `imp`/`bot`, so they land as one-line
+    corollaries of 6.3; and no `sat_*` fact is consumed, because `InterpInvariant` is a statement
+    about the constructed model, not about the branch — the saturation facts belong one level up,
+    in Phase 7's truth lemma)*: `allFuture`/`allPast`/`someFuture`/
     `somePast` cases of `interp_invariance`, consuming the repaired transitive ordering facts and
     the branch saturation (`sat_*`) facts. Estimated output: ~200-400 lines. Done when: cases
     sorry-free; build green.
-  - [ ] **6.3 `untl`/`snce` cases**: discharge the open-interval guard using the trichotomy-
+  - [x] **6.3 `untl`/`snce` cases** *(deviation: altered — the open-interval guard is discharged
+    from the region structure and carrier density, not from a branch-side trichotomy fact; see
+    the banner below. Closed on the first dispatch, so the bounded-unit stopping condition never
+    fired)*: discharge the open-interval guard using the trichotomy-
     certified fact that the guard holds at every branch time strictly between source and witness
     (producible only post-R2; `untlPos` branch 2 is NOT a semantic decomposition — 02 §2.6).
     Estimated output: ~200-400 lines. **Bounded-unit stopping condition**: if after one full
@@ -1649,6 +1659,62 @@ reported `unknown identifier`, per constraint 2.
 - **Timing:** 3 dispatches, ~10 hours.
 - **Depends on:** 2, 5
 - **Territory:** `Verified/Bridge/Interpolate.lean` only.
+
+**PHASE 6 STATUS (2026-07-28d) — COMPLETE, sorry-free, both builds green.** One dispatch, not
+three. `lake build FormalSystem.Metalogic.Decidability` and `lake build BimodalTest` both green;
+`interpInvariant` verifies on `propext`/`Classical.choice`/`Quot.sound` only.
+
+*The half-open partition the plan specifies is WRONG, and the correction is forced.* Under
+`[d_i, d_{i+1})` the region is closed on the left, so its least element `d_i` has no region-mate
+below it and every past-directed operator can tell `d_i` apart from its own region. Measured
+counterexample, recorded in `Interpolate.lean`'s module docstring: `D = ℚ`, placed points
+`{0, 1}`, model constant on half-open regions with an atom `p` true exactly on `[0,1)`. Then
+`somePast p` is **false** at `0` and **true** at `1/2`, and `0` and `1/2` are half-open
+region-mates. The dual failure afflicts future-directed operators under `(d_i, d_{i+1}]`; no
+orientation of a half-open partition works.
+
+*The landed partition:* `SameRegion f r r' := ∀ i, (f i < r ↔ f i < r') ∧ (r < f i ↔ r' < f i)` —
+"`r` and `r'` stand in the same order relation to every placed point". The regions are the
+**singletons** `{d_i}` together with the **open** gaps `(d_i, d_{i+1})` and the two open rays.
+Singleton regions are invariant trivially (`sameRegion_singleton`); open regions have members on
+both sides of any member, which is exactly what the temporal cases consume. `region_total` is the
+"never an island" statement (every `r : D` is a placed point, below everything, above everything,
+or in a gap with identified endpoints); `regionExtend` is the total-on-`D` extension operator.
+
+*Density is load-bearing, and `.Discrete ℤ` is NOT covered.* "An open region has a member
+strictly above (below) any of its members" is **false on `ℤ`** — with placed points `{0,2}` the
+gap `(0,2)` is the singleton `{1}`. This is proved, not suspected:
+`not_exists_gt_sameRegion_int`. So `interpInvariant` and every temporal case carry
+`[DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]`. `.Base ℚ`, `.Dense ℚ` and `.Dedekind ℝ` all
+satisfy these (checked by `inferInstance` in the file). **`.Discrete ℤ` needs a separate route in
+Phase 7** — this is the one genuinely open item this phase creates.
+
+*No `sat_*` fact is consumed.* `InterpInvariant` is a statement about the constructed model, so
+it follows from the region structure and density alone. The branch's saturation facts are
+consumed one level up, by Phase 7's truth lemma, which is where model values get tied to what the
+branch asserts. Lemma statements are as the plan specifies; only their hypothesis lists are
+shorter.
+
+*New API for Phase 7:*
+- `SameRegion f r r'`, `regionCode`, `sameRegion_iff_regionCode_eq`; `SameRegion.refl/symm/trans`,
+  `sameRegion_convex`, `sameRegion_singleton`, `sameRegion_of_gap`, `placed_ne_of_sameRegion_ne`
+- `regionExtend f g : D → W` (total on `D`), `regionExtend_apply`, `regionExtend_congr`,
+  `regionExtend_total`
+- `exists_greatest_placed_lt`, `exists_least_placed_gt`, `exists_gt_sameRegion`,
+  `exists_lt_sameRegion`, `region_total` (all over `[Fintype ι]`)
+- `exists_region_placement fc D h` — `exists_monotone_placement` upgraded to the region structure,
+  preserving the explicit `(BranchOrder b ord h).le` shape
+- `RegionConstant f τ` (the hypothesis Phase 7's history construction must discharge),
+  `InterpInvariant f M Om χ`
+- `interpInvariant_atom/bot/imp/box/neg/top/untl/snce/someFuture/somePast/allFuture/allPast`
+- `interpInvariant hRC χ` — **the assembled induction, the interface Phase 7 starts from**
+
+**DO NOT RE-ATTEMPT in Phase 7:**
+- A half-open `[d_i, d_{i+1})` (or `(d_i, d_{i+1}]`) region partition — refuted above.
+- Dropping the density hypotheses from the temporal cases — `not_exists_gt_sameRegion_int` refutes
+  it, and it is a theorem in the file.
+- Serving `.Discrete ℤ` from `interpInvariant` — `ℤ` is not densely ordered, so the hypothesis is
+  unsatisfiable there. A discrete-specific truth lemma is required.
 
 ### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [NOT STARTED]
 
