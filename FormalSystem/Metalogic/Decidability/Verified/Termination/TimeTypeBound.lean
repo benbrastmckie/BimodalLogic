@@ -57,6 +57,9 @@ cannot be read off the branch:
 - `tableauClosed_of_closureStep_subset` — `TableauClosed C` reduces to the decidable containment
   `closureStep C ⊆ C`, so a caller exhibits a stock and runs a check instead of reproving seven
   fields.
+- `exists_confining` — every finite seed sits inside a finite emission-closed stock.
+- `exists_tableauClosed_closureIter_of_seed` — the closure iteration from any finite seed reaches
+  a `TableauClosed` stock, unconditionally.
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -437,16 +440,16 @@ private def probeGapBody (g : Formula) : Formula :=
 
 end Probes
 
-/-! ## 4.2d — the closure operator terminates, given a bound
+/-! ## 4.2d — the closure operator terminates
 
-The outstanding piece of T2 is `∃ n, closureStep (closureIter n seed) ⊆ closureIter n seed` in
+The last piece of T2 is `∃ n, closureStep (closureIter n seed) ⊆ closureIter n seed` in
 general. It has two halves, and they are of very different difficulty:
 
 1. **stabilisation** — a `⊆`-increasing chain of `Finset`s confined to a fixed finite set has to
    stop growing, and where it stops is a fixed point of `closureStep`;
 2. **confinement** — exhibiting a finite `M` with `closureStep M ⊆ M`.
 
-Half 1 is discharged here, unconditionally. It reduces the whole obligation to half 2: *any*
+Half 1 is discharged first, unconditionally. It reduces the whole obligation to half 2: *any*
 finite emission-closed superset of the seed, however crude, yields the fixed point, and the
 iteration then finds one **at or below** it — which is what makes the reduction worth having
 rather than circular. (`closureStep M ⊆ M` would already give `TableauClosed M` directly via
@@ -454,10 +457,28 @@ rather than circular. (`closureStep M ⊆ M` would already give `TableauClosed M
 `closureIter n seed` is the *smaller* stock, and it is `|C|` that T2's `2 ^ (2 * |C|)` is
 exponential in.)
 
-Half 2 is where the real work is, and the shape is known: the only chains that could diverge are
-`priorU`/`priorS` re-firing through a `someFuture` subformula of their own conclusion
-(`conjEmissions`' first two arms), and there the recursion descends. It remains outstanding, and
-as before it is carried as a hypothesis, never a `sorry`.
+Half 2 is where the real work is, and it is discharged in the two sections after this one:
+`exists_confining` builds a finite emission-closed superset for every finite seed, so
+`exists_tableauClosed_closureIter_of_seed` is unconditional. The route is worth stating in
+advance, because the obligation looks like it needs a well-founded measure and does not have one.
+
+*Why no measure works.* Every arm of `emissions` except the two Dedekind gap arms maps a trigger
+to something no larger. `priorUGap` does not: from `U(⊤, g) ∧ F(¬g)` it emits
+`U(¬g ∨ K⁺¬g, g)`, which is strictly larger on every additive weighting of the constructors —
+and any weighting light enough to make it non-increasing is too light to have finitely many
+formulas below a bound. So confinement cannot be bought by ranking formulas.
+
+*What works instead.* The growth is real but **non-recurring**. `Confining` sets are closed
+under union (`closureStep_union`), so a confining stock can be assembled from independently
+confining pieces rather than verified in one go; `exists_confining_of_forall` turns the seed-level
+obligation into a formula-level one; and then a structural induction closes each of the six cases
+by exhibiting a finite batch and checking that batch's own emissions. The gap arms' batches
+(`exists_confining_gapU`, `exists_confining_gapS`, `exists_confining_sep`) are the cases with
+content: each conclusion drags in six to ten formulas, and each of those turns out to emit
+nothing new, for reasons that are decided at the outermost differing constructor.
+
+The `#guard_msgs` cascade rows above are the same statement, measured: a trigger delayed by one
+round of closure still stabilises at round 4, however deeply the delay is nested.
 -/
 
 /-- `closureIter` applies its step on the outside as well as the inside. Needed because the
