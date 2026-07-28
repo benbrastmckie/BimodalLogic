@@ -22,7 +22,7 @@
     "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINF.lean",
     "FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
     "FormalSystem/Metalogic/WeakCanonical/PriorDefsDense.lean",
-    "FormalSystem/Metalogic/BXCanonical/StrongCompleteness.lean"
+    "FormalSystem/Metalogic/StrongCompleteness.lean (consequence_completeness_dedekind_of_engine at :274, last touched by phase 6.2)"
   ],
   "verification": {
     "scoped_build_passed": true,
@@ -30,7 +30,9 @@
     "build_passed": true,
     "build_output": "lake build -> Build completed successfully (1913 jobs), no fallback used",
     "sorry_count_new_module": 0,
-    "live_sorry_outside_boneyard": ["FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242"],
+    "live_sorry_outside_boneyard": [
+      "FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242"
+    ],
     "live_sorry_baseline_unchanged": true,
     "vacuous_count": 0,
     "axiom_count_delta": 0,
@@ -43,22 +45,38 @@
     }
   },
   "declarations_landed": [
-    "HasGuardedDedekindINF", "HasGuardedDedekindSUP",
-    "HasDenseDedekindINF", "HasDenseDedekindSUP",
-    "prior_hasGuardedDedekindINF_dense", "prior_hasGuardedDedekindSUP_dense",
-    "prior_hasDenseDedekindINF_dense", "prior_hasDenseDedekindSUP_dense",
-    "HasDedekindINF.toHasGuardedDedekindINF", "HasDedekindSUP.toHasGuardedDedekindSUP",
-    "HasDedekindINF.toHasDenseDedekindINF", "HasDedekindSUP.toHasDenseDedekindSUP",
-    "HasDenseDedekindINF.toHasGuardedDedekindINF", "HasDenseDedekindSUP.toHasGuardedDedekindSUP",
-    "HasGuardedDedekindINF.toHasDenseDedekindINF", "HasGuardedDedekindSUP.toHasDenseDedekindSUP",
-    "HasAttainedINF.toHasGuardedDedekindINF", "HasAttainedSUP.toHasGuardedDedekindSUP",
-    "hasDedekindINF_fails_of_interval_witness", "hasDedekindSUP_fails_of_interval_witness",
-    "hasDedekindINF_fails_on_dense_window", "hasDedekindSUP_fails_on_dense_window",
+    "HasGuardedDedekindINF",
+    "HasGuardedDedekindSUP",
+    "HasDenseDedekindINF",
+    "HasDenseDedekindSUP",
+    "prior_hasGuardedDedekindINF_dense",
+    "prior_hasGuardedDedekindSUP_dense",
+    "prior_hasDenseDedekindINF_dense",
+    "prior_hasDenseDedekindSUP_dense",
+    "HasDedekindINF.toHasGuardedDedekindINF",
+    "HasDedekindSUP.toHasGuardedDedekindSUP",
+    "HasDedekindINF.toHasDenseDedekindINF",
+    "HasDedekindSUP.toHasDenseDedekindSUP",
+    "HasDenseDedekindINF.toHasGuardedDedekindINF",
+    "HasDenseDedekindSUP.toHasGuardedDedekindSUP",
+    "HasGuardedDedekindINF.toHasDenseDedekindINF",
+    "HasGuardedDedekindSUP.toHasDenseDedekindSUP",
+    "HasAttainedINF.toHasGuardedDedekindINF",
+    "HasAttainedSUP.toHasGuardedDedekindSUP",
+    "hasDedekindINF_fails_of_interval_witness",
+    "hasDedekindSUP_fails_of_interval_witness",
+    "hasDedekindINF_fails_on_dense_window",
+    "hasDedekindSUP_fails_on_dense_window",
     "hasGuardedDedekindINF_not_implies_hasDedekindINF",
-    "hasDenseDedekindINF_of_dense_window", "hasDenseDedekindSUP_of_dense_window",
-    "hasGuardedDedekindINF_of_dense_window", "hasGuardedDedekindSUP_of_dense_window",
-    "denseWindowAtom", "denseWindow_kplus_at_zero", "denseWindow_kplus_fails_at_neg_one",
-    "denseWindow_endpoint_disjunct_forced", "denseWindow_guardedINF_right_disjunct"
+    "hasDenseDedekindINF_of_dense_window",
+    "hasDenseDedekindSUP_of_dense_window",
+    "hasGuardedDedekindINF_of_dense_window",
+    "hasGuardedDedekindSUP_of_dense_window",
+    "denseWindowAtom",
+    "denseWindow_kplus_at_zero",
+    "denseWindow_kplus_fails_at_neg_one",
+    "denseWindow_endpoint_disjunct_forced",
+    "denseWindow_guardedINF_right_disjunct"
   ],
   "deviations": [
     {
@@ -89,7 +107,7 @@
       "message": "task 408 phase 10: dense first-occurrence carrier from SemanticPriorU/S"
     },
     {
-      "sha": "PENDING",
+      "sha": "6ca71d368",
       "message": "task 408 phase 10: complete - import edge, plan, summary and handoff"
     }
   ],
