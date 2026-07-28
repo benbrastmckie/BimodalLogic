@@ -953,6 +953,11 @@
           "path": "specs/414_refactor_semantics_to_maximal_history_validity/reports/01_maximal-history-validity-refactor.md",
           "type": "report",
           "summary": "Tier 1 research report: 5-column lemma mapping table, verified ~85-line sorry-free prototype (extension order, isMax_timeShift, chainSup, exists_maximal_extension, isMax_of_total, emptyHistory), exact pinned-Mathlib Zorn API, new Omega-free TruthAt/valid/satisfiable signatures, exhaustive Group A/B/C blast-radius worklist with declaration counts, adversarial verification table, and 7-phase plan recommendation."
+        },
+        {
+          "path": "specs/414_refactor_semantics_to_maximal_history_validity/reports/02_group-c-reconciliation.md",
+          "type": "report",
+          "summary": "Declaration-level live/dead/portable verdict table for Report A's Group C, final 8-declaration excision list, verification of both prior reports' claims, H5 divergence audit with root cause, and planner recommendations."
         }
       ],
       "created": "2026-07-28T22:51:10Z",
