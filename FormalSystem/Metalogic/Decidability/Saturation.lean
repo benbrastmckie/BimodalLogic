@@ -276,6 +276,18 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
               expandBranchWithFuel newBranch fuel newOrd fc tracker applied' maxBranches
                 (branchesUsed + 1)
           | (.split branches, newOrd, newAppliedFormulas) =>
+              -- Per-branch eventuality trackers: the same `tracker` value goes into every
+              -- sub-branch, but it is a *seed*, not the sub-branch's answer. Each
+              -- recursive call re-runs `registerEventualities`/`fulfillEventualities`
+              -- against its own branch before consulting `findBlockedTime`, so a
+              -- branching rule whose arms have different pending sets (`untlPos`: one arm
+              -- witnesses the event, the other defers it) gets the right set on each arm.
+              -- The seed is sound in the only direction that matters for blocking: every
+              -- entry in it was registered from a formula on the parent branch, which is
+              -- contained in each sub-branch, and an eventuality already discharged on the
+              -- parent stays discharged on every extension. So the tracker cannot
+              -- under-report pending obligations, which is the direction that would let
+              -- blocking fire over an outstanding Until/Since witness.
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
               -- For a split, we check if ALL branches close
               -- If any branch stays open, we return that open branch

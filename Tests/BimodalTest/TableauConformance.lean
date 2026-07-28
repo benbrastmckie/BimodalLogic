@@ -109,10 +109,11 @@ Fuel used by the whole corpus.
 
 Fixed rather than `soundFuel`, for two reasons. First, `soundFuel` caps at 100000, and a
 per-row interpreter run at that bound would make this file the slowest in the test suite
-for no gain — every row here either reaches a verdict well under 200 or stalls for
-structural reasons that more fuel cannot fix (confirmed: counterexample A still stalls at
-fuel 100000). Second, a fixed bound keeps the table's `STALLED` entries comparable across
-commits.
+for no gain — the rows that stall here stall for structural reasons (a missing rule, so
+the branch can never saturate), which more fuel does not fix; the audit confirmed this by
+re-running counterexample A at fuel 100000 and getting the same `none`. Second, a fixed
+bound keeps the table's `STALLED` entries comparable across commits, which a
+formula-dependent bound would not.
 -/
 def conformanceFuel : Nat := 200
 
@@ -192,11 +193,16 @@ def seriesRows : List Row :=
     , note := s!"F^{k}(top) is a theorem by iterated seriality" }
 
 /-- The two machine-produced counterexample branches from the adversarial probe. Both
-formulas are valid over any linear order, both currently STALL, and each is the direct
-regression target of one calculus repair. -/
+formulas are valid over any linear order, both produced an open branch satisfied by no
+linear model, and each is the direct regression target of one calculus repair.
+
+Row A now closes: transitive `futureOf` gives `G p @ t0` its reach to `t2`, and genuine
+blocking lets the branch reach a verdict at all instead of being handed back as
+"blocked open". Row B is still open and stays that way until a rule branches on the
+relative order of two incomparable fresh times. -/
 def counterexampleRows : List Row :=
   [ { id := "A Gp->GGp",     formula := im (G p) (G (G p)), target := "CLOSED"
-    , note := "D1: futureOf is direct-edge only, so G does not propagate transitively" }
+    , note := "was D1; closes now that futureOf is a transitive closure" }
   , { id := "B lin-perm"
     , formula := im (an (F p) (F q))
         (orr (F (an p (F q))) (orr (F (an p q)) (F (an q (F p)))))
@@ -314,8 +320,8 @@ K3 Fq->F^3-top     OPEN     target=CLOSED  [DEFECT] F^3(top) is a theorem by ite
 K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by iterated seriality
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
-A Gp->GGp          STALLED  target=CLOSED  [DEFECT] D1: futureOf is direct-edge only, so G does not propagate transitively
-B lin-perm         STALLED  target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
+A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
+B lin-perm         OPEN     target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -344,8 +350,8 @@ K3 Fq->F^3-top     OPEN     target=CLOSED  [DEFECT] F^3(top) is a theorem by ite
 K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by iterated seriality
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
-A Gp->GGp          STALLED  target=CLOSED  [DEFECT] D1: futureOf is direct-edge only, so G does not propagate transitively
-B lin-perm         STALLED  target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
+A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
+B lin-perm         OPEN     target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -374,8 +380,8 @@ K3 Fq->F^3-top     OPEN     target=CLOSED  [DEFECT] F^3(top) is a theorem by ite
 K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by iterated seriality
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
-A Gp->GGp          STALLED  target=CLOSED  [DEFECT] D1: futureOf is direct-edge only, so G does not propagate transitively
-B lin-perm         STALLED  target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
+A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
+B lin-perm         OPEN     target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -406,8 +412,8 @@ K3 Fq->F^3-top     OPEN     target=CLOSED  [DEFECT] F^3(top) is a theorem by ite
 K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by iterated seriality
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
-A Gp->GGp          STALLED  target=CLOSED  [DEFECT] D1: futureOf is direct-edge only, so G does not propagate transitively
-B lin-perm         STALLED  target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
+A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
+B lin-perm         OPEN     target=CLOSED  [DEFECT] D2: no rule branches on the order of two incomparable fresh times
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -481,5 +487,90 @@ def ordA : TimeOrdering := { constraints := [(1, 2), (0, 1)] }
   | .notApplicable => "notApplicable"
 
 end TransitivityProbe
+
+section BlockingProbe
+
+/-- The audit's blocking branch: `t0` carries `p`, `t1` carries `q`. The time type at `t1`
+is therefore *not* a subset of the type at `t0`, so nothing here licenses blocking `t1`. -/
+def b0 : Branch :=
+  [ SignedFormula.pos p { world := 0, time := 0 }
+  , SignedFormula.pos q { world := 0, time := 1 } ]
+
+/-- The same shape but with `t1`'s type genuinely contained in `t0`'s: both carry `p` and
+`t0` additionally carries `q`. This is what real subset blocking looks like. -/
+def b1 : Branch :=
+  [ SignedFormula.pos p { world := 0, time := 0 }
+  , SignedFormula.pos q { world := 0, time := 0 }
+  , SignedFormula.pos p { world := 0, time := 1 } ]
+
+/-- The single-edge ordering `t0 < t1` from the audit. -/
+def ordB : TimeOrdering := { constraints := [(0, 1)] }
+
+-- `t1`'s only ancestor is `t0`. The pre-repair definition returned `[0, 1]`: it followed
+-- the successor edge back and reported `t1` as its own ancestor. Since
+-- `isSubsetBlocked b t t` holds reflexively, that alone made every time with an incident
+-- constraint "blocked".
+/-- info: [0] -/
+#guard_msgs in
+#eval ancestorTimes ordB 1
+
+-- `t0` has no ancestors at all. Pre-repair this was `[1, 0]` — both the successor and,
+-- via the round trip, itself.
+/-- info: [] -/
+#guard_msgs in
+#eval ancestorTimes ordB 0
+
+-- The subset test itself was never the problem and must still say no here.
+/-- info: false -/
+#guard_msgs in
+#eval Branch.isSubsetBlocked b0 1 0
+
+-- The audit's headline probe. Pre-repair this was `true` with `isSubsetBlocked = false`
+-- sitting right next to it — blocking firing on a branch it had no grounds to block.
+/-- info: false -/
+#guard_msgs in
+#eval isTemporallyBlocked b0 1 ordB EventualityTracker.empty
+
+-- Blocking must still fire when it is genuinely licensed, otherwise the repair has just
+-- turned the predicate off. On `b1` the type at `t1` really is contained in the type at
+-- its ancestor `t0`, and there are no pending eventualities, so blocking fires.
+/-- info: true -/
+#guard_msgs in
+#eval isTemporallyBlocked b1 1 ordB EventualityTracker.empty
+
+-- Argument-order regression for the eventuality guard. An unfulfilled Until obligation
+-- sits at the *blocked* time `t1` and nowhere else, so blocking must be withheld: `t1`
+-- still owes a witness that the ancestor is not carrying. Passing `(t_anc, t_new)` in the
+-- wrong order made this `true`, because the ancestor `t0` has nothing pending and the
+-- `all` then ranged over an empty list.
+/-- info: false -/
+#guard_msgs in
+#eval
+  let tr : EventualityTracker :=
+    { pending := [{ formula := U p q, label := { world := 0, time := 1 }, isUntil := true }] }
+  isTemporallyBlocked b1 1 ordB tr
+
+-- The converse direction, which the swapped call was accidentally testing: an obligation
+-- pending only at the *ancestor* says nothing about whether `t1` may be blocked, so
+-- blocking still fires.
+/-- info: true -/
+#guard_msgs in
+#eval
+  let tr : EventualityTracker :=
+    { pending := [{ formula := U p q, label := { world := 0, time := 0 }, isUntil := true }] }
+  isTemporallyBlocked b1 1 ordB tr
+
+-- And the obligation being duplicated at the ancestor is exactly the case the guard is
+-- meant to permit: the ancestor will discharge it, so blocking fires.
+/-- info: true -/
+#guard_msgs in
+#eval
+  let tr : EventualityTracker :=
+    { pending :=
+        [ { formula := U p q, label := { world := 0, time := 1 }, isUntil := true }
+        , { formula := U p q, label := { world := 0, time := 0 }, isUntil := true } ] }
+  isTemporallyBlocked b1 1 ordB tr
+
+end BlockingProbe
 
 end BimodalTest.TableauConformance

@@ -761,24 +761,26 @@ end TimeOrdering
 -/
 
 /--
-Compute the transitive closure of temporal predecessors of a given time index.
+The temporal ancestors of `t`: every time strictly before `t` in the transitive closure of
+the ordering constraints.
 
-Starting from time `t`, follows all backward edges in the `TimeOrdering`
-constraints to find all ancestor times. Uses fuel to avoid infinite loops
-in case of malformed orderings.
+**Predecessor edges only, and never `t` itself.** An earlier version followed
+`directPredecessors ++ directSuccessors`, which computes the *connected component* of `t`
+rather than its ancestors. That is not a near miss — it makes blocking vacuous. Following
+a successor edge and then coming back along it returns `t`, so every time incident to any
+constraint is its own "ancestor"; since `isSubsetBlocked b t t` is reflexively true,
+`isTemporallyBlocked` then fired for every such time regardless of formula content, and
+`expandBranchWithFuel` handed back the branch as a "blocked open branch" immediately.
+
+Any termination or pigeonhole argument stated against the old predicate would have been
+measuring that artifact rather than a real repetition of time types.
+
+This is exactly `TimeOrdering.pastOf`, which already performs fuel-bounded backward
+reachability with a visited set; the name is kept because the blocking code reads better
+in terms of ancestors.
 -/
 def ancestorTimes (ord : TimeOrdering) (t : TimeIndex) (fuel : Nat := 100) : List TimeIndex :=
-  match fuel with
-  | 0 => []
-  | fuel + 1 =>
-    let directPredecessors := ord.constraints.filterMap fun (a, b) =>
-      if b == t then some a else none
-    let directSuccessors := ord.constraints.filterMap fun (a, b) =>
-      if a == t then some b else none
-    let immediateAncestors := (directPredecessors ++ directSuccessors).eraseDups
-    let transitiveAncestors := immediateAncestors.flatMap fun anc =>
-      anc :: ancestorTimes ord anc fuel
-    transitiveAncestors.eraseDups
+  ord.pastOf t fuel
 
 /--
 Check if all pending eventualities at time `t_new` are either:
@@ -818,12 +820,20 @@ A time `t` is blocked if there exists some ancestor time `t_anc` such that:
 
 When both conditions hold, further expansion from time `t` cannot produce
 new information that would not also be available at the ancestor.
+
+**Argument order matters in the eventuality guard.**
+`allEventualitiesFulfilledOrDuplicated` takes `(tracker) (t_new t_anc)` — the blocked
+time first, the ancestor second. Passing them the other way round asks "is every
+eventuality pending at the *ancestor* duplicated at the *blocked* time", which is the
+converse of the required side condition and lets blocking fire while an unfulfilled
+Until/Since obligation at `t` is still outstanding. Here `t` is the candidate blocked
+time, so it goes first.
 -/
 def isTemporallyBlocked (b : Branch) (t : TimeIndex) (ord : TimeOrdering)
     (tracker : EventualityTracker := EventualityTracker.empty) : Bool :=
   let ancestors := ancestorTimes ord t
   ancestors.any fun t_anc =>
-    b.isSubsetBlocked t t_anc && allEventualitiesFulfilledOrDuplicated tracker t_anc t
+    b.isSubsetBlocked t t_anc && allEventualitiesFulfilledOrDuplicated tracker t t_anc
 
 /--
 Check if ANY active time on the branch is temporally blocked.

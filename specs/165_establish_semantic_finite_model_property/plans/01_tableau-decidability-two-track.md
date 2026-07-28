@@ -1,7 +1,7 @@
 # Implementation Plan: Verified Tableau Decidability of TM (Two-Track, Skeleton)
 
 - **Task**: 165 - establish_semantic_finite_model_property (rescoped to tableau decidability)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: ~50 hours (Track A scope carried by this task; Track B deferred to follow-up tasks)
 - **Dependencies**: None
 - **Research Inputs**:
@@ -208,12 +208,12 @@ owns only new file `Verified/RuleSpec.lean`; Phase 4 owns only new directory
 `BranchOrder.lean`, `Embed.lean`, `Carrier.lean`). No wave-3 phase edits engine files — all
 engine edits complete in waves 1-2. Reads are unrestricted.
 
-### Phase 1: Conformance Harness and Mechanical Calculus Repairs (R1, R3, R4) [NOT STARTED]
+### Phase 1: Conformance Harness and Mechanical Calculus Repairs (R1, R3, R4) [COMPLETED]
 
 - **Goal:** Executable regression corpus in place; the three mechanical WP1 defects (D1 transitive
   closure, D3 ancestor set, D3′ swapped eventuality arguments) fixed with probes green.
 - **Tasks:**
-  - [ ] **1.1 Conformance corpus** (`Tests/BimodalTest/TableauConformance.lean`, new). Rows per
+  - [x] **1.1 Conformance corpus** (`Tests/BimodalTest/TableauConformance.lean`, new). Rows per
     frame class with expected verdicts and an explicit statement of which validity notion each
     class's corpus targets (03 §6): cslib's five seriality/dual probes (`F⊤`, `¬G⊥`, `Gp → Fp`,
     `Hp → Pp`, `P⊤`), the `Fq → Fᵏ⊤` family `k = 0..6`, `Gp → GGp` (counterexample A), the
@@ -224,13 +224,13 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     committed as documented expected-current-failure rows to be flipped by later phases.
     Estimated output: ~200-300 lines. Done when: file builds; every row's current verdict is
     recorded; failing rows enumerated in the phase summary.
-  - [ ] **1.2 R1 — transitive `futureOf`/`pastOf`** (`SignedFormula.lean:676,681`): replace the
+  - [x] **1.2 R1 — transitive `futureOf`/`pastOf`** (`SignedFormula.lean:676,681`): replace the
     direct-edge filter with fuel-bounded transitive closure reusing `isTimeOrderedBefore`
     (`CountermodelExtraction.lean:198`). Re-run the §2.2 probe: `applyRule .someFutureNeg` on
     branch A now propagates to `[1, 2]`. Estimated output: ~100-200 lines incl. probe `#eval`s.
     Done when: counterexample A's probe closes under the blocking-free driver; `lake build` green;
     conformance rows updated.
-  - [ ] **1.3 R3 + R4 — genuine blocking** (`SignedFormula.lean:707,732,763`): `ancestorTimes`
+  - [x] **1.3 R3 + R4 — genuine blocking** (`SignedFormula.lean:707,732,763`): `ancestorTimes`
     follows predecessor edges only and excludes `t` itself; fix the swapped
     `t_new`/`t_anc` arguments at the `isTemporallyBlocked` call site; check the branching arms
     thread eventuality trackers per-branch (03 §4.5) and fix if not. Reprove `blocking_sound`
@@ -238,6 +238,13 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     repaired predicate. Re-run the §2.4 probe: `isTemporallyBlocked b0 1 ⟨[(0,1)]⟩ = false`.
     Estimated output: ~200-350 lines. Done when: §2.4 probe evals flipped and committed;
     `lake build` green; `Saturation.lean` `#eval` suite green or updates justified.
+    *(deviation: none required for the two contingent items — `blocking_sound` is stated about
+    `findClosure openBranch = none`, not about the blocking predicate, so it re-elaborated
+    unchanged; no `Closure.lean` monotonicity lemma broke. The 03 §4.5 per-branch tracker check
+    found the cslib defect does NOT reproduce here: each recursive `expandBranchWithFuel` call
+    re-runs `registerEventualities`/`fulfillEventualities` against its own branch before
+    consulting `findBlockedTime`, so no fix was needed; the finding is recorded in-code at the
+    `.split` arm.)*
 - **Timing:** 3 dispatches, ~7 hours.
 - **Depends on:** none
 
