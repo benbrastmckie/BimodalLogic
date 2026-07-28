@@ -2252,6 +2252,13 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   **Verification Tier**: `interface`. Estimated output: ~200-350 lines. Done when: sorry-free; the
   gate evaluates `true` on the 7.1a corpus; `lake build FormalSystem.Metalogic.Decidability` green.
 - [ ] **7.1c The ℤ milestone — `not_valid_of_hasOpen` for `valid` and `ValidDiscrete`.**
+  **PARTIAL (2026-07-28l) — four of the six cases landed sorry-free, `untl`/`snce` owed as two
+  tracked strategic sorries.** See the 2026-07-28l STATUS banner below for what landed, the two
+  corrections it forced, and the four enumerated items the temporal cases still need.
+  *(deviation: altered — the induction is assembled and both headline results
+  (`not_valid_of_hasOpen_int`, `not_validDiscrete_of_hasOpen_int`) are in tree and complete
+  **modulo** `branchTruthAt_untl`/`branchTruthAt_snce`. The sub-phase's "done when: sorry-free at
+  ℤ for both classes" is therefore NOT met and 7.1c stays unchecked.)*
   **PREREQUISITES DONE (2026-07-28k); the induction itself is NOT started.** Landed sorry-free,
   `lake build FormalSystem.Metalogic.Decidability` green (1112 jobs), `lake build BimodalTest`
   green (1975 jobs):
@@ -2303,6 +2310,88 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   verdicts; **green milestone commit**.
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
+
+**PHASE 7 STATUS (2026-07-28l) — still PARTIAL after a seventh dispatch. 7.1c's induction is
+started, four of its six cases are sorry-free, and the two headline results are in tree complete
+modulo the other two.** `lake build FormalSystem.Metalogic.Decidability` green (1113 jobs);
+`lake env lean` green on the new module; sorry census over `Verified/` reports `2`, both of them
+the tracked temporal cases named below. 7.1d, 7.1e, 7.2 and 7.3 are still not started. No engine
+file was touched.
+
+*What landed.* One new module, `Verified/Bridge/IntTruth.lean`, registered in
+`Decidability.lean`, and one new probe, `Tests/BimodalTest/RayRegionProbe.lean`, registered in
+`Tests/BimodalTest.lean`:
+
+- `stateLabel` — the label a carrier point reads: its own branch time at a placed point, its
+  region's chosen label elsewhere. With it, `Bridge/Valuation.lean`'s placed readback and
+  `Bridge/RegionLabel.lean`'s gap readback become **one** statement, `truthAt_atom_state`, and it
+  is an `iff`.
+- `BranchTruthAt` — the induction predicate, **signed** and one-directional in each sign
+  (`T(φ)@stateLabel → φ true`, `F(φ)@stateLabel → φ false`), which is the strength a saturated
+  branch actually has.
+- `branchTruthAt_atom`, `branchTruthAt_bot`, `branchTruthAt_imp`, **`branchTruthAt_box`** — all
+  sorry-free, and all proved **generic in the carrier `D` and the placement `f`**, so 7.1d
+  inherits them verbatim. The `box` case was written first, per the 2026-07-28i lesson, and it
+  closes exactly as the region-labelling decision predicted: `sat_box_grid_of_check` at placed
+  points, `regionLabel_box` at gap points, so the induction hypothesis always lands at a *label*
+  and never at a gap valuation.
+- `OrderFaithful` and `RayOnly` — the two properties the temporal cases need of a placement,
+  both stated **without** a `LinearOrder` instance on `BranchTime b`, both discharged at ℤ
+  (`orderFaithful_intPlace`, `rayOnly_intPlace`) from `Bridge/IntGaps.lean`.
+- `intPlace` — `finiteOrderEmbInt (BranchTime b)` instantiated **directly**, never through
+  `exists_monotone_placement`.
+- `not_valid_of_hasOpen_int` and `not_validDiscrete_of_hasOpen_int` — the two headline results,
+  assembled and type-correct, complete modulo `branchTruthAt_untl`/`branchTruthAt_snce`.
+
+*Correction 10 — the carrier has worlds the branch never mentioned, and the `box` case dies
+unless the model normalises them.* `regionOmega f` is `Set.range fun p : WorldIndex × D => …` —
+the range over **all** of `WorldIndex`, which is `Nat` — and `truthAt_box_iff_base` quantifies
+over exactly that range. At an unmentioned world `branchPlacedVal b w i p` is `false` for every
+atom, so one such world falsifies `□p` on a branch carrying `T(□p)`. The repair is `normWorld`:
+every carrier world is read as a world the branch knows, and `normModel` composes that onto
+`regionModel`'s two valuation arguments. No signature moves — `branchModel`'s `gapVal` type is
+untouched and `branchRegionVal` is consumed exactly as 7.1b states it.
+
+*Correction 11 — the "ℤ is the easy milestone" premise holds only for the INTERIOR, and this is
+where 7.1c actually stops.* Contiguity does empty the interior gaps (`ray_of_gap_finiteOrderEmbInt`,
+unchanged). What it does not buy is the other half of the dense route: region invariance
+(`interpInvariantAt`, `Bridge/TruthLemma.lean`) requires `DenselyOrdered D`, and
+`not_exists_gt_sameRegion_int` (`Bridge/Interpolate.lean`) is the in-tree machine witness that its
+`exists_gt_sameRegion` step fails at ℤ. So at ℤ the two rays are **infinite** regions whose points
+must be reasoned about one at a time, while at ℚ/ℝ one invariance lemma handles each region
+wholesale. The `untl`/`snce` cases are consequently *harder* on the rays at ℤ than at ℚ/ℝ, which
+inverts the sub-phase ordering's stated rationale for those two cases (it remains correct for the
+interior, and hence for everything the four landed cases do).
+
+*Probed before proving, and the hypothesis was refuted.* The obstruction Correction 11 exposes
+suggested a specific defect: the gate imports each region's demands from labels on the *other*
+side of it and asks nothing about what a region's chosen label demands **of the region itself** —
+and an upper-ray point has no witness above it outside its own ray, so `T(U(φ,ψ))` at the ray's
+label needs `T(φ)` at that same label. `Tests/BimodalTest/RayRegionProbe.lean` measured this
+before anything was stated in `Verified/`. **The hypothesis is refuted on every engine row**:
+`rayUp` and `rayDn` are `true` on all six rows measured (`F p → p`, `P p → p`, `G p → p`,
+`(□p ∧ ◇q) → r`, `(□p ∧ □(p→q)) → r`, and `F p → p` at `.Dense`), alongside `check=true`. The ray
+self-demand is therefore a **candidate additional gate row**, in the same decidable family, not a
+refutation of `regionLabelCheck`; row G pins a synthetic branch with `check=true rayUp=false`, so
+it is not vacuous. This is the fourth consecutive dispatch in which probing first changed the
+conclusion.
+
+*What remains in 7.1c — two lemmas, four items.* Enumerated in `IntTruth.lean`'s
+"The temporal cases — OWED" section and repeated here because they are the whole residual:
+
+1. **`sat_untl_pos` discards the ordering.** It concludes `∃ t' ∈ b.knownTimes, …` with no
+   relation between `t'` and the until's own time. The ordering is present in the existing proof
+   and thrown away — `witnessPresent` scans `timeOrd.futureOf t` and the proof binds that
+   membership to `_`. A strengthened `sat_untl_pos_future` keeping `strictBefore ord t t' = true`
+   is a re-run of the existing proof, not a new argument. `sat_snce_pos` is the mirror.
+2. **The witness must be the earliest one**, because `TruthAt … (untl φ ψ)` demands the guard at
+   every point strictly between. The saturation fact's second disjunct is an iteration step;
+   `b.knownTimes.length - branchRank b ord t'` is the decreasing measure, and `branchRank` already
+   exists in `Bridge/RegionLabel.lean`.
+3. **The ray self-demand** — measured `true` on the corpus as above, to be added as a gate row.
+4. **Region invariance is unavailable at ℤ** — Correction 11; the rays are handled point by point.
+
+None of the four touches an engine file, the region labelling, or any interface already landed.
 
 #### Phase 7 DO-NOT-RE-ATTEMPT register (consolidated; all prior entries carried forward verbatim)
 
@@ -2358,6 +2447,30 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   subtypes. Reuse the *shape*, never the theorem.
 - **Treating all four `Decidable` instances as one milestone** — ℤ placements are contiguous and
   have empty interior gaps; ℚ/ℝ placements do not.
+
+*Added by this dispatch (2026-07-28l):*
+- **Building the countermodel over `WorldIndex` without normalising the worlds the branch never
+  mentions.** `regionOmega` is a range over *all* of `WorldIndex` and `truthAt_box_iff_base`
+  quantifies over it, so one unmentioned world falsifies `□p` on a branch carrying `T(□p)` and
+  the `box` case is unclosable. Use `normWorld`/`normModel` (`Bridge/IntTruth.lean`).
+- **Writing bare `i < j` or `i ≤ j` for `BranchTime b` and expecting the branch order.**
+  `BranchTime b` is an `abbrev` for `Fin n`, so `Fin`'s own order instances win and a `letI` of
+  `BranchOrder b ord hV` does **not** displace them. Write `(BranchOrder b ord hV).lt/.le`
+  explicitly. Separately, the `LE` instance `finiteOrderEmbInt` carries reaches `LinearOrder`
+  through `DistribLattice` while `Monotone`/`StrictMono` reach it through `Preorder`; the paths
+  are defeq but not syntactically equal, so unification against a metavariable fails. Route
+  monotonicity through `RelEmbedding.map_rel_iff`, which has no instance arguments at all
+  (`le_intPlace_of_branchLE`). Three separate elaboration failures came out of this one trap.
+- **Assuming ℤ is uniformly easier than ℚ/ℝ.** Correction 11: contiguity empties the *interior*
+  only. The two rays are infinite regions and region invariance — which handles a whole region at
+  once at ℚ/ℝ — needs `DenselyOrdered` and is machine-refuted at ℤ by
+  `not_exists_gt_sameRegion_int`.
+- **Using `sat_untl_pos`/`sat_snce_pos` as they stand for the `untl`/`snce` positive case.** They
+  discard the witness's position in the time order, which the case cannot do without. Strengthen
+  them (the ordering is already in their proofs, bound to `_`) rather than working around them.
+- **Treating the ray self-demand as a refutation of `regionLabelCheck`.** Measured `true` on all
+  six engine rows (`Tests/BimodalTest/RayRegionProbe.lean`); it is a candidate additional gate
+  row, not a reason to restate the region labelling for a fourth time.
 
 ### Phase 8: Hygiene — Vacuous Theorems and Documentation [IN PROGRESS]
 
