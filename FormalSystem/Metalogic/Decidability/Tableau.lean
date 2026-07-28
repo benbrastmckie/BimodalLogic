@@ -169,6 +169,26 @@ inductive TableauRule : Type where
       position in a per-formula priority list is the wrong one. See
       `serialityRules` / `expandOnce` for the globally-last scheduling it requires instead. -/
   | serialityRule
+  /-- Time linearity (BX11, order level). Takes two times the branch knows but the ordering
+      leaves incomparable and branches three ways on their relative position: `t₁ < t₂`,
+      `t₂ < t₁`, or `t₁ = t₂`. Returns `.branchingOrdered`, because each arm needs a *different*
+      `TimeOrdering` and the identification arm needs a different branch as well.
+
+      **Arm 3 cannot be dropped.** `t₁ < t₂ ∨ t₁ = t₂ ∨ t₂ < t₁` is the trichotomy of a linear
+      order; a two-arm version forces the two times to be distinct and loses exactly the models
+      in which one instant witnesses both existentials.
+
+      **Not a replacement for `orderTrichotomy`, and vice versa.** `orderTrichotomy` branches on
+      `temp_linearity` *formulas*, which mint fresh witness times rather than ordering the two
+      existing ones — which is why the W rows stayed incomparable while it was the only
+      order-facing rule present. The two emit different things (formulas vs. ordering
+      constraints) and coexist.
+
+      Base rule in the soundness sense — `Axiom.temp_linearity` is a base axiom — but, like
+      `serialityRule` and for the same reason, deliberately **absent from `allRulesForFC`**: it
+      is keyed on the branch's time structure, not on any formula's shape. See
+      `linearityRules` / `expandOnce` for the third-stage scheduling it requires. -/
+  | timeLinearity
   deriving Repr, DecidableEq, BEq, Hashable
 
 /-!
@@ -380,7 +400,31 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula)
   -- which filters its two outputs against the branch and reports `.notApplicable` when both are
   -- already present. Scheduling — not applicability — is what keeps this rule in its place.
   | .serialityRule, _, _ => true
+  -- Time linearity: keyed on the branch's time structure, not on the formula's shape, for the
+  -- same reason as seriality. The real suppression is in `applyRule`, which reports
+  -- `.notApplicable` as soon as no two known times are incomparable.
+  | .timeLinearity, _, _ => true
   | _, _, _ => false
+
+/--
+The first pair of branch times the ordering leaves incomparable, scanned in `knownTimes` order.
+
+`timeLinearity`'s trigger, factored out so the rule's arm reads as a two-case match and the
+stage lemmas can `rcases` on this call rather than on an inlined `findSome?` term.
+
+Incomparable means exactly what `Saturation.timeOrderTotal` means by it — neither time is in the
+other's transitive future — and the quantification is over `Branch.knownTimes`, with no
+common-predecessor or shared-world side condition. See the rule's arm in `applyRule` for why the
+narrower trigger cannot meet the totality criterion.
+-/
+def firstIncomparablePair (b : Branch) (ord : TimeOrdering) : Option (TimeIndex × TimeIndex) :=
+  let ts := b.knownTimes
+  ts.findSome? fun t₁ =>
+    let futs := ord.futureOf t₁
+    let pasts := ord.pastOf t₁
+    match ts.find? fun t₂ => t₂ != t₁ && !futs.contains t₂ && !pasts.contains t₂ with
+    | some t₂ => some (t₁, t₂)
+    | none => none
 
 /--
 Helper: collect T(□A) and F(◇A) formulas at a specific world and time,
@@ -1247,6 +1291,37 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
                    SignedFormula.pos (Formula.somePast Formula.top) l].filter
                     fun f => !branch.contains f
       if outs.isEmpty then (.notApplicable, timeOrd) else (.persistent outs, timeOrd)
+  -- Time linearity: find the first pair of known times the ordering leaves incomparable and
+  -- branch on their trichotomy.
+  --
+  -- **The trigger is "incomparable pair of `knownTimes`", full stop** — no common-predecessor
+  -- and no shared-world restriction. Report 04 §Q2.4 describes the trigger as the one
+  -- `orderTrichotomy` already computes (incomparable siblings under a common predecessor, same
+  -- world), but that trigger cannot meet the done-criterion the same report sets, which is
+  -- `timeOrderTotal` — and `timeOrderTotal` quantifies over *every* pair of `b.knownTimes`,
+  -- with no predecessor or world condition. Measured on the corpus's own control row W6
+  -- (`F p → F(F p)`): times `0` and `3` are incomparable and have no common predecessor at all
+  -- (`pastOf 3 = []`), so a common-predecessor trigger leaves that pair unordered and the row
+  -- reads `total=false` forever. The wider trigger is what the criterion forces.
+  --
+  -- Soundness is `Axiom.temp_linearity` read at the order level: on a linear order any two
+  -- instants stand in exactly one of the three relations, so the three arms are jointly
+  -- exhaustive and adding the disjunction preserves satisfiability. Arms 1 and 2 add one
+  -- constraint and leave the branch alone; arm 3 identifies the two instants in both the branch
+  -- and the ordering.
+  --
+  -- Self-suppressing: once every pair of known times is comparable there is no candidate and
+  -- the rule reports `.notApplicable`, so it cannot re-fire on a pair it has already settled.
+  -- That is also why `findApplicableRule` adds no guard for `.branchingOrdered`.
+  | .timeLinearity, _, _ =>
+      match firstIncomparablePair branch timeOrd with
+      | none => (.notApplicable, timeOrd)
+      | some (t₁, t₂) =>
+          (.branchingOrdered
+            [ (branch, timeOrd.addFuture t₁ t₂)
+            , (branch, timeOrd.addFuture t₂ t₁)
+            , (branch.identifyTime t₂ t₁, timeOrd.identifyTime t₂ t₁) ],
+           timeOrd)
   | _, _, _ => (.notApplicable, timeOrd)
 
 /--
@@ -1406,6 +1481,82 @@ def findApplicableSerialRule (sf : SignedFormula) (branch : Branch := [])
 def findUnexpandedSerial (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty) :
     Option SignedFormula :=
   b.find? fun sf => (findApplicableSerialRule sf b timeOrd).isSome
+
+/-!
+### Time linearity: built, gated, NOT YET SCHEDULED
+
+**Read this before wiring the stage below into `expandOnce`.** `timeLinearity`, its stage
+helpers and `Branch`/`TimeOrdering.identifyTime` are complete and reviewable, but the third
+stage is deliberately **not** wired into `expandOnce` / `expandOnceUnblocked`. Wiring it makes
+the engine report `F p → F(F p)` as CLOSED at `.Base` (conformance row C4, `target=OPEN`:
+there is no density over an arbitrary linear order, and ℤ with `p` true only at `1` is a
+countermodel). That is a real unsoundness, and it is **not** a defect in this rule.
+
+*What actually goes wrong*, isolated by running C4 at `.Base` with the arms varied and by
+calling `expandBranchWithFuel` directly instead of `buildTableau`:
+
+- identification arm alone → OPEN, with a genuinely total order (`5 < 0 < 1 < 2 < 4`) that is a
+  correct countermodel; arms 2+3 → OPEN likewise. Any variant containing arm 1 → CLOSED.
+- Calling `expandBranchWithFuel` directly shows it returns `.inr openBranch` — an **open**
+  branch — for which `findUnexpanded ≠ none`. So the fuel loop hands back a branch that is
+  saturated only in the *unblocked* sense.
+- `expandBranchWithFuel`'s split fold short-circuits on the first sub-branch that comes back
+  `.inr` and never explores the remaining arms. `buildTableau` (`Saturation.lean`) then runs
+  `saturateBlocked` on that branch, which closes it, and reports `.allClosed` — so the
+  abandoned sibling arms are silently counted as closed.
+
+The defect is therefore in the open-branch contract between the split fold and
+`buildTableau`'s post-blocking pass, not in the trichotomy. It is pre-existing and merely
+*exposed* here: it needs a rule whose arms come back open-but-not-saturated, and before
+`timeLinearity` no corpus row produced one. Repairing it changes what `expandBranchWithFuel`
+may return while siblings remain unexplored, which Phases 5 and 7 consume, so it is out of this
+sub-phase's scope.
+
+Everything below is the finished rule, kept so the repair dispatch has only to re-wire the two
+`match` arms in `expandOnce`/`expandOnceUnblocked` (and restore the third-stage cases in
+`expandOnceUnblocked_pick_ne_nil` / `_adds_new`, which the two stage lemmas already supply).
+
+### When it is scheduled, it goes third, after seriality
+
+`timeLinearity` is not in `allRulesForFC` either, for the same reason as `serialityRule` — it is
+keyed on the branch's time structure rather than on any formula's shape — but its stage belongs
+*after* seriality's, not alongside it, and the order between the two is forced rather than
+stylistic.
+
+Seriality mints times. Time linearity orders the times that exist. Running linearity first would
+order a time structure that seriality then extends, and every extension reintroduces
+incomparabilities — the two stages would ping-pong, and each linearity firing is a **three-way
+split**, so the ping-pong is paid for in branches rather than in steps. Running it strictly last
+means the ordering work is done once, against a time structure nothing else is going to grow.
+
+That is also why it is not merged into `serialityRules`: `findApplicableSerialRule` walks its
+list per *formula*, so a two-element list would let linearity fire at the first formula seriality
+happens to have nothing to do at, which is the same "last per formula, not last globally" defect
+the section above measured for seriality itself.
+-/
+
+/-- The third-stage rule set: time linearity alone. Deliberately disjoint from both
+`allRulesForFC` and `serialityRules`. -/
+def linearityRules : List TableauRule := [.timeLinearity]
+
+/-- `findApplicableRule` over the linearity stage. `timeLinearity` returns only
+`.notApplicable` or `.branchingOrdered`, and it is self-suppressing (no candidate pair means
+no result), so this needs none of the `.linear`/`.branching` guard structure. -/
+def findApplicableLinearityRule (sf : SignedFormula) (branch : Branch := [])
+    (timeOrd : TimeOrdering := TimeOrdering.empty) :
+    Option (TableauRule × RuleResult × TimeOrdering) :=
+  linearityRules.findSome? fun rule =>
+    let (result, newOrd) := applyRule rule sf branch timeOrd
+    match result with
+    | .notApplicable => none
+    | _ => some (rule, result, newOrd)
+
+/-- The first formula the linearity stage can serve. Since `timeLinearity` is keyed on the
+branch rather than on the formula, this is "the head of a non-empty branch that still has two
+incomparable known times". -/
+def findUnexpandedLinearity (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty) :
+    Option SignedFormula :=
+  b.find? fun sf => (findApplicableLinearityRule sf b timeOrd).isSome
 
 /-!
 ## Uniform Branch Guards
@@ -2083,8 +2234,41 @@ theorem findApplicableSerialRule_not_linear
   · simp only [hE, if_false, Bool.false_eq_true] at h
     simp at h
 
+/--
+The linearity stage never reports `.linear`.
+
+`timeLinearity`'s `applyRule` arm returns `.notApplicable` or `.branchingOrdered` and nothing
+else, and `findApplicableLinearityRule` discards the former, so the stage's only possible result
+is an ordered split. Stated as two lemmas (`_not_linear`, `_not_persistent`) rather than one
+existential because that is the shape `expandOnceUnblocked_pick_ne_nil` consumes.
+-/
+theorem findApplicableLinearityRule_not_linear
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {rule : TableauRule} {ord' : TimeOrdering} {fs : List SignedFormula}
+    (h : findApplicableLinearityRule sf b ord = some (rule, RuleResult.linear fs, ord')) :
+    False := by
+  unfold findApplicableLinearityRule linearityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil, applyRule] at h
+  -- `rcases` on the trigger rather than `split at h`: the result sits under a `Prod.fst`
+  -- projection, which `split` cannot see through (the tactic note in the ProgressLemmas
+  -- section records the same obstacle).
+  rcases hc : firstIncomparablePair b ord with _ | pr <;> rw [hc] at h <;> simp at h
+
+/-- The linearity stage never reports `.persistent`; see `findApplicableLinearityRule_not_linear`. -/
+theorem findApplicableLinearityRule_not_persistent
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {rule : TableauRule} {ord' : TimeOrdering} {fs : List SignedFormula}
+    (h : findApplicableLinearityRule sf b ord = some (rule, RuleResult.persistent fs, ord')) :
+    False := by
+  unfold findApplicableLinearityRule linearityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil, applyRule] at h
+  -- `rcases` on the trigger rather than `split at h`: the result sits under a `Prod.fst`
+  -- projection, which `split` cannot see through (the tactic note in the ProgressLemmas
+  -- section records the same obstacle).
+  rcases hc : firstIncomparablePair b ord with _ | pr <;> rw [hc] at h <;> simp at h
+
 /-- The result tail shared by `expandOnce`, `expandOnceUnblocked` and `expandOnceNoFresh`,
-factored out over an arbitrary pick.
+factored out over an abstract pick.
 
 Reporting `.extended nb` means the pick supplied a `.linear` or `.persistent` result and `nb` is
 that result appended to `b`. Stating it over an abstract `pick` is what lets the two-stage

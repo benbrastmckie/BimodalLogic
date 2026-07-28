@@ -350,6 +350,23 @@ def knownTimes (b : Branch) : List TimeIndex :=
   (b.map (·.label.time)).eraseDups
 
 /--
+Relabel every signed formula sitting at time `src` to sit at time `tgt` instead.
+
+The branch half of temporal identification: the two times are asserted to be the *same*
+instant, so everything asserted at one is asserted at the other. `src` disappears from
+`knownTimes` (nothing is left carrying it), which is the whole point — a partial order cannot
+be made total by adding edges alone if two of its elements are meant to be equal rather than
+ordered, so identification has to remove one of them.
+
+Duplicates are erased: a formula already present at `tgt` and also present at `src` would
+otherwise appear twice, and the branch is used as a set by `contains`/`knownTimes`.
+-/
+def identifyTime (b : Branch) (src tgt : TimeIndex) : Branch :=
+  (b.map fun sf =>
+    if sf.label.time == src then { sf with label := { sf.label with time := tgt } } else sf
+  ).eraseDups
+
+/--
 Maximum time index in the branch (0 if empty).
 Used to compute the next fresh time index.
 -/
@@ -671,6 +688,26 @@ def addFuture (ord : TimeOrdering) (t t_new : TimeIndex) : TimeOrdering :=
 /-- Add a past constraint: `t_new` is strictly before `t`. -/
 def addPast (ord : TimeOrdering) (t t_new : TimeIndex) : TimeOrdering :=
   { constraints := (t_new, t) :: ord.constraints }
+
+/--
+Rewrite every constraint mentioning `src` to mention `tgt` instead.
+
+The ordering half of temporal identification, the companion of `Branch.identifyTime`.
+`TimeOrdering` is a list of strict `<` pairs and cannot express equality, so identifying two
+instants is done by substitution rather than by adding an edge.
+
+Constraints that collapse to `(t, t)` are dropped. They are not merely redundant: `(t, t)`
+asserts `t < t`, which `futureOf` would then propagate into a spurious cycle making every
+time reachable from every other, and `timeOrderTotal` would report `true` for a branch whose
+order is in fact inconsistent. Duplicates are erased for the same reason `Branch.identifyTime`
+erases them — the constraint list is read as a set.
+-/
+def identifyTime (ord : TimeOrdering) (src tgt : TimeIndex) : TimeOrdering :=
+  { constraints :=
+      (ord.constraints.filterMap fun (a, b) =>
+        let a' := if a == src then tgt else a
+        let b' := if b == src then tgt else b
+        if a' == b' then none else some (a', b')).eraseDups }
 
 /-- Immediate successors of `t`: the `b` of every constraint `(t, b)`.
 

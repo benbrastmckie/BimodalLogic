@@ -234,6 +234,7 @@ def ruleToString : TableauRule → String
   | .priorUGap               => "priorUGap"
   | .priorSGap               => "priorSGap"
   | .serialityRule           => "serialityRule"
+  | .timeLinearity           => "timeLinearity"
   | .sepRule                 => "sepRule"
 
 /--
