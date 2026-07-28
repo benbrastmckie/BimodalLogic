@@ -2252,11 +2252,12 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   **Verification Tier**: `interface`. Estimated output: ~200-350 lines. Done when: sorry-free; the
   gate evaluates `true` on the 7.1a corpus; `lake build FormalSystem.Metalogic.Decidability` green.
 - [ ] **7.1c The ℤ milestone — `not_valid_of_hasOpen` for `valid` and `ValidDiscrete`.**
-  **PARTIAL (2026-07-28m) — four of the six cases landed sorry-free; `untl`/`snce` owed as two
-  tracked strategic sorries, on a residual now much smaller.** Items 1 and 3 of the four
-  enumerated in the 2026-07-28l banner are LANDED sorry-free
-  (`Bridge/TemporalSaturation.lean`, `Bridge/TemporalGate.lean`); items 2 and 4 remain, joined by
-  Correction 12's lower-ray demand and a geometry step. See the 2026-07-28m STATUS banner below.
+  **PARTIAL (2026-07-28n) — four of the six cases landed sorry-free, and both temporal cases are
+  now split into halves with both NEGATIVE halves landed sorry-free. The two remaining sorries
+  are `branchTruthAt_untl_pos` and `branchTruthAt_snce_pos` and nothing else.** Items 1 and 3 of
+  the four enumerated in the 2026-07-28l banner landed at 2026-07-28m; the geometry step and the
+  lower-ray negative demand landed at 2026-07-28n, closing the negative direction outright. See
+  the 2026-07-28n STATUS banner below.
   *(deviation: altered — the induction is assembled and both headline results
   (`not_valid_of_hasOpen_int`, `not_validDiscrete_of_hasOpen_int`) are in tree and complete
   **modulo** `branchTruthAt_untl`/`branchTruthAt_snce`. The sub-phase's "done when: sorry-free at
@@ -2569,6 +2570,116 @@ with `branchLT`'s equal-times disjunct vacuous because `b.knownTimes` is an `era
   `Bridge/TemporalSaturation.lean` and `Bridge/TemporalGate.lean`.
 - **Assuming the two `ℤ` rays are mirror images for the *positive* case.** Correction 12: the
   upper ray closes outright via `untlRay_self`; the lower ray is a strictly larger demand.
+
+**PHASE 7 STATUS (2026-07-28n) — still PARTIAL after a ninth dispatch, but the temporal residual
+is now HALVED and the remaining half is one direction, not two.** Both **negative** temporal
+halves are landed sorry-free. `lake build FormalSystem.Metalogic.Decidability` green; sorry
+census over `Verified/` reports `2`, and both are now `branchTruthAt_untl_pos` /
+`branchTruthAt_snce_pos` — the negative cases have left the inventory. Three green commits. No
+engine file touched.
+
+*The split came first, and it is what made the rest possible.* `branchTruthAt_untl` is now
+`fun w r => ⟨branchTruthAt_untl_pos … w r, branchTruthAt_untl_neg … w r⟩`, and likewise for
+`snce`. Nothing in the negative direction touches the earliest-witness iteration or the guard at
+all, so the whole positive-side residual of Correction 12 stays out of its way. The four landed
+non-temporal cases, `sat_untl_pos_future`, `sat_snce_pos_past`, `orderDual_converse` and every
+row and consumption lemma of `temporalWitnessCheck` were consumed, not re-derived.
+
+*Measured before stated, for the sixth consecutive dispatch.* `untlNegRayLow` — "a negative until
+asserted at its world's **lower-ray** label denies its event at *every* known time" — reports
+`true` on **eleven of twelve** corpus rows, the single `false` being row N, where
+`regionLabelCheck` already reports `false`. That is the same acceptance standard the four
+existing rows met. The strictly weaker "at its own label only" variant was measured alongside as
+a diagnostic and fails on exactly that same row, so extending the demand from the ray label to
+the whole of `b.knownTimes` costs nothing anywhere in the corpus — and the strong form is the one
+the case needs. Adopted with its mirror `snceNegRayUp` as rows 5 and 6 of `temporalWitnessCheck`,
+with two consumption lemmas in the established branch-fact-in/branch-fact-out shape.
+
+*The rays swap between the two operators.* `untl` needs its extra row at the **lower** ray and
+`snce` at the **upper** one, and the leaf `untl` closes with `regionLabel_untlNeg` at `j = n` its
+mirror closes with `regionLabel_snceNeg` at `j = 0`, whose `0 ≤ branchRank` side condition is
+free where the other needed `branchRank_lt_length`. This is the negative-direction counterpart of
+Correction 12's positive-direction asymmetry, and it runs the same way round.
+
+*What else landed, all sorry-free.*
+
+- **`List.eraseDups` is `Nodup`, proved rather than imported.** The import closure has
+  `eraseDups_cons` and `mem_eraseDups` but **no** `Nodup` lemma for `eraseDups` at all;
+  Mathlib's `nodup_dedup` is about `List.dedup`, a different function. The recursion is on the
+  *filtered* tail, so it is a `length` recursion and not a structural one. Hence
+  `knownTimes_nodup` and `timeAt_injective` (`Bridge/BranchOrder.lean`).
+- **`OrderReflecting` and `RaySplit`**, beside `OrderFaithful`/`RayOnly`, with both discharges at
+  `ℤ`. Order reflection is the geometry step the 2026-07-28m banner owed, and `timeAt_injective`
+  is exactly what collapses `branchLT`'s equal-times disjunct, which would otherwise leave a tie
+  the case cannot use. `RaySplit` is the position to `RayOnly`'s label: the index says which
+  label a non-placed point reads, the position says which points lie above it, and the temporal
+  cases need both.
+- **`branchRank_lt_length`**, which is what lets a *placed* point reach the upper ray's label
+  through `regionLabel_untlNeg`'s "strictly below region `j`" side condition at `j = n`.
+- **`isPlacedCode_of_between`** — contiguity in the form the induction consumes it: a carrier
+  point strictly between two placed points is itself placed. Proved now rather than next
+  dispatch because walking the positive placed-point leaf confirmed its shape. This is the step
+  that turns "the guard at every carrier point strictly between" into "at every known time
+  strictly between", and it is precisely where `ℤ` parts company with `ℚ`/`ℝ`.
+
+*The negative `untl` case tree, for the record — four live leaves and three vacuous ones.* Write
+`r` for the evaluation point and `s` for the witness the semantics hands back, so `r < s`.
+`r` placed / `s` placed closes by `OrderReflecting` + `untlNeg_spread`; `r` placed / `s` upper
+ray by `regionLabel_untlNeg` at `j = n`; `r` placed / `s` lower ray is vacuous by `RaySplit`;
+`r` **lower ray** is one leaf covering all three shapes of `s`, because every label any point
+reads is a known time and that is exactly row 5's reach — this is the leaf Correction 12 named;
+`r` upper ray forces `n ≠ 0`, makes `s` placed and `s` lower ray vacuous, and closes `s` upper
+ray against `r`'s own label.
+
+*What remains in 7.1c — one direction, and its row shapes are already measured.* Only
+`branchTruthAt_untl_pos` and `branchTruthAt_snce_pos`. Walking the placed-point leaf confirms
+`untlPosGuardedWitness` is exactly the row it wants, and `Tests/BimodalTest/TemporalWitnessProbe.lean`
+already reports `gw` and `rdG` (`untlRayDnGuard`) `true` on **every** row the region gate
+accepts, so both row shapes are measured and adoptable — they were deliberately **not** stated
+this dispatch, because the discipline that has held for six dispatches is measure-then-state-
+then-consume in one step, and an unconsumed row in the gate is dead weight a reviewer cannot
+validate. Two obstructions are newly identified and neither is a row:
+
+1. **The upper-ray positive leaf needs a witness to exist at all.** At an upper-ray `r` the
+   design says `untlRay_self` closes it outright because the guard interval is empty — but that
+   argument silently needs *some* `s > r` that is still on the upper ray, i.e. a successor-like
+   property of the carrier. `D` is only an `AddCommGroup` + `LinearOrder` here, so `r + 1` is not
+   available generically; at `ℤ` it is. Either a new abstract property beside `RayOnly`/
+   `RaySplit` ("the upper ray has no greatest element and everything above an upper-ray point is
+   upper-ray") or an `ℤ`-only statement of the positive halves is owed. **This was not visible
+   before the negative halves were written.**
+2. **The lower-ray positive leaf** is Correction 12's residual, unchanged: the guard at the ray's
+   own label *and* at every known time below the witness. `untlRayDnGuard` is the measured row
+   for it.
+
+The `ψ = ⊤` split is unchanged and still governs: the engine never writes `T(⊤)`, so the guard
+row must exempt `ψ = Formula.top` and that case takes its witness from the already-landed
+`sat_untl_pos_future` instead.
+
+*Carried forward, unchanged and still live.* `regionLabelCheck` reports **false** on the branches
+the engine builds for `U(p,q) → q` and `S(p,q) → q` (probe rows H, J, M, N). It is a *hypothesis*
+wherever used, so nothing proved is affected — but 7.3 has to discharge it for real engine
+branches, and `temporalWitnessCheck`, now six rows, will need the same treatment.
+
+#### Additions to the Phase 7 DO-NOT-RE-ATTEMPT register (2026-07-28n)
+
+- **Re-deriving the negative temporal halves.** `branchTruthAt_untl_neg` and
+  `branchTruthAt_snce_neg` are landed sorry-free. Likewise `OrderReflecting`, `RaySplit`,
+  `isPlacedCode_of_between`, `branchRank_lt_length`, `nodup_eraseDups`, `knownTimes_nodup`,
+  `timeAt_injective`, rows 5-6 of `temporalWitnessCheck` and their two consumption lemmas.
+- **Looking for a `Nodup` lemma for `List.eraseDups` in Mathlib or Batteries.** There is none in
+  this import closure — `grep` and an `exact?` probe both come back empty, and
+  `List.nodup_dedup` is about `List.dedup`. It is proved locally in `Bridge/BranchOrder.lean`.
+- **Assuming an upper-ray point has a carrier point above it** without an explicit property. `D`
+  is only an `AddCommGroup` + `LinearOrder` at the point where the temporal cases are stated;
+  `RayOnly` and `RaySplit` say nothing about inhabitance above the upper ray. See obstruction 1
+  above.
+- **Stating the two measured positive rows in `Verified/` before the proof that consumes them.**
+  `untlPosGuardedWitness` and `untlRayDnGuard` are measured and adoptable, but a row that enters
+  the gate without a consumption lemma is unvalidatable dead weight and makes 7.3's discharge
+  obligation larger for nothing. State them in the same step that consumes them.
+- Plus every prior entry, all carried forward unchanged; nothing this dispatch did contradicts
+  any of them.
 
 ### Phase 8: Hygiene — Vacuous Theorems and Documentation [IN PROGRESS]
 
