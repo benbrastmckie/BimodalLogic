@@ -430,6 +430,27 @@ def RaySplit (b : Branch) (f : BranchTime b → D) : Prop :=
     (cutIndex (regionCode f r) = b.knownTimes.length → ∀ i : BranchTime b, f i < r)
 
 /--
+**The carrier is stepped**: every point has an immediate successor and an immediate predecessor.
+
+This is the resolution of the witness-existence obstruction the negative halves exposed. At an
+**upper-ray** evaluation point the positive `untl` case closes by `untlRay_self` — every point
+above reads the same label, so the witness is that label — but the argument silently needs *some*
+`s > r` to be the witness, and a guard interval `(r,s)` it can empty. Neither `RayOnly` nor
+`RaySplit` says anything about inhabitance above the upper ray, and where the temporal cases are
+stated `D` is only an `AddCommGroup` + `LinearOrder`, so `r + 1` is not available. This is stated
+as a property of the carrier rather than of the placement because that is all it is, and it is
+discharged at `ℤ` by `r + 1` and `r - 1` (`stepped_int`).
+
+Like `RayOnly` and `RaySplit` it is **false** at `ℚ` and `ℝ`, and like them it is used only by the
+temporal cases; sub-phase 7.1d replaces all three at once with `Bridge/Interpolate.lean`'s
+`exists_gt_sameRegion`/`exists_lt_sameRegion`, which supply a witness by density instead of by a
+step. So this adds no restriction that was not already present.
+-/
+def Stepped (C : Type) [LinearOrder C] : Prop :=
+  (∀ r : C, ∃ s : C, r < s ∧ ∀ u : C, r < u → ¬ u < s) ∧
+  (∀ r : C, ∃ s : C, s < r ∧ ∀ u : C, u < r → ¬ s < u)
+
+/--
 **Contiguity, in the form the induction consumes it.** A carrier point strictly between two
 placed points is itself placed.
 
@@ -450,6 +471,52 @@ theorem isPlacedCode_of_between (hRO : RayOnly b f) (hRS : RaySplit b f)
   rcases hRO u hu with h0 | hn
   · exact absurd ((hRS u hu).1 h0 i) (asymm hiu)
   · exact absurd ((hRS u hu).2 hn j) (asymm huj)
+
+/--
+**The upper ray is upward-closed.** Everything strictly above an upper-ray point is itself on the
+upper ray, and so reads the same label.
+
+Derived rather than assumed: a point above an upper-ray point cannot be placed (`RaySplit` puts
+every placed point below the ray), and cannot be on the lower ray (`RaySplit` would then put it
+below every placed point, hence below the ray point itself). The `n = 0` case — no placed points
+at all, so the two rays' indices coincide — is not an exception but a degeneracy, and is settled
+by the two indices being equal.
+-/
+theorem upperRay_of_gt (hRO : RayOnly b f) (hRS : RaySplit b f) {r s : D}
+    (hr : ¬ IsPlacedCode f (regionCode f r))
+    (hn : cutIndex (regionCode f r) = b.knownTimes.length) (hrs : r < s) :
+    ¬ IsPlacedCode f (regionCode f s) ∧
+      cutIndex (regionCode f s) = b.knownTimes.length := by
+  have habove : ∀ i : BranchTime b, f i < r := (hRS r hr).2 hn
+  have hs : ¬ IsPlacedCode f (regionCode f s) := by
+    intro h
+    obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode h
+    exact absurd (hi ▸ habove i) (asymm hrs)
+  refine ⟨hs, ?_⟩
+  rcases hRO s hs with h0 | hn'
+  · by_cases hlen : b.knownTimes.length = 0
+    · rw [h0, hlen]
+    · exact absurd (hrs.trans (((hRS s hs).1 h0 ⟨0, Nat.pos_of_ne_zero hlen⟩).trans
+        (habove ⟨0, Nat.pos_of_ne_zero hlen⟩))) (lt_irrefl r)
+  · exact hn'
+
+/-- **The lower ray is downward-closed**, the mirror. -/
+theorem lowerRay_of_lt (hRO : RayOnly b f) (hRS : RaySplit b f) {r s : D}
+    (hr : ¬ IsPlacedCode f (regionCode f r))
+    (hz : cutIndex (regionCode f r) = 0) (hsr : s < r) :
+    ¬ IsPlacedCode f (regionCode f s) ∧ cutIndex (regionCode f s) = 0 := by
+  have hbelow : ∀ i : BranchTime b, r < f i := (hRS r hr).1 hz
+  have hs : ¬ IsPlacedCode f (regionCode f s) := by
+    intro h
+    obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode h
+    exact absurd (hi ▸ hbelow i) (asymm hsr)
+  refine ⟨hs, ?_⟩
+  rcases hRO s hs with h0 | hn'
+  · exact h0
+  · by_cases hlen : b.knownTimes.length = 0
+    · rw [hn', hlen]
+    · exact absurd ((hbelow ⟨0, Nat.pos_of_ne_zero hlen⟩).trans
+        (((hRS s hs).2 hn' ⟨0, Nat.pos_of_ne_zero hlen⟩).trans hsr)) (lt_irrefl r)
 
 
 /-! ## The temporal cases — OWED, and precisely bounded
@@ -648,11 +715,31 @@ theorem branchTruthAt_snce_neg (hf : Function.Injective f) (hOR : OrderReflectin
         · exact absurd (hsr.trans ((hbelow ⟨0, hlen⟩).trans ((hRS s hs).2 hnn' ⟨0, hlen⟩)))
             (lt_irrefl s)
 
-/-- **Until case, positive half — OWED.** See "What the positive halves still need" above: the
-upper ray closes via `untlRay_self`, a placed point needs the earliest-witness iteration on
-`b.knownTimes.length - branchRank b ord t'`, and the lower ray is Correction 12's residual. -/
+/--
+**Until case, positive half.** `T(U(φ,ψ))` at a point's label makes `U(φ,ψ)` true there.
+
+Three leaves, and the guard is read off a different row at each.
+
+* `r` **placed** — row 7 (`untlPos_witness`) hands back a known time `t'` strictly after `r`'s own
+  carrying `T(φ)`, and the guard at every known time strictly between. `OrderFaithful` puts the
+  witness above `r`; `isPlacedCode_of_between` makes every carrier point of the guard interval
+  placed and `OrderReflecting` reads its time back as strictly between, which is exactly the row's
+  reach.
+* `r` on the **lower ray** — row 9 (`untlRayDn_witness`), Correction 12's residual. The witness may
+  be *any* known time, since every placed point is above `r`; the guard interval contains placed
+  points below the witness *and* lower-ray points reading `r`'s own label, so the row has to carry
+  the guard at both, which is why its reach is `b.knownTimes` rather than a slice.
+* `r` on the **upper ray** — `untlRay_self` gives `T(φ)` at the label, `upperRay_of_gt` says every
+  point above reads that same label, and `Stepped`'s successor supplies a witness with an empty
+  guard interval. Without `Stepped` there is no witness to hand back at all: this leaf is where
+  the property earns its place.
+
+`ψ = ⊤` splits off at every leaf and is discharged semantically — `⊤` is true at every point of
+every model, and the engine never writes `T(⊤)`, so no row may ask for it. Rows 7 and 9 keep the
+witness in that case and drop only the guard.
+-/
 theorem branchTruthAt_untl_pos (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
-    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
@@ -662,12 +749,59 @@ theorem branchTruthAt_untl_pos (hf : Function.Injective f) (hOF : OrderFaithful 
     b.hasPosAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
       TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
         (Formula.untl φ ψ) := by
-  sorry
+  intro hp
+  have hmem : (⟨.pos, .untl φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+    (hasPosAt_iff_mem b _ _).mp hp
+  by_cases hr : IsPlacedCode f (regionCode f r)
+  · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
+    rw [stateLabel_placed hf w hi] at hmem
+    obtain ⟨t', ht'mem, ht'lt, ht'φ, hguard⟩ := untlPos_witness hTW hmem
+    obtain ⟨j, hj⟩ := exists_index_of_mem_knownTimes ht'mem
+    refine ⟨f j, by rw [← hi]; exact hOF i j (by rw [hj]; exact ht'lt), ?_, ?_⟩
+    · exact (hφ w (f j)).1 (by rw [stateLabel_placed hf w (rfl : f j = f j), hj]; exact ht'φ)
+    · intro u hru huj
+      rcases hguard with hg | hg
+      · subst hg; exact id
+      · obtain ⟨k, hk⟩ :=
+          exists_eq_of_isPlacedCode
+            (isPlacedCode_of_between hRO hRS (by rw [hi]; exact hru : f i < u) huj)
+        refine (hψ w u).1 ?_
+        rw [stateLabel_placed hf w hk]
+        exact hg (timeAt b k) (timeAt_mem b k) (hOR i k (by rw [hi, hk]; exact hru))
+          (by rw [← hj]; exact hOR k j (by rw [hk]; exact huj))
+  · rw [stateLabel_gap w hr] at hmem
+    by_cases hz : cutIndex (regionCode f r) = 0
+    · rw [hz] at hmem
+      have hbelow : ∀ i : BranchTime b, r < f i := (hRS r hr).1 hz
+      obtain ⟨t, htmem, htφ, hguard⟩ := untlRayDn_witness hTW hmem
+      obtain ⟨j, hj⟩ := exists_index_of_mem_knownTimes htmem
+      refine ⟨f j, hbelow j, ?_, ?_⟩
+      · exact (hφ w (f j)).1 (by rw [stateLabel_placed hf w (rfl : f j = f j), hj]; exact htφ)
+      · intro u hru huj
+        rcases hguard with hg | ⟨hl, hg⟩
+        · subst hg; exact id
+        · refine (hψ w u).1 ?_
+          by_cases hu : IsPlacedCode f (regionCode f u)
+          · obtain ⟨k, hk⟩ := exists_eq_of_isPlacedCode hu
+            rw [stateLabel_placed hf w hk]
+            exact hg (timeAt b k) (timeAt_mem b k)
+              (by rw [← hj]; exact hOR k j (by rw [hk]; exact huj))
+          · rw [stateLabel_gap w hu]
+            rcases hRO u hu with h0 | hnn
+            · rw [h0]; exact hl
+            · exact absurd ((hRS u hu).2 hnn j) (asymm huj)
+    · have hn : cutIndex (regionCode f r) = b.knownTimes.length := (hRO r hr).resolve_left hz
+      rw [hn] at hmem
+      have hev := untlRay_self hTW hmem
+      obtain ⟨s, hrs, hgap⟩ := hSt.1 r
+      obtain ⟨hs, hsn⟩ := upperRay_of_gt hRO hRS hr hn hrs
+      exact ⟨s, hrs, (hφ w s).1 (by rw [stateLabel_gap w hs, hsn]; exact hev),
+        fun u hru hus => absurd hus (hgap u hru)⟩
 
 /-- **Since case, positive half — OWED.** The past-directed mirror, with the *upper* ray as
 Correction 12's residual shape in place of the lower one. -/
 theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
-    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
@@ -681,7 +815,7 @@ theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful 
 
 /-- **Until case**, assembled from its two halves. The negative half is sorry-free. -/
 theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
-    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
@@ -689,12 +823,12 @@ theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b or
     (hne : b.knownWorlds ≠ [])
     {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
     BranchTruthAt b ord f (Formula.untl φ ψ) := fun w r =>
-  ⟨branchTruthAt_untl_pos hf hOF hOR hRO hRS hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ w r,
+  ⟨branchTruthAt_untl_pos hf hOF hOR hRO hRS hSt hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ w r,
     branchTruthAt_untl_neg hf hOR hRO hRS hV hCheck hTW hne hφ w r⟩
 
 /-- **Since case**, assembled from its two halves. The negative half is sorry-free. -/
 theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
-    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
@@ -702,7 +836,7 @@ theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b or
     (hne : b.knownWorlds ≠ [])
     {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
     BranchTruthAt b ord f (Formula.snce φ ψ) := fun w r =>
-  ⟨branchTruthAt_snce_pos hf hOF hOR hRO hRS hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ w r,
+  ⟨branchTruthAt_snce_pos hf hOF hOR hRO hRS hSt hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ w r,
     branchTruthAt_snce_neg hf hOR hRO hRS hCheck hTW hne hφ w r⟩
 
 /-! ## The assembled induction
@@ -714,7 +848,7 @@ universal lands on the `untl`/`snce` cases through `imp`.
 
 /-- **The truth lemma**, at every formula, for any placement with no inhabited interior gap. -/
 theorem branchTruthAt (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
-    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f)
+    (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
@@ -727,9 +861,9 @@ theorem branchTruthAt (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
   | imp φ ψ hφ hψ => exact branchTruthAt_imp hSat hφ hψ
   | box φ hφ => exact branchTruthAt_box hf hSat hTot hBA hCheck hne hφ
   | untl φ ψ hφ hψ =>
-      exact branchTruthAt_untl hf hOF hOR hRO hRS hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ
+      exact branchTruthAt_untl hf hOF hOR hRO hRS hSt hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ
   | snce φ ψ hφ hψ =>
-      exact branchTruthAt_snce hf hOF hOR hRO hRS hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ
+      exact branchTruthAt_snce hf hOF hOR hRO hRS hSt hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ
 
 end Model
 
@@ -835,6 +969,12 @@ theorem rayOnly_intPlace (hV : branchOrderValid b ord = true) :
   · exact Or.inl (cutIndex_eq_zero (regionCode_fst_eq_empty_of_neg (BranchTime b) hlo))
   · exact Or.inr (cutIndex_eq_length (regionCode_fst_eq_univ_of_card_le (BranchTime b) hhi))
 
+/-- **`ℤ` is stepped**: `r + 1` is an immediate successor and `r - 1` an immediate predecessor.
+This is the discharge of the witness-existence obstruction, and it is the whole of it. -/
+theorem stepped_int : Stepped ℤ :=
+  ⟨fun r => ⟨r + 1, by omega, fun u hu => by omega⟩,
+    fun r => ⟨r - 1, by omega, fun u hu => by omega⟩⟩
+
 /-! ### Headline result 1, at `ℤ`
 
 The hypothesis bundle is the open-branch certificate plus the three decidable branch gates.
@@ -869,7 +1009,8 @@ theorem not_valid_of_hasOpen_int (hV : branchOrderValid b ord = true)
   have hneg : b.hasNegAt χ (stateLabel b ord f l₀.world (f i)) = true := by
     rw [hlab, hasNegAt_iff_mem]; exact hroot
   exact (branchTruthAt hf (orderFaithful_intPlace hV) (orderReflecting_intPlace hV)
-      (rayOnly_intPlace hV) (raySplit_intPlace hV) hV fc hSat hOpen hTot hBA hCheck hTW hne
+      (rayOnly_intPlace hV) (raySplit_intPlace hV) stepped_int hV fc hSat hOpen hTot hBA hCheck hTW
+      hne
       χ l₀.world (f i)).2 hneg
     (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f) (regionOmega f)
       (shiftClosed_regionOmega f) (regionHistory f l₀.world (0 : ℤ))
@@ -897,7 +1038,8 @@ theorem not_validDiscrete_of_hasOpen_int (hV : branchOrderValid b ord = true)
   have hneg : b.hasNegAt χ (stateLabel b ord f l₀.world (f i)) = true := by
     rw [hlab, hasNegAt_iff_mem]; exact hroot
   exact (branchTruthAt hf (orderFaithful_intPlace hV) (orderReflecting_intPlace hV)
-      (rayOnly_intPlace hV) (raySplit_intPlace hV) hV fc hSat hOpen hTot hBA hCheck hTW hne
+      (rayOnly_intPlace hV) (raySplit_intPlace hV) stepped_int hV fc hSat hOpen hTot hBA hCheck hTW
+      hne
       χ l₀.world (f i)).2 hneg
     (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f) (regionOmega f)
       (shiftClosed_regionOmega f) (regionHistory f l₀.world (0 : ℤ))
