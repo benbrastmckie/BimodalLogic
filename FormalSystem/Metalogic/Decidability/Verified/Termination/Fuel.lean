@@ -514,6 +514,88 @@ theorem chain_le_worlds_times {C : Finset Formula}
   le_trans (chain_le_own_labels hC hT run n h0 hstep)
     (Nat.mul_le_mul_left _ (Branch.card_labelFinset_le _))
 
+/-! ## The label dimension, part 2: the time factor and the chain invariant
+
+`chain_le_worlds_times` leaves two cardinalities. This section discharges the **time** one, which
+is the factor T2 was built to bound, and does so in the direction the fuel argument needs: not
+"a long chain makes blocking fire" but its contrapositive, "a branch on which nothing is blocked
+has few times".
+
+`blocking_fires_of_card_lt` needs its times *comparable* — pigeonhole alone produces two times of
+equal type, and two incomparable times of equal type block nothing. `TimeChain` below is that
+comparability, stated over exactly the set the bound is about, and it is the run-level invariant
+the module docstring's residual 1 names.
+-/
+
+/--
+**The run-level chain invariant.** Any two distinct times the branch mentions are comparable in
+the transitive ancestor order.
+
+This is precisely `blocking_fires_of_card_lt`'s `hchain` at `ts := b.timeFinset`, stated as a
+predicate so that it can be established once (from linearity saturation, below) and consumed
+wherever the time bound is needed.
+-/
+def TimeChain (b : Branch) (ord : TimeOrdering) : Prop :=
+  ∀ t₁ ∈ b.knownTimes, ∀ t₂ ∈ b.knownTimes, t₁ ≠ t₂ →
+    t₁ ∈ ancestorTimes ord t₂ ∨ t₂ ∈ ancestorTimes ord t₁
+
+/--
+**T2, contraposed — the time factor.** On a branch confined to `C` whose times form a chain and
+on which `findBlockedTime` reports nothing, there are at most `2 ^ (2 * |C|)` times.
+
+This is the direction the fuel argument consumes. `blocking_fires_of_card_lt` says a long chain
+*forces* blocking; a run that is still taking unblocked steps has therefore not yet accumulated
+one, and the count is bounded.
+-/
+theorem timeFinset_card_le_of_not_blocked {C : Finset Formula} {b : Branch} {ord : TimeOrdering}
+    {tracker : EventualityTracker}
+    (hb : ∀ x ∈ b, x.formula ∈ C) (hchain : TimeChain b ord)
+    (hev : ∀ t₁ ∈ b.knownTimes, ∀ t₂ ∈ b.knownTimes,
+      allEventualitiesFulfilledOrDuplicated tracker t₁ t₂ = true)
+    (hnb : findBlockedTime b ord tracker = none) :
+    b.timeFinset.card ≤ 2 ^ (2 * C.card) := by
+  by_contra hcon
+  have hfire := blocking_fires_of_card_lt (C := C) (b := b) (ord := ord) (tracker := tracker)
+    hb b.timeFinset (fun _ ht => List.mem_toFinset.mp ht)
+    (fun t₁ h₁ t₂ h₂ hne =>
+      hchain t₁ (List.mem_toFinset.mp h₁) t₂ (List.mem_toFinset.mp h₂) hne)
+    (fun t₁ h₁ t₂ h₂ => hev t₁ (List.mem_toFinset.mp h₁) t₂ (List.mem_toFinset.mp h₂))
+    (by omega)
+  rw [hnb] at hfire
+  exact absurd hfire (by simp)
+
+/-- The empty-tracker specialisation: with nothing pending the eventuality guard is vacuous. -/
+theorem timeFinset_card_le_of_not_blocked_empty {C : Finset Formula} {b : Branch}
+    {ord : TimeOrdering}
+    (hb : ∀ x ∈ b, x.formula ∈ C) (hchain : TimeChain b ord)
+    (hnb : findBlockedTime b ord EventualityTracker.empty = none) :
+    b.timeFinset.card ≤ 2 ^ (2 * C.card) :=
+  timeFinset_card_le_of_not_blocked hb hchain
+    (fun _ _ _ _ => by simp [allEventualitiesFulfilledOrDuplicated,
+      EventualityTracker.pendingAtTime, EventualityTracker.empty]) hnb
+
+/--
+**The step bound with the time dimension discharged.**
+
+The composition of `chain_le_worlds_times` with the contraposed T2 bound: the only cardinality
+left standing is the world count, which is a separate dimension with a separate argument (the S5
+rules' fresh-world discipline) and is carried here as `W`.
+-/
+theorem chain_le_worlds_of_not_blocked {C : Finset Formula} {ord : TimeOrdering}
+    {tracker : EventualityTracker} {W : Nat}
+    (hC : TableauClosed C) (hT : TrichStock C) (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0))
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1)))
+    (hchain : TimeChain (run n) ord)
+    (hev : ∀ t₁ ∈ (run n).knownTimes, ∀ t₂ ∈ (run n).knownTimes,
+      allEventualitiesFulfilledOrDuplicated tracker t₁ t₂ = true)
+    (hnb : findBlockedTime (run n) ord tracker = none)
+    (hW : (run n).worldFinset.card ≤ W) :
+    n ≤ 2 * C.card * (W * 2 ^ (2 * C.card)) := by
+  refine le_trans (chain_le_worlds_times hC hT run n h0 hstep) (Nat.mul_le_mul_left _ ?_)
+  exact Nat.mul_le_mul hW
+    (timeFinset_card_le_of_not_blocked (branchStock_chain hC hT run n h0 hstep).mem hchain hev hnb)
+
 /--
 **The fuel figure is justified in the dimension proved.**
 
