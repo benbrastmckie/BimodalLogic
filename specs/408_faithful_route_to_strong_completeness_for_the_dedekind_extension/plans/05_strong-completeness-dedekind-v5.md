@@ -2793,7 +2793,7 @@ did not show it unrealizable. Budget this as a probe, not as proof engineering.
   edited, no closure enlarged, no witness-aware selection. Phase marked `[COMPLETED]` in v5 per
   the RESOLUTION block above.
 
-### Phase 7.3: The guard gap lemma, above — `limitGuardAbove_of_priorU` (R3a) [NOT STARTED]
+### Phase 7.3: The guard gap lemma, above — `limitGuardAbove_of_priorU` (R3a) [IN PROGRESS]
 
 **This is the Prior-U mirror of Phase 6.3 and the third place in the plan where the Dedekind axiom
 layer is used.** `Axiom.prior_U_gap` has `minFrameClass = .Dedekind` (`Axioms.lean:524` block), so

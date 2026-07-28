@@ -16,6 +16,7 @@ import FormalSystem.Metalogic.BXCanonical.Quasimodel.LocusControl
 import FormalSystem.Metalogic.BXCanonical.CanonicalChain
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGapWitness
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGuardWitness
+import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGuardAbove
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension
 
 /-!
