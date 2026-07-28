@@ -2124,6 +2124,244 @@ theorem expandOnceUnblocked_length_lt
   simp only [List.length_append]
   omega
 
+/-! ### Freshness and the `contains`/`∈` bridge
+
+`length_lt` needs only "the appended list is non-empty". `adds_new` needs "one of its elements is
+off the branch", and two of the ways a rule can guarantee that are not `branch.contains` tests:
+`densityRule`'s interpolant and every fresh-label rule's witness are off-branch *by freshness*,
+because they live at `Branch.nextTime` / `Branch.nextWorld`. -/
+
+private theorem le_foldl_max (f : SignedFormula → Nat) :
+    ∀ (l : List SignedFormula) (a : Nat), a ≤ l.foldl (fun x s => max x (f s)) a := by
+  intro l
+  induction l with
+  | nil => intro a; simp
+  | cons x xs ih =>
+      intro a
+      simp only [List.foldl_cons]
+      exact le_trans (le_max_left a (f x)) (ih _)
+
+private theorem mem_le_foldl_max (f : SignedFormula → Nat) :
+    ∀ (l : List SignedFormula) {sf : SignedFormula}, sf ∈ l →
+      ∀ a : Nat, f sf ≤ l.foldl (fun x s => max x (f s)) a := by
+  intro l
+  induction l with
+  | nil => intro sf h; cases h
+  | cons x xs ih =>
+      intro sf h a
+      simp only [List.foldl_cons]
+      rcases List.mem_cons.mp h with rfl | h
+      · exact le_trans (le_max_right a (f sf)) (le_foldl_max f xs _)
+      · exact ih h _
+
+/-- Every formula on the branch sits at or below `Branch.maxTime`. -/
+theorem le_maxTime {b : Branch} {sf : SignedFormula} (h : sf ∈ b) :
+    sf.label.time ≤ b.maxTime :=
+  mem_le_foldl_max (fun s => s.label.time) b h 0
+
+/-- Every formula on the branch sits at or below `Branch.maxWorld`. -/
+theorem le_maxWorld {b : Branch} {sf : SignedFormula} (h : sf ∈ b) :
+    sf.label.world ≤ b.maxWorld :=
+  mem_le_foldl_max (fun s => s.label.world) b h 0
+
+/-- A formula at the branch's fresh time is not on the branch. This is what makes
+`Branch.nextTime` a *fresh* time rather than merely a new numeral. -/
+theorem not_mem_of_time_nextTime {b : Branch} {sf : SignedFormula}
+    (h : sf.label.time = b.nextTime) : sf ∉ b := by
+  intro hmem
+  have := le_maxTime hmem
+  rw [h] at this
+  unfold Branch.nextTime at this
+  exact Nat.not_succ_le_self _ this
+
+/-- A formula at the branch's fresh world is not on the branch. -/
+theorem not_mem_of_world_nextWorld {b : Branch} {sf : SignedFormula}
+    (h : sf.label.world = b.nextWorld) : sf ∉ b := by
+  intro hmem
+  have := le_maxWorld hmem
+  rw [h] at this
+  unfold Branch.nextWorld at this
+  exact Nat.not_succ_le_self _ this
+
+/-- `Branch.contains` is `b.any (· == ·)`, not `List.contains`, so the standard membership
+simp set does not bridge it. This is the bridge. -/
+theorem not_mem_of_contains_false {b : Branch} {g : SignedFormula}
+    (h : b.contains g = false) : g ∉ b := by
+  unfold Branch.contains at h
+  simp only [List.any_eq_false] at h
+  intro hmem
+  have := h g hmem
+  simp at this
+
+/-- The `Branch.contains`/`∈` bridge as an iff, for use in `simp` sets. -/
+theorem contains_eq_false_iff {b : Branch} {g : SignedFormula} :
+    b.contains g = false ↔ g ∉ b := by
+  constructor
+  · exact not_mem_of_contains_false
+  · intro h
+    by_contra hc
+    simp only [Bool.not_eq_false] at hc
+    unfold Branch.contains at hc
+    simp only [List.any_eq_true] at hc
+    obtain ⟨x, hx, hxe⟩ := hc
+    exact h (by simpa [eq_of_beq hxe] using hx)
+
+/-- The non-fresh `.linear`/`.branching` guard, read as a membership witness.
+
+`fs.all branch.contains = false` is exactly "some element of `fs` is off the branch" — the guard
+delivers the *specific* `g` that `adds_new` needs, not merely `fs ≠ []`. -/
+theorem exists_not_mem_of_all_contains_false {b : Branch} {fs : List SignedFormula}
+    (h : fs.all b.contains = false) : ∃ g ∈ fs, g ∉ b := by
+  simp only [List.all_eq_false] at h
+  obtain ⟨g, hg, hc⟩ := h
+  exact ⟨g, hg, not_mem_of_contains_false (by simpa using hc)⟩
+
+/-- Bundle non-emptiness with an all-elements-off-branch fact into the existential. -/
+theorem exists_of_ne_nil_of_forall_not_mem {b : Branch} {fs : List SignedFormula}
+    (hne : fs ≠ []) (hnm : ∀ g ∈ fs, g ∉ b) : ∃ g ∈ fs, g ∉ b := by
+  cases fs with
+  | nil => exact absurd rfl hne
+  | cons x xs => exact ⟨x, List.mem_cons_self, hnm x List.mem_cons_self⟩
+
+/-! ### Set growth -/
+
+/-- **Every** formula a `.persistent` rule emits is off the branch.
+
+Stronger than needed, and true for a reason worth recording: 14 of the 15 `.persistent` arms
+build their output by filtering against `branch.contains`, so the property is immediate; the
+15th (`densityRule`) emits its interpolant at `Branch.nextTime` and its propagated `T(G A)`
+consequences at the same fresh time, so freshness covers it. -/
+theorem applyRule_persistent_not_mem
+    {rule : TableauRule} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fs : List SignedFormula}
+    (h : (applyRule rule sf b ord).1 = RuleResult.persistent fs) : ∀ g ∈ fs, g ∉ b := by
+  unfold applyRule at h
+  repeat' first
+    | split at h
+    | simp only [apply_ite Prod.fst] at h
+  all_goals (try (injection h with h))
+  all_goals first
+    | (simp_all [contains_eq_false_iff]; done)
+    | (subst h; simp_all [contains_eq_false_iff])
+  all_goals first
+    | (rintro g x hx hnm rfl; exact hnm)
+    | (refine ⟨not_mem_of_time_nextTime rfl, ?_⟩
+       intro a x hx hm
+       repeat' split at hm
+       all_goals first
+         | (injection hm with hm; subst hm; exact not_mem_of_time_nextTime rfl)
+         | (simp at hm))
+
+/-- A `.persistent` step contributes a formula the branch did not already carry. -/
+theorem applyRule_persistent_adds_new
+    {rule : TableauRule} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fs : List SignedFormula}
+    (h : (applyRule rule sf b ord).1 = RuleResult.persistent fs) : ∃ g ∈ fs, g ∉ b :=
+  exists_of_ne_nil_of_forall_not_mem (applyRule_persistent_ne_nil h)
+    (applyRule_persistent_not_mem h)
+
+/-- A fresh-label `.linear` step contributes its witness, which is off-branch by freshness.
+
+All eight fresh-label constructors return `witness :: …` with the witness at
+`Branch.nextWorld` (the modal rules) or `Branch.nextTime` (the temporal ones), so the head of the
+list is the required element in every case. -/
+theorem applyRule_fresh_linear_adds_new
+    {rule : TableauRule} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fs : List SignedFormula}
+    (hfresh : ruleMintsFreshLabel rule = true)
+    (h : (applyRule rule sf b ord).1 = RuleResult.linear fs) : ∃ g ∈ fs, g ∉ b := by
+  cases rule <;> simp only [ruleMintsFreshLabel] at hfresh <;>
+    (unfold applyRule at h
+     repeat' first
+       | split at h
+       | simp only [apply_ite Prod.fst] at h)
+  all_goals (try (injection h with h))
+  all_goals (try (simp_all; done))
+  all_goals (try (subst h))
+  all_goals first
+    | (exact ⟨_, List.mem_cons_self, not_mem_of_world_nextWorld rfl⟩)
+    | (exact ⟨_, List.mem_cons_self, not_mem_of_time_nextTime rfl⟩)
+
+/-- The seriality pick contributes a formula the branch did not already carry. -/
+theorem findApplicableSerialRule_adds_new
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {rule : TableauRule} {ord' : TimeOrdering} {fs : List SignedFormula}
+    (h : findApplicableSerialRule sf b ord = some (rule, RuleResult.persistent fs, ord')) :
+    ∃ g ∈ fs, g ∉ b := by
+  unfold findApplicableSerialRule serialityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil] at h
+  rcases hA : applyRule TableauRule.serialityRule sf b ord with ⟨res, o⟩
+  rw [hA] at h
+  simp only at h
+  cases res <;> simp at h
+  obtain ⟨-, hres, -⟩ := h
+  subst hres
+  exact applyRule_persistent_adds_new (by rw [hA])
+
+/-- The ordinary-rule pick contributes a formula the branch did not already carry.
+
+Three sources, one per guard: the non-fresh `.linear` arm's `fs.all branch.contains = false`,
+the fresh-label arm's witness, and the `.persistent` arms' own filters. -/
+theorem findApplicableRule_extending_adds_new
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering} {fc : ProofSystem.FrameClass}
+    {rule : TableauRule} {ord' : TimeOrdering} {fs : List SignedFormula}
+    (h : findApplicableRule sf b ord fc = some (rule, RuleResult.linear fs, ord')
+       ∨ findApplicableRule sf b ord fc = some (rule, RuleResult.persistent fs, ord')) :
+    ∃ g ∈ fs, g ∉ b := by
+  rcases h with h | h <;>
+    (unfold findApplicableRule at h
+     obtain ⟨r, _, hr⟩ := List.exists_of_findSome?_eq_some h
+     repeat' split at hr)
+  all_goals simp_all
+  all_goals first
+    | exact applyRule_fresh_linear_adds_new (by assumption) (congrArg Prod.fst (by assumption))
+    | exact applyRule_persistent_adds_new (congrArg Prod.fst (by assumption))
+    | (rename_i hguard
+       obtain ⟨x, hx, hc⟩ := hguard
+       exact ⟨x, hx, not_mem_of_contains_false hc⟩)
+
+/-- An `.extended` step appends a list containing at least one formula the branch lacked. -/
+theorem expandOnceUnblocked_pick_adds_new
+    {b nb : Branch} {ord : TimeOrdering} {fc : ProofSystem.FrameClass}
+    {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.extended nb) :
+    ∃ fs, (∃ g ∈ fs, g ∉ b) ∧ nb = fs ++ b := by
+  unfold expandOnceUnblocked at h
+  obtain ⟨r, fs, o, hp, rfl⟩ := pick_extended h
+  refine ⟨fs, ?_, rfl⟩
+  rcases hpick : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+  · rw [hpick] at hp
+    rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                             && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+    · rw [hser] at hp
+      simp only at hp
+      rcases hp with hp | hp <;> exact absurd hp (by simp)
+    · rw [hser] at hp
+      simp only at hp
+      rcases hp with hp | hp
+      · exact absurd hp (fun hc => findApplicableSerialRule_not_linear hc)
+      · exact findApplicableSerialRule_adds_new hp
+  · rw [hpick] at hp
+    simp only at hp
+    rcases hp with hp | hp
+    · exact findApplicableRule_extending_adds_new (Or.inl hp)
+    · exact findApplicableRule_extending_adds_new (Or.inr hp)
+
+/-- **The progress measure the fuel bound can consume**: expansion is non-destructive and
+strictly grows the branch *as a set*.
+
+This, and not `expandOnceUnblocked_length_lt`, is what bounds the step count. `nb = fs ++ b` may
+re-add formulas already present, so `List.length` has no upper bound and strict length increase
+alone permits an unbounded run. Set growth against the finite signed closure × label set does
+not. -/
+theorem expandOnceUnblocked_adds_new
+    {b nb : Branch} {ord : TimeOrdering} {fc : ProofSystem.FrameClass}
+    {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.extended nb) :
+    b ⊆ nb ∧ ∃ g ∈ nb, g ∉ b := by
+  obtain ⟨fs, ⟨g, hg, hgb⟩, rfl⟩ := expandOnceUnblocked_pick_adds_new h
+  exact ⟨List.subset_append_right _ _, g, List.mem_append_left _ hg, hgb⟩
+
 end ProgressLemmas
 
 /-!
