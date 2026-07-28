@@ -17,6 +17,7 @@ import FormalSystem.Metalogic.Decidability.Propositional.Kalmar
 import FormalSystem.Metalogic.Decidability.Propositional.Decidable
 import FormalSystem.Metalogic.Decidability.Verified.RuleSpec
 import FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProperty
+import FormalSystem.Metalogic.Decidability.Verified.Termination.TimeTypeBound
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -35,6 +36,7 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Correctness`: Soundness and completeness proofs
 - `Verified.RuleSpec`: rule/axiom frame-class gate lemmas
 - `Verified.Termination.SubformulaProperty`: T1, the signed subformula property (per rule)
+- `Verified.Termination.TimeTypeBound`: T2, the `2 ^ (2 * |C|)` time-type bound and pigeonhole
 
 ## Status
 
