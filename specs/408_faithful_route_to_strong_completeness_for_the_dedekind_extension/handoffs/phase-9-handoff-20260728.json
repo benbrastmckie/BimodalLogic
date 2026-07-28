@@ -1,0 +1,66 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "summary": "Phase 9 complete. New module FormalSystem/Metalogic/WeakCanonical/PriorDefsDense.lean lands SemanticPriorU / SemanticPriorS (Reynolds 1992, printed p.168, verified against PDF p.4), the FlowGLB/FlowLUB completeness Props, the general theorem that every Dedekind-complete flow satisfies both dense Prior hypotheses, a general exclusion lemma refuting SemanticPriorUZ on any dense flow with an interval witness, and two ray/window witnesses over the reals. All eleven declarations sorry-free and axiom-clean; full lake build green; live sorry census unchanged at Transfer.lean:1242. Two route-critical probe findings for Phase 10 recorded (see next_dispatch_target).",
+  "phases_completed": 1,
+  "phases_total": 22,
+  "phase_number": "9",
+  "sorry_inventory": [],
+  "blockers": [],
+  "continuation_path": null,
+  "continuation_context": null,
+  "files_touched": [
+    "FormalSystem/Metalogic/WeakCanonical/PriorDefsDense.lean (new, 408 lines)",
+    "FormalSystem/Metalogic/WeakCanonical.lean (one import line added)",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/07_strong-completeness-dedekind-v7.md (Phase 9 marked COMPLETED, tasks ticked, Phase 10 input note added)",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/07_phase-9-dense-prior-defs-summary.md (new)"
+  ],
+  "verification": {
+    "scoped_build": "lake build FormalSystem.Metalogic.WeakCanonical.PriorDefsDense -> Build completed successfully (1097 jobs)",
+    "full_build": "lake build -> Build completed successfully (1909 jobs), no errors (full build ran; no fallback used)",
+    "sorry_count_outside_boneyard": 1,
+    "sorry_census": "exactly FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242 - unchanged from baseline",
+    "print_axioms_new_declarations": {
+      "semanticPriorU_of_flowGLB": "[propext, Classical.choice, Quot.sound]",
+      "semanticPriorS_of_flowLUB": "[propext, Classical.choice, Quot.sound]",
+      "semanticPriorUZ_fails_of_interval_witness": "[propext]",
+      "semanticPriorUZ_fails_on_dense": "[propext, Classical.choice, Quot.sound]",
+      "semanticPriorU_of_dense_ray": "[propext, Classical.choice, Quot.sound]",
+      "semanticPriorS_of_dense_ray": "[propext, Classical.choice, Quot.sound]",
+      "semanticPriorU_not_implies_semanticPriorUZ": "[propext, Classical.choice, Quot.sound]",
+      "denseRayFlow_pred_nontrivial": "[propext, Classical.choice, Quot.sound]",
+      "semanticPriorU_of_dense_window": "[propext, Classical.choice, Quot.sound]",
+      "semanticPriorS_of_dense_window": "[propext, Classical.choice, Quot.sound]",
+      "densePriorU_antecedent_reachable": "[propext, Classical.choice, Quot.sound]"
+    },
+    "regression_canaries": {
+      "completeness_dense": "[propext, Classical.choice, Quot.sound]",
+      "completeness_discrete": "[propext, Classical.choice, Quot.sound]",
+      "countermodel_discrete_reynolds_v2": "[propext, Classical.choice, Quot.sound]"
+    },
+    "frozen_files_byte_identical": true,
+    "frozen_files_checked": [
+      "BXCanonical/Chronicle/ (all, including ChronicleTypes.lean, ChronicleToCountermodelBasic.lean, ChronicleConstruction.lean, CounterexampleElimination.lean)",
+      "WeakCanonical/PriorDefs.lean",
+      "WeakCanonical/Kamp/DedekindINF.lean",
+      "WeakCanonical/Kamp/PriorINF.lean"
+    ],
+    "territory_respected": "no file under FormalSystem/Metalogic/Decidability/ or FormalSystem/Automation/ read for edit, modified or staged",
+    "anti_vacuity_gate": "satisfied by all three admissible forms: witness (denseRayFlow, denseWindowFlow), derivation (semanticPriorU_of_flowGLB / semanticPriorS_of_flowLUB for every Dedekind-complete flow), and exclusion lemma (semanticPriorUZ_fails_of_interval_witness); plus densePriorU_antecedent_reachable showing the Prior-U antecedent is satisfiable",
+    "citations_verified": "printed p.168 = PDF page 4 and printed p.176 = PDF page 12 re-verified against the Reynolds 1992 PDF in this dispatch; no correction needed to the plan's mapping table"
+  },
+  "commits": [
+    "d2ff8d737 task 408 phase 9: SemanticPriorU/SemanticPriorS with dense-flow witnesses"
+  ],
+  "next_dispatch_target": {
+    "phase": "10",
+    "title": "HasDedekindINF / HasDedekindSUP from the dense Prior axioms",
+    "owns": "FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINFDense.lean (new)",
+    "phase_9_findings_route_critical": [
+      "FINDING 1 (refutation, machine-checked as a lean_run_code probe, NOT landed): HasDedekindINF as literally stated is FALSE on a dense Prior structure. denseWindowFlow (carrier R, one predicate true exactly on (0,1)) satisfies both landed dense Prior hypotheses yet refutes HasDedekindINF denseWindowFlow densePriorAtomMap at P = the atom, z0 = 1/2, z1 = 1: the left disjunct kplus P z0 needs not-P(z0) (PriorINF.lean:86) but P(1/2) holds; the right disjunct needs a P-free interval (z0,r0), impossible on a dense flow when P holds throughout (z0,z1). This is Rabinovich's r0 = z0 subcase with P TRUE at z0, which this tree's kplus cannot express.",
+      "FINDING 2 (positive, machine-checked as a probe, NOT landed): with the endpoint guard (hnP0 : not TemporalTruth M atomMap z0 P) added, the plan's Phase 10 skeleton steps 1-6 go through verbatim from SemanticPriorU alone - generic in sig, M, atomMap, using no completeness and no attainment, translating at p := P.neg through temporal_truth_neg (Kamp/Translation.lean:47).",
+      "CONSEQUENCE: prior_hasDedekindINF_dense cannot conclude in bare HasDedekindINF. Honest options are (a) a guarded sibling carrier in Phase 10's own new module stating the not-P(z0) hypothesis and documenting it as Rabinovich's Case 2 setup, or (b) supplying HasDedekindINF only for structures where the endpoint case is excluded. Neither is a softening: the derivation itself is complete and axiom-clean; what is unavailable is the unguarded universal statement. Do NOT edit HasDedekindINF (preserved asset)."
+    ],
+    "inputs_available": "SemanticPriorU / SemanticPriorS (statement form Phase 10 consumes, unchanged), the two witnesses for the phase's anti-vacuity instantiation, semanticPriorU_of_flowGLB for supplying the hypothesis at any complete flow"
+  }
+}

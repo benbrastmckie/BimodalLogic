@@ -798,35 +798,45 @@ the deviation in the phase summary. **No phase owns a file another phase owns in
 
 ---
 
-### Phase 9: `SemanticPriorU` / `SemanticPriorS` and the dense-flow vacuity witness [NOT STARTED]
+### Phase 9: `SemanticPriorU` / `SemanticPriorS` and the dense-flow vacuity witness [COMPLETED]
 
 - **Goal**: Land the *dense* semantic Prior hypotheses — Reynolds' Prior-U / Prior-S in the
   `OrderedMonadicStructure` idiom — and, in the same dispatch, a machine-checked witness that
   `SemanticPriorUZ` is the wrong hypothesis for a dense flow.
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/PriorDefsDense.lean` (new).
 - **Tasks**:
-  - [ ] Define `SemanticPriorU M atomMap : Prop` as the semantic reading of
+  - [x] Define `SemanticPriorU M atomMap : Prop` as the semantic reading of
         `U(⊤,p) ∧ F¬p → U(¬p ∨ K⁺(¬p), p)` at every point and every `Formula` — i.e. if `p` holds
         throughout some initial stretch above `t` and `¬p` holds somewhere above `t`, then there is
         `s > t` with `p` throughout `(t,s)` and `(¬p ∨ K⁺(¬p))` at `s`, where `K⁺(A)` unfolds to
         "`A` holds arbitrarily soon after". Define `SemanticPriorS` dually.
-  - [ ] Docstring per the honesty charter: `Reynolds 1992, Prior-U/Prior-S, printed p.168`, with the
+  - [x] Docstring per the honesty charter: `Reynolds 1992, Prior-U/Prior-S, printed p.168`, with the
         axioms quoted character-for-character and the correspondence to `Axiom.prior_U_gap`
         (`Axioms.lean:377`) / `Axiom.prior_S_gap` (`:387`) stated explicitly. Verify the printed page
-        against the PDF.
-  - [ ] **Rule 6 — state what the carrier excludes.** Record that `SemanticPriorU` does *not* imply
-        `SemanticPriorUZ`, and that on a dense flow it cannot.
-  - [ ] **Anti-vacuity gate, part 1 — the negative witness.** Land
+        against the PDF. *(printed p.168 re-verified against PDF page 4; p.176 re-verified against
+        PDF page 12)*
+  - [x] **Rule 6 — state what the carrier excludes.** Record that `SemanticPriorU` does *not* imply
+        `SemanticPriorUZ`, and that on a dense flow it cannot. *(as
+        `semanticPriorU_not_implies_semanticPriorUZ` plus the general exclusion lemma
+        `semanticPriorUZ_fails_of_interval_witness`)*
+  - [x] **Anti-vacuity gate, part 1 — the negative witness.** Land
         `semanticPriorUZ_fails_on_dense`: an explicit `OrderedMonadicStructure` with a densely
         ordered carrier and one predicate true exactly on an open right-ray, refuting
         `SemanticPriorUZ`. This is the machine-checked form of the vacuity finding that triggered
         Block D, and it is the reason the rest of the block exists.
-  - [ ] **Anti-vacuity gate, part 2 — the positive witness.** Land `semanticPriorU_of_dense_ray` or
+  - [x] **Anti-vacuity gate, part 2 — the positive witness.** Land `semanticPriorU_of_dense_ray` or
         an equivalent: a densely ordered structure satisfying `SemanticPriorU` **and**
         `SemanticPriorS` non-trivially (at minimum, a structure with at least one predicate that is
         neither empty nor the whole carrier). Without this the whole of Block D risks being vacuous.
-  - [ ] `#print axioms` on all four new declarations; record.
-  - [ ] Scoped build green; full `lake build` green.
+        *(exceeded: `semanticPriorU_of_flowGLB` / `semanticPriorS_of_flowLUB` give the general
+        Dedekind-complete-flow theorem, instantiated at two witnesses — the ray and a bounded
+        window whose Prior-U antecedent is actually satisfied,
+        `densePriorU_antecedent_reachable`)*
+  - [x] `#print axioms` on all four new declarations; record. *(all eleven new declarations
+        checked: `[propext, Classical.choice, Quot.sound]`; the exclusion lemma needs only
+        `[propext]`)*
+  - [x] Scoped build green; full `lake build` green. *(both observed; `lake build` = "Build
+        completed successfully (1909 jobs)")*
 - **Estimated output**: ~220 lines.
 - **Done when**: `SemanticPriorU`, `SemanticPriorS`, `semanticPriorUZ_fails_on_dense` and the
   positive witness are sorry-free with axioms exactly `[propext, Classical.choice, Quot.sound]`;
@@ -840,6 +850,30 @@ the deviation in the phase summary. **No phase owns a file another phase owns in
 > onward is vacuous without it, the argument is short, and a failure here refutes the route cheaply.
 > If it fails, the phase reports `[BLOCKED]` with the exact goal state and **no later phase is
 > dispatched**.
+
+> **INPUT FROM PHASE 9 — two machine-checked facts, both established as `lean_run_code` probes
+> against the landed Phase 9 witnesses and neither yet in the tree.**
+>
+> 1. **`HasDedekindINF` as literally stated is FALSE on a dense Prior structure.** Phase 9's
+>    `denseWindowFlow` (carrier `ℝ`, one predicate true exactly on `(0,1)`) satisfies
+>    `SemanticPriorU` **and** `SemanticPriorS` — both landed — yet refutes
+>    `HasDedekindINF denseWindowFlow densePriorAtomMap`: take `P` the atom, `z₀ = 1/2`, `z₁ = 1`.
+>    `P` occurs in `(z₀,z₁)`, so the hypothesis fires; the **left** disjunct `kplus P z₀` fails
+>    because `kplus` (`PriorINF.lean:86`) demands `¬P(z₀)` and `P(1/2)` holds; the **right** disjunct
+>    fails because it demands a `P`-free interval `(z₀,r₀)`, which a dense flow cannot supply when
+>    `P` holds throughout `(z₀,z₁)`. The gap is precisely Rabinovich's `r₀ = z₀` subcase *with `P`
+>    true at `z₀`*, which this tree's `kplus` cannot express.
+> 2. **With the endpoint guard `¬TemporalTruth M atomMap z0 P` added, the plan's skeleton (steps
+>    1-6) goes through verbatim from `SemanticPriorU` alone** — proved as a probe, generic in `sig`,
+>    `M` and `atomMap`, no completeness and no attainment used, via `temporal_truth_neg`
+>    (`Kamp/Translation.lean:47`) at `p := P.neg`.
+>
+> Consequence for this phase: `prior_hasDedekindINF_dense` cannot conclude in bare `HasDedekindINF`.
+> The honest options are (a) a guarded sibling carrier in the phase's own new module, stating the
+> `¬P(z₀)` hypothesis and documenting that it is Rabinovich's Case 2 setup, or (b) `HasDedekindINF`
+> supplied only for structures where the endpoint case is excluded. **Neither is a softening**: the
+> derivation itself is complete and axiom-clean. What is *not* available is the unguarded universal
+> statement, and Phase 9 refutes it rather than leaving it to be discovered mid-proof.
 
 - **Goal**: `prior_hasDedekindINF_dense` and `prior_hasDedekindSUP_dense` — the faithful Rabinovich
   eq (5.2) carrier derived from `SemanticPriorU` / `SemanticPriorS`, with **no** discreteness and
