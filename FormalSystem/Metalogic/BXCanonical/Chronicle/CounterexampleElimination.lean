@@ -637,6 +637,33 @@ structure EliminationResult (fc : FrameClass) (χ : Chronicle) (pc : PotentialCo
       (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ pc.x → pc.ξ ∈ χ.g a b) ∧
       (∀ w ∈ χ.dom, y < w → w < pc.x → pc.ξ ∈ χ.f w)) →
     ∀ u ∈ val.dom, u ∈ χ.dom
+  /--
+  **Guard-accumulation preservation across one elimination step.**
+
+  Stated for an arbitrary guard set `G`, in the form `NoGuardAccumulation` is given in
+  `ChronicleGuardAccumulation.lean`, with no restatement and no weakening. This is the
+  elimination-level counterpart of `C5ForwardWalkResult.guard_accum_preserved` and
+  `C5BackwardWalkResult.guard_accum_preserved`, and it is composed from them in the two C5
+  branches and established directly in the C4 and no-new-point branches.
+
+  **Read the discharge honestly.** Both `χ.dom` and `val.dom` are `Finset Rat`, so at every finite
+  stage the conclusion holds outright by `noGuardAccumulation_of_finite` — a set ascending to a gap
+  of a finite domain is infinite and cannot fit inside it. The hypothesis is therefore not used in
+  any branch, including the C4 branches, whose point placement is consequently unconstrained by
+  this field. **Iterating this field along the ω-chain does not bound anything at the limit**: the
+  quantity it preserves is free at every stage and is not free at the limit, so a limit claim
+  obtained by chaining it would be unsound. The content that genuinely transports is the
+  interval data — `C5ForwardWalkResult.guard_interval` and `C5BackwardWalkResult.guard_interval`,
+  read through `no_guard_failure_below_witness` / `no_guard_failure_above_witness` — together with
+  `g_sub_f_insert`. The field is carried so that the invariant is a formal component of the chain
+  rather than an afterthought, and so that any future strengthening has a single place to land.
+
+  **No source.** Original work. ADAPTED-FROM Burgess 1982 I §2.10, printed pp.372-373 (fresh-point
+  witness placement); ADAPTED-FROM Burgess 1984 §2.7, printed pp.109-110 (the far-side placement,
+  which carries no guard).
+  -/
+  guard_accum_preserved : ∀ G : Set Formula,
+    NoGuardAccumulation (↑χ.dom) χ.f G → NoGuardAccumulation (↑val.dom) val.f G
 
 /--
 Result of the C5 forward recursive walk (Burgess 2.10 induction).
@@ -2267,6 +2294,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                   · exact absurd hv hv_not
                   · exact absurd hu hu_not
                   · exact absurd hu hu_not
+                guard_accum_preserved := fun G _ =>
+                  noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
                 c5_forward_resolved_no_new := fun _ _ _ h_wit => absurd h_wit h_no_wit
                 c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
       · -- **Case n≥1**: pc.x is NOT the maximum. Burgess 2.10 induction case.
@@ -2333,6 +2362,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                   g_sub_f_insert := r.g_sub_f_insert
                   g_sub_g_new := r.g_sub_g_new
                   dom_new_unique := r.dom_new_unique
+                  guard_accum_preserved := fun G _ =>
+                    noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
                   c5_forward_resolved_no_new := fun _ _ _ h_wit => absurd h_wit h_no_wit
                   c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
         · -- **Not condition (i)**: splitting at (pc.x, x') succeeds.
@@ -2654,6 +2685,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                     · exact absurd hv hv_not
                     · exact absurd hu hu_not
                     · exact absurd hu hu_not
+                  guard_accum_preserved := fun G _ =>
+                    noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
                   c5_forward_resolved_no_new := fun _ _ _ h_wit => absurd h_wit h_no_wit
                   c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
     · exact { val := χ
@@ -2675,6 +2708,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not
+              guard_accum_preserved := fun G _ =>
+                noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
               c5_forward_resolved_no_new := fun _ _ _ _ u hu => hu
               c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
   | .c5_backward =>
@@ -2830,6 +2865,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                   · exact absurd hv hv_not
                   · exact absurd hu hu_not
                   · exact absurd hu hu_not
+                guard_accum_preserved := fun G _ =>
+                  noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
                 c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
                 c5_backward_resolved_no_new := fun _ _ _ h_wit => absurd h_wit h_no_wit }
       · -- **Case n≥1**: pc.x is NOT the minimum. Burgess 2.10' induction case (backward mirror).
@@ -2896,6 +2933,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                   g_sub_f_insert := r.g_sub_f_insert
                   g_sub_g_new := r.g_sub_g_new
                   dom_new_unique := r.dom_new_unique
+                  guard_accum_preserved := fun G _ =>
+                    noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
                   c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
                   c5_backward_resolved_no_new := fun _ _ _ h_wit => absurd h_wit h_no_wit }
         · -- **Not condition (i) backward**: splitting at (x'', pc.x) succeeds.
@@ -3196,6 +3235,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                     · exact absurd hv hv_not
                     · exact absurd hu hu_not
                     · exact absurd hu hu_not
+                  guard_accum_preserved := fun G _ =>
+                    noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
                   c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
                   c5_backward_resolved_no_new := fun _ _ _ h_wit => absurd h_wit h_no_wit }
     · exact { val := χ
@@ -3216,6 +3257,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not
+              guard_accum_preserved := fun G _ =>
+                noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
               c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
               c5_backward_resolved_no_new := fun _ _ _ _ u hu => hu }
   | .c4_forward =>
@@ -3516,6 +3559,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                 · exact absurd hv hv_not
                 · exact absurd hu hu_not
                 · exact absurd hu hu_not
+              guard_accum_preserved := fun G _ =>
+                noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
               c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
               c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
     · exact { val := χ
@@ -3535,6 +3580,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not
+              guard_accum_preserved := fun G _ =>
+                noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
               c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
               c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
   | .c4_backward =>
@@ -3821,6 +3868,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                 · exact absurd hv hv_not
                 · exact absurd hu hu_not
                 · exact absurd hu hu_not
+              guard_accum_preserved := fun G _ =>
+                noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
               c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
               c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
     · exact { val := χ
@@ -3840,6 +3889,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not
+              guard_accum_preserved := fun G _ =>
+                noGuardAccumulation_of_finite (Finset.finite_toSet _) _ G
               c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
               c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
 
