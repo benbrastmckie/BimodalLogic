@@ -68,7 +68,7 @@
 - **Type**: lean4
 - **Phases**: **19 total** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, **7.5, 7.6, 7.7,
   7.8, 7.9**, 8) — **16 `[COMPLETED]`** (1, 2, 3, 4, 5, 6, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7),
-  **3 `[NOT STARTED]`** (7.8, 7.9, 8). Next dispatch target: **Phase 7.8**.
+  **2 `[NOT STARTED]`** (7.9, 8). Next dispatch target: **Phase 7.9**.
   **Counting convention (v6)**: `phases_total = 19`, `phases_completed = 16`,
   `phases_dispatchable = 3`, `phases_user_gated = 0`. **`[USER GATED]` no longer exists in this
   plan** — the R3d gate was resolved by explicit user authorization at this revision, so every
@@ -3954,7 +3954,7 @@ wrong, as Phase 7.3 already recorded for a different mirror on this route.
 - **Timing:** 5 hours.
 - **Depends on:** 7.5 (and, for the field's shape and the split-case route, 7.6)
 
-### Phase 7.8: `EliminationResult` and the ω-chain stage induction (R3d-4) [NOT STARTED]
+### Phase 7.8: `EliminationResult` and the ω-chain stage induction (R3d-4) [COMPLETED]
 
 **Composition, not new mathematics — but it is where the two walks, the C4 branches and the
 no-new-point branches have to agree.** This phase lifts the walk-level preservation to
@@ -3991,27 +3991,55 @@ no-new-point branches have to agree.** This phase lifts the walk-level preservat
     by `singleton_invariant` and is not what the chain carries. Amendment 2's drafted text names
     it; that naming is a factual error corrected at this revision.
 - **Tasks:**
-  - [ ] Add the invariant-preservation field to `EliminationResult` (`:580`).
-  - [ ] Discharge it in the **no-new-point** branches (`c5_forward_resolved_no_new`,
+  - [x] Add the invariant-preservation field to `EliminationResult` (`:580`). Landed as
+        `guard_accum_preserved`, statement mirroring the two walk fields verbatim.
+  - [x] Discharge it in the **no-new-point** branches (`c5_forward_resolved_no_new`,
         `c5_backward_resolved_no_new`, and any branch returning the input chronicle unchanged) —
         immediate, and the cheapest green in the phase.
-  - [ ] Discharge it in the **C5 forward and backward** branches by consuming 7.6's and 7.7's
+  - [x] Discharge it in the **C5 forward and backward** branches by consuming 7.6's and 7.7's
         result-structure fields. **Consume, do not re-derive**; a dispatch re-proving a walk case
         here has misread the territory.
-  - [ ] Discharge it in the **C4 forward and backward inline branches**. These have received no
+  - [x] Discharge it in the **C4 forward and backward inline branches** *(deviation: altered —
+        two premises of this task are factually wrong about the landed tree; see the FINDING block
+        below. Route (a) taken, as in 7.6/7.7)*. These have received no
         prior analysis on this route and are the phase's genuine unknown: check where
         `eliminate_g_prop_counterexample` / `eliminate_h_prop_counterexample` place their points and
         whether that placement can accumulate. If it can, the same route (a)/(b) choice as 7.6
         applies, under Amendment 2, with the same documentation obligation.
-  - [ ] **Widen the `omegaChain` subtype** (`ChronicleConstruction.lean:262`) to carry the
+  - [x] **Widen the `omegaChain` subtype** (`ChronicleConstruction.lean:262`) to carry the
         invariant alongside `c0` and `c2'`; repair the `.property` projections in
         `omega_chain_c0` / `omega_chain_c2'`; add the new projection lemma (suggested
         `omega_chain_no_guard_accumulation`, name at the implementer's discretion — report it).
-  - [ ] **Establish the base case at stage 0**: `singletonChronicle` (`:70`) has
+  - [x] **Establish the base case at stage 0**: `singletonChronicle` (`:70`) has
         `dom = {(0:Rat)}`, so the invariant holds vacuously. Land it as a named lemma beside
         `singleton_invariant` (`:103`) — do **not** modify `singleton_invariant` itself.
-  - [ ] Docstrings per the honesty charter on every new declaration. **No task-number citations.**
-  - [ ] `lake build` on both modules, then full `lake build`.
+  - [x] Docstrings per the honesty charter on every new declaration. **No task-number citations.**
+  - [x] `lake build` on both modules, then full `lake build` — `Build completed successfully
+        (1908 jobs)`.
+**FINDING (Phase 7.8, C4 branches — the flagged "genuine unknown", now settled):** two premises of
+this phase's task list are factually wrong about the landed tree, and the correction is favourable.
+
+1. **The C4 branches do not use `eliminate_g_prop_counterexample` / `eliminate_h_prop_counterexample`.**
+   Those two theorems are **dead code**: a repository-wide grep finds no reference to either outside
+   its own declaration. The C4 branches instead locate an adjacent pair `(w, w_next)` in `[x, y)`
+   with the guard absent from `g w w_next` and split it with the `lemma_2_6/2_7/2_8` family, exactly
+   as the C5 walks do.
+2. **Consequently C4 placement is not guard-blind.** The C4 branches discharge `g_sub_f_insert` and
+   `g_sub_g_new` **non-vacuously** — the old interval set `χ.g w w_next` flows into the new point's
+   `f` and into both new sub-intervals `g w z`, `g z w_next`. Burgess's interval datum therefore
+   survives C4 insertions, so a later C4 midpoint dropped inside an earlier C5 walk's guard-true
+   interval still carries that guard. This closes the C4 accumulation worry that the task list
+   raised, and it is the mechanism `omega_chain_g_sub_f_insert` (`:1300`) already exports.
+
+**The finding does not rescue the stage induction, and this phase does not claim that it does.** The
+landed `guard_accum_preserved` is free by finiteness at every stage on all twelve branches (as it
+already was on both walks in 7.6/7.7), so `omega_chain_no_guard_accumulation` carries **no**
+transporting content to `LimitDom`. Both new docstrings say so explicitly. Nothing landed here
+excludes the family-`Q` pattern; `familyQ_violates_noGuardAccumulation` remains unrefuted and
+remains 7.9's falsification target. Verified as a hard check: every landed `NoGuardAccumulation`
+occurrence in `ChronicleConstruction.lean` is at domain `↑χ.dom` (a `Finset`) — `Set.univ` appears
+only as the *guard-set* argument — so no limit-level claim exists on disk.
+
 - **Estimated output:** ~300-450 lines across the two files. **One agent run (H8).** If it
   overruns, the sanctioned split is (i) `EliminationResult` field + all branches, then (ii) the
   ω-chain widening + stage 0 — **report the split; do not silently re-dispatch**.

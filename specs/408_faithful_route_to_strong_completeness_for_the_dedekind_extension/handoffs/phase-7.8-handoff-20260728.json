@@ -1,0 +1,61 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "phase_number": "7.8",
+  "summary": "Phase 7.8 complete. EliminationResult carries guard_accum_preserved, discharged sorry-free in all 12 construction branches; the omegaChain subtype is widened to a three-way conjunction carrying NoGuardAccumulation, with stage 0 established (singleton_no_guard_accumulation) and the projection omega_chain_no_guard_accumulation added. Full lake build green (1908 jobs). Zero sorries introduced; frozen files byte-identical. The C4 'genuine unknown' is settled and the plan's two premises about it were factually wrong (see findings) -- favourably, but the stage induction still transports nothing to the limit and the docstrings say so.",
+  "phases_completed": 17,
+  "phases_total": 19,
+  "sorry_inventory": [],
+  "blockers": [],
+  "files_touched": [
+    "FormalSystem/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean",
+    "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean",
+    "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/06_strong-completeness-dedekind-v6.md"
+  ],
+  "new_declarations": [
+    "EliminationResult.guard_accum_preserved",
+    "singleton_no_guard_accumulation",
+    "omega_chain_no_guard_accumulation"
+  ],
+  "verification": {
+    "build": "full `lake build` green: Build completed successfully (1908 jobs)",
+    "scoped_builds": [
+      "lake build FormalSystem.Metalogic.BXCanonical.Chronicle.CounterexampleElimination -- green (1108 jobs)",
+      "lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleConstruction -- green (1112 jobs)"
+    ],
+    "sorries_introduced": 0,
+    "live_tree_sorry_baseline": "1 pre-existing (FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242), unchanged; all other census hits are in FormalSystem/Boneyard/ (not built)",
+    "vacuous_definitions": 0,
+    "axioms_added": 0,
+    "print_axioms": {
+      "singleton_no_guard_accumulation": "[propext, Classical.choice, Quot.sound]",
+      "omega_chain_no_guard_accumulation": "[propext, Classical.choice, Quot.sound]",
+      "omega_chain_c0": "[propext, Classical.choice, Quot.sound]",
+      "omega_chain_c2'": "[propext, Classical.choice, Quot.sound]",
+      "EliminationResult.guard_accum_preserved": "[propext, Classical.choice, Quot.sound]",
+      "eliminatePotentialCounterexample": "[propext, Classical.choice, Quot.sound]"
+    },
+    "frozen_files_byte_identical": [
+      "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean",
+      "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean"
+    ],
+    "frozen_statements_unchanged": true,
+    "chronicle_invariant_untouched": true,
+    "walk_regions_untouched": true,
+    "adversarial_check_familyQ": "PASSES, and passes vacuously -- no limit-level claim was landed, so nothing landed here is refuted by familyQ_violates_noGuardAccumulation, and equally nothing landed here excludes the family-Q pattern. Verified mechanically: every NoGuardAccumulation occurrence in ChronicleConstruction.lean is at domain (up-arrow)chi.dom, a Finset; Set.univ appears only as the guard-set argument."
+  },
+  "commits": [
+    "4e81c3c06 task 408 phase 7.8: EliminationResult carries guard_accum_preserved, all 12 branches green",
+    "e1b541683 task 408 phase 7.8: widen omegaChain subtype, stage 0 base case, chain projection"
+  ],
+  "critical_carry_forward": [
+    "The uniform-in-stage constraint carried from 7.5/7.6/7.7 is STILL UNMET and 7.8 did not and could not meet it. guard_accum_preserved is free by finiteness on all 12 elimination branches exactly as it was on both walks; omega_chain_no_guard_accumulation is therefore true at every n and bounds nothing at the limit. A 7.9 proof that iterates the chain projection will look complete and be unsound. Both new docstrings state this in terms.",
+    "NEW FINDING, favourable, corrects two plan premises: the C4 branches do NOT use eliminate_g_prop_counterexample / eliminate_h_prop_counterexample -- those two theorems are dead code, unreferenced anywhere in FormalSystem/. C4 elimination splits an adjacent pair (w, w_next) via the lemma_2_6/2_7/2_8 family, and discharges g_sub_f_insert and g_sub_g_new NON-VACUOUSLY. So chi.g w w_next flows into the new point's f and into both new sub-intervals.",
+    "CONSEQUENCE FOR 7.9: the interval datum survives every insertion kind, C4 included. A later midpoint dropped inside an earlier C5 walk's guard-true interval still carries that guard, via g_sub_f_insert. This is the uniform-in-stage mechanism 7.9 should build the limit transport on -- omega_chain_g_sub_f_insert (ChronicleConstruction.lean:1300, already landed) plus C5Forward/BackwardWalkResult.guard_interval -- NOT the stage projection this phase added.",
+    "Placement discipline remains symmetric; nothing to reconcile between forward and backward sides.",
+    "noGuardAccumulation_transport is landed and unused so far; it is 7.9's Cantor pull-back."
+  ],
+  "next_dispatch_target": "Phase 7.9 (R3d-5): limit transport, cantor-side discharge, and _fuc",
+  "continuation_path": null,
+  "continuation_context": null
+}
