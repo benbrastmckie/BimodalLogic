@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.CountermodelExtraction
+import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
 
 /-!
 # O3: the modal-temporal saturation facts
@@ -304,8 +305,17 @@ At the one-step level the converse is immediate and is proved here: `directFutur
 `directPastOf` are the two projections of the *same* constraint list
 (`mem_directFutureOf_iff_mem_constraints` / `mem_directPastOf_iff_mem_constraints`). Lifting it
 through `reachableForward`/`reachableBackward` is a fuel-bounded breadth-first-search duality —
-forward and backward shortest-path depths agree, so equal fuel suffices — and is left as an
-explicit hypothesis rather than assumed: every consumer below carries it.
+forward and backward shortest-path depths agree, so equal fuel suffices.
+
+**That lifting is done, and `TimeOrderConverse` is no longer an assumption.** It is not proved
+again here: `Verified/Termination/Fuel.lean` already carries it as `orderDual_holds`, for *every*
+`TimeOrdering`, via the `open private reachableForward reachableBackward` route plus the shared
+breadth-first shape `bfsClosure` (`bfsClosure_sound` for the forward half, `PathN.reverse` for the
+edge-by-edge reversal, `bfsClosure_complete` and the `BfsInv` visited-set invariant for the
+backward half). `OrderDual` and `TimeOrderConverse` are the same statement, so `timeOrderConverse`
+below is a rename, and the consumers' `hConv` hypotheses are now dischargeable at every call site.
+The two names are kept apart because the fuel module reaches the closure duality for a termination
+purpose (`timeChain_of_linearity_saturated`) that has nothing to do with the box grid.
 -/
 
 theorem mem_directFutureOf_iff_mem_constraints (ord : TimeOrdering) (t t' : TimeIndex) :
@@ -350,6 +360,17 @@ consumes `pastOf`.
 -/
 def TimeOrderConverse (ord : TimeOrdering) : Prop :=
   ∀ t t' : TimeIndex, t' ∈ ord.futureOf t → t ∈ ord.pastOf t'
+
+/--
+**The converse law holds, for every ordering** — so no consumer below is really hypothetical.
+
+`OrderDual` (`Verified/Termination/Fuel.lean`) is this statement under another name, discharged
+there for every `TimeOrdering`; this is the rename that lets the box-grid consumers apply it.
+Anything carrying `TimeOrderConverse timeOrd` as a hypothesis may now be fed `timeOrderConverse
+timeOrd` outright.
+-/
+theorem timeOrderConverse (ord : TimeOrdering) : TimeOrderConverse ord :=
+  fun t t' h => orderDual_holds ord t t' h
 
 /--
 **Trichotomy at a fixed time.** Every known time is the given one, strictly after it, or strictly
