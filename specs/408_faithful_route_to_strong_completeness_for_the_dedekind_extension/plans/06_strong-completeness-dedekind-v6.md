@@ -3630,7 +3630,7 @@ these facts stated; none of them is withdrawn by it.**
 
 ---
 
-### Phase 7.5: The guard-accumulation invariant and the payoff implication (R3d-1) [NOT STARTED]
+### Phase 7.5: The guard-accumulation invariant and the payoff implication (R3d-1) [IN PROGRESS]
 
 **Risk-first, and it touches NO construction file.** This sub-phase answers the question that makes
 all the rest worth doing: *does a Dedekind-closedness invariant on the guard-failure classes
@@ -4083,7 +4083,7 @@ precondition is met and nothing else stands between the tree and the uncondition
 - **Timing:** 3 hours.
 - **Depends on:** 7.8
 
-### Phase 8: The Dedekind countermodel on ℝ and the unconditional terminus [NOT STARTED]
+### Phase 8: The Dedekind countermodel on ℝ and the unconditional terminus [IN PROGRESS]
 
 > **PRECONDITION (v6, binding, updated but NOT weakened): this phase is NOT dispatchable until
 > `BFMCS.LimitGuardEventual` is discharged for `cantorBfmcsDense`. The exact expected declaration
