@@ -478,4 +478,335 @@ theorem noGuardAccumulation_transport {D : Set Rat} (e : Rat → Rat) (hmono : S
       exact ⟨e q, hmaps q, hmono haq, ⟨e b', ⟨b', hb', rfl⟩, hmono hqb'⟩, hAq⟩
     exact hcof.imp (key _) (key _)
 
+/-! ## What the limit-level chronicle data does **not** imply
+
+This section is a **negative** result, and it is established rather than asserted.
+
+The transport of the invariant from the finite stages to the limit domain was to be built on the
+data the limit chronicle exports: the strong forward and backward Until/Since conditions with
+their *permanent* guard intervals (the interval datum `g` propagates into every point inserted
+later, so the guard survives every subsequent insertion), together with the two
+counterexample-elimination conditions. Abstracted, that data is `C5StrongData`,
+`C5BackwardStrongData`, `C4Data` and `C4BackwardData` below.
+
+The theorems that close this section show that **this data does not entail
+`NoGuardAccumulation`**: there is an explicit family over `ℚ` satisfying all four conditions on
+all of `ℚ` and refuting the invariant, and it refutes it by exhibiting exactly the accumulating
+shape `FamilyQShape` names. So the falsification target is not merely unrefuted — it is
+*realizable* against the whole of the available structural data, and any argument deriving the
+invariant from that data alone is unsound.
+
+What this leaves open is stated exactly. The refuting family is a bare `Rat → Set Formula`; it is
+**not** claimed to be a family of maximal consistent sets, and nothing here settles whether the
+shape is realizable at `FrameClass.Dedekind` — that is the Ehrenfeucht-Fraïssé/modal-depth
+question the module docstring already records as out of scope and open. What is settled is the
+*route*: the invariant cannot be obtained from the limit chronicle's order-and-interval data, so
+establishing it requires content about the maximal-consistent-set values the construction assigns
+to freshly inserted points, which the construction does not currently control.
+
+**No source.** Original work. ADAPTED-FROM Burgess 1982 I §2.10, printed pp.372-373 (the
+fresh-point witness placement whose accumulation behaviour is at issue); ADAPTED-FROM Burgess
+1984 §2.7, printed pp.109-110 (the completion-at-a-gap shape, which runs in the `F`/`G` fragment
+with no guard to carry, so the configuration refuted here does not arise there at all). The
+*statement* whose discharge is blocked by this result is Reynolds' `γ⁺` failure at the guard
+(Reynolds 1992, printed p.175); nothing in this section is Reynolds'.
+-/
+
+/--
+The forward guard datum the limit chronicle exports, abstracted away from the construction:
+every `untl` obligation has a witness whose guard holds at **every** domain point of the open
+interval below it — the permanent form, already closed under all later insertions.
+
+**No source.** Original work.
+-/
+def C5StrongData (D : Set Rat) (m : Rat → Set Formula) : Prop :=
+  ∀ x ∈ D, ∀ φ ψ : Formula, Formula.untl φ ψ ∈ m x →
+    ∃ y ∈ D, x < y ∧ φ ∈ m y ∧ ∀ w ∈ D, x < w → w < y → ψ ∈ m w
+
+/--
+The backward mirror of `C5StrongData`.
+
+**No source.** Original work.
+-/
+def C5BackwardStrongData (D : Set Rat) (m : Rat → Set Formula) : Prop :=
+  ∀ x ∈ D, ∀ φ ψ : Formula, Formula.snce φ ψ ∈ m x →
+    ∃ y ∈ D, y < x ∧ φ ∈ m y ∧ ∀ w ∈ D, y < w → w < x → ψ ∈ m w
+
+/--
+The forward counterexample-elimination datum, abstracted: a failed `untl` with a later event
+point has a guard failure strictly in between.
+
+**No source.** Original work.
+-/
+def C4Data (D : Set Rat) (m : Rat → Set Formula) : Prop :=
+  ∀ x ∈ D, ∀ y ∈ D, x < y → ∀ φ ψ : Formula,
+    (Formula.untl φ ψ).neg ∈ m x → φ ∈ m y →
+    ∃ z ∈ D, x < z ∧ z < y ∧ ψ.neg ∈ m z
+
+/--
+The backward mirror of `C4Data`.
+
+**No source.** Original work.
+-/
+def C4BackwardData (D : Set Rat) (m : Rat → Set Formula) : Prop :=
+  ∀ x ∈ D, ∀ y ∈ D, y < x → ∀ φ ψ : Formula,
+    (Formula.snce φ ψ).neg ∈ m x → φ ∈ m y →
+    ∃ z ∈ D, y < z ∧ z < x ∧ ψ.neg ∈ m z
+
+/-! ### A monotone rational approach to a gap
+
+Dyadic truncation. No choice and no recursion is involved: the `n`-th term is
+`⌊r · 2ⁿ⌋ / 2ⁿ`, which is monotone in `n`, strictly below `r` exactly because `r` is unselected,
+and cofinal below `r` because the truncation error is at most `2⁻ⁿ`.
+
+Monotone — not strictly monotone — is all the argument needs: what is required of the approach is
+that every rational below `r` have a *least* approach point above it, and non-strict monotonicity
+already gives that through `Nat.find`.
+-/
+
+/--
+The dyadic approach to an unselected real from below.
+
+**No source.** Original work.
+-/
+noncomputable def gapApproach (r : ℝ) (n : Nat) : Rat := (⌊r * 2 ^ n⌋ : Rat) / 2 ^ n
+
+/-- Each approach point lies strictly below the gap; strictness is exactly unselectedness. -/
+theorem gapApproach_lt (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (n : Nat) :
+    ((gapApproach r n : Rat) : ℝ) < r := by
+  have hpow : (0 : ℝ) < 2 ^ n := by positivity
+  have hval : ((gapApproach r n : Rat) : ℝ) = ((⌊r * 2 ^ n⌋ : ℤ) : ℝ) / 2 ^ n := by
+    simp only [gapApproach]; push_cast; ring
+  have hfl : ((⌊r * 2 ^ n⌋ : ℤ) : ℝ) ≤ r * 2 ^ n := Int.floor_le _
+  have hne : ((⌊r * 2 ^ n⌋ : ℤ) : ℝ) ≠ r * 2 ^ n := by
+    intro heq
+    refine hr ⟨gapApproach r n, ?_⟩
+    rw [hval, heq]
+    field_simp
+  have hlt : ((⌊r * 2 ^ n⌋ : ℤ) : ℝ) < r * 2 ^ n := lt_of_le_of_ne hfl hne
+  rw [hval, div_lt_iff₀ hpow]
+  exact hlt
+
+/-- The approach is monotone. -/
+theorem gapApproach_mono (r : ℝ) : Monotone (gapApproach r) := by
+  refine monotone_nat_of_le_succ ?_
+  intro n
+  have hpow : (0 : ℝ) < 2 ^ n := by positivity
+  have hstep : 2 * ⌊r * 2 ^ n⌋ ≤ ⌊r * 2 ^ (n + 1)⌋ := by
+    rw [Int.le_floor]
+    have hfl : ((⌊r * 2 ^ n⌋ : ℤ) : ℝ) ≤ r * 2 ^ n := Int.floor_le _
+    have h2 : r * 2 ^ (n + 1) = (r * 2 ^ n) * 2 := by ring
+    push_cast
+    rw [h2]
+    linarith [hfl]
+  have hq : (2 : Rat) * (⌊r * 2 ^ n⌋ : Rat) ≤ (⌊r * 2 ^ (n + 1)⌋ : Rat) := by
+    exact_mod_cast hstep
+  have hpq : (0 : Rat) < 2 ^ n := by positivity
+  have key := mul_le_mul_of_nonneg_right hq (le_of_lt hpq)
+  simp only [gapApproach]
+  rw [div_le_div_iff₀ hpq (by positivity : (0 : Rat) < 2 ^ (n + 1)), pow_succ]
+  have hring : (⌊r * 2 ^ n⌋ : Rat) * (2 ^ n * 2) = 2 * (⌊r * 2 ^ n⌋ : Rat) * 2 ^ n := by ring
+  rw [hring]
+  exact key
+
+/-- The approach is cofinal below the gap. -/
+theorem gapApproach_cofinal (r : ℝ) (z : ℝ) (hz : z < r) :
+    ∃ n : Nat, z < ((gapApproach r n : Rat) : ℝ) := by
+  obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one (sub_pos.mpr hz) (by norm_num : (1 : ℝ) / 2 < 1)
+  refine ⟨n, ?_⟩
+  have hpow : (0 : ℝ) < 2 ^ n := by positivity
+  have hval : ((gapApproach r n : Rat) : ℝ) = ((⌊r * 2 ^ n⌋ : ℤ) : ℝ) / 2 ^ n := by
+    simp only [gapApproach]; push_cast; ring
+  have hfl : r * 2 ^ n - 1 < ((⌊r * 2 ^ n⌋ : ℤ) : ℝ) := by
+    have := Int.sub_one_lt_floor (r * 2 ^ n)
+    linarith
+  have hhalf : ((1 : ℝ) / 2) ^ n = 1 / 2 ^ n := by
+    rw [div_pow]; norm_num
+  rw [hhalf] at hn
+  rw [hval, lt_div_iff₀ hpow]
+  have h1 : (1 : ℝ) < (r - z) * 2 ^ n := by
+    rw [div_lt_iff₀ hpow] at hn; linarith
+  nlinarith [hfl, h1]
+
+/-! ### The refuting family
+
+One atom `a`. Below the gap the obligation `U(a, ¬a)` holds everywhere; the guard `¬a` fails
+exactly at the approach points, where `a` holds instead; and at or above the gap nothing holds.
+
+The `U(a, ¬a)` obligation is discharged at every point below the gap by the *least* approach point
+above it: `a` holds there, and `¬a` holds at every rational strictly in between, because no
+approach point lies strictly in between. So the guard interval is genuine and permanent, and it is
+nonetheless useless against the accumulation, because it always terminates below the gap.
+-/
+
+/--
+The family that realizes the accumulating shape against the full limit-level data.
+
+**No source.** Original work.
+-/
+noncomputable def guardAccumFamily (r : ℝ) (a : Atom) (q : Rat) : Set Formula :=
+  {χ | (q : ℝ) < r ∧
+    (χ = Formula.untl (Formula.atom a) (Formula.neg (Formula.atom a)) ∨
+     (q ∈ Set.range (gapApproach r) ∧
+       (χ = Formula.atom a ∨ χ = Formula.neg (Formula.neg (Formula.atom a)))) ∨
+     (q ∉ Set.range (gapApproach r) ∧ χ = Formula.neg (Formula.atom a)))}
+
+/-- Everything in the family is one of four formulas, and only strictly below the gap. -/
+theorem guardAccumFamily_mem_cases (r : ℝ) (a : Atom) {q : Rat} {χ : Formula}
+    (h : χ ∈ guardAccumFamily r a q) :
+    (q : ℝ) < r ∧
+      (χ = Formula.untl (Formula.atom a) (Formula.neg (Formula.atom a)) ∨
+       χ = Formula.atom a ∨ χ = Formula.neg (Formula.neg (Formula.atom a)) ∨
+       χ = Formula.neg (Formula.atom a)) := by
+  obtain ⟨hq, hcase⟩ := h
+  refine ⟨hq, ?_⟩
+  rcases hcase with h | ⟨-, h | h⟩ | ⟨-, h⟩
+  · exact Or.inl h
+  · exact Or.inr (Or.inl h)
+  · exact Or.inr (Or.inr (Or.inl h))
+  · exact Or.inr (Or.inr (Or.inr h))
+
+/-- The obligation holds at every rational strictly below the gap. -/
+theorem guardAccumFamily_untl_mem (r : ℝ) (a : Atom) {q : Rat} (hq : (q : ℝ) < r) :
+    Formula.untl (Formula.atom a) (Formula.neg (Formula.atom a)) ∈ guardAccumFamily r a q :=
+  ⟨hq, Or.inl rfl⟩
+
+/-- The event formula holds at each approach point. -/
+theorem guardAccumFamily_atom_mem (r : ℝ) (a : Atom) {q : Rat} (hq : (q : ℝ) < r)
+    (hmem : q ∈ Set.range (gapApproach r)) :
+    Formula.atom a ∈ guardAccumFamily r a q :=
+  ⟨hq, Or.inr (Or.inl ⟨hmem, Or.inl rfl⟩)⟩
+
+/-- The guard fails at each approach point. -/
+theorem guardAccumFamily_negneg_mem (r : ℝ) (a : Atom) {q : Rat} (hq : (q : ℝ) < r)
+    (hmem : q ∈ Set.range (gapApproach r)) :
+    Formula.neg (Formula.neg (Formula.atom a)) ∈ guardAccumFamily r a q :=
+  ⟨hq, Or.inr (Or.inl ⟨hmem, Or.inr rfl⟩)⟩
+
+/-- The guard holds at every other rational below the gap. -/
+theorem guardAccumFamily_neg_mem (r : ℝ) (a : Atom) {q : Rat} (hq : (q : ℝ) < r)
+    (hmem : q ∉ Set.range (gapApproach r)) :
+    Formula.neg (Formula.atom a) ∈ guardAccumFamily r a q :=
+  ⟨hq, Or.inr (Or.inr ⟨hmem, rfl⟩)⟩
+
+/--
+**The refuting family satisfies the forward guard datum on all of `ℚ`.**
+
+The witness is the least approach point above `x`, which exists by cofinality; minimality is
+exactly what makes the open interval below it free of approach points, hence guarded.
+
+**No source.** Original work.
+-/
+theorem guardAccumFamily_c5Strong (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (a : Atom) :
+    C5StrongData Set.univ (guardAccumFamily r a) := by
+  intro x _ φ ψ hmem
+  obtain ⟨hxr, hcase⟩ := guardAccumFamily_mem_cases r a hmem
+  have hφψ : φ = Formula.atom a ∧ ψ = Formula.neg (Formula.atom a) := by
+    rcases hcase with h | h | h | h
+    · injection h with h1 h2
+      exact ⟨h1, h2⟩
+    · simp at h
+    · simp [Formula.neg] at h
+    · simp [Formula.neg] at h
+  obtain ⟨rfl, rfl⟩ := hφψ
+  have hex : ∃ n : Nat, x < gapApproach r n := by
+    obtain ⟨n, hn⟩ := gapApproach_cofinal r (x : ℝ) hxr
+    exact ⟨n, by exact_mod_cast hn⟩
+  classical
+  set N := Nat.find hex with hN
+  have hxN : x < gapApproach r N := Nat.find_spec hex
+  have hNr : ((gapApproach r N : Rat) : ℝ) < r := gapApproach_lt r hr N
+  refine ⟨gapApproach r N, Set.mem_univ _, hxN, ?_, ?_⟩
+  · exact guardAccumFamily_atom_mem r a hNr ⟨N, rfl⟩
+  · intro w _ hxw hwN
+    have hwr : ((w : Rat) : ℝ) < r := by
+      have : ((w : Rat) : ℝ) < ((gapApproach r N : Rat) : ℝ) := by exact_mod_cast hwN
+      linarith
+    refine guardAccumFamily_neg_mem r a hwr ?_
+    rintro ⟨k, rfl⟩
+    have hNk : N ≤ k := Nat.find_min' hex hxw
+    have : gapApproach r N ≤ gapApproach r k := gapApproach_mono r hNk
+    exact absurd hwN (not_lt.mpr this)
+
+/--
+**The refuting family satisfies the backward guard datum**, vacuously: it contains no `snce`
+formula. Recorded so that the refutation is against *both* directions of the data at once.
+
+**No source.** Original work.
+-/
+theorem guardAccumFamily_c5BackwardStrong (r : ℝ) (a : Atom) :
+    C5BackwardStrongData Set.univ (guardAccumFamily r a) := by
+  intro x _ φ ψ hmem
+  obtain ⟨-, hcase⟩ := guardAccumFamily_mem_cases r a hmem
+  rcases hcase with h | h | h | h <;> simp [Formula.neg] at h
+
+/--
+**The refuting family satisfies the forward elimination datum**, vacuously: it contains no negated
+`untl` formula.
+
+**No source.** Original work.
+-/
+theorem guardAccumFamily_c4 (r : ℝ) (a : Atom) : C4Data Set.univ (guardAccumFamily r a) := by
+  intro x _ y _ _ φ ψ hmem _
+  obtain ⟨-, hcase⟩ := guardAccumFamily_mem_cases r a hmem
+  rcases hcase with h | h | h | h <;> simp [Formula.neg] at h
+
+/--
+**The refuting family satisfies the backward elimination datum**, vacuously.
+
+**No source.** Original work.
+-/
+theorem guardAccumFamily_c4Backward (r : ℝ) (a : Atom) :
+    C4BackwardData Set.univ (guardAccumFamily r a) := by
+  intro x _ y _ _ φ ψ hmem _
+  obtain ⟨-, hcase⟩ := guardAccumFamily_mem_cases r a hmem
+  rcases hcase with h | h | h | h <;> simp [Formula.neg] at h
+
+/--
+**The refuting family has the accumulating shape.**
+
+This is the falsification target instantiated, not merely left unrefuted.
+
+**No source.** Original work.
+-/
+theorem guardAccumFamily_familyQShape (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (a : Atom) :
+    FamilyQShape (guardAccumFamily r a) (Formula.atom a) r := by
+  refine ⟨hr, ?_, ?_⟩
+  · intro z hz
+    obtain ⟨n, hn⟩ := gapApproach_cofinal r z hz
+    exact ⟨gapApproach r n, hn, gapApproach_lt r hr n,
+      guardAccumFamily_negneg_mem r a (gapApproach_lt r hr n) ⟨n, rfl⟩⟩
+  · intro q hq
+    exact guardAccumFamily_untl_mem r a hq
+
+/--
+**The invariant is not implied by the limit chronicle's data.**
+
+There is a family over `ℚ` satisfying, on all of `ℚ`, the permanent-guard forward and backward
+Until/Since conditions and both counterexample-elimination conditions — the whole of what the
+limit chronicle exports — which nevertheless realizes the accumulating shape and refutes
+`NoGuardAccumulation`.
+
+Consequently no derivation of `NoGuardAccumulation Set.univ _ Set.univ` from that data can be
+sound, and the transport of the invariant to the limit domain cannot be carried out on the
+strength of the construction's order-and-interval content. Establishing it requires content about
+which maximal consistent sets the construction assigns to freshly inserted points — content the
+construction does not currently control, and which is exactly the realizability question the
+module docstring records as open.
+
+**No source.** Original work.
+-/
+theorem noGuardAccumulation_not_implied_by_limit_data
+    (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (a : Atom) :
+    ∃ m : Rat → Set Formula,
+      C5StrongData Set.univ m ∧ C5BackwardStrongData Set.univ m ∧
+      C4Data Set.univ m ∧ C4BackwardData Set.univ m ∧
+      FamilyQShape m (Formula.atom a) r ∧
+      ¬ NoGuardAccumulation Set.univ m Set.univ := by
+  refine ⟨guardAccumFamily r a, guardAccumFamily_c5Strong r hr a,
+    guardAccumFamily_c5BackwardStrong r a, guardAccumFamily_c4 r a,
+    guardAccumFamily_c4Backward r a, guardAccumFamily_familyQShape r hr a, ?_⟩
+  exact familyQ_violates_noGuardAccumulation (guardAccumFamily r a) (Formula.atom a) r
+    (guardAccumFamily_familyQShape r hr a) Set.univ (Set.mem_univ _)
+
 end FormalSystem.Metalogic.BXCanonical.Chronicle
