@@ -1,5 +1,15 @@
 # Implementation Plan: Weak + Finite-Context Consequence Completeness for FrameClass.Dedekind (v6)
 
+> **SUPERSEDED by `plans/07_strong-completeness-dedekind-v7.md` (2026-07-28).** Phase 7.9 refuted
+> this plan's route: `noGuardAccumulation_not_implied_by_limit_data` is a landed, axiom-clean
+> theorem showing the guard invariant is not derivable from the data the limit chronicle exports,
+> and `reports/07_r3d-limit-blocker-verdict.md` establishes that all three Dedekind axioms are
+> individually silent against it. The user authorized the **Doets route** (verdict (b)); v7
+> implements it. **This file is retained as record and is not edited further.** Its Phases 1-2 and
+> the rational chronicle survive as v7's base; its Phases 3-7.9 are amputated as forward road but
+> stay in-tree, compiling and unmodified. Ten sections of this plan are superseded — the mapping is
+> in v7's "Superseded v6 sections" table. Do not dispatch against this file.
+
 > **REFRAMING NOTE (carried forward from v1, applies to the whole plan)**: "Strong completeness"
 > is reserved, project-wide, for the genuine infinite-premise statement (`Γ : Set Formula` with
 > finitary set-derivability), which is **provably unavailable** for the Dedekind class — its
