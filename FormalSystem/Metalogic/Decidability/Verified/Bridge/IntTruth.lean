@@ -429,6 +429,28 @@ def RaySplit (b : Branch) (f : BranchTime b → D) : Prop :=
     (cutIndex (regionCode f r) = 0 → ∀ i : BranchTime b, r < f i) ∧
     (cutIndex (regionCode f r) = b.knownTimes.length → ∀ i : BranchTime b, f i < r)
 
+/--
+**Contiguity, in the form the induction consumes it.** A carrier point strictly between two
+placed points is itself placed.
+
+`RayOnly` and `RaySplit` together say every non-placed point is outside the placed block, so
+there is nothing left for the interior. This is the step that turns the semantics' "`ψ` at
+*every* carrier point strictly between" into the branch's "`ψ` at every known time strictly
+between", and it is where the `ℤ` placement differs from `ℚ` and `ℝ`: at those carriers the
+interior of a gap is inhabited and `RayOnly` is false, which is why sub-phase 7.1d needs
+`Bridge/Interpolate.lean`'s `exists_gt_sameRegion` in its place.
+
+It is also what makes three of the negative case's seven leaves vacuous, in the contrapositive
+form used there.
+-/
+theorem isPlacedCode_of_between (hRO : RayOnly b f) (hRS : RaySplit b f)
+    {i j : BranchTime b} {u : D} (hiu : f i < u) (huj : u < f j) :
+    IsPlacedCode f (regionCode f u) := by
+  by_contra hu
+  rcases hRO u hu with h0 | hn
+  · exact absurd ((hRS u hu).1 h0 i) (asymm hiu)
+  · exact absurd ((hRS u hu).2 hn j) (asymm huj)
+
 
 /-! ## The temporal cases — OWED, and precisely bounded
 

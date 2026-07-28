@@ -86,6 +86,16 @@ region below the until's own time contains no point above the evaluation point a
 obligation. The negative case therefore consumes the **existing** `regionLabel_untlNeg` for the
 non-placed points and needs a new row only for the placed ones.
 
+**5. The lower-ray negative demand is adoptable, and the strong form is free.** `untlNegRayLow` —
+"a negative until asserted at its world's lower-ray label denies its event at *every* known time"
+— is `true` on eleven of twelve rows, the single `false` being row N, where `regionLabelCheck` is
+already `false`. The strictly weaker "at its own label only" variant fails on exactly that same
+row, so extending the demand from the ray label to the whole of `b.knownTimes` costs nothing
+anywhere in the corpus, and the strong form is the one the case actually needs. This is
+Correction 12's negative residual, and it and its mirror `snceNegRayUp` are now rows 5 and 6 of
+`Bridge/TemporalGate.lean`'s `temporalWitnessCheck`. See the "lower-ray negative demand" section
+at the foot of this file.
+
 **A finding outside this file's scope, recorded because it is load-bearing elsewhere.**
 `regionLabelCheck` is `false` on rows H, J, M and N — the branches the engine builds for
 `U(p,q) → q` and `S(p,q) → q`. `regionLabelCheck b ord = true` is a *hypothesis* of

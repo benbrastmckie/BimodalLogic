@@ -38,6 +38,18 @@ upper ray, and puts **nothing** strictly between consecutive placed points.
   at that same label. Every carrier point above an upper-ray point is on the same ray and reads
   the same label, so the witness has nowhere else to be. This is `RayRegionProbe.lean`'s `rayUp`.
 * `snceNegPast`, `snceRaySelf` — the past-directed mirrors, at the lower ray.
+* `untlNegRayLow` — a **negative** until asserted at its world's **lower-ray** label denies its
+  event at *every* known time. This is Correction 12's negative residual, and it is the one row
+  here whose reach is the whole of `b.knownTimes` rather than a slice of it. It has to be: a
+  point below every placed point sees, above it, placed points and both rays' labels, and all
+  three of those are known times, whereas `untlNegFuture` reaches only the known times strictly
+  *after* the ray label — not all of them, because `regionLabel` picks the first eligible
+  candidate and not the order-minimal one. Measured `true` on eleven of twelve rows, the single
+  `false` sitting on a row `regionLabelCheck` already rejects; the strictly weaker "at its own
+  label only" variant fails on exactly that same row, so the full reach costs nothing anywhere
+  in the corpus.
+* `snceNegRayUp` — the mirror, at the **upper** ray. The rays swap between the two operators:
+  `untl` needs its extra row below and `snce` needs its above.
 
 ## What is deliberately **not** here
 
