@@ -20,7 +20,7 @@ next_project_number: 413
 ### Completeness
 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
-165 [PLANNED] — Establish verified decidability of TM bimodal logic for all four 
+165 [IMPLEMENTING] — Establish verified decidability of TM bimodal logic for all four 
   └─ 410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
   └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
   └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
@@ -128,9 +128,11 @@ COORDINATION: task 362 leg D owns stating the genuine strong-completeness result
 - **Research**:
   - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/01_faithful-route-strong-completeness.md]
   - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/04_backward-transport-blocker.md]
+  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/05_forward-guard-r3-research.md]
 - **Plan**:
   - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/01_strong-completeness-dedekind.md]
   - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/04_strong-completeness-dedekind-v4.md]
+  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/05_strong-completeness-dedekind-v5.md]
 
 **Description**: Identify the most faithful and mathematically correct route to STRONG completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics), with weak completeness obtained as a corollary rather than as the target.
 
@@ -466,7 +468,7 @@ ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the
 ---
 
 ### 165. Establish semantic finite model property
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
