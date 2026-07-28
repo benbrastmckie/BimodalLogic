@@ -36,7 +36,7 @@ on the critical path for `uSExpressivelyCompleteOverPrior`.
 ## References
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem"
-- Reynolds 1994, Theorem 5, pp.123-124
+- Reynolds 1994, Theorem 5, p.123
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Theorem 9.3.1
 -/
 
@@ -206,7 +206,7 @@ this version uses the semantic Prior-UZ/SZ hypotheses instead. The proof is by
 structural induction on sf. The U'/S' cases use Prior-UZ/SZ to derive contradiction
 (both sides are false). All other cases are identical to `flatten_stavi_correct`.
 
-Reference: Reynolds 1994, Theorem 5, pp.123-124.
+Reference: Reynolds 1994, Theorem 5, p.123.
 -/
 theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -352,7 +352,7 @@ and it now uses `kampPriorExpressiveCompleteness` instead.
 
 References:
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 3-5
-- Reynolds 1994, Theorem 5, pp.123-124
+- Reynolds 1994, Theorem 5, p.123
 -/
 noncomputable def uSExpressivelyCompleteOverPrior
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]

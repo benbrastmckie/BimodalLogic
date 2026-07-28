@@ -3336,7 +3336,7 @@ discharged at a non-trivial instance. These results are not to be described as d
   land Groups 1 and 3 (G3.1/G3.2 do not consume clause (iii)) and report `[PARTIAL]` naming clause
   (iii) as the residual — do not sorry it and do not weaken `IsContempEquivDense`.
 
-### Phase 20.5: D16 closure — the `PriorExpressiveness.lean` page-range correction [NOT STARTED]
+### Phase 20.5: D16 closure — the `PriorExpressiveness.lean` page-range correction [COMPLETED]
 
 - **Goal**: Give **D16** an owner. It is the last open documentation ticket from Block D/F and it
   currently appears in **no** `Owns` list for any phase from 20 through 30, so the existing
@@ -3352,18 +3352,43 @@ discharged at a non-trivial instance. These results are not to be described as d
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/PriorExpressiveness.lean` — **comment bytes
   only**.
 - **Tasks**:
-  - [ ] Re-verify against the page image that Reynolds 1994 Theorem 5 (*"The language with `U` and
+  - [x] Re-verify against the page image that Reynolds 1994 Theorem 5 (*"The language with `U` and
         `S` is expressively complete for the class of Prior structures."*) sits wholly on printed
         p.123. **If it does not, change nothing** and record the finding — the standing instruction
         not to manufacture a correction in order to close a ticket applies here as it did in
-        Phase 17.
-  - [ ] If confirmed, narrow the References range from `pp.123-124` to `p.123`. No proof,
-        statement, signature or declaration changes.
-  - [ ] Record that there is **no** conflict with `PriorExpressivenessDense.lean`'s header: that
+        Phase 17. **CONFIRMED against the page image** (`pdftoppm -f 7` of
+        `Reynolds_1994_Axiomatising_U_and_S_over_integer_time.pdf`, read as an image, not from
+        another docstring): PDF page 7 carries the printed running header **123**, and Theorem 5's
+        statement *and* its complete proof (down to *"The case of `S'` is similar."*) both sit on
+        that page, followed immediately by the §7 heading *"No gaps between equivalence classes"*.
+        Nothing of Theorem 5 spills onto p.124. **Offset re-measured for this section rather than
+        inherited**: printed = PDF page **+ 116** here (123 = 7 + 116) — §6's measured `+164` does
+        NOT carry over, exactly as the standing directive warned.
+  - [x] If confirmed, narrow the References range from `pp.123-124` to `p.123`. No proof,
+        statement, signature or declaration changes. **Done at all three citation sites in the
+        owned file** (module-header References `:39`, `flatten_stavi_correct_prior`'s docstring
+        `:209`, `uSExpressivelyCompleteOverPrior`'s References `:355`) — the estimate said ~1 line
+        because only the third was on the D16 ticket, but all three carried the identical wrong
+        range and all three are comment bytes in the owned file. *(deviation: widened — 3 changed
+        lines, not 1, same correction each time.)*
+  - [x] Record that there is **no** conflict with `PriorExpressivenessDense.lean`'s header: that
         header refers to Reynolds **1992** §5 Theorem 3, while this file cites Reynolds **1994**
-        Theorem 5. Two papers, two numberings, both citations correct.
-  - [ ] `git diff -U0` shows changes confined to `/-` … `-/` or `--` lines; `#print axioms
-        uSExpressivelyCompleteOverPrior` unchanged.
+        Theorem 5. Two papers, two numberings, both citations correct. **Re-confirmed by
+        inspection**: `PriorExpressivenessDense.lean:15,125,190,284` cite *Reynolds 1992,
+        "Continuous Temporal Models", §5 Theorem 3, printed p.176*; nothing there mentions p.123
+        or Reynolds 1994. The two files were not made to agree, because they are not about the
+        same theorem.
+  - [x] `git diff -U0` shows changes confined to `/-` … `-/` or `--` lines; `#print axioms
+        uSExpressivelyCompleteOverPrior` unchanged. **Both gates pass**: `git diff -U0` is exactly
+        three single-line `-`/`+` pairs, every one inside a `/-! … -/` or `/-- … -/` block; the
+        axiom set is `[propext, Classical.choice, Quot.sound]` with no `sorryAx`, unchanged.
+        Scoped `lake build FormalSystem.Metalogic.WeakCanonical.PriorExpressiveness` green
+        (1234 jobs).
+  - **Out-of-territory finding, reported not fixed**: two `Boneyard/` files still carry the old
+    range — `BXPipelineDeadCode/ReynoldsModelSurgery.lean:41` and
+    `BXPipelineGapAnalysis/ChronicleNoGaps.lean:72`. Both are outside this phase's `Owns` list and
+    were deliberately left untouched. They are dead code; if anyone wants them consistent it is a
+    separate, trivially small ticket, not a silent territory extension here.
 - **Estimated output**: ~1 changed line.
 - **Batching permission (explicit, to avoid a wasted dispatch)**: this phase **may** be executed as
   a chartered territory extension inside any dispatch from Phase 20.4 onward. If it is, the
