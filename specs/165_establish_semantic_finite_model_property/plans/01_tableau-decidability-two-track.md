@@ -248,35 +248,88 @@ engine edits complete in waves 1-2. Reads are unrestricted.
 - **Timing:** 3 dispatches, ~7 hours.
 - **Depends on:** none
 
-### Phase 2: Calculus Completion (R7, R2, R6, R5) [NOT STARTED]
+### Phase 2: Calculus Completion (R7, R2, R6, R5) [PARTIAL]
 
 - **Goal:** The rule set is adequate and honestly reported: trichotomy branching exists, Dedekind
   rules exist, the `.timeout` conflation is split, and the open-branch certificate is strong
   enough for a truth lemma.
 - **Tasks:**
-  - [ ] **2.1 R7 — verdict split** (`DecisionProcedure.lean:64,128,152,161`): split `.timeout`
+  - [x] **2.1 R7 — verdict split** (`DecisionProcedure.lean:64,128,152,161`): split `.timeout`
     into `.fuelExhausted` / `.extractionFailed` so a closed tableau is never reported undecided;
     reprove `decide_result_exclusive` (`Correctness.lean:101`); update the conformance verdict
     adapter. Estimated output: ~100-200 lines. Done when: build green; conformance suite green
     with the new verdict vocabulary.
-  - [ ] **2.2 R2 — `orderTrichotomy`** (`Tableau.lean`): new `TableauRule` constructor +
+    *(done: `DecisionResult.timeout` split into `.fuelExhausted` / `.extractionFailed`;
+    `isUndecided` holds of the former only; `decide_result_exclusive` reproved as four-way
+    exclusivity, plus `not_undecided_of_extractionFailed` and
+    `isKnownValid_of_extractionFailed`. `CancellableExpansion` mirror and the six
+    `Automation/` consumers updated; conformance adapter's `STALLED`/`.fuelExhausted`
+    correspondence documented in-file.)*
+  - [x] **2.2 R2 — `orderTrichotomy`** (`Tableau.lean`): new `TableauRule` constructor +
     `isApplicable` + `applyRule` case, branches syntactically the `temp_linearity` disjuncts
     (SETTLED decision); branching restricted to incomparable AND relevant time pairs (shared
     world + shared temporal formula) to contain `3^k` blowup. Re-run the §2.3 probe.
     Estimated output: ~200-350 lines. Done when: counterexample B closes; conformance corpus and
     `Saturation.lean` `#eval` suite green; branching-restriction rationale documented in-code.
-  - [ ] **2.3 R6 — `dedekindRules`** (`Tableau.lean:1067`): design tableau counterparts for
+    *(done: counterexample B flips OPEN -> CLOSED and is the ONLY row that moved across all
+    four class tables. Deviation from the phase text, recorded: the rule triggers on a
+    **witness** formula at an incomparable sibling time under a common predecessor, not on a
+    pair of unconsumed `T(F .)` eventualities at one label — the eventuality-pair trigger is
+    unreachable, because `someFuturePos` is consumable and consumes the first eventuality
+    before the second is decomposed out of the antecedent conjunction. Branches are still
+    syntactically the `temp_linearity` disjuncts, as settled. Three-part termination guard
+    (disjunct still present / witnesses now ordered / first-witnesses-only) with the measured
+    divergence traces recorded in-code. Row B needs fuel ~10000, so `Row` gained a per-row
+    `fuel` override rather than raising the corpus-wide bound — raising it corpus-wide was
+    tried and made the file take minutes.)*
+  - [x] **2.3 R6 — `dedekindRules`** (`Tableau.lean:1067`): design tableau counterparts for
     `prior_U_gap`/`prior_S_gap`/`sep` (`Axioms.lean:377,387,398`; the first two involve
     `K⁺`/`K⁻`, `Formula.lean:180,193`); add the `allRulesForFC` Dedekind arm
     (base + dense + dedekind, preserving `Discrete ≰ Dedekind`). Add Dedekind conformance rows
     (the three axiom instances close). Estimated output: ~150-300 lines. Done when: Dedekind
     axiom instances close; no regression in other classes' corpora; build green.
-  - [ ] **2.4 R5 — certificate strengthening** (`Saturation.lean:50-59`): strengthen
+    *(done: `priorUGap`/`priorSGap`/`sepRule` added; all three Dedekind rows flip
+    STALLED -> CLOSED with no other row moving. Two design points recorded in-code: each rule
+    triggers on its axiom's antecedent **conjunction** (a conjunct trigger loses a race to the
+    consumable Until/Since rules), and the Dedekind arm is **prepended** to `allRulesForFC`
+    rather than appended, since appending leaves the rules dead. `Discrete <= Dedekind` is
+    preserved: the arm is base + dense + dedekind.)*
+  - [ ] **2.4 R5 — certificate strengthening** *(deviation: BLOCKED — see below)* (`Saturation.lean:50-59`): strengthen
     `ExpandedTableau.hasOpen` to certify `findUnexpanded … = none` (or restate against the
     applied-set predicate with a proved semantic-redundancy lemma — pick ONE, record the choice);
     fix the D4 orphan situation so a truth lemma's hypothesis is actually met by the pipeline
     (witness: `◇p`). Estimated output: ~150-300 lines. Done when: a `#eval` shows the pipeline's
     open certificate satisfies the strengthened predicate on `◇p`; build green.
+
+**BLOCKER** (Phase 2, task 2.4):
+- **What failed**: neither of the two offered repairs completes. Certifying
+  `findUnexpanded ... = none` is unavailable: the applied set is the only thing preventing an
+  unbounded persistent/consumable cycle in `expandBranchWithFuel`, so requiring it would stop
+  the pipeline producing a certificate for any formula whose expansion uses a persistent rule.
+  The applied-set route needs a *proved* semantic-redundancy lemma, and the obvious statement
+  (`every applied entry is on the branch` implies `findUnexpanded = none`) is false: several
+  persistent rules return `.persistent fs` even when every element of `fs` is already on the
+  branch, so `findApplicableRule` still finds them.
+- **What was tried**: measured the D4 orphan situation on the plan's named witness. For
+  `buildTableau (diamond p) 200 .Base` the certificate has 3 applied-set entries, all 3
+  orphaned off the branch (`T(not p)`, `T(G p)`, `T(H p)` at `(0,0)`, each consumed by
+  `negPos`), and `findUnexpanded` returns `T(box (not p)) @ (0,0)`. Each orphan is present on
+  the branch in decomposed form (`F(p)`, `F(U(not p, top))`, `F(S(not p, top))`).
+- **Why stuck**: the correct hypothesis is weaker than full saturation and stronger than the
+  current field — "every applied entry is redundant on the branch". Proving the pipeline
+  always establishes it is an induction over `expandBranchWithFuel`, which is a sub-phase of
+  its own, not a step inside this one.
+- **What is needed**: either a 2.5 sub-phase proving
+  `AppliedRedundant` invariant under `expandBranchWithFuel` (then `hasOpen` can carry it as a
+  field), or a plan revision that reassigns the D4 repair.
+- **Landed instead (non-vacuous, green)**: the choice is recorded in `Saturation.lean`'s new
+  "Certificate Strength (R5)" section with the orphan table; `appliedEntryRedundant` /
+  `AppliedRedundant` define the strengthened predicate executably; and two `#guard_msgs`
+  probes in the conformance corpus pin the measurement — `◇p` gives
+  `fullySaturated=false applied=3 orphans=3 appliedRedundant=true`, and the persistent-rule-free
+  contrast case `G p -> p` gives `fullySaturated=true applied=0 orphans=0 appliedRedundant=true`.
+- **Prohibited**: no `sorry`, no vacuous placeholder was introduced; `FormalSystem/` remains
+  sorry-free apart from the pre-existing `countermodel_discrete`.
 - **Timing:** 4 dispatches, ~10 hours.
 - **Depends on:** 1
 
