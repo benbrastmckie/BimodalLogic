@@ -356,6 +356,248 @@ theorem branchTruthAt_box (hf : Function.Injective f)
     rw [hasNegAt_iff_mem, stateLabel_placed hf w'' (rfl : f i = f i), normWorld_eq_self hw'', hi]
     exact hmem'
 
+/-! ## What the temporal cases need of the placement
+
+Two properties, both stated **without** a `LinearOrder` instance on `BranchTime b` so that they
+can appear in the case lemmas' hypotheses without a `letI` in every statement. Both are
+discharged at `ℤ` in the last section, from `Bridge/Embed.lean` and `Bridge/IntGaps.lean`.
+-/
+
+/--
+The placement is faithful to the branch's own order: a strict `futureOf` fact between two branch
+times is a strict inequality between their carrier positions.
+-/
+def OrderFaithful (b : Branch) (ord : TimeOrdering) (f : BranchTime b → D) : Prop :=
+  ∀ i j : BranchTime b, strictBefore ord (timeAt b i) (timeAt b j) = true → f i < f j
+
+/--
+The placement has **no inhabited interior gap**: every non-placed point is on one of the two
+rays, so its region index is `0` or `n`.
+
+True of `ℤ` under `finiteOrderEmbInt`, which is the `Nat`-cast and therefore contiguous
+(`ray_of_gap_finiteOrderEmbInt`). False of `ℚ` and `ℝ`, where sub-phase 7.1d has to meet the
+`G`-content from the left and the `H`-content from the right in one region state.
+-/
+def RayOnly (b : Branch) (f : BranchTime b → D) : Prop :=
+  ∀ r : D, ¬ IsPlacedCode f (regionCode f r) →
+    cutIndex (regionCode f r) = 0 ∨ cutIndex (regionCode f r) = b.knownTimes.length
+
+/-! ## The temporal cases — OWED, and precisely bounded
+
+These are the two cases this dispatch does **not** close, and they are stated rather than omitted
+so that the remaining obligation is exactly two named lemmas with a fixed hypothesis bundle,
+rather than an unscoped "run the induction". Everything else in this file is sorry-free and the
+build is green.
+
+### What is missing, item by item
+
+1. **`sat_untl_pos` discards the ordering.** It concludes `∃ t' ∈ b.knownTimes, T(event) @ t' ∨
+   (T(guard) @ t' ∧ T(U) @ t')` — with no relation between `t'` and the until's own time. The
+   ordering is present in the proof and thrown away: `witnessPresent` scans
+   `timeOrd.futureOf t`, and the existing proof binds that membership to `_` before replacing it
+   with `mem_knownTimes_of_mem`. A strengthened `sat_untl_pos_future` keeping
+   `strictBefore ord t t' = true` is the first item, and it is a re-run of the existing proof,
+   not a new argument. `sat_snce_pos` is the mirror.
+2. **The witness has to be the *earliest* one.** `TruthAt … (untl φ ψ)` demands `ψ` at every
+   point strictly between the evaluation point and the witness. The saturation fact's second
+   disjunct (`T(guard)` and the until again, at `t'`) is the step of an iteration, and the
+   iteration needs a decreasing measure: `b.knownTimes.length - branchRank b ord t'` is the
+   obvious one, and `branchRank` (`Bridge/RegionLabel.lean`) already exists for the gate.
+3. **The ray self-demand.** An upper-ray point has no point above it outside its own ray, so
+   `T(U(φ,ψ))` at the ray's chosen label needs `T(φ)` at that same label. No row of
+   `regionLabelCheck` asks for this. `Tests/BimodalTest/RayRegionProbe.lean` measures it on the
+   engine corpus **before** it is stated here: `rayUp` and `rayDn` are `true` on all six engine
+   rows alongside `check=true`, and row G is a synthetic branch with `check=true rayUp=false`, so
+   the condition is a real strengthening the engine happens to satisfy. It is therefore a
+   candidate additional gate row in the family `timeOrderTotal`/`boxAnchoredCheck`/
+   `regionLabelCheck` already belong to — not a refutation of the gate, and not a reason to
+   restate the region labelling.
+4. **Region invariance is unavailable at `ℤ`.** `interpInvariantAt` (`Bridge/TruthLemma.lean`)
+   needs `DenselyOrdered D`, and `not_exists_gt_sameRegion_int` (`Bridge/Interpolate.lean`) is
+   the machine witness that the `untl` case's `exists_gt_sameRegion` step genuinely fails at
+   `ℤ`. So the two rays are infinite regions whose points must be handled one at a time here,
+   where at `ℚ`/`ℝ` one invariance lemma handles each region wholesale. **This corrects the
+   premise on which `ℤ` was scheduled first**: contiguity empties the *interior*, and buys
+   nothing on the rays.
+
+None of 1–4 touches an engine file, the region labelling, or any interface already landed.
+-/
+
+/-- **Until case — OWED.** See the section docstring for the four items this needs. -/
+theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hRO : RayOnly b f) (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hne : b.knownWorlds ≠ [])
+    {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
+    BranchTruthAt b ord f (Formula.untl φ ψ) := by
+  sorry
+
+/-- **Since case — OWED.** The past-directed mirror of `branchTruthAt_untl`. -/
+theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hRO : RayOnly b f) (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hne : b.knownWorlds ≠ [])
+    {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
+    BranchTruthAt b ord f (Formula.snce φ ψ) := by
+  sorry
+
+/-! ## The assembled induction
+
+`Formula` has exactly six constructors — `atom`, `bot`, `imp`, `box`, `untl`, `snce`. There are
+no `G`/`H`/`F`/`P` constructors: `allFuture φ` is `(untl φ.neg ⊤).neg`, so every temporal
+universal lands on the `untl`/`snce` cases through `imp`.
+-/
+
+/-- **The truth lemma**, at every formula, for any placement with no inhabited interior gap. -/
+theorem branchTruthAt (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hRO : RayOnly b f) (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true) (hne : b.knownWorlds ≠ [])
+    (χ : Formula) : BranchTruthAt b ord f χ := by
+  induction χ with
+  | atom p => exact branchTruthAt_atom hf fc hOpen p
+  | bot => exact branchTruthAt_bot fc hOpen
+  | imp φ ψ hφ hψ => exact branchTruthAt_imp hSat hφ hψ
+  | box φ hφ => exact branchTruthAt_box hf hSat hTot hBA hCheck hne hφ
+  | untl φ ψ hφ hψ =>
+      exact branchTruthAt_untl hf hOF hRO fc hSat hOpen hTot hBA hCheck hne hφ hψ
+  | snce φ ψ hφ hψ =>
+      exact branchTruthAt_snce hf hOF hRO fc hSat hOpen hTot hBA hCheck hne hφ hψ
+
 end Model
+
+/-! ## The `ℤ` instantiation
+
+`valid` (`Semantics/Validity.lean`) quantifies over every carrier, so **one** carrier refutes it,
+and `ℤ` under `finiteOrderEmbInt` is the one whose interior gaps are empty. The placement is
+instantiated **directly**, not through `exists_monotone_placement`: that returns an existential
+and discards the contiguity, which is the only thing `ℤ` has going for it.
+-/
+
+section IntCarrier
+
+variable {b : Branch} {ord : TimeOrdering}
+
+/-- The `ℤ` placement of a gated branch's times. -/
+noncomputable def intPlace (b : Branch) (ord : TimeOrdering)
+    (hV : branchOrderValid b ord = true) (i : BranchTime b) : ℤ :=
+  letI := BranchOrder b ord hV
+  finiteOrderEmbInt (BranchTime b) i
+
+theorem intPlace_injective (hV : branchOrderValid b ord = true) :
+    Function.Injective (intPlace b ord hV) := by
+  letI := BranchOrder b ord hV
+  exact (finiteOrderEmbInt (BranchTime b)).injective
+
+/--
+The placement is monotone for the **packaged** branch order.
+
+Stated with the packaged order's `le` written out rather than as `≤`, deliberately, and routed
+through `RelEmbedding.map_rel_iff` rather than `OrderEmbedding.monotone`. `BranchTime b` is an
+`abbrev` for `Fin n`, so bare `i ≤ j` resolves to `Fin`'s own instance and not to
+`BranchOrder b ord hV`, and a `letI` does not displace it; separately, the `LE` instance
+`finiteOrderEmbInt` carries reaches `LinearOrder` through `DistribLattice` where `Monotone`
+reaches it through `Preorder`, and the two paths are defeq but not syntactically equal, so
+unification against a metavariable fails. `map_rel_iff` has no instance arguments at all — the
+relations come from the embedding's own type — so neither trap can fire. Every consumer goes
+through this lemma.
+-/
+theorem le_intPlace_of_branchLE (hV : branchOrderValid b ord = true) {i j : BranchTime b}
+    (h : (BranchOrder b ord hV).le i j) : intPlace b ord hV i ≤ intPlace b ord hV j := by
+  letI := BranchOrder b ord hV
+  exact (finiteOrderEmbInt (BranchTime b)).map_rel_iff.mpr h
+
+/-- **Order faithfulness at `ℤ`**: a `futureOf` fact is a strict `branchLT` fact
+(`lt_of_strictBefore`), hence a `≤` fact whose two sides are distinct, and the placement is
+injective. -/
+theorem orderFaithful_intPlace (hV : branchOrderValid b ord = true) :
+    OrderFaithful b ord (intPlace b ord hV) := by
+  intro i j hij
+  have hlt : (BranchOrder b ord hV).lt i j := lt_of_strictBefore hV hij
+  have hne : i ≠ j := by rintro rfl; exact branchLT_irrefl hV i hlt
+  exact lt_of_le_of_ne (le_intPlace_of_branchLE hV (Or.inr hlt))
+    (fun hc => hne (intPlace_injective hV hc))
+
+/-- **No inhabited interior gap at `ℤ`**: `ray_of_gap_finiteOrderEmbInt` says a non-placed
+integer is on one of the two rays, and `cutIndex_eq_zero`/`cutIndex_eq_length` name those rays
+as regions `0` and `n` of the gate's indexing. -/
+theorem rayOnly_intPlace (hV : branchOrderValid b ord = true) :
+    RayOnly b (intPlace b ord hV) := by
+  letI := BranchOrder b ord hV
+  intro r hr
+  rcases ray_of_gap_finiteOrderEmbInt (BranchTime b) hr with hlo | hhi
+  · exact Or.inl (cutIndex_eq_zero (regionCode_fst_eq_empty_of_neg (BranchTime b) hlo))
+  · exact Or.inr (cutIndex_eq_length (regionCode_fst_eq_univ_of_card_le (BranchTime b) hhi))
+
+/-! ### Headline result 1, at `ℤ`
+
+The hypothesis bundle is the open-branch certificate plus the three decidable branch gates.
+`findUnexpanded … = none` is the `hasOpen` field verbatim, and it means "no **ordinary** rule
+applies" — `serialityRule` is outside `allRulesForFC`, so the branch may still be owed
+`T(F ⊤)`/`T(P ⊤)` at every label. Neither this theorem nor anything it calls consumes those, and
+both are true at every point of the `ℤ` countermodel regardless.
+-/
+
+/--
+**`not_valid_of_hasOpen`, at `ℤ`.** A saturated open branch denying `χ` at one of its labels
+refutes `valid χ`.
+
+The countermodel is `normModel b ord (intPlace b ord hV)` over `regionFrame WorldIndex
+(BranchTime b) ℤ`, with `regionOmega` as the shift-closed admissible set and the base history of
+the denying label's own world as the falsifying history.
+-/
+theorem not_valid_of_hasOpen_int (hV : branchOrderValid b ord = true)
+    (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true)
+    {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
+    (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ valid χ := by
+  intro hval
+  set f := intPlace b ord hV with hf_def
+  have hf : Function.Injective f := intPlace_injective hV
+  have hne : b.knownWorlds ≠ [] := fun hc => by rw [hc] at hw₀; exact absurd hw₀ (by simp)
+  obtain ⟨i, hi⟩ := exists_index_of_mem_knownTimes (mem_knownTimes_of_mem hroot)
+  have hlab : stateLabel b ord f l₀.world (f i) = l₀ := by
+    rw [stateLabel_placed hf l₀.world (rfl : f i = f i), normWorld_eq_self hw₀, hi]
+  have hneg : b.hasNegAt χ (stateLabel b ord f l₀.world (f i)) = true := by
+    rw [hlab, hasNegAt_iff_mem]; exact hroot
+  exact (branchTruthAt hf (orderFaithful_intPlace hV) (rayOnly_intPlace hV) fc hSat hOpen hTot
+      hBA hCheck hne χ l₀.world (f i)).2 hneg
+    (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f) (regionOmega f)
+      (shiftClosed_regionOmega f) (regionHistory f l₀.world (0 : ℤ))
+      (regionHistory_mem_regionOmega f l₀.world 0) (f i))
+
+/--
+**The `ValidDiscrete` companion.** `ℤ` carries `SuccOrder`, `PredOrder`, `IsSuccArchimedean` and
+`IsPredArchimedean`, which is what `.Discrete`'s binder list adds; the countermodel and the truth
+lemma are the same objects, so the two results differ only in which binder list is discharged.
+-/
+theorem not_validDiscrete_of_hasOpen_int (hV : branchOrderValid b ord = true)
+    (fc : ProofSystem.FrameClass)
+    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
+    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (hCheck : regionLabelCheck b ord = true)
+    {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
+    (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ ValidDiscrete χ := by
+  intro hval
+  set f := intPlace b ord hV with hf_def
+  have hf : Function.Injective f := intPlace_injective hV
+  have hne : b.knownWorlds ≠ [] := fun hc => by rw [hc] at hw₀; exact absurd hw₀ (by simp)
+  obtain ⟨i, hi⟩ := exists_index_of_mem_knownTimes (mem_knownTimes_of_mem hroot)
+  have hlab : stateLabel b ord f l₀.world (f i) = l₀ := by
+    rw [stateLabel_placed hf l₀.world (rfl : f i = f i), normWorld_eq_self hw₀, hi]
+  have hneg : b.hasNegAt χ (stateLabel b ord f l₀.world (f i)) = true := by
+    rw [hlab, hasNegAt_iff_mem]; exact hroot
+  exact (branchTruthAt hf (orderFaithful_intPlace hV) (rayOnly_intPlace hV) fc hSat hOpen hTot
+      hBA hCheck hne χ l₀.world (f i)).2 hneg
+    (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f) (regionOmega f)
+      (shiftClosed_regionOmega f) (regionHistory f l₀.world (0 : ℤ))
+      (regionHistory_mem_regionOmega f l₀.world 0) (f i))
+
+end IntCarrier
 
 end FormalSystem.Metalogic.Decidability.Verified.Bridge
