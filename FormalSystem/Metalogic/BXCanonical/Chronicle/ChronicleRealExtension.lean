@@ -55,7 +55,88 @@ absence is the module's only gap. Forward `untl` from a membership at an *unsele
 forward case B — is a separate obligation with its own probe; there the guard is the
 *conclusion* rather than a hypothesis, so nothing supplies the antecedent that
 `BFMCS.LimitGuardBelow` needs, and the backward completion above does not reach it. Its absence
-is not an oversight and does not mean the module is half-finished.
+is not an oversight and does not mean the module is half-finished. How far the forward side does
+get, and exactly where it stops, is settled below and recorded in
+`forward_until_unselected_eventuality_of_priorU`.
+
+## Forward case B: what is settled
+
+The forward obligation at an unselected target splits, and the split is a theorem
+(`toRealBundle_forward_until_unselected_dichotomy`), not a description:
+
+- **Forward case A** — the descent finds a rational witness pattern *straddling* the shifted
+  target. `forward_until_witness_of_straddling_rat` closes it outright, with no selectedness
+  assumption anywhere: the rational guard on `(p, s')` covers the subinterval `(t + δ, s')`, and
+  `guard_transport_realLimitMCS` carries it to every real in between. This case is **landed**.
+- **Forward case B** — every rational witness stays below the target. Then `φ` holds at rationals
+  cofinally below the gap, `limitSetBelow_someFuture_of_cofinal` turns that into
+  `F φ ∈ limitSetBelow`, and Prior-U applied at `F φ` (`limitFutureWitness_of_priorU`) crosses the
+  gap. **The eventuality half is therefore available and is proved here.** What is *not* available
+  is any guard at all on the rationals between the gap and that witness.
+
+The guard is not merely unproved, it is unreachable by this route, and the reason is structural.
+`Axiom.prior_U_gap` at `χ` has consequent `U(¬χ ∨ K⁺(¬χ), χ)`, which guards with `χ` and nothing
+else; a `ψ`-guard therefore requires applying it at `χ = ψ` (or at some `χ ⊢ ψ`). Its antecedent
+is `U(⊤, χ)`, demanding `χ` uninterruptedly on an interval abutting the gap **from below** — and
+under `χ ⊢ ψ` that already delivers `ψ` uninterruptedly on that interval. The antecedent is thus
+available exactly when the below-gap analogue of the conclusion already holds. Forward case B
+supplies only `ψ` on the descent intervals `(p, s'_p)`, each closing strictly below the gap: `ψ`
+is cofinally, not eventually, true below it. This is the whole asymmetry with the backward side,
+where `BFMCS.LimitGuardBelow`'s own hypothesis hands Prior-S the interval it needs.
+
+Reynolds records the same limitation at the same point of his own development (§6 opening,
+**printed p.176**): "We know that the Prior axioms ensure that there will not be any definable
+gaps in a model. To show that our model can be made into a model over the reals we actually need
+a stronger result." Burgess 1984 runs the completion route only in the `F`/`G` fragment
+(**printed pp.109-110**) and says nothing about `U`/`S` at a gap.
+
+### Refutation 3 — forward `untl`, at an *unselected* target
+
+Built like Refutations 1 and 2: `M` a genuine model over the flow `ℝ`, `m q := {χ | M, q ⊨ χ}`
+for rational `q`. Fix an irrational `T`, rationals `t_n ↗ T` and `α_n ∈ (t_n, t_{n+1})`, and
+mirror them above: rationals `u_n ↘ T` and `α'_n ↘ T` interleaved as
+`α'_{n+1} < u_{n+1} < α'_n`. Let `V(φ) = {α_n} ∪ {α'_n}` and let `V(ψ)` omit exactly the points
+`{t_n} ∪ {u_n}`. All boundary points are rational, so both directions of *unrestricted* rational
+Until coherence hold, and each `m q` is maximal consistent at `FrameClass.Dedekind` for free.
+
+*The hypothesis holds, conditionally on the ultrafilter.* `untl φ ψ ∈ m q` exactly for
+`q ∈ ⋃ (t_n, α_n)` below `T`: at such a `q` the witness `α_n` works and `ψ` guards `(q, α_n)`,
+while at `q ∈ (α_n, t_{n+1})` the next `φ`-point is `α_{n+1}`, beyond the `ψ`-failure `t_{n+1}`.
+
+*The conclusion fails.* Every rational `φ`-point above `T` is some `α'_n`, and `(T, α'_n)`
+contains the `ψ`-failure `u_{n+1}`, so no rational witness carries a guard. No *unselected*
+witness exists either: `V(φ)` is a discrete point set whose only accumulation point is `T`
+itself, so `φ ∉ limitMCSBelow m g` for every gap `g > T`. The eventuality is met — as
+`forward_until_unselected_eventuality_of_priorU` proves it must be — and the guard never is.
+
+*The ultrafilter computation.* `{q | untl φ ψ ∈ m q} = ⋃ (t_n, α_n) ∩ ℚ` is cofinal below `T`,
+and so is its complement `⋃ (α_n, t_{n+1}) ∩ ℚ`. **Neither contains an interval `(z, T)`, so
+neither lies in `limitFilterBelow T`.** Membership of `untl φ ψ` in `limitMCSBelow m T` is
+therefore decided by `Ultrafilter.of (limitFilterBelow T)` and is *not* determined by
+`limitFilterBelow_le`, the only property of that choice the development ever uses. The honest
+reading: the forward transport is **not derivable** from rational coherence together with
+`BFMCS.LimitGuardBelow` and `BFMCS.LimitFutureWitness`, since a proof would have to know how
+`Ultrafilter.of` resolves an oscillation nothing constrains. It is not thereby shown false.
+
+*Why the guard-side exclusion does not rescue this one.* Refutations 1 and 2 are killed by
+`BFMCS.LimitGuardBelow`, and that predicate does constrain this family hard: any formula constant
+on an interval above `T` must be eventually true below `T`, so `φ`, `ψ` and `untl φ ψ` are each
+forced to oscillate on **both** sides of `T` — which is exactly why the family above is built
+two-sided rather than copying Refutation 2's one-sided shape. It then satisfies
+`BFMCS.LimitGuardBelow` vacuously at `T`, and `BFMCS.LimitGuardBelow` has no antecedent left to
+consume.
+
+*What is not settled.* Whether `cantorBfmcsDense`'s own back-and-forth can produce a two-sided
+oscillation of this shape at some gap is **open**, and is deliberately labelled as open rather
+than asserted either way. Refutation 3 refutes the route at the level of the hypotheses actually
+available to the transport; it does not exhibit the configuration inside the chronicle.
+
+*The positive residual.* One invariant closes forward case B outright: if the guard `ψ` is
+*eventually* true below the gap rather than merely cofinally, then `U(⊤, ψ)` is free, Prior-U
+applied at `ψ` gives `U(¬ψ ∨ K⁺(¬ψ), ψ)`, and the endpoint it produces cannot lie below the gap
+(where `ψ` holds) nor equal it (unselectedness), so it lies above — delivering precisely the
+missing guard. That is the exact mirror of `limitGuardBelow_of_priorS`, and it names the one
+strengthening that would settle the forward side.
 
 ## Refutations
 
@@ -169,6 +250,10 @@ guard-free signature is not to be re-attempted.
   `toRealBundle_backward_since_selected_of_gap_witness`,
   `toRealBundle_backward_since_unselected`.
 - `BFMCS.toRealBundle_restricted_backward_until_since`.
+- `forward_until_witness_of_straddling_rat`,
+  `toRealBundle_forward_until_unselected_dichotomy`,
+  `limitSetBelow_someFuture_of_cofinal`,
+  `forward_until_unselected_eventuality_of_priorU`.
 - `cantor_bfmcs_dense_real_restricted_tc`, `cantor_bfmcs_dense_real_restricted_buc`.
 -/
 

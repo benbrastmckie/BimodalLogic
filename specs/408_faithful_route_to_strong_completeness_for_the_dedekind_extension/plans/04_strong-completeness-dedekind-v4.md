@@ -2142,7 +2142,67 @@ attempt is to be made to prove them unrealizable directly — their unrealizabil
   also repaired a dangling reference to the never-existing
   `toRealBundle_backward_since_selected_is_refuted`, now pointing at the relocation lemma.
 
-### Phase 7.2: Forward case B — a two-outcome probe [IN PROGRESS]
+### Phase 7.2: Forward case B — a two-outcome probe [BLOCKED]
+
+**OUTCOME (ii) — the probe refuted forward case B. This is a planned outcome, not a failure.**
+
+**BLOCKER** (Phase 7.2):
+
+- **What was landed first (the H2 bar, sorry-free)**: forward case A, as
+  `forward_until_witness_of_straddling_rat` plus
+  `toRealBundle_forward_until_unselected_dichotomy`, both in `ChronicleRealExtension.lean`, both
+  `[propext, Classical.choice, Quot.sound]`.
+- **What failed**: the case (b) guard. The probe reached the eventuality half and no further, and
+  that reach is itself now a theorem — `forward_until_unselected_eventuality_of_priorU` proves
+  that at an unselected target either the obligation is discharged outright, or there is a
+  rational `w > t + δ` with `φ ∈ fam.mcs w` **and no guard whatever** on `(t + δ, w)`.
+- **Which formula Prior-U was applied to, and what supplies its antecedent** (the question the
+  phase required be answered up front): a `ψ`-guard requires `Axiom.prior_U_gap` at `χ = ψ` or at
+  some `χ ⊢ ψ`, because its consequent `U(¬χ ∨ K⁺(¬χ), χ)` guards with `χ` and nothing else. Its
+  antecedent `U(⊤, χ)` demands `χ` uninterruptedly on an interval abutting the gap **from below**,
+  which under `χ ⊢ ψ` already yields `ψ` uninterruptedly there. **The antecedent is available
+  exactly when the below-gap analogue of the conclusion already holds**, and forward case B
+  supplies `ψ` only on the descent intervals `(p, s'_p)`, each closing strictly below the gap.
+  The antecedent cannot be exhibited, so per this phase's own instruction the attempt stopped
+  rather than iterating tactics.
+- **Refuting family (Refutation 3)**, delivered with the three required elements in the
+  `ChronicleRealExtension.lean` module docstring: (1) the two-sided oscillation at an irrational
+  `T` — `V(φ) = {α_n} ∪ {α'_n}`, `V(ψ)` omitting `{t_n} ∪ {u_n}`, interleaved
+  `α'_{n+1} < u_{n+1} < α'_n` above `T`; (2) realizability inside `cantorBfmcsDense` is
+  **explicitly labelled unsettled** — the weaker outcome the phase permits; (3) the ultrafilter
+  computation: `{q | untl φ ψ ∈ m q}` and its complement are both cofinal below `T` and **neither
+  lies in `limitFilterBelow (t + δ)`**, so membership in `limitMCSBelow` is decided by
+  `Ultrafilter.of` and is not determined by `limitFilterBelow_le`, the only property of that
+  choice the development uses. The transport is therefore **not derivable** from rational
+  coherence plus `LimitGuardBelow` plus `LimitFutureWitness`; it is not thereby shown false.
+- **Why the guard-side exclusion does not rescue it**: `BFMCS.LimitGuardBelow` forces `φ`, `ψ` and
+  `untl φ ψ` each to oscillate on **both** sides of `T`, which is why Refutation 3 is built
+  two-sided rather than copying Refutation 2's one-sided shape. It then satisfies
+  `LimitGuardBelow` vacuously at `T`, leaving that predicate no antecedent to consume.
+- **Rung elected: R4 (honest floor), with R2 eliminated on source evidence.** `Axiom.sep`'s own
+  route was checked verbatim against the corpus before being ruled on, as directed.
+  **R2 is dead by the plan's own stated test.** Reynolds 1992 Theorem 5 (§7, printed pp.184-185),
+  the separability step R2 would consume, says at its critical line: "Let the temporal formula `C`
+  be true exactly at points who are the left hand end points of their classes. … **We use
+  expressive completeness here.**" And Doets' theorem (§8, Theorem 6, printed pp.185-188) is
+  stated purely in terms of "monadic first-order sentences of quantifier depth at most `k`" and
+  proved by EF-game arguments, lexicographic sums and shuffles (Lemmas 11-13). Both are squarely
+  inside the standing Postmortem Constraint against the Reynolds transfer route (monadic-FO,
+  Stavi connectives, EF games, expressive completeness), and Phase 7.2's own R2 clause states
+  that "if an escalation finds itself needing expressive completeness of `{U,S}` then R2 is also
+  dead". It does, so it is.
+- **What is needed to unblock — R3, now the only live escalation, and precisely targeted.** The
+  probe identified the exact invariant that closes forward case B: **if the guard `ψ` is
+  *eventually* true below the gap rather than merely cofinally**, then `U(⊤, ψ)` is free, Prior-U
+  at `ψ` yields `U(¬ψ ∨ K⁺(¬ψ), ψ)`, and its endpoint can lie neither below the gap (where `ψ`
+  holds) nor at it (unselectedness), so it lies above — delivering the missing guard. That is the
+  exact mirror of `limitGuardBelow_of_priorS`. Electing R3 **requires an explicit amendment to
+  the Postmortem Constraints** (it modifies `Chronicle/`) **plus a new research dispatch**, and
+  this dispatch does neither — flagged, not elected.
+- **Prohibited and not done**: no `sorry`, no vacuous definition, no hypothesised
+  `LimitUntilWitness` predicate threaded onto the terminus, no narrowing of the target class.
+  **Phase 8 must not be dispatched** — under outcome (ii) the correct action is `[PARTIAL]`, not
+  a conditional terminus.
 
 **This phase has two acceptable outcomes and a refutation is not a failure.** The blocker research
 constructed a candidate family in which Prior-U applied to `untl α β` is satisfied *locally* with
@@ -2177,10 +2237,10 @@ did not show it unrealizable. Budget this as a probe, not as proof engineering.
   reals we actually need a stronger result." Burgess runs the completion route only in the `F`/`G`
   fragment (**printed pp.109-110**) and says nothing about `U`/`S` at a gap.
 - **Tasks:**
-  - [ ] Land case (a) first, as a named lemma, using Phase 7.1′'s guard lemma. This is the H2
+  - [x] Land case (a) first, as a named lemma, using Phase 7.1′'s guard lemma. This is the H2
         formal-proof-line bar for the dispatch and must exist before any analysis of case (b) is
         written down.
-  - [ ] **Probe case (b), pursuing outcome (i) first**: attempt
+  - [x] **Probe case (b), pursuing outcome (i) first**: attempt
         `limitUntilWitness_of_priorU` — the analogue of Phase 6.2's Statement 2 for `untl α β`,
         with an **explicit guard** on the interval between `t + δ` and the produced witness. Any
         such attempt must state up front which formula Prior-U is being applied to and what
@@ -2191,8 +2251,8 @@ did not show it unrealizable. Budget this as a probe, not as proof engineering.
         `cantor_bfmcs_dense_real_restricted_fuc` against `cantor_bfmcs_dense_restricted_fuc`
         (`ChronicleToCountermodelBasic.lean:755`), which is not modified. Then
         `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension` and mark
-        the phase `[COMPLETED]`.
-  - [ ] **If outcome (ii) fires — a refuting family**: deliver, as the phase's artifact, (1) the
+        the phase `[COMPLETED]`. *(not applicable — outcome (ii) fired, not outcome (i))*
+  - [x] **If outcome (ii) fires — a refuting family**: deliver, as the phase's artifact, (1) the
         family exhibited concretely, (2) an argument that it is realizable inside
         `cantorBfmcsDense` at `fc = FrameClass.Dedekind` (or an explicit statement that
         realizability is itself unsettled, which is a *weaker* outcome and must be labelled as
@@ -2200,7 +2260,7 @@ did not show it unrealizable. Budget this as a probe, not as proof engineering.
         belong to `limitFilterBelow (t + δ)`. Mark the phase `[BLOCKED]` with that content. **Do
         not** add a `sorry`, a vacuous definition, or a hypothesised `LimitUntilWitness` predicate
         threaded onto the terminus.
-  - [ ] Either way, record the outcome in the module docstring by PDF page, not by task number.
+  - [x] Either way, record the outcome in the module docstring by PDF page, not by task number.
 - **If the refutation outcome fires, this is what it means for the route.** Fixed in advance so
   the orchestrator does not improvise:
   1. **It does not invalidate anything already landed.** Phases 1-7.1′ stand. The limit MCS, the
