@@ -646,13 +646,13 @@ theorem endsInGapOnLeft_of_endsInGapOnRight (atomMap : Formula → sig.preds)
     exact not_endsInGapOnRight_of_immediatePredecessor hε M hzt hnz hall
       (hint.rThroughout z haz (le_trans hzt.le hint.lt_right.le))
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 6, printed p.180 — *"bad points only occur in non-singleton bad
 intervals"*, right-hand half.**
 
 Where `R` holds, `R` holds on a whole stretch above, so the point is not an isolated bad point.
 This is `endsInGapOnRight_forAWhile` (`Lemma34.lean:277`) read as a statement about bad
 points. -/
-omit [Fintype sig.preds] [DecidableEq sig.preds] in
 theorem reynolds_lemma6_nonsingleton {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
     (M : OrderedMonadicStructure sig) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
     ∃ y : M.carrier, t < y ∧ ∀ r : M.carrier, t < r → r ≤ y → IsBadPoint M ε r := by
