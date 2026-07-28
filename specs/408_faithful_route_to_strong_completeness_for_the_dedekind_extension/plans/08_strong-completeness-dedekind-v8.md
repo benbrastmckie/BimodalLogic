@@ -2002,7 +2002,70 @@ re-base targets at all** (`PriorINF` 2 and `DedekindINF` 1 are the *suppliers*
 1 are the exclusion results that provably do **not** carry over), leaving **72 lines across 15
 modules** as the genuine remainder. That is the number Phase 14.3 inherits.
 
-### Phase 14.3: the remaining 72 binder lines of the spine re-base [NOT STARTED]
+### Phase 14.3: the remaining 72 binder lines of the spine re-base [COMPLETED]
+
+> **OUTCOME (2026-07-28).** The phase's "Done when" is fully met:
+> `kampFaithfulExpressiveCompleteness_open` is sorry-free, and
+> `uSExpressivelyCompleteOverDensePrior` is axiom-clean at
+> `[propext, Classical.choice, Quot.sound]` — verified by `#print axioms`, not asserted. The
+> live tree now carries exactly ONE `sorry`, the pre-existing unrelated `Transfer.lean:1242`;
+> the strategic sorry is gone, so the census delta is **−1**. Full `lake build` green at 1926
+> jobs. Zero edits to any existing Lean declaration; the only edit outside the two new modules
+> is the sanctioned replacement of `kampFaithfulExpressiveCompleteness_open`'s body, and even
+> there nothing was removed or renamed — the name is retained as an unweakened alias of the new
+> `kampFaithfulExpressiveCompleteness` (D11).
+>
+> **Landed**: 952 lines across two new modules, 25 declarations, all axiom-clean.
+>
+> | Module | Contents |
+> |---|---|
+> | `NfMultiAnchorBridge/ArmLemmasFaithful.lean` (455 lines, 17 decls) | the three `k = 0` arms, `aggPosDiagK1_correct_faithful`, `kampArm_diag_k1_correct_faithful`, `CAggInt`/`CAggOd`/`CAggOdSwap` clause iffs, the `negFixFaithful` population folds `aggPop1Faithful` / `aggPop1FFaithful` and their correctness, and the two off-diagonal `k = 1` arms |
+> | `Kamp/KampPriorFaithful.lean` (497 lines, 8 decls) | `nf_succ_char_formula_correct_faithful`, both per-depth arm closures, `nf_nvar_exist_all_depths_faithful`, its wrapper + correctness, `nfCharacterizableTemporalPriorFaithful`, `kampPriorExpressiveCompletenessFaithful` |
+>
+> **14.2's load-bearing finding is CONFIRMED, not corrected.** No site on the live path needed
+> `HasAttainedINF`'s extra strength. Everything above the ζ wire was restatement, exactly as
+> 14.2 reported.
+>
+> **Three corrections to this phase's own scope model, however.**
+>
+> 1. **The "72 binder lines across 15 modules" figure over-scoped the obligation.** Only
+>    **seven** declarations in `KampPrior.lean` and **nine** in the bridge lie on the live
+>    dependency path from `kampPriorExpressiveCompleteness` (`:672`). In particular
+>    `KampPrior.lean`'s own site/coverage-probe block — `kampPrior_site_*`,
+>    `kampPriorExistProviders*`, `kampPrior_fChain_*`, all of it *below* `:672` — is consumed by
+>    nothing on that path, and neither are `ExteriorPinnedConverseK` (10 lines),
+>    `ExteriorPinnedConversePastK`, `ExteriorBracketAssembleK`, `ExteriorFiberK`,
+>    `EndIntervalConsumerK`, `ExteriorNegation{K,PastK}`, `ExteriorConverter{K,PastK}`,
+>    `ExteriorGateAssembleK` or `InteriorGateGeneralK`'s further sites. Re-basing them is not
+>    required to discharge the obligation and was **not** done.
+> 2. **The plan's grep metric never was a complete inventory.**
+>    `grep -cE '(_?h_UZ|hUZ) *: *SemanticPriorUZ'` counts only the *named-binder* form and misses
+>    the arrow form `SemanticPriorUZ M atomMap →` entirely. There are 6 arrow-form sites in the
+>    live tree, and **5 of the 6 are on the live path** (the `k = 0` / `k = 1` arm lemmas in
+>    `AggregateHookDischarge.lean` and `AggregateOffDiagK1.lean`). The "72" therefore both
+>    over-counted (off-path sites) and under-counted (arrow form) at the same time.
+> 3. **Under D11 the UZ/SZ binder count can never decrease.** D11 forbids editing the attained
+>    originals, so a faithful re-base *adds* faithful binders beside the UZ/SZ ones rather than
+>    replacing them. The UZ/SZ count is now 115, up from 85, purely for that reason. It measures
+>    remaining restatement work, not progress, and should not be used as a completion metric —
+>    the sorry census is the metric that moved, and it moved the right way.
+>
+> **The `private` obstruction was largely a non-issue on the live path.** Exactly one private
+> helper mattered: `AggregateHookDischarge.lean`'s `agg2_cons_diag_env` (`:1447`), a four-line
+> arity-2 env identity, restated visibly as `aggDiagEnv2_const_faithful` (an addition; the
+> original keeps its `private`). `ExteriorBracket.lean`'s `kvE2_extGate_anyBit_iff` (`:837`) —
+> the case 14.2 diagnosed as forcing a ~265-line in-file duplication — is **not on the live
+> path**, so it never had to be touched.
+>
+> **What is left, and it is optional.** The off-path UZ/SZ sites above are unreached restatement.
+> They cost nothing to leave: they are pinned at the strictly stronger carrier, they are
+> sorry-free, and no live result depends on them at the faithful carrier. Any future phase that
+> wants them re-based should be chartered on its own merits, not as a completion obligation of
+> this route.
+
+<details>
+<summary>Original Phase 14.3 charter (retained verbatim)</summary>
+
 
 - **Goal**: finish what 14.2 began — re-base the remaining 72 `SemanticPriorUZ`/`SemanticPriorSZ`
   binder lines across 15 modules onto `HasFaithfulDedekindINF`/`SUP`, then discharge
@@ -2039,6 +2102,9 @@ modules** as the genuine remainder. That is the number Phase 14.3 inherits.
 - **Depends on**: 14.2.
 - **Note**: likely three or four dispatches. A natural seam is the 8 `private`-free bridge modules
   first, then `KampPrior.lean`, then the 7 `private`-bearing modules last.
+  *(Outcome: one dispatch, because the live path was far narrower than the inventory suggested.)*
+
+</details>
 
 <!-- superseded 14.2 heading retained below for the original charter text -->
 
