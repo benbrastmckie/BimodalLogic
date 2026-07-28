@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.WeakCanonical.PriorExpressiveness
 import FormalSystem.Metalogic.WeakCanonical.PriorDefsDense
 import FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
+import FormalSystem.Metalogic.WeakCanonical.Kamp.KampPriorFaithful
 
 /-!
 # `{U,S}` Expressive Completeness over *Dense* Prior Structures
@@ -216,74 +217,69 @@ noncomputable def uSExpressivelyCompleteOverDensePrior_of_faithful
       (Kamp.prior_hasFaithfulDedekindINF_dense M atomMap h_U)
       (Kamp.prior_hasFaithfulDedekindSUP_dense M atomMap h_S) t⟩
 
-/-! ## The plan-shaped target
+/-! ## The plan-shaped target — DISCHARGED
 
-Everything above is sorry-free. The single `sorry` in this module is isolated in the next
-declaration, which is the named obligation and nothing else. -/
+This module is now sorry-free, and with it the whole route: the obligation below was the only
+gap. -/
 
-/-- **STRATEGIC SORRY — the one open obligation of this module.**
+/-- **The obligation, discharged** — expressive completeness of `{U,S}` at the faithful eq (5.2)
+carrier, supplied by `Kamp.kampPriorExpressiveCompletenessFaithful`
+(`Kamp/KampPriorFaithful.lean`).
 
-**What is assumed**: expressive completeness of `{U,S}` at the faithful eq (5.2) carrier —
-`KampFaithfulExpressiveCompleteness`, the faithful sibling of
-`Kamp.kampPriorExpressiveCompleteness`.
+**What closed it.** The obligation was a re-base of the whole `kampPriorExpressiveCompleteness`
+spine (`Kamp/KampPrior.lean:672`) from `SemanticPriorUZ` / `SemanticPriorSZ` onto
+`Kamp.HasFaithfulDedekindINF` / `Kamp.HasFaithfulDedekindSUP`. The re-base landed in four rungs,
+each sorry-free:
 
-**Why it is not discharged here — and how much of the gap is now closed.** The obligation is a
-re-base of the whole `kampPriorExpressiveCompleteness` spine onto the faithful carrier, not a
-composition of already-landed parts. That re-base is under way and its **bottom rung is landed**:
+1. **The ζ wire** — `Kamp.kampArm_zeta_faithful` (`Kamp/ZetaUniformExtractFaithful.lean:522`),
+   with the canonical-expansion transfers `Kamp.canonExpand_hasFaithfulDedekindINF` / `SUP` and
+   the faithful uniform translate `Kamp.translate_uniformFin_faithful`. This serves the `k ≥ 2`
+   arms of `nf_nvar_exist_all_depths`.
+2. **The one substantive obligation above the wire** — `Kamp.aggOdPopFold_iff_faithful`
+   (`Kamp/NfMultiAnchorBridge/AggregateOffDiagK1Faithful.lean:89`). `aggOdPopFold_iff`
+   (`AggregateOffDiagK1.lean:1226`) touches its carrier hypotheses at exactly one step, the
+   bit-false branch of its cons case (`:1253`), and that step is `VVecEA2.negFix_iff` — for which
+   `VVecEA2.negFixFaithful_iff` is the faithful counterpart, needing `HasFaithfulDedekindINF`
+   alone. Everything else in the spine turned out to be restatement.
+3. **The bridge interface and the six trichotomy arms** —
+   `Kamp/NfMultiAnchorBridge/PriorInterfaceFaithful.lean`,
+   `Kamp/NfMultiAnchorBridge/OuterGateFaithful.lean`, and
+   `Kamp/NfMultiAnchorBridge/ArmLemmasFaithful.lean`, the last carrying the `k = 0` and `k = 1`
+   arm closures plus the `negFixFaithful` population folds they ride.
+4. **The spine itself** — `Kamp/KampPriorFaithful.lean`, restating
+   `nf_succ_char_formula_correct`, both per-depth arm closures, `nf_nvar_exist_all_depths`, its
+   convenience wrapper, `nfCharacterizableTemporalPrior`, and the main theorem.
 
-- **Closed.** The ζ wire, which is where the completeness carrier enters the chain, now exists at
-  the faithful carrier: `Kamp.kampArm_zeta_faithful`
-  (`Kamp/ZetaUniformExtractFaithful.lean`), sorry-free, together with the canonical-expansion
-  transfers `Kamp.canonExpand_hasFaithfulDedekindINF` / `SUP` and the faithful uniform translate
-  `Kamp.translate_uniformFin_faithful`. `Kamp.kampArm_zeta_faithful_covers_attained`
-  machine-checks that the faithful wire re-supplies every consumer of the attained one, so the
-  re-base is a weakening and not a sideways move.
-- **Closed: the only substantive obligation above the wire.** The two sites that genuinely
-  *consume* the carrier on the correctness path — `aggPop1_correct` and `aggPop1F_correct`
-  (`NfMultiAnchorBridge/AggregateOffDiagK1.lean:1288`, `:1381`) — consume it identically, by
-  feeding `prior_hasAttained*` to `Kamp.aggOdPopFold_iff` (`:1226`). That lemma touches its carrier
-  hypotheses at exactly one step, the bit-false branch of its cons case (`:1253`), and that step is
-  `VVecEA2.negFix_iff` — for which `VVecEA2.negFixFaithful_iff` is the faithful counterpart, needing
-  `HasFaithfulDedekindINF` alone. `Kamp.aggOdPopFold_iff_faithful`
-  (`Kamp/NfMultiAnchorBridge/AggregateOffDiagK1Faithful.lean`) is landed sorry-free, with
-  `Kamp.aggOdPopFold_iff_faithful_covers_attained` machine-checking the weakening. **What remains
-  below therefore contains no proof content at all.**
-- **Closed: the two roots of the bridge's UZ/SZ subgraph.**
-  `Kamp/NfMultiAnchorBridge/PriorInterfaceFaithful.lean` restates the interface
-  (`ExistProvidersFaithful`, `BracketCarrierCorrectVPriorFaithful`, both `k ≤ 1` lifts) and
-  `Kamp/NfMultiAnchorBridge/OuterGateFaithful.lean` the k = 2 outer gate. These two modules are the
-  only bridge modules whose own imports mention no completeness carrier, so every other
-  UZ/SZ-carrying bridge module sits above them.
-- **Open.** The rest of the spine above the wire is still pinned at `SemanticPriorUZ` /
-  `SemanticPriorSZ`: **72 hypothesis-binder lines across 15 live modules**, of which
-  `Kamp/KampPrior.lean` alone carries 26. All of it is restatement. (The measurement is
-  `grep -cE '(_?h_UZ|hUZ) *: *SemanticPriorUZ'` over the live tree: 85 lines in total, less the 5
-  re-based here and the 8 that are not re-base targets — `PriorINF.lean` and `DedekindINF.lean` are
-  the *suppliers*, `ZetaPriorTransfer.lean` already has its faithful siblings, and
-  `Lemma53Faithful.lean:545`, `Lemma53FaithfulPast.lean:472` and `Prop42Faithful.lean` are the
-  exclusion results that consume `HasAttainedINF.first_occ`'s attained conclusion and provably do
-  **not** carry over.)
-- **What makes the remainder awkward is `private`, not difficulty.** A faithful sibling can live in
-  a new module only when the declarations it consumes are visible there. Seven of the fifteen
-  remaining modules carry `private` declarations on the carrier-consuming path —
-  `ExteriorBracket.lean`'s `kvE2_extGate_anyBit_iff` (`:837`) is the diagnosed case — and for those
-  the sibling must be added inside the original module. The other eight, **including
-  `KampPrior.lean`**, are `private`-free and re-basable with no edit to any existing file.
+Every attained original is untouched: the re-base added declarations and removed and renamed
+nothing.
 
-**Why the assumption is safe to make in this shape**: it is the *only* gap. Every other step of
-the route is landed and sorry-free — `prior_hasFaithfulDedekindINF_dense` and its dual supply the
-carrier from the dense hypotheses with no side conditions, and
-`uSExpressivelyCompleteOverDensePrior_of_faithful` performs the composition. Substituting any
-proof of this obligation makes the whole route unconditional with no further edits.
+**What it does not assume**: nothing about arity `≥ 2`. The statement is at
+`MonadicFormula sig 1`, inheriting `Kamp.nf_nvar_exist_all_depths_faithful`'s `hn : n ≤ 1`
+domain restriction rather than widening it.
 
-**What it does not assume**: nothing about arity `≥ 2`. The obligation is stated at
-`MonadicFormula sig 1`, inheriting `Kamp.nf_nvar_exist_all_depths`' `hn : n ≤ 1`. -/
+**Source status**: the construction is Rabinovich, *A Proof of Kamp's Theorem* (2014) — Def 3.1
+p.4 for the normal-form stratification, Lemmas 3.2(2) and 3.4 pp.4-5 for the characteristic
+assembly, Def 4.1 / Prop 4.3 / Thm 4.4 pp.5-6 for the ζ wire, Prop 4.2 p.6 for the negated
+population clauses. The *choice of carrier* has no source: Rabinovich draws no distinction
+between the attained first-occurrence property and his own eq (5.2) dichotomy (PDF p.8), so the
+re-basing is this tree's own work. -/
+noncomputable def kampFaithfulExpressiveCompleteness
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    KampFaithfulExpressiveCompleteness atomMap h_surj :=
+  fun psi => Kamp.kampPriorExpressiveCompletenessFaithful atomMap h_surj psi
+
+/-- **Retained name.** This was the module's strategic sorry; it is now
+`kampFaithfulExpressiveCompleteness` under its former name, at the same type and with no
+weakening. It is kept so that every consumer written against the open obligation continues to
+typecheck unchanged, and it no longer contributes `sorryAx` to anything downstream. -/
 noncomputable def kampFaithfulExpressiveCompleteness_open
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     KampFaithfulExpressiveCompleteness atomMap h_surj :=
-  sorry
+  kampFaithfulExpressiveCompleteness atomMap h_surj
 
 /-- **`{U,S}` expressive completeness over dense Prior structures** — Reynolds 1992, §5 Theorem 3,
 printed p.176: *"The language with U and S is expressively complete for the class of Prior
