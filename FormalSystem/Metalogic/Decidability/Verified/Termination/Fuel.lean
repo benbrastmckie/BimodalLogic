@@ -761,4 +761,143 @@ theorem chain_le_soundFuel' {C : Finset Formula} {L : Finset Label} {φ : Formul
     Nat.mul_le_mul_left _ hL
   simpa [soundFuel', ← hφ] using le_trans hstep' this
 
+/-! ## 4.3c — `expandBranchWithFuel` does not exhaust
+
+The plan's named deliverable was `buildTableau_isSome` at `soundFuel'`, and it is **false as
+stated**: `buildTableau` calls `expandBranchWithFuel` at the default `maxBranches := 50000`, whose
+very first line returns `none` once `branchesUsed` reaches that figure, at *any* fuel whatsoever.
+The corrected statement quantifies over the branch budget instead of inheriting the default, which
+is what this section proves. The engine is untouched — `maxBranches = 50000` is a deliberate
+runtime guard, and the wave-3 territory contract forbids editing it.
+
+Three things can make `expandBranchWithFuel` report `none`, and a true theorem has to rule out all
+three: the branch-budget guard, fuel exhaustion, and a `none` propagated out of a split arm's
+fold. The theorem below rules out the first by hypothesis (`branchesUsed + fuel ≤ maxBranches`),
+the second by the T3 progress measure (the run cannot take more steps than the universe has
+members), and the third by confining attention to runs that never split. The splitting case is a
+genuinely separate obligation — it needs `resolveOpenArm`, which has its own `none` — and is
+recorded as such rather than waved at.
+-/
+
+/--
+An invariant on branches under which the engine's step never splits, and which survives an
+extending step.
+
+Stated as a predicate rather than as a property of one run because that is what the induction on
+fuel consumes: the recursion re-enters at the *new* branch with a *new* ordering and tracker, so
+whatever is assumed at the start has to be re-established there, for all such parameters.
+-/
+def NoSplit (P : Branch → Prop) (fc : ProofSystem.FrameClass) : Prop :=
+  ∀ b, P b → ∀ (ord : TimeOrdering) (tr : EventualityTracker),
+    (∀ nb, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.extended nb → P nb)
+    ∧ (∀ bs, (expandOnceUnblocked b ord fc tr).1 ≠ ExpansionResult.split bs)
+    ∧ (∀ bs, (expandOnceUnblocked b ord fc tr).1 ≠ ExpansionResult.splitOrdered bs)
+
+/--
+**4.3c, corrected form.** With the branch budget quantified and enough fuel to outlast the finite
+universe, an unbranched expansion never reports `none`.
+
+The fuel hypothesis `U.card < b.toFinset.card + fuel` is exactly the T3 progress measure in the
+form the induction needs: every extending step consumes one unit of fuel *and* adds at least one
+member to the branch-as-a-set, and the branch cannot exceed `U`, so the fuel outlasts the run. At
+`fuel = 0` the hypothesis is already contradictory, which is why the base case is discharged
+rather than being the place the theorem fails.
+
+The branch-budget hypothesis `branchesUsed + fuel ≤ maxBranches` is the honest replacement for the
+plan's silent reliance on the default: each extending step increments `branchesUsed` by one and
+decrements `fuel` by one, so the sum is invariant and the guard `branchesUsed ≥ maxBranches` is
+never reached.
+-/
+theorem expandBranchWithFuel_isSome_of_noSplit {P : Branch → Prop}
+    {fc : ProofSystem.FrameClass} {U : Finset SignedFormula}
+    (hP : NoSplit P fc) (hU : ∀ b, P b → ∀ x ∈ b, x ∈ U) :
+    ∀ (fuel : Nat) (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker)
+      (applied : AppliedSet) (maxBranches branchesUsed : Nat),
+      P b → U.card < b.toFinset.card + fuel → branchesUsed + fuel ≤ maxBranches →
+      (expandBranchWithFuel b fuel ord fc tr applied maxBranches branchesUsed).isSome = true := by
+  intro fuel
+  induction fuel with
+  | zero =>
+      intro b _ _ _ _ _ hPb hcard _
+      exact absurd (card_le_of_subset_universe (hU b hPb)) (by omega)
+  | succ f ih =>
+      intro b ord tr applied mb bu hPb hcard hbud
+      rw [expandBranchWithFuel, if_neg (by omega : ¬ bu ≥ mb)]
+      rcases hcl : findClosure b fc with _ | reason
+      case some => simp
+      case none =>
+        simp only [expandOnceUnblockedWithApplied]
+        obtain ⟨hext, hsp, hsso⟩ :=
+          hP b hPb ord (fulfillEventualities b (registerEventualities b tr))
+        rcases hres : (expandOnceUnblocked b ord fc
+            (fulfillEventualities b (registerEventualities b tr))).1 with _ | nb | bs | bs
+        · simp
+        · have hgrow := expandOnceUnblocked_card_lt hres
+          simpa using ih nb _ _ applied mb (bu + 1) (hext nb hres) (by omega) (by omega)
+        · exact absurd hres (hsp bs)
+        · exact absurd hres (hsso bs)
+
+/--
+**4.3c at the justified fuel figure.** The same statement with the two abstract parameters
+instantiated the way T1 and T2 supply them: the universe is `signedUniverse C L`, and the fuel is
+whatever exceeds its cardinality.
+
+This is the form a caller uses: exhibit a stock `C` (by `decide`, via
+`tableauClosed_of_closureStep_subset`), a label set `L`, a branch budget, and the theorem returns
+totality of the expansion. Note that the fuel figure that suffices is `2 * |C| * |L|` — the step
+bound of `chain_le_stock` — and `chain_le_soundFuel'` is what identifies that with `soundFuel' φ`
+once the label count sits at the T2 figure.
+-/
+theorem expandBranchWithFuel_isSome_of_stock {P : Branch → Prop}
+    {fc : ProofSystem.FrameClass} {C : Finset Formula} {L : Finset Label}
+    (hP : NoSplit P fc)
+    (hf : ∀ b, P b → ∀ x ∈ b, x.formula ∈ C) (hl : ∀ b, P b → ∀ x ∈ b, x.label ∈ L)
+    (fuel : Nat) (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker)
+    (applied : AppliedSet) (maxBranches branchesUsed : Nat)
+    (hPb : P b) (hfuel : 2 * C.card * L.card < fuel)
+    (hbud : branchesUsed + fuel ≤ maxBranches) :
+    (expandBranchWithFuel b fuel ord fc tr applied maxBranches branchesUsed).isSome = true :=
+  expandBranchWithFuel_isSome_of_noSplit (U := signedUniverse C L) hP
+    (fun b' hb' x hx => mem_signedUniverse (hf b' hb' x hx) (hl b' hb' x hx))
+    fuel b ord tr applied maxBranches branchesUsed hPb
+    (by have := card_signedUniverse_le C L; omega) hbud
+
+/-! ### Non-vacuity
+
+`expandBranchWithFuel_isSome_of_noSplit` is stated over a hypothetical invariant `P`, and
+`P := fun _ => False` would satisfy `NoSplit` vacuously — so the theorem is worth exactly as much
+as the existence of a satisfying `P` with an inhabited branch. The witness below supplies one
+outright, and it is not artificial: the empty branch is the engine's own starting shape before any
+seed formula is placed, and it is `saturated` at every ordering, frame class and tracker because
+all three pick stages scan the branch itself.
+-/
+
+/-- The engine reports `saturated` on the empty branch, at every parameter: all three pick stages
+scan the branch, and there is nothing to scan. -/
+theorem expandOnceUnblocked_nil (ord : TimeOrdering) (fc : ProofSystem.FrameClass)
+    (tr : EventualityTracker) :
+    (expandOnceUnblocked [] ord fc tr).1 = ExpansionResult.saturated := by
+  simp [expandOnceUnblocked, findUnexpandedUnblockedWith]
+
+/-- **`NoSplit` is satisfiable.** -/
+theorem noSplit_nil (fc : ProofSystem.FrameClass) :
+    NoSplit (fun b => b = ([] : Branch)) fc := by
+  rintro b rfl ord tr
+  refine ⟨fun nb h => ?_, fun bs h => ?_, fun bs h => ?_⟩ <;>
+    rw [expandOnceUnblocked_nil] at h <;> exact absurd h (by simp)
+
+/-- **The corrected 4.3c statement, fully instantiated and hypothesis-free apart from the branch
+budget.** Nothing here is assumed: the invariant, the universe and the fuel are all supplied, and
+the only condition left is the one the plan's blocker note identified as the real content — that
+the branch budget covers the run. -/
+theorem expandBranchWithFuel_nil_isSome (fuel : Nat) (ord : TimeOrdering)
+    (fc : ProofSystem.FrameClass) (tr : EventualityTracker) (applied : AppliedSet)
+    (maxBranches branchesUsed : Nat)
+    (hfuel : 0 < fuel) (hbud : branchesUsed + fuel ≤ maxBranches) :
+    (expandBranchWithFuel [] fuel ord fc tr applied maxBranches branchesUsed).isSome = true :=
+  expandBranchWithFuel_isSome_of_noSplit (U := (∅ : Finset SignedFormula)) (noSplit_nil fc)
+    (fun _ hb x hx => absurd hx (by subst hb; simp)) fuel [] ord tr applied maxBranches
+    branchesUsed rfl
+    (by simp only [Finset.card_empty, List.toFinset_nil]; omega) hbud
+
 end FormalSystem.Metalogic.Decidability
