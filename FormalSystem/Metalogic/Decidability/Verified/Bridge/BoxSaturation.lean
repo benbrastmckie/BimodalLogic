@@ -490,6 +490,40 @@ def boxGridCheck (b : Branch) : Bool :=
         b.knownTimes.all fun t' => b.contains (SignedFormula.pos inner ⟨w', t'⟩)
     | _ => true
 
+/-! ### The check discharges the invariant
+
+**`BoxAnchored` does not need an induction over tableau construction, and should not get one.**
+`timeOrderTotal` — the other branch-level side condition the grid consumes — is *not* proved
+invariant under expansion anywhere in this development. It is a decidable check on the finished
+branch, carried as a hypothesis `hTot : timeOrderTotal b timeOrd = true` and discharged per run
+by computation. `BoxAnchored` has exactly the same character: it is a first-order condition on a
+finite branch, decidable in the branch, and the truth lemma only ever needs it for the *one*
+saturated branch `hasOpen` hands back.
+
+`boxAnchored_of_check` is that route. It turns the residual obligation from "prove an induction
+over `expandOnceUnblocked` covering every rule in `allRulesForFC`, including the two that mint
+worlds and the six that mint times" into "evaluate a `Bool` on the branch in hand" — which the
+probe rows already do, and which `Decidable (⊨ φ)` can do at instance-resolution time. A
+construction-level proof would be a strictly stronger result and is worth having; it is not on
+the critical path for the truth lemma, and treating it as if it were is what cost the previous
+two dispatches.
+-/
+
+/-- **The decidable check discharges the invariant.** -/
+theorem boxAnchored_of_check {b : Branch} (h : boxAnchoredCheck b = true) : BoxAnchored b := by
+  intro φ l hmem w' hw'
+  have hbf : (⟨.pos, .box φ, l⟩ : SignedFormula) ∈ b.boxPosFormulas := by
+    simp only [Branch.boxPosFormulas, List.mem_filter]
+    exact ⟨hmem, trivial⟩
+  have h1 := (List.all_eq_true.mp h) _ hbf
+  simp only at h1
+  have h2 := (List.all_eq_true.mp h1) w' hw'
+  obtain ⟨s, hs, hcond⟩ := List.any_eq_true.mp h2
+  simp only [Bool.and_eq_true] at hcond
+  obtain ⟨⟨hc, hG⟩, hH⟩ := hcond
+  exact ⟨s, hs, mem_of_branch_contains hc, mem_of_branch_contains hG,
+    mem_of_branch_contains hH⟩
+
 /-! ## The grid, from the corrected invariant -/
 
 /--
@@ -521,6 +555,22 @@ theorem sat_box_grid_of_anchored (b : Branch) (timeOrd : TimeOrdering)
   · rw [heq]; exact hc
   · exact sat_all_future_pos b timeOrd hSat φ w' s hG t' hfut
   · exact sat_all_past_pos b timeOrd hSat φ w' s hH t' hpast
+
+/--
+**The grid with both side conditions in decidable form** — the shape the truth lemma consumes.
+
+Both hypotheses are now `Bool` equations on the finished branch, matching how `timeOrderTotal`
+was already handled, so a caller holding a concrete open branch discharges them by computation
+rather than by a construction-level invariant.
+-/
+theorem sat_box_grid_of_check (b : Branch) (timeOrd : TimeOrdering)
+    (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
+    (hTot : timeOrderTotal b timeOrd = true)
+    (hBA : boxAnchoredCheck b = true)
+    (φ : Formula) (w : WorldIndex) (t : TimeIndex)
+    (hmem : (⟨.pos, .box φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b) :
+    ∀ w' ∈ b.knownWorlds, ∀ t' ∈ b.knownTimes, (⟨.pos, φ, ⟨w', t'⟩⟩ : SignedFormula) ∈ b :=
+  sat_box_grid_of_anchored b timeOrd hSat hTot (boxAnchored_of_check hBA) φ w t hmem
 
 /--
 **`T(□φ)` reaches every known label** — the exact hypothesis `truthAt_box_iff_base` consumes, and
