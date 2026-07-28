@@ -1976,6 +1976,75 @@ the branch, so it imports nothing from an endpoint and is neither refuted copy p
 - Folding the `U`/`S` straddling guards into the gap *policy* — they are compound-formula
   obligations of the induction, not degrees of freedom of `gapVal`.
 
+**PHASE 7 STATUS (2026-07-28h) — still PARTIAL after a fourth dispatch. Both residuals named by
+the 2026-07-28g banner are closed; one of them was closed by discovering it was already proved,
+the other by refuting it and replacing it. Sorry-free; both builds green** (`lake build
+FormalSystem.Metalogic.Decidability`, `lake build BimodalTest`); the sorry census over
+`Verified/` reports `0`; every new theorem verifies on `propext`/`Classical.choice`/`Quot.sound`
+only. 7.2 and 7.3 are still not started. No engine file was touched.
+
+*Residual B (`TimeOrderConverse`) was not open — it was already proved, in another module.*
+`Verified/Termination/Fuel.lean` carries `orderDual_holds`, for **every** `TimeOrdering`, via
+`open private reachableForward reachableBackward` plus the shared breadth-first shape `bfsClosure`
+(`bfsClosure_sound` for the forward half, `PathN.reverse` for the edge-by-edge reversal,
+`bfsClosure_complete` and the `BfsInv` visited-set invariant for the backward half). `OrderDual`
+and `TimeOrderConverse` are the same statement. `timeOrderConverse` (`Bridge/BoxSaturation.lean`)
+is the rename, and every `hConv` hypothesis downstream is now dischargeable at the call site. The
+two names are kept apart because the fuel module reaches the duality for a termination purpose
+that has nothing to do with the box grid. **Lesson for the next dispatch: grep the whole
+`Verified/` tree for an obligation's statement before budgeting a proof for it.**
+
+*Correction 7 — `BoxTemporalSpread` is refuted on the engine's own output, and `BoxAnchored`
+replaces it.* The 2026-07-28g banner named `BoxTemporalSpread` on the strength of the
+world-minting copy (`boxNeg`/`diamondPos` copy `branch.allFuturePosAtTime l.time` and
+`branch.allPastPosAtTime l.time` onto the fresh world, `Tableau.lean:553-559`). That reading of
+the copy is correct; what it misses is that the copy happens at **one** time — the *triggering*
+label's `l.time` — while the box formula does not stay at one time. `boxDiamondPersistence`
+relabels `T(□φ)` from `(w,t)` to `(w,freshTime)`, so one `T(□φ)` on the seed becomes a `T(□φ)` at
+every time the run later mints in that world, and `BoxTemporalSpread` then demands `T(Gφ)` at the
+fresh world at every one of them, of which the mint supplied exactly one. Measured, not argued:
+`(□p ∧ ◇q) → r` at `.Base`, fuel `200`, gives an OPEN saturated branch over 2 worlds and 7 times
+with `boxTemporalSpreadCheck = false` — and note the world there is minted at the *same* time the
+box sits at, so this is not the cross-time-mint case one would guess at. `(□p ∧ ◇(G q)) → r` and
+the `.Dense` run of the same formula fail identically. Rows in
+`Tests/BimodalTest/BoxSpreadProbe.lean` as `#guard_msgs`, so the refutation is re-runnable.
+`BoxAnchored` is the correction — for each known world, **one** anchor time carrying `T(φ)`,
+`T(Gφ)` and `T(Hφ)` together — and `boxAnchoredCheck` and `boxGridCheck` are both `true` on every
+branch that refutes the spread. `sat_box_grid_of_anchored` derives the grid from it by
+`knownTime_trichotomy` about the anchor; `boxAnchored_of_boxTemporalSpread` records that nothing
+is lost by the weakening.
+
+*Correction 8 — the box invariant does not want a construction induction, and the plan should
+stop asking for one.* `timeOrderTotal`, the grid's *other* branch-level side condition, is nowhere
+proved invariant under expansion in this development: it is a decidable check on the finished
+branch, carried as `hTot : timeOrderTotal b timeOrd = true` and discharged per run by computation.
+`BoxAnchored` has exactly the same character — a first-order condition on a finite branch,
+decidable in the branch, needed only for the one saturated branch `hasOpen` returns — and
+`boxAnchored_of_check` gives it the same treatment. `sat_box_grid_of_check` is the composed form
+the truth lemma consumes, with both side conditions as `Bool` equations. This is what turns the
+residual from "induct over `expandOnceUnblocked` across every rule in `allRulesForFC`, including
+the two that mint worlds and the six that mint times" into "evaluate a `Bool`". A
+construction-level proof of `BoxAnchored` is strictly stronger and remains worth having as
+hygiene; it is **not** on the truth lemma's critical path, and treating it as if it were is what
+the previous two dispatches spent themselves on.
+
+*What remains in 7.1 — one item, and it is the mathematical content.* The **truth-lemma induction
+itself**: `not_valid_of_hasOpen`, generic in `TemporalCarrier`, consuming the `sat_*` family and
+the three now-complete interfaces (O1 `branchPlacedVal`/`truthAt_atom_branch_placed`, O2
+`branchGapVal`/`branchGapVal_gapAdequate`, O3 `sat_box_grid_of_check`). `TruthLemma.lean`'s "What
+the truth lemma still needs" section has been rewritten to say this and to name the interfaces;
+it is the file the next dispatch should open. The `U`/`S` straddling guards are discharged inside
+the induction, where the `untlPos`-minted witness (a placed point) and the dense rules'
+intermediate guards are available; the preamble must state that `findUnexpanded = none` means "no
+*ordinary* rule applies", since `serialityRule` sits outside `allRulesForFC`.
+
+**DO NOT RE-ATTEMPT (added by this dispatch):**
+- `TimeOrderConverse` as an open obligation — already proved as `orderDual_holds`.
+- `BoxTemporalSpread` as a construction invariant *or* as a saturated-branch fact — machine-refuted
+  on `(□p ∧ ◇q) → r`; use `BoxAnchored`.
+- A construction induction for the box invariant as a *prerequisite* for the truth lemma —
+  `boxAnchoredCheck` discharges it the same way `timeOrderTotal` is already discharged.
+
 ### Phase 8: Hygiene — Vacuous Theorems and Documentation [NOT STARTED]
 
 - **Goal:** No vacuous theorems remain in `Decidability/`; documentation matches reality.

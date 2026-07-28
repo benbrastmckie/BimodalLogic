@@ -322,32 +322,49 @@ end Countermodel
 
 /-! ## What the truth lemma still needs
 
-Recorded here because this is the file the next dispatch opens. Three obligations remain between
-the invariance above and `not_valid_of_hasOpen`; none of them is a gap in what is proved, and the
-first two are consequences of `truthAt_box_iff`, not of any choice made in this file.
+Recorded here because this is the file the next dispatch opens. **O1, O2 and O3 are all
+discharged**; what remains between the invariance above and `not_valid_of_hasOpen` is the
+truth-lemma induction itself. The three interfaces it consumes, and where they live:
 
-**O1 — the valuation.** `regionFrame`'s states are `W × (Set ι × Set ι)`, so a `TaskModel` over it
-is a predicate on (world, region code). At a *placed* code — one of the form `regionCode f (f i)` —
-the branch dictates the value: `b.hasPosAt (.atom p) ⟨worldAt w, timeAt b i⟩`. At a *gap* code the
-branch says nothing and the value is a free choice, which is exactly the choice `interpInvariantAt`
-leaves open and the choice the remaining two obligations constrain.
+**O1 — the valuation. Done** (`Bridge/Valuation.lean`). `regionFrame`'s states are
+`W × (Set ι × Set ι)`, so a `TaskModel` over it is a predicate on (world, region code). At a
+*placed* code — one of the form `regionCode f (f i)` — the branch dictates the value:
+`branchPlacedVal`, reading `b.hasPosAt (.atom p) ⟨w, timeAt b i⟩`, with `truthAt_atom_branch_placed`
+the readback. `regionValuation` is total on codes; `truthAt_atom_regionHistory` discharges the
+domain existential outright.
 
-**O2 — the gap policy is forced by the universal cases, not by the atoms.** `T(G φ) @ (w, t)`
-requires `φ` at *every* `r > f t`, gap points included, and `T(□ φ)` requires `φ` at every point of
-every base history (`truthAt_box_iff_base`). Region invariance transports truth between
-region-*mates*, and a gap region contains no placed point, so it cannot import a value from an
-endpoint — that is precisely the half-open partition the Phase 6 banner refutes. The gap valuation
-must therefore be defined so that every universally-quantified branch fact survives at it, and the
-consistency of that definition is the mathematical content still owed.
+**O2 — the gap policy. Done** (`Bridge/Valuation.lean`). The obligation is `GapAdequate`, *not*
+`GapDemands`: the latter is stated backwards and `gapDemands_trivial` proves every policy meets
+it, including the two the same file refutes (`not_leftCopy_gapAdequate`,
+`not_rightCopy_gapAdequate`). `branchGapVal` defines the policy outright, reading only the region
+code and the branch — at a gap code `c`, the atom `p` holds when some index below the gap carries
+`T(G p)`, or some index above carries `T(H p)`, or `T(□ p)` is on the branch at all — and
+`branchGapVal_gapAdequate` discharges all three fields. Note what is *not* part of this: the
+`U`/`S` straddling guards (`prior_U_gap`/`prior_S_gap`/`sep`) are compound-formula obligations of
+the induction below, not degrees of freedom of `gapVal`, since a compound formula's value at a gap
+point is fixed by the induction rather than by the atom policy.
 
-**O3 — a missing branch-side closure fact.** The `sat_*` family (`CountermodelExtraction.lean`)
-has `sat_box_pos`: `T(□φ) @ (w,t)` propagates `T(φ)` to every known world **at the same time**.
-What the `box` case needs is propagation to every known *label*. The engine has it — `boxTemporal`
-(`Tableau.lean:635`) emits `T(Gφ)`, `T(Hφ)` at the same label, and the measured probes close
-`□p → □Gp`, `□p → □□p`, `□p → G□p` and `□p → ¬◇F¬p` — but there is no `sat_box_temporal` lemma to
-consume, and `sat_box_pos` alone does not reach a label differing in both coordinates. Proving it
-means unfolding `applyRule` (`sat_box_pos` needs `maxHeartbeats 1600000`), so it should be budgeted
-as its own sub-phase rather than attempted inside the truth-lemma induction.
+**O3 — the box grid. Done, after two corrections** (`Bridge/BoxSaturation.lean`). The `box` case
+needs `T(□φ) @ (w,t)` to reach every known *label*, and `sat_box_pos` reaches only the same time.
+The interface is now `sat_box_grid_of_check`, whose two side conditions are both `Bool` equations
+on the finished branch: `timeOrderTotal b timeOrd = true` and `boxAnchoredCheck b = true`.
+
+  Two invariants were tried and both are refuted in tree, so neither should be reached for again.
+  `BoxContextClosed` ("`T(□φ)` at every known label") fails because world-minting copies box
+  formulas' *contents*, never the formulas. `BoxTemporalSpread` ("`T(Gφ)`/`T(Hφ)` at every known
+  world at the box formula's own time") fails because `boxDiamondPersistence` relabels `T(□φ)`
+  into every time the run later mints in that world, while the world-minting copy of
+  `allFuturePosAtTime` happened once, at the triggering time — measured on
+  `(□p ∧ ◇q) → r`, see `Tests/BimodalTest/BoxSpreadProbe.lean`. `BoxAnchored` — one anchor time
+  per known world carrying `T(φ)`, `T(Gφ)` and `T(Hφ)` together — is what survives, and
+  `timeOrderTotal` sweeps the world's whole row from that single anchor.
+
+**What is actually owed: the induction.** `not_valid_of_hasOpen`, generic in `TemporalCarrier`,
+consuming the `sat_*` family and the three interfaces above. Its preamble must state that
+`findUnexpanded = none` means "no *ordinary* rule applies" — `serialityRule` is deliberately
+outside `allRulesForFC`, so the branch may still be owed `T(F ⊤)`/`T(P ⊤)` at every label. Those
+are true at every point of any serial frame, so the extracted model is unaffected, but the gap
+must be named rather than assumed away.
 -/
 
 /-! ## Sanity checks -/
