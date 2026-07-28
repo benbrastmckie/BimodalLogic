@@ -18,6 +18,7 @@ import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGapWitness
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGuardWitness
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGuardAbove
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension
+import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleGuardAccumulation
 
 /-!
 # BX Canonical Model Completeness

@@ -3630,7 +3630,7 @@ these facts stated; none of them is withdrawn by it.**
 
 ---
 
-### Phase 7.5: The guard-accumulation invariant and the payoff implication (R3d-1) [IN PROGRESS]
+### Phase 7.5: The guard-accumulation invariant and the payoff implication (R3d-1) [COMPLETED]
 
 **Risk-first, and it touches NO construction file.** This sub-phase answers the question that makes
 all the rest worth doing: *does a Dedekind-closedness invariant on the guard-failure classes
@@ -3658,7 +3658,13 @@ verbatim** in the summary so 7.6-7.9 can be held to it.
   **ADAPTED-FROM: Burgess 1982 I §2.10, printed pp.372-373** and **ADAPTED-FROM: Burgess 1984 §2.7,
   printed pp.109-110**.
 - **Tasks:**
-  - [ ] **Deliverable 1 — the invariant, stated at the ℚ level.** Define a predicate on a rational
+  - [x] **Deliverable 1 — the invariant, stated at the ℚ level.** *(landed as
+        `NoGuardAccumulation (D : Set Rat) (m : Rat → Set Formula) (G : Set Formula)`; deviation:
+        altered — the signature carries a **domain parameter `D`** and a `Set Formula` guard set
+        rather than the sketched `Finset`. `Set` because `BFMCS.LimitGuardEventual` has no closure
+        hypothesis, so the payoff needs `G = Set.univ`; `D` because the order-theoretic clauses must
+        be relative to the sub-order the construction manipulates, which is exactly what makes
+        `noGuardAccumulation_transport` (also landed) available to 7.9.)* Define a predicate on a rational
         MCS family and a finite guard set, of the shape
 
         ```lean
@@ -3689,7 +3695,10 @@ verbatim** in the summary so 7.6-7.9 can be held to it.
         the point, exactly as `LimitGuardEventual` is. **Do NOT enlarge any closure**: the guard
         set is *indexed by* `subformulaClosure root`, which is a `Finset`
         (`SubformulaClosure/Closure.lean:36`), and indexing is not enlarging (Amendment 3).
-  - [ ] **Deliverable 2 — the payoff implication.** Prove
+  - [x] **Deliverable 2 — the payoff implication.** *(landed sorry-free as
+        `limitGuardEventual_of_noGuardAccumulation`, exactly the suggested name; routed through
+        `SetMaximalConsistent.negation_complete` and `limitMCSBelow_cofinal_below` as specified,
+        with the ultrafilter untouched.)* Prove
         `limitGuardEventual_of_noGuardAccumulation` (name at the implementer's discretion; report
         it): a bundle whose every family satisfies the invariant at the relevant guard set
         satisfies `BFMCS.LimitGuardEventual`. **This is the load-bearing direction.** The residual
@@ -3699,7 +3708,11 @@ verbatim** in the summary so 7.6-7.9 can be held to it.
         `{A | ∃ z : ℝ, z < r ∧ ∀ q : Rat, z < q → q < r → A ∈ m q}`). Consume
         `limitMCSBelow_cofinal_below` for the descent from the `untl`/`snce` antecedent; **do not
         modify it and do not touch the ultrafilter**.
-  - [ ] **Deliverable 3 — the family-`Q` counterexample check, landed as an artefact.** Show that
+  - [x] **Deliverable 3 — the family-`Q` counterexample check, landed as an artefact.** *(landed as
+        the general refutation `not_noGuardAccumulation_of_cofinal_guard_failure` plus the shape
+        package `FamilyQShape` and its instantiation `familyQ_violates_noGuardAccumulation`.
+        Outcome: the invariant **excludes** the pattern. No realizability claim was made or
+        attempted.)* Show that
         family `Q` (report 05 §5.1: one atom `P`, irrational `T`, `t_n ↗ T`, `u_n ↓ T`,
         `V(P) = {t_n} ∪ {u_n}`, `φ := P`, `ψ := ¬P`) **violates** the invariant, as a Lean
         statement — at minimum, a lemma that the invariant fails for any family whose `¬ψ`-set is
@@ -3711,16 +3724,20 @@ verbatim** in the summary so 7.6-7.9 can be held to it.
         at `fc = FrameClass.Dedekind`** — that needs the forbidden EF / modal-depth machinery, it is
         an explicit Non-Goal, and it is not what this deliverable asks. The question here is only
         whether the invariant *excludes the pattern*.
-  - [ ] Module docstring: state the no-source fact per the honesty charter; record the chosen
+  - [x] Module docstring: state the no-source fact per the honesty charter; record the chosen
         invariant form and **why** it was chosen over the alternatives considered; record the
         order-theoretic characterization (report 05 §4.2) and the fact that it is what makes the
         invariant transportable through `cantorIsoDense` in 7.9; record that `Q` is excluded and
         that this says nothing about `Q`'s abstract realizability. Cite Reynolds **printed p.175**
         for the `γ⁺` statement being discharged, and nothing else as a source. **No task-number
         citations.**
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleGuardAccumulation`, then
-        full `lake build`.
-  - [ ] `#print axioms` on each new declaration; record the results.
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleGuardAccumulation`, then
+        full `lake build`. *(both green; the full build emitted zero `error:`/`✖` lines. A
+        confirmation re-run was left contending with a concurrent session rebuilding
+        `Decidability/` and `Automation/`, which are outside this phase's territory and were not
+        modified here.)*
+  - [x] `#print axioms` on each new declaration; record the results. *(all
+        `[propext, Classical.choice, Quot.sound]` — recorded in the summary.)*
 - **Estimated output:** ~250-350 lines in the new module. **One agent run (H8).**
 - **Done when:** the invariant is defined; the payoff implication (P1) is proved sorry-free; (P2)
   and (P3) are recorded as landed Lean, not as prose; full `lake build` is green; live sorries
