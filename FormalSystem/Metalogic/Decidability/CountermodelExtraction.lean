@@ -713,6 +713,8 @@ theorem sat_some_future_neg (b : Branch) (timeOrd : TimeOrdering)
         exact absurd hm (by unfold applyRule; simp only [asSomeFuture?]; split <;> simp)
     | .branching bs =>
         exact absurd hm (by unfold applyRule; simp only [asSomeFuture?]; split <;> simp)
+    | .branchingOrdered bs =>
+        exact absurd hm (by unfold applyRule; simp only [asSomeFuture?]; split <;> simp)
     | .persistent fs => rw [hm] at hSFNeg; simp at hSFNeg
   -- Unfold applyRule to get the filter structure
   unfold applyRule at hNA
@@ -777,6 +779,8 @@ theorem sat_some_past_neg (b : Branch) (timeOrd : TimeOrdering)
     | .linear fs =>
         exact absurd hm (by unfold applyRule; simp only [asSomePast?]; split <;> simp)
     | .branching bs =>
+        exact absurd hm (by unfold applyRule; simp only [asSomePast?]; split <;> simp)
+    | .branchingOrdered bs =>
         exact absurd hm (by unfold applyRule; simp only [asSomePast?]; split <;> simp)
     | .persistent fs => rw [hm] at hSPNeg; simp at hSPNeg
   unfold applyRule at hNA
@@ -855,6 +859,7 @@ theorem sat_untl_neg (b : Branch) (timeOrd : TimeOrdering)
     -- already excludes any time whose co-decomposition output is on the branch), so
     -- `findApplicableRule` adds no guard and the result is `some`, contradicting `hUntlNeg`.
     | .branching bs => rw [hm] at hUntlNeg; simp [ruleSelfGuarded] at hUntlNeg
+    | .branchingOrdered bs => rw [hm] at hUntlNeg; simp [ruleSelfGuarded] at hUntlNeg
     | .persistent fs => rw [hm] at hUntlNeg; simp at hUntlNeg
   -- Now unfold applyRule to get the filter/match structure
   unfold applyRule at hNA
@@ -921,6 +926,7 @@ theorem sat_snce_neg (b : Branch) (timeOrd : TimeOrdering)
         repeat' split
         all_goals simp
     | .branching bs => rw [hm] at hSnceNeg; simp [ruleSelfGuarded] at hSnceNeg
+    | .branchingOrdered bs => rw [hm] at hSnceNeg; simp [ruleSelfGuarded] at hSnceNeg
     | .persistent fs => rw [hm] at hSnceNeg; simp at hSnceNeg
   -- Unfold applyRule to get the filter/match structure
   unfold applyRule at hNA

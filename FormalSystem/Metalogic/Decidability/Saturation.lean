@@ -169,6 +169,10 @@ def appliedEntryRedundant (b : Branch) (ord : TimeOrdering) (fc : FrameClass)
      | some (_, .linear fs, _) => fs.all b.contains
      | some (_, .persistent fs, _) => fs.all b.contains
      | some (_, .branching bss, _) => bss.any fun fs => fs.all b.contains
+     -- An ordered split's arms are replacement branches, not outputs, so "the branch already
+     -- carries this arm's output" has no content here. Retained-as-history predicate (the R5
+     -- section below records its refutation); it has no live dependents.
+     | some (_, .branchingOrdered _, _) => false
      | _ => false)
 
 /--
@@ -483,6 +487,26 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
                     | some (.inl _) => acc  -- This branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open
               (branches.zip fuelAllocs).foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
+          | (.splitOrdered branches, _, newAppliedFormulas) =>
+              -- Identical to the `.split` arm above except for the one thing this constructor
+              -- exists to express: each sub-branch is expanded under **its own** ordering,
+              -- `pair.1.2`, rather than under the single post-step `newOrd` they would
+              -- otherwise share. The tracker/applied-set reasoning in the `.split` arm carries
+              -- over verbatim — it says nothing about the time ordering.
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              let plainBranches := branches.map Prod.fst
+              let fuelAllocs := allocateFuelProportionally (fuel + 1) plainBranches
+              let branchesUsed' := branchesUsed + branches.length
+              let tryBranch := fun acc (pair : (Branch × TimeOrdering) × Nat) =>
+                match acc with
+                | some (.inr openBr) => some (.inr openBr)  -- Already found open
+                | _ =>
+                    match expandBranchWithFuel pair.1.1 (min pair.2 fuel)
+                      pair.1.2 fc tracker applied' maxBranches branchesUsed' with
+                    | none => none  -- Out of fuel
+                    | some (.inl _) => acc  -- This branch closed, continue
+                    | some (.inr openBr) => some (.inr openBr)  -- Found open
+              (branches.zip fuelAllocs).foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
   termination_by fuel
 decreasing_by all_goals simp_wf
 
@@ -547,6 +571,15 @@ def expandOnceWithAppliedTracedImpl (b : Branch) (timeOrd : TimeOrdering)
                 let branchId := depth + idx + 1
                 TraceM.record (.branchCreated cert.totalSteps depth branchId rule)
               return (.split newBranches, newOrd, [])
+          | .branchingOrdered branches =>
+              -- Mirror of the `.branching` arm. The arms are already complete branches, so
+              -- there is nothing to append; the trace shape is otherwise identical.
+              TraceM.recordRuleFired rule sf.sign sf.formula sf.label [] false depth
+              let cert ← TraceM.getCert
+              for (_pair, idx) in branches.zip (List.range branches.length) do
+                let branchId := depth + idx + 1
+                TraceM.record (.branchCreated cert.totalSteps depth branchId rule)
+              return (.splitOrdered branches, newOrd, [])
           | .persistent formulas =>
               TraceM.recordRuleFired rule sf.sign sf.formula sf.label formulas true depth
               return (.extended (formulas ++ b), newOrd, newApplied)
@@ -630,6 +663,23 @@ def expandBranchWithFuelTracedImpl (b : Branch) (fuel : Nat)
                 | _ =>
                     match ← expandBranchWithFuelTracedImpl pair.1 (min pair.2 fuel)
                       newOrd fc tracker applied' maxBranches branchesUsed' with
+                    | none => acc := none
+                    | some (.inl _) => pure ()  -- closed; continue
+                    | some (.inr openBr) => acc := some (.inr openBr)
+              return acc
+          | .splitOrdered branches =>
+              -- Mirror of the `.split` arm; each sub-branch runs under its own ordering.
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              let fuelAllocs := allocateFuelProportionally (fuel + 1) (branches.map Prod.fst)
+              let branchesUsed' := branchesUsed + branches.length
+              let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
+                some (.inl ⟨b, .botPos Label.initial⟩)
+              for pair in branches.zip fuelAllocs do
+                match acc with
+                | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
+                | _ =>
+                    match ← expandBranchWithFuelTracedImpl pair.1.1 (min pair.2 fuel)
+                      pair.1.2 fc tracker applied' maxBranches branchesUsed' with
                     | none => acc := none
                     | some (.inl _) => pure ()  -- closed; continue
                     | some (.inr openBr) => acc := some (.inr openBr)
@@ -736,6 +786,23 @@ def saturateBlocked (b : Branch) (fuel : Nat)
                     | some (.inl _) => acc  -- Sub-branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open
                     | none => none  -- Should not happen (saturateBlocked always returns some)
+              branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
+          | (.splitOrdered branches, newOrd) =>
+              if newOrd.constraints.length > timeOrd.constraints.length then
+                some (.inr (b, timeOrd))  -- Reject: would create new time point
+              else
+              -- Mirror of the `.split` arm; each sub-branch keeps its own ordering. In practice
+              -- this arm is unreachable from `expandOnceNoFresh`, whose pick rejects any rule
+              -- that lengthens the constraint list and every ordered split does exactly that;
+              -- it is written out rather than collapsed so the invariant stays checkable.
+              let tryBranch := fun acc (pair : Branch × TimeOrdering) =>
+                match acc with
+                | some (.inr openBr) => some (.inr openBr)  -- Already found open
+                | _ =>
+                    match saturateBlocked pair.1 fuel pair.2 fc with
+                    | some (.inl _) => acc  -- Sub-branch closed, continue
+                    | some (.inr openBr) => some (.inr openBr)  -- Found open
+                    | none => none
               branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
 termination_by fuel
 
@@ -1364,6 +1431,99 @@ private theorem foldl_preserves_findClosure
           ord' ap' ih h_init h)
       h_result
 
+/--
+Ordered-split analogue of `tryBranch_inr`.
+
+The only difference is where the recursive call gets its `TimeOrdering`: from the pair itself
+(`pair.1.2`) rather than from a single ordering shared across the split. The invariant being
+preserved says nothing about the ordering — `expandBranchWithFuel_sound`'s induction hypothesis
+is universally quantified over it — so the proof is the same case analysis.
+-/
+private theorem tryBranchOrdered_inr
+    (fuelBound : Nat) (fc : FrameClass)
+    (tracker : EventualityTracker) (applied' : AppliedSet)
+    (maxBranches : Nat) (branchesUsed' : Nat)
+    (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)))
+    (pair : (Branch × TimeOrdering) × Nat) (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
+    (ih : ∀ (fuel' : Nat), fuel' ≤ fuelBound →
+          ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
+            (ap' : AppliedSet) (mb : Nat) (bu : Nat)
+            (ob' : Branch) (o' : TimeOrdering) (a' : AppliedSet),
+            expandBranchWithFuel b' fuel' t' fc' trk' ap' mb bu = some (.inr (ob', o', a')) →
+            findClosure ob' fc' = none)
+    (h_acc : ∀ ob' ord' ap', acc = some (.inr (ob', ord', ap')) → findClosure ob' fc = none)
+    (h_result : (match acc with
+      | some (.inr openBr) => some (.inr openBr)
+      | _ =>
+          match expandBranchWithFuel pair.1.1 (min pair.2 fuelBound)
+            pair.1.2 fc tracker applied' maxBranches branchesUsed' with
+          | none => none
+          | some (.inl _) => acc
+          | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap))) :
+    findClosure ob fc = none := by
+  cases acc with
+  | none =>
+    simp only at h_result
+    split at h_result
+    · exact absurd h_result (by simp)
+    · exact absurd h_result (by simp)
+    · simp only [Option.some.injEq, Sum.inr.injEq] at h_result
+      obtain ⟨rfl, rfl, rfl⟩ := h_result
+      rename_i openBr h_exp
+      exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
+        pair.1.1 pair.1.2 fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
+  | some val =>
+    cases val with
+    | inr p =>
+      simp only [Option.some.injEq, Sum.inr.injEq] at h_result
+      obtain ⟨rfl, rfl, rfl⟩ := h_result
+      exact h_acc ob ord ap rfl
+    | inl cb =>
+      simp only at h_result
+      split at h_result
+      · exact absurd h_result (by simp)
+      · exact absurd h_result (by simp)
+      · simp only [Option.some.injEq, Sum.inr.injEq] at h_result
+        obtain ⟨rfl, rfl, rfl⟩ := h_result
+        rename_i openBr h_exp
+        exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
+          pair.1.1 pair.1.2 fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
+
+/-- Ordered-split analogue of `foldl_preserves_findClosure`. -/
+private theorem foldlOrdered_preserves_findClosure
+    (fuelBound : Nat) (fc : FrameClass)
+    (tracker : EventualityTracker) (applied' : AppliedSet)
+    (maxBranches : Nat) (branchesUsed' : Nat)
+    (ih : ∀ (fuel' : Nat), fuel' ≤ fuelBound →
+          ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
+            (ap' : AppliedSet) (mb : Nat) (bu : Nat)
+            (ob' : Branch) (o' : TimeOrdering) (a' : AppliedSet),
+            expandBranchWithFuel b' fuel' t' fc' trk' ap' mb bu = some (.inr (ob', o', a')) →
+            findClosure ob' fc' = none)
+    (pairs : List ((Branch × TimeOrdering) × Nat))
+    (init : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)))
+    (h_init : ∀ ob ord ap, init = some (.inr (ob, ord, ap)) → findClosure ob fc = none)
+    (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
+    (h_result : pairs.foldl (fun acc (pair : (Branch × TimeOrdering) × Nat) =>
+      match acc with
+      | some (.inr openBr) => some (.inr openBr)
+      | _ =>
+          match expandBranchWithFuel pair.1.1 (min pair.2 fuelBound)
+            pair.1.2 fc tracker applied' maxBranches branchesUsed' with
+          | none => none
+          | some (.inl _) => acc
+          | some (.inr openBr) => some (.inr openBr)) init = some (.inr (ob, ord, ap))) :
+    findClosure ob fc = none := by
+  induction pairs generalizing init with
+  | nil => exact h_init ob ord ap h_result
+  | cons hd tl ih_tl =>
+    simp only [List.foldl] at h_result
+    exact ih_tl _
+      (fun ob' ord' ap' h =>
+          tryBranchOrdered_inr fuelBound fc tracker applied' maxBranches branchesUsed' init hd ob'
+          ord' ap' ih h_init h)
+      h_result
+
 set_option maxHeartbeats 3200000 in
 -- `expandBranchWithFuel_sound` runs strong induction on fuel; the fuel-divided split case
 -- re-elaborates the full `expandBranchWithFuel` definition in each recursive branch.
@@ -1418,6 +1578,15 @@ private theorem expandBranchWithFuel_sound
               (branchesUsed + branches.length)
               (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))
               (branches.zip (allocateFuelProportionally (k + 1) branches))
+              (some (.inl ⟨b, .botPos Label.initial⟩))
+              (fun _ _ _ h' => by simp at h')
+              ob ord ap h
+          | ⟨.splitOrdered branches, _, newAppliedFormulas⟩ =>
+            simp only [hexp] at h
+            exact foldlOrdered_preserves_findClosure k fc _ _ maxBranches
+              (branchesUsed + branches.length)
+              (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))
+              (branches.zip (allocateFuelProportionally (k + 1) (branches.map Prod.fst)))
               (some (.inl ⟨b, .botPos Label.initial⟩))
               (fun _ _ _ h' => by simp at h')
               ob ord ap h

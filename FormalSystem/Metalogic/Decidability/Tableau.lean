@@ -187,6 +187,21 @@ inductive RuleResult : Type where
   | linear (formulas : List SignedFormula)
   /-- Split into multiple branches (each is a list of formulas to add). -/
   | branching (branches : List (List SignedFormula))
+  /--
+  Split into multiple branches that constrain the **time ordering differently per branch**.
+
+  Additive: `.branching` above is untouched and keeps its meaning, so every existing rule and
+  every existing consumer is unaffected. Only a rule that genuinely needs a different
+  `TimeOrdering` on each branch — today only `timeLinearity` — returns this constructor.
+
+  **The payload is a list of replacement branches, not of deltas.** This is the one place where
+  it differs from `.branching`, and the difference is forced rather than stylistic: the
+  identification arm of `timeLinearity` has to *remove* a time from `Branch.knownTimes`, which no
+  list of formulas-to-add can do. Arms that add nothing to the branch simply pass the branch
+  through unchanged. `Branch` is an `abbrev` for `List SignedFormula`, so this is the same type
+  the design note names.
+  -/
+  | branchingOrdered (branches : List (Branch × TimeOrdering))
   /-- Universal modal rule: add formulas but do NOT remove the source formula.
       Used for T(□A) and F(◇A) which must persist for propagation to new worlds. -/
   | persistent (formulas : List SignedFormula)
@@ -1570,6 +1585,14 @@ def findApplicableRule (sf : SignedFormula) (branch : Branch := [])
             (if witnessPresent rule sf branch timeOrd then none else some (rule, result, newOrd))
           else if bss.any (fun fs => fs.all branch.contains) then none
           else some (rule, result, newOrd)
+      | .branchingOrdered _ =>
+          -- No output-presence guard, and none is possible: the arms of an ordered split are
+          -- replacement *branches*, so "the branch already contains this arm's output" is
+          -- trivially true of every arm that adds no formula, which is every arm of the only
+          -- rule that produces this constructor. What stops re-firing is the rule's own gate —
+          -- it reports `.notApplicable` once no incomparable pair remains — exactly as the
+          -- `.persistent` arm above relies on `applyRule`'s per-rule filters.
+          some (rule, result, newOrd)
     else none
 
 /--
@@ -1768,6 +1791,15 @@ inductive ExpansionResult : Type where
   | extended (newBranch : Branch)
   /-- Branch splits into multiple branches (branching rule applied). -/
   | split (branches : List Branch)
+  /--
+  Branch splits into multiple branches, each carrying **its own** `TimeOrdering`.
+
+  Additive counterpart of `.split`, which keeps its payload and its meaning verbatim. A consumer
+  of `.split` passes the single post-step ordering to every sub-branch; a consumer of
+  `.splitOrdered` passes each sub-branch the ordering paired with it. Produced only from
+  `RuleResult.branchingOrdered`.
+  -/
+  | splitOrdered (branches : List (Branch × TimeOrdering))
   deriving Repr
 
 /--
@@ -1804,6 +1836,9 @@ def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
               (.extended (formulas ++ b), newOrd)
           | .branching branches =>
               (.split (branches.map fun newFormulas => newFormulas ++ b), newOrd)
+          | .branchingOrdered branches =>
+              -- Replacement branches: each arm already *is* the branch it describes.
+              (.splitOrdered branches, newOrd)
           | .persistent formulas =>
               (.extended (formulas ++ b), newOrd)
           | .notApplicable => (.saturated, newOrd)  -- Shouldn't happen
@@ -1843,6 +1878,7 @@ def expandOnceUnblocked (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.emp
           | .linear formulas => (.extended (formulas ++ b), newOrd)
           | .branching branches =>
               (.split (branches.map fun newFormulas => newFormulas ++ b), newOrd)
+          | .branchingOrdered branches => (.splitOrdered branches, newOrd)
           | .persistent formulas => (.extended (formulas ++ b), newOrd)
           | .notApplicable => (.saturated, newOrd)
 
@@ -1881,6 +1917,7 @@ def expandOnceNoFresh (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty
       match result with
       | .linear formulas => (.extended (formulas ++ b), newOrd)
       | .branching branches => (.split (branches.map fun fs => fs ++ b), newOrd)
+      | .branchingOrdered branches => (.splitOrdered branches, newOrd)
       | .persistent formulas => (.extended (formulas ++ b), newOrd)
       | .notApplicable => (.saturated, newOrd)
 
@@ -2062,6 +2099,7 @@ theorem pick_extended
             match result with
             | .linear fs => (ExpansionResult.extended (fs ++ b), newOrd)
             | .branching bss => (ExpansionResult.split (bss.map fun fs => fs ++ b), newOrd)
+            | .branchingOrdered bs => (ExpansionResult.splitOrdered bs, newOrd)
             | .persistent fs => (ExpansionResult.extended (fs ++ b), newOrd)
             | .notApplicable => (ExpansionResult.saturated, newOrd)).1
          = ExpansionResult.extended nb) :
@@ -2072,6 +2110,7 @@ theorem pick_extended
   · cases res with
     | notApplicable => simp at h
     | branching bss => simp at h
+    | branchingOrdered bs => simp at h
     | linear fs => exact ⟨r, fs, o, Or.inl rfl, by simpa using h.symm⟩
     | persistent fs => exact ⟨r, fs, o, Or.inr rfl, by simpa using h.symm⟩
 

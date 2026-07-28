@@ -563,6 +563,7 @@ def ordA : TimeOrdering := { constraints := [(1, 2), (0, 1)] }
   | .persistent fs => s!"persistent -> times {fs.map (fun g : SignedFormula => g.label.time)}"
   | .linear fs => s!"linear -> times {fs.map (fun g : SignedFormula => g.label.time)}"
   | .branching _ => "branching"
+  | .branchingOrdered _ => "branchingOrdered"
   | .notApplicable => "notApplicable"
 
 end TransitivityProbe

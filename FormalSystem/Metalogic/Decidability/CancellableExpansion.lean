@@ -111,6 +111,24 @@ def expandBranchWithFuelCancellable (abortRef : IO.Ref Bool)
                     | some (.inl _) => pure ()  -- closed; continue
                     | some (.inr openBr) => acc := some (.inr openBr)
               return acc
+          | (.splitOrdered branches, _, newAppliedFormulas) =>
+              -- Mirror of the `.split` arm; each sub-branch runs under its own ordering
+              -- (`pair.1.2`) rather than under a shared post-step `newOrd`.
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              let fuelAllocs := allocateFuelProportionally (fuel + 1) (branches.map Prod.fst)
+              let branchesUsed' := branchesUsed + branches.length
+              let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
+                some (.inl ⟨b, .botPos Label.initial⟩)
+              for pair in branches.zip fuelAllocs do
+                match acc with
+                | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
+                | _ =>
+                    match ← expandBranchWithFuelCancellable abortRef pair.1.1 (min pair.2 fuel)
+                      pair.1.2 fc tracker applied' maxBranches branchesUsed' with
+                    | none => acc := none
+                    | some (.inl _) => pure ()  -- closed; continue
+                    | some (.inr openBr) => acc := some (.inr openBr)
+              return acc
 termination_by fuel
 decreasing_by all_goals simp_wf
 
@@ -167,6 +185,25 @@ def saturateBlockedCancellable (abortRef : IO.Ref Bool)
                   | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
                   | _ =>
                       match ← saturateBlockedCancellable abortRef newBranch fuel timeOrd fc with
+                      | some (.inl _) => pure ()  -- sub-branch closed; continue
+                      | some (.inr openBr) => acc := some (.inr openBr)
+                      | none => acc := none
+                return acc
+          | (.splitOrdered branches, newOrd) =>
+              if newOrd.constraints.length > timeOrd.constraints.length then
+                return some (.inr (b, timeOrd))  -- reject: new time point
+              else
+                -- Mirror of the `.split` arm; each sub-branch keeps its own ordering. As in
+                -- the pure `saturateBlocked`, this arm is unreachable from `expandOnceNoFresh`
+                -- (whose pick rejects any rule that lengthens the constraint list, which every
+                -- ordered split does) and is written out to keep that invariant checkable.
+                let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering)) :=
+                  some (.inl ⟨b, .botPos Label.initial⟩)
+                for pair in branches do
+                  match acc with
+                  | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
+                  | _ =>
+                      match ← saturateBlockedCancellable abortRef pair.1 fuel pair.2 fc with
                       | some (.inl _) => pure ()  -- sub-branch closed; continue
                       | some (.inr openBr) => acc := some (.inr openBr)
                       | none => acc := none
