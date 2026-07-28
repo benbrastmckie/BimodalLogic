@@ -1585,39 +1585,48 @@ characterization.
 
 ---
 
-## Paper Alignment Programme (possible_worlds.tex, 2026-07-28)
+## Paper Alignment Programme (possible_worlds.tex, 2026-07-28; revised same day)
 
 The JPL paper (PossibleWorlds/JPL/possible_worlds.tex) has settled its semantic-core
 decisions (PossibleWorlds/Comments/fix.md, Parts A-B): same-sign frame axioms with
-identity Nullity (already this repo's axiomatization: `nullity_identity`,
-`forward_comp`, `converse`), nontrivial `D` (already `[Nontrivial D]`), and — the
-load-bearing change — **official validity = maximal-history validity** (histories
-restricted to maximal ones), with Omega-relativized validity retained only as
-completeness scaffolding. The repo is to be adapted to the paper (not the paper
-scoped down to the repo). New tasks:
+identity Nullity (already this repo's axiomatization), nontrivial `D` (already
+`[Nontrivial D]`), and — the load-bearing change — **official validity =
+maximal-history validity**. Direction of alignment: **the repo's basic definitions
+change to match the paper** (definitional alignment). No bridge lemmas, transfer
+theorems, compatibility shims, or parallel validity notions: one uniform Ω-free
+API, with the mathematical content of countermodel realization absorbed into the
+canonical constructions themselves.
 
-- **414** — correct the false `valid` docstrings (Semantics/Validity.lean:33,70-71:
-  the Set.univ-equivalence claim is false); define `validUniv` and `validMaximal`
-  (maximal histories + ShiftClosed); instance lemmas `valid → validUniv/validMaximal`.
-- **415** (dep: 414) — **realization transfer**: upgrade weak completeness from
-  Omega-relativized to maximal-history validity per class (Discrete first; then
-  Dense/Base/Dedekind as 170/169/408 land). Lead: singleton-Omega countermodels
-  realizable as deterministic frames.
-- **416** — CO-axiom bridge (paper BX_c axiom CO vs repo prior_U_gap/prior_S_gap/sep)
-  + Hoelder classification docs (complete ⇒ ≅ ℤ or ℝ; dense+complete ⇒ ℝ; TM_c vs
-  TM+_dc naming alignment).
-- **417** — semantic FMP connected to TruthAt (finite WorldState over D = ℤ) +
-  decidable model checking there; the semantic-FMP follow-on descoped from 165.
+- **414** — *refactor semantics to maximal-history validity*: extension order +
+  `Maximal` on `WorldHistory` (Zorn extension, shift-preservation); `TruthAt`/
+  `valid`/satisfiability/consequence refactored to quantify over maximal histories,
+  **removing the Omega parameter entirely** (the false Set.univ-equivalence
+  docstrings die with it); Soundness propagated.
+- **415** (dep: 414) — *completeness over the new semantics, internalized*: per-class
+  weak completeness reproved so canonical/chronicle constructions deliver
+  maximal-history countermodels outright (deterministic frames replace the
+  singleton-Omega device). Rebases the targets of 169/170/408.
+- **416** — *adopt the CO axiom basis*: the paper's single CO axiom (line 3250)
+  becomes the official Dedekind-class basis; Reynolds-style gap principles are
+  re-derived as internal theorems where proofs need them; Hoelder classification
+  (complete ⇒ ≅ ℤ or ℝ; dense+complete ⇒ ℝ) recorded; rebases 408/411 targets.
+- **417** (dep: 414) — *semantic FMP*, finite `WorldState` over `D = ℤ`, connected to
+  the refactored `TruthAt`, + decidable model checking there (the follow-on
+  descoped from 165).
 
-Existing tasks already carrying the alignment: **413** (TM conservativity bridge,
-paper thm:ConservativeExtension), **169/170/408/361/362** (completeness programme;
-paper cor:tm-completeness is scoped to WEAK completeness per the settled
-terminology), **165/410/411/412** (tableau decidability). Paper-side edits that
-remain regardless (paper's own mathematics): weak-completeness wording, the false
-non-Archimedean footnote (3252-3255), ℤ-time rescope of UZ/Z1 soundness, and the
-enumeration argument restated as finite W over ℤ.
+Existing tasks carrying the rest — all rebasing onto the 414 semantics as they land:
+**413** (TM conservativity bridge, paper thm:ConservativeExtension),
+**169/170/408/361/362** (completeness programme; paper cor:tm-completeness scoped to
+WEAK completeness per the settled terminology), **165/410/411/412** (tableau
+decidability). Paper-side edits that remain regardless (paper's own mathematics):
+weak-completeness wording, the false non-Archimedean footnote (3252-3255), ℤ-time
+rescope of UZ/Z1, and the enumeration argument restated as finite W over ℤ.
 
----
+**Cost note (accepted)**: the refactor temporarily regresses currently-green
+theorems (restatement against the new semantics) and removes the Ω degree of
+freedom the old completeness proofs exploited — the constructions must now earn
+full maximal-history countermodels. This is the intended trade: uniformity and
+mathematical quality over incremental cheapness.
 
 ## Recommended Priority Order
 

@@ -11,8 +11,8 @@ next_project_number: 418
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,361,390,408,409,413,414,416,417 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 169,170,177,178,219,282,296,410,411,412,415 | 165,193,231,298,361,414 | formula-refactor, dataset-enhancement, strong_completeness |
+| 1 | 95,125,127,128,165,179,193,231,257,298,361,390,408,409,413,414,416 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 169,170,177,178,219,282,296,410,411,412,415,417 | 165,193,231,298,361,414 | formula-refactor, dataset-enhancement, strong_completeness |
 | 3 | 362 | 169,170 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -70,10 +70,10 @@ next_project_number: 418
 
 ### Uncategorized
 
-414 [NOT STARTED] — Paper-alignment anchor (PossibleWorlds Comments/fix.md C1/B1; pap
-  └─ 415 [NOT STARTED] — Realization theorem (PossibleWorlds Comments/fix.md B1 bridge / C
-416 [NOT STARTED] — CO-axiom bridge and Hoelder alignment (PossibleWorlds Comments/fi
-417 [NOT STARTED] — Semantic FMP over a fixed carrier (PossibleWorlds Comments/fix.md
+414 [NOT STARTED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
+  └─ 415 [NOT STARTED] — Completeness under the refactored (Omega-free, maximal-history) s
+  └─ 417 [NOT STARTED] — Semantic FMP over a fixed carrier, stated against the refactored 
+416 [NOT STARTED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revise
 
 ## Tasks
 
@@ -81,39 +81,39 @@ next_project_number: 418
 - **Effort**: medium
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Dependencies**: None
+- **Dependencies**: Task 414
 
-**Description**: Semantic FMP over a fixed carrier (PossibleWorlds Comments/fix.md C6): prove the TruthAt-connected finite model property the paper cor:tm-decidability proof text cites — any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z — replacing reliance on the syntactic closure-MCS FMP theorems (Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by task 165 redirect; the tableau programme (165/410-412) remains the decision-procedure route. Related: 165, 410, 411, 412.
+**Description**: Semantic FMP over a fixed carrier, stated against the refactored Omega-free maximal-history semantics of task 414 (PossibleWorlds Comments/fix.md C6; revised 2026-07-28): prove the TruthAt-connected finite model property the paper cor:tm-decidability proof text cites — any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z — replacing reliance on the syntactic closure-MCS FMP theorems (Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by task 165 redirect; the tableau programme (165/410-412) remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
 
 ---
 
-### 416. Co axiom bridge and holder alignment complete classes
-- **Effort**: medium
+### 416. Adopt co axiom basis for dedekind class
+- **Effort**: large
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Dependencies**: None
 
-**Description**: CO-axiom bridge and Hoelder alignment (PossibleWorlds Comments/fix.md C4): the paper BX_c uses the single completeness axiom CO (possible_worlds.tex line 3250) while the repo Dedekind class uses Reynolds-style prior_U_gap/prior_S_gap/sep over dense+LUB, with no formal bridge. (1) Prove interderivability of CO with the Reynolds gap axioms over the relevant class, or add CO-basis derivations both directions. (2) Record the Hoelder classification (in Lean where cheap, else docs): a nontrivial Dedekind-complete totally ordered abelian group is Archimedean hence order-iso to Z or R; dense+complete = R — aligning FrameClass.Dedekind (dense+LUB = paper TM+_dc) docs with the paper TM_c/TM_dc distinction, and noting complete-but-discrete is exactly Z (already covered by Discrete). Related: tasks 390, 408, 411.
+**Description**: DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; revised 2026-07-28: adopt the paper basis, no two-basis bridge). Replace the Reynolds-style prior_U_gap/prior_S_gap/sep axioms with the paper single completeness axiom CO (possible_worlds.tex line 3250) as the OFFICIAL Dedekind-class axiom basis. Where existing proofs (tasks 408, 411) consume the gap principles, re-derive them as internal THEOREMS from the CO basis — derived lemmas from one basis, not an equivalence bridge between two coexisting bases — and rebase 408/411 targets accordingly. Record the Hoelder classification (nontrivial Dedekind-complete totally ordered abelian group is Archimedean, hence order-iso to Z or R; dense+complete = R) as lemmas where cheap, else docs; align FrameClass docs with the paper TM_c / TM+_dc distinction, noting complete-but-discrete is exactly Z (Discrete class). Related: 390, 408, 411.
 
 ---
 
-### 415. Realization transfer completeness to maximal history validity
+### 415. Completeness over maximal history semantics
 - **Effort**: large
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Dependencies**: Task 414
 
-**Description**: Realization theorem (PossibleWorlds Comments/fix.md B1 bridge / C1): upgrade WEAK completeness from Omega-relativized validity to maximal-history validity (validMaximal, task 414) per frame class, starting with Discrete (weak completeness DONE) and extending to Dense (task 170), Base (task 169), Dedekind (task 408) as they land. Approach: show each canonical/chronicle countermodel Omega can be REALIZED as the full maximal-history set of an actual frame. Lead: the singleton-Omega countermodels (WeakCanonical/Transfer.lean:603-638, WorldState = Unit, Omega = {tau}) look realizable as deterministic frames whose maximal histories form a single shift class — determinism may be the general realization device. Outcome: cor:tm-completeness true for the paper official semantics. Documented fallback if realization resists for a class: the inclusion derivable = Omega-valid subset-of maximal-valid, gap flagged as conjectural.
+**Description**: Completeness under the refactored (Omega-free, maximal-history) semantics of task 414 — INTERNALIZED, not bridged (PossibleWorlds Comments/fix.md B1/C2; revised 2026-07-28): restate and reprove WEAK completeness per frame class so the canonical/chronicle constructions deliver countermodels that are maximal-history models OUTRIGHT. The former singleton-Omega device (WeakCanonical/Transfer.lean:603-638) becomes: construct frames — deterministic frames are the lead, their maximal histories forming a single shift class — whose FULL maximal-history set is the required countermodel family; no transfer or realization lemmas in the final statements. Order: Discrete first (currently green under the old semantics), then Dense (task 170), Base (task 169), Dedekind (task 408), whose targets all rebase onto the new semantics. The mathematical content of realization is absorbed into the constructions; the headline theorems mention only the paper-aligned validity.
 
 ---
 
-### 414. Correct validity docstrings add validity notion ladder
-- **Effort**: small
+### 414. Refactor semantics to maximal history validity
+- **Effort**: large
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Dependencies**: None
 
-**Description**: Paper-alignment anchor (PossibleWorlds Comments/fix.md C1/B1; paper official validity = maximal-history validity). (1) Fix the FALSE docstrings in FormalSystem/Semantics/Validity.lean (~lines 33 and 70-71): the claim that Omega-relativized valid is equivalent to the standard Set.univ definition is false — the singleton-Omega countermodels (WeakCanonical/Transfer.lean:603-638) witness completeness resting on countermodels unavailable under Omega = univ. (2) Define validUniv (Omega = Set.univ) and validMaximal (Omega = the set of MAXIMAL world histories: define the extension order on WorldHistory, the Maximal predicate, and prove the maximal set is ShiftClosed). (3) Prove the instance lemmas valid -> validUniv and valid -> validMaximal and document that the converses are open (completeness transfer is task 415). Small, self-contained; no proof rewrites.
+**Description**: DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; revised 2026-07-28: change the basic definitions, no bridge lemmas). Make maximal-history validity THE validity of the repo, eliminating the Omega parameter from the semantics core. (1) Define the extension order on WorldHistory (sigma extends tau iff tau.domain subset-of sigma.domain and states agree on tau.domain), the Maximal predicate, and prove: every history extends to a maximal one (Zorn) and maximality is preserved by time-shift — the paper re-verified both. (2) Refactor TruthAt, valid, satisfiable, and semantic consequence to quantify over MAXIMAL histories of the frame, removing Omega and ShiftClosed hypotheses everywhere; the false Set.univ-equivalence docstrings (Semantics/Validity.lean:33,70-71) disappear with the parameter. (3) Propagate through Soundness (expected to survive verbatim via Zorn extension + shift-preservation). NO compatibility shims, aliases, or parallel validity notions: one uniform Omega-free API. Downstream metalogic rebasing is task 415; 417 restates against this semantics.
 
 ---
 
