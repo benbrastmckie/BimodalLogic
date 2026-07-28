@@ -33,6 +33,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.TemporalGate
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntGaps
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntTruth
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.DenseTruth
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -90,6 +91,13 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Bridge.IntGaps`: the `ℤ` placement is contiguous, so a non-placed integer lies on one
   of the two rays and there is no interior gap — the reason the `ℤ` milestone is strictly easier
   than the `ℚ`/`ℝ` one
+- `Verified.Bridge.IntTruth`: the signed truth correspondence and its six-case induction, run at
+  `ℤ`; the `atom`, `bot`, `imp` and `box` cases are proved there for an arbitrary carrier and an
+  arbitrary injective placement, and so are not `ℤ`-specific despite the module's name
+- `Verified.Bridge.DenseTruth`: the same correspondence at a dense carrier.
+  `branchTruthAt_of_temporal` is the machine-checked statement of what the two milestones share —
+  the whole induction with only the `untl`/`snce` cases abstracted, the four others discharged
+  from `IntTruth` unchanged
 
 ## Status
 
