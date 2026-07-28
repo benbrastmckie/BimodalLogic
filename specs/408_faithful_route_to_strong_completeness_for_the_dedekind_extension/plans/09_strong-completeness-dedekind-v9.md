@@ -3403,41 +3403,95 @@ discharged at a non-trivial instance. These results are not to be described as d
   Assets. The tier's blind spot — an edit crossing out of the comment region — is covered by the
   `git diff -U0` check and the `#print axioms` check above.)*
 
-### Phase 21: Reynolds §6 Lemma 8 — truth preservation under bad-interval surgery [NOT STARTED]
+### Phase 21: Reynolds §6 Lemma 8 — truth preservation under bad-interval surgery [COMPLETED]
 
 - **Goal**: *"For all temporal formulas `A`, for all `t ∈ N`, `M ⊨ A(t)` iff `N ⊨ A(t)"`*, where `N`
   is `M` with a whole bad interval `Q₀` replaced by one of its `∼`-classes `I`.
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean` (new).
 - **Tasks**:
-  - [ ] **Dependency check, first task (v9).** Confirm that this phase's Lemma 8 argument consumes
+  - [x] **Dependency check, first task (v9).** Confirm that this phase's Lemma 8 argument consumes
         only `reynolds_lemma7` (`BadIntervals.lean:1230`, **complete on both sides**) and Phase
         20's landed vocabulary — `IsBadInterval`, `ClassInteriorToBadInterval` (`:1017`),
         `reynolds_lemma6_nonsingleton` (`:677`), `reynolds_lemma6_right_endpoint` (`:1275`). **If
         any step needs `reynolds_lemma6`'s fourth conjunct or any other `R`-from-`L` fact, name the
         exact dependency and report `[BLOCKED]` on Phase 20.4** — do not wait silently, and do not
-        manufacture the mirror inline.
-  - [ ] Define the surgered structure `N` with domain `Q⁻ ∪ I ∪ Q⁺` (printed **p.181**).
-  - [ ] Prove Lemma 8 by induction on `A`, transcribing all thirteen cases from printed
+        manufacture the mirror inline. **CONFIRMED, and the de-serialization held**: the landed
+        consumers are exactly `reynolds_lemma7_start`, `reynolds_lemma7_end`,
+        `reynolds_lemma7_close_to_left`, `reynolds_lemma7_close_to_right`, `IsBadInterval` and
+        `ClassInteriorToBadInterval`. `reynolds_lemma6`'s fourth conjunct was **not** needed and
+        neither were `reynolds_lemma6_nonsingleton` or `reynolds_lemma6_right_endpoint` — the two
+        Lemma 6 facts Lemma 8 does use (*"a bad interval has no first point"*, *"no last point"*)
+        are re-derived inside the owned file as `exists_mem_lt` / `exists_mem_gt` from the
+        interiority witnesses plus `IsBadInterval.saturated`, in four lines each. No `[BLOCKED]`
+        report was required.
+  - [x] Define the surgered structure `N` with domain `Q⁻ ∪ I ∪ Q⁺` (printed **p.181**).
+        `restrictStructure` (the general form of `MonadicFO.lean:215`'s `subinterval`),
+        `SurgeryDomain` and `surgeredStructure`. `Q⁻ ∪ Q⁺` is rendered as the single clause
+        `¬ Q x` — justified by convexity of a bad interval, and proved as `lt_of_before` /
+        `lt_of_after` rather than assumed.
+  - [x] Prove Lemma 8 by induction on `A`, transcribing all thirteen cases from printed
         **pp.181-182**: seven forward `U(A,B)` cases and six backward, with `S(A,B)` by the mirror.
         Each case's justification is written out in the source; Lemma 7 is what closes cases 2, 3,
-        5 and 6 in both directions.
-  - [ ] **Pick the gap-crossing lemma deliberately.** Three (four with the past mirror) coexist and
+        5 and 6 in both directions. **Case count confirmed by measurement off the page images**
+        (PDF pp.17-18): seven forward, six backward, thirteen in all. *(deviation: altered —
+        Reynolds' seven forward cases are jointly exhaustive but **not pairwise disjoint**, his
+        case 4 overlapping his case 2 when `t ∈ Q⁻` and `s ∈ I`. Lean needs a disjoint split, so
+        the transcription fixes the position of `t` first and of `s` second, giving `3+3+1`
+        forward and `3+2+1` backward — exactly his counts, with his case 4 read as the `t ∈ I`
+        reading. The correspondence is recorded case by case in the module header and in inline
+        case comments.)* Second measured divergence: Reynolds names Lemma 7 in **forward case 3**,
+        where in this rendering his remark that *"`B` holds throughout `I`"* is just the
+        observation that `I ⊆ (t, s)`, so the `U`-hypothesis already covers it and no appeal is
+        needed. Lemma 7 is genuinely consumed in forward cases 2 and 5 and backward cases 2, 3
+        and 5 — five of the thirteen.
+  - [x] **Pick the gap-crossing lemma deliberately.** Three (four with the past mirror) coexist and
         differ only in their preconditions — see the family table in Preserved Assets. Phase 20
         found by measurement that Lemma 7 licenses **neither** of the first two. **Do not assume
-        the unbounded form.** State in the summary which was used and why.
-  - [ ] **If a `λ`-side mirror is needed anywhere in this phase and Phase 20.4 has landed**, obtain
+        the unbounded form.** State in the summary which was used and why. **Resolved by not
+        touching the family at all**: this module consumes `reynolds_lemma7`'s four landed halves
+        and nothing below them, so the choice among `false_of_holds_throughout_class`,
+        `..._bounded`, `..._from_bounded` and `..._upto_bounded` was already made *inside* Lemma 7
+        and re-making it here would have been re-deriving Lemma 7. No Prior axiom is applied
+        anywhere in the owned file outside the four `reynolds_lemma7_*` calls. Recorded explicitly
+        in the module header under *"The gap-crossing family: which form this module uses"*.
+  - [x] **If a `λ`-side mirror is needed anywhere in this phase and Phase 20.4 has landed**, obtain
         it by instantiation at `(dual M, dualize ε)` through `Dual.lean` at ~25 lines. **Do not
-        hand-write a third mirror.**
-  - [ ] Compare against the landed `truth_transfer` (`Transfer.lean:361`) and reuse whatever
-        transfers; record what does and does not.
-  - [ ] Docstring: `Reynolds 1992, §6 Lemma 8, printed pp.181-182` (**corrected in v9** from
+        hand-write a third mirror.** **Done — no hand-written mirror.** `S(A,B)` is
+        `reynolds_lemma8_untl_forward` / `_backward` instantiated at `(dual M, dualize ε)`.
+        *(deviation: widened — ~110 lines, not ~25. Two bridges were missing and had to be built:
+        `temporalTruth_iso`, the `TemporalTruth` lift of `Dual.lean`'s `eval_iso` via
+        `table_correctness`, which `Dual.lean` stopped one step short of; and `surgeredDualIso`,
+        the commutation of `surgeredStructure` with `dual`, on the exact model of
+        `subintervalDualIso`. Both are new declarations in the owned file; nothing in `Dual.lean`
+        or `BadIntervals.lean` was edited, renamed or weakened. `temporalTruth_iso` is stated for
+        an arbitrary `StructIso` and is reusable.)*
+  - [x] Compare against the landed `truth_transfer` (`Transfer.lean:361`) and reuse whatever
+        transfers; record what does and does not. **Nothing transfers, and the reason is
+        recorded in the module header.** `truth_transfer` is an Ehrenfeucht-Fraïssé argument: it
+        moves an *existentially closed* formula between two `k`-equivalent structures via
+        `table_correctness`, concluding *"`ψ` holds at **some** point of `N`"*. Lemma 8 needs
+        point-by-point agreement at a designated `t` between structures not assumed
+        `k`-equivalent. Only `TemporalTruth` itself is shared. `table_correctness`, which
+        `truth_transfer` uses, **is** reused — inside `temporalTruth_iso`.
+  - [x] Docstring: `Reynolds 1992, §6 Lemma 8, printed pp.181-182` (**corrected in v9** from
         v8's pp.179-180 — see the measured §6 page map), with the case numbering preserved so a
         reader can check the transcription case by case. Verify any **displayed** formula against
-        the page image before transcribing.
-  - [ ] Carry the standing conditionality caveat: §6 below Lemma 2 is conditional, with no live
-        non-trivial instance until Phase 22.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
-- **Estimated output**: ~500 lines.
+        the page image before transcribing. **Both pages read as images at 200 dpi**
+        (`pdftoppm -f 17 -l 18`): PDF p.17 carries the printed running header **181** and PDF
+        p.18 carries **182**, confirming the `+164` §6 offset and v9's corrected range. The one
+        displayed formula in Lemma 8 (`M ⊨ A(t) iff N ⊨ A(t)`) was checked against the image and
+        is **clean** in the corpus markdown; the thirteen case bodies were compared line by line
+        against both images and agree with the corpus prose (only *"Straight forward"* /
+        *"Straightforward"* differs, which is typesetting).
+  - [x] Carry the standing conditionality caveat: §6 below Lemma 2 is conditional, with no live
+        non-trivial instance until Phase 22. Carried verbatim in the module header under
+        *"Honest caveat on conditionality"* and repeated in `reynolds_lemma8`'s own docstring.
+  - [x] `#print axioms`; scoped build green; full `lake build` green. `reynolds_lemma8` axioms:
+        `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. Scoped build green (1246 jobs);
+        full `lake build` green (1939 jobs).
+- **Estimated output**: ~500 lines. **Actual: 806 lines** — 1.6x, the same direction as Phase 20's
+  overrun though a much smaller factor. The excess is the module header's verbatim transcription
+  of both printed pages plus the `S`-mirror bridge that came in at ~110 lines rather than ~25.
 - **Scope Hypothesis**: *"thirteen cases"* and *"~500 lines"* are hypotheses taken from the source
   and from the discrete precedent. Confirm at implementation time by enumerating the cases actually
   printed on pp.181-182 off the page image, and by recording the actual line count. Phase 20's
