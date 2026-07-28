@@ -7,8 +7,15 @@
 - **Reference tier**: Tier 1 (literature-backed: `PossibleWorlds/Comments/fix.md` B1/C2; `possible_worlds.tex`)
 - **Status of dependency 414**: NOT LANDED — `valid` at `FormalSystem/Semantics/Validity.lean:79`
   still carries the `Omega : Set (WorldHistory F)` + `ShiftClosed Omega` parameters (verified by
-  read, 2026-07-28). All post-414 signatures below are provisional against 414's final naming;
-  a coordination request for 414's target names was sent to the parallel research-414 agent.
+  read, 2026-07-28). Interface coordination with the parallel research-414 agent is COMPLETE:
+  414's settled, machine-verified target shapes (their report, Finding 3:
+  `specs/414_refactor_semantics_to_maximal_history_validity/reports/01_maximal-history-validity-refactor.md`)
+  are: a bespoke `instance : Preorder (WorldHistory F)` (extension order; agreement clause
+  quantifies over an arbitrary proof of the larger domain; Preorder only, no antisymmetry);
+  maximality is **Mathlib's `IsMax` used directly** (no repo wrapper — write `IsMax τ`, never
+  `τ.IsMaximal`); and the helpers `exists_maximal_extension` (via `zorn_le_nonempty_Ici₀`),
+  `isMax_timeShift`, and `isMax_of_total : (∀ t, τ.domain t) → IsMax τ`. All signatures below
+  use this settled interface.
 
 ## Executive Summary
 
@@ -52,14 +59,14 @@ Complete/CO constraint at 1094-1116) but fix.md's own text is used as the citati
 
 | Source (fix.md/tex location) | Informal statement | Target Lean name | Lean signature | Status |
 |---|---|---|---|---|
-| fix.md B1 Decision (line 77) | `H_F` restricted to maximal histories; `□` ranges over them | `WorldHistory.IsMaximal` (name owned by 414) | `(τ : WorldHistory F) → Prop` over the extension order | to-define (task-414 scope) |
-| fix.md B1 line 69/77 ("Zorn extension … re-verified") | Every history extends to a maximal one | `WorldHistory.exists_maximal_extension` | `∀ τ, ∃ σ, τ ≤ σ ∧ IsMaximal σ` (Mathlib `Maximal`/`IsMax` + `zorn_le_nonempty`, both verified to exist: `Mathlib.Order.Defs.Unbundled`, `Mathlib.Order.Zorn`) | to-prove (task-414 scope) |
-| fix.md B1 line 69/77 ("maximality is preserved by time-shift") | Shift-preservation of maximality | `WorldHistory.isMaximal_timeShift` | `IsMaximal τ → IsMaximal (τ.timeShift Δ)` | to-prove (task-414 scope) |
+| fix.md B1 Decision (line 77) | `H_F` restricted to maximal histories; `□` ranges over them | Mathlib `IsMax` over a new `Preorder (WorldHistory F)` instance (414-settled; no repo wrapper) | `IsMax (τ : WorldHistory F) : Prop` | to-define (task-414 scope; prototype verified) |
+| fix.md B1 line 69/77 ("Zorn extension … re-verified") | Every history extends to a maximal one | `exists_maximal_extension` | `(τ : WorldHistory F) : ∃ σ, τ ≤ σ ∧ IsMax σ` (via `zorn_le_nonempty_Ici₀`; `IsMax`/Zorn lemmas verified in Mathlib: `Mathlib.Order.Defs.Unbundled`, `Mathlib.Order.Zorn`) | to-prove (task-414 scope; prototype verified) |
+| fix.md B1 line 69/77 ("maximality is preserved by time-shift") | Shift-preservation of maximality | `isMax_timeShift` | `(h : IsMax σ) (Δ : D) : IsMax (timeShift σ Δ)` | to-prove (task-414 scope; prototype verified) |
 | fix.md line 82 (completeness work item, "definitional, not a bridge") | Per-class weak completeness with maximal-history countermodels outright | `completeness_discrete` | `ValidDiscrete φ → Derivable FrameClass.Discrete [] φ` (text unchanged; `ValidDiscrete` Omega-free) | exists (green) → to-restate |
 | fix.md C2 Decision | Dense weak terminus | `completeness_dense` | `ValidDense φ → Derivable FrameClass.Dense [] φ` | exists (green) → to-restate (frame re-host) |
 | fix.md C2 Issue ("base `completeness` carries sorryAx") | Base weak terminus | `completeness` | `valid φ → Derivable FrameClass.Base [] φ` | exists (sorryAx) → to-restate (sorry persists) |
 | fix.md C2 Issue ("engine-conditional") | Dedekind weak/consequence terminus | `completeness_dedekind_of_engine`, `consequence_completeness_dedekind_of_engine` | `StrongCompleteness.lean:274,308` (engine hypothesis retained) | exists (conditional) → to-restate |
-| fix.md line 82 ("deterministic frames, … single shift class, replace the former singleton-Ω device") | Maximal-history characterization of deterministic flow frames | `multiFam_isMaximal_iff` (new) | `[Nonempty FamIdx] → (σ.IsMaximal ↔ ∃ f w₀, σ = multiFamHistory f w₀)` | to-prove (415 core) — "single shift class" holds per family, see §3 |
+| fix.md line 82 ("deterministic frames, … single shift class, replace the former singleton-Ω device") | Maximal-history characterization of deterministic flow frames | `multiFam_isMax_iff` (new) | `[Nonempty FamIdx] → (IsMax σ ↔ ∃ f w₀, σ = multiFamHistory f w₀)` | to-prove (415 core) — "single shift class" holds per family, see §3; ← direction is 414's `isMax_of_total` (histories are full-domain), only → is new work |
 | fix.md C1 Issue (witness `Transfer.lean:603–638`) | Singleton-Ω countermodel device | `zIntervalTaskFrame`/`zIntervalOmega`/`z_interval_countermodel` | `Transfer.lean:568-687` | exists-DEAD → to-delete/archive (415) |
 | fix.md B1 Consequences / tex disk line 865 | Segments vs worlds (`H^\star_F`) presentation | (no Lean artifact needed by 415) | — | n/a (paper-side) |
 
@@ -113,9 +120,11 @@ remains sorried — see §6).
 - `FamIdx := {N // SetMaximalConsistent N ∧ □nextTop ∈ N ∧ (∀ ψ, □ψ ∈ A ↔ □ψ ∈ N)}` (line 754)
   — the box-equivalent MCS witnesses; inhabited by `f₀ := A` (line 757).
 
-**Claim (415's core new lemma): for `Nonempty FamIdx`, the maximal histories of
-`multiFamTaskFrame FamIdx` are exactly `multiFamOmega`.** Proof sketch, checked against the
-`WorldHistory` structure (`Semantics/WorldHistory.lean:75-104`):
+**Claim (415's core new lemma, `multiFam_isMax_iff`): for `Nonempty FamIdx`, the maximal
+histories of `multiFamTaskFrame FamIdx` are exactly `multiFamOmega`.** Proof sketch, checked
+against the `WorldHistory` structure (`Semantics/WorldHistory.lean:75-104`); note 414 ships
+`isMax_of_total`, which discharges the easy (⟸) direction in one line since `multiFamHistory`
+has full domain — only the (⟹) direction below is new work:
 
 - Any history σ with `t₀ ∈ σ.domain`, `σ.states t₀ = (f, z₀)`: for `t ∈ σ.domain` with
   `t₀ ≤ t`, `respects_task t₀ t` forces `σ.states t = (f, z₀ + (t - t₀))`; for `t < t₀`,
@@ -140,12 +149,12 @@ Consequences for the rebase of `ReynoldsBridge.lean`:
 - The truth-correspondence induction (line 804 ff.) changes **only in the box case**
   (lines 840-940): forward direction currently instantiates `h_all` at
   `multiFamHistory f' (z - t) ∈ multiFamOmega`; post-414 it instantiates at
-  `(multiFam_isMaximal_iff …).mpr ⟨f', z - t, rfl⟩`. Reverse direction currently destructures
+  `(multiFam_isMax_iff …).mpr ⟨f', z - t, rfl⟩`. Reverse direction currently destructures
   `σ ∈ multiFamOmega` as `⟨⟨f', w₀'⟩, rfl⟩`; post-414 it destructures
-  `(multiFam_isMaximal_iff …).mp h_max`. The atom/bot/imp/untl/snce cases mention Omega only as
+  `(multiFam_isMax_iff …).mp h_max`. The atom/bot/imp/untl/snce cases mention Omega only as
   a passed-through parameter that disappears.
 - The existential packaging (lines 744-750, 810-815) drops
-  `Omega, ShiftClosed Omega, τ ∈ Omega` in favor of `τ.IsMaximal`.
+  `Omega, ShiftClosed Omega, τ ∈ Omega` in favor of `IsMax τ`.
 - Everything below the frame layer — `mkSigFrom`, `limitdom_is_good`, `getZ`, `KEquiv`,
   `truth_transfer`, `table_correctness`, the whole Kamp/Reynolds/EF-game cone — is
   `TemporalTruth`-side and Omega-free already. **Preserved unchanged.**
@@ -212,9 +221,9 @@ def bundleFlowHistory (fam : {fam // fam ∈ B.families}) (w₀ : D) :
 def bundleFlowModel (B : BFMCS (fc := fc) D) : TaskModel (bundleFlowFrame B) where
   valuation := fun w p => Formula.atom p ∈ w.1.val.mcs w.2
 
-theorem bundleFlow_isMaximal_iff [Nonempty {fam // fam ∈ B.families}]
+theorem bundleFlow_isMax_iff [Nonempty {fam // fam ∈ B.families}]
     (σ : WorldHistory (bundleFlowFrame B)) :
-    σ.IsMaximal ↔ ∃ fam w₀, σ = bundleFlowHistory fam w₀
+    IsMax σ ↔ ∃ fam w₀, σ = bundleFlowHistory fam w₀
 
 theorem bundleFlow_truth_lemma (h_rtc : B.RestrictedTemporallyCoherent root)
     (h_buc : B.RestrictedBackwardUntilSinceCoherent root)
@@ -233,7 +242,7 @@ history — the separate "shifted" formulation dissolves):
   frame-independent, **preserved verbatim**.
 - box case: `parametric_box_persistent` (box persists across times within a family) +
   `B.modal_forward`/`B.modal_backward` (`Bundle/BFMCS.lean:91` ff.) — with Omega-membership
-  destructuring replaced by `bundleFlow_isMaximal_iff`, exactly as in §2.
+  destructuring replaced by `bundleFlow_isMax_iff`, exactly as in §2.
 
 Then `countermodel_dense_enriched` re-packages over `bundleFlowFrame` at `D := Rat` using the
 **unchanged** chronicle suppliers `Chronicle.cantorBfmcsDense`, `rootedCantorFmcsDense`,
@@ -245,19 +254,20 @@ machinery at `D := ℝ`; `real_lub_of_bddAbove` (line 127) is untouched.
 
 No transfer or realization lemmas appear anywhere below. Statement TEXT of the headliners is
 unchanged; the change is inside `Valid*`/`TruthAt` (414) and inside the countermodel lemmas
-(415). Assuming 414's shapes (provisional names `IsMaximal` etc.):
+(415). Using 414's settled, prototype-verified interface (Mathlib `IsMax` over the new
+`Preorder (WorldHistory F)` instance):
 
 ```lean
 -- Semantics (task-414, restated here as the interface 415 builds against)
 def TruthAt (M : TaskModel F) (τ : WorldHistory F) (t : D) : Formula → Prop
-  | .box φ => ∀ σ : WorldHistory F, σ.IsMaximal → TruthAt M σ t φ
+  | .box φ => ∀ σ : WorldHistory F, IsMax σ → TruthAt M σ t φ
   | …  -- other clauses unchanged modulo dropped Omega
 def valid (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F) (τ : WorldHistory F), τ.IsMaximal → ∀ t : D,
+    (F : TaskFrame D) (M : TaskModel F) (τ : WorldHistory F), IsMax τ → ∀ t : D,
     TruthAt M τ t φ
 -- ValidDense / ValidDiscrete / ValidDedekind(Dense): same binder lists as today
--- (Validity.lean:169,187,231,255) with (Omega, ShiftClosed, τ ∈ Omega) ↦ (τ.IsMaximal)
+-- (Validity.lean:169,187,231,255) with (Omega, ShiftClosed, τ ∈ Omega) ↦ (IsMax τ)
 
 -- 415 headliners (statement text unchanged)
 theorem completeness_discrete (φ : Formula) :
@@ -280,13 +290,13 @@ theorem countermodel_discrete_reynolds_v2 (A) (h_mcs) (φ) (h_neg_in) (h_box_dis
       (_ : Nontrivial D) (_ : SuccOrder D) (_ : PredOrder D)
       (_ : IsSuccArchimedean D) (_ : IsPredArchimedean D)
       (F : TaskFrame D) (TM : TaskModel F) (τ : WorldHistory F),
-      τ.IsMaximal ∧ ∃ t : D, ¬TruthAt TM τ t φ
+      IsMax τ ∧ ∃ t : D, ¬TruthAt TM τ t φ
 theorem countermodel_dense_enriched (A) (h_mcs) (φ) (h_neg_in) (h_box_dense) :
     ∃ (F : TaskFrame Rat) (TM : TaskModel F) (τ : WorldHistory F),
-      τ.IsMaximal ∧ ∃ t : Rat, ¬TruthAt TM τ t φ
+      IsMax τ ∧ ∃ t : Rat, ¬TruthAt TM τ t φ
 theorem countermodel_discrete (A) (h_mcs : SetMaximalConsistent (fc := .Base) A) (φ) … :
     ∃ (D : Type) …instances… (F : TaskFrame D) (TM : TaskModel F) (τ : WorldHistory F),
-      τ.IsMaximal ∧ ∃ t : D, ¬TruthAt TM τ t φ         -- restated, still `sorry`
+      IsMax τ ∧ ∃ t : D, ¬TruthAt TM τ t φ         -- restated, still `sorry`
 ```
 
 `SemanticConsequenceDedekindDense` and `semantic_deduction_dedekind_dense`
@@ -314,7 +324,7 @@ sorry-free but engine-conditional. 415 restates the sorried lemma Omega-free wit
 
 | File | Role in rebase |
 |---|---|
-| `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` | box case + packaging + `multiFam_isMaximal_iff` (Discrete) |
+| `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` | box case + packaging + `multiFam_isMax_iff` (Discrete) |
 | `Metalogic/Algebraic/ParametricHistory.lean` | superseded by flow-history module (Dense/Dedekind) |
 | `Metalogic/Algebraic/RestrictedParametricTruthLemma.lean` | re-hosted onto `bundleFlowFrame` |
 | `Metalogic/Algebraic/ParametricTruthLemma.lean`, `ParametricCompleteness.lean` | model/valuation defs re-pointed or superseded |
@@ -358,7 +368,7 @@ green, matching fix.md C2.
 - Statement text of every headline theorem; `real_lub_of_bddAbove`.
 
 **Rebuilt/new:**
-- NEW: maximality characterization lemmas (`multiFam_isMaximal_iff`, `bundleFlow_isMaximal_iff`
+- NEW: maximality characterization lemmas (`multiFam_isMax_iff`, `bundleFlow_isMax_iff`
   — or one generic flow-frame lemma both instantiate), with the `Nonempty` side condition and
   the funext/propext/proof-irrelevance equality bookkeeping (pattern precedent:
   `multiFamHistory_shift_eq`, `zIntervalHistory_shift_eq`).
@@ -433,18 +443,19 @@ line 865) and CO/Complete constraint (disk lines 1094-1116).
 |---|---|---|
 | 1 | Validity = truth at all maximal histories of all frames (B1 Option 1, decided) | 414's `valid`; 415 consumes it |
 | 2 | Soundness survives verbatim (Zorn extension + shift-preservation) | 414's propagation; 415 relies on restated `soundness_*` for the guard theorems in `StrongCompleteness.lean` |
-| 3 | Completeness re-proved per class with countermodels that are maximal-history models outright; "no realization/transfer lemmas in the final statements" | Headliners restated with unchanged text; countermodel existentials carry `τ.IsMaximal` instead of `(Omega, ShiftClosed, τ ∈ Omega)`; the realization content is absorbed into `*_isMaximal_iff` characterization lemmas inside the constructions |
+| 3 | Completeness re-proved per class with countermodels that are maximal-history models outright; "no realization/transfer lemmas in the final statements" | Headliners restated with unchanged text; countermodel existentials carry `IsMax τ` instead of `(Omega, ShiftClosed, τ ∈ Omega)`; the realization content is absorbed into `*_isMax_iff` characterization lemmas inside the constructions |
 | 4 | "Deterministic frames … replace the former singleton-Ω device" | Flow frames (`multiFamTaskFrame` kept; `bundleFlowFrame` new); dead device deleted |
 | 5 | Weak-only scoping (strong completeness provably false where non-compact) | Untouched: `StrongCompleteness.lean` module docs and engine architecture keep exactly this scoping |
 
 ## Recommended Phase Skeleton for the Planner (not a plan)
 
-1. **Gate**: 414 lands (extension order, `IsMaximal`, Zorn, shift-preservation, refactored
+1. **Gate**: 414 lands (Preorder extension order, `IsMax` usage, Zorn, shift-preservation,
+   `isMax_of_total`, refactored
    `TruthAt`/`Valid*`, Soundness propagated). Blocked until then; every 415 phase type-checks
    only post-414.
-2. **Discrete**: generic flow-frame maximality characterization (`multiFam_isMaximal_iff`);
+2. **Discrete**: generic flow-frame maximality characterization (`multiFam_isMax_iff`);
    `ReynoldsBridge.lean` box case + packaging; `completeness_discrete` green again.
-3. **Dense**: `bundleFlowFrame`/history/model + `bundleFlow_isMaximal_iff`; re-host restricted
+3. **Dense**: `bundleFlowFrame`/history/model + `bundleFlow_isMax_iff`; re-host restricted
    truth lemma; `countermodel_dense_enriched`; `completeness_dense` green again.
 4. **Base**: `completeness` restated (dense/mixed branches green, discrete branch restated +
    still sorried); delete `Transfer.lean:568-687`; update `Metalogic.lean` headline docs.
