@@ -78,6 +78,14 @@ bundle is a candidate *additional* gate, in the family `timeOrderTotal`/`boxAnch
 than `sat_untl_neg`'s `F(φ)@t' ∨ F(ψ)@t'` and it settles the negative case outright, with no
 minimal-witness argument and no reasoning about the guard interval.
 
+**4. A second candidate is refuted: `untlNegAllRegions`.** "Every region label of a world denies
+the event of every negative until in that world" is `false` on rows C and I, both of which the
+gate accepts. It overreaches: `Bridge/RegionLabel.lean`'s `untlNegSubjects` demands the subject
+only of untils asserted *strictly below* the region, which is the correct side condition — a
+region below the until's own time contains no point above the evaluation point and is under no
+obligation. The negative case therefore consumes the **existing** `regionLabel_untlNeg` for the
+non-placed points and needs a new row only for the placed ones.
+
 **A finding outside this file's scope, recorded because it is load-bearing elsewhere.**
 `regionLabelCheck` is `false` on rows H, J, M and N — the branches the engine builds for
 `U(p,q) → q` and `S(p,q) → q`. `regionLabelCheck b ord = true` is a *hypothesis* of
@@ -407,5 +415,86 @@ contain.
 /-- info: "OPEN |T|=4 gen=true check=false U[dich=true wit=true gw=true rdG=false nStr=true nCo=true rP=false rN=false] S[dich=false wit=true gw=false ruG=false nStr=true nCo=true rP=false rN=true]" -/
 #guard_msgs in
 #eval probe (.imp p (.untl p q)) 200 .Discrete
+
+/-! ## A candidate that is refuted: the region labels are not uniformly negative
+
+The negative `untl` case at a placed point needs `¬φ` at every carrier point above it, and the
+points above it that are **not** placed read a region label. The obvious candidate row is that a
+world's region labels all deny the event of every negative until in that world. They do not.
+
+The reason is instructive and is exactly why the row is not needed: `Bridge/RegionLabel.lean`'s
+`untlNegSubjects` already demands the subject of every `F(U(φ,ψ))` asserted **strictly below**
+region `j`, and `regionLabel_untlNeg` consumes it. A region *below* the until's own time is under
+no such demand, and should not be — no point of it is above the evaluation point. The candidate
+row overreaches by dropping the "strictly below" side condition, and the corpus reports it.
+-/
+
+private def untlNegAllRegions (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .untl φ _ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          b.hasNegAt φ ⟨sf.label.world, regionLabel b ord sf.label.world j⟩
+    | _, _ => true
+
+private def snceNegAllRegions (b : Branch) (ord : TimeOrdering) : Bool :=
+  b.all fun sf =>
+    match sf.sign, sf.formula with
+    | .neg, .snce φ _ =>
+        (List.range (b.knownTimes.length + 1)).all fun j =>
+          b.hasNegAt φ ⟨sf.label.world, regionLabel b ord sf.label.world j⟩
+    | _, _ => true
+
+/-- Report the two over-reaching candidates alone. -/
+def probe2 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String :=
+  match buildTableau φ fuel fc with
+  | none => "STALLED"
+  | some (.allClosed _) => "CLOSED"
+  | some (.hasOpen ob ord _ _) =>
+      s!"check={regionLabelCheck ob ord} uNAR={untlNegAllRegions ob ord} " ++
+      s!"sNAR={snceNegAllRegions ob ord}"
+
+/-- info: "A check=true uNAR=true sNAR=true" -/
+#guard_msgs in
+#eval "A " ++ probe2 (.imp (Formula.someFuture p) p)
+
+/-- info: "B check=true uNAR=true sNAR=true" -/
+#guard_msgs in
+#eval "B " ++ probe2 (.imp (Formula.somePast p) p)
+
+-- C. **Refuting row.** `G p → p`, which the gate accepts, and `uNAR` is `false`.
+/-- info: "C check=true uNAR=false sNAR=true" -/
+#guard_msgs in
+#eval "C " ++ probe2 (.imp (.allFuture p) p)
+
+/-- info: "D check=true uNAR=true sNAR=true" -/
+#guard_msgs in
+#eval "D " ++ probe2 (.imp (andF (.box p) (dia q)) r)
+
+/-- info: "E check=true uNAR=true sNAR=true" -/
+#guard_msgs in
+#eval "E " ++ probe2 (.imp (andF (.box p) (.box (.imp p q))) r)
+
+/-- info: "F check=true uNAR=true sNAR=true" -/
+#guard_msgs in
+#eval "F " ++ probe2 (.imp (Formula.someFuture p) p) 200 .Dense
+
+/-- info: "H check=false uNAR=true sNAR=true" -/
+#guard_msgs in
+#eval "H " ++ probe2 (.imp (.untl p q) q)
+
+-- I. **The second refuting row**, and the one that matters: a genuine negative until on a branch
+-- the gate accepts.
+/-- info: "I check=true uNAR=false sNAR=true" -/
+#guard_msgs in
+#eval "I " ++ probe2 (.imp p (.untl p q))
+
+/-- info: "J check=false uNAR=true sNAR=true" -/
+#guard_msgs in
+#eval "J " ++ probe2 (.imp (.snce p q) q)
+
+/-- info: "K check=true uNAR=true sNAR=true" -/
+#guard_msgs in
+#eval "K " ++ probe2 (.imp p (.snce p q))
 
 end BimodalTest.TemporalWitnessProbe
