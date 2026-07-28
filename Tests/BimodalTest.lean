@@ -19,6 +19,7 @@ import BimodalTest.Theorems.ModalS5Test
 import BimodalTest.Theorems.PerpetuityTest
 import BimodalTest.Metalogic.PropDecideTest
 import BimodalTest.TableauConformance
+import BimodalTest.BoxSpreadProbe
 import BimodalTest.Automation.ProofSearchTest
 import BimodalTest.Automation.EdgeCaseTest
 import BimodalTest.Automation.ProofSearchBenchmark

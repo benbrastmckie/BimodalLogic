@@ -389,7 +389,138 @@ theorem knownTime_trichotomy {b : Branch} {timeOrd : TimeOrdering}
   · exact Or.inr (Or.inl hf)
   · exact Or.inr (Or.inr (hConv t' t hb))
 
+/-! ## `BoxTemporalSpread` is refuted, and `BoxAnchored` replaces it
+
+**`BoxTemporalSpread` is not a fact about saturated branches, and so is not available as a
+construction invariant either.** It was adopted on the strength of the world-minting copy
+(`boxNeg`/`diamondPos` copy `branch.allFuturePosAtTime l.time` and `branch.allPastPosAtTime
+l.time` onto the fresh world, `Tableau.lean:553-559`), and that reading of the copy is correct as
+far as it goes. What it misses is that the copy happens at **one** time — the *triggering* label's
+`l.time` — while the box formula it is supposed to serve does not stay at one time. The
+time-minting rules run `boxDiamondPersistence branch l.world l.time freshTime`, which relabels
+`T(□φ)` from `(w, t)` to `(w, freshTime)`; so a single `T(□φ)` on the seed branch becomes a
+`T(□φ)` at *every* time the run mints in that world, and `BoxTemporalSpread` then demands `T(Gφ)`
+at the fresh world at every one of those times, of which the mint supplied exactly one.
+
+The refutation is measured, not argued, and on a formula that is in no way exotic. Running the
+engine on `(□p ∧ ◇q) → r` at `.Base` (fuel `200`) yields an OPEN saturated branch over 2 worlds
+and 7 times on which `boxTemporalSpreadCheck` is `false` — note that the world here is minted at
+the *same* time as the box formula, so the failure is not the cross-time-mint case one would
+guess at; it is the persistence of `T(□φ)` into times minted later. `(□p ∧ ◇(G q)) → r` and
+`(□p ∧ ◇q) → r` at `.Dense` fail the same way. See `Tests/BimodalTest/BoxSpreadProbe.lean` for
+the rows.
+
+`boxAnchoredCheck` is `true`, and `boxGridCheck` is `true`, on every one of those branches. That
+is the corrected invariant: what the fresh world needs is not `T(Gφ)`/`T(Hφ)` at every time the
+box formula reaches, but **one anchor time** carrying `T(φ)`, `T(Gφ)` and `T(Hφ)` together. The
+mint supplies exactly that (`boxProps` gives the content at the box formula's own time,
+`tempGProps`/`tempHProps` give `G` and `H` at the minting time), and `timeOrderTotal` does the
+rest: every known time is comparable to the anchor, so `sat_all_future_pos` and
+`sat_all_past_pos` sweep the world's whole row from the single anchor.
+-/
+
+/--
+**The anchored box spread.** For every `T(□φ)` on the branch and every known world `w'`, *some*
+known time `s` carries `T(φ)`, `T(Gφ)` and `T(Hφ)` together at `w'`.
+
+This is the corrected replacement for `BoxTemporalSpread`. The two differences are exactly the
+two the refutation above forces: the time is **existential** rather than pinned to the box
+formula's own `l.time`, and the content `T(φ)` is demanded alongside `T(Gφ)`/`T(Hφ)` (the `t' = s`
+case of the trichotomy has no `G`/`H` to appeal to, since `G` and `H` are strict).
+-/
+def BoxAnchored (b : Branch) : Prop :=
+  ∀ (φ : Formula) (l : Label), (⟨.pos, .box φ, l⟩ : SignedFormula) ∈ b →
+    ∀ w' ∈ b.knownWorlds, ∃ s ∈ b.knownTimes,
+      (⟨.pos, φ, ⟨w', s⟩⟩ : SignedFormula) ∈ b ∧
+      (⟨.pos, Formula.allFuture φ, ⟨w', s⟩⟩ : SignedFormula) ∈ b ∧
+      (⟨.pos, Formula.allPast φ, ⟨w', s⟩⟩ : SignedFormula) ∈ b
+
+/--
+**Nothing is lost by the correction.** On a saturated branch `BoxTemporalSpread` implies
+`BoxAnchored`, with the box formula's own time as the anchor and `sat_box_pos` supplying the
+content. The converse fails — that is the content of the refutation — so `BoxAnchored` is
+strictly weaker, and it is the one that survives contact with the engine.
+-/
+theorem boxAnchored_of_boxTemporalSpread (b : Branch) (timeOrd : TimeOrdering)
+    (hSat : findUnexpanded b (timeOrd := timeOrd) = none) (hBTS : BoxTemporalSpread b) :
+    BoxAnchored b := by
+  intro φ l hmem w' hw'
+  obtain ⟨hG, hH⟩ := hBTS φ l hmem w' hw'
+  exact ⟨l.time, mem_knownTimes_of_mem hmem,
+    sat_box_pos b timeOrd hSat φ l.world l.time (by simpa using hmem) w' hw', hG, hH⟩
+
+/-! ### The invariant and the grid in decidable form
+
+Stated as `Bool`-valued checks so the refutation is re-runnable against the engine's own output
+rather than only assertable in prose. `Tests/BimodalTest/BoxSpreadProbe.lean` holds the rows;
+they live there and not here because each row runs `buildTableau`, which is far too slow to sit
+on a library module's build path.
+-/
+
+/-- `BoxTemporalSpread`, decidably. Measured **false** on engine output — see the refutation. -/
+def boxTemporalSpreadCheck (b : Branch) : Bool :=
+  b.boxPosFormulas.all fun bsf =>
+    match bsf.formula with
+    | .box inner =>
+      b.knownWorlds.all fun w' =>
+        b.contains (SignedFormula.pos (Formula.allFuture inner) ⟨w', bsf.label.time⟩)
+        && b.contains (SignedFormula.pos (Formula.allPast inner) ⟨w', bsf.label.time⟩)
+    | _ => true
+
+/-- `BoxAnchored`, decidably. Measured **true** on the branches that refute the spread. -/
+def boxAnchoredCheck (b : Branch) : Bool :=
+  b.boxPosFormulas.all fun bsf =>
+    match bsf.formula with
+    | .box inner =>
+      b.knownWorlds.all fun w' =>
+        b.knownTimes.any fun s =>
+          b.contains (SignedFormula.pos inner ⟨w', s⟩)
+          && b.contains (SignedFormula.pos (Formula.allFuture inner) ⟨w', s⟩)
+          && b.contains (SignedFormula.pos (Formula.allPast inner) ⟨w', s⟩)
+    | _ => true
+
+/-- The conclusion the truth lemma consumes, decidably: `T(□φ)` puts `T(φ)` at every known
+label. Measured **true** wherever `boxTemporalSpreadCheck` is false, which is what says the
+spread was too strong rather than the grid too ambitious. -/
+def boxGridCheck (b : Branch) : Bool :=
+  b.boxPosFormulas.all fun bsf =>
+    match bsf.formula with
+    | .box inner =>
+      b.knownWorlds.all fun w' =>
+        b.knownTimes.all fun t' => b.contains (SignedFormula.pos inner ⟨w', t'⟩)
+    | _ => true
+
 /-! ## The grid, from the corrected invariant -/
+
+/--
+**The grid, from the anchor.** `T(□φ)` reaches every known label — the exact hypothesis
+`truthAt_box_iff_base` consumes — on a saturated branch whose ordering is total, given
+`BoxAnchored`.
+
+The three cases of `knownTime_trichotomy`, taken about the *anchor* `s` rather than about the box
+formula's own time:
+
+* `t' = s` — the anchor's own content `T(φ) @ (w', s)`.
+* `t' ∈ futureOf s` — `T(Gφ) @ (w', s)` and `sat_all_future_pos`.
+* `t' ∈ pastOf s` — `T(Hφ) @ (w', s)` and `sat_all_past_pos`.
+
+`TimeOrderConverse` is no longer a hypothesis here: `timeOrderConverse` discharges it. Note that,
+as with `sat_box_grid`, no case needs `T(□φ)` anywhere other than where it was found — and unlike
+`sat_box_grid`, the invariant this consumes is one the engine's output actually satisfies.
+-/
+theorem sat_box_grid_of_anchored (b : Branch) (timeOrd : TimeOrdering)
+    (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
+    (hTot : timeOrderTotal b timeOrd = true)
+    (hBA : BoxAnchored b)
+    (φ : Formula) (w : WorldIndex) (t : TimeIndex)
+    (hmem : (⟨.pos, .box φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b) :
+    ∀ w' ∈ b.knownWorlds, ∀ t' ∈ b.knownTimes, (⟨.pos, φ, ⟨w', t'⟩⟩ : SignedFormula) ∈ b := by
+  intro w' hw' t' ht'
+  obtain ⟨s, hs, hc, hG, hH⟩ := hBA φ ⟨w, t⟩ hmem w' hw'
+  rcases knownTime_trichotomy hTot (timeOrderConverse timeOrd) hs ht' with heq | hfut | hpast
+  · rw [heq]; exact hc
+  · exact sat_all_future_pos b timeOrd hSat φ w' s hG t' hfut
+  · exact sat_all_past_pos b timeOrd hSat φ w' s hH t' hpast
 
 /--
 **`T(□φ)` reaches every known label** — the exact hypothesis `truthAt_box_iff_base` consumes, and
