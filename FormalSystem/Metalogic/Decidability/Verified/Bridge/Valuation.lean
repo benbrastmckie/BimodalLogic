@@ -71,13 +71,28 @@ code `c`, the atom `p` holds when some index in `c.1` (the placed points below t
 all. It reads only the region code and the branch — nothing is imported from an endpoint, so it is
 neither copy policy. `branchGapVal_gapAdequate` discharges all three `GapAdequate` fields.
 
-*What is still owed.* Condition 4, the `U`/`S` straddling guards, is the `denseRules`
-(`prior_U_gap`/`prior_S_gap`/`sep`) content and is not part of `GapAdequate`: it is not a
-constraint on the gap *policy* — a guard is in general compound, and a compound formula's value at
-a gap point is fixed by the truth-lemma induction, not by `gapVal`. Its discharge belongs to that
-induction, where the branch's `T(U(φ,ψ))` witness (a placed point, minted by `untlPos`) and the
-dense rules' intermediate guards are available. The remaining Phase 7.1 work is therefore the
-induction itself, with `branchGapVal` fixed as the atom clause's gap arm.
+**`GapAdequate` is necessary but NOT sufficient, and `gapAdequate_insufficient` proves it.** The
+paragraph this replaces claimed the remaining Phase 7.1 work was the induction itself with
+`branchGapVal` fixed as the atom clause's gap arm. That is refuted. `GapAdequate` constrains the
+policy at *atoms*, on the ground that a compound formula's value at a gap point is fixed by the
+induction. `□` breaks the ground: `truthAt_box_iff_base` makes `T(□χ)` a demand at every point of
+every base history for a possibly **compound** `χ`, so the branch fact constrains the gap's
+*induced* values, which only the atom policy can supply. On the two-formula branch
+`refuteBoxBranch` — `T(□p)` and `T(□(p → q))`, with no `T(□q)`, `T(G q)` or `T(H q)` anywhere,
+a configuration the engine really produces (`Tests/BimodalTest/BoxSpreadProbe.lean`, row D) —
+`branchGapVal` makes `p` true and `q` false at every gap, so `□(p → q)` is false in the model the
+branch asserts it in.
+
+Condition 4, the `U`/`S` straddling guards, remains an obligation of the induction and not of the
+policy — that part of the previous reading survives. What does not survive is the idea that an
+atom-wise gap policy read off the branch can be completed at all: the required gap state must be
+closed under the propositional consequences of the forced set
+`{χ : T(Gχ) below} ∪ {χ : T(Hχ) above} ∪ {χ : T(□χ)}`, and a saturated branch is not (the same
+argument runs on the lower ray from `T(H(p → q))`, `T(H p)` and `F(q)` at the earliest known time,
+which is satisfiable and forces `q` on the ray with nothing on the branch naming it). The residual
+is therefore a **realisability condition on the branch** — in the decidable-check family of
+`timeOrderTotal` and `boxAnchoredCheck` — not a degree of freedom of `gapVal`. See the
+`BoxCompoundRefuted` section below for the statement and for what it rules out.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.Verified.Bridge
@@ -628,6 +643,26 @@ theorem not_truthLemma_branchGapVal (p q : Atom) (hpq : p ≠ q) :
         injection hf with hf'
         exact Formula.noConfusion hf'
       · exact absurd hnil (by simp)
+
+/--
+**The insufficiency, as one statement.** The policy is `GapAdequate`, the branch asserts
+`T(□(p → q))`, and the model makes `□(p → q)` false — all three at once, so no reading of
+`GapAdequate` closes the truth lemma's `box` case.
+
+This is the fact to cite; the two conjuncts above are its parts.
+-/
+theorem gapAdequate_insufficient (p q : Atom) (hpq : p ≠ q) :
+    GapAdequate (refuteBoxBranch p q) (refuteBoxPlacement p q)
+        (branchGapVal (refuteBoxBranch p q)) ∧
+    (⟨.pos, Formula.box ((Formula.atom p).imp (Formula.atom q)), ⟨0, 0⟩⟩ : SignedFormula)
+        ∈ refuteBoxBranch p q ∧
+    ¬ TruthAt (branchModel (refuteBoxBranch p q) (refuteBoxPlacement p q)
+          (branchGapVal (refuteBoxBranch p q)))
+        (regionOmega (refuteBoxPlacement p q))
+        (regionHistory (refuteBoxPlacement p q) 0 (0 : ℚ)) (0 : ℚ)
+        (Formula.box ((Formula.atom p).imp (Formula.atom q))) :=
+  ⟨branchGapVal_gapAdequate _ _, (not_truthLemma_branchGapVal p q hpq).1,
+    (not_truthLemma_branchGapVal p q hpq).2⟩
 
 end BoxCompoundRefuted
 

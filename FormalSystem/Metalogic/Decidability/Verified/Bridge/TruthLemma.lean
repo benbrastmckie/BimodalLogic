@@ -322,9 +322,11 @@ end Countermodel
 
 /-! ## What the truth lemma still needs
 
-Recorded here because this is the file the next dispatch opens. **O1, O2 and O3 are all
-discharged**; what remains between the invariance above and `not_valid_of_hasOpen` is the
-truth-lemma induction itself. The three interfaces it consumes, and where they live:
+Recorded here because this is the file the next dispatch opens. **O1 and O3 are discharged; O2 is
+NOT — its interface was refuted, and the refutation is machine-checked.** Read the O2 entry below
+before budgeting anything, and read `gapAdequate_insufficient` (`Bridge/Valuation.lean`) before
+budgeting the induction: the induction cannot be closed against `GapAdequate`, whatever policy is
+plugged into it. The interfaces, and where they live:
 
 **O1 — the valuation. Done** (`Bridge/Valuation.lean`). `regionFrame`'s states are
 `W × (Set ι × Set ι)`, so a `TaskModel` over it is a predicate on (world, region code). At a
@@ -333,16 +335,44 @@ truth-lemma induction itself. The three interfaces it consumes, and where they l
 the readback. `regionValuation` is total on codes; `truthAt_atom_regionHistory` discharges the
 domain existential outright.
 
-**O2 — the gap policy. Done** (`Bridge/Valuation.lean`). The obligation is `GapAdequate`, *not*
-`GapDemands`: the latter is stated backwards and `gapDemands_trivial` proves every policy meets
-it, including the two the same file refutes (`not_leftCopy_gapAdequate`,
-`not_rightCopy_gapAdequate`). `branchGapVal` defines the policy outright, reading only the region
-code and the branch — at a gap code `c`, the atom `p` holds when some index below the gap carries
-`T(G p)`, or some index above carries `T(H p)`, or `T(□ p)` is on the branch at all — and
-`branchGapVal_gapAdequate` discharges all three fields. Note what is *not* part of this: the
-`U`/`S` straddling guards (`prior_U_gap`/`prior_S_gap`/`sep`) are compound-formula obligations of
-the induction below, not degrees of freedom of `gapVal`, since a compound formula's value at a gap
-point is fixed by the induction rather than by the atom policy.
+**O2 — the gap policy. OPEN, and its interface is refuted** (`Bridge/Valuation.lean`). Three
+successive statements of this obligation have now been machine-refuted, each by the file that
+states it, so the history matters:
+
+* `GapDemands` — stated backwards, `gapDemands_trivial` proves every policy meets it.
+* the endpoint-copy policies — `not_leftCopy_gapAdequate`, `not_rightCopy_gapAdequate`.
+* `GapAdequate` itself — **`gapAdequate_insufficient`**. `branchGapVal` satisfies `GapAdequate`
+  (`branchGapVal_gapAdequate`) and still falsifies a branch fact: on `refuteBoxBranch`, carrying
+  `T(□p)` and `T(□(p → q))` with no `T(□q)`/`T(G q)`/`T(H q)` anywhere, the gap points get `p`
+  true and `q` false, so `□(p → q)` is false in the model. `Tests/BimodalTest/BoxSpreadProbe.lean`
+  row D measures that the engine produces exactly this configuration on
+  `(□p ∧ □(p → q)) → r` at `.Base`.
+
+The defect is structural, not a bad choice of policy. `GapAdequate` constrains `gapVal` at atoms
+only, on the ground that a compound formula's value at a gap point is fixed by the induction;
+`truthAt_box_iff_base` breaks that ground, because `T(□χ)` for compound `χ` is a demand *at* the
+gap points that only the atom policy can meet. The gap's state must be closed under the
+propositional consequences of the forced set
+`{χ : T(Gχ) below} ∪ {χ : T(Hχ) above} ∪ {χ : T(□χ)}`, and a saturated branch is not closed under
+those consequences — the lower ray gives the same failure from `T(H(p → q))`, `T(H p)` and `F(q)`
+at the earliest known time, a satisfiable configuration that forces `q` on the ray with nothing on
+the branch naming it.
+
+So O2's replacement is a **realisability condition on the branch**, in the decidable-check family
+`timeOrderTotal` / `boxAnchoredCheck` already belong to, not a policy. Two routes, neither yet
+probed — and by the process lesson that cost two earlier dispatches, **probe before proving**:
+
+* *Model-side.* Assign each gap region the atoms of a chosen known label, with a `Bool` check that
+  the chosen label's positive content contains the region's forced set. Cheap to check, but the
+  induction target has to be restated: "truth at `r`" is then indexed by the label assigned to
+  `r`'s region, and the temporal cases must be re-derived at gap points rather than inherited.
+* *Branch-side.* Have the dense rules realise each gap as an actual minted label
+  (`prior_U_gap`/`prior_S_gap`/`sep` are already shaped for this) and place those labels in the
+  carrier, so no region is forced by facts it does not itself carry. Costlier, and it touches the
+  engine's rule set rather than the bridge.
+
+The `U`/`S` straddling guards remain obligations of the induction, not of `gapVal` — that part of
+the previous reading survives the refutation unchanged.
 
 **O3 — the box grid. Done, after two corrections** (`Bridge/BoxSaturation.lean`). The `box` case
 needs `T(□φ) @ (w,t)` to reach every known *label*, and `sat_box_pos` reaches only the same time.
@@ -359,12 +389,24 @@ on the finished branch: `timeOrderTotal b timeOrd = true` and `boxAnchoredCheck 
   per known world carrying `T(φ)`, `T(Gφ)` and `T(Hφ)` together — is what survives, and
   `timeOrderTotal` sweeps the world's whole row from that single anchor.
 
-**What is actually owed: the induction.** `not_valid_of_hasOpen`, generic in `TemporalCarrier`,
-consuming the `sat_*` family and the three interfaces above. Its preamble must state that
-`findUnexpanded = none` means "no *ordinary* rule applies" — `serialityRule` is deliberately
-outside `allRulesForFC`, so the branch may still be owed `T(F ⊤)`/`T(P ⊤)` at every label. Those
-are true at every point of any serial frame, so the extracted model is unaffected, but the gap
-must be named rather than assumed away.
+**The `sat_*` family is now complete** for the induction's propositional needs.
+`Bridge/PropSaturation.lean` adds `sat_imp_pos`, which `CountermodelExtraction.lean` did not
+carry: `impPos` is the only *branching* propositional rule, and the guard it fails under
+`findUnexpanded = none` is `bss.any (fun fs => fs.all branch.contains)` — i.e. exactly
+`F(ψ) ∈ b ∨ T(χ) ∈ b`. Nothing about it depends on the gap policy, so it survives the O2
+refutation intact.
+
+**What is owed, in order.** (1) O2's replacement — a realisability condition on the branch, chosen
+between the two routes above **after** probing the engine's output, not before. (2) Then
+`not_valid_of_hasOpen`, generic in `TemporalCarrier`, consuming the `sat_*` family and the
+interfaces above. Its preamble must state that `findUnexpanded = none` means "no *ordinary* rule
+applies" — `serialityRule` is deliberately outside `allRulesForFC`, so the branch may still be
+owed `T(F ⊤)`/`T(P ⊤)` at every label. Those are true at every point of any serial frame, so the
+extracted model is unaffected, but the gap must be named rather than assumed away.
+
+Do **not** start the induction against `GapAdequate`. It is refuted, and the `box` case is where
+it fails, so a partial induction that leaves `box` for last will look healthy until the last case
+and then be unclosable.
 -/
 
 /-! ## Sanity checks -/
