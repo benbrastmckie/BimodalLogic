@@ -1492,7 +1492,7 @@ discharged in the sense it asked for, and the corrected `expandBranchWithFuel_is
   signature's default does not permit without an engine edit. Do not re-attempt the unconditional
   form.
 
-### Phase 5: Bridge Infrastructure (BranchOrder, Embed, Carrier) [IN PROGRESS]
+### Phase 5: Bridge Infrastructure (BranchOrder, Embed, Carrier) [COMPLETED]
 
 **ENGINE CONTRACT CHANGE (2026-07-28b, from sub-phase 2.7c) — read before consuming
 `expandBranchWithFuel`.** What the fuel loop may return while sibling branches are unexplored
@@ -1527,7 +1527,7 @@ carry the repair (it feeds trace certificates only, and no corpus row consumes i
   into each class's concrete carrier through one abstract interface — the only place the four
   classes genuinely diverge (02 §8.4).
 - **Tasks:**
-  - [ ] **5.1 `Verified/Bridge/BranchOrder.lean`** (new) *(rewritten 2026-07-27; the original
+  - [x] **5.1 `Verified/Bridge/BranchOrder.lean`** (new) *(rewritten 2026-07-27; the original
     "trichotomy now guarantees totality" premise was refuted by measurement — report 04 §Q2.1)*:
     from a saturated branch **carrying `timeOrderTotal`** (the decidable gate landed in 2.8 and
     discharged by `timeLinearity` in 2.7) package `BranchOrder b ord : LinearOrder (Fin n)`.
@@ -1545,7 +1545,7 @@ carry the repair (it feeds trace certificates only, and no corpus row consumes i
     use; `identifyTime` now arrives from 2.7 and is shared. Estimated output: ~150-300 lines.
     Done when: `BranchOrder` sorry-free with a totality proof consuming `timeOrderTotal`;
     build green.
-  - [ ] **5.2 `Verified/Bridge/Embed.lean` + `Verified/Bridge/Carrier.lean`** (new):
+  - [x] **5.2 `Verified/Bridge/Embed.lean` + `Verified/Bridge/Carrier.lean`** (new):
     `class TemporalCarrier (fc) (D)` with `embed_finite` and `frame_condition` fields (02 §8.4);
     instances `.Base ℚ`, `.Dense ℚ`, `.Discrete ℤ`, `.Dedekind ℝ`. ℚ/ℝ `embed_finite` via
     `Order.embedding_from_countable_to_dense` (verified, `Mathlib.Order.CountableDenseLinearOrder`);
@@ -1558,6 +1558,67 @@ carry the repair (it feeds trace certificates only, and no corpus row consumes i
 - **Depends on:** 2 (5.2's order theory is independent of the rule set, but wave-3 scheduling
   keeps territory clean; 5.1 needs R2 totality)
 - **Territory:** `Verified/Bridge/{BranchOrder,Embed,Carrier}.lean` only.
+
+**PHASE 5 STATUS (2026-07-28c) — COMPLETE, sorry-free, both builds green.**
+
+*5.1 delivered, with one design refinement the plan text did not anticipate.* `timeOrderTotal`
+alone is **not** sufficient to package a `LinearOrder`: it delivers totality only, and the other
+two `LinearOrder` obligations fail for independent, measured reasons. Transitivity of
+`strictBefore` (`futureOf`-membership) is **not a theorem** — `futureOf` is a fuel-bounded BFS
+(default `fuel := 100`), so on a chain longer than the fuel it under-reports and transitivity is
+false as stated about the function the engine calls. Antisymmetry fails on a **cyclic** constraint
+list, which `addFuture` never guards against; the pinned probe
+`#eval timeOrderTotal chainBranch ⟨[(0,1),(1,2),(2,0)]⟩ = true` shows `timeOrderTotal` reporting
+`true` for an inconsistent order. The landed gate is therefore
+`branchOrderValid b ord := timeOrderTotal b ord && orderIrrefl b ord && orderTransOn b ord` —
+still ONE decidable `Bool`, carried on a certificate exactly as `timeOrderTotal` was designed to
+be, with the two new conjuncts quantified over `b.knownTimes` (cubically many checks). The
+order-level branching rule's done-criterion is unchanged in kind: one more conjunct to flip.
+
+*Indexing decision, settled:* `BranchTime b := Fin b.knownTimes.length` — the simple indexing, NOT
+the `ord.constraints ∪ knownTimes` union. 2.5's non-destructive expansion removed the cause of the
+Q2.2 symptom, and union indexing would force the bridge to invent semantic content for times
+carrying no formulas.
+
+*Construction route:* `linearOrderOfSTO` on the strict relation `branchLT`, not a hand-rolled
+`LinearOrder` literal. A literal with an opaque `le` field **cannot** synthesise the `rfl` defaults
+for `lt_iff_le_not_ge` / `min_def` / `max_def` / `compare_eq_compareOfLessAndEq` — measured, four
+errors. `branchLT` carries an index-level tiebreak (`timeAt i = timeAt j ∧ i < j`) so trichotomy
+and irreflexivity hold with no `List.Nodup b.knownTimes` side condition to thread downstream; the
+tiebreak never fires on a real branch, since `knownTimes` is `eraseDups`.
+
+*5.2 delivered as specified.* `FrameConditionFor` is **`Type`-valued, not `Prop`-valued** — forced
+by `.Discrete`, whose `SuccOrder`/`PredOrder` binders are data, not propositions. `.Dedekind`'s lub
+component is `isLUB_csSup`; the plan's `Real.isLUB_sSup` **does not exist** (refuted by the
+name-verification pass), as does not `OrderEmbedding.trans` (the composition is
+`RelEmbedding.trans`, since `↪o` unfolds to `RelEmbedding`). Both corrections are recorded in
+`Embed.lean`'s verification docstring. The name pass carried a deliberate control error which
+reported `unknown identifier`, per constraint 2.
+
+*New API for Phases 6 and 7:*
+- `branchOrderValid b ord : Bool` — the gate; `total_of_valid` / `irrefl_of_valid` /
+  `trans_of_valid` unpack it into relational form
+- `BranchOrder b ord h : LinearOrder (BranchTime b)`; `BranchOrder_lt_iff` / `BranchOrder_le_iff`
+  (both `Iff.rfl`), `lt_of_strictBefore`, `le_of_strictBefore`, `strictBefore_of_lt`
+- `timeAt b i` / `timeAt_mem`, plus `Finite`/`Fintype (BranchTime b)`
+- `embed_finite_to_dense` (ℚ/ℝ), `finOrderEmbInt` / `finiteOrderEmbInt` / `embed_finite_to_int` (ℤ)
+- `class TemporalCarrier fc D` with the four instances `.Base ℚ`, `.Dense ℚ`, `.Discrete ℤ`,
+  `.Dedekind ℝ`; `HasLUBs`, `DiscreteStructure`, `FrameConditionFor`
+- `exists_monotone_placement fc D h : ∃ f : BranchTime b → D, Function.Injective f ∧ ∀ i j,
+  (BranchOrder b ord h).le i j ↔ f i ≤ f j` — **the interface Phase 6 starts from.** Stated with an
+  explicit `.le` rather than an instance-in-statement `letI`, because `Fin`'s own `instLEFin` wins
+  over a `letI`-introduced `LinearOrder` in a `↪o` statement position (measured).
+
+*Regression corpus:* +7 `#guard_msgs` rows (6 in `BranchOrder.lean`, 1 in `Embed.lean`), total 30.
+
+**DO NOT RE-ATTEMPT in Phase 6/7:**
+- Proving `strictBefore`/`futureOf` transitive outright — false at fixed fuel; consume
+  `trans_of_valid` instead.
+- Weakening the gate back to `timeOrderTotal` alone — the cycle probe refutes it.
+- A Mathlib linear extension of a partial branch order (`extend_partialOrder`/`LinearExtension`)
+  — unsound, counterexample recorded in `BranchOrder.lean`'s module docstring.
+- Reusing `embed_finite_to_dense` for `ℤ` — `ℤ` is not densely ordered under any weakening.
+- A `Prop`-valued `frame_condition` — `SuccOrder`/`PredOrder` are data.
 
 ### Phase 6: Interpolation — the Mathematical Core (WP4 stage 3) [NOT STARTED]
 
