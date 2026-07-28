@@ -23,6 +23,8 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.BranchOrder
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Embed
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Carrier
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Interpolate
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.Omega
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -48,6 +50,11 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Bridge.Carrier`: `TemporalCarrier fc D`, the per-frame-class carrier interface
 - `Verified.Bridge.Interpolate`: the region structure a placement cuts in the carrier, the
   total-on-`D` extension operator, and the invariance induction's propositional and modal cases
+- `Verified.Bridge.Omega`: the countermodel's `TaskFrame`, its region histories, the shift-closed
+  admissible set `Ω` that `valid` quantifies over, and `truthAt_box_iff` — `□` is the universal
+  modality once `Ω` is shift-closed
+- `Verified.Bridge.TruthLemma`: `InterpInvariantAt`, region invariance at a single history — the
+  form a shift-closed `Ω` admits — and its instantiation at the countermodel's base histories
 
 ## Status
 
