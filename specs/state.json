@@ -4,8 +4,18 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 413,
+  "next_project_number": 414,
   "active_projects": [
+    {
+      "project_number": 413,
+      "project_name": "formalize_tm_conservativity_bridge",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Formalize the TM+ over TM conservativity bridge in Lean 4 (paper thm:ConservativeExtension, CEB/CEF/CED/CEC): add a BL base-language Formula type with primitive box/G/H, its TM axiom set and derivation trees, a translation into the existing BL+ Formula type, and prove that TM+ derivability of a translated BL-formula yields TM derivability, supplying the missing step in the paper's cor:tm-completeness route",
+      "topic": "completeness",
+      "created": "2026-07-28T16:58:26Z",
+      "last_updated": "2026-07-28T16:58:26Z"
+    },
     {
       "project_number": 409,
       "project_name": "reconcile_latex_metalogic_docs_with_live_tree",

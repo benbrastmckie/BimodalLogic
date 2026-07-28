@@ -1,5 +1,5 @@
 ---
-next_project_number: 413
+next_project_number: 414
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 413
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,361,390,408,409 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,361,390,408,409,413 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296,410,411,412 | 165,193,231,298,361 | formula-refactor, dataset-enhancement, strong_completeness |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -26,6 +26,7 @@ next_project_number: 413
   └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
 408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
+413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 
 ### Formula Refactor
 
@@ -70,6 +71,16 @@ next_project_number: 413
 ### Uncategorized
 
 ## Tasks
+
+### 413. Formalize tm conservativity bridge
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: Formalize the TM+ over TM conservativity bridge in Lean 4 (paper thm:ConservativeExtension, CEB/CEF/CED/CEC): add a BL base-language Formula type with primitive box/G/H, its TM axiom set and derivation trees, a translation into the existing BL+ Formula type, and prove that TM+ derivability of a translated BL-formula yields TM derivability, supplying the missing step in the paper's cor:tm-completeness route
+
+---
 
 ### 412. Prove refutation core and decidability of provability with completeness corollaries
 - **Effort**: 10-15 hours
