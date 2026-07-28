@@ -1301,9 +1301,147 @@ def allRulesForFC (fc : FrameClass := .Base) : List TableauRule :=
   -- that adds one formula and then reports `notApplicable` cannot pre-empt any other rule.
   dedekind ++ base ++ dense ++ discrete
 
+/-!
+## Uniform Branch Guards
+
+The persistent rules have always been self-guarded: each one filters its own output against
+`branch.contains` and reports `.notApplicable` when nothing new remains. The `.linear` and
+`.branching` rules were not, and did not need to be — they were *destructive*, deleting their
+source from the branch, so they could not re-fire.
+
+Destruction is what made the applied set necessary, and it made it necessary for a reason
+that has nothing to do with the persistent rules themselves. `boxPos` produces `T(¬p)`;
+`negPos` consumes `T(¬p)`; `boxPos`'s own guard now sees its output missing and re-emits it;
+`negPos` consumes it again. The cycle is driven by the consumable rule deleting the persistent
+rule's output, not by the persistent rule ignoring the branch.
+
+So the fix is to stop deleting, and to give the consumable arms the guard the persistent arms
+already have. `untlNeg` and `snceNeg` are the in-repo precedent: both re-include their source
+formula in every arm and are guarded by their own `unprocessed` filter, and both have always
+been non-destructive.
+
+**The fresh-label complication.** Eight rules mint a fresh world or a fresh time, so their
+outputs live at a label that by construction is not on the branch. `fs.all branch.contains`
+can therefore never suppress them, and non-destructive application would mint labels forever.
+For those eight, output-presence is replaced by *witness existence*: the rule is suppressed
+when the branch already carries a witness of the right shape at some already-known world (for
+the modal rules) or at some already-ordered time (for the temporal ones). This is the standard
+"do not duplicate an existing witness" restriction and is satisfiability-preserving in both
+directions, exactly as the output-presence guard is.
+
+`densityRule` also mints a fresh time but is deliberately absent from the list below: it
+carries its own equivalent guard (`existingIntermediates.isEmpty`), which is the same test
+specialised to the intermediate it would create.
+
+With both guards in place every expansion step strictly adds at least one formula the branch
+did not have, so branch length is a strict progress measure and the applied set has no work
+left to do.
+-/
+
+/--
+Rules whose output lives at a freshly-minted world or time, and which therefore cannot be
+suppressed by testing their output against the branch.
+
+`densityRule` mints a fresh time too but is not listed: its `existingIntermediates` guard is
+already the witness test specialised to its own witness shape.
+-/
+def ruleMintsFreshLabel : TableauRule → Bool
+  | .boxNeg | .diamondPos | .allFutureNeg | .allPastNeg
+  | .someFuturePos | .somePastPos | .untlPos | .sncePos => true
+  | _ => false
+
+/--
+Rules that already suppress themselves, and so need no guard added in `findApplicableRule`.
+
+`untlNeg` and `snceNeg` return `.branching`, but they filter the times they act on through
+their own `unprocessed` test — a target time counts only when *neither* co-decomposition
+output is on the branch yet — and they re-include the source formula in every arm. They are
+therefore self-guarded and non-destructive already, by exactly the argument that makes the
+`.persistent` arms self-guarded. Re-guarding them here would add nothing operationally (the
+outer test can never fire where the inner filter has already passed) while putting an extra
+`if` between the saturation lemmas and the filter structure they read.
+-/
+def ruleSelfGuarded : TableauRule → Bool
+  | .untlNeg | .snceNeg => true
+  | _ => false
+
+/--
+Does the branch already carry a witness for this fresh-label rule at this formula?
+
+The witness test per rule, at label `(w, t)`:
+
+- `boxNeg` / `diamondPos` — the modal accessibility relation is universal (S5), so any known
+  world serves: some `w'` with `F(ψ) @ (w', t)` (resp. `T(ψ) @ (w', t)`) on the branch.
+- `allFutureNeg` / `someFuturePos` — some `t'` strictly after `t` in the *transitive* ordering
+  carrying `F(ψ)` (resp. `T(ψ)`) at `w`.
+- `allPastNeg` / `somePastPos` — the past-directed mirrors.
+- `untlPos` / `sncePos` — either arm counts, since the rule's conclusion is a disjunction: a
+  future (resp. past) time carrying the event witness, or one carrying both the guard and the
+  Until/Since itself.
+
+Returns `false` for every other rule, so it is only ever consulted behind
+`ruleMintsFreshLabel`.
+-/
+def witnessPresent (rule : TableauRule) (sf : SignedFormula) (branch : Branch)
+    (timeOrd : TimeOrdering) : Bool :=
+  let l := sf.label
+  match rule, sf.sign, sf.formula with
+  | .boxNeg, .neg, .box ψ =>
+      branch.knownWorlds.any fun w =>
+        branch.contains (SignedFormula.neg ψ { world := w, time := l.time })
+  | .diamondPos, .pos, φ =>
+      match asDiamond? φ with
+      | some ψ =>
+          branch.knownWorlds.any fun w =>
+            branch.contains (SignedFormula.pos ψ { world := w, time := l.time })
+      | none => false
+  | .allFutureNeg, .neg, .allFuture ψ =>
+      (timeOrd.futureOf l.time).any fun t =>
+        branch.contains (SignedFormula.neg ψ { world := l.world, time := t })
+  | .allPastNeg, .neg, .allPast ψ =>
+      (timeOrd.pastOf l.time).any fun t =>
+        branch.contains (SignedFormula.neg ψ { world := l.world, time := t })
+  | .someFuturePos, .pos, φ =>
+      match asSomeFuture? φ with
+      | some ψ =>
+          (timeOrd.futureOf l.time).any fun t =>
+            branch.contains (SignedFormula.pos ψ { world := l.world, time := t })
+      | none => false
+  | .somePastPos, .pos, φ =>
+      match asSomePast? φ with
+      | some ψ =>
+          (timeOrd.pastOf l.time).any fun t =>
+            branch.contains (SignedFormula.pos ψ { world := l.world, time := t })
+      | none => false
+  | .untlPos, .pos, φ =>
+      match asUntil? φ with
+      | some (event, guard) =>
+          (timeOrd.futureOf l.time).any fun t =>
+            let lab : Label := { world := l.world, time := t }
+            branch.contains (SignedFormula.pos event lab) ||
+              (branch.contains (SignedFormula.pos guard lab) &&
+               branch.contains (SignedFormula.pos (.untl event guard) lab))
+      | none => false
+  | .sncePos, .pos, φ =>
+      match asSince? φ with
+      | some (event, guard) =>
+          (timeOrd.pastOf l.time).any fun t =>
+            let lab : Label := { world := l.world, time := t }
+            branch.contains (SignedFormula.pos event lab) ||
+              (branch.contains (SignedFormula.pos guard lab) &&
+               branch.contains (SignedFormula.pos (.snce event guard) lab))
+      | none => false
+  | _, _, _ => false
+
 /--
 Find a rule that applies to a signed formula.
 Returns the first applicable rule, its result, and the updated TimeOrdering.
+
+Every arm is branch-guarded: a rule whose conclusion the branch already carries is not
+"applicable", so `findApplicableRule … = none` is a genuine downward-saturation statement
+rather than a statement about what the engine happens to have tried. See the
+"Uniform Branch Guards" section above for why the `.linear`/`.branching` guards must exist
+and why the eight fresh-label rules use witness existence instead of output presence.
 -/
 def findApplicableRule (sf : SignedFormula) (branch : Branch := [])
     (timeOrd : TimeOrdering := TimeOrdering.empty)
@@ -1313,7 +1451,34 @@ def findApplicableRule (sf : SignedFormula) (branch : Branch := [])
       let (result, newOrd) := applyRule rule sf branch timeOrd
       match result with
       | .notApplicable => none
-      | _ => some (rule, result, newOrd)
+      | .linear fs =>
+          if ruleMintsFreshLabel rule then
+            if witnessPresent rule sf branch timeOrd then none
+            else some (rule, result, newOrd)
+          else if fs.all branch.contains then none
+          else some (rule, result, newOrd)
+      | .persistent _ =>
+          -- No guard here, deliberately. Every `.persistent` arm of `applyRule` already
+          -- filters its own output against `branch.contains` and returns `.notApplicable`
+          -- when nothing new remains (the sole exception, `densityRule`, emits at a fresh
+          -- time, so its output cannot be on the branch and it carries an equivalent
+          -- `existingIntermediates` guard instead). A `fs.all branch.contains` test here
+          -- would therefore always be false and never fire. Adding it anyway would be
+          -- harmless operationally but would put an extra `if` between every saturation
+          -- lemma and the rule's own filter structure, which is precisely what those
+          -- lemmas read to extract their conclusion.
+          some (rule, result, newOrd)
+      | .branching bss =>
+          -- Symmetric with the `.linear` arm: a fresh-label rule is tested for witness
+          -- existence *instead of* output presence, never in addition to it. Its arms all
+          -- live at a label the branch does not have, so the output-presence test could
+          -- never fire there anyway; running both would only put a dead `if` between the
+          -- saturation lemmas and the witness condition they need to read off.
+          if ruleSelfGuarded rule then some (rule, result, newOrd)
+          else if ruleMintsFreshLabel rule then
+            (if witnessPresent rule sf branch timeOrd then none else some (rule, result, newOrd))
+          else if bss.any (fun fs => fs.all branch.contains) then none
+          else some (rule, result, newOrd)
     else none
 
 /--
@@ -1350,6 +1515,16 @@ Perform a single expansion step on a branch.
 
 Finds the first unexpanded formula and applies the appropriate rule.
 Returns the result of the expansion together with the (possibly updated) TimeOrdering.
+
+**Non-destructive.** No arm deletes the source formula. The `.linear` and `.branching` arms
+used to (`remaining := b.filter (· != sf)`), which is what created the persistent/consumable
+cycle the applied set was invented to suppress: a consumable rule would delete a formula a
+persistent rule had produced, the persistent rule's `branch.contains` guard would then see
+its own output missing, and the two would alternate forever. With the guards in
+`findApplicableRule` covering all three arms, deletion is no longer needed to prevent
+re-firing, and keeping the source buys two things: the branch is monotone, so its length is a
+strict progress measure; and a time whose formulas were all consumed no longer disappears from
+`Branch.knownTimes`, which is what made the ordering induced on the known times lossy.
 -/
 def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base) : ExpansionResult × TimeOrdering :=
@@ -1361,78 +1536,103 @@ def expandOnce (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
       | some (_, result, newOrd) =>
           match result with
           | .linear formulas =>
-              -- Remove the expanded formula and add new ones
-              let remaining := b.filter (· != sf)
-              (.extended (formulas ++ remaining), newOrd)
+              (.extended (formulas ++ b), newOrd)
           | .branching branches =>
-              -- Remove the expanded formula from each branch and add new formulas
-              let remaining := b.filter (· != sf)
-              (.split (branches.map fun newFormulas => newFormulas ++ remaining), newOrd)
+              (.split (branches.map fun newFormulas => newFormulas ++ b), newOrd)
           | .persistent formulas =>
-              -- Add new formulas but keep the source formula (universal modal rule)
               (.extended (formulas ++ b), newOrd)
           | .notApplicable => (.saturated, newOrd)  -- Shouldn't happen
 
 /--
-Find a rule applicable to a signed formula, filtering persistent rules whose
-output has already been fully produced (tracked in the applied set).
+A single expansion step restricted to rules that introduce **no new label** — neither a fresh
+world nor a fresh time.
+
+This is the step the post-blocking pass needs. That pass exists to finish the propositional
+and propagation work still outstanding on a branch that time-blocking halted, without
+extending the time structure the blocking decision was made against.
+
+Its predecessor asked `expandOnce` for *the* next step and abandoned the whole branch when
+that step happened to introduce a time. That is too brittle to survive non-destructive
+expansion: the source formulas now stay on the branch, so the first formula `findUnexpanded`
+lands on is frequently a temporal existential, and the pass would give up with ordinary
+propositional work still pending. Here the label-introducing candidates are *skipped* and the
+search continues, so the pass stops only when no label-free work remains at all.
+
+The test is exact rather than a rule list: a candidate is rejected if it mints a fresh world
+(`ruleMintsFreshLabel`) or if applying it would lengthen the ordering constraints. That covers
+`densityRule` and the active-mode arms of `untlNeg`/`snceNeg`, which introduce times without
+being witness-guarded, and it stays correct if a future rule does the same.
+-/
+def expandOnceNoFresh (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
+    (fc : FrameClass := .Base) : ExpansionResult × TimeOrdering :=
+  let pick := b.findSome? fun sf =>
+    match findApplicableRule sf b timeOrd fc with
+    | some (rule, result, newOrd) =>
+        if ruleMintsFreshLabel rule then none
+        else if newOrd.constraints.length > timeOrd.constraints.length then none
+        else some (result, newOrd)
+    | none => none
+  match pick with
+  | none => (.saturated, timeOrd)
+  | some (result, newOrd) =>
+      match result with
+      | .linear formulas => (.extended (formulas ++ b), newOrd)
+      | .branching branches => (.split (branches.map fun fs => fs ++ b), newOrd)
+      | .persistent formulas => (.extended (formulas ++ b), newOrd)
+      | .notApplicable => (.saturated, newOrd)
+
+/-!
+## The Applied Set, Demoted
+
+The applied set existed to break the persistent/consumable cycle described in the
+"Uniform Branch Guards" section. The branch guards plus non-destructive expansion break that
+cycle at its source, so the applied set has nothing left to suppress, and it must not be
+allowed to suppress anything: a rule filtered out by the applied set rather than by the branch
+is a rule whose conclusion may be *absent* from the branch, which is exactly the orphan
+situation that stopped the open-branch certificate from meaning downward saturation.
+
+The four functions below are therefore **inert wrappers**: they ignore the `applied` argument
+entirely and delegate to the guarded, non-destructive versions, always reporting an empty
+applied-set delta. The signatures are kept only so that the certificate and the fuel loop can
+be moved off them in a separate step; nothing depends on the applied set's contents any more,
+and an open certificate's applied set is now always empty.
+-/
+
+/--
+Deprecated in substance: delegates to `findApplicableRule`, ignoring `applied`.
+Always reports an empty applied-set delta.
 -/
 def findApplicableRuleWithApplied (sf : SignedFormula) (branch : Branch := [])
     (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base)
-    (applied : AppliedSet := {}) :
+    (_applied : AppliedSet := {}) :
       Option (TableauRule × RuleResult × TimeOrdering × List SignedFormula) :=
-  (allRulesForFC fc).findSome? fun rule =>
-    if isApplicable rule sf fc then
-      let (result, newOrd) := applyRule rule sf branch timeOrd
-      match result with
-      | .notApplicable => none
-      | .persistent formulas =>
-          -- Filter out formulas already in the applied set
-          let newFormulas := formulas.filter fun f => !applied.contains f
-          if newFormulas.isEmpty then
-            none  -- All outputs already produced; skip this rule
-          else
-            some (rule, .persistent newFormulas, newOrd, newFormulas)
-      | _ => some (rule, result, newOrd, [])
-    else none
+  match findApplicableRule sf branch timeOrd fc with
+  | none => none
+  | some (rule, result, newOrd) => some (rule, result, newOrd, [])
 
-/-- Check if a signed formula is fully expanded, considering the applied set. -/
+/-- Deprecated in substance: agrees with `isExpanded`, ignoring `applied`. -/
 def isExpandedWithApplied (sf : SignedFormula) (branch : Branch := [])
     (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base)
     (applied : AppliedSet := {}) : Bool :=
   (findApplicableRuleWithApplied sf branch timeOrd fc applied).isNone
 
-/-- Find an unexpanded formula in a branch, considering the applied set. -/
+/-- Deprecated in substance: agrees with `findUnexpanded`, ignoring `applied`. -/
 def findUnexpandedWithApplied (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base)
     (applied : AppliedSet := {}) : Option SignedFormula :=
   b.find? (fun sf => ¬isExpandedWithApplied sf b timeOrd fc applied)
 
 /--
-Perform a single expansion step on a branch, using the applied set to prevent
-persistent rule loops. Returns `(result, newTimeOrdering, formulasToAddToAppliedSet)`.
+Deprecated in substance: delegates to `expandOnce`, ignoring `applied` and always reporting
+an empty applied-set delta.
 -/
 def expandOnceWithApplied (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
-    (fc : FrameClass := .Base) (applied : AppliedSet := {})
+    (fc : FrameClass := .Base) (_applied : AppliedSet := {})
     : ExpansionResult × TimeOrdering × List SignedFormula :=
-  match findUnexpandedWithApplied b timeOrd fc applied with
-  | none => (.saturated, timeOrd, [])
-  | some sf =>
-      match findApplicableRuleWithApplied sf b timeOrd fc applied with
-      | none => (.saturated, timeOrd, [])
-      | some (_, result, newOrd, newApplied) =>
-          match result with
-          | .linear formulas =>
-              let remaining := b.filter (· != sf)
-              (.extended (formulas ++ remaining), newOrd, [])
-          | .branching branches =>
-              let remaining := b.filter (· != sf)
-              (.split (branches.map fun newFormulas => newFormulas ++ remaining), newOrd, [])
-          | .persistent formulas =>
-              (.extended (formulas ++ b), newOrd, newApplied)
-          | .notApplicable => (.saturated, newOrd, [])
+  let (result, newOrd) := expandOnce b timeOrd fc
+  (result, newOrd, [])
 
 /--
 Count of unexpanded formulas in a branch (termination measure).

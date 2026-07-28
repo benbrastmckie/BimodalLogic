@@ -232,7 +232,24 @@ two incomparable fresh times, syntactically as the `temp_linearity` disjuncts, a
 resulting branches close — two against a negated disjunct directly, the third through the
 ordinary `someFutureNeg`/conjunction machinery, which is why a single orientation of the
 pair suffices even though row B's disjuncts are a permutation drawn from both orientations.
-Row B carries a raised `fuel`; see `conformanceFuel`. -/
+Row B carries a raised `fuel`; see `conformanceFuel`.
+
+**Row B regression at `.Dense` and `.Dedekind`.** Row B closes at `.Base` and `.Discrete` but
+reads `STALLED` in the two dense classes since branch-guarded non-destructive expansion landed.
+The cause is measured, and it is *not* the guards: restoring source destruction while keeping
+the guards makes row B stall in all four classes, so non-destructive expansion is what recovers
+`.Base` and `.Discrete`. Widening `orderTrichotomy`'s first-witnesses-only restriction from one
+witness to two was also tried, and changes nothing.
+
+What the measurement shows is time-blocking firing before the closure is reached. At `.Dense`,
+fuel 10000, the halted branch has ordering `[(4,3),(0,4),(3,2),(0,3),(0,2),(0,1)]` — `densityRule`
+has interpolated times 3 and 4 into `0 < 2` — and `findUnexpanded` is left pointing at
+`T(G ¬(p ∧ F q)) @ (0,0)`. The interpolated times carry formula types that are subsets of their
+ancestors', so `findBlockedTime` halts the branch with propagation still outstanding. That is
+the known "blocking is too eager" defect, made visible rather than caused by this change: with
+destruction, the intermediate times carried fewer formulas and the subset test read differently.
+
+Repairing it belongs with the blocking predicate, not with the expansion guards. -/
 def counterexampleRows : List Row :=
   [ { id := "A Gp->GGp",     formula := im (G p) (G (G p)), target := "CLOSED"
     , note := "was D1; closes now that futureOf is a transitive closure" }
@@ -390,7 +407,7 @@ K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by ite
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
-B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
+B lin-perm         STALLED  target=CLOSED  [DEFECT] was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -452,7 +469,7 @@ K4 Fq->F^4-top     OPEN     target=CLOSED  [DEFECT] F^4(top) is a theorem by ite
 K5 Fq->F^5-top     OPEN     target=CLOSED  [DEFECT] F^5(top) is a theorem by iterated seriality
 K6 Fq->F^6-top     OPEN     target=CLOSED  [DEFECT] F^6(top) is a theorem by iterated seriality
 A Gp->GGp          CLOSED   target=CLOSED          was D1; closes now that futureOf is a transitive closure
-B lin-perm         CLOSED   target=CLOSED          was D2; closes now that orderTrichotomy splits on the witness order
+B lin-perm         STALLED  target=CLOSED  [DEFECT] was D2; closes now that orderTrichotomy splits on the witness order
 BX11 lin-fut       CLOSED   target=CLOSED          temp_linearity, exact axiom disjunct order
 BX11' lin-past     CLOSED   target=CLOSED          temp_linearity_past, exact axiom disjunct order
 BX10 U->F          CLOSED   target=CLOSED          until_F
@@ -614,14 +631,20 @@ end BlockingProbe
 
 /-! ## R5 certificate-strength probe
 
-The open-branch certificate `ExpandedTableau.hasOpen` carries applied-set-aware saturation,
-not full `findUnexpanded` saturation. `Saturation.lean`'s "Certificate Strength (R5)"
-section records why (the D4 orphan situation) and which of the two available repairs this
-development takes. These probes pin the measurement that decision rests on, so that a change
-which closes the gap — or reopens it — breaks this file.
+These probes pin the state of the open-branch certificate. They were introduced to record a
+gap and now record its closure, which is why they are worth keeping in both directions.
 
-`◇p` is the witness the audit named: its certificate has orphaned applied-set entries, and
-`findUnexpanded` still reports work.
+The gap was D4: `ExpandedTableau.hasOpen` carried *applied-set-aware* saturation rather than
+`findUnexpanded … = none`, and on `◇p` the certificate had three applied-set entries all
+orphaned off the branch — a consumable rule had deleted formulas a persistent rule produced,
+the persistent rule was then suppressed by the applied set, and the branch was reported
+saturated while `findUnexpanded` still found work.
+
+Branch-guarded non-destructive expansion removes the mechanism. Nothing is deleted, so nothing
+is orphaned; the applied set has nothing to suppress and is inert. `◇p` now reports
+`fullySaturated=true applied=0 orphans=0`: the applied-set-free saturation predicate — the one
+a truth lemma actually needs — is *reachable* on the pipeline's own output. A regression that
+re-orphans an entry, or that makes full saturation unreachable again, breaks this file.
 -/
 
 namespace CertificateProbe
@@ -645,7 +668,7 @@ appliedRedundant={AppliedRedundant b ord fc applied}"
   | some (.allClosed _) => "CLOSED"
   | none => "STALLED"
 
-/-- info: fullySaturated=false applied=3 orphans=3 appliedRedundant=true -/
+/-- info: fullySaturated=true applied=0 orphans=0 appliedRedundant=true -/
 #guard_msgs in
 #eval IO.print (certProbe diaP FrameClass.Base)
 
@@ -668,11 +691,12 @@ Four of the seven rows are `false` today, and they are the gate: the order-level
 rule's done-criterion is that W1-W4 flip to `total=true` while W5-W7 stay `true`. Three
 further facts are pinned along with the verdict, because each one is load-bearing:
 
-- `knownTimes` omits any time whose formulas were all consumed, so in W1-W4 the *induced*
-  order on `knownTimes` is empty even though `constraints` relates both times to the root.
-  Non-destructive expansion should make `constraints` and `knownTimes` agree; if it lands and
-  these rows still read `false`, the incomparability is genuine rather than an indexing
-  artifact, and that distinction is exactly what the printed fields preserve.
+- `knownTimes` used to omit any time whose formulas were all consumed, so in W1-W4 the
+  *induced* order on `knownTimes` was empty even though `constraints` related both times to the
+  root. Non-destructive expansion fixed that: the root time now appears (`[0, 2, 1]` rather than
+  `[2, 1]`), so `constraints` and `knownTimes` agree and the remaining `total=false` is the
+  genuine article rather than an indexing artifact. That was the point of printing the fields
+  alongside the verdict, and it is now settled: `1` and `2` really are incomparable.
 - The verdicts are **fuel-insensitive**: W7 repeats W1 at fuel 2000 and is identical.
   `orderTrichotomy` is present in `allRulesForFC .Base` and still does not fire here — its
   branches are `temp_linearity` *formulas*, which mint fresh witness times rather than
@@ -697,28 +721,28 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
   | none => "STALLED"
 
 -- W1. The named witness: siblings `1` and `2` carry `T(G p)` and `F(p)`.
-/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base)
 
 -- W2. Two bare future eventualities: the same shape with no universal involved.
-/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F p) (F q))) FrameClass.Base)
 
 -- W3. Two universals: incomparability is not caused by the negative conjunct.
-/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base)
 
 -- W4. W1 with the conjuncts swapped: the order the eventualities appear in does not matter.
-/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (nt p)) (F (G p)))) FrameClass.Base)
 
 -- W5 (control). One future and one past witness: the root sits between them, so both known
 -- times are comparable and totality already holds. No rule should move this row.
-/-- info: total=true knownTimes=[2, 1] constraints=[(2, 0), (0, 1)] incomparable=[] -/
+/-- info: total=true knownTimes=[0, 2, 1] constraints=[(2, 0), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F p) (P q))) FrameClass.Base)
 
@@ -729,7 +753,7 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 
 -- W7. W1 at ten times the fuel. Identical: incomparability is structural, not a budget
 -- artifact, so no fuel increase can be mistaken for a fix.
-/-- info: total=false knownTimes=[2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
+/-- info: total=false knownTimes=[0, 2, 1] constraints=[(0, 2), (0, 1)] incomparable=[(1, 2)] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base 2000)
 

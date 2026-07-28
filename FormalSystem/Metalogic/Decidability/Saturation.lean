@@ -76,40 +76,44 @@ end ExpandedTableau
 /-!
 ## Certificate Strength (R5)
 
-`hasOpen` certifies `findUnexpandedWithApplied … = none`, not `findUnexpanded … = none`.
-The two are genuinely different, and the gap is the D4 orphan situation: the applied set can
-record a formula that is no longer on the branch, because a *consumable* rule deleted a
-formula a *persistent* rule had produced. The persistent rule is then suppressed, the branch
-is reported saturated, and `findUnexpanded` — which does not consult the applied set — still
-finds work.
+**Status: the gap this section was written to record is closed; the predicates below are
+retained as history and nothing may depend on them.**
 
-**The choice, recorded.** Of the two repairs available (certify the applied-set-free
-predicate, or keep the applied-set predicate and justify it), this development takes the
-second. The first is not available: the applied set is the only thing standing between
-`expandBranchWithFuel` and an unbounded persistent/consumable cycle, so requiring
-`findUnexpanded … = none` would make the pipeline unable to produce a certificate at all for
-any formula whose expansion uses a persistent rule.
+The gap was this. `hasOpen` certified `findUnexpandedWithApplied … = none`, not
+`findUnexpanded … = none`, and the two differed by the D4 orphan situation: the applied set
+could record a formula no longer on the branch, because a *consumable* rule deleted a formula
+a *persistent* rule had produced. The persistent rule was then suppressed by the applied set,
+the branch was reported saturated, and `findUnexpanded` — which does not consult the applied
+set — still found work.
 
-**Measured, on `◇p`** (`buildTableau (Formula.diamond p) 200 .Base`). The certificate has
-three applied-set entries, all three orphaned — present in the applied set, absent from the
-branch:
+**The original diagnosis was wrong, and the correction is the point.** It was believed that
+several persistent rules return `.persistent fs` even when every element of `fs` is already on
+the branch, so that requiring `findUnexpanded … = none` would stall the pipeline. Every
+`.persistent` return site in `applyRule` was subsequently checked: all of them are already
+branch-guarded, and the one that is not (`densityRule`) emits at a fresh time, where its output
+cannot be on the branch by construction. Nothing was wrong with the persistent rules. The cycle
+was driven entirely by **destruction** in the `.linear`/`.branching` arms of `expandOnce`, which
+deleted the source of every consumable rule; the applied set existed only to paper over that.
 
-| orphan | why it is absent | what stands in for it |
-|---|---|---|
-| `T(¬p) @ (0,0)` | `negPos` consumed it | `F(p) @ (0,0)` |
-| `T(¬F(¬p)) @ (0,0)` (`T(G p)`) | `negPos` consumed it | `F(U(¬p,⊤)) @ (0,0)` |
-| `T(¬P(¬p)) @ (0,0)` (`T(H p)`) | `negPos` consumed it | `F(S(¬p,⊤)) @ (0,0)` |
+The repair is therefore in the destructive arms, not the persistent ones: guard `.linear` and
+`.branching` the way `.persistent` already guards itself, stop deleting, and the applied set has
+nothing left to do. `findUnexpanded … = none` is then reachable, and it means exactly downward
+saturation, with no auxiliary invariant. `Tests/BimodalTest/TableauConformance.lean`'s
+`CertificateProbe` pins the result on the old witness: `◇p` now reports
+`fullySaturated=true applied=0 orphans=0`.
 
-and `findUnexpanded` returns `T(□¬p) @ (0,0)` — the box rules would re-fire, producing
-exactly those three orphans again.
+**`AppliedRedundant` was refuted, not merely unproved.** The predicate below was believed true
+of the pipeline's output and was to be proved invariant under `expandBranchWithFuel`. Measured
+over a spread of formulas at `.Base`, fuel 200, it is **false** on `◇(p ∧ q)`, `◇◇p`, `◇¬¬p` and
+`◇(□(p ∧ q) ∧ ¬p)`; the original `◇p` witness is unrepresentative, its three orphans all
+happening to sit one `negPos` step from the branch. The mechanism is structural rather than
+incidental: `appliedEntryRedundant` is a **one-step** predicate, and the engine decomposes to
+arbitrary depth, so an entry's rule outputs are themselves consumed one level further down. A
+transitive strengthening does not repair it either — `findApplicableRule`'s `.persistent` output
+set grows with the branch, so the predicate is not monotone in `b` and the induction step for a
+growing branch does not go through.
 
-So on this witness the orphans are not lost information: every one of them is on the branch
-in *decomposed* form. `AppliedRedundant` below is that observation made checkable, and it is
-the hypothesis a truth lemma should take rather than full `findUnexpanded` saturation.
-
-**What is not done here.** `AppliedRedundant` is stated and demonstrated on the pipeline's
-own output; it is not yet *proved* to hold of every certificate `buildTableau` produces.
-That proof is an induction over `expandBranchWithFuel`, and it is the remaining half of R5.
+The two definitions are kept only so this record has something to point at.
 -/
 
 /--
@@ -662,17 +666,19 @@ def saturateBlocked (b : Branch) (fuel : Nat)
       match findClosure b fc with
       | some reason => some (.inl ⟨b, reason⟩)
       | none =>
-          -- Try to expand
-          match expandOnce b timeOrd fc with
-          | (.saturated, _) => some (.inr (b, timeOrd))  -- Fully saturated
+          -- Try to expand, using only steps that introduce no new world or time.
+          -- `expandOnceNoFresh` *skips* label-introducing candidates rather than reporting
+          -- the first one and forcing this pass to abandon the branch; see its docstring.
+          -- The `constraints.length` guards below are therefore now unreachable, and are
+          -- retained only as a belt-and-braces check on that invariant.
+          match expandOnceNoFresh b timeOrd fc with
+          | (.saturated, _) => some (.inr (b, timeOrd))  -- No label-free work remains
           | (.extended newBranch, newOrd) =>
-              -- Only accept if no new time constraints were introduced
               if newOrd.constraints.length > timeOrd.constraints.length then
                 some (.inr (b, timeOrd))  -- Reject: would create new time point
               else
                 saturateBlocked newBranch fuel timeOrd fc
           | (.split branches, newOrd) =>
-              -- Only accept if no new time constraints were introduced
               if newOrd.constraints.length > timeOrd.constraints.length then
                 some (.inr (b, timeOrd))  -- Reject: would create new time point
               else
