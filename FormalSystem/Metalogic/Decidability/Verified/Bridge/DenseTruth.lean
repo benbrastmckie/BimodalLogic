@@ -329,6 +329,207 @@ theorem branchTruthAt_snce_neg_dense (hf : Function.Injective f) (hOF : OrderFai
     · rw [stateLabel_gap w hs]
       exact snceNegRegion_label hTW (cutIndex_le b _) (cutIndex_le b _) hmem (cutIndex_mono hsr)
 
+
+/-! ## The two positive temporal halves, at a dense carrier
+
+The positive halves are where the discrete and dense milestones differ most, and the difference is
+one word: at `ℤ` the upper-ray leaf **vanishes** its guard interval — `Stepped` supplies an
+immediate successor, so there is nothing strictly between the point and its witness — while at
+`ℚ`/`ℝ` no point has a successor and the interval is always inhabited. The guard therefore has to
+be *carried across a whole region* instead, which is precisely the demand row 11's `self` disjunct
+makes and no `ℤ` row ever did.
+
+`exists_gt_sameRegion` supplies the witness `Stepped` used to, and `sameRegion_convex` does the
+work `upperRay_of_gt` did: everything between a point and a region-mate above it is another
+region-mate, so it reads the same label and the single guard fact at that label covers the whole
+interval. `RayOnly`, `RaySplit`, `Stepped`, `upperRay_of_gt` and `isPlacedCode_of_between` are all
+absent.
+
+The **placed** leaf is the one place a landed row is consumed for the first time:
+`regionLabel_untlGuard` — `Bridge/RegionLabel.lean`'s straddling guard — closes the sub-leaf where
+the guard interval of a placed-to-placed witness meets a non-placed point. `ℤ` never called it
+because contiguity made that sub-leaf empty (`isPlacedCode_of_between`). It is worth naming that
+this costs **nothing** in gate strength: `untlGuards` is already a row of `regionLabelCheck`, so
+consuming it adds no obligation that sub-phase 7.3 did not already carry.
+-/
+
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
+/-- A known time whose rank reaches a non-placed point's region is placed strictly above it.
+The converse of `branchRank_lt_cutIndex`, in the contrapositive form the witness leaf needs. -/
+theorem lt_of_cutIndex_le_branchRank (hV : branchOrderValid b ord = true)
+    (hOF : OrderFaithful b ord f) {r : D} (hr : ¬ IsPlacedCode f (regionCode f r))
+    {k : BranchTime b} (hrk : cutIndex (regionCode f r) ≤ branchRank b ord (timeAt b k)) :
+    r < f k := by
+  rcases lt_trichotomy (f k) r with hlt | heq | hgt
+  · exact absurd (branchRank_lt_cutIndex hV hOF hlt) (not_lt.mpr hrk)
+  · exact absurd (isPlacedCode_of_eq heq) hr
+  · exact hgt
+
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
+/-- The mirror: a known time whose rank falls short of a non-placed point's region is placed
+strictly below it. -/
+theorem gt_of_branchRank_lt_cutIndex (hOR : OrderReflecting b ord f) {r : D}
+    (hr : ¬ IsPlacedCode f (regionCode f r)) {k : BranchTime b}
+    (hrk : branchRank b ord (timeAt b k) < cutIndex (regionCode f r)) : f k < r := by
+  rcases lt_trichotomy (f k) r with hlt | heq | hgt
+  · exact hlt
+  · exact absurd (isPlacedCode_of_eq heq) hr
+  · exact absurd (cutIndex_le_branchRank hOR hgt) (not_le.mpr hrk)
+
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
+/-- **Region-mates read the same label.** This is what replaces `upperRay_of_gt`: at `ℤ` the fact
+that everything above a ray point reads the ray's label was derived from `RayOnly`/`RaySplit`; here
+it is the definition of a region, and it holds at every region rather than only at the two rays. -/
+theorem stateLabel_sameRegion (w : WorldIndex) {r s : D}
+    (hr : ¬ IsPlacedCode f (regionCode f r)) (h : SameRegion f r s) :
+    stateLabel b ord f w s = stateLabel b ord f w r := by
+  have hc : regionCode f r = regionCode f s := sameRegion_iff_regionCode_eq.mp h
+  have hs : ¬ IsPlacedCode f (regionCode f s) := hc ▸ hr
+  rw [stateLabel_gap w hs, stateLabel_gap w hr, hc]
+
+/--
+**Until case, positive half, at a dense carrier.**
+
+Four leaves: the evaluation point is placed or not, and in each case the witness comes from a
+known time or from the point's own region. `DenselyOrdered` and `NoMaxOrder` enter here and
+nowhere else in the file — they are what `Stepped` was.
+-/
+theorem branchTruthAt_untl_pos_dense [DenselyOrdered D] [NoMaxOrder D]
+    (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hOR : OrderReflecting b ord f) (hV : branchOrderValid b ord = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
+    b.hasPosAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
+      TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.untl φ ψ) := by
+  intro hp
+  have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
+  have hmem : (⟨.pos, .untl φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+    (hasPosAt_iff_mem b _ _).mp hp
+  by_cases hr : IsPlacedCode f (regionCode f r)
+  · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
+    rw [stateLabel_placed hf w hi] at hmem
+    obtain ⟨t', ht'mem, ht'lt, ht'φ, hguard⟩ := untlPos_witness hTW hmem
+    obtain ⟨j, hj⟩ := exists_index_of_mem_knownTimes ht'mem
+    refine ⟨f j, by rw [← hi]; exact hOF i j (by rw [hj]; exact ht'lt), ?_, ?_⟩
+    · exact (hφ w (f j)).1 (by rw [stateLabel_placed hf w (rfl : f j = f j), hj]; exact ht'φ)
+    · intro u hru huj
+      by_cases hu : IsPlacedCode f (regionCode f u)
+      · obtain ⟨k, hk⟩ := exists_eq_of_isPlacedCode hu
+        rcases hguard with hg | hg
+        · subst hg; exact id
+        · refine (hψ w u).1 ?_
+          rw [stateLabel_placed hf w hk]
+          exact hg (timeAt b k) (timeAt_mem b k) (hOR i k (by rw [hi, hk]; exact hru))
+            (by rw [← hj]; exact hOR k j (by rw [hk]; exact huj))
+      · refine (hψ w u).1 ?_
+        rw [stateLabel_gap w hu, hasPosAt_iff_mem]
+        exact regionLabel_untlGuard hCheck hw' (cutIndex_le b _) hmem
+          (branchRank_lt_cutIndex hV hOF (by rw [hi]; exact hru))
+  · rw [stateLabel_gap w hr] at hmem
+    have hrne : ∀ i : BranchTime b, f i ≠ r := fun i hi => hr (isPlacedCode_of_eq hi)
+    rcases untlPosRegion_witness hTW (cutIndex_le b _) hmem with
+      ⟨hlabφ, hlabψ⟩ | ⟨v, hv, hrk, hvφ, hg⟩
+    · obtain ⟨s, hrs, hsr⟩ := exists_gt_sameRegion hrne
+      refine ⟨s, hrs, ?_, ?_⟩
+      · exact (hφ w s).1 (by rw [stateLabel_sameRegion w hr hsr, stateLabel_gap w hr]; exact hlabφ)
+      · intro u hru hus
+        rcases hlabψ with hg | hg
+        · subst hg; exact id
+        · refine (hψ w u).1 ?_
+          rw [stateLabel_sameRegion w hr (sameRegion_convex hsr (le_of_lt hru) (le_of_lt hus)),
+            stateLabel_gap w hr]
+          exact hg
+    · obtain ⟨k, hk⟩ := exists_index_of_mem_knownTimes hv
+      have hrk' : r < f k := lt_of_cutIndex_le_branchRank hV hOF hr (by rw [hk]; exact hrk)
+      refine ⟨f k, hrk', ?_, ?_⟩
+      · exact (hφ w (f k)).1 (by rw [stateLabel_placed hf w (rfl : f k = f k), hk]; exact hvφ)
+      · intro u hru huk
+        rcases hg with hg | ⟨hgK, hgR⟩
+        · subst hg; exact id
+        · refine (hψ w u).1 ?_
+          by_cases hu : IsPlacedCode f (regionCode f u)
+          · obtain ⟨m, hm⟩ := exists_eq_of_isPlacedCode hu
+            rw [stateLabel_placed hf w hm]
+            exact hgK (timeAt b m) (timeAt_mem b m)
+              (cutIndex_le_branchRank hOR (by rw [hm]; exact hru))
+              (by rw [← hk]; exact hOR m k (by rw [hm]; exact huk))
+          · rw [stateLabel_gap w hu]
+            exact hgR (cutIndex (regionCode f u)) (cutIndex_mono hru)
+              (by rw [← hk]; exact cutIndex_le_branchRank hOR huk) (cutIndex_le b _)
+
+/--
+**Since case, positive half, at a dense carrier.** The past-directed mirror, leaf for leaf, with
+`exists_lt_sameRegion` for `exists_gt_sameRegion` and `regionLabel_snceGuard` for
+`regionLabel_untlGuard`.
+-/
+theorem branchTruthAt_snce_pos_dense [DenselyOrdered D] [NoMinOrder D]
+    (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
+    (hOR : OrderReflecting b ord f) (hV : branchOrderValid b ord = true)
+    (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
+    (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
+    (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
+    b.hasPosAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
+      TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+        (Formula.snce φ ψ) := by
+  intro hp
+  have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
+  have hmem : (⟨.pos, .snce φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+    (hasPosAt_iff_mem b _ _).mp hp
+  by_cases hr : IsPlacedCode f (regionCode f r)
+  · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
+    rw [stateLabel_placed hf w hi] at hmem
+    obtain ⟨t', ht'mem, ht'lt, ht'φ, hguard⟩ := sncePos_witness hTW hmem
+    obtain ⟨j, hj⟩ := exists_index_of_mem_knownTimes ht'mem
+    refine ⟨f j, by rw [← hi]; exact hOF j i (by rw [hj]; exact ht'lt), ?_, ?_⟩
+    · exact (hφ w (f j)).1 (by rw [stateLabel_placed hf w (rfl : f j = f j), hj]; exact ht'φ)
+    · intro u hju hur
+      by_cases hu : IsPlacedCode f (regionCode f u)
+      · obtain ⟨k, hk⟩ := exists_eq_of_isPlacedCode hu
+        rcases hguard with hg | hg
+        · subst hg; exact id
+        · refine (hψ w u).1 ?_
+          rw [stateLabel_placed hf w hk]
+          exact hg (timeAt b k) (timeAt_mem b k) (hOR k i (by rw [hi, hk]; exact hur))
+            (by rw [← hj]; exact hOR j k (by rw [hk]; exact hju))
+      · refine (hψ w u).1 ?_
+        rw [stateLabel_gap w hu, hasPosAt_iff_mem]
+        exact regionLabel_snceGuard hCheck hw' (cutIndex_le b _) hmem
+          (cutIndex_le_branchRank hOR (by rw [hi]; exact hur))
+  · rw [stateLabel_gap w hr] at hmem
+    have hrne : ∀ i : BranchTime b, f i ≠ r := fun i hi => hr (isPlacedCode_of_eq hi)
+    rcases sncePosRegion_witness hTW (cutIndex_le b _) hmem with
+      ⟨hlabφ, hlabψ⟩ | ⟨v, hv, hrk, hvφ, hg⟩
+    · obtain ⟨s, hsr, hsr'⟩ := exists_lt_sameRegion hrne
+      refine ⟨s, hsr, ?_, ?_⟩
+      · exact (hφ w s).1 (by rw [stateLabel_sameRegion w hr hsr', stateLabel_gap w hr]; exact hlabφ)
+      · intro u hsu hur
+        rcases hlabψ with hg | hg
+        · subst hg; exact id
+        · refine (hψ w u).1 ?_
+          rw [stateLabel_sameRegion w hr
+            (hsr'.trans (sameRegion_convex hsr'.symm (le_of_lt hsu) (le_of_lt hur))),
+            stateLabel_gap w hr]
+          exact hg
+    · obtain ⟨k, hk⟩ := exists_index_of_mem_knownTimes hv
+      have hrk' : f k < r := gt_of_branchRank_lt_cutIndex hOR hr (by rw [hk]; exact hrk)
+      refine ⟨f k, hrk', ?_, ?_⟩
+      · exact (hφ w (f k)).1 (by rw [stateLabel_placed hf w (rfl : f k = f k), hk]; exact hvφ)
+      · intro u hku hur
+        rcases hg with hg | ⟨hgK, hgR⟩
+        · subst hg; exact id
+        · refine (hψ w u).1 ?_
+          by_cases hu : IsPlacedCode f (regionCode f u)
+          · obtain ⟨m, hm⟩ := exists_eq_of_isPlacedCode hu
+            rw [stateLabel_placed hf w hm]
+            exact hgK (timeAt b m) (timeAt_mem b m)
+              (branchRank_lt_cutIndex hV hOF (by rw [hm]; exact hur))
+              (by rw [← hk]; exact hOR k m (by rw [hm]; exact hku))
+          · rw [stateLabel_gap w hu]
+            exact hgR (cutIndex (regionCode f u)) (cutIndex_mono hur)
+              (by rw [← hk]; exact branchRank_lt_cutIndex hV hOF hku) (cutIndex_le b _)
+
 end Dense
 
 end FormalSystem.Metalogic.Decidability.Verified.Bridge
