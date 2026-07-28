@@ -54,9 +54,13 @@ The obstruction is **this tree's rendering, not Reynolds'**, and is recorded her
 Reynolds' `M | [a,b]` is an *unordered* interval: the pair `(a,b)` is not presumed ordered and
 the interval is the same object either way round. `M.subinterval` (`MonadicFO.lean:215`) renders
 it as a `Subtype` over the predicate `min a b ≤ x ∧ x ≤ max a b`; under order reversal `min` and
-`max` exchange and the dual's predicate is the *same two conjuncts in the opposite order*, which
-is not definitionally equal. There is no `eval`-along-a-carrier-isomorphism lemma in the tree to
-bridge them (`Kamp.eval_rename` is variable renaming, not carrier transport).
+`max` exchange, and the dual's predicate is the *same two conjuncts in the opposite order*.
+
+Measured here, and narrower than anticipated: the endpoint exchange itself **is** definitional —
+`dual_min` and `dual_max` below are both `rfl`. What is not definitional is only the **order of
+the two conjuncts** in the `Subtype` predicate. Before this module there was no
+`eval`-along-a-carrier-isomorphism lemma in the tree to bridge that (`Kamp.eval_rename` is
+variable renaming, not carrier transport); `eval_iso` below is that lemma.
 
 **The escape taken here** is to build the missing bridge rather than to route around it:
 `StructIso` and `eval_iso` below prove `eval` invariant along any order- and
@@ -303,5 +307,176 @@ theorem endsInGapOnLeft_dual {M : OrderedMonadicStructure sig} (ε : MonadicForm
     refine forall_congr' fun y => ⟨fun h h₁ h₂ => ?_, fun h h₁ h₂ => ?_⟩
     · exact (contempEquivDense_dual ε t y).mp (h h₂ h₁)
     · exact (contempEquivDense_dual ε t y).mpr (h h₂ h₁)
+
+/-! ## `eval` along a carrier isomorphism
+
+The bridge R14 named as missing. `Kamp.eval_rename` transports along a reindexing of *variables*;
+nothing in the tree transported along a reindexing of *points*. `eval_iso` does, and it is what
+lets clause (iii) of `IsContempEquivDense` cross the dual (see the module header). It is stated
+for an arbitrary order- and interpretation-preserving equivalence, so it is reusable for any
+later carrier transport, not only for this one. -/
+
+/-- **An isomorphism of ordered monadic structures**: an equivalence of carriers that preserves
+the strict order and every predicate interpretation. -/
+structure StructIso (M N : OrderedMonadicStructure sig) where
+  /-- The underlying equivalence of carriers. -/
+  toEquiv : M.carrier ≃ N.carrier
+  /-- The equivalence preserves the strict order. -/
+  map_lt : ∀ x y : M.carrier, toEquiv x < toEquiv y ↔ x < y
+  /-- The equivalence preserves every predicate interpretation. -/
+  map_interp : ∀ (p : sig.preds) (x : M.carrier), N.interp p (toEquiv x) ↔ M.interp p x
+
+/-- Consing a fresh value at the front of an environment commutes with post-composing an
+equivalence. The binder-case bookkeeping of `eval_iso`. -/
+theorem cons_comp_equiv {α β : Type*} (e : α ≃ β) {n : Nat} (env : Fin n → α) (x : α) :
+    ((e ∘ Fin.cons x env : Fin (n + 1) → β)) = Fin.cons (e x) (e ∘ env) := by
+  funext k
+  refine Fin.cases ?_ ?_ k <;> simp
+
+/-- **`eval` is invariant along a structure isomorphism.**
+
+One structural induction over `MonadicFormula`, six cases: `atom` is `map_interp`, `lt` is
+`map_lt`, the connectives are congruences, and the two binder cases transport the witness across
+`toEquiv` using `cons_comp_equiv`. -/
+theorem eval_iso {M N : OrderedMonadicStructure sig} (e : StructIso M N) :
+    ∀ {n : Nat} (env : Fin n → M.carrier) (φ : MonadicFormula sig n),
+      eval N (e.toEquiv ∘ env) φ ↔ eval M env φ
+  | _, env, .atom p i => e.map_interp p (env i)
+  | _, env, .lt i j => e.map_lt (env i) (env j)
+  | _, env, .not α => not_congr (eval_iso e env α)
+  | _, env, .and α β => and_congr (eval_iso e env α) (eval_iso e env β)
+  | _, env, .all α => by
+      constructor
+      · intro h x
+        have ih := eval_iso e (Fin.cons x env) α
+        rw [cons_comp_equiv] at ih
+        exact ih.mp (h (e.toEquiv x))
+      · intro h y
+        have ih := eval_iso e (Fin.cons (e.toEquiv.symm y) env) α
+        rw [cons_comp_equiv, Equiv.apply_symm_apply] at ih
+        exact ih.mpr (h _)
+  | _, env, .ex α => by
+      constructor
+      · rintro ⟨y, hy⟩
+        refine ⟨e.toEquiv.symm y, ?_⟩
+        have ih := eval_iso e (Fin.cons (e.toEquiv.symm y) env) α
+        rw [cons_comp_equiv, Equiv.apply_symm_apply] at ih
+        exact ih.mp hy
+      · rintro ⟨x, hx⟩
+        refine ⟨e.toEquiv x, ?_⟩
+        have ih := eval_iso e (Fin.cons x env) α
+        rw [cons_comp_equiv] at ih
+        exact ih.mpr hx
+
+/-- `∼` transports along a structure isomorphism. -/
+theorem contempEquivDense_iso {M N : OrderedMonadicStructure sig} (e : StructIso M N)
+    (ε : MonadicFormula sig 2) (a b : M.carrier) :
+    ContempEquivDense N ε (e.toEquiv a) (e.toEquiv b) ↔ ContempEquivDense M ε a b := by
+  have h := eval_iso e ![a, b] ε
+  have he : (e.toEquiv ∘ ![a, b] : Fin 2 → N.carrier) = ![e.toEquiv a, e.toEquiv b] := by
+    funext k; fin_cases k <;> rfl
+  rw [he] at h
+  exact h
+
+/-! ## Dualizing on the base side
+
+`eval_dualize` moves a dualized formula into the dual structure. The `'`-variant moves it the
+other way, which is the direction `IsContempEquivDense` needs, and follows from the first by
+`dualize_involutive`. -/
+
+/-- **The `eval` transport, base side.** -/
+theorem eval_dualize' {M : OrderedMonadicStructure sig} {n : Nat} (env : Fin n → M.carrier)
+    (φ : MonadicFormula sig n) :
+    eval M env (dualize φ) ↔ eval (dual M) (d ∘ env) φ := by
+  have h := eval_dualize (M := M) env (dualize φ)
+  rw [dualize_involutive] at h
+  exact h.symm
+
+/-- **`∼` under a dualized `ε`**: the relation `dualize ε` defines on `M` is the relation `ε`
+defines on `dual M`. -/
+theorem contempEquivDense_dualize {M : OrderedMonadicStructure sig} (ε : MonadicFormula sig 2)
+    (a b : M.carrier) :
+    ContempEquivDense M (dualize ε) a b ↔ ContempEquivDense (dual M) ε (d a) (d b) := by
+  have h := eval_dualize' (M := M) ![a, b] ε
+  have he : (d ∘ ![a, b] : Fin 2 → (dual M).carrier) = ![d a, d b] := by
+    funext k; fin_cases k <;> rfl
+  rw [he] at h
+  exact h
+
+/-! ## The subinterval and the conjunct exchange
+
+This is R14's obstruction and its repair. `M.subinterval` is a `Subtype` over
+`min a b ≤ x ∧ x ≤ max a b`; in the dual the endpoints exchange and the two conjuncts arrive in
+the opposite order. `subintervalDualIso` is the resulting `StructIso`, whose underlying
+equivalence is precisely the conjunct exchange. -/
+
+/-- `min` in the dual is `max` in the original. -/
+theorem dual_min {M : OrderedMonadicStructure sig} (a b : M.carrier) :
+    (min (d a) (d b) : (dual M).carrier) = d (max a b) := rfl
+
+/-- `max` in the dual is `min` in the original. -/
+theorem dual_max {M : OrderedMonadicStructure sig} (a b : M.carrier) :
+    (max (d a) (d b) : (dual M).carrier) = d (min a b) := rfl
+
+/-- **The conjunct exchange.** The dual of a subinterval and the corresponding subinterval of the
+dual have the same points, but their `Subtype` predicates present the two bounds in opposite
+order. This is `Equiv.subtypeEquivRight (fun _ => and_comm)`, written out. -/
+def subintervalDualEquiv {M : OrderedMonadicStructure sig} (u v : M.carrier) :
+    (dual (M.subinterval sig u v)).carrier ≃
+      ((dual M).subinterval sig (d v) (d u)).carrier where
+  toFun x := ⟨x.val, x.property.2, x.property.1⟩
+  invFun x := ⟨x.val, x.property.2, x.property.1⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+/-- **The conjunct exchange is a structure isomorphism.** Both order and interpretation are
+preserved definitionally; only the `Subtype` predicate's conjunct order differs. -/
+def subintervalDualIso {M : OrderedMonadicStructure sig} (u v : M.carrier) :
+    StructIso (dual (M.subinterval sig u v)) ((dual M).subinterval sig (d v) (d u)) where
+  toEquiv := subintervalDualEquiv u v
+  map_lt _ _ := Iff.rfl
+  map_interp _ _ := Iff.rfl
+
+/-! ## The hypothesis transports
+
+`IsContempEquivDense` is a property of `ε` alone, quantified over **all** structures, so the
+transport is not an instantiation at one structure: each clause is re-established at an arbitrary
+`N` by running the original clause at `dual N`. -/
+
+/-- **`IsContempEquivDense` transports to `dualize ε`** — all three clauses, with clause (iii)
+crossing via `eval_iso` and `subintervalDualIso`.
+
+`IsContempEquivDense` itself is untouched: this is a new theorem about `dualize ε`, not a
+weakening of the structure. -/
+theorem isContempEquivDense_dualize {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε) :
+    IsContempEquivDense (dualize ε) where
+  equiv N :=
+    { refl := fun a => (contempEquivDense_dualize ε a a).mpr ((hε.equiv (dual N)).refl (d a))
+      symm := fun {a b} h =>
+        (contempEquivDense_dualize ε b a).mpr
+          ((hε.equiv (dual N)).symm ((contempEquivDense_dualize ε a b).mp h))
+      trans := fun {a b c} h₁ h₂ =>
+        (contempEquivDense_dualize ε a c).mpr
+          ((hε.equiv (dual N)).trans ((contempEquivDense_dualize ε a b).mp h₁)
+            ((contempEquivDense_dualize ε b c).mp h₂)) }
+  convex := by
+    intro N a b c hab hbc hac
+    have hac' : ContempEquivDense (dual N) ε (d a) (d c) :=
+      (contempEquivDense_dualize ε a c).mp hac
+    have hca' : ContempEquivDense (dual N) ε (d c) (d a) := (hε.equiv (dual N)).symm hac'
+    have hcb' : ContempEquivDense (dual N) ε (d c) (d b) :=
+      hε.convex (dual N) (d c) (d b) (d a) (show (d c : (dual N).carrier) ≤ d b from hbc)
+        (show (d b : (dual N).carrier) ≤ d a from hab) hca'
+    exact (contempEquivDense_dualize ε a b).mpr ((hε.equiv (dual N)).trans hac' hcb')
+  contemporary := by
+    intro N a b
+    have hiso := contempEquivDense_iso (subintervalDualIso (M := N) (min a b) (max a b)) ε
+      (d (⟨a, min_le_left a b, le_max_left a b⟩ : (N.subinterval sig (min a b) (max a b)).carrier))
+      (d (⟨b, min_le_right a b, le_max_right a b⟩ : (N.subinterval sig (min a b) (max a b)).carrier))
+    have hbase := hε.contemporary (dual N) (d a) (d b)
+    rw [contempEquivDense_dualize ε a b,
+      contempEquivDense_dualize (M := N.subinterval sig (min a b) (max a b)) ε
+        ⟨a, min_le_left a b, le_max_left a b⟩ ⟨b, min_le_right a b, le_max_right a b⟩]
+    exact hbase.trans hiso
 
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
