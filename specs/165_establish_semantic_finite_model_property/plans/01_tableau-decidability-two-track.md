@@ -374,6 +374,88 @@ engine edits complete in waves 1-2. Reads are unrestricted.
     **Done when**: the full corpus is unmoved (all 24 measured rows plus the existing
     `#guard_msgs` tables); every open certificate reports `findUnexpanded … = none`;
     `lake build` and `lake build BimodalTest` green.
+    *(PARTIAL — engine and proof work landed and green; one corpus row regressed. See the
+    2.5 note and BLOCKER below.)*
+
+**2.5 note — what landed, and the four deviations.**
+
+Landed and green (`lake build` + `lake build BimodalTest`, zero new sorries/axioms/vacuous
+defs): `ruleMintsFreshLabel` and `witnessPresent` (8 arms); guards on the `.linear` and
+`.branching` results of `findApplicableRule`; non-destructive `expandOnce`; the `…WithApplied`
+family demoted to inert wrappers; the "Certificate Strength (R5)" section rewritten to record
+the refutation and the corrected diagnosis. **The headline result is measured**: the corpus R5
+probe flips from `fullySaturated=false applied=3 orphans=3` to
+`fullySaturated=true applied=0 orphans=0` on `◇p` — the certificate Phase 7 needs is reachable
+on the pipeline's own output. `Branch.knownTimes` now retains the root time (`[0,2,1]` vs
+`[2,1]` on W1-W7), confirming report 04 §Q2.2's predicted side effect.
+
+Deviations, all forced and all recorded in-code:
+
+1. *No output-presence guard on the `.persistent` arm*, contrary to the report's §Q1.4 sketch.
+   It is provably dead code — every `.persistent` arm of `applyRule` already filters its own
+   output, and `densityRule` emits at a fresh time — and adding it puts an extra `if` between
+   the saturation lemmas and the filter structure they read. Same treatment for `untlNeg` and
+   `snceNeg` via a new `ruleSelfGuarded`: report 04 §Q1.1 established both are already
+   self-guarded by their `unprocessed` filter and re-include the source in every arm.
+2. *Fresh-label branching rules use the witness guard **instead of** the output-presence test*,
+   symmetric with the `.linear` arm, rather than in addition to it. Their arms live at a label
+   the branch does not have, so the output test can never fire there.
+3. *The `sat_*` family was reproved rather than merely re-elaborated.* `sat_imp_neg`,
+   `sat_box_neg`, `sat_untl_pos` and `sat_snce_pos` were proved `exfalso` from
+   `*_not_expanded` helpers asserting their formulas cannot occur on a saturated branch. Those
+   helpers were true only of the destructive engine — which is exactly why the four facts were
+   worthless — and the guards make them false. Each is now proved directly off the guard that
+   suppressed the rule, and each has content for the first time. This is the MUST-PRESERVE
+   `sat_*` family strengthened, not weakened.
+4. *`branchTruthLemma` retired early* (Phase 7.1 directs "demote to a documented debugging aid
+   or delete it — it must no longer appear in any proof path"). Its `imp`/`untl`/`snce` cases
+   rested on the same vacuity; discharging them properly is the Phase 6 interpolation argument.
+   `branchTruth` itself survives as an executable debugging aid with the rationale in-file.
+   Nothing outside `CountermodelExtraction.lean` referenced it. *This is a `.lean` plan
+   deviation and is raised in the handoff rather than only annotated here.*
+
+Also landed, unplanned but forced: `expandOnceNoFresh` (`Tableau.lean`) and its use in
+`saturateBlocked`. The post-pass previously abandoned the whole branch the moment the first
+unexpanded formula needed a fresh label; under non-destructive expansion that happens
+constantly, since sources persist. It now skips such candidates and stops only when no
+label-free work remains. This is report 04 §Q1.5's flagged residual risk, materialised.
+
+**Not landed** (carried to a follow-up unit): `saturated_downward_closed` and
+`expandOnce_length_lt`. The four reproved `sat_*` lemmas are the load-bearing instances of the
+former. The latter needs `formulas ≠ []` for every rule result the guards let through, which is
+a per-rule argument (`denseIndicatorClosure` returns `.linear []`, suppressed by the guard, but
+that is a rule-by-rule fact, not a generic one) — a bounded unit of its own, and Phase 4.3's
+consumer.
+
+**BLOCKER** (Phase 2, task 2.5) — one corpus row regressed:
+- **What failed**: counterexample row B (`(F p ∧ F q) → (F(p ∧ F q) ∨ F(p ∧ q) ∨ F(q ∧ F p))`)
+  reads `CLOSED` at `.Base` and `.Discrete` but `STALLED` at `.Dense` and `.Dedekind`. It read
+  `CLOSED` in all four before 2.5. The regression is committed and recorded as a `[DEFECT]` row
+  in those two class tables, with its measurement in-file.
+- **What was tried, with measurements**: (a) restoring source destruction while keeping the
+  guards — row B then stalls in **all four** classes, so non-destructive expansion is what
+  recovers `.Base`/`.Discrete` and is not the cause; (b) widening `orderTrichotomy`'s
+  first-witnesses-only restriction from `<= 1` to `<= 2` (the plan's Rollback/Contingency
+  stepwise widening) — no change; (c) `expandOnceNoFresh` in `saturateBlocked` — fixed a real
+  defect but did not recover row B; (d) raising fuel to 20000, 40000 and 120000 — no change, so
+  it is not a budget artifact.
+- **Why stuck**: measured cause is **eager time blocking**, not expansion. At `.Dense`, fuel
+  10000, the halted branch carries ordering `[(4,3),(0,4),(3,2),(0,3),(0,2),(0,1)]` — density
+  has interpolated times 3 and 4 into `0 < 2` — and `findUnexpanded` still points at
+  `T(G ¬(p ∧ F q)) @ (0,0)`. The interpolated times carry formula types that are subsets of
+  their ancestors', so `findBlockedTime` halts the branch with propagation outstanding. This is
+  postmortem constraint 3's "blocking is too eager" (C4), made visible rather than caused by
+  2.5: with destruction the intermediate times carried fewer formulas and the subset test read
+  differently.
+- **What is needed**: a bounded sub-phase against the blocking predicate — `isSubsetBlocked` /
+  `findBlockedTime` (`SignedFormula.lean:844-846`) — deciding whether a time whose type is a
+  subset of an ancestor's should still block when the ancestor is itself not saturated. That is
+  1.3's territory, not 2.5's, and it must not be phrased as "strengthen blocking" (constraint 3).
+- **Prohibited**: no `sorry`, no vacuous placeholder was introduced; the live tree remains
+  sorry-free apart from the pre-existing `countermodel_discrete`.
+- **Consequence for sequencing**: 2.6 depends on 2.5 (report 04's 24/24 measurement has both
+  changes). Landing `serialityRule` on top of a known-regressed dense corpus would confound the
+  two signals, so 2.6/2.7/2.4 are not started.
   - [ ] **2.6 (new) — `serialityRule` with globally-last scheduling** (`Tableau.lean` +
     `Saturation.lean`). Add the `serialityRule` constructor with
     `isApplicable .serialityRule _ _ = true` (keyed on the *label*, not the formula shape) and the
