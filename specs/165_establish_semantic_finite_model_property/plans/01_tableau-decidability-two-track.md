@@ -2313,7 +2313,8 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   theorem, was replaced by a pointer to where the truth lemma actually lives. Full `lake build`
   green (1939 jobs).
 - [ ] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`, new) — **STARTED
-  (2026-07-28r), 11 of 28 rules landed sorry-free; not closed.** The module exists and is
+  (2026-07-28s), 15 of 28 rules landed sorry-free; not closed, and the assembly's target
+  statement is now known to be FALSE as written — see the 2026-07-28s banner.** The module exists and is
   registered: `SatState` (the satisfiability notion), `SatResult` (preservation read off
   `applyRule`'s own `RuleResult × TimeOrdering`), `RuleSound` indexed by a `CarrierProp`, and
   `RuleSound.mono`. Landed: the eight truth-functional rules and the three label-preserving modal
@@ -2335,6 +2336,124 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   verdicts; **green milestone commit**.
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
+
+**PHASE 7 STATUS (2026-07-28s) — still PARTIAL after a fourteenth dispatch. 7.2 is at 15 of 28
+rules sorry-free, and the sub-phase's own target statement has been measured FALSE.**
+`lake build FormalSystem.Metalogic.Decidability.Verified.Decidable` green (exit 0, zero errors);
+`lake env lean` green on the module and on the new probe, all five pinned rows matching; sorry
+census over `Verified/` reports `0`. Two green code commits, each verified by `git show --stat`
+for **content** (+288, then +159/-11). 7.1a–7.1e remain closed; no file under `Verified/Bridge/`
+was touched; no engine file was touched. 7.3 not started.
+
+*The `ordResp` fork, settled by measurement rather than by preference.* The previous dispatch
+stopped at this fork and refused to guess. It resolves to **route (a)**: `SatState.ordResp` stays
+on `ord.constraints`, and the transitive closure the four temporal universal rules consume is
+bridged once, on the consumer side. The measurement is the producers' side of the ledger. Every
+fresh-time rule — `allFutureNeg` (`Tableau.lean:652`), `allPastNeg` (`:692`), `someFuturePos`
+(`:723`), `somePastPos`, and the `untl`/`snce` fresh-time arms — returns
+`timeOrd.addFuture l.time branch.nextTime`, a new edge consed onto the list. Under the
+strengthened field each would owe the closure property for the *extended* ordering, which needs a
+path-factorisation lemma over `(t, tNew) :: cs` that is **not in the tree**, re-applied at six
+sites. Under the field as it stands each owes only `∀ p ∈ (t, tNew) :: cs, tv p.1 < tv p.2` — head
+from the witness, tail from the state handed in. Six harder obligations against four consumers
+sharing one lemma: the closure reasoning belongs to the consumers. Nothing speculative was written
+into the definition, and the field is unchanged.
+
+*What landed.* The bridge — `mem_constraints_of_mem_directFutureOf`, its past dual,
+`lt_of_pathN_directFutureOf`/`lt_of_pathN_directPastOf` (the `n + 1` in those statements is what
+carries strictness), and `SatState.lt_of_mem_futureOf`/`gt_of_mem_pastOf` via `bfsClosure_sound`,
+the route `Bridge/TemporalSaturation.lean`'s `orderDual_converse` already walks. Then the four
+temporal universal rules as one shape family: `allFuturePos`, `allPastPos`, `someFutureNeg`,
+`somePastNeg`. The import edge into `Verified/Termination/Fuel.lean` was weighed explicitly and is
+intra-`Verified/` — Fuel imports only `TimeTypeBound` and `Saturation`, both already in the
+decidability build, so it adds no cross-tree edge, unlike the `Metalogic.Soundness` edge the
+previous dispatch declined.
+
+*A Lean fact worth recording, because it changes proof shape.* `Formula.allFuture` and
+`Formula.allPast` are **definitions, not constructors** — `G A` unfolds to an `imp`. So `cases φ`
+cannot separate `G A` from a general implication, and the two positive rules cannot be driven the
+way `boxPos` is driven by the genuine `.box` constructor. They are driven by `split` on
+`applyRule`'s own matcher, which decides exactly the distinction the engine decides. Four
+point-form truth lemmas (`truthAt_of_allFuture`, `truthAt_of_allPast`,
+`not_truthAt_of_someFuture`, `not_truthAt_of_somePast`) keep the arms free of any dependence on
+how `split` names what it binds — unification folds the unfolded hypothesis back without the proof
+ever naming the matrix.
+
+*PROBE BEFORE PROVING, FOR THE ELEVENTH CONSECUTIVE DISPATCH — AND THIS TIME IT OVERTURNED A
+STANDING CONCLUSION.* The 2026-07-28r banner recorded that the `boxNeg`/`diamondPos` group-3 copy
+was suspected unsound, that three shapes chosen to expose it as a wrong verdict all reported
+correctly, and — correctly and explicitly — that this measured verdicts and not steps. Reading the
+`boxNeg` arm this dispatch produced a prediction: on verdict-row B, `(G p) → □(G p)`, the fresh
+world receives the witness `F(G p)` *and* the group-3 copy `T(G p)`, so the successor should close
+and the verdict should read `true`. The pinned row says `false`. A prediction contradicting a
+pinned measurement is a fact to be measured, not reasoned around, so it was measured:
+`Tests/BimodalTest/BoxNegPreservationProbe.lean` applies `applyRule .boxNeg` to that branch
+directly. **It emits exactly two formulas, both at the minted label, being the same formula with
+opposite signs.** Consequences, all pinned:
+
+- The branch `T(G p) @ (w₀,t₀)`, `F(□(G p)) @ (w₀,t₀)` is **satisfiable** — precisely because
+  `(G p) → □(G p)` is invalid, which is what verdict-row B's `false` records — and its `boxNeg`
+  successor is **unsatisfiable**, since `SatAt` reads the emitted pair as `TruthAt …` and
+  `¬ TruthAt …` at one point, for every `hist` and `tv`.
+- So **`RuleSound carrierBase .boxNeg` is FALSE.** `ruleSound_boxNeg` is not unproved but
+  unprovable, and `diamondPos` carries an identical `tempGProps` block.
+- So **the assembly `∀ r ∈ allRulesForFC fc, RuleSound _ r` cannot be proved as stated**, since
+  both rules are members at every frame class. This is the sub-phase's own target statement, and
+  it is the reason this finding outranks the four rules landed beside it.
+- **No engine defect is claimed, and row 5 pins why**: the verdict on the same formula is still
+  `false`. The engine never applies `boxNeg` to that branch — `T(G p)` is itself an `imp`, so the
+  propositional schedule reaches it first — which is also *why* the three verdict rows came back
+  clean: they do not exercise the copy in the engine's own run. The prior dispatch's conclusion was
+  not wrong about what it measured; it was measuring the wrong thing for this obligation, and said
+  so at the time.
+
+*The fork this opens, deliberately left unguessed.* `RuleSound` must be weakened for these two
+rules by a hypothesis excluding branches the engine never builds — schedule reachability is the
+obvious candidate, being exactly what makes the counterexample unreachable — and the assembly must
+then thread that hypothesis through the tableau induction. Which invariant is strong enough for
+these two and cheap enough for the other twenty-six is the next **measurable** question. Nothing
+was written into `RuleSound` on spec; the same discipline that kept `carrierDense` undeclared and
+kept `ordResp` unstrengthened applies here.
+
+*Environment.* A shared clone with three other live sessions. `Tableau.olean` and
+`SubformulaProperty.olean` were deleted out from under two builds mid-dispatch and three `lean`
+processes were observed compiling one module concurrently; this cost most of the dispatch's wall
+clock and none of its content. Nothing under `WeakCanonical/DenseModelSurgery/**`, `specs/408_*/**`,
+`specs/414_*/**` or `specs/415_*/**` was touched, staged, committed or reverted. Staging was by
+explicit path throughout and `git show --stat` after each commit matched the intended diff size.
+`mcp__lean-lsp__lean_run_code` was found to report `success` on code that does not compile
+(`example : (1:Nat) = 2 := by rfl` returns clean) and was discarded as a probe channel mid-dispatch;
+every result reported here is from `lake build`/`lake env lean`.
+
+#### Additions to the Phase 7 DO-NOT-RE-ATTEMPT register (2026-07-28s)
+
+- **Re-deriving the ordering bridge** — `mem_constraints_of_mem_directFutureOf`,
+  `mem_constraints_of_mem_directPastOf`, `lt_of_pathN_directFutureOf`, `lt_of_pathN_directPastOf`,
+  `SatState.lt_of_mem_futureOf`, `SatState.gt_of_mem_pastOf`. All landed sorry-free and all four
+  temporal universal rules consume them.
+- **Re-opening the `ordResp` fork**, or strengthening `ordResp` to `strictBefore`/the closure.
+  Measured and settled above; the producers' side is strictly the more expensive one.
+- **Re-proving `ruleSound_allFuturePos`, `ruleSound_allPastPos`, `ruleSound_someFutureNeg`,
+  `ruleSound_somePastNeg`**, or the helpers `truthAt_of_allFuture`, `truthAt_of_allPast`,
+  `not_truthAt_of_someFuture`, `not_truthAt_of_somePast`, `asSomeFuture?_eq_some`,
+  `asSomePast?_eq_some`.
+- **Driving `allFuturePos`/`allPastPos` by `cases φ`.** `Formula.allFuture`/`allPast` are
+  definitions, not constructors; `cases` cannot separate them from a general `imp`. Use `split` on
+  `applyRule`'s matcher.
+- **Attempting to prove `RuleSound carrierBase .boxNeg` or `.diamondPos` as currently stated.**
+  Measured false, in tree, `#guard_msgs`-pinned in `Tests/BimodalTest/BoxNegPreservationProbe.lean`.
+  Re-running those five rows is also on this register.
+- **Attempting the assembly `∀ r ∈ allRulesForFC fc, RuleSound _ r` in its present shape.** It
+  entails the two statements above and is therefore false. The 2026-07-28r entry treating the
+  single induction over `mem_allRulesForFC_iff` as the unchanged assembly is **superseded**: the
+  induction principle is fine, the predicate it ranges over is not.
+- **Claiming, on the strength of the above, that the engine decides wrongly.** It does not; the
+  verdict row is pinned beside the others. The failure is in the rule-level statement's
+  quantification over arbitrary branches.
+- **Using `mcp__lean-lsp__lean_run_code` as a verification channel in this project.** It reports
+  `success: true` with empty diagnostics for code that does not compile.
+- Plus every prior entry, all carried forward unchanged.
+
 
 **PHASE 7 STATUS (2026-07-28r) — still PARTIAL after a thirteenth dispatch. 7.2 is STARTED, not
 closed: `Verified/Decidable.lean` exists, is registered, and carries 11 of the 28 rules
