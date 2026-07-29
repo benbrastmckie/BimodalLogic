@@ -1128,4 +1128,162 @@ theorem reynolds_lemma11_no_endpoints (sig : MonadicSignature) [Fintype sig.pred
   exact ⟨_, (kEquiv_blockSum sig k N (veryGoodSpine N.carrier) hmono blockOf hlo hhi R
     hRequiv).trans (blockSumWitness_iso_real sig k N (veryGoodSpine N.carrier) R hRcar)⟩
 
+/-! ## *"add appropriate singleton structures to the end(s)"*
+
+Reynolds, printed p.186. `pointSum` adjoins a point on the left; `sumPoint` is its mirror on the
+right. On the real side, `icoBlock` already realizes a left adjunction as `(c,d) ↦ [c,d)`;
+`snocBlock` realizes a right adjunction as `s ↦ s ∪ {d}`, which covers both `(c,d) ↦ (c,d]`
+and `[c,d) ↦ [c,d]` — so one construction serves both the one- and the two-end-point case.
+-/
+
+/-- The two-element family `[S, M | {b}]` whose lexicographic sum is `S + M | {b}`. -/
+noncomputable def sumPointFamily (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    (S : OrderedMonadicStructure sig) (b : M.carrier) : Bool → OrderedMonadicStructure sig :=
+  fun c => if c = false then S else M.subinterval sig b b
+
+/-- Reynolds' block `S + M | {b}`: `S`, followed by the singleton at `b`. -/
+noncomputable def sumPoint (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    (S : OrderedMonadicStructure sig) (b : M.carrier) : OrderedMonadicStructure sig :=
+  orderedSum sig Bool (sumPointFamily sig M S b)
+
+/-- `− + M | {b}` preserves `k`-equivalence: one application of `doets_lemma_1_4` over `Bool`. -/
+theorem kEquiv_sumPoint (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (M : OrderedMonadicStructure sig) (b : M.carrier)
+    {S S' : OrderedMonadicStructure sig} (h : KEquiv sig k S S') :
+    KEquiv sig k (sumPoint sig M S b) (sumPoint sig M S' b) :=
+  doets_lemma_1_4 sig k Bool _ _ (fun c => by
+    simp only [sumPointFamily]
+    split
+    · exact h
+    · rfl)
+
+/--
+The block `R + M | {b}` realized on `R`'s flow with the single real `d` adjoined on the right.
+
+`hoc` is taken as a hypothesis rather than derived: `insert d s` is an interval only when `d`
+abuts `s`, which is true for the two uses here (`insert d (c,d) = (c,d]` and
+`insert d [c,d) = [c,d]`) but not for general `s`.
+-/
+noncomputable def snocBlock (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : OrderedMonadicStructure sig) (b : M.carrier) (R : RIntervalStructure sig) (d : ℝ)
+    (hoc : (insert d R.carrierSet).OrdConnected) : RIntervalStructure sig where
+  carrierSet := insert d R.carrierSet
+  ordConnected := hoc
+  interp p x := if x = d then M.interp p b else R.interp p x
+
+/-- `R + M | {b} ≡_k` the real block with `d` adjoined on the right, when `d` lies strictly
+    above `R`'s flow. The mirror of `kEquiv_pointSum_icoBlock`. -/
+theorem kEquiv_sumPoint_snocBlock (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) (b : M.carrier)
+    (R : RIntervalStructure sig) (d : ℝ) (hoc : (insert d R.carrierSet).OrdConnected)
+    (hd : ∀ x ∈ R.carrierSet, x < d) :
+    KEquiv sig k (sumPoint sig M (R.toOrdered sig) b)
+      ((snocBlock sig M b R d hoc).toOrdered sig) := by
+  letI fam := sumPointFamily sig M (R.toOrdered sig) b
+  letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
+    (orderedSum sig Bool fam).carrierOrder
+  let e : ((snocBlock sig M b R d hoc).toOrdered sig).carrier ≃
+      (orderedSum sig Bool fam).carrier := {
+    toFun := fun x =>
+      if h : x.val = d then orderedSumPt (ms := fam) true ⟨b, le_refl b, le_refl b⟩
+      else orderedSumPt (ms := fam) false ⟨x.val, x.property.resolve_left h⟩
+    invFun := fun w => match w with
+      | ⟨false, y⟩ => ⟨y.val, Or.inr y.property⟩
+      | ⟨true, _⟩ => ⟨d, Or.inl rfl⟩
+    left_inv := by
+      intro x
+      by_cases h : x.val = d
+      · simp only [dif_pos h]; exact Subtype.ext h.symm
+      · simp only [dif_neg h]; exact Subtype.ext rfl
+    right_inv := by
+      intro ⟨cw, w⟩
+      match cw with
+      | false =>
+        simp only [dif_neg (hd w.val w.property).ne]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+      | true =>
+        simp only [dite_true]
+        refine Sigma.ext rfl (heq_of_eq (Subtype.ext ?_))
+        exact (le_antisymm w.property.2 w.property.1).symm
+  }
+  have hm1 : Monotone e := by
+    intro x y (hxy : x.val ≤ y.val)
+    simp only [e, Equiv.coe_fn_mk]
+    split_ifs with hx hy hy
+    · exact le_refl _
+    · exact absurd ((hx.symm.trans_le hxy : d ≤ y.val))
+        (not_le.mpr (hd y.val (y.property.resolve_left hy)))
+    · exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+  have hm2 : Monotone e.symm := by
+    intro w w' hww
+    obtain ⟨cw, w⟩ := w; obtain ⟨cw', w'⟩ := w'
+    have hww' := Sigma.Lex.le_def.mp hww
+    change ((e.symm ⟨cw, w⟩).val ≤ (e.symm ⟨cw', w'⟩).val)
+    revert hww'; cases cw <;> cases cw' <;> simp only [e, Equiv.coe_fn_symm_mk] <;> intro hww'
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+    · exact le_of_lt (hd w.val w.property)
+    · rcases hww' with h | ⟨h, _⟩
+      · exact absurd h (by decide)
+      · exact absurd h (by decide)
+    · exact le_refl _
+  have h_pred : ∀ (p : sig.preds) (x : ((snocBlock sig M b R d hoc).toOrdered sig).carrier),
+      ((snocBlock sig M b R d hoc).toOrdered sig).interp p x ↔
+        (orderedSum sig Bool fam).interp p (e x) := by
+    intro p x
+    have he : e x =
+        if h : x.val = d then orderedSumPt (ms := fam) true ⟨b, le_refl b, le_refl b⟩
+        else orderedSumPt (ms := fam) false ⟨x.val, x.property.resolve_left h⟩ := rfl
+    have hL : ((snocBlock sig M b R d hoc).toOrdered sig).interp p x
+        = (if x.val = d then M.interp p b else R.interp p x.val) := rfl
+    rw [hL, he]
+    split_ifs with h <;>
+      simp [fam, sumPointFamily, orderedSumPt, OrderedMonadicStructure.subinterval,
+        RIntervalStructure.toOrdered, orderedSum]
+  exact (k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred).symm
+
+/-- Adjoining a point on the **left** of a good, non-empty, end-point-free structure keeps it
+    good: normalize the witness onto `(0,1)`, then take `icoBlock` onto `[0,1)`. -/
+theorem goodDense_pointSum (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig) (a : M.carrier)
+    (S : OrderedMonadicStructure sig) [Nonempty S.carrier] [NoMaxOrder S.carrier]
+    [NoMinOrder S.carrier] (hS : goodDense sig k S) : goodDense sig k (pointSum sig M a S) := by
+  obtain ⟨R, hRcar, hReq⟩ := exists_ioo_witness sig k hk S hS (by norm_num : (0 : ℝ) < 1)
+  exact ⟨icoBlock sig M a R 0 1, (kEquiv_pointSum sig k M a hReq).trans
+    (kEquiv_pointSum_icoBlock sig k M a R (by norm_num) hRcar)⟩
+
+/-- Adjoining a point on the **right** keeps it good: `(0,1)` becomes `(0,1]`. -/
+theorem goodDense_sumPoint (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig) (b : M.carrier)
+    (S : OrderedMonadicStructure sig) [Nonempty S.carrier] [NoMaxOrder S.carrier]
+    [NoMinOrder S.carrier] (hS : goodDense sig k S) : goodDense sig k (sumPoint sig M S b) := by
+  obtain ⟨R, hRcar, hReq⟩ := exists_ioo_witness sig k hk S hS (by norm_num : (0 : ℝ) < 1)
+  have hins : insert (1 : ℝ) R.carrierSet = Set.Ioc (0 : ℝ) 1 := by
+    rw [hRcar]; exact Set.Ioo_insert_right (by norm_num)
+  have hoc : (insert (1 : ℝ) R.carrierSet).OrdConnected := by
+    rw [hins]; exact Set.ordConnected_Ioc
+  exact ⟨snocBlock sig M b R 1 hoc, (kEquiv_sumPoint sig k M b hReq).trans
+    (kEquiv_sumPoint_snocBlock sig k M b R 1 hoc (fun x hx => by
+      rw [hRcar] at hx; exact hx.2))⟩
+
+/-- Adjoining a point at **both** ends keeps it good: `(0,1)` becomes `[0,1)` and then `[0,1]`.
+    This is the two-end-point case of Lemma 11's last paragraph. -/
+theorem goodDense_pointSum_sumPoint (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    (a b : M.carrier) (S : OrderedMonadicStructure sig) [Nonempty S.carrier]
+    [NoMaxOrder S.carrier] [NoMinOrder S.carrier] (hS : goodDense sig k S) :
+    goodDense sig k (sumPoint sig M (pointSum sig M a S) b) := by
+  obtain ⟨R, hRcar, hReq⟩ := exists_ioo_witness sig k hk S hS (by norm_num : (0 : ℝ) < 1)
+  have h1 : KEquiv sig k (pointSum sig M a S) ((icoBlock sig M a R 0 1).toOrdered sig) :=
+    (kEquiv_pointSum sig k M a hReq).trans
+      (kEquiv_pointSum_icoBlock sig k M a R (by norm_num) hRcar)
+  have hins : insert (1 : ℝ) (icoBlock sig M a R 0 1).carrierSet = Set.Icc (0 : ℝ) 1 :=
+    Set.Ico_insert_right (by norm_num)
+  have hoc : (insert (1 : ℝ) (icoBlock sig M a R 0 1).carrierSet).OrdConnected := by
+    rw [hins]; exact Set.ordConnected_Icc
+  exact ⟨snocBlock sig M b (icoBlock sig M a R 0 1) 1 hoc, (kEquiv_sumPoint sig k M b h1).trans
+    (kEquiv_sumPoint_snocBlock sig k M b _ 1 hoc (fun _ hx => hx.2))⟩
+
 end FormalSystem.Metalogic.WeakCanonical
