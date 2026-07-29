@@ -170,7 +170,7 @@ concurrently.
 
 ---
 
-### Phase 2: Prove `co_valid` [NOT STARTED]
+### Phase 2: Prove `co_valid` [COMPLETED]
 
 - **Goal:** CO is proved semantically valid on dense Dedekind-complete flows, independently of
   the proof-theoretic route, as a check on Phase 4 and on the formalization of Phase 1.

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.Metalogic.SoundnessLemmas.CoValidity
 import FormalSystem.Metalogic.SoundnessLemmas.Core
 import FormalSystem.Metalogic.SoundnessLemmas.DenseValidity
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
@@ -17,6 +18,8 @@ theorem; keeping them separate stops that file from growing without bound.
 
 ## Contents
 
+- `CoValidity` — `co_valid`, the semantic validity of the paper's CO principle (not a
+  soundness case: CO is derived here, not primitive)
 - `Core` — validity lemmas for the base axiom schemas
 - `DenseValidity` — validity lemmas specific to the dense frame class
 - `FrameClassVariants` — validity across the frame-class variants

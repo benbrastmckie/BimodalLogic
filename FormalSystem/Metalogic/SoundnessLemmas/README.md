@@ -10,6 +10,7 @@ lemmas for the Dense and Discrete frame classes.
 
 | File | Lines | Description |
 |------|-------|-------------|
+| `CoValidity.lean` | 143 | `co_valid`: semantic validity of the paper's CO principle `△(Hφ → F Hφ) → (Hφ → Gφ)` on dense Dedekind-complete flows. Not a soundness case — CO is a derived theorem here, not an `Axiom` constructor |
 | `Core.lean` | 106 | Core soundness lemmas valid on all linear temporal orders |
 | `DenseValidity.lean` | 1338 | Soundness lemmas for densely-ordered frames (Dense TM variant) |
 | `FrameClassVariants.lean` | 971 | Soundness lemmas for frame-class-specific axioms; axiom-to-class mapping |
