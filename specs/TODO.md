@@ -1,5 +1,5 @@
 ---
-next_project_number: 421
+next_project_number: 426
 ---
 
 # TODO
@@ -12,8 +12,10 @@ next_project_number: 421
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 95,125,127,128,179,193,231,257,298,361,390,408,413,418,419,420 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 165,169,170,177,178,219,282,296,414 | 193,231,298,361,418,420 | completeness, formula-refactor, dataset-enhancement, ... |
-| 3 | 362,410,411,412,415,417 | 165,169,170,414 | paper-refactor, strong_completeness |
+| 2 | 165,170,177,178,219,282,296,414,421,423,424 | 193,231,298,361,418,420 | completeness, formula-refactor, dataset-enhancement, ... |
+| 3 | 410,411,412,415,417,422,425 | 165,414,421,423 | paper-refactor, strong_completeness |
+| 4 | 169 | 422 | strong_completeness |
+| 5 | 362 | 169,170 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -68,14 +70,122 @@ next_project_number: 421
 ### Strong Completeness
 
 361 [IMPLEMENTING] — Research + scoping for the completeness-terminology refactor and 
-  └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+  └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness — SUBSTANTIVELY CLOSED
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-  └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
-    └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
+  └─ 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
+    └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
+      └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+        └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
+  └─ 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
+    └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
+  └─ 424 [NOT STARTED] — Prove, in both directions, that the task-model class is represent
 
 ### Uncategorized
 
 ## Tasks
+
+### 425. Machine check discrete non compactness witness
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: Task 361, Task 423
+
+**Description**: Convert the informal argument at FormalSystem/Metalogic/StrongCompleteness.lean:56-62 into a machine-checked theorem: the FrameClass.Discrete consequence relation is not compact, hence strong completeness is refuted for that class.
+
+The witness is the premise set {F p} union {not X^n p : n in N} where X phi = Formula.next phi. Every finite subset is satisfiable over Z (place p beyond the largest n used); the whole set is unsatisfiable over any Archimedean discrete carrier, because the F p witness would lie at some finite successor distance, contradicting the corresponding not X^n p.
+
+The load-bearing ingredient is already in the tree: Formula.next phi = Formula.untl phi Formula.bot (FormalSystem/Syntax/Formula.lean:490) genuinely is a next-step operator — through the untl clause of TruthAt, "exists s > t, phi(s) and for all r in (t,s), false" says exactly that s is the immediate successor. No extra hypothesis is needed for this. The "not satisfiable" half is where IsSuccArchimedean does its work, via Order.succ_iterate-style reachability lemmas in Mathlib.
+
+This is the negative half of the per-class split and is independent of the compactness gate — it is not affected by whether Route B succeeds. It depends only on the set-based layer's vocabulary (SatisfiableDiscreteSet / CompactDiscrete are the Discrete analogues of SatisfiableDenseSet / CompactDense).
+
+Explicitly out of scope: an analogous Dedekind non-compactness witness. That belongs to task 408 and the class's non-compactness is already established; duplicating it here would create scope overlap with an in-flight task for no gain.
+
+Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md, section "Discrete non-compactness witness".
+
+Acceptance: archWitness_finitely_satisfiable, archWitness_not_satisfiable, and discrete_consequence_not_compact all land sorry-free; #print axioms clean on each; lake build green.
+
+---
+
+### 424. Prove shift set representation theorem compactness feasibility gate
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: Task 361
+
+**Description**: Prove, in both directions, that the task-model class is representable by shift sets <Omega, D, sh, A> — D an ordered abelian group, Omega a nonempty type with a D-action sh : Omega -> D -> Omega, and A : Atom -> Omega -> Prop.
+
+THIS TASK IS THE GATE FOR THE ENTIRE ULTRAPRODUCT BRANCH. The follow-on work — the ultraproduct carrier (S2), the Los lemma for TruthAt (S3), compactness of the Base/Dense consequence relations (S4), and strong completeness for Dense and Base (S5-Dense, S5-Base) — is NOT AUTHORIZED and has deliberately NOT been created as tasks. It becomes authorized only when this task lands sorry-free. Do not spawn, plan, or dispatch any of it from within this task.
+
+Gate-passed evidence standard, and nothing weaker: a sorry-free Lean statement of both directions, with #print axioms on each direction reporting no sorryAx. A statement that type-checks with a sorry body does not pass. Proving only the forward direction does not pass. A prose argument does not pass.
+
+Cancel condition: if either direction is refuted, or the construction cannot be stated without an additional non-elementary hypothesis, then Route B (semantic compactness via ultraproduct) is REFUTED and the whole branch is cancelled, not retried. Record the refutation and re-open the compactness question; do not proceed to S2 hoping the gap can be patched downstream.
+
+Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md — section "Representation theorem" for both directions (the reverse direction uses WorldHistory.timeShift and FormalSystem.Semantics.TimeShift.time_shift_preserves_truth, FormalSystem/Semantics/Truth.lean:446), section "Risks" R3 for the Type vs Type* constraint (assert it EARLY, not at assembly time), and section "GATING RULE" for the full gate contract.
+
+Acceptance: both directions sorry-free; #print axioms clean on each; lake build green; the task's summary states explicitly whether the gate PASSED or FAILED.
+
+---
+
+### 423. Land set based consequence layer setderivable and per class setsemanticconsequence
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: Task 361
+
+**Description**: Create FormalSystem/Metalogic/SetConsequence.lean containing the finitary set-derivability relation SetDerivable, the four per-class SetSemanticConsequence* predicates, the basic lemmas, and the strong-completeness / compactness / model-existence statements. Then import it from FormalSystem/Metalogic/StrongCompleteness.lean.
+
+This is vocabulary only. It proves no compactness result and closes no existing sorry. It is self-contained and unblocks two downstream branches (the Discrete non-compactness witness, and Dense strong completeness).
+
+Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/01_set-consequence-layer.md — transcribe section 2 (SetDerivable), section 3 (the four per-class definitions), section 4 (basic lemmas), section 5 (StrongCompletenessDense, CompactDense, strongCompletenessDense_of_compact, SatisfiableDenseSet, ModelExistenceDense). Section 4's "Implementer notes" name three elaboration risks; section 7 records what is deliberately out of scope.
+
+Acceptance (from design/01 section 6, all five required): zero sorries and zero vacuous placeholders; grep -c 'import FormalSystem.Metalogic.BXCanonical' on the new module returns 0; each SetSemanticConsequence* binder list is byte-comparable to its Validity.lean source (valid :79, ValidDense :169, ValidDiscrete :187, ValidDedekindDense :276) with only the premise hypothesis inserted, and uses Type not Type* (Validity.lean:77 records this as deliberate); #print axioms on every new declaration reports no sorryAx; StrongCompleteness.lean imports the module and still builds.
+
+---
+
+### 422. Build discrete chronicle over non archimedean block carrier with restricted coherence
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: Task 421
+
+**Description**: Construct the discrete-case analogue of the existing dense chronicle machinery, over the non-Archimedean carrier Q x_lex Z confirmed by the predecessor task.
+
+Deliverable (a): the analogue of box_dense_gives_density (FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean:435) and cantorIsoDense for the "box U(T,F) in A" case — block decomposition of the chronicle order into Z-blocks, densification of the block order, and the isomorphism into Q x_lex Z.
+
+Deliverable (b): the three restricted-coherence analogues, mirroring cantor_bfmcs_dense_restricted_tc (:629), _buc (:680), _fuc (:755) at the new carrier.
+
+Why this carrier and not Z: succ_cofinal — the obligation that killed the old BX pipeline, refuted by the Z+Z counterexample in Boneyard/BXPipelineGapAnalysis/ — was only ever needed to force the chronicle into Z, i.e. to make it Archimedean. FrameClass.Base imposes no Archimedean-ness (valid, FormalSystem/Semantics/Validity.lean:79, has no IsSuccArchimedean binder). The Z+Z shape is not a counterexample here — it is the intended carrier. Do not re-attempt succ_cofinal.
+
+PRINCIPAL RISK, unresolved at scoping time: it has NOT been verified that the chronicle's block order can always be densified without disturbing MCS-chain coherence. A countable discrete order without endpoints is a Z-indexed fibration over its block order, but making the total structure a group requires the block order to carry a compatible group structure. If this fails, escalate as [BLOCKED] with the failing coherence obligation named — do not paper over it with a sorry or a vacuous placeholder.
+
+Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md, sections 5.4-5.7.
+
+Acceptance: the block-carrier construction and all three restricted-coherence analogues are sorry-free; #print axioms on each reports no sorryAx; lake build green. This task does NOT close the Transfer.lean:1242 sorry — that is task 169's job, which consumes this output.
+
+---
+
+### 421. Correct transfer route guidance and probe non archimedean discrete carrier
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: Task 361
+
+**Description**: Two deliverables on the Base weak terminus, both small.
+
+(a) Correct the refuted route guidance. FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1239-1241 currently proposes "(i) a Base-MCS -> Discrete-MCS transfer lemma that lets countermodel_discrete_reynolds_v2 apply". Route (i) is REFUTED and MUST NOT be re-attempted. The witness: over D := Z x_lex Z (lex, first coordinate dominant) with p true exactly at points >= (1,0), every point has an immediate successor so box U(T,F) holds; G(Gp -> p) holds at (0,0); FGp holds at (0,0) (witness (1,0)) but Gp fails there (witness (0,1)); hence Axiom.z1 p is false. So a Base-MCS containing box U(T,F) need not be Discrete-consistent and no Base-to-Discrete MCS transfer lemma can exist. Replace those comment lines with the refutation and point at route (ii). Docstring/comment-only — do not touch the sorry at :1242 in this task.
+
+(b) Probe the recommended carrier. Confirm AddCommGroup, LinearOrder, IsOrderedAddMonoid, Nontrivial all resolve for Q x_lex Z, and add a CarrierProbe-style example block (mirroring the pattern at FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean:61-100) showing the parametric canonical machinery elaborates at that carrier. This is a confirmation step, not a supply step: Mathlib/Algebra/Order/Monoid/Prod.lean:52-59 declares @[to_additive] instance Lex.isOrderedMonoid ... : IsOrderedMonoid (a x_lex b), whose additive form supplies IsOrderedAddMonoid (a x_lex b). Confirm the instance actually fires for Q x_lex Z (in particular that AddLeftStrictMono Q is found) — the generated instance name was inferred from the attribute and not resolved by lookup.
+
+Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md, section 5.3 (the refutation), 5.5 (the carrier), 5.6 (the Mathlib instance).
+
+Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-1241; the probe block elaborates; lake build is green; #print axioms on any new declaration shows no sorryAx; the live non-Boneyard sorry count is unchanged at 2 (verify with: grep -rn --include='*.lean' -E '^\s*sorry\s*$' FormalSystem/ | grep -vc Boneyard).
+
+---
 
 ### 420. Align task frame with positive cone limit nullity
 - **Effort**: medium
@@ -85,6 +195,8 @@ next_project_number: 421
 - **Dependencies**: None
 
 **Description**: Align the Lean TaskFrame with the refactored paper def:frame (PossibleWorlds task 51, commits 754d069..e566885; SUPERSEDES fix.md A1 -- Reflection is no longer a paper axiom). PAPER'S NEW DEF:FRAME (settled, do not re-litigate): primitive task relation on the positive cone (subset of W x D+ x W, D+ = {x : 0 <= x}); (i) iff-Nullity; (ii) proviso-free Compositionality on D+ stated as the LAX law (R_{x+y} contains R_x o R_y -- equality would assert interpolation, NOT adopted); (iii) NEW axiom Limit Nullity: the intersection over x > 0 of the two-sided cones (w)_x equals {w}; negative durations by the definitional CONVERSE CONVENTION (w =>_x u for x < 0 IS u =>_{-x} w); Reflection and backward composition are DERIVED; mixed-sign composition is inexpressible at the primitive level; the paper appendix now proves T_F is T1 (hence R0) for EVERY frame (app:topology-r0, one-line proof from Nullity + converse convention + Limit Nullity). CURRENT LEAN STATE (FormalSystem/Semantics/TaskFrame.lean): already close -- nullity_identity matches iff-Nullity; forward_comp (0 <= x, 0 <= y hypotheses) is exactly the official lax positive-cone law; backward_comp already derived, matching the paper's derived status. The two-sided primitive TaskRel with the `converse` FIELD is precisely the paper's EXTENDED relation, so the presentation itself can stand; but the docstring must be recast: `converse` is the paper's definitional converse convention packaged as a structure field, not a substantive temporal-symmetry axiom, and the 'Axiomatization Notes' block is now inverted (the paper has ADOPTED the positive-cone presentation -- record agreement, not divergence). Stale 'def:frame, line 1835' citations throughout the module must be re-anchored. THE REAL MATHEMATICAL DELTA: Limit Nullity is absent from the Lean structure. (1) Add a limit_nullity field; direct transcription with the extended relation: forall w u, (forall x, 0 < x -> exists y, |y| < x and TaskRel w y u) -> u = w. Paper task-51 research S2 proved forward-only and two-sided forms equivalent when imposed at all states -- research may pick either, but the two-sided form matches the paper's official statement. (2) Provide helper limit_nullity_of_discrete: over Z (and generally SuccOrder + IsSuccArchimedean D) the axiom is AUTOMATIC (|y| < succ 0 forces y = 0, then nullity_identity), so every Discrete-class construction discharges it in one line. (3) Inventory and discharge ALL TaskFrame instantiation sites tree-wide (research phase: grep ': TaskFrame' / 'TaskFrame D where' / '.mk'). Known: trivialFrame (Unit singleton -- trivially fine), identityFrame (fine -- verify), natFrame (VIOLATES the axiom over dense D: any u is reachable in arbitrarily small nonzero duration -- repair the relation or restrict its temporal parameter to discrete D), plus every canonical/countermodel frame in Metalogic/ (coordinate with 415, which owns the per-class canonical obligations). (4) latex/subfiles/02-Semantics.tex Task Frame definition is stale vs BOTH the live tree and the paper (states one-way Nullity and unrestricted mixed-sign Compositionality -- the very axiomatization TaskFrame.lean's own notes call impossible for nondeterministic relations): restate with iff-Nullity, positive-cone lax Compositionality, the converse convention, and Limit Nullity; must still compile standalone (pdflatex with TEXINPUTS=../assets: from latex/subfiles/). SCOPE BOUNDARY with task 409: 409 owns 04-Metalogic.tex/06-Notes.tex identifier-architecture fidelity; THIS task owns the 02-Semantics.tex frame-definition subsection. OPTIONAL STRETCH (defer if nontrivial): formalize the paper's T1 theorem as a sanity check -- with the cone topology, closure of {u} equals {u} for every frame. NON-GOALS: no edits under Philosophy/Papers/; no change to WorldHistory/respects_task (unaffected -- it evaluates at d = t - s with converse handling signs); no validity/semantics refactor (task 414 owns that and now depends on this task so the Omega-free API lands once, against the final frame structure). Related: 414, 415, 417, 409.
+
+NOTATION (user decision, 2026-07-28): any explicit converse operation on the task relation is written with a superscript inverse -- $\Rightarrow^{-1}$ (and $R^{-1}$ for abstract relations) -- NEVER the relation-algebra breve/smile ($\breve{R}$, $R^{\smallsmile}$) common in the arrow-logic literature. This applies to the 02-Semantics.tex restatement of the converse convention, any Lean notation or declaration names (prefer inv/⁻¹ vocabulary, e.g. TaskRel.inv, consistent with Mathlib's Inv), and all module docstrings. Note the paper itself currently states the converse convention without any operator symbol (subscript negation only) -- if a symbol is ever introduced paper-side it uses the same superscript -1 form.
 
 ---
 
@@ -560,9 +672,19 @@ CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped)
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361
 
-**Description**: Dense (FrameClass.Dense) WEAK completeness green: make `completeness_dense` (BXCanonical/Completeness.lean:255) genuinely sorry-free by retiring the inherited chronicle dense-path sorries (BXCanonical/Chronicle/ChronicleToCountermodel.lean succ_reaches_dom_N / chronicle_gap_contradiction; MCSMixedCase.lean).
+**Description**: Dense (FrameClass.Dense) WEAK completeness — SUBSTANTIVELY CLOSED. NO IMPLEMENTATION AGENT SHOULD BE DISPATCHED AT THIS TASK.
 
-ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Dense, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Dense (Γ : Set Formula) additionally requires the set-based model-existence theorem whose feasibility and decomposition are owned by research task 361; that obligation is NOT discharged by this task. Exact sorry-retirement decomposition scoped by research task 361. (Repurposed from the former empty stub "complete_dense_extension_completeness".)
+VERIFIED STATUS (2026-07-28, from task 361's design/03_weak-terminus-status.md section 1): `completeness_dense` (BXCanonical/Completeness.lean:255) is already machine-verified sorry-free. `lean_verify` against current oleans reports `#print axioms completeness_dense` = [propext, Classical.choice, Quot.sound] — no `sorryAx`.
+
+WHY THE EARLIER DESCRIPTION WAS STALE: it named three inherited chronicle dense-path obligations. All three are gone from live code. `succ_reaches_dom_N` and `chronicle_gap_contradiction` exist only under `Boneyard/DeadChronicleGapElimination/` and `Boneyard/SorriedDeclExcisions/`; `MCSMixedCase.lean` exists and is sorry-free (its `Chronicle.mcs_mixed_case_absurd` is what closes the mixed case). None of the three is reachable from `completeness_dense`. There are exactly TWO live non-Boneyard sorries in the whole tree — `Transfer.lean:1242` (task 169's) and `RealModel/ShuffleReal.lean:201` (task 408's) — and neither is reachable from `completeness_dense`.
+
+THE SINGLE REMAINING ACTION, and it is administrative, not Lean work: a build-lock holder runs an independent CLEAN-BUILD `#print axioms FormalSystem.Metalogic.BXCanonical.completeness_dense`. (Task 361's verification consumed existing oleans; a clean-build re-verification is the stronger evidence the closure should rest on.) If it reports exactly `propext, Classical.choice, Quot.sound`, transition this task to [COMPLETED] with a completion summary recording that axiom set verbatim.
+
+The status transition was deliberately NOT performed by task 361, which held no build lock and therefore could not produce the clean-build evidence.
+
+ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Dense, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Dense (Γ : Set Formula) additionally requires semantic compactness, gated on task 424; that obligation is NOT discharged by this task. Because this weak engine is already green, DENSE IS THE NATURAL FIRST STRONG-COMPLETENESS TARGET — it does not wait on the Base weak terminus.
+
+Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md section 4.
 
 ---
 
@@ -571,11 +693,22 @@ ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361
+- **Dependencies**: Task 361, Task 422
 
-**Description**: Base (FrameClass.Base / general) WEAK completeness green: make the empty-context theorem `completeness` (BXCanonical/Completeness.lean:196, `valid φ → Derivable FrameClass.Base [] φ`) genuinely sorry-free by retiring or rerouting its open sorries — the dense-arm `countermodel_dense`, the deprecated `countermodel_discrete` path (Transfer.lean, the "unfixable Z+Z" succ_cofinal route; reroute through the clean countermodel_discrete_reynolds_v2 where the base case overlaps), and `dd_countermodel_chronicle_mixed_sorry`.
+**Description**: Base (FrameClass.Base / general) WEAK completeness green: make the empty-context theorem `completeness` (BXCanonical/Completeness.lean:196, `valid φ → Derivable FrameClass.Base [] φ`) genuinely sorry-free.
 
-ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Base, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Base (Γ : Set Formula) additionally requires the set-based model-existence theorem whose feasibility and decomposition are owned by research task 361; that obligation is NOT discharged by this task. Exact sorry-retirement decomposition scoped by research task 361. (Repurposed from the former empty stub "complete_frame_extension_setup_and_soundness".)
+CORRECTED SCOPE (2026-07-28, from task 361's design/03_weak-terminus-status.md): this task's earlier description named THREE open sorries. That was stale. `completeness` has EXACTLY ONE reachable sorry: `WeakCanonical.countermodel_discrete` at `FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242`. Machine-verified this session via `lean_verify`: `#print axioms completeness` = [propext, sorryAx, Classical.choice, Quot.sound], with `Transfer.lean:1242` the sole `sorryAx` source. The other two the old description named are gone from live code — the dense arm now runs through `countermodel_dense_enriched` (Completeness.lean:133, called at :221), which is sorry-free, and the mixed case is closed by `Chronicle.mcs_mixed_case_absurd` (MCSMixedCase.lean, called from Completeness.lean:231), also sorry-free. `dd_countermodel_chronicle_mixed_sorry` is archived.
+
+ROUTE (settled by task 361, design/03 sections 5.3-5.7):
+- Route (i) — a Base-MCS → Discrete-MCS transfer lemma letting `countermodel_discrete_reynolds_v2` apply (the route the Transfer.lean docstring currently proposes) — is REFUTED and MUST NOT be re-attempted. Witness: over `ℤ ×ₗ ℤ` with `p` true exactly at points ≥ (1,0), `□U(⊤,⊥)` holds everywhere while `Axiom.z1 p` is false at (0,0); so a Base-MCS containing `□U(⊤,⊥)` need not be Discrete-consistent.
+- Route (iii) — reuse the existing ℚ dense chronicle — is BLOCKED: `box_dense_gives_density` (ChronicleToCountermodelBasic.lean:435) is load-bearing for the ℚ Cantor isomorphism and is unavailable when the order is discrete.
+- Route (ii) — direct construction over the NON-ARCHIMEDEAN discrete carrier `ℚ ×ₗ ℤ` — is RECOMMENDED. `FrameClass.Base` imposes no Archimedean-ness (`valid`, Validity.lean:79, has no `IsSuccArchimedean` binder), so the ℤ+ℤ shape that killed the old BX `succ_cofinal` pipeline is not a counterexample here — it is the intended carrier. Do not re-attempt `succ_cofinal`.
+
+DEPENDENCIES: task 421 corrects the refuted route guidance in Transfer.lean and probes the carrier's Mathlib instances; task 422 builds the discrete chronicle over that carrier plus its three restricted-coherence analogues. THIS task consumes 422's output to close `countermodel_discrete`, delete the Transfer.lean sorry, and re-verify `#print axioms completeness` reports no `sorryAx`.
+
+ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Base, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Base (Γ : Set Formula) additionally requires semantic compactness, gated on task 424; that obligation is NOT discharged by this task.
+
+Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md.
 
 ---
 
