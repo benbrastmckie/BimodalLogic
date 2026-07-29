@@ -1065,7 +1065,7 @@
     {
       "project_number": 418,
       "project_name": "fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Remove the six unsound group-3 blocks -- tempGProps, tempHProps, tempFNegProps, tempPNegProps, tempUNegProps, tempSNegProps -- from both boxNeg (FormalSystem/Metalogic/Decidability/Tableau.lean:555-574) and diamondPos (same file, :599-619). Groups 1 (existential witness) and 2 (T(square B)/F(diamond B) propagation) in both rules are sound and MUST NOT be touched. After the edit, temporalProps in each rule reduces to the empty concatenation (or is deleted along with its assembly line), and each rule's .linear list becomes `witness :: boxProps ++ diaProps`. Root cause: the six blocks copy every temporal-universal/existential signed formula true at l.time on the current branch verbatim into the freshly minted box/diamond-witness world, conflating 'true along the history being built' with 'true at the same instant along every admissible history' -- exactly what square/diamond quantify over. Measured effect: buildTableau ((G p) -> square (G p)) 1000 .Base returns .allClosed (should be .hasOpen), with decide returning .extractionFailed rather than .invalid with a countermodel; pinned in Tests/BimodalTest/BoxNegReachabilityProbe.lean (twelve #guard_msgs rows) and Tests/BimodalTest/BoxNegPreservationProbe.lean. Rebuild Tableau.lean and the full project (lake build), then run the FULL conformance corpus (Tests/BimodalTest/TableauConformance.lean plus the two probes above) as the acceptance gate -- not a spot check. Because the removal is risk-asymmetric (branches can only get harder to close, never easier: the fix cannot introduce a new false-invalid verdict, only reveal previously-hidden false-valid ones or newly-uncloseable branches), the only way to bound the fix's blast radius is to run the entire corpus before and after and record every verdict that changes, producing a before/after table (formula, old verdict, new verdict) as part of the task's summary artifact. Because three concurrent sessions (tasks 408, 414, 415) share this git clone and have previously destroyed full-build attempts by deleting .olean files mid-build, this task's own plan must include an explicit build-reliability strategy before attempting the full-project rebuild and corpus run that form its acceptance gate: check for and honor any existing build-coordination/lock convention in the repo, avoid `lake clean` while a concurrent session may be mid-build, and treat a corpus run whose build step failed or was interrupted as inconclusive (retry) rather than as a passing gate -- never treat an oleans-were-deleted failure as if the corpus had validated the fix. Do NOT touch FormalSystem/Metalogic/Decidability/Verified/Decidable.lean or attempt Phase 7.2's RuleSound proof -- that remains task 165's responsibility once this fix lands. This task ends at: engine sound, full corpus green (or every regression explicitly recorded and triaged), full build green.",
       "effort": "4-8 hours",
@@ -1079,12 +1079,17 @@
         "Tests/BimodalTest/BoxNegPreservationProbe.lean"
       ],
       "created": "2026-07-29T05:05:55Z",
-      "last_updated": "2026-07-29T05:25:03Z",
+      "last_updated": "2026-07-29T05:35:40Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/165_establish_semantic_finite_model_property/reports/08_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "path": "specs/418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/plans/01_remove-unsound-temporal-copy-blocks.md",
+          "type": "plan",
+          "summary": "8-phase plan to remove six unsound group-3 temporal-copy blocks"
         }
       ],
       "session_id": "sess_1785302672_d06f95"
