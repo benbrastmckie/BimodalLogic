@@ -674,9 +674,11 @@ structure HasBadIntervalSurgery (M : OrderedMonadicStructure sig)
 >
 > *Then the `∼`-classes do not end at gaps.*
 
-This is **D1**, the first hypothesis of Doets' theorem. Conditional on `HasBadIntervalSurgery`;
-see the section header for exactly which clause that stands in for. -/
-theorem no_gaps_dense_prior (atomMap : Formula → sig.preds)
+This is **D1**, the first hypothesis of Doets' theorem, in its **hypothesised** form: it takes
+`HasBadIntervalSurgery` as an assumption. `no_gaps_dense_prior` below is the same statement with
+that assumption discharged by `hasBadIntervalSurgery`; this form is retained unweakened for
+callers that would rather supply their own surgery. -/
+theorem no_gaps_dense_prior_of_hasBadIntervalSurgery (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hbi : HasBadIntervalSurgery M ε)
@@ -690,19 +692,226 @@ Obtained by instantiation at `(dual M, dualize ε)` through `Dual.lean`, not by 
 mirror: `endsInGapOnRight_dual` exchanges the two gap predicates, `isContempEquivDense_dualize`
 carries `ε`, and `semanticPriorU_dual` / `semanticPriorS_dual` carry the Prior pair. The
 `HasBadIntervalSurgery` hypothesis is stated at the dual for the same reason — it is the one
-input that does not transport for free. -/
-theorem no_gaps_dense_prior_left (atomMap : Formula → sig.preds)
+input that does not transport for free.
+
+The **hypothesised** form, retained unweakened; `no_gaps_dense_prior_left` below discharges it. -/
+theorem no_gaps_dense_prior_left_of_hasBadIntervalSurgery (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap)
     (hbi : HasBadIntervalSurgery (dual M) (dualize ε))
     (t : M.carrier) : ¬ EndsInGapOnLeft M ε t := by
   intro ht
-  exact no_gaps_dense_prior (M := dual M) atomMap h_surj (isContempEquivDense_dualize hε)
+  exact no_gaps_dense_prior_of_hasBadIntervalSurgery (M := dual M) atomMap h_surj
+    (isContempEquivDense_dualize hε)
     (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U) hbi (d t)
     ((endsInGapOnRight_dual ε t).mpr ht)
 
 end Theorem4
+
+/-! ## Discharging `HasBadIntervalSurgery`
+
+`HasBadIntervalSurgery` was introduced above as a *named hypothesis* standing in for Lemma 6's
+first clause. It is discharged here, outright, with no new assumption.
+
+What made it a hypothesis was not a step Reynolds waved away — he proves Lemma 6's clause over
+five paragraphs on printed p.180, and both halves have been landed in `BadIntervals.lean` since
+Phases 20 and 20.4. What was missing was the *hypothesis discharge*: both landed halves consume an
+interval witness, and nothing produced one. `exists_classInteriorToRInterval`
+(`BadIntervals.lean`) is now that producer, and with it
+`endsInGapOnLeft_of_endsInGapOnRight'` / `endsInGapOnRight_of_endsInGapOnLeft'` give Lemma 6's
+first clause with no interval hypothesis at all. That, plus the observation that `Q` may be taken
+to be the **bad-connected component** of `t`, is everything the surgery structure asks for.
+
+`Btw t x q` says `q` lies weakly between `t` and `x`, in whichever order the two come; `badComp`
+is the set of points `x` such that every point between `t` and `x` is bad. Convexity and
+saturation of that set are immediate; the real work is `IsBadIntervalSurgery.interior`, which
+needs a **single** segment straddling `p`'s class that also contains a second arbitrary component
+point `u`. It is obtained by extending the `exists_classInteriorToRInterval` witness by
+`min`/`max` against `u` and pulling the extension back into the component by convexity. -/
+
+namespace StepD
+
+section Component
+
+variable {M : OrderedMonadicStructure sig}
+
+/-- `q` lies weakly between `t` and `x`, in whichever order they come. -/
+def Btw (t x q : M.carrier) : Prop :=
+  (t ≤ q ∧ q ≤ x) ∨ (x ≤ q ∧ q ≤ t)
+
+/-- `Btw` from the `min`/`max` bracketing that `IsBadInterval.saturated` speaks in. -/
+theorem btw_of_minmax {t x q : M.carrier} (h₁ : min t x ≤ q) (h₂ : q ≤ max t x) : Btw t x q := by
+  rcases le_total t x with h | h
+  · rw [min_eq_left h] at h₁; rw [max_eq_right h] at h₂; exact Or.inl ⟨h₁, h₂⟩
+  · rw [min_eq_right h] at h₁; rw [max_eq_left h] at h₂; exact Or.inr ⟨h₁, h₂⟩
+
+/-- The converse bracketing. -/
+theorem minmax_of_btw {t x q : M.carrier} (h : Btw t x q) : min t x ≤ q ∧ q ≤ max t x := by
+  rcases h with ⟨h₁, h₂⟩ | ⟨h₁, h₂⟩
+  · exact ⟨le_trans (min_le_left _ _) h₁, le_trans h₂ (le_max_right _ _)⟩
+  · exact ⟨le_trans (min_le_right _ _) h₁, le_trans h₂ (le_max_left _ _)⟩
+
+/-- Reflexivity at the far endpoint. Needs the `le_total` case split rather than `le_refl`. -/
+theorem btw_self (t x : M.carrier) : Btw t x x := by
+  rcases le_total t x with h | h
+  · exact Or.inl ⟨h, le_refl _⟩
+  · exact Or.inr ⟨le_refl _, h⟩
+
+/-- **The bad-connected component of `t`**: the points reachable from `t` without leaving the bad
+points. This is the `Q` the surgery is performed on. -/
+def badComp (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2) (t x : M.carrier) : Prop :=
+  ∀ q : M.carrier, Btw t x q → IsBadPoint M ε q
+
+end Component
+
+section Discharge
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- The bad-connected component is a bad interval: non-empty, bad throughout, convex, and
+saturated. All four are read straight off `Btw`'s case structure. -/
+theorem badComp_isBadInterval (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
+    IsBadInterval M ε (badComp M ε t) := by
+  refine ⟨⟨t, fun q hq => ?_⟩, fun x hx => hx x (btw_self t x),
+    fun a b c hab hbc ha hc q hq => ?_, fun a x ha hsat q hq => ?_⟩
+  · rcases hq with ⟨h₁, h₂⟩ | ⟨h₁, h₂⟩ <;>
+      exact (le_antisymm h₂ h₁ ▸ IsBadPoint.of_right ht)
+  · rcases hq with ⟨h₁, h₂⟩ | ⟨h₁, h₂⟩
+    · exact hc q (Or.inl ⟨h₁, le_trans h₂ hbc⟩)
+    · exact ha q (Or.inr ⟨le_trans hab h₁, h₂⟩)
+  · rcases hq with ⟨h₁, h₂⟩ | ⟨h₁, h₂⟩
+    · rcases le_total q a with h | h
+      · exact ha q (Or.inl ⟨h₁, h⟩)
+      · exact hsat q (minmax_of_btw (Or.inl ⟨h, h₂⟩)).1 (minmax_of_btw (Or.inl ⟨h, h₂⟩)).2
+    · rcases le_total a q with h | h
+      · exact ha q (Or.inr ⟨h, h₂⟩)
+      · exact hsat q (minmax_of_btw (Or.inr ⟨h₁, h⟩)).1 (minmax_of_btw (Or.inr ⟨h₁, h⟩)).2
+
+/-- **Every point of the component satisfies `R`** — *"in any bad interval both `R` and `L` hold
+throughout"*, printed p.180. A component point is bad, so it satisfies `R` or `L`; in the `L` case
+`endsInGapOnRight_of_endsInGapOnLeft'` supplies `R`. This is the implication that was missing, and
+it is exactly Lemma 6's first clause in its hypothesis-free form. -/
+theorem badComp_right (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {t x : M.carrier} (hx : badComp M ε t x) :
+    EndsInGapOnRight M ε x := by
+  rcases hx x (btw_self t x) with h | h
+  · exact h
+  · exact endsInGapOnRight_of_endsInGapOnLeft' atomMap h_surj hε M h_prior_U h_prior_S h
+
+/-- **`HasBadIntervalSurgery` holds outright**, with `Q` the bad-connected component of `t`.
+
+The `interior` field is the only real work. Given a component point `p` and a second arbitrary
+component point `u`, `exists_classInteriorToRInterval` supplies `a₀ < p < b₀` outside `p`'s class
+with `R` throughout `[a₀, b₀]`; saturation puts `a₀` and `b₀` themselves in the component; and
+`min a₀ u`, `max b₀ u` then straddle `p`'s class while bracketing `u`, with the whole segment
+pulled back into the component by convexity.
+
+Note that the `left_out` and `right_out` branches are **not** symmetric in this rendering: the
+lower one needs the `contemp_trans` / `contemp_symm` wrapper and the upper one applies
+`contemp_of_between` directly. -/
+theorem hasBadIntervalSurgery (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) :
+    HasBadIntervalSurgery M ε := by
+  refine ⟨fun t ht => ⟨badComp M ε t, ⟨?_, ?_, ?_⟩, ?_⟩⟩
+  · exact badComp_isBadInterval atomMap h_surj hε M h_prior_U h_prior_S ht
+  · intro q hq
+    rcases hq with ⟨h₁, h₂⟩ | ⟨h₁, h₂⟩ <;> exact (le_antisymm h₂ h₁ ▸ IsBadPoint.of_right ht)
+  · -- `interior`
+    intro p u hp hu
+    have hbi := badComp_isBadInterval atomMap h_surj hε M h_prior_U h_prior_S ht
+    have hRp : EndsInGapOnRight M ε p :=
+      badComp_right atomMap h_surj hε M h_prior_U h_prior_S hp
+    obtain ⟨a₀, b₀, hint⟩ :=
+      exists_classInteriorToRInterval atomMap h_surj hε M h_prior_U h_prior_S hRp
+    -- the two `R`-interval endpoints are themselves in the component
+    have ha₀ : badComp M ε t a₀ := by
+      refine hbi.saturated p a₀ hp (fun q h₁ h₂ => ?_)
+      rw [min_eq_right hint.left_lt.le] at h₁
+      rw [max_eq_left hint.left_lt.le] at h₂
+      exact IsBadPoint.of_right (hint.rThroughout q h₁ (le_trans h₂ hint.lt_right.le))
+    have hb₀ : badComp M ε t b₀ := by
+      refine hbi.saturated p b₀ hp (fun q h₁ h₂ => ?_)
+      rw [min_eq_left hint.lt_right.le] at h₁
+      rw [max_eq_right hint.lt_right.le] at h₂
+      exact IsBadPoint.of_right (hint.rThroughout q (le_trans hint.left_lt.le h₁) h₂)
+    refine ⟨min a₀ u, max b₀ u, min_le_right _ _, le_max_right _ _, ?_⟩
+    have hamem : badComp M ε t (min a₀ u) := by
+      rcases min_cases a₀ u with ⟨h, _⟩ | ⟨h, _⟩ <;> rw [h] <;> assumption
+    have hbmem : badComp M ε t (max b₀ u) := by
+      rcases max_cases b₀ u with ⟨h, _⟩ | ⟨h, _⟩ <;> rw [h] <;> assumption
+    have hseg : ∀ q : M.carrier, min a₀ u ≤ q → q ≤ max b₀ u → badComp M ε t q :=
+      fun q h₁ h₂ => hbi.convex _ _ _ h₁ h₂ hamem hbmem
+    have hal : min a₀ u < p := lt_of_le_of_lt (min_le_left _ _) hint.left_lt
+    have hbr : p < max b₀ u := lt_of_lt_of_le hint.lt_right (le_max_left _ _)
+    refine ⟨⟨hal, hbr, ?_, ?_, fun q h₁ h₂ =>
+        badComp_right atomMap h_surj hε M h_prior_U h_prior_S (hseg q h₁ h₂)⟩,
+      fun q h₁ h₂ => endsInGapOnLeft_of_endsInGapOnRight' atomMap h_surj hε M h_prior_U h_prior_S
+        (badComp_right atomMap h_surj hε M h_prior_U h_prior_S (hseg q h₁ h₂))⟩
+    · intro hc
+      exact hint.left_out (contemp_trans hε M hc
+        (contemp_of_between hε M (min_le_left a₀ u) hint.left_lt.le (contemp_symm hε M hc)))
+    · intro hc
+      exact hint.right_out (contemp_of_between hε M hint.lt_right.le (le_max_left b₀ u) hc)
+  · intro q _ hq
+    rcases hq with h | h
+    · exact h
+    · exact endsInGapOnRight_of_endsInGapOnLeft' atomMap h_surj hε M h_prior_U h_prior_S h
+
+end Discharge
+
+end StepD
+
+section Theorem4Unconditional
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
+
+/-- **Reynolds 1992, §6 Theorem 4, printed p.183 — the right-hand end.**
+
+> *Suppose that `∼` is a contemporaneous equivalence relation on a Prior structure `M`.*
+>
+> *Then the `∼`-classes do not end at gaps.*
+
+This is **D1**, the first hypothesis of Doets' theorem, with `HasBadIntervalSurgery` discharged by
+`StepD.hasBadIntervalSurgery`. `no_gaps_dense_prior_of_hasBadIntervalSurgery` above is the same
+statement in its hypothesised form and is retained unweakened.
+
+**Still conditional**, and not on nothing: `IsContempEquivDense ε` and Prior-U/Prior-S remain
+hypotheses. See `## Conditionality after Theorem 4` below for exactly what that leaves standing. -/
+theorem no_gaps_dense_prior (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap)
+    (t : M.carrier) : ¬ EndsInGapOnRight M ε t :=
+  no_gaps_dense_prior_of_hasBadIntervalSurgery atomMap h_surj hε h_prior_U h_prior_S
+    (StepD.hasBadIntervalSurgery atomMap h_surj hε M h_prior_U h_prior_S) t
+
+/-- **Theorem 4, the left-hand end**, with `HasBadIntervalSurgery` discharged — at the dual, by
+`StepD.hasBadIntervalSurgery` instantiated at `(dual M, dualize ε)`. The one input that did not
+transport for free now needs no transporting: it is a theorem at every structure.
+
+`no_gaps_dense_prior_left_of_hasBadIntervalSurgery` above is retained unweakened. -/
+theorem no_gaps_dense_prior_left (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap)
+    (t : M.carrier) : ¬ EndsInGapOnLeft M ε t :=
+  no_gaps_dense_prior_left_of_hasBadIntervalSurgery atomMap h_surj hε h_prior_U h_prior_S
+    (StepD.hasBadIntervalSurgery atomMap h_surj (isContempEquivDense_dualize hε) (dual M)
+      (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U)) t
+
+end Theorem4Unconditional
 
 /-! ## Conditionality after Theorem 4
 
