@@ -212,6 +212,16 @@ Mathlib `ConditionallyCompleteLinearOrder` instance
 `ValidDedekind`. Including density here would silently narrow the predicate to real flow
 alone; the density-carrying variant is the separate `ValidDedekindDense` below.
 
+That "ℤ satisfies every binder" observation is not an isolated curiosity: it is the **discrete
+branch of the Hölder dichotomy**. By `FormalSystem.Semantics.complete_duration_discrete_or_dense`
+(`Semantics/DurationClassification.lean`) a duration group with the least-upper-bound hypothesis
+is either `≃+o ℤ` or densely ordered, and by
+`FormalSystem.Semantics.complete_not_dense_iso_int` the non-dense case is `≃+o ℤ` on the nose.
+So this predicate's binder set is exactly the paper's **TM⁺_c** (complete simpliciter), whose
+model class is `{ℤ, ℝ}` up to isomorphism and whose theory is `Th(ℤ) ∩ Th(ℝ)`. No `FrameClass`
+element corresponds to it — see the `FrameClass` docstring in
+`FormalSystem/ProofSystem/Axioms.lean`.
+
 **This predicate is NOT the target of `soundness_dedekind`, and that is not an oversight.**
 `FrameClass.Dedekind` sits strictly above `FrameClass.Dense` (see the `FrameClass` docstring
 in `FormalSystem/ProofSystem/Axioms.lean`), so `Axiom.density` (`GGφ → Gφ`) and
@@ -238,8 +248,19 @@ def ValidDedekind (φ : Formula) : Prop :=
 
 /--
 A formula is valid over **dense Dedekind-complete** temporal orders: `ValidDedekind` with
-`[DenselyOrdered D]` added to the binder list. This is the real-flow predicate — `ℝ` is the
-paradigm model, and `ℤ` is excluded by the density binder.
+`[DenselyOrdered D]` added to the binder list. This is the real-flow predicate, and sharply so:
+up to order-and-group isomorphism `ℝ` is the *only* nontrivial model, not merely a paradigm one.
+
+**Why the density binder is exactly the right cut.** By
+`FormalSystem.Semantics.complete_duration_discrete_or_dense`
+(`Semantics/DurationClassification.lean`), a duration group satisfying the least-upper-bound
+hypothesis is *either* `≃+o ℤ` *or* densely ordered, and by
+`FormalSystem.Semantics.complete_not_dense_iso_int` those branches are exclusive. So adding
+`DenselyOrdered` deletes precisely the `ℤ` branch of the Hölder dichotomy and nothing else —
+which is why `ℤ` is excluded here even though it satisfies every binder of `ValidDedekind`.
+(Getting from "dense and complete" to a literal `≃+o ℝ` needs one further step this repository
+does not carry; the composition path and the reason it is out of scope are recorded in the
+`DurationClassification` module docstring.)
 
 **This is the target of `soundness_dedekind`**, not `ValidDedekind`. The reason is spelled out
 in the `ValidDedekind` docstring above and is worth restating, because the weaker-looking

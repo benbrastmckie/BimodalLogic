@@ -375,7 +375,18 @@ duplication rather than leaving it silent.
 
 ---
 
-### Phase 6: FrameClass / Validity documentation alignment [NOT STARTED]
+### Phase 6: FrameClass / Validity documentation alignment [COMPLETED]
+
+**Scope Hypothesis outcome**: confirmed — docstring-only across exactly the two planned files
+(`Axioms.lean`, `Validity.lean`); every changed hunk sits inside a `--` comment block or a
+`/-- ... -/` doc comment, and no code changed. Because Phase 4 landed, the prose references
+`co_derived` as a completed fact rather than the `co_valid`-only fallback the plan reserved.
+
+**Deviation (skipped — not applicable)**: the final task, "correct the paper footnote's claim
+where it is repeated anywhere in repo prose (no non-Archimedean order is complete)", is a no-op
+here: `grep -rn "non-Archimedean\|nonArchimedean" FormalSystem/ --include=*.lean` returns
+nothing, so the claim is not repeated anywhere in this repository's prose. Nothing was written
+to assert or deny it, since there was no stale text to correct.
 
 - **Goal:** The repo's docstrings state the sharp Hölder picture and the paper's TM_c / TM⁺_dc
   distinction correctly, and stop implying that the CO basis and the Reynolds basis are
