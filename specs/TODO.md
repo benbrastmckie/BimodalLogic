@@ -11,7 +11,7 @@ next_project_number: 418
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,361,390,408,409,413,414,416 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,361,390,408,409,413,414 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296,410,411,412,415,417 | 165,193,231,298,361,414 | formula-refactor, dataset-enhancement, paper-refactor, ... |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -61,7 +61,6 @@ next_project_number: 418
 414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
   └─ 415 [RESEARCHED] — Completeness under the refactored (Omega-free, maximal-history) s
   └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
-416 [PLANNED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; INVERT
 
 ### Documentation
 
@@ -93,12 +92,13 @@ next_project_number: 418
 
 ### 416. Adopt co axiom basis for dedekind class
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
 - **Research**: [416_adopt_co_axiom_basis_for_dedekind_class/reports/01_co-axiom-basis-adoption.md]
 - **Plan**: [416_adopt_co_axiom_basis_for_dedekind_class/plans/02_co-derived-reynolds-basis.md]
+- **Summary**: [416_adopt_co_axiom_basis_for_dedekind_class/summaries/02_co-derived-reynolds-basis-summary.md]
 
 **Description**: DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; INVERTED after research, user-ratified 2026-07-28: the Reynolds basis stays official and CO becomes derived — the reverse of this task's original framing). Research found strong evidence CO does NOT syntactically derive prior_U_gap/prior_S_gap/sep: the two bases are frame-equivalent (both pin Dedekind completeness) but plausibly NOT deductively equivalent — an independence-model sketch (Q-flow with isolated not-p points accumulating at an irrational from above, the classical Stavi US-vs-FO gap phenomenon) validates every CO instance while refuting Prior-U; the converse Reynolds |- CO derivation sketch does work. THEREFORE: (1) KEEP the Reynolds triple prior_U_gap/prior_S_gap/sep as the OFFICIAL Dedekind-class axiom basis — no basis swap, no two-basis bridge. (2) Add CO as a DERIVED internal theorem co_derived plus its validity lemma co_valid, where CO = triangle(H phi -> F(H phi)) -> (H phi -> G phi) with triangle phi := H phi and phi and G phi (the TEMPORAL triangle, not box); the CO formula is at PossibleWorlds/JPL/possible_worlds.tex:3250 (identical formula at current-tex line 1109 — note the top-level Papers/possible_worlds.tex has only 2253 lines and is NOT the right source). All needed operators (allPast/allFuture/someFuture/always) already exist in Formula.lean. (3) Route the paper-side correction back through fix.md C4 option 2, which explicitly contemplated switching the paper's basis: the paper's BX_c completeness claim is deferred to THIS repo with no independent citation, so def:TMplus-c is implicated and needs paper-side amendment. Under this inversion the 408/411 rebase surface is EMPTY (no downstream churn), and the 6 real DerivationTree.axiom consumption sites — 3 Chronicle limit-witness files plus 3 in ChronicleMonadicBridge feeding the Doets embedding, the latter having no CO-local workaround — stay untouched. (4) Record the Hoelder classification where cheap: pinned Mathlib v4.33.0-rc1 verified to PROVIDE LinearOrderedAddCommGroup.discrete_or_denselyOrdered / discrete_iff_not_denselyOrdered (GroupTheory/ArchimedeanDensely.lean, exact typeclass match with the repo's duration binders) and Archimedean.exists_orderAddMonoidHom_real_injective (Data/Real/Embedding.lean:232); verified ABSENT are "complete ordered group => Archimedean" (cheap ~20-line hand lemma, do it) and packaged "dense+complete group ~=+o R" (NOT cheap — docs, not a lemma); complete+discrete = Z is cheaply composable as a lemma. (5) Align FrameClass/Validity docs with the paper TM_c / TM+_dc distinction, noting complete-but-discrete is exactly Z (Discrete class). Related: 390, 408, 411.
 
@@ -194,16 +194,9 @@ COORDINATION: task 362 leg D owns stating the genuine strong-completeness result
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
-- **Research**:
-  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/01_faithful-route-strong-completeness.md]
-  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/04_backward-transport-blocker.md]
-  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/05_forward-guard-r3-research.md]
-- **Plan**:
-  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/01_strong-completeness-dedekind.md]
-  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/04_strong-completeness-dedekind-v4.md]
-  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/05_strong-completeness-dedekind-v5.md]
-  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/06_strong-completeness-dedekind-v6.md]
 - **Summary**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/21_duality-transport-lemma6-fourth-half-summary.md]
+- **Research**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/09_lemma6-first-clause-blocker.md]
+- **Plan**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/10_strong-completeness-dedekind-v10.md]
 
 **Description**: Identify the most faithful and mathematically correct route to STRONG completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics), with weak completeness obtained as a corollary rather than as the target.
 

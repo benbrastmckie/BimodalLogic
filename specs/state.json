@@ -849,48 +849,23 @@
       "priority": "high",
       "description": "Identify the most faithful and mathematically correct route to STRONG completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics), with weak completeness obtained as a corollary rather than as the target.\n\nTARGET IS SETTLED, NOT AN OPEN QUESTION: strong completeness is the goal. Weak completeness is to fall out as a corollary. Do not produce a plan whose terminus is weak completeness.\n\nWHY THIS IS NOT MERELY \"EXECUTE THE 390 PLAN\": the route proposed in specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md is Reynolds' transfer argument, and Reynolds 1992 Theorem 7 delivers explicitly WEAK completeness (\"sound and weakly complete\", printed p.189). That report names this itself and states that if the target is strong completeness \"this route does not reach it and the verdict changes.\" The verdict has now changed. The central question of this task is therefore whether the Reynolds route extends to strong completeness, or whether a different construction is the faithful one.\n\nDESIGN CONSTRAINT FROM THE USER: avoid needless bridges. Prefer the construction that is faithful to the mathematics over one that accumulates intermediate scaffolding, adapter lemmas, or bespoke bridge predicates. If a proposed step exists only to connect two artifacts the tree happens to already have, that is evidence the route is wrong, not evidence a bridge is needed. This applies specifically to the phase-5 gap-freeness bridge (Gap-free <-> conditionally complete for the dense case), which was NOT authorized as standalone work and should only appear if the faithful route genuinely requires it.\n\nCURRENT STATE (verified 2026-07-27, do not re-derive from stale notes):\n- Soundness is COMPLETE. FrameClass.Dedekind exists (ProofSystem/Axioms.lean:453) with the Base < Dense < Dedekind chain; the three Reynolds axioms prior_U_gap/prior_S_gap/sep exist (:377,:387,:398) with minFrameClass at :524-526; ValidDedekind and ValidDedekindDense exist (Semantics/Validity.lean:231,:255); all three axioms and the sep temporal dual are proved valid; soundness_dedekind is assembled at Metalogic/Soundness.lean:1910. Soundness.lean is at ZERO sorries.\n- Completeness is NOT STARTED. `completeness_dedekind` does not exist anywhere in the tree. completeness_dense and completeness_discrete exist and are sorryAx-free (Metalogic/BXCanonical/Completeness.lean:255,:296).\n- The only live sorry outside Boneyard is Metalogic/WeakCanonical/Transfer.lean:1242, on the DISCRETE countermodel branch (a Base-MCS -> Discrete-MCS gap). It blocks general `completeness` and is not on the Dedekind route.\n\nTHREE KNOWN OBSTRUCTIONS the research must address explicitly:\n1. The input model does not exist. Reynolds' step 1 needs a Q-flowed model validating Prior-U/Prior-S/Sep. The tree's countermodel_dense_enriched (Metalogic/BXCanonical/Completeness.lean:133) produces a Q model for FrameClass.Dense (density + dense_indicator) -- a different axiom set.\n2. TRAP -- the Base-MCS problem applies verbatim. Completeness.lean:178-193 documents why general `completeness` carries sorryAx: a Base-MCS is not automatically Discrete-consistent. A Dedekind variant hits the structurally identical problem, since a Base-MCS need not validate Prior-U/Prior-S/Sep. Any countermodel must be built from an MCS of its own class. A proof that reuses the dense pipeline's MCS will look complete and be unsound at the seam.\n3. The transfer engine is Z-specialized. Metalogic/WeakCanonical/IntegerModel/ has the right primitives (good, VeryGood, ContempEquiv, k_equiv_of_iso, KEquiv, orderedSumPt) but its engine is subinterval_finite_of_succ_archimedean -- a FINITENESS argument with no dense analogue.\n\nDO NOT ASSUME THE BIMODAL GRAFT IS FREE. The recently-completed sep_valid work found the bimodal graft trivial for SOUNDNESS, because Sep's operators are all temporal evaluated at a fixed history, so the statement reduced to pure order theory. That result does NOT transfer to completeness, where the construction must PRODUCE histories rather than evaluate at one. Research task 390 flagged grafting a monadic-FO transfer argument onto TaskFrame/WorldHistory/Omega/ShiftClosed semantics as genuinely new work not present in any source read.\n\nCOORDINATE WITH the existing strong-completeness axis: tasks 361 (strong_completeness_architecture_and_weak_terminus_gap_analysis) and 362 (completeness_capstone_consequence_all_classes_strong_where_compact). If the faithful Dedekind route is a special case of, or is subsumed by, the architecture those tasks establish, say so plainly rather than proposing a parallel construction.\n\nLITERATURE: run with --lit. Primary sources already local: /home/benjamin/Projects/Literature/sources/reynolds_1992/ (all sections; sec04 is the separability section). GHR 1994 chapter 10 treats Dedekind completeness as a HYPOTHESIS rather than deriving it, per 390's Finding 3. Doets' theorem is reached via Reynolds section 8 (printed pp.184-188, lemmas 11-13). Read verbatim; do not reconstruct statements from memory.\n\nDONE WHEN: a research report that (a) gives an explicit, argued verdict on whether strong completeness for FrameClass.Dedekind is reachable and by which construction; (b) names the faithful route and justifies it against at least one rejected alternative; (c) states honestly if the answer is that it is not currently reachable, and what would have to change; (d) identifies which existing tree assets are genuinely reused versus which would be needless bridges; (e) does NOT propose a phase decomposition whose terminus is weak completeness.\n\nREFRAMING ADDENDUM (2026-07-27, supersedes the \"TARGET IS SETTLED\" paragraph above): project-wide, \"strong completeness\" is now reserved for consequence from possibly-infinite premise sets (Γ : Set Formula) with finitary set-derivability. The Dedekind-class consequence relation is NOT compact (Reynolds 1992 Theorem 7 is weak-only and the restriction is genuine), so genuine strong completeness is provably unreachable for this class. The task's proof obligations are unchanged in mathematical content but renamed: the class HEADLINE is weak completeness `completeness_dedekind`, together with the finite-context consequence form `consequence_completeness_dedekind` (formerly \"strong_completeness_dedekind\"), the two being inter-derivable via the deduction theorem. Plan v1 and FormalSystem/Metalogic/StrongCompleteness.lean have been reframed and the identifiers renamed accordingly (see the plan's Reframing Note and the module docstring's per-class programme). Do NOT reintroduce the \"strong\" name for any finite-context result, and do NOT read the earlier \"do not produce a plan whose terminus is weak completeness\" directive as forbidding the weak headline — that directive predates the terminology settlement and is superseded.",
       "created": "2026-07-27T20:47:13Z",
-      "last_updated": "2026-07-28T16:38:20Z",
-      "session_id": "sess_1785243543_9dde88",
+      "last_updated": "2026-07-29T00:42:18Z",
+      "session_id": "sess_1785278656_384f35",
       "artifacts": [
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/01_faithful-route-strong-completeness.md",
-          "type": "report",
-          "summary": "Faithful route to strong completeness for FrameClass.Dedekind: verdict reachable via direct real-carrier construction (Route B); Reynolds transfer rejected"
-        },
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/01_strong-completeness-dedekind.md",
-          "type": "plan",
-          "summary": "8-phase risk-first plan; terminus strong_completeness_dedekind, weak as Γ=[] corollary"
-        },
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/04_backward-transport-blocker.md",
-          "type": "report",
-          "summary": "Blocker research: the refuted backward Until/Since transport; verdict reachable via Prior-S guard gap lemma (Reynolds gamma-minus / right gaps); bounded-witness residual corrected"
-        },
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/04_strong-completeness-dedekind-v4.md",
-          "type": "plan",
-          "summary": "v4: 12 phases (8 completed). Adds Phase 6.3 guard gap lemma (prior_S_gap) and rewrites Phase 7.1 as the three unlanded backward cases; Phase 7.2 and 8 unchanged"
-        },
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/05_forward-guard-r3-research.md",
-          "type": "report",
-          "summary": "Blocker research R3 (forward case B guard): R3 has NO source in the corpus; r3_invariant_necessary and boundedWitness_of_limitGuardBelow proved sorry-free; charter gap found (forward snce at an unselected target)"
-        },
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/05_strong-completeness-dedekind-v5.md",
-          "type": "plan",
-          "summary": "v5: 15 phases (11 completed, 3 not started, 1 user-gated). Adds Phase 7.3 (limitGuardAbove_of_priorU) and 7.4 (bounded witness + LimitGuardEventual + BOTH unselected forward cases, repairing the charter gap) as determined work; applies Amendment 1; records Phase 7.5 (R3d) as USER GATED with amendments 2-4 drafted but not applied; Phase 8 marker corrected to NOT STARTED with a LimitGuardEventual precondition"
-        },
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/06_strong-completeness-dedekind-v6.md",
-          "type": "plan",
-          "summary": "v6: 19 phases (13 completed, 6 not started). Applies Amendments 2-4 verbatim under fresh explicit user authorization at the R3d gate; decomposes Phase 7.5 (R3d) into five agent-run-sized sub-phases 7.5-7.9 (invariant + payoff, c5_forward_walk, c5_backward_walk, EliminationResult + omega-chain, limit transport + cantor_bfmcs_dense_limit_guard_eventual + _fuc); charters ADAPTED-FROM no-source docstrings; family-Q two-outcome risk register; [USER GATED] retired; Phase 8 precondition names cantor_bfmcs_dense_limit_guard_eventual"
-        },
         {
           "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/21_duality-transport-lemma6-fourth-half-summary.md",
           "type": "summary",
           "summary": "Phase 20.4: duality-transport layer (Dual.lean) and Lemma 6's fourth half"
+        },
+        {
+          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/09_lemma6-first-clause-blocker.md",
+          "type": "report",
+          "summary": "Blocker research: Lemma 6 first clause (F1) and anti-vacuity module direction (F2)"
+        },
+        {
+          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/10_strong-completeness-dedekind-v10.md",
+          "type": "plan",
+          "summary": "Plan v10 — Lemma 4 boundary case and sub-phase 22.1"
         }
       ]
     },
@@ -991,7 +966,7 @@
     {
       "project_number": 416,
       "project_name": "adopt_co_axiom_basis_for_dedekind_class",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; INVERTED after research, user-ratified 2026-07-28: the Reynolds basis stays official and CO becomes derived — the reverse of this task's original framing). Research found strong evidence CO does NOT syntactically derive prior_U_gap/prior_S_gap/sep: the two bases are frame-equivalent (both pin Dedekind completeness) but plausibly NOT deductively equivalent — an independence-model sketch (Q-flow with isolated not-p points accumulating at an irrational from above, the classical Stavi US-vs-FO gap phenomenon) validates every CO instance while refuting Prior-U; the converse Reynolds |- CO derivation sketch does work. THEREFORE: (1) KEEP the Reynolds triple prior_U_gap/prior_S_gap/sep as the OFFICIAL Dedekind-class axiom basis — no basis swap, no two-basis bridge. (2) Add CO as a DERIVED internal theorem co_derived plus its validity lemma co_valid, where CO = triangle(H phi -> F(H phi)) -> (H phi -> G phi) with triangle phi := H phi and phi and G phi (the TEMPORAL triangle, not box); the CO formula is at PossibleWorlds/JPL/possible_worlds.tex:3250 (identical formula at current-tex line 1109 — note the top-level Papers/possible_worlds.tex has only 2253 lines and is NOT the right source). All needed operators (allPast/allFuture/someFuture/always) already exist in Formula.lean. (3) Route the paper-side correction back through fix.md C4 option 2, which explicitly contemplated switching the paper's basis: the paper's BX_c completeness claim is deferred to THIS repo with no independent citation, so def:TMplus-c is implicated and needs paper-side amendment. Under this inversion the 408/411 rebase surface is EMPTY (no downstream churn), and the 6 real DerivationTree.axiom consumption sites — 3 Chronicle limit-witness files plus 3 in ChronicleMonadicBridge feeding the Doets embedding, the latter having no CO-local workaround — stay untouched. (4) Record the Hoelder classification where cheap: pinned Mathlib v4.33.0-rc1 verified to PROVIDE LinearOrderedAddCommGroup.discrete_or_denselyOrdered / discrete_iff_not_denselyOrdered (GroupTheory/ArchimedeanDensely.lean, exact typeclass match with the repo's duration binders) and Archimedean.exists_orderAddMonoidHom_real_injective (Data/Real/Embedding.lean:232); verified ABSENT are \"complete ordered group => Archimedean\" (cheap ~20-line hand lemma, do it) and packaged \"dense+complete group ~=+o R\" (NOT cheap — docs, not a lemma); complete+discrete = Z is cheaply composable as a lemma. (5) Align FrameClass/Validity docs with the paper TM_c / TM+_dc distinction, noting complete-but-discrete is exactly Z (Discrete class). Related: 390, 408, 411.",
       "effort": "large",
@@ -1007,12 +982,17 @@
           "path": "specs/416_adopt_co_axiom_basis_for_dedekind_class/plans/02_co-derived-reynolds-basis.md",
           "type": "plan",
           "summary": "6-phase implementation plan for CO as a derived theorem over the retained Reynolds basis: Formula.co abbreviation, co_valid semantic lemma, Hilbert derivation scaffolding, co_derived, cheap Hoelder classification lemmas, and FrameClass/Validity doc alignment. Includes a no-sorry contingency for the derivation phase and an explicit paper-side-amendment Non-Goal."
+        },
+        {
+          "path": "specs/416_adopt_co_axiom_basis_for_dedekind_class/summaries/02_co-derived-reynolds-basis-summary.md",
+          "type": "summary",
+          "summary": "6-phase implementation: CO derived over the retained Reynolds basis, sorry-free, build green."
         }
       ],
       "created": "2026-07-28T22:51:10Z",
-      "last_updated": "2026-07-29T00:24:50Z",
+      "last_updated": "2026-07-29T01:44:10Z",
       "topic": "paper-refactor",
-      "session_id": "sess_1785284225_96a95e",
+      "session_id": "sess_1785284899_9943d1",
       "plan_metadata": {
         "phase_count": 6,
         "estimated_hours": 10,
@@ -1041,7 +1021,8 @@
             "integrated_date": "2026-07-28"
           }
         ]
-      }
+      },
+      "completion_summary": "The Reynolds triple (prior_U_gap / prior_S_gap / sep) is retained as the official Dedekind-class axiom basis, and the JPL paper's CO principle is now a derived internal theorem over it: Formula.co (source-cited abbreviation), co_valid : ValidDedekindDense (Formula.co f) proved by an independent least-upper-bound argument, and co_derived {fc} (h_fc : .Dedekind <= fc) (f) : |-[fc] Formula.co f, whose axiom footprint is Axiom.prior_U_gap and nothing else outside FrameClass.Base. Supporting scaffolding lands three point-shifting lemmas (F(Hp) -> p, F(Hp) -> U(T,p), S(Hp and p, p) -> Hp) plus the three cheap Hoelder classification lemmas Mathlib lacks, and the FrameClass / Validity docstrings now state the sharp discrete-or-dense picture and the TM_c vs TM+_dc distinction instead of the vaguer 'paradigmatically R' prose. No Axiom constructor was added, removed, or renamed, and no file under Philosophy/Papers/ was touched."
     },
     {
       "project_number": 417,

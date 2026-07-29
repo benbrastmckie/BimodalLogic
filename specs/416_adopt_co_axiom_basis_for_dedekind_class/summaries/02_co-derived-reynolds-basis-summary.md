@@ -1,11 +1,26 @@
 # Implementation Summary: CO as a Derived Theorem over the Retained Reynolds Basis
 
 - **Task**: 416 - adopt_co_axiom_basis_for_dedekind_class
+- **Status**: COMPLETED
+- **Started**: 2026-07-29
+- **Completed**: 2026-07-29
+- **Artifacts**: `plans/02_co-derived-reynolds-basis.md`, `reports/01_co-axiom-basis-adoption.md`, this summary
+- **Standards**: `.claude/rules/lean4.md`, `.claude/rules/plan-compliance.md`
 - **Plan**: `specs/416_adopt_co_axiom_basis_for_dedekind_class/plans/02_co-derived-reynolds-basis.md`
 - **Type**: lean4
 - **Outcome**: all 6 phases `[COMPLETED]`, zero `sorry`, zero new axioms
 
-## What landed
+## Overview
+
+The paper's CO principle is now a *derived* internal theorem of the proof system rather than a
+candidate axiom, and the Reynolds triple it was originally proposed to replace remains the
+official Dedekind-class basis. Research had inverted the task's framing before planning: CO does
+not appear to syntactically derive the Reynolds triple (an independence sketch refutes Prior-U
+while validating every CO instance), but the converse derivation does go through — so the correct
+move was to keep the stronger basis and derive the weaker principle over it. Six phases landed
+sorry-free; `lake build` is green at 1983 jobs.
+
+## What Changed
 
 The task's original framing was inverted before planning: the Reynolds triple
 (`Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep`) stays the official Dedekind-class
@@ -61,6 +76,33 @@ imported lemma it uses is stated at `FrameClass.Base`. `lean_verify` reports onl
 `ValidDedekindDense (Formula.co φ)`, which is exactly what soundness applied to `co_derived`
 delivers — the intended consistency check on the Phase 1 transcription.
 
+## Decisions
+
+- **Keep the Reynolds basis, derive CO** (inverting the task's original framing). Research found
+  the two bases frame-equivalent but plausibly not deductively equivalent, with the independence
+  sketch cutting against CO-as-basis; deriving CO costs nothing downstream, while swapping the
+  basis would have put the 6 real `DerivationTree.axiom` consumption sites at risk.
+- **No `Axiom.co` constructor.** CO enters as `Formula.co`, an abbreviation, plus two theorems.
+  This keeps the axiom footprint auditable and left the 408/411 rebase surface empty.
+- **Route the derivation through self-accumulation, not guard monotonicity** (see the L1 and L3
+  steps above). Both obvious routes fail for structural reasons that are now recorded in prose so
+  a later reader does not retry them.
+- **Do not move `Separability.lean`'s private `arch_of_lub`.** Cross-referencing the duplication
+  was preferred over a refactor that would drag the Reynolds Sep chain into a rebase for no gain.
+
+## Impacts
+
+- **Axiom footprint narrowed, and verified rather than assumed**: `co_derived` consumes
+  `Axiom.prior_U_gap` alone outside `FrameClass.Base`. `lean_verify` reports only `propext`,
+  `Classical.choice`, `Quot.sound` for every named result.
+- **Build**: `lake build` green (1983 jobs), `lake build BimodalTest` green (2030 jobs). Zero
+  `sorry` in the three new files; the non-Boneyard `sorry` count is unchanged repo-wide.
+- **No downstream churn**: nothing under `FormalSystem/Metalogic/Decidability/` was touched, no
+  `Axiom` constructor changed, and the Chronicle limit-witness and `ChronicleMonadicBridge`
+  consumption sites are untouched as predicted.
+- **Docs**: `FrameClass` / `Validity` docstrings now state the sharp discrete-or-dense picture and
+  the TM_c vs TM⁺_dc distinction in place of vaguer "paradigmatically ℝ" prose.
+
 ## Plan Deviations
 
 - **Phase 3 (altered)**: the three `△`-eliminators are landed at the plan's exact names and
@@ -94,9 +136,30 @@ delivers — the intended consistency check on the Phase 1 transcription.
   points accumulating at a gap; the Stavi US-vs-FO phenomenon) is recorded in prose and
   explicitly flagged as pen-and-paper, not machine-checked. Nothing in the tree depends on it.
 
-## Follow-up recorded, not delivered
+## Follow-ups
 
-The paper-side amendment in `/home/benjamin/Philosophy/Papers/PossibleWorlds/`: switch the BX_c
-basis of `def:TMplus-c` to the Reynolds axioms (fix.md C4 option 2), since `cor:tm-completeness`
-defers its completeness claim to this repository and, under the independence sketch, the CO-only
-basis is deductively too weak to support it.
+Recorded, not delivered:
+
+- **Paper-side amendment** in `/home/benjamin/Philosophy/Papers/PossibleWorlds/`: switch the BX_c
+  basis of `def:TMplus-c` to the Reynolds axioms (fix.md C4 option 2), since
+  `cor:tm-completeness` defers its completeness claim to this repository and, under the
+  independence sketch, the CO-only basis is deductively too weak to support it.
+- **The independence claim itself (CO ⊬ Reynolds) is a pen-and-paper model sketch, not a
+  machine-checked result.** It is flagged as such in the docstrings. Nothing in the tree depends
+  on it, but the paper-side amendment above rests on it, so formalizing it (a ℚ-flow with `¬φ`
+  points accumulating at a gap) would be the way to put that amendment on firm ground.
+- **Packaged "nontrivial dense complete ordered abelian group ≃+o ℝ"** remains absent from
+  Mathlib; the composition path and the reason for omitting it are documented in the
+  `DurationClassification` module docstring.
+
+## References
+
+- Plan: `specs/416_adopt_co_axiom_basis_for_dedekind_class/plans/02_co-derived-reynolds-basis.md`
+- Research: `specs/416_adopt_co_axiom_basis_for_dedekind_class/reports/01_co-axiom-basis-adoption.md`
+- CO source formula: `PossibleWorlds/JPL/possible_worlds.tex:3250`
+- New files: `FormalSystem/Theorems/DedekindDerived.lean`,
+  `FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean`,
+  `FormalSystem/Semantics/DurationClassification.lean`
+- Mathlib API used: `LinearOrderedAddCommGroup.discrete_or_denselyOrdered`,
+  `discrete_iff_not_denselyOrdered` (`GroupTheory/ArchimedeanDensely.lean`),
+  `Archimedean.exists_orderAddMonoidHom_real_injective` (`Data/Real/Embedding.lean:232`)

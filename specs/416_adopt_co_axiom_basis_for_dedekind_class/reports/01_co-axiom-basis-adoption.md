@@ -1,6 +1,13 @@
 # Research Report: Adopt CO Axiom Basis for the Dedekind Class
 
 - **Task**: 416 `adopt_co_axiom_basis_for_dedekind_class`
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Session**: sess_1785280411_23b0e6_416
 - **Date**: 2026-07-28
 - **Agent**: lean-research-hard-agent (H2+H3+H4 active; H5 not activated)
