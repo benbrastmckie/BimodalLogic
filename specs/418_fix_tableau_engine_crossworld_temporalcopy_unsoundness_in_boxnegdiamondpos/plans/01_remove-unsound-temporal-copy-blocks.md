@@ -692,19 +692,19 @@ before/after verdict-change table the task requires as its summary deliverable.
 
 ## Testing & Validation
 
-- [ ] `lake build` (library) exits zero, bracketed by consistent olean counts.
-- [ ] `lake build BimodalTest` (full corpus, 145 `#guard_msgs` rows across eight probe files)
+- [x] `lake build` (library) exits zero, bracketed by consistent olean counts. *(LIBRARY_RC=0; oleans 399 → 405, an increase consistent with a completed build)*
+- [x] *(CORPUS_RC=0, zero mismatches. Correction: the corpus is **142** directives, not 145 — three of the plan's grep hits are prose mentions; it is 143 after the one justified addition.)* `lake build BimodalTest` (full corpus, 145 `#guard_msgs` rows across eight probe files)
       exits zero, or every remaining failure is a recorded and triaged regression.
-- [ ] `buildTableau ((G p) → □(G p)) 1000 .Base` returns `.hasOpen`.
-- [ ] `decide ((G p) → □(G p))` returns `.invalid` with `getCountermodel?.isSome = true`.
-- [ ] `grep -c` for all six `temp*Props` identifiers in `Tableau.lean` returns 0; exactly two
+- [ ] **NOT MET — measured, recorded, triaged, deliberately not repaired.** `buildTableau ((G p) → □(G p)) 1000 .Base` returns `.hasOpen`. *(Measured: fuel-exhausted at fuel 30, 60, 400 and 1000. Pinned by `BoxNegReachabilityProbe` row 9 as `(0, 0)`.)*
+- [ ] **NOT MET — measured, recorded, triaged, deliberately not repaired.** `decide ((G p) → □(G p))` returns `.invalid` with `getCountermodel?.isSome = true`. *(Measured: `.fuelExhausted`, countermodel `false`. Pinned by `BoxNegReachabilityProbe` rows 10-11 and `CrossWorldPropagationProbe` row F. Pre-fix was `.extractionFailed`, which by R7 semantics asserts this invalid formula is VALID — so the move is from a wrong answer to no answer.)*
+- [x] *(0 hits; exactly 2 emit sites by `grep -cE '^\s*\(\.linear \(witness :: boxProps \+\+ diaProps\), timeOrd\)'`)* `grep -c` for all six `temp*Props` identifiers in `Tableau.lean` returns 0; exactly two
       occurrences of `witness :: boxProps ++ diaProps`.
-- [ ] `boxAnchoredCheck`'s post-fix value is measured and documented, with its carrier list.
-- [ ] No `sorry`, no vacuous definition, no deleted or weakened `#guard_msgs` block in the diff;
+- [x] `boxAnchoredCheck`'s post-fix value is measured and documented, with its carrier list. *(`boxanchored-finding.md`, 14 carriers, plus a §7 corpus-side addendum)*
+- [x] *(0 introduced, established by git comparison against the task baseline — repo-wide sorry 1075 → 1075, axiom 2 → 2; 0 directives removed, 0 `#eval` expressions altered)* No `sorry`, no vacuous definition, no deleted or weakened `#guard_msgs` block in the diff;
       the `Verified/` tree still has zero term-level `sorry`.
-- [ ] `Verified/Decidable.lean` is absent from `git diff --name-only`.
-- [ ] No propagation block was added to `applyRule` to compensate for the deletion.
-- [ ] Every changed expected value has a written justification in the verdict artifacts.
+- [x] `Verified/Decidable.lean` is absent from `git diff --name-only`.
+- [x] No propagation block was added to `applyRule` to compensate for the deletion. *(`git diff c2a25cfb5 HEAD -- Tableau.lean` empty)*
+- [x] Every changed expected value has a written justification in the verdict artifacts. *(all 22, bucket-by-bucket, in `after-verdicts.md`)*
 
 ## Artifacts & Outputs
 
