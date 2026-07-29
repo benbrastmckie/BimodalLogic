@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Decidability.Verified.RuleSpec
 import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
 import FormalSystem.Semantics.Validity
+import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
 
 /-!
 # Semantic rule soundness: satisfiability preservation, one rule shape at a time
@@ -2103,6 +2104,116 @@ theorem ruleSound_densityRule : RuleSound carrierDense .densityRule := by
         · simpa [SatAt, SignedFormula.pos] using truthAt_of_allFuture hsrc hlt
         · exact satAt_of_mem_gPropsExcept hst hlt hrest
       · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
+
+/-!
+### The `.Discrete` family: `priorUZ`, `priorSZ`, `z1Rule`
+
+All three are *same-label* `.persistent [newSf]` rules that return `timeOrd` **unchanged**, so
+none of them consumes `OrdWithin` and none has an ordering obligation at all. What each emits is
+exactly the consequent of a discreteness axiom whose antecedent the branch already carries, at
+the very same label — so each proof is one instantiation of an already-proved validity lemma
+followed by semantic modus ponens against `hst.sat`. There is no new mathematics here and none
+should be attempted: `prior_UZ_is_valid`, `prior_SZ_is_valid` and `z1_is_valid`
+(`Metalogic/SoundnessLemmas/FrameClassVariants.lean`) already do the `SuccOrder`/`PredOrder`
+descent work, and re-deriving it inside the decidability tree would be several hundred lines of
+duplicated Mathlib.
+
+**On the import edge.** `FormalSystem.Metalogic.Soundness` remains refused, and this is *not*
+that edge. `FrameClassVariants` is a different module with a different import closure —
+`FrameClassVariants → DenseValidity → Core → {Semantics.Truth, ProofSystem.Derivation,
+ProofSystem.Axioms}` — and nothing anywhere in it imports `Decidability`, so there is no cycle.
+The cost is a heavier build edge, not a cycle.
+
+**Why `carrierDiscrete` is an `Exists` and not a conjunction of classes.** `CarrierProp` returns
+`Prop`, and `DenselyOrdered` is `Prop`-valued, so `carrierDense` could be written outright.
+`SuccOrder` and `PredOrder` are **data** — `Type`-valued classes — so `fun D => SuccOrder D` does
+not typecheck as a `CarrierProp`. `Exists` ranges over any `Sort`, so existentially quantifying
+the two structures is a legitimate `Prop`, and eliminating that `Exists` is fine because the
+goal, `SatResult`, is itself a `Prop`. Each proof below opens by destructuring it and reinstating
+the four instances with `haveI`.
+
+**The other three frame-class rules are NOT landed, and the reason is not budget.** `priorUGap`,
+`priorSGap` and `sepRule` (`.Dedekind`) would need `prior_U_gap_valid`, `prior_S_gap_valid` and
+`sep_valid`. Those three exist **only** in `FormalSystem/Metalogic/Soundness.lean` — the module
+whose import edge into this tree is refused — and `FrameClassVariants` does **not** carry them.
+So the reuse argument that unblocks the discrete three does not transfer, and no
+`carrierDedekind` is declared here: a frame-class carrier property is declared only in the step
+that consumes one, and nothing consumes that one yet.
+-/
+
+/-- Discreteness of the carrier, as the three `.Discrete` rules consume it.
+
+Existentially quantified because `SuccOrder`/`PredOrder` are data; see the section docstring. -/
+def carrierDiscrete : CarrierProp := fun D =>
+  ∃ (hs : SuccOrder D) (hp : PredOrder D), @IsSuccArchimedean D _ hs ∧ @IsPredArchimedean D _ hp
+
+/-- `T(F ψ)` gives `T(U(ψ, ¬ψ))` at the **same** label — the consequent of Prior-UZ, whose
+antecedent is the source formula. On a discrete order `F ψ` has a *nearest* `ψ`-point, and `¬ψ`
+guards the interval strictly below it; that is the whole content, and it is
+`prior_UZ_is_valid`. -/
+theorem ruleSound_priorUZ : RuleSound carrierDiscrete .priorUZ := by
+  intro D _ _ _ _ hC F M Om hist tv b sf ord hmem hst _
+  obtain ⟨hs, hp, ha, hb⟩ := hC
+  -- `letI`, not `haveI`, for the two DATA instances: `haveI` is opaque, so the installed
+  -- `SuccOrder` would not be defeq to `hs`, and `ha : @IsSuccArchimedean D _ hs` would then fail
+  -- to typecheck against it. The two `Prop` fields may stay `haveI`.
+  letI := hs
+  letI := hp
+  haveI := ha
+  haveI := hb
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asSomeFuture? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ψ =>
+      have hφ : φ = Formula.someFuture ψ := asSomeFuture?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro c hc
+        rw [List.mem_singleton] at hc
+        subst hc
+        simpa [SatAt, SignedFormula.pos] using
+          SoundnessLemmas.prior_UZ_is_valid ψ F M Om hst.shiftClosed (hist l.world)
+            (hst.histMem l.world) (tv l.time) hsrc
+
+/-- `T(P ψ)` gives `T(S(ψ, ¬ψ))` at the same label — Prior-SZ, the exact time reversal of
+`priorUZ`. -/
+theorem ruleSound_priorSZ : RuleSound carrierDiscrete .priorSZ := by
+  intro D _ _ _ _ hC F M Om hist tv b sf ord hmem hst _
+  obtain ⟨hs, hp, ha, hb⟩ := hC
+  -- `letI`, not `haveI`, for the two DATA instances: `haveI` is opaque, so the installed
+  -- `SuccOrder` would not be defeq to `hs`, and `ha : @IsSuccArchimedean D _ hs` would then fail
+  -- to typecheck against it. The two `Prop` fields may stay `haveI`.
+  letI := hs
+  letI := hp
+  haveI := ha
+  haveI := hb
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asSomePast? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ψ =>
+      have hφ : φ = Formula.somePast ψ := asSomePast?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro c hc
+        rw [List.mem_singleton] at hc
+        subst hc
+        simpa [SatAt, SignedFormula.pos] using
+          SoundnessLemmas.prior_SZ_is_valid ψ F M Om hst.shiftClosed (hist l.world)
+            (hst.histMem l.world) (tv l.time) hsrc
 
 /-!
 ## `untlNeg` and `snceNeg` — BLOCKED, two independent engine defects
