@@ -1286,4 +1286,147 @@ theorem goodDense_pointSum_sumPoint (sig : MonadicSignature) [Fintype sig.preds]
   exact ⟨snocBlock sig M b (icoBlock sig M a R 0 1) 1 hoc, (kEquiv_sumPoint sig k M b h1).trans
     (kEquiv_sumPoint_snocBlock sig k M b _ 1 hoc (fun _ hx => hx.2))⟩
 
+/-! ## Splitting the end points off `N`
+
+*"by the very goodness of `N`, its interior does not have end points"* (printed p.186). The
+unbounded one-sided substructures are what carry that interior; `openSubinterval` already covers
+the two-end-point case.
+-/
+
+/-- The substructure `M | (←, b)`, everything strictly below `b`. -/
+def OrderedMonadicStructure.belowSubinterval (sig : MonadicSignature)
+    (M : OrderedMonadicStructure sig) (b : M.carrier) : OrderedMonadicStructure sig where
+  carrier := {x : M.carrier // x < b}
+  interp p x := M.interp p x.val
+  carrierOrder := inferInstance
+
+/-- The substructure `M | (a, →)`, everything strictly above `a`. -/
+def OrderedMonadicStructure.aboveSubinterval (sig : MonadicSignature)
+    (M : OrderedMonadicStructure sig) (a : M.carrier) : OrderedMonadicStructure sig where
+  carrier := {x : M.carrier // a < x}
+  interp p x := M.interp p x.val
+  carrierOrder := inferInstance
+
+/-- Splitting the right hand end point off: if `b` is the greatest point of `M`, then
+    `M ≡_k M | (←, b) + M | {b}`. -/
+theorem kEquiv_sumPoint_below (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (M : OrderedMonadicStructure sig) (b : M.carrier) (hmax : ∀ x : M.carrier, x ≤ b) :
+    KEquiv sig k M (sumPoint sig M (M.belowSubinterval sig b) b) := by
+  letI fam := sumPointFamily sig M (M.belowSubinterval sig b) b
+  letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
+    (orderedSum sig Bool fam).carrierOrder
+  let e : M.carrier ≃ (orderedSum sig Bool fam).carrier := {
+    toFun := fun x =>
+      if h : b ≤ x then orderedSumPt (ms := fam) true ⟨x, h, hmax x⟩
+      else orderedSumPt (ms := fam) false ⟨x, lt_of_not_ge h⟩
+    invFun := fun w => match w with
+      | ⟨false, z⟩ => z.val
+      | ⟨true, z⟩ => z.val
+    left_inv := by intro x; simp only; split_ifs <;> rfl
+    right_inv := by
+      intro ⟨c, z⟩
+      match c with
+      | false =>
+        simp only [dif_neg (not_le.mpr z.property)]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+      | true =>
+        simp only [dif_pos z.property.1]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+  }
+  have hm1 : Monotone e := by
+    intro x y hxy
+    simp only [e, Equiv.coe_fn_mk]
+    split_ifs with hx hy hy
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+    · exact absurd (le_trans hx hxy) hy
+    · exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+  have hm2 : Monotone e.symm := by
+    intro w w' hww
+    obtain ⟨cw, w⟩ := w; obtain ⟨cw', w'⟩ := w'
+    have hww' := Sigma.Lex.le_def.mp hww
+    change (e.symm ⟨cw, w⟩) ≤ (e.symm ⟨cw', w'⟩)
+    revert hww'; cases cw <;> cases cw' <;> simp only [e, Equiv.coe_fn_symm_mk] <;> intro hww'
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+    · exact le_of_lt (lt_of_lt_of_le w.property w'.property.1)
+    · rcases hww' with h | ⟨h, _⟩
+      · exact absurd h (by decide)
+      · exact absurd h (by decide)
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+  have h_pred : ∀ (p : sig.preds) (x : M.carrier),
+      M.interp p x ↔ (orderedSum sig Bool fam).interp p (e x) := by
+    intro p x
+    have he : e x =
+        if h : b ≤ x then orderedSumPt (ms := fam) true ⟨x, h, hmax x⟩
+        else orderedSumPt (ms := fam) false ⟨x, lt_of_not_ge h⟩ := rfl
+    rw [he]; split_ifs with h <;>
+      simp [fam, sumPointFamily, orderedSumPt, OrderedMonadicStructure.subinterval,
+        OrderedMonadicStructure.belowSubinterval, orderedSum]
+  exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred
+
+/-- Splitting the left hand end point off: if `a` is the least point of `M`, then
+    `M ≡_k M | {a} + M | (a, →)`. -/
+theorem kEquiv_pointSum_above (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (M : OrderedMonadicStructure sig) (a : M.carrier) (hmin : ∀ x : M.carrier, a ≤ x) :
+    KEquiv sig k M (pointSum sig M a (M.aboveSubinterval sig a)) := by
+  letI fam := pointSumFamily sig M a (M.aboveSubinterval sig a)
+  letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
+    (orderedSum sig Bool fam).carrierOrder
+  let e : M.carrier ≃ (orderedSum sig Bool fam).carrier := {
+    toFun := fun x =>
+      if h : x ≤ a then orderedSumPt (ms := fam) false ⟨x, hmin x, h⟩
+      else orderedSumPt (ms := fam) true ⟨x, lt_of_not_ge h⟩
+    invFun := fun w => match w with
+      | ⟨false, z⟩ => z.val
+      | ⟨true, z⟩ => z.val
+    left_inv := by intro x; simp only; split_ifs <;> rfl
+    right_inv := by
+      intro ⟨c, z⟩
+      match c with
+      | false =>
+        simp only [dif_pos z.property.2]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+      | true =>
+        simp only [dif_neg (not_le.mpr z.property)]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+  }
+  have hm1 : Monotone e := by
+    intro x y hxy
+    simp only [e, Equiv.coe_fn_mk]
+    split_ifs with hx hy hy
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+    · exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
+    · exact absurd (le_trans hxy hy) hx
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+  have hm2 : Monotone e.symm := by
+    intro w w' hww
+    obtain ⟨cw, w⟩ := w; obtain ⟨cw', w'⟩ := w'
+    have hww' := Sigma.Lex.le_def.mp hww
+    change (e.symm ⟨cw, w⟩) ≤ (e.symm ⟨cw', w'⟩)
+    revert hww'; cases cw <;> cases cw' <;> simp only [e, Equiv.coe_fn_symm_mk] <;> intro hww'
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+    · exact le_of_lt (lt_of_le_of_lt w.property.2 w'.property)
+    · rcases hww' with h | ⟨h, _⟩
+      · exact absurd h (by decide)
+      · exact absurd h (by decide)
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+  have h_pred : ∀ (p : sig.preds) (x : M.carrier),
+      M.interp p x ↔ (orderedSum sig Bool fam).interp p (e x) := by
+    intro p x
+    have he : e x =
+        if h : x ≤ a then orderedSumPt (ms := fam) false ⟨x, hmin x, h⟩
+        else orderedSumPt (ms := fam) true ⟨x, lt_of_not_ge h⟩ := rfl
+    rw [he]; split_ifs with h <;>
+      simp [fam, pointSumFamily, orderedSumPt, OrderedMonadicStructure.subinterval,
+        OrderedMonadicStructure.aboveSubinterval, orderedSum]
+  exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred
+
 end FormalSystem.Metalogic.WeakCanonical
