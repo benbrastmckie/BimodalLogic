@@ -571,6 +571,280 @@ theorem gammaBetween_dense_of_minimal {k : Nat} {ε : MonadicFormula sig 2}
     exact hnf
   exact (mem_gammaBetween.mp hmem).2
 
+/-! ## Layer 6 — `M/∼` as a linear order, and the order type of Reynolds' `I`
+
+Printed p.187:
+
+> Since we have density of `M / ∼`, the classes in `I = {E | E is a ∼-class strictly between c and
+> d}` have order type `ℚ`.
+
+**Why a quotient type is constructed here when §6/§7 deliberately avoid one.** `Singletons.lean`'s
+header states the §6/§7 convention outright: *"All four are stated below directly in terms of `∼`
+itself, with no quotient type constructed"*, and for `QuotientDenselyOrdered` /
+`HasDenseSingletons` that is right — each is a property of `∼` on `M`, expressible pointwise.
+*"Order type `ℚ`"* is not of that kind. It is a statement about `I` **as an ordered set**: it
+asserts an order isomorphism, so there must be a type carrying the order for the isomorphism to
+land on. `Order.iso_of_countable_dense` cannot be applied to a pointwise predicate.
+
+So this layer builds `M/∼` — and nothing above it needs to, which is why it lives here rather
+than in `Singletons.lean`. The two §6/§7 predicates are used **unchanged** as the hypotheses of
+the results below; `QuotientDenselyOrdered` is exactly what supplies `DenselyOrdered (M/∼)`, and
+that is the whole reason it was stated pointwise in the first place.
+
+**What the order needs, and what it does not.** The order on classes is well defined precisely
+because classes are convex — clause (ii) of *"contemporaneous equivalence relation"*. Together
+with clause (i) (`Equivalence`) that is all of it: `IsConvexEquiv` below bundles the two at a
+**single** structure `M`, which is what `IsContempEquivDenseCD` yields at a countable dense flow.
+Clause (iii) is not used, and neither is D1 — D1's role is upstream, in establishing
+`QuotientDenselyOrdered` from Lemma 13, and that step is not this layer's.
+-/
+
+/-- The two clauses of *"contemporaneous equivalence relation"* the quotient order needs, taken at
+one structure: `∼` is an equivalence and its classes are convex.
+
+Bundling them at a single `M` (rather than quantifying over all structures, as
+`IsContempEquivDense` and `IsContempEquivDenseCD` do) is what lets the quotient type below depend
+on one proof term. `IsContempEquivDenseCD.atStructure` is the bridge from Reynolds' `ε`. -/
+structure IsConvexEquiv (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2) : Prop where
+  /-- Clause (i) at `M`. -/
+  equiv : Equivalence (ContempEquivDense M ε)
+  /-- Clause (ii) at `M`: classes are convex. -/
+  convex : ∀ a b c : M.carrier, a ≤ b → b ≤ c →
+    ContempEquivDense M ε a c → ContempEquivDense M ε a b
+
+/-- Reynolds' `ε` gives `IsConvexEquiv` at every countable dense flow — the two clauses of
+`IsContempEquivDenseCD` read at one structure. -/
+theorem IsContempEquivDenseCD.atStructure {ε : MonadicFormula sig 2}
+    (hε : IsContempEquivDenseCD ε) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] : IsConvexEquiv M ε :=
+  ⟨hε.equiv M, hε.convex M⟩
+
+/-- **`a`'s class lies strictly below `b`'s** — the relation `M/∼` is ordered by, before it is
+known to descend to the quotient. -/
+def ContempLtPt (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (a b : M.carrier) : Prop :=
+  a < b ∧ ¬ ContempEquivDense M ε a b
+
+namespace IsConvexEquiv
+
+variable {ε : MonadicFormula sig 2} {M : OrderedMonadicStructure sig}
+
+/-- **`ContempLtPt` is `∼`-invariant in both arguments** — the well-definedness fact the quotient
+order rests on, and the only place convexity is used essentially.
+
+The content is that two distinct classes are *totally* separated, not merely separated at the
+chosen representatives: if `a < b` with `a ≁ b`, then every member of `a`'s class is below every
+member of `b`'s. Convexity is what rules out the interleaving that would otherwise be possible. -/
+theorem ltPt_congr (h : IsConvexEquiv M ε) {a a' b b' : M.carrier}
+    (ha : ContempEquivDense M ε a a') (hb : ContempEquivDense M ε b b')
+    (hlt : ContempLtPt M ε a b) : ContempLtPt M ε a' b' := by
+  obtain ⟨hab, hnab⟩ := hlt
+  have hna'b' : ¬ ContempEquivDense M ε a' b' := fun hc =>
+    hnab (h.equiv.trans ha (h.equiv.trans hc (h.equiv.symm hb)))
+  refine ⟨?_, hna'b'⟩
+  rcases lt_trichotomy a' b' with hlt' | heq' | hgt'
+  · exact hlt'
+  · exact absurd (heq' ▸ h.equiv.refl a') hna'b'
+  · -- `b' < a'` is impossible: it forces `a ∼ b`.
+    exfalso
+    rcases lt_or_ge a b' with hab' | hb'a
+    · -- `a < b' < a'` with `a ∼ a'`, so `a ∼ b'` by convexity.
+      have hab'' : ContempEquivDense M ε a b' :=
+        h.convex a b' a' (le_of_lt hab') (le_of_lt hgt') ha
+      exact hnab (h.equiv.trans hab'' (h.equiv.symm hb))
+    · -- `b' ≤ a < b` with `b' ∼ b`, so `b' ∼ a` by convexity.
+      have hb'a' : ContempEquivDense M ε b' a :=
+        h.convex b' a b hb'a (le_of_lt hab) (h.equiv.symm hb)
+      exact hnab (h.equiv.trans (h.equiv.symm hb'a') (h.equiv.symm hb))
+
+/-- The setoid of `∼` on `M`. -/
+def setoid (h : IsConvexEquiv M ε) : Setoid M.carrier where
+  r := ContempEquivDense M ε
+  iseqv := h.equiv
+
+/-- **`M/∼`** — the type of `∼`-classes. -/
+abbrev ClassQuot (h : IsConvexEquiv M ε) : Type := Quotient h.setoid
+
+/-- The class of a point. -/
+abbrev cls (h : IsConvexEquiv M ε) (x : M.carrier) : h.ClassQuot := Quotient.mk h.setoid x
+
+theorem cls_eq_cls_iff (h : IsConvexEquiv M ε) {a b : M.carrier} :
+    h.cls a = h.cls b ↔ ContempEquivDense M ε a b := Quotient.eq
+
+/-- The strict order on `M/∼`, descended from `ContempLtPt` by `ltPt_congr`. -/
+def classLt (h : IsConvexEquiv M ε) : h.ClassQuot → h.ClassQuot → Prop :=
+  Quotient.lift₂ (ContempLtPt M ε) fun _ _ _ _ ha hb =>
+    propext ⟨fun hh => h.ltPt_congr ha hb hh,
+      fun hh => h.ltPt_congr (h.equiv.symm ha) (h.equiv.symm hb) hh⟩
+
+@[simp] theorem classLt_cls (h : IsConvexEquiv M ε) {a b : M.carrier} :
+    h.classLt (h.cls a) (h.cls b) ↔ ContempLtPt M ε a b := Iff.rfl
+
+theorem classLt_irrefl (h : IsConvexEquiv M ε) (A : h.ClassQuot) : ¬ h.classLt A A :=
+  Quotient.inductionOn A fun a hh => absurd hh.1 (lt_irrefl a)
+
+theorem classLt_trans (h : IsConvexEquiv M ε) {A B C : h.ClassQuot} :
+    h.classLt A B → h.classLt B C → h.classLt A C := by
+  refine Quotient.inductionOn₃ A B C fun a b c hab hbc => ?_
+  obtain ⟨hab₁, hab₂⟩ := hab
+  obtain ⟨hbc₁, _⟩ := hbc
+  exact ⟨lt_trans hab₁ hbc₁,
+    fun hac => hab₂ (h.convex a b c (le_of_lt hab₁) (le_of_lt hbc₁) hac)⟩
+
+theorem classLt_trichotomous (h : IsConvexEquiv M ε) (A B : h.ClassQuot) :
+    h.classLt A B ∨ A = B ∨ h.classLt B A := by
+  refine Quotient.inductionOn₂ A B fun a b => ?_
+  by_cases hab : ContempEquivDense M ε a b
+  · exact Or.inr (Or.inl (Quotient.sound hab))
+  · rcases lt_trichotomy a b with hlt | heq | hgt
+    · exact Or.inl ⟨hlt, hab⟩
+    · exact absurd (heq ▸ h.equiv.refl a) hab
+    · exact Or.inr (Or.inr ⟨hgt, fun hc => hab (h.equiv.symm hc)⟩)
+
+open scoped Classical in
+/-- **`M/∼` is a linear order.** `classLt` is irreflexive, transitive and trichotomous, so this is
+`linearOrderOfSTO` and nothing more. -/
+noncomputable instance instLinearOrderClassQuot (h : IsConvexEquiv M ε) :
+    LinearOrder h.ClassQuot :=
+  letI : IsTrans h.ClassQuot h.classLt := ⟨fun _ _ _ => h.classLt_trans⟩
+  letI : IsIrrefl h.ClassQuot h.classLt := ⟨h.classLt_irrefl⟩
+  letI : IsTrichotomous h.ClassQuot h.classLt := ⟨fun a b hab hba => by
+    rcases h.classLt_trichotomous a b with hc | hc | hc
+    · exact absurd hc hab
+    · exact hc
+    · exact absurd hc hba⟩
+  letI : IsStrictOrder h.ClassQuot h.classLt := {}
+  letI : IsStrictTotalOrder h.ClassQuot h.classLt := {}
+  letI : DecidableRel h.classLt := fun _ _ => Classical.dec _
+  linearOrderOfSTO h.classLt
+
+theorem cls_lt_cls (h : IsConvexEquiv M ε) {a b : M.carrier} :
+    h.cls a < h.cls b ↔ ContempLtPt M ε a b := Iff.rfl
+
+/-- **A point strictly inside `(c,d)` and inequivalent to both ends has its whole class inside** —
+convexity again, and the workhorse of every density argument below. -/
+theorem classStrictlyBetween_of_between (h : IsConvexEquiv M ε) {c d e : M.carrier}
+    (hce : c < e) (hed : e < d) (hnce : ¬ ContempEquivDense M ε c e)
+    (hned : ¬ ContempEquivDense M ε e d) : ClassStrictlyBetween M ε c d e := by
+  intro x hx
+  refine ⟨?_, ?_⟩
+  · rcases lt_or_ge c x with hcx | hxc
+    · exact hcx
+    · -- `x ≤ c ≤ e` with `x ∼ e` forces `x ∼ c`, hence `c ∼ e`.
+      have hxc' : ContempEquivDense M ε x c :=
+        h.convex x c e hxc (le_of_lt hce) (h.equiv.symm hx)
+      exact absurd (h.equiv.trans (h.equiv.symm hxc') (h.equiv.symm hx)) hnce
+  · rcases lt_or_ge x d with hxd | hdx
+    · exact hxd
+    · exact absurd (h.convex e d x (le_of_lt hed) hdx hx) hned
+
+/-- Reynolds' `I` as a predicate on `M/∼`: *"`E` is a `∼`-class strictly between `c` and `d`"*.
+`ClassStrictlyBetween` is `∼`-invariant because it quantifies over the whole class. -/
+def ClassStrictlyBetweenQ (h : IsConvexEquiv M ε) (c d : M.carrier) : h.ClassQuot → Prop :=
+  Quotient.lift (ClassStrictlyBetween M ε c d) fun a b hab =>
+    propext ⟨fun hh x hx => hh x (h.equiv.trans hab hx),
+      fun hh x hx => hh x (h.equiv.trans (h.equiv.symm hab) hx)⟩
+
+@[simp] theorem classStrictlyBetweenQ_cls (h : IsConvexEquiv M ε) {c d e : M.carrier} :
+    h.ClassStrictlyBetweenQ c d (h.cls e) ↔ ClassStrictlyBetween M ε c d e := Iff.rfl
+
+/-- **Reynolds' `I`** (printed p.187) — *"`I = {E | E is a ∼-class strictly between c and d}`"*,
+as an ordered type: the classes strictly inside `(c,d)`, ordered as a subtype of `M/∼`. -/
+abbrev ClassBetween (h : IsConvexEquiv M ε) (c d : M.carrier) : Type :=
+  {A : h.ClassQuot // h.ClassStrictlyBetweenQ c d A}
+
+/-- A class strictly between `c` and `d` has its representative strictly between them. -/
+theorem lt_of_classStrictlyBetween (h : IsConvexEquiv M ε) {c d e : M.carrier}
+    (hbet : ClassStrictlyBetween M ε c d e) : c < e ∧ e < d :=
+  hbet e (h.equiv.refl e)
+
+/-- A class strictly between `c` and `d` is distinct from `c`'s class and from `d`'s. -/
+theorem not_contempEquiv_ends (h : IsConvexEquiv M ε) {c d e : M.carrier}
+    (hbet : ClassStrictlyBetween M ε c d e) :
+    ¬ ContempEquivDense M ε c e ∧ ¬ ContempEquivDense M ε e d := by
+  refine ⟨fun hc => ?_, fun hd => ?_⟩
+  · exact absurd (hbet c (h.equiv.symm hc)).1 (lt_irrefl c)
+  · exact absurd (hbet d hd).2 (lt_irrefl d)
+
+/-- **`I` is nonempty** — from `c ≁ d` and density of `M/∼`. -/
+theorem nonempty_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOrdered M ε)
+    {c d : M.carrier} (hcd : c < d) (hns : ¬ ContempEquivDense M ε c d) :
+    Nonempty (h.ClassBetween c d) := by
+  obtain ⟨e, hce, hed, hnce, hned⟩ := hq c d hcd hns
+  exact ⟨⟨h.cls e, h.classStrictlyBetween_of_between hce hed hnce hned⟩⟩
+
+/-- **`I` is densely ordered** — this is `QuotientDenselyOrdered` read at the quotient, which is
+exactly what it was stated pointwise in order to supply. -/
+theorem denselyOrdered_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOrdered M ε)
+    (c d : M.carrier) : DenselyOrdered (h.ClassBetween c d) := by
+  constructor
+  rintro ⟨A, hA⟩ ⟨B, hB⟩ hAB
+  induction A using Quotient.ind with
+  | _ a =>
+  induction B using Quotient.ind with
+  | _ b =>
+  obtain ⟨hab, hnab⟩ := hAB
+  obtain ⟨e, hae, heb, hnae, hneb⟩ := hq a b hab hnab
+  have hbet : ClassStrictlyBetween M ε c d e := by
+    intro x hx
+    obtain ⟨hcx, hxb⟩ := h.classStrictlyBetween_of_between hae heb hnae hneb x hx
+    exact ⟨lt_trans (h.lt_of_classStrictlyBetween hA).1 hcx,
+      lt_trans hxb (h.lt_of_classStrictlyBetween hB).2⟩
+  exact ⟨⟨h.cls e, hbet⟩, ⟨hae, hnae⟩, ⟨heb, hneb⟩⟩
+
+/-- **`I` has no least element** — there is always a further class between `c` and the given one,
+because a class strictly inside `(c,d)` is inequivalent to `c`. -/
+theorem noMinOrder_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOrdered M ε)
+    (c d : M.carrier) : NoMinOrder (h.ClassBetween c d) := by
+  constructor
+  rintro ⟨A, hA⟩
+  induction A using Quotient.ind with
+  | _ a =>
+  obtain ⟨hca, had⟩ := h.lt_of_classStrictlyBetween hA
+  obtain ⟨hnca, -⟩ := h.not_contempEquiv_ends hA
+  obtain ⟨e, hce, hea, hnce, hnea⟩ := hq c a hca hnca
+  refine ⟨⟨h.cls e, ?_⟩, ⟨hea, hnea⟩⟩
+  intro x hx
+  obtain ⟨hcx, hxa⟩ := h.classStrictlyBetween_of_between hce hea hnce hnea x hx
+  exact ⟨hcx, lt_trans hxa had⟩
+
+/-- **`I` has no greatest element** — the mirror of `noMinOrder_classBetween`. -/
+theorem noMaxOrder_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOrdered M ε)
+    (c d : M.carrier) : NoMaxOrder (h.ClassBetween c d) := by
+  constructor
+  rintro ⟨A, hA⟩
+  induction A using Quotient.ind with
+  | _ a =>
+  obtain ⟨hca, had⟩ := h.lt_of_classStrictlyBetween hA
+  obtain ⟨-, hnad⟩ := h.not_contempEquiv_ends hA
+  obtain ⟨e, hae, hed, hnae, hned⟩ := hq a d had hnad
+  refine ⟨⟨h.cls e, ?_⟩, ⟨hae, hnae⟩⟩
+  intro x hx
+  obtain ⟨hax, hxd⟩ := h.classStrictlyBetween_of_between hae hed hnae hned x hx
+  exact ⟨lt_trans hca hax, hxd⟩
+
+/--
+**`I` has order type `ℚ`** — Reynolds 1992, printed p.187:
+
+> Since we have density of `M / ∼`, the classes in `I = {E | E is a ∼-class strictly between c and
+> d}` have order type `ℚ`.
+
+Cantor's isomorphism theorem (`Order.iso_of_countable_dense`) at the four properties established
+above: countable (a quotient of a countable carrier, then a subtype), densely ordered, and without
+end points — the last two both from `QuotientDenselyOrdered`, which is D2's antecedent and is what
+D1 plus Lemma 13 supply upstream.
+-/
+theorem nonempty_orderIso_rat_classBetween (h : IsConvexEquiv M ε) [Countable M.carrier]
+    (hq : QuotientDenselyOrdered M ε) {c d : M.carrier} (hcd : c < d)
+    (hns : ¬ ContempEquivDense M ε c d) : Nonempty (h.ClassBetween c d ≃o ℚ) := by
+  haveI := h.denselyOrdered_classBetween hq c d
+  haveI := h.noMinOrder_classBetween hq c d
+  haveI := h.noMaxOrder_classBetween hq c d
+  haveI := h.nonempty_classBetween hq hcd hns
+  exact Order.iso_of_countable_dense (α := h.ClassBetween c d) (β := ℚ)
+
+end IsConvexEquiv
+
 /--
 **The residual of Reynolds' §8 Theorem 6** — printed pp.187-188, everything after
 `exists_not_simDense_of_not_goodDense` has produced `a < b` with `a ≁ b`:
