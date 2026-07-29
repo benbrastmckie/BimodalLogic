@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.WeakCanonical.RealModel.Shuffle
 import FormalSystem.Metalogic.WeakCanonical.MixedSum
+import FormalSystem.Metalogic.WeakCanonical.RealModel.OrderIsoReal
 
 /-!
 # The `ℝ`-extension of the shuffle
@@ -598,5 +599,87 @@ theorem pointFam_orderedSum_facts :
       (fun r _ => pointFam_subsingleton (sig := sig) r) hsep⟩
 
 end AntiVacuity
+
+/-! ## `R ≅o ℝ` — the last sentence of the printed paragraph
+
+> But then `R` being Dedekind complete, dense, without end points and with a countable dense
+> subset must be isomorphic to the reals.
+
+The characterization itself is `orderIsoRealOfDedekindDenseSeparable`
+(`RealModel/OrderIsoReal.lean`); this section only feeds it the five facts established above.
+
+This is also the **non-trivial anti-vacuity instantiation** that `OrderIsoReal.lean`'s docstring
+points at. It is not `ℝ` in disguise: the carrier of `shuffleReal N γ₁ σ` is a lexicographically
+ordered `Sigma` type over `ℝ` whose fibres are the carriers of arbitrary monadic structures, and
+the isomorphism to `ℝ` is a theorem about that type, not a re-labelling of `ℝ`.
+-/
+
+section OrderIsoRealShuffle
+
+variable {ι : Type} (N : ι → OrderedMonadicStructure sig) (γ₁ : ι) (σ : ℚ → ι)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **The `ℝ`-shuffle's flow satisfies the whole hypothesis bundle of the `ℝ`-characterization**
+(printed p.188). The six hypotheses are exactly the ones the five order facts above need, in the
+same spelling; no clause is added here. -/
+theorem isRealLike_shuffleReal
+    (hne : ∀ i : ι, Nonempty (N i).carrier)
+    (hdense : ∀ i : ι, ∀ x y : (N i).carrier, x < y → ∃ z : (N i).carrier, x < z ∧ z < y)
+    (hsum : ∀ i : ι, ∀ s : Set (N i).carrier, s.Nonempty → ∃ u, IsLUB s u)
+    (hbot : ∀ i : ι, ∃ b : (N i).carrier, ∀ x : (N i).carrier, b ≤ x)
+    (hone : ∀ x y : (N γ₁).carrier, x = y)
+    (hsep : ∀ i : ι, ∃ D : Set (N i).carrier, D.Countable ∧
+      ∀ x y : (N i).carrier, x < y → ∃ d ∈ D, x < d ∧ d < y) :
+    IsRealLike (shuffleReal N γ₁ σ).carrier where
+  nonempty' := ⟨⟨(0 : ℝ), (hne (shuffleColourReal γ₁ σ (0 : ℝ))).some⟩⟩
+  dense := denselyOrdered_shuffleReal N γ₁ σ hne hdense
+  noMax := noMax_shuffleReal N γ₁ σ hne
+  noMin := noMin_shuffleReal N γ₁ σ hne
+  lub := fun S hS hbdd => exists_isLUB_shuffleReal N γ₁ σ hsum hbot S hS hbdd
+  sep := exists_countableDense_shuffleReal N γ₁ σ hne hone hsep
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **The flow of `Σ_{r∈ℝ} σ*(r)` is order-isomorphic to `ℝ`** (Reynolds 1992, §8, printed p.188,
+last sentence of the paragraph).
+
+Statement source: Reynolds, as quoted. Proof: `orderIsoRealOfDedekindDenseSeparable`, which is
+original to this development — Reynolds gives no proof of the characterization. -/
+theorem nonempty_orderIso_real_shuffleReal
+    (hne : ∀ i : ι, Nonempty (N i).carrier)
+    (hdense : ∀ i : ι, ∀ x y : (N i).carrier, x < y → ∃ z : (N i).carrier, x < z ∧ z < y)
+    (hsum : ∀ i : ι, ∀ s : Set (N i).carrier, s.Nonempty → ∃ u, IsLUB s u)
+    (hbot : ∀ i : ι, ∃ b : (N i).carrier, ∀ x : (N i).carrier, b ≤ x)
+    (hone : ∀ x y : (N γ₁).carrier, x = y)
+    (hsep : ∀ i : ι, ∃ D : Set (N i).carrier, D.Countable ∧
+      ∀ x y : (N i).carrier, x < y → ∃ d ∈ D, x < d ∧ d < y) :
+    Nonempty ((shuffleReal N γ₁ σ).carrier ≃o ℝ) :=
+  orderIsoRealOfDedekindDenseSeparable
+    (isRealLike_shuffleReal N γ₁ σ hne hdense hsum hbot hone hsep)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- Every point of the one-point structure equals every other. -/
+theorem pointStructure_subsingleton (x y : (pointStructure sig).carrier) : x = y := rfl
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **Anti-vacuity for the isomorphism itself**: the six hypotheses of
+`nonempty_orderIso_real_shuffleReal` are jointly satisfiable, so the theorem is not vacuous. The
+witness is the constant one-point palette — the degenerate case Reynolds' own `γ₁` clause puts on
+the main path (printed p.188: `γ₁` is *"only satisfied by one point structures"*). Its shuffle is
+`Σ_{r∈ℝ} 1`, whose flow really is a copy of `ℝ` obtained through the full construction: Cantor on
+a countable dense subflow, then the cut map. -/
+theorem nonempty_orderIso_real_shuffleReal_point :
+    Nonempty ((shuffleReal (sig := sig) (fun _ : PUnit => pointStructure sig) PUnit.unit
+      (fun _ => PUnit.unit)).carrier ≃o ℝ) := by
+  refine nonempty_orderIso_real_shuffleReal _ _ _ (fun _ => ⟨PUnit.unit⟩) ?_ ?_ ?_ ?_ ?_
+  · exact fun _ x y h => absurd (pointStructure_subsingleton (sig := sig) x y) (ne_of_lt h)
+  · exact fun _ s _ => ⟨PUnit.unit,
+      fun a _ => le_of_eq (pointStructure_subsingleton (sig := sig) a _),
+      fun b _ => le_of_eq (pointStructure_subsingleton (sig := sig) _ b)⟩
+  · exact fun _ => ⟨PUnit.unit, fun x => le_of_eq (pointStructure_subsingleton (sig := sig) _ x)⟩
+  · exact fun x y => pointStructure_subsingleton (sig := sig) x y
+  · exact fun _ => ⟨∅, Set.countable_empty, fun x y h =>
+      absurd (pointStructure_subsingleton (sig := sig) x y) (ne_of_lt h)⟩
+
+end OrderIsoRealShuffle
 
 end FormalSystem.Metalogic.WeakCanonical
