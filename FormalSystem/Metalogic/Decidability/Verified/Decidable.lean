@@ -2266,6 +2266,204 @@ theorem ruleSound_z1Rule : RuleSound carrierDiscrete .z1Rule := by
           (hst.histMem l.world) (tv l.time) hsrc hfgs
 
 /-!
+### The `.Dedekind` family: `priorUGap` and `priorSGap`
+
+These two consume a *different* carrier property and, unlike the discrete three, their semantic
+content is **not** reusable from `SoundnessLemmas`. `prior_U_gap_valid` and `prior_S_gap_valid`
+exist only in `FormalSystem/Metalogic/Soundness.lean`, whose import edge into this tree is
+refused, and `FrameClassVariants` does not carry them. So the content is re-proved here.
+
+That is a smaller cost than it sounds, and the reason is worth recording because it corrects a
+standing estimate. The Prior-gap arguments consume **only** the least-upper-bound hypothesis and
+the linear order — no `DenselyOrdered`, no `Nontrivial`, no group structure, no `ShiftClosed`.
+Each is a supremum construction of about thirty lines. (The blanket "re-proving the Dedekind
+soundness inside the decidability tree is several hundred lines of duplicated Mathlib work"
+estimate is right for the *discrete* `SuccOrder`/`PredOrder` descent, which is exactly why those
+three were reused rather than re-proved; it is not right for these two.)
+
+`sepRule`, the third `.Dedekind` rule, is a different matter and is **not** landed here: its
+validity needs `exists_countable_order_dense`, a substantial order-theoretic development in
+`SoundnessLemmas/Separability.lean`, which is a genuine dependency rather than a thirty-line
+argument.
+-/
+
+/-- Classical `∧`-introduction from a doubly-negated pair, as the gap antecedents arrive. -/
+private theorem and_of_not_imp_not' {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
+  Classical.byContradiction fun hc => h fun hp hq => hc ⟨hp, hq⟩
+
+/-- A greatest lower bound from a least-upper-bound hypothesis: `inf B` is the least upper bound
+of `B`'s lower-bound set. The bridge the past-directed gap argument needs, since the carrier
+property supplies only upward completeness. -/
+private theorem exists_isGLB_of_lub' {D : Type} [LinearOrder D]
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    {B : Set D} (hne : B.Nonempty) (hbdd : BddBelow B) : ∃ x, IsGLB B x := by
+  obtain ⟨a, ha⟩ := hne
+  obtain ⟨x, hx⟩ := h_lub (lowerBounds B) hbdd ⟨a, fun _ hb => hb ha⟩
+  exact ⟨x, isLUB_lowerBounds.mp hx⟩
+
+/-- Dedekind completeness of the carrier, as the two Prior-gap rules consume it. Density is
+carried alongside because the `.Dedekind` frame class imposes both; only the least-upper-bound
+half is used below. -/
+def carrierDedekind : CarrierProp := fun D =>
+  DenselyOrdered D ∧ ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x
+
+/-- **Prior-U gap, semantic half.** `U(⊤,g) ∧ F(¬g)` at `t` gives `U(¬g ∨ K⁺(¬g), g)` at `t`.
+
+`A` is the set of right endpoints of `g`-intervals starting at `t`. The first conjunct makes it
+non-empty, the second bounds it above, so `s = sup A` exists. `g` holds throughout `(t,s)`
+because any `r < s` is undercut by a member of `A` above it; and `s` witnesses the consequent
+because a `w > s` refuting `¬g ∨ K⁺(¬g)` at `s` would put `w` itself in `A`, above its own
+supremum. -/
+private theorem truthAt_priorUGap {M : TaskModel F} {Om : Set (WorldHistory F)}
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    {τ : WorldHistory F} {t : D} {g : Formula}
+    (h_ant : TruthAt M Om τ t (Formula.and (Formula.untl Formula.top g) g.neg.someFuture)) :
+    TruthAt M Om τ t (Formula.untl (Formula.or g.neg (Formula.kPlus g.neg)) g) := by
+  simp only [TruthAt, Formula.and, Formula.neg, Formula.someFuture, Formula.top] at h_ant
+  obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
+  obtain ⟨s0, hts0, -, hp0⟩ := h1
+  obtain ⟨v, htv, hnpv, -⟩ := h2
+  set A : Set D := {u : D | t < u ∧ ∀ r : D, t < r → r < u → TruthAt M Om τ r g} with hA
+  have hs0A : s0 ∈ A := ⟨hts0, hp0⟩
+  have hAbdd : BddAbove A := by
+    refine ⟨v, ?_⟩
+    intro u hu
+    by_contra hvu
+    exact hnpv (hu.2 v htv (lt_of_not_ge hvu))
+  obtain ⟨s, hs⟩ := h_lub A ⟨s0, hs0A⟩ hAbdd
+  have hts : t < s := lt_of_lt_of_le hts0 (hs.1 hs0A)
+  have hguard : ∀ r : D, t < r → r < s → TruthAt M Om τ r g := by
+    intro r htr hrs
+    obtain ⟨u, huA, hru, -⟩ := hs.exists_between hrs
+    exact huA.2 r htr hru
+  simp only [TruthAt, Formula.or, Formula.neg, Formula.kPlus, Formula.top]
+  refine ⟨s, hts, ?_, hguard⟩
+  intro hnn
+  rintro ⟨w, hsw, -, hw⟩
+  have hps : TruthAt M Om τ s g := Classical.byContradiction hnn
+  have hwA : w ∈ A := by
+    refine ⟨lt_trans hts hsw, ?_⟩
+    intro r htr hrw
+    rcases lt_trichotomy r s with h | h | h
+    · exact hguard r htr h
+    · exact h ▸ hps
+    · exact Classical.byContradiction (hw r h hrw)
+  exact absurd (hs.1 hwA) (not_le_of_gt hsw)
+
+/-- **Prior-S gap, semantic half** — the infimum dual. `B` is the set of left endpoints of
+`g`-intervals ending at `t`, and the witness is `inf B`, obtained through `exists_isGLB_of_lub'`
+because the carrier property supplies only upward completeness. The trichotomy branches run in
+the mirror order: the `K⁻` interval lies to the left of `s`, not the right. -/
+private theorem truthAt_priorSGap {M : TaskModel F} {Om : Set (WorldHistory F)}
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    {τ : WorldHistory F} {t : D} {g : Formula}
+    (h_ant : TruthAt M Om τ t (Formula.and (Formula.snce Formula.top g) g.neg.somePast)) :
+    TruthAt M Om τ t (Formula.snce (Formula.or g.neg (Formula.kMinus g.neg)) g) := by
+  simp only [TruthAt, Formula.and, Formula.neg, Formula.somePast, Formula.top] at h_ant
+  obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
+  obtain ⟨s0, hs0t, -, hp0⟩ := h1
+  obtain ⟨v, hvt, hnpv, -⟩ := h2
+  set B : Set D := {u : D | u < t ∧ ∀ r : D, u < r → r < t → TruthAt M Om τ r g} with hB
+  have hs0B : s0 ∈ B := ⟨hs0t, hp0⟩
+  have hBbdd : BddBelow B := by
+    refine ⟨v, ?_⟩
+    intro u hu
+    by_contra huv
+    exact hnpv (hu.2 v (lt_of_not_ge huv) hvt)
+  obtain ⟨s, hs⟩ := exists_isGLB_of_lub' h_lub ⟨s0, hs0B⟩ hBbdd
+  have hst : s < t := lt_of_le_of_lt (hs.1 hs0B) hs0t
+  have hguard : ∀ r : D, s < r → r < t → TruthAt M Om τ r g := by
+    intro r hsr hrt
+    obtain ⟨u, huB, -, hur⟩ := hs.exists_between hsr
+    exact huB.2 r hur hrt
+  simp only [TruthAt, Formula.or, Formula.neg, Formula.kMinus, Formula.top]
+  refine ⟨s, hst, ?_, hguard⟩
+  intro hnn
+  rintro ⟨w, hws, -, hw⟩
+  have hps : TruthAt M Om τ s g := Classical.byContradiction hnn
+  have hwB : w ∈ B := by
+    refine ⟨lt_trans hws hst, ?_⟩
+    intro r hwr hrt
+    rcases lt_trichotomy r s with h | h | h
+    · exact Classical.byContradiction (hw r hwr h)
+    · exact h ▸ hps
+    · exact hguard r h hrt
+  exact absurd (hs.1 hwB) (not_le_of_gt hws)
+
+/-- `T(U(⊤,g) ∧ F(¬g))` gives `T(U(¬g ∨ K⁺(¬g), g))` at the same label. Same-label
+`.persistent`, ordering untouched; the content is `truthAt_priorUGap`. -/
+theorem ruleSound_priorUGap : RuleSound carrierDedekind .priorUGap := by
+  intro D _ _ _ _ hC F M Om hist tv b sf ord hmem hst _
+  obtain ⟨-, h_lub⟩ := hC
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asAnd? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ab =>
+      obtain ⟨a, bb⟩ := ab
+      have hφ : φ = .imp (.imp a (.imp bb .bot)) .bot := asAnd?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      subst hφ
+      simp only [SatAt] at hsrc
+      simp only [applyRule, hA]
+      split
+      all_goals try trivial
+      rename_i e g
+      split
+      all_goals try trivial
+      rename_i hbeq
+      obtain ⟨he, hbb⟩ := Bool.and_eq_true _ _ |>.mp hbeq
+      have he' : e = Formula.top := by simpa using he
+      have hbb' : bb = Formula.someFuture (Formula.neg g) := by simpa using hbb
+      subst he'
+      subst hbb'
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro c hc
+        rw [List.mem_singleton] at hc
+        subst hc
+        simpa [SatAt, SignedFormula.pos] using truthAt_priorUGap h_lub hsrc
+
+/-- `T(S(⊤,g) ∧ P(¬g))` gives `T(S(¬g ∨ K⁻(¬g), g))` at the same label — the past mirror. -/
+theorem ruleSound_priorSGap : RuleSound carrierDedekind .priorSGap := by
+  intro D _ _ _ _ hC F M Om hist tv b sf ord hmem hst _
+  obtain ⟨-, h_lub⟩ := hC
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asAnd? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ab =>
+      obtain ⟨a, bb⟩ := ab
+      have hφ : φ = .imp (.imp a (.imp bb .bot)) .bot := asAnd?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      subst hφ
+      simp only [SatAt] at hsrc
+      simp only [applyRule, hA]
+      split
+      all_goals try trivial
+      rename_i e g
+      split
+      all_goals try trivial
+      rename_i hbeq
+      obtain ⟨he, hbb⟩ := Bool.and_eq_true _ _ |>.mp hbeq
+      have he' : e = Formula.top := by simpa using he
+      have hbb' : bb = Formula.somePast (Formula.neg g) := by simpa using hbb
+      subst he'
+      subst hbb'
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro c hc
+        rw [List.mem_singleton] at hc
+        subst hc
+        simpa [SatAt, SignedFormula.pos] using truthAt_priorSGap h_lub hsrc
+
+/-!
 ## `untlNeg` and `snceNeg` — BLOCKED, two independent engine defects
 
 **Status.** `untlPos` and `sncePos` are proved above; the copy defect described below was
