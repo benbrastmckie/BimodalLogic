@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.WeakCanonical.RealModel.Shuffle
+import FormalSystem.Metalogic.WeakCanonical.ColourOrders
 
 /-!
 # The `ℝ`-extension of the shuffle
@@ -133,6 +134,33 @@ theorem isShuffleMapReal_shuffleColourReal {ι : Type} {S : Finset ι} {γ₁ : 
       lt_trans (by exact_mod_cast ht₂) hq₂s, ?_⟩
     rw [shuffleColourReal_rat, hteq]
 
+/-! ### The two shuffle colourings, in the form the coloured-order game consumes
+
+`IsShuffleMap` / `IsShuffleMapReal` state Reynolds' density condition for the concrete index
+orders `ℚ` and `ℝ`. `IsShuffleColouring` (`ColourOrders.lean`) states it for an arbitrary index
+order, adding the endpoint and nonemptiness clauses that `ℚ` and `ℝ` satisfy outright. These two
+lemmas are the bridge, and they are what lets `kEquiv_colourStructure` be applied to the pair
+`(ℚ, σ)`, `(ℝ, σ*)`.
+-/
+
+/-- `σ` is a shuffle colouring of `ℚ` over the palette `S`. -/
+theorem isShuffleColouring_of_isShuffleMap {ι : Type} {S : Finset ι} {σ : ℚ → ι}
+    (hσ : IsShuffleMap S σ) : IsShuffleColouring (↑S : Set ι) σ where
+  mem_palette i := Finset.mem_coe.mpr (hσ.1 i)
+  colour_dense z hz x y hxy := hσ.2 z (Finset.mem_coe.mp hz) x y hxy
+  exists_lt x := ⟨x - 1, by linarith⟩
+  exists_gt x := ⟨x + 1, by linarith⟩
+  nonempty := ⟨0⟩
+
+/-- `σ*` is a shuffle colouring of `ℝ` over the same palette `S`. -/
+theorem isShuffleColouring_of_isShuffleMapReal {ι : Type} {S : Finset ι} {π : ℝ → ι}
+    (hπ : IsShuffleMapReal S π) : IsShuffleColouring (↑S : Set ι) π where
+  mem_palette r := Finset.mem_coe.mpr (hπ.1 r)
+  colour_dense z hz x y hxy := hπ.2 z (Finset.mem_coe.mp hz) x y hxy
+  exists_lt x := ⟨x - 1, by linarith⟩
+  exists_gt x := ⟨x + 1, by linarith⟩
+  nonempty := ⟨0⟩
+
 /-- **`Σ_{r∈ℝ} σ*(r)`** (printed p.188): the `ℝ`-extension of the shuffle. -/
 noncomputable def shuffleReal {ι : Type} (N : ι → OrderedMonadicStructure sig) (γ₁ : ι)
     (σ : ℚ → ι) : OrderedMonadicStructure sig :=
@@ -144,25 +172,11 @@ The `Z`-coloured index order of the source statement is rendered as a monadic st
 own right, over a signature whose predicate symbols *are* the colours. With `Z := KType sig k`
 and the colour of an index `i` its summand's `k`-type, `colourStructure` is literally
 `(I, {i | m(i) ⊨ σ})_{σ∈Z}`.
+
+`colourSig`, `colourStructure` and `kTypeColouring` live in `ColourOrders.lean`, together with
+the proof that any two shuffle colourings over a common palette give `≡ₖ` coloured orders. Only
+the *mixing* half of Doets 3.1.8 is open, and it is stated here.
 -/
-
-/-- The signature whose unary predicates are the colours of a palette `ι`. -/
-def colourSig (ι : Type) : MonadicSignature where
-  preds := ι
-
-/-- **The `Z`-coloured index order as a structure**: carrier the index order, and the predicate
-`p` true exactly at the indices coloured `p`. -/
-def colourStructure {ι : Type} (I : Type) [LinearOrder I] (c : I → ι) :
-    OrderedMonadicStructure (colourSig ι) where
-  carrier := I
-  interp := fun p i => c i = p
-  carrierOrder := inferInstance
-
-/-- The `k`-type colouring of an index set by its summands — *"which sentences of `Z` does the
-summand at `i` satisfy"*, in the source's notation `{i | m(i) ⊨ σ}`. -/
-noncomputable def kTypeColouring (sig : MonadicSignature) (k : Nat) {I : Type} [LinearOrder I]
-    (m : I → OrderedMonadicStructure sig) : OrderedMonadicStructure (colourSig (KType sig k)) :=
-  colourStructure I (fun i => kTypeOf sig k (m i))
 
 /--
 **Doets 1987, 3.1.8** — *the mixing lemma*:
@@ -178,16 +192,27 @@ invokes as *"another simple game argument"* when he passes from the `ℚ`-shuffl
 **STRATEGIC SORRY — unproved.** The proof is an Ehrenfeucht-Fraïssé argument on the two sums:
 Duplicator's strategy is assembled from a depth-`n` strategy on the coloured index orders
 together with, at each matched pair of indices, a depth-`n` strategy inside the corresponding
-summands (available because matched indices carry the same `k`-type). `NEquivalence.lean`'s
-`sum_nf_agree` / `sum_lift_one_var` apparatus carries out exactly this induction for the
-*shared*-index case; generalizing it to a coloured back-and-forth between two *different* index
-sets is the missing work, and it is a phase-sized piece of formalization in its own right rather
-than a gap in an otherwise complete proof.
+summands (available because matched indices carry the same `k`-type).
 
-**FOLLOW-UP**: *Generalize `NEquivalence.lean`'s `sum_nf_agree` normal-form induction from a
-shared index set to a coloured correspondence between two index sets, and discharge this
-`sorry`.* Until then every consumer of this lemma is conditional on it, and this module's
-`kEquiv_shuffle_shuffleReal` is the only such consumer.
+The *engine* for that argument is now in the tree. `BackAndForth.lean` supplies `BackForth`, the
+back-and-forth relation for an arbitrary **pair** of structures, and `kEquiv_iff_backForth`,
+which converts between it and `≡ₖ` in both directions. Applied to the hypothesis, it turns
+`_hcol` into a depth-`k` strategy on the coloured index orders; applied to `kTypeOf`-equality of
+matched summands, it supplies a depth-`k` strategy inside each matched pair; applied to the
+conclusion, it reduces the goal to exhibiting a strategy on the sums.
+
+**What remains** is the bookkeeping that assembles those strategies into one: the invariant
+carried down the induction must record, for each already-matched pair of indices `(i, j)`, the
+sub-tuple of environment positions lying in that pair of summands and a strategy relating them —
+the two-index analogue of `NEquivalence.lean`'s `CompData` (`:333`) and `build_bicompat`
+(`:512`). Phrased through `BackForth` rather than through normal-form agreement it avoids
+`CompData`'s dependent `NormalForm`-type casts, but it is still a phase-sized piece of
+formalization in its own right rather than a gap in an otherwise complete proof.
+
+**FOLLOW-UP**: *Build the two-index analogue of `CompData`/`build_bicompat` over
+`BackAndForth.lean`'s `BackForth`, and discharge this `sorry`.* Until then every consumer of
+this lemma is conditional on it, and this module's `kEquiv_shuffle_shuffleReal` is the only such
+consumer.
 
 **Nothing else in this module rests on it.** The order-theoretic properties of `R`
 (`denselyOrdered_orderedSumReal`, `noMax_orderedSumReal`, `noMin_orderedSumReal`,
@@ -207,21 +232,25 @@ theorem doets_lemma_1_5 (k : Nat) {I J : Type} [LinearOrder I] [LinearOrder J]
 game argument"* — without proof; the argument he is pointing at is Doets' mixing lemma, carried
 here as `doets_lemma_1_5`.
 
-The hypothesis `hcol` is the `≡ₖ` fact about the two **coloured index orders** that the mixing
-lemma reduces the claim to: `(ℚ, σ)` and `(ℝ, σ*)` satisfy the same monadic sentences of depth
-`≤ k` in the language of the colours. It is true — both are dense endpointless orders coloured by
-the same finite palette with every colour dense, and the colour-preserving back-and-forth wins
-the depth-`k` game — but it is *not* proved in this tree, so it is carried as an explicit
-hypothesis rather than silently assumed. Discharging it is the second half of the follow-up
-recorded on `doets_lemma_1_5`.
+The `≡ₖ` fact about the two **coloured index orders** that the mixing lemma reduces the claim to
+— that `(ℚ, σ)` and `(ℝ, σ*)` satisfy the same monadic sentences of depth `≤ k` in the language
+of the colours — is now **proved**, by `kEquiv_colourStructure` (`ColourOrders.lean`): both are
+dense endpointless orders coloured by the same palette with every colour dense in every
+interval, so the colour-preserving back-and-forth wins the depth-`k` game. It was carried as an
+explicit hypothesis `hcol` while it was open; that hypothesis is gone, replaced by the shuffle
+data `hγ` and `hσ` it was always a consequence of.
+
+The only thing this theorem is still conditional on is `doets_lemma_1_5` itself.
 -/
-theorem kEquiv_shuffle_shuffleReal (k : Nat) {ι : Type} (N : ι → OrderedMonadicStructure sig)
-    (γ₁ : ι) (σ : ℚ → ι)
-    (hcol : KEquiv (colourSig (KType sig k)) k
-      (kTypeColouring sig k (fun q : ℚ => N (σ q)))
-      (kTypeColouring sig k (fun r : ℝ => N (shuffleColourReal γ₁ σ r)))) :
+theorem kEquiv_shuffle_shuffleReal (k : Nat) {ι : Type} {S : Finset ι}
+    (N : ι → OrderedMonadicStructure sig) {γ₁ : ι} {σ : ℚ → ι}
+    (hγ : γ₁ ∈ S) (hσ : IsShuffleMap S σ) :
     KEquiv sig k (shuffle N σ) (shuffleReal N γ₁ σ) :=
-  doets_lemma_1_5 k _ _ hcol
+  doets_lemma_1_5 k _ _
+    (kEquiv_colourStructure
+      ((isShuffleColouring_of_isShuffleMap hσ).map (fun i => kTypeOf sig k (N i)))
+      ((isShuffleColouring_of_isShuffleMapReal
+        (isShuffleMapReal_shuffleColourReal hγ hσ)).map (fun i => kTypeOf sig k (N i))) k)
 
 /-! ## The flow `R` of `Σ_{r∈ℝ} σ*(r)`
 
