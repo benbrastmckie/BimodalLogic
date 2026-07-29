@@ -210,7 +210,18 @@ concurrently.
 
 ---
 
-### Phase 3: Derivation scaffolding for the CO derivation [NOT STARTED]
+### Phase 3: Derivation scaffolding for the CO derivation [COMPLETED]
+
+**Implementation note (Phase 3)**: the three `△`-eliminators are landed at the plan's exact
+names and statements (`alwaysElimPast` / `alwaysElimHere` / `alwaysElimFuture`, `fc`-generic),
+but their proofs delegate to the pre-existing `FrameClass.Base` conjunction-eliminators
+`TemporalDerived.alwaysImpAllPast` / `alwaysToPresent` / `alwaysImpAllFuture` lifted via
+`DerivationTree.lift`, rather than re-deriving the conjunction elimination from scratch. The
+"point-shifting helper(s)" slot is filled by three lemmas rather than one — `L2`
+(`someFutureAllPastImp`), `L1` (`someFutureAllPastUntlTop`), `L3` (`snceAllPastAndImp`) — which
+is what the Finding 3(c) sketch actually needs; all three are built from `untilMonoGuard` /
+`untilMonoEvent` / `sinceMonoGuard` / `sinceMonoEvent` plus `deductionTheorem`, as the plan
+specified, and all sit at an arbitrary `fc` (no `.Dedekind` restatement was needed).
 
 - **Goal:** The reusable Hilbert-side helper derivations the CO proof needs exist and are green,
   independently of whether the full CO derivation lands.

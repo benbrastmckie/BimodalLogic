@@ -12,6 +12,7 @@ import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.ModalS4
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.GeneralizedNecessitation
+import FormalSystem.Theorems.DedekindDerived
 /-!
 # FormalSystem.Theorems - Key Theorems
 
@@ -28,6 +29,8 @@ pairing, notNotIntro)
 - `ModalS4`: S4 nested modality theorems (diamond_box_conj, box_diamond_box distributions)
 - `Perpetuity`: Perpetuity principles P1-P6 connecting modal and temporal operators
 - `GeneralizedNecessitation`: Generalized modal and temporal K rules (derived theorems)
+- `DedekindDerived`: Dedekind-class derived theorems -- the point-shifting scaffolding and
+`co_derived`, which derives the paper's CO principle from the Reynolds gap basis
 ## Status
 
 ### Propositional & Combinators

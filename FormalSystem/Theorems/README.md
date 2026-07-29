@@ -11,6 +11,7 @@ derivations), organized by topic. These are distinguished from metalogical resul
 | File | Lines | Description |
 |------|-------|-------------|
 | `Combinators.lean` | 675 | Propositional combinator lemmas: I, K, S, B, C, composition |
+| `DedekindDerived.lean` | 400 | Dedekind-class derived theorems: `△`-eliminators, the `F(Hψ) → ψ` / `F(Hψ) → U(⊤,ψ)` / `S(Hψ∧ψ,ψ) → Hψ` point-shifting lemmas, and `co_derived` (the paper's CO principle derived from the Reynolds gap basis) |
 | `GeneralizedNecessitation.lean` | 240 | Generalized necessitation rules for modal and temporal operators |
 | `ModalS4.lean` | 468 | S4 modal theorems: consequences of T, 4, K axioms |
 | `ModalS5.lean` | 859 | S5 modal theorems: consequences of T, 4, B, 5 axioms |
