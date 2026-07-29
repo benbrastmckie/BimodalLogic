@@ -754,6 +754,73 @@ theorem SatState.gt_of_mem_pastOf {M : TaskModel F} {Om : Set (WorldHistory F)}
     exact lt_of_pathN_directPastOf hst.ordResp m s t' (by simpa [Nat.add_comm] using hp)
 
 /-!
+### The fresh-time producers' ordering obligation is not discharged by freshness alone
+
+The bridge above is what the four temporal *universal* rules consume, and it costs the producers
+nothing, because those four return `timeOrd` untouched. The six fresh-time *producers* —
+`allFutureNeg`, `allPastNeg`, `someFuturePos`, `somePastPos`, and the `untl`/`snce` fresh-time
+arms — are a different matter, and this subsection records a gap in `RuleSound`'s statement that
+was found while attempting them, measured rather than argued.
+
+The intended argument is the one the module docstring states: `branch.nextTime` is absent from
+`b` (`Tableau.not_mem_of_time_nextTime`), so a one-point update of `tv` at the fresh index leaves
+every branch formula satisfied, and the single new edge `(l.time, freshTime)` is discharged by
+the witness time the update chose. **The step that fails is `ordResp` on the *tail*.**
+
+`Branch.nextTime` is `b.maxTime + 1` (`SignedFormula.lean:380`): a function of the *branch*
+alone. `SatState` has four fields and not one of them relates the times occurring in
+`ord.constraints` to the times occurring in `b`. `RuleSound` quantifies over `b` and `ord`
+independently. So `ord` may already mention `b.nextTime`, and since `addFuture` merely conses
+(`addFuture ord t tNew = ⟨(t, tNew) :: ord.constraints⟩`, `SignedFormula.lean:685`), the
+successor ordering can be cyclic — and then *no* re-choice of `tv` satisfies it, which is what
+the two theorems below prove outright. The freedom `SatResult` grants the successor to re-choose
+`hist` and `tv` is therefore not enough: the obligation is unsatisfiable, not merely hard.
+
+This is a defect in the *statement*, not in the engine. The engine threads its ordering from
+`TimeOrdering.empty` and only ever adds an edge to a genuinely fresh index, so every ordering it
+actually builds has all its times occurring on the branch; the cyclic orderings refuted below are
+not ones it constructs. Two remedies were considered and **both are escalated rather than taken
+here**, because each changes a definition this phase's sixteen landed rules are stated against:
+
+1. **A fifth `SatState` field** bounding `ord`'s times by `b.nextTime`. Measured obstruction:
+   any such field mentions `b` *positively*, and `SatState.mono` (line 152) weakens `b` to a
+   sublist `b'` with `b'.nextTime ≤ b.nextTime`. The field would not survive `mono`, and `mono`
+   is consumed throughout. This remedy is not merely costly; it is blocked as stated.
+2. **A well-formedness hypothesis on `RuleSound`** — `∀ p ∈ ord.constraints, p.1 < b.nextTime ∧
+   p.2 < b.nextTime`. This survives `mono` (it is not a `SatState` field), costs the sixteen
+   landed proofs one `intro` each, and is discharged at the assembly by induction from
+   `TimeOrdering.empty`. It is a genuine weakening of `RuleSound` and must be approved as such.
+
+Remedy 2 is *not* the schedule-reachability weakening that was measured and closed earlier: it
+does not restrict which branches the engine builds, and it is not tailored to exclude a
+counterexample. It is a well-formedness condition on the `(branch, ordering)` pair, discharged
+by construction rather than assumed. The distinction is real, and the choice is still the user's.
+-/
+
+/-- **The gap, proved.** If `ord` already records `b.nextTime` as lying *before* `t`, then the
+edge `allFutureNeg` conses on closes a cycle, and the successor's `ordResp` obligation has no
+solution at all — not for the `tv` it was handed, and not for any `tv` it might re-choose. -/
+theorem addFuture_nextTime_cycle_unsatisfiable (b : Branch) (t : TimeIndex) :
+    ¬ ∃ tv : TimeIndex → D,
+      ∀ p ∈ (TimeOrdering.addFuture ⟨[(b.nextTime, t)]⟩ t b.nextTime).constraints,
+        tv p.1 < tv p.2 := by
+  rintro ⟨tv, h⟩
+  have h1 : tv t < tv b.nextTime := h (t, b.nextTime) (by simp [TimeOrdering.addFuture])
+  have h2 : tv b.nextTime < tv t := h (b.nextTime, t) (by simp [TimeOrdering.addFuture])
+  exact absurd h1 (lt_asymm h2)
+
+/-- The past mirror. `addPast ord t tNew` conses `(tNew, t)`, so the cycle is closed by an `ord`
+that already records `b.nextTime` as lying *after* `t`. -/
+theorem addPast_nextTime_cycle_unsatisfiable (b : Branch) (t : TimeIndex) :
+    ¬ ∃ tv : TimeIndex → D,
+      ∀ p ∈ (TimeOrdering.addPast ⟨[(t, b.nextTime)]⟩ t b.nextTime).constraints,
+        tv p.1 < tv p.2 := by
+  rintro ⟨tv, h⟩
+  have h1 : tv b.nextTime < tv t := h (b.nextTime, t) (by simp [TimeOrdering.addPast])
+  have h2 : tv t < tv b.nextTime := h (t, b.nextTime) (by simp [TimeOrdering.addPast])
+  exact absurd h1 (lt_asymm h2)
+
+/-!
 ## The temporal universal family
 
 Four rules, one shape. Each reads a *universal* temporal formula at a label, and copies its
