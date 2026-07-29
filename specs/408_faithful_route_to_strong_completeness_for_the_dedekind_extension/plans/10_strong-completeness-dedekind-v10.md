@@ -4325,39 +4325,47 @@ for the repaired formula**.
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 25: Reynolds §8 Lemma 12 — `ε(x,y)` defines `∼_M`, and the finite `γ`-set [IN PROGRESS]
+### Phase 25: Reynolds §8 Lemma 12 — `ε(x,y)` defines `∼_M`, and the finite `γ`-set [COMPLETED]
 
 - **Goal**: *"There is a monadic formula `ε(x,y)` which defines `∼_M` as a contemporaneous
   equivalence relation on the domain of any `M`. Furthermore, there is a finite set `{γᵢ}` of
   sentences such that `M` is good if and only if `M ⊨ γᵢ` for some `i`."*
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/RealModel/EpsilonDense.lean` (new).
 - **Tasks**:
-  - [ ] Define `∼_M` by Reynolds' three clauses (printed p.186): `a = b`, or `a < b` and `M|(a,b)`
-        very good, or `b < a` and `M|(b,a)` very good.
-  - [ ] Land the finite `γ`-set: *"There are only finitely many logically inequivalent maximal
+  - [x] Define `∼_M` by Reynolds' three clauses (printed p.186): `a = b`, or `a < b` and `M|(a,b)`
+        very good, or `b < a` and `M|(b,a)` very good. *(landed as `SimDense`)*
+  - [x] Land the finite `γ`-set: *"There are only finitely many logically inequivalent maximal
         consistent conjunctions `γ` of sentences of quantifier depth `≤ k`"* — consume the tree's
         `NormalForm` / `nf_nvar_exist_all_depths` layer rather than rebuilding it, and record which
         declarations discharge finiteness. **Note the `hn : n ≤ 1` restriction inherited from
         Phase 14.**
-  - [ ] Define `ε(x,y)` verbatim from printed p.187, via `γ(z,t)` = relativization of `⋁γᵢ` to
+  - [x] Define `ε(x,y)` verbatim from printed p.187, via `γ(z,t)` = relativization of `⋁γᵢ` to
         `(z,t)` and `γ'(z,t) = γ(z,t) ∧ ∃u(z<u<t)`. **This is already prepaid — instantiate, do not
         build.** Phase 19 landed relativization at **arbitrary arity** as `relativizeAt` / `evalOn`
         with the soundness theorem `eval_relativizeAt` (`Lemma5.lean`), of which
         `relativizeToClass` is only the sentence case. The two-variable `γ(z,t)` this task needs is
         covered by `relativizeAt` as it stands. Note the **open**-interval relativization, versus
         the closed `[z,t]` of the discrete Lemma 15.
-  - [ ] Prove `ε` defines `∼_M` and that `∼_M` is a contemporaneous equivalence relation, with the
+  - [x] Prove `ε` defines `∼_M` and that `∼_M` is a contemporaneous equivalence relation, with the
         transitivity argument transcribed (the `a < t < b < u < c` case via `R₁ + R₂ + R₃`).
-  - [ ] Docstring: `Reynolds 1992, §8 Lemma 12, printed pp.186-187`, plus `ADAPTED-FROM` naming
+        *(deviation: altered — the three clauses are landed as the standalone theorems
+        `simDense_equivalence` / `simDense_convex` / `simDense_contemporary` and bundled by
+        `epsDense_isContempEquiv` at `[Countable M.carrier] [DenselyOrdered M.carrier]`, not as the
+        `∀ M`-quantified `IsContempEquivDense (epsDense sig k)` structure. Reynolds' "any `M`" is
+        not supportable: transitivity needs Lemma 11 (countability) and, at the boundary case, is
+        outright **false** without density — a counterexample is recorded in the module header. Both
+        hypotheses hold at Doets' theorem's `M`, so Phase 29's consumption is unaffected; see the
+        handoff note for the one adapter Phase 29 must supply.)*
+  - [x] Docstring: `Reynolds 1992, §8 Lemma 12, printed pp.186-187`, plus `ADAPTED-FROM` naming
         Lemma 15 (printed p.191) and the closed/open difference.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
 - **Estimated output**: ~400 lines.
 - **Done when**: `ε`, the `γ`-set, and both properties are sorry-free and axiom-clean.
 - **Depends on**: 22. **Parallel-eligible with Phase 24** (disjoint files).
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 26: Reynolds §8 Lemma 13 and the `ℚ`-shuffle [NOT STARTED]
+### Phase 26: Reynolds §8 Lemma 13 and the `ℚ`-shuffle [IN PROGRESS]
 
 - **Goal**: *"For any structure `M`, if there are no `∼_M` classes ending at gaps then they are all
   closed intervals"* (Lemma 13), and the shuffle `Σ_{t∈ℚ} π(t)` with its `≡ₖ` property.

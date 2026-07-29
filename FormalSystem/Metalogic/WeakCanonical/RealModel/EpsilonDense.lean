@@ -684,4 +684,375 @@ theorem simDense_contemporary (k : Nat) (M : OrderedMonadicStructure sig) (a b :
     · exact Or.inr (Or.inl ⟨h, (veryGoodDense_subOpen_iff k M (min a b) (max a b) _ _).mp hv⟩)
     · exact Or.inr (Or.inr ⟨h, (veryGoodDense_subOpen_iff k M (min a b) (max a b) _ _).mp hv⟩)
 
+/-! ## `R_1 + R_2 + R_3`: the transitivity sum
+
+*"Choose `R_1 ≡_k M | (t,b)`, `R_2 = M | {b}` and `R_3 ≡_k M | (b,u)` each with flow a subset of
+`ℝ`. Then we know that `M | (t,u) ≡_k R_1 + R_2 + R_3` whose flow is isomorphic to `ℝ` itself"*
+(printed p.187).
+
+`GoodDense.lean` supplies the two one-sided sums `M | {a} + S` and `S + M | {b}`; the middle
+step here needs a genuinely binary sum with **both** summands general, so `binSum` is added, and
+with it the real block that realizes a concatenation of two abutting real intervals.
+
+Note *why* the concatenated flow is again an interval of `ℝ`: `R_1` inherits `M | (t,b)`'s lack
+of a right end point (`noMaxOrder_of_kEquiv`, which is where `2 ≤ k` is spent), so no two
+consecutive points arise at the seam. Without that, the sum would have a jump and no ordered
+subset of `ℝ` could realize it.
+-/
+
+/-- The two-element family `[X, Y]` whose lexicographic sum is `X + Y`. -/
+noncomputable def binSumFamily (sig : MonadicSignature) (X Y : OrderedMonadicStructure sig) :
+    Bool → OrderedMonadicStructure sig :=
+  fun c => if c = false then X else Y
+
+/-- The binary lexicographic sum `X + Y`, both summands general. -/
+noncomputable def binSum (sig : MonadicSignature) (X Y : OrderedMonadicStructure sig) :
+    OrderedMonadicStructure sig :=
+  orderedSum sig Bool (binSumFamily sig X Y)
+
+/-- `+` preserves `k`-equivalence in both arguments: one application of `doets_lemma_1_4`. -/
+theorem kEquiv_binSum (k : Nat) {X X' Y Y' : OrderedMonadicStructure sig}
+    (hX : KEquiv sig k X X') (hY : KEquiv sig k Y Y') :
+    KEquiv sig k (binSum sig X Y) (binSum sig X' Y') :=
+  doets_lemma_1_4 sig k Bool _ _ (fun c => by
+    simp only [binSumFamily]
+    split
+    · exact hX
+    · exact hY)
+
+/-- The real block realizing `R₁ + R₂` when `R₁`'s flow lies entirely below `R₂`'s and the union
+    is again an interval. -/
+noncomputable def catBlock (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (R₁ R₂ : RIntervalStructure sig)
+    (hoc : (R₁.carrierSet ∪ R₂.carrierSet).OrdConnected) : RIntervalStructure sig where
+  carrierSet := R₁.carrierSet ∪ R₂.carrierSet
+  ordConnected := hoc
+  interp p x := (x ∈ R₁.carrierSet ∧ R₁.interp p x) ∨ (x ∉ R₁.carrierSet ∧ R₂.interp p x)
+
+/-- `R₁ + R₂ ≡_k` the concatenated real block. -/
+theorem kEquiv_binSum_catBlock (k : Nat) (R₁ R₂ : RIntervalStructure sig)
+    (hoc : (R₁.carrierSet ∪ R₂.carrierSet).OrdConnected)
+    (hsep : ∀ x ∈ R₁.carrierSet, ∀ y ∈ R₂.carrierSet, x < y) :
+    KEquiv sig k (binSum sig (R₁.toOrdered sig) (R₂.toOrdered sig))
+      ((catBlock sig R₁ R₂ hoc).toOrdered sig) := by
+  classical
+  letI fam := binSumFamily sig (R₁.toOrdered sig) (R₂.toOrdered sig)
+  letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
+    (orderedSum sig Bool fam).carrierOrder
+  have hdisj : ∀ y ∈ R₂.carrierSet, y ∉ R₁.carrierSet :=
+    fun y hy h1 => absurd (hsep y h1 y hy) (lt_irrefl y)
+  let e : ((catBlock sig R₁ R₂ hoc).toOrdered sig).carrier ≃
+      (orderedSum sig Bool fam).carrier := {
+    toFun := fun x =>
+      if h : x.val ∈ R₁.carrierSet then orderedSumPt (ms := fam) false ⟨x.val, h⟩
+      else orderedSumPt (ms := fam) true ⟨x.val, x.property.resolve_left h⟩
+    invFun := fun w => match w with
+      | ⟨false, y⟩ => ⟨y.val, Or.inl y.property⟩
+      | ⟨true, y⟩ => ⟨y.val, Or.inr y.property⟩
+    left_inv := by
+      intro x
+      by_cases h : x.val ∈ R₁.carrierSet
+      · simp only [dif_pos h]; exact Subtype.ext rfl
+      · simp only [dif_neg h]; exact Subtype.ext rfl
+    right_inv := by
+      intro ⟨cw, w⟩
+      match cw with
+      | false =>
+        simp only [dif_pos w.property]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+      | true =>
+        simp only [dif_neg (hdisj w.val w.property)]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+  }
+  have hm1 : Monotone e := by
+    intro x y (hxy : x.val ≤ y.val)
+    simp only [e, Equiv.coe_fn_mk]
+    split_ifs with hx hy hy
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+    · exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
+    · exact absurd (hsep y.val hy x.val (x.property.resolve_left hx)) (not_lt.mpr hxy)
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+  have hm2 : Monotone e.symm := by
+    intro w w' hww
+    obtain ⟨cw, w⟩ := w; obtain ⟨cw', w'⟩ := w'
+    have hww' := Sigma.Lex.le_def.mp hww
+    change ((e.symm ⟨cw, w⟩).val ≤ (e.symm ⟨cw', w'⟩).val)
+    revert hww'; cases cw <;> cases cw' <;> simp only [e, Equiv.coe_fn_symm_mk] <;> intro hww'
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+    · exact le_of_lt (hsep w.val w.property w'.val w'.property)
+    · rcases hww' with h | ⟨h, _⟩
+      · exact absurd h (by decide)
+      · exact absurd h (by decide)
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+  have h_pred : ∀ (p : sig.preds) (x : ((catBlock sig R₁ R₂ hoc).toOrdered sig).carrier),
+      ((catBlock sig R₁ R₂ hoc).toOrdered sig).interp p x ↔
+        (orderedSum sig Bool fam).interp p (e x) := by
+    intro p x
+    have he : e x =
+        if h : x.val ∈ R₁.carrierSet then orderedSumPt (ms := fam) false ⟨x.val, h⟩
+        else orderedSumPt (ms := fam) true ⟨x.val, x.property.resolve_left h⟩ := rfl
+    have hL : ((catBlock sig R₁ R₂ hoc).toOrdered sig).interp p x
+        = ((x.val ∈ R₁.carrierSet ∧ R₁.interp p x.val) ∨
+            (x.val ∉ R₁.carrierSet ∧ R₂.interp p x.val)) := rfl
+    rw [hL, he]
+    by_cases h : x.val ∈ R₁.carrierSet
+    · rw [dif_pos h]
+      simp only [fam, binSumFamily, orderedSumPt, RIntervalStructure.toOrdered, orderedSum,
+        h, not_true_eq_false, false_and, or_false, true_and]
+      simp
+    · rw [dif_neg h]
+      simp only [fam, binSumFamily, orderedSumPt, RIntervalStructure.toOrdered, orderedSum,
+        h, false_and, false_or, not_false_eq_true, true_and]
+      simp
+  exact (k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred).symm
+
+/-- `Ioo 0 1 ∪ Ico 1 2 = Ioo 0 2`: the seam of the transitivity sum closes up. -/
+theorem ioo_union_ico : Set.Ioo (0 : ℝ) 1 ∪ Set.Ico (1 : ℝ) 2 = Set.Ioo (0 : ℝ) 2 := by
+  ext x
+  simp only [Set.mem_union, Set.mem_Ioo, Set.mem_Ico]
+  constructor
+  · rintro (⟨h1, h2⟩ | ⟨h1, h2⟩)
+    · exact ⟨h1, by linarith⟩
+    · exact ⟨by linarith, h2⟩
+  · rintro ⟨h1, h2⟩
+    by_cases h : x < 1
+    · exact Or.inl ⟨h1, h⟩
+    · exact Or.inr ⟨not_lt.mp h, h2⟩
+
+/--
+**`X + M | {b} + Y` is good** when `X` and `Y` are good and end-point-free.
+
+`X` goes onto `(0,1)`, the point `b` onto `1`, and `Y` onto `(1,2)`; the flow of the sum is
+`(0,2)`, again an interval of `ℝ`.
+-/
+theorem goodDense_binSum_pointSum (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    (b : M.carrier) (X Y : OrderedMonadicStructure sig)
+    [Nonempty X.carrier] [NoMaxOrder X.carrier] [NoMinOrder X.carrier]
+    [Nonempty Y.carrier] [NoMaxOrder Y.carrier] [NoMinOrder Y.carrier]
+    (hX : goodDense sig k X) (hY : goodDense sig k Y) :
+    goodDense sig k (binSum sig X (pointSum sig M b Y)) := by
+  obtain ⟨R₁, hR₁car, hR₁⟩ := exists_ioo_witness sig k hk X hX (by norm_num : (0 : ℝ) < 1)
+  obtain ⟨R₂, hR₂car, hR₂⟩ := exists_ioo_witness sig k hk Y hY (by norm_num : (1 : ℝ) < 2)
+  have h2 : KEquiv sig k (pointSum sig M b Y) ((icoBlock sig M b R₂ 1 2).toOrdered sig) :=
+    (kEquiv_pointSum sig k M b hR₂).trans
+      (kEquiv_pointSum_icoBlock sig k M b R₂ (by norm_num) hR₂car)
+  have hcar : R₁.carrierSet ∪ (icoBlock sig M b R₂ 1 2).carrierSet = Set.Ioo (0 : ℝ) 2 := by
+    rw [hR₁car]
+    exact ioo_union_ico
+  have hoc : (R₁.carrierSet ∪ (icoBlock sig M b R₂ 1 2).carrierSet).OrdConnected := by
+    rw [hcar]; exact Set.ordConnected_Ioo
+  have hsep : ∀ x ∈ R₁.carrierSet, ∀ y ∈ (icoBlock sig M b R₂ 1 2).carrierSet, x < y := by
+    intro x hx y hy
+    rw [hR₁car] at hx
+    have hy' : (1 : ℝ) ≤ y ∧ y < 2 := hy
+    linarith [hx.2, hy'.1]
+  exact ⟨catBlock sig R₁ (icoBlock sig M b R₂ 1 2) hoc,
+    (kEquiv_binSum k hR₁ h2).trans (kEquiv_binSum_catBlock k R₁ _ hoc hsep)⟩
+
+/-- `M | (t,u) ≡_k M | (t,b) + M | [b,u)` for `t < b < u`: splitting the open interval at an
+    interior point, with the point itself heading the second block. -/
+theorem kEquiv_openSub_split (k : Nat) (M : OrderedMonadicStructure sig) (t b u : M.carrier)
+    (htb : t < b) (hbu : b < u) :
+    KEquiv sig k (M.openSubinterval sig t u)
+      (binSum sig (M.openSubinterval sig t b) (M.halfOpenSubinterval sig b u)) := by
+  classical
+  letI fam := binSumFamily sig (M.openSubinterval sig t b) (M.halfOpenSubinterval sig b u)
+  letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
+    (orderedSum sig Bool fam).carrierOrder
+  let e : (M.openSubinterval sig t u).carrier ≃ (orderedSum sig Bool fam).carrier := {
+    toFun := fun x =>
+      if h : x.val < b then orderedSumPt (ms := fam) false ⟨x.val, x.property.1, h⟩
+      else orderedSumPt (ms := fam) true ⟨x.val, not_lt.mp h, x.property.2⟩
+    invFun := fun w => match w with
+      | ⟨false, y⟩ => ⟨y.val, y.property.1, lt_trans y.property.2 hbu⟩
+      | ⟨true, y⟩ => ⟨y.val, lt_of_lt_of_le htb y.property.1, y.property.2⟩
+    left_inv := by
+      intro x
+      by_cases h : x.val < b
+      · simp only [dif_pos h]; exact Subtype.ext rfl
+      · simp only [dif_neg h]; exact Subtype.ext rfl
+    right_inv := by
+      intro ⟨cw, w⟩
+      match cw with
+      | false =>
+        simp only [dif_pos w.property.2]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+      | true =>
+        simp only [dif_neg (not_lt.mpr w.property.1)]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+  }
+  have hm1 : Monotone e := by
+    intro x y (hxy : x.val ≤ y.val)
+    simp only [e, Equiv.coe_fn_mk]
+    split_ifs with hx hy hy
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+    · exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
+    · exact absurd (lt_of_le_of_lt hxy hy) hx
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+  have hm2 : Monotone e.symm := by
+    intro w w' hww
+    obtain ⟨cw, w⟩ := w; obtain ⟨cw', w'⟩ := w'
+    have hww' := Sigma.Lex.le_def.mp hww
+    change ((e.symm ⟨cw, w⟩).val ≤ (e.symm ⟨cw', w'⟩).val)
+    revert hww'; cases cw <;> cases cw' <;> simp only [e, Equiv.coe_fn_symm_mk] <;> intro hww'
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+    · exact le_of_lt (lt_of_lt_of_le w.property.2 w'.property.1)
+    · rcases hww' with h | ⟨h, _⟩
+      · exact absurd h (by decide)
+      · exact absurd h (by decide)
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+  have h_pred : ∀ (p : sig.preds) (x : (M.openSubinterval sig t u).carrier),
+      (M.openSubinterval sig t u).interp p x ↔ (orderedSum sig Bool fam).interp p (e x) := by
+    intro p x
+    have he : e x =
+        if h : x.val < b then orderedSumPt (ms := fam) false ⟨x.val, x.property.1, h⟩
+        else orderedSumPt (ms := fam) true ⟨x.val, not_lt.mp h, x.property.2⟩ := rfl
+    have hL : (M.openSubinterval sig t u).interp p x = M.interp p x.val := rfl
+    rw [hL, he]
+    split_ifs with h <;>
+      simp [fam, binSumFamily, orderedSumPt, OrderedMonadicStructure.openSubinterval,
+        OrderedMonadicStructure.halfOpenSubinterval, orderedSum]
+  exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred
+
+/-! ## Transitivity
+
+*"The difficult part is transitivity"* (printed p.187). See the module header for why
+`[Countable M.carrier]` and `[DenselyOrdered M.carrier]` appear: the first is Lemma 11's
+hypothesis, the second is what makes the boundary case of the source's argument true.
+-/
+
+/--
+**The core of transitivity**: for `a < b < c`, if `M | (a,b)` and `M | (b,c)` are very good then
+so is `M | (a,c)`.
+
+The three cases are Reynolds' own: `t,u` on the same side of `b` (inheritance), and the straddling
+case `t < b < u`, which is the `R_1 + R_2 + R_3` argument.
+-/
+theorem veryGoodDense_openSub_trans (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] {a b c : M.carrier}
+    (h₁ : veryGoodDense sig k (M.openSubinterval sig a b))
+    (h₂ : veryGoodDense sig k (M.openSubinterval sig b c)) :
+    veryGoodDense sig k (M.openSubinterval sig a c) := by
+  rw [veryGoodDense_openSubinterval_iff]
+  intro t u hat htu huc
+  haveI hcount : Countable (M.openSubinterval sig t u).carrier :=
+    inferInstanceAs (Countable {x : M.carrier // t < x ∧ x < u})
+  refine ⟨?_, ?_⟩
+  · obtain ⟨x, hx1, hx2⟩ := exists_between htu
+    exact ⟨⟨x, hx1, hx2⟩⟩
+  by_cases hub : u ≤ b
+  · -- both on the left of `b`
+    exact reynolds_lemma11 sig k hk _
+      (veryGoodDense_openSubinterval_mono k h₁ (le_of_lt hat) hub)
+  by_cases hbt : b ≤ t
+  · -- both on the right of `b`
+    exact reynolds_lemma11 sig k hk _
+      (veryGoodDense_openSubinterval_mono k h₂ hbt (le_of_lt huc))
+  replace hbu : b < u := not_le.mp hub
+  replace htb : t < b := not_le.mp hbt
+  -- `t < b < u`: the lexicographic sum `M | (t,b) + M | {b} + M | (b,u)`
+  haveI : Countable (M.openSubinterval sig t b).carrier :=
+    inferInstanceAs (Countable {x : M.carrier // t < x ∧ x < b})
+  haveI : Countable (M.openSubinterval sig b u).carrier :=
+    inferInstanceAs (Countable {x : M.carrier // b < x ∧ x < u})
+  have hXvg : veryGoodDense sig k (M.openSubinterval sig t b) :=
+    veryGoodDense_openSubinterval_mono k h₁ (le_of_lt hat) (le_refl b)
+  have hYvg : veryGoodDense sig k (M.openSubinterval sig b u) :=
+    veryGoodDense_openSubinterval_mono k h₂ (le_refl b) (le_of_lt huc)
+  haveI : Nonempty (M.openSubinterval sig t b).carrier := by
+    obtain ⟨x, hx1, hx2⟩ := exists_between htb; exact ⟨⟨x, hx1, hx2⟩⟩
+  haveI : Nonempty (M.openSubinterval sig b u).carrier := by
+    obtain ⟨x, hx1, hx2⟩ := exists_between hbu; exact ⟨⟨x, hx1, hx2⟩⟩
+  haveI := noMaxOrder_openSubinterval sig M t b
+  haveI := noMinOrder_openSubinterval sig M t b
+  haveI := noMaxOrder_openSubinterval sig M b u
+  haveI := noMinOrder_openSubinterval sig M b u
+  have hsplit : KEquiv sig k (M.openSubinterval sig t u)
+      (binSum sig (M.openSubinterval sig t b)
+        (pointSum sig M b (M.openSubinterval sig b u))) :=
+    (kEquiv_openSub_split k M t b u htb hbu).trans
+      (kEquiv_binSum k (rfl : KEquiv sig k (M.openSubinterval sig t b) _) (kEquiv_halfOpen_pointSum sig k M b u hbu))
+  exact goodDense_of_kEquiv sig k hsplit
+    (goodDense_binSum_pointSum k hk M b _ _
+      (reynolds_lemma11 sig k hk _ hXvg) (reynolds_lemma11 sig k hk _ hYvg))
+
+/-- **`∼_M` is transitive** (printed p.187). -/
+theorem simDense_trans (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] {a b c : M.carrier}
+    (h₁ : SimDense sig k M a b) (h₂ : SimDense sig k M b c) : SimDense sig k M a c := by
+  rcases h₁ with rfl | ⟨hab, hv₁⟩ | ⟨hba, hv₁⟩
+  · exact h₂
+  · rcases h₂ with rfl | ⟨hbc, hv₂⟩ | ⟨hcb, hv₂⟩
+    · exact Or.inr (Or.inl ⟨hab, hv₁⟩)
+    · exact Or.inr (Or.inl ⟨lt_trans hab hbc,
+        veryGoodDense_openSub_trans k hk M hv₁ hv₂⟩)
+    · rcases lt_trichotomy a c with hac | rfl | hca
+      · exact Or.inr (Or.inl ⟨hac,
+          veryGoodDense_openSubinterval_mono k hv₁ (le_refl a) (le_of_lt hcb)⟩)
+      · exact Or.inl rfl
+      · exact Or.inr (Or.inr ⟨hca,
+          veryGoodDense_openSubinterval_mono k hv₂ (le_refl c) (le_of_lt hab)⟩)
+  · rcases h₂ with rfl | ⟨hbc, hv₂⟩ | ⟨hcb, hv₂⟩
+    · exact Or.inr (Or.inr ⟨hba, hv₁⟩)
+    · rcases lt_trichotomy a c with hac | rfl | hca
+      · exact Or.inr (Or.inl ⟨hac,
+          veryGoodDense_openSubinterval_mono k hv₂ (le_of_lt hba) (le_refl c)⟩)
+      · exact Or.inl rfl
+      · exact Or.inr (Or.inr ⟨hca,
+          veryGoodDense_openSubinterval_mono k hv₁ (le_of_lt hbc) (le_refl a)⟩)
+    · exact Or.inr (Or.inr ⟨lt_trans hcb hba,
+        veryGoodDense_openSub_trans k hk M hv₂ hv₁⟩)
+
+/--
+**`∼_M` is an equivalence relation** (printed p.187), on a countable densely ordered `M`.
+-/
+theorem simDense_equivalence (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] :
+    Equivalence (SimDense sig k M) where
+  refl := simDense_refl k M
+  symm := simDense_symm
+  trans := simDense_trans k hk M
+
+/--
+**`ε` defines `∼_M` as a contemporaneous equivalence relation** — Reynolds 1992, §8 Lemma 12,
+printed pp.186-187, assembled.
+
+The three components are exactly the clauses of `IsContempEquivDense`
+(`DenseModelSurgery/Defs.lean:234`), stated here for a countable densely ordered `M`. The bundled
+`IsContempEquivDense (epsDense sig k)` quantifies over **every** structure, and is therefore
+strictly stronger than what Lemma 12's proof supports — see the module header.
+-/
+theorem epsDense_isContempEquiv (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] :
+    Equivalence (ContempEquivDense M (epsDense sig k)) ∧
+    (∀ a b c : M.carrier, a ≤ b → b ≤ c →
+      ContempEquivDense M (epsDense sig k) a c → ContempEquivDense M (epsDense sig k) a b) ∧
+    (∀ a b : M.carrier, ContempEquivDense M (epsDense sig k) a b ↔
+      ContempEquivDense (M.subinterval sig (min a b) (max a b)) (epsDense sig k)
+        ⟨a, min_le_left a b, le_max_left a b⟩ ⟨b, min_le_right a b, le_max_right a b⟩) := by
+  refine ⟨?_, ?_, ?_⟩
+  · refine ⟨fun a => (contempEquivDense_epsDense_iff k M a a).mpr (simDense_refl k M a),
+      fun h => (contempEquivDense_epsDense_iff k M _ _).mpr
+        (simDense_symm ((contempEquivDense_epsDense_iff k M _ _).mp h)),
+      fun h₁ h₂ => (contempEquivDense_epsDense_iff k M _ _).mpr
+        (simDense_trans k hk M ((contempEquivDense_epsDense_iff k M _ _).mp h₁)
+          ((contempEquivDense_epsDense_iff k M _ _).mp h₂))⟩
+  · intro a b c hab hbc h
+    exact (contempEquivDense_epsDense_iff k M a b).mpr
+      (simDense_convex k M a b c hab hbc ((contempEquivDense_epsDense_iff k M a c).mp h))
+  · intro a b
+    exact (contempEquivDense_epsDense_iff k M a b).trans
+      ((simDense_contemporary k M a b).trans
+        (contempEquivDense_epsDense_iff k (M.subinterval sig (min a b) (max a b))
+          ⟨a, min_le_left a b, le_max_left a b⟩
+          ⟨b, min_le_right a b, le_max_right a b⟩).symm)
+
 end FormalSystem.Metalogic.WeakCanonical
