@@ -66,11 +66,11 @@ next_project_number: 420
 
 ### Documentation
 
-409 [RESEARCHED] — Systematically reconcile the LaTeX reference (latex/subfiles/, es
+409 [PLANNING] — Systematically reconcile the LaTeX reference (latex/subfiles/, es
 
 ### Strong Completeness
 
-361 [RESEARCHING] — Research + scoping for the completeness-terminology refactor and 
+361 [RESEARCHED] — Research + scoping for the completeness-terminology refactor and 
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
@@ -198,7 +198,7 @@ next_project_number: 420
 
 ### 409. Reconcile latex metalogic docs with live tree
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: None
@@ -318,10 +318,11 @@ DEPENDENCY STATUS (2026-07-27; dependencies array unchanged): 375 (discrete weak
 
 ### 361. Strong completeness architecture and weak terminus gap analysis
 - **Effort**: high
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: None
+- **Research**: [361_strong_completeness_architecture_and_weak_terminus_gap_analysis/reports/01_strong-completeness-architecture-gap-analysis.md]
 
 **Description**: Research + scoping for the completeness-terminology refactor and the genuine strong-completeness architecture. TERMINOLOGY IS SETTLED (2026-07-27): "strong completeness" is reserved for consequence from possibly-INFINITE premise sets (Γ : Set Formula) with finitary set-derivability (∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ). Finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong (see FormalSystem/Metalogic/StrongCompleteness.lean module docstring, reframed 2026-07-27, for the per-class programme).
 
