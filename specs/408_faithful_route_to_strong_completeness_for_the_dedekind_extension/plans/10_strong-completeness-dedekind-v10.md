@@ -4661,17 +4661,34 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
   p.187's *"`M` is not very good and so there are `a < b` with `a ≁ b`"*, both implications by
   Lemma 11 in contrapositive form.
 - **What is not proved**: `reynolds_theorem6_contradiction` — printed pp.187-188, the
-  `G`-minimality contradiction. **One `sorry`, at `DoetsTheorem.lean:415`.** Its docstring names
-  the three sub-gaps precisely: (1) the `ε`-adapter — `epsDense_isContempEquiv`
-  (`EpsilonDense.lean:1033`) supplies the three clauses only at a fixed `Countable`,
-  `DenselyOrdered` `M`, not the `∀ M`-quantified `IsContempEquivDense` that `DoetsD1`/`DoetsD2`
-  take, which is exactly *"the one adapter Phase 29 must supply"* flagged in Phase 25's own
-  deviation record; (2) the minimization over the finite `γ`-palette, which has no counterpart in
-  the tree; (3) the *"classes strictly between have order type `ℚ`"* step, which needs the
-  `∼`-quotient built before `Order.iso_of_countable_dense` can be applied.
-- **Anti-vacuity checkbox NOT met**, and not faked. The chronicle instantiation is not landed. It
-  is gated on the same `ε`-adapter as (1) above, and closing it at `epsTop` would be vacuous by
-  the plan's own caveat. `exists_realFlow_shuffleReal_point` is landed instead as an honest but
+  `G`-minimality contradiction. **One `sorry`, now at `DoetsTheorem.lean:458`.** Of the three
+  sub-gaps its docstring named, **(1) is discharged**; (2) and (3) remain:
+  - ~~(1) the `ε`-adapter~~ — **DONE (sub-phase 29.1)**. `IsContempEquivDenseCD` (`Defs.lean`) is
+    the countable-dense bundle, `epsDense_isContempEquivDenseCD` (`EpsilonDense.lean`) discharges
+    it sorry-free, `DoetsD1`/`DoetsD2` now take it, and `doetsD1_epsDense` / `doetsD2_epsDense`
+    apply Reynolds' hypotheses at `∼_M` outright. All axiom-clean; `IsContempEquivDense.toCD`
+    reports `[propext]` alone.
+  - (2) the minimization over the finite `γ`-palette, which has no counterpart in the tree.
+  - (3) the *"classes strictly between have order type `ℚ`"* step, which needs the `∼`-quotient
+    built before `Order.iso_of_countable_dense` can be applied.
+- **NEW OBLIGATION SURFACED, and deliberately not hidden.** Weakening D1/D2's antecedent is what
+  made (1) closable, and it makes D1/D2 correspondingly *harder to discharge* — Phase 30's
+  suppliers (`no_gaps_dense_prior`, `no_gaps_dense_prior_left`, `dense_singletons_of_sep`) all
+  take the unrestricted `IsContempEquivDense`, and `toCD` runs the wrong way. Making §6 run on
+  the countable-dense bundle was **attempted and measured to fail** in this dispatch: restricting
+  the clauses in place and propagating the instances through Lemma34/Lemma5/BadIntervals/
+  TruthTransfer/NoGaps left exactly one irreducible failure — `reynolds_lemma9` demands
+  `DenselyOrdered (surgeredStructure M ε Q t).carrier`, and that structure collapses a bad
+  interval to a single class, so by Lemma 4 (*"no first class in any maximal interval"*) it has
+  adjacent points and is not densely ordered. Supplying it as a hypothesis would make §6
+  Theorem 4 vacuous, so the attempt was **reverted** (commits `3be9b82d8` then `19f4cbd8b`)
+  rather than kept, and the finding is recorded in `DoetsTheorem.lean`'s D1/D2 section header.
+- **Anti-vacuity checkbox STILL NOT met**, and not faked. The chronicle instantiation is not
+  landed. It is **no longer** gated on the `ε`-adapter — that is discharged — but it is now
+  gated on the newly surfaced obligation above: instantiating the chronicle requires *discharging*
+  D1/D2 at the chronicle structure, which needs §6 to run on the countable-dense bundle, which is
+  exactly what was measured to fail at `surgeredStructure`. Closing it at `epsTop` would be
+  vacuous by the plan's own caveat. `exists_realFlow_shuffleReal_point` is landed instead as an honest but
   *weaker* anti-vacuity witness: it exhibits the `ℝ`-flow conclusion shape at the constant
   one-point palette, so Layer 3 is demonstrably non-vacuous. It does **not** discharge the
   chronicle checkbox and is not presented as doing so.
