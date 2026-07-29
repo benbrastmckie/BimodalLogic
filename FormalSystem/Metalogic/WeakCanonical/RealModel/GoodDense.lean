@@ -257,6 +257,40 @@ theorem goodDense_of_orderIso (sig : MonadicSignature) [Fintype sig.preds] [Deci
     (hN : goodDense sig k N) : goodDense sig k M :=
   goodDense_of_kEquiv sig k (k_equiv_of_iso sig k M N f h_pred) hN
 
+/-! ## The two degenerate cases of Lemma 11
+
+Reynolds opens Lemma 11's proof by clearing them, printed p.185: *"All one point structures are
+good and no bigger but finite structures are very good so suppose that `N` has countably infinite
+domain."*
+-/
+
+/--
+*"All one point structures are good"* (printed p.185).
+
+The witness is the degenerate real interval `[0,0]`, which is `Set.OrdConnected`; the unique
+point of `M` goes to `0`.
+-/
+theorem goodDense_of_subsingleton (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) [Nonempty M.carrier]
+    [Subsingleton M.carrier] : goodDense sig k M := by
+  obtain ⟨a⟩ := ‹Nonempty M.carrier›
+  refine ⟨{ carrierSet := Set.Icc (0 : ℝ) 0
+            ordConnected := Set.ordConnected_Icc
+            interp := fun p _ => M.interp p a }, ?_⟩
+  have hone : ∀ x y : {v : ℝ // v ∈ Set.Icc (0 : ℝ) 0}, x = y := fun x y =>
+    Subtype.ext ((le_antisymm x.property.2 x.property.1).trans
+      (le_antisymm y.property.2 y.property.1).symm)
+  let e : M.carrier ≃ {v : ℝ // v ∈ Set.Icc (0 : ℝ) 0} := {
+    toFun := fun _ => ⟨0, le_refl 0, le_refl 0⟩
+    invFun := fun _ => a
+    left_inv := fun x => Subsingleton.elim a x
+    right_inv := fun x => hone _ x }
+  refine k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e
+    (fun x y _ => le_of_eq (congrArg e (Subsingleton.elim x y)))
+    (fun x y _ => le_of_eq (congrArg e.symm (hone x y)))) ?_
+  intro p x
+  exact iff_of_eq (congrArg (M.interp p) (Subsingleton.elim x a))
+
 /-! ## The blocks `N | {a} + S`
 
 Reynolds' summand, printed p.186: `N | {a_i} + R_i`. The `+` is the two-element lexicographic
@@ -459,6 +493,27 @@ theorem denselyOrdered_of_veryGoodDense (sig : MonadicSignature) [Fintype sig.pr
   refine ⟨fun a b hab => ?_⟩
   obtain ⟨⟨x, hx⟩⟩ := (h a b hab).1
   exact ⟨x, hx.1, hx.2⟩
+
+/--
+*"no bigger but finite structures are very good"* (printed p.185): a finite structure with at
+least two points is never very good.
+
+Very goodness forces density (`denselyOrdered_of_veryGoodDense`), and a finite linear order has
+an immediate successor above any non-maximal point, which density forbids.
+-/
+theorem not_veryGoodDense_of_finite_two_lt (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) [Finite M.carrier]
+    [Nontrivial M.carrier] : ¬ veryGoodDense sig k M := by
+  intro h
+  haveI : DenselyOrdered M.carrier := denselyOrdered_of_veryGoodDense sig k h
+  haveI : WellFoundedLT M.carrier := Finite.to_wellFoundedLT
+  obtain ⟨a, b, hab⟩ := exists_pair_ne M.carrier
+  -- Order the pair, then take the least point strictly above the smaller one.
+  obtain ⟨u, v, huv⟩ : ∃ u v : M.carrier, u < v :=
+    (lt_or_gt_of_ne hab).elim (fun hlt => ⟨a, b, hlt⟩) (fun hgt => ⟨b, a, hgt⟩)
+  obtain ⟨m, hm, hmin⟩ := (wellFounded_lt (α := M.carrier)).has_min {x | u < x} ⟨v, huv⟩
+  obtain ⟨c, huc, hcm⟩ := exists_between (hm : u < m)
+  exact hmin c huc hcm
 
 /-- An open subinterval of a densely ordered structure has no right hand end point. -/
 theorem noMaxOrder_openSubinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
@@ -677,6 +732,21 @@ theorem exists_ioo_witness (sig : MonadicSignature) [Fintype sig.preds] [Decidab
   show R₀.interp p x.val ↔ R₀.interp p (ψ.symm (ψ x)).val
   exact (iff_of_eq (congrArg (R₀.interp p)
     (congrArg Subtype.val (ψ.symm_apply_apply x)))).symm
+
+/--
+*"Take `R_i ≡_k N | (a_i, a_{i+1})` with an open interval of `R` as a flow"* (printed p.185),
+at the unit interval `(i, i+1)`.
+
+This is the shape the `ℤ`-indexed assembly needs: block `i` must sit on `[i, i+1)`, so its
+open part must sit on `(i, i+1)`.
+-/
+theorem exists_iooUnit_witness (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Nonempty M.carrier] [NoMaxOrder M.carrier] [NoMinOrder M.carrier] (hM : goodDense sig k M)
+    (i : ℤ) :
+    ∃ R : RIntervalStructure sig, R.carrierSet = Set.Ioo (i : ℝ) ((i : ℝ) + 1) ∧
+      KEquiv sig k M (R.toOrdered sig) :=
+  exists_ioo_witness sig k hk M hM (by linarith)
 
 /-! ## The `ℤ`-indexed decomposition of `N`
 
