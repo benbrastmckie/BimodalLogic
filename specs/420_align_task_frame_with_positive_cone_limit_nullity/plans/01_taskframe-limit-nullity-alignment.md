@@ -297,13 +297,13 @@ be proved as stated, land the succ-order helper alone and report the shift helpe
 
 ---
 
-### Phase 4: Add the finite uniform-radius theorem [NOT STARTED]
+### Phase 4: Add the finite uniform-radius theorem [COMPLETED]
 
 **Goal**: The substitute for the deferred T1 stretch goal lands as a machine-checked derived
 result.
 
 **Tasks**:
-- [ ] Add `TaskFrame.exists_uniform_radius_of_finite` (research-verified statement):
+- [x] Add `TaskFrame.exists_uniform_radius_of_finite` (research-verified statement):
 
       ```lean
       theorem exists_uniform_radius_of_finite [Nontrivial D] {W : Type} [Fintype W]
@@ -314,13 +314,14 @@ result.
 
       Proof shape: for each `u ≠ w` the contrapositive of `hlim` supplies a radius `x_u`; take
       the `Finset.inf'` over the finite carrier.
-- [ ] Address the `push_neg` deprecation warning research observed, so the phase closes with no
+- [x] Address the `push_neg` deprecation warning research observed *(completed — replaced with
+      `push Not`; module builds with zero diagnostics)*, so the phase closes with no
       new warnings.
-- [ ] Docstring it with the mathematical reading (Limit Nullity upgrades from pointwise to a
+- [x] Docstring it with the mathematical reading (Limit Nullity upgrades from pointwise to a
       *uniform* positive radius per state on a finite carrier) and the consequence: a finite frame
       satisfying Limit Nullity over a dense `D` is temporally rigid, so finite/filtration frames
       cannot remain dense-polymorphic once the axiom lands.
-- [ ] Add a docstring note that this is the deliberate substitute for the deferred cone-topology
+- [x] Add a docstring note that this is the deliberate substitute for the deferred cone-topology
       T1 result, and why (no topology exists anywhere in `FormalSystem/`; the infrastructure, not
       the one-line proof, is the cost).
 

@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import Mathlib.Algebra.Order.Group.Defs
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Algebra.Order.Group.Abs
+import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Order.SuccPred.Basic
 
 /-!
@@ -84,6 +85,8 @@ This allows for various temporal structures:
   type (`[SuccOrder D] [NoMaxOrder D]`)
 - `TaskFrame.limit_nullity_of_shift`: Limit Nullity is automatic for deterministic-shift frames
   over any nontrivial duration type, dense included
+- `TaskFrame.exists_uniform_radius_of_finite`: on a finite carrier, Limit Nullity upgrades to a
+  uniform positive radius around each state
 - Example task frames for testing and demonstrations (polymorphic over time type)
 
 ## Implementation Notes
@@ -311,6 +314,58 @@ theorem limit_nullity_of_shift [Nontrivial D] {W : Type} (pos : W → D)
   have hzero' : y₀ = 0 := abs_eq_zero.mp (le_antisymm hle (abs_nonneg y₀))
   subst hzero'
   exact hzero w u hR₀
+
+/--
+On a finite carrier, Limit Nullity upgrades to a *uniform* positive radius around each state.
+
+Limit Nullity is a pointwise limit statement: for each `u ≠ w` there is *some* radius below
+which `u` is unreachable from `w`. When the carrier is finite, taking the minimum of those
+radii over the carrier turns this into a single positive `x` that works for every `u` at once:
+nothing but `w` is reachable from `w` within `x`.
+
+**Consequence.** A finite frame satisfying Limit Nullity over a densely ordered duration type is
+temporally *rigid*: a world history through `w` at time `t` is constant on `(t - x, t + x)`, so
+over a dense duration domain histories are locally constant. That is the correct content of the
+axiom, not a defect — but it means the filtration and FMP frames cannot remain
+dense-polymorphic once Limit Nullity is carried as a frame axiom. The move of FMP to `ℤ` is
+therefore forced by the axiom rather than being a convenience.
+
+**Status.** This is the deliberate substitute for the paper's cone-topology T1 result
+(`app:topology-r0`). Formalizing that result requires first building the cone topology — `(w)_x`
+as a basis, a proof that it *is* a basis, a `TopologicalSpace` instance — and no topology exists
+anywhere in this library; the infrastructure, not the one-line proof, is the cost. This lemma
+gives a machine-checked consequence of Limit Nullity in the same cost bracket, is topology-free,
+and has direct bearing on the finite-model constructions.
+-/
+theorem exists_uniform_radius_of_finite [Nontrivial D] {W : Type} [Fintype W]
+    (R : W → D → W → Prop)
+    (hlim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
+    (w : W) : ∃ x : D, 0 < x ∧ ∀ u y, |y| < x → R w y u → u = w := by
+  classical
+  -- A nontrivial ordered group has a positive element, used as the radius at `u = w`.
+  obtain ⟨x₀, hx₀⟩ : ∃ x : D, 0 < x := by
+    obtain ⟨a, ha⟩ := exists_ne (0 : D)
+    rcases lt_or_gt_of_ne ha with hlt | hgt
+    · exact ⟨-a, neg_pos.mpr hlt⟩
+    · exact ⟨a, hgt⟩
+  -- Pointwise: each `u` has its own radius, from the contrapositive of Limit Nullity.
+  have hrad : ∀ u : W, ∃ x : D, 0 < x ∧ ∀ y, |y| < x → R w y u → u = w := by
+    intro u
+    by_cases huw : u = w
+    · exact ⟨x₀, hx₀, fun _ _ _ => huw⟩
+    · have hne : ¬ ∀ x : D, 0 < x → ∃ y, |y| < x ∧ R w y u := fun hh => huw (hlim w u hh)
+      push Not at hne
+      obtain ⟨x, hx, hnx⟩ := hne
+      exact ⟨x, hx, fun y hy hR => absurd hR (hnx y hy)⟩
+  -- Uniform: take the minimum of the pointwise radii over the finite carrier.
+  have huniv : (Finset.univ : Finset W).Nonempty := ⟨w, Finset.mem_univ w⟩
+  let f : W → D := fun u => (hrad u).choose
+  refine ⟨Finset.univ.inf' huniv f, ?_, ?_⟩
+  · rw [Finset.lt_inf'_iff]
+    exact fun u _ => (hrad u).choose_spec.1
+  · intro u y hy hR
+    have hle : Finset.univ.inf' huniv f ≤ f u := Finset.inf'_le f (Finset.mem_univ u)
+    exact (hrad u).choose_spec.2 y (lt_of_lt_of_le hy hle) hR
 
 /--
 Simple unit-based task frame for testing.
