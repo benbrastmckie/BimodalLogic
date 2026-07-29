@@ -926,6 +926,64 @@ theorem ruleSound_somePastNeg : RuleSound carrierBase .somePastNeg := by
           exact not_truthAt_of_somePast hsrc (hst.gt_of_mem_pastOf ht')
 
 /-!
+## `orderTrichotomy` — the linear-order content, isolated from the rule's plumbing
+
+`orderTrichotomy` fires at a label `(w, t₁)` carrying `T(φ)` when the branch also carries `T(ψ)`
+at a *sibling* time `(w, t₂)` — incomparable to `t₁` in the recorded ordering — with a common
+recorded predecessor `t₀`. It splits on the three ways the two witness times can be arranged, and
+emits at `(w, t₀)` one of
+
+```
+F(φ ∧ ψ)   F(φ ∧ Fψ)   F(Fφ ∧ ψ)
+```
+
+The rule is sound for the reason its name gives: `t₁` and `t₂` may be incomparable in the
+*recorded* ordering, but `tv t₁` and `tv t₂` are elements of a `LinearOrder`, so `lt_trichotomy`
+decides between them and each of the three outcomes lands on exactly one disjunct. Nothing about
+the branch, the ordering, or the frame class enters — only that both times are interpreted above
+`tv t₀` in the same history — so the content is stated here as a lemma over three points of `D`
+and consumed by the rule's proof with the plumbing kept separate.
+-/
+
+/-- `φ ∧ ψ` holds where both conjuncts do. `Formula.and` is `¬(φ → ¬ψ)`, so this is the
+double-negation step, needed three times below and stated once. -/
+theorem truthAt_and {M : TaskModel F} {Om : Set (WorldHistory F)} {τ : WorldHistory F} {t : D}
+    {φ ψ : Formula} (hφ : TruthAt M Om τ t φ) (hψ : TruthAt M Om τ t ψ) :
+    TruthAt M Om τ t (Formula.and φ ψ) := by
+  simp only [Formula.and, Formula.neg, TruthAt]
+  intro h
+  exact h hφ hψ
+
+/--
+**The trichotomy.** Two times strictly above a common point, each carrying a formula in the same
+history, satisfy one of `orderTrichotomy`'s three disjuncts at that common point.
+
+The three cases are `tv t₁ = tv t₂`, `tv t₁ < tv t₂` and `tv t₂ < tv t₁`, in that order, and the
+witness for each disjunct is the earlier of the two times.
+-/
+theorem exists_trichotomy_disjunct {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {c a b : D} {φ ψ : Formula}
+    (hca : c < a) (hcb : c < b)
+    (hφ : TruthAt M Om τ a φ) (hψ : TruthAt M Om τ b ψ) :
+    TruthAt M Om τ c (Formula.someFuture (Formula.and φ ψ))
+      ∨ TruthAt M Om τ c (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
+      ∨ TruthAt M Om τ c (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ)) := by
+  rcases lt_trichotomy a b with hab | hab | hab
+  · -- `a < b`: the earlier time carries `φ`, and `ψ` is still ahead of it.
+    refine Or.inr (Or.inl ?_)
+    rw [Truth.some_future_iff]
+    exact ⟨a, hca, truthAt_and hφ ((Truth.some_future_iff Om ψ).mpr ⟨b, hab, hψ⟩)⟩
+  · -- `a = b`: both formulas stand at one time.
+    subst hab
+    refine Or.inl ?_
+    rw [Truth.some_future_iff]
+    exact ⟨a, hca, truthAt_and hφ hψ⟩
+  · -- `b < a`: the earlier time carries `ψ`, and `φ` is still ahead of it.
+    refine Or.inr (Or.inr ?_)
+    rw [Truth.some_future_iff]
+    exact ⟨b, hcb, truthAt_and ((Truth.some_future_iff Om φ).mpr ⟨a, hab, hφ⟩) hψ⟩
+
+/-!
 ## What `boxNeg` and `diamondPos` still owe
 
 Both fresh-world rules emit three groups of formulas at the minted world `branch.nextWorld`:
