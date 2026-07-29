@@ -292,6 +292,13 @@ theorem mem_knownTimes_append {b : Branch} {fs : List SignedFormula} {t : TimeIn
   simp only [Branch.knownTimes, List.mem_eraseDups, List.map_append, List.mem_append] at *
   exact Or.inr h
 
+/-- Every branch formula's time is a time the branch knows. The converse direction of
+`lt_nextTime_of_mem_knownTimes`'s extraction step, restated for direct use. -/
+theorem mem_knownTimes_of_mem_branch {b : Branch} {sf : SignedFormula} (h : sf ∈ b) :
+    sf.label.time ∈ b.knownTimes := by
+  simp only [Branch.knownTimes, List.mem_eraseDups]
+  exact List.mem_map_of_mem h
+
 /-- `OrdWithin` implies the numeric bound, so `Branch.nextTime` is fresh *for the ordering* as
 well as for the branch. This is the fact a fresh-time producer's one-point update of `tv`
 consumes: the new index disturbs no existing `ordResp` obligation. -/
@@ -1488,6 +1495,143 @@ theorem ordResp_addPast_update {M : TaskModel F} {Om : Set (WorldHistory F)}
   · simpa [Function.update_of_ne hne] using hlt
   · obtain ⟨h1, h2⟩ := hord.nextTime_not_mem hp
     simpa only [Function.update_of_ne h1, Function.update_of_ne h2] using hst.ordResp p hp
+
+/-- The `T(Gφ)` propagations a fresh-*future*-time rule emits are satisfied at the minted time:
+`T(Gφ)` at the trigger's time gives `φ` at every later time, and the minted time is later by the
+choice of `d`. Shared verbatim by `allFutureNeg` and `someFuturePos`. -/
+theorem satAt_of_mem_gProps {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) {t : TimeIndex} {d : D} (hlt : tv t < d)
+    {g : SignedFormula}
+    (hg : g ∈ b.allFuturePosFormulas.filterMap fun gsf =>
+      match gsf.formula with
+      | .allFuture inner =>
+        if gsf.label.time == t then
+          let prop := SignedFormula.pos inner { world := gsf.label.world, time := b.nextTime }
+          if b.contains prop then none else some prop
+        else none
+      | _ => none) :
+    SatAt M Om hist (Function.update tv b.nextTime d) g := by
+  obtain ⟨gsf, hgsf, hw⟩ := List.mem_filterMap.mp hg
+  have hpred := List.of_mem_filter hgsf
+  have hsign : gsf.sign = .pos := by split at hpred <;> simp_all
+  have hsrc : SatAt M Om hist tv gsf := hst.sat _ (List.mem_of_mem_filter hgsf)
+  split at hw
+  · rename_i inner hgf
+    by_cases ht : (gsf.label.time == t) = true
+    · rw [if_pos ht] at hw
+      have hteq : gsf.label.time = t := by simpa using ht
+      by_cases hc : b.contains (SignedFormula.pos inner
+          { world := gsf.label.world, time := b.nextTime }) = true
+      · rw [if_pos hc] at hw; exact absurd hw (by simp)
+      · rw [if_neg hc] at hw
+        rw [SatAt, hsign, hgf, hteq] at hsrc
+        rw [← Option.some_inj.mp hw]
+        simpa [SatAt, SignedFormula.pos] using truthAt_of_allFuture hsrc hlt
+    · rw [if_neg ht] at hw; exact absurd hw (by simp)
+  · exact absurd hw (by simp)
+
+/-- The `F(Fφ)` propagations a fresh-*future*-time rule emits. `F(Fφ)` denies `φ` at every later
+time, and the minted time is later. Shared verbatim by `allFutureNeg` and `someFuturePos`. -/
+theorem satAt_of_mem_fNegProps {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) {t : TimeIndex} {d : D} (hlt : tv t < d)
+    {g : SignedFormula}
+    (hg : g ∈ b.someFutureNegFormulas.filterMap fun fsf =>
+      match fsf.formula with
+      | .someFuture inner =>
+        if fsf.label.time == t then
+          let prop := SignedFormula.neg inner { world := fsf.label.world, time := b.nextTime }
+          if b.contains prop then none else some prop
+        else none
+      | _ => none) :
+    SatAt M Om hist (Function.update tv b.nextTime d) g := by
+  obtain ⟨fsf, hfsf, hw⟩ := List.mem_filterMap.mp hg
+  have hpred := List.of_mem_filter hfsf
+  have hsign : fsf.sign = .neg := by split at hpred <;> simp_all
+  have hsrc : SatAt M Om hist tv fsf := hst.sat _ (List.mem_of_mem_filter hfsf)
+  split at hw
+  · rename_i inner hff
+    by_cases ht : (fsf.label.time == t) = true
+    · rw [if_pos ht] at hw
+      have hteq : fsf.label.time = t := by simpa using ht
+      by_cases hc : b.contains (SignedFormula.neg inner
+          { world := fsf.label.world, time := b.nextTime }) = true
+      · rw [if_pos hc] at hw; exact absurd hw (by simp)
+      · rw [if_neg hc] at hw
+        rw [SatAt, hsign, hff, hteq] at hsrc
+        rw [← Option.some_inj.mp hw]
+        simpa [SatAt, SignedFormula.neg] using not_truthAt_of_someFuture hsrc hlt
+    · rw [if_neg ht] at hw; exact absurd hw (by simp)
+  · exact absurd hw (by simp)
+
+/-- The `T(Hφ)` propagations a fresh-*past*-time rule emits. Past mirror of
+`satAt_of_mem_gProps`; shared by `allPastNeg` and `somePastPos`. -/
+theorem satAt_of_mem_hProps {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) {t : TimeIndex} {d : D} (hlt : d < tv t)
+    {g : SignedFormula}
+    (hg : g ∈ b.allPastPosFormulas.filterMap fun hsf =>
+      match hsf.formula with
+      | .allPast inner =>
+        if hsf.label.time == t then
+          let prop := SignedFormula.pos inner { world := hsf.label.world, time := b.nextTime }
+          if b.contains prop then none else some prop
+        else none
+      | _ => none) :
+    SatAt M Om hist (Function.update tv b.nextTime d) g := by
+  obtain ⟨hsf, hhsf, hw⟩ := List.mem_filterMap.mp hg
+  have hpred := List.of_mem_filter hhsf
+  have hsign : hsf.sign = .pos := by split at hpred <;> simp_all
+  have hsrc : SatAt M Om hist tv hsf := hst.sat _ (List.mem_of_mem_filter hhsf)
+  split at hw
+  · rename_i inner hhf
+    by_cases ht : (hsf.label.time == t) = true
+    · rw [if_pos ht] at hw
+      have hteq : hsf.label.time = t := by simpa using ht
+      by_cases hc : b.contains (SignedFormula.pos inner
+          { world := hsf.label.world, time := b.nextTime }) = true
+      · rw [if_pos hc] at hw; exact absurd hw (by simp)
+      · rw [if_neg hc] at hw
+        rw [SatAt, hsign, hhf, hteq] at hsrc
+        rw [← Option.some_inj.mp hw]
+        simpa [SatAt, SignedFormula.pos] using truthAt_of_allPast hsrc hlt
+    · rw [if_neg ht] at hw; exact absurd hw (by simp)
+  · exact absurd hw (by simp)
+
+/-- The `F(Pφ)` propagations a fresh-*past*-time rule emits. Past mirror of
+`satAt_of_mem_fNegProps`; shared by `allPastNeg` and `somePastPos`. -/
+theorem satAt_of_mem_pNegProps {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) {t : TimeIndex} {d : D} (hlt : d < tv t)
+    {g : SignedFormula}
+    (hg : g ∈ b.somePastNegFormulas.filterMap fun psf =>
+      match psf.formula with
+      | .somePast inner =>
+        if psf.label.time == t then
+          let prop := SignedFormula.neg inner { world := psf.label.world, time := b.nextTime }
+          if b.contains prop then none else some prop
+        else none
+      | _ => none) :
+    SatAt M Om hist (Function.update tv b.nextTime d) g := by
+  obtain ⟨psf, hpsf, hw⟩ := List.mem_filterMap.mp hg
+  have hpred := List.of_mem_filter hpsf
+  have hsign : psf.sign = .neg := by split at hpred <;> simp_all
+  have hsrc : SatAt M Om hist tv psf := hst.sat _ (List.mem_of_mem_filter hpsf)
+  split at hw
+  · rename_i inner hpf
+    by_cases ht : (psf.label.time == t) = true
+    · rw [if_pos ht] at hw
+      have hteq : psf.label.time = t := by simpa using ht
+      by_cases hc : b.contains (SignedFormula.neg inner
+          { world := psf.label.world, time := b.nextTime }) = true
+      · rw [if_pos hc] at hw; exact absurd hw (by simp)
+      · rw [if_neg hc] at hw
+        rw [SatAt, hsign, hpf, hteq] at hsrc
+        rw [← Option.some_inj.mp hw]
+        simpa [SatAt, SignedFormula.neg] using not_truthAt_of_somePast hsrc hlt
+    · rw [if_neg ht] at hw; exact absurd hw (by simp)
+  · exact absurd hw (by simp)
 
 /-!
 ## What `boxNeg` and `diamondPos` owed, and how it was discharged — RESOLVED
