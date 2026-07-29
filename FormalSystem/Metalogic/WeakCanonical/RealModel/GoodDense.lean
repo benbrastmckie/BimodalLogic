@@ -718,4 +718,146 @@ theorem kEquiv_sum_halfOpen (sig : MonadicSignature) [Fintype sig.preds] [Decida
   rintro p ⟨i, y⟩
   exact Iff.rfl
 
+/-! ## *"and this latter has flow isomorphic to `R`"*
+
+Reynolds, printed p.186. The sum `Σ_{i∈ℤ}(N | {a_i} + R_i)` is carried onto `ℝ` in two steps:
+each block `N | {a_i} + R_i` becomes the half-open real interval `[i, i+1)`, and the sum of those
+blocks over `ℤ` becomes the whole line.
+-/
+
+/-- The block `M | {a} + R` realized on the half-open real interval `[c,d)`: the point `a` sits
+    at the left end point `c`, and `R`'s open interval `(c,d)` follows it. -/
+noncomputable def icoBlock (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : OrderedMonadicStructure sig) (a : M.carrier) (R : RIntervalStructure sig) (c d : ℝ) :
+    RIntervalStructure sig where
+  carrierSet := Set.Ico c d
+  ordConnected := Set.ordConnected_Ico
+  interp p x := if x = c then M.interp p a else R.interp p x
+
+/-- `M | {a} + R ≡_k` the half-open real block, when `R`'s flow is the open interval `(c,d)`. -/
+theorem kEquiv_pointSum_icoBlock (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) (a : M.carrier)
+    (R : RIntervalStructure sig) {c d : ℝ} (hcd : c < d) (hR : R.carrierSet = Set.Ioo c d) :
+    KEquiv sig k (pointSum sig M a (R.toOrdered sig))
+      ((icoBlock sig M a R c d).toOrdered sig) := by
+  letI fam := pointSumFamily sig M a (R.toOrdered sig)
+  letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
+    (orderedSum sig Bool fam).carrierOrder
+  -- Membership in `R.carrierSet` is transported through `hR` by `Set.ext_iff`, never by `rw`:
+  -- the subtype's own type mentions `R.carrierSet`, so rewriting it breaks the motive.
+  have hmem : ∀ y : {x : ℝ // x ∈ R.carrierSet}, c < y.val ∧ y.val < d :=
+    fun y => (Set.ext_iff.mp hR y.val).mp y.property
+  have hmk : ∀ v : ℝ, c < v → v < d → v ∈ R.carrierSet :=
+    fun v h1 h2 => (Set.ext_iff.mp hR v).mpr ⟨h1, h2⟩
+  let e : ((icoBlock sig M a R c d).toOrdered sig).carrier ≃
+      (orderedSum sig Bool fam).carrier := {
+    toFun := fun x =>
+      if h : x.val = c then orderedSumPt (ms := fam) false ⟨a, le_refl a, le_refl a⟩
+      else orderedSumPt (ms := fam) true
+        ⟨x.val, hmk x.val (lt_of_le_of_ne x.property.1 (Ne.symm h)) x.property.2⟩
+    invFun := fun w => match w with
+      | ⟨false, _⟩ => ⟨c, le_refl c, hcd⟩
+      | ⟨true, y⟩ => ⟨y.val, le_of_lt (hmem y).1, (hmem y).2⟩
+    left_inv := by
+      intro x
+      by_cases h : x.val = c
+      · simp only [dif_pos h]; exact Subtype.ext h.symm
+      · simp only [dif_neg h]; exact Subtype.ext rfl
+    right_inv := by
+      intro ⟨cw, w⟩
+      match cw with
+      | false =>
+        simp only [dite_true]
+        refine Sigma.ext rfl (heq_of_eq (Subtype.ext ?_))
+        exact (le_antisymm w.property.2 w.property.1).symm
+      | true =>
+        simp only [dif_neg (hmem w).1.ne']
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+  }
+  have hm1 : Monotone e := by
+    intro x y (hxy : x.val ≤ y.val)
+    simp only [e, Equiv.coe_fn_mk]
+    split_ifs with hx hy hy
+    · exact le_refl _
+    · exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
+    · exact absurd (le_antisymm (hxy.trans_eq hy) x.property.1) hx
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+  have hm2 : Monotone e.symm := by
+    intro w w' hww
+    obtain ⟨cw, w⟩ := w; obtain ⟨cw', w'⟩ := w'
+    have hww' := Sigma.Lex.le_def.mp hww
+    change ((e.symm ⟨cw, w⟩).val ≤ (e.symm ⟨cw', w'⟩).val)
+    revert hww'; cases cw <;> cases cw' <;> simp only [e, Equiv.coe_fn_symm_mk] <;> intro hww'
+    · exact le_refl _
+    · exact le_of_lt (hmem w').1
+    · rcases hww' with h | ⟨h, _⟩
+      · exact absurd h (by decide)
+      · exact absurd h (by decide)
+    · rcases hww' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+  have h_pred : ∀ (p : sig.preds) (x : ((icoBlock sig M a R c d).toOrdered sig).carrier),
+      ((icoBlock sig M a R c d).toOrdered sig).interp p x ↔
+        (orderedSum sig Bool fam).interp p (e x) := by
+    intro p x
+    have he : e x =
+        if h : x.val = c then orderedSumPt (ms := fam) false ⟨a, le_refl a, le_refl a⟩
+        else orderedSumPt (ms := fam) true
+          ⟨x.val, hmk x.val (lt_of_le_of_ne x.property.1 (Ne.symm h)) x.property.2⟩ := rfl
+    have hL : ((icoBlock sig M a R c d).toOrdered sig).interp p x
+        = (if x.val = c then M.interp p a else R.interp p x.val) := rfl
+    rw [hL, he]
+    split_ifs with h <;>
+      simp [fam, pointSumFamily, orderedSumPt, OrderedMonadicStructure.subinterval,
+        RIntervalStructure.toOrdered, orderedSum]
+  exact (k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred).symm
+
+/-- The whole real line, assembled from a `ℤ`-indexed family of half-open real blocks. -/
+noncomputable def realLine (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (blocks : ℤ → RIntervalStructure sig) : RIntervalStructure sig where
+  carrierSet := Set.univ
+  ordConnected := Set.ordConnected_univ
+  interp p x := (blocks ⌊x⌋).interp p x
+
+/-- The lexicographic sum over `ℤ` of the blocks `[i, i+1)` is the real line — *"this latter has
+    flow isomorphic to `R`"*. -/
+theorem kEquiv_sum_realLine (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (blocks : ℤ → RIntervalStructure sig)
+    (hb : ∀ i : ℤ, (blocks i).carrierSet = Set.Ico (i : ℝ) ((i : ℝ) + 1)) :
+    KEquiv sig k (orderedSum sig ℤ (fun i => (blocks i).toOrdered sig))
+      ((realLine sig blocks).toOrdered sig) := by
+  letI fam := fun i : ℤ => (blocks i).toOrdered sig
+  have hmem : ∀ (i : ℤ) (y : {x : ℝ // x ∈ (blocks i).carrierSet}),
+      (i : ℝ) ≤ y.val ∧ y.val < (i : ℝ) + 1 := by
+    -- `rw [hb i] at y.property` is not available: `y`'s own type mentions
+    -- `(blocks i).carrierSet`, so abstracting it breaks the motive. Go through `Set.ext_iff`.
+    intro i y; exact (Set.ext_iff.mp (hb i) y.val).mp y.property
+  have hfloor : ∀ (i : ℤ) (y : (fam i).carrier), ⌊y.val⌋ = i := by
+    intro i y
+    exact Int.floor_eq_iff.mpr ⟨(hmem i y).1, (hmem i y).2⟩
+  have hstrict : StrictMono (fun w : (orderedSum sig ℤ fam).carrier =>
+      (⟨w.2.val, Set.mem_univ _⟩ : {x : ℝ // x ∈ Set.univ})) := by
+    rintro ⟨i, y⟩ ⟨j, z⟩ hlt
+    rcases Sigma.Lex.lt_def.mp hlt with hij | ⟨hij, hyz⟩
+    · have hij' : i < j := hij
+      have h1 : ((i : ℝ) + 1) ≤ (j : ℝ) := by exact_mod_cast (by omega : i + 1 ≤ j)
+      exact Subtype.mk_lt_mk.mpr
+        (lt_of_lt_of_le (hmem i y).2 (le_trans h1 (hmem j z).1))
+    · have heq : i = j := hij
+      subst heq
+      exact Subtype.mk_lt_mk.mpr hyz
+  have hright : Function.RightInverse
+      (fun x : {v : ℝ // v ∈ (Set.univ : Set ℝ)} =>
+        (orderedSumPt (ms := fam) ⌊x.val⌋
+          ⟨x.val, by
+            rw [hb]
+            exact ⟨Int.floor_le _, Int.lt_floor_add_one _⟩⟩))
+      (fun w : (orderedSum sig ℤ fam).carrier =>
+        (⟨w.2.val, Set.mem_univ _⟩ : {x : ℝ // x ∈ Set.univ})) :=
+    fun _ => Subtype.ext rfl
+  refine k_equiv_of_iso sig k _ _ (StrictMono.orderIsoOfRightInverse _ hstrict _ hright) ?_
+  rintro p ⟨i, y⟩
+  show (blocks i).interp p y.val ↔ (blocks ⌊y.val⌋).interp p y.val
+  rw [hfloor i y]
+
 end FormalSystem.Metalogic.WeakCanonical

@@ -4294,7 +4294,7 @@ for the repaired formula**.
 - **Verification Tier**: full.
 - **BLOCK G CHECKPOINT**: both of Doets' hypotheses, D1 and D2, are now available.
 
-### Phase 24: Reynolds §8 Lemma 11 — countable + very good ⇒ good, at `ℝ`-intervals [NOT STARTED]
+### Phase 24: Reynolds §8 Lemma 11 — countable + very good ⇒ good, at `ℝ`-intervals [IN PROGRESS]
 
 - **Goal**: `goodDense`, `veryGoodDense` and *"If `N` is countable and very good then it is good"*.
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/RealModel/GoodDense.lean` (new).
@@ -4323,7 +4323,7 @@ for the repaired formula**.
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 25: Reynolds §8 Lemma 12 — `ε(x,y)` defines `∼_M`, and the finite `γ`-set [NOT STARTED]
+### Phase 25: Reynolds §8 Lemma 12 — `ε(x,y)` defines `∼_M`, and the finite `γ`-set [IN PROGRESS]
 
 - **Goal**: *"There is a monadic formula `ε(x,y)` which defines `∼_M` as a contemporaneous
   equivalence relation on the domain of any `M`. Furthermore, there is a finite set `{γᵢ}` of
