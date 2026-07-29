@@ -991,7 +991,7 @@
     {
       "project_number": 416,
       "project_name": "adopt_co_axiom_basis_for_dedekind_class",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; INVERTED after research, user-ratified 2026-07-28: the Reynolds basis stays official and CO becomes derived — the reverse of this task's original framing). Research found strong evidence CO does NOT syntactically derive prior_U_gap/prior_S_gap/sep: the two bases are frame-equivalent (both pin Dedekind completeness) but plausibly NOT deductively equivalent — an independence-model sketch (Q-flow with isolated not-p points accumulating at an irrational from above, the classical Stavi US-vs-FO gap phenomenon) validates every CO instance while refuting Prior-U; the converse Reynolds |- CO derivation sketch does work. THEREFORE: (1) KEEP the Reynolds triple prior_U_gap/prior_S_gap/sep as the OFFICIAL Dedekind-class axiom basis — no basis swap, no two-basis bridge. (2) Add CO as a DERIVED internal theorem co_derived plus its validity lemma co_valid, where CO = triangle(H phi -> F(H phi)) -> (H phi -> G phi) with triangle phi := H phi and phi and G phi (the TEMPORAL triangle, not box); the CO formula is at PossibleWorlds/JPL/possible_worlds.tex:3250 (identical formula at current-tex line 1109 — note the top-level Papers/possible_worlds.tex has only 2253 lines and is NOT the right source). All needed operators (allPast/allFuture/someFuture/always) already exist in Formula.lean. (3) Route the paper-side correction back through fix.md C4 option 2, which explicitly contemplated switching the paper's basis: the paper's BX_c completeness claim is deferred to THIS repo with no independent citation, so def:TMplus-c is implicated and needs paper-side amendment. Under this inversion the 408/411 rebase surface is EMPTY (no downstream churn), and the 6 real DerivationTree.axiom consumption sites — 3 Chronicle limit-witness files plus 3 in ChronicleMonadicBridge feeding the Doets embedding, the latter having no CO-local workaround — stay untouched. (4) Record the Hoelder classification where cheap: pinned Mathlib v4.33.0-rc1 verified to PROVIDE LinearOrderedAddCommGroup.discrete_or_denselyOrdered / discrete_iff_not_denselyOrdered (GroupTheory/ArchimedeanDensely.lean, exact typeclass match with the repo's duration binders) and Archimedean.exists_orderAddMonoidHom_real_injective (Data/Real/Embedding.lean:232); verified ABSENT are \"complete ordered group => Archimedean\" (cheap ~20-line hand lemma, do it) and packaged \"dense+complete group ~=+o R\" (NOT cheap — docs, not a lemma); complete+discrete = Z is cheaply composable as a lemma. (5) Align FrameClass/Validity docs with the paper TM_c / TM+_dc distinction, noting complete-but-discrete is exactly Z (Discrete class). Related: 390, 408, 411.",
       "effort": "large",
@@ -1002,12 +1002,46 @@
           "path": "specs/416_adopt_co_axiom_basis_for_dedekind_class/reports/01_co-axiom-basis-adoption.md",
           "type": "report",
           "summary": "Tier-1 research report: CO verbatim + Lean formalization, 5-column lemma mapping, derivability analysis with blocking independence sketch, complete consumption-site worklist, verified Mathlib Hoelder API, FrameClass doc alignment requirements, adversarial self-verification."
+        },
+        {
+          "path": "specs/416_adopt_co_axiom_basis_for_dedekind_class/plans/02_co-derived-reynolds-basis.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for CO as a derived theorem over the retained Reynolds basis: Formula.co abbreviation, co_valid semantic lemma, Hilbert derivation scaffolding, co_derived, cheap Hoelder classification lemmas, and FrameClass/Validity doc alignment. Includes a no-sorry contingency for the derivation phase and an explicit paper-side-amendment Non-Goal."
         }
       ],
       "created": "2026-07-28T22:51:10Z",
-      "last_updated": "2026-07-28T23:40:00Z",
+      "last_updated": "2026-07-29T00:24:50Z",
       "topic": "paper-refactor",
-      "session_id": "sess_1785280411_23b0e6_416"
+      "session_id": "sess_1785284225_96a95e",
+      "plan_metadata": {
+        "phase_count": 6,
+        "estimated_hours": 10,
+        "estimated_effort_hours": 10,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            6
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_co-axiom-basis-adoption.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-28"
+          }
+        ]
+      }
     },
     {
       "project_number": 417,
