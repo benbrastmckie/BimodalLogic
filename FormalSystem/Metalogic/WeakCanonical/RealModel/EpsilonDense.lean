@@ -282,4 +282,192 @@ theorem goodDense_iff_eval_gammaDisj (k : Nat) (M : OrderedMonadicStructure sig)
     exact goodDense_of_kEquiv sig k
       (kEquiv_of_shared_nf k ((nf_to_sentence_correct M nf).mp hev) hNnf) hNgood
 
+/-! ## `γ(z,t)`: relativization to the **open** interval
+
+*"Let `γ(z,t)` be the result of relativising the quantifiers of `⋁_{i ≤ s} γ_i` to `(z,t)`, where
+`z` and `t` are new variables"* (printed p.187).
+
+The variable layout copies `relativize` (`MonadicFO.lean:551`) exactly, so that the two operators
+are drop-in siblings: in `relativizeOpen φ` for `φ : MonadicFormula sig n`, variables `0 … n-1`
+are `φ`'s own, variable `n` is the lower bound `z` and variable `n+1` is the upper bound `t`.
+The only change is `<` in place of `≤` in the two quantifier guards, matching
+`OrderedMonadicStructure.openSubinterval` in place of `OrderedMonadicStructure.subinterval`.
+-/
+
+/--
+Relativize a monadic formula to the **open** subinterval `(var n, var (n+1))`.
+
+The open sibling of `relativize` (`MonadicFO.lean:551`); see this section's header for why the
+closed operator cannot be reused here.
+-/
+def relativizeOpen {sig : MonadicSignature} :
+    {n : Nat} → MonadicFormula sig n → MonadicFormula sig (n + 2)
+  | _, .atom p i => .atom p (i.castSucc.castSucc)
+  | _, .lt i j => .lt (i.castSucc.castSucc) (j.castSucc.castSucc)
+  | _, .not α => .not (relativizeOpen α)
+  | _, .and α β => .and (relativizeOpen α) (relativizeOpen β)
+  | n, .all α =>
+    -- ∀ x, (z < x ∧ x < t) → relativizeOpen α
+    .all (MonadicFormula.imp
+      (.and (.lt ⟨n + 1, by omega⟩ ⟨0, by omega⟩) (.lt ⟨0, by omega⟩ ⟨n + 2, by omega⟩))
+      (relativizeOpen α))
+  | n, .ex α =>
+    -- ∃ x, (z < x ∧ x < t) ∧ relativizeOpen α
+    .ex (.and
+      (.and (.lt ⟨n + 1, by omega⟩ ⟨0, by omega⟩) (.lt ⟨0, by omega⟩ ⟨n + 2, by omega⟩))
+      (relativizeOpen α))
+
+/-- Relativize a sentence to the open interval `(var 0, var 1)`. -/
+def relativizeOpenSentence {sig : MonadicSignature} (φ : MonadicSentence sig) :
+    MonadicFormula sig 2 :=
+  relativizeOpen φ
+
+/-- The environment for `relativizeOpen`: an environment over the open subinterval, projected
+    into `M` and extended with the two bounds in the fresh slots `n` and `n+1`. -/
+def relativizeOpenEnv {sig : MonadicSignature} {n : Nat} (M : OrderedMonadicStructure sig)
+    (lo hi : M.carrier) (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) :
+    Fin (n + 2) → M.carrier :=
+  fun i =>
+    if h : i.val < n then (env_sub ⟨i.val, h⟩).val
+    else if i.val = n then lo else hi
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+theorem relativizeOpenEnv_lt {n : Nat} (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
+    (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) (i : Fin n) :
+    relativizeOpenEnv M lo hi env_sub (i.castSucc.castSucc) = (env_sub i).val := by
+  simp [relativizeOpenEnv, Fin.castSucc, i.isLt]
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+theorem relativizeOpenEnv_lo {n : Nat} (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
+    (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) (h : n < n + 2) :
+    relativizeOpenEnv M lo hi env_sub ⟨n, h⟩ = lo := by
+  simp [relativizeOpenEnv]
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+theorem relativizeOpenEnv_hi {n : Nat} (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
+    (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) (h : n + 1 < n + 2) :
+    relativizeOpenEnv M lo hi env_sub ⟨n + 1, h⟩ = hi := by
+  simp [relativizeOpenEnv]
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- Pushing a fresh point through `relativizeOpenEnv`: extending the ambient environment by `x`
+    is extending the subinterval environment by `x` viewed as a point of `(lo,hi)`. -/
+theorem relativizeOpenEnv_cons {n : Nat} (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
+    (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier)
+    (x : (M.openSubinterval sig lo hi).carrier) :
+    Fin.cons x.val (relativizeOpenEnv M lo hi env_sub)
+      = relativizeOpenEnv M lo hi (Fin.cons x env_sub) := by
+  funext j
+  rcases Fin.eq_zero_or_eq_succ j with rfl | ⟨i, rfl⟩
+  · show x.val = _
+    rw [show (0 : Fin (n + 1 + 2)) = (⟨0, by omega⟩ : Fin (n + 1 + 2)) from rfl]
+    simp only [relativizeOpenEnv, dif_pos (by omega : (0 : Nat) < n + 1)]
+    rfl
+  · rw [Fin.cons_succ]
+    simp only [relativizeOpenEnv, Fin.val_succ]
+    by_cases hlt : i.val < n
+    · rw [dif_pos hlt, dif_pos (by omega : i.val + 1 < n + 1)]
+      congr 1
+    · rw [dif_neg hlt, dif_neg (by omega : ¬ (i.val + 1 < n + 1))]
+      by_cases heq : i.val = n
+      · rw [if_pos heq, if_pos (by omega : i.val + 1 = n + 1)]
+      · rw [if_neg heq, if_neg (by omega : ¬ (i.val + 1 = n + 1))]
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- `relativizeOpenEnv_cons` with the fresh point given as an ambient element together with its
+    membership proofs; this is the form the quantifier cases actually rewrite with. -/
+theorem relativizeOpenEnv_cons' {n : Nat} (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
+    (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) (x : M.carrier)
+    (h1 : lo < x) (h2 : x < hi) :
+    Fin.cons x (relativizeOpenEnv M lo hi env_sub)
+      = relativizeOpenEnv M lo hi (Fin.cons ⟨x, h1, h2⟩ env_sub) :=
+  relativizeOpenEnv_cons M lo hi env_sub ⟨x, h1, h2⟩
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- The lower-bound slot, seen from under one extra binder. -/
+theorem cons_relativizeOpenEnv_lo {n : Nat} (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
+    (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) (x : M.carrier)
+    (h : n + 1 < n + 3) :
+    (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier) ⟨n + 1, h⟩ = lo := by
+  show (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier)
+      (Fin.succ (⟨n, by omega⟩ : Fin (n + 2))) = lo
+  rw [Fin.cons_succ]
+  exact relativizeOpenEnv_lo M lo hi env_sub _
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- The upper-bound slot, seen from under one extra binder. -/
+theorem cons_relativizeOpenEnv_hi {n : Nat} (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
+    (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) (x : M.carrier)
+    (h : n + 2 < n + 3) :
+    (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier) ⟨n + 2, h⟩ = hi := by
+  show (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier)
+      (Fin.succ (⟨n + 1, by omega⟩ : Fin (n + 2))) = hi
+  rw [Fin.cons_succ]
+  exact relativizeOpenEnv_hi M lo hi env_sub _
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- The freshly bound variable slot. -/
+theorem cons_relativizeOpenEnv_zero {n : Nat} (M : OrderedMonadicStructure sig)
+    (lo hi : M.carrier) (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) (x : M.carrier)
+    (h : 0 < n + 3) :
+    (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier) ⟨0, h⟩ = x := rfl
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/--
+**The open relativization is correct**: evaluating `relativizeOpen φ` in `M` with the two bounds
+in the fresh slots is evaluating `φ` in `M | (lo, hi)`.
+
+The open counterpart of `relativize_correct` (`MonadicFO.lean:648`).
+-/
+theorem relativizeOpen_correct {n : Nat} (M : OrderedMonadicStructure sig)
+    (lo hi : M.carrier) (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier)
+    (φ : MonadicFormula sig n) :
+    eval M (relativizeOpenEnv M lo hi env_sub) (relativizeOpen φ) ↔
+      eval (M.openSubinterval sig lo hi) env_sub φ := by
+  induction φ with
+  | atom p i =>
+    simp only [relativizeOpen, eval, OrderedMonadicStructure.openSubinterval]
+    rw [relativizeOpenEnv_lt]
+  | lt i j =>
+    simp only [relativizeOpen, eval]
+    rw [relativizeOpenEnv_lt, relativizeOpenEnv_lt]
+    exact Iff.rfl
+  | not α ih => simp only [relativizeOpen, eval]; exact (ih env_sub).not
+  | and α β ihα ihβ => simp only [relativizeOpen, eval]; exact (ihα env_sub).and (ihβ env_sub)
+  | @all n α ih =>
+    simp only [relativizeOpen, eval, eval_imp, cons_relativizeOpenEnv_lo,
+      cons_relativizeOpenEnv_hi, cons_relativizeOpenEnv_zero]
+    constructor
+    · intro h_all x
+      refine (ih (Fin.cons x env_sub)).mp ?_
+      rw [← relativizeOpenEnv_cons]
+      exact h_all x.val ⟨x.property.1, x.property.2⟩
+    · intro h_all x hguard
+      rw [relativizeOpenEnv_cons' M lo hi env_sub x hguard.1 hguard.2]
+      exact (ih (Fin.cons ⟨x, hguard.1, hguard.2⟩ env_sub)).mpr (h_all ⟨x, hguard.1, hguard.2⟩)
+  | @ex n α ih =>
+    simp only [relativizeOpen, eval, cons_relativizeOpenEnv_lo,
+      cons_relativizeOpenEnv_hi, cons_relativizeOpenEnv_zero]
+    constructor
+    · rintro ⟨x, ⟨hlo, hhi⟩, hbody⟩
+      rw [relativizeOpenEnv_cons' M lo hi env_sub x hlo hhi] at hbody
+      exact ⟨⟨x, hlo, hhi⟩, (ih (Fin.cons ⟨x, hlo, hhi⟩ env_sub)).mp hbody⟩
+    · rintro ⟨x, hbody⟩
+      refine ⟨x.val, ⟨x.property.1, x.property.2⟩, ?_⟩
+      rw [relativizeOpenEnv_cons]
+      exact (ih (Fin.cons x env_sub)).mpr hbody
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- The sentence case: `γ(z,t)` holds at `(lo,hi)` exactly when `M | (lo,hi) ⊨ γ`. -/
+theorem relativizeOpenSentence_correct (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
+    (φ : MonadicSentence sig) :
+    eval M ![lo, hi] (relativizeOpenSentence φ) ↔ eval (M.openSubinterval sig lo hi) Fin.elim0 φ := by
+  have h := relativizeOpen_correct M lo hi (Fin.elim0 : Fin 0 → _) φ
+  have henv : relativizeOpenEnv M lo hi (Fin.elim0 : Fin 0 → (M.openSubinterval sig lo hi).carrier)
+      = ![lo, hi] := by
+    funext i
+    fin_cases i <;> simp [relativizeOpenEnv]
+  rw [henv] at h
+  exact h
+
 end FormalSystem.Metalogic.WeakCanonical
