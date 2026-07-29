@@ -4403,15 +4403,18 @@ for the repaired formula**.
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 27: The `ℝ`-extension of the shuffle, its Dedekind completeness and its countable dense subflow [IN PROGRESS]
+### Phase 27: The `ℝ`-extension of the shuffle, its Dedekind completeness and its countable dense subflow [PARTIAL]
 
 - **Goal**: `Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)` where `σ*` is `σ` extended by singletons at the
   irrationals; plus the flow `R` of `Σ_{r∈ℝ} σ*(r)` is dense, endpointless, **Dedekind complete**,
   and has a countable dense subflow.
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/RealModel/ShuffleReal.lean` (new).
 - **Tasks**:
-  - [ ] Define `σ*` (printed p.188): `σ*(i) = N_{γ₁}` for `i ∈ ℝ − ℚ`, where `γ₁` is a `γ` in `G`
-        satisfied only by one-point structures.
+  - [x] Define `σ*` (printed p.188): `σ*(i) = N_{γ₁}` for `i ∈ ℝ − ℚ`, where `γ₁` is a `γ` in `G`
+        satisfied only by one-point structures. *(landed as `shuffleColourReal` with
+        `shuffleColourReal_rat` / `shuffleColourReal_irrational`, plus `shuffleReal` for the sum
+        and `isShuffleMapReal_shuffleColourReal` transferring Reynolds' density condition from
+        `ℚ`-intervals to `ℝ`-intervals.)*
   - [ ] **Land `doets_lemma_1_5` in live code** — the phase's centre of gravity. **Do not attempt
         Reynolds' one-line "another simple game argument" directly**; charter it against **Doets 1987,
         3.1.8**: *"if `(I, {i | m(i) ⊨ σ})_{σ∈Z} ≡ⁿ (J, {j | m'(j) ⊨ σ})_{σ∈Z}` then
@@ -4424,18 +4427,77 @@ for the repaired formula**.
         `#exit` (line 41), uses the stale names `k_type_of`/`k_equiv`, and its body is `sorry`. Copy
         the *shape* into a live module under the live names `kTypeOf`/`KEquiv`, and **prove it**. Do
         not import `Boneyard`, and do not reintroduce the `sorry`.
-  - [ ] Update the forward pointer at `OrderedSum.lean:20-22` and the archive note at
+        *(deviation: altered — the **statement** landed in live code as
+        `ShuffleReal.lean`'s `doets_lemma_1_5`, under the live names `kTypeOf`/`KEquiv`, in
+        Doets 3.1.8's coloured-index form (`colourSig`, `colourStructure`, `kTypeColouring`
+        render `(I, {i | m(i) ⊨ σ})_{σ∈Z}` with `Z := KType sig k`), with no `Boneyard` import.
+        The archived draft's own hypothesis was **not** copied: matching *sets* of realized
+        k-types does not imply `≡ₖ` sums, since it ignores the order the types occur in; that is
+        recorded at both `OrderedSum.lean`'s status block and the archive note. The **proof** is
+        a documented strategic `sorry` — `ShuffleReal.lean:201` — with the follow-up named in
+        its docstring. See the BLOCKER note below.)*
+  - [x] Update the forward pointer at `OrderedSum.lean:20-22` and the archive note at
         `SingletonSorriedDecls.lean:19-24` — or, if editing them is out of territory, record in the
-        summary that they are now stale.
-  - [ ] Apply `doets_lemma_1_5` to obtain `Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)`.
-  - [ ] Prove Dedekind completeness of `R`, transcribing printed p.188: *"any subset bounded above
+        summary that they are now stale. *(both edited in place; each now points at the live
+        re-statement and records that the archived draft is superseded and unsound as stated.)*
+  - [x] Apply `doets_lemma_1_5` to obtain `Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)`.
+        *(deviation: altered — landed as `kEquiv_shuffle_shuffleReal`, sorry-free **given**
+        `doets_lemma_1_5`, but carrying the `≡ₖ` fact about the two coloured index orders as an
+        **explicit hypothesis** rather than discharging it. That fact — `(ℚ, σ)` and `(ℝ, σ*)`,
+        densely coloured by the same finite palette, are `≡ₖ` — is the colour-preserving
+        back-and-forth and is not in the tree. Carrying it as a visible hypothesis rather than a
+        second `sorry` keeps what remains open readable from the statement.)*
+  - [x] Prove Dedekind completeness of `R`, transcribing printed p.188: *"any subset bounded above
         intersects a last summand. Because the `γᵢ`'s say so the summands themselves are closed
         intervals of the reals so the supremum of the set exists in this class."*
-  - [ ] Prove `R` has a countable dense subflow, transcribing printed p.188.
-  - [ ] Docstrings: `Reynolds 1992, §8, printed p.188` for each part, plus
+        *(landed as `exists_isLUB_orderedSumReal` / `exists_isLUB_shuffleReal`, sorry-free and
+        axiom-clean. The transcription adds the case Reynolds' sentence passes over — the
+        supremum of the index set need not be met by the subset — and handles it with the
+        summand's least element.)*
+  - [x] Prove `R` has a countable dense subflow, transcribing printed p.188.
+        *(landed as `exists_countableDense_orderedSumReal` / `exists_countableDense_shuffleReal`;
+        density and endpointlessness landed alongside as `denselyOrdered_orderedSumReal`,
+        `noMax_orderedSumReal`, `noMin_orderedSumReal` and their `shuffleReal` instances. All
+        sorry-free and axiom-clean. Reynolds' choice of `γ₁` as a one-point colour is consumed
+        exactly here, as the hypothesis that the irrational summands are subsingletons.)*
+  - [x] Docstrings: `Reynolds 1992, §8, printed p.188` for each part, plus
         `ADAPTED-FROM: Doets 1987, 3.1.8` for the mixing argument, with a one-clause note that
         Reynolds asserts it without proof.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
+        *(all 13 sorry-free declarations depend only on `propext`, `Classical.choice`,
+        `Quot.sound`. Scoped and full builds green. Census outside `Boneyard/` is
+        `Transfer.lean:1242` plus the one tracked strategic sorry at `ShuffleReal.lean:201`.)*
+  - [x] **Not in the original checklist, added**: anti-vacuity witness for the order facts —
+        `pointStructure` / `pointFam` / `pointFam_hyps` / `pointFam_orderedSum_facts` exhibit one
+        family satisfying every hypothesis of all five order lemmas simultaneously, so none of
+        them is only vacuously instantiable.
+
+**BLOCKER** (Phase 27, partial):
+- **What failed**: `doets_lemma_1_5` (`ShuffleReal.lean:201`) — the statement is landed under the
+  live names, the proof is not.
+- **What was tried**: routing it through the existing apparatus. `doets_lemma_1_4`
+  (`OrderedSum.lean:41`) delegates to `KEquivalenceFramework.sum_preservation`, whose engine is
+  `NEquivalence.lean`'s `sum_nf_agree` / `sum_lift_one_var` normal-form induction. That induction
+  is written for a **shared** index set: at each quantifier step it matches a witness `⟨i, a⟩` in
+  one sum with `⟨i, b⟩` in the other at the *same* `i`. Doets 3.1.8 needs the witness matched at a
+  *different* index supplied by a coloured back-and-forth between two index orders. Re-association
+  was also checked and does not avoid the argument: `Σ_{r∈ℝ} σ*(r)` is not a re-bracketing of
+  `Σ_{q∈ℚ} σ(q)`, because a convex partition of `ℝ` into countably many blocks cannot have
+  quotient order `ℚ` (`ℝ` is Dedekind complete and `ℚ` is not), so the index-relabelling bridge
+  `kEquiv_orderedSum_of_orderIso` from Phase 26 does not apply.
+- **Why stuck**: the missing piece is a genuine generalization of `sum_nf_agree` from a shared
+  index set to a coloured correspondence between two index sets — phase-sized formalization in
+  `NEquivalence.lean`, not a gap in an otherwise complete proof.
+- **What is needed**: a follow-up task, *"generalize `NEquivalence.lean`'s `sum_nf_agree`
+  normal-form induction to a coloured correspondence between two index sets, discharge
+  `doets_lemma_1_5`, and then discharge `kEquiv_shuffle_shuffleReal`'s `hcol` hypothesis by the
+  colour-preserving back-and-forth for finitely many colours dense in a dense endpointless
+  order"*. The second half is independent of the first and can be done in parallel.
+- **Downstream**: Phase 29 consumes `kEquiv_shuffle_shuffleReal`; until both halves land, that
+  consumption is conditional. **Phase 28 is unaffected** — it consumes only the four order facts,
+  all of which are sorry-free and axiom-clean here.
+- **Prohibited**: Do NOT resolve this with `def X := True`, a vacuous placeholder, or a new axiom.
+
 - **Estimated output**: ~500 lines.
 - **Done when**: **`doets_lemma_1_5` is landed in live code, sorry-free and axiom-clean, under the
   live names**; the mixing `≡ₖ`, Dedekind completeness, density, endpointlessness and separability of
