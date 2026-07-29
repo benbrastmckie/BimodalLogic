@@ -1823,7 +1823,7 @@ theorem ruleSound_denseIndicatorClosure : RuleSound carrierBase .denseIndicatorC
   exact ⟨hist, tv, by simpa using hst⟩
 
 /-!
-## `untlPos`, `sncePos` and the ACTIVE arms of `untlNeg`/`snceNeg` — BLOCKED, engine defect
+## `untlPos`, `sncePos`, `untlNeg` and `snceNeg` — BLOCKED, engine defect
 
 These four rules cannot be proved sound as the engine currently stands, and the obstruction is
 **not** the ordering gap this section's predecessors were about. That gap is closed: `OrdWithin`
@@ -1838,37 +1838,89 @@ its truth is interval-relative, so `F(U(e', g'))` at `t` does not imply `F(U(e',
 time. Unlike the `□`/`◇` copies that `boxDiamondPersistence` performs, there is no shift-closure
 argument available: the claim is not `Ω`-universal.
 
-**The counterexample**, over any carrier containing `{1/n}` — `ℚ` and `ℝ` both do. Fix a world
-`w` and read all formulas along one history.
+**The counterexample**, over `ℤ`. `RuleSound` quantifies over *all* carriers, so a refutation
+over one carrier refutes the statement, and discrete time is what makes the refutation work
+(see the retraction note below for why a dense carrier does not).
 
-* Let `e'` be true exactly on `{1/n : n ≥ 1}` and `g'` be false exactly on `{1/n : n ≥ 1}`.
-  Then `¬U(e', g')` at `0`: every `e'`-witness is some `1/n`, and `1/(n+1) ∈ (0, 1/n)` falsifies
-  `g'`. But `U(e', g')` holds at **every** `d ∈ (0, 1)`: take the least `1/n` above `d`; it
-  carries `e'`, and `(d, 1/n)` meets `{1/m}` nowhere, so `g'` holds throughout.
-* Let `event` be true exactly at `1/2` and `guard` be true everywhere. Then `T(U(event, guard))`
-  at `0`, with `1/2` as its unique witness.
+*Frame.* `D = ℤ`, `F.WorldState = ℤ`, `TaskRel w d u ⟺ u = w + d`. `τ` is the identity history:
+total domain, `states t = t`. `Om` is the **shift orbit of `τ`** — `ShiftClosed` by construction,
+with every member of total domain. `Om = Set.univ` must NOT be used; see the trap below.
 
-Both signed formulas sit at `(w, 0)`, and the pair is satisfiable. Now `untlPos` fires on the
-`T(U(event, guard))`. The interpretations of `freshTime` that satisfy *either* emitted branch are
-exactly `(0, 1/2]` — branch 1 needs `event`, true only at `1/2`; branch 2 needs `guard` and a
-continuing `U(event, guard)`, which holds throughout `(0, 1/2)`. Every one of those values lies
-in `(0, 1)`, where `U(e', g')` is **true**. So the copied `F(U(e', g'))` is false at every
-admissible witness time, and both successor branches are unsatisfiable although the source branch
-was satisfiable. `RuleSound carrierBase .untlPos` is therefore false as stated.
+*Valuation*, on four atoms (`event = p`, `guard = q`, `e' = r`, `g' = s`):
 
-**Isolation.** Only the arms carrying an `untlNegProps`/`snceNegProps` block are affected:
-`untlPos` (`Tableau.lean`, the `.untlPos` arm), `sncePos`, and the ACTIVE arm of `untlNeg` and
-`snceNeg`. The PASSIVE arm of `untlNeg`/`snceNeg` — the Reynolds co-decomposition at an
-*existing* future/past time — emits no such block, returns `timeOrd` unchanged, and is sound; it
-is provable today with the ordering bridge already landed. It cannot be landed on its own,
-because `RuleSound` is stated per rule and `untlNeg` owns both arms.
+```
+V(n,p) ⟺ n = 5     V(n,q) ⟺ n ≥ 1     V(n,r) ⟺ n ≥ 2     V(n,s) ⟺ n ≠ 1
+```
 
-**Required behaviour.** Either drop the `untlNegProps`/`snceNegProps` blocks from those four
-arms, exactly as the six group-3 blocks were dropped from `boxNeg`/`diamondPos`, or replace the
-unconditional copy with the branching co-decomposition the PASSIVE arm already performs. Both are
-engine changes and both need the conformance corpus as their acceptance gate, so neither is taken
-here: `plan-compliance.md` requires an engine defect found mid-proof to be escalated rather than
-silently repaired.
+which gives `U(p,q)@a ⟺ 0 ≤ a ≤ 4` (the sole `p`-witness is `5`, and `(a,5)` must avoid `0`) and
+`U(r,s)@x ⟺ x ≥ 1` (for `x ≥ 1` take the witness `max(x+1,2)` over an empty guard interval; for
+`x ≤ 0` every `r`-witness is `≥ 2 > 1 > x`, so `1` lies in the interval and `s@1` fails).
+
+*Branch.* `b = [T(U(p,q))@(w₀,0), F(U(r,s))@(w₀,0)]`, `sf` the first, `ord = TimeOrdering.empty`.
+`OrdWithin` holds vacuously and `SatState` holds with `tv 0 = 0`.
+
+*Rule output.* `freshTime = b.nextTime = 1`, `newOrd = addFuture 0 1`; `gProps`, `fNegProps` and
+`modalProps` are all empty, and `untlNegProps = [F(U(r,s))@(w₀,1)]`, so
+
+```
+branch1 = [T(p)@(w₀,1), F(U(r,s))@(w₀,1)]
+branch2 = [T(q)@(w₀,1), T(U(p,q))@(w₀,1), F(U(r,s))@(w₀,1)]
+```
+
+*Both successors are unsatisfiable.* Write `A = tv'(0)`, `C = tv'(1)`. Carrying `b` forces
+`0 ≤ A ≤ 4` and `A ≤ 0`, hence `A = 0`; `ordResp` on `newOrd` forces `C ≥ 1`. Branch 1 needs
+`p@C`, i.e. `C = 5`, against the copied `¬U(r,s)@C`, i.e. `C ≤ 0`. Branch 2 needs `U(p,q)@C`,
+i.e. `C ≤ 4`, together with `C ≤ 0` from the same copy, against `C ≥ 1`. A satisfiable branch is
+mapped to two unsatisfiable ones, so `RuleSound carrierBase .untlPos` is false as stated. The
+copy is precisely the culprit: delete `untlNegProps` and branch 1 is satisfied by `A = 0, C = 5`.
+`sncePos` follows by the time-reversal mirror of this model.
+
+**Retraction — the earlier `{1/n}` counterexample recorded here was WRONG.** It made `e'` true
+exactly on `{1/n : n ≥ 1}` and `g'` false there, and argued that every admissible interpretation
+of `freshTime` lies in `(0,1)` where `U(e',g')` is true. That argument fails because `SatResult`
+lets the successor re-choose `tv` **wholesale**, not just at the fresh index: the fresh time's
+interpretation is free anywhere above the trigger's, and on a dense carrier there is always room
+above the failure point, so the successor escapes. (This is the same failure mode that sank a
+still earlier single-witness draft.) A working refutation must make the region where the *source*
+branch is satisfiable a single **maximal** point, leaving no room above it — which is what the
+`ℤ` model does, and what no dense carrier can do. Recorded so that a third wrong version is not
+attempted.
+
+**Formalization trap.** With `Om = Set.univ` the counterexample is rescued and becomes no
+counterexample at all: a history with domain `(-∞,5]` kills every `r`-point above `5`, making
+`¬U(r,s)@5` vacuously true and branch 1 satisfiable. Any Lean formalization must therefore fix
+`Om` to the shift orbit of a *total-domain* history — legitimate, since `Om` is the
+counterexample's to choose and only `ShiftClosed` is required of it.
+
+**Isolation — FIVE unsound sites, not four, and `untlNeg`/`snceNeg` carry two independent
+obstructions.** The four copy blocks are one family: `untlPos`, `sncePos`, and the ACTIVE arm of
+`untlNeg`/`snceNeg`. The PASSIVE arms are a **second, independent** family, and the claim
+previously recorded here — that the PASSIVE arm "emits no such block, returns `timeOrd`
+unchanged, and is sound; it is provable today" — is **refuted**. For `a < c`, `¬U(e,g)@a` implies
+only `¬e@c ∨ ∃ z ∈ (a,c). ¬g@z`: the guard failure lies strictly *between* `a` and `c`, whereas
+the arm places it *at* `c` and additionally re-asserts `¬U(e,g)@c` — the same interval-relative
+propagation as the copy defect. Over `ℤ` with `e` true exactly at `3` and `g` false exactly at
+`1`: `¬U(e,g)@0` holds, yet `e@3` and `g@3` are both true, so both emitted arms fail; and `¬g@1`
+holds while `U(e,g)@1` is true, which independently refutes branch 2's second conjunct. A
+refutation of `RuleSound carrierBase .untlNeg` using no copy block at all: same frame and `Om`,
+atoms `e, g, x` with `V(n,e) ⟺ n = 3`, `V(n,g) ⟺ n ≠ 1`, `V(n,x) ⟺ n = 3`, branch
+`[F(U(e,g))@(w₀,0), T(x)@(w₀,1)]` with `ord = ⟨[(0,1)]⟩` and `tv 0 = 0`, `tv 1 = 3`. The pinning
+formula `T(x)@t₁` is not exotic — `someFuturePos` produces exactly that shape with exactly that
+ordering constraint.
+
+**Required behaviour, and why the two families are handled differently.**
+
+* For `untlPos`/`sncePos` the fix is **deletion** of the copy block, on the group-3 precedent
+  below. A guarded copy is not available: soundness would need `¬U(e',g')@A → ¬U(e',g')@C` for a
+  freshly chosen `C > A`, a semantic condition on the model that no syntactic guard computable
+  from `(branch, ord)` expresses. Deletion can only make branches *harder* to close, so its risk
+  is under-closing, which the conformance corpus measures directly.
+* For `untlNeg`/`snceNeg` deletion is **necessary but not sufficient** — it leaves the PASSIVE
+  defect intact, and `RuleSound` is per rule. The sound restatement is an adjacency-aware
+  co-decomposition (mint an interpolant `z` with `t < z < t'` and emit `F(guard)@z`), which turns
+  the PASSIVE arm into a fresh-time producer and so carries termination and completeness
+  consequences of exactly the kind `densityRule`'s gap-selection comment documents. That change
+  is *not* authorized here and is escalated rather than improvised.
 
 **What this does *not* affect.** Nothing above this section. The four fresh-time existentials
 mint their witness the same way and are unaffected, because their propagation families are `G`/`H`
