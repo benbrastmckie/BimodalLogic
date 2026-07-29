@@ -390,7 +390,7 @@ SCOPE BOUNDARY ADDENDUM (2026-07-28): the frame-definition subsection of latex/s
 - **Dependencies**: None
 - **Research**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/09_lemma6-first-clause-blocker.md]
 - **Plan**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/10_strong-completeness-dedekind-v10.md]
-- **Summary**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/32_theorem6-g-minimality-and-quotient-summary.md]
+- **Summary**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/33_theorem6-assembly-summary.md]
 
 **Description**: Identify and implement the most faithful and mathematically correct route to completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics).
 

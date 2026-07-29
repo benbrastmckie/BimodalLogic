@@ -1057,9 +1057,9 @@
           "summary": "Plan v10 — Lemma 4 boundary case and sub-phase 22.1"
         },
         {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/32_theorem6-g-minimality-and-quotient-summary.md",
+          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/33_theorem6-assembly-summary.md",
           "type": "summary",
-          "summary": "Phase 29 layers 5-7: Reynolds' G-minimality, the M/~ quotient with order type Q, and density of M/~"
+          "summary": "Cycle-2 summary: Layers 8-10, the assembled reynolds_theorem6_contradiction, the correction to the prior cycle's sizing of the decomposition, the narrowed residual with its concrete route, and the full verification table."
         }
       ]
     },
