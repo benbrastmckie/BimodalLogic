@@ -1809,6 +1809,73 @@ theorem ruleSound_somePastPos : RuleSound carrierBase .somePastPos := by
               hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
       · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
 
+/-- `T(U(⊤,⊥))` closes the branch on a dense frame. The rule emits `.linear []`, so the successor
+branch *is* the branch and the handed-in state discharges the obligation outright; the closure is
+detected downstream by `checkAxiomNeg` against the density indicator axiom, not here. Proved at
+`carrierBase` and reused at `.Dense` through `RuleSound.mono`, which is why no carrier property is
+declared for it. -/
+theorem ruleSound_denseIndicatorClosure : RuleSound carrierBase .denseIndicatorClosure := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
+  obtain ⟨s, φ, l⟩ := sf
+  simp only [applyRule]
+  split
+  all_goals try trivial
+  exact ⟨hist, tv, by simpa using hst⟩
+
+/-!
+## `untlPos`, `sncePos` and the ACTIVE arms of `untlNeg`/`snceNeg` — BLOCKED, engine defect
+
+These four rules cannot be proved sound as the engine currently stands, and the obstruction is
+**not** the ordering gap this section's predecessors were about. That gap is closed: `OrdWithin`
+is in `RuleSound`, and the four fresh-time existentials above are proved against it. The
+obstruction here is a second, independent unsoundness in `applyRule`, of exactly the same family
+as the group-3 defect that was removed from `boxNeg`/`diamondPos`.
+
+**The defect.** `untlPos` (and its `sncePos` mirror, and the ACTIVE arm of `untlNeg`/`snceNeg`)
+emits an `untlNegProps` block that copies every `F(U(e', g'))` sitting at the trigger's time
+*unconditionally* to the freshly minted time. `Formula.untl` is evaluated along one history and
+its truth is interval-relative, so `F(U(e', g'))` at `t` does not imply `F(U(e', g'))` at a later
+time. Unlike the `□`/`◇` copies that `boxDiamondPersistence` performs, there is no shift-closure
+argument available: the claim is not `Ω`-universal.
+
+**The counterexample**, over any carrier containing `{1/n}` — `ℚ` and `ℝ` both do. Fix a world
+`w` and read all formulas along one history.
+
+* Let `e'` be true exactly on `{1/n : n ≥ 1}` and `g'` be false exactly on `{1/n : n ≥ 1}`.
+  Then `¬U(e', g')` at `0`: every `e'`-witness is some `1/n`, and `1/(n+1) ∈ (0, 1/n)` falsifies
+  `g'`. But `U(e', g')` holds at **every** `d ∈ (0, 1)`: take the least `1/n` above `d`; it
+  carries `e'`, and `(d, 1/n)` meets `{1/m}` nowhere, so `g'` holds throughout.
+* Let `event` be true exactly at `1/2` and `guard` be true everywhere. Then `T(U(event, guard))`
+  at `0`, with `1/2` as its unique witness.
+
+Both signed formulas sit at `(w, 0)`, and the pair is satisfiable. Now `untlPos` fires on the
+`T(U(event, guard))`. The interpretations of `freshTime` that satisfy *either* emitted branch are
+exactly `(0, 1/2]` — branch 1 needs `event`, true only at `1/2`; branch 2 needs `guard` and a
+continuing `U(event, guard)`, which holds throughout `(0, 1/2)`. Every one of those values lies
+in `(0, 1)`, where `U(e', g')` is **true**. So the copied `F(U(e', g'))` is false at every
+admissible witness time, and both successor branches are unsatisfiable although the source branch
+was satisfiable. `RuleSound carrierBase .untlPos` is therefore false as stated.
+
+**Isolation.** Only the arms carrying an `untlNegProps`/`snceNegProps` block are affected:
+`untlPos` (`Tableau.lean`, the `.untlPos` arm), `sncePos`, and the ACTIVE arm of `untlNeg` and
+`snceNeg`. The PASSIVE arm of `untlNeg`/`snceNeg` — the Reynolds co-decomposition at an
+*existing* future/past time — emits no such block, returns `timeOrd` unchanged, and is sound; it
+is provable today with the ordering bridge already landed. It cannot be landed on its own,
+because `RuleSound` is stated per rule and `untlNeg` owns both arms.
+
+**Required behaviour.** Either drop the `untlNegProps`/`snceNegProps` blocks from those four
+arms, exactly as the six group-3 blocks were dropped from `boxNeg`/`diamondPos`, or replace the
+unconditional copy with the branching co-decomposition the PASSIVE arm already performs. Both are
+engine changes and both need the conformance corpus as their acceptance gate, so neither is taken
+here: `plan-compliance.md` requires an engine defect found mid-proof to be escalated rather than
+silently repaired.
+
+**What this does *not* affect.** Nothing above this section. The four fresh-time existentials
+mint their witness the same way and are unaffected, because their propagation families are `G`/`H`
+universals, `F`/`P` negatives and the `□`/`◇` copies — every one of which *is* preserved in the
+required direction, which is why they went through.
+-/
+
 /-!
 ## What `boxNeg` and `diamondPos` owed, and how it was discharged — RESOLVED
 
