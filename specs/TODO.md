@@ -388,9 +388,9 @@ SCOPE BOUNDARY ADDENDUM (2026-07-28): the frame-definition subsection of latex/s
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
-- **Summary**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/21_duality-transport-lemma6-fourth-half-summary.md]
 - **Research**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/09_lemma6-first-clause-blocker.md]
 - **Plan**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/10_strong-completeness-dedekind-v10.md]
+- **Summary**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/32_theorem6-g-minimality-and-quotient-summary.md]
 
 **Description**: Identify the most faithful and mathematically correct route to STRONG completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics), with weak completeness obtained as a corollary rather than as the target.
 
@@ -756,6 +756,7 @@ Governing design document: specs/361_strong_completeness_architecture_and_weak_t
 - **Dependencies**: Task 418
 - **Plan**: [165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md]
 - **Research**: [165_establish_semantic_finite_model_property/reports/06_soundfuel-decision.md]
+- **Summary**: [165_establish_semantic_finite_model_property/summaries/19_phase8-vacuous-theorem-hygiene-summary.md]
 
 **Description**: Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.
 
