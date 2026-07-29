@@ -4365,20 +4365,38 @@ for the repaired formula**.
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 26: Reynolds §8 Lemma 13 and the `ℚ`-shuffle [IN PROGRESS]
+### Phase 26: Reynolds §8 Lemma 13 and the `ℚ`-shuffle [COMPLETED]
 
 - **Goal**: *"For any structure `M`, if there are no `∼_M` classes ending at gaps then they are all
   closed intervals"* (Lemma 13), and the shuffle `Σ_{t∈ℚ} π(t)` with its `≡ₖ` property.
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/RealModel/Shuffle.lean` (new).
 - **Tasks**:
-  - [ ] Prove Lemma 13, transcribing printed p.187: classes are intervals; a class ending at an
+  - [x] Prove Lemma 13, transcribing printed p.187: classes are intervals; a class ending at an
         excluded point `b` would make `M|(c,b)` very good, which is the contradiction.
-  - [ ] Define `Shuffle S π` for a finite set `S` of structures and `π : ℚ → S` dense in every
+        *(deviation: altered — landed as `reynolds_lemma13_right`/`_left`/`reynolds_lemma13` with
+        two hypotheses beyond the printed statement, `[Countable M.carrier]` and
+        `[DenselyOrdered M.carrier]`. Reynolds' "for any structure `M`" does not survive the
+        non-emptiness clause of his own `veryGoodDense`, and the very-good⇒good step is Lemma 11,
+        which is stated for countable structures. Both are standing hypotheses of the theorem this
+        feeds (printed p.185), so nothing downstream weakens; documented in the module's honesty
+        charter notes.)*
+  - [x] Define `Shuffle S π` for a finite set `S` of structures and `π : ℚ → S` dense in every
         interval (printed p.186), and prove it well defined up to isomorphism.
-  - [ ] Prove `M|(⋃I) ≡ₖ Σ_{q∈ℚ} σ(q)` for the density-of-`γᵢ` situation of the main proof, using
-        `doets_lemma_1_4`.
-  - [ ] Docstrings: `Reynolds 1992, §8 Lemma 13, printed p.187` and `§8 (the shuffle), printed p.186`.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+        *(deviation: altered — `shuffle` and `IsShuffleMap` landed as specified; "well defined up
+        to isomorphism" landed only in its **reindexing** form, `kEquiv_shuffle_congr_orderIso`
+        (invariance under any colour-preserving order isomorphism of `ℚ`) plus
+        `kEquiv_shuffle_congr`. The full claim — that **any** two dense `π, π'` over the same `S`
+        are related by such an isomorphism — is the colour-preserving Cantor back-and-forth, which
+        Mathlib does not carry (`Order.iso_of_countable_dense` is uncoloured) and which no
+        downstream phase consumes. Deferred as a named follow-up; see the module header's
+        `FOLLOW-UP` note.)*
+  - [x] Prove `M|(⋃I) ≡ₖ Σ_{q∈ℚ} σ(q)` for the density-of-`γᵢ` situation of the main proof, using
+        `doets_lemma_1_4`. *(landed in two halves: `kEquiv_orderedSum_blocks` for the left-hand
+        identity `M|(⋃I) = Σ_{E∈I} M|E`, and `kEquiv_shuffle_of_classIso` for the `≡ₖ`; assembled
+        as `kEquiv_blocks_shuffle`. `kEquiv_orderedSum_reindex` /
+        `kEquiv_orderedSum_of_orderIso` supply the `I ≃o ℚ` bridge `doets_lemma_1_4` lacks.)*
+  - [x] Docstrings: `Reynolds 1992, §8 Lemma 13, printed p.187` and `§8 (the shuffle), printed p.186`.
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
 - **Estimated output**: ~350 lines.
 - **Done when**: Lemma 13 and the shuffle's `≡ₖ` property are sorry-free and axiom-clean.
 - **Depends on**: 24, 25.
