@@ -3806,7 +3806,7 @@ discharged at a non-trivial instance. These results are not to be described as d
 - **Decomposition protocol**: as Phase 18 — the `U`/`S` and forward/backward boundaries are both
   clean seams.
 
-### Phase 22: Reynolds §6 Lemma 9 and Theorem 4 — D1 [PARTIAL]
+### Phase 22: Reynolds §6 Lemma 9 and Theorem 4 — D1 [COMPLETED]
 
 > **DISPATCH REDIRECT (v10).** This heading is the first match for the orchestrator's phase scan,
 > but **there is no work left inside Phase 22's own territory**. Lemma 9 and both halves of Theorem
@@ -3970,7 +3970,7 @@ discharged at a non-trivial instance. These results are not to be described as d
 - **BLOCK F CHECKPOINT**: D1 is the harder of Doets' two hypotheses and it is now available at the
   dense instance. Clean stopping point.
 
-### Phase 22.1: Reynolds §6 Lemma 4's boundary case, and the discharge of `HasBadIntervalSurgery` [NOT STARTED]
+### Phase 22.1: Reynolds §6 Lemma 4's boundary case, and the discharge of `HasBadIntervalSurgery` [COMPLETED]
 
 > **TRANSCRIBE, DO NOT RE-DERIVE.** `reports/09` §3 contains **239 lines of this phase's content
 > already compiled green, sorry-free and axiom-clean** against the tree at this commit
@@ -4033,7 +4033,7 @@ for the repaired formula**.
    by this phase** as part of task 6.
 
 - **Tasks**:
-  1. [ ] **Step A — the repaired Lemma 4**, in `Lemma34.lean`, **beside** the landed faithful
+  1. [x] **Step A — the repaired Lemma 4**, in `Lemma34.lean`, **beside** the landed faithful
         transcription, which is not modified. Land `firstClassFormulaClosed`,
         `IsFirstClassPointClosed`, `firstClassFormulaClosed_eval`, `firstClassTemporalClosed`,
         `firstClassTemporalClosed_spec`, `isFirstClassPointClosed_congr`,
@@ -4047,14 +4047,14 @@ for the repaired formula**.
         `reynolds_lemma4_no_first_class`** — that is the evidence that the repair is faithful to
         Reynolds' *prose* even though it deviates from his *display*, and it is why the same
         `false_of_holds_throughout_class` route closes it.
-  2. [ ] **Step B — `exists_classInteriorToRInterval`**, the producer this plan assumed and never
+  2. [x] **Step B — `exists_classInteriorToRInterval`**, the producer this plan assumed and never
         chartered: `EndsInGapOnRight M ε t → ∃ a b, ClassInteriorToRInterval M ε a t b`. ~22 lines.
         **This is where the `≤` repair pays**: with the landed strict form, the lower witness gives
         `R` only on the **open** `(y, t)` while `ClassInteriorToRInterval.rThroughout` demands the
         **closed** `[a, b]`, and shrinking `a` into `(y, t)` fails in exactly the boundary case.
         Home file: `Lemma34.lean` or `BadIntervals.lean` — either is inside this phase's territory;
         record which was chosen.
-  3. [ ] **Step C — Lemma 6's first clause, hypothesis-free, both directions**, in
+  3. [x] **Step C — Lemma 6's first clause, hypothesis-free, both directions**, in
         `BadIntervals.lean` after `endsInGapOnRight_of_endsInGapOnLeft`:
         `endsInGapOnLeft_of_endsInGapOnRight'` (from Step B plus the landed Phase 20 theorem) and
         `endsInGapOnRight_of_endsInGapOnLeft'` **by instantiation at `(dual M, dualize ε)` through
@@ -4062,7 +4062,7 @@ for the repaired formula**.
         ~22 lines total.
         **`Dual.lean` applies HERE and nowhere earlier in this phase.** Steps A and B have no
         `ρ`-side theorem to dualise; dualising a theorem that does not exist yields nothing.
-  4. [ ] **Step D — the discharge**, in `NoGaps.lean`: the `Btw` / `badComp` family
+  4. [x] **Step D — the discharge**, in `NoGaps.lean`: the `Btw` / `badComp` family
         (`btw_of_minmax`, `minmax_of_btw`, `btw_self`, `badComp`, `badComp_isBadInterval`,
         `badComp_right`) and `hasBadIntervalSurgery`. `Q` is the bad-connected component of `t`.
         ~110 lines. Then restate `no_gaps_dense_prior` / `no_gaps_dense_prior_left` **without** the
@@ -4076,7 +4076,7 @@ for the repaired formula**.
         convexity. The `left_out` and `right_out` branches need **different argument shapes** — see
         residual error 5 below. **If this is re-derived rather than transcribed, budget an extra
         hour.**
-  5. [ ] **F2 — `ChronicleInstance.lean`** (new), importing `…DenseModelSurgery.NoGaps` and
+  5. [x] **F2 — `ChronicleInstance.lean`** (new), importing `…DenseModelSurgery.NoGaps` and
         `FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleMonadicBridge`; instantiate at
         `chronicleIsDensePriorSepStructure` (`ChronicleMonadicBridge.lean:1053`), whose `priorU`
         and `priorS` fields plug straight into the Step D conclusion.
@@ -4091,33 +4091,55 @@ for the repaired formula**.
         standing caveat **at one named structure**. It does **not** supply `IsContempEquivDense ε`
         — that is Phase 25's deliverable (§8 Lemma 12) and `epsTop` remains the only exhibitable
         `ε`.
-  6. [ ] **Rewrite `NoGaps.lean`'s `## Conditionality after Theorem 4`** to the three-condition
+  6. [x] **Rewrite `NoGaps.lean`'s `## Conditionality after Theorem 4`** to the three-condition
         accounting: **one of three conditions fully gone** (`HasBadIntervalSurgery`), **one gone at
         a live structure** (Prior-U/S, via `ChronicleInstance.lean`), **one standing until Phase
         25** (`ε`). **DO NOT DELETE THE CAVEAT.** Halves one and two of the standing §6 caveat stay
         **verbatim** in every module header that carries them — `Lemma5.lean`, `BadIntervals.lean`,
         `Dual.lean`, `TruthTransfer.lean`, `NoGaps.lean`. In the same edit, correct the sentence at
         `NoGaps.lean:730-731` per constraint 2 above.
-  7. [ ] **`#print axioms`** on `reynolds_lemma4_no_first_class_closed`,
+  7. [x] **`#print axioms`** on `reynolds_lemma4_no_first_class_closed`,
         `exists_classInteriorToRInterval`, `endsInGapOnLeft_of_endsInGapOnRight'`,
         `endsInGapOnRight_of_endsInGapOnLeft'`, `hasBadIntervalSurgery`, the restated
         `no_gaps_dense_prior` / `no_gaps_dense_prior_left`, and the `ChronicleInstance.lean`
         instantiation = exactly `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. Scoped
         build green; full `lake build` green.
-  8. [ ] **Declaration census (V1 pattern).** Every declaration present in `Lemma34.lean`,
+  8. [x] **Declaration census (V1 pattern).** Every declaration present in `Lemma34.lean`,
         `BadIntervals.lean` and `NoGaps.lean` before the dispatch is still present after it with
         its conclusion unweakened. Record before/after counts. `no_gaps_dense_prior` and
         `no_gaps_dense_prior_left` are the only declarations whose signatures change, and they may
         only be **strengthened** (one hypothesis removed), with the hypothesised forms retained
         under the `_of_hasBadIntervalSurgery` names.
-  9. [ ] **Sorry census unchanged.** Exactly one live `sorry` outside `Boneyard/`, at
+  9. [x] **Sorry census unchanged.** Exactly one live `sorry` outside `Boneyard/`, at
         `WeakCanonical/Transfer.lean:1242` — pre-existing, unrelated, **never to be attempted**.
         Locate it by name, not by trusting a line number carried in a brief. **Any sorries under
         `Decidability/Verified/Bridge/` belong to the concurrent effort: do not count them, do not
         touch them, do not stage them.**
-  10. [ ] **Regression canaries**: `#print axioms completeness_dense`, `completeness_discrete`,
+  10. [x] **Regression canaries**: `#print axioms completeness_dense`, `completeness_discrete`,
         `countermodel_discrete_reynolds_v2` unchanged. No file under `Decidability/` or
         `Automation/` read for edit or staged. No task-number citations in any `.lean` file.
+
+- **DEVIATION RECORD (Phase 22.1, as executed).**
+
+  | # | Kind | What | Why |
+  |---|---|---|---|
+  | 1 | **Flagged deviation from the source** (mandated by constraint 1) | `firstClassFormulaClosed` reads Reynolds' Lemma 4 inner bound as `y ≤ z` where printed p.179 displays `y < z`. Recorded in the `Lemma34.lean` section docstring *"Lemma 4 at the boundary"*, which quotes the printed display verbatim, names the boundary configuration on which it is false, attributes the defect to the **source**, and states the fallback framing if the attribution is disputed | The strict display is false at points of a first class bounded below by an excluded end point `r ∈ M`. `firstClassFormula` / `IsFirstClassPoint` are **not modified**; the repaired variant lands beside them |
+  | 2 | Placement, resolved | **Step B landed in `BadIntervals.lean`**, not `Lemma34.lean` | The charter allowed either. `ClassInteriorToRInterval` is defined at `BadIntervals.lean:422`, which is **downstream** of `Lemma34.lean` in the import DAG (`Defs → Lemma34 → Dual → Lemma5 → BadIntervals`), so `Lemma34.lean` was not actually available |
+  | 3 | Placement, as recommended | **F2 landed at `DenseModelSurgery/ChronicleInstance.lean`** | §6 material, inside Block F's existing territory; no boundary crossed. `reports/09` §5.2's recommended home |
+  | 4 | **In-place edit beyond the one permitted** | Two further docstring corrections in `NoGaps.lean`: the module header's *"adds a third condition"* paragraph, and the `## Theorem 4` section header's *"the input this tree cannot yet supply"* / *"the clause that is missing"* | Both became **actively false** the moment `StepD.hasBadIntervalSurgery` landed. Leaving them would have left the file asserting a standing gap that no longer exists. Prose only — no declaration touched |
+  | 5 | Signature change, chartered | `no_gaps_dense_prior` / `no_gaps_dense_prior_left` lose the `HasBadIntervalSurgery` hypothesis; the hypothesised forms are retained under `_of_hasBadIntervalSurgery` | Task 4 and task 8 charter exactly this. Strengthening only; zero declarations removed; no external callers existed (verified repo-wide) |
+
+- **SCOPE HYPOTHESIS, CONFIRMED AT IMPLEMENTATION TIME** (per the Scope Hypothesis bullet below):
+
+  | Measure | Hypothesis | Actual |
+  |---|---|---|
+  | Total | ~415 across 4 files | **+628 / −48 across 4 files + 1 import line** (`git diff --stat` against `5bf191e9e`, scoped to `DenseModelSurgery/` and `WeakCanonical.lean`). Docstrings ran materially longer than estimated: the honesty-charter Rule 7 quotation block in `Lemma34.lean` and the three-condition rewrite in `NoGaps.lean` account for most of the excess. **The proof content itself matched the 239-line pre-compiled figure almost exactly** |
+  | `Lemma34.lean` (Step A) | ~135 | +153, −0 (purely additive) |
+  | `BadIntervals.lean` (Steps B+C) | ~85 | +76, −0 (purely additive) |
+  | `NoGaps.lean` (Step D + rewrite) | ~195 | +335, −48 (the 48 deletions are the two rewritten prose sections plus the two renamed declaration lines) |
+  | `ChronicleInstance.lean` (F2) | ~30 | 111 (whole new file) |
+  | **Step A green in-file on first attempt (THE HARD GATE)** | gate may trip | **NOT TRIPPED — green first attempt, zero repairs.** Steps B+C and Step D were likewise green on the first attempt; F2 needed one repair (a missing `open` for `FrameClass` / `SetMaximalConsistent`, not a proof failure) |
+  | Residual errors from §3.6 re-encountered | 5 recorded | **0** — all five were pre-applied from the charter's table, exactly as intended |
 
 - **Residual errors already encountered on this route, with their fixes** (`reports/09` §3.6 —
   reproduced so this dispatch does not rediscover them; all five are mechanical):
