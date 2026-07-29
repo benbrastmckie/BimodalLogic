@@ -1049,16 +1049,21 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
                   if branch.contains prop then none else some prop
                 else none
               | _ => none
-            -- Auto-propagate OTHER F(U(event', guard')) formulas to freshTime
-            let untlNegProps := branch.untlNegFormulas.filterMap fun usf =>
-              if usf.label.time == l.time && usf != sf then
-                let prop :=
-                  SignedFormula.neg usf.formula { world := usf.label.world, time := freshTime }
-                if branch.contains prop then none else some prop
-              else none
+            -- NO `untlNegProps` BLOCK. Copying OTHER `F(U(event',guard'))` formulas from
+            -- `l.time` to `freshTime` is UNSOUND and was deleted; see `applyRule`'s docstring
+            -- for the time-axis prohibition. `Formula.untl` is interval-relative along a single
+            -- history, so `F(U(e',g'))@t` does not imply `F(U(e',g'))@t'` for `t < t'`, and no
+            -- shift-closure argument is available because the claim is not Ω-universal. A
+            -- *guarded* copy is not available either: soundness would need
+            -- `¬U(e',g')@A → ¬U(e',g')@C` for a freshly chosen `C > A`, a semantic condition on
+            -- the model that no syntactic guard computable from `(branch, ord)` expresses. This
+            -- ACTIVE arm mints `freshTime` strictly ABOVE `l.time` exactly as `untlPos` does, so
+            -- the ℤ counterexample recorded in `Verified/Decidable.lean` transfers unchanged.
+            -- Deletion can only make branches harder to close, so its sole risk is
+            -- under-closing — the direction the 29-row conformance corpus measures directly.
             -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
             let modalProps := boxDiamondPersistence branch l.world l.time freshTime
-            let autoProp := gProps ++ fNegProps ++ untlNegProps ++ modalProps
+            let autoProp := gProps ++ fNegProps ++ modalProps
             -- Reynolds co-decomposition at the fresh time
             let branch1 := [SignedFormula.neg event freshLabel, sf] ++ autoProp
             let branch2 := [SignedFormula.neg guard freshLabel,
@@ -1122,16 +1127,13 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
                   if branch.contains prop then none else some prop
                 else none
               | _ => none
-            -- Auto-propagate OTHER F(S(event', guard')) formulas to freshTime
-            let snceNegProps := branch.snceNegFormulas.filterMap fun ssf =>
-              if ssf.label.time == l.time && ssf != sf then
-                let prop :=
-                  SignedFormula.neg ssf.formula { world := ssf.label.world, time := freshTime }
-                if branch.contains prop then none else some prop
-              else none
+            -- NO `snceNegProps` BLOCK. Exact past mirror of the `untlNegProps` deletion in the
+            -- `.untlNeg` ACTIVE arm above: copying OTHER `F(S(event',guard'))` formulas from
+            -- `l.time` to `freshTime` is UNSOUND, no guarded form is available, and the
+            -- counterexample is the time reversal of the ℤ model in `Verified/Decidable.lean`.
             -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
             let modalProps := boxDiamondPersistence branch l.world l.time freshTime
-            let autoProp := hProps ++ pNegProps ++ snceNegProps ++ modalProps
+            let autoProp := hProps ++ pNegProps ++ modalProps
             -- Reynolds co-decomposition at the fresh time
             let branch1 := [SignedFormula.neg event freshLabel, sf] ++ autoProp
             let branch2 := [SignedFormula.neg guard freshLabel,
