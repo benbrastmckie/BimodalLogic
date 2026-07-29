@@ -199,47 +199,54 @@ alike. The corpus does **not** currently pin the distinction that matters here. 
 pins the `decide` *constructor* on this formula would be a genuine improvement to the corpus, and
 is the sort of addition Phase 7 could justify.
 
-## Earlier partial measurements of the anchor row (superseded by the section above)
+## Fuel sweep on the anchor row, and two process notes
 
-The plan's headline acceptance criterion is that `buildTableau ((G p) → □(G p)) 1000 .Base` now
-returns `.hasOpen`, and that `decide` on it returns `.invalid` with `getCountermodel?.isSome`.
-
-**Measured so far** (scratch `#eval`, `lake env lean`, not committed):
+The fuel sweep, kept because it brackets the behaviour and the section above reports only 1000:
 
 | Fuel | Pre-fix | Post-fix |
 |---|---|---|
-| 1000 | `.allClosed` — the false claim of validity this task exists to remove (recorded in `reports/08_spawn-analysis.md`) | **not yet measured** — see below |
-| 60 | not measured | `STALLED (none)` |
 | 30 | not measured | `STALLED (none)` |
+| 60 | not measured | `STALLED (none)` |
+| 1000 | `.allClosed` (recorded in `reports/08_spawn-analysis.md`) | `STALLED (none)`, `decide = .fuelExhausted` |
 
-**What is established**: the engine no longer returns `.allClosed` at low fuel; the branch stays
-open long enough to exhaust it. That is the fix working in the intended direction — the formula
-is invalid, and a closed tableau on it was the defect.
+Every measured fuel gives `none`. The ceiling above which `.hasOpen` might appear is **not
+bracketed**, and nothing here shows the branch ever saturates.
 
-**What is not yet established**: whether fuel 1000 now yields `.hasOpen` (the intended repair,
-bucket (a)) or `none` / `.fuelExhausted` (a bucket-(e) resource outcome that would leave the
-headline criterion unmet). A scratch probe running `buildTableau … 1000` and `decide` on this
-formula ran for **over an hour without producing a result** and was stopped. That is itself the
-measurement's most important interim datum, and it is why the plan's Phase 6 fuel-classification
-step (`.hasOpen` vs fuel-exhausted vs `extractionFailed` kept separate rather than collapsed into
-pass/fail) was the right instrument to specify.
+Two mistakes made while taking this measurement, recorded so they are not repeated:
 
-The definitive value will come from `CrossWorldPropagationProbe.lean` **row B**, which is
-`isValid ((G p) → □(G p))` — literally this formula — and which is one of the four modules still
-building. Note that this row pins `isValid = false`, and `isValid` is `(decide φ).isValid`, which
-is `true` only for `.valid`. Pre-fix the engine returned `.extractionFailed` here (closed tableau,
-no proof term), so `isValid` read `false` on a formula the engine was wrongly closing. Post-fix
-the row's *value* should survive at `false` whether the outcome is `.invalid` or `.fuelExhausted`
-— which is exactly why the plan classed this file as "values predicted safe, narrative
-superseded", and why the row cannot by itself discriminate (a) from (e). Reading the row is
-necessary but not sufficient; the next dispatch should also run `decide` directly and record the
-constructor.
+1. **A combined probe is unrecoverable.** The first attempt put rows A/B/C, the mechanism check,
+   `buildTableau … 1000` and `decide` in one file. `#eval` output is buffered until the whole file
+   elaborates, so after ~20 minutes the run was stopped with **nothing** recoverable. Split cheap
+   and expensive measurements into separate files.
+2. **"Over an hour without returning" was partly CPU contention, not the formula.** That probe ran
+   alongside a full corpus build. Run alone and with the expensive rows split out, `decide` on this
+   formula returns in minutes. The earlier reading in this document overstated the cost; the real
+   cost is the ~1100x figure in the resource section, which is measured from lake's own timings.
 
-## Modules still building
+A third note, on instrumentation rather than process: `CrossWorldPropagationProbe` row B was
+expected to settle this question and **cannot**. It pins `isValid`, which is `true` only for
+`.valid`, so it reads `false` under `.invalid` and `.fuelExhausted` alike. Only a direct
+measurement of the `decide` constructor distinguishes the intended repair from fuel exhaustion.
 
-`TableauConformance` (27 rows) and `BoxNegReachabilityProbe` (12 rows) had not completed at the
-time of writing. `BoxNegPreservationProbe` and `CrossWorldPropagationProbe`, initially recorded
-here as incomplete, both finished — see their sections above.
+## Modules still building at dispatch end — 2 of 8, 39 rows
+
+`TableauConformance` (27 rows) and `BoxNegReachabilityProbe` (12 rows) had not completed when this
+dispatch ended, after the build had run for several hours. `BoxNegPreservationProbe` and
+`CrossWorldPropagationProbe`, recorded earlier in this document as incomplete, both finished — see
+their sections above.
+
+**The build was left running and `after-corpus-raw.log` is appended in place.** The next dispatch
+should read it before re-running: it may already contain the missing 39 rows' verdicts. Verify
+first that the process actually completed (a trailing `Build completed` / `error: Lean exited`
+line for each of the two modules, and a `[2031/2031]` entry) rather than assuming the log is final
+— a truncated log from a killed process is an INCONCLUSIVE run under the Phase 1 triage checklist,
+not a measurement.
+
+These two are expected to carry the remaining bucket-(a) and bucket-(b) rows, and they are the
+only remaining source of a possible bucket-(c) under-closing regression. **None of the 17 rows
+measured so far is bucket (c), but that conclusion is provisional until these 39 rows are read.**
+`TableauConformance` in particular pins CLOSED/OPEN/STALLED verdicts directly across four frame
+classes, so it is the one file where a genuine verdict regression would show.
 
 ## Resource finding (bucket (e)) — the corpus got materially slower, quantified
 

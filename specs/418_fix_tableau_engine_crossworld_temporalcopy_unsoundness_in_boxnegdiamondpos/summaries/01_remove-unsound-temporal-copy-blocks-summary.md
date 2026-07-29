@@ -85,6 +85,12 @@ corpus was measuring the bug and reporting it as health. **Three are bucket (b)*
 **no bucket-(c) under-closing regression was found**. `CrossWorldPropagationProbe` — five rows
 pinning `isValid` on three invalid formulas and two controls — passes completely unchanged.
 
+**That last conclusion is provisional.** The 39 unmeasured rows sit in `TableauConformance` (27)
+and `BoxNegReachabilityProbe` (12), and `TableauConformance` is the one file that pins
+CLOSED/OPEN/STALLED verdicts directly, across four frame classes. It is therefore exactly where a
+genuine under-closing regression would surface. "Zero bucket-(c)" is a true statement about the
+103 rows read, not yet about the corpus.
+
 ## The anchor result — measured, and the plan's headline criterion is NOT met
 
 ```

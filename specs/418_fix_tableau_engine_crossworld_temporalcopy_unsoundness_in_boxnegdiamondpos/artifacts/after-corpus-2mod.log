@@ -1,0 +1,314 @@
+ℹ [680/727] Replayed FormalSystem.Syntax.Formula
+info: FormalSystem/Syntax/Formula.lean:271:0: 2
+info: FormalSystem/Syntax/Formula.lean:274:0: 2
+info: FormalSystem/Syntax/Formula.lean:277:0: 2
+info: FormalSystem/Syntax/Formula.lean:280:0: 2
+info: FormalSystem/Syntax/Formula.lean:283:0: 3
+info: FormalSystem/Syntax/Formula.lean:286:0: 3
+info: FormalSystem/Syntax/Formula.lean:287:0: 3
+info: FormalSystem/Syntax/Formula.lean:563:0: 3
+info: FormalSystem/Syntax/Formula.lean:566:0: 3
+info: FormalSystem/Syntax/Formula.lean:569:0: 3
+info: FormalSystem/Syntax/Formula.lean:572:0: 3
+info: FormalSystem/Syntax/Formula.lean:575:0: 4
+info: FormalSystem/Syntax/Formula.lean:578:0: 4
+info: FormalSystem/Syntax/Formula.lean:615:0: 2
+info: FormalSystem/Syntax/Formula.lean:618:0: 2
+info: FormalSystem/Syntax/Formula.lean:621:0: 2
+info: FormalSystem/Syntax/Formula.lean:624:0: 2
+info: FormalSystem/Syntax/Formula.lean:627:0: 2
+info: FormalSystem/Syntax/Formula.lean:630:0: 2
+info: FormalSystem/Syntax/Formula.lean:633:0: 2
+⚠ [688/727] Replayed FormalSystem.Metalogic.Decidability.Tableau
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:464:30: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, reduceIte] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:464:40: This simp argument is unused:
+  reduceIte
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, if_false] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:471:30: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, reduceIte] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:471:40: This simp argument is unused:
+  reduceIte
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, if_false] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2729:52: This simp argument is unused:
+  Bool.not_eq_true
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, decide_eq_true_eq, Bool.not_eq_eq_eq_not, Bool.not_false,
+    Bool.decide_eq_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2730:4: This simp argument is unused:
+  Bool.not_eq_eq_eq_not
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_false,
+    Bool.decide_eq_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2730:27: This simp argument is unused:
+  Bool.not_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_eq_eq_eq_not,
+    Bool.decide_eq_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2730:43: This simp argument is unused:
+  Bool.decide_eq_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_eq_eq_eq_not,
+    Bool.not_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2730:65: This simp argument is unused:
+  Bool.not_eq_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_eq_eq_eq_not,
+    Bool.not_false, Bool.decide_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2776:34: This simp argument is unused:
+  Bool.not_eq_true
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hfresh, if_true] at hr
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1345/1352] Replayed FormalSystem.Metalogic.Decidability.Saturation
+warning: FormalSystem/Metalogic/Decidability/Saturation.lean:934:29: Variable name `appliedSet` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _appliedSet
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1064:0: "PASS: U(p, bot) -> F(p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1074:0: "PASS: S(p, bot) -> P(p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1084:0: "PASS: F(p) -> U(p, top) is valid (BX12)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1093:0: "PASS: P(p) -> S(p, top) is valid (BX12')"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1102:0: "PASS: F(top) -> top is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1112:0: "PASS: U(p, q) is satisfiable (open branch found)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1121:0: "PASS: p -> p is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1146:0: "PASS B1: G(p) -> G(p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1155:0: "PASS B2: U(p,q) -> U(p,q) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1165:0: "PASS B3: U(p,bot) -> F(p) is valid (eventuality witnessed)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1192:0: "PASS: □p → Gp is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1201:0: "PASS: □p → Hp is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1213:0: "PASS: □p → always p is valid (P1 perpetuity)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1223:0: "PASS: □(□p) → G(□p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1237:0: "PASS: p ∧ F(¬p) is satisfiable (open branch found)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1246:0: "PASS: □p → □(Gp) is valid (modal_future)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1273:0: "PASS E1: U(U(p,q),r) -> U(U(p,q),r) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1283:0: "PASS E2: S(p,bot) -> P(p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1292:0: "PASS E3: p -> (q -> p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1302:0: "PASS E4: U(p,q) is satisfiable (open branch with blocking)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1313:0: "INFO E5: G(p) -> p is invalid (strict reading)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1758:0: "PASS FC1: GGp → Gp closes under Dense"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1768:0: "PASS FC2: GGp → Gp correctly open under Base"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1777:0: "PASS FC3: ¬U(⊤,⊥) closes under Dense"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1787:0: "PASS FC4: ¬U(⊤,⊥) correctly open under Base"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1796:0: "PASS FC5: F(p) → U(p, ¬p) closes under Discrete"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1806:0: "PASS FC6: F(p) → U(p, ¬p) correctly open under Base"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1815:0: "PASS FC7: F(p) → U(p, ¬p) correctly open under Dense"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1824:0: "PASS FC8: p → p closes under all frame classes (monotonicity)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1839:0: "PASS FC9: ¬U(⊤,⊥) correctly open under Discrete"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1861:0: "PASS PL1: diamond p terminates with open branch (no loop)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1870:0: "PASS PL2: (box(bot -> bot) -> r) terminates (no stall)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1879:0: "PASS PL3: box(bot -> p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1888:0: "PASS PL4: box(p -> p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1897:0: "PASS PL5: (box bot -> r) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1932:0: "PASS AN1: G(p) → ¬F(¬p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1945:0: "PASS AN2: U(p,q) is satisfiable (active untlNeg created time)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1958:0: "PASS AN3: U(p,q) → U(p,q) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1968:0: "PASS AN4: S(p,q) is satisfiable (active snceNeg created time)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1980:0: "PASS AN5: H(p) → ¬P(¬p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1997:0: "PASS AN6: nested Until identity valid (fuel=500)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2011:0: "PASS AN7: U(p,q) → F(p) valid (fuel=500)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2024:0: "PASS AN8: ¬U(p,q) satisfiable (fuel=500, active rule + blocking)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2047:0: "PASS FA1: balanced branches get equal fuel"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2060:0: "PASS FA2: temporal branch gets more fuel than propositional"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2071:0: "PASS FA3: all allocations in bounds [1, 199]: [25, 100, 75]"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2082:0: "PASS FA4: fuel=0 gives all zeros"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2091:0: "PASS FA5: difficulty ordering correct: prop=1 < modal=3 < temp=4"
+⚠ [1348/1352] Replayed FormalSystem.Metalogic.Decidability.CountermodelExtraction
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:565:46: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asUntil?, hg', applyRule, ruleMintsFreshLabel, ruleSelfGuarded, if_true,
+    Option.isSome_some, if_neg hc] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:566:34: This simp argument is unused:
+  Option.isSome_some
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asUntil?, hg', if_false, applyRule, ruleMintsFreshLabel, ruleSelfGuarded, if_true,
+    if_neg hc] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:610:46: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asSince?, hg', applyRule, ruleMintsFreshLabel, ruleSelfGuarded, if_true,
+    Option.isSome_some, if_neg hc] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:611:34: This simp argument is unused:
+  Option.isSome_some
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asSince?, hg', if_false, applyRule, ruleMintsFreshLabel, ruleSelfGuarded, if_true,
+    if_neg hc] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:806:57: This simp argument is unused:
+  ruleSelfGuarded
+
+Hint: Omit it from the simp argument list.
+  [apply] simp at hUntlNeg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:873:57: This simp argument is unused:
+  ruleSelfGuarded
+
+Hint: Omit it from the simp argument list.
+  [apply] simp at hSnceNeg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+ℹ [1350/1352] Replayed FormalSystem.Automation.Normalization
+info: FormalSystem/Automation/Normalization.lean:239:0: neg_unfold : ∀ (φ : Formula), φ.neg = φ.imp bot
+info: FormalSystem/Automation/Normalization.lean:240:0: top_unfold : top = bot.imp bot
+info: FormalSystem/Automation/Normalization.lean:241:0: next_unfold : ∀ (φ : Formula), φ.next = φ.untl bot
+info: FormalSystem/Automation/Normalization.lean:242:0: prev_unfold : ∀ (φ : Formula), φ.prev = φ.snce bot
+info: FormalSystem/Automation/Normalization.lean:243:0: and_unfold : ∀ (φ ψ : Formula), φ.and ψ = (φ.imp (ψ.imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:244:0: or_unfold : ∀ (φ ψ : Formula), φ.or ψ = (φ.imp bot).imp ψ
+info: FormalSystem/Automation/Normalization.lean:245:0: diamond_unfold : ∀ (φ : Formula), φ.diamond = (φ.imp bot).box.imp bot
+info: FormalSystem/Automation/Normalization.lean:246:0: some_future_unfold : ∀ (φ : Formula), φ.someFuture = φ.untl (bot.imp bot)
+info: FormalSystem/Automation/Normalization.lean:247:0: some_past_unfold : ∀ (φ : Formula), φ.somePast = φ.snce (bot.imp bot)
+info: FormalSystem/Automation/Normalization.lean:248:0: all_future_unfold : ∀ (φ : Formula), φ.allFuture = ((φ.imp bot).untl (bot.imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:249:0: all_past_unfold : ∀ (φ : Formula), φ.allPast = ((φ.imp bot).snce (bot.imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:250:0: weak_future_unfold : ∀ (φ : Formula),
+  φ.weakFuture = (φ.imp ((((φ.imp bot).untl (bot.imp bot)).imp bot).imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:251:0: weak_past_unfold : ∀ (φ : Formula), φ.weakPast = (φ.imp ((((φ.imp bot).snce (bot.imp bot)).imp bot).imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:252:0: always_unfold : ∀ (φ : Formula), △φ = φ.allPast.and (φ.and φ.allFuture)
+info: FormalSystem/Automation/Normalization.lean:253:0: sometimes_unfold : ∀ (φ : Formula), ▽φ = (△φ.neg).neg
+info: FormalSystem/Automation/Normalization.lean:254:0: strong_release_unfold : ∀ (φ ψ : Formula), φ.strongRelease ψ = (ψ.and φ).untl ψ
+info: FormalSystem/Automation/Normalization.lean:255:0: strong_trigger_unfold : ∀ (φ ψ : Formula), φ.strongTrigger ψ = (ψ.and φ).snce ψ
+info: FormalSystem/Automation/Normalization.lean:613:0: FormalSystem.Automation.Normalization.EnrichedFormula.neg
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:620:0: FormalSystem.Automation.Normalization.EnrichedFormula.top
+info: FormalSystem/Automation/Normalization.lean:627:0: FormalSystem.Automation.Normalization.EnrichedFormula.diamond
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:634:0: FormalSystem.Automation.Normalization.EnrichedFormula.and_
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:641:0: FormalSystem.Automation.Normalization.EnrichedFormula.imp
+  (FormalSystem.Automation.Normalization.EnrichedFormula.neg
+    (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:648:0: FormalSystem.Automation.Normalization.EnrichedFormula.some_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:655:0: FormalSystem.Automation.Normalization.EnrichedFormula.some_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:661:0: FormalSystem.Automation.Normalization.EnrichedFormula.all_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:667:0: FormalSystem.Automation.Normalization.EnrichedFormula.all_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:673:0: FormalSystem.Automation.Normalization.EnrichedFormula.next
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:679:0: FormalSystem.Automation.Normalization.EnrichedFormula.prev
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:686:0: [(true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.neg
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.top)), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.imp
+    (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.and_
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.imp
+    (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+    (FormalSystem.Syntax.Formula.bot))
+  (FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none }), FormalSystem.Automation.Normalization.EnrichedFormula.imp
+  (FormalSystem.Automation.Normalization.EnrichedFormula.neg
+    (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.box
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.diamond
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.untl
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot)), FormalSystem.Automation.Normalization.EnrichedFormula.some_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.snce
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot)), FormalSystem.Automation.Normalization.EnrichedFormula.some_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.untl
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot))
+    (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.all_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.snce
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot))
+    (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.all_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.untl
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.next
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.snce
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.prev
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })))]
+info: FormalSystem/Automation/Normalization.lean:707:0: FormalSystem.Automation.Normalization.EnrichedFormula.weak_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:713:0: FormalSystem.Automation.Normalization.EnrichedFormula.weak_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:719:0: FormalSystem.Automation.Normalization.EnrichedFormula.always
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:725:0: FormalSystem.Automation.Normalization.EnrichedFormula.sometimes
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:731:0: [(true, FormalSystem.Automation.Normalization.EnrichedFormula.always
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })), (true, FormalSystem.Automation.Normalization.EnrichedFormula.sometimes
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })), (true, FormalSystem.Automation.Normalization.EnrichedFormula.weak_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })), (true, FormalSystem.Automation.Normalization.EnrichedFormula.weak_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))]
+info: FormalSystem/Automation/Normalization.lean:910:0: "Round-trip test: ALL PASS (21 formulas tested)"
+info: FormalSystem/Automation/Normalization.lean:1128:0: "{\"tag\": \"neg\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1134:0: "{\"tag\": \"diamond\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1140:0: "{\"tag\": \"diamond\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1146:0: "△p"
+info: FormalSystem/Automation/Normalization.lean:1152:0: "(and (atom \"p\") (atom \"q\"))"
+info: FormalSystem/Automation/Normalization.lean:1158:0: "{\"tag\": \"always\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1164:0: "(<>p → Gq)"
