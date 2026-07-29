@@ -2345,6 +2345,78 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
 
+**PHASE 7 STATUS (2026-07-29e) — the ACTIVE arms of `untlNeg`/`snceNeg` are SOUND, and 7.2 goes
+31 → 32 of 34 via `sepRule`.** Twentieth dispatch. Four green commits. Sorry census over
+`Verified/` is `0`; no new axioms; no vacuous definitions introduced.
+
+*Read the ledger arithmetic carefully, because two separate things happened and only one of them
+moved it.* The ACTIVE-arm repair moved it **not at all** — `RuleSound` is per rule over **both**
+arms, and the PASSIVE arms remain refuted, so `untlNeg`/`snceNeg` stay unproved. The single
+increment is `sepRule`, which is unrelated to either.
+
+*1. The authorized ACTIVE-arm repair landed, with its gate.* The self-propagated
+`F(U(event,guard))@freshLabel` is deleted from the ACTIVE arm of `.untlNeg` and its `.snceNeg`
+mirror. This was the THIRD defect in these two rules, independent of the copy block (defect 1,
+closed in the 2026-07-29d dispatch) and of the PASSIVE arms' endpoint co-decomposition (defect 2,
+still open). It is refuted over a **dense** carrier where the copy needed a **discrete** one.
+Gate, before and after: the 29-row conformance corpus GREEN both sides (58.5 s → 64.2 s) with
+**zero rows changed**; `TemporalWitnessProbe` GREEN with **zero rows moved**, rows H–N still
+reading `nStr=true nCo=true`, so no gate row regressed; `UntlSnceCopyProbe` sections A/B/C
+untouched. Full downstream rebuild of `Verified.Decidable` green at 1353 jobs, so the 31 landed
+rule proofs and `applyRule_untlNeg_closed` all survive. **No `guardWitnessed` variant was
+implemented** — it is refuted on three independent grounds and must not be revisited.
+
+*2. Probe rows D1/D2 landed first, pinned pre-repair, as required.* New section D of
+`Tests/BimodalTest/UntlSnceCopyProbe.lean` turns the ℚ refutation into a measured fact. Exactly
+four rows moved across the repair, all four intended: `D1c`/`D2c` `true → false` (the sub-term is
+gone) and `D1d`/`D2d` `[2,3] → [2,2]` (the arms are now symmetric). `D1a`/`D1b`/`D1e` and mirrors
+are **unchanged**, which is what makes the `false` non-vacuous — the arm still fires, still
+branches in two, still mints time `3`.
+
+*3. `ruleSound_sepRule` is proved. 31 → 32 of 34.* The `.Dedekind` family is now complete. The
+blocker was real but was mis-priced as unreachable: `sep_valid` needs
+`exists_countable_order_dense`, which is genuine order-theoretic machinery — but it already
+exists in `SoundnessLemmas/Separability.lean`, a file that imports **only** Mathlib and mentions
+neither formulas nor truth. The import edge is therefore acyclic by inspection and strictly
+weaker than the `FrameClassVariants` edge already present. It is **not** an edge into
+`Metalogic/Soundness.lean` (still refused) and **not** into `WeakCanonical` (out of territory).
+Mathlib was searched first and does not carry the lemma usably: its countable-dense results are
+stated for `SeparableSpace`/`OrderTopology`, and building that bridge from an ordered group is
+exactly what `Separability.lean` does by hand. `truthAt_sep` transcribes Reynolds §7 lemma 10's
+remaining ~45 lines; `ruleSound_sepRule` follows `ruleSound_priorUGap`'s shape. Verified
+axiom-clean: `propext`, `Classical.choice`, `Quot.sound` only.
+
+*4. The two open measurements are resolved, and both cut AGAINST the capped-interpolant design.*
+New section E, measurement-only. **E1**: a `timeCount` cap is a switch, not a net —
+`timeCount ≥ 4` (the threshold the existing ACTIVE guard tests) is crossed after **5** first-arm
+steps, and `timeCount ≥ 8` after **21**, against a section-C fuel of 200. A capped PASSIVE arm
+would be switched off for most of every run by background minting it plays no part in. **E2**:
+the `G`-propagation channel **fires** on a branch the engine actually builds — from a branch
+whose only `U(e,g)` is positive and buried under a `G`, the count of distinct times carrying a
+*negative* `U(e,g)` runs `[0,1,1,3,5,9]` at `k = 0,4,8,16,32,64`, at five distinct labels by step
+32. So the supply of `(source, label)` pairs is not fixed in advance and no subformula-descent
+bound is available. **These are inputs to the passive-arm choice (rank 2 vs corrected rank 3),
+which is the orchestrator's to make; this dispatch did not make it.**
+
+*5. Item B10 fixed (comment-only, both copies).* `Saturation.lean`'s `.splitOrdered` arm claimed
+it was unreachable "because every ordered split lengthens the constraint list". That reason is
+**false**: `timeLinearity`, the only rule returning `.branchingOrdered`, returns the *unchanged*
+`timeOrd` outwardly, so the length guard reads `false` and lets it through. The arm is
+nonetheless dead, for a different reason — `.timeLinearity` is deliberately excluded from
+`allRulesForFC`, which is what `expandOnceNoFresh` picks through. Both the `Saturation.lean` and
+`CancellableExpansion.lean` copies now say so, and both record the trap: a future
+`allRulesForFC` rule returning `.branchingOrdered` makes the arm live, and the guard protects it
+only under the *opposite* ordering convention to `timeLinearity`'s.
+
+**Not attempted, deliberately:** 7.3; any PASSIVE-arm logic; any `guardWitnessed` variant.
+
+**DO NOT RE-LITIGATE:**
+- `guardWitnessed` in any form. It suppresses the whole rule, including branch 1 — the only
+  emitter of `¬event@t'` at an existing time, which is exactly what `untlNegFuture` demands.
+- Pricing the ACTIVE-arm repair as ledger progress. It yields no theorem.
+- "`sepRule` needs machinery this tree does not have." It needed one Mathlib-only import.
+
+
 **PHASE 7 STATUS (2026-07-29d) — the copy defect is CLOSED across all four rules, and 7.2 goes
 26 → 31 of 34.** Five green commits. Sorry census over `Verified/` is `0`; no new axioms; no
 vacuous definitions introduced.

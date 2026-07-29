@@ -115,8 +115,11 @@ def saturateBlockedCancellable (abortRef : IO.Ref Bool)
               else
                 -- Mirror of the `.split` arm; each sub-branch keeps its own ordering. As in
                 -- the pure `saturateBlocked`, this arm is unreachable from `expandOnceNoFresh`
-                -- (whose pick rejects any rule that lengthens the constraint list, which every
-                -- ordered split does) and is written out to keep that invariant checkable.
+                -- — but because `.timeLinearity`, the only rule returning `.branchingOrdered`,
+                -- is excluded from `allRulesForFC`, NOT because the length guard rejects it.
+                -- It does not: `timeLinearity` returns the unchanged `timeOrd` outwardly. See
+                -- the fuller note on the corresponding arm of `saturateBlocked`, and keep the
+                -- two in sync.
                 let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering)) :=
                   some (.inl ⟨b, .botPos Label.initial⟩)
                 for pair in branches do

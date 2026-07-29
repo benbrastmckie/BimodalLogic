@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.Decidability.Verified.RuleSpec
 import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
 import FormalSystem.Semantics.Validity
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
+import FormalSystem.Metalogic.SoundnessLemmas.Separability
 
 /-!
 # Semantic rule soundness: satisfiability preservation, one rule shape at a time
@@ -2281,10 +2282,14 @@ soundness inside the decidability tree is several hundred lines of duplicated Ma
 estimate is right for the *discrete* `SuccOrder`/`PredOrder` descent, which is exactly why those
 three were reused rather than re-proved; it is not right for these two.)
 
-`sepRule`, the third `.Dedekind` rule, is a different matter and is **not** landed here: its
-validity needs `exists_countable_order_dense`, a substantial order-theoretic development in
-`SoundnessLemmas/Separability.lean`, which is a genuine dependency rather than a thirty-line
-argument.
+`sepRule`, the third `.Dedekind` rule, is a different matter, and it is landed by a different
+route — see `truthAt_sep` below. Its validity genuinely needs `exists_countable_order_dense`,
+which is a substantial order-theoretic development and not a thirty-line argument, so it is
+**reused** from `SoundnessLemmas/Separability.lean` rather than re-proved. That reuse is
+available precisely because `Separability.lean` imports only Mathlib and mentions neither
+formulas nor truth, which makes the import edge acyclic by inspection; the refused edge is the
+one into `Metalogic/Soundness.lean`, and it stays refused. With `sepRule` proved the `.Dedekind`
+family is complete.
 -/
 
 /-- Classical `∧`-introduction from a doubly-negated pair, as the gap antecedents arrive. -/
@@ -2463,15 +2468,139 @@ theorem ruleSound_priorSGap : RuleSound carrierDedekind .priorSGap := by
         subst hc
         simpa [SatAt, SignedFormula.pos] using truthAt_priorSGap h_lub hsrc
 
+/-- **Sep, semantic half.** `K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ,¬ψ))` at `t` gives `K⁺(K⁺ψ ∧ K⁻ψ)` at `t`.
+
+Unlike the two Prior-gap lemmas above, this one does **not** get by on the linear order and the
+least-upper-bound hypothesis. Sep is FALSE on an arbitrary densely ordered Dedekind-complete
+linear order — the lexicographic square `[0,1] ×ₗₑₓ [0,1]` refutes it — so the algebraic binders
+are load-bearing: `AddCommGroup`, `IsOrderedAddMonoid`, `DenselyOrdered` and `Nontrivial`
+together with `h_lub` force the carrier to be Archimedean and hence separable. That is exactly
+what `exists_countable_order_dense` extracts, and it is why this rule needed an import edge where
+the Prior-gap pair did not.
+
+**On the import.** `SoundnessLemmas/Separability.lean` imports **only** Mathlib
+(`Algebra.Order.Archimedean.Basic`, `Data.Set.Countable`) — it mentions neither formulas nor
+truth — so the edge into this tree is acyclic by inspection and is a strictly weaker dependency
+than the `FrameClassVariants` edge already present. It is emphatically **not** an edge to
+`Metalogic/Soundness.lean`, which remains refused, nor to the `WeakCanonical` tree. Mathlib
+itself was searched first and does not carry this lemma in usable form: its countable-dense
+results are stated for `SeparableSpace`/`OrderTopology`, and reaching them from an ordered group
+is the very bridge `Separability.lean` builds by hand.
+
+The argument is Reynolds 1992 §7 lemma 10, and it is transcribed rather than reinvented: `S` is
+the ψ-region just above `t`, dense in itself because no ψ-point above `t` begins a ψ-free gap,
+and each `u` above `t` carries a ψ-free interval on one side, whose point of `Q` separates `S`
+below `u` from `S` above it. `sep_order` turns that into `False`. -/
+private theorem truthAt_sep {M : TaskModel F} {Om : Set (WorldHistory F)}
+    [DenselyOrdered D] [Nontrivial D]
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    {τ : WorldHistory F} {t : D} {ψ : Formula}
+    (h_ant : TruthAt M Om τ t (Formula.and (Formula.kPlus ψ)
+        (Formula.kPlus (Formula.and ψ (Formula.untl ψ ψ.neg))).neg)) :
+    TruthAt M Om τ t (Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ))) := by
+  obtain ⟨Q, hQc, hQd⟩ :=
+    FormalSystem.Metalogic.SoundnessLemmas.exists_countable_order_dense h_lub
+  simp only [TruthAt, Formula.and, Formula.neg, Formula.kPlus, Formula.kMinus,
+    Formula.top] at h_ant ⊢
+  obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
+  rintro ⟨s₂, hts₂, -, hno⟩
+  have hK : ∀ v, t < v → ∃ u, t < u ∧ u < v ∧ TruthAt M Om τ u ψ := by
+    intro v htv
+    by_contra hc
+    refine h1 ⟨v, htv, fun hb => hb, ?_⟩
+    intro r htr hrv hrφ
+    exact hc ⟨r, htr, hrv, hrφ⟩
+  have h2' : ∃ s₁, t < s₁ ∧ (True) ∧ ∀ u, t < u → u < s₁ →
+      (TruthAt M Om τ u ψ → TruthAt M Om τ u (Formula.untl ψ ψ.neg) → False) := by
+    refine Classical.byContradiction (fun hc => h2 ?_)
+    intro hbad
+    exact hc (by
+      obtain ⟨s₁, hts₁, -, hu⟩ := hbad
+      exact ⟨s₁, hts₁, trivial, fun u htu hus => Classical.byContradiction (hu u htu hus)⟩)
+  obtain ⟨s₁, hts₁, -, hstart⟩ := h2'
+  refine FormalSystem.Metalogic.SoundnessLemmas.sep_order h_lub Q hQc hQd
+    {u | TruthAt M Om τ u ψ} t s₁ s₂ hts₁ hts₂ hK ?_ ?_
+  · rintro u htu hus₁ huP ⟨v, huv, hvP, hfree⟩
+    exact hstart u htu hus₁ huP ⟨v, huv, hvP, fun r hur hrv => hfree r hur hrv⟩
+  · intro u htu hus₂
+    have hAB : TruthAt M Om τ u (Formula.kPlus ψ) →
+        TruthAt M Om τ u (Formula.kMinus ψ) → False := by
+      intro ha hb
+      exact hno u htu hus₂ (fun k => k ha hb)
+    by_cases hR : ∃ v, u < v ∧ ∀ w, u < w → w < v → ¬ TruthAt M Om τ w ψ
+    · exact Or.inl hR
+    · refine Or.inr ?_
+      have ha : TruthAt M Om τ u (Formula.kPlus ψ) := by
+        simp only [TruthAt, Formula.kPlus, Formula.neg, Formula.top]
+        rintro ⟨v, huv, -, hw⟩
+        exact hR ⟨v, huv, fun w huw hwv => hw w huw hwv⟩
+      have hb := hAB ha
+      refine Classical.byContradiction (fun hns => hb ?_)
+      simp only [TruthAt, Formula.kMinus, Formula.neg, Formula.top]
+      rintro ⟨v, hvu, -, hw⟩
+      exact hns ⟨v, hvu, fun w hvw hwu => hw w hvw hwu⟩
+
+/-- `T(K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ,¬ψ)))` gives `T(K⁺(K⁺ψ ∧ K⁻ψ))` at the same label. The third and last
+`.Dedekind` rule; with it the `.Dedekind` family is complete. -/
+theorem ruleSound_sepRule : RuleSound carrierDedekind .sepRule := by
+  intro D _ _ _ _ hC F M Om hist tv b sf ord hmem hst _
+  obtain ⟨hDense, h_lub⟩ := hC
+  haveI := hDense
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asAnd? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ab =>
+      obtain ⟨a, bb⟩ := ab
+      have hφ : φ = .imp (.imp a (.imp bb .bot)) .bot := asAnd?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      subst hφ
+      simp only [SatAt] at hsrc
+      simp only [applyRule, hA]
+      split
+      all_goals try trivial
+      rename_i e ψ
+      split
+      all_goals try trivial
+      rename_i hbeq
+      obtain ⟨he, hbb⟩ := Bool.and_eq_true _ _ |>.mp hbeq
+      have he' : e = Formula.top := by simpa using he
+      have hbb' : bb = Formula.neg
+          (Formula.kPlus (Formula.and ψ (Formula.untl ψ (Formula.neg ψ)))) := by simpa using hbb
+      subst he'
+      subst hbb'
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro c hc
+        rw [List.mem_singleton] at hc
+        subst hc
+        simpa [SatAt, SignedFormula.pos, Formula.and, Formula.kPlus, Formula.neg]
+          using truthAt_sep h_lub hsrc
+
 /-!
 ## `untlNeg` and `snceNeg` — BLOCKED, two independent engine defects
 
 **Status.** `untlPos` and `sncePos` are proved above; the copy defect described below was
 repaired for those two arms by deleting the block, gated on the full conformance corpus. This
-section is retained because `untlNeg`/`snceNeg` are still blocked, and they are blocked
-**twice**: their ACTIVE arms still carry the copy block, and their PASSIVE arms carry a second,
-wholly independent unsoundness. Everything below stated in the present tense holds of
-`untlNeg`/`snceNeg`; for `untlPos`/`sncePos` read it in the past tense.
+section is retained because `untlNeg`/`snceNeg` are still blocked — but the count of live
+obstructions has since fallen from three to one, and only the last of the three is still open.
+
+**Current status, superseding the present tense below.** Three independent defects were found in
+these two rules, not two. (1) The copy block, described as Defect 1 below: deleted from the
+ACTIVE arms, as it had already been from `untlPos`/`sncePos`. (2) A *third* defect, found after
+that deletion and independent of it — the ACTIVE arm re-asserting its **own**
+`F(U(event,guard))` at the time it had just minted, refuted over a **dense** carrier where the
+copy needed a discrete one: also deleted, gated on the full conformance corpus, and measured by
+section D of `Tests/BimodalTest/UntlSnceCopyProbe.lean`. **The ACTIVE arms are now sound.**
+(3) Defect 2 below, the PASSIVE arms' endpoint co-decomposition: still open, and it alone is why
+these two rules remain unproved. `RuleSound` is per rule over **both** arms, so repairing the
+ACTIVE arms moved no theorem.
+
+Read Defect 1 below in the past tense for all four rules. Read Defect 2 in the present tense —
+it is the live one.
 
 Neither obstruction is the ordering gap this section's predecessors were about. That gap is
 closed: `OrdWithin` is in `RuleSound`, and the four fresh-time existentials above are proved

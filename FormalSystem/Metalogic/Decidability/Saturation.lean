@@ -469,9 +469,24 @@ def saturateBlocked (b : Branch) (fuel : Nat)
                 some (.inr (b, timeOrd))  -- Reject: would create new time point
               else
               -- Mirror of the `.split` arm; each sub-branch keeps its own ordering. In practice
-              -- this arm is unreachable from `expandOnceNoFresh`, whose pick rejects any rule
-              -- that lengthens the constraint list and every ordered split does exactly that;
-              -- it is written out rather than collapsed so the invariant stays checkable.
+              -- this arm is unreachable from `expandOnceNoFresh` — but NOT for the reason the
+              -- length guard just above might suggest, and the difference is a trap worth
+              -- naming. `expandOnceNoFresh` picks through `findApplicableRule`, which walks
+              -- `allRulesForFC`, and `.timeLinearity` — the ONLY rule that returns
+              -- `.branchingOrdered` — is deliberately excluded from that list (it lives in
+              -- `linearityRules`, and runs as a separate third stage). THAT is what makes this
+              -- arm dead.
+              --
+              -- The length test would NOT have caught it. `timeLinearity` returns the
+              -- **unchanged** `timeOrd` as its outer component (`Tableau.lean`, the
+              -- `.timeLinearity` arm) and carries its three extended orderings per branch
+              -- instead, so `newOrd.constraints.length > timeOrd.constraints.length` reads
+              -- `false` on it and the guard lets it straight through. So if a future rule in
+              -- `allRulesForFC` ever returns `.branchingOrdered`, this arm goes live, and the
+              -- guard above protects it only if that rule reports its EXTENDED ordering
+              -- outwardly — the opposite convention to the one `timeLinearity` uses.
+              --
+              -- Written out rather than collapsed so that both invariants stay checkable.
               let tryBranch := fun acc (pair : Branch × TimeOrdering) =>
                 match acc with
                 | some (.inr openBr) => some (.inr openBr)  -- Already found open
