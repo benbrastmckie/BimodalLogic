@@ -1,7 +1,9 @@
 # Implementation Plan: Verified Tableau Decidability of TM (Two-Track, Skeleton)
 
 - **Task**: 165 - establish_semantic_finite_model_property (rescoped to tableau decidability)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED] (2026-07-29h — all 8 phases `[COMPLETED]`; Phase 7 closes against a
+  REDUCED scope, item 7.3 rehomed to tasks 428/429/430. See "Scope change (Phase 7 narrowed)"
+  below and the SCOPE CHANGE subsection under the Phase 7 heading.)
 - **Effort**: ~50 hours (Track A scope carried by this task; Track B deferred to follow-up tasks)
 - **Dependencies**: None
 - **Research Inputs**:
@@ -12,7 +14,29 @@
 - **Artifacts**: plans/01_tableau-decidability-two-track.md (this file)
 - **Standards**: .claude/context/formats/plan-format.md; .claude/rules/plan-format-enforcement.md; .claude/rules/artifact-formats.md; .claude/rules/state-management.md; .claude/context/formats/status-markers reference in plan-format.md
 - **Type**: lean4
-- **Plan Metadata**: `skeleton: true` (Stage 4a escape valve — full scope exceeds the 8-phase hard-mode ceiling); `follow_up_tasks: [410, 411, 412]` (allocated by skill postflight); `dependency_waves: [[1],[2],[3,4,5],[6],[7],[8]]`
+- **Plan Metadata**: `skeleton: true` (Stage 4a escape valve — full scope exceeds the 8-phase hard-mode ceiling); `follow_up_tasks: [410, 411, 412, 428, 429, 430]` (410/411/412 allocated by skill postflight; 428/429/430 allocated by the 2026-07-29h scope change below); `dependency_waves: [[1],[2],[3,4,5],[6],[7],[8]]`
+
+## Scope change (Phase 7 narrowed) — 2026-07-29h
+
+**Phase 7's scope is now the truth lemma and Track A's CONDITIONAL results, and those are
+delivered. Item 7.3 — `valid_iff_allClosed` and the four `Decidable` instances — has been MOVED
+OUT of this task** into three new tasks, created and committed: **428** (owns O1, engine totality
+at a quantified branch budget), **429** (owns O2 and O3, the `boxAnchoredCheck`/
+`temporalWitnessCheck` side-condition repairs), and **430** (owns O4, the semantic lift, and then
+delivers 7.3; predecessors 428, 429). Task 412 was re-scoped off the refuted `buildTableau_isSome`
+and gained 428 as a predecessor.
+
+The verdict this implements, with every `file:line` anchor, is
+`reports/09_phase7-deadlock-blocker-research.md`. The four obstructions O1-O4 and the reason O2/O3
+are the *cost of authorized soundness fixes* rather than regressions to revert are recorded in the
+`#### SCOPE CHANGE (2026-07-29h)` subsection immediately under the Phase 7 heading. Read that
+subsection before scheduling any work against Phase 7.
+
+**What this changes about the two blocks below.** The **Definition of done (this task)** in the
+Overview is restated there to match the reduced scope — `Decidable (⊨ φ)` and the three class
+variants are no longer this task's terminus. Everything else in this file, including all
+twenty-one PHASE 7 STATUS banners and the consolidated DO-NOT-RE-ATTEMPT register, is retained
+verbatim as historical record and remains binding on 428/429/430.
 
 ## Revision (blocker research) — 2026-07-27
 
@@ -97,10 +121,20 @@ first publishable milestone, reachable without touching the Hilbert system. **Tr
 the `countermodel_discrete` sorry) is deliberately deferred to three follow-up tasks declared in
 `.skeleton-return.json`; see Planned Strategic Sorries.
 
-**Definition of done (this task)**: `Decidable (⊨ φ)` plus the three class variants proved
-sorry-free with the conformance corpus green for all four frame classes; all four vacuous
-theorems deleted/replaced; docs corrected. Track B division points recorded, follow-up tasks
-created.
+**Definition of done (this task) — RESTATED 2026-07-29h against the reduced scope.** This task is
+done when: the truth lemma is sorry-free at all four frame classes in its **conditional** form
+(`not_valid_of_hasOpen*`, seven-hypothesis bundle); the rule-soundness ledger is complete at 34 of
+34 `TableauRule` constructors with the single induction assembled; all four vacuous theorems are
+deleted or replaced and the docs corrected; Track B division points are recorded and the follow-up
+tasks created. **All of that is met.**
+
+*Superseded original*: "`Decidable (⊨ φ)` plus the three class variants proved sorry-free with the
+conformance corpus green for all four frame classes; all four vacuous theorems deleted/replaced;
+docs corrected. Track B division points recorded, follow-up tasks created." The unconditional
+`Decidable (⊨ φ)` terminus is **no longer this task's**: it needs `valid_iff_allClosed`, which is
+blocked on the four obstructions O1-O4 and now belongs to tasks 428/429/430 — see "Scope change
+(Phase 7 narrowed) — 2026-07-29h" above. The rest of the original definition is unchanged and
+delivered.
 
 ### Research Integration
 
@@ -1716,7 +1750,79 @@ shorter.
 - Serving `.Discrete ℤ` from `interpInvariant` — `ℤ` is not densely ordered, so the hypothesis is
   unsatisfiable there. A discrete-specific truth lemma is required.
 
-### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [BLOCKED]
+### Phase 7: Truth Lemma and Track A Decidability — MILESTONE [COMPLETED]
+
+#### SCOPE CHANGE (2026-07-29h) — Phase 7 closes against a REDUCED scope; item 7.3 is rehomed
+
+**Read `reports/09_phase7-deadlock-blocker-research.md` before touching anything in this phase.**
+It is the verdict this subsection implements, and it carries every `file:line` anchor cited below.
+
+**(a) What Phase 7's scope now is, and that it is delivered.** Phase 7 owns the truth lemma and
+Track A's **conditional** results. Those are landed, sorry-free, and green:
+
+- `not_valid_of_hasOpen_int` and `not_validDiscrete_of_hasOpen_int`
+  (`Verified/Bridge/IntTruth.lean:1027,1056`), `not_validDense_of_hasOpen` and
+  `not_validDedekindDense_of_hasOpen` (`Verified/Bridge/DenseTruth.lean:651,674`) — all four
+  classes, each conditional on a seven-hypothesis bundle stated verbatim at
+  `IntTruth.lean:1027-1033`.
+- The rule-soundness ledger complete at **34 of 34** `TableauRule` constructors, with the single
+  induction assembled as `ruleSound_of_mem_allRulesForFC` (`Verified/Decidable.lean:3089`).
+- Sub-phases 7.1a, 7.1b, 7.1c, 7.1d, 7.1e and 7.2 all `[x]`, sorry-free, full `lake build` green
+  at 1983 jobs, axioms exactly `propext`/`Classical.choice`/`Quot.sound`.
+
+**(b) Item 7.3 is MOVED OUT of this task.** `valid_iff_allClosed` and the four `Decidable`
+instances are no longer in scope here. Ownership, as created and committed:
+
+| New owner | Owns | Predecessors |
+|---|---|---|
+| **428** `engine_totality_at_a_quantified_branch_budget` | **O1** | none beyond this task |
+| **429** `repair_truth_lemma_side_conditions_boxanchored_and_temporalwitness` | **O2** and **O3** | none beyond this task |
+| **430** `semantic_lift_and_track_a_assembly_valid_iff_allclosed` | **O4**, then delivers 7.3 itself | 428, 429 |
+
+Task 412 was additionally re-scoped off the refuted `buildTableau_isSome` and gained 428 as a
+predecessor, since 412 *consumes* Track A's artifacts rather than producing them and therefore
+inherits O1/O2/O3 from this phase rather than resolving them.
+
+**(c) The four obstructions, one line each.**
+
+- **O1 — engine totality.** `buildTableau_isSome` is **FALSE as stated**, not merely unproved:
+  `expandBranchWithFuel`'s first line is `if branchesUsed >= maxBranches then none`
+  (`Saturation.lean:594`, default `maxBranches := 50000` at `:590`) and `buildTableau`'s last arm
+  returns `none` on a still-unsaturated branch (`:950`) — neither is fuel exhaustion, so no fuel
+  figure rules them out; the landed substitute `expandBranchWithFuel_isSome_at_worldFuel'`
+  (`Verified/Termination/Fuel.lean:1587-1598`) carries `(hP : NoSplit P fc)`, excluding every
+  branching rule, plus an unmet budget hypothesis.
+- **O2 — `hBA` (`boxAnchoredCheck`) is not dischargeable on multi-world engine output**: the two
+  removed box copy blocks were the only route by which `T(Gφ)`/`T(Hφ)` could reach a freshly
+  minted world, so the check is expected to compute `false` on multi-world branches now
+  (`Verified/Bridge/BoxSaturation.lean:430-435,574-580`; `Verified/Bridge/TruthLemma.lean:399-404`
+  names the repair as an open design decision with three candidate routes).
+- **O3 — `hTW` (`temporalWitnessCheck`) is not dischargeable on any branch carrying a negative
+  until with a known future time**: the retired PASSIVE arm's branch 1 was the only producer of
+  `¬event` at an *existing* time, and its removal moved fourteen probe rows `true → false`,
+  taking the accepted set from eight rows to six (`Tests/BimodalTest/TemporalWitnessProbe.lean:59-88`).
+- **O4 — the semantic lift plus the two rules scheduled outside `allRulesForFC`**: `serialityRule`
+  and `timeLinearity` run as stages 2 and 3 of `expandOnce` and need their own obligations at the
+  `expandOnce` level, and the induction lifting single-step satisfiability preservation to the
+  whole `expandOnce`/`expandBranchWithFuel` recursion does not exist
+  (`Verified/Decidable.lean:3062-3067`; `Correctness.lean:98-105`).
+
+**(d) O2 and O3 were CREATED by authorized soundness fixes. They are the cost of correct fixes,
+not regressions to revert.** O2 exists because task 418 removed the unsound box copy blocks; O3
+exists because the `untlNeg`/`snceNeg` PASSIVE arms were retired under explicit rank-2
+authorization. Both removals fixed genuine unsoundness — `buildTableau` was closing an invalid
+formula. `TruthLemma.lean:404` records "Do **not** reinstate the removed copies", and
+`sat_untl_neg`/`sat_snce_neg` are **FALSE** against the current engine, not merely unproved. The
+standing DO-NOT-RE-ATTEMPT register below applies to 428/429/430 exactly as it applies here.
+
+**Not `[COMPLETED WITH EXCLUSIONS]`, deliberately.** Report 09 §4.1 recommended that marker and
+verified it mechanically. It is not used, because the five-condition admission test in
+`.claude/context/standards/status-markers.md` fails at condition 5 ("No residual work: nothing
+remains that a future dispatch would need to do — this is exactly why no follow-up task is
+recorded"). Work IS being handed off, to 428/429/430. A scope change with the residue rehomed to
+owned tasks is the honest mechanism, and `[COMPLETED]` is correct against the reduced scope. No
+`#### Reasoned Exclusions` table is recorded here: that record format belongs to the exclusion
+marker, which this phase does not carry.
 
 **ENGINE CONTRACT CHANGE (2026-07-28b, from sub-phase 2.7c).** See the identically-titled note
 under Phase 5 — it applies here verbatim. The short version: a `.inr` arm out of a split is now
@@ -2347,7 +2453,11 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   Original text: the `allClosed → valid` direction as ONE induction over `allRulesForFC fc`,
   using `mem_allRulesForFC_iff` from Phase 3. **Verification Tier**: `full`. Estimated output:
   ~250-450 lines. Done when: sorry-free for all four classes via the single induction; build green.
-- [ ] **7.3 `valid_iff_allClosed` + `Decidable` instances** — **unchanged in content, split in
+- [ ] **7.3 `valid_iff_allClosed` + `Decidable` instances** *(deviation: MOVED OUT of this task
+  2026-07-29h — O1 to task 428, O2+O3 to task 429, O4 and then 7.3 itself to task 430. Not
+  attempted here and not to be attempted here. See the `#### SCOPE CHANGE (2026-07-29h)`
+  subsection under the Phase 7 heading, and `reports/09_phase7-deadlock-blocker-research.md`.)*
+  — **unchanged in content, split in
   delivery**: the `valid`/`ValidDiscrete` pair may land after 7.1c without waiting for 7.1d.
   **Verification Tier**: `full`. Estimated output: ~150-300 lines. Done when: all four instances
   sorry-free; conformance corpus green with zero expected-failure rows remaining for validity
