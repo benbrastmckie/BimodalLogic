@@ -99,6 +99,28 @@ but `isValid` is `true` only for `.valid`, so it reads `false` under `.invalid` 
 `.fuelExhausted` alike. The corpus does not pin the distinction that matters. Adding a row that
 pins the `decide` **constructor** on this formula is a justified Phase 7 addition.
 
+## Concurrent-dispatch overlap on this task — read before starting work
+
+A second dispatch of this same session (`sess_1785302672_d06f95`) was active in parallel near the
+end of this one. It committed `f2f5efff6` ("rescue scratch measurements from stopped dispatch"),
+which created `artifacts/rescued/` and started a targeted 2-module build logged to
+`artifacts/after-corpus-2mod.log` with `artifacts/phase6b-olean-before.txt` (399) as its bracket.
+
+Consequences to be aware of:
+
+1. **Two `lake build` processes may have been running against this clone at once.** That is the
+   exact hazard the Phase 1 protocol names. Any log written during the overlap window must be
+   triaged as INCONCLUSIVE unless its bracket shows a completed build.
+2. **`artifacts/rescued/reach418.out` is NOT a measurement of `BoxNegReachabilityProbe`.** Its own
+   `PROVENANCE.md` says so: it is an 8-row scratch re-encoding, while the real file has 12
+   `#guard_msgs` rows. This document and `after-verdicts.md` both count that module as
+   **unmeasured**. Do not promote it.
+3. **`artifacts/rescued/anchor418c.out` IS usable and has been folded in** — it corroborates the
+   anchor finding at fuel 400 and adds that the result *returns instantly*, which the fuel-1000
+   measurement could not show.
+4. The targeted 2-module build (`TableauConformance` + `BoxNegReachabilityProbe`) is the right
+   shape for finishing Phase 6 — much cheaper than re-running the whole corpus. Prefer it.
+
 ## Commits
 
 | SHA | Phase |
