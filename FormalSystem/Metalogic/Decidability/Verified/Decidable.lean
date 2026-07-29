@@ -79,14 +79,23 @@ Landed: the framework; the eight truth-functional rules (`andPos`, `andNeg`, `or
 `impPos`, `impNeg`, `negPos`, `negNeg`); and the three *label-preserving* modal rules (`boxPos`,
 `diamondNeg`, `boxTemporal`).
 
-Still owed by sub-phase 7.2: the two fresh-world modal rules `boxNeg` and `diamondPos`; the eight
-temporal quantifier rules; `untlPos`/`untlNeg`/`sncePos`/`snceNeg`; `orderTrichotomy`; the two
+Also landed: the two fresh-world modal rules `boxNeg` and `diamondPos`, together with the four
+temporal *universal* rules and `orderTrichotomy`.
+
+Still owed by sub-phase 7.2: the four fresh-*time* existential rules (`allFutureNeg`,
+`allPastNeg`, `someFuturePos`, `somePastPos`); `untlPos`/`untlNeg`/`sncePos`/`snceNeg`; the two
 dense, three discrete and three Dedekind rules; and the assembly
 `∀ r ∈ allRulesForFC fc, RuleSound _ r` via `RuleSpec.mem_allRulesForFC_iff`.
 
-`boxNeg` and `diamondPos` are held back deliberately rather than merely unfinished — see
-"What `boxNeg` and `diamondPos` still owe" at the end of this file for the open obligation and
-for what measurement has and has not settled about it.
+All six fresh-*time* producers are blocked on a defect in `RuleSound`'s own statement, not on
+proof effort: nothing ties `ord`'s times to `b`'s, so `Branch.nextTime` need not be fresh for the
+ordering, and the successor's `ordResp` obligation can be outright unsatisfiable. See "The
+fresh-time producers' ordering obligation is not discharged by freshness alone" below, and the
+two theorems that prove it. Two remedies are priced there; both change a definition the landed
+rules are stated against, so both are escalated rather than taken.
+
+`boxNeg` and `diamondPos` were previously held back for a different and now-resolved reason —
+see "What `boxNeg` and `diamondPos` owed, and how it was discharged" at the end of this file.
 
 ## References
 
@@ -760,6 +769,43 @@ theorem ruleSound_boxNeg : RuleSound carrierBase .boxNeg := by
           simpa only [SatAt, Function.update_of_ne hne] using hst.sat g hb
     | _ => simp [applyRule, SatResult]
 
+/-- `T(◇A) → T(A)` at a fresh world, plus the same two universal propagations. The exact mirror
+of `boxNeg`: `T(◇A)` is `F(□¬A)` once `◇` is unfolded, so it supplies a history at which `A`
+*holds*, and the two propagation helpers are reused verbatim. -/
+theorem ruleSound_diamondPos : RuleSound carrierBase .diamondPos := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asDiamond? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ψ =>
+      have hφ : φ = .imp (.box (.imp ψ .bot)) .bot := asDiamond?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ, TruthAt] at hsrc
+      have hex : ∃ σ ∈ Om, TruthAt M Om σ (tv l.time) ψ := by
+        by_contra hcon
+        push_neg at hcon
+        exact hsrc hcon
+      obtain ⟨σ, hσ, hσtrue⟩ := hex
+      simp only [applyRule, hA]
+      refine ⟨Function.update hist b.nextWorld σ, tv, hst.shiftClosed, ?_, hst.ordResp, ?_⟩
+      · intro v
+        rcases eq_or_ne v b.nextWorld with rfl | hv
+        · simpa using hσ
+        · simpa [Function.update_of_ne hv] using hst.histMem v
+      · intro g hg
+        rcases List.mem_append.mp hg with hnew | hb
+        · rcases List.mem_cons.mp hnew with rfl | hrest
+          · simpa [SatAt, SignedFormula.pos] using hσtrue
+          · rcases List.mem_append.mp hrest with hbox | hdia
+            · exact satAt_of_mem_boxProps hst hσ hbox
+            · exact satAt_of_mem_diaProps hst hσ hdia
+        · have hne : g.label.world ≠ b.nextWorld := fun h =>
+            (not_mem_of_world_nextWorld h) hb
+          simpa only [SatAt, Function.update_of_ne hne] using hst.sat g hb
+
 /-!
 ## The ordering bridge: from the recorded edges to the transitive closure
 
@@ -1242,9 +1288,42 @@ theorem ruleSound_orderTrichotomy : RuleSound carrierBase .orderTrichotomy := by
           · exact hφtrue
 
 /-!
-## What `boxNeg` and `diamondPos` still owe
+## What `boxNeg` and `diamondPos` owed, and how it was discharged — RESOLVED
 
-Both fresh-world rules emit three groups of formulas at the minted world `branch.nextWorld`:
+`ruleSound_boxNeg` and `ruleSound_diamondPos` are proved above. This section is kept as the
+record of why they could not be proved before, because the reason was an unsound *engine* step
+rather than a missing proof, and because the sequence of measurements that established it is the
+one methodological result of this sub-phase worth keeping.
+
+**Summary of the resolution.** Both rules emitted a third group of formulas — six blocks copying
+`T(GB)`, `T(HB)`, `F(FB)`, `F(PB)`, `F(U(B,C))` and `F(S(B,C))` from the trigger's time into the
+freshly minted world. That group does not preserve satisfiability, and it was *reachable*: the
+engine closed the invalid `(G p) → □(G p)`. The six blocks were removed from `applyRule`, with
+the full conformance corpus as the acceptance gate; `applyRule`'s docstring now carries the
+prohibition against reintroducing them. With group 3 gone, what remains is groups 1 and 2, and
+those are exactly what `satAt_of_mem_boxProps` and `satAt_of_mem_diaProps` discharge. The two
+theorems above are therefore not merely newly proved but newly *true*.
+
+**Three lessons, each of which overturned the previous dispatch's conclusion.**
+
+* *A scheduling argument needs a consumption argument.* The claim that `boxNeg` never sees an
+  undecomposed `T(G p)`, because the propositional rules run first, is unsound in any additive
+  tableau — and this engine is additive by design (`expandOnceUnblocked` reads a `.linear` output
+  as `formulas ++ b`, so no rule's source formula is ever consumed).
+* *A measurement has a value and a meaning, and reusing the value reopens the question of the
+  meaning.* `isValid φ = false` was read as "the engine judged `φ` invalid". It is also what
+  `extractionFailed` reports — a tableau that closed, followed by a failed proof reconstruction.
+  Discriminate with `isInvalid`/`getCountermodel?`, never with `isValid` alone.
+* *Before pricing two branches of a fork, test what they agree on.* The fork over weakening
+  `RuleSound` by a reachability hypothesis dissolved once the premise both branches shared — that
+  the engine does not build the refuting branch — was measured and found false.
+
+The probes that pin all of this are `Tests/BimodalTest/CrossWorldPropagationProbe.lean` (verdicts),
+`BoxNegPreservationProbe.lean` (the step), and `BoxNegReachabilityProbe.lean` (reachability).
+
+## The historical record
+
+Before the engine change, both rules emitted three groups at the minted world `branch.nextWorld`:
 
 1. the **witness** — `F(A)` for `boxNeg`, `T(A)` for `diamondPos`;
 2. the **modal propagation** — every `T(□B)` and `F(◇B)` on the branch, copied to the fresh
@@ -1315,6 +1394,12 @@ sound and are not implicated. That change is outside this module — it edits `a
 and it must be planned rather than improvised, because removing the blocks can only make branches
 *harder* to close and so risks the opposite failure on the conformance corpus. It is recorded as
 a blocker rather than attempted here.
+
+*(End of the historical record. The engine change described in that last paragraph was
+subsequently made, gated on the full conformance corpus, and the two rules are proved above. Every
+claim above stated in the present tense should be read as holding of the calculus **before** that
+change — in particular "`RuleSound carrierBase .boxNeg` is false" was true of the old engine and
+is not true now.)*
 -/
 
 end FormalSystem.Metalogic.Decidability.Verified
