@@ -3507,25 +3507,50 @@ discharged at a non-trivial instance. These results are not to be described as d
 - **Decomposition protocol**: as Phase 18 — the `U`/`S` and forward/backward boundaries are both
   clean seams.
 
-### Phase 22: Reynolds §6 Lemma 9 and Theorem 4 — D1 [NOT STARTED]
+### Phase 22: Reynolds §6 Lemma 9 and Theorem 4 — D1 [PARTIAL]
 
 - **Goal**: **D1.** *"In fact there can't have been any bad points anyway"* (Lemma 9), hence
   *"Suppose that `∼` is a contemporaneous equivalence relation on a Prior structure `M`. Then the
   `∼`-classes do not end at gaps"* (Theorem 4).
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean` (new).
 - **Tasks**:
-  - [ ] **Measure Lemma 9 / Theorem 4's printed page, first task (v9).** This is the one §6 row
+  - [x] **MEASURED: pp.182-183.** Both pages read as 200 dpi images
+        (`pdftoppm -f 18 -l 19 -r 200`). PDF p.18 carries the printed running header **182** and
+        holds the whole of Lemma 9, statement and proof; PDF p.19 carries **183** and opens with
+        the statement of Theorem 4, immediately followed by §7 *"Separability"*. The `+164` offset
+        and the extrapolation both hold; v8's `pp.180-181` was wrong. One measured corpus
+        divergence recorded: the image spells *"appropraite"*, which the corpus markdown silently
+        normalizes to *"appropriate"*. No **displayed** formula occurs anywhere in Lemma 9 or
+        Theorem 4 — the whole of both is inline prose. Original task text:
+        **Measure Lemma 9 / Theorem 4's printed page, first task (v9).** This is the one §6 row
         whose page the measured map (printed = PDF page + 164) only lets us **extrapolate**:
         `≈pp.182-183`, flagged UNVERIFIED in the Source-to-Implementation Mapping. Read it off the
         page image at 200 dpi, not from `pdftotext`, and record the result — exactly as Phases 18,
         19 and 20 each had to. **Do not copy `p.180` or `pp.180-181` out of the task text below**;
         those are v8's unmeasured figures, retained only so the correction is visible.
-  - [ ] **THIS PHASE IS WHERE §6 STOPS BEING CONDITIONAL.** Every §6 lemma below Lemma 2 is
+  - [ ] **NOT ACHIEVED — reported, not annotated away.** §6 remains conditional and the caveat
+        stays verbatim everywhere it is carried. Two of the three conditions are now precisely
+        located: (a) the **structure** half is blocked by module direction, not by mathematics —
+        `chronicleIsDensePriorSepStructure` exists but `ChronicleMonadicBridge` imports
+        `WeakCanonical`, so the instantiation cannot live in this phase's `Owns` file and needs a
+        new module downstream of both; (b) the **ε** half is unchanged, `epsTop` is still the only
+        exhibitable `ε`; (c) a **third** condition was discovered — Theorem 4 additionally needs
+        Lemma 6's first clause, see below. Original task text:
+        **THIS PHASE IS WHERE §6 STOPS BEING CONDITIONAL.** Every §6 lemma below Lemma 2 is
         conditional on `IsContempEquivDense ε` plus Prior-U/Prior-S, and the only `ε` the tree can
         currently exhibit is `epsTop`, for which `EndsInGapOnRight` is empty — **so nothing in
         Phases 17-21 has a live non-trivial instance**. The anti-vacuity task below is what
         finally supplies one. Treat it as load-bearing, not as a formality.
-  - [ ] Prove Lemma 9, transcribing printed p.180: by Lemma 8, `R` holds in `I` in `N`; by Lemma 2,
+  - [x] **DONE, sorry-free and axiom-clean.** `reynolds_lemma9`, transcribed from the measured
+        printed **p.182** (not p.180). *"`N` is a Prior structure"* was stated as its own named
+        lemma exactly as this task required — in fact as six: `priorUFormula` / `priorSFormula`
+        render Reynolds' two schemes (printed p.168) as `Formula`s,
+        `temporalTruth_priorUFormula` / `temporalTruth_priorSFormula` check the rendering against
+        `SemanticPriorU` / `SemanticPriorS`'s bodies, and `surgeredSemanticPriorU` /
+        `surgeredSemanticPriorS` transport them by Lemma 8. The formula-level route is forced: a
+        direct semantic transfer would have to produce, from *"p holds at every point of N in
+        (t,s)"*, the same about every point of **M**, and the points of `Q₀ ∖ I` are exactly the
+        ones that fail. Original task text: Prove Lemma 9, transcribing printed p.180: by Lemma 8, `R` holds in `I` in `N`; by Lemma 2,
         `R` holds in *any* Prior structure exactly at points whose class ends in a gap, and `N` **is**
         a Prior structure (*"we still have all the instances of Prior-U/S continuing to hold as any
         counterexample point in `N` is also one in `M`"*); by contemporaneity of `ε`, `I` is in one
@@ -3533,18 +3558,55 @@ discharged at a non-trivial instance. These results are not to be described as d
         Lemma 6 begins with a point `q` at which `¬R` holds — so the class ends just before `q` and
         `R` cannot have been true. The step "`N` is a Prior structure" needs care in Lean: state it
         as its own named lemma.
-  - [ ] Land `no_gaps_dense_prior` — **Theorem 4**, the D1 hypothesis of Doets' theorem — stated so
-        Phase 29 can consume it directly.
-  - [ ] **Anti-vacuity**: instantiate D1 at `chronicleIsDensePriorSepStructure` (Phase 16) and land
-        the instance as a named lemma. Without this, D1 could be true of nothing.
-  - [ ] Docstrings: `Reynolds 1992, §6 Lemma 9 and Theorem 4, printed p.<measured>` — **the page
-        measured in this phase's first task, not v8's unverified `pp.180-181`.**
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
-- **Estimated output**: ~300 lines.
+  - [x] **LANDED BUT CONDITIONAL.** `no_gaps_dense_prior` (right end) and
+        `no_gaps_dense_prior_left` (left end, by instantiation at `(dual M, dualize ε)` through
+        `Dual.lean` — no hand-written mirror), both sorry-free and axiom-clean. *(deviation:
+        altered — both carry a new named hypothesis `HasBadIntervalSurgery`, so Phase 29 can NOT
+        yet consume them directly.)* The missing input is **Reynolds' Lemma 6 first clause**,
+        *"in any bad interval both `R` and `L` hold throughout"* (printed p.180), and the
+        obstruction was measured rather than guessed: `IsBadInterval.saturated` is stated over
+        `IsBadPoint` (= `R ∨ L`), so the bad-connected component of a point is the only candidate
+        satisfying it; but `IsBadIntervalSurgery.interior` demands `ClassInteriorToBadInterval`,
+        which carries `R` **and** `L` throughout its segment; closing that gap is `L → R` at a
+        point where only `L` is known. `endsInGapOnRight_of_endsInGapOnLeft`
+        (`BadIntervals.lean:1346`) proves that implication but only from a
+        `ClassInteriorToLInterval` witness, and producing that witness at a merely-`L` point is
+        the missing clause. It is the same clause `reynolds_lemma6_right_endpoint` already carries
+        as its `hbadR` hypothesis — one gap, in one place, in all three declarations. Everything
+        else assembles from landed material (`reynolds_lemma4_no_last_class` gives the upper
+        interiority witness, `reynolds_lemma4_no_first_class` the lower).
+  - [ ] **Anti-vacuity: NOT LANDED — blocked on module direction, reported not worked around.**
+        `chronicleIsDensePriorSepStructure` lives in
+        `BXCanonical/Chronicle/ChronicleMonadicBridge.lean:1053`, which **imports**
+        `WeakCanonical`. This phase's `Owns` file is under `WeakCanonical/DenseModelSurgery/` and
+        therefore cannot import it back without a cycle. The instantiation needs a **new module
+        downstream of both**, which is outside this phase's territory; extending territory
+        silently was declined. Even once landed it would discharge only the Prior-U/S hypotheses,
+        leaving `HasBadIntervalSurgery` and the `ε` half — so it would not by itself retire the
+        caveat.
+  - [x] Docstrings carry `Reynolds 1992, §6 Lemma 9 and Theorem 4, printed pp.182-183` — the
+        measured range, with both printed pages block-quoted verbatim in the module header and a
+        proof-step → name map, as Phases 19-21 did.
+  - [x] `#print axioms` on `reynolds_lemma9`, `no_gaps_dense_prior`, `no_gaps_dense_prior_left`,
+        `surgeredSemanticPriorU/S`, `temporalTruth_priorUFormula/SFormula` and
+        `surgeredContempEquiv_of_base`: all `[propext, Classical.choice, Quot.sound]`, no
+        `sorryAx`. Scoped build green; full `lake build` green (**1940 jobs**, +1 over Phase 21's
+        1939 — the new module).
+- **Estimated output**: ~300 lines. **Actual: 742 lines** — 2.5x. The excess is the module header's
+  verbatim transcription of both printed pages, the Prior-U/S scheme bridge (~230 lines, which the
+  plan assumed rather than budgeted), and the closing conditionality section.
 - **Done when**: Lemma 9 and `no_gaps_dense_prior` are sorry-free and axiom-clean, the chronicle
   instance is landed, **and the §6 conditionality caveat is retired from the module headers of
   `DenseModelSurgery/*` that it can now be retired from — with an explicit statement of which
   results are thereby discharged and which are not.**
+- **OUTCOME (measured, not asserted)**: Lemma 9 and both halves of Theorem 4 are sorry-free and
+  axiom-clean. The chronicle instance is **not** landed (module direction, above) and the §6
+  conditionality caveat is **NOT retired** — it stays verbatim in every module header that carries
+  it, and the new module's closing section `## Conditionality after Theorem 4` states exactly what
+  is and is not established. Phase 22 is therefore `[PARTIAL]`. Two follow-ups, named precisely:
+  **(F1)** Reynolds' Lemma 6 first clause, to discharge `HasBadIntervalSurgery` and `hbadR`;
+  **(F2)** a new module downstream of both `BXCanonical/Chronicle` and
+  `WeakCanonical/DenseModelSurgery` carrying the chronicle anti-vacuity instantiation.
 - **Depends on**: 21.
 - **Timing**: 6 hours.
 - **Verification Tier**: full.
