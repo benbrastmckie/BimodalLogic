@@ -144,7 +144,8 @@ structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
 - `nullity`: Zero-duration task is identity (reflexivity)
 - `compositionality`: Tasks compose with time addition (transitivity)
 
-**Paper Alignment**: Matches JPL paper definition exactly (app:TaskSemantics, def:frame, line 1835).
+**Paper Alignment**: Matches the JPL paper definition (app:TaskSemantics, def:frame,
+possible_worlds.tex:2423-2451; body statement at possible_worlds.tex:908-926).
 
 ---
 

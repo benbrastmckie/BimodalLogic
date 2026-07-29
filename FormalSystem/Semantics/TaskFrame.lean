@@ -14,7 +14,7 @@ This module defines task frames, the fundamental semantic structures for bimodal
 
 ## Paper Specification Reference
 
-**Task Frames (app:TaskSemantics, def:frame, line 1835)**:
+**Task Frames (app:TaskSemantics, def:frame, possible_worlds.tex:2423-2451)**:
 The JPL paper "The Perpetuity Calculus of Agency" defines task frames as tuples
 `F = (W, G, ·)` where:
 - `W` is a set of world states
@@ -65,7 +65,8 @@ This matches the paper's specification exactly and allows for various temporal s
 ## References
 
 * [architecture.md](../../../docs/user-guide/architecture.md) - Task semantics specification
-* JPL Paper app:TaskSemantics (def:frame, line 1835) - Formal task frame definition
+* JPL Paper app:TaskSemantics (def:frame, possible_worlds.tex:2423-2451) - Formal task frame
+  definition; the body statement is at possible_worlds.tex:908-926 with gloss at 932
 -/
 
 namespace FormalSystem.Semantics
@@ -87,7 +88,7 @@ executing a task of duration `x` can result in world state `u`.
 **Type Parameters**:
 - `D`: Temporal duration type with totally ordered abelian group structure
 
-**Paper Alignment**: Matches JPL paper def:frame (line 1835) exactly with
+**Paper Alignment**: Matches JPL paper def:frame (possible_worlds.tex:2423-2451) with
 `D = ⟨D, +, ≤⟩` as a totally ordered abelian group.
 
 **Axiomatization Notes**:

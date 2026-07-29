@@ -451,8 +451,9 @@ template induction_on_formula (P : Formula → Prop) :
 Layer 1 implements **task semantics** where possible worlds are functions from times to world states constrained by a task relation.
 
 **Polymorphic Temporal Type**: The temporal structure is now polymorphic over any type `T` with a
-`LinearOrderedAddCommGroup` instance, matching the JPL paper specification (def:frame, line 1835)
-that requires "a totally ordered abelian group T = ⟨T, +, ≤⟩". Standard instances include:
+`LinearOrderedAddCommGroup` instance, matching the JPL paper specification
+(def:frame, possible_worlds.tex:2423-2451) that requires "a nontrivial totally ordered abelian
+group T = ⟨T, +, ≤⟩". Standard instances include:
 - `Int`: Discrete integer time (default, decidable)
 - `Rat`: Dense rational time (infinitely divisible)
 - `Real`: Continuous real time (complete, for physical systems)

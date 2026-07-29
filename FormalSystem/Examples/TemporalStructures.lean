@@ -17,7 +17,8 @@ with ProofChecker's generalized semantics. The polymorphic `TaskFrame T` and
 
 ## Paper Alignment
 
-The JPL paper "The Perpetuity Calculus of Agency" (§app:TaskSemantics, def:frame, line 1835)
+The JPL paper "The Perpetuity Calculus of Agency"
+(§app:TaskSemantics, def:frame, possible_worlds.tex:2423-2451)
 specifies that the temporal structure is a "totally ordered abelian group D = ⟨D, +, ≤⟩".
 ProofChecker implements this via the unbundled typeclasses `[AddCommGroup D] [LinearOrder D]
 [IsOrderedAddMonoid D]`, which provide exactly this structure.
@@ -54,7 +55,8 @@ includes:
 
 * [TaskFrame.lean](../ProofChecker/Semantics/TaskFrame.lean) - TaskFrame definition
 * [WorldHistory.lean](../ProofChecker/Semantics/WorldHistory.lean) - WorldHistory definition
-* JPL Paper app:TaskSemantics (def:frame, line 1835) - Temporal structure specification
+* JPL Paper app:TaskSemantics (def:frame, possible_worlds.tex:2423-2451) - Temporal structure
+  specification; the body statement is at possible_worlds.tex:908-926
 -/
 
 namespace FormalSystem.Examples.TemporalStructures
