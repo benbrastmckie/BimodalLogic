@@ -542,7 +542,7 @@ theorem eval_epsDense (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carri
           Nonempty (M.openSubinterval sig z t).carrier ∧
             goodDense sig k (M.openSubinterval sig z t))) := by
   simp only [epsDense, eval, eval_imp, eval_epsAt, ContempEquivDense, eval_gammaPrime,
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Fin.cons_zero, Fin.cons_succ]
+    Matrix.cons_val_zero, Matrix.cons_val_one, Fin.cons_zero]
   constructor
   · rintro ⟨h1, h2⟩
     refine ⟨fun hab z t hz hzt htb => h1 hab z t ⟨hz, hzt, htb⟩,
@@ -605,5 +605,83 @@ theorem contempEquivDense_epsDense_iff (k : Nat) (M : OrderedMonadicStructure si
       · exact absurd hba (asymm hab)
       · exact ⟨fun hab => absurd hba (asymm hab),
           fun _ => (veryGoodDense_openSubinterval_iff k M b a).mp hv⟩
+
+/-! ## Contemporaneity
+
+*"Contemporaneity then follows from the fact that the definition of `∼_M` is in terms of exactly
+the right substructure"* (printed p.187): `ε(a,b)` only ever mentions points strictly between `a`
+and `b`, so passing to `M | [a,b]` changes nothing.
+-/
+
+/-- An order isomorphism of ambient structures restricts to the open subintervals. -/
+def openSubOrderEquiv (sig : MonadicSignature) {M N : OrderedMonadicStructure sig}
+    (f : M.carrier ≃o N.carrier) (t u : M.carrier) :
+    (M.openSubinterval sig t u).carrier ≃ (N.openSubinterval sig (f t) (f u)).carrier where
+  toFun x := ⟨f x.val, f.lt_iff_lt.mpr x.property.1, f.lt_iff_lt.mpr x.property.2⟩
+  invFun y := ⟨f.symm y.val,
+    by simpa using f.symm.lt_iff_lt.mpr y.property.1,
+    by simpa using f.symm.lt_iff_lt.mpr y.property.2⟩
+  left_inv x := Subtype.ext (by simp)
+  right_inv y := Subtype.ext (by simp)
+
+/-- **Very goodness transfers along a predicate-preserving order isomorphism.** -/
+theorem veryGoodDense_of_orderIso (k : Nat) {M N : OrderedMonadicStructure sig}
+    (f : M.carrier ≃o N.carrier) (h_pred : ∀ (p : sig.preds) (x : M.carrier),
+      M.interp p x ↔ N.interp p (f x)) (hN : veryGoodDense sig k N) :
+    veryGoodDense sig k M := by
+  intro t u htu
+  obtain ⟨hne, hgood⟩ := hN (f t) (f u) (f.lt_iff_lt.mpr htu)
+  refine ⟨?_, ?_⟩
+  · obtain ⟨y⟩ := hne
+    exact ⟨(openSubOrderEquiv sig f t u).symm y⟩
+  · refine goodDense_of_orderIso sig k
+      (Equiv.toOrderIso (openSubOrderEquiv sig f t u) ?_ ?_) (fun p x => h_pred p x.val) hgood
+    · exact fun x y h => f.le_iff_le.mpr h
+    · exact fun x y h => f.symm.le_iff_le.mpr h
+
+/-- `(M | [lo,hi]) | (a,b) ≃ M | (a,b)`: cutting an open interval out of a closed one is cutting
+    it out of `M` directly. -/
+def subOpenSubEquiv (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    (lo hi : M.carrier) (a b : (M.subinterval sig lo hi).carrier) :
+    ((M.subinterval sig lo hi).openSubinterval sig a b).carrier ≃
+      (M.openSubinterval sig a.val b.val).carrier where
+  toFun x := ⟨x.val.val, x.property.1, x.property.2⟩
+  invFun y := ⟨⟨y.val, le_trans a.property.1 (le_of_lt y.property.1),
+    le_trans (le_of_lt y.property.2) b.property.2⟩, y.property.1, y.property.2⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+/-- Very goodness of `(M | [lo,hi]) | (a,b)` is very goodness of `M | (a,b)`. -/
+theorem veryGoodDense_subOpen_iff (k : Nat) (M : OrderedMonadicStructure sig)
+    (lo hi : M.carrier) (a b : (M.subinterval sig lo hi).carrier) :
+    veryGoodDense sig k ((M.subinterval sig lo hi).openSubinterval sig a b) ↔
+      veryGoodDense sig k (M.openSubinterval sig a.val b.val) := by
+  constructor
+  · exact veryGoodDense_of_orderIso k
+      (Equiv.toOrderIso (subOpenSubEquiv sig M lo hi a b).symm (fun _ _ h => h) (fun _ _ h => h))
+      (fun _ _ => Iff.rfl)
+  · exact veryGoodDense_of_orderIso k
+      (Equiv.toOrderIso (subOpenSubEquiv sig M lo hi a b) (fun _ _ h => h) (fun _ _ h => h))
+      (fun _ _ => Iff.rfl)
+
+/--
+**`∼_M` is contemporaneous** — Reynolds 1992, printed p.187, clause (iii) of the
+`IsContempEquivDense` shape: `M ⊨ ε(a,b)` iff `M | [a,b] ⊨ ε(a,b)`.
+
+Stated on `SimDense` rather than on `eval`; `contempEquivDense_epsDense_iff` converts.
+-/
+theorem simDense_contemporary (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carrier) :
+    SimDense sig k M a b ↔
+      SimDense sig k (M.subinterval sig (min a b) (max a b))
+        ⟨a, min_le_left a b, le_max_left a b⟩ ⟨b, min_le_right a b, le_max_right a b⟩ := by
+  constructor
+  · rintro (rfl | ⟨h, hv⟩ | ⟨h, hv⟩)
+    · exact Or.inl rfl
+    · exact Or.inr (Or.inl ⟨h, (veryGoodDense_subOpen_iff k M (min a b) (max a b) _ _).mpr hv⟩)
+    · exact Or.inr (Or.inr ⟨h, (veryGoodDense_subOpen_iff k M (min a b) (max a b) _ _).mpr hv⟩)
+  · rintro (h | ⟨h, hv⟩ | ⟨h, hv⟩)
+    · exact Or.inl (congrArg Subtype.val h)
+    · exact Or.inr (Or.inl ⟨h, (veryGoodDense_subOpen_iff k M (min a b) (max a b) _ _).mp hv⟩)
+    · exact Or.inr (Or.inr ⟨h, (veryGoodDense_subOpen_iff k M (min a b) (max a b) _ _).mp hv⟩)
 
 end FormalSystem.Metalogic.WeakCanonical
