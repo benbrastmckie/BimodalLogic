@@ -2051,6 +2051,212 @@ theorem ruleSound_sncePos : RuleSound carrierBase .sncePos := by
       · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
 
 /-!
+## `untlNeg` and `snceNeg` — provable once the PASSIVE arms are retired
+
+These two were the last pair open, and like `untlPos`/`sncePos` the obstruction was an unsound
+*engine* step rather than a missing proof — but three of them in succession, not one. The
+`untlNegProps`/`snceNegProps` copy blocks went first; then the ACTIVE arms' self-propagated
+`¬U(e,g)@fresh` / `¬S(e,g)@fresh`; and last the PASSIVE co-decomposition arms, which placed the
+guard failure at the *endpoint* `t'` rather than strictly inside `(l.time, t')` and could not be
+repaired without an interpolant design this tree has no termination bound for. `RuleSound` is per
+rule over **both** arms, so none of the first two deletions moved the ledger on its own; the third
+one is what makes these statements true. `Tableau.lean`'s two arms carry the full argument, the
+refuting model and the authorization; `Tests/BimodalTest/UntlSnceCopyProbe.lean` sections B, E and
+F carry the measurements.
+
+What survives is a single arm whose obligation is the classical split, and it is discharged the
+same way the four fresh-time existentials above are: a witness supplied by the source formula's
+truth condition, plus the `T(G·)`, `F(F·)` and `□`/`◇` families (`T(H·)`, `F(P·)` and `□`/`◇` in
+the past).
+
+**Where these differ from `untlPos`.** `untlPos` never has to choose: its witness satisfies branch
+1 outright, so branch 2 is a sound alternative the proof simply never takes (`List.mem_cons_self`
+at every use). Here the arm to take is not determined by the source formula, and the choice is
+genuinely two-sided — which is exactly the content of `¬U(e,g)`'s classical split. `refine` names
+branch 1 in one case and branch 2 in the other, and the two dispatches are otherwise identical.
+
+**Where the witness time comes from, and why `Nontrivial D` is consumed here.** `¬U(e,g)@A` says:
+for every `s > A`, either `e` fails at `s`, or the guard fails somewhere strictly inside `(A,s)`.
+It does **not** hand over a time; it constrains all of them. The construction is therefore: probe
+at some arbitrary `d₀ > A`, and either `¬e@d₀` (take branch 1 at `d₀`) or a guard failure at some
+`z ∈ (A,d₀)` (take branch 2 at `z`). Either way the chosen time is strictly above `A`, which is
+what `ordResp_addFuture_update` needs, and the existence of the probe `d₀` is the whole of what
+`Nontrivial D` buys — a nonzero `c` gives `A < A + |c|`. No `NoMaxOrder`, no density, no
+`DenselyOrdered`: the fresh time is a new extreme, not an interpolant, which is precisely the
+difference between this arm and the ones `densityRule` needs the carrier property for.
+
+`exists_gt_not_untl_disj` packages that construction, and its proof is shorter than the
+description: negate the goal, and the resulting "`e` and `g` both hold everywhere above `A`" is
+`U(e,g)@A` on the nose.
+-/
+
+/-- A nontrivial ordered abelian group has no maximum. Consumed only to supply the probe time
+in `exists_gt_not_untl_disj`; see that lemma for why a probe is needed at all. -/
+theorem exists_gt_self [Nontrivial D] (t : D) : ∃ d : D, t < d := by
+  obtain ⟨c, hc⟩ := exists_ne (0 : D)
+  exact ⟨t + |c|, lt_add_of_pos_right t (abs_pos.mpr hc)⟩
+
+/-- The past mirror: a nontrivial ordered abelian group has no minimum. -/
+theorem exists_lt_self [Nontrivial D] (t : D) : ∃ d : D, d < t := by
+  obtain ⟨c, hc⟩ := exists_ne (0 : D)
+  exact ⟨t - |c|, sub_lt_self t (abs_pos.mpr hc)⟩
+
+/-- **The classical split `¬U(e,g)` licenses, in the form the ACTIVE arm emits it.** From
+`¬U(e,g)@t`, a strictly later time at which the event fails **or** the guard fails. Both
+disjuncts are live and neither can be selected in advance, which is why `ruleSound_untlNeg`
+case-splits where `ruleSound_untlPos` does not.
+
+Note what this does **not** say: it gives a time of the prover's choosing, not one named by the
+formula. That is the whole difference between the retired PASSIVE arm and the surviving ACTIVE
+one — the passive arm asserted the split at a time the *branch* named, `t'`, where it is false,
+since the guard failure `¬U(e,g)@t` licenses lies strictly inside `(t,t')`. -/
+theorem exists_gt_not_untl_disj [Nontrivial D] {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t : D} {e g : Formula}
+    (h : ¬ TruthAt M Om τ t (Formula.untl e g)) :
+    ∃ d, t < d ∧ (¬ TruthAt M Om τ d e ∨ ¬ TruthAt M Om τ d g) := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨d₀, hd₀⟩ := exists_gt_self (D := D) t
+  exact h ⟨d₀, hd₀, (hcon d₀ hd₀).1, fun r hr1 _ => (hcon r hr1).2⟩
+
+/-- The past mirror of `exists_gt_not_untl_disj`. -/
+theorem exists_lt_not_snce_disj [Nontrivial D] {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t : D} {e g : Formula}
+    (h : ¬ TruthAt M Om τ t (Formula.snce e g)) :
+    ∃ d, d < t ∧ (¬ TruthAt M Om τ d e ∨ ¬ TruthAt M Om τ d g) := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨d₀, hd₀⟩ := exists_lt_self (D := D) t
+  exact h ⟨d₀, hd₀, (hcon d₀ hd₀).1, fun r _ hr2 => (hcon r hr2).2⟩
+
+/-- `F(U(e,g))` at a fresh future time yields `F(e)` **or** `F(g)` there, plus the three future
+propagation families. The ledger's penultimate entry, and the one the three-defect sequence
+above was blocking. -/
+theorem ruleSound_untlNeg : RuleSound carrierBase .untlNeg := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst hord
+  obtain ⟨s, φ, l⟩ := sf
+  have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
+  cases s
+  case pos => simp only [applyRule]; trivial
+  case neg =>
+    cases hA : asUntil? φ with
+    | none => simp only [applyRule, hA]; trivial
+    | some eg =>
+      obtain ⟨e, g⟩ := eg
+      have hφ : φ = Formula.untl e g := asUntil?_eq_some hA
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      split
+      case isFalse => trivial
+      case isTrue =>
+        obtain ⟨d, hlt, hdisj⟩ := exists_gt_not_untl_disj hsrc
+        rcases hdisj with hfail | hfail
+        · refine ⟨_, List.mem_cons_self, hist, Function.update tv b.nextTime d,
+            hst.shiftClosed, hst.histMem,
+            ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+          intro c hc
+          rcases List.mem_append.mp hc with hnew | hb
+          · rcases List.mem_append.mp hnew with hhead | hrest
+            · rcases List.mem_cons.mp hhead with rfl | hsf
+              · simpa [SatAt, SignedFormula.neg] using hfail
+              · rw [List.mem_singleton] at hsf
+                subst hsf
+                exact satAt_update_nextTime_of_mem hmem (hst.sat _ hmem)
+            · rcases List.mem_append.mp hrest with hleft | hmodal
+              · rcases List.mem_append.mp hleft with hgp | hfn
+                · exact satAt_of_mem_gProps hst hlt hgp
+                · exact satAt_of_mem_fNegProps hst hlt hfn
+              · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+                  mem_boxDiamondPersistence_label hmodal
+                exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+                  hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+          · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
+        · refine ⟨_, List.mem_cons_of_mem _ List.mem_cons_self, hist,
+            Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+            ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+          intro c hc
+          rcases List.mem_append.mp hc with hnew | hb
+          · rcases List.mem_append.mp hnew with hhead | hrest
+            · rcases List.mem_cons.mp hhead with rfl | hsf
+              · simpa [SatAt, SignedFormula.neg] using hfail
+              · rw [List.mem_singleton] at hsf
+                subst hsf
+                exact satAt_update_nextTime_of_mem hmem (hst.sat _ hmem)
+            · rcases List.mem_append.mp hrest with hleft | hmodal
+              · rcases List.mem_append.mp hleft with hgp | hfn
+                · exact satAt_of_mem_gProps hst hlt hgp
+                · exact satAt_of_mem_fNegProps hst hlt hfn
+              · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+                  mem_boxDiamondPersistence_label hmodal
+                exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+                  hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+          · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
+
+/-- The exact time-reversal mirror of `ruleSound_untlNeg`: the probe time lands earlier, the
+ordering edge runs the other way (`addPast`), and the two past propagation helpers replace the
+two future ones. The modal family is direction-blind and reused verbatim. -/
+theorem ruleSound_snceNeg : RuleSound carrierBase .snceNeg := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst hord
+  obtain ⟨s, φ, l⟩ := sf
+  have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
+  cases s
+  case pos => simp only [applyRule]; trivial
+  case neg =>
+    cases hA : asSince? φ with
+    | none => simp only [applyRule, hA]; trivial
+    | some eg =>
+      obtain ⟨e, g⟩ := eg
+      have hφ : φ = Formula.snce e g := asSince?_eq_some hA
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      split
+      case isFalse => trivial
+      case isTrue =>
+        obtain ⟨d, hlt, hdisj⟩ := exists_lt_not_snce_disj hsrc
+        rcases hdisj with hfail | hfail
+        · refine ⟨_, List.mem_cons_self, hist, Function.update tv b.nextTime d,
+            hst.shiftClosed, hst.histMem,
+            ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+          intro c hc
+          rcases List.mem_append.mp hc with hnew | hb
+          · rcases List.mem_append.mp hnew with hhead | hrest
+            · rcases List.mem_cons.mp hhead with rfl | hsf
+              · simpa [SatAt, SignedFormula.neg] using hfail
+              · rw [List.mem_singleton] at hsf
+                subst hsf
+                exact satAt_update_nextTime_of_mem hmem (hst.sat _ hmem)
+            · rcases List.mem_append.mp hrest with hleft | hmodal
+              · rcases List.mem_append.mp hleft with hgp | hfn
+                · exact satAt_of_mem_hProps hst hlt hgp
+                · exact satAt_of_mem_pNegProps hst hlt hfn
+              · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+                  mem_boxDiamondPersistence_label hmodal
+                exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+                  hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+          · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
+        · refine ⟨_, List.mem_cons_of_mem _ List.mem_cons_self, hist,
+            Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+            ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+          intro c hc
+          rcases List.mem_append.mp hc with hnew | hb
+          · rcases List.mem_append.mp hnew with hhead | hrest
+            · rcases List.mem_cons.mp hhead with rfl | hsf
+              · simpa [SatAt, SignedFormula.neg] using hfail
+              · rw [List.mem_singleton] at hsf
+                subst hsf
+                exact satAt_update_nextTime_of_mem hmem (hst.sat _ hmem)
+            · rcases List.mem_append.mp hrest with hleft | hmodal
+              · rcases List.mem_append.mp hleft with hgp | hfn
+                · exact satAt_of_mem_hProps hst hlt hgp
+                · exact satAt_of_mem_pNegProps hst hlt hfn
+              · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+                  mem_boxDiamondPersistence_label hmodal
+                exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+                  hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+          · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
+
+
+/-!
 ## The frame-class-gated rules
 
 `denseIndicatorClosure` above needed no carrier property. `densityRule` is the first rule that
