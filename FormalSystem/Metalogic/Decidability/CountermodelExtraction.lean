@@ -755,146 +755,38 @@ theorem sat_some_past_neg (b : Branch) (timeOrd : TimeOrdering)
   simp only [SignedFormula.neg] at hNA hNE
   simp [hNE] at hNA
 
-set_option maxHeartbeats 3200000 in
--- `sat_untl_neg` adds a non-`top` guard case on top of the per-future-time analysis, so it
--- reduces the rule table under two nested case splits.
-/--
-**Until negative saturation**: If `F(U(event, guard))` at `(w, t)` is in a
-saturated branch with guard not equal to `top`, then for every known future
-time `t'`, either `F(event)` at `(w, t')` or the negated guard condition holds.
--/
-theorem sat_untl_neg (b : Branch) (timeOrd : TimeOrdering)
-    (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
-    (event guard : Formula) (w : WorldIndex) (t : TimeIndex)
-    (hmem : ⟨.neg, .untl event guard, ⟨w, t⟩⟩ ∈ b)
-    (hguard : guard ≠ Formula.top) :
-    ∀ t' ∈ timeOrd.futureOf t,
-      ⟨.neg, event, ⟨w, t'⟩⟩ ∈ b ∨
-      ⟨.neg, guard, ⟨w, t'⟩⟩ ∈ b := by
-  have hExp :=
-    findUnexpanded_none_all_expanded b timeOrd hSat ⟨.neg, .untl event guard, ⟨w, t⟩⟩ hmem
-  simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
-  unfold findApplicableRule at hExp
-  rw [List.findSome?_eq_none_iff] at hExp
-  have hUntlNeg := hExp (.untlNeg) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
-  simp only [isApplicable, asUntil?] at hUntlNeg
-  have hg' : (guard == Formula.top) = false := by simp [hguard]
-  -- Simplify hUntlNeg to expose the applyRule result structure.
-  -- The isApplicable part reduces to true, so we get:
-  -- (match (applyRule .untlNeg sf b timeOrd).1 with | .notApplicable => none | _ => some ...) =
-  -- none
-  -- This means (applyRule .untlNeg sf b timeOrd).1 = .notApplicable
-  simp only [hg'] at hUntlNeg
-  -- Extract: applyRule must return .notApplicable
-  have hNA :
-    (applyRule .untlNeg ⟨.neg, .untl event guard, ⟨w, t⟩⟩ b timeOrd).1 = .notApplicable := by
-    by_contra h
-    -- If not notApplicable, the match returns some, contradicting hUntlNeg = none
-    match hm : (applyRule .untlNeg ⟨.neg, .untl event guard, ⟨w, t⟩⟩ b timeOrd).1 with
-    | .notApplicable => exact h hm
-    -- `untlNeg` returns only `.notApplicable` or `.branching`.
-    | .linear fs =>
-        refine absurd hm ?_
-        unfold applyRule
-        simp only [asUntil?, hg']
-        repeat' split
-        all_goals simp
-    -- `.branching` is reachable, but `untlNeg` is self-guarded (its `unprocessed` filter
-    -- already excludes any time whose co-decomposition output is on the branch), so
-    -- `findApplicableRule` adds no guard and the result is `some`, contradicting `hUntlNeg`.
-    | .branching bs => rw [hm] at hUntlNeg; simp [ruleSelfGuarded] at hUntlNeg
-    | .branchingOrdered bs => rw [hm] at hUntlNeg; simp [ruleSelfGuarded] at hUntlNeg
-    | .persistent fs => rw [hm] at hUntlNeg; simp at hUntlNeg
-  -- Now unfold applyRule to get the filter/match structure
-  unfold applyRule at hNA
-  simp only [asUntil?, hg', ite_false, Bool.false_eq_true] at hNA
-  intro t' ht'
-  by_contra habs
-  push Not at habs
-  obtain ⟨hne, hng⟩ := habs
-  have hNotContainsE : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
-    simp only [Bool.eq_false_iff]; exact fun h => hne ((contains_iff_mem b _).mp h)
-  have hNotContainsG : Branch.contains b ⟨.neg, guard, ⟨w, t'⟩⟩ = false := by
-    simp only [Bool.eq_false_iff]; exact fun h => hng ((contains_iff_mem b _).mp h)
-  -- Show the filter list is non-empty (t' passes the predicate)
-  have hFilterPred : (!Branch.contains b (SignedFormula.neg event { world := w, time := t' }) &&
-    !Branch.contains b (SignedFormula.neg guard { world := w, time := t' })) = true := by
-    simp [SignedFormula.neg, hNotContainsE, hNotContainsG]
-  have h_t'_in : t' ∈ List.filter
-    (fun t'' => !Branch.contains b (SignedFormula.neg event { world := w, time := t'' }) &&
-                !Branch.contains b (SignedFormula.neg guard { world := w, time := t'' }))
-    (timeOrd.futureOf t) := List.mem_filter.mpr ⟨ht', hFilterPred⟩
-  -- The filter is non-empty, so the match gives branching, but hNA says notApplicable.
-  obtain ⟨hd, tl, hcons⟩ := List.exists_cons_of_ne_nil (List.ne_nil_of_mem h_t'_in)
-  -- Rewrite the filter in hNA
-  simp only [SignedFormula.neg] at hNA hcons
-  rw [hcons] at hNA
-  -- Now hNA : (branching ..., timeOrd).1 = notApplicable, i.e. branching = notApplicable
-  simp at hNA
+/-!
+## `sat_untl_neg` / `sat_snce_neg` — Retired with the PASSIVE arms
 
-set_option maxHeartbeats 3200000 in
--- `sat_snce_neg` is the past-directed mirror of `sat_untl_neg`, with the same nested
--- guard-and-time case splits over the reduced rule table.
-/--
-**Since negative saturation**: Mirror of `sat_untl_neg` for past-directed Since.
+These two theorems said: on a saturated branch carrying `F(U(event, guard))@(w,t)` with a
+non-`top` guard, **every** known future time `t'` already carries `F(event)@(w,t')` or
+`F(guard)@(w,t')` — and the past-directed mirror. They are recorded as retired rather than
+deleted quietly, because they did not become merely unprovable. They became **false**.
+
+Both were read straight off the PASSIVE co-decomposition arm of `applyRule .untlNeg` /
+`.snceNeg`. The derivation was: saturation forces the rule to `.notApplicable`; the only way the
+old rule reached `.notApplicable` with future times present was for its `unprocessed` filter to
+be empty; and the filter was empty exactly when every future time already carried one of the two
+disjuncts. Each theorem's conclusion *was* that filter predicate, transcribed.
+
+The PASSIVE arms are now retired (see the blocks inside both arms in `Tableau.lean` for the
+unsoundness that forced it, the refuted alternatives, and the authorization). `.notApplicable`
+is now what the rule returns on **every** configuration with a non-empty `futureTimes`/
+`pastTimes`, so saturation carries no information about those times at all, and a saturated
+branch may perfectly well hold a future time with neither disjunct on it. The conclusion no
+longer follows and does not hold.
+
+Nothing consumed them. A grep across the project finds their names only in prose: two orientation
+comments in `Tests/BimodalTest/TemporalWitnessProbe.lean` and one in
+`Verified/Bridge/TemporalGate.lean`, each contrasting the strength of these facts against the
+gate rows that superseded them. All three are updated in the same commit as this retirement.
+
+What the gate rows do instead. `untlNegFuture` (`Verified/Bridge/TemporalGate.lean`) demands
+`F(event)` at every known future time of every negative `Until` — strictly stronger than the
+disjunction these theorems offered, and it is a hypothesis the truth lemmas bind (`hTW`) rather
+than a fact derived from a rule's guard. That is the honest place for this content: a condition
+the branch is *checked* against, not one inferred from an arm that should not have existed.
 -/
-theorem sat_snce_neg (b : Branch) (timeOrd : TimeOrdering)
-    (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
-    (event guard : Formula) (w : WorldIndex) (t : TimeIndex)
-    (hmem : ⟨.neg, .snce event guard, ⟨w, t⟩⟩ ∈ b)
-    (hguard : guard ≠ Formula.top) :
-    ∀ t' ∈ timeOrd.pastOf t,
-      ⟨.neg, event, ⟨w, t'⟩⟩ ∈ b ∨
-      ⟨.neg, guard, ⟨w, t'⟩⟩ ∈ b := by
-  have hExp :=
-    findUnexpanded_none_all_expanded b timeOrd hSat ⟨.neg, .snce event guard, ⟨w, t⟩⟩ hmem
-  simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
-  unfold findApplicableRule at hExp
-  rw [List.findSome?_eq_none_iff] at hExp
-  have hSnceNeg := hExp (.snceNeg) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
-  simp only [isApplicable, asSince?] at hSnceNeg
-  have hg' : (guard == Formula.top) = false := by simp [hguard]
-  simp only [hg'] at hSnceNeg
-  -- Extract: applyRule must return .notApplicable
-  have hNA :
-    (applyRule .snceNeg ⟨.neg, .snce event guard, ⟨w, t⟩⟩ b timeOrd).1 = .notApplicable := by
-    by_contra h
-    match hm : (applyRule .snceNeg ⟨.neg, .snce event guard, ⟨w, t⟩⟩ b timeOrd).1 with
-    | .notApplicable => exact h hm
-    -- Mirror of `sat_untl_neg`: only `.notApplicable` or `.branching`, and `snceNeg` is
-    -- self-guarded, so the `.branching` result is `some` and contradicts `hSnceNeg`.
-    | .linear fs =>
-        refine absurd hm ?_
-        unfold applyRule
-        simp only [asSince?, hg']
-        repeat' split
-        all_goals simp
-    | .branching bs => rw [hm] at hSnceNeg; simp [ruleSelfGuarded] at hSnceNeg
-    | .branchingOrdered bs => rw [hm] at hSnceNeg; simp [ruleSelfGuarded] at hSnceNeg
-    | .persistent fs => rw [hm] at hSnceNeg; simp at hSnceNeg
-  -- Unfold applyRule to get the filter/match structure
-  unfold applyRule at hNA
-  simp only [asSince?, hg', ite_false, Bool.false_eq_true] at hNA
-  intro t' ht'
-  by_contra habs
-  push Not at habs
-  obtain ⟨hne, hng⟩ := habs
-  have hNotContainsE : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
-    simp only [Bool.eq_false_iff]; exact fun h => hne ((contains_iff_mem b _).mp h)
-  have hNotContainsG : Branch.contains b ⟨.neg, guard, ⟨w, t'⟩⟩ = false := by
-    simp only [Bool.eq_false_iff]; exact fun h => hng ((contains_iff_mem b _).mp h)
-  -- Show the filter list is non-empty (t' passes the predicate)
-  have hFilterPred : (!Branch.contains b (SignedFormula.neg event { world := w, time := t' }) &&
-    !Branch.contains b (SignedFormula.neg guard { world := w, time := t' })) = true := by
-    simp [SignedFormula.neg, hNotContainsE, hNotContainsG]
-  have h_t'_in : t' ∈ List.filter
-    (fun t'' => !Branch.contains b (SignedFormula.neg event { world := w, time := t'' }) &&
-                !Branch.contains b (SignedFormula.neg guard { world := w, time := t'' }))
-    (timeOrd.pastOf t) := List.mem_filter.mpr ⟨ht', hFilterPred⟩
-  obtain ⟨hd, tl, hcons⟩ := List.exists_cons_of_ne_nil (List.ne_nil_of_mem h_t'_in)
-  simp only [SignedFormula.neg] at hNA hcons
-  rw [hcons] at hNA
-  simp at hNA
 
 /-!
 ## Branch Truth Lemma — Retired

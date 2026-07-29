@@ -31,9 +31,16 @@ upper ray, and puts **nothing** strictly between consecutive placed points.
 
 * `untlNegFuture` — `F(U(φ,ψ))` at `(w,t)` denies `φ` at every known time strictly after `t`.
   This is what the negative `untl` case needs at the **placed** points above `r`. It is much
-  stronger than `sat_untl_neg`'s `F(φ)@t' ∨ F(ψ)@t'`, and it has to be: neither disjunct alone
-  settles the case `s = t'`, where the guard interval `(r,s)` is empty and only `¬φ` at `s` will
-  do. Measured `true` on **all twelve** corpus rows, including the four the region gate rejects.
+  stronger than the `F(φ)@t' ∨ F(ψ)@t'` that the now-retired `sat_untl_neg` supplied, and it has
+  to be: neither disjunct alone settles the case `s = t'`, where the guard interval `(r,s)` is
+  empty and only `¬φ` at `s` will do. `sat_untl_neg` was read off the PASSIVE co-decomposition arm
+  of `applyRule .untlNeg`; that arm has been retired as unsound and the theorem went with it (see
+  the retirement note in `Decidability/CountermodelExtraction.lean`), which strengthens rather
+  than weakens the case for stating this demand as a gate row instead of inferring it from a
+  rule's guard. It was measured `true` on **all twelve** corpus rows before the retirement; it is
+  now `false` on the rows carrying a negative until with a known future time, because the arm was
+  the only producer of `¬φ` at an existing future time. See the banner at the head of
+  `Tests/BimodalTest/TemporalWitnessProbe.lean`.
 * `untlRaySelf` — a positive until asserted at its world's **upper-ray** label carries its event
   at that same label. Every carrier point above an upper-ray point is on the same ray and reads
   the same label, so the witness has nowhere else to be. This is `RayRegionProbe.lean`'s `rayUp`.

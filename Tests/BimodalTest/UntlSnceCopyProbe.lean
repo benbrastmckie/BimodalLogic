@@ -29,15 +29,37 @@ The refuting model (`ℤ`, four atoms `V(n,p) ⟺ n = 5`, `V(n,q) ⟺ n ≥ 1`, 
 step it argues about.** Section A is the copy itself; it read `true` before the deletion of the
 `untlNegProps`/`snceNegProps` blocks from `untlPos`/`sncePos` and reads `false` after.
 
-## Defect 2 — the PASSIVE arms' co-decomposition (`untlNeg`, `snceNeg`)
+## Defect 2 — the PASSIVE arms' co-decomposition (`untlNeg`, `snceNeg`) — RETIRED
 
 Independent of any copy block. For `a < c`, `¬U(e,g)@a` implies only
 `¬e@c ∨ ∃ z ∈ (a,c). ¬g@z` — the guard failure lies strictly *between*. The PASSIVE arm instead
-places it *at* `c` and additionally re-asserts `¬U(e,g)@c`. Over `ℤ` with `e` true exactly at `3`
-and `g` false exactly at `1`, `¬U(e,g)@0` holds while `e@3` and `g@3` are both true, so both
-emitted arms fail. **Section B pins that the arm fires and what it emits.** This defect is
-NOT repaired here: its fix converts the PASSIVE arm into a fresh-time producer, with termination
-and completeness consequences that must be designed rather than improvised.
+placed it *at* `c` and additionally re-asserted `¬U(e,g)@c`. Over `ℤ` with `e` true exactly at
+`3` and `g` false exactly at `1`, `¬U(e,g)@0` holds while `e@3` and `g@3` are both true, so both
+emitted arms fail. **Section B pinned that the arm fired and what it emitted**, and read `true`
+for as long as it stood.
+
+**The arms are now RETIRED**, not repaired: a sound arm would have to mint an interpolant
+strictly inside the open interval, and no termination bound for that is available here — the
+subformula-descent bound is refuted by the `G`-propagation channel (section E2, and F3 for the
+channel reaching the arm) and a `timeCount` cap is a switch rather than a net (E1c). `Tableau.lean`'s
+`.untlNeg` arm carries the full argument and the authorization.
+
+**Reading section B after the retirement.** B0 and B1 are the live rows: no branching result,
+no arms. B2, B3 and B4 are now VACUOUS — `armsB = []` makes `List.all` trivially true and
+`List.any` trivially false — which is precisely the state the `armsB` docstring predicted would
+be indistinguishable from a genuine repair. What distinguishes it is B0/B1 saying the cause
+outright, and section F counting the firings. Do not read B2 or B4 on their own.
+
+## What the retirement cost, measured
+
+Recorded here because it was mis-predicted in both directions and the correction is the useful
+part. The declared cost was two `TableauConformance` rows. **The conformance corpus did not move
+at all** — all 29 rows unchanged. The cost landed instead on `TemporalWitnessProbe`, where
+fourteen rows moved and every one of them carries `check=true → check=false`: retiring the arm
+removes branch 1, the only emitter of `¬event@t'` at an *existing* time, which is exactly what
+the `untlNegFuture` gate row demands, so `temporalWitnessCheck` now fails on branches it used to
+accept. That is a real completeness regression in the truth-lemma gate, deliberate and
+authorized, and it is larger than the declared cost while sitting somewhere else entirely.
 
 ## What each row is evidence of
 
@@ -47,23 +69,35 @@ strictly more expensive question — a false formula emitted onto a branch does 
 it. Per the group-3 lesson, section C discriminates with `isInvalid` / `getCountermodel?` and
 never with `isValid` alone: `isValid = false` conflates "judged invalid" with `extractionFailed`.
 
-## What section B is hardened against
+## What section B was hardened against, and how the hardening actually fared
 
-Section B's rows are the ones a future PASSIVE-arm repair will be graded on, so they are built to
-fail *loudly* rather than quietly when the arm changes shape:
+Section B's rows were the ones a PASSIVE-arm change would be graded on, so they were built to
+fail *loudly* rather than quietly when the arm changed shape. The change turned out to be a
+retirement rather than the anticipated constructor switch, and the two halves of the defence
+fared differently — the `armsB` destructuring did not help, the loud companion rows did. That
+is recorded at each bullet and at the `armsB` binder itself.
 
 * `armsB` reads **either** branching constructor. Matching `.branching` alone would make `armsB`
   empty under a switch to `.branchingOrdered` — the shape a repair must take, since its two arms
   carry different orderings — and B4 would then read `false` **vacuously**, which is
   indistinguishable from "the defect was repaired". Row **B0** pins which constructor is live, so
-  the switch is reported rather than inferred.
+  the switch is reported rather than inferred. **Outcome**: the arm was retired, not switched,
+  so `armsB` is empty and B2/B4 do read vacuously — the destructuring bought nothing. B0 and B1
+  are what make the vacuity legible, and they are the part of the design that worked.
 * Rows **B5**/**B5′** measure fresh-time production, the failure mode nothing else here can see:
   divergence reaches the decision procedure only as `.fuelExhausted`. They are *differential* —
   a triggered profile against a control with the negative `Until` deleted — because the engine
   mints times on this branch for reasons unrelated to `untlNeg`, so no single count is pinnable.
-  See the row's own comment for the measurement that establishes this.
+  See the row's own comment for the measurement that establishes this. **Outcome**: B5′ flipped
+  to `false`, but in the *opposite* direction to the one it was built to catch — the triggered
+  profile rose to exactly one above the control everywhere, the signature of an arm that stopped
+  firing, not one that re-fires and mints. B5′ cannot tell "stopped" from "never mattered".
 * Row **B6** pins the post-blocking pass, whose fresh-time rejection test reads `applyRule`'s
   *outer* ordering and is therefore blind to a fresh time hidden inside a per-arm ordering.
+  Unmoved.
+* Section **F**, added one commit before the retirement, is the row that closes B5′'s blind spot:
+  it counts PASSIVE firings directly and went from `[1, 5, 9, 23, 75, 275, 1059]` to all-zero.
+  It is the only instrument here that separates a retired arm from a capped one.
 -/
 
 namespace BimodalTest.UntlSnceCopyProbe
@@ -131,11 +165,25 @@ all empty; `untlNegProps` was the only non-empty block, and it is gone. Was `[2,
 #guard_msgs in
 #eval armsA.map List.length
 
-/-! ## Section B — the `untlNeg` PASSIVE arm (NOT repaired)
+/-! ## Section B — the `untlNeg` PASSIVE arm (RETIRED)
 
-`ord = ⟨[(0,1)]⟩`, so `futureOf 0 = [1]` and time `1` is unprocessed. The pinning formula
-`T(x)@(w₀,1)` is not exotic: `someFuturePos` on `T(F x)@(w₀,0)` produces exactly that shape with
-exactly that ordering constraint. -/
+**The arm these rows measure no longer exists.** Its co-decomposition at existing future times
+was unsound and could not be repaired without an interpolant design this tree has no termination
+bound for, so it was retired to `.notApplicable`; `Tableau.lean`'s `.untlNeg` arm carries the
+full argument and the authorization. Section B is kept, and kept *running*, because a retirement
+that is only asserted in a comment is not measured. Every row below is now the post-retirement
+reading, and each row's own note records what it read while the arm stood.
+
+Reading the section as a whole: **B0 and B1 are the live rows** — they say directly that no
+branching result comes back and that there are no arms. **B2, B3, B4 are now vacuous**, in the
+precise sense that `armsB = []` makes `List.all` trivially true and `List.any` trivially false.
+That is why B0 and B1 exist, and it is exactly the failure mode the `armsB` note below was
+written against: a vacuous reading is only safe when a non-vacuous row says why. Do not read B2
+or B4 on their own again.
+
+`ord = ⟨[(0,1)]⟩`, so `futureOf 0 = [1]` and time `1` was the unprocessed target the arm used to
+fire at. The pinning formula `T(x)@(w₀,1)` is not exotic: `someFuturePos` on `T(F x)@(w₀,0)`
+produces exactly that shape with exactly that ordering constraint. -/
 
 /-- Probe atom `e` — true exactly at `3` in the refuting model. -/
 def e : Formula := .atom (Atom.mkBase "e")
@@ -166,38 +214,55 @@ two arms would carry different orderings — makes `armsB` silently **empty**. B
 loudly, but B2 would read `true` and B4 would read `false` **vacuously**, and a vacuous `false`
 on B4 is indistinguishable from a genuine repair. That is the failure mode this destructuring
 removes: the rows keep measuring the arms whichever constructor carries them, and row B0 below
-is what reports the switch. -/
+is what reports the switch.
+
+**This hardening did its job, and the outcome is worth recording.** The arm was not switched to
+another constructor in the end; it was retired outright. `armsB` is therefore empty, and B2/B4
+do read vacuously — the very state the note above calls indistinguishable from a repair. What
+makes it distinguishable is that B0 (`false`) and B1 (`0`) report the cause in so many words
+rather than leaving it to be inferred from a row that went quiet. The lesson generalises: the
+destructuring was the wrong half of the defence, and the loud non-vacuous companion row was the
+right half. -/
 def armsB : List (List SignedFormula) :=
   match resB.1 with
   | .branching bss => bss
   | .branchingOrdered brs => brs.map Prod.fst
   | _ => []
 
-/-! ### Row B0 — **which branching constructor is live.** Today: `.branching`
+/-! ### Row B0 — **which constructor comes back.** Was `.branching`; now neither
 
-A repair of the PASSIVE arm must return `.branchingOrdered` (`.branching` shares one ordering
-across all arms, and the two repaired arms need different ones), so this row flipping to `false`
-is the signal that the arm's shape changed. It exists so that change is *reported* rather than
-inferred from a row that went quiet. -/
-/-- info: true -/
+Written to report a switch to `.branchingOrdered`, the shape a co-decomposition *repair* would
+have taken. What happened instead is a retirement, so the row reads `false` for the stronger
+reason that no branching result comes back at all — `applyRule .untlNeg` on this configuration
+now returns `.notApplicable`. Read together with B1, which distinguishes the two cases: a
+constructor switch would leave B1 at `2`. -/
+/-- info: false -/
 #guard_msgs in
 #eval resB.1 matches .branching _
 
-/-! ### Row B1 — the PASSIVE arm fires: two branches, not `.notApplicable` -/
-/-- info: 2 -/
+/-! ### Row B1 — **the retirement itself.** The arm no longer fires: no arms, not two
+
+Was `2`. With B0 this is the whole content of the retirement as a measurement: not a different
+shape, not a narrower guard — nothing comes back. -/
+/-- info: 0 -/
 #guard_msgs in
 #eval armsB.length
 
-/-! ### Row B2 — it fires at the **existing** time `1`, and mints nothing
+/-! ### Row B2 — VACUOUS since the retirement (`armsB = []`, so `List.all` is trivially true)
 
-Every formula it emits sits at a time already in `ordB`; no fresh time appears. This is what
-distinguishes the PASSIVE arm from the ACTIVE one and is why the copy deletion does not touch
-it. -/
+It used to say: every formula the arm emits sits at a time already in `ordB`, no fresh time
+appears — the property distinguishing the PASSIVE arm from the ACTIVE one. There are no
+emissions left for it to quantify over. Kept as a tripwire: if anything ever restores a firing
+arm, this row starts carrying content again, and B0/B1 will have reported the restoration
+first. -/
 /-- info: true -/
 #guard_msgs in
 #eval armsB.all fun arm => arm.all fun sf => sf.label.time ≤ 1
 
-/-! ### Row B3 — the ordering comes back **unchanged** -/
+/-! ### Row B3 — the ordering comes back **unchanged**
+
+Unmoved by the retirement, and for a newly trivial reason: `.notApplicable` is returned paired
+with `timeOrd` itself. -/
 /-- info: true -/
 #guard_msgs in
 #eval resB.2.constraints == ordB.constraints
@@ -206,9 +271,15 @@ it. -/
 
 `¬U(e,g)@0` licenses only `¬e@1 ∨ ∃ z ∈ (0,1). ¬g@z`. Branch 2 asserts `¬g@1`, an endpoint, and
 `¬U(e,g)@1` alongside it. In the model with `e` true exactly at `3` and `g` false exactly at `1`,
-interpreting `1` as the instant `3` makes both `e` and `g` true there, so both arms fail. This
-row stays `true` — the defect is escalated, not repaired. -/
-/-- info: true -/
+interpreting `1` as the instant `3` makes both `e` and `g` true there, so both arms fail.
+
+**Was `true`, and read `true` for as long as the defect stood.** It now reads `false`, and the
+`false` is VACUOUS — `armsB = []`, so `List.any` is trivially false. It does **not** say the
+guard failure has been moved strictly inside the interval; nothing places it anywhere any more.
+This is exactly the reading the `armsB` note warned would be indistinguishable from a repair,
+and B0/B1 are what make it distinguishable. The row that carries the retirement is B1, not this
+one. -/
+/-- info: false -/
 #guard_msgs in
 #eval armsB.any fun arm =>
   arm.contains (SignedFormula.neg g { world := 0, time := 1 })
@@ -239,11 +310,24 @@ temporal existentials mint a witness for each — and the negative `Until` sligh
 spending steps on co-decomposition instead. First-arm-following is also not the real search,
 which explores every arm and is bounded by fuel and `maxBranches`.
 
-So the gate is the **relation between the two profiles**, not either profile alone. Today the
-triggered profile sits strictly *below* the control from `k = 16` on. A passive-arm repair that
-re-fires would push it *above*. Both are pinned, so that crossover is a diff rather than a
-judgement call — and either profile changing on its own localises the cause to the trigger or to
-the engine's background minting. -/
+So the gate is the **relation between the two profiles**, not either profile alone. Both are
+pinned, so a crossover is a diff rather than a judgement call, and either profile changing on
+its own localises the cause to the trigger or to the engine's background minting.
+
+**What the retirement did to this gate, and why the crossover happened in the harmless
+direction.** The triggered profile used to sit strictly *below* the control from `k = 16` on,
+because the negative `Until` spent steps on co-decomposition instead of on minting. It now sits
+exactly **one above** the control at every entry: `[2, 4, 5, 8, 13, 24, 45]` against
+`[1, 3, 4, 7, 12, 23, 44]`, was `[2, 3, 4, 6, 10, 18, 34]`. B5′ therefore flipped to `false`.
+
+That flip is **not** the failure mode B5′ was built to catch. B5′ was written to catch an arm
+that *re-fires and mints*; what happened is an arm that stopped firing altogether, leaving the
+triggered branch to mint at exactly the control's rate plus the one extra time that `bB`'s own
+`T(x)@(w₀,1)` labels and `bBctl` does not. The constant offset of one, at every fuel, is the
+signature of that and is why this is legible as retirement rather than as divergence. Row E1b
+records the same offset for the same reason. The rows to read alongside it are **B1** (the arm
+is gone) and **section F** (it fires zero times) — B5′ alone cannot distinguish "stopped" from
+"never mattered", which is the same blind spot section F exists to close. -/
 
 /-- Follow `expandOnce` for `k` steps, taking the first arm at every split, and count the times
 the resulting branch knows. -/
@@ -256,8 +340,9 @@ def stepTimes : Nat → Branch → TimeOrdering → Nat
     | (.splitOrdered ((b', o') :: _), _) => stepTimes k b' o'
     | (_, _) => (Branch.knownTimes b).length
 
-/-! Triggered profile, at `k = 0, 4, 8, 16, 32, 64, 128`. -/
-/-- info: [2, 3, 4, 6, 10, 18, 34] -/
+/-! Triggered profile, at `k = 0, 4, 8, 16, 32, 64, 128`. Was `[2, 3, 4, 6, 10, 18, 34]` while
+the PASSIVE arm still fired. -/
+/-- info: [2, 4, 5, 8, 13, 24, 45] -/
 #guard_msgs in
 #eval [stepTimes 0 bB ordB, stepTimes 4 bB ordB, stepTimes 8 bB ordB, stepTimes 16 bB ordB,
        stepTimes 32 bB ordB, stepTimes 64 bB ordB, stepTimes 128 bB ordB]
@@ -265,16 +350,22 @@ def stepTimes : Nat → Branch → TimeOrdering → Nat
 /-- The same branch with the negative `Until` **removed** — the control for row B5. -/
 def bBctl : Branch := [ SignedFormula.pos x { world := 0, time := 1 } ]
 
-/-! Control profile, same fuels. Entry-wise `≥` the triggered profile from `k = 16` on; a
-passive-arm repair that re-fires reverses that. -/
+/-! Control profile, same fuels. **Unmoved by the retirement** — it never carried the negative
+`Until` — which is what makes it the reference the triggered profile's shift is measured
+against. It used to sit entry-wise `≥` the triggered profile from `k = 16` on; it now sits
+exactly one below it everywhere. -/
 /-- info: [1, 3, 4, 7, 12, 23, 44] -/
 #guard_msgs in
 #eval [stepTimes 0 bBctl ordB, stepTimes 4 bBctl ordB, stepTimes 8 bBctl ordB,
        stepTimes 16 bBctl ordB, stepTimes 32 bBctl ordB, stepTimes 64 bBctl ordB,
        stepTimes 128 bBctl ordB]
 
-/-! ### Row B5′ — the comparison itself, stated as the single fact the gate turns on -/
-/-- info: true -/
+/-! ### Row B5′ — the comparison itself, stated as the single fact the gate turns on
+
+Was `true`. Reads `false` because the triggered profile now sits one *above* the control at
+every fuel — see B5's note for why that is the retirement's signature and not the divergence
+this row was built to catch. -/
+/-- info: false -/
 #guard_msgs in
 #eval [16, 32, 64, 128].all fun k => stepTimes k bB ordB ≤ stepTimes k bBctl ordB
 
@@ -545,8 +636,9 @@ radius. These rows are that comparison, on the same two profiles and the same fu
 /-! #### Row E1a — triggered profile at `k = 0, 4, 8, 16, 32, 64, 128`
 
 Identical, entry for entry, to B5's triggered `knownTimes` profile: on this branch every known
-time is an ordered time. -/
-/-- info: [2, 3, 4, 6, 10, 18, 34] -/
+time is an ordered time. Was `[2, 3, 4, 6, 10, 18, 34]` before the PASSIVE arms were retired,
+and moved in lockstep with B5 for the reason B5's note gives. -/
+/-- info: [2, 4, 5, 8, 13, 24, 45] -/
 #guard_msgs in
 #eval [stepOrd 0 bB ordB, stepOrd 4 bB ordB, stepOrd 8 bB ordB, stepOrd 16 bB ordB,
        stepOrd 32 bB ordB, stepOrd 64 bB ordB, stepOrd 128 bB ordB]
@@ -554,7 +646,8 @@ time is an ordered time. -/
 /-! #### Row E1b — control profile (negative `Until` deleted), same fuels
 
 Exactly one above B5's control `knownTimes` profile at every entry, and the offset is
-accounted for: `ordB = ⟨[(0,1)]⟩` mentions time `0`, which the control branch never labels. -/
+accounted for: `ordB = ⟨[(0,1)]⟩` mentions time `0`, which the control branch never labels.
+**Unmoved by the retirement**, like B5's control and for the same reason. -/
 /-- info: [2, 4, 5, 8, 13, 24, 45] -/
 #guard_msgs in
 #eval [stepOrd 0 bBctl ordB, stepOrd 4 bBctl ordB, stepOrd 8 bBctl ordB, stepOrd 16 bBctl ordB,
@@ -567,8 +660,15 @@ net rather than a switch. It is not: `4` — the threshold the **existing** ACTI
 `0 < timeCount < 4` tests — is crossed after a handful of steps, which is why the ACTIVE arms
 read as dormant on every measured row, and `8` follows well inside any realistic fuel (section C
 runs at fuel `200`). A `timeCount`-capped PASSIVE arm would therefore be switched off for the
-overwhelming majority of every run, by background minting it has no part in. -/
-/-- info: [some 5, some 4, some 21, some 16] -/
+overwhelming majority of every run, by background minting it has no part in.
+
+That reading is what the retirement was decided on, and the row has since moved: it was
+`[some 5, some 4, some 21, some 16]` and is now `[some 4, some 4, some 16, some 16]`. The
+triggered and control crossings have **collapsed onto each other**, at both thresholds. This
+strengthens the original reading rather than qualifying it: with the arm gone, the negative
+`Until` no longer delays the crossing even by the one step it used to, so the crossing is now
+purely background minting, with no contribution from the rule whatsoever. -/
+/-- info: [some 4, some 4, some 16, some 16] -/
 #guard_msgs in
 #eval [(List.range 33).find? fun k => stepOrd k bB ordB ≥ 4,
        (List.range 33).find? fun k => stepOrd k bBctl ordB ≥ 4,
@@ -617,16 +717,25 @@ distinct labelled negative `Until`s where it began with zero.
 
 This is what makes a subformula-descent termination argument unavailable for any interpolant
 design: the descent presumes a supply of `(source, label)` pairs fixed in advance, and this row
-exhibits the engine manufacturing new ones without bound as it mints times. -/
-/-- info: [0, 1, 1, 3, 5, 9] -/
+exhibits the engine manufacturing new ones without bound as it mints times.
+
+**Survives the PASSIVE-arm retirement, and grows slightly.** Was `[0, 1, 1, 3, 5, 9]`; the
+`k = 64` entry is now `10`. The channel is `allFuturePos` + `negPos`, neither of which the
+retirement touched, so the manufacture continues; what changed is only that the manufactured
+sources no longer spend steps firing the retired arm, leaving one more of them standing by
+`k = 64`. The refutation this row supports is therefore unaffected — which matters, because it
+is one of the two measurements the retirement was chosen on. -/
+/-- info: [0, 1, 1, 3, 5, 10] -/
 #guard_msgs in
 #eval [0, 4, 8, 16, 32, 64].map fun k => (negUntlTimes (stepFull k bE ordB)).length
 
 /-! #### Row E2b — the times themselves at `k = 32`, with the branch size
 
 Guards against reading E2a's growth as an artefact of a branch that merely got large: the
-negative `Until`s sit at five *distinct* times, not five copies at one. -/
-/-- info: ([6, 4, 3, 2, 1], 44) -/
+negative `Until`s sit at five *distinct* times, not five copies at one. The branch length was
+`44` before the retirement and is `42` after — two formulas smaller, the co-decomposition output
+the arm used to add — while **the five times are unchanged**, which is the point of the row. -/
+/-- info: ([6, 4, 3, 2, 1], 42) -/
 #guard_msgs in
 #eval ((negUntlTimes (stepFull 32 bE ordB)), (stepFull 32 bE ordB).length)
 
@@ -673,12 +782,14 @@ def stepPassive : Nat → Branch → TimeOrdering → Nat
       | (.splitOrdered ((b', o') :: _), _) => stepPassive k b' o'
       | (_, _) => 0
 
-/-! ### Row F1 — the arm fires **right now**, on the section-B branch, at step 0
+/-! ### Row F1 — does the arm fire on the section-B branch at step 0?
 
 The single fact B5′ cannot report. `bB` carries one negative `Until` at time `0` with time `1`
-future and unprocessed, so the PASSIVE arm is live on it. If a later change retires or caps the
-arm, this drops to `0` and says so directly. -/
-/-- info: 1 -/
+future and unprocessed, so the PASSIVE arm was live on it, and this row read `1` when it was
+written and pinned — one commit before the retirement, deliberately, so that the retirement
+would be measured rather than asserted. **It now reads `0`, and that is the retirement stated as
+a measurement**, in the place B5′ could not state it. -/
+/-- info: 0 -/
 #guard_msgs in
 #eval passiveCount bB ordB
 
@@ -689,11 +800,17 @@ a capped arm reads a nonzero prefix and then flatlines, which is the shape row E
 which is precisely what "the cap is a switch, not a net" means in firings rather than in times.
 Neither shape is distinguishable from the other, or from a working repair, on B5′ alone.
 
-Read against B5: the triggered `knownTimes` profile is `[2, 3, 4, 6, 10, 18, 34]` while the arm
-fires `[1, 5, 9, 23, 75, 275, 1059]` times over the same trajectory. The arm is not near-dormant
-the way the ACTIVE arms are — it is the busiest thing on the branch, and it fires roughly thirty
-times per time the branch knows by `k = 128`. B5′ reports none of this. -/
-/-- info: [1, 5, 9, 23, 75, 275, 1059] -/
+**Pre-retirement this row read `[1, 5, 9, 23, 75, 275, 1059]`**, against a B5 triggered
+`knownTimes` profile of `[2, 3, 4, 6, 10, 18, 34]` — the arm was not near-dormant the way the
+ACTIVE arms are behind their `0 < timeCount < 4` guard, it was the busiest thing on the branch,
+firing roughly thirty times per time the branch knew by `k = 128`. B5′ reported none of that,
+which is the whole reason this section was built.
+
+**It now reads all-zero at every fuel.** The retirement is complete along the entire trajectory,
+not merely at step 0 (which is all F1 can see) and not merely on the hand-built configuration
+(which is all B0/B1 can see). This is the row that distinguishes a retired arm from a capped
+one: a cap would leave a nonzero prefix here and then flatline. -/
+/-- info: [0, 0, 0, 0, 0, 0, 0] -/
 #guard_msgs in
 #eval [stepPassive 0 bB ordB, stepPassive 4 bB ordB, stepPassive 8 bB ordB,
        stepPassive 16 bB ordB, stepPassive 32 bB ordB, stepPassive 64 bB ordB,
@@ -706,14 +823,22 @@ engine does on its own account. `bE` is section E2's branch, where the negative 
 **manufactured** by `allFuturePos` + `negPos` rather than seeded — so it reports whether the
 manufactured sources go on to fire the PASSIVE arm, which is the channel R2 is about.
 
-Both halves are informative. The control reads `[0, 0]`: **every** firing counted in F2 is
-attributable to the negative `Until`, with no background contribution to net out — unlike B5,
-where the whole difficulty was that the engine mints times for its own reasons. And `bE` reads
-`[34, 650]` from a branch that starts with **zero** negative `Until`s: section E2 showed the
-`G`-propagation channel manufacturing new `(source, label)` pairs, and this row shows those
-manufactured sources going on to fire the PASSIVE arm hundreds of times. E2 established the
-channel exists; F3 establishes it reaches this arm. -/
-/-- info: ([0, 0], [34, 650]) -/
+Both halves were informative pre-retirement, when this row read `([0, 0], [34, 650])`. The
+control read `[0, 0]`, so **every** firing counted in F2 was attributable to the negative
+`Until`, with no background contribution to net out — unlike B5, where the whole difficulty was
+that the engine mints times for its own reasons. And `bE` read `[34, 650]` from a branch that
+starts with **zero** negative `Until`s: section E2 showed the `G`-propagation channel
+manufacturing new `(source, label)` pairs, and this row showed those manufactured sources going
+on to fire the PASSIVE arm hundreds of times. E2 established the channel exists; F3 established
+it reached this arm — jointly the sharpest statement of why no interpolant design here has a
+bound, and one of the two measurements the retirement was chosen on.
+
+**Now `([0, 0], [0, 0])`.** The control half is unchanged and was always the floor. The `bE`
+half going `[34, 650] → [0, 0]` is the load-bearing one: the manufacturing channel is untouched
+(E2a still grows, and grew by one), so this zero is the retirement reaching the manufactured
+sources too, not the channel drying up. Those are different facts and only this row separates
+them. -/
+/-- info: ([0, 0], [0, 0]) -/
 #guard_msgs in
 #eval ([stepPassive 32 bBctl ordB, stepPassive 128 bBctl ordB],
        [stepPassive 32 bE ordB, stepPassive 128 bE ordB])

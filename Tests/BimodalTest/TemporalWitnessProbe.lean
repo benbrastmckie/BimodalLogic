@@ -47,10 +47,45 @@ future time) settles it outright and is what `sat_some_future_neg` gives when `�
 `negCoDec` is the weaker, semantically exact form. `rayNeg` is the upper-ray instance: all points
 above a ray point read one label, so that label must carry `F(φ)`.
 
-`sat_untl_neg` as it stands gives only `F(φ)@t' ∨ F(ψ)@t'` for each known future `t'` — the
-second arm's `F(U(φ,ψ))@t'` propagation is discarded — and neither disjunct alone settles the
-`s = t'` case, where the guard interval `(r,s)` is empty. That is the specific reason `negStrong`
-and `negCoDec` are measured rather than assumed.
+`sat_untl_neg`, while it existed, gave only `F(φ)@t' ∨ F(ψ)@t'` for each known future `t'` — the
+second arm's `F(U(φ,ψ))@t'` propagation was discarded — and neither disjunct alone settles the
+`s = t'` case, where the guard interval `(r,s)` is empty. That was the specific reason `negStrong`
+and `negCoDec` are measured rather than assumed. The theorem has since been **retired**: it was
+read off the PASSIVE co-decomposition arm of `applyRule .untlNeg`, and when that arm was retired
+the statement became false rather than merely unprovable. See the retirement note in
+`Decidability/CountermodelExtraction.lean`. The reason `negStrong`/`negCoDec` are measured is
+unaffected and is now the *only* reason they exist.
+
+## THE PASSIVE-ARM RETIREMENT MOVED FOURTEEN ROWS IN THIS FILE — read this first
+
+Everything in "What was measured" below was measured while the PASSIVE co-decomposition arms of
+`.untlNeg`/`.snceNeg` still fired. Those arms have since been retired as unsound (see the arm
+bodies in `Tableau.lean` for the argument and the authorization), and this file is the instrument
+that shows what that cost. **Fourteen rows moved, and every one of them carries
+`check=true → check=false`.**
+
+The mechanism is exact and was predicted in advance. `untlNegFuture` — row `nStr` here — demands
+`F(event)` at **every** known future time of every negative until. The only rule that ever placed
+`¬event` at an *existing* future time on account of a negative until was the PASSIVE arm's branch
+1. Retire the arm and that producer is gone, so `nStr` and the semantically exact `nCo` drop to
+`false` on any branch with a negative until and a known future time, and `temporalWitnessCheck`
+fails with them. The mirrors `sNRD`/`sPR`/`uPR`'s `self` diagnostics move for the same reason on
+the past side.
+
+**Consequence for every enumeration below.** The eight rows this file repeatedly describes as
+"the rows the gate accepts" — A, B, C, D, E, F, I, K — are now **six**: I and K, the two genuine
+negative-until/since rows, have joined H, J, M and N on the rejected side. Findings 2, 4, 6, 7
+and 8 are stated against the old eight-row set and are left as written, because their content is
+a comparison *among candidate rows on a fixed set of branches* and that comparison is unchanged;
+what changed is which branches the landed gate admits. Read every "all eight rows the gate
+accepts" below as "all eight rows the gate accepted before the retirement".
+
+**This is a deliberate, authorized completeness regression, and it is larger than what was
+declared.** The declared cost was two `TableauConformance` rows; the corpus in fact did not move
+at all, and the cost landed here instead. It does not invalidate a landed theorem —
+`temporalWitnessCheck` enters the truth lemmas as the *hypothesis* `hTW`, not as a derived fact,
+and it was already `false` on the branches the engine actually builds. What it removes is the
+last set of hand-built branches on which the hypothesis was discharged.
 
 ## What was measured
 
@@ -75,7 +110,8 @@ bundle is a candidate *additional* gate, in the family `timeOrderTotal`/`boxAnch
 
 **3. `negStrong` is true on all twelve rows, including the four the gate rejects.** `F(U(φ,ψ))` at
 `(w,t)` puts `F(φ)` at *every* known time after `t`, genuine guard or not. That is much stronger
-than `sat_untl_neg`'s `F(φ)@t' ∨ F(ψ)@t'` and it settles the negative case outright, with no
+than the `F(φ)@t' ∨ F(ψ)@t'` the now-retired `sat_untl_neg` supplied, and it settles the negative
+case outright, with no
 minimal-witness argument and no reasoning about the guard interval.
 
 **4. A second candidate is refuted: `untlNegAllRegions`.** "Every region label of a world denies
@@ -446,8 +482,11 @@ contain.
 #guard_msgs in
 #eval probe (.imp (.untl p q) q)
 
--- I. `p → U(p,q)`, a negative genuine until. The gate accepts, and every candidate row holds.
-/-- info: "OPEN |T|=4 gen=true check=true U[dich=true wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+-- I. `p → U(p,q)`, a negative genuine until. **Was `check=true` with every candidate row
+-- holding.** The PASSIVE-arm retirement flipped `check` to `false` here, and with it the U-side
+-- `nStr`/`nCo`/`rP`/`rN`: no rule places `¬event` at an existing future time any more. This is
+-- the row the retirement cost the most, and the one the top-of-file banner is about.
+/-- info: "OPEN |T|=4 gen=true check=false U[dich=true wit=true gw=true rdG=true nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
 #eval probe (.imp p (.untl p q))
 
@@ -456,8 +495,9 @@ contain.
 #guard_msgs in
 #eval probe (.imp (.snce p q) q)
 
--- K. `p → S(p,q)`, the mirror of I. The gate accepts, and every candidate row holds.
-/-- info: "OPEN |T|=4 gen=true check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=true wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+-- K. `p → S(p,q)`, the mirror of I. **Was `check=true` with every candidate row holding**; the
+-- retirement flipped `check` and the S-side quadruple, exactly mirroring I.
+/-- info: "OPEN |T|=4 gen=true check=false U[dich=true wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=false nCo=false rP=false rN=false]" -/
 #guard_msgs in
 #eval probe (.imp p (.snce p q))
 
@@ -476,7 +516,7 @@ contain.
 --
 -- Note that rows H, J and M — the other genuine-until rows — are **unchanged**, as is every
 -- other row in this file. `|T|=6` here matches H's table size.
-/-- info: "OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+/-- info: "OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=false rdG=true nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (.untl p q) (.untl q p))
 
@@ -488,7 +528,7 @@ contain.
 -- N. Row I under `.Discrete`. `regionLabelCheck` reports `false` here where it reported `true`
 -- at `.Base`, and four candidate rows go with it — the frame class changes the branch, not the
 -- relationship between the gate and the bundle.
-/-- info: "OPEN |T|=4 gen=true check=false U[dich=true wit=true gw=true rdG=false nStr=true nCo=true rP=false rN=false] S[dich=false wit=true gw=false ruG=false nStr=true nCo=true rP=false rN=true]" -/
+/-- info: "OPEN |T|=4 gen=true check=false U[dich=true wit=true gw=true rdG=false nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=false ruG=false nStr=true nCo=true rP=false rN=true]" -/
 #guard_msgs in
 #eval probe (.imp p (.untl p q)) 200 .Discrete
 
@@ -560,8 +600,10 @@ def probe2 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #eval "H " ++ probe2 (.imp (.untl p q) q)
 
 -- I. **The second refuting row**, and the one that matters: a genuine negative until on a branch
--- the gate accepts.
-/-- info: "I check=true uNAR=false sNAR=true" -/
+-- the gate accepted before the PASSIVE-arm retirement (`check` is now `false`; see the banner at
+-- the head of this file). The refutation this row records is about `uNAR`, not about `check`, and
+-- is unaffected.
+/-- info: "I check=false uNAR=false sNAR=true" -/
 #guard_msgs in
 #eval "I " ++ probe2 (.imp p (.untl p q))
 
@@ -569,7 +611,7 @@ def probe2 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "J " ++ probe2 (.imp (.snce p q) q)
 
-/-- info: "K check=true uNAR=true sNAR=true" -/
+/-- info: "K check=false uNAR=true sNAR=false" -/
 #guard_msgs in
 #eval "K " ++ probe2 (.imp p (.snce p q))
 
@@ -667,8 +709,9 @@ def probe3 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "H " ++ probe3 (.imp (.untl p q) q)
 
--- I. The row that matters: a genuine **negative** until on a branch the gate accepts.
-/-- info: "I gen=true check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+-- I. The row that matters: a genuine **negative** until on a branch the gate accepted before the
+-- PASSIVE-arm retirement (`check` is now `false`; see the banner at the head of this file).
+/-- info: "I gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
 #guard_msgs in
 #eval "I " ++ probe3 (.imp p (.untl p q))
 
@@ -676,7 +719,7 @@ def probe3 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "J " ++ probe3 (.imp (.snce p q) q)
 
-/-- info: "K gen=true check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+/-- info: "K gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
 #guard_msgs in
 #eval "K " ++ probe3 (.imp p (.snce p q))
 
@@ -815,7 +858,7 @@ def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 
 -- I. The row that matters for the positive `untl` case: a genuine until on a branch the gate
 -- accepts.
-/-- info: "I gen=true check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+/-- info: "I gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
 #eval "I " ++ probe4 (.imp p (.untl p q))
 
@@ -823,7 +866,7 @@ def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "J " ++ probe4 (.imp (.snce p q) q)
 
-/-- info: "K gen=true check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+/-- info: "K gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
 #eval "K " ++ probe4 (.imp p (.snce p q))
 
@@ -965,8 +1008,9 @@ def probe5 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "H " ++ probe5 (.imp (.untl p q) q)
 
--- I. The row that matters: a genuine **negative** until on a branch the gate accepts.
-/-- info: "I gen=true check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+-- I. The row that matters: a genuine **negative** until on a branch the gate accepted before the
+-- PASSIVE-arm retirement (`check` is now `false`; see the banner at the head of this file).
+/-- info: "I gen=true check=false uNRU=false [k=false r=false uRL=true] sNRD=true [k=true r=true sRU=true]" -/
 #guard_msgs in
 #eval "I " ++ probe5 (.imp p (.untl p q))
 
@@ -974,7 +1018,7 @@ def probe5 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "J " ++ probe5 (.imp (.snce p q) q)
 
-/-- info: "K gen=true check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+/-- info: "K gen=true check=false uNRU=true [k=true r=true uRL=true] sNRD=false [k=false r=false sRU=true]" -/
 #guard_msgs in
 #eval "K " ++ probe5 (.imp p (.snce p q))
 
@@ -1123,9 +1167,10 @@ def probe6 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "H " ++ probe6 (.imp (.untl p q) q)
 
--- I. The row that matters: a genuine until on a branch the gate accepts. Both candidates and
+-- I. The row that matters: a genuine until on a branch the gate accepted before the PASSIVE-arm
+-- retirement (`check` is now `false`, and both `self` diagnostics with it). Both candidates and
 -- both `self` diagnostics hold.
-/-- info: "I gen=true check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+/-- info: "I gen=true check=false uPR=false [self=false uRD=true] sPR=true [self=false sRU=true]" -/
 #guard_msgs in
 #eval "I " ++ probe6 (.imp p (.untl p q))
 
@@ -1136,7 +1181,7 @@ def probe6 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "J " ++ probe6 (.imp (.snce p q) q)
 
-/-- info: "K gen=true check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+/-- info: "K gen=true check=false uPR=true [self=false uRD=true] sPR=false [self=false sRU=true]" -/
 #guard_msgs in
 #eval "K " ++ probe6 (.imp p (.snce p q))
 

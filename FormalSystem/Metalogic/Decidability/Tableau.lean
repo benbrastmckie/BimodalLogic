@@ -1004,9 +1004,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
       | none => (.notApplicable, timeOrd)
   -- F(U(event, guard)) @ (w,t) → Reynolds co-decomposition at future times
   -- Persistent: source formula re-included in both branches.
-  -- PASSIVE mode: For each known future time t' > t, branch:
-  --   Branch 1: F(event) @ (w, t'), source re-included
-  --   Branch 2: F(guard) @ (w, t'), F(U(event, guard)) @ (w, t'), source re-included
+  -- The PASSIVE mode is RETIRED; see the block inside the arm. Only the ACTIVE mode below
+  -- fires.
   -- ACTIVE mode: When no future times exist, create a fresh future time and
   --   perform Reynolds co-decomposition there with full auto-propagation. At the fresh time the
   --   co-decomposition is the bare classical split — F(event) or F(guard), source re-included —
@@ -1015,170 +1014,200 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
       match asUntil? φ with
       | some (event, guard) =>
         let futureTimes := timeOrd.futureOf l.time
-        -- Find first unprocessed future time (where decomposition hasn't been done yet)
-        let unprocessed := futureTimes.filter fun t' =>
-          let negEvent := SignedFormula.neg event { world := l.world, time := t' }
-          let negGuard := SignedFormula.neg guard { world := l.world, time := t' }
-          !branch.contains negEvent && !branch.contains negGuard
-        match unprocessed with
-        | [] =>
-          if futureTimes.isEmpty && timeOrd.timeCount > 0 && timeOrd.timeCount < 4 then
-            -- ACTIVE: no future times exist at all — create fresh future time
-            -- for Reynolds decomposition (Skolem witness for universal quantifier)
-            -- Guard: limit fresh time point creation to prevent runaway chains
-            --. Without this guard, standalone temporal formulas create
-            -- exponential branching chains that exhaust fuel.
-            let freshTime := branch.nextTime
-            let freshLabel : Label := { world := l.world, time := freshTime }
-            let newOrd := timeOrd.addFuture l.time freshTime
-            -- Auto-propagate T(GA) formulas from time t to freshTime
-            let gProps := branch.allFuturePosFormulas.filterMap fun gsf =>
-              match gsf.formula with
-              | .allFuture inner =>
-                if gsf.label.time == l.time then
-                  let prop :=
-                    SignedFormula.pos inner { world := gsf.label.world, time := freshTime }
-                  if branch.contains prop then none else some prop
-                else none
-              | _ => none
-            -- Auto-propagate F(FA) formulas from time t to freshTime
-            let fNegProps := branch.someFutureNegFormulas.filterMap fun fsf =>
-              match fsf.formula with
-              | .someFuture inner =>
-                if fsf.label.time == l.time then
-                  let prop :=
-                    SignedFormula.neg inner { world := fsf.label.world, time := freshTime }
-                  if branch.contains prop then none else some prop
-                else none
-              | _ => none
-            -- NO `untlNegProps` BLOCK. Copying OTHER `F(U(event',guard'))` formulas from
-            -- `l.time` to `freshTime` is UNSOUND and was deleted; see `applyRule`'s docstring
-            -- for the time-axis prohibition. `Formula.untl` is interval-relative along a single
-            -- history, so `F(U(e',g'))@t` does not imply `F(U(e',g'))@t'` for `t < t'`, and no
-            -- shift-closure argument is available because the claim is not Ω-universal. A
-            -- *guarded* copy is not available either: soundness would need
-            -- `¬U(e',g')@A → ¬U(e',g')@C` for a freshly chosen `C > A`, a semantic condition on
-            -- the model that no syntactic guard computable from `(branch, ord)` expresses. This
-            -- ACTIVE arm mints `freshTime` strictly ABOVE `l.time` exactly as `untlPos` does, so
-            -- the ℤ counterexample recorded in `Verified/Decidable.lean` transfers unchanged.
-            -- Deletion can only make branches harder to close, so its sole risk is
-            -- under-closing — the direction the 29-row conformance corpus measures directly.
-            -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
-            let modalProps := boxDiamondPersistence branch l.world l.time freshTime
-            let autoProp := gProps ++ fNegProps ++ modalProps
-            -- Reynolds co-decomposition at the fresh time.
-            --
-            -- NO SELF-PROPAGATED `F(U(event,guard))@freshLabel` IN BRANCH 2. It was there and it
-            -- was UNSOUND, independently of the deleted `untlNegProps` block above: this is the
-            -- arm re-asserting its OWN negative Until at the time it just minted, not a copy of
-            -- some other one. `¬U(e,g)@A` licenses, at a chosen `C > A`, exactly the classical
-            -- split `¬e@C ∨ ¬g@C` (`Semantics/Truth.lean:134-135`); it does NOT license
-            -- `¬U(e,g)@C`, because `U` is interval-relative along a single history and the
-            -- interval `(C,·)` is a *sub*-interval of `(A,·)` — the very reason the guard could
-            -- fail below `C` while `U(e,g)@C` is true.
-            --
-            -- Refutation, over `D = ℚ` with `V(q,e) ⟺ q > 0` and `V(q,g) ⟺ q ∉ {1/n : n ≥ 1}`:
-            -- `¬U(e,g)@0` holds, since every `s > 0` has some `1/n ∈ (0,s)` where the guard
-            -- fails. Branch 2 forced `¬g@C`, hence `C = 1/n`, AND `¬U(e,g)@(1/n)` — but
-            -- `U(e,g)@(1/n)` is true: take `s ∈ (1/n, 1/(n−1))`, where `e@s` holds and `(1/n,s)`
-            -- contains no `1/m`. So branch 2 was unsatisfiable on a satisfiable branch, and
-            -- branch 1 (`¬e@C`, with `e` true throughout `(0,∞)`) cannot rescue the arm.
-            -- Measured as fact by `Tests/BimodalTest/UntlSnceCopyProbe.lean` section D, rows
-            -- D1c/D1d — `true`/`[2,3]` before this deletion, `false`/`[2,2]` after.
-            --
-            -- Deleting it removes an emission, so it can only make branches HARDER to close: the
-            -- sole risk is under-closing, which the 29-row conformance corpus measures directly.
-            -- It does not by itself make `RuleSound carrierBase .untlNeg` provable — that is a
-            -- per-rule statement over BOTH arms, and the PASSIVE arm below is separately refuted.
-            let branch1 := [SignedFormula.neg event freshLabel, sf] ++ autoProp
-            let branch2 := [SignedFormula.neg guard freshLabel, sf] ++ autoProp
-            (.branching [branch1, branch2], newOrd)
-          else
-            -- All existing future times processed, or depth limit reached
-            (.notApplicable, timeOrd)
-        | t' :: _ =>
-          let targetLabel : Label := { world := l.world, time := t' }
-          -- Branch 1: event fails at t', source formula re-included for persistence
-          let branch1 := [SignedFormula.neg event targetLabel, sf]
-          -- Branch 2: guard fails at t' AND Until propagated to t', source re-included
-          let branch2 := [SignedFormula.neg guard targetLabel,
-                           SignedFormula.neg (.untl event guard) targetLabel, sf]
-          (.branching [branch1, branch2], timeOrd)
+        -- THE PASSIVE ARM IS RETIRED. This rule no longer co-decomposes at existing future
+        -- times. It fires ONLY through the ACTIVE arm below, which mints a fresh time; on every
+        -- other configuration it now returns `.notApplicable`.
+        --
+        -- WHAT WAS HERE. For the first future time `t'` carrying neither `¬event@t'` nor
+        -- `¬guard@t'`, a two-way split emitting `¬event@t'` on one arm and `¬guard@t'`
+        -- together with `¬U(event,guard)@t'` on the other, with the ordering returned unchanged.
+        --
+        -- WHY IT IS GONE. It was UNSOUND, independently of both deleted copy blocks and of the
+        -- ACTIVE arm's deleted self-propagation. For `a < c`, `¬U(e,g)@a` licenses only
+        -- `¬e@c ∨ ∃z ∈ (a,c). ¬g@z` (`Semantics/Truth.lean:134-135`) — the guard failure lies
+        -- STRICTLY BETWEEN `a` and `c`. This arm placed it AT `c`, and additionally re-asserted
+        -- `¬U(e,g)@c`. Over `ℤ` with `e` true exactly at `3` and `g` false exactly at `1`,
+        -- `¬U(e,g)@0` holds while `e@3` and `g@3` are both true, so BOTH emitted arms fail on a
+        -- satisfiable branch. Pinned live by `UntlSnceCopyProbe` row B4 for as long as it stood.
+        --
+        -- WHY RETIREMENT AND NOT REPAIR. A sound arm must mint an INTERPOLANT strictly inside
+        -- the open interval, and no termination bound for that is available in this tree. The
+        -- subformula-descent bound is refuted: `allFuturePos` propagates `T(G ¬U(e,g))` to every
+        -- minted time and the sign flip manufactures a NEW `(source, label)` pair there, so the
+        -- supply of sources is not fixed in advance — measured firing in `UntlSnceCopyProbe`
+        -- rows E2a/E2b, and measured reaching THIS arm in row F3, which reads `[34, 650]` on a
+        -- branch that starts with zero negative `Until`s. And a `timeCount` cap is a switch
+        -- rather than a net: `timeCount` reaches `8` by step 21 of an ordinary run (row E1c), so
+        -- a capped arm would be dormant on real branches while carrying an interpolant design's
+        -- full blast radius.
+        --
+        -- DECLARED, AUTHORIZED COST. This is a deliberate COMPLETENESS regression, recorded
+        -- rather than absorbed. Retiring an arm only removes emissions, so its sole risk
+        -- direction is UNDER-closing, and it costs the `TableauConformance` rows that closed
+        -- through it. Those rows are re-pinned to their regressed values with this same note
+        -- attached and are NOT to be quietly restored. Authorized by the user as rank 2 of
+        -- `specs/165_*/reports/05_until-tableau-design-research.md` §6, on the verification in
+        -- `reports/06_rank1-design-verification.md` §8 ("Item (ii) — REFUTE as specified").
+        --
+        -- WHAT IT BUYS. `RuleSound carrierBase .untlNeg` becomes provable. `RuleSound` is per
+        -- rule over BOTH arms, so the ACTIVE arm's repair could yield no theorem while this arm
+        -- stood refuted. The `unprocessed` filter went with the arm: it existed to pick the
+        -- passive target, and with the target gone it was provably dead — the result is
+        -- `.notApplicable` unless `futureTimes.isEmpty`, which forces the filter empty anyway.
+        -- `ruleSelfGuarded .untlNeg` remains true, now for a different reason: the ACTIVE arm
+        -- returns `newOrd`, which makes `futureTimes` non-empty at the next call.
+        --
+        -- Measured by `UntlSnceCopyProbe` section F, the PASSIVE-arm firing counter: it read
+        -- `1` / `[1, 5, 9, 23, 75, 275, 1059]` / `([0, 0], [34, 650])` before this deletion and
+        -- reads all-zero after.
+        if futureTimes.isEmpty && timeOrd.timeCount > 0 && timeOrd.timeCount < 4 then
+          -- ACTIVE: no future times exist at all — create fresh future time
+          -- for Reynolds decomposition (Skolem witness for universal quantifier)
+          -- Guard: limit fresh time point creation to prevent runaway chains
+          --. Without this guard, standalone temporal formulas create
+          -- exponential branching chains that exhaust fuel.
+          let freshTime := branch.nextTime
+          let freshLabel : Label := { world := l.world, time := freshTime }
+          let newOrd := timeOrd.addFuture l.time freshTime
+          -- Auto-propagate T(GA) formulas from time t to freshTime
+          let gProps := branch.allFuturePosFormulas.filterMap fun gsf =>
+            match gsf.formula with
+            | .allFuture inner =>
+              if gsf.label.time == l.time then
+                let prop :=
+                  SignedFormula.pos inner { world := gsf.label.world, time := freshTime }
+                if branch.contains prop then none else some prop
+              else none
+            | _ => none
+          -- Auto-propagate F(FA) formulas from time t to freshTime
+          let fNegProps := branch.someFutureNegFormulas.filterMap fun fsf =>
+            match fsf.formula with
+            | .someFuture inner =>
+              if fsf.label.time == l.time then
+                let prop :=
+                  SignedFormula.neg inner { world := fsf.label.world, time := freshTime }
+                if branch.contains prop then none else some prop
+              else none
+            | _ => none
+          -- NO `untlNegProps` BLOCK. Copying OTHER `F(U(event',guard'))` formulas from
+          -- `l.time` to `freshTime` is UNSOUND and was deleted; see `applyRule`'s docstring
+          -- for the time-axis prohibition. `Formula.untl` is interval-relative along a single
+          -- history, so `F(U(e',g'))@t` does not imply `F(U(e',g'))@t'` for `t < t'`, and no
+          -- shift-closure argument is available because the claim is not Ω-universal. A
+          -- *guarded* copy is not available either: soundness would need
+          -- `¬U(e',g')@A → ¬U(e',g')@C` for a freshly chosen `C > A`, a semantic condition on
+          -- the model that no syntactic guard computable from `(branch, ord)` expresses. This
+          -- ACTIVE arm mints `freshTime` strictly ABOVE `l.time` exactly as `untlPos` does, so
+          -- the ℤ counterexample recorded in `Verified/Decidable.lean` transfers unchanged.
+          -- Deletion can only make branches harder to close, so its sole risk is
+          -- under-closing — the direction the 29-row conformance corpus measures directly.
+          -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
+          let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+          let autoProp := gProps ++ fNegProps ++ modalProps
+          -- Reynolds co-decomposition at the fresh time.
+          --
+          -- NO SELF-PROPAGATED `F(U(event,guard))@freshLabel` IN BRANCH 2. It was there and it
+          -- was UNSOUND, independently of the deleted `untlNegProps` block above: this is the
+          -- arm re-asserting its OWN negative Until at the time it just minted, not a copy of
+          -- some other one. `¬U(e,g)@A` licenses, at a chosen `C > A`, exactly the classical
+          -- split `¬e@C ∨ ¬g@C` (`Semantics/Truth.lean:134-135`); it does NOT license
+          -- `¬U(e,g)@C`, because `U` is interval-relative along a single history and the
+          -- interval `(C,·)` is a *sub*-interval of `(A,·)` — the very reason the guard could
+          -- fail below `C` while `U(e,g)@C` is true.
+          --
+          -- Refutation, over `D = ℚ` with `V(q,e) ⟺ q > 0` and `V(q,g) ⟺ q ∉ {1/n : n ≥ 1}`:
+          -- `¬U(e,g)@0` holds, since every `s > 0` has some `1/n ∈ (0,s)` where the guard
+          -- fails. Branch 2 forced `¬g@C`, hence `C = 1/n`, AND `¬U(e,g)@(1/n)` — but
+          -- `U(e,g)@(1/n)` is true: take `s ∈ (1/n, 1/(n−1))`, where `e@s` holds and `(1/n,s)`
+          -- contains no `1/m`. So branch 2 was unsatisfiable on a satisfiable branch, and
+          -- branch 1 (`¬e@C`, with `e` true throughout `(0,∞)`) cannot rescue the arm.
+          -- Measured as fact by `Tests/BimodalTest/UntlSnceCopyProbe.lean` section D, rows
+          -- D1c/D1d — `true`/`[2,3]` before this deletion, `false`/`[2,2]` after.
+          --
+          -- Deleting it removes an emission, so it can only make branches HARDER to close: the
+          -- sole risk is under-closing, which the 29-row conformance corpus measures directly.
+          -- It does not by itself make `RuleSound carrierBase .untlNeg` provable — that is a
+          -- per-rule statement over BOTH arms, and the PASSIVE arm below is separately refuted.
+          let branch1 := [SignedFormula.neg event freshLabel, sf] ++ autoProp
+          let branch2 := [SignedFormula.neg guard freshLabel, sf] ++ autoProp
+          (.branching [branch1, branch2], newOrd)
+        else
+          -- All existing future times processed, or depth limit reached
+          (.notApplicable, timeOrd)
       | none => (.notApplicable, timeOrd)
   -- F(S(event, guard)) @ (w,t) → Reynolds co-decomposition at past times
   -- Persistent: source formula re-included in both branches.
-  -- PASSIVE mode: For each known past time t' < t, branch:
-  --   Branch 1: F(event) @ (w, t'), source re-included
-  --   Branch 2: F(guard) @ (w, t'), F(S(event, guard)) @ (w, t'), source re-included
+  -- The PASSIVE mode is RETIRED; see the block inside the arm. Only the ACTIVE mode below
+  -- fires.
   -- ACTIVE mode: When no past times exist, create a fresh past time and
   --   perform Reynolds co-decomposition there with full auto-propagation.
   | .snceNeg, .neg, φ =>
       match asSince? φ with
       | some (event, guard) =>
         let pastTimes := timeOrd.pastOf l.time
-        -- Find first unprocessed past time
-        let unprocessed := pastTimes.filter fun t' =>
-          let negEvent := SignedFormula.neg event { world := l.world, time := t' }
-          let negGuard := SignedFormula.neg guard { world := l.world, time := t' }
-          !branch.contains negEvent && !branch.contains negGuard
-        match unprocessed with
-        | [] =>
-          if pastTimes.isEmpty && timeOrd.timeCount > 0 && timeOrd.timeCount < 4 then
-            -- ACTIVE: no past times exist at all — create fresh past time
-            -- for Reynolds co-decomposition (Skolem witness for universal quantifier)
-            -- Guard: limit fresh time point creation to prevent runaway chains
-            --. Same guard as untlNeg active case above.
-            let freshTime := branch.nextTime
-            let freshLabel : Label := { world := l.world, time := freshTime }
-            let newOrd := timeOrd.addPast l.time freshTime
-            -- Auto-propagate T(HA) formulas from time t to freshTime
-            let hProps := branch.allPastPosFormulas.filterMap fun hsf =>
-              match hsf.formula with
-              | .allPast inner =>
-                if hsf.label.time == l.time then
-                  let prop :=
-                    SignedFormula.pos inner { world := hsf.label.world, time := freshTime }
-                  if branch.contains prop then none else some prop
-                else none
-              | _ => none
-            -- Auto-propagate F(PA) formulas from time t to freshTime
-            let pNegProps := branch.somePastNegFormulas.filterMap fun psf =>
-              match psf.formula with
-              | .somePast inner =>
-                if psf.label.time == l.time then
-                  let prop :=
-                    SignedFormula.neg inner { world := psf.label.world, time := freshTime }
-                  if branch.contains prop then none else some prop
-                else none
-              | _ => none
-            -- NO `snceNegProps` BLOCK. Exact past mirror of the `untlNegProps` deletion in the
-            -- `.untlNeg` ACTIVE arm above: copying OTHER `F(S(event',guard'))` formulas from
-            -- `l.time` to `freshTime` is UNSOUND, no guarded form is available, and the
-            -- counterexample is the time reversal of the ℤ model in `Verified/Decidable.lean`.
-            -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
-            let modalProps := boxDiamondPersistence branch l.world l.time freshTime
-            let autoProp := hProps ++ pNegProps ++ modalProps
-            -- Reynolds co-decomposition at the fresh time.
-            --
-            -- NO SELF-PROPAGATED `F(S(event,guard))@freshLabel` IN BRANCH 2. Exact time reversal
-            -- of the deletion in the `.untlNeg` ACTIVE arm above, with the same standing: it is
-            -- independent of the deleted `snceNegProps` block, since this is the arm re-asserting
-            -- its OWN negative Since at the time it just minted. The refuting model is the
-            -- reversal of that arm's ℚ model. Measured by `UntlSnceCopyProbe.lean` rows D2c/D2d.
-            let branch1 := [SignedFormula.neg event freshLabel, sf] ++ autoProp
-            let branch2 := [SignedFormula.neg guard freshLabel, sf] ++ autoProp
-            (.branching [branch1, branch2], newOrd)
-          else
-            -- All existing past times processed, or depth limit reached
-            (.notApplicable, timeOrd)
-        | t' :: _ =>
-          let targetLabel : Label := { world := l.world, time := t' }
-          -- Branch 1: event fails at t', source formula re-included for persistence
-          let branch1 := [SignedFormula.neg event targetLabel, sf]
-          -- Branch 2: guard fails at t' AND Since propagated to t', source re-included
-          let branch2 := [SignedFormula.neg guard targetLabel,
-                           SignedFormula.neg (.snce event guard) targetLabel, sf]
-          (.branching [branch1, branch2], timeOrd)
+        -- THE PASSIVE ARM IS RETIRED — exact past mirror of the `.untlNeg` retirement above,
+        -- which carries the full argument, the counterexample, the refuted alternatives and the
+        -- authorization. This rule fires ONLY through the ACTIVE arm below; every other
+        -- configuration returns `.notApplicable`.
+        --
+        -- The defect is the time reversal of `untlNeg`'s: for `c < a`, `¬S(e,g)@a` licenses only
+        -- `¬e@c ∨ ∃z ∈ (c,a). ¬g@z`, and the arm placed the guard failure AT `c` while
+        -- re-asserting `¬S(e,g)@c`. Pinned live by `UntlSnceCopyProbe` row B4' for as long as it
+        -- stood, and the `ℤ` counterexample transfers unchanged under `t ↦ -t`.
+        --
+        -- Same declared, authorized cost: a deliberate under-closing completeness regression on
+        -- the `TableauConformance` rows that closed through it, re-pinned rather than restored.
+        -- Same gain: `RuleSound carrierBase .snceNeg` becomes provable. The `unprocessed` filter
+        -- went with the arm for the same reason — with `pastTimes.isEmpty` forcing it empty on
+        -- the only surviving firing path, it was provably dead.
+        if pastTimes.isEmpty && timeOrd.timeCount > 0 && timeOrd.timeCount < 4 then
+          -- ACTIVE: no past times exist at all — create fresh past time
+          -- for Reynolds co-decomposition (Skolem witness for universal quantifier)
+          -- Guard: limit fresh time point creation to prevent runaway chains
+          --. Same guard as untlNeg active case above.
+          let freshTime := branch.nextTime
+          let freshLabel : Label := { world := l.world, time := freshTime }
+          let newOrd := timeOrd.addPast l.time freshTime
+          -- Auto-propagate T(HA) formulas from time t to freshTime
+          let hProps := branch.allPastPosFormulas.filterMap fun hsf =>
+            match hsf.formula with
+            | .allPast inner =>
+              if hsf.label.time == l.time then
+                let prop :=
+                  SignedFormula.pos inner { world := hsf.label.world, time := freshTime }
+                if branch.contains prop then none else some prop
+              else none
+            | _ => none
+          -- Auto-propagate F(PA) formulas from time t to freshTime
+          let pNegProps := branch.somePastNegFormulas.filterMap fun psf =>
+            match psf.formula with
+            | .somePast inner =>
+              if psf.label.time == l.time then
+                let prop :=
+                  SignedFormula.neg inner { world := psf.label.world, time := freshTime }
+                if branch.contains prop then none else some prop
+              else none
+            | _ => none
+          -- NO `snceNegProps` BLOCK. Exact past mirror of the `untlNegProps` deletion in the
+          -- `.untlNeg` ACTIVE arm above: copying OTHER `F(S(event',guard'))` formulas from
+          -- `l.time` to `freshTime` is UNSOUND, no guarded form is available, and the
+          -- counterexample is the time reversal of the ℤ model in `Verified/Decidable.lean`.
+          -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
+          let modalProps := boxDiamondPersistence branch l.world l.time freshTime
+          let autoProp := hProps ++ pNegProps ++ modalProps
+          -- Reynolds co-decomposition at the fresh time.
+          --
+          -- NO SELF-PROPAGATED `F(S(event,guard))@freshLabel` IN BRANCH 2. Exact time reversal
+          -- of the deletion in the `.untlNeg` ACTIVE arm above, with the same standing: it is
+          -- independent of the deleted `snceNegProps` block, since this is the arm re-asserting
+          -- its OWN negative Since at the time it just minted. The refuting model is the
+          -- reversal of that arm's ℚ model. Measured by `UntlSnceCopyProbe.lean` rows D2c/D2d.
+          let branch1 := [SignedFormula.neg event freshLabel, sf] ++ autoProp
+          let branch2 := [SignedFormula.neg guard freshLabel, sf] ++ autoProp
+          (.branching [branch1, branch2], newOrd)
+        else
+          -- All existing past times processed, or depth limit reached
+          (.notApplicable, timeOrd)
       | none => (.notApplicable, timeOrd)
   -- Order trichotomy (R2, repairs D2): branch on the relative order of two incomparable
   -- times that share a common past.
