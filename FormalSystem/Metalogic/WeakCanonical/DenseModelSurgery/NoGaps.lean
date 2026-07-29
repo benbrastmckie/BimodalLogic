@@ -83,17 +83,18 @@ prose, which is the half of the corpus the standing warning rates as clean.
 | *"By lemma 8, `R` holds in `I` in `N`"* | `reynolds_lemma9_R_in_N` |
 | *"by lemma 2, `R` holds at a point in any Prior structure (not just `M`)"* | `gapRightFormula_spec` at `surgeredStructure` |
 | *"By the contemporaneity of `ε`, `I` … is all in one `∼_N`-class"* | `surgeredContempEquiv_of_base` |
-| *"Thus `Q⁺` is non-empty"* | `reynolds_lemma9_exists_after` |
+| *"Thus `Q⁺` is non-empty"* | `reynolds_lemma9_exists_after`, `exists_not_isBadPoint_gt` |
 | *"and by lemma 6 begins with a point `q`"*, *"`¬R` holds at `q`"* | `reynolds_lemma6_right_endpoint` |
-| *"Clearly `q` is not in the class of `I` in `N`. Thus the class ends just before `q`"* | `reynolds_lemma9_first_after_not_gap` |
+| *"Clearly `q` is not in the class of `I` in `N`. Thus the class ends just before `q`"* | `reynolds_lemma9` (the closing `refine`, on `endsInGapOnRight_congr`) |
 | **LEMMA 9** itself | `reynolds_lemma9` |
 | **THEOREM 4** | `no_gaps_dense_prior` |
 
 ## Honest caveat on conditionality — what this module does and does not retire
 
-See `## Conditionality after Theorem 4` at the foot of this file. The short form: this module
-retires the **structure** half of the standing §6 caveat and does **not** retire the **`ε`**
-half. Read that section before describing any §6 result as discharged.
+**The standing §6 caveat is NOT retired by this module, and stays verbatim wherever it is
+carried.** `## Conditionality after Theorem 4` at the foot of this file states exactly what is
+and is not established, and adds a third condition (`HasBadIntervalSurgery`) that Theorem 4
+introduces. Read that section before describing any §6 result as discharged.
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
@@ -611,5 +612,131 @@ theorem reynolds_lemma9 (hε : IsContempEquivDense ε)
       (z.property.resolve_left (· hzQ))
 
 end Lemma9
+
+/-! ## Theorem 4
+
+> **THEOREM 4** *Suppose that `∼` is a contemporaneous equivalence relation on a Prior structure
+> `M`.*
+>
+> *Then the `∼`-classes do not end at gaps.*
+
+Reynolds writes *"Thus we have proven…"* and states Theorem 4 with no further argument: Lemma 9
+**is** Theorem 4, once one knows that a point whose class ends in a gap gives rise to the bad
+interval Lemma 8's surgery is performed on.
+
+**That last step is the input this tree cannot yet supply, and it is named rather than assumed
+away.** `HasBadIntervalSurgery` below packages it. What it asks for is not the whole of Lemma 6
+but one clause: *"in any bad interval both `R` and `L` hold throughout"* (printed p.180, Lemma
+6's first clause). Everything else assembles from landed material —
+`reynolds_lemma4_no_last_class` supplies the upper interiority witness and
+`reynolds_lemma4_no_first_class` the lower, and the bad-connected component of the point is the
+maximal interval. The obstruction is exact and was measured, not guessed:
+
+* `IsBadInterval.saturated` is stated over `IsBadPoint`, i.e. over `R ∨ L`, so the bad-connected
+  component of a point is the only candidate that satisfies it;
+* but `IsBadIntervalSurgery.interior` demands `ClassInteriorToBadInterval`, which carries `R`
+  **and** `L` throughout its segment;
+* closing that gap is the implication `L → R` at a point where only `L` is known. The landed
+  `endsInGapOnRight_of_endsInGapOnLeft` (`BadIntervals.lean:1346`) proves it, but only from a
+  `ClassInteriorToLInterval` witness, and producing that witness at a merely-`L` point is exactly
+  the clause that is missing.
+
+The same clause is why `reynolds_lemma6_right_endpoint` carries its own `hbadR` hypothesis, and
+why `reynolds_lemma9` above carries it too. So the gap is one gap, in one place, and it is the
+same one in all three declarations.
+
+Everything below Theorem 4 is therefore **conditional on `HasBadIntervalSurgery`**, and no §6
+result may be described as discharged on the strength of it. See `## Conditionality after
+Theorem 4`. -/
+
+section Theorem4
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
+
+/-- **The one input Theorem 4 still needs**: at every point whose class ends in a gap on the
+right, the bad interval of Lemma 8's surgery together with Lemma 6's first clause above that
+point.
+
+This is a *hypothesis*, and naming it is the point: it is Lemma 6's first clause (*"in any bad
+interval both `R` and `L` hold throughout"*, printed p.180) in the form Lemmas 6 and 9 consume,
+and it is not proved anywhere in this tree. -/
+structure HasBadIntervalSurgery (M : OrderedMonadicStructure sig)
+    (ε : MonadicFormula sig 2) : Prop where
+  /-- *"Let `Q₀` be the bad interval itself"*, at a point whose class ends in a gap. -/
+  exists_surgery : ∀ t : M.carrier, EndsInGapOnRight M ε t →
+    ∃ Q : M.carrier → Prop, IsBadIntervalSurgery M ε Q t ∧
+      ∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q
+
+/-- **Reynolds 1992, §6 Theorem 4, printed p.183 — the right-hand end.**
+
+> *Suppose that `∼` is a contemporaneous equivalence relation on a Prior structure `M`.*
+>
+> *Then the `∼`-classes do not end at gaps.*
+
+This is **D1**, the first hypothesis of Doets' theorem. Conditional on `HasBadIntervalSurgery`;
+see the section header for exactly which clause that stands in for. -/
+theorem no_gaps_dense_prior (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (hbi : HasBadIntervalSurgery M ε)
+    (t : M.carrier) : ¬ EndsInGapOnRight M ε t := fun ht => by
+  obtain ⟨Q, hS, hbadR⟩ := hbi.exists_surgery t ht
+  exact reynolds_lemma9 atomMap h_surj hε h_prior_U h_prior_S hS hbadR
+
+/-- **Theorem 4, the left-hand end** — *"the classes do not end at gaps"* covers both ends.
+
+Obtained by instantiation at `(dual M, dualize ε)` through `Dual.lean`, not by a hand-written
+mirror: `endsInGapOnRight_dual` exchanges the two gap predicates, `isContempEquivDense_dualize`
+carries `ε`, and `semanticPriorU_dual` / `semanticPriorS_dual` carry the Prior pair. The
+`HasBadIntervalSurgery` hypothesis is stated at the dual for the same reason — it is the one
+input that does not transport for free. -/
+theorem no_gaps_dense_prior_left (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap)
+    (hbi : HasBadIntervalSurgery (dual M) (dualize ε))
+    (t : M.carrier) : ¬ EndsInGapOnLeft M ε t := by
+  intro ht
+  exact no_gaps_dense_prior (M := dual M) atomMap h_surj (isContempEquivDense_dualize hε)
+    (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U) hbi (d t)
+    ((endsInGapOnRight_dual ε t).mpr ht)
+
+end Theorem4
+
+/-! ## Conditionality after Theorem 4
+
+The standing §6 caveat, carried verbatim in every module header from `Lemma5.lean` onwards, has
+two halves. This module **does not retire either of them**, and they are restated here so that no
+reader has to reconstruct the position from the plan.
+
+**Half one — the structure.** *"Semantic Prior-U / Prior-S are hypotheses."* This half is close
+to retired but is **not** retired here. `chronicleIsDensePriorSepStructure`
+(`BXCanonical/Chronicle/ChronicleMonadicBridge.lean:1053`) exhibits a countable dense endpointless
+structure satisfying both, so a live Prior structure does exist in this tree. It cannot be plugged
+in *here*: `ChronicleMonadicBridge` imports `WeakCanonical`, so a module under
+`WeakCanonical/DenseModelSurgery/` cannot import it back. The instantiation has to live in a new
+module downstream of both, which is outside this file's territory. Until that module exists, the
+`Prior` hypotheses of every §6 declaration are formally undischarged.
+
+**Half two — `ε`.** *"The only `ε` this tree can exhibit satisfying `IsContempEquivDense` is
+`epsTop`, for which `EndsInGapOnRight` is empty"* (`Defs.lean`'s `isContempEquivDense_epsTop` and
+`not_endsInGapOnRight_epsTop`). Nothing in this module changes that. There is still **no live
+non-trivial instance** of anything in `Lemma5.lean`, `BadIntervals.lean`, `Dual.lean`,
+`TruthTransfer.lean` or this file.
+
+**And a third, new to this module.** Theorem 4 is additionally conditional on
+`HasBadIntervalSurgery`, which stands in for Lemma 6's first clause and is proved nowhere. This is
+a genuine gap in the formalization, **not** a gap in Reynolds: his Lemma 6 states the clause and
+he takes it as established by the time Lemma 9 runs.
+
+**What this module does establish, unconditionally in its own hypotheses.** `reynolds_lemma9` is
+sorry-free and axiom-clean: given the surgery set-up and Lemma 6's first clause, a class ending in
+a gap is contradictory. `surgeredSemanticPriorU` / `surgeredSemanticPriorS` are sorry-free with no
+extra hypothesis at all beyond Lemma 8's — *"`N` is a Prior structure"*, the step `TruthTransfer`
+left open, is fully discharged.
+
+**So: the §6 conditionality caveat stays, verbatim, in every module header that carries it.**
+Do not soften it on the strength of this module. -/
 
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
