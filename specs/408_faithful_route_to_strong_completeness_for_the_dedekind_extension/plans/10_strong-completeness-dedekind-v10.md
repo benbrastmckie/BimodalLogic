@@ -4294,13 +4294,13 @@ for the repaired formula**.
 - **Verification Tier**: full.
 - **BLOCK G CHECKPOINT**: both of Doets' hypotheses, D1 and D2, are now available.
 
-### Phase 24: Reynolds §8 Lemma 11 — countable + very good ⇒ good, at `ℝ`-intervals [IN PROGRESS]
+### Phase 24: Reynolds §8 Lemma 11 — countable + very good ⇒ good, at `ℝ`-intervals [COMPLETED]
 
 - **Goal**: `goodDense`, `veryGoodDense` and *"If `N` is countable and very good then it is good"*.
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/RealModel/GoodDense.lean` (new).
   **`IntegerModel/GoodStructures.lean` is read, not edited.**
 - **Tasks**:
-  - [ ] Define `RIntervalStructure sig` (the `ℝ`-interval analogue of `ZIntervalStructure`),
+  - [x] Define `RIntervalStructure sig` (the `ℝ`-interval analogue of `ZIntervalStructure`),
         `goodDense M` (`∃ R : RIntervalStructure sig, KEquiv sig k M (R.toOrdered sig)`) and
         `veryGoodDense M` (`∀ t < u`, `M|(t,u)` non-empty and good). **Genuinely new definitions, not
         instantiations.** The landed `good` (`:78`) is `∃ Z : ZIntervalStructure sig, …` and the
@@ -4308,15 +4308,17 @@ for the repaired formula**.
         p.186) use **open** intervals and strict `t < u`. Record the difference in the docstring; it
         is not cosmetic — the open/closed choice is what makes Lemma 11's `Σ_{i∈ℤ}(N|{aᵢ} + Rᵢ)` have
         flow isomorphic to `ℝ`.
-  - [ ] Prove Lemma 11, transcribing printed p.186: for `N` with no endpoints choose `aᵢ` (`i ∈ ℤ`)
+  - [x] Prove Lemma 11, transcribing printed p.186: for `N` with no endpoints choose `aᵢ` (`i ∈ ℤ`)
         increasing and cofinal both ways; `N|(aᵢ,aᵢ₊₁)` is good, so take `Rᵢ ≡ₖ N|(aᵢ,aᵢ₊₁)` with an
         open real interval as flow; then `N ≡ₖ Σ_{i∈ℤ}(N|{aᵢ} + Rᵢ)`, whose flow is isomorphic to
         `ℝ`. Consume `doets_lemma_1_4` (`OrderedSum.lean:41`). Then the one- and two-endpoint cases
         by adding singleton structures.
-  - [ ] Docstring: `Reynolds 1992, §8 Lemma 11, printed p.186` (attributed there to `[8] lemma 6.4`),
+  - [x] Docstring: `Reynolds 1992, §8 Lemma 11, printed p.186` (attributed there to `[8] lemma 6.4`),
         plus `ADAPTED-FROM: IntegerModel/GoodStructures.lean` naming the `ℤ` analogue (Reynolds Lemma
-        14, printed p.190) and what changed.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+        14, printed p.190) and what changed. *(citation corrected to `pp.185-186`: re-measured off
+        the 200 dpi page images, correction and its evidence recorded in the module header's
+        "Corpus and page-measurement notes". Landed in sub-objective 24.1, not this dispatch.)*
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
 - **Estimated output**: ~380 lines.
 - **Done when**: `goodDense`, `veryGoodDense` and Lemma 11 sorry-free and axiom-clean.
 - **Depends on**: 22.
