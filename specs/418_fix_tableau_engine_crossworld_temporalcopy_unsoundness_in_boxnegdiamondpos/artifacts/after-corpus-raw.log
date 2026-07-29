@@ -2542,3 +2542,22 @@ error: Tests/BimodalTest/TemporalWitnessProbe.lean:1085:0: ❌️ Docstring on `
 - info: "D gen=false check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]"
 + info: "D gen=false check=false uPR=false [self=false uRD=true] sPR=false [self=false sRU=true]"
 error: Lean exited with code 1
+✖ [2027/2031] Building BimodalTest.BoxNegPreservationProbe (1048s)
+trace: .> LEAN_PATH=/home/benjamin/Projects/BimodalLogic/.lake/packages/Cli/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/batteries/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/Qq/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/aesop/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/importGraph/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/plausible/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/packages/mathlib/.lake/build/lib/lean:/home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean /home/benjamin/.elan/toolchains/leanprover--lean4---v4.33.0-rc1/bin/lean /home/benjamin/Projects/BimodalLogic/Tests/BimodalTest/BoxNegPreservationProbe.lean -o /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/BimodalTest/BoxNegPreservationProbe.olean -i /home/benjamin/Projects/BimodalLogic/.lake/build/lib/lean/BimodalTest/BoxNegPreservationProbe.ilean -c /home/benjamin/Projects/BimodalLogic/.lake/build/ir/BimodalTest/BoxNegPreservationProbe.c --setup /home/benjamin/Projects/BimodalLogic/.lake/build/ir/BimodalTest/BoxNegPreservationProbe.setup.json --json
+info: Tests/BimodalTest/BoxNegPreservationProbe.lean:104:0: 1
+error: Tests/BimodalTest/BoxNegPreservationProbe.lean:103:0: ❌️ Docstring on `#guard_msgs` does not match generated message:
+
+- info: 2
++ info: 1
+info: Tests/BimodalTest/BoxNegPreservationProbe.lean:117:0: false
+error: Tests/BimodalTest/BoxNegPreservationProbe.lean:116:0: ❌️ Docstring on `#guard_msgs` does not match generated message:
+
+- info: true
++ info: false
+info: Tests/BimodalTest/BoxNegPreservationProbe.lean:123:0: false
+error: Tests/BimodalTest/BoxNegPreservationProbe.lean:122:0: ❌️ Docstring on `#guard_msgs` does not match generated message:
+
+- info: true
++ info: false
+error: Lean exited with code 1
+✔ [2028/2031] Built BimodalTest.CrossWorldPropagationProbe (1363s)

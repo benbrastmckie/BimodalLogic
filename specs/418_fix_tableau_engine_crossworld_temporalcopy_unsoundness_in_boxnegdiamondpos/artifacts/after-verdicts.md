@@ -31,9 +31,9 @@ at the first, and within each module reported **every** mismatching row rather t
 first. Per-module builds were therefore not needed to surface the full mismatch set — the plan
 prescribed them as insurance against masking, and the raw log shows no masking occurred.
 
-## Moved rows — 14 confirmed across 4 probe modules
+## Moved rows — 17 confirmed across 5 probe modules
 
-All fourteen are quoted verbatim from Lean's `- info:` (old) / `+ info:` (new) diff pairs in
+All seventeen are quoted verbatim from Lean's `- info:` (old) / `+ info:` (new) diff pairs in
 `after-corpus-raw.log`.
 
 ### `RayRegionProbe.lean` — 1 of 7 rows moved
@@ -97,6 +97,46 @@ The plan predicted row D "recurring at `:407`, `:520-522`, `:628-630`, `:774-776
 `:914`" — five sites. **Measured: six**, the sixth at `:1085` (`probe6`). The plan's "near `:914`"
 resolves to `:927`. All 65 other rows in this file are unmoved.
 
+### `BoxNegPreservationProbe.lean` — 3 of 5 rows moved — **bucket (b), and the headline result**
+
+This file was written to pin the defect directly, at the `applyRule` level rather than the verdict
+level. Its rows moving is the task's central evidence.
+
+| # | Row | What it evaluates | Old | New | Bucket |
+|---|---|---|---|---|---|
+| 15 | 1 (`:103`) | `emitted.length` | `2` | **`1`** | **(b)** |
+| 16 | 3 (`:116`) | `emitted` contains the same formula at the same label with **opposite signs** | `true` | **`false`** | **(b)** |
+| 17 | 4 (`:122`) | `emitted` contains a `T(G p)` that was standing at another world | `true` | **`false`** | **(b)** |
+
+Rows 2 (`:107`, both emitted formulas sit at the minted world) and 5 (`:130`, `isValid = false`)
+are **unmoved** — exactly as the plan predicted, row for row, on all five.
+
+**Row 3 is the soundness defect itself, measured as repaired.** Its docstring reads: *"This is the
+measurement. A branch containing both is unsatisfiable outright, so the successor of a satisfiable
+branch is unsatisfiable and `RuleSound carrierBase .boxNeg` is false."* That row now evaluates
+`false`: applying `.boxNeg` to this branch no longer manufactures a contradictory pair. This is
+the most direct available confirmation that the task achieved its stated goal, and it is
+independent of any fuel budget or search-depth question.
+
+Row 1 (`2 → 1`) and row 4 (`true → false`) are the mechanism: the rule used to emit the witness
+`F(G p)` **plus** the copied `T(G p)`; it now emits the witness alone.
+
+### `CrossWorldPropagationProbe.lean` — 0 of 5 rows moved — **built green**
+
+`✔ [2028/2031] Built BimodalTest.CrossWorldPropagationProbe (1363s)`. All five rows pass
+unchanged, **confirming the plan's prediction exactly** ("all five rows predicted safe in value —
+they pin `isValid` only — but superseded in narrative").
+
+This includes **row B**, which is `isValid ((G p) → □(G p))` — the headline formula — still
+pinning `false`. As noted below, `isValid` is `true` only for `.valid`, so this row reads `false`
+under both `.invalid` and `.fuelExhausted` and does not by itself discriminate the two. What it
+does establish is that the engine does **not** now report this invalid formula as valid.
+
+The file's narrative is nonetheless superseded: its title is *"Does the fresh-world temporal copy
+make the engine decide wrongly? Measured, and it does not"*, and its thesis is that the copy is
+suspect but harmless at the verdict level. The copy is now gone, so the whole framing is
+historical. Phase 7 must rewrite it even though no value moved.
+
 ## The headline anchor row — `(G p) → □(G p)` — partially measured
 
 The plan's headline acceptance criterion is that `buildTableau ((G p) → □(G p)) 1000 .Base` now
@@ -133,24 +173,44 @@ superseded", and why the row cannot by itself discriminate (a) from (e). Reading
 necessary but not sufficient; the next dispatch should also run `decide` directly and record the
 constructor.
 
-## Modules still building at the end of this dispatch
+## Modules still building
 
-`TableauConformance`, `BoxNegReachabilityProbe`, `BoxNegPreservationProbe` and
-`CrossWorldPropagationProbe` had not completed when this dispatch ended. See "Resource finding"
-below — their slowness is itself a measurement, not a stall.
+`TableauConformance` (27 rows) and `BoxNegReachabilityProbe` (12 rows) had not completed at the
+time of writing. `BoxNegPreservationProbe` and `CrossWorldPropagationProbe`, initially recorded
+here as incomplete, both finished — see their sections above.
 
-## Resource finding (bucket (e)) — the corpus got materially slower
+## Resource finding (bucket (e)) — the corpus got materially slower, quantified
 
-`CrossWorldPropagationProbe` built in **1.2 s** in the Phase 2 baseline. Post-fix it, and the two
-`BoxNeg*Probe` files, had been running for **tens of minutes** without completing, alongside
-`TableauConformance`.
+Lake's own per-module timings, post-fix, against the one baseline figure available:
+
+| Module | Baseline | Post-fix | Factor |
+|---|---|---|---|
+| `CrossWorldPropagationProbe` | **1.2 s** | **1363 s** (~23 min) | **~1100×** |
+| `BoxNegPreservationProbe` | not separately timed (cached) | **1048 s** (~17 min) | — |
+| `RayRegionProbe` | not separately timed | 3.3 s | — |
+| `BoxSpreadProbe` | not separately timed | 7.8 s | — |
+| `RegionGateProbe` | not separately timed | 12 s | — |
+| `TemporalWitnessProbe` | not separately timed | 21 s | — |
+
+The two slow modules are precisely the two whose rows run `isValid`/`decide` on formulas that
+**used to close and now do not**: `CrossWorldPropagationProbe` rows A/B/C and
+`BoxNegPreservationProbe` row 5. The four fast modules run `buildTableau` at explicit low fuel
+(200) and are barely affected.
 
 This is the plan's risk-asymmetry argument showing up as wall-clock: removing emitted formulas
-can only shrink a branch's contradiction surface, so branches that used to close now stay open,
-and `decide` runs the full fuel budget plus proof search plus countermodel extraction instead of
+shrinks a branch's contradiction surface, so branches that used to close now stay open and
+`decide` runs the whole fuel budget plus proof search plus countermodel extraction instead of
 terminating early on a closed tableau. It is a **cost**, not a failure, and it is the expected
-direction. It does mean any future dispatch must budget a full corpus build in tens of minutes,
-not minutes.
+direction.
+
+**Correction to an earlier reading in this document**: `CrossWorldPropagationProbe` was initially
+recorded as "running tens of minutes without completing". It did complete, in 1363 s, and it
+built **green**. The slowdown is real and large but it is not a hang.
+
+Practical consequence: a full `lake build BimodalTest` must be run in the background with no
+wall-clock ceiling and budgeted in tens of minutes at minimum. It must never be run in a
+foreground window that can time out — doing so once already destroyed a run and dropped the olean
+count 405 → 398.
 
 ## Rows that did not move
 
@@ -160,26 +220,27 @@ not minutes.
 | `RegionGateProbe.lean` | 10 | 4 | 6 |
 | `RayRegionProbe.lean` | 7 | 1 | 6 |
 | `BoxSpreadProbe.lean` | 5 | 3 | 2 |
+| `BoxNegPreservationProbe.lean` | 5 | 3 | 2 |
+| `CrossWorldPropagationProbe.lean` | 5 | **0 (built green)** | 5 |
 | `TableauConformance.lean` | 27 | not yet measured | — |
 | `BoxNegReachabilityProbe.lean` | 12 | not yet measured | — |
-| `CrossWorldPropagationProbe.lean` | 5 | not yet measured | — |
-| `BoxNegPreservationProbe.lean` | 5 | not yet measured | — |
-| **Total** | **142** | **14 so far** | **79 so far** |
+| **Total** | **142** | **17 so far** | **86 so far** |
 
 ## Bucket summary so far
 
 | Bucket | Count | Note |
 |---|---|---|
-| (a) intended repair | 0 so far | expected in `CrossWorldPropagationProbe` / `TableauConformance`, not yet measured |
-| (b) probe-pins-the-bug | 0 so far | expected in the two `BoxNeg*Probe` files, not yet measured |
-| (c) suspected under-closing regression | **0** | none among the 14 measured |
-| (d) saturation-metric change | **14** | all fourteen |
+| (a) intended repair | 0 so far | `CrossWorldPropagationProbe` built green, so no verdict moved there; `TableauConformance` not yet measured |
+| (b) probe-pins-the-bug | **3** | `BoxNegPreservationProbe` rows 1, 3, 4 — including row 3, the unsoundness itself, measured as repaired |
+| (c) suspected under-closing regression | **0** | none among the 17 measured |
+| (d) saturation-metric change | **14** | the `RayRegion`/`BoxSpread`/`RegionGate`/`TemporalWitness` set |
 | (e) fuel/resource change | see above | corpus-wide slowdown, not a per-row verdict |
 
-**No bucket-(c) row has been found.** Every measured move is a decidable branch-gate or
-structural metric on a multi-world branch, and every one of them was previously computing `true`
-*because of* the unsound copies. No verdict (`CLOSED`/`OPEN`/`STALLED`, `isValid`) has moved in
-the measured set at all.
+**No bucket-(c) row has been found** among the 17 measured. Fourteen are decidable branch-gates or
+structural metrics on a multi-world branch, every one of which was previously computing `true`
+*because of* the unsound copies. Three are `BoxNegPreservationProbe` rows that pinned the defect
+directly and now pin its absence. **No verdict** (`CLOSED`/`OPEN`/`STALLED`, `isValid`) has moved
+in the measured set at all.
 
 ## Anticipation accounting
 

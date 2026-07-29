@@ -212,19 +212,19 @@ later phase depends on, and record the clone's starting build state so mid-task 
 detectable rather than merely suspected.
 
 **Tasks**:
-- [ ] Record the starting state: `find .lake/build -name "*.olean" | wc -l`, `git status --short`,
+- [x] Record the starting state: `find .lake/build -name "*.olean" | wc -l`, `git status --short`,
       `git rev-parse HEAD`, and `pgrep -af "lake|lean --"`. Write all four into
       `specs/418_.../artifacts/build-environment.md`.
-- [ ] Create the advisory lock convention at `.lake/.task-418-build.lock` — a plain file whose
+- [x] Create the advisory lock convention at `.lake/.task-418-build.lock` — a plain file whose
       contents are the task number, PID, and ISO8601 acquisition time. Document the acquire /
       release / stale-detection procedure (a lock older than 60 minutes whose PID is dead is
       stale and may be broken) in the same artifact.
-- [ ] Write the infra-vs-verdict error triage table (from the Build-Reliability Protocol above)
+- [x] Write the infra-vs-verdict error triage table (from the Build-Reliability Protocol above)
       into the artifact as an operational checklist the later phases follow verbatim.
-- [ ] Confirm the six accessor definitions exist and are untouched at
+- [x] Confirm the six accessor definitions exist and are untouched at
       `FormalSystem/Metalogic/Decidability/SignedFormula.lean:473-537`, so the Phase 3 edit is
       unambiguously a call-site deletion.
-- [ ] Confirm `lake build` alone does NOT build the corpus, by reading `lakefile.lean`'s
+- [x] Confirm `lake build` alone does NOT build the corpus, by reading `lakefile.lean`'s
       `@[default_target]` placement, and record `lake build BimodalTest` as the corpus command.
 
 **Timing**: 0.75 hours
@@ -251,26 +251,26 @@ detectable rather than merely suspected.
 so every post-fix change is attributable and nothing pre-existing is misread as a regression.
 
 **Tasks**:
-- [ ] Acquire the build lock. Record the olean count immediately before building.
-- [ ] Run `lake build` (the `FormalSystem` library). Capture full stdout+stderr to
+- [x] Acquire the build lock. Record the olean count immediately before building.
+- [x] Run `lake build` (the `FormalSystem` library). Capture full stdout+stderr to
       `specs/418_.../artifacts/baseline-build.log`.
-- [ ] Run `lake build BimodalTest` (the corpus). Capture full output to
+- [x] Run `lake build BimodalTest` (the corpus). Capture full output to
       `specs/418_.../artifacts/baseline-corpus.log`.
-- [ ] Record the olean count immediately after. If it dropped, or if either build produced an
+- [x] Record the olean count immediately after. If it dropped, or if either build produced an
       infrastructure-class error, discard both logs and retry from the top of this phase. Do not
       proceed on an inconclusive baseline.
-- [ ] Write `specs/418_.../artifacts/baseline-verdicts.md`: a table keyed by file and row
+- [x] Write `specs/418_.../artifacts/baseline-verdicts.md`: a table keyed by file and row
       recording each `#guard_msgs` row's expected value as written in the source, for all eight
       probe files — `TableauConformance` (29), `TemporalWitnessProbe` (71),
       `BoxNegReachabilityProbe` (12), `RegionGateProbe` (10), `RayRegionProbe` (8),
       `CrossWorldPropagationProbe` (5), `BoxSpreadProbe` (5), `BoxNegPreservationProbe` (5).
-- [ ] Capture the **pre-fix `boxAnchoredCheck` datum** explicitly, since Phase 5 needs a
+- [x] Capture the **pre-fix `boxAnchoredCheck` datum** explicitly, since Phase 5 needs a
       before-value to compare against: record `BoxSpreadProbe.lean` rows A/B/C (`:71-86`) —
       currently pinning `anchor = true` and `|T| = 7` / `|T| = 10` — verbatim, and note them as
       the anchor baseline.
-- [ ] Record explicitly whether the baseline is fully green. Name any already-failing row as a
+- [x] Record explicitly whether the baseline is fully green. Name any already-failing row as a
       pre-existing failure excluded from before/after attribution.
-- [ ] Release the lock.
+- [x] Release the lock.
 
 **Timing**: 1.5 hours
 
@@ -309,22 +309,22 @@ No `.lean` file is modified in this phase.
 assembly lines — and confirm the single edited module compiles.
 
 **Tasks**:
-- [ ] In `Tableau.lean`'s `.boxNeg` case: delete the `-- Cross-modal-temporal: ...` comment and
+- [x] In `Tableau.lean`'s `.boxNeg` case: delete the `-- Cross-modal-temporal: ...` comment and
       the six `let` bindings `tempGProps`, `tempHProps`, `tempFNegProps`, `tempPNegProps`,
       `tempUNegProps`, `tempSNegProps` (currently lines 554-572), and the `temporalProps` binding
       (currently 573-574).
-- [ ] Change the `.boxNeg` result line (currently 575) from
+- [x] Change the `.boxNeg` result line (currently 575) from
       `(.linear (witness :: boxProps ++ diaProps ++ temporalProps), timeOrd)` to
       `(.linear (witness :: boxProps ++ diaProps), timeOrd)`.
-- [ ] In `Tableau.lean`'s `.diamondPos` case: delete the corresponding comment, the same six
+- [x] In `Tableau.lean`'s `.diamondPos` case: delete the corresponding comment, the same six
       `let` bindings (currently 598-616), and the `temporalProps` binding (617-619).
-- [ ] Change the `.diamondPos` result line (currently 620) identically.
-- [ ] Confirm by reading the surrounding code that group 1 (`freshWorld` / `freshLabel` /
+- [x] Change the `.diamondPos` result line (currently 620) identically.
+- [x] Confirm by reading the surrounding code that group 1 (`freshWorld` / `freshLabel` /
       `witness`) and group 2 (`boxProps` / `diaProps`) in BOTH rules are byte-identical to their
       pre-edit form. This is the isolation guarantee; verify it, do not assume it.
-- [ ] Update the `applyRule` doc comment and any comment in the file describing cross-modal
+- [x] Update the `applyRule` doc comment and any comment in the file describing cross-modal
       temporal propagation, so no surviving comment claims the removed behavior still happens.
-- [ ] Acquire the lock and run the scoped build
+- [x] Acquire the lock and run the scoped build
       `lake build FormalSystem.Metalogic.Decidability.Tableau`. Release the lock.
 
 **Timing**: 1.0 hours
@@ -365,10 +365,10 @@ tactic script was written against the old `applyRule` term structure, and correc
 docstrings that assert the removed behavior as live — without touching `Verified/Decidable.lean`.
 
 **Tasks**:
-- [ ] Acquire the lock, bracket with olean counts, run `lake build`. Triage every error as
+- [x] Acquire the lock, bracket with olean counts, run `lake build`. Triage every error as
       infrastructure-class or verdict-class per the Phase 1 checklist. Retry on infrastructure
       errors; do not proceed on an inconclusive build.
-- [ ] Repair each verdict-class error. Investigation predicts **none**, with the only plausible
+- [x] Repair each verdict-class error. Investigation predicts **none**, with the only plausible
       site being `Verified/Termination/SubformulaProperty.lean` — `applyRule_boxNeg_closed`
       (~828) and `applyRule_diamondPos_closed` (~859). Each `unfold applyRule at hg`, then
       `simp only [...]` a list naming all six removed accessors, then peels membership with
@@ -378,7 +378,7 @@ docstrings that assert the removed behavior as live — without touching `Verifi
       (`Branch.allFuturePosAtTime`, `Branch.allPastPosAtTime`, `Branch.someFutureNegAtTime`,
       `Branch.somePastNegAtTime`, `Branch.untlNegAtTime`, `Branch.snceNegAtTime`) from those two
       lists regardless, since they are now inert.
-- [ ] Rewrite the stale prose that describes the removed copying as live behavior. Three sites
+- [x] Rewrite the stale prose that describes the removed copying as live behavior. Three sites
       were identified: `Verified/Bridge/BoxSaturation.lean:266-283` (the `BoxTemporalSpread`
       docstring, which cites `Tableau.lean:553-559` as the supplier),
       `Verified/Bridge/BoxSaturation.lean:415-419` (the `BoxAnchored` rationale, which credits
@@ -386,23 +386,23 @@ docstrings that assert the removed behavior as live — without touching `Verifi
       `Verified/Bridge/TruthLemma.lean:379-390` (the O3 status block). Each must state that the
       copies were removed as unsound and, for the `BoxAnchored` site, forward-reference the
       Phase 5 finding rather than silently deleting the sentence.
-- [ ] Confirm the modules investigation predicts SAFE actually are:
+- [x] Confirm the modules investigation predicts SAFE actually are:
       `Verified/Bridge/TemporalSaturation.lean`, `Verified/Bridge/PropSaturation.lean`,
       `Verified/Termination/Fuel.lean` (`:1118-1140`, `witnessPresent` only),
       `Verified/Termination/TimeTypeBound.lean`,
       `CountermodelExtraction.lean` (`:505-524`, `sat_box_neg`, reasons via `witnessPresent`),
       `TraceCertificate.lean` (`:212-213`, a rule-name table), `TraceExport.lean`,
       `Decidability.lean`.
-- [ ] Re-eyeball `Saturation.lean`'s Modal-Temporal Interaction block (`:1176-1256`, MT1-MT6).
+- [x] Re-eyeball `Saturation.lean`'s Modal-Temporal Interaction block (`:1176-1256`, MT1-MT6).
       It uses `#eval` with no `#guard_msgs`, so it cannot fail the build, but MT4 and MT6
       (`□p → □(Gp)`) may now print different verdicts. Record any change; do not treat a printed
       FAIL as a build failure, and do not "fix" it by editing the engine.
-- [ ] **STOP if `Verified/Decidable.lean` fails.** Do not edit it. Mark the phase `[BLOCKED]`,
+- [x] **STOP if `Verified/Decidable.lean` fails.** Do not edit it. Mark the phase `[BLOCKED]`,
       record the exact error and goal state, and report.
-- [ ] Introduce no `sorry` and no vacuous definition (`:= True`, `:= trivial`, `:= Unit`). The
+- [x] Introduce no `sorry` and no vacuous definition (`:= True`, `:= trivial`, `:= Unit`). The
       `Verified/` tree currently has zero `sorry` terms; it must still have zero afterwards. If a
       proof cannot be repaired, the phase is `[BLOCKED]`.
-- [ ] Re-run `lake build` to green. Release the lock.
+- [x] Re-run `lake build` to green. Release the lock.
 
 **Timing**: 1.75 hours
 
@@ -444,31 +444,31 @@ branches after the deletion, enumerate every downstream lemma that carries it as
 write the result up as a self-contained handoff finding for task 165 — without repairing it.
 
 **Tasks**:
-- [ ] Construct a minimal multi-world probe (a scratch `#eval`, not a committed test) that builds
+- [x] Construct a minimal multi-world probe (a scratch `#eval`, not a committed test) that builds
       a branch exercising `boxNeg`/`diamondPos` world-minting and evaluates `boxAnchoredCheck` on
       the result. Record the measured value. Compare against the Phase 2 `BoxSpreadProbe`
       anchor baseline (rows A/B/C, previously `anchor = true`, `|T| = 7` / `|T| = 10`).
-- [ ] Confirm or refute the mechanism claim: that no rule other than the deleted blocks can place
+- [x] Confirm or refute the mechanism claim: that no rule other than the deleted blocks can place
       `T(Gφ)` or `T(Hφ)` at a freshly minted world. Check each candidate route explicitly —
       `boxProps` supplies only `T(inner)`; `boxTemporal` fires only on `T(□·)`;
       `allFuturePos`/`allPastPos` require `T(G·)`/`T(H·)` already present;
       `boxDiamondPersistence` relabels within a world across times, not across worlds.
-- [ ] Enumerate and verify the carrier list — the lemmas taking `hBA : boxAnchoredCheck b = true`
+- [x] Enumerate and verify the carrier list — the lemmas taking `hBA : boxAnchoredCheck b = true`
       as a hypothesis: `sat_box_grid_of_anchored` and `sat_box_grid_of_check`
       (`Verified/Bridge/BoxSaturation.lean:534-551`); `Verified/Bridge/IntTruth.lean` lines 351,
       366, 853, 866, 886, 1030, 1059; `Verified/Bridge/DenseTruth.lean` lines 84, 582, 613, 654,
       677. Confirm each still typechecks (it should — the hypothesis is carried, never unfolded)
       and record which now have a hypothesis that is no longer dischargeable by computation.
-- [ ] Write `specs/418_.../artifacts/boxanchored-finding.md`: the measured before/after
+- [x] Write `specs/418_.../artifacts/boxanchored-finding.md`: the measured before/after
       `boxAnchoredCheck` values, the mechanism argument, the full carrier list with file:line
       references, the precise statement of what is lost (the truth lemma's `box` case side
       condition stops being computable-true on real engine output), and an explicit note that
       nothing breaks at typecheck.
-- [ ] Sketch — as *options for task 165*, not as work performed — the candidate repairs and their
+- [x] Sketch — as *options for task 165*, not as work performed — the candidate repairs and their
       soundness obligations: (a) propagate `T(□φ)` itself to the fresh world; (b) copy
       `T(Gφ)`/`T(Hφ)` only when box-derived; (c) weaken `BoxAnchored` / restructure the truth
       lemma's `box` case to not need the anchor. State for each what would have to be proved.
-- [ ] **Do not implement any of them.** Do not add any propagation block to `applyRule`. Do not
+- [x] **Do not implement any of them.** Do not add any propagation block to `applyRule`. Do not
       edit `Verified/Decidable.lean`. Re-verify at phase end that
       `git diff FormalSystem/Metalogic/Decidability/Tableau.lean` is byte-identical to its
       Phase 3 state.
@@ -574,7 +574,7 @@ No `.lean` file is modified in this phase. That is the point of separating it fr
 
 ---
 
-### Phase 7: Adjudicate and Realign the Corpus [NOT STARTED]
+### Phase 7: Adjudicate and Realign the Corpus [IN PROGRESS]
 
 **Goal**: Turn the Phase 6 measurement into a green corpus, updating each moved row's expected
 value only where the new value is individually justified as correct — and escalating, rather than

@@ -29,9 +29,25 @@ alternative world. All twelve blocks, both `temporalProps` assemblies, and both
 | 7 — adjudicate and realign | [NOT STARTED] | blocked on Phase 6 |
 | 8 — acceptance gate | [NOT STARTED] | blocked on Phase 7 |
 
+## The headline result
+
+`Tests/BimodalTest/BoxNegPreservationProbe.lean` row 3 was written to measure the unsoundness
+directly, at the `applyRule` level. Its docstring reads:
+
+> *"This is the measurement. A branch containing both is unsatisfiable outright, so the successor
+> of a satisfiable branch is unsatisfiable and `RuleSound carrierBase .boxNeg` is false."*
+
+It evaluated `true` before the fix. **It now evaluates `false`** — applying `.boxNeg` to that
+branch no longer manufactures a same-formula/same-label/opposite-sign pair. Rows 1 and 4 give the
+mechanism: `emitted.length` moved `2 → 1` and "the emitted set contains a `T(G p)` that was
+standing at another world" moved `true → false`. The rule now emits the witness alone.
+
+This is the most direct available confirmation that the task achieved its stated goal, and unlike
+the `(G p) → □(G p)` verdict it is independent of any fuel budget or search-depth question.
+
 ## Before/after verdict-change table
 
-Fourteen rows measured as moved, across four of the eight probe files. Every value is quoted
+Seventeen rows measured as moved, across five of the eight probe files. Every value is quoted
 from Lean's own `- info:` / `+ info:` diff. Full detail, per-row, in `artifacts/after-verdicts.md`.
 
 | # | Probe row / formula | Old verdict | New verdict | Bucket |
@@ -50,17 +66,24 @@ from Lean's own `- info:` / `+ info:` diff. Full detail, per-row, in `artifacts/
 | 12 | `TemporalWitnessProbe` D `:775` | `D gen=false check=true …` | `D gen=false check=false …` | (d) |
 | 13 | `TemporalWitnessProbe` D `:927` | `D gen=false check=true …` | `D gen=false check=false …` | (d) |
 | 14 | `TemporalWitnessProbe` D `:1085` | `D gen=false check=true uPR=true [self=true …]` | `D gen=false check=false uPR=false [self=false …]` | (d) |
+| 15 | `BoxNegPreservationProbe` 1 — `emitted.length` | `2` | `1` | **(b)** |
+| 16 | `BoxNegPreservationProbe` 3 — opposite-sign clash in `emitted` | `true` | `false` | **(b)** |
+| 17 | `BoxNegPreservationProbe` 4 — copied `T(G p)` present in `emitted` | `true` | `false` | **(b)** |
 
-**Rows that did not change, in aggregate**: 79 of the 93 rows in the four measured files
-(`TemporalWitnessProbe` 65/71, `RegionGateProbe` 6/10, `RayRegionProbe` 6/7, `BoxSpreadProbe` 2/5).
-The remaining 49 rows across `TableauConformance` (27), `BoxNegReachabilityProbe` (12),
-`CrossWorldPropagationProbe` (5) and `BoxNegPreservationProbe` (5) are **not yet measured**.
+**Rows that did not change, in aggregate**: 86 of the 103 rows in the five measured files
+(`TemporalWitnessProbe` 65/71, `RegionGateProbe` 6/10, `RayRegionProbe` 6/7, `BoxSpreadProbe` 2/5,
+`BoxNegPreservationProbe` 2/5) plus **all 5** of `CrossWorldPropagationProbe`, which **built
+green**. The remaining 39 rows across `TableauConformance` (27) and `BoxNegReachabilityProbe` (12)
+are **not yet measured**.
 
-**Every one of the 14 is bucket (d)** — a decidable branch-gate or structural metric on a
-multi-world branch. **No verdict** (`CLOSED`/`OPEN`/`STALLED`, `isValid`) moved in the measured
-set, and **no bucket-(c) under-closing regression was found**. Every moved row is one that used to
-compute `true` *because of* the unsound copies: the corpus was measuring the bug and reporting it
-as health.
+**Fourteen of the 17 are bucket (d)** — decidable branch-gates or structural metrics on a
+multi-world branch, every one of which used to compute `true` *because of* the unsound copies: the
+corpus was measuring the bug and reporting it as health. **Three are bucket (b)** — the
+`BoxNegPreservationProbe` rows that pinned the defect directly and now pin its absence.
+
+**No verdict** (`CLOSED`/`OPEN`/`STALLED`, `isValid`) moved anywhere in the measured set, and
+**no bucket-(c) under-closing regression was found**. `CrossWorldPropagationProbe` — five rows
+pinning `isValid` on three invalid formulas and two controls — passes completely unchanged.
 
 ## The anchor result
 
@@ -76,17 +99,24 @@ So the defect (a closed tableau on an invalid formula) is demonstrably gone, but
 engine now reaches `.hasOpen` with a countermodel at fuel 1000, or exhausts fuel, is open. See
 "Performance" below — this is the same phenomenon.
 
-## Performance — a material, unresolved cost
+## Performance — a material cost, now quantified
 
-`CrossWorldPropagationProbe.lean` built in **1.2 s** at baseline. Post-fix it, both `BoxNeg*Probe`
-files, and `TableauConformance.lean` ran for **tens of minutes without completing**.
+| Module | Baseline | Post-fix | Factor |
+|---|---|---|---|
+| `CrossWorldPropagationProbe` | **1.2 s** | **1363 s** (~23 min, built green) | **~1100×** |
+| `BoxNegPreservationProbe` | cached at baseline | **1048 s** (~17 min) | — |
+| `RayRegionProbe` / `BoxSpreadProbe` / `RegionGateProbe` / `TemporalWitnessProbe` | cached | 3.3 s / 7.8 s / 12 s / 21 s | negligible |
+
+The two slow modules are exactly the two whose rows run `isValid`/`decide` on formulas that used
+to close and now do not. The four fast modules call `buildTableau` at explicit low fuel (200) and
+are barely affected.
 
 This is the plan's risk-asymmetry argument surfacing as wall-clock: removing emitted formulas
 shrinks a branch's contradiction surface, so branches that used to close now stay open and
 `decide` runs the whole fuel budget plus proof search plus countermodel extraction instead of
-terminating early. It is the expected direction and a cost, not a soundness problem — but it is
-large enough that a full corpus build must now be budgeted in tens of minutes to hours, and it may
-need addressing before the Phase 8 gate can be run at all.
+terminating early. It is the expected direction and a cost, not a soundness problem — but a full
+corpus build must now be budgeted in tens of minutes at minimum, run in the background, never in
+a foreground window that can time out.
 
 ## The `boxAnchoredCheck` finding — handoff to task 165
 
