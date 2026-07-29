@@ -1,0 +1,141 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import Mathlib.GroupTheory.ArchimedeanDensely
+import FormalSystem.Semantics.TaskFrame
+
+/-!
+# Hölder Classification of Dedekind-Complete Duration Groups
+
+Pure order/group theory about the duration type `D` of a `TaskFrame`. Nothing here mentions
+formulas or truth; the point is to make the *sharp* Hölder picture citable from the `FrameClass`
+and `Validity` docstrings, instead of the vaguer "paradigmatically ℝ" prose those files used to
+carry.
+
+## The binder convention
+
+Every lemma below takes the repository's standard duration binders — `AddCommGroup D`,
+`LinearOrder D`, `IsOrderedAddMonoid D` (see `TaskFrame`) — plus Dedekind completeness in the
+**explicit Prop-valued form** the semantics uses throughout:
+
+  `h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x`
+
+rather than a `ConditionallyCompleteLinearOrder D` instance. That choice is deliberate and is
+explained at `ValidDedekind` in `FormalSystem/Semantics/Validity.lean`: it keeps every
+`[LinearOrder D]`-indexed lemma applicable with no instance-unification risk.
+
+## The classification
+
+`complete_duration_discrete_or_dense`: a Dedekind-complete duration group is **either**
+order-and-group isomorphic to `ℤ` **or** densely ordered — and `complete_not_dense_iso_int`
+shows the two branches are exclusive. This is what pins down the two frame classes the
+repository actually cares about:
+
+* the discrete branch is *exactly* `ℤ` (not merely "ℤ-like"), which is `FrameClass.Discrete` /
+  `ValidDiscrete`;
+* the dense branch is the real flow, which is `FrameClass.Dedekind` / `ValidDedekindDense`.
+
+## What is deliberately *not* proved here
+
+The packaged statement "a **nontrivial dense** Dedekind-complete ordered abelian group is
+`≃+o ℝ`". It is true, and it is what would license calling `ValidDedekindDense` the real-flow
+predicate outright rather than up to the composition below, but it is a ~100-200 line
+order-topology development with no Mathlib equivalent. The composition path, recorded here so
+the omission is a scoped decision rather than a gap:
+
+1. `archimedean_of_lub` (this file) — completeness gives `Archimedean D`;
+2. `Archimedean.exists_orderAddMonoidHom_real_injective`
+   (`Mathlib/Data/Real/Embedding.lean`) — an injective `D →+o ℝ`;
+3. `AddSubgroup.dense_or_cyclic` (`Mathlib/Topology/Algebra/Order/Archimedean.lean`) — the
+   image is dense in `ℝ` once `D` is not cyclic, which density rules out by step 4 of
+   `complete_duration_discrete_or_dense`;
+4. surjectivity of the embedding from Dedekind completeness of `D`.
+
+## Relation to `Metalogic/SoundnessLemmas/Separability.lean`
+
+That file carries a `private` copy of the same Archimedean argument (`arch_of_lub`), used there
+to feed Reynolds' separability lemma. It is `private` and sits in the `Metalogic` layer, so it
+is unreachable from `Semantics`; `archimedean_of_lub` below is the public `Semantics`-layer
+statement of the same fact. The duplication is deliberate and is noted in both places rather
+than resolved by moving the helper, which would drag `Metalogic` proofs into a rebase.
+
+## Main results
+
+- `archimedean_of_lub`: Dedekind completeness ⇒ `Archimedean`.
+- `complete_duration_discrete_or_dense`: `Nonempty (D ≃+o ℤ) ∨ DenselyOrdered D`.
+- `complete_not_dense_iso_int`: not densely ordered ⇒ `Nonempty (D ≃+o ℤ)`.
+-/
+
+namespace FormalSystem.Semantics
+
+/--
+**Dedekind completeness forces Archimedean.**
+
+If some `y > 0` had all of its `ℕ`-multiples bounded above by `x`, the set `{n • y}` would have
+a supremum `s`; but `s - y < s`, so some `n • y` exceeds `s - y`, whence `(n+1) • y > s`,
+contradicting that `s` bounds the set.
+
+**Mathlib has no group-level version of this.** The only completeness-to-Archimedean route it
+provides is `ConditionallyCompleteLinearOrderedField.to_archimedean`, which requires a field —
+useless for a duration *group*. So this is a genuine new lemma, not a re-export.
+-/
+theorem archimedean_of_lub {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) : Archimedean D := by
+  refine ⟨fun x y hy => ?_⟩
+  by_contra hcon
+  simp only [not_exists, not_le] at hcon
+  have hbdd : BddAbove (Set.range (fun n : ℕ => n • y)) := by
+    refine ⟨x, ?_⟩
+    rintro _ ⟨n, rfl⟩
+    exact (hcon n).le
+  obtain ⟨s, hs⟩ := h_lub (Set.range (fun n : ℕ => n • y))
+    ⟨(0 : ℕ) • y, Set.mem_range_self 0⟩ hbdd
+  have h1 : s - y < s := by simpa using sub_lt_self s hy
+  obtain ⟨_, ⟨n, rfl⟩, hn, -⟩ := hs.exists_between h1
+  have hle : (n + 1) • y ≤ s := hs.1 ⟨n + 1, rfl⟩
+  have h2 : s < (n + 1) • y := by
+    rw [succ_nsmul]
+    exact sub_lt_iff_lt_add.mp hn
+  exact absurd hle (not_le_of_gt h2)
+
+/--
+**Hölder dichotomy for Dedekind-complete duration groups**: such a group is either
+order-and-group isomorphic to `ℤ`, or densely ordered.
+
+`archimedean_of_lub` supplies the `Archimedean D` instance that
+`LinearOrderedAddCommGroup.discrete_or_denselyOrdered` needs; the typeclass sets match exactly
+(`AddCommGroup` + `LinearOrder` + `IsOrderedAddMonoid` + `Archimedean`), so no adapter is
+required.
+
+This is the statement that makes `FrameClass.Dedekind`'s density binder substantive rather than
+decorative: without density the class would also admit `ℤ`, on which `Axiom.density` and
+`Axiom.dense_indicator` are both false.
+-/
+theorem complete_duration_discrete_or_dense {D : Type*} [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D]
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) :
+    Nonempty (D ≃+o ℤ) ∨ DenselyOrdered D :=
+  letI : Archimedean D := archimedean_of_lub h_lub
+  LinearOrderedAddCommGroup.discrete_or_denselyOrdered D
+
+/--
+**The discrete branch is exactly `ℤ`.** A Dedekind-complete duration group that is *not*
+densely ordered is order-and-group isomorphic to the integers.
+
+Via `LinearOrderedAddCommGroup.discrete_iff_not_denselyOrdered`, again with the `Archimedean`
+instance from `archimedean_of_lub`. Together with `complete_duration_discrete_or_dense` this
+makes the dichotomy exclusive, which is why `ValidDiscrete` and `ValidDedekindDense` carve up
+the complete case with nothing left over.
+-/
+theorem complete_not_dense_iso_int {D : Type*} [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D]
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (h_not_dense : ¬ DenselyOrdered D) :
+    Nonempty (D ≃+o ℤ) :=
+  letI : Archimedean D := archimedean_of_lub h_lub
+  (LinearOrderedAddCommGroup.discrete_iff_not_denselyOrdered D).mpr h_not_dense
+
+end FormalSystem.Semantics

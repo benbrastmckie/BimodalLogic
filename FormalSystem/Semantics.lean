@@ -9,6 +9,7 @@ import FormalSystem.Semantics.WorldHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.Validity
+import FormalSystem.Semantics.DurationClassification
 
 /-!
 # FormalSystem.Semantics - Task Frame Semantics
@@ -26,6 +27,9 @@ polymorphic over temporal types.
 - `TaskModel`: Task models extending frames with valuation functions `V: W × String → Prop`
 - `Truth`: Recursive truth evaluation `M,τ,t ⊨ φ` for formulas at model-history-time triples
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
+- `DurationClassification`: Hölder classification of Dedekind-complete duration groups --
+  completeness implies Archimedean, and the discrete-or-dense dichotomy pinning the discrete
+  branch to `ℤ`
 
 ## Semantic Structure
 

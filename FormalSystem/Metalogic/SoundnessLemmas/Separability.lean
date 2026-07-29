@@ -67,7 +67,13 @@ private theorem exists_half_le {D : Type} [AddCommGroup D] [LinearOrder D] [IsOr
 If some `y > 0` had all its multiples bounded by `x`, the set `{n • y}` would have a supremum `s`;
 but `s - y < s` so some `n • y` exceeds `s - y`, whence `(n+1) • y > s`, contradicting that `s`
 bounds the set. There is no route to this through Mathlib: the available instances
-(`ConditionallyCompleteLinearOrderedField.to_archimedean`) require a field. -/
+(`ConditionallyCompleteLinearOrderedField.to_archimedean`) require a field.
+
+Deliberate duplicate of `FormalSystem.Semantics.archimedean_of_lub`
+(`Semantics/DurationClassification.lean`), which is the public `Semantics`-layer statement of
+the same fact and the one the `FrameClass` / `Validity` docstrings cite. This copy stays
+`private` and stays here because `exists_countable_order_dense` below uses it and moving it
+would drag the Reynolds Sep chain into a rebase for no gain. -/
 private theorem arch_of_lub {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) : Archimedean D := by
   refine ⟨fun x y hy => ?_⟩

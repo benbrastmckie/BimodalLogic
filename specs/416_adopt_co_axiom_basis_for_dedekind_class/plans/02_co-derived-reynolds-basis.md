@@ -316,7 +316,15 @@ only `propext`, `Classical.choice`, `Quot.sound`.
 
 ---
 
-### Phase 5: Cheap Hölder classification lemmas [NOT STARTED]
+### Phase 5: Cheap Hölder classification lemmas [COMPLETED]
+
+**Scope Hypothesis outcome**: confirmed. Exactly three lemmas in one new file; both cited
+Mathlib names applied with **no adapter** (typeclass sets matched exactly, as research
+predicted). One finding not anticipated by the plan and recorded in the module docstring:
+`Metalogic/SoundnessLemmas/Separability.lean` already carried a `private` copy of the
+Archimedean argument (`arch_of_lub`), unreachable from `Semantics`. `archimedean_of_lub` is the
+public `Semantics`-layer statement of the same fact; both sites now cross-reference the
+duplication rather than leaving it silent.
 
 - **Goal:** The Hölder facts that are cheap in the pinned Mathlib are proved as lemmas against
   the repo's own LUB-hypothesis form, so the docstrings of Phase 6 can cite repo theorems rather
