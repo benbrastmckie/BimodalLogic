@@ -24,6 +24,7 @@ import BimodalTest.RegionGateProbe
 import BimodalTest.RayRegionProbe
 import BimodalTest.TemporalWitnessProbe
 import BimodalTest.CrossWorldPropagationProbe
+import BimodalTest.BoxNegPreservationProbe
 import BimodalTest.Automation.ProofSearchTest
 import BimodalTest.Automation.EdgeCaseTest
 import BimodalTest.Automation.ProofSearchBenchmark

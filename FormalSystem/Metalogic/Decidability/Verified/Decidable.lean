@@ -944,20 +944,42 @@ Group 3 is not: `T(GB)` at one history says nothing *prima facie* about another 
 alone. Discharging it means showing the witness can always be chosen to satisfy the copied
 temporal formulas too, and no such argument is in the tree.
 
-**What was measured, and what it settled.** `Tests/BimodalTest/CrossWorldPropagationProbe.lean`
+**The verdict measurement, and its limit.** `Tests/BimodalTest/CrossWorldPropagationProbe.lean`
 runs the full decision procedure on the three shapes that would expose an unsound group-3 copy as
 a wrong *verdict* — `(¬F p) → □(¬F p)`, `(G p) → □(G p)` and `(¬P p) → □(¬P p)`, each invalid
 because `Ω` may hold a history with a future (resp. past) `p` while `τ` has none. All three report
-`false`, the correct answer, alongside a `true` control and a `false` control. So the suspicion
-that group 3 makes the engine *decide wrongly* is **not** confirmed, and nothing here is recorded
-as an engine defect: there is no counterexample, and under the defect bar a suspicion without one
-is not a finding.
+`false`, the correct answer, alongside a `true` control and a `false` control. That probe was
+explicit that it measured verdicts and not steps, and it was right to be.
 
-What the probe does *not* settle is the proof obligation. "No wrong verdict on three shapes" is
-not "the step preserves satisfiability", and the two are independent — a step can fail to
-preserve satisfiability while every branch it spoils happens to be closable another way. Both
-rules are therefore left open with the obligation stated rather than proved with a gap, and the
-next dispatch on them should start from the probe, not from this note.
+**The step has now been measured, and it is unsound.**
+`Tests/BimodalTest/BoxNegPreservationProbe.lean` applies `boxNeg` directly to the branch that
+verdict-row B negates into — `T(G p) @ (w₀,t₀)`, `F(□(G p)) @ (w₀,t₀)`, which is *satisfiable*
+exactly because `(G p) → □(G p)` is invalid — and pins what comes back. The rule emits exactly
+two formulas, both at the minted label `(w₁, t₀)`: the witness `F(G p)`, and `T(G p)` copied by
+group 3 from `w₀`. Same formula, same label, opposite signs. `SatAt` reads that pair as
+`TruthAt …` together with `¬ TruthAt …` at one point, so no choice of `hist` or `tv` satisfies
+the successor. A satisfiable branch has been mapped to an unsatisfiable one, and therefore
+
+* `RuleSound carrierBase .boxNeg` is **false** — `ruleSound_boxNeg` is not unproved but
+  unprovable, and `diamondPos` carries an identical `tempGProps` block; and
+* the assembly `∀ r ∈ allRulesForFC fc, RuleSound _ r` cannot be proved in the present shape,
+  because `boxNeg` and `diamondPos` are both members of `allRulesForFC` at every frame class.
+
+**No engine defect is claimed, and the probe pins that too.** Its final row records that the
+verdict on the same formula is still `false`. The engine never applies `boxNeg` to that branch —
+`T(G p)` is itself an `imp`, so the propositional schedule reaches it first — which is also why
+the verdict rows came back clean: they do not exercise the copy in the engine's own run. The
+failure is in the rule-level statement, quantified as `RuleSound` quantifies it over *arbitrary*
+branches, not in what the procedure computes.
+
+**What this costs, and the fork it opens.** `RuleSound` must be weakened for these two rules, by
+a hypothesis excluding branches the engine never builds — reachability under the schedule is the
+obvious candidate, since it is exactly what makes the counterexample unreachable — and the
+`allClosed → valid` assembly must then thread that hypothesis through the tableau induction. Which
+invariant is both strong enough for these two rules and cheap enough for the other twenty-six is
+the next measurable question, and it should be measured, not chosen: the standing lesson of this
+sub-phase is that both the definition's fields and the gate rows earn their place in the step that
+consumes them. Nothing speculative has been written into `RuleSound` here.
 -/
 
 end FormalSystem.Metalogic.Decidability.Verified
