@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.WeakCanonical.RealModel.ShuffleReal
+import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Singletons
 
 /-!
 # Doets' Theorem — Reynolds §8 Theorem 6
@@ -82,6 +83,8 @@ identification, the `ℝ`-extension, the order-isomorphism to `ℝ`, and the `�
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
+
+open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
@@ -289,6 +292,166 @@ theorem exists_realFlow_of_kEquiv_shuffle (k : Nat) {S : Finset ι} (hγ : γ₁
     exists_realFlow_shuffleReal N γ₁ σ k hne hdense hsum hbot hone hsep
   exact ⟨R, hRflow, (hP.trans (kEquiv_shuffle_shuffleReal k N hγ hσ)).trans hR⟩
 
+/--
+**Anti-vacuity for Layer 3**: the `ℝ`-flow conclusion is genuinely inhabited, at the constant
+one-point palette — the degenerate case Reynolds' own `γ₁` clause puts on the main path (printed
+p.188, `γ₁` is *"only satisfied by one point structures"*).
+
+The shuffle's carrier is a lexicographic `Sigma` over `ℝ`, not `ℝ`; the witness produced here is
+an honest `RIntervalStructure` on `Set.univ` that is `k`-equivalent to it.
+-/
+theorem exists_realFlow_shuffleReal_point (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) :
+    ∃ R : RIntervalStructure sig, R.IsRealFlow ∧
+      KEquiv sig k (shuffleReal (sig := sig) (fun _ : PUnit => pointStructure sig) PUnit.unit
+        (fun _ => PUnit.unit)) (R.toOrdered sig) :=
+  (nonempty_orderIso_real_shuffleReal_point (sig := sig)).elim
+    (fun f => exists_realFlow_of_orderIso_real sig k _ f)
+
 end RealModelTransfer
+
+/-! ## Layer 4 — Doets' Theorem
+
+Reynolds' hypotheses D1 and D2 are quantified over *"any contemporaneous equivalence relation
+`∼` on `M`"*, which is `IsContempEquivDense ε` in the tree's spelling (`Defs.lean:234`); the two
+conclusions are `EndsInGapOnRight`/`EndsInGapOnLeft` (`Defs.lean:307,317`) and
+`QuotientDenselyOrdered → HasDenseSingletons` (`Singletons.lean:190,200`).
+
+This is deliberately the spelling **Phase 30's suppliers already produce**: `no_gaps_dense_prior`
+/ `no_gaps_dense_prior_left` (`NoGaps.lean:901`) discharge D1 and `dense_singletons_of_sep`
+(`Singletons.lean:565`) discharges D2, each taking `hε : IsContempEquivDense ε` as its own
+hypothesis in exactly this form.
+-/
+
+/-- **D1** — *"the `∼` classes do not end in gaps"* (printed p.185), for every contemporaneous
+equivalence relation on `M` and at both ends. -/
+def DoetsD1 (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : OrderedMonadicStructure sig) : Prop :=
+  ∀ ε : MonadicFormula sig 2, IsContempEquivDense ε →
+    ∀ t : M.carrier, ¬ EndsInGapOnRight M ε t ∧ ¬ EndsInGapOnLeft M ε t
+
+/-- **D2** — *"if `M/∼` is densely ordered then `M/∼` has a dense set of singletons"*
+(printed p.185), for every contemporaneous equivalence relation on `M`. -/
+def DoetsD2 (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : OrderedMonadicStructure sig) : Prop :=
+  ∀ ε : MonadicFormula sig 2, IsContempEquivDense ε →
+    QuotientDenselyOrdered M ε → HasDenseSingletons M ε
+
+/--
+**Failure of goodness produces two inequivalent points** — printed p.187, the opening move of
+Theorem 6's proof by contradiction:
+
+> So suppose that `M` is not good. Then `M` is not very good and so there are `a < b` in `M` with
+> `a ≁ b`.
+
+Both implications are Lemma 11 (`reynolds_lemma11_no_endpoints`, `GoodDense.lean:1115`) in
+contrapositive form: applied at `M` itself for *"`M` is not very good"*, and applied at
+`M | (t,u)` for the step from *"`M | (t,u)` is not good"* to *"`t ≁ u`"* — the middle clause of
+`SimDense` (`EpsilonDense.lean:128`) asks for very-goodness of `M | (t,u)`, which at a countable
+endpointless interval is goodness.
+
+Density of `M` is what supplies `veryGoodDense`'s non-emptiness clause and both end-point
+conditions on the open subintervals.
+-/
+theorem exists_not_simDense_of_not_goodDense (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [Nonempty M.carrier] [DenselyOrdered M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier] (hM : ¬ goodDense sig k M) :
+    ∃ a b : M.carrier, a < b ∧ ¬ SimDense sig k M a b := by
+  by_contra hcon
+  push Not at hcon
+  refine hM (reynolds_lemma11_no_endpoints sig k hk M (fun t u htu => ⟨?_, ?_⟩))
+  · obtain ⟨c, hc₁, hc₂⟩ := exists_between htu
+    exact ⟨⟨c, hc₁, hc₂⟩⟩
+  · -- The middle clause of `SimDense t u` is very-goodness of `M | (t,u)`; Lemma 11 upgrades it.
+    rcases hcon t u htu with heq | ⟨-, hvg⟩ | ⟨hut, -⟩
+    · exact absurd heq (ne_of_lt htu)
+    · haveI : Countable (M.openSubinterval sig t u).carrier :=
+        (inferInstance : Countable {x : M.carrier // t < x ∧ x < u})
+      haveI : Nonempty (M.openSubinterval sig t u).carrier := by
+        obtain ⟨c, hc₁, hc₂⟩ := exists_between htu
+        exact ⟨⟨c, hc₁, hc₂⟩⟩
+      haveI := noMaxOrder_openSubinterval sig M t u
+      haveI := noMinOrder_openSubinterval sig M t u
+      exact reynolds_lemma11_no_endpoints sig k hk _ hvg
+    · exact absurd hut (not_lt.mpr (le_of_lt htu))
+
+/--
+**The residual of Reynolds' §8 Theorem 6** — printed pp.187-188, everything after
+`exists_not_simDense_of_not_goodDense` has produced `a < b` with `a ≁ b`:
+
+> Now choose `a < b` in `M` with `a ≁ b` and `G` minimal. … Suppose `a < c < d < b` and `c ≁ d`.
+> … the classes strictly between them have order type `ℚ` … and by minimality all the `γᵢ ∈ G`
+> are dense in `I` … so `M | (⋃I) ≡ₖ` the shuffle … and `M | (c,d) ≡ₖ X + R + Y`. So `M | (a,b)`
+> is very good, contradicting `a ≁ b`.
+
+**This is the one gap in Block H, and it is carried here as a single named `sorry` rather than as
+an unproved assertion buried in a longer tactic block.** What it still needs, precisely:
+
+1. **The `ε`-adapter.** The argument runs at `∼_M`, i.e. `ε := epsDense sig k`, but
+   `epsDense_isContempEquiv` (`EpsilonDense.lean:1033`) supplies the three clauses only **at a
+   fixed `Countable`, `DenselyOrdered` `M`** — not the `∀ M`-quantified `IsContempEquivDense`
+   that D1 and D2 above take as their antecedent. Phase 25's own deviation record names this as
+   *"the one adapter Phase 29 must supply"*, and it is not supplied. Closing it means either
+   weakening `IsContempEquivDense` to an at-`M` bundle throughout `DenseModelSurgery/`, or
+   proving the `∀ M` form, which the Phase 25 module header records as **false** without density.
+2. **The `G`-minimality argument.** Reynolds' *"`G` minimal"* is a minimization over the finite
+   `γ`-palette (`gammaSentences`, `EpsilonDense.lean:239`); it has no counterpart in the tree.
+3. **The order-type-`ℚ` step.** *"the classes strictly between them have order type `ℚ`"* is
+   Cantor's theorem at the `∼`-quotient, fed by D1 (Lemma 13 makes the classes closed intervals)
+   and D2 (dense singletons). `Order.iso_of_countable_dense` supplies the isomorphism once the
+   quotient is built; the quotient itself is not built.
+
+Everything this residual routes *through* — `kEquiv_blocks_shuffle`, `kEquiv_shuffle_shuffleReal`,
+`nonempty_orderIso_real_shuffleReal`, `goodDense_shuffle`, `doets_lemma_1_4` — is landed and
+sorry-free.
+-/
+theorem reynolds_theorem6_contradiction (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [Nonempty M.carrier] [DenselyOrdered M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (D1 : DoetsD1 sig M) (D2 : DoetsD2 sig M)
+    {a b : M.carrier} (hab : a < b) (hnsim : ¬ SimDense sig k M a b) : False := by
+  sorry
+
+/--
+**`M` is good** — Reynolds' §8 Theorem 6 in the form the proof actually establishes: the
+*"suppose that `M` is not good"* branch is impossible.
+-/
+theorem doets_goodDense (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [Nonempty M.carrier] [DenselyOrdered M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (D1 : DoetsD1 sig M) (D2 : DoetsD2 sig M) :
+    goodDense sig k M := by
+  by_contra hM
+  obtain ⟨a, b, hab, hnsim⟩ := exists_not_simDense_of_not_goodDense sig k hk M hM
+  exact reynolds_theorem6_contradiction sig k hk M D1 D2 hab hnsim
+
+/--
+**Doets' Theorem** — Reynolds 1992, §8 Theorem 6, printed pp.185-188; Doets 1987, 3.3.9.
+
+> *Suppose that `M` is a temporal structure in a finite language whose flow of time is countable,
+> dense and without end points. Suppose further that for any contemporaneous equivalence relation
+> `∼` on `M`, D1) the `∼` classes do not end in gaps and D2) if `M/∼` is densely ordered then
+> `M/∼` has a dense set of singletons. Then for all `k < ω`, there is a temporal structure with
+> flow of time the real numbers satisfying the same monadic first order sentences of quantifier
+> depth at most `k` as `M` does.*
+
+Reynolds' own note on the attribution (printed p.185): *"This statement is slightly stronger than
+Doets' and the proof is a little different because of the contemporaneity notion."*
+
+`hk : 2 ≤ k` is not in the printed statement and is not a strengthening of it: at `k ≤ 1` the
+end-point sentences `hasMaxSent`/`hasMinSent` exceed the quantifier depth budget, so *"without
+end points"* does not travel across `≡ₖ` and Reynolds' *"flow of time the real numbers"* is not
+determined. Every §8 result in this tree carries the same hypothesis.
+-/
+theorem doets_theorem_dense (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [Nonempty M.carrier] [DenselyOrdered M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (D1 : DoetsD1 sig M) (D2 : DoetsD2 sig M) :
+    ∃ R : RIntervalStructure sig, R.IsRealFlow ∧ KEquiv sig k M (R.toOrdered sig) :=
+  exists_realFlow_witness sig k hk M (doets_goodDense sig k hk M D1 D2)
 
 end FormalSystem.Metalogic.WeakCanonical
