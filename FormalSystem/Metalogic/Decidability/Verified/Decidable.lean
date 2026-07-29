@@ -983,6 +983,75 @@ theorem exists_trichotomy_disjunct {M : TaskModel F} {Om : Set (WorldHistory F)}
     rw [Truth.some_future_iff]
     exact ⟨b, hcb, truthAt_and ((Truth.some_future_iff Om φ).mpr ⟨a, hab, hφ⟩) hψ⟩
 
+theorem ruleSound_orderTrichotomy : RuleSound carrierBase .orderTrichotomy := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    simp only [applyRule]
+    split
+    · trivial
+    · split
+      · trivial
+      · rename_i _ _ t0 ψ hfind
+        -- The pair the engine selected is a member of its own candidate list, and unpacking that
+        -- membership is what turns the rule's `flatMap`/`filterMap` plumbing into the four facts
+        -- the trichotomy consumes: two recorded order edges and two branch formulas.
+        have hmemc := List.mem_of_find?_eq_some hfind
+        simp only [List.mem_flatMap, List.mem_map, List.mem_filter, List.mem_filterMap,
+          Prod.mk.injEq] at hmemc
+        obtain ⟨t0', ht0, t2, ⟨ht2, -⟩, ψ', ⟨x, hxb, hxeq⟩, rfl, rfl⟩ := hmemc
+        -- The carried formula is positive, at the sibling time, in the source's own world.
+        have hxsign : x.sign = Sign.pos := by
+          cases hsx : x.sign with
+          | pos => rfl
+          | neg => rw [hsx] at hxeq; simp at hxeq
+        have hxrest : x.label.world = l.world ∧ x.label.time = t2 ∧ x.formula = ψ' := by
+          rw [hxsign] at hxeq
+          simp only at hxeq
+          split at hxeq
+          · rename_i hcond
+            simp only [Bool.and_eq_true, beq_iff_eq] at hcond
+            exact ⟨hcond.1.1, hcond.1.2, Option.some_inj.mp hxeq⟩
+          · simp at hxeq
+        -- The two truths, both in the source label's world.
+        have hψtrue : TruthAt M Om (hist l.world) (tv t2) ψ' := by
+          have hsx := hst.sat x hxb
+          simp only [SatAt, hxsign] at hsx
+          rwa [hxrest.1, hxrest.2.1, hxrest.2.2] at hsx
+        have hφtrue : TruthAt M Om (hist l.world) (tv l.time) φ := hst.sat _ hmem
+        -- The two order facts, from the bridge.
+        have hc1 : tv t0' < tv l.time := hst.gt_of_mem_pastOf ht0
+        have hc2 : tv t0' < tv t2 := hst.lt_of_mem_futureOf ht2
+        refine satResult_branching rfl ?_
+        -- `lt_trichotomy` on the two interpreted times picks the surviving disjunct.
+        rcases exists_trichotomy_disjunct (M := M) (Om := Om) (τ := hist l.world)
+          hc1 hc2 hφtrue hψtrue with hd | hd | hd
+        · refine ⟨[SignedFormula.pos ((φ.and ψ').someFuture) { world := l.world, time := t0' },
+              { sign := Sign.pos, formula := φ, label := l }], by simp, hist, tv, hst.append ?_⟩
+          intro g hg
+          simp only [List.mem_cons, List.not_mem_nil, or_false] at hg
+          rcases hg with rfl | rfl
+          · exact hd
+          · exact hφtrue
+        · refine ⟨[SignedFormula.pos ((φ.and ψ'.someFuture).someFuture)
+                { world := l.world, time := t0' },
+              { sign := Sign.pos, formula := φ, label := l }], by simp, hist, tv, hst.append ?_⟩
+          intro g hg
+          simp only [List.mem_cons, List.not_mem_nil, or_false] at hg
+          rcases hg with rfl | rfl
+          · exact hd
+          · exact hφtrue
+        · refine ⟨[SignedFormula.pos ((φ.someFuture.and ψ').someFuture)
+                { world := l.world, time := t0' },
+              { sign := Sign.pos, formula := φ, label := l }], by simp, hist, tv, hst.append ?_⟩
+          intro g hg
+          simp only [List.mem_cons, List.not_mem_nil, or_false] at hg
+          rcases hg with rfl | rfl
+          · exact hd
+          · exact hφtrue
+
 /-!
 ## What `boxNeg` and `diamondPos` still owe
 
