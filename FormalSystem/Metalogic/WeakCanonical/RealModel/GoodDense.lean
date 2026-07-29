@@ -756,6 +756,123 @@ only through the induced block map `t ↦ the i with a_i ≤ t < a_{i+1}`, so th
 decomposition lemma takes as its hypothesis.
 -/
 
+/-- The upward half of Reynolds' spine, driven by a surjective enumeration `f` of the carrier:
+    `up 0 = f 0`, and `up (n+1)` is chosen above **both** `up n` and `f n`. Exceeding `up n`
+    makes the half strictly increasing; exceeding `f n` makes it cofinal. -/
+noncomputable def spineUp {α : Type} [LinearOrder α] [NoMaxOrder α] (f : ℕ → α) : ℕ → α
+  | 0 => f 0
+  | n + 1 => (exists_gt (max (spineUp f n) (f n))).choose
+
+/-- The downward half, mirroring `spineUp`: `down (n+1)` is chosen below both `down n` and
+    `f n`. The base is supplied so the two halves can be spliced at `0`. -/
+noncomputable def spineDown {α : Type} [LinearOrder α] [NoMinOrder α] (f : ℕ → α) (base : α) :
+    ℕ → α
+  | 0 => base
+  | n + 1 => (exists_lt (min (spineDown f base n) (f n))).choose
+
+theorem lt_spineUp_succ {α : Type} [LinearOrder α] [NoMaxOrder α] (f : ℕ → α) (n : ℕ) :
+    max (spineUp f n) (f n) < spineUp f (n + 1) := by
+  rw [spineUp]
+  exact (exists_gt (max (spineUp f n) (f n))).choose_spec
+
+theorem spineDown_succ_lt {α : Type} [LinearOrder α] [NoMinOrder α] (f : ℕ → α) (base : α)
+    (n : ℕ) : spineDown f base (n + 1) < min (spineDown f base n) (f n) := by
+  rw [spineDown]
+  exact (exists_lt (min (spineDown f base n) (f n))).choose_spec
+
+theorem spineUp_strictMono {α : Type} [LinearOrder α] [NoMaxOrder α] (f : ℕ → α) :
+    StrictMono (spineUp f) :=
+  strictMono_nat_of_lt_succ fun n => lt_of_le_of_lt (le_max_left _ _) (lt_spineUp_succ f n)
+
+theorem spineDown_strictAnti {α : Type} [LinearOrder α] [NoMinOrder α] (f : ℕ → α) (base : α) :
+    StrictAnti (spineDown f base) :=
+  strictAnti_nat_of_succ_lt fun n =>
+    lt_of_lt_of_le (spineDown_succ_lt f base n) (min_le_left _ _)
+
+/-- A surjective enumeration of a countable non-empty carrier. -/
+noncomputable def carrierEnum (α : Type) [Countable α] [Nonempty α] : ℕ → α :=
+  (exists_surjective_nat α).choose
+
+theorem carrierEnum_surjective (α : Type) [Countable α] [Nonempty α] :
+    Function.Surjective (carrierEnum α) :=
+  (exists_surjective_nat α).choose_spec
+
+/--
+Reynolds' spine, printed p.185: *"Choose `a_i ∈ N` for each integer `i` such that `i < j` implies
+`a_i < a_j` and for all `t ∈ N`, there is `i,j` such that `a_i < t < a_j`."*
+
+The two halves are spliced at `0`, where `spineDown _ _ 0` is by construction the base
+`spineUp _ 0`, so the splice is consistent.
+-/
+noncomputable def veryGoodSpine (α : Type) [LinearOrder α] [Countable α] [Nonempty α]
+    [NoMaxOrder α] [NoMinOrder α] : ℤ → α := fun i =>
+  if 0 ≤ i then spineUp (carrierEnum α) i.toNat
+  else spineDown (carrierEnum α) (carrierEnum α 0) i.natAbs
+
+/-- *"`i < j` implies `a_i < a_j`"*. -/
+theorem veryGoodSpine_strictMono (α : Type) [LinearOrder α] [Countable α] [Nonempty α]
+    [NoMaxOrder α] [NoMinOrder α] : StrictMono (veryGoodSpine α) := by
+  refine strictMono_int_of_lt_succ fun i => ?_
+  rcases le_or_gt 0 i with hi | hi
+  · -- both indices land in the upward half
+    have hi1 : (0 : ℤ) ≤ i + 1 := by omega
+    have htoNat : (i + 1).toNat = i.toNat + 1 := by omega
+    simp only [veryGoodSpine, if_pos hi, if_pos hi1, htoNat]
+    exact spineUp_strictMono (carrierEnum α) (Nat.lt_succ_self _)
+  · rcases le_or_gt 0 (i + 1) with hi1 | hi1
+    · -- the splice at `i = -1`: `down 1 < down 0 = up 0`
+      have hieq : i = -1 := by omega
+      subst hieq
+      have h0 : ((-1 : ℤ) + 1).toNat = 0 := by decide
+      simp only [veryGoodSpine, if_neg (by decide : ¬ (0 : ℤ) ≤ -1), if_pos hi1, h0]
+      have : (-1 : ℤ).natAbs = 1 := by decide
+      rw [this]
+      exact spineDown_strictAnti (carrierEnum α) (carrierEnum α 0) Nat.zero_lt_one
+    · -- both indices land in the downward half
+      have hnat : i.natAbs = (i + 1).natAbs + 1 := by omega
+      simp only [veryGoodSpine, if_neg (not_le.mpr hi), if_neg (not_le.mpr hi1), hnat]
+      exact spineDown_strictAnti (carrierEnum α) (carrierEnum α 0) (Nat.lt_succ_self _)
+
+/-- *"for all `t ∈ N`, there is `i,j` such that `a_i < t < a_j`"*. -/
+theorem veryGoodSpine_cofinal (α : Type) [LinearOrder α] [Countable α] [Nonempty α]
+    [NoMaxOrder α] [NoMinOrder α] (x : α) :
+    (∃ i : ℤ, veryGoodSpine α i < x) ∧ (∃ j : ℤ, x < veryGoodSpine α j) := by
+  obtain ⟨n, hn⟩ := carrierEnum_surjective α x
+  constructor
+  · refine ⟨-((n : ℤ) + 1), ?_⟩
+    have hneg : ¬ (0 : ℤ) ≤ -((n : ℤ) + 1) := by omega
+    have hnat : (-((n : ℤ) + 1)).natAbs = n + 1 := by omega
+    simp only [veryGoodSpine, if_neg hneg, hnat]
+    exact hn ▸ lt_of_lt_of_le (spineDown_succ_lt (carrierEnum α) (carrierEnum α 0) n)
+      (min_le_right _ _)
+  · refine ⟨(n : ℤ) + 1, ?_⟩
+    have hpos : (0 : ℤ) ≤ (n : ℤ) + 1 := by omega
+    have hnat : ((n : ℤ) + 1).toNat = n + 1 := by omega
+    simp only [veryGoodSpine, if_pos hpos, hnat]
+    exact hn ▸ lt_of_le_of_lt (le_max_right _ _) (lt_spineUp_succ (carrierEnum α) n)
+
+/-- Every point lies in exactly one block `[a_i, a_{i+1})`: the block index is the greatest `i`
+    with `a_i ≤ x`, which exists because the spine is cofinal both ways. -/
+theorem exists_blockOf {α : Type} [LinearOrder α] (spine : ℤ → α) (hmono : StrictMono spine)
+    (hcof : ∀ x : α, (∃ i : ℤ, spine i < x) ∧ (∃ j : ℤ, x < spine j)) :
+    ∃ blockOf : α → ℤ,
+      (∀ x, spine (blockOf x) ≤ x) ∧ (∀ x, x < spine (blockOf x + 1)) := by
+  classical
+  have hstep : ∀ x : α, ∃ i : ℤ, spine i ≤ x ∧ x < spine (i + 1) := by
+    intro x
+    obtain ⟨⟨i₀, hi₀⟩, ⟨j₀, hj₀⟩⟩ := hcof x
+    obtain ⟨lub, hlub, hmax⟩ := Int.exists_greatest_of_bdd (P := fun i => spine i ≤ x)
+      ⟨j₀, fun z hz => by
+        by_contra hcon
+        exact lt_asymm hj₀ (lt_of_lt_of_le (hmono (not_le.mp hcon)) hz)⟩
+      ⟨i₀, le_of_lt hi₀⟩
+    refine ⟨lub, hlub, ?_⟩
+    by_contra hcon
+    have := hmax (lub + 1) (not_lt.mp hcon)
+    omega
+  choose blockOf h1 h2 using hstep
+  exact ⟨blockOf, h1, h2⟩
+
 /--
 `N` is `k`-equivalent to the lexicographic sum over `ℤ` of its half-open blocks
 `N | [a_i, a_{i+1})`.
