@@ -347,30 +347,33 @@ result.
 
 ---
 
-### Phase 5: Restate the LaTeX Task Frame definition [NOT STARTED]
+### Phase 5: Restate the LaTeX Task Frame definition [COMPLETED]
 
 **Goal**: `latex/subfiles/02-Semantics.tex`'s frame-definition subsection matches both the paper
 and the live Lean tree, and still compiles standalone.
 
 **Tasks**:
-- [ ] Rewrite the `Task Frame` definition (currently lines 25-31) to state, in order: a nonempty
+- [x] Rewrite the `Task Frame` definition (currently lines 25-31) to state, in order: a nonempty
       set of world states `\worldstate`; a **nontrivial** totally ordered abelian group `D`; a
       primitive task relation on the **positive cone** `D^+ = \{x \in D : x \geq 0\}`, extended to
       negative durations by the **converse convention** `w \taskto{x} u := u \taskto{-x} w` for
       `x < 0`; the two-sided cone `(w)_x = \{u : w \taskto{y} u \text{ or } u \taskto{y} w,\ 0 \leq y < x\}`.
-- [ ] State the three axioms correctly: **Nullity** as an *iff* (`w \taskto{0} u` iff `w = u`),
+- [x] State the three axioms correctly: **Nullity** as an *iff* (`w \taskto{0} u` iff `w = u`),
       replacing the current one-way form; **Compositionality** as the lax positive-cone law on
       `D^+`, replacing the current unrestricted mixed-sign form; **Limit Nullity**
       `\bigcap_{x > 0} (w)_x = \{w\}`.
-- [ ] Add a remark after the definition: Reflection and backward composition are **derived**;
+- [x] Add a remark after the definition: Reflection and backward composition are **derived**;
       mixed-sign composition is not prohibited but inexpressible at the primitive level, since
       primitive durations are nonnegative.
-- [ ] Correct the primitives table (lines 13-23): add a `D^+` row and correct the task relation's
+- [x] Correct the primitives table (lines 13-23): add a `D^+` row and correct the task relation's
       stated type to reflect the positive-cone primitive plus the extended relation.
-- [ ] Update the gloss paragraph (lines 33-35) so it describes the three axioms actually stated.
-- [ ] Add `\label{def:frame}` to the definition. The file currently contains zero `\label`
+- [x] Update the gloss paragraph (lines 33-35) so it describes the three axioms actually stated.
+- [x] Add `\label{def:frame}` to the definition. The file currently contains zero `\label`
       commands, so nothing cross-references it and the addition is safe.
-- [ ] If the restatement needs new notation (positive cone, cone `(w)_x`), either add macros to
+- [x] Added two macros to `bimodal-notation.sty`: `\poscone` -> `D^{+}` and `\taskcone{w}{x}`
+      -> `(w)_{x}`. `\taskcone` was chosen over `\cone` to avoid any future collision. No converse
+      *operator* symbol was introduced, matching the paper. Original task text: if the
+      restatement needs new notation (positive cone, cone `(w)_x`), either add macros to
       `latex/assets/bimodal-notation.sty` or write them inline. Available today: `\taskframe`
       (line 51), `\worldstate` (53), `\taskto` (56).
 

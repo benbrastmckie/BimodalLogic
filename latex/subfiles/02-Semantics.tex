@@ -15,24 +15,52 @@ The following primitives are required to define a task frame:
 \toprule
 Primitive & Type & Description \\
 \midrule
-$\worldstate$ & Type & World states \\
-$D$ & Type & Temporal durations \\
-$w \taskto{x} u$ & $\worldstate \to D \to \worldstate \to \text{Prop}$ & Task relation \\
+$\worldstate$ & Type & World states (nonempty) \\
+$D$ & Type & Temporal durations (nontrivial totally ordered abelian group) \\
+$\poscone$ & $\{x : D \mid 0 \leq x\}$ & Positive cone of durations \\
+$w \taskto{x} u$ & $\worldstate \to \poscone \to \worldstate \to \text{Prop}$ & Primitive task relation \\
+$w \taskto{x} u$ & $\worldstate \to D \to \worldstate \to \text{Prop}$ & Extended task relation \\
+$\taskcone{w}{x}$ & $\worldstate \to D \to \mathcal{P}(\worldstate)$ & Cone of radius $x$ around $w$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\begin{definition}[Task Frame]
-A \textbf{task frame} over temporal type $D$ is a triple $\taskframe = (\worldstate, D, {\taskto{}})$ satisfying:
+\noindent
+The task relation is primitive only on the positive cone; the extended relation is obtained from it by the converse convention stated below, and the cone is defined in terms of the extended relation.
+
+\begin{definition}[Task Frame]\label{def:frame}
+A \textbf{task frame} is a structure $\taskframe = (\worldstate, \D, {\taskto{}})$ where:
 \begin{enumerate}
-  \item \textbf{Nullity}: For all $w : \worldstate$, we have $w \taskto{0} w$.
-  \item \textbf{Compositionality}: For all $w, u, v : \worldstate$ and $x, y : D$, if $w \taskto{x} u$ and $u \taskto{y} v$, then $w \taskto{x+y} v$.
+  \item \textbf{World States}: $\worldstate$ is a nonempty set of world states.
+  \item \textbf{Temporal Order}: $\D = (D, +, 0, \leq)$ is a nontrivial totally ordered abelian group.
+  \item \textbf{Task Relation}: ${\taskto{}} \subseteq \worldstate \times \poscone \times \worldstate$ is a parameterised task relation on the \emph{positive cone} $\poscone \define \{x \in D : x \geq 0\}$, extended to negative durations by the \emph{converse convention}
+  \[
+    w \taskto{x} u \quad \define \quad u \taskto{-x} w
+    \qquad \text{for any } x < 0,
+  \]
+  and determining, for each $w \in \worldstate$ and each $x > 0$, the \emph{cone}
+  \[
+    \taskcone{w}{x} \define \{\, u \in \worldstate : w \taskto{y} u \text{ or } u \taskto{y} w \text{ for some } 0 \leq y < x \,\},
+  \]
+  subject to:
+  \begin{itemize}
+    \item[\emph{Nullity}:] $w \taskto{0} u$ if and only if $w = u$.
+    \item[\emph{Compositionality}:] if $w \taskto{x} u$ and $u \taskto{y} v$, then $w \taskto{x+y} v$.
+    \item[\emph{Limit Nullity}:] $\bigcap_{x > 0} \taskcone{w}{x} = \{w\}$.
+  \end{itemize}
 \end{enumerate}
 \end{definition}
 
 \noindent
-Nullity ensures that zero-duration tasks leave the world state unchanged.
-Compositionality ensures that executing tasks sequentially yields results consistent with a single task of combined duration.
+\emph{Nullity} is a biconditional, and so says more than that zero-duration tasks leave the world state unchanged: it also says that no two distinct world states are related by a zero-duration task.
+\emph{Compositionality} is stated on the positive cone, where the primitive relation lives, and asserts the inclusion $\taskrel_{x+y} \supseteq \taskrel_{x} \circ \taskrel_{y}$ rather than the corresponding equality, which would additionally assert interpolation.
+\emph{Limit Nullity} excludes world states that are distinct from $w$ and yet reachable from $w$ within arbitrarily small durations; equivalently, $w$ is the only world state lying in every cone around $w$.
+
+\begin{remark}
+Reflection ($w \taskto{0} w$) and composition over negative durations are \emph{derived} rather than postulated: the first from \emph{Nullity}, and the second by taking converses, composing on the positive cone, and taking the converse of the result.
+Mixed-sign composition is not so much prohibited as inexpressible at the primitive level, since primitive durations are nonnegative.
+This is just as well: were composition extended across mixed-sign durations, \emph{Nullity} would collapse nondeterminism, since $w \taskto{x} u$ and $w \taskto{x} u'$ give $u \taskto{-x} w$ by the converse convention, whence $u \taskto{0} u'$ and so $u = u'$.
+\end{remark}
 
 \subsection{World Histories}
 
