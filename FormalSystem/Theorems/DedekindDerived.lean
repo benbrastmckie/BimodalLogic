@@ -303,4 +303,132 @@ noncomputable def snceAllPastAndImp {fc : FrameClass} (ψ : Formula) :
     (show [Formula.snce E ψ] ⊢[fc] P.imp Formula.bot from
       deductionTheorem [Formula.snce E ψ] P Formula.bot hBot)
 
+/-! ## The CO derivation -/
+
+/--
+**Event refutation at the Prior-U witness.**
+
+`⊢[fc] (Hφ → F(Hφ)) → (((¬φ ∨ K⁺(¬φ)) ∧ S(Hφ ∧ φ, φ)) → ⊥)`.
+
+This is the whole content of the `co_derived` endgame, packaged as a *theorem* (empty context)
+so that it can be pushed under `G` by `gDistribution` and fed to BX3 at the Prior-U witness.
+
+At the witness `s`, the `Since` conjunct — supplied by BX13 (`enrichment_until`) from the fact
+that `Hφ ∧ φ` holds at the evaluation point and `φ` holds throughout the open guard interval —
+yields `Hφ` at `s` by **L3**. The `△`-antecedent's `G`-component, evaluated at `s`, then gives
+`F(Hφ)` there, and both disjuncts of the Prior-U consequent's event die:
+
+* `¬φ` dies because **L2** turns `F(Hφ)` into `φ`;
+* `K⁺(¬φ) = ¬U(⊤, ¬¬φ)` dies because **L1** turns `F(Hφ)` into `U(⊤, φ)`, which BX2G lifts to
+  `U(⊤, ¬¬φ)`.
+-/
+private noncomputable def coEventBot {fc : FrameClass} (φ : Formula) :
+    ⊢[fc] (φ.allPast.imp φ.allPast.someFuture).imp
+      ((Formula.and (Formula.or φ.neg (Formula.kPlus φ.neg))
+        (Formula.snce (Formula.and φ.allPast φ) φ)).imp Formula.bot) :=
+  let χ := φ.allPast
+  let ev := Formula.or φ.neg (Formula.kPlus φ.neg)
+  let sinceWit := Formula.snce (Formula.and χ φ) φ
+  let Δ : Context := [Formula.and ev sinceWit, χ.imp χ.someFuture]
+  let hAnd : Δ ⊢[fc] Formula.and ev sinceWit :=
+    DerivationTree.assumption _ _ (List.Mem.head _)
+  let hImp : Δ ⊢[fc] χ.imp χ.someFuture :=
+    DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.head _))
+  let hχ : Δ ⊢[fc] χ := ctxMp (thmIn (snceAllPastAndImp φ)) (andSnd hAnd)
+  let hFχ : Δ ⊢[fc] χ.someFuture := ctxMp hImp hχ
+  let hφ : Δ ⊢[fc] φ := ctxMp (thmIn (someFutureAllPastImp φ)) hFχ
+  let hU : Δ ⊢[fc] Formula.untl Formula.top φ :=
+    ctxMp (thmIn (someFutureAllPastUntlTop φ)) hFχ
+  let hUnn : Δ ⊢[fc] Formula.untl Formula.top φ.neg.neg :=
+    ctxMp (thmIn (mp (DerivationTree.temporal_necessitation _ (notNotIntro (fc := fc) φ))
+      (baseThm (untilMonoGuard φ φ.neg.neg Formula.top)))) hU
+  let refuteNeg : Δ ⊢[fc] φ.neg.imp Formula.bot :=
+    ctxMp (thmIn (theoremApp1 (fc := fc) (A := φ) (B := Formula.bot))) hφ
+  let refuteKPlus : Δ ⊢[fc] (Formula.kPlus φ.neg).imp Formula.bot :=
+    ctxMp (thmIn (theoremApp1 (fc := fc) (A := Formula.untl Formula.top φ.neg.neg)
+      (B := Formula.bot))) hUnn
+  deductionTheorem [] (χ.imp χ.someFuture) _
+    (deductionTheorem [χ.imp χ.someFuture] (Formula.and ev sinceWit) Formula.bot
+      (orElimBot (andFst hAnd) refuteNeg refuteKPlus))
+
+/--
+**CO is a derived theorem of the Dedekind class.**
+
+`⊢[fc] △(Hφ → F(Hφ)) → (Hφ → Gφ)` whenever `FrameClass.Dedekind ≤ fc`.
+
+**Source of the formula**: `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex:3250`
+(`def:TMplus-c`), where CO is the extra axiom of the paper's complete-order extension BX_c. The
+`△` is the temporal triangle `Formula.always`, not `Formula.box`; see `Formula.co`.
+
+**CO is derived here, not primitive.** No `Axiom.co` constructor exists; the official
+Dedekind-class basis remains `Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep`.
+
+**Axiom footprint** (verified against the finished derivation, not assumed): the *only*
+non-base axiom consumed is `Axiom.prior_U_gap`. Neither `Axiom.prior_S_gap` nor `Axiom.sep` is
+used, and neither is `Axiom.density` nor `Axiom.dense_indicator` — so the derivation in fact
+goes through at any `fc` admitting Prior-U. (This is exact, not an estimate: every other
+`DerivationTree.axiom` node in this file is discharged by `FrameClass.base_le`, and every
+imported lemma it uses is stated at `FrameClass.Base`.) The base axioms consumed include
+`prop_k`, `prop_s`, `ex_falso`, `connect_future` (BX4), `left_mono_until_G` (BX2G),
+`left_mono_since_H`
+(BX2H), `right_mono_until` (BX3), `right_mono_since` (BX3'), `self_accum_until` (BX5),
+`self_accum_since` (BX5'), `linear_since` (BX7') and `enrichment_until` (BX13). The rules used
+are modus ponens, assumption, weakening, temporal necessitation and — via
+`Theorems.pastNecessitation` — temporal duality.
+
+**Shape of the argument.** Assume `△(Hφ → F Hφ)` and `Hφ`, and for contradiction `F(¬φ)`. The
+middle conjunct of the triangle gives `F(Hφ)`, whence `φ` (L2) and `U(⊤, φ)` (L1). Prior-U at
+`φ` then yields `U(¬φ ∨ K⁺(¬φ), φ)`, and BX13 enriches its event with `S(Hφ ∧ φ, φ)` — the
+`Since`-record of what holds at and below the evaluation point. `coEventBot`, pushed under `G`
+by the triangle's `G`-component, refutes that enriched event outright, collapsing the `Until`
+to `U(⊥, φ)`, which is absurd.
+
+**Direction.** This is the Reynolds ⊢ CO direction only. The converse is not claimed; see the
+module docstring.
+
+**Semantic cross-check.** `FormalSystem.Metalogic.SoundnessLemmas.co_valid` proves
+`ValidDedekindDense (Formula.co φ)` by an independent least-upper-bound argument, so soundness
+applied to this derivation lands on a statement already established semantically.
+-/
+noncomputable def co_derived {fc : FrameClass} (h_fc : FrameClass.Dedekind ≤ fc)
+    (φ : Formula) : ⊢[fc] Formula.co φ :=
+  let χ := φ.allPast
+  let tri := Formula.always (χ.imp χ.someFuture)
+  let ev := Formula.or φ.neg (Formula.kPlus φ.neg)
+  let sinceWit := Formula.snce (Formula.and χ φ) φ
+  let enriched := Formula.and ev sinceWit
+  let Γ : Context := [φ.neg.someFuture, χ, tri]
+  let hTri : Γ ⊢[fc] tri :=
+    DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _)))
+  let hH : Γ ⊢[fc] χ := DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.head _))
+  let hFneg : Γ ⊢[fc] φ.neg.someFuture := DerivationTree.assumption _ _ (List.Mem.head _)
+  -- The triangle's present-tense conjunct fires at the evaluation point.
+  let hFχ : Γ ⊢[fc] χ.someFuture :=
+    ctxMp (ctxMp (thmIn (alwaysElimHere (χ.imp χ.someFuture))) hTri) hH
+  let hφ : Γ ⊢[fc] φ := ctxMp (thmIn (someFutureAllPastImp φ)) hFχ
+  let hU : Γ ⊢[fc] Formula.untl Formula.top φ :=
+    ctxMp (thmIn (someFutureAllPastUntlTop φ)) hFχ
+  -- Prior-U at `φ` — the only non-base axiom in the whole derivation.
+  let hGap : Γ ⊢[fc] Formula.untl ev φ :=
+    ctxMp (thmIn (DerivationTree.axiom [] _ (Axiom.prior_U_gap φ) h_fc)) (andIntro hU hFneg)
+  -- BX13: record `Hφ ∧ φ` at the witness as a `Since`.
+  let hEnriched : Γ ⊢[fc] Formula.untl enriched φ :=
+    ctxMp (thmIn (DerivationTree.axiom [] _
+      (Axiom.enrichment_until φ ev (Formula.and χ φ)) (FrameClass.base_le fc)))
+      (andIntro (andIntro hH hφ) hGap)
+  -- The triangle's `G`-conjunct, pushed onto the event refutation.
+  let hG : Γ ⊢[fc] (χ.imp χ.someFuture).allFuture :=
+    ctxMp (thmIn (alwaysElimFuture (χ.imp χ.someFuture))) hTri
+  let hGEvent : Γ ⊢[fc] (enriched.imp Formula.bot).allFuture :=
+    ctxMp (ctxMp (thmIn (baseThm (gDistribution (χ.imp χ.someFuture)
+      (enriched.imp Formula.bot))))
+      (thmIn (DerivationTree.temporal_necessitation _ (coEventBot (fc := fc) φ)))) hG
+  let hUBot : Γ ⊢[fc] Formula.untl Formula.bot φ :=
+    ctxMp (ctxMp (thmIn (baseThm (untilMonoEvent enriched Formula.bot φ))) hGEvent) hEnriched
+  let hBot : Γ ⊢[fc] Formula.bot := ctxMp (thmIn (notUntlBot φ)) hUBot
+  deductionTheorem [] tri _
+    (deductionTheorem [tri] χ φ.allFuture
+      (show [χ, tri] ⊢[fc] φ.neg.someFuture.imp Formula.bot from
+        deductionTheorem [χ, tri] φ.neg.someFuture Formula.bot hBot))
+
 end FormalSystem.Theorems.DedekindDerived

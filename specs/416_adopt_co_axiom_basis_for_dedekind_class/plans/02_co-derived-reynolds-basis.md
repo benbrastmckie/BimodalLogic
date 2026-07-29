@@ -261,7 +261,13 @@ specified, and all sit at an arbitrary `fc` (no `.Dedekind` restatement was need
 
 ---
 
-### Phase 4: Prove `co_derived` from the Reynolds basis [NOT STARTED]
+### Phase 4: Prove `co_derived` from the Reynolds basis [COMPLETED]
+
+**Outcome**: closed sorry-free within budget; the contingency was not invoked. The Scope
+Hypothesis is **confirmed**: `co_derived` consumes `Axiom.prior_U_gap` and nothing else outside
+`FrameClass.Base` — neither `prior_S_gap` nor `sep` (nor `density` / `dense_indicator`) appears.
+Every other axiom node in the file is discharged by `FrameClass.base_le`. `lean_verify` reports
+only `propext`, `Classical.choice`, `Quot.sound`.
 
 - **Goal:** The paper's CO axiom is a *theorem* of this repo's Dedekind class:
   `co_derived (φ) : DerivationTree fc [] (Formula.co φ)` for `.Dedekind ≤ fc`, derived from
