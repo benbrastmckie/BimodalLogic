@@ -244,6 +244,53 @@ structure IsContempEquivDense {sig : MonadicSignature} (ε : MonadicFormula sig 
       ContempEquivDense (M.subinterval sig (min a b) (max a b)) ε
         ⟨a, min_le_left a b, le_max_left a b⟩ ⟨b, min_le_right a b, le_max_right a b⟩
 
+/-! ## The countable-dense bundle
+
+`IsContempEquivDense` above quantifies its clauses over **every** structure. That is the right
+reading for Reynolds' §6, whose surgery constructions apply the clauses at structures built from
+`M` — in particular at `surgeredStructure M ε Q t`, which collapses a bad interval to a single
+class and is therefore **not** densely ordered (Lemma 4 gives no first class in a maximal
+interval, so the points below the surviving class are removed and adjacency appears).
+
+It is the wrong reading for the one `ε` §8 actually produces. Reynolds' `ε(x,y)` of §8 Lemma 12
+(`epsDense`, `RealModel/EpsilonDense.lean`) defines `∼_M`, and `∼_M` is an equivalence relation
+only on a **countable, densely ordered** flow: `EpsilonDense`'s module header exhibits the
+counterexample without density — with `M | (a,b) ≅ (0,1]` having a maximum `x` and `M | (b,c)`
+very good, `a ∼ b` and `b ∼ c` but `M | (x,b)` is empty, so `a ≁ c` — and countability enters
+through Lemma 11. So `IsContempEquivDense (epsDense sig k)` is **false**, not merely unproved.
+
+`IsContempEquivDenseCD` is that weaker reading, and it is exactly what Doets' theorem needs:
+Reynolds states D1 and D2 for *"any contemporaneous equivalence relation `∼` on `M`"* where `M`
+is his countable dense endpointless flow, so the at-countable-dense quantification is the
+source-faithful one at the D1/D2 boundary.
+
+Only the two clauses that need it are restricted. Clause (iii) is left quantified over every
+structure, because `simDense_contemporary` carries no instance hypotheses — keeping the bundle
+as strong as `epsDense` actually supports, which is what gives whoever discharges D1/D2 the most
+to work with. -/
+structure IsContempEquivDenseCD {sig : MonadicSignature} (ε : MonadicFormula sig 2) : Prop where
+  /-- Clause (i), at a countable dense flow. -/
+  equiv : ∀ (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier],
+    Equivalence (ContempEquivDense M ε)
+  /-- Clause (ii), at a countable dense flow. -/
+  convex : ∀ (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (a b c : M.carrier), a ≤ b → b ≤ c →
+    ContempEquivDense M ε a c → ContempEquivDense M ε a b
+  /-- Clause (iii), at every structure — unrestricted, as `epsDense` supports it. -/
+  contemporary : ∀ (M : OrderedMonadicStructure sig) (a b : M.carrier),
+    ContempEquivDense M ε a b ↔
+      ContempEquivDense (M.subinterval sig (min a b) (max a b)) ε
+        ⟨a, min_le_left a b, le_max_left a b⟩ ⟨b, min_le_right a b, le_max_right a b⟩
+
+/-- **The unrestricted bundle implies the countable-dense one** — clause by clause, by
+forgetting the instances. This is the direction that is free; the converse is unavailable, and
+that asymmetry is the whole content of the note above. -/
+theorem IsContempEquivDense.toCD {sig : MonadicSignature} {ε : MonadicFormula sig 2}
+    (hε : IsContempEquivDense ε) : IsContempEquivDenseCD ε where
+  equiv M := hε.equiv M
+  convex M := hε.convex M
+  contemporary := hε.contemporary
+
 /-! ## `ρ` and `λ` -/
 
 /-- **`ρ(x)`** — Reynolds 1992, printed p.177, transcribed from the page image (see the module

@@ -1055,4 +1055,32 @@ theorem epsDense_isContempEquiv (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStru
           ⟨a, min_le_left a b, le_max_left a b⟩
           ⟨b, min_le_right a b, le_max_right a b⟩).symm)
 
+/--
+**Reynolds' `ε` is a contemporaneous equivalence relation, bundled** — §8 Lemma 12, printed
+pp.186-187, in the form D1 and D2 consume.
+
+`epsDense_isContempEquiv` above supplies the three clauses at one fixed countable dense `M`.
+This packages them at *every* countable dense `M`, which is what `IsContempEquivDenseCD`
+(`DenseModelSurgery/Defs.lean`) asks for and what lets `DoetsD1`/`DoetsD2` be *applied* at
+`ε := epsDense sig k` — the step Reynolds takes without comment when he runs D1 and D2 at `∼_M`.
+
+Clause (iii) is discharged at an arbitrary structure, with no instances: `simDense_contemporary`
+needs none. Only clauses (i) and (ii) consume the `Countable`/`DenselyOrdered` hypotheses, and
+clause (i) only through transitivity — see the restriction note on `IsContempEquivDenseCD`.
+
+The bundled `IsContempEquivDense (epsDense sig k)` is **not** available and is not a matter of
+missing effort: transitivity of `∼_M` is false at a non-dense flow (module header), so the
+unrestricted clause (i) has a counterexample.
+-/
+theorem epsDense_isContempEquivDenseCD (k : Nat) (hk : 2 ≤ k) :
+    IsContempEquivDenseCD (epsDense sig k) where
+  equiv M := (epsDense_isContempEquiv k hk M).1
+  convex M := (epsDense_isContempEquiv k hk M).2.1
+  contemporary M a b := by
+    exact (contempEquivDense_epsDense_iff k M a b).trans
+      ((simDense_contemporary k M a b).trans
+        (contempEquivDense_epsDense_iff k (M.subinterval sig (min a b) (max a b))
+          ⟨a, min_le_left a b, le_max_left a b⟩
+          ⟨b, min_le_right a b, le_max_right a b⟩).symm)
+
 end FormalSystem.Metalogic.WeakCanonical
