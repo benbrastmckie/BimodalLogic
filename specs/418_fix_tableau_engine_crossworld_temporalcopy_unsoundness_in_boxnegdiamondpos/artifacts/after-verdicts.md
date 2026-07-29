@@ -207,10 +207,27 @@ The fuel sweep, kept because it brackets the behaviour and the section above rep
 |---|---|---|
 | 30 | not measured | `STALLED (none)` |
 | 60 | not measured | `STALLED (none)` |
+| 400 | not measured | `decide = .fuelExhausted`, `isUndecided = true`, `getCountermodel?.isSome = false`, **returns in ~0 ms** |
 | 1000 | `.allClosed` (recorded in `reports/08_spawn-analysis.md`) | `STALLED (none)`, `decide = .fuelExhausted` |
 
-Every measured fuel gives `none`. The ceiling above which `.hasOpen` might appear is **not
-bracketed**, and nothing here shows the branch ever saturates.
+Every measured fuel gives fuel exhaustion. The ceiling above which `.hasOpen` might appear is
+**not bracketed**, and nothing here shows the branch ever saturates.
+
+The fuel-400 row comes from `artifacts/rescued/anchor418c.out`, produced by a separate dispatch of
+this session and committed under `artifacts/rescued/` with its own `PROVENANCE.md`. It is an
+**independent corroboration** of the fuel-1000 finding above, taken with different code, and it
+adds something the fuel-1000 measurement lacked: it **returns essentially instantly**. That rules
+out "the measurement is just slow" and confirms the engine is genuinely reporting fuel exhaustion
+rather than grinding. `isUndecided = true` is recorded explicitly there, which is the R7 predicate
+that distinguishes honest ignorance from the pre-fix false claim of validity.
+
+**One rescued file is deliberately NOT used here.** `artifacts/rescued/reach418.out` is a scratch
+re-encoding of `BoxNegReachabilityProbe`-style queries (8 rows), not a build of the real
+`Tests/BimodalTest/BoxNegReachabilityProbe.lean` (12 `#guard_msgs` rows). Its own `PROVENANCE.md`
+flags it as "a lead to confirm, not the AFTER measurement", and that caveat is honored:
+`BoxNegReachabilityProbe` is counted as **unmeasured** throughout this document. Its
+`row6 (clash at fresh world) = false` is nonetheless consistent with `BoxNegPreservationProbe`
+row 3 moving `true → false`.
 
 Two mistakes made while taking this measurement, recorded so they are not repeated:
 
