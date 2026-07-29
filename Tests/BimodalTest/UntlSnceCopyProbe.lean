@@ -630,4 +630,92 @@ negative `Until`s sit at five *distinct* times, not five copies at one. -/
 #guard_msgs in
 #eval ((negUntlTimes (stepFull 32 bE ordB)), (stepFull 32 bE ordB).length)
 
+/-! ## Section F — T3, the PASSIVE-arm firing counter
+
+Row **B5′** compares two `knownTimes` profiles and asks only whether the triggered profile stays
+at or below the control. That comparison reads `true` in **two** completely different worlds: one
+where the PASSIVE arm fires as designed and produces no extra times, and one where the arm has
+been switched off entirely and produces nothing at all. Every other row in this file measures a
+*single* `applyRule` call on a hand-built branch, so none of them can tell those apart either.
+That is B5′'s blind spot, and this section is the instrument that closes it: a direct count of
+how many times the PASSIVE arm actually returns a branching constructor along a fixed-fuel run.
+
+The discriminator between the two arms is the **outer ordering**. The ACTIVE arm mints a fresh
+time and returns `timeOrd.addFuture`/`addPast`, so its outer ordering is strictly longer than the
+one it was given (rows D1e/D2e pin exactly this). The PASSIVE arm fires at an existing time and
+returns the ordering **unchanged** (row B3). So "branching result with an unextended outer
+ordering" identifies a PASSIVE firing without reaching inside the arm bodies, and it keeps
+working if the arm's constructor is ever switched — the same hardening `armsB` has. -/
+
+/-- Did `applyRule r sf b ord` fire through a **PASSIVE** path: a branching result whose outer
+ordering did not grow? Both branching constructors are read, for the reason `armsB` reads both. -/
+def passiveFires (rule : TableauRule) (sf : SignedFormula) (b : Branch) (ord : TimeOrdering) :
+    Bool :=
+  let res := applyRule rule sf b ord
+  ((res.1 matches .branching _) || (res.1 matches .branchingOrdered _))
+    && res.2.constraints.length == ord.constraints.length
+
+/-- How many formulas on `b` the PASSIVE arms of `untlNeg`/`snceNeg` fire on, right now. -/
+def passiveCount (b : Branch) (ord : TimeOrdering) : Nat :=
+  (b.filter fun sf =>
+    passiveFires .untlNeg sf b ord || passiveFires .snceNeg sf b ord).length
+
+/-- Cumulative PASSIVE firings over `k` steps of the same first-arm trajectory sections B and E
+walk. Counts the step it is standing on, then recurses; a stuck trajectory contributes nothing
+further. -/
+def stepPassive : Nat → Branch → TimeOrdering → Nat
+  | 0, b, ord => passiveCount b ord
+  | k + 1, b, ord =>
+    passiveCount b ord +
+      match expandOnce b ord .Base with
+      | (.extended b', ord') => stepPassive k b' ord'
+      | (.split (b' :: _), ord') => stepPassive k b' ord'
+      | (.splitOrdered ((b', o') :: _), _) => stepPassive k b' o'
+      | (_, _) => 0
+
+/-! ### Row F1 — the arm fires **right now**, on the section-B branch, at step 0
+
+The single fact B5′ cannot report. `bB` carries one negative `Until` at time `0` with time `1`
+future and unprocessed, so the PASSIVE arm is live on it. If a later change retires or caps the
+arm, this drops to `0` and says so directly. -/
+/-- info: 1 -/
+#guard_msgs in
+#eval passiveCount bB ordB
+
+/-! ### Row F2 — cumulative firings along the triggered trajectory
+
+`k = 0, 4, 8, 16, 32, 64, 128`, the same fuels as B5 and E1. A retired arm reads all-zero here;
+a capped arm reads a nonzero prefix and then flatlines, which is the shape row E1c predicts and
+which is precisely what "the cap is a switch, not a net" means in firings rather than in times.
+Neither shape is distinguishable from the other, or from a working repair, on B5′ alone.
+
+Read against B5: the triggered `knownTimes` profile is `[2, 3, 4, 6, 10, 18, 34]` while the arm
+fires `[1, 5, 9, 23, 75, 275, 1059]` times over the same trajectory. The arm is not near-dormant
+the way the ACTIVE arms are — it is the busiest thing on the branch, and it fires roughly thirty
+times per time the branch knows by `k = 128`. B5′ reports none of this. -/
+/-- info: [1, 5, 9, 23, 75, 275, 1059] -/
+#guard_msgs in
+#eval [stepPassive 0 bB ordB, stepPassive 4 bB ordB, stepPassive 8 bB ordB,
+       stepPassive 16 bB ordB, stepPassive 32 bB ordB, stepPassive 64 bB ordB,
+       stepPassive 128 bB ordB]
+
+/-! ### Row F3 — the control trajectory, and the `G`-propagation trajectory
+
+`bBctl` has the negative `Until` deleted, so it is the floor: whatever it reads is firing the
+engine does on its own account. `bE` is section E2's branch, where the negative `Until`s are
+**manufactured** by `allFuturePos` + `negPos` rather than seeded — so it reports whether the
+manufactured sources go on to fire the PASSIVE arm, which is the channel R2 is about.
+
+Both halves are informative. The control reads `[0, 0]`: **every** firing counted in F2 is
+attributable to the negative `Until`, with no background contribution to net out — unlike B5,
+where the whole difficulty was that the engine mints times for its own reasons. And `bE` reads
+`[34, 650]` from a branch that starts with **zero** negative `Until`s: section E2 showed the
+`G`-propagation channel manufacturing new `(source, label)` pairs, and this row shows those
+manufactured sources going on to fire the PASSIVE arm hundreds of times. E2 established the
+channel exists; F3 establishes it reaches this arm. -/
+/-- info: ([0, 0], [34, 650]) -/
+#guard_msgs in
+#eval ([stepPassive 32 bBctl ordB, stepPassive 128 bBctl ordB],
+       [stepPassive 32 bE ordB, stepPassive 128 bE ordB])
+
 end BimodalTest.UntlSnceCopyProbe
