@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 418,
+  "next_project_number": 419,
   "active_projects": [
     {
       "project_number": 413,
@@ -289,14 +289,14 @@
     {
       "project_number": 165,
       "project_name": "establish_semantic_finite_model_property",
-      "status": "implementing",
+      "status": "blocked",
       "task_type": "lean4",
       "description": "Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.\n\nCURRENT STATE (sound-only). The tableau stack exists and builds: a 28-rule calculus in Tableau.lean (23 base rules in allRules, 2 in denseRules, 3 in discreteRules), fuel-based saturation with blocking plus AppliedSet and EventualityTracker (Saturation.lean), per-frame-class closure detection (Closure.lean), and the entry point `decide` (DecisionProcedure.lean:128). Valid answers do carry proof terms, but the stack is sound only, and three gaps block any decidability theorem: (a) closed-tableau proof extraction (`extractProof`, ProofExtraction.lean:258) is a best-effort runtime search over 5 strategies that can fail, returning `.timeout` even on a genuinely closed tableau; (b) there is NO termination theorem -- `soundFuel` (Saturation.lean:627) caps at `min bound 100000` with nothing proved about it, and the original `blocking_terminates` was found FALSE (see the status discussion at Saturation.lean:1028-1060); (c) countermodel extraction proves `branchTruthLemma` (CountermodelExtraction.lean:1044) only over a bespoke `branchTruth` semantics (CountermodelExtraction.lean:263 -- direct-successor Until/Since, box quantified over a finite world list) that is NOT connected to the repository's real `TruthAt`/`valid`.\n\nWORK PACKAGES, in recommended order.\n\nWP1 -- Adversarial calculus-adequacy probe (must come first; top risk). The branch's `TimeOrdering` is a partial order while real TM time is linear, and the calculus appears to lack an ordering-trichotomy/linearity branching rule for freshly introduced times. Probe whether an open saturated branch can fail to admit any linear model. Also probe Until-guard interpolation at times not present on the branch, and blocking-vs-truth-lemma compatibility (blocked branches will need an unwinding argument). This package comes first because a negative result forces rule additions, which would invalidate every downstream proof in WP2-WP4.\n\nWP2 -- Refutation meta-theorem (closed tableau to Derivable). Replace runtime proof extraction with a theorem of the form `allClosed tableau -> Derivable fc [] phi`, established via per-rule admissibility lemmas in the Hilbert system across all ~28 rules. The untlPos/untlNeg Reynolds decomposition and z1Rule are the hard cases. The existing runtime strategies in ProofExtraction.lean are retained only as fast paths, no longer as the correctness story.\n\nWP3 -- Termination theorem. Prove a generalized subformula property covering every rule in `applyRule` (the current `subformula_property` at Saturation.lean:1014 covers only the initial branch), then a pigeonhole argument on at most 2^(2n) distinct time types showing that blocking must fire, and finally an uncapped, justified fuel function with a theorem of the form `buildTableau phi (soundFuel' phi) fc = some _`.\n\nWP4 -- Semantic bridge (open saturated branch to not-valid). This is the mathematical core, comparable in weight to a canonical-model completeness proof. Embed the finite branch time order into an actual temporal type D (arbitrary, Q, Z, or R according to frame class), interpolate valuations so that the real Until/Since guard conditions hold at in-between times, construct genuine WorldHistories and a shift-closed Omega, and prove `not TruthAt` -- thereby replacing the bespoke `branchTruth` semantics with the real one.\n\nASSEMBLY AND PAYOFF. WP2 + WP3 + WP4 together yield `Decidable (Derivable fc [] phi)` and decidability of validity for each frame class. As a corollary they also yield completeness for all four classes, which discharges the repository's single live sorry -- `countermodel_discrete` at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242, which currently taints Base `completeness` -- and supplies the missing Dedekind engine required by `completeness_dedekind_of_engine` (StrongCompleteness.lean:308, via `consequence_completeness_dedekind_of_engine` at :274).\n\nDEDEKIND CAVEAT. `allRulesForFC` (Tableau.lean:1067) gates dense rules on `Dense <= fc` and discrete rules on `Discrete <= fc`; since the FrameClass order (Axioms.lean:456-463) makes `Dense <= Dedekind` true but `Discrete <= Dedekind` false, the Dedekind class receives only the Base + Dense rules. Adequacy for Dedekind must therefore be proved rather than assumed: finite branch models do embed into R, but this requires an actual theorem.\n\nHYGIENE SUBTASK. Delete or replace the two vacuous theorems `validity_decidable` and `validity_has_decision_procedure` (Decidability/Correctness.lean:78 and :91 -- both are mere `Classical.em`/`by_cases` tautologies), and the `and True`-padded `filtered_world_bound` and `fmp_size_bound` (Decidability/FMP/FMP.lean:183 and :237). Also correct the LaTeX and Typst documentation that currently cites the unproven 2^|cl(phi)| bound as an established result.",
       "created": "2026-05-18T18:06:02Z",
-      "last_updated": "2026-07-28T00:31:07Z",
+      "last_updated": "2026-07-29T05:02:36Z",
       "topic": "completeness",
       "file_scope": null,
-      "session_id": "sess_1785198629_c14175",
+      "session_id": "sess_1785273302_28f3e5",
       "artifacts": [
         {
           "path": "specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md",
@@ -316,7 +316,11 @@
           411,
           412
         ]
-      }
+      },
+      "previous_status": "implementing",
+      "dependencies": [
+        418
+      ]
     },
     {
       "project_number": 161,
@@ -1046,6 +1050,32 @@
       "last_updated": "2026-07-28T23:26:00Z",
       "topic": "paper-refactor",
       "session_id": "sess_1785280411_23b0e6_417"
+    },
+    {
+      "project_number": 418,
+      "project_name": "fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Remove the six unsound group-3 blocks -- tempGProps, tempHProps, tempFNegProps, tempPNegProps, tempUNegProps, tempSNegProps -- from both boxNeg (FormalSystem/Metalogic/Decidability/Tableau.lean:555-574) and diamondPos (same file, :599-619). Groups 1 (existential witness) and 2 (T(square B)/F(diamond B) propagation) in both rules are sound and MUST NOT be touched. After the edit, temporalProps in each rule reduces to the empty concatenation (or is deleted along with its assembly line), and each rule's .linear list becomes `witness :: boxProps ++ diaProps`. Root cause: the six blocks copy every temporal-universal/existential signed formula true at l.time on the current branch verbatim into the freshly minted box/diamond-witness world, conflating 'true along the history being built' with 'true at the same instant along every admissible history' -- exactly what square/diamond quantify over. Measured effect: buildTableau ((G p) -> square (G p)) 1000 .Base returns .allClosed (should be .hasOpen), with decide returning .extractionFailed rather than .invalid with a countermodel; pinned in Tests/BimodalTest/BoxNegReachabilityProbe.lean (twelve #guard_msgs rows) and Tests/BimodalTest/BoxNegPreservationProbe.lean. Rebuild Tableau.lean and the full project (lake build), then run the FULL conformance corpus (Tests/BimodalTest/TableauConformance.lean plus the two probes above) as the acceptance gate -- not a spot check. Because the removal is risk-asymmetric (branches can only get harder to close, never easier: the fix cannot introduce a new false-invalid verdict, only reveal previously-hidden false-valid ones or newly-uncloseable branches), the only way to bound the fix's blast radius is to run the entire corpus before and after and record every verdict that changes, producing a before/after table (formula, old verdict, new verdict) as part of the task's summary artifact. Because three concurrent sessions (tasks 408, 414, 415) share this git clone and have previously destroyed full-build attempts by deleting .olean files mid-build, this task's own plan must include an explicit build-reliability strategy before attempting the full-project rebuild and corpus run that form its acceptance gate: check for and honor any existing build-coordination/lock convention in the repo, avoid `lake clean` while a concurrent session may be mid-build, and treat a corpus run whose build step failed or was interrupted as inconclusive (retry) rather than as a passing gate -- never treat an oleans-were-deleted failure as if the corpus had validated the fix. Do NOT touch FormalSystem/Metalogic/Decidability/Verified/Decidable.lean or attempt Phase 7.2's RuleSound proof -- that remains task 165's responsibility once this fix lands. This task ends at: engine sound, full corpus green (or every regression explicitly recorded and triaged), full build green.",
+      "effort": "4-8 hours",
+      "parent_task": 165,
+      "topic": "completeness",
+      "dependencies": [],
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/Tableau.lean",
+        "Tests/BimodalTest/TableauConformance.lean",
+        "Tests/BimodalTest/BoxNegReachabilityProbe.lean",
+        "Tests/BimodalTest/BoxNegPreservationProbe.lean"
+      ],
+      "created": "2026-07-29T05:05:55Z",
+      "last_updated": "2026-07-29T05:05:55Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/165_establish_semantic_finite_model_property/reports/08_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
     }
   ],
   "artifacts": [
