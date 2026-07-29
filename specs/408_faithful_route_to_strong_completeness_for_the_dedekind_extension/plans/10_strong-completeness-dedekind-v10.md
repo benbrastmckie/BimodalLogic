@@ -4385,7 +4385,7 @@ for the repaired formula**.
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 27: The `ℝ`-extension of the shuffle, its Dedekind completeness and its countable dense subflow [NOT STARTED]
+### Phase 27: The `ℝ`-extension of the shuffle, its Dedekind completeness and its countable dense subflow [IN PROGRESS]
 
 - **Goal**: `Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)` where `σ*` is `σ` extended by singletons at the
   irrationals; plus the flow `R` of `Σ_{r∈ℝ} σ*(r)` is dense, endpointless, **Dedekind complete**,
