@@ -283,6 +283,41 @@ soundness obligations.
 
 ---
 
-## 6. Corpus-side evidence
+## 6. Corpus-side evidence — the gap is wider than `boxAnchoredCheck`
 
-*(Appended in Phase 7 once the corpus measurement is adjudicated.)*
+Appended from the Phase 6 corpus measurement (`after-verdicts.md`). **This is the single most
+important addition to this document, and it was not anticipated by the plan.**
+
+`boxAnchoredCheck` is not the only decidable branch gate that collapses. The corpus measurement
+shows the *whole family* of decidable branch gates going `true → false` on multi-world branches,
+and always on the same formulas — the ones that mint a world:
+
+| Gate | Where | Probe row that measures it | Before | After |
+|---|---|---|---|---|
+| `boxAnchoredCheck` | `Bridge/BoxSaturation.lean:501` | `BoxSpreadProbe` A/B/C | `true` | **`false`** |
+| `boxGridCheck` | `Bridge/BoxSaturation.lean` | `BoxSpreadProbe` A/B/C | `true` | **`false`** |
+| `regionGate` | `Bridge/RegionLabel.lean` | `RegionGateProbe` A, B, H | `true` | **`false`** |
+| `regionLabelCheck` | `Bridge/RegionLabel.lean` | `RegionGateProbe` A, B, H; `RayRegionProbe` D; `TemporalWitnessProbe` row D ×6 | `true` | **`false`** |
+| `rayUpOk` / `rayDnOk` | `RayRegionProbe` helpers over `Bridge/RegionLabel.lean` | `RayRegionProbe` D | `true` | **`false`** |
+
+The candidate-label grids make the cause explicit. `RegionGateProbe` row A moves from
+`cands=[[3,3,3,3,3,3,3,3], [3,3,3,3,3,3,3,3]]` to
+`cands=[[3,3,3,3,3,3,3,3], [0,0,0,0,0,0,0,0]]`: world 0's regions are untouched, and **world 1 —
+the minted world — drops from three eligible labels per region to zero**. `RayRegionProbe` row D
+moves `rays=[(2, 2), (5, 5)]` to `rays=[(2, 2), (0, 0)]` — same story, the second world's ray
+loses its witness. Every moved gate is a gate quantifying over the minted world, and every
+unmoved one is single-world.
+
+**What this means for task 165.** The inherited open item is not "re-establish
+`boxAnchoredCheck`". It is: *a freshly minted `□`/`◇`-witness world now carries only the witness
+plus modal-universal content, and every branch-level gate that expected temporal content there
+fails.* Repair options (a) and (b) in §5 would restore the temporal content and so would likely
+restore this whole family at once, which is a point in their favour that §5's per-gate framing
+understates. Option (c) — weaken what the bridge demands — would have to be applied gate by gate
+across at least `BoxSaturation.lean` and `RegionLabel.lean`, not just to the `box` case.
+
+**And a matching point in the fix's favour.** Every one of these gates was previously computing
+`true` *because of* the unsound copies. A `true` that rests on an unsound premise is not evidence
+the branch has the property; it is the defect propagating into the verification layer. The
+corpus was measuring the bug and reporting it as health. That is the strongest available argument
+that these rows moved for the right reason.
