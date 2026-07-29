@@ -322,6 +322,7 @@ DEPENDENCY STATUS (2026-07-27; dependencies array unchanged): 375 (discrete weak
 - **Dependencies**: None
 - **Research**: [361_strong_completeness_architecture_and_weak_terminus_gap_analysis/reports/01_strong-completeness-architecture-gap-analysis.md]
 - **Plan**: [361_strong_completeness_architecture_and_weak_terminus_gap_analysis/plans/01_strong-completeness-scoping.md]
+- **Summary**: [361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/04_subtask-decomposition.md]
 
 **Description**: Research + scoping for the completeness-terminology refactor and the genuine strong-completeness architecture. TERMINOLOGY IS SETTLED (2026-07-27): "strong completeness" is reserved for consequence from possibly-INFINITE premise sets (Γ : Set Formula) with finitary set-derivability (∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ). Finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong (see FormalSystem/Metalogic/StrongCompleteness.lean module docstring, reframed 2026-07-27, for the per-class programme).
 

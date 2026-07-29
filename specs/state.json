@@ -837,6 +837,11 @@
           "path": "specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/plans/01_strong-completeness-scoping.md",
           "type": "plan",
           "summary": "Six-phase scoping plan: four design documents, five gated spawned tasks, staleness corrections."
+        },
+        {
+          "path": "specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/04_subtask-decomposition.md",
+          "type": "summary",
+          "summary": "14-item decomposition, dependency graph, gated spawn policy, five-row spawn manifest, checklists for deferred phases 5-6."
         }
       ]
     },

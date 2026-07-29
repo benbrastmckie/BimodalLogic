@@ -1,7 +1,7 @@
 # Implementation Plan: Task #361
 
 - **Task**: 361 - strong_completeness_architecture_and_weak_terminus_gap_analysis
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/reports/01_strong-completeness-architecture-gap-analysis.md
@@ -142,7 +142,7 @@ sequentially.
 
 ---
 
-### Phase 1: Set-based consequence layer design document [NOT STARTED]
+### Phase 1: Set-based consequence layer design document [COMPLETED]
 
 **Goal**: Write `design/01_set-consequence-layer.md` — the transcribable specification of the
 set-based layer, precise enough that the spawned S0 task can implement it without re-reading the
@@ -195,7 +195,7 @@ research report.
 
 ---
 
-### Phase 2: Compactness feasibility, route, and Discrete non-compactness witness [NOT STARTED]
+### Phase 2: Compactness feasibility, route, and Discrete non-compactness witness [COMPLETED]
 
 **Goal**: Write `design/02_compactness-route.md` — the Base/Dense strong-completeness feasibility
 verdict, the recommended route with its gate, its named risks, and the negative half (the
@@ -264,7 +264,7 @@ machine-checkable Discrete non-compactness witness).
 
 ---
 
-### Phase 3: Verified weak-terminus status and Base route analysis [NOT STARTED]
+### Phase 3: Verified weak-terminus status and Base route analysis [COMPLETED]
 
 **Goal**: Write `design/03_weak-terminus-status.md` — the machine-verified current state of both
 weak termini, the itemized corrections to the task brief, and the Base route analysis.
@@ -339,7 +339,7 @@ document rather than reproducing the report's number.
 
 ---
 
-### Phase 4: Sub-task decomposition, dependency graph, and spawn manifest [NOT STARTED]
+### Phase 4: Sub-task decomposition, dependency graph, and spawn manifest [COMPLETED]
 
 **Goal**: Write `design/04_subtask-decomposition.md` — the full 14-item decomposition, the
 dependency graph, the gated spawn policy, and a machine-followable spawn manifest giving exact
