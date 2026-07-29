@@ -427,18 +427,21 @@ moves, D1c has stopped measuring the arm it was written for. -/
 
 /-! #### Row D1c — **the measurement.** Is `¬U(e,g)` re-asserted at the minted time?
 
-`true` before the ACTIVE-arm repair, `false` after. Read together with D1a and D1b, which
-exclude the vacuous route to `false`. -/
-/-- info: true -/
+`true` before the ACTIVE-arm repair, `false` after. **It has flipped**: the self-propagated
+sub-term is deleted. Read together with D1a and D1b, which are unchanged across the repair and
+so exclude the vacuous route to `false` — the arm still fires, still branches in two, and still
+mints `3`; what it no longer does is re-assert its own negative Until there. -/
+/-- info: false -/
 #guard_msgs in
 #eval armsD.any fun arm => arm.contains selfCopyD
 
 /-! #### Row D1d — the arm shapes
 
 `autoProp` is empty on this branch (no `T(G·)`, no `F(F·)`, no `□`/`◇`), so the lengths are
-exactly the co-decomposition payloads: branch 1 is `[¬e@3, sf]` and branch 2 is
-`[¬g@3, ¬U(e,g)@3, sf]`. After the repair this reads `[2, 2]`. -/
-/-- info: [2, 3] -/
+exactly the co-decomposition payloads. Before the repair: branch 1 `[¬e@3, sf]` and branch 2
+`[¬g@3, ¬U(e,g)@3, sf]`, i.e. `[2, 3]`. **After: `[2, 2]`** — the two arms are now symmetric,
+which is the shape the classical split `¬e@C ∨ ¬g@C` actually licenses. -/
+/-- info: [2, 2] -/
 #guard_msgs in
 #eval armsD.map List.length
 
@@ -493,13 +496,15 @@ def selfCopyD' : SignedFormula :=
 #guard_msgs in
 #eval [(ordD'.pastOf 0).length, ordD'.timeCount, bD'.nextTime]
 
-/-! #### Row D2c — **the mirror measurement.** `true` before the repair, `false` after. -/
-/-- info: true -/
+/-! #### Row D2c — **the mirror measurement.** `true` before the repair, `false` after; flipped
+in lockstep with D1c, confirming the two arms are genuine time reversals rather than merely
+similar-looking. -/
+/-- info: false -/
 #guard_msgs in
 #eval armsD'.any fun arm => arm.contains selfCopyD'
 
-/-! #### Row D2d — the arm shapes; `[2, 2]` after the repair -/
-/-- info: [2, 3] -/
+/-! #### Row D2d — the arm shapes; `[2, 3]` before the repair, `[2, 2]` after -/
+/-- info: [2, 2] -/
 #guard_msgs in
 #eval armsD'.map List.length
 
