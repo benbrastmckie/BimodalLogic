@@ -348,4 +348,164 @@ because the search now terminates with a verdict. -/
 #guard_msgs in
 #eval verdictC.isFuelExhausted
 
+/-! ## Section D — the `untlNeg`/`snceNeg` **ACTIVE** arms' self-propagated `Until`/`Since`
+
+Section A measures the copy of *other* negative `Until`s onto a minted time (deleted). Section B
+measures the PASSIVE arm's endpoint co-decomposition (escalated, unrepaired). This section
+measures a **third, independent** defect that neither sees: the ACTIVE arm re-asserts **its own**
+`¬U(event,guard)` at the time it just minted.
+
+The hand refutation these rows convert into facts is over `D = ℚ`, with `V(q,e) ⟺ q > 0`,
+`V(q,g) ⟺ q ∉ {1/n : n ≥ 1}`, `V(q,x) ⟺ q = 0`, `V(q,y) ⟺ q = −1`. On the branch below,
+`¬U(e,g)@0` is **true** (every `s > 0` has some `1/n` strictly inside `(0,s)` where `g` fails),
+yet both emitted arms are false at every admissible interpretation `C` of the minted time:
+
+* branch 1 demands `¬e@C`, and the ordering forces `C > 0`, where `e` holds throughout;
+* branch 2 demands `¬g@C` — so `C = 1/n` — **and** `¬U(e,g)@(1/n)`. But `U(e,g)@(1/n)` is true:
+  pick `s ∈ (1/n, 1/(n−1))` (any `s > 1` when `n = 1`); `e@s` holds and `(1/n, s)` contains no
+  `1/m`, so the guard holds across the whole interval. It is the **second conjunct** — the
+  self-propagated `¬U(e,g)@fresh` — that makes branch 2 unsatisfiable, and it is the sub-term
+  the repair deletes.
+
+Unlike section A's copy, no `untlNegProps` block is involved: the sub-term is written into the
+arm literally, so the deletion of the copy blocks left it standing. `T(x)@0` and `T(y)@2` are not
+decoration — they pin the origin against the shift orbit and force `tv 2 < tv 0` respectively, so
+that re-choosing the history is not an escape.
+
+**Row D1c/D2c are the before/after rows for the ACTIVE-arm repair**: `true` before the deletion
+of the self-propagated sub-term, `false` after. Every other row in the section is a
+precondition-pin, so that a `false` on D1c/D2c cannot be produced *vacuously* by the arm ceasing
+to fire — the failure mode section B's own comment describes. -/
+
+/-- Probe atom `y` — pins `tv 2 = −1`, i.e. that `2` lies *below* `0`. -/
+def y : Formula := .atom (Atom.mkBase "y")
+
+/-! ### D1 — the `.untlNeg` ACTIVE arm -/
+
+/-- The ℚ-refutation branch. `maxTime = 2`, so `nextTime = 3`. -/
+def bD : Branch :=
+  [ SignedFormula.neg (Formula.untl e g) { world := 0, time := 0 }
+  , SignedFormula.pos x { world := 0, time := 0 }
+  , SignedFormula.pos y { world := 0, time := 2 } ]
+
+/-- The `F(U(e,g))` the rule fires on. -/
+def srcD : SignedFormula := SignedFormula.neg (Formula.untl e g) { world := 0, time := 0 }
+
+/-- The recorded ordering. A constraint `(a,b)` means `a < b`, so `(2,0)` says `2 < 0`: time `0`
+has **no** future, which is exactly the ACTIVE arm's precondition, while `timeCount = 2` keeps it
+inside the arm's `0 < timeCount < 4` window. -/
+def ordD : TimeOrdering := { constraints := [(2, 0)] }
+
+/-- What the ACTIVE arm returns. -/
+def resD : RuleResult × TimeOrdering := applyRule .untlNeg srcD bD ordD
+
+/-- Its successor branches, read out of **either** branching constructor, for the reason row B0's
+comment gives: a constructor switch must be *reported* by D1e, never silently empty these rows. -/
+def armsD : List (List SignedFormula) :=
+  match resD.1 with
+  | .branching bss => bss
+  | .branchingOrdered brs => brs.map Prod.fst
+  | _ => []
+
+/-- The sub-term under audit: the arm's **own** `¬U(e,g)`, at the time it just minted. -/
+def selfCopyD : SignedFormula :=
+  SignedFormula.neg (Formula.untl e g) { world := 0, time := bD.nextTime }
+
+/-! #### Row D1a — the ACTIVE arm fires, and branches in two -/
+/-- info: 2 -/
+#guard_msgs in
+#eval armsD.length
+
+/-! #### Row D1b — the ACTIVE preconditions actually hold, and the minted time is `3`
+
+`[futureOf 0 |>.length, timeCount, nextTime]`. The first must be `0` (else the PASSIVE arm runs
+instead), the second must lie in `(0,4)`, and the third is the minted index. If any of these
+moves, D1c has stopped measuring the arm it was written for. -/
+/-- info: [0, 2, 3] -/
+#guard_msgs in
+#eval [(ordD.futureOf 0).length, ordD.timeCount, bD.nextTime]
+
+/-! #### Row D1c — **the measurement.** Is `¬U(e,g)` re-asserted at the minted time?
+
+`true` before the ACTIVE-arm repair, `false` after. Read together with D1a and D1b, which
+exclude the vacuous route to `false`. -/
+/-- info: true -/
+#guard_msgs in
+#eval armsD.any fun arm => arm.contains selfCopyD
+
+/-! #### Row D1d — the arm shapes
+
+`autoProp` is empty on this branch (no `T(G·)`, no `F(F·)`, no `□`/`◇`), so the lengths are
+exactly the co-decomposition payloads: branch 1 is `[¬e@3, sf]` and branch 2 is
+`[¬g@3, ¬U(e,g)@3, sf]`. After the repair this reads `[2, 2]`. -/
+/-- info: [2, 3] -/
+#guard_msgs in
+#eval armsD.map List.length
+
+/-! #### Row D1e — the ordering is extended, and returned as the **outer** component
+
+The arm mints `3` above `0`, so the returned ordering is strictly longer than `ordD`. This is the
+component `expandOnceNoFresh`'s fresh-time rejection test reads; row B6 is the corresponding pin
+for the PASSIVE arm. `[constructor-is-.branching, constraints grew]`. -/
+/-- info: [true, true] -/
+#guard_msgs in
+#eval [resD.1 matches .branching _, resD.2.constraints.length > ordD.constraints.length]
+
+/-! ### D2 — the `.snceNeg` mirror
+
+The exact time reversal of D1: `(0,2)` says `0 < 2`, so time `0` has no **past** and the
+`.snceNeg` ACTIVE arm fires, minting `3` below `0`. The mirror claim was inferred rather than
+measured before these rows existed. -/
+
+/-- The mirror branch. -/
+def bD' : Branch :=
+  [ SignedFormula.neg (Formula.snce e g) { world := 0, time := 0 }
+  , SignedFormula.pos x { world := 0, time := 0 }
+  , SignedFormula.pos y { world := 0, time := 2 } ]
+
+/-- The `F(S(e,g))` the rule fires on. -/
+def srcD' : SignedFormula := SignedFormula.neg (Formula.snce e g) { world := 0, time := 0 }
+
+/-- `0 < 2`: time `0` has no past. -/
+def ordD' : TimeOrdering := { constraints := [(0, 2)] }
+
+/-- What the `.snceNeg` ACTIVE arm returns. -/
+def resD' : RuleResult × TimeOrdering := applyRule .snceNeg srcD' bD' ordD'
+
+/-- Its successor branches, constructor-agnostically. -/
+def armsD' : List (List SignedFormula) :=
+  match resD'.1 with
+  | .branching bss => bss
+  | .branchingOrdered brs => brs.map Prod.fst
+  | _ => []
+
+/-- The mirror sub-term under audit. -/
+def selfCopyD' : SignedFormula :=
+  SignedFormula.neg (Formula.snce e g) { world := 0, time := bD'.nextTime }
+
+/-! #### Row D2a — the ACTIVE arm fires, and branches in two -/
+/-- info: 2 -/
+#guard_msgs in
+#eval armsD'.length
+
+/-! #### Row D2b — `[pastOf 0 |>.length, timeCount, nextTime]` -/
+/-- info: [0, 2, 3] -/
+#guard_msgs in
+#eval [(ordD'.pastOf 0).length, ordD'.timeCount, bD'.nextTime]
+
+/-! #### Row D2c — **the mirror measurement.** `true` before the repair, `false` after. -/
+/-- info: true -/
+#guard_msgs in
+#eval armsD'.any fun arm => arm.contains selfCopyD'
+
+/-! #### Row D2d — the arm shapes; `[2, 2]` after the repair -/
+/-- info: [2, 3] -/
+#guard_msgs in
+#eval armsD'.map List.length
+
+/-! #### Row D2e — constructor and ordering extension -/
+/-- info: [true, true] -/
+#guard_msgs in
+#eval [resD'.1 matches .branching _, resD'.2.constraints.length > ordD'.constraints.length]
+
 end BimodalTest.UntlSnceCopyProbe
