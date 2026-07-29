@@ -11,11 +11,10 @@ next_project_number: 426
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,179,193,231,257,298,361,390,408,413,418,419,420 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 165,170,177,178,219,282,296,414,421,423,424 | 193,231,298,361,418,420 | completeness, formula-refactor, dataset-enhancement, ... |
-| 3 | 410,411,412,415,417,422,425 | 165,414,421,423 | paper-refactor, strong_completeness |
-| 4 | 169 | 422 | strong_completeness |
-| 5 | 362 | 169,170 | strong_completeness |
+| 1 | 95,125,127,128,170,179,193,231,257,298,390,408,413,418,419,420,421,423,424 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 165,177,178,219,282,296,414,422,425 | 193,231,298,418,420,421,423 | completeness, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,410,411,412,415,417 | 165,414,422 | paper-refactor, strong_completeness |
+| 4 | 362 | 169,170 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -69,16 +68,15 @@ next_project_number: 426
 
 ### Strong Completeness
 
-361 [IMPLEMENTING] — Research + scoping for the completeness-terminology refactor and 
-  └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness — SUBSTANTIVELY CLOSED
-    └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-  └─ 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
-    └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
-      └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-        └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
-  └─ 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
-    └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
-  └─ 424 [NOT STARTED] — Prove, in both directions, that the task-model class is represent
+170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness — SUBSTANTIVELY CLOSED
+  └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
+421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
+  └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
+    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
+423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
+  └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
+424 [NOT STARTED] — Prove, in both directions, that the task-model class is represent
 
 ### Uncategorized
 
@@ -448,7 +446,7 @@ DEPENDENCY STATUS (2026-07-27; dependencies array unchanged): 375 (discrete weak
 
 ### 361. Strong completeness architecture and weak terminus gap analysis
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: None
@@ -676,7 +674,7 @@ CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped)
 
 VERIFIED STATUS (2026-07-28, from task 361's design/03_weak-terminus-status.md section 1): `completeness_dense` (BXCanonical/Completeness.lean:255) is already machine-verified sorry-free. `lean_verify` against current oleans reports `#print axioms completeness_dense` = [propext, Classical.choice, Quot.sound] — no `sorryAx`.
 
-WHY THE EARLIER DESCRIPTION WAS STALE: it named three inherited chronicle dense-path obligations. All three are gone from live code. `succ_reaches_dom_N` and `chronicle_gap_contradiction` exist only under `Boneyard/DeadChronicleGapElimination/` and `Boneyard/SorriedDeclExcisions/`; `MCSMixedCase.lean` exists and is sorry-free (its `Chronicle.mcs_mixed_case_absurd` is what closes the mixed case). None of the three is reachable from `completeness_dense`. There are exactly TWO live non-Boneyard sorries in the whole tree — `Transfer.lean:1242` (task 169's) and `RealModel/ShuffleReal.lean:201` (task 408's) — and neither is reachable from `completeness_dense`.
+WHY THE EARLIER DESCRIPTION WAS STALE: it named three inherited chronicle dense-path obligations. All three are gone from live code — two survive only under `Boneyard/` sub-trees, and the third file exists but is sorry-free (its mixed-case closer, `Chronicle.mcs_mixed_case_absurd`, is what discharges that case). None of the three is reachable from `completeness_dense`. The itemized correction table, naming each stale claim against its actual state, is design/03 section 3; it is deliberately not reproduced here so this description cannot be mistaken for a live obligation list. There are exactly TWO live non-Boneyard sorries in the whole tree — `Transfer.lean:1242` (task 169's) and `RealModel/ShuffleReal.lean:201` (task 408's) — and neither is reachable from `completeness_dense`.
 
 THE SINGLE REMAINING ACTION, and it is administrative, not Lean work: a build-lock holder runs an independent CLEAN-BUILD `#print axioms FormalSystem.Metalogic.BXCanonical.completeness_dense`. (Task 361's verification consumed existing oleans; a clean-build re-verification is the stronger evidence the closure should rest on.) If it reports exactly `propext, Classical.choice, Quot.sound`, transition this task to [COMPLETED] with a completion summary recording that axiom set verbatim.
 

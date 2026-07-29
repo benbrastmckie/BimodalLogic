@@ -3,8 +3,10 @@
 **Source**: `reports/01_strong-completeness-architecture-gap-analysis.md` §5 (authoritative), plus
 `design/01_set-consequence-layer.md`, `design/02_compactness-route.md`,
 `design/03_weak-terminus-status.md`.
-**Status**: design document. **No task has been created by this document.**
-**Intended consumer**: the deferred Phase 5 of `plans/01_strong-completeness-scoping.md`.
+**Status**: design document, **executed**. The five tasks it specifies now exist as **421, 422,
+423, 424, 425** in `specs/state.json` — see §0 for the allocation record.
+**Intended consumer**: Phases 5 and 6 of `plans/01_strong-completeness-scoping.md` (both now
+`[COMPLETED]`).
 
 ---
 
@@ -21,22 +23,32 @@
 
 ## 0. Execution status of this document
 
-**This document is a MANIFEST, not a creation record.** Phases 5 and 6 of the governing plan —
-which create the five tasks in `specs/state.json` / `specs/TODO.md` and record the staleness
-corrections in `specs/ROADMAP.md` and the task 169/170 descriptions — were **deliberately
-deferred** and have **not** been executed. The reason is a concurrency hazard, not a blocker: the
-orchestrator was concurrently rewriting `specs/state.json` and `specs/TODO.md` for another
-in-flight task, and a second writer would have risked a lost-update race that silently drops task
-records.
+**This document was a MANIFEST; the spawn it describes has now been EXECUTED.** Phases 5 and 6 of
+the governing plan were originally deferred for a concurrency hazard (the orchestrator was
+concurrently rewriting `specs/state.json` and `specs/TODO.md` for another in-flight task, and a
+second writer would have risked a lost-update race that silently drops task records). **That
+conflict has since been resolved and both phases have been executed.**
 
 Consequently:
 
-- The symbolic IDs `N1`..`N5` below are **still symbolic**. No task numbers have been allocated.
-- Phase 5 must substitute real allocated numbers and back-fill them into this document.
-- §7 ("Post-spawn edits") lists exactly what Phase 6 must then do.
+- The symbolic IDs `N1`..`N5` have been **allocated to real task numbers** and back-filled
+  throughout this document. The symbolic ID is retained in parentheses for traceability.
+- §8 ("Post-spawn edits") records the checklist both phases executed.
 
-This document is written so Phase 5 can execute **mechanically** from §5 and §6 without
-re-deriving anything.
+**Allocation record**:
+
+| Symbolic ID | Allocated task number |
+|---|---|
+| N1 | **421** |
+| N2 | **422** |
+| N3 | **423** |
+| N4 | **424** |
+| N5 | **425** |
+
+`next_project_number` was **421** at allocation time — **not** the 420 recorded below at manifest
+time; a concurrent session had created task 420 (`align_task_frame_with_positive_cone_limit_nullity`)
+in the interim. The re-read mandated by §8 step 1 caught this, which is exactly what it exists for.
+After the batch, `next_project_number` is **426** (advanced by exactly five).
 
 ---
 
@@ -99,8 +111,8 @@ expensive one) until `S1` lands.
 
 > ### Exactly five tasks are created now
 >
-> **Created**: `B0+B1` (as one task, N1), `B2+B3` (as one task, N2), `S0` (N3), `S1` (N4),
-> `D1` (N5).
+> **Created**: `B0+B1` (as one task, 421 (N1)), `B2+B3` (as one task, 422 (N2)), `S0` (423 (N3)), `S1` (424 (N4)),
+> `D1` (425 (N5)).
 >
 > **Deliberately NOT created**: **`S2`, `S3`, `S4`, `S5-Dense`, and `S5-Base`.**
 >
@@ -162,20 +174,20 @@ immediately before the first allocation** — a concurrent session may have adva
 
 | ID | Title | task_type | topic | dependencies | file_scope |
 |----|-------|-----------|-------|--------------|------------|
-| N1 | Correct Transfer.lean route guidance and probe the non-Archimedean discrete carrier | lean4 | strong_completeness | `[361]` | `["FormalSystem/Metalogic/WeakCanonical/Transfer.lean", "FormalSystem/Metalogic/BXCanonical/DiscreteCarrierProbe.lean"]` |
-| N2 | Build the discrete chronicle over the non-Archimedean block carrier with restricted coherence | lean4 | strong_completeness | `[N1]` | `["FormalSystem/Metalogic/BXCanonical/Chronicle/"]` |
-| N3 | Land the set-based consequence layer (SetDerivable and per-class SetSemanticConsequence) | lean4 | strong_completeness | `[361]` | `["FormalSystem/Metalogic/SetConsequence.lean", "FormalSystem/Metalogic/StrongCompleteness.lean"]` |
-| N4 | Prove the shift-set representation theorem for task models (compactness feasibility gate) | lean4 | strong_completeness | `[361]` | `["FormalSystem/Semantics/ShiftSet.lean"]` |
-| N5 | Machine-check the Discrete non-compactness witness | lean4 | strong_completeness | `[361, N3]` | `["FormalSystem/Metalogic/DiscreteNonCompactness.lean"]` |
+| 421 (N1) | Correct Transfer.lean route guidance and probe the non-Archimedean discrete carrier | lean4 | strong_completeness | `[361]` | `["FormalSystem/Metalogic/WeakCanonical/Transfer.lean", "FormalSystem/Metalogic/BXCanonical/DiscreteCarrierProbe.lean"]` |
+| 422 (N2) | Build the discrete chronicle over the non-Archimedean block carrier with restricted coherence | lean4 | strong_completeness | `[421]` (N1) | `["FormalSystem/Metalogic/BXCanonical/Chronicle/"]` |
+| 423 (N3) | Land the set-based consequence layer (SetDerivable and per-class SetSemanticConsequence) | lean4 | strong_completeness | `[361]` | `["FormalSystem/Metalogic/SetConsequence.lean", "FormalSystem/Metalogic/StrongCompleteness.lean"]` |
+| 424 (N4) | Prove the shift-set representation theorem for task models (compactness feasibility gate) | lean4 | strong_completeness | `[361]` | `["FormalSystem/Semantics/ShiftSet.lean"]` |
+| 425 (N5) | Machine-check the Discrete non-compactness witness | lean4 | strong_completeness | `[361, 423]` (N3) | `["FormalSystem/Metalogic/DiscreteNonCompactness.lean"]` |
 
-**Common fields for all five**: `status: "not_started"`, `effort: "high"` (except N1, see below),
+**Common fields for all five**: `status: "not_started"`, `effort: "high"` (except 421 (N1), see below),
 `task_type: "lean4"`, `topic: "strong_completeness"`.
 
-**Effort override**: N1 is `"medium"` — it is a docstring correction plus an instance probe, and
+**Effort override**: 421 (N1) is `"medium"` — it is a docstring correction plus an instance probe, and
 `design/03` §5.6 retired its main risk by confirming the Mathlib lex instance exists.
 
-**Dependency-edge ordering note**: `N1`, `N3`, and `N4` depend on `361` only and can be written
-correctly at creation time. `N2` (`[N1]`) and `N5` (`[361, N3]`) reference newly-allocated numbers
+**Dependency-edge ordering note**: `421 (N1)`, `423 (N3)`, and `424 (N4)` depend on `361` only and can be written
+correctly at creation time. `422 (N2)` (`[421]` (N1)) and `425 (N5)` (`[361, 423]` (N3)) reference newly-allocated numbers
 and must be **patched after all five allocations complete**.
 
 ---
@@ -184,7 +196,7 @@ and must be **patched after all five allocations complete**.
 
 Verbatim text for each task's `description` field.
 
-### N1 — Correct Transfer.lean route guidance and probe the non-Archimedean discrete carrier
+### 421 (N1) — Correct Transfer.lean route guidance and probe the non-Archimedean discrete carrier
 
 > Two deliverables on the Base weak terminus, both small.
 >
@@ -218,7 +230,7 @@ Verbatim text for each task's `description` field.
 > `sorryAx`; the live non-Boneyard sorry count is unchanged at 2 (verify with
 > `grep -rn --include='*.lean' -E '^\s*sorry\s*$' FormalSystem/ | grep -vc Boneyard`).
 
-### N2 — Build the discrete chronicle over the non-Archimedean block carrier with restricted coherence
+### 422 (N2) — Build the discrete chronicle over the non-Archimedean block carrier with restricted coherence
 
 > Construct the discrete-case analogue of the existing dense chronicle machinery, over the
 > non-Archimedean carrier `ℚ ×ₗ ℤ` confirmed by the predecessor task.
@@ -251,7 +263,7 @@ Verbatim text for each task's `description` field.
 > sorry-free; `#print axioms` on each reports no `sorryAx`; `lake build` green. This task does NOT
 > close the `Transfer.lean:1242` sorry — that is task 169's job, which consumes this output.
 
-### N3 — Land the set-based consequence layer (SetDerivable and per-class SetSemanticConsequence)
+### 423 (N3) — Land the set-based consequence layer (SetDerivable and per-class SetSemanticConsequence)
 
 > Create `FormalSystem/Metalogic/SetConsequence.lean` containing the finitary set-derivability
 > relation `SetDerivable`, the four per-class `SetSemanticConsequence*` predicates, the basic
@@ -277,7 +289,7 @@ Verbatim text for each task's `description` field.
 > deliberate); `#print axioms` on every new declaration reports no `sorryAx`; `StrongCompleteness.lean`
 > imports the module and still builds.
 
-### N4 — Prove the shift-set representation theorem for task models (compactness feasibility gate)
+### 424 (N4) — Prove the shift-set representation theorem for task models (compactness feasibility gate)
 
 > Prove, in both directions, that the task-model class is representable by **shift sets**
 > `⟨Ω, D, sh, A⟩` — `D` an ordered abelian group, `Ω` a nonempty type with a `D`-action
@@ -309,7 +321,7 @@ Verbatim text for each task's `description` field.
 > **Acceptance**: both directions sorry-free; `#print axioms` clean on each; `lake build` green;
 > the task's summary states explicitly whether the gate PASSED or FAILED.
 
-### N5 — Machine-check the Discrete non-compactness witness
+### 425 (N5) — Machine-check the Discrete non-compactness witness
 
 > Convert the informal argument at `FormalSystem/Metalogic/StrongCompleteness.lean:56-62` into a
 > machine-checked theorem: the `FrameClass.Discrete` consequence relation is **not compact**, hence
@@ -350,11 +362,11 @@ Overlap analysis against tasks in flight. `file_scope` values below were read fr
 
 | New task | file_scope | Overlaps | Intended? |
 |---|---|---|---|
-| N1 | `Transfer.lean`, `BXCanonical/DiscreteCarrierProbe.lean` | nothing currently in flight | — |
-| N2 | `BXCanonical/Chronicle/` | **task 169** and **task 170** (both declare `["…/BXCanonical/Completeness.lean", "…/BXCanonical/Chronicle/"]`) | **YES — intended.** N2 produces exactly what 169 consumes; serializing them is correct. The 170 overlap is incidental (170 has no Lean work at all per `design/03` §4). |
-| N3 | `Metalogic/SetConsequence.lean`, `Metalogic/StrongCompleteness.lean` | **task 362** (`["…/StrongCompleteness.lean", "FormalSystem/Metalogic.lean"]`) | **YES — intended.** Both edit `StrongCompleteness.lean`; serializing them prevents a merge conflict on the same file. |
-| N4 | `Semantics/ShiftSet.lean` | nothing currently in flight | — |
-| N5 | `Metalogic/DiscreteNonCompactness.lean` | nothing currently in flight | — |
+| 421 (N1) | `Transfer.lean`, `BXCanonical/DiscreteCarrierProbe.lean` | nothing currently in flight | — |
+| 422 (N2) | `BXCanonical/Chronicle/` | **task 169** and **task 170** (both declare `["…/BXCanonical/Completeness.lean", "…/BXCanonical/Chronicle/"]`) | **YES — intended.** 422 (N2) produces exactly what 169 consumes; serializing them is correct. The 170 overlap is incidental (170 has no Lean work at all per `design/03` §4). |
+| 423 (N3) | `Metalogic/SetConsequence.lean`, `Metalogic/StrongCompleteness.lean` | **task 362** (`["…/StrongCompleteness.lean", "FormalSystem/Metalogic.lean"]`) | **YES — intended.** Both edit `StrongCompleteness.lean`; serializing them prevents a merge conflict on the same file. |
+| 424 (N4) | `Semantics/ShiftSet.lean` | nothing currently in flight | — |
+| 425 (N5) | `Metalogic/DiscreteNonCompactness.lean` | nothing currently in flight | — |
 
 ### Explicitly NOT overlapped
 
@@ -379,26 +391,30 @@ Overlap analysis against tasks in flight. `file_scope` values below were read fr
 
 ---
 
-## 8. Post-spawn edits — the checklist for deferred Phases 5 and 6
+## 8. Post-spawn edits — the checklist executed by Phases 5 and 6
+
+> **EXECUTION RECORD**: every step below has been carried out. Step 1's re-read found
+> `next_project_number` at **421**, not the 420 recorded at manifest time. Kept in imperative form
+> as the audit trail of what was done.
 
 Phase 5 (task creation) must:
 
 1. Re-read `next_project_number` from `specs/state.json` immediately before the first allocation
-   (it was **420** at manifest time; a concurrent session may have advanced it).
-2. Create N1..N5 in that order, **one atomic `jq` read-modify-write each**
+   (it was **420** at manifest time; a concurrent session may have advanced it — **it had, to 421**).
+2. Create 421 (N1)..425 (N5) in that order, **one atomic `jq` read-modify-write each**
    (`jq … specs/state.json > specs/tmp/state.json && mv specs/tmp/state.json specs/state.json`),
    using the field values in §5 and the descriptions in §6. Follow each write with
    `jq empty specs/state.json`.
-3. Patch the two intra-spawn dependency edges once all five numbers are allocated: N2's
-   `dependencies` becomes `[<N1>]`; N5's becomes `[361, <N3>]`.
+3. Patch the two intra-spawn dependency edges once all five numbers are allocated: 422 (N2)'s
+   `dependencies` becomes `[<421 (N1)>]`; 425 (N5)'s becomes `[361, <423 (N3)>]`.
 4. Verify no dangling edges — every integer in any new task's `dependencies` resolves to a real
    `project_number` in `specs/state.json` or `specs/archive/state.json`.
 5. Confirm tasks 418 and 408 survived every write intact (`jq -S` byte-compare before/after).
 6. `bash .claude/scripts/manage-topics.sh set <num> strong_completeness` for each new task.
 7. `bash .claude/scripts/generate-todo.sh` **once**, then confirm all five titles appear in
    `specs/TODO.md`.
-8. Back-fill the allocated numbers into **this document**, replacing `N1`..`N5` and keeping the
-   symbolic ID in parentheses for traceability.
+8. Back-fill the allocated numbers into **this document**, replacing the symbolic IDs `N1`..`N5`
+   and keeping the symbolic ID in parentheses for traceability.
 
 Phase 6 (staleness corrections) must then:
 
@@ -409,9 +425,9 @@ Phase 6 (staleness corrections) must then:
    content, never a whole-file rewrite.
 2. **`specs/ROADMAP.md`, `Base` row, `Weak completeness` cell**: record that exactly ONE reachable
    sorry remains (`WeakCanonical/Transfer.lean:1242`, `countermodel_discrete`), and that the route
-   is now scoped (route (i) refuted, route (ii) recommended), naming the chain N1 → N2 → 169.
+   is now scoped (route (i) refuted, route (ii) recommended), naming the chain 421 (N1) → 422 (N2) → 169.
 3. **`specs/ROADMAP.md`, `Genuine strong (Set Formula)` cells for `Base` and `Dense`**: point at
-   the allocated N4 number instead of "compactness research, task 361", and state the gating rule
+   the allocated 424 (N4) number instead of "compactness research, task 361", and state the gating rule
    in one sentence.
 4. **`specs/ROADMAP.md`**: leave the `Discrete` and `Dedekind` rows untouched — both are accurate.
 5. **`specs/state.json`, task 170 `description`**: rewrite so it no longer names the archived
@@ -423,7 +439,7 @@ Phase 6 (staleness corrections) must then:
    clean build.
 6. **`specs/state.json`, task 169 `description`**: rewrite so it names **exactly ONE** remaining
    sorry (`Transfer.lean:1242`) rather than three, records route (i) as refuted and route (ii) as
-   recommended, and cites `design/03_weak-terminus-status.md`. **Add the allocated N2 number to its
+   recommended, and cites `design/03_weak-terminus-status.md`. **Add the allocated 422 (N2) number to its
    `dependencies`** (currently `[361]`).
 7. Each `state.json` mutation is a single atomic `jq … > specs/tmp/state.json && mv`, followed by
    `jq empty`. Run `bash .claude/scripts/generate-todo.sh` **once** after the `state.json` edits.
@@ -435,7 +451,7 @@ Phase 6 (staleness corrections) must then:
 
 | # | Report claim | Observed | Impact |
 |---|---|---|---|
-| 1 | Report §5.3 suggested spawn set: B0+B1, B2+B3, S0, S1, D1 | Reproduced exactly as N1..N5 | none |
+| 1 | Report §5.3 suggested spawn set: B0+B1, B2+B3, S0, S1, D1 | Reproduced exactly as 421 (N1)..425 (N5) | none |
 | 2 | (plan assumption) task 408 scoped to `ShuffleReal.lean` | task 408's `file_scope` is **`[]`** | Substantive non-overlap claim holds; the *mechanism* differs — see §7 |
 
 Divergences affecting the *content* of the spawned tasks (the live sorry count, the Mathlib lex

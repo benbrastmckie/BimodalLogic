@@ -41,11 +41,17 @@ settled; the in-tree authority is the module docstring of
 
   | Class | Weak completeness | Finite-context consequence | Genuine strong (`Set Formula`) |
   |---|---|---|---|
-  | Base | open — task 169 | capstone task 362 | OPEN question — compactness research, task 361 |
-  | Dense | open — task 170 | capstone task 362 | OPEN question — compactness research, task 361 |
+  | Base | open — task 169, but narrower than previously recorded: **exactly ONE** reachable sorry remains, `countermodel_discrete` at `WeakCanonical/Transfer.lean:1242`. Route now scoped: the tree's own route (i) (Base-MCS → Discrete-MCS transfer) is **REFUTED** by a `ℤ ×ₗ ℤ` witness; route (ii) (direct construction over the non-Archimedean discrete carrier `ℚ ×ₗ ℤ`) is recommended. Chain: task 421 → task 422 → task 169. | capstone task 362 | OPEN question — gated on the shift-set representation theorem, task 424 |
+  | Dense | **substantively closed** — `completeness_dense` (`BXCanonical/Completeness.lean:255`) is machine-verified sorry-free, axioms exactly `propext, Classical.choice, Quot.sound`, pending an independent clean-build re-verification by a build-lock holder. Task 170 needs **no implementation agent**; its remaining action is that re-verification plus the status transition. | capstone task 362 | OPEN question — gated on the shift-set representation theorem, task 424 |
   | Discrete | DONE (pristine axiom set) | capstone task 362 | **IMPOSSIBLE** — non-compact |
   | Dedekind | in flight — task 408 | task 408 (`consequence_completeness_dedekind`) | **IMPOSSIBLE** — non-compact |
 
+- **The Base/Dense strong-completeness GATING RULE**: task 424 (the shift-set representation
+  theorem) is a cheap feasibility gate for the whole semantic-compactness route — the expensive
+  ultraproduct work (ultraproduct carrier, Łoś lemma for `TruthAt`, compactness, per-class strong
+  completeness) is **not authorized and deliberately not created as tasks** until task 424 lands
+  sorry-free in **both** directions with `#print axioms` clean on each; if either direction is
+  refuted, the route is cancelled rather than retried.
 - **Why Discrete is weak-only**: `ValidDiscrete` requires `IsSuccArchimedean`/
   `IsPredArchimedean`, and `next φ = untl φ bot` is a genuine next-step operator on discrete
   orders, so `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}` is finitely satisfiable over `ℤ` yet unsatisfiable over
@@ -63,8 +69,13 @@ settled; the in-tree authority is the module docstring of
   finitary, `SetMaximalConsistent`, `set_lindenbaum`, in `Metalogic/Core/MaximalConsistent.lean`)
   already exists; the missing substantive piece is a **model-existence theorem** (every
   `SetConsistent` set satisfiable in a class frame), which does NOT follow from the
-  single-formula countermodel engines. Task 361 owns the feasibility verdict, the per-class
-  set-consequence/set-derivability definitions, and the sub-task decomposition.
+  single-formula countermodel engines. Task 361 delivered the feasibility verdict, the per-class
+  set-consequence/set-derivability definitions, and the sub-task decomposition (see its
+  `design/` documents); the recommended route is semantic compactness by a bespoke ultraproduct
+  over a shift-set representation of task models, gated on task 424 per the rule above.
+  **Dense is the natural first strong-completeness target**: its weak engine
+  (`completeness_dense`) is already green, so Dense strong completeness does not wait on the
+  Base weak terminus.
 
 ---
 

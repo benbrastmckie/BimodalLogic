@@ -1,7 +1,7 @@
 # Implementation Plan: Task #361
 
 - **Task**: 361 - strong_completeness_architecture_and_weak_terminus_gap_analysis
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/reports/01_strong-completeness-architecture-gap-analysis.md
@@ -418,7 +418,7 @@ non-existence of a proposed new path is expected and is NOT a reason to drop it 
 
 ---
 
-### Phase 5: Create the five spawned tasks in state.json and TODO.md [NOT STARTED]
+### Phase 5: Create the five spawned tasks in state.json and TODO.md [COMPLETED]
 
 **Goal**: Create exactly the five manifest tasks as real entries in `specs/state.json`, encode
 the dependency edges, regenerate `specs/TODO.md`, and back-fill the allocated numbers into the
@@ -469,23 +469,32 @@ task-creation path is the `/task` command's Create Task Mode, steps 6-7, execute
 hand-edited.
 
 **Tasks**:
-- [ ] Re-read `next_project_number` immediately before the first allocation (it is 420 as of
-      planning time, but a concurrent session may have advanced it).
-- [ ] Create N1, N2, N3, N4, N5 in that order, one atomic `jq` write each, using the exact field
+- [x] Re-read `next_project_number` immediately before the first allocation (it is 420 as of
+      planning time, but a concurrent session may have advanced it). *(completed — the re-read
+      found **421**, not 420; a concurrent session had created task 420
+      `align_task_frame_with_positive_cone_limit_nullity` in the interim. Allocation started at
+      421 accordingly.)*
+- [x] Create N1, N2, N3, N4, N5 in that order, one atomic `jq` write each, using the exact field
       values from the Phase 4 manifest. Each write is followed by `jq empty specs/state.json` to
-      confirm the file is still valid JSON.
-- [ ] Encode the intra-spawn dependency edges once all five numbers are allocated: N2's
+      confirm the file is still valid JSON. *(completed — allocated N1=421, N2=422, N3=423,
+      N4=424, N5=425)*
+- [x] Encode the intra-spawn dependency edges once all five numbers are allocated: N2's
       `dependencies` becomes `[<N1>]`; N5's becomes `[361, <N3>]`. (N1, N3, N4 depend on 361
-      only and can be written correctly at creation time.)
-- [ ] Verify no dangling edges: every integer appearing in any new task's `dependencies` resolves
+      only and can be written correctly at creation time.) *(completed — 422 → `[421]`,
+      425 → `[361, 423]`)*
+- [x] Verify no dangling edges: every integer appearing in any new task's `dependencies` resolves
       to an existing `project_number` in `active_projects` or in `specs/archive/state.json`.
-- [ ] Confirm task 418's and task 408's entries survived every write intact (byte-compare their
-      `jq -S` serialization before and after the batch).
-- [ ] Run `bash .claude/scripts/manage-topics.sh set <num> strong_completeness` for each new task.
-- [ ] Run `bash .claude/scripts/generate-todo.sh` once, then confirm all five titles appear in
-      `specs/TODO.md`.
-- [ ] Back-fill the allocated numbers into `design/04_subtask-decomposition.md`, replacing the
+      *(completed — zero missing targets across all five)*
+- [x] Confirm task 418's and task 408's entries survived every write intact (byte-compare their
+      `jq -S` serialization before and after the batch). *(completed — both byte-identical; the
+      full pre-existing `project_number` set is also unchanged, delta is exactly the five new)*
+- [x] Run `bash .claude/scripts/manage-topics.sh set <num> strong_completeness` for each new task.
+      *(completed — all five carry `topic: strong_completeness`)*
+- [x] Run `bash .claude/scripts/generate-todo.sh` once, then confirm all five titles appear in
+      `specs/TODO.md`. *(completed — all five render with correct dependencies)*
+- [x] Back-fill the allocated numbers into `design/04_subtask-decomposition.md`, replacing the
       symbolic IDs `N1`..`N5` (keeping the symbolic ID in parentheses for traceability).
+      *(completed — plus an allocation-record table and an execution-status rewrite of §0)*
 
 **Timing**: 1 hour
 
@@ -520,46 +529,54 @@ and with `jq '.next_project_number' specs/state.json` before and after.
 
 ---
 
-### Phase 6: Record the staleness corrections and close out [NOT STARTED]
+### Phase 6: Record the staleness corrections and close out [COMPLETED]
 
 **Goal**: Correct the stale Dense/Base claims where they actually live — `specs/ROADMAP.md` and
 the task 170 / task 169 descriptions — wire task 169's new dependency, and write the task
 summary.
 
 **Tasks**:
-- [ ] `specs/ROADMAP.md`, completeness table (~lines 43-47): correct the `Dense` row's
+- [x] `specs/ROADMAP.md`, completeness table (~lines 43-47): correct the `Dense` row's
       `Weak completeness` cell from `open — task 170` to a cell recording that
       `completeness_dense` is machine-verified sorry-free (axioms `propext, Classical.choice,
       Quot.sound`) pending an independent clean-build re-verification, and that task 170 is
       therefore substantively closed. Use targeted `Edit` calls against freshly-read content, not
-      a whole-file rewrite.
-- [ ] `specs/ROADMAP.md`: correct the `Base` row's `Weak completeness` cell to record that
+      a whole-file rewrite. *(completed — also records that task 170 needs no implementation agent)*
+- [x] `specs/ROADMAP.md`: correct the `Base` row's `Weak completeness` cell to record that
       exactly ONE reachable sorry remains (`WeakCanonical/Transfer.lean:1242`,
       `countermodel_discrete`), and that the route is now scoped (route (i) refuted, route (ii)
-      recommended) with the chain of newly spawned tasks named.
-- [ ] `specs/ROADMAP.md`: update the `Genuine strong (Set Formula)` cells for `Base` and `Dense`
+      recommended) with the chain of newly spawned tasks named. *(completed — chain named as
+      421 → 422 → 169)*
+- [x] `specs/ROADMAP.md`: update the `Genuine strong (Set Formula)` cells for `Base` and `Dense`
       to point at the allocated feasibility-gate task number (N4) instead of "compactness
-      research, task 361", and record the gating rule in one sentence.
-- [ ] `specs/ROADMAP.md`: leave the `Discrete` and `Dedekind` rows untouched — both are already
-      accurate.
-- [ ] `specs/state.json`, task 170: rewrite `description` so it no longer names the archived
+      research, task 361", and record the gating rule in one sentence. *(completed — both cells
+      now read "gated on the shift-set representation theorem, task 424"; the gating rule is a
+      new bullet immediately below the table, and the "Why Base/Dense are open" paragraph was
+      updated from "Task 361 owns" to "Task 361 delivered")*
+- [x] `specs/ROADMAP.md`: leave the `Discrete` and `Dedekind` rows untouched — both are already
+      accurate. *(completed — both verified byte-unchanged)*
+- [x] `specs/state.json`, task 170: rewrite `description` so it no longer names the archived
       declarations `succ_reaches_dom_N` / `chronicle_gap_contradiction` / the
       `MCSMixedCase.lean` sorry. The new description states the verified status, names the single
       remaining action (independent clean-build `#print axioms completeness_dense` by a build-lock
       holder, then `[COMPLETED]` with the axiom set as the completion summary), and states
       explicitly that no implementation agent should be dispatched at it. Do NOT change its
-      `status` — that transition belongs to whoever runs the clean build.
-- [ ] `specs/state.json`, task 169: rewrite `description` so it names exactly ONE remaining sorry
+      `status` — that transition belongs to whoever runs the clean build. *(completed; `status`
+      verified still `not_started`. The stale declaration names are described as archived rather
+      than listed, and the itemized correction table is cited to `design/03` §3 — a first draft
+      named them inline and was rewritten to satisfy this item's literal verification criterion)*
+- [x] `specs/state.json`, task 169: rewrite `description` so it names exactly ONE remaining sorry
       (`Transfer.lean:1242`) rather than three, records route (i) as refuted and route (ii) as
       recommended, and cites `design/03_weak-terminus-status.md`. Add the allocated N2 number to
-      its `dependencies` array (currently `[361]`).
-- [ ] Each `state.json` mutation is a single atomic `jq ... > specs/tmp/state.json && mv`
-      read-modify-write, followed by `jq empty`.
-- [ ] Run `bash .claude/scripts/generate-todo.sh` once after the `state.json` edits.
-- [ ] Write `summaries/01_strong-completeness-scoping-summary.md`: what was produced (four design
+      its `dependencies` array (currently `[361]`). *(completed — `dependencies` now `[361, 422]`;
+      route (iii) recorded as BLOCKED as well)*
+- [x] Each `state.json` mutation is a single atomic `jq ... > specs/tmp/state.json && mv`
+      read-modify-write, followed by `jq empty`. *(completed — every write validated)*
+- [x] Run `bash .claude/scripts/generate-todo.sh` once after the `state.json` edits. *(completed)*
+- [x] Write `summaries/01_strong-completeness-scoping-summary.md`: what was produced (four design
       documents, five spawned tasks), the corrected picture of both weak termini, the gating rule
       for the ultraproduct branch, and the explicit statement that no `FormalSystem/` file was
-      touched and no build was run.
+      touched and no build was run. *(completed)*
 
 **Timing**: 45 minutes
 
