@@ -513,4 +513,121 @@ similar-looking. -/
 #guard_msgs in
 #eval [resD'.1 matches .branching _, resD'.2.constraints.length > ordD'.constraints.length]
 
+/-! ## Section E — the two quantities the PASSIVE-arm decision turns on
+
+Section E measures nothing about soundness. It exists because the choice between the two
+surviving PASSIVE-arm designs — retire the arm outright, or let it mint an interpolant under a
+`timeCount` cap — was being argued from two quantities that had never actually been evaluated.
+Both are recorded here as facts, so that the choice is made against measurements. -/
+
+/-- Follow `expandOnce` for `k` steps, first arm at every split, and report the **ordering's**
+`timeCount` rather than the branch's `knownTimes`. -/
+def stepOrd : Nat → Branch → TimeOrdering → Nat
+  | 0, _, ord => ord.timeCount
+  | k + 1, b, ord =>
+    match expandOnce b ord .Base with
+    | (.extended b', ord') => stepOrd k b' ord'
+    | (.split (b' :: _), ord') => stepOrd k b' ord'
+    | (.splitOrdered ((b', o') :: _), _) => stepOrd k b' o'
+    | (_, _) => ord.timeCount
+
+/-! ### E1 — does `timeCount` cross a cap threshold early enough to retire a capped arm?
+
+Row B5 profiles `Branch.knownTimes`; every proposed cap is stated against
+`TimeOrdering.timeCount`, and the two are different objects — a time is *known* as soon as some
+formula carries it, but enters `timeCount` only once an ordering constraint mentions it. So B5
+cannot settle the question, and the inference "`knownTimes` grows, therefore `timeCount` grows"
+is structural rather than measured. What turns on it: if `timeCount` passes the threshold within
+the opening steps, a capped interpolant design is *behaviourally indistinguishable on real
+branches* from simply retiring the arm — dormant either way — while carrying a far larger blast
+radius. These rows are that comparison, on the same two profiles and the same fuels as B5. -/
+
+/-! #### Row E1a — triggered profile at `k = 0, 4, 8, 16, 32, 64, 128`
+
+Identical, entry for entry, to B5's triggered `knownTimes` profile: on this branch every known
+time is an ordered time. -/
+/-- info: [2, 3, 4, 6, 10, 18, 34] -/
+#guard_msgs in
+#eval [stepOrd 0 bB ordB, stepOrd 4 bB ordB, stepOrd 8 bB ordB, stepOrd 16 bB ordB,
+       stepOrd 32 bB ordB, stepOrd 64 bB ordB, stepOrd 128 bB ordB]
+
+/-! #### Row E1b — control profile (negative `Until` deleted), same fuels
+
+Exactly one above B5's control `knownTimes` profile at every entry, and the offset is
+accounted for: `ordB = ⟨[(0,1)]⟩` mentions time `0`, which the control branch never labels. -/
+/-- info: [2, 4, 5, 8, 13, 24, 45] -/
+#guard_msgs in
+#eval [stepOrd 0 bBctl ordB, stepOrd 4 bBctl ordB, stepOrd 8 bBctl ordB, stepOrd 16 bBctl ordB,
+       stepOrd 32 bBctl ordB, stepOrd 64 bBctl ordB, stepOrd 128 bBctl ordB]
+
+/-! #### Row E1c — **the crossing.** Least `k ≤ 32` at which `timeCount` reaches `4` and `8`
+
+`[triggered≥4, control≥4, triggered≥8, control≥8]`. `none` would have meant a cap is genuinely a
+net rather than a switch. It is not: `4` — the threshold the **existing** ACTIVE guard
+`0 < timeCount < 4` tests — is crossed after a handful of steps, which is why the ACTIVE arms
+read as dormant on every measured row, and `8` follows well inside any realistic fuel (section C
+runs at fuel `200`). A `timeCount`-capped PASSIVE arm would therefore be switched off for the
+overwhelming majority of every run, by background minting it has no part in. -/
+/-- info: [some 5, some 4, some 21, some 16] -/
+#guard_msgs in
+#eval [(List.range 33).find? fun k => stepOrd k bB ordB ≥ 4,
+       (List.range 33).find? fun k => stepOrd k bBctl ordB ≥ 4,
+       (List.range 33).find? fun k => stepOrd k bB ordB ≥ 8,
+       (List.range 33).find? fun k => stepOrd k bBctl ordB ≥ 8]
+
+/-! ### E2 — does the `G`-propagation channel fire on a branch the engine actually builds?
+
+The channel, as constructed by hand from two rule bodies: `allFuturePos` propagates
+`T(G ¬U(e,g))@0` to every time the engine mints, and the positive-negation rule turns each
+resulting `T(¬U(e,g))@z` into `F(U(e,g))@z` — a **new `(source, label)` pair** at every one,
+hence a fresh mint allowance for any arm keyed on that pair. If it fires, no subformula-descent
+argument bounds an interpolant design, because the supply of sources is not fixed in advance.
+
+The measurement is the number of **distinct times** carrying a negative `U(e,g)` after `k` steps
+from a branch that starts with exactly one such source, at time `0`, under a `G`. Growth in this
+count *is* the channel. -/
+
+/-- The branch carrying `T(G ¬U(e,g))@0` plus one future time. -/
+def bE : Branch :=
+  [ SignedFormula.pos (Formula.allFuture (Formula.untl e g).neg) { world := 0, time := 0 }
+  , SignedFormula.pos x { world := 0, time := 1 } ]
+
+/-- Follow `expandOnce` for `k` steps, first arm at every split, returning the branch reached. -/
+def stepFull : Nat → Branch → TimeOrdering → Branch
+  | 0, b, _ => b
+  | k + 1, b, ord =>
+    match expandOnce b ord .Base with
+    | (.extended b', ord') => stepFull k b' ord'
+    | (.split (b' :: _), ord') => stepFull k b' ord'
+    | (.splitOrdered ((b', o') :: _), _) => stepFull k b' o'
+    | (_, _) => b
+
+/-- The distinct times at which a negative `U(e,g)` stands on `b`. -/
+def negUntlTimes (b : Branch) : List TimeIndex :=
+  (b.filterMap fun sf =>
+    if sf.sign matches .neg && sf.formula == Formula.untl e g then some sf.label.time
+    else none).eraseDups
+
+/-! #### Row E2a — **the measurement.** Distinct negative-`U(e,g)` times after `k` steps
+
+`k = 0, 4, 8, 16, 32, 64`. The branch **starts with none** — its only `U(e,g)` occurrence is
+positive and buried under a `G` — so every count above `0` is manufactured by the channel, and
+the growth is the channel operating. **It fires.** By step 64 the engine is carrying nine
+distinct labelled negative `Until`s where it began with zero.
+
+This is what makes a subformula-descent termination argument unavailable for any interpolant
+design: the descent presumes a supply of `(source, label)` pairs fixed in advance, and this row
+exhibits the engine manufacturing new ones without bound as it mints times. -/
+/-- info: [0, 1, 1, 3, 5, 9] -/
+#guard_msgs in
+#eval [0, 4, 8, 16, 32, 64].map fun k => (negUntlTimes (stepFull k bE ordB)).length
+
+/-! #### Row E2b — the times themselves at `k = 32`, with the branch size
+
+Guards against reading E2a's growth as an artefact of a branch that merely got large: the
+negative `Until`s sit at five *distinct* times, not five copies at one. -/
+/-- info: ([6, 4, 3, 2, 1], 44) -/
+#guard_msgs in
+#eval ((negUntlTimes (stepFull 32 bE ordB)), (stepFull 32 bE ordB).length)
+
 end BimodalTest.UntlSnceCopyProbe
