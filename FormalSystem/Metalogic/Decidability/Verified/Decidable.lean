@@ -242,6 +242,16 @@ def CarrierProp : Type 1 :=
 the ordered-group structure every validity notion already binds. -/
 def carrierBase : CarrierProp := fun _ => True
 
+/-- Density of the carrier, as the `.Dense` rules consume it. Stated as `DenselyOrdered D`
+rather than as an unfolded betweenness statement so that the eventual assembly can discharge it
+from `ValidDense`'s own `[DenselyOrdered D]` binder (`Semantics/Validity.lean`) by
+`inferInstance`, with no bridging lemma in between.
+
+Declared here but consumed by exactly one rule so far — `densityRule`, the only `.Dense` rule
+that mints a time. `denseIndicatorClosure` is the other `.Dense` rule and needs *no* carrier
+property: it is proved at `carrierBase` and reused through `RuleSound.mono`. -/
+def carrierDense : CarrierProp := fun D => DenselyOrdered D
+
 /-!
 ### Well-formedness of the `(branch, ordering)` pair
 
@@ -1012,6 +1022,41 @@ theorem SatState.gt_of_mem_pastOf {M : TaskModel F} {Om : Set (WorldHistory F)}
     obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn1
     exact lt_of_pathN_directPastOf hst.ordResp m s t' (by simpa [Nat.add_comm] using hp)
 
+/-- The endpoint of a forward path is a time the branch knows. Same induction as
+`lt_of_pathN_directFutureOf`, reading `OrdWithin` off the final edge rather than `ordResp`; the
+recursive case does not even need the edge, since the invariant travels with the path's tail. -/
+theorem mem_knownTimes_of_pathN_directFutureOf {b : Branch} {ord : TimeOrdering}
+    (hord : OrdWithin b ord) :
+    ∀ (n : Nat) (t t' : TimeIndex),
+      TimeOrdering.PathN ord.directFutureOf (n + 1) t t' → t' ∈ b.knownTimes := by
+  intro n
+  induction n with
+  | zero =>
+    intro t t' h
+    obtain ⟨c, hc, hp⟩ := h
+    simp only [TimeOrdering.PathN] at hp
+    subst hp
+    exact (hord _ (mem_constraints_of_mem_directFutureOf hc)).2
+  | succ m ih =>
+    intro t t' h
+    obtain ⟨c, _, hp⟩ := h
+    exact ih c t' hp
+
+/-- **The bridge, in the `OrdWithin` direction.** A time the engine reports as a future time of
+`t` is a time the branch already knows — so it is bounded below `b.nextTime`, which is what a
+rule minting an *interpolant* between two existing times needs and which the four fresh-time
+producers, minting above a single branch time, did not. Consumed by `densityRule`. -/
+theorem mem_knownTimes_of_mem_futureOf {b : Branch} {ord : TimeOrdering}
+    (hord : OrdWithin b ord) {t t' : TimeIndex} (h : t' ∈ ord.futureOf t) :
+    t' ∈ b.knownTimes := by
+  rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [t] [] h with hv | ⟨s, hs, n, hn1, _, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hs
+    subst hs
+    obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn1
+    exact mem_knownTimes_of_pathN_directFutureOf hord m s t' (by simpa [Nat.add_comm] using hp)
+
 /-!
 ### The fresh-time producers' ordering obligation is not discharged by freshness alone
 
@@ -1537,6 +1582,28 @@ theorem ordResp_addPast_update {M : TaskModel F} {Om : Set (WorldHistory F)}
   · obtain ⟨h1, h2⟩ := hord.nextTime_not_mem hp
     simpa only [Function.update_of_ne h1, Function.update_of_ne h2] using hst.ordResp p hp
 
+/-- The `ordResp` obligation for an *interpolating* rule's extended ordering. `densityRule` mints
+two edges in one step — `t < fresh` and `fresh < t'` — so `ordResp_addFuture_update` does not
+apply as it stands, and the extra input is a second `OrdWithin` witness: `t'` must also be a known
+time, or the one-point update at `b.nextTime` would silently move it. That is what
+`mem_knownTimes_of_mem_futureOf` supplies. -/
+theorem ordResp_addFuture_addFuture_update {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) (hord : OrdWithin b ord)
+    {t t' : TimeIndex} (hmemt : t ∈ b.knownTimes) (hmemt' : t' ∈ b.knownTimes)
+    {d : D} (hlt : tv t < d) (hlt' : d < tv t') :
+    ∀ p ∈ ((ord.addFuture t b.nextTime).addFuture b.nextTime t').constraints,
+      Function.update tv b.nextTime d p.1 < Function.update tv b.nextTime d p.2 := by
+  have hne : t ≠ b.nextTime := Nat.ne_of_lt (lt_nextTime_of_mem_knownTimes hmemt)
+  have hne' : t' ≠ b.nextTime := Nat.ne_of_lt (lt_nextTime_of_mem_knownTimes hmemt')
+  intro p hp
+  simp only [TimeOrdering.addFuture, List.mem_cons] at hp
+  rcases hp with rfl | rfl | hp
+  · simpa [Function.update_of_ne hne'] using hlt'
+  · simpa [Function.update_of_ne hne] using hlt
+  · obtain ⟨h1, h2⟩ := hord.nextTime_not_mem hp
+    simpa only [Function.update_of_ne h1, Function.update_of_ne h2] using hst.ordResp p hp
+
 /-- The `T(Gφ)` propagations a fresh-*future*-time rule emits are satisfied at the minted time:
 `T(Gφ)` at the trigger's time gives `φ` at every later time, and the minted time is later by the
 choice of `d`. Shared verbatim by `allFutureNeg` and `someFuturePos`. -/
@@ -1562,6 +1629,45 @@ theorem satAt_of_mem_gProps {M : TaskModel F} {Om : Set (WorldHistory F)}
     by_cases ht : (gsf.label.time == t) = true
     · rw [if_pos ht] at hw
       have hteq : gsf.label.time = t := by simpa using ht
+      by_cases hc : b.contains (SignedFormula.pos inner
+          { world := gsf.label.world, time := b.nextTime }) = true
+      · rw [if_pos hc] at hw; exact absurd hw (by simp)
+      · rw [if_neg hc] at hw
+        rw [SatAt, hsign, hgf, hteq] at hsrc
+        rw [← Option.some_inj.mp hw]
+        simpa [SatAt, SignedFormula.pos] using truthAt_of_allFuture hsrc hlt
+    · rw [if_neg ht] at hw; exact absurd hw (by simp)
+  · exact absurd hw (by simp)
+
+/-- `satAt_of_mem_gProps` with the extra guard conjunct `densityRule` carries. That rule already
+emits its own `T(ψ)` witness from the `T(Gψ)` it fired on, so it excludes that one formula from
+the propagation block to avoid emitting the same signed formula twice; the guard is therefore
+`gsf.label.time == t && gsf.formula != Formula.allFuture χ` rather than the bare time test, which
+does not unify with the original helper. The excluded conjunct is *discarded* information here —
+the proof never needs it — so the two lemmas differ only in the shape they match. -/
+theorem satAt_of_mem_gPropsExcept {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) {t : TimeIndex} {d : D} (hlt : tv t < d)
+    {χ : Formula} {g : SignedFormula}
+    (hg : g ∈ b.allFuturePosFormulas.filterMap fun gsf =>
+      match gsf.formula with
+      | .allFuture inner =>
+        if gsf.label.time == t && gsf.formula != Formula.allFuture χ then
+          let prop := SignedFormula.pos inner { world := gsf.label.world, time := b.nextTime }
+          if b.contains prop then none else some prop
+        else none
+      | _ => none) :
+    SatAt M Om hist (Function.update tv b.nextTime d) g := by
+  obtain ⟨gsf, hgsf, hw⟩ := List.mem_filterMap.mp hg
+  have hpred := List.of_mem_filter hgsf
+  have hsign : gsf.sign = .pos := by split at hpred <;> simp_all
+  have hsrc : SatAt M Om hist tv gsf := hst.sat _ (List.mem_of_mem_filter hgsf)
+  split at hw
+  · rename_i inner hgf
+    by_cases ht : (gsf.label.time == t && gsf.formula != Formula.allFuture χ) = true
+    · rw [if_pos ht] at hw
+      have hteq : gsf.label.time = t := by
+        simp only [Bool.and_eq_true, beq_iff_eq] at ht; exact ht.1
       by_cases hc : b.contains (SignedFormula.pos inner
           { world := gsf.label.world, time := b.nextTime }) = true
       · rw [if_pos hc] at hw; exact absurd hw (by simp)
@@ -1821,6 +1927,62 @@ theorem ruleSound_denseIndicatorClosure : RuleSound carrierBase .denseIndicatorC
   split
   all_goals try trivial
   exact ⟨hist, tv, by simpa using hst⟩
+
+/-!
+## The frame-class-gated rules
+
+`denseIndicatorClosure` above needed no carrier property. `densityRule` is the first rule that
+does, and it is also the first rule that mints an **interpolant** rather than a new extreme: it
+returns two ordering edges, `l.time < fresh` and `fresh < t'`, where `t'` is a maximal element of
+the source's recorded future. Three things follow, and all three are what the two helper variants
+above exist for.
+
+* The witness `d` is not free above `tv l.time`; it must land strictly *between* `tv l.time` and
+  `tv t'`. That is exactly `DenselyOrdered D`, i.e. `carrierDense`, and it is the only place the
+  property is consumed.
+* `ordResp` must be re-established for **two** new edges at once, and the upper endpoint `t'` has
+  to be shown untouched by the one-point update — which needs `t' ∈ b.knownTimes`, supplied by
+  `mem_knownTimes_of_mem_futureOf` off `OrdWithin`.
+* The propagation block excludes the rule's own source formula, so its guard carries an extra
+  conjunct and matches `satAt_of_mem_gPropsExcept` rather than `satAt_of_mem_gProps`.
+
+The gap-selection logic (`gapTargets`: maximal, unfilled) is soundness-irrelevant — any `t'` in
+the recorded future would do — and is there for *termination*, as `applyRule`'s comment records.
+The proof accordingly reads `t'` off the head of the filtered list and forgets the filter.
+-/
+
+/-- `T(Gψ)` at `t` with a maximal recorded future time `t'` gives `T(ψ)` at a fresh interpolant
+strictly between them, plus the `T(G·)` propagations. The first rule to consume a carrier
+property, and the first to mint a time bounded on *both* sides. -/
+theorem ruleSound_densityRule : RuleSound carrierDense .densityRule := by
+  intro D _ _ _ _ hC F M Om hist tv b sf ord hmem hst hord
+  haveI : DenselyOrdered D := hC
+  obtain ⟨s, φ, l⟩ := sf
+  have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
+  cases s
+  case neg => simp only [applyRule]; trivial
+  case pos =>
+    simp only [SatAt] at hsrc
+    simp only [applyRule]
+    split
+    all_goals try trivial
+    rename_i ψ
+    split
+    · trivial
+    · rename_i t' _ hgap
+      have hmemf : t' ∈ ord.futureOf l.time :=
+        List.mem_of_mem_filter (a := t') (by rw [hgap]; exact List.mem_cons_self)
+      have hltt : tv l.time < tv t' := hst.lt_of_mem_futureOf hmemf
+      obtain ⟨d, hlt, hlt'⟩ := exists_between hltt
+      refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+        ordResp_addFuture_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem)
+          (mem_knownTimes_of_mem_futureOf hord hmemf) hlt hlt', ?_⟩
+      intro g hg
+      rcases List.mem_append.mp hg with hnew | hb
+      · rcases List.mem_cons.mp hnew with rfl | hrest
+        · simpa [SatAt, SignedFormula.pos] using truthAt_of_allFuture hsrc hlt
+        · exact satAt_of_mem_gPropsExcept hst hlt hrest
+      · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
 
 /-!
 ## `untlPos`, `sncePos`, `untlNeg` and `snceNeg` — BLOCKED, engine defect
