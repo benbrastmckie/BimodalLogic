@@ -2345,6 +2345,98 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
 
+**PHASE 7 STATUS (2026-07-29d) — the copy defect is CLOSED across all four rules, and 7.2 goes
+26 → 31 of 34.** Five green commits. Sorry census over `Verified/` is `0`; no new axioms; no
+vacuous definitions introduced.
+
+*The authorized deletion landed, alone, with its gate.* The `untlNegProps` and `snceNegProps`
+blocks in the ACTIVE arms of `.untlNeg`/`.snceNeg` (and their uses in the two `autoProp` lists)
+are deleted, per `reports/04_untlneg-snceneg-repair-verification.md` §4.2 and its §4.4
+"separately, and first" attributability requirement. No `untlNeg`/`snceNeg` **arm** logic was
+touched: the PASSIVE-arm co-decomposition repair remains REFUTED on termination (cross-formula
+divergence, not minimally repairable) and was not attempted.
+
+**Acceptance-gate results.** `TableauConformance.lean`, 29 `#guard_msgs` rows: GREEN before
+(59.0 s) and GREEN after (62.8 s), **zero rows changed**. `UntlSnceCopyProbe.lean` and
+`TemporalWitnessProbe.lean`: GREEN at existing pins, **zero rows moved**. `lake build` of
+`Verified.Decidable` (1350 jobs, the full downstream rebuild): green — so `applyRule_untlNeg_closed`
+in `SubformulaProperty.lean` survived unchanged, confirming report 04 §2.7's prediction that
+shrinking the emitted set only makes that lemma easier. **Unlike the `untlPos`/`sncePos`
+deletion, this one moved nothing**, and the reason is structural rather than lucky: the ACTIVE
+arms are gated on `futureTimes.isEmpty && 0 < timeCount < 4`, so the copies were dormant on every
+measured row. The deletion is necessary for `RuleSound carrierBase .untlNeg`/`.snceNeg` under any
+future passive-arm design; it is not a behaviour change on the current corpus.
+
+*Probe section B is hardened, and the report's B5 design did not survive measurement.* `armsB`
+now reads **either** branching constructor (matching `.branching` alone would silently empty it
+under the constructor switch a repair requires, making B4 read `false` **vacuously** —
+indistinguishable from a genuine repair), and new row **B0** pins which constructor is live so
+the switch is reported rather than inferred. New row **B6** pins the post-blocking pass, whose
+fresh-time rejection test reads `applyRule`'s *outer* ordering and is blind to a fresh time
+hidden in a per-arm ordering.
+
+**Row B5 is a differential gate, not the single pinned number the report specified, and the
+change is forced by a measurement.** Following `expandOnce`'s first arm from `bB`, the known-time
+count is `2 + k/4` and does **not** saturate through `k = 128` — `[2,3,4,6,10,18,34]` at
+`k = 0,4,8,16,32,64,128` — so no fixed number is pinnable. A control row settles the attribution
+and reverses the naive reading: the identical measurement with the negative `Until` **deleted**
+grows *faster* (`[1,3,4,7,12,23,44]`, 44 against 34 at `k = 128`). The growth is ordinary
+seriality-driven witness minting, **not** `untlNeg` — the negative `Until` slightly *slows* it by
+spending steps on co-decomposition. Without the control this would have been recorded as an
+`untlNeg` divergence signature and been wrong. Both profiles are pinned, plus **B5′** pinning the
+single fact the gate turns on (triggered ≤ control at `k = 16,32,64,128`); a passive-arm repair
+that re-fires reverses that inequality.
+
+*Five frame-class rules landed: 26 → 31.* Both blocking questions from the previous dispatch are
+settled, and one of them was settled by **refuting** its premise.
+
+- **`carrierDiscrete`** is declared as an `Exists` — `CarrierProp` returns `Prop` and
+  `SuccOrder`/`PredOrder` are *data*, so `fun D => SuccOrder D` does not typecheck; `Exists`
+  ranges over any `Sort` and eliminating it into `SatResult` is fine because `SatResult` is a
+  `Prop`. Destructure with **`letI`, not `haveI`**: `haveI` is opaque, so the installed instance
+  is not defeq to the destructured one and the Archimedean fields fail to typecheck against it.
+- **The import edge was verified, not assumed.** `FormalSystem.Metalogic.Soundness` stays
+  refused. `SoundnessLemmas.FrameClassVariants` is a different module —
+  `FrameClassVariants → DenseValidity → Core → {Semantics.Truth, ProofSystem.Derivation,
+  ProofSystem.Axioms}` — and a grep over `Semantics/`, `ProofSystem/`, `SoundnessLemmas/` and
+  `Syntax/` finds **zero** imports of `Decidability` anywhere in that closure. No cycle. Landed:
+  `ruleSound_priorUZ`, `ruleSound_priorSZ`, `ruleSound_z1Rule`, each one instantiation of
+  `prior_UZ_is_valid` / `prior_SZ_is_valid` / `z1_is_valid` plus semantic modus ponens.
+- **The Dedekind pair landed by LOCAL proof, because the "several hundred lines" estimate was
+  wrong for them.** `prior_U_gap_valid`/`prior_S_gap_valid` exist only in the refused
+  `Metalogic/Soundness.lean` and `FrameClassVariants` does not carry them, so reuse was
+  unavailable. But `Soundness.lean`'s own docstring records that the Prior-gap argument consumes
+  **only** the least-upper-bound hypothesis and the linear order — no `DenselyOrdered`, no
+  `Nontrivial`, no group structure, no `ShiftClosed`. Each is a ~30-line supremum construction,
+  and both re-proved here elaborated **green on the first attempt**. The several-hundred-line
+  figure is correct for the *discrete* `SuccOrder`/`PredOrder` descent, which is precisely why
+  those three were reused instead. `carrierDedekind` needs no `Exists` (both conjuncts are
+  `Prop`).
+
+**Ledger: 31 of 34.** Three rules remain open, for three *different* reasons, none of them
+budget:
+| Rule | Why open |
+|---|---|
+| `untlNeg`, `snceNeg` | **THREE** obstructions, not two — see the superseding note below. Their copy blocks are now gone, which is necessary but not sufficient. |
+| `sepRule` | Needs `exists_countable_order_dense`, a substantial order-theoretic development in `SoundnessLemmas/Separability.lean` — a genuine dependency, not a thirty-line argument. The cheap route: `Separability.lean` imports *only* Mathlib, so that edge carries zero cycle risk and is strictly safer than the `FrameClassVariants` one already added; it was not taken here because it is a new import edge outside this dispatch's territory. |
+
+> **SUPERSEDING NOTE — `reports/05_until-tableau-design-research.md`.** A concurrent read-only
+> research dispatch landed report 05 *during* this dispatch, and it changes the `untlNeg`/`snceNeg`
+> picture. **Do not read this banner's "the copy defect is CLOSED across all four rules" as "the
+> ACTIVE arm is now sound".** Report 05 §2.2 refutes `RuleSound carrierBase .untlNeg` through the
+> ACTIVE arm using **no copy block at all**, over a **dense** (`ℚ`) carrier: branch 2 asserts
+> `F(U(event,guard))@freshLabel`, and that *self*-propagated negative Until is unsound on its own.
+> §2.3 shows the repair is a **one-token deletion** that makes the ACTIVE arm sound outright — its
+> **item 1**, ranked to land first and alone, currently awaiting authorization. It was not done
+> here because arm logic was out of scope. Report 05 §8 records that this corrects report 04's
+> *scope*, not its ruling, so nothing above is invalidated. **Note the carrier reversal**: this
+> refutation needs a DENSE carrier where the copy-defect refutation needed a DISCRETE one, so the
+> standing "the refutation must be over a discrete carrier" lesson points the *wrong way* for this
+> arm. Report 05 §7 also specifies a probe row **B0′** gating item 1; it was not added here,
+> because pinning a gate for an unlanded repair pins it at its pre-repair value with nothing to
+> compare against. Section B's other hardening (B0, B5, B5′, B6) is in place and `armsB` is already
+> constructor-agnostic, so B0′ drops in cleanly when item 1 is authorized.
+
 **PHASE 7 STATUS (2026-07-29c) — the untl/snce copy defect is REPAIRED for `untlPos`/`sncePos`,
 and 7.2 goes 23 → 26.** Four green commits. `lake env lean` green on `Verified/Decidable.lean`
 after every edit; `lake build FormalSystem.Metalogic.Decidability.Tableau` green (689 jobs);
