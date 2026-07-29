@@ -482,6 +482,18 @@ splits the branch once per element of `bss`, `.persistent fs` adds `fs` while
 keeping the formula, and `.notApplicable` means the rule does not match this
 sign/connective pair. Rules that introduce a fresh time (the temporal and
 diamond rules) are what extend the returned `TimeOrdering`.
+
+The two world-minting rules (`.boxNeg`, `.diamondPos`) emit exactly
+`witness :: boxProps ++ diaProps`: the existential witness, plus the modal
+universals `T(□B)` and `F(◇B)` re-labelled into the fresh world. They emit
+**no temporal formulas**. Copying `T(Gφ)`, `T(Hφ)`, `F(Fφ)`, `F(Pφ)`,
+`F(U(φ,ψ))` or `F(S(φ,ψ))` from the triggering label's time into the fresh
+world would assert of an alternative world what is only known of the history
+being built — precisely the distinction `□`/`◇` quantify over — and six such
+copy blocks per rule were removed for that reason. Do not reintroduce them, in
+narrowed form or otherwise. Note the contrast with the *time*-minting rules
+below, whose `boxDiamondPersistence` calls relabel `T(□A)`/`F(◇A)` across
+times *within one world*; that is sound and is unaffected.
 -/
 def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
     (timeOrd : TimeOrdering := TimeOrdering.empty) : RuleResult × TimeOrdering :=
@@ -551,28 +563,11 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           let prop := SignedFormula.neg inner { world := freshWorld, time := dsf.label.time }
           if branch.contains prop then none else some prop
         | _ => none
-      -- Cross-modal-temporal: propagate temporal universals at time l.time to fresh world
-      let tempGProps := (branch.allFuturePosAtTime l.time).filterMap fun gsf =>
-        let prop := { gsf with label := { gsf.label with world := freshWorld } }
-        if branch.contains prop then none else some prop
-      let tempHProps := (branch.allPastPosAtTime l.time).filterMap fun hsf =>
-        let prop := { hsf with label := { hsf.label with world := freshWorld } }
-        if branch.contains prop then none else some prop
-      let tempFNegProps := (branch.someFutureNegAtTime l.time).filterMap fun fsf =>
-        let prop := { fsf with label := { fsf.label with world := freshWorld } }
-        if branch.contains prop then none else some prop
-      let tempPNegProps := (branch.somePastNegAtTime l.time).filterMap fun psf =>
-        let prop := { psf with label := { psf.label with world := freshWorld } }
-        if branch.contains prop then none else some prop
-      let tempUNegProps := (branch.untlNegAtTime l.time).filterMap fun usf =>
-        let prop := { usf with label := { usf.label with world := freshWorld } }
-        if branch.contains prop then none else some prop
-      let tempSNegProps := (branch.snceNegAtTime l.time).filterMap fun ssf =>
-        let prop := { ssf with label := { ssf.label with world := freshWorld } }
-        if branch.contains prop then none else some prop
-      let temporalProps :=
-        tempGProps ++ tempHProps ++ tempFNegProps ++ tempPNegProps ++ tempUNegProps ++ tempSNegProps
-      (.linear (witness :: boxProps ++ diaProps ++ temporalProps), timeOrd)
+      -- No cross-modal-temporal propagation. Temporal formulas at `l.time` are NOT copied
+      -- into the fresh world: `T(Gφ)` says φ holds along *this* history's future, which is
+      -- exactly what `□`/`◇` quantify over and therefore exactly what must not be assumed
+      -- of a newly minted alternative world.
+      (.linear (witness :: boxProps ++ diaProps), timeOrd)
   -- T(◇A) → T(A) at fresh witness world + auto-propagate universals (S5 existential)
   | .diamondPos, .pos, φ =>
       match asDiamond? φ with
@@ -595,29 +590,10 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
             let prop := SignedFormula.neg inner { world := freshWorld, time := dsf.label.time }
             if branch.contains prop then none else some prop
           | _ => none
-        -- Cross-modal-temporal: propagate temporal universals at time l.time to fresh world
-        let tempGProps := (branch.allFuturePosAtTime l.time).filterMap fun gsf =>
-          let prop := { gsf with label := { gsf.label with world := freshWorld } }
-          if branch.contains prop then none else some prop
-        let tempHProps := (branch.allPastPosAtTime l.time).filterMap fun hsf =>
-          let prop := { hsf with label := { hsf.label with world := freshWorld } }
-          if branch.contains prop then none else some prop
-        let tempFNegProps := (branch.someFutureNegAtTime l.time).filterMap fun fsf =>
-          let prop := { fsf with label := { fsf.label with world := freshWorld } }
-          if branch.contains prop then none else some prop
-        let tempPNegProps := (branch.somePastNegAtTime l.time).filterMap fun psf =>
-          let prop := { psf with label := { psf.label with world := freshWorld } }
-          if branch.contains prop then none else some prop
-        let tempUNegProps := (branch.untlNegAtTime l.time).filterMap fun usf =>
-          let prop := { usf with label := { usf.label with world := freshWorld } }
-          if branch.contains prop then none else some prop
-        let tempSNegProps := (branch.snceNegAtTime l.time).filterMap fun ssf =>
-          let prop := { ssf with label := { ssf.label with world := freshWorld } }
-          if branch.contains prop then none else some prop
-        let temporalProps :=
-          tempGProps ++ tempHProps ++ tempFNegProps ++ tempPNegProps ++ tempUNegProps ++
-          tempSNegProps
-        (.linear (witness :: boxProps ++ diaProps ++ temporalProps), timeOrd)
+        -- No cross-modal-temporal propagation. See the matching note in `.boxNeg` above:
+        -- copying `T(Gφ)`/`T(Hφ)`/`F(Fφ)`/`F(Pφ)`/`F(U ..)`/`F(S ..)` from `l.time` into the
+        -- fresh world would assume of an alternative world what is only known of this one.
+        (.linear (witness :: boxProps ++ diaProps), timeOrd)
       | none => (.notApplicable, timeOrd)
   -- F(◇A) → propagate F(A) to all known worlds (S5 universal, persistent)
   | .diamondNeg, .neg, φ =>

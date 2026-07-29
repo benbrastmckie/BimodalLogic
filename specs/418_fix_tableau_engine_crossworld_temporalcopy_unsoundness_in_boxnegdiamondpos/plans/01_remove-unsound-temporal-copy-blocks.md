@@ -1,7 +1,7 @@
 # Implementation Plan: Task #418
 
 - **Task**: 418 - fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11.25 hours
 - **Dependencies**: None (this task unblocks task 165 Phase 7.2)
 - **Research Inputs**: specs/165_establish_semantic_finite_model_property/reports/08_spawn-analysis.md
@@ -205,7 +205,7 @@ nothing overlapping. Do not parallelize it.
 
 ---
 
-### Phase 1: Build-Reliability Protocol and Concurrency Guard [NOT STARTED]
+### Phase 1: Build-Reliability Protocol and Concurrency Guard [COMPLETED]
 
 **Goal**: Establish the advisory build lock and the infra-vs-verdict triage procedure that every
 later phase depends on, and record the clone's starting build state so mid-task olean loss is
@@ -245,7 +245,7 @@ detectable rather than merely suspected.
 
 ---
 
-### Phase 2: BEFORE Baseline — Full Corpus Capture on Unmodified Source [NOT STARTED]
+### Phase 2: BEFORE Baseline — Full Corpus Capture on Unmodified Source [COMPLETED]
 
 **Goal**: Capture the complete pre-fix verdict state of the library and the conformance corpus,
 so every post-fix change is attributable and nothing pre-existing is misread as a regression.
@@ -303,7 +303,7 @@ No `.lean` file is modified in this phase.
 
 ---
 
-### Phase 3: Remove the Six Group-3 Blocks from boxNeg and diamondPos [NOT STARTED]
+### Phase 3: Remove the Six Group-3 Blocks from boxNeg and diamondPos [COMPLETED]
 
 **Goal**: Perform the actual soundness fix — a pure deletion of twelve `let` blocks and two
 assembly lines — and confirm the single edited module compiles.
@@ -358,7 +358,7 @@ after) rather than reproducing this estimate.
 
 ---
 
-### Phase 4: Restore the Library Build and Refresh Stale Bridge Prose [NOT STARTED]
+### Phase 4: Restore the Library Build and Refresh Stale Bridge Prose [IN PROGRESS]
 
 **Goal**: Get `lake build` (the whole `FormalSystem` library) green, repairing any proof whose
 tactic script was written against the old `applyRule` term structure, and correcting the bridge
