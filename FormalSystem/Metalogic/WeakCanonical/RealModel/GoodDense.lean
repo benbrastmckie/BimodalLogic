@@ -257,4 +257,160 @@ theorem goodDense_of_orderIso (sig : MonadicSignature) [Fintype sig.preds] [Deci
     (hN : goodDense sig k N) : goodDense sig k M :=
   goodDense_of_kEquiv sig k (k_equiv_of_iso sig k M N f h_pred) hN
 
+/-! ## Which sets of reals are open intervals
+
+Reynolds' *"with an open interval of `R` as a flow"* and *"has flow isomorphic to `R`"* are the
+two places §8 leans on the order type of the real line. Both need the same fact: an interval of
+`ℝ` with no end points is order-isomorphic to `(0,1)`. That is proved here, once, and consumed
+twice.
+-/
+
+/-- The affine order isomorphism `(a,b) ≃o (c,d)` between two non-degenerate bounded open
+    intervals of `ℝ`. -/
+noncomputable def iooIsoIoo {a b c d : ℝ} (hab : a < b) (hcd : c < d) :
+    Set.Ioo a b ≃o Set.Ioo c d := by
+  have hba : (0 : ℝ) < b - a := sub_pos.mpr hab
+  have hdc : (0 : ℝ) < d - c := sub_pos.mpr hcd
+  refine StrictMono.orderIsoOfRightInverse
+    (fun x => ⟨c + (x.val - a) * ((d - c) / (b - a)), ?_, ?_⟩) ?_
+    (fun y => ⟨a + (y.val - c) * ((b - a) / (d - c)), ?_, ?_⟩) ?_
+  · have hx : a < x.val := x.property.1
+    have : 0 < (x.val - a) * ((d - c) / (b - a)) :=
+      mul_pos (sub_pos.mpr hx) (div_pos hdc hba)
+    linarith
+  · have hx : x.val < b := x.property.2
+    have h1 : (x.val - a) * ((d - c) / (b - a)) < (b - a) * ((d - c) / (b - a)) :=
+      mul_lt_mul_of_pos_right (by linarith) (div_pos hdc hba)
+    have h2 : (b - a) * ((d - c) / (b - a)) = d - c := by field_simp
+    linarith [h1, h2 ▸ h1]
+  · intro x y hxy
+    have hxy' : x.val < y.val := hxy
+    have : (x.val - a) * ((d - c) / (b - a)) < (y.val - a) * ((d - c) / (b - a)) :=
+      mul_lt_mul_of_pos_right (by linarith) (div_pos hdc hba)
+    exact Subtype.mk_lt_mk.mpr (by linarith)
+  · have hy : c < y.val := y.property.1
+    have : 0 < (y.val - c) * ((b - a) / (d - c)) :=
+      mul_pos (sub_pos.mpr hy) (div_pos hba hdc)
+    linarith
+  · have hy : y.val < d := y.property.2
+    have h1 : (y.val - c) * ((b - a) / (d - c)) < (d - c) * ((b - a) / (d - c)) :=
+      mul_lt_mul_of_pos_right (by linarith) (div_pos hba hdc)
+    have h2 : (d - c) * ((b - a) / (d - c)) = b - a := by field_simp
+    linarith [h1, h2 ▸ h1]
+  · intro y
+    apply Subtype.ext
+    show c + ((a + (y.val - c) * ((b - a) / (d - c))) - a) * ((d - c) / (b - a)) = y.val
+    have hba' : b - a ≠ 0 := ne_of_gt hba
+    have hdc' : d - c ≠ 0 := ne_of_gt hdc
+    field_simp
+    ring
+
+/-- `(a, ∞) ≃o ℝ`, by `x ↦ log (x - a)`. -/
+noncomputable def ioiIsoReal (a : ℝ) : Set.Ioi a ≃o ℝ := by
+  refine StrictMono.orderIsoOfRightInverse (fun x => Real.log (x.val - a)) ?_
+    (fun y => ⟨a + Real.exp y, ?_⟩) ?_
+  · intro x y hxy
+    exact Real.log_lt_log (sub_pos.mpr x.property) (by have : x.val < y.val := hxy; linarith)
+  · have := Real.exp_pos y
+    simp only [Set.mem_Ioi]
+    linarith
+  · intro y
+    show Real.log (a + Real.exp y - a) = y
+    rw [show a + Real.exp y - a = Real.exp y by ring, Real.log_exp]
+
+/-- `(-∞, b) ≃o ℝ`, by `x ↦ -log (b - x)`. -/
+noncomputable def iioIsoReal (b : ℝ) : Set.Iio b ≃o ℝ := by
+  refine StrictMono.orderIsoOfRightInverse (fun x => -Real.log (b - x.val)) ?_
+    (fun y => ⟨b - Real.exp (-y), ?_⟩) ?_
+  · intro x y hxy
+    have hxy' : x.val < y.val := hxy
+    have : Real.log (b - y.val) < Real.log (b - x.val) :=
+      Real.log_lt_log (sub_pos.mpr y.property) (by linarith)
+    simpa using this
+  · have := Real.exp_pos (-y)
+    simp only [Set.mem_Iio]
+    linarith
+  · intro y
+    show -Real.log (b - (b - Real.exp (-y))) = y
+    rw [show b - (b - Real.exp (-y)) = Real.exp (-y) by ring, Real.log_exp, neg_neg]
+
+/-- `ℝ ≃o (0,1)`, from Mathlib's `orderIsoIooNegOneOne` composed with an affine rescaling. -/
+noncomputable def realIsoIoo01 : ℝ ≃o Set.Ioo (0 : ℝ) 1 :=
+  (orderIsoIooNegOneOne ℝ).trans (iooIsoIoo (by norm_num : (-1 : ℝ) < 1) (by norm_num))
+
+/-- `Set.univ ≃o ℝ`. -/
+def univIsoReal : (Set.univ : Set ℝ) ≃o ℝ where
+  toFun x := x.val
+  invFun y := ⟨y, Set.mem_univ y⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+  map_rel_iff' := Iff.rfl
+
+/--
+An interval of `ℝ` with no end points is order-isomorphic to `(0,1)`.
+
+The four shapes an interval with no end points can take — `(a,b)`, `(a,∞)`, `(-∞,b)` and `ℝ` —
+are separated by `BddBelow`/`BddAbove` and identified through `sInf`/`sSup`; each is then carried
+to `(0,1)`.
+
+This is the content behind Reynolds' *"with an open interval of `R` as a flow"* (printed p.185).
+-/
+theorem exists_orderIso_ioo01_of_ordConnected (s : Set ℝ) (hc : s.OrdConnected)
+    (hne : s.Nonempty) (hmax : ∀ x ∈ s, ∃ y ∈ s, x < y) (hmin : ∀ x ∈ s, ∃ y ∈ s, y < x) :
+    Nonempty (s ≃o Set.Ioo (0 : ℝ) 1) := by
+  -- Every point of `s` is strictly inside whichever bounds `s` has.
+  have h_inf_lt : ∀ x ∈ s, BddBelow s → sInf s < x := by
+    intro x hx hb
+    obtain ⟨y, hy, hyx⟩ := hmin x hx
+    exact lt_of_le_of_lt (csInf_le hb hy) hyx
+  have h_lt_sup : ∀ x ∈ s, BddAbove s → x < sSup s := by
+    intro x hx ha
+    obtain ⟨y, hy, hxy⟩ := hmax x hx
+    exact lt_of_lt_of_le hxy (le_csSup ha hy)
+  by_cases hb : BddBelow s <;> by_cases ha : BddAbove s
+  · -- Bounded both ways: `s = (sInf s, sSup s)`.
+    obtain ⟨p, hp⟩ := hne
+    have hlt : sInf s < sSup s := lt_trans (h_inf_lt p hp hb) (h_lt_sup p hp ha)
+    have hs : s = Set.Ioo (sInf s) (sSup s) := by
+      ext x
+      constructor
+      · intro hx; exact ⟨h_inf_lt x hx hb, h_lt_sup x hx ha⟩
+      · rintro ⟨h1, h2⟩
+        obtain ⟨y, hy, hyx⟩ := exists_lt_of_csInf_lt ⟨p, hp⟩ h1
+        obtain ⟨z, hz, hxz⟩ := exists_lt_of_lt_csSup ⟨p, hp⟩ h2
+        exact hc.out hy hz ⟨le_of_lt hyx, le_of_lt hxz⟩
+    exact ⟨(OrderIso.setCongr _ _ hs).trans (iooIsoIoo hlt (by norm_num))⟩
+  · -- Bounded below only: `s = (sInf s, ∞)`.
+    obtain ⟨p, hp⟩ := hne
+    have hs : s = Set.Ioi (sInf s) := by
+      ext x
+      constructor
+      · intro hx; exact h_inf_lt x hx hb
+      · intro h1
+        obtain ⟨y, hy, hyx⟩ := exists_lt_of_csInf_lt ⟨p, hp⟩ h1
+        obtain ⟨z, hz, hxz⟩ := (not_bddAbove_iff.mp ha) x
+        exact hc.out hy hz ⟨le_of_lt hyx, le_of_lt hxz⟩
+    exact ⟨((OrderIso.setCongr _ _ hs).trans (ioiIsoReal _)).trans realIsoIoo01⟩
+  · -- Bounded above only: `s = (-∞, sSup s)`.
+    obtain ⟨p, hp⟩ := hne
+    have hs : s = Set.Iio (sSup s) := by
+      ext x
+      constructor
+      · intro hx; exact h_lt_sup x hx ha
+      · intro h2
+        obtain ⟨z, hz, hxz⟩ := exists_lt_of_lt_csSup ⟨p, hp⟩ h2
+        obtain ⟨y, hy, hyx⟩ := (not_bddBelow_iff.mp hb) x
+        exact hc.out hy hz ⟨le_of_lt hyx, le_of_lt hxz⟩
+    exact ⟨((OrderIso.setCongr _ _ hs).trans (iioIsoReal _)).trans realIsoIoo01⟩
+  · -- Unbounded both ways: `s = ℝ`.
+    have hs : s = Set.univ := by
+      ext x
+      constructor
+      · intro _; trivial
+      · intro _
+        obtain ⟨y, hy, hyx⟩ := (not_bddBelow_iff.mp hb) x
+        obtain ⟨z, hz, hxz⟩ := (not_bddAbove_iff.mp ha) x
+        exact hc.out hy hz ⟨le_of_lt hyx, le_of_lt hxz⟩
+    exact ⟨((OrderIso.setCongr _ _ hs).trans univIsoReal).trans realIsoIoo01⟩
+
 end FormalSystem.Metalogic.WeakCanonical
