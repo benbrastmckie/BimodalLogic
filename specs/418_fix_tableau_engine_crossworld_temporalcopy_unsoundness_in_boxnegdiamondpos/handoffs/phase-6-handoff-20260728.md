@@ -9,7 +9,7 @@
 | 3 The deletion | [COMPLETED] |
 | 4 Library build + prose | [COMPLETED] |
 | 5 `boxAnchoredCheck` finding | [COMPLETED] |
-| 6 AFTER corpus measurement | **[PARTIAL]** — 4 of 8 probe modules measured |
+| 6 AFTER corpus measurement | **[PARTIAL]** — 6 of 8 probe modules measured |
 | 7 Adjudicate and realign | [NOT STARTED] |
 | 8 Acceptance gate | [NOT STARTED] |
 
@@ -23,11 +23,12 @@ zero proof repairs. What remains is corpus realignment and the acceptance gate.
    is gone — **budget tens of minutes to hours, in the background, never a foreground timeout.**
    (A 10-minute foreground timeout already killed one attempt and dropped the olean count
    405 → 398; per the protocol that run was discarded as INCONCLUSIVE, not recorded.)
-2. Extract the mismatch set for the four unmeasured modules — `TableauConformance` (27 rows),
-   `BoxNegReachabilityProbe` (12), `CrossWorldPropagationProbe` (5), `BoxNegPreservationProbe` (5)
-   — and append to `artifacts/after-verdicts.md` in the same table format as the 14 already there.
-   Parser: each mismatch is `error: <file>:<line>:0: ❌️ Docstring on \`#guard_msgs\` does not
-   match generated message:` followed by a `- info: <old>` / `+ info: <new>` pair.
+2. Extract the mismatch set for the **two** still-unmeasured modules — `TableauConformance`
+   (27 rows) and `BoxNegReachabilityProbe` (12) — and append to `artifacts/after-verdicts.md` in
+   the same table format as the 17 already there. Parser: each mismatch is
+   `error: <file>:<line>:0: ❌️ Docstring on \`#guard_msgs\` does not match generated message:`
+   followed by a `- info: <old>` / `+ info: <new>` pair. Note the preceding
+   `info: <file>:<eval-line>: <actual>` line belongs to the *same* block, not the next one.
 3. Then Phase 7 (adjudicate + edit the corpus), then Phase 8 (acceptance gate).
 
 ## Measurements already banked
@@ -37,7 +38,20 @@ zero proof repairs. What remains is corpus realignment and the acceptance gate.
   `RegionGateProbe` 10, `RayRegionProbe` 7, `CrossWorldPropagationProbe` 5, `BoxSpreadProbe` 5,
   `BoxNegPreservationProbe` 5. **Phase 7's `grep -c` invariant must match these, not the plan's.**
 - Baseline was **fully green** — zero pre-existing failures, so every move is attributable.
-- **14 moved rows measured**, all bucket (d), no bucket (c). Detail in `after-verdicts.md`.
+- **17 moved rows measured** across 6 of 8 modules: 14 bucket (d), 3 bucket (b), **zero bucket
+  (c)**. No verdict moved anywhere. Detail in `after-verdicts.md`.
+- **The headline result is `BoxNegPreservationProbe` row 3**, which pinned the unsoundness
+  directly (`RuleSound carrierBase .boxNeg` is false because `.boxNeg` emits a same-label
+  opposite-sign pair) and now evaluates `false`. Rows 1 (`2 → 1`) and 4 (`true → false`) give the
+  mechanism. This is fuel-independent evidence that the task achieved its goal.
+- **`CrossWorldPropagationProbe` built green** (1363 s) — all five rows unchanged, including row B
+  which is `isValid ((G p) → □(G p))`. Its *narrative* is nevertheless superseded and Phase 7 must
+  rewrite it: the file's thesis is "the copy is suspect but harmless at the verdict level", and
+  the copy no longer exists.
+- Performance quantified: `CrossWorldPropagationProbe` 1.2 s → 1363 s (~1100×);
+  `BoxNegPreservationProbe` 1048 s. The four low-fuel probe modules are 3-21 s and barely
+  affected. The slow ones are exactly those calling `isValid`/`decide` on formulas that used to
+  close.
 - `boxAnchoredCheck` and `boxGridCheck` both `true → false`; so do `regionGate`,
   `regionLabelCheck`, `rayUpOk`/`rayDnOk`. Detail in `boxanchored-finding.md`.
 

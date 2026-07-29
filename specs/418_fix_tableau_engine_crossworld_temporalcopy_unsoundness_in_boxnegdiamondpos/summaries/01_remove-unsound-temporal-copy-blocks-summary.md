@@ -162,6 +162,12 @@ composition differs from the prediction (`IntTruth.lean:366` is not a carrier;
 3. `boxGridCheck` collapses alongside `boxAnchoredCheck`.
 4. `TemporalWitnessProbe` row D moved at **six** sites, not the predicted five.
 5. The mechanism and carrier-list corrections above.
+6. The plan's Phase 3 check `grep -n 'witness :: boxProps ++ diaProps' Tableau.lean` "returns
+   exactly two lines" now returns **three**. Two are the code sites (lines 570, 596); the third
+   (line 487) is a mention inside the `applyRule` docstring this task added, which quotes the new
+   emitted shape verbatim. Same prose-vs-directive distinction as the 145 → 142 correction. The
+   precise invariant is `grep -cE '^\s*\(\.linear \(witness :: boxProps \+\+ diaProps\), timeOrd\)'`
+   **= 2**, which holds.
 
 ## Plan Deviations
 
