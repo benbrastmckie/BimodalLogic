@@ -1,6 +1,17 @@
 # Phase 29 (cycle 2): the Theorem 6 assembly
 
-- **Task**: 408 — faithful route to strong completeness for `FrameClass.Dedekind`
+- **Task**: 408 — faithful route to completeness for `FrameClass.Dedekind`
+- **Terminus (per the plan's REFRAMING NOTE, head of v10)**: the headline result for this class is
+  **weak** completeness, `completeness_dedekind`, with the finite-context consequence form
+  `consequence_completeness_dedekind` (`Γ : Context = List Formula`) as the terminus pair and weak
+  completeness as its `Γ = []` corollary. *"Strong completeness"* is reserved project-wide for the
+  infinite-premise statement (`Γ : Set Formula`), which is **provably unavailable** here — the
+  Dedekind class consequence relation is not compact (Reynolds 1992 §2, printed p.169; §9 Theorem 7
+  is weak completeness and the restriction is genuine). It is refuted, not merely unproved. The task
+  directory and plan filename retain `strong_completeness` as historical identifiers only; they are
+  not a statement of the target.
+- **Bearing on this dispatch**: none. §8 Theorem 6 is an ingredient of the weak-completeness route,
+  so nothing below is affected either way.
 - **Phase**: 29, *Doets' Theorem — Reynolds §8 Theorem 6*
 - **Plan**: `plans/10_strong-completeness-dedekind-v10.md`
 - **Outcome**: partial (skeleton). Heading stays `[PARTIAL]` — the phase's done-when is
