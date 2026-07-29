@@ -4661,16 +4661,45 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
   p.187's *"`M` is not very good and so there are `a < b` with `a ≁ b`"*, both implications by
   Lemma 11 in contrapositive form.
 - **What is not proved**: `reynolds_theorem6_contradiction` — printed pp.187-188, the
-  `G`-minimality contradiction. **One `sorry`, now at `DoetsTheorem.lean:458`.** Of the three
-  sub-gaps its docstring named, **(1) is discharged**; (2) and (3) remain:
+  `G`-minimality contradiction. **One `sorry`, now at `DoetsTheorem.lean:1000`.** All three
+  sub-gaps its docstring named are now **discharged**; what remains is the assembly that consumes
+  them:
   - ~~(1) the `ε`-adapter~~ — **DONE (sub-phase 29.1)**. `IsContempEquivDenseCD` (`Defs.lean`) is
     the countable-dense bundle, `epsDense_isContempEquivDenseCD` (`EpsilonDense.lean`) discharges
     it sorry-free, `DoetsD1`/`DoetsD2` now take it, and `doetsD1_epsDense` / `doetsD2_epsDense`
     apply Reynolds' hypotheses at `∼_M` outright. All axiom-clean; `IsContempEquivDense.toCD`
     reports `[propext]` alone.
-  - (2) the minimization over the finite `γ`-palette, which has no counterpart in the tree.
-  - (3) the *"classes strictly between have order type `ℚ`"* step, which needs the `∼`-quotient
-    built before `Order.iso_of_countable_dense` can be applied.
+  - ~~(2) the minimization over the finite `γ`-palette~~ — **DONE (sub-phase 29.2)**, Layer 5 of
+    `DoetsTheorem.lean`: `ClassStrictlyBetween`, `contempClassStructure`, `gammaBetween`
+    (Reynolds' `G` at a pair), `mem_gammaBetween`, `gammaBetween_subset`,
+    `exists_minimal_gammaBetween` (*"the following choice makes sense"*),
+    `gammaBetween_eq_of_minimal` (*"by minimality of `G`"*) and `gammaBetween_dense_of_minimal`
+    (*"all the `γᵢ`'s in `G` are satisfied densely in `I`"*). All sorry-free and axiom-clean.
+    Rendering note recorded in the file: `G` is a `Finset (NormalForm sig k 0)` rather than a set
+    of sentences, because `Finset.card` is the size measure and `nfToSentence`-injectivity is not
+    part of what the argument uses.
+  - ~~(3) the *"classes strictly between have order type `ℚ`"* step~~ — **DONE (sub-phases 29.3,
+    29.4)**, Layers 6-7. The quotient is built: `IsConvexEquiv` (clauses (i)+(ii) at one
+    structure), `ltPt_congr` (the well-definedness fact — two distinct classes are *totally*
+    separated, the one essential use of convexity), `ClassQuot` with
+    `instLinearOrderClassQuot` via `linearOrderOfSTO`, `ClassBetween` (Reynolds' `I` as an
+    ordered type), the four order properties from `QuotientDenselyOrdered`, and
+    `nonempty_orderIso_rat_classBetween` by `Order.iso_of_countable_dense`. Layer 7 then
+    discharges that hypothesis *from D1*: `quotientDenselyOrdered_epsDense` is printed p.187's
+    *"By lemma 13 and D1 … thus we have density of `M/∼`"*, and
+    `nonempty_orderIso_rat_classBetween_epsDense` states the order-type-`ℚ` result at Reynolds'
+    own `∼_M` with no abstract hypothesis left. All sorry-free and axiom-clean.
+  - **WHAT NOW REMAINS — one item, not three: the assembly** (printed p.187 line 141 through
+    p.188). Three steps, of which only the last needs a new ingredient:
+    1. *The shuffle map.* Transport `Σ_{E∈I} M|E` to `Σ_{q∈ℚ} σ(q)` along the landed `I ≃o ℚ`,
+       choosing `N_γ ⊨ γ` per `γ ∈ G` and `σ` from `gammaBetween_dense_of_minimal`. Transport
+       layer (`kEquiv_orderedSum_blocks`, `Shuffle.lean:424`) and density input are both landed;
+       what must be written is the choice of `σ` and the discharge of `IsShuffleMap`.
+    2. *The `ℝ`-extension and the flow.* `doets_lemma_1_5` plus Phase 28's `≅o ℝ`
+       characterization — application of landed assets, not new mathematics.
+    3. *The three-summand decomposition* `M|(c,d) = M|(c,c'] + M|⋃I + M|[d',d)`, with `c'`/`d'`
+       the attained class end points Lemma 13 supplies, then `M|(c,d) ≡ₖ X + 𝓡 + Y` via
+       `doets_lemma_1_4`. **This is the one genuinely missing ingredient in the tree.**
 - **NEW OBLIGATION SURFACED, and deliberately not hidden.** Weakening D1/D2's antecedent is what
   made (1) closable, and it makes D1/D2 correspondingly *harder to discharge* — Phase 30's
   suppliers (`no_gaps_dense_prior`, `no_gaps_dense_prior_left`, `dense_singletons_of_sep`) all
@@ -4707,7 +4736,10 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
         `exists_not_simDense_of_not_goodDense`; "so `M|(⋃I) ≡ₖ` a shuffle (26), extend to `ℝ`
         (27), the flow is `≅o ℝ` (28)" as `goodDense_shuffle` /
         `exists_realFlow_of_kEquiv_shuffle`. The `G`-minimality contradiction that consumes them
-        is the tracked sorry at `DoetsTheorem.lean:415`.)*
+        is the tracked sorry at `DoetsTheorem.lean:1000`. Sub-phases 29.2-29.4 landed Reynolds'
+        `G` and its minimization, `M/∼` as a linear order, Reynolds' `I` with order type `ℚ`, and
+        density of `M/∼` from D1 — so all three named sub-gaps are discharged and the residual is
+        now the assembly alone.)*
         Lemma 11 there are ≥ 2 `∼`-classes; by Lemma 13 and D1 there is a third between any two, so
         `M/∼` is dense and D2 gives density of singletons. Choose `a < b` with `a ≁ b` and `G`
         minimal; show `M|(a,b)` is very good, contradiction. For `a < c < d < b` with `c ≁ d`: the
