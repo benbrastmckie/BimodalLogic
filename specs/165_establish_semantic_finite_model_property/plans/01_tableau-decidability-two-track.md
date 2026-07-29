@@ -2345,6 +2345,45 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
 
+**PHASE 7 STATUS (2026-07-29b) — the `RuleSound` statement blocker is CLOSED. 7.2 goes 18 → 23,
+and the denominator is corrected from 28 to 34.** Seven green commits, each verified by
+`git show --stat`. `lake build FormalSystem.Metalogic.Decidability.Verified.Decidable` green
+(1350 jobs); `lake env lean` green on `Tableau.lean` and `Verified/Decidable.lean`; sorry census
+over `Verified/` reports `0`.
+
+1. **THE AUTHORIZED STATEMENT CHANGE LANDED, IN ITS CORRECTED FORM.** `RuleSound` now carries
+   `OrdWithin b ord := ∀ p ∈ ord.constraints, p.1 ∈ b.knownTimes ∧ p.2 ∈ b.knownTimes` as its
+   **last** hypothesis, after `SatState`. The *membership* form, not the numeric `< b.nextTime`
+   form the prior dispatch proposed: the numeric bound is refuted as an inductive invariant by
+   the identification arm of `timeLinearity`, the engine's one non-additive step, which can lower
+   `nextTime` while a constraint endpoint survives the rewrite. Membership is stable under exactly
+   that operation and implies the numeric bound (`OrdWithin.bound`), so the fresh-time producers
+   lose nothing. 19 sites, not 18 — `RuleSound.mono` needed an extra `intro` *and* an extra
+   `exact` argument. Position was load-bearing exactly as predicted; all 18 rule proofs take one
+   appended anonymous `intro` and none consumes the hypothesis.
+2. **ALL FOUR FRESH-TIME EXISTENTIALS ARE PROVED**, sorry-free: `allFutureNeg`, `allPastNeg`,
+   `someFuturePos`, `somePastPos`. Plus `denseIndicatorClosure` (emits `.linear []`, so the
+   handed-in state discharges it; proved at `carrierBase`, reusable at `.Dense` through
+   `RuleSound.mono`). The three latter existentials went green on the first attempt against the
+   infrastructure the first one established.
+3. **THE DENOMINATOR IS 34, NOT 28.** `TableauRule` has 36 constructors; `allRules` has 26;
+   `+ denseRules` 2 `+ discreteRules` 3 `+ dedekindRules` 3 = 34 reachable through
+   `allRulesForFC`; `+ serialityRule + timeLinearity` = 36 the engine actually fires. Line 177 of
+   this plan already warned against the "28" figure and the warning had been going unread for
+   several dispatches. Older banners below retain "of 28" as written; they are historical record.
+4. **A NEW ENGINE DEFECT BLOCKS THE `untl`/`snce` FAMILY**, independent of the ordering gap just
+   closed and of the same family as the group-3 defect already removed from `boxNeg`/`diamondPos`.
+   `untlPos`, `sncePos` and the ACTIVE arms of `untlNeg`/`snceNeg` copy `F(U(e', g'))`
+   *unconditionally* from the trigger's time to the minted time. `Until`'s truth is
+   interval-relative, so — unlike the `□`/`◇` copies, which are `Ω`-universal and so
+   time-invariant under shift-closure — no transfer argument exists. Counterexample recorded in
+   full in `Verified/Decidable.lean`: with `e'` true exactly on `{1/n}` and `g'` false exactly on
+   `{1/n}`, `¬U(e', g')` holds at `0` but `U(e', g')` holds at every `d ∈ (0,1)`, and every
+   witness time either emitted branch admits lies in that range. ESCALATED, not repaired: it is an
+   engine change and needs the conformance corpus as its acceptance gate, as task 418's did.
+   The PASSIVE arm of `untlNeg`/`snceNeg` is sound and provable today, but cannot land alone
+   because `RuleSound` is stated per rule and `untlNeg` owns both arms.
+
 **PHASE 7 STATUS (2026-07-29a) — 7.2 is at 18 of 28 rules sorry-free, and the engine blocker
 that closed the previous dispatch is RESOLVED. A NEW blocker replaces it, in `RuleSound`'s own
 statement rather than in the engine, and it is escalated rather than taken.** Four green commits.
