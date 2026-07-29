@@ -2345,6 +2345,67 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
 
+**PHASE 7 STATUS (2026-07-29a) — 7.2 is at 18 of 28 rules sorry-free, and the engine blocker
+that closed the previous dispatch is RESOLVED. A NEW blocker replaces it, in `RuleSound`'s own
+statement rather than in the engine, and it is escalated rather than taken.** Four green commits.
+`lake build FormalSystem.Metalogic.Decidability.Verified.Decidable` green (exit 0, 1350 jobs);
+`lake env lean` green on `Tableau.lean` and on `Verified/Decidable.lean`; sorry census over
+`Verified/` reports `0`. **The full conformance corpus (`Tests/BimodalTest/TableauConformance.lean`,
+27 rows) ran to completion, exit 0, every `#guard_msgs` row matching** — the acceptance gate the
+previous handoff demanded, satisfied.
+
+*The engine fix had already landed, under a different task.* The previous handoff's top
+obligation was to remove the six group-3 temporal-copy blocks from `boxNeg`/`diamondPos`. That
+was done by task 418 (commit `c2a25cfb5`), gated on the full corpus, with baseline and after
+verdicts recorded under that task's `artifacts/`. Verified here rather than assumed: the six
+identifiers are absent from `Tableau.lean`, and `applyRule`'s docstring now carries the
+prohibition against reintroducing them. **Nothing was re-done.**
+
+*What landed here.* (1) `mem_boxDiamondPersistence_label`, the label-level companion the four
+fresh-time rules were said to be blocked on — it recovers the fresh label `(w, ft)` and the
+source label `(w, t)` with matching sign and formula, where `mem_boxDiamondPersistence` recovers
+only the formula. Prop-valued, additive, one `Tableau.lean` rebuild as the handoff advised.
+(2) **`ruleSound_boxNeg` and `ruleSound_diamondPos`**, taking 16 → 18, together with the two
+shared helpers `satAt_of_mem_boxProps` and `satAt_of_mem_diaProps`.
+
+*Why the two fresh-world rules were reopened despite a DO-NOT-RE-ATTEMPT entry.* The register
+said both "remain false, now for a strictly stronger reason". That entry's premise was the
+presence of the group-3 blocks. The blocks are gone, so the premise is void and the entry with
+it. This is the same failure mode the previous dispatch's own process lesson named — reusing a
+recorded value in a new argument without rechecking its meaning — applied to the register itself.
+Both rules are now proved, sorry-free, first-attempt-green.
+
+*THE NEW BLOCKER, at the four-element bar, and it is a statement defect, not an engine defect.*
+`RuleSound carrierBase r` is **false** for all six fresh-*time* producers (`allFutureNeg`,
+`allPastNeg`, `someFuturePos`, `somePastPos`, and the `untl`/`snce` fresh-time arms).
+`Branch.nextTime` is `b.maxTime + 1`, a function of the *branch* alone; `SatState`'s four fields
+relate `ord`'s times to `b`'s times in none of them; and `RuleSound` quantifies over `b` and
+`ord` independently. So `ord` may already mention `b.nextTime`, and since `addFuture` merely
+conses, the successor ordering can be cyclic — at which point **no** re-choice of `tv` satisfies
+`ordResp`. Proved, not argued: `addFuture_nextTime_cycle_unsatisfiable` and
+`addPast_nextTime_cycle_unsatisfiable` in `Verified/Decidable.lean`. The engine never builds such
+an ordering (it threads from `TimeOrdering.empty` and only ever adds an edge to a genuinely fresh
+index), which is exactly why this is a defect in the statement.
+
+*Two remedies, both escalated per `plan-compliance.md` rather than taken.* (1) A fifth `SatState`
+field bounding `ord`'s times by `b.nextTime` — **measured obstruction: this is blocked, not
+merely costly.** Any such field mentions `b` positively, and `SatState.mono` weakens `b` to a
+sublist with a *smaller* `nextTime`, so the field does not survive `mono`, which is consumed
+throughout. (2) A well-formedness hypothesis on `RuleSound` — `∀ p ∈ ord.constraints, p.1 <
+b.nextTime ∧ p.2 < b.nextTime`. Survives `mono`, costs the eighteen landed proofs one `intro`
+each, discharged at the assembly by induction from `TimeOrdering.empty`. Remedy 2 is a genuine
+weakening of `RuleSound` and needs approval as such. **It is NOT the schedule-reachability
+weakening that was measured and closed**: it does not restrict which branches the engine builds
+and is not tailored to exclude a counterexample; it is a well-formedness condition on the
+`(branch, ordering)` pair, discharged by construction. The distinction is real; the choice is the
+user's.
+
+*Carried forward for 7.3, from task 418's own measurement and unrepaired there.* Post-fix,
+`buildTableau ((G p) → □(G p)) 1000 .Base` returns **fuel-exhausted `(0,0)`**, not `.hasOpen`, and
+`decide` returns `.fuelExhausted`, not `.invalid` with a countermodel. The wrong-verdict defect is
+gone (`fuelExhausted` is honest ignorance where `extractionFailed` asserted validity), but the
+countermodel 7.3 needs is still owed, and each such search now costs ≈860 s.
+
 **PHASE 7 STATUS (2026-07-28t) — still PARTIAL after a fifteenth dispatch. 7.2 is at 16 of 28
 rules sorry-free, and the `RuleSound`-weakening fork is SETTLED — by refuting the premise both
 of its branches shared. 7.2 is now BLOCKED on an engine defect, recorded below.**
