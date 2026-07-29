@@ -241,4 +241,147 @@ theorem reynolds_lemma13 (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure s
         ∀ y : M.carrier, y < z → ¬ SimDense sig k M t y) :=
   ⟨reynolds_lemma13_right k hk M t (hnogap t).1, reynolds_lemma13_left k hk M t (hnogap t).2⟩
 
+/-! ## Reindexing a lexicographic sum along an order isomorphism
+
+`doets_lemma_1_4` (`OrderedSum.lean:41`) compares two sums **over the same index set**. Reynolds'
+shuffle step compares a sum over the set `I` of `∼`-classes with a sum over `ℚ`, along the order
+isomorphism `I ≃o ℚ` supplied by *"the classes in `I` … have order type `ℚ`"* (printed p.187).
+The bridge is purely order-theoretic: relabelling the index of a lexicographic sum by an order
+isomorphism is an isomorphism of structures, hence a `k`-equivalence.
+-/
+
+/-- Relabelling the index of a lexicographic sum: `Σ_{i∈I} m(e i) ≃ Σ_{j∈J} m(j)`.
+
+`Equiv.sigmaCongrLeft` supplies the underlying bijection; the content added here is that it is
+monotone for the two lexicographic orders. -/
+def orderedSumReindexEquiv {I J : Type} [LinearOrder I] [LinearOrder J]
+    (e : I ≃o J) (m : J → OrderedMonadicStructure sig) :
+    (orderedSum sig I (fun i => m (e i))).carrier ≃ (orderedSum sig J m).carrier :=
+  Equiv.sigmaCongrLeft (β := fun j => (m j).carrier) e.toEquiv
+
+/-- **Relabelling the index of a lexicographic sum preserves `≡ₖ`.** -/
+theorem kEquiv_orderedSum_reindex (k : Nat) {I J : Type}
+    [LinearOrder I] [LinearOrder J] (e : I ≃o J) (m : J → OrderedMonadicStructure sig) :
+    KEquiv sig k (orderedSum sig I (fun i => m (e i))) (orderedSum sig J m) := by
+  letI instI : LinearOrder (orderedSum sig I (fun i => m (e i))).carrier :=
+    (orderedSum sig I (fun i => m (e i))).carrierOrder
+  letI instJ : LinearOrder (orderedSum sig J m).carrier := (orderedSum sig J m).carrierOrder
+  have hmono : ∀ x y : (orderedSum sig I (fun i => m (e i))).carrier, x < y →
+      orderedSumReindexEquiv e m x < orderedSumReindexEquiv e m y := by
+    rintro ⟨i, c⟩ ⟨i', c'⟩ hlt
+    rcases Sigma.Lex.lt_def.mp hlt with hij | ⟨hij, hcc⟩
+    · exact Sigma.Lex.lt_def.mpr (Or.inl (e.lt_iff_lt.mpr hij))
+    · have heq : i = i' := hij
+      subst heq
+      exact Sigma.Lex.lt_def.mpr (Or.inr ⟨rfl, hcc⟩)
+  have hmono' : ∀ x y : (orderedSum sig J m).carrier, x < y →
+      (orderedSumReindexEquiv e m).symm x < (orderedSumReindexEquiv e m).symm y := by
+    intro x y hlt
+    by_contra hle
+    rcases lt_trichotomy ((orderedSumReindexEquiv e m).symm x)
+        ((orderedSumReindexEquiv e m).symm y) with h | h | h
+    · exact hle h
+    · exact absurd ((orderedSumReindexEquiv e m).symm.injective h) (ne_of_lt hlt)
+    · exact absurd hlt (asymm (by
+        simpa using hmono _ _ h))
+  exact k_equiv_of_iso sig k _ _
+    (Equiv.toOrderIso (orderedSumReindexEquiv e m)
+      (fun x y h => le_of_eq_of_le rfl (by
+        rcases eq_or_lt_of_le h with rfl | h' <;> [exact le_refl _; exact le_of_lt (hmono _ _ h')]))
+      (fun x y h => by
+        rcases eq_or_lt_of_le h with rfl | h' <;> [exact le_refl _; exact le_of_lt (hmono' _ _ h')]))
+    (fun p x => by rcases x with ⟨i, c⟩; exact Iff.rfl)
+
+/-- **Sums over order-isomorphic index sets are `≡ₖ`**, when matched summands are.
+
+This is `doets_lemma_1_4` composed with `kEquiv_orderedSum_reindex`, and is the form Reynolds'
+*"since lexicographic sums preserve `k`-equivalence we can choose `σ : ℚ → {N_γ | γ ∈ G}`
+appropriately"* (printed p.187) actually needs. -/
+theorem kEquiv_orderedSum_of_orderIso (k : Nat) {I J : Type}
+    [LinearOrder I] [LinearOrder J] (e : I ≃o J) (m : I → OrderedMonadicStructure sig)
+    (m' : J → OrderedMonadicStructure sig) (h : ∀ i : I, KEquiv sig k (m i) (m' (e i))) :
+    KEquiv sig k (orderedSum sig I m) (orderedSum sig J m') :=
+  (doets_lemma_1_4 sig k I m (fun i => m' (e i)) h).trans
+    (kEquiv_orderedSum_reindex k e m')
+
+/-! ## The shuffle
+
+Printed p.186: *"suppose that `S` is a finite set of structures. Let `π : ℚ → S` be any map such
+that for any `M ∈ S`, for any `r, s ∈ ℚ`, there is `t ∈ ℚ` such that `r < t < s` and `π(t) = M`.
+We call the structure `Σ_{t∈ℚ} π(t)` the shuffle over `S`."*
+
+The finite set `S` is carried as a `Finset` of an index type `ι` together with a family
+`N : ι → OrderedMonadicStructure sig`, rather than as a `Finset` of structures: structures do not
+carry `DecidableEq`, and Reynolds' own use instantiates `ι` at the `γ`'s of `G`, which do.
+-/
+
+/-- **Reynolds' density condition on a shuffle map** (printed p.186): `π` takes every value of
+`S`, and takes each of them somewhere strictly inside every rational interval. -/
+def IsShuffleMap {ι : Type} (S : Finset ι) (π : ℚ → ι) : Prop :=
+  (∀ q : ℚ, π q ∈ S) ∧
+    ∀ i ∈ S, ∀ r s : ℚ, r < s → ∃ t : ℚ, r < t ∧ t < s ∧ π t = i
+
+/-- **The shuffle** `Σ_{t∈ℚ} π(t)` over a family of structures (printed p.186).
+
+The density condition `IsShuffleMap` is *not* baked into the definition: the sum
+`Σ_{t∈ℚ} N(π t)` makes sense for any `π`, and every result below that needs density takes it as
+a hypothesis. This keeps the congruence lemmas free of a side condition they do not use. -/
+noncomputable def shuffle {ι : Type}
+    (N : ι → OrderedMonadicStructure sig) (π : ℚ → ι) : OrderedMonadicStructure sig :=
+  orderedSum sig ℚ (fun q => N (π q))
+
+/-- **The shuffle is a congruence for `≡ₖ` in its summands**: one application of
+`doets_lemma_1_4` over `ℚ`. -/
+theorem kEquiv_shuffle_congr (k : Nat) {ι : Type}
+    {N N' : ι → OrderedMonadicStructure sig} (π : ℚ → ι)
+    (h : ∀ i : ι, KEquiv sig k (N i) (N' i)) :
+    KEquiv sig k (shuffle N π) (shuffle N' π) :=
+  doets_lemma_1_4 sig k ℚ _ _ (fun q => h (π q))
+
+/-- **The shuffle is well defined under colour-preserving reindexing of `ℚ`**: if an order
+automorphism `e` of `ℚ` carries `π'` to `π`, the two shuffles are isomorphic, hence `≡ₖ`.
+
+This is the reindexing half of Reynolds' *"it can be shown to be well defined up to
+isomorphism"* (printed p.186), and the half the downstream proof uses. The other half — that
+**any** two dense `π, π'` over the same `S` are related by such an `e`, by a colour-preserving
+Cantor back-and-forth — is not formalised here; see the module header's `FOLLOW-UP`. -/
+theorem kEquiv_shuffle_congr_orderIso (k : Nat) {ι : Type}
+    (N : ι → OrderedMonadicStructure sig) (π π' : ℚ → ι) (e : ℚ ≃o ℚ)
+    (hcolour : ∀ q : ℚ, π' (e q) = π q) :
+    KEquiv sig k (shuffle N π) (shuffle N π') := by
+  refine kEquiv_orderedSum_of_orderIso k e (fun q => N (π q)) (fun q => N (π' q)) ?_
+  intro q
+  rw [hcolour q]
+
+/-- **`Σ_{E∈I} M|E ≡ₖ Σ_{q∈ℚ} σ(q)`** — Reynolds 1992, §8, printed p.187, the shuffle step of
+Doets' theorem:
+
+> *Since we have density of `M/∼`, the classes in `I = {E | E is a ∼-class strictly between c and
+> d}` have order type `ℚ`. Also, by minimality of `G`, all the `γᵢ`'s in `G` are satisfied densely
+> in `I`. … Since lexicographic sums preserve `k`-equivalence we can choose
+> `σ : ℚ → {N_γ | γ ∈ G}` appropriately so that*
+>
+> `M | (⋃ I) = Σ_{E∈I} M|E ≡ₖ Σ_{q∈ℚ} σ(q)`,
+>
+> *the latter structure being a shuffle over `{N_γ | γ ∈ G}`.*
+
+The three hypotheses are Reynolds' three inputs, made explicit:
+
+* `e : I ≃o ℚ` is *"the classes in `I` have order type `ℚ`"*;
+* `hmatch` is *"it is clear that for any `E ∈ I`, `M|E ≡ₖ N_γ` for one of the `γ`'s in `G`"*,
+  together with the choice of `σ` that *"we can choose appropriately"* refers to;
+* `hdense` is *"all the `γᵢ`'s in `G` are satisfied densely in `I`"*, i.e. that the resulting `σ`
+  really is a shuffle map.
+
+`hdense` is carried but not consumed: it is what makes the right-hand side a *shuffle* rather
+than an arbitrary `ℚ`-sum, which is what Phase 27 needs of it, and stating the theorem without it
+would silently drop the source's density requirement. -/
+theorem kEquiv_shuffle_of_classIso (k : Nat) {I ι : Type}
+    [LinearOrder I] (e : I ≃o ℚ) (m : I → OrderedMonadicStructure sig)
+    (N : ι → OrderedMonadicStructure sig) (S : Finset ι) (σ : ℚ → ι)
+    (_hdense : IsShuffleMap S σ)
+    (hmatch : ∀ i : I, KEquiv sig k (m i) (N (σ (e i)))) :
+    KEquiv sig k (orderedSum sig I m) (shuffle N σ) :=
+  kEquiv_orderedSum_of_orderIso k e m (fun q => N (σ q)) hmatch
+
 end FormalSystem.Metalogic.WeakCanonical
