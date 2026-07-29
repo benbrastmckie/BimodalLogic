@@ -102,6 +102,7 @@ Both are recorded as explicit hypotheses on the theorems that need them rather t
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
 variable {sig : MonadicSignature}
 
@@ -469,5 +470,140 @@ theorem relativizeOpenSentence_correct (M : OrderedMonadicStructure sig) (lo hi 
     fin_cases i <;> simp [relativizeOpenEnv]
   rw [henv] at h
   exact h
+
+/-! ## `γ'(z,t)` and `ε(x,y)`
+
+*"Put `γ'(z,t) = γ(z,t) ∧ (∃u(z < u < t))`"*, and then
+
+```
+ε(x, y) =  x < y → ∀z t(x < z < t < y → γ'(z, t))
+        ∧  y < x → ∀z t(y < z < t < x → γ'(z, t))
+```
+
+(printed p.187), transcribed with the source's variable order preserved.
+-/
+
+/--
+**`γ'(z,t)`** (printed p.187): the free variable `0` is `z`, the free variable `1` is `t`.
+
+The second conjunct `∃u(z < u < t)` is the non-emptiness clause; under the binder `u` is `0`,
+`z` is `1` and `t` is `2`.
+-/
+noncomputable def gammaPrime (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) : MonadicFormula sig 2 :=
+  .and (relativizeOpenSentence (gammaDisj sig k)) (.ex (.and (.lt 1 0) (.lt 0 2)))
+
+/-- `γ'(z,t)` says exactly that `M | (z,t)` is non-empty and good — the body of the
+    `veryGoodDense` clause. -/
+theorem eval_gammaPrime (k : Nat) (M : OrderedMonadicStructure sig) (z t : M.carrier) :
+    eval M ![z, t] (gammaPrime sig k) ↔
+      Nonempty (M.openSubinterval sig z t).carrier ∧
+        goodDense sig k (M.openSubinterval sig z t) := by
+  have hgood : eval M ![z, t] (relativizeOpenSentence (gammaDisj sig k)) ↔
+      goodDense sig k (M.openSubinterval sig z t) :=
+    (relativizeOpenSentence_correct M z t (gammaDisj sig k)).trans
+      (goodDense_iff_eval_gammaDisj k (M.openSubinterval sig z t)).symm
+  have hne : eval M ![z, t] (MonadicFormula.ex (.and (.lt 1 0) (.lt 0 2)) : MonadicFormula sig 2) ↔
+      Nonempty (M.openSubinterval sig z t).carrier := by
+    simp only [eval]
+    constructor
+    · rintro ⟨u, h1, h2⟩; exact ⟨⟨u, h1, h2⟩⟩
+    · rintro ⟨⟨u, h1, h2⟩⟩; exact ⟨u, h1, h2⟩
+  simp only [gammaPrime, eval]
+  rw [and_comm]
+  exact and_congr hne hgood
+
+/--
+**`ε(x,y)`** — Reynolds 1992, printed p.187, transcribed verbatim.
+
+De Bruijn layout: the free variable `0` is `x` and `1` is `y`. Under the two quantifiers of each
+conjunct the layout is `t = 0`, `z = 1`, `x = 2`, `y = 3` — the inner binder is `t`, so `z` is the
+outer one, matching the source's `∀z t`.
+-/
+noncomputable def epsDense (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) : MonadicFormula sig 2 :=
+  .and
+    -- x < y → ∀z t (x < z < t < y → γ'(z,t))
+    (.imp (.lt 0 1)
+      (.all (.all (.imp (.and (.lt 2 1) (.and (.lt 1 0) (.lt 0 3)))
+        (epsAt (gammaPrime sig k) 1 0)))))
+    -- y < x → ∀z t (y < z < t < x → γ'(z,t))
+    (.imp (.lt 1 0)
+      (.all (.all (.imp (.and (.lt 3 1) (.and (.lt 1 0) (.lt 0 2)))
+        (epsAt (gammaPrime sig k) 1 0)))))
+
+/-- Unfolding `ε(a,b)`: the two guarded universal clauses, with `γ'` already read semantically. -/
+theorem eval_epsDense (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carrier) :
+    eval M ![a, b] (epsDense sig k) ↔
+      ((a < b → ∀ z t : M.carrier, a < z → z < t → t < b →
+          Nonempty (M.openSubinterval sig z t).carrier ∧
+            goodDense sig k (M.openSubinterval sig z t)) ∧
+       (b < a → ∀ z t : M.carrier, b < z → z < t → t < a →
+          Nonempty (M.openSubinterval sig z t).carrier ∧
+            goodDense sig k (M.openSubinterval sig z t))) := by
+  simp only [epsDense, eval, eval_imp, eval_epsAt, ContempEquivDense, eval_gammaPrime,
+    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Fin.cons_zero, Fin.cons_succ]
+  constructor
+  · rintro ⟨h1, h2⟩
+    refine ⟨fun hab z t hz hzt htb => h1 hab z t ⟨hz, hzt, htb⟩,
+      fun hba z t hz hzt hta => h2 hba z t ⟨hz, hzt, hta⟩⟩
+  · rintro ⟨h1, h2⟩
+    exact ⟨fun hab z t hg => h1 hab z t hg.1 hg.2.1 hg.2.2,
+      fun hba z t hg => h2 hba z t hg.1 hg.2.1 hg.2.2⟩
+
+/-- `veryGoodDense` at an open subinterval, re-expressed with ambient points. This is the form
+    `ε` matches: *"for all `t < u` in `M | (a,b)`, `M | (t,u)` is non-empty and good"*. -/
+theorem veryGoodDense_openSubinterval_iff (k : Nat) (M : OrderedMonadicStructure sig)
+    (a b : M.carrier) :
+    veryGoodDense sig k (M.openSubinterval sig a b) ↔
+      ∀ z t : M.carrier, a < z → z < t → t < b →
+        Nonempty (M.openSubinterval sig z t).carrier ∧
+          goodDense sig k (M.openSubinterval sig z t) := by
+  constructor
+  · intro h z t haz hzt htb
+    have hz : a < z ∧ z < b := ⟨haz, lt_trans hzt htb⟩
+    have ht : a < t ∧ t < b := ⟨lt_trans haz hzt, htb⟩
+    obtain ⟨hne, hgood⟩ := h ⟨z, hz⟩ ⟨t, ht⟩ hzt
+    refine ⟨?_, goodDense_of_kEquiv sig k (kEquiv_openSub_openSub k M a b ⟨z, hz⟩ ⟨t, ht⟩).symm
+      hgood⟩
+    obtain ⟨x⟩ := hne
+    exact ⟨openSubOpenSubEquiv sig M a b ⟨z, hz⟩ ⟨t, ht⟩ x⟩
+  · intro h z t hzt
+    obtain ⟨hne, hgood⟩ := h z.val t.val z.property.1 hzt t.property.2
+    refine ⟨?_, goodDense_of_kEquiv sig k (kEquiv_openSub_openSub k M a b z t) hgood⟩
+    obtain ⟨x⟩ := hne
+    exact ⟨(openSubOpenSubEquiv sig M a b z t).symm x⟩
+
+/--
+**`ε` defines `∼_M`** — Reynolds 1992, printed p.187: *"`ε(x,y)` … is a formula defining
+`∼_M`."*
+
+The three clauses of `SimDense` fall out of trichotomy: at `a = b` both antecedents of `ε` are
+false, and at `a < b` (resp. `b < a`) the surviving conjunct is literally the `veryGoodDense`
+condition on `M | (a,b)` (resp. `M | (b,a)`).
+-/
+theorem contempEquivDense_epsDense_iff (k : Nat) (M : OrderedMonadicStructure sig)
+    (a b : M.carrier) :
+    ContempEquivDense M (epsDense sig k) a b ↔ SimDense sig k M a b := by
+  rw [ContempEquivDense, eval_epsDense, SimDense]
+  rcases lt_trichotomy a b with hab | rfl | hba
+  · constructor
+    · intro h
+      exact Or.inr (Or.inl ⟨hab, (veryGoodDense_openSubinterval_iff k M a b).mpr (h.1 hab)⟩)
+    · rintro (rfl | ⟨_, hv⟩ | ⟨hba, _⟩)
+      · exact absurd hab (lt_irrefl a)
+      · exact ⟨fun _ => (veryGoodDense_openSubinterval_iff k M a b).mp hv,
+          fun hba => absurd hab (asymm hba)⟩
+      · exact absurd hab (asymm hba)
+  · exact ⟨fun _ => Or.inl rfl,
+      fun _ => ⟨fun h => absurd h (lt_irrefl a), fun h => absurd h (lt_irrefl a)⟩⟩
+  · constructor
+    · intro h
+      exact Or.inr (Or.inr ⟨hba, (veryGoodDense_openSubinterval_iff k M b a).mpr (h.2 hba)⟩)
+    · rintro (rfl | ⟨hab, _⟩ | ⟨_, hv⟩)
+      · exact absurd hba (lt_irrefl a)
+      · exact absurd hba (asymm hab)
+      · exact ⟨fun hab => absurd hba (asymm hab),
+          fun _ => (veryGoodDense_openSubinterval_iff k M b a).mp hv⟩
 
 end FormalSystem.Metalogic.WeakCanonical
