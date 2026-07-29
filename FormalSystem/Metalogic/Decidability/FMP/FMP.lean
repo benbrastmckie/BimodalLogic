@@ -34,7 +34,9 @@ The proof uses the MCS-based filtration approach:
 
 - `fmp_contrapositive`: If φ valid in all finite models → φ valid
 - `finite_model_property`: ¬valid(φ) → ∃ finite model falsifying φ
-- `fmp_size_bound`: The finite model has size ≤ 2^|closure(φ)|
+- `assignmentSpace_card`: The assignment space has exactly 2^|closure(φ)| elements
+- `filtered_world_bound`: `Nat.card (FilteredWorld φ) ≤ 2^|closure(φ)|`
+- `fmp_size_bound`: The FMP countermodel is finite and bounded by 2^|closure(φ)|
 
 ## References
 
@@ -178,15 +180,38 @@ noncomputable def filteredFiniteFrame (D : Type*) [AddCommGroup D] [LinearOrder 
   FiniteFilteredTaskFrame D phi
 
 /--
-The number of worlds in the filtered model is bounded.
+The space of truth assignments to the subformula closure has exactly `2 ^ |closure(φ)|` elements.
+
+This is an equality, not a bound: the closure is a `Finset`, so its coercion to a type is a
+`Fintype` (`subformulaClosureFintype`), and the powerset of an `n`-element type has `2 ^ n`
+elements. It is the *target* of the filtration's characteristic-set map, and so supplies the
+figure that `filtered_world_bound` transports to the world type.
+-/
+theorem assignmentSpace_card (phi : Formula) :
+    Nat.card (Set (subformulaClosure phi)) = 2 ^ (subformulaClosure phi).card := by
+  rw [Nat.card_eq_fintype_card, Fintype.card_set, Fintype.card_coe]
+
+/--
+The number of worlds in the filtered model is at most `2 ^ |closure(φ)|`.
+
+The bound is transported along `filteredCharacteristicSet`, the map sending a filtered world to
+the set of closure formulas its representatives satisfy. That map is *injective*
+(`filteredCharacteristicSet_injective`) — which is exactly the content of the filtration
+equivalence, since two closure MCSs are identified precisely when they agree on the closure — so
+the world type has no more elements than the assignment space, whose size
+`assignmentSpace_card` computes exactly.
+
+The `Nat.card` here is not the junk value that convention assigns to infinite types:
+`FilteredWorld.finite` proves `Finite (FilteredWorld phi)` independently, via the same injection.
+The inequality is therefore a real bound on a genuinely finite type, and not vacuously satisfied
+by `Nat.card = 0`.
 -/
 theorem filtered_world_bound (phi : Formula) :
-    ∃ n : Nat, n ≤ 2 ^ (subformulaClosure phi).card ∧
-    ∀ (_S : FilteredWorld phi), True := by
-  use 2 ^ (subformulaClosure phi).card
-  constructor
-  · exact Nat.le_refl _
-  · intro _; trivial
+    Nat.card (FilteredWorld phi) ≤ 2 ^ (subformulaClosure phi).card := by
+  haveI : Finite (Set (subformulaClosure phi)) := set_finite phi
+  have h := Nat.card_le_card_of_injective (filteredCharacteristicSet phi)
+    (filteredCharacteristicSet_injective phi)
+  exact (assignmentSpace_card phi) ▸ h
 
 /-!
 ## FMP Main Theorem
@@ -228,18 +253,25 @@ The finite model has size bounded by 2^|closure(φ)|.
 -/
 
 /--
-The finite filtered model has at most 2^|closure(φ)| worlds.
+The Finite Model Property with its size bound attached: if `φ` is not provable, the countermodel
+the FMP produces lives in a world type that is finite and has at most `2 ^ |closure(φ)|` elements.
 
-Each world (equivalence class) is determined by which formulas from
-the closure it satisfies. With |closure| formulas, there are at most
-2^|closure| possible truth assignments.
+This is `mcs_finite_model_property` with `filtered_world_bound` carried alongside, which is what
+makes it a *size* bound rather than a bare finiteness claim — the point of the FMP for
+decidability is not that some finite countermodel exists but that its size is bounded by a
+computable function of `φ`, so that only finitely many candidates need be searched.
+
+Each world (an equivalence class of closure MCSs) is determined by which closure formulas it
+satisfies, and there are `2 ^ |closure|` such assignments; `filtered_world_bound` is where that
+argument is discharged, through the injectivity of `filteredCharacteristicSet`.
 -/
-theorem fmp_size_bound (phi : Formula) :
-    ∃ (bound : Nat),
-    bound = 2 ^ (subformulaClosure phi).card ∧
-    -- The bound is 2^|closure|
-    True :=
-  ⟨2 ^ (subformulaClosure phi).card, rfl, trivial⟩
+theorem fmp_size_bound (phi : Formula)
+    (h_not_provable : ¬Derivable FrameClass.Base [] phi) :
+    ∃ (S : ClosureMCSBundle phi), phi ∉ S.carrier ∧
+    Finite (FilteredWorld phi) ∧
+    Nat.card (FilteredWorld phi) ≤ 2 ^ (subformulaClosure phi).card := by
+  obtain ⟨S, h_not_in, h_fin⟩ := mcs_finite_model_property phi h_not_provable
+  exact ⟨S, h_not_in, h_fin, filtered_world_bound phi⟩
 
 /-!
 ## Summary
@@ -250,10 +282,22 @@ This module proves the Finite Model Property for TM bimodal logic:
 2. **filtered_model_falsifies**: If φ not provable, ∃ world where φ fails
 3. **mcs_finite_model_property**: Combined with finiteness proof
 4. **fmp_contrapositive**: If φ true in all finite worlds → φ provable
-5. **fmp_size_bound**: The model has size ≤ 2^|closure(φ)|
+5. **assignmentSpace_card**: The assignment space has exactly 2^|closure(φ)| elements
+6. **filtered_world_bound**: The world type has at most 2^|closure(φ)| elements
+7. **fmp_size_bound**: The FMP countermodel is finite and carries that bound
 
 These results establish that TM bimodal logic has the finite model property,
 which is essential for decidability.
+
+Items 5-7 replace two theorems that previously stood at 5 and 6 under the names
+`filtered_world_bound` and `fmp_size_bound` and were **vacuous**: each concluded in a `∧ True`
+(respectively `∀ _S, True`) conjunct discharged by `trivial`, so neither said anything about
+`FilteredWorld` at all. `filtered_world_bound` asserted only that `2 ^ |closure(φ)| ≤
+2 ^ |closure(φ)|`, and `fmp_size_bound` only that some natural number equals
+`2 ^ |closure(φ)|` — both true of any formula and of any world type whatsoever. The bound is now
+carried by the injectivity of `filteredCharacteristicSet`, which was already proved in
+`FiniteModel.lean` and used there for finiteness; it needed only to be read for cardinality as
+well.
 -/
 
 end FormalSystem.Metalogic.Decidability.FMP
