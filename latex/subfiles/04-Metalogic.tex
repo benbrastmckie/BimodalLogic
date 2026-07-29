@@ -346,13 +346,21 @@ This approach required explicit negation-completeness proofs for locally consist
 
 The decidability of TM bimodal logic rests on the \emph{Finite Model Property}: if a formula is satisfiable, it is satisfiable in a finite model bounded by the formula's modal and temporal depth.
 The bound on model size is $2^{|\mathsf{closure}(\varphi)|}$, where the subformula closure contains all relevant formulas for determining the truth of $\varphi$.
+This bound is proved, not conjectural: \texttt{filtered\_world\_bound} establishes $\mathsf{Nat.card}\,(\mathsf{FilteredWorld}\,\varphi) \leq 2^{|\mathsf{closure}(\varphi)|}$, and \texttt{assignmentSpace\_card} computes the right-hand side as an equality: the space of truth assignments to the subformula closure has exactly $2^{|\mathsf{closure}(\varphi)|}$ elements.
+Both are obtained from the injectivity of the characteristic-set map on filtered worlds (\texttt{filteredCharacteristicSet\_injective}), which is also what witnesses finiteness.
 This property connects the representation infrastructure to decidability by ensuring that satisfiability checking can terminate.
 
 The decidability proof proceeds via a tableau-based decision procedure.
 
-\begin{theorem}[Decidability]
-Validity in TM bimodal logic is decidable: for any formula $\varphi$, either $\valid{\varphi}$ or $\neg\valid{\varphi}$.
-\end{theorem}
+\begin{remark}[Decidability is not yet a theorem here]
+An earlier version of this section stated, as a theorem, that validity in TM bimodal logic is decidable, on the ground that for any formula $\varphi$ either $\valid{\varphi}$ or $\neg\valid{\varphi}$.
+That statement is a consequence of excluded middle for an arbitrary proposition and carries no decidability content: it holds of every predicate whatsoever, produces no procedure, and yields no \texttt{Decidable} instance.
+The two Lean theorems it corresponded to were correspondingly vacuous and have been deleted.
+
+What is proved is the semantic soundness of the tableau calculus: every rule the procedure can schedule at a given frame class preserves satisfiability under that class's carrier property, for all $34$ rules and all four frame classes (\texttt{ruleSound\_of\_mem\_allRulesForFC}).
+Constructive decidability of validity additionally requires the equivalence between a formula's validity and the closure of every tableau branch, together with the termination bound and the truth-lemma gate, and obligations for the two rules scheduled outside the frame-class rule set.
+That remains open.
+\end{remark}
 
 \begin{theorem}[Decision Soundness]
 If the decision procedure returns ``valid'' with proof $\pi$, then $\valid{\varphi}$.\footnote{This is proven as \texttt{decide\_sound}.}

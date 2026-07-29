@@ -27,6 +27,11 @@ The antecedent quantifies over `FMP.ClosureMCSBundle φ` -- a *finite, syntactic
 The finite-filtration completeness argument is therefore complete as it stands, while the bridge connecting "true in every closure MCS bundle" to semantic validity in the task-frame sense of @sec:truth is an open problem.
 The distinction matters when citing the result: `fmp_completeness` is a theorem about the filtration structure, not a theorem about task-frame validity.
 
+The bridge is *partly* built, and it is worth being precise about which part, because the tableau route rather than the filtration route is what has advanced.
+What has landed is the semantic soundness of the tableau calculus itself: `Decidability/Verified/` now proves `RuleSound` for all 34 rules that `allRulesForFC` can schedule, at each of the four frame classes, assembled by `ruleSound_of_mem_allRulesForFC` (`Verified/Decidable.lean:3089`), with the frame-class carrier properties supplied by `carrierForFC` (`Verified/Decidable.lean:3074`).
+What has *not* landed is the bridge itself: `valid_iff_allClosed` and the `Decidable` instances for validity over the four frame classes remain open, since they need the fuel/termination side and the truth-lemma gate on top of rule soundness, plus obligations for `serialityRule` and `timeLinearity`, which run outside `allRulesForFC`.
+So the entry in the status table below stays an open problem; what changed is that its rule half is now discharged rather than assumed.
+
 === The Filtration Construction
 
 The finiteness argument follows the classical filtration pattern, specialized to closure MCSs.
@@ -39,7 +44,10 @@ def FilteredWorld (phi : Formula) : Type :=
   Quotient (ClosureMCSSetoid phi)
 ```
 
-The number of equivalence classes is bounded by $2^(|op("closure")(φ)|)$, and finiteness is witnessed constructively by `FilteredWorld.finite` (`FMP/FiniteModel.lean:131`).
+The number of equivalence classes is bounded by $2^(|op("closure")(φ)|)$, and finiteness is witnessed constructively by `FilteredWorld.finite` (`FMP/FiniteModel.lean:137`).
+Both halves of that sentence are now proved, and the bound is a theorem rather than an estimate: `FMP.filtered_world_bound` states `Nat.card (FilteredWorld φ) ≤ 2^(|op("closure")(φ)|)` and `FMP.assignmentSpace_card` computes the right-hand side as an *equality*, `Nat.card (Set ↥(subformulaClosure φ)) = 2^(|op("closure")(φ)|)`.
+Both travel along `filteredCharacteristicSet_injective` (`FMP/FiniteModel.lean:96`) -- the same injection that witnesses finiteness, read for cardinality as well as for `Finite`.
+This is worth stating explicitly because the two theorems previously carrying these names were vacuous: each concluded in an `and True` conjunct discharged by `trivial`, so neither constrained `FilteredWorld` at all.
 From there, `FMP.mcs_finite_model_property` (`FMP/FMP.lean:193`) shows that a formula outside some closure MCS fails in the induced finite structure, and `FMP.fmp_contrapositive` (`FMP/FMP.lean:206`) turns this into the completeness form quoted above: membership in *every* closure MCS bundle forces derivability.
 Truth preservation across the quotient is handled in `FMP/TruthPreservation.lean`, and the dense and discrete refinements live in `FMP/DenseFMP.lean` and `FMP/DiscreteFMP.lean`.
 The construction is thus a complete, self-contained finite combinatorics of the proof system; what it does not supply -- the open bridge noted above -- is the semantic step identifying "true in every closure MCS bundle" with task-frame validity.
@@ -67,7 +75,8 @@ Every `invalid` result carries a `SimpleCountermodel` (`Decidability/Countermode
 == Correctness Properties
 
 - `decide_sound` (`Decidability/Correctness.lean:50`): if `decide` returns `valid` with proof $π$, then $tack.r.double φ$. Proven, sorry-free -- this is the load-bearing correctness guarantee: every "valid" answer is backed by a kernel-checked proof term, so it is trustworthy independent of the decision procedure's own correctness.
-- `validity_decidable` (`Decidability/Correctness.lean:72`): stated as `(⊨ φ) ∨ ¬(⊨ φ)`. Its proof is literally `Classical.em (⊨ φ)` -- this is *not* a constructive decidability result and should never be cited as one; it is a vacuous classical tautology, included in the file for documentation purposes only.
+- `validity_decidable` and `validity_has_decision_procedure`: *deleted*. The first was stated as `(⊨ φ) ∨ ¬(⊨ φ)` and proved by `Classical.em (⊨ φ)`; the second as `∃ decision : Bool, decision = true ↔ ⊨ φ` and proved by `by_cases` on the very proposition it purported to decide. Neither was a constructive decidability result and neither should ever have been cited as one, so rather than keeping them "for documentation purposes" the file now carries a retirement note in their place (`Decidability/Correctness.lean`, "Retired as vacuous"), recording what each said, why its proof did not reach its name, and what remains owed before an `isValid`-shaped statement can stand.
+- `ruleSound_of_mem_allRulesForFC` (`Decidability/Verified/Decidable.lean:3089`): every rule `allRulesForFC` can schedule at a frame class preserves satisfiability under that class's carrier property -- all 34 rules, sorry-free. This is the *rule half* of the `allClosed arrow.r "valid"` direction, and it is the real content that the deleted names gestured at. It is not yet `valid_iff_allClosed`, which additionally needs the fuel/termination side and the truth-lemma gate, and which says nothing about `serialityRule` and `timeLinearity` -- deliberately outside `allRulesForFC`, run as stages 2 and 3 of `expandOnce`.
 - `fmp_completeness`: sorry-free as a finite-filtration statement; its semantic-validity bridge is open (@sec:fmp-resolution).
 - The tableau's own completeness (every semantically valid formula's tableau eventually closes, within fuel) is not separately proven in this module; `decide_sound` covers only the soundness direction.
 
@@ -109,7 +118,9 @@ The `tableauFuel` parameter bounds the total number of expansion steps: fuel-bou
     [Decision soundness (`decide_sound`)], [Proven, sorry-free],
     [Finite-model-property completeness (`fmp_completeness`)], [Proven, sorry-free (finite-filtration statement)],
     [Semantic-validity bridge for FMP], [Open problem],
-    [Constructive validity decidability], [Open problem (`validity_decidable` is vacuous)],
+    [Rule soundness for every scheduled rule (`ruleSound_of_mem_allRulesForFC`)], [Proven, sorry-free (34 of 34 rules)],
+    [Model-size bound $2^(|op("closure")(φ)|)$ (`filtered_world_bound`)], [Proven, sorry-free],
+    [Constructive validity decidability], [Open problem (`valid_iff_allClosed` and the `Decidable` instances are still owed)],
     [Fully automated decidable fragment], [Open problem],
     table.hline(),
   ),
