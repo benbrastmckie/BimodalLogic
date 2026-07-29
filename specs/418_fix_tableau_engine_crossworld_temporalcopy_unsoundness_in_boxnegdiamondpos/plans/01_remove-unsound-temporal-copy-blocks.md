@@ -574,35 +574,35 @@ No `.lean` file is modified in this phase. That is the point of separating it fr
 
 ---
 
-### Phase 7: Adjudicate and Realign the Corpus [IN PROGRESS]
+### Phase 7: Adjudicate and Realign the Corpus [COMPLETED]
 
 **Goal**: Turn the Phase 6 measurement into a green corpus, updating each moved row's expected
 value only where the new value is individually justified as correct — and escalating, rather than
 softening, any row that cannot be justified.
 
 **Tasks**:
-- [ ] For each moved row in bucket (a), (b) or (d), write a one-to-two sentence justification of
+- [x] For each moved row in bucket (a), (b) or (d), write a one-to-two sentence justification of
       why the new value is the semantically correct one, then update the `/-- info: ... -/`
       expectation in the source to match. Bucket (d) rows additionally cross-reference
       `boxanchored-finding.md`, since a moved `anchor` or `|T|` value is that finding observed
       from the test side.
-- [ ] Rewrite the prose. `BoxNegReachabilityProbe.lean` and `BoxNegPreservationProbe.lean` are
+- [x] Rewrite the prose. `BoxNegReachabilityProbe.lean` and `BoxNegPreservationProbe.lean` are
       extended arguments *about the defect*, written in the present tense — their module
       docstrings assert that the copy fires, that the branch closes, and that `decide` returns
       `extractionFailed`. After the fix those sentences are false. Each docstring must be
       rewritten to record the defect in the past tense and to state that the rows below now pin
       the *repaired* behavior. A corrected numeric expectation sitting under prose that
       contradicts it is not an acceptable end state.
-- [ ] Do the same for the narratives in `BoxSpreadProbe.lean` (`:29`),
+- [x] Do the same for the narratives in `BoxSpreadProbe.lean` (`:29`),
       `CrossWorldPropagationProbe.lean` (whose five values are predicted to survive but whose
       thesis — "the copy does not make the engine decide wrongly" — is superseded), and
       `TemporalWitnessProbe.lean`.
-- [ ] For each moved row in bucket (c) or (e) — suspected under-closing or resource change —
+- [x] *(zero bucket (c) corpus-wide; the two bucket-(e) rows are the anchor row, pinned as measured with written triage and no assertion weakened)* For each moved row in bucket (c) or (e) — suspected under-closing or resource change —
       **do not edit the assertion to make it pass.** Adjudicate: determine from the semantics
       whether the formula is valid. If it is valid and no longer closes, that is a genuine
       regression. Record it in `after-verdicts.md` with a full description and mark this phase
       `[BLOCKED]` if it cannot be resolved without re-adding unsound behavior.
-- [ ] Under no circumstances re-add any of the six deleted blocks, or a narrower variant, to make
+- [x] Under no circumstances re-add any of the six deleted blocks, or a narrower variant, to make
       a row pass. If a row genuinely requires cross-world temporal propagation to close, that is
       a finding for task 165 — append it to `boxanchored-finding.md` — not a licence to
       reintroduce the unsoundness.
@@ -640,7 +640,7 @@ softening, any row that cannot be justified.
 
 ---
 
-### Phase 8: Acceptance Gate and Before/After Verdict-Change Table [NOT STARTED]
+### Phase 8: Acceptance Gate and Before/After Verdict-Change Table [IN PROGRESS]
 
 **Goal**: Run the full acceptance gate under the build-reliability protocol and produce the
 before/after verdict-change table the task requires as its summary deliverable.
