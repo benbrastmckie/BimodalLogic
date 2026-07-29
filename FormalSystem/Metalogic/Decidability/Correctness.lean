@@ -15,8 +15,13 @@ This module proves properties of the tableau decision procedure.
 
 ## Main Theorems
 
-- `validity_decidable`: Validity is classically decidable
+- `decide_sound`: A derivation produced by `decide` yields semantic validity
 - `decide_result_exclusive`: Decision results are mutually exclusive
+- `not_undecided_of_extractionFailed`: A closed tableau is never reported as undecided
+
+See "`validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous", below, for
+the two theorems that used to head this list, why their names overclaimed what their proofs
+established, and what is still owed before an `isValid`-shaped decidability statement can stand.
 
 ## Implementation Notes
 
@@ -66,30 +71,39 @@ theorem decide_sound' (φ : Formula) (searchDepth tableauFuel : Nat)
   decide_sound φ proof
 
 /-!
-## Decidability Theorem
--/
+## `validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous
 
-/--
-Validity is decidable for TM bimodal logic.
+Two theorems used to stand here under the names above, and they are recorded as retired rather
+than deleted quietly, because their *names* claimed a decidability result their *proofs* did not
+contain.
 
-This combines soundness and completeness to show that validity
-is a decidable property (using classical logic for incomplete cases).
--/
-theorem validity_decidable (φ : Formula) :
-    (⊨ φ) ∨ ¬(⊨ φ) := by
-  -- Classical disjunction
-  exact Classical.em (⊨ φ)
+`validity_decidable (φ : Formula) : (⊨ φ) ∨ ¬(⊨ φ)` was proved by `exact Classical.em (⊨ φ)`.
+That is an instance of excluded middle for an arbitrary proposition; it holds of any predicate
+whatsoever and says nothing about `⊨` in particular, about tableaux, or about computation. It is
+in no sense a decidability statement: it produces no procedure and no `Decidable` instance.
 
-/--
-Alternative formulation: there exists a decision procedure
-that correctly determines validity (using classical logic
-for timeout cases).
+`validity_has_decision_procedure (φ : Formula) : ∃ decision : Bool, decision = true ↔ ⊨ φ` was
+proved by `by_cases h : (⊨ φ)` supplying `true` or `false` accordingly. The existential is
+therefore witnessed non-constructively by the truth value one is trying to compute; it is
+`Classical.em` again with a `Bool` wrapped around it. In particular it is not the statement that
+`isValid` (`DecisionProcedure.lean`) is that `decision`, which is the content one would want.
+
+**What actually holds, and is proved.** `decide_sound` (this file) is the real one-directional
+fact: a `⊢ φ` derivation — the witness `decide` returns in its `.valid` constructor — yields
+`⊨ φ`. On the tableau side, `ruleSound_of_mem_allRulesForFC`
+(`Verified/Decidable.lean`) is the rule half of the `allClosed → valid` direction: every rule
+`allRulesForFC` can schedule at a frame class preserves satisfiability under that class's carrier
+property, all 34 of them, sorry-free.
+
+**What is still owed, and is deliberately not stated here.** The replacement these names should
+eventually have — `isValid φ fc = true ↔ ⊨ φ`, and the `Decidable (⊨ φ)` instances for the four
+frame classes — requires `valid_iff_allClosed`, which needs the fuel/termination side and the
+truth-lemma gate on top of the rule half above, and it must also account for the two rules
+scheduled outside `allRulesForFC` (`serialityRule` and `timeLinearity`, stages 2 and 3 of
+`expandOnce`). That obligation is open. Stating an `isValid`-shaped `iff` before it is discharged
+would reproduce exactly the defect this retirement removes: a true-looking name over a proof that
+does not reach it. No such statement is written here until it can be proved.
 -/
-theorem validity_has_decision_procedure (φ : Formula) :
-    ∃ (decision : Bool), (decision = true ↔ ⊨ φ) := by
-  by_cases h : (⊨ φ)
-  · exact ⟨true, by simp [h]⟩
-  · exact ⟨false, by simp [h]⟩
 
 /-!
 ## Statistics and Properties
