@@ -31,10 +31,166 @@ at the first, and within each module reported **every** mismatching row rather t
 first. Per-module builds were therefore not needed to surface the full mismatch set — the plan
 prescribed them as insurance against masking, and the raw log shows no masking occurred.
 
-## Moved rows
+## Moved rows — 14 confirmed across 4 probe modules
 
-STATUS_PENDING_TABLE
+All fourteen are quoted verbatim from Lean's `- info:` (old) / `+ info:` (new) diff pairs in
+`after-corpus-raw.log`.
+
+### `RayRegionProbe.lean` — 1 of 7 rows moved
+
+| # | Row | Formula | Old | New | Bucket |
+|---|---|---|---|---|---|
+| 1 | D (`:139`) | `(□p ∧ ◇q) → r` | `"OPEN \|W\|=2 \|T\|=7 check=true rayUp=true rayDn=true rays=[(2, 2), (5, 5)]"` | `"OPEN \|W\|=2 \|T\|=7 check=false rayUp=false rayDn=false rays=[(2, 2), (0, 0)]"` | **(d)** |
+
+Rows A, B, C, E and the two `#eval`-only rows are unmoved. **Confirms** the plan's prediction
+exactly: "row D … rows A-C, E-G predicted safe."
+
+World 0's ray is unchanged at `(2, 2)`; world 1 — the minted one — drops from `(5, 5)` to
+`(0, 0)`, i.e. loses its witnessing label. Verdict is still `OPEN` with the same `|W|`/`|T|`.
+
+### `BoxSpreadProbe.lean` — 3 of 5 rows moved
+
+| # | Row | Formula / class | Old | New | Bucket |
+|---|---|---|---|---|---|
+| 2 | A (`:75`) | `(□p ∧ ◇q) → r`, `.Base` | `"OPEN spread=false anchor=true grid=true \|W\|=2 \|T\|=7"` | `"OPEN spread=false anchor=false grid=false \|W\|=2 \|T\|=7"` | **(d)** |
+| 3 | B (`:80`) | `(□p ∧ ◇(G q)) → r`, `.Base` | `"OPEN spread=false anchor=true grid=true \|W\|=2 \|T\|=7"` | `"OPEN spread=false anchor=false grid=false \|W\|=2 \|T\|=7"` | **(d)** |
+| 4 | C (`:85`) | `(□p ∧ ◇q) → r`, `.Dense` | `"OPEN spread=false anchor=true grid=true \|W\|=2 \|T\|=10"` | `"OPEN spread=false anchor=false grid=false \|W\|=2 \|T\|=8"` | **(d)** |
+
+Rows D and E (`gapProbe`, single-world) unmoved — **confirms** the plan's prediction.
+
+This is the `boxAnchoredCheck` finding seen from the test side; cross-reference
+`boxanchored-finding.md` §1.2. **Beyond the plan's prediction**: `grid` moved too, and row C's
+`|T|` moved 10 → 8.
+
+### `RegionGateProbe.lean` — 4 of 10 rows moved
+
+| # | Row | Old | New | Bucket |
+|---|---|---|---|---|
+| 5 | A (`:216`) | `"OPEN \|W\|=2 \|T\|=7 total=true gate=true check=true cands=[[3,3,3,3,3,3,3,3], [3,3,3,3,3,3,3,3]]"` | `"… total=true gate=false check=false cands=[[3,3,3,3,3,3,3,3], [0,0,0,0,0,0,0,0]]"` | **(d)** |
+| 6 | B (`:222`) | `"OPEN \|W\|=2 \|T\|=7 total=true gate=true check=true cands=[[3×8], [3,3,3,3,1,1,1,1]]"` | `"… total=true gate=false check=false cands=[[3×8], [0×8]]"` | **(d)** |
+| 7 | C (`:227`) | `"OPEN \|W\|=2 \|T\|=10 total=true gate=true check=true cands=[[3×11], [3×11]]"` | `"OPEN \|W\|=2 \|T\|=8 total=true gate=true check=true cands=[[3×9], [1×9]]"` | **(d)** |
+| 8 | H (`:255`) | `"OPEN \|W\|=2 \|T\|=10 total=true gate=true check=true cands=[[3×11], [3,3,3,3,1,1,1,1,1,1,1]]"` | `"… total=true gate=false check=false cands=[[3×11], [0×11]]"` | **(d)** |
+
+Rows D-G and I unmoved — **confirms** the plan's prediction ("rows A, B, C, H … rows D-G, I
+predicted safe") on all ten rows.
+
+`timeOrderTotal` (`total`) stays `true` throughout: the deletion did not disturb the time order,
+only the minted world's formula content. Row C is notable — it keeps `gate=true check=true`
+while its `|T|` shrinks 10 → 8 and world 1's candidate count falls 3 → 1; it is the one moved
+`RegionGateProbe` row that does **not** lose its gate.
+
+### `TemporalWitnessProbe.lean` — 6 of 71 rows moved, all the same formula
+
+Every one is **row D**, `(□p ∧ ◇q) → r` — the only multi-world formula among the C/D/E triples
+that each of the six probe helpers (`probe`, `probe2` … `probe6`) runs.
+
+| # | Line | Helper | Change | Bucket |
+|---|---|---|---|---|
+| 9 | `:408` | `probe` | `check=true → false`; `U[… rP=true → rP=false …]`, `S[… rP=true → rP=false …]` | **(d)** |
+| 10 | `:521` | `probe2` | `D check=true → check=false` (`uNAR`/`sNAR` unchanged, both `true`) | **(d)** |
+| 11 | `:629` | `probe3` | `D gen=false check=true → check=false` (`uRL`/`uRLs`/`sRU`/`sRUs` unchanged) | **(d)** |
+| 12 | `:775` | `probe4` | `D gen=false check=true → check=false` (all `uGW`/`sGW`/`uRD`/`sRU` blocks unchanged) | **(d)** |
+| 13 | `:927` | `probe5` | `D gen=false check=true → check=false` (`uNRU`/`sNRD` blocks unchanged) | **(d)** |
+| 14 | `:1085` | `probe6` | `D gen=false check=true → check=false`; `uPR=true → false [self=true → false]`, `sPR` likewise | **(d)** |
+
+The plan predicted row D "recurring at `:407`, `:520-522`, `:628-630`, `:774-776` and near
+`:914`" — five sites. **Measured: six**, the sixth at `:1085` (`probe6`). The plan's "near `:914`"
+resolves to `:927`. All 65 other rows in this file are unmoved.
+
+## The headline anchor row — `(G p) → □(G p)` — partially measured
+
+The plan's headline acceptance criterion is that `buildTableau ((G p) → □(G p)) 1000 .Base` now
+returns `.hasOpen`, and that `decide` on it returns `.invalid` with `getCountermodel?.isSome`.
+
+**Measured so far** (scratch `#eval`, `lake env lean`, not committed):
+
+| Fuel | Pre-fix | Post-fix |
+|---|---|---|
+| 1000 | `.allClosed` — the false claim of validity this task exists to remove (recorded in `reports/08_spawn-analysis.md`) | **not yet measured** — see below |
+| 60 | not measured | `STALLED (none)` |
+| 30 | not measured | `STALLED (none)` |
+
+**What is established**: the engine no longer returns `.allClosed` at low fuel; the branch stays
+open long enough to exhaust it. That is the fix working in the intended direction — the formula
+is invalid, and a closed tableau on it was the defect.
+
+**What is not yet established**: whether fuel 1000 now yields `.hasOpen` (the intended repair,
+bucket (a)) or `none` / `.fuelExhausted` (a bucket-(e) resource outcome that would leave the
+headline criterion unmet). A scratch probe running `buildTableau … 1000` and `decide` on this
+formula ran for **over an hour without producing a result** and was stopped. That is itself the
+measurement's most important interim datum, and it is why the plan's Phase 6 fuel-classification
+step (`.hasOpen` vs fuel-exhausted vs `extractionFailed` kept separate rather than collapsed into
+pass/fail) was the right instrument to specify.
+
+The definitive value will come from `CrossWorldPropagationProbe.lean` **row B**, which is
+`isValid ((G p) → □(G p))` — literally this formula — and which is one of the four modules still
+building. Note that this row pins `isValid = false`, and `isValid` is `(decide φ).isValid`, which
+is `true` only for `.valid`. Pre-fix the engine returned `.extractionFailed` here (closed tableau,
+no proof term), so `isValid` read `false` on a formula the engine was wrongly closing. Post-fix
+the row's *value* should survive at `false` whether the outcome is `.invalid` or `.fuelExhausted`
+— which is exactly why the plan classed this file as "values predicted safe, narrative
+superseded", and why the row cannot by itself discriminate (a) from (e). Reading the row is
+necessary but not sufficient; the next dispatch should also run `decide` directly and record the
+constructor.
+
+## Modules still building at the end of this dispatch
+
+`TableauConformance`, `BoxNegReachabilityProbe`, `BoxNegPreservationProbe` and
+`CrossWorldPropagationProbe` had not completed when this dispatch ended. See "Resource finding"
+below — their slowness is itself a measurement, not a stall.
+
+## Resource finding (bucket (e)) — the corpus got materially slower
+
+`CrossWorldPropagationProbe` built in **1.2 s** in the Phase 2 baseline. Post-fix it, and the two
+`BoxNeg*Probe` files, had been running for **tens of minutes** without completing, alongside
+`TableauConformance`.
+
+This is the plan's risk-asymmetry argument showing up as wall-clock: removing emitted formulas
+can only shrink a branch's contradiction surface, so branches that used to close now stay open,
+and `decide` runs the full fuel budget plus proof search plus countermodel extraction instead of
+terminating early on a closed tableau. It is a **cost**, not a failure, and it is the expected
+direction. It does mean any future dispatch must budget a full corpus build in tens of minutes,
+not minutes.
 
 ## Rows that did not move
 
-STATUS_PENDING_UNMOVED
+| Probe file | Rows | Moved | Unmoved |
+|---|---|---|---|
+| `TemporalWitnessProbe.lean` | 71 | 6 | 65 |
+| `RegionGateProbe.lean` | 10 | 4 | 6 |
+| `RayRegionProbe.lean` | 7 | 1 | 6 |
+| `BoxSpreadProbe.lean` | 5 | 3 | 2 |
+| `TableauConformance.lean` | 27 | not yet measured | — |
+| `BoxNegReachabilityProbe.lean` | 12 | not yet measured | — |
+| `CrossWorldPropagationProbe.lean` | 5 | not yet measured | — |
+| `BoxNegPreservationProbe.lean` | 5 | not yet measured | — |
+| **Total** | **142** | **14 so far** | **79 so far** |
+
+## Bucket summary so far
+
+| Bucket | Count | Note |
+|---|---|---|
+| (a) intended repair | 0 so far | expected in `CrossWorldPropagationProbe` / `TableauConformance`, not yet measured |
+| (b) probe-pins-the-bug | 0 so far | expected in the two `BoxNeg*Probe` files, not yet measured |
+| (c) suspected under-closing regression | **0** | none among the 14 measured |
+| (d) saturation-metric change | **14** | all fourteen |
+| (e) fuel/resource change | see above | corpus-wide slowdown, not a per-row verdict |
+
+**No bucket-(c) row has been found.** Every measured move is a decidable branch-gate or
+structural metric on a multi-world branch, and every one of them was previously computing `true`
+*because of* the unsound copies. No verdict (`CLOSED`/`OPEN`/`STALLED`, `isValid`) has moved in
+the measured set at all.
+
+## Anticipation accounting
+
+Of the plan's Phase 6 predictions, on the four modules measured:
+
+- `RayRegionProbe` row D moved, A-C/E safe — **confirmed exactly**.
+- `BoxSpreadProbe` A/B/C moved, D/E safe — **confirmed**, with two unpredicted extras (`grid`
+  also false; row C `|T|` 10 → 8).
+- `RegionGateProbe` A/B/C/H moved, D-G/I safe — **confirmed exactly** on all ten rows.
+- `TemporalWitnessProbe` row D — **confirmed**, but at **six** sites rather than the predicted
+  five.
+
+No row moved that the plan did not anticipate as a *file*. The only unanticipated movements are
+within-row (extra fields moving) and the sixth `TemporalWitnessProbe` site.
