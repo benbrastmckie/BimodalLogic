@@ -23,7 +23,7 @@ next_project_number: 420
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
 408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
-418 [PLANNED] — Remove the six unsound group-3 blocks -- tempGProps, tempHProps, 
+418 [IMPLEMENTING] — Remove the six unsound group-3 blocks -- tempGProps, tempHProps, 
   └─ 165 [BLOCKED] — Establish verified decidability of TM bimodal logic for all four 
     └─ 410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
     └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
@@ -66,11 +66,11 @@ next_project_number: 420
 
 ### Documentation
 
-409 [NOT STARTED] — Systematically reconcile the LaTeX reference (latex/subfiles/, es
+409 [RESEARCHED] — Systematically reconcile the LaTeX reference (latex/subfiles/, es
 
 ### Strong Completeness
 
-361 [NOT STARTED] — Research + scoping for the completeness-terminology refactor and 
+361 [RESEARCHING] — Research + scoping for the completeness-terminology refactor and 
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
@@ -93,7 +93,7 @@ next_project_number: 420
 
 ### 418. Fix tableau engine crossworld temporalcopy unsoundness in boxnegdiamondpos
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -198,10 +198,11 @@ next_project_number: 420
 
 ### 409. Reconcile latex metalogic docs with live tree
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: None
+- **Research**: [409_reconcile_latex_metalogic_docs_with_live_tree/reports/01_latex-metalogic-live-tree-audit.md]
 
 **Description**: Systematically reconcile the LaTeX reference (latex/subfiles/, especially 04-Metalogic.tex and 06-Notes.tex) with the live FormalSystem/ tree and the settled completeness terminology. The TERMINOLOGY pass already landed (2026-07-27): "strong completeness" is reserved for infinite premise sets, the finite-context form is named consequence completeness, and 04-Metalogic.tex now carries a "Strong Completeness and Compactness" subsection with the per-class split (Base/Dense open; Discrete/Dedekind provably non-compact) — see specs/ROADMAP.md ("Completeness programme" block) and the FormalSystem/Metalogic/StrongCompleteness.lean module docstring for the authoritative statements. What remains, and what this task owns, is ARCHITECTURE/IDENTIFIER fidelity: the chapter still largely describes the retired Metalogic_v2 (Boneyard) architecture.
 
@@ -317,7 +318,7 @@ DEPENDENCY STATUS (2026-07-27; dependencies array unchanged): 375 (discrete weak
 
 ### 361. Strong completeness architecture and weak terminus gap analysis
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: None
