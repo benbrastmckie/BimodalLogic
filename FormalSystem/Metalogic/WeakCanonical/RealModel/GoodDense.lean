@@ -1047,4 +1047,85 @@ theorem kEquiv_sum_realLine (sig : MonadicSignature) [Fintype sig.preds] [Decida
   show (blocks i).interp p y.val ↔ (blocks ⌊y.val⌋).interp p y.val
   rw [hfloor i y]
 
+/-! ## Lemma 11
+
+Reynolds, printed pp.185-186. The two displayed clauses of the proof, then the no-end-point case
+and the full statement.
+-/
+
+/--
+*"Because `≡_k` is preserved under lexicographic sums, `N ≡_k Σ_{i∈Z}(N | {a_i} + R_i)`"*
+(printed p.186).
+
+`doets_lemma_1_4` is applied once here, over `ℤ`; the per-block equivalence is the composite of
+splitting off the left end point (`kEquiv_halfOpen_pointSum`) and replacing the open part by its
+real witness (`kEquiv_pointSum`, itself a second application of `doets_lemma_1_4` over `Bool`).
+-/
+theorem kEquiv_blockSum (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (N : OrderedMonadicStructure sig) (spine : ℤ → N.carrier)
+    (hmono : StrictMono spine) (blockOf : N.carrier → ℤ)
+    (hlo : ∀ x, spine (blockOf x) ≤ x) (hhi : ∀ x, x < spine (blockOf x + 1))
+    (R : ℤ → RIntervalStructure sig)
+    (hR : ∀ i : ℤ, KEquiv sig k (N.openSubinterval sig (spine i) (spine (i + 1)))
+      ((R i).toOrdered sig)) :
+    KEquiv sig k N
+      (orderedSum sig ℤ (fun i => pointSum sig N (spine i) ((R i).toOrdered sig))) := by
+  refine (kEquiv_sum_halfOpen sig k N spine hmono blockOf hlo hhi).trans ?_
+  refine doets_lemma_1_4 sig k ℤ _ _ (fun i => ?_)
+  exact (kEquiv_halfOpen_pointSum sig k N (spine i) (spine (i + 1))
+    (hmono (by omega : i < i + 1))).trans (kEquiv_pointSum sig k N (spine i) (hR i))
+
+/--
+*"and this latter has flow isomorphic to `R`"* (printed p.186).
+
+Each summand `N | {a_i} + R_i` is carried onto the half-open real interval `[i, i+1)`, and the
+`ℤ`-indexed sum of those is the whole line. This is where the **open**-interval choice in
+`veryGoodDense` does its work: had `R_i` been closed, the join between consecutive blocks would
+carry two consecutive points and the sum would not be dense.
+-/
+theorem blockSumWitness_iso_real (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (N : OrderedMonadicStructure sig) (spine : ℤ → N.carrier)
+    (R : ℤ → RIntervalStructure sig)
+    (hR : ∀ i : ℤ, (R i).carrierSet = Set.Ioo (i : ℝ) ((i : ℝ) + 1)) :
+    KEquiv sig k (orderedSum sig ℤ (fun i => pointSum sig N (spine i) ((R i).toOrdered sig)))
+      ((realLine sig (fun i => icoBlock sig N (spine i) (R i) (i : ℝ) ((i : ℝ) + 1))).toOrdered
+        sig) := by
+  refine (doets_lemma_1_4 sig k ℤ _ _ (fun i =>
+    kEquiv_pointSum_icoBlock sig k N (spine i) (R i) (by linarith) (hR i))).trans ?_
+  exact kEquiv_sum_realLine sig k _ (fun _ => rfl)
+
+/--
+Lemma 11, *"First the case when `N` has no end points"* (printed p.185).
+
+Countability enters exactly once, through `veryGoodSpine`: it is what makes the `ℤ`-indexed
+cofinal spine `a_i` available.
+-/
+theorem reynolds_lemma11_no_endpoints (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (hk : 2 ≤ k) (N : OrderedMonadicStructure sig)
+    [Countable N.carrier] [Nonempty N.carrier] [NoMaxOrder N.carrier] [NoMinOrder N.carrier]
+    (hN : veryGoodDense sig k N) : goodDense sig k N := by
+  haveI : DenselyOrdered N.carrier := denselyOrdered_of_veryGoodDense sig k hN
+  have hmono := veryGoodSpine_strictMono N.carrier
+  obtain ⟨blockOf, hlo, hhi⟩ :=
+    exists_blockOf (veryGoodSpine N.carrier) hmono (veryGoodSpine_cofinal N.carrier)
+  -- *"Since `N` is very good, `N | (a_i, a_{i+1})` is good. Take `R_i ≡_k N | (a_i, a_{i+1})`
+  -- with an open interval of `R` as a flow."*
+  have hRex : ∀ i : ℤ, ∃ R : RIntervalStructure sig,
+      R.carrierSet = Set.Ioo (i : ℝ) ((i : ℝ) + 1) ∧
+      KEquiv sig k (N.openSubinterval sig (veryGoodSpine N.carrier i)
+        (veryGoodSpine N.carrier (i + 1))) (R.toOrdered sig) := by
+    intro i
+    have hlt : veryGoodSpine N.carrier i < veryGoodSpine N.carrier (i + 1) :=
+      hmono (by omega : i < i + 1)
+    haveI : Nonempty (N.openSubinterval sig (veryGoodSpine N.carrier i)
+        (veryGoodSpine N.carrier (i + 1))).carrier := (hN _ _ hlt).1
+    haveI := noMaxOrder_openSubinterval sig N (veryGoodSpine N.carrier i)
+      (veryGoodSpine N.carrier (i + 1))
+    haveI := noMinOrder_openSubinterval sig N (veryGoodSpine N.carrier i)
+      (veryGoodSpine N.carrier (i + 1))
+    exact exists_iooUnit_witness sig k hk _ (hN _ _ hlt).2 i
+  choose R hRcar hRequiv using hRex
+  exact ⟨_, (kEquiv_blockSum sig k N (veryGoodSpine N.carrier) hmono blockOf hlo hhi R
+    hRequiv).trans (blockSumWitness_iso_real sig k N (veryGoodSpine N.carrier) R hRcar)⟩
+
 end FormalSystem.Metalogic.WeakCanonical
