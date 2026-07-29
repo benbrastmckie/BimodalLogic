@@ -607,6 +607,25 @@ copy blocks per rule were removed for that reason. Do not reintroduce them, in
 narrowed form or otherwise. Note the contrast with the *time*-minting rules
 below, whose `boxDiamondPersistence` calls relabel `T(□A)`/`F(◇A)` across
 times *within one world*; that is sound and is unaffected.
+
+**The same prohibition on the time axis.** `.untlPos` and `.sncePos` used to copy every
+`F(U(e',g'))` (resp. `F(S(e',g'))`) standing at the trigger's time into the *freshly minted
+time*. `Formula.untl`/`Formula.snce` are evaluated inside a single history and their truth is
+interval-relative, so such a copy asserts at a later instant what is only known at an earlier
+one. It is not rescued by shift-closure, because the claim is not `Ω`-universal, and no
+syntactic guard computable from `(branch, timeOrd)` expresses the semantic condition under which
+the copy would be sound. Both blocks were removed; do not reintroduce them, in guarded form or
+otherwise. Deleting them can only make branches *harder* to close, and the full conformance
+corpus is unchanged by the deletion while
+`Tests/BimodalTest/UntlSnceCopyProbe.lean` section C now returns a countermodel for an invalid
+`Until` implication where it previously exhausted its fuel.
+
+**Still outstanding, deliberately.** The PASSIVE arms of `.untlNeg`/`.snceNeg` place the guard
+failure *at* the target time rather than strictly between, and re-assert the negative
+`Until`/`Since` there. That is a second, independent unsoundness of the same interval-relative
+family; it is measured by `UntlSnceCopyProbe.lean` section B and is NOT repaired here, because
+the sound restatement converts the arm into a fresh-time producer with termination and
+completeness consequences that must be designed.
 -/
 def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
     (timeOrd : TimeOrdering := TimeOrdering.empty) : RuleResult × TimeOrdering :=
@@ -928,16 +947,18 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               if branch.contains prop then none else some prop
             else none
           | _ => none
-        -- Auto-propagate all F(U(event', guard')) formulas to freshTime
-        let untlNegProps := branch.untlNegFormulas.filterMap fun usf =>
-          if usf.label.time == l.time then
-            let prop :=
-              SignedFormula.neg usf.formula { world := usf.label.world, time := freshTime }
-            if branch.contains prop then none else some prop
-          else none
+        -- **No `untlNegProps` block here, and none may be reintroduced.** It copied every
+        -- `F(U(e',g'))` standing at `l.time` unconditionally to `freshTime`. `Formula.untl` is
+        -- evaluated inside a single history and its truth is interval-relative, so
+        -- `F(U(e',g'))@t` does not imply `F(U(e',g'))@t'` for `t < t'`; unlike the `□`/`◇`
+        -- copies below, the claim is not `Ω`-universal and no shift-closure argument transfers.
+        -- The block mapped a satisfiable branch to two unsatisfiable ones and made
+        -- `RuleSound carrierBase .untlPos` false as stated. Same reason as the six group-3
+        -- blocks removed from `boxNeg`/`diamondPos`, applied to the time axis.
+        -- Measured by `Tests/BimodalTest/UntlSnceCopyProbe.lean` section A.
         -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
         let modalProps := boxDiamondPersistence branch l.world l.time freshTime
-        let autoProp := gProps ++ fNegProps ++ untlNegProps ++ modalProps
+        let autoProp := gProps ++ fNegProps ++ modalProps
         (.branching [branch1 ++ autoProp, branch2 ++ autoProp], newOrd)
       | none => (.notApplicable, timeOrd)
   -- T(S(event, guard)) @ (w,t) → branch: event-witness at fresh past time OR guard+continue
@@ -973,16 +994,12 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               if branch.contains prop then none else some prop
             else none
           | _ => none
-        -- Auto-propagate all F(S(event', guard')) formulas to freshTime
-        let snceNegProps := branch.snceNegFormulas.filterMap fun ssf =>
-          if ssf.label.time == l.time then
-            let prop :=
-              SignedFormula.neg ssf.formula { world := ssf.label.world, time := freshTime }
-            if branch.contains prop then none else some prop
-          else none
+        -- **No `snceNegProps` block here, and none may be reintroduced.** The exact time-reversal
+        -- mirror of the `untlNegProps` deletion in `.untlPos` above; see that comment for the
+        -- argument and `Tests/BimodalTest/UntlSnceCopyProbe.lean` section A for the measurement.
         -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
         let modalProps := boxDiamondPersistence branch l.world l.time freshTime
-        let autoProp := hProps ++ pNegProps ++ snceNegProps ++ modalProps
+        let autoProp := hProps ++ pNegProps ++ modalProps
         (.branching [branch1 ++ autoProp, branch2 ++ autoProp], newOrd)
       | none => (.notApplicable, timeOrd)
   -- F(U(event, guard)) @ (w,t) → Reynolds co-decomposition at future times

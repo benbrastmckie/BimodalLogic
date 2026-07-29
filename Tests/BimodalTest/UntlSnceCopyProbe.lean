@@ -92,10 +92,8 @@ def copiedA : SignedFormula :=
 
 /-! ### Row A2 — **the measurement.** Is `F(U(r,s))` copied to the minted time?
 
-`true` before the repair, `false` after. This single row is defect 1.
-
-**Pinned at the PRE-repair value.** -/
-/-- info: true -/
+`true` before the repair, `false` after. This single row is defect 1. -/
+/-- info: false -/
 #guard_msgs in
 #eval armsA.any fun arm => arm.contains copiedA
 
@@ -110,10 +108,8 @@ Unmoved by the repair: the witness labelling was never the problem. -/
 pair, with no propagation at all on this branch
 
 `bA` carries no `T(G·)`, no `F(F·)` and no `□`/`◇`, so `gProps`, `fNegProps` and `modalProps` are
-all empty; `untlNegProps` was the only non-empty block, and it is gone.
-
-**Pinned at the PRE-repair value**: `[2, 3]`, one copied formula per arm. -/
-/-- info: [2, 3] -/
+all empty; `untlNegProps` was the only non-empty block, and it is gone. Was `[2, 3]`. -/
+/-- info: [1, 2] -/
 #guard_msgs in
 #eval armsA.map List.length
 
@@ -186,7 +182,10 @@ row stays `true` — the defect is escalated, not repaired. -/
 `U(p,q) → U(r,s)` is invalid (the `ℤ` model above satisfies the antecedent at `0` and refutes the
 consequent there). No conformance row covers this direction. The fuel is deliberately small: the
 row's job is to record which `DecisionResult` constructor comes back, not to hunt for a
-countermodel, and `isValid = false` alone would not distinguish the three ways of failing. -/
+countermodel, and `isValid = false` alone would not distinguish the three ways of failing.
+
+As it turned out, the fuel was ample: after the copy deletion this search terminates with a
+countermodel rather than exhausting its budget. -/
 
 /-- The invalid implication. -/
 def invalidUntil : Formula := (Formula.untl p q).imp (Formula.untl r s)
@@ -199,13 +198,19 @@ def verdictC : DecisionResult invalidUntil := decide invalidUntil 4 200
 #guard_msgs in
 #eval verdictC.isValid
 
-/-! ### Row C2 — is it positively judged **invalid**? -/
-/-- info: false -/
+/-! ### Row C2 — is it positively judged **invalid**?
+
+**This row moved, and it is the deletion's clearest dividend.** Before the deletion the run
+returned `fuelExhausted`; after it, the engine positively refutes the formula. The copy was
+closing off the very branches a countermodel had to be read from. -/
+/-- info: true -/
 #guard_msgs in
 #eval verdictC.isInvalid
 
-/-! ### Row C3 — is a countermodel in hand? -/
-/-- info: false -/
+/-! ### Row C3 — is a countermodel in hand?
+
+Moved with C2. `false` before the deletion. -/
+/-- info: true -/
 #guard_msgs in
 #eval verdictC.getCountermodel?.isSome
 
@@ -217,8 +222,11 @@ mean the engine answers wrongly. -/
 #guard_msgs in
 #eval verdictC.isExtractionFailed
 
-/-! ### Row C5 — or did it simply run out of budget? -/
-/-- info: true -/
+/-! ### Row C5 — or did it simply run out of budget?
+
+`true` before the deletion, `false` after: the budget is no longer the binding constraint,
+because the search now terminates with a verdict. -/
+/-- info: false -/
 #guard_msgs in
 #eval verdictC.isFuelExhausted
 

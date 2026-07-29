@@ -1929,6 +1929,126 @@ theorem ruleSound_denseIndicatorClosure : RuleSound carrierBase .denseIndicatorC
   exact ⟨hist, tv, by simpa using hst⟩
 
 /-!
+## `untlPos` and `sncePos` — provable once the copy is gone
+
+These two were blocked, and the obstruction was an unsound *engine* step rather than a missing
+proof: an `untlNegProps`/`snceNegProps` block copying every negative `Until`/`Since` at the
+trigger's time into the freshly minted time. The block has been deleted (see `applyRule`'s
+docstring for the prohibition, and `Tests/BimodalTest/UntlSnceCopyProbe.lean` for the
+measurement), and what remains is exactly the shape the four fresh-time existentials already
+discharge: a witness supplied by the source formula's truth condition, plus the `T(G·)`, `F(F·)`
+and `□`/`◇` families in the future direction (`T(H·)`, `F(P·)` and `□`/`◇` in the past).
+
+The `Until` witness is *stronger* than these proofs need. `T(U(e,g))@t` supplies a witness time
+`s > t` carrying `e` **and** a guard condition on all of `(t,s)`; branch 1 needs only the
+witness, so the guard half is discarded. That is why only branch 1 is ever named — branch 2 is a
+sound alternative the proof never has to take. The section header below records the same fact
+for the `Since` mirror.
+-/
+
+/-- A genuine `Until` (guard not `⊤`) really is an `untl`. -/
+theorem asUntil?_eq_some {φ e g : Formula} (h : asUntil? φ = some (e, g)) :
+    φ = Formula.untl e g := by
+  unfold asUntil? at h
+  split at h <;> simp_all
+
+/-- A genuine `Since` (guard not `⊤`) really is a `snce`. -/
+theorem asSince?_eq_some {φ e g : Formula} (h : asSince? φ = some (e, g)) :
+    φ = Formula.snce e g := by
+  unfold asSince? at h
+  split at h <;> simp_all
+
+/-- The witness half of `Until`'s truth condition. The guard half is discarded: branch 1 of
+`untlPos` asserts only the event, and the fresh time is interpreted as the witness. -/
+theorem exists_gt_truthAt_of_untl {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t : D} {e g : Formula}
+    (h : TruthAt M Om τ t (Formula.untl e g)) : ∃ d, t < d ∧ TruthAt M Om τ d e := by
+  simp only [TruthAt] at h
+  obtain ⟨s, hts, hs, _⟩ := h
+  exact ⟨s, hts, hs⟩
+
+/-- The witness half of `Since`'s truth condition, the past mirror. -/
+theorem exists_lt_truthAt_of_snce {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t : D} {e g : Formula}
+    (h : TruthAt M Om τ t (Formula.snce e g)) : ∃ d, d < t ∧ TruthAt M Om τ d e := by
+  simp only [TruthAt] at h
+  obtain ⟨s, hst, hs, _⟩ := h
+  exact ⟨s, hst, hs⟩
+
+/-- `T(U(e,g)) → T(e)` at a fresh future time, plus the three future propagation families.
+Branch 1 of the two the rule offers; branch 2 is never needed. -/
+theorem ruleSound_untlPos : RuleSound carrierBase .untlPos := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst hord
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asUntil? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some eg =>
+      obtain ⟨e, g⟩ := eg
+      have hφ : φ = Formula.untl e g := asUntil?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      obtain ⟨d, hlt, htrue⟩ := exists_gt_truthAt_of_untl hsrc
+      refine ⟨_, List.mem_cons_self, hist, Function.update tv b.nextTime d,
+        hst.shiftClosed, hst.histMem,
+        ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+      intro c hc
+      rcases List.mem_append.mp hc with hnew | hb
+      · rcases List.mem_append.mp hnew with hwit | hrest
+        · rw [List.mem_singleton] at hwit
+          subst hwit
+          simpa [SatAt, SignedFormula.pos] using htrue
+        · rcases List.mem_append.mp hrest with hleft | hmodal
+          · rcases List.mem_append.mp hleft with hgp | hfn
+            · exact satAt_of_mem_gProps hst hlt hgp
+            · exact satAt_of_mem_fNegProps hst hlt hfn
+          · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+              mem_boxDiamondPersistence_label hmodal
+            exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+              hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+      · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
+
+/-- `T(S(e,g)) → T(e)` at a fresh past time. The exact time-reversal mirror of `untlPos`: the
+witness lands earlier, the ordering edge runs the other way, and the two past propagation
+helpers replace the two future ones. The modal family is direction-blind and reused verbatim. -/
+theorem ruleSound_sncePos : RuleSound carrierBase .sncePos := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst hord
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asSince? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some eg =>
+      obtain ⟨e, g⟩ := eg
+      have hφ : φ = Formula.snce e g := asSince?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      obtain ⟨d, hlt, htrue⟩ := exists_lt_truthAt_of_snce hsrc
+      refine ⟨_, List.mem_cons_self, hist, Function.update tv b.nextTime d,
+        hst.shiftClosed, hst.histMem,
+        ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+      intro c hc
+      rcases List.mem_append.mp hc with hnew | hb
+      · rcases List.mem_append.mp hnew with hwit | hrest
+        · rw [List.mem_singleton] at hwit
+          subst hwit
+          simpa [SatAt, SignedFormula.pos] using htrue
+        · rcases List.mem_append.mp hrest with hleft | hmodal
+          · rcases List.mem_append.mp hleft with hhp | hpn
+            · exact satAt_of_mem_hProps hst hlt hhp
+            · exact satAt_of_mem_pNegProps hst hlt hpn
+          · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+              mem_boxDiamondPersistence_label hmodal
+            exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+              hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+      · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
+
+/-!
 ## The frame-class-gated rules
 
 `denseIndicatorClosure` above needed no carrier property. `densityRule` is the first rule that
@@ -1985,15 +2105,21 @@ theorem ruleSound_densityRule : RuleSound carrierDense .densityRule := by
       · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
 
 /-!
-## `untlPos`, `sncePos`, `untlNeg` and `snceNeg` — BLOCKED, engine defect
+## `untlNeg` and `snceNeg` — BLOCKED, two independent engine defects
 
-These four rules cannot be proved sound as the engine currently stands, and the obstruction is
-**not** the ordering gap this section's predecessors were about. That gap is closed: `OrdWithin`
-is in `RuleSound`, and the four fresh-time existentials above are proved against it. The
-obstruction here is a second, independent unsoundness in `applyRule`, of exactly the same family
-as the group-3 defect that was removed from `boxNeg`/`diamondPos`.
+**Status.** `untlPos` and `sncePos` are proved above; the copy defect described below was
+repaired for those two arms by deleting the block, gated on the full conformance corpus. This
+section is retained because `untlNeg`/`snceNeg` are still blocked, and they are blocked
+**twice**: their ACTIVE arms still carry the copy block, and their PASSIVE arms carry a second,
+wholly independent unsoundness. Everything below stated in the present tense holds of
+`untlNeg`/`snceNeg`; for `untlPos`/`sncePos` read it in the past tense.
 
-**The defect.** `untlPos` (and its `sncePos` mirror, and the ACTIVE arm of `untlNeg`/`snceNeg`)
+Neither obstruction is the ordering gap this section's predecessors were about. That gap is
+closed: `OrdWithin` is in `RuleSound`, and the four fresh-time existentials above are proved
+against it.
+
+**Defect 1, the copy.** The ACTIVE arm of `untlNeg`/`snceNeg` (and, before its deletion,
+`untlPos`/`sncePos`)
 emits an `untlNegProps` block that copies every `F(U(e', g'))` sitting at the trigger's time
 *unconditionally* to the freshly minted time. `Formula.untl` is evaluated along one history and
 its truth is interval-relative, so `F(U(e', g'))` at `t` does not imply `F(U(e', g'))` at a later
@@ -2072,11 +2198,15 @@ ordering constraint.
 
 **Required behaviour, and why the two families are handled differently.**
 
-* For `untlPos`/`sncePos` the fix is **deletion** of the copy block, on the group-3 precedent
-  below. A guarded copy is not available: soundness would need `¬U(e',g')@A → ¬U(e',g')@C` for a
-  freshly chosen `C > A`, a semantic condition on the model that no syntactic guard computable
-  from `(branch, ord)` expresses. Deletion can only make branches *harder* to close, so its risk
-  is under-closing, which the conformance corpus measures directly.
+* For `untlPos`/`sncePos` the fix was **deletion** of the copy block, on the group-3 precedent
+  below — **done**, and the two rules are proved above. A guarded copy was not available:
+  soundness would need `¬U(e',g')@A → ¬U(e',g')@C` for a freshly chosen `C > A`, a semantic
+  condition on the model that no syntactic guard computable from `(branch, ord)` expresses.
+  Deletion can only make branches *harder* to close, so its risk was under-closing, which the
+  conformance corpus measures directly: all 29 rows are unchanged by the deletion. In the other
+  direction the deletion is a strict gain — `UntlSnceCopyProbe.lean` row C2 shows the engine now
+  returns a countermodel for the invalid `U(p,q) → U(r,s)` where it previously exhausted its
+  fuel, because the copy had been closing off the branches a countermodel is read from.
 * For `untlNeg`/`snceNeg` deletion is **necessary but not sufficient** — it leaves the PASSIVE
   defect intact, and `RuleSound` is per rule. The sound restatement is an adjacency-aware
   co-decomposition (mint an interpolant `z` with `t < z < t'` and emit `F(guard)@z`), which turns
