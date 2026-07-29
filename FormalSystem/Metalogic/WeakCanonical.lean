@@ -44,6 +44,7 @@ import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Lemma5
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.BadIntervals
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.TruthTransfer
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.NoGaps
+import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Singletons
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.ChronicleInstance
 
 /-!
