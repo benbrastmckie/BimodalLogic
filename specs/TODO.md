@@ -11,10 +11,10 @@ next_project_number: 427
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,170,179,193,231,257,298,390,408,413,419,420,421,423,424,426 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 177,178,219,282,296,410,411,412,414,422,425 | 165,193,231,298,420,421,423 | formula-refactor, dataset-enhancement, paper-refactor, ... |
-| 3 | 169,415,417 | 414,422 | paper-refactor, strong_completeness |
-| 4 | 362 | 169,170 | strong_completeness |
+| 1 | 95,125,127,128,165,170,179,193,231,257,298,390,408,413,415,419,421,423,424,426 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 177,178,219,282,296,410,411,412,420,422,425 | 165,193,231,298,415,421,423 | formula-refactor, dataset-enhancement, paper-refactor, ... |
+| 3 | 169,414 | 420,422 | paper-refactor, strong_completeness |
+| 4 | 362,417 | 169,170,414 | paper-refactor, strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -60,11 +60,11 @@ next_project_number: 427
 
 ### Paper Refactor
 
+415 [RESEARCHED] — Completeness under the refactored (Omega-free, maximal-history) s
+  └─ 420 [BLOCKED] — Align the Lean TaskFrame with the refactored paper def:frame (Pos
+    └─ 414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
+      └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
 419 [NOT STARTED] — Machine-check the CO-does-not-derive-Reynolds independence result
-420 [NOT STARTED] — Align the Lean TaskFrame with the refactored paper def:frame (Pos
-  └─ 414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
-    └─ 415 [RESEARCHED] — Completeness under the refactored (Omega-free, maximal-history) s
-    └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
 
 ### Strong Completeness
 
@@ -199,10 +199,13 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 
 ### 420. Align task frame with positive cone limit nullity
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: None
+- **Dependencies**: Task 415
+- **Research**: [420_align_task_frame_with_positive_cone_limit_nullity/reports/01_taskframe-positive-cone-limit-nullity.md]
+- **Plan**: [420_align_task_frame_with_positive_cone_limit_nullity/plans/01_taskframe-limit-nullity-alignment.md]
+- **Summary**: [420_align_task_frame_with_positive_cone_limit_nullity/summaries/01_taskframe-limit-nullity-alignment-summary.md]
 
 **Description**: Align the Lean TaskFrame with the refactored paper def:frame (PossibleWorlds task 51, commits 754d069..e566885; SUPERSEDES fix.md A1 -- Reflection is no longer a paper axiom). PAPER'S NEW DEF:FRAME (settled, do not re-litigate): primitive task relation on the positive cone (subset of W x D+ x W, D+ = {x : 0 <= x}); (i) iff-Nullity; (ii) proviso-free Compositionality on D+ stated as the LAX law (R_{x+y} contains R_x o R_y -- equality would assert interpolation, NOT adopted); (iii) NEW axiom Limit Nullity: the intersection over x > 0 of the two-sided cones (w)_x equals {w}; negative durations by the definitional CONVERSE CONVENTION (w =>_x u for x < 0 IS u =>_{-x} w); Reflection and backward composition are DERIVED; mixed-sign composition is inexpressible at the primitive level; the paper appendix now proves T_F is T1 (hence R0) for EVERY frame (app:topology-r0, one-line proof from Nullity + converse convention + Limit Nullity). CURRENT LEAN STATE (FormalSystem/Semantics/TaskFrame.lean): already close -- nullity_identity matches iff-Nullity; forward_comp (0 <= x, 0 <= y hypotheses) is exactly the official lax positive-cone law; backward_comp already derived, matching the paper's derived status. The two-sided primitive TaskRel with the `converse` FIELD is precisely the paper's EXTENDED relation, so the presentation itself can stand; but the docstring must be recast: `converse` is the paper's definitional converse convention packaged as a structure field, not a substantive temporal-symmetry axiom, and the 'Axiomatization Notes' block is now inverted (the paper has ADOPTED the positive-cone presentation -- record agreement, not divergence). Stale 'def:frame, line 1835' citations throughout the module must be re-anchored. THE REAL MATHEMATICAL DELTA: Limit Nullity is absent from the Lean structure. (1) Add a limit_nullity field; direct transcription with the extended relation: forall w u, (forall x, 0 < x -> exists y, |y| < x and TaskRel w y u) -> u = w. Paper task-51 research S2 proved forward-only and two-sided forms equivalent when imposed at all states -- research may pick either, but the two-sided form matches the paper's official statement. (2) Provide helper limit_nullity_of_discrete: over Z (and generally SuccOrder + IsSuccArchimedean D) the axiom is AUTOMATIC (|y| < succ 0 forces y = 0, then nullity_identity), so every Discrete-class construction discharges it in one line. (3) Inventory and discharge ALL TaskFrame instantiation sites tree-wide (research phase: grep ': TaskFrame' / 'TaskFrame D where' / '.mk'). Known: trivialFrame (Unit singleton -- trivially fine), identityFrame (fine -- verify), natFrame (VIOLATES the axiom over dense D: any u is reachable in arbitrarily small nonzero duration -- repair the relation or restrict its temporal parameter to discrete D), plus every canonical/countermodel frame in Metalogic/ (coordinate with 415, which owns the per-class canonical obligations). (4) latex/subfiles/02-Semantics.tex Task Frame definition is stale vs BOTH the live tree and the paper (states one-way Nullity and unrestricted mixed-sign Compositionality -- the very axiomatization TaskFrame.lean's own notes call impossible for nondeterministic relations): restate with iff-Nullity, positive-cone lax Compositionality, the converse convention, and Limit Nullity; must still compile standalone (pdflatex with TEXINPUTS=../assets: from latex/subfiles/). SCOPE BOUNDARY with task 409: 409 owns 04-Metalogic.tex/06-Notes.tex identifier-architecture fidelity; THIS task owns the 02-Semantics.tex frame-definition subsection. OPTIONAL STRETCH (defer if nontrivial): formalize the paper's T1 theorem as a sanity check -- with the cone topology, closure of {u} equals {u} for every frame. NON-GOALS: no edits under Philosophy/Papers/; no change to WorldHistory/respects_task (unaffected -- it evaluates at d = t - s with converse handling signs); no validity/semantics refactor (task 414 owns that and now depends on this task so the Omega-free API lands once, against the final frame structure). Related: 414, 415, 417, 409.
 

@@ -97,13 +97,35 @@
     {
       "project_number": 420,
       "project_name": "align_task_frame_with_positive_cone_limit_nullity",
-      "status": "not_started",
+      "status": "blocked",
       "task_type": "lean4",
       "description": "Align the Lean TaskFrame with the refactored paper def:frame (PossibleWorlds task 51, commits 754d069..e566885; SUPERSEDES fix.md A1 -- Reflection is no longer a paper axiom). PAPER'S NEW DEF:FRAME (settled, do not re-litigate): primitive task relation on the positive cone (subset of W x D+ x W, D+ = {x : 0 <= x}); (i) iff-Nullity; (ii) proviso-free Compositionality on D+ stated as the LAX law (R_{x+y} contains R_x o R_y -- equality would assert interpolation, NOT adopted); (iii) NEW axiom Limit Nullity: the intersection over x > 0 of the two-sided cones (w)_x equals {w}; negative durations by the definitional CONVERSE CONVENTION (w =>_x u for x < 0 IS u =>_{-x} w); Reflection and backward composition are DERIVED; mixed-sign composition is inexpressible at the primitive level; the paper appendix now proves T_F is T1 (hence R0) for EVERY frame (app:topology-r0, one-line proof from Nullity + converse convention + Limit Nullity). CURRENT LEAN STATE (FormalSystem/Semantics/TaskFrame.lean): already close -- nullity_identity matches iff-Nullity; forward_comp (0 <= x, 0 <= y hypotheses) is exactly the official lax positive-cone law; backward_comp already derived, matching the paper's derived status. The two-sided primitive TaskRel with the `converse` FIELD is precisely the paper's EXTENDED relation, so the presentation itself can stand; but the docstring must be recast: `converse` is the paper's definitional converse convention packaged as a structure field, not a substantive temporal-symmetry axiom, and the 'Axiomatization Notes' block is now inverted (the paper has ADOPTED the positive-cone presentation -- record agreement, not divergence). Stale 'def:frame, line 1835' citations throughout the module must be re-anchored. THE REAL MATHEMATICAL DELTA: Limit Nullity is absent from the Lean structure. (1) Add a limit_nullity field; direct transcription with the extended relation: forall w u, (forall x, 0 < x -> exists y, |y| < x and TaskRel w y u) -> u = w. Paper task-51 research S2 proved forward-only and two-sided forms equivalent when imposed at all states -- research may pick either, but the two-sided form matches the paper's official statement. (2) Provide helper limit_nullity_of_discrete: over Z (and generally SuccOrder + IsSuccArchimedean D) the axiom is AUTOMATIC (|y| < succ 0 forces y = 0, then nullity_identity), so every Discrete-class construction discharges it in one line. (3) Inventory and discharge ALL TaskFrame instantiation sites tree-wide (research phase: grep ': TaskFrame' / 'TaskFrame D where' / '.mk'). Known: trivialFrame (Unit singleton -- trivially fine), identityFrame (fine -- verify), natFrame (VIOLATES the axiom over dense D: any u is reachable in arbitrarily small nonzero duration -- repair the relation or restrict its temporal parameter to discrete D), plus every canonical/countermodel frame in Metalogic/ (coordinate with 415, which owns the per-class canonical obligations). (4) latex/subfiles/02-Semantics.tex Task Frame definition is stale vs BOTH the live tree and the paper (states one-way Nullity and unrestricted mixed-sign Compositionality -- the very axiomatization TaskFrame.lean's own notes call impossible for nondeterministic relations): restate with iff-Nullity, positive-cone lax Compositionality, the converse convention, and Limit Nullity; must still compile standalone (pdflatex with TEXINPUTS=../assets: from latex/subfiles/). SCOPE BOUNDARY with task 409: 409 owns 04-Metalogic.tex/06-Notes.tex identifier-architecture fidelity; THIS task owns the 02-Semantics.tex frame-definition subsection. OPTIONAL STRETCH (defer if nontrivial): formalize the paper's T1 theorem as a sanity check -- with the cone topology, closure of {u} equals {u} for every frame. NON-GOALS: no edits under Philosophy/Papers/; no change to WorldHistory/respects_task (unaffected -- it evaluates at d = t - s with converse handling signs); no validity/semantics refactor (task 414 owns that and now depends on this task so the Omega-free API lands once, against the final frame structure). Related: 414, 415, 417, 409.\n\nNOTATION (user decision, 2026-07-28): any explicit converse operation on the task relation is written with a superscript inverse -- $\\Rightarrow^{-1}$ (and $R^{-1}$ for abstract relations) -- NEVER the relation-algebra breve/smile ($\\breve{R}$, $R^{\\smallsmile}$) common in the arrow-logic literature. This applies to the 02-Semantics.tex restatement of the converse convention, any Lean notation or declaration names (prefer inv/⁻¹ vocabulary, e.g. TaskRel.inv, consistent with Mathlib's Inv), and all module docstrings. Note the paper itself currently states the converse convention without any operator symbol (subscript negation only) -- if a symbol is ever introduced paper-side it uses the same superscript -1 form.",
       "topic": "paper-refactor",
       "effort": "medium",
       "created": "2026-07-29T06:36:04Z",
-      "last_updated": "2026-07-29T06:41:42Z"
+      "last_updated": "2026-07-29T14:18:01Z",
+      "session_id": "sess_1785332177_7809d8",
+      "artifacts": [
+        {
+          "path": "specs/420_align_task_frame_with_positive_cone_limit_nullity/reports/01_taskframe-positive-cone-limit-nullity.md",
+          "type": "report",
+          "summary": "TaskFrame positive-cone + Limit Nullity research"
+        },
+        {
+          "path": "specs/420_align_task_frame_with_positive_cone_limit_nullity/plans/01_taskframe-limit-nullity-alignment.md",
+          "type": "plan",
+          "summary": "TaskFrame Limit Nullity alignment plan (6 phases; phase 6 blocked on 415)"
+        },
+        {
+          "path": "specs/420_align_task_frame_with_positive_cone_limit_nullity/summaries/01_taskframe-limit-nullity-alignment-summary.md",
+          "type": "summary",
+          "summary": "Phases 1-5 complete; phase 6 blocked on 415"
+        }
+      ],
+      "blockers": "Phase 6 (add the limit_nullity structure field and discharge all 18 instantiation sites) is blocked on task 415. ParametricCanonicalTaskFrame (Algebraic/ParametricCanonical.lean:207) is duration-blind above zero and genuinely violates Limit Nullity over dense D; it witnesses the LIVE theorem countermodel_dense_enriched (BXCanonical/Completeness.lean:143, stated as exists (F : TaskFrame Rat)) and is also the witness at ChronicleToCountermodelBasic.lean:839. Rat/Real have no SuccOrder, so the discrete binders cannot be added. Resolution: task 415's bundleFlowFrame (deterministic-shift carrier) discharges the obligation via TaskFrame.limit_nullity_of_shift, already landed and verified by phases 1-5. Phase 6 is then a mechanical drop-in; re-run the site-inventory greps first since the 18-site inventory predates 415.",
+      "dependencies": [
+        415
+      ]
     },
     {
       "project_number": 419,
