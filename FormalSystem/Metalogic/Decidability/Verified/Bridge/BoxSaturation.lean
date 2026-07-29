@@ -269,13 +269,23 @@ theorem mem_knownTimes_of_mem {b : Branch} {sf : SignedFormula} (h : sf ∈ b) :
 **The temporal spread of a box formula across worlds.** `T(□φ)` anywhere puts `T(Gφ)` and `T(Hφ)`
 at *every known world*, at the box formula's own time.
 
-This is what `boxNeg`/`diamondPos` do maintain: minting a world copies
+**Historical note — this is no longer maintained by the engine, and the sentence that follows
+describes a removed mechanism.** `boxNeg`/`diamondPos` used to copy
 `branch.allFuturePosAtTime l.time` and `branch.allPastPosAtTime l.time` — the `T(G·)` and `T(H·)`
-formulas at the triggering time, **at every world** — onto the fresh world
-(`Tableau.lean:553-559`). Combined with `boxTemporal`, which turns `T(□φ)` into exactly those two
-formulas, it is the invariant form of "the box context follows the label".
+formulas at the triggering time, at every world — onto the fresh world, and combined with
+`boxTemporal` that was read as the invariant form of "the box context follows the label". Those
+six copy blocks (per rule) were **removed as unsound**: `T(Gφ)` asserts that `φ` holds along the
+history currently being built, which is exactly the thing `□`/`◇` quantify over and therefore
+exactly what may not be assumed of a freshly minted alternative world.
 
-It is strictly weaker than `BoxContextClosed`, and — unlike it — it is enough.
+The refutation recorded below already showed `BoxTemporalSpread` false on real engine output
+*before* that removal, for an unrelated reason (later time-minting), so the removal does not
+change this definition's status: it was not maintained then and is not maintained now. The
+definition is kept because `boxAnchored_of_boxTemporalSpread` still routes through it and it
+documents the invariant that was tried and rejected.
+
+It is strictly weaker than `BoxContextClosed`, and it is not what the truth lemma consumes; see
+`BoxAnchored` below.
 -/
 def BoxTemporalSpread (b : Branch) : Prop :=
   ∀ (φ : Formula) (l : Label), (⟨.pos, .box φ, l⟩ : SignedFormula) ∈ b →
@@ -410,13 +420,33 @@ guess at; it is the persistence of `T(□φ)` into times minted later. `(□p �
 `(□p ∧ ◇q) → r` at `.Dense` fail the same way. See `Tests/BimodalTest/BoxSpreadProbe.lean` for
 the rows.
 
-`boxAnchoredCheck` is `true`, and `boxGridCheck` is `true`, on every one of those branches. That
-is the corrected invariant: what the fresh world needs is not `T(Gφ)`/`T(Hφ)` at every time the
-box formula reaches, but **one anchor time** carrying `T(φ)`, `T(Gφ)` and `T(Hφ)` together. The
-mint supplies exactly that (`boxProps` gives the content at the box formula's own time,
-`tempGProps`/`tempHProps` give `G` and `H` at the minting time), and `timeOrderTotal` does the
-rest: every known time is comparable to the anchor, so `sat_all_future_pos` and
-`sat_all_past_pos` sweep the world's whole row from the single anchor.
+`boxAnchoredCheck` was `true`, and `boxGridCheck` `true`, on every one of those branches at the
+time that measurement was taken. That was the corrected invariant: what the fresh world needs is
+not `T(Gφ)`/`T(Hφ)` at every time the box formula reaches, but **one anchor time** carrying
+`T(φ)`, `T(Gφ)` and `T(Hφ)` together. The mint used to supply exactly that: `boxProps` gave the
+content at the box formula's own time, and the `tempGProps`/`tempHProps` blocks gave `G` and `H`
+at the minting time.
+
+**Those two blocks have since been removed as unsound** (see the historical note on
+`BoxTemporalSpread` above). They were the *only* route by which `T(Gφ)`/`T(Hφ)` could reach a
+freshly minted world: `boxProps` supplies only `T(inner)`; `boxTemporal` fires only on `T(□·)`,
+which never reaches a fresh world; `allFuturePos`/`allPastPos` require `T(G·)`/`T(H·)` to be
+present already. `boxAnchoredCheck` is therefore expected to compute `false` on multi-world
+branches now, and the anchor half of the argument above no longer holds on real engine output.
+
+**Nothing breaks at typecheck.** `BoxAnchored` and `boxAnchoredCheck` are still well-formed, and
+every lemma below that takes `hBA : boxAnchoredCheck b = true` carries it as a hypothesis and
+never unfolds it. What is lost is that the hypothesis is no longer dischargeable by computing on
+a branch the engine actually built, so the truth lemma's `box` case loses a side condition it
+could previously establish by `decide`. Repairing that — by propagating `T(□φ)` itself to the
+fresh world, by copying `T(Gφ)`/`T(Hφ)` only when box-derived, or by restructuring the `box` case
+so it does not need an anchor — is a design decision about the saturation strategy with its own
+soundness obligations, and it is deliberately left open here rather than settled by reinstating
+an unsound copy. The measurement, the full carrier list and the repair options are written up in
+`specs/418_.../artifacts/boxanchored-finding.md`; the second half of the `timeOrderTotal`
+argument (every known time is comparable to the anchor, so `sat_all_future_pos` and
+`sat_all_past_pos` sweep the world's whole row from a single anchor) is unaffected and remains
+correct *given* an anchor.
 -/
 
 /--

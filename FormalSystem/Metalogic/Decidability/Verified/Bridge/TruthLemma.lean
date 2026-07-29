@@ -374,10 +374,12 @@ probed — and by the process lesson that cost two earlier dispatches, **probe b
 The `U`/`S` straddling guards remain obligations of the induction, not of `gapVal` — that part of
 the previous reading survives the refutation unchanged.
 
-**O3 — the box grid. Done, after two corrections** (`Bridge/BoxSaturation.lean`). The `box` case
-needs `T(□φ) @ (w,t)` to reach every known *label*, and `sat_box_pos` reaches only the same time.
-The interface is now `sat_box_grid_of_check`, whose two side conditions are both `Bool` equations
-on the finished branch: `timeOrderTotal b timeOrd = true` and `boxAnchoredCheck b = true`.
+**O3 — the box grid. Proved, but its side condition has since stopped being computable-true**
+(`Bridge/BoxSaturation.lean`). The `box` case needs `T(□φ) @ (w,t)` to reach every known *label*,
+and `sat_box_pos` reaches only the same time. The interface is `sat_box_grid_of_check`, whose two
+side conditions are both `Bool` equations on the finished branch: `timeOrderTotal b timeOrd = true`
+and `boxAnchoredCheck b = true`. Both lemmas still typecheck; the second hypothesis is carried and
+never unfolded.
 
   Two invariants were tried and both are refuted in tree, so neither should be reached for again.
   `BoxContextClosed` ("`T(□φ)` at every known label") fails because world-minting copies box
@@ -386,8 +388,22 @@ on the finished branch: `timeOrderTotal b timeOrd = true` and `boxAnchoredCheck 
   into every time the run later mints in that world, while the world-minting copy of
   `allFuturePosAtTime` happened once, at the triggering time — measured on
   `(□p ∧ ◇q) → r`, see `Tests/BimodalTest/BoxSpreadProbe.lean`. `BoxAnchored` — one anchor time
-  per known world carrying `T(φ)`, `T(Gφ)` and `T(Hφ)` together — is what survives, and
-  `timeOrderTotal` sweeps the world's whole row from that single anchor.
+  per known world carrying `T(φ)`, `T(Gφ)` and `T(Hφ)` together — is the statement that survived
+  those two refutations, and `timeOrderTotal` sweeps the world's whole row from that single
+  anchor.
+
+  **What has changed since.** The world-minting copies of `allFuturePosAtTime`/`allPastPosAtTime`
+  — the six group-3 blocks in `boxNeg` and `diamondPos` — have been **removed from the engine as
+  unsound**: they asserted of a freshly minted alternative world what was only known of the
+  history being built. They were the only route by which `T(Gφ)`/`T(Hφ)` could reach a fresh
+  world, so `boxAnchoredCheck` no longer computes `true` on multi-world branches, and
+  `sat_box_grid_of_check`'s second side condition is no longer dischargeable by `decide` on real
+  engine output. Nothing here fails to typecheck; what O3 has lost is the ability to *supply* its
+  own hypothesis. Choosing the repair — propagate `T(□φ)` itself, copy `T(Gφ)`/`T(Hφ)` only when
+  box-derived, or restructure the `box` case to need no anchor — is an open design decision with
+  its own soundness obligations. Do **not** reinstate the removed copies. The measurement, the
+  carrier list, and the repair options are written up in
+  `specs/418_.../artifacts/boxanchored-finding.md`.
 
 **The `sat_*` family is now complete** for the induction's propositional needs.
 `Bridge/PropSaturation.lean` adds `sat_imp_pos`, which `CountermodelExtraction.lean` did not

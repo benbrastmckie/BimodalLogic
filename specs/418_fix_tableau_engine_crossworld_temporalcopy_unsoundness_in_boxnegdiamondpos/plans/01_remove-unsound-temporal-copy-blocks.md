@@ -358,7 +358,7 @@ after) rather than reproducing this estimate.
 
 ---
 
-### Phase 4: Restore the Library Build and Refresh Stale Bridge Prose [IN PROGRESS]
+### Phase 4: Restore the Library Build and Refresh Stale Bridge Prose [COMPLETED]
 
 **Goal**: Get `lake build` (the whole `FormalSystem` library) green, repairing any proof whose
 tactic script was written against the old `applyRule` term structure, and correcting the bridge
@@ -437,7 +437,7 @@ expansion beyond `SubformulaProperty.lean` in the phase notes rather than silent
 
 ---
 
-### Phase 5: Measure and Document the boxAnchoredCheck Consequence [NOT STARTED]
+### Phase 5: Measure and Document the boxAnchoredCheck Consequence [IN PROGRESS]
 
 **Goal**: Determine empirically whether `boxAnchoredCheck` still computes `true` on multi-world
 branches after the deletion, enumerate every downstream lemma that carries it as a hypothesis, and

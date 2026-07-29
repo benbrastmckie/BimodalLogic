@@ -811,9 +811,16 @@ variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrder
 
 /-! ### The fresh-witness family
 
-These rules mint a fresh world or time, put a witness there, and then drag every universal
-already on the branch across to it. Their statements carry `hb` as well as `hsf`, because the
-propagation blocks read formulas back off the branch.
+These rules mint a fresh world or time, put a witness there, and then drag universals already on
+the branch across to it. Their statements carry `hb` as well as `hsf`, because the propagation
+blocks read formulas back off the branch.
+
+For the two *world*-minting rules (`.boxNeg`, `.diamondPos`) the universals dragged across are
+the modal ones only — `boxPosFormulas` and `diamondNegFormulas`. Six further blocks used to copy
+temporal formulas (`allFuturePosAtTime`, `allPastPosAtTime`, `someFutureNegAtTime`,
+`somePastNegAtTime`, `untlNegAtTime`, `snceNegAtTime`) into the fresh world; they were removed as
+unsound, and those six accessor names were correspondingly pruned from the two `simp only` lists
+below, where they had become inert. The accessors themselves still exist in `SignedFormula.lean`.
 
 The proofs share one shape. After the split cascade, `hg` is a membership in a nest of
 `::`/`++`/`flatten`, `repeat' rcases` peels it into one goal per block, and a three-alternative
@@ -836,9 +843,7 @@ theorem applyRule_boxNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
   all_goals (try simp only [RuleResult.emitted] at hg)
   all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
   all_goals (try simp only [
-    Branch.boxPosFormulas, Branch.diamondNegFormulas, Branch.allFuturePosAtTime,
-    Branch.allPastPosAtTime, Branch.someFutureNegAtTime, Branch.somePastNegAtTime,
-    Branch.untlNegAtTime, Branch.snceNegAtTime,
+    Branch.boxPosFormulas, Branch.diamondNegFormulas,
     List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
     List.not_mem_nil, or_false] at hg)
   all_goals (try (repeat' rcases hg with hg | hg))
@@ -867,9 +872,7 @@ theorem applyRule_diamondPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈
   all_goals (try simp only [RuleResult.emitted] at hg)
   all_goals (try simp_all only [asDiamond?_eq_iff, reduceCtorEq, List.not_mem_nil])
   all_goals (try simp only [
-    Branch.boxPosFormulas, Branch.diamondNegFormulas, Branch.allFuturePosAtTime,
-    Branch.allPastPosAtTime, Branch.someFutureNegAtTime, Branch.somePastNegAtTime,
-    Branch.untlNegAtTime, Branch.snceNegAtTime,
+    Branch.boxPosFormulas, Branch.diamondNegFormulas,
     List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
     List.not_mem_nil, or_false] at hg)
   all_goals (try (repeat' rcases hg with hg | hg))
