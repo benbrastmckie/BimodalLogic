@@ -459,6 +459,32 @@ is trivially valid: if φ holds at ALL times, then at any future time z,
 -/
 def always (φ : Formula) : Formula := φ.allPast.and (φ.and φ.allFuture)
 
+/--
+The paper's **CO** formula (Cauchy/completeness-of-order principle), as a *named abbreviation*:
+
+  `CO(φ) := △(Hφ → F(Hφ)) → (Hφ → Gφ)`
+
+**Source**: `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex:3250`
+(`def:TMplus-c`), where CO is listed as the extra axiom distinguishing the complete-order
+extension of the base tense logic.
+
+**Operator resolution (important).** The `△` here is the **temporal** triangle
+`Formula.always` — i.e. `△ψ = Hψ ∧ ψ ∧ Gψ` (see `Formula.always` immediately above) — and
+**not** the modal box `Formula.box`. Writing `□` in its place transcribes a different axiom.
+The four constituent operators are `Formula.allPast` (H), `Formula.someFuture` (F),
+`Formula.allFuture` (G), and `Formula.always` (△).
+
+**This is an abbreviation, not an `Axiom` constructor.** This repository's official
+Dedekind-class axiom basis remains the Reynolds triple `Axiom.prior_U_gap` /
+`Axiom.prior_S_gap` / `Axiom.sep`; CO is a *derived* object over that basis. See
+`FormalSystem/Theorems/DedekindDerived.lean` (proof-theoretic side) and
+`FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean` (`co_valid`, the semantic side).
+The converse direction — CO deriving the Reynolds gap axioms — is **not** claimed; see the
+Layer 9 discussion in `FormalSystem/ProofSystem/Axioms.lean`.
+-/
+def co (φ : Formula) : Formula :=
+  (Formula.always (φ.allPast.imp φ.allPast.someFuture)).imp (φ.allPast.imp φ.allFuture)
+
 /-- Next-step operator: X(phi) = U(phi, bot) (Burgess convention: event first, guard second).
     X(phi) at t means phi holds at t+1 (event=phi at immediate successor, guard=bot vacuous). -/
 def next (φ : Formula) : Formula := Formula.untl φ Formula.bot

@@ -1,7 +1,7 @@
 # Implementation Plan: CO as a Derived Theorem over the Retained Reynolds Basis
 
 - **Task**: 416 - adopt_co_axiom_basis_for_dedekind_class
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (runs in parallel with tasks 408 and 165; no shared edit targets — see Risks)
 - **Research Inputs**: `specs/416_adopt_co_axiom_basis_for_dedekind_class/reports/01_co-axiom-basis-adoption.md`
@@ -134,12 +134,12 @@ concurrently.
 
 ---
 
-### Phase 1: Add `Formula.co` abbreviation [NOT STARTED]
+### Phase 1: Add `Formula.co` abbreviation [COMPLETED]
 
 - **Goal:** A named, source-cited abbreviation for the paper's CO formula exists in the syntax
   layer, usable from both `Metalogic` (Phase 2) and `Theorems` (Phase 4).
 - **Tasks:**
-  - [ ] `grep`/`lean_local_search` for an existing `Formula.co` to rule out a name collision;
+  - [x] `grep`/`lean_local_search` for an existing `Formula.co` to rule out a name collision;
         fall back to `Formula.dedekindCO` if one exists.
   - [ ] Add to `FormalSystem/Syntax/Formula.lean`, immediately after `Formula.always` (line
         ~460), the definition
