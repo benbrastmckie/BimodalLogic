@@ -2312,7 +2312,17 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   Guarantee" section, which still advertised the long-retired `branchTruthLemma` as a key
   theorem, was replaced by a pointer to where the truth lemma actually lives. Full `lake build`
   green (1939 jobs).
-- [ ] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`, new) — **BLOCKED
+- [x] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`) — **COMPLETE (2026-07-29f).**
+  All 34 `TableauRule` constructors have a sorry-free `RuleSound` theorem at the weakest carrier
+  property that discharges them, and the assembly `ruleSound_of_mem_allRulesForFC` runs the single
+  induction over `mem_allRulesForFC_iff` that this bullet's original text specified. Axioms exactly
+  `propext`/`Classical.choice`/`Quot.sound`; full `lake build` green at 1983 jobs. The blocker
+  recorded below was real and is closed: it was three unsound ENGINE steps in succession, not a
+  missing proof — the `untlNegProps`/`snceNegProps` copy blocks, the ACTIVE arms' self-propagated
+  `¬U(e,g)@fresh`, and the PASSIVE arms' endpoint co-decomposition, each refuted and deleted in
+  its own gated commit. See the 2026-07-29f banner for the assembly's exact scope and for the
+  completeness cost the last of those deletions carried.
+  Historical blocker text follows. **BLOCKED
   (2026-07-28t) at 16 of 28 rules, all sorry-free. The assembly's target statement is FALSE as
   written, and the `RuleSound`-weakening repair is now measured impossible: the refuting branch
   is one the engine itself builds, and `buildTableau` consequently closes an invalid formula.
@@ -2344,6 +2354,61 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   verdicts; **green milestone commit**.
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
+
+**PHASE 7 STATUS (2026-07-29f) — THE RULE-SOUNDNESS LEDGER IS COMPLETE AT 34/34, AND THE 7.2
+ASSEMBLY IS LANDED.** Twenty-first dispatch. Four green commits. Full `lake build` green at 1983
+jobs, matching the recorded baseline exactly; sorry census over `Decidability/` is `0` with an
+empty inventory; no new axioms; no vacuous definitions. 7.3 was not attempted and remains the
+only open item in this phase.
+
+*What landed, in order.* (1) **T3**, the PASSIVE-arm firing counter (`UntlSnceCopyProbe` section
+F), pinned at PRE-change values and committed BEFORE the edit — report 06 §6's one required gate
+row that had never landed, and B5′'s blind spot. (2) **The PASSIVE arms of `untlNeg`/`snceNeg`
+retired**, user-authorized rank 2, with the full gate run. (3) **`ruleSound_untlNeg` and
+`ruleSound_snceNeg` proved**, taking the ledger 32 → 34 of 34. (4) **`ruleSound_of_mem_allRulesForFC`**,
+the single induction over `mem_allRulesForFC_iff` that 7.2 named, discharged case by case against
+the completed ledger.
+
+*The declared cost was wrong in both directions, and that is the finding this dispatch most needs
+carried forward.* Report 05/06 priced rank 2 at two `TableauConformance` rows (`BX7`/`BX7'`),
+marked PLAUSIBLE / UNVERIFIABLE-WITHOUT-BUILD. Measured:
+
+* **The conformance corpus did not move at all.** 29 rows green before (1346 jobs, 58.2 s) and
+  green after (1346 jobs, 62.7 s), ZERO rows changed. The predicted regression is refuted.
+* **`TemporalWitnessProbe` moved FOURTEEN rows, every one `check=true → check=false`.** This is
+  R1 of report 06 §3.1 arriving on exactly the instrument report 06 called "the only instrument
+  that can see R1" and "NON-NEGOTIABLE". `untlNegFuture` demands `F(event)` at every known future
+  time of every negative until; the PASSIVE arm's branch 1 was the only producer of `¬event` at
+  an EXISTING time; retiring the arm removes the producer. Rows **I** and **K**, the two genuine
+  negative-until/since rows, leave the accepted set, taking it from eight to six.
+
+This is a real completeness regression, deliberate and authorized, larger than declared and in a
+different place. It invalidates no landed theorem: `temporalWitnessCheck` enters the truth lemmas
+as the *hypothesis* `hTW`, not as a derived fact, and it was already `false` on the branches the
+engine actually builds. What it removes is the last set of hand-built branches discharging it.
+Re-pinned honestly with the mechanism recorded at the head of the probe file and at each moved
+row. **7.3 must be planned against six accepted rows, not eight.**
+
+*A landed theorem was deleted, and it is not a regression to hide.* `sat_untl_neg` and
+`sat_snce_neg` were read straight off the PASSIVE arm — each theorem's conclusion WAS that arm's
+`unprocessed` filter predicate, transcribed — so when the arm went they became **false**, not
+merely unprovable, exactly as report 06's B5 warned. Nothing consumed them; their names appeared
+only in three prose comments, all updated. Retired with a note in `CountermodelExtraction.lean`
+in the same style as the `branchTruthLemma` retirement already there.
+
+*What 7.2's assembly does and does not give.* It is the rule half of `allClosed → valid`:
+whatever the engine schedules at whatever frame class, applying it preserves satisfiability. It is
+NOT `valid_iff_allClosed`, and it says nothing about `serialityRule`/`timeLinearity`, which are
+deliberately outside `allRulesForFC` and run as stages 2 and 3 of `expandOnce` — their obligations
+arise where `expandOnce`, not `applyRule`, is the object. Two facts worth carrying: `carrierBase`
+is `fun _ => True` so 27 of 34 rules transport by `ruleSound_base_mono`; and `carrierDedekind`'s
+`DenselyOrdered` first conjunct, which had looked redundant, is consumed exactly once — it is what
+lets `densityRule` discharge its `.Dedekind` obligation. Note also that `.Discrete` is NOT above
+`.Dense`: `FrameClass`'s order is partial, not linear.
+
+*Do not reopen.* `guardWitnessed` in any variant. Whether the ACTIVE-arm repair advanced the
+ledger — it did not; the 32 → 34 jump is the passive retirement alone. Whether the conformance
+corpus regresses under rank 2 — measured, it does not.
 
 **PHASE 7 STATUS (2026-07-29e) — the ACTIVE arms of `untlNeg`/`snceNeg` are SOUND, and 7.2 goes
 31 → 32 of 34 via `sepRule`.** Twentieth dispatch. Four green commits. Sorry census over
