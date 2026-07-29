@@ -257,6 +257,108 @@ theorem goodDense_of_orderIso (sig : MonadicSignature) [Fintype sig.preds] [Deci
     (hN : goodDense sig k N) : goodDense sig k M :=
   goodDense_of_kEquiv sig k (k_equiv_of_iso sig k M N f h_pred) hN
 
+/-! ## The blocks `N | {a} + S`
+
+Reynolds' summand, printed p.186: `N | {a_i} + R_i`. The `+` is the two-element lexicographic
+sum, so the block is `orderedSum` over `Bool` with the singleton `N | {a}` first.
+-/
+
+/-- The two-element family `[M | {a}, S]` whose lexicographic sum is `M | {a} + S`. -/
+noncomputable def pointSumFamily (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    (a : M.carrier) (S : OrderedMonadicStructure sig) : Bool → OrderedMonadicStructure sig :=
+  fun c => if c = false then M.subinterval sig a a else S
+
+/-- Reynolds' block `M | {a} + S`: the singleton at `a`, followed by `S`. -/
+noncomputable def pointSum (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    (a : M.carrier) (S : OrderedMonadicStructure sig) : OrderedMonadicStructure sig :=
+  orderedSum sig Bool (pointSumFamily sig M a S)
+
+/-- `M | {a} + −` preserves `k`-equivalence: one application of `doets_lemma_1_4` over `Bool`. -/
+theorem kEquiv_pointSum (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (M : OrderedMonadicStructure sig) (a : M.carrier)
+    {S S' : OrderedMonadicStructure sig} (h : KEquiv sig k S S') :
+    KEquiv sig k (pointSum sig M a S) (pointSum sig M a S') :=
+  doets_lemma_1_4 sig k Bool _ _ (fun c => by
+    simp only [pointSumFamily]
+    split
+    · rfl
+    · exact h)
+
+/-- The substructure `M | [a,b)` on the half-open interval.
+
+    This is the shape of the block `[a_i, a_{i+1})` that `N` decomposes into; it is
+    `k`-equivalent to Reynolds' `M | {a} + M | (a,b)` by `kEquiv_halfOpen_pointSum`. -/
+def OrderedMonadicStructure.halfOpenSubinterval (sig : MonadicSignature)
+    (M : OrderedMonadicStructure sig) (a b : M.carrier) : OrderedMonadicStructure sig where
+  carrier := {x : M.carrier // a ≤ x ∧ x < b}
+  interp p x := M.interp p x.val
+  carrierOrder := inferInstance
+
+/-- `M | [a,b) ≡_k M | {a} + M | (a,b)`: splitting off the left end point of a half-open block. -/
+theorem kEquiv_halfOpen_pointSum (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carrier)
+    (hab : a < b) :
+    KEquiv sig k (M.halfOpenSubinterval sig a b)
+      (pointSum sig M a (M.openSubinterval sig a b)) := by
+  letI fam := pointSumFamily sig M a (M.openSubinterval sig a b)
+  letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
+    (orderedSum sig Bool fam).carrierOrder
+  let e : (M.halfOpenSubinterval sig a b).carrier ≃ (orderedSum sig Bool fam).carrier := {
+    toFun := fun x =>
+      if h : x.val ≤ a then orderedSumPt (ms := fam) false ⟨x.val, x.property.1, h⟩
+      else orderedSumPt (ms := fam) true ⟨x.val, lt_of_not_ge h, x.property.2⟩
+    invFun := fun y => match y with
+      | ⟨false, z⟩ => ⟨z.val, z.property.1, lt_of_le_of_lt z.property.2 hab⟩
+      | ⟨true, z⟩ => ⟨z.val, le_of_lt z.property.1, z.property.2⟩
+    left_inv := by intro x; simp only; split_ifs with h <;> rfl
+    right_inv := by
+      intro ⟨c, z⟩
+      match c with
+      | false =>
+        have hle : z.val ≤ a := z.property.2
+        simp only [dif_pos hle]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+      | true =>
+        have hgt : ¬ z.val ≤ a := not_le.mpr z.property.1
+        simp only [dif_neg hgt]
+        exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+  }
+  have hm1 : Monotone e := by
+    intro x y (hxy : x.val ≤ y.val)
+    simp only [e, Equiv.coe_fn_mk]
+    split_ifs with hx hy hy
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+    · exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
+    · exact absurd (le_trans hxy hy) hx
+    · exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+  have hm2 : Monotone e.symm := by
+    intro y z hyz
+    obtain ⟨cy, ey⟩ := y; obtain ⟨cz, ez⟩ := z
+    have hyz' := Sigma.Lex.le_def.mp hyz
+    change (e.symm ⟨cy, ey⟩).val ≤ (e.symm ⟨cz, ez⟩).val
+    revert hyz'; cases cy <;> cases cz <;> simp only [e, Equiv.coe_fn_symm_mk] <;> intro hyz'
+    · rcases hyz' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+    · exact le_trans ey.property.2 (le_of_lt ez.property.1)
+    · rcases hyz' with h | ⟨h, _⟩
+      · exact absurd h (by decide)
+      · exact absurd h (by decide)
+    · rcases hyz' with h | ⟨_, h⟩
+      · exact absurd h (lt_irrefl _)
+      · exact h
+  have h_pred : ∀ (p : sig.preds) (x : (M.halfOpenSubinterval sig a b).carrier),
+      (M.halfOpenSubinterval sig a b).interp p x ↔ (orderedSum sig Bool fam).interp p (e x) := by
+    intro p x
+    have he : e x =
+        if h : x.val ≤ a then orderedSumPt (ms := fam) false ⟨x.val, x.property.1, h⟩
+        else orderedSumPt (ms := fam) true ⟨x.val, lt_of_not_ge h, x.property.2⟩ := rfl
+    rw [he]; split_ifs with h <;>
+      simp [fam, pointSumFamily, orderedSumPt, OrderedMonadicStructure.subinterval,
+        OrderedMonadicStructure.openSubinterval, OrderedMonadicStructure.halfOpenSubinterval,
+        orderedSum]
+  exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred
+
 /-! ## Density, and end points across `≡_k`
 
 Reynolds' preliminaries, printed p.185: *"Note that since `k ≥ 2`, if `M ≡_k N` then `M` and `N`
@@ -529,5 +631,91 @@ theorem exists_orderIso_ioo01_of_ordConnected (s : Set ℝ) (hc : s.OrdConnected
         obtain ⟨z, hz, hxz⟩ := (not_bddAbove_iff.mp ha) x
         exact hc.out hy hz ⟨le_of_lt hyx, le_of_lt hxz⟩
     exact ⟨((OrderIso.setCongr _ _ hs).trans univIsoReal).trans realIsoIoo01⟩
+
+/-! ## *"with an open interval of `R` as a flow"*
+
+Reynolds, printed p.185. Goodness hands back *some* interval of `ℝ`; because `k ≥ 2` carries end
+points across `≡_k`, a good structure with no end points is `k`-equivalent to one whose flow is
+an interval with no end points, and such an interval can be moved onto any prescribed `(c,d)`.
+-/
+
+/--
+A good structure with no end points is `k`-equivalent to a structure whose flow is **any**
+prescribed non-degenerate bounded open interval `(c,d)` of `ℝ`.
+-/
+theorem exists_ioo_witness (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig) [Nonempty M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier] (hM : goodDense sig k M) {c d : ℝ}
+    (hcd : c < d) :
+    ∃ R : RIntervalStructure sig, R.carrierSet = Set.Ioo c d ∧ KEquiv sig k M (R.toOrdered sig) := by
+  obtain ⟨R₀, hR₀⟩ := hM
+  haveI hne : Nonempty {x : ℝ // x ∈ R₀.carrierSet} :=
+    nonempty_of_kEquiv sig k (le_trans one_le_two hk) hR₀
+  haveI : NoMaxOrder {x : ℝ // x ∈ R₀.carrierSet} := noMaxOrder_of_kEquiv sig k hk hR₀
+  haveI : NoMinOrder {x : ℝ // x ∈ R₀.carrierSet} := noMinOrder_of_kEquiv sig k hk hR₀
+  obtain ⟨φ⟩ := exists_orderIso_ioo01_of_ordConnected R₀.carrierSet R₀.ordConnected
+    (by obtain ⟨x⟩ := hne; exact ⟨x.val, x.property⟩)
+    (by
+      intro x hx
+      obtain ⟨y, hy⟩ := exists_gt (⟨x, hx⟩ : {v : ℝ // v ∈ R₀.carrierSet})
+      exact ⟨y.val, y.property, hy⟩)
+    (by
+      intro x hx
+      obtain ⟨y, hy⟩ := exists_lt (⟨x, hx⟩ : {v : ℝ // v ∈ R₀.carrierSet})
+      exact ⟨y.val, y.property, hy⟩)
+  obtain ⟨ψ⟩ : Nonempty (R₀.carrierSet ≃o Set.Ioo c d) :=
+    ⟨φ.trans (iooIsoIoo (by norm_num) hcd)⟩
+  refine ⟨{ carrierSet := Set.Ioo c d
+            ordConnected := Set.ordConnected_Ioo
+            interp := fun p x =>
+              if h : x ∈ Set.Ioo c d then R₀.interp p (ψ.symm ⟨x, h⟩).val else False }, rfl, ?_⟩
+  refine hR₀.trans (k_equiv_of_iso sig k _ _ ψ ?_)
+  intro p x
+  show R₀.interp p x.val ↔
+    (if h : (ψ x).val ∈ Set.Ioo c d then R₀.interp p (ψ.symm ⟨(ψ x).val, h⟩).val else False)
+  rw [dif_pos (ψ x).property]
+  show R₀.interp p x.val ↔ R₀.interp p (ψ.symm (ψ x)).val
+  exact (iff_of_eq (congrArg (R₀.interp p)
+    (congrArg Subtype.val (ψ.symm_apply_apply x)))).symm
+
+/-! ## The `ℤ`-indexed decomposition of `N`
+
+Reynolds, printed pp.185-186: *"Choose `a_i ∈ N` for each integer `i` such that `i < j` implies
+`a_i < a_j` and for all `t ∈ N`, there is `i,j` such that `a_i < t < a_j`."* The choice is used
+only through the induced block map `t ↦ the i with a_i ≤ t < a_{i+1}`, so that is what the
+decomposition lemma takes as its hypothesis.
+-/
+
+/--
+`N` is `k`-equivalent to the lexicographic sum over `ℤ` of its half-open blocks
+`N | [a_i, a_{i+1})`.
+
+The `k`-equivalence is in fact an order isomorphism: every point lies in exactly one block.
+-/
+theorem kEquiv_sum_halfOpen (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (M : OrderedMonadicStructure sig) (spine : ℤ → M.carrier)
+    (hmono : StrictMono spine) (blockOf : M.carrier → ℤ)
+    (hlo : ∀ x, spine (blockOf x) ≤ x) (hhi : ∀ x, x < spine (blockOf x + 1)) :
+    KEquiv sig k M
+      (orderedSum sig ℤ (fun i => M.halfOpenSubinterval sig (spine i) (spine (i + 1)))) := by
+  letI fam := fun i : ℤ => M.halfOpenSubinterval sig (spine i) (spine (i + 1))
+  -- `f` collapses a block element to the underlying point of `M`.
+  have hstrict : StrictMono (fun y : (orderedSum sig ℤ fam).carrier => y.2.val) := by
+    rintro ⟨i, y⟩ ⟨j, z⟩ hlt
+    rcases Sigma.Lex.lt_def.mp hlt with hij | ⟨hij, hyz⟩
+    · have hij' : i < j := hij
+      exact lt_of_lt_of_le y.property.2
+        (le_trans (hmono.monotone (by omega : i + 1 ≤ j)) z.property.1)
+    · have heq : i = j := hij
+      subst heq
+      exact hyz
+  have hright : Function.RightInverse
+      (fun x : M.carrier => (⟨blockOf x, ⟨x, hlo x, hhi x⟩⟩ : (orderedSum sig ℤ fam).carrier))
+      (fun y : (orderedSum sig ℤ fam).carrier => y.2.val) := fun _ => rfl
+  let g : (orderedSum sig ℤ fam).carrier ≃o M.carrier :=
+    StrictMono.orderIsoOfRightInverse _ hstrict _ hright
+  refine (k_equiv_of_iso sig k (orderedSum sig ℤ fam) M g ?_).symm
+  rintro p ⟨i, y⟩
+  exact Iff.rfl
 
 end FormalSystem.Metalogic.WeakCanonical
