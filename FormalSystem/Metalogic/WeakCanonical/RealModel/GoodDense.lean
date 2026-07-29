@@ -257,6 +257,123 @@ theorem goodDense_of_orderIso (sig : MonadicSignature) [Fintype sig.preds] [Deci
     (hN : goodDense sig k N) : goodDense sig k M :=
   goodDense_of_kEquiv sig k (k_equiv_of_iso sig k M N f h_pred) hN
 
+/-! ## Density, and end points across `≡_k`
+
+Reynolds' preliminaries, printed p.185: *"Note that since `k ≥ 2`, if `M ≡_k N` then `M` and `N`
+either both have a right (respectively left) hand end point or both do not have a right
+(resp. left) hand end point."* Both halves are used in Lemma 11, to know that the witness
+supplied by goodness of `N | (a_i,a_{i+1})` really does have an **open** interval as its flow.
+-/
+
+/-- *"has a right hand end point"*, at quantifier depth 2. -/
+def hasMaxSent (sig : MonadicSignature) : MonadicSentence sig :=
+  .ex (.all (.not (.lt 1 0)))
+
+/-- *"has a left hand end point"*, at quantifier depth 2. -/
+def hasMinSent (sig : MonadicSignature) : MonadicSentence sig :=
+  .ex (.all (.not (.lt 0 1)))
+
+/-- *"is non-empty"*, at quantifier depth 1. -/
+def nonemptySent (sig : MonadicSignature) : MonadicSentence sig :=
+  .ex (.not (.lt 0 0))
+
+/-- A sentence of quantifier depth at most `k` transfers across `k`-equivalence.
+
+    This is `doets_lemma_1_1` packaged at the sentence level, with the `KEquiv`-to-normal-form
+    bridge done once instead of at each call site. -/
+theorem eval_transfer_of_kEquiv (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (φ : MonadicSentence sig)
+    (hdepth : φ.quantifierDepth ≤ k) {M N : OrderedMonadicStructure sig}
+    (h : KEquiv sig k M N) :
+    eval M Fin.elim0 φ ↔ eval N Fin.elim0 φ := by
+  have h_same : ∀ nf : NormalForm sig k 0,
+      NfEvalNf M k 0 Fin.elim0 nf ↔ NfEvalNf N k 0 Fin.elim0 nf := by
+    intro nf
+    have hp := congr_fun h nf
+    simp only [kTypeOf, decide_eq_decide] at hp
+    exact_mod_cast hp
+  exact doets_lemma_1_1 k 0 φ hdepth M N Fin.elim0 Fin.elim0 h_same
+
+theorem eval_hasMaxSent (sig : MonadicSignature) (M : OrderedMonadicStructure sig) :
+    eval M Fin.elim0 (hasMaxSent sig) ↔ ∃ x : M.carrier, ∀ y : M.carrier, ¬ x < y := by
+  simp [hasMaxSent, eval]
+
+theorem eval_hasMinSent (sig : MonadicSignature) (M : OrderedMonadicStructure sig) :
+    eval M Fin.elim0 (hasMinSent sig) ↔ ∃ x : M.carrier, ∀ y : M.carrier, ¬ y < x := by
+  simp [hasMinSent, eval]
+
+theorem eval_nonemptySent (sig : MonadicSignature) (M : OrderedMonadicStructure sig) :
+    eval M Fin.elim0 (nonemptySent sig) ↔ Nonempty M.carrier := by
+  constructor
+  · rintro ⟨x, -⟩; exact ⟨x⟩
+  · rintro ⟨x⟩; exact ⟨x, lt_irrefl _⟩
+
+/-- Non-emptiness transfers across `k`-equivalence for `k ≥ 1`. -/
+theorem nonempty_of_kEquiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 1 ≤ k) {M N : OrderedMonadicStructure sig} (h : KEquiv sig k M N)
+    [Nonempty M.carrier] : Nonempty N.carrier := by
+  have hdepth : (nonemptySent sig).quantifierDepth ≤ k := by
+    simpa [nonemptySent, MonadicFormula.quantifierDepth] using hk
+  exact (eval_nonemptySent sig N).mp
+    ((eval_transfer_of_kEquiv sig k _ hdepth h).mp ((eval_nonemptySent sig M).mpr ‹_›))
+
+/-- *"no right hand end point"* transfers across `k`-equivalence for `k ≥ 2`. -/
+theorem noMaxOrder_of_kEquiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) {M N : OrderedMonadicStructure sig} (h : KEquiv sig k M N)
+    [NoMaxOrder M.carrier] : NoMaxOrder N.carrier := by
+  have hdepth : (hasMaxSent sig).quantifierDepth ≤ k := by
+    simpa [hasMaxSent, MonadicFormula.quantifierDepth] using hk
+  refine ⟨fun a => ?_⟩
+  by_contra hcon
+  push Not at hcon
+  have hN : eval N Fin.elim0 (hasMaxSent sig) :=
+    (eval_hasMaxSent sig N).mpr ⟨a, fun y => not_lt.mpr (hcon y)⟩
+  obtain ⟨x, hx⟩ := (eval_hasMaxSent sig M).mp
+    ((eval_transfer_of_kEquiv sig k _ hdepth h).mpr hN)
+  obtain ⟨y, hy⟩ := exists_gt x
+  exact hx y hy
+
+/-- *"no left hand end point"* transfers across `k`-equivalence for `k ≥ 2`. -/
+theorem noMinOrder_of_kEquiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) {M N : OrderedMonadicStructure sig} (h : KEquiv sig k M N)
+    [NoMinOrder M.carrier] : NoMinOrder N.carrier := by
+  have hdepth : (hasMinSent sig).quantifierDepth ≤ k := by
+    simpa [hasMinSent, MonadicFormula.quantifierDepth] using hk
+  refine ⟨fun a => ?_⟩
+  by_contra hcon
+  push Not at hcon
+  have hN : eval N Fin.elim0 (hasMinSent sig) :=
+    (eval_hasMinSent sig N).mpr ⟨a, fun y => not_lt.mpr (hcon y)⟩
+  obtain ⟨x, hx⟩ := (eval_hasMinSent sig M).mp
+    ((eval_transfer_of_kEquiv sig k _ hdepth h).mpr hN)
+  obtain ⟨y, hy⟩ := exists_lt x
+  exact hx y hy
+
+/-- A very good structure is densely ordered: the non-emptiness clause of `veryGoodDense` is
+    exactly density. -/
+theorem denselyOrdered_of_veryGoodDense (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) {M : OrderedMonadicStructure sig}
+    (h : veryGoodDense sig k M) : DenselyOrdered M.carrier := by
+  refine ⟨fun a b hab => ?_⟩
+  obtain ⟨⟨x, hx⟩⟩ := (h a b hab).1
+  exact ⟨x, hx.1, hx.2⟩
+
+/-- An open subinterval of a densely ordered structure has no right hand end point. -/
+theorem noMaxOrder_openSubinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    [DenselyOrdered M.carrier] (a b : M.carrier) :
+    NoMaxOrder (M.openSubinterval sig a b).carrier := by
+  refine ⟨fun x => ?_⟩
+  obtain ⟨y, hxy, hyb⟩ := exists_between x.property.2
+  exact ⟨⟨y, lt_trans x.property.1 hxy, hyb⟩, hxy⟩
+
+/-- An open subinterval of a densely ordered structure has no left hand end point. -/
+theorem noMinOrder_openSubinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    [DenselyOrdered M.carrier] (a b : M.carrier) :
+    NoMinOrder (M.openSubinterval sig a b).carrier := by
+  refine ⟨fun x => ?_⟩
+  obtain ⟨y, hay, hyx⟩ := exists_between x.property.1
+  exact ⟨⟨y, hay, lt_trans hyx x.property.2⟩, hyx⟩
+
 /-! ## Which sets of reals are open intervals
 
 Reynolds' *"with an open interval of `R` as a flow"* and *"has flow isomorphic to `R`"* are the
