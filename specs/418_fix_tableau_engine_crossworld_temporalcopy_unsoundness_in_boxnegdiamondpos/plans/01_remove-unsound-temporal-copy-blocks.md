@@ -1,7 +1,7 @@
 # Implementation Plan: Task #418
 
 - **Task**: 418 - fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11.25 hours
 - **Dependencies**: None (this task unblocks task 165 Phase 7.2)
 - **Research Inputs**: specs/165_establish_semantic_finite_model_property/reports/08_spawn-analysis.md

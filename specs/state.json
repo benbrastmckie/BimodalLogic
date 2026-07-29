@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 426,
+  "next_project_number": 427,
   "active_projects": [
     {
       "project_number": 425,
@@ -1213,7 +1213,7 @@
     {
       "project_number": 418,
       "project_name": "fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Remove the six unsound group-3 blocks -- tempGProps, tempHProps, tempFNegProps, tempPNegProps, tempUNegProps, tempSNegProps -- from both boxNeg (FormalSystem/Metalogic/Decidability/Tableau.lean:555-574) and diamondPos (same file, :599-619). Groups 1 (existential witness) and 2 (T(square B)/F(diamond B) propagation) in both rules are sound and MUST NOT be touched. After the edit, temporalProps in each rule reduces to the empty concatenation (or is deleted along with its assembly line), and each rule's .linear list becomes `witness :: boxProps ++ diaProps`. Root cause: the six blocks copy every temporal-universal/existential signed formula true at l.time on the current branch verbatim into the freshly minted box/diamond-witness world, conflating 'true along the history being built' with 'true at the same instant along every admissible history' -- exactly what square/diamond quantify over. Measured effect: buildTableau ((G p) -> square (G p)) 1000 .Base returns .allClosed (should be .hasOpen), with decide returning .extractionFailed rather than .invalid with a countermodel; pinned in Tests/BimodalTest/BoxNegReachabilityProbe.lean (twelve #guard_msgs rows) and Tests/BimodalTest/BoxNegPreservationProbe.lean. Rebuild Tableau.lean and the full project (lake build), then run the FULL conformance corpus (Tests/BimodalTest/TableauConformance.lean plus the two probes above) as the acceptance gate -- not a spot check. Because the removal is risk-asymmetric (branches can only get harder to close, never easier: the fix cannot introduce a new false-invalid verdict, only reveal previously-hidden false-valid ones or newly-uncloseable branches), the only way to bound the fix's blast radius is to run the entire corpus before and after and record every verdict that changes, producing a before/after table (formula, old verdict, new verdict) as part of the task's summary artifact. Because three concurrent sessions (tasks 408, 414, 415) share this git clone and have previously destroyed full-build attempts by deleting .olean files mid-build, this task's own plan must include an explicit build-reliability strategy before attempting the full-project rebuild and corpus run that form its acceptance gate: check for and honor any existing build-coordination/lock convention in the repo, avoid `lake clean` while a concurrent session may be mid-build, and treat a corpus run whose build step failed or was interrupted as inconclusive (retry) rather than as a passing gate -- never treat an oleans-were-deleted failure as if the corpus had validated the fix. Do NOT touch FormalSystem/Metalogic/Decidability/Verified/Decidable.lean or attempt Phase 7.2's RuleSound proof -- that remains task 165's responsibility once this fix lands. This task ends at: engine sound, full corpus green (or every regression explicitly recorded and triaged), full build green.",
       "effort": "4-8 hours",
@@ -1227,7 +1227,7 @@
         "Tests/BimodalTest/BoxNegPreservationProbe.lean"
       ],
       "created": "2026-07-29T05:05:55Z",
-      "last_updated": "2026-07-29T05:36:28Z",
+      "last_updated": "2026-07-29T13:27:11Z",
       "artifacts": [
         {
           "type": "research",
@@ -1238,9 +1238,43 @@
           "path": "specs/418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/plans/01_remove-unsound-temporal-copy-blocks.md",
           "type": "plan",
           "summary": "8-phase plan to remove six unsound group-3 temporal-copy blocks"
+        },
+        {
+          "path": "specs/418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/summaries/01_remove-unsound-temporal-copy-blocks-summary.md",
+          "type": "summary",
+          "summary": "Engine sound; acceptance gate green; 22/142 rows moved, zero under-closing regressions"
         }
       ],
-      "session_id": "sess_1785302672_d06f95"
+      "session_id": "sess_1785302672_d06f95",
+      "completion_summary": "Removed the six unsound group-3 temporal-copy blocks from boxNeg and diamondPos in Tableau.lean; each rule now emits .linear (witness :: boxProps ++ diaProps). Acceptance gate green: lake build and lake build BimodalTest both RC 0 in one locked window, zero #guard_msgs mismatches across 143 directives, all eight probe modules built. 22 of 142 corpus rows moved (6 defect-pinning, 14 gate/metric collapse, 2 fuel-exhaustion) with ZERO under-closing regressions corpus-wide, confirmed by TableauConformance returning 0 of 27 rows moved -- the only module pinning CLOSED/OPEN/STALLED across all four frame classes. The repair is measured two fuel-independent ways: BoxNegPreservationProbe row 3 (rule level, no opposite-sign pair manufactured) and BoxNegReachabilityProbe row 7 ((1,0) -> (1,1), the reached branch went closed to open, row 8 confirming none as closure reason). Verified/ remains sorry-free and Verified/Decidable.lean untouched. Closed by explicit user decision accepting .fuelExhausted as the honest outcome for the anchor row (G p) -> box (G p), with the countermodel recorded as owed rather than pursued here.",
+      "roadmap_items": [
+        "Anchor row (G p) -> box (G p) returns .fuelExhausted with no countermodel at fuel 30/60/400/1000; positive refutation is owed. Open question is whether this is a fuel-budget or a non-termination problem for Verified/Termination/Fuel.lean.",
+        "The decidable-branch-gate family -- boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk -- now computes false on every multi-world branch. Nothing breaks at typecheck (all 14 carriers take it as an unfolded hypothesis) but it is no longer dischargeable by computation; the truth lemma box case loses its side condition."
+      ]
+    },
+    {
+      "project_number": 426,
+      "project_name": "settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Settle whether the tableau engine can positively refute (G p) -> square (G p), or whether that branch provably never saturates. Context: the cross-world temporal-copy unsoundness in boxNeg/diamondPos is fixed and the engine is sound, but the fix moved this formula from a WRONG answer to NO answer rather than to the intended positive refutation. Measured post-fix: decide returns .fuelExhausted (not .invalid), getCountermodel?.isSome = false, and buildTableau returns none at fuel 30, 60, 400 and 1000 -- so the fuel ceiling is not bracketed from above and there is no evidence a larger budget helps. Pre-fix the same formula returned .extractionFailed, which under this codebase R7 semantics asserts VALIDITY of an invalid formula; the current .fuelExhausted is the only constructor isUndecided recognises, so the present state is honest-but-incomplete rather than wrong. Two hypotheses to discriminate: (a) budget -- the branch does saturate but needs more fuel, in which case find and record the ceiling; (b) non-termination -- the branch never saturates, in which case this is a termination question for FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean, not a budget one, and the honest deliverable is a proof or argument that no finite fuel suffices. Discriminating between (a) and (b) is the primary deliverable; producing the countermodel is the secondary one and only applies under (a). The corpus already pins this outcome directly: CrossWorldPropagationProbe row F asserts the decide constructor and builds green at (false, false, true, false, true) -- update that row if the verdict moves. Do NOT reintroduce any temporal-copy propagation block into boxNeg/diamondPos to make the branch close; that is the exact unsoundness that was removed, and reverting it would restore a false claim of validity. Note the related but SEPARATE inheritance also recorded for the parent task: the decidable-branch-gate family (boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk) now computes false on every multi-world branch; that is the truth-lemma side-condition problem and is not this task.",
+      "effort": "4-8 hours",
+      "parent_task": 165,
+      "topic": "completeness",
+      "dependencies": [],
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean",
+        "Tests/BimodalTest/CrossWorldPropagationProbe.lean"
+      ],
+      "created": "2026-07-29T09:20:00Z",
+      "last_updated": "2026-07-29T09:20:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/artifacts/after-verdicts.md",
+          "summary": "Anchor-row measurement and bucket-(e) triage from the engine soundness fix"
+        }
+      ]
     }
   ],
   "artifacts": [

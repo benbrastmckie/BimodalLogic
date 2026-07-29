@@ -1,5 +1,5 @@
 ---
-next_project_number: 426
+next_project_number: 427
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 426
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,170,179,193,231,257,298,390,408,413,418,419,420,421,423,424 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 165,177,178,219,282,296,414,422,425 | 193,231,298,418,420,421,423 | completeness, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,410,411,412,415,417 | 165,414,422 | paper-refactor, strong_completeness |
+| 1 | 95,125,127,128,165,170,179,193,231,257,298,390,408,413,419,420,421,423,424,426 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 177,178,219,282,296,410,411,412,414,422,425 | 165,193,231,298,420,421,423 | formula-refactor, dataset-enhancement, paper-refactor, ... |
+| 3 | 169,415,417 | 414,422 | paper-refactor, strong_completeness |
 | 4 | 362 | 169,170 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -21,14 +21,14 @@ next_project_number: 426
 ### Completeness
 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
+165 [BLOCKED] — Establish verified decidability of TM bimodal logic for all four 
+  └─ 410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
+  └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
 408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
-418 [IMPLEMENTING] — Remove the six unsound group-3 blocks -- tempGProps, tempHProps, 
-  └─ 165 [BLOCKED] — Establish verified decidability of TM bimodal logic for all four 
-    └─ 410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
-    └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-    └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
 
 ### Formula Refactor
 
@@ -81,6 +81,18 @@ next_project_number: 426
 ### Uncategorized
 
 ## Tasks
+
+### 426. Settle anchor row countermodel or nontermination for g p box g p
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+- **Research**: [418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/artifacts/after-verdicts.md]
+
+**Description**: Settle whether the tableau engine can positively refute (G p) -> square (G p), or whether that branch provably never saturates. Context: the cross-world temporal-copy unsoundness in boxNeg/diamondPos is fixed and the engine is sound, but the fix moved this formula from a WRONG answer to NO answer rather than to the intended positive refutation. Measured post-fix: decide returns .fuelExhausted (not .invalid), getCountermodel?.isSome = false, and buildTableau returns none at fuel 30, 60, 400 and 1000 -- so the fuel ceiling is not bracketed from above and there is no evidence a larger budget helps. Pre-fix the same formula returned .extractionFailed, which under this codebase R7 semantics asserts VALIDITY of an invalid formula; the current .fuelExhausted is the only constructor isUndecided recognises, so the present state is honest-but-incomplete rather than wrong. Two hypotheses to discriminate: (a) budget -- the branch does saturate but needs more fuel, in which case find and record the ceiling; (b) non-termination -- the branch never saturates, in which case this is a termination question for FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean, not a budget one, and the honest deliverable is a proof or argument that no finite fuel suffices. Discriminating between (a) and (b) is the primary deliverable; producing the countermodel is the secondary one and only applies under (a). The corpus already pins this outcome directly: CrossWorldPropagationProbe row F asserts the decide constructor and builds green at (false, false, true, false, true) -- update that row if the verdict moves. Do NOT reintroduce any temporal-copy propagation block into boxNeg/diamondPos to make the branch close; that is the exact unsoundness that was removed, and reverting it would restore a false claim of validity. Note the related but SEPARATE inheritance also recorded for the parent task: the decidable-branch-gate family (boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk) now computes false on every multi-world branch; that is the truth-lemma side-condition problem and is not this task.
+
+---
 
 ### 425. Machine check discrete non compactness witness
 - **Effort**: high
@@ -211,12 +223,13 @@ NOTATION (user decision, 2026-07-28): any explicit converse operation on the tas
 
 ### 418. Fix tableau engine crossworld temporalcopy unsoundness in boxnegdiamondpos
 - **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [165_establish_semantic_finite_model_property/reports/08_spawn-analysis.md]
 - **Plan**: [418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/plans/01_remove-unsound-temporal-copy-blocks.md]
+- **Summary**: [418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/summaries/01_remove-unsound-temporal-copy-blocks-summary.md]
 
 **Description**: Remove the six unsound group-3 blocks -- tempGProps, tempHProps, tempFNegProps, tempPNegProps, tempUNegProps, tempSNegProps -- from both boxNeg (FormalSystem/Metalogic/Decidability/Tableau.lean:555-574) and diamondPos (same file, :599-619). Groups 1 (existential witness) and 2 (T(square B)/F(diamond B) propagation) in both rules are sound and MUST NOT be touched. After the edit, temporalProps in each rule reduces to the empty concatenation (or is deleted along with its assembly line), and each rule's .linear list becomes `witness :: boxProps ++ diaProps`. Root cause: the six blocks copy every temporal-universal/existential signed formula true at l.time on the current branch verbatim into the freshly minted box/diamond-witness world, conflating 'true along the history being built' with 'true at the same instant along every admissible history' -- exactly what square/diamond quantify over. Measured effect: buildTableau ((G p) -> square (G p)) 1000 .Base returns .allClosed (should be .hasOpen), with decide returning .extractionFailed rather than .invalid with a countermodel; pinned in Tests/BimodalTest/BoxNegReachabilityProbe.lean (twelve #guard_msgs rows) and Tests/BimodalTest/BoxNegPreservationProbe.lean. Rebuild Tableau.lean and the full project (lake build), then run the FULL conformance corpus (Tests/BimodalTest/TableauConformance.lean plus the two probes above) as the acceptance gate -- not a spot check. Because the removal is risk-asymmetric (branches can only get harder to close, never easier: the fix cannot introduce a new false-invalid verdict, only reveal previously-hidden false-valid ones or newly-uncloseable branches), the only way to bound the fix's blast radius is to run the entire corpus before and after and record every verdict that changes, producing a before/after table (formula, old verdict, new verdict) as part of the task's summary artifact. Because three concurrent sessions (tasks 408, 414, 415) share this git clone and have previously destroyed full-build attempts by deleting .olean files mid-build, this task's own plan must include an explicit build-reliability strategy before attempting the full-project rebuild and corpus run that form its acceptance gate: check for and honor any existing build-coordination/lock convention in the repo, avoid `lake clean` while a concurrent session may be mid-build, and treat a corpus run whose build step failed or was interrupted as inconclusive (retry) rather than as a passing gate -- never treat an oleans-were-deleted failure as if the corpus had validated the fix. Do NOT touch FormalSystem/Metalogic/Decidability/Verified/Decidable.lean or attempt Phase 7.2's RuleSound proof -- that remains task 165's responsibility once this fix lands. This task ends at: engine sound, full corpus green (or every regression explicitly recorded and triaged), full build green.
 
