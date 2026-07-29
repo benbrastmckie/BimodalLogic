@@ -74,7 +74,7 @@ from his display.
 | Check | Result |
 |---|---|
 | `#print axioms` on all 11 target declarations | exactly `[propext, Classical.choice, Quot.sound]`; **no `sorryAx`** |
-| Canaries `completeness_dense`, `completeness_discrete` | unchanged: `[propext, Classical.choice, Quot.sound]` |
+| Canaries `completeness_dense`, `completeness_discrete`, `countermodel_discrete_reynolds_v2` | all three unchanged: `[propext, Classical.choice, Quot.sound]` |
 | Live sorries outside `Boneyard/` | **exactly one**: `WeakCanonical/Transfer.lean:1242` — pre-existing, unrelated, not attempted |
 | Vacuous definitions | 1 hit, pre-existing and outside territory (`Examples/TemporalStructures.lean:277`, a genuine `trivial` goal); unchanged |
 | `^axiom ` declarations | 2 hits, both **prose inside Boneyard docstrings**, not declarations; unchanged |
@@ -82,7 +82,8 @@ from his display.
 | Declaration census, `BadIntervals.lean` | 50 → 53, **zero removals** |
 | Declaration census, `NoGaps.lean` | 33 → 42, **zero removals** |
 | Preserved assets (9) | all present exactly once; `Lemma34.lean` and `BadIntervals.lean` are **purely additive** (zero deleted lines) |
-| Scoped builds | green at every substep |
+| Scoped builds | green at every substep: Lemma34 1242 jobs, BadIntervals 1245, NoGaps 1247, ChronicleInstance 1883 |
+| Full `lake build` | **green, 1982 jobs**. The baseline after Phase 22 was 1940, but the absolute figure is contaminated by the concurrent session's new `Decidability/Verified/Bridge/` modules; this phase's own delta is **+1 module** (`ChronicleInstance.lean`) plus the join it creates |
 | Task-number citations in `.lean` | none |
 
 The declarations whose signatures changed are exactly the two the charter authorises:
