@@ -1372,6 +1372,124 @@ theorem ruleSound_orderTrichotomy : RuleSound carrierBase .orderTrichotomy := by
           · exact hφtrue
 
 /-!
+## The fresh-time producers
+
+These are the rules that *mint* a time: they file a witness at `branch.nextTime` and record one
+new ordering edge joining the trigger's time to it. Their obligation therefore has three parts
+rather than the usual one, and each part is discharged by a different piece of the state:
+
+* **the new edge** — `tv` is updated at the single index `freshTime`, to a value chosen on the
+  strength of the source formula (`F(GA)` supplies a later time at which `A` fails, `T(FA)` a
+  later time at which `A` holds, and their two past mirrors likewise). The edge holds by that
+  choice.
+* **the old edges** — this is where `OrdWithin` is consumed, and it is the *only* place any rule
+  consumes it. A one-point update at `freshTime` leaves `tv p.1 < tv p.2` intact for an existing
+  constraint `p` exactly when neither endpoint is `freshTime`, which is `OrdWithin.bound`. Without
+  the hypothesis the obligation is not merely hard but unsatisfiable — see
+  `addFuture_nextTime_cycle_unsatisfiable` above.
+* **the branch, and the propagated formulas** — the branch is untouched by the update because no
+  branch formula sits at `nextTime` (`not_mem_of_time_nextTime`). The propagated formulas split
+  into three families: the *temporal* propagations, discharged by the four `truthAt_of_*` lemmas
+  from the chosen time's position relative to the trigger's; and the *modal* propagations emitted
+  by `boxDiamondPersistence`, discharged by `satAt_of_boxForm_time` below.
+
+The modal family is the subtle one. Copying a formula from one time to another inside a single
+world is unsound in general — that is precisely the defect that was removed from the fresh-*world*
+rules. It is sound here only because the two source lists hold `T(□A)` and `F(◇A)` formulas
+exclusively, whose truth conditions are `Ω`-universal, and an `Ω`-universal claim is
+time-invariant when `Ω` is shift-closed. `mem_boxDiamondPersistence_shape` is what makes that
+restriction visible across the `private` definition.
+-/
+
+/-- **An `Ω`-universal claim is time-invariant.** If `ψ` holds at time `t` in *every* admissible
+history, it holds at *any* time in every admissible history.
+
+This is the ungated core of `truthAt_allFuture_of_box` and `truthAt_allPast_of_box`: those two
+wrap this fact in `G` and `H` respectively, and each discards the direction information the
+wrapper supplies. The fresh-time rules need it raw, because they move a `□` formula to a time
+whose position relative to the source is recorded in the ordering rather than in the formula. -/
+theorem forall_truthAt_time_invariant {M : TaskModel F} {Om : Set (WorldHistory F)}
+    (hsc : ShiftClosed Om) {t s : D} {ψ : Formula}
+    (h : ∀ σ ∈ Om, TruthAt M Om σ t ψ) : ∀ σ ∈ Om, TruthAt M Om σ s ψ := fun τ hτ =>
+  (TimeShift.time_shift_preserves_truth M Om hsc τ t s ψ).mp
+    (h (WorldHistory.timeShift τ (s - t)) (hsc τ hτ (s - t)))
+
+/-- Everything `boxDiamondPersistence` emits is satisfied at the fresh time by the *same* history
+that satisfies its source at the trigger's time.
+
+Stated against the conclusions of `mem_boxDiamondPersistence_label` and
+`mem_boxDiamondPersistence_shape` rather than against membership, because
+`boxDiamondPersistence` is `private` to `Tableau.lean` and so cannot be named here. Note the
+interpretation `tv'` is unconstrained: time-invariance means the fresh time's value is
+irrelevant, which is why this lemma survives an arbitrary one-point update. -/
+theorem satAt_of_boxForm_time {M : TaskModel F} {Om : Set (WorldHistory F)}
+    (hsc : ShiftClosed Om) {hist : WorldIndex → WorldHistory F} {tv tv' : TimeIndex → D}
+    {w : WorldIndex} {t ft : TimeIndex} {s g : SignedFormula}
+    (hsrc : SatAt M Om hist tv s)
+    (hslab : s.label = { world := w, time := t })
+    (hglab : g.label = { world := w, time := ft })
+    (hsign : s.sign = g.sign) (hform : s.formula = g.formula)
+    (hshape : (g.sign = .pos ∧ ∃ χ, g.formula = .box χ) ∨
+      (g.sign = .neg ∧ ∃ χ, g.formula = .imp (.box (.imp χ .bot)) .bot)) :
+    SatAt M Om hist tv' g := by
+  rcases hshape with ⟨hgs, χ, hgf⟩ | ⟨hgs, χ, hgf⟩
+  · have hss : s.sign = .pos := hsign.trans hgs
+    have hsf : s.formula = Formula.box χ := hform.trans hgf
+    simp only [SatAt, hss, hsf, hslab, TruthAt] at hsrc
+    simp only [SatAt, hgs, hgf, hglab, TruthAt]
+    exact forall_truthAt_time_invariant hsc hsrc
+  · have hss : s.sign = .neg := hsign.trans hgs
+    have hsf : s.formula = Formula.imp (.box (.imp χ .bot)) .bot := hform.trans hgf
+    simp only [SatAt, hss, hsf, hslab] at hsrc
+    have hbox : ∀ σ ∈ Om, TruthAt M Om σ (tv t) (Formula.imp χ .bot) := by
+      by_contra hcon
+      exact hsrc hcon
+    simp only [SatAt, hgs, hgf, hglab]
+    intro hc
+    exact hc (forall_truthAt_time_invariant hsc hbox)
+
+/-- A branch formula is undisturbed by a one-point update of `tv` at the branch's fresh time: no
+branch formula sits there, by `not_mem_of_time_nextTime`. -/
+theorem satAt_update_nextTime_of_mem {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {d : D}
+    {sf : SignedFormula} (hmem : sf ∈ b) (h : SatAt M Om hist tv sf) :
+    SatAt M Om hist (Function.update tv b.nextTime d) sf := by
+  have hne : sf.label.time ≠ b.nextTime := fun hq => (not_mem_of_time_nextTime hq) hmem
+  simpa only [SatAt, Function.update_of_ne hne] using h
+
+/-- The `ordResp` obligation for a fresh-time rule's extended ordering, in the shape all four
+share: the minted edge holds by the choice of `d`, and every previously recorded edge survives
+the one-point update because `OrdWithin` puts both its endpoints strictly below `nextTime`. -/
+theorem ordResp_addFuture_update {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) (hord : OrdWithin b ord)
+    {t : TimeIndex} (hmemt : t ∈ b.knownTimes) {d : D} (hlt : tv t < d) :
+    ∀ p ∈ (ord.addFuture t b.nextTime).constraints,
+      Function.update tv b.nextTime d p.1 < Function.update tv b.nextTime d p.2 := by
+  have hne : t ≠ b.nextTime := Nat.ne_of_lt (lt_nextTime_of_mem_knownTimes hmemt)
+  intro p hp
+  simp only [TimeOrdering.addFuture, List.mem_cons] at hp
+  rcases hp with rfl | hp
+  · simpa [Function.update_of_ne hne] using hlt
+  · obtain ⟨h1, h2⟩ := hord.nextTime_not_mem hp
+    simpa only [Function.update_of_ne h1, Function.update_of_ne h2] using hst.ordResp p hp
+
+/-- The past mirror of `ordResp_addFuture_update`. -/
+theorem ordResp_addPast_update {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) (hord : OrdWithin b ord)
+    {t : TimeIndex} (hmemt : t ∈ b.knownTimes) {d : D} (hlt : d < tv t) :
+    ∀ p ∈ (ord.addPast t b.nextTime).constraints,
+      Function.update tv b.nextTime d p.1 < Function.update tv b.nextTime d p.2 := by
+  have hne : t ≠ b.nextTime := Nat.ne_of_lt (lt_nextTime_of_mem_knownTimes hmemt)
+  intro p hp
+  simp only [TimeOrdering.addPast, List.mem_cons] at hp
+  rcases hp with rfl | hp
+  · simpa [Function.update_of_ne hne] using hlt
+  · obtain ⟨h1, h2⟩ := hord.nextTime_not_mem hp
+    simpa only [Function.update_of_ne h1, Function.update_of_ne h2] using hst.ordResp p hp
+
+/-!
 ## What `boxNeg` and `diamondPos` owed, and how it was discharged — RESOLVED
 
 `ruleSound_boxNeg` and `ruleSound_diamondPos` are proved above. This section is kept as the
