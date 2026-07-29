@@ -1462,6 +1462,164 @@ theorem subsingleton_of_carrierSet_eq_Icc_self (R : RIntervalStructure sig) {x :
 
 end IccNormalization
 
+/-! ## Layer 12 — the `∼`-classes are Reynolds' closed-interval summands
+
+Printed p.188, the clause Layer 11 was built to consume:
+
+> because the `γᵢ`'s say so the summands themselves are closed intervals of the reals
+
+The summands are the `∼`-classes `E ∈ I`. This layer discharges the three facts Layer 11 needs of
+each of them, and each fact is one of Reynolds' own sentences read at a class:
+
+* **`M | E` is good.** `x ∼ y` *means* that `M | (x,y)` is very good (`SimDense`, printed p.185),
+  and convexity of the class (Lemma 12) puts `(x,y)` inside `E` whenever `x, y ∈ E`. So every open
+  subinterval of `M | E` is an `M | (x,y)` with `x ∼ y`, which makes `M | E` very good, and
+  Lemma 11 turns that into goodness.
+* **`M | E` has a right hand end point**, and **a left hand one.** This is Layer 9's construction
+  run at `(e,d)` and at `(c,e)` rather than at `(c,d)`: the class of a point strictly inside
+  `(c,d)` is bounded on both sides — above by `d`, below by `c` — so Lemma 13 and D1 attain both
+  bounds *inside the class*. Reynolds uses the same two end points at the outer classes of `c` and
+  of `d`; at the interior classes they are what makes each summand closed.
+
+The two `≡ₖ`-identifications at the head of the section are the bookkeeping that lets a class be
+cut out of `M` or out of `M | (c',d')` interchangeably — `restrictSet` composed with
+`openSubinterval` in each order. Reynolds writes `M | E` throughout and never distinguishes the
+two; in Lean they are different types and the shuffle's block map consumes the second.
+-/
+
+section ClassSummands
+
+/--
+**Cutting a set-shaped restriction down to an interval is cutting `M` down to that interval** —
+provided the interval lies inside the set, which for a `∼`-class is convexity (Lemma 12).
+
+The dense analogue of `openSubOpenSubEquiv` (`EpsilonDense.lean:151`), for a `restrictSet` outer
+cut rather than an `openSubinterval` one.
+-/
+theorem kEquiv_restrictSet_openSub (k : Nat) (M : OrderedMonadicStructure sig)
+    (s : Set M.carrier) (u v : {x : M.carrier // x ∈ s})
+    (hconv : ∀ x : M.carrier, u.val < x → x < v.val → x ∈ s) :
+    KEquiv sig k ((M.restrictSet sig s).openSubinterval sig u v)
+      (M.openSubinterval sig u.val v.val) :=
+  k_equiv_of_iso sig k _ _ (Equiv.toOrderIso
+    { toFun := fun x => ⟨x.val.val, x.property.1, x.property.2⟩
+      invFun := fun y => ⟨⟨y.val, hconv y.val y.property.1 y.property.2⟩,
+        y.property.1, y.property.2⟩
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl }
+    (fun _ _ h => h) (fun _ _ h => h)) (fun _ _ => Iff.rfl)
+
+/--
+**A class lying inside `(c',d')` is the same structure whether cut from `M` or from `M | (c',d')`**
+— the identification the shuffle's block map needs, because the block map is *"the `∼`-class of"*
+read on `M | (c',d')` while the `γ`-palette is defined by classes cut from `M`.
+-/
+theorem kEquiv_openSub_restrictSet (k : Nat) (M : OrderedMonadicStructure sig)
+    {c' d' : M.carrier} (s : Set M.carrier) (hsub : ∀ x ∈ s, c' < x ∧ x < d') :
+    KEquiv sig k ((M.openSubinterval sig c' d').restrictSet sig
+        {v : (M.openSubinterval sig c' d').carrier | v.val ∈ s})
+      (M.restrictSet sig s) :=
+  k_equiv_of_iso sig k _ _ (Equiv.toOrderIso
+    { toFun := fun x => ⟨x.val.val, x.property⟩
+      invFun := fun y => ⟨⟨y.val, (hsub y.val y.property).1, (hsub y.val y.property).2⟩,
+        y.property⟩
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl }
+    (fun _ _ h => h) (fun _ _ h => h)) (fun _ _ => Iff.rfl)
+
+variable (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+  [Countable M.carrier] [DenselyOrdered M.carrier]
+
+include hk
+
+/--
+**A `∼`-class is very good** — printed p.185's `∼` unwound at the class.
+
+`x ∼ y` *is* very-goodness of `M | (x,y)`, and convexity puts `(x,y)` inside the class, so
+`kEquiv_restrictSet_openSub` identifies each open subinterval of `M | E` with such an `M | (x,y)`.
+Lemma 11 then supplies the goodness clause and density of `M` the non-emptiness clause.
+-/
+theorem veryGoodDense_contempClassStructure (h : IsConvexEquiv M (epsDense sig k)) (e : M.carrier) :
+    veryGoodDense sig k (contempClassStructure sig M (epsDense sig k) e) := by
+  intro u v huv
+  have huv' : u.val < v.val := huv
+  have huv'' : ContempEquivDense M (epsDense sig k) u.val v.val :=
+    h.equiv.trans (h.equiv.symm u.property) v.property
+  have hconv : ∀ x : M.carrier, u.val < x → x < v.val →
+      x ∈ {y : M.carrier | ContempEquivDense M (epsDense sig k) e y} := by
+    intro x hux hxv
+    exact h.equiv.trans u.property (h.convex u.val x v.val (le_of_lt hux) (le_of_lt hxv) huv'')
+  refine ⟨?_, ?_⟩
+  · obtain ⟨z, hz₁, hz₂⟩ := exists_between huv'
+    exact ⟨⟨⟨z, hconv z hz₁ hz₂⟩, hz₁, hz₂⟩⟩
+  · have hvg : veryGoodDense sig k (M.openSubinterval sig u.val v.val) := by
+      rcases (contempEquivDense_epsDense_iff k M u.val v.val).mp huv'' with heq | ⟨-, hv⟩ | ⟨hlt, -⟩
+      · exact absurd heq (ne_of_lt huv')
+      · exact hv
+      · exact absurd hlt (asymm huv')
+    haveI : Countable (M.openSubinterval sig u.val v.val).carrier :=
+      inferInstanceAs (Countable {x : M.carrier // u.val < x ∧ x < v.val})
+    exact goodDense_of_kEquiv sig k (kEquiv_restrictSet_openSub k M _ u v hconv)
+      (reynolds_lemma11 sig k hk _ hvg)
+
+/-- **A `∼`-class is good** — very-goodness through Lemma 11. -/
+theorem goodDense_contempClassStructure (h : IsConvexEquiv M (epsDense sig k)) (e : M.carrier) :
+    goodDense sig k (contempClassStructure sig M (epsDense sig k) e) := by
+  haveI : Countable (contempClassStructure sig M (epsDense sig k) e).carrier :=
+    inferInstanceAs (Countable {x : M.carrier // ContempEquivDense M (epsDense sig k) e x})
+  exact reynolds_lemma11 sig k hk _ (veryGoodDense_contempClassStructure k hk M h e)
+
+/--
+**An interior class has a right hand end point** — Layer 9's construction run at `(e,d)`.
+
+The class of a point strictly inside `(c,d)` is bounded above by `d` and is `≁ d`, so Lemma 13 and
+D1 attain the bound inside the class.
+-/
+theorem exists_max_contempClass (D1 : DoetsD1 sig M) {c d e : M.carrier}
+    (h : IsConvexEquiv M (epsDense sig k))
+    (hbet : ClassStrictlyBetween M (epsDense sig k) c d e) :
+    ∃ m : (contempClassStructure sig M (epsDense sig k) e).carrier,
+      ∀ y : (contempClassStructure sig M (epsDense sig k) e).carrier, ¬ m < y := by
+  have hed : e < d := (h.lt_of_classStrictlyBetween hbet).2
+  have hns : ¬ SimDense sig k M e d := fun hc =>
+    (h.not_contempEquiv_ends hbet).2 ((contempEquivDense_epsDense_iff k M e d).mpr hc)
+  obtain ⟨e', hsim, -, -, hlast⟩ := exists_right_endpoint_class sig k hk M D1 hed hns
+  refine ⟨⟨e', (contempEquivDense_epsDense_iff k M e e').mpr hsim⟩, ?_⟩
+  intro y hy
+  exact hlast y.val hy ((contempEquivDense_epsDense_iff k M e y.val).mp y.property)
+
+/-- **An interior class has a left hand end point** — the mirror, at `(c,e)`. -/
+theorem exists_min_contempClass (D1 : DoetsD1 sig M) {c d e : M.carrier}
+    (h : IsConvexEquiv M (epsDense sig k))
+    (hbet : ClassStrictlyBetween M (epsDense sig k) c d e) :
+    ∃ m : (contempClassStructure sig M (epsDense sig k) e).carrier,
+      ∀ y : (contempClassStructure sig M (epsDense sig k) e).carrier, ¬ y < m := by
+  have hce : c < e := (h.lt_of_classStrictlyBetween hbet).1
+  have hns : ¬ SimDense sig k M c e := fun hc =>
+    (h.not_contempEquiv_ends hbet).1 ((contempEquivDense_epsDense_iff k M c e).mpr hc)
+  obtain ⟨e', hsim, -, -, hfirst⟩ := exists_left_endpoint_class sig k hk M D1 hce hns
+  refine ⟨⟨e', (contempEquivDense_epsDense_iff k M e e').mpr hsim⟩, ?_⟩
+  intro y hy
+  exact hfirst y.val hy ((contempEquivDense_epsDense_iff k M e y.val).mp y.property)
+
+/--
+**Reynolds' summand, normalized** — printed p.188, *"the summands themselves are closed intervals
+of the reals"*, discharged: every `∼`-class strictly inside `(c,d)` is `≡ₖ` to a closed bounded
+interval of `ℝ`, hence satisfies the five summand hypotheses of `goodDense_shuffle`.
+
+This is Layers 11 and 12 composed, and it is the whole of Reynolds' *"choose an `N_γ`"* for the
+interior classes.
+-/
+theorem exists_iccLike_contempClass (D1 : DoetsD1 sig M) {c d e : M.carrier}
+    (h : IsConvexEquiv M (epsDense sig k))
+    (hbet : ClassStrictlyBetween M (epsDense sig k) c d e) :
+    ∃ R : RIntervalStructure sig, IsIccLike sig (R.toOrdered sig) ∧
+      KEquiv sig k (contempClassStructure sig M (epsDense sig k) e) (R.toOrdered sig) :=
+  exists_iccLike_witness k hk _ (goodDense_contempClassStructure k hk M h e)
+    (exists_max_contempClass k hk M D1 h hbet) (exists_min_contempClass k hk M D1 h hbet)
+
+end ClassSummands
+
 /-! ## The residual, narrowed to the shuffle step
 
 Layers 8-10 discharge Reynolds' closing paragraph *except* for the goodness of the middle block
