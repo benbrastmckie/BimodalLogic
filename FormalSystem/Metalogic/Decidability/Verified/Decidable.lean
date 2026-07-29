@@ -3029,4 +3029,103 @@ change — in particular "`RuleSound carrierBase .boxNeg` is false" was true of 
 is not true now.)*
 -/
 
+/-!
+## 7.2, the assembly — every rule the engine can schedule is sound at its frame class
+
+The per-rule ledger above is complete: all 34 `TableauRule` constructors have a `RuleSound`
+theorem, each at the weakest carrier property that discharges it. This section is the single
+induction the plan named, run on `mem_allRulesForFC_iff` (`Verified/RuleSpec.lean`) — the gate
+that says `allRulesForFC`, the engine's hand-maintained per-formula priority list, agrees with
+the declarative `ruleFrameClass` modulo the two deliberately-scheduled-elsewhere rules.
+
+**What makes it one line of real content and 144 cases of bookkeeping.** `mem_allRulesForFC_iff`
+turns membership into `r ≠ .serialityRule ∧ r ≠ .timeLinearity ∧ ruleFrameClass r ≤ fc`, which is
+decidable; so with both `fc` and `r` concrete, every non-member case is `absurd h (by decide)` and
+every member case is the rule's own theorem, transported along `RuleSound.mono` when the frame
+class supplies more than the theorem asks for. Only two transports are non-trivial, and both are
+one projection:
+
+* `carrierBase` is `fun _ => True`, so *any* carrier property refines it. That is
+  `ruleSound_base_mono`, and it carries 27 of the 34 rules — the 26 base rules plus
+  `denseIndicatorClosure`, which is gated at `.Dense` but proved without using density.
+* `carrierDedekind` has `DenselyOrdered` as its first conjunct, deliberately (see its docstring:
+  *"density is carried alongside because the `.Dedekind` frame class imposes both"*). That is what
+  lets `densityRule`, proved at `carrierDense`, discharge its `.Dedekind` obligation by `hC.1` —
+  and it is the only place the redundant-looking conjunct is consumed.
+
+**Why `.Discrete` is not a superclass of `.Dense`.** `FrameClass`'s order
+(`ProofSystem/Axioms.lean`) has `Base ≤ everything`, `Dense ≤ Dedekind`, and `Discrete`
+comparable only to itself. So `allRulesForFC .Discrete` is the 26 base rules plus the three
+Prior-Z rules and does **not** contain `densityRule` — a discrete order is not dense, and the
+partial (not linear) order on frame classes is what records that.
+
+**What this does and does not deliver.** It is the `allClosed → valid` direction's rule half:
+whatever the engine picks at whatever frame class, applying it preserves satisfiability. It is
+not yet `valid_iff_allClosed` (7.3), which additionally needs the fuel/termination side and the
+truth-lemma gate, and it says nothing about the two rules scheduled outside `allRulesForFC` —
+`serialityRule` and `timeLinearity` run as stages 2 and 3 of `expandOnce` and need their own
+obligations at the point where `expandOnce`, rather than `applyRule`, is the object.
+-/
+
+open FormalSystem.ProofSystem (FrameClass)
+
+/-- The carrier property a frame class supplies to the rules it schedules. One entry per
+constructor, each the weakest property that class's own rules consume. -/
+def carrierForFC : FrameClass -> CarrierProp
+  | .Base => carrierBase
+  | .Dense => carrierDense
+  | .Discrete => carrierDiscrete
+  | .Dedekind => carrierDedekind
+
+/-- A rule proved at `carrierBase` is sound under every carrier property, because `carrierBase`
+is `fun _ => True`. The workhorse of the assembly: 27 of the 34 rules travel this way. -/
+theorem ruleSound_base_mono {C : CarrierProp} {r : TableauRule}
+    (h : RuleSound carrierBase r) : RuleSound C r :=
+  h.mono (fun _ _ _ _ _ => trivial)
+
+/-- **The 7.2 assembly.** Every rule `allRulesForFC` can schedule at a frame class is sound under
+that class's carrier property. One induction over `mem_allRulesForFC_iff`, discharged case by
+case against the completed per-rule ledger. -/
+theorem ruleSound_of_mem_allRulesForFC (fc : FrameClass) (r : TableauRule)
+    (h : r ∈ allRulesForFC fc) : RuleSound (carrierForFC fc) r := by
+  cases fc <;> cases r <;>
+    first
+      | exact absurd h (by decide)
+      | exact ruleSound_base_mono ruleSound_andPos
+      | exact ruleSound_base_mono ruleSound_andNeg
+      | exact ruleSound_base_mono ruleSound_orPos
+      | exact ruleSound_base_mono ruleSound_orNeg
+      | exact ruleSound_base_mono ruleSound_impPos
+      | exact ruleSound_base_mono ruleSound_impNeg
+      | exact ruleSound_base_mono ruleSound_negPos
+      | exact ruleSound_base_mono ruleSound_negNeg
+      | exact ruleSound_base_mono ruleSound_boxPos
+      | exact ruleSound_base_mono ruleSound_boxNeg
+      | exact ruleSound_base_mono ruleSound_diamondPos
+      | exact ruleSound_base_mono ruleSound_diamondNeg
+      | exact ruleSound_base_mono ruleSound_boxTemporal
+      | exact ruleSound_base_mono ruleSound_allFuturePos
+      | exact ruleSound_base_mono ruleSound_allFutureNeg
+      | exact ruleSound_base_mono ruleSound_allPastPos
+      | exact ruleSound_base_mono ruleSound_allPastNeg
+      | exact ruleSound_base_mono ruleSound_someFuturePos
+      | exact ruleSound_base_mono ruleSound_someFutureNeg
+      | exact ruleSound_base_mono ruleSound_somePastPos
+      | exact ruleSound_base_mono ruleSound_somePastNeg
+      | exact ruleSound_base_mono ruleSound_untlPos
+      | exact ruleSound_base_mono ruleSound_untlNeg
+      | exact ruleSound_base_mono ruleSound_sncePos
+      | exact ruleSound_base_mono ruleSound_snceNeg
+      | exact ruleSound_base_mono ruleSound_orderTrichotomy
+      | exact ruleSound_base_mono ruleSound_denseIndicatorClosure
+      | exact ruleSound_densityRule
+      | exact ruleSound_densityRule.mono (fun _ _ _ _ hC => hC.1)
+      | exact ruleSound_priorUZ
+      | exact ruleSound_priorSZ
+      | exact ruleSound_z1Rule
+      | exact ruleSound_priorUGap
+      | exact ruleSound_priorSGap
+      | exact ruleSound_sepRule
+
+
 end FormalSystem.Metalogic.Decidability.Verified
