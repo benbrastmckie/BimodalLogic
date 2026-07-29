@@ -639,6 +639,128 @@ theorem ruleSound_boxTemporal : RuleSound carrierBase .boxTemporal := by
     | _ => simp [applyRule, SatResult]
 
 /-!
+## The two fresh-world modal rules
+
+`boxNeg` and `diamondPos` mint `branch.nextWorld` and point it at a witness history. Both return
+`timeOrd` **unchanged**, which is what keeps them clear of the fresh-*time* ordering gap recorded
+above: the only field of `SatState` they have to re-establish by a new argument is `sat`, and the
+re-choice they make is of `hist`, at a single world index absent from the branch
+(`Tableau.not_mem_of_world_nextWorld`).
+
+Each emits the same three groups: the witness, every `T(□B)` on the branch relabelled to the
+fresh world, and every `F(◇B)` likewise. Groups two and three are sound because `□` quantifies
+over `Ω` and not over the branch's worlds — `T(□B) @ (w', t')` says `B` holds at `t'` in *every*
+admissible history, so it says it of the witness history too, whatever world index that history
+is filed under. The two helpers below prove exactly that, once, since both rules emit the two
+lists verbatim.
+
+A third group used to be emitted — six blocks copying `T(Gφ)`, `T(Hφ)`, `F(Fφ)`, `F(Pφ)`,
+`F(U ..)` and `F(S ..)` from the trigger's time into the fresh world — and it was unsound, for
+the reason `applyRule`'s docstring now records: a temporal formula is evaluated along *one*
+history, which is precisely what `□`/`◇` quantify over. It was removed from the engine, and its
+removal is what makes the two theorems below true. They are not provable against the calculus as
+it stood before that removal.
+-/
+
+/-- Everything the fresh-world rules propagate out of a `T(□B)` on the branch is satisfied at the
+fresh world, whichever admissible history is filed there. -/
+theorem satAt_of_mem_boxProps {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) {σ : WorldHistory F} (hσ : σ ∈ Om)
+    {w : WorldIndex} {g : SignedFormula}
+    (hg : g ∈ b.boxPosFormulas.filterMap fun bsf =>
+      match bsf.formula with
+      | .box inner =>
+        let prop := SignedFormula.pos inner { world := w, time := bsf.label.time }
+        if b.contains prop then none else some prop
+      | _ => none) :
+    SatAt M Om (Function.update hist w σ) tv g := by
+  obtain ⟨bsf, hbsf, hw⟩ := List.mem_filterMap.mp hg
+  have hmem : bsf ∈ b := List.mem_of_mem_filter hbsf
+  have hpred := List.of_mem_filter hbsf
+  have hshape : bsf.sign = .pos ∧ ∃ inner, bsf.formula = .box inner := by
+    cases hbs : bsf.sign <;> cases hbf : bsf.formula <;> simp_all
+  obtain ⟨hsign, inner, hbf⟩ := hshape
+  rw [hbf] at hw
+  simp only at hw
+  by_cases hc : b.contains (SignedFormula.pos inner { world := w, time := bsf.label.time }) = true
+  · rw [if_pos hc] at hw; exact absurd hw (by simp)
+  · rw [if_neg hc] at hw
+    have hsrc : SatAt M Om hist tv bsf := hst.sat _ hmem
+    rw [SatAt, hsign, hbf] at hsrc
+    simp only [TruthAt] at hsrc
+    rw [← Option.some_inj.mp hw]
+    simpa [SatAt, SignedFormula.pos] using hsrc σ hσ
+
+/-- The `F(◇B)` mirror of `satAt_of_mem_boxProps`. `F(◇B)` is `T(□¬B)` once `◇` is unfolded, so
+the same `Ω`-quantification does the work, with the sign flipped. -/
+theorem satAt_of_mem_diaProps {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) {σ : WorldHistory F} (hσ : σ ∈ Om)
+    {w : WorldIndex} {g : SignedFormula}
+    (hg : g ∈ b.diamondNegFormulas.filterMap fun dsf =>
+      match dsf.formula with
+      | .imp (.box (.imp inner .bot)) .bot =>
+        let prop := SignedFormula.neg inner { world := w, time := dsf.label.time }
+        if b.contains prop then none else some prop
+      | _ => none) :
+    SatAt M Om (Function.update hist w σ) tv g := by
+  obtain ⟨dsf, hdsf, hw⟩ := List.mem_filterMap.mp hg
+  have hmem : dsf ∈ b := List.mem_of_mem_filter hdsf
+  have hpred := List.of_mem_filter hdsf
+  have hsign : dsf.sign = .neg := by
+    cases hbs : dsf.sign
+    · rw [hbs] at hpred; exact absurd hpred (by simp)
+    · rfl
+  split at hw
+  · next inner hbf =>
+    by_cases hc : b.contains (SignedFormula.neg inner { world := w, time := dsf.label.time }) = true
+    · rw [if_pos hc] at hw; exact absurd hw (by simp)
+    · rw [if_neg hc] at hw
+      have hsrc : SatAt M Om hist tv dsf := hst.sat _ hmem
+      rw [SatAt, hsign, hbf] at hsrc
+      simp only [TruthAt] at hsrc
+      have hbox : ∀ τ ∈ Om, TruthAt M Om τ (tv dsf.label.time) inner → False := by
+        by_contra hcon
+        exact hsrc hcon
+      rw [← Option.some_inj.mp hw]
+      simpa [SatAt, SignedFormula.neg] using hbox σ hσ
+  · exact absurd hw (by simp)
+
+/-- `F(□A) → F(A)` at a fresh world, plus the two universal propagations. The witness history is
+one at which `A` fails, which `F(□A)` supplies directly; it is filed at `branch.nextWorld`, an
+index no branch formula mentions, so the rest of the branch is satisfied by the same update. -/
+theorem ruleSound_boxNeg : RuleSound carrierBase .boxNeg := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case pos => cases φ <;> simp [applyRule, SatResult]
+  case neg =>
+    cases φ with
+    | box ψ =>
+      have hsrc : SatAt M Om hist tv ⟨.neg, Formula.box ψ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, TruthAt] at hsrc
+      push_neg at hsrc
+      obtain ⟨σ, hσ, hσfail⟩ := hsrc
+      simp only [applyRule]
+      refine ⟨Function.update hist b.nextWorld σ, tv, hst.shiftClosed, ?_, hst.ordResp, ?_⟩
+      · intro v
+        rcases eq_or_ne v b.nextWorld with rfl | hv
+        · simpa using hσ
+        · simpa [Function.update_of_ne hv] using hst.histMem v
+      · intro g hg
+        rcases List.mem_append.mp hg with hnew | hb
+        · rcases List.mem_cons.mp hnew with rfl | hrest
+          · simpa [SatAt, SignedFormula.neg] using hσfail
+          · rcases List.mem_append.mp hrest with hbox | hdia
+            · exact satAt_of_mem_boxProps hst hσ hbox
+            · exact satAt_of_mem_diaProps hst hσ hdia
+        · have hne : g.label.world ≠ b.nextWorld := fun h =>
+            (not_mem_of_world_nextWorld h) hb
+          simpa only [SatAt, Function.update_of_ne hne] using hst.sat g hb
+    | _ => simp [applyRule, SatResult]
+
+/-!
 ## The ordering bridge: from the recorded edges to the transitive closure
 
 `SatState.ordResp` is stated on `ord.constraints` — the *edges* the engine records, one per
