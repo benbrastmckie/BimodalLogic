@@ -520,18 +520,18 @@ starting; treat any newly-appeared site as in scope and any disappeared site as 
 
 ## Testing & Validation
 
-- [ ] `lake build` green after each of Phases 1-4 (and after Phase 6, if ever unblocked)
-- [ ] `grep -n "sorry" FormalSystem/Semantics/TaskFrame.lean` returns nothing
-- [ ] `#print axioms` on each new theorem (`limit_nullity_of_succOrder`, `limit_nullity_of_shift`,
+- [x] `lake build` green after each of Phases 1-4 (and after Phase 6, if ever unblocked)
+- [x] `grep -n "sorry" FormalSystem/Semantics/TaskFrame.lean` returns nothing
+- [x] `#print axioms` on each new theorem (`limit_nullity_of_succOrder`, `limit_nullity_of_shift`,
       `exists_uniform_radius_of_finite`) shows only the standard Lean axioms
-- [ ] `grep -rn "line 1835" --include=*.lean --include=*.md . | grep -v "^./specs/"` returns
+- [x] `grep -rn "line 1835" --include=*.lean --include=*.md . | grep -v "^./specs/"` returns
       nothing
-- [ ] `cd latex/subfiles && TEXINPUTS=../assets: pdflatex -interaction=nonstopmode 02-Semantics.tex`
+- [x] `cd latex/subfiles && TEXINPUTS=../assets: pdflatex -interaction=nonstopmode 02-Semantics.tex`
       exits clean
-- [ ] `cd latex && latexmk BimodalReference.tex` green with no duplicate-label warning
-- [ ] No task-number citation appears in any file changed outside `specs/**`
+- [x] `cd latex && latexmk BimodalReference.tex` green with no duplicate-label warning
+- [x] No task-number citation appears in any file changed outside `specs/**`
       (`bash .claude/scripts/check-task-references.sh` if available, else grep the diff)
-- [ ] `git status` shows no stray edits outside the phases' declared file sets
+- [x] `git status` shows no stray edits outside the phases' declared file sets
 
 ## Artifacts & Outputs
 
