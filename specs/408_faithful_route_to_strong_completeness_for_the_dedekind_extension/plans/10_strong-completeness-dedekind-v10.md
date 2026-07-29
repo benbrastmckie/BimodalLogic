@@ -4644,7 +4644,7 @@ introduced here. **No aggregator was edited** — `Metalogic/WeakCanonical.lean`
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [IN PROGRESS]
+### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [PARTIAL]
 
 **PARTIAL RECORD (Phase 29)**: `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean`
 is landed (443 lines), scoped build green, and every declaration in it is axiom-clean
@@ -4660,10 +4660,13 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
   `exists_realFlow_shuffleReal_point`, and `exists_not_simDense_of_not_goodDense` — printed
   p.187's *"`M` is not very good and so there are `a < b` with `a ≁ b`"*, both implications by
   Lemma 11 in contrapositive form.
-- **What is not proved**: `reynolds_theorem6_contradiction` — printed pp.187-188, the
-  `G`-minimality contradiction. **One `sorry`, now at `DoetsTheorem.lean:1000`.** All three
-  sub-gaps its docstring named are now **discharged**; what remains is the assembly that consumes
-  them:
+- **What is not proved**: the shuffle step at `⋃I`, carried by `goodDense_unionClasses`.
+  **One `sorry`, at `DoetsTheorem.lean:1318`.** `reynolds_theorem6_contradiction` — printed
+  pp.187-188, the `G`-minimality contradiction — now has no `sorry` in its own body, but it
+  consumes `goodDense_unionClasses`, so it and `doets_theorem_dense` still report `sorryAx`. All
+  **four** sub-gaps the residual's docstring has named across this phase's sub-dispatches are
+  accounted for below; the fourth (the assembly) is discharged and the residual is correspondingly
+  narrowed:
   - ~~(1) the `ε`-adapter~~ — **DONE (sub-phase 29.1)**. `IsContempEquivDenseCD` (`Defs.lean`) is
     the countable-dense bundle, `epsDense_isContempEquivDenseCD` (`EpsilonDense.lean`) discharges
     it sorry-free, `DoetsD1`/`DoetsD2` now take it, and `doetsD1_epsDense` / `doetsD2_epsDense`
@@ -4689,17 +4692,47 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
     *"By lemma 13 and D1 … thus we have density of `M/∼`"*, and
     `nonempty_orderIso_rat_classBetween_epsDense` states the order-type-`ℚ` result at Reynolds'
     own `∼_M` with no abstract hypothesis left. All sorry-free and axiom-clean.
-  - **WHAT NOW REMAINS — one item, not three: the assembly** (printed p.187 line 141 through
-    p.188). Three steps, of which only the last needs a new ingredient:
-    1. *The shuffle map.* Transport `Σ_{E∈I} M|E` to `Σ_{q∈ℚ} σ(q)` along the landed `I ≃o ℚ`,
-       choosing `N_γ ⊨ γ` per `γ ∈ G` and `σ` from `gammaBetween_dense_of_minimal`. Transport
-       layer (`kEquiv_orderedSum_blocks`, `Shuffle.lean:424`) and density input are both landed;
-       what must be written is the choice of `σ` and the discharge of `IsShuffleMap`.
-    2. *The `ℝ`-extension and the flow.* `doets_lemma_1_5` plus Phase 28's `≅o ℝ`
-       characterization — application of landed assets, not new mathematics.
-    3. *The three-summand decomposition* `M|(c,d) = M|(c,c'] + M|⋃I + M|[d',d)`, with `c'`/`d'`
-       the attained class end points Lemma 13 supplies, then `M|(c,d) ≡ₖ X + 𝓡 + Y` via
-       `doets_lemma_1_4`. **This is the one genuinely missing ingredient in the tree.**
+  - ~~(4) the assembly~~ — **DONE (sub-phase 29.5)**, Layers 8-10. `reynolds_theorem6_contradiction`
+    now carries **no `sorry` in its own body**: it makes Reynolds' minimal choice, derives
+    very-goodness of `M|(a,b)` as `SimDense` and so contradicts `a ≁ b` outright, reduces via
+    `veryGoodDense_openSubinterval_iff` to goodness of each `M|(c,d)`, takes the `c ∼ d` branch by
+    Lemma 11, and takes the `c ≁ d` branch through Layers 8-10. Sorry-free and axiom-clean in this
+    dispatch: `goodDense_openSub_of_mid`, `goodDense_openSub_of_mid_le`,
+    `exists_right_endpoint_class`, `exists_left_endpoint_class`, `endpoint_lt_endpoint`,
+    `mem_openSub_endpoints_iff`, `classStrictlyBetween_epsDense_iff`.
+    - **The prior record's step (3) was mis-sized, and the correction is recorded rather than
+      quietly absorbed.** The three-summand decomposition was named *"the one genuinely missing
+      ingredient"*; it is in fact **two nested applications of assets already in the tree** —
+      `kEquiv_openSub_split` (`EpsilonDense.lean:858`) plus `goodDense_binSum_pointSum`
+      (`EpsilonDense.lean:832`), the same `R₁+R₂+R₃` step §8 already used for transitivity of `∼`.
+      It cost ~40 lines. `goodDense_openSub_of_mid_le` additionally discharges all four
+      singleton/non-singleton combinations of `c'=c` / `d'=d`, which Reynolds' sentence passes over
+      and which D2 makes the *generic* case rather than a corner case.
+    - Step (2), the `ℝ`-extension and the flow, was correctly sized: it is application only, and it
+      is reached through `goodDense_shuffle`, which is landed.
+  - **WHAT NOW REMAINS — one item: the shuffle step at `⋃I`**, carried as the single tracked
+    strategic sorry `goodDense_unionClasses` (`DoetsTheorem.lean:1318`), stated with every input
+    Reynolds names in scope (`hmin`, `D1`, `D2`, and `hI : ⋃I = (c',d')`). Two sub-items, and the
+    order between them is forced:
+    1. *The choice of `N_γ`* — printed p.187 *"choose an `N_γ ⊨ γ` with flow of time an interval of
+       `ℝ`"*, used on p.188 as *"because the `γᵢ`'s say so the summands themselves are closed
+       intervals of the reals"*. `goodDense_shuffle` asks for this in six spellings (`hne`,
+       `hdense`, `hsum`, `hbot`, `hone`, `hsep`). **This is the genuinely missing ingredient**, and
+       it is NOT the decomposition the prior record named: it is the *two-sided closed* case of the
+       normalization `exists_ioo_witness` (`GoodDense.lean:713`) does end-point-free and
+       `icoBlock` / `kEquiv_pointSum_icoBlock` do one-sided. Sketch, for the successor: `M|E` is
+       good, countable, densely ordered, and by Lemma 13 has an attained least and greatest point;
+       transport *"has a min"*, *"has a max"* and `DenselyOrdered` across `≡ₖ` at `k ≥ 2` (the
+       pattern is `noMaxOrder_of_kEquiv`), and then the witness's `carrierSet`, being `OrdConnected`
+       with an attained min and max, **is** `Set.Icc x y` — which is Dedekind complete, has a least
+       element, is dense and is separable. So the six hypotheses fall out of the min/max transfer
+       plus that one set identity; no new construction is needed, but the transfer lemmas are.
+    2. *The choice of `σ`* — printed p.187 *"we can choose `σ` appropriately"*. `σ` is **not** free:
+       it is forced to be *"the `γ` realized by the class at that rational"*, i.e. `colour ∘ e.symm`
+       for the landed `e : I ≃o ℚ`. With `σ` so defined, `hmatch` of `kEquiv_blocks_shuffle` holds
+       by construction and `IsShuffleMap S σ` is `gammaBetween_dense_of_minimal` transported along
+       `e`. Bookkeeping over landed assets — but it cannot be written before (1) fixes `ι` and `N`,
+       because `σ` lands in `ι`.
 - **NEW OBLIGATION SURFACED, and deliberately not hidden.** Weakening D1/D2's antecedent is what
   made (1) closable, and it makes D1/D2 correspondingly *harder to discharge* — Phase 30's
   suppliers (`no_gaps_dense_prior`, `no_gaps_dense_prior_left`, `dense_singletons_of_sep`) all
@@ -4736,7 +4769,7 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
         `exists_not_simDense_of_not_goodDense`; "so `M|(⋃I) ≡ₖ` a shuffle (26), extend to `ℝ`
         (27), the flow is `≅o ℝ` (28)" as `goodDense_shuffle` /
         `exists_realFlow_of_kEquiv_shuffle`. The `G`-minimality contradiction that consumes them
-        is the tracked sorry at `DoetsTheorem.lean:1000`. Sub-phases 29.2-29.4 landed Reynolds'
+        is the tracked sorry at `DoetsTheorem.lean:1318`. Sub-phases 29.2-29.4 landed Reynolds'
         `G` and its minimization, `M/∼` as a linear order, Reynolds' `I` with order type `ℚ`, and
         density of `M/∼` from D1 — so all three named sub-gaps are discharged and the residual is
         now the assembly alone.)*
