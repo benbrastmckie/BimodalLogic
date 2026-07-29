@@ -1,5 +1,5 @@
 ---
-next_project_number: 420
+next_project_number: 421
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 420
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,179,193,231,257,298,361,390,408,413,414,418,419 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 165,169,170,177,178,219,282,296,415,417 | 193,231,298,361,414,418 | completeness, formula-refactor, dataset-enhancement, ... |
-| 3 | 362,410,411,412 | 165,169,170 | strong_completeness |
+| 1 | 95,125,127,128,179,193,231,257,298,361,390,408,413,418,419,420 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 165,169,170,177,178,219,282,296,414 | 193,231,298,361,418,420 | completeness, formula-refactor, dataset-enhancement, ... |
+| 3 | 362,410,411,412,415,417 | 165,169,170,414 | paper-refactor, strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -59,10 +59,11 @@ next_project_number: 420
 
 ### Paper Refactor
 
-414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
-  └─ 415 [RESEARCHED] — Completeness under the refactored (Omega-free, maximal-history) s
-  └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
 419 [NOT STARTED] — Machine-check the CO-does-not-derive-Reynolds independence result
+420 [NOT STARTED] — Align the Lean TaskFrame with the refactored paper def:frame (Pos
+  └─ 414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
+    └─ 415 [RESEARCHED] — Completeness under the refactored (Omega-free, maximal-history) s
+    └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
 
 ### Strong Completeness
 
@@ -75,6 +76,17 @@ next_project_number: 420
 ### Uncategorized
 
 ## Tasks
+
+### 420. Align task frame with positive cone limit nullity
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-refactor
+- **Dependencies**: None
+
+**Description**: Align the Lean TaskFrame with the refactored paper def:frame (PossibleWorlds task 51, commits 754d069..e566885; SUPERSEDES fix.md A1 -- Reflection is no longer a paper axiom). PAPER'S NEW DEF:FRAME (settled, do not re-litigate): primitive task relation on the positive cone (subset of W x D+ x W, D+ = {x : 0 <= x}); (i) iff-Nullity; (ii) proviso-free Compositionality on D+ stated as the LAX law (R_{x+y} contains R_x o R_y -- equality would assert interpolation, NOT adopted); (iii) NEW axiom Limit Nullity: the intersection over x > 0 of the two-sided cones (w)_x equals {w}; negative durations by the definitional CONVERSE CONVENTION (w =>_x u for x < 0 IS u =>_{-x} w); Reflection and backward composition are DERIVED; mixed-sign composition is inexpressible at the primitive level; the paper appendix now proves T_F is T1 (hence R0) for EVERY frame (app:topology-r0, one-line proof from Nullity + converse convention + Limit Nullity). CURRENT LEAN STATE (FormalSystem/Semantics/TaskFrame.lean): already close -- nullity_identity matches iff-Nullity; forward_comp (0 <= x, 0 <= y hypotheses) is exactly the official lax positive-cone law; backward_comp already derived, matching the paper's derived status. The two-sided primitive TaskRel with the `converse` FIELD is precisely the paper's EXTENDED relation, so the presentation itself can stand; but the docstring must be recast: `converse` is the paper's definitional converse convention packaged as a structure field, not a substantive temporal-symmetry axiom, and the 'Axiomatization Notes' block is now inverted (the paper has ADOPTED the positive-cone presentation -- record agreement, not divergence). Stale 'def:frame, line 1835' citations throughout the module must be re-anchored. THE REAL MATHEMATICAL DELTA: Limit Nullity is absent from the Lean structure. (1) Add a limit_nullity field; direct transcription with the extended relation: forall w u, (forall x, 0 < x -> exists y, |y| < x and TaskRel w y u) -> u = w. Paper task-51 research S2 proved forward-only and two-sided forms equivalent when imposed at all states -- research may pick either, but the two-sided form matches the paper's official statement. (2) Provide helper limit_nullity_of_discrete: over Z (and generally SuccOrder + IsSuccArchimedean D) the axiom is AUTOMATIC (|y| < succ 0 forces y = 0, then nullity_identity), so every Discrete-class construction discharges it in one line. (3) Inventory and discharge ALL TaskFrame instantiation sites tree-wide (research phase: grep ': TaskFrame' / 'TaskFrame D where' / '.mk'). Known: trivialFrame (Unit singleton -- trivially fine), identityFrame (fine -- verify), natFrame (VIOLATES the axiom over dense D: any u is reachable in arbitrarily small nonzero duration -- repair the relation or restrict its temporal parameter to discrete D), plus every canonical/countermodel frame in Metalogic/ (coordinate with 415, which owns the per-class canonical obligations). (4) latex/subfiles/02-Semantics.tex Task Frame definition is stale vs BOTH the live tree and the paper (states one-way Nullity and unrestricted mixed-sign Compositionality -- the very axiomatization TaskFrame.lean's own notes call impossible for nondeterministic relations): restate with iff-Nullity, positive-cone lax Compositionality, the converse convention, and Limit Nullity; must still compile standalone (pdflatex with TEXINPUTS=../assets: from latex/subfiles/). SCOPE BOUNDARY with task 409: 409 owns 04-Metalogic.tex/06-Notes.tex identifier-architecture fidelity; THIS task owns the 02-Semantics.tex frame-definition subsection. OPTIONAL STRETCH (defer if nontrivial): formalize the paper's T1 theorem as a sanity check -- with the cone topology, closure of {u} equals {u} for every frame. NON-GOALS: no edits under Philosophy/Papers/; no change to WorldHistory/respects_task (unaffected -- it evaluates at d = t - s with converse handling signs); no validity/semantics refactor (task 414 owns that and now depends on this task so the Omega-free API lands once, against the final frame structure). Related: 414, 415, 417, 409.
+
+---
 
 ### 419. Machine check co reynolds independence
 - **Effort**: large
@@ -105,10 +117,12 @@ next_project_number: 420
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: Task 414
+- **Dependencies**: Task 414, Task 420
 - **Research**: [417_semantic_fmp_finite_worldstate_over_z/reports/01_semantic-fmp-finite-worldstate.md]
 
 **Description**: Semantic FMP over a fixed carrier, stated against the refactored Omega-free maximal-history semantics of task 414 (PossibleWorlds Comments/fix.md C6; revised 2026-07-28): prove the TruthAt-connected finite model property the paper cor:tm-decidability proof text cites — any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z — replacing reliance on the syntactic closure-MCS FMP theorems (Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by task 165 redirect; the tableau programme (165/410-412) remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
+
+LIMIT NULLITY NOTE (PossibleWorlds task 51; repo task 420): over D = Z the new Limit Nullity frame axiom is automatic (|y| < 1 forces y = 0, then nullity_identity), so the finite-W-over-Z programme is mathematically unaffected; the TaskFrame packaging in this task's construction must simply discharge the new field via 420's discrete helper.
 
 ---
 
@@ -131,10 +145,12 @@ next_project_number: 420
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: Task 414
+- **Dependencies**: Task 414, Task 420
 - **Research**: [415_completeness_over_maximal_history_semantics/reports/01_completeness-maximal-history-rebase.md]
 
 **Description**: Completeness under the refactored (Omega-free, maximal-history) semantics of task 414 — INTERNALIZED, not bridged (PossibleWorlds Comments/fix.md B1/C2; revised 2026-07-28): restate and reprove WEAK completeness per frame class so the canonical/chronicle constructions deliver countermodels that are maximal-history models OUTRIGHT. The former singleton-Omega device (WeakCanonical/Transfer.lean:603-638) becomes: construct frames — deterministic frames are the lead, their maximal histories forming a single shift class — whose FULL maximal-history set is the required countermodel family; no transfer or realization lemmas in the final statements. Order: Discrete first (currently green under the old semantics), then Dense (task 170), Base (task 169), Dedekind (task 408), whose targets all rebase onto the new semantics. The mathematical content of realization is absorbed into the constructions; the headline theorems mention only the paper-aligned validity.
+
+NEW OBLIGATION FROM THE PAPER FRAME REFACTOR (PossibleWorlds task 51; repo task 420): once TaskFrame carries the Limit Nullity field, every countermodel frame this task constructs must discharge it. Discrete class: automatic via 420's limit_nullity_of_discrete helper (free over Z). Dense, Dedekind, and Base canonical/chronicle constructions: GENUINE new per-class proof obligation -- verify the constructed task relation does not relate distinct states in arbitrarily small durations (for the deterministic lead frames, check the induced relation's small-duration behavior explicitly; the paper's three-state countermodel shows exactly how Nullity + Compositionality alone permit violations). Add this to each class's rebase checklist. A class whose canonical frame violates Limit Nullity needs a repaired construction, not a weakened axiom -- the axiom is settled paper-side (def:frame axiom iii).
 
 ---
 
@@ -143,12 +159,14 @@ next_project_number: 420
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: None
+- **Dependencies**: Task 420
 - **Research**:
   - [414_refactor_semantics_to_maximal_history_validity/reports/01_maximal-history-validity-refactor.md]
   - [414_refactor_semantics_to_maximal_history_validity/reports/02_group-c-reconciliation.md]
 
 **Description**: DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; revised 2026-07-28: change the basic definitions, no bridge lemmas). Make maximal-history validity THE validity of the repo, eliminating the Omega parameter from the semantics core. (1) Define the extension order on WorldHistory (sigma extends tau iff tau.domain subset-of sigma.domain and states agree on tau.domain), the Maximal predicate, and prove: every history extends to a maximal one (Zorn) and maximality is preserved by time-shift — the paper re-verified both. (2) Refactor TruthAt, valid, satisfiable, and semantic consequence to quantify over MAXIMAL histories of the frame, removing Omega and ShiftClosed hypotheses everywhere; the false Set.univ-equivalence docstrings (Semantics/Validity.lean:33,70-71) disappear with the parameter. (3) Propagate through Soundness (expected to survive verbatim via Zorn extension + shift-preservation). NO compatibility shims, aliases, or parallel validity notions: one uniform Omega-free API. Downstream metalogic rebasing is task 415; 417 restates against this semantics.
+
+FRAME-PRESENTATION COORDINATION (2026-07-28, PossibleWorlds task 51): the paper's def:frame has been refactored to the positive-cone presentation with Limit Nullity, Reflection demoted to a derived remark (supersedes fix.md A1). This task's charter (Omega-free maximal-history validity) is mathematically unaffected -- the paper's world-history apparatus gained only a converse-convention gloss, and the Zorn extension + shift-preservation claims were re-verified paper-side under the new axioms. Frame-axiom alignment (new Limit Nullity field, converse-as-definitional docstring recast, 02-Semantics.tex restatement) is owned by task 420, which this task now DEPENDS ON so the validity refactor lands once against the final TaskFrame structure. Any def:frame line-number citations in this task's research artifacts refer to the pre-refactor paper and must be re-anchored during implementation.
 
 ---
 
@@ -211,6 +229,8 @@ SCOPE:
 (4) Verify compilation: pdflatex -interaction=nonstopmode with TEXINPUTS=../assets: from latex/subfiles/ (formatting.sty lives in latex/assets/); both 04-Metalogic.tex and 06-Notes.tex currently compile standalone and must still compile after the rewrite.
 
 COORDINATION: task 362 leg D owns stating the genuine strong-completeness results (and any further restatement) once the per-class consequence/strong results land; this task owns bringing the existing chapter to identifier/architecture fidelity now. Do not duplicate. Per .claude/rules/no-task-references-in-deliverables.md, do not cite task numbers inside the .tex files — reference module names and theorem identifiers instead.
+
+SCOPE BOUNDARY ADDENDUM (2026-07-28): the frame-definition subsection of latex/subfiles/02-Semantics.tex is owned by task 420 (positive-cone + Limit Nullity restatement following the paper's task-51 def:frame refactor); this task continues to own 04-Metalogic.tex and 06-Notes.tex identifier/architecture fidelity. Do not duplicate.
 
 ---
 
