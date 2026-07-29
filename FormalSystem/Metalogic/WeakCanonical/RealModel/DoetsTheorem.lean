@@ -1620,6 +1620,211 @@ theorem exists_iccLike_contempClass (D1 : DoetsD1 sig M) {c d e : M.carrier}
 
 end ClassSummands
 
+/-! ## Layer 13 — Reynolds' `σ`, and the family `{N_γ | γ ∈ G}`
+
+Printed p.187, the two choices this layer makes:
+
+> Any structure is a model of just one such `γ`. … we can choose `σ : ℚ → {N_γ | γ ∈ G}`
+> appropriately.
+
+*"a model of just one such `γ`"* is `nf_exists_unique`, so *"the `γ` realized by the class at that
+rational"* is a **function**, not a choice: `classNF` reads it off a point, `classColour` is the
+same function on `M/∼` — well defined because `∼`-equivalent points have literally the same class
+structure — and `σ` is `classColour ∘ e.symm` for the order isomorphism `e : I ≃o ℚ` of Layer 6.
+Nothing here is chosen; Reynolds' *"appropriately"* is discharged by `e` alone.
+
+`{N_γ | γ ∈ G}` is the one place a choice remains, and `exists_iccLike_family` makes it once. The
+three clauses of its conclusion are the three uses the shuffle puts the family to: `IsIccLike` at
+**every** index (`goodDense_shuffle` quantifies its five summand hypotheses over all of `ι`, not
+just over `S`), *"`N_γ ⊨ γ`"* at the indices `σ` can reach, and *"`γ₁` is only satisfied by one
+point structures"* at `γ₁`.
+
+`isShuffleMap_classColour` is *"by minimality of `G`, all the `γᵢ`'s in `G` are satisfied densely in
+`I`"* (printed p.187) transported along `e`. It is Layer 5's `gammaBetween_dense_of_minimal` plus
+one bridge Reynolds passes over: a `γ` recurring in *some* subinterval of `(c,d)` has to be shown
+to recur in the subinterval **the two rationals name**. The bridge is Layer 9's two end points run
+at the two classes `e.symm r` and `e.symm s`, which is why the class end points are needed twice —
+once to close each summand (Layer 12) and once to locate it.
+-/
+
+section ColourMap
+
+/-- The degenerate closed-interval structure, used as the family's value at the indices `σ` never
+reaches. `goodDense_shuffle` asks its five summand hypotheses of every index, so the family has to
+be total; Reynolds' `{N_γ | γ ∈ G}` is only defined on `G`. -/
+noncomputable def trivialIccStructure (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] : RIntervalStructure sig where
+  carrierSet := Set.Icc (0 : ℝ) 0
+  ordConnected := Set.ordConnected_Icc
+  interp := fun _ _ => False
+
+theorem isIccLike_trivialIccStructure :
+    IsIccLike sig ((trivialIccStructure sig).toOrdered sig) :=
+  isIccLike_of_carrierSet_eq_Icc _ (le_refl (0 : ℝ)) rfl
+
+/--
+**The `γ` realized by a point's `∼`-class** — printed p.187, *"Any structure is a model of just one
+such `γ`"*, so this is a function of the point and not a choice.
+-/
+noncomputable def classNF (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2) (x : M.carrier) :
+    NormalForm sig k 0 :=
+  nfCharacteristic (contempClassStructure sig M ε x) k 0 Fin.elim0
+
+theorem classNF_spec (k : Nat) (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (x : M.carrier) :
+    NfEvalNf (contempClassStructure sig M ε x) k 0 Fin.elim0 (classNF sig k M ε x) :=
+  nf_characteristic_satisfies _ k 0 Fin.elim0
+
+/-- Uniqueness half: any `γ` the class realizes *is* `classNF`. -/
+theorem classNF_eq_of_nfEvalNf (k : Nat) (M : OrderedMonadicStructure sig)
+    (ε : MonadicFormula sig 2) (x : M.carrier) {nf : NormalForm sig k 0}
+    (hnf : NfEvalNf (contempClassStructure sig M ε x) k 0 Fin.elim0 nf) :
+    classNF sig k M ε x = nf :=
+  nf_eval_unique _ k 0 Fin.elim0 _ nf (classNF_spec k M ε x) hnf
+
+/-- Equivalent points have **the same** class structure — not merely isomorphic ones: the two
+carriers are cut out by the same set. -/
+theorem contempClassStructure_congr {ε : MonadicFormula sig 2}
+    {M : OrderedMonadicStructure sig} (h : IsConvexEquiv M ε) {x y : M.carrier}
+    (hxy : ContempEquivDense M ε x y) :
+    contempClassStructure sig M ε x = contempClassStructure sig M ε y := by
+  unfold contempClassStructure
+  congr 1
+  ext z
+  exact ⟨fun hz => h.equiv.trans (h.equiv.symm hxy) hz, fun hz => h.equiv.trans hxy hz⟩
+
+theorem classNF_congr {ε : MonadicFormula sig 2} {M : OrderedMonadicStructure sig}
+    (h : IsConvexEquiv M ε) (k : Nat) {x y : M.carrier} (hxy : ContempEquivDense M ε x y) :
+    classNF sig k M ε x = classNF sig k M ε y := by
+  unfold classNF
+  rw [contempClassStructure_congr h hxy]
+
+/-- **`classNF` read on `M/∼`** — the colour of a class. This is the map Reynolds' `σ` is
+`e.symm`-composed with. -/
+noncomputable def classColour {ε : MonadicFormula sig 2} {M : OrderedMonadicStructure sig}
+    (h : IsConvexEquiv M ε) (k : Nat) : h.ClassQuot → NormalForm sig k 0 :=
+  Quotient.lift (classNF sig k M ε) fun _ _ hxy => classNF_congr h k hxy
+
+@[simp] theorem classColour_cls {ε : MonadicFormula sig 2} {M : OrderedMonadicStructure sig}
+    (h : IsConvexEquiv M ε) (k : Nat) (x : M.carrier) :
+    classColour h k (h.cls x) = classNF sig k M ε x := rfl
+
+variable (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+  [Countable M.carrier] [DenselyOrdered M.carrier]
+
+include hk
+
+/-- **The colour of an interior class is in `G`** — both clauses of `mem_gammaBetween` at once: the
+class realizes it, and the class is good (Layer 12), which is what `goodNFs` asks. -/
+theorem classNF_mem_gammaBetween (h : IsConvexEquiv M (epsDense sig k)) {a b x : M.carrier}
+    (hbet : ClassStrictlyBetween M (epsDense sig k) a b x) :
+    classNF sig k M (epsDense sig k) x ∈ gammaBetween sig k (epsDense sig k) M a b := by
+  classical
+  refine mem_gammaBetween.mpr ⟨?_, x, hbet, classNF_spec k M _ x⟩
+  simp only [goodNFs, Finset.mem_filter, Finset.mem_univ, true_and]
+  exact ⟨contempClassStructure sig M (epsDense sig k) x,
+    goodDense_contempClassStructure k hk M h x, classNF_spec k M _ x⟩
+
+/--
+**Reynolds' `σ` is a shuffle map** — printed p.187:
+
+> Also, by minimality of `G`, all the `γᵢ`'s in `G` are satisfied densely in `I`. … we can choose
+> `σ : ℚ → {N_γ | γ ∈ G}` appropriately.
+
+Two clauses. That `σ` lands in `G` is `classNF_mem_gammaBetween` at each class of `I`. That it takes
+every value of `G` inside every rational interval is Layer 5's `gammaBetween_dense_of_minimal`
+plus the bridge Reynolds' *"densely in `I`"* leaves implicit: minimality produces a class realizing
+`γ` inside a `≁`-pair of `M`-points, and the `≁`-pair has to be **the one the two rationals name**.
+Layer 9's two end points supply it — the right hand end point `x'` of the class `e.symm r` and the
+left hand end point `y'` of the class `e.symm s` — because a class strictly inside `(x',y')` is
+inequivalent to both named classes and lies between them, which is exactly *"strictly between them
+in `I`"* and hence, along `e`, *"at a rational strictly between `r` and `s`"*.
+-/
+theorem isShuffleMap_classColour (D1 : DoetsD1 sig M)
+    (h : IsConvexEquiv M (epsDense sig k)) {a b : M.carrier}
+    (hmin : ∀ a' b' : M.carrier, a' < b' → ¬ SimDense sig k M a' b' →
+      (gammaBetween sig k (epsDense sig k) M a b).card ≤
+        (gammaBetween sig k (epsDense sig k) M a' b').card)
+    {c d : M.carrier} (hac : a ≤ c) (hdb : d ≤ b)
+    (e : h.ClassBetween c d ≃o ℚ) :
+    IsShuffleMap (gammaBetween sig k (epsDense sig k) M a b)
+      (fun q => classColour h k (e.symm q).val) := by
+  -- Widening `(c,d)` to `(a,b)`: a class strictly inside the former is strictly inside the latter.
+  have hwiden : ∀ x : M.carrier, ClassStrictlyBetween M (epsDense sig k) c d x →
+      ClassStrictlyBetween M (epsDense sig k) a b x := by
+    intro x hx z hz
+    exact ⟨lt_of_le_of_lt hac (hx z hz).1, lt_of_lt_of_le (hx z hz).2 hdb⟩
+  -- The colour of any class of `I` lies in `G`.
+  have hcol : ∀ A : h.ClassBetween c d,
+      classColour h k A.val ∈ gammaBetween sig k (epsDense sig k) M a b := by
+    rintro ⟨A, hA⟩
+    induction A using Quotient.ind with
+    | _ x => exact classNF_mem_gammaBetween k hk M h (hwiden x hA)
+  refine ⟨fun q => hcol (e.symm q), ?_⟩
+  intro γ hγ r s hrs
+  -- The two classes the rationals name, with representatives.
+  have hAB : e.symm r < e.symm s := (OrderIso.lt_iff_lt e.symm).mpr hrs
+  obtain ⟨x, hx⟩ := Quotient.exists_rep (e.symm r).val
+  obtain ⟨y, hy⟩ := Quotient.exists_rep (e.symm s).val
+  have hxbet : ClassStrictlyBetween M (epsDense sig k) c d x := by
+    have := (e.symm r).property
+    rw [← hx] at this
+    exact this
+  have hybet : ClassStrictlyBetween M (epsDense sig k) c d y := by
+    have := (e.symm s).property
+    rw [← hy] at this
+    exact this
+  have hclt : h.cls x < h.cls y := by
+    have hv : (e.symm r).val < (e.symm s).val := Subtype.coe_lt_coe.mpr hAB
+    rw [← hx, ← hy] at hv
+    exact hv
+  obtain ⟨hxy, hnxy⟩ := (h.cls_lt_cls).mp hclt
+  have hnsxy : ¬ SimDense sig k M x y := fun hc =>
+    hnxy ((contempEquivDense_epsDense_iff k M x y).mpr hc)
+  -- Layer 9 at the two named classes: the right end of `x`'s and the left end of `y`'s.
+  obtain ⟨x', hsimx', hxx', -, hlastx⟩ := exists_right_endpoint_class sig k hk M D1 hxy hnsxy
+  obtain ⟨y', hsimy', hy'y, hxy', hfirsty⟩ := exists_left_endpoint_class sig k hk M D1 hxy hnsxy
+  have hx'y' : x' < y' := endpoint_lt_endpoint k hk M hnsxy hsimx' hsimy' hxy'
+  have hns' : ¬ SimDense sig k M x' y' := fun hc =>
+    hnsxy (simDense_trans k hk M hsimx'
+      (simDense_trans k hk M hc (simDense_symm hsimy')))
+  have hcx : c < x := (h.lt_of_classStrictlyBetween hxbet).1
+  have hyd : y < d := (h.lt_of_classStrictlyBetween hybet).2
+  have hax' : a ≤ x' := le_trans hac (le_trans (le_of_lt hcx) hxx')
+  have hy'b : y' ≤ b := le_trans hy'y (le_trans (le_of_lt hyd) hdb)
+  -- Minimality: `γ` recurs in `(x',y')`.
+  obtain ⟨z, hzbet, hznf⟩ := gammaBetween_dense_of_minimal hmin hax' hx'y' hy'b hns' hγ
+  obtain ⟨hx'z, hzy'⟩ := h.lt_of_classStrictlyBetween hzbet
+  have hzbet' : ClassStrictlyBetween M (epsDense sig k) c d z := by
+    intro w hw
+    exact ⟨lt_of_lt_of_le hcx (le_trans hxx' (le_of_lt (hzbet w hw).1)),
+      lt_of_lt_of_le (hzbet w hw).2 (le_trans hy'y (le_of_lt hyd))⟩
+  have hzQ : h.ClassStrictlyBetweenQ c d (h.cls z) := h.classStrictlyBetweenQ_cls.mpr hzbet'
+  set E : h.ClassBetween c d := ⟨h.cls z, hzQ⟩ with hE
+  refine ⟨e E, ?_, ?_, ?_⟩
+  · -- `r < e E`, because `e.symm r < E` in `I`
+    have hlt₁ : (e.symm r).val < E.val := by
+      rw [← hx]
+      exact h.cls_lt_cls.mpr ⟨lt_of_le_of_lt hxx' hx'z,
+        fun hc => hlastx z hx'z ((contempEquivDense_epsDense_iff k M x z).mp hc)⟩
+    have hlt₂ : e.symm r < E := Subtype.coe_lt_coe.mp hlt₁
+    simpa using (OrderIso.lt_iff_lt e).mpr hlt₂
+  · -- `e E < s`, because `E < e.symm s` in `I`
+    have hlt₁ : E.val < (e.symm s).val := by
+      rw [← hy]
+      exact h.cls_lt_cls.mpr ⟨lt_of_lt_of_le hzy' hy'y,
+        fun hc => hfirsty z hzy'
+          (simDense_symm ((contempEquivDense_epsDense_iff k M z y).mp hc))⟩
+    have hlt₂ : E < e.symm s := Subtype.coe_lt_coe.mp hlt₁
+    simpa using (OrderIso.lt_iff_lt e).mpr hlt₂
+  · -- and its colour is `γ`
+    show classColour h k (e.symm (e E)).val = γ
+    rw [OrderIso.symm_apply_apply]
+    exact classNF_eq_of_nfEvalNf k M _ z hznf
+
+end ColourMap
+
 /-! ## The residual, narrowed to the shuffle step
 
 Layers 8-10 discharge Reynolds' closing paragraph *except* for the goodness of the middle block
