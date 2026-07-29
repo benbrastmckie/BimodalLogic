@@ -1,5 +1,5 @@
 ---
-next_project_number: 427
+next_project_number: 428
 ---
 
 # TODO
@@ -15,6 +15,7 @@ next_project_number: 427
 | 2 | 177,178,219,282,296,410,411,412,420,422,425 | 165,193,231,298,415,421,423 | formula-refactor, dataset-enhancement, paper-refactor, ... |
 | 3 | 169,414 | 420,422 | paper-refactor, strong_completeness |
 | 4 | 362,417 | 169,170,414 | paper-refactor, strong_completeness |
+| 5 | 427 | 417,419 | paper-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -64,7 +65,9 @@ next_project_number: 427
   └─ 420 [BLOCKED] — Align the Lean TaskFrame with the refactored paper def:frame (Pos
     └─ 414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
       └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
+        └─ 427 [NOT STARTED] — Bring the BimodalReference typst book back into sync with the ref
 419 [NOT STARTED] — Machine-check the CO-does-not-derive-Reynolds independence result
+  └─ 427 [NOT STARTED] — Bring the BimodalReference typst book back into sync with the ref (see above)
 
 ### Strong Completeness
 
@@ -81,6 +84,29 @@ next_project_number: 427
 ### Uncategorized
 
 ## Tasks
+
+### 427. Sync typst book with refactored paper
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: typst
+- **Topic**: paper-refactor
+- **Dependencies**: Task 414, Task 415, Task 417, Task 419, Task 420
+
+**Description**: Bring the BimodalReference typst book back into sync with the refactored paper at /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and with the Lean tree as it stands once the paper-refactor task chain has landed. This is the typst-side counterpart of the LaTeX work already done in latex/subfiles/; it was deliberately deferred and declared out of scope there, so the typst chapters currently CONTRADICT the corrected LaTeX.
+
+KNOWN STALE SITE (confirmed, the trigger for this task): typst/chapters/02-semantics.typ:35-40 states the PRE-REFACTOR three-axiom Task Frame definition -- one-way Nullity (w =>_0 w rather than the iff), Reflection as a SUBSTANTIVE axiom, and unrestricted mixed-sign Compositionality. All three are wrong against the current paper def:frame: (i) Nullity is now an iff; (ii) Compositionality is the proviso-free LAX law on the positive cone D+ = {x : 0 <= x} (R_{x+y} contains R_x o R_y -- equality would assert interpolation and is NOT adopted); (iii) Reflection is DERIVED, not primitive -- negative durations come from the definitional CONVERSE CONVENTION (w =>_x u for x < 0 IS u =>_{-x} w); and (iv) a NEW axiom Limit Nullity is missing entirely (the intersection over x > 0 of the two-sided cones (w)_x equals {w}). The prose gloss at 02-semantics.typ:42-50 repeats the same errors and calls the mixed-sign form merely "algebraically impossible for non-deterministic relations" as if the Lean tree diverged from the paper -- that framing is now inverted: the paper has ADOPTED the positive-cone presentation, so this should record AGREEMENT, not divergence. The corrected LaTeX wording is in latex/subfiles/02-Semantics.tex and should be the model for the typst restatement.
+
+STALE LINE ANCHORS: 02-semantics.typ cites Semantics/TaskFrame.lean:93 for the structure; it now lives at TaskFrame.lean:152. typst/SYNC-MAP.md:230 records the 02-semantics verdict against the PRE-refactor paper range possible_worlds.tex:902-907; the correct live anchors are possible_worlds.tex:2423 (formal def:frame) and 908-926 (body). Re-derive rather than trusting either number -- the paper moves.
+
+SCOPE: audit ALL of typst/chapters/ against the current paper and the post-chain Lean tree, not just 02-semantics.typ. Chapters carrying paper-anchored claims that the refactor chain plausibly touches include 02-semantics.typ (frame/semantics), 04-metalogic.typ (completeness, FMP, decidability), p2-frame-classes.typ (DF/DN/CO paper correspondence, possible_worlds.tex line refs at :109-112), p3-ltl-to-tm.typ and p3-vlach-blstar.typ (paper clause ranges). Update typst/SYNC-MAP.md verdict rows for every claim re-verified, and refresh typst/sync-check-whitelist.txt if paper labels changed. Verify with the repo scripts: scripts/typst-sync-check.sh (backtick name resolution + count freshness) and a full typst compile of typst/BimodalReference.typ.
+
+NOTATION (binding user decision, 2026-07-28): any explicit converse operation on the task relation is written with a superscript inverse -- $Rightarrow^{-1}$ / $R^{-1}$ -- NEVER the relation-algebra breve/smile ($breve{R}$, $R^{smallsmile}$) common in the arrow-logic literature. Note that the paper itself currently states the converse convention with subscript negation only and introduces no operator symbol at all; the corrected LaTeX subfile followed suit and introduced none either, so the typst restatement should also introduce none unless a symbol is genuinely needed.
+
+WHY IT DEPENDS ON THE WHOLE CHAIN: this task must run LAST. Each predecessor changes what the typst book must say. 420 fixes the frame definition itself (its Phase 6, adding the limit_nullity structure field, is blocked on 415 and had not landed when this task was created -- confirm before starting). 414 refactors semantics to maximal-history validity. 415 replaces the canonical frame (bundleFlowFrame) and reworks completeness. 417 moves FMP to a finite WorldState over Z. 419 machine-checks co-Reynolds independence. Syncing typst before these land would guarantee a second full re-sync.
+
+NON-GOALS: no edits under Philosophy/Papers/ -- the paper is READ-ONLY ground truth here. No changes to latex/subfiles/ (already corrected). No Lean changes: if the audit finds a Lean/paper divergence, record it and raise a separate task rather than fixing it here.
+
+---
 
 ### 426. Settle anchor row countermodel or nontermination for g p box g p
 - **Effort**: 4-8 hours
