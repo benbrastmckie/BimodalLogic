@@ -223,4 +223,297 @@ theorem kEquiv_shuffle_shuffleReal (k : Nat) {ι : Type} (N : ι → OrderedMona
     KEquiv sig k (shuffle N σ) (shuffleReal N γ₁ σ) :=
   doets_lemma_1_5 k _ _ hcol
 
+/-! ## The flow `R` of `Σ_{r∈ℝ} σ*(r)`
+
+Printed p.188: *"Let `R` be the flow of time of `Σ_{r∈ℝ} σ*(r)`. Clearly `R` is dense and without
+end points. `R` is also Dedekind complete: any subset bounded above intersects a last summand.
+Because the `γᵢ`'s say so the summands themselves are closed intervals of the reals so the
+supremum of the set exists in this class. Also `R` has a countable dense subflow."*
+
+The four facts are proved for an arbitrary `ℝ`-indexed family and then specialized to the
+shuffle, because none of them uses anything about the summands beyond the order-theoretic
+hypotheses stated: nonemptiness, internal density, internal completeness with a least element,
+internal separability, and — for the countable dense subflow only — that the summands at the
+*irrationals* are subsingletons. That last hypothesis is where Reynolds' choice of `γ₁` as
+*"a `γ` in `G` which is only satisfied by one point structures"* does its work: without it, `R`
+would have `ℝ`-many pairwise-separated pairs of points and no countable dense subset.
+
+`orderedSum` is deliberately not reducible (see its docstring), so the four small transfer lemmas
+between the lexicographic order and its components are stated once here rather than unfolded at
+each use.
+-/
+
+section OrderFacts
+
+/-! The four transfer lemmas are stated through `orderedSumPt` (`NEquivalence.lean:155`) rather
+than through an anonymous `⟨r, a⟩`. An anonymous sigma literal forces its expected type to weak
+head normal form, which unfolds `.carrier` to the raw `Sigma` type; typeclass search then finds
+Mathlib's *non-lexicographic* `Sigma.instLE` in preference to the structure's `carrierOrder`, and
+the statement silently becomes one about the wrong order. This is exactly the hazard
+`orderedSum`'s docstring warns about, met here for `LE` rather than for `LinearOrder`. -/
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- A strictly smaller index gives a strictly smaller point of the sum. -/
+private theorem osLt_of_fst_lt {fam : ℝ → OrderedMonadicStructure sig}
+    {x y : (orderedSum sig ℝ fam).carrier} (h : x.1 < y.1) : x < y :=
+  Sigma.Lex.lt_def.mpr (Or.inl h)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- Within one summand, the component order is the induced order. -/
+private theorem osLe_of_snd_le {fam : ℝ → OrderedMonadicStructure sig} {r : ℝ}
+    {a b : (fam r).carrier} (h : a ≤ b) :
+    orderedSumPt (ms := fam) r a ≤ orderedSumPt (ms := fam) r b := by
+  rcases eq_or_lt_of_le h with rfl | hlt
+  · exact le_refl _
+  · exact le_of_lt (Sigma.Lex.lt_def.mpr (Or.inr ⟨rfl, hlt⟩))
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- The index is monotone in the sum order. -/
+private theorem osFst_le_of_le {fam : ℝ → OrderedMonadicStructure sig}
+    {x y : (orderedSum sig ℝ fam).carrier} (h : x ≤ y) : x.1 ≤ y.1 := by
+  by_contra hc
+  exact absurd h (not_le.mpr (osLt_of_fst_lt (not_le.mp hc)))
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- Within one summand, the sum order reflects to the component order. -/
+private theorem osSnd_le_of_le {fam : ℝ → OrderedMonadicStructure sig} {r : ℝ}
+    {a b : (fam r).carrier}
+    (h : orderedSumPt (ms := fam) r a ≤ orderedSumPt (ms := fam) r b) : a ≤ b := by
+  by_contra hc
+  exact absurd h (not_le.mpr (Sigma.Lex.lt_def.mpr (Or.inr ⟨rfl, not_le.mp hc⟩)))
+
+variable (fam : ℝ → OrderedMonadicStructure sig)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **`R` is dense** (printed p.188).
+
+Two points in different summands are separated by a whole summand, because `ℝ` is densely
+ordered and every summand is inhabited; two points in the same summand are separated inside it.
+The second clause is why the singleton summands at the irrationals cost nothing: a subsingleton
+summand has no pair to separate. -/
+theorem denselyOrdered_orderedSumReal
+    (hne : ∀ r : ℝ, Nonempty (fam r).carrier)
+    (hdense : ∀ r : ℝ, ∀ x y : (fam r).carrier, x < y → ∃ z : (fam r).carrier, x < z ∧ z < y) :
+    ∀ x y : (orderedSum sig ℝ fam).carrier, x < y →
+      ∃ z : (orderedSum sig ℝ fam).carrier, x < z ∧ z < y := by
+  rintro ⟨r, a⟩ ⟨s, b⟩ hlt
+  rcases Sigma.Lex.lt_def.mp hlt with hrs | ⟨hrs, hab⟩
+  · obtain ⟨t, hrt, hts⟩ := exists_between hrs
+    exact ⟨⟨t, (hne t).some⟩, osLt_of_fst_lt hrt, osLt_of_fst_lt hts⟩
+  · have heq : r = s := hrs
+    subst heq
+    obtain ⟨z, hz₁, hz₂⟩ := hdense r a b hab
+    exact ⟨⟨r, z⟩, Sigma.Lex.lt_def.mpr (Or.inr ⟨rfl, hz₁⟩),
+      Sigma.Lex.lt_def.mpr (Or.inr ⟨rfl, hz₂⟩)⟩
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **`R` has no last point** (printed p.188): `ℝ` has none, and the later summands are
+inhabited. -/
+theorem noMax_orderedSumReal (hne : ∀ r : ℝ, Nonempty (fam r).carrier) :
+    ∀ x : (orderedSum sig ℝ fam).carrier, ∃ y : (orderedSum sig ℝ fam).carrier, x < y := by
+  rintro ⟨r, a⟩
+  exact ⟨⟨r + 1, (hne (r + 1)).some⟩, osLt_of_fst_lt (by simp)⟩
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **`R` has no first point** (printed p.188). -/
+theorem noMin_orderedSumReal (hne : ∀ r : ℝ, Nonempty (fam r).carrier) :
+    ∀ x : (orderedSum sig ℝ fam).carrier, ∃ y : (orderedSum sig ℝ fam).carrier, y < x := by
+  rintro ⟨r, a⟩
+  exact ⟨⟨r - 1, (hne (r - 1)).some⟩, osLt_of_fst_lt (by simp)⟩
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/--
+**`R` is Dedekind complete** — Reynolds 1992, §8, printed p.188:
+
+> *`R` is also Dedekind complete: any subset bounded above intersects a last summand. Because
+> the `γᵢ`'s say so the summands themselves are closed intervals of the reals so the supremum of
+> the set exists in this class.*
+
+The transcription makes the printed sentence's two moves explicit and adds the case Reynolds'
+*"intersects a last summand"* passes over. Let `ρ` be the supremum in `ℝ` of the indices met by
+`T`, which exists because `ℝ` is complete.
+
+* If `T` does meet the summand at `ρ` — Reynolds' *"intersects a last summand"* — the supremum is
+  taken inside that summand, which is where *"the summands themselves are closed intervals of the
+  reals"* is used: `hsum` says every inhabited subset of a summand has a least upper bound
+  **in that summand**, which is exactly closedness on the right.
+* If it does not, `ρ` is approached from below by indices met by `T` and the least point of the
+  summand at `ρ` is the supremum; `hbot` — *"closed intervals"* again, now on the left — supplies
+  it.
+
+Stated as `∃ u, IsLUB T u` rather than through a `ConditionallyCompleteLinearOrder` instance:
+the carrier is a `Sigma` type whose order comes from `orderedSum`'s `carrierOrder` field, and
+registering a second order-theoretic instance on it is precisely the hazard `orderedSum`'s
+docstring warns about.
+-/
+theorem exists_isLUB_orderedSumReal
+    (hsum : ∀ r : ℝ, ∀ s : Set (fam r).carrier, s.Nonempty → ∃ u, IsLUB s u)
+    (hbot : ∀ r : ℝ, ∃ b : (fam r).carrier, ∀ x : (fam r).carrier, b ≤ x)
+    (T : Set (orderedSum sig ℝ fam).carrier) (hT : T.Nonempty) (hbdd : BddAbove T) :
+    ∃ u, IsLUB T u := by
+  classical
+  -- `P` is the set of indices met by `T`.
+  set P : Set ℝ := Sigma.fst '' T with hP
+  obtain ⟨z₀, hz₀⟩ := hT
+  have hPne : P.Nonempty := ⟨z₀.1, ⟨z₀, hz₀, rfl⟩⟩
+  obtain ⟨w, hw⟩ := hbdd
+  have hPbdd : BddAbove P := by
+    refine ⟨w.1, ?_⟩
+    rintro _ ⟨z, hzT, rfl⟩
+    exact osFst_le_of_le (hw hzT)
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℝ, IsLUB P ρ := ⟨sSup P, isLUB_csSup hPne hPbdd⟩
+  -- Any upper bound of `T` has index at least every index met by `T`.
+  have hub_fst : ∀ y : (orderedSum sig ℝ fam).carrier, y ∈ upperBounds T →
+      ∀ r ∈ P, r ≤ y.1 := by
+    rintro y hy _ ⟨z, hzT, rfl⟩
+    exact osFst_le_of_le (hy hzT)
+  by_cases hmem : ρ ∈ P
+  · -- Reynolds' case: `T` meets the last summand.
+    obtain ⟨z, hzT, hzfst⟩ := hmem
+    obtain ⟨rz, xz⟩ := z
+    simp only at hzfst
+    subst hzfst
+    set Tρ : Set (fam rz).carrier :=
+      {u | (⟨rz, u⟩ : (orderedSum sig ℝ fam).carrier) ∈ T} with hTρ
+    obtain ⟨u, hu⟩ := hsum rz Tρ ⟨xz, hzT⟩
+    refine ⟨⟨rz, u⟩, ?_, ?_⟩
+    · rintro ⟨s, y⟩ hyT
+      have hs : s ≤ rz := hρ.1 ⟨⟨s, y⟩, hyT, rfl⟩
+      rcases eq_or_lt_of_le hs with rfl | hlt
+      · exact osLe_of_snd_le (hu.1 hyT)
+      · exact le_of_lt (osLt_of_fst_lt hlt)
+    · rintro ⟨s, y⟩ hy
+      have hs : rz ≤ s := osFst_le_of_le (hy hzT)
+      rcases eq_or_lt_of_le hs with rfl | hlt
+      · refine osLe_of_snd_le (hu.2 ?_)
+        intro v hv
+        exact osSnd_le_of_le (hy hv)
+      · exact le_of_lt (osLt_of_fst_lt hlt)
+  · -- The case Reynolds' sentence passes over: no last summand is met.
+    obtain ⟨b, hb⟩ := hbot ρ
+    refine ⟨⟨ρ, b⟩, ?_, ?_⟩
+    · rintro ⟨s, y⟩ hyT
+      have hsP : s ∈ P := ⟨⟨s, y⟩, hyT, rfl⟩
+      have hs : s ≤ ρ := hρ.1 hsP
+      rcases eq_or_lt_of_le hs with rfl | hlt
+      · exact absurd hsP hmem
+      · exact le_of_lt (osLt_of_fst_lt hlt)
+    · rintro ⟨s, y⟩ hy
+      have hs : ρ ≤ s := hρ.2 (hub_fst ⟨s, y⟩ hy)
+      rcases eq_or_lt_of_le hs with rfl | hlt
+      · exact osLe_of_snd_le (hb y)
+      · exact le_of_lt (osLt_of_fst_lt hlt)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/--
+**`R` has a countable dense subflow** — Reynolds 1992, §8, printed p.188 (*"Also `R` has a
+countable dense subflow."*).
+
+The witness is the union over the **rationals** of a countable dense subset of each rational
+summand, together with one chosen point of each rational summand. Countability is then a
+countable union of countable sets.
+
+Density needs both hypotheses and shows what each is for. Two points in different summands are
+separated by any point sitting over a rational strictly between their indices — this is why the
+chosen basepoints are thrown in, since a subsingleton summand's dense subset is empty. Two
+points in the *same* summand are separated inside it when the index is rational; when the index
+is irrational, `hirr` says the summand is a subsingleton, so there is no such pair. That is
+precisely Reynolds' reason for putting the one-point structures at `ℝ − ℚ`: a family of
+non-degenerate summands over all of `ℝ` has no countable dense subset at all.
+-/
+theorem exists_countableDense_orderedSumReal
+    (hne : ∀ r : ℝ, Nonempty (fam r).carrier)
+    (hirr : ∀ r : ℝ, ¬ (∃ q : ℚ, (q : ℝ) = r) → ∀ x y : (fam r).carrier, x = y)
+    (hsep : ∀ q : ℚ, ∃ D : Set (fam (q : ℝ)).carrier, D.Countable ∧
+      ∀ x y : (fam (q : ℝ)).carrier, x < y → ∃ d ∈ D, x < d ∧ d < y) :
+    ∃ D : Set (orderedSum sig ℝ fam).carrier, D.Countable ∧
+      ∀ x y : (orderedSum sig ℝ fam).carrier, x < y → ∃ d ∈ D, x < d ∧ d < y := by
+  classical
+  choose D hDc hDd using hsep
+  refine ⟨⋃ q : ℚ, (fun u : (fam (q : ℝ)).carrier =>
+      (⟨(q : ℝ), u⟩ : (orderedSum sig ℝ fam).carrier)) ''
+      (insert (hne (q : ℝ)).some (D q)), ?_, ?_⟩
+  · exact Set.countable_iUnion (fun q => (((hDc q).insert _)).image _)
+  · rintro ⟨r, a⟩ ⟨s, b⟩ hlt
+    rcases Sigma.Lex.lt_def.mp hlt with hrs | ⟨hrs, hab⟩
+    · obtain ⟨q, hrq, hqs⟩ := exists_rat_btwn hrs
+      refine ⟨⟨(q : ℝ), (hne (q : ℝ)).some⟩, ?_, osLt_of_fst_lt hrq, osLt_of_fst_lt hqs⟩
+      exact Set.mem_iUnion.mpr ⟨q, ⟨_, Set.mem_insert _ _, rfl⟩⟩
+    · have heq : r = s := hrs
+      subst heq
+      by_cases hq : ∃ q : ℚ, (q : ℝ) = r
+      · obtain ⟨q, hqr⟩ := hq
+        subst hqr
+        obtain ⟨d, hdD, hd₁, hd₂⟩ := hDd q a b hab
+        refine ⟨⟨(q : ℝ), d⟩, ?_, Sigma.Lex.lt_def.mpr (Or.inr ⟨rfl, hd₁⟩),
+          Sigma.Lex.lt_def.mpr (Or.inr ⟨rfl, hd₂⟩)⟩
+        exact Set.mem_iUnion.mpr ⟨q, ⟨d, Set.mem_insert_of_mem _ hdD, rfl⟩⟩
+      · exact absurd (hirr r hq a b) (ne_of_lt hab)
+
+end OrderFacts
+
+/-! ## The four facts at the `ℝ`-shuffle itself
+
+`shuffleReal N γ₁ σ` is `orderedSum sig ℝ (fun r => N (σ* r))`, so the four facts above apply
+verbatim once the hypotheses are read off the palette. `hone` is Reynolds' *"`γ₁` is a `γ` in `G`
+which is only satisfied by one point structures"* (printed p.188) — the only place that clause is
+used.
+-/
+
+section ShuffleRealFacts
+
+variable {ι : Type} (N : ι → OrderedMonadicStructure sig) (γ₁ : ι) (σ : ℚ → ι)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **The `ℝ`-shuffle's flow is dense** (printed p.188). -/
+theorem denselyOrdered_shuffleReal
+    (hne : ∀ i : ι, Nonempty (N i).carrier)
+    (hdense : ∀ i : ι, ∀ x y : (N i).carrier, x < y → ∃ z : (N i).carrier, x < z ∧ z < y) :
+    ∀ x y : (shuffleReal N γ₁ σ).carrier, x < y →
+      ∃ z : (shuffleReal N γ₁ σ).carrier, x < z ∧ z < y :=
+  denselyOrdered_orderedSumReal _ (fun _ => hne _) (fun _ => hdense _)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **The `ℝ`-shuffle's flow has no last point** (printed p.188). -/
+theorem noMax_shuffleReal (hne : ∀ i : ι, Nonempty (N i).carrier) :
+    ∀ x : (shuffleReal N γ₁ σ).carrier, ∃ y : (shuffleReal N γ₁ σ).carrier, x < y :=
+  noMax_orderedSumReal _ (fun _ => hne _)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **The `ℝ`-shuffle's flow has no first point** (printed p.188). -/
+theorem noMin_shuffleReal (hne : ∀ i : ι, Nonempty (N i).carrier) :
+    ∀ x : (shuffleReal N γ₁ σ).carrier, ∃ y : (shuffleReal N γ₁ σ).carrier, y < x :=
+  noMin_orderedSumReal _ (fun _ => hne _)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **The `ℝ`-shuffle's flow is Dedekind complete** (printed p.188).
+
+`hsum` and `hbot` together are *"the summands themselves are closed intervals of the reals"*. -/
+theorem exists_isLUB_shuffleReal
+    (hsum : ∀ i : ι, ∀ s : Set (N i).carrier, s.Nonempty → ∃ u, IsLUB s u)
+    (hbot : ∀ i : ι, ∃ b : (N i).carrier, ∀ x : (N i).carrier, b ≤ x)
+    (T : Set (shuffleReal N γ₁ σ).carrier) (hT : T.Nonempty) (hbdd : BddAbove T) :
+    ∃ u, IsLUB T u :=
+  exists_isLUB_orderedSumReal _ (fun _ => hsum _) (fun _ => hbot _) T hT hbdd
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **The `ℝ`-shuffle's flow has a countable dense subflow** (printed p.188).
+
+`hone` is where *"`γ₁` … is only satisfied by one point structures"* is consumed. -/
+theorem exists_countableDense_shuffleReal
+    (hne : ∀ i : ι, Nonempty (N i).carrier)
+    (hone : ∀ x y : (N γ₁).carrier, x = y)
+    (hsep : ∀ i : ι, ∃ D : Set (N i).carrier, D.Countable ∧
+      ∀ x y : (N i).carrier, x < y → ∃ d ∈ D, x < d ∧ d < y) :
+    ∃ D : Set (shuffleReal N γ₁ σ).carrier, D.Countable ∧
+      ∀ x y : (shuffleReal N γ₁ σ).carrier, x < y → ∃ d ∈ D, x < d ∧ d < y := by
+  refine exists_countableDense_orderedSumReal _ (fun _ => hne _) (fun r hr => ?_)
+    (fun q => ?_)
+  · rw [shuffleColourReal_irrational γ₁ σ hr]
+    exact hone
+  · obtain ⟨D, hDc, hDd⟩ := hsep (shuffleColourReal γ₁ σ (q : ℝ))
+    exact ⟨D, hDc, hDd⟩
+
+end ShuffleRealFacts
+
 end FormalSystem.Metalogic.WeakCanonical
