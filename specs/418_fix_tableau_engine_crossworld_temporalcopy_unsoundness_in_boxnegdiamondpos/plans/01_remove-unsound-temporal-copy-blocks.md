@@ -437,7 +437,7 @@ expansion beyond `SubformulaProperty.lean` in the phase notes rather than silent
 
 ---
 
-### Phase 5: Measure and Document the boxAnchoredCheck Consequence [IN PROGRESS]
+### Phase 5: Measure and Document the boxAnchoredCheck Consequence [COMPLETED]
 
 **Goal**: Determine empirically whether `boxAnchoredCheck` still computes `true` on multi-world
 branches after the deletion, enumerate every downstream lemma that carries it as a hypothesis, and
@@ -502,7 +502,7 @@ not committed.
 
 ---
 
-### Phase 6: AFTER Corpus Measurement — Surface Every Moved Row [NOT STARTED]
+### Phase 6: AFTER Corpus Measurement — Surface Every Moved Row [IN PROGRESS]
 
 **Goal**: Run the full corpus against the fixed engine and produce a complete per-row record of
 what moved — measuring first and adjudicating later, so the measurement is not contaminated by

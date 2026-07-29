@@ -569,8 +569,15 @@ formula's own time:
 * `t' ∈ pastOf s` — `T(Hφ) @ (w', s)` and `sat_all_past_pos`.
 
 `TimeOrderConverse` is no longer a hypothesis here: `timeOrderConverse` discharges it. Note that,
-as with `sat_box_grid`, no case needs `T(□φ)` anywhere other than where it was found — and unlike
-`sat_box_grid`, the invariant this consumes is one the engine's output actually satisfies.
+as with `sat_box_grid`, no case needs `T(□φ)` anywhere other than where it was found.
+
+**Status of the hypothesis.** `BoxAnchored` *was* an invariant the engine's output satisfied, on
+the strength of the world-minting rules' `tempGProps`/`tempHProps` blocks. Those blocks have been
+removed as unsound, and they were the only route by which `T(Gφ)`/`T(Hφ)` could reach a freshly
+minted world, so `BoxAnchored` is no longer supplied by the construction on multi-world branches.
+This lemma is unaffected as a lemma — it takes `BoxAnchored` as a hypothesis and proves the grid
+from it — but a caller can no longer expect to discharge that hypothesis from a real run. See
+`specs/418_.../artifacts/boxanchored-finding.md`.
 -/
 theorem sat_box_grid_of_anchored (b : Branch) (timeOrd : TimeOrdering)
     (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
