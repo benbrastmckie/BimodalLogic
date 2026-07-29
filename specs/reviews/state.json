@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Review state tracking",
-  "_last_updated": "2026-07-27T20:42:31Z",
+  "_last_updated": "2026-07-29T00:00:00Z",
   "reviews": [
     {
       "review_id": "review-20260331",
@@ -253,12 +253,33 @@
         408
       ],
       "registries_updated": []
+    },
+    {
+      "review_id": "review-2026-07-29-pre-refactor-milestone",
+      "date": "2026-07-29",
+      "scope": "task-portfolio: pre-refactor milestone sequencing",
+      "report_path": "specs/reviews/review-2026-07-29-pre-refactor-milestone.md",
+      "summary": {
+        "files_reviewed": 0,
+        "critical_issues": 0,
+        "high_issues": 3,
+        "medium_issues": 4,
+        "low_issues": 3
+      },
+      "tasks_created": [],
+      "registries_updated": [],
+      "actions": [
+        "deps added: 411<-410, 412<-410+411, 426<-165, 95<-408+165+412, 193<-165",
+        "status: 165 blocked->implementing (stale)",
+        "closed: 179, 170, 390",
+        "decision: 177/178 deferred post-refactor"
+      ]
     }
   ],
   "statistics": {
-    "total_reviews": 14,
-    "last_review": "2026-07-27T20:42:31Z",
-    "total_issues_found": 109,
+    "total_reviews": 15,
+    "last_review": "2026-07-29T00:00:00Z",
+    "total_issues_found": 119,
     "total_tasks_created": 22
   }
 }

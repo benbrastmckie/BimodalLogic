@@ -359,7 +359,7 @@
     {
       "project_number": 179,
       "project_name": "research_lean4_tactics_infrastructure",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-20T21:40:02Z",
       "last_updated": "2026-05-20T21:58:55Z",
@@ -399,7 +399,8 @@
         }
       ],
       "topic": "automation",
-      "file_scope": null
+      "file_scope": null,
+      "completion_summary": "Research-only task, delivered 2026-05-20 as a 4-teammate team-research report on Lean 4 tactics infrastructure (custom simp sets, FormalizedFormalLogic prior art, adoption critique). Actionable content was absorbed by the archived codebase tactic survey and re-scoped into the macro-application task; no implementation remained under this task."
     },
     {
       "project_number": 169,
@@ -423,7 +424,7 @@
     {
       "project_number": 170,
       "project_name": "complete_dense_extension_completeness",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-19T16:14:16Z",
       "last_updated": "2026-07-29T06:41:59Z",
@@ -436,12 +437,13 @@
       "file_scope": [
         "FormalSystem/Metalogic/BXCanonical/Completeness.lean",
         "FormalSystem/Metalogic/BXCanonical/Chronicle/"
-      ]
+      ],
+      "completion_summary": "Dense (FrameClass.Dense) weak completeness substantively closed: completeness_dense exists sorryAx-free at Metalogic/BXCanonical/Completeness.lean. Task description itself directed that no implementation agent be dispatched."
     },
     {
       "project_number": 165,
       "project_name": "establish_semantic_finite_model_property",
-      "status": "blocked",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.\n\nCURRENT STATE (sound-only). The tableau stack exists and builds: a 28-rule calculus in Tableau.lean (23 base rules in allRules, 2 in denseRules, 3 in discreteRules), fuel-based saturation with blocking plus AppliedSet and EventualityTracker (Saturation.lean), per-frame-class closure detection (Closure.lean), and the entry point `decide` (DecisionProcedure.lean:128). Valid answers do carry proof terms, but the stack is sound only, and three gaps block any decidability theorem: (a) closed-tableau proof extraction (`extractProof`, ProofExtraction.lean:258) is a best-effort runtime search over 5 strategies that can fail, returning `.timeout` even on a genuinely closed tableau; (b) there is NO termination theorem -- `soundFuel` (Saturation.lean:627) caps at `min bound 100000` with nothing proved about it, and the original `blocking_terminates` was found FALSE (see the status discussion at Saturation.lean:1028-1060); (c) countermodel extraction proves `branchTruthLemma` (CountermodelExtraction.lean:1044) only over a bespoke `branchTruth` semantics (CountermodelExtraction.lean:263 -- direct-successor Until/Since, box quantified over a finite world list) that is NOT connected to the repository's real `TruthAt`/`valid`.\n\nWORK PACKAGES, in recommended order.\n\nWP1 -- Adversarial calculus-adequacy probe (must come first; top risk). The branch's `TimeOrdering` is a partial order while real TM time is linear, and the calculus appears to lack an ordering-trichotomy/linearity branching rule for freshly introduced times. Probe whether an open saturated branch can fail to admit any linear model. Also probe Until-guard interpolation at times not present on the branch, and blocking-vs-truth-lemma compatibility (blocked branches will need an unwinding argument). This package comes first because a negative result forces rule additions, which would invalidate every downstream proof in WP2-WP4.\n\nWP2 -- Refutation meta-theorem (closed tableau to Derivable). Replace runtime proof extraction with a theorem of the form `allClosed tableau -> Derivable fc [] phi`, established via per-rule admissibility lemmas in the Hilbert system across all ~28 rules. The untlPos/untlNeg Reynolds decomposition and z1Rule are the hard cases. The existing runtime strategies in ProofExtraction.lean are retained only as fast paths, no longer as the correctness story.\n\nWP3 -- Termination theorem. Prove a generalized subformula property covering every rule in `applyRule` (the current `subformula_property` at Saturation.lean:1014 covers only the initial branch), then a pigeonhole argument on at most 2^(2n) distinct time types showing that blocking must fire, and finally an uncapped, justified fuel function with a theorem of the form `buildTableau phi (soundFuel' phi) fc = some _`.\n\nWP4 -- Semantic bridge (open saturated branch to not-valid). This is the mathematical core, comparable in weight to a canonical-model completeness proof. Embed the finite branch time order into an actual temporal type D (arbitrary, Q, Z, or R according to frame class), interpolate valuations so that the real Until/Since guard conditions hold at in-between times, construct genuine WorldHistories and a shift-closed Omega, and prove `not TruthAt` -- thereby replacing the bespoke `branchTruth` semantics with the real one.\n\nASSEMBLY AND PAYOFF. WP2 + WP3 + WP4 together yield `Decidable (Derivable fc [] phi)` and decidability of validity for each frame class. As a corollary they also yield completeness for all four classes, which discharges the repository's single live sorry -- `countermodel_discrete` at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242, which currently taints Base `completeness` -- and supplies the missing Dedekind engine required by `completeness_dedekind_of_engine` (StrongCompleteness.lean:308, via `consequence_completeness_dedekind_of_engine` at :274).\n\nDEDEKIND CAVEAT. `allRulesForFC` (Tableau.lean:1067) gates dense rules on `Dense <= fc` and discrete rules on `Discrete <= fc`; since the FrameClass order (Axioms.lean:456-463) makes `Dense <= Dedekind` true but `Discrete <= Dedekind` false, the Dedekind class receives only the Base + Dense rules. Adequacy for Dedekind must therefore be proved rather than assumed: finite branch models do embed into R, but this requires an actual theorem.\n\nHYGIENE SUBTASK. Delete or replace the two vacuous theorems `validity_decidable` and `validity_has_decision_procedure` (Decidability/Correctness.lean:78 and :91 -- both are mere `Classical.em`/`by_cases` tautologies), and the `and True`-padded `filtered_world_bound` and `fmp_size_bound` (Decidability/FMP/FMP.lean:183 and :237). Also correct the LaTeX and Typst documentation that currently cites the unproven 2^|cl(phi)| bound as an established result.",
       "created": "2026-05-18T18:06:02Z",
@@ -514,7 +516,11 @@
         60,
         93
       ],
-      "dependencies": [],
+      "dependencies": [
+        165,
+        408,
+        412
+      ],
       "topic": "completeness",
       "task_type": "lean4",
       "file_scope": [
@@ -654,6 +660,7 @@
         }
       ],
       "dependencies": [
+        165,
         402
       ],
       "topic": "automation",
@@ -1000,7 +1007,7 @@
     {
       "project_number": 390,
       "project_name": "dedekind_carrier_construction_research",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "high",
@@ -1019,7 +1026,8 @@
         }
       ],
       "file_scope": [],
-      "session_id": "sess_1785167491_0e2961"
+      "session_id": "sess_1785167491_0e2961",
+      "completion_summary": "Research resolved with GO verdict on the Dedekind carrier question; the umbrella Dedekind-completeness effort proceeded under the faithful-route task, which superseded this scoping task."
     },
     {
       "project_number": 408,
@@ -1074,7 +1082,8 @@
       "effort": "15-20 hours",
       "parent_task": 165,
       "dependencies": [
-        165
+        165,
+        410
       ],
       "created": "2026-07-28T00:21:55Z",
       "last_updated": "2026-07-28T00:21:55Z",
@@ -1089,7 +1098,9 @@
       "effort": "10-15 hours",
       "parent_task": 165,
       "dependencies": [
-        165
+        165,
+        410,
+        411
       ],
       "created": "2026-07-28T00:21:55Z",
       "last_updated": "2026-07-28T00:21:55Z",
@@ -1283,7 +1294,9 @@
       "effort": "4-8 hours",
       "parent_task": 165,
       "topic": "completeness",
-      "dependencies": [],
+      "dependencies": [
+        165
+      ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean",
         "Tests/BimodalTest/CrossWorldPropagationProbe.lean"

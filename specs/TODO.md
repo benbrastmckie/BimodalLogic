@@ -11,25 +11,25 @@ next_project_number: 428
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,170,179,193,231,257,298,390,408,413,415,419,421,423,424,426 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 177,178,219,282,296,410,411,412,420,422,425 | 165,193,231,298,415,421,423 | formula-refactor, dataset-enhancement, paper-refactor, ... |
-| 3 | 169,414 | 420,422 | paper-refactor, strong_completeness |
-| 4 | 362,417 | 169,170,414 | paper-refactor, strong_completeness |
-| 5 | 427 | 417,419 | paper-refactor |
+| 1 | 125,127,128,165,231,257,298,408,413,415,419,421,423,424 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 193,219,282,296,410,420,422,425,426 | 165,231,298,415,421,423 | completeness, automation, dataset-enhancement, ... |
+| 3 | 169,177,178,411,414 | 193,410,420,422 | formula-refactor, paper-refactor, strong_completeness |
+| 4 | 362,412,417 | 169,411,414 | paper-refactor, strong_completeness |
+| 5 | 95,427 | 408,412,417,419 | completeness, paper-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
-165 [BLOCKED] — Establish verified decidability of TM bimodal logic for all four 
+165 [IMPLEMENTING] — Establish verified decidability of TM bimodal logic for all four 
   └─ 410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
-  └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
+    └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+      └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+        └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
+  └─ 426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
 408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
+  └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me (see above)
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
-426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
 
 ### Formula Refactor
 
@@ -47,7 +47,6 @@ next_project_number: 428
 
 ### Automation
 
-179 [RESEARCHED] — research_lean4_tactics_infrastructure
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
 
 ### Dataset Enhancement
@@ -71,12 +70,10 @@ next_project_number: 428
 
 ### Strong Completeness
 
-170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness — SUBSTANTIVELY CLOSED
-  └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
   └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
     └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
+      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [NOT STARTED] — Prove, in both directions, that the task-model class is represent
@@ -113,7 +110,7 @@ NON-GOALS: no edits under Philosophy/Papers/ -- the paper is READ-ONLY ground tr
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: None
+- **Dependencies**: Task 165
 - **Research**: [418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/artifacts/after-verdicts.md]
 
 **Description**: Settle whether the tableau engine can positively refute (G p) -> square (G p), or whether that branch provably never saturates. Context: the cross-world temporal-copy unsoundness in boxNeg/diamondPos is fixed and the engine is sound, but the fix moved this formula from a WRONG answer to NO answer rather than to the intended positive refutation. Measured post-fix: decide returns .fuelExhausted (not .invalid), getCountermodel?.isSome = false, and buildTableau returns none at fuel 30, 60, 400 and 1000 -- so the fuel ceiling is not bracketed from above and there is no evidence a larger budget helps. Pre-fix the same formula returned .extractionFailed, which under this codebase R7 semantics asserts VALIDITY of an invalid formula; the current .fuelExhausted is the only constructor isUndecided recognises, so the present state is honest-but-incomplete rather than wrong. Two hypotheses to discriminate: (a) budget -- the branch does saturate but needs more fuel, in which case find and record the ceiling; (b) non-termination -- the branch never saturates, in which case this is a termination question for FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean, not a budget one, and the honest deliverable is a proof or argument that no finite fuel suffices. Discriminating between (a) and (b) is the primary deliverable; producing the countermodel is the secondary one and only applies under (a). The corpus already pins this outcome directly: CrossWorldPropagationProbe row F asserts the decide constructor and builds green at (false, false, true, false, true) -- update that row if the verdict moves. Do NOT reintroduce any temporal-copy propagation block into boxNeg/diamondPos to make the branch close; that is the exact unsoundness that was removed, and reverting it would restore a false claim of validity. Note the related but SEPARATE inheritance also recorded for the parent task: the decidable-branch-gate family (boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk) now computes false on every multi-world branch; that is the truth-lemma side-condition problem and is not this task.
@@ -336,7 +333,7 @@ FRAME-PRESENTATION COORDINATION (2026-07-28, PossibleWorlds task 51): the paper'
 - **Effort**: 10-15 hours
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Dependencies**: Task 165
+- **Dependencies**: Task 165, Task 410, Task 411
 
 **Description**: Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi; discharge the pre-existing sorry countermodel_discrete at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242; and supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense). Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.
 
@@ -346,7 +343,7 @@ FRAME-PRESENTATION COORDINATION (2026-07-28, PossibleWorlds task 51): the paper'
 - **Effort**: 15-20 hours
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Dependencies**: Task 165
+- **Dependencies**: Task 165, Task 410
 
 **Description**: Track B part 2 for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.2-3.3 and 10). First run a /literature acquisition pass for Reynolds 1992 and Reynolds 2003 (the untlNeg co-decomposition and the Dedekind gap axioms; report 02 section 10 flags in-repo literature as thin). Then prove the hard admissibility block in Verified/Refutation/Rules/{UntilSince,Trichotomy,Discrete,Dense,Dedekind}.lean: untlPos (branch 1 via until_F, branch 2 via self_accum_until — follow the axiom literally), untlNeg (Reynolds co-decomposition via absorb_until + left_mono_until_G; the single largest lemma — budget it its own dispatch), sncePos/snceNeg duals, orderTrichotomy (one-liner if Phase 2.2 kept branches syntactically equal to temp_linearity disjuncts — verify, do not assume), z1Rule (two-premise instance of z1 + two modus ponens, relies on same-label internalization from the predecessor task), densityRule/denseIndicatorClosure via density/dense_indicator, and the Dedekind rules via prior_U_gap/prior_S_gap/sep. Acceptance: all admissibility lemmas sorry-free; lake build green.
 
@@ -427,7 +424,7 @@ REFRAMING ADDENDUM (2026-07-27, supersedes the "TARGET IS SETTLED" paragraph abo
 
 ### 390. Dedekind carrier construction research
 - **Effort**: large
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 389
@@ -618,7 +615,7 @@ Reference: FormalSystem/Metalogic/StrongCompleteness.lean (per-class programme +
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: automation
-- **Dependencies**: Task 402
+- **Dependencies**: Task 165, Task 402
 - **Research**: [193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md]
 
 **Description**: Apply validity-intro and truth-simp macros to the soundness layer.
@@ -653,7 +650,7 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 ---
 
 ### 179. Research lean4 tactics infrastructure
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
@@ -707,7 +704,7 @@ CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped)
 
 ### 170. Complete dense extension completeness
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361
@@ -753,7 +750,7 @@ Governing design document: specs/361_strong_completeness_architecture_and_weak_t
 ---
 
 ### 165. Establish semantic finite model property
-- **Status**: [BLOCKED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 418
@@ -826,7 +823,7 @@ HYGIENE SUBTASK. Delete or replace the two vacuous theorems `validity_decidable`
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: None
+- **Dependencies**: Task 165, Task 408, Task 412
 
 **Description**: Verify and record the final axiom/sorry status of the headline metalogical results, then close.
 
