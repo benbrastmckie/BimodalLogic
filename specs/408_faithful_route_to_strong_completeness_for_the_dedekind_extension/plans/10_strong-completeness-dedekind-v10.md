@@ -4408,7 +4408,9 @@ for the repaired formula**.
 - **Goal**: `Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)` where `σ*` is `σ` extended by singletons at the
   irrationals; plus the flow `R` of `Σ_{r∈ℝ} σ*(r)` is dense, endpointless, **Dedekind complete**,
   and has a countable dense subflow.
-- **Owns**: `FormalSystem/Metalogic/WeakCanonical/RealModel/ShuffleReal.lean` (new).
+- **Owns**: `FormalSystem/Metalogic/WeakCanonical/RealModel/ShuffleReal.lean` (new),
+  `FormalSystem/Metalogic/WeakCanonical/BackAndForth.lean` (new, continuation dispatch),
+  `FormalSystem/Metalogic/WeakCanonical/ColourOrders.lean` (new, continuation dispatch).
 - **Tasks**:
   - [x] Define `σ*` (printed p.188): `σ*(i) = N_{γ₁}` for `i ∈ ℝ − ℚ`, where `γ₁` is a `γ` in `G`
         satisfied only by one-point structures. *(landed as `shuffleColourReal` with
@@ -4472,8 +4474,32 @@ for the repaired formula**.
         family satisfying every hypothesis of all five order lemmas simultaneously, so none of
         them is only vacuously instantiable.
 
-**BLOCKER** (Phase 27, partial):
-- **What failed**: `doets_lemma_1_5` (`ShuffleReal.lean:201`) — the statement is landed under the
+**PROGRESS UPDATE** (Phase 27, continuation dispatch — second of the two open halves now closed):
+
+The blocker below named two independent halves. **The second half is discharged.**
+`kEquiv_shuffle_shuffleReal` no longer carries the `hcol` hypothesis; it takes the shuffle data
+`hγ : γ₁ ∈ S` and `hσ : IsShuffleMap S σ` instead, and the coloured-order `≡ₖ` fact is proved.
+Two new sorry-free, axiom-clean modules landed:
+
+- `FormalSystem/Metalogic/WeakCanonical/BackAndForth.lean` — `BackForth`, the depth-indexed
+  back-and-forth relation for an **arbitrary pair** of structures, with both bridge directions
+  (`nfAgree_of_backForth`, `backForth_of_nfAgree`) and the characterization
+  `kEquiv_iff_backForth`, plus `backForth_mono`. This generalizes machinery that existed only
+  inside the ordered-sum proof and only for a shared index set: `BiCompat` / `sum_nf_lift_gen`
+  (whose `_h_comp` argument is threaded but never consumed — the content is the generic EF
+  lemma) and `component_extend_fwd` / `component_extend_bwd`.
+- `FormalSystem/Metalogic/WeakCanonical/ColourOrders.lean` — now owns `colourSig`,
+  `colourStructure` and `kTypeColouring` (moved out of `ShuffleReal.lean`), and adds
+  `IsShuffleColouring` (Reynolds' density condition for an arbitrary index order) and
+  `kEquiv_colourStructure`: **any two shuffle colourings over a common palette give `≡ₖ`
+  coloured index orders, at every depth.** Proved by a colour-preserving back-and-forth whose
+  matching step answers a new point by the density of its colour in the gap of the finite
+  matched configuration. Nothing in it is specific to `ℚ` or `ℝ`.
+
+The first half remains open, and the route to it is now sharper — see the revised blocker.
+
+**BLOCKER** (Phase 27, partial — first half only):
+- **What failed**: `doets_lemma_1_5` (`ShuffleReal.lean:226`) — the statement is landed under the
   live names, the proof is not.
 - **What was tried**: routing it through the existing apparatus. `doets_lemma_1_4`
   (`OrderedSum.lean:41`) delegates to `KEquivalenceFramework.sum_preservation`, whose engine is
@@ -4485,17 +4511,25 @@ for the repaired formula**.
   `Σ_{q∈ℚ} σ(q)`, because a convex partition of `ℝ` into countably many blocks cannot have
   quotient order `ℚ` (`ℝ` is Dedekind complete and `ℚ` is not), so the index-relabelling bridge
   `kEquiv_orderedSum_of_orderIso` from Phase 26 does not apply.
-- **Why stuck**: the missing piece is a genuine generalization of `sum_nf_agree` from a shared
-  index set to a coloured correspondence between two index sets — phase-sized formalization in
-  `NEquivalence.lean`, not a gap in an otherwise complete proof.
-- **What is needed**: a follow-up task, *"generalize `NEquivalence.lean`'s `sum_nf_agree`
-  normal-form induction to a coloured correspondence between two index sets, discharge
-  `doets_lemma_1_5`, and then discharge `kEquiv_shuffle_shuffleReal`'s `hcol` hypothesis by the
-  colour-preserving back-and-forth for finitely many colours dense in a dense endpointless
-  order"*. The second half is independent of the first and can be done in parallel.
-- **Downstream**: Phase 29 consumes `kEquiv_shuffle_shuffleReal`; until both halves land, that
-  consumption is conditional. **Phase 28 is unaffected** — it consumes only the four order facts,
-  all of which are sorry-free and axiom-clean here.
+- **Why stuck**: the *engine* is no longer missing — `BackAndForth.lean` supplies it. Applied to
+  the hypothesis, `kEquiv_iff_backForth` turns `_hcol` into a depth-`k` strategy on the coloured
+  index orders; applied to `kTypeOf`-equality of matched summands it supplies a depth-`k`
+  strategy inside each matched pair; applied to the conclusion it reduces the goal to exhibiting
+  a strategy on the sums. What remains is the *bookkeeping that assembles them*: the invariant
+  carried down the induction must record, for each already-matched pair of indices `(i, j)`, the
+  sub-tuple of environment positions lying in that pair of summands together with a strategy
+  relating them — the two-index analogue of `NEquivalence.lean`'s `CompData` (`:333`) and
+  `build_bicompat` (`:512`). Phrased through `BackForth` rather than through normal-form
+  agreement it avoids `CompData`'s dependent `NormalForm`-type casts (the `convert … using 2`
+  `HEq` blocks), which is a real simplification, but it is still phase-sized formalization in its
+  own right rather than a gap in an otherwise complete proof.
+- **What is needed**: a follow-up task, *"build the two-index analogue of `CompData` /
+  `build_bicompat` over `BackAndForth.lean`'s `BackForth`, and discharge `doets_lemma_1_5`"*.
+  The former second half (`hcol`) is **done** and no longer part of this.
+- **Downstream**: Phase 29 consumes `kEquiv_shuffle_shuffleReal`; until `doets_lemma_1_5` lands,
+  that consumption is conditional — but it is now conditional on that lemma **alone**, with no
+  undischarged hypothesis attached. **Phase 28 is unaffected** — it consumes only the four order
+  facts, all of which are sorry-free and axiom-clean here.
 - **Prohibited**: Do NOT resolve this with `def X := True`, a vacuous placeholder, or a new axiom.
 
 - **Estimated output**: ~500 lines.
@@ -4547,7 +4581,7 @@ for the repaired formula**.
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [NOT STARTED]
+### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [IN PROGRESS]
 
 - **Goal**: `doets_theorem_dense`: *"Suppose that `M` is a temporal structure in a finite language
   whose flow of time is countable, dense and without end points. Suppose further that for any
