@@ -325,13 +325,21 @@ formula is on it, then the rule's output preserves satisfiability.
 Quantifying over *all* `sf`, not only those the rule applies to, is deliberate: `applyRule`
 answers `.notApplicable` on a mismatched sign or shape, and `SatResult` reads that as `True`, so
 the mismatched cases cost one `simp` each rather than a side condition in the statement.
+
+The `OrdWithin b ord` hypothesis is the well-formedness condition on the `(branch, ordering)`
+pair discussed in the section above. It sits **last**, after `SatState`, and that position is
+load-bearing rather than stylistic: every rule proof opens with a single positional `intro` line,
+so inserting the hypothesis any earlier silently rebinds the `SatState` witness and breaks all of
+them at a distance. The rules that leave the ordering untouched — the truth-functional eight, the
+label-preserving modal three, the temporal universals, `orderTrichotomy`, and the two
+fresh-*world* rules — never consume it; it is exactly the fresh-*time* producers that do.
 -/
 def RuleSound (C : CarrierProp) (r : TableauRule) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D],
     C D → ∀ (F : TaskFrame D) (M : TaskModel F) (Om : Set (WorldHistory F))
       (hist : WorldIndex → WorldHistory F) (tv : TimeIndex → D)
       (b : Branch) (sf : SignedFormula) (ord : TimeOrdering),
-      sf ∈ b → SatState M Om hist tv b ord →
+      sf ∈ b → SatState M Om hist tv b ord → OrdWithin b ord →
       SatResult M Om b (applyRule r sf b ord).1 (applyRule r sf b ord).2
 
 /-- A rule sound under a weaker carrier property is sound under a stronger one. This is what lets
@@ -341,8 +349,8 @@ consumes it. -/
 theorem RuleSound.mono {C C' : CarrierProp} {r : TableauRule}
     (hle : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], C' D → C D)
     (h : RuleSound C r) : RuleSound C' r := by
-  intro D _ _ _ _ hC F M Om hist tv b sf ord hmem hst
-  exact h D (hle D hC) F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ hC F M Om hist tv b sf ord hmem hst hord
+  exact h D (hle D hC) F M Om hist tv b sf ord hmem hst hord
 
 /-!
 ## Shape inversion for the propositional decomposers
@@ -384,7 +392,7 @@ likewise `T(A ∨ B)`, `T(A → B)` and the two negation rules.
 
 /-- `T(A ∧ B) → T(A), T(B)`. -/
 theorem ruleSound_andPos : RuleSound carrierBase .andPos := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case neg => simp [applyRule, SatResult]
@@ -410,7 +418,7 @@ theorem ruleSound_andPos : RuleSound carrierBase .andPos := by
 
 /-- `F(A ∧ B) → F(A) | F(B)`. -/
 theorem ruleSound_andNeg : RuleSound carrierBase .andNeg := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case pos => simp [applyRule, SatResult]
@@ -443,7 +451,7 @@ theorem ruleSound_andNeg : RuleSound carrierBase .andNeg := by
 
 /-- `T(A ∨ B) → T(A) | T(B)`. -/
 theorem ruleSound_orPos : RuleSound carrierBase .orPos := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case neg => simp [applyRule, SatResult]
@@ -473,7 +481,7 @@ theorem ruleSound_orPos : RuleSound carrierBase .orPos := by
 
 /-- `F(A ∨ B) → F(A), F(B)`. -/
 theorem ruleSound_orNeg : RuleSound carrierBase .orNeg := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case pos => simp [applyRule, SatResult]
@@ -498,7 +506,7 @@ theorem ruleSound_orNeg : RuleSound carrierBase .orNeg := by
 
 /-- `T(A → B) → F(A) | T(B)`. -/
 theorem ruleSound_impPos : RuleSound carrierBase .impPos := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case neg => cases φ <;> simp [applyRule, SatResult]
@@ -526,7 +534,7 @@ theorem ruleSound_impPos : RuleSound carrierBase .impPos := by
 
 /-- `F(A → B) → T(A), F(B)`. -/
 theorem ruleSound_impNeg : RuleSound carrierBase .impNeg := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case pos => cases φ <;> simp [applyRule, SatResult]
@@ -549,7 +557,7 @@ theorem ruleSound_impNeg : RuleSound carrierBase .impNeg := by
 
 /-- `T(¬A) → F(A)`. -/
 theorem ruleSound_negPos : RuleSound carrierBase .negPos := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case neg => simp [applyRule, SatResult]
@@ -569,7 +577,7 @@ theorem ruleSound_negPos : RuleSound carrierBase .negPos := by
 
 /-- `F(¬A) → T(A)`. -/
 theorem ruleSound_negNeg : RuleSound carrierBase .negNeg := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case pos => simp [applyRule, SatResult]
@@ -641,7 +649,7 @@ theorem truthAt_allPast_of_box {M : TaskModel F} {Om : Set (WorldHistory F)}
 
 /-- `T(□A) → T(A)` at every known world, same time. Persistent: the source stays. -/
 theorem ruleSound_boxPos : RuleSound carrierBase .boxPos := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case neg => cases φ <;> simp [applyRule, SatResult]
@@ -667,7 +675,7 @@ theorem ruleSound_boxPos : RuleSound carrierBase .boxPos := by
 /-- `F(◇A) → F(A)` at every known world, same time. The mirror of `boxPos`: `F(◇A)` is
 `T(□¬A)` after unfolding `◇`, so the same `histMem` step does the work. -/
 theorem ruleSound_diamondNeg : RuleSound carrierBase .diamondNeg := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case pos => simp [applyRule, SatResult]
@@ -697,7 +705,7 @@ theorem ruleSound_diamondNeg : RuleSound carrierBase .diamondNeg := by
 /-- `T(□A) → T(GA), T(HA)` at the same label. The one rule in this family that consumes
 shift-closure, via `truthAt_allFuture_of_box` and `truthAt_allPast_of_box`. -/
 theorem ruleSound_boxTemporal : RuleSound carrierBase .boxTemporal := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case neg => cases φ <;> simp [applyRule, SatResult]
@@ -816,7 +824,7 @@ theorem satAt_of_mem_diaProps {M : TaskModel F} {Om : Set (WorldHistory F)}
 one at which `A` fails, which `F(□A)` supplies directly; it is filed at `branch.nextWorld`, an
 index no branch formula mentions, so the rest of the branch is satisfied by the same update. -/
 theorem ruleSound_boxNeg : RuleSound carrierBase .boxNeg := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case pos => cases φ <;> simp [applyRule, SatResult]
@@ -849,7 +857,7 @@ theorem ruleSound_boxNeg : RuleSound carrierBase .boxNeg := by
 of `boxNeg`: `T(◇A)` is `F(□¬A)` once `◇` is unfolded, so it supplies a history at which `A`
 *holds*, and the two propagation helpers are reused verbatim. -/
 theorem ruleSound_diamondPos : RuleSound carrierBase .diamondPos := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case neg => simp [applyRule, SatResult]
@@ -1136,7 +1144,7 @@ answers `.notApplicable`, which `SatResult` reads as `True`.
 
 /-- `T(GA) → T(A)` at every known future time, same world. Persistent: the source stays. -/
 theorem ruleSound_allFuturePos : RuleSound carrierBase .allFuturePos := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
   cases s
@@ -1160,7 +1168,7 @@ theorem ruleSound_allFuturePos : RuleSound carrierBase .allFuturePos := by
 
 /-- `T(HA) → T(A)` at every known past time, same world. The past mirror of `allFuturePos`. -/
 theorem ruleSound_allPastPos : RuleSound carrierBase .allPastPos := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
   cases s
@@ -1186,7 +1194,7 @@ theorem ruleSound_allPastPos : RuleSound carrierBase .allPastPos := by
 outright, so every future time is one at which `A` must fail — the existential's negation is a
 universal, and that is why this rule sits in this family rather than with the fresh-time ones. -/
 theorem ruleSound_someFutureNeg : RuleSound carrierBase .someFutureNeg := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case pos => simp [applyRule, SatResult]
@@ -1212,7 +1220,7 @@ theorem ruleSound_someFutureNeg : RuleSound carrierBase .someFutureNeg := by
 
 /-- `F(PA) → F(A)` at every known past time, same world. The past mirror of `someFutureNeg`. -/
 theorem ruleSound_somePastNeg : RuleSound carrierBase .somePastNeg := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case pos => simp [applyRule, SatResult]
@@ -1295,7 +1303,7 @@ theorem exists_trichotomy_disjunct {M : TaskModel F} {Om : Set (WorldHistory F)}
     exact ⟨b, hcb, truthAt_and ((Truth.some_future_iff Om φ).mpr ⟨a, hab, hφ⟩) hψ⟩
 
 theorem ruleSound_orderTrichotomy : RuleSound carrierBase .orderTrichotomy := by
-  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
   cases s
   case neg => simp [applyRule, SatResult]
