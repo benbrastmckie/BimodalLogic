@@ -11,7 +11,7 @@ next_project_number: 420
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,179,193,231,257,298,361,390,408,409,413,414,418,419 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,179,193,231,257,298,361,390,408,413,414,418,419 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 165,169,170,177,178,219,282,296,415,417 | 193,231,298,361,414,418 | completeness, formula-refactor, dataset-enhancement, ... |
 | 3 | 362,410,411,412 | 165,169,170 | strong_completeness |
 
@@ -64,13 +64,9 @@ next_project_number: 420
   └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
 419 [NOT STARTED] — Machine-check the CO-does-not-derive-Reynolds independence result
 
-### Documentation
-
-409 [IMPLEMENTING] — Systematically reconcile the LaTeX reference (latex/subfiles/, es
-
 ### Strong Completeness
 
-361 [PLANNED] — Research + scoping for the completeness-terminology refactor and 
+361 [IMPLEMENTING] — Research + scoping for the completeness-terminology refactor and 
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
@@ -198,12 +194,13 @@ next_project_number: 420
 
 ### 409. Reconcile latex metalogic docs with live tree
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [409_reconcile_latex_metalogic_docs_with_live_tree/reports/01_latex-metalogic-live-tree-audit.md]
 - **Plan**: [409_reconcile_latex_metalogic_docs_with_live_tree/plans/01_latex-metalogic-reconcile.md]
+- **Summary**: [409_reconcile_latex_metalogic_docs_with_live_tree/summaries/01_latex-metalogic-reconcile-summary.md]
 
 **Description**: Systematically reconcile the LaTeX reference (latex/subfiles/, especially 04-Metalogic.tex and 06-Notes.tex) with the live FormalSystem/ tree and the settled completeness terminology. The TERMINOLOGY pass already landed (2026-07-27): "strong completeness" is reserved for infinite premise sets, the finite-context form is named consequence completeness, and 04-Metalogic.tex now carries a "Strong Completeness and Compactness" subsection with the per-class split (Base/Dense open; Discrete/Dedekind provably non-compact) — see specs/ROADMAP.md ("Completeness programme" block) and the FormalSystem/Metalogic/StrongCompleteness.lean module docstring for the authoritative statements. What remains, and what this task owns, is ARCHITECTURE/IDENTIFIER fidelity: the chapter still largely describes the retired Metalogic_v2 (Boneyard) architecture.
 
@@ -319,7 +316,7 @@ DEPENDENCY STATUS (2026-07-27; dependencies array unchanged): 375 (discrete weak
 
 ### 361. Strong completeness architecture and weak terminus gap analysis
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: None

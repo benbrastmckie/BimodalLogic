@@ -51,7 +51,7 @@ Axiom Validity & Lean Theorem & Technique \\
 \end{center}
 
 \noindent
-The MF and TF axioms use time-shift invariance to relate truth at different times (via \texttt{WorldHistory.time\_shift}).
+The MF and TF axioms use time-shift invariance to relate truth at different times (via \texttt{WorldHistory.timeShift}, \texttt{FormalSystem/Semantics/WorldHistory.lean:246}). Note the mixed naming convention: the def itself is camelCase, while its supporting lemmas (\texttt{time\_shift\_domain\_iff}, \texttt{time\_shift\_inverse\_domain}, \texttt{time\_shift\_time\_shift\_states}, \texttt{time\_shift\_congr}) are snake\_case.
 
 \subsection{Core Infrastructure}
 
@@ -103,94 +103,75 @@ Note that contexts (finite lists of formulas) embed naturally into sets, so ``co
 The key step is showing that the union of any chain of consistent sets is itself consistent.
 This follows because any derivation uses only finitely many premises, so a derivation of $\falsum$ from the union would have to come from some finite subset, which is contained in some member of the chain, contradicting that member's consistency.
 
-\subsection{Representation Theory}
+\subsection{Canonical Model Construction}
 
-The \emph{Representation Theorem} is the core of the metalogic, providing the bridge between syntactic consistency and semantic satisfiability.
-The subsequent \emph{Completeness Theorems} follow directly from this result.
+This section introduces the canonical-frame vocabulary used to build countermodels for the completeness theorems below.
+The syntactic argument these theorems used to route through a standalone representation theorem is, in the live proof architecture, inlined directly inside each completeness proof; see the discussion following the Truth Lemma below.
 
 \subsubsection{Canonical World States}
 
-The semantic approach constructs world states from histories and times.
-We first define these constituent concepts before assembling them into canonical structures.
+The canonical-frame vocabulary is defined in \texttt{FormalSystem/Metalogic/Bundle/}.
 
-% FIX: these definitions are not accurate or formally precise
-
-\begin{definition}[History]
-A \textbf{history} is a function $\tau : \mathbb{Z} \to \text{MCS}$ mapping each time to a maximal consistent set, satisfying temporal coherence: for each time $t$, the formulas in $\tau(t)$ are consistent with the temporal operators applied to formulas in $\tau(t')$ for related times $t'$.
+\begin{definition}[Family of MCS]
+A \textbf{family of MCS} (\texttt{FMCS}) is a single time-indexed family of maximal consistent sets, $\tau : \mathbb{Z} \to \text{MCS}$, satisfying temporal coherence: for each time $t$, G/H formulas propagate between $\tau(t)$ and $\tau(t')$ for temporally related $t, t'$.\footnote{\texttt{FMCS}, \texttt{FormalSystem/Metalogic/Bundle/FMCSDef.lean}.}
 \end{definition}
 
-\begin{definition}[Time]
-\textbf{Times} are integers ($\mathbb{Z}$), providing a discrete linear order with both past and future directions.
+\begin{definition}[Bundle of FMCS]
+A \textbf{bundle of FMCS} (\texttt{BFMCS}) is a bundle of \texttt{FMCS} instances satisfying modal coherence conditions across the bundled families.\footnote{\texttt{BFMCS}, \texttt{FormalSystem/Metalogic/Bundle/BFMCS.lean}.}
+Structurally this is a \emph{bundle}, not a quotient of (history, time) pairs: the box operator $\Box$ quantifies over the bundled families rather than over all histories.
 \end{definition}
 
-\begin{definition}[Task Relation]
-The \textbf{task relation} (\texttt{SemanticTaskRelV2}) relates world states based on the existence of histories connecting them: world state $w$ is task-related to $w'$ if there exists a history $\tau$ such that $w$ and $w'$ both occur along $\tau$.
-\end{definition}
+% TODO (carried forward): the chain construction below instantiates the duration type as
+% $\mathbb{Z}$ (a \texttt{BFMCS Int}). Whether this is a genuine commitment to discrete time, or
+% whether the construction generalizes to any totally ordered commutative group -- as the
+% semantics' own frame definition allows -- is a live open design question about this
+% instantiation, not yet resolved.
 
-% TODO: I don't see how the integers can be used without making time discrete. Rather, a canonical frame should have the same structural properties as the definition of a frame in the semantics where a temporal order is ANY totally ordered commutative group. This is the crux of the proof strategy and so needs careful thinking and research.
+The \textbf{chain construction} (\texttt{FormalSystem/Metalogic/BXCanonical/CanonicalChain.lean}
+and \texttt{CanonicalModel.lean}) builds a \texttt{BFMCS Int} by resolving formulas along an
+enumeration schedule, using forward and backward temporal witness seeds
+(\texttt{FormalSystem/Metalogic/Bundle/WitnessSeed.lean}) to establish the modal and temporal
+coherence conditions.
 
-% FIX: this should be moved into the definition below, calling this the 'canonical world state', not 'semantic world state'
-
-A \textbf{canonical world state} is derived from a maximal consistent set.
-The semantic approach defines world states as equivalence classes of (history, time) pairs.
-
-\begin{definition}[Semantic World State]
-A world state is an equivalence class of (history, time) pairs under the relation where two pairs are equivalent iff they denote the same underlying world state.\footnote{This is formalized as \texttt{SemanticWorldState}.}
-\end{definition}
-
-\begin{definition}[Universal Canonical Model]
-The \textbf{canonical model} is built from an indexed MCS family using the \texttt{IndexedMCSFamily D} construction:
-\begin{itemize}
-  \item Indexed family: \texttt{IndexedMCSFamily D} assigns an MCS to each time $t : D$
-  \item Temporal coherence: G/H formulas propagate between time-indexed MCS via strict inequalities
-  \item Canonical frame: \texttt{canonical\_model D family} with task relation via histories
-  \item Duration type: Parametric over totally ordered abelian group $D$
-\end{itemize}
-The construction is formula-independent and universally parametric, avoiding the T-axiom requirement of same-MCS-at-all-times approaches.\footnote{The T-axiom ($G\varphi \to \varphi$) is \emph{not} valid in TM logic because G/H are irreflexive operators.}
-\end{definition}
+Task-relatedness between bundled families is realized per completeness development rather than
+by a single shared "task relation" type: the \texttt{BXCanonical} route uses
+\texttt{BXCanonical.CanonicalTaskRelation} (\texttt{FormalSystem/Metalogic/Bundle/CanonicalTaskRelation.lean}).
 
 \begin{definition}[Canonical Valuation]
-An atom $p$ is true at world state $[\tau, x]$ iff $p \in \mathsf{MCS}(\tau(x))$.
+An atom $p$ is true at the bundled world state indexed by family $\tau$ and time $x$ iff $p \in \tau(x)$.
 \end{definition}
 
 \begin{lemma}[Truth Lemma]
-In the canonical model, $\varphi \in \mathsf{MCS}(t)$ iff $\varphi$ is true at time $t$ in the canonical model.\footnote{This is proven as \texttt{truth\_lemma} in \texttt{FormalSystem/Metalogic/Representation/TruthLemma.lean}.}
+Membership in the family $\tau$ at time $t$ coincides with truth at $t$ in the canonical model.\footnote{Proven per completeness development, since there is no single truth lemma shared across all three: \texttt{FormalSystem/Metalogic/BXCanonical/TruthLemma.lean} (feeding the landed \texttt{completeness}/\texttt{completeness\_dense}/\texttt{completeness\_discrete} theorems), \texttt{WeakCanonical/TruthLemma.lean}, and \texttt{Algebraic/ParametricTruthLemma.lean} (with a restricted variant, \texttt{RestrictedParametricTruthLemma.lean}).}
 \end{lemma}
 
-% TODO: This is not in the correct spirit of a representation theorem which aims to build a semantic object out of pure syntax. A purely syntactic, and fully general approach should be carefully researched and implemented, thinking hardest about this crux of the metalogic.
+% TODO (carried forward, restated against the live construction): this bundle-based construction
+% is still a semantic approach, not the purely syntactic one that builds a semantic object
+% directly out of syntax. Whether a fully general, purely syntactic construction is preferable
+% remains an open design question; see the discussion of the archived syntactic approach below.
 
-The \emph{quotient construction} identifies (history, time) pairs that agree on which formulas hold, forming equivalence classes.
-Two pairs $(\tau_1, t_1)$ and $(\tau_2, t_2)$ are equivalent when $\tau_1(t_1) = \tau_2(t_2)$ as maximal consistent sets.
-The \emph{Truth Lemma} follows directly from this construction: membership in a maximal consistent set corresponds to truth by definition of the equivalence class.
+\subsubsection{From Consistency to Satisfiability}
 
-\subsubsection{Representation Theorem}
+No live declaration plays the role of a standalone representation theorem.
+The argument such a theorem would encapsulate — consistent set $\to$ Lindenbaum extension $\to$ canonical bundle $\to$ truth lemma $\to$ satisfiability — is inlined directly inside each \texttt{completeness*} proof in \texttt{FormalSystem/Metalogic/BXCanonical/Completeness.lean}: \texttt{set\_lindenbaum}, then a case split on the dense/discrete/mixed frame class, then the corresponding \texttt{countermodel\_*} construction, then a contradiction with the semantic validity hypothesis.
 
-\begin{theorem}[Representation Theorem]
-Every consistent formula is satisfiable in the canonical model.\footnote{This is proven as \texttt{representation\_theorem} in \texttt{FormalSystem/Metalogic/Representation/UniversalCanonicalModel.lean}.}
-\end{theorem}
-
-This theorem is the pivotal result linking syntax to semantics.
-The proof strategy is:
+The proof strategy, restated against this inlined structure, is:
 \begin{enumerate}
-  \item Given a consistent context $\context$, convert it to a set $S = \texttt{contextToSet}(\context)$.
-  \item Apply Lindenbaum's lemma to extend $S$ to a maximal consistent set $M$.
-  \item View $M$ as a canonical world state.
-  \item By the truth lemma, all formulas in $\context$ are satisfied at this world.
+  \item Given a consistent context $\context$, convert it to a set $S = \texttt{contextToSet}(\context)$ (\texttt{FormalSystem/Metalogic/Core/MaximalConsistent.lean:123}).
+  \item Apply Lindenbaum's lemma (\texttt{set\_lindenbaum}) to extend $S$ to a maximal consistent set $M$.
+  \item Case-split on the frame class (dense/discrete/mixed) and extract the corresponding countermodel from $M$ via the canonical bundle construction (\S\emph{Canonical World States} above).
+  \item By the truth lemma, the countermodel falsifies the negated formula, contradicting the semantic validity hypothesis.
 \end{enumerate}
 
 The elegance of this approach is that the MCS construction makes the \emph{Truth Lemma} essentially trivial since truth \emph{is} membership in the MCS.
 
-\begin{theorem}[Strong Representation Theorem]
-If $\context \not\proves \varphi$, then $\context \cup \{\lneg\varphi\}$ is satisfiable in the canonical model.\footnote{This is proven as \texttt{strong\_representation\_theorem}.}
-\end{theorem}
-
-This strengthening is crucial for completeness: it says that any formula unprovable from a context can be made false while satisfying the context.
-The proof adds $\lneg\varphi$ to the context and applies the standard \emph{Representation Theorem} to the resulting consistent set.
+The strengthening once packaged as a standalone \emph{Strong Representation Theorem} — that $\context \not\proves \varphi$ entails $\context \cup \{\lneg\varphi\}$ is satisfiable — is likewise not a distinct live result: it is the same inlined argument applied to $\context \cup \{\lneg\varphi\}$ rather than to $\context$ alone, since $\context \not\proves \varphi$ makes $\context \cup \{\lneg\varphi\}$ consistent by definition.
 
 \subsubsection{Theorem Dependency Structure}
 
-\Cref{fig:theorem-deps} illustrates the dependency structure of the completeness proof.
-The core infrastructure (top row) feeds into the central \emph{Representation Theorem}, from which the completeness corollaries follow.
+\Cref{fig:theorem-deps} illustrates the dependency structure feeding the landed completeness theorems, via the \texttt{BXCanonical} route.
+The core infrastructure (top layer, \texttt{Core/}) feeds the shared canonical-bundle construction (\texttt{Bundle/}), which \texttt{BXCanonical/CanonicalModel.lean} uses to build the canonical model and, from it, the truth lemma and the per-class completeness theorems.
+The aggregator files \texttt{Core.lean}, \texttt{Bundle.lean}, \texttt{BXCanonical.lean}, \texttt{WeakCanonical.lean}, and \texttt{Algebraic.lean} document each layer's full contents and can be consulted to re-derive this diagram if the module tree changes further.
 
 \begin{figure}[ht]
 \centering
@@ -198,33 +179,39 @@ The core infrastructure (top row) feeds into the central \emph{Representation Th
   box/.style={rectangle, draw, rounded corners, minimum width=3.5cm, minimum height=0.9cm, align=center, font=\small},
   arrow/.style={->, >=stealth, thick}
 ]
-  % Core Infrastructure layer (top)
-  \node[box, fill=blue!10] (deduct) at (0,4) {Deduction Theorem\\{\scriptsize\texttt{deduction\_theorem}}};
-  \node[box, fill=blue!10] (linden) at (4.5,4) {Lindenbaum's Lemma\\{\scriptsize\texttt{set\_lindenbaum}}};
-  \node[box, fill=blue!10] (mcs) at (9,4) {Maximal Consistent Sets\\{\scriptsize\texttt{MaximalConsistent}}};
+  % Core Infrastructure layer (top) -- Core/
+  \node[box, fill=blue!10] (deduct) at (0,6) {Deduction Theorem\\{\scriptsize\texttt{deductionTheorem}}};
+  \node[box, fill=blue!10] (linden) at (4.5,6) {Lindenbaum's Lemma\\{\scriptsize\texttt{set\_lindenbaum}}};
+  \node[box, fill=blue!10] (mcs) at (9,6) {Maximal Consistent Sets\\{\scriptsize\texttt{MaximalConsistent}}};
 
-  % Representation layer (middle) - central
-  \node[box, fill=green!15, minimum width=6cm] (repr) at (4.5,2) {\textbf{Representation Theorem}\\{\scriptsize\texttt{representation\_theorem}}};
+  % Canonical-bundle construction layer -- Bundle/ + BXCanonical/CanonicalModel.lean
+  \node[box, fill=teal!15, minimum width=6cm] (bundle) at (4.5,4) {\textbf{Canonical Bundle Construction}\\{\scriptsize\texttt{Bundle/}: FMCS, BFMCS\ ---\ \texttt{BXCanonical/CanonicalModel.lean}}};
 
-  % Completeness layer (bottom)
-  \node[box, fill=orange!15] (weak) at (1.5,0) {Weak Completeness\\{\scriptsize\texttt{semantic\_weak\_completeness}}};
-  \node[box, fill=orange!15] (strong) at (7.5,0) {Consequence Completeness\\{\scriptsize\texttt{consequence\_completeness\_*}}};
+  % Truth lemma layer
+  \node[box, fill=green!15, minimum width=5cm] (truth) at (4.5,2) {Truth Lemma\\{\scriptsize\texttt{BXCanonical/TruthLemma.lean}}};
 
-  % Arrows from Core to Representation
-  \draw[arrow] (deduct.south) -- ++(0,-0.4) -| (repr.north west);
-  \draw[arrow] (linden.south) -- (repr.north);
-  \draw[arrow] (mcs.south) -- ++(0,-0.4) -| (repr.north east);
+  % Completeness terminus layer (bottom)
+  \node[box, fill=orange!15, minimum width=6.5cm] (weak) at (1.75,0) {Weak Completeness (per class)\\{\scriptsize\texttt{completeness}/\texttt{completeness\_dense}/\texttt{completeness\_discrete}}};
+  \node[box, fill=orange!15, minimum width=5cm] (strong) at (8,0) {Consequence Completeness\\{\scriptsize\texttt{consequence\_completeness\_dedekind\_of\_engine}}};
 
-  % Arrows from Representation to Completeness
-  \draw[arrow] (repr.south) -- ++(0,-0.4) -| (weak.north);
-  \draw[arrow] (repr.south) -- ++(0,-0.4) -| (strong.north);
+  % Arrows from Core to the canonical-bundle construction
+  \draw[arrow] (deduct.south) -- ++(0,-0.4) -| (bundle.north west);
+  \draw[arrow] (linden.south) -- (bundle.north);
+  \draw[arrow] (mcs.south) -- ++(0,-0.4) -| (bundle.north east);
+
+  % Canonical bundle to Truth Lemma
+  \draw[arrow] (bundle.south) -- (truth.north);
+
+  % Truth Lemma to the completeness termini
+  \draw[arrow] (truth.south) -- ++(0,-0.4) -| (weak.north);
+  \draw[arrow] (truth.south) -- ++(0,-0.4) -| (strong.north);
 \end{tikzpicture}
-\caption{Theorem dependency structure for completeness.}
+\caption{Dependency structure feeding the landed completeness theorems via the \texttt{BXCanonical} route. \texttt{WeakCanonical.lean} and \texttt{Algebraic.lean} document the other two parallel completeness developments (\S\emph{Three Parallel Completeness Developments} below), which share the \texttt{Core.lean} foundations but not this diagram's \texttt{Bundle.lean}-based construction end-to-end.}
 \label{fig:theorem-deps}
 \end{figure}
 
-The three foundational components---the \emph{Deduction Theorem}, \emph{Lindenbaum's Lemma}, and \emph{Maximal Consistent Sets}---provide the infrastructure for the \emph{Representation Theorem}.
-Both weak and consequence completeness then follow as direct corollaries via contrapositive arguments.
+The three foundational components---the \emph{Deduction Theorem}, \emph{Lindenbaum's Lemma}, and \emph{Maximal Consistent Sets}---provide the infrastructure for the canonical bundle construction (\texttt{Bundle/}), which \texttt{BXCanonical/CanonicalModel.lean} uses to build the canonical model.
+The truth lemma and the per-class completeness theorems then follow, with the conditional consequence-completeness result following the same pattern via \texttt{StrongCompleteness.lean}.
 
 \subsection{Completeness as Corollary}
 
@@ -233,7 +220,7 @@ The \emph{Completeness Theorems} follow directly from the \emph{Representation T
 \subsubsection{Weak Completeness}
 
 \begin{theorem}[Weak Completeness]
-If $~\satisfies{\varphi}$, then $\proves \varphi$.\footnote{This is proven as \texttt{semantic\_weak\_completeness}.}
+If $~\satisfies{\varphi}$, then $\proves \varphi$.\footnote{Proven per frame class in \texttt{FormalSystem/Metalogic/BXCanonical/Completeness.lean}: \texttt{completeness} (Base, line 196, carrying one live \texttt{sorryAx} sourced from the deprecated \texttt{WeakCanonical.countermodel\_discrete} fallback in its discrete branch), \texttt{completeness\_dense} (line 255, \texttt{sorryAx}-free), and \texttt{completeness\_discrete} (line 296, \texttt{sorryAx}-free).}
 \end{theorem}
 
 The proof proceeds by contraposition:
@@ -259,7 +246,7 @@ unavailable for some of the frame classes treated here.
 
 \begin{theorem}[Consequence Completeness]
 If $\context \satisfies \varphi$, then $\context \proves \varphi$.\footnote{The landed pattern
-is \texttt{consequence\_completeness\_dedekind} in
+is \texttt{consequence\_completeness\_dedekind\_of\_engine} in
 \texttt{FormalSystem/Metalogic/StrongCompleteness.lean}, stated there modulo its single-formula
 completeness engine; the Base, Dense, and Discrete instances follow the same three-declaration
 shape against their own validity predicates.}
@@ -315,35 +302,45 @@ The classes treated in this development split as follows:
     this class.
 \end{itemize}
 
-\begin{theorem}[Provable iff Valid]
-$\proves \varphi \iff \satisfies{\varphi}$.\footnote{This is proven as \texttt{main\_provable\_iff\_valid}, establishing completeness of \textbf{TM}.}
-\end{theorem}
+\paragraph{Provable iff Valid.}
+No unconditional $\proves \varphi \iff \satisfies{\varphi}$ declaration exists under a single name.
+The biconditional holds compositionally per frame class: the right-to-left direction is \texttt{completeness}/\texttt{completeness\_dense}/\texttt{completeness\_discrete} (\texttt{FormalSystem/Metalogic/BXCanonical/Completeness.lean}), and the left-to-right direction is \texttt{soundness}/\texttt{soundness\_dense}/\texttt{soundness\_discrete} (\texttt{FormalSystem/Metalogic/Soundness.lean}).
 
 This biconditional shows that the proof system and semantics align perfectly.
 Soundness (left-to-right) ensures no non-logical consequences are derivable, while completeness (right-to-left) ensures all logical consequences are captured by the proof system.
-Together, they establish that \textbf{TM} provides an exact syntactic characterization of semantic validity.
+Together, they establish that \textbf{TM} provides an exact syntactic characterization of semantic validity, per frame class.
 
-\subsubsection{Two Canonical Model Approaches}
+\subsubsection{Three Parallel Completeness Developments}
 
-The codebase contains two canonical model constructions.
-Understanding their differences explains why the semantic approach is primary.
+The codebase's completeness proof is not a single syntactic-versus-semantic dichotomy.
+It has three independently-developed, parallel completeness routes sharing common foundations.
 
-% TODO: the following syntactic approach is in the correct spirit and should be ported over from the Boneyard. This is deserving of careful study to implement completely. By contrast, the semantic approach abandons the intended spirit of the representation theorem.
+\paragraph{Shared foundation (\texttt{Core/}).}
+\texttt{Consistent}, \texttt{MaximalConsistent}, \texttt{SetConsistent}, \texttt{SetMaximalConsistent}, \texttt{set\_lindenbaum}, \texttt{contextToSet}, and \texttt{deductionTheorem}/\texttt{Derivable.deduction} are shared by all three routes below; none is tied to any one of them.
 
-\paragraph{Syntactic Approach.}
-World states are directly identified with maximal consistent sets.
-Accessibility is defined via modal witnesses: $\nec\varphi \in w$ implies $\varphi \in w'$ for all accessible $w'$.
-This approach requires explicit negation-completeness proofs for locally consistent sets.
-The syntactic approach is archived in \texttt{Boneyard/} for historical reference.
+\paragraph{\texttt{BXCanonical/} --- the BX (chronicle/Henkin-style) route.}
+Builds a \texttt{BFMCS Int} via the chain construction described above and is the home of the landed \texttt{completeness}/\texttt{completeness\_dense}/\texttt{completeness\_discrete} theorems.
 
-\paragraph{Semantic Approach.}
-World states are equivalence classes of (history, time) pairs, where two pairs are equivalent iff they denote the same underlying world state.
-This approach offers key advantages:
-\begin{itemize}
-  \item \textbf{Truth lemma}: Follows trivially from the quotient construction.
-  \item \textbf{Compositionality}: The task relation is defined via history concatenation, making compositionality proofs straightforward.
-  \item \textbf{Negation-completeness}: The semantic approach does not require proving negation-completeness of arbitrary locally consistent sets, a property that caused difficulties in the syntactic approach.
-\end{itemize}
+\paragraph{\texttt{WeakCanonical/} --- the Reynolds/Doets discrete route.}
+Includes the large \texttt{Kamp/} subtree (Kamp's-theorem-style normal-form translation machinery bridging temporal formulas to monadic first-order structures for the Doets $k$-types argument).
+Its export \texttt{countermodel\_discrete} (\texttt{WeakCanonical/Transfer.lean}) is the \emph{deprecated} fallback still wired into the general \texttt{completeness} theorem's discrete branch, and is the sole sorry source (see \emph{Implementation Status} below); its sorry-free sibling \texttt{countermodel\_discrete\_reynolds\_v2} (\texttt{WeakCanonical/IntegerModel/ReynoldsBridge.lean:739}) is what \texttt{completeness\_discrete} actually uses.
+These are two different pipelines and must not be conflated.
+
+\paragraph{\texttt{Algebraic/} --- the Lindenbaum-Tarski quotient-algebra route.}
+\texttt{LindenbaumQuotient.lean}, \texttt{ParametricCanonical.lean}, \texttt{ParametricTruthLemma.lean}, \texttt{UltrafilterMCS.lean}.
+Closest in spirit to the archived syntactic approach's quotient-flavored construction below, but a \emph{third}, independently-developed route, not the same construction under a new name, and not currently the route feeding the landed \texttt{completeness*} theorems.
+
+\texttt{Bundle/} supplies the shared canonical-frame vocabulary (\texttt{FMCS}, \texttt{BFMCS}) used by \texttt{BXCanonical/}.
+None of the three routes above is claimed to be primary beyond the verifiable fact that \texttt{BXCanonical/} is where the landed completeness theorems live.
+
+% TODO (carried forward, restated against the live construction): the archived syntactic
+% approach below is in the correct spirit and should be ported over from the Boneyard for
+% careful study and full implementation. By contrast, none of the three live routes above
+% builds a semantic object directly out of pure syntax the way the syntactic approach does.
+
+\paragraph{Archived: Syntactic Approach.}
+World states were directly identified with maximal consistent sets, with accessibility defined via modal witnesses: $\nec\varphi \in w$ implies $\varphi \in w'$ for all accessible $w'$.
+This approach required explicit negation-completeness proofs for locally consistent sets and is archived in \texttt{Boneyard/} for historical reference; it is not one of the three current developments above, and its archival is a matter of historical record rather than a claim that the live routes supersede it in spirit.
 
 \subsection{Decidability}
 
@@ -427,9 +424,8 @@ Despite computational limitations, decidability is practically valuable: small f
 
 \subsection{File Organization and Dependencies}
 
-The active metalogic infrastructure is in \texttt{FormalSystem/Metalogic/}, using the \texttt{IndexedMCSFamily} approach.
-Deprecated code in \texttt{Boneyard/Metalogic\_v2/} is preserved for historical reference.
-The following diagram illustrates the import structure of the active codebase.
+The active metalogic infrastructure is in \texttt{FormalSystem/Metalogic/}, organized as a shared \texttt{Core/} foundation beneath three parallel completeness developments (\texttt{BXCanonical/}, \texttt{WeakCanonical/}, \texttt{Algebraic/}) plus the shared \texttt{Bundle/} canonical-frame construction (\S\emph{Three Parallel Completeness Developments} above), alongside \texttt{Soundness.lean}, \texttt{StrongCompleteness.lean}, and \texttt{Decidability/}.
+The following diagram illustrates this top-level layout at summary level; \texttt{WeakCanonical/Kamp/} (approximately 90 files) and \texttt{Decidability/Verified/} are large internal machinery, named here but not expanded.
 
 \begin{center}
 \begin{tikzpicture}[
@@ -437,58 +433,56 @@ The following diagram illustrates the import structure of the active codebase.
   arrow/.style={->, >=stealth, thick, gray!70}
 ]
   % Core layer (bottom)
-  \node[dirbox, fill=blue!10] (core) at (0,0) {Core/\\{\scriptsize Basic, Provability, Deduction, MCS}};
-  \node[dirbox, fill=blue!10] (sound) at (5,0) {Soundness/\\{\scriptsize Soundness, SoundnessLemmas}};
+  \node[dirbox, fill=blue!10] (core) at (1.5,0) {Core/\\{\scriptsize Derivable, Deduction, MCS}};
+  \node[dirbox, fill=blue!10] (sound) at (6,0) {Soundness.lean\\{\scriptsize + SoundnessLemmas/}};
 
-  % Representation layer (middle)
-  \node[dirbox, fill=green!15] (repr) at (2.5,1.5) {Representation/\\{\scriptsize Canonical, Truth, Representation}};
+  % Bundle and the three parallel completeness routes
+  \node[dirbox, fill=cyan!10] (bundle) at (-2,1.8) {Bundle/\\{\scriptsize FMCS, BFMCS}};
+  \node[dirbox, fill=green!15] (bx) at (1.5,1.8) {BXCanonical/\\{\scriptsize Chronicle, Quasimodel}};
+  \node[dirbox, fill=orange!15] (weak) at (5,1.8) {WeakCanonical/\\{\scriptsize Kamp/, IntegerModel/}};
+  \node[dirbox, fill=purple!10] (alg) at (8.5,1.8) {Algebraic/\\{\scriptsize LindenbaumQuotient}};
 
-  % Completeness layer
-  \node[dirbox, fill=orange!15] (compl) at (0,3) {Completeness/\\{\scriptsize Weak, Consequence}};
-
-  % FMP hub
-  \node[dirbox, fill=yellow!20] (fmp) at (5,3) {FMP.lean\\{\scriptsize Central Hub}};
-
-  % Applications and Decidability
-  \node[dirbox, fill=purple!10] (apps) at (0,4.5) {Applications/\\{\scriptsize Compactness}};
-  \node[dirbox, fill=purple!10] (decid) at (5,4.5) {Decidability/\\{\scriptsize Tableau, Saturation}};
+  % Consequence completeness and decidability
+  \node[dirbox, fill=orange!15] (strong) at (1.5,3.6) {StrongCompleteness.lean\\{\scriptsize consequence\_completeness\_dedekind\_of\_engine}};
+  \node[dirbox, fill=yellow!20, minimum width=4cm] (decid) at (8,3.6) {Decidability/\\{\scriptsize Tableau, Saturation; FMP/FMP.lean nested inside}};
 
   % Arrows
-  \draw[arrow] (core.north) -- (repr.south west);
-  \draw[arrow] (sound.north) -- (repr.south east);
-  \draw[arrow] (repr.north) -- (compl.south);
-  \draw[arrow] (repr.north) -- (fmp.south);
-  \draw[arrow] (compl.north) -- (apps.south);
-  \draw[arrow] (fmp.north) -- (decid.south);
-  \draw[arrow] (fmp.west) -- (compl.east);
+  \draw[arrow] (bundle.east) -- (bx.west);
+  \draw[arrow] (core.north) -- ++(0,0.4) -| (bx.south west);
+  \draw[arrow] (core.north) -- ++(0,0.4) -| (weak.south);
+  \draw[arrow] (core.north) -- ++(0,0.4) -| (alg.south east);
+  \draw[arrow] (bx.north) -- (strong.south);
+  \draw[arrow] (sound.north) -- ++(0,0.4) -| (decid.south west);
 \end{tikzpicture}
 \end{center}
 
 \noindent
 \textbf{Directory descriptions}:
 \begin{itemize}
-  \item \textbf{\texttt{Core/}}: Foundational definitions including provability (\texttt{Derivable}), deduction theorem, and maximal consistent sets (\texttt{Consistent}).
-  \item \textbf{\texttt{Soundness/}}: Validity proofs for all 15 axiom schemata and the main soundness theorem.
-  \item \textbf{\texttt{Representation/}}: Canonical model construction, truth lemma, and the central representation theorems.
-  \item \textbf{\texttt{Completeness/}}: Weak and consequence completeness theorems derived from representation.
-  \item \textbf{\texttt{Applications/}}: Compactness theorem (trivial for list-based contexts).
-  \item \textbf{\texttt{Decidability/}}: Tableau-based decision procedure with proof/countermodel extraction.
+  \item \textbf{\texttt{Core/}}: Shared foundational definitions -- provability (\texttt{Derivable}), the deduction theorem, and maximal consistent sets (\texttt{Consistent}, \texttt{MaximalConsistent}, \texttt{set\_lindenbaum}).
+  \item \textbf{\texttt{Bundle/}}: Shared canonical-frame construction (\texttt{FMCS}, \texttt{BFMCS}) used by \texttt{BXCanonical/}.
+  \item \textbf{\texttt{BXCanonical/}}: The BX (chronicle/Henkin-style) completeness route; home of the landed \texttt{completeness}/\texttt{completeness\_dense}/\texttt{completeness\_discrete} theorems.
+  \item \textbf{\texttt{WeakCanonical/}}: The Reynolds/Doets discrete completeness route, including the large \texttt{Kamp/} subtree.
+  \item \textbf{\texttt{Algebraic/}}: The Lindenbaum-Tarski quotient-algebra completeness route.
+  \item \textbf{\texttt{Soundness.lean} (+ \texttt{SoundnessLemmas/})}: Validity proofs for all 15 axiom schemata and the main soundness theorems.
+  \item \textbf{\texttt{StrongCompleteness.lean}}: The consequence-completeness statements, including the conditional \texttt{consequence\_completeness\_dedekind\_of\_engine}.
+  \item \textbf{\texttt{Decidability/}}: Tableau-based decision procedure with proof/countermodel extraction; the finite model property lives nested inside at \texttt{Decidability/FMP/FMP.lean}, not as a top-level hub.
 \end{itemize}
 
 \subsection{Implementation Status}
 
 \subsubsection{Sorry Status}
 
-The \texttt{Metalogic\_v2} codebase has three remaining \texttt{sorry} statements, none of which block the core completeness results:
+The live per-class completeness picture, in \texttt{FormalSystem/Metalogic/BXCanonical/Completeness.lean} unless noted:
 
-\begin{enumerate}
-  \item \texttt{semantic\_task\_rel\_compositionality} (SemanticCanonicalModel.lean:236) --- Finite time domain limitation; a fundamental issue with Int-valued durations exceeding finite time bounds.
-  \item \texttt{main\_provable\_iff\_valid\_v2} completeness direction (SemanticCanonicalModel.lean:647) --- Requires truth bridge from general validity to finite model truth.
-  \item \texttt{finite\_model\_property\_constructive} truth bridge (FiniteModelProperty.lean:481) --- Same truth bridge issue.
-\end{enumerate}
+\begin{itemize}
+  \item \texttt{completeness} (Base, line 196) carries exactly \textbf{one} live \texttt{sorryAx}, sourced from the deprecated \texttt{WeakCanonical.countermodel\_discrete} fallback in its discrete branch. Its dense branch (\texttt{countermodel\_dense\_enriched}) and mixed branch (\texttt{Chronicle.mcs\_mixed\_case\_absurd}) are individually \texttt{sorryAx}-free.
+  \item \texttt{completeness\_dense} (line 255) and \texttt{completeness\_discrete} (line 296) are \textbf{\texttt{sorryAx}-free}, with axioms exactly \texttt{[propext, Classical.choice, Quot.sound]}.
+  \item An unconditional \texttt{completeness\_dedekind} \textbf{does not exist}. Only \texttt{completeness\_dedekind\_of\_engine} and \texttt{consequence\_completeness\_dedekind\_of\_engine} (\texttt{FormalSystem/Metalogic/StrongCompleteness.lean:274,308}) are landed, both conditional on a supplied single-formula completeness engine hypothesis.
+\end{itemize}
 
 \noindent
-The core completeness result \texttt{semantic\_weak\_completeness} is fully proven without sorries.
+The one remaining sorry has a specific, named blocker rather than a vague gap: per \texttt{Completeness.lean}'s own docstring, the underlying \texttt{succ\_cofinal} argument behind \texttt{WeakCanonical.countermodel\_discrete} is characterized as provably unfixable and has been archived; closing it needs a genuine new construction --- a Base-to-Discrete MCS transfer or a Henkin-style discrete model --- not a re-wiring of the existing fallback.
 
 \subsubsection{Decidability Implementation}
 
@@ -518,25 +512,26 @@ Completeness & Partial & Requires Finite Model Property \\
 Component & Status & Lean \\
 \midrule
 Soundness & Proven & \texttt{soundness} \\
-Deduction Theorem & Proven & \texttt{deduction\_theorem} \\
+Deduction Theorem & Proven & \texttt{deductionTheorem} (general form: \texttt{Derivable.deduction}) \\
 Lindenbaum Lemma & Proven & \texttt{set\_lindenbaum} \\
-IndexedMCSFamily & Proven & \texttt{IndexedMCSFamily} \\
-Truth Lemma & Proven & \texttt{truth\_lemma} \\
-Representation Theorem & Proven & \texttt{representation\_theorem} \\
-Weak Completeness & Proven & \texttt{semantic\_weak\_completeness} \\
-Consequence Completeness & Proven* & \texttt{consequence\_completeness\_*} \\
-Provable iff Valid & Proven & \texttt{main\_provable\_iff\_valid} \\
-Finite Model Property & Statement & \texttt{finite\_model\_property} \\
+Canonical Bundle & Proven & \texttt{FMCS}, \texttt{BFMCS} (\texttt{Bundle/}) \\
+Truth Lemma & Proven (per development) & \texttt{BXCanonical/TruthLemma.lean} \\
+Weak Completeness & Proven*, one Base-case sorry & \texttt{completeness}/\texttt{completeness\_dense}/\texttt{completeness\_discrete} \\
+Consequence Completeness & Proven, conditional on engine & \texttt{consequence\_completeness\_dedekind\_of\_engine} \\
+Finite Model Property & Statement & \texttt{mcs\_finite\_model\_property} \\
 Decidability Soundness & Proven & \texttt{decide\_sound} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \noindent
-* Consequence completeness is the deduction-theorem transport of the weak completeness result
-(finite contexts); genuine strong completeness over infinite premise sets is a separate
-statement, unavailable for the Discrete and Dedekind classes (see \emph{Strong Completeness and
-Compactness}).
-The three sorries listed above affect only the finite model property path.
+* Weak completeness is proven for all three frame classes; the Base-class instance additionally
+carries the single live sorry described above (\emph{Sorry Status}), sourced from the deprecated
+\texttt{WeakCanonical.countermodel\_discrete} fallback.
+\texttt{completeness\_dense} and \texttt{completeness\_discrete} are \texttt{sorryAx}-free.
+Consequence completeness (\texttt{consequence\_completeness\_dedekind\_of\_engine}) is conditional
+on a supplied single-formula completeness engine hypothesis; genuine strong completeness over
+infinite premise sets is a separate statement, unavailable for the Discrete and Dedekind classes
+(see \emph{Strong Completeness and Compactness}).
 
 \end{document}

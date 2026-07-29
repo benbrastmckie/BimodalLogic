@@ -1,7 +1,7 @@
 # Implementation Plan: Reconcile LaTeX Metalogic Docs With Live Tree
 
 - **Task**: 409 - reconcile_latex_metalogic_docs_with_live_tree
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/409_reconcile_latex_metalogic_docs_with_live_tree/reports/01_latex-metalogic-live-tree-audit.md`
@@ -158,7 +158,7 @@ parallel-eligible with that chain.
 
 ---
 
-### Phase 1: Baseline Capture and Low-Risk Identifier Corrections [NOT STARTED]
+### Phase 1: Baseline Capture and Low-Risk Identifier Corrections [COMPLETED]
 
 **Goal**: Establish the compile baseline (including the parent document) and land the three
 single-token corrections in sections that are otherwise already accurate, so the riskier
@@ -166,26 +166,30 @@ rewrites start from a known-green, known-correct state.
 
 **Tasks**:
 
-- [ ] From `latex/subfiles/`, run both required `pdflatex` commands and record the exit codes as
-      the pre-edit baseline.
-- [ ] From `latex/`, run `pdflatex -interaction=nonstopmode BimodalReference.tex` once and record
+- [x] From `latex/subfiles/`, run both required `pdflatex` commands and record the exit codes as
+      the pre-edit baseline. *(completed: both exit 0)*
+- [x] From `latex/`, run `pdflatex -interaction=nonstopmode BimodalReference.tex` once and record
       its exit code as the parent-document baseline (used by Phase 9 for comparison; a
-      pre-existing parent failure must be recorded now, not discovered at the end).
-- [ ] In the Soundness subsection, replace `\texttt{WorldHistory.time\_shift}` with
+      pre-existing parent failure must be recorded now, not discovered at the end). *(completed:
+      exit 1, pre-existing failure — missing `bimodal-notation.sty`, unrelated to this task and
+      to `latex/subfiles/`'s own `../assets` TEXINPUTS; recorded as the Phase 9 comparison
+      baseline)*
+- [x] In the Soundness subsection, replace `\texttt{WorldHistory.time\_shift}` with
       `\texttt{WorldHistory.timeShift}` (live def, `FormalSystem/Semantics/WorldHistory.lean:246`).
       Optionally note the mixed convention: the def is camelCase, its supporting lemmas
       (`time_shift_domain_iff`, `time_shift_inverse_domain`, `time_shift_time_shift_states`,
-      `time_shift_congr`) are snake_case.
-- [ ] In the Weak Completeness subsection, replace the footnote's `semantic\_weak\_completeness`
+      `time_shift_congr`) are snake_case. *(completed)*
+- [x] In the Weak Completeness subsection, replace the footnote's `semantic\_weak\_completeness`
       with the live per-class set: `completeness` (Base, `BXCanonical/Completeness.lean:196`,
       carrying one live `sorryAx` from the deprecated `WeakCanonical.countermodel_discrete`
       fallback), `completeness_dense` (`:255`, sorryAx-free), `completeness_discrete` (`:296`,
       sorryAx-free). Leave the surrounding proof-sketch prose alone — generic contrapositive
-      reasoning, still accurate.
-- [ ] In the Consequence Completeness subsection, correct the cited declaration name to
+      reasoning, still accurate. *(completed)*
+- [x] In the Consequence Completeness subsection, correct the cited declaration name to
       `consequence_completeness_dedekind_of_engine` (with the `_of_engine` suffix). Do not
-      otherwise rewrite this subsection.
-- [ ] Confirm no task-number citation was introduced.
+      otherwise rewrite this subsection. *(completed)*
+- [x] Confirm no task-number citation was introduced. *(completed: grep for task-number patterns
+      in 04-Metalogic.tex returns no hits)*
 
 **Timing**: 0.75 hours
 
@@ -217,7 +221,7 @@ occurrences beyond the three sites, record them and handle them here rather than
 
 ---
 
-### Phase 2: Rewrite Canonical World States Against the Live Construction [NOT STARTED]
+### Phase 2: Rewrite Canonical World States Against the Live Construction [COMPLETED]
 
 **Goal**: Replace the retired quotient-of-(history,time)-pairs construction with the live
 `Bundle/` + `BXCanonical/` picture, eliminating `SemanticTaskRelV2`, `SemanticWorldState`,
@@ -226,7 +230,7 @@ occurrences beyond the three sites, record them and handle them here rather than
 
 **Tasks**:
 
-- [ ] Rewrite the `\subsubsection{Canonical World States}` block (baseline 111-164). Replacement
+- [x] Rewrite the `\subsubsection{Canonical World States}` block (baseline 111-164). Replacement
       content, from the research report's architecture narrative:
       - `FMCS` ("Family of MCS", `FormalSystem/Metalogic/Bundle/FMCSDef.lean`) — a single
         time-indexed family of maximal consistent sets; the direct conceptual successor to the
@@ -246,21 +250,25 @@ occurrences beyond the three sites, record them and handle them here rather than
         `WeakCanonical/TruthLemma.lean`, `Algebraic/ParametricTruthLemma.lean` (plus
         `RestrictedParametricTruthLemma.lean`). Cite the `BXCanonical/` one as the lemma feeding
         the landed completeness theorems.
-- [ ] Delete the retired `\texttt{SemanticWorldState}` footnote and the "quotient construction"
+- [x] Delete the retired `\texttt{SemanticWorldState}` footnote and the "quotient construction"
       paragraph (baseline 162-164) rather than patching them — the construction they describe
-      does not exist.
-- [ ] Rename `\subsection{Representation Theory}` (baseline 106) to a name that matches the live
+      does not exist. *(completed)*
+- [x] Rename `\subsection{Representation Theory}` (baseline 106) to a name that matches the live
       architecture (e.g. `Canonical Model Construction`) and update its two-sentence lead-in
       (108-109), which currently presents the Representation Theorem as "the core of the
       metalogic". No `\label` is attached to this heading and nothing `\Cref`s it, so the rename
-      is compile-safe — confirm with a grep before renaming.
-- [ ] Resolve or carry forward the four author comments in this region (baseline 116, 130, 132,
+      is compile-safe — confirm with a grep before renaming. *(completed: confirmed no
+      `\label`/`\Cref` targets this heading; renamed to "Canonical Model Construction")*
+- [x] Resolve or carry forward the four author comments in this region (baseline 116, 130, 132,
       160). Each must either be resolved by the rewrite (and removed with the resolution
       reflected in the new prose) or restated against the live construction. Silently deleting
       one is a phase failure. In particular the comment at 130 (whether integers force time to
       be discrete, versus a frame's temporal order being any totally ordered commutative group)
       is a live open design question about the `BFMCS Int` instantiation and should be carried
-      forward, not dropped.
+      forward, not dropped. *(completed: 116 and 132 resolved by the rewrite itself — the new
+      definitions are precise and the world-state terminology is folded into FMCS/BFMCS, so both
+      comments are removed; 130 and 160 are restated as `% TODO` comments carried forward,
+      updated to reference the live `BFMCS Int` construction)*
 
 **Timing**: 1.25 hours
 
@@ -297,7 +305,7 @@ and record any occurrence found outside all three regions.
 
 ---
 
-### Phase 3: Retire the Representation Theorem and Provable-iff-Valid Statements [NOT STARTED]
+### Phase 3: Retire the Representation Theorem and Provable-iff-Valid Statements [COMPLETED]
 
 **Goal**: Remove the two theorem environments that have no live counterpart
 (`representation_theorem`, `strong_representation_theorem`, `main_provable_iff_valid`) and
@@ -305,7 +313,7 @@ replace them with an accurate account of how the argument is actually structured
 
 **Tasks**:
 
-- [ ] Replace the `\subsubsection{Representation Theorem}` block (baseline 166-188). No live 1:1
+- [x] Replace the `\subsubsection{Representation Theorem}` block (baseline 166-188). No live 1:1
       analogue exists for either `representation_theorem` or `strong_representation_theorem`.
       The replacement must state that the argument those theorems encapsulated — consistent set
       to Lindenbaum extension to canonical world to truth lemma to satisfiability — is now
@@ -314,19 +322,19 @@ replace them with an accurate account of how the argument is actually structured
       split on dense/discrete/mixed, then `countermodel_*`, then contradiction with the semantic
       validity hypothesis), rather than factored into a standalone reusable theorem. Do not hunt
       for a name replacement; there is none.
-- [ ] Preserve the two still-accurate elements of that block: the `\texttt{contextToSet}`
+- [x] Preserve the two still-accurate elements of that block: the `\texttt{contextToSet}`
       citation (live, `Core/MaximalConsistent.lean:123`) and the proof-strategy enumeration,
-      restated against the inlined structure.
-- [ ] Replace the `\begin{theorem}[Provable iff Valid]` block (baseline 318-324). No
+      restated against the inlined structure. *(completed)*
+- [x] Replace the `\begin{theorem}[Provable iff Valid]` block (baseline 318-324). No
       unconditional `⊢ φ ↔ ⊨ φ` declaration exists live under any name. Replace with a paragraph
       stating the biconditional holds compositionally per frame class, pairing
       `completeness`/`completeness_dense`/`completeness_discrete` (right-to-left,
       `BXCanonical/Completeness.lean`) with `soundness`/`soundness_dense`/`soundness_discrete`
       (left-to-right, `FormalSystem/Metalogic/Soundness.lean`), and noting it is not available
       under a single declaration name. The existing follow-on prose about soundness and
-      completeness aligning is accurate and can be kept.
-- [ ] Do not touch the intervening Weak Completeness, Consequence Completeness, or Strong
-      Completeness and Compactness subsections.
+      completeness aligning is accurate and can be kept. *(completed)*
+- [x] Do not touch the intervening Weak Completeness, Consequence Completeness, or Strong
+      Completeness and Compactness subsections. *(completed: confirmed unchanged)*
 
 **Timing**: 0.75 hours
 
@@ -356,14 +364,14 @@ before editing; any occurrence outside those three regions must be handled here.
 
 ---
 
-### Phase 4: Redraw the Theorem Dependency Diagram [NOT STARTED]
+### Phase 4: Redraw the Theorem Dependency Diagram [COMPLETED]
 
 **Goal**: Replace the tikz figure whose central node is the retired `representation_theorem`
 with a diagram of the live dependency structure.
 
 **Tasks**:
 
-- [ ] Redraw the `\begin{figure}` / `tikzpicture` block (baseline 195-224) against the live
+- [x] Redraw the `\begin{figure}` / `tikzpicture` block (baseline 195-224) against the live
       structure:
       - Foundations layer: `Core/` — `deductionTheorem` (and the newer dot-notation form
         `Derivable.deduction`, `Core/DeductionTheorem.lean`), `set_lindenbaum`,
@@ -376,17 +384,19 @@ with a diagram of the live dependency structure.
         `consequence_completeness_dedekind_of_engine`.
       - The retired `deduction_theorem` node label becomes `deductionTheorem`; the
         `representation_theorem` node is removed entirely, not renamed.
-- [ ] Keep the `\label{fig:theorem-deps}` name unchanged so the in-file `\Cref` at baseline 192
+- [x] Keep the `\label{fig:theorem-deps}` name unchanged so the in-file `\Cref` at baseline 192
       still resolves. Update the caption and the surrounding lead-in (192-193) and follow-on
       (226-227) prose, both of which currently describe the Representation Theorem as the
-      central node.
-- [ ] Reuse the existing `box`/`arrow` tikz style definitions and the existing node-anchor
+      central node. *(completed: confirmed exactly two hits for `fig:theorem-deps` in `latex/`,
+      no undefined-reference warning after a second `pdflatex` pass)*
+- [x] Reuse the existing `box`/`arrow` tikz style definitions and the existing node-anchor
       arrow idiom. Do not introduce new tikz libraries or packages — `formatting.sty` under
-      `latex/assets/` is not in this task's write territory.
-- [ ] Per the research report's mitigation, name the aggregator files (`Core.lean`,
+      `latex/assets/` is not in this task's write territory. *(completed: same style names/idiom
+      reused, one new style `teal!15` fill color added inline, no new tikz libraries)*
+- [x] Per the research report's mitigation, name the aggregator files (`Core.lean`,
       `BXCanonical.lean`, `WeakCanonical.lean`, `Algebraic.lean`, `Bundle.lean`) in the caption
       or an adjacent footnote, so a future reconciliation pass can re-derive the diagram from
-      those docstrings rather than walking the whole module tree.
+      those docstrings rather than walking the whole module tree. *(completed)*
 
 **Timing**: 1 hour
 
@@ -418,7 +428,7 @@ parent-document dependency before it breaks).
 
 ---
 
-### Phase 5: Replace the Two-Approach Dichotomy With the Live Architecture [NOT STARTED]
+### Phase 5: Replace the Two-Approach Dichotomy With the Live Architecture [COMPLETED]
 
 **Goal**: Replace the false "Syntactic (Boneyard) vs Semantic (quotient)" dichotomy with the
 live three-development architecture. This is the single largest architecture-fidelity gap in the
@@ -426,7 +436,7 @@ chapter.
 
 **Tasks**:
 
-- [ ] Rewrite the `\subsubsection{Two Canonical Model Approaches}` block (baseline 326-346),
+- [x] Rewrite the `\subsubsection{Two Canonical Model Approaches}` block (baseline 326-346),
       including retitling it (the "two approaches" framing is itself the error). Replacement
       content, from the research report's architecture narrative point 2 — three parallel,
       independently-developed completeness routes over a shared foundation:
@@ -450,15 +460,18 @@ chapter.
         route feeding the landed `completeness*` theorems.
       - **`Bundle/`** supplies the shared canonical-frame vocabulary (`FMCS`, `BFMCS`) used by
         `BXCanonical/`.
-- [ ] Historicize rather than delete the syntactic-approach paragraph: the claim that world
+- [x] Historicize rather than delete the syntactic-approach paragraph: the claim that world
       states are directly identified with maximal consistent sets, with accessibility via modal
       witnesses, and that this line is archived in `Boneyard/`, remains accurate. Present it as
-      archived history, not as one of two current approaches.
-- [ ] Preserve or explicitly resolve the author comment at baseline 331 (arguing the syntactic
+      archived history, not as one of two current approaches. *(completed)*
+- [x] Preserve or explicitly resolve the author comment at baseline 331 (arguing the syntactic
       approach is in the correct spirit and should be ported from `Boneyard/`). It is a live
-      design position, not stale text; silently dropping it is a phase failure.
-- [ ] Do not claim any route is "primary" beyond the verifiable fact that `BXCanonical/` is where
-      the landed `completeness*` theorems live.
+      design position, not stale text; silently dropping it is a phase failure. *(completed:
+      restated as a `% TODO` comment against the live three-development architecture)*
+- [x] Do not claim any route is "primary" beyond the verifiable fact that `BXCanonical/` is where
+      the landed `completeness*` theorems live. *(completed; also fixed a stale Phase-4 caption
+      cross-reference to this subsection's old name, discovered during this phase's compile
+      check)*
 
 **Timing**: 1.25 hours
 
@@ -489,7 +502,7 @@ figure (Phase 4); a hit in any *other* region indicates an overlap to reconcile 
 
 ---
 
-### Phase 6: Rewrite File Organization Prose and the Directory Diagram [NOT STARTED]
+### Phase 6: Rewrite File Organization Prose and the Directory Diagram [COMPLETED]
 
 **Goal**: Replace the stale directory tikz diagram and its prose. `Representation/`,
 `Completeness/`, and `Applications/` do not exist; `Soundness` is a file not a directory; there
@@ -497,10 +510,10 @@ is no top-level `FMP.lean` hub.
 
 **Tasks**:
 
-- [ ] Rewrite the lead-in prose (baseline 428-432), removing the claim that the active metalogic
+- [x] Rewrite the lead-in prose (baseline 428-432), removing the claim that the active metalogic
       uses "the `IndexedMCSFamily` approach" and the `Boneyard/Metalogic_v2/` framing of the live
-      organization.
-- [ ] Redraw the directory `tikzpicture` (baseline 434-465) against the live top-level layout
+      organization. *(completed)*
+- [x] Redraw the directory `tikzpicture` (baseline 434-465) against the live top-level layout
       from the research report's module-layout block:
       - `Core/` (shared foundations) at the base.
       - Three parallel routes above it: `BXCanonical/`, `WeakCanonical/`, `Algebraic/`.
@@ -510,11 +523,14 @@ is no top-level `FMP.lean` hub.
       - `Decidability/` (tableau decision procedure), with `Decidability/FMP/FMP.lean` shown as
         nested inside it, not as a top-level central hub.
       - Remove the `Representation/`, `Completeness/`, and `Applications/` nodes entirely.
-- [ ] Rewrite the "Directory descriptions" itemize list (baseline 467-476) to match the new
-      diagram, one entry per live node.
-- [ ] Reuse the existing `dirbox`/`arrow` style definitions; introduce no new tikz libraries.
-- [ ] Keep the diagram summary-level. `WeakCanonical/Kamp/` (~90 files) and
+      *(completed: confirmed every retained directory/file exists on disk via read-only `ls`)*
+- [x] Rewrite the "Directory descriptions" itemize list (baseline 467-476) to match the new
+      diagram, one entry per live node. *(completed)*
+- [x] Reuse the existing `dirbox`/`arrow` style definitions; introduce no new tikz libraries.
+      *(completed)*
+- [x] Keep the diagram summary-level. `WeakCanonical/Kamp/` (~90 files) and
       `Decidability/Verified/` are large internal machinery and should be named, not expanded.
+      *(completed)*
 
 **Timing**: 1.25 hours
 
@@ -550,7 +566,7 @@ the chapter.
 
 ---
 
-### Phase 7: Replace the Sorry Inventory and the Metalogic Status Table [NOT STARTED]
+### Phase 7: Replace the Sorry Inventory and the Metalogic Status Table [COMPLETED]
 
 **Goal**: Replace the `Metalogic_v2` sorry inventory (describing a module that no longer exists)
 with the accurate live per-class picture, and update the Metalogic Implementation table's "Lean"
@@ -558,7 +574,7 @@ column to live identifiers.
 
 **Tasks**:
 
-- [ ] Replace the `\subsubsection{Sorry Status}` block (baseline 480-491) entirely. The three
+- [x] Replace the `\subsubsection{Sorry Status}` block (baseline 480-491) entirely. The three
       listed sorries (`semantic_task_rel_compositionality`, `main_provable_iff_valid_v2`,
       `finite_model_property_constructive`) are all in modules that no longer exist
       (`SemanticCanonicalModel.lean`, `FiniteModelProperty.lean`, all of `Metalogic_v2`).
@@ -580,8 +596,8 @@ column to live identifiers.
         re-wiring. A future reader must be able to tell at a glance whether the blocker is still
         open.
       - Delete the now-false claim that "the core completeness result
-        `semantic_weak_completeness` is fully proven without sorries".
-- [ ] Rewrite the `\subsubsection{Metalogic Implementation}` table's "Lean" column (baseline
+        `semantic_weak_completeness` is fully proven without sorries". *(completed)*
+- [x] Rewrite the `\subsubsection{Metalogic Implementation}` table's "Lean" column (baseline
       513-533), row by row, per the audit table:
       - `deduction_theorem` -> `deductionTheorem` (with `Derivable.deduction` as the general
         dot-notation form).
@@ -597,11 +613,16 @@ column to live identifiers.
       - `finite_model_property` -> `mcs_finite_model_property`
         (`Decidability/FMP/FMP.lean:204`), used by `Decidability/Correctness.lean:177`.
       - `soundness` and `decide_sound` -> unchanged (both live).
-- [ ] Update the trailing footnote (baseline 535-540). Its terminology distinction (consequence
+      *(completed: verified `mcs_finite_model_property` at `FMP.lean:204` and its use at
+      `Correctness.lean:177` via read-only grep; removed the Representation Theorem and Provable
+      iff Valid rows rather than restating them, since Phase 3 already gives the latter a full
+      paragraph treatment)*
+- [x] Update the trailing footnote (baseline 535-540). Its terminology distinction (consequence
       vs strong completeness) is already correct and must be preserved; only its final sentence
       ("The three sorries listed above affect only the finite model property path") is false and
-      must be replaced.
-- [ ] Do NOT touch the Decidability Implementation table (baseline 493-511) — confirmed accurate.
+      must be replaced. *(completed)*
+- [x] Do NOT touch the Decidability Implementation table (baseline 493-511) — confirmed accurate.
+      *(completed: confirmed byte-identical via diff)*
 
 **Timing**: 1.25 hours
 
@@ -632,14 +653,14 @@ Phases 1-6 claimed, and must be resolved before the phase closes.
 
 ---
 
-### Phase 8: Reconcile 06-Notes.tex [NOT STARTED]
+### Phase 8: Reconcile 06-Notes.tex [COMPLETED]
 
 **Goal**: Update `06-Notes.tex`'s Completeness Status bullets and the Implementation Status
 summary row, leaving its confirmed-accurate sections untouched.
 
 **Tasks**:
 
-- [ ] Replace the retired identifiers in the `\subsubsection{Completeness Status}` bullet list
+- [x] Replace the retired identifiers in the `\subsubsection{Completeness Status}` bullet list
       (baseline 72-77):
       - `set_lindenbaum` -> unchanged (live).
       - `semantic_truth_lemma_v2` -> the per-development truth lemmas; cite
@@ -647,20 +668,23 @@ summary row, leaving its confirmed-accurate sections untouched.
       - `semantic_weak_completeness` -> `completeness` / `completeness_dense` /
         `completeness_discrete`, same replacement as `04-Metalogic.tex`.
       - `main_provable_iff_valid` -> removed or restated per-class compositionally.
-- [ ] Replace the "world states as equivalence classes of history-time pairs" prose (baseline 78)
-      with the `FMCS`/`BFMCS` bundle picture.
-- [ ] Update the sorry caveat (baseline 79) to name the current single sorry source — the
+      *(completed)*
+- [x] Replace the "world states as equivalence classes of history-time pairs" prose (baseline 78)
+      with the `FMCS`/`BFMCS` bundle picture. *(completed)*
+- [x] Update the sorry caveat (baseline 79) to name the current single sorry source — the
       deprecated `WeakCanonical.countermodel_discrete` in the general `completeness` theorem's
       discrete branch — rather than a generic "bridge sorries remain". **Preserve this line's
       terminology verbatim** where it distinguishes the finite-context form from strong
       completeness over infinite premise sets; that wording is already correct and only the
-      sorry-count/identifier claims change.
-- [ ] In the Implementation Status summary table (baseline 8-23), change the Completeness row's
+      sorry-count/identifier claims change. *(completed: the finite-context/strong-completeness
+      sentence is preserved verbatim)*
+- [x] In the Implementation Status summary table (baseline 8-23), change the Completeness row's
       "Semantic" qualifier — now ambiguous, since three developments exist — to a per-class
       statement (Base proven modulo one sorry; Dense and Discrete proven sorry-free; Dedekind
-      conditional only).
-- [ ] Do NOT touch: Discrepancy Notes, Terminology, Axiom Naming, M5 Collapse Axiom (all ten
+      conditional only). *(completed)*
+- [x] Do NOT touch: Discrepancy Notes, Terminology, Axiom Naming, M5 Collapse Axiom (all ten
       `Axiom.*` names confirmed live), or the Decidability Implementation subsection.
+      *(completed: confirmed byte-identical via diff)*
 
 **Timing**: 0.75 hours
 
@@ -690,31 +714,40 @@ before and after; the after-count must be 0.
 
 ---
 
-### Phase 9: Residual Sweep and Full-Document Verification [NOT STARTED]
+### Phase 9: Residual Sweep and Full-Document Verification [COMPLETED]
 
 **Goal**: Prove no retired identifier or missing path survives in either target file, fix any
 that do, and confirm the parent document still compiles.
 
 **Tasks**:
 
-- [ ] Run a residual sweep over both target files for the full retired-identifier list from the
+- [x] Run a residual sweep over both target files for the full retired-identifier list from the
       research report's audit table: `semantic_weak_completeness`, `main_provable_iff_valid`,
       `main_provable_iff_valid_v2`, `representation_theorem`, `strong_representation_theorem`,
       `deduction_theorem` (bare, not `deductionTheorem`), `semantic_task_rel_compositionality`,
       `finite_model_property_constructive`, `semantic_truth_lemma_v2`, `IndexedMCSFamily`,
       `canonical_model`, `SemanticTaskRelV2`, `SemanticWorldState`, `WorldHistory.time_shift`,
       `Metalogic_v2`, `SemanticCanonicalModel`, `FiniteModelProperty`. Expected count: 0 in both
-      files. Fix any survivor here rather than reporting it.
-- [ ] Run a residual sweep for stale paths: `Metalogic/Representation/`, `Metalogic/Completeness/`,
-      `Metalogic/Applications/`. Expected count: 0.
-- [ ] Spot-check that every `FormalSystem/...` path now cited in either file exists on disk
+      files. Fix any survivor here rather than reporting it. *(completed: all 17 return 0 in
+      both files)*
+- [x] Run a residual sweep for stale paths: `Metalogic/Representation/`, `Metalogic/Completeness/`,
+      `Metalogic/Applications/`. Expected count: 0. *(completed: 0 hits)*
+- [x] Spot-check that every `FormalSystem/...` path now cited in either file exists on disk
       (read-only `ls`/`test -f`), and that every `\texttt{...}` Lean identifier now cited has a
-      non-`Boneyard` hit under `FormalSystem/`.
-- [ ] Verify no task-number citation was introduced into either file, per
-      `.claude/rules/no-task-references-in-deliverables.md`.
-- [ ] Re-confirm the three accuracy-floor claims are stated consistently across both files and
-      that neither file claims an unconditional Dedekind completeness terminus.
-- [ ] Compile the parent document and compare against the Phase 1 baseline.
+      non-`Boneyard` hit under `FormalSystem/`. *(completed: every cited `.lean` path, including
+      the abbreviated forms whose directory is established by surrounding context, resolves to
+      an existing non-Boneyard file; the identifiers added in Phases 5-8
+      (`countermodel_dense_enriched`, `Chronicle.mcs_mixed_case_absurd`, `succ_cofinal`,
+      `countermodel_discrete_reynolds_v2`, `countermodel_discrete`) all confirmed live)*
+- [x] Verify no task-number citation was introduced into either file, per
+      `.claude/rules/no-task-references-in-deliverables.md`. *(completed: 0 hits)*
+- [x] Re-confirm the three accuracy-floor claims are stated consistently across both files and
+      that neither file claims an unconditional Dedekind completeness terminus. *(completed: no
+      occurrence of an unconditional `completeness_dedekind`; both files consistently state the
+      one-Base-sorry / dense-discrete-sorry-free / Dedekind-conditional-only picture)*
+- [x] Compile the parent document and compare against the Phase 1 baseline. *(completed: exit 1,
+      identical pre-existing `bimodal-notation.sty not found` failure as the Phase 1 baseline —
+      unrelated to this task's edits)*
 
 **Timing**: 0.5 hours
 
@@ -748,21 +781,22 @@ reason to narrow the list.
 
 ## Testing & Validation
 
-- [ ] `TEXINPUTS=../assets: pdflatex -interaction=nonstopmode 04-Metalogic.tex` exits 0 from
+- [x] `TEXINPUTS=../assets: pdflatex -interaction=nonstopmode 04-Metalogic.tex` exits 0 from
       `latex/subfiles/`, after every phase.
-- [ ] `TEXINPUTS=../assets: pdflatex -interaction=nonstopmode 06-Notes.tex` exits 0 from
+- [x] `TEXINPUTS=../assets: pdflatex -interaction=nonstopmode 06-Notes.tex` exits 0 from
       `latex/subfiles/`, after every phase.
-- [ ] `pdflatex -interaction=nonstopmode BimodalReference.tex` from `latex/` matches its Phase 1
-      baseline exit code.
-- [ ] Residual sweep for all retired identifiers and stale paths returns 0 hits in both target
+- [x] `pdflatex -interaction=nonstopmode BimodalReference.tex` from `latex/` matches its Phase 1
+      baseline exit code. *(exit 1, pre-existing `bimodal-notation.sty` failure, both before and
+      after this task)*
+- [x] Residual sweep for all retired identifiers and stale paths returns 0 hits in both target
       files.
-- [ ] Every `FormalSystem/...` path cited in either file exists on disk.
-- [ ] Every `\texttt{...}` Lean identifier cited in either file has a non-`Boneyard` hit under
+- [x] Every `FormalSystem/...` path cited in either file exists on disk.
+- [x] Every `\texttt{...}` Lean identifier cited in either file has a non-`Boneyard` hit under
       `FormalSystem/`.
-- [ ] The three accuracy-floor claims (Standing Constraint 5) are stated and none is overstated.
-- [ ] `git status --short` shows no modification under `FormalSystem/` or `Tests/`.
-- [ ] No task-number citation appears in either `.tex` file.
-- [ ] The explicitly out-of-scope sections are unchanged: Strong Completeness and Compactness,
+- [x] The three accuracy-floor claims (Standing Constraint 5) are stated and none is overstated.
+- [x] `git status --short` shows no modification under `FormalSystem/` or `Tests/`.
+- [x] No task-number citation appears in either `.tex` file.
+- [x] The explicitly out-of-scope sections are unchanged: Strong Completeness and Compactness,
       the Decidability subsection and its status table, and `06-Notes.tex`'s Discrepancy
       Notes / Terminology / Axiom Naming / M5 Collapse / Decidability Implementation.
 

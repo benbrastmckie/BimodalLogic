@@ -30,12 +30,12 @@
     {
       "project_number": 409,
       "project_name": "reconcile_latex_metalogic_docs_with_live_tree",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "topic": "documentation",
       "effort": "medium",
       "created": "2026-07-27",
-      "last_updated": "2026-07-29T06:15:59Z",
+      "last_updated": "2026-07-29T06:32:08Z",
       "dependencies": [],
       "file_scope": [
         "latex/subfiles/"
@@ -52,8 +52,14 @@
           "path": "specs/409_reconcile_latex_metalogic_docs_with_live_tree/plans/01_latex-metalogic-reconcile.md",
           "type": "plan",
           "summary": "9-phase LaTeX metalogic reconciliation plan, pdflatex-gated per phase."
+        },
+        {
+          "path": "specs/409_reconcile_latex_metalogic_docs_with_live_tree/summaries/01_latex-metalogic-reconcile-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: all 9 phases, both .tex files reconciled and compiling."
         }
-      ]
+      ],
+      "completion_summary": "Reconciled latex/subfiles/04-Metalogic.tex and 06-Notes.tex against the live FormalSystem/Metalogic/ tree: replaced every retired Lean identifier and missing file path, replaced the false two-approach dichotomy with the live three-parallel-development architecture (BXCanonical/, WeakCanonical/, Algebraic/), redrew both tikz diagrams, and replaced the Metalogic_v2 sorry inventory with the accurate live per-class picture. Both files compile with pdflatex exit 0 after every phase; the pre-existing parent-document failure is unchanged."
     },
     {
       "project_number": 298,
@@ -811,7 +817,7 @@
     {
       "project_number": 361,
       "project_name": "strong_completeness_architecture_and_weak_terminus_gap_analysis",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "strong_completeness",
       "description": "Research + scoping for the completeness-terminology refactor and the genuine strong-completeness architecture. TERMINOLOGY IS SETTLED (2026-07-27): \"strong completeness\" is reserved for consequence from possibly-INFINITE premise sets (Γ : Set Formula) with finitary set-derivability (∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ). Finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong (see FormalSystem/Metalogic/StrongCompleteness.lean module docstring, reframed 2026-07-27, for the per-class programme).\n\nDeliverables:\n(1) Design the set-based layer: per-class SetSemanticConsequence_X (Γ : Set Formula) (φ : Formula) paralleling the valid/ValidDense/ValidDiscrete binder lists in Semantics/Validity.lean; the finitary set-derivability relation; and their basic lemmas (monotonicity, finite-restriction). The set-based MCS layer already exists and is correctly finitary — SetConsistent, SetMaximalConsistent, set_lindenbaum in Metalogic/Core/MaximalConsistent.lean (:96, :103, :303).\n(2) Feasibility verdict on GENUINE strong completeness per class. Already established, do not re-derive: Discrete is provably NON-COMPACT — ValidDiscrete requires IsSuccArchimedean/IsPredArchimedean, and Formula.next φ = untl φ bot is a genuine next-step operator on discrete orders, so {F p} ∪ {¬Xⁿ p : n ∈ ℕ} is finitely satisfiable over ℤ yet unsatisfiable over every Archimedean discrete carrier — hence weak completeness only. Dedekind is likewise non-compact (Reynolds 1992 Thm 7 is weak-only and the restriction is genuine) — weak completeness only, owned by task 408. OPEN QUESTION this task must answer: whether Base and Dense (neither binder list imposes Archimedean-ness, so no known counterexample applies; classical Burgess-style strong completeness for the ℚ tense logic suggests plausibility) are compact under the FULL task-frame semantics (S5 box over shift-closed Omega, ordered-abelian-group time). For Base/Dense, determine whether the BXCanonical chronicle machinery (which already manipulates Set Formula MCSs internally) extends to a MODEL-EXISTENCE theorem — every SetConsistent set is satisfiable in a frame of the class. That theorem is the substantive new obligation; the single-formula countermodel engines do NOT suffice for it.\n(3) Authoritative gap analysis of what still gates each WEAK terminus (unchanged charter): Base = the open sorries reachable from `completeness` (BXCanonical/Completeness.lean:196 — dense-arm countermodel_dense, the deprecated countermodel_discrete Transfer.lean route, dd_countermodel_chronicle_mixed_sorry); Dense = the chronicle dense-path sorries inherited by `completeness_dense` (:255) (ChronicleToCountermodel.lean succ_reaches_dom_N / chronicle_gap_contradiction; MCSMixedCase.lean). Produce a concrete sub-task decomposition + dependency graph for tasks 169 (base weak) and 170 (dense weak), PLUS new model-existence sub-tasks for the Base/Dense strong legs if the feasibility verdict is positive, spawning refinements as needed.\n(4) Optionally scope formalizing the Discrete non-compactness witness as a documented theorem (satisfiable-finitely-but-not-globally), so the weak-only status of Discrete is machine-checked rather than prose.\n\nReference: FormalSystem/Metalogic/StrongCompleteness.lean (per-class programme + reserved section headers); latex/subfiles/04-Metalogic.tex §Completeness-as-Corollary \"Note on Infinite Contexts\" and its TODO (the LaTeX restatement is owned by task 362). Analysis/read task — no proof obligations to close here.",
@@ -819,7 +825,7 @@
       "dependencies": [],
       "file_scope": [],
       "created": "2026-07-13T21:48:29Z",
-      "last_updated": "2026-07-29T06:21:23Z",
+      "last_updated": "2026-07-29T06:22:05Z",
       "session_id": "sess_1785304764_efadf2_361",
       "artifacts": [
         {

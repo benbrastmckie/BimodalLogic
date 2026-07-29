@@ -15,7 +15,7 @@ Semantics & Complete & Task frames, world histories, truth \\
 Proof System & Complete & 14 axioms, 7 inference rules \\
 Soundness & Proven & All 14 axioms valid, 7 rules sound \\
 Deduction Theorem & Proven & Well-founded recursion on height \\
-Completeness & Proven (Semantic) & Lindenbaum, truth lemma, weak completeness \\
+Completeness & Proven per class & Base: modulo one sorry; Dense/Discrete: sorry-free; Dedekind: conditional only \\
 Decidability & Soundness Proven & Tableau-based, FMP for full completeness \\
 Perpetuity Principles & Proven & P1-P6 all proven \\
 \bottomrule
@@ -67,16 +67,17 @@ for proof convenience in the S5 collapse theorem.
 \subsubsection{Completeness Status}
 
 The paper proves completeness via canonical model construction.
-The Lean implementation establishes completeness via the semantic canonical model approach.
+The Lean implementation establishes completeness via three parallel canonical-model developments (\texttt{BXCanonical/}, \texttt{WeakCanonical/}, \texttt{Algebraic/}) over shared \texttt{Core/} and \texttt{Bundle/} foundations.
 The key results are:
 \begin{itemize}
   \item \texttt{set\_lindenbaum}: Every consistent set extends to a maximal consistent set
-  \item \texttt{semantic\_truth\_lemma\_v2}: Membership corresponds to truth in the semantic model
-  \item \texttt{semantic\_weak\_completeness}: Validity implies derivability
-  \item \texttt{main\_provable\_iff\_valid}: Derivability and validity coincide
+  \item The per-development truth lemmas (e.g.\ \texttt{BXCanonical/TruthLemma.lean}): Membership corresponds to truth in the canonical bundle
+  \item \texttt{completeness}/\texttt{completeness\_dense}/\texttt{completeness\_discrete}: Validity implies derivability, per frame class
+  \item \texttt{consequence\_completeness\_dedekind\_of\_engine}: Derivability and validity coincide compositionally, conditional on a supplied completeness engine
 \end{itemize}
-The semantic approach defines world states as equivalence classes of history-time pairs, making the truth lemma straightforward by construction.
-Bridge sorries remain for connecting general validity to frame validity in consequence completeness (the finite-context form; ``strong completeness'' is reserved for infinite premise sets and is treated separately).
+World states are realized as a bundle of time-indexed maximal-consistent-set families (\texttt{FMCS}/\texttt{BFMCS}), not as equivalence classes of history-time pairs, making the truth lemma per-development but direct by construction.
+The current sorry source is a single, specific one: the general \texttt{completeness} theorem's discrete branch falls back to the deprecated \texttt{WeakCanonical.countermodel\_discrete}; \texttt{completeness\_dense} and \texttt{completeness\_discrete} are sorry-free.
+This affects consequence completeness (the finite-context form; ``strong completeness'' is reserved for infinite premise sets and is treated separately) only insofar as it is built atop the Base-class result.
 
 \subsubsection{Decidability Implementation}
 
