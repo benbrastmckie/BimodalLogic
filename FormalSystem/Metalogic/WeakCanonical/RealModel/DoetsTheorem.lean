@@ -604,7 +604,7 @@ one structure: `∼` is an equivalence and its classes are convex.
 
 Bundling them at a single `M` (rather than quantifying over all structures, as
 `IsContempEquivDense` and `IsContempEquivDenseCD` do) is what lets the quotient type below depend
-on one proof term. `IsContempEquivDenseCD.atStructure` is the bridge from Reynolds' `ε`. -/
+on one proof term. `isConvexEquiv_of_contempEquivDenseCD` is the bridge from Reynolds' `ε`. -/
 structure IsConvexEquiv (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2) : Prop where
   /-- Clause (i) at `M`. -/
   equiv : Equivalence (ContempEquivDense M ε)
@@ -613,8 +613,12 @@ structure IsConvexEquiv (M : OrderedMonadicStructure sig) (ε : MonadicFormula s
     ContempEquivDense M ε a c → ContempEquivDense M ε a b
 
 /-- Reynolds' `ε` gives `IsConvexEquiv` at every countable dense flow — the two clauses of
-`IsContempEquivDenseCD` read at one structure. -/
-theorem IsContempEquivDenseCD.atStructure {ε : MonadicFormula sig 2}
+`IsContempEquivDenseCD` read at one structure.
+
+Not named `IsContempEquivDenseCD.atStructure`: `IsContempEquivDenseCD` is declared in the
+`DenseModelSurgery` namespace, so a declaration of that name here would sit in a different
+namespace and could never be reached by dot notation. -/
+theorem isConvexEquiv_of_contempEquivDenseCD {ε : MonadicFormula sig 2}
     (hε : IsContempEquivDenseCD ε) (M : OrderedMonadicStructure sig)
     [Countable M.carrier] [DenselyOrdered M.carrier] : IsConvexEquiv M ε :=
   ⟨hε.equiv M, hε.convex M⟩
@@ -845,6 +849,96 @@ theorem nonempty_orderIso_rat_classBetween (h : IsConvexEquiv M ε) [Countable M
 
 end IsConvexEquiv
 
+/-! ## Layer 7 — density of `M/∼` from D1
+
+Printed p.187, the sentence between *"there are at least two `∼`-classes"* and the choice of
+`a < b`:
+
+> By lemma 13 and D1, we know that between any such classes is a third. Thus we have density of
+> `M / ∼` and D2 says that we have density of singleton classes.
+
+This is what turns D1 into the `QuotientDenselyOrdered` hypothesis Layer 6 runs on, and it is
+also D2's antecedent — so the same lemma discharges the input of `doetsD2_epsDense`.
+-/
+
+/--
+**Density of `M/∼`** — printed p.187, *"By lemma 13 and D1, we know that between any such classes
+is a third. Thus we have density of `M / ∼`."*
+
+The argument the printed sentence compresses: given `a ≁ b` with `a < b`, Lemma 13 gives `a`'s
+class a **last** point `z` (it is bounded above, by `b`) and `b`'s class a **first** point `w`
+(bounded below, by `a`). Convexity puts `z < w`, density of `M` produces a point strictly between
+them, and that point is in neither class precisely because `z` is last and `w` is first.
+
+Density of `M`'s own flow is used, and is one of Theorem 6's standing hypotheses. Without it the
+`∼`-classes could be adjacent with nothing between them and the conclusion would be false, not
+merely unproved.
+-/
+theorem quotientDenselyOrdered_epsDense (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] (D1 : DoetsD1 sig M) :
+    QuotientDenselyOrdered M (epsDense sig k) := by
+  have hnogap : ∀ t : M.carrier, ¬ EndsInGapOnRight M (epsDense sig k) t ∧
+      ¬ EndsInGapOnLeft M (epsDense sig k) t := fun t => doetsD1_epsDense sig k hk M D1 t
+  intro a b hab hnab
+  rw [contempEquivDense_epsDense_iff] at hnab
+  -- `a`'s class has a last point `z`, and `b`'s class a first point `w`.
+  obtain ⟨z, hza, hzlast⟩ := (reynolds_lemma13 k hk M hnogap a).1 ⟨b, hab, hnab⟩
+  obtain ⟨w, hwb, hwfirst⟩ := (reynolds_lemma13 k hk M hnogap b).2
+    ⟨a, hab, fun hc => hnab (simDense_symm hc)⟩
+  -- `a ≤ z`: `a` is in its own class, so it cannot lie strictly above the last point.
+  have haz : a ≤ z := by
+    rcases le_or_gt a z with h | h
+    · exact h
+    · exact absurd (simDense_refl k M a) (hzlast a h)
+  -- `w ≤ b`, by the mirror argument.
+  have hwb' : w ≤ b := by
+    rcases le_or_gt w b with h | h
+    · exact h
+    · exact absurd (simDense_refl k M b) (hwfirst b h)
+  -- `a < w`: otherwise `w ∼ a` by convexity of `b`'s class, hence `a ∼ b`.
+  have haw : a < w := by
+    rcases lt_or_ge a w with h | h
+    · exact h
+    · have hwa : SimDense sig k M w a :=
+        simDense_convex k M w a b h (le_of_lt hab) (simDense_symm hwb)
+      exact absurd (simDense_trans k hk M (simDense_symm hwa) (simDense_symm hwb)) hnab
+  -- `z < w`: otherwise `a ∼ w` by convexity of `a`'s class, hence `a ∼ b`.
+  have hzw : z < w := by
+    rcases lt_or_ge z w with h | h
+    · exact h
+    · exact absurd (simDense_trans k hk M
+        (simDense_convex k M a w z (le_of_lt haw) h hza) (simDense_symm hwb)) hnab
+  -- Density of `M` supplies a point strictly between the two attained bounds.
+  obtain ⟨c, hzc, hcw⟩ := exists_between hzw
+  refine ⟨c, lt_of_le_of_lt haz hzc, lt_of_lt_of_le hcw hwb', ?_, ?_⟩
+  · rw [contempEquivDense_epsDense_iff]
+    exact hzlast c hzc
+  · rw [contempEquivDense_epsDense_iff]
+    exact fun hc => hwfirst c hcw (simDense_symm hc)
+
+/-- `IsConvexEquiv` at Reynolds' own `∼_M` — Lemma 12's clauses read at one countable dense
+structure, via the `ε`-adapter. -/
+theorem isConvexEquiv_epsDense (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] : IsConvexEquiv M (epsDense sig k) :=
+  isConvexEquiv_of_contempEquivDenseCD (epsDense_isContempEquivDenseCD k hk) M
+
+/--
+**Reynolds' `I` has order type `ℚ` at his own `∼_M`** — printed p.187, with every hypothesis
+discharged from Theorem 6's own standing assumptions plus D1.
+
+This is the capstone of Layers 6 and 7 together: nothing abstract is left as a hypothesis. `∼` is
+`∼_M` (via `epsDense_isContempEquivDenseCD`), density of `M/∼` comes from D1 through Lemma 13
+(`quotientDenselyOrdered_epsDense`), and `c ≁ d` is stated in `SimDense` — the form the residual
+below actually has it in.
+-/
+theorem nonempty_orderIso_rat_classBetween_epsDense (k : Nat) (hk : 2 ≤ k)
+    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (D1 : DoetsD1 sig M) {c d : M.carrier} (hcd : c < d) (hns : ¬ SimDense sig k M c d) :
+    Nonempty ((isConvexEquiv_epsDense k hk M).ClassBetween c d ≃o ℚ) :=
+  (isConvexEquiv_epsDense k hk M).nonempty_orderIso_rat_classBetween
+    (quotientDenselyOrdered_epsDense k hk M D1) hcd
+    (fun hc => hns ((contempEquivDense_epsDense_iff k M c d).mp hc))
+
 /--
 **The residual of Reynolds' §8 Theorem 6** — printed pp.187-188, everything after
 `exists_not_simDense_of_not_goodDense` has produced `a < b` with `a ≁ b`:
@@ -863,12 +957,35 @@ an unproved assertion buried in a longer tactic block.** What it still needs, pr
    residual is blocked on it any more. The obligation it displaced — making §6 run on the
    countable-dense bundle, so that D1/D2 can be *discharged* — is recorded in the D1/D2 section
    header above, together with the measured obstruction at `surgeredStructure`.
-2. **The `G`-minimality argument.** Reynolds' *"`G` minimal"* is a minimization over the finite
-   `γ`-palette (`gammaSentences`, `EpsilonDense.lean:239`); it has no counterpart in the tree.
-3. **The order-type-`ℚ` step.** *"the classes strictly between them have order type `ℚ`"* is
-   Cantor's theorem at the `∼`-quotient, fed by D1 (Lemma 13 makes the classes closed intervals)
-   and D2 (dense singletons). `Order.iso_of_countable_dense` supplies the isomorphism once the
-   quotient is built; the quotient itself is not built.
+2. ~~**The `G`-minimality argument.**~~ **Discharged (Layer 5).** `gammaBetween` is Reynolds' `G`
+   at a pair, `exists_minimal_gammaBetween` is *"the following choice makes sense"*,
+   `gammaBetween_eq_of_minimal` is the *"by minimality of `G`"* step, and
+   `gammaBetween_dense_of_minimal` is *"all the `γᵢ`'s in `G` are satisfied densely in `I`"* in the
+   form the shuffle construction consumes. All sorry-free.
+3. ~~**The order-type-`ℚ` step.**~~ **Discharged (Layers 6-7).** `M/∼` is now built
+   (`IsConvexEquiv.ClassQuot`, with `instLinearOrderClassQuot`), Reynolds' `I` is
+   `IsConvexEquiv.ClassBetween`, and `nonempty_orderIso_rat_classBetween` is *"the classes in `I`
+   have order type `ℚ`"* by `Order.iso_of_countable_dense`. Its `QuotientDenselyOrdered`
+   hypothesis is itself discharged from D1 by `quotientDenselyOrdered_epsDense` (Layer 7 — *"by
+   lemma 13 and D1 … thus we have density of `M/∼`"*), and
+   `nonempty_orderIso_rat_classBetween_epsDense` states the whole thing at Reynolds' own `∼_M`
+   with no abstract hypothesis left. All sorry-free.
+
+**What remains, and it is now one thing rather than three: the assembly.** Every ingredient
+Reynolds names is landed; what is not landed is the chain that puts them together, printed
+p.187 line 141 through p.188:
+
+- **The shuffle map.** Transport `Σ_{E ∈ I} M|E` to `Σ_{q ∈ ℚ} σ(q)` along the `I ≃o ℚ` above,
+  choosing `N_γ ⊨ γ` for each `γ ∈ G` and `σ` from `gammaBetween_dense_of_minimal`. The transport
+  layer is `kEquiv_orderedSum_blocks` (`Shuffle.lean:424`) plus the reindexing section below it;
+  the density input is landed; what has to be written is the choice of `σ` and the discharge of
+  `IsShuffleMap`.
+- **The `ℝ`-extension and the flow.** `doets_lemma_1_5` and Phase 28's `≅o ℝ` characterization,
+  both landed and sorry-free — this step is application, not mathematics.
+- **The three-summand decomposition.** `M|(c,d) = M|(c,c'] + M|⋃I + M|[d',d)` with `c'` the right
+  end point of `c`'s class and `d'` the left end point of `d`'s. **This is the one place a new
+  ingredient is needed**: `c'` and `d'` exist by Lemma 13, but the decomposition of `M|(c,d)` into
+  the three pieces, and `M|(c,d) ≡ₖ X + 𝓡 + Y` via `doets_lemma_1_4`, has no counterpart yet.
 
 Everything this residual routes *through* — `kEquiv_blocks_shuffle`, `kEquiv_shuffle_shuffleReal`,
 `nonempty_orderIso_real_shuffleReal`, `goodDense_shuffle`, `doets_lemma_1_4` — is landed and
