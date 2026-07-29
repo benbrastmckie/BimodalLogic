@@ -27,7 +27,7 @@ next_project_number: 428
       └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
         └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
   └─ 426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
-408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
+408 [PARTIAL] — Identify the most faithful and mathematically correct route to ST
   └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me (see above)
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 
@@ -384,7 +384,7 @@ SCOPE BOUNDARY ADDENDUM (2026-07-28): the frame-definition subsection of latex/s
 ---
 
 ### 408. Faithful route to strong completeness for the dedekind extension
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
