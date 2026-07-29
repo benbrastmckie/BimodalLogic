@@ -4218,31 +4218,74 @@ for the repaired formula**.
   `ε` half stands until Phase 25.** No §6 result may be described as discharged in any docstring,
   summary or handoff produced by this phase.
 
-### Phase 23: Reynolds §7 Theorem 5 — D2 from `Axiom.sep` [NOT STARTED]
+### Phase 23: Reynolds §7 Theorem 5 — D2 from `Axiom.sep` [COMPLETED]
 
 - **Goal**: **D2.** *"Suppose that `M` is a Prior structure which also satisfies every substitution
   instance of axiom Sep. Then for every contemporaneous equivalence relation `∼` such that `M/∼` is
   densely ordered, `M/∼` has a dense set of singletons."*
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Singletons.lean` (new).
 - **Tasks**:
-  - [ ] Prove that the classes are **closed intervals**, from Theorem 4 plus density: *"if a class has
+  - [x] Prove that the classes are **closed intervals**, from Theorem 4 plus density: *"if a class has
         an excluded end point then this point is in the next class and this contradicts density"*
-        (printed p.184).
-  - [ ] Prove Theorem 5, transcribing printed pp.184-185: with `c < d`, `c ≁ d`, `c` the right
+        (printed p.184). *(landed as `exists_rightEndPoint` and `exists_leftEndPoint`; the left half
+        by order-duality transport through `Dual.lean`, not a hand mirror, which additionally
+        required the new `quotientDenselyOrdered_dual`)*
+  - [x] Prove Theorem 5, transcribing printed pp.184-185: with `c < d`, `c ≁ d`, `c` the right
         endpoint of its class, let `C` be true exactly at left endpoints of classes (**expressive
         completeness**, Phase 14); `C ∧ U(C,¬C)` never holds, so `¬K⁺(C ∧ U(C,¬C))` holds at `c`;
         `K⁺(C)` holds at `c`; Sep gives `K⁺(K⁺C ∧ K⁻C)` at `c`; some `e` between `c` and `d` has
         `K⁺C ∧ K⁻C` and must be in a class of its own. **Note (v8): `Axiom.sep` is stated with
         `Formula.kPlus`/`kMinus`; read it through Phase 10.1's bridge, cited by name.**
-  - [ ] Land `dense_singletons_of_sep` — the D2 hypothesis of Doets' theorem.
-  - [ ] **Anti-vacuity**: instantiate at `chronicleIsDensePriorSepStructure` (Phase 16).
-  - [ ] Docstrings: `Reynolds 1992, §7 Theorem 5, printed pp.184-185`, quoting *"We use expressive
+        *(deviation: altered — the page range is `p.184` alone, not `pp.184-185`; measured off the
+        200 dpi images, see deviation #1 below. The "without loss of generality" was **discharged**
+        rather than assumed, via `exists_rightEndPoint` applied to `c` itself.)*
+  - [x] Land `dense_singletons_of_sep` — the D2 hypothesis of Doets' theorem.
+  - [x] **Anti-vacuity**: instantiate at `chronicleIsDensePriorSepStructure` (Phase 16).
+        *(deviation: altered — landed in the existing `ChronicleInstance.lean` rather than in a new
+        module; purely additive, see deviation #3 below)*
+  - [x] Docstrings: `Reynolds 1992, §7 Theorem 5, printed pp.184-185`, quoting *"We use expressive
         completeness here"* at the point where Phase 14 is consumed — that sentence is the reason
         Block D exists and the docstring should say so. **Reynolds' Lemma 10 (Sep's validity over
         real flows, printed p.184) is NOT re-derived**: `sep_valid` (`Soundness.lean:1601`) is landed
         and already stated at `ValidDedekindDense`. Phase 23 consumes `Axiom.sep`'s *derivability*
-        side, exactly as Phase 16 does for Prior-U/Prior-S.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+        side, exactly as Phase 16 does for Prior-U/Prior-S. *(deviation: altered — docstrings cite
+        `printed p.184`; Lemma 10 is on `p.183`, not `p.184`. Both measured, see deviation #1.)*
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
+
+**Phase 23 deviation record:**
+
+1. **Page range corrected (source measurement).** The charter says Theorem 5 runs *"printed
+   pp.184-185"* and puts Lemma 10 on p.184. Measured off the 200 dpi page images: §7 *Separability*
+   **opens on p.183** directly beneath Theorem 4's statement, Lemma 10 and its whole proof are on
+   **p.183**, and Theorem 5's statement **and entire proof fit on p.184 alone** — §8 *Doets'
+   Theorem* also opens on p.184, so p.185 is already inside §8's preliminaries. The §6 offset
+   (`printed = PDF 1-based + 164`) does carry over to §7 and was re-verified page by page across
+   PDF indices 18-20; it was the charter's *content* attribution that did not carry. This is a
+   plan error, **not** a source defect: no defect is claimed or repaired in §7. The §7 corpus chunk
+   (`sec04_7-separability.md`) was compared sentence-by-sentence against both page images and is
+   **clean** — Theorem 5 carries no displayed formulas at all, which is consistent with §6's
+   finding that inline prose is reliable where displays are not.
+2. **`SemanticSepOpen` restated rather than imported.** `SemanticSep` lives in
+   `ChronicleMonadicBridge.lean`, whose transitive closure is ~280 modules; importing it would
+   contradict the layering rule `ChronicleInstance.lean` records. The body is restated
+   character-for-character in `Singletons.lean` as `SemanticSepOpen`. Nothing is removed or renamed
+   (D11 respected). The definitional identity is **machine-checked, not asserted**:
+   `chronicleMonadic_dense_singletons` passes `hpack.sep` (a `SemanticSep`) directly into a
+   `SemanticSepOpen` argument, which elaborates only if the two are defeq.
+3. **Anti-vacuity landed in `ChronicleInstance.lean`, not a new module.** The charter's `Owns` names
+   only `Singletons.lean`. The chronicle instantiation went into the existing
+   `ChronicleInstance.lean`, which is exactly the §6/§7-to-bridge join point Phase 22.1 created.
+   The edit is **purely additive** (two new theorems plus header text; zero removals, zero
+   signature changes to existing declarations).
+4. **Second, independent vacuity recorded.** Beyond the standing `EndsInGapOnRight`-is-empty reason,
+   Theorem 5's `epsTop` instantiation is vacuous because `QuotientDenselyOrdered M (epsTop sig)` is
+   itself *unsatisfiable* on any structure with two distinct points. Stated in-file as
+   `quotientDenselyOrdered_epsTop_vacuous` / `chronicleMonadic_dense_singletons_epsTop_vacuous`
+   rather than left to be rediscovered.
+5. **The §6 caveat is carried forward unweakened.** `Singletons.lean`'s header reproduces
+   *"Honest caveat, carried forward"* verbatim and adds that Theorem 5 inherits every condition
+   Theorem 4 stands on, plus Sep and plus density. **No §6 or §7 result is described as
+   discharged.**
 - **Estimated output**: ~300 lines.
 - **Done when**: `dense_singletons_of_sep` and the closed-interval lemma are sorry-free and
   axiom-clean; the chronicle instance is landed.
