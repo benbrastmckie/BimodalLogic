@@ -137,7 +137,69 @@ make the engine decide wrongly? Measured, and it does not"*, and its thesis is t
 suspect but harmless at the verdict level. The copy is now gone, so the whole framing is
 historical. Phase 7 must rewrite it even though no value moved.
 
-## The headline anchor row — `(G p) → □(G p)` — partially measured
+## The headline anchor row — MEASURED. The plan's acceptance criterion is NOT met.
+
+Measured with a targeted scratch `#eval` (`lake env lean`, not committed), run without competing
+load:
+
+```
+"decide: valid=false invalid=false fuelExhausted=true extractionFailed=false countermodel?=false"
+"buildTableau 1000 = STALLED (none)"
+```
+
+| Criterion (plan, Phase 6 and Testing & Validation) | Required | **Measured** | Met? |
+|---|---|---|---|
+| `buildTableau ((G p) → □(G p)) 1000 .Base` | `.hasOpen` | **`none`** (fuel exhausted) | **NO** |
+| `decide` constructor | `.invalid` | **`.fuelExhausted`** | **NO** |
+| `getCountermodel?.isSome` | `true` | **`false`** | **NO** |
+
+### What actually happened, stated exactly
+
+| | Pre-fix | Post-fix |
+|---|---|---|
+| `buildTableau … 1000` | `.allClosed` | `none` |
+| `decide` | `.extractionFailed` | `.fuelExhausted` |
+| What the procedure claims | **"φ is valid"** — false; φ is invalid | **"undetermined"** |
+
+**The soundness defect is gone.** Pre-fix the engine closed every branch on an invalid formula
+and `decide` returned `.extractionFailed`, which by this codebase's own R7 semantics
+(`DecisionProcedure.lean`: `isKnownValid` is true for `extractionFailed`; `isUndecided` is true
+only for `fuelExhausted`) is an assertion that **the formula is valid**. That assertion was
+false. Post-fix the engine returns `.fuelExhausted`, which `isUndecided` recognises as honest
+ignorance. The move is from *a wrong answer* to *no answer*.
+
+**But the intended repair did not land.** The plan wanted `.hasOpen` with an extracted
+countermodel — the engine positively refuting the formula. It does not get there within fuel
+1000; the branch stays open long enough to exhaust the budget without saturating. This is
+**bucket (e)**, and it is the same phenomenon as the ~1100× slowdown recorded above: removing
+emitted formulas shrinks the contradiction surface, so searches that used to terminate by closing
+now run to the fuel ceiling.
+
+### Triage — this is not a revert trigger
+
+Per the plan's Rollback/Contingency section, a bucket-(e) resource outcome is recorded and
+triaged, never repaired by reinstating a deleted block. Reverting would trade honest ignorance
+for a false claim of validity, which is strictly worse. Options for the next dispatch, none
+performed here:
+
+1. **Raise the fuel** and re-measure. Cheapest first step; establishes whether `.hasOpen` is
+   reachable at all or whether the branch never saturates. Note fuel 30, 60 and 1000 all give
+   `none`, so the ceiling has not yet been bracketed from above.
+2. **Investigate why the branch does not saturate.** If some rule now fires unboundedly on this
+   shape, that is a termination question rather than a fuel-budget question, and it belongs with
+   `Verified/Termination/Fuel.lean`'s bounds.
+3. **Accept `.fuelExhausted` as the correct current verdict** for this formula and record the
+   countermodel as owed. Defensible — the procedure is sound and honest — but it leaves the
+   task's stated headline goal unmet, so it needs an explicit decision rather than a default.
+
+**Note for whoever picks this up**: `CrossWorldPropagationProbe` row B, which is
+`isValid ((G p) → □(G p))`, passes green and pins `false`. It cannot detect this outcome —
+`isValid` is `true` only for `.valid`, so it reads `false` under `.invalid` and `.fuelExhausted`
+alike. The corpus does **not** currently pin the distinction that matters here. Adding a row that
+pins the `decide` *constructor* on this formula would be a genuine improvement to the corpus, and
+is the sort of addition Phase 7 could justify.
+
+## Earlier partial measurements of the anchor row (superseded by the section above)
 
 The plan's headline acceptance criterion is that `buildTableau ((G p) → □(G p)) 1000 .Base` now
 returns `.hasOpen`, and that `decide` on it returns `.invalid` with `getCountermodel?.isSome`.

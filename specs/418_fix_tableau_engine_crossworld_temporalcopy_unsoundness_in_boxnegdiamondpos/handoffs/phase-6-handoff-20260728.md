@@ -69,16 +69,35 @@ finding to record and escalate — **not** a reason to reinstate any deleted blo
 mitigation is lowering fuel in a probe row, but only with a written justification per the plan's
 Phase 7 rules, and never by weakening the assertion itself.
 
-### 2. The headline anchor row is not yet decided
+### 2. The headline anchor row is DECIDED, and the criterion is NOT met
 
-`buildTableau ((G p) → □(G p)) 1000 .Base`: pre-fix `.allClosed`. Post-fix, `STALLED (none)` at
-fuel 30 and 60; fuel 1000 unmeasured. The plan's criterion is `.hasOpen` + `decide = .invalid`
-with a countermodel. If the answer turns out to be fuel exhaustion rather than `.hasOpen`, that
-is a bucket-(e) outcome to record and triage, not a licence to revert.
+Measured:
 
-`CrossWorldPropagationProbe` row B is `isValid ((G p) → □(G p))` and pins `false`. Note it
-**cannot discriminate** (a) from (e): `isValid` is `true` only for `.valid`, so it reads `false`
-under both `.invalid` and `.fuelExhausted`. Run `decide` directly and record the constructor.
+```
+decide: valid=false invalid=false fuelExhausted=true extractionFailed=false countermodel?=false
+buildTableau 1000 = STALLED (none)
+```
+
+Plan required `.hasOpen` + `decide = .invalid` + a countermodel. **None of the three holds.**
+Pre-fix was `.allClosed` / `.extractionFailed` — which by R7 semantics asserts the invalid
+formula is *valid*. Post-fix is `none` / `.fuelExhausted` — honest ignorance. **A wrong answer
+became no answer.** The soundness defect is gone; the positive refutation is not there.
+
+Fuel 30, 60 and 1000 all give `none`, so the ceiling is **not bracketed from above**.
+
+**Do not revert.** Reverting trades honest ignorance for a false claim of validity. Options, in
+order of cost — full write-up in `artifacts/after-verdicts.md`:
+
+1. Raise fuel and re-measure; establish whether `.hasOpen` is reachable at all.
+2. If it never saturates, that is a **termination** question for `Verified/Termination/Fuel.lean`,
+   not a budget question.
+3. Accept `.fuelExhausted` as the correct current verdict and record the countermodel as owed.
+   **This needs an explicit decision** — it leaves the task's stated headline goal unmet.
+
+**Corpus gap**: `CrossWorldPropagationProbe` row B is `isValid ((G p) → □(G p))` and passes green,
+but `isValid` is `true` only for `.valid`, so it reads `false` under `.invalid` and
+`.fuelExhausted` alike. The corpus does not pin the distinction that matters. Adding a row that
+pins the `decide` **constructor** on this formula is a justified Phase 7 addition.
 
 ## Commits
 

@@ -85,19 +85,50 @@ corpus was measuring the bug and reporting it as health. **Three are bucket (b)*
 **no bucket-(c) under-closing regression was found**. `CrossWorldPropagationProbe` — five rows
 pinning `isValid` on three invalid formulas and two controls — passes completely unchanged.
 
-## The anchor result
+## The anchor result — measured, and the plan's headline criterion is NOT met
 
-Not yet fully measured, and this is the main gap.
+```
+decide: valid=false invalid=false fuelExhausted=true extractionFailed=false countermodel?=false
+buildTableau 1000 = STALLED (none)
+```
 
-- **Pre-fix**: `buildTableau ((G p) → □(G p)) 1000 .Base` returned `.allClosed` — a false claim of
-  validity on an invalid formula, with `decide` returning `.extractionFailed`.
-- **Post-fix, fuel 30 and 60**: `STALLED (none)`. The engine no longer closes it.
-- **Post-fix, fuel 1000**: **unmeasured.** A scratch probe ran for over an hour without
-  returning and was stopped.
+| Criterion | Plan required | Measured | Met? |
+|---|---|---|---|
+| `buildTableau ((G p) → □(G p)) 1000 .Base` | `.hasOpen` | `none` | **NO** |
+| `decide` constructor | `.invalid` | `.fuelExhausted` | **NO** |
+| `getCountermodel?.isSome` | `true` | `false` | **NO** |
 
-So the defect (a closed tableau on an invalid formula) is demonstrably gone, but whether the
-engine now reaches `.hasOpen` with a countermodel at fuel 1000, or exhausts fuel, is open. See
-"Performance" below — this is the same phenomenon.
+| | Pre-fix | Post-fix |
+|---|---|---|
+| `buildTableau … 1000` | `.allClosed` | `none` |
+| `decide` | `.extractionFailed` | `.fuelExhausted` |
+| What the procedure claims | **"φ is valid"** — false, φ is invalid | **"undetermined"** |
+
+**The soundness defect is gone.** By this codebase's own R7 semantics
+(`DecisionProcedure.lean`), `extractionFailed` means *the tableau closed, so the formula is
+valid, we just could not rebuild the proof term* — `isKnownValid` is true of it. That was a false
+assertion about an invalid formula. `fuelExhausted` is the only constructor `isUndecided`
+recognises. The procedure moved from **a wrong answer to no answer**, which is the direction that
+matters for soundness.
+
+**But the intended repair did not land.** The plan wanted the engine to positively refute the
+formula with an extracted countermodel. It does not reach saturation within fuel 1000 — fuel 30,
+60 and 1000 all return `none`, so the ceiling is not yet bracketed from above. This is
+**bucket (e)**, the same phenomenon as the slowdown below.
+
+Per the plan's Rollback/Contingency section this is recorded and triaged, **not** repaired by
+reinstating a deleted block: reverting would trade honest ignorance for a false claim of
+validity, which is strictly worse. Three options for the next dispatch — raise the fuel and
+re-measure; investigate whether the branch saturates at all (a termination question for
+`Verified/Termination/Fuel.lean` rather than a budget question); or accept `.fuelExhausted` as
+the correct current verdict and record the countermodel as owed — are set out in
+`artifacts/after-verdicts.md`. **Option three needs an explicit decision, not a default**, since
+it leaves the task's stated headline goal unmet.
+
+One corpus gap worth naming: `CrossWorldPropagationProbe` row B is `isValid ((G p) → □(G p))` and
+passes green, but `isValid` is `true` only for `.valid`, so it reads `false` under `.invalid` and
+`.fuelExhausted` alike. **The corpus does not currently pin the distinction that matters here.**
+Adding a row that pins the `decide` constructor on this formula would be a real improvement.
 
 ## Performance — a material cost, now quantified
 
