@@ -46,6 +46,24 @@ they are cheap and deterministic. Section C measures a *verdict*, which is a str
 strictly more expensive question — a false formula emitted onto a branch does not by itself close
 it. Per the group-3 lesson, section C discriminates with `isInvalid` / `getCountermodel?` and
 never with `isValid` alone: `isValid = false` conflates "judged invalid" with `extractionFailed`.
+
+## What section B is hardened against
+
+Section B's rows are the ones a future PASSIVE-arm repair will be graded on, so they are built to
+fail *loudly* rather than quietly when the arm changes shape:
+
+* `armsB` reads **either** branching constructor. Matching `.branching` alone would make `armsB`
+  empty under a switch to `.branchingOrdered` — the shape a repair must take, since its two arms
+  carry different orderings — and B4 would then read `false` **vacuously**, which is
+  indistinguishable from "the defect was repaired". Row **B0** pins which constructor is live, so
+  the switch is reported rather than inferred.
+* Rows **B5**/**B5′** measure fresh-time production, the failure mode nothing else here can see:
+  divergence reaches the decision procedure only as `.fuelExhausted`. They are *differential* —
+  a triggered profile against a control with the negative `Until` deleted — because the engine
+  mints times on this branch for reasons unrelated to `untlNeg`, so no single count is pinnable.
+  See the row's own comment for the measurement that establishes this.
+* Row **B6** pins the post-blocking pass, whose fresh-time rejection test reads `applyRule`'s
+  *outer* ordering and is therefore blind to a fresh time hidden inside a per-arm ordering.
 -/
 
 namespace BimodalTest.UntlSnceCopyProbe
@@ -140,11 +158,30 @@ def ordB : TimeOrdering := { constraints := [(0, 1)] }
 /-- What the PASSIVE arm returns. -/
 def resB : RuleResult × TimeOrdering := applyRule .untlNeg srcB bB ordB
 
-/-- Its successor branches. -/
+/-- Its successor branches, read out of **either** branching constructor.
+
+Deliberately not `| .branching bss => bss | _ => []`. Under that form, a future switch of the
+PASSIVE arm to `.branchingOrdered` — the shape any co-decomposition repair must take, since its
+two arms would carry different orderings — makes `armsB` silently **empty**. B1 would then fail
+loudly, but B2 would read `true` and B4 would read `false` **vacuously**, and a vacuous `false`
+on B4 is indistinguishable from a genuine repair. That is the failure mode this destructuring
+removes: the rows keep measuring the arms whichever constructor carries them, and row B0 below
+is what reports the switch. -/
 def armsB : List (List SignedFormula) :=
   match resB.1 with
   | .branching bss => bss
+  | .branchingOrdered brs => brs.map Prod.fst
   | _ => []
+
+/-! ### Row B0 — **which branching constructor is live.** Today: `.branching`
+
+A repair of the PASSIVE arm must return `.branchingOrdered` (`.branching` shares one ordering
+across all arms, and the two repaired arms need different ones), so this row flipping to `false`
+is the signal that the arm's shape changed. It exists so that change is *reported* rather than
+inferred from a row that went quiet. -/
+/-- info: true -/
+#guard_msgs in
+#eval resB.1 matches .branching _
 
 /-! ### Row B1 — the PASSIVE arm fires: two branches, not `.notApplicable` -/
 /-- info: 2 -/
@@ -176,6 +213,87 @@ row stays `true` — the defect is escalated, not repaired. -/
 #eval armsB.any fun arm =>
   arm.contains (SignedFormula.neg g { world := 0, time := 1 })
     && arm.contains (SignedFormula.neg (Formula.untl e g) { world := 0, time := 1 })
+
+/-! ### Row B5 — **the re-fire counter**, as a *differential* gate
+
+No other row in this file, and no row in the conformance corpus, can see a termination defect. A
+diverging arm surfaces to the decision procedure as `.fuelExhausted`, which `isValid = false`
+conflates with `extractionFailed`; and every `Until`/`Since` corpus row targets `CLOSED`, so the
+corpus gates the under-closing direction only. This row is the instrument for the other
+direction.
+
+The concrete divergence it guards against: the `unprocessed` filter in `applyRule`'s `.untlNeg`
+arm suppresses re-firing at `t'` only because **every** emitted arm places `¬event` or `¬guard`
+at `t'` *itself*. Any repair that moves the guard failure to a fresh interpolant strictly inside
+`(l.time, t')` — which is what the semantics actually licenses — leaves `t'` passing the filter,
+and the arm re-fires at `t'` without bound, minting one time per re-fire.
+
+**Why this is a pair of rows and not one pinned number.** The obvious design — run to a fixed
+fuel and pin a single count, treating any growth as divergence — does not survive contact with
+this engine. Measured below: following `expandOnce`'s first arm from `bB`, the count is
+`2 + k/4` and *does not saturate* through `k = 128`. That growth is real but it is **not**
+`untlNeg`'s: the control row, the identical measurement on the same branch with the negative
+`Until` deleted outright, grows **faster** (`44` against `34` at `k = 128`). It is ordinary
+seriality-driven witness minting — `serialityRule` puts `T(F⊤)`/`T(P⊤)` on the branch and the
+temporal existentials mint a witness for each — and the negative `Until` slightly *slows* it by
+spending steps on co-decomposition instead. First-arm-following is also not the real search,
+which explores every arm and is bounded by fuel and `maxBranches`.
+
+So the gate is the **relation between the two profiles**, not either profile alone. Today the
+triggered profile sits strictly *below* the control from `k = 16` on. A passive-arm repair that
+re-fires would push it *above*. Both are pinned, so that crossover is a diff rather than a
+judgement call — and either profile changing on its own localises the cause to the trigger or to
+the engine's background minting. -/
+
+/-- Follow `expandOnce` for `k` steps, taking the first arm at every split, and count the times
+the resulting branch knows. -/
+def stepTimes : Nat → Branch → TimeOrdering → Nat
+  | 0, b, _ => (Branch.knownTimes b).length
+  | k + 1, b, ord =>
+    match expandOnce b ord .Base with
+    | (.extended b', ord') => stepTimes k b' ord'
+    | (.split (b' :: _), ord') => stepTimes k b' ord'
+    | (.splitOrdered ((b', o') :: _), _) => stepTimes k b' o'
+    | (_, _) => (Branch.knownTimes b).length
+
+/-! Triggered profile, at `k = 0, 4, 8, 16, 32, 64, 128`. -/
+/-- info: [2, 3, 4, 6, 10, 18, 34] -/
+#guard_msgs in
+#eval [stepTimes 0 bB ordB, stepTimes 4 bB ordB, stepTimes 8 bB ordB, stepTimes 16 bB ordB,
+       stepTimes 32 bB ordB, stepTimes 64 bB ordB, stepTimes 128 bB ordB]
+
+/-- The same branch with the negative `Until` **removed** — the control for row B5. -/
+def bBctl : Branch := [ SignedFormula.pos x { world := 0, time := 1 } ]
+
+/-! Control profile, same fuels. Entry-wise `≥` the triggered profile from `k = 16` on; a
+passive-arm repair that re-fires reverses that. -/
+/-- info: [1, 3, 4, 7, 12, 23, 44] -/
+#guard_msgs in
+#eval [stepTimes 0 bBctl ordB, stepTimes 4 bBctl ordB, stepTimes 8 bBctl ordB,
+       stepTimes 16 bBctl ordB, stepTimes 32 bBctl ordB, stepTimes 64 bBctl ordB,
+       stepTimes 128 bBctl ordB]
+
+/-! ### Row B5′ — the comparison itself, stated as the single fact the gate turns on -/
+/-- info: true -/
+#guard_msgs in
+#eval [16, 32, 64, 128].all fun k => stepTimes k bB ordB ≤ stepTimes k bBctl ordB
+
+/-! ### Row B6 — the post-blocking pass still mints nothing on this branch
+
+`expandOnceNoFresh` exists to finish label-free work "without extending the time structure the
+blocking decision was made against", and it enforces that by rejecting any candidate rule whose
+returned ordering is longer than the one it was given. That test reads `applyRule`'s **second
+component**, so a rule that hides a fresh time inside a per-arm ordering while returning the
+unextended ordering outright would slip straight through it — and `saturateBlocked` carries the
+same test and the same exposure. These two rows pin both halves of the guard against exactly
+that: the constructor it comes back with, and whether the outer ordering reports growth. -/
+/-- info: false -/
+#guard_msgs in
+#eval (expandOnceNoFresh bB ordB .Base).1 matches .splitOrdered _
+
+/-- info: false -/
+#guard_msgs in
+#eval (expandOnceNoFresh bB ordB .Base).2.constraints.length > ordB.constraints.length
 
 /-! ## Section C — the verdict on an invalid `Until` implication
 
