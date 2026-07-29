@@ -74,13 +74,18 @@ one, so the base family never needs restating.
 
 ## Status
 
-Landed: the framework, and the eight truth-functional rules (`andPos`, `andNeg`, `orPos`,
-`orNeg`, `impPos`, `impNeg`, `negPos`, `negNeg`).
+Landed: the framework; the eight truth-functional rules (`andPos`, `andNeg`, `orPos`, `orNeg`,
+`impPos`, `impNeg`, `negPos`, `negNeg`); and the three *label-preserving* modal rules (`boxPos`,
+`diamondNeg`, `boxTemporal`).
 
-Still owed by sub-phase 7.2: the four S5 modal rules and `boxTemporal`; the eight temporal
-quantifier rules; `untlPos`/`untlNeg`/`sncePos`/`snceNeg`; `orderTrichotomy`; the two dense,
-three discrete and three Dedekind rules; and the assembly
+Still owed by sub-phase 7.2: the two fresh-world modal rules `boxNeg` and `diamondPos`; the eight
+temporal quantifier rules; `untlPos`/`untlNeg`/`sncePos`/`snceNeg`; `orderTrichotomy`; the two
+dense, three discrete and three Dedekind rules; and the assembly
 `∀ r ∈ allRulesForFC fc, RuleSound _ r` via `RuleSpec.mem_allRulesForFC_iff`.
+
+`boxNeg` and `diamondPos` are held back deliberately rather than merely unfinished — see
+"What `boxNeg` and `diamondPos` still owe" at the end of this file for the open obligation and
+for what measurement has and has not settled about it.
 
 ## References
 
@@ -118,8 +123,11 @@ def SatAt (M : TaskModel F) (Om : Set (WorldHistory F))
 /--
 An interpretation satisfying a branch together with its abstract time ordering.
 
-The three fields are independent obligations and all three are load-bearing:
+The four fields are independent obligations and all four are load-bearing:
 
+* `shiftClosed` — `Ω` is shift-closed. Not a convenience: it is the *only* hypothesis all four
+  validity notions impose on `Ω`, and it is what makes `□` behave as the universal modality
+  across times as well as histories. `boxTemporal` is unsound without it.
 * `histMem` — every branch world lands in `Ω`. `□` quantifies over `Ω`, so without this a
   `T(□A)` on the branch would say nothing about the branch's own other worlds.
 * `ordResp` — every recorded ordering constraint is a genuine strict inequality in `D`. This is
@@ -129,6 +137,8 @@ The three fields are independent obligations and all three are load-bearing:
 structure SatState (M : TaskModel F) (Om : Set (WorldHistory F))
     (hist : WorldIndex → WorldHistory F) (tv : TimeIndex → D)
     (b : Branch) (ord : TimeOrdering) : Prop where
+  /-- The admissible set is shift-closed, as every validity notion requires of it. -/
+  shiftClosed : ShiftClosed Om
   /-- Every branch world is interpreted by an admissible history. -/
   histMem : ∀ w, hist w ∈ Om
   /-- Every abstract ordering constraint is a genuine strict inequality. -/
@@ -142,7 +152,7 @@ theorem SatState.mono {M : TaskModel F} {Om : Set (WorldHistory F)}
     {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b b' : Branch} {ord : TimeOrdering}
     (h : SatState M Om hist tv b ord) (hsub : ∀ sf ∈ b', sf ∈ b) :
     SatState M Om hist tv b' ord :=
-  ⟨h.histMem, h.ordResp, fun sf hsf => h.sat sf (hsub sf hsf)⟩
+  ⟨h.shiftClosed, h.histMem, h.ordResp, fun sf hsf => h.sat sf (hsub sf hsf)⟩
 
 /-- Build a state on `fs ++ b` from a state on `b` plus satisfaction of each added formula. The
 shape every non-branching rule's proof ends in. -/
@@ -151,7 +161,7 @@ theorem SatState.append {M : TaskModel F} {Om : Set (WorldHistory F)}
     {fs : List SignedFormula} (h : SatState M Om hist tv b ord)
     (hfs : ∀ sf ∈ fs, SatAt M Om hist tv sf) :
     SatState M Om hist tv (fs ++ b) ord :=
-  ⟨h.histMem, h.ordResp, by
+  ⟨h.shiftClosed, h.histMem, h.ordResp, by
     intro sf hsf
     rcases List.mem_append.mp hsf with h' | h'
     · exact hfs sf h'
@@ -492,5 +502,174 @@ theorem ruleSound_negNeg : RuleSound carrierBase .negNeg := by
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hg
       rcases hg with rfl
       exact hψ
+
+/-!
+## The S5 modal family
+
+`□` quantifies over the admissible set `Ω`, and `SatState.histMem` puts every branch world inside
+`Ω`. That is the whole content of the two *universal* modal rules: `boxPos` reads `T(□A)` at one
+label and asserts `T(A)` at every known world at the same time, and `diamondNeg` does the mirror
+image for `F(◇A)`. Neither mints a label, neither touches the ordering, and neither needs
+shift-closure.
+
+`boxTemporal` does need shift-closure, and it is the first rule here that does. `T(□A) → T(GA)`
+is not a modal-logic step at all: it holds because `Ω` shift-closed makes `□` reach across
+*times* as well as histories, which is the semantic content of the `modal_future` (MF) axiom the
+rule declares as its grounding (`RuleSpec.ruleAxioms`).
+-/
+
+/-- `◇A` is `¬□¬A`. -/
+theorem asDiamond?_eq_some {φ ψ : Formula} (h : asDiamond? φ = some ψ) :
+    φ = .imp (.box (.imp ψ .bot)) .bot := by
+  unfold asDiamond? at h
+  split at h <;> simp_all
+
+/--
+**Shift-closure carries `□` into `G`.** If `A` holds at time `t` in every admissible history, it
+holds at every *later* time of any one admissible history.
+
+The witness is the shifted history `τ ⊕ (s - t)`, admissible by shift-closure, at which truth at
+`t` is truth at `s` in `τ` (`TimeShift.time_shift_preserves_truth`). This is the point form of
+`Metalogic.Soundness.modal_future_valid`, which states the same fact as the validity of
+`□A → □(GA)`; it is derived here from the same primitive rather than imported, so that the
+decidability tree acquires no import edge into the soundness tree.
+-/
+theorem truthAt_allFuture_of_box {M : TaskModel F} {Om : Set (WorldHistory F)}
+    (hsc : ShiftClosed Om) {τ : WorldHistory F} (hτ : τ ∈ Om) {t : D} {ψ : Formula}
+    (h : ∀ σ ∈ Om, TruthAt M Om σ t ψ) : TruthAt M Om τ t ψ.allFuture := by
+  rw [Truth.future_iff]
+  intro s _
+  exact (TimeShift.time_shift_preserves_truth M Om hsc τ t s ψ).mp
+    (h (WorldHistory.timeShift τ (s - t)) (hsc τ hτ (s - t)))
+
+/-- **Shift-closure carries `□` into `H`.** The past mirror of `truthAt_allFuture_of_box`; the
+shift argument is insensitive to the direction of the inequality, so the two proofs differ only
+in which characterisation lemma they open with. -/
+theorem truthAt_allPast_of_box {M : TaskModel F} {Om : Set (WorldHistory F)}
+    (hsc : ShiftClosed Om) {τ : WorldHistory F} (hτ : τ ∈ Om) {t : D} {ψ : Formula}
+    (h : ∀ σ ∈ Om, TruthAt M Om σ t ψ) : TruthAt M Om τ t ψ.allPast := by
+  rw [Truth.past_iff]
+  intro s _
+  exact (TimeShift.time_shift_preserves_truth M Om hsc τ t s ψ).mp
+    (h (WorldHistory.timeShift τ (s - t)) (hsc τ hτ (s - t)))
+
+/-- `T(□A) → T(A)` at every known world, same time. Persistent: the source stays. -/
+theorem ruleSound_boxPos : RuleSound carrierBase .boxPos := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => cases φ <;> simp [applyRule, SatResult]
+  case pos =>
+    cases φ with
+    | box ψ =>
+      have hsrc : SatAt M Om hist tv ⟨.pos, Formula.box ψ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, TruthAt] at hsrc
+      simp only [applyRule]
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro g hg
+        rw [List.mem_filterMap] at hg
+        obtain ⟨w, _, hw⟩ := hg
+        split at hw
+        · exact absurd hw (by simp)
+        · rw [Option.some.injEq] at hw
+          subst hw
+          exact hsrc (hist w) (hst.histMem w)
+    | _ => simp [applyRule, SatResult]
+
+/-- `F(◇A) → F(A)` at every known world, same time. The mirror of `boxPos`: `F(◇A)` is
+`T(□¬A)` after unfolding `◇`, so the same `histMem` step does the work. -/
+theorem ruleSound_diamondNeg : RuleSound carrierBase .diamondNeg := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case pos => simp [applyRule, SatResult]
+  case neg =>
+    cases hA : asDiamond? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ψ =>
+      have hφ : φ = .imp (.box (.imp ψ .bot)) .bot := asDiamond?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.neg, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ, TruthAt] at hsrc
+      have hbox : ∀ σ ∈ Om, TruthAt M Om σ (tv l.time) ψ → False := by
+        by_contra hc
+        exact hsrc hc
+      simp only [applyRule, hA]
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro g hg
+        rw [List.mem_filterMap] at hg
+        obtain ⟨w, _, hw⟩ := hg
+        split at hw
+        · exact absurd hw (by simp)
+        · rw [Option.some.injEq] at hw
+          subst hw
+          exact hbox (hist w) (hst.histMem w)
+
+/-- `T(□A) → T(GA), T(HA)` at the same label. The one rule in this family that consumes
+shift-closure, via `truthAt_allFuture_of_box` and `truthAt_allPast_of_box`. -/
+theorem ruleSound_boxTemporal : RuleSound carrierBase .boxTemporal := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => cases φ <;> simp [applyRule, SatResult]
+  case pos =>
+    cases φ with
+    | box ψ =>
+      have hsrc : SatAt M Om hist tv ⟨.pos, Formula.box ψ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, TruthAt] at hsrc
+      have hG : TruthAt M Om (hist l.world) (tv l.time) ψ.allFuture :=
+        truthAt_allFuture_of_box hst.shiftClosed (hst.histMem l.world) hsrc
+      have hH : TruthAt M Om (hist l.world) (tv l.time) ψ.allPast :=
+        truthAt_allPast_of_box hst.shiftClosed (hst.histMem l.world) hsrc
+      simp only [applyRule]
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro g hg
+        rw [List.mem_filter] at hg
+        have hg' := hg.1
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hg'
+        rcases hg' with rfl | rfl
+        · exact hG
+        · exact hH
+    | _ => simp [applyRule, SatResult]
+
+/-!
+## What `boxNeg` and `diamondPos` still owe
+
+Both fresh-world rules emit three groups of formulas at the minted world `branch.nextWorld`:
+
+1. the **witness** — `F(A)` for `boxNeg`, `T(A)` for `diamondPos`;
+2. the **modal propagation** — every `T(□B)` and `F(◇B)` on the branch, copied to the fresh
+   world at its own time;
+3. the **cross-modal-temporal propagation** — every `T(GB)`, `T(HB)`, `F(FB)`, `F(PB)`,
+   `F(U(B,C))` and `F(S(B,C))` *at the source label's time*, copied to the fresh world at that
+   same time.
+
+Groups 1 and 2 are exactly the argument `boxPos`/`diamondNeg` already make, plus a one-point
+update of `hist` at an index absent from the branch (`Tableau.not_mem_of_world_nextWorld`).
+Group 3 is not: `T(GB)` at one history says nothing *prima facie* about another history, since
+`G` is evaluated inside a single history and the witness `σ` is chosen for the witness condition
+alone. Discharging it means showing the witness can always be chosen to satisfy the copied
+temporal formulas too, and no such argument is in the tree.
+
+**What was measured, and what it settled.** `Tests/BimodalTest/CrossWorldPropagationProbe.lean`
+runs the full decision procedure on the three shapes that would expose an unsound group-3 copy as
+a wrong *verdict* — `(¬F p) → □(¬F p)`, `(G p) → □(G p)` and `(¬P p) → □(¬P p)`, each invalid
+because `Ω` may hold a history with a future (resp. past) `p` while `τ` has none. All three report
+`false`, the correct answer, alongside a `true` control and a `false` control. So the suspicion
+that group 3 makes the engine *decide wrongly* is **not** confirmed, and nothing here is recorded
+as an engine defect: there is no counterexample, and under the defect bar a suspicion without one
+is not a finding.
+
+What the probe does *not* settle is the proof obligation. "No wrong verdict on three shapes" is
+not "the step preserves satisfiability", and the two are independent — a step can fail to
+preserve satisfiability while every branch it spoils happens to be closable another way. Both
+rules are therefore left open with the obligation stated rather than proved with a gap, and the
+next dispatch on them should start from the probe, not from this note.
+-/
 
 end FormalSystem.Metalogic.Decidability.Verified
