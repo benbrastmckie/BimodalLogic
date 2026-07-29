@@ -208,22 +208,38 @@ private def refuteBranch : Branch :=
 /-! ## The rows
 
 Six shapes at `.Base` matching report 07's stationarity and region-fill probes row for row,
-then three at `.Dense`. Read each as: the branch's time order is total, every region of every
-world has an eligible label, and the per-region counts show which labels the demands exclude. -/
+then three at `.Dense`. Read each as: the branch's time order is total, and the per-region
+counts show which labels the demands exclude.
+
+**The two-world rows (A, B, C, H) moved** when the unsound cross-world temporal copies were
+deleted from `.boxNeg`/`.diamondPos`. The minted world's regions lose their eligible labels
+because it no longer receives any `T(G·)`/`T(H·)`, so `gate` and `check` go false and its
+candidate vector collapses to zeros. `total` is unmoved throughout — the deletion did not
+disturb the time order, only the minted world's formula content. The single-world rows (D, E, F,
+G, I) are entirely unmoved. See `BoxNegPreservationProbe.lean` row 3 for the soundness
+measurement and `Verified/Bridge/BoxSaturation.lean`'s `BoxAnchored` rationale for the
+consequence. -/
 
 -- A. The minimal witness: one box, one diamond, an unrelated consequent.
-/-- info: "OPEN |W|=2 |T|=7 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 3, 3, 3, 3]]" -/
+-- Was `gate=true check=true` with world 1's vector `[3, 3, 3, 3, 3, 3, 3, 3]`.
+/-- info: "OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
 
--- B. The witness world carries a temporal universal of its own. Its regions fall to a single
--- eligible label from rank 4 up — the `G q` in the minted world biting.
-/-- info: "OPEN |W|=2 |T|=7 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 1, 1, 1, 1]]" -/
+-- B. The witness world carries a temporal universal of its own. Its regions used to fall to a
+-- single eligible label from rank 4 up — the `G q` in the minted world biting. That `T(G q)`
+-- reached the minted world only via the deleted copy, so the row now collapses to A's: no
+-- eligible label anywhere in world 1.
+-- Was `gate=true check=true` with world 1's vector `[3, 3, 3, 3, 1, 1, 1, 1]`.
+/-- info: "OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r)
 
--- C. The same shape under `.Dense`, where the density rules mint further times.
-/-- info: "OPEN |W|=2 |T|=10 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]]" -/
+-- C. The same shape under `.Dense`, where the density rules mint further times. The one moved
+-- two-world row that keeps its gate: `|T|` shrinks `10 → 8` (two times the removed copies used
+-- to force are no longer minted), and world 1's per-region count falls `3 → 1` rather than to
+-- `0`, so an eligible label survives everywhere. Was `|T|=10` with both vectors all-`3`.
+/-- info: "OPEN |W|=2 |T|=8 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3], [1, 1, 1, 1, 1, 1, 1, 1, 1]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r) 200 .Dense
 
@@ -250,8 +266,11 @@ world has an eligible label, and the per-region counts show which labels the dem
 #guard_msgs in
 #eval probe (.imp (.allFuture p) p) 200 .Dense
 
--- H. Row B under `.Dense`: the single-candidate stretch survives the extra minted times.
-/-- info: "OPEN |W|=2 |T|=10 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1]]" -/
+-- H. Row B under `.Dense`. The single-candidate stretch was the deleted copy's `T(G q)` biting;
+-- with the copy gone world 1 has no eligible label at any rank. Unlike row C, `|T|` is unmoved
+-- at `10` here — the `◇(G q)` shape still forces the same density mints.
+-- Was `gate=true check=true` with world 1's vector `[3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1]`.
+/-- info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r) 200 .Dense
 

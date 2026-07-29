@@ -1,0 +1,4 @@
+OLEAN_BEFORE=399
+OLEAN_AFTER=399
+RESULT=BoxNegReachabilityProbe 3437s, 5 verdict-class mismatches, no infra errors
+TableauConformance: olean present, built 23:22 post-fix (engine olean 22:43); not rebuilt this run = lake trace current

@@ -18,19 +18,37 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
 * `boxGridCheck` — `T(□φ)` puts `T(φ)` at every known label. This is what the truth lemma's `box`
   case consumes, and `sat_box_grid_of_anchored` derives it from `BoxAnchored`.
 
-The rows below run the engine and evaluate all three on the resulting open saturated branch. They
-are the evidence for the correction: the spread is **false** on branches the engine actually
-builds, while the anchor and the grid are both **true** on those same branches. Without them the
-choice between the two invariants is a matter of reading `Tableau.lean` carefully enough, which is
-precisely what went wrong twice before (`BoxContextClosed`, then `BoxTemporalSpread`).
+The rows below run the engine and evaluate all three on the resulting open saturated branch.
+
+## What these rows used to say, and what they say now
+
+They were originally the evidence for a correction: the spread was **false** on branches the
+engine actually builds, while the anchor and the grid were both **true** on those same branches,
+so `BoxAnchored` was the invariant to carry and `BoxTemporalSpread` was not.
+
+**The anchor and the grid are now false as well** (rows A, B, C). This is not a new defect. The
+six group-3 temporal-copy blocks in `.boxNeg`/`.diamondPos` were the *only* route by which a
+`T(Gφ)`/`T(Hφ)` could reach a freshly minted world, and they were deleted as unsound — they
+copied temporal formulas verbatim across worlds, conflating "true along the history being built"
+with "true at this instant along every admissible history". See
+`Tests/BimodalTest/BoxNegPreservationProbe.lean` row 3 for the soundness measurement, and
+`Verified/Bridge/BoxSaturation.lean`'s `BoxAnchored` rationale for the consequence.
+
+So these rows now measure the *cost* of that repair rather than a choice between invariants: on
+a multi-world branch there is no longer any time at which a minted world carries `T(φ)`, `T(Gφ)`
+and `T(Hφ)` together, so `boxAnchoredCheck` is `false`, and `boxGridCheck` — which
+`sat_box_grid_of_anchored` derives from it — goes with it. `hBA : boxAnchoredCheck b = true` is
+still carried, never unfolded, by the truth-lemma family, so nothing breaks at typecheck; what
+is lost is that the hypothesis is no longer dischargeable by computation on real engine output.
+Choosing the repair belongs with the truth lemma, not here.
 
 ## Why the spread fails, in one sentence
 
-The world-minting rules copy `allFuturePosAtTime l.time` at the **triggering** label's time only,
-while `boxDiamondPersistence` relabels `T(□φ)` into every time the run later mints in that world —
-so the box formula spreads across times faster than its temporal consequences spread across
-worlds. Note that row A mints its world at the *same* time as the box formula sits at, and still
-fails: this is not the cross-time-mint case, it is the later persistence.
+`boxDiamondPersistence` relabels `T(□φ)` into every time the run later mints in that world, while
+nothing propagates its temporal consequences across worlds at all — so the box formula spreads
+across times while its consequences do not spread across worlds. Note that row A mints its world
+at the *same* time as the box formula sits at, and still fails: this is not the cross-time-mint
+case.
 
 ## Cost
 
@@ -66,22 +84,32 @@ def probe (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String
 
 /-! ## The rows
 
-Read each as: the spread is false, the anchor is true, and the grid — the thing actually
-needed — is true. -/
+Read each as: on a two-world branch all three conditions are false. `|W|=2` is what makes them
+so — the minted world receives the box formula's `T(φ)` from `boxProps` but no `T(Gφ)`/`T(Hφ)`
+from anywhere, because the rules that used to copy them were unsound and were removed. Rows D
+and E below are single-world and unaffected.
+
+Each row's `anchor` and `grid` moved `true → false` with the deletion, and row C's `|T|` moved
+`10 → 8`; `spread` and `|W|` are unmoved. -/
 
 -- A. The minimal witness: one box, one diamond, an unrelated consequent. The world is minted at
 -- the same time the box sits at, so the failure is purely the later time-minting.
-/-- info: "OPEN spread=false anchor=true grid=true |W|=2 |T|=7" -/
+-- Was `anchor=true grid=true`.
+/-- info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=7" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
 
--- B. The witness world carries a temporal universal of its own.
-/-- info: "OPEN spread=false anchor=true grid=true |W|=2 |T|=7" -/
+-- B. The witness world carries a temporal universal of its own. Was `anchor=true grid=true`.
+-- Note this row is unmoved from A even though its `◇` argument is itself a `G`: that `T(G q)`
+-- never reached the minted world either.
+/-- info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=7" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r)
 
 -- C. The same shape under `.Dense`, where the density rules mint further times.
-/-- info: "OPEN spread=false anchor=true grid=true |W|=2 |T|=10" -/
+-- Was `anchor=true grid=true |T|=10`. `|T|` shrinks to `8` because the two times that the
+-- removed temporal copies used to force into existence at the minted world are no longer minted.
+/-- info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=8" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r) 200 .Dense
 

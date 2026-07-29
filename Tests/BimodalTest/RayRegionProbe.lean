@@ -133,9 +133,14 @@ is whether the upper ray's chosen label witnesses it.
 #guard_msgs in
 #eval probe (.imp (.allFuture p) p)
 
--- D. `(□p ∧ ◇q) → r`, row A of the 7.1a corpus. Two worlds, and the two rays of the second
--- world choose a different label from the first's — the choice is per world, as intended.
-/-- info: "OPEN |W|=2 |T|=7 check=true rayUp=true rayDn=true rays=[(2, 2), (5, 5)]" -/
+-- D. `(□p ∧ ◇q) → r`, row A of the 7.1a corpus. The only two-world row in this file, and the
+-- only one the cross-world temporal-copy deletion moved. World `0`'s ray is unchanged at
+-- `(2, 2)`; the minted world `1` drops from `(5, 5)` to `(0, 0)` — it no longer has an eligible
+-- region label at all, because the `T(G·)`/`T(H·)` formulas that used to be copied into it are
+-- no longer emitted (they were unsound; see `BoxNegPreservationProbe.lean` row 3). With no
+-- eligible label the region gate, and both ray self-demands with it, go false.
+-- Was `check=true rayUp=true rayDn=true rays=[(2, 2), (5, 5)]`. `|W|` and `|T|` are unmoved.
+/-- info: "OPEN |W|=2 |T|=7 check=false rayUp=false rayDn=false rays=[(2, 2), (0, 0)]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
 

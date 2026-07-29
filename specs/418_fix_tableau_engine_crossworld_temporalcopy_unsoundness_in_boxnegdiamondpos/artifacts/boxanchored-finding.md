@@ -321,3 +321,50 @@ across at least `BoxSaturation.lean` and `RegionLabel.lean`, not just to the `bo
 the branch has the property; it is the defect propagating into the verification layer. The
 corpus was measuring the bug and reporting it as health. That is the strongest available argument
 that these rows moved for the right reason.
+
+---
+
+## 7. Phase 7 addendum — the corpus now pins the gap rather than the bug
+
+The moved rows enumerated in §6 have been realigned to their measured values, so the gap this
+document describes is now **pinned by the test corpus** instead of being a prose claim. Concretely,
+task 165 inherits a corpus that asserts, and will keep asserting:
+
+| Where | What is now pinned |
+|---|---|
+| `BoxSpreadProbe.lean` rows A, B, C | `anchor=false grid=false` on every two-world branch |
+| `RegionGateProbe.lean` rows A, B, H | the minted world's candidate vector is all-zero — no eligible region label at any rank |
+| `RegionGateProbe.lean` row C | the `.Dense` exception: count falls `3 → 1`, not to `0`, so `gate`/`check` survive |
+| `RayRegionProbe.lean` row D | the minted world's ray is `(0, 0)` |
+| `TemporalWitnessProbe.lean` row D ×6 | `regionLabelCheck=false`, and the ray self-demands with it |
+| `BoxNegPreservationProbe.lean` rows 1, 3, 4 | `.boxNeg` emits the witness alone and manufactures no opposite-sign pair |
+
+**This changes the shape of the inherited obligation in a useful way.** Any repair option from §5
+that restores temporal content at the minted world — (a) or (b) — will move this whole family of
+rows back, in one commit, and the corpus will say so row by row. Option (c), weakening what the
+bridge demands, will leave them false and must instead justify each one. The corpus is now a
+decision instrument for that choice rather than a casualty of it.
+
+### The `boxAnchoredCheck` gate is *not* the only thing lost, and the corpus now shows the width
+
+`regionLabelCheck` (`RegionLabel.lean`) and the two ray self-demands moved alongside
+`boxAnchoredCheck`/`boxGridCheck`. All four are branch-level gates quantifying over the minted
+world, and all four failed for the same single reason: the minted world receives the box
+formula's `T(φ)` from `boxProps` and nothing else — no `T(Gφ)`, no `T(Hφ)`. A repair aimed only
+at `BoxAnchored` would leave the region-label and ray families still false.
+
+### One new corpus row was added, and it pins what is still owed
+
+`CrossWorldPropagationProbe.lean` row F pins the `decide` **constructor** on `(G p) → □(G p)`:
+
+```
+(isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndecided)
+  = (false, false, true, false, true)
+```
+
+Pre-fix this was `(false, false, false, true, false)` — `extractionFailed`, which by R7 semantics
+asserts the formula is valid. It is not. The five pre-existing rows in that file all call
+`isValid`, which collapses `.invalid`, `.fuelExhausted` and `.extractionFailed` to a single
+`false`, so none of them could see this move; row B in particular passed green across the entire
+fix without moving. Row F exists so that the outcome still owed — `.invalid` with an extracted
+countermodel — cannot land, or fail to land, unnoticed.

@@ -7,49 +7,66 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Decidability.DecisionProcedure
 
 /-!
-# Is the `boxNeg` counterexample branch REACHABLE by the engine's own schedule?
+# The `boxNeg` counterexample branch WAS reachable — and the copy that spoiled it is now gone
 
-`Tests/BimodalTest/BoxNegPreservationProbe.lean` measured that `applyRule .boxNeg` maps the
+`Tests/BimodalTest/BoxNegPreservationProbe.lean` measured that `applyRule .boxNeg` mapped the
 satisfiable branch `T(G p) @ (w₀,t₀)`, `F(□(G p)) @ (w₀,t₀)` to an unsatisfiable one, refuting
-`RuleSound carrierBase .boxNeg` as stated. That left one question open, and the whole shape of
-sub-phase 7.2's assembly turns on it: **does the engine ever present such a branch to `boxNeg`?**
+`RuleSound carrierBase .boxNeg` as stated. This file answered the question that left open —
+**does the engine ever present such a branch to `boxNeg`?** — and the answer was yes. That
+closed the last escape route, and the offending emission was subsequently deleted from the
+engine.
 
-The standing answer was "no — `T(G p)` is an `imp`, and the propositional rules are scheduled
-first, so an undecomposed `T(G p)` never stands beside `F(□(G p))` when `boxNeg` fires." That
-answer makes a prediction this file tests, and it rests on two claims that are measured here
-separately:
+**Everything below is written so the past tense describes the defect and the present tense
+describes the engine as it now stands.** Rows 1-5 are unmoved by the repair; rows 6-10 moved,
+and their movement is the repair measured from the reachability side.
 
-1. that the propositional rules precede `boxNeg` in the schedule; and
-2. that decomposing `T(G p)` removes it from the branch.
+## Part 1-2 — the schedule and additivity claims, both still false, both unmoved
 
-Both claims are measured false below, and a third thing is measured that was not in question.
+The standing defence was "no — `T(G p)` is an `imp`, and the propositional rules are scheduled
+first, so an undecomposed `T(G p)` never stands beside `F(□(G p))` when `boxNeg` fires." It
+rested on two claims, and both are false independently of the repair:
 
-Claim 1 is false of the *branching* propositional rules: `allRules` schedules `boxNeg` ahead of
-`impPos`, `andNeg` and `orPos` (rows 2-3). Claim 2 is false outright: `applyRule`'s `.linear`
-output is read by `expandOnceUnblocked` as `formulas ++ b`, so expansion is **additive** and the
-source formula stays on the branch (row 4); and `boxNeg`'s `tempGProps` block reads
-`branch.allFuturePosAtTime`, a **shape** filter over the branch list that is indifferent to
-whether a formula has been expanded. So when `boxNeg` fires, the copy fires with it — and it does
-fire, on `b0` itself, under the engine's own selector (rows 5-6).
+1. **The schedule claim is false of the *branching* propositional rules.** `allRules` schedules
+   `boxNeg` ahead of `impPos`, `andNeg` and `orPos` (rows 2-3), and ahead of `allFuturePos`
+   (row 3).
+2. **Expansion is additive, so decomposition removes nothing.** `applyRule`'s `.linear` output is
+   read by `expandOnceUnblocked` as `formulas ++ b`, so the source formula stays on the branch
+   (row 4).
 
-## The consequence, which is larger than the reachability question
+Rows 1-5 all still hold. In particular **row 5 still reads `true`**: `boxNeg` does fire on this
+branch and does mint world `1` carrying the witness `F(G p)`. The repair did not make the branch
+unreachable, and was never meant to — group 1, the existential witness, is sound and untouched.
 
-Because the counterexample branch is reachable, the branch closes (rows 7-8, on the clash and not
-on a negated axiom), and `buildTableau` returns `allClosed` for `(G p) → □(G p)` (row 9) — a
+## Part 3-4 — what the repair changed
+
+What used to arrive beside the witness was `T(G p)`, copied into the fresh world by the
+`tempGProps` block: a **shape** filter (`branch.allFuturePosAtTime`) over the branch list,
+indifferent to whether a formula had been expanded, and indifferent to which world it came from.
+Those six group-3 blocks in each of `.boxNeg`/`.diamondPos` have been deleted as unsound. Each
+rule now emits `.linear (witness :: boxProps ++ diaProps)`.
+
+So the clash is gone (row 6), the branch the engine builds is **open** rather than closed
+(rows 7-8), and `buildTableau` no longer returns `allClosed` for `(G p) → □(G p)` (row 9) — a
 formula that is **invalid**: `box φ` is `∀ σ ∈ Ω, TruthAt … σ t φ`, quantifying over admissible
 histories at the fixed time, while `G p` is evaluated along `τ` alone, so an `Ω` holding one
-history with `p` throughout the future and one without refutes it. The tableau reports a valid
-formula where there is none.
+history with `p` throughout the future and one without refutes it. The tableau no longer reports
+a valid formula where there is none.
 
-`Tests/BimodalTest/BoxNegPreservationProbe.lean` read `isValid ((G p) → □(G p)) = false` as the
-*correct verdict on an invalid formula* and concluded on that basis that "no engine defect is
-claimed here and none is measured". Rows 10-12 measure what that `false` is:
-`decide` returns **`extractionFailed`** — the tableau closed and proof extraction then failed —
-with `isInvalid = false` and `getCountermodel? = none`. `isValid`'s `false` conflates "judged
-invalid" with "claimed valid, then could not produce the proof", and only the second happened.
+## What is fixed, and what is still owed
 
-So the reachability escape is closed: there is no branch invariant that admits what the engine
-builds and excludes the refuting branch, because they are the same branch.
+`decide` moved from **`extractionFailed`** to **`fuelExhausted`** (row 10). That is a real
+improvement and not a cosmetic one: by this codebase's R7 semantics `isKnownValid` is true for
+`extractionFailed`, so the old value was an assertion that this invalid formula is **valid**.
+The new value is recognised by `isUndecided` as honest ignorance. A wrong answer became no
+answer.
+
+**But the positive refutation is not here.** The plan for this repair required `buildTableau` to
+return `.hasOpen` and `decide` to return `.invalid` with a countermodel. At fuel 1000 it returns
+neither: the branch stays open long enough to exhaust the budget without saturating (row 9's
+`(0, 0)`), and rows 11-12 still pin no countermodel. Fuel 30, 60, 400 and 1000 all agree. That
+is a **resource/completeness** question — see `Verified/Termination/Fuel.lean`'s bounds — and it
+is recorded here rather than papered over. Row 10 exists precisely so that the day it becomes
+`.invalid` is loud.
 -/
 
 namespace BimodalTest.BoxNegReachabilityProbe
@@ -144,24 +161,34 @@ The witness `F(G p)` stands at the freshly minted world `1`. So the schedule pre
 #guard_msgs in
 #eval reached.any fun bo => bo.1.contains (SignedFormula.neg gp { world := 1, time := 0 })
 
-/-! ### Row 6 — and the `tempGProps` copy arrives beside it, producing the clash.
+/-! ### Row 6 — the `tempGProps` copy no longer arrives beside it, so there is no clash.
 
-This is the refutation of the reachability claim. The branch the previous measurement showed to
-be mapped from satisfiable to unsatisfiable is a branch the engine actually builds. -/
-/-- info: true -/
+**Was `true`** — and that `true` was the refutation of the reachability claim: the branch the
+preservation probe showed to be mapped from satisfiable to unsatisfiable was a branch the engine
+actually built. With the six group-3 blocks deleted, the minted world receives the witness alone
+and no `T(G p)` from any other world. Compare `BoxNegPreservationProbe.lean` rows 3 and 4, which
+measure the same absence at the `applyRule` level. -/
+/-- info: false -/
 #guard_msgs in
 #eval reached.any fun bo => clashAtFreshWorld bo.1
 
-/-! ### Row 7 — every reached branch is closed, and none is open. -/
-/-- info: (1, 0) -/
+/-! ### Row 7 — the one reached branch is now **open**, not closed.
+
+**Was `(1, 0)`** — one branch, none open. The branch count is unchanged; what changed is that it
+no longer closes. This is the repair seen at the branch level, and it is the single most direct
+statement of it in this file: the engine was closing a branch it had no grounds to close. -/
+/-- info: (1, 1) -/
 #guard_msgs in
 #eval (reached.length, (reached.filter fun bo => !isClosed bo.1 .Base).length)
 
-/-! ### Row 8 — and the closure reason is the clash itself, not a negated axiom.
+/-! ### Row 8 — and there is no closure reason at all.
 
-`1` tags `contradiction`, `2` tags `botPos`, `3` tags `axiomNeg`. The label reported is the
-minted world, at the source time. -/
-/-- info: some (1, 1, 0) -/
+**Was `some (1, 1, 0)`** — a `contradiction` at the minted world `1`, at the source time `0`,
+i.e. the `tempGProps` clash itself rather than a negated axiom. It is now `none`: nothing on the
+branch closes it. The tags `1`/`2`/`3` for `contradiction`/`botPos`/`axiomNeg` are retained so
+that a future closure by a *different* route would be reported rather than silently read as the
+old one. -/
+/-- info: none -/
 #guard_msgs in
 #eval (reached.head?.bind fun bo => findClosure bo.1 .Base).map fun cr =>
         match cr with
@@ -169,42 +196,64 @@ minted world, at the source time. -/
         | .botPos l => (2, l.world, l.time)
         | .axiomNeg _ _ l => (3, l.world, l.time)
 
-/-! ## Part 4 — what the engine therefore answers, and what the earlier reading of it missed
+/-! ## Part 4 — what the engine therefore answers, before and after
 
-The previous probe recorded `isValid ((G p) → □(G p)) = false` and read it as *the correct
-verdict on an invalid formula*, concluding that no engine defect was in evidence. The rows below
-measure what that `false` actually is. -/
+The preservation probe originally recorded `isValid ((G p) → □(G p)) = false` and read it as
+*the correct verdict on an invalid formula*, concluding that no engine defect was in evidence.
+The rows below measure what that `false` actually is — and it was never a refutation, either
+before the repair or after it. What changed is which wrong-shaped answer it stands for. -/
 
-/-! ### Row 9 — the real driver, on the real initial branch, returns `allClosed`.
+/-! ### Row 9 — the real driver, on the real initial branch, no longer returns `allClosed`.
 
 `1` tags `.allClosed`, `2` tags `.hasOpen`, `0` tags fuel exhaustion; the second component is the
-branch count. The tableau closes — i.e. it reports the formula **valid**. -/
-/-- info: (1, 1) -/
+branch count.
+
+**Was `(1, 1)`** — the tableau closed, i.e. reported this **invalid** formula **valid**. That was
+the defect this file exists to document. It is now `(0, 0)`: the budget is exhausted without the
+branch saturating.
+
+`(0, 0)` is an improvement over `(1, 1)` and is **not** the intended end state, which is
+`(2, _)`. Fuel 30, 60, 400 and 1000 all return `(0, 0)`, so the ceiling is not bracketed from
+above and this is a termination/bound question rather than a budget one. Pinned as measured. -/
+/-- info: (0, 0) -/
 #guard_msgs in
 #eval match buildTableau (gp.imp gp.box) 1000 .Base with
       | none => (0, 0)
       | some (.allClosed bs) => (1, bs.length)
       | some (.hasOpen ob _ _ _) => (2, ob.length)
 
-/-! ### Row 10 — so `isValid`'s `false` is **not** an `invalid` verdict.
+/-! ### Row 10 — `isValid`'s `false` is still not an `invalid` verdict, but it is now honest.
 
-The tuple is `(isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndecided)`. `decide`
-closes the tableau and then fails to extract a proof term, and `isValid` reports that as `false`.
-The engine never judged the formula invalid. -/
-/-- info: (false, false, false, true, false) -/
+The tuple is `(isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndecided)`.
+
+**Was `(false, false, false, true, false)`** — `extractionFailed`. `decide` closed the tableau
+and then failed to extract a proof term. By this codebase's R7 semantics `isKnownValid` is true
+for `extractionFailed`, so that value **asserted the formula is valid**. It is not.
+
+It is now `(false, false, true, false, true)` — `fuelExhausted`, which `isUndecided` recognises
+as "undetermined". The move is from a wrong answer to no answer.
+
+This is the anchor row for the whole repair, and it is duplicated deliberately at
+`CrossWorldPropagationProbe.lean` row F, whose five sibling rows all call `isValid` and so
+cannot see this distinction. -/
+/-- info: (false, false, true, false, true) -/
 #guard_msgs in
 #eval let r := decide (gp.imp gp.box)
       (r.isValid, r.isInvalid, r.isFuelExhausted, r.isExtractionFailed, r.isUndecided)
 
-/-! ### Row 11 — and no countermodel was ever produced. -/
+/-! ### Row 11 — and no countermodel is produced, before or after.
+
+Unmoved at `false`, and this is the criterion still owed: the repair removed the false claim of
+validity but did not supply the positive refutation. -/
 /-- info: false -/
 #guard_msgs in
 #eval (decide (gp.imp gp.box)).getCountermodel?.isSome
 
 /-! ### Row 12 — `isValid` reports `false`, the value the earlier reading rested on.
 
-Kept last, immediately after the rows that say what it means, so the two can never again be read
-apart: this `false` is row 10's `extractionFailed`, not a countermodel. -/
+Unmoved. Kept last, immediately after the rows that say what it means, so the two can never
+again be read apart: this `false` is row 10's constructor — `extractionFailed` then,
+`fuelExhausted` now — and a countermodel neither time. -/
 /-- info: false -/
 #guard_msgs in
 #eval isValid (gp.imp gp.box)

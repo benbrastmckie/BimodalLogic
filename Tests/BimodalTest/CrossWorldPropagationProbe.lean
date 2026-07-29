@@ -7,43 +7,53 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Decidability
 
 /-!
-# Does the fresh-world temporal copy make the engine decide wrongly? Measured, and it does not
+# The fresh-world temporal copy: what `isValid` could and could not see — and why row F exists
 
-`applyRule`'s `boxNeg` and `diamondPos` arms mint a fresh world and copy three groups of
-formulas to it. The third group is the *cross-modal-temporal* one: every `T(GB)`, `T(HB)`,
-`F(FB)`, `F(PB)`, `F(U(B,C))` and `F(S(B,C))` standing at the source label's **time**, copied to
-the fresh world at that same time, from **any** world.
+**The copy this file was written to investigate no longer exists.** `applyRule`'s `boxNeg` and
+`diamondPos` arms used to mint a fresh world and copy three groups of formulas to it; the third
+group was the *cross-modal-temporal* one — every `T(GB)`, `T(HB)`, `F(FB)`, `F(PB)`, `F(U(B,C))`
+and `F(S(B,C))` standing at the source label's **time**, copied to the fresh world at that same
+time, from **any** world. Those six blocks were deleted from both rules as unsound. Each rule now
+emits `.linear (witness :: boxProps ++ diaProps)`.
 
-That copy has no evident semantic justification. `G` is evaluated inside a single history, and
-the fresh world's witness history is chosen to falsify `□A` (resp. satisfy `◇A`) and for nothing
-else; a second history need not agree with the first about what holds at all later times. So the
-question is whether the copy can turn a *satisfiable* branch into a closed one — which, if it
-can, would make the procedure report `valid` for an invalid formula.
+The copy had no semantic justification. `G` is evaluated inside a single history, while the fresh
+world's witness history is chosen to falsify `□A` (resp. satisfy `◇A`) and for nothing else; a
+second history need not agree with the first about what holds at all later times.
+`Tests/BimodalTest/BoxNegPreservationProbe.lean` row 3 measured the consequence directly — the
+rule mapped a satisfiable branch to one carrying the same formula at the same label with opposite
+signs — and `Tests/BimodalTest/BoxNegReachabilityProbe.lean` showed the engine really did build
+that branch.
+
+## This file's original thesis was superseded, and how
+
+The title used to read "Measured, and it does not [decide wrongly]". Rows A-E all still pin the
+values they always pinned — **not one of the five moved** across the deletion. That is the
+problem, and it is why row F was added.
+
+`isValid` is `(decide φ).isValid`, which is `true` only for the `.valid` constructor. It
+therefore reads `false` under `.invalid`, `.fuelExhausted` and `.extractionFailed` alike. Before
+the deletion, row B's `false` was `decide` returning **`extractionFailed`** — `buildTableau` had
+*closed* the tableau on this invalid formula, i.e. asserted it valid, and proof extraction then
+failed. This file read that `false` as "the correct verdict on an invalid formula" and concluded
+no defect was in evidence. The conclusion did not follow from the measurement: the row could not
+distinguish a correct refutation from a wrong closure.
 
 ## The rows
 
-Each row is a formula that is **invalid** — `Ω` may hold a history with a future (resp. past)
+Rows A-C are formulas that are **invalid** — `Ω` may hold a history with a future (resp. past)
 `p` while `τ` has none, so the antecedent can hold at `τ` while the `□`-consequent fails — and
-that is also shaped to drive exactly the suspect copy: the antecedent leaves a `G`/`F`-negative
-formula standing at the root label, and the consequent's `F(□·)` is what fires `boxNeg` and
-copies it to the fresh world, where the witness itself supplies the opposite sign.
-
-If the copy were making the engine decide wrongly, these are the shapes on which it would show,
-and the verdict would read `true`.
+that were also shaped to drive exactly the suspect copy.
 
 Rows D and E are controls, and both are needed: D pins that the harness reports `true` when it
 should, so a row reading `false` is not merely the procedure failing to close anything; E pins
 that `false` is reachable on a formula with no temporal content at all.
 
-## What this measures and what it does not
-
-It measures **verdicts**, not steps. A `false` on every row establishes that the copy does not
-produce a wrong answer on these shapes. It does *not* establish that the copy preserves
-satisfiability, and the two come apart: a step can spoil a satisfiable branch while every branch
-it spoils is closable by some other route. The proof obligation recorded in
-`Verified/Decidable.lean` ("What `boxNeg` and `diamondPos` still owe") is therefore untouched by
-this file — the file exists so that the next dispatch starts from a measurement rather than from
-the suspicion this one started with.
+**Row F is the discrimination rows A-C cannot make**, pinning the `decide` *constructor* rather
+than `isValid`'s collapse of it. It records the post-deletion state honestly: on `(G p) → □(G p)`
+the engine no longer wrongly closes, but neither does it positively refute — it exhausts its
+fuel. A wrong answer became no answer. That is a strict improvement in soundness and an
+unfinished job on completeness; see the plan's Phase 6 triage. `BoxNegReachabilityProbe.lean`
+rows 9-12 pin the same distinction from the other side, on the same formula.
 -/
 
 namespace BimodalTest.CrossWorldPropagationProbe
@@ -92,5 +102,27 @@ failure to close. -/
 /-- info: false -/
 #guard_msgs in
 #eval isValid (p.imp q)
+
+/-! ### Row F — the `decide` constructor on row B's formula, which row B cannot see
+
+Added because rows A-E are all `isValid`, and `isValid` is `true` only for `.valid`: every one of
+them reads `false` under `.invalid`, `.fuelExhausted` and `.extractionFailed` alike. This row
+pins the constructor itself, so a future change that moves `(G p) → □(G p)` between those three
+outcomes cannot pass unnoticed.
+
+The tuple is `(isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndecided)`, matching
+`BoxNegReachabilityProbe.lean` row 10.
+
+* **Before the deletion**: `(false, false, false, true, false)` — `extractionFailed`. The tableau
+  closed on an invalid formula, which by this codebase's R7 semantics (`isKnownValid` is true for
+  `extractionFailed`) is an assertion that the formula is **valid**. That assertion was false.
+* **Now**: `fuelExhausted`, which `isUndecided` recognises as honest ignorance.
+
+The soundness defect is gone. The positive refutation this formula is owed — `.invalid` with an
+extracted countermodel — is **not** here yet, and pinning that fact is this row's job. -/
+/-- info: (false, false, true, false, true) -/
+#guard_msgs in
+#eval let d := decide ((Formula.allFuture p).imp ((Formula.allFuture p).box))
+      (d.isValid, d.isInvalid, d.isFuelExhausted, d.isExtractionFailed, d.isUndecided)
 
 end BimodalTest.CrossWorldPropagationProbe

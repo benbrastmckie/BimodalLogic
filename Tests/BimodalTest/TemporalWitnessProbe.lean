@@ -385,7 +385,21 @@ until or since at all, which is the gap this file exists to fill. Rows H–N are
 The pinned strings are the whole measurement. The reading is in the module docstring's
 "What was measured" section; in one line, **every row with `check=true` reports `true` on all
 ten candidate rows, and every `false` sits on a row where `regionLabelCheck` is already
-`false`.**
+`false`.** That statement is unchanged by the movement noted below, and is in fact what the
+movement respects.
+
+## Row D moved, in all six probe helpers
+
+Row D, `(□p ∧ ◇q) → r`, is the only multi-world shape among these six, and it is the only row
+this file's cross-world temporal-copy deletion touched — at all six sites (`probe` through
+`probe6`). Its `check` (`regionLabelCheck`) moved `true → false`, and in `probe` and `probe6` the
+ray self-demands `rP`/`self` moved with it. The minted world no longer receives any
+`T(G·)`/`T(H·)`, so it has no eligible region label; with no label the ray has nothing to read
+and its self-demand is vacuously unmet rather than met. Nothing about the until/since analysis
+changed — `wit`, `gw`, `rdG`/`ruG`, `nStr`, `nCo` and `rN` are unmoved on row D throughout, as
+are all 65 other rows in this file. See `BoxNegPreservationProbe.lean` row 3 for the soundness
+measurement that motivated the deletion, and `RegionGateProbe.lean` rows A/B/H for the same
+effect measured on the candidate grid directly.
 -/
 
 -- A. `F p → p`.
@@ -404,7 +418,7 @@ ten candidate rows, and every `false` sits on a row where `regionLabelCheck` is 
 #eval probe (.imp (.allFuture p) p)
 
 -- D. `(□p ∧ ◇q) → r`.
-/-- info: "OPEN |T|=7 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+/-- info: "OPEN |T|=7 gen=false check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
 
@@ -517,7 +531,7 @@ def probe2 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "C " ++ probe2 (.imp (.allFuture p) p)
 
-/-- info: "D check=true uNAR=true sNAR=true" -/
+/-- info: "D check=false uNAR=true sNAR=true" -/
 #guard_msgs in
 #eval "D " ++ probe2 (.imp (andF (.box p) (dia q)) r)
 
@@ -625,7 +639,7 @@ def probe3 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "C " ++ probe3 (.imp (.allFuture p) p)
 
-/-- info: "D gen=false check=true uRL=true uRLs=true sRU=true sRUs=true" -/
+/-- info: "D gen=false check=false uRL=true uRLs=true sRU=true sRUs=true" -/
 #guard_msgs in
 #eval "D " ++ probe3 (.imp (andF (.box p) (dia q)) r)
 
@@ -771,7 +785,7 @@ def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "C " ++ probe4 (.imp (.allFuture p) p)
 
-/-- info: "D gen=false check=true uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+/-- info: "D gen=false check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
 #eval "D " ++ probe4 (.imp (andF (.box p) (dia q)) r)
 
@@ -923,7 +937,7 @@ def probe5 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "C " ++ probe5 (.imp (.allFuture p) p)
 
-/-- info: "D gen=false check=true uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
+/-- info: "D gen=false check=false uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
 #guard_msgs in
 #eval "D " ++ probe5 (.imp (andF (.box p) (dia q)) r)
 
@@ -1081,7 +1095,7 @@ def probe6 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "C " ++ probe6 (.imp (.allFuture p) p)
 
-/-- info: "D gen=false check=true uPR=true [self=true uRD=true] sPR=true [self=true sRU=true]" -/
+/-- info: "D gen=false check=false uPR=false [self=false uRD=true] sPR=false [self=false sRU=true]" -/
 #guard_msgs in
 #eval "D " ++ probe6 (.imp (andF (.box p) (dia q)) r)
 
