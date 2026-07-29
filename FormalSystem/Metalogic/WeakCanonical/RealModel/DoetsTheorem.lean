@@ -420,6 +420,157 @@ theorem exists_not_simDense_of_not_goodDense (sig : MonadicSignature) [Fintype s
       exact reynolds_lemma11_no_endpoints sig k hk _ hvg
     · exact absurd hut (not_lt.mpr (le_of_lt htu))
 
+/-! ## Layer 5 — Reynolds' `G`, and its minimization
+
+Printed p.187, the choice that opens the contradiction:
+
+> Choose `a < b` from `M` such that
+>
+> - `a ≁ b` and
+> - `G = {γᵢ | i = 1, …, s and ∃ ∼-class E strictly between a and b such that M | E ⊨ γᵢ}` has
+>   minimal size.
+
+and the use the choice is put to, three sentences later:
+
+> Also, by minimality of `G`, all the `γᵢ`'s in `G` are satisfied densely in `I`.
+
+**Two rendering decisions, both stated rather than assumed.**
+
+*Reynolds' `G` is a set of sentences; this is a `Finset` of normal forms.* `gammaSentences`
+(`EpsilonDense.lean:239`) is literally `(goodNFs sig k).toList.map nfToSentence`, so the `γᵢ` and
+the elements of `goodNFs sig k` are the same data presented twice. The minimization is done at
+the normal-form level because that is where `Finset.card` is available without needing
+`nfToSentence` to be injective — and injectivity is not part of what the argument uses. The only
+property of the size measure the proof consumes is that it is monotone under inclusion and
+strictly so on proper subsets, which `Finset.card` supplies.
+
+*`E` is named by a representative point.* A `∼`-class is `{x | x ∼ e}` for any of its members, so
+*"∃ `∼`-class `E` strictly between `a` and `b`"* becomes *"∃ `e` all of whose `∼`-equals lie in
+`(a,b)`"* (`ClassStrictlyBetween`). Reynolds' *"strictly between `a` and `b`"* is a condition on
+the whole class, not on the representative — the classes are intervals but need not be singletons,
+so quantifying over the class is what makes the monotonicity below true.
+-/
+
+/-- *"`E` is a `∼`-class strictly between `a` and `b`"* (printed p.187), with the class named by
+a representative `e`: every point `∼`-equal to `e` lies strictly inside `(a,b)`.
+
+Stated over the whole class rather than over `e` alone. That is what the source means and it is
+also what `gammaBetween_subset` needs: shrinking `(a,b)` must not admit new classes. -/
+def ClassStrictlyBetween (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (a b e : M.carrier) : Prop :=
+  ∀ x : M.carrier, ContempEquivDense M ε e x → a < x ∧ x < b
+
+/-- **`M | E`** — the substructure of `M` on the `∼`-class of `e`.
+
+`restrictSet` (`Shuffle.lean:409`) is the general set-shaped cut; the tree's other cuts are all
+interval-shaped, and a `∼`-class is given here as a set rather than by endpoints. That the classes
+*are* intervals is Lemma 13's content and is not needed to state this. -/
+def contempClassStructure (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    (ε : MonadicFormula sig 2) (e : M.carrier) : OrderedMonadicStructure sig :=
+  M.restrictSet sig {x : M.carrier | ContempEquivDense M ε e x}
+
+open scoped Classical in
+/-- **Reynolds' `G`**, at the pair `(a,b)` — printed p.187. The `γ`-palette entries realized by
+some `∼`-class lying strictly between `a` and `b`. -/
+noncomputable def gammaBetween (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (ε : MonadicFormula sig 2) (M : OrderedMonadicStructure sig) (a b : M.carrier) :
+    Finset (NormalForm sig k 0) :=
+  (goodNFs sig k).filter fun nf => ∃ e : M.carrier, ClassStrictlyBetween M ε a b e ∧
+    NfEvalNf (contempClassStructure sig M ε e) k 0 Fin.elim0 nf
+
+/-- Membership in `G`, unfolded once so no later proof has to re-derive the filter instance. -/
+theorem mem_gammaBetween {k : Nat} {ε : MonadicFormula sig 2} {M : OrderedMonadicStructure sig}
+    {a b : M.carrier} {nf : NormalForm sig k 0} :
+    nf ∈ gammaBetween sig k ε M a b ↔ nf ∈ goodNFs sig k ∧
+      ∃ e : M.carrier, ClassStrictlyBetween M ε a b e ∧
+        NfEvalNf (contempClassStructure sig M ε e) k 0 Fin.elim0 nf := by
+  classical
+  simp only [gammaBetween, Finset.mem_filter]
+
+/-- **`G` is monotone in the interval** — narrowing `(a,b)` can only lose classes, never gain
+them. This is the one structural fact the minimality argument runs on. -/
+theorem gammaBetween_subset {k : Nat} {ε : MonadicFormula sig 2} {M : OrderedMonadicStructure sig}
+    {a b a' b' : M.carrier} (hlo : a ≤ a') (hhi : b' ≤ b) :
+    gammaBetween sig k ε M a' b' ⊆ gammaBetween sig k ε M a b := by
+  intro nf hnf
+  obtain ⟨hgood, e, hbet, hev⟩ := mem_gammaBetween.mp hnf
+  refine mem_gammaBetween.mpr ⟨hgood, e, ?_, hev⟩
+  intro x hx
+  exact ⟨lt_of_le_of_lt hlo (hbet x hx).1, lt_of_lt_of_le (hbet x hx).2 hhi⟩
+
+/--
+**The choice makes sense** — printed p.187, *"Choose `a < b` from `M` such that `a ≁ b` and `G`
+has minimal size"*.
+
+`Finset.card ∘ gammaBetween` maps the (nonempty, by
+`exists_not_simDense_of_not_goodDense`) set of `≁`-pairs into `ℕ`, and `ℕ` is well-ordered. So
+this is `Nat.find` and nothing more; the only reason it is a named lemma is that Reynolds' phrase
+*"The following choice makes sense"* is a proof obligation and this is it.
+-/
+theorem exists_minimal_gammaBetween (k : Nat) (ε : MonadicFormula sig 2)
+    (M : OrderedMonadicStructure sig)
+    (hex : ∃ a b : M.carrier, a < b ∧ ¬ SimDense sig k M a b) :
+    ∃ a b : M.carrier, a < b ∧ ¬ SimDense sig k M a b ∧
+      ∀ a' b' : M.carrier, a' < b' → ¬ SimDense sig k M a' b' →
+        (gammaBetween sig k ε M a b).card ≤ (gammaBetween sig k ε M a' b').card := by
+  classical
+  set P : Nat → Prop := fun n => ∃ a b : M.carrier, a < b ∧ ¬ SimDense sig k M a b ∧
+    (gammaBetween sig k ε M a b).card = n with hP
+  have hPex : ∃ n, P n := by
+    obtain ⟨a, b, hab, hns⟩ := hex
+    exact ⟨(gammaBetween sig k ε M a b).card, a, b, hab, hns, rfl⟩
+  obtain ⟨a, b, hab, hns, hcard⟩ := Nat.find_spec hPex
+  refine ⟨a, b, hab, hns, ?_⟩
+  intro a' b' hab' hns'
+  rw [hcard]
+  exact Nat.find_le ⟨a', b', hab', hns', rfl⟩
+
+/--
+**Minimality forces equality** — the step printed p.187 compresses into *"by minimality of `G`"*.
+
+For `a < c < d < b` with `c ≁ d`, `G(c,d) ⊆ G(a,b)` by `gammaBetween_subset` and
+`|G(a,b)| ≤ |G(c,d)|` by minimality, so the inclusion is an equality: **every** `γ` of the
+minimal palette is already realized by a class strictly inside `(c,d)`.
+-/
+theorem gammaBetween_eq_of_minimal {k : Nat} {ε : MonadicFormula sig 2}
+    {M : OrderedMonadicStructure sig} {a b : M.carrier}
+    (hmin : ∀ a' b' : M.carrier, a' < b' → ¬ SimDense sig k M a' b' →
+      (gammaBetween sig k ε M a b).card ≤ (gammaBetween sig k ε M a' b').card)
+    {c d : M.carrier} (hac : a ≤ c) (hcd : c < d) (hdb : d ≤ b)
+    (hns : ¬ SimDense sig k M c d) :
+    gammaBetween sig k ε M c d = gammaBetween sig k ε M a b :=
+  Finset.eq_of_subset_of_card_le (gammaBetween_subset hac hdb) (hmin c d hcd hns)
+
+/--
+**All the `γᵢ` in `G` are satisfied densely in `I`** — printed p.187, the sentence the shuffle
+construction consumes:
+
+> Also, by minimality of `G`, all the `γᵢ`'s in `G` are satisfied densely in `I`.
+
+*Densely* is unpacked into the form the construction uses: given any sub-pair `c ≤ c' < d' ≤ d`
+that is itself a `≁`-pair, every `γ` of the minimal palette is realized by a `∼`-class lying
+strictly inside `(c',d')`. Since the classes strictly between `c` and `d` are Reynolds' `I`, this
+says exactly that each `γ ∈ G` recurs in every subinterval of `I` cut out by a `≁`-pair — density
+in `I`.
+
+It is a corollary of `gammaBetween_eq_of_minimal` applied at `(c',d')` rather than at `(c,d)`,
+which is why minimality has to be carried as a hypothesis about *all* `≁`-pairs and not merely
+about the one pair `(c,d)`.
+-/
+theorem gammaBetween_dense_of_minimal {k : Nat} {ε : MonadicFormula sig 2}
+    {M : OrderedMonadicStructure sig} {a b : M.carrier}
+    (hmin : ∀ a' b' : M.carrier, a' < b' → ¬ SimDense sig k M a' b' →
+      (gammaBetween sig k ε M a b).card ≤ (gammaBetween sig k ε M a' b').card)
+    {c' d' : M.carrier} (hac' : a ≤ c') (hc'd' : c' < d') (hd'b : d' ≤ b)
+    (hns' : ¬ SimDense sig k M c' d')
+    {nf : NormalForm sig k 0} (hnf : nf ∈ gammaBetween sig k ε M a b) :
+    ∃ e : M.carrier, ClassStrictlyBetween M ε c' d' e ∧
+      NfEvalNf (contempClassStructure sig M ε e) k 0 Fin.elim0 nf := by
+  have hmem : nf ∈ gammaBetween sig k ε M c' d' := by
+    rw [gammaBetween_eq_of_minimal hmin hac' hc'd' hd'b hns']
+    exact hnf
+  exact (mem_gammaBetween.mp hmem).2
+
 /--
 **The residual of Reynolds' §8 Theorem 6** — printed pp.187-188, everything after
 `exists_not_simDense_of_not_goodDense` has produced `a < b` with `a ≁ b`:
