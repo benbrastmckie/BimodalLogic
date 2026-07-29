@@ -2215,6 +2215,56 @@ theorem ruleSound_priorSZ : RuleSound carrierDiscrete .priorSZ := by
           SoundnessLemmas.prior_SZ_is_valid ψ F M Om hst.shiftClosed (hist l.world)
             (hst.histMem l.world) (tv l.time) hsrc
 
+/-- `T(G(Gφ → φ))` together with `T(F(Gφ))` at the same label gives `T(Gφ)` there — Z1, the
+discrete backward-induction axiom. Unlike the other two `.Discrete` rules this one is *binary*:
+its second premise is read off the branch by `branch.contains` rather than from the source
+formula, so the proof instantiates `z1_is_valid` and then applies it to **two** hypotheses, the
+source's `hst.sat` and the partner's. -/
+theorem ruleSound_z1Rule : RuleSound carrierDiscrete .z1Rule := by
+  intro D _ _ _ _ hC F M Om hist tv b sf ord hmem hst _
+  obtain ⟨hs, hp, ha, hb⟩ := hC
+  letI := hs
+  letI := hp
+  haveI := ha
+  haveI := hb
+  obtain ⟨s, φ, l⟩ := sf
+  have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    simp only [SatAt] at hsrc
+    simp only [applyRule]
+    split
+    all_goals try trivial
+    split
+    all_goals try trivial
+    split
+    all_goals try trivial
+    split
+    all_goals try trivial
+    -- The six surviving inaccessible binders, in context order: the sign equation, the outer
+    -- match's `φ_inner`, the two formula pattern variables, and the two `if` conditions.
+    rename_i _heq _φi inner rhs hbeq hfg
+    have hrhs : inner = rhs := by simpa using hbeq
+    subst hrhs
+    -- `Branch.contains` is a `List.any` over `==`, not `List.elem`, so the standard
+    -- `mem_of_elem_eq_true` does not apply; unfold it and read the witness off.
+    have hfgmem : SignedFormula.pos inner.allFuture.someFuture l ∈ b := by
+      simp only [Branch.contains, List.any_eq_true] at hfg
+      obtain ⟨x, hx, heq⟩ := hfg
+      exact beq_iff_eq.mp heq ▸ hx
+    have hfgs := hst.sat _ hfgmem
+    simp only [SatAt, SignedFormula.pos] at hfgs
+    split
+    · trivial
+    · refine ⟨hist, tv, hst.append ?_⟩
+      intro c hc
+      rw [List.mem_singleton] at hc
+      subst hc
+      simpa [SatAt, SignedFormula.pos] using
+        SoundnessLemmas.z1_is_valid inner F M Om hst.shiftClosed (hist l.world)
+          (hst.histMem l.world) (tv l.time) hsrc hfgs
+
 /-!
 ## `untlNeg` and `snceNeg` — BLOCKED, two independent engine defects
 
