@@ -50,20 +50,29 @@ as stated in `Verified/Decidable.lean` is **false**. `ruleSound_boxNeg` is not m
 it is not provable, and the same argument applies to `diamondPos`, whose `tempGProps` block is
 identical.
 
-## What this is *not*
+## What this is *not* — SUPERSEDED, see `BoxNegReachabilityProbe.lean`
 
-It is **not** a claim that the engine decides wrongly, and the rows below pin that too: the
-verdict on the very same formula is still `false`, the correct answer. The engine does not apply
-`boxNeg` to this branch — `T(G p)` is itself an `imp`, so the propositional schedule reaches it
-first — and the verdict probe's rows consequently do not exercise the copy in the engine's own
-run, which is why they came back clean. No engine defect is claimed here and none is measured.
+**The paragraph this section used to carry has been measured false and is replaced.** It read:
+"It is not a claim that the engine decides wrongly, and the rows below pin that too: the verdict
+on the very same formula is still `false`, the correct answer. The engine does not apply `boxNeg`
+to this branch — `T(G p)` is itself an `imp`, so the propositional schedule reaches it first."
+Both halves are refuted by `Tests/BimodalTest/BoxNegReachabilityProbe.lean`:
 
-What is measured is that the *rule-level* preservation statement, quantified over arbitrary
-branches as `RuleSound` quantifies it, is refuted. The consequence is for the shape of sub-phase
-7.2's assembly, not for the engine: `∀ r ∈ allRulesForFC fc, RuleSound _ r` cannot be proved, and
-the `allClosed → valid` direction needs `boxNeg`/`diamondPos` to carry a branch invariant strong
-enough to exclude branches like this one — the schedule's own reachability being the obvious
-candidate, since the engine never builds this successor.
+* The engine **does** apply `boxNeg` to this branch. Expansion is additive (`formulas ++ b`), so
+  decomposing `T(G p)` never removes it, and `tempGProps` filters the branch by *shape*, not by
+  expandedness. `boxNeg` also precedes the branching propositional rules in `allRules`. The
+  reachability probe fires the rule from `b0` under the engine's own selector and gets the clash.
+* Row 5's `false` is **not** a verdict of "invalid". `decide` returns `extractionFailed`:
+  `buildTableau` closes the tableau — reporting this invalid formula **valid** — and proof
+  extraction then fails. `isInvalid` is `false` and `getCountermodel?` is `none`.
+
+Row 5 is kept below unchanged, because the *value* it records is correct and it is the value the
+superseded reading misinterpreted; what changed is what the value means. Read it only together
+with rows 10-12 of the reachability probe.
+
+What this file measures remains exactly what it always measured: the *rule-level* preservation
+statement is refuted. What it may no longer be used to conclude is that the refuting branch is
+unreachable, or that the engine's answer on this formula is sound.
 -/
 
 namespace BimodalTest.BoxNegPreservationProbe
