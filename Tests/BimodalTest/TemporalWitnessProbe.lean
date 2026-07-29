@@ -461,10 +461,22 @@ contain.
 #guard_msgs in
 #eval probe (.imp p (.snce p q))
 
--- L. `U(p,q) → U(q,p)`: a genuine until on **both** signs. The engine stalls at this fuel — the
--- row is pinned so that a future engine change which makes it terminate is visible rather than
--- silently absorbed.
-/-- info: "STALLED" -/
+-- L. `U(p,q) → U(q,p)`: a genuine until on **both** signs. **This row has moved, and it moved
+-- for the reason it was pinned.** It previously read `STALLED`, with the note that it was pinned
+-- "so that a future engine change which makes it terminate is visible rather than silently
+-- absorbed". That change has now happened: deleting the `untlNegProps` copy block from
+-- `.untlPos` (and `snceNegProps` from `.sncePos`) made the search **terminate** on a saturated
+-- open branch instead of exhausting its fuel.
+--
+-- The direction is the right one. `U(p,q) → U(q,p)` is invalid, and `OPEN` is the correct
+-- verdict; the copy had been re-asserting a negative until at every freshly minted time, which
+-- kept manufacturing new obligations and drove the search into its fuel bound. Compare
+-- `Tests/BimodalTest/UntlSnceCopyProbe.lean` row C2, where the same deletion turned
+-- `fuelExhausted` into a positively extracted countermodel on `U(p,q) → U(r,s)`.
+--
+-- Note that rows H, J and M — the other genuine-until rows — are **unchanged**, as is every
+-- other row in this file. `|T|=6` here matches H's table size.
+/-- info: "OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (.untl p q) (.untl q p))
 

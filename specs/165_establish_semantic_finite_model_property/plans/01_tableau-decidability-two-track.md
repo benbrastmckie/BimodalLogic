@@ -2392,6 +2392,25 @@ fix shape for those two rules is not authorized.
   Section C uses `isInvalid`/`getCountermodel?`/`isExtractionFailed` and never `isValid` alone.
   C4 (`isExtractionFailed`) is `false` before and after — the engine never wrongly closed this
   formula, so the copy's harm here was under-closing, not over-closing.
+- `Tests/BimodalTest/TemporalWitnessProbe.lean`: **one row moved, and it is a sixth verdict in
+  the right direction.** Row L, `U(p,q) → U(q,p)`, went `STALLED` → `OPEN |T|=6` — the search now
+  terminates on a saturated open branch instead of exhausting fuel, which is the correct verdict
+  since the formula is invalid. That row had been pinned *precisely* to catch this: its own
+  comment read "the row is pinned so that a future engine change which makes it terminate is
+  visible rather than silently absorbed". Same mechanism as row C2 above — the copy had been
+  re-asserting a negative until at every freshly minted time, manufacturing obligations without
+  bound. Rows H, J and M, the other genuine-until rows and the ones the `regionLabelCheck`
+  carry-forward tracks, are **unchanged**, as is every other row in the file. Re-pinned, green.
+- `BoxSpreadProbe` / `RegionGateProbe` / `RayRegionProbe`: green, 6 s / 9 s / 3 s.
+
+**A claim that had to be withdrawn.** An earlier draft of this dispatch's handoff argued the four
+probes above were "provably unreachable" from the deletion, because `asUntil?`/`asSince?` reject a
+`⊤` guard and so `F`/`G`/`P`/`H` shapes never fire `untlPos`/`sncePos`. That argument is sound for
+the box-side and region-side rows but **overbroad as stated**: `TemporalWitnessProbe.lean` carries
+genuine untils and sinces (rows H–M), which fire the rules directly. Running the probes rather
+than resting on the reachability argument is what caught row L. A code-reading argument for
+"cannot be affected" is worth exactly as much as the cheapest measurement that would test it, and
+here the measurement cost 16 seconds.
 
 *7.2 ledger 23 → 26.* `ruleSound_densityRule` (the first carrier-gated rule and the first to mint
 an *interpolant* rather than a new extreme), then `ruleSound_untlPos` and `ruleSound_sncePos`,
