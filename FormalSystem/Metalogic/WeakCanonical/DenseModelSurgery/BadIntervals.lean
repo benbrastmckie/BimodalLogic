@@ -1406,6 +1406,82 @@ theorem reynolds_lemma6 (atomMap : Formula → sig.preds)
     fun _ _ hintL =>
       endsInGapOnRight_of_endsInGapOnLeft atomMap h_surj hε M h_prior_U h_prior_S hintL⟩
 
+/-! ## The interval witness, and Lemma 6's first clause without it
+
+`ClassInteriorToRInterval` and `ClassInteriorToLInterval` were introduced above as *hypotheses*,
+and nothing in this tree produced one on either side. `exists_classInteriorToRInterval` below is
+that producer. It is what Reynolds' Lemma 4 was supposed to supply and — with the display as
+printed — could not; see the *"Lemma 4 at the boundary"* section of `Lemma34.lean` for the
+one-symbol defect in the source that blocked it, and for the repaired reading that unblocks it.
+
+With the producer in hand, both halves of Lemma 6's first clause become hypothesis-free. -/
+
+/-- **The interval witness, produced.** Wherever `R` holds, `t`'s class lies in the interior of a
+maximal interval of `R`: there are `a < t < b` outside `t`'s class with `R` throughout `[a, b]`.
+
+The **upper** endpoint is `reynolds_lemma4_no_last_class` used as it stands. The **lower** endpoint
+is where the repaired Lemma 4 pays: negating `reynolds_lemma4_no_first_class_closed` gives a `y`
+below `t`, outside `t`'s class, with `R` throughout the **closed** `[y, t)`, which is what
+`rThroughout`'s closed `[a, b]` demands. The faithful strict form gives only the **open** `(y, t)`,
+and shrinking `a` into `(y, t)` is unavailable in exactly the configuration where `t`'s class
+begins immediately after `y ∈ M` — the boundary case documented in `Lemma34.lean`. -/
+theorem exists_classInteriorToRInterval (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
+    ∃ a b : M.carrier, ClassInteriorToRInterval M ε a t b := by
+  obtain ⟨b, htb, hnb, hIccb⟩ :=
+    reynolds_lemma4_no_last_class atomMap h_surj hε M h_prior_U h_prior_S ht
+  have hnf := reynolds_lemma4_no_first_class_closed atomMap h_surj hε M h_prior_U h_prior_S t
+  have hlow : ∃ y : M.carrier, y < t ∧ ¬ ContempEquivDense M ε t y ∧
+      ∀ z : M.carrier, y ≤ z → z < t → EndsInGapOnRight M ε z := by
+    by_contra hcon
+    push_neg at hcon
+    refine hnf ⟨ht, fun y hy hny => ?_⟩
+    obtain ⟨z, hyz, hzt, hnz⟩ := hcon y hy hny
+    exact ⟨z, hyz, hzt, hnz⟩
+  obtain ⟨a, hat, hna, hIcca⟩ := hlow
+  have hR : ∀ q : M.carrier, a ≤ q → q ≤ b → EndsInGapOnRight M ε q := by
+    intro q h₁ h₂
+    rcases lt_or_ge q t with h | h
+    · exact hIcca q h₁ h
+    · exact hIccb q h h₂
+  exact ⟨a, b, ⟨hat, htb, hna, hnb, hR⟩⟩
+
+/-- **Reynolds 1992, §6 Lemma 6, printed p.180 — *"we first show that `L` holds wherever `R`
+does"*, with no interval hypothesis.**
+
+`endsInGapOnLeft_of_endsInGapOnRight` above is Reynolds' five-paragraph argument; this is that
+theorem with its hypothesis discharged by `exists_classInteriorToRInterval`. The original is kept
+unchanged for callers that already hold an interval witness. -/
+theorem endsInGapOnLeft_of_endsInGapOnRight' (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
+    EndsInGapOnLeft M ε t := by
+  obtain ⟨a, b, hint⟩ :=
+    exists_classInteriorToRInterval atomMap h_surj hε M h_prior_U h_prior_S ht
+  exact endsInGapOnLeft_of_endsInGapOnRight atomMap h_surj hε M h_prior_U h_prior_S hint
+
+/-- **Reynolds 1992, §6 Lemma 6, printed p.180 — *"using mirror images"*, with no interval
+hypothesis.**
+
+By instantiation at `(dual M, dualize ε)` through `Dual.lean`, exactly as
+`endsInGapOnRight_of_endsInGapOnLeft` is. This is the third use of the transport layer, and no
+`λ`-side interval witness is needed: the `ρ`-side producer above supplies the dual one. -/
+theorem endsInGapOnRight_of_endsInGapOnLeft' (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnLeft M ε t) :
+    EndsInGapOnRight M ε t :=
+  (endsInGapOnLeft_dual (M := M) ε t).mp
+    (endsInGapOnLeft_of_endsInGapOnRight' atomMap h_surj (isContempEquivDense_dualize hε) (dual M)
+      (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U)
+      ((endsInGapOnRight_dual (M := M) ε t).mpr ht))
+
 end Lemma7Mirror
 
 end FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
