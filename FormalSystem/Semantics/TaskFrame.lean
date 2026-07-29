@@ -15,38 +15,65 @@ This module defines task frames, the fundamental semantic structures for bimodal
 ## Paper Specification Reference
 
 **Task Frames (app:TaskSemantics, def:frame, possible_worlds.tex:2423-2451)**:
-The JPL paper "The Perpetuity Calculus of Agency" defines task frames as tuples
-`F = (W, G, ·)` where:
-- `W` is a set of world states
-- `G` is a totally ordered abelian group `D = ⟨D, +, ≤⟩` of "time" elements (durations)
-- `·: W × G → P(W)` is the task relation
+The JPL paper "The Perpetuity Calculus of Agency" defines a frame as a structure
+`F = ⟨W, D, ⇒⟩` where:
+- `W` is a **nonempty** set of world states
+- `D = ⟨D, +, 0, ≤⟩` is a **nontrivial** totally ordered abelian group of durations
+- `⇒ ⊆ W × D⁺ × W` is a task relation on the **positive cone** `D⁺ = {x ∈ D : 0 ≤ x}`,
+  extended to negative durations by the **converse convention** `w ⇒_x u := u ⇒_{-x} w`
+  for `x < 0`, and determining for each `w` and each `x > 0` the **cone**
+  `(w)_x = {u : w ⇒_y u for some |y| < x}` over the extended relation, subject to:
+  - *Nullity*: `w ⇒_0 u` if and only if `w = u`.
+  - *Compositionality*: if `w ⇒_x u` and `u ⇒_y v` then `w ⇒_{x + y} v` (on `D⁺`).
+  - *Limit Nullity*: `⋂_{x > 0} (w)_x = {w}`.
 
 **ProofChecker Implementation**:
-This implementation generalizes the time group `G` to any type `D` with an
+This implementation generalizes the time group to any type `D` with an
 ordered additive commutative group structure, which provides:
 - Additive abelian group structure (zero, addition, inverse)
 - Total linear order (≤ relation)
 - Order compatibility with addition
 
-This matches the paper's specification exactly and allows for various temporal structures:
+This allows for various temporal structures:
 - `Int`: Discrete integer time (standard temporal logic)
 - `Rat`: Dense rational time (for fine-grained temporal reasoning)
 - `Real`: Continuous real time (for physical systems)
 - Custom bounded or modular time structures
 
-**Alignment Verification**:
-- Paper's nullity: `w ∈ w · 0` corresponds to `nullity : ∀ w, TaskRel w 0 w` (derived theorem)
-- Paper's compositionality: Achieved via `forward_comp` (restricted to 0 ≤ x, 0 ≤ y) plus `converse`
-- `nullity_identity`: `TaskRel w 0 u ↔ w = u` (stronger than reflexivity)
-- `converse`: `TaskRel w d u ↔ TaskRel u (-d) w` (temporal symmetry)
-- The ordered additive group structure provides the required abelian group with total order
+**Alignment Verification** — this module *agrees* with the paper's official presentation:
+- Paper's *Nullity* is an iff, and `nullity_identity : TaskRel w 0 u ↔ w = u` is an exact match.
+- Paper's *Compositionality* on the positive cone is `forward_comp`, whose `0 ≤ x` and `0 ≤ y`
+  hypotheses are how the paper's domain restriction is expressed against a two-sided relation.
+  The law is the **lax** one (`R_{x + y} ⊇ R_x ∘ R_y`); the inclusion replaces the usual
+  equality, which would additionally assert interpolation and is **not** adopted
+  (possible_worlds.tex:964, which calls the positive-cone presentation "its official form").
+- The two-sided `TaskRel` together with the `converse` field **is** the paper's extended
+  relation over a primitive relation living on the positive cone. `converse` packages the
+  paper's definitional converse convention as structure data; it is not an extra
+  temporal-symmetry axiom.
+- Reflection (`nullity`) and backward composition (`backward_comp`) are **derived** here,
+  matching their derived status in the paper (possible_worlds.tex:954-959).
+- Mixed-sign composition is not so much prohibited as **inexpressible at the primitive level**,
+  since primitive durations are nonnegative. Were it extended across mixed signs, *Nullity*
+  would collapse nondeterminism: `w ⇒_x u` and `w ⇒_x u'` give `u ⇒_{-x} w` by the converse
+  convention, whence `u ⇒_0 u'` and so `u = u'` (possible_worlds.tex:957-959).
+- The ordered additive group structure provides the required abelian group with total order.
+
+**Known gaps relative to the paper** (stated plainly rather than silently repaired):
+- The paper requires `W` nonempty; the structure carries no `Nonempty WorldState` field.
+- The paper requires `D` nontrivial; `[Nontrivial D]` is not among the structure's binders and
+  is supplied ad hoc at the sites that need it.
+- *Limit Nullity* is the one paper clause still absent from the structure. Its intended
+  transcription against the extended relation is
+  `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w`; the `⊇` half of the paper's
+  equality is `nullity` plus cone monotonicity and needs no field.
 
 ## Main Definitions
 
 - `TaskFrame D`: Structure with world states, times of type `D`, task relation, and constraints
 - `TaskFrame.nullity_identity`: Zero duration iff identity (`TaskRel w 0 u ↔ w = u`)
-- `TaskFrame.forward_comp`: Forward compositionality (restricted to non-negative durations)
-- `TaskFrame.converse`: Temporal symmetry (`TaskRel w d u ↔ TaskRel u (-d) w`)
+- `TaskFrame.forward_comp`: Lax positive-cone compositionality (`0 ≤ x`, `0 ≤ y`)
+- `TaskFrame.converse`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
 - `TaskFrame.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`)
 
 ## Main Results
@@ -58,8 +85,8 @@ This matches the paper's specification exactly and allows for various temporal s
 - Type parameter `D` represents temporal duration with ordered additive group structure
 - Task relation `TaskRel w x u` means: world state `u` is reachable from `w` by task
   of duration `x`
-- Nullity: zero-duration task is identity (reflexivity)
-- Compositionality: sequential tasks compose (transitivity with addition)
+- Nullity: zero-duration task is identity, stated as an iff
+- Compositionality: sequential tasks compose on the positive cone (lax law, no interpolation)
 - Typeclass parameter convention: `(D : Type*)` explicit, ordered group instances implicit
 
 ## References
@@ -79,8 +106,8 @@ A task frame consists of:
 - A type `D` of temporal durations with ordered additive group structure
 - A task relation connecting world states via timed tasks
 - Nullity identity: zero-duration task iff identity (w = u)
-- Forward compositionality: tasks compose for non-negative durations
-- Converse: TaskRel w d u iff TaskRel u (-d) w
+- Forward compositionality: tasks compose on the positive cone
+- Converse: the definitional converse convention, `TaskRel w d u ↔ TaskRel u (-d) w`
 
 The task relation `TaskRel w x u` means: starting from world state `w`,
 executing a task of duration `x` can result in world state `u`.
@@ -88,14 +115,30 @@ executing a task of duration `x` can result in world state `u`.
 **Type Parameters**:
 - `D`: Temporal duration type with totally ordered abelian group structure
 
-**Paper Alignment**: Matches JPL paper def:frame (possible_worlds.tex:2423-2451) with
-`D = ⟨D, +, ≤⟩` as a totally ordered abelian group.
+**Paper Alignment**: Matches JPL paper def:frame (possible_worlds.tex:2423-2451) on three of
+its four clauses — iff-*Nullity*, the lax positive-cone *Compositionality*, and the converse
+convention. *Limit Nullity* is not yet carried as a field; see the module docstring's
+"Known gaps" list for its intended transcription.
 
 **Axiomatization Notes**:
-The original axiomatization used universal compositionality, which is algebraically
-impossible for non-deterministic relations with mixed signs. This axiomatization
-uses forward_comp (restricted to 0 ≤ x, 0 ≤ y) plus converse, which is equivalent
-for all semantic purposes since `respects_task` only evaluates at d = t - s ≥ 0.
+The paper's own presentation takes the primitive task relation to live on the positive cone
+`D⁺ = {x : 0 ≤ x}` and extends it to negative durations by the converse convention. This
+structure is that presentation: the two-sided `TaskRel` is the *extended* relation, `converse`
+is the convention that defines it from the primitive one, and `forward_comp`'s `0 ≤ x`, `0 ≤ y`
+hypotheses confine composition to the primitive domain. The paper calls this positive-cone form
+"not merely equivalent to the definition above but its official form" and states the law as the
+**lax** inclusion `R_{x + y} ⊇ R_x ∘ R_y`, the inclusion replacing an equality that would
+additionally assert interpolation (possible_worlds.tex:964).
+
+Consequently *Reflection* and backward composition are derived rather than postulated here
+(`nullity`, `backward_comp`), exactly as in the paper, and mixed-sign composition is not
+prohibited but inexpressible at the primitive level, since primitive durations are nonnegative.
+The paper gives the same nondeterminism-collapse argument for why it must stay that way: from
+`w ⇒_x u` and `w ⇒_x u'` the converse convention yields `u ⇒_{-x} w`, so mixed-sign composition
+would give `u ⇒_0 u'` and hence `u = u'` (possible_worlds.tex:957-959).
+
+This block previously recorded a divergence from the paper. There is none: the paper has since
+adopted the same positive-cone presentation, and the agreement is recorded here instead.
 -/
 structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
   /-- Type of world states -/
@@ -110,21 +153,31 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   -/
   nullity_identity : ∀ w u, TaskRel w 0 u ↔ w = u
   /--
-  Forward compositionality constraint: tasks compose for non-negative durations.
+  Compositionality on the positive cone: tasks compose for non-negative durations.
 
   If task of duration `x ≥ 0` takes `w` to `u`, and task of duration `y ≥ 0` takes `u` to `v`,
   then task of duration `x + y` takes `w` to `v`.
 
-  This restricted form avoids the algebraically impossible mixed-sign compositionality
-  while being sufficient for `respects_task` which only uses non-negative durations.
+  The paper states *Compositionality* proviso-free, but on a primitive relation that already
+  lives on the positive cone `D⁺`; the `0 ≤ x`, `0 ≤ y` hypotheses are how that domain
+  restriction is expressed against the two-sided extended relation. The law is the **lax**
+  inclusion `R_{x + y} ⊇ R_x ∘ R_y`: an equality would additionally assert interpolation and is
+  not adopted. Composition over negative durations is derived (`backward_comp`); mixed-sign
+  composition is inexpressible at the primitive level rather than prohibited.
   -/
   forward_comp : ∀ w u v x y, 0 ≤ x → 0 ≤ y → TaskRel w x u → TaskRel u y v → TaskRel w (x + y) v
   /--
-  Converse constraint: task relation is symmetric under duration negation.
+  The paper's **definitional converse convention**, packaged as structure data.
 
   `TaskRel w d u` holds iff `TaskRel u (-d) w` holds.
-  This gives temporal symmetry: if we can go from w to u in time d,
-  we can go from u to w in time -d.
+
+  This is *not* a substantive temporal-symmetry axiom. The paper's primitive task relation
+  lives on the positive cone `D⁺ = {x : 0 ≤ x}` and is extended to negative durations by
+  stipulating `w ⇒_x u := u ⇒_{-x} w` for `x < 0` (possible_worlds.tex:2423-2451). A two-sided
+  Lean relation cannot carry that stipulation in its type, so it is carried as this field: the
+  pair (two-sided `TaskRel`, `converse`) is precisely the paper's *extended* relation over a
+  primitive relation on `D⁺`, and it constrains the negative half of `TaskRel` to be exactly
+  the reflection of the positive half rather than adding independent content.
   -/
   converse : ∀ w d u, TaskRel w d u ↔ TaskRel u (-d) w
 

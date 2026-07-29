@@ -168,19 +168,19 @@ site found and record the corrected count in the summary rather than stopping at
 
 ---
 
-### Phase 2: Recast TaskFrame docstrings from divergence to agreement [NOT STARTED]
+### Phase 2: Recast TaskFrame docstrings from divergence to agreement [COMPLETED]
 
 **Goal**: The module's prose states the true relationship to the paper: agreement on the
 positive-cone presentation, with Reflection and backward composition derived and mixed-sign
 composition inexpressible.
 
 **Tasks**:
-- [ ] Rewrite the `converse` field docstring (`TaskFrame.lean:122-128` region): it is the paper's
+- [x] Rewrite the `converse` field docstring (`TaskFrame.lean:122-128` region): it is the paper's
       **definitional converse convention** packaged as a structure field
       (`w ⇒_x u := u ⇒_{-x} w` for `x < 0`), **not** a substantive temporal-symmetry axiom. State
       that the two-sided `TaskRel` plus this field is precisely the paper's *extended* relation
       over a primitive relation living on the positive cone.
-- [ ] Invert the `Axiomatization Notes` block (`TaskFrame.lean:93-97`). It currently claims the
+- [x] Invert the `Axiomatization Notes` block (`TaskFrame.lean:93-97`). It currently claims the
       restricted form is a workaround for something "algebraically impossible". Replace with a
       statement of agreement: the paper adopts the same positive-cone presentation and calls it
       "its official form" (`possible_worlds.tex:964`), states the lax law
@@ -188,12 +188,12 @@ composition inexpressible.
       assert interpolation, and is **not** adopted — and gives the same nondeterminism-collapse
       argument for why mixed-sign composition must stay inexpressible
       (`possible_worlds.tex:957-959`).
-- [ ] Record in the docstring that Reflection and backward composition are **derived**, matching
+- [x] Record in the docstring that Reflection and backward composition are **derived**, matching
       the paper's derived status, and that mixed-sign composition is not prohibited but
       inexpressible at the primitive level (primitive durations are nonnegative).
-- [ ] Record the known gap: the paper requires `W` nonempty and `D` nontrivial; neither is
+- [x] Record the known gap: the paper requires `W` nonempty and `D` nontrivial; neither is
       currently enforced by the Lean structure. State it plainly rather than fixing it silently.
-- [ ] Add a forward-looking note that Limit Nullity is the one paper clause still absent from the
+- [x] Add a forward-looking note that Limit Nullity is the one paper clause still absent from the
       structure, with the intended statement (see Phase 6) — as prose, **not** as a field.
 
 **Timing**: 0.75 hours
