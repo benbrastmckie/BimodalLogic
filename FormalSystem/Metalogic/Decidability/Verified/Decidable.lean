@@ -242,6 +242,82 @@ def CarrierProp : Type 1 :=
 the ordered-group structure every validity notion already binds. -/
 def carrierBase : CarrierProp := fun _ => True
 
+/-!
+### Well-formedness of the `(branch, ordering)` pair
+
+`RuleSound` quantifies over `b` and `ord` independently, and `SatState`'s four fields relate the
+times occurring in `ord.constraints` to the times occurring in `b` in none of them. Without a
+condition tying the two together the predicate is *false* for every fresh-time producer:
+`Branch.nextTime` is a function of the branch alone, so an adversarial `ord` may already record
+it, and the successor's `ordResp` obligation then demands a cycle. That is proved below
+(`addFuture_nextTime_cycle_unsatisfiable` and its past mirror) rather than argued.
+
+`OrdWithin` is the condition. Two formulations were considered:
+
+* the numeric bound `∀ p ∈ ord.constraints, p.1 < b.nextTime ∧ p.2 < b.nextTime`, and
+* the membership condition below.
+
+The numeric bound is **not an inductive invariant of the construction**. It is preserved by 35 of
+the 36 `TableauRule` constructors and refuted by the identification arm of `timeLinearity`
+(`Tableau.lean`, the `.branchingOrdered` arm), the engine's single non-additive step:
+`Branch.identifyTime` *removes* a time from `knownTimes` and so can **lower** `nextTime`, while
+`TimeOrdering.identifyTime` carries a constraint mentioning an unrelated larger time through the
+substitution unchanged. Concretely, `b = [f₀, f₇]` with `ord = ⟨[(5, 7)]⟩` satisfies the numeric
+bound (`nextTime = 8`); the arm identifies `7` with `0`, giving `b'.nextTime = 1` with the
+constraint `(5, 0)` surviving.
+
+The membership condition is stable under exactly that operation — every time of
+`ord.identifyTime t₂ t₁` is either an unchanged time of `ord` other than `t₂`, or `t₁`, which
+survives in the branch — and it is strictly stronger than the numeric bound
+(`OrdWithin.bound`), so the fresh-time producers lose nothing.
+-/
+
+/-- Every time recorded in the ordering is a time the branch knows.
+
+Discharged at the root by `TimeOrdering.empty` (`OrdWithin.empty`) and preserved by every arm of
+`applyRule`. See the section docstring above for why membership rather than a numeric bound. -/
+def OrdWithin (b : Branch) (ord : TimeOrdering) : Prop :=
+  ∀ p ∈ ord.constraints, p.1 ∈ b.knownTimes ∧ p.2 ∈ b.knownTimes
+
+/-- A time the branch knows is strictly below the branch's fresh time. -/
+theorem lt_nextTime_of_mem_knownTimes {b : Branch} {t : TimeIndex}
+    (h : t ∈ b.knownTimes) : t < b.nextTime := by
+  simp only [Branch.knownTimes, List.mem_eraseDups, List.mem_map] at h
+  obtain ⟨sf, hsf, rfl⟩ := h
+  exact Nat.lt_succ_of_le (le_maxTime hsf)
+
+/-- `knownTimes` only grows under the additive branch extension every expansion tail performs. -/
+theorem mem_knownTimes_append {b : Branch} {fs : List SignedFormula} {t : TimeIndex}
+    (h : t ∈ b.knownTimes) : t ∈ Branch.knownTimes (fs ++ b) := by
+  simp only [Branch.knownTimes, List.mem_eraseDups, List.map_append, List.mem_append] at *
+  exact Or.inr h
+
+/-- `OrdWithin` implies the numeric bound, so `Branch.nextTime` is fresh *for the ordering* as
+well as for the branch. This is the fact a fresh-time producer's one-point update of `tv`
+consumes: the new index disturbs no existing `ordResp` obligation. -/
+theorem OrdWithin.bound {b : Branch} {ord : TimeOrdering} (h : OrdWithin b ord) :
+    ∀ p ∈ ord.constraints, p.1 < b.nextTime ∧ p.2 < b.nextTime := fun p hp =>
+  ⟨lt_nextTime_of_mem_knownTimes (h p hp).1, lt_nextTime_of_mem_knownTimes (h p hp).2⟩
+
+/-- Corollary in the form the fresh-time proofs use it: the fresh time is not an endpoint of any
+existing constraint. -/
+theorem OrdWithin.nextTime_not_mem {b : Branch} {ord : TimeOrdering} (h : OrdWithin b ord)
+    {p : TimeIndex × TimeIndex} (hp : p ∈ ord.constraints) :
+    p.1 ≠ b.nextTime ∧ p.2 ≠ b.nextTime :=
+  ⟨Nat.ne_of_lt (h.bound p hp).1, Nat.ne_of_lt (h.bound p hp).2⟩
+
+/-- The root ordering satisfies the invariant against any branch, vacuously. This is where the
+assembly's induction starts (`Saturation.lean`'s root call passes `TimeOrdering.empty`). -/
+theorem OrdWithin.empty (b : Branch) : OrdWithin b TimeOrdering.empty := by
+  intro p hp
+  simp [TimeOrdering.empty] at hp
+
+/-- Additive branch growth preserves the invariant. Every expansion tail in the engine builds
+`fs ++ b`, so this covers all four additive `RuleResult` arms. -/
+theorem OrdWithin.append {b : Branch} {ord : TimeOrdering} {fs : List SignedFormula}
+    (h : OrdWithin b ord) : OrdWithin (fs ++ b) ord := fun p hp =>
+  ⟨mem_knownTimes_append (h p hp).1, mem_knownTimes_append (h p hp).2⟩
+
 /--
 **Semantic soundness of one tableau rule.** If the branch is satisfied and the rule's source
 formula is on it, then the rule's output preserves satisfiability.
