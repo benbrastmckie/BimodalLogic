@@ -1036,6 +1036,146 @@ theorem goodDense_openSub_of_mid (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStr
     (goodDense_binSum_pointSum k hk M c' _ _ (reynolds_lemma11 sig k hk _ hleft) hinner)
 
 /--
+**The decomposition with the degenerate cases admitted** — `c' = c` and `d' = d` are exactly the
+cases in which `c`'s (resp. `d`'s) class is a singleton, and then Reynolds' `M | (c,c']` (resp.
+`M | [d',d)`) is empty and the corresponding summand is absent.
+
+Reynolds' *"Let `c'` be the right hand end point of `c`'s class"* passes over this silently. It is
+not a corner case that can be assumed away: D2 supplies a **dense set of singleton classes**
+(printed p.187), so singleton classes are the generic situation, and `c` or `d` landing on one is
+routine rather than exceptional. All four combinations are discharged, the outer two by a single
+split and the degenerate-degenerate one by the middle block alone.
+-/
+theorem goodDense_openSub_of_mid_le (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] {c c' d' d : M.carrier}
+    (hcc' : c ≤ c') (hc'd' : c' < d') (hd'd : d' ≤ d)
+    (hleft : c < c' → veryGoodDense sig k (M.openSubinterval sig c c'))
+    (hmid : goodDense sig k (M.openSubinterval sig c' d'))
+    (hright : d' < d → veryGoodDense sig k (M.openSubinterval sig d' d)) :
+    goodDense sig k (M.openSubinterval sig c d) := by
+  haveI : Countable (M.openSubinterval sig c c').carrier :=
+    inferInstanceAs (Countable {x : M.carrier // c < x ∧ x < c'})
+  haveI : Countable (M.openSubinterval sig d' d).carrier :=
+    inferInstanceAs (Countable {x : M.carrier // d' < x ∧ x < d})
+  haveI := noMaxOrder_openSubinterval sig M c c'
+  haveI := noMinOrder_openSubinterval sig M c c'
+  haveI := noMaxOrder_openSubinterval sig M c' d'
+  haveI := noMinOrder_openSubinterval sig M c' d'
+  haveI := noMaxOrder_openSubinterval sig M d' d
+  haveI := noMinOrder_openSubinterval sig M d' d
+  haveI : Nonempty (M.openSubinterval sig c' d').carrier := by
+    obtain ⟨x, hx₁, hx₂⟩ := exists_between hc'd'; exact ⟨⟨x, hx₁, hx₂⟩⟩
+  rcases eq_or_lt_of_le hcc' with rfl | hcc'
+  · rcases eq_or_lt_of_le hd'd with rfl | hd'd
+    · -- both classes singletons: `M | (c,d)` *is* the middle block
+      exact hmid
+    · -- only `c`'s class is a singleton: one split, at `d'`
+      haveI : Nonempty (M.openSubinterval sig d' d).carrier := by
+        obtain ⟨x, hx₁, hx₂⟩ := exists_between hd'd; exact ⟨⟨x, hx₁, hx₂⟩⟩
+      have hsplit : KEquiv sig k (M.openSubinterval sig c d)
+          (binSum sig (M.openSubinterval sig c d')
+            (pointSum sig M d' (M.openSubinterval sig d' d))) :=
+        (kEquiv_openSub_split k M c d' d hc'd' hd'd).trans
+          (kEquiv_binSum k (rfl : KEquiv sig k (M.openSubinterval sig c d') _)
+            (kEquiv_halfOpen_pointSum sig k M d' d hd'd))
+      exact goodDense_of_kEquiv sig k hsplit
+        (goodDense_binSum_pointSum k hk M d' _ _ hmid
+          (reynolds_lemma11 sig k hk _ (hright hd'd)))
+  · haveI : Nonempty (M.openSubinterval sig c c').carrier := by
+      obtain ⟨x, hx₁, hx₂⟩ := exists_between hcc'; exact ⟨⟨x, hx₁, hx₂⟩⟩
+    rcases eq_or_lt_of_le hd'd with rfl | hd'd
+    · -- only `d`'s class is a singleton: one split, at `c'`
+      have hsplit : KEquiv sig k (M.openSubinterval sig c d')
+          (binSum sig (M.openSubinterval sig c c')
+            (pointSum sig M c' (M.openSubinterval sig c' d'))) :=
+        (kEquiv_openSub_split k M c c' d' hcc' hc'd').trans
+          (kEquiv_binSum k (rfl : KEquiv sig k (M.openSubinterval sig c c') _)
+            (kEquiv_halfOpen_pointSum sig k M c' d' hc'd'))
+      exact goodDense_of_kEquiv sig k hsplit
+        (goodDense_binSum_pointSum k hk M c' _ _
+          (reynolds_lemma11 sig k hk _ (hleft hcc')) hmid)
+    · exact goodDense_openSub_of_mid k hk M hcc' hc'd' hd'd (hleft hcc') hmid (hright hd'd)
+
+/-! ## Layer 9 — Reynolds' `c'` and `d'`
+
+Printed p.188: *"Let `c'` be the right hand end point of `c`'s `∼`-class and `d'` be the left hand
+end point of `d`'s."*
+
+That the two end points **exist** is Lemma 13 (`reynolds_lemma13_right` / `reynolds_lemma13_left`,
+`Shuffle.lean:176,201`) together with D1: the classes do not end in gaps, so a class bounded on a
+side attains its bound there. Reynolds' sentence reads as though the end points came for free;
+they are exactly Lemma 13's content, which is the reason that lemma is proved at all.
+
+What each construction adds beyond Lemma 13 is the **location** of the end point relative to the
+opposite end of the interval — `c' < d` and `c < d'` — because that is what makes each a genuine
+interior seam of `(c,d)`, and `c' < d'`, which is what makes the middle block non-degenerate. All
+three are convexity plus transitivity of `∼` against `c ≁ d`, and all three fail without `c ≁ d`:
+at `c ∼ d` the two classes coincide and there is no middle block at all. That is why Reynolds
+disposes of `c ∼ d` first, by Lemma 11, before this paragraph begins.
+-/
+
+/--
+**The right hand end point of `c`'s class** (printed p.188), from Lemma 13 and D1.
+
+The conclusions are: `c'` lies in `c`'s class, `c` does not exceed it, `c'` still lies strictly
+below `d`, and nothing above `c'` is `∼ c`. The last clause is what identifies `⋃I` with an
+interval starting at `c'`.
+-/
+theorem exists_right_endpoint_class (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] (D1 : DoetsD1 sig M)
+    {c d : M.carrier} (hcd : c < d) (hns : ¬ SimDense sig k M c d) :
+    ∃ c' : M.carrier, SimDense sig k M c c' ∧ c ≤ c' ∧ c' < d ∧
+      ∀ y : M.carrier, c' < y → ¬ SimDense sig k M c y := by
+  obtain ⟨c', hsim, hlast⟩ :=
+    reynolds_lemma13_right k hk M c (doetsD1_epsDense sig k hk M D1 c).1 ⟨d, hcd, hns⟩
+  refine ⟨c', hsim, ?_, ?_, hlast⟩
+  · -- `c` itself is `∼ c`, so it cannot lie strictly above the last point of its class.
+    by_contra hlt
+    exact hlast c (not_le.mp hlt) (simDense_refl k M c)
+  · -- `d ≤ c'` would put `d` inside `c`'s class by convexity.
+    by_contra hle
+    exact hns (simDense_convex k M c d c' (le_of_lt hcd) (not_lt.mp hle) hsim)
+
+/--
+**The left hand end point of `d`'s class** (printed p.188) — the mirror of
+`exists_right_endpoint_class`, from Lemma 13's left half.
+-/
+theorem exists_left_endpoint_class (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] (D1 : DoetsD1 sig M)
+    {c d : M.carrier} (hcd : c < d) (hns : ¬ SimDense sig k M c d) :
+    ∃ d' : M.carrier, SimDense sig k M d d' ∧ d' ≤ d ∧ c < d' ∧
+      ∀ y : M.carrier, y < d' → ¬ SimDense sig k M d y := by
+  obtain ⟨d', hsim, hfst⟩ :=
+    reynolds_lemma13_left k hk M d (doetsD1_epsDense sig k hk M D1 d).2
+      ⟨c, hcd, fun h => hns (simDense_symm h)⟩
+  refine ⟨d', hsim, ?_, ?_, hfst⟩
+  · by_contra hle
+    exact hfst d (not_le.mp hle) (simDense_refl k M d)
+  · -- `d' ≤ c` would put `c` inside `d`'s class, by convexity read from `d'` upwards.
+    by_contra hlt
+    have hd'c : SimDense sig k M d' c :=
+      simDense_convex k M d' c d (not_lt.mp hlt) (le_of_lt hcd) (simDense_symm hsim)
+    exact hns (simDense_trans k hk M (simDense_symm hd'c) (simDense_symm hsim))
+
+/--
+**The two end points do not cross** — `c' < d'`, so the middle block `M | (c',d')` is a genuine
+non-empty open interval.
+
+`d' ≤ c'` would place `d'` inside `c`'s class by convexity, and `d'` is in `d`'s class, so
+transitivity would give `c ∼ d`.
+-/
+theorem endpoint_lt_endpoint (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] {c d c' d' : M.carrier}
+    (hns : ¬ SimDense sig k M c d) (hsimc : SimDense sig k M c c')
+    (hsimd : SimDense sig k M d d') (hcd' : c < d') : c' < d' := by
+  by_contra hle
+  have hcd'sim : SimDense sig k M c d' :=
+    simDense_convex k M c d' c' (le_of_lt hcd') (not_lt.mp hle) hsimc
+  exact hns (simDense_trans k hk M hcd'sim (simDense_symm hsimd))
+
+/--
 **The residual of Reynolds' §8 Theorem 6** — printed pp.187-188, everything after
 `exists_not_simDense_of_not_goodDense` has produced `a < b` with `a ≁ b`:
 
