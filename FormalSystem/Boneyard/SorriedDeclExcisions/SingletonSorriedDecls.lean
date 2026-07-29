@@ -22,6 +22,15 @@ From `Metalogic/WeakCanonical/OrderedSum.lean`:
   bypassed in the discrete case by the one_class argument. Required only for
   the dense case (future work). The live `doets_lemma_1_4` is NOT part of this
   excision and remains in live code.
+  **SUPERSEDED — do not revive.** The dense case now has a live re-statement at
+  `Metalogic/WeakCanonical/RealModel/ShuffleReal.lean`'s `doets_lemma_1_5`, under the live
+  names `kTypeOf`/`KEquiv`. That re-statement is *not* a port of the draft below: the draft's
+  hypothesis, that the two index sets realize the same **set** of k-types, does not imply its
+  conclusion, because it ignores the order in which the types occur (two summands of types
+  `τ₁, τ₂` in either order realize the same set but need not give `≡ₖ` sums). The live version
+  carries Doets 1987 3.1.8's actual hypothesis instead: that the two **`Z`-coloured index
+  orders** are `≡ⁿ`. It too is unproved, but as a documented strategic `sorry` with a named
+  follow-up, not as an archived draft.
 
 From `Metalogic/BXCanonical/Frame.lean`:
 - `bx_le_refl` (1 sorry) — reflexivity of the canonical temporal ordering.

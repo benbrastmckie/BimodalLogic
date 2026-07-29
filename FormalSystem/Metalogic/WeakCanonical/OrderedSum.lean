@@ -17,9 +17,14 @@ building on definitions from NEquivalence.lean.
 
 ## Status
 - `doets_lemma_1_4`: closed (delegates to KEquivalenceFramework.sum_preservation)
-- `doets_lemma_1_5` (type-matching variant, sorried, dense-case-only) was archived to
-  `Boneyard/SorriedDeclExcisions/SingletonSorriedDecls.lean` — zero code consumers;
-  bypassed in the discrete case by the one_class argument.
+- `doets_lemma_1_5`: **re-stated in live code** as
+  `RealModel/ShuffleReal.lean`'s `doets_lemma_1_5`, in Doets 1987 3.1.8's *coloured index order*
+  form rather than the archived draft's type-matching form. Still unproved there, but as a
+  documented strategic `sorry` with a named follow-up rather than as an archived draft.
+  The archived draft in `Boneyard/SorriedDeclExcisions/SingletonSorriedDecls.lean` sits behind
+  `#exit`, uses the stale names `k_type_of`/`k_equiv`, and is superseded: its hypothesis
+  (matching *sets* of realized k-types) does not in fact imply its conclusion, since it takes no
+  account of the order in which the types occur. Do not revive it.
 
 ## References
 - Doets 1989, Lemmas 1.4, 1.5: `literature/Doets_1989_Monadic_Pi11_Theories.md`

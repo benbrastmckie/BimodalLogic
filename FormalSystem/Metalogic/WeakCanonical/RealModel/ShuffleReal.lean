@@ -516,4 +516,72 @@ theorem exists_countableDense_shuffleReal
 
 end ShuffleRealFacts
 
+/-! ## Anti-vacuity: the hypothesis bundles are satisfiable
+
+Every order fact above is stated under hypotheses on the summands, and would be worthless if no
+family satisfied them. A witness is exhibited here: the constant `ℝ`-family of one-point
+structures, which satisfies *all* of the hypotheses of *all five* lemmas simultaneously. This is
+not an artificial witness — it is exactly what `σ*` produces at the irrationals (printed p.188,
+`γ₁` *"only satisfied by one point structures"*), so the degenerate case is on the main path
+rather than beside it.
+-/
+
+section AntiVacuity
+
+/-- The one-point structure over any signature. -/
+def pointStructure (sig : MonadicSignature) : OrderedMonadicStructure sig where
+  carrier := PUnit
+  interp := fun _ _ => False
+  carrierOrder := inferInstance
+
+/-- The constant `ℝ`-family of one-point structures. -/
+def pointFam (sig : MonadicSignature) : ℝ → OrderedMonadicStructure sig :=
+  fun _ => pointStructure sig
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- Every summand of `pointFam` is a subsingleton. -/
+theorem pointFam_subsingleton (r : ℝ) (x y : (pointFam sig r).carrier) : x = y := rfl
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **The hypotheses of all five order facts hold together** at the one-point family, so none of
+them is vacuously satisfiable only. The conclusions are then instantiated below. -/
+theorem pointFam_hyps :
+    (∀ r : ℝ, Nonempty (pointFam sig r).carrier) ∧
+    (∀ r : ℝ, ∀ x y : (pointFam sig r).carrier, x < y →
+      ∃ z : (pointFam sig r).carrier, x < z ∧ z < y) ∧
+    (∀ r : ℝ, ∀ s : Set (pointFam sig r).carrier, s.Nonempty → ∃ u, IsLUB s u) ∧
+    (∀ r : ℝ, ∃ b : (pointFam sig r).carrier, ∀ x : (pointFam sig r).carrier, b ≤ x) ∧
+    (∀ q : ℚ, ∃ D : Set (pointFam sig (q : ℝ)).carrier, D.Countable ∧
+      ∀ x y : (pointFam sig (q : ℝ)).carrier, x < y → ∃ d ∈ D, x < d ∧ d < y) := by
+  refine ⟨fun _ => ⟨PUnit.unit⟩, ?_, ?_, ?_, ?_⟩
+  · exact fun r x y h => absurd (pointFam_subsingleton (sig := sig) r x y) (ne_of_lt h)
+  · exact fun r s _ => ⟨PUnit.unit, fun a _ => le_of_eq (pointFam_subsingleton (sig := sig) r a _),
+      fun b _ => le_of_eq (pointFam_subsingleton (sig := sig) r _ b)⟩
+  · exact fun r => ⟨PUnit.unit, fun x => le_of_eq (pointFam_subsingleton (sig := sig) r _ x)⟩
+  · exact fun q => ⟨∅, Set.countable_empty,
+      fun x y h => absurd (pointFam_subsingleton (sig := sig) (q : ℝ) x y) (ne_of_lt h)⟩
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- **Anti-vacuity witness**: the one-point family's sum is dense, endpointless, Dedekind
+complete and separable — every conclusion of the section, at one concrete family. -/
+theorem pointFam_orderedSum_facts :
+    (∀ x y : (orderedSum sig ℝ (pointFam sig)).carrier, x < y →
+      ∃ z : (orderedSum sig ℝ (pointFam sig)).carrier, x < z ∧ z < y) ∧
+    (∀ x : (orderedSum sig ℝ (pointFam sig)).carrier,
+      ∃ y : (orderedSum sig ℝ (pointFam sig)).carrier, x < y) ∧
+    (∀ x : (orderedSum sig ℝ (pointFam sig)).carrier,
+      ∃ y : (orderedSum sig ℝ (pointFam sig)).carrier, y < x) ∧
+    (∀ T : Set (orderedSum sig ℝ (pointFam sig)).carrier, T.Nonempty → BddAbove T →
+      ∃ u, IsLUB T u) ∧
+    (∃ D : Set (orderedSum sig ℝ (pointFam sig)).carrier, D.Countable ∧
+      ∀ x y : (orderedSum sig ℝ (pointFam sig)).carrier, x < y → ∃ d ∈ D, x < d ∧ d < y) := by
+  obtain ⟨hne, hdense, hsum, hbot, hsep⟩ := pointFam_hyps (sig := sig)
+  exact ⟨denselyOrdered_orderedSumReal _ hne hdense, noMax_orderedSumReal _ hne,
+    noMin_orderedSumReal _ hne,
+    fun T hT hbdd => exists_isLUB_orderedSumReal _ hsum hbot T hT hbdd,
+    exists_countableDense_orderedSumReal _ hne
+      (fun r _ => pointFam_subsingleton (sig := sig) r) hsep⟩
+
+end AntiVacuity
+
 end FormalSystem.Metalogic.WeakCanonical
