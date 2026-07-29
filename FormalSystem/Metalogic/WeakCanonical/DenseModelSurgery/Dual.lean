@@ -131,6 +131,15 @@ def d {M : OrderedMonadicStructure sig} (x : M.carrier) : (dual M).carrier := x
 theorem d_lt {M : OrderedMonadicStructure sig} (x y : M.carrier) :
     d x < d y ↔ y < x := Iff.rfl
 
+/-- **Countability crosses the dual.** Mathlib carries `OrderDual.denselyOrdered` but no
+`Countable αᵒᵈ` instance, and `dual` is deliberately not `@[reducible]` (see the module header),
+so this is stated as a named lemma to be introduced with `haveI` at the point of use rather than
+as a global instance — registering it globally is exactly the `.carrier`-unfolding that the
+non-reducibility of `dual` is there to prevent. -/
+theorem countable_dual (M : OrderedMonadicStructure sig) [Countable M.carrier] :
+    Countable (dual M).carrier :=
+  Countable.of_equiv M.carrier OrderDual.toDual
+
 /-! ## Syntactic dualization -/
 
 /-- **`dualize`** — flip every order comparison in a monadic formula. Atoms, connectives and
@@ -460,24 +469,29 @@ crossing via `eval_iso` and `subintervalDualIso`.
 weakening of the structure. -/
 theorem isContempEquivDense_dualize {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε) :
     IsContempEquivDense (dualize ε) where
-  equiv N :=
-    { refl := fun a => (contempEquivDense_dualize ε a a).mpr ((hε.equiv (dual N)).refl (d a))
-      symm := fun {a b} h =>
-        (contempEquivDense_dualize ε b a).mpr
-          ((hε.equiv (dual N)).symm ((contempEquivDense_dualize ε a b).mp h))
-      trans := fun {a b c} h₁ h₂ =>
-        (contempEquivDense_dualize ε a c).mpr
-          ((hε.equiv (dual N)).trans ((contempEquivDense_dualize ε a b).mp h₁)
-            ((contempEquivDense_dualize ε b c).mp h₂)) }
+  refl N a := (contempEquivDense_dualize ε a a).mpr (hε.refl (dual N) (d a))
+  symm := by
+    intro N a b h
+    exact (contempEquivDense_dualize ε b a).mpr
+      (hε.symm (dual N) ((contempEquivDense_dualize ε a b).mp h))
+  trans := by
+    intro N _ _ a b c h₁ h₂
+    haveI := countable_dual N
+    haveI : DenselyOrdered (dual N).carrier := inferInstanceAs (DenselyOrdered (N.carrier)ᵒᵈ)
+    exact (contempEquivDense_dualize ε a c).mpr
+      (hε.trans (dual N) ((contempEquivDense_dualize ε a b).mp h₁)
+        ((contempEquivDense_dualize ε b c).mp h₂))
   convex := by
-    intro N a b c hab hbc hac
+    intro N _ _ a b c hab hbc hac
+    haveI := countable_dual N
+    haveI : DenselyOrdered (dual N).carrier := inferInstanceAs (DenselyOrdered (N.carrier)ᵒᵈ)
     have hac' : ContempEquivDense (dual N) ε (d a) (d c) :=
       (contempEquivDense_dualize ε a c).mp hac
-    have hca' : ContempEquivDense (dual N) ε (d c) (d a) := (hε.equiv (dual N)).symm hac'
+    have hca' : ContempEquivDense (dual N) ε (d c) (d a) := hε.symm (dual N) hac'
     have hcb' : ContempEquivDense (dual N) ε (d c) (d b) :=
       hε.convex (dual N) (d c) (d b) (d a) (show (d c : (dual N).carrier) ≤ d b from hbc)
         (show (d b : (dual N).carrier) ≤ d a from hab) hca'
-    exact (contempEquivDense_dualize ε a b).mpr ((hε.equiv (dual N)).trans hac' hcb')
+    exact (contempEquivDense_dualize ε a b).mpr (hε.trans (dual N) hac' hcb')
   contemporary := by
     intro N a b
     have hiso := contempEquivDense_iso (subintervalDualIso (M := N) (min a b) (max a b)) ε
