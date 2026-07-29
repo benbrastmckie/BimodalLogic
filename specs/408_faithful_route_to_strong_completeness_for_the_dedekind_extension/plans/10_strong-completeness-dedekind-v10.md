@@ -4644,7 +4644,37 @@ introduced here. **No aggregator was edited** — `Metalogic/WeakCanonical.lean`
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [IN PROGRESS]
+### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [PARTIAL]
+
+**PARTIAL RECORD (Phase 29)**: `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean`
+is landed (443 lines), scoped build green, and every declaration in it is axiom-clean
+(`[propext, Classical.choice, Quot.sound]`) **except** the ones that route through the single
+tracked strategic sorry named below. `doets_theorem_dense` is landed **with its final signature**
+— `DoetsD1` / `DoetsD2` only, no extra hypothesis — so Phase 30 can consume it exactly as
+chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
+
+- **What is proved, sorry-free**: `exists_realFlow_witness` (goodness normalized to flow `= ℝ`),
+  `goodDense_of_orderIso_real` / `exists_realFlow_of_orderIso_real`, the whole Layer-3 `ℝ`-model
+  transfer (`goodDense_shuffleReal`, `exists_realFlow_shuffleReal`, `goodDense_shuffle`,
+  `exists_realFlow_of_kEquiv_shuffle`), the anti-vacuity witness
+  `exists_realFlow_shuffleReal_point`, and `exists_not_simDense_of_not_goodDense` — printed
+  p.187's *"`M` is not very good and so there are `a < b` with `a ≁ b`"*, both implications by
+  Lemma 11 in contrapositive form.
+- **What is not proved**: `reynolds_theorem6_contradiction` — printed pp.187-188, the
+  `G`-minimality contradiction. **One `sorry`, at `DoetsTheorem.lean:415`.** Its docstring names
+  the three sub-gaps precisely: (1) the `ε`-adapter — `epsDense_isContempEquiv`
+  (`EpsilonDense.lean:1033`) supplies the three clauses only at a fixed `Countable`,
+  `DenselyOrdered` `M`, not the `∀ M`-quantified `IsContempEquivDense` that `DoetsD1`/`DoetsD2`
+  take, which is exactly *"the one adapter Phase 29 must supply"* flagged in Phase 25's own
+  deviation record; (2) the minimization over the finite `γ`-palette, which has no counterpart in
+  the tree; (3) the *"classes strictly between have order type `ℚ`"* step, which needs the
+  `∼`-quotient built before `Order.iso_of_countable_dense` can be applied.
+- **Anti-vacuity checkbox NOT met**, and not faked. The chronicle instantiation is not landed. It
+  is gated on the same `ε`-adapter as (1) above, and closing it at `epsTop` would be vacuous by
+  the plan's own caveat. `exists_realFlow_shuffleReal_point` is landed instead as an honest but
+  *weaker* anti-vacuity witness: it exhibits the `ℝ`-flow conclusion shape at the constant
+  one-point palette, so Layer 3 is demonstrably non-vacuous. It does **not** discharge the
+  chronicle checkbox and is not presented as doing so.
 
 - **Goal**: `doets_theorem_dense`: *"Suppose that `M` is a temporal structure in a finite language
   whose flow of time is countable, dense and without end points. Suppose further that for any
@@ -4655,13 +4685,19 @@ introduced here. **No aggregator was edited** — `Metalogic/WeakCanonical.lean`
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean` (new).
 - **Tasks**:
   - [ ] Assemble the proof, transcribing printed pp.187-188: if `M` is good, done. Otherwise by
+        *(deviation: partial — the "if `M` is good, done" half is landed as
+        `exists_realFlow_witness`; "`M` not very good ⇒ `a ≁ b`" as
+        `exists_not_simDense_of_not_goodDense`; "so `M|(⋃I) ≡ₖ` a shuffle (26), extend to `ℝ`
+        (27), the flow is `≅o ℝ` (28)" as `goodDense_shuffle` /
+        `exists_realFlow_of_kEquiv_shuffle`. The `G`-minimality contradiction that consumes them
+        is the tracked sorry at `DoetsTheorem.lean:415`.)*
         Lemma 11 there are ≥ 2 `∼`-classes; by Lemma 13 and D1 there is a third between any two, so
         `M/∼` is dense and D2 gives density of singletons. Choose `a < b` with `a ≁ b` and `G`
         minimal; show `M|(a,b)` is very good, contradiction. For `a < c < d < b` with `c ≁ d`: the
         classes strictly between have order type `ℚ` and by minimality all `γᵢ ∈ G` are dense in `I`,
         so `M|(⋃I) ≡ₖ` a shuffle (Phase 26); extend to `ℝ` (Phase 27); the flow is `≅o ℝ` (Phase 28);
         and `M|(c,d) ≡ₖ X + R + Y` (Phase 24 + `doets_lemma_1_4`).
-  - [ ] Land the statement so Phase 30 can consume it with `D1 := no_gaps_dense_prior` and
+  - [x] Land the statement so Phase 30 can consume it with `D1 := no_gaps_dense_prior` and
         `D2 := dense_singletons_of_sep` at the chronicle structure. **No change of substance in
         v10**: once Phase 22.1 lands, `no_gaps_dense_prior` carries one fewer hypothesis
         (`HasBadIntervalSurgery` is discharged) and this consumption is direct, exactly as
@@ -4679,10 +4715,20 @@ introduced here. **No aggregator was edited** — `Metalogic/WeakCanonical.lean`
         as well as on 22-23**, and a dispatch that closes it at `epsTop` has not met the gate. The
         `Depends on` line below is unchanged (27 already depends on 26 → 25), so this is a citation
         of an existing edge, not a new one.
-  - [ ] Docstrings: `Reynolds 1992, §8 Theorem 6, printed pp.185-188` and `Doets 1987, 3.3.9`, with
+        *(deviation: NOT met — see the PARTIAL RECORD above. The chronicle instantiation is gated
+        on the same `ε`-adapter as the tracked sorry. `exists_realFlow_shuffleReal_point` is
+        landed as a weaker, honest substitute and is not claimed to discharge this checkbox.)*
+  - [x] Docstrings: `Reynolds 1992, §8 Theorem 6, printed pp.185-188` and `Doets 1987, 3.3.9`, with
         Reynolds' own note that his statement is slightly stronger and his proof a little different
-        because of the contemporaneity notion.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
+        because of the contemporaneity notion. *(landed verbatim on `doets_theorem_dense`, plus a
+        source-to-implementation map in the module header.)*
+  - [x] `#print axioms`; scoped build green; full `lake build` green. *(scoped
+        `lake build …RealModel.DoetsTheorem` green, 2215 jobs; full `lake build` green, 1983 jobs
+        — the full build does **not** reach `RealModel/**`, per the Phase 28 reachability finding,
+        so the scoped build is the load-bearing channel. Every declaration reports exactly
+        `[propext, Classical.choice, Quot.sound]` except `doets_goodDense` /
+        `doets_theorem_dense`, which additionally report `sorryAx` through
+        `reynolds_theorem6_contradiction`.)*
 - **Estimated output**: ~400 lines.
 - **Done when**: `doets_theorem_dense` and the chronicle instantiation are sorry-free and axiom-clean.
 - **Depends on**: 23, 27, 28.
