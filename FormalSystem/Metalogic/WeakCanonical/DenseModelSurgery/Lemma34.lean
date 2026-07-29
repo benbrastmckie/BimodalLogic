@@ -173,25 +173,21 @@ variable {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
 
 include hε in
 /-- Clause (i), reflexivity. -/
-theorem contemp_refl (a : M.carrier) : ContempEquivDense M ε a a := hε.refl M a
+theorem contemp_refl (a : M.carrier) : ContempEquivDense M ε a a := (hε.equiv M).refl a
 
 include hε in
 /-- Clause (i), symmetry. -/
 theorem contemp_symm {a b : M.carrier} (h : ContempEquivDense M ε a b) :
-    ContempEquivDense M ε b a := hε.symm M h
+    ContempEquivDense M ε b a := (hε.equiv M).symm h
 
 include hε in
-/-- Clause (i), transitivity. Reynolds' transitivity is the one clause that needs the flow to be
-countable and dense — see the restriction note on `IsContempEquivDense` (`Defs.lean`) — so this
-is the one of the three shapes below that carries instances. -/
-theorem contemp_trans [Countable M.carrier] [DenselyOrdered M.carrier] {a b c : M.carrier}
-    (h₁ : ContempEquivDense M ε a b)
-    (h₂ : ContempEquivDense M ε b c) : ContempEquivDense M ε a c := hε.trans M h₁ h₂
+/-- Clause (i), transitivity. -/
+theorem contemp_trans {a b c : M.carrier} (h₁ : ContempEquivDense M ε a b)
+    (h₂ : ContempEquivDense M ε b c) : ContempEquivDense M ε a c := (hε.equiv M).trans h₁ h₂
 
 include hε in
 /-- Class-mates have the same class: the workhorse rewriting step. -/
-theorem contemp_congr_left [Countable M.carrier] [DenselyOrdered M.carrier]
-    {a b c : M.carrier} (hab : ContempEquivDense M ε a b) :
+theorem contemp_congr_left {a b c : M.carrier} (hab : ContempEquivDense M ε a b) :
     ContempEquivDense M ε a c ↔ ContempEquivDense M ε b c :=
   ⟨fun h => contemp_trans hε M (contemp_symm hε M hab) h, fun h => contemp_trans hε M hab h⟩
 
@@ -217,7 +213,7 @@ variable {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
   (M : OrderedMonadicStructure sig)
 
 include hε in
-private theorem endsInGapOnRight_of_contemp [Countable M.carrier] [DenselyOrdered M.carrier] {t u : M.carrier}
+private theorem endsInGapOnRight_of_contemp {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) (h : EndsInGapOnRight M ε t) :
     EndsInGapOnRight M ε u := by
   obtain ⟨⟨y₀, hty₀, hny₀⟩, h2, h3⟩ := h
@@ -243,7 +239,7 @@ include hε in
 /-- **"Ends in a gap on the right" is a property of the `∼`-class.**
 
 Used silently by Reynolds at every step of §6 that speaks of *the class* ending in a gap. -/
-theorem endsInGapOnRight_congr [Countable M.carrier] [DenselyOrdered M.carrier] {t u : M.carrier} (htu : ContempEquivDense M ε t u) :
+theorem endsInGapOnRight_congr {t u : M.carrier} (htu : ContempEquivDense M ε t u) :
     EndsInGapOnRight M ε t ↔ EndsInGapOnRight M ε u :=
   ⟨endsInGapOnRight_of_contemp hε M htu,
     endsInGapOnRight_of_contemp hε M (contemp_symm hε M htu)⟩
@@ -278,7 +274,7 @@ while after `t`: up until a gap in fact. Thus `t` is in a non-singleton interval
 
 The class has no last point, so it contains some `y > t`; everything in `[t, y]` is in the class by
 convexity, and `ρ` is a property of the class. -/
-theorem endsInGapOnRight_forAWhile [Countable M.carrier] [DenselyOrdered M.carrier] {t : M.carrier} (h : EndsInGapOnRight M ε t) :
+theorem endsInGapOnRight_forAWhile {t : M.carrier} (h : EndsInGapOnRight M ε t) :
     ∃ y : M.carrier, t < y ∧ ∀ r : M.carrier, t < r → r ≤ y → EndsInGapOnRight M ε r := by
   obtain ⟨y, hty, hcy⟩ := exists_contemp_gt hε M h
   refine ⟨y, hty, fun r htr hry => ?_⟩
@@ -499,7 +495,7 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 put a whole interval `(v, s)` inside the class, where `R` holds, leaving no room for the `¬R`
 points `K⁻(¬R)` demands. -/
 theorem contemp_not_lt_of_kminus {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier] {s : M.carrier} (hs : EndsInGapOnRight M ε s)
+    (M : OrderedMonadicStructure sig) {s : M.carrier} (hs : EndsInGapOnRight M ε s)
     (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ EndsInGapOnRight M ε r)
     {v : M.carrier} (hv : ContempEquivDense M ε s v) : ¬ v < s := by
   intro hvs
@@ -522,7 +518,7 @@ to the end of the maximal interval of `R` as it would again not end at a gap"*. 
 theorem exists_gt_notContemp_holds (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (M : OrderedMonadicStructure sig)
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     {s : M.carrier} (hs : EndsInGapOnRight M ε s) :
     ∃ u : M.carrier, s < u ∧ ¬ ContempEquivDense M ε s u ∧
@@ -554,7 +550,7 @@ held at `u`, its witness `w` — the least element of `u`'s class — would lie 
 the `K⁻(¬R)` clause at `w` would demand a `¬R` point between `s` and `w`, where `R` in fact holds
 throughout. -/
 theorem not_classBeginsAtGapStart {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier] {s u : M.carrier} (hsu : s < u)
+    (M : OrderedMonadicStructure sig) {s u : M.carrier} (hsu : s < u)
     (hnu : ¬ ContempEquivDense M ε s u)
     (hIcc : ∀ q : M.carrier, s ≤ q → q ≤ u → EndsInGapOnRight M ε q) :
     ¬ ClassBeginsAtGapStart M ε u := by
@@ -572,7 +568,7 @@ theorem not_classBeginsAtGapStart {ε : MonadicFormula sig 2} (hε : IsContempEq
 /-- **Reynolds 1992, printed p.178**: *"`B` holds in `s`'s class"* — with `s` itself as the witness
 that the class begins with a point satisfying `R ∧ K⁻(¬R)`. -/
 theorem classBeginsAtGapStart_of_contemp {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier] {s t : M.carrier} (hs : EndsInGapOnRight M ε s)
+    (M : OrderedMonadicStructure sig) {s t : M.carrier} (hs : EndsInGapOnRight M ε s)
     (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ EndsInGapOnRight M ε r)
     (hst : ContempEquivDense M ε s t) : ClassBeginsAtGapStart M ε t :=
   ⟨s, contemp_symm hε M hst,
@@ -599,7 +595,7 @@ need exactly this step, and it is the one place where Prior-U meets the gap. -/
 theorem false_of_holds_throughout_class (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (M : OrderedMonadicStructure sig)
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     {s : M.carrier} (hs : EndsInGapOnRight M ε s) (P : Formula)
     (hin : ∀ r : M.carrier, ContempEquivDense M ε s r → TemporalTruth M atomMap r P)
@@ -652,7 +648,7 @@ with `R` throughout below it). That is the contradiction. -/
 theorem reynolds_lemma3_no_first_point (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (M : OrderedMonadicStructure sig)
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     {s : M.carrier} (hs : EndsInGapOnRight M ε s)
     (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧
@@ -678,7 +674,7 @@ hold anywhere below `t`, so Prior-S could not be applied at `t` itself. Its thir
 theorem reynolds_lemma3_left (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (M : OrderedMonadicStructure sig)
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     {t : M.carrier} (ht : EndsInGapOnRight M ε t)
     (hnot : ∃ u : M.carrier, u < t ∧ ¬ EndsInGapOnRight M ε u) :
@@ -745,7 +741,7 @@ rather than being a gap. -/
 theorem reynolds_lemma3 (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (M : OrderedMonadicStructure sig)
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
     (∃ b : M.carrier, t < b ∧ ∀ r : M.carrier, t < r → r ≤ b → EndsInGapOnRight M ε r) ∧
@@ -837,7 +833,7 @@ theorem firstClassTemporal_spec (atomMap : Formula → sig.preds)
 *"this formula holding up to a gap"* — it holds at every point of the class, not merely at the one
 it was verified at. -/
 theorem isFirstClassPoint_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier] {t t' : M.carrier}
+    (M : OrderedMonadicStructure sig) {t t' : M.carrier}
     (htt' : ContempEquivDense M ε t t') (h : IsFirstClassPoint M ε t) :
     IsFirstClassPoint M ε t' := by
   refine ⟨(endsInGapOnRight_congr hε M htt').mp h.1, fun y hyt' hny => ?_⟩
@@ -885,7 +881,7 @@ The three sentences map to `isFirstClassPoint_congr` (*"holding up to a gap"*),
 theorem reynolds_lemma4_no_first_class (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (M : OrderedMonadicStructure sig)
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ IsFirstClassPoint M ε t := by
   intro h
@@ -925,7 +921,7 @@ theorem reynolds_lemma4_no_last_class (atomMap : Formula → sig.preds)
 theorem reynolds_lemma4 (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (M : OrderedMonadicStructure sig)
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
     (∃ u : M.carrier, t < u ∧ ¬ ContempEquivDense M ε t u ∧
@@ -1032,7 +1028,7 @@ end Lemma4Closed
 /-- The repaired property is a property of the class, as `isFirstClassPoint_congr` is for the
 faithful one — this is what licenses *"this formula holding up to a gap"*. -/
 theorem isFirstClassPointClosed_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier] {t t' : M.carrier}
+    (M : OrderedMonadicStructure sig) {t t' : M.carrier}
     (htt' : ContempEquivDense M ε t t') (h : IsFirstClassPointClosed M ε t) :
     IsFirstClassPointClosed M ε t' := by
   refine ⟨(endsInGapOnRight_congr hε M htt').mp h.1, fun y hyt' hny => ?_⟩
@@ -1076,7 +1072,7 @@ unchanged; only the formula it is run against is. -/
 theorem reynolds_lemma4_no_first_class_closed (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
+    (M : OrderedMonadicStructure sig)
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ IsFirstClassPointClosed M ε t := by
   intro h

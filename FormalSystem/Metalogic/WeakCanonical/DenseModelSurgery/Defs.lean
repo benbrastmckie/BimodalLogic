@@ -230,52 +230,12 @@ three clauses, universally quantified over structures exactly as the source has 
 temporal structure `M`"*).
 
 Note this is a property of `ε` alone. `ContempEquivDense M ε` is the relation; this is the
-predicate saying that relation deserves the name at every `M`.
-
-## Clause (i) is restricted to countable dense flows, and why
-
-Clause (i) quantifies over `[Countable] [DenselyOrdered]` structures; clauses (ii) and (iii)
-remain at **every** structure. This is not a convenience: at the one `ε` this development has
-to instantiate — Reynolds' own `ε(x,y)` of §8 Lemma 12, `epsDense` — the unrestricted clause (i)
-is **false**, while (ii) and (iii) are theorems at every structure.
-
-Clause (i) is therefore split into its three components: `refl` and `symm` are stated at every
-structure, and only `trans` carries the instances. `IsContempEquivDense.equiv` below reassembles
-them into the `Equivalence` bundle at a countable dense flow, so every existing `hε.equiv M`
-call site reads unchanged.
-
-Transitivity is the whole of the difference. `simDense_trans` (`RealModel/EpsilonDense.lean`)
-needs both instances, and `EpsilonDense`'s module header exhibits the counterexample without
-density: with `M | (a,b) ≅ (0,1]` having a maximum `x` and `M | (b,c)` very good, `a ∼ b` and
-`b ∼ c` but `M | (x,b)` is empty, so `a ≁ c`. Countability enters through Lemma 11 (*"countable
-and very good ⇒ good"*), which the transitivity proof calls. By contrast `simDense_refl`,
-`simDense_symm`, `simDense_convex` and `simDense_contemporary` carry **no** instance
-hypotheses — hence clauses (ii) and (iii) are left unrestricted, exactly as strong as before.
-
-Keeping the restriction on clause (i) alone is what makes `epsDense` an instance of this
-predicate at all (`epsDense_isContempEquivDense`, `RealModel/EpsilonDense.lean`), and it is the
-narrowest weakening that achieves it: everything downstream that projects `.equiv` does so at
-the ambient `M` or at `dual M`, never at a structure whose countability or density is in doubt.
-The one projection at a surgered structure uses `.contemporary`, which is unrestricted. -/
+predicate saying that relation deserves the name at every `M`. -/
 structure IsContempEquivDense {sig : MonadicSignature} (ε : MonadicFormula sig 2) : Prop where
-  /-- Clause (i), reflexivity — at every structure. -/
-  refl : ∀ (M : OrderedMonadicStructure sig) (a : M.carrier), ContempEquivDense M ε a a
-  /-- Clause (i), symmetry — at every structure. -/
-  symm : ∀ (M : OrderedMonadicStructure sig) {a b : M.carrier},
-    ContempEquivDense M ε a b → ContempEquivDense M ε b a
-  /-- Clause (i), transitivity — **only** at countable dense flows. This single field carries the
-  whole of the weakening; see the restriction note on the structure. -/
-  trans : ∀ (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
-    {a b c : M.carrier}, ContempEquivDense M ε a b → ContempEquivDense M ε b c →
-      ContempEquivDense M ε a c
-  /-- Clause (ii): *"`∼_M` partitions `M` into intervals"*, i.e. each class is convex.
-
-  Carries the same instances as `trans`, and for the same reason: the clause is *inherited* by
-  `dualize ε` (`Dual.lean`) only through transitivity at `dual M` — from `a ≤ b ≤ c` and `a ∼ c`
-  the dual reads off `c ∼ b`, and getting back to `a ∼ b` is a transitivity step that no
-  rearrangement of the convexity clause avoids. -/
-  convex : ∀ (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier]
-    (a b c : M.carrier), a ≤ b → b ≤ c →
+  /-- Clause (i): *"`∼_M` is an equivalence relation on the domain of `M`"*. -/
+  equiv : ∀ M : OrderedMonadicStructure sig, Equivalence (ContempEquivDense M ε)
+  /-- Clause (ii): *"`∼_M` partitions `M` into intervals"*, i.e. each class is convex. -/
+  convex : ∀ (M : OrderedMonadicStructure sig) (a b c : M.carrier), a ≤ b → b ≤ c →
     ContempEquivDense M ε a c → ContempEquivDense M ε a b
   /-- Clause (iii): *"`ε` depends only on contemporary properties: i.e. for all `a, b ∈ M`,
   `M ⊨ ε(a,b)` iff `M | [a,b] ⊨ ε(a,b)`"*. -/
@@ -283,18 +243,6 @@ structure IsContempEquivDense {sig : MonadicSignature} (ε : MonadicFormula sig 
     ContempEquivDense M ε a b ↔
       ContempEquivDense (M.subinterval sig (min a b) (max a b)) ε
         ⟨a, min_le_left a b, le_max_left a b⟩ ⟨b, min_le_right a b, le_max_right a b⟩
-
-/-- **Clause (i) reassembled** — Reynolds' *"`∼_M` is an equivalence relation on the domain of
-`M`"*, at a countable dense flow, which is where his §8 uses it.
-
-The three components are separate fields so that the instances ride on transitivity alone; this
-is the bundle the surgery development reads them through. -/
-theorem IsContempEquivDense.equiv {sig : MonadicSignature} {ε : MonadicFormula sig 2}
-    (hε : IsContempEquivDense ε) (M : OrderedMonadicStructure sig) [Countable M.carrier]
-    [DenselyOrdered M.carrier] : Equivalence (ContempEquivDense M ε) where
-  refl := hε.refl M
-  symm := hε.symm M
-  trans := hε.trans M
 
 /-! ## `ρ` and `λ` -/
 
@@ -524,10 +472,10 @@ relation is an equivalence, its single class is trivially convex, and both sides
 are true outright. -/
 theorem isContempEquivDense_epsTop (sig : MonadicSignature) :
     IsContempEquivDense (epsTop sig) where
-  refl M _ := contempEquivDense_epsTop M _ _
-  symm := by intros; exact contempEquivDense_epsTop _ _ _
-  trans := by intros; exact contempEquivDense_epsTop _ _ _
-  convex := by intros; exact contempEquivDense_epsTop _ _ _
+  equiv M := ⟨fun _ => contempEquivDense_epsTop M _ _,
+    fun _ => contempEquivDense_epsTop M _ _,
+    fun _ _ => contempEquivDense_epsTop M _ _⟩
+  convex M _ _ _ _ _ _ := contempEquivDense_epsTop M _ _
   contemporary M a b :=
     ⟨fun _ => contempEquivDense_epsTop _ _ _, fun _ => contempEquivDense_epsTop M a b⟩
 
