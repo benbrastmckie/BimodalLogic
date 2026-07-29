@@ -2345,6 +2345,78 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
 
+**PHASE 7 STATUS (2026-07-29c) — the untl/snce copy defect is REPAIRED for `untlPos`/`sncePos`,
+and 7.2 goes 23 → 26.** Four green commits. `lake env lean` green on `Verified/Decidable.lean`
+after every edit; `lake build FormalSystem.Metalogic.Decidability.Tableau` green (689 jobs);
+sorry count over the file is `0`.
+
+*The counterexample record is corrected.* The `{1/n}` counterexample previously recorded at
+`Verified/Decidable.lean` was **wrong** and has been replaced by the `ℤ` model from
+`reports/03_untl-snce-copy-defect-verification.md`: `V(n,p) ⟺ n = 5`, `V(n,q) ⟺ n ≥ 1`,
+`V(n,r) ⟺ n ≥ 2`, `V(n,s) ⟺ n ≠ 1`, branch `[T(U(p,q))@(w₀,0), F(U(r,s))@(w₀,0)]`, `ord = empty`.
+The reason the dense version failed is now recorded in-module so a third wrong version is not
+attempted: `SatResult` lets the successor re-choose `tv` **wholesale**, so the fresh time is free
+anywhere above the trigger's and a dense carrier always leaves room above the failure point. A
+working refutation needs the satisfiable region to be a single *maximal* point, which only
+discrete time supplies. The `Om = Set.univ` formalization trap (a domain-restricted history
+rescues branch 1) is recorded alongside it.
+
+*The false passive-arm claim is retracted.* The module previously asserted the PASSIVE arm of
+`untlNeg`/`snceNeg` "is sound; it is provable today". It is **not**: for `a < c`, `¬U(e,g)@a`
+licenses only `¬e@c ∨ ∃ z ∈ (a,c). ¬g@z`, and the arm places the guard failure *at* `c` while
+additionally re-asserting `¬U(e,g)@c`. Five unsound sites, not four. `untlNeg`/`snceNeg`
+therefore carry **two independent** obstructions and are the only two rules still blocked by
+this family.
+
+*The scoped engine fix landed, with its gate.* The `untlNegProps` block in `.untlPos` and the
+`snceNegProps` block in `.sncePos` were deleted; `applyRule`'s docstring now carries the
+time-axis prohibition alongside the existing group-3 one. Nothing else in the engine was touched
+— in particular the ACTIVE arms of `untlNeg`/`snceNeg` still carry their copy blocks, since the
+fix shape for those two rules is not authorized.
+
+**Acceptance-gate results, both directions measured.**
+- `Tests/BimodalTest/TableauConformance.lean`, all 29 `#guard_msgs` rows: **green before and
+  green after, zero rows changed.** 59 s per run. This is the under-closing gate the deletion
+  risks, and it is clean.
+- New: `Tests/BimodalTest/UntlSnceCopyProbe.lean`, registered in `Tests/BimodalTest.lean`,
+  committed first at its PRE-repair values and then re-pinned. Five verdicts changed, all in the
+  right direction:
+  | Row | Before | After | Reading |
+  |---|---|---|---|
+  | A2 — is `F(U(r,s))` copied to the minted time? | `true` | `false` | the defect itself, gone |
+  | A4 — arm lengths | `[2, 3]` | `[1, 2]` | one copied formula per arm removed |
+  | C2 — `isInvalid` on `U(p,q) → U(r,s)` | `false` | **`true`** | now positively refuted |
+  | C3 — `getCountermodel?.isSome` | `false` | **`true`** | with a countermodel in hand |
+  | C5 — `isFuelExhausted` | `true` | `false` | search terminates instead of exhausting |
+  Section B (the PASSIVE-arm defect) is unchanged by design: it is escalated, not repaired.
+  Section C uses `isInvalid`/`getCountermodel?`/`isExtractionFailed` and never `isValid` alone.
+  C4 (`isExtractionFailed`) is `false` before and after — the engine never wrongly closed this
+  formula, so the copy's harm here was under-closing, not over-closing.
+
+*7.2 ledger 23 → 26.* `ruleSound_densityRule` (the first carrier-gated rule and the first to mint
+an *interpolant* rather than a new extreme), then `ruleSound_untlPos` and `ruleSound_sncePos`,
+both of which went green on the first attempt once the copy was gone — exactly as the
+verification report predicted. New supporting machinery: `carrierDense` (defined as
+`DenselyOrdered D` so `ValidDense`'s own binder discharges it by `inferInstance`),
+`mem_knownTimes_of_pathN_directFutureOf` + `mem_knownTimes_of_mem_futureOf` (the `OrdWithin`
+direction of the ordering bridge, needed because an interpolant's *upper* endpoint must also be
+shown untouched by the one-point `tv` update), `ordResp_addFuture_addFuture_update`,
+`satAt_of_mem_gPropsExcept`, `asUntil?_eq_some`, `asSince?_eq_some`, `exists_gt_truthAt_of_untl`
+and `exists_lt_truthAt_of_snce`.
+
+*Still open in 7.2, and why.* `untlNeg`/`snceNeg` (two independent obstructions, escalated —
+see the handoff's blockers for the proposed adjacency-aware co-decomposition and the diff it
+would need). `priorUZ`/`priorSZ`/`z1Rule` (`.Discrete`) and `priorUGap`/`priorSGap`/`sepRule`
+(`.Dedekind`) are **not** blocked by any defect but need a carrier property that cannot be stated
+the way `carrierDense` was: `SuccOrder`/`PredOrder` are *data*, not `Prop`, so `carrierDiscrete`
+must existentially quantify them (`∃ _ : SuccOrder D, ∃ _ : PredOrder D, IsSuccArchimedean D ∧
+IsPredArchimedean D`) and the proofs must re-`haveI` the instances. The semantic content itself
+is already in the tree and should be reused rather than redone:
+`Metalogic/SoundnessLemmas/FrameClassVariants.lean` proves `prior_UZ_is_valid`,
+`prior_SZ_is_valid` and `z1_is_valid` under exactly those instances. Whether importing that
+module into the decidability tree is acceptable is an open design question — it is a *different*
+module from `Metalogic.Soundness`, whose import edge was previously rejected.
+
 **PHASE 7 STATUS (2026-07-29b) — the `RuleSound` statement blocker is CLOSED. 7.2 goes 18 → 23,
 and the denominator is corrected from 28 to 34.** Seven green commits, each verified by
 `git show --stat`. `lake build FormalSystem.Metalogic.Decidability.Verified.Decidable` green
