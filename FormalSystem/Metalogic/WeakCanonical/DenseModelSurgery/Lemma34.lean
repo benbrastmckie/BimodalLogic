@@ -932,6 +932,159 @@ theorem reynolds_lemma4 (atomMap : Formula → sig.preds)
 
 end Lemma4
 
+/-! ## Lemma 4 at the boundary: the repaired display
+
+**This section records a defect in the source, not in the transcription above.**
+`firstClassFormula` and `IsFirstClassPoint` are a faithful, symbol-for-symbol rendering of the
+printed display and are **not modified**; the repaired variant lands here beside them.
+
+Reynolds 1992, §6 Lemma 4, printed p.179, verified against the 200 dpi page image (the local
+corpus's rendering of this display is corrupt in four places; the image is authoritative):
+
+> *By expressive completeness, the formula*
+> ```
+> ρ(x) ∧ ∀y < x(¬ε(x, y) → ∃z(y < z < x ∧ ¬ρ(z)))
+> ```
+> *has a temporal equivalent which is true only in the first classes of maximal intervals of `R`.*
+
+**The boundary configuration on which the displayed formula is false.** Take a maximal interval of
+`R` bounded below, with its excluded left end point `r ∈ M` — the configuration Reynolds' own
+Lemma 3 licenses — and let the first class of that interval be `(r, δ)` for a gap `δ`. Let `x` be
+any point of that first class. The universal clause must hold at `y := r`, and it demands a `z`
+with **`r < z < x`** and `¬ρ(z)`. But `(r, x)` lies inside `x`'s own class, where `ρ` holds
+throughout, so no such `z` exists. The displayed formula is therefore **false** at `x`, even though
+`x` *is* in a first class.
+
+**What survives and what does not.** The display stays **sound** — true only in first classes —
+which is the direction Reynolds' own Lemma 4 proof consumes, so `reynolds_lemma4_no_first_class`
+above is correct as it stands. What fails is **completeness**: the display's conclusion is weaker
+than the plain-English statement *"true only in the first classes"* that Lemma 6's second paragraph
+(printed p.180) goes on to use, where *"the class can not be first in the bad interval"* has to
+produce a class strictly below inside the same `R`-interval.
+
+**The repair, and whose it is.** Reading the inner lower bound as **`y ≤ z`** rather than `y < z`
+repairs it: at `y := r`, take `z := r` itself. The defect is **the source's**; the reading below is
+**this tree's**. Reynolds' *proof* of Lemma 4 goes through unchanged for the repaired formula —
+`reynolds_lemma4_no_first_class_closed` below is byte-for-byte the shape of
+`reynolds_lemma4_no_first_class`, closing through the same `false_of_holds_throughout_class`, which
+*is* his Prior-U argument factored out. That the same argument closes both is the evidence that the
+repair is faithful to his prose even where it deviates from his display.
+
+Should the attribution be disputed, the fallback statement is: the `≤` reading is this tree's
+rendering choice, and Reynolds' Lemma 6 second paragraph is the evidence that the plain-English
+reading is the one he actually uses. No code changes either way — the route depends only on the
+repaired lemma being *provable*, which is machine-checked below. -/
+
+/-- **Lemma 4's displayed formula with the inner lower bound read as `y ≤ z`** rather than the
+printed `y < z`. See this section's header: the strict form is false at points of a first class
+bounded below by an excluded end point `r ∈ M`, and that defect is the source's. Rendered as
+`¬(z < y)` since the object language has only `<`. -/
+def firstClassFormulaClosed (ε : MonadicFormula sig 2) : MonadicFormula sig 1 :=
+  .and (rhoAt ε 0)
+    (.all (.imp (.lt 0 1)
+      (.imp (.not (epsAt ε 1 0))
+        (.ex (.and (.not (.lt 0 1)) (.and (.lt 0 2) (.not (rhoAt ε 0))))))))
+
+/-- **What the repaired formula says.** Identical to `IsFirstClassPoint` except that the witness
+`z` is allowed to be `y` itself. -/
+def IsFirstClassPointClosed (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
+    (t : M.carrier) : Prop :=
+  EndsInGapOnRight M ε t ∧
+  ∀ y : M.carrier, y < t → ¬ ContempEquivDense M ε t y →
+    ∃ z : M.carrier, y ≤ z ∧ z < t ∧ ¬ EndsInGapOnRight M ε z
+
+/-- The repaired transcription is correct — checked, not asserted, exactly as for
+`firstClassFormula_eval`. -/
+theorem firstClassFormulaClosed_eval (M : OrderedMonadicStructure sig)
+    (ε : MonadicFormula sig 2) (t : M.carrier) :
+    eval M (fun _ => t) (firstClassFormulaClosed ε) ↔ IsFirstClassPointClosed M ε t := by
+  simp only [firstClassFormulaClosed, IsFirstClassPointClosed, eval, eval_imp, eval_epsAt,
+    eval_rhoAt, Fin.cons_zero, c2_one, c3_one, c3_two, not_lt]
+
+section Lemma4Closed
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- The repaired formula's temporal equivalent — *"has a temporal equivalent"*, printed p.179. -/
+noncomputable def firstClassTemporalClosed (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ε : MonadicFormula sig 2) : Formula :=
+  (uSExpressivelyCompleteOverDensePrior atomMap h_surj (firstClassFormulaClosed ε)).val
+
+/-- The temporal equivalent holds exactly at repaired-first-class points, in every Prior
+structure. -/
+theorem firstClassTemporalClosed_spec (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ε : MonadicFormula sig 2) (M : OrderedMonadicStructure sig)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    (t : M.carrier) :
+    TemporalTruth M atomMap t (firstClassTemporalClosed atomMap h_surj ε) ↔
+      IsFirstClassPointClosed M ε t :=
+  ((uSExpressivelyCompleteOverDensePrior atomMap h_surj (firstClassFormulaClosed ε)).property
+    M h_prior_U h_prior_S t).symm.trans (firstClassFormulaClosed_eval M ε t)
+
+end Lemma4Closed
+
+/-- The repaired property is a property of the class, as `isFirstClassPoint_congr` is for the
+faithful one — this is what licenses *"this formula holding up to a gap"*. -/
+theorem isFirstClassPointClosed_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) {t t' : M.carrier}
+    (htt' : ContempEquivDense M ε t t') (h : IsFirstClassPointClosed M ε t) :
+    IsFirstClassPointClosed M ε t' := by
+  refine ⟨(endsInGapOnRight_congr hε M htt').mp h.1, fun y hyt' hny => ?_⟩
+  have hnty : ¬ ContempEquivDense M ε t y := fun hc =>
+    hny (contemp_trans hε M (contemp_symm hε M htt') hc)
+  have hyt : y < t := by
+    by_contra hle
+    push_neg at hle
+    exact hnty (contemp_of_between hε M hle hyt'.le htt')
+  obtain ⟨z, hyz, hzt, hnz⟩ := h.2 y hyt hnty
+  refine ⟨z, hyz, ?_, hnz⟩
+  by_contra hle
+  push_neg at hle
+  exact hnz ((endsInGapOnRight_congr hε M
+    (contemp_of_between hε M hle hzt.le (contemp_symm hε M htt'))).mp
+      ((endsInGapOnRight_congr hε M htt').mp h.1))
+
+/-- *"No immediately subsequent classes satisfy this"* (printed p.179), for the repaired
+property. -/
+theorem not_isFirstClassPointClosed {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig) {t u : M.carrier} (htu : t < u)
+    (hnu : ¬ ContempEquivDense M ε t u)
+    (hIcc : ∀ q : M.carrier, t ≤ q → q ≤ u → EndsInGapOnRight M ε q) :
+    ¬ IsFirstClassPointClosed M ε u := by
+  rintro ⟨_, h2⟩
+  obtain ⟨z, htz, hzu, hnz⟩ := h2 t htu (fun hc => hnu (contemp_symm hε M hc))
+  exact hnz (hIcc z htz hzu.le)
+
+section Lemma4ClosedMain
+
+variable [Fintype sig.preds] [DecidableEq sig.preds]
+
+/-- **Reynolds 1992, §6 Lemma 4, printed p.179, for the repaired display — there is no first
+class**, in the stronger sense the plain-English statement carries.
+
+The proof is the shape of `reynolds_lemma4_no_first_class` with every occurrence of the faithful
+rendering replaced by the repaired one: `isFirstClassPointClosed_congr` for *"holding up to a
+gap"*, `not_isFirstClassPointClosed` for *"no immediately subsequent classes satisfy this"*, and
+`false_of_holds_throughout_class` for *"this contradicts Prior-U"*. Reynolds' argument is
+unchanged; only the formula it is run against is. -/
+theorem reynolds_lemma4_no_first_class_closed (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
+    (M : OrderedMonadicStructure sig)
+    (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
+    (t : M.carrier) : ¬ IsFirstClassPointClosed M ε t := by
+  intro h
+  exact false_of_holds_throughout_class atomMap h_surj hε M h_prior_U h_prior_S h.1
+    (firstClassTemporalClosed atomMap h_surj ε)
+    (fun r hr => (firstClassTemporalClosed_spec atomMap h_surj ε M h_prior_U h_prior_S r).mpr
+      (isFirstClassPointClosed_congr hε M hr h))
+    (fun u htu hnu hIcc hP => not_isFirstClassPointClosed hε M htu hnu hIcc
+      ((firstClassTemporalClosed_spec atomMap h_surj ε M h_prior_U h_prior_S u).mp hP))
+
+end Lemma4ClosedMain
+
 /-! ## Anti-vacuity
 
 Every theorem above is conditional on `IsContempEquivDense ε` **and** on `EndsInGapOnRight M ε t`.
