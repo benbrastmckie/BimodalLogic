@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.Verified.RuleSpec
+import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
 import FormalSystem.Semantics.Validity
 
 /-!
@@ -636,6 +637,293 @@ theorem ruleSound_boxTemporal : RuleSound carrierBase .boxTemporal := by
         · exact hG
         · exact hH
     | _ => simp [applyRule, SatResult]
+
+/-!
+## The ordering bridge: from the recorded edges to the transitive closure
+
+`SatState.ordResp` is stated on `ord.constraints` — the *edges* the engine records, one per
+`addFuture`/`addPast` call. The four temporal **universal** rules consume
+`timeOrd.futureOf`/`pastOf`, which is the transitive *closure* of those edges, and deliberately
+so: `SignedFormula.lean`'s `futureOf` docstring records that a direct-edge reading makes
+`G p → G G p` — valid over any linear order — produce an open branch. So a gap has to be crossed
+before any of those four rules can be proved, and there are two places to cross it.
+
+**The fork, and the measurement that settled it.** The alternative is to strengthen `ordResp`
+itself to the closure (`t' ∈ ord.futureOf t → tv t < tv t'`), which makes the four consumers
+immediate. What that costs is paid by the *producers*: every fresh-time rule — `allFutureNeg`,
+`allPastNeg`, `someFuturePos`, `somePastPos`, and the `untl`/`snce` fresh-time arms — returns
+`timeOrd.addFuture l.time branch.nextTime`, i.e. a new edge consed onto the constraint list, and
+would then have to re-establish the closure property for the *extended* ordering. That needs a
+path-factorisation lemma — every path through `(t, tNew) :: cs` either avoids the new edge or
+runs through it into the sink `tNew` — which is not in the tree, and it would have to be applied
+afresh at each of those six sites. Against `ordResp` as it stands, those same rules owe only
+`∀ p ∈ (t, tNew) :: cs, tv p.1 < tv p.2`: the head from the witness they just chose, the tail
+from the state they were handed. So the closure reasoning belongs on the consumer side, where
+one lemma serves four rules, and not on the producer side, where a strictly harder one would
+serve six. The field is left as it is and the bridge is built here.
+
+The route is the one `Bridge/TemporalSaturation.lean`'s `orderDual_converse` already walks:
+`bfsClosure_sound` turns closure membership into a `PathN` of between one and `100` edges, and
+an induction on that path length chains the per-edge inequalities.
+-/
+
+/-- One forward BFS edge is one recorded constraint. -/
+theorem mem_constraints_of_mem_directFutureOf {ord : TimeOrdering} {x y : TimeIndex}
+    (h : y ∈ ord.directFutureOf x) : (x, y) ∈ ord.constraints := by
+  simp only [TimeOrdering.directFutureOf, List.mem_filterMap] at h
+  obtain ⟨⟨a, b⟩, hp, hq⟩ := h
+  simp only [beq_iff_eq] at hq
+  split at hq
+  · next hax => rw [Option.some.injEq] at hq; subst hq; subst hax; exact hp
+  · exact absurd hq (by simp)
+
+/-- One backward BFS edge is one recorded constraint, read in the other direction. -/
+theorem mem_constraints_of_mem_directPastOf {ord : TimeOrdering} {x y : TimeIndex}
+    (h : y ∈ ord.directPastOf x) : (y, x) ∈ ord.constraints := by
+  simp only [TimeOrdering.directPastOf, List.mem_filterMap] at h
+  obtain ⟨⟨a, b⟩, hp, hq⟩ := h
+  simp only [beq_iff_eq] at hq
+  split at hq
+  · next hax => rw [Option.some.injEq] at hq; subst hq; subst hax; exact hp
+  · exact absurd hq (by simp)
+
+/-- A forward path of at least one edge is a strict increase. The `n + 1` in the statement is
+what carries the *strictness*: the empty path joins a time to itself and says nothing. -/
+theorem lt_of_pathN_directFutureOf {ord : TimeOrdering} {tv : TimeIndex → D}
+    (hor : ∀ p ∈ ord.constraints, tv p.1 < tv p.2) :
+    ∀ (n : Nat) (t t' : TimeIndex),
+      TimeOrdering.PathN ord.directFutureOf (n + 1) t t' → tv t < tv t' := by
+  intro n
+  induction n with
+  | zero =>
+    intro t t' h
+    obtain ⟨c, hc, hp⟩ := h
+    simp only [TimeOrdering.PathN] at hp
+    subst hp
+    exact hor _ (mem_constraints_of_mem_directFutureOf hc)
+  | succ m ih =>
+    intro t t' h
+    obtain ⟨c, hc, hp⟩ := h
+    exact lt_trans (hor _ (mem_constraints_of_mem_directFutureOf hc)) (ih c t' hp)
+
+/-- A backward path of at least one edge is a strict decrease. The past mirror of
+`lt_of_pathN_directFutureOf`; only the orientation of the edge lemma differs. -/
+theorem lt_of_pathN_directPastOf {ord : TimeOrdering} {tv : TimeIndex → D}
+    (hor : ∀ p ∈ ord.constraints, tv p.1 < tv p.2) :
+    ∀ (n : Nat) (t t' : TimeIndex),
+      TimeOrdering.PathN ord.directPastOf (n + 1) t t' → tv t' < tv t := by
+  intro n
+  induction n with
+  | zero =>
+    intro t t' h
+    obtain ⟨c, hc, hp⟩ := h
+    simp only [TimeOrdering.PathN] at hp
+    subst hp
+    exact hor _ (mem_constraints_of_mem_directPastOf hc)
+  | succ m ih =>
+    intro t t' h
+    obtain ⟨c, hc, hp⟩ := h
+    exact lt_trans (ih c t' hp) (hor _ (mem_constraints_of_mem_directPastOf hc))
+
+/-- **The bridge, forward.** Everything the engine calls a future time of `t` is interpreted
+strictly later than `t`. This is what the two universal future rules consume. -/
+theorem SatState.lt_of_mem_futureOf {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) {t t' : TimeIndex} (h : t' ∈ ord.futureOf t) :
+    tv t < tv t' := by
+  rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [t] [] h with hv | ⟨s, hs, n, hn1, _, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hs
+    subst hs
+    obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn1
+    exact lt_of_pathN_directFutureOf hst.ordResp m s t' (by simpa [Nat.add_comm] using hp)
+
+/-- **The bridge, backward.** Everything the engine calls a past time of `t` is interpreted
+strictly earlier than `t`. -/
+theorem SatState.gt_of_mem_pastOf {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M Om hist tv b ord) {t t' : TimeIndex} (h : t' ∈ ord.pastOf t) :
+    tv t' < tv t := by
+  rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [t] [] h with hv | ⟨s, hs, n, hn1, _, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hs
+    subst hs
+    obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn1
+    exact lt_of_pathN_directPastOf hst.ordResp m s t' (by simpa [Nat.add_comm] using hp)
+
+/-!
+## The temporal universal family
+
+Four rules, one shape. Each reads a *universal* temporal formula at a label, and copies its
+matrix to every time the abstract ordering already knows to lie on the relevant side — no fresh
+label, no new constraint, and the ordering passes through untouched (all four return `timeOrd`
+unchanged, and all four are `.persistent`, since a universal formula is never spent).
+
+The whole content is the bridge above plus the relevant `Truth` characterisation:
+`Truth.future_iff` and `Truth.past_iff` for the two `G`/`H` rules, `Truth.some_future_iff` and
+`Truth.some_past_iff` for the two `F`/`P` rules, whose negations are what the `.neg` sign
+asserts. Nothing here needs shift-closure or `histMem`: every emitted formula stays in the source
+label's own world.
+-/
+
+/-!
+### Point-form readings of the four temporal operators
+
+Each is `Truth`'s characterisation applied at a single time. They exist to keep the rule proofs
+free of any dependence on how `split` names the variables it binds: `Formula.allFuture` and
+friends are definitions, so the hypothesis these consume arrives *unfolded*, and unification
+folds it back without the proof ever having to name the matrix.
+-/
+
+/-- `T(Gψ) @ t` gives `ψ` at any later time of the same history. -/
+theorem truthAt_of_allFuture {M : TaskModel F} {Om : Set (WorldHistory F)} {τ : WorldHistory F}
+    {t s : D} {ψ : Formula} (h : TruthAt M Om τ t ψ.allFuture) (hlt : t < s) :
+    TruthAt M Om τ s ψ :=
+  (Truth.future_iff Om ψ).mp h s hlt
+
+/-- `T(Hψ) @ t` gives `ψ` at any earlier time of the same history. -/
+theorem truthAt_of_allPast {M : TaskModel F} {Om : Set (WorldHistory F)} {τ : WorldHistory F}
+    {t s : D} {ψ : Formula} (h : TruthAt M Om τ t ψ.allPast) (hlt : s < t) :
+    TruthAt M Om τ s ψ :=
+  (Truth.past_iff Om ψ).mp h s hlt
+
+/-- `F(Fψ) @ t` denies `ψ` at every later time: an existential's negation is a universal, which
+is why the `F`/`P` negative rules are propagators and not fresh-time rules. -/
+theorem not_truthAt_of_someFuture {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t s : D} {ψ : Formula}
+    (h : ¬ TruthAt M Om τ t (Formula.someFuture ψ)) (hlt : t < s) : ¬ TruthAt M Om τ s ψ :=
+  fun hc => h ((Truth.some_future_iff Om ψ).mpr ⟨s, hlt, hc⟩)
+
+/-- `F(Pψ) @ t` denies `ψ` at every earlier time. -/
+theorem not_truthAt_of_somePast {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t s : D} {ψ : Formula}
+    (h : ¬ TruthAt M Om τ t (Formula.somePast ψ)) (hlt : s < t) : ¬ TruthAt M Om τ s ψ :=
+  fun hc => h ((Truth.some_past_iff Om ψ).mpr ⟨s, hlt, hc⟩)
+
+/-- `F A` is `U(A, ⊤)`. -/
+theorem asSomeFuture?_eq_some {φ ψ : Formula} (h : asSomeFuture? φ = some ψ) :
+    φ = Formula.someFuture ψ := by
+  unfold asSomeFuture? at h
+  split at h <;> simp_all [Formula.someFuture, Formula.top]
+
+/-- `P A` is `S(A, ⊤)`. -/
+theorem asSomePast?_eq_some {φ ψ : Formula} (h : asSomePast? φ = some ψ) :
+    φ = Formula.somePast ψ := by
+  unfold asSomePast? at h
+  split at h <;> simp_all [Formula.somePast, Formula.top]
+
+/-!
+`Formula.allFuture` and `Formula.allPast` are **definitions**, not constructors — `G A` unfolds to
+`((A.neg.someFuture).neg`, an `imp`. So `cases φ` cannot separate `G A` from a general
+implication, and the two `.pos` rules below cannot be driven by it the way `boxPos` is driven by
+the genuine `.box` constructor. They are driven by `split` on `applyRule`'s own matcher instead,
+which decides exactly the distinction the engine decides; every arm other than the rule's own
+answers `.notApplicable`, which `SatResult` reads as `True`.
+-/
+
+/-- `T(GA) → T(A)` at every known future time, same world. Persistent: the source stays. -/
+theorem ruleSound_allFuturePos : RuleSound carrierBase .allFuturePos := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
+  cases s
+  case neg => simp only [applyRule]; trivial
+  case pos =>
+    simp only [SatAt] at hsrc
+    simp only [applyRule]
+    split
+    all_goals try trivial
+    split
+    · trivial
+    · refine ⟨hist, tv, hst.append ?_⟩
+      intro g hg
+      rw [List.mem_filterMap] at hg
+      obtain ⟨t', ht', hw⟩ := hg
+      split at hw
+      · exact absurd hw (by simp)
+      · rw [Option.some.injEq] at hw
+        subst hw
+        exact truthAt_of_allFuture hsrc (hst.lt_of_mem_futureOf ht')
+
+/-- `T(HA) → T(A)` at every known past time, same world. The past mirror of `allFuturePos`. -/
+theorem ruleSound_allPastPos : RuleSound carrierBase .allPastPos := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
+  cases s
+  case neg => simp only [applyRule]; trivial
+  case pos =>
+    simp only [SatAt] at hsrc
+    simp only [applyRule]
+    split
+    all_goals try trivial
+    split
+    · trivial
+    · refine ⟨hist, tv, hst.append ?_⟩
+      intro g hg
+      rw [List.mem_filterMap] at hg
+      obtain ⟨t', ht', hw⟩ := hg
+      split at hw
+      · exact absurd hw (by simp)
+      · rw [Option.some.injEq] at hw
+        subst hw
+        exact truthAt_of_allPast hsrc (hst.gt_of_mem_pastOf ht')
+
+/-- `F(FA) → F(A)` at every known future time, same world. `F(FA)` denies a future witness
+outright, so every future time is one at which `A` must fail — the existential's negation is a
+universal, and that is why this rule sits in this family rather than with the fresh-time ones. -/
+theorem ruleSound_someFutureNeg : RuleSound carrierBase .someFutureNeg := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case pos => simp [applyRule, SatResult]
+  case neg =>
+    cases hA : asSomeFuture? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ψ =>
+      have hφ : φ = Formula.someFuture ψ := asSomeFuture?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.neg, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro g hg
+        rw [List.mem_filterMap] at hg
+        obtain ⟨t', ht', hw⟩ := hg
+        split at hw
+        · exact absurd hw (by simp)
+        · rw [Option.some.injEq] at hw
+          subst hw
+          exact not_truthAt_of_someFuture hsrc (hst.lt_of_mem_futureOf ht')
+
+/-- `F(PA) → F(A)` at every known past time, same world. The past mirror of `someFutureNeg`. -/
+theorem ruleSound_somePastNeg : RuleSound carrierBase .somePastNeg := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case pos => simp [applyRule, SatResult]
+  case neg =>
+    cases hA : asSomePast? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ψ =>
+      have hφ : φ = Formula.somePast ψ := asSomePast?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.neg, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      split
+      · trivial
+      · refine ⟨hist, tv, hst.append ?_⟩
+        intro g hg
+        rw [List.mem_filterMap] at hg
+        obtain ⟨t', ht', hw⟩ := hg
+        split at hw
+        · exact absurd hw (by simp)
+        · rw [Option.some.injEq] at hw
+          subst hw
+          exact not_truthAt_of_somePast hsrc (hst.gt_of_mem_pastOf ht')
 
 /-!
 ## What `boxNeg` and `diamondPos` still owe
