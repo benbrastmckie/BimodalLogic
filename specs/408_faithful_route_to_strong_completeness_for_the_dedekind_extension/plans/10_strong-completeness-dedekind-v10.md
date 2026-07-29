@@ -4447,7 +4447,7 @@ for the repaired formula**.
 - **Decomposition protocol**: as Phase 18 — `doets_lemma_1_5` and the three order-theoretic facts are
   a clean seam, and splitting there is the expected outcome if the `≡ⁿ` colouring fact resists.
 
-### Phase 28: `orderIsoRealOfDedekindDenseSeparable` — the order characterization of `ℝ` [NOT STARTED]
+### Phase 28: `orderIsoRealOfDedekindDenseSeparable` — the order characterization of `ℝ` [IN PROGRESS]
 
 > **Confirmed absent from Mathlib.** `Order.iso_of_countable_dense`
 > (`Mathlib.Order.CountableDenseLinearOrder`) gives Cantor's theorem for countable dense endpointless
