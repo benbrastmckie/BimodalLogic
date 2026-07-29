@@ -1128,6 +1128,47 @@ theorem not_truthAt_of_somePast {M : TaskModel F} {Om : Set (WorldHistory F)}
     (h : ¬ TruthAt M Om τ t (Formula.somePast ψ)) (hlt : s < t) : ¬ TruthAt M Om τ s ψ :=
   fun hc => h ((Truth.some_past_iff Om ψ).mpr ⟨s, hlt, hc⟩)
 
+/-!
+The four fresh-time producers each need the *existential* reading of their source formula: a
+time, on the correct side of the trigger's, at which the inner formula takes the required truth
+value. Stated as four lemmas rather than inlined because `Formula.allFuture`, `allPast`,
+`someFuture` and `somePast` are all **definitions**, so at the use site the goal shows the
+unfolded `imp`/`untl` skeleton and the wrapper has to be recovered by unification against a
+lemma's statement — the same reason `truthAt_of_allFuture` exists rather than a `rw`.
+-/
+
+/-- `F(Gψ) @ t` yields a strictly later time at which `ψ` fails. The witness time of
+`allFutureNeg`. -/
+theorem exists_gt_not_truthAt_of_allFuture {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t : D} {ψ : Formula}
+    (h : ¬ TruthAt M Om τ t ψ.allFuture) : ∃ s, t < s ∧ ¬ TruthAt M Om τ s ψ := by
+  by_contra hcon
+  push_neg at hcon
+  exact h ((Truth.future_iff Om ψ).mpr hcon)
+
+/-- `F(Hψ) @ t` yields a strictly earlier time at which `ψ` fails. The witness time of
+`allPastNeg`. -/
+theorem exists_lt_not_truthAt_of_allPast {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t : D} {ψ : Formula}
+    (h : ¬ TruthAt M Om τ t ψ.allPast) : ∃ s, s < t ∧ ¬ TruthAt M Om τ s ψ := by
+  by_contra hcon
+  push_neg at hcon
+  exact h ((Truth.past_iff Om ψ).mpr hcon)
+
+/-- `T(Fψ) @ t` yields a strictly later time at which `ψ` holds. The witness time of
+`someFuturePos`. -/
+theorem exists_gt_truthAt_of_someFuture {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t : D} {ψ : Formula}
+    (h : TruthAt M Om τ t (Formula.someFuture ψ)) : ∃ s, t < s ∧ TruthAt M Om τ s ψ :=
+  (Truth.some_future_iff Om ψ).mp h
+
+/-- `T(Pψ) @ t` yields a strictly earlier time at which `ψ` holds. The witness time of
+`somePastPos`. -/
+theorem exists_lt_truthAt_of_somePast {M : TaskModel F} {Om : Set (WorldHistory F)}
+    {τ : WorldHistory F} {t : D} {ψ : Formula}
+    (h : TruthAt M Om τ t (Formula.somePast ψ)) : ∃ s, s < t ∧ TruthAt M Om τ s ψ :=
+  (Truth.some_past_iff Om ψ).mp h
+
 /-- `F A` is `U(A, ⊤)`. -/
 theorem asSomeFuture?_eq_some {φ ψ : Formula} (h : asSomeFuture? φ = some ψ) :
     φ = Formula.someFuture ψ := by
@@ -1632,6 +1673,41 @@ theorem satAt_of_mem_pNegProps {M : TaskModel F} {Om : Set (WorldHistory F)}
         simpa [SatAt, SignedFormula.neg] using not_truthAt_of_somePast hsrc hlt
     · rw [if_neg ht] at hw; exact absurd hw (by simp)
   · exact absurd hw (by simp)
+
+/-- `F(GA) → F(A)` at a fresh future time, plus the three propagation families.
+
+`F(GA)` says `A` fails somewhere strictly later, and that failure time is what interprets the
+minted index `Branch.nextTime`. The interpretation is a one-point update, which is safe for the
+branch because no branch formula sits at `nextTime`, and safe for the previously recorded
+ordering constraints because `OrdWithin` puts both endpoints of each strictly below it. This is
+the first of the four rules that consume the hypothesis, and the only reason it is needed. -/
+theorem ruleSound_allFutureNeg : RuleSound carrierBase .allFutureNeg := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst hord
+  obtain ⟨s, φ, l⟩ := sf
+  have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
+  cases s
+  case pos => simp only [applyRule]; trivial
+  case neg =>
+    simp only [SatAt] at hsrc
+    simp only [applyRule]
+    split
+    all_goals try trivial
+    obtain ⟨d, hlt, hfail⟩ := exists_gt_not_truthAt_of_allFuture hsrc
+    refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+      ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+    intro g hg
+    rcases List.mem_append.mp hg with hnew | hb
+    · rcases List.mem_cons.mp hnew with rfl | hrest
+      · simpa [SatAt, SignedFormula.neg] using hfail
+      · rcases List.mem_append.mp hrest with hleft | hmodal
+        · rcases List.mem_append.mp hleft with hgp | hfn
+          · exact satAt_of_mem_gProps hst hlt hgp
+          · exact satAt_of_mem_fNegProps hst hlt hfn
+        · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+            mem_boxDiamondPersistence_label hmodal
+          exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+            hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+    · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
 
 /-!
 ## What `boxNeg` and `diamondPos` owed, and how it was discharged — RESOLVED
