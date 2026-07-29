@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.WeakCanonical.RealModel.Shuffle
-import FormalSystem.Metalogic.WeakCanonical.ColourOrders
+import FormalSystem.Metalogic.WeakCanonical.MixedSum
 
 /-!
 # The `ℝ`-extension of the shuffle
@@ -174,8 +174,9 @@ and the colour of an index `i` its summand's `k`-type, `colourStructure` is lite
 `(I, {i | m(i) ⊨ σ})_{σ∈Z}`.
 
 `colourSig`, `colourStructure` and `kTypeColouring` live in `ColourOrders.lean`, together with
-the proof that any two shuffle colourings over a common palette give `≡ₖ` coloured orders. Only
-the *mixing* half of Doets 3.1.8 is open, and it is stated here.
+the proof that any two shuffle colourings over a common palette give `≡ₖ` coloured orders. The
+*mixing* half is `MixedSum.lean`'s `kEquiv_orderedSum_of_kEquiv_colour`; the statement is
+restated here under Doets' numbering, which is how the rest of this file refers to it.
 -/
 
 /--
@@ -189,41 +190,26 @@ special case `I = J` with the identity colour-matching. It is what Reynolds 1992
 invokes as *"another simple game argument"* when he passes from the `ℚ`-shuffle to its
 `ℝ`-extension; he gives no proof, and the game argument is not simple.
 
-**STRATEGIC SORRY — unproved.** The proof is an Ehrenfeucht-Fraïssé argument on the two sums:
-Duplicator's strategy is assembled from a depth-`n` strategy on the coloured index orders
-together with, at each matched pair of indices, a depth-`n` strategy inside the corresponding
-summands (available because matched indices carry the same `k`-type).
+**Proved** in `MixedSum.lean`, by the Ehrenfeucht-Fraïssé argument on the two sums: Duplicator's
+strategy is assembled from a depth-`k` strategy on the coloured index orders together with, at
+each matched pair of indices, a depth-`k` strategy inside the corresponding summands — available
+because matched indices carry the same `k`-type, which is exactly what the hypothesis says.
 
-The *engine* for that argument is now in the tree. `BackAndForth.lean` supplies `BackForth`, the
-back-and-forth relation for an arbitrary **pair** of structures, and `kEquiv_iff_backForth`,
-which converts between it and `≡ₖ` in both directions. Applied to the hypothesis, it turns
-`_hcol` into a depth-`k` strategy on the coloured index orders; applied to `kTypeOf`-equality of
-matched summands, it supplies a depth-`k` strategy inside each matched pair; applied to the
-conclusion, it reduces the goal to exhibiting a strategy on the sums.
+`BackAndForth.lean` supplies the engine (`BackForth` for an arbitrary **pair** of structures, and
+`kEquiv_iff_backForth` converting it to and from `≡ₖ`); `MixedSum.lean`'s `Mixed` is the invariant
+that assembles the two families of strategies, and `backForth_of_mixed` runs the induction.
 
-**What remains** is the bookkeeping that assembles those strategies into one: the invariant
-carried down the induction must record, for each already-matched pair of indices `(i, j)`, the
-sub-tuple of environment positions lying in that pair of summands and a strategy relating them —
-the two-index analogue of `NEquivalence.lean`'s `CompData` (`:333`) and `build_bicompat`
-(`:512`). Phrased through `BackForth` rather than through normal-form agreement it avoids
-`CompData`'s dependent `NormalForm`-type casts, but it is still a phase-sized piece of
-formalization in its own right rather than a gap in an otherwise complete proof.
-
-**FOLLOW-UP**: *Build the two-index analogue of `CompData`/`build_bicompat` over
-`BackAndForth.lean`'s `BackForth`, and discharge this `sorry`.* Until then every consumer of
-this lemma is conditional on it, and this module's `kEquiv_shuffle_shuffleReal` is the only such
-consumer.
-
-**Nothing else in this module rests on it.** The order-theoretic properties of `R`
+**Nothing in this module is conditional any longer.** The order-theoretic properties of `R`
 (`denselyOrdered_orderedSumReal`, `noMax_orderedSumReal`, `noMin_orderedSumReal`,
-`exists_isLUB_orderedSumReal`, `exists_countableDense_orderedSumReal`) are proved outright.
+`exists_isLUB_orderedSumReal`, `exists_countableDense_orderedSumReal`) were already proved
+outright, and `kEquiv_shuffle_shuffleReal` — this lemma's only consumer — now is too.
 -/
 theorem doets_lemma_1_5 (k : Nat) {I J : Type} [LinearOrder I] [LinearOrder J]
     (m : I → OrderedMonadicStructure sig) (m' : J → OrderedMonadicStructure sig)
-    (_hcol : KEquiv (colourSig (KType sig k)) k
+    (hcol : KEquiv (colourSig (KType sig k)) k
       (kTypeColouring sig k m) (kTypeColouring sig k m')) :
-    KEquiv sig k (orderedSum sig I m) (orderedSum sig J m') := by
-  sorry
+    KEquiv sig k (orderedSum sig I m) (orderedSum sig J m') :=
+  kEquiv_orderedSum_of_kEquiv_colour k m m' hcol
 
 /--
 **`Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)`** — Reynolds 1992, §8, printed p.188.
