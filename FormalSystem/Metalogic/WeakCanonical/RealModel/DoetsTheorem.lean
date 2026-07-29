@@ -1249,6 +1249,219 @@ theorem classStrictlyBetween_epsDense_iff (k : Nat) (hk : 2 ≤ k)
     · exact fun h => hnce ((contempEquivDense_epsDense_iff k M c e).mp h)
     · exact fun h => hnde (simDense_symm ((contempEquivDense_epsDense_iff k M e d).mp h))
 
+/-! ## Layer 11 — the two-sided closed normalization of Reynolds' `N_γ`
+
+Printed p.187, the choice this layer makes good on:
+
+> For each `γᵢ` choose a structure `N_i ⊨ γᵢ` whose flow of time is an interval of the reals.
+
+and printed p.188, the sharper form the shuffle actually consumes:
+
+> because the `γᵢ`'s say so, the summands themselves are closed intervals of the reals.
+
+`goodDense` hands back *some* order-connected set of reals. The shuffle's summand hypotheses —
+`hne`, `hdense`, `hsum`, `hbot`, `hsep` of `goodDense_shuffle` (Layer 3) — are the five facts that
+hold of a **closed bounded** interval and fail for the open one: an open interval has no least
+element and is not closed under suprema. So the normalization has to be sharpened, and the
+sharpening is what *"the `γᵢ`'s say so"* means: `γ` records that the class has a right hand and a
+left hand end point, which is Lemma 13 together with D1 (Layer 9), and *"has an end point"* is a
+depth-`2` sentence, so it travels across `≡ₖ` at `k ≥ 2` exactly as *"has no end point"* does in
+`noMaxOrder_of_kEquiv`.
+
+The two ends then pin the flow down completely: an order-connected set of reals with a least and a
+greatest element **is** the closed interval between them, with no residual choice. That is
+`ordConnected_eq_Icc`, and `isIccLike_of_carrierSet_eq_Icc` reads the five facts off it.
+
+`exists_ioo_witness` (`GoodDense.lean:713`) is the end-point-**free** case of this same
+normalization and `icoBlock` / `kEquiv_pointSum_icoBlock` the one-sided case; neither applies here,
+because Reynolds' summands are the ones that *do* have both ends.
+-/
+
+section IccNormalization
+
+/--
+*"has a right hand end point"* transfers across `≡ₖ` for `k ≥ 2` — the positive counterpart of
+`noMaxOrder_of_kEquiv` (`GoodDense.lean:469`), read off the same depth-`2` sentence `hasMaxSent`.
+-/
+theorem exists_max_of_kEquiv (k : Nat) (hk : 2 ≤ k) {M N : OrderedMonadicStructure sig}
+    (h : KEquiv sig k M N) (hM : ∃ x : M.carrier, ∀ y : M.carrier, ¬ x < y) :
+    ∃ x : N.carrier, ∀ y : N.carrier, ¬ x < y := by
+  have hdepth : (hasMaxSent sig).quantifierDepth ≤ k := by
+    simpa [hasMaxSent, MonadicFormula.quantifierDepth] using hk
+  exact (eval_hasMaxSent sig N).mp
+    ((eval_transfer_of_kEquiv sig k _ hdepth h).mp ((eval_hasMaxSent sig M).mpr hM))
+
+/-- *"has a left hand end point"* transfers across `≡ₖ` for `k ≥ 2`. -/
+theorem exists_min_of_kEquiv (k : Nat) (hk : 2 ≤ k) {M N : OrderedMonadicStructure sig}
+    (h : KEquiv sig k M N) (hM : ∃ x : M.carrier, ∀ y : M.carrier, ¬ y < x) :
+    ∃ x : N.carrier, ∀ y : N.carrier, ¬ y < x := by
+  have hdepth : (hasMinSent sig).quantifierDepth ≤ k := by
+    simpa [hasMinSent, MonadicFormula.quantifierDepth] using hk
+  exact (eval_hasMinSent sig N).mp
+    ((eval_transfer_of_kEquiv sig k _ hdepth h).mp ((eval_hasMinSent sig M).mpr hM))
+
+/-- A normal form travels across `≡ₖ`: `k`-equivalence *is* equality of `k`-types, and the `k`-type
+is the normal-form decision function. -/
+theorem nfEvalNf_of_kEquiv (k : Nat) {M N : OrderedMonadicStructure sig} (h : KEquiv sig k M N)
+    {nf : NormalForm sig k 0} (hM : NfEvalNf M k 0 Fin.elim0 nf) :
+    NfEvalNf N k 0 Fin.elim0 nf := by
+  have hp := congr_fun h nf
+  simp only [kTypeOf, decide_eq_decide] at hp
+  exact hp.mp hM
+
+/--
+**An order-connected set of reals with both ends attained is a closed interval.** This is the step
+that makes Reynolds' *"the summands are closed intervals"* a theorem rather than a further choice:
+once the two end points exist there is nothing left to choose.
+-/
+theorem ordConnected_eq_Icc {s : Set ℝ} (hc : s.OrdConnected) {x y : ℝ}
+    (hx : IsLeast s x) (hy : IsGreatest s y) : s = Set.Icc x y :=
+  Set.Subset.antisymm (fun _ hv => ⟨hx.2 hv, hy.2 hv⟩) (hc.out hx.1 hy.1)
+
+/--
+**The five order facts of a closed real interval** — precisely the summand hypotheses of
+`goodDense_shuffle` (Layer 3), bundled so the shuffle step discharges them once per `γ` instead of
+five times.
+
+Reynolds never names this bundle: on p.188 it is the single phrase *"closed intervals of the
+reals"*, used to license Dedekind completeness and the least element of each summand.
+-/
+def IsIccLike (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (N : OrderedMonadicStructure sig) : Prop :=
+  Nonempty N.carrier ∧
+    (∀ x y : N.carrier, x < y → ∃ z : N.carrier, x < z ∧ z < y) ∧
+    (∀ s : Set N.carrier, s.Nonempty → ∃ u, IsLUB s u) ∧
+    (∃ b : N.carrier, ∀ x : N.carrier, b ≤ x) ∧
+    (∃ D : Set N.carrier, D.Countable ∧
+      ∀ x y : N.carrier, x < y → ∃ d ∈ D, x < d ∧ d < y)
+
+/--
+**A closed-interval flow is `IsIccLike`.** Each clause is the corresponding standard fact about
+`Set.Icc` in `ℝ`: density from `exists_between`, completeness from `sSup` of the image (the
+interval is closed, so the supremum is attained *inside* it — the clause that fails for `Ioo` and
+is the reason Reynolds needs the closed form), the least element is the left end point, and
+separability is `exists_rat_btwn`.
+
+Membership is transported through `hR` by `Set.ext_iff` rather than by `rw`: the carrier's own type
+mentions `R.carrierSet`, so rewriting it breaks the motive (the same discipline as
+`kEquiv_pointSum_icoBlock`, `GoodDense.lean:945`).
+-/
+theorem isIccLike_of_carrierSet_eq_Icc (R : RIntervalStructure sig) {x y : ℝ} (hxy : x ≤ y)
+    (hR : R.carrierSet = Set.Icc x y) : IsIccLike sig (R.toOrdered sig) := by
+  have hmem : ∀ v : ℝ, v ∈ R.carrierSet ↔ (x ≤ v ∧ v ≤ y) := by
+    intro v
+    rw [Set.ext_iff] at hR
+    simpa [Set.mem_Icc] using hR v
+  have hx0 : x ∈ R.carrierSet := (hmem x).mpr ⟨le_refl x, hxy⟩
+  refine ⟨⟨⟨x, hx0⟩⟩, ?_, ?_, ⟨⟨x, hx0⟩, ?_⟩, ?_⟩
+  · -- density: `Set.Icc` inherits `ℝ`'s density, and both bounds are preserved
+    intro u v huv
+    have huv' : u.val < v.val := huv
+    obtain ⟨w, hw₁, hw₂⟩ := exists_between huv'
+    have hwm : w ∈ R.carrierSet :=
+      (hmem w).mpr ⟨le_trans ((hmem u.val).mp u.property).1 (le_of_lt hw₁),
+        le_trans (le_of_lt hw₂) ((hmem v.val).mp v.property).2⟩
+    exact ⟨⟨w, hwm⟩, hw₁, hw₂⟩
+  · -- completeness: the supremum of the image lies in `[x,y]`, so it lies in the carrier
+    intro s hs
+    obtain ⟨w₀, hw₀⟩ := hs
+    have hub : ∀ v ∈ Subtype.val '' s, v ≤ y := by
+      rintro v ⟨u, -, rfl⟩
+      exact ((hmem u.val).mp u.property).2
+    have hbdd : BddAbove (Subtype.val '' s) := ⟨y, hub⟩
+    have hne : (Subtype.val '' s).Nonempty := ⟨w₀.val, w₀, hw₀, rfl⟩
+    have hle : sSup (Subtype.val '' s) ≤ y := csSup_le hne hub
+    have hge : x ≤ sSup (Subtype.val '' s) :=
+      le_trans ((hmem w₀.val).mp w₀.property).1 (le_csSup hbdd ⟨w₀, hw₀, rfl⟩)
+    refine ⟨⟨sSup (Subtype.val '' s), (hmem _).mpr ⟨hge, hle⟩⟩, ?_, ?_⟩
+    · intro v hv
+      exact le_csSup hbdd ⟨v, hv, rfl⟩
+    · intro b hb
+      exact csSup_le hne (by rintro v ⟨u, hu, rfl⟩; exact hb hu)
+  · -- the least element is the left end point
+    intro v
+    exact ((hmem v.val).mp v.property).1
+  · -- separability: the rationals of the interval
+    refine ⟨Subtype.val ⁻¹' (Set.range ((↑) : ℚ → ℝ)),
+      (Set.countable_range ((↑) : ℚ → ℝ)).preimage Subtype.val_injective, ?_⟩
+    intro u v huv
+    have huv' : u.val < v.val := huv
+    obtain ⟨q, hq₁, hq₂⟩ := exists_rat_btwn huv'
+    have hqm : (q : ℝ) ∈ R.carrierSet :=
+      (hmem q).mpr ⟨le_trans ((hmem u.val).mp u.property).1 (le_of_lt hq₁),
+        le_trans (le_of_lt hq₂) ((hmem v.val).mp v.property).2⟩
+    exact ⟨⟨(q : ℝ), hqm⟩, ⟨q, rfl⟩, hq₁, hq₂⟩
+
+/--
+**Reynolds' `N_γ`, with both ends** (printed p.187 sharpened by p.188): a good structure with a
+right hand and a left hand end point has a `≡ₖ`-equivalent whose flow is a **closed** bounded
+interval of the reals — hence `IsIccLike`.
+
+The proof is the whole content of Layer 11: goodness supplies an order-connected flow, the two end
+points travel across `≡ₖ` by `exists_max_of_kEquiv` / `exists_min_of_kEquiv`, and
+`ordConnected_eq_Icc` then leaves no choice about which interval it is.
+-/
+theorem exists_iccLike_witness (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    (hgood : goodDense sig k M)
+    (hmax : ∃ x : M.carrier, ∀ y : M.carrier, ¬ x < y)
+    (hmin : ∃ x : M.carrier, ∀ y : M.carrier, ¬ y < x) :
+    ∃ R : RIntervalStructure sig, IsIccLike sig (R.toOrdered sig) ∧
+      KEquiv sig k M (R.toOrdered sig) := by
+  obtain ⟨R, hR⟩ := hgood
+  obtain ⟨xm, hxm⟩ := exists_max_of_kEquiv k hk hR hmax
+  obtain ⟨xn, hxn⟩ := exists_min_of_kEquiv k hk hR hmin
+  have hgreat : IsGreatest R.carrierSet xm.val :=
+    ⟨xm.property, fun v hv => not_lt.mp (hxm ⟨v, hv⟩)⟩
+  have hleast : IsLeast R.carrierSet xn.val :=
+    ⟨xn.property, fun v hv => not_lt.mp (hxn ⟨v, hv⟩)⟩
+  exact ⟨R, isIccLike_of_carrierSet_eq_Icc R (hleast.2 hgreat.1)
+    (ordConnected_eq_Icc R.ordConnected hleast hgreat), hR⟩
+
+/--
+**Reynolds' `γ₁`** (printed p.188, *"`γ₁` is only satisfied by one point structures"*): the flow of
+a one-point structure, with the flow itself exposed rather than hidden behind an existential.
+
+`goodDense_of_subsingleton` (`GoodDense.lean:285`) proves goodness of a one-point structure, but
+`hone` of `goodDense_shuffle` is a statement *about* `N γ₁`, so the shuffle needs the witness and
+not merely its existence. The construction is `goodDense_of_subsingleton`'s, at the degenerate
+interval `[0,0]`.
+-/
+theorem exists_icc_witness_of_subsingleton (k : Nat) (M : OrderedMonadicStructure sig)
+    [Nonempty M.carrier] [Subsingleton M.carrier] :
+    ∃ R : RIntervalStructure sig, R.carrierSet = Set.Icc (0 : ℝ) 0 ∧
+      KEquiv sig k M (R.toOrdered sig) := by
+  obtain ⟨a⟩ := ‹Nonempty M.carrier›
+  refine ⟨{ carrierSet := Set.Icc (0 : ℝ) 0
+            ordConnected := Set.ordConnected_Icc
+            interp := fun p _ => M.interp p a }, rfl, ?_⟩
+  have hone : ∀ u v : {w : ℝ // w ∈ Set.Icc (0 : ℝ) 0}, u = v := fun u v =>
+    Subtype.ext ((le_antisymm u.property.2 u.property.1).trans
+      (le_antisymm v.property.2 v.property.1).symm)
+  let e : M.carrier ≃ {w : ℝ // w ∈ Set.Icc (0 : ℝ) 0} := {
+    toFun := fun _ => ⟨0, le_refl 0, le_refl 0⟩
+    invFun := fun _ => a
+    left_inv := fun u => Subsingleton.elim a u
+    right_inv := fun u => hone _ u }
+  refine k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e
+    (fun u v _ => le_of_eq (congrArg e (Subsingleton.elim u v)))
+    (fun u v _ => le_of_eq (congrArg e.symm (hone u v)))) ?_
+  intro p u
+  exact iff_of_eq (congrArg (M.interp p) (Subsingleton.elim u a))
+
+/-- A degenerate closed-interval flow is a one-point flow — the `hone` clause of
+`goodDense_shuffle`, read off `carrierSet = [x,x]`. -/
+theorem subsingleton_of_carrierSet_eq_Icc_self (R : RIntervalStructure sig) {x : ℝ}
+    (hR : R.carrierSet = Set.Icc x x) :
+    ∀ u v : (R.toOrdered sig).carrier, u = v := by
+  have hmem : ∀ v : ℝ, v ∈ R.carrierSet ↔ v = x := by
+    intro v
+    rw [Set.ext_iff] at hR
+    simpa [Set.mem_Icc] using hR v
+  intro u v
+  exact Subtype.ext (((hmem u.val).mp u.property).trans ((hmem v.val).mp v.property).symm)
+
+end IccNormalization
+
 /-! ## The residual, narrowed to the shuffle step
 
 Layers 8-10 discharge Reynolds' closing paragraph *except* for the goodness of the middle block
