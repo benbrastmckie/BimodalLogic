@@ -1709,6 +1709,106 @@ theorem ruleSound_allFutureNeg : RuleSound carrierBase .allFutureNeg := by
             hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
     · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
 
+/-- `F(HA) → F(A)` at a fresh past time, plus the three propagation families. The exact past
+mirror of `allFutureNeg`: `F(HA)` supplies a strictly *earlier* failure time, the ordering edge
+runs the other way (`addPast`), and the two past propagation helpers replace the two future
+ones. The modal family is direction-blind and is reused verbatim. -/
+theorem ruleSound_allPastNeg : RuleSound carrierBase .allPastNeg := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst hord
+  obtain ⟨s, φ, l⟩ := sf
+  have hsrc : SatAt M Om hist tv ⟨s, φ, l⟩ := hst.sat _ hmem
+  cases s
+  case pos => simp only [applyRule]; trivial
+  case neg =>
+    simp only [SatAt] at hsrc
+    simp only [applyRule]
+    split
+    all_goals try trivial
+    obtain ⟨d, hlt, hfail⟩ := exists_lt_not_truthAt_of_allPast hsrc
+    refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+      ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+    intro g hg
+    rcases List.mem_append.mp hg with hnew | hb
+    · rcases List.mem_cons.mp hnew with rfl | hrest
+      · simpa [SatAt, SignedFormula.neg] using hfail
+      · rcases List.mem_append.mp hrest with hleft | hmodal
+        · rcases List.mem_append.mp hleft with hhp | hpn
+          · exact satAt_of_mem_hProps hst hlt hhp
+          · exact satAt_of_mem_pNegProps hst hlt hpn
+        · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+            mem_boxDiamondPersistence_label hmodal
+          exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+            hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+    · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
+
+/-- `T(FA) → T(A)` at a fresh future time, plus the three propagation families.
+
+The dual of `allFutureNeg` in the sign of the witness rather than in the direction of time: both
+mint a *future* index and both call `addFuture`, but `T(FA)` supplies a later time at which `A`
+*holds* where `F(GA)` supplies one at which it fails. `F A` is `U(A, ⊤)`, a definition rather
+than a constructor, so the rule is driven by `asSomeFuture?` exactly as `someFutureNeg` is. -/
+theorem ruleSound_someFuturePos : RuleSound carrierBase .someFuturePos := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst hord
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asSomeFuture? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ψ =>
+      have hφ : φ = Formula.someFuture ψ := asSomeFuture?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      obtain ⟨d, hlt, htrue⟩ := exists_gt_truthAt_of_someFuture hsrc
+      refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+        ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+      intro g hg
+      rcases List.mem_append.mp hg with hnew | hb
+      · rcases List.mem_cons.mp hnew with rfl | hrest
+        · simpa [SatAt, SignedFormula.pos] using htrue
+        · rcases List.mem_append.mp hrest with hleft | hmodal
+          · rcases List.mem_append.mp hleft with hgp | hfn
+            · exact satAt_of_mem_gProps hst hlt hgp
+            · exact satAt_of_mem_fNegProps hst hlt hfn
+          · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+              mem_boxDiamondPersistence_label hmodal
+            exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+              hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+      · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
+
+/-- `T(PA) → T(A)` at a fresh past time, plus the three propagation families. The past mirror of
+`someFuturePos`, and the last of the four fresh-time existentials. -/
+theorem ruleSound_somePastPos : RuleSound carrierBase .somePastPos := by
+  intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst hord
+  obtain ⟨s, φ, l⟩ := sf
+  cases s
+  case neg => simp [applyRule, SatResult]
+  case pos =>
+    cases hA : asSomePast? φ with
+    | none => simp [applyRule, hA, SatResult]
+    | some ψ =>
+      have hφ : φ = Formula.somePast ψ := asSomePast?_eq_some hA
+      have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
+      simp only [SatAt, hφ] at hsrc
+      simp only [applyRule, hA]
+      obtain ⟨d, hlt, htrue⟩ := exists_lt_truthAt_of_somePast hsrc
+      refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+        ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
+      intro g hg
+      rcases List.mem_append.mp hg with hnew | hb
+      · rcases List.mem_cons.mp hnew with rfl | hrest
+        · simpa [SatAt, SignedFormula.pos] using htrue
+        · rcases List.mem_append.mp hrest with hleft | hmodal
+          · rcases List.mem_append.mp hleft with hhp | hpn
+            · exact satAt_of_mem_hProps hst hlt hhp
+            · exact satAt_of_mem_pNegProps hst hlt hpn
+          · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
+              mem_boxDiamondPersistence_label hmodal
+            exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+              hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
+      · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
+
 /-!
 ## What `boxNeg` and `diamondPos` owed, and how it was discharged — RESOLVED
 
