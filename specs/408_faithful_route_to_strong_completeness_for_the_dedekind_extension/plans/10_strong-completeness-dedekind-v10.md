@@ -4403,7 +4403,7 @@ for the repaired formula**.
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 27: The `ℝ`-extension of the shuffle, its Dedekind completeness and its countable dense subflow [PARTIAL]
+### Phase 27: The `ℝ`-extension of the shuffle, its Dedekind completeness and its countable dense subflow [COMPLETED]
 
 - **Goal**: `Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)` where `σ*` is `σ` extended by singletons at the
   irrationals; plus the flow `R` of `Σ_{r∈ℝ} σ*(r)` is dense, endpointless, **Dedekind complete**,
@@ -4417,7 +4417,7 @@ for the repaired formula**.
         `shuffleColourReal_rat` / `shuffleColourReal_irrational`, plus `shuffleReal` for the sum
         and `isShuffleMapReal_shuffleColourReal` transferring Reynolds' density condition from
         `ℚ`-intervals to `ℝ`-intervals.)*
-  - [ ] **Land `doets_lemma_1_5` in live code** — the phase's centre of gravity. **Do not attempt
+  - [x] **Land `doets_lemma_1_5` in live code** — the phase's centre of gravity. **Do not attempt
         Reynolds' one-line "another simple game argument" directly**; charter it against **Doets 1987,
         3.1.8**: *"if `(I, {i | m(i) ⊨ σ})_{σ∈Z} ≡ⁿ (J, {j | m'(j) ⊨ σ})_{σ∈Z}` then
         `Σ_{i∈I} m(i) ≡ⁿ Σ_{j∈J} m'(j)`"*, which reduces the claim to a `≡ⁿ` fact about the
@@ -4436,8 +4436,9 @@ for the repaired formula**.
         The archived draft's own hypothesis was **not** copied: matching *sets* of realized
         k-types does not imply `≡ₖ` sums, since it ignores the order the types occur in; that is
         recorded at both `OrderedSum.lean`'s status block and the archive note. The **proof** is
-        a documented strategic `sorry` — `ShuffleReal.lean:201` — with the follow-up named in
-        its docstring. See the BLOCKER note below.)*
+        now landed too, as `MixedSum.lean`'s `kEquiv_orderedSum_of_kEquiv_colour`, of which
+        `ShuffleReal.lean`'s `doets_lemma_1_5` is a one-line consequence. Sorry-free and
+        axiom-clean; the former BLOCKER note below is retained as a record and marked resolved.)*
   - [x] Update the forward pointer at `OrderedSum.lean:20-22` and the archive note at
         `SingletonSorriedDecls.lean:19-24` — or, if editing them is out of territory, record in the
         summary that they are now stale. *(both edited in place; each now points at the live
@@ -4496,9 +4497,22 @@ Two new sorry-free, axiom-clean modules landed:
   matching step answers a new point by the density of its colour in the gap of the finite
   matched configuration. Nothing in it is specific to `ℚ` or `ℝ`.
 
-The first half remains open, and the route to it is now sharper — see the revised blocker.
+Both halves are now closed. The first half is `MixedSum.lean` (this phase's final dispatch); the
+record of how it was blocked, and of what the blocking analysis got right, is kept below.
 
-**BLOCKER** (Phase 27, partial — first half only):
+**BLOCKER — RESOLVED** (Phase 27, first half; kept as a record):
+- **Resolution**: `MixedSum.lean` builds the two-index invariant `Mixed` and discharges
+  `doets_lemma_1_5`. The diagnosis below was correct about *what* was missing (the assembly
+  bookkeeping, not the engine) and about the two refuted routes (shared-index `sum_nf_agree`,
+  re-association). Two design choices made the bookkeeping tractable: the position-to-summand
+  **link is a `Sigma` equality in the sum carrier**, never a transport of a summand element along
+  an index equality; and every slot's environment carries the **same arity** as the position
+  count, so a move extends every slot by exactly one entry — the touched slot by the real witness,
+  the others by a junk move answered by their own strategy. Together these remove `CompData`'s
+  `Fin (sz t)` reindexing and hence all of `build_bicompat`'s `NormalForm`-type `HEq` casts. The
+  depth budget `d + n ≤ k` is what a freshly created slot needs: matched indices carry the same
+  `k`-type, so their summands are `≡ₖ`, and `backForth_pad` spends `n` moves reaching arity `n`
+  plus one for the real witness, leaving depth `d`.
 - **What failed**: `doets_lemma_1_5` (`ShuffleReal.lean:226`) — the statement is landed under the
   live names, the proof is not.
 - **What was tried**: routing it through the existing apparatus. `doets_lemma_1_4`
@@ -4526,10 +4540,9 @@ The first half remains open, and the route to it is now sharper — see the revi
 - **What is needed**: a follow-up task, *"build the two-index analogue of `CompData` /
   `build_bicompat` over `BackAndForth.lean`'s `BackForth`, and discharge `doets_lemma_1_5`"*.
   The former second half (`hcol`) is **done** and no longer part of this.
-- **Downstream**: Phase 29 consumes `kEquiv_shuffle_shuffleReal`; until `doets_lemma_1_5` lands,
-  that consumption is conditional — but it is now conditional on that lemma **alone**, with no
-  undischarged hypothesis attached. **Phase 28 is unaffected** — it consumes only the four order
-  facts, all of which are sorry-free and axiom-clean here.
+- **Downstream**: Phase 29 consumes `kEquiv_shuffle_shuffleReal`, which is now **unconditional**
+  (`#print axioms` reports `propext, Classical.choice, Quot.sound` and no `sorryAx`). **Phase 28**
+  was never affected — it consumes only the four order facts.
 - **Prohibited**: Do NOT resolve this with `def X := True`, a vacuous placeholder, or a new axiom.
 
 - **Estimated output**: ~500 lines.
@@ -4627,7 +4640,7 @@ The first half remains open, and the route to it is now sharper — see the revi
 - **Verification Tier**: full.
 - **BLOCK H CHECKPOINT**: an `ℝ`-flowed structure `≡ₖ`-equivalent to the chronicle model now exists.
 
-### Phase 30: Reynolds §9 Theorem 7 — the engine and the unconditional terminus [NOT STARTED]
+### Phase 30: Reynolds §9 Theorem 7 — the engine and the unconditional terminus [IN PROGRESS]
 
 > **This phase absorbs v6's Phase 8.** Its precondition is the availability of `doets_theorem_dense`
 > at the chronicle structure. **The `consequence_completeness_dedekind_of_engine` pinned signature
