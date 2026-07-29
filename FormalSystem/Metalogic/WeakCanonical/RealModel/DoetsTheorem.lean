@@ -939,6 +939,102 @@ theorem nonempty_orderIso_rat_classBetween_epsDense (k : Nat) (hk : 2 ≤ k)
     (quotientDenselyOrdered_epsDense k hk M D1) hcd
     (fun hc => hns ((contempEquivDense_epsDense_iff k M c d).mp hc))
 
+/-! ## Layer 8 — Reynolds' three-summand decomposition of `M | (c,d)`
+
+Printed p.188, the closing step of Theorem 6's proof:
+
+> Let `c'` be the right hand end point of `c`'s `∼`-class and `d'` be the left hand end point of
+> `d`'s. Thus
+>
+> `M | (c,d) = M | (c,c'] + M | ⋃I + M | [d',d)`.
+>
+> As `c ∼ c'`, there is `X ≡ₖ M | (c,c']` with flow isomorphic to an interval of `ℝ` and similarly
+> there is `Y ≡ₖ M | [d',d)`. Then
+>
+> `M | (c,d) ≡ₖ X + 𝓡 + Y`
+>
+> and this latter has flow of time isomorphic to `ℝ` as required.
+
+**The displayed three-summand identity is two nested binary splits, and both are already landed.**
+`kEquiv_openSub_split` (`EpsilonDense.lean:858`) cuts an open interval at an interior point,
+putting that point at the head of the second block, and `goodDense_binSum_pointSum`
+(`EpsilonDense.lean:832`) is literally *"`X + M | {b} + Y` is good"* — the `R₁ + R₂ + R₃` step
+Reynolds had already used once, for transitivity of `∼` (printed p.187), and where the seam
+closes up because `X` inherits its lack of a right end point across `≡ₖ`.
+
+Applying that pair twice, at `c'` and then at `d'`, *is* Reynolds' identity: the first cut splits
+off `M | (c,c')` and leaves `M | [c',d)`; the second splits `M | [c',d)` — whose head is `c'`, so
+that `M | {c'} + M | (c',d')` is Reynolds' `M | (c,c']` shifted one seam to the right — into
+`M | (c',d')` and `M | [d',d)`. The middle block `M | (c',d')` is `⋃I`
+(`unionClasses_eq_openSub` below).
+
+So this layer adds no mathematics: it is the composition, stated once, with the goodness of the
+middle block left as the hypothesis it is. `M | (c,c')` and `M | (d',d)` are very good outright,
+because `c ∼ c'` and `d' ∼ d`; `hmid` is the only input that is not immediate, and supplying it is
+the shuffle step.
+-/
+
+/--
+**Reynolds' `M | (c,d) ≡ₖ X + 𝓡 + Y`** — printed p.188, as a statement about goodness.
+
+Two applications of `goodDense_binSum_pointSum`, at `d'` and then at `c'`. The inner one produces
+goodness of `M | (c',d)` from the middle block and the right-hand tail; the outer one prefixes
+`M | (c,c')` and the seam point `c'`.
+
+The hypotheses are exactly Reynolds' three summands: `hleft` is *"`c ∼ c'`"*, `hright` is
+*"`d' ∼ d`"*, and `hmid` is *"`M | ⋃I` is good"* — the one that costs the shuffle.
+-/
+theorem goodDense_openSub_of_mid (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+    [Countable M.carrier] [DenselyOrdered M.carrier] {c c' d' d : M.carrier}
+    (hcc' : c < c') (hc'd' : c' < d') (hd'd : d' < d)
+    (hleft : veryGoodDense sig k (M.openSubinterval sig c c'))
+    (hmid : goodDense sig k (M.openSubinterval sig c' d'))
+    (hright : veryGoodDense sig k (M.openSubinterval sig d' d)) :
+    goodDense sig k (M.openSubinterval sig c d) := by
+  have hc'd : c' < d := lt_trans hc'd' hd'd
+  -- Countability, non-emptiness and end-point freedom for each of the four open blocks.
+  haveI : Countable (M.openSubinterval sig c c').carrier :=
+    inferInstanceAs (Countable {x : M.carrier // c < x ∧ x < c'})
+  haveI : Countable (M.openSubinterval sig c' d').carrier :=
+    inferInstanceAs (Countable {x : M.carrier // c' < x ∧ x < d'})
+  haveI : Countable (M.openSubinterval sig d' d).carrier :=
+    inferInstanceAs (Countable {x : M.carrier // d' < x ∧ x < d})
+  haveI : Nonempty (M.openSubinterval sig c c').carrier := by
+    obtain ⟨x, hx₁, hx₂⟩ := exists_between hcc'; exact ⟨⟨x, hx₁, hx₂⟩⟩
+  haveI : Nonempty (M.openSubinterval sig c' d').carrier := by
+    obtain ⟨x, hx₁, hx₂⟩ := exists_between hc'd'; exact ⟨⟨x, hx₁, hx₂⟩⟩
+  haveI : Nonempty (M.openSubinterval sig d' d).carrier := by
+    obtain ⟨x, hx₁, hx₂⟩ := exists_between hd'd; exact ⟨⟨x, hx₁, hx₂⟩⟩
+  haveI : Nonempty (M.openSubinterval sig c' d).carrier := by
+    obtain ⟨x, hx₁, hx₂⟩ := exists_between hc'd; exact ⟨⟨x, hx₁, hx₂⟩⟩
+  haveI := noMaxOrder_openSubinterval sig M c c'
+  haveI := noMinOrder_openSubinterval sig M c c'
+  haveI := noMaxOrder_openSubinterval sig M c' d'
+  haveI := noMinOrder_openSubinterval sig M c' d'
+  haveI := noMaxOrder_openSubinterval sig M d' d
+  haveI := noMinOrder_openSubinterval sig M d' d
+  haveI := noMaxOrder_openSubinterval sig M c' d
+  haveI := noMinOrder_openSubinterval sig M c' d
+  -- Inner split, at `d'`: `M | (c',d) ≡ₖ M | (c',d') + M | {d'} + M | (d',d)`.
+  have hinner : goodDense sig k (M.openSubinterval sig c' d) := by
+    have hsplit : KEquiv sig k (M.openSubinterval sig c' d)
+        (binSum sig (M.openSubinterval sig c' d')
+          (pointSum sig M d' (M.openSubinterval sig d' d))) :=
+      (kEquiv_openSub_split k M c' d' d hc'd' hd'd).trans
+        (kEquiv_binSum k (rfl : KEquiv sig k (M.openSubinterval sig c' d') _)
+          (kEquiv_halfOpen_pointSum sig k M d' d hd'd))
+    exact goodDense_of_kEquiv sig k hsplit
+      (goodDense_binSum_pointSum k hk M d' _ _ hmid (reynolds_lemma11 sig k hk _ hright))
+  -- Outer split, at `c'`: `M | (c,d) ≡ₖ M | (c,c') + M | {c'} + M | (c',d)`.
+  have hsplit : KEquiv sig k (M.openSubinterval sig c d)
+      (binSum sig (M.openSubinterval sig c c')
+        (pointSum sig M c' (M.openSubinterval sig c' d))) :=
+    (kEquiv_openSub_split k M c c' d hcc' hc'd).trans
+      (kEquiv_binSum k (rfl : KEquiv sig k (M.openSubinterval sig c c') _)
+        (kEquiv_halfOpen_pointSum sig k M c' d hc'd))
+  exact goodDense_of_kEquiv sig k hsplit
+    (goodDense_binSum_pointSum k hk M c' _ _ (reynolds_lemma11 sig k hk _ hleft) hinner)
+
 /--
 **The residual of Reynolds' §8 Theorem 6** — printed pp.187-188, everything after
 `exists_not_simDense_of_not_goodDense` has produced `a < b` with `a ≁ b`:

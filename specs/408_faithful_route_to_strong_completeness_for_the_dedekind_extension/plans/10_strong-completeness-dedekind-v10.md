@@ -4644,7 +4644,7 @@ introduced here. **No aggregator was edited** — `Metalogic/WeakCanonical.lean`
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [PARTIAL]
+### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [IN PROGRESS]
 
 **PARTIAL RECORD (Phase 29)**: `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean`
 is landed (443 lines), scoped build green, and every declaration in it is axiom-clean
