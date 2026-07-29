@@ -384,4 +384,114 @@ theorem kEquiv_shuffle_of_classIso (k : Nat) {I ι : Type}
     KEquiv sig k (orderedSum sig I m) (shuffle N σ) :=
   kEquiv_orderedSum_of_orderIso k e m (fun q => N (σ q)) hmatch
 
+/-! ## `M | (⋃I) = Σ_{E∈I} M|E`
+
+Reynolds writes the left-hand identity of
+
+`M | (⋃ I) = Σ_{E∈I} M|E ≡ₖ Σ_{q∈ℚ} σ(q)`
+
+as an identity (printed p.187), on the strength of *"`∼_M` partitions `M` into intervals"*
+(Lemma 12, clause (ii); here `simDense_convex`). Formally it is an isomorphism, not an equality,
+so it is landed as a `≡ₖ` like every other step.
+
+The decomposition is stated for an arbitrary **order-respecting block map** `cls` rather than for
+the `∼`-quotient specifically: what the proof uses is only that points in an earlier block
+precede points in a later one, and stating it that way keeps the lemma free of quotient
+machinery. At the call site `cls` is *"the `∼`-class of"*, `I` is Reynolds' `I` and the
+hypothesis is convexity of the classes.
+-/
+
+/-- The substructure of `M` on an arbitrary subset of its carrier.
+
+The tree's existing cuts (`subinterval`, `openSubinterval`, `belowSubinterval`,
+`aboveSubinterval`) are all interval-shaped; the blocks of a partition are given as sets, so this
+general form is what the decomposition below needs. -/
+def OrderedMonadicStructure.restrictSet (sig : MonadicSignature)
+    (M : OrderedMonadicStructure sig) (s : Set M.carrier) : OrderedMonadicStructure sig where
+  carrier := {x : M.carrier // x ∈ s}
+  interp p x := M.interp p x.val
+  carrierOrder := inferInstance
+
+/--
+**A structure is the lexicographic sum of its blocks** — the left-hand identity
+`M | (⋃ I) = Σ_{E∈I} M|E` of Reynolds 1992, §8, printed p.187.
+
+`cls` assigns each point its block; `hmono` is *"the blocks are intervals, ordered by `I`"* in the
+only form the proof uses: a point of an earlier block precedes a point of a later one. Blocks are
+allowed to be empty — an empty summand contributes no points to the sum, so no surjectivity of
+`cls` is required.
+-/
+theorem kEquiv_orderedSum_blocks (k : Nat) (P : OrderedMonadicStructure sig) {I : Type}
+    [LinearOrder I] (cls : P.carrier → I)
+    (hmono : ∀ x y : P.carrier, cls x < cls y → x < y) :
+    KEquiv sig k P
+      (orderedSum sig I (fun i => P.restrictSet sig {x : P.carrier | cls x = i})) := by
+  letI fam := fun i : I => P.restrictSet sig {x : P.carrier | cls x = i}
+  -- `f` forgets the block label; it is strictly monotone by `hmono`.
+  have hstrict : StrictMono (fun y : (orderedSum sig I fam).carrier => y.2.val) := by
+    rintro ⟨i, x⟩ ⟨j, y⟩ hlt
+    rcases Sigma.Lex.lt_def.mp hlt with hij | ⟨hij, hxy⟩
+    · have hclt : cls x.val < cls y.val := by
+        have hx : cls x.val = i := x.property
+        have hy : cls y.val = j := y.property
+        rw [hx, hy]; exact hij
+      exact hmono _ _ hclt
+    · have heq : i = j := hij
+      subst heq
+      exact hxy
+  have hright : Function.RightInverse
+      (fun x : P.carrier =>
+        (⟨cls x, ⟨x, rfl⟩⟩ : (orderedSum sig I fam).carrier))
+      (fun y : (orderedSum sig I fam).carrier => y.2.val) := fun _ => rfl
+  let g : (orderedSum sig I fam).carrier ≃o P.carrier :=
+    StrictMono.orderIsoOfRightInverse _ hstrict _ hright
+  refine (k_equiv_of_iso sig k (orderedSum sig I fam) P g ?_).symm
+  rintro p ⟨i, x⟩
+  exact Iff.rfl
+
+/--
+**`M | (⋃ I) ≡ₖ Σ_{q∈ℚ} σ(q)`** — Reynolds 1992, §8, printed p.187, assembled: the block
+decomposition of the interval followed by the shuffle comparison.
+
+This is the phase's deliverable for the main proof: `P` is `M | (⋃ I)`, `cls` is *"the `∼`-class
+of"*, `e : I ≃o ℚ` is *"the classes in `I` have order type `ℚ`"*, and `hmatch` is *"for any
+`E ∈ I`, `M|E ≡ₖ N_γ` for one of the `γ`'s in `G`"* with `σ` the choice of `γ` per rational.
+-/
+theorem kEquiv_blocks_shuffle (k : Nat) (P : OrderedMonadicStructure sig) {I ι : Type}
+    [LinearOrder I] (cls : P.carrier → I)
+    (hmono : ∀ x y : P.carrier, cls x < cls y → x < y) (e : I ≃o ℚ)
+    (N : ι → OrderedMonadicStructure sig) (S : Finset ι) (σ : ℚ → ι)
+    (hdense : IsShuffleMap S σ)
+    (hmatch : ∀ i : I,
+      KEquiv sig k (P.restrictSet sig {x : P.carrier | cls x = i}) (N (σ (e i)))) :
+    KEquiv sig k P (shuffle N σ) :=
+  (kEquiv_orderedSum_blocks k P cls hmono).trans
+    (kEquiv_shuffle_of_classIso k e _ N S σ hdense hmatch)
+
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
+/-- A **monotone** block labelling is order-respecting, which is the hypothesis
+`kEquiv_orderedSum_blocks` asks for.
+
+This is the form the `∼`-quotient supplies: *"`∼_M` partitions `M` into intervals"* (Lemma 12,
+clause (ii), landed as `simDense_convex`) says exactly that the class labelling is monotone, and
+monotonicity alone gives the strict form. -/
+theorem blocks_lt_of_monotone_cls {P : OrderedMonadicStructure sig} {I : Type} [LinearOrder I]
+    (cls : P.carrier → I) (hmono : ∀ x y : P.carrier, x ≤ y → cls x ≤ cls y) :
+    ∀ x y : P.carrier, cls x < cls y → x < y := by
+  intro x y hlt
+  by_contra hle
+  exact absurd (hmono y x (not_lt.mp hle)) (not_le.mpr hlt)
+
+/-- **Anti-vacuity for the block decomposition**: the singleton partition.
+
+Labelling each point by itself makes every block a singleton, and the decomposition reads
+`P ≡ₖ Σ_{x∈P} P|{x}` — a non-trivial instance of `kEquiv_orderedSum_blocks` with a genuinely
+inhabited index and genuinely inhabited blocks, so the general lemma is not vacuously about
+empty sums. It is also the degenerate shuffle Reynolds' `σ*` uses at the irrationals
+(printed p.188). -/
+theorem kEquiv_singletonBlocks (k : Nat) (P : OrderedMonadicStructure sig) :
+    KEquiv sig k P
+      (orderedSum sig P.carrier (fun a => P.restrictSet sig {x : P.carrier | x = a})) :=
+  kEquiv_orderedSum_blocks k P id (fun _ _ h => h)
+
 end FormalSystem.Metalogic.WeakCanonical
