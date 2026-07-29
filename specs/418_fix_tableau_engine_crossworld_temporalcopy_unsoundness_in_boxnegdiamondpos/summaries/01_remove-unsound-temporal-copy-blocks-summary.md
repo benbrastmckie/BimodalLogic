@@ -2,10 +2,11 @@
 
 - **Task**: 418 — fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos
 - **Plan**: `plans/01_remove-unsound-temporal-copy-blocks.md`
-- **Status**: Phases 1-7 [COMPLETED]; Phase 8 **[IN PROGRESS]** — the acceptance gate is running
-  and its result is **not yet recorded here**. The soundness fix landed and the corpus is
-  realigned; **the plan's headline acceptance criterion is measured and NOT met**, recorded as
-  bucket (e) and triaged for an explicit human decision (see "The anchor result").
+- **Status**: Phases 1-8 [COMPLETED]. Acceptance gate **GREEN** — `lake build` RC 0 and
+  `lake build BimodalTest` RC 0 in one locked window, zero `#guard_msgs` mismatches across all
+  143 directives. The soundness fix landed and the corpus is realigned; **the plan's headline
+  acceptance criterion is measured and NOT met**, recorded as bucket (e) and triaged for an
+  explicit human decision (see "The anchor result").
 - **Session**: `sess_1785302672_d06f95`
 
 ## What was done
@@ -27,7 +28,7 @@ alternative world. All twelve blocks, both `temporalProps` assemblies, and both
 | 5 — `boxAnchoredCheck` finding | [COMPLETED] | Measured, carrier list re-derived, handed to task 165 |
 | 6 — AFTER corpus measurement | [COMPLETED] | All 8 modules measured; **22 of 142 rows moved** |
 | 7 — adjudicate and realign | [COMPLETED] | All 22 rows realigned with per-row justification; 1 row added; 6 narratives rewritten |
-| 8 — acceptance gate | **[IN PROGRESS]** | `lake build` + `lake build BimodalTest` running detached; **result pending — not yet asserted** |
+| 8 — acceptance gate | [COMPLETED] | **`LIBRARY_RC=0`, `CORPUS_RC=0`, 0 mismatches**; oleans 399 → 405 (increase = completed build); zero infrastructure-class errors |
 
 ## The headline result
 
@@ -291,3 +292,48 @@ such at the rule level (`BoxNegPreservationProbe` row 3) and at the reachability
 
 Two open items travel with it: the `boxAnchoredCheck` gate family, and the owed countermodel for
 `(G p) → □(G p)`.
+
+## The acceptance gate
+
+Run detached (`setsid nohup`), no wall-clock ceiling, in a single locked window with no source
+edit between the two steps — so this one run serves as both Phase 7's re-run-to-green and Phase
+8's gate, stated explicitly rather than claimed as two independent gates.
+
+```
+=== GATE STEP 1: lake build (FormalSystem library) ===   LIBRARY_RC=0
+=== GATE STEP 2: lake build BimodalTest (full corpus) === CORPUS_RC=0
+mismatch rows: 0
+```
+
+| Probe module | Gate result | Time |
+|---|---|---|
+| `RayRegionProbe` | ✔ built | 3.0 s |
+| `BoxSpreadProbe` | ✔ built | 5.6 s |
+| `RegionGateProbe` | ✔ built | 9.7 s |
+| `TemporalWitnessProbe` | ✔ built | 17 s |
+| `BoxNegPreservationProbe` | ✔ built | 980 s |
+| `CrossWorldPropagationProbe` | ✔ built | 2185 s |
+| `BoxNegReachabilityProbe` | ✔ built | 3649 s |
+| `BimodalTest` (root) | ✔ built | 1.1 s |
+| `TableauConformance` | trace current, unmoved | — |
+
+**Conclusiveness**: oleans **399 → 405** — an *increase*, consistent with a build that ran to
+completion (the six realigned modules plus the root emitted fresh `.olean`s). Zero
+infrastructure-class errors in the log: no `could not resolve import`, no missing `.olean`, no
+diagnostic-free abrupt exit. The gate is a pass, not an interrupted run recorded as one.
+
+### Final verification census
+
+| Check | Result |
+|---|---|
+| `#guard_msgs` mismatches | **0** across 143 directives |
+| term-level `sorry` introduced | **0** — repo-wide count 1075 → 1075, unchanged; the one `Verified/` grep hit is the word `sorry` inside a docstring |
+| axioms introduced | **0** — count 2 → 2, unchanged; both hits are prose lines in `Boneyard/` beginning with the word "axiom", not declarations |
+| vacuous definitions introduced | **0** — the two `:= trivial` hits (`int_domain_universal`, `domainProof0`) are pre-existing, are genuine proofs of total-domain propositions, and sit in files this task never touched |
+| `Verified/Decidable.lean` in diff | **absent** |
+| `Tableau.lean` vs Phase 3 | **byte-identical** (`git diff c2a25cfb5 HEAD` empty) |
+| emit-site invariant | exactly **2** `(.linear (witness :: boxProps ++ diaProps), timeOrd)` |
+| `#guard_msgs` directives removed | **0**; `#eval` expressions altered | **0** |
+
+Eleven files changed in total across the whole task: four under `FormalSystem/` and seven probe
+modules under `Tests/`. No file outside the declared scope.

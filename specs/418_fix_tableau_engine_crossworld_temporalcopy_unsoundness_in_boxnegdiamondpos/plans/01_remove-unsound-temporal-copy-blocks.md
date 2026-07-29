@@ -606,8 +606,8 @@ softening, any row that cannot be justified.
       a row pass. If a row genuinely requires cross-world temporal propagation to close, that is
       a finding for task 165 — append it to `boxanchored-finding.md` — not a licence to
       reintroduce the unsoundness.
-- [ ] Acquire the lock and re-run `lake build BimodalTest` to green, or to a state where every
-      remaining failure is a recorded, triaged bucket-(c)/(e) regression. Release the lock.
+- [x] Acquire the lock and re-run `lake build BimodalTest` to green, or to a state where every
+      remaining failure is a recorded, triaged bucket-(c)/(e) regression. Release the lock. *(deviation: altered — satisfied by the Phase 8 gate run, since no source edit occurs between Phase 7's end and the gate; CORPUS_RC=0, 0 mismatches.)*
 
 **Timing**: 2.0 hours
 
@@ -640,33 +640,32 @@ softening, any row that cannot be justified.
 
 ---
 
-### Phase 8: Acceptance Gate and Before/After Verdict-Change Table [IN PROGRESS]
+### Phase 8: Acceptance Gate and Before/After Verdict-Change Table [COMPLETED]
 
 **Goal**: Run the full acceptance gate under the build-reliability protocol and produce the
 before/after verdict-change table the task requires as its summary deliverable.
 
 **Tasks**:
-- [ ] Acquire the lock. Record the olean count.
-- [ ] Run the complete gate in order: `lake build` (library), then `lake build BimodalTest`
-      (corpus). Capture both to `specs/418_.../artifacts/acceptance-build.log`.
-- [ ] Record the olean count after. Apply the infra-vs-verdict triage one final time: if either
+- [x] Acquire the lock. Record the olean count.
+- [x] Run the complete gate in order: `lake build` (library), then `lake build BimodalTest`
+      (corpus). Capture both to `specs/418_.../artifacts/acceptance-build.log`. *(LIBRARY_RC=0, CORPUS_RC=0)*
+- [x] *(399 → 405, an increase; zero infra-class errors; gate conclusive)* Record the olean count after. Apply the infra-vs-verdict triage one final time: if either
       build hit an infrastructure error the gate is **inconclusive** — retry the whole gate. Do
       not write the summary on an inconclusive gate, and never describe an interrupted build as
       a pass.
-- [ ] Write `specs/418_.../summaries/01_remove-unsound-temporal-copy-blocks-summary.md`
+- [x] Write `specs/418_.../summaries/01_remove-unsound-temporal-copy-blocks-summary.md`
       containing the **before/after verdict-change table**: one row per corpus row that changed,
       with columns *formula / probe row*, *old verdict*, *new verdict*, *bucket*,
       *justification*. Rows that did not change are summarized in aggregate with a count, not
       enumerated.
-- [ ] Include in the summary: the anchor result (`(G p) → □(G p)` now `.hasOpen`, `decide` now
-      `.invalid` with a countermodel), the total moved-row count, the `boxAnchoredCheck` finding
+- [x] *(deviation: altered — the anchor result is recorded as MEASURED AND NOT MET: fuel-exhausted, `.fuelExhausted`, no countermodel. The plan's parenthetical states the intended outcome, not the observed one.)* Include in the summary: the anchor result, the total moved-row count, the `boxAnchoredCheck` finding
       in one paragraph with a pointer to `boxanchored-finding.md`, any bucket-(c)/(e) regression
       left open, and the final state of both builds.
-- [ ] State explicitly that `Verified/Decidable.lean` was not modified, that the `RuleSound`
+- [x] State explicitly that `Verified/Decidable.lean` was not modified, that the `RuleSound`
       proof was not attempted, that no replacement propagation block was added, and that task 165
       Phase 7.2 is now unblocked with the `boxAnchoredCheck` gap as its inherited open item.
-- [ ] Release the lock and remove the lock file.
-- [ ] Commit with `task 418: {action}` and the session ID in the body. Do not push, do not create
+- [x] Release the lock and remove the lock file.
+- [x] Commit with `task 418: {action}` and the session ID in the body. Do not push, do not create
       a PR.
 
 **Timing**: 1.0 hours
