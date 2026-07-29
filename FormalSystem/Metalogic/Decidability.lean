@@ -34,6 +34,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.TemporalGate
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntGaps
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntTruth
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.DenseTruth
+import FormalSystem.Metalogic.Decidability.Verified.Decidable
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -98,6 +99,12 @@ Tableau-based decision procedure returning proof terms or countermodels.
   `branchTruthAt_of_temporal` is the machine-checked statement of what the two milestones share —
   the whole induction with only the `untl`/`snce` cases abstracted, the four others discharged
   from `IntTruth` unchanged
+- `Verified.Decidable`: the *other* direction — `allClosed → valid`. `SatState` is the
+  satisfiability notion a branch supports (a model, a shift-closed `Ω`, an interpretation of the
+  branch's world labels landing inside `Ω`, and an interpretation of its time labels respecting
+  the abstract `TimeOrdering`); `SatResult` is satisfiability preservation read off `applyRule`'s
+  own `RuleResult × TimeOrdering`; `RuleSound` is the per-rule obligation, indexed by a carrier
+  property so that a frame-class-gated rule can assume what its class supplies
 
 ## Status
 
