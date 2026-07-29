@@ -313,29 +313,73 @@ end RealModelTransfer
 /-! ## Layer 4 — Doets' Theorem
 
 Reynolds' hypotheses D1 and D2 are quantified over *"any contemporaneous equivalence relation
-`∼` on `M`"*, which is `IsContempEquivDense ε` in the tree's spelling (`Defs.lean:234`); the two
-conclusions are `EndsInGapOnRight`/`EndsInGapOnLeft` (`Defs.lean:307,317`) and
+`∼` on `M`"*; the two conclusions are `EndsInGapOnRight`/`EndsInGapOnLeft` (`Defs.lean`) and
 `QuotientDenselyOrdered → HasDenseSingletons` (`Singletons.lean:190,200`).
 
-This is deliberately the spelling **Phase 30's suppliers already produce**: `no_gaps_dense_prior`
-/ `no_gaps_dense_prior_left` (`NoGaps.lean:901`) discharge D1 and `dense_singletons_of_sep`
-(`Singletons.lean:565`) discharges D2, each taking `hε : IsContempEquivDense ε` as its own
-hypothesis in exactly this form.
+## Which spelling of *"contemporaneous equivalence relation"*, and why it changed
+
+The antecedent is `IsContempEquivDenseCD ε` (`Defs.lean`), the **countable-dense** bundle, not
+the unrestricted `IsContempEquivDense ε` an earlier version of this file used. The reason is
+forced, not stylistic:
+
+Theorem 6 runs D1 and D2 at `ε := epsDense sig k`, Reynolds' own `ε(x,y)` of §8 Lemma 12. That
+`ε` satisfies the unrestricted clause (iii) but satisfies clauses (i) and (ii) **only** at a
+countable dense flow — `IsContempEquivDense (epsDense sig k)` is false, with the counterexample
+in `EpsilonDense`'s module header. So the antecedent had to weaken to something `epsDense`
+actually meets, or Theorem 6 could never apply its own hypotheses. `doetsD1_epsDense` /
+`doetsD2_epsDense` below are that application, and they are the ε-adapter Phase 25's deviation
+record asked for.
+
+**What this costs, stated plainly.** Weakening an antecedent makes the hypothesis *harder* to
+discharge. `no_gaps_dense_prior` / `no_gaps_dense_prior_left` (`NoGaps.lean:901`) and
+`dense_singletons_of_sep` (`Singletons.lean:565`) each take the **unrestricted**
+`hε : IsContempEquivDense ε`, and `IsContempEquivDense.toCD` runs the wrong way to help — from
+`IsContempEquivDenseCD ε` there is no route to `IsContempEquivDense ε`. So whoever discharges
+D1/D2 must first make §6 run on the countable-dense bundle.
+
+**That is not a formality, and it has been measured rather than guessed.** Restricting
+`IsContempEquivDense`'s clauses in place and propagating the instances through §6 leaves exactly
+one irreducible failure: `NoGaps.lean`'s `reynolds_lemma9` projects the clauses at
+`surgeredStructure M ε Q t` and demands `DenselyOrdered` of it. That structure collapses a bad
+interval to a single `∼`-class, and Lemma 4 (*"no first class in any maximal interval"*)
+guarantees the points below the surviving class are removed — so it has adjacent points and is
+**not** densely ordered. Supplying the instance as a hypothesis would be worse than leaving it
+open: the hypothesis is unsatisfiable in the intended situation, and §6 Theorem 4 would go
+vacuous. The attempt is therefore reverted rather than kept, and the obligation is recorded here
+in the type of D1/D2 where it cannot be lost.
 -/
 
 /-- **D1** — *"the `∼` classes do not end in gaps"* (printed p.185), for every contemporaneous
 equivalence relation on `M` and at both ends. -/
 def DoetsD1 (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) : Prop :=
-  ∀ ε : MonadicFormula sig 2, IsContempEquivDense ε →
+  ∀ ε : MonadicFormula sig 2, IsContempEquivDenseCD ε →
     ∀ t : M.carrier, ¬ EndsInGapOnRight M ε t ∧ ¬ EndsInGapOnLeft M ε t
 
 /-- **D2** — *"if `M/∼` is densely ordered then `M/∼` has a dense set of singletons"*
 (printed p.185), for every contemporaneous equivalence relation on `M`. -/
 def DoetsD2 (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) : Prop :=
-  ∀ ε : MonadicFormula sig 2, IsContempEquivDense ε →
+  ∀ ε : MonadicFormula sig 2, IsContempEquivDenseCD ε →
     QuotientDenselyOrdered M ε → HasDenseSingletons M ε
+
+/-- **The ε-adapter, D1 half** — D1 applied at Reynolds' own `∼_M`.
+
+This is the step printed p.187 takes silently, and the one Phase 25's deviation record named as
+*"the one adapter Phase 29 must supply"*: `epsDense_isContempEquivDenseCD` is what licenses
+instantiating *"any contemporaneous equivalence relation on `M`"* at `∼_M` itself. -/
+theorem doetsD1_epsDense (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig) (D1 : DoetsD1 sig M)
+    (t : M.carrier) :
+    ¬ EndsInGapOnRight M (epsDense sig k) t ∧ ¬ EndsInGapOnLeft M (epsDense sig k) t :=
+  D1 (epsDense sig k) (epsDense_isContempEquivDenseCD k hk) t
+
+/-- **The ε-adapter, D2 half** — D2 applied at Reynolds' own `∼_M`. -/
+theorem doetsD2_epsDense (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig) (D2 : DoetsD2 sig M)
+    (hq : QuotientDenselyOrdered M (epsDense sig k)) :
+    HasDenseSingletons M (epsDense sig k) :=
+  D2 (epsDense sig k) (epsDense_isContempEquivDenseCD k hk) hq
 
 /--
 **Failure of goodness produces two inequivalent points** — printed p.187, the opening move of
@@ -388,13 +432,12 @@ theorem exists_not_simDense_of_not_goodDense (sig : MonadicSignature) [Fintype s
 **This is the one gap in Block H, and it is carried here as a single named `sorry` rather than as
 an unproved assertion buried in a longer tactic block.** What it still needs, precisely:
 
-1. **The `ε`-adapter.** The argument runs at `∼_M`, i.e. `ε := epsDense sig k`, but
-   `epsDense_isContempEquiv` (`EpsilonDense.lean:1033`) supplies the three clauses only **at a
-   fixed `Countable`, `DenselyOrdered` `M`** — not the `∀ M`-quantified `IsContempEquivDense`
-   that D1 and D2 above take as their antecedent. Phase 25's own deviation record names this as
-   *"the one adapter Phase 29 must supply"*, and it is not supplied. Closing it means either
-   weakening `IsContempEquivDense` to an at-`M` bundle throughout `DenseModelSurgery/`, or
-   proving the `∀ M` form, which the Phase 25 module header records as **false** without density.
+1. ~~**The `ε`-adapter.**~~ **Discharged.** D1 and D2 now take `IsContempEquivDenseCD` and
+   `epsDense_isContempEquivDenseCD` (`EpsilonDense.lean`) discharges it, so `doetsD1_epsDense`
+   and `doetsD2_epsDense` above apply Reynolds' hypotheses at `∼_M` outright. Nothing in the
+   residual is blocked on it any more. The obligation it displaced — making §6 run on the
+   countable-dense bundle, so that D1/D2 can be *discharged* — is recorded in the D1/D2 section
+   header above, together with the measured obstruction at `surgeredStructure`.
 2. **The `G`-minimality argument.** Reynolds' *"`G` minimal"* is a minimization over the finite
    `γ`-palette (`gammaSentences`, `EpsilonDense.lean:239`); it has no counterpart in the tree.
 3. **The order-type-`ℚ` step.** *"the classes strictly between them have order type `ℚ`"* is
