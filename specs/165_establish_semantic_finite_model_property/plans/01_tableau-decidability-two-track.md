@@ -2312,9 +2312,21 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   Guarantee" section, which still advertised the long-retired `branchTruthLemma` as a key
   theorem, was replaced by a pointer to where the truth lemma actually lives. Full `lake build`
   green (1939 jobs).
-- [ ] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`, new) — **unchanged**: the
-  `allClosed → valid` direction as ONE induction over `allRulesForFC fc`, using
-  `mem_allRulesForFC_iff` from Phase 3. **Verification Tier**: `full`. Estimated output:
+- [ ] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`, new) — **STARTED
+  (2026-07-28r), 11 of 28 rules landed sorry-free; not closed.** The module exists and is
+  registered: `SatState` (the satisfiability notion), `SatResult` (preservation read off
+  `applyRule`'s own `RuleResult × TimeOrdering`), `RuleSound` indexed by a `CarrierProp`, and
+  `RuleSound.mono`. Landed: the eight truth-functional rules and the three label-preserving modal
+  rules (`boxPos`, `diamondNeg`, `boxTemporal`). Open: `boxNeg`/`diamondPos` (obligation stated,
+  see the 2026-07-28r banner), the eight temporal quantifier rules, the four `untl`/`snce` rules,
+  `orderTrichotomy`, the eight frame-class-gated rules, and the assembly itself.
+  *(deviation: altered — delivery split by rule **shape family**, one green commit each, rather
+  than one induction landed whole. The single induction over `allRulesForFC` via
+  `mem_allRulesForFC_iff` is unchanged as the assembly; what changed is that its 28 per-rule
+  obligations are discharged in families first. The estimate of ~250-450 lines was for the whole
+  sub-phase and is low: 11 rules cost ~690 lines including the framework.)*
+  Original text: the `allClosed → valid` direction as ONE induction over `allRulesForFC fc`,
+  using `mem_allRulesForFC_iff` from Phase 3. **Verification Tier**: `full`. Estimated output:
   ~250-450 lines. Done when: sorry-free for all four classes via the single induction; build green.
 - [ ] **7.3 `valid_iff_allClosed` + `Decidable` instances** — **unchanged in content, split in
   delivery**: the `valid`/`ValidDiscrete` pair may land after 7.1c without waiting for 7.1d.
@@ -2323,6 +2335,112 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   verdicts; **green milestone commit**.
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
+
+**PHASE 7 STATUS (2026-07-28r) — still PARTIAL after a thirteenth dispatch. 7.2 is STARTED, not
+closed: `Verified/Decidable.lean` exists, is registered, and carries 11 of the 28 rules
+sorry-free.** `lake build FormalSystem.Metalogic.Decidability` green (1117 jobs); **full
+`lake build` green (1941 jobs)**, up from 1939 by exactly the new module and the new probe;
+`lake build BimodalTest` green (1987 jobs); sorry census over `Verified/` reports `0`; zero
+vacuous definitions, zero axioms. Two green code commits, each verified by `git show --stat` for
+**content**. 7.1a–7.1e remain closed and no file under `Verified/Bridge/` was touched. 7.3 not
+started.
+
+*The three definitions the sub-phase turns on, and why each is shaped as it is.*
+
+1. **`SatState`** — a model `M`, a shift-closed `Ω`, an interpretation `hist` of the branch's
+   world labels landing **inside `Ω`**, and an interpretation `tv` of its time labels
+   **respecting the abstract `TimeOrdering`**. Four fields, all load-bearing. `histMem` is what
+   makes `□` (which quantifies over `Ω`) say anything about the branch's own other worlds.
+   `shiftClosed` was added mid-dispatch, not designed in: `boxTemporal` is unsound without it,
+   and that only became visible when the rule was attempted.
+2. **`SatResult`** — stated against `applyRule`'s actual return type, `RuleResult × TimeOrdering`,
+   rather than against a hand-summarised "successor branch". This matters: the ordering a
+   fresh-time rule returns is then part of the obligation rather than an afterthought, and
+   `.branching` is the only constructor carrying a disjunction, which is exactly why closing
+   *all* arms is what a closed tableau needs. Each successor may re-choose `hist`/`tv` (the
+   fresh-label rules need that) but never `M` or `Ω` (no rule needs that).
+3. **`RuleSound C r`**, indexed by a `CarrierProp`. Only `carrierBase` is declared. The dense,
+   discrete and Dedekind carrier properties are deliberately **absent** — each is to be stated in
+   the same step that proves a rule consuming it. `RuleSound.mono` is what makes deferring them
+   safe, so the base family never needs restating at a higher class.
+
+*What landed, by shape family.* The eight truth-functional rules (`andPos`, `andNeg`, `orPos`,
+`orNeg`, `impPos`, `impNeg`, `negPos`, `negNeg`) — same three moves each, and the only classical
+steps are the genuine ones. Then the three **label-preserving** modal rules: `boxPos` and
+`diamondNeg` from `histMem` alone, and `boxTemporal` from shift-closure via two new point-form
+lemmas, `truthAt_allFuture_of_box` and `truthAt_allPast_of_box`.
+
+*A reuse decision, made explicitly rather than by default.*
+`Metalogic.Soundness.modal_future_valid` already states `□A → □(GA)`, exactly the future half of
+what `boxTemporal` needs, and grepping for it first was right. It was **not** imported: the edge
+would pull the whole soundness tree into the decidability tree's build for half of one rule, and
+the past dual does not exist there at all. Both halves are derived instead from the primitive
+`modal_future_valid` itself uses, `TimeShift.time_shift_preserves_truth`, in eight lines. This is
+deriving from the primitive, not re-deriving the lemma.
+
+*Probe before proving changed the conclusion again — for the tenth consecutive dispatch, and
+this time by refuting the dispatch's own suspicion.* `boxNeg` and `diamondPos` mint a fresh world
+and copy three groups of formulas to it. Groups 1 and 2 (the witness; the `T(□B)`/`F(◇B)`
+propagation) are the argument `boxPos`/`diamondNeg` already make plus a one-point `hist` update
+at an index absent from the branch. Group 3 — every `T(GB)`, `T(HB)`, `F(FB)`, `F(PB)`,
+`F(U(B,C))`, `F(S(B,C))` at the source *time*, from **any** world, copied to the fresh world —
+has no evident justification: `G` is evaluated inside a single history, and the witness history
+is chosen for the witness condition alone. The natural next move was to write that up as an
+engine defect. It was measured first instead
+(`Tests/BimodalTest/CrossWorldPropagationProbe.lean`): the three invalid shapes that would expose
+an unsound group-3 copy as a **wrong verdict** — `(¬F p) → □(¬F p)`, `(G p) → □(G p)`,
+`(¬P p) → □(¬P p)` — all report `false`, the correct answer, beside a `true` control and a
+`false` control. **No defect is claimed**: there is no counterexample, and under the defect bar a
+suspicion without one is not a finding. What the probe does *not* settle is the proof obligation,
+and the two come apart — a step can spoil a satisfiable branch while every branch it spoils is
+closable another way. Both rules are therefore left **open with the obligation stated**, never
+papered over with a sorry.
+
+*The fork that stopped this dispatch, named rather than guessed at.* The four temporal
+**universal** rules (`allFuturePos`, `allPastPos`, `someFutureNeg`, `somePastNeg`) propagate
+along `timeOrd.futureOf`/`pastOf`, the transitive closure. Consuming that needs
+`t' ∈ futureOf ord t → tv t < tv t'`, which `SatState.ordResp` (stated on raw constraints) does
+not give directly; the path is `TimeOrdering.bfsClosure_sound` and `PathN` in
+`Verified/Termination/Fuel.lean`. The alternative is to **strengthen `ordResp` to `strictBefore`**,
+which makes these four rules immediate and pushes the same BFS reasoning into the fresh-time
+rules that must re-establish it. Which is right is a measurable question — the producers are the
+fresh-time rules and the consumers are these four — and it was not settled by guess at the end of
+a dispatch. Nothing speculative was written into the definition.
+
+*Environment.* Both concurrent sessions were quiet. Nothing under
+`WeakCanonical/DenseModelSurgery/**`, `specs/408_*/**`, `specs/414_*/**` or `specs/415_*/**` was
+touched, staged, committed or reverted — a task-408 untracked scratch file appeared during the
+dispatch and was correctly left unstaged. Staging was by explicit path throughout, and
+`git show --stat` after every commit matched the intended diff size.
+
+#### Additions to the Phase 7 DO-NOT-RE-ATTEMPT register (2026-07-28r)
+
+- **Re-deriving `SatAt`, `SatState`, `SatResult`, `CarrierProp`, `carrierBase`, `RuleSound`,
+  `RuleSound.mono`, `SatState.mono`, `SatState.append`, or the three `satResult_*` discharge
+  lemmas.** All landed sorry-free and all are consumed.
+- **Re-proving any of the eleven landed rules**: `ruleSound_andPos`, `ruleSound_andNeg`,
+  `ruleSound_orPos`, `ruleSound_orNeg`, `ruleSound_impPos`, `ruleSound_impNeg`,
+  `ruleSound_negPos`, `ruleSound_negNeg`, `ruleSound_boxPos`, `ruleSound_diamondNeg`,
+  `ruleSound_boxTemporal` — nor the inversion lemmas `asAnd?_eq_some`, `asOr?_eq_some`,
+  `asNeg?_eq_some`, `asDiamond?_eq_some`, nor `truthAt_allFuture_of_box` /
+  `truthAt_allPast_of_box`.
+- **Importing `FormalSystem.Metalogic.Soundness` into the decidability tree to get
+  `modal_future_valid`.** Considered and rejected with reasons; the two point-form lemmas above
+  are derived from `time_shift_preserves_truth` instead, and there is no past dual in the
+  soundness tree to import anyway.
+- **Claiming the fresh-world cross-modal-temporal copy (`boxNeg`/`diamondPos` group 3) is an
+  engine defect.** Measured on three shapes chosen to expose it as a wrong verdict; all three
+  report the correct `false`. Re-running those three rows is also on this register — they are
+  `#guard_msgs`-pinned in `Tests/BimodalTest/CrossWorldPropagationProbe.lean`. The *proof*
+  obligation remains open and is not on this register.
+- **Omitting `shiftClosed` from `SatState`, or adding it back as a separate `RuleSound`
+  hypothesis.** It is a property of `Ω`, every validity notion imposes it, and `boxTemporal`
+  consumes it.
+- **Declaring `carrierDense`/`carrierDiscrete`/`carrierDedekind` before a rule consumes one.**
+  An unconsumed carrier property is unvalidatable dead weight, the same objection that governs
+  gate rows; `RuleSound.mono` is what makes deferring them free.
+- Plus every prior entry, all carried forward unchanged.
+
 
 **PHASE 7 STATUS (2026-07-28l) — still PARTIAL after a seventh dispatch. 7.1c's induction is
 started, four of its six cases are sorry-free, and the two headline results are in tree complete
