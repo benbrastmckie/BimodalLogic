@@ -1,5 +1,5 @@
 ---
-next_project_number: 419
+next_project_number: 420
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 419
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,179,193,231,257,298,361,390,408,409,413,414,418 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,179,193,231,257,298,361,390,408,409,413,414,418,419 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 165,169,170,177,178,219,282,296,415,417 | 193,231,298,361,414,418 | completeness, formula-refactor, dataset-enhancement, ... |
 | 3 | 362,410,411,412 | 165,169,170 | strong_completeness |
 
@@ -23,7 +23,7 @@ next_project_number: 419
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
 408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
-418 [RESEARCHED] — Remove the six unsound group-3 blocks -- tempGProps, tempHProps, 
+418 [PLANNING] — Remove the six unsound group-3 blocks -- tempGProps, tempHProps, 
   └─ 165 [BLOCKED] — Establish verified decidability of TM bimodal logic for all four 
     └─ 410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
     └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
@@ -62,6 +62,7 @@ next_project_number: 419
 414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
   └─ 415 [RESEARCHED] — Completeness under the refactored (Omega-free, maximal-history) s
   └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
+419 [NOT STARTED] — Machine-check the CO-does-not-derive-Reynolds independence result
 
 ### Documentation
 
@@ -79,9 +80,20 @@ next_project_number: 419
 
 ## Tasks
 
+### 419. Machine check co reynolds independence
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-refactor
+- **Dependencies**: None
+
+**Description**: Machine-check the CO-does-not-derive-Reynolds independence result. Currently recorded ONLY as a pen-and-paper model sketch in the Layer 9 prose of FormalSystem/ProofSystem/Axioms.lean:376-387 (immediately above the Axiom.prior_U_gap constructor), where it is explicitly flagged as NOT machine-checked. GOAL: construct a Lean countermodel establishing that the paper's CO principle does not syntactically derive the Reynolds gap axioms — specifically that CO does not derive Axiom.prior_U_gap. THE SKETCH TO FORMALIZE: a rational (Q) flow carrying isolated not-phi points that accumulate at an irrational from above validates every CO instance while refuting Prior-U; this is the classical Stavi US-vs-FO gap phenomenon. WHY IT MATTERS: this is the sole load-bearing justification for the paper-side amendment to def:TMplus-c / cor:tm-completeness in /home/benjamin/Philosophy/Papers/PossibleWorlds/ (fix.md C4 option 2) — the paper's completeness claim is deferred to this repository with no independent citation, so if the sketch is right def:TMplus-c is deductively too weak, and if it is wrong the amendment is unnecessary. Right now that amendment would rest on an unverified claim. CONTEXT ALREADY IN THE TREE (do not redo): the CONVERSE direction is done and sorry-free — co_derived in FormalSystem/Theorems/DedekindDerived.lean proves Reynolds |- CO, consuming Axiom.prior_U_gap and nothing else outside FrameClass.Base, and co_valid in FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean gives the semantic side. Formula.co (FormalSystem/Syntax/Formula.lean) is the CO formula as a source-cited abbreviation; note the triangle is Formula.always, NOT Formula.box. CO source formula: PossibleWorlds/JPL/possible_worlds.tex:3250. Likely needs a /literature acquisition pass for Stavi and Reynolds 1992 on the US-vs-FO expressiveness gap. Nothing currently in the Lean tree depends on the claim, so this is additive — no rebase surface. NON-GOAL: editing any file under Philosophy/Papers/. Related: 416, 408, 390.
+
+---
+
 ### 418. Fix tableau engine crossworld temporalcopy unsoundness in boxnegdiamondpos
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
