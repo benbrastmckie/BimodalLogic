@@ -103,7 +103,9 @@ module.**
 | *"Because `≡_k` is preserved under lexicographic sums"* | `doets_lemma_1_4` (`OrderedSum.lean:41`), applied twice |
 | *"`N ≡_k Σ_{i∈Z}(N \| {a_i} + R_i)`"* | `kEquiv_blockSum` |
 | *"and this latter has flow isomorphic to `R`"* | `blockSumWitness_iso_real` |
-| *"Now if `N` has one or two end points … add appropriate singleton structures"* | `reynolds_lemma11` (the four endpoint cases) |
+| *"its interior does not have end points"* | `belowSubinterval`, `aboveSubinterval`, `veryGoodDense_belowSubinterval`, `veryGoodDense_aboveSubinterval` |
+| *"use the lexicographic sum result to add appropriate singleton structures to the end(s)"* | `sumPoint`, `snocBlock`, `goodDense_pointSum`, `goodDense_sumPoint`, `goodDense_pointSum_sumPoint` |
+| *"Now if `N` has one or two end points …"* | `kEquiv_sumPoint_below`, `kEquiv_pointSum_above`, `kEquiv_above_below_open`, assembled in `reynolds_lemma11` |
 
 ## ADAPTED-FROM
 
@@ -138,6 +140,16 @@ still no live non-trivial instance of any §6 result below Lemma 2.
 
 `goodDense` is a statement about `KEquiv` at a fixed depth `k`, as in the source. Nothing here
 asserts that a single `ℝ`-flowed structure works for all `k` at once.
+
+`reynolds_lemma11` admits one case Reynolds does not discuss: the **empty** structure, which is
+vacuously very good and is here declared good with the empty interval `∅` as flow. Reynolds'
+*"structure"* carries a non-emptiness convention, so this is an addition, not a transcription.
+It is isolated in the first branch of the proof and used nowhere else.
+
+`not_veryGoodDense_of_finite_two_lt` discharges Reynolds' *"no bigger but finite structures are
+very good"* for **finite** carriers, which is what the sentence says. It is not used by
+`reynolds_lemma11`: the proof there splits on end points rather than on cardinality, so the
+finite non-degenerate case is subsumed. The lemma is landed because the source states it.
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
@@ -1428,5 +1440,211 @@ theorem kEquiv_pointSum_above (sig : MonadicSignature) [Fintype sig.preds] [Deci
       simp [fam, pointSumFamily, orderedSumPt, OrderedMonadicStructure.subinterval,
         OrderedMonadicStructure.aboveSubinterval, orderedSum]
   exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred
+
+/-- Any two singleton substructures agreeing on every predicate are `k`-equivalent, whatever
+    ambient structures they are cut out of. This is what lets the split lemmas above be
+    re-based from a substructure onto the original `M`. -/
+theorem kEquiv_singleton (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (M M' : OrderedMonadicStructure sig) (a : M.carrier) (a' : M'.carrier)
+    (h : ∀ p, M'.interp p a' ↔ M.interp p a) :
+    KEquiv sig k (M'.subinterval sig a' a') (M.subinterval sig a a) := by
+  have hL : ∀ x : (M'.subinterval sig a' a').carrier, x.val = a' :=
+    fun x => le_antisymm x.property.2 x.property.1
+  have hR : ∀ y : (M.subinterval sig a a).carrier, y.val = a :=
+    fun y => le_antisymm y.property.2 y.property.1
+  haveI : Subsingleton (M'.subinterval sig a' a').carrier :=
+    ⟨fun x y => Subtype.ext ((hL x).trans (hL y).symm)⟩
+  haveI : Subsingleton (M.subinterval sig a a).carrier :=
+    ⟨fun x y => Subtype.ext ((hR x).trans (hR y).symm)⟩
+  let e : (M'.subinterval sig a' a').carrier ≃ (M.subinterval sig a a).carrier := {
+    toFun := fun _ => ⟨a, le_refl a, le_refl a⟩
+    invFun := fun _ => ⟨a', le_refl a', le_refl a'⟩
+    left_inv := fun x => Subtype.ext (hL x).symm
+    right_inv := fun y => Subtype.ext (hR y).symm }
+  refine k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e
+    (fun x y _ => le_of_eq (congrArg e (Subsingleton.elim x y)))
+    (fun x y _ => le_of_eq (congrArg e.symm (Subsingleton.elim x y)))) ?_
+  intro p x
+  show M'.interp p x.val ↔ M.interp p a
+  rw [hL x]
+  exact h p
+
+/-- Re-base a left adjunction: `M' | {a'} + S' ≡_k M | {a} + S` whenever the two singletons and
+    the two tails match. Two applications of `doets_lemma_1_4` over `Bool` in one. -/
+theorem kEquiv_pointSum_base (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (M M' : OrderedMonadicStructure sig) (a : M.carrier) (a' : M'.carrier)
+    (S S' : OrderedMonadicStructure sig)
+    (hpt : KEquiv sig k (M'.subinterval sig a' a') (M.subinterval sig a a))
+    (hS : KEquiv sig k S' S) :
+    KEquiv sig k (pointSum sig M' a' S') (pointSum sig M a S) :=
+  doets_lemma_1_4 sig k Bool _ _ (fun c => by
+    simp only [pointSumFamily]
+    split
+    · exact hpt
+    · exact hS)
+
+/-- `(M | (←,b)) | (a, →) ≡_k M | (a,b)`: the two ways of cutting out the open interval agree. -/
+theorem kEquiv_above_below_open (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carrier)
+    (hab : a < b) :
+    KEquiv sig k ((M.belowSubinterval sig b).aboveSubinterval sig ⟨a, hab⟩)
+      (M.openSubinterval sig a b) := by
+  let f : ((M.belowSubinterval sig b).aboveSubinterval sig ⟨a, hab⟩).carrier ≃
+      (M.openSubinterval sig a b).carrier := {
+    toFun := fun x => ⟨x.val.val, x.property, x.val.property⟩
+    invFun := fun y => ⟨⟨y.val, y.property.2⟩, y.property.1⟩
+    left_inv := fun _ => rfl
+    right_inv := fun _ => rfl }
+  exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso f (fun _ _ h => h) (fun _ _ h => h))
+    (fun _ _ => Iff.rfl)
+
+/-! ### The interior of a very good structure is again very good, and end-point-free -/
+
+theorem veryGoodDense_belowSubinterval (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) (b : M.carrier)
+    (hM : veryGoodDense sig k M) : veryGoodDense sig k (M.belowSubinterval sig b) := by
+  intro t u htu
+  obtain ⟨hne, hgood⟩ := hM t.val u.val (htu : t.val < u.val)
+  refine ⟨?_, ?_⟩
+  · obtain ⟨x⟩ := hne
+    exact ⟨⟨⟨x.val, lt_trans x.property.2 u.property⟩, x.property.1, x.property.2⟩⟩
+  · refine goodDense_of_kEquiv sig k ?_ hgood
+    let f : ((M.belowSubinterval sig b).openSubinterval sig t u).carrier ≃
+        (M.openSubinterval sig t.val u.val).carrier := {
+      toFun := fun x => ⟨x.val.val, x.property.1, x.property.2⟩
+      invFun := fun y => ⟨⟨y.val, lt_trans y.property.2 u.property⟩, y.property.1, y.property.2⟩
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl }
+    exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso f (fun _ _ h => h) (fun _ _ h => h))
+      (fun _ _ => Iff.rfl)
+
+theorem veryGoodDense_aboveSubinterval (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) (a : M.carrier)
+    (hM : veryGoodDense sig k M) : veryGoodDense sig k (M.aboveSubinterval sig a) := by
+  intro t u htu
+  obtain ⟨hne, hgood⟩ := hM t.val u.val (htu : t.val < u.val)
+  refine ⟨?_, ?_⟩
+  · obtain ⟨x⟩ := hne
+    exact ⟨⟨⟨x.val, lt_trans t.property x.property.1⟩, x.property.1, x.property.2⟩⟩
+  · refine goodDense_of_kEquiv sig k ?_ hgood
+    let f : ((M.aboveSubinterval sig a).openSubinterval sig t u).carrier ≃
+        (M.openSubinterval sig t.val u.val).carrier := {
+      toFun := fun x => ⟨x.val.val, x.property.1, x.property.2⟩
+      invFun := fun y => ⟨⟨y.val, lt_trans t.property y.property.1⟩, y.property.1, y.property.2⟩
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl }
+    exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso f (fun _ _ h => h) (fun _ _ h => h))
+      (fun _ _ => Iff.rfl)
+
+theorem nonempty_belowSubinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    [NoMinOrder M.carrier] (b : M.carrier) : Nonempty (M.belowSubinterval sig b).carrier :=
+  let ⟨y, hy⟩ := exists_lt b; ⟨⟨y, hy⟩⟩
+
+theorem noMinOrder_belowSubinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    [NoMinOrder M.carrier] (b : M.carrier) : NoMinOrder (M.belowSubinterval sig b).carrier :=
+  ⟨fun x => let ⟨y, hy⟩ := exists_lt x.val; ⟨⟨y, lt_trans hy x.property⟩, hy⟩⟩
+
+theorem noMaxOrder_belowSubinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    [DenselyOrdered M.carrier] (b : M.carrier) :
+    NoMaxOrder (M.belowSubinterval sig b).carrier :=
+  ⟨fun x => let ⟨y, h1, h2⟩ := exists_between x.property; ⟨⟨y, h2⟩, h1⟩⟩
+
+theorem nonempty_aboveSubinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    [NoMaxOrder M.carrier] (a : M.carrier) : Nonempty (M.aboveSubinterval sig a).carrier :=
+  let ⟨y, hy⟩ := exists_gt a; ⟨⟨y, hy⟩⟩
+
+theorem noMaxOrder_aboveSubinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    [NoMaxOrder M.carrier] (a : M.carrier) : NoMaxOrder (M.aboveSubinterval sig a).carrier :=
+  ⟨fun x => let ⟨y, hy⟩ := exists_gt x.val; ⟨⟨y, lt_trans x.property hy⟩, hy⟩⟩
+
+theorem noMinOrder_aboveSubinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    [DenselyOrdered M.carrier] (a : M.carrier) :
+    NoMinOrder (M.aboveSubinterval sig a).carrier :=
+  ⟨fun x => let ⟨y, h1, h2⟩ := exists_between x.property; ⟨⟨y, h1⟩, h2⟩⟩
+
+/--
+**Lemma 11** ([8] lemma 6.4), Reynolds 1992 §8, printed pp.185-186:
+
+> *If `N` is countable and very good then it is good.*
+
+The four cases are the source's own: the degenerate structures, the end-point-free case (the
+substance of the proof), and *"if `N` has one or two end points … add appropriate singleton
+structures to the end(s)"*.
+
+The empty structure is admitted as good with the empty interval as flow; Reynolds does not
+mention it, since *"structure"* there carries a non-emptiness convention.
+-/
+theorem reynolds_lemma11 (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (hk : 2 ≤ k) (N : OrderedMonadicStructure sig) [Countable N.carrier]
+    (hN : veryGoodDense sig k N) : goodDense sig k N := by
+  classical
+  rcases isEmpty_or_nonempty N.carrier with hem | hne
+  · haveI := hem
+    refine ⟨{ carrierSet := (∅ : Set ℝ), ordConnected := Set.ordConnected_empty,
+              interp := fun _ _ => False }, ?_⟩
+    -- Both carriers are empty; the equiv is written out rather than found by instance search,
+    -- which does not see through `RIntervalStructure.toOrdered`.
+    exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso
+      { toFun := fun x => isEmptyElim x
+        invFun := fun x => x.property.elim
+        left_inv := fun x => isEmptyElim x
+        right_inv := fun x => x.property.elim }
+      (fun x => isEmptyElim x) (fun x => x.property.elim)) (fun _ x => isEmptyElim x)
+  haveI := hne
+  rcases subsingleton_or_nontrivial N.carrier with hss | hnt
+  · haveI := hss
+    exact goodDense_of_subsingleton sig k N
+  haveI := hnt
+  haveI : DenselyOrdered N.carrier := denselyOrdered_of_veryGoodDense sig k hN
+  by_cases hmax : ∃ b : N.carrier, ∀ x, x ≤ b
+  · obtain ⟨b, hb⟩ := hmax
+    by_cases hmin : ∃ a : N.carrier, ∀ x, a ≤ x
+    · -- *"two end points"*: `N ≡_k N | {a} + N | (a,b) + N | {b}`.
+      obtain ⟨a, ha⟩ := hmin
+      have hab : a < b := by
+        obtain ⟨u, v, huv⟩ := exists_pair_ne N.carrier
+        rcases lt_or_gt_of_ne huv with h | h
+        · exact lt_of_le_of_lt (ha u) (lt_of_lt_of_le h (hb v))
+        · exact lt_of_le_of_lt (ha v) (lt_of_lt_of_le h (hb u))
+      have hsplit2 := kEquiv_pointSum_above sig k (N.belowSubinterval sig b) ⟨a, hab⟩
+        (fun x => ha x.val)
+      have hswap := kEquiv_pointSum_base sig k N (N.belowSubinterval sig b) a ⟨a, hab⟩
+        (N.openSubinterval sig a b) ((N.belowSubinterval sig b).aboveSubinterval sig ⟨a, hab⟩)
+        (kEquiv_singleton sig k N (N.belowSubinterval sig b) a ⟨a, hab⟩ (fun _ => Iff.rfl))
+        (kEquiv_above_below_open sig k N a b hab)
+      haveI : Nonempty (N.openSubinterval sig a b).carrier := (hN a b hab).1
+      haveI := noMaxOrder_openSubinterval sig N a b
+      haveI := noMinOrder_openSubinterval sig N a b
+      refine goodDense_of_kEquiv sig k ((kEquiv_sumPoint_below sig k N b hb).trans
+        (kEquiv_sumPoint sig k N b (hsplit2.trans hswap))) ?_
+      exact goodDense_pointSum_sumPoint sig k hk N a b _ (hN a b hab).2
+    · -- *"one end point"*, on the right: `N ≡_k N | (←,b) + N | {b}`.
+      push Not at hmin
+      haveI : NoMinOrder N.carrier := ⟨fun a => hmin a⟩
+      haveI : Countable (N.belowSubinterval sig b).carrier :=
+        inferInstanceAs (Countable {x : N.carrier // x < b})
+      haveI := nonempty_belowSubinterval sig N b
+      haveI := noMinOrder_belowSubinterval sig N b
+      haveI := noMaxOrder_belowSubinterval sig N b
+      refine goodDense_of_kEquiv sig k (kEquiv_sumPoint_below sig k N b hb) ?_
+      exact goodDense_sumPoint sig k hk N b _ (reynolds_lemma11_no_endpoints sig k hk _
+        (veryGoodDense_belowSubinterval sig k N b hN))
+  · push Not at hmax
+    haveI : NoMaxOrder N.carrier := ⟨fun b => hmax b⟩
+    by_cases hmin : ∃ a : N.carrier, ∀ x, a ≤ x
+    · -- *"one end point"*, on the left: `N ≡_k N | {a} + N | (a,→)`.
+      obtain ⟨a, ha⟩ := hmin
+      haveI : Countable (N.aboveSubinterval sig a).carrier :=
+        inferInstanceAs (Countable {x : N.carrier // a < x})
+      haveI := nonempty_aboveSubinterval sig N a
+      haveI := noMaxOrder_aboveSubinterval sig N a
+      haveI := noMinOrder_aboveSubinterval sig N a
+      refine goodDense_of_kEquiv sig k (kEquiv_pointSum_above sig k N a ha) ?_
+      exact goodDense_pointSum sig k hk N a _ (reynolds_lemma11_no_endpoints sig k hk _
+        (veryGoodDense_aboveSubinterval sig k N a hN))
+    · -- *"the case when `N` has no end points"*.
+      push Not at hmin
+      haveI : NoMinOrder N.carrier := ⟨fun a => hmin a⟩
+      exact reynolds_lemma11_no_endpoints sig k hk N hN
 
 end FormalSystem.Metalogic.WeakCanonical
