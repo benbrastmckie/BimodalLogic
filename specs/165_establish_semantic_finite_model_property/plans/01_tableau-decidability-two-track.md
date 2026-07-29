@@ -2312,7 +2312,15 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   Guarantee" section, which still advertised the long-retired `branchTruthLemma` as a key
   theorem, was replaced by a pointer to where the truth lemma actually lives. Full `lake build`
   green (1939 jobs).
-- [ ] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`, new) — **STARTED
+- [ ] **7.2 Semantic rule soundness** (`Verified/Decidable.lean`, new) — **BLOCKED
+  (2026-07-28t) at 16 of 28 rules, all sorry-free. The assembly's target statement is FALSE as
+  written, and the `RuleSound`-weakening repair is now measured impossible: the refuting branch
+  is one the engine itself builds, and `buildTableau` consequently closes an invalid formula.
+  Unblocking requires an engine change to `applyRule`'s group-3 blocks — see the 2026-07-28t
+  banner for the defect at the four-element bar, and for why it was escalated rather than
+  attempted.** *(deviation: escalated, not substituted — per `plan-compliance.md`, a step that
+  cannot be executed as written on a `.lean` file is raised as a blocker.)*
+  Previously **STARTED
   (2026-07-28s), 15 of 28 rules landed sorry-free; not closed, and the assembly's target
   statement is now known to be FALSE as written — see the 2026-07-28s banner.** The module exists and is
   registered: `SatState` (the satisfiability notion), `SatResult` (preservation read off
@@ -2336,6 +2344,88 @@ documentation**: `GapDemands`/`gapDemands_trivial`, `GapAdequate`/`branchGapVal`
   verdicts; **green milestone commit**.
 
 **Timing:** 5-6 dispatches. **Depends on:** 3, 4, 6.
+
+**PHASE 7 STATUS (2026-07-28t) — still PARTIAL after a fifteenth dispatch. 7.2 is at 16 of 28
+rules sorry-free, and the `RuleSound`-weakening fork is SETTLED — by refuting the premise both
+of its branches shared. 7.2 is now BLOCKED on an engine defect, recorded below.**
+`lake build FormalSystem.Metalogic.Decidability.Verified.Decidable` green (exit 0, 1350 jobs);
+`lake env lean` green on the module and on both probes, every pinned row matching; sorry census
+over `Verified/` reports `0`. Three green commits, each verified by `git show --stat` for
+**content** (+236/-14, then +58, then +69). 7.1a–7.1e remain closed; no engine file was touched.
+
+*The fork was settled by measuring its shared premise, and the premise is false.* The instruction
+was to price a branch hypothesis "excluding what the schedule never builds", the candidate being
+that `T(G p)` is an `imp` whose propositional decomposition is scheduled ahead of `boxNeg`. Before
+pricing it, that claim was turned into a prediction and checked — the eleventh-dispatch discipline
+— and it does not survive:
+
+- `allRules` schedules `boxNeg` **ahead of** `impPos`, `andNeg` and `orPos`. Only the
+  non-branching propositional rules precede it.
+- Expansion is **additive**: `expandOnceUnblocked` reads `.linear fs` as `fs ++ b`, so decomposing
+  `T(G p)` never removes it, and `tempGProps` filters the branch by *shape*, indifferent to
+  whether a formula has been expanded. The source outlives its own decomposition.
+- Driven from `b0` by the engine's **own selector**, `boxNeg` fires and the clash appears.
+  `Tests/BimodalTest/BoxNegReachabilityProbe.lean` pins it, together with the closure reason:
+  `contradiction` at the minted world, not a negated axiom.
+
+So the refuting branch is exactly a branch the engine builds. **No branch invariant can separate
+them, and the `RuleSound`-weakening fork is therefore closed rather than open** — there is nothing
+to price, because a hypothesis that admits what the engine builds also admits the counterexample.
+
+*A pinned row was being misread, and this is the larger finding.* The 2026-07-28s banner and
+`BoxNegPreservationProbe.lean` both rested on `isValid ((G p) → □(G p)) = false`, read as the
+correct verdict on an invalid formula and used to conclude that **no engine defect was in
+evidence**. Measured: `buildTableau ((G p) → □(G p)) 1000 .Base` returns **`allClosed`**, and
+`decide` returns **`extractionFailed`** — `isInvalid` is `false`, `getCountermodel?` is `none`.
+`isValid`'s `false` conflates "judged invalid" with "claimed valid, then could not build the proof
+term", and only the second happened. The tableau closes an invalid formula. `(G p) → □(G p)` is
+invalid on the project's own semantics: `TruthAt … (box φ)` is `∀ σ ∈ Ω, TruthAt … σ t φ`, fixing
+the time and ranging over histories, while `G p` is evaluated along `τ` alone.
+
+*The defect, stated to the four-element bar.* **Counterexample**: `(G p) → □(G p)`, invalid.
+**Current behaviour**: `buildTableau` returns `.allClosed` with one closed branch; `decide`
+returns `.extractionFailed`; no countermodel. **Required behaviour**: `.hasOpen`, hence
+`.invalid` with a countermodel. **Isolation**: `boxNeg`'s group-3 blocks (`tempGProps`,
+`tempHProps`, `tempFNegProps`, `tempPNegProps`, `tempUNegProps`, `tempSNegProps`,
+`Tableau.lean:555-574`) copy temporal formulas across worlds; `diamondPos` carries the identical
+block at `:599-619`. Groups 1 and 2 (the witness, and the `T(□B)`/`F(◇B)` propagation) are sound
+and are not implicated.
+
+*What was deliberately NOT done.* The engine fix — deleting the six group-3 blocks — was not
+attempted. It edits `applyRule` itself, which is a plan deviation on a `.lean` file and so must be
+escalated rather than substituted; and removing the blocks can only make branches *harder* to
+close, so it risks the opposite failure on the conformance corpus and needs the corpus as its
+acceptance gate rather than a end-of-dispatch improvisation in a shared clone.
+
+*What landed instead.* `ruleSound_orderTrichotomy`, the one remaining rule that is self-contained
+— no fresh label, no `boxDiamondPersistence`, and untouched by the defect. Its content is split
+into `truthAt_and` and `exists_trichotomy_disjunct`, the latter stating the whole of the rule's
+mathematics over three points of `D`: two times interpreted above a common point, each carrying a
+formula in one history, satisfy one of `F(φ∧ψ)`, `F(φ∧Fψ)`, `F(Fφ∧ψ)` there. The times may be
+incomparable in the *recorded* ordering, but `tv` lands them in a `LinearOrder`, and
+`lt_trichotomy` decides. The plumbing — `List.find?` back through `flatMap`/`filterMap` to two
+order edges and two branch formulas — is kept out of the lemma and consumed by the rule's proof.
+
+#### Additions to the Phase 7 DO-NOT-RE-ATTEMPT register (2026-07-28t)
+
+- **Weakening `RuleSound` by a schedule-reachability hypothesis, or by any branch invariant
+  meant to exclude the `boxNeg` counterexample.** Measured: the engine builds that branch. The
+  2026-07-28s entry describing this as the next measurable fork is **superseded** — it was
+  measured, and it is closed, not open.
+- **Re-deriving the reachability measurement** — that `boxNeg` precedes `impPos` in `allRules`,
+  that expansion is additive, that the clash arises from `b0` under the engine's own selector, or
+  that the closure reason is `contradiction` at the minted world. All `#guard_msgs`-pinned in
+  `Tests/BimodalTest/BoxNegReachabilityProbe.lean`.
+- **Reading `isValid φ = false` as "the engine judged `φ` invalid."** It is also what
+  `extractionFailed` reports. Discriminate with `isInvalid` / `getCountermodel?`, never with
+  `isValid` alone. The 2026-07-28s claim that "no engine defect is claimed, and row 5 pins why"
+  is **withdrawn**; the row's value is right and its reading was wrong.
+- **Re-proving `ruleSound_orderTrichotomy`, `exists_trichotomy_disjunct` or `truthAt_and`.**
+- **Attempting the group-3 engine fix without the conformance corpus as its acceptance gate.**
+  Removing the blocks only makes branches harder to close, so the risk it carries is
+  under-closing, which only the corpus detects.
+- Plus every prior entry, all carried forward unchanged.
+
 
 **PHASE 7 STATUS (2026-07-28s) — still PARTIAL after a fourteenth dispatch. 7.2 is at 15 of 28
 rules sorry-free, and the sub-phase's own target statement has been measured FALSE.**

@@ -1092,21 +1092,40 @@ the successor. A satisfiable branch has been mapped to an unsatisfiable one, and
 * the assembly `∀ r ∈ allRulesForFC fc, RuleSound _ r` cannot be proved in the present shape,
   because `boxNeg` and `diamondPos` are both members of `allRulesForFC` at every frame class.
 
-**No engine defect is claimed, and the probe pins that too.** Its final row records that the
-verdict on the same formula is still `false`. The engine never applies `boxNeg` to that branch —
-`T(G p)` is itself an `imp`, so the propositional schedule reaches it first — which is also why
-the verdict rows came back clean: they do not exercise the copy in the engine's own run. The
-failure is in the rule-level statement, quantified as `RuleSound` quantifies it over *arbitrary*
-branches, not in what the procedure computes.
+**The branch is reachable, and the escape that was hoped for is closed.**
+`Tests/BimodalTest/BoxNegReachabilityProbe.lean` measures what this section previously asserted
+in the other direction. The earlier text read that "no engine defect is claimed", on the ground
+that the engine never applies `boxNeg` to that branch because `T(G p)` is an `imp` whose
+propositional decomposition comes first. Three measurements refute it:
 
-**What this costs, and the fork it opens.** `RuleSound` must be weakened for these two rules, by
-a hypothesis excluding branches the engine never builds — reachability under the schedule is the
-obvious candidate, since it is exactly what makes the counterexample unreachable — and the
-`allClosed → valid` assembly must then thread that hypothesis through the tableau induction. Which
-invariant is both strong enough for these two rules and cheap enough for the other twenty-six is
-the next measurable question, and it should be measured, not chosen: the standing lesson of this
-sub-phase is that both the definition's fields and the gate rows earn their place in the step that
-consumes them. Nothing speculative has been written into `RuleSound` here.
+* **Expansion is additive.** `expandOnceUnblocked` reads a `.linear` output as `formulas ++ b`,
+  so decomposing `T(G p)` never removes it, and `tempGProps` filters the branch by *shape*, with
+  no regard to whether a formula has been expanded. `boxNeg` also precedes the *branching*
+  propositional rules (`impPos`, `andNeg`, `orPos`) in `allRules`.
+* **The rule fires.** Driven from `b0` by the engine's own selector, `boxNeg` mints the world and
+  the clash appears: `T(G p)` and `F(G p)` at one label. The branch closes on that contradiction,
+  and the closure reason is pinned as `contradiction` at the minted world, not a negated axiom.
+* **The tableau therefore answers wrongly.** `buildTableau ((G p) → □(G p))` returns `allClosed`
+  — reporting an invalid formula valid.
+
+**And the reading of the verdict row was wrong.** `isValid` returned `false`, which this section
+took for the correct verdict on an invalid formula. `decide` in fact returns **`extractionFailed`**:
+the tableau closed, and proof extraction then failed. `isInvalid` is `false` and
+`getCountermodel?` is `none`. `isValid`'s `false` conflates "judged invalid" with "claimed valid,
+then could not build the proof term", and only the second occurred. The distinction between
+"the step is unsound" and "the procedure answers wrongly" was the right distinction to insist on;
+what was wrong was believing the second had been measured and found clean.
+
+**What this costs.** There is no branch invariant that admits the branches the engine builds and
+excludes the refuting one, because they are the same branch — so weakening `RuleSound` by a
+reachability hypothesis cannot work, and that fork is closed rather than open. Group 3 is
+unsound as a semantic step *and* reachable, so the only repair that makes this sub-phase's target
+true is an engine change: the six group-3 blocks in `boxNeg` and `diamondPos` do not preserve
+satisfiability and no hypothesis available at the rule level rescues them. Groups 1 and 2 are
+sound and are not implicated. That change is outside this module — it edits `applyRule` itself —
+and it must be planned rather than improvised, because removing the blocks can only make branches
+*harder* to close and so risks the opposite failure on the conformance corpus. It is recorded as
+a blocker rather than attempted here.
 -/
 
 end FormalSystem.Metalogic.Decidability.Verified
