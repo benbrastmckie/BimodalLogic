@@ -6,6 +6,8 @@ Authors: Benjamin Brast-McKie
 
 import Mathlib.Algebra.Order.Group.Defs
 import Mathlib.Data.Fintype.Basic
+import Mathlib.Algebra.Order.Group.Abs
+import Mathlib.Order.SuccPred.Basic
 
 /-!
 # TaskFrame - Task Frame Structure for TM Semantics
@@ -78,6 +80,10 @@ This allows for various temporal structures:
 
 ## Main Results
 
+- `TaskFrame.limit_nullity_of_succOrder`: Limit Nullity is automatic over a discrete duration
+  type (`[SuccOrder D] [NoMaxOrder D]`)
+- `TaskFrame.limit_nullity_of_shift`: Limit Nullity is automatic for deterministic-shift frames
+  over any nontrivial duration type, dense included
 - Example task frames for testing and demonstrations (polymorphic over time type)
 
 ## Implementation Notes
@@ -217,6 +223,94 @@ theorem backward_comp (F : TaskFrame D) (w u v : F.WorldState) (x y : D)
   have h4 : -y + -x = -(x + y) := by simp [neg_add_rev, add_comm]
   rw [h4] at h3
   exact F.converse w (x + y) v |>.mpr h3
+
+/-!
+### Limit Nullity discharge helpers
+
+The paper's *Limit Nullity* clause (`⋂_{x > 0} (w)_x = {w}`, possible_worlds.tex:2423-2451)
+transcribes against the extended relation as
+
+```
+∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w
+```
+
+The two theorems below are the two reusable ways to discharge that obligation. They are stated
+against a bare relation `R : W → D → W → Prop` rather than against a `TaskFrame` field, so they
+apply verbatim to a frame's `TaskRel` whether or not the clause is carried as structure data.
+-/
+
+/--
+Limit Nullity holds automatically over a duration type with a successor operation.
+
+Over a `SuccOrder`, `Order.succ 0` is a positive duration with nothing strictly between it and
+`0` in absolute value, so the hypothesis at `x = Order.succ 0` already forces the witness
+duration to be `0`, and iff-Nullity closes the goal. This discharges every frame whose duration
+type is discrete (`Int` in particular).
+
+`NoMaxOrder D` is what makes `0 < Order.succ 0` available; it is *not* an extra burden in
+practice, because `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]`
+already implies it by instance search. The repo's standard discrete binder bundle
+(`[SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]`, used
+throughout `SoundnessLemmas/FrameClassVariants.lean`) therefore subsumes both hypotheses, and no
+frame carrying that bundle needs any new hypothesis to apply this lemma. `IsSuccArchimedean` is
+not used.
+-/
+theorem limit_nullity_of_succOrder [SuccOrder D] [NoMaxOrder D]
+    {W : Type} {R : W → D → W → Prop} (hnull : ∀ w u, R w 0 u ↔ w = u) :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w := by
+  intro w u h
+  obtain ⟨y, hy, hR⟩ := h (Order.succ 0) (Order.lt_succ 0)
+  have h1 : |y| ≤ 0 := Order.lt_succ_iff.mp hy
+  have h2 : y = 0 := abs_eq_zero.mp (le_antisymm h1 (abs_nonneg y))
+  subst h2
+  exact ((hnull w u).mp hR).symm
+
+/--
+Limit Nullity holds for any deterministic-shift frame, over *any* duration type — dense included.
+
+A frame is a *deterministic shift* when the duration of a transition is recoverable from its
+endpoints, via a position function `pos : W → D` with `R w y u → pos u = pos w + y`. The witness
+duration supplied by the Limit Nullity hypothesis is then the *same* `pos u - pos w` for every
+radius `x`, so `|pos u - pos w| < x` for all `x > 0` and the shift must be `0`; `hzero` then
+closes the goal.
+
+`[Nontrivial D]` is genuinely required and is not an artifact of the proof: over a trivial
+duration group no positive `x` exists, the hypothesis is vacuous, and the conclusion fails (take
+`R := fun _ _ _ => False` on a two-element carrier). The paper independently mandates a
+nontrivial totally ordered abelian group for exactly this reason.
+
+This is the shape of every flow-style frame — carriers of the form `Index × D` whose relation
+advances the second component by the duration — so it is the discharge route for the bundled
+flow frames as well as the multi-family bridge frames.
+-/
+theorem limit_nullity_of_shift [Nontrivial D] {W : Type} (pos : W → D)
+    {R : W → D → W → Prop}
+    (hshift : ∀ w y u, R w y u → pos u = pos w + y)
+    (hzero : ∀ w u, R w 0 u → u = w) :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w := by
+  intro w u h
+  -- A nontrivial ordered group has a positive element.
+  obtain ⟨x₀, hx₀⟩ : ∃ x : D, 0 < x := by
+    obtain ⟨a, ha⟩ := exists_ne (0 : D)
+    rcases lt_or_gt_of_ne ha with hlt | hgt
+    · exact ⟨-a, neg_pos.mpr hlt⟩
+    · exact ⟨a, hgt⟩
+  obtain ⟨y₀, _, hR₀⟩ := h x₀ hx₀
+  have hy₀ : pos u = pos w + y₀ := hshift w y₀ u hR₀
+  -- Every witness duration equals `y₀`, since all of them are `pos u - pos w`.
+  have key : ∀ x : D, 0 < x → |y₀| < x := by
+    intro x hx
+    obtain ⟨y, hy, hR⟩ := h x hx
+    have hyy : pos u = pos w + y := hshift w y u hR
+    have : y = y₀ := by
+      have := hy₀.symm.trans hyy
+      exact (add_right_injective (pos w) this).symm
+    rwa [this] at hy
+  -- Hence `|y₀|` is below every positive duration, so it is `0`.
+  have hle : |y₀| ≤ 0 := not_lt.mp fun hpos => lt_irrefl _ (key _ hpos)
+  have hzero' : y₀ = 0 := abs_eq_zero.mp (le_antisymm hle (abs_nonneg y₀))
+  subst hzero'
+  exact hzero w u hR₀
 
 /--
 Simple unit-based task frame for testing.

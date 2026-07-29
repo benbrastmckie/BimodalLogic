@@ -221,13 +221,13 @@ composition inexpressible.
 
 ---
 
-### Phase 3: Add the two reusable Limit Nullity discharge helpers [NOT STARTED]
+### Phase 3: Add the two reusable Limit Nullity discharge helpers [COMPLETED]
 
 **Goal**: Both discharge strategies exist as standalone, sorry-free theorems before any field
 consumes them.
 
 **Tasks**:
-- [ ] Add the succ-order helper (research-verified, transcribe as given):
+- [x] Add the succ-order helper (research-verified, transcribe as given): *(completed — transcribed verbatim; compiled first attempt)*
 
       ```lean
       theorem limit_nullity_of_succOrder [SuccOrder D] [NoMaxOrder D]
@@ -241,7 +241,7 @@ consumes them.
         exact ((hnull w u).mp hR).symm
       ```
 
-- [ ] Add the deterministic-shift helper. Target statement (see Scope Hypothesis — confirm or
+- [x] Add the deterministic-shift helper *(deviation: altered — the general `pos`-indexed form was CONFIRMED in Lean, but requires one added binder `[Nontrivial D]`; over a trivial duration group the hypothesis is vacuous and the statement is false, e.g. `R := fun _ _ _ => False` on a two-element carrier. The Scope Hypothesis explicitly authorised adjusting the hypothesis set. No narrowing of the conclusion was needed.)*. Target statement (see Scope Hypothesis — confirm or
       adjust in Lean):
 
       ```lean
@@ -257,9 +257,9 @@ consumes them.
       (`zTaskFrameV2` at `ReynoldsBridge.lean:453`, `multiFamTaskFrame` at `ReynoldsBridge.lean:671`,
       `multiFamTaskFrameGen` at `ChronicleMonadicBridge.lean:139`), where `hzero` is exactly the
       `mp` direction of `nullity_identity`.
-- [ ] Place both in `FormalSystem/Semantics/TaskFrame.lean` under `namespace TaskFrame`, with
+- [x] Place both in `FormalSystem/Semantics/TaskFrame.lean` under `namespace TaskFrame`, with
       docstrings citing the paper anchor and stating which frame class each discharges.
-- [ ] Add a docstring note that `NoMaxOrder D` is an instance consequence of `[Nontrivial D]` on
+- [x] Add a docstring note that `NoMaxOrder D` is an instance consequence of `[Nontrivial D]` on
       this repo's standard duration binders, so the existing discrete bundle in
       `SoundnessLemmas/FrameClassVariants.lean` needs no new hypotheses.
 
@@ -279,6 +279,9 @@ be proved as stated, land the succ-order helper alone and report the shift helpe
 
 **Files to modify**:
 - `FormalSystem/Semantics/TaskFrame.lean` - two new theorems in `namespace TaskFrame`
+  *(deviation: altered — two imports also added, `Mathlib.Algebra.Order.Group.Abs` for the `|·|`
+  notation and `Mathlib.Order.SuccPred.Basic` for `Order.succ`; neither was anticipated in the
+  plan and both are required for the transcribed statements to parse/elaborate)*
 
 **Constraints**:
 - Standalone theorems only. Do **not** add the `limit_nullity` structure field in this phase.
