@@ -531,6 +531,61 @@ theorem mem_boxDiamondPersistence_label {branch : Branch} {w : WorldIndex} {t ft
     · exact absurd hp (by simp)
 
 /--
+Shape companion to `mem_boxDiamondPersistence` and `mem_boxDiamondPersistence_label`.
+
+Those two say *what formula* is emitted and *where* it lands; neither says what **shape** it has,
+and shape is what the soundness argument turns on. `boxDiamondPersistence` copies a formula from
+one time to another inside a single world, and a formula's truth is in general not time-invariant
+— that is exactly the unsoundness that was removed from `boxNeg`/`diamondPos`. The copy is sound
+here only because both source lists are restricted to modal formulas: `T(□A)` says
+`∀ σ ∈ Ω, A` at the evaluation time, and `F(◇A)` says `∀ σ ∈ Ω, ¬A` at it, and an `Ω`-universal
+claim *is* time-invariant when `Ω` is shift-closed.
+
+So a consumer needs to see the `□`/`◇` shape to invoke shift-closure at all. This lemma supplies
+it: everything emitted is either a positive `□` formula or a negative `◇` formula, `◇` in its
+`¬□¬` encoding.
+
+Stated here for the same reason as its two companions: `boxDiamondPersistence` is `private` and
+so is opaque outside this module. Like them, it is `Prop`-valued and additive.
+-/
+theorem mem_boxDiamondPersistence_shape {branch : Branch} {w : WorldIndex} {t ft : TimeIndex}
+    {g : SignedFormula} (h : g ∈ boxDiamondPersistence branch w t ft) :
+    (g.sign = .pos ∧ ∃ χ, g.formula = .box χ) ∨
+      (g.sign = .neg ∧ ∃ χ, g.formula = .imp (.box (.imp χ .bot)) .bot) := by
+  have key : ∀ (l : List SignedFormula) (P : SignedFormula → Prop),
+      (∀ s ∈ l, P s) →
+      (∀ s : SignedFormula, P s → P { s with label := { s.label with time := ft } }) →
+      g ∈ l.filterMap (fun sf =>
+        let prop := { sf with label := { sf.label with time := ft } }
+        if branch.contains prop then none else some prop) →
+      P g := by
+    intro l P hP hstable hmem
+    obtain ⟨s, hs, hsg⟩ := List.mem_filterMap.mp hmem
+    by_cases hc : branch.contains { s with label := { s.label with time := ft } } = true <;>
+      simp only [hc, if_true] at hsg
+    · exact absurd hsg (by simp)
+    · have hgs : ({ s with label := { s.label with time := ft } } : SignedFormula) = g :=
+        Option.some_inj.mp hsg
+      exact hgs ▸ hstable s (hP s hs)
+  unfold boxDiamondPersistence at h
+  simp only [List.mem_append] at h
+  rcases h with h | h
+  · refine key _ (fun s => (s.sign = .pos ∧ ∃ χ, s.formula = .box χ) ∨
+        (s.sign = .neg ∧ ∃ χ, s.formula = .imp (.box (.imp χ .bot)) .bot))
+      ?_ (fun s hs => hs) h
+    intro s hs
+    have hp := List.of_mem_filter hs
+    left
+    split at hp <;> simp_all
+  · refine key _ (fun s => (s.sign = .pos ∧ ∃ χ, s.formula = .box χ) ∨
+        (s.sign = .neg ∧ ∃ χ, s.formula = .imp (.box (.imp χ .bot)) .bot))
+      ?_ (fun s hs => hs) h
+    intro s hs
+    have hp := List.of_mem_filter hs
+    right
+    split at hp <;> simp_all
+
+/--
 Apply a single tableau rule to a signed formula, in the context of the branch it
 belongs to and the time ordering accumulated so far.
 
