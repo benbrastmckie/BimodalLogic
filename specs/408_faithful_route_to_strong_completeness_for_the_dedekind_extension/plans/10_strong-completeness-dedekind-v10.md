@@ -4556,7 +4556,7 @@ record of how it was blocked, and of what the blocking analysis got right, is ke
 - **Decomposition protocol**: as Phase 18 — `doets_lemma_1_5` and the three order-theoretic facts are
   a clean seam, and splitting there is the expected outcome if the `≡ⁿ` colouring fact resists.
 
-### Phase 28: `orderIsoRealOfDedekindDenseSeparable` — the order characterization of `ℝ` [IN PROGRESS]
+### Phase 28: `orderIsoRealOfDedekindDenseSeparable` — the order characterization of `ℝ` [COMPLETED]
 
 > **Confirmed absent from Mathlib.** `Order.iso_of_countable_dense`
 > (`Mathlib.Order.CountableDenseLinearOrder`) gives Cantor's theorem for countable dense endpointless
@@ -4576,20 +4576,70 @@ record of how it was blocked, and of what the blocking analysis got right, is ke
   3. Monotone and injective by density of `D`; surjective by Dedekind completeness of `R` against
      completeness of `ℝ`; conclude `R ≃o ℝ`.
 - **Tasks**:
-  - [ ] Land the hypothesis bundle as a named `structure` (dense, no endpoints, lub property,
+  - [x] Land the hypothesis bundle as a named `structure` (dense, no endpoints, lub property,
         separable) with **Rule 6**'s "what this excludes" docstring paragraph.
-  - [ ] Prove step 1 and land it as a named lemma.
-  - [ ] Prove steps 2-3 and land `orderIsoRealOfDedekindDenseSeparable`.
-  - [ ] **Anti-vacuity**: instantiate at `ℝ` itself and at one non-trivial example; if the only
+        *(`IsRealLike`, six fields: `nonempty'`, `dense`, `noMax`, `noMin`, `lub`, `sep`. The
+        Rule 6 paragraph names a separating witness for every clause — `ℤ` for `dense`, `[0,1]`
+        for the endpoint clauses, `ℚ` and `(0,1) \ {1/2}` for `lub`, the long line for `sep` —
+        and records that no field/topological/metric structure is assumed.)*
+  - [x] Prove step 1 and land it as a named lemma.
+        *(`nonempty_orderIso_rat_of_countableDense`: `↥D` inherits `Countable`, `DenselyOrdered`,
+        `NoMinOrder`, `NoMaxOrder`, `Nonempty`, then Mathlib's `Order.iso_of_countable_dense`.)*
+  - [x] Prove steps 2-3 and land `orderIsoRealOfDedekindDenseSeparable`.
+        *(`cutSet` / `cutMap`, well-definedness via `cutSet_nonempty` + `cutSet_bddAbove`, the
+        two one-sided bounds `cutMap_le_of` / `le_cutMap_of`, then `strictMono_cutMap` and
+        `cutMap_surjective`, closed by `StrictMono.orderIsoOfSurjective`.)*
+  - [x] **Anti-vacuity**: instantiate at `ℝ` itself and at one non-trivial example; if the only
         instance is `ℝ`, say so.
-  - [ ] Docstring per honesty charter Rule 4: the *statement* is `Reynolds 1992, §8, printed p.188`;
+        *(Base case `isRealLike_real` + `nonempty_orderIso_real_real` in `OrderIsoReal.lean`.
+        **Non-trivial example**: `nonempty_orderIso_real_shuffleReal` in `ShuffleReal.lean` — the
+        flow of `Σ_{r∈ℝ} σ*(r)`, a lexicographic `Sigma` over `ℝ` with arbitrary summands, is
+        `≃o ℝ`; and `nonempty_orderIso_real_shuffleReal_point` exhibits a concrete palette
+        satisfying all six hypotheses, so that theorem is not vacuous either. This is the last
+        sentence of Reynolds' printed p.188 paragraph, landed.)*
+  - [x] Docstring per honesty charter Rule 4: the *statement* is `Reynolds 1992, §8, printed p.188`;
         the *proof* has **no source in the corpus** and is original work.
-  - [ ] Search Mathlib once more before writing (`loogle`, `leansearch`) and record the negative
+  - [x] Search Mathlib once more before writing (`loogle`, `leansearch`) and record the negative
         result in the docstring so a future reader does not repeat the search.
-  - [ ] `#print axioms`; scoped build green; full `lake build` green.
-- **Estimated output**: ~350 lines.
+        *(`loogle "Nonempty (?a ≃o ℝ)"` → **zero results**; `loogle "?a ≃o ℝ"` → only
+        `Real.tanOrderIso`, `Real.sinhOrderIso`, `CircleDeg1Lift.toOrderIso`, i.e. specific
+        isomorphisms, never a characterization. `leansearch` returned HTTP 502 and was not
+        retried; the two `loogle` queries are decisive on their own. Recorded verbatim in the
+        module docstring.)*
+  - [x] `#print axioms`; scoped build green; full `lake build` green.
+- **Estimated output**: ~350 lines. **Actual**: 335 lines (`OrderIsoReal.lean`, new) + 83
+  appended to `ShuffleReal.lean`.
 - **Done when**: `orderIsoRealOfDedekindDenseSeparable` is sorry-free and axiom-clean and the
   anti-vacuity instantiation lands.
+
+**CLOSED.** `orderIsoRealOfDedekindDenseSeparable` and every helper is sorry-free, and
+`#print axioms` reports exactly `[propext, Classical.choice, Quot.sound]` for it,
+`isRealLike_real`, `nonempty_orderIso_real_real`, `strictMono_cutMap`, `cutMap_surjective`,
+`isRealLike_shuffleReal`, `nonempty_orderIso_real_shuffleReal` and
+`nonempty_orderIso_real_shuffleReal_point`. Sorry census outside `Boneyard/` unchanged at
+exactly one (`Transfer.lean:1242`). The three regression canaries
+(`BXCanonical.completeness_dense`, `BXCanonical.completeness_discrete`,
+`WeakCanonical.countermodel_discrete_reynolds_v2`) are unchanged and sorryAx-free.
+
+**Deviation from the `Owns` line, recorded rather than absorbed.** The phase owns
+`RealModel/OrderIsoReal.lean` only. The non-trivial anti-vacuity instantiation was landed
+**append-only in `RealModel/ShuffleReal.lean`** (Phase 27's file, `[COMPLETED]`, so no live
+conflict) plus one added `import`. The alternative — importing `ShuffleReal` *into*
+`OrderIsoReal` — would have inverted the layering and made the characterization module depend on
+the whole Doets chain. `OrderIsoReal.lean` therefore imports **only Mathlib** and remains the
+free-floating unit the wave map describes.
+
+**FINDING for Phases 29-30, verified not assumed: `RealModel/**` is unreachable from the default
+build target.** `lakefile.lean` sets `roots := #[FormalSystem]`, and nothing in the
+`FormalSystem.lean → FormalSystem/FormalSystem.lean → Metalogic.lean →
+Metalogic/WeakCanonical.lean` chain imports any `RealModel/*` module — `grep -rn '^import.*RealModel'`
+matches only inside `RealModel/` itself. Measured consequence: full `lake build` runs **1983
+jobs**, while `lake build FormalSystem.Metalogic.WeakCanonical.RealModel.ShuffleReal` runs
+**2207**. So "full `lake build` green" does **not** cover Blocks G-H; the scoped builds are the
+real verification, and both are green. This is a pre-existing condition from Phases 24-27, not
+introduced here. **No aggregator was edited** — `Metalogic/WeakCanonical.lean` is in no phase's
+`Owns` list and `FormalSystem/Metalogic.lean` belongs to Phase 30, which should add the
+`RealModel` reachability edge when it updates the tracking table.
 - **Depends on**: — (independent of Blocks D-G; **parallel-eligible from wave 2 onward**).
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
