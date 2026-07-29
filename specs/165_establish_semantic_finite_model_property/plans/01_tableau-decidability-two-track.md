@@ -3709,24 +3709,88 @@ branches, and `temporalWitnessCheck`, now six rows, will need the same treatment
 - Plus every prior entry, all carried forward unchanged; nothing this dispatch did contradicts
   any of them.
 
-### Phase 8: Hygiene — Vacuous Theorems and Documentation [IN PROGRESS]
+### Phase 8: Hygiene — Vacuous Theorems and Documentation [COMPLETED]
 
 - **Goal:** No vacuous theorems remain in `Decidability/`; documentation matches reality.
 - **Tasks:**
-  - [ ] Delete `validity_decidable` and `validity_has_decision_procedure`
+  - [x] Delete `validity_decidable` and `validity_has_decision_procedure`
     (`Correctness.lean:78,91`); point their former use sites (if any) at the Phase 7 instances;
     state `isValid φ fc = true ↔ ⊨ φ`-shaped replacements where natural.
-  - [ ] Replace `filtered_world_bound` and `fmp_size_bound` (`FMP/FMP.lean:183,237`) with the
+    *(No Lean use sites existed — a project-wide grep found the names only in prose. The
+    `isValid`-shaped replacement is NOT stated: "where natural" is not satisfied, because 7.3 is
+    `[BLOCKED]` and neither `valid_iff_allClosed` nor the `Decidable` instances exist. Stating
+    the iff unproved would reproduce the exact defect being removed. A retirement note records
+    the obligation instead.)*
+  - [x] Replace `filtered_world_bound` and `fmp_size_bound` (`FMP/FMP.lean:183,237`) with the
     real bound — report 01 F8 machine-verified `Nat.card (Set ↥cl) = 2 ^ cl.card` as an equality.
-  - [ ] Documentation: `latex/subfiles/04-Metalogic.tex:351` (mark the `2^|cl(φ)|` claim proved
+  - [x] Documentation: `latex/subfiles/04-Metalogic.tex:351` (mark the `2^|cl(φ)|` claim proved
     or conjectural per what actually landed); `typst/chapters/p2-decidability-practice.typ:42`
     (same), `:70,112` (update the deleted-theorem references), `:26-28` (record Track A's
     completion of the semantics bridge).
+    *(deviation: altered — `:26-28` records what actually landed, NOT "Track A's completion".
+    Track A did not complete: 7.3 is `[BLOCKED]`, so `valid_iff_allClosed` and the `Decidable`
+    instances do not exist and the semantics bridge is still open. What is recorded is the rule
+    half — `ruleSound_of_mem_allRulesForFC` at 34/34 — with the bridge left marked open in the
+    status table. The plan's own governing phrase for this task is "per what actually landed".)*
 - **Estimated output:** ~150-250 lines (Lean + LaTeX + typst diffs).
 - **Done when:** `grep` confirms no `∧ True`-padded or `Classical.em` theorem bodies remain in
   `Decidability/`; `lake build` green; doc builds unaffected.
 - **Timing:** 1 dispatch, ~2.5 hours.
 - **Depends on:** 7
+
+**PHASE 8 STATUS (2026-07-29g) — COMPLETE in one dispatch. Three green commits.** All four
+vacuous theorems are gone and every done-when criterion is met.
+
+*The two `Correctness.lean` deletions.* `validity_decidable` (`Classical.em (⊨ φ)`) and
+`validity_has_decision_procedure` (`by_cases` on the very proposition it purported to decide) are
+deleted, replaced by a retirement note in the established `CountermodelExtraction.lean` style. No
+Lean consumer existed; the names appeared only in prose. **The `isValid φ fc = true ↔ ⊨ φ`
+replacement was deliberately not stated.** The plan licenses it "where natural" and the condition
+is unmet: 7.3 is `[BLOCKED]`, so `valid_iff_allClosed` and the `Decidable` instances do not exist,
+and writing the iff would put a true-looking name over a proof that cannot reach it — the exact
+defect this phase removes. The note names the open obligation instead, including that it must
+also cover `serialityRule`/`timeLinearity`, which sit outside `allRulesForFC`.
+
+*The two `FMP/FMP.lean` bounds are now real, and cost almost nothing.* The replacement did not
+need new mathematics: `filteredCharacteristicSet_injective` (`FMP/FiniteModel.lean:96`) was
+already proved and already consumed by `FilteredWorld.finite` for `Finite`. It had simply never
+been read for *cardinality*. Three theorems now stand where two vacuous ones did —
+`assignmentSpace_card` (F8's equality, `Nat.card (Set ↥cl) = 2 ^ cl.card`),
+`filtered_world_bound` (`Nat.card (FilteredWorld φ) ≤ 2 ^ cl.card`, the figure transported along
+that injection), and `fmp_size_bound` (the bound attached to the FMP terminus, so the name means a
+*size* bound and not bare finiteness). All three verify to `{propext, Classical.choice, Quot.sound}`
+only. Note that `filtered_world_bound`'s docstring explicitly rules out the `Nat.card = 0`
+junk-value reading, since `Nat.card` on an infinite type would satisfy the inequality vacuously —
+`FilteredWorld.finite` is what makes it a real bound.
+
+*The docs correction went further than "mark proved or conjectural".* `04-Metalogic.tex` did not
+merely cite the vacuous theorem; it **restated it as a `\begin{theorem}[Decidability]`** in prose
+("either `⊨ φ` or `¬ ⊨ φ`"). Marking a reference stale would have left a false theorem standing in
+the reference document, so it is converted to a `\begin{remark}` that says what the old claim was,
+why excluded middle is not decidability, and what is proved instead. This is the one place where
+the deleted Lean theorem had propagated into a *claim* rather than a *citation*.
+
+*One plan sub-clause was not executed as written, and it is the interesting one.* `:26-28` was to
+"record Track A's completion of the semantics bridge". Track A did **not** complete — 7.3 is
+blocked — so recording its completion would have been a false documentation claim of precisely the
+kind this phase exists to remove. The typst passage instead states which half landed (rule
+soundness, 34/34, via `ruleSound_of_mem_allRulesForFC`) and which did not
+(`valid_iff_allClosed`, the `Decidable` instances), and the status-table row stays
+"Open problem". The plan's own governing phrase for the documentation task — "per what actually
+landed" — is what this follows.
+
+*Verification.* Full `lake build` green at **1983 jobs, matching the recorded baseline exactly**.
+Sorry census over `Decidability/`: **0**, empty inventory. Axiom count 2, unchanged — no new
+axioms. Vacuous-definition grep over all of `FormalSystem/`: one hit, at
+`Examples/TemporalStructures.lean:279`, pre-existing and outside the tree; it is a true statement
+about a total history whose `domain` is by design `fun _ => True`, not a placeholder. Both doc
+builds verified rather than assumed: `typst compile` exit 0 (only pre-existing font-family
+warnings) and `latexmk -g -pdf -halt-on-error` exit 0 on a forced full rebuild.
+
+*Do not reopen.* Whether `validity_decidable` should be kept "for documentation purposes" — no; it
+was a false claim in a reference document and the retirement note carries the documentation value
+without the false theorem. Whether the FMP bound needs a new injection — it does not; the existing
+one suffices and is what landed.
 
 ## Planned Strategic Sorries
 
