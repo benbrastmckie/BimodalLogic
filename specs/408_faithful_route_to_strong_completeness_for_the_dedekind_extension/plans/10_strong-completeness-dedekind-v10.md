@@ -4946,14 +4946,18 @@ Nothing landed is weakened and both gates pass by construction.
 **Deliberately NOT in this phase.** The ~90-binder propagation across `Defs`, `Dual`, `Lemma34`,
 `Lemma5`, `BadIntervals`, `TruthTransfer`, `NoGaps`, `Singletons` (plus `ChronicleInstance`) is
 **not** chartered here and was not attempted — that is the whole point of proving the risky claim
-first. It needs its own heading, which is not yet written. Likewise out of scope and untouched:
+first. It needs its own heading. **Landed since**: that heading is Phase 29.8 below, and the
+propagation is complete; 29.8's measurement 1 also corrects this phase's guess about *which*
+clauses need restricting. Likewise out of scope and untouched:
 Phase 29's anti-vacuity checkbox, any part of Phase 30, and `StrongCompleteness.lean` (its four
 signatures are pinned and the §6 repair is upstream of all of them).
 
 **Consequence for the helpers' eventual reuse, stated rather than left implicit.** The five
 declarations take today's unrestricted `hε : IsContempEquivDense ε`. Under `IsContempEquivDenseOn`
 the successor will project the clauses at `M` and re-bind these signatures; the **proof bodies are
-unaffected**, which is exactly what this phase was for.
+unaffected**, which is exactly what this phase was for. **Confirmed by 29.8**: all five were
+re-bound with no proof-body edit, and `denselyOrdered_surgeredStructure` /
+`countable_surgeredStructure` are exactly what `instIsSurgeryClosedCountableDense` is built from.
 
 - **Estimated output**: ~120 lines (actual: 118 added to `NoGaps.lean`, plus ~35 lines of
   record-correction prose across two files).
@@ -4969,6 +4973,97 @@ unaffected**, which is exactly what this phase was for.
   `HasBadIntervalSurgery`, which is what keeps `interior` from being an open assumption).
 - **Timing**: 2 hours.
 - **Verification Tier**: full.
+
+### Phase 29.8: §6 on a parameterized structure class [COMPLETED]
+
+> **Numbering note.** Successor to 29.7 in the same series; 29.7's record chartered this work as
+> "Decision 1" and deliberately left the binder propagation out of scope.
+
+- **Goal**: state the whole of §6 against an arbitrary structure class `C` rather than against
+  either Reynolds' unrestricted reading or the countable-dense one, so that both instantiate from
+  one chain. `C := UnrestrictedClass sig` recovers every pre-existing conclusion **verbatim**;
+  `C := CountableDense sig` gives the CD forms Doets' theorem consumes, with the two closure
+  obligations discharged by 29.7's `countable_surgeredStructure` /
+  `denselyOrdered_surgeredStructure` and by the `dual` transfer.
+- **Owns**: `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/`{`Defs`, `Dual`, `Lemma34`,
+  `Lemma5`, `BadIntervals`, `TruthTransfer`, `NoGaps`, `Singletons`, `ChronicleInstance`}`.lean`.
+  Nothing outside that directory is touched — in particular not `StrongCompleteness.lean`, whose
+  four pinned signatures are downstream of all of it, and not `RealModel/EpsilonDense.lean` or
+  `RealModel/DoetsTheorem.lean`, which keep `IsContempEquivDenseCD` unchanged.
+- **Tasks**:
+  - [x] **Task 29.8.1**: `IsContempEquivDenseOn ε C` in `Defs.lean`, with clause (i) split into
+        `refl` / `symm` / `trans` and `IsContempEquivDenseOn.equiv` as the reassembling accessor, so
+        call sites read unchanged. Membership carried by a class, `InStructureClass C M`, so the
+        quantifier lives on binder lines and no call site mentions it.
+  - [x] **Task 29.8.2**: `UnrestrictedClass` and `CountableDense` as named classes with their
+        membership instances, plus `countable_of_countableDense` /
+        `denselyOrdered_of_countableDense` for the reverse translation.
+        `abbrev IsContempEquivDense ε := IsContempEquivDenseOn ε (UnrestrictedClass sig)`, so the
+        unrestricted name survives as a specialization rather than a separate structure.
+  - [x] **Task 29.8.3**: `isContempEquivDenseCD_of_countableDense` (free) and
+        `IsContempEquivDenseCD.toOn` (needs the two unrestricted halves, which `simDense_refl` /
+        `simDense_symm` supply for the only `ε` §8 produces).
+  - [x] **Task 29.8.4**: `IsDualClosed C` + `instInStructureClassDual` in `Dual.lean`;
+        `isContempEquivDense_dualize` generalized to **preserve** `C` rather than change it.
+  - [x] **Task 29.8.5**: `IsSurgeryClosed C` in `TruthTransfer.lean`, with the bundle quantified
+        *inside* the field so one binder serves both `ε` and `dualize ε`.
+        `instIsSurgeryClosedCountableDense` in `NoGaps.lean` derives it from 29.7's two theorems.
+  - [x] **Task 29.8.6**: propagate the binders across the eight §6 files plus
+        `ChronicleInstance.lean`, and supply the membership at `N` at the one site that projects the
+        gated clauses there (`reynolds_lemma9`).
+  - [x] **Task 29.8.7**: `section NoWeakening` in `ChronicleInstance.lean` — seven
+        pre-parameterization signatures restated verbatim and discharged by direct application.
+
+- **The gate question, and how it is answered.** Report 11 §2.2 records that a straight in-place CD
+  restatement narrows `no_gaps_dense_prior` and `dense_singletons_of_sep` from "any Prior structure"
+  to "any countable densely-ordered Prior structure", tripping the Block D gate ("conclusion
+  unweakened") and the Block F gate ("additions and strengthenings only"). The user rejected both
+  the gate waiver and the duplicate-chain alternative. The parameterization answers the gate by
+  **strengthening**: each §6 theorem now quantifies over `C`, and the pre-existing statement is the
+  `C := UnrestrictedClass sig` instance of it. The three class obligations
+  (`InStructureClass`, `IsDualClosed`, `IsSurgeryClosed`) are all typeclasses with global instances
+  at `UnrestrictedClass`, so recovery costs **no extra explicit argument** — which is what makes it
+  verbatim rather than merely equivalent, and is checked by Task 29.8.7 rather than asserted.
+
+- **Two measurements that came out better than the route predicted.**
+  1. Report 11 §2.1 proposed restricting clauses (i) and (ii). Reading `EpsilonDense.lean` showed
+     `simDense_refl` (`:136`), `simDense_symm` (`:140`), `simDense_convex` (`:199`) and
+     `simDense_contemporary` (`:673`) carry **no** instance hypotheses and `simDense_trans` (`:988`)
+     is the only one that does. So `refl` and `symm` are left class-free — which is what lets
+     `contemp_refl` / `contemp_symm` stay class-free and what keeps the dual transport's own
+     `refl`/`symm` branches from needing any closure hypothesis. Clause (ii) **is** gated, but not
+     for `epsDense`'s sake: `isContempEquivDense_dualize` reconstructs clause (ii) at `N` out of
+     clause (ii) *and transitivity* at `dual N`, so an ungated field there would have demanded
+     `C (dual N)` at every `N`. Recorded at the field itself.
+  2. Report 11's High-confidence claim that `reynolds_lemma9` is the **only** site projecting the
+     gated clauses at `surgeredStructure` is **confirmed by the compiler**, not by a second audit:
+     after the mechanical rename the build reported exactly one unsatisfied
+     `InStructureClass C (surgeredStructure …)` obligation, at that site. No second site exists.
+
+- **Cost, measured against the estimate**: the route estimated ~100-140 new lines plus ~90 binder
+  edits across 8 files. Actual: 9 files, 569 insertions / 192 deletions, of which the binder
+  propagation was ~60 declaration signatures reached by one scripted pass (declarations that do not
+  bind the bundle are left alone — there `C` is undetermined and instance search is stuck, which is
+  how the over-broad first pass was caught and narrowed).
+- **Scope Hypothesis, retired**: the "one site" hypothesis 29.7 recorded is no longer a hypothesis;
+  see measurement 2 above.
+- **Done when**: full `lake build` green, the scoped build over `DenseModelSurgery.ChronicleInstance`
+  + `RealModel.DoetsTheorem` green at its baseline job count, non-Boneyard sorry census unchanged,
+  and the no-weakening block elaborating.
+  **Met**: full build green (1983 jobs), scoped build green (2234 jobs, the same count 29.7 cites),
+  non-Boneyard sorry census 1 at entry and 1 at exit (`Transfer.lean:1242`, pre-existing and
+  unrelated), no new axiom, no vacuous definition, `StrongCompleteness.lean` byte-identical.
+- **Depends on**: 29.7 (the two derived instances, which are what make the `CountableDense` surgery
+  closure a *derived* result rather than a hypothesis — without them the parameterization would
+  compile but §6 at the CD reading would be vacuous).
+- **Timing**: 3 hours.
+- **Verification Tier**: full.
+
+- **Deliberately NOT in this phase**: Phase 29's anti-vacuity checkbox, any part of Phase 30, and
+  `epsDense`'s own `IsContempEquivDenseOn (epsDense sig k) (CountableDense sig)` witness. The last
+  is a one-liner over `simDense_refl` / `simDense_symm` / `epsDense_isContempEquivDenseCD`, but it
+  belongs in `RealModel/EpsilonDense.lean`, outside this phase's `Owns`; `IsContempEquivDenseCD.toOn`
+  names it as the remaining step and states its two inputs.
 
 ### Phase 30: Reynolds §9 Theorem 7 — the engine and the unconditional terminus [IN PROGRESS]
 
