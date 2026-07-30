@@ -4647,11 +4647,16 @@ introduced here. **No aggregator was edited** — `Metalogic/WeakCanonical.lean`
 ### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [PARTIAL]
 
 **PARTIAL RECORD (Phase 29)**: `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean`
-is landed (443 lines), scoped build green, and every declaration in it is axiom-clean
-(`[propext, Classical.choice, Quot.sound]`) **except** the ones that route through the single
-tracked strategic sorry named below. `doets_theorem_dense` is landed **with its final signature**
-— `DoetsD1` / `DoetsD2` only, no extra hypothesis — so Phase 30 can consume it exactly as
-chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
+is landed, scoped build green (2234 jobs, `DenseModelSurgery.ChronicleInstance` as canary), full
+build green (1983 jobs), and the file now contains **no `sorry` at all**. `doets_theorem_dense` is
+landed with its final signature — `DoetsD1` / `DoetsD2` only, no extra hypothesis — and is
+**sorry-free and axiom-clean**: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. Phase 30
+can consume it exactly as chartered.
+
+**The phase remains `[PARTIAL]` for exactly one reason, and it is not the proof**: the anti-vacuity
+checkbox (the chronicle instantiation) is still unmet, on the measured `surgeredStructure`
+obstruction recorded below. That obstruction is outside this phase's territory. Nothing else is
+outstanding.
 
 - **What is proved, sorry-free**: `exists_realFlow_witness` (goodness normalized to flow `= ℝ`),
   `goodDense_of_orderIso_real` / `exists_realFlow_of_orderIso_real`, the whole Layer-3 `ℝ`-model
@@ -4660,13 +4665,9 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
   `exists_realFlow_shuffleReal_point`, and `exists_not_simDense_of_not_goodDense` — printed
   p.187's *"`M` is not very good and so there are `a < b` with `a ≁ b`"*, both implications by
   Lemma 11 in contrapositive form.
-- **What is not proved**: the shuffle step at `⋃I`, carried by `goodDense_unionClasses`.
-  **One `sorry`, at `DoetsTheorem.lean:1318`.** `reynolds_theorem6_contradiction` — printed
-  pp.187-188, the `G`-minimality contradiction — now has no `sorry` in its own body, but it
-  consumes `goodDense_unionClasses`, so it and `doets_theorem_dense` still report `sorryAx`. All
-  **four** sub-gaps the residual's docstring has named across this phase's sub-dispatches are
-  accounted for below; the fourth (the assembly) is discharged and the residual is correspondingly
-  narrowed:
+- **The proof is complete, and there is no tracked sorry left in this phase.** All **five** sub-gaps
+  the residual's docstring named across this phase's sub-dispatches are discharged, the fifth (the
+  shuffle step) in sub-phase 29.6:
   - ~~(1) the `ε`-adapter~~ — **DONE (sub-phase 29.1)**. `IsContempEquivDenseCD` (`Defs.lean`) is
     the countable-dense bundle, `epsDense_isContempEquivDenseCD` (`EpsilonDense.lean`) discharges
     it sorry-free, `DoetsD1`/`DoetsD2` now take it, and `doetsD1_epsDense` / `doetsD2_epsDense`
@@ -4710,29 +4711,47 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
       and which D2 makes the *generic* case rather than a corner case.
     - Step (2), the `ℝ`-extension and the flow, was correctly sized: it is application only, and it
       is reached through `goodDense_shuffle`, which is landed.
-  - **WHAT NOW REMAINS — one item: the shuffle step at `⋃I`**, carried as the single tracked
-    strategic sorry `goodDense_unionClasses` (`DoetsTheorem.lean:1318`), stated with every input
-    Reynolds names in scope (`hmin`, `D1`, `D2`, and `hI : ⋃I = (c',d')`). Two sub-items, and the
-    order between them is forced:
-    1. *The choice of `N_γ`* — printed p.187 *"choose an `N_γ ⊨ γ` with flow of time an interval of
-       `ℝ`"*, used on p.188 as *"because the `γᵢ`'s say so the summands themselves are closed
-       intervals of the reals"*. `goodDense_shuffle` asks for this in six spellings (`hne`,
-       `hdense`, `hsum`, `hbot`, `hone`, `hsep`). **This is the genuinely missing ingredient**, and
-       it is NOT the decomposition the prior record named: it is the *two-sided closed* case of the
-       normalization `exists_ioo_witness` (`GoodDense.lean:713`) does end-point-free and
-       `icoBlock` / `kEquiv_pointSum_icoBlock` do one-sided. Sketch, for the successor: `M|E` is
-       good, countable, densely ordered, and by Lemma 13 has an attained least and greatest point;
-       transport *"has a min"*, *"has a max"* and `DenselyOrdered` across `≡ₖ` at `k ≥ 2` (the
-       pattern is `noMaxOrder_of_kEquiv`), and then the witness's `carrierSet`, being `OrdConnected`
-       with an attained min and max, **is** `Set.Icc x y` — which is Dedekind complete, has a least
-       element, is dense and is separable. So the six hypotheses fall out of the min/max transfer
-       plus that one set identity; no new construction is needed, but the transfer lemmas are.
-    2. *The choice of `σ`* — printed p.187 *"we can choose `σ` appropriately"*. `σ` is **not** free:
-       it is forced to be *"the `γ` realized by the class at that rational"*, i.e. `colour ∘ e.symm`
-       for the landed `e : I ≃o ℚ`. With `σ` so defined, `hmatch` of `kEquiv_blocks_shuffle` holds
-       by construction and `IsShuffleMap S σ` is `gammaBetween_dense_of_minimal` transported along
-       `e`. Bookkeeping over landed assets — but it cannot be written before (1) fixes `ι` and `N`,
-       because `σ` lands in `ι`.
+  - ~~(5) the shuffle step at `⋃I`~~ — **DONE (sub-phase 29.6)**, Layers 11-14.
+    `goodDense_unionClasses` is sorry-free, so the whole chain up to `doets_theorem_dense` is.
+    Twenty-eight new sorry-free, axiom-clean declarations, in four layers:
+    - **Layer 11, the two-sided closed normalization** (`exists_max_of_kEquiv`,
+      `exists_min_of_kEquiv`, `nfEvalNf_of_kEquiv`, `ordConnected_eq_Icc`, `IsIccLike`,
+      `isIccLike_of_carrierSet_eq_Icc`, `exists_iccLike_witness`,
+      `exists_icc_witness_of_subsingleton`, `subsingleton_of_carrierSet_eq_Icc_self`). The prior
+      record's sketch for this item was **correct and was followed**, with one simplification: the
+      `DenselyOrdered` transfer it called for is **not needed and could not have been used** —
+      *"densely ordered"* is a depth-3 sentence and so does **not** travel across `≡ₖ` at `hk : 2 ≤ k`.
+      Density comes for free instead, from `OrdConnected` in `ℝ`. Only the two end-point transfers
+      are real, and both reuse the existing depth-2 `hasMaxSent`/`hasMinSent` machinery.
+    - **Layer 12, the summands are the classes** (`kEquiv_restrictSet_openSub`,
+      `kEquiv_openSub_restrictSet`, `veryGoodDense_contempClassStructure`,
+      `goodDense_contempClassStructure`, `exists_max_contempClass`, `exists_min_contempClass`,
+      `exists_iccLike_contempClass`). Two facts the prior record's sketch assumed without naming:
+      that `M|E` is **good** (it is *very* good, because `x ∼ y` *is* very-goodness of `M|(x,y)` and
+      convexity puts `(x,y)` inside `E`; Lemma 11 finishes), and that Layer 9's end-point
+      construction applies at an **interior** class — run at `(e,d)` and at `(c,e)` rather than at
+      `(c,d)`, which is what makes each summand closed on both sides.
+    - **Layer 13, Reynolds' `σ`** (`trivialIccStructure`, `isIccLike_trivialIccStructure`,
+      `classNF`, `classNF_spec`, `classNF_eq_of_nfEvalNf`, `contempClassStructure_congr`,
+      `classNF_congr`, `classColour`, `classColour_cls`, `classNF_mem_gammaBetween`,
+      `isShuffleMap_classColour`). The prior record was right that `σ` is forced, and right that
+      `IsShuffleMap` is `gammaBetween_dense_of_minimal` along `e` — but it called this half
+      *"bookkeeping"*, and one step is not. Minimality produces a class realizing `γ` inside *some*
+      `≁`-pair; the shuffle needs it inside the pair **the two rationals name**. The bridge is
+      Layer 9's end points run a second time, at the two classes `e.symm r` and `e.symm s`. That is
+      why the class end points are needed twice over: once to close each summand and once to locate
+      it. Recorded because the prior sizing understated it.
+    - **Layer 14, the composition** (`exists_singleton_class_between`, `exists_iccLike_family`,
+      `kEquiv_classBlock`, `goodDense_unionClasses`). `kEquiv_classBlock` is the one step of the
+      composition Reynolds does not write at all: on paper `M | E` is one object, but the block map
+      cuts the class out of `M | (c',d')` while the `γ`-palette cuts it out of `M`, and in Lean
+      those are different types.
+    - **Stale documentation corrected rather than left standing**: the module header's *"honesty
+      charter"* claimed the `G`-minimality argument was carried as a hypothesis of a
+      `doets_theorem_dense_core` that no longer exists, and
+      `reynolds_theorem6_contradiction`'s docstring still asserted that `#print axioms` reports
+      `sorryAx`. Both were false as of this sub-phase; both are fixed, and four source-map rows
+      were added for Layers 11-14.
 - **NEW OBLIGATION SURFACED, and deliberately not hidden.** Weakening D1/D2's antecedent is what
   made (1) closable, and it makes D1/D2 correspondingly *harder to discharge* — Phase 30's
   suppliers (`no_gaps_dense_prior`, `no_gaps_dense_prior_left`, `dense_singletons_of_sep`) all
@@ -4763,16 +4782,13 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
   sentences of quantifier depth at most `k` as `M` does."*
 - **Owns**: `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean` (new).
 - **Tasks**:
-  - [ ] Assemble the proof, transcribing printed pp.187-188: if `M` is good, done. Otherwise by
-        *(deviation: partial — the "if `M` is good, done" half is landed as
-        `exists_realFlow_witness`; "`M` not very good ⇒ `a ≁ b`" as
-        `exists_not_simDense_of_not_goodDense`; "so `M|(⋃I) ≡ₖ` a shuffle (26), extend to `ℝ`
-        (27), the flow is `≅o ℝ` (28)" as `goodDense_shuffle` /
-        `exists_realFlow_of_kEquiv_shuffle`. The `G`-minimality contradiction that consumes them
-        is the tracked sorry at `DoetsTheorem.lean:1318`. Sub-phases 29.2-29.4 landed Reynolds'
-        `G` and its minimization, `M/∼` as a linear order, Reynolds' `I` with order type `ℚ`, and
-        density of `M/∼` from D1 — so all three named sub-gaps are discharged and the residual is
-        now the assembly alone.)*
+  - [x] Assemble the proof, transcribing printed pp.187-188: if `M` is good, done. Otherwise by
+        *(complete — sorry-free and axiom-clean as of sub-phase 29.6. The "if `M` is good, done"
+        half is `exists_realFlow_witness`; "`M` not very good ⇒ `a ≁ b`" is
+        `exists_not_simDense_of_not_goodDense`; the `ℝ`-passage is `goodDense_shuffle` /
+        `exists_realFlow_of_kEquiv_shuffle`; the `G`-minimality contradiction that consumes them is
+        `reynolds_theorem6_contradiction`; and the shuffle step it routes through is
+        `goodDense_unionClasses` over Layers 11-14.)*
         Lemma 11 there are ≥ 2 `∼`-classes; by Lemma 13 and D1 there is a third between any two, so
         `M/∼` is dense and D2 gives density of singletons. Choose `a < b` with `a ≁ b` and `G`
         minimal; show `M|(a,b)` is very good, contradiction. For `a < c < d < b` with `c ≁ d`: the
@@ -4797,20 +4813,26 @@ chartered; it is not sorry-free, so this phase is not `[COMPLETED]`.
         as well as on 22-23**, and a dispatch that closes it at `epsTop` has not met the gate. The
         `Depends on` line below is unchanged (27 already depends on 26 → 25), so this is a citation
         of an existing edge, not a new one.
-        *(deviation: NOT met — see the PARTIAL RECORD above. The chronicle instantiation is gated
-        on the same `ε`-adapter as the tracked sorry. `exists_realFlow_shuffleReal_point` is
-        landed as a weaker, honest substitute and is not claimed to discharge this checkbox.)*
+        *(deviation: NOT met — see the PARTIAL RECORD above, and note that this is now the phase's
+        **only** outstanding item: the proof itself is sorry-free, so the checkbox is no longer
+        coupled to any tracked sorry. It is gated on discharging `DoetsD1`/`DoetsD2` at the
+        chronicle structure, which needs §6 to run on the countable-dense bundle, which was
+        measured to fail irreducibly at `reynolds_lemma9`'s demand for
+        `DenselyOrdered (surgeredStructure M ε Q t).carrier` — false, because that structure
+        collapses a bad interval to one class and so has adjacent points by Lemma 4. Outside this
+        phase's territory. `exists_realFlow_shuffleReal_point` remains landed as a weaker, honest
+        substitute and is not claimed to discharge this checkbox.)*
   - [x] Docstrings: `Reynolds 1992, §8 Theorem 6, printed pp.185-188` and `Doets 1987, 3.3.9`, with
         Reynolds' own note that his statement is slightly stronger and his proof a little different
         because of the contemporaneity notion. *(landed verbatim on `doets_theorem_dense`, plus a
         source-to-implementation map in the module header.)*
   - [x] `#print axioms`; scoped build green; full `lake build` green. *(scoped
-        `lake build …RealModel.DoetsTheorem` green, 2215 jobs; full `lake build` green, 1983 jobs
-        — the full build does **not** reach `RealModel/**`, per the Phase 28 reachability finding,
-        so the scoped build is the load-bearing channel. Every declaration reports exactly
-        `[propext, Classical.choice, Quot.sound]` except `doets_goodDense` /
-        `doets_theorem_dense`, which additionally report `sorryAx` through
-        `reynolds_theorem6_contradiction`.)*
+        `lake build …RealModel.DoetsTheorem …DenseModelSurgery.ChronicleInstance` green, 2234 jobs;
+        full `lake build` green, 1983 jobs — the full build does **not** reach `RealModel/**`, per
+        the Phase 28 reachability finding, so the scoped build is the load-bearing channel.
+        **Every** declaration in the module, `doets_goodDense` and `doets_theorem_dense` included,
+        now reports exactly `[propext, Classical.choice, Quot.sound]`. No `sorryAx` anywhere in the
+        chain.)*
 - **Estimated output**: ~400 lines.
 - **Done when**: `doets_theorem_dense` and the chronicle instantiation are sorry-free and axiom-clean.
 - **Depends on**: 23, 27, 28.
