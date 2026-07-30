@@ -449,28 +449,66 @@ def subintervalDualIso {M : OrderedMonadicStructure sig} (u v : M.carrier) :
 
 /-! ## The hypothesis transports
 
-`IsContempEquivDense` is a property of `ε` alone, quantified over **all** structures, so the
+`IsContempEquivDenseOn` is a property of `ε` alone, quantified over **all** structures (clauses (i)
+`refl`/`symm` and (iii)) or over the class `C` (clause (i) `trans` and clause (ii)), so the
 transport is not an instantiation at one structure: each clause is re-established at an arbitrary
-`N` by running the original clause at `dual N`. -/
+`N` by running the original clause at `dual N`.
 
-/-- **`IsContempEquivDense` transports to `dualize ε`** — all three clauses, with clause (iii)
+For the two class-gated clauses that means the transport needs `C (dual N)` wherever it has
+`C N` — which is the first of the two closure conditions the class parameterization carries. It is
+packaged as a class, `IsDualClosed`, so that `instInStructureClassDual` below discharges the
+membership at `dual N` by instance search and no dual call site in §6 has to mention it. -/
+
+/-- **`C` is closed under order-duals.** The first closure condition on a structure class: without
+it the dual transport below cannot re-establish transitivity or convexity, since it establishes
+both at `N` by running them at `dual N`. -/
+class IsDualClosed {sig : MonadicSignature} (C : OrderedMonadicStructure sig → Prop) : Prop where
+  /-- Duals stay in the class. -/
+  out : ∀ M : OrderedMonadicStructure sig, C M → C (dual M)
+
+/-- Membership transfers to the dual. Keyed on `dual _`, so instance search reaches for it only at
+a genuinely dualized structure. -/
+instance instInStructureClassDual {C : OrderedMonadicStructure sig → Prop} [IsDualClosed C]
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] : InStructureClass C (dual M) :=
+  ⟨IsDualClosed.out M InStructureClass.out⟩
+
+/-- The class of all structures is trivially dual-closed. This is what makes every §6 result
+instantiate at Reynolds' unrestricted reading with no extra argument. -/
+instance instIsDualClosedUnrestricted : IsDualClosed (UnrestrictedClass sig) :=
+  ⟨fun _ _ => trivial⟩
+
+/-- The countable densely-ordered class is dual-closed. `OrderDual.denselyOrdered` supplies the
+order half; `Countable αᵒᵈ` has **no** named Mathlib instance, so the countability half goes
+through `inferInstanceAs`, which works because `OrderDual` is a plain `def` — the idiom already
+used at `ChronicleMonadicBridge.lean:375`. -/
+instance instIsDualClosedCountableDense : IsDualClosed (CountableDense sig) := by
+  refine ⟨fun M hM => ⟨?_, ?_⟩⟩
+  · haveI : Countable M.carrier := hM.1
+    exact inferInstanceAs (Countable M.carrier)
+  · haveI : DenselyOrdered M.carrier := hM.2
+    exact inferInstanceAs (DenselyOrdered (M.carrier)ᵒᵈ)
+
+/-- **`IsContempEquivDenseOn` transports to `dualize ε`** — all clauses, with clause (iii)
 crossing via `eval_iso` and `subintervalDualIso`.
 
-`IsContempEquivDense` itself is untouched: this is a new theorem about `dualize ε`, not a
-weakening of the structure. -/
-theorem isContempEquivDense_dualize {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε) :
-    IsContempEquivDense (dualize ε) where
-  equiv N :=
-    { refl := fun a => (contempEquivDense_dualize ε a a).mpr ((hε.equiv (dual N)).refl (d a))
-      symm := fun {a b} h =>
-        (contempEquivDense_dualize ε b a).mpr
-          ((hε.equiv (dual N)).symm ((contempEquivDense_dualize ε a b).mp h))
-      trans := fun {a b c} h₁ h₂ =>
-        (contempEquivDense_dualize ε a c).mpr
-          ((hε.equiv (dual N)).trans ((contempEquivDense_dualize ε a b).mp h₁)
-            ((contempEquivDense_dualize ε b c).mp h₂)) }
+`IsContempEquivDenseOn` itself is untouched: this is a new theorem about `dualize ε`, not a
+weakening of the structure. The class is preserved rather than changed, which is what keeps the
+~10 dual projection sites downstream in §6 free of any edit. -/
+theorem isContempEquivDense_dualize {ε : MonadicFormula sig 2}
+    {C : OrderedMonadicStructure sig → Prop} [IsDualClosed C]
+    (hε : IsContempEquivDenseOn ε C) : IsContempEquivDenseOn (dualize ε) C where
+  refl N a := (contempEquivDense_dualize ε a a).mpr (hε.refl (dual N) (d a))
+  symm := by
+    intro N a b h
+    exact (contempEquivDense_dualize ε b a).mpr
+      (hε.symm (dual N) ((contempEquivDense_dualize ε a b).mp h))
+  trans := by
+    intro N _ a b c h₁ h₂
+    exact (contempEquivDense_dualize ε a c).mpr
+      ((hε.equiv (dual N)).trans ((contempEquivDense_dualize ε a b).mp h₁)
+        ((contempEquivDense_dualize ε b c).mp h₂))
   convex := by
-    intro N a b c hab hbc hac
+    intro N _ a b c hab hbc hac
     have hac' : ContempEquivDense (dual N) ε (d a) (d c) :=
       (contempEquivDense_dualize ε a c).mp hac
     have hca' : ContempEquivDense (dual N) ε (d c) (d a) := (hε.equiv (dual N)).symm hac'
