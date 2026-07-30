@@ -443,20 +443,15 @@
     {
       "project_number": 165,
       "project_name": "establish_semantic_finite_model_property",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.\n\nCURRENT STATE (sound-only). The tableau stack exists and builds: a 28-rule calculus in Tableau.lean (23 base rules in allRules, 2 in denseRules, 3 in discreteRules), fuel-based saturation with blocking plus AppliedSet and EventualityTracker (Saturation.lean), per-frame-class closure detection (Closure.lean), and the entry point `decide` (DecisionProcedure.lean:128). Valid answers do carry proof terms, but the stack is sound only, and three gaps block any decidability theorem: (a) closed-tableau proof extraction (`extractProof`, ProofExtraction.lean:258) is a best-effort runtime search over 5 strategies that can fail, returning `.timeout` even on a genuinely closed tableau; (b) there is NO termination theorem -- `soundFuel` (Saturation.lean:627) caps at `min bound 100000` with nothing proved about it, and the original `blocking_terminates` was found FALSE (see the status discussion at Saturation.lean:1028-1060); (c) countermodel extraction proves `branchTruthLemma` (CountermodelExtraction.lean:1044) only over a bespoke `branchTruth` semantics (CountermodelExtraction.lean:263 -- direct-successor Until/Since, box quantified over a finite world list) that is NOT connected to the repository's real `TruthAt`/`valid`.\n\nWORK PACKAGES, in recommended order.\n\nWP1 -- Adversarial calculus-adequacy probe (must come first; top risk). The branch's `TimeOrdering` is a partial order while real TM time is linear, and the calculus appears to lack an ordering-trichotomy/linearity branching rule for freshly introduced times. Probe whether an open saturated branch can fail to admit any linear model. Also probe Until-guard interpolation at times not present on the branch, and blocking-vs-truth-lemma compatibility (blocked branches will need an unwinding argument). This package comes first because a negative result forces rule additions, which would invalidate every downstream proof in WP2-WP4.\n\nWP2 -- Refutation meta-theorem (closed tableau to Derivable). Replace runtime proof extraction with a theorem of the form `allClosed tableau -> Derivable fc [] phi`, established via per-rule admissibility lemmas in the Hilbert system across all ~28 rules. The untlPos/untlNeg Reynolds decomposition and z1Rule are the hard cases. The existing runtime strategies in ProofExtraction.lean are retained only as fast paths, no longer as the correctness story.\n\nWP3 -- Termination theorem. Prove a generalized subformula property covering every rule in `applyRule` (the current `subformula_property` at Saturation.lean:1014 covers only the initial branch), then a pigeonhole argument on at most 2^(2n) distinct time types showing that blocking must fire, and finally an uncapped, justified fuel function with a theorem of the form `buildTableau phi (soundFuel' phi) fc = some _`.\n\nWP4 -- Semantic bridge (open saturated branch to not-valid). This is the mathematical core, comparable in weight to a canonical-model completeness proof. Embed the finite branch time order into an actual temporal type D (arbitrary, Q, Z, or R according to frame class), interpolate valuations so that the real Until/Since guard conditions hold at in-between times, construct genuine WorldHistories and a shift-closed Omega, and prove `not TruthAt` -- thereby replacing the bespoke `branchTruth` semantics with the real one.\n\nASSEMBLY AND PAYOFF. WP2 + WP3 + WP4 together yield `Decidable (Derivable fc [] phi)` and decidability of validity for each frame class. As a corollary they also yield completeness for all four classes, which discharges the repository's single live sorry -- `countermodel_discrete` at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242, which currently taints Base `completeness` -- and supplies the missing Dedekind engine required by `completeness_dedekind_of_engine` (StrongCompleteness.lean:308, via `consequence_completeness_dedekind_of_engine` at :274).\n\nDEDEKIND CAVEAT. `allRulesForFC` (Tableau.lean:1067) gates dense rules on `Dense <= fc` and discrete rules on `Discrete <= fc`; since the FrameClass order (Axioms.lean:456-463) makes `Dense <= Dedekind` true but `Discrete <= Dedekind` false, the Dedekind class receives only the Base + Dense rules. Adequacy for Dedekind must therefore be proved rather than assumed: finite branch models do embed into R, but this requires an actual theorem.\n\nHYGIENE SUBTASK. Delete or replace the two vacuous theorems `validity_decidable` and `validity_has_decision_procedure` (Decidability/Correctness.lean:78 and :91 -- both are mere `Classical.em`/`by_cases` tautologies), and the `and True`-padded `filtered_world_bound` and `fmp_size_bound` (Decidability/FMP/FMP.lean:183 and :237). Also correct the LaTeX and Typst documentation that currently cites the unproven 2^|cl(phi)| bound as an established result.",
       "created": "2026-05-18T18:06:02Z",
-      "last_updated": "2026-07-29T22:11:54Z",
+      "last_updated": "2026-07-30T00:12:20Z",
       "topic": "completeness",
       "file_scope": [],
       "session_id": "sess_1785362916_22a871_165",
       "artifacts": [
-        {
-          "path": "specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md",
-          "type": "plan",
-          "summary": "Skeleton implementation plan: Track A to green milestone in 8 phases (20 sub-phase dispatch units, 6 waves), Track B deferred via follow-up tasks 410-412"
-        },
         {
           "path": "specs/165_establish_semantic_finite_model_property/reports/06_soundfuel-decision.md",
           "type": "report",
@@ -466,6 +461,11 @@
           "path": "specs/165_establish_semantic_finite_model_property/summaries/19_phase8-vacuous-theorem-hygiene-summary.md",
           "type": "summary",
           "summary": "Phase 8 complete: vacuous theorems retired, real 2^|cl| bound landed, decidability docs corrected"
+        },
+        {
+          "path": "specs/165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md",
+          "type": "plan",
+          "summary": "Phase 7 heading marker changed [BLOCKED] -> [COMPLETED]; new '#### SCOPE CHANGE (2026-07-29h)' subsection under the heading recording the reduced scope, the 428/429/430 rehoming table, O1-O4 one line each with file:line anchors, and the authorized-soundness-fix provenance of O2/O3; top-level Status -> [COMPLETED], follow_up_tasks extended to [410,411,412,428,429,430], new '## Scope change (Phase 7 narrowed) - 2026-07-29h' section, Definition of done restated with the original retained as superseded; the 7.3 checklist item annotated with an inline MOVED-OUT deviation marker."
         }
       ],
       "plan_metadata": {
@@ -479,6 +479,12 @@
       "previous_status": "implementing",
       "dependencies": [
         418
+      ],
+      "completion_summary": "Verified Track A decidability is delivered up to the CONDITIONAL truth-lemma results, and the rule-soundness ledger is complete at 34 of 34 TableauRule constructors. The four headline results not_valid_of_hasOpen_int, not_validDiscrete_of_hasOpen_int, not_validDense_of_hasOpen and not_validDedekindDense_of_hasOpen are sorry-free at all four frame classes, each conditional on a seven-hypothesis bundle, and the single induction is assembled as ruleSound_of_mem_allRulesForFC. The calculus repairs (R1-R7), the RuleSpec composition gate, termination (T1-T3), the semantic bridge, the interpolation core, and the vacuous-theorem hygiene pass are all complete; full lake build green at 1983 jobs with a zero sorry census over the Decidability tree and no new axioms. The unconditional terminus valid_iff_allClosed plus the four Decidable instances (item 7.3) is REHOMED, not abandoned: it is blocked on four obstructions that no task owned, now owned by task 428 (O1, engine totality - buildTableau_isSome is FALSE as stated, not merely unproved), task 429 (O2 and O3, the boxAnchoredCheck and temporalWitnessCheck side conditions, which became undischargeable as the deliberate cost of two authorized soundness fixes rather than as regressions), and task 430 (O4, the expandOnce-level rule obligations and the semantic lift, which then delivers 7.3; predecessors 428 and 429). Phase 7 therefore closes as [COMPLETED] against a reduced and documented scope; the exclusion marker was deliberately not used because work is being handed off, which fails its admission test. No conditional valid_iff_allClosed was written - hypothesising the semantic lift and concluding the iff would have been a restatement, the same vacuity Phase 8 had just removed four instances of.",
+      "roadmap_items": [
+        "Track A of the verified tableau decidability stack is delivered up to its conditional results: the truth lemma not_valid_of_hasOpen is sorry-free at all four frame classes (Base/Dense over Q, Discrete over Z, DedekindDense over R), and semantic rule soundness is complete at 34 of 34 tableau rules with the single induction over allRulesForFC assembled.",
+        "The unconditional Decidable instances for validity remain open behind four named and now-owned obstructions: engine totality at a quantified branch budget, repair of the boxAnchoredCheck and temporalWitnessCheck branch gates, and the lift from per-rule satisfiability preservation to the whole expansion recursion.",
+        "buildTableau_isSome is refuted rather than unproved - the maxBranches guard and the unsaturated-branch arm both return none independently of fuel - so any future totality result must be parameterised by a branch budget rather than stated unconditionally."
       ]
     },
     {
@@ -1057,9 +1063,9 @@
           "summary": "Plan v10 — Lemma 4 boundary case and sub-phase 22.1"
         },
         {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/33_theorem6-assembly-summary.md",
+          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/34_shuffle-step-summary.md",
           "type": "summary",
-          "summary": "Cycle-2 summary: Layers 8-10, the assembled reynolds_theorem6_contradiction, the correction to the prior cycle's sizing of the decomposition, the narrowed residual with its concrete route, and the full verification table."
+          "summary": "Cycle-3 summary: Layers 11-14, the discharged goodDense_unionClasses, the two corrections to the prior cycle's sizing, the full verification table, and a precise account of why the phase is still PARTIAL on the anti-vacuity checkbox alone."
         }
       ]
     },

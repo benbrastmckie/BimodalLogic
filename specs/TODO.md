@@ -6,35 +6,30 @@ next_project_number: 431
 
 ## Task Order
 
-*Updated 2026-07-29. Generated from state.json dependency graph.*
+*Updated 2026-07-30. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,165,231,257,298,408,413,415,419,421,423,424,428,429 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 193,219,282,296,410,420,422,425,426,430 | 165,231,298,415,421,423,428,429 | completeness, decidability, automation, ... |
-| 3 | 169,177,178,411,414 | 193,410,420,422 | formula-refactor, paper-refactor, strong_completeness |
-| 4 | 362,412,417 | 169,411,414,428 | paper-refactor, strong_completeness |
-| 5 | 95,427 | 408,412,417,419 | completeness, paper-refactor |
+| 1 | 125,127,128,193,231,257,298,408,410,413,415,419,421,423,424,426,428,429 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 177,178,219,282,296,411,420,422,425,430 | 193,231,298,410,415,421,423,428,429 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,412,414 | 411,420,422,428 | paper-refactor, strong_completeness |
+| 4 | 95,362,417 | 169,408,412,414 | completeness, paper-refactor, strong_completeness |
+| 5 | 427 | 417,419 | paper-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-165 [IMPLEMENTING] — Establish verified decidability of TM bimodal logic for all four 
-  └─ 410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
-    └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-      └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-        └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
-  └─ 426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
 408 [IMPLEMENTING] — Identify and implement the most faithful and mathematically corre
-  └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me (see above)
+  └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
+426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
 
 ### Decidability
 
 428 [NOT STARTED] — Engine totality at a quantified branch budget. Owns obstruction O
-  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t (see above)
+  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
   └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
   └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o (see above)
@@ -87,6 +82,10 @@ next_project_number: 431
 424 [NOT STARTED] — Prove, in both directions, that the task-model class is represent
 
 ### Uncategorized
+
+410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
+  └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+    └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t (see above)
 
 ## Tasks
 
@@ -483,7 +482,7 @@ SCOPE BOUNDARY ADDENDUM (2026-07-28): the frame-definition subsection of latex/s
 - **Dependencies**: None
 - **Research**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/09_lemma6-first-clause-blocker.md]
 - **Plan**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/10_strong-completeness-dedekind-v10.md]
-- **Summary**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/33_theorem6-assembly-summary.md]
+- **Summary**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/34_shuffle-step-summary.md]
 
 **Description**: Identify and implement the most faithful and mathematically correct route to completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics).
 
@@ -842,13 +841,13 @@ Governing design document: specs/361_strong_completeness_architecture_and_weak_t
 ---
 
 ### 165. Establish semantic finite model property
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 418
-- **Plan**: [165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md]
 - **Research**: [165_establish_semantic_finite_model_property/reports/06_soundfuel-decision.md]
 - **Summary**: [165_establish_semantic_finite_model_property/summaries/19_phase8-vacuous-theorem-hygiene-summary.md]
+- **Plan**: [165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md]
 
 **Description**: Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.
 
