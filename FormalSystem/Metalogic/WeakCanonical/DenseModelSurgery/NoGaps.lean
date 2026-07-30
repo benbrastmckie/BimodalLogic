@@ -507,6 +507,125 @@ theorem endsInGapOnRight_of_mem (hS : IsBadIntervalSurgery M ε Q t) {u : M.carr
   obtain ⟨a, b, _, _, hint⟩ := hS.interior u u hu hu
   exact hint.toR.rThroughout u hint.toR.left_lt.le hint.toR.lt_right.le
 
+/-- **`L` holds throughout the bad interval in `M`** — Lemma 6's first clause, `L` half, in the
+form the interiority witnesses already carry.
+
+The exact mirror of `endsInGapOnRight_of_mem`, through `ClassInteriorToBadInterval.lThroughout`
+(`BadIntervals.lean`) instead of `.toR.rThroughout`. Lemma 6 states *"in any bad interval both
+`R` and `L` hold throughout"* (printed p.180); only the `R` half was named. -/
+theorem endsInGapOnLeft_of_mem (hS : IsBadIntervalSurgery M ε Q t) {u : M.carrier} (hu : Q u) :
+    EndsInGapOnLeft M ε u := by
+  obtain ⟨a, b, _, _, hint⟩ := hS.interior u u hu hu
+  exact hint.lThroughout u hint.toR.left_lt.le hint.toR.lt_right.le
+
+/-! ## `I` has no endpoints
+
+Reynolds' Lemma 4 — *"no last class and no first class in any maximal interval of `R`"* — is a
+statement about **classes**. The two results below are the corresponding statements about
+**points** of a single class, and they are what rule out the designated class `I` of a surgery
+having a least or a greatest element.
+
+The distinction is load-bearing. Removing the classes of `Q₀` below `I` creates adjacency in
+`surgeredStructure M ε Q t` only if `I` has a least element; because it does not, `I` itself
+supplies survivors arbitrarily close to its own lower edge, and the surgered structure is
+densely ordered (`denselyOrdered_surgeredStructure`). An earlier record in this development
+inferred point-adjacency from Lemma 4 directly and concluded the opposite; that inference does
+not go through, and the source of the missing premise is Lemma 6's first clause, which
+`IsBadIntervalSurgery.interior` already supplies at every point of `Q₀`. -/
+
+/-- **`I` has no last point**: a class-mate of `t` strictly above any given point of the class.
+
+`R` holds at every point of `Q₀` (`endsInGapOnRight_of_mem`), and `ρ`'s second conjunct is
+exactly *"the class has no last point"* (`exists_contemp_gt`). -/
+theorem exists_contemp_gt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
+    (hε : IsContempEquivDense ε) {x : M.carrier} (hx : ContempEquivDense M ε t x) :
+    ∃ w : M.carrier, x < w ∧ ContempEquivDense M ε t w := by
+  obtain ⟨w, hxw, hcw⟩ :=
+    exists_contemp_gt hε M (endsInGapOnRight_of_mem hS (hS.mem_of_contemp_base hε hx))
+  exact ⟨w, hxw, contemp_trans hε M hx hcw⟩
+
+/-- **`I` has no first point** — the mirror of `exists_contemp_gt_of_mem`, through
+`endsInGapOnLeft_of_mem` and `λ`'s second conjunct (`exists_contemp_lt`). -/
+theorem exists_contemp_lt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
+    (hε : IsContempEquivDense ε) {x : M.carrier} (hx : ContempEquivDense M ε t x) :
+    ∃ w : M.carrier, w < x ∧ ContempEquivDense M ε t w := by
+  obtain ⟨w, hwx, hcw⟩ :=
+    exists_contemp_lt hε M (endsInGapOnLeft_of_mem hS (hS.mem_of_contemp_base hε hx))
+  exact ⟨w, hwx, contemp_trans hε M hx hcw⟩
+
+/-- **`N` is countable when `M` is** — the domain of `N` is a subtype of `M`'s. -/
+theorem countable_surgeredStructure (M : OrderedMonadicStructure sig)
+    (ε : MonadicFormula sig 2) (Q : M.carrier → Prop) (t : M.carrier) [Countable M.carrier] :
+    Countable (surgeredStructure M ε Q t).carrier :=
+  Subtype.countable
+
+/-- **`N` is densely ordered when `M` is** — printed p.181's *"the substructure of `M` whose
+domain is just `Q⁻ ∪ I ∪ Q⁺`"*, shown dense.
+
+Reynolds does not argue this, because his `∼` is contemporaneous at every structure and so he
+never needs density at `N`. It is needed here to project clauses (i)/(ii) of the countable-dense
+bundle at `N`, which is the single site in §6 that does so (`reynolds_lemma9`).
+
+The proof cases on the two `SurgeryDomain` disjuncts at each endpoint:
+
+* **both in `I`** — an `M`-dense point between them is in `I` by convexity of the class;
+* **`x ∈ I`, `y ∉ Q₀`** — then `t < y`, and `I` has no last point, so a class-mate `w > x` exists;
+  `w ∈ Q₀` and `y ∉ Q₀` above `t` put `w < y`;
+* **`x ∉ Q₀`, `y ∈ I`** — the mirror, through `exists_contemp_lt_of_mem`;
+* **both outside `Q₀`, straddling `t`** — `t` itself survives, by reflexivity;
+* **both outside `Q₀`, on one side** — an `M`-dense point between them is outside `Q₀`, since a
+  point of `Q₀` would have to lie beyond the further endpoint by convexity.
+
+Note the clauses of `hε` are projected **only at `M`**, never at `N`: there is no circularity in
+using this result to supply the instances that license the projection at `N`. -/
+theorem denselyOrdered_surgeredStructure (hS : IsBadIntervalSurgery M ε Q t)
+    (hε : IsContempEquivDense ε) [DenselyOrdered M.carrier] :
+    DenselyOrdered (surgeredStructure M ε Q t).carrier := by
+  refine ⟨fun x y hxy => ?_⟩
+  have hlt : x.val < y.val := hxy
+  rcases x.property with hxout | hxI
+  · rcases y.property with hyout | hyI
+    · rcases hS.lt_or_gt_of_not_mem hxout with hxt | htx
+      · rcases hS.lt_or_gt_of_not_mem hyout with hyt | hty
+        · -- Both wholly below `Q₀`.
+          obtain ⟨w, hxw, hwy⟩ := exists_between hlt
+          refine ⟨⟨w, Or.inl fun hQw => ?_⟩, hxw, hwy⟩
+          exact absurd (hS.lt_of_before hyout hyt hQw) (lt_asymm hwy)
+        · -- Straddling: `t` itself survives its own surgery.
+          exact ⟨⟨t, Or.inr (contemp_refl hε M t)⟩, hxt, hty⟩
+      · rcases hS.lt_or_gt_of_not_mem hyout with hyt | hty
+        · exact absurd (hlt.trans hyt) (lt_asymm htx)
+        · -- Both wholly above `Q₀`.
+          obtain ⟨w, hxw, hwy⟩ := exists_between hlt
+          refine ⟨⟨w, Or.inl fun hQw => ?_⟩, hxw, hwy⟩
+          exact absurd (hS.lt_of_after hxout htx hQw) (lt_asymm hxw)
+    · -- `x` outside `Q₀`, `y ∈ I`: `I` has no first point.
+      have hQy : Q y.val := hS.mem_of_contemp_base hε hyI
+      have hxt : x.val < t := by
+        rcases hS.lt_or_gt_of_not_mem hxout with h | h
+        · exact h
+        · exact absurd (hS.lt_of_after hxout h hQy) (lt_asymm hlt)
+      obtain ⟨w, hwy, hwI⟩ := exists_contemp_lt_of_mem hS hε hyI
+      exact ⟨⟨w, Or.inr hwI⟩,
+        hS.lt_of_before hxout hxt (hS.mem_of_contemp_base hε hwI), hwy⟩
+  · rcases y.property with hyout | hyI
+    · -- `x ∈ I`, `y` outside `Q₀`: `I` has no last point.
+      have hQx : Q x.val := hS.mem_of_contemp_base hε hxI
+      have hty : t < y.val := by
+        rcases hS.lt_or_gt_of_not_mem hyout with h | h
+        · exact absurd (hS.lt_of_before hyout h hQx) (lt_asymm hlt)
+        · exact h
+      obtain ⟨w, hxw, hwI⟩ := exists_contemp_gt_of_mem hS hε hxI
+      exact ⟨⟨w, Or.inr hwI⟩, hxw,
+        hS.lt_of_after hyout hty (hS.mem_of_contemp_base hε hwI)⟩
+    · -- Both in `I`: convexity of the class.
+      obtain ⟨w, hxw, hwy⟩ := exists_between hlt
+      have hwI : ContempEquivDense M ε t w :=
+        contemp_of_mem_class_interval hε hxI hyI
+          (by rw [min_eq_left hlt.le]; exact hxw.le)
+          (by rw [max_eq_right hlt.le]; exact hwy.le)
+      exact ⟨⟨w, Or.inr hwI⟩, hxw, hwy⟩
+
 /-- **A stretch of bad points above `t` lies inside `Q₀`** — maximality of the bad interval,
 used twice below. -/
 theorem mem_of_badStretch (hS : IsBadIntervalSurgery M ε Q t) {r : M.carrier} (htr : t < r)
