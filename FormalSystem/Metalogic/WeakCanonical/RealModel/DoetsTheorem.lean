@@ -54,16 +54,19 @@ Four layers, bottom-up:
 4. **The theorem** (`doets_theorem_dense`), with D1 and D2 spelled as explicit hypotheses in the
    form Phase 30 consumes them.
 
-## Honesty charter — the state of the main branch
+## State of the main branch
 
 Reynolds' proof of Theorem 6 (printed pp.187-188) is a proof by contradiction whose core is a
 **minimality argument over the finite `γ`-palette `G`**: choose `a < b` with `a ≁ b` and `G`
 minimal among all such choices, then show `M | (a,b)` is very good — contradicting `a ≁ b` via
-Lemma 11. That minimality argument is **not landed here**; see `doets_theorem_dense_core` below,
-which carries it as a single named, tracked hypothesis rather than as an unproved assertion
-buried in a tactic block. Everything Reynolds routes *through* that argument — the shuffle
-identification, the `ℝ`-extension, the order-isomorphism to `ℝ`, and the `ℝ`-flow normalization —
-**is** landed here, sorry-free.
+Lemma 11. That argument is landed here, as `reynolds_theorem6_contradiction`, and so is everything
+it routes through: the shuffle identification, the `ℝ`-extension, the order-isomorphism to `ℝ`, and
+the `ℝ`-flow normalization. `doets_theorem_dense` is the printed statement with no added
+hypotheses, and the whole chain is `sorry`-free and reports only `propext`, `Classical.choice` and
+`Quot.sound`.
+
+An earlier revision of this module carried the minimality argument as a named hypothesis of a
+`doets_theorem_dense_core`; that declaration is gone, discharged rather than renamed.
 
 ## Source-to-implementation map
 
@@ -78,7 +81,11 @@ identification, the `ℝ`-extension, the order-isomorphism to `ℝ`, and the `�
 | p.188, *"`R` is dense … Dedekind complete … countable dense subflow"* | `isRealLike_shuffleReal` (`ShuffleReal.lean:625`) |
 | p.188, *"so `R` is isomorphic to the reals"* | `nonempty_orderIso_real_shuffleReal` (`ShuffleReal.lean:647`) |
 | p.188, *"and hence `Σ_{r∈ℝ} σ*(r)` is good"* | `goodDense_shuffleReal` (this module) |
-| p.188, the `G`-minimality contradiction | `doets_theorem_dense_core` hypothesis (this module) |
+| p.187, *"choose an `N_γ ⊨ γ` with flow an interval of `ℝ`"* | `exists_iccLike_witness` (this module) |
+| p.188, *"the summands themselves are closed intervals of the reals"* | `exists_iccLike_contempClass` (this module) |
+| p.187, *"all the `γᵢ`'s in `G` are satisfied densely in `I`"* | `isShuffleMap_classColour` (this module) |
+| p.187, *"we can choose `σ : ℚ → {N_γ | γ ∈ G}` appropriately"* | `classColour` composed with `e.symm` (this module) |
+| p.188, the `G`-minimality contradiction | `reynolds_theorem6_contradiction` (this module) |
 | p.187, *"`M | (c,d) ≡ₖ X + R + Y`"* | `doets_lemma_1_4` (`OrderedSum.lean:46`) |
 -/
 
@@ -1825,41 +1832,133 @@ theorem isShuffleMap_classColour (D1 : DoetsD1 sig M)
 
 end ColourMap
 
-/-! ## The residual, narrowed to the shuffle step
+/-! ## Layer 14 — the shuffle step
 
-Layers 8-10 discharge Reynolds' closing paragraph *except* for the goodness of the middle block
-`M | ⋃I`, which is the shuffle. `goodDense_unionClasses` below carries that one obligation, with
-every input Reynolds names available in its hypotheses:
+Layers 8-10 discharge Reynolds' closing paragraph except for the goodness of the middle block
+`M | ⋃I`, which is the shuffle; Layers 11-13 supply its three ingredients. This layer composes
+them, and `goodDense_unionClasses` is Reynolds' shuffle sentence with nothing left over:
 
-* `hmin` is the minimality of `G` — the input to `gammaBetween_dense_of_minimal` (Layer 5), which
-  is *"all the `γᵢ`'s in `G` are satisfied densely in `I`"*;
-* `D1` gives `I ≃o ℚ` through `nonempty_orderIso_rat_classBetween_epsDense` (Layers 6-7), which is
-  *"the classes in `I` have order type `ℚ`"*;
-* `D2` gives the dense set of singleton classes, which is the `γ₁` clause of Reynolds' `σ*`;
+* `hmin` is the minimality of `G`, feeding `isShuffleMap_classColour` (Layer 13);
+* `D1` gives `I ≃o ℚ` through `nonempty_orderIso_rat_classBetween_epsDense` (Layers 6-7) — *"the
+  classes in `I` have order type `ℚ`"*;
+* `D2` gives the dense set of singleton classes, which is `γ₁` — Reynolds' one-point colour;
 * `hI` is `⋃I = (c',d')` (Layer 10), so the block map on `M | (c',d')` is indexed by `I`.
 
-**What is still missing, precisely.** Two things, and neither is the composition:
-
-1. **The choice of `N_γ`.** Printed p.187, *"for each `γ ∈ G`, choose an `N_γ ⊨ γ` with flow of time
-   an interval of `ℝ`"*, used on p.188 as *"because the `γᵢ`'s say so the summands themselves are
-   closed intervals of the reals"*. `goodDense_shuffle` (Layer 3) asks for exactly that in six
-   spellings — `hne`, `hdense`, `hsum`, `hbot`, `hone`, `hsep` — and discharging them needs a
-   normalization lemma the tree does not have: *"a good, densely ordered, countable structure with
-   a least and a greatest point has a `≡ₖ`-equivalent whose flow is a closed bounded interval of
-   `ℝ`"*. `exists_ioo_witness` (`GoodDense.lean:713`) is the end-point-**free** case of the same
-   normalization, and `icoBlock` / `kEquiv_pointSum_icoBlock` are the one-sided case; the two-sided
-   closed case has no counterpart. Lemma 13 is what supplies the two end points on the `M` side.
-2. **The choice of `σ`.** Printed p.187, *"we can choose `σ : ℚ → {N_γ | γ ∈ G}` appropriately"*.
-   `σ` is not free: it is forced to be *"the `γ` realized by the class at that rational"*, i.e.
-   `σ := colour ∘ e.symm` for `e : I ≃o ℚ`. With `σ` so defined, `hmatch` of
-   `kEquiv_blocks_shuffle` holds by construction and `IsShuffleMap S σ` is exactly
-   `gammaBetween_dense_of_minimal` transported along `e`. So this half is bookkeeping over landed
-   assets — but it cannot be written before (1) fixes what `N` is.
-
-The **order** matters: (1) determines the type `ι` and the family `N`, and `σ` lands in `ι`, so (1)
-must be written first. Item (1) is genuinely new mathematics of the same kind
-`exists_orderIso_ioo01_of_ordConnected` already does once; item (2) is not.
+The composition is `kEquiv_blocks_shuffle` (Reynolds' `M | (⋃ I) = Σ_{E ∈ I} M | E ≡ₖ
+Σ_{q ∈ ℚ} σ(q)`) followed by `goodDense_shuffle` (his `Σ_{q ∈ ℚ} σ(q) ≡ₖ Σ_{r ∈ ℝ} σ*(r)` and
+*"`R` is isomorphic to the reals"*). The only step of the composition Reynolds does not write is
+`kEquiv_classBlock`: his `M | E` is the class cut from `M`, while the block map cuts it from
+`M | (c',d')`, and in Lean those are different types.
 -/
+
+section ShuffleStep
+
+variable (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
+  [Countable M.carrier] [DenselyOrdered M.carrier]
+
+include hk
+
+/--
+**Reynolds' `γ₁`** — printed p.188, the colour that *"is only satisfied by one point structures"*,
+produced where Reynolds produces it: from D2.
+
+D2's conclusion is a dense set of singleton classes, and a singleton class strictly inside `(c,d)`
+is all `γ₁` needs to be: its class structure is a one-point structure, so `γ₁` is the normal form
+of a one-point structure, and it lies in `G` because the class lies inside `(c,d) ⊆ (a,b)`.
+-/
+theorem exists_singleton_class_between (D1 : DoetsD1 sig M) (D2 : DoetsD2 sig M)
+    (h : IsConvexEquiv M (epsDense sig k)) {c d : M.carrier} (hcd : c < d)
+    (hns : ¬ SimDense sig k M c d) :
+    ∃ e₁ : M.carrier, ClassStrictlyBetween M (epsDense sig k) c d e₁ ∧
+      Subsingleton (contempClassStructure sig M (epsDense sig k) e₁).carrier := by
+  obtain ⟨e₁, hce, hed, hsing⟩ :=
+    doetsD2_epsDense sig k hk M D2 (quotientDenselyOrdered_epsDense k hk M D1) c d hcd
+      (fun hc => hns ((contempEquivDense_epsDense_iff k M c d).mp hc))
+  refine ⟨e₁, ?_, ⟨fun u v => Subtype.ext
+    ((hsing u.val u.property).trans (hsing v.val v.property).symm)⟩⟩
+  intro x hx
+  rw [hsing x hx]
+  exact ⟨hce, hed⟩
+
+/--
+**The family `{N_γ | γ ∈ G}`** — Reynolds' choice, printed p.187, made once.
+
+Three clauses, one per use the shuffle puts the family to. `IsIccLike` holds at **every** index
+because `goodDense_shuffle` quantifies its five summand hypotheses over all of `ι` rather than over
+`S`; at indices outside `G` the value is the degenerate interval, which satisfies them trivially.
+*"`N_γ ⊨ γ`"* holds at the indices `σ` can reach, by Layer 12 at a class realizing `γ`. And the
+`γ₁` clause carries `hone` through.
+-/
+theorem exists_iccLike_family (D1 : DoetsD1 sig M) (h : IsConvexEquiv M (epsDense sig k))
+    (a b : M.carrier) (γ₁ : NormalForm sig k 0) (N₁ : OrderedMonadicStructure sig)
+    (h₁icc : IsIccLike sig N₁) (h₁one : ∀ u v : N₁.carrier, u = v)
+    (h₁nf : NfEvalNf N₁ k 0 Fin.elim0 γ₁) :
+    ∀ γ : NormalForm sig k 0, ∃ Nγ : OrderedMonadicStructure sig, IsIccLike sig Nγ ∧
+      (γ ∈ gammaBetween sig k (epsDense sig k) M a b → NfEvalNf Nγ k 0 Fin.elim0 γ) ∧
+      (γ = γ₁ → ∀ u v : Nγ.carrier, u = v) := by
+  intro γ
+  by_cases hγ₁ : γ = γ₁
+  · exact ⟨N₁, h₁icc, fun _ => by rw [hγ₁]; exact h₁nf, fun _ => h₁one⟩
+  by_cases hγ : γ ∈ gammaBetween sig k (epsDense sig k) M a b
+  · obtain ⟨-, x, hbet, hnf⟩ := mem_gammaBetween.mp hγ
+    obtain ⟨R, hRicc, hR⟩ := exists_iccLike_contempClass k hk M D1 h hbet
+    exact ⟨R.toOrdered sig, hRicc, fun _ => nfEvalNf_of_kEquiv k hR hnf,
+      fun hc => absurd hc hγ₁⟩
+  · exact ⟨(trivialIccStructure sig).toOrdered sig, isIccLike_trivialIccStructure,
+      fun hc => absurd hc hγ, fun hc => absurd hc hγ₁⟩
+
+/--
+**A block of `M | (c',d')` is a class of `M`** — the one step of Reynolds' composition he does not
+write, because on paper `M | E` is one object.
+
+The block `{v ∈ (c',d') | v's class is E}` and the class `E` cut straight out of `M` have the same
+points, since `E ⊆ (c',d')` by `hI`; `kEquiv_openSub_restrictSet` (Layer 12) is the identification,
+and `kEquiv_of_shared_nf` then replaces the class by the family's representative of its colour —
+Reynolds' *"for any `E ∈ I`, `M | E ≡ₖ N_γ` for one of the `γ`'s in `G`"*.
+-/
+theorem kEquiv_classBlock (D1 : DoetsD1 sig M) (h : IsConvexEquiv M (epsDense sig k))
+    {a b c d c' d' : M.carrier} (hac : a ≤ c) (hdb : d ≤ b)
+    (hI : ∀ y : M.carrier, ClassStrictlyBetween M (epsDense sig k) c d y ↔ (c' < y ∧ y < d'))
+    (N : NormalForm sig k 0 → OrderedMonadicStructure sig)
+    (hNnf : ∀ γ : NormalForm sig k 0, γ ∈ gammaBetween sig k (epsDense sig k) M a b →
+      NfEvalNf (N γ) k 0 Fin.elim0 γ)
+    (hclsP : ∀ v : (M.openSubinterval sig c' d').carrier,
+      h.ClassStrictlyBetweenQ c d (h.cls v.val))
+    (i : h.ClassBetween c d) :
+    KEquiv sig k ((M.openSubinterval sig c' d').restrictSet sig
+        {v : (M.openSubinterval sig c' d').carrier |
+          (⟨h.cls v.val, hclsP v⟩ : h.ClassBetween c d) = i})
+      (N (classColour h k i.val)) := by
+  obtain ⟨x, hxi⟩ := Quotient.exists_rep i.val
+  have hxbet : ClassStrictlyBetween M (epsDense sig k) c d x := by
+    have hp := i.property
+    rw [← hxi] at hp
+    exact hp
+  have hsub : ∀ y ∈ {y : M.carrier | ContempEquivDense M (epsDense sig k) x y},
+      c' < y ∧ y < d' :=
+    fun y hy => (hI y).mp (fun w hw => hxbet w (h.equiv.trans hy hw))
+  have hseteq : {v : (M.openSubinterval sig c' d').carrier |
+        (⟨h.cls v.val, hclsP v⟩ : h.ClassBetween c d) = i} =
+      {v : (M.openSubinterval sig c' d').carrier |
+        v.val ∈ {y : M.carrier | ContempEquivDense M (epsDense sig k) x y}} := by
+    ext v
+    simp only [Set.mem_setOf_eq, Subtype.ext_iff]
+    rw [← hxi]
+    exact ⟨fun hv => h.equiv.symm (h.cls_eq_cls_iff.mp hv),
+      fun hv => h.cls_eq_cls_iff.mpr (h.equiv.symm hv)⟩
+  rw [hseteq]
+  have hcolour : classColour h k i.val = classNF sig k M (epsDense sig k) x := by
+    rw [← hxi]
+    exact classColour_cls h k x
+  have hnfN : NfEvalNf (N (classColour h k i.val)) k 0 Fin.elim0
+      (classNF sig k M (epsDense sig k) x) := by
+    rw [hcolour]
+    refine hNnf _ (classNF_mem_gammaBetween k hk M h (fun z hz => ?_))
+    exact ⟨lt_of_le_of_lt hac (hxbet z hz).1, lt_of_lt_of_le (hxbet z hz).2 hdb⟩
+  exact (kEquiv_openSub_restrictSet k M _ hsub).trans
+    (kEquiv_of_shared_nf k (classNF_spec k M (epsDense sig k) x) hnfN)
+
+end ShuffleStep
 
 /--
 **`M | ⋃I` is good** — Reynolds 1992, §8, printed pp.187-188, the shuffle step:
@@ -1868,16 +1967,10 @@ must be written first. Item (1) is genuinely new mathematics of the same kind
 > `G`, all the `γᵢ`'s in `G` are satisfied densely in `I`. … `M | (⋃ I) = Σ_{E ∈ I} M | E ≡ₖ
 > Σ_{q ∈ ℚ} σ(q)` … `Σ_{q ∈ ℚ} σ(q) ≡ₖ Σ_{r ∈ ℝ} σ*(r)` … `R` is isomorphic to the reals.
 
-**This is the one remaining gap in Block H**, and it is carried here as a single named `sorry` at
-the narrowest statement that still has all of Reynolds' inputs in scope. See the section header
-above for the two items it still needs — the closed-interval normalization for `N_γ`, and then the
-forced choice of `σ` — and for why they must be done in that order.
-
-Everything this residual is *consumed by* is sorry-free: `goodDense_openSub_of_mid_le` (Layer 8),
-the two end-point constructions (Layer 9), and the `⋃I` identification (Layer 10). Everything it
-routes *through* is sorry-free: `gammaBetween_dense_of_minimal`,
-`nonempty_orderIso_rat_classBetween_epsDense`, `kEquiv_blocks_shuffle`,
-`kEquiv_shuffle_shuffleReal`, `nonempty_orderIso_real_shuffleReal`, `goodDense_shuffle`.
+The proof is that paragraph, in order: `e : I ≃o ℚ` is the first sentence (Layers 6-7), `γ₁` and its
+one-point structure come from D2 (Layer 14), the family `{N_γ}` from Layers 11-12, the block
+identification `M | (⋃ I) = Σ_{E ∈ I} M | E ≡ₖ Σ_{q ∈ ℚ} σ(q)` from `kEquiv_blocks_shuffle` over
+`kEquiv_classBlock`, and the passage to `ℝ` from `goodDense_shuffle`.
 -/
 theorem goodDense_unionClasses (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds] (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
@@ -1891,7 +1984,52 @@ theorem goodDense_unionClasses (sig : MonadicSignature) [Fintype sig.preds]
     (hns : ¬ SimDense sig k M c d) {c' d' : M.carrier} (hc'd' : c' < d')
     (hI : ∀ e : M.carrier, ClassStrictlyBetween M (epsDense sig k) c d e ↔ (c' < e ∧ e < d')) :
     goodDense sig k (M.openSubinterval sig c' d') := by
-  sorry
+  classical
+  -- *"the classes in `I` have order type `ℚ`"*
+  obtain ⟨e⟩ := nonempty_orderIso_rat_classBetween_epsDense k hk M D1 hcd hns
+  set h := isConvexEquiv_epsDense k hk M with hhIC
+  -- Reynolds' `γ₁`: a singleton class strictly inside `(c,d)`, from D2.
+  obtain ⟨e₁, hbet₁, hsub₁⟩ := exists_singleton_class_between k hk M D1 D2 h hcd hns
+  haveI : Nonempty (contempClassStructure sig M (epsDense sig k) e₁).carrier :=
+    ⟨⟨e₁, h.equiv.refl e₁⟩⟩
+  haveI := hsub₁
+  obtain ⟨R₁, hR₁set, hR₁⟩ :=
+    exists_icc_witness_of_subsingleton k (contempClassStructure sig M (epsDense sig k) e₁)
+  -- Widening `(c,d)` to `(a,b)`, so that `G` is the palette at both.
+  have hwiden : ∀ y : M.carrier, ClassStrictlyBetween M (epsDense sig k) c d y →
+      ClassStrictlyBetween M (epsDense sig k) a b y :=
+    fun y hy z hz => ⟨lt_of_le_of_lt hac (hy z hz).1, lt_of_lt_of_le (hy z hz).2 hdb⟩
+  -- *"for each `γ ∈ G` choose an `N_γ ⊨ γ` whose flow is an interval of the reals"*
+  have hfam := exists_iccLike_family k hk M D1 h a b (classNF sig k M (epsDense sig k) e₁)
+    (R₁.toOrdered sig) (isIccLike_of_carrierSet_eq_Icc R₁ (le_refl (0 : ℝ)) hR₁set)
+    (subsingleton_of_carrierSet_eq_Icc_self R₁ hR₁set)
+    (nfEvalNf_of_kEquiv k hR₁ (classNF_spec k M (epsDense sig k) e₁))
+  choose N hNicc hNnf hNone using hfam
+  -- *"the `∼`-class of"*, read on `M | (c',d')`, with `I` as its index
+  have hclsP : ∀ v : (M.openSubinterval sig c' d').carrier,
+      h.ClassStrictlyBetweenQ c d (h.cls v.val) :=
+    fun v => h.classStrictlyBetweenQ_cls.mpr ((hI v.val).mpr ⟨v.property.1, v.property.2⟩)
+  have hmono : ∀ u v : (M.openSubinterval sig c' d').carrier,
+      (⟨h.cls u.val, hclsP u⟩ : h.ClassBetween c d) < ⟨h.cls v.val, hclsP v⟩ → u < v :=
+    fun _ _ huv => (h.cls_lt_cls.mp (Subtype.coe_lt_coe.mpr huv)).1
+  have hσ := isShuffleMap_classColour k hk M D1 h hmin hac hdb e
+  refine goodDense_of_kEquiv sig k
+    (kEquiv_blocks_shuffle k (M.openSubinterval sig c' d')
+      (fun v => (⟨h.cls v.val, hclsP v⟩ : h.ClassBetween c d)) hmono e N
+      (gammaBetween sig k (epsDense sig k) M a b)
+      (fun q => classColour h k (e.symm q).val) hσ ?_)
+    (goodDense_shuffle N (classNF sig k M (epsDense sig k) e₁)
+      (fun q => classColour h k (e.symm q).val) k
+      (classNF_mem_gammaBetween k hk M h (hwiden e₁ hbet₁)) hσ
+      (fun i => (hNicc i).1) (fun i => (hNicc i).2.1) (fun i => (hNicc i).2.2.1)
+      (fun i => (hNicc i).2.2.2.1) (hNone _ rfl) (fun i => (hNicc i).2.2.2.2))
+  intro i
+  show KEquiv sig k ((M.openSubinterval sig c' d').restrictSet sig
+      {v : (M.openSubinterval sig c' d').carrier |
+        (⟨h.cls v.val, hclsP v⟩ : h.ClassBetween c d) = i})
+    (N (classColour h k (e.symm (e i)).val))
+  rw [OrderIso.symm_apply_apply]
+  exact kEquiv_classBlock k hk M D1 h hac hdb hI N hNnf hclsP i
 
 /--
 **Reynolds' §8 Theorem 6 contradiction** — printed pp.187-188, assembled.
@@ -1906,9 +2044,9 @@ very-goodness of `M | (a,b)` is `SimDense` at `a,b` and so contradicts `a ≁ b`
 `veryGoodDense_openSubinterval_iff` reduces it to goodness of each `M | (c,d)`, the `c ∼ d` branch
 is Lemma 11, and the `c ≁ d` branch is Layers 8-10 over `goodDense_unionClasses`.
 
-**Honesty note.** This theorem is now free of a `sorry` in its own body, but it is *not* yet
-sorry-free: it consumes `goodDense_unionClasses`, which carries the tracked residual. `#print
-axioms` still reports `sorryAx` here, and will until the shuffle step lands.
+Sorry-free, and axiom-clean: `#print axioms` reports exactly `propext`, `Classical.choice` and
+`Quot.sound`. `goodDense_unionClasses`, which used to carry the shuffle step as a tracked residual,
+is itself sorry-free since Layers 11-14 landed.
 -/
 theorem reynolds_theorem6_contradiction (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds] (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
