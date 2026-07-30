@@ -217,6 +217,13 @@ open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature}
 
+/-! The structure class §6 is parameterized over, together with its dual-closure hypothesis; see
+`IsContempEquivDenseOn` and `IsDualClosed` (`Defs.lean`, `Dual.lean`). `IsDualClosed` is carried at
+file scope rather than per-declaration because the mirror halves of Lemmas 5-9 obtain their results
+by running the unmirrored half at `dual M`, and every caller of those halves needs it too. At both
+instantiations of `C` it is discharged by instance search, so no call site mentions it. -/
+variable {C : OrderedMonadicStructure sig → Prop} [IsDualClosed C]
+
 /-! ## Environment lookups
 
 `Lemma5.lean`'s lookups are `private` to that module, so the two this module's transcriptions
@@ -347,8 +354,8 @@ theorem notLeftEndFormula_eval (M : OrderedMonadicStructure sig) (ε : MonadicFo
 
 /-- **`B` is upward closed in a class** — *"`B` is true continuously in any class from just after
 the left hand end point up until the gap"* (printed p.180). -/
-theorem notLeftEnd_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) {t u : M.carrier} (htu : ContempEquivDense M ε t u)
+theorem notLeftEnd_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t u : M.carrier} (htu : ContempEquivDense M ε t u)
     (hle : t ≤ u) (ht : NotLeftEnd M ε t) : NotLeftEnd M ε u := by
   obtain ⟨v, hvc, hvt⟩ := ht
   exact ⟨v, contemp_trans hε M (contemp_symm hε M htu) hvc, lt_of_lt_of_le hvt hle⟩
@@ -394,7 +401,7 @@ right. No temporal formula and no Prior axiom is involved: this is pure class ca
 If `t`'s class begins just after `r` — `r` below the class, and everything in `(r, t)` inside it —
 then `r` is the greatest element of its own class, so `ρ` fails at `r`. -/
 theorem not_endsInGapOnRight_of_immediatePredecessor {ε : MonadicFormula sig 2}
-    (hε : IsContempEquivDense ε) (M : OrderedMonadicStructure sig) {t r : M.carrier}
+    (hε : IsContempEquivDenseOn ε C) (M : OrderedMonadicStructure sig) [InStructureClass C M] {t r : M.carrier}
     (hrt : r < t) (hnrt : ¬ ContempEquivDense M ε t r)
     (hbetween : ∀ y : M.carrier, r < y → y < t → ContempEquivDense M ε t y) :
     ¬ EndsInGapOnRight M ε r := by
@@ -448,7 +455,7 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 One direction of Reynolds' *"use the previous result"* step: it is what lets Lemma 5 be applied
 to the property *"includes its left hand end point"*, which is not itself a temporal formula. -/
 theorem leftEnd_iff_exists_not_notLeftEnd {ε : MonadicFormula sig 2}
-    (hε : IsContempEquivDense ε) (M : OrderedMonadicStructure sig) (t : M.carrier) :
+    (hε : IsContempEquivDenseOn ε C) (M : OrderedMonadicStructure sig) [InStructureClass C M] (t : M.carrier) :
     (∃ w : M.carrier, ContempEquivDense M ε t w ∧
         ∀ u : M.carrier, ContempEquivDense M ε t u → ¬ u < w) ↔
       ∃ w : M.carrier, ContempEquivDense M ε t w ∧ ¬ NotLeftEnd M ε w := by
@@ -471,8 +478,8 @@ Given one class in the interval that includes its left hand end point, every cla
 meets does. Lemma 5's first statement, applied to `¬B`. -/
 theorem exists_leftEnd_throughout (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {z q : M.carrier}
     (hIcc : ∀ p : M.carrier, min z q ≤ p → p ≤ max z q → EndsInGapOnRight M ε p)
     (hz : ¬ NotLeftEnd M ε z) :
@@ -519,8 +526,8 @@ convexity of the interval supplies `R` in between, which is exactly what
 `ClassInteriorToRInterval` packages. -/
 theorem false_of_allClassesHaveLeftEnd (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap)
     {s v b : M.carrier} (hs : EndsInGapOnRight M ε s)
     (hvs : v < s) (hvc : ContempEquivDense M ε s v)
@@ -620,8 +627,8 @@ does"*.**
 `t`. -/
 theorem endsInGapOnLeft_of_endsInGapOnRight (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {a t b : M.carrier}
     (hint : ClassInteriorToRInterval M ε a t b) :
     EndsInGapOnLeft M ε t := by
@@ -680,8 +687,8 @@ intervals"*, right-hand half.**
 Where `R` holds, `R` holds on a whole stretch above, so the point is not an isolated bad point.
 This is `endsInGapOnRight_forAWhile` (`Lemma34.lean:277`) read as a statement about bad
 points. -/
-theorem reynolds_lemma6_nonsingleton {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
+theorem reynolds_lemma6_nonsingleton {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
     ∃ y : M.carrier, t < y ∧ ∀ r : M.carrier, t < r → r ≤ y → IsBadPoint M ε r := by
   obtain ⟨y, hty, hy⟩ := endsInGapOnRight_forAWhile hε M ht
   exact ⟨y, hty, fun r h₁ h₂ => IsBadPoint.of_right (hy r h₁ h₂)⟩
@@ -694,8 +701,8 @@ Two one-line consequences of convexity, used repeatedly below: a class-mate of `
 past a point outside `t`'s class on either side. -/
 
 /-- Every class-mate of `t` lies strictly above a point below `t` that is outside `t`'s class. -/
-theorem lt_of_classMate {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) {a t s : M.carrier} (hat : a < t)
+theorem lt_of_classMate {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {a t s : M.carrier} (hat : a < t)
     (hna : ¬ ContempEquivDense M ε t a) (hts : ContempEquivDense M ε t s) : a < s := by
   by_contra hcon
   push_neg at hcon
@@ -703,8 +710,8 @@ theorem lt_of_classMate {ε : MonadicFormula sig 2} (hε : IsContempEquivDense �
     (contemp_of_between hε M hcon hat.le (contemp_symm hε M hts)))
 
 /-- Every class-mate of `t` lies strictly below a point above `t` that is outside `t`'s class. -/
-theorem classMate_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) {t b s : M.carrier} (htb : t < b)
+theorem classMate_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t b s : M.carrier} (htb : t < b)
     (hnb : ¬ ContempEquivDense M ε t b) (hts : ContempEquivDense M ε t s) : s < b := by
   by_contra hcon
   push_neg at hcon
@@ -733,8 +740,8 @@ Strictly weaker in both hypothesis slots than `false_of_holds_throughout_class_b
 (`Lemma5.lean:400`), which is left in place unweakened and unrenamed together with all of its
 consumers. Prior-S is not needed. -/
 theorem false_of_holds_throughout_class_from_bounded {atomMap : Formula → sig.preds}
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     {s : M.carrier} (hs : EndsInGapOnRight M ε s) (P : Formula)
     {b : M.carrier} (hsb : s < b) (hnb : ¬ ContempEquivDense M ε s b)
     (hin : ∀ r : M.carrier, ContempEquivDense M ε s r → s ≤ r → TemporalTruth M atomMap r P)
@@ -799,8 +806,8 @@ theorem afterNotHoldsInClassFormula_eval (M : OrderedMonadicStructure sig)
     Fin.cons_zero, b2_one]
 
 /-- **`C` is upward closed in a class** — *"then true for a while at the end"* (printed p.180). -/
-theorem afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (P : M.carrier → Prop) {t u : M.carrier}
+theorem afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) (hle : t ≤ u) (ht : AfterNotHoldsInClass M ε P t) :
     AfterNotHoldsInClass M ε P u := by
   obtain ⟨v, hvc, hvt, hnv⟩ := ht
@@ -808,8 +815,8 @@ theorem afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempE
 
 /-- **`¬C` is downward closed in a class** — *"`C` will be false for a while at the beginning of
 each class"* (printed p.180). The contrapositive of `afterNotHoldsInClass_of_le`. -/
-theorem not_afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (P : M.carrier → Prop) {t u : M.carrier}
+theorem not_afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) (hle : u ≤ t) (ht : ¬ AfterNotHoldsInClass M ε P t) :
     ¬ AfterNotHoldsInClass M ε P u := fun h =>
   ht (afterNotHoldsInClass_of_le hε M P (contemp_symm hε M htu) hle h)
@@ -862,8 +869,8 @@ used a second time, on `¬C`: `¬C` holds at `x` outright, because `hstart` give
 class-mate below `x`. -/
 theorem reynolds_lemma7_start (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (B : Formula) {a t b : M.carrier}
     (hint : ClassInteriorToRInterval M ε a t b)
     (hstart : ∃ x : M.carrier, ContempEquivDense M ε t x ∧
@@ -948,8 +955,8 @@ Exactly Reynolds' one-line derivation: were `A` to fail on a whole initial stret
 throughout the interval, contradicting `A` holding somewhere in it. -/
 theorem reynolds_lemma7_close_to_left (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {a t b : M.carrier}
     (hint : ClassInteriorToRInterval M ε a t b)
     (hsome : ∃ u : M.carrier, a ≤ u ∧ u ≤ b ∧ TemporalTruth M atomMap u A)
@@ -978,8 +985,8 @@ package below carries both. -/
 
 /-- **`λ` is a property of the `∼`-class**, the mirror of `endsInGapOnRight_congr`
 (`Lemma34.lean:242`). Reynolds uses it silently on both sides. -/
-theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) {t u : M.carrier}
+theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) : EndsInGapOnLeft M ε t ↔ EndsInGapOnLeft M ε u := by
   have main : ∀ {p q : M.carrier}, ContempEquivDense M ε p q → EndsInGapOnLeft M ε p →
       EndsInGapOnLeft M ε q := by
@@ -1008,8 +1015,8 @@ theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivD
 
 /-- **The class has no first point**, the mirror of `exists_contemp_gt` (`Lemma34.lean:265`):
 `λ(t)`'s second conjunct at `z := t`, with reflexivity. -/
-theorem exists_contemp_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) {t : M.carrier} (h : EndsInGapOnLeft M ε t) :
+theorem exists_contemp_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t : M.carrier} (h : EndsInGapOnLeft M ε t) :
     ∃ y : M.carrier, y < t ∧ ContempEquivDense M ε t y := by
   by_contra hcon
   push_neg at hcon
@@ -1031,8 +1038,8 @@ structure ClassInteriorToBadInterval (M : OrderedMonadicStructure sig)
 `false_of_holds_throughout_class_from_bounded`, on Prior-S and `λ`. No printed source: Reynolds
 writes only *"Similarly at the end"*. -/
 theorem false_of_holds_throughout_class_upto_bounded {atomMap : Formula → sig.preds}
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_S : SemanticPriorS M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_S : SemanticPriorS M atomMap)
     {s : M.carrier} (hs : EndsInGapOnLeft M ε s) (P : Formula)
     {b : M.carrier} (hbs : b < s) (hnb : ¬ ContempEquivDense M ε s b)
     (hin : ∀ r : M.carrier, ContempEquivDense M ε s r → r ≤ s → TemporalTruth M atomMap r P)
@@ -1095,8 +1102,8 @@ theorem beforeNotHoldsInClassFormula_eval (M : OrderedMonadicStructure sig)
     Fin.cons_zero, b2_one]
 
 /-- **`C'` is downward closed in a class** — the mirror of `afterNotHoldsInClass_of_le`. -/
-theorem beforeNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (P : M.carrier → Prop) {t u : M.carrier}
+theorem beforeNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) (hle : u ≤ t) (ht : BeforeNotHoldsInClass M ε P t) :
     BeforeNotHoldsInClass M ε P u := by
   obtain ⟨v, hvc, htv, hnv⟩ := ht
@@ -1135,8 +1142,8 @@ The mirror of `reynolds_lemma7_start`, on Prior-S, `λ` and `C'`. Reynolds print
 everything below the statement is therefore this tree's mirror rather than a transcription. -/
 theorem reynolds_lemma7_end (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (B : Formula) {a t b : M.carrier}
     (hint : ClassInteriorToBadInterval M ε a t b)
     (hend : ∃ x : M.carrier, ContempEquivDense M ε t x ∧
@@ -1211,8 +1218,8 @@ theorem reynolds_lemma7_end (atomMap : Formula → sig.preds)
 /-- **Reynolds 1992, §6 Lemma 7, printed p.181 — second statement, the *right end* half.** -/
 theorem reynolds_lemma7_close_to_right (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {a t b : M.carrier}
     (hint : ClassInteriorToBadInterval M ε a t b)
     (hsome : ∃ u : M.carrier, a ≤ u ∧ u ≤ b ∧ TemporalTruth M atomMap u A)
@@ -1235,8 +1242,8 @@ theorem reynolds_lemma7_close_to_right (atomMap : Formula → sig.preds)
 The four halves assembled, on one class in the interior of a bad interval. -/
 theorem reynolds_lemma7 (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {a t b : M.carrier}
     (hint : ClassInteriorToBadInterval M ε a t b) :
     (∀ B : Formula, (∃ x : M.carrier, ContempEquivDense M ε t x ∧
@@ -1280,8 +1287,8 @@ The right-hand end point. `hbadR` is Lemma 6's first clause (*"in any bad interv
 `L` hold throughout"*) in the form this argument consumes. -/
 theorem reynolds_lemma6_right_endpoint (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t)
     (hbadR : ∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q)
     (hnot : ∃ u : M.carrier, t < u ∧ ¬ IsBadPoint M ε u) :
@@ -1345,8 +1352,8 @@ mirrored argument appeals to are supplied by `reynolds_lemma5_first_left`, itsel
 instantiation. -/
 theorem endsInGapOnRight_of_endsInGapOnLeft (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {a t b : M.carrier}
     (hint : ClassInteriorToLInterval M ε a t b) :
     EndsInGapOnRight M ε t := by
@@ -1386,8 +1393,8 @@ is no live non-trivial instance yet, and nothing here is discharged in the uncon
 sense. -/
 theorem reynolds_lemma6 (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {a t b : M.carrier}
     (hint : ClassInteriorToRInterval M ε a t b) :
     (∃ y : M.carrier, t < y ∧ ∀ r : M.carrier, t < r → r ≤ y → IsBadPoint M ε r) ∧
@@ -1427,8 +1434,8 @@ and shrinking `a` into `(y, t)` is unavailable in exactly the configuration wher
 begins immediately after `y ∈ M` — the boundary case documented in `Lemma34.lean`. -/
 theorem exists_classInteriorToRInterval (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
     ∃ a b : M.carrier, ClassInteriorToRInterval M ε a t b := by
   obtain ⟨b, htb, hnb, hIccb⟩ :=
@@ -1457,8 +1464,8 @@ theorem with its hypothesis discharged by `exists_classInteriorToRInterval`. The
 unchanged for callers that already hold an interval witness. -/
 theorem endsInGapOnLeft_of_endsInGapOnRight' (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
     EndsInGapOnLeft M ε t := by
   obtain ⟨a, b, hint⟩ :=
@@ -1473,8 +1480,8 @@ By instantiation at `(dual M, dualize ε)` through `Dual.lean`, exactly as
 `λ`-side interval witness is needed: the `ρ`-side producer above supplies the dual one. -/
 theorem endsInGapOnRight_of_endsInGapOnLeft' (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnLeft M ε t) :
     EndsInGapOnRight M ε t :=
   (endsInGapOnLeft_dual (M := M) ε t).mp

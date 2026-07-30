@@ -123,6 +123,13 @@ open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature}
 
+/-! The structure class §6 is parameterized over, together with its dual-closure hypothesis; see
+`IsContempEquivDenseOn` and `IsDualClosed` (`Defs.lean`, `Dual.lean`). `IsDualClosed` is carried at
+file scope rather than per-declaration because the mirror halves of Lemmas 5-9 obtain their results
+by running the unmirrored half at `dual M`, and every caller of those halves needs it too. At both
+instantiations of `C` it is discharged by instance search, so no call site mentions it. -/
+variable {C : OrderedMonadicStructure sig → Prop} [IsDualClosed C]
+
 /-! ## A monadic image of a temporal formula
 
 Reynolds uses expressive completeness in both directions in §6 without comment. The tree lands
@@ -317,8 +324,8 @@ theorem holdsSomewhereInClassFormula_eval (M : OrderedMonadicStructure sig)
 
 /-- *"`A` occurs somewhere in their `∼`-class"* is a property of the class, which is the whole
 point of building `B` this way. -/
-theorem holdsSomewhereInClass_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (P : M.carrier → Prop) {a c : M.carrier}
+theorem holdsSomewhereInClass_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {a c : M.carrier}
     (hac : ContempEquivDense M ε a c) :
     HoldsSomewhereInClass M ε P a ↔ HoldsSomewhereInClass M ε P c := by
   constructor
@@ -399,8 +406,8 @@ is outside it, so no appeal to Lemma 3 is needed and Prior-S drops out of the hy
 This does **not** follow from `false_of_holds_throughout_class`, whose `hout` is strictly
 stronger; both are kept. -/
 theorem false_of_holds_throughout_class_bounded {atomMap : Formula → sig.preds}
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     {s : M.carrier} (hs : EndsInGapOnRight M ε s) (P : Formula)
     {b : M.carrier} (hsb : s < b) (hnb : ¬ ContempEquivDense M ε s b)
     (hin : ∀ r : M.carrier, ContempEquivDense M ε s r → TemporalTruth M atomMap r P)
@@ -450,8 +457,8 @@ and both are excluded by class-invariance. -/
 
 The bound `b` is beyond the class, and `B` is false throughout `(s,b)`. -/
 theorem exists_bound_notHolds {atomMap : Formula → sig.preds}
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap) (B : Formula)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap) (B : Formula)
     (hinv : ∀ a c : M.carrier, ContempEquivDense M ε a c →
       (TemporalTruth M atomMap a B ↔ TemporalTruth M atomMap c B))
     {s : M.carrier} (hs : EndsInGapOnRight M ε s)
@@ -510,8 +517,8 @@ Reynolds' *"`¬B ∧ K⁻(B)`"* is `hnBs` together with `hkm` below; the tree's 
 stretch it also returns, using `ρ` to supply the intermediate points. -/
 theorem false_of_classInvariant_changes {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (B : Formula)
     (hinv : ∀ a c : M.carrier, ContempEquivDense M ε a c →
       (TemporalTruth M atomMap a B ↔ TemporalTruth M atomMap c B))
@@ -591,8 +598,8 @@ theorem false_of_classInvariant_changes {atomMap : Formula → sig.preds}
 somewhere in their `∼`-class"*; *"by using `¬B` instead if necessary"* is the `t' < t` branch. -/
 theorem reynolds_lemma5_first {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {t t' : M.carrier}
     (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q)
     (hA : ∃ w : M.carrier, ContempEquivDense M ε t w ∧ TemporalTruth M atomMap w A) :
@@ -729,8 +736,8 @@ def ClassModels (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
 
 /-- Modelling `φ` is a property of the class, not of the point — the classes of two class-mates are
 the same set, so the relativized satisfaction relations coincide. -/
-theorem classModels_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) {a c : M.carrier} (hac : ContempEquivDense M ε a c)
+theorem classModels_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {a c : M.carrier} (hac : ContempEquivDense M ε a c)
     (φ : MonadicFormula sig 0) : ClassModels M ε a φ ↔ ClassModels M ε c φ := by
   have h : ContempEquivDense M ε a = ContempEquivDense M ε c := by
     funext z
@@ -782,8 +789,8 @@ interval"* is the appeal to `reynolds_lemma5_first` below, applied to the tempor
 *"holds throughout the class"*. -/
 theorem reynolds_lemma5_second {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (φ : MonadicFormula sig 0) {t t' : M.carrier}
     (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q) :
     ClassModels M ε t φ ↔ ClassModels M ε t' φ := by
@@ -805,8 +812,8 @@ theorem reynolds_lemma5_second {atomMap : Formula → sig.preds}
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179**, both statements. -/
 theorem reynolds_lemma5 {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {t t' : M.carrier}
     (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q) :
     (∀ A : Formula, (∃ w : M.carrier, ContempEquivDense M ε t w ∧
@@ -851,8 +858,8 @@ header for what licenses it and for why it is not attributed to him.
 Proved by instantiating `reynolds_lemma5_first` at `(dual M, dualize ε)` and at `swapUS A`. -/
 theorem reynolds_lemma5_first_left {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {t t' : M.carrier}
     (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnLeft M ε q)
     (hA : ∃ w : M.carrier, ContempEquivDense M ε t w ∧ TemporalTruth M atomMap w A) :

@@ -160,6 +160,13 @@ open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature}
 
+/-! The structure class §6 is parameterized over, together with its dual-closure hypothesis; see
+`IsContempEquivDenseOn` and `IsDualClosed` (`Defs.lean`, `Dual.lean`). `IsDualClosed` is carried at
+file scope rather than per-declaration because the mirror halves of Lemmas 5-9 obtain their results
+by running the unmirrored half at `dual M`, and every caller of those halves needs it too. At both
+instantiations of `C` it is discharged by instance search, so no call site mentions it. -/
+variable {C : OrderedMonadicStructure sig → Prop} [IsDualClosed C]
+
 /-! ## The surgered structure
 
 *"We look at `N`, the substructure of `M` whose domain is just `Q⁻ ∪ I ∪ Q⁺`."* -/
@@ -232,7 +239,7 @@ theorem badPoint (hS : IsBadIntervalSurgery M ε Q t) {u : M.carrier} (hu : Q u)
 
 Derived, not assumed: the interiority witnesses put the class inside `[a, b]`, `R` holds
 throughout `[a, b]`, and the saturation clause of `IsBadInterval` then pulls `[a, b]` into `Q`. -/
-theorem mem_of_contemp (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEquivDense ε)
+theorem mem_of_contemp (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     {p q : M.carrier} (hp : Q p) (hpq : ContempEquivDense M ε p q) : Q q := by
   obtain ⟨a, b, _, _, hint⟩ := hS.interior p p hp hp
   have haq : a < q := lt_of_classMate hε M hint.toR.left_lt hint.toR.left_out hpq
@@ -243,7 +250,7 @@ theorem mem_of_contemp (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEqui
   · exact le_trans hr₂ (max_le hint.toR.lt_right.le hqb.le)
 
 /-- **`I ⊆ Q₀`** at the designated class. -/
-theorem mem_of_contemp_base (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEquivDense ε)
+theorem mem_of_contemp_base (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     {q : M.carrier} (h : ContempEquivDense M ε t q) : Q q :=
   hS.mem_of_contemp hε hS.mem h
 
@@ -309,7 +316,7 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 holds throughout the bad interval."* -/
 theorem lemma7_start_wide (hS : IsBadIntervalSurgery M ε Q t) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (B : Formula) {p : M.carrier} (hp : Q p)
     (hstart : ∃ x : M.carrier, ContempEquivDense M ε p x ∧
       ∀ q : M.carrier, ContempEquivDense M ε p q → q < x → TemporalTruth M atomMap q B)
@@ -321,7 +328,7 @@ theorem lemma7_start_wide (hS : IsBadIntervalSurgery M ε Q t) (atomMap : Formul
 *"Similarly at the end."* -/
 theorem lemma7_end_wide (hS : IsBadIntervalSurgery M ε Q t) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (B : Formula) {p : M.carrier} (hp : Q p)
     (hend : ∃ x : M.carrier, ContempEquivDense M ε p x ∧
       ∀ q : M.carrier, ContempEquivDense M ε p q → x < q → TemporalTruth M atomMap q B)
@@ -335,7 +342,7 @@ class in the interval."* -/
 theorem lemma7_close_left_wide (hS : IsBadIntervalSurgery M ε Q t)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {p : M.carrier} (hp : Q p)
     (hsome : ∃ w : M.carrier, Q w ∧ TemporalTruth M atomMap w A)
     {x : M.carrier} (hxc : ContempEquivDense M ε p x) :
@@ -350,7 +357,7 @@ theorem lemma7_close_left_wide (hS : IsBadIntervalSurgery M ε Q t)
 theorem lemma7_close_right_wide (hS : IsBadIntervalSurgery M ε Q t)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (A : Formula) {p : M.carrier} (hp : Q p)
     (hsome : ∃ w : M.carrier, Q w ∧ TemporalTruth M atomMap w A)
     {x : M.carrier} (hxc : ContempEquivDense M ε p x) :
@@ -424,7 +431,7 @@ his remark that *"`B` holds throughout `I`"* is the observation that `I` lies in
 interval `(t, s)`, so the hypothesis already covers it and no appeal is needed. -/
 theorem reynolds_lemma8_untl_forward (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) (A B : Formula)
     (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
@@ -512,7 +519,7 @@ to land in. Cases 2, 3 and 5 consume Lemma 7 to recover `B` at the points the su
 the only points where the `N` witness could fail to be an `M` witness. -/
 theorem reynolds_lemma8_untl_backward (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) (A B : Formula)
     (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
@@ -715,7 +722,7 @@ theorem snce_mirror_ih (atomMap : Formula → sig.preds) {C : Formula}
 Obtained by instantiating `reynolds_lemma8_untl_forward` at `(dual M, dualize ε)`. -/
 theorem reynolds_lemma8_snce_forward (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) (A B : Formula)
     (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
@@ -739,7 +746,7 @@ theorem reynolds_lemma8_snce_forward (atomMap : Formula → sig.preds)
 The instantiation of `reynolds_lemma8_untl_backward` at `(dual M, dualize ε)`. -/
 theorem reynolds_lemma8_snce_backward (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) (A B : Formula)
     (ihA : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val A ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y A)
@@ -781,7 +788,7 @@ until the anti-vacuity instance lands with Lemma 9 and Theorem 4. This lemma is 
 discharged in the unconditional sense, and must not be described as such. -/
 theorem reynolds_lemma8 (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
     ∀ (A : Formula) (x : (surgeredStructure M ε Q t).carrier),
       TemporalTruth M atomMap x.val A ↔
