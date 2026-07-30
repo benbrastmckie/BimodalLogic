@@ -344,16 +344,35 @@ discharge. `no_gaps_dense_prior` / `no_gaps_dense_prior_left` (`NoGaps.lean:901`
 `IsContempEquivDenseCD ε` there is no route to `IsContempEquivDense ε`. So whoever discharges
 D1/D2 must first make §6 run on the countable-dense bundle.
 
-**That is not a formality, and it has been measured rather than guessed.** Restricting
-`IsContempEquivDense`'s clauses in place and propagating the instances through §6 leaves exactly
-one irreducible failure: `NoGaps.lean`'s `reynolds_lemma9` projects the clauses at
-`surgeredStructure M ε Q t` and demands `DenselyOrdered` of it. That structure collapses a bad
-interval to a single `∼`-class, and Lemma 4 (*"no first class in any maximal interval"*)
-guarantees the points below the surviving class are removed — so it has adjacent points and is
-**not** densely ordered. Supplying the instance as a hypothesis would be worse than leaving it
-open: the hypothesis is unsatisfiable in the intended situation, and §6 Theorem 4 would go
-vacuous. The attempt is therefore reverted rather than kept, and the obligation is recorded here
-in the type of D1/D2 where it cannot be lost.
+**That is not a formality, and the obstruction is exactly one site.** Restricting
+`IsContempEquivDense`'s clauses in place and propagating the instances through §6 leaves one
+place that needs work: `NoGaps.lean`'s `reynolds_lemma9` projects the clauses at
+`surgeredStructure M ε Q t` and so demands `Countable` and `DenselyOrdered` of it.
+
+**An earlier version of this note claimed that demand was unsatisfiable. That claim was wrong,
+and it is corrected here rather than quietly dropped.** The argument recorded was: the surgered
+structure collapses a bad interval to a single `∼`-class, and Lemma 4 (*"no first class in any
+maximal interval"*) removes the classes below the surviving class `I`, so `I` becomes adjacent to
+what precedes it. The premise is right and the conclusion does not follow — removing what is
+below `I` produces adjacency only if `I` has a **least element**, and Lemma 4 quantifies over
+**classes**, saying nothing about the points inside one. What this tree already proves is that
+`I` has neither a first nor a last point: `IsBadIntervalSurgery.interior` supplies a
+`ClassInteriorToBadInterval` at every point of `Q₀`, which carries both halves of Lemma 6's first
+clause (*"in any bad interval both `R` and `L` hold throughout"*, printed p.180) — `.toR.rThroughout`
+and `.lThroughout` — and `ρ`/`λ`'s second conjuncts (`exists_contemp_gt`, `exists_contemp_lt`)
+then give class-mates strictly above and below every point of `I`. So `I` supplies survivors
+arbitrarily close to its own edges and no adjacency appears.
+
+Both instances are therefore **provable**, under exactly the hypotheses `reynolds_lemma9` already
+carries, and both are landed and sorry-free in `NoGaps.lean`:
+`countable_surgeredStructure` and `denselyOrdered_surgeredStructure`, the latter by a five-case
+analysis on the two `SurgeryDomain` disjuncts of each endpoint. They are **derived**, not assumed,
+so §6 Theorem 4 does not go vacuous — the failure mode the earlier note rightly feared is avoided
+by proving the instances rather than hypothesizing them. The clauses of `hε` are projected only at
+`M` in that proof, never at `N`, so there is no circularity.
+
+What remains is the mechanical part: restating the §6 chain so the instances can be supplied at
+that one site. The obligation is recorded here in the type of D1/D2 where it cannot be lost.
 -/
 
 /-- **D1** — *"the `∼` classes do not end in gaps"* (printed p.185), for every contemporaneous

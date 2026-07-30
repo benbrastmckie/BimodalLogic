@@ -246,11 +246,19 @@ structure IsContempEquivDense {sig : MonadicSignature} (ε : MonadicFormula sig 
 
 /-! ## The countable-dense bundle
 
-`IsContempEquivDense` above quantifies its clauses over **every** structure. That is the right
-reading for Reynolds' §6, whose surgery constructions apply the clauses at structures built from
-`M` — in particular at `surgeredStructure M ε Q t`, which collapses a bad interval to a single
-class and is therefore **not** densely ordered (Lemma 4 gives no first class in a maximal
-interval, so the points below the surviving class are removed and adjacency appears).
+`IsContempEquivDense` above quantifies its clauses over **every** structure. That is the
+convenient reading for Reynolds' §6, whose surgery constructions apply the clauses at structures
+built from `M` — in particular at `surgeredStructure M ε Q t`, which collapses a bad interval to a
+single class.
+
+**A correction to an earlier version of this note.** It asserted that the surgered structure is
+therefore **not** densely ordered, on the ground that Lemma 4 gives no first class in a maximal
+interval, so the points below the surviving class are removed and adjacency appears. That
+inference does not go through: Lemma 4 quantifies over **classes**, and adjacency additionally
+requires the surviving class to have a least element, which Lemma 6's first clause rules out. The
+surgered structure **is** densely ordered whenever `M` is — see
+`denselyOrdered_surgeredStructure` and `countable_surgeredStructure` (`NoGaps.lean`), both landed
+and sorry-free. So the unrestricted reading is a convenience here, not a necessity.
 
 It is the wrong reading for the one `ε` §8 actually produces. Reynolds' `ε(x,y)` of §8 Lemma 12
 (`epsDense`, `RealModel/EpsilonDense.lean`) defines `∼_M`, and `∼_M` is an equivalence relation

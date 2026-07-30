@@ -4756,14 +4756,38 @@ outstanding.
   made (1) closable, and it makes D1/D2 correspondingly *harder to discharge* — Phase 30's
   suppliers (`no_gaps_dense_prior`, `no_gaps_dense_prior_left`, `dense_singletons_of_sep`) all
   take the unrestricted `IsContempEquivDense`, and `toCD` runs the wrong way. Making §6 run on
-  the countable-dense bundle was **attempted and measured to fail** in this dispatch: restricting
-  the clauses in place and propagating the instances through Lemma34/Lemma5/BadIntervals/
-  TruthTransfer/NoGaps left exactly one irreducible failure — `reynolds_lemma9` demands
-  `DenselyOrdered (surgeredStructure M ε Q t).carrier`, and that structure collapses a bad
-  interval to a single class, so by Lemma 4 (*"no first class in any maximal interval"*) it has
-  adjacent points and is not densely ordered. Supplying it as a hypothesis would make §6
-  Theorem 4 vacuous, so the attempt was **reverted** (commits `3be9b82d8` then `19f4cbd8b`)
-  rather than kept, and the finding is recorded in `DoetsTheorem.lean`'s D1/D2 section header.
+  the countable-dense bundle was attempted and abandoned in that dispatch, with the abandonment
+  recorded as a *measured irreducible failure*. **Both halves of that record were wrong, and the
+  corrections are stated here rather than smoothed over.**
+  - **The claim was false.** The record said `reynolds_lemma9` demands
+    `DenselyOrdered (surgeredStructure M ε Q t).carrier`, that the surgered structure collapses a
+    bad interval to a single class, and that by Lemma 4 (*"no first class in any maximal
+    interval"*) it therefore has adjacent points and is not densely ordered. The premise is right
+    and the conclusion does not follow: removing what lies below the surviving class `I` produces
+    adjacency only if `I` has a **least element**, and Lemma 4 quantifies over **classes**, saying
+    nothing about the points inside one. Lemma 6's first clause — supplied at every point of `Q₀`
+    by `IsBadIntervalSurgery.interior` (`TruthTransfer.lean:218`) via
+    `ClassInteriorToBadInterval` (`BadIntervals.lean:1023`), whose `.toR.rThroughout` (`:433`) and
+    `.lThroughout` (`:1028`) are both halves — makes every point of `Q₀` an `R`-point and an
+    `L`-point, and `exists_contemp_gt` (`Lemma34.lean:265`) / `exists_contemp_lt`
+    (`BadIntervals.lean:1011`) then give class-mates strictly above and below every point of `I`.
+    So `I` has no first and no last point, and no adjacency appears. **Both instances are
+    provable and are now landed sorry-free** (sub-phase 29.7: `denselyOrdered_surgeredStructure`,
+    `countable_surgeredStructure`, `NoGaps.lean`), so the vacuity fear the record cited is avoided
+    by *deriving* the instances rather than hypothesizing them.
+  - **The extent of the attempt was overstated.** The record says the instances were "propagated
+    through Lemma34/Lemma5/BadIntervals/TruthTransfer/NoGaps". The reverted commit `3be9b82d8`
+    touched **three** files — `Defs.lean`, `Dual.lean`, `Lemma34.lean` (113 insertions, 43
+    deletions) — and its own message claims green for exactly those three: *"Defs, Lemma34 and
+    Dual scoped-build green."* `Lemma5`, `BadIntervals`, `TruthTransfer` and `NoGaps` were never
+    touched. The `reynolds_lemma9` failure was therefore **predicted from reading, never observed
+    from a build**. That does not make the *localization* wrong — an independent audit confirms
+    `NoGaps.lean:608` is the only site projecting clauses (i)/(ii) at a non-`M`, non-`dual M`
+    structure — but the remaining propagation is real work still to do, chartered as sub-phase
+    29.7's successor.
+  - The design of the reverted commit is worth recovering: it split clause (i) into
+    `refl`/`symm`/`trans` with the instances riding on `trans` alone, keeping
+    `IsContempEquivDense.equiv` as a reassembling accessor so call sites read unchanged.
 - **Anti-vacuity checkbox STILL NOT met**, and not faked. The chronicle instantiation is not
   landed. It is **no longer** gated on the `ε`-adapter — that is discharged — but it is now
   gated on the newly surfaced obligation above: instantiating the chronicle requires *discharging*
@@ -4816,12 +4840,17 @@ outstanding.
         *(deviation: NOT met — see the PARTIAL RECORD above, and note that this is now the phase's
         **only** outstanding item: the proof itself is sorry-free, so the checkbox is no longer
         coupled to any tracked sorry. It is gated on discharging `DoetsD1`/`DoetsD2` at the
-        chronicle structure, which needs §6 to run on the countable-dense bundle, which was
-        measured to fail irreducibly at `reynolds_lemma9`'s demand for
-        `DenselyOrdered (surgeredStructure M ε Q t).carrier` — false, because that structure
-        collapses a bad interval to one class and so has adjacent points by Lemma 4. Outside this
-        phase's territory. `exists_realFlow_shuffleReal_point` remains landed as a weaker, honest
-        substitute and is not claimed to discharge this checkbox.)*
+        chronicle structure, which needs §6 to run on the countable-dense bundle.
+        **The earlier record that this was blocked by an irreducible failure is retracted**: it
+        claimed `DenselyOrdered (surgeredStructure M ε Q t).carrier` is false because the structure
+        collapses a bad interval to one class and so has adjacent points by Lemma 4. That inference
+        does not go through — Lemma 4 is about **classes**, and adjacency additionally needs the
+        surviving class to have a least element, which Lemma 6's first clause rules out. The
+        instance is **provable and landed sorry-free** (sub-phase 29.7). What is genuinely
+        outstanding is the mechanical restatement of the §6 chain, chartered as sub-phase 29.7's
+        successor and **outside this phase's territory** either way.
+        `exists_realFlow_shuffleReal_point` remains landed as a weaker, honest substitute and is
+        not claimed to discharge this checkbox.)*
   - [x] Docstrings: `Reynolds 1992, §8 Theorem 6, printed pp.185-188` and `Doets 1987, 3.3.9`, with
         Reynolds' own note that his statement is slightly stronger and his proof a little different
         because of the contemporaneity notion. *(landed verbatim on `doets_theorem_dense`, plus a
@@ -4839,6 +4868,107 @@ outstanding.
 - **Timing**: 8 hours.
 - **Verification Tier**: full.
 - **BLOCK H CHECKPOINT**: an `ℝ`-flowed structure `≡ₖ`-equivalent to the chronicle model now exists.
+
+### Phase 29.7: `Countable` and `DenselyOrdered` at the surgered structure [COMPLETED]
+
+> **Numbering note.** The report that chartered this work suggested `22.2`, and the dispatch brief
+> suggested `29.1`. Both collide: `### Phase 22.1` already exists as a real heading, and the
+> Phase 29 body already uses *"sub-phase 29.1"* through *"sub-phase 29.6"* as informal labels for
+> six prior dispatches within Phase 29 (`:4671` is the `ε`-adapter, `:4714` the shuffle step).
+> Reusing either number would make those six provenance annotations ambiguous. `29.7` is the next
+> free label in the same series, and it keeps this work filed where it belongs — with Phase 29's
+> anti-vacuity checkbox, which it unblocks.
+
+**Why this phase exists.** Phase 29's anti-vacuity checkbox was recorded as blocked by a *measured
+irreducible failure*: that `DenselyOrdered (surgeredStructure M ε Q t).carrier` is **false**. That
+record was wrong on both counts — the claim, and the extent of the attempt behind it. Both
+corrections are written into the Phase 29 record above, into `DoetsTheorem.lean`'s D1/D2 section
+header, and into `Defs.lean`'s countable-dense-bundle note. This phase's job is to **machine-check
+the replacement claim before any wide mechanical edit depends on it**, because the five-case
+density argument was the one load-bearing step in the escalation's route that was hand-verified and
+explicitly not machine-checked (Medium-High implementation risk).
+
+- **Goal**: land `DenselyOrdered (surgeredStructure M ε Q t).carrier` and
+  `Countable (surgeredStructure M ε Q t).carrier` as **derived** results — never hypotheses — so
+  that the one §6 site projecting clauses (i)/(ii) at a non-`M` structure (`reynolds_lemma9`) can
+  be supplied its instances without making §6 Theorem 4 vacuous.
+- **Owns**: `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean` (additions only),
+  plus the record-correction docstrings in
+  `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean` and
+  `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean`. The `DoetsTheorem.lean` edit
+  is inside Phase 29's `Owns` and is **prose only** — it is the site that carries the retracted
+  claim, so correcting it there is the whole point rather than a territory violation.
+- **Tasks**:
+  - [x] `endsInGapOnLeft_of_mem` — Lemma 6's first clause, `L` half, immediately after
+        `endsInGapOnRight_of_mem`. The mirror three lines through
+        `ClassInteriorToBadInterval.lThroughout` instead of `.toR.rThroughout`.
+  - [x] `exists_contemp_gt_of_mem` / `exists_contemp_lt_of_mem` — the **point**-level statements
+        that `I` has no last and no first point. This is the premise Lemma 4 does not supply,
+        because Lemma 4 quantifies over **classes**; it is the exact gap in the retracted argument.
+  - [x] `countable_surgeredStructure` — `Subtype.countable`.
+  - [x] `denselyOrdered_surgeredStructure` — the five-case analysis on the two `SurgeryDomain`
+        disjuncts of each endpoint: both in `I` (convexity); `x ∈ I` / `y ∉ Q₀` (no last point);
+        `x ∉ Q₀` / `y ∈ I` (no first point); both outside straddling `t` (reflexivity at `t`); both
+        outside on one side (an `M`-dense point is outside `Q₀` by convexity). The clauses of `hε`
+        are projected **only at `M`**, so there is no circularity in using this to license the
+        projection at `N`.
+  - [x] `#print axioms`; scoped build green. *(All five declarations sorry-free;
+        `denselyOrdered_surgeredStructure` reports exactly `[propext, Classical.choice, Quot.sound]`,
+        no `sorryAx`. Scoped `lake build …DenseModelSurgery.NoGaps` green, 1247 jobs. Green on the
+        first attempt — no goal-state failure to record.)*
+  - [ ] `isContempEquivDenseCD_dualize` + the `Countable`/`DenselyOrdered` transfer at `dual M`.
+        *(deviation: skipped — the dispatch brief authorized this only "if and only if it is needed
+        to state or prove the above", and it is not: the density proof never touches `dual M`.
+        Deferred to the successor phase, where it is genuinely needed. The finding it rests on is
+        preserved: `Countable αᵒᵈ` has **no** named Mathlib instance, so it needs
+        `inferInstanceAs (Countable M.carrier)`, the idiom already used at
+        `ChronicleMonadicBridge.lean:375`; `OrderDual.denselyOrdered` does exist.)*
+
+**Chartered design for the successor — Decision 1, settled and not to be relitigated.** The
+successor phase restates the §6 chain so the instances above can be supplied. A straight in-place
+CD restatement would narrow `no_gaps_dense_prior` and `dense_singletons_of_sep` from *"any Prior
+structure"* to *"any countable densely-ordered Prior structure"*, tripping the Block D gate
+(`:4944-4946`, "conclusion unweakened") and the Block F gate (`:4980`, "additions and
+strengthenings only"). The user rejected both a gate waiver and a duplicated chain. The chosen
+design is to **parameterize over a structure class**:
+
+```
+IsContempEquivDenseOn ε (C : OrderedMonadicStructure sig → Prop)
+  with closure hypotheses:  C M → C (dual M)
+                            C M → IsBadIntervalSurgery M ε Q t → C (surgeredStructure M ε Q t)
+
+C := fun _ => True       recovers today's unrestricted results VERBATIM
+C := countable ∧ dense   gives the CD results, closure discharged by this phase's declarations
+```
+
+Nothing landed is weakened and both gates pass by construction.
+
+**Deliberately NOT in this phase.** The ~90-binder propagation across `Defs`, `Dual`, `Lemma34`,
+`Lemma5`, `BadIntervals`, `TruthTransfer`, `NoGaps`, `Singletons` (plus `ChronicleInstance`) is
+**not** chartered here and was not attempted — that is the whole point of proving the risky claim
+first. It needs its own heading, which is not yet written. Likewise out of scope and untouched:
+Phase 29's anti-vacuity checkbox, any part of Phase 30, and `StrongCompleteness.lean` (its four
+signatures are pinned and the §6 repair is upstream of all of them).
+
+**Consequence for the helpers' eventual reuse, stated rather than left implicit.** The five
+declarations take today's unrestricted `hε : IsContempEquivDense ε`. Under `IsContempEquivDenseOn`
+the successor will project the clauses at `M` and re-bind these signatures; the **proof bodies are
+unaffected**, which is exactly what this phase was for.
+
+- **Estimated output**: ~120 lines (actual: 118 added to `NoGaps.lean`, plus ~35 lines of
+  record-correction prose across two files).
+- **Scope Hypothesis**: the density demand arises at exactly **one** site,
+  `NoGaps.lean:608` in `reynolds_lemma9`; `NoGaps.lean:467`
+  (`surgeredContempEquiv_of_base`) uses clause (iii), which is unrestricted in the CD bundle and so
+  survives untouched. Every other `hε` projection in §6 is at `M` or at `dual M`. Confirmed by the
+  escalation report's exhaustive audit of all 97 `hε : IsContempEquivDense` binders; **not**
+  re-measured in this phase, since this phase changes no binder.
+- **Done when**: both instances are landed sorry-free and axiom-clean as derived results, and the
+  retracted claim is corrected everywhere it was recorded.
+- **Depends on**: 20 (Lemma 6), 21 (Lemma 8's surgery set-up), 22.1 (the unconditional discharge of
+  `HasBadIntervalSurgery`, which is what keeps `interior` from being an open assumption).
+- **Timing**: 2 hours.
+- **Verification Tier**: full.
 
 ### Phase 30: Reynolds §9 Theorem 7 — the engine and the unconditional terminus [IN PROGRESS]
 
