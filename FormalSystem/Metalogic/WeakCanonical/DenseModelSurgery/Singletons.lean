@@ -152,6 +152,13 @@ open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature}
 
+/-! The structure class §6 is parameterized over, together with its dual-closure hypothesis; see
+`IsContempEquivDenseOn` and `IsDualClosed` (`Defs.lean`, `Dual.lean`). `IsDualClosed` is carried at
+file scope rather than per-declaration because the mirror halves of Lemmas 5-9 obtain their results
+by running the unmirrored half at `dual M`, and every caller of those halves needs it too. At both
+instantiations of `C` it is discharged by instance search, so no call site mentions it. -/
+variable {C : OrderedMonadicStructure sig → Prop} [IsDualClosed C]
+
 /-! ## Class end points, singleton classes, and the two quotient properties
 
 Reynolds names four things in §7 without defining any of them: the *right hand end point of a
@@ -243,7 +250,7 @@ must be closed intervals"*, right-hand half.
 `hgap` is Theorem 4 (`no_gaps_dense_prior`); `hdense` is Theorem 5's standing density hypothesis;
 `htx`/`hx` say the class of `t` is strictly bounded above, which is what makes the question of an
 end point arise at all. -/
-theorem exists_rightEndPoint (hε : IsContempEquivDense ε)
+theorem exists_rightEndPoint (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     (hdense : QuotientDenselyOrdered M ε)
     (hgap : ∀ t : M.carrier, ¬ EndsInGapOnRight M ε t)
     {t x : M.carrier} (htx : t < x) (hx : ¬ ContempEquivDense M ε t x) :
@@ -266,7 +273,7 @@ theorem exists_rightEndPoint (hε : IsContempEquivDense ε)
 
 /-- **Density transports to the order dual.** The one transport `exists_leftEndPoint` needs beyond
 what `Dual.lean` already supplies. -/
-theorem quotientDenselyOrdered_dual (hε : IsContempEquivDense ε)
+theorem quotientDenselyOrdered_dual (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     (hdense : QuotientDenselyOrdered M ε) :
     QuotientDenselyOrdered (dual M) (dualize ε) := by
   intro a b hab hnab
@@ -282,7 +289,7 @@ must be closed intervals"*, left-hand half.
 Obtained by instantiating `exists_rightEndPoint` at `(dual M, dualize ε)` through `Dual.lean`,
 not by a hand-written mirror: `endsInGapOnRight_dual` exchanges the two gap predicates,
 `isContempEquivDense_dualize` carries `ε`, and `quotientDenselyOrdered_dual` carries density. -/
-theorem exists_leftEndPoint (hε : IsContempEquivDense ε)
+theorem exists_leftEndPoint (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     (hdense : QuotientDenselyOrdered M ε)
     (hgap : ∀ t : M.carrier, ¬ EndsInGapOnLeft M ε t)
     {t x : M.carrier} (hxt : x < t) (hx : ¬ ContempEquivDense M ε t x) :
@@ -386,7 +393,7 @@ left hand end point lies strictly between `x` and `y`. Contradiction.
 
 The step where the class strictly between is shown to *have* a left hand end point is exactly
 where *"the classes must be closed intervals"* is consumed. -/
-theorem not_leftEnd_and_untl (hε : IsContempEquivDense ε)
+theorem not_leftEnd_and_untl (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     (hdense : QuotientDenselyOrdered M ε)
     (hgapL : ∀ t : M.carrier, ¬ EndsInGapOnLeft M ε t)
     {C : Formula} (hC : ∀ s : M.carrier, TemporalTruth M atomMap s C ↔ IsLeftEndPoint M ε s)
@@ -432,7 +439,7 @@ theorem not_kplusOpen_of_never {P : Formula}
 Given any `s > c`: since `c` is the right hand end point of its class, `c ≁ s`, so density
 supplies a class strictly between, and (classes being closed intervals) that class's left hand end
 point lies strictly between `c` and `s`. So `C` holds arbitrarily soon after `c`. -/
-theorem kplusOpen_classLeftEnd (hε : IsContempEquivDense ε)
+theorem kplusOpen_classLeftEnd (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     (hdense : QuotientDenselyOrdered M ε)
     (hgapL : ∀ t : M.carrier, ¬ EndsInGapOnLeft M ε t)
     {C : Formula} (hC : ∀ s : M.carrier, TemporalTruth M atomMap s C ↔ IsLeftEndPoint M ε s)
@@ -461,7 +468,7 @@ in `e`'s class; but `K⁺C` (resp. `K⁻C`) puts a left hand end point strictly 
 and a left hand end point of `e`'s own class cannot have a class-mate strictly below it.
 
 No gap lemma is consumed here: `y` itself supplies the bound that `K⁺`/`K⁻` is applied at. -/
-theorem isSingletonClass_of_kplus_kminus (hε : IsContempEquivDense ε)
+theorem isSingletonClass_of_kplus_kminus (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     {C : Formula} (hC : ∀ s : M.carrier, TemporalTruth M atomMap s C ↔ IsLeftEndPoint M ε s)
     {e : M.carrier} (hp : Kamp.kplusOpen M atomMap C e) (hm : Kamp.kminusOpen M atomMap C e) :
     IsSingletonClass M ε e := by
@@ -515,7 +522,8 @@ Theorem 4 is *not* an extra hypothesis: the Prior pair that Theorem 4 needs is a
 See the module header's *"Honest caveat, carried forward"*. -/
 theorem reynolds_theorem5 (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
+    (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap)
     (hdense : QuotientDenselyOrdered M ε) :
     HasDenseSingletons M ε := by
@@ -564,7 +572,8 @@ than as a standing hypothesis. The Sep hypothesis is Reynolds' *"`M` … also sa
 substitution instance of axiom Sep"*, and the Prior pair is *"`M` is a Prior structure"*. -/
 theorem dense_singletons_of_sep (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
+    (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap) :
     QuotientDenselyOrdered M ε → HasDenseSingletons M ε :=
   fun hdense => reynolds_theorem5 atomMap h_surj hε h_prior_U h_prior_S h_sep hdense

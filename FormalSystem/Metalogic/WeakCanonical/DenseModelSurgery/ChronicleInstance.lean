@@ -79,7 +79,9 @@ tree cannot yet supply non-trivially. -/
 theorem chronicleMonadic_no_gaps {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula)
-    {ε : MonadicFormula (mkSigFrom root) 2} (hε : IsContempEquivDense ε)
+    {C : OrderedMonadicStructure (mkSigFrom root) → Prop} [IsDualClosed C] [IsSurgeryClosed C]
+    [InStructureClass C (chronicleMonadicStructure fc A h_mcs h_box_dense root)]
+    {ε : MonadicFormula (mkSigFrom root) 2} (hε : IsContempEquivDenseOn ε C)
     (t : (chronicleMonadicStructure fc A h_mcs h_box_dense root).carrier) :
     ¬ EndsInGapOnRight (chronicleMonadicStructure fc A h_mcs h_box_dense root) ε t :=
   let hpack := chronicleIsDensePriorSepStructure hfc A h_mcs h_box_dense root
@@ -92,7 +94,9 @@ same two Prior hypotheses discharged. -/
 theorem chronicleMonadic_no_gaps_left {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula)
-    {ε : MonadicFormula (mkSigFrom root) 2} (hε : IsContempEquivDense ε)
+    {C : OrderedMonadicStructure (mkSigFrom root) → Prop} [IsDualClosed C] [IsSurgeryClosed C]
+    [InStructureClass C (chronicleMonadicStructure fc A h_mcs h_box_dense root)]
+    {ε : MonadicFormula (mkSigFrom root) 2} (hε : IsContempEquivDenseOn ε C)
     (t : (chronicleMonadicStructure fc A h_mcs h_box_dense root).carrier) :
     ¬ EndsInGapOnLeft (chronicleMonadicStructure fc A h_mcs h_box_dense root) ε t :=
   let hpack := chronicleIsDensePriorSepStructure hfc A h_mcs h_box_dense root
@@ -117,7 +121,9 @@ condition of the three that this tree cannot yet supply non-trivially. -/
 theorem chronicleMonadic_dense_singletons {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula)
-    {ε : MonadicFormula (mkSigFrom root) 2} (hε : IsContempEquivDense ε)
+    {C : OrderedMonadicStructure (mkSigFrom root) → Prop} [IsDualClosed C] [IsSurgeryClosed C]
+    [InStructureClass C (chronicleMonadicStructure fc A h_mcs h_box_dense root)]
+    {ε : MonadicFormula (mkSigFrom root) 2} (hε : IsContempEquivDenseOn ε C)
     (hdense : QuotientDenselyOrdered
       (chronicleMonadicStructure fc A h_mcs h_box_dense root) ε) :
     HasDenseSingletons (chronicleMonadicStructure fc A h_mcs h_box_dense root) ε :=
@@ -158,5 +164,104 @@ theorem chronicleMonadic_dense_singletons_epsTop_vacuous {fc : FrameClass}
     ¬ ¬ ContempEquivDense (chronicleMonadicStructure fc A h_mcs h_box_dense root)
       (epsTop (mkSigFrom root)) a b :=
   quotientDenselyOrdered_epsTop_vacuous _ a b hab
+
+/-! ## The class parameterization weakens nothing — machine-checked
+
+§6 is now stated against an arbitrary structure class `C` (`IsContempEquivDenseOn`, `Defs.lean`).
+The plan's census gates require that every pre-existing declaration survive **with its conclusion
+unweakened**, so the claim that `C := UnrestrictedClass sig` recovers today's results *verbatim* is
+checked here rather than asserted.
+
+Each theorem below restates a pre-parameterization signature **exactly** as it stood, with the same
+explicit arguments in the same order and the same conclusion, and discharges it by direct
+application. Nothing is supplied at the call: `instInStructureClassUnrestricted`,
+`instIsDualClosedUnrestricted` and `instIsSurgeryClosedUnrestricted` discharge all three class
+obligations by instance search, which is what makes the recovery verbatim rather than merely
+equivalent. Had the parameterization narrowed any of these, the corresponding line would not
+elaborate.
+
+These are regression checks, not new mathematics, and they are deliberately not `example`s: a named
+theorem is what a later census can grep for. -/
+
+section NoWeakening
+
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
+
+open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
+/-- Theorem 4, right-hand end, at Reynolds' own unrestricted reading — the pre-parameterization
+signature of `no_gaps_dense_prior`, verbatim. -/
+theorem no_gaps_dense_prior_unrestricted (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap)
+    (t : M.carrier) : ¬ EndsInGapOnRight M ε t :=
+  no_gaps_dense_prior atomMap h_surj hε h_prior_U h_prior_S t
+
+open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
+/-- Theorem 4, left-hand end, at Reynolds' own unrestricted reading — the pre-parameterization
+signature of `no_gaps_dense_prior_left`, verbatim. -/
+theorem no_gaps_dense_prior_left_unrestricted (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap)
+    (t : M.carrier) : ¬ EndsInGapOnLeft M ε t :=
+  no_gaps_dense_prior_left atomMap h_surj hε h_prior_U h_prior_S t
+
+open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
+/-- Theorem 5 at Reynolds' own unrestricted reading — the pre-parameterization signature of
+`reynolds_theorem5`, verbatim. -/
+theorem reynolds_theorem5_unrestricted (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap)
+    (hdense : QuotientDenselyOrdered M ε) :
+    HasDenseSingletons M ε :=
+  reynolds_theorem5 atomMap h_surj hε h_prior_U h_prior_S h_sep hdense
+
+open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
+/-- D2 at Reynolds' own unrestricted reading — the pre-parameterization signature of
+`dense_singletons_of_sep`, verbatim. -/
+theorem dense_singletons_of_sep_unrestricted (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap) :
+    QuotientDenselyOrdered M ε → HasDenseSingletons M ε :=
+  dense_singletons_of_sep atomMap h_surj hε h_prior_U h_prior_S h_sep
+
+end NoWeakening
+
+/-- The chronicle-bridge form of Theorem 4's right-hand end at the unrestricted reading — the
+pre-parameterization signature of `chronicleMonadic_no_gaps`, verbatim. -/
+theorem chronicleMonadic_no_gaps_unrestricted {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula)
+    {ε : MonadicFormula (mkSigFrom root) 2} (hε : IsContempEquivDense ε)
+    (t : (chronicleMonadicStructure fc A h_mcs h_box_dense root).carrier) :
+    ¬ EndsInGapOnRight (chronicleMonadicStructure fc A h_mcs h_box_dense root) ε t :=
+  chronicleMonadic_no_gaps hfc A h_mcs h_box_dense root hε t
+
+/-- The chronicle-bridge form of Theorem 4's left-hand end at the unrestricted reading — the
+pre-parameterization signature of `chronicleMonadic_no_gaps_left`, verbatim. -/
+theorem chronicleMonadic_no_gaps_left_unrestricted {fc : FrameClass}
+    (hfc : FrameClass.Dedekind ≤ fc)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula)
+    {ε : MonadicFormula (mkSigFrom root) 2} (hε : IsContempEquivDense ε)
+    (t : (chronicleMonadicStructure fc A h_mcs h_box_dense root).carrier) :
+    ¬ EndsInGapOnLeft (chronicleMonadicStructure fc A h_mcs h_box_dense root) ε t :=
+  chronicleMonadic_no_gaps_left hfc A h_mcs h_box_dense root hε t
+
+/-- The chronicle-bridge form of Theorem 5 at the unrestricted reading — the
+pre-parameterization signature of `chronicleMonadic_dense_singletons`, verbatim. -/
+theorem chronicleMonadic_dense_singletons_unrestricted {fc : FrameClass}
+    (hfc : FrameClass.Dedekind ≤ fc)
+    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula)
+    {ε : MonadicFormula (mkSigFrom root) 2} (hε : IsContempEquivDense ε)
+    (hdense : QuotientDenselyOrdered
+      (chronicleMonadicStructure fc A h_mcs h_box_dense root) ε) :
+    HasDenseSingletons (chronicleMonadicStructure fc A h_mcs h_box_dense root) ε :=
+  chronicleMonadic_dense_singletons hfc A h_mcs h_box_dense root hε hdense
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle
