@@ -83,7 +83,7 @@ next_project_number: 431
 
 ### Uncategorized
 
-410 [NOT STARTED] — Track B part 1 for the TM tableau decidability program (parent: t
+410 [RESEARCHED] — Track B part 1 for the TM tableau decidability program (parent: t
   └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
     └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t (see above)
 
@@ -443,9 +443,10 @@ ALSO NOTE: this task inherits obstructions O2 and O3 (the boxAnchoredCheck and t
 
 ### 410. Internalize tableau branches and prove routine rule admissibility
 - **Effort**: 12-18 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: Task 165
+- **Research**: [410_internalize_tableau_branches_and_prove_routine_rule_admissibility/reports/01_internalize-routine-admissibility.md]
 
 **Description**: Track B part 1 for the TM tableau decidability program (parent: task 165, plan plans/01_tableau-decidability-two-track.md, research reports/02_tableau-decidability-hard-research.md sections 3.1-3.4). Create FormalSystem/Metalogic/Decidability/Verified/Internalize.lean defining Branch.internalize (world labels via box/diamond nesting, time labels via U/S guards realizing the branch TimeOrdering; SETTLED constraints: internalization design over substitution — no cut or uniform-substitution admissibility exists in the tree — and z1Rule's two premises must stay at the same label). Then prove the routine admissibility lemmas in Verified/Refutation/Rules/{Propositional,Modal,Temporal}.lean (~21 lemmas: 8 propositional, 4 S5 modal, 1 boxTemporal, 8 temporal universal/existential), each stated as rule_admissible per report 02 section 3.1 with hypothesis ruleFrameClass r <= fc, reusing Combinators.lean, ModalS5.lean, TemporalDerived.lean, GeneralizedNecessitation.lean, and DeductionTheorem.lean via DerivationTree.lift. Acceptance: all lemmas sorry-free, lake build green, RuleSpec GATE lemmas still green.
 
