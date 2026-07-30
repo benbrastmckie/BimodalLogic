@@ -18,6 +18,33 @@
         "auto_recoverable": true
       },
       "fix_status": "unfixed"
+    },
+    {
+      "id": "err_1785370935",
+      "timestamp": "2026-07-30T00:22:15Z",
+      "type": "delegation_interrupted",
+      "severity": "medium",
+      "message": "Task 410 research dispatch died on an API server error mid-response; .return-meta.json left at status=in_progress with no report written.",
+      "context": {
+        "session_id": "sess_1785362916_22a871_410",
+        "command": "/orchestrate",
+        "task": 410,
+        "checkpoint": "MT-4 handoff read"
+      },
+      "trajectory": {
+        "delegation_path": [
+          "orchestrator",
+          "orchestrate",
+          "skill-orchestrate-hard",
+          "lean-research-hard-agent"
+        ],
+        "failed_at_depth": 3
+      },
+      "recovery": {
+        "suggested_action": "Re-dispatch research for task 410; status reset to not_started so it is eligible again.",
+        "auto_recoverable": true
+      },
+      "fix_status": "unfixed"
     }
   ]
 }
