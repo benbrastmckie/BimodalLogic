@@ -225,24 +225,114 @@ rendered as convexity of each class; clause (iii) uses `M.subinterval` (`Monadic
 Reynolds' `M | [a,b]`, with `min`/`max` endpoints so that the clause is stated for every ordered
 pair without presupposing `a ≤ b` — the same convention the landed `ContempEquiv` uses. -/
 
-/-- **`ε` defines a contemporaneous equivalence relation** — Reynolds 1992, printed p.176, all
-three clauses, universally quantified over structures exactly as the source has them (*"on any
-temporal structure `M`"*).
+/-! ### The structure class the clauses are quantified over
+
+Reynolds states clauses (i) and (ii) *"on any temporal structure `M`"*, and §6's surgery
+constructions duly apply them at structures built from `M`. The one `ε` §8 actually produces
+(`epsDense`) satisfies them only at **countable, densely ordered** flows, so §6 is stated here
+against an arbitrary class `C` of structures rather than against either reading.
+
+`C := UnrestrictedClass sig` recovers Reynolds' own quantification verbatim; `C := CountableDense
+sig` is the reading `epsDense` supports. Membership is carried as a **class**, `InStructureClass`,
+so that the quantifier lives on binder lines and no call site in §6 has to mention it — the same
+device `IsContempEquivDenseCD` already uses with its `[Countable _] [DenselyOrdered _]` binders. -/
+
+/-- **`M` belongs to the structure class `C`**, as a typeclass so that §6's clause projections
+resolve it by instance search instead of threading an explicit witness through every call. -/
+class InStructureClass {sig : MonadicSignature} (C : OrderedMonadicStructure sig → Prop)
+    (M : OrderedMonadicStructure sig) : Prop where
+  /-- The underlying membership fact. -/
+  out : C M
+
+/-- **The class of all structures** — Reynolds' own quantification in clauses (i) and (ii). Named
+rather than written `fun _ => True` inline so that the membership instance below has a
+discrimination-tree key. -/
+def UnrestrictedClass (sig : MonadicSignature) : OrderedMonadicStructure sig → Prop :=
+  fun _ => True
+
+/-- **The countable densely-ordered class** — the reading `epsDense` supports, and the one Doets'
+theorem consumes. -/
+def CountableDense (sig : MonadicSignature) : OrderedMonadicStructure sig → Prop :=
+  fun M => Countable M.carrier ∧ DenselyOrdered M.carrier
+
+instance instInStructureClassUnrestricted {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) : InStructureClass (UnrestrictedClass sig) M :=
+  ⟨trivial⟩
+
+instance instInStructureClassCountableDense {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier] :
+    InStructureClass (CountableDense sig) M :=
+  ⟨‹Countable M.carrier›, ‹DenselyOrdered M.carrier›⟩
+
+/-- `Countable` read back out of `CountableDense` membership. Not an instance: its conclusion
+would match every `Countable _` goal in the library. -/
+theorem countable_of_countableDense {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    [h : InStructureClass (CountableDense sig) M] : Countable M.carrier :=
+  h.out.1
+
+/-- `DenselyOrdered` read back out of `CountableDense` membership. Not an instance, for the same
+reason as `countable_of_countableDense`. -/
+theorem denselyOrdered_of_countableDense {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) [h : InStructureClass (CountableDense sig) M] :
+    DenselyOrdered M.carrier :=
+  h.out.2
+
+/-- **`ε` defines a contemporaneous equivalence relation on the class `C`** — Reynolds 1992,
+printed p.176, all three clauses.
+
+Clause (i) is split into `refl` / `symm` / `trans` with the class restriction riding on `trans`
+alone. That is not a convenience: it is measured against the only `ε` §8 produces. `simDense_refl`
+(`RealModel/EpsilonDense.lean:136`), `simDense_symm` (`:140`), `simDense_convex` (`:199`) and
+`simDense_contemporary` (`:673`) carry **no** instance hypotheses, and `simDense_trans` (`:988`) is
+the sole one that does. Transitivity is exactly what fails away from a countable dense flow — the
+`(0,1]` counterexample in `EpsilonDense`'s module header. So `refl` and `symm` are left free of the
+class entirely, which is what keeps the dual transport's own `refl`/`symm` branches from needing
+any closure hypothesis. Clause (ii) is gated as well, for the reason recorded at its field; clause
+(iii) is not, because it holds of `epsDense` at every structure.
+
+`equiv` below reassembles clause (i), so call sites read exactly as they did when it was a single
+`Equivalence` field.
 
 Note this is a property of `ε` alone. `ContempEquivDense M ε` is the relation; this is the
-predicate saying that relation deserves the name at every `M`. -/
-structure IsContempEquivDense {sig : MonadicSignature} (ε : MonadicFormula sig 2) : Prop where
-  /-- Clause (i): *"`∼_M` is an equivalence relation on the domain of `M`"*. -/
-  equiv : ∀ M : OrderedMonadicStructure sig, Equivalence (ContempEquivDense M ε)
-  /-- Clause (ii): *"`∼_M` partitions `M` into intervals"*, i.e. each class is convex. -/
-  convex : ∀ (M : OrderedMonadicStructure sig) (a b c : M.carrier), a ≤ b → b ≤ c →
-    ContempEquivDense M ε a c → ContempEquivDense M ε a b
+predicate saying that relation deserves the name, with transitivity asked only at `M` in `C`. -/
+structure IsContempEquivDenseOn {sig : MonadicSignature} (ε : MonadicFormula sig 2)
+    (C : OrderedMonadicStructure sig → Prop) : Prop where
+  /-- Clause (i), reflexivity — at every structure. -/
+  refl : ∀ (M : OrderedMonadicStructure sig) (a : M.carrier), ContempEquivDense M ε a a
+  /-- Clause (i), symmetry — at every structure. -/
+  symm : ∀ (M : OrderedMonadicStructure sig) {a b : M.carrier},
+    ContempEquivDense M ε a b → ContempEquivDense M ε b a
+  /-- Clause (i), transitivity — at structures in `C`. The only class-restricted field. -/
+  trans : ∀ (M : OrderedMonadicStructure sig) [InStructureClass C M] {a b c : M.carrier},
+    ContempEquivDense M ε a b → ContempEquivDense M ε b c → ContempEquivDense M ε a c
+  /-- Clause (ii): *"`∼_M` partitions `M` into intervals"*, i.e. each class is convex. Gated on
+  `C` — not because `epsDense` needs it (`simDense_convex` carries no instances) but because the
+  dual transport `isContempEquivDense_dualize` reconstructs clause (ii) at `N` out of clause (ii)
+  **and transitivity** at `dual N`, so an ungated field here would demand `C (dual N)` at every
+  `N`. See that theorem's `convex` branch. -/
+  convex : ∀ (M : OrderedMonadicStructure sig) [InStructureClass C M] (a b c : M.carrier),
+    a ≤ b → b ≤ c → ContempEquivDense M ε a c → ContempEquivDense M ε a b
   /-- Clause (iii): *"`ε` depends only on contemporary properties: i.e. for all `a, b ∈ M`,
   `M ⊨ ε(a,b)` iff `M | [a,b] ⊨ ε(a,b)`"*. -/
   contemporary : ∀ (M : OrderedMonadicStructure sig) (a b : M.carrier),
     ContempEquivDense M ε a b ↔
       ContempEquivDense (M.subinterval sig (min a b) (max a b)) ε
         ⟨a, min_le_left a b, le_max_left a b⟩ ⟨b, min_le_right a b, le_max_right a b⟩
+
+/-- **Clause (i) reassembled** — the accessor that keeps `hε.equiv M` reading as it did when
+clause (i) was a single `Equivalence` field. -/
+theorem IsContempEquivDenseOn.equiv {sig : MonadicSignature} {ε : MonadicFormula sig 2}
+    {C : OrderedMonadicStructure sig → Prop} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] :
+    Equivalence (ContempEquivDense M ε) :=
+  ⟨hε.refl M, fun h => hε.symm M h, fun h₁ h₂ => hε.trans M h₁ h₂⟩
+
+/-- **`ε` defines a contemporaneous equivalence relation** — Reynolds' own unrestricted reading,
+clauses (i) and (ii) *"on any temporal structure `M`"*. This is `IsContempEquivDenseOn` at the
+class of all structures, so every §6 result stated on a general `C` instantiates here with no
+extra argument: `instInStructureClassUnrestricted` discharges the membership silently. -/
+abbrev IsContempEquivDense {sig : MonadicSignature} (ε : MonadicFormula sig 2) : Prop :=
+  IsContempEquivDenseOn ε (UnrestrictedClass sig)
 
 /-! ## The countable-dense bundle
 
@@ -297,6 +387,53 @@ theorem IsContempEquivDense.toCD {sig : MonadicSignature} {ε : MonadicFormula s
     (hε : IsContempEquivDense ε) : IsContempEquivDenseCD ε where
   equiv M := hε.equiv M
   convex M := hε.convex M
+  contemporary := hε.contemporary
+
+/-- **`IsContempEquivDenseOn` at the countable dense class gives the countable-dense bundle** —
+the free direction. `instInStructureClassCountableDense` turns the `[Countable _]`
+`[DenselyOrdered _]` binders of `IsContempEquivDenseCD`'s clauses into class membership.
+
+`IsContempEquivDenseCD` itself is untouched by the class parameterization, so `epsDense`'s witness
+(`RealModel/EpsilonDense.lean:1075`) and Doets' consumers (`RealModel/DoetsTheorem.lean:382,389`)
+are unaffected. -/
+theorem isContempEquivDenseCD_of_countableDense {sig : MonadicSignature}
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε (CountableDense sig)) :
+    IsContempEquivDenseCD ε where
+  equiv M := hε.equiv M
+  convex M := hε.convex M
+  contemporary := hε.contemporary
+
+/-- **The countable-dense bundle in the class-parameterized form §6 consumes.**
+
+The converse of `isContempEquivDenseCD_of_countableDense` is *not* free, and the two extra
+hypotheses are exactly the gap: `IsContempEquivDenseCD` bundles clause (i) as a single
+`Equivalence` at a countable dense flow, from which unrestricted reflexivity and symmetry cannot be
+recovered.
+
+For the one `ε` §8 produces both are available and neither is an extra assumption:
+`simDense_refl` (`RealModel/EpsilonDense.lean:136`) and `simDense_symm` (`:140`) carry no instance
+hypotheses. So `epsDense` satisfies
+`IsContempEquivDenseOn (epsDense sig k) (CountableDense sig)` outright; assembling that witness
+belongs with `epsDense_isContempEquivDenseCD` in `EpsilonDense.lean` and is deliberately left to
+that file's owner rather than reached into from here. -/
+theorem IsContempEquivDenseCD.toOn {sig : MonadicSignature} {ε : MonadicFormula sig 2}
+    (hε : IsContempEquivDenseCD ε)
+    (hrefl : ∀ (M : OrderedMonadicStructure sig) (a : M.carrier), ContempEquivDense M ε a a)
+    (hsymm : ∀ (M : OrderedMonadicStructure sig) {a b : M.carrier},
+      ContempEquivDense M ε a b → ContempEquivDense M ε b a) :
+    IsContempEquivDenseOn ε (CountableDense sig) where
+  refl := hrefl
+  symm := hsymm
+  trans := by
+    intro M hC a b c h₁ h₂
+    haveI := countable_of_countableDense M
+    haveI := denselyOrdered_of_countableDense M
+    exact (hε.equiv M).trans h₁ h₂
+  convex := by
+    intro M hC a b c hab hbc hac
+    haveI := countable_of_countableDense M
+    haveI := denselyOrdered_of_countableDense M
+    exact hε.convex M a b c hab hbc hac
   contemporary := hε.contemporary
 
 /-! ## `ρ` and `λ` -/
@@ -527,10 +664,10 @@ relation is an equivalence, its single class is trivially convex, and both sides
 are true outright. -/
 theorem isContempEquivDense_epsTop (sig : MonadicSignature) :
     IsContempEquivDense (epsTop sig) where
-  equiv M := ⟨fun _ => contempEquivDense_epsTop M _ _,
-    fun _ => contempEquivDense_epsTop M _ _,
-    fun _ _ => contempEquivDense_epsTop M _ _⟩
-  convex M _ _ _ _ _ _ := contempEquivDense_epsTop M _ _
+  refl := by intros; exact contempEquivDense_epsTop _ _ _
+  symm := by intros; exact contempEquivDense_epsTop _ _ _
+  trans := by intros; exact contempEquivDense_epsTop _ _ _
+  convex := by intros; exact contempEquivDense_epsTop _ _ _
   contemporary M a b :=
     ⟨fun _ => contempEquivDense_epsTop _ _ _, fun _ => contempEquivDense_epsTop M a b⟩
 
