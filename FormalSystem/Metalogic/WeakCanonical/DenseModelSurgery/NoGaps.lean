@@ -105,6 +105,13 @@ open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature}
 
+/-! The structure class §6 is parameterized over, together with its dual-closure hypothesis; see
+`IsContempEquivDenseOn` and `IsDualClosed` (`Defs.lean`, `Dual.lean`). `IsDualClosed` is carried at
+file scope rather than per-declaration because the mirror halves of Lemmas 5-9 obtain their results
+by running the unmirrored half at `dual M`, and every caller of those halves needs it too. At both
+instantiations of `C` it is discharged by instance search, so no call site mentions it. -/
+variable {C : OrderedMonadicStructure sig → Prop} [IsDualClosed C]
+
 /-! ## *"`N` is a Prior structure"*
 
 > And `N` is a Prior structure: we still have all the instances of Prior-U/S continuing to hold
@@ -349,7 +356,8 @@ variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
 /-- **Prior-U survives the surgery.** -/
 theorem surgeredSemanticPriorU (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
+    (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
     SemanticPriorU (surgeredStructure M ε Q t) atomMap := by
   refine semanticPriorU_iff_forall.mpr fun x p => ?_
@@ -359,7 +367,8 @@ theorem surgeredSemanticPriorU (atomMap : Formula → sig.preds)
 /-- **Prior-S survives the surgery.** -/
 theorem surgeredSemanticPriorS (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
+    (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
     SemanticPriorS (surgeredStructure M ε Q t) atomMap := by
   refine semanticPriorS_iff_forall.mpr fun x p => ?_
@@ -436,7 +445,7 @@ def surgerySubintervalIso (M : OrderedMonadicStructure sig) (ε : MonadicFormula
 
 /-- **A class is convex, as a set of points**: anything between two members of `t`'s class is in
 `t`'s class. Clause (ii) of `IsContempEquivDense` with the base point moved to `t`. -/
-theorem contemp_of_mem_class_interval (hε : IsContempEquivDense ε) {x y z : M.carrier}
+theorem contemp_of_mem_class_interval (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] {x y z : M.carrier}
     (hx : ContempEquivDense M ε t x) (hy : ContempEquivDense M ε t y)
     (h₁ : min x y ≤ z) (h₂ : z ≤ max x y) : ContempEquivDense M ε t z := by
   have hequiv := hε.equiv M
@@ -451,7 +460,7 @@ theorem contemp_of_mem_class_interval (hε : IsContempEquivDense ε) {x y z : M.
 /-- **`I` is all in one `∼_N`-class** — printed p.182.
 
 Two survivors of the designated class `I` are `∼_N`-equivalent. -/
-theorem surgeredContempEquiv_of_base (hε : IsContempEquivDense ε)
+theorem surgeredContempEquiv_of_base (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     {x y : (surgeredStructure M ε Q t).carrier}
     (hx : ContempEquivDense M ε t x.val) (hy : ContempEquivDense M ε t y.val) :
     ContempEquivDense (surgeredStructure M ε Q t) ε x y := by
@@ -538,7 +547,7 @@ not go through, and the source of the missing premise is Lemma 6's first clause,
 `R` holds at every point of `Q₀` (`endsInGapOnRight_of_mem`), and `ρ`'s second conjunct is
 exactly *"the class has no last point"* (`exists_contemp_gt`). -/
 theorem exists_contemp_gt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
-    (hε : IsContempEquivDense ε) {x : M.carrier} (hx : ContempEquivDense M ε t x) :
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] {x : M.carrier} (hx : ContempEquivDense M ε t x) :
     ∃ w : M.carrier, x < w ∧ ContempEquivDense M ε t w := by
   obtain ⟨w, hxw, hcw⟩ :=
     exists_contemp_gt hε M (endsInGapOnRight_of_mem hS (hS.mem_of_contemp_base hε hx))
@@ -547,7 +556,7 @@ theorem exists_contemp_gt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
 /-- **`I` has no first point** — the mirror of `exists_contemp_gt_of_mem`, through
 `endsInGapOnLeft_of_mem` and `λ`'s second conjunct (`exists_contemp_lt`). -/
 theorem exists_contemp_lt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
-    (hε : IsContempEquivDense ε) {x : M.carrier} (hx : ContempEquivDense M ε t x) :
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] {x : M.carrier} (hx : ContempEquivDense M ε t x) :
     ∃ w : M.carrier, w < x ∧ ContempEquivDense M ε t w := by
   obtain ⟨w, hwx, hcw⟩ :=
     exists_contemp_lt hε M (endsInGapOnLeft_of_mem hS (hS.mem_of_contemp_base hε hx))
@@ -579,7 +588,7 @@ The proof cases on the two `SurgeryDomain` disjuncts at each endpoint:
 Note the clauses of `hε` are projected **only at `M`**, never at `N`: there is no circularity in
 using this result to supply the instances that license the projection at `N`. -/
 theorem denselyOrdered_surgeredStructure (hS : IsBadIntervalSurgery M ε Q t)
-    (hε : IsContempEquivDense ε) [DenselyOrdered M.carrier] :
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [DenselyOrdered M.carrier] :
     DenselyOrdered (surgeredStructure M ε Q t).carrier := by
   refine ⟨fun x y hxy => ?_⟩
   have hlt : x.val < y.val := hxy
@@ -626,6 +635,21 @@ theorem denselyOrdered_surgeredStructure (hS : IsBadIntervalSurgery M ε Q t)
           (by rw [max_eq_right hlt.le]; exact hwy.le)
       exact ⟨⟨w, Or.inr hwI⟩, hxw, hwy⟩
 
+/-- **The countable densely-ordered class is closed under bad-interval surgery** — the two theorems
+above, packaged as the closure condition `reynolds_lemma9` consumes.
+
+This is what keeps §6 at the countable-dense reading from going vacuous. The membership at `N` is
+**derived** here, from `M`'s own membership plus the surgery data, and never hypothesised; and
+`IsBadIntervalSurgery.interior`, the sole source of the "no first and no last point" content the
+density argument runs on, is itself discharged unconditionally by `StepD.hasBadIntervalSurgery`
+below. So neither half of this instance is an open assumption in disguise. -/
+instance instIsSurgeryClosedCountableDense : IsSurgeryClosed (CountableDense sig) := by
+  refine ⟨fun ε hε M Q t hM hS => ?_⟩
+  haveI : InStructureClass (CountableDense sig) M := ⟨hM⟩
+  haveI : Countable M.carrier := hM.1
+  haveI : DenselyOrdered M.carrier := hM.2
+  exact ⟨countable_surgeredStructure M ε Q t, denselyOrdered_surgeredStructure hS hε⟩
+
 /-- **A stretch of bad points above `t` lies inside `Q₀`** — maximality of the bad interval,
 used twice below. -/
 theorem mem_of_badStretch (hS : IsBadIntervalSurgery M ε Q t) {r : M.carrier} (htr : t < r)
@@ -648,7 +672,7 @@ Three moves: `R` holds at `t` in `M` because `t` is in the bad interval (Lemma 6
 Lemma 8 carries `R` to `t` in `N`; and Lemma 2 read **at `N`** — legitimate exactly because Lemma
 2 quantifies `∃ R` before `∀ N`, and because `N` is a Prior structure — turns that back into a
 statement about `∼_N`. -/
-theorem reynolds_lemma9_R_in_N (hε : IsContempEquivDense ε)
+theorem reynolds_lemma9_R_in_N (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (hS : IsBadIntervalSurgery M ε Q t) :
     EndsInGapOnRight (surgeredStructure M ε Q t) ε
@@ -669,7 +693,7 @@ non-empty"** — printed p.182.
 The first conjunct of `EndsInGapOnRight` in `N` is *"the class does not extend forever to the
 right"*: some surviving point above `t` is outside the class. A surviving point outside the class
 is outside `Q₀`, since the only points of `Q₀` that survive are those of `I`. -/
-theorem reynolds_lemma9_exists_after (hε : IsContempEquivDense ε)
+theorem reynolds_lemma9_exists_after (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (hS : IsBadIntervalSurgery M ε Q t) :
     ∃ y : M.carrier, t < y ∧ ¬ Q y := by
@@ -699,11 +723,16 @@ The closing contradiction is the **third** conjunct of `EndsInGapOnRight` at `I`
 conjunct says there is no first point after the class, and `q` is exactly one. Reynolds' *"Thus
 the class ends just before `q`"* is that sentence, and his *"`R` can not have been true in this
 class after all"* is the `False` this returns. -/
-theorem reynolds_lemma9 (hε : IsContempEquivDense ε)
+theorem reynolds_lemma9 (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
+    [IsSurgeryClosed C]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (hS : IsBadIntervalSurgery M ε Q t)
     (hbadR : ∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q) :
     False := by
+  -- The single site in §6 that needs the class-gated clauses at `N` rather than at `M`; the
+  -- membership comes from the closure condition, never from a hypothesis at `N`.
+  haveI : InStructureClass C (surgeredStructure M ε Q t) :=
+    ⟨IsSurgeryClosed.out ε hε M Q t InStructureClass.out hS⟩
   have hgapN := reynolds_lemma9_R_in_N atomMap h_surj hε h_prior_U h_prior_S hS
   obtain ⟨y, hty, hny⟩ := reynolds_lemma9_exists_after atomMap h_surj hε h_prior_U h_prior_S hS
   -- *"Thus `Q⁺` is non-empty and by lemma 6 begins with a point `q` say."*
@@ -808,7 +837,8 @@ that assumption discharged by `hasBadIntervalSurgery`; this form is retained unw
 callers that would rather supply their own surgery. -/
 theorem no_gaps_dense_prior_of_hasBadIntervalSurgery (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
+    (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hbi : HasBadIntervalSurgery M ε)
     (t : M.carrier) : ¬ EndsInGapOnRight M ε t := fun ht => by
   obtain ⟨Q, hS, hbadR⟩ := hbi.exists_surgery t ht
@@ -825,7 +855,8 @@ input that does not transport for free.
 The **hypothesised** form, retained unweakened; `no_gaps_dense_prior_left` below discharges it. -/
 theorem no_gaps_dense_prior_left_of_hasBadIntervalSurgery (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
+    (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap)
     (hbi : HasBadIntervalSurgery (dual M) (dualize ε))
     (t : M.carrier) : ¬ EndsInGapOnLeft M ε t := by
@@ -901,8 +932,8 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 saturated. All four are read straight off `Btw`'s case structure. -/
 theorem badComp_isBadInterval (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
     IsBadInterval M ε (badComp M ε t) := by
   refine ⟨⟨t, fun q hq => ?_⟩, fun x hx => hx x (btw_self t x),
@@ -926,8 +957,8 @@ throughout"*, printed p.180. A component point is bad, so it satisfies `R` or `L
 it is exactly Lemma 6's first clause in its hypothesis-free form. -/
 theorem badComp_right (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {t x : M.carrier} (hx : badComp M ε t x) :
     EndsInGapOnRight M ε x := by
   rcases hx x (btw_self t x) with h | h
@@ -947,8 +978,8 @@ lower one needs the `contemp_trans` / `contemp_symm` wrapper and the upper one a
 `contemp_of_between` directly. -/
 theorem hasBadIntervalSurgery (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDense ε)
-    (M : OrderedMonadicStructure sig) (h_prior_U : SemanticPriorU M atomMap)
+    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) :
     HasBadIntervalSurgery M ε := by
   refine ⟨fun t ht => ⟨badComp M ε t, ⟨?_, ?_, ?_⟩, ?_⟩⟩
@@ -1019,7 +1050,8 @@ statement in its hypothesised form and is retained unweakened.
 hypotheses. See `## Conditionality after Theorem 4` below for exactly what that leaves standing. -/
 theorem no_gaps_dense_prior (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
+    (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ EndsInGapOnRight M ε t :=
   no_gaps_dense_prior_of_hasBadIntervalSurgery atomMap h_surj hε h_prior_U h_prior_S
@@ -1032,7 +1064,8 @@ transport for free now needs no transporting: it is a theorem at every structure
 `no_gaps_dense_prior_left_of_hasBadIntervalSurgery` above is retained unweakened. -/
 theorem no_gaps_dense_prior_left (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
+    (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ EndsInGapOnLeft M ε t :=
   no_gaps_dense_prior_left_of_hasBadIntervalSurgery atomMap h_surj hε h_prior_U h_prior_S

@@ -225,6 +225,33 @@ structure IsBadIntervalSurgery (M : OrderedMonadicStructure sig) (ε : MonadicFo
   interior : ∀ p u : M.carrier, Q p → Q u →
     ∃ a b : M.carrier, a ≤ u ∧ u ≤ b ∧ ClassInteriorToBadInterval M ε a p b
 
+/-! ### The second closure condition on a structure class
+
+`reynolds_lemma9` is the one place in §6 that projects the class-gated clauses at the **surgered**
+structure — Reynolds' *"Clearly `q` is not in the class of `I` in `N`"*, printed p.182. So the
+structure class has to be closed under the surgery, alongside `IsDualClosed` (`Dual.lean`).
+
+The bundle for `ε` is quantified **inside** the field rather than fixed by an index. That is what
+makes one `[IsSurgeryClosed C]` binder serve both `ε` and `dualize ε`: the mirror halves of
+Theorem 4 run the unmirrored half at `(dual M, dualize ε)`, and an `ε`-indexed class would have
+forced a second binder at every one of them. -/
+
+/-- **`C` is closed under bad-interval surgery**, for every `ε` whose contemporaneous-equivalence
+bundle holds on `C`. -/
+class IsSurgeryClosed {sig : MonadicSignature} (C : OrderedMonadicStructure sig → Prop) : Prop where
+  /-- Surgered structures stay in the class. -/
+  out : ∀ (ε : MonadicFormula sig 2), IsContempEquivDenseOn ε C →
+    ∀ (M : OrderedMonadicStructure sig) (Q : M.carrier → Prop) (t : M.carrier),
+      C M → IsBadIntervalSurgery M ε Q t → C (surgeredStructure M ε Q t)
+
+/-- The class of all structures is trivially surgery-closed. With `instIsDualClosedUnrestricted`
+this is what makes every §6 result instantiate at Reynolds' unrestricted reading with no extra
+argument — the class parameterization adds nothing to those signatures that instance search does
+not discharge. -/
+instance instIsSurgeryClosedUnrestricted {sig : MonadicSignature} :
+    IsSurgeryClosed (UnrestrictedClass sig) :=
+  ⟨fun _ _ _ _ _ _ _ => trivial⟩
+
 namespace IsBadIntervalSurgery
 
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2} {Q : M.carrier → Prop}
