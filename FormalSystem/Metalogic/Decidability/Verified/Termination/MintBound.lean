@@ -338,4 +338,224 @@ theorem pastOf_transport (ord : TimeOrdering) (t₁ t₂ : TimeIndex)
     intro x y hy
     exact directPastOf_transport ord t₁ t₂ hinc hnsl y x hy
 
+/-! ## A3. `densityRule` and the ordering-times invariant
+
+`densityRule` is the sole two-edge mint site. Its second edge runs from the fresh time to a
+target `t'` drawn from `ord.futureOf l.time`, so irreflexivity there needs `t' ≠ freshTime`,
+which freshness alone does not give. The auxiliary invariant below is what supplies it: if every
+time the ordering mentions is a time the branch already knows, then `t'` sits at or below
+`b.maxTime`, strictly below the fresh time. -/
+
+/-- **Every time the ordering mentions is a branch time.** -/
+def OrdTimesLeMaxTime (b : Branch) (ord : TimeOrdering) : Prop :=
+  ∀ p ∈ ord.constraints, p.1 ≤ b.maxTime ∧ p.2 ≤ b.maxTime
+
+/-- A path of at least one edge has a last edge, so its endpoint is some constraint's target. -/
+theorem exists_constraint_to_of_pathN (ord : TimeOrdering) :
+    ∀ (n : Nat) (a t : TimeIndex), 1 ≤ n →
+      TimeOrdering.PathN ord.directFutureOf n a t → ∃ x, (x, t) ∈ ord.constraints := by
+  intro n
+  induction n with
+  | zero => intro a t hn; omega
+  | succ m ih =>
+    intro a t _ hp
+    obtain ⟨c, hc, hrest⟩ := hp
+    rcases Nat.eq_zero_or_pos m with rfl | hm
+    · simp only [TimeOrdering.PathN] at hrest
+      subst hrest
+      exact ⟨a, (mem_directFutureOf_iff' ord a c).mp hc⟩
+    · exact ih c t hm hrest
+
+/-- Anything in a time's future is the target of some ordering constraint.
+
+The `1 ≤ n` lower bound `bfsClosure_sound` carries is what makes this work: without it,
+membership could be witnessed by the empty path, and a source with no incoming edge would be a
+counterexample. -/
+theorem exists_constraint_to_of_mem_futureOf (ord : TimeOrdering) (s t : TimeIndex)
+    (h : t ∈ ord.futureOf s) : ∃ x, (x, t) ∈ ord.constraints := by
+  rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [s] [] h with hv | ⟨u, hu, n, hn1, -, hp⟩
+  · simp at hv
+  · exact exists_constraint_to_of_pathN ord n u t hn1 hp
+
+/-- **The `densityRule` second-edge fact.** A time in the ordering's reach is never the branch's
+fresh time. -/
+theorem ne_nextTime_of_mem_futureOf {b : Branch} {ord : TimeOrdering} {s t : TimeIndex}
+    (haux : OrdTimesLeMaxTime b ord) (h : t ∈ ord.futureOf s) : b.nextTime ≠ t := by
+  obtain ⟨x, hx⟩ := exists_constraint_to_of_mem_futureOf ord s t h
+  have hle : t ≤ b.maxTime := (haux (x, t) hx).2
+  -- `Branch.nextTime = maxTime + 1`. Note `omega` is not usable here: it reports "no usable
+  -- constraints" on `TimeIndex` hypotheses even though `TimeIndex` is an `abbrev` for `Nat`.
+  simp only [Branch.nextTime]
+  exact Nat.ne_of_gt (Nat.lt_succ_of_le hle)
+
+/-- The two-edge ordering `densityRule` builds is irreflexive.
+
+`t'` is the head of a filtered sub-list of `ord.futureOf t`, hence itself in `ord.futureOf t`,
+hence at or below `b.maxTime` by `OrdTimesLeMaxTime` and so distinct from the fresh time. The
+filter predicate is left as a parameter because nothing here depends on which gaps the rule
+selects — only on the fact that the selection is a sub-list of the reach. -/
+theorem irreflOrd_density_newOrd {b : Branch} {ord : TimeOrdering} {t t' : TimeIndex}
+    {P : TimeIndex → Bool} {tail : List TimeIndex}
+    (hord : IrreflOrd ord) (haux : OrdTimesLeMaxTime b ord)
+    (hfresh : t ≠ b.nextTime)
+    (heq : (ord.futureOf t).filter P = t' :: tail) :
+    IrreflOrd ((ord.addFuture t b.nextTime).addFuture b.nextTime t') := by
+  have hmem : t' ∈ ord.futureOf t :=
+    List.mem_of_mem_filter (by rw [heq]; exact List.mem_cons_self)
+  exact irreflOrd_addFuture (irreflOrd_addFuture hord hfresh)
+    (ne_nextTime_of_mem_futureOf haux hmem)
+
+set_option maxHeartbeats 4000000 in
+/-- **`applyRule` preserves ordering irreflexivity, with no rule excluded and no frame-class
+restriction.** The `densityRule` case, the one `applyRule_irreflOrd_of_ne_density` leaves out, is
+closed by `irreflOrd_density_newOrd` from the auxiliary invariant. -/
+theorem applyRule_irreflOrd {rule : TableauRule} {sf : SignedFormula} {b : Branch}
+    {ord : TimeOrdering} (hsf : sf ∈ b) (hord : IrreflOrd ord)
+    (haux : OrdTimesLeMaxTime b ord) : IrreflOrd (applyRule rule sf b ord).2 := by
+  have hfresh : sf.label.time ≠ b.nextTime := time_ne_nextTime hsf
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        first
+          | contradiction
+          | exact hord
+          | exact irreflOrd_addFuture hord hfresh
+          | exact irreflOrd_addPast hord hfresh
+          | exact irreflOrd_density_newOrd hord haux hfresh (by assumption))
+
+/-! ### `OrdTimesLeMaxTime` is preserved at the non-branching result shapes
+
+`Branch.maxTime` is a `foldl max`, and the two facts the preservation proof needs — that it is
+monotone in the branch, and that it dominates the fresh time once the witness is on the branch —
+are not exported by `Tableau.lean` (`le_foldl_max` / `mem_le_foldl_max` there are `private`), so
+the `≤`-direction is re-proved locally. -/
+
+private theorem foldl_max_le (f : SignedFormula → Nat) :
+    ∀ (l : List SignedFormula) (a n : Nat), a ≤ n → (∀ s ∈ l, f s ≤ n) →
+      l.foldl (fun x s => max x (f s)) a ≤ n := by
+  intro l
+  induction l with
+  | nil => intro a n ha _; simpa using ha
+  | cons x xs ih =>
+    intro a n ha hall
+    simp only [List.foldl_cons]
+    exact ih _ n (max_le ha (hall x List.mem_cons_self))
+      (fun s hs => hall s (List.mem_cons_of_mem _ hs))
+
+/-- `Branch.maxTime` is the least upper bound of the branch's times. -/
+theorem maxTime_le_of_forall {b : Branch} {n : Nat} (h : ∀ sf ∈ b, sf.label.time ≤ n) :
+    b.maxTime ≤ n := foldl_max_le (fun s => s.label.time) b 0 n (Nat.zero_le _) h
+
+/-- `Branch.maxTime` is monotone in the branch. -/
+theorem maxTime_mono {b nb : Branch} (h : ∀ x ∈ b, x ∈ nb) : b.maxTime ≤ nb.maxTime :=
+  maxTime_le_of_forall (fun _ hsf => le_maxTime (h _ hsf))
+
+/-- Appending in front never lowers `maxTime`. -/
+theorem maxTime_le_append (fs : List SignedFormula) (b : Branch) :
+    b.maxTime ≤ Branch.maxTime (fs ++ b) :=
+  maxTime_mono (fun _ hx => List.mem_append_right fs hx)
+
+/-- The invariant survives branch growth on its own, when the ordering does not change. -/
+theorem ordTimes_mono {b nb : Branch} {ord : TimeOrdering}
+    (haux : OrdTimesLeMaxTime b ord) (hle : b.maxTime ≤ nb.maxTime) :
+    OrdTimesLeMaxTime nb ord :=
+  fun p hp => ⟨le_trans (haux p hp).1 hle, le_trans (haux p hp).2 hle⟩
+
+/-- A mint step's new branch dominates the fresh time, because the witness sits there. -/
+theorem nextTime_le_maxTime_cons {b : Branch} {g : SignedFormula} {rest : List SignedFormula}
+    (hg : g.label.time = b.nextTime) : b.nextTime ≤ Branch.maxTime (g :: rest ++ b) :=
+  hg ▸ le_maxTime (List.mem_append_left b List.mem_cons_self)
+
+/-- Single-edge `addFuture` mint step: the invariant is preserved. -/
+theorem ordTimes_addFuture_cons {b : Branch} {ord : TimeOrdering} {t : TimeIndex}
+    {g : SignedFormula} {rest : List SignedFormula}
+    (haux : OrdTimesLeMaxTime b ord) (ht : t ≤ b.maxTime)
+    (hg : g.label.time = b.nextTime) :
+    OrdTimesLeMaxTime (g :: rest ++ b) (ord.addFuture t b.nextTime) := by
+  have hmono : b.maxTime ≤ Branch.maxTime (g :: rest ++ b) := maxTime_le_append _ _
+  have hnext : b.nextTime ≤ Branch.maxTime (g :: rest ++ b) := nextTime_le_maxTime_cons hg
+  intro p hp
+  simp only [TimeOrdering.addFuture, List.mem_cons] at hp
+  rcases hp with rfl | hp
+  · exact ⟨le_trans ht hmono, hnext⟩
+  · exact ordTimes_mono haux hmono p hp
+
+/-- Single-edge `addPast` mint step: the invariant is preserved. -/
+theorem ordTimes_addPast_cons {b : Branch} {ord : TimeOrdering} {t : TimeIndex}
+    {g : SignedFormula} {rest : List SignedFormula}
+    (haux : OrdTimesLeMaxTime b ord) (ht : t ≤ b.maxTime)
+    (hg : g.label.time = b.nextTime) :
+    OrdTimesLeMaxTime (g :: rest ++ b) (ord.addPast t b.nextTime) := by
+  have hmono : b.maxTime ≤ Branch.maxTime (g :: rest ++ b) := maxTime_le_append _ _
+  have hnext : b.nextTime ≤ Branch.maxTime (g :: rest ++ b) := nextTime_le_maxTime_cons hg
+  intro p hp
+  simp only [TimeOrdering.addPast, List.mem_cons] at hp
+  rcases hp with rfl | hp
+  · exact ⟨hnext, le_trans ht hmono⟩
+  · exact ordTimes_mono haux hmono p hp
+
+/-- `densityRule`'s two-edge mint step: the invariant is preserved. The extra obligation over the
+single-edge case is `t' ≤ b.maxTime`, which is the invariant applied to the constraint that put
+`t'` in the reach in the first place. -/
+theorem ordTimes_density_cons {b : Branch} {ord : TimeOrdering} {t t' : TimeIndex}
+    {P : TimeIndex → Bool} {tail : List TimeIndex}
+    {g : SignedFormula} {rest : List SignedFormula}
+    (haux : OrdTimesLeMaxTime b ord) (ht : t ≤ b.maxTime)
+    (hg : g.label.time = b.nextTime)
+    (heq : (ord.futureOf t).filter P = t' :: tail) :
+    OrdTimesLeMaxTime (g :: rest ++ b) ((ord.addFuture t b.nextTime).addFuture b.nextTime t') := by
+  have hmem : t' ∈ ord.futureOf t :=
+    List.mem_of_mem_filter (by rw [heq]; exact List.mem_cons_self)
+  obtain ⟨x, hx⟩ := exists_constraint_to_of_mem_futureOf ord t t' hmem
+  have ht' : t' ≤ b.maxTime := (haux (x, t') hx).2
+  have hmono : b.maxTime ≤ Branch.maxTime (g :: rest ++ b) := maxTime_le_append _ _
+  have hnext : b.nextTime ≤ Branch.maxTime (g :: rest ++ b) := nextTime_le_maxTime_cons hg
+  intro p hp
+  simp only [TimeOrdering.addFuture, List.mem_cons] at hp
+  rcases hp with rfl | rfl | hp
+  · exact ⟨hnext, le_trans ht' hmono⟩
+  · exact ⟨le_trans ht hmono, hnext⟩
+  · exact ordTimes_mono haux hmono p hp
+
+/-- The successor branch of a **non-branching** rule result, if there is one.
+
+Phrasing the preservation statement against this `Option` keeps the whole obligation on the goal
+side, so the rule case analysis reduces the result and the ordering *together*. A hypothesis of
+the form `applyRule … = (.linear fs, ord')` cannot be split in step with the goal, because
+`split` does not reach every `dite` once the equation has been oriented. -/
+def nonBranchingResultBranch (b : Branch) : RuleResult → Option Branch
+  | .linear fs => some (fs ++ b)
+  | .persistent fs => some (fs ++ b)
+  | _ => none
+
+set_option maxHeartbeats 4000000 in
+/-- **`applyRule` preserves `OrdTimesLeMaxTime` at the non-branching result shapes.**
+
+The branching shapes (`.branching`, `.branchingOrdered`) are handled at engine level, where the
+per-arm branches are visible. -/
+theorem applyRule_ordTimes_nonbranching {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering}
+    (hsf : sf ∈ b) (haux : OrdTimesLeMaxTime b ord) :
+    ∀ nb ∈ nonBranchingResultBranch b (applyRule rule sf b ord).1,
+      OrdTimesLeMaxTime nb (applyRule rule sf b ord).2 := by
+  have ht : sf.label.time ≤ b.maxTime := le_maxTime hsf
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        first
+          | contradiction
+          | (intro nb hnb
+             simp only [nonBranchingResultBranch, Option.mem_def, Option.some.injEq] at hnb
+             first
+               | (subst hnb
+                  first
+                    | exact ordTimes_mono haux (maxTime_le_append _ _)
+                    | exact ordTimes_addFuture_cons haux ht rfl
+                    | exact ordTimes_addPast_cons haux ht rfl
+                    | exact ordTimes_density_cons haux ht rfl (by assumption))
+               | exact absurd hnb (by simp)))
+
 end FormalSystem.Metalogic.Decidability

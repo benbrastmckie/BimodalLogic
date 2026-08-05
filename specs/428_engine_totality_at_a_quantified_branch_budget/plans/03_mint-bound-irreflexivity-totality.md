@@ -360,18 +360,18 @@ not absorbed.
 
 ---
 
-### Phase 3: `densityRule` and the ordering-times invariant [NOT STARTED]
+### Phase 3: `densityRule` and the ordering-times invariant [COMPLETED]
 
 **Goal**: Close the one mint site Phase 2 excludes, by supplying the auxiliary invariant its second
 edge needs. **This is the phase report 04 flagged as the identified risk point, and it carries an
 explicit `[BLOCKED]` escalation clause.**
 
 **Tasks**:
-- [ ] State the auxiliary invariant. Working name and shape:
+- [x] State the auxiliary invariant. Working name and shape:
       `OrdTimesLeMaxTime (b : Branch) (ord : TimeOrdering) : Prop := ∀ p ∈ ord.constraints, p.1 ≤ b.maxTime ∧ p.2 ≤ b.maxTime`
       — "every time mentioned in the ordering is a branch time". Confirm this is the weakest form
       that discharges the `densityRule` obligation before committing to it.
-- [ ] Prove the `densityRule` case. `Tableau.lean:1370-1373` builds
+- [x] Prove the `densityRule` case. `Tableau.lean:1370-1373` builds
       `newOrd := (timeOrd.addFuture l.time freshTime).addFuture freshTime t'` with `t'` drawn from
       `timeOrd.futureOf l.time`. The first edge is Phase 2's fact. The second needs
       `freshTime ≠ t'`, i.e. `t' ≤ b.maxTime < b.nextTime = freshTime`. Two sub-cases:
@@ -381,14 +381,60 @@ explicit `[BLOCKED]` escalation clause.**
         "reachable" to "appears in a constraint" is `mem_futureOf_of_mem_constraints`'s converse
         direction; if no such converse is available, derive it from `bfsClosure_sound` plus
         `mem_directFutureOf_iff'` (both landed / Phase 5) rather than assuming it.
-- [ ] Land the unrestricted `applyRule_irreflOrd (hsf : sf ∈ b) (hord : IrreflOrd ord) (haux : OrdTimesLeMaxTime b ord) : IrreflOrd (applyRule rule sf b ord).2`,
+- [x] Land the unrestricted `applyRule_irreflOrd (hsf : sf ∈ b) (hord : IrreflOrd ord) (haux : OrdTimesLeMaxTime b ord) : IrreflOrd (applyRule rule sf b ord).2`,
       combining Phase 2 with the `densityRule` case.
-- [ ] Prove `applyRule` preserves `OrdTimesLeMaxTime` **at the non-branching result shapes** (the
+- [x] Prove `applyRule` preserves `OrdTimesLeMaxTime` **at the non-branching result shapes** (the
       branching shapes are Phase 4's obligation, and the hazard lives there).
-- [ ] Do **not** scope the statement to frame classes below `.Dense`. `densityRule` only appears at
+- [x] Do **not** scope the statement to frame classes below `.Dense`. `densityRule` only appears at
       frame classes `≥ .Dense` (`denseRules`, `Tableau.lean:1593-1595`, gated in `allRulesForFC` at
       `:1626`), so the risk is confined — but the target theorem is quantified over `fc`, so scoping
       it away would be a narrowing, not a fix.
+
+**Completion notes — the `[BLOCKED]` clause was NOT triggered; the sub-case discharged.**
+
+- **The invariant is sufficient, confirmed before any preservation work was written** (the plan's
+  explicit gate). `OrdTimesLeMaxTime` is landed exactly as the plan states it. The
+  `freshTime ≠ t'` goal is reached and discharged by `ne_nextTime_of_mem_futureOf`, and that was
+  built and made green *before* the preservation proof was attempted.
+- **The bridge from "reachable" to "appears in a constraint" did not need
+  `mem_futureOf_of_mem_constraints`'s converse.** `bfsClosure_sound` carries a `1 ≤ n` lower
+  bound on the path length, so any member of `ord.futureOf s` is reached by a path with a *last*
+  edge. `exists_constraint_to_of_pathN` (induction on the path, using Phase 5's
+  `mem_directFutureOf_iff'`) turns that into `∃ x, (x, t') ∈ ord.constraints` directly. The
+  plan's two-sub-case split (`t' = l.time` / `t' ≠ l.time`) is therefore subsumed: the `1 ≤ n`
+  bound covers both, including the cyclic case the split would have had to treat separately.
+  This is a simplification within the plan's stated route (`bfsClosure_sound` plus
+  `mem_directFutureOf_iff'`, exactly as the plan sanctions), not a substituted route.
+- **`applyRule_irreflOrd` is landed with no rule excluded and no frame-class restriction** — the
+  statement quantifies over every `rule` and mentions no `FrameClass` at all, checkable by
+  reading it. `densityRule` was not deleted from `denseRules`, `IrreflOrd` was not weakened, and
+  the auxiliary invariant is a *hypothesis of this lemma* that Phases 3-4 discharge as a run
+  invariant, not an admitted assumption on the terminus.
+- **Integrity checks performed.** Deleting the `irreflOrd_density_newOrd` alternative from
+  `applyRule_irreflOrd` produces a type-mismatch error, and deleting `ordTimes_density_cons` from
+  `applyRule_ordTimes_nonbranching` produces an error — both density discharges are load-bearing,
+  not swept up by `contradiction`.
+- **Statement-shape finding worth recording.** The preservation lemma is stated against an
+  `Option Branch` (`nonBranchingResultBranch`) rather than as
+  `applyRule … = (.linear fs, ord') → …`. The hypothesis form does not work: `split at h` fails to
+  reach every `dite` once the equation is oriented, leaving `h` as an equality between a pair
+  literal and an unsplit `Decidable.rec`, and the goal then falls out of step with the
+  hypothesis. Keeping the obligation entirely on the goal side lets the rule case analysis reduce
+  the result and the ordering *together*, which is the same shape Phase 2 uses. This is recorded
+  in the definition's docstring.
+- **`omega` is unusable on `TimeIndex` goals.** Although `TimeIndex` is an `abbrev` for `Nat`
+  (`SignedFormula.lean:52`), `omega` reports "no usable constraints" on hypotheses at that type.
+  `Nat.ne_of_gt` / `Nat.lt_succ_of_le` are used instead, and the fact is noted in-source at
+  `ne_nextTime_of_mem_futureOf`.
+- **`Branch.maxTime` needed re-proving in the `≤` direction.** `Tableau.lean`'s `le_foldl_max` and
+  `mem_le_foldl_max` are `private`, so `maxTime_le_of_forall` / `maxTime_mono` /
+  `maxTime_le_append` are proved locally. Also note `Branch` is an `abbrev` for
+  `List SignedFormula`, so dot notation `(fs ++ b).maxTime` resolves to `List.maxTime` and fails;
+  `Branch.maxTime (fs ++ b)` is written out.
+- `lean_verify applyRule_irreflOrd` and `lean_verify applyRule_ordTimes_nonbranching` each report
+  exactly `[propext, Classical.choice, Quot.sound]`. Zero `sorry`, zero `axiom`, zero `NoSplit`.
+- `lake build FormalSystem.Metalogic.Decidability` green; `Saturation.lean`, `Fuel.lean`, and
+  `Tableau.lean` md5 unchanged.
 
 **Timing**: 2 hours
 
