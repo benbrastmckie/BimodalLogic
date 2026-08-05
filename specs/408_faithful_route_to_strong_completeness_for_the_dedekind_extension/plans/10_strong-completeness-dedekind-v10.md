@@ -5132,7 +5132,7 @@ re-bound with no proof-body edit, and `denselyOrdered_surgeredStructure` /
   (`RealModel/ChronicleRealFlow.lean`). The sizing was accurate in both cases: the first is the
   predicted one-liner, and the second is the predicted two `haveI`s off the bridge's own fields.
 
-### Phase 30: Reynolds §9 Theorem 7 — the engine and the unconditional terminus [IN PROGRESS]
+### Phase 30: Reynolds §9 Theorem 7 — the engine and the unconditional terminus [COMPLETED]
 
 > **This phase absorbs v6's Phase 8.** Its precondition is the availability of `doets_theorem_dense`
 > at the chronicle structure. **The `consequence_completeness_dedekind_of_engine` pinned signature
@@ -5144,12 +5144,20 @@ re-bound with no proof-body edit, and `denselyOrdered_surgeredStructure` /
 - **Owns**: `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`,
   `FormalSystem/Metalogic/StrongCompleteness.lean`, `FormalSystem/Metalogic.lean` (tracking table).
 - **Tasks**:
-  - [ ] Define the **table** `α(t)` of a `Formula` and its quantifier depth, or verify that the tree's
+  - [x] Define the **table** `α(t)` of a `Formula` and its quantifier depth, or verify that the tree's
         existing `tableMu` / `staviFoDepth` layer (`EFGames/StaviCompleteness.lean:237,462`) already
         supplies it; record which. Set `k` to one greater than the depth, per printed p.189.
-  - [ ] Prove the transfer: `R ⊨ ∃t α(t)` from `M ⊨ ∃t α(t)` via `≡ₖ`, obtain `b ∈ R` with
+        *(deviation: altered — recorded as **neither** of the two offered options. The supplier is
+        the plain `table` / `table_correctness` / `table_depth_bound` layer in
+        `WeakCanonical/Table.lean`, already consumed by `countermodel_discrete_reynolds_v2`;
+        `tableMu`/`staviFoDepth` is the μ-relativized variant belonging to the Stavi development
+        and is not on this path. Recorded in the new §9 section header of
+        `CompletenessDedekind.lean`. Also: `k := operatorDepth φ + 2`, i.e. **two** greater rather
+        than one, so that Doets' theorem's standing `2 ≤ k` holds with no side condition; this
+        matches the `ℤ` original's own `k` exactly.)*
+  - [x] Prove the transfer: `R ⊨ ∃t α(t)` from `M ⊨ ∃t α(t)` via `≡ₖ`, obtain `b ∈ R` with
         `R ⊨ α(b)`, hence `R ⊨ A₀(b)`.
-  - [ ] Convert the `ℝ`-flowed monadic structure back to a `TaskFrame ℝ` + `TaskModel` + shift-closed
+  - [x] Convert the `ℝ`-flowed monadic structure back to a `TaskFrame ℝ` + `TaskModel` + shift-closed
         `Omega`, using Phase 15's `multiFamTaskFrameGen` and siblings at `D := ℝ` (the `ℤ` originals
         at `ReynoldsBridge.lean:671,694,708` stay byte-identical), and land `countermodel_dedekind_dense
         {fc} (hfc : FrameClass.Dedekind ≤ fc) (A) (h_mcs) (φ) (h_neg_in) (h_box_dense) :
@@ -5157,29 +5165,38 @@ re-bound with no proof-body edit, and `denselyOrdered_surgeredStructure` /
         (t : ℝ), ¬TruthAt TM Omega τ t φ`. Follow `countermodel_dense_enriched`
         (`Completeness.lean:133`) statement-for-statement with `Rat → ℝ`. **Do not add any hypothesis
         beyond `hfc`.**
-  - [ ] Prove `completeness_dedekind_engine (ψ : Formula) : ValidDedekindDense ψ →
+        *(deviation: altered — the **statement** follows `countermodel_dense_enriched` with
+        `Rat → ℝ` and adds only `hfc`, as required; the **proof** follows
+        `countermodel_discrete_reynolds_v2` (`ReynoldsBridge.lean:739`) instead, because the `ℝ`
+        structure is produced by Doets' theorem per box-equivalence class rather than by the
+        parametric canonical machinery, so the multi-family shape is forced. The `ℤ` originals at
+        `ReynoldsBridge.lean:671,694,708` are byte-identical — verified by `git diff`.)*
+  - [x] Prove `completeness_dedekind_engine (ψ : Formula) : ValidDedekindDense ψ →
         Derivable FrameClass.Dedekind [] ψ`: contrapositive, `neg_consistent_of_not_derivable`
         (`Completeness.lean:72`), `set_lindenbaum`, `dedekind_box_dense_mem`
         (`CompletenessDedekind.lean:149`), then `countermodel_dedekind_dense` at `ℝ` with
         `real_lub_of_bddAbove` (`:127`) discharging the lub binder and `by decide` discharging `hfc`.
-  - [ ] Instantiate `consequence_completeness_dedekind_of_engine` (`StrongCompleteness.lean:274`) with
+  - [x] Instantiate `consequence_completeness_dedekind_of_engine` (`StrongCompleteness.lean:274`) with
         this engine to obtain the unconditional `consequence_completeness_dedekind`. **Do not restate
         or re-bind that signature** — pinned by commit `bd9ae0ac1`.
-  - [ ] Derive `completeness_dedekind (φ : Formula) : ValidDedekindDense φ →
+  - [x] Derive `completeness_dedekind (φ : Formula) : ValidDedekindDense φ →
         Derivable FrameClass.Dedekind [] φ` as `consequence_completeness_dedekind []`, with `simp`
         discharging `∀ ψ ∈ [], _`. **It must be a corollary, not an independent proof.**
-  - [ ] Verify the root placement: the evaluation family's value at `t = 0` is the root MCS `A`,
+  - [x] Verify the root placement: the evaluation family's value at `t = 0` is the root MCS `A`,
         composing with `rooted_cantor_fmcs_dense_at_s` (`ChronicleToCountermodelBasic.lean:513`). A
         mismatch here is silent. Land it as a named lemma, not an inline `have`.
-  - [ ] `#print axioms consequence_completeness_dedekind` and `#print axioms completeness_dedekind`;
+  - [x] `#print axioms consequence_completeness_dedekind` and `#print axioms completeness_dedekind`;
         record. Regression: `completeness_dense`, `completeness_discrete`,
         `countermodel_discrete_reynolds_v2`.
-  - [ ] Update the tracking table in `FormalSystem/Metalogic.lean` with the Dedekind rows, matching
+  - [x] Update the tracking table in `FormalSystem/Metalogic.lean` with the Dedekind rows, matching
         the existing `Completeness (dense)` / `(discrete)` row format at `:37`,`:39`.
-  - [ ] Docstrings: `Reynolds 1992, §9 Theorem 7, printed p.189`, quoting the five proof steps, and
+  - [x] Docstrings: `Reynolds 1992, §9 Theorem 7, printed p.189`, quoting the five proof steps, and
         `Reynolds 1992, §2, printed p.169` for the definition of weak completeness that makes the
         finite-context form fall out.
-  - [ ] Full `lake build` green.
+        *(page-discipline record: both printed pages are **carried** from the plan and from Phases
+        15 and 24-29, not re-measured against the page image in this dispatch. Flagged per the
+        Block F §6 page-discipline gate.)*
+  - [x] Full `lake build` green.
 - **Estimated output**: ~450 lines.
 - **Done when**: `consequence_completeness_dedekind` and `completeness_dedekind` are sorry-free; full
   `lake build` green; `#print axioms` on both shows exactly `[propext, Classical.choice, Quot.sound]`;
@@ -5275,9 +5292,9 @@ Run at the end of **every** phase, not only at the end of a block:
 
 At Phase 30 additionally:
 
-- [ ] `#print axioms consequence_completeness_dedekind` = `[propext, Classical.choice, Quot.sound]`.
-- [ ] `#print axioms completeness_dedekind` = `[propext, Classical.choice, Quot.sound]`.
-- [ ] `FormalSystem/Metalogic.lean` tracking table updated.
+- [x] `#print axioms consequence_completeness_dedekind` = `[propext, Classical.choice, Quot.sound]`.
+- [x] `#print axioms completeness_dedekind` = `[propext, Classical.choice, Quot.sound]`.
+- [x] `FormalSystem/Metalogic.lean` tracking table updated.
 
 ---
 
