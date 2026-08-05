@@ -4644,19 +4644,53 @@ introduced here. **No aggregator was edited** — `Metalogic/WeakCanonical.lean`
 - **Timing**: 7 hours.
 - **Verification Tier**: full.
 
-### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [PARTIAL]
+### Phase 29: Doets' Theorem — Reynolds §8 Theorem 6 [COMPLETED]
 
-**PARTIAL RECORD (Phase 29)**: `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean`
-is landed, scoped build green (2234 jobs, `DenseModelSurgery.ChronicleInstance` as canary), full
-build green (1983 jobs), and the file now contains **no `sorry` at all**. `doets_theorem_dense` is
-landed with its final signature — `DoetsD1` / `DoetsD2` only, no extra hypothesis — and is
-**sorry-free and axiom-clean**: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. Phase 30
-can consume it exactly as chartered.
+**COMPLETION RECORD (Phase 29)**: `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean`
+is landed, and as of the closing dispatch so is the anti-vacuity checkbox — the last outstanding
+item. Full build green (1983 jobs), scoped build green (2235 jobs: the 2234-job target set plus the
+one new module). `doets_theorem_dense` is landed with its final signature — `DoetsD1` / `DoetsD2`
+only, no extra hypothesis — and is **sorry-free and axiom-clean**:
+`[propext, Classical.choice, Quot.sound]`, no `sorryAx`. Phase 30 can consume it exactly as
+chartered, and can now consume the chronicle instantiation instead of re-deriving it.
 
-**The phase remains `[PARTIAL]` for exactly one reason, and it is not the proof**: the anti-vacuity
-checkbox (the chronicle instantiation) is still unmet, on the measured `surgeredStructure`
-obstruction recorded below. That obstruction is outside this phase's territory. Nothing else is
-outstanding.
+**What the closing dispatch landed**, all three pieces sorry-free and reporting exactly
+`[propext, Classical.choice, Quot.sound]`:
+
+1. `epsDense_isContempEquivDenseOn_countableDense` (`RealModel/EpsilonDense.lean`) — Phase 29.8's
+   first named follow-up, the one-liner it deliberately left outside its `Owns`. It is
+   `IsContempEquivDenseCD.toOn` fed `simDense_refl` and `simDense_symm`, both of which carry no
+   instance hypotheses, so nothing is assumed that `∼_M` does not already supply.
+2. **D1/D2 restated at §6's class-parameterized bundle** (`RealModel/DoetsTheorem.lean`):
+   `DoetsD1` / `DoetsD2` now quantify over `ε` satisfying
+   `IsContempEquivDenseOn ε (CountableDense sig)` rather than `IsContempEquivDenseCD ε`. **This is
+   a strengthening of `doets_theorem_dense`, not a weakening, and it is machine-checked rather than
+   asserted.** D1/D2 quantify *over* `ε`, so a stronger antecedent admits fewer `ε` and makes the
+   *hypothesis* weaker and the theorem stronger; `doetsD1_of_cd` / `doetsD2_of_cd` land the check —
+   any supplier that met the previous reading meets this one, through the free direction
+   `isContempEquivDenseCD_of_countableDense`. The reading also remains strictly stronger than
+   Reynolds' own, whose D1/D2 quantify over the unrestricted bundle. Without this step the
+   instantiation is impossible, not merely awkward: the surplus `IsContempEquivDenseCD →
+   IsContempEquivDenseOn _ (CountableDense _)` is unrestricted reflexivity and symmetry, which is
+   available for `epsDense` and **not** available for an arbitrary `ε` handed to D1 by a caller.
+3. `RealModel/ChronicleRealFlow.lean` (new, ~170 lines) — the join module:
+   `chronicleMonadic_doetsD1`, `chronicleMonadic_doetsD2`, `exists_chronicleRealFlow`, and the
+   named definition `chronicleRealFlow` with its two spec lemmas `chronicleRealFlow_isRealFlow`
+   and `chronicleRealFlow_kEquiv`. Phase 29.8's second named follow-up — chronicle-level
+   `CountableDense` membership — is discharged inside D1/D2 there, from the bridge's own
+   `countable` and `denselyOrdered` fields, exactly as 29.8's handoff predicted (it cannot be a
+   global instance because `h_mcs` and `h_box_dense` are non-class explicit arguments).
+
+**`Owns` deviation, recorded rather than absorbed.** This phase's `Owns` names
+`RealModel/DoetsTheorem.lean` alone. The closing dispatch also edited
+`RealModel/EpsilonDense.lean` (piece 1, which Phase 29.8 explicitly assigned to that file's owner
+and named as this checkbox's prerequisite) and created `RealModel/ChronicleRealFlow.lean`
+(piece 3). The new module is a leaf: it imports `RealModel/DoetsTheorem` and
+`DenseModelSurgery/ChronicleInstance` and is imported by nothing. It exists for the layering reason
+`ChronicleInstance.lean` records for itself — `RealModel/` must not acquire the chronicle's
+~280-module closure, and `ChronicleMonadicBridge` must not acquire §8's — so the instantiation
+could not have gone into either file it joins. Nothing outside `RealModel/` was modified;
+`StrongCompleteness.lean` and all of `DenseModelSurgery/` are byte-identical.
 
 - **What is proved, sorry-free**: `exists_realFlow_witness` (goodness normalized to flow `= ℝ`),
   `goodDense_of_orderIso_real` / `exists_realFlow_of_orderIso_real`, the whole Layer-3 `ℝ`-model
@@ -4752,7 +4786,10 @@ outstanding.
       `reynolds_theorem6_contradiction`'s docstring still asserted that `#print axioms` reports
       `sorryAx`. Both were false as of this sub-phase; both are fixed, and four source-map rows
       were added for Layers 11-14.
-- **NEW OBLIGATION SURFACED, and deliberately not hidden.** Weakening D1/D2's antecedent is what
+- **NEW OBLIGATION SURFACED, and deliberately not hidden. DISCHARGED as of the closing dispatch**
+  — by Phase 29.8's class parameterization plus the two follow-ups it named; see the COMPLETION
+  RECORD above. The record of it is kept because the route it describes is the one that worked.
+  Weakening D1/D2's antecedent is what
   made (1) closable, and it makes D1/D2 correspondingly *harder to discharge* — Phase 30's
   suppliers (`no_gaps_dense_prior`, `no_gaps_dense_prior_left`, `dense_singletons_of_sep`) all
   take the unrestricted `IsContempEquivDense`, and `toCD` runs the wrong way. Making §6 run on
@@ -4788,15 +4825,23 @@ outstanding.
   - The design of the reverted commit is worth recovering: it split clause (i) into
     `refl`/`symm`/`trans` with the instances riding on `trans` alone, keeping
     `IsContempEquivDense.equiv` as a reassembling accessor so call sites read unchanged.
-- **Anti-vacuity checkbox STILL NOT met**, and not faked. The chronicle instantiation is not
-  landed. It is **no longer** gated on the `ε`-adapter — that is discharged — but it is now
-  gated on the newly surfaced obligation above: instantiating the chronicle requires *discharging*
-  D1/D2 at the chronicle structure, which needs §6 to run on the countable-dense bundle, which is
-  exactly what was measured to fail at `surgeredStructure`. Closing it at `epsTop` would be
-  vacuous by the plan's own caveat. `exists_realFlow_shuffleReal_point` is landed instead as an honest but
-  *weaker* anti-vacuity witness: it exhibits the `ℝ`-flow conclusion shape at the constant
-  one-point palette, so Layer 3 is demonstrably non-vacuous. It does **not** discharge the
-  chronicle checkbox and is not presented as doing so.
+- **Anti-vacuity checkbox MET**, and the earlier "STILL NOT met" record is superseded rather than
+  deleted — its diagnosis was right and its route is the one that was taken. The gate it named was:
+  instantiating the chronicle requires *discharging* D1/D2 at the chronicle structure, which needs
+  §6 to run on the countable-dense bundle. Phase 29.8 made §6 run on an arbitrary structure class,
+  and the closing dispatch supplied the two remaining pieces (the `epsDense` witness at
+  `CountableDense`, and the chronicle-level membership) and landed `chronicleRealFlow`.
+  - **Neither `epsTop` escape hatch is taken.** `chronicleMonadic_doetsD1` and
+    `chronicleMonadic_doetsD2` are proved at an **arbitrary** `ε` in the countable-dense class, not
+    at a chosen convenient one, and `doets_theorem_dense` then consumes them at
+    `ε := epsDense (mkSigFrom root) k` — Reynolds' own `∼_M` — through `doetsD1_epsDense` /
+    `doetsD2_epsDense`. So the `ε` at which D1 and D2 do work inside `chronicleRealFlow_kEquiv` is
+    the live one, and neither `chronicleMonadic_no_gaps_epsTop_vacuous` (empty `EndsInGapOnRight`)
+    nor `chronicleMonadic_dense_singletons_epsTop_vacuous` (unsatisfiable density antecedent) is in
+    the picture. The v10 caveat's condition — *"this checkbox still needs a live `ε`"* — is met by
+    Phase 25's `epsDense`, not evaded.
+  - `exists_realFlow_shuffleReal_point` remains landed as the weaker Layer-3 witness it always was.
+    It is now redundant as an anti-vacuity argument and is kept as a Layer-3 regression check.
 
 - **Goal**: `doets_theorem_dense`: *"Suppose that `M` is a temporal structure in a finite language
   whose flow of time is countable, dense and without end points. Suppose further that for any
@@ -4824,9 +4869,18 @@ outstanding.
         v10**: once Phase 22.1 lands, `no_gaps_dense_prior` carries one fewer hypothesis
         (`HasBadIntervalSurgery` is discharged) and this consumption is direct, exactly as
         originally written.
-  - [ ] **Anti-vacuity**: instantiate at `chronicleIsDensePriorSepStructure` (Phase 16) with the D1
+  - [x] **Anti-vacuity**: instantiate at `chronicleIsDensePriorSepStructure` (Phase 16) with the D1
         and D2 instances from Phases 22-23, and land the resulting `ℝ`-flowed structure as a named
         definition. This is the phase's real deliverable.
+        *(MET. `chronicleRealFlow` (`RealModel/ChronicleRealFlow.lean`) is the named `ℝ`-flowed
+        structure; `chronicleRealFlow_isRealFlow` and `chronicleRealFlow_kEquiv` are its two
+        halves of Theorem 6's conclusion. `chronicleMonadic_doetsD1` / `chronicleMonadic_doetsD2`
+        are D1 and D2 discharged — not hypothesized — from `chronicleMonadic_no_gaps`,
+        `chronicleMonadic_no_gaps_left` and `chronicleMonadic_dense_singletons` (Phases 22-23 at
+        the bridge), with Prior-U, Prior-S, Sep and the four order conditions all coming from
+        `chronicleIsDensePriorSepStructure` (Phase 16). All five declarations report exactly
+        `[propext, Classical.choice, Quot.sound]`. See the COMPLETION RECORD above for the
+        `Owns` deviation and for why the `epsTop` vacuity caveat does not apply.)*
         **CAVEAT ADDED IN v10 — this checkbox still needs a live `ε`, and that is Phase 25's
         deliverable, not this phase's and not Phase 22.1's.** Phase 22.1's `ChronicleInstance.lean`
         discharges the **Prior-U/S** half at this very structure, but `IsContempEquivDense ε`
@@ -4837,20 +4891,20 @@ outstanding.
         as well as on 22-23**, and a dispatch that closes it at `epsTop` has not met the gate. The
         `Depends on` line below is unchanged (27 already depends on 26 → 25), so this is a citation
         of an existing edge, not a new one.
-        *(deviation: NOT met — see the PARTIAL RECORD above, and note that this is now the phase's
-        **only** outstanding item: the proof itself is sorry-free, so the checkbox is no longer
-        coupled to any tracked sorry. It is gated on discharging `DoetsD1`/`DoetsD2` at the
-        chronicle structure, which needs §6 to run on the countable-dense bundle.
+        *(HISTORY, kept because its diagnosis is what the closing dispatch executed. It read:
+        "NOT met … gated on discharging `DoetsD1`/`DoetsD2` at the chronicle structure, which needs
+        §6 to run on the countable-dense bundle." That gating was correct; Phase 29.8 made §6 run on
+        an arbitrary structure class and the closing dispatch discharged D1/D2 at the chronicle.
         **The earlier record that this was blocked by an irreducible failure is retracted**: it
         claimed `DenselyOrdered (surgeredStructure M ε Q t).carrier` is false because the structure
         collapses a bad interval to one class and so has adjacent points by Lemma 4. That inference
         does not go through — Lemma 4 is about **classes**, and adjacency additionally needs the
         surviving class to have a least element, which Lemma 6's first clause rules out. The
-        instance is **provable and landed sorry-free** (sub-phase 29.7). What is genuinely
-        outstanding is the mechanical restatement of the §6 chain, chartered as sub-phase 29.7's
-        successor and **outside this phase's territory** either way.
-        `exists_realFlow_shuffleReal_point` remains landed as a weaker, honest substitute and is
-        not claimed to discharge this checkbox.)*
+        instance is **provable and landed sorry-free** (sub-phase 29.7). The mechanical restatement
+        of the §6 chain it called for is sub-phase 29.8, and the residue — the `epsDense` witness at
+        `CountableDense` and the chronicle-level membership — is what the closing dispatch landed.
+        `exists_realFlow_shuffleReal_point` was the weaker honest substitute in the interim and is
+        no longer needed as one.)*
   - [x] Docstrings: `Reynolds 1992, §8 Theorem 6, printed pp.185-188` and `Doets 1987, 3.3.9`, with
         Reynolds' own note that his statement is slightly stronger and his proof a little different
         because of the contemporaneity notion. *(landed verbatim on `doets_theorem_dense`, plus a
@@ -4861,9 +4915,17 @@ outstanding.
         the Phase 28 reachability finding, so the scoped build is the load-bearing channel.
         **Every** declaration in the module, `doets_goodDense` and `doets_theorem_dense` included,
         now reports exactly `[propext, Classical.choice, Quot.sound]`. No `sorryAx` anywhere in the
-        chain.)*
+        chain. **Closing dispatch**: the same scoped set plus
+        `…RealModel.ChronicleRealFlow` green at 2235 jobs; full `lake build` green at 1983 jobs,
+        unchanged, because the new module is a leaf the root does not reach — so the scoped build
+        remains the load-bearing channel for it too. Non-Boneyard sorry census 1 at entry and 1 at
+        exit (`Metalogic/WeakCanonical/Transfer.lean:1242`, pre-existing and unrelated).)*
 - **Estimated output**: ~400 lines.
 - **Done when**: `doets_theorem_dense` and the chronicle instantiation are sorry-free and axiom-clean.
+  **Met.** `doets_theorem_dense` was already both; `chronicleRealFlow`, `chronicleRealFlow_isRealFlow`,
+  `chronicleRealFlow_kEquiv`, `chronicleMonadic_doetsD1` and `chronicleMonadic_doetsD2` each report
+  exactly `[propext, Classical.choice, Quot.sound]` with no `sorryAx`, and no `sorry` appears in
+  any file this phase touched.
 - **Depends on**: 23, 27, 28.
 - **Timing**: 8 hours.
 - **Verification Tier**: full.
@@ -5064,6 +5126,11 @@ re-bound with no proof-body edit, and `denselyOrdered_surgeredStructure` /
   is a one-liner over `simDense_refl` / `simDense_symm` / `epsDense_isContempEquivDenseCD`, but it
   belongs in `RealModel/EpsilonDense.lean`, outside this phase's `Owns`; `IsContempEquivDenseCD.toOn`
   names it as the remaining step and states its two inputs.
+  **Both follow-ups landed in the dispatch that closed Phase 29** — as
+  `epsDense_isContempEquivDenseOn_countableDense` (`RealModel/EpsilonDense.lean`) and, for the
+  chronicle-level membership, inside `chronicleMonadic_doetsD1` / `chronicleMonadic_doetsD2`
+  (`RealModel/ChronicleRealFlow.lean`). The sizing was accurate in both cases: the first is the
+  predicted one-liner, and the second is the predicted two `haveI`s off the bridge's own fields.
 
 ### Phase 30: Reynolds §9 Theorem 7 — the engine and the unconditional terminus [IN PROGRESS]
 
