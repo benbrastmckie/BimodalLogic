@@ -799,7 +799,7 @@
     {
       "project_number": 428,
       "project_name": "engine_totality_at_a_quantified_branch_budget",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "dependencies": [],
       "parent_task": 165,
@@ -820,11 +820,16 @@
           "path": "specs/428_engine_totality_at_a_quantified_branch_budget/plans/01_budget-totality-engine-repair.md",
           "type": "plan",
           "summary": "Eight-phase plan: engine arm-settling repair, budget-parameterised entry point with blocking-aware certificate, NoSplit-free totality, world-dimension discharge, and the terminus theorem."
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/summaries/01_budget-totality-engine-repair-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: phases 1-3 complete, phase 4 blocked by a refuted plan lemma, phases 5-8 not started."
         }
       ],
       "title": null,
       "created": "2026-07-29T23:39:38Z",
-      "last_updated": "2026-08-05T19:41:01Z",
+      "last_updated": "2026-08-05T19:42:20Z",
       "session_id": "sess_1785958345_b49dea"
     },
     {
