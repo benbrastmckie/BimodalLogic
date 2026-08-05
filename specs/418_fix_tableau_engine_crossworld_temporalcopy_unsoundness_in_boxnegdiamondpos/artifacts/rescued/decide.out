@@ -1,3 +1,0 @@
-"decide: valid=false invalid=false fuelExhausted=true extractionFailed=false countermodel?=false"
-"buildTableau 1000 = STALLED (none)"
-RC=0

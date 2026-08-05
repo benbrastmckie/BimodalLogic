@@ -1,4 +1,0 @@
-=== C. decide-constructor discrimination at a fuel level that RETURNS ===
-  row9-encoding buildTableau fuel=400: (0, 0)  (0 ms)
-  decide fuel=400 (isValid,isInvalid,isFuelExh,isExtrFail,isUndec) = (false, (false, (true, (false, true))))  (0 ms)
-  decide fuel=400 getCountermodel?.isSome = false  (0 ms)

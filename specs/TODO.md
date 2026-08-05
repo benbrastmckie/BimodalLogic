@@ -6,7 +6,7 @@ next_project_number: 431
 
 ## Task Order
 
-*Updated 2026-07-30. Generated from state.json dependency graph.*
+*Updated 2026-08-05. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -334,20 +334,6 @@ NOTATION (user decision, 2026-07-28): any explicit converse operation on the tas
 
 ---
 
-### 418. Fix tableau engine crossworld temporalcopy unsoundness in boxnegdiamondpos
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-- **Research**: [165_establish_semantic_finite_model_property/reports/08_spawn-analysis.md]
-- **Plan**: [418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/plans/01_remove-unsound-temporal-copy-blocks.md]
-- **Summary**: [418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/summaries/01_remove-unsound-temporal-copy-blocks-summary.md]
-
-**Description**: Remove the six unsound group-3 blocks -- tempGProps, tempHProps, tempFNegProps, tempPNegProps, tempUNegProps, tempSNegProps -- from both boxNeg (FormalSystem/Metalogic/Decidability/Tableau.lean:555-574) and diamondPos (same file, :599-619). Groups 1 (existential witness) and 2 (T(square B)/F(diamond B) propagation) in both rules are sound and MUST NOT be touched. After the edit, temporalProps in each rule reduces to the empty concatenation (or is deleted along with its assembly line), and each rule's .linear list becomes `witness :: boxProps ++ diaProps`. Root cause: the six blocks copy every temporal-universal/existential signed formula true at l.time on the current branch verbatim into the freshly minted box/diamond-witness world, conflating 'true along the history being built' with 'true at the same instant along every admissible history' -- exactly what square/diamond quantify over. Measured effect: buildTableau ((G p) -> square (G p)) 1000 .Base returns .allClosed (should be .hasOpen), with decide returning .extractionFailed rather than .invalid with a countermodel; pinned in Tests/BimodalTest/BoxNegReachabilityProbe.lean (twelve #guard_msgs rows) and Tests/BimodalTest/BoxNegPreservationProbe.lean. Rebuild Tableau.lean and the full project (lake build), then run the FULL conformance corpus (Tests/BimodalTest/TableauConformance.lean plus the two probes above) as the acceptance gate -- not a spot check. Because the removal is risk-asymmetric (branches can only get harder to close, never easier: the fix cannot introduce a new false-invalid verdict, only reveal previously-hidden false-valid ones or newly-uncloseable branches), the only way to bound the fix's blast radius is to run the entire corpus before and after and record every verdict that changes, producing a before/after table (formula, old verdict, new verdict) as part of the task's summary artifact. Because three concurrent sessions (tasks 408, 414, 415) share this git clone and have previously destroyed full-build attempts by deleting .olean files mid-build, this task's own plan must include an explicit build-reliability strategy before attempting the full-project rebuild and corpus run that form its acceptance gate: check for and honor any existing build-coordination/lock convention in the repo, avoid `lake clean` while a concurrent session may be mid-build, and treat a corpus run whose build step failed or was interrupted as inconclusive (retry) rather than as a passing gate -- never treat an oleans-were-deleted failure as if the corpus had validated the fix. Do NOT touch FormalSystem/Metalogic/Decidability/Verified/Decidable.lean or attempt Phase 7.2's RuleSound proof -- that remains task 165's responsibility once this fix lands. This task ends at: engine sound, full corpus green (or every regression explicitly recorded and triaged), full build green.
-
----
-
 ### 417. Semantic fmp finite worldstate over z
 - **Effort**: medium
 - **Status**: [RESEARCHED]
@@ -359,20 +345,6 @@ NOTATION (user decision, 2026-07-28): any explicit converse operation on the tas
 **Description**: Semantic FMP over a fixed carrier, stated against the refactored Omega-free maximal-history semantics of task 414 (PossibleWorlds Comments/fix.md C6; revised 2026-07-28): prove the TruthAt-connected finite model property the paper cor:tm-decidability proof text cites — any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z — replacing reliance on the syntactic closure-MCS FMP theorems (Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by task 165 redirect; the tableau programme (165/410-412) remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
 
 LIMIT NULLITY NOTE (PossibleWorlds task 51; repo task 420): over D = Z the new Limit Nullity frame axiom is automatic (|y| < 1 forces y = 0, then nullity_identity), so the finite-W-over-Z programme is mathematically unaffected; the TaskFrame packaging in this task's construction must simply discharge the new field via 420's discrete helper.
-
----
-
-### 416. Adopt co axiom basis for dedekind class
-- **Effort**: large
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: paper-refactor
-- **Dependencies**: None
-- **Research**: [416_adopt_co_axiom_basis_for_dedekind_class/reports/01_co-axiom-basis-adoption.md]
-- **Plan**: [416_adopt_co_axiom_basis_for_dedekind_class/plans/02_co-derived-reynolds-basis.md]
-- **Summary**: [416_adopt_co_axiom_basis_for_dedekind_class/summaries/02_co-derived-reynolds-basis-summary.md]
-
-**Description**: DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md C4; INVERTED after research, user-ratified 2026-07-28: the Reynolds basis stays official and CO becomes derived — the reverse of this task's original framing). Research found strong evidence CO does NOT syntactically derive prior_U_gap/prior_S_gap/sep: the two bases are frame-equivalent (both pin Dedekind completeness) but plausibly NOT deductively equivalent — an independence-model sketch (Q-flow with isolated not-p points accumulating at an irrational from above, the classical Stavi US-vs-FO gap phenomenon) validates every CO instance while refuting Prior-U; the converse Reynolds |- CO derivation sketch does work. THEREFORE: (1) KEEP the Reynolds triple prior_U_gap/prior_S_gap/sep as the OFFICIAL Dedekind-class axiom basis — no basis swap, no two-basis bridge. (2) Add CO as a DERIVED internal theorem co_derived plus its validity lemma co_valid, where CO = triangle(H phi -> F(H phi)) -> (H phi -> G phi) with triangle phi := H phi and phi and G phi (the TEMPORAL triangle, not box); the CO formula is at PossibleWorlds/JPL/possible_worlds.tex:3250 (identical formula at current-tex line 1109 — note the top-level Papers/possible_worlds.tex has only 2253 lines and is NOT the right source). All needed operators (allPast/allFuture/someFuture/always) already exist in Formula.lean. (3) Route the paper-side correction back through fix.md C4 option 2, which explicitly contemplated switching the paper's basis: the paper's BX_c completeness claim is deferred to THIS repo with no independent citation, so def:TMplus-c is implicated and needs paper-side amendment. Under this inversion the 408/411 rebase surface is EMPTY (no downstream churn), and the 6 real DerivationTree.axiom consumption sites — 3 Chronicle limit-witness files plus 3 in ChronicleMonadicBridge feeding the Doets embedding, the latter having no CO-local workaround — stay untouched. (4) Record the Hoelder classification where cheap: pinned Mathlib v4.33.0-rc1 verified to PROVIDE LinearOrderedAddCommGroup.discrete_or_denselyOrdered / discrete_iff_not_denselyOrdered (GroupTheory/ArchimedeanDensely.lean, exact typeclass match with the repo's duration binders) and Archimedean.exists_orderAddMonoidHom_real_injective (Data/Real/Embedding.lean:232); verified ABSENT are "complete ordered group => Archimedean" (cheap ~20-line hand lemma, do it) and packaged "dense+complete group ~=+o R" (NOT cheap — docs, not a lemma); complete+discrete = Z is cheaply composable as a lemma. (5) Align FrameClass/Validity docs with the paper TM_c / TM+_dc distinction, noting complete-but-discrete is exactly Z (Discrete class). Related: 390, 408, 411.
 
 ---
 
@@ -453,30 +425,6 @@ ALSO NOTE: this task inherits obstructions O2 and O3 (the boxAnchoredCheck and t
 
 ---
 
-### 409. Reconcile latex metalogic docs with live tree
-- **Effort**: medium
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: documentation
-- **Dependencies**: None
-- **Research**: [409_reconcile_latex_metalogic_docs_with_live_tree/reports/01_latex-metalogic-live-tree-audit.md]
-- **Plan**: [409_reconcile_latex_metalogic_docs_with_live_tree/plans/01_latex-metalogic-reconcile.md]
-- **Summary**: [409_reconcile_latex_metalogic_docs_with_live_tree/summaries/01_latex-metalogic-reconcile-summary.md]
-
-**Description**: Systematically reconcile the LaTeX reference (latex/subfiles/, especially 04-Metalogic.tex and 06-Notes.tex) with the live FormalSystem/ tree and the settled completeness terminology. The TERMINOLOGY pass already landed (2026-07-27): "strong completeness" is reserved for infinite premise sets, the finite-context form is named consequence completeness, and 04-Metalogic.tex now carries a "Strong Completeness and Compactness" subsection with the per-class split (Base/Dense open; Discrete/Dedekind provably non-compact) — see specs/ROADMAP.md ("Completeness programme" block) and the FormalSystem/Metalogic/StrongCompleteness.lean module docstring for the authoritative statements. What remains, and what this task owns, is ARCHITECTURE/IDENTIFIER fidelity: the chapter still largely describes the retired Metalogic_v2 (Boneyard) architecture.
-
-SCOPE:
-(1) Identifier audit: check every \texttt{...} Lean identifier in latex/subfiles/ against the live tree (grep, excluding Boneyard/). Known-stale already: semantic_weak_completeness, main_provable_iff_valid(_v2), representation_theorem, strong_representation_theorem, deduction_theorem (live names: deductionTheorem / Derivable.deduction, Metalogic/Core/DeductionTheorem.lean), truth_lemma path (cited as Metalogic/Representation/TruthLemma.lean, which does not exist), semantic_task_rel_compositionality, finite_model_property_constructive, semantic_truth_lemma_v2, IndexedMCSFamily, canonical_model. The "Implementation Status" subsection describes Metalogic_v2 sorries and module layout (Core/, Soundness/, Representation/, Completeness/, Applications/, FMP.lean) that no longer exist.
-(2) Restate the completeness-proof narrative around the live architecture: per-class weak termini (completeness at Metalogic/BXCanonical/Completeness.lean:196, completeness_dense :255, completeness_discrete :296 — the latter two sorryAx-free with axioms [propext, Classical.choice, Quot.sound]; completeness_dedekind in flight via the limit-MCS route), consequence completeness (StrongCompleteness.lean), and the chronicle/parametric canonical machinery actually used (Metalogic/Core, BXCanonical + Chronicle, WeakCanonical/Kamp, Algebraic parametric truth lemma, Bundle FMCS/BFMCS) instead of the retired quotient/semantic-canonical story where the two diverge.
-(3) Update the two tikz diagrams (theorem dependency structure; directory structure) and the status tables to the live module layout and live theorem names; remove or historicize the Metalogic_v2 sorry inventory.
-(4) Verify compilation: pdflatex -interaction=nonstopmode with TEXINPUTS=../assets: from latex/subfiles/ (formatting.sty lives in latex/assets/); both 04-Metalogic.tex and 06-Notes.tex currently compile standalone and must still compile after the rewrite.
-
-COORDINATION: task 362 leg D owns stating the genuine strong-completeness results (and any further restatement) once the per-class consequence/strong results land; this task owns bringing the existing chapter to identifier/architecture fidelity now. Do not duplicate. Per .claude/rules/no-task-references-in-deliverables.md, do not cite task numbers inside the .tex files — reference module names and theorem identifiers instead.
-
-SCOPE BOUNDARY ADDENDUM (2026-07-28): the frame-definition subsection of latex/subfiles/02-Semantics.tex is owned by task 420 (positive-cone + Limit Nullity restatement following the paper's task-51 def:frame refactor); this task continues to own 04-Metalogic.tex and 06-Notes.tex identifier/architecture fidelity. Do not duplicate.
-
----
-
 ### 408. Faithful route to strong completeness for the dedekind extension
 - **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
@@ -515,38 +463,6 @@ DONE WHEN: `completeness_dedekind` and `consequence_completeness_dedekind` are l
 
 ---
 
-### 390. Dedekind carrier construction research
-- **Effort**: large
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: Task 389
-- **Research**: [390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md]
-
-**Description**: RESOLVED (research complete). VERDICT: GO on the carrier question; the umbrella Dedekind-completeness effort is CONDITIONAL. Report: specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md (three named preconditions + nine-phase decomposition).
-The obstruction stated below conflates the chronicle limit domain X with the model time domain D. X is countable; D is the carrier and is already strictly larger than X (X subset of Rat, with carrier Rat). The carrier therefore requires NO construction: setting D = Real is the same move that already sets D = Rat, and the live parametric scaffolding was compile-verified to instantiate at Real unmodified.
-Reynolds 1992 Theorem 7 (printed p.189) obtains real-flow WEAK completeness by a Doets quantifier-depth TRANSFER from a countable rational model -- never by completion. GHR94 ch.10 section 10.3 likewise assumes Dedekind completeness as a frame condition rather than constructing it.
-Dedekind completeness is NOT modally definable (Reynolds printed p.169: the Prior axioms enforce a merely DEFINABLY Dedekind-complete model). The axiomatic proxy is Prior-U / Prior-S / Sep (printed p.168), none of which is in the Axiom inductive today; the tree's existing prior_UZ / prior_SZ are the DIFFERENT integer well-ordering axioms, not Reynolds' gap axioms.
-The original framing below is retained as historical context for why this task existed; its file anchors have been corrected against the working tree.
-
-Research task: determine how a Dedekind-complete carrier can be produced for the canonical-model construction. This is the mathematical crux of the Dedekind-complete completeness effort and MUST resolve before any implementation plan is written.
-
-THE OBSTRUCTION. specs/ROADMAP.md:1477 describes the chronicle limit domain X as a COUNTABLE linear order (sparse X subset of Rat for Base, Rat for Dense, order-isomorphic to Int for Discrete). But a Dedekind-complete, densely ordered, unbounded linear order is order-isomorphic to the reals, hence uncountable. So the existing chronicle / canonical-model route cannot directly yield a Dedekind-complete carrier.
-Corroborating anchors: specs/ROADMAP.md:317-320 warns that dense domains such as Rat are WRONG for general completeness (GGp -> Gp is valid on Rat but not derivable in BX; Burgess uses a sparse X subset of Rat). specs/ROADMAP.md:1414's "Representation Theorem Goal" enumerates D' = Rat (base), Rat (dense), Int (discrete) and has NO reals row. FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINF.lean:50 states flatly that no reals OrderedMonadicStructure is constructed here or anywhere in this tree.
-
-QUESTIONS TO ANSWER, with literature grounding (see the Dedekind literature-remediation task):
-1. Does the intended semantics quantify over Dedekind-complete ORDERS, or over Dedekind-complete orders arising as duration groups? The live validity predicates take instance binders on a duration type D (FormalSystem/Semantics/Validity.lean:79 valid, :169 ValidDense, :187 ValidDiscrete -- note the declarations are named ValidDense / ValidDiscrete, not valid_dense / valid_discrete). Establish what the Dedekind analogue's binder list must be.
-2. Is a Dedekind completion of the countable limit domain sound for the truth lemma -- i.e. does adding limit points preserve the coherence conditions the BFMCS bundle requires? If not, why not, and what is the obstruction precisely.
-3. What does the literature actually do? Reynolds 1992 axiomatizes Until/Since over the reals; GHR94 Ch.10 section 10.3 treats separation over Dedekind-complete flows. Extract the construction each uses for the carrier and state whether it is a completion, a direct construction, or a representation argument.
-4. Is the target completeness result even true for the intended axiom set, and what axiom characterizes Dedekind completeness? No candidate exists in the Axiom inductive today.
-
-CONSTRAINTS. Standing ROADMAP anti-patterns apply: do NOT attempt a direct IsSuccArchimedean proof bypassing chronicle_gap_contradiction; do NOT attempt the "discrete bypass"; decidability-based completeness is explicitly excluded as a path to the representation theorem.
-Reusable scaffolding that a solution must plug into (all live, sorry-free, generic in the duration type D and the frame class fc; line numbers verified against the working tree): ParametricCanonicalTaskFrame (FormalSystem/Metalogic/Algebraic/ParametricCanonical.lean:207), ParametricCanonicalTaskModel (FormalSystem/Metalogic/Algebraic/ParametricTruthLemma.lean:108), parametric_canonical_truth_lemma (:240), restricted_parametric_shifted_truth_lemma (FormalSystem/Metalogic/Algebraic/RestrictedParametricTruthLemma.lean:119), and the single funnel both live countermodels go through, fully_restricted_parametric_completeness_from_neg_membership (:417). Also neg_consistent_of_not_derivable (FormalSystem/Metalogic/BXCanonical/Completeness.lean:72, generic in fc) and mcs_mixed_case_absurd (FormalSystem/Metalogic/BXCanonical/Chronicle/MCSMixedCase.lean:42 -- note this is under BXCanonical/, takes fc explicitly). structure Gap (FormalSystem/Metalogic/WeakCanonical/EFGames/Defs.lean:248) is the existing object with the right shape for phrasing "no Dedekind gaps" as a frame condition.
-Related warning from the existing tree: FormalSystem/Metalogic/BXCanonical/Completeness.lean:173-193 documents why the general completeness theorem still carries sorryAx -- a Base-MCS is not automatically Discrete-consistent, so the sorry-free Reynolds pipeline cannot be reused. A Dedekind variant will hit the structurally identical problem and must build a countermodel from an MCS of its own class.
-DELIVERABLE: a research report with a GO / NO-GO recommendation and, if GO, the carrier construction to be formalized. Dispatch with --lit.
-
----
-
 ### 362. Completeness capstone consequence all classes strong where compact
 - **Effort**: high
 - **Status**: [NOT STARTED]
@@ -573,65 +489,6 @@ VERIFIED ANCHORS (re-checked 2026-07-27):
 Axioms exactly [propext, Classical.choice, Quot.sound] modulo whatever the underlying weak terminus already carries; leg A sorry-free once the three weak termini are green.
 
 DEPENDENCY STATUS (2026-07-27; dependencies array unchanged): 375 (discrete weak terminus) COMPLETED — completeness_discrete/completeness_dense kernel-verify to the pristine axiom set. 169 (base weak) not_started. 170 (dense weak) not_started. 361 (terminology/architecture research + set-based layer design + Base/Dense compactness verdict) not_started — leg B is additionally gated on 361's verdict and the model-existence tasks it spawns; legs A/C/D are not.
-
----
-
-### 361. Strong completeness architecture and weak terminus gap analysis
-- **Effort**: high
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: strong_completeness
-- **Dependencies**: None
-- **Research**: [361_strong_completeness_architecture_and_weak_terminus_gap_analysis/reports/01_strong-completeness-architecture-gap-analysis.md]
-- **Plan**: [361_strong_completeness_architecture_and_weak_terminus_gap_analysis/plans/01_strong-completeness-scoping.md]
-- **Summary**: [361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/04_subtask-decomposition.md]
-
-**Description**: Research + scoping for the completeness-terminology refactor and the genuine strong-completeness architecture. TERMINOLOGY IS SETTLED (2026-07-27): "strong completeness" is reserved for consequence from possibly-INFINITE premise sets (Γ : Set Formula) with finitary set-derivability (∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ). Finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong (see FormalSystem/Metalogic/StrongCompleteness.lean module docstring, reframed 2026-07-27, for the per-class programme).
-
-Deliverables:
-(1) Design the set-based layer: per-class SetSemanticConsequence_X (Γ : Set Formula) (φ : Formula) paralleling the valid/ValidDense/ValidDiscrete binder lists in Semantics/Validity.lean; the finitary set-derivability relation; and their basic lemmas (monotonicity, finite-restriction). The set-based MCS layer already exists and is correctly finitary — SetConsistent, SetMaximalConsistent, set_lindenbaum in Metalogic/Core/MaximalConsistent.lean (:96, :103, :303).
-(2) Feasibility verdict on GENUINE strong completeness per class. Already established, do not re-derive: Discrete is provably NON-COMPACT — ValidDiscrete requires IsSuccArchimedean/IsPredArchimedean, and Formula.next φ = untl φ bot is a genuine next-step operator on discrete orders, so {F p} ∪ {¬Xⁿ p : n ∈ ℕ} is finitely satisfiable over ℤ yet unsatisfiable over every Archimedean discrete carrier — hence weak completeness only. Dedekind is likewise non-compact (Reynolds 1992 Thm 7 is weak-only and the restriction is genuine) — weak completeness only, owned by task 408. OPEN QUESTION this task must answer: whether Base and Dense (neither binder list imposes Archimedean-ness, so no known counterexample applies; classical Burgess-style strong completeness for the ℚ tense logic suggests plausibility) are compact under the FULL task-frame semantics (S5 box over shift-closed Omega, ordered-abelian-group time). For Base/Dense, determine whether the BXCanonical chronicle machinery (which already manipulates Set Formula MCSs internally) extends to a MODEL-EXISTENCE theorem — every SetConsistent set is satisfiable in a frame of the class. That theorem is the substantive new obligation; the single-formula countermodel engines do NOT suffice for it.
-(3) Authoritative gap analysis of what still gates each WEAK terminus (unchanged charter): Base = the open sorries reachable from `completeness` (BXCanonical/Completeness.lean:196 — dense-arm countermodel_dense, the deprecated countermodel_discrete Transfer.lean route, dd_countermodel_chronicle_mixed_sorry); Dense = the chronicle dense-path sorries inherited by `completeness_dense` (:255) (ChronicleToCountermodel.lean succ_reaches_dom_N / chronicle_gap_contradiction; MCSMixedCase.lean). Produce a concrete sub-task decomposition + dependency graph for tasks 169 (base weak) and 170 (dense weak), PLUS new model-existence sub-tasks for the Base/Dense strong legs if the feasibility verdict is positive, spawning refinements as needed.
-(4) Optionally scope formalizing the Discrete non-compactness witness as a documented theorem (satisfiable-finitely-but-not-globally), so the weak-only status of Discrete is machine-checked rather than prose.
-
-Reference: FormalSystem/Metalogic/StrongCompleteness.lean (per-class programme + reserved section headers); latex/subfiles/04-Metalogic.tex §Completeness-as-Corollary "Note on Infinite Contexts" and its TODO (the LaTeX restatement is owned by task 362). Analysis/read task — no proof obligations to close here.
-
----
-
-### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
-- **Effort**: 10-16 hours
-- **Status**: [EXPANDED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 320, Task 326, Task 330, Task 331, Task 335, Task 336
-- **Research**:
-  - [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
-  - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/06_faithful-separate-bracket-architecture.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/07_v7-consolidated-faithful-route.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/10_supersession-decision.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/01_blocker-research-successor-k.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/02_spawn-analysis.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/03_divergence-audit-joint-channel.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/04_spawn-analysis.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md]
-- **Plan**:
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/02_corrected-k2-carrier-fi-chain-v2.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/03_corrected-k2-carrier-gate-v3.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/04_corrected-k2-carrier-gate-v4.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/05_corrected-k2-carrier-gate-v5.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/06_corrected-k2-carrier-gate-v6-redesign.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/07_v7-faithful-separate-bracket.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/01_corrected-k2-carrier-fi-chain.md]
-- **Summary**:
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/01_corrected-k2-carrier-fi-chain-summary.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/06_corrected-k2-carrier-gate-v6-redesign-summary.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/07_phase11-n2-singleton-summary.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/07_phase7-sepbody-carrier-summary.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/08_phase8-joint-extraction-summary.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/09_phase9-o4-verdict-summary.md]
-
-**Description**: REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audit (specs/330_.../reports/01_faithfulness-audit-fold-representation.md — the PRIMARY BASIS) determined the entire v1-v5 route rested on a MIS-CITATION: the "constant-arity E[Sigma]-fold (Def 4.1)" does not exist in Rabinovich 2014. Def 4.1 (p.5) is the E[Sigma] ALPHABET EXPANSION (TL-formulas-as-atoms), NOT a fold. The real fold is Prop 3.5 / Cor 5.4: NAVIGATED (nested Until/Since) over FLAT exists-forall blocks with QUANTIFIER-FREE point types (Lemma 5.1, p.7); higher FO depth is discharged by STRUCTURAL INDUCTION (Prop 4.3, p.6), never by nesting a depth-k characteristic. The static arity-1 E-atom (EAtomDom = ZoneSpec n x NormalForm sig k 1, NfEFold:69) is a CATEGORY ERROR at k>=1 — the recurring wall (G6 :1609-1641, F4 :5689-5765, k=2 NO-GO 327 :8760-8825) is ONE obstruction: an arity-1 monadic channel cannot carry an inner witness's joint coupling to multiple anchors (goal needs ZoneSpec 4, channel supplies ZoneSpec 1).\n\nv6 DROPS every phase depending on the refuted infrastructure (nfk_assemble/nfk_dropFresh/nfk_zoneSpec, nf_eval_nf1_cons_factor, efold_of_nfk, the constant-arity fold engine nf_quant_layer_fold_k2_gate). It CONSUMES the landed assets the audit identified: BracketCarrierCorrectV (NfMultiAnchorBridge:1881, the witness-growing carrier), neg_2var_vec_ea (EANegationClosure:722, the LANDED Prop 4.2 negation closure — the hardest piece), and the task-326 interior closers (kvE_subBracket2V_sound_of_outer/_complete). It ADDS the missing ingredient: the Prop 4.3 re-flatten structural-induction wiring. It FOLDS IN the redefined scope of the now-ABANDONED prerequisite tasks (NOT re-spawned): former 328 -> the navigated witness-growing fold (Prop 4.3 re-flatten induction over flat exists-forall blocks); former 329 -> the per-arrangement VVecEA2 non-interior dischargers (soundness + completeness) for the 5 non-interior zones (zPastX/zAtX/zAtW/zAtT/zFutT). v5 Phase 15 (F4 Z adversarial gate + verdict record) is preserved as the downstream consumer (now Phase 8).\n\nBINDING INVARIANT (the ONE thing v6 changes after 5 non-converging versions): reconstruction is NAVIGATED / witness-growing, NEVER a static arity-1 characteristic — inter-anchor coupling rides the EVALUATION POINT / structural position of nested Until/Since (Prop 3.5 / Cor 5.4). LITMUS: no x1 < e_i relative-position literal on any live path. CONSTRAINTS (preserved from v5): purely additive; DO-NOT-EDIT (byte-identical) task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice, kvE_subChain2V, BracketCarrierCorrectVPrior, EANegation, F1-F4 records; no provider-side pinning (Amendment F3); anchor cap 2; G5 citations at every chain step; axiom-clean [propext, Classical.choice, Quot.sound]; no sorry on any live path. RE-SCOPE fallback (audit-sanctioned) only if the navigated fold + induction wiring exceeds budget: narrow to the interior + boundary fragment via task 326 + epL/epR/ptW, deferring exterior-navigated completeness. GOAL STATE: v6 GO gate unblocks task 309 Phase 13.4 (general-k one-step correctness) + Phase 14 (hook rewire discharging KampPrior.lean:351's strategic sorry). LITERATURE GROUNDING: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md (Def 3.1/4.1, Prop 3.5, Prop 4.2, Prop 4.3, Lemma 5.1, Lemma 5.3, Cor 5.4). SCOPE AMENDMENT (2026-07-07, plan v7 Phase 10 decision gate): O4 (carrier-side per-sigma hgate derivation) FAILED its one dedicated dispatch — forward-zone conjunct underdetermined at cross-sigma slot points (inert O4 CRUX RECORD, SharedWitness.lean). Verdict N2: task re-scoped to the single-positive-sub fragment (Appendix N2 promoted into Phases 11-12). The GO/NO-GO deliverable for task 309 Phase 13.4 + KampPrior.lean:351 is now fragment-scoped; the multi-positive case (bit-compatibility filtering of kvE2_sepArrL/R, a carrier re-definition) is deferred to a successor task.
 
 ---
 
@@ -742,21 +599,6 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 
 ---
 
-### 179. Research lean4 tactics infrastructure
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: automation
-- **Dependencies**: None
-- **Research**:
-  - [179_research_lean4_tactics_infrastructure/reports/01_team-research.md]
-  - [179_research_lean4_tactics_infrastructure/reports/02_mathlib-submission.md]
-  - [179_research_lean4_tactics_infrastructure/reports/01_teammate-a-findings.md]
-  - [179_research_lean4_tactics_infrastructure/reports/01_teammate-b-findings.md]
-  - [179_research_lean4_tactics_infrastructure/reports/01_teammate-c-findings.md]
-  - [179_research_lean4_tactics_infrastructure/reports/01_teammate-d-findings.md]
-
----
-
 ### 178. Publication examples and demo
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -774,47 +616,6 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 - **Dependencies**: Task 131, Task 193, Task 402
 
 **Description**: Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.
-
----
-
-### 175. Naming convention and bridge cleanup
-- **Status**: [EXPANDED]
-- **Task Type**: lean4
-- **Topic**: formula-refactor
-- **Dependencies**: Task 131, Task 402
-- **Research**:
-  - [175_naming_convention_and_bridge_cleanup/reports/01_team-research.md]
-  - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-a-findings.md]
-  - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-b-findings.md]
-  - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-c-findings.md]
-  - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-d-findings.md]
-
-**Description**: Normalize naming conventions to follow Mathlib-style descriptive conventions and eliminate bridge/wrapper indirection for publication quality. Adopt Mathlib naming patterns: bot_of_and_neg instead of ecq, and_left instead of lce, and_right instead of rce, or_inl instead of ldi, or_inr instead of rdi, absurd instead of raa, False.elim instead of efq, not_not_intro instead of dni, etc. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid for consistency. Rename temp_ prefix to temporal_ for clarity. Purge 81 removed/archived/superseded tombstone comments. Reference Mathlib naming conventions guide and task 179 research report for the full mapping.
-
-CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped): the target names listed above are SNAKE_CASE, which is correct for `theorem`s but WRONG for `def`s under Mathlib convention -- and this repository has ~860 declarations that are forced to be `def` because `DerivationTree` is Type-valued. Any declaration that remains a `def` must receive a lowerCamelCase semantic name (`botOfAndNeg`, not `bot_of_and_neg`), or this task will reintroduce exactly the `defsWithUnderscore` violations its predecessor eliminated. Do not choose a target name without first establishing whether the declaration is a `def` or a `theorem`; where a `-> Prop` declaration can legitimately become a `theorem`, doing so is strictly better than renaming it, because it leaves the linter's scope entirely.
-
----
-
-### 170. Complete dense extension completeness
-- **Effort**: high
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: strong_completeness
-- **Dependencies**: Task 361
-
-**Description**: Dense (FrameClass.Dense) WEAK completeness — SUBSTANTIVELY CLOSED. NO IMPLEMENTATION AGENT SHOULD BE DISPATCHED AT THIS TASK.
-
-VERIFIED STATUS (2026-07-28, from task 361's design/03_weak-terminus-status.md section 1): `completeness_dense` (BXCanonical/Completeness.lean:255) is already machine-verified sorry-free. `lean_verify` against current oleans reports `#print axioms completeness_dense` = [propext, Classical.choice, Quot.sound] — no `sorryAx`.
-
-WHY THE EARLIER DESCRIPTION WAS STALE: it named three inherited chronicle dense-path obligations. All three are gone from live code — two survive only under `Boneyard/` sub-trees, and the third file exists but is sorry-free (its mixed-case closer, `Chronicle.mcs_mixed_case_absurd`, is what discharges that case). None of the three is reachable from `completeness_dense`. The itemized correction table, naming each stale claim against its actual state, is design/03 section 3; it is deliberately not reproduced here so this description cannot be mistaken for a live obligation list. There are exactly TWO live non-Boneyard sorries in the whole tree — `Transfer.lean:1242` (task 169's) and `RealModel/ShuffleReal.lean:201` (task 408's) — and neither is reachable from `completeness_dense`.
-
-THE SINGLE REMAINING ACTION, and it is administrative, not Lean work: a build-lock holder runs an independent CLEAN-BUILD `#print axioms FormalSystem.Metalogic.BXCanonical.completeness_dense`. (Task 361's verification consumed existing oleans; a clean-build re-verification is the stronger evidence the closure should rest on.) If it reports exactly `propext, Classical.choice, Quot.sound`, transition this task to [COMPLETED] with a completion summary recording that axiom set verbatim.
-
-The status transition was deliberately NOT performed by task 361, which held no build lock and therefore could not produce the clean-build evidence.
-
-ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Dense, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Dense (Γ : Set Formula) additionally requires semantic compactness, gated on task 424; that obligation is NOT discharged by this task. Because this weak engine is already green, DENSE IS THE NATURAL FIRST STRONG-COMPLETENESS TARGET — it does not wait on the Base weak terminus.
-
-Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md section 4.
 
 ---
 
@@ -839,47 +640,6 @@ DEPENDENCIES: task 421 corrects the refuted route guidance in Transfer.lean and 
 ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Base, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Base (Γ : Set Formula) additionally requires semantic compactness, gated on task 424; that obligation is NOT discharged by this task.
 
 Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md.
-
----
-
-### 165. Establish semantic finite model property
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: Task 418
-- **Research**: [165_establish_semantic_finite_model_property/reports/06_soundfuel-decision.md]
-- **Summary**: [165_establish_semantic_finite_model_property/summaries/19_phase8-vacuous-theorem-hygiene-summary.md]
-- **Plan**: [165_establish_semantic_finite_model_property/plans/01_tableau-decidability-two-track.md]
-
-**Description**: Establish verified decidability of TM bimodal logic for all four frame classes (Base, Dense, Discrete, Dedekind) by completing the tableau decision procedure in FormalSystem/Metalogic/Decidability/ into a fully proved decidability result. This redirects the task away from the semantic finite model property: the semantic FMP is now out of scope (an optional follow-on), though the existing research report (reports/01_semantic-fmp-research.md) remains valid background and its documentation-defect findings are retained below.
-
-CURRENT STATE (sound-only). The tableau stack exists and builds: a 28-rule calculus in Tableau.lean (23 base rules in allRules, 2 in denseRules, 3 in discreteRules), fuel-based saturation with blocking plus AppliedSet and EventualityTracker (Saturation.lean), per-frame-class closure detection (Closure.lean), and the entry point `decide` (DecisionProcedure.lean:128). Valid answers do carry proof terms, but the stack is sound only, and three gaps block any decidability theorem: (a) closed-tableau proof extraction (`extractProof`, ProofExtraction.lean:258) is a best-effort runtime search over 5 strategies that can fail, returning `.timeout` even on a genuinely closed tableau; (b) there is NO termination theorem -- `soundFuel` (Saturation.lean:627) caps at `min bound 100000` with nothing proved about it, and the original `blocking_terminates` was found FALSE (see the status discussion at Saturation.lean:1028-1060); (c) countermodel extraction proves `branchTruthLemma` (CountermodelExtraction.lean:1044) only over a bespoke `branchTruth` semantics (CountermodelExtraction.lean:263 -- direct-successor Until/Since, box quantified over a finite world list) that is NOT connected to the repository's real `TruthAt`/`valid`.
-
-WORK PACKAGES, in recommended order.
-
-WP1 -- Adversarial calculus-adequacy probe (must come first; top risk). The branch's `TimeOrdering` is a partial order while real TM time is linear, and the calculus appears to lack an ordering-trichotomy/linearity branching rule for freshly introduced times. Probe whether an open saturated branch can fail to admit any linear model. Also probe Until-guard interpolation at times not present on the branch, and blocking-vs-truth-lemma compatibility (blocked branches will need an unwinding argument). This package comes first because a negative result forces rule additions, which would invalidate every downstream proof in WP2-WP4.
-
-WP2 -- Refutation meta-theorem (closed tableau to Derivable). Replace runtime proof extraction with a theorem of the form `allClosed tableau -> Derivable fc [] phi`, established via per-rule admissibility lemmas in the Hilbert system across all ~28 rules. The untlPos/untlNeg Reynolds decomposition and z1Rule are the hard cases. The existing runtime strategies in ProofExtraction.lean are retained only as fast paths, no longer as the correctness story.
-
-WP3 -- Termination theorem. Prove a generalized subformula property covering every rule in `applyRule` (the current `subformula_property` at Saturation.lean:1014 covers only the initial branch), then a pigeonhole argument on at most 2^(2n) distinct time types showing that blocking must fire, and finally an uncapped, justified fuel function with a theorem of the form `buildTableau phi (soundFuel' phi) fc = some _`.
-
-WP4 -- Semantic bridge (open saturated branch to not-valid). This is the mathematical core, comparable in weight to a canonical-model completeness proof. Embed the finite branch time order into an actual temporal type D (arbitrary, Q, Z, or R according to frame class), interpolate valuations so that the real Until/Since guard conditions hold at in-between times, construct genuine WorldHistories and a shift-closed Omega, and prove `not TruthAt` -- thereby replacing the bespoke `branchTruth` semantics with the real one.
-
-ASSEMBLY AND PAYOFF. WP2 + WP3 + WP4 together yield `Decidable (Derivable fc [] phi)` and decidability of validity for each frame class. As a corollary they also yield completeness for all four classes, which discharges the repository's single live sorry -- `countermodel_discrete` at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242, which currently taints Base `completeness` -- and supplies the missing Dedekind engine required by `completeness_dedekind_of_engine` (StrongCompleteness.lean:308, via `consequence_completeness_dedekind_of_engine` at :274).
-
-DEDEKIND CAVEAT. `allRulesForFC` (Tableau.lean:1067) gates dense rules on `Dense <= fc` and discrete rules on `Discrete <= fc`; since the FrameClass order (Axioms.lean:456-463) makes `Dense <= Dedekind` true but `Discrete <= Dedekind` false, the Dedekind class receives only the Base + Dense rules. Adequacy for Dedekind must therefore be proved rather than assumed: finite branch models do embed into R, but this requires an actual theorem.
-
-HYGIENE SUBTASK. Delete or replace the two vacuous theorems `validity_decidable` and `validity_has_decision_procedure` (Decidability/Correctness.lean:78 and :91 -- both are mere `Classical.em`/`by_cases` tautologies), and the `and True`-padded `filtered_world_bound` and `fmp_size_bound` (Decidability/FMP/FMP.lean:183 and :237). Also correct the LaTeX and Typst documentation that currently cites the unproven 2^|cl(phi)| bound as an established result.
-
----
-
-### 161. Rename theories bimodal to formalsystem
-- **Status**: [EXPANDED]
-- **Task Type**: lean4
-- **Topic**: formula-refactor
-- **Dependencies**: Task 291
-
-**Description**: Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.
 
 ---
 

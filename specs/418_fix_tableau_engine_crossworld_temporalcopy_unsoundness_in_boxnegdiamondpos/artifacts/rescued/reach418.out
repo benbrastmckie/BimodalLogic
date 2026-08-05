@@ -1,9 +1,0 @@
-row1 (negPos < boxNeg)          = true
-row2 (boxNeg < impPos)          = true
-row3 (boxNeg < allFuturePos)    = true
-row4 (T(G p) on every reached)  = true
-row5 (F(G p) at minted world)   = true
-row6 (clash at fresh world)     = false
-row7 (reached.length, #open)    = (1, 1)
-row8 (closure reason of head)   = none
-=== DONE ===
