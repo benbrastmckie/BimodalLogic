@@ -279,26 +279,61 @@ including the counterexample that makes the side condition necessary rather than
 
 ---
 
-### Phase 2: `applyRule` preserves `IrreflOrd` at the eight non-density mint sites [NOT STARTED]
+### Phase 2: `applyRule` preserves `IrreflOrd` at the eight non-density mint sites [COMPLETED]
 
 **Goal**: Prove that `applyRule` returns an irreflexive ordering for every rule except
 `densityRule`, given an irreflexive input and a source formula on the branch.
 
 **Tasks**:
-- [ ] State
+- [x] State
       `applyRule_irreflOrd_of_ne_density (hrule : rule ≠ .densityRule) (hsf : sf ∈ b) (h : IrreflOrd ord) : IrreflOrd (applyRule rule sf b ord).2`.
-- [ ] Establish the freshness fact once, as a named helper:
+- [x] Establish the freshness fact once, as a named helper:
       `sf ∈ b → sf.label.time ≠ b.nextTime`, from the landed `le_maxTime` (`Tableau.lean:2597`) and
       `Branch.nextTime = maxTime + 1` — equivalently reuse `not_mem_of_time_nextTime`
       (`Tableau.lean:2608`) contrapositively. Every one of the eight sites reduces to this plus
       `irreflOrd_addFuture` / `irreflOrd_addPast`.
-- [ ] Discharge the eight sites: `allFutureNeg` (`:761`), `allPastNeg` (`:801`), `someFuturePos`
+- [x] Discharge the eight sites: `allFutureNeg` (`:761`), `allPastNeg` (`:801`), `someFuturePos`
       (`:834`), `somePastPos` (`:878`), `untlPos` (`:1069`), `sncePos` (`:1168`), and the
       `untlNeg` / `snceNeg` active arms (`:924`, `:971`).
-- [ ] Discharge every remaining rule by the ordering being returned unchanged (`timeOrd` passed
+- [x] Discharge every remaining rule by the ordering being returned unchanged (`timeOrd` passed
       through). `timeLinearity` returns `.branchingOrdered` and is handled at the engine level in
       Phase 4, not here — state it as returning the input ordering in the `.2` component and confirm
       that reading against the source before relying on it.
+
+**Completion notes**:
+- **Mint-site enumeration (Scope Hypothesis, confirmed)**: `grep -n 'nextTime'
+  FormalSystem/Metalogic/Decidability/Tableau.lean` reports exactly nine `branch.nextTime`
+  occurrences inside `applyRule`, at lines 761, 801, 834, 878, 924, 971, 1069, 1168, 1370 —
+  exactly the nine report 04 names. `densityRule` (`:1370`) is the only two-edge site.
+- **Grounding correction to this plan's own task list**: the plan text pairs `sncePos` with
+  `:1168` and the `snceNeg` active arm with `:971`. Reading the source, these are swapped —
+  `:971` is `.sncePos` and `:1168` is the `snceNeg` active arm (likewise `:924` is `.untlPos`
+  and `:1069` is the `untlNeg` active arm). The *set* of nine sites is unchanged, and the
+  addFuture/addPast split is unchanged, so this is a labelling correction with no effect on the
+  proof. Recorded rather than absorbed.
+- **addFuture / addPast split, confirmed by reading each site**: `addFuture` at `:761`
+  (`allFutureNeg`), `:834` (`someFuturePos`), `:924` (`untlPos`), `:1069` (`untlNeg` active),
+  `:1370` (`densityRule` first edge). `addPast` at `:801` (`allPastNeg`), `:878` (`somePastPos`),
+  `:971` (`sncePos`), `:1168` (`snceNeg` active). Four `addPast` sites, matching the plan's count.
+- **`timeLinearity` reading, confirmed against the source** (`Tableau.lean:1513-1521`): its arm
+  returns `(.branchingOrdered [...], timeOrd)` — the per-arm orderings live inside the
+  `.branchingOrdered` payload and the `.2` component is the *input* ordering, unchanged. So it is
+  discharged here by the ordering-unchanged alternative, and the per-arm orderings are Phase 4's
+  obligation, exactly as the plan sequences it.
+- **`contradiction` is load-bearing, not defensive.** `applyRule` is one `match` over three
+  discriminants with overlapping patterns, so `split` emits *every* rule's arm inside each rule's
+  case, each carrying a false discriminant equation (`TableauRule.impPos = TableauRule.densityRule`,
+  `Sign.pos = Sign.neg`, …). This is the same phenomenon the scratch file documents for
+  `applyRule_branchingOrdered_rule` (where it is discharged by `simp_all`); `contradiction` is the
+  cheaper discharge and is recorded in the theorem's docstring so a future reader does not delete
+  it. It also discharges the genuine `densityRule` case from `hrule`.
+- **Integrity check performed**: deleting the `irreflOrd_addFuture` / `irreflOrd_addPast`
+  alternatives leaves 10 unsolved-goal errors, confirming the mint sites are genuinely discharged
+  by those lemmas and not swept up by `contradiction`.
+- `lean_verify applyRule_irreflOrd_of_ne_density` -> exactly
+  `[propext, Classical.choice, Quot.sound]`. Zero `sorry`, zero `axiom`.
+- `set_option maxHeartbeats 4000000` is required (R6's phenomenon, one phase early). Measured
+  module build time ~23s.
 
 **Timing**: 2 hours
 

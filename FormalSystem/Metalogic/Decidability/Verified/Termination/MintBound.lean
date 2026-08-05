@@ -151,4 +151,47 @@ theorem witnessPresent_identifyTime_unconditional_false :
         (b.identifyTime 1 0) (ord.identifyTime 1 0) = false := by
   constructor <;> rfl
 
+/-! ## A2. `applyRule` preserves `IrreflOrd` -/
+
+/-- A branch formula never sits at the branch's fresh time. This is the single freshness fact
+every mint site reduces to, read off `not_mem_of_time_nextTime` contrapositively. -/
+theorem time_ne_nextTime {b : Branch} {sf : SignedFormula} (h : sf ∈ b) :
+    sf.label.time ≠ b.nextTime := fun hc => not_mem_of_time_nextTime hc h
+
+set_option maxHeartbeats 4000000 in
+/-- **Every rule except `densityRule` preserves ordering irreflexivity.**
+
+`applyRule` mints a fresh time at exactly nine sites, all of the shape
+`freshTime := branch.nextTime` followed by a single ordering edge between `sf.label.time` and
+`freshTime` — five via `TimeOrdering.addFuture` and four via `TimeOrdering.addPast`. Each
+reduces to `irreflOrd_addFuture` / `irreflOrd_addPast` applied to the one freshness fact
+`time_ne_nextTime`. Every other rule threads the input ordering through unchanged, including
+`timeLinearity`, whose `.branchingOrdered` result carries the per-arm orderings in the *result*
+and returns the input ordering in the second component; the per-arm orderings are handled at
+engine level rather than here.
+
+`densityRule` is excluded because it is the sole **two-edge** site: it builds
+`(ord.addFuture l.time freshTime).addFuture freshTime t'`, and the second edge needs
+`freshTime ≠ t'`, which does not follow from freshness alone.
+
+The `contradiction` alternative is load-bearing rather than defensive. `applyRule` is written as
+one `match` over three discriminants with overlapping patterns, so `split` emits the arms of
+*every* rule in each rule's case, each carrying a false discriminant equation such as
+`TableauRule.impPos = TableauRule.densityRule`; `contradiction` is what discharges those
+unreachable arms. It also discharges the genuine `densityRule` case from `hrule`. -/
+theorem applyRule_irreflOrd_of_ne_density {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering} (hrule : rule ≠ .densityRule) (hsf : sf ∈ b)
+    (h : IrreflOrd ord) : IrreflOrd (applyRule rule sf b ord).2 := by
+  have hfresh : sf.label.time ≠ b.nextTime := time_ne_nextTime hsf
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        first
+          | contradiction
+          | exact h
+          | exact irreflOrd_addFuture h hfresh
+          | exact irreflOrd_addPast h hfresh)
+
+
 end FormalSystem.Metalogic.Decidability
