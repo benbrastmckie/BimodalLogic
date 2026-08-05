@@ -1,7 +1,7 @@
 # Implementation Plan: Task #428
 
 - **Task**: 428 - engine_totality_at_a_quantified_branch_budget
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 14 hours
 - **Dependencies**: None blocking (tasks 426 and 412 are sequenced *behind* this one in state.json; Fuel.lean is unshared for the duration of this task)
 - **Research Inputs**: specs/428_engine_totality_at_a_quantified_branch_budget/reports/01_budget-totality-refuted-and-repair.md
@@ -289,7 +289,7 @@ the proved bridge relating the two.
 
 ---
 
-### Phase 4: Split-arm quantitative prerequisites [NOT STARTED]
+### Phase 4: Split-arm quantitative prerequisites [BLOCKED]
 
 **Goal**: Prove the two facts about splits that the `NoSplit`-free induction needs and that
 Fuel.lean currently only *documents*: sub-branches strictly grow, and each arm's fuel allocation has
@@ -300,17 +300,63 @@ a usable lower bound.
       `nb ∈ bs` satisfies `b.toFinset.card < nb.toFinset.card` — the `.split` analogue of the
       already-landed `expandOnceUnblocked_card_lt`. Prove the `.splitOrdered` twin. This is what
       bounds split depth along any root-to-leaf path by the universe cardinality.
-- [ ] Prove `allocateFuelProportionally_ge`: if `totalDifficulty * m <= fuel + 1` and `m <= fuel`,
+      **BLOCKED — the `.splitOrdered` twin is FALSE.** Landed instead: `expandOnceUnblocked_split_shape`,
+      `expandOnceUnblocked_split_subset` and `expandOnceUnblocked_split_card_le` (a `.split` arm
+      contains its parent, so cardinality is monotone — the non-strict half), plus
+      `applyRule_timeLinearity_arms`, which exhibits the refutation. See the BLOCKER entry below.
+- [x] Prove `allocateFuelProportionally_ge`: if `totalDifficulty * m <= fuel + 1` and `m <= fuel`,
       then every element of `allocateFuelProportionally (fuel + 1) branches` is at least `m`.
       Consume the already-landed `allocateFuelProportionally_pos` for the `max 1` floor.
-- [ ] Prove a bound on `totalDifficulty` in terms of branch size and arity, so that the hypothesis
+- [x] Prove a bound on `totalDifficulty` in terms of branch size and arity, so that the hypothesis
       of the previous lemma is dischargeable from `U.card` and `beta` rather than from an
       unbounded quantity. `estimateBranchDifficulty` is `1 + 3*tempCount + 2*modCount + len/4`, so
       it is bounded by a linear function of branch length.
-- [ ] Attempt `expandOnceUnblocked_split_arity_le` (`bs.length <= 3`) and its `splitOrdered` twin.
+- [x] Attempt `expandOnceUnblocked_split_arity_le` (`bs.length <= 3`) and its `splitOrdered` twin.
       If the case analysis over `applyRule` does not close inside this phase's budget, **stop and
       leave `beta` a hypothesis** — the already-landed `splitBudget_preserved` carries `beta`
       generically and nothing downstream requires the literal. Record the outcome either way.
+
+
+**BLOCKER** (Phase 4):
+- **What failed**: the second half of task 4.1 — "Prove the `.splitOrdered` twin" of the
+  split-growth lemma. It is not hard; it is **false**, and its falsity is machine-checked by the
+  landed `applyRule_timeLinearity_arms`.
+- **What was tried**: the `.split` half went through cleanly (`expandOnceUnblocked_split_shape`
+  gives `bs = bss.map (· ++ b)`, hence `b ⊆ nb` and `b.toFinset.card ≤ nb.toFinset.card`). Reading
+  the `.splitOrdered` producer to prove the twin the same way showed there is no `++ b` to exploit:
+  `applyRule .timeLinearity` returns
+  `[(b, ord.addFuture t₁ t₂), (b, ord.addFuture t₂ t₁), (b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁)]`.
+  The first two arms carry the branch **unchanged**; the third *identifies two times*, which can
+  only merge signed formulas and so cannot raise `toFinset.card` either.
+- **Why it is stuck**: `timeLinearity` is the only rule producing `.branchingOrdered`, and
+  `findApplicableRule` states in its own source comment why no output-presence guard is even
+  possible on that constructor: "the arms of an ordered split are replacement branches, so 'the
+  branch already contains this arm's output' is trivially true of every arm". What makes that rule
+  terminate is *self-suppression on the ordering* (no incomparable pair left, so
+  `.notApplicable`) — a comparability measure on `TimeOrdering`, not a cardinality measure on the
+  branch. So branch-cardinality growth cannot bound split depth across both split constructors,
+  which is precisely the purpose task 4.1 states for the lemma.
+- **What is needed**: a second, order-theoretic progress measure for the `.splitOrdered` arm —
+  e.g. the number of incomparable pairs among `b.knownTimes` under `ord`, shown to strictly
+  decrease at each `timeLinearity` firing — and a Phase 6 fuel figure built from *both* measures
+  rather than from branch cardinality alone. That is a re-plan of Phases 4/6, not an
+  implementation detail, so it is escalated rather than substituted (`plan-compliance.md`).
+- **Downstream**: Phase 6's stated approach ("a run of split-depth `d` needs a figure scaling like
+  `(bound on totalDifficulty) ^ d`, with `d` bounded by Phase 4's split-growth lemma") rests on the
+  refuted twin. Phases 5-8 were therefore not started.
+- **Prohibited workarounds**: no `sorry`, no vacuous placeholder, no reintroduction of `NoSplit`
+  to manufacture a green terminus, and no silent narrowing of the twin to the `.split` case only.
+
+**Landed in Phase 4 despite the blocker** (all sorry-free, `lake build` green repo-wide):
+`expandOnceUnblocked_split_shape`, `expandOnceUnblocked_split_subset`,
+`expandOnceUnblocked_split_card_le`, `applyRule_timeLinearity_arms`,
+`estimateBranchDifficulty_pos`, `allocateFuelProportionally_ge`, `totalDifficulty_le`,
+`applyRule_branching_arity_le`, `expandOnceUnblocked_split_arity_le`.
+
+**Scope-hypothesis outcome (arity)**: the census-versus-theorem question is *resolved in favour of
+the theorem*. `expandOnceUnblocked_split_arity_le` proves `bs.length ≤ 3` outright, via a
+36-rule case analysis of `applyRule` lifted through all three pick stages. The literal `3` is
+still not baked in anywhere: `splitBudget_preserved` and its cluster keep carrying `β`.
 
 **Timing**: 2 hours
 

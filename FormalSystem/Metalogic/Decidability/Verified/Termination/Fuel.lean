@@ -1444,6 +1444,301 @@ theorem budget_le_of_betaBudget {branchesUsed maxBranches fuel β : Nat} (hβ : 
     branchesUsed + fuel ≤ maxBranches :=
   le_trans (Nat.add_le_add_left (Nat.le_mul_of_pos_left _ (by omega)) _) hbud
 
+/-! ### 4.3d(i) — what a split arm inherits, and what it does *not*
+
+The unsplit induction's progress measure is `U.card < b.toFinset.card + fuel`, and re-establishing
+it at a split arm needs two things: the arm must be strictly larger as a set (so the `U.card`
+side has room), and the arm's fuel allocation must be large enough (so the `fuel` side does).
+This subsection settles the first question for both split constructors — and the answers differ,
+which is the finding.
+-/
+
+/-- The pick-tail of `expandOnceUnblocked` reports `.split` only from a `.branching` rule result,
+and the arms it reports are that result's arms appended to the branch.
+
+Stated over an abstract `pick` for the same reason `pick_extended` is (Tableau.lean): a hypothesis
+about the three-stage `match` as a whole is not something the per-stage lemmas can consume. -/
+private theorem pick_split {b : Branch} {bs : List Branch} {ord : TimeOrdering}
+    {pick : Option (TableauRule × RuleResult × TimeOrdering)}
+    (h : (match pick with
+          | none => (ExpansionResult.saturated, ord)
+          | some (_, result, newOrd) =>
+            match result with
+            | .linear fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .branching bss => (ExpansionResult.split (bss.map fun fs => fs ++ b), newOrd)
+            | .branchingOrdered bs' => (ExpansionResult.splitOrdered bs', newOrd)
+            | .persistent fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .notApplicable => (ExpansionResult.saturated, newOrd)).1
+         = ExpansionResult.split bs) :
+    ∃ (r : TableauRule) (bss : List (List SignedFormula)) (o : TimeOrdering),
+      pick = some (r, RuleResult.branching bss, o) ∧ bs = bss.map (fun fs => fs ++ b) := by
+  rcases pick with _ | ⟨r, res, o⟩
+  · simp at h
+  · cases res with
+    | notApplicable => simp at h
+    | linear fs => simp at h
+    | branchingOrdered bs' => simp at h
+    | persistent fs => simp at h
+    | branching bss => exact ⟨r, bss, o, rfl, by simpa using h.symm⟩
+
+/-- The same, for `.splitOrdered`: the arms are the rule's own replacement branches, handed
+through unchanged. Note what is *absent* from the conclusion — there is no `++ b`, because an
+ordered split does not append to the branch at all. -/
+private theorem pick_splitOrdered {b : Branch} {bs : List (Branch × TimeOrdering)}
+    {ord : TimeOrdering} {pick : Option (TableauRule × RuleResult × TimeOrdering)}
+    (h : (match pick with
+          | none => (ExpansionResult.saturated, ord)
+          | some (_, result, newOrd) =>
+            match result with
+            | .linear fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .branching bss => (ExpansionResult.split (bss.map fun fs => fs ++ b), newOrd)
+            | .branchingOrdered bs' => (ExpansionResult.splitOrdered bs', newOrd)
+            | .persistent fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .notApplicable => (ExpansionResult.saturated, newOrd)).1
+         = ExpansionResult.splitOrdered bs) :
+    ∃ r o, pick = some (r, RuleResult.branchingOrdered bs, o) := by
+  rcases pick with _ | ⟨r, res, o⟩
+  · simp at h
+  · cases res with
+    | notApplicable => simp at h
+    | linear fs => simp at h
+    | branching bss => simp at h
+    | persistent fs => simp at h
+    | branchingOrdered bs' => exact ⟨r, o, by simpa using h⟩
+
+/-- **The shape of a `.split`**: every arm is the branch with a rule arm appended. -/
+theorem expandOnceUnblocked_split_shape {b : Branch} {bs : List Branch} {ord : TimeOrdering}
+    {fc : ProofSystem.FrameClass} {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.split bs) :
+    ∃ bss : List (List SignedFormula), bs = bss.map (fun fs => fs ++ b) := by
+  unfold expandOnceUnblocked at h
+  obtain ⟨_, bss, _, _, hbs⟩ := pick_split h
+  exact ⟨bss, hbs⟩
+
+/-- **A `.split` arm contains the branch it came from.** Non-destructive expansion in the split
+arms, in the form the universe bound consumes. -/
+theorem expandOnceUnblocked_split_subset {b nb : Branch} {bs : List Branch} {ord : TimeOrdering}
+    {fc : ProofSystem.FrameClass} {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.split bs) (hnb : nb ∈ bs) :
+    ∀ x ∈ b, x ∈ nb := by
+  obtain ⟨bss, rfl⟩ := expandOnceUnblocked_split_shape h
+  obtain ⟨fs, _, rfl⟩ := List.mem_map.mp hnb
+  intro x hx
+  exact List.mem_append_right fs hx
+
+/-- **A `.split` arm is at least as large as the branch, as a set.** The *strict* version is the
+one Phase-6-style split-depth reasoning would want, and it is not proved here — see the
+`splitOrdered` note below for why the strict version does not generalise across both split
+constructors. -/
+theorem expandOnceUnblocked_split_card_le {b nb : Branch} {bs : List Branch} {ord : TimeOrdering}
+    {fc : ProofSystem.FrameClass} {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.split bs) (hnb : nb ∈ bs) :
+    b.toFinset.card ≤ nb.toFinset.card :=
+  Finset.card_le_card fun x hx =>
+    List.mem_toFinset.mpr (expandOnceUnblocked_split_subset h hnb x (List.mem_toFinset.mp hx))
+
+/--
+**An ordered split hands its arms through untouched.** There is no `++ b`: the arms of a
+`.branchingOrdered` result *are* branches, supplied by the rule.
+
+This is the negative half of this subsection, and it is load-bearing. `timeLinearity` is the only
+rule producing `.branchingOrdered`, and its three arms are
+`(branch, ord.addFuture t₁ t₂)`, `(branch, ord.addFuture t₂ t₁)` and
+`(branch.identifyTime t₂ t₁, ord.identifyTime t₂ t₁)` — the first two carry the branch
+**unchanged**, and the third *identifies two times*, which can only merge signed formulas and so
+cannot increase `toFinset.card` either. `findApplicableRule` adds no output-presence guard on
+this constructor and says in its own comment why one is impossible: "the arms of an ordered split
+are replacement branches, so 'the branch already contains this arm's output' is trivially true of
+every arm that adds no formula, which is every arm of the only rule that produces this
+constructor."
+
+**Consequence.** There is no `.splitOrdered` analogue of `expandOnceUnblocked_card_lt`, and there
+cannot be one: branch cardinality is constant (or decreasing) across an ordered split. What makes
+that rule terminate is its own self-suppression — once every pair of known times is comparable
+there is no candidate pair and it reports `.notApplicable` — a *comparability* measure on the
+ordering, not a cardinality measure on the branch. Any argument that bounds split depth by branch
+growth therefore covers `.split` only, and needs a second, order-theoretic measure for
+`.splitOrdered`.
+-/
+theorem applyRule_timeLinearity_arms (sf : SignedFormula) (b : Branch) (ord : TimeOrdering)
+    (bs : List (Branch × TimeOrdering))
+    (h : (applyRule .timeLinearity sf b ord).1 = RuleResult.branchingOrdered bs) :
+    ∃ t₁ t₂, bs = [ (b, ord.addFuture t₁ t₂)
+                  , (b, ord.addFuture t₂ t₁)
+                  , (b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁) ] := by
+  cases sf with
+  | mk sign formula label =>
+    simp only [applyRule] at h
+    rcases hp : firstIncomparablePair b ord with _ | ⟨t₁, t₂⟩
+    · rw [hp] at h; simp at h
+    · rw [hp] at h
+      exact ⟨t₁, t₂, by simpa using h.symm⟩
+
+set_option maxHeartbeats 1600000 in
+/-- **Split arity, attempted.** Every `.branching` result of every rule has at most three arms. -/
+theorem applyRule_branching_arity_le (rule : TableauRule) (sf : SignedFormula) (b : Branch)
+    (ord : TimeOrdering) (bss : List (List SignedFormula))
+    (h : (applyRule rule sf b ord).1 = RuleResult.branching bss) :
+    bss.length ≤ 3 := by
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;>
+      simp only [applyRule] at h <;>
+      (repeat' split at h) <;>
+      (try simp_all) <;>
+      (try subst h) <;>
+      (try simp) <;>
+      (try omega)
+
+/--
+**Split arity, proved: `β = 3` is a theorem, not a census.**
+
+Every `.split` reported by the engine's step has at most three arms. The route is the same
+three-stage pick destructuring `expandOnceUnblocked_pick_ne_nil` uses: whichever stage supplied
+the rule, its extraction lemma turns the pick back into an `applyRule` equation, and
+`applyRule_branching_arity_le` bounds the arms there.
+
+**This does not license baking `3` in anywhere.** `splitBudget_preserved` and the lemmas around
+it still carry `β` as a hypothesis, deliberately: a rule added later could return four arms, and
+the point of carrying the coefficient is that such a rule would break exactly one lemma — this
+one — rather than silently invalidating everything stated at the literal.
+-/
+theorem expandOnceUnblocked_split_arity_le {b : Branch} {bs : List Branch} {ord : TimeOrdering}
+    {fc : ProofSystem.FrameClass} {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.split bs) :
+    bs.length ≤ 3 := by
+  unfold expandOnceUnblocked at h
+  obtain ⟨r, bss, o, hpick, rfl⟩ := pick_split h
+  rw [List.length_map]
+  rcases hfu : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+  · rw [hfu] at hpick
+    rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                             && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+    · rw [hser] at hpick
+      rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+      · rw [hlin] at hpick; simp at hpick
+      · rw [hlin] at hpick
+        simp only at hpick
+        exact applyRule_branching_arity_le r sf3 b ord bss
+          (findApplicableLinearityRule_applyRule_eq hpick)
+    · rw [hser] at hpick
+      simp only at hpick
+      exact applyRule_branching_arity_le r sf2 b ord bss
+        (findApplicableSerialRule_applyRule_eq hpick)
+  · rw [hfu] at hpick
+    simp only at hpick
+    exact applyRule_branching_arity_le r sf b ord bss
+      (findApplicableRule_applyRule_eq hpick)
+
+/-! ### 4.3d(ii) — the arm's fuel allocation, from below
+
+`allocateFuelProportionally_pos` gives each arm at least one unit. That is enough for
+non-degeneracy and not enough for progress: re-establishing `U.card < nb.toFinset.card + alloc`
+at an arm needs `alloc` bounded below by a *figure*, not by `1`. The bound below is that figure,
+and it is exactly as good as the hypothesis relating the parent's fuel to the arms' total
+difficulty.
+-/
+
+/-- Every branch has difficulty at least one: `estimateBranchDifficulty` is `1 + …`, so no arm is
+weighted out of the allocation entirely. -/
+theorem estimateBranchDifficulty_pos (b : Branch) : 1 ≤ estimateBranchDifficulty b := by
+  simp only [estimateBranchDifficulty]
+  omega
+
+/-- A `foldl (· + ·)` over `Nat` is at least its seed. -/
+private theorem foldl_add_le_self : ∀ (l : List Nat) (a : Nat), a ≤ l.foldl (· + ·) a := by
+  intro l
+  induction l with
+  | nil => intro a; simp
+  | cons x xs ih =>
+    intro a
+    simp only [List.foldl_cons]
+    exact le_trans (Nat.le_add_right a x) (ih (a + x))
+
+/-- A member of a `Nat` list is at most the list's `foldl (· + ·) 0`. Stated against `foldl`
+rather than `List.sum` because that is the form `allocateFuelProportionally` uses. -/
+private theorem le_foldl_add : ∀ (l : List Nat) (a d : Nat), d ∈ l → d ≤ l.foldl (· + ·) a := by
+  intro l
+  induction l with
+  | nil => intro a d h; cases h
+  | cons x xs ih =>
+    intro a d h
+    simp only [List.foldl_cons]
+    rcases List.mem_cons.mp h with rfl | h
+    · exact le_trans (Nat.le_add_left d a) (foldl_add_le_self xs (a + d))
+    · exact ih (a + x) d h
+
+/--
+**Every arm's fuel allocation is at least `m`**, provided the parent's fuel covers `m` copies of
+the arms' total difficulty and `m` fits under the termination cap.
+
+The two hypotheses are exactly the two ways the allocation can fall short. `hT` is the
+proportional-share condition: an arm of difficulty `d ≥ 1` out of a total `T` receives
+`(fuel+1) * d / T ≥ (fuel+1) / T`, and `T * m ≤ fuel + 1` is precisely what makes that at least
+`m`. `hm` is the termination cap: the allocation is `min … fuel`, so nothing above `fuel` is
+obtainable no matter how favourable the proportion.
+
+This is the lower bound `allocateFuelProportionally_pos` is the `m = 1` case of, and it is what a
+split-aware progress argument has to consume.
+-/
+theorem allocateFuelProportionally_ge (fuel : Nat) (branches : List Branch) (m n : Nat)
+    (hm : m ≤ fuel)
+    (hT : ((branches.map estimateBranchDifficulty).foldl (· + ·) 0) * m ≤ fuel + 1)
+    (h : n ∈ allocateFuelProportionally (fuel + 1) branches) : m ≤ n := by
+  simp only [allocateFuelProportionally] at h
+  rw [List.mem_map] at h
+  obtain ⟨d, hd, rfl⟩ := h
+  set T := (branches.map estimateBranchDifficulty).foldl (· + ·) 0 with hTdef
+  -- every difficulty is at least one, so the total is at least the arm's own difficulty
+  obtain ⟨b0, _, rfl⟩ := List.mem_map.mp hd
+  have hd1 : 1 ≤ estimateBranchDifficulty b0 := estimateBranchDifficulty_pos b0
+  have hdT : estimateBranchDifficulty b0 ≤ T := le_foldl_add _ 0 _ hd
+  have hT1 : 1 ≤ T := le_trans hd1 hdT
+  have hmax : max 1 T = T := Nat.max_eq_right hT1
+  refine Nat.le_min.mpr ⟨?_, hm⟩
+  refine le_trans ?_ (Nat.le_max_right 1 _)
+  rw [hmax]
+  refine Nat.le_div_iff_mul_le (by omega) |>.mpr ?_
+  calc m * T = T * m := Nat.mul_comm _ _
+    _ ≤ fuel + 1 := hT
+    _ = (fuel + 1) * 1 := by omega
+    _ ≤ (fuel + 1) * estimateBranchDifficulty b0 := Nat.mul_le_mul_left _ hd1
+
+/--
+**The total difficulty of a split, bounded by arity and a per-arm difficulty bound.**
+
+This is what makes `allocateFuelProportionally_ge`'s hypothesis `T * m ≤ fuel + 1`
+dischargeable from bounded quantities rather than from an unbounded one: `T ≤ D * β`, where `β`
+bounds the arity and `D` bounds any single arm's difficulty.
+
+**Why `D` is carried abstractly rather than computed.** `estimateBranchDifficulty` is
+`1 + 3 * tempCount + 2 * modCount + len / 4`, and both counting functions (`temporalCount`,
+`modalCount`) are `private` to `Saturation.lean`, so a finer bound in terms of per-formula
+complexity cannot be *stated* from this file without changing their visibility — a change to an
+existing declaration, which this addition deliberately does not make. `D` is therefore the
+interface: a caller that can bound one arm's difficulty gets the total, and `estimateBranchDifficulty`
+is monotone enough in branch content that such a bound follows from a universe bound.
+-/
+theorem totalDifficulty_le (branches : List Branch) (D : Nat)
+    (hD : ∀ b ∈ branches, estimateBranchDifficulty b ≤ D) :
+    (branches.map estimateBranchDifficulty).foldl (· + ·) 0 ≤ D * branches.length := by
+  have gen : ∀ (l : List Branch) (a : Nat), (∀ b ∈ l, estimateBranchDifficulty b ≤ D) →
+      (l.map estimateBranchDifficulty).foldl (· + ·) a ≤ a + D * l.length := by
+    intro l
+    induction l with
+    | nil => intro a _; simp
+    | cons x xs ih =>
+      intro a hx
+      have h1 : estimateBranchDifficulty x ≤ D := hx x (List.mem_cons_self ..)
+      have h2 := ih (a + estimateBranchDifficulty x)
+        (fun b hb => hx b (List.mem_cons_of_mem _ hb))
+      simp only [List.map_cons, List.foldl_cons, List.length_cons]
+      have : D * (xs.length + 1) = D * xs.length + D := by ring
+      omega
+  have := gen branches 0 hD
+  omega
+
 /-! ### Arm-fuel probes
 
 The shortfall above is a claim about a `#eval`-able function, so it is checked by running it
