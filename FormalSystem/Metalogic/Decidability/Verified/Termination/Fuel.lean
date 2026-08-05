@@ -2332,6 +2332,165 @@ theorem expand_splitOrdered_fold_isSome (fuel : Nat) (fc : ProofSystem.FrameClas
         | none, h' => rw [hr] at hro; simp at hro
       | none, h' => rw [hex] at hhd; simp at hhd
 
+/-! ### 4.3d(iv) — the carried time bound `hT`, and the split-aware fuel figure
+
+#### `hT` is a bound, not an exclusion — and specifically it is not `NoSplit` renamed
+
+`NoSplit P fc` **forbids** the split constructors outright: it says the engine's step at any
+`P`-branch is never `.split` and never `.splitOrdered`. Any theorem carrying it is therefore
+*vacuous on branching runs* — it says nothing whatsoever about the behaviour this task exists to
+establish.
+
+`TimeBounded P Tmax` says something entirely different. It **permits both split constructors**
+and merely quantifies the time dimension: the branches the invariant admits carry at most `Tmax`
+distinct times. It is the same kind of hypothesis as the `hU : ∀ b, P b → ∀ x ∈ b, x ∈ U` that
+`expandBranchWithFuel_isSome_of_noSplit` already carries — a finiteness bound on a dimension the
+progress measure ranges over — and nobody calls `hU` a vacuity. A theorem carrying `hT` still
+applies to runs that branch, and the branching non-vacuity witness is the mechanical check of
+that claim: a theorem that only applied to unbranching runs would have removed `NoSplit` in name
+only.
+
+#### Why a naive combination of the two split measures fails, and why `hT` is needed to break it
+
+Do not retry the following, in either ordering. The two split constructors have progress
+measures that move in *opposite* directions on each other's dimension:
+
+* `.split` **grows the branch strictly** (`expandOnceUnblocked_split_card_lt`) — but it can also
+  **mint fresh times**. `untlPos` and `sncePos` are branching rules *and* are in
+  `ruleMintsFreshLabel`; `untlNeg`/`snceNeg` are `ruleSelfGuarded` with their passive arms
+  retired, so they fire only through an ACTIVE arm that also mints. So `.split` raises
+  `|knownTimes|` and thereby *resets the ordering measure upward*.
+* `.splitOrdered` **strictly drops the lexicographic ordering measure**
+  (`splitOrderedMeasure_lt_of_timeLinearity`) — but its third arm `identifyTime`s two times,
+  which merges signed formulas and can therefore **shrink the branch**, handing back universe
+  budget the `.split` measure had spent.
+
+So neither measure bounds the other, and no weighted sum of the two decreases at all four kinds
+of step: arm 3 needs the `knownTimes` weight to dominate the branch-cardinality weight, while an
+extending or splitting step needs the branch-cardinality weight to dominate the `knownTimes`
+weight. `hT` exists precisely to break that circularity — it caps the ordering dimension
+*a priori* rather than asking the branch dimension to pay for it. -/
+
+/-- The a-priori time bound carried alongside `hU`. **A bound, not an exclusion** — see the
+section prose above for why this is not `NoSplit` under another name. -/
+def TimeBounded (P : Branch → Prop) (Tmax : Nat) : Prop :=
+  ∀ b, P b → b.knownTimes.toFinset.card ≤ Tmax
+
+/-- The incomparable-pair count is quadratic in the time count: the pairs live in
+`knownTimes ×ˢ knownTimes`. This is what makes the ordering measure's range computable from
+`Tmax` alone. -/
+theorem incompPairs_card_le (b : Branch) (ord : TimeOrdering) :
+    (incompPairs b ord).card ≤ b.knownTimes.toFinset.card * b.knownTimes.toFinset.card := by
+  have hsub : incompPairs b ord ⊆ b.knownTimes.toFinset ×ˢ b.knownTimes.toFinset := by
+    intro p hp
+    rw [mem_incompPairs] at hp
+    exact Finset.mem_product.mpr ⟨List.mem_toFinset.mpr hp.1, List.mem_toFinset.mpr hp.2.1⟩
+  calc (incompPairs b ord).card
+      ≤ (b.knownTimes.toFinset ×ˢ b.knownTimes.toFinset).card := Finset.card_le_card hsub
+    _ = b.knownTimes.toFinset.card * b.knownTimes.toFinset.card := Finset.card_product _ _
+
+/-- `splitOrderedMeasure` flattened into a single `Nat`, so a fuel figure can be read off it.
+The base `Tmax * Tmax + 1` is one more than the second component's range, which is exactly what
+makes a drop in the first component outweigh any possible rise in the second. -/
+def splitOrderedRank (Tmax : Nat) (b : Branch) (ord : TimeOrdering) : Nat :=
+  b.knownTimes.toFinset.card * (Tmax * Tmax + 1) + (incompPairs b ord).card
+
+/--
+**The ordered-run bound, DERIVED rather than assumed.**
+
+Plan 02's Phase 10 wrote this figure as `Tmax + Tmax²` and instructed that it be *derived* from
+the measure's own range before use, using the derived value and recording any divergence. The
+derivation gives a different — larger — figure, and it is the derived one that is used here:
+
+  `orderedRunBound Tmax = Tmax * (Tmax * Tmax + 1) + Tmax * Tmax`
+
+i.e. `Tmax³ + Tmax² + Tmax`, not `Tmax² + Tmax`. The reason is that the two components compose
+*multiplicatively*, not additively: each of the at most `Tmax` drops of component 1 can be
+followed by a fresh run of up to `Tmax²` drops of component 2, because component 2 is *reset*
+(not merely continued) whenever component 1 drops. `splitOrderedRank_le` is the machine-checked
+statement of the range.
+-/
+def orderedRunBound (Tmax : Nat) : Nat := Tmax * (Tmax * Tmax + 1) + Tmax * Tmax
+
+/-- The rank's range, given the carried time bound. This is what justifies `orderedRunBound`. -/
+theorem splitOrderedRank_le (Tmax : Nat) (b : Branch) (ord : TimeOrdering)
+    (hT : b.knownTimes.toFinset.card ≤ Tmax) :
+    splitOrderedRank Tmax b ord ≤ orderedRunBound Tmax := by
+  have h1 := incompPairs_card_le b ord
+  have h2 : b.knownTimes.toFinset.card * b.knownTimes.toFinset.card ≤ Tmax * Tmax :=
+    Nat.mul_le_mul hT hT
+  have h3 : b.knownTimes.toFinset.card * (Tmax * Tmax + 1) ≤ Tmax * (Tmax * Tmax + 1) :=
+    Nat.mul_le_mul_right _ hT
+  simp only [splitOrderedRank, orderedRunBound]
+  omega
+
+/-- **The `Nat`-valued form of the ordered-split decrease.** Same content as
+`splitOrderedMeasure_lt_of_timeLinearity`, transported through `splitOrderedRank`, and carrying
+the time bound because the identification arm's rank has to be re-bounded from its own (smaller)
+time set. -/
+theorem splitOrderedRank_lt_of_timeLinearity (Tmax : Nat) (sf : SignedFormula) (b : Branch)
+    (ord : TimeOrdering) (bs : List (Branch × TimeOrdering))
+    (hT : b.knownTimes.toFinset.card ≤ Tmax)
+    (h : (applyRule .timeLinearity sf b ord).1 = RuleResult.branchingOrdered bs) :
+    ∀ p ∈ bs, splitOrderedRank Tmax p.1 p.2 < splitOrderedRank Tmax b ord := by
+  obtain ⟨t₁, t₂, htrig, rfl⟩ := applyRule_timeLinearity_arms_trigger sf b ord bs h
+  obtain ⟨hm1, hm2, hne, -, -⟩ := firstIncomparablePair_spec htrig
+  obtain ⟨hlt1, hlt2⟩ := incompPairs_lt_addFuture htrig
+  intro p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · simp only [splitOrderedRank]; omega
+  · simp only [splitOrderedRank]; omega
+  · have hk := knownTimes_card_lt_identifyTime hm1 hm2 hne
+    have harm : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card ≤ Tmax := by omega
+    have hc := incompPairs_card_le (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
+    have h2 : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card
+        * ((b.identifyTime t₂ t₁).knownTimes).toFinset.card ≤ Tmax * Tmax :=
+      Nat.mul_le_mul harm harm
+    simp only [splitOrderedRank]
+    have hstep : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card * (Tmax * Tmax + 1)
+        + (Tmax * Tmax + 1) ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := by
+      have hle : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card + 1
+          ≤ b.knownTimes.toFinset.card := hk
+      calc ((b.identifyTime t₂ t₁).knownTimes).toFinset.card * (Tmax * Tmax + 1)
+            + (Tmax * Tmax + 1)
+          = (((b.identifyTime t₂ t₁).knownTimes).toFinset.card + 1) * (Tmax * Tmax + 1) := by ring
+        _ ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hle
+    omega
+
+/-- The longest path the two measures jointly admit: at most `|U|` branch-growing steps
+(`expandOnceUnblocked_card_lt` for `.extended`, `expandOnceUnblocked_split_card_lt` for
+`.split`), each of which can be followed by a full ordered run of `orderedRunBound Tmax` steps
+(`splitOrderedRank_lt_of_timeLinearity`). -/
+def splitPathBound (Ucard Tmax : Nat) : Nat := (Ucard + 1) * (orderedRunBound Tmax + 1)
+
+/--
+**The split-aware fuel figure.**
+
+Deliberately a *new name*: `soundFuel'` and `worldFuel'` are frozen and are not overloaded here.
+
+Two independent costs are combined. The **path** cost is `splitPathBound`, the longest chain of
+engine steps the two measures jointly admit. The **decay** cost is the fuel a split arm actually
+receives: `allocateFuelProportionally` hands each arm a *proportional* share, and
+`allocateFuelProportionally_ge` with `totalDifficulty_le` says an arm is guaranteed `m` units
+only when `D * β * m ≤ fuel + 1`, where `β` bounds the split arity and `D` bounds a single arm's
+`estimateBranchDifficulty`. So the available fuel is divided by up to `D * β` at every split, and
+over a path of length `splitPathBound` that is a factor of `(D * β + 1) ^ splitPathBound`.
+
+`β` stays a **carried parameter**. The literal `3` is not baked in anywhere, even though
+`expandOnceUnblocked_split_arity_le` now proves it: a rule added later could return four arms,
+and the point of carrying the coefficient is that such a rule breaks exactly one lemma rather
+than silently invalidating every figure stated at the literal.
+-/
+def splitAwareFuel (Ucard Tmax D β : Nat) : Nat :=
+  splitPathBound Ucard Tmax * (D * β + 1) ^ splitPathBound Ucard Tmax
+
+/-- The figure dominates the path length it is built from. -/
+theorem splitPathBound_le_splitAwareFuel (Ucard Tmax D β : Nat) :
+    splitPathBound Ucard Tmax ≤ splitAwareFuel Ucard Tmax D β := by
+  simp only [splitAwareFuel]
+  exact Nat.le_mul_of_pos_right _ (Nat.pow_pos (Nat.succ_pos _))
+
 /-! ## 4.3e — the general fuel figure `worldFuel'`
 
 `soundFuel'` is the **single-world** figure: `chain_le_soundFuel'` earns it exactly, with no

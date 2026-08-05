@@ -549,29 +549,29 @@ unchanged from plan 01 Phase 5.
 
 ---
 
-### Phase 10: The carried time bound and the split-aware fuel figure [NOT STARTED]
+### Phase 10: The carried time bound and the split-aware fuel figure [COMPLETED]
 
 **Goal**: Add the a-priori `hT` invariant to the bundle and define the fuel figure that combines
 both split measures. This is where G4's residual gap is *named and carried*, not papered over.
 (Research 02 items 12-13.)
 
 **Tasks**:
-- [ ] Add `hT : ∀ b, P b → b.knownTimes.toFinset.card ≤ Tmax` to the invariant bundle, alongside the
+- [x] Add `hT : ∀ b, P b → b.knownTimes.toFinset.card ≤ Tmax` to the invariant bundle, alongside the
       existing `hU : ∀ b, P b → ∀ x ∈ b, x ∈ U`.
-- [ ] **Write the `NoSplit` distinction into the docstring, in-source.** State plainly that `hT` is a
+- [x] **Write the `NoSplit` distinction into the docstring, in-source.** State plainly that `hT` is a
       *bound*, not an exclusion: `NoSplit` forbids the split constructors outright, so any theorem
       carrying it is vacuous on branching runs, whereas `hT` permits **both** split constructors and
       merely quantifies the time dimension — the same kind of hypothesis as `hU`, which the landed
       `expandBranchWithFuel_isSome_of_noSplit` already carries without anyone calling it vacuous.
       This paragraph is a required deliverable of the phase, not optional prose.
-- [ ] Record, also in-source, **why a naive combination of the two measures fails**, so a future
+- [x] Record, also in-source, **why a naive combination of the two measures fails**, so a future
       reader does not retry it: `.split` can mint fresh times (`untlPos`/`sncePos` are branching and
       in `ruleMintsFreshLabel`; `untlNeg`/`snceNeg` are `ruleSelfGuarded` with passive arms retired,
       so they fire only through an active arm that also mints), raising `knownTimes` and resetting
       the order measure, while `.splitOrdered` arm 3 *shrinks* the branch. A naive lexicographic
       combination therefore fails in **both** orderings. `hT` exists precisely to break this.
-- [ ] Define the split-aware fuel figure over `(|U|, Tmax, β)`: `.split` depth ≤ `|U|` (Phase 8),
-      `.splitOrdered` depth between fresh-time mints ≤ `Tmax + Tmax²` (Phase 7). Name it distinctly;
+- [x] Define the split-aware fuel figure over `(|U|, Tmax, β)`: `.split` depth ≤ `|U|` (Phase 8),
+      `.splitOrdered` depth between fresh-time mints ≤ `Tmax + Tmax²` (Phase 7). Name it distinctly; *(deviation: altered — the Scope Hypothesis required DERIVING this figure; the derivation gives `orderedRunBound Tmax = Tmax*(Tmax*Tmax+1) + Tmax*Tmax` = `Tmax³+Tmax²+Tmax`, not `Tmax²+Tmax`, because the two components compose multiplicatively — component 2 resets on every drop of component 1. The derived figure is used and the divergence is recorded in-source on `orderedRunBound`.)*
       **do not overload `soundFuel'` or `worldFuel'`**, both of which are frozen. Keep `β` a carried
       parameter — do not bake in the literal `3` even though `expandOnceUnblocked_split_arity_le`
       now proves it.
