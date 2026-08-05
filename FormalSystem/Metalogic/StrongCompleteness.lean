@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.Validity
 import FormalSystem.Metalogic.Core.DeductionTheorem
 import FormalSystem.Metalogic.Soundness
+import FormalSystem.Metalogic.BXCanonical.CompletenessDedekind
 
 /-!
 # Consequence Completeness, and the Strong Completeness Programme
@@ -310,6 +311,57 @@ theorem completeness_dedekind_of_engine
     (φ : Formula) (h : ValidDedekindDense φ) : Derivable FrameClass.Dedekind [] φ :=
   consequence_completeness_dedekind_of_engine engine [] φ
     ((semantic_deduction_dedekind_dense [] φ).mpr (by simpa using h))
+
+/-! ## The unconditional terminus
+
+`completeness_dedekind_engine` (`BXCanonical/CompletenessDedekind.lean`) discharges the engine
+hypothesis of the two `_of_engine` forms above. Nothing in this section restates or re-binds
+those signatures: the two theorems below are their instances and nothing else, which is why
+neither carries a proof of its own beyond naming the engine. -/
+
+/--
+**Finite-context consequence completeness over dense Dedekind-complete frames, unconditional.**
+
+`consequence_completeness_dedekind_of_engine` at
+`engine := BXCanonical.completeness_dedekind_engine` — Reynolds 1992, §9 Theorem 7, printed
+p.189. The engine hypothesis is discharged; everything the docstring of the `_of_engine` form
+says about what this statement is and is not carries over verbatim, including the three facts
+held apart there. In particular this is **not** strong completeness: the class consequence
+relation is not compact, the infinitary statement is refuted rather than merely unproved, and
+`Context := List Formula` cannot express it in any case.
+-/
+theorem consequence_completeness_dedekind (Γ : Context) (φ : Formula)
+    (h : SemanticConsequenceDedekindDense Γ φ) : Derivable FrameClass.Dedekind Γ φ :=
+  consequence_completeness_dedekind_of_engine
+    FormalSystem.Metalogic.BXCanonical.completeness_dedekind_engine Γ φ h
+
+/--
+**Weak completeness for `FrameClass.Dedekind` — the headline result — unconditional.**
+
+Reynolds 1992, §2, printed p.169, is where the notion being discharged is fixed: validity over
+the class implies derivability in the system for the class. The finite-context form falls out
+of it because `Context` is finite and the deduction theorem is available in both directions;
+that is exactly why this declaration is `consequence_completeness_dedekind` at `Γ := []` with
+`simp` discharging the vacuous `∀ ψ ∈ [], _` premise binder, and **not** an independent
+countermodel construction. Proving it separately would duplicate
+`countermodel_dedekind_dense`; deriving it makes the redundancy visible in the type.
+
+This agrees definitionally with `completeness_dedekind_of_engine` at the same engine; the
+`_of_engine` form is retained unmodified as the pinned interface.
+-/
+theorem completeness_dedekind (φ : Formula) (h : ValidDedekindDense φ) :
+    Derivable FrameClass.Dedekind [] φ :=
+  consequence_completeness_dedekind [] φ
+    ((semantic_deduction_dedekind_dense [] φ).mpr (by simpa using h))
+
+/-! ### Axiom audit for the terminus
+
+Reynolds' §9 Theorem 7 is discharged with no `sorryAx` and no new axiom: exactly `propext`,
+`Classical.choice` and `Quot.sound`, the same set carried by `completeness_dense` and
+`completeness_discrete`. -/
+
+#print axioms consequence_completeness_dedekind
+#print axioms completeness_dedekind
 
 /-! ## Consequence and strong completeness for `FrameClass.Base`
 
