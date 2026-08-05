@@ -2215,6 +2215,123 @@ section SplitFuelProbes
 
 end SplitFuelProbes
 
+/-! ### 4.3d(iii) — the split folds preserve `isSome`
+
+The structural half of removing `NoSplit`, separated from the quantitative half. Both of
+`expandBranchWithFuel`'s split folds short-circuit on the first arm reported genuinely open and
+otherwise thread the accumulator, so what they need to preserve `isSome` is exactly two facts per
+arm — and both are carried as **abstract hypotheses** so the quantitative phases can supply them
+without restating the fold reasoning.
+
+**`resolveOpenArm = none` is genuinely reachable, and is carried, not assumed away.** By the
+landed `resolveOpenArm_eq_none_imp`, the only surviving route to `none` is its final "still not
+saturated" arm: `saturateBlocked` returned an open branch that `findClosure` does not close and
+that is still not saturated in the blocking-aware sense. That is precisely the configuration the
+refuted unconditional `buildTableau_isSome` died on (`φ = F(G p)`), so it is a live outcome, not a
+dead one. It therefore appears as the named per-arm hypothesis `hres` below rather than being
+proved away. Any caller of these lemmas must discharge it, and cannot do so by accident. -/
+
+/-- **The `.split` fold preserves `isSome`**, given that each arm's own call does and that each
+arm's `resolveOpenArm` settlement does. Stated over abstract per-arm hypotheses: no `worldFuel'`,
+no `soundFuel'`, and no `NoSplit` appears anywhere in the statement. -/
+theorem expand_split_fold_isSome (fuel : Nat) (newOrd : TimeOrdering)
+    (fc : ProofSystem.FrameClass) (tracker : EventualityTracker) (applied' : AppliedSet)
+    (maxBranches branchesUsed' : Nat) :
+    ∀ (bs : List (Branch × Nat)),
+      (∀ pair ∈ bs, (expandBranchWithFuel pair.1 (min pair.2 fuel) newOrd fc tracker applied'
+        maxBranches branchesUsed').isSome = true) →
+      (∀ pair ∈ bs, ∀ ob oOrd oAp,
+        expandBranchWithFuel pair.1 (min pair.2 fuel) newOrd fc tracker applied' maxBranches
+          branchesUsed' = some (.inr (ob, oOrd, oAp)) →
+        (resolveOpenArm ob oOrd oAp fuel fc).isSome = true) →
+      ∀ (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))), acc.isSome = true →
+        (bs.foldl (fun acc (pair : Branch × Nat) =>
+          match acc with
+          | some (.inr openBr) => some (.inr openBr)
+          | _ =>
+            match expandBranchWithFuel pair.1 (min pair.2 fuel)
+              newOrd fc tracker applied' maxBranches branchesUsed' with
+            | none => none
+            | some (.inl _) => acc
+            | some (.inr (ob, oOrd, oAp)) =>
+                match resolveOpenArm ob oOrd oAp fuel fc with
+                | none => none
+                | some (.inl _) => acc
+                | some (.inr openBr) => some (.inr openBr)) acc).isSome = true := by
+  intro bs
+  induction bs with
+  | nil => intro _ _ acc h; exact h
+  | cons hd tl iht =>
+    intro harm hres acc h
+    refine iht (fun p hp => harm p (List.mem_cons_of_mem _ hp))
+      (fun p hp => hres p (List.mem_cons_of_mem _ hp)) _ ?_
+    have hhd := harm hd List.mem_cons_self
+    match acc, h with
+    | some (.inr _), _ => simp
+    | some (.inl _), _ =>
+      simp only
+      match hex : expandBranchWithFuel hd.1 (min hd.2 fuel) newOrd fc tracker applied'
+          maxBranches branchesUsed', hhd with
+      | some (.inl _), _ => simp
+      | some (.inr (ob, oOrd, oAp)), _ =>
+        have hro := hres hd List.mem_cons_self ob oOrd oAp hex
+        match hr : resolveOpenArm ob oOrd oAp fuel fc, hro with
+        | some (.inl _), _ => simp [hr]
+        | some (.inr _), _ => simp [hr]
+        | none, h' => rw [hr] at hro; simp at hro
+      | none, h' => rw [hex] at hhd; simp at hhd
+
+/-- **The `.splitOrdered` fold preserves `isSome`.** Identical to the `.split` twin except that
+each arm carries **its own** `TimeOrdering` (`pair.1.2`) rather than a shared post-step ordering.
+
+This twin is a statement about the *fold*, and is untouched by the Phase-4 refutation, which was
+about branch cardinality across an ordered split. -/
+theorem expand_splitOrdered_fold_isSome (fuel : Nat) (fc : ProofSystem.FrameClass)
+    (tracker : EventualityTracker) (applied' : AppliedSet) (maxBranches branchesUsed' : Nat) :
+    ∀ (bs : List ((Branch × TimeOrdering) × Nat)),
+      (∀ pair ∈ bs, (expandBranchWithFuel pair.1.1 (min pair.2 fuel) pair.1.2 fc tracker applied'
+        maxBranches branchesUsed').isSome = true) →
+      (∀ pair ∈ bs, ∀ ob oOrd oAp,
+        expandBranchWithFuel pair.1.1 (min pair.2 fuel) pair.1.2 fc tracker applied' maxBranches
+          branchesUsed' = some (.inr (ob, oOrd, oAp)) →
+        (resolveOpenArm ob oOrd oAp fuel fc).isSome = true) →
+      ∀ (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))), acc.isSome = true →
+        (bs.foldl (fun acc (pair : (Branch × TimeOrdering) × Nat) =>
+          match acc with
+          | some (.inr openBr) => some (.inr openBr)
+          | _ =>
+            match expandBranchWithFuel pair.1.1 (min pair.2 fuel)
+              pair.1.2 fc tracker applied' maxBranches branchesUsed' with
+            | none => none
+            | some (.inl _) => acc
+            | some (.inr (ob, oOrd, oAp)) =>
+                match resolveOpenArm ob oOrd oAp fuel fc with
+                | none => none
+                | some (.inl _) => acc
+                | some (.inr openBr) => some (.inr openBr)) acc).isSome = true := by
+  intro bs
+  induction bs with
+  | nil => intro _ _ acc h; exact h
+  | cons hd tl iht =>
+    intro harm hres acc h
+    refine iht (fun p hp => harm p (List.mem_cons_of_mem _ hp))
+      (fun p hp => hres p (List.mem_cons_of_mem _ hp)) _ ?_
+    have hhd := harm hd List.mem_cons_self
+    match acc, h with
+    | some (.inr _), _ => simp
+    | some (.inl _), _ =>
+      simp only
+      match hex : expandBranchWithFuel hd.1.1 (min hd.2 fuel) hd.1.2 fc tracker applied'
+          maxBranches branchesUsed', hhd with
+      | some (.inl _), _ => simp
+      | some (.inr (ob, oOrd, oAp)), _ =>
+        have hro := hres hd List.mem_cons_self ob oOrd oAp hex
+        match hr : resolveOpenArm ob oOrd oAp fuel fc, hro with
+        | some (.inl _), _ => simp [hr]
+        | some (.inr _), _ => simp [hr]
+        | none, h' => rw [hr] at hro; simp at hro
+      | none, h' => rw [hex] at hhd; simp at hhd
+
 /-! ## 4.3e — the general fuel figure `worldFuel'`
 
 `soundFuel'` is the **single-world** figure: `chain_le_soundFuel'` earns it exactly, with no

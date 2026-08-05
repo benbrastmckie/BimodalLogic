@@ -509,27 +509,27 @@ would-be deviation on a `.lean` file is escalated, not silently annotated.
 
 ---
 
-### Phase 9: Split-fold preservation helpers [NOT STARTED]
+### Phase 9: Split-fold preservation helpers [COMPLETED]
 
 **Goal**: Prove that `expandBranchWithFuel`'s two split folds preserve `isSome`, given that each arm
 does — the structural half of removing `NoSplit`, separated from the quantitative half. Content
 unchanged from plan 01 Phase 5.
 
 **Tasks**:
-- [ ] State and prove a fold-preservation lemma for the `.split` fold: given a starting accumulator
+- [x] State and prove a fold-preservation lemma for the `.split` fold: given a starting accumulator
       that is `isSome` and a hypothesis that each arm's `expandBranchWithFuel` call is `isSome`, the
       fold's result is `isSome`. Model the shape on the landed `split_fold_isSome`, which is the
       same argument for `saturateBlocked`.
-- [ ] Prove the `.splitOrdered` twin, which additionally carries each arm's own `TimeOrdering`.
+- [x] Prove the `.splitOrdered` twin, which additionally carries each arm's own `TimeOrdering`.
       (Note: this twin is a *fold* lemma and is unaffected by the Phase 4 refutation, which was
       about branch cardinality, not fold structure.)
-- [ ] Both folds pass through `resolveOpenArm` on an arm reported open. Discharge that step using
+- [x] Both folds pass through `resolveOpenArm` on an arm reported open. Discharge that step using
       the landed `saturateBlocked_isSome` and `resolveOpenArm_eq_none_imp` plus Phase 2's repaired
       body: state explicitly which `resolveOpenArm` outcomes are reachable and prove the `none`
       outcome does not defeat the fold under the phase's hypotheses. If `resolveOpenArm = none`
       remains genuinely reachable, that is a finding — carry it as a named hypothesis on the arm and
       report it, rather than assuming it away.
-- [ ] Keep both lemmas stated over an **abstract arm hypothesis** so Phases 10-11 can supply the
+- [x] Keep both lemmas stated over an **abstract arm hypothesis** so Phases 10-11 can supply the
       quantitative content without restating the fold reasoning.
 
 **Timing**: 2 hours
