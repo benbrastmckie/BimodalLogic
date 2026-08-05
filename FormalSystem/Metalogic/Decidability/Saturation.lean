@@ -663,15 +663,33 @@ this arm and never via the fuel or budget guards. Substituting the engine's real
 those to clean open verdicts and leaves already-succeeding formulas (`U(p,q)` and the rest of
 the corpus) unchanged. The probes at the end of this section pin both halves of that claim.
 
-**Which blocked set.** `findUnexpandedUnblocked` derives its blocked set from a tracker, and
-`resolveOpenArm`'s signature carries no tracker. Threading the enclosing fold's live tracker
-would require changing that signature; rather than do so silently, both call sites below pass
-`EventualityTracker.empty` **explicitly**. The certificate this function issues is therefore
-relative to `blockedTimes ob ord fc EventualityTracker.empty` — the blocked set computed with
-no pending eventualities registered. That set is the *smallest* one (an empty tracker can only
-make `isTemporallyBlockedSaturated` harder to satisfy, never easier), so this is the
-conservative choice: fewer times are treated as blocked, hence more work is counted as
-outstanding, hence the test is harder to pass than a live-tracker version would be.
+**Which blocked set.** `findUnexpandedUnblocked` derives its blocked set from an
+`EventualityTracker`, and `resolveOpenArm`'s signature carries none. The tracker argument is
+therefore *decided here and written out*, rather than left to the `EventualityTracker.empty`
+default, because the default is the wrong direction and it is worth saying why.
+
+`isTemporallyBlockedSaturated` requires `allEventualitiesFulfilledOrDuplicated tracker t t_anc`,
+which quantifies over `tracker.pendingAtTime t`. Under `EventualityTracker.empty` that list is
+empty and the condition holds **vacuously**, so *more* times count as blocked, so *fewer*
+formulas are candidates, so the saturation test is *easier* to pass. The empty tracker is the
+permissive extreme, not the conservative one — precisely the direction in which a blocking
+engine must not be sloppy, since it is what would let an arm be declared open over an
+outstanding Until/Since obligation.
+
+Both call sites below therefore use `armTracker ob`, which recomputes the arm's eventualities
+from the arm's own branch (`fulfillEventualities` after `registerEventualities`, seeded from
+empty). Two facts make this the right set:
+
+* It is **self-contained**: no tracker has to be threaded in, so `resolveOpenArm`'s signature is
+  unchanged and neither the enclosing folds nor the cancellable mirror's signature move.
+* It is **at least as strict as the engine's own**: the engine seeds `registerEventualities`
+  with an inherited tracker that `fulfillEventualities` may already have pruned, whereas
+  recomputing from empty re-derives every pending entry the arm's formulas justify. More
+  pending entries means a harder blocking condition, means fewer blocked times, means a harder
+  saturation test. So this test never declares an arm saturated that the engine's own blocking
+  set would have left unsaturated.
+
+The certificate this function issues is relative to `blockedTimes ob ord fc (armTracker ob)`.
 
 **Soundness scope.** This changes what an arm reported open certifies: from "no formula on this
 branch has an applicable rule" to "no formula at an *unblocked* time has an applicable rule".
@@ -683,14 +701,25 @@ never by silently reinterpreting the existing one.
 -/
 
 /--
+The eventuality tracker for a branch, recomputed from that branch alone: register every
+eventuality its formulas justify, then discharge the ones the branch already witnesses.
+
+This is the tracker `resolveOpenArm` and `buildTableauAt` test saturation against. Seeding from
+`EventualityTracker.empty` rather than from an inherited tracker is deliberate and is the
+conservative direction — see the section prose above.
+-/
+def armTracker (b : Branch) : EventualityTracker :=
+  fulfillEventualities b (registerEventualities b EventualityTracker.empty)
+
+/--
 Settle a sub-branch that `expandBranchWithFuel` returned as open, before the enclosing split
 fold decides whether to keep exploring its siblings.
 
 Returns `some (.inl _)` if the arm actually closes under post-blocking saturation,
 `some (.inr _)` if it is open *and* blocking-aware saturated
-(`findUnexpandedUnblocked … = none`, relative to the empty-tracker blocked set — see the
-section prose above for why that is the notion and which set it is), and `none` if it cannot
-be settled.
+(`findUnexpandedUnblocked … = none`, relative to the arm's own recomputed blocked set — see
+the section prose above for why that is the notion and which set it is), and `none` if it
+cannot be settled.
 
 `resolveOpenArm_inr` records the invariant the soundness proof needs: whenever this reports
 an open branch, that branch has no closure reason.
@@ -709,7 +738,7 @@ def resolveOpenArm (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
     Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
   -- Tracker written out rather than defaulted: the blocked set is tracker-dependent and the
   -- certificate below is relative to *this* one. See the section prose.
-  match findUnexpandedUnblocked ob ord fc EventualityTracker.empty with
+  match findUnexpandedUnblocked ob ord fc (armTracker ob) with
   | none => some (.inr (ob, ord, ap))  -- Already saturated (blocking-aware): a genuine open branch
   | some _ =>
       -- Blocked but not saturated: run the same post-blocking pass `buildTableau` runs,
@@ -721,7 +750,7 @@ def resolveOpenArm (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
           match findClosure satBr fc with
           | some reason => some (.inl ⟨satBr, reason⟩)
           | none =>
-              match findUnexpandedUnblocked satBr satOrd fc EventualityTracker.empty with
+              match findUnexpandedUnblocked satBr satOrd fc (armTracker satBr) with
               | none => some (.inr (satBr, satOrd, ap))
               | some _ => none  -- Still not saturated: undecided, never "closed"
 
@@ -1256,7 +1285,7 @@ private def armDisagreement : Option (Bool × Bool) :=
   match expandBranchWithFuel (probe_seed probe_FGp) 500 with
   | some (.inr (ob, ord, _)) =>
       some ((findUnexpanded ob (timeOrd := ord) (fc := .Base)).isSome,
-            (findUnexpandedUnblocked ob ord .Base EventualityTracker.empty).isSome)
+            (findUnexpandedUnblocked ob ord .Base (armTracker ob)).isSome)
   | _ => none
 
 /-- info: some (true, false) -/
