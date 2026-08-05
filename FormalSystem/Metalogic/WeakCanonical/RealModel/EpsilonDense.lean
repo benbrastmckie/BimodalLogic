@@ -1083,4 +1083,27 @@ theorem epsDense_isContempEquivDenseCD (k : Nat) (hk : 2 ≤ k) :
           ⟨a, min_le_left a b, le_max_left a b⟩
           ⟨b, min_le_right a b, le_max_right a b⟩).symm)
 
+/-- **Reynolds' `ε` is a contemporaneous equivalence relation on the countable dense class** —
+§8 Lemma 12 again, in the class-parameterized form §6 consumes (`IsContempEquivDenseOn`,
+`DenseModelSurgery/Defs.lean`).
+
+This is strictly more than `epsDense_isContempEquivDenseCD`, and the surplus is exactly what
+`IsContempEquivDenseCD.toOn` asks for: **unrestricted** reflexivity and symmetry. Neither is an
+extra assumption for this `ε`. `simDense_refl` (`:136`) and `simDense_symm` (`:140`) carry no
+instance hypotheses at all — `∼_M`'s first clause is `a = b` and its second and third clauses are
+mirrors — so both transport to `ContempEquivDense` at an arbitrary `M` through
+`contempEquivDense_epsDense_iff`. Transitivity and convexity stay at the countable dense class,
+where they belong: transitivity is false at a non-dense flow (module header).
+
+This is the witness `IsContempEquivDenseCD.toOn`'s docstring names as *"deliberately left to that
+file's owner"*, and it is what lets `DoetsD1`/`DoetsD2` be discharged from §6's class-parameterized
+Theorems 4 and 5 rather than from an unavailable unrestricted bundle. -/
+theorem epsDense_isContempEquivDenseOn_countableDense (k : Nat) (hk : 2 ≤ k) :
+    IsContempEquivDenseOn (epsDense sig k) (CountableDense sig) :=
+  (epsDense_isContempEquivDenseCD k hk).toOn
+    (fun M a => (contempEquivDense_epsDense_iff k M a a).mpr (simDense_refl k M a))
+    (fun M {a b} h =>
+      (contempEquivDense_epsDense_iff k M b a).mpr
+        (simDense_symm ((contempEquivDense_epsDense_iff k M a b).mp h)))
+
 end FormalSystem.Metalogic.WeakCanonical
