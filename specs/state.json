@@ -799,7 +799,7 @@
     {
       "project_number": 428,
       "project_name": "engine_totality_at_a_quantified_branch_budget",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [],
       "parent_task": 165,
@@ -830,12 +830,17 @@
           "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/04_witness-preservation-machine-checked.md",
           "type": "report",
           "summary": "Research gate discharged: both report-03 claims machine-checked (27 lemmas, 0 sorries). Witness preservation holds for all 8 fresh-label rules conditional on IrreflOrd; unconditional form refuted by counterexample. Non-deletion verified engine-level. Route (b) survives with one new irreflexivity obligation, densityRule flagged."
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/plans/03_mint-bound-irreflexivity-totality.md",
+          "type": "plan",
+          "summary": "Fourteen-phase route-(b) plan replacing the blocked Phase 11 of plans/02. Blocks: A=irreflexivity (1-4), B=witness preservation (5-8), C=mint-budget restatement (10), D=world dimension + amortized counting + terminus (9, 11-14). All new declarations land in a NEW module MintBound.lean, so Fuel.lean and Saturation.lean are never edited."
         }
       ],
       "title": null,
       "created": "2026-07-29T23:39:38Z",
-      "last_updated": "2026-08-05T22:51:07Z",
-      "session_id": "sess_1785968750_5178fd",
+      "last_updated": "2026-08-05T23:23:20Z",
+      "session_id": "sess_1785971269_20de53",
       "blockers": "RESEARCH GATE DISCHARGED (reports/04_witness-preservation-machine-checked.md). Both uncertain claims of report 03 machine-checked in Lean, 0 sorries, axioms [propext, Classical.choice, Quot.sound]: (i) witness preservation across .splitOrdered arm 3 VERIFIED for all 8 fresh-label rules, but CONDITIONAL on constraint-list irreflexivity (IrreflOrd) -- the unconditional form is FALSE by machine-checked counterexample (identifyTime drops pre-existing self-loops, so a witness reachable only around one is destroyed); (ii) formulas-are-never-deleted VERIFIED at engine level for all four ExpansionResult shapes, via the new bridge expandOnceUnblocked_splitOrdered_shape (timeLinearity is the sole producer of .branchingOrdered). Route (b) SURVIVES; this is NOT a third retarget decision. NEW OBLIGATION for the plan: engine-level IrreflOrd must be its own phase ordered BEFORE the witness-preservation phases; 2 of 3 preservation cases already machine-checked (identifyTime unconditionally, addFuture at arms 1-2 via the trigger), the third (nine fresh-time mint sites) reduces to landed le_maxTime, with densityRule's second edge (addFuture freshTime t') flagged as a risk needing an every-ordering-time-is-a-branch-time invariant that .branching's shared newOrd gives a visible way to break. Next: /plan 428.",
       "researched": "2026-08-05T22:51:07Z"
     },
