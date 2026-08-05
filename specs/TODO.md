@@ -11,20 +11,19 @@ next_project_number: 431
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,408,410,413,415,419,421,423,424,426,428,429 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,410,413,415,419,421,423,424,426,428,429 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 177,178,219,282,296,411,420,422,425,430 | 193,231,298,410,415,421,423,428,429 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,412,414 | 411,420,422,428 | paper-refactor, strong_completeness |
-| 4 | 95,362,417 | 169,408,412,414 | completeness, paper-refactor, strong_completeness |
+| 4 | 95,362,417 | 169,412,414 | completeness, paper-refactor, strong_completeness |
 | 5 | 427 | 417,419 | paper-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-408 [IMPLEMENTING] — Identify and implement the most faithful and mathematically corre
-  └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
+95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Decidability
 
@@ -426,13 +425,15 @@ ALSO NOTE: this task inherits obstructions O2 and O3 (the boxAnchoredCheck and t
 ---
 
 ### 408. Faithful route to strong completeness for the dedekind extension
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
-- **Research**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/09_lemma6-first-clause-blocker.md]
 - **Plan**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/10_strong-completeness-dedekind-v10.md]
-- **Summary**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/12_section6-parameterized-class-summary.md]
+- **Research**: [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/09_lemma6-first-clause-blocker.md]
+- **Summary**:
+  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/12_section6-parameterized-class-summary.md]
+  - [408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/14_phase-30-dedekind-terminus-summary.md]
 
 **Description**: Identify and implement the most faithful and mathematically correct route to completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics).
 

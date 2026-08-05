@@ -22,7 +22,7 @@
 > nothing, re-sequences nothing, and re-costs nothing except the +3 hours that heading carries.
 
 - **Task**: 408 - faithful_route_to_strong_completeness_for_the_dedekind_extension
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: **~171.5 hours across 31 phase headings**, of which **~108.5 hours (Phases 9 through
   22) are spent** and **~63 hours remain**. The sum of the per-phase timings below, not a rounded
   guess. The increase over v9's ~168.5 hours is **+3 hours, entirely in Block F** (Phase 22.1),
