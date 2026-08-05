@@ -19,6 +19,7 @@ import FormalSystem.Metalogic.Decidability.Verified.RuleSpec
 import FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProperty
 import FormalSystem.Metalogic.Decidability.Verified.Termination.TimeTypeBound
 import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
+import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.BranchOrder
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Embed
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.Carrier

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #428 — Route (b), the Mint Bound
 
 - **Task**: 428 - engine_totality_at_a_quantified_branch_budget
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 22 hours
 - **Dependencies**: None blocking. Consumes phases 1-10 of
   `plans/02_lexicographic-splitordered-measure.md` (landed, sorry-free, axiom-free, green) and the
@@ -218,34 +218,46 @@ which is not required and not planned.
 
 ---
 
-### Phase 1: New module, `IrreflOrd`, and its two machine-checked preservation cases [NOT STARTED]
+### Phase 1: New module, `IrreflOrd`, and its two machine-checked preservation cases [COMPLETED]
 
 **Goal**: Create the module, wire it into the build, and land the irreflexivity primitives —
 including the counterexample that makes the side condition necessary rather than convenient.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean` with
+- [x] Create `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean` with
       `import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel`, the project's standard
       copyright header, and a module docstring stating what the file is for. The docstring must NOT
       cite a task number.
-- [ ] Add the one-line `import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound`
+- [x] Add the one-line `import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound`
       to `FormalSystem/Metalogic/Decidability.lean` (adjacent to the existing `...Termination.Fuel`
       import at line 21) so the module is in the default build target.
-- [ ] Land `rho` and `rhoSF` (scratch lines 8, 175) — the renaming and its action on a signed
+- [x] Land `rho` and `rhoSF` (scratch lines 8, 175) — the renaming and its action on a signed
       formula's label.
-- [ ] Land `IrreflOrd` (scratch line 345), `irreflOrd_identifyTime` (line 348, unconditional), and
+- [x] Land `IrreflOrd` (scratch line 345), `irreflOrd_identifyTime` (line 348, unconditional), and
       `irreflOrd_addFuture` (line 362) verbatim.
-- [ ] Land the **new mirror** `irreflOrd_addPast : IrreflOrd ord → t ≠ t' → IrreflOrd (ord.addPast t t')`.
+- [x] Land the **new mirror** `irreflOrd_addPast : IrreflOrd ord → t ≠ t' → IrreflOrd (ord.addPast t t')`.
       Not in the scratch file. Needed because four of the nine mint sites use `addPast`
       (`Tableau.lean:801, :924, :971, :1168`). `addPast t t_new = ⟨(t_new, t) :: constraints⟩`, so
       this is `irreflOrd_addFuture` with the pair flipped — expect a two-line proof.
-- [ ] Land `incomparableB_of_firstIncomparablePair` (scratch line 336), which derives the `hinc`
+- [x] Land `incomparableB_of_firstIncomparablePair` (scratch line 336), which derives the `hinc`
       side condition free from the landed `firstIncomparablePair_spec`.
-- [ ] Land the **counterexample record** (scratch lines 377-396): the three `decide`/`rfl` examples
+- [x] Land the **counterexample record** (scratch lines 377-396): the three `decide`/`rfl` examples
       plus the `witnessPresent .allFutureNeg` flip, under a section comment stating plainly that the
       unconditional form of witness preservation is FALSE and belongs on the do-not-re-attempt
       register. This is a required deliverable, not decoration: it is what stops a future reader
       from dropping `IrreflOrd` as an apparently-cosmetic hypothesis.
+
+**Completion notes**:
+- Module created; import added to `FormalSystem/Metalogic/Decidability.lean` adjacent to the
+  `...Termination.Fuel` import. Both scoped and aggregate builds green on first attempt.
+- The counterexample record is landed as three anonymous `example`s plus one **named** theorem,
+  `witnessPresent_identifyTime_unconditional_false`, so downstream in-source notes can cite it by
+  declaration name (Phase 6's obligation).
+- `lean_verify`: `irreflOrd_addPast` -> `[propext]`; `incomparableB_of_firstIncomparablePair` ->
+  `[propext, Quot.sound]`; `witnessPresent_identifyTime_unconditional_false` -> `[propext]`. All
+  subsets of the sanctioned `[propext, Classical.choice, Quot.sound]`.
+- `grep -c 'sorry'` = 0, `grep -c '^axiom '` = 0, `grep -inE 'task [0-9]|tasks [0-9]'` = nothing.
+- `Saturation.lean` and `Fuel.lean` md5 unchanged (`ae47004e...`, `8a395bd7...`).
 
 **Timing**: 1.5 hours
 
