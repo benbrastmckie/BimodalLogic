@@ -812,11 +812,6 @@
       "effort": null,
       "artifacts": [
         {
-          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/01_budget-totality-refuted-and-repair.md",
-          "type": "report",
-          "summary": "Budget totality refuted by machine-checked counterexample; validated repair identified"
-        },
-        {
           "path": "specs/428_engine_totality_at_a_quantified_branch_budget/plans/01_budget-totality-engine-repair.md",
           "type": "plan",
           "summary": "Eight-phase plan: engine arm-settling repair, budget-parameterised entry point with blocking-aware certificate, NoSplit-free totality, world-dimension discharge, and the terminus theorem."
@@ -825,6 +820,11 @@
           "path": "specs/428_engine_totality_at_a_quantified_branch_budget/summaries/01_budget-totality-engine-repair-summary.md",
           "type": "summary",
           "summary": "Implementation summary: phases 1-3 complete, phase 4 blocked by a refuted plan lemma, phases 5-8 not started."
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/02_splitordered-measure-blocker.md",
+          "type": "report",
+          "summary": "Machine-checked evaluation of the .splitOrdered progress measure; 15-item Phase 4/4b/6 re-plan; two flagged residual gaps."
         }
       ],
       "title": null,
