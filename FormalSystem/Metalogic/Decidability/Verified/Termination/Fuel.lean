@@ -1765,6 +1765,117 @@ theorem applyRule_timeLinearity_arms (sf : SignedFormula) (b : Branch) (ord : Ti
     · rw [hp] at h
       exact ⟨t₁, t₂, by simpa using h.symm⟩
 
+/-! ### The identification arm, and the lexicographic measure
+
+`applyRule .timeLinearity`'s third arm rewrites both the branch and the ordering. What the measure
+uses of it is only the *branch* half: identification retires one time outright, so the first
+component of the measure strictly drops and the arm is discharged there.
+
+**`timeLinearity` is the only rule producing `.branchingOrdered`** — `applyRule`'s
+`.timeLinearity` case (`Tableau.lean:1513-1520`) is its sole construction site, and
+`findApplicableRule`'s own `.branchingOrdered` arm records the same fact ("the only rule that
+produces this constructor"). So the decrease theorem below covers every ordered split the engine
+can take. -/
+
+/-- The trigger-carrying strengthening of `applyRule_timeLinearity_arms`: the same three arms,
+plus the `firstIncomparablePair` equation that produced them. The landed lemma is left untouched;
+this is additive, and it is what lets the arm-3 case read off the trigger's own guarantees. -/
+theorem applyRule_timeLinearity_arms_trigger (sf : SignedFormula) (b : Branch)
+    (ord : TimeOrdering) (bs : List (Branch × TimeOrdering))
+    (h : (applyRule .timeLinearity sf b ord).1 = RuleResult.branchingOrdered bs) :
+    ∃ t₁ t₂, firstIncomparablePair b ord = some (t₁, t₂) ∧
+      bs = [ (b, ord.addFuture t₁ t₂)
+           , (b, ord.addFuture t₂ t₁)
+           , (b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁) ] := by
+  cases sf with
+  | mk sign formula label =>
+    simp only [applyRule] at h
+    rcases hp : firstIncomparablePair b ord with _ | ⟨t₁, t₂⟩
+    · rw [hp] at h; simp at h
+    · rw [hp] at h
+      exact ⟨t₁, t₂, rfl, by simpa using h.symm⟩
+
+/-- Identification retires `src`: nothing is left carrying it. -/
+theorem src_not_mem_knownTimes_identifyTime (b : Branch) (src tgt : TimeIndex)
+    (h : src ≠ tgt) : src ∉ (b.identifyTime src tgt).knownTimes := by
+  simp only [Branch.knownTimes, Branch.identifyTime, List.mem_eraseDups, List.mem_map]
+  rintro ⟨sf, hsf, hsfeq⟩
+  obtain ⟨sf0, -, rfl⟩ := hsf
+  by_cases hc : sf0.label.time = src
+  · simp [hc] at hsfeq; exact h hsfeq.symm
+  · simp [hc] at hsfeq
+
+/-- Identification introduces no new times, provided the target was already known. -/
+theorem knownTimes_identifyTime_subset {b : Branch} {src tgt : TimeIndex}
+    (h : tgt ∈ b.knownTimes) :
+    ∀ t ∈ (b.identifyTime src tgt).knownTimes, t ∈ b.knownTimes := by
+  intro t ht
+  simp only [Branch.knownTimes, Branch.identifyTime, List.mem_eraseDups, List.mem_map] at ht ⊢
+  obtain ⟨sf, ⟨sf0, hsf0, rfl⟩, rfl⟩ := ht
+  by_cases hc : sf0.label.time = src
+  · simp only [hc, beq_self_eq_true, if_pos]
+    simpa [Branch.knownTimes, List.mem_eraseDups, List.mem_map] using h
+  · simp only [beq_iff_eq, hc, if_neg, not_false_iff]
+    exact ⟨sf0, hsf0, rfl⟩
+
+/-- **The measure's first component strictly drops at the identification arm.** No new times, and
+one old one retired. -/
+theorem knownTimes_card_lt_identifyTime {b : Branch} {t₁ t₂ : TimeIndex}
+    (h1 : t₁ ∈ b.knownTimes) (h2 : t₂ ∈ b.knownTimes) (hne : t₂ ≠ t₁) :
+    ((b.identifyTime t₂ t₁).knownTimes).toFinset.card < (b.knownTimes).toFinset.card := by
+  refine Finset.card_lt_card ⟨?_, fun hcon => ?_⟩
+  · intro t ht
+    rw [List.mem_toFinset] at ht ⊢
+    exact knownTimes_identifyTime_subset h1 t ht
+  · exact src_not_mem_knownTimes_identifyTime b t₂ t₁ hne
+      (List.mem_toFinset.mp (hcon (List.mem_toFinset.mpr h2)))
+
+/--
+**The `.splitOrdered` progress measure**, lexicographic in `(|knownTimes|, |incomparable pairs|)`.
+
+This is the direct replacement for the refuted branch-cardinality route (see the do-not-re-attempt
+register): branch cardinality is monotone-*non-increasing* across an ordered split — arm 3 merges
+signed formulas — so it cannot bound ordered-split depth. The lexicographic pair can, because the
+two arms that leave the branch alone strictly shrink the ordering's incomparability, and the arm
+that rewrites the ordering strictly shrinks the branch's time set.
+
+**Why there is no missing fact about `identifyTime`'s output ordering.** A reader looking for a
+proof that `TimeOrdering.identifyTime`'s constraint substitution preserves comparability of the
+surviving times will not find one, and should not go looking: arm 3 is discharged *entirely* on
+the first component. Nothing anywhere in this development needs to know what the rewritten
+ordering looks like. That is the whole point of making the measure lexicographic rather than
+trying to run the incomparable-pair count across all three arms.
+
+**Scope.** The measure bounds ordered-split depth *between fresh-time mints*, not globally:
+`.split` can mint fresh times and so raise the first component. See the split-aware fuel figure
+for how that residual is carried (`hT`) rather than hidden.
+-/
+def splitOrderedMeasure (b : Branch) (ord : TimeOrdering) : Nat × Nat :=
+  (b.knownTimes.toFinset.card, (incompPairs b ord).card)
+
+/--
+**The measure strictly decreases at every arm of an ordered split.**
+
+Arms 1 and 2 (`addFuture`) keep the branch literally unchanged, so the first component is equal
+and the second strictly drops (`incompPairs_lt_addFuture`); arm 3 (`identifyTime`) drops the
+first component outright (`knownTimes_card_lt_identifyTime`). Since `timeLinearity` is the only
+producer of `.branchingOrdered`, this covers every ordered split the engine takes.
+-/
+theorem splitOrderedMeasure_lt_of_timeLinearity (sf : SignedFormula) (b : Branch)
+    (ord : TimeOrdering) (bs : List (Branch × TimeOrdering))
+    (h : (applyRule .timeLinearity sf b ord).1 = RuleResult.branchingOrdered bs) :
+    ∀ p ∈ bs, Prod.Lex (· < ·) (· < ·)
+      (splitOrderedMeasure p.1 p.2) (splitOrderedMeasure b ord) := by
+  obtain ⟨t₁, t₂, htrig, rfl⟩ := applyRule_timeLinearity_arms_trigger sf b ord bs h
+  obtain ⟨hm1, hm2, hne, -, -⟩ := firstIncomparablePair_spec htrig
+  obtain ⟨hlt1, hlt2⟩ := incompPairs_lt_addFuture htrig
+  intro p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · exact Prod.Lex.right _ hlt1
+  · exact Prod.Lex.right _ hlt2
+  · exact Prod.Lex.left _ _ (knownTimes_card_lt_identifyTime hm1 hm2 hne)
+
 set_option maxHeartbeats 1600000 in
 /-- **Split arity, attempted.** Every `.branching` result of every rule has at most three arms. -/
 theorem applyRule_branching_arity_le (rule : TableauRule) (sf : SignedFormula) (b : Branch)

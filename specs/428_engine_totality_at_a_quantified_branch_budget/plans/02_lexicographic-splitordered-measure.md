@@ -411,26 +411,26 @@ at `timeLinearity`'s two `addFuture` arms. All VERIFIED (research 02 item groups
 
 ---
 
-### Phase 7: The identification arm and the lexicographic combination [NOT STARTED]
+### Phase 7: The identification arm and the lexicographic combination [COMPLETED]
 
 **Goal**: Prove the first component of the measure strictly drops at `timeLinearity`'s
 identification arm, then land the lexicographic measure and its decrease theorem — the direct
 replacement for the refuted lemma. All VERIFIED (research 02 item groups 9-10).
 
 **Tasks**:
-- [ ] Prove `src_not_mem_knownTimes_identifyTime`: `src ≠ tgt → src ∉ (b.identifyTime src tgt).knownTimes`.
-- [ ] Prove `knownTimes_identifyTime_subset`: `tgt ∈ b.knownTimes` implies identification introduces
+- [x] Prove `src_not_mem_knownTimes_identifyTime`: `src ≠ tgt → src ∉ (b.identifyTime src tgt).knownTimes`.
+- [x] Prove `knownTimes_identifyTime_subset`: `tgt ∈ b.knownTimes` implies identification introduces
       no new times.
-- [ ] Prove `knownTimes_card_lt_identifyTime`:
+- [x] Prove `knownTimes_card_lt_identifyTime`:
       `((b.identifyTime t₂ t₁).knownTimes).toFinset.card < (b.knownTimes).toFinset.card`.
-- [ ] Define
+- [x] Define
       `splitOrderedMeasure b ord := ( b.knownTimes.toFinset.card , (incompPairs b ord).card )`.
-- [ ] Prove `splitOrderedMeasure_lt_of_timeLinearity`: the measure strictly decreases in the
+- [x] Prove `splitOrderedMeasure_lt_of_timeLinearity`: the measure strictly decreases in the
       lexicographic order at every arm of `applyRule .timeLinearity`, dispatching on the landed
       `applyRule_timeLinearity_arms`. Arms 1-2: component 1 equal (branch literally unchanged),
       component 2 strictly down by Phase 6. Arm 3: component 1 strictly down by
       `knownTimes_card_lt_identifyTime`.
-- [ ] **Do not** prove, assume, or state anything about the `TimeOrdering` that `identifyTime`
+- [x] **Do not** prove, assume, or state anything about the `TimeOrdering` that `identifyTime`
       produces. Per G2 the lexicographic split makes it unnecessary — arm 3 is discharged entirely
       on component 1. Record this in the measure's docstring so a future reader does not go looking
       for the missing fact and conclude the proof has a hole.
