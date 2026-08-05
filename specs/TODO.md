@@ -31,7 +31,7 @@ next_project_number: 431
 
 ### Decidability
 
-428 [RESEARCHED] — Engine totality at a quantified branch budget. Owns obstruction O
+428 [PLANNED] — Engine totality at a quantified branch budget. Owns obstruction O
   └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
     └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
       └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
@@ -141,11 +141,12 @@ DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on re
 ---
 
 ### 428. Engine totality at a quantified branch budget
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/01_budget-totality-refuted-and-repair.md]
+- **Plan**: [428_engine_totality_at_a_quantified_branch_budget/plans/01_budget-totality-engine-repair.md]
 
 **Description**: Engine totality at a quantified branch budget. Owns obstruction O1 of the Phase 7.3 deadlock recorded in specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md section "The four obstructions" (read it first; do not re-derive the refutation).
 
@@ -167,6 +168,8 @@ THREE SUB-OBLIGATIONS:
 COORDINATION: overlaps task 426's hypothesis (b) on the same file (Fuel.lean). Sequence with 426 or merge; do not both edit Fuel.lean concurrently. Task 412 consumes this theorem in place of the refuted `buildTableau_isSome`.
 
 DONE WHEN: the budget-parameterised totality theorem is landed sorry-free with no `NoSplit` hypothesis, lake build green, and the world dimension is either supplied or its absence is proved harmless.
+
+RETARGET DECISION (user-approved, post-research): the specified unconditional target shape is refuted (see reports/01_budget-totality-refuted-and-repair.md). Task WIDENED to own the validated certificate repair: swap findUnexpanded -> findUnexpandedUnblocked at resolveOpenArm's two decision points, discharge the accompanying soundness obligation on what .hasOpen certifies (shared with O2/O3), lift the proved saturateBlocked_isSome asset, close the world dimension via worldFuel'/WorldWitness, and land the budget-parameterised totality theorem against the repaired engine. The per-path budget finding (maxBranches >= 3*fuel linear invariant) supplies the side condition.
 
 ---
 
