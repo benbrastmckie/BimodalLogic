@@ -2044,6 +2044,300 @@ theorem blocking_sound (φ : Formula) (b : Branch) (openBranch : Branch)
   expandBranchWithFuel_sound (soundFuel φ) b _ _ _ _ _ _ openBranch ord ap h_result
 
 /-!
+## The Budget-Parameterised Entry Point
+
+Everything in this section is an **addition**. `buildTableau`, its `fuel := 1000` /
+`fc := .Base` defaults, `expandBranchWithFuel`'s `maxBranches := 50000` default, and
+`ExpandedTableau.hasOpen`'s `findUnexpanded … = none` proof field are all untouched, and the
+verified corpus that reads them is unaffected.
+
+Two things are added, for two different reasons.
+
+**`buildTableauAt` exists because `maxBranches` must be quantifiable.** `buildTableau` fixes it
+at the engine default by not exposing it at all. A totality statement has to be able to say
+"at *this* budget", so the budget has to be a parameter.
+
+**`BudgetedTableau` exists because the honest open certificate for a blocking engine is not
+`ExpandedTableau`'s.** `ExpandedTableau.hasOpen` carries the *literal*
+`findUnexpanded … = none`. For the class of formulas whose refutation requires an infinite
+descent that loop-blocking cuts, that field is permanently unobtainable — `saturateBlocked`
+refuses to mint the time points, `findUnexpanded` keeps counting them, and no fuel figure or
+branch budget touches the disagreement (see the arm-settling section above for the measured
+census). `BudgetedTableau.hasOpen` carries the blocking-aware field instead, **and says which
+blocked set it is relative to** by carrying the tracker as a field rather than leaving it
+implicit.
+
+This is strictly weaker than `ExpandedTableau.hasOpen`, and the weakening is not hidden: no
+existing declaration is redefined, no consumer silently receives the weaker notion, and
+`BudgetedTableau.upgrade` below shows a consumer that needs the strong certificate can still
+obtain one — but only under the strong condition, which is exactly the right price.
+-/
+
+/--
+The blocking-aware twin of `ExpandedTableau`.
+
+- `allClosed` — identical in force to `ExpandedTableau.allClosed`.
+- `hasOpen` — carries `findUnexpandedUnblockedWith … = none` (the engine's *real* saturation
+  test) together with the `EventualityTracker` the blocked set was computed from, so the
+  certificate names its own frame of reference instead of leaving it to a default.
+
+**How this is weaker than `ExpandedTableau.hasOpen`, precisely.** `findUnexpanded … = none`
+says *no* formula on the branch has an applicable rule. This field says no formula *at an
+unblocked time* does. The gap is exactly the formulas sitting at times blocked by a saturated
+ancestor. For a blocking engine that gap is not an imperfection to be closed later: it is what
+blocking is, and a certificate that refused to admit it would be unobtainable rather than
+strong. See `upgrade` for the bridge back.
+-/
+inductive BudgetedTableau : Type where
+  /-- All branches are closed (formula is valid). -/
+  | allClosed (closedBranches : List ClosedBranch)
+  /-- At least one branch is open and **blocking-aware** saturated, relative to the carried
+      tracker's blocked set. -/
+  | hasOpen (openBranch : Branch) (timeOrdering : TimeOrdering) (fc : FrameClass)
+      (tracker : EventualityTracker)
+      (saturated : findUnexpandedUnblockedWith openBranch timeOrdering fc
+        (blockedTimes openBranch timeOrdering fc tracker) = none)
+
+namespace BudgetedTableau
+
+/-- The tableau reports the formula valid. -/
+def isValid : BudgetedTableau → Bool
+  | allClosed _ => true
+  | hasOpen _ _ _ _ _ => false
+
+/-- The tableau reports the formula invalid (relative to the carried blocked set). -/
+def isInvalid : BudgetedTableau → Bool
+  | allClosed _ => false
+  | hasOpen _ _ _ _ _ => true
+
+/--
+**The upgrade bridge.** A consumer that needs `ExpandedTableau`'s strong certificate can still
+get one from a `BudgetedTableau` — but only by paying the strong condition, which this function
+checks rather than assumes. `allClosed` upgrades unconditionally (it says the same thing in
+both types); `hasOpen` upgrades exactly when the literal saturation test also passes.
+
+The point of stating it this way is that nothing downstream is weakened by the existence of
+`BudgetedTableau`: `upgrade_hasOpen_isSome_iff` below says the bridge succeeds *iff* the strong
+condition holds, so no path exists from a blocking-aware certificate to a literal one that does
+not go through the literal condition.
+-/
+def upgrade : BudgetedTableau → Option ExpandedTableau
+  | allClosed cs => some (.allClosed cs)
+  | hasOpen b o f _ _ =>
+      match h : findUnexpanded b (timeOrd := o) (fc := f) with
+      | none => some (ExpandedTableau.hasOpen b o f h)
+      | some _ => none
+
+/-- `allClosed` crosses the bridge unconditionally. -/
+@[simp] theorem upgrade_allClosed (cs : List ClosedBranch) :
+    (allClosed cs).upgrade = some (ExpandedTableau.allClosed cs) := rfl
+
+/-- **The bridge is exactly the strong condition.** A blocking-aware open certificate upgrades
+to an `ExpandedTableau.hasOpen` if and only if the literal saturation test also reports `none`.
+So the weaker certificate buys no free access to the stronger one. -/
+theorem upgrade_hasOpen_isSome_iff (b : Branch) (o : TimeOrdering) (f : FrameClass)
+    (tr : EventualityTracker)
+    (hs : findUnexpandedUnblockedWith b o f (blockedTimes b o f tr) = none) :
+    ((hasOpen b o f tr hs).upgrade).isSome = true
+      ↔ findUnexpanded b (timeOrd := o) (fc := f) = none := by
+  constructor
+  · intro h
+    simp only [upgrade] at h
+    split at h
+    · assumption
+    · simp at h
+  · intro h
+    simp only [upgrade]
+    split
+    · simp
+    · rename_i sf heq
+      rw [h] at heq
+      simp at heq
+
+end BudgetedTableau
+
+/--
+`findUnexpandedUnblockedWith` is a restriction of `findUnexpanded`: it searches the same list
+with a strictly stronger predicate. So finding unblocked work implies finding work.
+
+This is the one arithmetic-free fact the pinning lemma needs, and it is the direction that
+holds. The converse fails, and that failure is the whole content of the arm-settling repair.
+-/
+theorem findUnexpanded_isSome_of_unblocked_isSome (b : Branch) (ord : TimeOrdering)
+    (fc : FrameClass) (blocked : List TimeIndex) (sf : SignedFormula)
+    (h : findUnexpandedUnblockedWith b ord fc blocked = some sf) :
+    (findUnexpanded b (timeOrd := ord) (fc := fc)).isSome = true := by
+  match hfu : findUnexpanded b (timeOrd := ord) (fc := fc) with
+  | some _ => simp
+  | none =>
+    exfalso
+    rw [findUnexpanded, List.find?_eq_none] at hfu
+    have hmem := List.find?_some h
+    have hmem2 := List.mem_of_find?_eq_some h
+    simp only [Bool.and_eq_true, Bool.not_eq_true'] at hmem
+    exact absurd (hfu sf hmem2) (by simp [hmem.2])
+
+/--
+Build a tableau at an explicitly given branch budget, certifying openness with the engine's
+real (blocking-aware) saturation test.
+
+Arm for arm this is `buildTableau`, with exactly two differences, both forced:
+
+1. `maxBranches` is threaded into `expandBranchWithFuel` instead of being left at the engine
+   default, because a budget that cannot be named cannot be quantified over.
+2. Both top-level saturation tests are `findUnexpandedUnblockedWith … (blockedTimes …
+   (armTracker …))` rather than `findUnexpanded …`, matching the repaired `resolveOpenArm` and
+   producing the `BudgetedTableau` certificate rather than the `ExpandedTableau` one.
+
+`buildTableau` itself is not touched, not wrapped, and not re-expressed in terms of this
+function. `buildTableauAt_allClosed_imp` records the relation between the two that is actually
+provable.
+-/
+def buildTableauAt (phi : Formula) (fuel : Nat) (fc : FrameClass) (maxBranches : Nat) :
+    Option BudgetedTableau :=
+  let initialBranch : Branch := [SignedFormula.neg phi Label.initial]
+  match expandBranchWithFuel initialBranch fuel TimeOrdering.empty fc
+      (maxBranches := maxBranches) with
+  | none => none  -- Out of fuel or out of budget
+  | some (.inl closedBr) => some (.allClosed [closedBr])
+  | some (.inr (openBr, ord, _)) =>
+      match h : findUnexpandedUnblockedWith openBr ord fc
+          (blockedTimes openBr ord fc (armTracker openBr)) with
+      | none => some (.hasOpen openBr ord fc (armTracker openBr) h)
+      | some _ =>
+          match saturateBlocked openBr fuel ord fc with
+          | some (.inl closedBr) => some (.allClosed [closedBr])
+          | some (.inr (satBr, satOrd)) =>
+              match h2 : findUnexpandedUnblockedWith satBr satOrd fc
+                  (blockedTimes satBr satOrd fc (armTracker satBr)) with
+              | none => some (.hasOpen satBr satOrd fc (armTracker satBr) h2)
+              | some _ => none  -- Still not saturated after post-blocking
+          | none => none  -- Provably dead: `saturateBlocked_ne_none`
+/--
+**The pinning lemma.** At the engine's own default budget, a closed verdict from the new entry
+point is a closed verdict from the frozen one. This is what keeps the existing verified corpus
+honest about the addition: nothing `buildTableauAt` calls valid at `50000` is anything
+`buildTableau` would have called otherwise.
+
+**The converse is false, and deliberately not asserted.** `buildTableau` can report `allClosed`
+where `buildTableauAt` reports `hasOpen`: precisely when the literal test finds outstanding
+work at the top-level open branch, the blocking-aware test does not, and the post-blocking pass
+would have closed the branch. That is the same disagreement the arm-settling repair addresses,
+and it is a genuine difference in verdict, not a proof gap — so it is recorded here as a
+statement about the two functions rather than papered over with an unproved `iff`.
+-/
+theorem buildTableauAt_allClosed_imp (phi : Formula) (fuel : Nat) (fc : FrameClass)
+    (cs : List ClosedBranch)
+    (h : buildTableauAt phi fuel fc 50000 = some (.allClosed cs)) :
+    buildTableau phi fuel fc = some (.allClosed cs) := by
+  unfold buildTableauAt at h
+  simp only [buildTableau]
+  simp only at h
+  split at h
+  · simp at h
+  · rename_i closedBr hexp
+    simpa using h
+  · rename_i openBr oOrd ap hexp
+    split at h
+    · simp at h
+    · rename_i sf hub
+      have hlit := findUnexpanded_isSome_of_unblocked_isSome openBr oOrd fc _ sf hub
+      split
+      · rename_i hfu
+        rw [hfu] at hlit
+        simp at hlit
+      · split at h
+        · rename_i closedBr hsb
+          simpa using h
+        · rename_i satBr satOrd hsb
+          split at h <;> simp at h
+        · simp at h
+
+/--
+**Top-level closure freedom**, the `resolveOpenArm_inr` analogue for `buildTableauAt`.
+
+The disjunction is not hedging: the first disjunct is *proved* and covers the branch reported
+open directly by expansion; the second disjunct names the one remaining route, through the
+post-blocking pass, and it is named rather than discharged because **it cannot be discharged**.
+`saturateBlocked` returning `.inr` does not imply the returned branch is closure-free: take a
+branch `b` with `findClosure b = none` whose single label-free expansion step reaches a branch
+`nb` that closes, and run `saturateBlocked b 1`. The recursive call is at fuel `0`, whose base
+case returns `(nb, ord)` unexamined. So `saturateBlocked_sound` is false as an unconditional
+statement, and remains deferred as a conditional one.
+
+`buildTableau` has the identical gap at the identical arm — it is inherited, not introduced
+here — and `resolveOpenArm` is the one caller that guards against it, with its own
+`findClosure satBr` check.
+-/
+theorem buildTableauAt_hasOpen_findClosure_none (phi : Formula) (fuel : Nat) (fc : FrameClass)
+    (maxBranches : Nat) (ob : Branch) (ord : TimeOrdering) (fc' : FrameClass)
+    (tr : EventualityTracker)
+    (hs : findUnexpandedUnblockedWith ob ord fc' (blockedTimes ob ord fc' tr) = none)
+    (h : buildTableauAt phi fuel fc maxBranches = some (.hasOpen ob ord fc' tr hs)) :
+    findClosure ob fc = none
+      ∨ ∃ preBranch preOrd,
+          saturateBlocked preBranch fuel preOrd fc = some (.inr (ob, ord)) := by
+  unfold buildTableauAt at h
+  simp only at h
+  split at h
+  · simp at h
+  · simp at h
+  · rename_i openBr oOrd ap hexp
+    split at h
+    · rename_i hub
+      simp only [Option.some.injEq] at h
+      injection h with h1 h2 _ _
+      subst h1
+      exact Or.inl (expandBranchWithFuel_sound fuel _ _ _ _ _ _ _ _ _ _ hexp)
+    · rename_i sf hub
+      split at h
+      · simp at h
+      · rename_i satBr satOrd hsb
+        split at h
+        · rename_i h2
+          simp only [Option.some.injEq] at h
+          injection h with h1 h2' _ _
+          subst h1
+          subst h2'
+          exact Or.inr ⟨openBr, oOrd, hsb⟩
+        · simp at h
+      · simp at h
+
+/-! ### Budget-entry-point probes
+
+The row that matters: at a budget the research measured `buildTableau` returning `none` on,
+`buildTableauAt` settles. `buildTableau` is re-evaluated alongside so the two verdicts sit in
+the same file and drift together if either changes.
+-/
+section BudgetedTableauProbes
+
+/-- info: false -/
+#guard_msgs in
+#eval (buildTableau probe_FGp 500).isSome
+
+/-- info: true -/
+#guard_msgs in
+#eval (buildTableauAt probe_FGp 500 .Base 50000).isSome
+
+/-- info: true -/
+#guard_msgs in
+#eval (buildTableauAt probe_FGp 500 .Base 1000000).isSome
+
+/-- info: some true -/
+#guard_msgs in
+#eval (buildTableauAt probe_FGp 500 .Base 50000).map BudgetedTableau.isInvalid
+
+/-- info: true -/
+#guard_msgs in
+#eval (buildTableauAt probe_nGFp 500 .Base 50000).isSome
+
+/-- info: true -/
+#guard_msgs in
+#eval (buildTableauAt probe_Upq 500 .Base 50000).isSome
+
+end BudgetedTableauProbes
+
+/-!
 ## Frame-Class Gating Tests
 
 These tests verify that the FrameClass parameter correctly gates axiom closure:

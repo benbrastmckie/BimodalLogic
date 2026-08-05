@@ -227,36 +227,47 @@ the swap to `buildTableau:955`/`:963` in this phase — those sites feed the dep
 
 ---
 
-### Phase 3: Budget-parameterised entry point and its certificate [NOT STARTED]
+### Phase 3: Budget-parameterised entry point and its certificate [COMPLETED]
 
 **Goal**: Add `buildTableauAt` alongside the frozen `buildTableau`, with a blocking-aware open
 certificate that is a *named addition* rather than a weakening of `ExpandedTableau.hasOpen`, plus
 the proved bridge relating the two.
 
 **Tasks**:
-- [ ] Add a certificate type in `Saturation.lean` carrying the blocking-aware saturation proof —
+- [x] Add a certificate type in `Saturation.lean` carrying the blocking-aware saturation proof —
       e.g. `BudgetedTableau` with an `allClosed` arm and a `hasOpen` arm whose proof field is
       `findUnexpandedUnblockedWith openBranch ord fc (blockedTimes openBranch ord fc tracker) = none`,
       with the tracker carried as a field so the certificate says which blocked set it is relative
       to. Document in its docstring exactly how it is weaker than `ExpandedTableau.hasOpen` and why
       the weaker notion is the honest one for a blocking engine.
-- [ ] Add `def buildTableauAt (phi : Formula) (fuel : Nat) (fc : FrameClass) (maxBranches : Nat) :
+- [x] Add `def buildTableauAt (phi : Formula) (fuel : Nat) (fc : FrameClass) (maxBranches : Nat) :
       Option BudgetedTableau`, mirroring `buildTableau` arm for arm but threading `maxBranches`
       into `expandBranchWithFuel` and using the blocking-aware test at both top-level decision
       points.
-- [ ] Prove the **upgrade bridge**: a `BudgetedTableau` `hasOpen` certificate plus the strong
+- [x] Prove the **upgrade bridge**: a `BudgetedTableau` `hasOpen` certificate plus the strong
       hypothesis `findUnexpanded openBranch ... = none` yields an `ExpandedTableau.hasOpen`. This
       is the soundness discharge — it shows nothing downstream is weakened, because a consumer that
       needs the strong certificate can still obtain it only under the strong condition.
-- [ ] Prove the **pinning lemma** relating the new entry point to the frozen one: at the engine
+- [x] Prove the **pinning lemma** relating the new entry point to the frozen one: at the engine
       default budget, `buildTableauAt phi fuel fc 50000` reports `allClosed` exactly when
       `buildTableau phi fuel fc` does. This is what keeps the existing verified corpus honest about
       the new definition. If a clean `iff` does not close, land the implication that matters
       (`buildTableauAt` closed implies `buildTableau` closed) and state the converse as an explicit
       open question in the docstring — do not assert an unproved `iff`.
-- [ ] Prove `buildTableauAt_hasOpen_findClosure_none`: whenever `buildTableauAt` reports open, the
+      *(The `iff` is FALSE, not merely unproved: `buildTableau` reports `allClosed` where
+      `buildTableauAt` reports `hasOpen` exactly when the literal test finds work, the
+      blocking-aware test does not, and post-blocking then closes the branch. Landed the
+      implication that matters as `buildTableauAt_allClosed_imp`, with the converse's failure
+      characterised in its docstring.)*
+- [x] Prove `buildTableauAt_hasOpen_findClosure_none`: whenever `buildTableauAt` reports open, the
       reported branch has no closure reason — the `resolveOpenArm_inr` analogue at the top level.
-- [ ] Add `#eval` probes showing `buildTableauAt` settling `F(G p)` at a quantified budget where the
+      *(Landed as a two-way disjunction. The first disjunct — the branch reported open directly
+      by expansion — is proved outright via `expandBranchWithFuel_sound`. The second names the
+      post-blocking route and is NOT dischargeable: `saturateBlocked` returning `.inr` does not
+      imply closure-freedom, because its `fuel = 0` base case returns the branch unexamined.
+      The concrete refuting shape is recorded in the theorem's docstring. `buildTableau` has the
+      identical latent gap at the identical arm; it is inherited, not introduced.)*
+- [x] Add `#eval` probes showing `buildTableauAt` settling `F(G p)` at a quantified budget where the
       research measured `buildTableau` returning `none`.
 
 **Timing**: 2 hours
