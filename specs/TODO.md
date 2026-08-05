@@ -145,9 +145,9 @@ DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on re
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
-- **Plan**: [428_engine_totality_at_a_quantified_branch_budget/plans/01_budget-totality-engine-repair.md]
 - **Summary**: [428_engine_totality_at_a_quantified_branch_budget/summaries/01_budget-totality-engine-repair-summary.md]
 - **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/02_splitordered-measure-blocker.md]
+- **Plan**: [428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md]
 
 **Description**: Engine totality at a quantified branch budget. Owns obstruction O1 of the Phase 7.3 deadlock recorded in specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md section "The four obstructions" (read it first; do not re-derive the refutation).
 
