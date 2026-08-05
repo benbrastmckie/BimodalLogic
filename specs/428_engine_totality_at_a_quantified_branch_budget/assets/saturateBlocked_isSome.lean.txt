@@ -1,0 +1,96 @@
+/-
+Scratch validation file for task 428 research. Not imported by anything.
+Validates: `saturateBlocked` is total (always returns `some`).
+-/
+import FormalSystem.Metalogic.Decidability.Saturation
+
+namespace FormalSystem.Metalogic.Decidability
+
+/-- Fold helper for the `.split` arm of `saturateBlocked`. -/
+private theorem split_fold_isSome (f : Nat) (ord : TimeOrdering) (fc : ProofSystem.FrameClass)
+    (ih : ∀ b' o', (saturateBlocked b' f o' fc).isSome = true) :
+    ∀ (bs : List Branch) (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering))),
+      acc.isSome = true →
+      (bs.foldl (fun acc newBranch =>
+        match acc with
+        | some (.inr openBr) => some (.inr openBr)
+        | _ =>
+          match saturateBlocked newBranch f ord fc with
+          | some (.inl _) => acc
+          | some (.inr openBr) => some (.inr openBr)
+          | none => none) acc).isSome = true := by
+  intro bs
+  induction bs with
+  | nil => intro acc h; exact h
+  | cons hd tl iht =>
+    intro acc h
+    apply iht
+    have hhd := ih hd ord
+    match acc, h with
+    | some (.inr _), _ => simp
+    | some (.inl _), _ =>
+      simp only
+      match hsb : saturateBlocked hd f ord fc, hhd with
+      | some (.inl _), _ => simp
+      | some (.inr _), _ => simp
+      | none, h' => rw [hsb] at hhd; simp at hhd
+
+/-- Fold helper for the `.splitOrdered` arm of `saturateBlocked`. -/
+private theorem splitOrdered_fold_isSome (f : Nat) (fc : ProofSystem.FrameClass)
+    (ih : ∀ b' o', (saturateBlocked b' f o' fc).isSome = true) :
+    ∀ (bs : List (Branch × TimeOrdering))
+      (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering))),
+      acc.isSome = true →
+      (bs.foldl (fun acc (pair : Branch × TimeOrdering) =>
+        match acc with
+        | some (.inr openBr) => some (.inr openBr)
+        | _ =>
+          match saturateBlocked pair.1 f pair.2 fc with
+          | some (.inl _) => acc
+          | some (.inr openBr) => some (.inr openBr)
+          | none => none) acc).isSome = true := by
+  intro bs
+  induction bs with
+  | nil => intro acc h; exact h
+  | cons hd tl iht =>
+    intro acc h
+    apply iht
+    have hhd := ih hd.1 hd.2
+    match acc, h with
+    | some (.inr _), _ => simp
+    | some (.inl _), _ =>
+      simp only
+      match hsb : saturateBlocked hd.1 f hd.2 fc, hhd with
+      | some (.inl _), _ => simp
+      | some (.inr _), _ => simp
+      | none, h' => rw [hsb] at hhd; simp at hhd
+
+/--
+**`saturateBlocked` is total.** Every arm either returns `some` outright or recurses at
+strictly smaller fuel; the `none` cases in the two split folds are unreachable because the
+recursive call is itself `some`.
+-/
+theorem saturateBlocked_isSome :
+    ∀ (fuel : Nat) (b : Branch) (ord : TimeOrdering) (fc : ProofSystem.FrameClass),
+      (saturateBlocked b fuel ord fc).isSome = true := by
+  intro fuel
+  induction fuel with
+  | zero => intro b ord fc; simp [saturateBlocked]
+  | succ f ih =>
+    intro b ord fc
+    rw [saturateBlocked]
+    split
+    · simp
+    · split
+      · simp
+      · split
+        · simp
+        · exact ih _ _ _
+      · split
+        · simp
+        · exact split_fold_isSome f ord fc (fun b' o' => ih b' o' fc) _ _ (by simp)
+      · split
+        · simp
+        · exact splitOrdered_fold_isSome f fc (fun b' o' => ih b' o' fc) _ _ (by simp)
+
+end FormalSystem.Metalogic.Decidability

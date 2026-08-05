@@ -799,7 +799,7 @@
     {
       "project_number": 428,
       "project_name": "engine_totality_at_a_quantified_branch_budget",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [],
       "parent_task": 165,
@@ -810,10 +810,17 @@
       ],
       "description": "Engine totality at a quantified branch budget. Owns obstruction O1 of the Phase 7.3 deadlock recorded in specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md section \"The four obstructions\" (read it first; do not re-derive the refutation).\n\nTHE REFUTED THEOREM, SETTLED: `buildTableau_isSome` in unconditional form is FALSE, not merely unproved, and is on a do-not-re-attempt register (165's plan 01_tableau-decidability-two-track.md:1405-1420, :1489-1493). The refutation is a property of the engine SIGNATURE, not a proof difficulty: `buildTableau` (Saturation.lean:928-951) calls `expandBranchWithFuel` at the default `maxBranches := 50000` (Saturation.lean:590), whose first line is `if branchesUsed >= maxBranches then none` (:594). A formula exploring more than 50000 branches returns `none` at ANY fuel whatsoever. Independently, `buildTableau`'s last arm returns `none` on a still-unsaturated branch (:950). Neither is fuel exhaustion, so no fuel figure rules them out. DO NOT attempt the unconditional form.\n\nWHAT LANDED INSTEAD, and why it is unusable as-is: Verified/Termination/Fuel.lean:1587-1598 carries two hypotheses -- `(hP : NoSplit P fc)` and `(hbud : branchesUsed + fuel <= maxBranches)`. `NoSplit` excludes impPos, orPos, untlPos, untlNeg, sncePos, snceNeg, orderTrichotomy and every frame-class-gated splitting rule, i.e. it holds only on non-branching runs. 165's plan:1467-1468 records \"Residual 2 (branching arms) -- isolated, not discharged.\"\n\nGOAL: add a `maxBranches`-parameterised entry point ALONGSIDE `buildTableau` -- an ADDITION, never an edit to the existing default, because `maxBranches = 50000` is a deliberate runtime guard -- and prove totality against a quantified budget. Target shape:\n\n  theorem buildTableau_isSome_of_budget (phi : Formula) (fc : FrameClass)\n      (maxBranches : Nat) (hmb : <bound in phi> <= maxBranches) :\n      (buildTableauAt phi (soundFuel' phi) fc maxBranches).isSome = true\n\nTHREE SUB-OBLIGATIONS:\n1. Discharge the branching-arm residual that `NoSplit` currently hypothesises (Fuel.lean:1587, Saturation.lean:661-664, :686-689).\n2. Supply the missing WORLD-COUNT dimension. 165's plan:1484-1488: \"T1 bounds formulas and T2 bounds times; neither bounds worlds ... as defined, `soundFuel' = 2*n*2^(2n)` has no world factor at all.\" A branch bound that ignores worlds cannot bound branches.\n3. Establish the `<bound in phi> <= maxBranches` side condition in a form callers can actually discharge.\n\nCOORDINATION: overlaps task 426's hypothesis (b) on the same file (Fuel.lean). Sequence with 426 or merge; do not both edit Fuel.lean concurrently. Task 412 consumes this theorem in place of the refuted `buildTableau_isSome`.\n\nDONE WHEN: the budget-parameterised totality theorem is landed sorry-free with no `NoSplit` hypothesis, lake build green, and the world dimension is either supplied or its absence is proved harmless.",
       "effort": null,
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/01_budget-totality-refuted-and-repair.md",
+          "type": "report",
+          "summary": "Budget totality refuted by machine-checked counterexample; validated repair identified"
+        }
+      ],
       "title": null,
       "created": "2026-07-29T23:39:38Z",
-      "last_updated": "2026-07-29T23:39:38Z"
+      "last_updated": "2026-08-05T19:23:21Z",
+      "session_id": "sess_1785952999_c3149a_428"
     },
     {
       "project_number": 429,

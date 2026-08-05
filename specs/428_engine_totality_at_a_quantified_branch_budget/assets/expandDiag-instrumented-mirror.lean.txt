@@ -1,0 +1,113 @@
+/-
+Scratch probe 2 for task 428 research. Not imported by anything.
+Instrumented mirror of `expandBranchWithFuel` that NAMES the `none` source.
+-/
+import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
+
+namespace FormalSystem.Metalogic.Decidability
+
+open FormalSystem.Syntax
+
+private def p : Formula := .atom (Atom.mkBase "p")
+private def q : Formula := .atom (Atom.mkBase "q")
+
+inductive Fail where
+  | budget    -- branchesUsed >= maxBranches
+  | outOfFuel -- fuel hit 0
+  | resolve   -- resolveOpenArm returned none (post-blocking left branch unsaturated)
+  deriving Repr, Inhabited
+
+instance : ToString Fail where
+  toString
+    | .budget => "BUDGET (branchesUsed >= maxBranches)"
+    | .outOfFuel => "FUEL (fuel = 0)"
+    | .resolve => "RESOLVE (resolveOpenArm = none: still unsaturated after post-blocking)"
+
+/-- Structural mirror of `expandBranchWithFuel`, reporting *why* it would return `none`. -/
+def expandDiag (b : Branch) (fuel : Nat) (timeOrd : TimeOrdering)
+    (fc : ProofSystem.FrameClass) (tracker : EventualityTracker) (applied : AppliedSet)
+    (maxBranches branchesUsed : Nat)
+    : Except Fail (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
+  if branchesUsed >= maxBranches then .error .budget
+  else
+  match fuel with
+  | 0 => .error .outOfFuel
+  | fuel + 1 =>
+      match findClosure b fc with
+      | some reason => .ok (.inl ⟨b, reason⟩)
+      | none =>
+          let tracker := registerEventualities b tracker
+          let tracker := fulfillEventualities b tracker
+          match expandOnceUnblockedWithApplied b timeOrd fc tracker applied with
+          | (.saturated, _, _) => .ok (.inr (b, timeOrd, applied))
+          | (.extended newBranch, newOrd, newAppliedFormulas) =>
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              expandDiag newBranch fuel newOrd fc tracker applied' maxBranches (branchesUsed + 1)
+          | (.split branches, newOrd, newAppliedFormulas) =>
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
+              let branchesUsed' := branchesUsed + branches.length
+              let tryBranch := fun acc (pair : Branch × Nat) =>
+                match acc with
+                | .ok (.inr openBr) => .ok (.inr openBr)
+                | _ =>
+                    match expandDiag pair.1 (min pair.2 fuel)
+                      newOrd fc tracker applied' maxBranches branchesUsed' with
+                    | .error e => .error e
+                    | .ok (.inl _) => acc
+                    | .ok (.inr (ob, oOrd, oAp)) =>
+                        match resolveOpenArm ob oOrd oAp fuel fc with
+                        | none => .error .resolve
+                        | some (.inl _) => acc
+                        | some (.inr openBr) => .ok (.inr openBr)
+              (branches.zip fuelAllocs).foldl tryBranch (.ok (.inl ⟨b, .botPos Label.initial⟩))
+          | (.splitOrdered branches, _, newAppliedFormulas) =>
+              let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
+              let plainBranches := branches.map Prod.fst
+              let fuelAllocs := allocateFuelProportionally (fuel + 1) plainBranches
+              let branchesUsed' := branchesUsed + branches.length
+              let tryBranch := fun acc (pair : (Branch × TimeOrdering) × Nat) =>
+                match acc with
+                | .ok (.inr openBr) => .ok (.inr openBr)
+                | _ =>
+                    match expandDiag pair.1.1 (min pair.2 fuel)
+                      pair.1.2 fc tracker applied' maxBranches branchesUsed' with
+                    | .error e => .error e
+                    | .ok (.inl _) => acc
+                    | .ok (.inr (ob, oOrd, oAp)) =>
+                        match resolveOpenArm ob oOrd oAp fuel fc with
+                        | none => .error .resolve
+                        | some (.inl _) => acc
+                        | some (.inr openBr) => .ok (.inr openBr)
+              (branches.zip fuelAllocs).foldl tryBranch (.ok (.inl ⟨b, .botPos Label.initial⟩))
+  termination_by fuel
+  decreasing_by all_goals simp_wf
+
+def diag (φ : Formula) (fuel mb : Nat) (fc : ProofSystem.FrameClass) : String :=
+  match expandDiag [SignedFormula.neg φ Label.initial] fuel TimeOrdering.empty fc
+      EventualityTracker.empty {} mb 0 with
+  | .ok _ => "ok"
+  | .error e => toString e
+
+private def hard : List (String × Formula) :=
+  [ ("F(G p)",     Formula.someFuture (Formula.allFuture p))
+  , ("F(F(G p))",  Formula.someFuture (Formula.someFuture (Formula.allFuture p)))
+  , ("~G(F p)",    Formula.neg (Formula.allFuture (Formula.someFuture p)))
+  , ("F(G p) & q", Formula.and (Formula.someFuture (Formula.allFuture p)) q)
+  , ("U(p,q)",     Formula.untl p q)
+  ]
+
+#eval do
+  for nf in hard do
+    IO.println s!"{nf.1}: [f=500,mb=10^9]={diag nf.2 500 1000000000 .Base}  [f=8000,mb=10^9]={diag nf.2 8000 1000000000 .Base}  [f=500,mb=50000]={diag nf.2 500 50000 .Base}"
+
+private def sizes : List (String × Formula) :=
+  [ ("p -> p", Formula.imp p p)
+  , ("U(p,q)", Formula.untl p q)
+  , ("F(G p)", Formula.someFuture (Formula.allFuture p)) ]
+
+#eval do
+  for nf in sizes do
+    IO.println s!"{nf.1}: soundFuel'={soundFuel' nf.2}  worldFuel'(s=1)={worldFuel' nf.2 1}"
+
+end FormalSystem.Metalogic.Decidability
