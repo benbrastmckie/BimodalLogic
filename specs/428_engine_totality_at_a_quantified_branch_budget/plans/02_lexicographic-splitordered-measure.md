@@ -601,7 +601,77 @@ divergence — do not write down the plan's figure unchecked.
 
 ---
 
-### Phase 11: `NoSplit`-free totality of `expandBranchWithFuel` [NOT STARTED]
+### Phase 11: `NoSplit`-free totality of `expandBranchWithFuel` [BLOCKED]
+
+**BLOCKER** (Phase 11):
+
+- **What failed**: `expandBranchWithFuel_isSome_of_budget` cannot be closed by induction on fuel
+  at the `.splitOrdered` arm. Nothing was landed for this phase; no `sorry`, no narrowed
+  statement, no `NoSplit` reintroduction.
+- **What was tried**: the landed `expandBranchWithFuel_isSome_of_noSplit` induction was
+  reproduced with `hP : NoSplit P fc` deleted and run against the real proof state. The
+  `saturated` and `extended` arms carry over unchanged. The two split arms were then reached
+  with these exact goals (verbatim shape, both arms):
+
+  ```
+  ⊢ (List.foldl (fun acc pair => match acc with
+        | some (Sum.inr openBr) => some (Sum.inr openBr)
+        | x => match expandBranchWithFuel pair.1 (min pair.2 f) newOrd fc
+                      (fulfillEventualities b (registerEventualities b tr)) applied' mb
+                      (bu + branches.length) with
+               | none => none
+               | some (Sum.inl val) => acc
+               | some (Sum.inr (ob, oOrd, oAp)) =>
+                 match resolveOpenArm ob oOrd oAp f fc with
+                 | none => none | some (Sum.inl val) => acc
+                 | some (Sum.inr openBr) => some (Sum.inr openBr))
+      (some (Sum.inl { branch := b, reason := ClosureReason.botPos Label.initial }))
+      (branches.zip (allocateFuelProportionally (f + 1) branches))).isSome = true
+  ```
+  with context `hcard : U.card < (List.toFinset b).card + (f + 1)` and
+  `hbud : bu + (f + 1) ≤ mb` (the `.splitOrdered` twin is identical modulo `pair.1.1` /
+  `pair.1.2` and `List.map Prod.fst branches`).
+
+  Phase 9's `expand_split_fold_isSome` / `expand_splitOrdered_fold_isSome` match these fold
+  shapes exactly and reduce the arms to two per-arm obligations. The budget obligation
+  discharges: `splitBudget_preserved` plus `branches.length ≤ β` gives
+  `bu + branches.length + min alloc f ≤ mb`. The **fuel-sufficiency** obligation does not.
+  Re-establishing it needs a potential preserved at all four arms; the natural candidate,
+  built from exactly the assets Phases 7-10 supply, is
+
+  `Ψ(b, ord) = (|U| − |b|) * (orderedRunBound Tmax + 1) + splitOrderedRank Tmax b ord`.
+
+  It is preserved at three arms: `.extended` and `.split` drop the first term by a full
+  `orderedRunBound + 1` (`expandOnceUnblocked_card_lt`, `expandOnceUnblocked_split_card_lt`),
+  which outweighs any rank rise (`splitOrderedRank_le`); `.splitOrdered` arms 1-2 leave `|b|`
+  literally unchanged and strictly drop the rank
+  (`splitOrderedRank_lt_of_timeLinearity`).
+- **Why it is stuck**: `Ψ` **rises at `.splitOrdered` arm 3**. `identifyTime` can shrink the
+  branch, so `(|U| − |b|)` grows by `s * (orderedRunBound + 1)` for the merge count `s`, while
+  the rank is only guaranteed to drop by `1`. Re-weighting is circular, not merely unlucky:
+  making the `knownTimes` weight dominate `(orderedRunBound + 1) * |U|` fixes arm 3, but then an
+  extending or splitting step that mints one fresh time raises `knownTimes` by `1` at a cost
+  exceeding the `(orderedRunBound + 1)` its branch growth pays. Each ordering of the weights is
+  broken by the other constructor.
+
+  **This is a correction to the plan's own reading of G4/R1.** The plan carried `hT` on the
+  understanding that it breaks this circularity, and located the residual risk at Phase 12 (can
+  `hT` be *discharged*?). The measured finding is that `hT` does not break the circularity even
+  when *granted*: it caps the ordering dimension's value, but does not stop `identifyTime` from
+  returning universe budget to the branch dimension. The obstruction therefore bites at Phase
+  11, before Phase 12's discharge question is ever reached.
+- **What is needed**: either (a) a lower bound on `(b.identifyTime t₂ t₁).toFinset.card` in terms
+  of `b.toFinset.card` — i.e. a bound on how much an identification can merge; or (b) an
+  independent bound on the number of fresh-time mints along a path, not stated in terms of
+  branch growth. Neither is available in `Fuel.lean` today and neither is supplied by any landed
+  lemma. Both are new research, not new tactics.
+- **Prohibited workarounds**: no `sorry`; no `def X := True` or other vacuous placeholder; no
+  `NoSplit` reintroduction under any name; no narrowing to an unbranching special case; no
+  admitted `hT` or `WorldWitness`.
+- **In-source record**: the obstruction is written next to `splitAwareFuel` in `Fuel.lean` under
+  "MEASURED OBSTRUCTION", so a future reader meets it where they would otherwise re-attempt it.
+  Phases 12 and 13 depend on Phase 11 and are consequently unreachable; they remain
+  `[NOT STARTED]` rather than being attempted out of order.
 
 **Goal**: Land the budget-parameterised totality of `expandBranchWithFuel` with the `NoSplit`
 hypothesis **deleted**, using the split-aware figure. (Research 02 items 14-15.)

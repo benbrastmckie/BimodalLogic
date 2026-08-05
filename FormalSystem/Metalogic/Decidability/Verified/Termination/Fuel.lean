@@ -2485,6 +2485,48 @@ than silently invalidating every figure stated at the literal.
 def splitAwareFuel (Ucard Tmax D β : Nat) : Nat :=
   splitPathBound Ucard Tmax * (D * β + 1) ^ splitPathBound Ucard Tmax
 
+/-! #### MEASURED OBSTRUCTION: this figure is *not* yet known to suffice
+
+Read this before attempting `NoSplit`-free totality of `expandBranchWithFuel` at this figure.
+The attempt was made against the real proof state and it does **not** close. The obstruction is
+sharp, and it is not a missing tactic.
+
+The unsplit induction's invariant is `U.card < b.toFinset.card + fuel`. A `.splitOrdered` arm
+recurses at `min alloc fuel`, where `allocateFuelProportionally` hands out only a *proportional*
+share, so any workable invariant has to make the two split measures pay for that division. The
+natural candidate is the combined potential
+
+  `Ψ(b, ord) = (|U| − |b|) * (orderedRunBound Tmax + 1) + splitOrderedRank Tmax b ord`
+
+and it is preserved at three of the four arms:
+
+* `.extended` and `.split` — `|b|` strictly grows (`expandOnceUnblocked_card_lt`,
+  `expandOnceUnblocked_split_card_lt`), so the first term drops by a full `orderedRunBound + 1`,
+  which outweighs any rise in the rank (`splitOrderedRank_le` bounds that rise by
+  `orderedRunBound`);
+* `.splitOrdered` arms 1-2 — `|b|` is *literally* unchanged and the rank strictly drops
+  (`splitOrderedRank_lt_of_timeLinearity`).
+
+It **fails at `.splitOrdered` arm 3**. There `identifyTime` can shrink the branch, so the first
+term *grows* by `s * (orderedRunBound + 1)` for the merge count `s`, while the rank is only
+guaranteed to drop by `1`. `Ψ` therefore rises.
+
+Re-weighting does not rescue it, and the failure is circular rather than accidental. Making the
+`knownTimes` weight dominate `(orderedRunBound + 1) * |U|` fixes arm 3 — but then an extending or
+splitting step that mints one fresh time raises `knownTimes` by `1` and so costs more than the
+`(orderedRunBound + 1)` its branch growth pays. Each ordering of the weights is broken by the
+other constructor. This is the same circularity recorded above under "why a naive combination
+fails"; what is new here is the finding that **`hT` does not break it after all**. `hT` caps the
+ordering dimension's *value*; it does not stop `identifyTime` from *returning universe budget* to
+the branch dimension, which is what arm 3 does.
+
+What would unblock it is a bound on the branch shrinkage at `identifyTime` — or, independently, a
+bound on the number of fresh-time mints along a path that is not itself stated in terms of branch
+growth. Neither is available in this file today, and neither is supplied by any landed lemma.
+`splitAwareFuel`, `splitPathBound` and `orderedRunBound` are therefore **definitions whose
+adequacy is open**: they are correct as arithmetic and they are exactly the figures the two
+measures suggest, but no theorem here says the engine is total at them. -/
+
 /-- The figure dominates the path length it is built from. -/
 theorem splitPathBound_le_splitAwareFuel (Ucard Tmax D β : Nat) :
     splitPathBound Ucard Tmax ≤ splitAwareFuel Ucard Tmax D β := by
