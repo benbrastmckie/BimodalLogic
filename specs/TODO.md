@@ -11,27 +11,30 @@ next_project_number: 431
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,410,413,415,419,421,423,424,426,428,429 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 177,178,219,282,296,411,420,422,425,430 | 193,231,298,410,415,421,423,428,429 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,412,414 | 411,420,422,428 | paper-refactor, strong_completeness |
-| 4 | 95,362,417 | 169,412,414 | completeness, paper-refactor, strong_completeness |
-| 5 | 427 | 417,419 | paper-refactor |
+| 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,428 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 177,178,219,282,296,420,422,425,429 | 193,231,298,415,421,423,428 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,410,414 | 420,422,429 | paper-refactor, strong_completeness |
+| 4 | 362,411,417 | 169,410,414 | paper-refactor, strong_completeness |
+| 5 | 427,430 | 411,417,419 | decidability, paper-refactor |
+| 6 | 412 | 430 | -- |
+| 7 | 95,426 | 412 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
-426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
+426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
 
 ### Decidability
 
 428 [NOT STARTED] — Engine totality at a quantified branch budget. Owns obstruction O
-  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-  └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
-429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
-  └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o (see above)
+  └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
+    └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
+      └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+        └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
+          └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 
 ### Formula Refactor
 
@@ -82,17 +85,13 @@ next_project_number: 431
 
 ### Uncategorized
 
-410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
-  └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-    └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t (see above)
-
 ## Tasks
 
 ### 430. Semantic lift and track a assembly valid iff allclosed
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 428, Task 429
+- **Dependencies**: Task 428, Task 429, Task 411
 
 **Description**: The semantic lift and the Track A assembly. Owns obstruction O4 of the Phase 7.3 deadlock, then delivers what Phase 7.3 of task 165 was for. Grounding: specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md.
 
@@ -119,7 +118,7 @@ DONE WHEN: `valid_iff_allClosed` and the four `Decidable` validity instances are
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 428
 
 **Description**: Repair the truth-lemma side conditions. Owns obstructions O2 and O3 of the Phase 7.3 deadlock recorded in specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md. THIS IS THE TASK WITH GENUINE OPEN MATHEMATICS IN IT and should be budgeted accordingly.
 
@@ -196,7 +195,7 @@ NON-GOALS: no edits under Philosophy/Papers/ -- the paper is READ-ONLY ground tr
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 165
+- **Dependencies**: Task 165, Task 412
 - **Research**: [418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/artifacts/after-verdicts.md]
 
 **Description**: Settle whether the tableau engine can positively refute (G p) -> square (G p), or whether that branch provably never saturates. Context: the cross-world temporal-copy unsoundness in boxNeg/diamondPos is fixed and the engine is sound, but the fix moved this formula from a WRONG answer to NO answer rather than to the intended positive refutation. Measured post-fix: decide returns .fuelExhausted (not .invalid), getCountermodel?.isSome = false, and buildTableau returns none at fuel 30, 60, 400 and 1000 -- so the fuel ceiling is not bracketed from above and there is no evidence a larger budget helps. Pre-fix the same formula returned .extractionFailed, which under this codebase R7 semantics asserts VALIDITY of an invalid formula; the current .fuelExhausted is the only constructor isUndecided recognises, so the present state is honest-but-incomplete rather than wrong. Two hypotheses to discriminate: (a) budget -- the branch does saturate but needs more fuel, in which case find and record the ceiling; (b) non-termination -- the branch never saturates, in which case this is a termination question for FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean, not a budget one, and the honest deliverable is a proof or argument that no finite fuel suffices. Discriminating between (a) and (b) is the primary deliverable; producing the countermodel is the secondary one and only applies under (a). The corpus already pins this outcome directly: CrossWorldPropagationProbe row F asserts the decide constructor and builds green at (false, false, true, false, true) -- update that row if the verdict moves. Do NOT reintroduce any temporal-copy propagation block into boxNeg/diamondPos to make the branch close; that is the exact unsoundness that was removed, and reverting it would restore a false claim of validity. Note the related but SEPARATE inheritance also recorded for the parent task: the decidable-branch-gate family (boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk) now computes false on every multi-world branch; that is the truth-lemma side-condition problem and is not this task.
@@ -391,7 +390,7 @@ FRAME-PRESENTATION COORDINATION (2026-07-28, PossibleWorlds task 51): the paper'
 - **Effort**: 10-15 hours
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Dependencies**: Task 165, Task 410, Task 411, Task 428
+- **Dependencies**: Task 165, Task 410, Task 411, Task 428, Task 430
 
 **Description**: Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi; discharge the pre-existing sorry countermodel_discrete at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242; and supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense). Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.
 RE-SCOPING ADDENDUM (2026-07-29, supersedes the buildTableau_isSome reference above): the scope text above depends on "Track A's buildTableau_isSome", which task 165 proved FALSE and placed on a do-not-re-attempt register (165's plan 01_tableau-decidability-two-track.md:1405-1420, :1489-1493). The refutation is a property of the engine signature, not a proof difficulty: buildTableau returns none whenever a formula explores more than maxBranches := 50000, at ANY fuel. Consequently this task's acceptance criterion "zero sorries repo-wide outside Boneyard" was UNREACHABLE AS SCOPED, independently of task 165's own status.
@@ -416,7 +415,7 @@ ALSO NOTE: this task inherits obstructions O2 and O3 (the boxAnchoredCheck and t
 - **Effort**: 12-18 hours
 - **Status**: [PLANNED]
 - **Task Type**: lean4
-- **Dependencies**: Task 165
+- **Dependencies**: Task 165, Task 429
 - **Research**: [410_internalize_tableau_branches_and_prove_routine_rule_admissibility/reports/01_internalize-routine-admissibility.md]
 - **Plan**: [410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md]
 

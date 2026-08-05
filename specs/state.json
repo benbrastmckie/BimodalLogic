@@ -612,7 +612,8 @@
       "effort": "12-18 hours",
       "parent_task": 165,
       "dependencies": [
-        165
+        165,
+        429
       ],
       "created": "2026-07-28T00:21:55Z",
       "last_updated": "2026-07-30T01:31:18Z",
@@ -658,7 +659,8 @@
         165,
         410,
         411,
-        428
+        428,
+        430
       ],
       "created": "2026-07-28T00:21:55Z",
       "last_updated": "2026-07-28T00:21:55Z",
@@ -750,7 +752,8 @@
       "parent_task": 165,
       "topic": "completeness",
       "dependencies": [
-        165
+        165,
+        412
       ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean",
@@ -808,7 +811,9 @@
       "project_name": "repair_truth_lemma_side_conditions_boxanchored_and_temporalwitness",
       "status": "not_started",
       "task_type": "lean4",
-      "dependencies": [],
+      "dependencies": [
+        428
+      ],
       "parent_task": 165,
       "topic": "decidability",
       "file_scope": [
@@ -830,7 +835,8 @@
       "task_type": "lean4",
       "dependencies": [
         428,
-        429
+        429,
+        411
       ],
       "parent_task": 165,
       "topic": "decidability",
