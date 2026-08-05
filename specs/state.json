@@ -812,19 +812,19 @@
       "effort": null,
       "artifacts": [
         {
-          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/summaries/01_budget-totality-engine-repair-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: phases 1-3 complete, phase 4 blocked by a refuted plan lemma, phases 5-8 not started."
-        },
-        {
-          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/02_splitordered-measure-blocker.md",
-          "type": "report",
-          "summary": "Machine-checked evaluation of the .splitOrdered progress measure; 15-item Phase 4/4b/6 re-plan; two flagged residual gaps."
-        },
-        {
           "path": "specs/428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md",
           "type": "plan",
           "summary": "Thirteen-phase revised plan: phases 1-4 closed as landed; 5-7 lexicographic splitOrderedMeasure; 8 strict .split growth; 9 fold helpers; 10-11 carried hT bound and NoSplit-free totality; 12 world dimension plus hT discharge (main risk); 13 terminus."
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/summaries/02_lexicographic-splitordered-measure-summary.md",
+          "type": "summary",
+          "summary": "Phases 5-10 landed; Phase 11 blocked by a measured potential-rise obstruction at the splitOrdered identification arm."
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/03_phase11-potential-obstruction.md",
+          "type": "report",
+          "summary": "Route (a) dead by definition; route (b) viable with identifyTime_no_collapse machine-checked, but requires restating the theorem with an explicit mint-budget parameter — a second retarget decision."
         }
       ],
       "title": null,
