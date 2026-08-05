@@ -39,6 +39,16 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   `propext`, `Classical.choice`, `Quot.sound`)
 - **Completeness (discrete)** (`completeness_discrete`): SORRY-FREE (sorryAx-free; axioms:
   exactly `propext`, `Classical.choice`, `Quot.sound`)
+- **Completeness (Dedekind)** (`completeness_dedekind`): SORRY-FREE (sorryAx-free; axioms:
+  exactly `propext`, `Classical.choice`, `Quot.sound`). Weak completeness for
+  `FrameClass.Dedekind` against `ValidDedekindDense`, on the real line. It is a corollary of
+  the consequence form below, not an independent construction.
+- **Consequence completeness (Dedekind)** (`consequence_completeness_dedekind`): SORRY-FREE
+  (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). Finite-context
+  consequence completeness. This is **not** strong completeness: `Context` is `List Formula`,
+  so it is inter-derivable with the weak form through the deduction theorem, and the
+  infinitary statement is refuted for this class by non-compactness — see the module docstring
+  of `StrongCompleteness.lean`.
 - **Decidability** (`decide`): SORRY-FREE
 
 ## Completeness Architecture
@@ -51,18 +61,33 @@ The completeness proof uses a three-way case split based on MCS membership:
    (WeakCanonical/Transfer.lean)
 3. **Mixed case**: Eliminated by `mcs_mixed_case_absurd`
 
+The `FrameClass.Dedekind` route has no case split. `Dense <= Dedekind`, so
+`Axiom.dense_indicator` is admissible in a Dedekind derivation and `dedekind_box_dense_mem`
+(`BXCanonical/CompletenessDedekind.lean`) puts `Box(F'T)` in every Dedekind-MCS
+unconditionally: only the dense branch exists. Its countermodel is on the **reals**
+(`countermodel_dedekind_dense`), obtained by pushing the rational chronicle through Doets'
+theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading the resulting
+`R`-flowed monadic structure back as a `TaskFrame R`.
+
 ### Key Components
 
 - **Algebraic/ParametricTruthLemma**: D-parametric truth lemma (core of countermodel)
 - **BXCanonical/Chronicle/**: Burgess 1982 chronicle construction for dense case
 - **WeakCanonical/**: Reynolds/Doets pipeline for discrete case
+- **WeakCanonical/DenseModelSurgery/**, **WeakCanonical/RealModel/**: Reynolds Sections 6-8
+  (Theorems 4, 5 and Doets' Theorem 6), the Dedekind route's model surgery and real-flow layer
+- **BXCanonical/CompletenessDedekind.lean**: Reynolds Section 9 Theorem 7 — the real-line
+  countermodel and the single-formula completeness engine
+- **StrongCompleteness.lean**: the Dedekind terminus (`consequence_completeness_dedekind`,
+  `completeness_dedekind`), plus the per-class strong-completeness programme and the
+  non-compactness obstructions that bound it
 - **Bundle/**: BFMCS infrastructure (shared by all paths)
 
 ## Axiom Dependencies
 
 Soundness, decidability, and the completeness theorems (`completeness_dense`,
-`completeness_discrete`) all use standard Lean axioms only: `propext`, `Classical.choice`,
-`Quot.sound`. The former `Lean.ofReduceBool`/`Lean.trustCompiler` dependency was eliminated
+`completeness_discrete`, `completeness_dedekind`, `consequence_completeness_dedekind`) all use
+standard Lean axioms only: `propext`, `Classical.choice`, `Quot.sound`. The former `Lean.ofReduceBool`/`Lean.trustCompiler` dependency was eliminated
 by swapping the Syntax-layer `native_decide` sites to `rfl`/`decide` (see the Axiom Audit
 in `BXCanonical/Completeness.lean`). No `sorryAx` on any of these paths. The general
 Base-frame `completeness` still carries `sorryAx` via the deprecated
