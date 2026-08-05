@@ -799,7 +799,7 @@
     {
       "project_number": 428,
       "project_name": "engine_totality_at_a_quantified_branch_budget",
-      "status": "blocked",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [],
       "parent_task": 165,
@@ -825,13 +825,19 @@
           "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/03_phase11-potential-obstruction.md",
           "type": "report",
           "summary": "Route (a) dead by definition; route (b) viable with identifyTime_no_collapse machine-checked, but requires restating the theorem with an explicit mint-budget parameter — a second retarget decision."
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/04_witness-preservation-machine-checked.md",
+          "type": "report",
+          "summary": "Research gate discharged: both report-03 claims machine-checked (27 lemmas, 0 sorries). Witness preservation holds for all 8 fresh-label rules conditional on IrreflOrd; unconditional form refuted by counterexample. Non-deletion verified engine-level. Route (b) survives with one new irreflexivity obligation, densityRule flagged."
         }
       ],
       "title": null,
       "created": "2026-07-29T23:39:38Z",
-      "last_updated": "2026-08-05T21:37:18Z",
-      "session_id": "sess_1785958345_b49dea",
-      "blockers": "Phase 11 of plan 02: the per-step potential cannot close at the .splitOrdered identification arm (reports/03 section 4 -- circular, not unlucky; hT does not help even when granted). User-approved route (b) requires an explicit mint-budget parameter. RESEARCH GATE: machine-check witness preservation across arm 3 for the six temporal fresh-label rules, and 'formulas are never deleted', BEFORE planning. Resume: /research 428 then /orchestrate 428."
+      "last_updated": "2026-08-05T22:51:07Z",
+      "session_id": "sess_1785968750_5178fd",
+      "blockers": "RESEARCH GATE DISCHARGED (reports/04_witness-preservation-machine-checked.md). Both uncertain claims of report 03 machine-checked in Lean, 0 sorries, axioms [propext, Classical.choice, Quot.sound]: (i) witness preservation across .splitOrdered arm 3 VERIFIED for all 8 fresh-label rules, but CONDITIONAL on constraint-list irreflexivity (IrreflOrd) -- the unconditional form is FALSE by machine-checked counterexample (identifyTime drops pre-existing self-loops, so a witness reachable only around one is destroyed); (ii) formulas-are-never-deleted VERIFIED at engine level for all four ExpansionResult shapes, via the new bridge expandOnceUnblocked_splitOrdered_shape (timeLinearity is the sole producer of .branchingOrdered). Route (b) SURVIVES; this is NOT a third retarget decision. NEW OBLIGATION for the plan: engine-level IrreflOrd must be its own phase ordered BEFORE the witness-preservation phases; 2 of 3 preservation cases already machine-checked (identifyTime unconditionally, addFuture at arms 1-2 via the trigger), the third (nine fresh-time mint sites) reduces to landed le_maxTime, with densityRule's second edge (addFuture freshTime t') flagged as a risk needing an every-ordering-time-is-a-branch-time invariant that .branching's shared newOrd gives a visible way to break. Next: /plan 428.",
+      "researched": "2026-08-05T22:51:07Z"
     },
     {
       "project_number": 429,

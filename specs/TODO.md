@@ -31,7 +31,7 @@ next_project_number: 431
 
 ### Decidability
 
-428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
+428 [RESEARCHED] — Engine totality at a quantified branch budget. Owns obstruction O
   └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
     └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
       └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
@@ -141,13 +141,15 @@ DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on re
 ---
 
 ### 428. Engine totality at a quantified branch budget
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Plan**: [428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md]
 - **Summary**: [428_engine_totality_at_a_quantified_branch_budget/summaries/02_lexicographic-splitordered-measure-summary.md]
-- **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/03_phase11-potential-obstruction.md]
+- **Research**:
+  - [428_engine_totality_at_a_quantified_branch_budget/reports/03_phase11-potential-obstruction.md]
+  - [428_engine_totality_at_a_quantified_branch_budget/reports/04_witness-preservation-machine-checked.md]
 
 **Description**: Engine totality at a quantified branch budget. Owns obstruction O1 of the Phase 7.3 deadlock recorded in specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md section "The four obstructions" (read it first; do not re-derive the refutation).
 
