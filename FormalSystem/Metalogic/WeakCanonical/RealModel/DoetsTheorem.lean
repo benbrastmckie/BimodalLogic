@@ -325,27 +325,44 @@ Reynolds' hypotheses D1 and D2 are quantified over *"any contemporaneous equival
 
 ## Which spelling of *"contemporaneous equivalence relation"*, and why it changed
 
-The antecedent is `IsContempEquivDenseCD ε` (`Defs.lean`), the **countable-dense** bundle, not
-the unrestricted `IsContempEquivDense ε` an earlier version of this file used. The reason is
-forced, not stylistic:
+The antecedent is `IsContempEquivDenseOn ε (CountableDense sig)` (`Defs.lean`) — §6's
+class-parameterized bundle read at the **countable dense** class, not the unrestricted
+`IsContempEquivDense ε` an earlier version of this file used and not the intermediate
+`IsContempEquivDenseCD ε` this file used between them. The reason is forced, not stylistic:
 
 Theorem 6 runs D1 and D2 at `ε := epsDense sig k`, Reynolds' own `ε(x,y)` of §8 Lemma 12. That
-`ε` satisfies the unrestricted clause (iii) but satisfies clauses (i) and (ii) **only** at a
+`ε` satisfies the unrestricted clause (iii) but satisfies transitivity and convexity **only** at a
 countable dense flow — `IsContempEquivDense (epsDense sig k)` is false, with the counterexample
 in `EpsilonDense`'s module header. So the antecedent had to weaken to something `epsDense`
 actually meets, or Theorem 6 could never apply its own hypotheses. `doetsD1_epsDense` /
 `doetsD2_epsDense` below are that application, and they are the ε-adapter Phase 25's deviation
-record asked for.
+record asked for; `epsDense_isContempEquivDenseOn_countableDense` (`EpsilonDense.lean`) is the
+witness they consume.
 
-**What this costs, stated plainly.** Weakening an antecedent makes the hypothesis *harder* to
-discharge. `no_gaps_dense_prior` / `no_gaps_dense_prior_left` (`NoGaps.lean:901`) and
-`dense_singletons_of_sep` (`Singletons.lean:565`) each take the **unrestricted**
-`hε : IsContempEquivDense ε`, and `IsContempEquivDense.toCD` runs the wrong way to help — from
-`IsContempEquivDenseCD ε` there is no route to `IsContempEquivDense ε`. So whoever discharges
-D1/D2 must first make §6 run on the countable-dense bundle.
+**Why `IsContempEquivDenseOn ε (CountableDense sig)` and not `IsContempEquivDenseCD ε`, and in
+which direction that moves the theorem.** The three readings are ordered
+`IsContempEquivDense → IsContempEquivDenseOn _ (CountableDense _) → IsContempEquivDenseCD`
+(`isContempEquivDenseCD_of_countableDense`, `Defs.lean`), strongest requirement on `ε` first; the
+last arrow is not reversible without unrestricted reflexivity and symmetry. D1 and D2 quantify
+**over** `ε`, so a *stronger* antecedent admits *fewer* `ε` and makes D1/D2 *weaker* — hence
+`doets_theorem_dense` *stronger*. Moving from `IsContempEquivDenseCD` to
+`IsContempEquivDenseOn _ (CountableDense _)` therefore strengthens the theorem, and it stays
+strictly stronger than Reynolds' own statement, whose D1/D2 quantify over the unrestricted
+reading. `doetsD1_of_cd` / `doetsD2_of_cd` below check the strengthening rather than assert it:
+anything that discharged the previous reading discharges this one.
 
-**That is not a formality, and the obstruction is exactly one site.** Restricting
-`IsContempEquivDense`'s clauses in place and propagating the instances through §6 leaves one
+**What the antecedent costs, stated plainly.** Weakening an antecedent makes the hypothesis
+*harder* to discharge. `no_gaps_dense_prior` / `no_gaps_dense_prior_left` (`NoGaps.lean`) and
+`dense_singletons_of_sep` (`Singletons.lean`) are what must supply it, and at the time this note
+was first written they took the **unrestricted** `hε : IsContempEquivDense ε`, with
+`IsContempEquivDense.toCD` running the wrong way to help. **That gap is now closed**: §6 is
+stated against an arbitrary structure class `C` (`IsContempEquivDenseOn ε C`), so those three
+theorems are available at `C := CountableDense sig` directly. The paragraphs below record the one
+obstruction that closing it had to clear, because the record of that obstruction was wrong twice
+and the corrections are worth keeping.
+
+**That was not a formality, and the obstruction was exactly one site.** Restricting
+`IsContempEquivDense`'s clauses and propagating the instances through §6 leaves one
 place that needs work: `NoGaps.lean`'s `reynolds_lemma9` projects the clauses at
 `surgeredStructure M ε Q t` and so demands `Countable` and `DenselyOrdered` of it.
 
@@ -371,23 +388,49 @@ so §6 Theorem 4 does not go vacuous — the failure mode the earlier note right
 by proving the instances rather than hypothesizing them. The clauses of `hε` are projected only at
 `M` in that proof, never at `N`, so there is no circularity.
 
-What remains is the mechanical part: restating the §6 chain so the instances can be supplied at
-that one site. The obligation is recorded here in the type of D1/D2 where it cannot be lost.
+The mechanical part — restating the §6 chain so the instances can be supplied at that one site —
+is **done**: §6 now quantifies over a structure class and `reynolds_lemma9` gets its membership at
+`surgeredStructure` from `instIsSurgeryClosedCountableDense` (`NoGaps.lean`). The obligation is
+still recorded here in the type of D1/D2, where it names the class the suppliers run at.
 -/
 
 /-- **D1** — *"the `∼` classes do not end in gaps"* (printed p.185), for every contemporaneous
-equivalence relation on `M` and at both ends. -/
+equivalence relation on `M` and at both ends.
+
+*"Contemporaneous equivalence relation"* is read at the countable dense class, which is the class
+`M` itself belongs to whenever Theorem 6 applies. See the module note above for why this reading
+rather than either neighbour, and `doetsD1_of_cd` for the machine-checked comparison. -/
 def DoetsD1 (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) : Prop :=
-  ∀ ε : MonadicFormula sig 2, IsContempEquivDenseCD ε →
+  ∀ ε : MonadicFormula sig 2, IsContempEquivDenseOn ε (CountableDense sig) →
     ∀ t : M.carrier, ¬ EndsInGapOnRight M ε t ∧ ¬ EndsInGapOnLeft M ε t
 
 /-- **D2** — *"if `M/∼` is densely ordered then `M/∼` has a dense set of singletons"*
 (printed p.185), for every contemporaneous equivalence relation on `M`. -/
 def DoetsD2 (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) : Prop :=
-  ∀ ε : MonadicFormula sig 2, IsContempEquivDenseCD ε →
+  ∀ ε : MonadicFormula sig 2, IsContempEquivDenseOn ε (CountableDense sig) →
     QuotientDenselyOrdered M ε → HasDenseSingletons M ε
+
+/-- **The previous reading of D1 still suffices** — the strengthening recorded in the module note,
+checked rather than asserted. A supplier that met D1 for every `ε` satisfying the *weaker*
+`IsContempEquivDenseCD` bundle meets the current D1 too, by the free direction
+`isContempEquivDenseCD_of_countableDense`. Nothing that could discharge the old hypothesis is
+stranded by the new one. -/
+theorem doetsD1_of_cd (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : OrderedMonadicStructure sig)
+    (h : ∀ ε : MonadicFormula sig 2, IsContempEquivDenseCD ε →
+      ∀ t : M.carrier, ¬ EndsInGapOnRight M ε t ∧ ¬ EndsInGapOnLeft M ε t) :
+    DoetsD1 sig M :=
+  fun ε hε => h ε (isContempEquivDenseCD_of_countableDense hε)
+
+/-- **The previous reading of D2 still suffices** — the D2 half of `doetsD1_of_cd`. -/
+theorem doetsD2_of_cd (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : OrderedMonadicStructure sig)
+    (h : ∀ ε : MonadicFormula sig 2, IsContempEquivDenseCD ε →
+      QuotientDenselyOrdered M ε → HasDenseSingletons M ε) :
+    DoetsD2 sig M :=
+  fun ε hε => h ε (isContempEquivDenseCD_of_countableDense hε)
 
 /-- **The ε-adapter, D1 half** — D1 applied at Reynolds' own `∼_M`.
 
@@ -398,14 +441,14 @@ theorem doetsD1_epsDense (sig : MonadicSignature) [Fintype sig.preds] [Decidable
     (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig) (D1 : DoetsD1 sig M)
     (t : M.carrier) :
     ¬ EndsInGapOnRight M (epsDense sig k) t ∧ ¬ EndsInGapOnLeft M (epsDense sig k) t :=
-  D1 (epsDense sig k) (epsDense_isContempEquivDenseCD k hk) t
+  D1 (epsDense sig k) (epsDense_isContempEquivDenseOn_countableDense k hk) t
 
 /-- **The ε-adapter, D2 half** — D2 applied at Reynolds' own `∼_M`. -/
 theorem doetsD2_epsDense (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig) (D2 : DoetsD2 sig M)
     (hq : QuotientDenselyOrdered M (epsDense sig k)) :
     HasDenseSingletons M (epsDense sig k) :=
-  D2 (epsDense sig k) (epsDense_isContempEquivDenseCD k hk) hq
+  D2 (epsDense sig k) (epsDense_isContempEquivDenseOn_countableDense k hk) hq
 
 /--
 **Failure of goodness produces two inequivalent points** — printed p.187, the opening move of
