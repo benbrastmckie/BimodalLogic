@@ -459,14 +459,14 @@ would mean the theorem as stated is incomplete and must be reported.
 
 ---
 
-### Phase 8: Strict `.split` cardinality growth [NOT STARTED]
+### Phase 8: Strict `.split` cardinality growth [COMPLETED]
 
 **Goal**: Land the strict version of the `.split` card lemma — the first half of plan 01's task 4.1,
 relocated here. This is what bounds `.split` depth by the universe cardinality. **UNVERIFIED**:
 research 02 read the guard structure from source but did not machine-check the lemma.
 
 **Tasks**:
-- [ ] Prove `expandOnceUnblocked_split_card_lt`: when `(expandOnceUnblocked b ord fc tr).1 = .split bs`,
+- [x] Prove `expandOnceUnblocked_split_card_lt`: when `(expandOnceUnblocked b ord fc tr).1 = .split bs`,
       every `nb ∈ bs` satisfies `b.toFinset.card < nb.toFinset.card`. Three cases, because two
       predicates bypass the `.branching` containment guard:
       1. **Ordinary rules** — `findApplicableRule`'s `.branching` arm (`Tableau.lean:1924-1934`)
@@ -476,7 +476,7 @@ research 02 read the guard structure from source but did not machine-check the l
          time, so its output sits at a label the branch does not carry.
       3. **`ruleMintsFreshLabel`** (`.untlPos`, `.sncePos` among the branching rules) — same
          argument.
-- [ ] Consume the landed `expandOnceUnblocked_split_shape` / `_split_subset` / `_split_card_le`
+- [x] Consume the landed `expandOnceUnblocked_split_shape` / `_split_subset` / `_split_card_le`
       rather than re-deriving the containment; only the strictness is new.
 
 **Timing**: 1.5 hours

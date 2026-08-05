@@ -1728,6 +1728,154 @@ theorem expandOnceUnblocked_split_card_le {b nb : Branch} {bs : List Branch} {or
   Finset.card_le_card fun x hx =>
     List.mem_toFinset.mpr (expandOnceUnblocked_split_subset h hnb x (List.mem_toFinset.mp hx))
 
+/-! ### The strict `.split` growth, in three cases
+
+`expandOnceUnblocked_split_card_le` above is non-strict, and a `.split` depth bound needs the
+strict version. What supplies it is `findApplicableRule`'s `.branching` guard — but that guard has
+**exactly two bypasses**, `ruleSelfGuarded` and `ruleMintsFreshLabel`, so the argument splits into
+three cases rather than one:
+
+1. **ordinary rules** — the `bss.any (fun fs => fs.all branch.contains)` guard rejects the result
+   outright when some arm adds nothing, so every accepted arm carries a formula the branch lacks;
+2. **`ruleSelfGuarded`** (`.untlNeg`, `.snceNeg`) — their surviving ACTIVE arm mints
+   `branch.nextTime` and emits at it, so each arm's head sits at a time the branch does not carry;
+3. **`ruleMintsFreshLabel`** (`.untlPos`, `.sncePos` among the branching rules) — same argument.
+
+Cases 2 and 3 share one lemma (`applyRule_branching_arms_fresh`) because they share the witness:
+`Branch.nextTime`, and `not_mem_of_time_nextTime`.
+
+The other two pick stages cannot reach this lemma at all: `serialityRule` reports only
+`.notApplicable`/`.persistent`, and `timeLinearity` only `.notApplicable`/`.branchingOrdered`, so
+neither can produce the `.branching` a `.split` comes from. Those two are dispatched by the
+`_not_branching` lemmas rather than by a fourth guard case. -/
+
+/-- Case 1: the containment guard, read as "every accepted arm adds something". -/
+theorem branching_arms_new_of_guard {b : Branch} {bss : List (List SignedFormula)}
+    (hg : bss.any (fun fs => fs.all b.contains) = false) :
+    ∀ fs ∈ bss, ∃ x ∈ fs, x ∉ b := by
+  intro fs hfs
+  have := (List.any_eq_false.mp hg) fs hfs
+  simp only [Bool.not_eq_true, List.all_eq_false] at this
+  obtain ⟨x, hx, hxc⟩ := this
+  exact ⟨x, hx, not_mem_of_contains_false (by simpa using hxc)⟩
+
+set_option maxHeartbeats 1600000 in
+/-- Cases 2 and 3: the guard bypasses. A rule that is self-guarded or mints a fresh label and
+still reports `.branching` emits, on every arm, at `branch.nextTime` — a time no formula on the
+branch carries. The 36-rule case analysis leaves exactly the four live rules (`.untlNeg`,
+`.snceNeg`, `.untlPos`, `.sncePos`); every other rule either fails the guard hypothesis or does
+not report `.branching`. -/
+theorem applyRule_branching_arms_fresh (rule : TableauRule) (sf : SignedFormula) (b : Branch)
+    (ord : TimeOrdering) (bss : List (List SignedFormula))
+    (hg : ruleSelfGuarded rule = true ∨ ruleMintsFreshLabel rule = true)
+    (h : (applyRule rule sf b ord).1 = RuleResult.branching bss) :
+    ∀ fs ∈ bss, ∃ x ∈ fs, x ∉ b := by
+  cases sf with
+  | mk sign formula label =>
+  cases rule <;> simp only [ruleSelfGuarded, ruleMintsFreshLabel] at hg <;>
+    simp only [applyRule] at h <;> (repeat' split at h) <;> (try simp_all)
+  all_goals
+    subst h
+    intro fs hfs
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hfs
+    rcases hfs with rfl | rfl <;>
+      refine ⟨_, List.mem_cons_self, not_mem_of_time_nextTime ?_⟩ <;> rfl
+
+/-- The guard-carrying companion to `findApplicableRule_applyRule_eq`: a `.branching` result the
+ordinary stage accepted was accepted through exactly one of the three routes. This is the lemma
+that pins the "three cases" count to the source rather than to a reading of it. -/
+theorem findApplicableRule_branching_guard
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering} {fc : ProofSystem.FrameClass}
+    {r : TableauRule} {bss : List (List SignedFormula)} {o : TimeOrdering}
+    (h : findApplicableRule sf b ord fc = some (r, RuleResult.branching bss, o)) :
+    ruleSelfGuarded r = true ∨ ruleMintsFreshLabel r = true ∨
+      bss.any (fun fs => fs.all b.contains) = false := by
+  unfold findApplicableRule at h
+  obtain ⟨rule, -, hr⟩ := List.exists_of_findSome?_eq_some h
+  repeat' split at hr
+  all_goals simp_all
+
+/-- `serialityRule` reports `.notApplicable` or `.persistent`, never `.branching`. -/
+theorem applyRule_serialityRule_not_branching (sf : SignedFormula) (b : Branch)
+    (ord : TimeOrdering) (bss : List (List SignedFormula)) :
+    (applyRule .serialityRule sf b ord).1 ≠ RuleResult.branching bss := by
+  cases sf with
+  | mk sign formula label => simp only [applyRule]; split <;> simp
+
+/-- `timeLinearity` reports `.notApplicable` or `.branchingOrdered`, never `.branching`. -/
+theorem applyRule_timeLinearity_not_branching (sf : SignedFormula) (b : Branch)
+    (ord : TimeOrdering) (bss : List (List SignedFormula)) :
+    (applyRule .timeLinearity sf b ord).1 ≠ RuleResult.branching bss := by
+  cases sf with
+  | mk sign formula label => simp only [applyRule]; split <;> simp
+
+/-- The seriality stage cannot produce the `.branching` a `.split` comes from. -/
+theorem findApplicableSerialRule_not_branching {sf : SignedFormula} {b : Branch}
+    {ord : TimeOrdering} {r : TableauRule} {bss : List (List SignedFormula)} {o : TimeOrdering}
+    (h : findApplicableSerialRule sf b ord = some (r, RuleResult.branching bss, o)) : False := by
+  unfold findApplicableSerialRule serialityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil] at h
+  cases hres : (applyRule TableauRule.serialityRule sf b ord).1
+  case branching bss' => exact applyRule_serialityRule_not_branching sf b ord bss' hres
+  all_goals rw [hres] at h; simp at h
+
+/-- The linearity stage cannot produce the `.branching` a `.split` comes from. -/
+theorem findApplicableLinearityRule_not_branching {sf : SignedFormula} {b : Branch}
+    {ord : TimeOrdering} {r : TableauRule} {bss : List (List SignedFormula)} {o : TimeOrdering}
+    (h : findApplicableLinearityRule sf b ord = some (r, RuleResult.branching bss, o)) : False := by
+  unfold findApplicableLinearityRule linearityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil] at h
+  cases hres : (applyRule TableauRule.timeLinearity sf b ord).1
+  case branching bss' => exact applyRule_timeLinearity_not_branching sf b ord bss' hres
+  all_goals rw [hres] at h; simp at h
+
+/--
+**A `.split` arm is strictly larger than the branch, as a set.**
+
+The strict companion of `expandOnceUnblocked_split_card_le`, which stays in place unmodified —
+this lemma is purely additive. It is what bounds `.split` depth by `|U|`: each split level adds a
+formula from the finite universe, so a run cannot split more than `|U|` times without repeating.
+
+Contrast with `.splitOrdered`, where the analogous statement is **false** (see
+`applyRule_timeLinearity_arms`): ordered-split arms replace rather than extend, and arm 3 can
+shrink the branch. That asymmetry is exactly why `splitOrderedMeasure` exists.
+-/
+theorem expandOnceUnblocked_split_card_lt {b nb : Branch} {bs : List Branch} {ord : TimeOrdering}
+    {fc : ProofSystem.FrameClass} {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.split bs) (hnb : nb ∈ bs) :
+    b.toFinset.card < nb.toFinset.card := by
+  unfold expandOnceUnblocked at h
+  obtain ⟨r, bss, o, hpick, rfl⟩ := pick_split h
+  obtain ⟨fs, hfs, rfl⟩ := List.mem_map.mp hnb
+  have hnew : ∃ x ∈ fs, x ∉ b := by
+    rcases hfu : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+    · rw [hfu] at hpick
+      rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+      · rw [hser] at hpick
+        rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                                 && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+        · rw [hlin] at hpick; simp at hpick
+        · rw [hlin] at hpick
+          simp only at hpick
+          exact absurd hpick findApplicableLinearityRule_not_branching
+      · rw [hser] at hpick
+        simp only at hpick
+        exact absurd hpick findApplicableSerialRule_not_branching
+    · rw [hfu] at hpick
+      simp only at hpick
+      rcases findApplicableRule_branching_guard hpick with hg | hg | hg
+      · exact applyRule_branching_arms_fresh r sf b ord bss (Or.inl hg)
+          (findApplicableRule_applyRule_eq hpick) fs hfs
+      · exact applyRule_branching_arms_fresh r sf b ord bss (Or.inr hg)
+          (findApplicableRule_applyRule_eq hpick) fs hfs
+      · exact branching_arms_new_of_guard hg fs hfs
+  obtain ⟨x, hx, hxb⟩ := hnew
+  refine Finset.card_lt_card ⟨fun y hy => ?_, fun hcon => ?_⟩
+  · exact List.mem_toFinset.mpr (List.mem_append_right fs (List.mem_toFinset.mp hy))
+  · exact hxb (List.mem_toFinset.mp
+      (hcon (List.mem_toFinset.mpr (List.mem_append_left b hx))))
+
 /--
 **An ordered split hands its arms through untouched.** There is no `++ b`: the arms of a
 `.branchingOrdered` result *are* branches, supplied by the rule.
