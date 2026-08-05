@@ -631,14 +631,55 @@ performs exactly the resolution `buildTableau` used to perform, and reports it i
 fold can act on:
 
 - `some (.inl _)` — this arm is genuinely closed; the fold continues with its siblings;
-- `some (.inr r)` — this arm is genuinely open **and saturated** (`findUnexpanded = none`),
-  so it is a real countermodel witness and short-circuiting on it is sound;
-- `none` — undecided: the arm is neither closed nor saturated (post-blocking ran out of
-  fuel, or left work outstanding). Reporting `none` propagates as fuel exhaustion, which is
-  the honest answer; it is never converted into a closure.
+- `some (.inr r)` — this arm is genuinely open and **blocking-aware saturated**
+  (`findUnexpandedUnblocked … = none`), so it is a real countermodel witness *relative to the
+  blocked set* and short-circuiting on it is sound;
+- `none` — undecided: the arm is neither closed nor blocking-aware saturated. Reporting `none`
+  propagates as fuel exhaustion, which is the honest answer; it is never converted into a
+  closure.
 
 The last case is the one that keeps the repair sound rather than merely different: an arm
 that cannot be settled must not be silently counted as closed.
+
+### Why the test is `findUnexpandedUnblocked`, not `findUnexpanded`
+
+Both decision points below previously used `findUnexpanded` — the **literal** saturation test.
+That is not the test the engine itself uses: `expandOnceUnblockedWithApplied` reports
+`.saturated` off `findUnexpandedUnblocked`, and `Tableau.lean` names the latter "the engine's
+real saturation test" in so many words.
+
+Testing an arm with the literal test after the post-blocking pass has run is a permanent
+disagreement, not a transient one. `saturateBlocked` **by construction refuses** any expansion
+step that would introduce a new time point; `findUnexpanded` **counts** exactly such
+label-introducing work as outstanding. So whenever loop-blocking defers label-introducing work
+— which is precisely what blocking exists to do — `saturateBlocked` cannot discharge it and
+`findUnexpanded` cannot stop reporting it. The arm then falls to the `none` branch at *every*
+fuel figure and *every* branch budget, because neither quantity appears in the disagreement.
+
+That was measured, not conjectured: `φ = F(G p)` and `φ = ¬G(F p)` returned `none` from
+`expandBranchWithFuel` at every tested pair
+`(fuel, maxBranches) ∈ {500, 8000, 50000, 229376, 300000} × {50000, 10⁹, 10¹²}`, always via
+this arm and never via the fuel or budget guards. Substituting the engine's real test converts
+those to clean open verdicts and leaves already-succeeding formulas (`U(p,q)` and the rest of
+the corpus) unchanged. The probes at the end of this section pin both halves of that claim.
+
+**Which blocked set.** `findUnexpandedUnblocked` derives its blocked set from a tracker, and
+`resolveOpenArm`'s signature carries no tracker. Threading the enclosing fold's live tracker
+would require changing that signature; rather than do so silently, both call sites below pass
+`EventualityTracker.empty` **explicitly**. The certificate this function issues is therefore
+relative to `blockedTimes ob ord fc EventualityTracker.empty` — the blocked set computed with
+no pending eventualities registered. That set is the *smallest* one (an empty tracker can only
+make `isTemporallyBlockedSaturated` harder to satisfy, never easier), so this is the
+conservative choice: fewer times are treated as blocked, hence more work is counted as
+outstanding, hence the test is harder to pass than a live-tracker version would be.
+
+**Soundness scope.** This changes what an arm reported open certifies: from "no formula on this
+branch has an applicable rule" to "no formula at an *unblocked* time has an applicable rule".
+`ExpandedTableau.hasOpen` is **not** weakened by this — it still carries the literal
+`findUnexpanded … = none` field, and every downstream truth-lemma and countermodel-extraction
+consumer reads that unchanged field. The weaker notion is carried by a separate, explicitly
+named certificate (`BudgetedTableau`, added alongside `buildTableau` further down this file),
+never by silently reinterpreting the existing one.
 -/
 
 /--
@@ -646,16 +687,30 @@ Settle a sub-branch that `expandBranchWithFuel` returned as open, before the enc
 fold decides whether to keep exploring its siblings.
 
 Returns `some (.inl _)` if the arm actually closes under post-blocking saturation,
-`some (.inr _)` if it is open *and* fully saturated, and `none` if it cannot be settled.
+`some (.inr _)` if it is open *and* blocking-aware saturated
+(`findUnexpandedUnblocked … = none`, relative to the empty-tracker blocked set — see the
+section prose above for why that is the notion and which set it is), and `none` if it cannot
+be settled.
 
 `resolveOpenArm_inr` records the invariant the soundness proof needs: whenever this reports
 an open branch, that branch has no closure reason.
+
+**Mirror drift, declared.** `resolveOpenArmCancellable` in `CancellableExpansion.lean`
+transcribes this body and has **not** been updated: it still tests with the literal
+`findUnexpanded` at both of its decision points, and its two call sites inside
+`expandBranchWithFuelCancellable`'s `.split` and `.splitOrdered` folds therefore still exhibit
+the permanent disagreement described above. `CancellableExpansion.lean` is outside the file
+scope of the change that repaired this function, so the divergence is recorded here rather than
+silently repaired. The cancellable runtime path is `IO`-only and feeds no verified result; a
+follow-up owning `CancellableExpansion.lean` should apply the same two-line swap.
 -/
 def resolveOpenArm (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
     (fuel : Nat) (fc : FrameClass) :
     Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
-  match findUnexpanded ob (timeOrd := ord) (fc := fc) with
-  | none => some (.inr (ob, ord, ap))  -- Already fully saturated: a genuine open branch
+  -- Tracker written out rather than defaulted: the blocked set is tracker-dependent and the
+  -- certificate below is relative to *this* one. See the section prose.
+  match findUnexpandedUnblocked ob ord fc EventualityTracker.empty with
+  | none => some (.inr (ob, ord, ap))  -- Already saturated (blocking-aware): a genuine open branch
   | some _ =>
       -- Blocked but not saturated: run the same post-blocking pass `buildTableau` runs,
       -- here, while the sibling arms are still reachable.
@@ -666,7 +721,7 @@ def resolveOpenArm (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
           match findClosure satBr fc with
           | some reason => some (.inl ⟨satBr, reason⟩)
           | none =>
-              match findUnexpanded satBr (timeOrd := satOrd) (fc := fc) with
+              match findUnexpandedUnblocked satBr satOrd fc EventualityTracker.empty with
               | none => some (.inr (satBr, satOrd, ap))
               | some _ => none  -- Still not saturated: undecided, never "closed"
 
@@ -1134,6 +1189,81 @@ Build tableau with automatic fuel calculation using sound FMP-derived bound.
 -/
 def buildTableauAuto (φ : Formula) (fc : FrameClass := .Base) : Option ExpandedTableau :=
   buildTableau φ (soundFuel φ) fc
+
+/-! ## Arm-Settling Probes
+
+Evidence rows for the `resolveOpenArm` repair (see "Why the test is `findUnexpandedUnblocked`,
+not `findUnexpanded`" above). These are checkable by *running*, not by reading, which is the
+point: the claim being pinned is a behavioural one.
+
+The first three rows are the ones that were measured to fail before the repair.
+`F(G p)` and `¬G(F p)` returned `none` from `expandBranchWithFuel` at every tested pair
+`(fuel, maxBranches) ∈ {500, 8000, 50000, 229376, 300000} × {50000, 10⁹, 10¹²}`, always through
+`resolveOpenArm`'s undecided arm and never through the fuel or `maxBranches` guards. They now
+settle. `U(p,q)` is the control: it succeeded before and is unchanged.
+
+The last two rows say what the repair did *not* do. `buildTableau` still tests with the literal
+`findUnexpanded` at its own two top-level decision points — deliberately, since those feed the
+dependently-typed `ExpandedTableau.hasOpen` constructor whose proof field is
+`findUnexpanded … = none` and which downstream consumers read. So `buildTableau (F(G p))` is
+still `none`; the budget-parameterised entry point below is what settles it.
+
+`armDisagreement` exhibits the mechanism directly: at the branch `expandBranchWithFuel` hands
+back for `F(G p)`, the literal test reports work outstanding (`true`) while the engine's real
+test reports saturation (`false`). That standing disagreement — `saturateBlocked` refusing to
+mint time points, `findUnexpanded` counting them — is the whole of the defect.
+-/
+section ArmSettlingProbes
+
+private def probe_p : Formula := .atom (Atom.mkBase "p")
+private def probe_q : Formula := .atom (Atom.mkBase "q")
+
+/-- `F(G p)` — refuting formula #1 from the counterexample census. -/
+private def probe_FGp : Formula := Formula.someFuture (Formula.allFuture probe_p)
+/-- `¬G(F p)` — refuting formula #2. -/
+private def probe_nGFp : Formula := (Formula.allFuture (Formula.someFuture probe_p)).neg
+/-- `U(p,q)` — the unchanged control. -/
+private def probe_Upq : Formula := Formula.untl probe_p probe_q
+
+private def probe_seed (φ : Formula) : Branch := [SignedFormula.neg φ Label.initial]
+
+private def armProbe (φ : Formula) (fuel : Nat) : Bool :=
+  (expandBranchWithFuel (probe_seed φ) fuel).isSome
+
+-- `F(G p)` settles. Before the repair this was `false` at every fuel and every budget.
+/-- info: true -/
+#guard_msgs in
+#eval armProbe probe_FGp 500
+
+-- `¬G(F p)` settles likewise.
+/-- info: true -/
+#guard_msgs in
+#eval armProbe probe_nGFp 500
+
+-- `U(p,q)` is unchanged: it succeeded before and still does.
+/-- info: true -/
+#guard_msgs in
+#eval armProbe probe_Upq 500
+
+-- The top level is *not* repaired by this phase: `buildTableau` still tests literally.
+/-- info: false -/
+#guard_msgs in
+#eval (buildTableau probe_FGp 500).isSome
+
+/-- The two saturation tests at the branch `expandBranchWithFuel` returns for `F(G p)`:
+literal reports outstanding work, blocking-aware reports saturation. -/
+private def armDisagreement : Option (Bool × Bool) :=
+  match expandBranchWithFuel (probe_seed probe_FGp) 500 with
+  | some (.inr (ob, ord, _)) =>
+      some ((findUnexpanded ob (timeOrd := ord) (fc := .Base)).isSome,
+            (findUnexpandedUnblocked ob ord .Base EventualityTracker.empty).isSome)
+  | _ => none
+
+/-- info: some (true, false) -/
+#guard_msgs in
+#eval armDisagreement
+
+end ArmSettlingProbes
 
 /-!
 ## Saturation Properties

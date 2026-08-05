@@ -161,35 +161,40 @@ edit to a tactic block means the hypothesis was wrong and must be reported in th
 
 ---
 
-### Phase 2: Blocking-aware `resolveOpenArm` [NOT STARTED]
+### Phase 2: Blocking-aware `resolveOpenArm` [COMPLETED]
 
 **Goal**: Swap the *literal* saturation test for the engine's *real* one at `resolveOpenArm`'s two
 decision points, converting the refuting class from `none` to clean open verdicts, and prove the
 existing invariant survives.
 
 **Tasks**:
-- [ ] Replace `findUnexpanded ob (timeOrd := ord) (fc := fc)` with
+- [x] Replace `findUnexpanded ob (timeOrd := ord) (fc := fc)` with
       `findUnexpandedUnblocked ob ord fc` at `resolveOpenArm`'s first decision point
       (`Saturation.lean:549`).
-- [ ] Replace `findUnexpanded satBr (timeOrd := satOrd) (fc := fc)` with
+- [x] Replace `findUnexpanded satBr (timeOrd := satOrd) (fc := fc)` with
       `findUnexpandedUnblocked satBr satOrd fc` at the second decision point (`:561`).
-- [ ] Decide and record the tracker argument explicitly at both sites rather than relying on
-      `findUnexpandedUnblocked`'s `EventualityTracker.empty` default. The blocked-time set is
+- [x] Decide and record the tracker argument explicitly at both sites rather than relying on
+      `findUnexpandedUnblocked`'s `EventualityTracker.empty` default. *(resolved via the plan's
+      own stated fallback: threading the live tracker requires changing `resolveOpenArm`'s
+      signature, so both sites pass `EventualityTracker.empty` written out explicitly and the
+      docstring names the blocked set the certificate is relative to.)* The blocked-time set is
       tracker-dependent, and `resolveOpenArm` is called from a fold that has a live tracker in
       scope. If the live tracker is not threadable without changing `resolveOpenArm`'s signature,
       use the default and state in the docstring exactly which blocked set the certificate is
       relative to.
-- [ ] Rewrite `resolveOpenArm`'s docstring and the preceding `/-! ## Resolving an Open Sub-Branch
+- [x] Rewrite `resolveOpenArm`'s docstring and the preceding `/-! ## Resolving an Open Sub-Branch
       Inside a Split -/` section: the `some (.inr r)` bullet currently claims "genuinely open **and
       saturated** (`findUnexpanded = none`)" — that claim is now false and must state the
       blocking-aware notion instead, with a forward reference to Phase 3's certificate type.
-- [ ] Re-prove `resolveOpenArm_inr`. Its statement is unchanged (it is about `findClosure`, not
+- [x] Re-prove `resolveOpenArm_inr`. Its statement is unchanged (it is about `findClosure`, not
       about saturation), but the `repeat' split at h` structure walks the rewritten match tree.
-- [ ] Add `#guard_msgs`/`#eval` probes in a `section` reproducing the research's measured rows:
+      *(No proof edit was needed: the existing `repeat' split at h` structure is match-shape
+      agnostic and re-elaborated green against the rewritten body.)*
+- [x] Add `#guard_msgs`/`#eval` probes in a `section` reproducing the research's measured rows:
       `F(G p)` and `¬G(F p)` now settle (previously `none`), and `U(p,q)` is unchanged. These are
       evidence rows, not decoration — they are what makes the repair checkable by running rather
       than by reading.
-- [ ] Record the `resolveOpenArmCancellable` mirror drift: add a comment at `resolveOpenArm` naming
+- [x] Record the `resolveOpenArmCancellable` mirror drift: add a comment at `resolveOpenArm` naming
       `CancellableExpansion.lean`'s `resolveOpenArmCancellable` and its two call sites as now
       out of sync, and state that the file is outside this task's `file_scope`. Report the same in
       the implementation summary.
