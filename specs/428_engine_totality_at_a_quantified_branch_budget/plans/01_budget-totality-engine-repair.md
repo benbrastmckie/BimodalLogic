@@ -1,7 +1,7 @@
 # Implementation Plan: Task #428
 
 - **Task**: 428 - engine_totality_at_a_quantified_branch_budget
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: None blocking (tasks 426 and 412 are sequenced *behind* this one in state.json; Fuel.lean is unshared for the duration of this task)
 - **Research Inputs**: specs/428_engine_totality_at_a_quantified_branch_budget/reports/01_budget-totality-refuted-and-repair.md
@@ -117,25 +117,25 @@ consumes both.
 
 ---
 
-### Phase 1: Land `saturateBlocked_isSome` from the preserved asset [NOT STARTED]
+### Phase 1: Land `saturateBlocked_isSome` from the preserved asset [COMPLETED]
 
 **Goal**: Close two provably-dead `none` arms by lifting the already-proved, sorry-free asset into
 `Saturation.lean`, unchanged except for namespace placement.
 
 **Tasks**:
-- [ ] Read `specs/428_engine_totality_at_a_quantified_branch_budget/assets/saturateBlocked_isSome.lean.txt` in full.
-- [ ] Insert `split_fold_isSome`, `splitOrdered_fold_isSome`, and `saturateBlocked_isSome` into
+- [x] Read `specs/428_engine_totality_at_a_quantified_branch_budget/assets/saturateBlocked_isSome.lean.txt` in full.
+- [x] Insert `split_fold_isSome`, `splitOrdered_fold_isSome`, and `saturateBlocked_isSome` into
       `Saturation.lean` immediately after `saturateBlocked`, replacing the deferral note at the
       `-- Note: saturateBlocked correctness theorems ... are deferred` block. Strip the asset's
       `import`/`namespace`/`end` wrapper; the body is already inside
       `FormalSystem.Metalogic.Decidability`.
-- [ ] Update the surviving deferral note so it names only the still-deferred
+- [x] Update the surviving deferral note so it names only the still-deferred
       `saturateBlocked_sound`, not `saturateBlocked_isSome`.
-- [ ] Add two corollaries recording what the theorem closes:
+- [x] Add two corollaries recording what the theorem closes:
       `resolveOpenArm`'s `| none => none  -- Undecided` arm at the `saturateBlocked` match is
       unreachable, and `buildTableau`'s `| none => none  -- Should not happen` last arm is
       unreachable. State each as an explicit lemma rather than a comment.
-- [ ] Confirm axiom cleanliness with `lean_verify` on the fully-qualified
+- [x] Confirm axiom cleanliness with `lean_verify` on the fully-qualified
       `FormalSystem.Metalogic.Decidability.saturateBlocked_isSome`; expect exactly
       `[propext, Classical.choice, Quot.sound]`.
 

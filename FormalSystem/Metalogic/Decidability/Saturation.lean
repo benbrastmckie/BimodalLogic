@@ -498,11 +498,119 @@ def saturateBlocked (b : Branch) (fuel : Nat)
               branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
 termination_by fuel
 
--- Note: `saturateBlocked` correctness theorems (isSome, soundness) are
--- deferred. The function is used in `buildTableau` for practical improvement
--- of blocked-branch handling. Formal verification requires:
--- 1. `saturateBlocked_isSome`: always returns `some` (follows from fuel=0 base case)
--- 2. `saturateBlocked_sound`: preserves `findClosure = none` (requires precondition from caller)
+/-- Fold helper for the `.split` arm of `saturateBlocked`. -/
+private theorem split_fold_isSome (f : Nat) (ord : TimeOrdering) (fc : ProofSystem.FrameClass)
+    (ih : ∀ b' o', (saturateBlocked b' f o' fc).isSome = true) :
+    ∀ (bs : List Branch) (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering))),
+      acc.isSome = true →
+      (bs.foldl (fun acc newBranch =>
+        match acc with
+        | some (.inr openBr) => some (.inr openBr)
+        | _ =>
+          match saturateBlocked newBranch f ord fc with
+          | some (.inl _) => acc
+          | some (.inr openBr) => some (.inr openBr)
+          | none => none) acc).isSome = true := by
+  intro bs
+  induction bs with
+  | nil => intro acc h; exact h
+  | cons hd tl iht =>
+    intro acc h
+    apply iht
+    have hhd := ih hd ord
+    match acc, h with
+    | some (.inr _), _ => simp
+    | some (.inl _), _ =>
+      simp only
+      match hsb : saturateBlocked hd f ord fc, hhd with
+      | some (.inl _), _ => simp
+      | some (.inr _), _ => simp
+      | none, h' => rw [hsb] at hhd; simp at hhd
+
+/-- Fold helper for the `.splitOrdered` arm of `saturateBlocked`. -/
+private theorem splitOrdered_fold_isSome (f : Nat) (fc : ProofSystem.FrameClass)
+    (ih : ∀ b' o', (saturateBlocked b' f o' fc).isSome = true) :
+    ∀ (bs : List (Branch × TimeOrdering))
+      (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering))),
+      acc.isSome = true →
+      (bs.foldl (fun acc (pair : Branch × TimeOrdering) =>
+        match acc with
+        | some (.inr openBr) => some (.inr openBr)
+        | _ =>
+          match saturateBlocked pair.1 f pair.2 fc with
+          | some (.inl _) => acc
+          | some (.inr openBr) => some (.inr openBr)
+          | none => none) acc).isSome = true := by
+  intro bs
+  induction bs with
+  | nil => intro acc h; exact h
+  | cons hd tl iht =>
+    intro acc h
+    apply iht
+    have hhd := ih hd.1 hd.2
+    match acc, h with
+    | some (.inr _), _ => simp
+    | some (.inl _), _ =>
+      simp only
+      match hsb : saturateBlocked hd.1 f hd.2 fc, hhd with
+      | some (.inl _), _ => simp
+      | some (.inr _), _ => simp
+      | none, h' => rw [hsb] at hhd; simp at hhd
+
+/--
+**`saturateBlocked` is total.** Every arm either returns `some` outright or recurses at
+strictly smaller fuel; the `none` cases in the two split folds are unreachable because the
+recursive call is itself `some`.
+-/
+theorem saturateBlocked_isSome :
+    ∀ (fuel : Nat) (b : Branch) (ord : TimeOrdering) (fc : ProofSystem.FrameClass),
+      (saturateBlocked b fuel ord fc).isSome = true := by
+  intro fuel
+  induction fuel with
+  | zero => intro b ord fc; simp [saturateBlocked]
+  | succ f ih =>
+    intro b ord fc
+    rw [saturateBlocked]
+    split
+    · simp
+    · split
+      · simp
+      · split
+        · simp
+        · exact ih _ _ _
+      · split
+        · simp
+        · exact split_fold_isSome f ord fc (fun b' o' => ih b' o' fc) _ _ (by simp)
+      · split
+        · simp
+        · exact splitOrdered_fold_isSome f fc (fun b' o' => ih b' o' fc) _ _ (by simp)
+
+/-- Restatement of `saturateBlocked_isSome` in `≠ none` form, which is the shape the two
+dead-arm corollaries below consume. -/
+theorem saturateBlocked_ne_none (b : Branch) (fuel : Nat) (ord : TimeOrdering)
+    (fc : FrameClass) : saturateBlocked b fuel ord fc ≠ none := by
+  intro h
+  have hs := saturateBlocked_isSome fuel b ord fc
+  rw [h] at hs
+  simp at hs
+
+/--
+**Dead arm 2.** `buildTableau`'s last arm (`| none => none  -- Should not happen`) is
+unreachable: the `saturateBlocked` call it guards never returns `none`. So whenever
+`buildTableau` returns `none`, the cause is either fuel/budget exhaustion in
+`expandBranchWithFuel` or a still-unsaturated branch after the post-blocking pass — never the
+"should not happen" arm.
+-/
+theorem buildTableau_saturateBlocked_arm_unreachable (openBr : Branch) (fuel : Nat)
+    (ord : TimeOrdering) (fc : FrameClass) :
+    ∃ r, saturateBlocked openBr fuel ord fc = some r := by
+  match hsb : saturateBlocked openBr fuel ord fc with
+  | none => exact absurd hsb (saturateBlocked_ne_none openBr fuel ord fc)
+  | some r => exact ⟨r, rfl⟩
+
+-- Note: `saturateBlocked_sound` (preserves `findClosure = none`, requires a precondition from
+-- the caller) remains deferred. `saturateBlocked_isSome` is proved just above and is no longer
+-- deferred.
 
 /-!
 ## Resolving an Open Sub-Branch Inside a Split
@@ -582,6 +690,30 @@ theorem resolveOpenArm_inr (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
          obtain ⟨rfl, rfl, rfl⟩ := h
          first | exact h_ob | assumption)
       | simp at h
+
+/--
+**Dead arm 1.** `resolveOpenArm`'s `| none => none  -- Undecided` arm — the one guarding the
+`saturateBlocked` match — is unreachable, by `saturateBlocked_isSome`. Consequently the *only*
+way `resolveOpenArm` reports `none` is its final "still not saturated" arm, and this corollary
+says so by exhibiting the post-blocking branch that arm reached.
+-/
+theorem resolveOpenArm_eq_none_imp (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
+    (fuel : Nat) (fc : FrameClass) (h : resolveOpenArm ob ord ap fuel fc = none) :
+    ∃ satBr satOrd, saturateBlocked ob fuel ord fc = some (.inr (satBr, satOrd))
+      ∧ findClosure satBr fc = none := by
+  unfold resolveOpenArm at h
+  split at h
+  · simp at h
+  · match hsb : saturateBlocked ob fuel ord fc with
+    | none => exact absurd hsb (saturateBlocked_ne_none ob fuel ord fc)
+    | some (.inl _) => rw [hsb] at h; simp at h
+    | some (.inr (satBr, satOrd)) =>
+      refine ⟨satBr, satOrd, rfl, ?_⟩
+      rw [hsb] at h
+      simp only at h
+      split at h
+      · simp at h
+      · assumption
 
 /--
 Expand a single branch until closed or saturated.
