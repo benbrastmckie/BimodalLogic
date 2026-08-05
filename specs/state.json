@@ -369,7 +369,11 @@
       "dependencies": [
         165,
         408,
-        412
+        412,
+        426,
+        428,
+        429,
+        430
       ],
       "topic": "completeness",
       "task_type": "lean4",
@@ -415,7 +419,11 @@
       "dependencies": [
         131,
         193,
-        402
+        402,
+        426,
+        428,
+        429,
+        430
       ],
       "created": "2026-05-20T15:55:54Z",
       "last_updated": "2026-07-26T00:00:00Z",
@@ -753,7 +761,8 @@
       "topic": "completeness",
       "dependencies": [
         165,
-        412
+        412,
+        428
       ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean",

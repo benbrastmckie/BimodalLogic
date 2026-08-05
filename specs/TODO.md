@@ -12,12 +12,13 @@ next_project_number: 431
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,428 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 177,178,219,282,296,420,422,425,429 | 193,231,298,415,421,423,428 | decidability, formula-refactor, dataset-enhancement, ... |
+| 2 | 178,219,282,296,420,422,425,429 | 193,231,298,415,421,423,428 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,410,414 | 420,422,429 | paper-refactor, strong_completeness |
 | 4 | 362,411,417 | 169,410,414 | paper-refactor, strong_completeness |
 | 5 | 427,430 | 411,417,419 | decidability, paper-refactor |
 | 6 | 412 | 430 | -- |
-| 7 | 95,426 | 412 | completeness |
+| 7 | 426 | 412 | completeness |
+| 8 | 95,177 | 193,426 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -26,6 +27,7 @@ next_project_number: 431
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
+  └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me (see above)
 
 ### Decidability
 
@@ -195,7 +197,7 @@ NON-GOALS: no edits under Philosophy/Papers/ -- the paper is READ-ONLY ground tr
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 165, Task 412
+- **Dependencies**: Task 165, Task 412, Task 428
 - **Research**: [418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/artifacts/after-verdicts.md]
 
 **Description**: Settle whether the tableau engine can positively refute (G p) -> square (G p), or whether that branch provably never saturates. Context: the cross-world temporal-copy unsoundness in boxNeg/diamondPos is fixed and the engine is sound, but the fix moved this formula from a WRONG answer to NO answer rather than to the intended positive refutation. Measured post-fix: decide returns .fuelExhausted (not .invalid), getCountermodel?.isSome = false, and buildTableau returns none at fuel 30, 60, 400 and 1000 -- so the fuel ceiling is not bracketed from above and there is no evidence a larger budget helps. Pre-fix the same formula returned .extractionFailed, which under this codebase R7 semantics asserts VALIDITY of an invalid formula; the current .fuelExhausted is the only constructor isUndecided recognises, so the present state is honest-but-incomplete rather than wrong. Two hypotheses to discriminate: (a) budget -- the branch does saturate but needs more fuel, in which case find and record the ceiling; (b) non-termination -- the branch never saturates, in which case this is a termination question for FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean, not a budget one, and the honest deliverable is a proof or argument that no finite fuel suffices. Discriminating between (a) and (b) is the primary deliverable; producing the countermodel is the secondary one and only applies under (a). The corpus already pins this outcome directly: CrossWorldPropagationProbe row F asserts the decide constructor and builds green at (false, false, true, false, true) -- update that row if the verdict moves. Do NOT reintroduce any temporal-copy propagation block into boxNeg/diamondPos to make the branch close; that is the exact unsoundness that was removed, and reverting it would restore a false claim of validity. Note the related but SEPARATE inheritance also recorded for the parent task: the decidable-branch-gate family (boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk) now computes false on every multi-world branch; that is the truth-lemma side-condition problem and is not this task.
@@ -613,7 +615,7 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 131, Task 193, Task 402
+- **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430
 
 **Description**: Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.
 
@@ -677,7 +679,7 @@ Governing design document: specs/361_strong_completeness_architecture_and_weak_t
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 165, Task 408, Task 412
+- **Dependencies**: Task 165, Task 408, Task 412, Task 426, Task 428, Task 429, Task 430
 
 **Description**: Verify and record the final axiom/sorry status of the headline metalogical results, then close.
 
