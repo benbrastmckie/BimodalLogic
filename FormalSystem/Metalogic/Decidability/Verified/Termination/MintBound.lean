@@ -194,4 +194,148 @@ theorem applyRule_irreflOrd_of_ne_density {rule : TableauRule} {sf : SignedFormu
           | exact irreflOrd_addPast h hfresh)
 
 
+/-! ## B. The reachability transport stack
+
+The twelve lemmas below are what make witness preservation across the identification arm work.
+The `hnsl` side condition every one of them carries is spelled `IrreflOrd`, which unfolds to the
+`∀ p ∈ ord.constraints, p.1 ≠ p.2` these proofs consume, so downstream phases meet one name. -/
+
+/-- **Edge transport.** A constraint that does not collapse survives, renamed. -/
+theorem identifyTime_edge (ord : TimeOrdering) (src tgt a b : TimeIndex)
+    (h : (a, b) ∈ ord.constraints)
+    (hne : rho src tgt a ≠ rho src tgt b) :
+    (rho src tgt a, rho src tgt b) ∈ (ord.identifyTime src tgt).constraints := by
+  simp only [TimeOrdering.identifyTime, List.mem_eraseDups, List.mem_filterMap]
+  refine ⟨(a, b), h, ?_⟩
+  simp only [rho] at hne ⊢
+  simp only [beq_iff_eq]
+  rw [if_neg (by simpa [rho, beq_iff_eq] using hne)]
+
+/-- A constraint's target is in its source's future. -/
+theorem mem_futureOf_of_mem_constraints (ord : TimeOrdering) (a b : TimeIndex)
+    (h : (a, b) ∈ ord.constraints) : b ∈ ord.futureOf a := by
+  rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq]
+  refine TimeOrdering.bfsClosure_complete _ (n := 1) ⟨b, ?_, rfl⟩ (le_refl 1) (by omega)
+  simp only [TimeOrdering.directFutureOf, List.mem_filterMap]
+  exact ⟨(a, b), h, by simp⟩
+
+/-- A constraint's source is in its target's past. -/
+theorem mem_pastOf_of_mem_constraints (ord : TimeOrdering) (a b : TimeIndex)
+    (h : (a, b) ∈ ord.constraints) : a ∈ ord.pastOf b := by
+  rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq]
+  refine TimeOrdering.bfsClosure_complete _ (n := 1) ⟨a, ?_, rfl⟩ (le_refl 1) (by omega)
+  simp only [TimeOrdering.directPastOf, List.mem_filterMap]
+  exact ⟨(a, b), h, by simp⟩
+
+/-- **Collapse-freedom.** On an incomparable pair, no constraint collapses. -/
+theorem identifyTime_no_collapse (ord : TimeOrdering) (t₁ t₂ : TimeIndex)
+    (hinc : incomparableB ord (t₁, t₂) = true)
+    (hnsl : IrreflOrd ord)
+    (a b : TimeIndex) (h : (a, b) ∈ ord.constraints) :
+    rho t₂ t₁ a ≠ rho t₂ t₁ b := by
+  simp only [incomparableB, Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true',
+    List.contains_eq_mem, decide_eq_false_iff_not] at hinc
+  obtain ⟨⟨hne, hf⟩, hp⟩ := hinc
+  have hab : a ≠ b := hnsl (a, b) h
+  simp only [rho]
+  by_cases ha : a = t₂ <;> by_cases hb : b = t₂
+  · exact absurd (ha.trans hb.symm) hab
+  · rw [if_pos ha, if_neg hb]
+    intro hcon
+    rw [ha, ← hcon] at h
+    exact hp (mem_pastOf_of_mem_constraints ord t₂ t₁ h)
+  · rw [if_neg ha, if_pos hb]
+    intro hcon
+    rw [hcon, hb] at h
+    exact hf (mem_futureOf_of_mem_constraints ord t₁ t₂ h)
+  · rw [if_neg ha, if_neg hb]; exact hab
+
+/-- Direct forward adjacency is exactly constraint membership. -/
+theorem mem_directFutureOf_iff' (ord : TimeOrdering) (a b : TimeIndex) :
+    b ∈ ord.directFutureOf a ↔ (a, b) ∈ ord.constraints := by
+  simp only [TimeOrdering.directFutureOf, List.mem_filterMap]
+  constructor
+  · rintro ⟨⟨x, y⟩, hxy, hres⟩
+    by_cases hx : x = a
+    · subst hx; simp at hres; subst hres; exact hxy
+    · simp [hx] at hres
+  · intro h; exact ⟨(a, b), h, by simp⟩
+
+/-- Direct backward adjacency is exactly constraint membership. -/
+theorem mem_directPastOf_iff' (ord : TimeOrdering) (a b : TimeIndex) :
+    a ∈ ord.directPastOf b ↔ (a, b) ∈ ord.constraints := by
+  simp only [TimeOrdering.directPastOf, List.mem_filterMap]
+  constructor
+  · rintro ⟨⟨x, y⟩, hxy, hres⟩
+    by_cases hy : y = b
+    · subst hy; simp at hres; subst hres; exact hxy
+    · simp [hy] at hres
+  · intro h; exact ⟨(a, b), h, by simp⟩
+
+/-- **Path transport along an arbitrary renaming**, *length preserving*.
+
+Length preservation is what makes the fuel budget work downstream: a path found at fuel `100`
+maps to a path of the same length and is re-found by `bfsClosure_complete` at the same `100`. -/
+theorem pathN_along (f g : TimeIndex → List TimeIndex) (φ : TimeIndex → TimeIndex)
+    (h : ∀ x y, y ∈ f x → φ y ∈ g (φ x)) :
+    ∀ (n : Nat) (a b : TimeIndex), TimeOrdering.PathN f n a b →
+      TimeOrdering.PathN g n (φ a) (φ b) := by
+  intro n
+  induction n with
+  | zero => intro a b hp; simp only [TimeOrdering.PathN] at hp ⊢; rw [hp]
+  | succ m ih =>
+    intro a b hp
+    obtain ⟨c, hc, hrest⟩ := hp
+    exact ⟨φ c, h a c hc, ih c b hrest⟩
+
+/-- Every forward edge survives identification, renamed. -/
+theorem directFutureOf_transport (ord : TimeOrdering) (t₁ t₂ : TimeIndex)
+    (hinc : incomparableB ord (t₁, t₂) = true)
+    (hnsl : IrreflOrd ord) (a b : TimeIndex)
+    (h : b ∈ ord.directFutureOf a) :
+    rho t₂ t₁ b ∈ (ord.identifyTime t₂ t₁).directFutureOf (rho t₂ t₁ a) := by
+  rw [mem_directFutureOf_iff'] at h ⊢
+  exact identifyTime_edge ord t₂ t₁ a b h (identifyTime_no_collapse ord t₁ t₂ hinc hnsl a b h)
+
+/-- Every backward edge survives identification, renamed. -/
+theorem directPastOf_transport (ord : TimeOrdering) (t₁ t₂ : TimeIndex)
+    (hinc : incomparableB ord (t₁, t₂) = true)
+    (hnsl : IrreflOrd ord) (a b : TimeIndex)
+    (h : a ∈ ord.directPastOf b) :
+    rho t₂ t₁ a ∈ (ord.identifyTime t₂ t₁).directPastOf (rho t₂ t₁ b) := by
+  rw [mem_directPastOf_iff'] at h ⊢
+  exact identifyTime_edge ord t₂ t₁ a b h (identifyTime_no_collapse ord t₁ t₂ hinc hnsl a b h)
+
+/-- **The reachability transport, forward.** -/
+theorem futureOf_transport (ord : TimeOrdering) (t₁ t₂ : TimeIndex)
+    (hinc : incomparableB ord (t₁, t₂) = true)
+    (hnsl : IrreflOrd ord) (s t : TimeIndex)
+    (h : t ∈ ord.futureOf s) :
+    rho t₂ t₁ t ∈ (ord.identifyTime t₂ t₁).futureOf (rho t₂ t₁ s) := by
+  rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [s] [] h with hv | ⟨u, hu, n, hn1, hn2, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hu
+    subst hu
+    rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq]
+    exact TimeOrdering.bfsClosure_complete _
+      (pathN_along _ _ (rho t₂ t₁) (directFutureOf_transport ord t₁ t₂ hinc hnsl) n u t hp)
+      hn1 hn2
+
+/-- **The reachability transport, backward.** -/
+theorem pastOf_transport (ord : TimeOrdering) (t₁ t₂ : TimeIndex)
+    (hinc : incomparableB ord (t₁, t₂) = true)
+    (hnsl : IrreflOrd ord) (s t : TimeIndex)
+    (h : t ∈ ord.pastOf s) :
+    rho t₂ t₁ t ∈ (ord.identifyTime t₂ t₁).pastOf (rho t₂ t₁ s) := by
+  rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [s] [] h with hv | ⟨u, hu, n, hn1, hn2, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hu
+    subst hu
+    rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq]
+    refine TimeOrdering.bfsClosure_complete _ (pathN_along _ _ (rho t₂ t₁) ?_ n u t hp) hn1 hn2
+    intro x y hy
+    exact directPastOf_transport ord t₁ t₂ hinc hnsl y x hy
+
 end FormalSystem.Metalogic.Decidability

@@ -477,28 +477,48 @@ non-branching runs (that is `NoSplit` by another name).
 
 ---
 
-### Phase 5: The reachability transport stack [NOT STARTED]
+### Phase 5: The reachability transport stack [COMPLETED]
 
 **Goal**: Land the twelve transport lemmas that make claim (i) work. **All twelve are verbatim
 transcription from the scratch file** — do not re-derive them.
 
 **Tasks**:
-- [ ] `identifyTime_edge` (scratch line 11) — a constraint that does not collapse survives, renamed.
-- [ ] `mem_futureOf_of_mem_constraints` (line 28), `mem_pastOf_of_mem_constraints` (line 35).
+- [x] `identifyTime_edge` (scratch line 11) — a constraint that does not collapse survives, renamed.
+- [x] `mem_futureOf_of_mem_constraints` (line 28), `mem_pastOf_of_mem_constraints` (line 35).
       **These do not exist in the library** despite report 03 describing them as already
       machine-checked; budget for them here.
-- [ ] `identifyTime_no_collapse` (line 49) — collapse-freedom, carrying `hinc` and `hnsl`. Also
+- [x] `identifyTime_no_collapse` (line 49) — collapse-freedom, carrying `hinc` and `hnsl`. Also
       absent from the library for the same reason.
-- [ ] `mem_directFutureOf_iff'` (line 77), `mem_directPastOf_iff'` (line 87).
-- [ ] `pathN_along` (line 98) — transport of `TimeOrdering.PathN` along an arbitrary renaming,
+- [x] `mem_directFutureOf_iff'` (line 77), `mem_directPastOf_iff'` (line 87).
+- [x] `pathN_along` (line 98) — transport of `TimeOrdering.PathN` along an arbitrary renaming,
       **length preserving**. This is the step that makes the fuel budget work: a path found at fuel
       `100` maps to a path of the same length, re-found by `bfsClosure_complete` at the same `100`.
-- [ ] `directFutureOf_transport` (line 119), `directPastOf_transport` (line 128).
-- [ ] `futureOf_transport` (line 137), `pastOf_transport` (line 153) — the two reachability
+- [x] `directFutureOf_transport` (line 119), `directPastOf_transport` (line 128).
+- [x] `futureOf_transport` (line 137), `pastOf_transport` (line 153) — the two reachability
       transports, built from landed `bfsClosure_sound`, `bfsClosure_complete`, `reachableForward_eq`,
       `reachableBackward_eq` only.
-- [ ] Restate `hnsl` in the landed `IrreflOrd` vocabulary where the scratch file spells it out as
+- [x] Restate `hnsl` in the landed `IrreflOrd` vocabulary where the scratch file spells it out as
       `∀ p ∈ ord.constraints, p.1 ≠ p.2`, so downstream phases consume one name.
+
+**Completion notes**:
+- **Sequencing note (not a content deviation)**: this phase was executed before Phase 3. Its only
+  dependency is Phase 1 (it is in wave 2 alongside Phase 2), and Phase 3's own task list
+  explicitly anticipates consuming `mem_directFutureOf_iff'` from here ("both landed / Phase 5").
+  Landing Phase 5 first is the honest way to have that lemma available rather than fragmenting it
+  out of its home phase. No phase content was changed.
+- All twelve lemmas transcribed **verbatim** from the scratch file and elaborated green on the
+  first attempt. No re-derivation was needed and none was attempted.
+- `hnsl` is stated as `IrreflOrd ord` throughout rather than the scratch file's spelled-out
+  `∀ p ∈ ord.constraints, p.1 ≠ p.2`. `IrreflOrd` is a `def` with exactly that body, so the
+  proofs transcribe unchanged and downstream phases meet one name (the plan's last task).
+- The primed names `mem_directFutureOf_iff'` / `mem_directPastOf_iff'` are kept: an unprimed
+  `mem_directFutureOf_iff` already exists in the library (one hit under `FormalSystem/`), which
+  is why the scratch file primed them.
+- The scratch file's section-level `variable (ord : TimeOrdering) (t₁ t₂ : TimeIndex)` binders
+  were made explicit parameters on the four transport lemmas, since this module has no matching
+  `variable` block. Statements are otherwise identical.
+- `lean_verify futureOf_transport` and `lean_verify pastOf_transport` each report exactly
+  `[propext, Classical.choice, Quot.sound]`. Zero `sorry`.
 
 **Timing**: 1.5 hours
 
