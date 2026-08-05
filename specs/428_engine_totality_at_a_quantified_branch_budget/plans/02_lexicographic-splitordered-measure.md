@@ -364,18 +364,18 @@ be reported, not silently supplied.
 
 ---
 
-### Phase 6: The incomparable-pair measure and the `addFuture` arms [NOT STARTED]
+### Phase 6: The incomparable-pair measure and the `addFuture` arms [COMPLETED]
 
 **Goal**: Define the second component of the lexicographic measure and prove it strictly decreases
 at `timeLinearity`'s two `addFuture` arms. All VERIFIED (research 02 item groups 5-8).
 
 **Tasks**:
-- [ ] Prove `firstIncomparablePair_spec`: `firstIncomparablePair b ord = some (t₁,t₂)` implies
+- [x] Prove `firstIncomparablePair_spec`: `firstIncomparablePair b ord = some (t₁,t₂)` implies
       `t₁ ∈ b.knownTimes ∧ t₂ ∈ b.knownTimes ∧ t₂ ≠ t₁ ∧ t₂ ∉ ord.futureOf t₁ ∧ t₂ ∉ ord.pastOf t₁`.
       This is the `some`-direction companion to the already-landed
       `comparable_of_firstIncomparablePair_none`, and it does not exist yet. Everything downstream
       consumes it.
-- [ ] Add the two definitions, **transcribing `firstIncomparablePair`'s own test verbatim** rather
+- [x] Add the two definitions, **transcribing `firstIncomparablePair`'s own test verbatim** rather
       than re-deriving it — this is deliberate, so the measure cannot drift from the trigger it is
       meant to track:
       ```lean
@@ -385,9 +385,9 @@ at `timeLinearity`'s two `addFuture` arms. All VERIFIED (research 02 item groups
       def incompPairs (b : Branch) (ord : TimeOrdering) : Finset (TimeIndex × TimeIndex) :=
         ((b.knownTimes ×ˢ b.knownTimes).filter (incomparableB ord)).toFinset
       ```
-- [ ] Prove `incomparableB_mono` and `incompPairs_mono`: `constraints ⊆ constraints′` implies
+- [x] Prove `incomparableB_mono` and `incompPairs_mono`: `constraints ⊆ constraints′` implies
       `incompPairs b ord' ⊆ incompPairs b ord`. Consume Phase 5's `futureOf_mono`/`pastOf_mono`.
-- [ ] Prove `incompPairs_lt_addFuture`: on the trigger's own hypotheses,
+- [x] Prove `incompPairs_lt_addFuture`: on the trigger's own hypotheses,
       `(incompPairs b (ord.addFuture t₁ t₂)).card < (incompPairs b ord).card`. This covers
       `timeLinearity` arms 1 and 2, whose branch is literally unchanged. Consume
       `firstIncomparablePair_spec`, `incompPairs_mono`, and Phase 5's `mem_futureOf_addFuture` /

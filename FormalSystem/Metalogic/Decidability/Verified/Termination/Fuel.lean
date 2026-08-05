@@ -1004,6 +1004,112 @@ theorem timeChain_of_linearity_saturated {b : Branch} {ord : TimeOrdering}
   · exact Or.inl (orderDual_holds ord t₁ t₂ hfut)
   · exact Or.inr hpast
 
+/-! ### The incomparable-pair measure
+
+The second component of the `.splitOrdered` progress measure. `timeLinearity` fires exactly while
+an incomparable pair remains, and its two `addFuture` arms leave the *branch* literally unchanged
+— so the only thing that can be moving there is the ordering, and what it moves is the count of
+incomparable pairs among the branch's known times.
+
+`incomparableB` transcribes `firstIncomparablePair`'s own test **verbatim** rather than
+re-deriving an equivalent one. That is deliberate: the measure must not be able to drift from the
+trigger it is meant to track. -/
+
+/--
+**What the trigger guarantees, `some` direction.** The companion to
+`comparable_of_firstIncomparablePair_none`: when `timeLinearity` does fire, the pair it reports is
+a genuine pair of branch times, distinct, and incomparable in both directions.
+-/
+theorem firstIncomparablePair_spec {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : firstIncomparablePair b ord = some (t₁, t₂)) :
+    t₁ ∈ b.knownTimes ∧ t₂ ∈ b.knownTimes ∧ t₂ ≠ t₁ ∧
+      t₂ ∉ ord.futureOf t₁ ∧ t₂ ∉ ord.pastOf t₁ := by
+  simp only [firstIncomparablePair] at h
+  obtain ⟨l₁, a, l₂, hsplit, hfa, -⟩ := List.findSome?_eq_some_iff.mp h
+  have hamem : a ∈ b.knownTimes := by rw [hsplit]; simp
+  rcases hfind : b.knownTimes.find? (fun t => t != a && !(ord.futureOf a).contains t
+      && !(ord.pastOf a).contains t) with _ | c
+  · rw [hfind] at hfa; simp at hfa
+  · rw [hfind] at hfa
+    simp only [Option.some.injEq, Prod.mk.injEq] at hfa
+    obtain ⟨ha1, ha2⟩ := hfa
+    subst ha1; subst ha2
+    have hcmem : c ∈ b.knownTimes := List.mem_of_find?_eq_some hfind
+    have hp := (List.find?_eq_some_iff_getElem.mp hfind).1
+    simp only [Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true', List.contains_eq_mem,
+      decide_eq_false_iff_not] at hp
+    exact ⟨hamem, hcmem, hp.1.1, hp.1.2, hp.2⟩
+
+/-- `firstIncomparablePair`'s test, transcribed verbatim as a predicate on pairs. -/
+def incomparableB (ord : TimeOrdering) (p : TimeIndex × TimeIndex) : Bool :=
+  p.2 != p.1 && !(ord.futureOf p.1).contains p.2 && !(ord.pastOf p.1).contains p.2
+
+/-- The incomparable pairs among a branch's known times: the measure's second component. -/
+def incompPairs (b : Branch) (ord : TimeOrdering) : Finset (TimeIndex × TimeIndex) :=
+  ((b.knownTimes ×ˢ b.knownTimes).filter (incomparableB ord)).toFinset
+
+theorem mem_incompPairs {b : Branch} {ord : TimeOrdering} {p : TimeIndex × TimeIndex} :
+    p ∈ incompPairs b ord ↔
+      p.1 ∈ b.knownTimes ∧ p.2 ∈ b.knownTimes ∧ incomparableB ord p = true := by
+  cases p with
+  | mk x y => simp [incompPairs, List.mem_toFinset, List.mem_product, and_assoc]
+
+/-- Incomparability is *anti*monotone in the constraint list: more constraints, fewer
+incomparable pairs. Consumes `futureOf_mono` / `pastOf_mono`. -/
+theorem incomparableB_mono {ord ord' : TimeOrdering}
+    (h : ∀ q ∈ ord.constraints, q ∈ ord'.constraints) (p : TimeIndex × TimeIndex) :
+    incomparableB ord' p = true → incomparableB ord p = true := by
+  simp only [incomparableB, Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true',
+    List.contains_eq_mem, decide_eq_false_iff_not]
+  rintro ⟨⟨hne, hf⟩, hp⟩
+  exact ⟨⟨hne, fun hc => hf (TimeOrdering.futureOf_mono h _ _ hc)⟩,
+    fun hc => hp (TimeOrdering.pastOf_mono h _ _ hc)⟩
+
+/-- Extending the constraint list can only shrink the incomparable-pair set. -/
+theorem incompPairs_mono {b : Branch} {ord ord' : TimeOrdering}
+    (h : ∀ q ∈ ord.constraints, q ∈ ord'.constraints) :
+    incompPairs b ord' ⊆ incompPairs b ord := by
+  intro p hp
+  rw [mem_incompPairs] at hp ⊢
+  exact ⟨hp.1, hp.2.1, incomparableB_mono h p hp.2.2⟩
+
+/-- `addFuture` only ever prepends a constraint. -/
+theorem addFuture_constraints_mono (ord : TimeOrdering) (t t' : TimeIndex) :
+    ∀ q ∈ ord.constraints, q ∈ (ord.addFuture t t').constraints := by
+  intro q hq; simp [TimeOrdering.addFuture]; exact Or.inr hq
+
+/--
+**The measure's second component strictly drops at both `addFuture` arms.**
+
+This covers arms 1 and 2 of `applyRule .timeLinearity`, whose branch is literally unchanged. The
+*same* witness pair `(t₁, t₂)` is eliminated by arm 1 through the `futureOf` conjunct and by arm 2
+through the `pastOf` conjunct, which is why arm 2 needs no appeal to `orderDual_holds`.
+-/
+theorem incompPairs_lt_addFuture {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : firstIncomparablePair b ord = some (t₁, t₂)) :
+    (incompPairs b (ord.addFuture t₁ t₂)).card < (incompPairs b ord).card ∧
+    (incompPairs b (ord.addFuture t₂ t₁)).card < (incompPairs b ord).card := by
+  obtain ⟨h1, h2, hne, hfut, hpast⟩ := firstIncomparablePair_spec h
+  have hmem : (t₁, t₂) ∈ incompPairs b ord := by
+    rw [mem_incompPairs]
+    refine ⟨h1, h2, ?_⟩
+    simp only [incomparableB, Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true',
+      List.contains_eq_mem, decide_eq_false_iff_not]
+    exact ⟨⟨hne, hfut⟩, hpast⟩
+  constructor
+  · refine Finset.card_lt_card ⟨incompPairs_mono (addFuture_constraints_mono ord t₁ t₂),
+      fun hcon => ?_⟩
+    have hc := (mem_incompPairs.mp (hcon hmem)).2.2
+    simp only [incomparableB, Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true',
+      List.contains_eq_mem, decide_eq_false_iff_not] at hc
+    exact hc.1.2 (TimeOrdering.mem_futureOf_addFuture ord t₁ t₂)
+  · refine Finset.card_lt_card ⟨incompPairs_mono (addFuture_constraints_mono ord t₂ t₁),
+      fun hcon => ?_⟩
+    have hc := (mem_incompPairs.mp (hcon hmem)).2.2
+    simp only [incomparableB, Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true',
+      List.contains_eq_mem, decide_eq_false_iff_not] at hc
+    exact hc.2 (TimeOrdering.mem_pastOf_addFuture ord t₁ t₂)
+
 /--
 **The label dimension, composed.** An unbranched run whose final branch is linearity-saturated and
 carries no blocked time is bounded by `2 * |C| * (W * 2 ^ (2 * |C|))`, with `W` the world count.
