@@ -1,6 +1,13 @@
 # Engine totality at a quantified branch budget — research findings
 
 - **Task**: 428
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4 (hard mode: H2, H3, H4, H5)
 - **Session**: sess_1785952999_c3149a_428
 - **Date**: 2026-08-05

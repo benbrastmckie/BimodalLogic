@@ -419,6 +419,15 @@ private theorem pick_splitOrdered' {b : Branch} {bs : List (Branch × TimeOrderi
     | persistent fs => simp at h
     | branchingOrdered bs' => exact ⟨r, o, by simpa using h⟩
 
+-- `linter.unusedTactic` fires on the `exact RuleResult.noConfusion h` inside the second
+-- `first` alternative below and calls it dead. It is NOT dead: it is the alternative's
+-- *failure* mechanism. In the goals where `simp only [] at h` makes progress but does not
+-- close the goal, that `exact` is what makes the whole alternative fail so `first` falls
+-- through to `simp_all`, which discharges them from the false rule equation in context.
+-- Deleting the `exact` was tried and leaves 12 goals unsolved (`impPos`, `impNeg`, `boxPos`,
+-- `boxNeg`, `boxTemporal`, `allFuturePos`, `allFutureNeg`, `allPastPos`, `allPastNeg`,
+-- `denseIndicatorClosure`, `densityRule`, `z1Rule`).
+set_option linter.unusedTactic false in
 set_option maxHeartbeats 4000000 in
 /-- `timeLinearity` is the ONLY rule that can produce an ordered split. -/
 theorem applyRule_branchingOrdered_rule (rule : TableauRule) (sf : SignedFormula) (b : Branch)

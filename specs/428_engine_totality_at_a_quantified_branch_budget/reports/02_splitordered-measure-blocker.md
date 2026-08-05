@@ -1,6 +1,13 @@
 # Research Report: the `.splitOrdered` progress measure
 
 - **Task**: 428 — engine_totality_at_a_quantified_branch_budget
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Question**: does the proposed order-theoretic measure unblock Phase 4 task 4.1, and what
   concrete Phase 4/6 re-plan follows?
 - **Method**: every claim below marked **VERIFIED** was type-checked against the real repo via

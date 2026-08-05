@@ -1,6 +1,11 @@
 # Implementation Summary: Task #428
 
 - **Task**: 428 - engine_totality_at_a_quantified_branch_budget
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Plan**: plans/01_budget-totality-engine-repair.md
 - **Outcome**: **PARTIAL** — Phases 1-3 COMPLETED, Phase 4 BLOCKED, Phases 5-8 not started
 - **Build**: `lake build` green repo-wide (2332 jobs); zero `sorry`, zero new axioms in both
