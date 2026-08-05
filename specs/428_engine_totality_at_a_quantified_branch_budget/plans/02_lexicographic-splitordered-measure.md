@@ -314,26 +314,26 @@ strict lemma was done or dropped.
 
 ---
 
-### Phase 5: Closure monotonicity calculus for the time ordering [NOT STARTED]
+### Phase 5: Closure monotonicity calculus for the time ordering [COMPLETED]
 
 **Goal**: Land the monotonicity facts about `futureOf`/`pastOf` under constraint extension, and the
 two "the new edge is actually seen" lemmas. These are the core of the `addFuture` arms of the
 lexicographic measure. All seven are VERIFIED (research 02 item groups 1-4).
 
 **Tasks**:
-- [ ] Confirm the BFS calculus is present before starting (see Scope Hypothesis) and that
+- [x] Confirm the BFS calculus is present before starting (see Scope Hypothesis) and that
       `Fuel.lean:98`'s `open private reachableForward reachableBackward from …` is in force. Do not
       rebuild any of it.
-- [ ] Prove `pathN_mono`: `(∀ x y, y ∈ f x → y ∈ g x) → PathN f n a b → PathN g n a b`.
-- [ ] Prove `directFutureOf_mono` and `directPastOf_mono`: `constraints ⊆ constraints′` implies
+- [x] Prove `pathN_mono`: `(∀ x y, y ∈ f x → y ∈ g x) → PathN f n a b → PathN g n a b`.
+- [x] Prove `directFutureOf_mono` and `directPastOf_mono`: `constraints ⊆ constraints′` implies
       `directFutureOf` / `directPastOf` grows.
-- [ ] Prove `futureOf_mono` and `pastOf_mono`: `constraints ⊆ constraints′` implies `futureOf` /
+- [x] Prove `futureOf_mono` and `pastOf_mono`: `constraints ⊆ constraints′` implies `futureOf` /
       `pastOf` grows, **at the same fuel 100**. Route: `bfsClosure_sound` extracts a path of length
       `1 ≤ n ≤ 100`, `pathN_mono` transports it along the bigger edge set, `bfsClosure_complete`
       re-finds it at the same fuel. Research 02 measures this at ~6 lines. The fuel bound is not an
       obstacle precisely because soundness and completeness are stated at a *matching* bound — the
       same observation `orderDual_holds` already relies on.
-- [ ] Prove `mem_futureOf_addFuture` (`t₂ ∈ (ord.addFuture t₁ t₂).futureOf t₁`) and
+- [x] Prove `mem_futureOf_addFuture` (`t₂ ∈ (ord.addFuture t₁ t₂).futureOf t₁`) and
       `mem_pastOf_addFuture` (`t₂ ∈ (ord.addFuture t₂ t₁).pastOf t₁`), each ~4 lines via a one-edge
       `PathN` plus `bfsClosure_complete`. Note that the *same* witness pair `(t₁, t₂)` is killed by
       arm 1 through the `futureOf` conjunct and by arm 2 through the `pastOf` conjunct, so **arm 2

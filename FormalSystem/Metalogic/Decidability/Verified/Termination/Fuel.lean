@@ -869,6 +869,91 @@ theorem mem_directFutureOf_iff (ord : TimeOrdering) (x y : TimeIndex) :
     y ∈ ord.directFutureOf x ↔ x ∈ ord.directPastOf y := by
   simp [directFutureOf, directPastOf, List.mem_filterMap]
 
+/-! ### Monotonicity of the closures under constraint extension
+
+The `addFuture` arms of `timeLinearity` extend the constraint list without touching the branch.
+What the progress measure needs from that is: adding a constraint can only *grow* each closure,
+and the constraint just added is actually seen by the closure. Both are consumers of the BFS
+calculus above — nothing new is built.
+
+The fuel bound is not an obstacle, and for the same reason `orderDual_holds` already relies on:
+`bfsClosure_sound` bounds the extracted path's length by the very fuel `bfsClosure_complete` is
+allowed to spend, so a path transported along a *larger* edge set is re-found at the *same* fuel
+`100`. Growing the edge set never lengthens the witnessing path. -/
+
+/-- A path transports along any edge-set enlargement, at the same length. -/
+theorem pathN_mono {f g : TimeIndex → List TimeIndex} (h : ∀ x y, y ∈ f x → y ∈ g x) :
+    ∀ {n : Nat} {a b : TimeIndex}, PathN f n a b → PathN g n a b := by
+  intro n
+  induction n with
+  | zero => intro a b hp; exact hp
+  | succ n ih =>
+    intro a b hp
+    obtain ⟨c, hc, hcb⟩ := hp
+    exact ⟨c, h a c hc, ih hcb⟩
+
+/-- One-step forward edges grow with the constraint list. -/
+theorem directFutureOf_mono {ord ord' : TimeOrdering}
+    (h : ∀ p ∈ ord.constraints, p ∈ ord'.constraints) (x y : TimeIndex) :
+    y ∈ ord.directFutureOf x → y ∈ ord'.directFutureOf x := by
+  simp only [directFutureOf, List.mem_filterMap]
+  rintro ⟨⟨a, b⟩, hab, hcond⟩
+  exact ⟨(a, b), h _ hab, hcond⟩
+
+/-- One-step backward edges grow with the constraint list. Mirror of `directFutureOf_mono`. -/
+theorem directPastOf_mono {ord ord' : TimeOrdering}
+    (h : ∀ p ∈ ord.constraints, p ∈ ord'.constraints) (x y : TimeIndex) :
+    y ∈ ord.directPastOf x → y ∈ ord'.directPastOf x := by
+  simp only [directPastOf, List.mem_filterMap]
+  rintro ⟨⟨a, b⟩, hab, hcond⟩
+  exact ⟨(a, b), h _ hab, hcond⟩
+
+/-- **The forward closure is monotone in the constraint list, at the same fuel `100`.**
+`bfsClosure_sound` extracts a path of length `1 ≤ n ≤ 100`, `pathN_mono` transports it along the
+larger edge set, and `bfsClosure_complete` re-finds it within the same budget. -/
+theorem futureOf_mono {ord ord' : TimeOrdering}
+    (h : ∀ p ∈ ord.constraints, p ∈ ord'.constraints) (t x : TimeIndex) :
+    x ∈ ord.futureOf t → x ∈ ord'.futureOf t := by
+  intro hx
+  rw [futureOf, reachableForward_eq] at hx
+  rcases bfsClosure_sound _ 100 [t] [] hx with hv | ⟨s, hs, n, hn1, hn2, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hs
+    subst hs
+    rw [futureOf, reachableForward_eq]
+    exact bfsClosure_complete _ (pathN_mono (directFutureOf_mono h) hp) hn1 hn2
+
+/-- The backward closure is monotone in the constraint list. Mirror of `futureOf_mono`. -/
+theorem pastOf_mono {ord ord' : TimeOrdering}
+    (h : ∀ p ∈ ord.constraints, p ∈ ord'.constraints) (t x : TimeIndex) :
+    x ∈ ord.pastOf t → x ∈ ord'.pastOf t := by
+  intro hx
+  rw [pastOf, reachableBackward_eq] at hx
+  rcases bfsClosure_sound _ 100 [t] [] hx with hv | ⟨s, hs, n, hn1, hn2, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hs
+    subst hs
+    rw [pastOf, reachableBackward_eq]
+    exact bfsClosure_complete _ (pathN_mono (directPastOf_mono h) hp) hn1 hn2
+
+/-- **The new edge is seen, forwards.** A one-edge path plus `bfsClosure_complete`. -/
+theorem mem_futureOf_addFuture (ord : TimeOrdering) (t₁ t₂ : TimeIndex) :
+    t₂ ∈ (ord.addFuture t₁ t₂).futureOf t₁ := by
+  rw [futureOf, reachableForward_eq]
+  refine bfsClosure_complete _ (n := 1) ⟨t₂, ?_, rfl⟩ (le_refl 1) (by omega)
+  simp [directFutureOf, addFuture, List.mem_filterMap]
+
+/-- **The new edge is seen, backwards.**
+
+Note the argument order: this is `ord.addFuture t₂ t₁`, so the *same* witness pair `(t₁, t₂)` that
+arm 1 of `timeLinearity` kills through the `futureOf` conjunct is killed by arm 2 through the
+`pastOf` conjunct. That symmetry is why arm 2 needs no appeal to `orderDual_holds`. -/
+theorem mem_pastOf_addFuture (ord : TimeOrdering) (t₁ t₂ : TimeIndex) :
+    t₂ ∈ (ord.addFuture t₂ t₁).pastOf t₁ := by
+  rw [pastOf, reachableBackward_eq]
+  refine bfsClosure_complete _ (n := 1) ⟨t₂, ?_, rfl⟩ (le_refl 1) (by omega)
+  simp [directPastOf, addFuture, List.mem_filterMap]
+
 end TimeOrdering
 
 /--
