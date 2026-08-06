@@ -706,7 +706,7 @@ the two is what makes that precise.
 
 ---
 
-### Phase 7: Clause (1), label dimension, per Phase 5's verdict [NOT STARTED]
+### Phase 7: Clause (1), label dimension, per Phase 5's verdict [BLOCKED]
 
 **Goal**: Land the honest maximum on the label dimension, on whichever of two pre-declared branches
 Phase 5 selected. Do not choose a third route.
@@ -719,17 +719,29 @@ Phase 5 selected. Do not choose a third route.
       mark this sub-branch `[BLOCKED]` on it rather than authoring the analogue here.
 - [ ] Combine with Phase 6 into clause 1 at `signedUniverse C L`.
 
-**Branch (b) — Phase 5 refuted clause 1 at every fixed finite `L`** (expected):
-- [ ] Land the refutation from Phase 5 as the definitive statement, with its witness named.
-- [ ] Name the repaired condition. The repair is a **branch-side headroom** hypothesis, not a further
+**Branch (b) — Phase 5 refuted clause 1 at every fixed finite `L`** (expected) — **THIS IS THE
+BRANCH THAT RAN**, per Phase 5's written verdict:
+- [x] Land the refutation from Phase 5 as the definitive statement, with its witness named.
+      *(`universeClosed_fresh_world_escapes`, with `universeClosedAt_fresh_world_escapes` recording
+      that the clause-2 repair does not rescue it.)*
+- [x] Name the repaired condition. The repair is a **branch-side headroom** hypothesis, not a further
       closure condition on `L`: a fixed finite universe cannot absorb fresh labels, because each
       enlargement of `L` raises the reachable `maxWorld`/`maxTime` and re-opens the gap. State it as
       such, and say plainly that this is why the condition cannot be moved into `L`.
-- [ ] Record the obligation map for the headroom condition, in the style
+      *(`FreshWorldHeadroom`, with `freshWorldHeadroom_not_universal` **proving** — not merely
+      asserting — that it cannot be moved into `L`, at every nonempty finite `L`.)*
+- [x] Record the obligation map for the headroom condition, in the style
       `StepLengthGrowth`'s docstring uses: what each rule shape needs, which existing lemma supplies
       it, and which piece is missing (the time-dimension analogue, owned elsewhere).
+      *(On `UnorderedSuccessorLabelClosed`'s docstring, per coordinate. The world coordinate is
+      backed by a new lemma, `applyRule_emitted_world_dichotomy`, rather than by prose.)*
 - [ ] State clause 1 at `signedUniverse C L` **with** the headroom hypothesis, so Phase 8 has a
       concrete composite to assemble. The hypothesis stays explicit and named; it is not absorbed.
+      *(deviation: PARTIAL — clause 1 is stated and proved at `signedUniverse C L` reduced to the
+      **label coordinate alone** (`unorderedSuccessor_confined_signedUniverse_of_headroom`), with the
+      formula coordinate discharged outright. It is **not** proved from `FreshWorldHeadroom`, because
+      doing so requires the missing time-coordinate lemma — see the blocker below. The label
+      coordinate is instead carried as the named residual `UnorderedSuccessorLabelClosed`.)*
 
 **Timing**: 2 hours
 
@@ -749,24 +761,82 @@ instead of forcing a branch-local form.
 - Module build green; every new declaration sorry-free.
 - The chosen branch matches Phase 5's written verdict, and the phase note says which branch ran.
 
+**BLOCKER** (Phase 7):
+- **What failed**: proving clause 1's label dimension at `signedUniverse C L` from the branch-side
+  headroom condition `FreshWorldHeadroom`. Specifically, discharging `∀ x ∈ nb, x.label ∈ L` for
+  every unordered successor `nb` requires bounding **both** label coordinates of every emitted
+  formula. The **world** coordinate is fully available. The **time** coordinate has no supporting
+  lemma anywhere in the development.
+- **What was tried**: the world coordinate was assembled and landed as
+  `applyRule_emitted_world_dichotomy` — every emitted formula sits at a world of `b` or at
+  `Branch.nextWorld`, no third case — from `applyRule_emitted_world_mem` (34 rules) plus
+  `applyRule_boxNeg_emitted_world` and `applyRule_diamondPos_emitted_world`. Searched for a time
+  analogue: `lean_local_search` on `nextTime` and a grep for `emitted_time` / `_time_mem` across
+  `FormalSystem/` return nothing. The eight-rule `ruleMintsFreshLabel` list was checked and is **not**
+  the list of time-introducing rules — `densityRule` interpolates a fresh time while being absent
+  from it, and the active arms of `untlNeg`/`snceNeg` introduce times while being classified
+  `ruleSelfGuarded`.
+- **Why it's stuck**: the missing statement is a time-coordinate analogue of
+  `applyRule_emitted_world_mem` — a 36-arm accounting over `applyRule` bounding emitted *times* by
+  `b.knownTimes` with the time-minting rules separated out. Its absence is named on
+  `MintPaysForTime`'s own docstring, which places it in the mint/time story.
+- **What is needed**: that lemma. **It is explicitly out of scope for this task** — the plan's
+  Non-Goals name it as another task's territory ("the time-dimension analogue of
+  `applyRule_emitted_world_mem` is 434's territory; this plan may *consume* it if it lands first but
+  must not author it"), and it had not landed at dispatch time. The plan's branch (b) instruction is
+  followed literally: "If it requires the time-dimension analogue of `applyRule_emitted_world_mem`,
+  **stop**: that is task 434's territory. Record the dependency and mark this sub-branch `[BLOCKED]`
+  on it rather than authoring the analogue here."
+- **Prohibited workarounds**: no `sorry`, no `def X := True`, no vacuous placeholder was used. In
+  particular the label residual was **not** defined as something trivially true, and it is not
+  circular window-dressing: `unorderedSuccessorLabelClosed_not_universal` proves it **fails** at a
+  concrete `L`, so it is a genuine condition and the composite that assumes it is genuinely
+  conditional rather than vacuous.
+
+#### Phase 7 completion note — branch (b), partially delivered
+
+**Branch (b) ran**, matching Phase 5's written verdict. Module build **green**; every new declaration
+sorry-free and axiom-free.
+
+Landed:
+
+| Declaration | Role |
+|-------------|------|
+| `applyRule_emitted_world_dichotomy` | **new**: the complete world-coordinate accounting, `b.worldFinset ∨ b.nextWorld`, no third case |
+| `FreshWorldHeadroom` | the named branch-side headroom condition (moved into Phase 5's section so `freshWorldHeadroom_not_universal` can be stated at it) |
+| `freshWorldHeadroom_not_universal` | **proof** that the condition cannot be moved into `L`, at every nonempty finite `L` |
+| `UnorderedSuccessorLabelClosed` | clause 1's label coordinate as a named residual, carrying the per-coordinate obligation map |
+| `unorderedSuccessor_confined_signedUniverse_of_headroom` | clause 1 at `signedUniverse C L`, reduced to the label coordinate alone |
+| `unorderedSuccessorLabelClosed_not_universal` | the residual is a genuine condition: it **fails** at `freshWorldLabels` |
+
+**Scope hypothesis, confirmed.** "The headroom condition is expressible over `b` alone, without
+reference to the run's remaining budget." Confirmed: `FreshWorldHeadroom L b` mentions only `L` and
+`b` — no `σ`, no `Tmax`, no fuel. So the condition does not belong to the budget story.
+
+**Refinement made to Phase 5's landed material** (additive, within this task's own new code):
+`worldHeadroom_fixed_finite_false` was restated as `freshWorldHeadroom_not_universal`, quantifying the
+headroom over `t ∈ b.knownTimes` rather than over all `t : TimeIndex`. This is a **stronger**
+theorem — it refutes a weaker headroom assumption — and it makes `FreshWorldHeadroom` load-bearing
+rather than decorative. Two docstring cross-references were updated to the new name.
+
 ---
 
-### Phase 8: The composite theorem, and the terminus corollary [NOT STARTED]
+### Phase 8: The composite theorem, and the terminus corollary [COMPLETED]
 
 **Goal**: Land the deliverable — a theorem establishing the repaired closure predicate at the
 concrete, useful instantiation `U = signedUniverse C L` — and a terminus corollary stated at it.
 
 **Tasks**:
-- [ ] Land `universeClosedAt_signedUniverse`: `UniverseClosedAt fc (signedUniverse C L)` from
+- [x] Land `universeClosedAt_signedUniverse`: `UniverseClosedAt fc (signedUniverse C L)` from
       `TableauClosed C`, `TrichStock C`, `TimeMergeClosed L`, and whatever Phase 7 left explicit.
       Clause 2 comes from Phase 4; clause 1 from Phases 6 and 7.
-- [ ] Land the terminus corollary: `buildTableauAt_isSome_of_budget` (or, if the length-budget
+- [x] Land the terminus corollary: `buildTableauAt_isSome_of_budget` (or, if the length-budget
       sibling is the live one, `buildTableauAt_isSome_of_lengthBudget`) with the `UniverseClosedAt`
       hypothesis discharged at `signedUniverse C L`, leaving only the other residuals. This is the
       statement that shows the residual is actually *paid* rather than merely renamed.
-- [ ] Write a docstring on the composite naming precisely which residuals remain on the corollary,
+- [x] Write a docstring on the composite naming precisely which residuals remain on the corollary,
       so a reader is not misled into thinking the terminus is now unconditional.
-- [ ] If Phase 7 ran branch (b), state on the corollary that the headroom hypothesis is the residue
+- [x] If Phase 7 ran branch (b), state on the corollary that the headroom hypothesis is the residue
       and where its obligation map lives.
 
 **Timing**: 1.5 hours
@@ -788,6 +858,46 @@ statement rather than to a `simp` set.
 **Verification**:
 - `lake build` full project green.
 - `lean_verify` on the composite and the corollary: sorry-free, axiom-free, no `native_decide`.
+
+#### Phase 8 completion note
+
+Module build **green**; `lean_verify` on `universeClosedAt_signedUniverse_of_headroom` and
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse`: axioms exactly
+`{propext, Classical.choice, Quot.sound}`.
+
+Landed:
+
+| Declaration | Role |
+|-------------|------|
+| `universeClosedAt_signedUniverse_of_headroom` | the composite: `UniverseClosedAt fc (signedUniverse C L)` from `TableauClosed C`, `TrichStock C`, `TimeMergeClosed L`, and the one named residual |
+| `buildTableauAt_isSome_of_lengthBudget_signedUniverse` | the terminus with the closure residual paid at `signedUniverse C L` |
+| `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse` | the caller-facing form, every number read off |
+
+**The composite is conditional, and the plan's naming is adjusted to say so.** The plan named it
+`universeClosedAt_signedUniverse`, i.e. unconditional. Because Phase 7 is blocked on the missing
+time-coordinate lemma, the honest statement carries the named residual
+`UnorderedSuccessorLabelClosed fc L`, and the declaration is named
+`universeClosedAt_signedUniverse_of_headroom` to make the conditionality visible at the call site
+rather than hidden in a hypothesis list. *(deviation: altered — conditional form and `_of_headroom`
+suffix, forced by Phase 7's blocker; the plan pre-declared this outcome in its Risks table and in
+branch (b).)*
+
+**The length-budget sibling is the live one**, so the corollary is stated there rather than at
+`buildTableauAt_isSome_of_budget` — the plan's own parenthetical permits exactly this choice, and
+`DifficultyBounded` being refutable at every `D` (`difficultyBounded_multiplicity_false`) is why.
+
+**Scope hypothesis, confirmed.** "The composite needs exactly the three named conditions plus Phase
+7's residue, and no additional side condition surfaces during assembly." Confirmed: the composite is
+a two-line anonymous-constructor term and the elaborator surfaced nothing beyond
+`TableauClosed C`, `TrichStock C`, `TimeMergeClosed L`, and `UnorderedSuccessorLabelClosed fc L`. No
+condition was hidden in a `simp` set.
+
+**What the terminus corollary actually pays, stated exactly** (and written onto its docstring):
+clause 2 in full — the conjunct that was unsatisfiable at every nonempty universe is now a rectangle
+condition on the label set — plus clause 1's formula coordinate. What remains of this residual is
+clause 1's **label** coordinate and nothing else. The three unrelated residuals
+(`MintPaysForTime`, `PostBlockingSettles`, `β ≥ 3`) and `StepLengthBounded` are carried across
+unaltered.
 
 ---
 
