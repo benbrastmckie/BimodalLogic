@@ -1,7 +1,37 @@
 # Implementation Plan: Task #428 — Route (b), the Mint Bound (v4, `OrdTimesKnown` strengthening)
 
 - **Task**: 428 - engine_totality_at_a_quantified_branch_budget
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
+
+> **Status at plan close (2026-08-06).** All 17 phases are `[COMPLETED]` and every Success
+> Criterion this plan wrote down is met (each is now individually ticked below with the check that
+> confirmed it). The plan is therefore **fully executed** — but it is **not** fully successful, and
+> the distinction is load-bearing:
+>
+> **The terminus is conditional.** `buildTableauAt_isSome_of_budget` carries four unproved
+> hypotheses — `UniverseClosed`, `DifficultyBounded` (at `β ≥ 3`), `MintPaysForTime`, and
+> `PostBlockingSettles` — each landed as a named `def` with an in-source docstring stating what
+> would discharge it. `NoSplit` and `RunInvariant` are genuinely absent from the statement and the
+> mint bound is genuinely discharged, so the three things this plan's criteria *did* forbid are all
+> absent. But **no criterion in the original list required the terminus to be unconditional**, so
+> "all criteria met" understates what remains. Obstruction O1 is closed **conditionally**, not
+> closed. A caller cannot use this result until the four residuals are discharged.
+>
+> That gap is recorded as criterion 11 below, left deliberately unchecked. `MintPaysForTime` is the
+> open mathematical core; `DifficultyBounded` is blocked by `temporalCount`/`modalCount` being
+> private to `Saturation.lean`, which this plan forbids touching, so it needs a scope decision
+> rather than more proof effort.
+>
+> Two premises of this plan did not survive contact with the source and are recorded at their
+> phases: the naked `BudgetedTotality` is **false as stated** (refuted at `β = 0` by
+> `budgetedTotality_beta_zero_false`), and Phase 12's "the path figure fits, no divergence needed"
+> is **withdrawn** — it compared the wrong quantity. The landed figure is the derived
+> `mintAwareFuel`, with `splitAwareFuel_le_mintAwareFuel` proving it enlarges rather than replaces.
+>
+> Everything else holds: `MintBound.lean` is 4512 lines, 0 `sorry`, 0 `axiom`, `#print axioms` on
+> the terminus exactly `[propext, Classical.choice, Quot.sound]`, `lake build` green repo-wide
+> (2333 jobs, 3m24s wall), and `Fuel.lean` / `Saturation.lean` / `Tableau.lean` are md5-identical
+> to their recorded baselines.
 - **Effort**: 27 hours (22 carried from plan 03, of which ~11 are already spent on landed phases; +5 for the Phase 4 repair)
 - **Dependencies**: None blocking. Consumes phases 1-10 of
   `plans/02_lexicographic-splitordered-measure.md` (landed, sorry-free, axiom-free, green), the
@@ -335,16 +365,21 @@ phase's deliverable and is forbidden.
 **Goal**: Lift Phase 3 from `applyRule` to `expandOnceUnblocked`, so `IrreflOrd` is a run invariant
 the fuel induction can carry.
 
-**Status**: this phase is `[IN PROGRESS]`, not `[COMPLETED]` and not `[BLOCKED]`. Its four original
-task bullets are all green and committed. Its *Goal* is not yet met, because the results below
-thread the **weak** invariant and a run through the ordered split's arm 3 loses it. The remaining
-work — the strong analogues — is decomposed into **Phases 4.1, 4.2 and 4.3** below.
+**Status history** (this phase is now `[COMPLETED]`; the record below is why it was written as a
+decomposition rather than as a single phase, and is retained deliberately):
 
-**This decomposition re-works results that this phase itself landed** (`expandOnceUnblocked_irreflOrd`
+While this phase was `[IN PROGRESS]`, its four original task bullets were all green and committed
+but its *Goal* was **not** met, because the results below thread the **weak** invariant and a run
+through the ordered split's arm 3 loses it. The remaining work — the strong analogues — was
+decomposed into **Phases 4.1, 4.2 and 4.3** below, all three of which have since landed. The
+phase's Goal is met by that decomposition, which is what closed it.
+
+**That decomposition re-works results this phase itself landed** (`expandOnceUnblocked_irreflOrd`
 at `MintBound.lean:931`, commit `77cb0930b`; `expandOnceUnblocked_ordTimes` at `:1152`, commit
-`cc1ae9a5f`), and that is **real re-work, stated plainly rather than glossed**. It is not a reopened
-completed phase: Phase 4 is `[IN PROGRESS]`, so its own deliverables are still in flight and are
-this plan's to revise. **No `[COMPLETED]` phase is reopened by anything in 4.1-4.3.**
+`cc1ae9a5f`), and that was **real re-work, stated plainly rather than glossed**. It was not a
+reopened completed phase: Phase 4 was `[IN PROGRESS]` at the time 4.1-4.3 were authored, so its own
+deliverables were still in flight and were this plan's to revise. **No `[COMPLETED]` phase was
+reopened by anything in 4.1-4.3.**
 
 **Tasks** (all four landed under plan 03):
 - [x] `findApplicable{,Serial,Linearity}Rule_applyRule_pair` — the three pick bridges carrying the
@@ -1364,6 +1399,14 @@ arm. Re-establishing it is `expandOnceUnblocked_splitOrdered_ordTimesKnown`.
       `densityRule` / `untlNeg` / `snceNeg` time-creation question), and `ArmSettlement`
       (`resolveOpenArm`'s reachable `none`, carried by `Fuel.lean` in the same form). None is the
       unbranching restriction renamed.
+      *(**superseded at Phase 14** — read that phase's record, not this bullet, for the residual
+      the terminus actually carries. The fourth residual is `PostBlockingSettles`, not
+      `ArmSettlement`: Phase 14 found the post-blocking `| some _ => none` arm still textually
+      present in `buildTableauAt`, and `PostBlockingSettles` discharges it **and** subsumes
+      `ArmSettlement` via `armSettlement_of_postBlockingSettles`, so the terminus carries one
+      settlement residual rather than two. `ArmSettlement` alone is provably too weak, because
+      `resolveOpenArm` tests `findClosure satBr` first and `buildTableauAt` does not. The count of
+      four is unchanged; the fourth member's name is.)*
 
 **Timing**: 2.5 hours
 
@@ -1481,45 +1524,96 @@ not permit one here.
 
 ## Success Criteria
 
-- [ ] `buildTableauAt_isSome_of_budget` is landed, sorry-free, axiom-free, with no `NoSplit`
+Each box below was ticked against a check that was actually run at plan close, named inline. The
+one unmet criterion (11) is a criterion this plan **did not originally write down**; it is added
+here rather than silently omitted, and is left unchecked.
+
+- [x] `buildTableauAt_isSome_of_budget` is landed, sorry-free, axiom-free, with no `NoSplit`
       hypothesis, no undischarged mint bound, and no carried `RunInvariant`.
-- [ ] `OrdTimesKnown` is the carried run invariant, `ordTimesLeMaxTime_of_ordTimesKnown` witnesses
+      *(verified: `MintBound.lean:4416`; `grep -c 'NoSplit'` = 0 file-wide; the statement's
+      hypothesis list contains no `RunInvariant` — it is discharged inside via `runInvariant_initial`
+      — and the mint bound appears only as the numeric `hmb : 8 * U.card ≤ mintBudget`, discharged
+      at the seed corollary by `Nat.le_refl`. **This criterion does not forbid other residuals, and
+      four are present — see criterion 11.**)*
+- [x] `OrdTimesKnown` is the carried run invariant, `ordTimesLeMaxTime_of_ordTimesKnown` witnesses
       that this is a **strengthening**, and every landed `OrdTimesLeMaxTime` declaration is
-      byte-untouched.
-- [ ] The ordered split's identification arm preserves the run invariant
+      byte-untouched. *(verified: witness at `MintBound.lean:1291`; the diff for the whole task is
+      purely additive — `git diff` shows +2709 lines, no deletion or edit of a landed declaration.)*
+- [x] The ordered split's identification arm preserves the run invariant
       (`ordTimesKnown_identifyTime`, `expandOnceUnblocked_splitOrdered_ordTimesKnown`) — the Phase 4
       blocker is closed by proof, not by narrowing.
-- [ ] The initial condition `runInvariant_initial` is landed and its vacuity is documented in-source
+      *(verified: `MintBound.lean:1331` and `:1653`.)*
+- [x] The initial condition `runInvariant_initial` is landed and its vacuity is documented in-source
       as a property of `TimeOrdering.empty`, not of a narrowed statement.
-- [ ] The mint budget is **discharged in-plan** (Phases 11-13), not carried as a caller obligation
-      and not pushed onto task 412.
-- [ ] The world dimension is supplied, or its absence is carried as exactly one explicitly named
-      residual whose harmlessness is **proved**, not asserted.
-- [ ] `buildTableau`, its `fuel := 1000` default, and `expandBranchWithFuel`'s
+      *(verified: `MintBound.lean:1726`.)*
+- [x] The mint budget is **discharged in-plan** (Phases 11-13), not carried as a caller obligation
+      and not pushed onto another task. *(verified: `mints_le_eight_mul` landed; the terminus takes
+      the bound as the numeric `hmb`, read off at `8 · |U|` in `buildTableauAt_isSome_at_seed`
+      rather than left as an obligation.)*
+- [x] The world dimension is supplied, or its absence is carried as exactly one explicitly named
+      residual whose harmlessness is **proved**, not asserted. *(met by the first disjunct: the
+      world dimension was **supplied** in Phase 9 — R4 is retired by proof via the
+      `WorldWitnessKnown` strengthening, not carried as a residual.)*
+- [x] `buildTableau`, its `fuel := 1000` default, and `expandBranchWithFuel`'s
       `maxBranches := 50000` default are byte-identical to their pre-task form.
-- [ ] `Fuel.lean`, `Saturation.lean`, and `Tableau.lean` are **BYTE-IDENTICAL**, verified by md5.
-- [ ] The do-not-re-attempt register carries all seven entries, including the refuted arm-3
-      preservation of `OrdTimesLeMaxTime`.
-- [ ] `lake build` green repo-wide.
+      *(verified: implied by the md5 check below — all three defaults live in the md5-pinned files.)*
+- [x] `Fuel.lean`, `Saturation.lean`, and `Tableau.lean` are **BYTE-IDENTICAL**, verified by md5.
+      *(verified at plan close: `ae47004e06e77f2846cc3e1dfa408382`,
+      `8a395bd7117a682c1f8302a2ac5f0f1f`, `cfd82332c8e400ac97ab709ece5dfb4a` — all three match the
+      baselines recorded below.)*
+- [x] The do-not-re-attempt register carries all seven entries, including the refuted arm-3
+      preservation of `OrdTimesLeMaxTime`. *(verified: **eight** entries present — the seven
+      required plus the naked `BudgetedTotality`, refuted at `β = 0`. A superset satisfies this.)*
+- [x] `lake build` green repo-wide. *(verified: 2333 jobs, 3m24.678s wall / 17m7.636s user.)*
+- [ ] **The terminus is unconditional** — `buildTableauAt_isSome_of_budget` carries no unproved
+      hypothesis beyond the numeric budget conditions a caller can read off.
+      **NOT MET, and not required by any criterion in this plan's original list.** The terminus
+      carries four unproved propositions: `UniverseClosed fc U`, `DifficultyBounded fc U D` (at
+      `β ≥ 3`), `MintPaysForTime fc U Tmax`, and `PostBlockingSettles fc`. Each is a named `def`
+      with an in-source docstring stating what would discharge it, and none is the unbranching
+      restriction renamed — all four `ExpansionResult` shapes stay admissible under every one.
+      **Consequence: obstruction O1 is closed conditionally, not closed.** This criterion is stated
+      here so that a future reader is not misled by the ten ticks above into thinking the headline
+      result is available for use. Discharging these is out of scope for this plan and needs either
+      a plan revision or separate tasks; `DifficultyBounded` in particular is blocked by
+      `temporalCount`/`modalCount` being private to `Saturation.lean`, which this plan forbids
+      editing, so it is a scope decision rather than a proof effort.
 
 ## Testing & Validation
 
-- [ ] `lake build` green repo-wide at Phase 14 (and at any phase whose tier is `full`).
-- [ ] Zero `sorry` and zero `^axiom ` in `MintBound.lean`.
-- [ ] `#print axioms` / `lean_verify` on each phase's top-level declaration reports exactly
-      `[propext, Classical.choice, Quot.sound]` (or a subset).
-- [ ] md5 of `FormalSystem/Metalogic/Decidability/Saturation.lean`,
+- [x] `lake build` green repo-wide at Phase 14 (and at any phase whose tier is `full`).
+      *(2333 jobs, 3m24.678s wall / 17m7.636s user.)*
+- [x] Zero `sorry` and zero `^axiom ` in `MintBound.lean`. *(both 0 at 4512 lines; and the whole
+      task's diff introduces zero new `sorry` anywhere under `FormalSystem/`.)*
+- [x] `#print axioms` / `lean_verify` on each phase's top-level declaration reports exactly
+      `[propext, Classical.choice, Quot.sound]` (or a subset). *(confirmed on the terminus.)*
+- [x] md5 of `FormalSystem/Metalogic/Decidability/Saturation.lean`,
       `.../Verified/Termination/Fuel.lean`, and `.../Tableau.lean` unchanged at every phase end —
       currently `ae47004e06e77f2846cc3e1dfa408382`, `8a395bd7117a682c1f8302a2ac5f0f1f`, and
-      `cfd82332c8e400ac97ab709ece5dfb4a`.
-- [ ] The existing `SplitFuelProbes`, `ArmSettlingProbes`, and `BudgetedTableauProbes` `#guard_msgs`
+      `cfd82332c8e400ac97ab709ece5dfb4a`. *(all three re-checked at plan close; all match.)*
+- [x] The existing `SplitFuelProbes`, `ArmSettlingProbes`, and `BudgetedTableauProbes` `#guard_msgs`
       rows all still pass unchanged. They pin measured behavior and must not drift.
-- [ ] `grep -inE 'task [0-9]|tasks [0-9]' FormalSystem/` reports nothing — no task-number citations
-      in any deliverable.
-- [ ] `grep 'NoSplit' MintBound.lean` reports nothing.
-- [ ] Every phase that closes `[BLOCKED]` has its exact goal state recorded, and every carried
-      residual hypothesis is named in the implementation summary.
-- [ ] The branching non-vacuity witness (Phase 13) is at a genuinely branching branch.
+      *(satisfied by construction, and worth stating explicitly so a future reader does not go
+      looking for them in the wrong file: all three probe blocks live in `Saturation.lean`
+      (`ArmSettlingProbes`, `BudgetedTableauProbes`) and `Fuel.lean` (`SplitFuelProbes`), both of
+      which are md5-verified byte-identical above — none is in `MintBound.lean`.)*
+- [x] No task-number citations are introduced in any deliverable.
+      *(**criterion corrected at plan close.** As originally written — "`grep -inE 'task [0-9]|tasks
+      [0-9]' FormalSystem/` reports nothing" — this is unmeetable and always was: that grep returns
+      71 pre-existing hits, every one of them in `FormalSystem/Boneyard/**` READMEs and other files
+      untouched by this task. The check that actually tests this plan's conduct is scoped to this
+      task's own contribution, and it passes: 0 hits in `MintBound.lean`, and 0 introduced by the
+      task's entire diff. The original repo-wide form is left recorded here rather than deleted,
+      because the pre-existing Boneyard citations are a real finding about the repository — they
+      are simply not this plan's to fix.)*
+- [x] `grep 'NoSplit' MintBound.lean` reports nothing. *(0 occurrences file-wide.)*
+- [x] Every phase that closes `[BLOCKED]` has its exact goal state recorded, and every carried
+      residual hypothesis is named in the implementation summary. *(vacuous in the first clause —
+      no phase closed `[BLOCKED]`. The second clause is met: all four residuals are named in the
+      summary, at Phase 13's scope-hypothesis report, and at Success Criterion 11 above.)*
+- [x] The branching non-vacuity witness (Phase 13) is at a genuinely branching branch.
+      *(`branchingWitness` = `T(p → q)`, with `branchingWitness_splits` closed by `decide` rather
+      than asserted, plus two `#guard_msgs` probes.)*
 
 ## Artifacts & Outputs
 
