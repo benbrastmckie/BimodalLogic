@@ -282,21 +282,21 @@ Phases within the same wave are logically independent, but **every phase edits t
 
 ---
 
-### Phase 4: The satisfiable form, and the rule-local obligation it isolates [NOT STARTED]
+### Phase 4: The satisfiable form, and the rule-local obligation it isolates [COMPLETED]
 
 - **Goal:** State the *length-hypothesis* form of the residual — the form that is actually
   satisfiable — and reduce its discharge to one finitely-checkable, rule-local inequality, with the
   obligation map recorded in-source.
 - **Tasks:**
-  - [ ] `def StepLengthGrowth (fc) (c : Nat) : Prop` — `∀ b ord tr`, every unordered successor and
+  - [x] `def StepLengthGrowth (fc) (c : Nat) : Prop` — `∀ b ord tr`, every unordered successor and
         every `.splitOrdered` arm satisfies `length ≤ c * b.length + c`, under `RunInvariant b ord`
         (needed for the four ordering-driven arms, whose emitted list is bounded via
-        `OrdTimesKnown`, not via `b` directly).
-  - [ ] `def DifficultyBoundedAt (fc) (U) (L D : Nat) : Prop` — `DifficultyBounded`'s two conjuncts
+        `OrdTimesKnown`, not via `b` directly). *(completed)*
+  - [x] `def DifficultyBoundedAt (fc) (U) (L D : Nat) : Prop` — `DifficultyBounded`'s two conjuncts
         with `RunInvariant b ord` and `b.length ≤ L` added as hypotheses. Mirror `MintPaysForTime`'s
-        hypothesis order (MintBound.lean:3945-3948) so the family reads uniformly.
-  - [ ] `difficultyBoundedAt_ceiling : StepLengthGrowth fc c → UniverseClosed fc U → DifficultyBoundedAt fc U L (difficultyCeiling U (c * L + c))`.
-  - [ ] Docstring `StepLengthGrowth` with the **full obligation map** so a follow-up can execute it
+        hypothesis order (MintBound.lean:3945-3948) so the family reads uniformly. *(completed)*
+  - [x] `difficultyBoundedAt_ceiling : StepLengthGrowth fc c → UniverseClosed fc U → DifficultyBoundedAt fc U L (difficultyCeiling U (c * L + c))`.
+  - [x] Docstring `StepLengthGrowth` with the **full obligation map** so a follow-up can execute it
         without redoing the reconnaissance: the constant arms (`.andPos`/`.orNeg`/`.impNeg` = 2,
         `.negPos`/`.negNeg` = 1, `.boxTemporal` ≤ 2, `.serialityRule` ≤ 2, the six `prior*`/`z1`/`sep`
         arms = 1); the branch-mapped arms (`.boxPos` Tableau.lean:671, `.diamondNeg` 731, `.boxNeg`
@@ -307,10 +307,22 @@ Phases within the same wave are logically independent, but **every phase edits t
         note that `TimeOrdering.futureOf` is `eraseDups`-ed (SignedFormula.lean:776) so `OrdTimesKnown`
         bounds its length by `b`'s known-time count; and `.branchingOrdered`'s three arms, all
         `≤ b.length` (Tableau.lean:1513-1519), the one already-benign family.
-  - [ ] State explicitly in the docstring that `StepLengthGrowth` is a **rule-local, finitely-many-cases**
+        *(completed. **deviation: altered** — the map was re-derived from `applyRule` as the Scope
+        Hypothesis instructed, and three of the plan's figures were wrong and are corrected
+        in-source: (i) `applyRule` has **36** arms, not ~25; (ii) two arms the plan's map omitted
+        are present and constant — `.orderTrichotomy` 1282 (three `.branching` arms of length 2)
+        and `.denseIndicatorClosure` 1331 (`.linear []`); (iii) `c = 3` is **too small**. The
+        `witness :: gProps ++ fNegProps ++ modalProps` arms carry a fourth branch-length term,
+        because `modalProps` is `boxDiamondPersistence` (Tableau.lean:434-442) and is itself two
+        branch `filterMap`s concatenated; the `.branching` arms of `.untlPos`/`.sncePos`/`.untlNeg`/
+        `.snceNeg` reach `2 + 4 * b.length`. **`c = 5` is the corrected constant**, and the
+        statements are parametric in `c` so widening cost nothing. `.z1Rule` is at 1408, not 1409.
+        The 13 branch-mapped / 4 ordering-driven / 6 `prior*`-`z1`-`sep` counts all checked out
+        exactly as the plan predicted.)*
+  - [x] State explicitly in the docstring that `StepLengthGrowth` is a **rule-local, finitely-many-cases**
         obligation — categorically unlike the residual it replaces, which could not be stated in
         terms of formula complexity at all — and that it is left unproved here by scope decision, not
-        by discovery of an obstruction.
+        by discovery of an obstruction. *(completed)*
 - **Timing:** 2 hours
 - **Depends on:** 3
 - **Verification Tier:** local

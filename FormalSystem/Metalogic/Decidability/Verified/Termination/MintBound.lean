@@ -4227,6 +4227,127 @@ theorem stepLengthBounded_of_difficultyBounded {fc : FormalSystem.ProofSystem.Fr
   · intro bs hbs p hp
     exact length_le_of_estimateBranchDifficulty_le ((hD b ord tr hbU).2 bs hbs p hp)
 
+/-! #### The satisfiable form, and the rule-local obligation it isolates
+
+The equivalence above says what the residual *is*; it does not make it true, and
+`difficultyBounded_multiplicity_false` says it is not. What is true is the same statement with the
+incoming branch's length bounded — `DifficultyBoundedAt` — and that form is reachable from a single
+rule-local growth inequality, `StepLengthGrowth`. The reduction is
+`difficultyBoundedAt_ceiling`, and the difference in character between the two obligations is the
+point of this block:
+
+* `DifficultyBounded` asks for a bound on `estimateBranchDifficulty` at *every* `U`-confined branch,
+  which by `estimateBranchDifficulty_length_le` means a bound on the length of every `U`-confined
+  branch. Confinement provides none, and no invariant supplies one. There is nothing to prove.
+* `StepLengthGrowth fc c` asks, for each of `applyRule`'s arms separately, that the emitted list be
+  linear in the incoming branch. That is a finite case analysis over a fixed function, with every
+  arm's answer already visible in its source text. It is left unproved **by scope decision**, not by
+  discovery of an obstruction, and the obligation map below is recorded so a follow-up needs no
+  fresh reconnaissance. -/
+
+/-- **The rule-local growth obligation: every successor is linear in the branch it came from.**
+
+`c` is a parameter, so the constant may be widened freely without restating anything downstream.
+`RunInvariant b ord` is present because four arms emit a list indexed by the *ordering* rather than
+by the branch, and only `OrdTimesKnown` ties the two together.
+
+### The obligation map
+
+`applyRule` (`Tableau.lean:630`) has **36** arms. Every one is accounted for here; the largest
+emitted list anywhere is `2 + 4 * b.length`, so a successor `formulas ++ b` has length at most
+`2 + 5 * b.length` and `c = 5` suffices.
+
+**Constant arms** — emitted length independent of the branch:
+* `.andPos` 635, `.orNeg` 650, `.impNeg` 658: exactly `2`.
+* `.andNeg` 640, `.orPos` 645, `.impPos` 655: `.branching`, each arm exactly `1`.
+* `.negPos` 661, `.negNeg` 666: exactly `1`.
+* `.boxTemporal` 743: a `filter` of a two-element list, so at most `2`.
+* `.orderTrichotomy` 1282: `.branching` with three arms, each of length exactly `2`
+  (`[pos d l0, sf]`).
+* `.denseIndicatorClosure` 1331: `.linear []`, length `0`.
+* `.priorUZ` 1388, `.priorSZ` 1398, `.z1Rule` 1408, `.priorUGap` 1429, `.priorSGap` 1445,
+  `.sepRule` 1464: six arms, each `.persistent [newSf]`, length exactly `1`.
+* `.serialityRule` 1486: a `filter` of a two-element list, so at most `2`.
+
+**Branch-mapped arms** — emitted length `Θ(b.length)`, thirteen of them:
+* `.boxPos` 671 and `.diamondNeg` 731: one `filterMap` over `branch.knownWorlds`, so at most
+  `b.length`.
+* `.boxNeg` 679 and `.diamondPos` 704: `witness :: boxProps ++ diaProps`, two `filterMap`s over
+  branch selectors, so at most `1 + 2 * b.length`.
+* `.densityRule` 1338: `witness :: gProps`, so at most `1 + b.length`.
+* `.allFutureNeg` 760, `.allPastNeg` 800, `.someFuturePos` 831, `.somePastPos` 875:
+  `witness :: gProps ++ fNegProps ++ modalProps`, where `modalProps` is
+  `boxDiamondPersistence` (`Tableau.lean:434-442`) and is itself two branch `filterMap`s
+  concatenated — four branch-length terms in all, so at most `1 + 4 * b.length`.
+* the `.branching` arms of `.untlPos` 921, `.sncePos` 968, `.untlNeg` 1013, `.snceNeg` 1144:
+  `[…] ++ autoProp` with `autoProp = gProps ++ fNegProps ++ modalProps`, so at most
+  `2 + 4 * b.length`. **These are the widest arms in the function**, and they are what fixes
+  `c = 5`.
+
+**Ordering-driven arms** — four of them, and the reason `RunInvariant` appears in the hypothesis:
+* `.allFuturePos` 751 and `.someFutureNeg` 863 `filterMap` over `timeOrd.futureOf l.time`;
+  `.allPastPos` 791 and `.somePastNeg` 907 over `timeOrd.pastOf l.time`.
+* `futureOf`/`pastOf` (`SignedFormula.lean:776`, `782`) are duplicate-free: `reachableForward` and
+  `reachableBackward` (`SignedFormula.lean:741-758`) `eraseDups` each layer and filter it against
+  the visited set. Every element is the target of an ordering constraint, so `OrdTimesKnown`
+  (`MintBound.lean:1260`) puts it in `b.knownTimes`, whose length is at most `b.length` because
+  `Branch.knownTimes` is a map-then-`eraseDups` of `b`. Hence at most `b.length` again — but only
+  under the invariant, which is why the invariant is a hypothesis here and not in
+  `StepLengthBounded`.
+
+**The `.branchingOrdered` arm** — `.timeLinearity` 1513, the one already-benign family: its three
+arms are `(b, _)`, `(b, _)` and `(b.identifyTime t₂ t₁, _)`, and `Branch.identifyTime` is
+`(b.map relabel).eraseDups`, so all three have length at most `b.length` with no `c` needed. -/
+def StepLengthGrowth (fc : FormalSystem.ProofSystem.FrameClass) (c : Nat) : Prop :=
+  ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), RunInvariant b ord →
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+        nb.length ≤ c * b.length + c) ∧
+    (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        ∀ p ∈ bs, p.1.length ≤ c * b.length + c)
+
+/-- **The satisfiable form of the difficulty residual.**
+
+`DifficultyBounded`'s two conjuncts with `RunInvariant b ord` and `b.length ≤ L` added as
+hypotheses, in `MintPaysForTime`'s hypothesis order so the residual family reads uniformly. The
+added length hypothesis is precisely what `difficultyBounded_multiplicity_false` shows cannot be
+dispensed with: without it the statement is false at every `D`. -/
+def DifficultyBoundedAt (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
+    (L D : Nat) : Prop :=
+  ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), RunInvariant b ord →
+    (∀ x ∈ b, x ∈ U) → b.length ≤ L →
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+        estimateBranchDifficulty nb ≤ D) ∧
+    (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        ∀ p ∈ bs, estimateBranchDifficulty p.1 ≤ D)
+
+/-- **The reduction.** A rule-local growth constant plus universe closure gives the satisfiable form
+of the difficulty residual outright, with `D` read off as `difficultyCeiling U (c * L + c)`.
+
+Proving `StepLengthGrowth fc c` for a concrete `c` — the map on `StepLengthGrowth` says `c = 5`
+works — would therefore turn this into an **unconditional** discharge of the satisfiable form,
+which is the furthest this residual can be taken. -/
+theorem difficultyBoundedAt_ceiling {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {c L : Nat}
+    (hg : StepLengthGrowth fc c) (hUcl : UniverseClosed fc U) :
+    DifficultyBoundedAt fc U L (difficultyCeiling U (c * L + c)) := by
+  intro b ord tr hinv hbU hlen
+  have habs : c * b.length + c ≤ c * L + c :=
+    Nat.add_le_add_right (Nat.mul_le_mul_left c hlen) c
+  refine ⟨?_, ?_⟩
+  · intro nb hnb
+    exact estimateBranchDifficulty_le_ceiling (hUcl.1 b ord tr hbU nb hnb)
+      (le_trans ((hg b ord tr hinv).1 nb hnb) habs)
+  · intro bs hbs p hp
+    have hlen' : p.1.length ≤ c * L + c := le_trans ((hg b ord tr hinv).2 bs hbs p hp) habs
+    obtain ⟨t₁, t₂, -, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hbs
+    have hconf : ∀ x ∈ p.1, x ∈ U := by
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl | rfl
+      · exact hbU
+      · exact hbU
+      · exact hUcl.2 b t₁ t₂ hbU
+    exact estimateBranchDifficulty_le_ceiling hconf hlen'
+
 /-- **The measure drops at `.extended` and at every arm of a `.split`.**
 
 Both residual disjuncts are discharged, and the second is the interesting one: a mint may raise the
