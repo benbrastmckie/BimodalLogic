@@ -1628,4 +1628,104 @@ theorem expandOnceUnblocked_irreflOrd_of_known {b : Branch} {ord : TimeOrdering}
     IrreflOrd (expandOnceUnblocked b ord fc tr).2 :=
   expandOnceUnblocked_irreflOrd hord (ordTimesLeMaxTime_of_ordTimesKnown haux)
 
+/-! ## A8. The run invariant
+
+This section closes the obligation the weak invariant could not meet.
+
+`OrdTimesLeMaxTime` is **refuted** at the ordered split's identification arm
+(`ordTimes_identifyTime_arm3_false`), so no amount of engine-level plumbing could have made the
+pair `(IrreflOrd, OrdTimesLeMaxTime)` into a run invariant: a single ordered split destroys the
+second component, and `IrreflOrd`'s own preservation at `applyRule` consumes it. The repair is
+`ordTimesKnown_identifyTime`, which survives that same arm **unconditionally** — with neither the
+`firstIncomparablePair` trigger nor `IrreflOrd` in hand — because branch and ordering are relabelled
+by the same `rho`.
+
+With arm 3 supplied, all three ordered-split arms close (`ordTimesKnown_splitOrdered_arms12` for
+arms 1-2), and `RunInvariant` below is carryable across **every** expansion step. -/
+
+/-- **The ordered split preserves `OrdTimesKnown` at all three arms** — the deliverable the
+strengthening exists for.
+
+`expandOnceUnblocked_splitOrdered_shape` supplies the exact three-arm list together with the
+trigger. Arms 1-2 keep the branch literally and add one edge between the incomparable pair, closed
+by `ordTimesKnown_splitOrdered_arms12` from the trigger alone; arm 3 is `ordTimesKnown_identifyTime`,
+which needs neither the trigger nor `IrreflOrd`. -/
+theorem expandOnceUnblocked_splitOrdered_ordTimesKnown
+    {b : Branch} {bs : List (Branch × TimeOrdering)} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (haux : OrdTimesKnown b ord)
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
+    ∀ p ∈ bs, OrdTimesKnown p.1 p.2 := by
+  obtain ⟨t₁, t₂, htrig, rfl⟩ := expandOnceUnblocked_splitOrdered_shape h
+  obtain ⟨harm1, harm2⟩ := ordTimesKnown_splitOrdered_arms12 htrig haux
+  intro p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · exact harm1
+  · exact harm2
+  · exact ordTimesKnown_identifyTime haux
+
+/-- **The run invariant.** Irreflexivity of the ordering, plus every ordering time being a known
+branch time.
+
+Bundled under one name so the fuel induction and its consumers carry a single hypothesis rather
+than spelling out a two-element bundle at every call site. The weak form `OrdTimesLeMaxTime` is
+available from it by projection (`RunInvariant.ordTimesLeMaxTime`) wherever a landed consumer wants
+it, so bundling loses nothing. -/
+def RunInvariant (b : Branch) (ord : TimeOrdering) : Prop :=
+  IrreflOrd ord ∧ OrdTimesKnown b ord
+
+/-- The irreflexivity component. -/
+theorem RunInvariant.irreflOrd {b : Branch} {ord : TimeOrdering} (h : RunInvariant b ord) :
+    IrreflOrd ord := h.1
+
+/-- The ordering-times component, in its strong form. -/
+theorem RunInvariant.ordTimesKnown {b : Branch} {ord : TimeOrdering} (h : RunInvariant b ord) :
+    OrdTimesKnown b ord := h.2
+
+/-- The ordering-times component in the **weak** form the landed `OrdTimesLeMaxTime` consumers
+take. This is the projection that keeps every already-proved result reachable. -/
+theorem RunInvariant.ordTimesLeMaxTime {b : Branch} {ord : TimeOrdering} (h : RunInvariant b ord) :
+    OrdTimesLeMaxTime b ord := ordTimesLeMaxTime_of_ordTimesKnown h.2
+
+/-- **The run invariant holds at every successor of an unblocked expansion step**, across all four
+`ExpansionResult` shapes.
+
+The first conjunct covers `.extended` (one successor) and `.split` (its arms), which share the
+step's own second-component ordering. The second conjunct covers `.splitOrdered`, whose per-arm
+orderings live inside the result. `.saturated` produces no successor branch and satisfies both
+conjuncts vacuously — by absence of successors, not by any weakening of the statement. -/
+theorem expandOnceUnblocked_runInvariant {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hinv : RunInvariant b ord) :
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+        RunInvariant nb (expandOnceUnblocked b ord fc tr).2) ∧
+    (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        ∀ p ∈ bs, RunInvariant p.1 p.2) := by
+  obtain ⟨hord, haux⟩ := hinv
+  constructor
+  · intro nb hnb
+    exact ⟨expandOnceUnblocked_irreflOrd_of_known hord haux,
+      expandOnceUnblocked_ordTimesKnown haux nb hnb⟩
+  · intro bs h p hp
+    exact ⟨expandOnceUnblocked_splitOrdered_irreflOrd hord h p hp,
+      expandOnceUnblocked_splitOrdered_ordTimesKnown haux h p hp⟩
+
+/-- **The initial condition.** The run invariant holds at the engine's seed ordering, for every
+branch.
+
+Both components are **vacuously true, and the vacuity is a property of the seed rather than of a
+narrowed statement**: `TimeOrdering.empty` has `constraints := []`, so there is no constraint to be
+irreflexive about and none whose times need to be known. Every engine run starts there — both
+`buildTableauAt` and `buildTableau` seed `expandBranchWithFuel` with `TimeOrdering.empty`.
+
+Stated with the same care as `ordTimesKnown_empty`: a base case discharged by `simp` here is not
+evidence that anything was weakened to make it close. The content lives in
+`expandOnceUnblocked_runInvariant`, whose three ordered-split arms and nine mint sites are each
+discharged by a non-vacuous lemma. -/
+theorem runInvariant_initial (b : Branch) : RunInvariant b TimeOrdering.empty := by
+  refine ⟨?_, ordTimesKnown_empty b⟩
+  intro t ht
+  simp [TimeOrdering.empty] at ht
+
 end FormalSystem.Metalogic.Decidability

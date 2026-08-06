@@ -330,7 +330,7 @@ phase's deliverable and is forbidden.
 
 ---
 
-### Phase 4: Engine-level `IrreflOrd` across all four result shapes [IN PROGRESS]
+### Phase 4: Engine-level `IrreflOrd` across all four result shapes [COMPLETED]
 
 **Goal**: Lift Phase 3 from `applyRule` to `expandOnceUnblocked`, so `IrreflOrd` is a run invariant
 the fuel induction can carry.
@@ -523,35 +523,35 @@ make room; a `sorry`; a vacuous placeholder. Per `plan-compliance.md`, a would-b
 
 ---
 
-### Phase 4.3: The ordered split closes — `IrreflOrd` becomes a run invariant [NOT STARTED]
+### Phase 4.3: The ordered split closes — `IrreflOrd` becomes a run invariant [COMPLETED]
 
 **Goal**: Close the Phase 4 blocker. Prove that `OrdTimesKnown` survives **every** arm of the
 ordered split, including arm 3, and package the pair `(IrreflOrd, OrdTimesKnown)` as the run
 invariant the fuel induction carries. **This is the deliverable the whole revision exists for.**
 
 **Tasks**:
-- [ ] Prove `expandOnceUnblocked_splitOrdered_ordTimesKnown`: given
+- [x] Prove `expandOnceUnblocked_splitOrdered_ordTimesKnown`: given
       `(expandOnceUnblocked b ord fc tr).1 = .splitOrdered bs` and `OrdTimesKnown b ord`, every
       `p ∈ bs` satisfies `OrdTimesKnown p.1 p.2`. Route: `expandOnceUnblocked_splitOrdered_shape`
       (landed, `:788`) supplies the exact three-arm list and the trigger
       `firstIncomparablePair b ord = some (t₁, t₂)`; arms 1-2 are
       `ordTimesKnown_splitOrdered_arms12 htrig haux` (branch literally unchanged); **arm 3** is
       `ordTimesKnown_identifyTime haux`, which needs neither the trigger nor `IrreflOrd`.
-- [ ] Package the run invariant as a single named definition, e.g.
+- [x] Package the run invariant as a single named definition, e.g.
       `RunInvariant (b : Branch) (ord : TimeOrdering) : Prop := IrreflOrd ord ∧ OrdTimesKnown b ord`,
       so Phases 8, 10, 13 and 14 consume **one** name rather than a two-element bundle spelled out
       at every call site. Supply its two projections and the derived weak form
       (`ordTimesLeMaxTime_of_ordTimesKnown ∘ .2`).
-- [ ] State and prove `expandOnceUnblocked_runInvariant`: the invariant holds at every successor of
+- [x] State and prove `expandOnceUnblocked_runInvariant`: the invariant holds at every successor of
       an unblocked expansion step — `.extended` and `.split` arms from 4.2 plus
       `expandOnceUnblocked_irreflOrd_of_known`; `.splitOrdered` arms from this phase's first task
       plus the landed `expandOnceUnblocked_splitOrdered_irreflOrd` (which carries over unchanged —
       it takes only `IrreflOrd ord`); `.saturated` contributes no successor.
-- [ ] Prove `runInvariant_initial (b : Branch) : RunInvariant b TimeOrdering.empty`, from
+- [x] Prove `runInvariant_initial (b : Branch) : RunInvariant b TimeOrdering.empty`, from
       `ordTimesKnown_empty` and the vacuous `IrreflOrd TimeOrdering.empty`. Docstring must repeat the
       initial-condition note from 4.1: vacuous **because the seed ordering has no constraints**, not
       because anything was narrowed.
-- [ ] Add an in-source section note recording that this closes the obligation the weak invariant
+- [x] Add an in-source section note recording that this closes the obligation the weak invariant
       could not meet, naming `ordTimes_identifyTime_arm3_false` as the refutation and
       `ordTimesKnown_identifyTime` as the repair. Never cite a task or report number.
 
