@@ -663,7 +663,7 @@ and mentions no ordering-times invariant.
 
 ---
 
-### Phase 8: Witness monotonicity and one-step preservation, all four shapes [NOT STARTED]
+### Phase 8: Witness monotonicity and one-step preservation, all four shapes [IN PROGRESS]
 
 **Goal**: Turn arm-3 preservation into a statement about **every** expansion step, which is what the
 mint counting actually consumes. This phase is **new proof**, not transcription.
@@ -676,14 +676,21 @@ is untouched, and the weak form is still available from `RunInvariant` by projec
 `OrdTimesLeMaxTime` consumer needs it.
 
 **Tasks**:
-- [ ] Prove `witnessPresent` is monotone in the branch:
+- [x] Prove `witnessPresent` is monotone in the branch:
       `b ⊆ b' → witnessPresent rule sf b ord = true → witnessPresent rule sf b' ord = true`.
       Every clause is a `contains` / `any … contains` test, so this is a `List.Subset` argument on
-      `Branch.contains`.
-- [ ] Prove `witnessPresent` is monotone in the ordering:
+      `Branch.contains`. *(landed as `witnessPresent_branch_mono`, with helpers `contains_mono`
+      and `knownWorlds_mono`)*
+- [x] Prove `witnessPresent` is monotone in the ordering:
       `ord.constraints ⊆ ord'.constraints → witnessPresent rule sf b ord = true → witnessPresent rule sf b ord' = true`,
       via the landed `futureOf_mono` / `pastOf_mono` and `addFuture_constraints_mono`.
+      *(landed as `witnessPresent_ord_mono`; `futureOf_mono`/`pastOf_mono` live in the
+      `TimeOrdering` namespace and must be qualified. Needed the module's standing
+      `maxHeartbeats 4000000` — not raised beyond it.)*
 - [ ] Combine into `expandOnceUnblocked_preserves_witness`, for each of the four result shapes:
+      *(NOT STARTED — dispatch budget ended after the two monotonicity lemmas. Needs a new
+      engine-level ordering-growth lemma `∀ p ∈ ord.constraints, p ∈ (expandOnceUnblocked …).2.constraints`
+      as its prerequisite; see the handoff.)*
       - `.extended nb`: `nb = fs ++ b` (`Tableau.lean:2234, 2238`), so branch monotonicity; the
         ordering only ever grows by `addFuture` / `addPast`, so ordering monotonicity.
       - `.split bs`: every arm is `fs ++ b` via the landed `expandOnceUnblocked_split_subset`.
@@ -694,6 +701,7 @@ is untouched, and the weak form is still available from `RunInvariant` by projec
       - `.saturated`: no successor branch, vacuous.
 - [ ] State the corollary in the form the counting needs: **`witnessPresent` never flips
       `true → false` along a run** (up to the arm-3 renaming), stated against `RunInvariant`.
+      *(NOT STARTED — depends on the bullet above.)*
 
 **Timing**: 2 hours
 
@@ -702,7 +710,11 @@ is untouched, and the weak form is still available from `RunInvariant` by projec
 **Verification Tier**: local
 
 **Scope Hypothesis**: This phase asserts that (a) the ordering only ever grows by edge addition
-except at arm 3, and (b) every `witnessPresent` clause is monotone in both arguments. Both are read
+except at arm 3, and (b) every `witnessPresent` clause is monotone in both arguments.
+**(b) CONFIRMED** by reading `witnessPresent`'s body (`Tableau.lean:1838`): eight real arms plus a
+`_ => false` default; every real arm is a `knownWorlds`/`futureOf`/`pastOf` `any` search whose body
+is a positive combination of `Branch.contains` tests joined by `||` and `&&`. **No negation
+anywhere, so no anti-monotone clause.** (a) is not yet confirmed — it is the remaining prerequisite. Both are read
 off the definitions; confirm by reading `witnessPresent`'s body and `applyRule`'s ordering returns
 before writing the proofs. If any clause is anti-monotone in either argument, that is a material
 finding — **report it**, since it would put the whole mint bound at risk.

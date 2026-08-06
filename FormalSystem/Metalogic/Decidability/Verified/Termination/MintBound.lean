@@ -1728,4 +1728,76 @@ theorem runInvariant_initial (b : Branch) : RunInvariant b TimeOrdering.empty :=
   intro t ht
   simp [TimeOrdering.empty] at ht
 
+/-! ## B4. `witnessPresent` monotonicity
+
+Every clause of `witnessPresent` is a **positive** combination of `Branch.contains` tests and
+`knownWorlds` / `futureOf` / `pastOf` membership tests, joined only by `any`, `||` and `&&`. There
+is no negation anywhere in its body, so it is monotone in the branch and monotone in the ordering
+separately. That is what makes "a witness, once present, stays present" available to the counting
+argument, and it is read off the definition rather than assumed. -/
+
+/-- `Branch.contains` is monotone in the branch. -/
+theorem contains_mono {b nb : Branch} {sf : SignedFormula} (hsub : ∀ x ∈ b, x ∈ nb)
+    (h : b.contains sf = true) : nb.contains sf = true := by
+  simp only [Branch.contains, List.any_eq_true] at h ⊢
+  obtain ⟨x, hx, hxe⟩ := h
+  exact ⟨x, hsub x hx, hxe⟩
+
+/-- Known worlds survive branch growth. The `knownWorlds` mirror of `knownTimes_mono`. -/
+theorem knownWorlds_mono {b nb : Branch} {w : WorldIndex} (hsub : ∀ x ∈ b, x ∈ nb)
+    (h : w ∈ b.knownWorlds) : w ∈ nb.knownWorlds := by
+  simp only [Branch.knownWorlds, List.mem_eraseDups, List.mem_map] at h ⊢
+  obtain ⟨sf, hsf, rfl⟩ := h
+  exact ⟨sf, hsub sf hsf, rfl⟩
+
+/-- **`witnessPresent` is monotone in the branch.** A witness found on a branch is still found on
+any larger branch: each of the eight real arms is a `knownWorlds`/`futureOf`/`pastOf` search whose
+body is a positive combination of `Branch.contains` tests, and only the `contains` tests and the
+`knownWorlds` search depend on the branch. -/
+theorem witnessPresent_branch_mono {rule : TableauRule} {sf : SignedFormula}
+    {b nb : Branch} {ord : TimeOrdering} (hsub : ∀ x ∈ b, x ∈ nb) :
+    witnessPresent rule sf b ord = true → witnessPresent rule sf nb ord = true := by
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;> cases sign <;> simp only [witnessPresent] <;> (repeat' split) <;>
+      (try simp only [List.any_eq_true, Bool.or_eq_true, Bool.and_eq_true]) <;>
+      first
+        | exact fun h => Bool.noConfusion h
+        | (rintro ⟨x, hx, hc⟩
+           refine ⟨x, ?_, ?_⟩
+           · first
+               | exact hx
+               | exact knownWorlds_mono hsub hx
+           · first
+               | exact contains_mono hsub hc
+               | (rcases hc with hc | ⟨h1, h2⟩
+                  · exact Or.inl (contains_mono hsub hc)
+                  · exact Or.inr ⟨contains_mono hsub h1, contains_mono hsub h2⟩))
+
+set_option maxHeartbeats 4000000 in
+/-- **`witnessPresent` is monotone in the ordering.** Only the `futureOf` / `pastOf` searches
+depend on the ordering, and both are monotone in the constraint list by the landed `futureOf_mono`
+and `pastOf_mono`. The `knownWorlds` arms do not mention the ordering at all.
+
+Carries the module's standing `maxHeartbeats 4000000`: the reachability-monotonicity lemmas are
+tried by `first` across every arm of the 36-constructor × 2-sign split, and `futureOf_mono`'s
+unification is not cheap. The figure is the one already established elsewhere in this module; it is
+not raised. -/
+theorem witnessPresent_ord_mono {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord ord' : TimeOrdering}
+    (hsub : ∀ p ∈ ord.constraints, p ∈ ord'.constraints) :
+    witnessPresent rule sf b ord = true → witnessPresent rule sf b ord' = true := by
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;> cases sign <;> simp only [witnessPresent] <;> (repeat' split) <;>
+      (try simp only [List.any_eq_true, Bool.or_eq_true, Bool.and_eq_true]) <;>
+      first
+        | exact fun h => Bool.noConfusion h
+        | (rintro ⟨x, hx, hc⟩
+           refine ⟨x, ?_, hc⟩
+           first
+             | exact hx
+             | exact TimeOrdering.futureOf_mono hsub _ _ hx
+             | exact TimeOrdering.pastOf_mono hsub _ _ hx)
+
 end FormalSystem.Metalogic.Decidability
