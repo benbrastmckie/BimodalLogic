@@ -3301,4 +3301,70 @@ theorem applyRule_fresh_witness_branching {rule : TableauRule} {sf : SignedFormu
                          Or.inr ⟨contains_of_mem List.mem_cons_self,
                            contains_of_mem (List.mem_cons_of_mem _ List.mem_cons_self)⟩⟩))))
 
+/-! ### The two halves meet: a mint is a strict decrease
+
+The guard puts the minting pair *in* the before-false set and the witness puts it *out* of the
+after-false set, and the successor is a superset in both components, so the after-false set is a
+strict subset of the before-false set. That is `mintPotential_lt_of_mint`, with its hypotheses now
+supplied from the pick rather than assumed.
+
+The two lemmas below are stated at the **pick**, not at the engine step, because that is where
+both halves are available at once — `findApplicableRule_applyRule_pair` ties the pick's reported
+result to `applyRule`'s, which is what lets the guard and the witness talk about the same rule
+application. The engine's fuel induction consumes them through the pick-stage bridges.
+
+With them, the once-only bound is complete: `mints_le_eight_mul` above turns "every step preserves
+`mints + mintPotential`, and a mint pays one unit for a strict decrease" into
+`#mints ≤ 8 · |U|` along a run of any length, carrying any number of ordered splits. The
+conclusion mentions no branch and no branch growth, which is the property route (b) exists to
+supply. -/
+
+/-- **A `.linear` mint strictly decreases the potential.** -/
+theorem mintPotential_lt_of_pick_linear {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {r : TableauRule} {sf₀ sf : SignedFormula}
+    {fs : List SignedFormula} {o : TimeOrdering}
+    (hpick : findApplicableRule sf₀ b ord fc = some (r, RuleResult.linear fs, o))
+    (hfresh : ruleMintsFreshLabel r = true) (hsfU : sf ∈ U) (hσ : σ sf = sf₀) :
+    mintPotential U σ (fs ++ b) o < mintPotential U σ b ord := by
+  have hpair : applyRule r sf₀ b ord = (RuleResult.linear fs, o) :=
+    findApplicableRule_applyRule_pair hpick
+  have hbefore : witnessPresent r (σ sf) b ord = false := by
+    rw [hσ]; exact findApplicableRule_guard_linear hpick hfresh
+  have hafter : witnessPresent r (σ sf) (fs ++ b) o = true := by
+    rw [hσ]
+    have := applyRule_fresh_witness_nonbranching (rule := r) (sf := sf₀) (b := b) (ord := ord)
+      hfresh (fs ++ b) (by rw [hpair]; simp [nonBranchingResultBranch])
+    rwa [hpair] at this
+  have hord : ∀ q ∈ ord.constraints, q ∈ o.constraints := by
+    have := applyRule_ord_mono r sf₀ b ord
+    rwa [hpair] at this
+  exact mintPotential_lt_of_mint (fun _ hx => List.mem_append_right fs hx) hord
+    (mem_freshLabelRules.mpr hfresh) hsfU hbefore hafter
+
+/-- **A `.branching` mint strictly decreases the potential, on every arm.** Both arms of
+`untlPos` / `sncePos` carry the witness, so neither arm is the one that escapes the bound. -/
+theorem mintPotential_lt_of_pick_branching {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {r : TableauRule} {sf₀ sf : SignedFormula}
+    {bss : List (List SignedFormula)} {o : TimeOrdering}
+    (hpick : findApplicableRule sf₀ b ord fc = some (r, RuleResult.branching bss, o))
+    (hfresh : ruleMintsFreshLabel r = true) (hsfU : sf ∈ U) (hσ : σ sf = sf₀) :
+    ∀ arm ∈ bss, mintPotential U σ (arm ++ b) o < mintPotential U σ b ord := by
+  have hpair : applyRule r sf₀ b ord = (RuleResult.branching bss, o) :=
+    findApplicableRule_applyRule_pair hpick
+  have hbefore : witnessPresent r (σ sf) b ord = false := by
+    rw [hσ]; exact findApplicableRule_guard_branching hpick hfresh
+  have hord : ∀ q ∈ ord.constraints, q ∈ o.constraints := by
+    have := applyRule_ord_mono r sf₀ b ord
+    rwa [hpair] at this
+  intro arm harm
+  have hafter : witnessPresent r (σ sf) (arm ++ b) o = true := by
+    rw [hσ]
+    have := applyRule_fresh_witness_branching (rule := r) (sf := sf₀) (b := b) (ord := ord)
+      hfresh (arm ++ b) (by rw [hpair]; exact List.mem_map_of_mem harm)
+    rwa [hpair] at this
+  exact mintPotential_lt_of_mint (fun _ hx => List.mem_append_right arm hx) hord
+    (mem_freshLabelRules.mpr hfresh) hsfU hbefore hafter
+
 end FormalSystem.Metalogic.Decidability

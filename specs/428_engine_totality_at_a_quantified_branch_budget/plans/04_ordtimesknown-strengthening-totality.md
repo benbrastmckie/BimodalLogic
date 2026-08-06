@@ -1120,7 +1120,7 @@ renamed or deleted. 0 `sorry`, 0 `axiom`, 0 `NoSplit`, 0 task-number citations.
 
 ---
 
-### Phase 11: `#mints ≤ 8·|U|` — the once-only bound [IN PROGRESS]
+### Phase 11: `#mints ≤ 8·|U|` — the once-only bound [COMPLETED]
 
 **Goal**: The first link of the amortized chain: each `(rule, sf)` pair mints at most once, so the
 total number of fresh-time mints along any path is bounded absolutely, with no reference to branch
@@ -1146,10 +1146,16 @@ bundle Phase 8's corollary carries, which is now `RunInvariant` — a rename, no
       Prove the post-mint fact: the rule's output **is** the witness (`Tableau.lean:2336` — all
       eight constructors return a syntactic cons whose head is the witness), so immediately after a
       mint `witnessPresent = true` for that pair.
-- [ ] Combine with Phase 8 (never flips `true → false`) to get: a mint strictly decreases
-      `mintPotential`, and a non-mint does not increase it.
-- [ ] Conclude `#mints ≤ 8 * |U|` along any path, as a statement about the induction's carried
-      counter — **absolute**, with no reference to branch growth.
+- [x] Combine with Phase 8 (never flips `true → false`) to get: a mint strictly decreases
+      `mintPotential`, and a non-mint does not increase it. *(landed as
+      `mintPotential_lt_of_pick_linear` / `mintPotential_lt_of_pick_branching` for the strict
+      half; the non-increase half is Phase 10's `mintPotential_le_of_grow`,
+      `mintPotential_identifyTime` and the two engine-level lemmas.)*
+- [x] Conclude `#mints ≤ 8 * |U|` along any path, as a statement about the induction's carried
+      counter — **absolute**, with no reference to branch growth. *(landed as
+      `mints_le_eight_mul`, which came in with Phase 10's block because the composition question
+      had to be settled there; its statement mentions no branch and no branch growth. Nothing was
+      re-derived here.)*
 
 **Timing**: 2 hours
 
@@ -1170,6 +1176,46 @@ would break the once-only argument and must be reported.
 - `lake build FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound` green.
 - The mint bound's statement mentions neither `|b|` nor branch growth, checkable by reading it.
 - Sorry-free; `#print axioms` reports exactly the three standard axioms.
+
+#### Completion notes
+
+**All three Scope Hypothesis readings CONFIRMED against the source before anything was built on
+them, and the one that mattered most is confirmed in the strong direction.** The guard at
+`Tableau.lean:1908` and `:1931` is in the `then` position of `if ruleMintsFreshLabel rule`, with
+the output-presence test in the *else* branch — it **replaces** that test rather than
+`&&`-composing with it, in both arms. An `&&`-composition would have broken the once-only
+argument, and the phase said so in advance; it is not one. The `.branching` arm checks
+`ruleSelfGuarded` first, and `not_selfGuarded_of_fresh` proves no fresh-label rule is
+self-guarded, so the guard is always reached. The witness-is-the-output reading at `:2336` and the
+eight-constructor count are both confirmed — the latter is now a proved `Finset`/`Bool` agreement
+(`mem_freshLabelRules`) rather than a census.
+
+**Landed**: `not_selfGuarded_of_fresh`; `findApplicableRule_guard_linear` /
+`findApplicableRule_guard_branching` (the guard, generalised from the two world-minting rules of
+`findApplicableRule_guard_mint` to all eight by taking the result shape as a hypothesis instead of
+excluding the unguarded shapes rule by rule); `applyRule_fresh_witness_nonbranching` /
+`applyRule_fresh_witness_branching` (the post-mint witness, all eight rules, **both** arms of each
+branching rule proved individually); `mintPotential_lt_of_pick_linear` /
+`mintPotential_lt_of_pick_branching` (the two halves meeting at the pick).
+
+**The residual is unchanged and still visible.** `mintPotential_lt_of_pick_*` carries `hσ : σ sf =
+sf₀` with `sf ∈ U` — the same `σ`-hit obligation Phase 10 named, now surfacing at the pick rather
+than in the abstract. It is a hypothesis, not an assumption, and discharging it is a statement
+about time reuse (see Phase 10's completion notes). Phases 12-13 own it.
+
+**Build (R6/R8)**: green on the **first** attempt at both milestones. Whole-module `lake build`
+**161s wall / 13m52s user** after the guard-and-witness block (was 124s / 7m48s), and **161s /
+13m47s** after the pick-level block — the second block is free. The two witness lemmas are the
+cost: `applyRule_fresh_witness_nonbranching` elaborates in ~66s standalone and
+`applyRule_fresh_witness_branching` in ~121s, both being 36 × 2 splits with a `simp_all` inside
+each surviving arm. `set_option maxHeartbeats 4000000` is carried on those two only — the module's
+standing figure, **not raised above it**; every other declaration in this phase closes at the
+default. `#print axioms` on all six new theorems reports exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+**Constraint status**: `Saturation.lean`, `Tableau.lean`, `Fuel.lean` md5s all still match the
+recorded baselines. `MintBound.lean` 3177 → 3370 lines, purely additive. 0 `sorry`, 0 `axiom`,
+0 `NoSplit`, 0 task-number citations.
 
 ---
 
