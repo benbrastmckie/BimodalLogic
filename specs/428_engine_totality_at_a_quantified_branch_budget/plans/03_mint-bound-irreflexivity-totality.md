@@ -654,30 +654,59 @@ be reported, not absorbed into `h_9`.
 
 ---
 
-### Phase 7: Non-deletion at engine level, all four result shapes [NOT STARTED]
+### Phase 7: Non-deletion at engine level, all four result shapes [COMPLETED]
 
 **Goal**: Land claim (ii) — no expansion step deletes a formula — including the `.branchingOrdered`
 exhaustiveness fact nobody had proved. **Verbatim transcription.**
 
 **Tasks**:
-- [ ] `pick_splitOrdered'` (scratch line 400) — the local re-proof of the `private`
+- [x] `pick_splitOrdered'` (scratch line 400) — the local re-proof of the `private`
       `pick_splitOrdered`.
-- [ ] `applyRule_branchingOrdered_rule` (line 433) — `timeLinearity` is the ONLY rule that can
+- [x] `applyRule_branchingOrdered_rule` (line 433) — `timeLinearity` is the ONLY rule that can
       produce `.branchingOrdered`. Transcribe **with** `set_option maxHeartbeats 4000000 in` and
       **with** `set_option linter.unusedTactic false in` plus the comment naming the 12 affected
       constructors (`impPos`, `impNeg`, `boxPos`, `boxNeg`, `boxTemporal`, `allFuturePos`,
       `allFutureNeg`, `allPastPos`, `allPastNeg`, `denseIndicatorClosure`, `densityRule`, `z1Rule`).
       The flagged `exact RuleResult.noConfusion h` is the `first`-alternative's failure mechanism;
       deleting it leaves 12 goals unsolved. Do not "fix" the linter warning by deleting the tactic.
-- [ ] `expandOnceUnblocked_splitOrdered_shape` (line 450) — the engine-level shape of an ordered
+- [x] `expandOnceUnblocked_splitOrdered_shape` (line 450) — the engine-level shape of an ordered
       split across all three pick stages.
-- [ ] `expandOnceUnblocked_splitOrdered_no_deletion` (line 472).
-- [ ] Add an in-source note that non-deletion is proved as a **membership** statement
+- [x] `expandOnceUnblocked_splitOrdered_no_deletion` (line 472).
+- [x] Add an in-source note that non-deletion is proved as a **membership** statement
       (`x ∈ b → ρ_SF x ∈ arm`), which is compatible with — and deliberately not a re-attempt of — the
       refuted `.splitOrdered` cardinality twin on the do-not-re-attempt register. Arm 3 still shrinks
       `toFinset.card` via `eraseDups` merging and nothing here claims otherwise.
-- [ ] Record the observed build time for `applyRule_branchingOrdered_rule` in the phase completion
+- [x] Record the observed build time for `applyRule_branchingOrdered_rule` in the phase completion
       notes (R6).
+
+**Completion notes**:
+- **Sequencing note**: executed before Phase 4. Both are wave 4 and logically independent; Phase 7
+  is verbatim transcription and Phase 4 is new proof, so 7 was taken first to bank the certain
+  value. Phase 4 remains the only wave-4 item outstanding.
+- All four declarations transcribed **verbatim**, green on the first attempt.
+- `applyRule_branchingOrdered_rule` was transcribed **with** both `set_option` lines and **with**
+  the full explanatory comment naming the 12 affected constructors. The flagged
+  `exact RuleResult.noConfusion h` was NOT deleted.
+- **Scope Hypothesis confirmed against the source.** `TableauRule` has **36** constructors (not
+  ~32): `andPos, andNeg, orPos, orNeg, impPos, impNeg, negPos, negNeg, boxPos, boxNeg,
+  diamondPos, diamondNeg, boxTemporal, allFuturePos, allFutureNeg, allPastPos, allPastNeg,
+  someFuturePos, someFutureNeg, somePastPos, somePastNeg, untlPos, untlNeg, sncePos, snceNeg,
+  orderTrichotomy, denseIndicatorClosure, densityRule, priorUZ, priorSZ, z1Rule, priorUGap,
+  priorSGap, sepRule, serialityRule, timeLinearity`. The plan's "~32" was an estimate; 36 × 2
+  signs is the actual elaboration load. This did **not** change the outcome — the transcription
+  elaborated unchanged at the scratch file's `maxHeartbeats 4000000` — but it is recorded rather
+  than absorbed, as the Scope Hypothesis requires.
+- **Measured build time (R6)**: the whole module (all phases landed so far, including
+  `applyRule_branchingOrdered_rule` and the two Phase 2/3 rule inductions) builds in **~26s wall
+  / ~73s user** from a warm `Fuel.lean`. `maxHeartbeats` was **not** raised above the scratch
+  file's 4000000.
+- The required in-source note on membership-vs-cardinality is the section docstring for **B3**:
+  it states that non-deletion is a membership fact, that arm 3 still shrinks
+  `Branch.toFinset.card` via the `eraseDups` merge, and that nothing here claims the refuted
+  cardinality twin.
+- `lean_verify expandOnceUnblocked_splitOrdered_shape` and
+  `lean_verify expandOnceUnblocked_splitOrdered_no_deletion` each report exactly
+  `[propext, Classical.choice, Quot.sound]`.
 
 **Timing**: 2 hours
 

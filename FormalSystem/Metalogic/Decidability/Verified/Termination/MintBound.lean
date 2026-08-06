@@ -727,4 +727,99 @@ theorem arm3_preserves_witness {b : Branch} {ord : TimeOrdering} {t₁ t₂ : Ti
       exact witnessPresent_identifyTime rule b ord t₁ t₂ s φ w tm
         (incomparableB_of_firstIncomparablePair htrig) hnsl h
 
+/-! ## B3. Non-deletion at engine level
+
+Claim (ii): no expansion step deletes a formula. Stated as a **membership** fact
+(`x ∈ b → x ∈ arm ∨ ρ_SF x ∈ arm`), which is deliberately *not* a cardinality fact. The third arm
+still shrinks `Branch.toFinset.card`, because `Branch.identifyTime` is
+`(b.map relabel).eraseDups` and the `eraseDups` merges two times into one; nothing here claims
+otherwise, and the cardinality twin of the split-growth lemma is refuted, not merely unproved. -/
+
+private theorem pick_splitOrdered' {b : Branch} {bs : List (Branch × TimeOrdering)}
+    {ord : TimeOrdering} {pick : Option (TableauRule × RuleResult × TimeOrdering)}
+    (h : (match pick with
+          | none => (ExpansionResult.saturated, ord)
+          | some (_, result, newOrd) =>
+            match result with
+            | .linear fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .branching bss => (ExpansionResult.split (bss.map fun fs => fs ++ b), newOrd)
+            | .branchingOrdered bs' => (ExpansionResult.splitOrdered bs', newOrd)
+            | .persistent fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .notApplicable => (ExpansionResult.saturated, newOrd)).1
+         = ExpansionResult.splitOrdered bs) :
+    ∃ r o, pick = some (r, RuleResult.branchingOrdered bs, o) := by
+  rcases pick with _ | ⟨r, res, o⟩
+  · simp at h
+  · cases res with
+    | notApplicable => simp at h
+    | linear fs => simp at h
+    | branching bss => simp at h
+    | persistent fs => simp at h
+    | branchingOrdered bs' => exact ⟨r, o, by simpa using h⟩
+
+-- `linter.unusedTactic` fires on the `exact RuleResult.noConfusion h` inside the second
+-- `first` alternative below and calls it dead. It is NOT dead: it is the alternative's
+-- *failure* mechanism. In the goals where `simp only [] at h` makes progress but does not
+-- close the goal, that `exact` is what makes the whole alternative fail so `first` falls
+-- through to `simp_all`, which discharges them from the false rule equation in context.
+-- Deleting the `exact` was tried and leaves 12 goals unsolved (`impPos`, `impNeg`, `boxPos`,
+-- `boxNeg`, `boxTemporal`, `allFuturePos`, `allFutureNeg`, `allPastPos`, `allPastNeg`,
+-- `denseIndicatorClosure`, `densityRule`, `z1Rule`).
+set_option linter.unusedTactic false in
+set_option maxHeartbeats 4000000 in
+/-- `timeLinearity` is the ONLY rule that can produce an ordered split. -/
+theorem applyRule_branchingOrdered_rule (rule : TableauRule) (sf : SignedFormula) (b : Branch)
+    (ord : TimeOrdering) (bs : List (Branch × TimeOrdering))
+    (h : (applyRule rule sf b ord).1 = RuleResult.branchingOrdered bs) : rule = .timeLinearity := by
+  cases sf with
+  | mk sign formula label =>
+    cases rule
+    case timeLinearity => rfl
+    all_goals (exfalso; revert h; cases sign <;> simp only [applyRule] <;> intro h <;>
+      (repeat' split at h) <;>
+      first
+        | exact RuleResult.noConfusion h
+        | (simp only [] at h; exact RuleResult.noConfusion h)
+        | simp_all)
+
+/-- **Engine-level shape of an ordered split.** Whichever of the three pick stages produced it,
+an ordered split is `timeLinearity`'s three arms on the very branch and ordering it was called
+with. -/
+theorem expandOnceUnblocked_splitOrdered_shape {b : Branch} {bs : List (Branch × TimeOrdering)}
+    {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
+    ∃ t₁ t₂, firstIncomparablePair b ord = some (t₁, t₂) ∧
+      bs = [ (b, ord.addFuture t₁ t₂), (b, ord.addFuture t₂ t₁),
+             (b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁) ] := by
+  unfold expandOnceUnblocked at h
+  obtain ⟨r, o, hpick⟩ := pick_splitOrdered' h
+  have key : ∃ sf : SignedFormula, (applyRule r sf b ord).1 = RuleResult.branchingOrdered bs := by
+    split at hpick
+    · exact ⟨_, findApplicableRule_applyRule_eq hpick⟩
+    · split at hpick
+      · exact ⟨_, findApplicableSerialRule_applyRule_eq hpick⟩
+      · split at hpick
+        · exact ⟨_, findApplicableLinearityRule_applyRule_eq hpick⟩
+        · exact absurd hpick (by simp)
+  obtain ⟨sf, hsf⟩ := key
+  cases applyRule_branchingOrdered_rule r sf b ord bs hsf
+  exact applyRule_timeLinearity_arms_trigger sf b ord bs hsf
+
+/-- **Claim (ii), engine level, `.splitOrdered` case.** No formula is deleted by an ordered
+split: arms 1-2 keep the branch literally, arm 3 keeps every formula renamed. -/
+theorem expandOnceUnblocked_splitOrdered_no_deletion
+    {b : Branch} {bs : List (Branch × TimeOrdering)} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
+    ∃ t₁ t₂, ∀ p ∈ bs, ∀ x ∈ b,
+      x ∈ p.1 ∨ rhoSF t₂ t₁ x ∈ p.1 := by
+  obtain ⟨t₁, t₂, -, rfl⟩ := expandOnceUnblocked_splitOrdered_shape h
+  refine ⟨t₁, t₂, ?_⟩
+  intro p hp x hx
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · exact Or.inl hx
+  · exact Or.inl hx
+  · exact Or.inr (mem_identifyTime b t₂ t₁ x hx)
+
 end FormalSystem.Metalogic.Decidability
