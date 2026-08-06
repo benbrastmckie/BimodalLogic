@@ -911,7 +911,7 @@
     {
       "project_number": 431,
       "project_name": "discharge_difficultybounded_residual",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Discharge `DifficultyBounded fc U D` (at `β >= 3`), defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3914, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). This is a SCOPE DECISION before it is a proof problem: `estimateBranchDifficulty` (Saturation.lean:360) is built from `temporalCount` and `modalCount` (Saturation.lean:330, 342), both `private` to Saturation.lean, which the parent task's plan v4 froze byte-identical (md5-pinned, alongside Fuel.lean and Tableau.lean) and forbade editing. Before attempting a proof, explicitly decide between: (a) widen visibility of `temporalCount`/`modalCount` (or expose an equivalent public lemma bounding `estimateBranchDifficulty` in terms of formula complexity) in Saturation.lean, which breaks the prior freeze and must be stated as a deliberate choice, not a silent edit; or (b) restate/discharge the bound using only `estimateBranchDifficulty`'s existing public interface plus branch-confinement facts already available in MintBound.lean, avoiding Saturation.lean entirely. Record the choice made and why. Done means: a theorem (or corollary) proving `DifficultyBounded fc U D` holds for a concrete, useful instantiation of `U` and `D` (matching the shape the terminus's caller-facing forms `buildTableauAt_isSome_of_budget` / `buildTableauAt_isSome_at_seed`, MintBound.lean:4416-4453, expect), landed sorry-free and axiom-free, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting) and do not touch `Fuel.lean` or `Tableau.lean`.",
       "effort": "3-5 hours",
@@ -923,7 +923,7 @@
         "FormalSystem/Metalogic/Decidability/Saturation.lean"
       ],
       "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-06T16:25:23Z",
+      "last_updated": "2026-08-06T17:32:04Z",
       "artifacts": [
         {
           "type": "research",
@@ -934,9 +934,15 @@
           "path": "specs/431_discharge_difficultybounded_residual/plans/01_discharge-difficultybounded-residual.md",
           "type": "plan",
           "summary": "7-phase plan; scope decision (b)"
+        },
+        {
+          "path": "specs/431_discharge_difficultybounded_residual/summaries/01_discharge-difficultybounded-residual-summary.md",
+          "type": "summary",
+          "summary": "Refutation plus repair: StepLengthBounded sibling terminus"
         }
       ],
-      "session_id": "sess_1786032616_1f0e93_431"
+      "session_id": "sess_1786032616_1f0e93_431",
+      "completion_summary": "Settled the DifficultyBounded residual on the buildTableauAt totality terminus: the hypothesis as literally stated is refuted at every D and every frame class (difficultyBounded_multiplicity_false), the cause is branch-list multiplicity rather than the private visibility of Saturation.lean's counters, and the repair is StepLengthBounded -- provably equivalent up to a factor of 4 -- with sibling termini buildTableauAt_isSome_of_lengthBudget and buildTableauAt_isSome_at_seed_lengthBudget stated at it. All 20-odd new declarations are sorry-free and axiom-free, the landed terminus proof terms are byte-unchanged, and Saturation.lean, Fuel.lean and Tableau.lean are untouched (md5s re-verified)."
     },
     {
       "project_number": 432,

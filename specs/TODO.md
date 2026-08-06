@@ -11,18 +11,17 @@ next_project_number: 435
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,431 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,420,422,425,432 | 193,231,298,415,421,423,431 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,414,433 | 420,422,432 | decidability, paper-refactor, strong_completeness |
-| 4 | 362,417,434 | 169,414,433 | decidability, paper-refactor, strong_completeness |
-| 5 | 427,428 | 417,419,434 | decidability, paper-refactor |
-| 6 | 429 | 428 | decidability |
-| 7 | 410 | 429 | -- |
-| 8 | 411 | 410 | -- |
-| 9 | 430 | 411 | decidability |
-| 10 | 412 | 430 | -- |
-| 11 | 426 | 412 | completeness |
-| 12 | 95,177 | 193,426 | completeness, formula-refactor |
+| 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,432 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,420,422,425,433 | 193,231,298,415,421,423,432 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,414,434 | 420,422,433 | decidability, paper-refactor, strong_completeness |
+| 4 | 362,417,428 | 169,414,434 | decidability, paper-refactor, strong_completeness |
+| 5 | 427,429 | 417,419,428 | decidability, paper-refactor |
+| 6 | 410 | 429 | -- |
+| 7 | 411 | 410 | -- |
+| 8 | 430 | 411 | decidability |
+| 9 | 412 | 430 | -- |
+| 10 | 426 | 412 | completeness |
+| 11 | 95,177 | 193,426 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -35,16 +34,15 @@ next_project_number: 435
 
 ### Decidability
 
-431 [PLANNED] — Discharge `DifficultyBounded fc U D` (at `β >= 3`), defined at Fo
-  └─ 432 [RESEARCHED] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
-    └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
-      └─ 434 [RESEARCHED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
-        └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
-          └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
-            └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
-              └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-                └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
-                  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+432 [RESEARCHED] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
+  └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
+    └─ 434 [RESEARCHED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
+      └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
+        └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
+          └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
+            └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+              └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
+                └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 
 ### Formula Refactor
 
@@ -135,12 +133,13 @@ next_project_number: 435
 
 ### 431. Discharge difficultybounded residual
 - **Effort**: 3-5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
 - **Plan**: [431_discharge_difficultybounded_residual/plans/01_discharge-difficultybounded-residual.md]
+- **Summary**: [431_discharge_difficultybounded_residual/summaries/01_discharge-difficultybounded-residual-summary.md]
 
 **Description**: Discharge `DifficultyBounded fc U D` (at `β >= 3`), defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3914, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). This is a SCOPE DECISION before it is a proof problem: `estimateBranchDifficulty` (Saturation.lean:360) is built from `temporalCount` and `modalCount` (Saturation.lean:330, 342), both `private` to Saturation.lean, which the parent task's plan v4 froze byte-identical (md5-pinned, alongside Fuel.lean and Tableau.lean) and forbade editing. Before attempting a proof, explicitly decide between: (a) widen visibility of `temporalCount`/`modalCount` (or expose an equivalent public lemma bounding `estimateBranchDifficulty` in terms of formula complexity) in Saturation.lean, which breaks the prior freeze and must be stated as a deliberate choice, not a silent edit; or (b) restate/discharge the bound using only `estimateBranchDifficulty`'s existing public interface plus branch-confinement facts already available in MintBound.lean, avoiding Saturation.lean entirely. Record the choice made and why. Done means: a theorem (or corollary) proving `DifficultyBounded fc U D` holds for a concrete, useful instantiation of `U` and `D` (matching the shape the terminus's caller-facing forms `buildTableauAt_isSome_of_budget` / `buildTableauAt_isSome_at_seed`, MintBound.lean:4416-4453, expect), landed sorry-free and axiom-free, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting) and do not touch `Fuel.lean` or `Tableau.lean`.
 
