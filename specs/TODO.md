@@ -34,7 +34,7 @@ next_project_number: 435
 
 ### Decidability
 
-432 [PLANNED] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
+432 [IMPLEMENTING] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
   └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
     └─ 434 [RESEARCHED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
       └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
@@ -121,12 +121,13 @@ next_project_number: 435
 
 ### 432. Discharge universeclosed residual
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 431
 - **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
 - **Plan**: [432_discharge_universeclosed_residual/plans/01_universeclosed-clause2-verdict-instantiation.md]
+- **Summary**: [432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md]
 
 **Description**: Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3901, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). The definition has two conjuncts: (1) closure of `U` under the engine's unblocked-expansion step `expandOnceUnblocked` -- a familiar shape already required by the unsplit totality theorem's `hU` obligation -- and (2) closure of `U` under an ordered split's identification arm `Branch.identifyTime`, which relabels the branch; this second clause is genuinely new. For `U = signedUniverse C L` (Fuel.lean:382, DO NOT edit Fuel.lean -- it is md5-pinned frozen), clause (2) reduces to a statement about the label set `L` being closed under time-merging. Done means: a theorem proving `UniverseClosed fc U` for a concrete, useful instantiation `U = signedUniverse C L` under an explicit closure condition on `L` (state and prove that condition too, if it is not already available), landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting), and in particular do not attempt route (a), entry 6 (a lower bound on `(b.identifyTime t2 t1).toFinset.card` from below -- dead by definition).
 
