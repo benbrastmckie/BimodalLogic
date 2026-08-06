@@ -857,6 +857,24 @@ suppressed, by `witnessPresent`'s world-indifference (the executable `WorldProbe
 `Fuel.lean:1296-1335` exhibit exactly that indifference). That induction was **not attempted** —
 it is the phase's remaining work, not a claimed result.
 
+**MATERIAL FINDING for whoever attempts that induction — `WorldWitness` as defined is not
+inductive as it stands.** Read the definition (`Fuel.lean:1214`): its witness function `wit` is
+constrained only by `(wit w).formula ∈ C ∧ (wit w).label.time ∈ b.timeFinset` plus signature
+injectivity. It does **not** require `wit w ∈ b`, nor `(wit w).label.world = w`. The preservation
+argument needs both: at a fresh-world mint the new world's witness must be shown to have a
+signature distinct from every existing non-seed world's, and the only reason that holds is that an
+existing witness *on the branch* with the same sign/formula/time would have made `witnessPresent`
+true and suppressed the mint. With `wit w` free-floating, there is nothing to feed the guard, so
+the step case cannot be closed against this definition.
+
+The expected repair is the **same shape as this plan's own `OrdTimesKnown` repair**: define a
+strengthened `WorldWitnessKnown` in `MintBound.lean` carrying `wit w ∈ b ∧ (wit w).label.world = w`
+alongside the existing clauses, prove `WorldWitness` from it (the strengthening witness, mirroring
+`ordTimesLeMaxTime_of_ordTimesKnown`), and run the 36-case induction on the strong form.
+`Fuel.lean` stays byte-untouched, exactly as it did for the times invariant. This is a **prediction
+about the route, not a claimed result** — nothing of it is proved, and a successor should confirm
+the strengthened form is actually preserved at the mint sites before committing to it.
+
 The residual is carried as **exactly one explicitly named hypothesis**,
 `WorldWitness C (seedBranch φ).worldFinset b`, visible in the statement of
 `labelFinset_card_le_at_seed_worlds` rather than absorbed into it. No `axiom`, no `sorry`, no
