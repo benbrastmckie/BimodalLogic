@@ -4028,6 +4028,133 @@ theorem length_le_of_estimateBranchDifficulty_le {b : Branch} {D : Nat}
   have hl := estimateBranchDifficulty_length_le b
   omega
 
+/-! #### The upper-bound machinery
+
+Three plumbing lemmas about `Nat`-valued list sums under sub-permutation, then the two statements
+this block exists for. Nothing here mentions the engine. -/
+
+private theorem natSum_le_of_sublist {l₁ l₂ : List Nat} (h : l₁.Sublist l₂) :
+    l₁.sum ≤ l₂.sum := by
+  induction h with
+  | slnil => simp
+  | cons a h ih => simp only [List.sum_cons]; omega
+  | cons_cons a h ih => simp only [List.sum_cons]; omega
+
+private theorem natSum_le_of_subperm {l₁ l₂ : List Nat} (h : l₁.Subperm l₂) :
+    l₁.sum ≤ l₂.sum := by
+  obtain ⟨l, hl, hs⟩ := h
+  rw [← hl.sum_eq]
+  exact natSum_le_of_sublist hs
+
+private theorem subperm_map_of_subperm {α β : Type} (g : α → β) {l₁ l₂ : List α}
+    (h : l₁.Subperm l₂) : (l₁.map g).Subperm (l₂.map g) := by
+  obtain ⟨l, hl, hs⟩ := h
+  exact ⟨l.map g, hl.map g, hs.map g⟩
+
+/-- **A branch-summed counter is monotone under sub-permutation**, for an arbitrary per-formula
+weight `f`. This is the generic form of both of `estimateBranchDifficulty`'s counters; `f` is
+universally quantified precisely so that the two `private` functions of `Saturation.lean` can be
+supplied by unification rather than by name. -/
+theorem branchCount_le_of_subperm (f : Formula → Nat) {b₁ b₂ : Branch} (h : b₁.Subperm b₂) :
+    b₁.foldl (fun acc sf => acc + f sf.formula) 0
+      ≤ b₂.foldl (fun acc sf => acc + f sf.formula) 0 := by
+  have e : ∀ l : Branch, l.foldl (fun acc sf => acc + f sf.formula) 0
+      = (l.map (fun sf => f sf.formula)).sum := by
+    intro l; rw [List.sum_eq_foldl, List.foldl_map]
+  rw [e, e]
+  exact natSum_le_of_subperm (subperm_map_of_subperm _ h)
+
+/-- **The unfolded shape of `estimateBranchDifficulty`, with both counters universally quantified.**
+
+This is the lemma the visibility question turns on. Its statement mentions no `private` name, so it
+can be written here; its two counter arguments are metavariables at the point of use, so
+`exact difficultyShape_le_of_subperm _ _ h` against a goal already reduced by
+`simp only [estimateBranchDifficulty]` unifies them with `temporalCount` and `modalCount` — terms
+this file may not *type* but the elaborator may freely *assign*. -/
+theorem difficultyShape_le_of_subperm (f g : Formula → Nat) {b₁ b₂ : Branch}
+    (h : b₁.Subperm b₂) :
+    1 + 3 * b₁.foldl (fun acc sf => acc + f sf.formula) 0
+      + 2 * b₁.foldl (fun acc sf => acc + g sf.formula) 0 + b₁.length / 4
+    ≤ 1 + 3 * b₂.foldl (fun acc sf => acc + f sf.formula) 0
+      + 2 * b₂.foldl (fun acc sf => acc + g sf.formula) 0 + b₂.length / 4 := by
+  have h1 := branchCount_le_of_subperm f h
+  have h2 := branchCount_le_of_subperm g h
+  have h4 : b₁.length / 4 ≤ b₂.length / 4 := Nat.div_le_div_right h.length_le
+  omega
+
+/-- **The difficulty is monotone under sub-permutation.** Every one of its four summands is: the two
+counters by `branchCount_le_of_subperm`, the length term because `Subperm` bounds length, and the
+constant trivially. Sub-permutation rather than `Sublist` is the right hypothesis because it is what
+a *multiset* comparison gives, and multiplicity is exactly what is at issue. -/
+theorem estimateBranchDifficulty_le_of_subperm {b₁ b₂ : Branch} (h : b₁.Subperm b₂) :
+    estimateBranchDifficulty b₁ ≤ estimateBranchDifficulty b₂ := by
+  simp only [estimateBranchDifficulty]
+  exact difficultyShape_le_of_subperm _ _ h
+
+/-- **The worst branch of length at most `L` drawn from `U`**: every element of `U` repeated `L`
+times. Any `U`-confined branch of length at most `L` is a sub-permutation of it, because it can
+contain at most `L` copies of any single element and this list contains exactly `L` of each. -/
+noncomputable def canonicalBranch (U : Finset SignedFormula) (L : Nat) : Branch :=
+  U.toList.flatMap (fun x => List.replicate L x)
+
+/-- **The difficulty ceiling for `U`-confined branches of length at most `L`.**
+
+Deliberately crude: it is `estimateBranchDifficulty` evaluated at the canonical worst branch, with
+no attempt at tightness. Size is irrelevant to every use, because the figure only ever appears as
+the `D` argument of `mintAwareFuel`, i.e. as a `Nat` fed to an already-astronomical fuel
+expression. `noncomputable` because `Finset.toList` is; nothing downstream evaluates it. -/
+noncomputable def difficultyCeiling (U : Finset SignedFormula) (L : Nat) : Nat :=
+  estimateBranchDifficulty (canonicalBranch U L)
+
+private theorem sublist_flatMap_of_mem {α β : Type} {a : α} {l : List α} {g : α → List β}
+    (h : a ∈ l) : (g a).Sublist (l.flatMap g) := by
+  induction l with
+  | nil => simp at h
+  | cons y ys ih =>
+    rw [List.flatMap_cons]
+    rcases List.mem_cons.mp h with rfl | h'
+    · exact List.sublist_append_left _ _
+    · exact (ih h').trans (List.sublist_append_right _ _)
+
+private theorem sublist_flatMap_mono {α β : Type} {l : List α} {g₁ g₂ : α → List β}
+    (h : ∀ a ∈ l, (g₁ a).Sublist (g₂ a)) : (l.flatMap g₁).Sublist (l.flatMap g₂) := by
+  induction l with
+  | nil => simp
+  | cons y ys ih =>
+    rw [List.flatMap_cons, List.flatMap_cons]
+    exact (h y (by simp)).append (ih (fun a ha => h a (by simp [ha])))
+
+/-- **Confinement plus a length bound is a sub-permutation of the canonical branch.** By the
+multiset criterion `List.subperm_ext_iff`: an element occurs in `b` at most `b.length ≤ L` times,
+and occurs in `canonicalBranch U L` exactly `L` times whenever it is in `U`. This is the one place
+where the length hypothesis is genuinely needed — confinement alone gives nothing, which is the
+whole content of the multiplicity obstruction. -/
+theorem subperm_canonicalBranch {U : Finset SignedFormula} {L : Nat} {b : Branch}
+    (hb : ∀ x ∈ b, x ∈ U) (hlen : b.length ≤ L) : b.Subperm (canonicalBranch U L) := by
+  rw [List.subperm_ext_iff]
+  intro x hx
+  have h1 : b.count x ≤ L := le_trans List.count_le_length hlen
+  have hxU : x ∈ U.toList := Finset.mem_toList.mpr (hb x hx)
+  have h3 : (List.replicate L x).count x ≤ (canonicalBranch U L).count x :=
+    List.Sublist.count_le x (sublist_flatMap_of_mem hxU)
+  rw [List.count_replicate] at h3
+  simp only [beq_self_eq_true, if_true] at h3
+  omega
+
+/-- **The ceiling does its job.** A `U`-confined branch of length at most `L` has difficulty at most
+`difficultyCeiling U L`. Both hypotheses are load-bearing. -/
+theorem estimateBranchDifficulty_le_ceiling {U : Finset SignedFormula} {L : Nat} {b : Branch}
+    (hb : ∀ x ∈ b, x ∈ U) (hlen : b.length ≤ L) :
+    estimateBranchDifficulty b ≤ difficultyCeiling U L :=
+  estimateBranchDifficulty_le_of_subperm (subperm_canonicalBranch hb hlen)
+
+/-- The ceiling is monotone in the length budget, so slack can always be absorbed upward. -/
+theorem difficultyCeiling_mono {U : Finset SignedFormula} {L L' : Nat} (h : L ≤ L') :
+    difficultyCeiling U L ≤ difficultyCeiling U L' :=
+  estimateBranchDifficulty_le_of_subperm
+    (List.Sublist.subperm (sublist_flatMap_mono
+      (fun a _ => (List.replicate_sublist_replicate a).mpr h)))
+
 /-- **The measure drops at `.extended` and at every arm of a `.split`.**
 
 Both residual disjuncts are discharged, and the second is the interesting one: a mint may raise the

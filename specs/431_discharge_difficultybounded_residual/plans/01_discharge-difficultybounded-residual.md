@@ -199,24 +199,31 @@ Phases within the same wave are logically independent, but **every phase edits t
 
 ---
 
-### Phase 2: The engine-free difficulty toolkit [NOT STARTED]
+### Phase 2: The engine-free difficulty toolkit [COMPLETED]
 
 - **Goal:** Land the upper-bound machinery: monotonicity under sub-permutation, and a concrete
   ceiling for confined branches of bounded length. No engine reasoning in this phase.
 - **Tasks:**
-  - [ ] Generic counter lemma: for `f : Formula → Nat` and `l₁ l₂ : Branch` with `l₁.Subperm l₂`,
+  - [x] Generic counter lemma: for `f : Formula → Nat` and `l₁ l₂ : Branch` with `l₁.Subperm l₂`,
         `l₁.foldl (fun acc sf => acc + f sf.formula) 0 ≤ l₂.foldl (fun acc sf => acc + f sf.formula) 0`.
-  - [ ] Generic shape lemma with both counters universally quantified, mirroring the unfolded form
+        *(completed as `branchCount_le_of_subperm`)*
+  - [x] Generic shape lemma with both counters universally quantified, mirroring the unfolded form
         of `estimateBranchDifficulty` (planning probe `gen_mono` is the exact template).
-  - [ ] `estimateBranchDifficulty_le_of_subperm {b₁ b₂ : Branch} (h : b₁.Subperm b₂) : estimateBranchDifficulty b₁ ≤ estimateBranchDifficulty b₂`,
+        *(completed as `difficultyShape_le_of_subperm`; the unification trick was green in the real
+        file exactly as the probe predicted)*
+  - [x] `estimateBranchDifficulty_le_of_subperm {b₁ b₂ : Branch} (h : b₁.Subperm b₂) : estimateBranchDifficulty b₁ ≤ estimateBranchDifficulty b₂`,
         proved by `simp only [estimateBranchDifficulty]; exact gen_shape _ _ …` so unification
-        supplies the private counters.
-  - [ ] `def difficultyCeiling (U : Finset SignedFormula) (L : Nat) : Nat` — the difficulty of the
+        supplies the private counters. *(completed)*
+  - [x] `def difficultyCeiling (U : Finset SignedFormula) (L : Nat) : Nat` — the difficulty of the
         canonical worst branch of length `≤ L` drawn from `U`, e.g.
         `estimateBranchDifficulty (U.toList.flatMap (fun x => List.replicate L x))`.
-  - [ ] `estimateBranchDifficulty_le_ceiling : (∀ x ∈ b, x ∈ U) → b.length ≤ L → estimateBranchDifficulty b ≤ difficultyCeiling U L`,
-        by exhibiting `b.Subperm` of the canonical list.
-  - [ ] `difficultyCeiling_mono` in `L` (needed by Phase 4/5 to absorb slack).
+        *(completed, at exactly the plan's suggested body, factored through a named
+        `canonicalBranch U L`. **deviation: altered** — it must be `noncomputable def`, because
+        `Finset.toList` is noncomputable. This forced the second deviation below.)*
+  - [x] `estimateBranchDifficulty_le_ceiling : (∀ x ∈ b, x ∈ U) → b.length ≤ L → estimateBranchDifficulty b ≤ difficultyCeiling U L`,
+        by exhibiting `b.Subperm` of the canonical list. *(completed; the `Subperm` step is
+        `subperm_canonicalBranch`, via `List.subperm_ext_iff`)*
+  - [x] `difficultyCeiling_mono` in `L` (needed by Phase 4/5 to absorb slack). *(completed)*
 - **Timing:** 2 hours
 - **Depends on:** 1
 - **Verification Tier:** local
@@ -230,7 +237,10 @@ Phases within the same wave are logically independent, but **every phase edits t
 - **Verification:**
   - Module build green; `lean_verify` sorry-free and axiom-free on each new declaration.
   - Sanity `#eval` (not committed as a test) that `difficultyCeiling` on a two-element `U` and small
-    `L` produces a finite number.
+    `L` produces a finite number. *(deviation: altered — `difficultyCeiling` is `noncomputable`, so
+    it cannot be `#eval`-ed at all. The equivalent check was run on the canonical list given as an
+    explicit literal: at `U = {T□p, F(p U q)}` and `L = 3` the canonical branch has length 6 and
+    difficulty 17. Finite, as required.)*
 
 ---
 
