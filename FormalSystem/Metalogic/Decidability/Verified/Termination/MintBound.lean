@@ -5062,7 +5062,7 @@ the landed theorem, with no new induction and no change to `stepDecreases_budget
 **What changed is the *shape* of one residual, and only that.** `UniverseClosed`,
 `MintPaysForTime`, `PostBlockingSettles` and `β ≥ 3` are carried across unaltered and are still
 named. `Fuel.lean` needs nothing new: every occurrence of `D` in the terminus chain flows through
-`mintAwareFuel`'s `D` argument (`mintAwareFuel` MintBound.lean:4543, `stepDecreases_budgetPotential`,
+`mintAwareFuel`'s `D` argument (`mintAwareFuel`, `stepDecreases_budgetPotential`,
 `expandBranchWithFuel_isSome_of_budget`), all inside this file, so instantiating it at
 `difficultyCeiling U L` is a substitution into statements that already quantify over it. -/
 
@@ -5109,7 +5109,7 @@ theorem buildTableauAt_isSome_at_seed_lengthBudget {fc : FormalSystem.ProofSyste
 
 /-! ## C9. The do-not-re-attempt register
 
-Eight statements that look like the natural next lemma and are **not** available. Each is cited by
+Nine statements that look like the natural next lemma and are **not** available. Each is cited by
 declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
@@ -5162,6 +5162,30 @@ already been here.
    arity; `BudgetedTotalityAt` carries both. Separately, the *figure* in `BudgetedTotality` is
    short — see the divergence recorded in section C7 — which is why the landed statement is at
    `mintAwareFuel`, with `splitAwareFuel_le_mintAwareFuel` recording that the derived figure
-   enlarges rather than replaces the landed one. -/
+   enlarges rather than replaces the landed one.
+
+9. **`DifficultyBounded fc U D` at any `D`, for a `U` the engine fires on.** Refuted, not merely
+   unproved, by `difficultyBounded_multiplicity_false`, which is universally quantified in `D` and in
+   the frame class. The cause in one line: `estimateBranchDifficulty` sums over the branch **list**
+   and adds `b.length / 4`, confinement to `U` bounds only `b.toFinset`, and no `Nodup` invariant on
+   a branch exists anywhere in the development — successors are built as raw `formulas ++ b` with no
+   `eraseDups` (`Tableau.lean:2233-2239`) and avoiding a `Nodup` side condition was a deliberate
+   design goal (`BranchOrder.lean:275-290`). So a `U`-confined branch can be arbitrarily long, and
+   `estimateBranchDifficulty_length_le` turns any difficulty bound into a bound on that length.
+
+   **Widening `temporalCount`/`modalCount` does not revive it.** A reader who reaches for
+   `Saturation.lean` on the strength of an older version of `DifficultyBounded`'s own docstring has
+   already been here: `private` blocks name resolution, not unfolding, so a bound is statable and
+   provable from this file with the markers exactly as they are — `estimateBranchDifficulty_length_le`
+   and `estimateBranchDifficulty_le_of_subperm` are the demonstrations. And the refuting witness is
+   an implication between two atoms, on which both counters are `0`, so the refutation never touches
+   them. `Saturation.lean` is deliberately not edited.
+
+   The settled repair is `StepLengthBounded`, which is equivalent to the difficulty bound up to a
+   factor of `4` (`difficultyBounded_of_stepLengthBounded`, `stepLengthBounded_of_difficultyBounded`)
+   and is satisfiable; `buildTableauAt_isSome_of_lengthBudget` and
+   `buildTableauAt_isSome_at_seed_lengthBudget` are the termini stated at it, and
+   `difficultyBoundedAt_ceiling` reduces the length-hypothesis form to the rule-local
+   `StepLengthGrowth`, whose full obligation map is recorded on its own docstring. -/
 
 end FormalSystem.Metalogic.Decidability

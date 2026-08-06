@@ -1,7 +1,7 @@
 # Implementation Plan: Discharge the `DifficultyBounded` residual
 
 - **Task**: 431 - Discharge `DifficultyBounded fc U D` (at `β ≥ 3`) on the totality terminus
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 11.5 hours
 - **Dependencies**: None (parent task 428's terminus is landed and is read-only input here)
 - **Research Inputs**: `specs/431_discharge_difficultybounded_residual/reports/01_spawn-inherited-research.md`
@@ -430,23 +430,29 @@ Phases within the same wave are logically independent, but **every phase edits t
 
 ---
 
-### Phase 7: Register entry, cross-references, and the full gate [NOT STARTED]
+### Phase 7: Register entry, cross-references, and the full gate [COMPLETED]
 
 - **Goal:** Close the loop: the register records what must not be re-attempted, every
   cross-reference resolves, and the whole project builds.
 - **Tasks:**
-  - [ ] Add register entry 9 at MintBound.lean:4455-4510: "**`DifficultyBounded fc U D` at any `D`,
+  - [x] Add register entry 9 at MintBound.lean:4455-4510: "**`DifficultyBounded fc U D` at any `D`,
         for a `U` the engine fires on.**" — refuted by `difficultyBounded_multiplicity_false` (or, on
         the Phase 6 fallback, by the concrete witnesses plus the recorded argument), with the
         one-line cause: difficulty sums over the branch **list**, confinement bounds only the
         `toFinset`, and no `Nodup` invariant exists. Note that widening `temporalCount`/`modalCount`
         does not revive it, so a reader who reaches for `Saturation.lean` has already been here.
-  - [ ] Update the terminus's "The residuals, stated once" paragraph (MintBound.lean:4410-4414) to
-        point at the Phase 5 sibling and the register entry.
-  - [ ] Verify every new docstring's file:line citation still resolves.
-  - [ ] Full `lake build` green.
-  - [ ] `lean_verify` sweep over every declaration added by Phases 1-6: sorry-free, axiom-free.
-  - [ ] Write `summaries/01_discharge-difficultybounded-residual-summary.md`.
+        *(completed; the Scope Hypothesis is confirmed — the register had exactly eight entries, so the
+        new one is 9, and the head count was updated from "Eight" to "Nine")*
+  - [x] Update the terminus's "The residuals, stated once" paragraph (MintBound.lean:4410-4414) to
+        point at the Phase 5 sibling and the register entry. *(completed in Phase 5, extended here)*
+  - [x] Verify every new docstring's file:line citation still resolves. *(completed; one stale figure
+        found and fixed — `.z1Rule` is at Tableau.lean:1408, not 1409 — and one same-file line
+        citation replaced by a declaration name so it cannot go stale as the file grows)*
+  - [x] Full `lake build` green. *(completed, 2333 jobs)*
+  - [x] `lean_verify` sweep over every declaration added by Phases 1-6: sorry-free, axiom-free.
+        *(completed via `#print axioms` over all 26 externally-addressable new declarations: only
+        `propext`, `Classical.choice`, `Quot.sound`; zero `sorryAx`, zero `Lean.ofReduceBool`)*
+  - [x] Write `summaries/01_discharge-difficultybounded-residual-summary.md`. *(completed)*
 - **Timing:** 1 hour
 - **Depends on:** 4, 5, 6
 - **Verification Tier:** full
@@ -463,15 +469,15 @@ Phases within the same wave are logically independent, but **every phase edits t
 
 ## Testing & Validation
 
-- [ ] `lake build` green (Phase 7), and module-scoped builds green at each earlier phase.
-- [ ] `lean_verify` on each new declaration: no `sorryAx`, no `Lean.ofReduceBool`, no new axioms.
-- [ ] `grep -c "sorry" MintBound.lean` unchanged from its pre-task value.
-- [ ] `git diff --stat` confirms `Saturation.lean`, `Fuel.lean`, `Tableau.lean` untouched; re-check
+- [x] `lake build` green (Phase 7), and module-scoped builds green at each earlier phase.
+- [x] `lean_verify` on each new declaration: no `sorryAx`, no `Lean.ofReduceBool`, no new axioms.
+- [x] `grep -c "sorry" MintBound.lean` unchanged from its pre-task value.
+- [x] `git diff --stat` confirms `Saturation.lean`, `Fuel.lean`, `Tableau.lean` untouched; re-check
       their md5s against the parent plan's pins.
-- [ ] The landed `buildTableauAt_isSome_of_budget` / `_at_seed` proof terms are byte-unchanged.
-- [ ] No task-number citation anywhere in `MintBound.lean`
+- [x] The landed `buildTableauAt_isSome_of_budget` / `_at_seed` proof terms are byte-unchanged.
+- [x] No task-number citation anywhere in `MintBound.lean`
       (`bash .claude/scripts/check-task-references.sh`).
-- [ ] Every file:line citation in every new docstring resolves to what it claims.
+- [x] Every file:line citation in every new docstring resolves to what it claims.
 
 ## Artifacts & Outputs
 
