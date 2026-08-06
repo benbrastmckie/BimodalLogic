@@ -6381,6 +6381,162 @@ theorem freshTimeRules_incomparable_freshLabelRules :
     (TableauRule.snceNeg ∈ freshTimeRules ∧ TableauRule.snceNeg ∉ freshLabelRules) := by
   decide
 
+/-! ### The time-coordinate plumbing
+
+The closers the time sweep is built from, one per emission shape `applyRule` uses. Three are
+mirrors of the world sweep's helpers (`mem_filterMap_world`, `mem_filterMap_const_world`,
+`mem_boxDiamondPersistence_label`); the rest have no world counterpart, and the reason each is
+needed is worth stating because it is exactly the asymmetry between the two coordinates.
+
+**The time coordinate needs an ordering hypothesis and the world coordinate does not.** Four rules —
+`allFuturePos`, `allPastPos`, `someFutureNeg`, `somePastNeg` — propagate to *every* time in
+`TimeOrdering.futureOf` / `pastOf` of the trigger. Nothing about `applyRule` ties those times to the
+branch: a formula may be emitted at an ordering time the branch has never carried. Their world
+counterparts have no such freedom, because all four emit at `l.world`. This is why
+`applyRule_emitted_time_mem` below carries `OrdTimesKnown b ord` where its world twin carries
+nothing, and `applyRule_emitted_time_mem_ordTimesKnown_needed` is the witness that the hypothesis is
+not removable. `mem_knownTimes_of_mem_futureOf` / `_pastOf` are the bridge, and they are exactly the
+reason section A7's strengthened invariant exists.
+
+**Identification rewrites times; it does not rewrite worlds.** `mem_identifyTime_world` concludes
+`∈ b.worldFinset` outright. Its time analogue cannot: `Branch.identifyTime src tgt` moves everything
+at `src` to `tgt`, and `tgt` is an arbitrary parameter of the function. So `mem_identifyTime_time`
+states the honest disjunction, and `mem_identifyTime_time_at_trigger` collapses it at the only place
+the engine calls it — where `tgt` is the `t₁` of `firstIncomparablePair`, already a known time. An
+unconditional `∈ b.knownTimes` conclusion is not available and must not be attempted. -/
+
+/-- A backward path of at least one edge has a last edge, so its endpoint is some constraint's
+*source*. The past-directed mirror of `exists_constraint_to_of_pathN`. -/
+theorem exists_constraint_from_of_pathN (ord : TimeOrdering) :
+    ∀ (n : Nat) (a t : TimeIndex), 1 ≤ n →
+      TimeOrdering.PathN ord.directPastOf n a t → ∃ x, (t, x) ∈ ord.constraints := by
+  intro n
+  induction n with
+  | zero => intro a t hn; omega
+  | succ m ih =>
+    intro a t _ hp
+    obtain ⟨c, hc, hrest⟩ := hp
+    rcases Nat.eq_zero_or_pos m with rfl | hm
+    · simp only [TimeOrdering.PathN] at hrest
+      subst hrest
+      exact ⟨a, (mem_directPastOf_iff' ord c a).mp hc⟩
+    · exact ih c t hm hrest
+
+/-- Anything in a time's past is the source of some ordering constraint. The mirror of
+`exists_constraint_to_of_mem_futureOf`, and needed for the same reason: the `1 ≤ n` bound rules out
+the empty path. -/
+theorem exists_constraint_from_of_mem_pastOf (ord : TimeOrdering) (s t : TimeIndex)
+    (h : t ∈ ord.pastOf s) : ∃ x, (t, x) ∈ ord.constraints := by
+  rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [s] [] h with hv | ⟨u, hu, n, hn1, -, hp⟩
+  · simp at hv
+  · exact exists_constraint_from_of_pathN ord n u t hn1 hp
+
+/-- **The forward bridge**: under the strengthened run invariant, the ordering's forward reach lies
+inside the branch's known times. This is what the four universal-propagation rules need and what
+their world counterparts get for free. -/
+theorem mem_knownTimes_of_mem_futureOf {b : Branch} {ord : TimeOrdering} {s t : TimeIndex}
+    (haux : OrdTimesKnown b ord) (h : t ∈ ord.futureOf s) : t ∈ b.knownTimes := by
+  obtain ⟨x, hx⟩ := exists_constraint_to_of_mem_futureOf ord s t h
+  exact (haux (x, t) hx).2
+
+/-- The past-directed mirror of `mem_knownTimes_of_mem_futureOf`. -/
+theorem mem_knownTimes_of_mem_pastOf {b : Branch} {ord : TimeOrdering} {s t : TimeIndex}
+    (haux : OrdTimesKnown b ord) (h : t ∈ ord.pastOf s) : t ∈ b.knownTimes := by
+  obtain ⟨x, hx⟩ := exists_constraint_from_of_mem_pastOf ord s t h
+  exact (haux (t, x) hx).1
+
+/-- Time-level analogue of `mem_filterMap_world`: a propagation block reading formulas off the
+branch through a `List.filter` selector and relabelling them emits only at times the branch already
+carries. `hF` is discharged per block by opening the block's own `match`/`if`. -/
+theorem mem_filterMap_time {b : Branch} {P : SignedFormula → Bool}
+    {F : SignedFormula → Option SignedFormula} {g : SignedFormula}
+    (hF : ∀ x y, F x = some y → y.label.time = x.label.time)
+    (h : g ∈ (b.filter P).filterMap F) : g.label.time ∈ b.knownTimes := by
+  obtain ⟨x, hx, hxg⟩ := List.mem_filterMap.mp h
+  rw [hF x g hxg]
+  exact mem_knownTimes_of_mem (List.mem_of_mem_filter hx)
+
+/-- The same shape with a constant target time. Generic in the source list's element type, because
+in the time coordinate the blocks that relabel to one fixed time range over worlds (`boxPos`,
+`diamondNeg`) as well as over signed formulas — `mem_filterMap_const_world`'s `List SignedFormula`
+would not cover them. -/
+theorem mem_filterMap_const_time {α : Type _} {l : List α}
+    {F : α → Option SignedFormula} {t : TimeIndex} {g : SignedFormula}
+    (hF : ∀ x y, F x = some y → y.label.time = t) (h : g ∈ l.filterMap F) :
+    g.label.time = t := by
+  obtain ⟨x, hx, hxg⟩ := List.mem_filterMap.mp h
+  exact hF x g hxg
+
+/-- The forward universal-propagation shape: a `filterMap` over the ordering's forward reach. -/
+theorem mem_filterMap_futureOf_time {b : Branch} {ord : TimeOrdering} {t : TimeIndex}
+    {F : TimeIndex → Option SignedFormula} {g : SignedFormula}
+    (haux : OrdTimesKnown b ord)
+    (hF : ∀ x y, F x = some y → y.label.time = x)
+    (h : g ∈ (ord.futureOf t).filterMap F) : g.label.time ∈ b.knownTimes := by
+  obtain ⟨x, hx, hxg⟩ := List.mem_filterMap.mp h
+  rw [hF x g hxg]
+  exact mem_knownTimes_of_mem_futureOf haux hx
+
+/-- The past-directed mirror of `mem_filterMap_futureOf_time`. -/
+theorem mem_filterMap_pastOf_time {b : Branch} {ord : TimeOrdering} {t : TimeIndex}
+    {F : TimeIndex → Option SignedFormula} {g : SignedFormula}
+    (haux : OrdTimesKnown b ord)
+    (hF : ∀ x y, F x = some y → y.label.time = x)
+    (h : g ∈ (ord.pastOf t).filterMap F) : g.label.time ∈ b.knownTimes := by
+  obtain ⟨x, hx, hxg⟩ := List.mem_filterMap.mp h
+  rw [hF x g hxg]
+  exact mem_knownTimes_of_mem_pastOf haux hx
+
+/-! #### The `boxDiamondPersistence` time component is *not* a standalone declaration
+
+The plan for this section called for a `mem_boxDiamondPersistence_time` beside its five siblings,
+projected from `mem_boxDiamondPersistence_label`. It cannot be one: `boxDiamondPersistence` is
+`private` to `Tableau.lean`, so no statement outside that module can *mention* it, and a lemma
+whose hypothesis is `g ∈ boxDiamondPersistence branch w t ft` is unstateable here. What is available
+is the projection *applied to a hypothesis already in scope* — `(mem_boxDiamondPersistence_label
+hg).1` rewrites `g.label` to `{ world := w, time := ft }`, from which the time component follows —
+and that is how the per-rule `nextTime` pinning lemmas below use it, exactly as
+`applyRule_emitted_world_mem` uses it in the world coordinate.
+
+This is register entry 9's observation in the one direction where it bites: `private` blocks name
+resolution, and here the *name* is what the statement needs. It does not block unfolding, so nothing
+is lost at the point of use. No `boxDiamondPersistence` block occurs in any rule the sweep below
+covers — all eight rules carrying one are in `freshTimeRules` — so the sweep never needs it. -/
+
+/-- **Identification, honestly.** Everything on `b.identifyTime src tgt` sits either at the merge
+target or at a time the branch already knew.
+
+This is where the time coordinate departs from `mem_identifyTime_world`, deliberately and
+irreducibly: the world lemma concludes `∈ b.worldFinset` because identification never touches a
+world, whereas here `tgt` is an arbitrary parameter and everything at `src` is moved onto it. An
+unconditional `∈ b.knownTimes` conclusion is therefore false as stated — take `tgt` outside
+`b.knownTimes` and any nonempty branch carrying `src`. The disjunction is collapsed at the engine's
+own call site by `mem_identifyTime_time_at_trigger`; it must not be collapsed here. -/
+theorem mem_identifyTime_time {b : Branch} {src tgt : TimeIndex} {g : SignedFormula}
+    (h : g ∈ b.identifyTime src tgt) : g.label.time = tgt ∨ g.label.time ∈ b.knownTimes := by
+  simp only [Branch.identifyTime, List.mem_eraseDups, List.mem_map] at h
+  obtain ⟨x, hx, rfl⟩ := h
+  by_cases hc : x.label.time = src
+  · exact Or.inl (by simp [hc])
+  · refine Or.inr ?_
+    simp only [hc, beq_iff_eq, if_false]
+    exact mem_knownTimes_of_mem hx
+
+/-- **The disjunction collapses at the trigger.** `applyRule .timeLinearity` identifies `t₂` into
+`t₁` where `(t₁, t₂)` is `firstIncomparablePair b ord`, and `firstIncomparablePair_spec` already
+returns `t₁ ∈ b.knownTimes`. So at the engine's own identification site — the only site there is —
+the honest disjunction of `mem_identifyTime_time` closes to plain membership.
+
+This is the same bridge move `universeClosedAt_identify_at_trigger` makes for the closure repair:
+the restriction that looks like a new obligation is already discharged by the pick. -/
+theorem mem_identifyTime_time_at_trigger {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    {g : SignedFormula} (htrig : firstIncomparablePair b ord = some (t₁, t₂))
+    (h : g ∈ b.identifyTime t₂ t₁) : g.label.time ∈ b.knownTimes := by
+  rcases mem_identifyTime_time h with hg | hg
+  · exact hg ▸ (firstIncomparablePair_spec htrig).1
+  · exact hg
+
 /-! ## C9. The do-not-re-attempt register
 
 Twelve statements that look like the natural next lemma and are **not** available. Each is cited by

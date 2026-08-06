@@ -209,34 +209,36 @@ census is what changes — the plan's later phases consume `freshTimeRules` by n
 
 ---
 
-### Phase 2: Time-coordinate plumbing helpers [IN PROGRESS]
+### Phase 2: Time-coordinate plumbing helpers [COMPLETED]
 
 **Goal**: Land the time-coordinate analogues of the three helper lemmas the world sweep is built
 from, so Phase 3's sweep has the same closers available that `applyRule_emitted_world_mem` had.
 
 **Tasks**:
-- [ ] `mem_filterMap_time` — the analogue of `mem_filterMap_world`: a propagation block reading
+- [x] `mem_filterMap_time` — the analogue of `mem_filterMap_world`: a propagation block reading
       formulas off the branch through a `List.filter` selector and relabelling them emits only at
       times the branch already carries, given
       `hF : ∀ x y, F x = some y → y.label.time = x.label.time`. Conclusion in `b.knownTimes` via
       `mem_knownTimes_of_mem`.
-- [ ] `mem_filterMap_const_time` — the analogue of `mem_filterMap_const_world`, for the blocks that
+- [x] `mem_filterMap_const_time` — the analogue of `mem_filterMap_const_world`, for the blocks that
       relabel to a single constant time (`freshTime`): given
       `hF : ∀ x y, F x = some y → y.label.time = t`, conclude `g.label.time = t`.
-- [ ] `mem_boxDiamondPersistence_time` — read off the existing `mem_boxDiamondPersistence_label`
+- [x] `mem_boxDiamondPersistence_time` — read off the existing `mem_boxDiamondPersistence_label`
       (the world sweep uses `(… hg).1`; this phase needs the time component `.2`, or an explicit
       restatement if the existing lemma's conjunct order differs). Do **not** re-prove
-      `mem_boxDiamondPersistence_label`; project from it.
-- [ ] `mem_identifyTime_time` — the analogue of `mem_identifyTime_world`, and the one that is **not**
+      `mem_boxDiamondPersistence_label`; project from it. *(deviation: altered - cannot be a standalone declaration; `boxDiamondPersistence` is `private` to `Tableau.lean`, so its name is unstateable outside that module. Recorded as an in-source note instead; the projection is applied inline at the per-rule pinning lemmas, exactly as the world sweep applies it.)*
+- [x] `mem_identifyTime_time` — the analogue of `mem_identifyTime_world`, and the one that is **not**
       a mirror: `Branch.identifyTime src tgt` rewrites times, so the honest conclusion is
       `g.label.time = tgt ∨ g.label.time ∈ b.knownTimes`. State it in exactly that disjunctive form.
       Do **not** attempt an unconditional `∈ b.knownTimes` conclusion — that is the shape register
       entry 10 refutes in a neighbouring coordinate, and `knownTimes_identifyTime_subset` /
       `src_not_mem_knownTimes_identifyTime` in `Fuel.lean` are the available true facts.
-- [ ] Add a companion `mem_identifyTime_time_at_trigger`: when `tgt` is the `t₁` of
+- [x] Add a companion `mem_identifyTime_time_at_trigger`: when `tgt` is the `t₁` of
       `firstIncomparablePair b ord`, `firstIncomparablePair_spec` already gives `t₁ ∈ b.knownTimes`,
       so the disjunction collapses. This is the exact move
       `universeClosedAt_identify_at_trigger` makes for the 432 repair; reuse that bridge's shape.
+
+*(deviation: altered - six additional helpers landed beside the five planned ones, because the time coordinate has emission shapes the world coordinate does not: `exists_constraint_from_of_pathN` and `exists_constraint_from_of_mem_pastOf` (past-directed mirrors of the existing forward lemmas), `mem_knownTimes_of_mem_futureOf` / `mem_knownTimes_of_mem_pastOf` (the `OrdTimesKnown` bridge the four universal-propagation rules need), and `mem_filterMap_futureOf_time` / `mem_filterMap_pastOf_time`. `mem_filterMap_const_time` is generic in the source list's element type rather than fixed to `List SignedFormula`, since `boxPos`/`diamondNeg` range over worlds.)*
 
 **Timing**: 1.5 hours
 
@@ -258,7 +260,7 @@ from, so Phase 3's sweep has the same closers available that `applyRule_emitted_
 
 ---
 
-### Phase 3: `applyRule_emitted_time_mem` — the deliverable task 432 consumes [NOT STARTED]
+### Phase 3: `applyRule_emitted_time_mem` — the deliverable task 432 consumes [IN PROGRESS]
 
 **Goal**: Land the time-dimension analogue of `applyRule_emitted_world_mem` under that exact name.
 **This is the phase whose output task 432 Phase 7 consumes by name.** It must land as a standalone,
