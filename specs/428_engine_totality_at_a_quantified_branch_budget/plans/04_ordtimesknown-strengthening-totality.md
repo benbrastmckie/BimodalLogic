@@ -1219,7 +1219,7 @@ recorded baselines. `MintBound.lean` 3177 → 3370 lines, purely additive. 0 `so
 
 ---
 
-### Phase 12: The counting chain — identifications, shrinkage, extensions [NOT STARTED]
+### Phase 12: The counting chain — identifications, shrinkage, extensions [COMPLETED]
 
 **Goal**: The remaining three links, each absolute.
 
@@ -1227,20 +1227,20 @@ recorded baselines. `MintBound.lean` 3177 → 3370 lines, purely additive. 0 `so
 lemmas and mention no ordering-times invariant.
 
 **Tasks**:
-- [ ] `#identifications ≤ |knownTimes|₀ + #mints`: each identification drops `|knownTimes|` by at
+- [x] `#identifications ≤ |knownTimes|₀ + #mints`: each identification drops `|knownTimes|` by at
       least one (landed `knownTimes_card_lt_identifyTime`), each mint raises it by one. Note the
       payoff: this **derives** the time bound rather than assuming it, so `TimeBounded` is
       instantiated at `Tmax := |knownTimes|₀ + 8·|U|` rather than carried as an assumption — record
       that in-source, since it is what makes `hT` a discharged parameter rather than a residual.
-- [ ] `total shrinkage ≤ #identifications · |U|`: each identification's `eraseDups` merge count is
+- [x] `total shrinkage ≤ #identifications · |U|`: each identification's `eraseDups` merge count is
       bounded by the number of formulas at the source time, hence by `|U|`. This is the *upper*
       bound; the refuted route (a) was a *lower* bound on the post-identification cardinality and is
       not re-attempted here — record the distinction in-source so a future reader does not conflate
       them.
-- [ ] `#extensions ≤ |U| + total shrinkage`: the branch-as-a-set grows by at least one per extending
+- [x] `#extensions ≤ |U| + total shrinkage`: the branch-as-a-set grows by at least one per extending
       step (landed `expandOnceUnblocked_card_lt`) and cannot exceed `|U|`; shrinkage is the only way
       budget returns.
-- [ ] Assemble the path-length bound and check it against the landed `splitPathBound` /
+- [x] Assemble the path-length bound and check it against the landed `splitPathBound` /
       `splitAwareFuel` shapes so Phase 13's induction consumes a figure that already exists rather
       than a new one.
 
@@ -1263,6 +1263,44 @@ than writing the plan's figure unchecked.
 - `lake build FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound` green.
 - Each of the three inequalities is a named sorry-free lemma.
 - The `Tmax` instantiation is present in-source with the "derived, not assumed" note.
+
+#### Completion notes
+
+**Every premise was confirmed against the source before use, and all three landed as named
+lemmas.** Each link is a fold of one per-step fact over an abstract carried counter — the shape
+the phase's own text asks for ("a statement about the induction's carried counter") — so the
+per-step hypotheses are exactly what Phase 13's induction will discharge from the engine lemmas
+named beside them.
+
+| Landed | Role |
+|---|---|
+| `fold_le_of_step` | The one fold all three links use. Additive form `f (i+1) + g i ≤ f i + g (i+1)`, so **no `Nat` subtraction appears anywhere** and `omega` closes every link. |
+| `identStep_le`, `mintStep_le`, `plainStep_le` | The three per-step arithmetic facts of link 1. |
+| `knownTimes_card_lt_at_arm3` | The concrete input: an identification drops the known-time count, with the trigger supplying `knownTimes_card_lt_identifyTime`'s three hypotheses. |
+| `idents_le_knownTimes_add_mints` | **Link 1.** |
+| `derivedTmax`, `derivedTmax_spec` | `Tmax := \|knownTimes\|₀ + 8·\|U\|`, **derived** from link 1 and `mints_le_eight_mul`; `BudgetedTotality`'s time hypothesis is satisfied at it definitionally. |
+| `shrinkage_le_card` | One identification's loss is bounded by `\|U\|`. |
+| `shrinkage_total_le` | **Link 2.** |
+| `extensions_le` | **Link 3.** |
+| `path_le_of_links`, `orderedRunBound_ge`, `path_le_splitPathBound` | The assembly, and the check against the landed figure. |
+
+**The refuted-route distinction is recorded in-source**, adjacent to `shrinkage_le_card`: this is
+an **upper** bound on the *loss*, which is available; route (a) sought a **lower** bound on the
+*survivors*, which is dead by definition. A reader who reads the former as reviving the latter has
+the direction backwards.
+
+**Task 4's check came out clean and no divergence had to be recorded.** The assembled figure
+`|U| + Tmax·|U| + Tmax` sits below `splitPathBound |U| Tmax = (|U| + 1) · (orderedRunBound Tmax + 1)`,
+because `orderedRunBound Tmax ≥ Tmax` (`orderedRunBound_ge`) and the outer factor is `|U| + 1`. So
+Phase 13 consumes `splitAwareFuel` **unchanged**; no new fuel figure is introduced.
+
+**Build (R6/R8)**: green on the **first** attempt. Whole-module `lake build` **161s wall / 13m30s
+user** — unchanged from Phase 11, because this block is `Nat` arithmetic with no case split over
+`TableauRule`. **No `set_option` added or raised.** `#print axioms` reports exactly
+`[propext, Classical.choice, Quot.sound]` throughout.
+
+**Constraint status**: all three md5 baselines still match. `MintBound.lean` 3370 → 3524 lines,
+purely additive. 0 `sorry`, 0 `axiom`, 0 `NoSplit`, 0 task-number citations.
 
 ---
 
