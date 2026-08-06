@@ -946,7 +946,11 @@ proposal and still not machine-checked.**
       `(freshLabelRules ×ˢ U).filter (fun p => witnessPresent p.1 (rhoSF t₂ t₁ p.2) b' ord' = false)`),
       turning the injection obligation into a pointwise implication Phase 6 already supplies. Try
       this before escalating.
-- [ ] **Confirm R3 is broken.** Before writing the statement, confirm from Phase 9's findings that
+- [x] **Confirm R3 is broken.** *(**CONFIRMED, and the confirmation is a landed lemma rather than
+      a reading**: `timeFinset_card_le_of_mem_stock`. Its four hypotheses — branch-in-stock,
+      linearity-saturated, eventuality-fulfilled, blocking-silent — mention no world, no mint and
+      no `|U|`, and its conclusion `2 ^ (2·|C|)` is a function of the stock alone. Nothing further
+      is owed here; do not re-derive it.)* Before writing the statement, confirm from Phase 9's findings that
       `Tmax` — and hence `|U| = |signedUniverse C L|` — is supplied independently of the mint chain,
       i.e. from T2's `timeFinset_card_le_of_not_blocked` (`Fuel.lean:588`). Record the confirmation.
       If Phase 9 could not supply it, **escalate here** rather than writing a statement whose
@@ -994,6 +998,41 @@ runs; a `sorry`; a vacuous placeholder.
   (so `buildTableau`'s `fuel := 1000` and `expandBranchWithFuel`'s `maxBranches := 50000` are
   untouched).
 - The R3 and arm-3 confirmations are recorded in the completion notes.
+
+---
+
+#### Completion notes so far (task 3 discharged; task 2 analysed, not settled)
+
+**Task 3 (R3) is discharged and needs no further work** — see the annotation above.
+`timeFinset_card_le_of_mem_stock` is landed and non-circular by inspection of its hypotheses.
+
+**Task 2 (the arm-3 obligation, R2) — analysis, explicitly NOT a settled result.** No Lean was
+written for this phase, deliberately: the plan's own task order requires the arm-3 monotonicity to
+be settled *before* the measure is committed to, and it is not settled. What is established:
+
+- The primary shape's obligation is `mintPotential U b' ord' ≤ mintPotential U b ord` at
+  `b' = b.identifyTime t₂ t₁`. Phase 8's `witnessPresent_no_flip` gives, at an ordered split, only
+  the **two-premise** form: a successor reporting no witness for *both* `sf` and `rhoSF t₂ t₁ sf`
+  implies no witness before. Counting needs one premise per pair, so it does not apply directly.
+- Attempting the injection on the complement (true-before ↦ true-after) fails for the reason R2
+  already names: the map `(r, sf) ↦ (r, rhoSF t₂ t₁ sf)` is **not injective on `U`**, because
+  `rhoSF` merges `t₂` into `t₁`.
+- **A concrete shape showing the primary measure is not obviously monotone**, recorded so a
+  successor does not re-find it: after the arm, `b'` carries *nothing* at time `t₂`, so **every**
+  pair whose formula sits at `t₂` reports no witness at `b'`. A pair at `t₂` whose witness was also
+  at `t₂` was therefore `true` before and is `false` after — an *increase* in the potential at that
+  pair. Whether the simultaneous decreases at `t₁` always dominate is exactly the open question;
+  it has **not** been decided in either direction, and nothing here refutes the measure.
+- **The plan's named alternative is the next thing to try, and it has a promising pointwise form.**
+  Indexing the filter over the pre-renaming pair set turns the obligation into
+  `witnessPresent r (rhoSF t₂ t₁ sf) b' ord' = false → witnessPresent r sf b ord = false`, which is
+  the contrapositive of Phase 6's landed `arm3_preserves_witness` — available pointwise, with no
+  injection. What is **not** yet worked out is how that step-indexed measure composes along a run
+  with a second identification. That is the first thing the next dispatch should settle.
+
+Per the phase's escalation clause this is **not** a `[BLOCKED]` outcome: the named alternative has
+not been tried in Lean, so the route is not exhausted. Nothing was narrowed, substituted, or
+admitted, and no statement was written that would have to be unwritten.
 
 ---
 
