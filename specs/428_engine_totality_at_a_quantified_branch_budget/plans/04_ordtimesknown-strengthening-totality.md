@@ -914,7 +914,7 @@ from the Phase 8 figure. `lean_verify` on `worldWitness_seedBranch`,
 
 ---
 
-### Phase 10: The mint potential and the budget-carrying restatement [IN PROGRESS]
+### Phase 10: The mint potential and the budget-carrying restatement [COMPLETED]
 
 **Goal**: Work item 2 — give `expandBranchWithFuel_isSome_of_budget` an explicit **mint-budget
 parameter** in the `branchesUsed`/`maxBranches` shape, and land the definitions and arithmetic
@@ -927,7 +927,10 @@ non-injectivity and is untouched by the strengthening. The bet is **still the pl
 proposal and still not machine-checked.**
 
 **Tasks**:
-- [ ] **Settle the measure design before writing the statement.** Proposed shape:
+- [x] **Settle the measure design before writing the statement.** *(deviation: altered — the landed
+      `mintPotential` carries an explicit accumulated-renaming parameter `σ` and filters on
+      `witnessPresent p.1 (σ p.2) b ord = false`. The shape below is the `σ = id` specialization
+      and is not preserved by the identification arm; see task 2.)* Proposed shape:
       ```
       mintPotential (U : Finset SignedFormula) (b : Branch) (ord : TimeOrdering) : Nat :=
         ((freshLabelRules ×ˢ U).filter (fun p => witnessPresent p.1 p.2 b ord = false)).card
@@ -936,7 +939,9 @@ proposal and still not machine-checked.**
       immediate. **The bet**: Phase 8 makes `witnessPresent` monotone, so `mintPotential` is
       non-increasing along a run and strictly decreases on a mint — a *per-state* quantity the
       induction can carry.
-- [ ] **Settle the arm-3 obligation first, before any induction is written.** Arm 3 renames via
+- [x] **Settle the arm-3 obligation first, before any induction is written.** *(settled by the
+      plan's own named alternative, landed as `mintPotential_identifyTime` — a proved lemma, not a
+      note. No injection was needed and none was built.)* Arm 3 renames via
       `rhoSF`, which is **not injective on `U`**, so `mintPotential(after) ≤ mintPotential(before)`
       is not immediate from Phase 6: it needs an injection from the after-false set into the
       before-false set, and a `(rule, sf')` false after arm 3 need not lie in `rhoSF`'s image. Reach
@@ -955,15 +960,19 @@ proposal and still not machine-checked.**
       i.e. from T2's `timeFinset_card_le_of_not_blocked` (`Fuel.lean:588`). Record the confirmation.
       If Phase 9 could not supply it, **escalate here** rather than writing a statement whose
       hypotheses are circular.
-- [ ] Land `mintBudget_preserved`, the arithmetic mirror of the landed `splitBudget_preserved`: a
+- [x] Land `mintBudget_preserved`, the arithmetic mirror of the landed `splitBudget_preserved`: a
       step consumes at most one unit of mint budget, so used-and-remaining is invariant across
       extending and splitting steps.
-- [ ] State `expandBranchWithFuel_isSome_of_budget` with the mint budget as an explicit parameter,
+- [x] *(deviation: altered — landed as the `Prop`-valued definition `BudgetedTotality`, not as an
+      unproved `theorem`. A theorem statement cannot be landed without a proof and `sorry` is
+      absolutely prohibited here; a named `Prop` fixes the target exactly as the task intends and
+      Phase 13 proves `BudgetedTotality …`. Every element the task lists is present in it.)*
+      State `expandBranchWithFuel_isSome_of_budget` with the mint budget as an explicit parameter,
       `NoSplit` **deleted**, `hT`/`TimeBounded` instantiated at `Tmax` from Phase 9 (not assumed),
       `RunInvariant` on the initial `(b, ord)` as the carried side condition, and the fuel figure
       the landed `splitAwareFuel` supplies. **Do not prove it here** — Phase 13 closes the induction.
       Land the statement plus its scaffolding so Phases 11-12 have a fixed target.
-- [ ] Record in-source, adjacent to the statement, **why the section-4 impossibility does not apply**:
+- [x] Record in-source, adjacent to the statement, **why the section-4 impossibility does not apply**:
       it rules out the three-component linear family
       `Ψ = A·(|U| − |b|) + B·|knownTimes| + C·|incompPairs|`, and `mintPotential` is a **fourth
       component outside that family**. Cite the components by name, never by report or task number.
@@ -1034,9 +1043,84 @@ Per the phase's escalation clause this is **not** a `[BLOCKED]` outcome: the nam
 not been tried in Lean, so the route is not exhausted. Nothing was narrowed, substituted, or
 admitted, and no statement was written that would have to be unwritten.
 
+#### Completion notes — the phase closed; R2 is settled by proof
+
+**The named alternative worked, and it worked in one attempt.** Every declaration below elaborated
+green on the **first** try, in a scratch file against the built module, and then again unchanged
+inside `MintBound.lean`. The escalation clause was not reached; nothing was narrowed, admitted, or
+substituted.
+
+**What settles R2.** `mintPotential` takes the accumulated renaming `σ` as an explicit parameter
+and filters `freshLabelRules ×ˢ U` on `witnessPresent p.1 (σ p.2) b ord = false`. That keeps the
+index set **fixed for the whole run**, so successive potentials are cardinalities of subsets of one
+finset. Both step shapes then become pointwise *subset* facts, and **the injection R2 demands is
+not needed and was not built**:
+
+| Landed | What it settles |
+|---|---|
+| `freshLabelRules`, `freshLabelRules_card`, `mem_freshLabelRules` | The eight-rule index factor, with `Finset`/`Bool` agreement **proved** over all 36 constructors rather than asserted. |
+| `mintPotential` | The measure, with the carried renaming. `σ = id` is the plan's proposed shape. |
+| `mintPotential_le_eight_mul` | `mintPotential ≤ 8 · \|U\|` at every state and every `σ`. Scope Hypothesis (b) **CONFIRMED BY PROOF**. |
+| `mintPotential_le_of_grow` | Ordinary steps do not increase it — `.extended`, `.split`, and ordered-split arms 1-2. |
+| **`mintPotential_identifyTime`** | **Arm 3 does not increase it.** The contrapositive of `arm3_preserves_witness`, pointwise. **This is R2's obligation, discharged.** |
+| `mintPotential_lt_of_mint` | A mint strictly decreases it, with the residual visible in the hypotheses (below). |
+| `mintPotential_expandOnceUnblocked` | Engine level, unordered successors. |
+| `mintPotential_expandOnceUnblocked_splitOrdered` | Engine level, all three ordered arms, each reporting which renaming the run carries onward. |
+| `mintBudget_preserved`, `mintBudget_preserved_mint` | The per-step arithmetic, mirroring `splitBudget_preserved` / `extendBudget_preserved`. |
+| `mints_le_eight_mul` | **The composition** — `#mints ≤ 8·\|U\|` over an arbitrary run, with arbitrarily many identifications. |
+| `BudgetedTotality` | The fixed target for Phases 11-13. |
+
+**The open piece the previous cycle named is now closed.** It asked how a step-indexed measure
+composes along a run with a *second* identification. The answer is that the renaming is
+**post-composed onto a parameter** rather than fixed inside the measure, so
+`mintPotential_identifyTime` applies unchanged at the second, third and `n`-th identification;
+`mints_le_eight_mul` is that composition, machine-checked over an arbitrary sequence of states,
+renamings and mint counts.
+
+**Scope Hypothesis (a), stated precisely rather than claimed wholesale.** "`mintPotential` is
+monotone across all four result shapes" is **CONFIRMED** for the `σ`-carrying measure at every
+shape, arm 3 included. It is **NOT** confirmed for the `σ`-free measure, and the plan's own
+concrete shape (recorded above) is why: after the arm the branch carries nothing at `t₂`, so a pair
+at `t₂` whose witness also sat at `t₂` was `true` before and is `false` after. That remains
+undecided in both directions and is now moot — the committed measure does not depend on it.
+
+**The residual, named.** `mintPotential_lt_of_mint` requires the minting pair to be **`σ`-hit**:
+the formula the rule fires on must be `σ sf` for some `sf ∈ U`. `σ`'s image omits exactly the times
+earlier identifications merged away, so the obligation is that a minting formula does not sit at a
+merged-away time. **This is a question about time reuse, not about the measure**: `Branch.nextTime`
+is `Branch.maxTime + 1` and `Branch.identifyTime` can lower `Branch.maxTime` (the configuration
+`ordTimes_identifyTime_arm3_false` decides drops it from `5` to `0`), so a fresh time can in
+principle re-issue a value an earlier identification removed. The "live times" reformulation —
+filter additionally on the formula's time being a fixed point of `σ` — carries the *identical*
+obligation, which is what shows it is intrinsic rather than an artifact of this shape. It is
+**Phase 11's first obligation**, it appears as a visible hypothesis rather than an assumption, and
+it is recorded in-source next to the lemma.
+
+**Task 3 (R3)** needed no further work; the confirmation is restated in-source in the C3 section
+note, citing `timeFinset_card_le_of_mem_stock`'s four world-free, mint-free, `|U|`-free hypotheses.
+
+**Task 6** is in-source adjacent to `BudgetedTotality`: `mintPotential` is a **fourth component
+outside** the linear three-component family `Ψ = A·(|U| − |b|) + B·|knownTimes| + C·|incompPairs|`
+that the measured obstruction rules out — it mentions none of the three and is not a linear
+combination of them.
+
+**Build (R6/R8)**: green on the first attempt (measured twice, 122s/7m40s then 124s/7m48s after a
+docstring-only edit). Whole-module `lake build` **124s wall / 7m48s user**, *down* from Phase 9's
+143s / 9m01s despite +298 lines — the new block is `Finset`
+cardinality reasoning with no case split over `TableauRule`, so it costs almost nothing. **No
+`set_option` was added or raised anywhere in this phase**; every declaration closes at the module's
+default budget. `#print axioms` on all eight new theorems reports exactly
+`[propext, Classical.choice, Quot.sound]` (`freshLabelRules_card`, decided, reports the subset
+`[propext, Quot.sound]`).
+
+**Constraint status**: `Saturation.lean` `ae47004e06e77f2846cc3e1dfa408382`, `Tableau.lean`
+`cfd82332c8e400ac97ab709ece5dfb4a`, `Fuel.lean` `8a395bd7117a682c1f8302a2ac5f0f1f` — all three
+still match. `MintBound.lean` 2879 → 3177 lines, purely additive; no landed declaration edited,
+renamed or deleted. 0 `sorry`, 0 `axiom`, 0 `NoSplit`, 0 task-number citations.
+
 ---
 
-### Phase 11: `#mints ≤ 8·|U|` — the once-only bound [NOT STARTED]
+### Phase 11: `#mints ≤ 8·|U|` — the once-only bound [IN PROGRESS]
 
 **Goal**: The first link of the amortized chain: each `(rule, sf)` pair mints at most once, so the
 total number of fresh-time mints along any path is bounded absolutely, with no reference to branch

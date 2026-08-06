@@ -2876,4 +2876,302 @@ theorem chain_le_worldFuel'_of_seed {C : Finset Formula} {φ : Formula}
     (worldWitness_chain_of_seed hC hT run n h0 hseed hstep) hφ
   rwa [seedWorlds_card] at h
 
+/-! ## C3. The mint potential
+
+The count of `(rule, signed formula)` pairs still eligible to mint. Witness preservation makes it
+non-increasing along a run, and a mint makes it strictly decrease, which is what turns "each pair
+mints at most once" into a *per-state* quantity a fuel induction can carry.
+
+### The carried renaming is not decoration — read this before simplifying it away
+
+The obvious measure filters `freshLabelRules ×ˢ U` by `witnessPresent r sf b ord = false` at the
+current state. **That measure is not available at the ordered split's identification arm**, and the
+reason is the same non-injectivity that `ordTimes_identifyTime_arm3_false` exhibits for the
+ordering-times invariant. `rhoSF t₂ t₁` merges `t₂` into `t₁`, so it is not injective on `U`, and a
+counting argument at arm 3 would need an injection from the after-false set into the before-false
+set. The map that suggests itself is not one: after the arm the branch carries **nothing** at `t₂`,
+so every pair whose formula sits at `t₂` reports no witness at the successor, while a pair at `t₂`
+whose witness also sat at `t₂` reported one before — a local *increase*, with no partner to absorb
+it. Whether the simultaneous decreases at `t₁` dominate is not decided here in either direction.
+
+`mintPotential` therefore carries the accumulated renaming `σ` as an explicit parameter and
+filters on `witnessPresent r (σ sf) b ord = false`. The index set `freshLabelRules ×ˢ U` is then
+**fixed for the whole run**, so successive potentials are cardinalities of subsets of one finset
+and compare directly, and each of the two step shapes is a pointwise *subset* fact needing no
+injection:
+
+* an ordinary step keeps `σ` and grows branch and ordering — `mintPotential_le_of_grow`, from the
+  two `witnessPresent` monotonicity lemmas;
+* arm 3 post-composes `rhoSF t₂ t₁` onto `σ` — `mintPotential_identifyTime`, from
+  `arm3_preserves_witness` read contrapositively.
+
+Post-composition is what makes the measure compose along a run carrying **any number** of
+identifications, rather than only the first one: `σ` is a parameter of the measure, not a fixed
+choice inside it. `mints_le_eight_mul` is that composition, in the form the counting consumes.
+Instantiating `σ := id` recovers the intrinsic measure at any prefix of the run before the first
+ordered split, so nothing is lost relative to the simpler shape where the simpler shape works.
+
+### The residual, named rather than absorbed
+
+`mintPotential_lt_of_mint` — the strict decrease — asks that the minting pair be **`σ`-hit**: the
+formula the rule fires on must be `σ sf` for some `sf ∈ U`. `σ`'s image omits exactly the times
+earlier identifications merged away, so the obligation is precisely that a minting formula does
+not sit at a merged-away time. That is a question about **time reuse**, not about the measure:
+`Branch.nextTime` is `Branch.maxTime + 1` and `Branch.identifyTime` can *lower* `Branch.maxTime`
+(the configuration `ordTimes_identifyTime_arm3_false` decides drops it from `5` to `0`), so a
+fresh time can in principle re-issue a value an earlier identification removed. The equivalent
+"live times" reformulation of the potential — filter additionally on the formula's time being a
+fixed point of `σ` — carries the identical obligation, which is what shows it is intrinsic to the
+situation rather than an artifact of this measure's shape. Discharging it is the first obligation
+of the once-only bound, and it is stated in `mintPotential_lt_of_mint`'s hypotheses rather than
+assumed anywhere.
+
+### Why the three-component impossibility does not apply
+
+The measured obstruction recorded against the split-aware fuel figure rules out the *linear
+three-component family* `Ψ = A · (|U| − |b|) + B · |knownTimes| + C · |incompPairs|`: no choice of
+the three coefficients decreases on every arm, because the identification arm moves the second and
+third components in opposite directions from the first. `mintPotential` is a **fourth component
+outside that family** — it mentions neither `b.toFinset.card`, nor `Branch.knownTimes`, nor the
+incomparable-pair count, and it is not a linear combination of them. It is a count over a fixed
+index set of *witness tests*, and it is bounded by `8 * U.card` outright. The impossibility is
+therefore not evidence against this measure; it is evidence against the family this measure is
+not in.
+
+### The time bound is not circular
+
+`|U| = |signedUniverse C L|` grows with the times, and the times grow by minting, so a `Tmax`
+derived from the mint count would make the chain circular. It is not derived that way:
+`timeFinset_card_le_of_mem_stock` above bounds `Branch.timeFinset.card` by `2 ^ (2 * |C|)` from
+branch-confined-to-stock, linearity-saturated, eventuality-fulfilled and blocking-silent. **Not
+one of those four hypotheses mentions a world, a mint, or `|U|`.** The mint chain may rest on it. -/
+
+/-- **The eight rules that mint a fresh label**, as a `Finset`, so the potential's index set is a
+product. The list is exactly `ruleMintsFreshLabel`'s `true` arms — `mem_freshLabelRules` proves the
+agreement rather than asserting it, so the two can never drift apart silently. -/
+def freshLabelRules : Finset TableauRule :=
+  {TableauRule.boxNeg, TableauRule.diamondPos, TableauRule.allFutureNeg, TableauRule.allPastNeg,
+   TableauRule.someFuturePos, TableauRule.somePastPos, TableauRule.untlPos, TableauRule.sncePos}
+
+/-- There are exactly eight, decided rather than counted by hand. -/
+theorem freshLabelRules_card : freshLabelRules.card = 8 := by decide
+
+/-- The `Finset` and the `Bool` predicate agree, over all thirty-six constructors. -/
+theorem mem_freshLabelRules {r : TableauRule} :
+    r ∈ freshLabelRules ↔ ruleMintsFreshLabel r = true := by
+  cases r <;> simp [freshLabelRules, ruleMintsFreshLabel]
+
+/-- **The mint potential**: the number of `(rule, formula)` pairs drawn from the fixed index set
+`freshLabelRules ×ˢ U` that report **no** witness at the current state, with the formula carried
+through the accumulated renaming `σ`.
+
+`σ` is the composition of the `rhoSF`s of the ordered splits taken so far; it is `id` before the
+first one. Carrying it keeps the index set fixed across the whole run — see the section note above
+for why the `σ`-free form is not available at the identification arm. -/
+def mintPotential (U : Finset SignedFormula) (σ : SignedFormula → SignedFormula)
+    (b : Branch) (ord : TimeOrdering) : Nat :=
+  ((freshLabelRules ×ˢ U).filter (fun p => witnessPresent p.1 (σ p.2) b ord = false)).card
+
+/-- **`mintPotential ≤ 8 · |U|`**, immediately, for every state and every renaming: the filter
+cannot exceed its index set, and the index set is a product with an eight-element left factor. This
+is the ceiling the once-only bound reads off. -/
+theorem mintPotential_le_eight_mul (U : Finset SignedFormula)
+    (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering) :
+    mintPotential U σ b ord ≤ 8 * U.card := by
+  refine le_trans (Finset.card_filter_le _ _) ?_
+  rw [Finset.card_product, freshLabelRules_card]
+
+/-- **An ordinary step does not increase the potential.** The branch grows and the ordering grows,
+so `witnessPresent` can only turn on; contrapositively the after-false set is a *subset* of the
+before-false set inside the same index set, and no injection is needed. Covers `.extended`,
+`.split`, and the ordered split's first two arms, all of which keep `σ`. -/
+theorem mintPotential_le_of_grow {U : Finset SignedFormula} {σ : SignedFormula → SignedFormula}
+    {b b' : Branch} {ord ord' : TimeOrdering}
+    (hb : ∀ x ∈ b, x ∈ b') (hord : ∀ q ∈ ord.constraints, q ∈ ord'.constraints) :
+    mintPotential U σ b' ord' ≤ mintPotential U σ b ord := by
+  refine Finset.card_le_card ?_
+  intro p hp
+  simp only [Finset.mem_filter] at hp ⊢
+  refine ⟨hp.1, ?_⟩
+  rcases hw : witnessPresent p.1 (σ p.2) b ord with _ | _
+  · rfl
+  · rw [witnessPresent_branch_mono hb (witnessPresent_ord_mono hord hw)] at hp
+    exact absurd hp.2 (by simp)
+
+/-- **The identification arm does not increase the potential either** — the central obligation of
+this block, and the one the plain measure cannot meet.
+
+The successor is measured at `rhoSF t₂ t₁ ∘ σ` rather than at `σ`, which is exactly the renaming
+the arm performs, and the proof is again a pointwise subset fact: the contrapositive of
+`arm3_preserves_witness`. No injection from the after-false set into the before-false set is
+required, and none is available — `rhoSF t₂ t₁` is not injective on `U`.
+
+Because the renaming is *post-composed* onto the parameter, this lemma applies unchanged at a
+second, third, or `n`-th identification along the same run. -/
+theorem mintPotential_identifyTime {U : Finset SignedFormula} {σ : SignedFormula → SignedFormula}
+    {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) (hirr : IrreflOrd ord) :
+    mintPotential U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
+      ≤ mintPotential U σ b ord := by
+  refine Finset.card_le_card ?_
+  intro p hp
+  simp only [Finset.mem_filter] at hp ⊢
+  refine ⟨hp.1, ?_⟩
+  rcases hw : witnessPresent p.1 (σ p.2) b ord with _ | _
+  · rfl
+  · rw [arm3_preserves_witness htrig hirr p.1 (σ p.2) hw] at hp
+    exact absurd hp.2 (by simp)
+
+/-- **A mint strictly decreases the potential.**
+
+The minting pair is in the before-false set (that is the guard `findApplicableRule` tests) and out
+of the after-false set (the rule's own output is the witness), and the after-false set is contained
+in the before-false set by the same argument as `mintPotential_le_of_grow`. A strict subset of a
+finset has strictly smaller cardinality.
+
+**The `σ`-hit hypotheses are the residual, and they are visible here rather than absorbed.** The
+pair must be drawn from the index set — `hr`, `hsf` — and the formula the rule fires on must be
+`σ sf`, not merely some branch formula. See the section note on time reuse for what discharging
+that costs. -/
+theorem mintPotential_lt_of_mint {U : Finset SignedFormula} {σ : SignedFormula → SignedFormula}
+    {b b' : Branch} {ord ord' : TimeOrdering} {r : TableauRule} {sf : SignedFormula}
+    (hb : ∀ x ∈ b, x ∈ b') (hord : ∀ q ∈ ord.constraints, q ∈ ord'.constraints)
+    (hr : r ∈ freshLabelRules) (hsf : sf ∈ U)
+    (hbefore : witnessPresent r (σ sf) b ord = false)
+    (hafter : witnessPresent r (σ sf) b' ord' = true) :
+    mintPotential U σ b' ord' < mintPotential U σ b ord := by
+  refine Finset.card_lt_card ?_
+  refine (Finset.ssubset_iff_of_subset ?_).mpr ⟨(r, sf), ?_, ?_⟩
+  · intro p hp
+    simp only [Finset.mem_filter] at hp ⊢
+    refine ⟨hp.1, ?_⟩
+    rcases hw : witnessPresent p.1 (σ p.2) b ord with _ | _
+    · rfl
+    · rw [witnessPresent_branch_mono hb (witnessPresent_ord_mono hord hw)] at hp
+      exact absurd hp.2 (by simp)
+  · simp only [Finset.mem_filter, Finset.mem_product]
+    exact ⟨⟨hr, hsf⟩, hbefore⟩
+  · simp only [Finset.mem_filter, hafter]
+    simp
+
+/-- **Engine level, unordered successors.** `.extended` and every arm of a `.split` grow both
+components of the state, so `mintPotential_le_of_grow` applies with the renaming unchanged.
+`.saturated` and `.splitOrdered` contribute no unordered successor. -/
+theorem mintPotential_expandOnceUnblocked {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 ≤ mintPotential U σ b ord := by
+  intro nb hnb
+  exact mintPotential_le_of_grow (expandOnceUnblocked_branch_mono nb hnb)
+    expandOnceUnblocked_ord_mono
+
+/-- **Engine level, the ordered split's three arms.** Each arm reports which renaming the run
+carries onward: arms 1 and 2 keep `σ` (the branch is literally unchanged and the ordering gains one
+edge), arm 3 post-composes `rhoSF t₂ t₁`. The disjunction is the honest shape — the induction
+chooses per arm, and both choices are supplied with the same bound. -/
+theorem mintPotential_expandOnceUnblocked_splitOrdered {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    {bs : List (Branch × TimeOrdering)} {t₁ t₂ : TimeIndex}
+    (hinv : RunInvariant b ord)
+    (hbs : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs)
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) :
+    ∀ p ∈ bs, ∃ σ' : SignedFormula → SignedFormula,
+      (σ' = σ ∨ σ' = fun x => rhoSF t₂ t₁ (σ x)) ∧
+        mintPotential U σ' p.1 p.2 ≤ mintPotential U σ b ord := by
+  obtain ⟨u₁, u₂, htrig', rfl⟩ := expandOnceUnblocked_splitOrdered_shape hbs
+  rw [htrig] at htrig'
+  obtain ⟨rfl, rfl⟩ : t₁ = u₁ ∧ t₂ = u₂ := by simpa using htrig'
+  intro p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · exact ⟨σ, Or.inl rfl,
+      mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₁ t₂)⟩
+  · exact ⟨σ, Or.inl rfl,
+      mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₂ t₁)⟩
+  · exact ⟨_, Or.inr rfl, mintPotential_identifyTime htrig hinv.irreflOrd⟩
+
+/-- **The mint budget's arithmetic, non-minting step.** The invariant is "mints used plus potential
+remaining does not exceed the budget"; a step that does not mint leaves the first summand alone and
+does not raise the second. The mirror of `extendBudget_preserved` for the mint dimension. -/
+theorem mintBudget_preserved {used budget p p' : Nat}
+    (hbud : used + p ≤ budget) (hle : p' ≤ p) : used + p' ≤ budget := by omega
+
+/-- **The mint budget's arithmetic, minting step.** A mint spends one unit of budget and buys a
+strict decrease in the potential, so the sum is again preserved. This is the mint dimension's
+analogue of `splitBudget_preserved`, and it is where "each pair mints at most once" is cashed. -/
+theorem mintBudget_preserved_mint {used budget p p' : Nat}
+    (hbud : used + p ≤ budget) (hlt : p' < p) : (used + 1) + p' ≤ budget := by omega
+
+/-- **`#mints ≤ 8 · |U|` along any run** — the composition, stated over an arbitrary sequence of
+states, renamings and mint counts.
+
+This is the piece the carried renaming buys. The hypothesis is exactly the two step shapes above
+combined with the budget arithmetic: at every step, `mints + mintPotential` does not increase, with
+the step free to choose the successor renaming (`σ (i+1)` is unconstrained here, and the two
+engine-level lemmas supply the two admissible choices). Because the index set is fixed, the
+potentials at different steps are comparable **without** any injection between them, and the run
+may carry arbitrarily many identifications.
+
+The conclusion mentions neither the branch, nor branch growth, nor the number of ordered splits. -/
+theorem mints_le_eight_mul {U : Finset SignedFormula}
+    (σ : Nat → SignedFormula → SignedFormula) (br : Nat → Branch) (og : Nat → TimeOrdering)
+    (mints : Nat → Nat) (n : Nat) (h0 : mints 0 = 0)
+    (hstep : ∀ i < n, mints (i + 1) + mintPotential U (σ (i + 1)) (br (i + 1)) (og (i + 1))
+      ≤ mints i + mintPotential U (σ i) (br i) (og i)) :
+    mints n ≤ 8 * U.card := by
+  have key : ∀ m ≤ n, mints m + mintPotential U (σ m) (br m) (og m)
+      ≤ mints 0 + mintPotential U (σ 0) (br 0) (og 0) := by
+    intro m
+    induction m with
+    | zero => intro _; exact Nat.le_refl _
+    | succ k ih =>
+      intro hk
+      exact le_trans (hstep k (Nat.lt_of_lt_of_le (Nat.lt_succ_self k) hk))
+        (ih (Nat.le_of_succ_le hk))
+  have h := key n (Nat.le_refl n)
+  rw [h0] at h
+  have hb : mintPotential U (σ 0) (br 0) (og 0) ≤ 8 * U.card :=
+    mintPotential_le_eight_mul _ _ _ _
+  omega
+
+/-- **The budget-carrying restatement, as a fixed target.**
+
+This is the statement the induction over fuel has to close, named here so the counting block has
+something fixed to aim at and so the shape cannot drift while it is being built. **Nothing here
+asserts it**: it is a `Prop`-valued definition, and it is discharged where the induction is closed,
+not before.
+
+Read against `expandBranchWithFuel_isSome_of_noSplit`, four things changed and each is deliberate:
+
+* **The unbranching-run restriction is gone**, name and all — the predicate
+  `expandBranchWithFuel_isSome_of_noSplit` carries does not appear here under any spelling.
+  No hypothesis restricts which `ExpansionResult` shapes the run may take,
+  which is the whole point; a theorem that only applied to unbranching runs would have removed the
+  restriction in name only.
+* **The mint budget is an explicit parameter**, `mintBudget`, constrained only by
+  `8 * U.card ≤ mintBudget` — the ceiling `mintPotential_le_eight_mul` supplies outright. It is a
+  parameter this development discharges, never a caller obligation.
+* **The time bound is derived from it**, `b.knownTimes.toFinset.card + mintBudget ≤ Tmax`, rather
+  than assumed: each identification drops the known-time count and each mint raises it by one, so
+  the initial count plus the mint budget bounds it for the whole run.
+* **`RunInvariant` is the carried side condition**, on the *initial* state only. It is
+  re-established at every successor by `expandOnceUnblocked_runInvariant`, and at the engine's own
+  seed it is discharged outright by `runInvariant_initial`.
+
+The fuel figure is the landed `splitAwareFuel`, unmodified, and the branch budget is the
+`β`-linear one that `splitBudget_preserved` preserves. -/
+def BudgetedTotality (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
+    (mintBudget Tmax D β : Nat) : Prop :=
+  ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker) (applied : AppliedSet)
+    (maxBranches branchesUsed : Nat),
+    (∀ x ∈ b, x ∈ U) →
+    RunInvariant b ord →
+    8 * U.card ≤ mintBudget →
+    b.knownTimes.toFinset.card + mintBudget ≤ Tmax →
+    branchesUsed + β * splitAwareFuel U.card Tmax D β ≤ maxBranches →
+    (expandBranchWithFuel b (splitAwareFuel U.card Tmax D β) ord fc tr applied
+      maxBranches branchesUsed).isSome = true
+
 end FormalSystem.Metalogic.Decidability
