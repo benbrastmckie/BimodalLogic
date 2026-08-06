@@ -4348,6 +4348,192 @@ theorem difficultyBoundedAt_ceiling {fc : FormalSystem.ProofSystem.FrameClass}
       · exact hUcl.2 b t₁ t₂ hbU
     exact estimateBranchDifficulty_le_ceiling hconf hlen'
 
+/-! #### The residual as literally stated is refutable, at every `D`
+
+The refutation, in one paragraph. Take `sf₀ := F(p → q)` at the initial label and
+`U₀ := {sf₀, T p, F q}` — closed enough that `sf₀`'s one step stays inside it. Take
+`b := List.replicate n sf₀`: a branch consisting of `n` copies of a single formula, which is
+`U₀`-confined for every `n` because confinement is a statement about *membership*, not about
+multiplicity. The engine's step at `b` is `.impNeg`, emitting `[T p, F q]`, so the successor has
+length `n + 2`, and `estimateBranchDifficulty_length_le` puts its difficulty at least
+`1 + (n + 2) / 4`. Instantiating at `n := 4·D + 4` makes that `D + 2`, which exceeds `D`. Hence no
+`D` bounds the difficulty of the successors of `U₀`-confined branches, and
+`DifficultyBounded fc U₀ D` is false — at **every** `D` and at **every** frame class.
+
+**Why the reduction goes through generically in `n`.** Every engine function the step consults is
+insensitive to the duplication:
+
+* `blockedTimes b ord fc tr` is `b.knownTimes.filter (isTemporallyBlockedSaturated …)`, and at
+  `ord = TimeOrdering.empty` the candidate list `blockCandidates` is empty at every time, so the
+  filter's predicate is `false` everywhere. `blockedTimes_empty` records this for an **arbitrary**
+  branch, frame class and tracker — it is not a fact about this witness at all.
+* `findUnexpandedUnblockedWith` is a `List.find?`, so it short-circuits on the head, which is `sf₀`.
+* `findApplicableRule` consults `allRulesForFC fc`, whose first three entries are the Dedekind rules
+  and whose next two are `.negPos`/`.negNeg`; all five are inapplicable to a `.neg`-signed
+  implication between atoms, so `.impNeg` — third in `allRules` — is the first rule to fire, at every
+  frame class. Its `fs.all branch.contains` guard passes because `T p` is not among the copies of
+  `sf₀`.
+
+None of this is a `decide` on a fixed `n`: `findApplicableRule_multWitness` holds for any branch not
+already carrying `T p`, and `expandOnceUnblocked_multBranch` for any `n ≥ 1`. -/
+
+section MultiplicityRefutation
+
+private def mfp : Formula := .atom (Atom.mkBase "p")
+private def mfq : Formula := .atom (Atom.mkBase "q")
+
+/-- `F(p → q)` at the initial label: the formula the refutation duplicates. `.impNeg` fires on it at
+every frame class, and its two outputs are neither of them equal to it. -/
+def multWitness : SignedFormula := SignedFormula.neg (Formula.imp mfp mfq) Label.initial
+
+/-- What `.impNeg` emits at `multWitness`: `T p, F q`. -/
+def multEmitted : List SignedFormula :=
+  [SignedFormula.pos mfp Label.initial, SignedFormula.neg mfq Label.initial]
+
+/-- The refuting universe: the witness together with the two formulas its one step produces, so the
+universe is closed under that step and the refutation cannot be dismissed as an artefact of a
+universe too small to be interesting. -/
+def multUniverse : Finset SignedFormula :=
+  {multWitness, SignedFormula.pos mfp Label.initial, SignedFormula.neg mfq Label.initial}
+
+/-- **The padded branch**: `n` copies of one formula. `U`-confined at every `n`, because confinement
+quantifies over membership. Its `toFinset` has one element and its `length` is `n` — which is the
+entire gap `DifficultyBounded` falls into. -/
+def multBranch (n : Nat) : Branch := List.replicate n multWitness
+
+private theorem futureOf_empty (t : TimeIndex) :
+    TimeOrdering.futureOf { constraints := [] } t = [] := rfl
+
+private theorem pastOf_empty (t : TimeIndex) :
+    TimeOrdering.pastOf { constraints := [] } t = [] := rfl
+
+/-- **Nothing is blocked at the empty ordering**, at any branch, frame class or tracker. Blocking
+needs an ancestor to block against, and `blockCandidates` reads its candidates off the ordering's
+constraints. This is what makes the refutation's engine reduction independent of the branch's
+content. -/
+theorem blockedTimes_empty (b : Branch) (fc : FormalSystem.ProofSystem.FrameClass)
+    (tr : EventualityTracker) : blockedTimes b TimeOrdering.empty fc tr = [] := by
+  simp [blockedTimes, isTemporallyBlockedSaturated, blockCandidates, ancestorTimes,
+    TimeOrdering.empty, futureOf_empty, pastOf_empty]
+
+private theorem ia_priorUGap (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .priorUGap multWitness fc = false := rfl
+
+private theorem ia_priorSGap (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .priorSGap multWitness fc = false := rfl
+
+private theorem ia_sepRule (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .sepRule multWitness fc = false := rfl
+
+private theorem ia_negPos (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .negPos multWitness fc = false := rfl
+
+private theorem ia_negNeg (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .negNeg multWitness fc = false := by
+  simp [isApplicable, multWitness, SignedFormula.neg, mfp, mfq, asNeg?]
+
+private theorem ia_impNeg (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .impNeg multWitness fc = true := rfl
+
+private theorem ar_impNeg (b : Branch) :
+    applyRule .impNeg multWitness b TimeOrdering.empty
+      = (RuleResult.linear multEmitted, TimeOrdering.empty) := rfl
+
+private theorem rm_impNeg : ruleMintsFreshLabel .impNeg = false := rfl
+
+attribute [local simp] ia_priorUGap ia_priorSGap ia_sepRule ia_negPos ia_negNeg ia_impNeg
+  ar_impNeg rm_impNeg
+
+theorem multWitness_mem_multUniverse : multWitness ∈ multUniverse := by simp [multUniverse]
+
+private theorem pos_ne_multWitness : SignedFormula.pos mfp Label.initial ≠ multWitness := by decide
+
+/-- **`.impNeg` is the rule the engine picks at `multWitness`, at every frame class and on any branch
+not already carrying `T p`.** The five rules ahead of it in `allRulesForFC fc` — the three Dedekind
+rules, then `.negPos` and `.negNeg` — are all inapplicable to a `.neg`-signed implication between
+atoms, and the frame-class-dependent rules are all `.pos`-gated, which is why the two `Dedekind ≤ fc`
+branches close by the same argument. -/
+theorem findApplicableRule_multWitness (b : Branch)
+    (hnot : SignedFormula.pos mfp Label.initial ∉ b)
+    (fc : FormalSystem.ProofSystem.FrameClass) :
+    findApplicableRule multWitness b TimeOrdering.empty fc
+      = some (TableauRule.impNeg, RuleResult.linear multEmitted, TimeOrdering.empty) := by
+  have hg : ¬ (∀ x ∈ multEmitted, b.contains x = true) := by
+    intro h
+    exact hnot (mem_of_branch_contains (h (SignedFormula.pos mfp Label.initial)
+      (by simp [multEmitted])))
+  simp only [findApplicableRule, allRulesForFC, allRules, dedekindRules]
+  by_cases hd : FormalSystem.ProofSystem.FrameClass.Dedekind ≤ fc
+  · simp [hd, hg, List.findSome?]
+  · simp [hd, hg, List.findSome?]
+
+/-- The padded branch carries only copies of the witness, so it never carries `T p`. -/
+theorem pos_not_mem_multBranch (n : Nat) :
+    SignedFormula.pos mfp Label.initial ∉ multBranch n := fun h =>
+  pos_ne_multWitness (List.eq_of_mem_replicate h)
+
+/-- **The step fires on the padded branch, generically in `n`.** Blocking is empty
+(`blockedTimes_empty`), the `List.find?` short-circuits on the head, and the pick is `.impNeg`
+(`findApplicableRule_multWitness`), so the step is `.extended (multEmitted ++ b)` — two formulas
+longer than a branch that can be made arbitrarily long. -/
+theorem expandOnceUnblocked_multBranch (n : Nat)
+    (fc : FormalSystem.ProofSystem.FrameClass) (tr : EventualityTracker) :
+    (expandOnceUnblocked (multBranch (n + 1)) TimeOrdering.empty fc tr).1
+      = ExpansionResult.extended (multEmitted ++ multBranch (n + 1)) := by
+  have hrule := findApplicableRule_multWitness (multBranch (n + 1))
+    (pos_not_mem_multBranch (n + 1)) fc
+  have hcons : multBranch (n + 1) = multWitness :: multBranch n := by
+    simp [multBranch, List.replicate_succ]
+  rw [expandOnceUnblocked]
+  simp only [blockedTimes_empty, findUnexpandedUnblockedWith, isExpanded]
+  rw [hcons, List.find?_cons]
+  simp only [← hcons, hrule, Option.isNone_some, List.contains_nil, Bool.not_false,
+    Bool.and_true]
+
+theorem length_multBranch (n : Nat) : (multBranch n).length = n := by simp [multBranch]
+
+/-- **`DifficultyBounded fc U D` is refuted, at every `D` and every frame class.**
+
+Not merely unproved: false. The witness is `multUniverse` and the padded branch
+`multBranch (4 * D + 4)`, which is `U`-confined because confinement is about membership, and whose
+`.impNeg` successor has length `4 * D + 6` and hence difficulty at least `D + 2`.
+
+This is why the landed terminus's `hD` hypothesis is unsatisfiable at any universe the engine fires
+on, and hence why `buildTableauAt_isSome_of_lengthBudget` is a repair rather than a convenience: the
+`DifficultyBounded`-shaped statements are true conditionals that no caller can discharge. The
+repaired hypothesis is `StepLengthBounded`, and `stepLengthBounded_of_difficultyBounded` shows the
+exchange loses nothing that was ever available.
+
+Note where the refutation does **not** come from. It is not about formula complexity — the witness is
+an implication between two atoms, with zero temporal and zero modal operators, so both of
+`estimateBranchDifficulty`'s weighted counters are `0` on it. The entire refutation runs through the
+`b.length / 4` term. Making `temporalCount` and `modalCount` public in `Saturation.lean` would leave
+every step of this argument intact. -/
+theorem difficultyBounded_multiplicity_false (fc : FormalSystem.ProofSystem.FrameClass)
+    (D : Nat) : ¬ DifficultyBounded fc multUniverse D := by
+  intro h
+  have hconf : ∀ x ∈ multBranch (4 * D + 3 + 1), x ∈ multUniverse := by
+    intro x hx
+    rw [List.eq_of_mem_replicate hx]
+    exact multWitness_mem_multUniverse
+  have hstep := expandOnceUnblocked_multBranch (4 * D + 3) fc EventualityTracker.empty
+  have hmem : (multEmitted ++ multBranch (4 * D + 3 + 1))
+      ∈ unorderedSuccessorBranches
+        (expandOnceUnblocked (multBranch (4 * D + 3 + 1)) TimeOrdering.empty fc
+          EventualityTracker.empty).1 := by
+    rw [hstep]; simp [unorderedSuccessorBranches]
+  have hle := (h (multBranch (4 * D + 3 + 1)) TimeOrdering.empty EventualityTracker.empty
+    hconf).1 _ hmem
+  have hlow := estimateBranchDifficulty_length_le (multEmitted ++ multBranch (4 * D + 3 + 1))
+  have hlen : (multEmitted ++ multBranch (4 * D + 3 + 1)).length = 4 * D + 6 := by
+    simp [multEmitted, length_multBranch]
+  rw [hlen] at hlow
+  have harith : (4 * D + 6) / 4 = D + 1 := by omega
+  rw [harith] at hlow
+  omega
+
+end MultiplicityRefutation
+
 /-- **The measure drops at `.extended` and at every arm of a `.split`.**
 
 Both residual disjuncts are discharged, and the second is the interesting one: a mint may raise the

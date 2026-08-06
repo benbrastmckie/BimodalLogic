@@ -381,24 +381,33 @@ Phases within the same wave are logically independent, but **every phase edits t
 
 ---
 
-### Phase 6: Refute the residual as literally stated [NOT STARTED]
+### Phase 6: Refute the residual as literally stated [COMPLETED]
 
 - **Goal:** A refuting witness in the register's house style: at any `U` containing a formula the
   engine fires on, **no** `D` satisfies `DifficultyBounded fc U D`.
 - **Tasks:**
-  - [ ] Choose the witness: `sf₀ := neg (imp (atom p) (atom q))` at one label, `U₀ := {sf₀, pos (atom p) …, neg (atom q) …}`
-        closed enough for the one step, and `b := List.replicate n sf₀`.
-  - [ ] Prove the step fires generically in `n`: `expandOnceUnblocked (List.replicate n sf₀) …` is
+  - [x] Choose the witness: `sf₀ := neg (imp (atom p) (atom q))` at one label, `U₀ := {sf₀, pos (atom p) …, neg (atom q) …}`
+        closed enough for the one step, and `b := List.replicate n sf₀`. *(completed exactly as
+        specified: `multWitness`, `multUniverse`, `multBranch n`)*
+  - [x] Prove the step fires generically in `n`: `expandOnceUnblocked (List.replicate n sf₀) …` is
         `.extended ([T p, F q] ++ b)`. The reductions needed are duplicate-insensitive:
         `Branch.knownTimes` and `timeType` go through `eraseDups`/`Finset` (SignedFormula.lean:350,
         640), so `blockedTimes` (Tableau.lean:2064) agrees with its value at `[sf₀]`;
         `findUnexpandedUnblockedWith` short-circuits on the head; `.impNeg` (Tableau.lean:659) emits
         exactly `2` formulas and passes `findApplicableRule`'s `fs.all branch.contains` guard
-        (Tableau.lean:1908-1911).
-  - [ ] `theorem difficultyBounded_multiplicity_false (D : Nat) : ¬ DifficultyBounded fc U₀ D` —
-        instantiate at `n := 4 * (D + 1)` and close with Phase 1's lower bound.
-  - [ ] Docstring: this is why the landed terminus's `hD` is unsatisfiable at any useful `U`, hence
-        why the Phase 5 sibling is a repair rather than a convenience.
+        (Tableau.lean:1908-1911). *(completed generically in `n` **and** in `fc` — the pre-declared
+        `decide` fallback was NOT needed. The reduction is even cleaner than the plan anticipated:
+        `blockedTimes b TimeOrdering.empty fc tr = []` holds for an *arbitrary* branch, frame class
+        and tracker, because `blockCandidates` is empty at the empty ordering — so no `knownTimes`
+        or `timeType` reasoning about the padded branch was required at all. The remaining work was
+        showing `.impNeg` is the first applicable rule in `allRulesForFC fc`, which needs only that
+        the three Dedekind rules and `.negPos`/`.negNeg` are inapplicable to a `.neg`-signed
+        implication between atoms.)*
+  - [x] `theorem difficultyBounded_multiplicity_false (D : Nat) : ¬ DifficultyBounded fc U₀ D` —
+        instantiate at `n := 4 * (D + 1)` and close with Phase 1's lower bound. *(completed at
+        exactly `n = 4 * D + 4`)*
+  - [x] Docstring: this is why the landed terminus's `hD` is unsatisfiable at any useful `U`, hence
+        why the Phase 5 sibling is a repair rather than a convenience. *(completed)*
 - **Timing:** 2 hours
 - **Depends on:** 1
 - **Verification Tier:** local
