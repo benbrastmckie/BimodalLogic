@@ -873,4 +873,119 @@ theorem findApplicableLinearityRule_applyRule_pair
     | (obtain ⟨rfl, rfl, rfl⟩ := h; exact hA)
     | exact absurd h (by simp)
 
+/-! ## A5. Engine-level `IrreflOrd`, all four result shapes
+
+`expandOnceUnblocked` hands the pick's third component on as the step's new ordering, and that
+component is `(applyRule r sf b ord).2` at each of the three pick stages. So the engine-level
+statement is `applyRule_irreflOrd` composed with the three pick bridges of A4, with `sf ∈ b`
+coming from `List.mem_of_find?_eq_some` at each stage. -/
+
+/-- The ordering a pick hands on: the input ordering when nothing was picked, and the picked
+rule's own new ordering otherwise. -/
+private def pickOrd (ord : TimeOrdering) :
+    Option (TableauRule × RuleResult × TimeOrdering) → TimeOrdering
+  | none => ord
+  | some (_, _, o) => o
+
+/-- The second component of `expandOnceUnblocked`'s result-tail is `pickOrd`, uniformly across
+all five `RuleResult` shapes. Stated over an abstract `pick` for the same reason `pick_extended`
+is: a hypothesis about the three-stage `match` as a whole is not something the per-stage lemmas
+can consume. -/
+private theorem pick_ord_eq {b : Branch} {ord : TimeOrdering}
+    {pick : Option (TableauRule × RuleResult × TimeOrdering)} :
+    (match pick with
+      | none => (ExpansionResult.saturated, ord)
+      | some (_, result, newOrd) =>
+        match result with
+        | .linear fs => (ExpansionResult.extended (fs ++ b), newOrd)
+        | .branching bss => (ExpansionResult.split (bss.map fun fs => fs ++ b), newOrd)
+        | .branchingOrdered bs' => (ExpansionResult.splitOrdered bs', newOrd)
+        | .persistent fs => (ExpansionResult.extended (fs ++ b), newOrd)
+        | .notApplicable => (ExpansionResult.saturated, newOrd)).2
+      = pickOrd ord pick := by
+  rcases pick with _ | ⟨r, res, o⟩
+  · rfl
+  · cases res <;> rfl
+
+/-- One pick stage preserves irreflexivity, given that the stage reports `applyRule`'s own pair.
+This is the single shape all three stages instantiate. -/
+private theorem pickOrd_irreflOrd {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (hsf : sf ∈ b) (hord : IrreflOrd ord) (haux : OrdTimesLeMaxTime b ord)
+    (hp : ∀ r res o, p = some (r, res, o) → applyRule r sf b ord = (res, o)) :
+    IrreflOrd (pickOrd ord p) := by
+  rcases p with _ | ⟨r, res, o⟩
+  · exact hord
+  · have hI : IrreflOrd (applyRule r sf b ord).2 := applyRule_irreflOrd hsf hord haux
+    rw [hp r res o rfl] at hI
+    exact hI
+
+/-- **Engine-level irreflexivity, all four `ExpansionResult` shapes.** The step's ordering
+component is irreflexive whichever shape the step reports: `.saturated` threads the input
+ordering through, `.extended` and `.split` hand the picked rule's ordering on unchanged, and
+`.splitOrdered` returns the input ordering in this component (its per-arm orderings are the
+subject of `expandOnceUnblocked_splitOrdered_irreflOrd` below).
+
+`.split` needs nothing further: a `.branching` step hands the *same* ordering to every arm, so
+this one statement covers every arm of a split. -/
+theorem expandOnceUnblocked_irreflOrd {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hord : IrreflOrd ord) (haux : OrdTimesLeMaxTime b ord) :
+    IrreflOrd (expandOnceUnblocked b ord fc tr).2 := by
+  -- `pick_ord_eq` applies up to definitional unfolding of `expandOnceUnblocked`, so the equation
+  -- is stated rather than rewritten into: `unfold` leaves the `let blocked := …` binder in place
+  -- and `rw` then has nothing syntactic to match.
+  have key : (expandOnceUnblocked b ord fc tr).2
+      = pickOrd ord
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_ord_eq
+  rw [key]
+  rcases hpick : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+  -- `rcases … : …` already substitutes the scrutinee in the goal, so no `rw [hpick]` here; the
+  -- two inner stages are still unreduced under the outer `match`, hence their `rw`s remain.
+  · rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                             && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+    · rw [hser]
+      rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+      · rw [hlin]; exact hord
+      · rw [hlin]
+        exact pickOrd_irreflOrd (List.mem_of_find?_eq_some hlin) hord haux
+          (fun _ _ _ h => findApplicableLinearityRule_applyRule_pair h)
+    · rw [hser]
+      exact pickOrd_irreflOrd (List.mem_of_find?_eq_some hser) hord haux
+        (fun _ _ _ h => findApplicableSerialRule_applyRule_pair h)
+  · have hmem : sf ∈ b := by
+      unfold findUnexpandedUnblockedWith at hpick
+      exact List.mem_of_find?_eq_some hpick
+    exact pickOrd_irreflOrd hmem hord haux
+      (fun _ _ _ h => findApplicableRule_applyRule_pair h)
+
+/-- **The `.splitOrdered` per-arm orderings are irreflexive.** Arms 1-2 add a single edge between
+the two incomparable times, distinct by `firstIncomparablePair_spec`; arm 3 identifies them, and
+`irreflOrd_identifyTime` is unconditional. -/
+theorem expandOnceUnblocked_splitOrdered_irreflOrd
+    {b : Branch} {bs : List (Branch × TimeOrdering)} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hord : IrreflOrd ord)
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
+    ∀ p ∈ bs, IrreflOrd p.2 := by
+  obtain ⟨t₁, t₂, htrig, rfl⟩ := expandOnceUnblocked_splitOrdered_shape h
+  obtain ⟨-, -, hne, -, -⟩ := firstIncomparablePair_spec htrig
+  intro p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · exact irreflOrd_addFuture hord (Ne.symm hne)
+  · exact irreflOrd_addFuture hord hne
+  · exact irreflOrd_identifyTime _ _ _
+
 end FormalSystem.Metalogic.Decidability
