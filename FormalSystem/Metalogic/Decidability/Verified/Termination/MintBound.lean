@@ -822,4 +822,55 @@ theorem expandOnceUnblocked_splitOrdered_no_deletion
   · exact Or.inl hx
   · exact Or.inr (mem_identifyTime b t₂ t₁ x hx)
 
+/-! ## A4. The pick bridges, carrying the ordering
+
+`Fuel.lean`'s `findApplicable{,Serial,Linearity}Rule_applyRule_eq` report only the *result*
+component of the pick. Lifting `applyRule_irreflOrd` to engine level needs the *ordering*
+component too, since `expandOnceUnblocked` hands the pick's third component on as the step's new
+ordering. These are the same three extraction lemmas strengthened to the full pair. -/
+
+/-- The ordinary-rule stage reports the rule's own result **and ordering**. -/
+theorem findApplicableRule_applyRule_pair
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (h : findApplicableRule sf b ord fc = some (r, res, o)) :
+    applyRule r sf b ord = (res, o) := by
+  unfold findApplicableRule at h
+  obtain ⟨rule, -, hr⟩ := List.exists_of_findSome?_eq_some h
+  repeat' split at hr
+  all_goals simp_all
+
+/-- The seriality stage reports the rule's own result **and ordering**. -/
+theorem findApplicableSerialRule_applyRule_pair
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (h : findApplicableSerialRule sf b ord = some (r, res, o)) :
+    applyRule r sf b ord = (res, o) := by
+  unfold findApplicableSerialRule serialityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil] at h
+  rcases hA : applyRule TableauRule.serialityRule sf b ord with ⟨res', o'⟩
+  rw [hA] at h
+  simp only at h
+  cases res' <;> simp only [Option.some.injEq, Prod.mk.injEq] at h
+  all_goals first
+    | (obtain ⟨rfl, rfl, rfl⟩ := h; exact hA)
+    | exact absurd h (by simp)
+
+/-- The linearity stage reports the rule's own result **and ordering**. -/
+theorem findApplicableLinearityRule_applyRule_pair
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (h : findApplicableLinearityRule sf b ord = some (r, res, o)) :
+    applyRule r sf b ord = (res, o) := by
+  unfold findApplicableLinearityRule linearityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil] at h
+  rcases hA : applyRule TableauRule.timeLinearity sf b ord with ⟨res', o'⟩
+  rw [hA] at h
+  simp only at h
+  cases res' <;> simp only [Option.some.injEq, Prod.mk.injEq] at h
+  all_goals first
+    | (obtain ⟨rfl, rfl, rfl⟩ := h; exact hA)
+    | exact absurd h (by simp)
+
 end FormalSystem.Metalogic.Decidability
