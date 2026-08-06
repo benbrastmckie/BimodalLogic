@@ -31,7 +31,7 @@ next_project_number: 431
 
 ### Decidability
 
-428 [PLANNED] — Engine totality at a quantified branch budget. Owns obstruction O
+428 [IMPLEMENTING] — Engine totality at a quantified branch budget. Owns obstruction O
   └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
     └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
       └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
@@ -141,7 +141,7 @@ DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on re
 ---
 
 ### 428. Engine totality at a quantified branch budget
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
