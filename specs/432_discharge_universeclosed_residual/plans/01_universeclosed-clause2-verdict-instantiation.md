@@ -630,26 +630,26 @@ is what closes off "some other frame class might behave differently".
 
 ---
 
-### Phase 6: Clause (1), formula dimension, for both `.extended` and `.split` [NOT STARTED]
+### Phase 6: Clause (1), formula dimension, for both `.extended` and `.split` [COMPLETED]
 
 **Goal**: Prove the half of clause 1 that is unconditionally available: a step out of a
 `C`-confined branch keeps every successor's formulas in `C`, across both unordered successor shapes.
 
 **Tasks**:
-- [ ] `.extended` case: reuse `expandOnceUnblocked_extended_mem` (`Fuel.lean:305`) directly. It needs
+- [x] `.extended` case: reuse `expandOnceUnblocked_extended_mem` (`Fuel.lean:305`) directly. It needs
       `TableauClosed C`, `∀ x ∈ b, x.formula ∈ C`, and `TrichClosed C b`; the last comes from
       `TrichStock C` via `trichClosed_of_trichStock`, exactly as
       `expandOnceUnblocked_extended_stock` does it.
-- [ ] `.split` case: land the missing analogue in `MintBound.lean`. Route:
+- [x] `.split` case: land the missing analogue in `MintBound.lean`. Route:
       `expandOnceUnblocked_split_shape` gives `bs = bss.map (· ++ b)`; the pick bridges give a rule
       and a trigger `sf ∈ b`; `applyRule_subformula_closed` (`SubformulaProperty.lean:1338`) is
       stated over `RuleResult.emitted` and so covers `.branching` as well as the two shapes
       `pick_result_mem` handles. Assemble into
       `expandOnceUnblocked_split_mem : … → ∀ nb ∈ bs, ∀ x ∈ nb, x.formula ∈ C`.
-- [ ] Combine into a single statement over `unorderedSuccessorBranches`, since that is the shape
+- [x] Combine into a single statement over `unorderedSuccessorBranches`, since that is the shape
       clause 1 is written at: `unorderedSuccessorBranches` is `[nb]` on `.extended`, `bs` on
       `.split`, and `[]` otherwise, so the `.splitOrdered` and `.saturated` cases are vacuous here.
-- [ ] Do **not** attempt the label dimension in this phase. Keeping the two dimensions separate is
+- [x] Do **not** attempt the label dimension in this phase. Keeping the two dimensions separate is
       what makes Phase 7's verdict-dependent branch tractable.
 
 **Timing**: 2 hours
@@ -670,6 +670,39 @@ phase grows a 36-arm case split and must be re-timed rather than rushed.
 **Verification**:
 - Module build green; both cases sorry-free.
 - `lean_verify` on the combined statement.
+
+#### Phase 6 completion note
+
+Module build **green**; `lean_verify` on `unorderedSuccessor_formula_mem`: axioms exactly
+`{propext, Classical.choice, Quot.sound}`.
+
+Landed:
+
+| Declaration | Role |
+|-------------|------|
+| `pick_split'` (private) | `Fuel.lean`'s `private pick_split`, restated because it is not exported |
+| `expandOnceUnblocked_split_mem` | **the missing `.split` analogue** of `expandOnceUnblocked_extended_mem` |
+| `unorderedSuccessor_formula_mem` | the combined statement, at clause 1's own shape, from `TableauClosed C` + `TrichStock C` + confinement |
+
+**Scope hypothesis, confirmed.** `RuleResult.emitted` (`SubformulaProperty.lean`) is defined on all
+five result shapes and sends `.branching bss` to `bss.flatten`, so `applyRule_subformula_closed`
+already covers the branching arms. **No 36-arm case split was needed** and the phase did not need
+re-timing. The only work was the pick-stage destructuring, which is
+`expandOnceUnblocked_extended_mem`'s own three-stage `rcases` with `pick_result_mem` (linear /
+persistent only) replaced by `applyRule_subformula_closed` directly — exactly the route the plan
+named.
+
+One implementation detail worth recording: the three pick bridges used are MintBound's own
+`findApplicable{,Serial,Linearity}Rule_applyRule_pair` (section A4) rather than `Fuel.lean`'s
+`…_applyRule_eq`, because the `.branching` case needs the ordering component to match
+`(RuleResult.branching bss, o)` as a pair.
+
+**The `.splitOrdered` and `.saturated` shapes are vacuous** in the combined statement, since
+`unorderedSuccessorBranches` is `[]` on both — so the statement is complete, not partial.
+
+**Reading of the result, stated so Phase 7 is not misread**: clause 1's *formula* coordinate is
+unconditionally safe. The refutation in Phase 5 is entirely about the *label* coordinate. Separating
+the two is what makes that precise.
 
 ---
 

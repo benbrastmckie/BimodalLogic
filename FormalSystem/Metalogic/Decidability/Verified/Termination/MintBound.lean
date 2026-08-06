@@ -5785,6 +5785,123 @@ theorem worldHeadroom_fixed_finite_false (L : Finset Label) (hne : L.Nonempty) :
 
 end FreshWorldRefutation
 
+/-! ### Clause 1's formula dimension, unconditionally, at both unordered shapes
+
+Clause 1 has two independent halves, and separating them is what makes the situation legible: the
+**formula** coordinate of every successor stays inside `C` outright, with no side condition beyond
+what `Fuel.lean` already asks; the **label** coordinate is the one that escapes
+(`universeClosed_fresh_world_escapes`). Proving the formula half here, in full, is what shows the
+refutation above is not a defect of the whole clause — it is confined to one coordinate.
+
+`.extended` is `expandOnceUnblocked_extended_mem`, already landed in `Fuel.lean`. `.split` had no
+analogue, and `expandOnceUnblocked_split_mem` is it. The `.splitOrdered` and `.saturated` shapes are
+vacuous here because `unorderedSuccessorBranches` is `[]` on both. -/
+
+/-- The `.split` counterpart of `Fuel.lean`'s `pick_split`, which is `private` there. Same statement,
+same proof; it is restated because the three-stage destructuring below has to consume it. -/
+private theorem pick_split' {b : Branch} {bs : List Branch}
+    {ord : TimeOrdering} {pick : Option (TableauRule × RuleResult × TimeOrdering)}
+    (h : (match pick with
+          | none => (ExpansionResult.saturated, ord)
+          | some (_, result, newOrd) =>
+            match result with
+            | .linear fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .branching bss => (ExpansionResult.split (bss.map fun fs => fs ++ b), newOrd)
+            | .branchingOrdered bs' => (ExpansionResult.splitOrdered bs', newOrd)
+            | .persistent fs => (ExpansionResult.extended (fs ++ b), newOrd)
+            | .notApplicable => (ExpansionResult.saturated, newOrd)).1
+         = ExpansionResult.split bs) :
+    ∃ (r : TableauRule) (bss : List (List SignedFormula)) (o : TimeOrdering),
+      pick = some (r, RuleResult.branching bss, o) ∧ bs = bss.map (fun fs => fs ++ b) := by
+  rcases pick with _ | ⟨r, res, o⟩
+  · simp at h
+  · cases res with
+    | notApplicable => simp at h
+    | linear fs => simp at h
+    | branchingOrdered bs' => simp at h
+    | persistent fs => simp at h
+    | branching bss => exact ⟨r, bss, o, rfl, by simpa using h.symm⟩
+
+/-- **T1 at the `.split` shape**: a branching step keeps every arm's formulas inside the stock.
+
+The missing analogue of `expandOnceUnblocked_extended_mem`, and it needs **no new per-rule case
+analysis**. `RuleResult.emitted` is defined on all five result shapes and sends `.branching bss` to
+`bss.flatten`, so `applyRule_subformula_closed` — which is stated over `emitted` — already covers the
+branching arms. What was missing is only the pick-stage destructuring, which is
+`expandOnceUnblocked_extended_mem`'s own three-stage `rcases` with `pick_result_mem` (which handles
+only `.linear`/`.persistent`) replaced by `applyRule_subformula_closed` directly.
+
+Each arm is `fs ++ b`: the additions come from `emitted`, and the retained tail from `hb`. -/
+theorem expandOnceUnblocked_split_mem {C : Finset Formula} {b : Branch} {bs : List Branch}
+    {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hC : TableauClosed C) (hb : ∀ x ∈ b, x.formula ∈ C) (htrich : TrichClosed C b)
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.split bs) :
+    ∀ nb ∈ bs, ∀ x ∈ nb, x.formula ∈ C := by
+  unfold expandOnceUnblocked at h
+  obtain ⟨r, bss, o, hp, rfl⟩ := pick_split' h
+  have key : ∀ sf : SignedFormula, sf ∈ b →
+      applyRule r sf b ord = (RuleResult.branching bss, o) →
+      ∀ g ∈ bss.flatten, g.formula ∈ C := by
+    intro sf hmem hpair
+    have hcl := applyRule_subformula_closed (C := C) (sf := sf) (b := b) (ord := ord)
+      hC (hb sf hmem) hb htrich r
+    rw [hpair] at hcl
+    simpa using hcl
+  have hfs : ∀ g ∈ bss.flatten, g.formula ∈ C := by
+    rcases hpick : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+    · rw [hpick] at hp
+      rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+      · rw [hser] at hp
+        rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                                 && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+        · rw [hlin] at hp
+          simp only at hp
+          exact absurd hp (by simp)
+        · rw [hlin] at hp
+          simp only at hp
+          exact key sf3 (List.mem_of_find?_eq_some hlin)
+            (findApplicableLinearityRule_applyRule_pair hp)
+      · rw [hser] at hp
+        simp only at hp
+        exact key sf2 (List.mem_of_find?_eq_some hser)
+          (findApplicableSerialRule_applyRule_pair hp)
+    · rw [hpick] at hp
+      simp only at hp
+      have hmem : sf ∈ b := by
+        unfold findUnexpandedUnblockedWith at hpick
+        exact List.mem_of_find?_eq_some hpick
+      exact key sf hmem (findApplicableRule_applyRule_pair hp)
+  intro nb hnb x hx
+  obtain ⟨fs, hfsmem, rfl⟩ := List.mem_map.mp hnb
+  rcases List.mem_append.mp hx with hx | hx
+  · exact hfs x (List.mem_flatten.mpr ⟨fs, hfsmem, hx⟩)
+  · exact hb x hx
+
+/-- **Clause 1's formula dimension, at the shape clause 1 is actually written at.** Every unordered
+successor of a `C`-confined branch is `C`-confined, across both shapes that
+`unorderedSuccessorBranches` is nonempty on.
+
+`TrichStock C` rather than `TrichClosed C b` as the hypothesis, since `TrichStock` is a condition on
+`C` alone and `trichClosed_of_trichStock` discharges the branch-side form — exactly as
+`expandOnceUnblocked_extended_stock` does it. So the whole statement asks nothing about `b` beyond
+confinement. -/
+theorem unorderedSuccessor_formula_mem {C : Finset Formula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hC : TableauClosed C) (hT : TrichStock C) (hb : ∀ x ∈ b, x.formula ∈ C) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      ∀ x ∈ nb, x.formula ∈ C := by
+  have htrich := trichClosed_of_trichStock hT hb
+  rcases hres : (expandOnceUnblocked b ord fc tr).1 with _ | nb' | bs | bs'
+  · intro nb hnb; simp [unorderedSuccessorBranches] at hnb
+  · intro nb hnb
+    simp only [unorderedSuccessorBranches, List.mem_cons, List.not_mem_nil, or_false] at hnb
+    subst hnb
+    exact expandOnceUnblocked_extended_mem hC hb htrich hres
+  · intro nb hnb
+    exact expandOnceUnblocked_split_mem hC hb htrich hres nb hnb
+  · intro nb hnb; simp [unorderedSuccessorBranches] at hnb
+
 /-! ### The threading spine, and the terminus at the repaired predicate
 
 The six theorems below only *pass* the closure residual on; none inspects it. Each is its
