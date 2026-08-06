@@ -341,23 +341,28 @@ Phases within the same wave are logically independent, but **every phase edits t
 
 ---
 
-### Phase 5: The sibling terminus, at the length budget [NOT STARTED]
+### Phase 5: The sibling terminus, at the length budget [COMPLETED]
 
 - **Goal:** A caller-facing totality statement whose difficulty hypothesis is a branch-length bound
   and whose `D` is read off, with the landed terminus untouched.
 - **Tasks:**
-  - [ ] `buildTableauAt_isSome_of_lengthBudget` — `buildTableauAt_isSome_of_budget`'s statement with
+  - [x] `buildTableauAt_isSome_of_lengthBudget` — `buildTableauAt_isSome_of_budget`'s statement with
         `hD : DifficultyBounded fc U D` replaced by `hL : StepLengthBounded fc U L` and every `D`
         instantiated at `difficultyCeiling U L`. Prove it by `exact buildTableauAt_isSome_of_budget …
         (difficultyBounded_of_stepLengthBounded hL hUcl) …` — no new induction, no change to
-        `stepDecreases_budgetPotential`.
-  - [ ] The seed-level sibling of `buildTableauAt_isSome_at_seed`, same substitution.
-  - [ ] Docstring both: what changed is the *shape* of one residual, from an unstatable
+        `stepDecreases_budgetPotential`. *(completed; the Scope Hypothesis is confirmed — every
+        `D` flows through `mintAwareFuel`'s `D` argument, all inside `MintBound.lean`, so the
+        sibling is a single application of the landed theorem and no `Fuel.lean` lemma needed a
+        new form)*
+  - [x] The seed-level sibling of `buildTableauAt_isSome_at_seed`, same substitution. *(completed
+        as `buildTableauAt_isSome_at_seed_lengthBudget`)*
+  - [x] Docstring both: what changed is the *shape* of one residual, from an unstatable
         formula-complexity bound to a branch-length bound; the other three residuals are unchanged
-        and still named.
-  - [ ] Add a pointer from the landed terminus's residual paragraph (MintBound.lean:4410-4414) to the
+        and still named. *(completed)*
+  - [x] Add a pointer from the landed terminus's residual paragraph (MintBound.lean:4410-4414) to the
         sibling, and to Phase 6's refutation once it lands (leave the cross-reference for Phase 7 if
-        Phase 6 has not run yet).
+        Phase 6 has not run yet). *(completed; the paragraph now names both the sibling and
+        `difficultyBounded_multiplicity_false`, which Phase 6 lands next)*
 - **Timing:** 2 hours
 - **Depends on:** 3
 - **Verification Tier:** local

@@ -4805,6 +4805,18 @@ proved, not confined.
 discharge it. The mint budget is **not** among them: it is a parameter this development discharges
 (`mintPotential_le_eight_mul` supplies the ceiling outright), and the time bound is derived from it
 rather than assumed (`derivedTmax_spec`).
+
+**One of the four is refutable, and has a repaired sibling.** `DifficultyBounded fc U D` is false at
+**every** `D` whenever `U` contains a formula the engine fires on, because
+`estimateBranchDifficulty` sums over the branch *list* and confinement to `U` bounds only its
+`toFinset`. The witness is `difficultyBounded_multiplicity_false`; register entry 9 below records the
+cause; and the docstring on `DifficultyBounded` itself corrects the older, wrong explanation that
+blamed `Saturation.lean`'s `private` markers. This theorem is therefore a true conditional whose
+antecedent no caller can supply. The usable form is `buildTableauAt_isSome_of_lengthBudget` (and
+`buildTableauAt_isSome_at_seed_lengthBudget`), which is this statement with the difficulty
+hypothesis exchanged for the branch-**length** hypothesis `StepLengthBounded fc U L` that
+`difficultyBounded_of_stepLengthBounded` shows is sufficient. Nothing below is withdrawn: the
+statement and proof here are unchanged, and the sibling is additive.
 -/
 theorem buildTableauAt_isSome_of_budget {fc : FormalSystem.ProofSystem.FrameClass}
     {U : Finset SignedFormula} {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
@@ -4844,6 +4856,70 @@ theorem buildTableauAt_isSome_at_seed {fc : FormalSystem.ProofSystem.FrameClass}
       ).isSome = true :=
   buildTableauAt_isSome_of_budget phi _ hβ hUcl hD hmint hpb hseed (Nat.le_refl _)
     (derivedTmax_spec (seedBranch phi) U) (Nat.le_refl _)
+
+/-! ### The sibling terminus, at the length budget
+
+The two theorems above are stated against `DifficultyBounded`, and `DifficultyBounded` is
+**refutable at every `D`** at any universe the engine fires on
+(`difficultyBounded_multiplicity_false`). They are not thereby wrong — they are conditionals, and a
+conditional with an unsatisfiable antecedent is true — but a caller cannot use them, which is a
+defect worth repairing rather than describing.
+
+The repair is a substitution, not a re-proof. `StepLengthBounded fc U L` is `DifficultyBounded`'s
+own statement with `estimateBranchDifficulty _ ≤ D` weakened to `_.length ≤ L`, it implies
+`DifficultyBounded fc U (difficultyCeiling U L)` under `UniverseClosed`
+(`difficultyBounded_of_stepLengthBounded`), and it is satisfiable — `StepLengthGrowth` reduces it to
+a finite case analysis over `applyRule`'s 36 arms. So the siblings below are the landed termini with
+one hypothesis exchanged and `D` read off as `difficultyCeiling U L`; each is a single application of
+the landed theorem, with no new induction and no change to `stepDecreases_budgetPotential`.
+
+**What changed is the *shape* of one residual, and only that.** `UniverseClosed`,
+`MintPaysForTime`, `PostBlockingSettles` and `β ≥ 3` are carried across unaltered and are still
+named. `Fuel.lean` needs nothing new: every occurrence of `D` in the terminus chain flows through
+`mintAwareFuel`'s `D` argument (`mintAwareFuel` MintBound.lean:4543, `stepDecreases_budgetPotential`,
+`expandBranchWithFuel_isSome_of_budget`), all inside this file, so instantiating it at
+`difficultyCeiling U L` is a substitution into statements that already quantify over it. -/
+
+/-- **The terminus at a branch-length budget.** `buildTableauAt_isSome_of_budget` with
+`hD : DifficultyBounded fc U D` replaced by `hL : StepLengthBounded fc U L`, and every `D`
+instantiated at `difficultyCeiling U L`. Unlike its `DifficultyBounded` sibling, this statement's
+difficulty hypothesis is not refutable. -/
+theorem buildTableauAt_isSome_of_lengthBudget {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {mintBudget Tmax L β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosed fc U) (hL : StepLengthBounded fc U L)
+    (hmint : MintPaysForTime fc U Tmax) (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 8 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuel U.card Tmax mintBudget (difficultyCeiling U L) β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuel U.card Tmax mintBudget (difficultyCeiling U L) β) fc
+        maxBranches).isSome = true :=
+  buildTableauAt_isSome_of_budget phi maxBranches hβ hUcl
+    (difficultyBounded_of_stepLengthBounded hL hUcl) hmint hpb hseed hmb hT hbud
+
+/-- **The caller-facing form at a branch-length budget**, the sibling of
+`buildTableauAt_isSome_at_seed`. Every number is read off: the mint budget at
+`mintPotential_le_eight_mul`'s ceiling, the time bound at `derivedTmax`, the branch budget at the
+`β`-linear figure, and the difficulty coefficient at `difficultyCeiling U L`. A caller supplies a
+universe containing the seed, a bound `L` on how long a successor branch can get, and the other
+three residuals. -/
+theorem buildTableauAt_isSome_at_seed_lengthBudget {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {L β : Nat} (phi : Formula)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosed fc U) (hL : StepLengthBounded fc U L)
+    (hmint : MintPaysForTime fc U
+      (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuel U.card (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (8 * U.card) (difficultyCeiling U L) β)
+        fc
+        (β * mintAwareFuel U.card
+          (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card) (8 * U.card)
+          (difficultyCeiling U L) β)
+      ).isSome = true :=
+  buildTableauAt_isSome_at_seed phi hβ hUcl
+    (difficultyBounded_of_stepLengthBounded hL hUcl) hmint hpb hseed
 
 /-! ## C9. The do-not-re-attempt register
 
