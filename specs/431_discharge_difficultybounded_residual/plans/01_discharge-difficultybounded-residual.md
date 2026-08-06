@@ -244,24 +244,28 @@ Phases within the same wave are logically independent, but **every phase edits t
 
 ---
 
-### Phase 3: The equivalence — difficulty bound iff length bound [NOT STARTED]
+### Phase 3: The equivalence — difficulty bound iff length bound [COMPLETED]
 
 - **Goal:** Reduce the difficulty residual to a pure branch-length residual, in both directions, so
   the residual's real content is exposed once and for all.
 - **Tasks:**
-  - [ ] `def StepLengthBounded (fc) (U : Finset SignedFormula) (L : Nat) : Prop` — mirroring
+  - [x] `def StepLengthBounded (fc) (U : Finset SignedFormula) (L : Nat) : Prop` — mirroring
         `DifficultyBounded`'s two conjuncts exactly (unordered successors, and `.splitOrdered` arms
         via the `bs`-equation form), with `nb.length ≤ L` / `p.1.length ≤ L` as the conclusions.
-  - [ ] `difficultyBounded_of_stepLengthBounded : StepLengthBounded fc U L → UniverseClosed fc U → DifficultyBounded fc U (difficultyCeiling U L)`
+        *(completed)*
+  - [x] `difficultyBounded_of_stepLengthBounded : StepLengthBounded fc U L → UniverseClosed fc U → DifficultyBounded fc U (difficultyCeiling U L)`
         — successors are `U`-confined by `UniverseClosed`, length-bounded by hypothesis, so Phase 2's
         ceiling applies. Confirm which conjunct of `UniverseClosed` covers the `.splitOrdered` arms
         and, if it does not, take the arm confinement as an explicit extra hypothesis rather than
-        inventing one.
-  - [ ] `stepLengthBounded_of_difficultyBounded : DifficultyBounded fc U D → StepLengthBounded fc U (4 * D)`
-        — from Phase 1's lower bound.
-  - [ ] Docstring the pair as *the* answer to the residual: the coefficient `D` the fuel allocation
+        inventing one. *(completed; **no extra hypothesis was needed** — the Scope Hypothesis is
+        confirmed: `expandOnceUnblocked_splitOrdered_shape` gives arms `(b, _)`, `(b, _)`,
+        `(b.identifyTime t₂ t₁, _)`, so arms 1-2 use the incoming confinement and arm 3 uses
+        `UniverseClosed`'s second conjunct exactly as stated)*
+  - [x] `stepLengthBounded_of_difficultyBounded : DifficultyBounded fc U D → StepLengthBounded fc U (4 * D)`
+        — from Phase 1's lower bound. *(completed)*
+  - [x] Docstring the pair as *the* answer to the residual: the coefficient `D` the fuel allocation
         consumes is, up to a factor of 4, a bound on branch **length**, and nothing about formula
-        complexity.
+        complexity. *(completed)*
 - **Timing:** 1.5 hours
 - **Depends on:** 2
 - **Verification Tier:** local
