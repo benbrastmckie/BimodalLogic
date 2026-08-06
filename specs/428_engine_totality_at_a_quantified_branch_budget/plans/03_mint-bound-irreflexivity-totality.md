@@ -588,26 +588,47 @@ attempting a re-derivation.
 
 ---
 
-### Phase 6: Witness preservation across `.splitOrdered` arm 3 [NOT STARTED]
+### Phase 6: Witness preservation across `.splitOrdered` arm 3 [COMPLETED]
 
 **Goal**: Land claim (i) — `witnessPresent_identifyTime` for all eight fresh-label rules with the
 remaining rules proved vacuous, and the packaged `arm3_preserves_witness`. **Verbatim transcription.**
 
 **Tasks**:
-- [ ] `mem_identifyTime` (scratch line 179), `contains_identifyTime` (line 189),
+- [x] `mem_identifyTime` (scratch line 179), `contains_identifyTime` (line 189),
       `knownWorlds_identifyTime` (line 198).
-- [ ] `any_knownWorlds_transport` (line 212), `any_futureOf_transport` (line 220),
+- [x] `any_knownWorlds_transport` (line 212), `any_futureOf_transport` (line 220),
       `any_pastOf_transport` (line 231), `contains_at` (line 243).
-- [ ] `witnessPresent_identifyTime` (line 257) — the eight-rule case analysis. Modal: `boxNeg`
+- [x] `witnessPresent_identifyTime` (line 257) — the eight-rule case analysis. Modal: `boxNeg`
       (case `h_1`), `diamondPos` (`h_2`). Temporal: `allFutureNeg` (`h_3`), `allPastNeg` (`h_4`),
       `someFuturePos` (`h_5`), `somePastPos` (`h_6`), `untlPos` (`h_7`, disjunctive witness
       transported componentwise), `sncePos` (`h_8`, past-directed mirror). Case `h_9` covers every
       other rule vacuously, and the vacuity is **proved**, not assumed.
-- [ ] `arm3_preserves_witness` (line 489), taking `firstIncomparablePair b ord = some (t₁, t₂)`
+- [x] `arm3_preserves_witness` (line 489), taking `firstIncomparablePair b ord = some (t₁, t₂)`
       (so `hinc` is free) and `IrreflOrd ord`.
-- [ ] Add an in-source note, adjacent to `witnessPresent_identifyTime`, that the `IrreflOrd`
+- [x] Add an in-source note, adjacent to `witnessPresent_identifyTime`, that the `IrreflOrd`
       hypothesis is load-bearing and that the counterexample in Phase 1's record refutes the
       unconditional form. Cite the counterexample by declaration name, not by task number.
+
+**Completion notes**:
+- **Sequencing note**: executed before Phase 4. This follows the plan's own dependency table —
+  Phase 6 is in wave 3 (with Phase 3) and Phase 4 is in wave 4, so this is dependency-wave order,
+  not a reordering.
+- **Scope Hypothesis confirmed against the source.** `ruleMintsFreshLabel` (`Tableau.lean`) has
+  exactly eight `true` arms: `boxNeg`, `diamondPos`, `allFutureNeg`, `allPastNeg`,
+  `someFuturePos`, `somePastPos`, `untlPos`, `sncePos`. `witnessPresent`'s own match has exactly
+  those eight non-default arms, in the same order as the scratch file's `h_1`…`h_8`. **There is
+  no ninth fresh-label rule**, so nothing is absorbed into the vacuous case that should not be.
+- All nine declarations transcribed **verbatim** and green on the first attempt.
+- The scratch file's section `variable (b) (ord) (t₁ t₂)` binders were written out as explicit
+  parameters in the same positions, so the named-argument call sites inside
+  `witnessPresent_identifyTime` transcribe unchanged.
+- The required in-source note is on `witnessPresent_identifyTime`'s docstring: it states that
+  `IrreflOrd` is load-bearing and cites the refuting counterexample **by declaration name**
+  (`witnessPresent_identifyTime_unconditional_false`), never by task or report number.
+- `lean_verify witnessPresent_identifyTime` and `lean_verify arm3_preserves_witness` each report
+  exactly `[propext, Classical.choice, Quot.sound]`.
+- The statement of `witnessPresent_identifyTime` quantifies over `(rule : TableauRule)` with no
+  side condition on the rule, checkable by reading it.
 
 **Timing**: 2 hours
 

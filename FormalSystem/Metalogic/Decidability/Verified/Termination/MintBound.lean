@@ -558,4 +558,173 @@ theorem applyRule_ordTimes_nonbranching {rule : TableauRule} {sf : SignedFormula
                     | exact ordTimes_density_cons haux ht rfl (by assumption))
                | exact absurd hnb (by simp)))
 
+/-! ## B2. Witness preservation across the identification arm
+
+This is claim (i): the third arm of an ordered split does not destroy a witness. It is stated for
+*every* `TableauRule`; the rules that do not mint a fresh label are covered because
+`witnessPresent` returns `false` on them, and that vacuity is **proved**, not assumed. -/
+
+/-- **No formula is deleted by identification**: every member survives, renamed. -/
+theorem mem_identifyTime (b : Branch) (src tgt : TimeIndex) (sf : SignedFormula)
+    (h : sf ∈ b) : rhoSF src tgt sf ∈ b.identifyTime src tgt := by
+  simp only [Branch.identifyTime, List.mem_eraseDups, List.mem_map]
+  refine ⟨sf, h, ?_⟩
+  simp only [rhoSF, rho]
+  by_cases hc : sf.label.time = src
+  · simp [hc]
+  · simp [hc]
+
+/-- The `contains` form of the same fact. -/
+theorem contains_identifyTime (b : Branch) (src tgt : TimeIndex) (sf : SignedFormula)
+    (h : b.contains sf = true) :
+    (b.identifyTime src tgt).contains (rhoSF src tgt sf) = true := by
+  simp only [Branch.contains, List.any_eq_true, beq_iff_eq] at h ⊢
+  obtain ⟨x, hx, hxe⟩ := h
+  subst hxe
+  exact ⟨_, mem_identifyTime b src tgt x hx, rfl⟩
+
+/-- Identification touches no world: `knownWorlds` is preserved. -/
+theorem knownWorlds_identifyTime (b : Branch) (src tgt : TimeIndex) (w : WorldIndex)
+    (h : w ∈ b.knownWorlds) : w ∈ (b.identifyTime src tgt).knownWorlds := by
+  simp only [Branch.knownWorlds, List.mem_eraseDups, List.mem_map] at h ⊢
+  obtain ⟨sf, hsf, rfl⟩ := h
+  exact ⟨rhoSF src tgt sf, mem_identifyTime b src tgt sf hsf, rfl⟩
+
+/-- Transport of a `knownWorlds`-quantified test. -/
+theorem any_knownWorlds_transport (b : Branch) (t₁ t₂ : TimeIndex) (P Q : WorldIndex → Bool)
+    (hPQ : ∀ w, P w = true → Q w = true)
+    (h : b.knownWorlds.any P = true) :
+    (b.identifyTime t₂ t₁).knownWorlds.any Q = true := by
+  simp only [List.any_eq_true] at h ⊢
+  obtain ⟨w, hw, hPw⟩ := h
+  exact ⟨w, knownWorlds_identifyTime b t₂ t₁ w hw, hPQ w hPw⟩
+
+/-- Transport of a future-quantified test. -/
+theorem any_futureOf_transport (ord : TimeOrdering) (t₁ t₂ : TimeIndex) (tm : TimeIndex)
+    (hinc : incomparableB ord (t₁, t₂) = true)
+    (hnsl : IrreflOrd ord)
+    (P Q : TimeIndex → Bool)
+    (hPQ : ∀ t, P t = true → Q (rho t₂ t₁ t) = true)
+    (h : (ord.futureOf tm).any P = true) :
+    ((ord.identifyTime t₂ t₁).futureOf (rho t₂ t₁ tm)).any Q = true := by
+  simp only [List.any_eq_true] at h ⊢
+  obtain ⟨t, ht, hPt⟩ := h
+  exact ⟨rho t₂ t₁ t, futureOf_transport ord t₁ t₂ hinc hnsl tm t ht, hPQ t hPt⟩
+
+/-- Transport of a past-quantified test. -/
+theorem any_pastOf_transport (ord : TimeOrdering) (t₁ t₂ : TimeIndex) (tm : TimeIndex)
+    (hinc : incomparableB ord (t₁, t₂) = true)
+    (hnsl : IrreflOrd ord)
+    (P Q : TimeIndex → Bool)
+    (hPQ : ∀ t, P t = true → Q (rho t₂ t₁ t) = true)
+    (h : (ord.pastOf tm).any P = true) :
+    ((ord.identifyTime t₂ t₁).pastOf (rho t₂ t₁ tm)).any Q = true := by
+  simp only [List.any_eq_true] at h ⊢
+  obtain ⟨t, ht, hPt⟩ := h
+  exact ⟨rho t₂ t₁ t, pastOf_transport ord t₁ t₂ hinc hnsl tm t ht, hPQ t hPt⟩
+
+/-- `contains` at a relabelled point, in the exact shape the witness tests use. -/
+theorem contains_at (b : Branch) (t₁ t₂ : TimeIndex) (s : Sign) (psi : Formula)
+    (w : WorldIndex) (t : TimeIndex)
+    (h : b.contains ⟨s, psi, ⟨w, t⟩⟩ = true) :
+    (b.identifyTime t₂ t₁).contains ⟨s, psi, ⟨w, rho t₂ t₁ t⟩⟩ = true :=
+  contains_identifyTime b t₂ t₁ ⟨s, psi, ⟨w, t⟩⟩ h
+
+/-- **Claim (i): witness preservation across the identification arm of an ordered split.**
+
+The `IrreflOrd` hypothesis is **load-bearing**, not cosmetic. Dropping it makes the statement
+false, by the machine-checked counterexample
+`witnessPresent_identifyTime_unconditional_false` above: `TimeOrdering.identifyTime` drops a
+pre-existing self-loop, and a witness reachable only around that loop is destroyed.
+
+Stated for *every* rule. The eight fresh-label rules (`boxNeg`, `diamondPos`, `allFutureNeg`,
+`allPastNeg`, `someFuturePos`, `somePastPos`, `untlPos`, `sncePos` — exactly the `true` arms of
+`ruleMintsFreshLabel`) are transported case by case; every other rule is covered by the final
+case, where `witnessPresent` is `false` and the hypothesis is absurd. -/
+theorem witnessPresent_identifyTime (rule : TableauRule) (b : Branch) (ord : TimeOrdering)
+    (t₁ t₂ : TimeIndex) (s : Sign) (φ : Formula) (w : WorldIndex) (tm : TimeIndex)
+    (hinc : incomparableB ord (t₁, t₂) = true)
+    (hnsl : IrreflOrd ord)
+    (h : witnessPresent rule ⟨s, φ, ⟨w, tm⟩⟩ b ord = true) :
+    witnessPresent rule ⟨s, φ, ⟨w, rho t₂ t₁ tm⟩⟩
+      (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁) = true := by
+  simp only [witnessPresent] at h ⊢
+  split at h
+  -- RULE 1 (modal): boxNeg
+  case h_1 =>
+    exact any_knownWorlds_transport (b := b) (t₁ := t₁) (t₂ := t₂) _ _
+      (fun w' hw' => contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .neg _ w' tm hw') h
+  -- RULE 2 (modal): diamondPos
+  case h_2 =>
+    split at h
+    case h_1 =>
+      exact any_knownWorlds_transport (b := b) (t₁ := t₁) (t₂ := t₂) _ _
+        (fun w' hw' => contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .pos _ w' tm hw') h
+    case h_2 => exact Bool.noConfusion h
+  -- RULE 3 (temporal): allFutureNeg
+  case h_3 =>
+    exact any_futureOf_transport (ord := ord) (t₁ := t₁) (t₂ := t₂) tm hinc hnsl _ _
+      (fun t ht => contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .neg _ w t ht) h
+  -- RULE 4 (temporal): allPastNeg
+  case h_4 =>
+    exact any_pastOf_transport (ord := ord) (t₁ := t₁) (t₂ := t₂) tm hinc hnsl _ _
+      (fun t ht => contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .neg _ w t ht) h
+  -- RULE 5 (temporal): someFuturePos
+  case h_5 =>
+    split at h
+    case h_1 =>
+      exact any_futureOf_transport (ord := ord) (t₁ := t₁) (t₂ := t₂) tm hinc hnsl _ _
+        (fun t ht => contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .pos _ w t ht) h
+    case h_2 => exact Bool.noConfusion h
+  -- RULE 6 (temporal): somePastPos
+  case h_6 =>
+    split at h
+    case h_1 =>
+      exact any_pastOf_transport (ord := ord) (t₁ := t₁) (t₂ := t₂) tm hinc hnsl _ _
+        (fun t ht => contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .pos _ w t ht) h
+    case h_2 => exact Bool.noConfusion h
+  -- RULE 7 (temporal): untlPos — disjunctive witness, transported componentwise
+  case h_7 =>
+    split at h
+    case h_1 =>
+      refine any_futureOf_transport (ord := ord) (t₁ := t₁) (t₂ := t₂) tm hinc hnsl _ _ ?_ h
+      intro t ht
+      simp only [Bool.or_eq_true, Bool.and_eq_true] at ht ⊢
+      rcases ht with ht | ⟨ht1, ht2⟩
+      · exact Or.inl (contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .pos _ w t ht)
+      · exact Or.inr ⟨contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .pos _ w t ht1,
+          contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .pos _ w t ht2⟩
+    case h_2 => exact Bool.noConfusion h
+  -- RULE 8 (temporal): sncePos — the past-directed mirror
+  case h_8 =>
+    split at h
+    case h_1 =>
+      refine any_pastOf_transport (ord := ord) (t₁ := t₁) (t₂ := t₂) tm hinc hnsl _ _ ?_ h
+      intro t ht
+      simp only [Bool.or_eq_true, Bool.and_eq_true] at ht ⊢
+      rcases ht with ht | ⟨ht1, ht2⟩
+      · exact Or.inl (contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .pos _ w t ht)
+      · exact Or.inr ⟨contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .pos _ w t ht1,
+          contains_at (b := b) (t₁ := t₁) (t₂ := t₂) .pos _ w t ht2⟩
+    case h_2 => exact Bool.noConfusion h
+  -- every other rule: `witnessPresent` is `false`, so the hypothesis is absurd
+  case h_9 => exact Bool.noConfusion h
+
+/-- **The full arm-3 preservation package**, in the form the mint bound consumes: the witness
+survives under the same renaming that carries the source formula. Taking the trigger equation
+rather than raw incomparability makes the `hinc` side condition free. -/
+theorem arm3_preserves_witness {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂))
+    (hnsl : IrreflOrd ord)
+    (rule : TableauRule) (sf : SignedFormula)
+    (h : witnessPresent rule sf b ord = true) :
+    witnessPresent rule (rhoSF t₂ t₁ sf) (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
+      = true := by
+  cases sf with
+  | mk s φ l =>
+    cases l with
+    | mk w tm =>
+      exact witnessPresent_identifyTime rule b ord t₁ t₂ s φ w tm
+        (incomparableB_of_firstIncomparablePair htrig) hnsl h
+
 end FormalSystem.Metalogic.Decidability
