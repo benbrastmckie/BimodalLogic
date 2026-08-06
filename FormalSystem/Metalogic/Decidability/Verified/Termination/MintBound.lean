@@ -4313,7 +4313,15 @@ and `estimateBranchDifficulty_le_ceiling` converts the pair into `difficultyCeil
 no extra hypothesis is required: by `expandOnceUnblocked_splitOrdered_shape` the three arms are
 `(b, _)`, `(b, _)` and `(b.identifyTime t₂ t₁, _)`, so arms 1-2 are confined by the incoming
 hypothesis and arm 3 by the identification clause. That the identification clause was introduced for
-this shape is why it is stated about `Branch.identifyTime` rather than about the engine step. -/
+this shape is why it is stated about `Branch.identifyTime` rather than about the engine step.
+
+**Correction, recorded rather than glossed.** That second conjunct is **false at every nonempty `U`**
+(`universeClosed_identify_retime_false`), so this theorem is a true conditional whose closure
+antecedent no caller can supply. The cause is that the conjunct quantifies the merge *target* `t₁`
+over all of `TimeIndex`, whereas this proof only ever needs it at the trigger's own `t₁` — which
+`firstIncomparablePair_spec` puts in `b.knownTimes`. `difficultyBounded_of_stepLengthBounded_at` is
+the same statement at the repaired `UniverseClosedAt`, and it is the usable one. This theorem's
+statement and proof are unchanged; the sibling is additive. Register entry 10 records the refutation. -/
 theorem difficultyBounded_of_stepLengthBounded {fc : FormalSystem.ProofSystem.FrameClass}
     {U : Finset SignedFormula} {L : Nat}
     (hL : StepLengthBounded fc U L) (hUcl : UniverseClosed fc U) :
@@ -5276,8 +5284,16 @@ merge target `t₁` restricted to a time the branch already knows.
 
 `UniverseClosed` is strictly stronger — `universeClosedAt_of_universeClosed` is the implication, and
 the converse fails at every nonempty `U` by `universeClosed_identify_retime_false`, so the two are
-genuinely not interchangeable. Unlike its predecessor this one is satisfiable, and
-`universeClosedAt_signedUniverse_of_headroom` exhibits it at `U = signedUniverse C L`. -/
+genuinely not interchangeable.
+
+**What the repair does and does not fix, stated precisely.** It repairs clause **2**, which as stated
+was satisfiable only at `U = ∅` and is now dischargeable at `U = signedUniverse C L` from a closure
+condition on the label set (`timeMergeClosed_identifyTime_signedUniverse`). It does **not** touch
+clause 1, which is carried verbatim and has an independent defect in its label coordinate:
+`universeClosedAt_fresh_world_escapes` refutes this very predicate at a concrete `signedUniverse C L`.
+So `UniverseClosedAt` is not satisfiable at an arbitrary `signedUniverse C L` either.
+`universeClosedAt_signedUniverse_of_headroom` is what it takes — the two stock conditions, the label
+closure condition, and one named residual for clause 1's label coordinate. -/
 def UniverseClosedAt (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula) : Prop :=
   (∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), (∀ x ∈ b, x ∈ U) →
       ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb, x ∈ U) ∧
@@ -6290,7 +6306,7 @@ theorem buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse
 
 /-! ## C9. The do-not-re-attempt register
 
-Nine statements that look like the natural next lemma and are **not** available. Each is cited by
+Twelve statements that look like the natural next lemma and are **not** available. Each is cited by
 declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
@@ -6367,6 +6383,61 @@ already been here.
    and is satisfiable; `buildTableauAt_isSome_of_lengthBudget` and
    `buildTableauAt_isSome_at_seed_lengthBudget` are the termini stated at it, and
    `difficultyBoundedAt_ceiling` reduces the length-hypothesis form to the rule-local
-   `StepLengthGrowth`, whose full obligation map is recorded on its own docstring. -/
+   `StepLengthGrowth`, whose full obligation map is recorded on its own docstring.
+
+10. **Clause 2 of `UniverseClosed fc U`, at any nonempty `U`.** Refuted, not merely unproved, by
+    `universeClosed_identify_retime_false`, which is universally quantified in `U` and takes no frame
+    class at all. The cause in one line: the conjunct quantifies the identification's merge **target**
+    `t₁` over all of `TimeIndex` with nothing tying it to the branch, so a `Finset` universe would
+    have to contain a distinct retiming of one of its own members at every one of infinitely many
+    times. `universeClosed_identify_empty` shows it *does* hold at `U = ∅`, so its satisfiability set
+    is exactly `{∅}` — satisfiable only where the terminus it guards is vacuous, since
+    `signedUniverse C L` is empty only when `C` or `L` is. `universeClosed_nonempty_false` is the
+    residual-level corollary.
+
+    **The settled repair is `UniverseClosedAt`**, which restricts `t₁` — and only `t₁` — to
+    `b.knownTimes`, and `universeClosedAt_of_universeClosed` records the direction: the new hypothesis
+    is *weaker*, so every theorem restated against it is a strengthening. The restriction leaks no new
+    hypothesis into the terminus, because both consuming sites reach `t₁` through
+    `expandOnceUnblocked_splitOrdered_shape` and `firstIncomparablePair_spec` already returns
+    `t₁ ∈ b.knownTimes`; `universeClosedAt_identify_at_trigger` is that bridge.
+    `buildTableauAt_isSome_of_lengthBudget_at` and its siblings are the termini stated at the repaired
+    shape, and `timeMergeClosed_identifyTime_signedUniverse` discharges the repaired clause at
+    `U = signedUniverse C L` under `TimeMergeClosed L`. `UniverseClosed` itself is retained verbatim,
+    because the landed terminus is stated against it and nothing in this file is withdrawn.
+
+11. **Clause 1 of `UniverseClosed`/`UniverseClosedAt` at a fixed finite `signedUniverse C L`, and any
+    repair of it phrased as a condition on `L`.** Both are refuted.
+
+    *The clause*: `universeClosed_fresh_world_escapes` exhibits `C = {□p, p}`, `L = {⟨0,0⟩}` and the
+    one-formula branch `[F(□p)@⟨0,0⟩]`, whose step — `.boxNeg`, at **every** frame class and every
+    tracker — emits `F(p)` at world `1`. `applyRule_boxNeg_emitted_world` and
+    `applyRule_diamondPos_emitted_world` are why: those two rules emit **only** at
+    `Branch.nextWorld`, which `nextWorld_not_mem_worldFinset` says is fresh. Since both predicates
+    carry clause 1 verbatim, one witness refutes both;
+    `universeClosedAt_fresh_world_escapes` states the second. Blocking does not save it: clause 1
+    quantifies over every tracker, and the witness is proved at all of them.
+
+    *Any `L`-side repair*: `freshWorldHeadroom_not_universal` proves that for **no** nonempty finite
+    `L` does every `L`-confined branch have `FreshWorldHeadroom L b`. Each enlargement of `L` raises
+    the reachable `maxWorld` at least as much as it adds, so the gap re-opens. A reader who, having
+    seen `TimeMergeClosed` close clause 2's gap, reaches for the analogous condition on worlds has
+    already been here — the asymmetry is real: identification moves a label *within* the existing
+    coordinates, whereas `boxNeg` moves it *past* them. The repair therefore has to be branch-side,
+    and the residue is carried as the named residual `UnorderedSuccessorLabelClosed`, whose
+    per-coordinate obligation map is on its own docstring. What is **not** refuted, and is proved
+    outright, is clause 1's *formula* coordinate: `unorderedSuccessor_formula_mem`, for both unordered
+    successor shapes.
+
+12. **Repairing clause 2 by constraining `t₂`, or by constraining both `t₁` and `t₂`.** Neither is
+    wrong in the sense of being false — they are weaker predicates than necessary, which makes every
+    theorem assuming them weaker than it needs to be, and that is the defect.
+    `timeMergeClosed_identifyTime_signedUniverse`'s proof is the evidence: it constrains only `t₁`,
+    and the source time `t₂` is never used to build a label — only ever tested against — so a
+    hypothesis about it would sit unused. Constraining `t₂` *instead* of `t₁` does not even repair the
+    refutation, since `universeClosed_identify_retime_false` instantiates at
+    `t₂ = x.label.time`, which is a known time of its witness branch already; the pigeonhole runs on
+    `t₁`. A reader who constrains both has needlessly weakened `UniverseClosedAt`; one who constrains
+    only `t₂` has not repaired anything. -/
 
 end FormalSystem.Metalogic.Decidability

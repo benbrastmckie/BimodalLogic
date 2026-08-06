@@ -1,7 +1,7 @@
 # Implementation Plan: Discharge the `UniverseClosed` residual
 
 - **Task**: 432 - Discharge `UniverseClosed fc U` on the totality terminus `buildTableauAt_isSome_of_budget`
-- **Status**: [IMPLEMENTING]
+- **Status**: PARTIAL
 - **Effort**: 15 hours
 - **Dependencies**: None (parent task 428's terminus is landed and is read-only input here)
 - **Research Inputs**: `specs/432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md`
@@ -901,32 +901,32 @@ unaltered.
 
 ---
 
-### Phase 9: Register entries, cross-references, and the full gate [NOT STARTED]
+### Phase 9: Register entries, cross-references, and the full gate [COMPLETED]
 
 **Goal**: Record every refuted statement in the do-not-re-attempt register, reconcile the
 docstrings, and run the complete verification gate.
 
 **Tasks**:
-- [ ] Add a register entry for clause 2 of `UniverseClosed`: refuted, not merely unproved, by
+- [x] Add a register entry for clause 2 of `UniverseClosed`: refuted, not merely unproved, by
       Phase 2's witness; cause in one line (unconstrained merge target `t₁` forces a finite universe
       to contain infinitely many retimings of one of its own members); the repaired form is
       `UniverseClosedAt`, and `universeClosedAt_of_universeClosed` records the direction. Follow the
       register's existing conventions: cite by declaration name, never by task number.
-- [ ] Add a register entry for whatever Phase 5 refuted, if it refuted anything, with its witness.
-- [ ] Add a register entry warning against the tempting-but-wrong repair of clause 2 — constraining
+- [x] Add a register entry for whatever Phase 5 refuted, if it refuted anything, with its witness. *(entry 11.)*
+- [x] Add a register entry warning against the tempting-but-wrong repair of clause 2 — constraining
       `t₂` instead of `t₁`, or constraining both. Planning verified `t₁` alone suffices; a reader who
       constrains both has needlessly weakened the predicate.
-- [ ] Reconcile every docstring that describes `UniverseClosed` as a caller's obligation about the
+- [x] Reconcile every docstring that describes `UniverseClosed` as a caller's obligation about the
       label set. That description is now partly wrong: for clause 2 it is right and Phase 4 supplies
       the condition; for clause 1's label dimension it understates the situation. Update the
       `UniverseClosed` docstring and the `.splitOrdered` note on
       `difficultyBounded_of_stepLengthBounded`.
-- [ ] Run the full gate: `lake build` over the whole project; `lean_verify` on every declaration this
+- [x] Run the full gate: `lake build` over the whole project; `lean_verify` on every declaration this
       task added; grep for `sorry`, `native_decide`, and the vacuous-definition patterns; confirm the
       three frozen files' md5s match the Phase 1 baseline; confirm the landed terminus's original
       statements still resolve; run `.claude/scripts/check-task-references.sh` so no task number
       leaks into `FormalSystem/**`.
-- [ ] Write the task summary to
+- [x] Write the task summary to
       `specs/432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md`,
       separating what is **landed** from what is **named but not discharged**.
 
@@ -951,6 +951,54 @@ follow theirs rather than colliding.
   `propext`, `Classical.choice`, `Quot.sound`.
 - Frozen-file md5s unchanged.
 - `check-task-references.sh` passes.
+
+#### Phase 9 completion note — the full gate
+
+Register entries **10, 11, 12** added; preamble updated "Nine statements" -> "Twelve statements".
+
+| Entry | Content |
+|-------|---------|
+| 10 | clause 2 of `UniverseClosed` at any nonempty `U`: refuted, witness `universeClosed_identify_retime_false`, satisfiability set exactly `{∅}`, repair `UniverseClosedAt` |
+| 11 | clause 1 of **both** predicates at a fixed finite `signedUniverse C L`: refuted, witness `universeClosed_fresh_world_escapes`; **and** any `L`-side repair of it, refuted by `freshWorldHeadroom_not_universal` |
+| 12 | the tempting-but-wrong repairs of clause 2: constraining `t₂` instead of `t₁` (repairs nothing) or constraining both (needlessly weaker) |
+
+Docstrings reconciled: `UniverseClosed` (the refutation, the retention rationale, and a **correction**
+of its own earlier claim that the definition "is a statement about `L`" — true for clause 2's repaired
+form, false for clause 1's label coordinate); `UniverseClosedAt` (precise statement of what the repair
+does and does not fix, since clause 1 is refuted at it too); and
+`difficultyBounded_of_stepLengthBounded`'s `.splitOrdered` note (its closure antecedent is
+unsatisfiable; the `_at` sibling is the usable one).
+
+**Scope hypothesis, confirmed.** The register had nine entries at Phase 1, so the new ones started at
+10. Tasks 433/434 had not landed register entries in the interim — verified by re-reading the register
+before writing.
+
+**Gate results:**
+
+| Check | Result |
+|-------|--------|
+| full `lake build` | **green**, 2333 jobs |
+| sorries in `MintBound.lean` | **0** (the single grep hit is the word "admits" in prose) |
+| sorries introduced anywhere | **0** — the census's hits are all pre-existing `FormalSystem/Boneyard/` legacy |
+| `native_decide` in `MintBound.lean` | **0** |
+| vacuous definitions | **0** |
+| new axioms | **0** (`grep '^axiom '` finds only two prose lines in `Boneyard` docstrings) |
+| `lean_verify` axiom sets | exactly `{propext, Classical.choice, Quot.sound}` on all 12 spot-checked declarations, including all four `…_at` termini and both `signedUniverse` corollaries |
+| frozen-file md5s | **all three identical** to the Phase 1 baseline |
+| `check-task-references.sh` | **PASS**, 0 occurrences; `FormalSystem/**` separately grepped clean |
+
+**Landed statements preserved — verified by diff, not by assertion.** Diffing `MintBound.lean` against
+the true session baseline (`742a1b26d`) shows **exactly six deleted lines**, every one of them a
+docstring tail displaced by the three plan-sanctioned docstring extensions plus the register preamble
+edit. **Zero statement lines and zero proof-term lines were deleted.** So all ten
+`hUcl : UniverseClosed` theorems — the terminus among them — are byte-identical in both statement and
+proof.
+
+*(Note recorded for accuracy: an initial diff was taken against `4cb7652c7`, the HEAD reported in the
+session's opening git snapshot. That was the wrong baseline — task 431's seven commits landed between
+that snapshot and this task's first command, so the diff attributed 431's docstring corrections and
+its register entry 9 to this task. Re-run against `742a1b26d`, the commit immediately preceding Phase
+1.)*
 
 ---
 
