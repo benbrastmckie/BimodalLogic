@@ -1227,4 +1227,280 @@ theorem ordTimes_identifyTime_arm3_false :
   · unfold OrdTimesLeMaxTime; decide
   · unfold OrdTimesLeMaxTime; decide
 
+/-! ## A7. `OrdTimesKnown` — the strengthened ordering-times invariant
+
+### Do-not-re-attempt
+
+The preservation of `OrdTimesLeMaxTime` across the ordered split's identification arm is
+**REFUTED**, not merely unproved: `ordTimes_identifyTime_arm3_false` just above decides a
+configuration in which both standing hypotheses hold, `firstIncomparablePair` really does fire,
+and the invariant nonetheless fails after the arm. A reader who assumes `OrdTimesLeMaxTime` is a
+run invariant across *every* engine step — or who later "simplifies" the run invariant back to the
+`≤ maxTime` form — is re-attempting a refuted statement.
+
+The settled repair is `OrdTimesKnown` below, with `ordTimesKnown_identifyTime` supplying the arm-3
+preservation the weak form cannot have. `ordTimesLeMaxTime_of_ordTimesKnown` records that this is a
+**strengthening** rather than a weakening: every landed `OrdTimesLeMaxTime` result stays true, stays
+in source, and stays reachable.
+
+Root cause of the refutation, restated so the repair is legible: `Branch.identifyTime` measures the
+ordering against a bound (`Branch.maxTime`) that the arm is free to move *downward* underneath a
+surviving constraint. Membership in `Branch.knownTimes` has no such defect, because the arm relabels
+the branch and the ordering by the **same** function `rho`, so the two move together. -/
+
+/-- **The strengthened ordering-times invariant**: every time mentioned by the ordering is a
+*known branch time*, rather than merely `≤ b.maxTime`.
+
+This strengthens `OrdTimesLeMaxTime`, and `ordTimesLeMaxTime_of_ordTimesKnown` is the witness —
+the weak form is derivable from this one, so every landed `OrdTimesLeMaxTime` consumer keeps
+working and none of its producers is disturbed. The strengthening is necessary rather than
+cosmetic: the weak form is **refuted** at the ordered split's identification arm by
+`ordTimes_identifyTime_arm3_false`, while this form survives it unconditionally
+(`ordTimesKnown_identifyTime`). -/
+def OrdTimesKnown (b : Branch) (ord : TimeOrdering) : Prop :=
+  ∀ p ∈ ord.constraints, p.1 ∈ b.knownTimes ∧ p.2 ∈ b.knownTimes
+
+/-! ### Basic `knownTimes` facts -/
+
+/-- A branch formula's time is a known time. -/
+theorem mem_knownTimes_of_mem {b : Branch} {sf : SignedFormula} (h : sf ∈ b) :
+    sf.label.time ∈ b.knownTimes := by
+  simp only [Branch.knownTimes, List.mem_eraseDups, List.mem_map]
+  exact ⟨sf, h, rfl⟩
+
+/-- Conversely, a known time is carried by some branch formula. -/
+theorem exists_mem_of_mem_knownTimes {b : Branch} {t : TimeIndex} (h : t ∈ b.knownTimes) :
+    ∃ sf ∈ b, sf.label.time = t := by
+  simp only [Branch.knownTimes, List.mem_eraseDups, List.mem_map] at h
+  obtain ⟨sf, hsf, hEq⟩ := h
+  exact ⟨sf, hsf, hEq⟩
+
+/-- A known time is at or below `maxTime`. -/
+theorem le_maxTime_of_mem_knownTimes {b : Branch} {t : TimeIndex} (h : t ∈ b.knownTimes) :
+    t ≤ b.maxTime := by
+  obtain ⟨sf, hsf, rfl⟩ := exists_mem_of_mem_knownTimes h
+  exact le_maxTime hsf
+
+/-- **The strengthening witness.** The strong invariant implies the weak one.
+
+This is what makes the move to `OrdTimesKnown` a *strengthening* rather than the forbidden
+weakening: every landed `OrdTimesLeMaxTime` consumer — `applyRule_irreflOrd` above chief among
+them — keeps working unchanged, reached from the strong form through this one lemma. None of the
+weak form's four producer lemmas is deleted, renamed, or restated; they remain true and simply go
+unused by the strong chain. -/
+theorem ordTimesLeMaxTime_of_ordTimesKnown {b : Branch} {ord : TimeOrdering}
+    (h : OrdTimesKnown b ord) : OrdTimesLeMaxTime b ord := fun p hp =>
+  ⟨le_maxTime_of_mem_knownTimes (h p hp).1, le_maxTime_of_mem_knownTimes (h p hp).2⟩
+
+/-- **The refuting configuration dies under the strengthened invariant.**
+
+The exact branch and ordering that refute `OrdTimesLeMaxTime` preservation at the identification
+arm (`ordTimes_identifyTime_arm3_false` above) fail `OrdTimesKnown` at their *input*: the
+constraint `(3, 4)` mentions two times no formula on the branch carries. So the counterexample
+does not transfer, and the strengthening is not merely a different statement but a live repair. -/
+theorem counterexample_dies :
+    letI p : Formula := .atom ⟨"p", none⟩
+    letI q : Formula := .atom ⟨"q", none⟩
+    letI b : Branch := [⟨.pos, p, ⟨0, 0⟩⟩, ⟨.pos, q, ⟨0, 5⟩⟩]
+    letI ord : TimeOrdering := ⟨[(3, 4)]⟩
+    ¬ OrdTimesKnown b ord := by
+  unfold OrdTimesKnown; decide
+
+/-! ### Arm-3 preservation — the crux
+
+`Branch.identifyTime` relabels by `rho src tgt`; `TimeOrdering.identifyTime` relabels its
+constraint components by the same function. So the two move together, and membership survives. -/
+
+/-- The branch half of the renaming acts on known times exactly as `rho` does. -/
+theorem mem_knownTimes_identifyTime {b : Branch} {src tgt t : TimeIndex}
+    (h : t ∈ b.knownTimes) : rho src tgt t ∈ (b.identifyTime src tgt).knownTimes := by
+  obtain ⟨sf, hsf, rfl⟩ := exists_mem_of_mem_knownTimes h
+  refine mem_knownTimes_of_mem (sf := rhoSF src tgt sf) ?_
+  simp only [Branch.identifyTime, List.mem_eraseDups, List.mem_map]
+  refine ⟨sf, hsf, ?_⟩
+  by_cases hc : sf.label.time = src
+  · simp [rhoSF, rho, hc]
+  · simp [rhoSF, rho, hc]
+
+/-- **Arm-3 preservation.** `OrdTimesKnown` IS preserved by the ordered split's identification arm.
+
+Note it needs **no trigger hypotheses at all** — not `firstIncomparablePair`, not `IrreflOrd`. It
+is a pure structural fact about branch and ordering being relabelled by the same `rho`, which is
+strictly better than the weak form: `ordTimes_identifyTime_arm3_false` shows the weak form fails
+here even *with* both hypotheses in hand. -/
+theorem ordTimesKnown_identifyTime {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : OrdTimesKnown b ord) :
+    OrdTimesKnown (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁) := by
+  rintro ⟨a, c⟩ hp
+  simp only [TimeOrdering.identifyTime, List.mem_eraseDups, List.mem_filterMap] at hp
+  obtain ⟨⟨x, y⟩, hxy, hres⟩ := hp
+  by_cases hAB : (if x == t₂ then t₁ else x) = (if y == t₂ then t₁ else y)
+  · rw [if_pos (by simpa using hAB)] at hres
+    exact absurd hres (by simp)
+  · rw [if_neg (by simpa using hAB)] at hres
+    simp only [Option.some.injEq, Prod.mk.injEq] at hres
+    obtain ⟨rfl, rfl⟩ := hres
+    obtain ⟨hx, hy⟩ := h (x, y) hxy
+    constructor
+    · have := mem_knownTimes_identifyTime (src := t₂) (tgt := t₁) hx
+      simpa only [rho, beq_iff_eq] using this
+    · have := mem_knownTimes_identifyTime (src := t₂) (tgt := t₁) hy
+      simpa only [rho, beq_iff_eq] using this
+
+/-! ### Preservation at the mint sites
+
+It is no use fixing arm 3 if the stronger invariant breaks at a mint site where the weaker one
+held. The mint sites state their invariant against the POST-step branch `g :: rest ++ b`, where
+`g` is the witness sitting at `b.nextTime`. -/
+
+/-- Known times survive branch growth. -/
+theorem knownTimes_mono {b nb : Branch} {t : TimeIndex} (hsub : ∀ x ∈ b, x ∈ nb)
+    (h : t ∈ b.knownTimes) : t ∈ nb.knownTimes := by
+  obtain ⟨sf, hsf, rfl⟩ := exists_mem_of_mem_knownTimes h
+  exact mem_knownTimes_of_mem (hsub sf hsf)
+
+/-- The strong invariant survives branch growth on its own, when the ordering does not change.
+The `OrdTimesKnown` analogue of `ordTimes_mono`. -/
+theorem ordTimesKnown_mono {b nb : Branch} {ord : TimeOrdering}
+    (haux : OrdTimesKnown b ord) (hsub : ∀ x ∈ b, x ∈ nb) : OrdTimesKnown nb ord :=
+  fun p hp => ⟨knownTimes_mono hsub (haux p hp).1, knownTimes_mono hsub (haux p hp).2⟩
+
+/-- A mint step's new branch KNOWS the fresh time, because the witness sits there.
+The `OrdTimesKnown` analogue of `nextTime_le_maxTime_cons`. -/
+theorem nextTime_mem_knownTimes_cons {b : Branch} {g : SignedFormula}
+    {rest : List SignedFormula} (hg : g.label.time = b.nextTime) :
+    b.nextTime ∈ Branch.knownTimes (g :: rest ++ b) :=
+  hg ▸ mem_knownTimes_of_mem (List.mem_append_left b List.mem_cons_self)
+
+/-- Branch growth by prepending any list. Stated for a general `fs` rather than the `g :: rest`
+shape, so it also covers the `.linear []` / `.persistent []` arms where the branch is unchanged. -/
+private theorem sub_append {b : Branch} {fs : List SignedFormula} :
+    ∀ x ∈ b, x ∈ (fs ++ b) := fun _ hx => List.mem_append_right _ hx
+
+/-- Single-edge `addFuture` mint step preserves the strong invariant. -/
+theorem ordTimesKnown_addFuture_cons {b : Branch} {ord : TimeOrdering} {t : TimeIndex}
+    {g : SignedFormula} {rest : List SignedFormula}
+    (haux : OrdTimesKnown b ord) (ht : t ∈ b.knownTimes)
+    (hg : g.label.time = b.nextTime) :
+    OrdTimesKnown (g :: rest ++ b) (ord.addFuture t b.nextTime) := by
+  intro p hp
+  simp only [TimeOrdering.addFuture, List.mem_cons] at hp
+  rcases hp with rfl | hp
+  · exact ⟨knownTimes_mono sub_append ht, nextTime_mem_knownTimes_cons hg⟩
+  · exact ordTimesKnown_mono haux sub_append p hp
+
+/-- Single-edge `addPast` mint step preserves the strong invariant. -/
+theorem ordTimesKnown_addPast_cons {b : Branch} {ord : TimeOrdering} {t : TimeIndex}
+    {g : SignedFormula} {rest : List SignedFormula}
+    (haux : OrdTimesKnown b ord) (ht : t ∈ b.knownTimes)
+    (hg : g.label.time = b.nextTime) :
+    OrdTimesKnown (g :: rest ++ b) (ord.addPast t b.nextTime) := by
+  intro p hp
+  simp only [TimeOrdering.addPast, List.mem_cons] at hp
+  rcases hp with rfl | hp
+  · exact ⟨nextTime_mem_knownTimes_cons hg, knownTimes_mono sub_append ht⟩
+  · exact ordTimesKnown_mono haux sub_append p hp
+
+/-- `densityRule`'s two-edge mint step preserves the strong invariant.
+The extra obligation is `t' ∈ b.knownTimes`, supplied by the invariant applied to the constraint
+that put `t'` in the reach. -/
+theorem ordTimesKnown_density_cons {b : Branch} {ord : TimeOrdering} {t t' : TimeIndex}
+    {P : TimeIndex → Bool} {tail : List TimeIndex}
+    {g : SignedFormula} {rest : List SignedFormula}
+    (haux : OrdTimesKnown b ord) (ht : t ∈ b.knownTimes)
+    (hg : g.label.time = b.nextTime)
+    (heq : (ord.futureOf t).filter P = t' :: tail) :
+    OrdTimesKnown (g :: rest ++ b) ((ord.addFuture t b.nextTime).addFuture b.nextTime t') := by
+  have hmem : t' ∈ ord.futureOf t :=
+    List.mem_of_mem_filter (by rw [heq]; exact List.mem_cons_self)
+  obtain ⟨x, hx⟩ := exists_constraint_to_of_mem_futureOf ord t t' hmem
+  have ht' : t' ∈ b.knownTimes := (haux (x, t') hx).2
+  intro p hp
+  simp only [TimeOrdering.addFuture, List.mem_cons] at hp
+  rcases hp with rfl | rfl | hp
+  · exact ⟨nextTime_mem_knownTimes_cons hg, knownTimes_mono sub_append ht'⟩
+  · exact ⟨knownTimes_mono sub_append ht, nextTime_mem_knownTimes_cons hg⟩
+  · exact ordTimesKnown_mono haux sub_append p hp
+
+set_option maxHeartbeats 4000000 in
+/-- **`applyRule` preserves `OrdTimesKnown` at the non-branching result shapes** — the strong
+analogue of `applyRule_ordTimes_nonbranching`, proved by the same tactic skeleton with the three
+`_cons` lemmas swapped for their strong forms.
+
+This is the load-bearing check: the strong invariant survives every one of the nine mint sites, so
+nothing that held under the weak form is lost by strengthening. -/
+theorem applyRule_ordTimesKnown_nonbranching {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering}
+    (hsf : sf ∈ b) (haux : OrdTimesKnown b ord) :
+    ∀ nb ∈ nonBranchingResultBranch b (applyRule rule sf b ord).1,
+      OrdTimesKnown nb (applyRule rule sf b ord).2 := by
+  have ht : sf.label.time ∈ b.knownTimes := mem_knownTimes_of_mem hsf
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        first
+          | contradiction
+          | (intro nb hnb
+             simp only [nonBranchingResultBranch, Option.mem_def, Option.some.injEq] at hnb
+             first
+               | (subst hnb
+                  first
+                    | exact ordTimesKnown_mono haux sub_append
+                    | exact ordTimesKnown_addFuture_cons haux ht rfl
+                    | exact ordTimesKnown_addPast_cons haux ht rfl
+                    | exact ordTimesKnown_density_cons haux ht rfl (by assumption))
+               | exact absurd hnb (by simp)))
+
+/-- **Both non-identification arms of the ordered split preserve the strong invariant.**
+
+Arms 1 and 2 keep the branch literally and add one ordering edge between the incomparable pair.
+The strong invariant needs `t₁, t₂ ∈ b.knownTimes`, and the trigger supplies exactly that —
+`firstIncomparablePair` scans `b.knownTimes`, so `firstIncomparablePair_spec` hands the two
+membership facts over directly. This engine-level site is therefore free. -/
+theorem ordTimesKnown_splitOrdered_arms12 {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) (haux : OrdTimesKnown b ord) :
+    OrdTimesKnown b (ord.addFuture t₁ t₂) ∧ OrdTimesKnown b (ord.addFuture t₂ t₁) := by
+  obtain ⟨h1, h2, -, -, -⟩ := firstIncomparablePair_spec htrig
+  constructor <;> (intro p hp
+                   simp only [TimeOrdering.addFuture, List.mem_cons] at hp
+                   rcases hp with rfl | hp)
+  · exact ⟨h1, h2⟩
+  · exact haux p hp
+  · exact ⟨h2, h1⟩
+  · exact haux p hp
+
+/-! ### The strong form re-derives the weak form's consumers unchanged -/
+
+/-- `applyRule_irreflOrd` — the headline irreflexivity result above — is reachable from the strong
+invariant with **no change to its proof**, by composing with `ordTimesLeMaxTime_of_ordTimesKnown`.
+This is the concrete evidence that adding `OrdTimesKnown` alongside `OrdTimesLeMaxTime` touches no
+already-proved result. -/
+theorem applyRule_irreflOrd_from_known {rule : TableauRule} {sf : SignedFormula} {b : Branch}
+    {ord : TimeOrdering} (hsf : sf ∈ b) (hord : IrreflOrd ord)
+    (haux : OrdTimesKnown b ord) : IrreflOrd (applyRule rule sf b ord).2 :=
+  applyRule_irreflOrd hsf hord (ordTimesLeMaxTime_of_ordTimesKnown haux)
+
+/-- Likewise the density second-edge fact. -/
+theorem ne_nextTime_from_known {b : Branch} {ord : TimeOrdering} {s t : TimeIndex}
+    (haux : OrdTimesKnown b ord) (h : t ∈ ord.futureOf s) : b.nextTime ≠ t :=
+  ne_nextTime_of_mem_futureOf (ordTimesLeMaxTime_of_ordTimesKnown haux) h
+
+/-- **The initial condition.** The strong invariant holds at the engine's seed ordering.
+
+This is **vacuously true, and the vacuity is a property of the seed rather than of a narrowed
+statement**: `TimeOrdering.empty` is defined with `constraints := []`, and every engine run starts
+there — both `buildTableauAt` and `buildTableau` call `expandBranchWithFuel` with
+`TimeOrdering.empty` as the initial ordering. So there is no constraint to check, for any branch
+whatsoever.
+
+The distinction matters enough to state. A later reader meeting a base case that discharges by
+`simp` must be able to tell, without re-deriving anything, that nothing was weakened to make it
+close. The base case is vacuous; the inductive step — `applyRule_ordTimesKnown_nonbranching`,
+`ordTimesKnown_splitOrdered_arms12`, and `ordTimesKnown_identifyTime` — carries all the content,
+and none of those three is vacuous. -/
+theorem ordTimesKnown_empty (b : Branch) : OrdTimesKnown b TimeOrdering.empty := by
+  intro p hp
+  simp [TimeOrdering.empty] at hp
+
 end FormalSystem.Metalogic.Decidability

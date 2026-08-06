@@ -380,7 +380,7 @@ this plan's to revise. **No `[COMPLETED]` phase is reopened by anything in 4.1-4
 
 ---
 
-### Phase 4.1: `OrdTimesKnown` — the strengthened invariant, transcribed [NOT STARTED]
+### Phase 4.1: `OrdTimesKnown` — the strengthened invariant, transcribed [COMPLETED]
 
 **Goal**: Land the strengthened invariant and every one of its machine-checked supporting results,
 plus the initial condition. **This phase is transcription of already-elaborated Lean, not new
@@ -389,38 +389,38 @@ proof.** Every declaration below exists, sorry-free, in
 (commit `7f3c7dcb5`, elaborates exit 0). **Read that file and transcribe. Do not re-derive.**
 
 **Tasks**:
-- [ ] Land `OrdTimesKnown (b : Branch) (ord : TimeOrdering) : Prop := ∀ p ∈ ord.constraints, p.1 ∈ b.knownTimes ∧ p.2 ∈ b.knownTimes`
+- [x] Land `OrdTimesKnown (b : Branch) (ord : TimeOrdering) : Prop := ∀ p ∈ ord.constraints, p.1 ∈ b.knownTimes ∧ p.2 ∈ b.knownTimes`
       with a docstring stating that it is a **strengthening** of `OrdTimesLeMaxTime`, that the weak
       form is **refuted** at the identification arm (citing `ordTimes_identifyTime_arm3_false` **by
       declaration name**), and that the weak form's landed results are retained and still true.
-- [ ] Transcribe `mem_knownTimes_of_mem`, `exists_mem_of_mem_knownTimes`,
+- [x] Transcribe `mem_knownTimes_of_mem`, `exists_mem_of_mem_knownTimes`,
       `le_maxTime_of_mem_knownTimes`.
-- [ ] Transcribe `ordTimesLeMaxTime_of_ordTimesKnown` — **the strengthening witness**. Its docstring
+- [x] Transcribe `ordTimesLeMaxTime_of_ordTimesKnown` — **the strengthening witness**. Its docstring
       must say that this is what makes the change a strengthening rather than the forbidden
       weakening, and that every landed `OrdTimesLeMaxTime` consumer keeps working through it.
-- [ ] Transcribe `counterexample_dies` — the refuting configuration fails the new invariant at its
+- [x] Transcribe `counterexample_dies` — the refuting configuration fails the new invariant at its
       input. Adjacent to `ordTimes_identifyTime_arm3_false`, so a reader meets both together.
-- [ ] Transcribe `mem_knownTimes_identifyTime` and `ordTimesKnown_identifyTime` — **arm-3
+- [x] Transcribe `mem_knownTimes_identifyTime` and `ordTimesKnown_identifyTime` — **arm-3
       preservation, the crux**. Its docstring must record that it needs **no trigger hypotheses at
       all** (not `firstIncomparablePair`, not `IrreflOrd`), because it is a pure structural fact
       about branch and ordering relabelling by the same `rho`. That is strictly better than the weak
       form, which is false here even *with* both hypotheses.
-- [ ] Transcribe `knownTimes_mono`, `ordTimesKnown_mono`, `nextTime_mem_knownTimes_cons`,
+- [x] Transcribe `knownTimes_mono`, `ordTimesKnown_mono`, `nextTime_mem_knownTimes_cons`,
       `sub_append`.
-- [ ] Transcribe `ordTimesKnown_addFuture_cons`, `ordTimesKnown_addPast_cons`,
+- [x] Transcribe `ordTimesKnown_addFuture_cons`, `ordTimesKnown_addPast_cons`,
       `ordTimesKnown_density_cons`.
-- [ ] Transcribe `applyRule_ordTimesKnown_nonbranching` (with its `set_option maxHeartbeats 4000000 in`)
+- [x] Transcribe `applyRule_ordTimesKnown_nonbranching` (with its `set_option maxHeartbeats 4000000 in`)
       and `ordTimesKnown_splitOrdered_arms12`.
-- [ ] Transcribe `applyRule_irreflOrd_from_known` and `ne_nextTime_from_known` — the shape-(b)
+- [x] Transcribe `applyRule_irreflOrd_from_known` and `ne_nextTime_from_known` — the shape-(b)
       viability witnesses. `applyRule_irreflOrd` itself is **not edited**.
-- [ ] **Land the initial condition as a named lemma**:
+- [x] **Land the initial condition as a named lemma**:
       `ordTimesKnown_empty (b : Branch) : OrdTimesKnown b TimeOrdering.empty`. Its docstring must
       state plainly that this is **vacuously true because `TimeOrdering.empty.constraints = []`**
       (`SignedFormula.lean:679`), that the engine seeds every run at `TimeOrdering.empty`
       (`Saturation.lean:2199`, `:1162`), and that the vacuity is a property of the seed rather than
       a narrowed statement — so a future reader does not mistake a vacuous base case for a weakened
       invariant.
-- [ ] Add the **new do-not-re-attempt register entry** as a section comment adjacent to
+- [x] Add the **new do-not-re-attempt register entry** as a section comment adjacent to
       `ordTimes_identifyTime_arm3_false`: the preservation of `OrdTimesLeMaxTime` across the ordered
       split's identification arm is **refuted**, not merely unproved, and `OrdTimesKnown` is the
       settled repair. Cite by declaration name only — never by task or report number.
