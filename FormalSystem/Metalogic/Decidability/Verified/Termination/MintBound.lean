@@ -4155,6 +4155,78 @@ theorem difficultyCeiling_mono {U : Finset SignedFormula} {L L' : Nat} (h : L �
     (List.Sublist.subperm (sublist_flatMap_mono
       (fun a _ => (List.replicate_sublist_replicate a).mpr h)))
 
+/-! #### The equivalence: a difficulty bound *is* a length bound
+
+The pair below is **the** answer to the `DifficultyBounded` residual, and it is worth stating what
+it settles. `D` looks like a bound on formula complexity — `estimateBranchDifficulty` weights
+`untl`/`snce` by `3` and `box` by `2`, so the name invites that reading. It is not. Up to a factor
+of `4`, `DifficultyBounded fc U D` and `StepLengthBounded fc U L` are the same hypothesis:
+
+* forwards, `stepLengthBounded_of_difficultyBounded` turns any `D` into the length budget `4 * D`;
+* backwards, `difficultyBounded_of_stepLengthBounded` turns any length budget `L` into the
+  difficulty coefficient `difficultyCeiling U L`.
+
+So the residual carries **no** information about the shapes of the formulas on a branch beyond what
+confinement to `U` already gives. Everything it asks for is a bound on how *long* a successor branch
+can get, and that is a statement this file can make about the engine on its own — which is what
+`StepLengthGrowth` below does. The visibility of `temporalCount`/`modalCount` never entered into it. -/
+
+/-- **The residual's real content: successors of `U`-confined branches have bounded length.**
+
+`DifficultyBounded`'s two conjuncts verbatim — same quantifier prefix, same confinement hypothesis,
+same split between the unordered successors and the `.splitOrdered` arms — with
+`estimateBranchDifficulty _ ≤ D` replaced by `_.length ≤ L`. -/
+def StepLengthBounded (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
+    (L : Nat) : Prop :=
+  ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), (∀ x ∈ b, x ∈ U) →
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, nb.length ≤ L) ∧
+    (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        ∀ p ∈ bs, p.1.length ≤ L)
+
+/-- **A length budget buys the difficulty coefficient outright.**
+
+`UniverseClosed` supplies confinement of every successor, `StepLengthBounded` supplies the length,
+and `estimateBranchDifficulty_le_ceiling` converts the pair into `difficultyCeiling U L`.
+
+**On the `.splitOrdered` arms.** `UniverseClosed`'s *second* conjunct is exactly what they need, and
+no extra hypothesis is required: by `expandOnceUnblocked_splitOrdered_shape` the three arms are
+`(b, _)`, `(b, _)` and `(b.identifyTime t₂ t₁, _)`, so arms 1-2 are confined by the incoming
+hypothesis and arm 3 by the identification clause. That the identification clause was introduced for
+this shape is why it is stated about `Branch.identifyTime` rather than about the engine step. -/
+theorem difficultyBounded_of_stepLengthBounded {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {L : Nat}
+    (hL : StepLengthBounded fc U L) (hUcl : UniverseClosed fc U) :
+    DifficultyBounded fc U (difficultyCeiling U L) := by
+  intro b ord tr hbU
+  refine ⟨?_, ?_⟩
+  · intro nb hnb
+    exact estimateBranchDifficulty_le_ceiling (hUcl.1 b ord tr hbU nb hnb)
+      ((hL b ord tr hbU).1 nb hnb)
+  · intro bs hbs p hp
+    obtain ⟨t₁, t₂, -, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hbs
+    have hlen : p.1.length ≤ L := (hL b ord tr hbU).2 _ hbs p hp
+    have hconf : ∀ x ∈ p.1, x ∈ U := by
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl | rfl
+      · exact hbU
+      · exact hbU
+      · exact hUcl.2 b t₁ t₂ hbU
+    exact estimateBranchDifficulty_le_ceiling hconf hlen
+
+/-- **The converse, with no side conditions at all.** A difficulty bound forces a length bound, by
+`estimateBranchDifficulty_length_le` applied at each successor. Confinement is not needed in this
+direction, which is the asymmetry that makes the difficulty residual the *stronger* of the two
+hypotheses and hence the one that is refutable. -/
+theorem stepLengthBounded_of_difficultyBounded {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {D : Nat} (hD : DifficultyBounded fc U D) :
+    StepLengthBounded fc U (4 * D) := by
+  intro b ord tr hbU
+  refine ⟨?_, ?_⟩
+  · intro nb hnb
+    exact length_le_of_estimateBranchDifficulty_le ((hD b ord tr hbU).1 nb hnb)
+  · intro bs hbs p hp
+    exact length_le_of_estimateBranchDifficulty_le ((hD b ord tr hbU).2 bs hbs p hp)
+
 /-- **The measure drops at `.extended` and at every arm of a `.split`.**
 
 Both residual disjuncts are discharged, and the second is the interesting one: a mint may raise the
