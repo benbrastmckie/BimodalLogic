@@ -6304,6 +6304,83 @@ theorem buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse
   buildTableauAt_isSome_at_seed_lengthBudget_at phi hβ
     (universeClosedAt_signedUniverse_of_headroom hC hT hL hlab) hSL hmint hpb hseed
 
+/-! ## D1. The time coordinate: the minting census
+
+The world coordinate is complete (`applyRule_emitted_world_dichotomy`). This section builds the
+same accounting in the **time** coordinate, and the first thing it needs is the list of rules that
+can put a formula at a time the branch does not already know. The section notes above record that
+no statement in the development says what that list is. This is that statement.
+
+**`ruleMintsFreshLabel` is the wrong list, in both directions.** It is a list of *witness-guarded*
+rules — the ones `findApplicableRule` gates on `witnessPresent` — and witness-guardedness and
+time-minting are two different properties:
+
+* `boxNeg` and `diamondPos` are in `ruleMintsFreshLabel` and mint **no time**. Both emit at
+  `Branch.nextWorld` while carrying the trigger's own time (their witness) or a branch formula's own
+  time (their `boxPosFormulas` / `diamondNegFormulas` propagation blocks). Fresh *world*, known time.
+* `densityRule` mints a time and is deliberately **absent** from `ruleMintsFreshLabel`: it carries
+  its own `existingIntermediates`-style gap guard (the maximal-target filter on
+  `TimeOrdering.futureOf`) instead of a witness test, so re-guarding it would have been redundant.
+* the ACTIVE arms of `untlNeg` and `snceNeg` mint `Branch.nextTime` and are absent from
+  `ruleMintsFreshLabel` too, because they are `ruleSelfGuarded`: they filter their target times
+  through their own `unprocessed` test and re-include the trigger in every arm.
+
+So neither list contains the other, and `freshTimeRules_incomparable_freshLabelRules` decides that
+rather than asserting it. `expandOnceNoFresh` is the in-repo operational evidence for the same fact:
+it runs the `ruleMintsFreshLabel` test **and then**, separately, a
+`newOrd.constraints.length > timeOrd.constraints.length` test. Two tests in sequence are necessary
+only when neither subsumes the other — a single test would do if one list contained the other.
+
+**The census is read off `applyRule`, not guessed from the sibling list.** Every fresh time in
+`applyRule` is `branch.nextTime`, bound at exactly nine sites: the `allFutureNeg` / `allPastNeg` /
+`someFuturePos` / `somePastPos` / `untlPos` / `sncePos` arms, the ACTIVE arms of `untlNeg` /
+`snceNeg`, and `densityRule`'s interpolation site. There is no `nextTime + k` anywhere, which is why
+the dichotomy below has the same two-case shape as its world twin. -/
+
+/-- **The nine rules that can emit at a time outside `Branch.knownTimes`.**
+
+Derived by walking `applyRule`'s thirty-six constructor arms and recording which reach a
+`freshTime := branch.nextTime` binding. Deliberately *not* derived from `ruleMintsFreshLabel`: see
+the section note above for why the two lists are incomparable. -/
+def ruleMintsFreshTime : TableauRule → Bool
+  | .allFutureNeg | .allPastNeg | .someFuturePos | .somePastPos
+  | .untlPos | .sncePos | .untlNeg | .snceNeg | .densityRule => true
+  | _ => false
+
+/-- The census as a `Finset`, mirroring `freshLabelRules`. -/
+def freshTimeRules : Finset TableauRule :=
+  {TableauRule.allFutureNeg, TableauRule.allPastNeg, TableauRule.someFuturePos,
+   TableauRule.somePastPos, TableauRule.untlPos, TableauRule.sncePos,
+   TableauRule.untlNeg, TableauRule.snceNeg, TableauRule.densityRule}
+
+/-- The `Finset` and the `Bool` predicate agree, over all thirty-six constructors. The anti-drift
+guarantee `mem_freshLabelRules` already gives the sibling list. -/
+theorem mem_freshTimeRules {r : TableauRule} :
+    r ∈ freshTimeRules ↔ ruleMintsFreshTime r = true := by
+  cases r <;> simp [freshTimeRules, ruleMintsFreshTime]
+
+/-- There are exactly nine, decided rather than counted by hand. -/
+theorem freshTimeRules_card : freshTimeRules.card = 9 := by decide
+
+/-- **The two rule lists are incomparable, not nested.** Both directions, decided.
+
+The first two conjuncts are the world-minting-is-not-time-minting direction: `boxNeg` and
+`diamondPos` are witness-guarded and mint no time. The last three are the converse: `densityRule`
+(gap-guarded) and the `untlNeg` / `snceNeg` ACTIVE arms (`ruleSelfGuarded`) mint a time while
+sitting outside `freshLabelRules`.
+
+`expandOnceNoFresh` is the operational evidence: it tests `ruleMintsFreshLabel` and **then** tests
+`newOrd.constraints.length`, two tests in sequence, which is only necessary because neither list
+subsumes the other. A reader who reads "not in `ruleMintsFreshLabel`" as "introduces no time" is
+re-attempting a refuted statement — see the register entry. -/
+theorem freshTimeRules_incomparable_freshLabelRules :
+    (TableauRule.boxNeg ∈ freshLabelRules ∧ TableauRule.boxNeg ∉ freshTimeRules) ∧
+    (TableauRule.diamondPos ∈ freshLabelRules ∧ TableauRule.diamondPos ∉ freshTimeRules) ∧
+    (TableauRule.densityRule ∈ freshTimeRules ∧ TableauRule.densityRule ∉ freshLabelRules) ∧
+    (TableauRule.untlNeg ∈ freshTimeRules ∧ TableauRule.untlNeg ∉ freshLabelRules) ∧
+    (TableauRule.snceNeg ∈ freshTimeRules ∧ TableauRule.snceNeg ∉ freshLabelRules) := by
+  decide
+
 /-! ## C9. The do-not-re-attempt register
 
 Twelve statements that look like the natural next lemma and are **not** available. Each is cited by

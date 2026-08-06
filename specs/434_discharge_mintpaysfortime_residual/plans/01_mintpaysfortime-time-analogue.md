@@ -1,7 +1,7 @@
 # Implementation Plan: Task #434
 
 - **Task**: 434 - Discharge `MintPaysForTime fc U Tmax` (the open mathematical core on the totality terminus)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None (unblocks task 432 Phase 7)
 - **Research Inputs**: `specs/434_discharge_mintpaysfortime_residual/reports/01_spawn-inherited-research.md`
@@ -155,29 +155,29 @@ declaration block.
 
 ---
 
-### Phase 1: The time-minting rule census [NOT STARTED]
+### Phase 1: The time-minting rule census [COMPLETED]
 
 **Goal**: Settle, as machine-checked fact, which `TableauRule` constructors can emit at a time
 outside `b.knownTimes`, and that this list is **incomparable** with `freshLabelRules`. The source
 says "no statement in the development says what that list is"; this phase makes that statement.
 
 **Tasks**:
-- [ ] Add a new section (`## D1. The time coordinate: the minting census`) at the end of
+- [x] Add a new section (`## D1. The time coordinate: the minting census`) at the end of
       `MintBound.lean`'s declaration body, before section C9, with a docstring explaining why
       `ruleMintsFreshLabel` is the wrong list, citing `densityRule`'s `existingIntermediates` guard
       and the `untlNeg`/`snceNeg` ACTIVE arms by name.
-- [ ] Define `ruleMintsFreshTime : TableauRule → Bool`, listing exactly the constructors whose
+- [x] Define `ruleMintsFreshTime : TableauRule → Bool`, listing exactly the constructors whose
       `applyRule` arms reach a `freshTime := branch.nextTime` binding. Derive the list by reading
       `Tableau.lean`'s `applyRule` — do **not** guess it from `ruleMintsFreshLabel`.
-- [ ] Define `freshTimeRules : Finset TableauRule` and prove `mem_freshTimeRules :
+- [x] Define `freshTimeRules : Finset TableauRule` and prove `mem_freshTimeRules :
       r ∈ freshTimeRules ↔ ruleMintsFreshTime r = true` by `cases r <;> simp [...]`, mirroring
       `mem_freshLabelRules`. This is the anti-drift guarantee the `freshLabelRules` pair already has.
-- [ ] Prove `freshTimeRules_card` by `decide`.
-- [ ] Prove the incomparability, both directions, by `decide`:
+- [x] Prove `freshTimeRules_card` by `decide`.
+- [x] Prove the incomparability, both directions, by `decide`:
       `boxNeg ∈ freshLabelRules ∧ boxNeg ∉ freshTimeRules` (world minting is not time minting) and
       `densityRule ∈ freshTimeRules ∧ densityRule ∉ freshLabelRules`, plus the `untlNeg`/`snceNeg`
       instances. Name the assembled statement `freshTimeRules_incomparable_freshLabelRules`.
-- [ ] Docstring the incomparability theorem with the `expandOnceNoFresh` evidence: it runs the
+- [x] Docstring the incomparability theorem with the `expandOnceNoFresh` evidence: it runs the
       `ruleMintsFreshLabel` test **and then** the `newOrd.constraints.length` test, two tests in
       sequence, which is only necessary because neither subsumes the other.
 
@@ -209,7 +209,7 @@ census is what changes — the plan's later phases consume `freshTimeRules` by n
 
 ---
 
-### Phase 2: Time-coordinate plumbing helpers [NOT STARTED]
+### Phase 2: Time-coordinate plumbing helpers [IN PROGRESS]
 
 **Goal**: Land the time-coordinate analogues of the three helper lemmas the world sweep is built
 from, so Phase 3's sweep has the same closers available that `applyRule_emitted_world_mem` had.
