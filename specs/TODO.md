@@ -11,10 +11,10 @@ next_project_number: 435
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,432 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,420,422,425,433 | 193,231,298,415,421,423,432 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,414,434 | 420,422,433 | decidability, paper-refactor, strong_completeness |
-| 4 | 362,417,428 | 169,414,434 | decidability, paper-refactor, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,434 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,420,422,425,432 | 193,231,298,415,421,423,434 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,414,433 | 420,422,432 | decidability, paper-refactor, strong_completeness |
+| 4 | 362,417,428 | 169,414,433 | decidability, paper-refactor, strong_completeness |
 | 5 | 427,429 | 417,419,428 | decidability, paper-refactor |
 | 6 | 410 | 429 | -- |
 | 7 | 411 | 410 | -- |
@@ -34,9 +34,9 @@ next_project_number: 435
 
 ### Decidability
 
-432 [IMPLEMENTING] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
-  └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
-    └─ 434 [RESEARCHED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
+434 [RESEARCHED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
+  └─ 432 [IMPLEMENTING] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
+    └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
       └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
         └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
           └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
@@ -100,7 +100,7 @@ next_project_number: 435
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 431, Task 432, Task 433
+- **Dependencies**: Task 431
 - **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
 
 **Description**: Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3945, the open mathematical core among the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). Two disjuncts to establish. First disjunct ('a step that does not raise the known-time count does not raise the rank'): the naive reading 'non-ruleMintsFreshLabel implies no new time' is FALSE -- `densityRule` interpolates a fresh time while deliberately absent from `ruleMintsFreshLabel` (it carries its own `existingIntermediates` guard), and the active-mode arms of `untlNeg`/`snceNeg` introduce times without being witness-guarded; the correct test is the ordering-length one `expandOnceNoFresh` already uses (`newOrd.constraints.length`), not the rule list. Establishing this disjunct means proving a time-dimension analogue of `applyRule_emitted_world_mem` keyed on that ordering-length test. Second disjunct (cashed at the once-only bound, carrying the sigma-hit obligation from `mintPotential_lt_of_pick_linear` / `_branching`): the formula the rule fires on must be `sigma sf` for some `sf in U`; this is entangled with the time-reuse question -- `Branch.nextTime = maxTime + 1` while `Branch.identifyTime` can LOWER `maxTime`, so whether the engine can re-issue a time an earlier identification retired is genuinely open (the live-times reformulation carries the identical obligation, confirming it is intrinsic rather than an artifact of the measure). Done means: a theorem proving `MintPaysForTime fc U Tmax` for a concrete, useful instantiation, landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting) -- in particular do not re-litigate `witnessPresent_identifyTime`'s unconditional form (entry 5, refuted by `witnessPresent_identifyTime_unconditional_false`) or `OrdTimesLeMaxTime` preservation across the identification arm (entry 7, refuted by `ordTimes_identifyTime_arm3_false`; the settled repair is `OrdTimesKnown`).
@@ -124,7 +124,7 @@ next_project_number: 435
 - **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 431
+- **Dependencies**: Task 431, Task 434
 - **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
 - **Plan**: [432_discharge_universeclosed_residual/plans/01_universeclosed-clause2-verdict-instantiation.md]
 - **Summary**: [432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md]

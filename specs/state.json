@@ -954,7 +954,8 @@
       "parent_task": 428,
       "topic": "decidability",
       "dependencies": [
-        431
+        431,
+        434
       ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
@@ -1016,9 +1017,7 @@
       "parent_task": 428,
       "topic": "decidability",
       "dependencies": [
-        431,
-        432,
-        433
+        431
       ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
