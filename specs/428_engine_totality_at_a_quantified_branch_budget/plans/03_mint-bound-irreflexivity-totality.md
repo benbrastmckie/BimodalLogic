@@ -469,7 +469,7 @@ stay `[NOT STARTED]` rather than being attempted out of order.
 
 ---
 
-### Phase 4: Engine-level `IrreflOrd` across all four result shapes [NOT STARTED]
+### Phase 4: Engine-level `IrreflOrd` across all four result shapes [IN PROGRESS]
 
 **Goal**: Lift Phase 3 from `applyRule` to `expandOnceUnblocked`, so `IrreflOrd` is a run invariant
 the fuel induction can carry.
@@ -494,6 +494,48 @@ the fuel induction can carry.
       `freshTime`. Report 04 flagged the shape as a *visible way to fail*, not a demonstrated
       failure. Check each branching mint rule's arms against this reading before assuming either
       outcome.
+
+**Progress notes (phase IN PROGRESS — one green sub-step landed, four tasks outstanding)**:
+
+- **Sub-step 4.1 landed and committed (green, sorry-free)**: the three *pick bridges carrying the
+  ordering component* — `findApplicableRule_applyRule_pair`,
+  `findApplicableSerialRule_applyRule_pair`, `findApplicableLinearityRule_applyRule_pair`.
+  **These did not exist and are a real prerequisite the plan does not name.** `Fuel.lean`'s
+  landed `findApplicable{,Serial,Linearity}Rule_applyRule_eq` report only the *result* component
+  (`(applyRule r sf b ord).1 = res`), but `expandOnceUnblocked` hands the pick's *third*
+  component on as the step's new ordering, so `applyRule_irreflOrd` cannot be lifted to engine
+  level without `applyRule r sf b ord = (res, o)`. The strengthened forms are proved by the same
+  scripts as the landed ones.
+- **Correction to this phase's task list, recorded rather than absorbed**: the plan says to use
+  `pick_result_mem` (`Fuel.lean:282`) "to supply the `sf ∈ b` side condition". It does not supply
+  that — it *consumes* it (`hsfb : sf ∈ b` is one of its hypotheses) and its conclusion is about
+  the formula stock `C`, not membership. The `sf ∈ b` side condition instead comes from
+  `List.mem_of_find?_eq_some` applied to each of the three pick stages' `find?`, which is exactly
+  the pattern the landed `expandOnceUnblocked_extended_mem` (`Fuel.lean:305`) uses. Copy its
+  three-stage `rcases hpick : … / rcases hser : … / rcases hlin : …` destructuring; note
+  `Fuel.lean`'s `pick_extended` / `pick_split` / `pick_splitOrdered` are `private`, so the
+  `.splitOrdered` one already had to be re-proved locally as `pick_splitOrdered'` (Phase 7) and
+  the `.extended` / `.split` analogues will need the same treatment.
+- **Outstanding**: `expandOnceUnblocked_irreflOrd` across all four shapes; the `.splitOrdered`
+  arm analysis (arms 1-2 via `irreflOrd_addFuture` and `firstIncomparablePair_spec`, arm 3 via
+  the unconditional `irreflOrd_identifyTime` — all three primitives are landed, and Phase 7's
+  `expandOnceUnblocked_splitOrdered_shape` already supplies the exact arm list); and the
+  `OrdTimesLeMaxTime` preservation at the branching shapes (R1's mirrored half), which still
+  needs the `.branching` arm of `applyRule` analysed the way Phase 3 analysed the non-branching
+  arms.
+- **Statement-shape guidance for the outstanding work** (learned in Phase 3, applies here):
+  keep the obligation on the **goal** side. A hypothesis of the form `applyRule … = (.linear fs,
+  ord')` cannot be split in step with the goal — `split at h` fails to reach every `dite` once
+  the equation is oriented, leaving an unsplit `Decidable.rec`. Phase 3's
+  `nonBranchingResultBranch : Branch → RuleResult → Option Branch` pattern is the working shape;
+  a `branchingResultBranches : Branch → RuleResult → List Branch` analogue should work the same
+  way for the branching arms.
+- **Two reusable tactic facts**: (1) `applyRule` is one `match` over three discriminants with
+  overlapping patterns, so `split` emits *every* rule's arm inside each rule's case with a false
+  discriminant equation — `contradiction` is the cheap discharge. (2) A `first` alternative whose
+  body contains a `by` block does **not** backtrack cleanly when the `by` block fails; put the
+  alternatives that fail by *tactic failure* (e.g. `subst`, `obtain`) before any alternative
+  containing `(by simp)`.
 
 **Timing**: 2 hours
 
