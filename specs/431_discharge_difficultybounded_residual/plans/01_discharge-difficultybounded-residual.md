@@ -1,7 +1,7 @@
 # Implementation Plan: Discharge the `DifficultyBounded` residual
 
 - **Task**: 431 - Discharge `DifficultyBounded fc U D` (at `β ≥ 3`) on the totality terminus
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11.5 hours
 - **Dependencies**: None (parent task 428's terminus is landed and is read-only input here)
 - **Research Inputs**: `specs/431_discharge_difficultybounded_residual/reports/01_spawn-inherited-research.md`
@@ -161,26 +161,29 @@ Phases within the same wave are logically independent, but **every phase edits t
 
 ---
 
-### Phase 1: The scope decision, and the lemma that settles it [NOT STARTED]
+### Phase 1: The scope decision, and the lemma that settles it [COMPLETED]
 
 - **Goal:** Record decision (b) in-source with evidence, and land the one lemma that proves the
   visibility framing wrong.
 - **Tasks:**
-  - [ ] Open a new section in `MintBound.lean` (after the residual definitions, before
-        `budgetPotential_step_unordered`) for the difficulty toolkit.
-  - [ ] Land `estimateBranchDifficulty_length_le (b : Branch) : 1 + b.length / 4 ≤ estimateBranchDifficulty b`,
+  - [x] Open a new section in `MintBound.lean` (after the residual definitions, before
+        `budgetPotential_step_unordered`) for the difficulty toolkit. *(completed)*
+  - [x] Land `estimateBranchDifficulty_length_le (b : Branch) : 1 + b.length / 4 ≤ estimateBranchDifficulty b`,
         proved by `simp only [estimateBranchDifficulty]; omega`. (Probe-verified green in planning.)
-  - [ ] Docstring it with *why* it is available: unfolding crosses the file boundary and leaves the
+        *(completed; the contrapositive `length_le_of_estimateBranchDifficulty_le` added alongside,
+        since Phases 3 and 6 both consume that direction)*
+  - [x] Docstring it with *why* it is available: unfolding crosses the file boundary and leaves the
         two counters as opaque non-negative terms, so `private` never blocked a bound in this
-        direction.
-  - [ ] Rewrite the `DifficultyBounded` docstring rationale (MintBound.lean:3907-3913). Replace
+        direction. *(completed)*
+  - [x] Rewrite the `DifficultyBounded` docstring rationale (MintBound.lean:3907-3913). Replace
         "cannot be stated from this file" with the real obstruction: `estimateBranchDifficulty` sums
         over the branch **list** and no invariant bounds a branch's length or asserts `Nodup`
         (cite `SignedFormula.lean:240`, `Tableau.lean:2233-2239`, `BranchOrder.lean:281-283`).
         State that widening `temporalCount`/`modalCount` would not help, so `Saturation.lean` is
         deliberately left untouched.
-  - [ ] Apply the same correction to the forward-reference at MintBound.lean:3553 if it repeats the
-        visibility claim.
+  - [x] Apply the same correction to the forward-reference at MintBound.lean:3553 if it repeats the
+        visibility claim. *(completed; `grep -n private` confirmed exactly the two sites the Scope
+        Hypothesis predicted — 3552-3553 and 3911 — and both were corrected)*
 - **Timing:** 1 hour
 - **Depends on:** none
 - **Verification Tier:** local

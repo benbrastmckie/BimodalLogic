@@ -3548,9 +3548,12 @@ each successor *choose* its own carried state (`∃ a'`), which is exactly the d
   not the (false) blanket claim that `resolveOpenArm` never reports `none` — at `fuel = 0` and an
   unsaturated arm it plainly does.
 * the difficulty and arity coefficients `D` and `β` — carried as `StepDecreases` clauses rather
-  than computed, which is the interface `Fuel.lean`'s `splitAwareFuel` already documents:
-  `temporalCount` and `modalCount` are `private` to `Saturation.lean`, so a bound on
-  `estimateBranchDifficulty` cannot be *stated* from this file without editing that one. -/
+  than computed, which is the interface `Fuel.lean`'s `splitAwareFuel` already documents. The
+  reason `D` is carried is **not** the `private` marker on `temporalCount`/`modalCount`:
+  `estimateBranchDifficulty_length_le` and `estimateBranchDifficulty_le_of_subperm` below both
+  bound it from inside this file, because `private` blocks name resolution and not unfolding. The
+  real obstruction is recorded on `DifficultyBounded` and refuted by
+  `difficultyBounded_multiplicity_false`; the repaired, satisfiable shape is `StepLengthBounded`. -/
 
 /-- **The fuel a run of at most `N` engine steps needs**, at split arity `β` and per-arm difficulty
 `D`.
@@ -3906,11 +3909,32 @@ def UniverseClosed (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset Signed
 
 /-- **Residual 2: the per-arm difficulty coefficient.**
 
-`D` is the interface `splitAwareFuel` already documents, and the reason it is an interface is
-recorded there: `estimateBranchDifficulty` is `1 + 3·tempCount + 2·modCount + len/4`, and both
-counting functions are `private` to `Saturation.lean`, so a bound in terms of formula complexity
-**cannot be stated from this file** without editing that one — which this task's territory
-forbids. The bound is therefore carried, in the exact form the fuel allocation consumes it. -/
+`D` is the interface `splitAwareFuel` already documents. An earlier version of this docstring
+blamed the `private` markers on `temporalCount`/`modalCount` in `Saturation.lean` for the bound
+being unstatable here. **That explanation is wrong**, and the correction matters because it points
+a reader at the wrong file. `private` blocks *name resolution*, not *unfolding*:
+`simp only [estimateBranchDifficulty]` reduces across the module boundary and leaves the two
+counters as opaque non-negative terms, over which `omega` reasons freely
+(`estimateBranchDifficulty_length_le`) and against which a lemma with universally quantified
+counters unifies (`estimateBranchDifficulty_le_of_subperm`). Widening the two markers would
+therefore change nothing, which is why `Saturation.lean` is deliberately left untouched.
+
+**The real obstruction is list multiplicity.** `estimateBranchDifficulty` is
+`1 + 3·tempCount + 2·modCount + len/4`, and both the counters and the `len/4` term are computed
+over the branch **list** — `Branch` is `List SignedFormula` (`SignedFormula.lean:240`), not a
+finite set. Every confinement fact in this development, `∀ x ∈ b, x ∈ U` included, is a statement
+about `b.toFinset`, and **nothing in the repository asserts a branch is `Nodup`**: successors are
+built as raw `formulas ++ b` with no `eraseDups` (`Tableau.lean:2233-2239`), and avoiding a `Nodup`
+side condition was a deliberate design goal (`BranchOrder.lean:275-290`). A `U`-confined branch may
+therefore be arbitrarily long, so no fixed `D` bounds `estimateBranchDifficulty` on it. The
+statement below is consequently **false at every `D`** at any `U` the engine fires on —
+`difficultyBounded_multiplicity_false` is the refuting witness, and register entry 9 records it.
+
+It is retained verbatim, unweakened, because the landed terminus is stated against it and nothing
+in this file is withdrawn. The satisfiable replacement is `StepLengthBounded`, which is provably
+equivalent to it up to a factor of `4` (`difficultyBounded_of_stepLengthBounded` and
+`stepLengthBounded_of_difficultyBounded`), and `buildTableauAt_isSome_of_lengthBudget` is the
+sibling terminus stated at that shape. -/
 def DifficultyBounded (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
     (D : Nat) : Prop :=
   ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), (∀ x ∈ b, x ∈ U) →
@@ -3954,6 +3978,55 @@ def MintPaysForTime (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset Signe
             ≤ mintTimeBudget U σ b ord ∧
           mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
             < mintPotential U σ b ord)
+
+/-! ### The difficulty toolkit, and the scope decision it settles
+
+`DifficultyBounded` is the one residual whose docstring used to misdescribe its own obstruction,
+and the toolkit here is what settles the question. Two routes were open:
+
+* **(a)** widen `temporalCount`/`modalCount` in `Saturation.lean` so a formula-complexity bound
+  becomes *nameable* here;
+* **(b)** bound `estimateBranchDifficulty` using only what is already reachable from this file.
+
+**(b) is taken, and (a) is neither necessary nor sufficient.** Not necessary, because
+`estimateBranchDifficulty_length_le` below is a bound on `estimateBranchDifficulty` proved in this
+file, right now, with the counters `private`: `simp only [estimateBranchDifficulty]` unfolds across
+the module boundary and leaves the two counters as opaque `Nat`-valued terms that no source text
+here can *name* but that `omega` handles like any other non-negative unknown. Upper bounds transfer
+the same way, by unification against a lemma whose counters are universally quantified — that is
+`estimateBranchDifficulty_le_of_subperm`. Not sufficient, because the obstruction is **list
+multiplicity**, not visibility: see `DifficultyBounded`'s docstring and
+`difficultyBounded_multiplicity_false`. Making the counters public would leave the residual exactly
+as unprovable as it is. `Saturation.lean` is therefore not edited.
+
+What the toolkit delivers instead is the honest maximum: a lower bound in the branch's **length**,
+monotonicity of the difficulty under sub-permutation, and a concrete ceiling `difficultyCeiling U L`
+that any `U`-confined branch of length at most `L` respects. Together with the equivalence in the
+next block, these say that the coefficient `D` the fuel allocation consumes is, up to a factor of
+`4`, a bound on branch length and nothing about formula complexity at all. -/
+
+/-- **The difficulty is at least the branch's length, quartered.**
+
+The lemma that retires the visibility framing of the `DifficultyBounded` residual. Its proof is
+`simp only [estimateBranchDifficulty]; omega` — the unfolding crosses the `Saturation.lean`
+boundary even though `temporalCount` and `modalCount` are `private` there, because `private`
+governs which names this file may *write*, not which definitions the elaborator may *unfold*. What
+`omega` sees after the `simp only` is `1 + 3 * ?t + 2 * ?m + b.length / 4` with the two counters
+opaque non-negative terms, and dropping two non-negative summands is all the bound needs.
+
+Read in the contrapositive this is the whole content of the multiplicity obstruction: a bound
+`estimateBranchDifficulty b ≤ D` *forces* `b.length ≤ 4 * D`, so a residual asserting the former
+for every `U`-confined `b` is asserting a bound on branch length in disguise. -/
+theorem estimateBranchDifficulty_length_le (b : Branch) :
+    1 + b.length / 4 ≤ estimateBranchDifficulty b := by
+  simp only [estimateBranchDifficulty]
+  omega
+
+/-- The contrapositive reading, spelled out: a difficulty bound **is** a length bound. -/
+theorem length_le_of_estimateBranchDifficulty_le {b : Branch} {D : Nat}
+    (h : estimateBranchDifficulty b ≤ D) : b.length ≤ 4 * D := by
+  have hl := estimateBranchDifficulty_length_le b
+  omega
 
 /-- **The measure drops at `.extended` and at every arm of a `.split`.**
 
