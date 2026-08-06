@@ -988,4 +988,199 @@ theorem expandOnceUnblocked_splitOrdered_irreflOrd
   · exact irreflOrd_addFuture hord hne
   · exact irreflOrd_identifyTime _ _ _
 
+/-! ## A6. `OrdTimesLeMaxTime` at the branching shapes
+
+This is the mirrored half of R1. A `.branching` step hands the *same* new ordering to every arm,
+so an arm whose formula list omitted the fresh witness would hold an ordering edge to a time
+absent from its own branch, and that arm's `nextTime` could then collide with the minted time.
+
+The reading of the four branching mint sites is that this does not happen: `untlPos`, `sncePos`,
+and the ACTIVE arms of `untlNeg` and `snceNeg` all build **both** arms at `freshLabel`, so each
+arm's head already sits at the fresh time and dominates it. That reading is what the proof below
+discharges — the `rfl` supplied for `hg` in each mint case is exactly the claim "this arm's head
+sits at `b.nextTime`". -/
+
+/-- The successor branches of a **branching** rule result. The `Option` analogue for the
+non-branching shapes is `nonBranchingResultBranch`; the same goal-side phrasing applies, and for
+the same reason. -/
+def branchingResultBranches (b : Branch) : RuleResult → List Branch
+  | .branching bss => bss.map (fun fs => fs ++ b)
+  | _ => []
+
+set_option maxHeartbeats 4000000 in
+/-- **`applyRule` preserves `OrdTimesLeMaxTime` at the `.branching` result shape**, for every arm.
+
+The `.branchingOrdered` shape is deliberately not covered here: its per-arm orderings live in the
+*result* rather than the second component, so it is handled at engine level where the arm list is
+visible. -/
+theorem applyRule_ordTimes_branching {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering}
+    (hsf : sf ∈ b) (haux : OrdTimesLeMaxTime b ord) :
+    ∀ nb ∈ branchingResultBranches b (applyRule rule sf b ord).1,
+      OrdTimesLeMaxTime nb (applyRule rule sf b ord).2 := by
+  have ht : sf.label.time ≤ b.maxTime := le_maxTime hsf
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        first
+          | contradiction
+          | (intro nb hnb
+             -- At a non-branching result `branchingResultBranches` is `[]`, so this `simp only`
+             -- turns `hnb` into `False` and closes the goal outright; `all_goals` is what lets
+             -- the branching alternatives below run only where a goal survives.
+             simp only [branchingResultBranches, List.mem_map, List.not_mem_nil] at hnb
+             all_goals first
+               | (obtain ⟨fs, hfs, rfl⟩ := hnb
+                  simp only [List.mem_cons, List.not_mem_nil, or_false] at hfs
+                  rcases hfs with rfl | rfl <;>
+                    first
+                      | exact ordTimes_addFuture_cons haux ht rfl
+                      | exact ordTimes_addPast_cons haux ht rfl)
+               | (obtain ⟨fs, -, rfl⟩ := hnb
+                  exact ordTimes_mono haux (maxTime_le_append _ _))))
+
+/-- The successor branches of a step at the two shapes that carry the step's **own** ordering:
+`.extended` reports one, `.split` reports its arms, and every arm of a split shares the single
+ordering in the step's second component. `.splitOrdered` is excluded by construction — it carries
+per-arm orderings inside the result, and `expandOnceUnblocked_splitOrdered_shape` is the lemma
+that exposes them. -/
+def unorderedSuccessorBranches : ExpansionResult → List Branch
+  | .extended nb => [nb]
+  | .split bs => bs
+  | _ => []
+
+/-- The branches a pick hands on, assembled from the two per-shape selectors. -/
+private def pickBranches (b : Branch) :
+    Option (TableauRule × RuleResult × TimeOrdering) → List Branch
+  | none => []
+  | some (_, res, _) => (nonBranchingResultBranch b res).toList ++ branchingResultBranches b res
+
+/-- The branch half of `pick_ord_eq`: uniformly across all five `RuleResult` shapes, the
+result-tail's successor branches are `pickBranches`. -/
+private theorem pick_branches_eq {b : Branch} {ord : TimeOrdering}
+    {pick : Option (TableauRule × RuleResult × TimeOrdering)} :
+    unorderedSuccessorBranches
+      (match pick with
+        | none => (ExpansionResult.saturated, ord)
+        | some (_, result, newOrd) =>
+          match result with
+          | .linear fs => (ExpansionResult.extended (fs ++ b), newOrd)
+          | .branching bss => (ExpansionResult.split (bss.map fun fs => fs ++ b), newOrd)
+          | .branchingOrdered bs' => (ExpansionResult.splitOrdered bs', newOrd)
+          | .persistent fs => (ExpansionResult.extended (fs ++ b), newOrd)
+          | .notApplicable => (ExpansionResult.saturated, newOrd)).1
+      = pickBranches b pick := by
+  rcases pick with _ | ⟨r, res, o⟩
+  · rfl
+  · cases res <;> rfl
+
+/-- **The three-stage pick reports `applyRule`'s own pair for some formula on the branch.**
+
+Packaging the three stages here, with the pick equation in a *hypothesis*, is what keeps the
+engine-level proofs free of the nested-`match` reduction problem: `rw … at h` on an equation
+hypothesis is the pattern `expandOnceUnblocked_extended_mem` already uses, whereas case-splitting
+the same `match` in the goal leaves outer `match none with …` layers that block unification at the
+application site. No `none` case is needed — the statement quantifies over a `some`. -/
+private theorem pick_stage_source (b : Branch) (ord : TimeOrdering)
+    (fc : FormalSystem.ProofSystem.FrameClass) (tr : EventualityTracker) :
+    ∀ r res o,
+      (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+       | some sf => findApplicableRule sf b ord fc
+       | none =>
+         match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+             && (findApplicableSerialRule sf b ord).isSome) with
+         | some sf => findApplicableSerialRule sf b ord
+         | none =>
+           match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+               && (findApplicableLinearityRule sf b ord).isSome) with
+           | some sf => findApplicableLinearityRule sf b ord
+           | none => none) = some (r, res, o) →
+      ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) := by
+  intro r res o h
+  rcases hpick : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+  · rw [hpick] at h
+    rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                             && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+    · rw [hser] at h
+      rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+      · rw [hlin] at h
+        simp only at h
+        exact absurd h (by simp)
+      · rw [hlin] at h
+        simp only at h
+        exact ⟨sf3, List.mem_of_find?_eq_some hlin,
+          findApplicableLinearityRule_applyRule_pair h⟩
+    · rw [hser] at h
+      simp only at h
+      exact ⟨sf2, List.mem_of_find?_eq_some hser, findApplicableSerialRule_applyRule_pair h⟩
+  · rw [hpick] at h
+    simp only at h
+    have hmem : sf ∈ b := by
+      unfold findUnexpandedUnblockedWith at hpick
+      exact List.mem_of_find?_eq_some hpick
+    exact ⟨sf, hmem, findApplicableRule_applyRule_pair h⟩
+
+/-- One pick stage preserves `OrdTimesLeMaxTime` at every successor branch it reports. This is
+where the non-branching and branching `applyRule` lemmas are joined. -/
+private theorem pickBranches_ordTimes {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (haux : OrdTimesLeMaxTime b ord)
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o)) :
+    ∀ nb ∈ pickBranches b p, OrdTimesLeMaxTime nb (pickOrd ord p) := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA⟩ := hp r res o rfl
+    have h1 := applyRule_ordTimes_nonbranching (rule := r) (sf := sf) (b := b) (ord := ord)
+      hsf haux
+    have h2 := applyRule_ordTimes_branching (rule := r) (sf := sf) (b := b) (ord := ord)
+      hsf haux
+    rw [hA] at h1 h2
+    intro nb hnb
+    simp only [pickBranches] at hnb
+    rcases List.mem_append.mp hnb with h | h
+    · exact h1 nb (by simpa using h)
+    · exact h2 nb h
+
+/-- **Engine-level `OrdTimesLeMaxTime`, at `.extended` and at every arm of a `.split`.**
+
+This is the mirrored half of R1 discharged: a `.branching` step does hand the same new ordering
+to every arm, and every arm nonetheless dominates the minted time, because all four branching
+mint sites build both arms at `freshLabel`. `.saturated` and `.splitOrdered` contribute no
+successor branch here by construction. -/
+theorem expandOnceUnblocked_ordTimes {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (haux : OrdTimesLeMaxTime b ord) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      OrdTimesLeMaxTime nb (expandOnceUnblocked b ord fc tr).2 := by
+  have keyO : (expandOnceUnblocked b ord fc tr).2
+      = pickOrd ord
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_ord_eq
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyO, keyB]
+  exact pickBranches_ordTimes haux (pick_stage_source b ord fc tr)
+
 end FormalSystem.Metalogic.Decidability
