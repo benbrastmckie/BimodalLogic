@@ -1800,4 +1800,195 @@ theorem witnessPresent_ord_mono {rule : TableauRule} {sf : SignedFormula}
              | exact TimeOrdering.futureOf_mono hsub _ _ hx
              | exact TimeOrdering.pastOf_mono hsub _ _ hx)
 
+/-! ## B5. Engine-level growth, and one-step witness preservation
+
+The two monotonicity lemmas above are stated against **abstract** growth hypotheses. Applying them
+at an expansion step needs both growth facts supplied at engine level, and only one of the two was
+available:
+
+* **Branch growth** — `expandOnceUnblocked_split_subset` covers `.split`, and the `.extended`
+  shape is `fs ++ b`; `expandOnceUnblocked_extended_shape` below records that shape and
+  `expandOnceUnblocked_branch_mono` joins the two.
+* **Ordering growth** — nothing like it was landed. `applyRule_ord_mono` proves it at rule level
+  by the same case analysis the invariant lemmas use, and `expandOnceUnblocked_ord_mono` lifts it
+  through the three pick stages.
+
+Arm 3 of the ordered split is the one place where **neither** growth fact holds: the ordering is
+*relabelled* there rather than extended, and the branch is `Branch.identifyTime`, which is not a
+superset of the branch it came from. That arm is supplied instead by `arm3_preserves_witness`, and
+it is why the `.splitOrdered` half of the statement below carries a disjunction over the
+renaming. -/
+
+/-- **`applyRule` never deletes an ordering constraint.**
+
+Every rule either hands `ord` straight back, or prepends one edge (`addFuture` at the five forward
+mint sites, `addPast` at the four backward ones), or prepends two (`densityRule`). `timeLinearity`
+returns `ord` itself in this component — its per-arm orderings live inside the result, and their
+growth is read off `expandOnceUnblocked_splitOrdered_shape` instead.
+
+This is the ordering half of the growth `witnessPresent_ord_mono` consumes, and it did not exist
+before: the landed `addFuture_constraints_mono` is a fact about one `TimeOrdering` operation, not
+about `applyRule`'s ordering component. -/
+theorem applyRule_ord_mono (rule : TableauRule) (sf : SignedFormula)
+    (b : Branch) (ord : TimeOrdering) :
+    ∀ q ∈ ord.constraints, q ∈ (applyRule rule sf b ord).2.constraints := by
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        first
+          | contradiction
+          | (intro q hq
+             first
+               | exact hq
+               | (simp only [TimeOrdering.addFuture, TimeOrdering.addPast, List.mem_cons]
+                  tauto)))
+
+/-- One pick stage never deletes an ordering constraint. The `none` stage threads `ord` through
+unchanged; a `some` stage hands on `applyRule`'s own ordering, and `pick_stage_source` supplies the
+formula it was called with. -/
+private theorem pickOrd_mono {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o)) :
+    ∀ q ∈ ord.constraints, q ∈ (pickOrd ord p).constraints := by
+  rcases p with _ | ⟨r, res, o⟩
+  · exact fun _ hq => hq
+  · obtain ⟨sf, -, hA⟩ := hp r res o rfl
+    have h1 := applyRule_ord_mono r sf b ord
+    rw [hA] at h1
+    exact h1
+
+/-- **Engine-level ordering growth.** An unblocked expansion step never deletes an ordering
+constraint from the step's own second component.
+
+The `.splitOrdered` per-arm orderings are *not* covered by this — arm 3 relabels rather than
+extends — and they are handled directly from `expandOnceUnblocked_splitOrdered_shape` in
+`expandOnceUnblocked_preserves_witness`. -/
+theorem expandOnceUnblocked_ord_mono {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
+    ∀ q ∈ ord.constraints, q ∈ (expandOnceUnblocked b ord fc tr).2.constraints := by
+  have keyO : (expandOnceUnblocked b ord fc tr).2
+      = pickOrd ord
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_ord_eq
+  rw [keyO]
+  exact pickOrd_mono (pick_stage_source b ord fc tr)
+
+/-- **Engine-level shape of an `.extended` step**: the reported branch is the picked rule's formula
+list appended to the branch. The `.extended` mirror of `expandOnceUnblocked_split_shape`, which
+`Fuel.lean` supplies for `.split` but not for `.extended`. -/
+theorem expandOnceUnblocked_extended_shape {b nb : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.extended nb) :
+    ∃ fs : List SignedFormula, nb = fs ++ b := by
+  unfold expandOnceUnblocked at h
+  obtain ⟨_, fs, _, -, hnb⟩ := pick_extended h
+  exact ⟨fs, hnb⟩
+
+/-- **Engine-level branch growth**, at `.extended` and at every arm of a `.split`. Both shapes
+append to the branch rather than replacing it: `.extended` by the shape lemma just above, `.split`
+by the landed `expandOnceUnblocked_split_subset`. `.saturated` and `.splitOrdered` contribute no
+unordered successor, so they hold by absence. -/
+theorem expandOnceUnblocked_branch_mono {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ b, x ∈ nb := by
+  rcases hres : (expandOnceUnblocked b ord fc tr).1 with _ | nb' | bs | bs
+  · simp [unorderedSuccessorBranches]
+  · obtain ⟨fs, rfl⟩ := expandOnceUnblocked_extended_shape hres
+    intro nb hnb x hx
+    simp only [unorderedSuccessorBranches, List.mem_cons, List.not_mem_nil, or_false] at hnb
+    subst hnb
+    exact List.mem_append_right fs hx
+  · intro nb hnb x hx
+    simp only [unorderedSuccessorBranches] at hnb
+    exact expandOnceUnblocked_split_subset hres hnb x hx
+  · simp [unorderedSuccessorBranches]
+
+/-- **One expansion step preserves a present witness**, across all four `ExpansionResult` shapes.
+
+The first conjunct covers `.extended` (one successor) and `.split` (its arms), which share the
+step's own ordering: the branch only grows (`expandOnceUnblocked_branch_mono`) and the ordering only
+grows (`expandOnceUnblocked_ord_mono`), so the two monotonicity lemmas compose.
+
+The second conjunct covers `.splitOrdered`, whose per-arm orderings live inside the result. Arms 1
+and 2 keep the branch literally and add one edge between the incomparable pair, so ordering
+monotonicity alone suffices; **arm 3** relabels both branch and ordering, and is
+`arm3_preserves_witness` — which is why the arm-3 disjunct is about `rhoSF t₂ t₁ sf` rather than
+`sf`. That renaming is not a weakening: it is the same formula carried along the identification the
+arm performs, and it is the same form in which
+`expandOnceUnblocked_splitOrdered_no_deletion` states non-deletion.
+
+`.saturated` produces no successor branch and satisfies both conjuncts by absence of successors,
+not by any weakening of the statement.
+
+`RunInvariant` enters for one reason only: arm 3's `IrreflOrd` side condition. Both monotonicity
+lemmas are invariant-free. -/
+theorem expandOnceUnblocked_preserves_witness {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    {rule : TableauRule} {sf : SignedFormula}
+    (hinv : RunInvariant b ord) (h : witnessPresent rule sf b ord = true) :
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+        witnessPresent rule sf nb (expandOnceUnblocked b ord fc tr).2 = true) ∧
+    (∀ bs t₁ t₂, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        firstIncomparablePair b ord = some (t₁, t₂) →
+        ∀ p ∈ bs, witnessPresent rule sf p.1 p.2 = true ∨
+          witnessPresent rule (rhoSF t₂ t₁ sf) p.1 p.2 = true) := by
+  constructor
+  · intro nb hnb
+    exact witnessPresent_branch_mono (expandOnceUnblocked_branch_mono nb hnb)
+      (witnessPresent_ord_mono expandOnceUnblocked_ord_mono h)
+  · intro bs t₁ t₂ hbs htrig
+    obtain ⟨u₁, u₂, htrig', rfl⟩ := expandOnceUnblocked_splitOrdered_shape hbs
+    rw [htrig] at htrig'
+    obtain ⟨rfl, rfl⟩ : t₁ = u₁ ∧ t₂ = u₂ := by simpa using htrig'
+    intro p hp
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+    rcases hp with rfl | rfl | rfl
+    · exact Or.inl (witnessPresent_ord_mono (addFuture_constraints_mono ord t₁ t₂) h)
+    · exact Or.inl (witnessPresent_ord_mono (addFuture_constraints_mono ord t₂ t₁) h)
+    · exact Or.inr (arm3_preserves_witness htrig hinv.irreflOrd rule sf h)
+
+/-- **`witnessPresent` never flips `true → false` along a run**, up to the arm-3 renaming — the
+corollary in the form the mint counting consumes.
+
+Contrapositive of `expandOnceUnblocked_preserves_witness`. Read forwards: if a successor reports no
+witness then the step it came from reported none either. At an ordered split, "the successor
+reports no witness" has to mean *both* the formula and its arm-3 rename report none — that is what
+makes the statement true at arm 3 rather than merely unrefuted there.
+
+Stated against `RunInvariant` rather than a standalone `IrreflOrd` hypothesis, so a fuel induction
+carrying the single bundled invariant can consume it directly. -/
+theorem witnessPresent_no_flip {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    {rule : TableauRule} {sf : SignedFormula} (hinv : RunInvariant b ord) :
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+        witnessPresent rule sf nb (expandOnceUnblocked b ord fc tr).2 = false →
+          witnessPresent rule sf b ord = false) ∧
+    (∀ bs t₁ t₂, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        firstIncomparablePair b ord = some (t₁, t₂) →
+        ∀ p ∈ bs, witnessPresent rule sf p.1 p.2 = false →
+          witnessPresent rule (rhoSF t₂ t₁ sf) p.1 p.2 = false →
+            witnessPresent rule sf b ord = false) := by
+  constructor
+  · intro nb hnb hfalse
+    rcases hw : witnessPresent rule sf b ord with _ | _
+    · rfl
+    · rw [(expandOnceUnblocked_preserves_witness hinv hw).1 nb hnb] at hfalse
+      exact Bool.noConfusion hfalse
+  · intro bs t₁ t₂ hbs htrig p hp h1 h2
+    rcases hw : witnessPresent rule sf b ord with _ | _
+    · rfl
+    · rcases (expandOnceUnblocked_preserves_witness hinv hw).2 bs t₁ t₂ hbs htrig p hp with ht | ht
+      · rw [ht] at h1; exact Bool.noConfusion h1
+      · rw [ht] at h2; exact Bool.noConfusion h2
+
 end FormalSystem.Metalogic.Decidability

@@ -663,7 +663,7 @@ and mentions no ordering-times invariant.
 
 ---
 
-### Phase 8: Witness monotonicity and one-step preservation, all four shapes [IN PROGRESS]
+### Phase 8: Witness monotonicity and one-step preservation, all four shapes [COMPLETED]
 
 **Goal**: Turn arm-3 preservation into a statement about **every** expansion step, which is what the
 mint counting actually consumes. This phase is **new proof**, not transcription.
@@ -687,10 +687,15 @@ is untouched, and the weak form is still available from `RunInvariant` by projec
       *(landed as `witnessPresent_ord_mono`; `futureOf_mono`/`pastOf_mono` live in the
       `TimeOrdering` namespace and must be qualified. Needed the module's standing
       `maxHeartbeats 4000000` — not raised beyond it.)*
-- [ ] Combine into `expandOnceUnblocked_preserves_witness`, for each of the four result shapes:
-      *(NOT STARTED — dispatch budget ended after the two monotonicity lemmas. Needs a new
-      engine-level ordering-growth lemma `∀ p ∈ ord.constraints, p ∈ (expandOnceUnblocked …).2.constraints`
-      as its prerequisite; see the handoff.)*
+- [x] Combine into `expandOnceUnblocked_preserves_witness`, for each of the four result shapes:
+      *(landed. The prerequisite the plan did not name — engine-level **ordering growth** — was
+      stated and proved first as `applyRule_ord_mono` → `pickOrd_mono` →
+      `expandOnceUnblocked_ord_mono`, mirroring the `applyRule`-level case analysis the invariant
+      lemmas use. Branch growth needed one new shape lemma too:
+      `expandOnceUnblocked_extended_shape` (the `.extended` mirror of `Fuel.lean`'s
+      `expandOnceUnblocked_split_shape`, which exists only for `.split`), joined with the landed
+      `expandOnceUnblocked_split_subset` in `expandOnceUnblocked_branch_mono`. Scope Hypothesis (a)
+      is thereby **CONFIRMED BY PROOF**, not by reading.)*
       - `.extended nb`: `nb = fs ++ b` (`Tableau.lean:2234, 2238`), so branch monotonicity; the
         ordering only ever grows by `addFuture` / `addPast`, so ordering monotonicity.
       - `.split bs`: every arm is `fs ++ b` via the landed `expandOnceUnblocked_split_subset`.
@@ -699,9 +704,13 @@ is untouched, and the weak form is still available from `RunInvariant` by projec
       - `.splitOrdered` arm 3: Phase 6's `arm3_preserves_witness`, with `IrreflOrd` supplied by
         `RunInvariant.1` (Phase 4.3) rather than by a standalone hypothesis.
       - `.saturated`: no successor branch, vacuous.
-- [ ] State the corollary in the form the counting needs: **`witnessPresent` never flips
+- [x] State the corollary in the form the counting needs: **`witnessPresent` never flips
       `true → false` along a run** (up to the arm-3 renaming), stated against `RunInvariant`.
-      *(NOT STARTED — depends on the bullet above.)*
+      *(landed as `witnessPresent_no_flip`. At an ordered split, "the successor reports no witness"
+      is the conjunction of `sf` and `rhoSF t₂ t₁ sf` both reporting none — the renaming is bound
+      by an explicit `firstIncomparablePair b ord = some (t₁, t₂)` hypothesis rather than an
+      existential, so the corollary and the theorem it contraposes share one quantifier shape and
+      compose without re-deriving the trigger.)*
 
 **Timing**: 2 hours
 
@@ -714,10 +723,14 @@ except at arm 3, and (b) every `witnessPresent` clause is monotone in both argum
 **(b) CONFIRMED** by reading `witnessPresent`'s body (`Tableau.lean:1838`): eight real arms plus a
 `_ => false` default; every real arm is a `knownWorlds`/`futureOf`/`pastOf` `any` search whose body
 is a positive combination of `Branch.contains` tests joined by `||` and `&&`. **No negation
-anywhere, so no anti-monotone clause.** (a) is not yet confirmed — it is the remaining prerequisite. Both are read
-off the definitions; confirm by reading `witnessPresent`'s body and `applyRule`'s ordering returns
-before writing the proofs. If any clause is anti-monotone in either argument, that is a material
-finding — **report it**, since it would put the whole mint bound at risk.
+anywhere, so no anti-monotone clause.** **(a) CONFIRMED BY PROOF**, not merely by reading:
+`applyRule_ord_mono` discharges it at rule level over the full 36-constructor × 2-sign split —
+every rule either returns `ord` unchanged, prepends one edge (`addFuture`/`addPast`), or prepends
+two (`densityRule`); `timeLinearity` returns `ord` itself in the second component, its per-arm
+orderings living inside the result — and `expandOnceUnblocked_ord_mono` lifts it through the three
+pick stages. The single exception the hypothesis already carved out, arm 3, is exactly where the
+proof routes through `arm3_preserves_witness` instead. No anti-monotone clause was found in either
+argument.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean`
@@ -726,6 +739,15 @@ finding — **report it**, since it would put the whole mint bound at risk.
 - `lake build FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound` green.
 - `expandOnceUnblocked_preserves_witness` covers all four shapes, checkable by reading the statement.
 - Sorry-free; `#print axioms` reports exactly the three standard axioms.
+
+**Completion notes**: green on the **first** build attempt for tasks 3-4. Measured whole-module
+`lake build` after tasks 3-4: **130s wall / 6m03s user** (tasks 1-2 measured 120s / 5m10s), so the
+seven new declarations — including one further 36 × 2 case split in `applyRule_ord_mono` — cost
+about 10s wall. The R6/R8 elaboration worry did not compound. **No `set_option` was added or
+raised**: `applyRule_ord_mono` closes inside the module's default budget, unlike
+`witnessPresent_ord_mono`, which needed the standing `maxHeartbeats 4000000`. `lean_verify` on
+`applyRule_ord_mono`, `expandOnceUnblocked_preserves_witness` and `witnessPresent_no_flip` each
+reports exactly `[propext, Classical.choice, Quot.sound]`.
 
 ---
 
