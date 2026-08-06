@@ -2563,7 +2563,7 @@ subformula closure, and its signature is unmatched on the branch by the guard
 theorem applyRule_worldWitnessKnown {C : Finset Formula} {S : Finset WorldIndex}
     {rule : TableauRule} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
     (hC : TableauClosed C) (hstock : ∀ x ∈ b, x.formula ∈ C) (hsf : sf ∈ b)
-    (hguard : witnessPresent rule sf b ord = false)
+    (hguard : rule = .boxNeg ∨ rule = .diamondPos → witnessPresent rule sf b ord = false)
     (hww : WorldWitnessKnown C S b) :
     ∀ nb ∈ (nonBranchingResultBranch b (applyRule rule sf b ord).1).toList
              ++ branchingResultBranches b (applyRule rule sf b ord).1,
@@ -2588,7 +2588,7 @@ theorem applyRule_worldWitnessKnown {C : Finset Formula} {S : Finset WorldIndex}
         rwa [hres, RuleResult.emitted_linear] at hW
       refine worldWitnessKnown_mint hww hsub ?_ (nextWorld_not_mem_worldFinset b)
         (hnbeq ▸ List.mem_append_left _ hWfs) rfl
-        (hC.box_inner (hf ▸ hstock sf hsf)) (boxNeg_guard_sig hf hs hguard)
+        (hC.box_inner (hf ▸ hstock sf hsf)) (boxNeg_guard_sig hf hs (hguard (Or.inl rfl)))
       intro y hy
       rcases hmem y hy with h | h
       · exact Or.inr (applyRule_boxNeg_emitted_world y h)
@@ -2617,7 +2617,7 @@ theorem applyRule_worldWitnessKnown {C : Finset Formula} {S : Finset WorldIndex}
         refine worldWitnessKnown_mint hww hsub ?_ (nextWorld_not_mem_worldFinset b)
           (hnbeq ▸ List.mem_append_left _ hWfs) rfl
           (hC.diamond_inner (asDiamond?_eq_iff.mp hf ▸ hstock sf hsf))
-          (diamondPos_guard_sig hf hs hguard)
+          (diamondPos_guard_sig hf hs (hguard (Or.inr rfl)))
         intro y hy
         rcases hmem y hy with h | h
         · exact Or.inr (applyRule_diamondPos_emitted_world y h)
@@ -2633,5 +2633,247 @@ theorem applyRule_worldWitnessKnown {C : Finset Formula} {S : Finset WorldIndex}
       · exact applyRule_emitted_world_mem hsf hbn hdp y h
       · exact Branch.mem_worldFinset h
 
+
+/-! ### The guard, extracted from the pick
+
+`witnessPresent` is tested by `findApplicableRule` **only** at the eight `ruleMintsFreshLabel`
+rules, and only in its `.linear` and `.branching` arms. Both world-minting rules live there —
+`applyRule_boxNeg_result` and `applyRule_diamondPos_result` rule out the two unguarded arms — so
+the guard is recoverable exactly where the fresh-world discipline needs it. The seriality and
+linearity stages need no guard at all: they run one rule each, and neither is world-minting. -/
+
+set_option maxHeartbeats 1000000 in
+/-- **The ordinary-rule pick carries its own guard, at the two world-minting rules.** -/
+theorem findApplicableRule_guard_mint {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (h : findApplicableRule sf b ord fc = some (r, res, o))
+    (hm : r = .boxNeg ∨ r = .diamondPos) :
+    witnessPresent r sf b ord = false := by
+  unfold findApplicableRule at h
+  obtain ⟨rule, -, hr⟩ := List.exists_of_findSome?_eq_some h
+  rcases hm with rfl | rfl <;>
+    (repeat' split at hr) <;>
+    simp_all [ruleMintsFreshLabel]
+  all_goals first
+    | (rcases applyRule_boxNeg_result sf b ord with h' | ⟨fs', h'⟩ <;> simp_all)
+    | (rcases applyRule_diamondPos_result sf b ord with h' | ⟨fs', h'⟩ <;> simp_all)
+
+/-- The seriality stage runs exactly one rule. -/
+theorem findApplicableSerialRule_rule {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (h : findApplicableSerialRule sf b ord = some (r, res, o)) :
+    r = TableauRule.serialityRule := by
+  unfold findApplicableSerialRule serialityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil] at h
+  rcases hA : applyRule TableauRule.serialityRule sf b ord with ⟨res', o'⟩
+  rw [hA] at h
+  simp only at h
+  cases res' <;> simp_all
+
+/-- The linearity stage runs exactly one rule. -/
+theorem findApplicableLinearityRule_rule {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (h : findApplicableLinearityRule sf b ord = some (r, res, o)) :
+    r = TableauRule.timeLinearity := by
+  unfold findApplicableLinearityRule linearityRules at h
+  simp only [List.findSome?_cons, List.findSome?_nil] at h
+  rcases hA : applyRule TableauRule.timeLinearity sf b ord with ⟨res', o'⟩
+  rw [hA] at h
+  simp only at h
+  cases res' <;> simp_all
+
+/-- **`pick_stage_source` with the fresh-world guard attached.** The three stages differ only in
+how the guard arrives: stage one has it from `findApplicableRule_guard_mint`, stages two and
+three by the rule they run not being a world-minting rule at all. -/
+private theorem pick_stage_source_guarded (b : Branch) (ord : TimeOrdering)
+    (fc : FormalSystem.ProofSystem.FrameClass) (tr : EventualityTracker) :
+    ∀ r res o,
+      (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+       | some sf => findApplicableRule sf b ord fc
+       | none =>
+         match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+             && (findApplicableSerialRule sf b ord).isSome) with
+         | some sf => findApplicableSerialRule sf b ord
+         | none =>
+           match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+               && (findApplicableLinearityRule sf b ord).isSome) with
+           | some sf => findApplicableLinearityRule sf b ord
+           | none => none) = some (r, res, o) →
+      ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧
+        (r = .boxNeg ∨ r = .diamondPos → witnessPresent r sf b ord = false) := by
+  intro r res o h
+  rcases hpick : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+  · rw [hpick] at h
+    rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                             && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+    · rw [hser] at h
+      rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+      · rw [hlin] at h
+        simp only at h
+        exact absurd h (by simp)
+      · rw [hlin] at h
+        simp only at h
+        refine ⟨sf3, List.mem_of_find?_eq_some hlin,
+          findApplicableLinearityRule_applyRule_pair h, ?_⟩
+        intro hm
+        have hr := findApplicableLinearityRule_rule h
+        rcases hm with rfl | rfl <;> exact absurd hr (by simp)
+    · rw [hser] at h
+      simp only at h
+      refine ⟨sf2, List.mem_of_find?_eq_some hser,
+        findApplicableSerialRule_applyRule_pair h, ?_⟩
+      intro hm
+      have hr := findApplicableSerialRule_rule h
+      rcases hm with rfl | rfl <;> exact absurd hr (by simp)
+  · rw [hpick] at h
+    simp only at h
+    have hmem : sf ∈ b := by
+      unfold findUnexpandedUnblockedWith at hpick
+      exact List.mem_of_find?_eq_some hpick
+    exact ⟨sf, hmem, findApplicableRule_applyRule_pair h,
+      fun hm => findApplicableRule_guard_mint h hm⟩
+
+/-- One pick stage preserves the strengthened fresh-world discipline at every successor branch it
+reports. The join of the `applyRule`-level lemma with the guarded source. -/
+private theorem pickBranches_worldWitnessKnown {C : Finset Formula} {S : Finset WorldIndex}
+    {b : Branch} {ord : TimeOrdering} {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (hC : TableauClosed C) (hstock : ∀ x ∈ b, x.formula ∈ C)
+    (hww : WorldWitnessKnown C S b)
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧
+      (r = .boxNeg ∨ r = .diamondPos → witnessPresent r sf b ord = false)) :
+    ∀ nb ∈ pickBranches b p, WorldWitnessKnown C S nb := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA, hg⟩ := hp r res o rfl
+    have h1 := applyRule_worldWitnessKnown (rule := r) (sf := sf) (b := b) (ord := ord)
+      hC hstock hsf hg hww
+    rw [hA] at h1
+    intro nb hnb
+    simp only [pickBranches] at hnb
+    exact h1 nb hnb
+
+/-- **Engine-level preservation of the strengthened fresh-world discipline**, at `.extended` and
+at every arm of a `.split`.
+
+`.saturated` contributes no successor. `.splitOrdered` is **deliberately not covered**, and the
+reason is a real limitation rather than an omission — see the note below. It is also not needed:
+`ExtendStep`, which is what every run this feeds is built from, is `.extended`-only. -/
+theorem expandOnceUnblocked_worldWitnessKnown {C : Finset Formula} {S : Finset WorldIndex}
+    {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hC : TableauClosed C) (hstock : ∀ x ∈ b, x.formula ∈ C)
+    (hww : WorldWitnessKnown C S b) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      WorldWitnessKnown C S nb := by
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyB]
+  exact pickBranches_worldWitnessKnown hC hstock hww (pick_stage_source_guarded b ord fc tr)
+
+/-! ### Why the ordered split is excluded, stated rather than glossed
+
+The identification arm relabels every branch formula by `rho`, and `rho` **merges** two times.
+Two non-seed worlds whose witnesses differ only in carrying the merged pair of times have
+*distinct* signatures before the arm and the *same* signature after it, so the injectivity clause
+of `WorldWitnessKnown` is not transported along `rhoSF`. That is a genuine failure of the
+invariant at arm 3, of exactly the kind `ordTimes_identifyTime_arm3_false` records for the
+ordering-times invariant — not a gap in this proof.
+
+It costs nothing here. `ExtendStep` (`Fuel.lean`) is defined as
+`(expandOnceUnblocked b ord fc tr).1 = .extended nb`, so every run that `chain_le_worlds_bounded`
+and `chain_le_worldFuel'` quantify over is `.extended`-only: no split of either kind occurs along
+it, and `expandOnceUnblocked_worldWitnessKnown` covers every step such a run can take. A consumer
+that needs the discipline **across** an ordered split would need a repair of the same shape as
+`OrdTimesKnown`, and does not have one. -/
+
+/-- **The strengthened discipline at the engine's seed.** Every world of the seed lies in `S`, so
+both clauses hold by absence of a non-seed world — the same reason `worldWitness_seedBranch`
+holds, and not by any weakening. -/
+theorem worldWitnessKnown_seedBranch (C : Finset Formula) (φ : Formula) :
+    WorldWitnessKnown C (seedBranch φ).worldFinset (seedBranch φ) := by
+  refine ⟨fun _ => ⟨Sign.pos, .bot, { world := 0, time := 0 }⟩, ?_, ?_⟩
+  · intro w hw hns; exact absurd hw hns
+  · intro w₁ hw₁ hns₁ _ _ _ _; exact absurd hw₁ hns₁
+
+/-- **The run-level discharge — `WorldWitnessKnown` is an invariant of an `ExtendStep` chain.**
+
+Base case: the hypothesis at step 0. Step case: `expandOnceUnblocked_worldWitnessKnown`, with the
+stock hypothesis supplied at each intermediate branch by `branchStock_chain` (T1). This is the
+induction the world bound needed and did not have. -/
+theorem worldWitnessKnown_chain {C : Finset Formula} {S : Finset WorldIndex}
+    (hC : TableauClosed C) (hT : TrichStock C) (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0))
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1)))
+    (hww : WorldWitnessKnown C S (run 0)) : WorldWitnessKnown C S (run n) := by
+  induction n with
+  | zero => exact hww
+  | succ n ih =>
+      have hstep' : ∀ i < n, ExtendStep (run i) (run (i + 1)) := fun i hi => hstep i (by omega)
+      have hprev := ih hstep'
+      have hstock := (branchStock_chain hC hT run n h0 hstep').mem
+      obtain ⟨ord, fc, tr, hs⟩ := hstep n (by omega)
+      refine expandOnceUnblocked_worldWitnessKnown (ord := ord) (fc := fc) (tr := tr)
+        hC hstock hprev (run (n + 1)) ?_
+      rw [hs]
+      simp [unorderedSuccessorBranches]
+
+/-- **The weak form at every step of a seed run — the residual `chain_le_worldFuel'` names is
+gone.** `WorldWitness C S (run n)` is now a theorem about runs out of the engine's own seed
+rather than a hypothesis a caller must supply. -/
+theorem worldWitness_chain_of_seed {C : Finset Formula} {φ : Formula}
+    (hC : TableauClosed C) (hT : TrichStock C) (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0)) (hseed : run 0 = seedBranch φ)
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1))) :
+    WorldWitness C (seedBranch φ).worldFinset (run n) :=
+  worldWitness_of_known
+    (worldWitnessKnown_chain hC hT run n h0 hstep (hseed ▸ worldWitnessKnown_seedBranch C φ))
+
+/-- **The label bound along a seed run, with no `WorldWitness` hypothesis left.**
+
+This is `labelFinset_card_le_at_seed_worlds` with its one carried input discharged: the fresh-world
+discipline is supplied by `worldWitness_chain_of_seed` rather than assumed, and `s = 1` by
+`seedWorlds_card`. -/
+theorem labelFinset_card_le_of_seed_run {C : Finset Formula} {φ : Formula}
+    (hC : TableauClosed C) (hT : TrichStock C) (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0)) (hseed : run 0 = seedBranch φ)
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1)))
+    (htime : (run n).timeFinset.card ≤ 2 ^ (2 * C.card)) :
+    (run n).labelFinset.card ≤ (1 + 2 * C.card * 2 ^ (2 * C.card)) * 2 ^ (2 * C.card) :=
+  labelFinset_card_le_at_seed_worlds (worldWitness_chain_of_seed hC hT run n h0 hseed hstep) htime
+
+/-- **T3's step bound for a seed run, with the fresh-world discipline discharged.**
+
+`chain_le_worldFuel'` carries `hww : WorldWitness C S (run n)` as an undischarged invariant. Out
+of the engine's own seed it is no longer undischarged: `worldWitness_chain_of_seed` proves it, and
+`seedWorlds_card` fixes `S.card = 1`, so the figure is `worldFuel' φ 1`. -/
+theorem chain_le_worldFuel'_of_seed {C : Finset Formula} {φ : Formula}
+    {ord : TimeOrdering} {tracker : EventualityTracker}
+    (hC : TableauClosed C) (hT : TrichStock C)
+    (run : Nat → Branch) (n : Nat)
+    (h0 : BranchStock C (run 0)) (hseed : run 0 = seedBranch φ)
+    (hstep : ∀ i < n, ExtendStep (run i) (run (i + 1)))
+    (hlin : firstIncomparablePair (run n) ord = none)
+    (hev : ∀ t₁ ∈ (run n).knownTimes, ∀ t₂ ∈ (run n).knownTimes,
+      allEventualitiesFulfilledOrDuplicated tracker t₁ t₂ = true)
+    (hnb : findBlockedTime (run n) ord tracker = none)
+    (hφ : C.card = (FormalSystem.Syntax.subformulaClosure φ).card) :
+    n ≤ worldFuel' φ 1 := by
+  have h := chain_le_worldFuel' (S := (seedBranch φ).worldFinset) (ord := ord) (tracker := tracker)
+    hC hT run n h0 hstep hlin hev hnb
+    (worldWitness_chain_of_seed hC hT run n h0 hseed hstep) hφ
+  rwa [seedWorlds_card] at h
 
 end FormalSystem.Metalogic.Decidability

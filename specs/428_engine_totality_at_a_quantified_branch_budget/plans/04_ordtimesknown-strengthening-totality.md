@@ -751,7 +751,7 @@ reports exactly `[propext, Classical.choice, Quot.sound]`.
 
 ---
 
-### Phase 9: The world dimension and an independent `Tmax` [IN PROGRESS]
+### Phase 9: The world dimension and an independent `Tmax` [COMPLETED]
 
 **Goal**: Supply the world dimension so that `|U|` is a real number rather than a circular one, and
 supply `Tmax` **independently of the mint chain** so R3 does not bite.
@@ -784,12 +784,12 @@ its named fallback, and its never-an-axiom clause are **preserved verbatim** fro
       `worldFinset_card_le`, in the exact shape the downstream phases consume.
       *(landed as `labelFinset_card_le_of_worldWitness` at general `s`, and
       `labelFinset_card_le_at_seed_worlds` at `s = 1`.)*
-- [ ] **Named fallback for `Tmax`**, taken only if T2 does not deliver: bound fresh-time mints
+- [ ] **Named fallback for `Tmax`** *(not taken — T2 delivered; `timeFinset_card_le_of_mem_stock` is landed)*, taken only if T2 does not deliver: bound fresh-time mints
       directly by the `witnessPresent` guard — each existential signed formula mints at most one
       witness and the existential formulas live in `U`. This route **reintroduces R3's circularity**
       unless `|U|` is closed first; if taken, the phase must state precisely how the circularity is
       broken, or escalate.
-- [ ] **Named fallback for `WorldWitness`**, taken only if the induction over `applyRule` does not
+- [ ] **Named fallback for `WorldWitness`** *(not taken — the primary induction closed; see the run-level completion notes)*, taken only if the induction over `applyRule` does not
       close: prove the narrower statement that the world component of the seed run's label set is
       bounded by the run's fresh-world-minting steps, and state precisely which residual remains.
 
@@ -848,38 +848,64 @@ stock alone. The mint chain may therefore rest on it without circularity. Phase 
 — `TableauRule` has exactly 36 constructors, the same count Phase 7 established and Phases 4.2 and
 8 have now each paid for twice (36 × 2 signs). The phase sizing stands.
 
-**THE NAMED RESIDUAL — the one thing this phase has not discharged.** `WorldWitness` is discharged
-**at the seed branch only** (`worldWitness_seedBranch`, the `n = 0` case). It is **not** discharged
-as a run-level invariant, which is what `chain_le_worldFuel'` demands at `run n`. The step case is
-the 36-constructor induction over `applyRule`, and its content is the injectivity clause: a second
-world minted for the same sign/formula/time would have found the first world's witness and been
-suppressed, by `witnessPresent`'s world-indifference (the executable `WorldProbes` rows at
-`Fuel.lean:1296-1335` exhibit exactly that indifference). That induction was **not attempted** —
-it is the phase's remaining work, not a claimed result.
+**THE RESIDUAL IS NOW DISCHARGED — the run-level `WorldWitness` induction closed.** What the
+first pass left open (`WorldWitness` at the seed branch only, the `n = 0` case) is now proved as a
+run invariant. R4 is retired by proof, not by fallback; **neither named fallback was taken**, and
+the escalation clause's sanctioned degraded outcome was **not** invoked.
 
-**MATERIAL FINDING for whoever attempts that induction — `WorldWitness` as defined is not
-inductive as it stands.** Read the definition (`Fuel.lean:1214`): its witness function `wit` is
-constrained only by `(wit w).formula ∈ C ∧ (wit w).label.time ∈ b.timeFinset` plus signature
-injectivity. It does **not** require `wit w ∈ b`, nor `(wit w).label.world = w`. The preservation
-argument needs both: at a fresh-world mint the new world's witness must be shown to have a
-signature distinct from every existing non-seed world's, and the only reason that holds is that an
-existing witness *on the branch* with the same sign/formula/time would have made `witnessPresent`
-true and suppressed the mint. With `wit w` free-floating, there is nothing to feed the guard, so
-the step case cannot be closed against this definition.
+**The definition really was not inductive, and the repair is the one the first pass predicted.**
+`WorldWitness` (`Fuel.lean:1214`) constrains `wit w` only by `(wit w).formula ∈ C` and
+`(wit w).label.time ∈ b.timeFinset` — not by branch membership and not by sitting at the world it
+witnesses. Both are needed at a mint, because the only reason the new world's signature is fresh
+is that a matching witness **on the branch** would have made `witnessPresent` true and suppressed
+the rule. `WorldWitnessKnown` adds exactly those two clauses; `worldWitness_of_known` recovers the
+weak form, so every landed `WorldWitness` consumer keeps working. `Fuel.lean` is byte-untouched.
 
-The expected repair is the **same shape as this plan's own `OrdTimesKnown` repair**: define a
-strengthened `WorldWitnessKnown` in `MintBound.lean` carrying `wit w ∈ b ∧ (wit w).label.world = w`
-alongside the existing clauses, prove `WorldWitness` from it (the strengthening witness, mirroring
-`ordTimesLeMaxTime_of_ordTimesKnown`), and run the 36-case induction on the strong form.
-`Fuel.lean` stays byte-untouched, exactly as it did for the times invariant. This is a **prediction
-about the route, not a claimed result** — nothing of it is proved, and a successor should confirm
-the strengthened form is actually preserved at the mint sites before committing to it.
+**The world dimension is far narrower than the "~36-case induction" figure suggested, and this is
+a material finding about the sizing rather than about the plan.** Of `TableauRule`'s 36
+constructors exactly **two** mint a world — `boxNeg` and `diamondPos` — and both do it by emitting
+at `Branch.nextWorld`. The split still has to be paid once, to show the *other* 34 introduce no
+world (`applyRule_emitted_world_mem`, stated against `RuleResult.emitted` so one statement covers
+all five result shapes), but the content of the invariant lives in two named cases rather than
+thirty-six.
 
-The residual is carried as **exactly one explicitly named hypothesis**,
-`WorldWitness C (seedBranch φ).worldFinset b`, visible in the statement of
-`labelFinset_card_le_at_seed_worlds` rather than absorbed into it. No `axiom`, no `sorry`, no
-vacuous placeholder, and the sanctioned degraded outcome of the escalation clause has **not** been
-taken — the phase is resumable at task 3's run-level half, not blocked.
+**What landed, in dependency order.**
+
+| Declaration | What it settles |
+|---|---|
+| `applyRule_emitted_world_mem` | The 34 non-minting rules emit only at worlds the branch already mentions. The full 34 × 2 split. |
+| `applyRule_boxNeg_emitted_world`, `applyRule_diamondPos_emitted_world` | The two minting rules emit **only** at `Branch.nextWorld` — witness and both auto-propagation blocks alike. |
+| `applyRule_boxNeg_shape` / `_eq` / `_witness` / `_result` (and the `diamondPos` mirrors) | A world appeared ⇒ the trigger had the rule's own shape ⇒ the result is `.linear` ⇒ the rule's own witness is on the successor. |
+| `boxNeg_guard_sig`, `diamondPos_guard_sig` | **The guard, in signature form.** `witnessPresent`'s scan is world-indifferent, so its failure says exactly that no branch formula shares the minted witness's signature. This is the injectivity clause. |
+| `worldWitnessKnown_of_no_new_world`, `worldWitnessKnown_mint` | The two preservation shapes, stated abstractly over the successor. |
+| `applyRule_worldWitnessKnown` | One rule application preserves the strong discipline at every successor branch. |
+| `findApplicableRule_guard_mint`, `findApplicableSerialRule_rule`, `findApplicableLinearityRule_rule`, `pick_stage_source_guarded` | The guard recovered from the pick. Stages two and three need none: they run one rule each and neither is world-minting. |
+| `expandOnceUnblocked_worldWitnessKnown` | Engine level, `.extended` and every arm of a `.split`. |
+| `worldWitnessKnown_seedBranch`, `worldWitnessKnown_chain` | Base case and the induction over an `ExtendStep` chain, with the stock hypothesis supplied at each step by `branchStock_chain`. |
+| `worldWitness_chain_of_seed`, `labelFinset_card_le_of_seed_run`, `chain_le_worldFuel'_of_seed` | The payoff: `chain_le_worldFuel'`'s `hww` is discharged for runs out of the engine's own seed, at `S.card = 1`. |
+
+**A real limitation, recorded rather than glossed: the ordered split's identification arm breaks
+the injectivity clause.** `rho` *merges* two times, so two non-seed worlds whose witnesses differ
+only in carrying the merged pair have distinct signatures before arm 3 and the same signature
+after it. `WorldWitnessKnown` is therefore **not** transported along `rhoSF` — the same shape of
+failure `ordTimes_identifyTime_arm3_false` records for the ordering-times invariant, and it is a
+property of the arm, not a gap in the proof.
+
+It costs nothing here, and the reason is structural rather than lucky: `ExtendStep`
+(`Fuel.lean:423`) is defined as `(expandOnceUnblocked b ord fc tr).1 = .extended nb`, so every run
+`chain_le_worlds_bounded` and `chain_le_worldFuel'` quantify over is `.extended`-only — no split of
+either kind occurs along it. A consumer that needs the discipline **across** an ordered split would
+need a repair of the same shape as `OrdTimesKnown`, and does not have one. This is recorded
+in-source adjacent to `expandOnceUnblocked_worldWitnessKnown`.
+
+**Build (R6/R8)**: green on the **first** attempt at both milestones. Whole-module `lake build`
+**150s wall / 8m23s user** after the `applyRule`-level block (was 130s / 6m03s), and **143s wall /
+9m01s user** after the engine lift. The 34 × 2 split cost about 20s wall. `set_option
+maxHeartbeats` was raised to `4000000` for `applyRule_emitted_world_mem` only (the module's
+standing figure, not above it) and to `1000000` for the per-rule shape lemmas. `lean_verify` /
+`#print axioms` on `applyRule_worldWitnessKnown`, `expandOnceUnblocked_worldWitnessKnown`,
+`worldWitnessKnown_chain`, `worldWitness_chain_of_seed`, `labelFinset_card_le_of_seed_run` and
+`chain_le_worldFuel'_of_seed` each reports exactly `[propext, Classical.choice, Quot.sound]`.
 
 **Build**: green on the first attempt; whole-module `lake build` 130s wall / 6m03s user, unchanged
 from the Phase 8 figure. `lean_verify` on `worldWitness_seedBranch`,
@@ -888,7 +914,7 @@ from the Phase 8 figure. `lean_verify` on `worldWitness_seedBranch`,
 
 ---
 
-### Phase 10: The mint potential and the budget-carrying restatement [NOT STARTED]
+### Phase 10: The mint potential and the budget-carrying restatement [IN PROGRESS]
 
 **Goal**: Work item 2 — give `expandBranchWithFuel_isSome_of_budget` an explicit **mint-budget
 parameter** in the `branchesUsed`/`maxBranches` shape, and land the definitions and arithmetic
