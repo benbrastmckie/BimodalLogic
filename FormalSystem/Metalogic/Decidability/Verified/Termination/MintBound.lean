@@ -1503,4 +1503,129 @@ theorem ordTimesKnown_empty (b : Branch) : OrdTimesKnown b TimeOrdering.empty :=
   intro p hp
   simp [TimeOrdering.empty] at hp
 
+/-! ### `OrdTimesKnown` at the branching shapes and at engine level
+
+The weak engine-level twins just above — `applyRule_ordTimes_branching`, `pickBranches_ordTimes`,
+`expandOnceUnblocked_ordTimes`, `expandOnceUnblocked_irreflOrd` — are **retained and still true**.
+They are not superseded in the sense of being wrong; they are what the strong forms compose
+through, and `expandOnceUnblocked_irreflOrd_of_known` below is literally one line of composition
+over `expandOnceUnblocked_irreflOrd`.
+
+The strong forms exist for one reason only: the weak invariant is **not carryable across the
+ordered split's identification arm**, by `ordTimes_identifyTime_arm3_false`. An engine-level
+statement threaded through `OrdTimesLeMaxTime` therefore cannot become a run invariant, however
+many result shapes it covers. -/
+
+set_option maxHeartbeats 4000000 in
+/-- **`applyRule` preserves `OrdTimesKnown` at the `.branching` result shape**, for every arm —
+the strong analogue of `applyRule_ordTimes_branching`.
+
+Proved by that theorem's own tactic skeleton, with `le_maxTime hsf` replaced by
+`mem_knownTimes_of_mem hsf`, the two `_cons` lemmas replaced by their `ordTimesKnown_*` twins, and
+the ordering-unchanged case discharged by `ordTimesKnown_mono … sub_append` where the weak form
+used `ordTimes_mono … (maxTime_le_append _ _)`. Branch growth is identical: every arm is `fs ++ b`.
+
+As with the weak twin, the `.branchingOrdered` shape is deliberately not covered here — its
+per-arm orderings live in the *result* rather than the second component, so it is handled at
+engine level where the arm list is visible. -/
+theorem applyRule_ordTimesKnown_branching {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering}
+    (hsf : sf ∈ b) (haux : OrdTimesKnown b ord) :
+    ∀ nb ∈ branchingResultBranches b (applyRule rule sf b ord).1,
+      OrdTimesKnown nb (applyRule rule sf b ord).2 := by
+  have ht : sf.label.time ∈ b.knownTimes := mem_knownTimes_of_mem hsf
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        first
+          | contradiction
+          | (intro nb hnb
+             -- At a non-branching result `branchingResultBranches` is `[]`, so this `simp only`
+             -- turns `hnb` into `False` and closes the goal outright; `all_goals` is what lets
+             -- the branching alternatives below run only where a goal survives.
+             simp only [branchingResultBranches, List.mem_map, List.not_mem_nil] at hnb
+             all_goals first
+               | (obtain ⟨fs, hfs, rfl⟩ := hnb
+                  simp only [List.mem_cons, List.not_mem_nil, or_false] at hfs
+                  rcases hfs with rfl | rfl <;>
+                    first
+                      | exact ordTimesKnown_addFuture_cons haux ht rfl
+                      | exact ordTimesKnown_addPast_cons haux ht rfl)
+               | (obtain ⟨fs, -, rfl⟩ := hnb
+                  exact ordTimesKnown_mono haux sub_append)))
+
+/-- One pick stage preserves `OrdTimesKnown` at every successor branch it reports. This is where
+the non-branching and branching `applyRule` lemmas are joined, exactly as `pickBranches_ordTimes`
+joins their weak twins. `pick_stage_source` is reused unchanged — it is invariant-agnostic. -/
+private theorem pickBranches_ordTimesKnown {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (haux : OrdTimesKnown b ord)
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o)) :
+    ∀ nb ∈ pickBranches b p, OrdTimesKnown nb (pickOrd ord p) := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA⟩ := hp r res o rfl
+    have h1 := applyRule_ordTimesKnown_nonbranching (rule := r) (sf := sf) (b := b) (ord := ord)
+      hsf haux
+    have h2 := applyRule_ordTimesKnown_branching (rule := r) (sf := sf) (b := b) (ord := ord)
+      hsf haux
+    rw [hA] at h1 h2
+    intro nb hnb
+    simp only [pickBranches] at hnb
+    rcases List.mem_append.mp hnb with h | h
+    · exact h1 nb (by simpa using h)
+    · exact h2 nb h
+
+/-- **Engine-level `OrdTimesKnown`, at `.extended` and at every arm of a `.split`.**
+
+The strong analogue of `expandOnceUnblocked_ordTimes`, reusing the invariant-agnostic `pick_ord_eq`
+and `pick_branches_eq` unchanged. `.saturated` contributes no successor branch; `.splitOrdered`
+carries per-arm orderings inside the result and is handled by
+`expandOnceUnblocked_splitOrdered_ordTimesKnown`. -/
+theorem expandOnceUnblocked_ordTimesKnown {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (haux : OrdTimesKnown b ord) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      OrdTimesKnown nb (expandOnceUnblocked b ord fc tr).2 := by
+  have keyO : (expandOnceUnblocked b ord fc tr).2
+      = pickOrd ord
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_ord_eq
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyO, keyB]
+  exact pickBranches_ordTimesKnown haux (pick_stage_source b ord fc tr)
+
+/-- **Engine-level irreflexivity from the strong invariant.**
+
+No case analysis is re-done here: this composes the landed `expandOnceUnblocked_irreflOrd` with
+`ordTimesLeMaxTime_of_ordTimesKnown`. It exists so that a run carrying `OrdTimesKnown` can feed
+irreflexivity without also carrying the weak invariant separately. -/
+theorem expandOnceUnblocked_irreflOrd_of_known {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hord : IrreflOrd ord) (haux : OrdTimesKnown b ord) :
+    IrreflOrd (expandOnceUnblocked b ord fc tr).2 :=
+  expandOnceUnblocked_irreflOrd hord (ordTimesLeMaxTime_of_ordTimesKnown haux)
+
 end FormalSystem.Metalogic.Decidability

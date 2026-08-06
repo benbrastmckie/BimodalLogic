@@ -453,14 +453,14 @@ lemma does not transcribe, **report which and why before attempting a re-derivat
 
 ---
 
-### Phase 4.2: `OrdTimesKnown` at the branching shapes and at engine level [NOT STARTED]
+### Phase 4.2: `OrdTimesKnown` at the branching shapes and at engine level [COMPLETED]
 
 **Goal**: Supply the one piece of the repair that is **not** in the scratch file — the `.branching`
 result-shape analogue — and lift the strong invariant to `expandOnceUnblocked`. **This phase is new
 proof**, and it is where R8 lives.
 
 **Tasks**:
-- [ ] Prove `applyRule_ordTimesKnown_branching`, the strong twin of the landed
+- [x] Prove `applyRule_ordTimesKnown_branching`, the strong twin of the landed
       `applyRule_ordTimes_branching` (`MintBound.lean:1016`):
       `(hsf : sf ∈ b) (haux : OrdTimesKnown b ord) : ∀ nb ∈ branchingResultBranches b (applyRule rule sf b ord).1, OrdTimesKnown nb (applyRule rule sf b ord).2`.
       Transcribe the weak twin's proof skeleton and make exactly these substitutions:
@@ -469,19 +469,19 @@ proof**, and it is where R8 lives.
       (`branchingResultBranches` maps `fs ++ b`, covered by `sub_append`). Carry
       `set_option maxHeartbeats 4000000 in` from the weak twin — do **not** raise it further; if the
       elaboration budget is exceeded, **report the measured time** rather than raising it silently.
-- [ ] Prove the strong pick-stage lemma `pickBranches_ordTimesKnown`, the twin of the landed private
+- [x] Prove the strong pick-stage lemma `pickBranches_ordTimesKnown`, the twin of the landed private
       `pickBranches_ordTimes` (`:1127`), joining the non-branching and branching `applyRule` lemmas.
       Reuse the landed `pick_stage_source` (`:1085`) unchanged — it supplies
       `∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o)` and is invariant-agnostic.
-- [ ] Prove `expandOnceUnblocked_ordTimesKnown`, the twin of the landed `expandOnceUnblocked_ordTimes`
+- [x] Prove `expandOnceUnblocked_ordTimesKnown`, the twin of the landed `expandOnceUnblocked_ordTimes`
       (`:1152`): `(haux : OrdTimesKnown b ord) : ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, OrdTimesKnown nb (expandOnceUnblocked b ord fc tr).2`.
       Reuse the landed `pick_ord_eq` and `pick_branches_eq` unchanged — both are invariant-agnostic.
-- [ ] Prove the strong `expandOnceUnblocked_irreflOrd_of_known`:
+- [x] Prove the strong `expandOnceUnblocked_irreflOrd_of_known`:
       `(hord : IrreflOrd ord) (haux : OrdTimesKnown b ord) : IrreflOrd (expandOnceUnblocked b ord fc tr).2`.
       **Do not re-prove the case analysis.** Compose: `expandOnceUnblocked_irreflOrd hord (ordTimesLeMaxTime_of_ordTimesKnown haux)`.
       Expect one line. The landed weak-threaded `expandOnceUnblocked_irreflOrd` stays in place as the
       lemma this is built from.
-- [ ] Add an in-source note, adjacent to the strong engine-level results, recording that the weak
+- [x] Add an in-source note, adjacent to the strong engine-level results, recording that the weak
       engine-level twins are **retained and still true** — they are what the strong forms compose
       through — and that the strong forms exist because the weak invariant is not carryable across
       the ordered split's identification arm. Cite `ordTimes_identifyTime_arm3_false` by declaration
