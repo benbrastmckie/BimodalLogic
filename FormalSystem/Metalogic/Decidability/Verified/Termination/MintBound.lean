@@ -1991,4 +1991,96 @@ theorem witnessPresent_no_flip {b : Branch} {ord : TimeOrdering}
       · rw [ht] at h1; exact Bool.noConfusion h1
       · rw [ht] at h2; exact Bool.noConfusion h2
 
+/-! ## C1. The world dimension, and a time bound that does not go through the mint chain
+
+Two independent obligations meet here.
+
+**The time bound must not be circular.** `|U| = |signedUniverse C L|` with `L = worlds × times`,
+while times grow by minting — so a time bound derived *from* the mint count would make the whole
+chain circular. `timeFinset_card_le_of_mem_stock` below is the non-circular route, and it is
+non-circular for a reason that can be read off its hypotheses rather than argued: branch-confined-
+to-stock, linearity-saturated, eventuality-fulfilled, blocking-silent. **Not one of the four
+mentions a world, a mint, or `|U|`.** Its conclusion `2 ^ (2 * |C|)` is a function of the stock
+alone.
+
+**The world dimension.** `worldFinset_card_le` turns the fresh-world discipline `WorldWitness`
+into `|worlds| ≤ |S| + 2·|C|·|times|`, and `Branch.card_labelFinset_le` multiplies the two
+dimensions into the label bound that `expandBranchWithFuel_isSome_at_worldFuel'` takes as `hL`.
+`labelFinset_card_le_of_worldWitness` assembles exactly that, and `seedWorlds_card` pins `s = 1`
+at the engine's own seed.
+
+**What is discharged here and what is not, stated plainly.** `WorldWitness` is discharged **at the
+seed branch** (`worldWitness_seedBranch`), which is what fixes `s = 1`. It is **not** discharged as
+a run-level invariant: `chain_le_worldFuel'` wants `WorldWitness C S (run n)` at step `n`, and
+establishing that is an induction over `applyRule`'s 36 constructors whose content is the
+injectivity clause — a second world minted for the same sign/formula/time would have found the
+first one's witness and been suppressed, which is `witnessPresent`'s world-indifference. That
+induction is not attempted here. The residual is therefore exactly one named hypothesis,
+`WorldWitness C (seedBranch φ).worldFinset b`, and every result below carries it visibly in its
+statement rather than absorbing it. -/
+
+/-- **The engine's seed branch.** Both `buildTableauAt` and `buildTableau` open with the single
+signed formula `¬φ` at `Label.initial` and hand it to `expandBranchWithFuel` together with
+`TimeOrdering.empty`. Named here so the seed-side facts cite one shape instead of repeating it. -/
+def seedBranch (φ : Formula) : Branch := [SignedFormula.neg φ Label.initial]
+
+/-- **The seed mentions exactly one world**, world `0` — which is what makes `s = 1` the right
+instantiation of the world bound's seed parameter, rather than a figure chosen for convenience. -/
+theorem seedWorlds_card (φ : Formula) : (seedBranch φ).worldFinset.card = 1 := rfl
+
+/-- **`WorldWitness` at the seed.** Discharged, not assumed: at `S := (seedBranch φ).worldFinset`
+every world of the branch lies in `S`, so both clauses of the discipline are satisfied by absence
+of a non-seed world.
+
+This is `worldWitness_self` at the seed, and — unlike the degenerate reading its docstring warns
+about — it is *not* empty here, because `seedWorlds_card` computes `|S| = 1`. The world bound's
+first summand is therefore a constant, which is the whole point of scoping to the seed. -/
+theorem worldWitness_seedBranch (C : Finset Formula) (φ : Formula) :
+    WorldWitness C (seedBranch φ).worldFinset (seedBranch φ) :=
+  worldWitness_self C (seedBranch φ)
+
+/-- **T2, in the form this chain consumes, and demonstrably not circular.**
+
+`timeFinset_card_le_of_not_blocked` wants `TimeChain b ord`; `timeChain_of_linearity_saturated`
+supplies it from the linearity stage's own silence, since `timeLinearity` is self-suppressing and
+fires exactly while an incomparable pair remains. Composing the two leaves four hypotheses, and the
+reason the mint bound may rest on this is that **none of them mentions a world, a mint, or the
+signed universe**: the bound `2 ^ (2 * |C|)` is a function of the stock alone. -/
+theorem timeFinset_card_le_of_mem_stock {C : Finset Formula} {b : Branch} {ord : TimeOrdering}
+    {tracker : EventualityTracker}
+    (hb : ∀ x ∈ b, x.formula ∈ C)
+    (hlin : firstIncomparablePair b ord = none)
+    (hev : ∀ t₁ ∈ b.knownTimes, ∀ t₂ ∈ b.knownTimes,
+      allEventualitiesFulfilledOrDuplicated tracker t₁ t₂ = true)
+    (hnb : findBlockedTime b ord tracker = none) :
+    b.timeFinset.card ≤ 2 ^ (2 * C.card) :=
+  timeFinset_card_le_of_not_blocked hb (timeChain_of_linearity_saturated hlin) hev hnb
+
+/-- **The label bound, in the exact shape `expandBranchWithFuel_isSome_at_worldFuel'` takes as
+`hL`.** The two dimensions multiply: `worldFinset_card_le` bounds the world component by
+`|S| + 2·|C|·|times|`, the time component is bounded by `htime`, and `Branch.card_labelFinset_le`
+injects labels into their two components. -/
+theorem labelFinset_card_le_of_worldWitness {C : Finset Formula} {S : Finset WorldIndex}
+    {b : Branch} {s : Nat}
+    (hww : WorldWitness C S b) (hs : S.card ≤ s)
+    (htime : b.timeFinset.card ≤ 2 ^ (2 * C.card)) :
+    b.labelFinset.card ≤ (s + 2 * C.card * 2 ^ (2 * C.card)) * 2 ^ (2 * C.card) := by
+  refine le_trans (Branch.card_labelFinset_le b) ?_
+  have hw : b.worldFinset.card ≤ s + 2 * C.card * 2 ^ (2 * C.card) :=
+    le_trans (worldFinset_card_le hww)
+      (Nat.add_le_add hs (Nat.mul_le_mul_left _ htime))
+  exact Nat.mul_le_mul hw htime
+
+/-- **The label bound at `s = 1`**, the figure the engine's own seed supplies.
+
+The one input not discharged in this module is `hww` — the fresh-world discipline **at the run's
+branch `b`**, not at the seed. It is carried explicitly rather than absorbed, so that a consumer
+can see precisely what remains: `worldWitness_seedBranch` gives the `n = 0` case, and the step case
+is the 36-constructor induction described in the section preamble. -/
+theorem labelFinset_card_le_at_seed_worlds {C : Finset Formula} {φ : Formula} {b : Branch}
+    (hww : WorldWitness C (seedBranch φ).worldFinset b)
+    (htime : b.timeFinset.card ≤ 2 ^ (2 * C.card)) :
+    b.labelFinset.card ≤ (1 + 2 * C.card * 2 ^ (2 * C.card)) * 2 ^ (2 * C.card) :=
+  labelFinset_card_le_of_worldWitness hww (le_of_eq (seedWorlds_card φ)) htime
+
 end FormalSystem.Metalogic.Decidability

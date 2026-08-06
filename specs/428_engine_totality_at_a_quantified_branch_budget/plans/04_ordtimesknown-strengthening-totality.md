@@ -751,7 +751,7 @@ reports exactly `[propext, Classical.choice, Quot.sound]`.
 
 ---
 
-### Phase 9: The world dimension and an independent `Tmax` [NOT STARTED]
+### Phase 9: The world dimension and an independent `Tmax` [IN PROGRESS]
 
 **Goal**: Supply the world dimension so that `|U|` is a real number rather than a circular one, and
 supply `Tmax` **independently of the mint chain** so R3 does not bite.
@@ -761,21 +761,29 @@ and `timeFinset` and consumes no ordering-times invariant. Its unattempted-`Worl
 its named fallback, and its never-an-axiom clause are **preserved verbatim** from plan 03.
 
 **Tasks**:
-- [ ] **Read first, prove second.** Read `chain_le_worldFuel'` (`Fuel.lean:2619`),
+- [x] **Read first, prove second.** Read `chain_le_worldFuel'` (`Fuel.lean:2619`),
       `worldFinset_card_le` (`:1230`), `worldWitness_self` (`:1302`), and
       `timeFinset_card_le_of_not_blocked` (`:588`), and record in the completion notes exactly what
       each supplies and what each demands. `chain_le_worldFuel'`'s docstring states that
       `hww : WorldWitness C S (run n)` is an invariant **not discharged there** — that is the
-      warning sign for this phase.
-- [ ] **Confirm T2 delivers `Tmax` in a consumable form** (R3). `timeFinset_card_le_of_not_blocked`
+      warning sign for this phase. *(done — findings recorded below.)*
+- [x] **Confirm T2 delivers `Tmax` in a consumable form** (R3). `timeFinset_card_le_of_not_blocked`
       is landed and bounds `Branch.timeFinset.card`; confirm its hypotheses are satisfiable along an
       engine run before building anything on it. If it is not consumable, say so explicitly and take
       the fallback below — do **not** reshape `TimeTypeBound.lean` (outside scope).
-- [ ] Discharge `WorldWitness` for the engine's seed configuration
+      *(**CONFIRMED, and landed as a lemma rather than left as prose**: `timeFinset_card_le_of_mem_stock`.
+      The one hypothesis that looked like it might not be reachable, `TimeChain b ord`, is supplied
+      by the landed `timeChain_of_linearity_saturated` from `firstIncomparablePair b ord = none`.
+      No fallback needed.)*
+- [x] Discharge `WorldWitness` for the engine's seed configuration
       (`initialBranch = [SignedFormula.neg phi Label.initial]`, so `S.card = 1`). Scope to the seed
-      run, not the general invariant.
-- [ ] Derive `hL : L.card ≤ (s + 2 * C.card * 2 ^ (2 * C.card)) * 2 ^ (2 * C.card)` at `s = 1` via
+      run, not the general invariant. *(landed as `seedBranch`, `seedWorlds_card` — which **computes**
+      `|S| = 1` by `rfl` rather than assuming it — and `worldWitness_seedBranch`. This is the seed
+      branch only; the run-level invariant is NOT discharged — see the residual note below.)*
+- [x] Derive `hL : L.card ≤ (s + 2 * C.card * 2 ^ (2 * C.card)) * 2 ^ (2 * C.card)` at `s = 1` via
       `worldFinset_card_le`, in the exact shape the downstream phases consume.
+      *(landed as `labelFinset_card_le_of_worldWitness` at general `s`, and
+      `labelFinset_card_le_at_seed_worlds` at `s = 1`.)*
 - [ ] **Named fallback for `Tmax`**, taken only if T2 does not deliver: bound fresh-time mints
       directly by the `witnessPresent` guard — each existential signed formula mints at most one
       witness and the existential formulas live in `U`. This route **reintroduces R3's circularity**
@@ -815,6 +823,50 @@ editing `TimeTypeBound.lean` or any file outside this plan's declared set.
 - The resulting lemmas carry no undischarged `WorldWitness` — or, on a fallback route, **exactly**
   the explicitly named residuals, each listed by name in the completion notes.
 - The read-and-report findings for T2 and `chain_le_worldFuel'` are recorded in the completion notes.
+
+#### Completion notes so far (tasks 1-4 landed; tasks 5-6 not reached)
+
+**Read-and-report findings (task 1).**
+
+| Declaration | Supplies | Demands |
+|---|---|---|
+| `timeFinset_card_le_of_not_blocked` (`Fuel.lean:588`) | `b.timeFinset.card ≤ 2 ^ (2·\|C\|)` — a function of the **stock alone** | branch-in-stock, `TimeChain b ord`, eventualities fulfilled-or-duplicated, `findBlockedTime = none` |
+| `timeChain_of_linearity_saturated` (`:1001`) | `TimeChain b ord` | `firstIncomparablePair b ord = none` — the linearity stage's own silence, since `timeLinearity` is self-suppressing |
+| `worldFinset_card_le` (`:1230`) | `\|worlds\| ≤ \|S\| + 2·\|C\|·\|times\|` | `WorldWitness C S b` |
+| `worldWitness_self` (`:1302`) | `WorldWitness C b.worldFinset b` | nothing — but only at `S := b.worldFinset`, degenerate unless `\|S\|` is separately known small |
+| `Branch.card_labelFinset_le` (`:519`) | `\|labels\| ≤ \|worlds\|·\|times\|` | nothing |
+| `chain_le_worldFuel'` (`:2619`) | `n ≤ worldFuel' φ \|S\|` | eight hypotheses **including `hww : WorldWitness C S (run n)`, explicitly not discharged there** |
+
+**R3 is broken — confirmed, and the confirmation is a landed lemma, not prose.**
+`timeFinset_card_le_of_mem_stock` composes the first two rows. Its four hypotheses are
+branch-in-stock, linearity-saturated, eventuality-fulfilled, blocking-silent; **none of the four
+mentions a world, a mint, or `\|U\|`**, and its conclusion `2 ^ (2·\|C\|)` is a function of the
+stock alone. The mint chain may therefore rest on it without circularity. Phase 10's third task
+(the R3 read-and-confirm) can cite this row and this lemma rather than re-deriving it.
+
+**Scope Hypothesis, `applyRule` arm count**: the plan's "~36-case induction" figure is **CONFIRMED**
+— `TableauRule` has exactly 36 constructors, the same count Phase 7 established and Phases 4.2 and
+8 have now each paid for twice (36 × 2 signs). The phase sizing stands.
+
+**THE NAMED RESIDUAL — the one thing this phase has not discharged.** `WorldWitness` is discharged
+**at the seed branch only** (`worldWitness_seedBranch`, the `n = 0` case). It is **not** discharged
+as a run-level invariant, which is what `chain_le_worldFuel'` demands at `run n`. The step case is
+the 36-constructor induction over `applyRule`, and its content is the injectivity clause: a second
+world minted for the same sign/formula/time would have found the first world's witness and been
+suppressed, by `witnessPresent`'s world-indifference (the executable `WorldProbes` rows at
+`Fuel.lean:1296-1335` exhibit exactly that indifference). That induction was **not attempted** —
+it is the phase's remaining work, not a claimed result.
+
+The residual is carried as **exactly one explicitly named hypothesis**,
+`WorldWitness C (seedBranch φ).worldFinset b`, visible in the statement of
+`labelFinset_card_le_at_seed_worlds` rather than absorbed into it. No `axiom`, no `sorry`, no
+vacuous placeholder, and the sanctioned degraded outcome of the escalation clause has **not** been
+taken — the phase is resumable at task 3's run-level half, not blocked.
+
+**Build**: green on the first attempt; whole-module `lake build` 130s wall / 6m03s user, unchanged
+from the Phase 8 figure. `lean_verify` on `worldWitness_seedBranch`,
+`timeFinset_card_le_of_mem_stock` and `labelFinset_card_le_at_seed_worlds` each reports exactly
+`[propext, Classical.choice, Quot.sound]`.
 
 ---
 
