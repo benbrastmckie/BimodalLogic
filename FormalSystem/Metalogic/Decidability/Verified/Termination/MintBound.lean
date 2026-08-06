@@ -3521,4 +3521,257 @@ theorem path_le_splitPathBound (Ucard Tmax ext ident : Nat)
   simp only [splitPathBound, hexp]
   omega
 
+/-! ## C6. The fuel induction, over an abstract measure
+
+The induction that closes the branching case, stated once and over an **abstract** carried state,
+measure and invariant. Separating it from any particular measure is what makes it checkable: the
+statement below mentions no branch cardinality, no known-time count, no mint potential and no
+ordering rank, and its proof therefore cannot smuggle in a fact about any of them. All four
+`ExpansionResult` shapes are discharged here — `.saturated` by the engine's own return, `.extended`
+by the inductive hypothesis at one less unit of fuel, and both split shapes through the landed
+folds — so the only thing a concrete measure has to supply is the per-step obligation bundle
+`StepDecreases`.
+
+**Why the carried state is a parameter rather than a fixed measure.** The mint potential carries
+the accumulated renaming `σ`, and `σ` changes at the ordered split's identification arm. A measure
+of the shape `Ψ : Branch → TimeOrdering → Nat` therefore cannot express it. `StepDecreases` lets
+each successor *choose* its own carried state (`∃ a'`), which is exactly the disjunction
+`mintPotential_expandOnceUnblocked_splitOrdered` reports.
+
+**The two residuals this section names rather than absorbs.**
+
+* `ArmSettlement` — `resolveOpenArm` reports `none` on an arm that is neither closed nor
+  blocking-aware saturated after the post-blocking pass. `Fuel.lean` records this outcome as
+  **reachable**, not dead, and carries it as the per-arm hypothesis `hres` of both fold lemmas;
+  nothing here discharges it, so it appears as a hypothesis under a name. It is stated exactly in
+  the form the folds consume, quantified only over arms an engine run actually produces, so it is
+  not the (false) blanket claim that `resolveOpenArm` never reports `none` — at `fuel = 0` and an
+  unsaturated arm it plainly does.
+* the difficulty and arity coefficients `D` and `β` — carried as `StepDecreases` clauses rather
+  than computed, which is the interface `Fuel.lean`'s `splitAwareFuel` already documents:
+  `temporalCount` and `modalCount` are `private` to `Saturation.lean`, so a bound on
+  `estimateBranchDifficulty` cannot be *stated* from this file without editing that one. -/
+
+/-- **The fuel a run of at most `N` engine steps needs**, at split arity `β` and per-arm difficulty
+`D`.
+
+`N` units would suffice if fuel were not divided at a split; `allocateFuelProportionally` hands an
+arm only a proportional share, and `allocateFuelProportionally_ge` says an arm is guaranteed `m`
+units only when `D * β * m ≤ fuel + 1`, so each split costs a factor of `D * β + 1`. Over a path of
+`N` steps that is `(D * β + 1) ^ N`.
+
+This is the landed `splitAwareFuel` with its path length made a parameter:
+`fuelFigure D β (splitPathBound Ucard Tmax)` is `splitAwareFuel Ucard Tmax D β` **definitionally**
+(`fuelFigure_splitAwareFuel`, by `rfl`). Nothing about the figure changes; only the path bound it
+is evaluated at becomes visible. -/
+def fuelFigure (D β N : Nat) : Nat := N * (D * β + 1) ^ N
+
+/-- The landed figure is this one at the landed path bound, on the nose. -/
+theorem fuelFigure_splitAwareFuel (Ucard Tmax D β : Nat) :
+    fuelFigure D β (splitPathBound Ucard Tmax) = splitAwareFuel Ucard Tmax D β := rfl
+
+/-- The decay factor is at least one, at every exponent. -/
+theorem one_le_pow_succ (K N : Nat) : 1 ≤ (K + 1) ^ N := Nat.one_le_pow _ _ (Nat.succ_pos _)
+
+/-- A nonzero path bound needs at least one unit of fuel — which is what lets the induction
+destructure `fuel` and reach the engine's `fuel + 1` arm. -/
+theorem fuelFigure_pos {D β N : Nat} (hN : 1 ≤ N) : 1 ≤ fuelFigure D β N := by
+  simp only [fuelFigure]
+  exact Nat.one_le_iff_ne_zero.mpr (by
+    have := one_le_pow_succ (D * β) N
+    exact Nat.mul_ne_zero (by omega) (by omega))
+
+/-- **One step's worth of slack.** The figure at `N + 1` covers the figure at `N` plus the one unit
+the step itself consumes. This is what re-establishes both the fuel hypothesis and the `β`-linear
+branch-budget hypothesis at every successor. -/
+theorem fuelFigure_succ (D β N : Nat) : fuelFigure D β N + 1 ≤ fuelFigure D β (N + 1) := by
+  simp only [fuelFigure]
+  have hp : 1 ≤ (D * β + 1) ^ N := one_le_pow_succ _ _
+  have h1 : (N + 1) * (D * β + 1) ^ (N + 1)
+      = (N + 1) * ((D * β + 1) ^ N * (D * β + 1)) := by rw [Nat.pow_succ]
+  have h2 : (N + 1) * (D * β + 1) ^ N ≤ (N + 1) * ((D * β + 1) ^ N * (D * β + 1)) :=
+    Nat.mul_le_mul_left _ (Nat.le_mul_of_pos_right _ (by omega))
+  have h3 : (N + 1) * (D * β + 1) ^ N = N * (D * β + 1) ^ N + (D * β + 1) ^ N := by ring
+  omega
+
+/-- **The allocation condition, discharged from the figure.** `allocateFuelProportionally_ge` asks
+for `T * m ≤ fuel + 1` with `T` the arms' total difficulty; `totalDifficulty_le` bounds `T` by
+`D * β`, and this is the resulting arithmetic. It is the whole reason the figure carries a power
+rather than a product. -/
+theorem fuelFigure_alloc (D β N : Nat) :
+    D * β * fuelFigure D β N ≤ fuelFigure D β (N + 1) := by
+  simp only [fuelFigure]
+  have h1 : D * β * (N * (D * β + 1) ^ N) = N * (D * β + 1) ^ N * (D * β) := by ring
+  have h2 : (N + 1) * (D * β + 1) ^ (N + 1)
+      = (N + 1) * (D * β + 1) ^ N * (D * β + 1) := by rw [Nat.pow_succ]; ring
+  have h3 : N * (D * β + 1) ^ N * (D * β) ≤ (N + 1) * (D * β + 1) ^ N * (D * β + 1) :=
+    Nat.mul_le_mul (Nat.mul_le_mul_right _ (by omega)) (by omega)
+  omega
+
+/-- The figure is monotone in the path bound, so a later, larger path bound never invalidates an
+earlier, smaller one. -/
+theorem fuelFigure_mono {D β N N' : Nat} (h : N ≤ N') :
+    fuelFigure D β N ≤ fuelFigure D β N' :=
+  Nat.mul_le_mul h (Nat.pow_le_pow_right (by omega) h)
+
+/-- **The per-step obligation bundle.**
+
+Everything a concrete measure has to supply, and nothing else. Each successor may choose its own
+carried state `a'` — which is what lets the mint potential's renaming change at the ordered split's
+identification arm — and every clause is stated at the engine step rather than at `applyRule`, so
+no pick-stage reasoning leaks into the induction.
+
+The `β` clauses bound the split arity and the `D` clauses bound a single arm's
+`estimateBranchDifficulty`; both are the coefficients `splitAwareFuel` already carries. -/
+def StepDecreases {α : Type} (fc : FormalSystem.ProofSystem.FrameClass)
+    (P : α → Branch → TimeOrdering → Prop) (Ψ : α → Branch → TimeOrdering → Nat)
+    (D β : Nat) : Prop :=
+  ∀ (a : α) (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), P a b ord →
+    (∀ nb, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.extended nb →
+        ∃ a' : α, P a' nb (expandOnceUnblocked b ord fc tr).2 ∧
+          Ψ a' nb (expandOnceUnblocked b ord fc tr).2 < Ψ a b ord) ∧
+    (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.split bs →
+        bs.length ≤ β ∧ (∀ nb ∈ bs, estimateBranchDifficulty nb ≤ D) ∧
+        ∀ nb ∈ bs, ∃ a' : α, P a' nb (expandOnceUnblocked b ord fc tr).2 ∧
+          Ψ a' nb (expandOnceUnblocked b ord fc tr).2 < Ψ a b ord) ∧
+    (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        bs.length ≤ β ∧ (∀ p ∈ bs, estimateBranchDifficulty p.1 ≤ D) ∧
+        ∀ p ∈ bs, ∃ a' : α, P a' p.1 p.2 ∧ Ψ a' p.1 p.2 < Ψ a b ord)
+
+/-- **The arm-settlement residual, named rather than absorbed.**
+
+Both split folds short-circuit on `resolveOpenArm` reporting `none`, and `Fuel.lean` records that
+outcome as **reachable**: by `resolveOpenArm_eq_none_imp` the surviving route is its final "still
+not saturated" arm, where the post-blocking pass returned an open branch that `findClosure` does
+not close and that the arm's own recomputed tracker does not certify as blocking-aware saturated.
+That is the configuration the refuted unconditional totality statement died on, so it is a live
+outcome, not a dead one.
+
+**The quantification is the honest one.** A blanket "`resolveOpenArm` never reports `none`" is
+plainly false — at `fuel = 0` and an unsaturated arm it reports `none` — so this predicate is
+restricted to arms an engine run actually hands the fold: `ob` is a branch some
+`expandBranchWithFuel` call returned open, and `parentFuel` is the enclosing call's own fuel, which
+dominates the arm's. Whether *that* is true is exactly the open question `Fuel.lean` records;
+nothing in this file decides it in either direction, and it is a hypothesis everywhere it appears.
+
+The gap it isolates is a disagreement between two eventuality trackers: the engine reports
+`.saturated` against the tracker it has threaded through the run, while `resolveOpenArm` re-derives
+one from the arm's own formulas (`armTracker`). The recomputed tracker is the *stricter* of the
+two, so the engine's verdict does not transfer, and closing the gap means comparing the two blocked
+sets — not adding fuel. -/
+def ArmSettlement (fc : FormalSystem.ProofSystem.FrameClass) : Prop :=
+  ∀ (b ob : Branch) (armFuel parentFuel : Nat) (ord oOrd : TimeOrdering)
+    (tr : EventualityTracker) (ap oAp : AppliedSet) (mb bu : Nat),
+    armFuel ≤ parentFuel →
+    expandBranchWithFuel b armFuel ord fc tr ap mb bu = some (.inr (ob, oOrd, oAp)) →
+    (resolveOpenArm ob oOrd oAp parentFuel fc).isSome = true
+
+/--
+**The fuel induction, `NoSplit`-free, over an abstract measure.**
+
+Read against the landed `expandBranchWithFuel_isSome_of_noSplit`, exactly one thing is removed and
+nothing is added in its place: the unbranching-run restriction is gone, name and all, and both
+split shapes are discharged here rather than excluded. `.split` goes through
+`expand_split_fold_isSome` with `allocateFuelProportionally_ge` and `totalDifficulty_le` supplying
+the arm's fuel and `splitBudget_preserved` the arm's budget; `.splitOrdered` goes through
+`expand_splitOrdered_fold_isSome` in the same shape, with each arm expanded under **its own**
+ordering.
+
+The measure is abstract, so this theorem asserts nothing about the engine's termination behaviour
+by itself: it converts a per-step decrease into totality at the figure that decrease earns. The
+mathematical content of the branching case lives in `StepDecreases`, and is supplied for the mint
+potential further down.
+
+`β ≥ 1` is not decoration. The engine's very first line returns `none` when
+`branchesUsed ≥ maxBranches`, so a budget hypothesis has to be strict somewhere; `β * fuelFigure`
+with `β ≥ 1` and a positive path bound is what makes it strict. `BudgetedTotality`'s
+`β`-linear hypothesis is **not** strict at `β = 0`, which is why the naked statement is refutable
+there (`budgetedTotality_beta_zero_false`).
+-/
+theorem expandBranchWithFuel_isSome_of_measure {α : Type}
+    {fc : FormalSystem.ProofSystem.FrameClass} {P : α → Branch → TimeOrdering → Prop}
+    {Ψ : α → Branch → TimeOrdering → Nat} {D β : Nat}
+    (hβ : 1 ≤ β) (hstep : StepDecreases fc P Ψ D β) (harm : ArmSettlement fc) :
+    ∀ (N : Nat) (a : α) (fuel : Nat) (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker)
+      (applied : AppliedSet) (maxBranches branchesUsed : Nat),
+      P a b ord → Ψ a b ord < N → fuelFigure D β N ≤ fuel →
+      branchesUsed + β * fuelFigure D β N ≤ maxBranches →
+      (expandBranchWithFuel b fuel ord fc tr applied maxBranches branchesUsed).isSome = true := by
+  intro N
+  induction N with
+  | zero => intro _ _ _ _ _ _ _ _ _ hlt; exact absurd hlt (by omega)
+  | succ M ih =>
+    intro a fuel b ord tr applied mb bu hP hlt hfuel hbud
+    have hFpos : 1 ≤ fuelFigure D β (M + 1) := fuelFigure_pos (by omega)
+    have hsucc := fuelFigure_succ D β M
+    have hβF : 1 ≤ β * fuelFigure D β (M + 1) :=
+      Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega) (by omega))
+    rcases fuel with _ | f
+    · omega
+    have hfM : fuelFigure D β M ≤ f := by omega
+    have hbudM : ∀ k, k ≤ β → bu + k + β * fuelFigure D β M ≤ mb := by
+      intro k hk
+      have : β * (fuelFigure D β M + 1) ≤ β * fuelFigure D β (M + 1) :=
+        Nat.mul_le_mul_left _ (by omega)
+      have h2 : β * (fuelFigure D β M + 1) = β * fuelFigure D β M + β := by ring
+      omega
+    rw [expandBranchWithFuel, if_neg (by omega : ¬ bu ≥ mb)]
+    rcases hcl : findClosure b fc with _ | reason
+    case some => simp
+    case none =>
+      simp only [expandOnceUnblockedWithApplied]
+      obtain ⟨hext, hsp, hsso⟩ :=
+        hstep a b ord (fulfillEventualities b (registerEventualities b tr)) hP
+      rcases hres : (expandOnceUnblocked b ord fc
+          (fulfillEventualities b (registerEventualities b tr))).1 with _ | nb | bs | bs
+      · simp
+      · obtain ⟨a', hP', hΨ'⟩ := hext nb hres
+        simpa using ih a' f nb _ _ applied mb (bu + 1) hP' (by omega) hfM
+          (by have := hbudM 1 hβ; omega)
+      · obtain ⟨harity, hdiff, harms⟩ := hsp bs hres
+        have hT : ((bs.map estimateBranchDifficulty).foldl (· + ·) 0) * fuelFigure D β M
+            ≤ f + 1 := by
+          have h1 := totalDifficulty_le bs D hdiff
+          have h2 : D * bs.length ≤ D * β := Nat.mul_le_mul_left _ harity
+          have h3 : ((bs.map estimateBranchDifficulty).foldl (· + ·) 0) * fuelFigure D β M
+              ≤ (D * β) * fuelFigure D β M := Nat.mul_le_mul_right _ (by omega)
+          have h4 := fuelFigure_alloc D β M
+          omega
+        refine expand_split_fold_isSome f _ fc _ _ mb _ _ ?_ ?_ _ (by simp)
+        · intro pair hp
+          obtain ⟨hb, hal⟩ := List.of_mem_zip hp
+          obtain ⟨a', hP', hΨ'⟩ := harms pair.1 hb
+          refine ih a' (min pair.2 f) pair.1 _ _ _ mb _ hP' (by omega) ?_ ?_
+          · exact Nat.le_min.mpr
+              ⟨allocateFuelProportionally_ge f bs _ _ hfM hT hal, hfM⟩
+          · exact hbudM bs.length harity
+        · intro pair hp ob oOrd oAp hexp
+          exact harm _ _ _ _ _ _ _ _ _ _ _ (Nat.min_le_right _ _) hexp
+      · obtain ⟨harity, hdiff, harms⟩ := hsso bs hres
+        have hdiff' : ∀ nb ∈ bs.map Prod.fst, estimateBranchDifficulty nb ≤ D := by
+          intro nb hnb
+          obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hnb
+          exact hdiff p hp
+        have hT : (((bs.map Prod.fst).map estimateBranchDifficulty).foldl (· + ·) 0)
+            * fuelFigure D β M ≤ f + 1 := by
+          have h1 := totalDifficulty_le (bs.map Prod.fst) D hdiff'
+          have hlen : (bs.map Prod.fst).length = bs.length := by simp
+          have h2 : D * (bs.map Prod.fst).length ≤ D * β := by
+            rw [hlen]; exact Nat.mul_le_mul_left _ harity
+          have h3 : (((bs.map Prod.fst).map estimateBranchDifficulty).foldl (· + ·) 0)
+              * fuelFigure D β M ≤ (D * β) * fuelFigure D β M :=
+            Nat.mul_le_mul_right _ (by omega)
+          have h4 := fuelFigure_alloc D β M
+          omega
+        refine expand_splitOrdered_fold_isSome f fc _ _ mb _ _ ?_ ?_ _ (by simp)
+        · intro pair hp
+          obtain ⟨hb, hal⟩ := List.of_mem_zip hp
+          obtain ⟨a', hP', hΨ'⟩ := harms pair.1 hb
+          refine ih a' (min pair.2 f) pair.1.1 pair.1.2 _ _ mb _ hP' (by omega) ?_ ?_
+          · exact Nat.le_min.mpr
+              ⟨allocateFuelProportionally_ge f (bs.map Prod.fst) _ _ hfM hT hal, hfM⟩
+          · exact hbudM bs.length harity
+        · intro pair hp ob oOrd oAp hexp
+          exact harm _ _ _ _ _ _ _ _ _ _ _ (Nat.min_le_right _ _) hexp
+
 end FormalSystem.Metalogic.Decidability

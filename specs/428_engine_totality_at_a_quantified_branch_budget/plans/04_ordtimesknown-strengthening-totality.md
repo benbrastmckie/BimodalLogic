@@ -1304,7 +1304,7 @@ purely additive. 0 `sorry`, 0 `axiom`, 0 `NoSplit`, 0 task-number citations.
 
 ---
 
-### Phase 13: Close the induction — `expandBranchWithFuel_isSome_of_budget` [NOT STARTED]
+### Phase 13: Close the induction — `expandBranchWithFuel_isSome_of_budget` [IN PROGRESS]
 
 **Goal**: Prove Phase 10's statement, `NoSplit`-free, using Phase 12's chain.
 
