@@ -947,7 +947,7 @@
     {
       "project_number": 432,
       "project_name": "discharge_universeclosed_residual",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3901, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). The definition has two conjuncts: (1) closure of `U` under the engine's unblocked-expansion step `expandOnceUnblocked` -- a familiar shape already required by the unsplit totality theorem's `hU` obligation -- and (2) closure of `U` under an ordered split's identification arm `Branch.identifyTime`, which relabels the branch; this second clause is genuinely new. For `U = signedUniverse C L` (Fuel.lean:382, DO NOT edit Fuel.lean -- it is md5-pinned frozen), clause (2) reduces to a statement about the label set `L` being closed under time-merging. Done means: a theorem proving `UniverseClosed fc U` for a concrete, useful instantiation `U = signedUniverse C L` under an explicit closure condition on `L` (state and prove that condition too, if it is not already available), landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting), and in particular do not attempt route (a), entry 6 (a lower bound on `(b.identifyTime t2 t1).toFinset.card` from below -- dead by definition).",
       "effort": "4-6 hours",
@@ -960,14 +960,20 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-06T16:01:52Z",
+      "last_updated": "2026-08-06T18:00:01Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "path": "specs/432_discharge_universeclosed_residual/plans/01_universeclosed-clause2-verdict-instantiation.md",
+          "type": "plan",
+          "summary": "9 phases; two verdict gates on UniverseClosed clauses"
         }
-      ]
+      ],
+      "session_id": "sess_1786032616_1f0e93_432"
     },
     {
       "project_number": 433,
