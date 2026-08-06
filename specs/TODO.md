@@ -1,5 +1,5 @@
 ---
-next_project_number: 431
+next_project_number: 435
 ---
 
 # TODO
@@ -11,14 +11,18 @@ next_project_number: 431
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,428 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,420,422,425,429 | 193,231,298,415,421,423,428 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,410,414 | 420,422,429 | paper-refactor, strong_completeness |
-| 4 | 362,411,417 | 169,410,414 | paper-refactor, strong_completeness |
-| 5 | 427,430 | 411,417,419 | decidability, paper-refactor |
-| 6 | 412 | 430 | -- |
-| 7 | 426 | 412 | completeness |
-| 8 | 95,177 | 193,426 | completeness, formula-refactor |
+| 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,431 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,420,422,425,432 | 193,231,298,415,421,423,431 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,414,433 | 420,422,432 | decidability, paper-refactor, strong_completeness |
+| 4 | 362,417,434 | 169,414,433 | decidability, paper-refactor, strong_completeness |
+| 5 | 427,428 | 417,419,434 | decidability, paper-refactor |
+| 6 | 429 | 428 | decidability |
+| 7 | 410 | 429 | -- |
+| 8 | 411 | 410 | -- |
+| 9 | 430 | 411 | decidability |
+| 10 | 412 | 430 | -- |
+| 11 | 426 | 412 | completeness |
+| 12 | 95,177 | 193,426 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -31,12 +35,16 @@ next_project_number: 431
 
 ### Decidability
 
-428 [IMPLEMENTING] — Engine totality at a quantified branch budget. Owns obstruction O
-  └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
-    └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
-      └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-        └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
-          └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+431 [RESEARCHED] — Discharge `DifficultyBounded fc U D` (at `β >= 3`), defined at Fo
+  └─ 432 [RESEARCHED] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
+    └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
+      └─ 434 [RESEARCHED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
+        └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
+          └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
+            └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
+              └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+                └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
+                  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 
 ### Formula Refactor
 
@@ -88,6 +96,54 @@ next_project_number: 431
 ### Uncategorized
 
 ## Tasks
+
+### 434. Discharge mintpaysfortime residual
+- **Effort**: 10-15 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 431, Task 432, Task 433
+- **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+
+**Description**: Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3945, the open mathematical core among the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). Two disjuncts to establish. First disjunct ('a step that does not raise the known-time count does not raise the rank'): the naive reading 'non-ruleMintsFreshLabel implies no new time' is FALSE -- `densityRule` interpolates a fresh time while deliberately absent from `ruleMintsFreshLabel` (it carries its own `existingIntermediates` guard), and the active-mode arms of `untlNeg`/`snceNeg` introduce times without being witness-guarded; the correct test is the ordering-length one `expandOnceNoFresh` already uses (`newOrd.constraints.length`), not the rule list. Establishing this disjunct means proving a time-dimension analogue of `applyRule_emitted_world_mem` keyed on that ordering-length test. Second disjunct (cashed at the once-only bound, carrying the sigma-hit obligation from `mintPotential_lt_of_pick_linear` / `_branching`): the formula the rule fires on must be `sigma sf` for some `sf in U`; this is entangled with the time-reuse question -- `Branch.nextTime = maxTime + 1` while `Branch.identifyTime` can LOWER `maxTime`, so whether the engine can re-issue a time an earlier identification retired is genuinely open (the live-times reformulation carries the identical obligation, confirming it is intrinsic rather than an artifact of the measure). Done means: a theorem proving `MintPaysForTime fc U Tmax` for a concrete, useful instantiation, landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting) -- in particular do not re-litigate `witnessPresent_identifyTime`'s unconditional form (entry 5, refuted by `witnessPresent_identifyTime_unconditional_false`) or `OrdTimesLeMaxTime` preservation across the identification arm (entry 7, refuted by `ordTimes_identifyTime_arm3_false`; the settled repair is `OrdTimesKnown`).
+
+---
+
+### 433. Discharge postblockingsettles residual
+- **Effort**: 6-10 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 431, Task 432
+- **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+
+**Description**: Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:4344, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). It states that the post-blocking pass leaves a branch the blocking-aware saturation test certifies -- i.e. `findUnexpandedUnblockedWith satBr satOrd fc (blockedTimes satBr satOrd fc (armTracker satBr)) = none` whenever `saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd))`. It subsumes `resolveOpenArm`'s own `none` arm via `armSettlement_of_postBlockingSettles` (MintBound.lean:4354) -- `ArmSettlement` alone is proved strictly too weak (`resolveOpenArm` tests `findClosure satBr` before its saturation test; `buildTableauAt` does not), so do not attempt to discharge via `ArmSettlement` instead. The relevant definitions are frozen (md5-pinned) in Saturation.lean (`saturateBlocked`, :431) and Tableau.lean (`blockedTimes`, :2104; `findUnexpandedUnblockedWith`, :2115) -- do not edit either file; the residual's own docstring states the gap ('whether the fuel-vs-condition gap can be closed by fuel alone') is exactly what Saturation.lean leaves open using only its existing public interface. Done means: either (a) a proof of `PostBlockingSettles fc` for the frame classes the terminus is meant to be used at, using only the public interface of the frozen files, landed sorry-free and axiom-free with `lake build` green; or (b), if (a) turns out to be genuinely impossible without touching the frozen files, a return to [BLOCKED] with the specific counterexample or obstruction found, analogous to the parent task's own refutation-driven repairs (e.g. `ordTimes_identifyTime_arm3_false`, MintBound.lean:1217) -- do not paper over with a vacuous definition (`lean4.md`'s Vacuous Definitions prohibition applies).
+
+---
+
+### 432. Discharge universeclosed residual
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 431
+- **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+
+**Description**: Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3901, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). The definition has two conjuncts: (1) closure of `U` under the engine's unblocked-expansion step `expandOnceUnblocked` -- a familiar shape already required by the unsplit totality theorem's `hU` obligation -- and (2) closure of `U` under an ordered split's identification arm `Branch.identifyTime`, which relabels the branch; this second clause is genuinely new. For `U = signedUniverse C L` (Fuel.lean:382, DO NOT edit Fuel.lean -- it is md5-pinned frozen), clause (2) reduces to a statement about the label set `L` being closed under time-merging. Done means: a theorem proving `UniverseClosed fc U` for a concrete, useful instantiation `U = signedUniverse C L` under an explicit closure condition on `L` (state and prove that condition too, if it is not already available), landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting), and in particular do not attempt route (a), entry 6 (a lower bound on `(b.identifyTime t2 t1).toFinset.card` from below -- dead by definition).
+
+---
+
+### 431. Discharge difficultybounded residual
+- **Effort**: 3-5 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+
+**Description**: Discharge `DifficultyBounded fc U D` (at `β >= 3`), defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3914, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). This is a SCOPE DECISION before it is a proof problem: `estimateBranchDifficulty` (Saturation.lean:360) is built from `temporalCount` and `modalCount` (Saturation.lean:330, 342), both `private` to Saturation.lean, which the parent task's plan v4 froze byte-identical (md5-pinned, alongside Fuel.lean and Tableau.lean) and forbade editing. Before attempting a proof, explicitly decide between: (a) widen visibility of `temporalCount`/`modalCount` (or expose an equivalent public lemma bounding `estimateBranchDifficulty` in terms of formula complexity) in Saturation.lean, which breaks the prior freeze and must be stated as a deliberate choice, not a silent edit; or (b) restate/discharge the bound using only `estimateBranchDifficulty`'s existing public interface plus branch-confinement facts already available in MintBound.lean, avoiding Saturation.lean entirely. Record the choice made and why. Done means: a theorem (or corollary) proving `DifficultyBounded fc U D` holds for a concrete, useful instantiation of `U` and `D` (matching the shape the terminus's caller-facing forms `buildTableauAt_isSome_of_budget` / `buildTableauAt_isSome_at_seed`, MintBound.lean:4416-4453, expect), landed sorry-free and axiom-free, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting) and do not touch `Fuel.lean` or `Tableau.lean`.
+
+---
 
 ### 430. Semantic lift and track a assembly valid iff allclosed
 - **Status**: [NOT STARTED]
@@ -141,10 +197,10 @@ DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on re
 ---
 
 ### 428. Engine totality at a quantified branch budget
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 431, Task 432, Task 433, Task 434
 - **Plan**:
   - [428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md]
   - [428_engine_totality_at_a_quantified_branch_budget/plans/03_mint-bound-irreflexivity-totality.md]
