@@ -333,30 +333,39 @@ form, false for clause 1's label dimension (Phase 5 settles that).
 
 ---
 
-### Phase 3: The repaired predicate, and the chain generalization [NOT STARTED]
+### Phase 3: The repaired predicate, and the chain generalization [COMPLETED]
 
 **Goal**: Introduce `UniverseClosedAt` — clause 1 unchanged, clause 2 restricted to
 `t₁ ∈ b.knownTimes` — record that it is strictly weaker than `UniverseClosed`, and generalize the
 existing chain to assume it, without withdrawing any landed statement.
 
 **Tasks**:
-- [ ] Define `UniverseClosedAt fc U`: clause 1 verbatim from `UniverseClosed`, clause 2 as
+- [x] Define `UniverseClosedAt fc U`: clause 1 verbatim from `UniverseClosed`, clause 2 as
       `∀ (b : Branch) (t₁ t₂ : TimeIndex), (∀ x ∈ b, x ∈ U) → t₁ ∈ b.knownTimes →
       ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U`. Do **not** also constrain `t₂` — planning verified `t₂` is
-      not needed, and constraining it would weaken the predicate for no gain.
-- [ ] Land `universeClosedAt_of_universeClosed : UniverseClosed fc U → UniverseClosedAt fc U`. Its
+      not needed, and constraining it would weaken the predicate for no gain. *(landed exactly as
+      specified; `t₂` left free.)*
+- [x] Land `universeClosedAt_of_universeClosed : UniverseClosed fc U → UniverseClosedAt fc U`. Its
       docstring must state the direction explicitly: the new hypothesis is weaker, so every theorem
       restated against it is a **strengthening**, in the same sense `ordTimesLeMaxTime_of_ordTimesKnown`
       records for the run invariant. Note that the converse is false by Phase 2's refutation whenever
       `U` is nonempty, so the two are genuinely not interchangeable.
-- [ ] Generalize the four theorems that *use* the hypothesis to take `UniverseClosedAt`, supplying
+- [x] Generalize the four theorems that *use* the hypothesis to take `UniverseClosedAt`, supplying
       `t₁ ∈ b.knownTimes` locally from `firstIncomparablePair_spec` applied to the trigger returned by
       `expandOnceUnblocked_splitOrdered_shape`. Change one site at a time and build after each.
-- [ ] Thread the weakened hypothesis through the remaining signatures up to and including the
-      terminus, so the whole chain assumes `UniverseClosedAt`.
-- [ ] Retain every original-shaped statement as a corollary obtained by composing with
+      *(deviation: altered — done **additively**, as four new `…_at` theorems rather than four
+      in-place signature changes. The local `t₁ ∈ b.knownTimes` supply was factored into the named
+      bridge `universeClosedAt_identify_at_trigger`. See the mechanism divergence below.)*
+- [x] Thread the weakened hypothesis through the remaining signatures up to and including the
+      terminus, so the whole chain assumes `UniverseClosedAt`. *(deviation: altered — the spine is
+      threaded through six new `…_at` theorems; the six originals are byte-unchanged.)*
+- [x] Retain every original-shaped statement as a corollary obtained by composing with
       `universeClosedAt_of_universeClosed`, so no landed statement is withdrawn and the landed
-      terminus's original signature remains available by name.
+      terminus's original signature remains available by name. *(deviation: altered — the originals
+      are retained **as themselves**, byte-identical, which is strictly stronger than retaining them
+      as re-derived corollaries: their statements AND their proof terms are unchanged. No composition
+      through the bridge was needed, and `universeClosedAt_of_universeClosed` is landed anyway
+      because it is what records the direction of the change.)*
 
 **Timing**: 2.5 hours
 
@@ -381,6 +390,61 @@ hypothesis into the terminus and changes the shape of this phase.
 - `lake build` full project green (this phase touches the terminus chain).
 - Every original-shaped statement still resolves by name, with the same statement text.
 - `lean_verify` on the terminus: still sorry-free and axiom-free.
+
+#### Phase 3 completion note
+
+Full `lake build` **green** (2333 jobs). Frozen-file md5s re-checked and unchanged.
+`lean_verify` on `buildTableauAt_isSome_at_seed_lengthBudget_at`: axioms exactly
+`{propext, Classical.choice, Quot.sound}`.
+
+All new material was placed in one contiguous new section, **`C10`, immediately before the `C9`
+register** — chosen for territory isolation, since tasks 433 and 434 also edit this file and the
+`MintPaysForTime` / blocking blocks are theirs.
+
+Landed (11 declarations):
+
+| Declaration | Role |
+|-------------|------|
+| `UniverseClosedAt` | the repaired predicate; clause 1 verbatim, clause 2 with `t₁ ∈ b.knownTimes` |
+| `universeClosedAt_of_universeClosed` | the direction record (weaker hypothesis ⇒ strengthening) |
+| `universeClosedAt_identify_at_trigger` | the freeness bridge: clause 2 at an ordered split's trigger |
+| `difficultyBounded_of_stepLengthBounded_at` | consumer 1 |
+| `difficultyBoundedAt_ceiling_at` | consumer 2 |
+| `budgetPotential_step_unordered_at` | consumer 3 (clause 1 only) |
+| `budgetPotential_step_splitOrdered_at` | consumer 4 (the only clause-2 payment site) |
+| `stepDecreases_budgetPotential_at` | spine |
+| `expandBranchWithFuel_isSome_of_budget_at` | spine |
+| `buildTableauAt_isSome_of_budget_at`, `buildTableauAt_isSome_at_seed_at` | terminus |
+| `buildTableauAt_isSome_of_lengthBudget_at`, `buildTableauAt_isSome_at_seed_lengthBudget_at` | terminus, length-budget siblings |
+
+**DIVERGENCE, recorded — mechanism, not substance.** The plan wrote this phase as an in-place
+generalization of the ten `hUcl : UniverseClosed fc U` signatures followed by original-shaped
+corollaries. It was done additively instead: the ten originals are **byte-identical**, and the chain
+at the repaired predicate is added alongside under `…_at` names. Reasons:
+
+1. The dispatch constraint "all edits additive; previously-landed terminus proof terms must stay
+   byte-unchanged" is non-negotiable, and an in-place hypothesis-type change alters ten landed
+   statements including the terminus.
+2. The plan's own Testing & Validation criterion — "every pre-existing theorem statement still
+   resolves by name with the same statement" — is **better** served this way: statements *and* proof
+   terms are unchanged, rather than statements preserved via re-derivation.
+
+The substance of the phase is fully delivered: the whole chain is available at `UniverseClosedAt`, up
+to and including four termini. Nothing is weakened; the divergence is recorded in the `C10` section
+preamble in the file as well, in the house "DIVERGENCE, recorded" style.
+
+**Cost of the divergence, stated plainly**: the two arithmetic step lemmas
+(`budgetPotential_step_unordered`, `budgetPotential_step_splitOrdered`, ~65 lines each) are restated
+rather than shared, because sharing them would require rewriting the landed proofs into one-liners
+over factored-out confinement hypotheses. The `C10` preamble names that refactor and says why it was
+not done.
+
+**Scope hypothesis, confirmed and corrected.** Four consuming theorems (as Phase 1 recorded), ten
+signatures. Both clause-2 consumers reach `t₁` **only** through
+`expandOnceUnblocked_splitOrdered_shape`, so no site leaks a new hypothesis — confirmed
+constructively by `universeClosedAt_identify_at_trigger` closing both. No fifth consuming site
+exists. One refinement on the plan's inventory: `budgetPotential_step_unordered` consumes **clause 1
+only**, so it needed no bridge at all.
 
 ---
 

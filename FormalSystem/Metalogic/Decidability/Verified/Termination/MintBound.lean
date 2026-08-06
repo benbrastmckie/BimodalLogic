@@ -5228,6 +5228,412 @@ theorem buildTableauAt_isSome_at_seed_lengthBudget {fc : FormalSystem.ProofSyste
   buildTableauAt_isSome_at_seed phi hβ hUcl
     (difficultyBounded_of_stepLengthBounded hL hUcl) hmint hpb hseed
 
+/-! ## C10. The repaired closure residual, and the chain stated at it
+
+`UniverseClosed`'s second conjunct is refuted above at every nonempty `U`
+(`universeClosed_identify_retime_false`), so the four theorems that assume it are conditionals no
+caller can discharge. This section supplies the repair and restates the chain at it.
+
+**The repair, and why it is exactly this.** Clause 2's defect is a single unconstrained quantifier:
+the merge *target* `t₁`. `UniverseClosedAt` restricts it to `b.knownTimes` and changes nothing else
+— clause 1 is carried verbatim and the merge *source* `t₂` stays free. Restricting `t₂` as well
+would weaken the predicate for no gain, since the proof of
+`timeMergeClosed_identifyTime_signedUniverse` below never appeals to it; register entry 12 records
+that as a tempting-but-wrong repair.
+
+**The restriction is free at every consuming site**, which is what makes this a repair rather than a
+new caller obligation. Both sites that consume clause 2 reach `t₁` through
+`expandOnceUnblocked_splitOrdered_shape`, which returns the trigger
+`firstIncomparablePair b ord = some (t₁, t₂)` alongside the arms; `firstIncomparablePair_spec`
+turns that trigger into `t₁ ∈ b.knownTimes` on the spot. So the hypothesis is discharged locally and
+never surfaces on the terminus.
+
+### DIVERGENCE, recorded: the chain is restated additively, not generalized in place
+
+The plan's Phase 3 wrote this as an in-place generalization of the ten signatures carrying
+`hUcl : UniverseClosed fc U`, with the original shapes retained afterwards as corollaries. It is
+done the other way round here: **every one of those ten theorems is left byte-identical**, and the
+chain at the repaired predicate is added alongside under `…_at` names. Two reasons, both of which
+the plan's own acceptance criteria prefer:
+
+* Its Testing & Validation asks that "every pre-existing theorem statement still resolves by name
+  with the same statement". An in-place hypothesis-type change alters ten landed statements —
+  including **the** terminus — and would have satisfied that criterion only by renaming the
+  generalized forms anyway, which is what is done here directly.
+* The landed terminus's proof terms stay untouched, so nothing about the parent development has to
+  be re-verified.
+
+The cost is that the two arithmetic step lemmas are restated rather than shared. They are not
+weakened: `budgetPotential_step_unordered_at` and `budgetPotential_step_splitOrdered_at` have the
+identical conclusions, and the only difference in either proof is which projection supplies
+confinement. A reader who wants the shared form should factor the confinement facts out as
+hypotheses (`∀ x ∈ nb, x ∈ U` for the unordered lemma, and the trigger-indexed form for the ordered
+one) and derive all four from those two — that refactor would touch the landed proofs and is
+deliberately not done here. -/
+
+/-- **The repaired closure residual.** Clause 1 verbatim from `UniverseClosed`; clause 2 with the
+merge target `t₁` restricted to a time the branch already knows.
+
+`UniverseClosed` is strictly stronger — `universeClosedAt_of_universeClosed` is the implication, and
+the converse fails at every nonempty `U` by `universeClosed_identify_retime_false`, so the two are
+genuinely not interchangeable. Unlike its predecessor this one is satisfiable, and
+`universeClosedAt_signedUniverse_of_headroom` exhibits it at `U = signedUniverse C L`. -/
+def UniverseClosedAt (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula) : Prop :=
+  (∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), (∀ x ∈ b, x ∈ U) →
+      ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb, x ∈ U) ∧
+  (∀ (b : Branch) (t₁ t₂ : TimeIndex), (∀ x ∈ b, x ∈ U) → t₁ ∈ b.knownTimes →
+      ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U)
+
+/-- **The direction, stated explicitly.** `UniverseClosedAt` is the **weaker** hypothesis, so every
+theorem restated against it is a **strengthening** of its `UniverseClosed`-shaped predecessor — the
+same sense in which `ordTimesLeMaxTime_of_ordTimesKnown` records that `OrdTimesKnown` strengthens
+the run invariant rather than weakening it.
+
+The converse is **false** whenever `U` is nonempty, by `universeClosed_identify_retime_false`: there
+is no `UniverseClosed`-shaped theorem to be recovered from a `UniverseClosedAt`-shaped one, and none
+is wanted, since the stronger hypothesis is the unsatisfiable one. -/
+theorem universeClosedAt_of_universeClosed {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} (h : UniverseClosed fc U) : UniverseClosedAt fc U :=
+  ⟨h.1, fun b t₁ t₂ hbU _ => h.2 b t₁ t₂ hbU⟩
+
+/-- **Clause 2, supplied at an ordered split's trigger.** The bridge that makes the restriction
+free: at any branch where `timeLinearity` fires, the arm-3 merge target is a known time, so
+`UniverseClosedAt`'s restricted clause applies with nothing extra assumed.
+
+This is the single lemma that would have to fail for the repair to have leaked a new hypothesis into
+the terminus. It does not fail: `firstIncomparablePair_spec` is exactly what it needs. -/
+theorem universeClosedAt_identify_at_trigger {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : UniverseClosedAt fc U) (hbU : ∀ x ∈ b, x ∈ U)
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) :
+    ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U :=
+  h.2 b t₁ t₂ hbU (firstIncomparablePair_spec htrig).1
+
+/-! ### The four consuming theorems, at the repaired predicate -/
+
+/-- `difficultyBounded_of_stepLengthBounded` at the repaired closure residual. Statement and proof
+are its own; the only change is that arm 3's confinement comes from
+`universeClosedAt_identify_at_trigger` rather than from the unrestricted clause. -/
+theorem difficultyBounded_of_stepLengthBounded_at {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {L : Nat}
+    (hL : StepLengthBounded fc U L) (hUcl : UniverseClosedAt fc U) :
+    DifficultyBounded fc U (difficultyCeiling U L) := by
+  intro b ord tr hbU
+  refine ⟨?_, ?_⟩
+  · intro nb hnb
+    exact estimateBranchDifficulty_le_ceiling (hUcl.1 b ord tr hbU nb hnb)
+      ((hL b ord tr hbU).1 nb hnb)
+  · intro bs hbs p hp
+    obtain ⟨t₁, t₂, htrig, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hbs
+    have hlen : p.1.length ≤ L := (hL b ord tr hbU).2 _ hbs p hp
+    have hconf : ∀ x ∈ p.1, x ∈ U := by
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl | rfl
+      · exact hbU
+      · exact hbU
+      · exact universeClosedAt_identify_at_trigger hUcl hbU htrig
+    exact estimateBranchDifficulty_le_ceiling hconf hlen
+
+/-- `difficultyBoundedAt_ceiling` at the repaired closure residual. -/
+theorem difficultyBoundedAt_ceiling_at {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {c L : Nat}
+    (hg : StepLengthGrowth fc c) (hUcl : UniverseClosedAt fc U) :
+    DifficultyBoundedAt fc U L (difficultyCeiling U (c * L + c)) := by
+  intro b ord tr hinv hbU hlen
+  have habs : c * b.length + c ≤ c * L + c :=
+    Nat.add_le_add_right (Nat.mul_le_mul_left c hlen) c
+  refine ⟨?_, ?_⟩
+  · intro nb hnb
+    exact estimateBranchDifficulty_le_ceiling (hUcl.1 b ord tr hbU nb hnb)
+      (le_trans ((hg b ord tr hinv).1 nb hnb) habs)
+  · intro bs hbs p hp
+    have hlen' : p.1.length ≤ c * L + c := le_trans ((hg b ord tr hinv).2 bs hbs p hp) habs
+    obtain ⟨t₁, t₂, htrig, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hbs
+    have hconf : ∀ x ∈ p.1, x ∈ U := by
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl | rfl
+      · exact hbU
+      · exact hbU
+      · exact universeClosedAt_identify_at_trigger hUcl hbU htrig
+    exact estimateBranchDifficulty_le_ceiling hconf hlen'
+
+/-- `budgetPotential_step_unordered` at the repaired closure residual. This lemma never touches
+clause 2 at all — only `hUcl.1`, which the two predicates share verbatim — so the arithmetic is
+carried across unaltered. -/
+theorem budgetPotential_step_unordered_at {U : Finset SignedFormula} {Tmax : Nat}
+    {σ : SignedFormula → SignedFormula} {b nb : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hUcl : UniverseClosedAt fc U) (hmint : MintPaysForTime fc U Tmax)
+    (hst : BudgetState U Tmax σ b ord)
+    (hmem : nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1)
+    (hgrow : b.toFinset.card < nb.toFinset.card) :
+    BudgetState U Tmax σ nb (expandOnceUnblocked b ord fc tr).2 ∧
+      budgetPotential U Tmax σ nb (expandOnceUnblocked b ord fc tr).2
+        < budgetPotential U Tmax σ b ord := by
+  obtain ⟨hinv, hbU, hbud⟩ := hst
+  have hnbU : ∀ x ∈ nb, x ∈ U := hUcl.1 b ord tr hbU nb hmem
+  have hinv' : RunInvariant nb (expandOnceUnblocked b ord fc tr).2 :=
+    (expandOnceUnblocked_runInvariant hinv).1 nb hmem
+  have hm' : mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+      ≤ mintPotential U σ b ord := mintPotential_expandOnceUnblocked nb hmem
+  have hcU : b.toFinset.card ≤ U.card := card_le_of_subset_universe hbU
+  have hc'U : nb.toFinset.card ≤ U.card := card_le_of_subset_universe hnbU
+  have hS : 0 < Tmax * Tmax + 1 := by omega
+  rcases hmint σ b ord tr hinv hbU nb hmem with ⟨hk, hR⟩ | ⟨hI, hmlt⟩
+  · have hI : mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+        ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2 * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance]
+    omega
+  · have hkT : nb.knownTimes.toFinset.card ≤ Tmax := by
+      simp only [mintTimeBudget] at hI hbud; omega
+    have hp' : (incompPairs nb (expandOnceUnblocked b ord fc tr).2).card ≤ Tmax * Tmax :=
+      le_trans (incompPairs_card_le _ _) (Nat.mul_le_mul hkT hkT)
+    have hEmul : mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2 * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hg1 : (nb.knownTimes.toFinset.card + mintPotential U σ nb
+          (expandOnceUnblocked b ord fc tr).2) * (Tmax * Tmax + 1)
+        ≤ (b.knownTimes.toFinset.card + mintPotential U σ b ord) * (Tmax * Tmax + 1) := by
+      refine Nat.mul_le_mul_right _ ?_
+      simpa only [mintTimeBudget] using hI
+    have hg3 : (mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 + 1)
+          * (Tmax * Tmax + 1)
+        ≤ mintPotential U σ b ord * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hmlt
+    have he1 : (nb.knownTimes.toFinset.card + mintPotential U σ nb
+          (expandOnceUnblocked b ord fc tr).2) * (Tmax * Tmax + 1)
+        = nb.knownTimes.toFinset.card * (Tmax * Tmax + 1)
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1) := by
+      ring
+    have he2 : (b.knownTimes.toFinset.card + mintPotential U σ b ord) * (Tmax * Tmax + 1)
+        = b.knownTimes.toFinset.card * (Tmax * Tmax + 1)
+          + mintPotential U σ b ord * (Tmax * Tmax + 1) := by ring
+    have he3 : (mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 + 1)
+          * (Tmax * Tmax + 1)
+        = mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + (Tmax * Tmax + 1) := by ring
+    have he4 : 2 * (Tmax * Tmax + 1) * mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+        = mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1) := by
+      ring
+    have he5 : 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord
+        = mintPotential U σ b ord * (Tmax * Tmax + 1)
+          + mintPotential U σ b ord * (Tmax * Tmax + 1) := by ring
+    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance, splitOrderedRank]
+    omega
+
+/-- `budgetPotential_step_splitOrdered` at the repaired closure residual. This is the one place in
+the chain where the restriction has to be paid for, and `universeClosedAt_identify_at_trigger` pays
+it from the trigger that `expandOnceUnblocked_splitOrdered_shape` has already produced two lines
+earlier — so the payment is local and nothing propagates outward. -/
+theorem budgetPotential_step_splitOrdered_at {U : Finset SignedFormula} {Tmax : Nat}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {bs : List (Branch × TimeOrdering)}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hUcl : UniverseClosedAt fc U) (hst : BudgetState U Tmax σ b ord)
+    (hres : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
+    ∀ p ∈ bs, ∃ σ' : SignedFormula → SignedFormula, BudgetState U Tmax σ' p.1 p.2 ∧
+      budgetPotential U Tmax σ' p.1 p.2 < budgetPotential U Tmax σ b ord := by
+  obtain ⟨hinv, hbU, hbud⟩ := hst
+  have hkT : b.knownTimes.toFinset.card ≤ Tmax := by
+    simp only [mintTimeBudget] at hbud; omega
+  have hcU : b.toFinset.card ≤ U.card := card_le_of_subset_universe hbU
+  have hrank := expandOnceUnblocked_splitOrdered_rank_lt hkT hres
+  have hinvs := (expandOnceUnblocked_runInvariant hinv).2 bs hres
+  obtain ⟨t₁, t₂, htrig, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hres
+  intro p hp
+  have hrk := hrank p hp
+  have hinvp := hinvs p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · dsimp only at hrk hinvp ⊢
+    have hm' : mintPotential U σ b (ord.addFuture t₁ t₂) ≤ mintPotential U σ b ord :=
+      mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₁ t₂)
+    have hI : mintTimeBudget U σ b (ord.addFuture t₁ t₂) ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : mintTimeBudget U σ b (ord.addFuture t₁ t₂) * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ b (ord.addFuture t₁ t₂)
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    refine ⟨σ, ⟨hinvp, hbU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance]
+    omega
+  · dsimp only at hrk hinvp ⊢
+    have hm' : mintPotential U σ b (ord.addFuture t₂ t₁) ≤ mintPotential U σ b ord :=
+      mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₂ t₁)
+    have hI : mintTimeBudget U σ b (ord.addFuture t₂ t₁) ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : mintTimeBudget U σ b (ord.addFuture t₂ t₁) * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ b (ord.addFuture t₂ t₁)
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    refine ⟨σ, ⟨hinvp, hbU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance]
+    omega
+  · dsimp only at hrk hinvp ⊢
+    have hm' : mintPotential U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+        (ord.identifyTime t₂ t₁) ≤ mintPotential U σ b ord :=
+      mintPotential_identifyTime htrig hinv.irreflOrd
+    have hk := knownTimes_card_lt_at_arm3 (b := b) (ord := ord) htrig
+    have hIU : ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U :=
+      universeClosedAt_identify_at_trigger hUcl hbU htrig
+    have hc'U : (b.identifyTime t₂ t₁).toFinset.card ≤ U.card :=
+      card_le_of_subset_universe hIU
+    have hIsucc : mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+        (ord.identifyTime t₂ t₁) + 1 ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : (mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+          (ord.identifyTime t₂ t₁) + 1) * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hIsucc
+    have hEexp : (mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+          (ord.identifyTime t₂ t₁) + 1) * U.card
+        = mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+          (ord.identifyTime t₂ t₁) * U.card + U.card := by ring
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U (fun x => rhoSF t₂ t₁ (σ x))
+          (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    refine ⟨fun x => rhoSF t₂ t₁ (σ x), ⟨hinvp, hIU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance]
+    omega
+
+/-! ### The threading spine, and the terminus at the repaired predicate
+
+The six theorems below only *pass* the closure residual on; none inspects it. Each is its
+`UniverseClosed`-shaped counterpart with the hypothesis type changed and the two step lemmas
+redirected, and the originals are untouched. -/
+
+/-- `stepDecreases_budgetPotential` at the repaired closure residual. -/
+theorem stepDecreases_budgetPotential_at {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax D β : Nat} (hβ : 3 ≤ β)
+    (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U Tmax) :
+    StepDecreases fc (BudgetState U Tmax) (budgetPotential U Tmax) D β := by
+  intro σ b ord tr hst
+  refine ⟨?_, ?_, ?_⟩
+  · intro nb hres
+    have hmem : nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1 := by
+      rw [hres]; simp [unorderedSuccessorBranches]
+    exact ⟨σ, budgetPotential_step_unordered_at hUcl hmint hst hmem
+      (expandOnceUnblocked_card_lt hres)⟩
+  · intro bs hres
+    have hmem : ∀ nb ∈ bs,
+        nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1 := by
+      intro nb hnb; rw [hres]; simpa [unorderedSuccessorBranches] using hnb
+    refine ⟨le_trans (expandOnceUnblocked_split_arity_le hres) hβ, ?_, ?_⟩
+    · intro nb hnb
+      exact (hD b ord tr hst.2.1).1 nb (hmem nb hnb)
+    · intro nb hnb
+      exact ⟨σ, budgetPotential_step_unordered_at hUcl hmint hst (hmem nb hnb)
+        (expandOnceUnblocked_split_card_lt hres hnb)⟩
+  · intro bs hres
+    have harity : bs.length ≤ β := by
+      obtain ⟨t₁, t₂, -, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hres
+      simpa using hβ
+    exact ⟨harity, (hD b ord tr hst.2.1).2 bs hres,
+      budgetPotential_step_splitOrdered_at hUcl hst hres⟩
+
+/-- `expandBranchWithFuel_isSome_of_budget` at the repaired closure residual. -/
+theorem expandBranchWithFuel_isSome_of_budget_at {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {mintBudget Tmax D β : Nat}
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U Tmax) (harm : ArmSettlement fc) :
+    BudgetedTotalityAt fc U mintBudget Tmax D β := by
+  intro b ord tr applied maxBranches branchesUsed hbU hinv hmb hT hbud
+  have hst : BudgetState U Tmax id b ord := by
+    refine ⟨hinv, hbU, ?_⟩
+    have := mintPotential_le_eight_mul U id b ord
+    simp only [mintTimeBudget]
+    omega
+  exact expandBranchWithFuel_isSome_of_measure (by omega)
+    (stepDecreases_budgetPotential_at hβ hUcl hD hmint)
+    harm (mintPathBound U.card Tmax mintBudget) id _ b ord tr applied maxBranches branchesUsed
+    hst (budgetPotential_lt_mintPathBound hst hmb) (Nat.le_refl _) hbud
+
+/-- **THE TERMINUS, at the repaired closure residual.** `buildTableauAt_isSome_of_budget` with
+`UniverseClosed` exchanged for `UniverseClosedAt`.
+
+The exchange is a **strengthening**: the hypothesis is weaker
+(`universeClosedAt_of_universeClosed`), and unlike its predecessor's it is satisfiable, so this is
+the form a caller can actually reach. The other three residuals are carried across unaltered and are
+still named — `DifficultyBounded` (itself refutable at every `D`; use the length-budget sibling
+below), `MintPaysForTime`, `PostBlockingSettles`. Nothing above is withdrawn: the
+`UniverseClosed`-shaped statements and their proofs stand untouched. -/
+theorem buildTableauAt_isSome_of_budget_at {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U Tmax) (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 8 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuel U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuel U.card Tmax mintBudget D β) fc maxBranches).isSome
+      = true := by
+  refine buildTableauAt_isSome_of_settles hpb ?_
+  exact expandBranchWithFuel_isSome_of_budget_at hβ hUcl hD hmint
+    (armSettlement_of_postBlockingSettles hpb)
+    (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
+    hseed (runInvariant_initial _) hmb hT (by omega)
+
+/-- `buildTableauAt_isSome_at_seed` at the repaired closure residual. -/
+theorem buildTableauAt_isSome_at_seed_at {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {D β : Nat} (phi : Formula)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U
+      (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuel U.card (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (8 * U.card) D β)
+        fc
+        (β * mintAwareFuel U.card
+          (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card) (8 * U.card) D β)
+      ).isSome = true :=
+  buildTableauAt_isSome_of_budget_at phi _ hβ hUcl hD hmint hpb hseed (Nat.le_refl _)
+    (derivedTmax_spec (seedBranch phi) U) (Nat.le_refl _)
+
+/-- `buildTableauAt_isSome_of_lengthBudget` at the repaired closure residual — the terminus with
+**both** refutable residuals exchanged for satisfiable ones at once, `DifficultyBounded` for
+`StepLengthBounded` and `UniverseClosed` for `UniverseClosedAt`. -/
+theorem buildTableauAt_isSome_of_lengthBudget_at {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {mintBudget Tmax L β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hL : StepLengthBounded fc U L)
+    (hmint : MintPaysForTime fc U Tmax) (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 8 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuel U.card Tmax mintBudget (difficultyCeiling U L) β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuel U.card Tmax mintBudget (difficultyCeiling U L) β) fc
+        maxBranches).isSome = true :=
+  buildTableauAt_isSome_of_budget_at phi maxBranches hβ hUcl
+    (difficultyBounded_of_stepLengthBounded_at hL hUcl) hmint hpb hseed hmb hT hbud
+
+/-- `buildTableauAt_isSome_at_seed_lengthBudget` at the repaired closure residual: every number read
+off, and both refutable residuals exchanged. -/
+theorem buildTableauAt_isSome_at_seed_lengthBudget_at
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {L β : Nat} (phi : Formula)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hL : StepLengthBounded fc U L)
+    (hmint : MintPaysForTime fc U
+      (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuel U.card (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (8 * U.card) (difficultyCeiling U L) β)
+        fc
+        (β * mintAwareFuel U.card
+          (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card) (8 * U.card)
+          (difficultyCeiling U L) β)
+      ).isSome = true :=
+  buildTableauAt_isSome_at_seed_at phi hβ hUcl
+    (difficultyBounded_of_stepLengthBounded_at hL hUcl) hmint hpb hseed
+
 /-! ## C9. The do-not-re-attempt register
 
 Nine statements that look like the natural next lemma and are **not** available. Each is cited by
