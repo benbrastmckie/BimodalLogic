@@ -6,7 +6,7 @@ next_project_number: 431
 
 ## Task Order
 
-*Updated 2026-08-05. Generated from state.json dependency graph.*
+*Updated 2026-08-06. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -148,6 +148,7 @@ DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on re
 - **Plan**:
   - [428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md]
   - [428_engine_totality_at_a_quantified_branch_budget/plans/03_mint-bound-irreflexivity-totality.md]
+  - [428_engine_totality_at_a_quantified_branch_budget/plans/04_ordtimesknown-strengthening-totality.md]
 - **Summary**: [428_engine_totality_at_a_quantified_branch_budget/summaries/02_lexicographic-splitordered-measure-summary.md]
 - **Research**:
   - [428_engine_totality_at_a_quantified_branch_budget/reports/03_phase11-potential-obstruction.md]
