@@ -469,22 +469,77 @@ stay `[NOT STARTED]` rather than being attempted out of order.
 
 ---
 
-### Phase 4: Engine-level `IrreflOrd` across all four result shapes [IN PROGRESS]
+### Phase 4: Engine-level `IrreflOrd` across all four result shapes [BLOCKED]
+
+**BLOCKER** (Phase 4) — the phase's escalation clause fired, on the arm the clause names:
+
+- **What failed**: `OrdTimesLeMaxTime` is **not preserved at a branching arm**. The rule is
+  `timeLinearity`; the arm is **arm 3**, the identification arm
+  `(b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁)` of `.splitOrdered`. This is a **refutation**,
+  not an unproved obligation — it is machine-checked in-source as
+  `ordTimes_identifyTime_arm3_false` (`MintBound.lean`), decided, axioms `[propext]` only.
+- **The refuting configuration**: `b = [T p @(0,0), T q @(0,5)]`, `ord = ⟨[(3, 4)]⟩`. All three
+  standing preconditions are decided true — `IrreflOrd ord`, `OrdTimesLeMaxTime b ord`
+  (`3 ≤ 5`, `4 ≤ 5`), and `firstIncomparablePair b ord = some (0, 5)`, so this is a *genuine*
+  ordered-split trigger, not a hypothetical one. After arm 3: `b.identifyTime 5 0` collapses the
+  branch's largest time, so `Branch.maxTime` drops from `5` to `0`, while
+  `ord.identifyTime 5 0` leaves `(3, 4)` untouched (neither component is `t₂ = 5`, so nothing
+  collapses and nothing is dropped). `3 ≤ 0` is false.
+- **Root cause**: `Branch.identifyTime` can *lower* `Branch.maxTime`; `TimeOrdering.identifyTime`
+  cannot lower a constraint that does not mention `t₂`. The invariant measures ordering times
+  against a bound that the arm is free to move downward underneath them.
+- **Why this blocks the phase rather than being a footnote**: the phase's stated Goal is "so
+  `IrreflOrd` is a run invariant the fuel induction can carry". `expandOnceUnblocked_irreflOrd`
+  consumes `haux : OrdTimesLeMaxTime b ord` as a hypothesis (via `applyRule_irreflOrd`, via the
+  `densityRule` second edge). A run that passes through an ordered split's arm 3 loses `haux`,
+  so `IrreflOrd` is **not yet** carryable across ordered splits, and the phase's Goal is not met
+  — even though every individual deliverable below is green.
+- **What is needed to unblock** (a plan decision, deliberately NOT taken here): a **strictly
+  stronger** invariant — "every ordering time is a *known branch time*" rather than "every
+  ordering time is `≤ b.maxTime`". That form *is* preserved at arm 3, because `rho t₂ t₁` maps
+  `b.knownTimes` onto `(b.identifyTime t₂ t₁).knownTimes`, so the ordering's renamed times land
+  in the new branch's known times by construction. It also still implies the `≤ maxTime` form
+  that the `densityRule` second edge consumes, so it is a strengthening rather than a weakening.
+  **It was not applied** because `OrdTimesLeMaxTime` is consumed by the already-`[COMPLETED]`
+  Phase 3 results (`applyRule_irreflOrd`, `ordTimes_addFuture_cons`, `ordTimes_addPast_cons`,
+  `ordTimes_density_cons`, `applyRule_ordTimes_nonbranching`); changing the definition reopens a
+  completed phase, which is a planning decision, not an implementation one.
+- **Prohibited workarounds** (none were used): `sorry`; `def X := True` or any vacuous
+  placeholder; admitting `OrdTimesLeMaxTime` at arm 3; weakening it into something the
+  `densityRule` case can no longer consume; restricting the theorem to non-branching runs
+  (`NoSplit` by another name).
+
+**What IS landed, green and sorry-free, under this phase** (three committed sub-steps):
+`findApplicable{,Serial,Linearity}Rule_applyRule_pair`; `expandOnceUnblocked_irreflOrd` (all
+four result shapes); `expandOnceUnblocked_splitOrdered_irreflOrd` (the per-arm orderings);
+`branchingResultBranches`, `applyRule_ordTimes_branching`, `pick_stage_source`,
+`unorderedSuccessorBranches`, `expandOnceUnblocked_ordTimes` (`.extended` and every arm of a
+`.split`). **R1's mirrored half is discharged, not blocked**: all four branching mint sites
+(`untlPos`, `sncePos`, and the ACTIVE arms of `untlNeg`/`snceNeg`) do build *both* arms at
+`freshLabel`, so every arm dominates the time it minted — the plan's UNVERIFIED grounding note
+on this point is now confirmed by proof.
 
 **Goal**: Lift Phase 3 from `applyRule` to `expandOnceUnblocked`, so `IrreflOrd` is a run invariant
 the fuel induction can carry.
 
 **Tasks**:
-- [ ] Prove `expandOnceUnblocked_irreflOrd`: given `IrreflOrd ord` (and `OrdTimesLeMaxTime b ord`),
+- [x] Prove `expandOnceUnblocked_irreflOrd`: given `IrreflOrd ord` (and `OrdTimesLeMaxTime b ord`),
       the ordering component of `(expandOnceUnblocked b ord fc tr)` is irreflexive, and each arm's
-      ordering in the `.split` / `.splitOrdered` cases is irreflexive.
-- [ ] `.splitOrdered`: arms 1-2 are `ord.addFuture t₁ t₂` / `ord.addFuture t₂ t₁` with `t₂ ≠ t₁` from
+      ordering in the `.split` / `.splitOrdered` cases is irreflexive. *(completed — the
+      per-arm `.splitOrdered` half is the separate `expandOnceUnblocked_splitOrdered_irreflOrd`,
+      since those orderings live in the result rather than the step's second component; `.split`
+      needs no separate statement because every arm shares the step's one ordering)*
+- [x] `.splitOrdered`: arms 1-2 are `ord.addFuture t₁ t₂` / `ord.addFuture t₂ t₁` with `t₂ ≠ t₁` from
       the landed `firstIncomparablePair_spec` — `irreflOrd_addFuture`. Arm 3 is
-      `ord.identifyTime t₂ t₁` — `irreflOrd_identifyTime`, unconditional.
-- [ ] `.split` / `.extended` / `.saturated`: route through Phase 3's `applyRule_irreflOrd` via the
+      `ord.identifyTime t₂ t₁` — `irreflOrd_identifyTime`, unconditional. *(completed exactly as
+      written)*
+- [x] `.split` / `.extended` / `.saturated`: route through Phase 3's `applyRule_irreflOrd` via the
       landed `findApplicable{,Serial,Linearity}Rule_applyRule_eq` bridges, using
       `pick_result_mem` (`Fuel.lean:282`) to supply the `sf ∈ b` side condition.
-- [ ] Prove `expandOnceUnblocked` preserves `OrdTimesLeMaxTime` **at the branching shapes**. This is
+      *(completed — via sub-step 4.1's `…_applyRule_pair` strengthenings, and with the recorded
+      correction applied: `sf ∈ b` comes from `List.mem_of_find?_eq_some` at each pick stage, not
+      from `pick_result_mem`, which consumes rather than supplies it)*
+- [x] Prove `expandOnceUnblocked` preserves `OrdTimesLeMaxTime` **at the branching shapes**. This is
       the mirrored half of R1: a `.branching` step hands the *same* `newOrd` to every arm, so an arm
       whose formula list omits the fresh witness would hold an ordering edge to a time absent from
       its own branch, and that arm's `nextTime` could then collide.
@@ -494,6 +549,11 @@ the fuel induction can carry.
       `freshTime`. Report 04 flagged the shape as a *visible way to fail*, not a demonstrated
       failure. Check each branching mint rule's arms against this reading before assuming either
       outcome.
+      *(completed for the `.branching` shape — `applyRule_ordTimes_branching` and
+      `expandOnceUnblocked_ordTimes`. The UNVERIFIED grounding note is CONFIRMED: all four
+      branching mint sites head both arms at `freshLabel`. **Refuted for `.splitOrdered` arm 3** —
+      see the BLOCKER at the top of this phase and the in-source
+      `ordTimes_identifyTime_arm3_false`.)*
 
 **Progress notes (phase IN PROGRESS — one green sub-step landed, four tasks outstanding)**:
 

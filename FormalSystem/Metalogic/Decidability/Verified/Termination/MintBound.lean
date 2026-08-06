@@ -1183,4 +1183,48 @@ theorem expandOnceUnblocked_ordTimes {b : Branch} {ord : TimeOrdering}
   rw [keyO, keyB]
   exact pickBranches_ordTimes haux (pick_stage_source b ord fc tr)
 
+/-! ### `OrdTimesLeMaxTime` is REFUTED at the ordered split's identification arm
+
+The statement above stops at `.extended` and `.split` for a reason that is a **fact, not a gap**.
+`Branch.identifyTime t₂ t₁` can *lower* `Branch.maxTime` — it does so exactly when `t₂` was the
+branch's largest time and `t₁` is smaller — while `TimeOrdering.identifyTime` leaves any
+constraint not mentioning `t₂` completely untouched. A constraint whose times sit strictly
+between `t₁` and `t₂` therefore survives the arm while the bound it was measured against drops
+below it.
+
+The refuting configuration below is machine-checked, and it belongs on the do-not-re-attempt
+register alongside `witnessPresent_identifyTime_unconditional_false`: a future reader who assumes
+`OrdTimesLeMaxTime` is a run invariant across *every* engine step will be re-attempting a refuted
+statement.
+
+**What this does and does not say.** It says the invariant *as defined* is not preserved by the
+identification arm. It does not say the configuration is reachable from `initialBranch` — the
+constraint `(3, 4)` mentions two times no formula on the branch carries, and every ordering edge
+the engine actually builds runs between a branch time and a freshly minted one. Closing that gap
+needs a **strictly stronger** invariant ("every ordering time is a *known branch time*", not
+merely "≤ `maxTime`"), which is preserved at the arm because `rho` maps known times to known
+times. That strengthening is not made here: `OrdTimesLeMaxTime` is what the landed density and
+non-branching results already consume, and changing it would reopen them. -/
+
+/-- **Counterexample: the identification arm does not preserve `OrdTimesLeMaxTime`.**
+
+All four conjuncts are decided. The first three establish that the configuration is a *genuine*
+ordered-split trigger satisfying both standing hypotheses — the ordering is irreflexive, the
+invariant holds before the step, and `firstIncomparablePair` really does select `(0, 5)` — so the
+failure in the fourth conjunct is attributable to the arm itself rather than to a violated
+precondition. The branch's largest time `5` is the one identified away, and the surviving
+constraint `(3, 4)` then exceeds the collapsed `maxTime` of `0`. -/
+theorem ordTimes_identifyTime_arm3_false :
+    letI p : Formula := .atom ⟨"p", none⟩
+    letI q : Formula := .atom ⟨"q", none⟩
+    letI b : Branch := [⟨.pos, p, ⟨0, 0⟩⟩, ⟨.pos, q, ⟨0, 5⟩⟩]
+    letI ord : TimeOrdering := ⟨[(3, 4)]⟩
+    IrreflOrd ord ∧ OrdTimesLeMaxTime b ord ∧
+      firstIncomparablePair b ord = some (0, 5) ∧
+      ¬ OrdTimesLeMaxTime (b.identifyTime 5 0) (ord.identifyTime 5 0) := by
+  refine ⟨?_, ?_, by decide, ?_⟩
+  · unfold IrreflOrd; decide
+  · unfold OrdTimesLeMaxTime; decide
+  · unfold OrdTimesLeMaxTime; decide
+
 end FormalSystem.Metalogic.Decidability
