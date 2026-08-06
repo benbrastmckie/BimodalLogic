@@ -699,7 +699,7 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430
+- **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430, Task 431, Task 432, Task 433, Task 434
 
 **Description**: Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.
 
@@ -763,7 +763,7 @@ Governing design document: specs/361_strong_completeness_architecture_and_weak_t
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 165, Task 408, Task 412, Task 426, Task 428, Task 429, Task 430
+- **Dependencies**: Task 165, Task 408, Task 412, Task 426, Task 428, Task 429, Task 430, Task 431, Task 432, Task 433, Task 434
 
 **Description**: Verify and record the final axiom/sorry status of the headline metalogical results, then close.
 
