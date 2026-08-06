@@ -3893,6 +3893,22 @@ def BudgetState (U : Finset SignedFormula) (Tmax : Nat)
     (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering) : Prop :=
   RunInvariant b ord ∧ (∀ x ∈ b, x ∈ U) ∧ mintTimeBudget U σ b ord ≤ Tmax
 
+/-- **The forward direction of `mem_signedUniverse`.**
+
+`mem_signedUniverse` is the `mpr` direction only: it builds membership from a formula fact and a
+label fact. Every closure argument about `signedUniverse C L` needs the converse — given a member,
+recover its two coordinates — because closure conditions are stated on `C` and `L`, not on the
+image.
+
+It lives here rather than beside `mem_signedUniverse` because `Fuel.lean` is frozen: its md5 is
+pinned by the plan that landed the totality terminus, so no new declaration may be added to it. -/
+theorem formula_label_of_mem_signedUniverse {C : Finset Formula} {L : Finset Label}
+    {x : SignedFormula} (h : x ∈ signedUniverse C L) : x.formula ∈ C ∧ x.label ∈ L := by
+  simp only [signedUniverse, Finset.mem_image, Finset.mem_product, Finset.mem_insert,
+    Finset.mem_singleton] at h
+  obtain ⟨p, ⟨-, hf, hl⟩, rfl⟩ := h
+  exact ⟨hf, hl⟩
+
 /-- **Residual 1: the universe is closed under the engine's steps.**
 
 The unsplit totality theorem carries the same obligation, as the conjunction of its `P` and its

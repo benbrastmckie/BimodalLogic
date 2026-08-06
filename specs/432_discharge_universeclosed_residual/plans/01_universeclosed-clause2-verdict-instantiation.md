@@ -1,7 +1,7 @@
 # Implementation Plan: Discharge the `UniverseClosed` residual
 
 - **Task**: 432 - Discharge `UniverseClosed fc U` on the totality terminus `buildTableauAt_isSome_of_budget`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None (parent task 428's terminus is landed and is read-only input here)
 - **Research Inputs**: `specs/432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md`
@@ -160,21 +160,22 @@ ends with an explicit written verdict, and the phases behind it branch on that v
 
 ---
 
-### Phase 1: Ground truth, register audit, and the missing forward membership lemma [NOT STARTED]
+### Phase 1: Ground truth, register audit, and the missing forward membership lemma [COMPLETED]
 
 **Goal**: Re-anchor every target by name rather than by the stale line numbers, read the register
 before writing anything, and land the one small lemma every later phase needs.
 
 **Tasks**:
-- [ ] Read the do-not-re-attempt register (section C9 of `MintBound.lean`, located by the heading
-      text `## C9. The do-not-re-attempt register`) in full. Record its entry count.
-- [ ] Re-locate by name and record current line numbers for: `UniverseClosed`,
+- [x] Read the do-not-re-attempt register (section C9 of `MintBound.lean`, located by the heading
+      text `## C9. The do-not-re-attempt register`) in full. Record its entry count. *(completed —
+      **nine** entries, heading at line 5110. New entries start at 10.)*
+- [x] Re-locate by name and record current line numbers for: `UniverseClosed`,
       `difficultyBounded_of_stepLengthBounded`, `difficultyBoundedAt_ceiling`,
       `buildTableauAt_isSome_of_budget`, and every theorem whose signature contains
-      `(hUcl : UniverseClosed`.
-- [ ] Record the md5 of `Fuel.lean`, `Saturation.lean`, and `Tableau.lean` as the baseline for the
-      Phase 9 frozen-file check.
-- [ ] Land `mem_signedUniverse_iff` (or `formula_label_of_mem_signedUniverse`) in `MintBound.lean`:
+      `(hUcl : UniverseClosed`. *(completed — see the anchor table in the completion note below.)*
+- [x] Record the md5 of `Fuel.lean`, `Saturation.lean`, and `Tableau.lean` as the baseline for the
+      Phase 9 frozen-file check. *(completed — baseline recorded in the completion note.)*
+- [x] Land `mem_signedUniverse_iff` (or `formula_label_of_mem_signedUniverse`) in `MintBound.lean`:
       `x ∈ signedUniverse C L → x.formula ∈ C ∧ x.label ∈ L`. Proof verified green in planning:
       `simp only [signedUniverse, Finset.mem_image, Finset.mem_product, Finset.mem_insert,
       Finset.mem_singleton] at h; obtain ⟨p, ⟨-, hf, hl⟩, rfl⟩ := h; exact ⟨hf, hl⟩`.
@@ -199,6 +200,53 @@ in Phase 3 or Phase 9.
 **Verification**:
 - `lake build FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound` green.
 - The recorded anchors and counts are written into the phase's completion note.
+
+#### Phase 1 completion note — recorded ground truth
+
+Baseline `lake build` over the whole project: **green** (2333 jobs) before any edit.
+
+Frozen-file md5 baseline:
+
+| File | md5 |
+|------|-----|
+| `Verified/Termination/Fuel.lean` | `8a395bd7117a682c1f8302a2ac5f0f1f` |
+| `Saturation.lean` | `ae47004e06e77f2846cc3e1dfa408382` |
+| `Tableau.lean` | `cfd82332c8e400ac97ab709ece5dfb4a` |
+
+Anchors, pre-edit (`MintBound.lean` was 5191 lines):
+
+| Target | Line |
+|--------|------|
+| `UniverseClosed` (def) | 3904 |
+| `difficultyBounded_of_stepLengthBounded` | 4198 |
+| `difficultyBoundedAt_ceiling` | 4331 |
+| `buildTableauAt_isSome_of_budget` | 5009 |
+| register heading `## C9.` | 5110 |
+
+`hUcl : UniverseClosed` signature count: **10** — scope hypothesis confirmed.
+
+`hUcl.` projection sites: **6** occurrences (`hUcl.1` at 4203, 4338, 4554; `hUcl.2` at 4213, 4348,
+4667), distributed over **exactly 4 consuming theorems** — the ones at 4198, 4331, 4546, 4622. The
+plan's scope hypothesis said "4 hits" for `grep -n "hUcl\."`; the raw grep count is 6 because two of
+the four theorems project both conjuncts. **The scope claim is confirmed at theorem granularity**
+(four consuming theorems), which is the granularity Phase 3 edits at; the raw-hit figure is
+corrected here rather than absorbed.
+
+`UniverseClosed` appears in exactly one file (`MintBound.lean`), so the Phase 3 sweep is
+file-local.
+
+Additional ground truth needed by later phases, read during Phase 1:
+- `Branch.identifyTime b src tgt = (b.map fun sf => if sf.label.time == src then {sf with label :=
+  {sf.label with time := tgt}} else sf).eraseDups` — so in clause 2's `b.identifyTime t₂ t₁`, the
+  **source** is `t₂` and the **target** is `t₁`.
+- `expandOnceUnblocked_splitOrdered_shape` returns arm 3 as `(b.identifyTime t₂ t₁, …)` together
+  with `firstIncomparablePair b ord = some (t₁, t₂)`, and `firstIncomparablePair_spec` turns that
+  into `t₁ ∈ b.knownTimes ∧ t₂ ∈ b.knownTimes ∧ …`. So the target `t₁` is always a known time at
+  every consuming site — this is what makes Phase 3's restriction free.
+- `Label` is `structure Label where world : WorldIndex; time : TimeIndex` with `DecidableEq`;
+  `WorldIndex = TimeIndex = Nat`. `Branch := List SignedFormula` (no `Nodup`).
+
+**Landed**: `formula_label_of_mem_signedUniverse`.
 
 ---
 
