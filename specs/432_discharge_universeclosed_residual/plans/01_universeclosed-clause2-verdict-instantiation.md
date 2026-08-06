@@ -250,30 +250,30 @@ Additional ground truth needed by later phases, read during Phase 1:
 
 ---
 
-### Phase 2: Clause (2) satisfiability verdict [NOT STARTED]
+### Phase 2: Clause (2) satisfiability verdict [COMPLETED]
 
 **Goal**: Settle, with a machine-checked theorem, whether clause 2 of `UniverseClosed` is provable,
 repairable, or refutable as literally stated. **This is the pivot gate for Phases 3 and 4.**
 
 **Tasks**:
-- [ ] Land the refutation `universeClosed_identify_retime_false`: from `U.Nonempty` and clause 2 of
+- [x] Land the refutation `universeClosed_identify_retime_false`: from `U.Nonempty` and clause 2 of
       `UniverseClosed` (stated as the standalone proposition, not via the conjunction), derive
       `False`. The planning probe compiled green and is the intended proof:
       instantiate clause 2 at `b = [x]`, `t₂ = x.label.time`, `t₁ = t` to obtain
       `⟨x.sign, x.formula, ⟨x.label.world, t⟩⟩ ∈ U` for every `t`, then apply
       `Finset.exists_ne_map_eq_of_card_lt_of_maps_to` at `Finset.range (U.card + 1)` and close with
       injectivity of the retiming. No frame-class hypothesis is needed and none should be added.
-- [ ] Land the corollary `universeClosed_nonempty_false`: `U.Nonempty → ¬ UniverseClosed fc U`, by
+- [x] Land the corollary `universeClosed_nonempty_false`: `U.Nonempty → ¬ UniverseClosed fc U`, by
       projecting `.2` and applying the above.
-- [ ] Land the complementary fact that makes the refutation informative rather than merely negative:
+- [x] Land the complementary fact that makes the refutation informative rather than merely negative:
       clause 2 *does* hold at `U = ∅` (vacuously, since confinement forces `b = []`). This is what
       shows the residual is not merely unproved but **satisfiable only where the terminus is
-      vacuous**.
-- [ ] Write the verdict into the phase's completion note in one of exactly three forms:
+      vacuous**. *(landed as `universeClosed_identify_empty`.)*
+- [x] Write the verdict into the phase's completion note in one of exactly three forms:
       **(a) provable as stated** — then Phase 3 is skipped and Phase 4 proves clause 2 directly;
       **(b) repairable** — the expected outcome; Phases 3 and 4 proceed as written;
       **(c) neither** — stop and mark the phase `[BLOCKED]` with the goal state reached.
-- [ ] Extend `UniverseClosed`'s docstring with the refutation, in the same register-citing style the
+- [x] Extend `UniverseClosed`'s docstring with the refutation, in the same register-citing style the
       `DifficultyBounded` docstring uses: name the witness, name the cause in one line (the merge
       target `t₁` is unconstrained, so a `Finset` universe would have to contain a retiming of one of
       its own members at every one of infinitely many times), and state that the definition is
@@ -300,6 +300,36 @@ did not, record the difference rather than absorbing it.
 - `lake build` scoped to the module, green.
 - `lean_verify` on both new theorems: zero sorries, zero added axioms, no `native_decide`.
 - The written verdict is one of the three pre-declared forms.
+
+#### Phase 2 completion note — VERDICT
+
+**Verdict: (b) repairable.** Clause 2 of `UniverseClosed` is **refutable as literally stated**, at
+every nonempty `U`, and the repair named in the plan is the right one. Phases 3 and 4 proceed as
+written.
+
+Machine-checked, green, axiom set exactly `{propext, Classical.choice, Quot.sound}` on all three:
+
+| Declaration | Content |
+|-------------|---------|
+| `universeClosed_identify_retime_false` | `U.Nonempty` + clause 2 standalone → `False` |
+| `universeClosed_nonempty_false` | `U.Nonempty → ¬ UniverseClosed fc U` |
+| `universeClosed_identify_empty` | clause 2 holds at `U = ∅`, vacuously |
+
+**The scope hypothesis is confirmed exactly**: the refutation went through with `U` universally
+quantified and **no frame-class hypothesis** — `fc` does not appear in
+`universeClosed_identify_retime_false` at all. The in-file version needed nothing the planning probe
+did not.
+
+**The satisfiability set of clause 2 is exactly `{∅}`**, by the conjunction of the refutation and the
+empty-universe complement. Since `signedUniverse C L` is empty only when `C` or `L` is, the residual
+as stated is satisfiable only where the terminus has nothing to say. This is the same class of defect
+as `difficultyBounded_multiplicity_false` (register entry 9) in a different coordinate: there the
+unconstrained quantity was the branch's list length, here it is the identification's merge target.
+
+`UniverseClosed`'s docstring was extended with the refutation, the retention rationale, and a
+forward pointer to `UniverseClosedAt`. It also now **corrects** its own earlier claim that the
+definition "is a statement about `L`" for `U = signedUniverse C L`: true for clause 2's repaired
+form, false for clause 1's label dimension (Phase 5 settles that).
 
 ---
 

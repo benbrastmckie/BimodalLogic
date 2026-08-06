@@ -3914,9 +3914,34 @@ theorem formula_label_of_mem_signedUniverse {C : Finset Formula} {L : Finset Lab
 The unsplit totality theorem carries the same obligation, as the conjunction of its `P` and its
 `hU`; here it is separated out and named because the second clause is genuinely new. An ordered
 split's identification arm **relabels** the branch, so confinement is preserved only if `U` is
-closed under merging one time into another. For `U = signedUniverse C L` that is a statement about
-`L`, and it is a caller's obligation about the label set, not a fact about the engine — which is
-why it appears here rather than being proved. -/
+closed under merging one time into another.
+
+**Clause 2 as written is false at every nonempty `U`.** `universeClosed_identify_retime_false` is
+the refuting witness and `universeClosed_nonempty_false` the residual-level corollary; the cause in
+one line is that the merge *target* `t₁` is universally quantified with nothing tying it to `b`, so
+a `Finset` universe would have to contain a distinct retiming of one of its own members at every one
+of infinitely many times. It is not a statement about `L` that a caller could discharge: no `C`, no
+`L` and no frame class enters the refutation. `universeClosed_identify_empty` shows the clause does
+hold at `U = ∅`, so its satisfiability set is exactly `{∅}` — satisfiable only where the terminus is
+vacuous.
+
+It is retained **verbatim, unweakened**, because the landed terminus is stated against it and
+nothing in this file is withdrawn. The satisfiable replacement is `UniverseClosedAt`, which
+restricts `t₁` — and only `t₁` — to `b.knownTimes`;
+`universeClosedAt_of_universeClosed` records that the replacement is *weaker*, hence that every
+theorem restated against it is a strengthening. The restriction leaks no new hypothesis into the
+terminus, because every consumer of clause 2 reaches `t₁` through
+`expandOnceUnblocked_splitOrdered_shape`, whose trigger spec `firstIncomparablePair_spec` already
+returns `t₁ ∈ b.knownTimes`. Register entries 10 and 12 record the refutation and the
+tempting-but-wrong repair.
+
+**Clause 1 is a different matter, and its label dimension is *not* a caller's obligation about `L`
+either** — see `universeClosed_fresh_world_escapes` and the discussion on
+`unorderedSuccessor_confined_signedUniverse_of_headroom`. An earlier version of this docstring said
+that for `U = signedUniverse C L` the whole definition "is a statement about `L`". That is right for
+clause 2's repaired form (`timeMergeClosed_identifyTime_signedUniverse` supplies the condition) and
+**wrong** for clause 1's label dimension, which no closure condition on a fixed finite `L` can
+supply. -/
 def UniverseClosed (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula) : Prop :=
   (∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), (∀ x ∈ b, x ∈ U) →
       ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb, x ∈ U) ∧
@@ -3994,6 +4019,86 @@ def MintPaysForTime (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset Signe
             ≤ mintTimeBudget U σ b ord ∧
           mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
             < mintPotential U σ b ord)
+
+/-! ### `UniverseClosed`'s identification clause is refutable, at every nonempty `U`
+
+The same shape of defect that `difficultyBounded_multiplicity_false` records for `DifficultyBounded`,
+in a different coordinate. There the quantifier that went unconstrained was the branch's *length*;
+here it is the identification's **merge target**.
+
+Clause 2 reads `∀ (b : Branch) (t₁ t₂ : TimeIndex), (∀ x ∈ b, x ∈ U) → ∀ x ∈ b.identifyTime t₂ t₁,
+x ∈ U`, and `t₁` — the time everything is merged *into* — ranges over all of `TimeIndex` with
+nothing tying it to `b`, to `U`, or to any ordering. Since `Branch.identifyTime b t₂ t₁` is
+`(b.map fun sf => if sf.label.time == t₂ then {sf with label := {sf.label with time := t₁}} else
+sf).eraseDups`, the singleton branch `[x]` at `t₂ = x.label.time` retimes `x` to `t₁` outright.
+Clause 2 then demands the retiming of `x` at **every** `t : TimeIndex`, and `t ↦ ⟨x.sign, x.formula,
+⟨x.label.world, t⟩⟩` is injective, so `U` would have to be infinite. It is a `Finset`.
+
+So the clause is satisfiable only where the terminus is vacuous: `universeClosed_identify_empty`
+records that it does hold at `U = ∅`, and `universeClosed_nonempty_false` records that this is the
+only case. No frame class enters either statement.
+
+The repaired form is `UniverseClosedAt` below, which constrains `t₁` — and only `t₁` — to
+`b.knownTimes`. Register entries 10 and 12 record the refutation and the tempting-but-wrong repair.
+-/
+
+/-- **The refutation.** Clause 2 of `UniverseClosed`, stated as a standalone proposition so the
+witness does not have to carry clause 1, is false at every nonempty `U` — with no frame-class
+hypothesis, because none is needed.
+
+The universe is a `Finset`; the clause forces it to contain a distinct retiming of one of its own
+members at every one of infinitely many times. The pigeonhole is taken over
+`Finset.range (U.card + 1)`, which is the smallest range that cannot inject. -/
+theorem universeClosed_identify_retime_false {U : Finset SignedFormula} (hne : U.Nonempty)
+    (h2 : ∀ (b : Branch) (t₁ t₂ : TimeIndex), (∀ x ∈ b, x ∈ U) →
+      ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U) : False := by
+  obtain ⟨x, hx⟩ := hne
+  -- Clause 2 at the singleton branch `[x]`, source `x.label.time`, target `t`.
+  have key : ∀ t : TimeIndex,
+      (⟨x.sign, x.formula, ⟨x.label.world, t⟩⟩ : SignedFormula) ∈ U := by
+    intro t
+    have hb : ∀ y ∈ ([x] : Branch), y ∈ U := by
+      intro y hy
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hy
+      subst hy; exact hx
+    refine h2 [x] t x.label.time hb _ ?_
+    refine List.mem_eraseDups.mpr (List.mem_map.mpr ⟨x, by simp, ?_⟩)
+    simp only [beq_self_eq_true, if_true]
+  -- `U.card + 1` retimings cannot fit in `U`.
+  obtain ⟨a, -, c, -, hac, heq⟩ :=
+    Finset.exists_ne_map_eq_of_card_lt_of_maps_to
+      (s := Finset.range (U.card + 1)) (t := U)
+      (f := fun t => (⟨x.sign, x.formula, ⟨x.label.world, t⟩⟩ : SignedFormula))
+      (by simp) (fun t _ => key t)
+  exact hac (by simpa using heq)
+
+/-- **The residual as literally stated is unsatisfiable wherever it matters.** Projecting the second
+conjunct and applying `universeClosed_identify_retime_false`.
+
+This is the exact analogue of `difficultyBounded_multiplicity_false` for the other residual: the
+hypothesis is not merely unproved, it is false, and it is false for a reason that no amount of work
+on `C`, on `L`, or on the frame class can repair. -/
+theorem universeClosed_nonempty_false {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} (hne : U.Nonempty) : ¬ UniverseClosed fc U :=
+  fun h => universeClosed_identify_retime_false hne h.2
+
+/-- **The complement that makes the refutation informative.** Clause 2 *does* hold at `U = ∅`,
+vacuously: confinement to the empty universe forces `b = []`, and `[].identifyTime t₂ t₁ = []`.
+
+Together with `universeClosed_nonempty_false` this pins the residual's satisfiability set exactly:
+`{∅}`. A residual satisfiable only at the empty universe is satisfiable only where the terminus it
+guards has nothing to say, since `signedUniverse C L` is empty only when `C` or `L` is. -/
+theorem universeClosed_identify_empty :
+    ∀ (b : Branch) (t₁ t₂ : TimeIndex), (∀ x ∈ b, x ∈ (∅ : Finset SignedFormula)) →
+      ∀ x ∈ b.identifyTime t₂ t₁, x ∈ (∅ : Finset SignedFormula) := by
+  intro b t₁ t₂ hb
+  have hnil : b = [] := by
+    cases b with
+    | nil => rfl
+    | cons y ys => exact absurd (hb y (by simp)) (by simp)
+  subst hnil
+  intro x hx
+  simp only [Branch.identifyTime, List.map_nil, List.eraseDups_nil, List.not_mem_nil] at hx
 
 /-! ### The difficulty toolkit, and the scope decision it settles
 
