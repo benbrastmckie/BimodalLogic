@@ -5605,6 +5605,186 @@ theorem timeMergeClosed_concrete_nonempty :
     ((({0, 1} : Finset WorldIndex) ×ˢ ({0, 1, 2} : Finset TimeIndex)).image
       (fun p => (⟨p.1, p.2⟩ : Label))).Nonempty := by decide
 
+/-! ### Clause 1's label dimension is refuted at a fixed finite `signedUniverse C L`
+
+Clause 2 was the residual's *fatal* defect and `UniverseClosedAt` repairs it. Clause 1 has a second,
+**independent** defect, and this subsection settles it rather than assuming either way. The verdict is
+that clause 1 is refutable at a fixed finite `signedUniverse C L` — so `UniverseClosedAt` is not
+satisfiable at an arbitrary `signedUniverse C L` either, and the repair of clause 2 does not rescue
+it. Both predicates carry clause 1 verbatim, so one witness refutes both.
+
+**The cause: fresh worlds.** `applyRule_boxNeg_emitted_world` and
+`applyRule_diamondPos_emitted_world` prove those two rules emit **only** at `Branch.nextWorld`, and
+`nextWorld_not_mem_worldFinset` says that world is fresh — not a world of `b` at all. So a branch
+confined to `signedUniverse C L` whose worlds exhaust `L`'s worlds has a `boxNeg` successor whose
+label is outside `L` by construction. `freshWorldBranch` below is the minimal such configuration:
+one formula, `F(□p)` at `⟨0, 0⟩`, and `L = {⟨0, 0⟩}`.
+
+**Why blocking does not save it.** Clause 1 quantifies over **every** tracker `tr` and every ordering
+`ord`, and the witness below is proved at every one of them. `blocking_fires_of_card_lt` would need
+an `allEventualitiesFulfilledOrDuplicated` guard that clause 1's caller never gets to supply.
+
+**Why no closure condition on `L` repairs it, unlike clause 2.** `worldHeadroom_fixed_finite_false`
+is the general statement: for **no** nonempty finite `L` whatsoever does every `L`-confined branch
+have its next world already in `L`. Each enlargement of `L` raises the reachable `maxWorld` by at
+least as much as it adds, so the gap re-opens. The repair therefore cannot live in `L` — it has to be
+a **branch-side headroom** hypothesis, which is what `FreshWorldHeadroom` below states and what
+register entry 11 records. -/
+
+section FreshWorldRefutation
+
+private def fwp : Formula := .atom (Atom.mkBase "p")
+
+/-- `F(□p)` at the initial label: the smallest branch whose step leaves every fixed label set. -/
+def freshWorldWitness : SignedFormula := SignedFormula.neg (Formula.box fwp) Label.initial
+
+/-- The witness branch — one formula, so its only world is `0` and its next world is `1`. -/
+def freshWorldBranch : Branch := [freshWorldWitness]
+
+/-- What `boxNeg` emits at the witness: `F(p)` at world `1`, the fresh world. -/
+def freshWorldEmitted : List SignedFormula := [SignedFormula.neg fwp ⟨1, 0⟩]
+
+/-- The formula stock: `□p` and `p`, which is all the witness and its successor need. -/
+def freshWorldStock : Finset Formula := {Formula.box fwp, fwp}
+
+/-- The label set: the initial label alone. Nonempty, so nothing below is vacuous. -/
+def freshWorldLabels : Finset Label := {Label.initial}
+
+private theorem ia_ug (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .priorUGap freshWorldWitness fc = false := rfl
+private theorem ia_sg (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .priorSGap freshWorldWitness fc = false := rfl
+private theorem ia_sep (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .sepRule freshWorldWitness fc = false := rfl
+private theorem ia_np (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .negPos freshWorldWitness fc = false := rfl
+private theorem ia_nn (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .negNeg freshWorldWitness fc = false := rfl
+private theorem ia_in (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .impNeg freshWorldWitness fc = false := rfl
+private theorem ia_ap (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .andPos freshWorldWitness fc = false := rfl
+private theorem ia_on (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .orNeg freshWorldWitness fc = false := rfl
+private theorem ia_bp (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .boxPos freshWorldWitness fc = false := rfl
+private theorem ia_bn (fc : FormalSystem.ProofSystem.FrameClass) :
+    isApplicable .boxNeg freshWorldWitness fc = true := rfl
+private theorem ar_bn :
+    applyRule .boxNeg freshWorldWitness freshWorldBranch TimeOrdering.empty
+      = (RuleResult.linear freshWorldEmitted, TimeOrdering.empty) := rfl
+private theorem rm_bn : ruleMintsFreshLabel .boxNeg = true := rfl
+private theorem wp_bn :
+    witnessPresent .boxNeg freshWorldWitness freshWorldBranch TimeOrdering.empty = false := rfl
+
+attribute [local simp] ia_ug ia_sg ia_sep ia_np ia_nn ia_in ia_ap ia_on ia_bp ia_bn ar_bn rm_bn
+  wp_bn
+
+/-- **`.boxNeg` is the rule the engine picks at the witness, at every frame class.** The nine rules
+ahead of it — the three Dedekind rules, then `negPos`, `negNeg`, `impNeg`, `andPos`, `orNeg`,
+`boxPos` — are all inapplicable to a `.neg`-signed box, and the Dense and Discrete blocks are
+*appended* after the base rules by `allRulesForFC`, so neither can pre-empt it. The witness guard is
+`witnessPresent` rather than output-presence, because `boxNeg` mints a fresh label. -/
+theorem findApplicableRule_freshWorldWitness (fc : FormalSystem.ProofSystem.FrameClass) :
+    findApplicableRule freshWorldWitness freshWorldBranch TimeOrdering.empty fc
+      = some (TableauRule.boxNeg, RuleResult.linear freshWorldEmitted, TimeOrdering.empty) := by
+  simp only [findApplicableRule, allRulesForFC, allRules, dedekindRules]
+  by_cases hd : FormalSystem.ProofSystem.FrameClass.Dedekind ≤ fc
+  · simp [hd, List.findSome?]
+  · simp [hd, List.findSome?]
+
+/-- **The step fires at the witness, at every frame class and every tracker.** Blocking is empty
+(`blockedTimes_empty`), the pick short-circuits on the single formula, and the result is
+`.extended (freshWorldEmitted ++ freshWorldBranch)` — carrying a formula at world `1`. -/
+theorem expandOnceUnblocked_freshWorldBranch
+    (fc : FormalSystem.ProofSystem.FrameClass) (tr : EventualityTracker) :
+    (expandOnceUnblocked freshWorldBranch TimeOrdering.empty fc tr).1
+      = ExpansionResult.extended (freshWorldEmitted ++ freshWorldBranch) := by
+  have hrule := findApplicableRule_freshWorldWitness fc
+  simp only [freshWorldBranch] at hrule
+  rw [expandOnceUnblocked]
+  simp only [blockedTimes_empty, findUnexpandedUnblockedWith, isExpanded, freshWorldBranch,
+    List.find?_cons, List.contains_nil, Bool.not_false, Bool.and_true, hrule,
+    Option.isNone_some]
+
+/-- The witness branch is confined to its universe: `□p ∈ C` and `⟨0,0⟩ ∈ L`. -/
+theorem freshWorldBranch_confined :
+    ∀ x ∈ freshWorldBranch, x ∈ signedUniverse freshWorldStock freshWorldLabels := by
+  intro x hx
+  simp only [freshWorldBranch, List.mem_cons, List.not_mem_nil, or_false] at hx
+  subst hx
+  exact mem_signedUniverse (by simp [freshWorldStock, freshWorldWitness, SignedFormula.neg])
+    (by simp [freshWorldLabels, freshWorldWitness, SignedFormula.neg])
+
+/-- **Clause 1 is refuted at a fixed finite `signedUniverse C L`, at every frame class.**
+
+Not merely unproved: false. The witness branch is confined, and its one step — `boxNeg`, at every
+frame class and every tracker — emits `F(p)` at world `1`, whose label is not in
+`freshWorldLabels = {⟨0,0⟩}`.
+
+Since `UniverseClosed` and `UniverseClosedAt` carry clause 1 **verbatim**, this refutes the first
+conjunct of both. It is therefore not a defect the clause-2 repair addresses, and no strengthening of
+`TimeMergeClosed` bears on it: `worldHeadroom_fixed_finite_false` shows the obstruction cannot be
+moved into `L` at all. -/
+theorem universeClosed_fresh_world_escapes (fc : FormalSystem.ProofSystem.FrameClass) :
+    ¬ (∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker),
+        (∀ x ∈ b, x ∈ signedUniverse freshWorldStock freshWorldLabels) →
+        ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb,
+          x ∈ signedUniverse freshWorldStock freshWorldLabels) := by
+  intro h
+  have hstep := expandOnceUnblocked_freshWorldBranch fc EventualityTracker.empty
+  have hmem : (freshWorldEmitted ++ freshWorldBranch)
+      ∈ unorderedSuccessorBranches
+        (expandOnceUnblocked freshWorldBranch TimeOrdering.empty fc
+          EventualityTracker.empty).1 := by
+    rw [hstep]; simp [unorderedSuccessorBranches]
+  have hbad := h freshWorldBranch TimeOrdering.empty EventualityTracker.empty
+    freshWorldBranch_confined _ hmem (SignedFormula.neg fwp ⟨1, 0⟩)
+    (by simp [freshWorldEmitted])
+  have hlab := (formula_label_of_mem_signedUniverse hbad).2
+  simp [freshWorldLabels, SignedFormula.neg, Label.initial] at hlab
+
+/-- **The repaired predicate is refuted at the same universe**, because it carries clause 1
+unchanged. `UniverseClosedAt` is the repair of clause **2** only, and this is the statement that says
+so plainly rather than letting a reader infer that the repair made the whole residual satisfiable at
+every `signedUniverse C L`. -/
+theorem universeClosedAt_fresh_world_escapes (fc : FormalSystem.ProofSystem.FrameClass) :
+    ¬ UniverseClosedAt fc (signedUniverse freshWorldStock freshWorldLabels) :=
+  fun h => universeClosed_fresh_world_escapes fc h.1
+
+/-- **No fixed finite label set supplies world headroom**, which is the general fact behind the
+witness and the reason the repair cannot be a closure condition on `L`.
+
+For every nonempty finite `L` there is an `L`-confined branch whose `Branch.nextWorld` is outside
+`L` — take a branch sitting at `L`'s largest world, whose next world is one higher. Enlarging `L` to
+cover it raises the largest world too, so the gap re-opens at every enlargement. Contrast clause 2,
+where `TimeMergeClosed` closes the analogous gap outright because identification moves a label
+*within* the existing coordinates rather than past them.
+
+This is why `FreshWorldHeadroom` below is a hypothesis about the **branch**, not about `L`. -/
+theorem worldHeadroom_fixed_finite_false (L : Finset Label) (hne : L.Nonempty) :
+    ¬ (∀ b : Branch, (∀ x ∈ b, x.label ∈ L) →
+        ∀ t : TimeIndex, (⟨Branch.nextWorld b, t⟩ : Label) ∈ L) := by
+  intro h
+  have hine : (L.image (·.world)).Nonempty := hne.image _
+  obtain ⟨l₀, hl₀, hl₀w⟩ := Finset.mem_image.mp ((L.image (·.world)).max'_mem hine)
+  have hbconf : ∀ x ∈ ([⟨.pos, .bot, l₀⟩] : Branch), x.label ∈ L := by
+    intro x hx
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hx
+    subst hx; exact hl₀
+  have hmax : Branch.nextWorld [⟨.pos, .bot, l₀⟩] = l₀.world + 1 := by
+    simp [Branch.nextWorld, Branch.maxWorld]
+  have hmem := h [⟨.pos, .bot, l₀⟩] hbconf l₀.time
+  rw [hmax] at hmem
+  have hle : l₀.world + 1 ≤ (L.image (·.world)).max' hine :=
+    Finset.le_max' (L.image (·.world)) (l₀.world + 1)
+      (Finset.mem_image.mpr ⟨⟨l₀.world + 1, l₀.time⟩, hmem, rfl⟩)
+  have heq : l₀.world = (L.image (·.world)).max' hine := hl₀w
+  rw [heq] at hle
+  exact absurd hle (Nat.not_succ_le_self _)
+
+end FreshWorldRefutation
+
 /-! ### The threading spine, and the terminus at the repaired predicate
 
 The six theorems below only *pass* the closure residual on; none inspects it. Each is its

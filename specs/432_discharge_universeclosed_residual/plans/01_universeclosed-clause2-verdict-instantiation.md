@@ -527,23 +527,23 @@ so a caller has no design decision to make beyond choosing the two projections.
 
 ---
 
-### Phase 5: Clause (1) satisfiability verdict at `signedUniverse C L` [NOT STARTED]
+### Phase 5: Clause (1) satisfiability verdict at `signedUniverse C L` [COMPLETED]
 
 **Goal**: Settle whether clause 1 can hold at a fixed finite `signedUniverse C L`, given that
 `boxNeg` and `diamondPos` emit only at `Branch.nextWorld` and that at least three rules introduce
 fresh times. **This is the pivot gate for Phases 6 and 7.**
 
 **Tasks**:
-- [ ] Read `applyRule_emitted_world_mem`, `applyRule_boxNeg_emitted_world`, and
+- [x] Read `applyRule_emitted_world_mem`, `applyRule_boxNeg_emitted_world`, and
       `applyRule_diamondPos_emitted_world` and record precisely what each gives.
-- [ ] Determine whether a branch confined to `signedUniverse C L` can be arranged so that
+- [x] Determine whether a branch confined to `signedUniverse C L` can be arranged so that
       `expandOnceUnblocked` picks a fresh-world or fresh-time rule whose emitted label escapes `L`.
       The argument to check: `b` confined implies every world of `b` is a world of `L`, so
       `b.nextWorld` is one past `b.maxWorld`; choose `b` realizing the largest world of `L` and a
       `C` containing a `boxNeg`-triggering formula. Blocking cannot be relied on to prevent this,
       because clause 1 quantifies over **every** tracker `tr` and `blocking_fires_of_card_lt`
       requires an `allEventualitiesFulfilledOrDuplicated` guard the caller must supply.
-- [ ] Land the verdict as a theorem, in whichever of these forms is true:
+- [x] Land the verdict as a theorem, in whichever of these forms is true:
       **(b) refutable** (expected) — a machine-checked witness in the style of
       `ordTimes_identifyTime_arm3_false`: exhibit concrete `C`, `L`, `b`, `ord`, `tr` and decide that
       the step's successor contains a formula outside `signedUniverse C L`. Prefer a `decide`-based
@@ -551,7 +551,7 @@ fresh times. **This is the pivot gate for Phases 6 and 7.**
       **(a) provable under conditions** — then state the conditions on `C` and `L` explicitly and
       proceed to prove them in Phase 7.
       **(c) undecided within budget** — mark `[BLOCKED]` with the configurations tried.
-- [ ] Write the verdict into the phase's completion note, naming which of Phase 7's two branches it
+- [x] Write the verdict into the phase's completion note, naming which of Phase 7's two branches it
       selects.
 
 **Timing**: 2 hours
@@ -572,6 +572,61 @@ out on the engine, fall back to a general argument from `applyRule_boxNeg_emitte
 **Verification**:
 - Module build green; the verdict theorem is sorry-free and free of `native_decide`.
 - The written verdict names one of the three pre-declared forms and selects a Phase 7 branch.
+
+#### Phase 5 completion note — VERDICT
+
+**Verdict: (b) refutable.** Clause 1 is **refutable at a fixed finite `signedUniverse C L`**, at every
+frame class and every tracker. **This selects Phase 7 branch (b).**
+
+Module build **green**; `lean_verify` on `universeClosed_fresh_world_escapes` and
+`worldHeadroom_fixed_finite_false`: axioms exactly `{propext, Classical.choice, Quot.sound}`. **No
+`native_decide` anywhere** — the witness runs on `rfl`-level rule computations plus one `simp`
+short-circuit, and is generic in `fc` and `tr` rather than decided at one concrete frame class.
+
+What the three world-emission lemmas give (task 1 of the phase, recorded):
+
+| Lemma | Content |
+|-------|---------|
+| `applyRule_emitted_world_mem` | the other 34 rules emit only inside `b.worldFinset` |
+| `applyRule_boxNeg_emitted_world` | `boxNeg` emits **only** at `Branch.nextWorld` |
+| `applyRule_diamondPos_emitted_world` | same for `diamondPos` |
+| `nextWorld_not_mem_worldFinset` (pre-existing) | `Branch.nextWorld` is not a world of `b` |
+
+Landed (section `FreshWorldRefutation`):
+
+| Declaration | Role |
+|-------------|------|
+| `freshWorldWitness`, `freshWorldBranch`, `freshWorldEmitted`, `freshWorldStock`, `freshWorldLabels` | the configuration: `F(□p)@⟨0,0⟩`, `C = {□p, p}`, `L = {⟨0,0⟩}` |
+| `findApplicableRule_freshWorldWitness` | `.boxNeg` is the pick, at **every** frame class |
+| `expandOnceUnblocked_freshWorldBranch` | the step is `.extended`, emitting at world `1` |
+| `freshWorldBranch_confined` | the witness branch is `signedUniverse C L`-confined |
+| `universeClosed_fresh_world_escapes` | **the verdict**: clause 1 is false there, at every `fc` |
+| `universeClosedAt_fresh_world_escapes` | hence `¬ UniverseClosedAt fc (signedUniverse …)` too |
+| `worldHeadroom_fixed_finite_false` | **no** nonempty finite `L` supplies world headroom |
+
+**Scope hypothesis, confirmed with a route change recorded.** The plan expected "a concrete refuting
+configuration reachable by `decide` on a single-formula branch", with `#eval` first. The `#eval`
+confirmed the configuration immediately: the step at `[F(□p)@⟨0,0⟩]` emits `F(p)@⟨1,0⟩`. But the
+final proof is **not** `decide` — it follows the plan's own named fallback, "a general argument from
+`applyRule_boxNeg_emitted_world` plus a `pick`-level bridge", in the `multWitness` template's style:
+nine `isApplicable … = false` facts by `rfl`, generic in `fc`. **The route change is an
+improvement**, and is recorded here as the plan required: a `decide` witness would have been pinned
+to one concrete frame class, whereas this one is universally quantified in both `fc` and `tr`, which
+is what closes off "some other frame class might behave differently".
+
+**Two findings beyond what the phase asked for, both load-bearing for Phases 7-9:**
+
+1. **The clause-2 repair does not rescue clause 1.** `UniverseClosed` and `UniverseClosedAt` carry
+   clause 1 **verbatim**, so one witness refutes the first conjunct of both.
+   `universeClosedAt_fresh_world_escapes` states this outright. Any docstring claiming
+   `UniverseClosedAt` is simply "satisfiable" is imprecise and must be corrected in Phase 9 — the
+   precise claim is that its *fatal* defect (clause 2, unsatisfiable except at `U = ∅`) is repaired,
+   while clause 1 needs an additional branch-side hypothesis.
+2. **The obstruction provably cannot be moved into `L`.** `worldHeadroom_fixed_finite_false` is
+   general over all nonempty finite `L`, so this is not "we did not find a closure condition" but
+   "no closure condition on `L` exists". That is exactly the asymmetry with clause 2, where
+   `TimeMergeClosed` closes the gap outright: identification moves a label *within* the existing
+   coordinates, whereas `boxNeg` moves it *past* them.
 
 ---
 
