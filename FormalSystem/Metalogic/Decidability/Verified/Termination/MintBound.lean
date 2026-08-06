@@ -3667,7 +3667,7 @@ def ArmSettlement (fc : FormalSystem.ProofSystem.FrameClass) : Prop :=
     (resolveOpenArm ob oOrd oAp parentFuel fc).isSome = true
 
 /--
-**The fuel induction, `NoSplit`-free, over an abstract measure.**
+**The fuel induction, free of the unbranching restriction, over an abstract measure.**
 
 Read against the landed `expandBranchWithFuel_isSome_of_noSplit`, exactly one thing is removed and
 nothing is added in its place: the unbranching-run restriction is gone, name and all, and both
@@ -3773,5 +3773,524 @@ theorem expandBranchWithFuel_isSome_of_measure {α : Type}
           · exact hbudM bs.length harity
         · intro pair hp ob oOrd oAp hexp
           exact harm _ _ _ _ _ _ _ _ _ _ _ (Nat.min_le_right _ _) hexp
+
+/-! ## C7. The measure, and the figure it earns
+
+The concrete measure the abstract induction is instantiated at, its three residuals, and the
+**divergence in the fuel figure** the instantiation forced.
+
+### The measure, and why each of its three components is there
+
+    Ψ(σ, b, ord) = 2·(Tmax² + 1)·mintPotential + extensionAllowance + splitOrderedRank
+
+* `splitOrderedRank` is the ordered dimension, landed and unmodified. It strictly drops at **all
+  three** arms of an ordered split (`expandOnceUnblocked_splitOrdered_rank_lt`), which is the only
+  thing that moves at arms 1 and 2 — there the branch is literally unchanged.
+* `extensionAllowance` is the branch dimension, and it is **not** `|U| − |b|`. That plain form is
+  what the recorded obstruction refutes: `Branch.identifyTime` shrinks the branch and hands
+  universe budget *back*, so `|U| − |b|` rises at arm 3. The allowance carries the shrinkage the
+  run may still be owed — `|U| + (|knownTimes| + mintPotential)·|U| − |b|` — which is exactly the
+  counting chain's links 2 and 3 turned into a per-state quantity: at most one identification per
+  unit of `|knownTimes| + mintPotential`, and at most `|U|` of shrinkage each. Every arm-3 step
+  spends one unit of that allowance to buy back at most `|U|`, so the allowance never rises.
+* `mintPotential` is the fourth component, weighted by `2·(Tmax² + 1)`, and it is what breaks the
+  circularity. A mint raises `|knownTimes|` and therefore raises the rank; nothing in the branch
+  dimension can pay for that without re-opening the recorded circularity, and the mint potential
+  can, because it is bounded by `8·|U|` outright and strictly drops at every mint. The weight is
+  exactly twice the rank's per-time step, which is what makes one mint's drop dominate one mint's
+  rank rise with a unit to spare.
+
+### DIVERGENCE, recorded: `splitAwareFuel` is short, and by how much
+
+Phase-level check `path_le_splitPathBound` compares the assembled counting figure against
+`splitPathBound` and it fits — but what it bounds is `#extensions + #identifications`, **not the
+total number of engine steps**. Fuel is spent by every step, including the ordered split's arms 1
+and 2, which change neither the branch nor its known times and are therefore counted by neither
+summand. `splitPathBound Ucard Tmax = (Ucard + 1)·(orderedRunBound Tmax + 1)` budgets one full
+ordered run per branch-growing step and allows `Ucard + 1` of those; the measure above admits up
+to `Ucard + Tmax·Ucard` branch-growing steps (shrinkage refunds) and up to `8·Ucard` rank resets
+(mints), and neither is inside that figure.
+
+The derived figure `mintPathBound` is therefore `splitPathBound` **plus** the three ceilings the
+measure actually needs, and `splitPathBound_le_mintPathBound` /
+`splitAwareFuel_le_mintAwareFuel` record that this is an *enlargement*: nothing that held at the
+landed figure is withdrawn, and the landed figure is not redefined. This follows plan 02's own
+instruction for `orderedRunBound` — derive the value, use the derived one, record the divergence —
+rather than quietly restating the target at a figure that was not checked.
+
+### Three residuals, named and not absorbed
+
+`UniverseClosed`, `DifficultyBounded` and `MintPaysForTime` below are hypotheses of the theorem,
+never of `mintPotential` or of the engine. Each carries its own docstring saying what would
+discharge it and what stands in the way. -/
+
+/-- **The ordered split's rank drop, at engine level.** `splitOrderedRank_lt_of_timeLinearity` is
+stated at `applyRule .timeLinearity`; this is the same content read off
+`expandOnceUnblocked_splitOrdered_shape`, so the induction never has to reach past the engine step
+into the pick stages. All three arms drop: arms 1-2 by `incompPairs_lt_addFuture`, arm 3 because a
+retired time is worth more than the whole incomparable-pair range. -/
+theorem expandOnceUnblocked_splitOrdered_rank_lt {b : Branch} {bs : List (Branch × TimeOrdering)}
+    {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    {Tmax : Nat} (hT : b.knownTimes.toFinset.card ≤ Tmax)
+    (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
+    ∀ p ∈ bs, splitOrderedRank Tmax p.1 p.2 < splitOrderedRank Tmax b ord := by
+  obtain ⟨t₁, t₂, htrig, rfl⟩ := expandOnceUnblocked_splitOrdered_shape h
+  obtain ⟨hlt1, hlt2⟩ := incompPairs_lt_addFuture htrig
+  intro p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · simp only [splitOrderedRank]; omega
+  · simp only [splitOrderedRank]; omega
+  · have hk := knownTimes_card_lt_at_arm3 htrig
+    have harm : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card ≤ Tmax := by omega
+    have hc := incompPairs_card_le (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
+    have h2 : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card
+        * ((b.identifyTime t₂ t₁).knownTimes).toFinset.card ≤ Tmax * Tmax :=
+      Nat.mul_le_mul harm harm
+    have hstep : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card * (Tmax * Tmax + 1)
+        + (Tmax * Tmax + 1) ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := by
+      have hle : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card + 1
+          ≤ b.knownTimes.toFinset.card := hk
+      calc ((b.identifyTime t₂ t₁).knownTimes).toFinset.card * (Tmax * Tmax + 1)
+            + (Tmax * Tmax + 1)
+          = (((b.identifyTime t₂ t₁).knownTimes).toFinset.card + 1) * (Tmax * Tmax + 1) := by ring
+        _ ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hle
+    simp only [splitOrderedRank]
+    omega
+
+/-- **The identification allowance.** Known times plus remaining mints: an upper bound on how many
+identifications the run can still perform, because each identification retires a known time and
+only a mint can create one. This is the counting chain's link 1 as a per-state quantity. -/
+def mintTimeBudget (U : Finset SignedFormula) (σ : SignedFormula → SignedFormula)
+    (b : Branch) (ord : TimeOrdering) : Nat :=
+  b.knownTimes.toFinset.card + mintPotential U σ b ord
+
+/-- **The branch-growing allowance**, carrying the shrinkage the run may still be owed.
+
+`|U| − |b|` alone is refuted as a measure by the identification arm; this is that quantity plus
+`|U|` for each identification still available, which is links 2 and 3 of the counting chain read
+per-state. It never rises: an identification spends one unit of `mintTimeBudget` (worth `|U|`) to
+buy back at most `|U|` of branch. -/
+def extensionAllowance (U : Finset SignedFormula) (σ : SignedFormula → SignedFormula)
+    (b : Branch) (ord : TimeOrdering) : Nat :=
+  U.card + mintTimeBudget U σ b ord * U.card - b.toFinset.card
+
+/-- **The measure.** See the section preamble for why each of the three components is present and
+why no two of them suffice. -/
+def budgetPotential (U : Finset SignedFormula) (Tmax : Nat)
+    (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering) : Nat :=
+  (2 * (Tmax * Tmax + 1)) * mintPotential U σ b ord
+  + extensionAllowance U σ b ord
+  + splitOrderedRank Tmax b ord
+
+/-- **The carried state**: the run invariant, confinement to the universe, and the derived time
+bound. The third clause is what `derivedTmax_spec` satisfies at the engine's seed, so it is a
+consequence of the mint budget rather than an assumption about `Tmax`. -/
+def BudgetState (U : Finset SignedFormula) (Tmax : Nat)
+    (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering) : Prop :=
+  RunInvariant b ord ∧ (∀ x ∈ b, x ∈ U) ∧ mintTimeBudget U σ b ord ≤ Tmax
+
+/-- **Residual 1: the universe is closed under the engine's steps.**
+
+The unsplit totality theorem carries the same obligation, as the conjunction of its `P` and its
+`hU`; here it is separated out and named because the second clause is genuinely new. An ordered
+split's identification arm **relabels** the branch, so confinement is preserved only if `U` is
+closed under merging one time into another. For `U = signedUniverse C L` that is a statement about
+`L`, and it is a caller's obligation about the label set, not a fact about the engine — which is
+why it appears here rather than being proved. -/
+def UniverseClosed (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula) : Prop :=
+  (∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), (∀ x ∈ b, x ∈ U) →
+      ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb, x ∈ U) ∧
+  (∀ (b : Branch) (t₁ t₂ : TimeIndex), (∀ x ∈ b, x ∈ U) →
+      ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U)
+
+/-- **Residual 2: the per-arm difficulty coefficient.**
+
+`D` is the interface `splitAwareFuel` already documents, and the reason it is an interface is
+recorded there: `estimateBranchDifficulty` is `1 + 3·tempCount + 2·modCount + len/4`, and both
+counting functions are `private` to `Saturation.lean`, so a bound in terms of formula complexity
+**cannot be stated from this file** without editing that one — which this task's territory
+forbids. The bound is therefore carried, in the exact form the fuel allocation consumes it. -/
+def DifficultyBounded (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
+    (D : Nat) : Prop :=
+  ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), (∀ x ∈ b, x ∈ U) →
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+        estimateBranchDifficulty nb ≤ D) ∧
+    (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        ∀ p ∈ bs, estimateBranchDifficulty p.1 ≤ D)
+
+/-- **Residual 3: a step that creates a time is a step that mints.**
+
+The one genuinely open mathematical obligation of this development, and the two things standing in
+its way are named here rather than glossed.
+
+*The first disjunct* — a step that does not raise the known-time count does not raise the rank —
+is refuted for at least three rules if read as "non-`ruleMintsFreshLabel` implies no new time":
+`densityRule` interpolates a fresh time and is deliberately **absent** from `ruleMintsFreshLabel`
+(it carries its own `existingIntermediates` guard instead), and the active-mode arms of
+`untlNeg`/`snceNeg` introduce times without being witness-guarded. `expandOnceNoFresh` rejects
+exactly those three by testing `newOrd.constraints.length` rather than the rule list, which is the
+in-repo evidence that the rule-list reading is the wrong one. So the disjunct is about the
+*ordering-length* test, not about `ruleMintsFreshLabel`, and establishing it means a time-dimension
+analogue of `applyRule_emitted_world_mem`.
+
+*The second disjunct* is where the once-only bound is cashed, and it carries the **σ-hit**
+obligation `mintPotential_lt_of_pick_linear` / `_branching` state in their hypotheses: the formula
+the rule fires on must be `σ sf` for some `sf ∈ U`. As the section note on time reuse records, that
+is a question about whether the engine can re-issue a time an earlier identification retired —
+`Branch.nextTime` is `maxTime + 1` and `Branch.identifyTime` can *lower* `maxTime` — and the
+equivalent live-times reformulation carries the identical obligation, which is what shows it is
+intrinsic to the situation rather than an artifact of this measure. It is **not** discharged here.
+It is a hypothesis, it is named, and nothing in this file assumes it. -/
+def MintPaysForTime (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
+    (Tmax : Nat) : Prop :=
+  ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)
+    (tr : EventualityTracker), RunInvariant b ord → (∀ x ∈ b, x ∈ U) →
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      (nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card ∧
+        splitOrderedRank Tmax nb (expandOnceUnblocked b ord fc tr).2
+          ≤ splitOrderedRank Tmax b ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord ∧
+          mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+            < mintPotential U σ b ord)
+
+/-- **The measure drops at `.extended` and at every arm of a `.split`.**
+
+Both residual disjuncts are discharged, and the second is the interesting one: a mint may raise the
+known-time count by as much as it lowered the potential, so the rank may rise by that many units of
+`Tmax² + 1` plus a full incomparable-pair range. The weight `2·(Tmax² + 1)` pays for both with a
+unit left over, which is why the drop is by at least one however many times the step mints. -/
+theorem budgetPotential_step_unordered {U : Finset SignedFormula} {Tmax : Nat}
+    {σ : SignedFormula → SignedFormula} {b nb : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hUcl : UniverseClosed fc U) (hmint : MintPaysForTime fc U Tmax)
+    (hst : BudgetState U Tmax σ b ord)
+    (hmem : nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1)
+    (hgrow : b.toFinset.card < nb.toFinset.card) :
+    BudgetState U Tmax σ nb (expandOnceUnblocked b ord fc tr).2 ∧
+      budgetPotential U Tmax σ nb (expandOnceUnblocked b ord fc tr).2
+        < budgetPotential U Tmax σ b ord := by
+  obtain ⟨hinv, hbU, hbud⟩ := hst
+  have hnbU : ∀ x ∈ nb, x ∈ U := hUcl.1 b ord tr hbU nb hmem
+  have hinv' : RunInvariant nb (expandOnceUnblocked b ord fc tr).2 :=
+    (expandOnceUnblocked_runInvariant hinv).1 nb hmem
+  have hm' : mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+      ≤ mintPotential U σ b ord := mintPotential_expandOnceUnblocked nb hmem
+  have hcU : b.toFinset.card ≤ U.card := card_le_of_subset_universe hbU
+  have hc'U : nb.toFinset.card ≤ U.card := card_le_of_subset_universe hnbU
+  have hS : 0 < Tmax * Tmax + 1 := by omega
+  rcases hmint σ b ord tr hinv hbU nb hmem with ⟨hk, hR⟩ | ⟨hI, hmlt⟩
+  · have hI : mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+        ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2 * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance]
+    omega
+  · have hkT : nb.knownTimes.toFinset.card ≤ Tmax := by
+      simp only [mintTimeBudget] at hI hbud; omega
+    have hp' : (incompPairs nb (expandOnceUnblocked b ord fc tr).2).card ≤ Tmax * Tmax :=
+      le_trans (incompPairs_card_le _ _) (Nat.mul_le_mul hkT hkT)
+    have hEmul : mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2 * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hg1 : (nb.knownTimes.toFinset.card + mintPotential U σ nb
+          (expandOnceUnblocked b ord fc tr).2) * (Tmax * Tmax + 1)
+        ≤ (b.knownTimes.toFinset.card + mintPotential U σ b ord) * (Tmax * Tmax + 1) := by
+      refine Nat.mul_le_mul_right _ ?_
+      simpa only [mintTimeBudget] using hI
+    have hg3 : (mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 + 1)
+          * (Tmax * Tmax + 1)
+        ≤ mintPotential U σ b ord * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hmlt
+    have he1 : (nb.knownTimes.toFinset.card + mintPotential U σ nb
+          (expandOnceUnblocked b ord fc tr).2) * (Tmax * Tmax + 1)
+        = nb.knownTimes.toFinset.card * (Tmax * Tmax + 1)
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1) := by
+      ring
+    have he2 : (b.knownTimes.toFinset.card + mintPotential U σ b ord) * (Tmax * Tmax + 1)
+        = b.knownTimes.toFinset.card * (Tmax * Tmax + 1)
+          + mintPotential U σ b ord * (Tmax * Tmax + 1) := by ring
+    have he3 : (mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 + 1)
+          * (Tmax * Tmax + 1)
+        = mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + (Tmax * Tmax + 1) := by ring
+    have he4 : 2 * (Tmax * Tmax + 1) * mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+        = mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1) := by
+      ring
+    have he5 : 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord
+        = mintPotential U σ b ord * (Tmax * Tmax + 1)
+          + mintPotential U σ b ord * (Tmax * Tmax + 1) := by ring
+    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance, splitOrderedRank]
+    omega
+
+/-- **The measure drops at every arm of an ordered split**, with each arm reporting the renaming it
+carries onward.
+
+No residual is consumed here: arms 1 and 2 keep the branch and add one edge, arm 3 is the landed
+`mintPotential_identifyTime` with `rhoSF t₂ t₁` post-composed, and the rank drops at all three by
+`expandOnceUnblocked_splitOrdered_rank_lt`. Arm 3 is the one that would have broken a plain
+`|U| − |b|` measure, and what absorbs it is `extensionAllowance`: the arm spends one unit of
+`mintTimeBudget`, which is worth a full `|U|` of branch, and the branch cannot shrink by more. -/
+theorem budgetPotential_step_splitOrdered {U : Finset SignedFormula} {Tmax : Nat}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {bs : List (Branch × TimeOrdering)}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hUcl : UniverseClosed fc U) (hst : BudgetState U Tmax σ b ord)
+    (hres : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
+    ∀ p ∈ bs, ∃ σ' : SignedFormula → SignedFormula, BudgetState U Tmax σ' p.1 p.2 ∧
+      budgetPotential U Tmax σ' p.1 p.2 < budgetPotential U Tmax σ b ord := by
+  obtain ⟨hinv, hbU, hbud⟩ := hst
+  have hkT : b.knownTimes.toFinset.card ≤ Tmax := by
+    simp only [mintTimeBudget] at hbud; omega
+  have hcU : b.toFinset.card ≤ U.card := card_le_of_subset_universe hbU
+  have hrank := expandOnceUnblocked_splitOrdered_rank_lt hkT hres
+  have hinvs := (expandOnceUnblocked_runInvariant hinv).2 bs hres
+  obtain ⟨t₁, t₂, htrig, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hres
+  intro p hp
+  have hrk := hrank p hp
+  have hinvp := hinvs p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · dsimp only at hrk hinvp ⊢
+    have hm' : mintPotential U σ b (ord.addFuture t₁ t₂) ≤ mintPotential U σ b ord :=
+      mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₁ t₂)
+    have hI : mintTimeBudget U σ b (ord.addFuture t₁ t₂) ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : mintTimeBudget U σ b (ord.addFuture t₁ t₂) * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ b (ord.addFuture t₁ t₂)
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    refine ⟨σ, ⟨hinvp, hbU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance]
+    omega
+  · dsimp only at hrk hinvp ⊢
+    have hm' : mintPotential U σ b (ord.addFuture t₂ t₁) ≤ mintPotential U σ b ord :=
+      mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₂ t₁)
+    have hI : mintTimeBudget U σ b (ord.addFuture t₂ t₁) ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : mintTimeBudget U σ b (ord.addFuture t₂ t₁) * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ b (ord.addFuture t₂ t₁)
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    refine ⟨σ, ⟨hinvp, hbU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance]
+    omega
+  · dsimp only at hrk hinvp ⊢
+    have hm' : mintPotential U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+        (ord.identifyTime t₂ t₁) ≤ mintPotential U σ b ord :=
+      mintPotential_identifyTime htrig hinv.irreflOrd
+    have hk := knownTimes_card_lt_at_arm3 (b := b) (ord := ord) htrig
+    have hIU : ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U := hUcl.2 b t₁ t₂ hbU
+    have hc'U : (b.identifyTime t₂ t₁).toFinset.card ≤ U.card :=
+      card_le_of_subset_universe hIU
+    have hIsucc : mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+        (ord.identifyTime t₂ t₁) + 1 ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : (mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+          (ord.identifyTime t₂ t₁) + 1) * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hIsucc
+    have hEexp : (mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+          (ord.identifyTime t₂ t₁) + 1) * U.card
+        = mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
+          (ord.identifyTime t₂ t₁) * U.card + U.card := by ring
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U (fun x => rhoSF t₂ t₁ (σ x))
+          (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    refine ⟨fun x => rhoSF t₂ t₁ (σ x), ⟨hinvp, hIU, by omega⟩, ?_⟩
+    simp only [budgetPotential, extensionAllowance]
+    omega
+
+/-- **The per-step bundle, discharged at the concrete measure.** The arity coefficient is supplied
+by the landed `expandOnceUnblocked_split_arity_le` for `.split` and by the ordered split's shape —
+exactly three arms — for `.splitOrdered`, so `β ≥ 3` is all that is asked of it. -/
+theorem stepDecreases_budgetPotential {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax D β : Nat} (hβ : 3 ≤ β)
+    (hUcl : UniverseClosed fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U Tmax) :
+    StepDecreases fc (BudgetState U Tmax) (budgetPotential U Tmax) D β := by
+  intro σ b ord tr hst
+  refine ⟨?_, ?_, ?_⟩
+  · intro nb hres
+    have hmem : nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1 := by
+      rw [hres]; simp [unorderedSuccessorBranches]
+    exact ⟨σ, budgetPotential_step_unordered hUcl hmint hst hmem
+      (expandOnceUnblocked_card_lt hres)⟩
+  · intro bs hres
+    have hmem : ∀ nb ∈ bs,
+        nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1 := by
+      intro nb hnb; rw [hres]; simpa [unorderedSuccessorBranches] using hnb
+    refine ⟨le_trans (expandOnceUnblocked_split_arity_le hres) hβ, ?_, ?_⟩
+    · intro nb hnb
+      exact (hD b ord tr hst.2.1).1 nb (hmem nb hnb)
+    · intro nb hnb
+      exact ⟨σ, budgetPotential_step_unordered hUcl hmint hst (hmem nb hnb)
+        (expandOnceUnblocked_split_card_lt hres hnb)⟩
+  · intro bs hres
+    have harity : bs.length ≤ β := by
+      obtain ⟨t₁, t₂, -, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hres
+      simpa using hβ
+    exact ⟨harity, (hD b ord tr hst.2.1).2 bs hres,
+      budgetPotential_step_splitOrdered hUcl hst hres⟩
+
+/-- **The derived path bound.** `splitPathBound` plus the three ceilings the measure needs and that
+figure does not carry: the mint dimension's rank resets, the shrinkage-refunded extensions, and one
+full ordered run. See the section preamble for the recorded divergence. -/
+def mintPathBound (Ucard Tmax mintBudget : Nat) : Nat :=
+  splitPathBound Ucard Tmax
+  + 2 * (Tmax * Tmax + 1) * mintBudget
+  + Ucard + Tmax * Ucard
+  + orderedRunBound Tmax + 1
+
+/-- **The derived fuel figure**, the landed one evaluated at the derived path bound. -/
+def mintAwareFuel (Ucard Tmax mintBudget D β : Nat) : Nat :=
+  fuelFigure D β (mintPathBound Ucard Tmax mintBudget)
+
+/-- The derived path bound is an **enlargement** of the landed one, never a replacement. -/
+theorem splitPathBound_le_mintPathBound (Ucard Tmax mintBudget : Nat) :
+    splitPathBound Ucard Tmax ≤ mintPathBound Ucard Tmax mintBudget := by
+  simp only [mintPathBound]; omega
+
+/-- …and so is the fuel figure, so nothing stated at `splitAwareFuel` is withdrawn. -/
+theorem splitAwareFuel_le_mintAwareFuel (Ucard Tmax mintBudget D β : Nat) :
+    splitAwareFuel Ucard Tmax D β ≤ mintAwareFuel Ucard Tmax mintBudget D β := by
+  rw [← fuelFigure_splitAwareFuel]
+  exact fuelFigure_mono (splitPathBound_le_mintPathBound _ _ _)
+
+/-- **The measure sits under the derived path bound**, which is the one arithmetic fact connecting
+the induction to a concrete figure. Each of the three components is capped by a landed ceiling:
+`mintPotential_le_eight_mul` for the mint dimension, the carried time bound for the extension
+allowance, and `splitOrderedRank_le` for the ordered dimension. -/
+theorem budgetPotential_lt_mintPathBound {U : Finset SignedFormula} {Tmax mintBudget : Nat}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    (hst : BudgetState U Tmax σ b ord) (hmb : 8 * U.card ≤ mintBudget) :
+    budgetPotential U Tmax σ b ord < mintPathBound U.card Tmax mintBudget := by
+  obtain ⟨hinv, hbU, hbud⟩ := hst
+  have hkT : b.knownTimes.toFinset.card ≤ Tmax := by
+    simp only [mintTimeBudget] at hbud; omega
+  have hm8 := mintPotential_le_eight_mul U σ b ord
+  have hR := splitOrderedRank_le Tmax b ord hkT
+  have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord
+      ≤ 2 * (Tmax * Tmax + 1) * mintBudget := Nat.mul_le_mul_left _ (by omega)
+  have hEmul : mintTimeBudget U σ b ord * U.card ≤ Tmax * U.card :=
+    Nat.mul_le_mul_right _ hbud
+  simp only [budgetPotential, extensionAllowance, mintPathBound]
+  omega
+
+/-- **The target, at the derived figure.**
+
+`BudgetedTotality` with `splitAwareFuel` replaced by `mintAwareFuel` and nothing else changed. Read
+against `expandBranchWithFuel_isSome_of_noSplit`, the unbranching-run restriction is gone name and
+all, the mint budget is a parameter this development discharges rather than a caller obligation,
+the time bound is derived from it (`derivedTmax_spec`) rather than assumed, and `RunInvariant` is
+carried on the initial state only. -/
+def BudgetedTotalityAt (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
+    (mintBudget Tmax D β : Nat) : Prop :=
+  ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker) (applied : AppliedSet)
+    (maxBranches branchesUsed : Nat),
+    (∀ x ∈ b, x ∈ U) →
+    RunInvariant b ord →
+    8 * U.card ≤ mintBudget →
+    b.knownTimes.toFinset.card + mintBudget ≤ Tmax →
+    branchesUsed + β * mintAwareFuel U.card Tmax mintBudget D β ≤ maxBranches →
+    (expandBranchWithFuel b (mintAwareFuel U.card Tmax mintBudget D β) ord fc tr applied
+      maxBranches branchesUsed).isSome = true
+
+/--
+**`expandBranchWithFuel` does not exhaust, with the branching arms discharged rather than
+excluded.**
+
+The measure is instantiated at `σ = id`, which is the intrinsic mint potential: the renaming is
+introduced by the run's own identification arms, not by the statement.
+
+**The residual hypotheses, listed as the phase's scope hypothesis requires.** Four appear, and each
+is named above with what would discharge it: `UniverseClosed` (closure of `U` under the engine's
+steps *and* under an identification's relabelling), `DifficultyBounded` and `β ≥ 3` (the two
+coefficients `splitAwareFuel` already carries as an interface), `MintPaysForTime` (the time
+dimension — the one genuinely open mathematical obligation, carrying the σ-hit/time-reuse question)
+and `ArmSettlement` (`resolveOpenArm`'s reachable `none`, which `Fuel.lean` carries in the same
+form). None of them is the unbranching restriction under another name: each is a bound or a
+closure condition, all
+four `ExpansionResult` shapes remain admissible under every one of them, and
+`branchingWitness_splits` exhibits a branch at which the engine genuinely splits.
+-/
+theorem expandBranchWithFuel_isSome_of_budget {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {mintBudget Tmax D β : Nat}
+    (hβ : 3 ≤ β) (hUcl : UniverseClosed fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U Tmax) (harm : ArmSettlement fc) :
+    BudgetedTotalityAt fc U mintBudget Tmax D β := by
+  intro b ord tr applied maxBranches branchesUsed hbU hinv hmb hT hbud
+  have hst : BudgetState U Tmax id b ord := by
+    refine ⟨hinv, hbU, ?_⟩
+    have := mintPotential_le_eight_mul U id b ord
+    simp only [mintTimeBudget]
+    omega
+  exact expandBranchWithFuel_isSome_of_measure (by omega)
+    (stepDecreases_budgetPotential hβ hUcl hD hmint)
+    harm (mintPathBound U.card Tmax mintBudget) id _ b ord tr applied maxBranches branchesUsed
+    hst (budgetPotential_lt_mintPathBound hst hmb) (Nat.le_refl _) hbud
+
+/-- **The naked statement is refuted at `β = 0`, not merely unproved.**
+
+`BudgetedTotality`'s branch-budget hypothesis is `branchesUsed + β · fuel ≤ maxBranches`, which at
+`β = 0` says only `branchesUsed ≤ maxBranches` — and the engine's very first line returns `none`
+when `branchesUsed ≥ maxBranches`. Taking both to be zero satisfies every hypothesis and refutes
+the conclusion, at every frame class, every difficulty coefficient and every branch.
+
+This is why `BudgetedTotalityAt` above is stated with `β ≥ 3` on the theorem rather than with the
+budget hypothesis left as it stands: `β ≥ 1` is what makes the budget hypothesis strict, and
+`β ≥ 3` is what the measured split arity asks for. A reader who "simplifies" the coefficient away
+is re-attempting a refuted statement. -/
+theorem budgetedTotality_beta_zero_false (fc : FormalSystem.ProofSystem.FrameClass)
+    (D : Nat) (sf : SignedFormula) :
+    ¬ BudgetedTotality fc {sf} 8 ((Branch.knownTimes [sf]).toFinset.card + 8) D 0 := by
+  intro h
+  have hx := h [sf] TimeOrdering.empty EventualityTracker.empty {} 0 0
+    (by simp) (runInvariant_initial _) (by simp) (Nat.le_refl _) (by simp)
+  rw [expandBranchWithFuel.eq_def] at hx
+  simp at hx
+
+/-! ### Branching non-vacuity
+
+`expandBranchWithFuel_isSome_of_budget` would be worth nothing if its hypotheses secretly excluded
+the branching shapes — that is precisely what the unbranching restriction did, and removing the
+name while keeping
+the exclusion would be removing it in name only. The witness below is the mechanical check: at a
+branch carrying `T(p → q)` the engine's step is a genuine `.split` with two arms, and the expansion
+still terminates. The check is by evaluation and by `decide`, not by inspection. -/
+
+section BranchingNonVacuity
+
+private def nvp : Formula := .atom (Atom.mkBase "p")
+private def nvq : Formula := .atom (Atom.mkBase "q")
+
+/-- `T(p → q)` at the initial label: the smallest branch at which the engine genuinely splits. -/
+def branchingWitness : Branch := [SignedFormula.pos (Formula.imp nvp nvq) Label.initial]
+
+private def branchingWitnessArity : Nat :=
+  match (expandOnceUnblocked branchingWitness TimeOrdering.empty .Base
+      EventualityTracker.empty).1 with
+  | .split bs => bs.length
+  | _ => 0
+
+/-- info: 2 -/
+#guard_msgs in
+#eval branchingWitnessArity
+
+/-- **The witness branches**, decided rather than asserted: the engine's step is `.split` with two
+arms, so neither the `.split` clause of `StepDecreases` nor the `.split` arm of the induction is
+vacuous. -/
+theorem branchingWitness_splits : branchingWitnessArity = 2 := by decide
+
+-- …and the expansion at that branch still terminates.
+/-- info: true -/
+#guard_msgs in
+#eval (expandBranchWithFuel branchingWitness 500).isSome
+
+end BranchingNonVacuity
 
 end FormalSystem.Metalogic.Decidability

@@ -1304,7 +1304,7 @@ purely additive. 0 `sorry`, 0 `axiom`, 0 `NoSplit`, 0 task-number citations.
 
 ---
 
-### Phase 13: Close the induction — `expandBranchWithFuel_isSome_of_budget` [IN PROGRESS]
+### Phase 13: Close the induction — `expandBranchWithFuel_isSome_of_budget` [COMPLETED]
 
 **Goal**: Prove Phase 10's statement, `NoSplit`-free, using Phase 12's chain.
 
@@ -1315,26 +1315,55 @@ arm 3, so the inductive hypothesis would not have been re-establishable at the o
 arm. Re-establishing it is `expandOnceUnblocked_splitOrdered_ordTimesKnown`.
 
 **Tasks**:
-- [ ] Prove by induction on fuel, carrying `RunInvariant` as an inductive hypothesis alongside the
+- [x] Prove by induction on fuel, carrying `RunInvariant` as an inductive hypothesis alongside the
       budget. The `saturated` and `extended` arms carry over from the landed
       `expandBranchWithFuel_isSome_of_noSplit` (`Fuel.lean:1462`); re-establish `RunInvariant` at
       each successor from `expandOnceUnblocked_runInvariant` (Phase 4.3).
-- [ ] `.split` arm: the landed `expand_split_fold_isSome` (`Fuel.lean:2237`) matches the goal's fold
+      *(deviation: altered — the induction is on the measure bound `N`, not on `fuel`, and it is
+      stated over an **abstract** carried state, measure and invariant
+      (`expandBranchWithFuel_isSome_of_measure` + `StepDecreases`), then instantiated at the
+      concrete measure. `RunInvariant` is carried inside `BudgetState`, so the plan's content is
+      unchanged; the split is what makes the branching arms checkable in isolation.)*
+- [x] `.split` arm: the landed `expand_split_fold_isSome` (`Fuel.lean:2237`) matches the goal's fold
       shape exactly; discharge the per-arm obligations with the landed
       `expandOnceUnblocked_split_card_lt`, `allocateFuelProportionally_ge`, and
-      `splitBudget_preserved`.
-- [ ] `.splitOrdered` arm: the landed `expand_splitOrdered_fold_isSome` (`Fuel.lean:2289`), plus
+      `splitBudget_preserved`. *(completed; all three consumed as written, plus
+      `totalDifficulty_le` for the allocation's difficulty hypothesis)*
+- [x] `.splitOrdered` arm: the landed `expand_splitOrdered_fold_isSome` (`Fuel.lean:2289`), plus
       Phase 10's `mintPotential` monotonicity at arm 3 and Phase 4.3's
       `expandOnceUnblocked_splitOrdered_ordTimesKnown` to re-establish the invariant — **this is the
       arm the previous plan could not close**, on two counts, and both are now supplied.
-- [ ] Add a **branching non-vacuity witness** in the style of the landed `noSplit_nil` /
+      *(completed; the arm needed one further engine-level fact,
+      `expandOnceUnblocked_splitOrdered_rank_lt`, transcribed from the landed
+      `splitOrderedRank_lt_of_timeLinearity`)*
+- [x] Add a **branching non-vacuity witness** in the style of the landed `noSplit_nil` /
       `expandBranchWithFuel_nil_isSome` block, but at a branch that **actually splits**. This is not
       decoration: it is the mechanical demonstration that the mint budget did not silently become
-      `NoSplit`. A theorem that only applied to unbranching runs would have removed `NoSplit` in name
-      only.
-- [ ] Leave the landed `expandBranchWithFuel_isSome_of_noSplit` and
+      the unbranching restriction. A theorem that only applied to unbranching runs would have
+      removed that restriction in name only.
+      *(completed: `branchingWitness` = `T(p → q)`, `branchingWitness_splits` by `decide`,
+      plus two `#guard_msgs` probes)*
+- [x] Leave the landed `expandBranchWithFuel_isSome_of_noSplit` and
       `expandBranchWithFuel_isSome_at_worldFuel'` in place. They are consumed elsewhere; this is an
-      addition, not a replacement.
+      addition, not a replacement. *(completed; `Fuel.lean` is byte-identical)*
+- [x] **DEVIATION, recorded (fuel figure)**: the phase's stated target `BudgetedTotality` fixes the
+      fuel at `splitAwareFuel`, and that figure is **short**. Phase 12's `path_le_splitPathBound`
+      bounds `#extensions + #identifications`, but fuel is spent by *every* engine step, including
+      the ordered split's arms 1-2, which are counted by neither summand; and `splitPathBound`
+      budgets only `|U| + 1` branch-growing steps, whereas shrinkage refunds admit up to
+      `|U| + Tmax·|U|` and each of up to `8·|U|` mints resets the ordered rank. The landed theorem
+      is therefore `BudgetedTotalityAt` at the **derived** figure `mintAwareFuel`, with
+      `splitAwareFuel_le_mintAwareFuel` proving the derived figure is an *enlargement* of the landed
+      one. This follows plan 02's own instruction for `orderedRunBound` (derive the value, use the
+      derived one, record the divergence). The naked `BudgetedTotality` is additionally **refuted**
+      at `β = 0` (`budgetedTotality_beta_zero_false`), so it is false as stated, not merely
+      unproved.
+- [x] **Scope-hypothesis report (residuals that appeared)**: four, each a named `def` with an
+      in-source docstring saying what would discharge it — `UniverseClosed`, `DifficultyBounded`
+      (with `β ≥ 3`), `MintPaysForTime` (the σ-hit / time-reuse question **and** the
+      `densityRule` / `untlNeg` / `snceNeg` time-creation question), and `ArmSettlement`
+      (`resolveOpenArm`'s reachable `none`, carried by `Fuel.lean` in the same form). None is the
+      unbranching restriction renamed.
 
 **Timing**: 2.5 hours
 
