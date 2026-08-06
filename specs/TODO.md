@@ -35,7 +35,7 @@ next_project_number: 435
 
 ### Decidability
 
-431 [RESEARCHED] — Discharge `DifficultyBounded fc U D` (at `β >= 3`), defined at Fo
+431 [PLANNED] — Discharge `DifficultyBounded fc U D` (at `β >= 3`), defined at Fo
   └─ 432 [RESEARCHED] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
     └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
       └─ 434 [RESEARCHED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
@@ -135,11 +135,12 @@ next_project_number: 435
 
 ### 431. Discharge difficultybounded residual
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+- **Plan**: [431_discharge_difficultybounded_residual/plans/01_discharge-difficultybounded-residual.md]
 
 **Description**: Discharge `DifficultyBounded fc U D` (at `β >= 3`), defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3914, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). This is a SCOPE DECISION before it is a proof problem: `estimateBranchDifficulty` (Saturation.lean:360) is built from `temporalCount` and `modalCount` (Saturation.lean:330, 342), both `private` to Saturation.lean, which the parent task's plan v4 froze byte-identical (md5-pinned, alongside Fuel.lean and Tableau.lean) and forbade editing. Before attempting a proof, explicitly decide between: (a) widen visibility of `temporalCount`/`modalCount` (or expose an equivalent public lemma bounding `estimateBranchDifficulty` in terms of formula complexity) in Saturation.lean, which breaks the prior freeze and must be stated as a deliberate choice, not a silent edit; or (b) restate/discharge the bound using only `estimateBranchDifficulty`'s existing public interface plus branch-confinement facts already available in MintBound.lean, avoiding Saturation.lean entirely. Record the choice made and why. Done means: a theorem (or corollary) proving `DifficultyBounded fc U D` holds for a concrete, useful instantiation of `U` and `D` (matching the shape the terminus's caller-facing forms `buildTableauAt_isSome_of_budget` / `buildTableauAt_isSome_at_seed`, MintBound.lean:4416-4453, expect), landed sorry-free and axiom-free, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting) and do not touch `Fuel.lean` or `Tableau.lean`.
 
