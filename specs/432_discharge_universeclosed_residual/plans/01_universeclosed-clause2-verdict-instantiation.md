@@ -448,30 +448,30 @@ only**, so it needed no bridge at all.
 
 ---
 
-### Phase 4: `TimeMergeClosed`, an instance, and the repaired clause 2 at `signedUniverse C L` [NOT STARTED]
+### Phase 4: `TimeMergeClosed`, an instance, and the repaired clause 2 at `signedUniverse C L` [COMPLETED]
 
 **Goal**: State the closure condition on the label set the task asks for, exhibit a nonempty family
 satisfying it, and prove the repaired clause 2 at the concrete universe.
 
 **Tasks**:
-- [ ] Define `TimeMergeClosed (L : Finset Label) : Prop :=
+- [x] Define `TimeMergeClosed (L : Finset Label) : Prop :=
       ∀ l ∈ L, ∀ l' ∈ L, (⟨l.world, l'.time⟩ : Label) ∈ L`. Docstring: this is exactly what clause 2
       reduces to at `U = signedUniverse C L`, because identification moves the *time* coordinate of a
       label and leaves the world coordinate and the formula alone.
-- [ ] Land `timeMergeClosed_product`: any label set of the form
+- [x] Land `timeMergeClosed_product`: any label set of the form
       `(Ws ×ˢ Ts).image (fun p => ⟨p.1, p.2⟩)` satisfies it. This is the condition's satisfiability
       witness — without it the condition could be vacuous, which is the failure mode 431 warns about.
-- [ ] Optionally land `timeMergeClosed_iff_product`: a `TimeMergeClosed` `L` *is* the product of its
+- [x] Optionally land `timeMergeClosed_iff_product`: a `TimeMergeClosed` `L` *is* the product of its
       world and time projections. If it does not close within the phase's time budget, drop it and
       record that it was dropped — it is a characterization, not a dependency.
-- [ ] Land `identifyTime_confined_signedUniverse`: under `TimeMergeClosed L`, for every `b` confined
+- [x] Land `identifyTime_confined_signedUniverse`: under `TimeMergeClosed L`, for every `b` confined
       to `signedUniverse C L`, every `t₂`, and every `t₁ ∈ b.knownTimes`, `b.identifyTime t₂ t₁` is
       confined to `signedUniverse C L`. The planning probe compiled green; its structure is: obtain
       `y ∈ b` with `y.label.time = t₁` from `Branch.knownTimes`'s
       `(b.map (·.label.time)).eraseDups` shape, destructure membership in `b.identifyTime` through
       `List.mem_eraseDups` and `List.mem_map`, case on `z.label.time = t₂`, and close each branch with
       `mem_signedUniverse` — the retimed case using `TimeMergeClosed` at `z.label` and `y.label`.
-- [ ] State the result as "clause 2 of `UniverseClosedAt` at `signedUniverse C L`" so Phase 8 can
+- [x] State the result as "clause 2 of `UniverseClosedAt` at `signedUniverse C L`" so Phase 8 can
       consume it directly.
 
 **Timing**: 2 hours
@@ -494,6 +494,36 @@ the call site.
 - `timeMergeClosed_product` instantiated at a concrete nonempty `Ws`, `Ts` by `decide` or by direct
   application, demonstrating the condition is satisfiable and the family nonempty.
 - `lean_verify` on all new declarations.
+
+#### Phase 4 completion note
+
+Module build **green**. `lean_verify` on `timeMergeClosed_identifyTime_signedUniverse` and
+`timeMergeClosed_concrete_nonempty`: axioms exactly `{propext, Classical.choice, Quot.sound}`.
+
+Landed:
+
+| Declaration | Role |
+|-------------|------|
+| `TimeMergeClosed` | the closure condition on `L` |
+| `timeMergeClosed_product` | satisfiability witness: every rectangle `Ws ×ˢ Ts` qualifies |
+| `timeMergeClosed_iff_product` | the optional characterization — **it closed**, so it is kept |
+| `timeMergeClosed_identifyTime_signedUniverse` | clause 2 of `UniverseClosedAt` at `signedUniverse C L` |
+| `timeMergeClosed_concrete`, `timeMergeClosed_concrete_nonempty` | a concrete nonempty instance, the latter by `decide` |
+
+**Scope hypothesis, confirmed.** `TimeMergeClosed` is the exact reduction: the proof appeals to `hL`
+**exactly once**, in the retimed case, and never elsewhere. No second appeal was needed, so the
+condition is not understated. `t₂` is genuinely unconstrained in the proof — the source time is only
+ever tested against, never used to build a label — which confirms the planning finding that
+constraining `t₂` would weaken the predicate for nothing.
+
+**Naming divergence (cosmetic).** The plan named this lemma
+`identifyTime_confined_signedUniverse`; it is landed as
+`timeMergeClosed_identifyTime_signedUniverse`, so the name leads with the condition it consumes,
+matching the file's existing `timeMergeClosed_*` / `ordTimesKnown_*` convention. Same statement.
+
+**The optional characterization was not dropped.** `timeMergeClosed_iff_product` closed inside
+budget, and it is worth keeping: it says the rectangles are the *only* time-merge closed label sets,
+so a caller has no design decision to make beyond choosing the two projections.
 
 ---
 

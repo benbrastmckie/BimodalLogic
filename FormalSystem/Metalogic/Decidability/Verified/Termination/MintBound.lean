@@ -5501,6 +5501,110 @@ theorem budgetPotential_step_splitOrdered_at {U : Finset SignedFormula} {Tmax : 
     simp only [budgetPotential, extensionAllowance]
     omega
 
+/-! ### The closure condition on the label set, and the repaired clause 2 at `signedUniverse C L`
+
+The repaired clause 2 *is* a caller's obligation about the label set, and this is it. The condition
+is small, it is exactly what the clause reduces to, and it is satisfiable — the three things the
+`DifficultyBounded` episode showed a residual has to be before it is worth stating.
+
+Why it takes this shape: an identification moves a label's **time** coordinate and leaves its world
+coordinate and its formula alone. So confinement of `b.identifyTime t₂ t₁` needs `L` to contain
+`⟨z.label.world, t₁⟩` for each `z ∈ b`, and `t₁` is a time some `y ∈ b` already carries. Both
+`z.label` and `y.label` are in `L`, so the requirement is precisely closure of `L` under taking one
+member's world with another's time. -/
+
+/-- **The closure condition on the label set.** `L` contains every label built from one member's
+world and another member's time.
+
+This is exactly the reduction of `UniverseClosedAt`'s clause 2 at `U = signedUniverse C L`, and
+`timeMergeClosed_identifyTime_signedUniverse` is the reduction. It is used **once** in that proof, at
+the retimed case, which is the check that it is neither stronger nor weaker than needed.
+
+Satisfiable and non-vacuous: `timeMergeClosed_product` exhibits a whole family satisfying it, and
+`timeMergeClosed_iff_product` shows the family is *all* of them — a `TimeMergeClosed` label set is
+precisely a full rectangle of worlds against times. -/
+def TimeMergeClosed (L : Finset Label) : Prop :=
+  ∀ l ∈ L, ∀ l' ∈ L, (⟨l.world, l'.time⟩ : Label) ∈ L
+
+/-- **The satisfiability witness.** Every rectangular label set — all of `Ws` against all of `Ts` —
+is time-merge closed. Without this the condition could be vacuous, which is the failure mode
+`DifficultyBounded` fell into: a residual nobody can satisfy makes its theorem a true conditional
+with no reach. -/
+theorem timeMergeClosed_product (Ws : Finset WorldIndex) (Ts : Finset TimeIndex) :
+    TimeMergeClosed ((Ws ×ˢ Ts).image fun p => (⟨p.1, p.2⟩ : Label)) := by
+  intro l hl l' hl'
+  simp only [Finset.mem_image, Finset.mem_product] at hl hl' ⊢
+  obtain ⟨p, ⟨hw, -⟩, rfl⟩ := hl
+  obtain ⟨q, ⟨-, ht⟩, rfl⟩ := hl'
+  exact ⟨(p.1, q.2), ⟨hw, ht⟩, rfl⟩
+
+/-- **The characterization**: the rectangles are the only time-merge closed label sets. A
+`TimeMergeClosed` `L` is the full product of its own world and time projections.
+
+Not a dependency of anything below — it is here because it is what makes the condition legible. A
+caller who wants `TimeMergeClosed L` has no choice to make beyond picking the two projections. -/
+theorem timeMergeClosed_iff_product (L : Finset Label) :
+    TimeMergeClosed L ↔
+      L = ((L.image (·.world)) ×ˢ (L.image (·.time))).image fun p => (⟨p.1, p.2⟩ : Label) := by
+  constructor
+  · intro h
+    ext l
+    simp only [Finset.mem_image, Finset.mem_product]
+    constructor
+    · intro hl
+      exact ⟨(l.world, l.time), ⟨⟨l, hl, rfl⟩, ⟨l, hl, rfl⟩⟩, by cases l; rfl⟩
+    · rintro ⟨p, ⟨⟨a, ha, haw⟩, ⟨c, hc, hct⟩⟩, hpl⟩
+      have := h a ha c hc
+      rw [haw, hct, hpl] at this
+      exact this
+  · intro h
+    rw [h]
+    exact timeMergeClosed_product _ _
+
+/-- **The repaired clause 2, discharged at the concrete universe.** Exactly
+`UniverseClosedAt`'s second conjunct at `U = signedUniverse C L`, under `TimeMergeClosed L`.
+
+Each member of `b.identifyTime t₂ t₁` is either an untouched member of `b` — confined by hypothesis
+— or a retimed one. The formula coordinate is untouched either way, so it stays in `C` by
+`formula_label_of_mem_signedUniverse`; the retimed label is `⟨z.label.world, t₁⟩`, and
+`TimeMergeClosed` supplies it once `t₁` is exhibited as `y.label.time` for some `y ∈ b`, which is
+what `t₁ ∈ b.knownTimes` gives via `exists_mem_of_mem_knownTimes`.
+
+**`t₂` is not constrained**, and the proof shows why it need not be: the source time is only ever
+tested against, never used to build a label. Constraining it too would weaken the predicate for
+nothing — register entry 12. -/
+theorem timeMergeClosed_identifyTime_signedUniverse {C : Finset Formula} {L : Finset Label}
+    (hL : TimeMergeClosed L) {b : Branch} (hb : ∀ x ∈ b, x ∈ signedUniverse C L)
+    {t₁ t₂ : TimeIndex} (ht₁ : t₁ ∈ b.knownTimes) :
+    ∀ x ∈ b.identifyTime t₂ t₁, x ∈ signedUniverse C L := by
+  obtain ⟨y, hy, hyt⟩ := exists_mem_of_mem_knownTimes ht₁
+  intro x hx
+  simp only [Branch.identifyTime, List.mem_eraseDups, List.mem_map] at hx
+  obtain ⟨z, hz, hzx⟩ := hx
+  obtain ⟨hzf, hzl⟩ := formula_label_of_mem_signedUniverse (hb z hz)
+  obtain ⟨-, hyl⟩ := formula_label_of_mem_signedUniverse (hb y hy)
+  by_cases hcase : z.label.time = t₂
+  · subst hzx
+    simp only [hcase, beq_self_eq_true, if_true]
+    refine mem_signedUniverse hzf ?_
+    have := hL z.label hzl y.label hyl
+    rw [hyt] at this
+    exact this
+  · rw [if_neg (by simpa using hcase)] at hzx
+    subst hzx
+    exact hb z hz
+
+/-- **The condition is satisfiable at a concrete nonempty label set**, so nothing above is vacuous:
+two worlds against three times, closed and inhabited. -/
+theorem timeMergeClosed_concrete :
+    TimeMergeClosed ((({0, 1} : Finset WorldIndex) ×ˢ ({0, 1, 2} : Finset TimeIndex)).image
+      (fun p => (⟨p.1, p.2⟩ : Label))) :=
+  timeMergeClosed_product _ _
+
+theorem timeMergeClosed_concrete_nonempty :
+    ((({0, 1} : Finset WorldIndex) ×ˢ ({0, 1, 2} : Finset TimeIndex)).image
+      (fun p => (⟨p.1, p.2⟩ : Label))).Nonempty := by decide
+
 /-! ### The threading spine, and the terminus at the repaired predicate
 
 The six theorems below only *pass* the closure residual on; none inspects it. Each is its
