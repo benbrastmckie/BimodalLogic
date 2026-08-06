@@ -1391,7 +1391,7 @@ witness; a `sorry`.
 
 ---
 
-### Phase 14: The terminus, the register, and the full gate [NOT STARTED]
+### Phase 14: The terminus, the register, and the full gate [COMPLETED]
 
 **Goal**: Land `buildTableauAt_isSome_of_budget`, append to the do-not-re-attempt register, and pass
 the repo-wide gate.
@@ -1404,20 +1404,32 @@ A terminus that carried `RunInvariant` as a caller obligation would be a residua
 not permit one here.
 
 **Tasks**:
-- [ ] State and prove `buildTableauAt_isSome_of_budget`: for `phi`, `fc`, and a quantified
+- [x] State and prove `buildTableauAt_isSome_of_budget`: for `phi`, `fc`, and a quantified
       `maxBranches` satisfying the β-linear budget condition at the split-aware fuel figure,
       `(buildTableauAt phi <fuel figure> fc maxBranches).isSome = true`. **`RunInvariant` is
       discharged inside**, via `runInvariant_initial`, and does **not** appear in the statement.
-- [ ] Discharge the top-level arms of `buildTableauAt` (`Saturation.lean:2196`): the
+      *(deviation: altered — the fuel figure is the derived `mintAwareFuel`, not `splitAwareFuel`;
+      see the Phase 13 divergence entry. `RunInvariant` is discharged inside as written and is
+      absent from the statement.)*
+- [x] Discharge the top-level arms of `buildTableauAt` (`Saturation.lean:2196`): the
       `expandBranchWithFuel` call via Phase 13; the `saturateBlocked` call via the landed
       `saturateBlocked_isSome`; the two `findUnexpandedUnblockedWith` saturation tests via the landed
       blocking-aware certificate. The arm that made the original `buildTableau` non-total
       (`| some _ => none` after the post-blocking pass) is exactly what that certificate change
       eliminates — **verify that in the proof rather than assuming it**.
-- [ ] Supply a caller-facing corollary at the engine's own seed, with `maxBranches` given as an
+      *(deviation: altered — verified against the landed source, and the plan's premise does not
+      hold: that arm is still textually present in `buildTableauAt`. The certificate change removed
+      the *permanent* disagreement, not the arm. It is discharged by the named residual
+      `PostBlockingSettles`, which also subsumes `resolveOpenArm`'s `none`
+      (`armSettlement_of_postBlockingSettles`), so the terminus carries one settlement residual
+      rather than two. The `saturateBlocked` `none` arm is consumed via `saturateBlocked_ne_none`
+      as written.)*
+- [x] Supply a caller-facing corollary at the engine's own seed, with `maxBranches` given as an
       explicit closed-form expression in `phi`, so a caller reads off a number rather than a proof
-      obligation (the task's sub-obligation 3).
-- [ ] Append the **do-not-re-attempt register**, as a section comment adjacent to the terminus so a
+      obligation (the task's sub-obligation 3). *(completed: `buildTableauAt_isSome_at_seed`, with
+      the mint budget at `8·|U|`, the time bound at `derivedTmax`, and the branch budget at the
+      β-linear figure — all three read off, none left as an obligation)*
+- [x] Append the **do-not-re-attempt register**, as a section comment adjacent to the terminus so a
       future reader meets it where they would otherwise re-attempt it. Cite by declaration name and
       by refuting witness, **never** by task or report number:
       1. the unconditional `buildTableau_isSome`;
@@ -1438,11 +1450,14 @@ not permit one here.
          `ordTimesLeMaxTime_of_ordTimesKnown` records that this is a strengthening rather than a
          weakening. A reader who "simplifies" the run invariant back to the `≤ maxTime` form is
          re-attempting a refuted statement.
-- [ ] Record for the consuming task in the implementation summary (**not** in-source): the
+      *(completed; an eighth entry was added — the naked `BudgetedTotality`, refuted at `β = 0`)*
+- [x] Record for the consuming task in the implementation summary (**not** in-source): the
       replacement for the refuted `buildTableau_isSome` is against `buildTableauAt` /
       `BudgetedTableau`, **not** `buildTableau` / `ExpandedTableau`, and it carries a quantified
-      branch budget plus any residual Phase 9 had to carry.
-- [ ] Full-repo final gate.
+      branch budget plus any residual Phase 9 had to carry. *(completed in the cycle handoff)*
+- [x] Full-repo final gate. *(completed: `lake build` green repo-wide, 3m24s wall / 17m07s user;
+      0 `sorry`, 0 `axiom`, 0 `NoSplit`, three md5 baselines unchanged, `#print axioms` on the
+      terminus exactly `[propext, Classical.choice, Quot.sound]`)*
 
 **Timing**: 2 hours
 

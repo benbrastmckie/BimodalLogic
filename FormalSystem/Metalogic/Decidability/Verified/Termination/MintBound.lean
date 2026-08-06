@@ -4293,4 +4293,220 @@ theorem branchingWitness_splits : branchingWitnessArity = 2 := by decide
 
 end BranchingNonVacuity
 
+/-! ## C8. The terminus at `buildTableauAt`
+
+`expandBranchWithFuel` is one of four things `buildTableauAt` calls, and the other three have to be
+discharged before totality of the expansion becomes totality of the entry point. Two of them are
+landed and go through unchanged; the third is the arm that made the original entry point non-total,
+and it is **still there**.
+
+### The post-blocking arm is not eliminated by the certificate change — a correction
+
+The expectation carried into this phase was that replacing the literal saturation test with the
+engine's blocking-aware one removes `buildTableauAt`'s `| some _ => none  -- Still not saturated
+after post-blocking` arm. Reading the landed function rather than the expectation: that arm is
+present, textually, in `Saturation.lean`'s definition of `buildTableauAt`, and the certificate
+change did not remove it. What the change removed is the *permanent* disagreement — the literal
+test counts label-introducing work that `saturateBlocked` refuses by construction, so it could
+never stop reporting it, at any fuel — and the measured probes confirm that the formulas which
+died there now settle. What it did not do is prove the arm unreachable.
+
+So the arm is discharged here the only honest way: by a **named hypothesis**,
+`PostBlockingSettles`, that says the post-blocking pass leaves a blocking-aware saturated branch.
+That hypothesis also settles `resolveOpenArm` (`armSettlement_of_postBlockingSettles`), because
+`resolveOpenArm`'s own `none` arm is the same test on the same branch — so the terminus carries
+**one** settlement residual, not two, and it is the same one the fuel induction consumes.
+
+`resolveOpenArm` and `buildTableauAt` are not interchangeable, which is why the bridge is proved
+rather than asserted: `resolveOpenArm` tests `findClosure satBr` before the saturation test and
+reports the arm closed if it fires, and `buildTableauAt` does not. `ArmSettlement` alone is
+therefore strictly too weak for the terminus, and `PostBlockingSettles` is what covers both.
+
+### What the terminus does discharge
+
+* the `expandBranchWithFuel` call — Phase 13's theorem, at the seed;
+* `RunInvariant` — discharged **inside**, by `runInvariant_initial`, and absent from the statement.
+  It is vacuous at `TimeOrdering.empty` because that ordering has no constraints, which is a
+  property of the engine's seed and not of a narrowed statement;
+* the `saturateBlocked` call's `none` arm — the landed `saturateBlocked_ne_none`, so the plan's
+  "provably dead" annotation on that arm is consumed rather than trusted. -/
+
+/-- **The post-blocking settlement residual.**
+
+The post-blocking pass leaves a branch that the blocking-aware saturation test certifies. This is
+the one statement that closes both `resolveOpenArm`'s `none` arm and `buildTableauAt`'s, and it is
+**open**: `saturateBlocked` at `fuel = 0` returns its input unchanged, and above zero it stops when
+no *label-free* work remains, which is a weaker condition than the saturation test it is measured
+against. Whether the gap can be closed by fuel alone is exactly the question `Saturation.lean`
+leaves open, and nothing here decides it.
+
+It is a hypothesis wherever it appears, and it is never an axiom. -/
+def PostBlockingSettles (fc : FormalSystem.ProofSystem.FrameClass) : Prop :=
+  ∀ (ob : Branch) (oOrd : TimeOrdering) (fuel : Nat) (satBr : Branch) (satOrd : TimeOrdering),
+    saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd)) →
+    findUnexpandedUnblockedWith satBr satOrd fc
+      (blockedTimes satBr satOrd fc (armTracker satBr)) = none
+
+/-- **One residual covers both settlement points.** `resolveOpenArm`'s only route to `none` is its
+final saturation test (`resolveOpenArm_eq_none_imp`), which is the test `PostBlockingSettles`
+answers; its `saturateBlocked` arm is dead by `saturateBlocked_ne_none`, consumed here rather than
+assumed. -/
+theorem armSettlement_of_postBlockingSettles {fc : FormalSystem.ProofSystem.FrameClass}
+    (hpb : PostBlockingSettles fc) : ArmSettlement fc := by
+  intro b ob armFuel parentFuel ord oOrd tr ap oAp mb bu _ _
+  simp only [resolveOpenArm, findUnexpandedUnblocked]
+  split
+  · simp
+  · match hsb : saturateBlocked ob parentFuel oOrd fc with
+    | none => exact absurd hsb (saturateBlocked_ne_none ob parentFuel oOrd fc)
+    | some (.inl cb) => simp
+    | some (.inr (satBr, satOrd)) =>
+        dsimp only
+        split
+        · simp
+        · rw [hpb ob oOrd parentFuel satBr satOrd hsb]
+          simp
+
+/-- **The entry point's own arms, discharged.** Given that the expansion does not exhaust, every
+remaining route to `none` in `buildTableauAt` is closed: the `saturateBlocked` arm by
+`saturateBlocked_ne_none`, and the post-blocking saturation arm by the settlement residual. -/
+theorem buildTableauAt_isSome_of_settles {phi : Formula} {fuel : Nat}
+    {fc : FormalSystem.ProofSystem.FrameClass} {maxBranches : Nat}
+    (hpb : PostBlockingSettles fc)
+    (hexp : (expandBranchWithFuel [SignedFormula.neg phi Label.initial] fuel TimeOrdering.empty fc
+      (maxBranches := maxBranches)).isSome = true) :
+    (buildTableauAt phi fuel fc maxBranches).isSome = true := by
+  unfold buildTableauAt
+  simp only
+  match hE : expandBranchWithFuel [SignedFormula.neg phi Label.initial] fuel TimeOrdering.empty fc
+      (maxBranches := maxBranches) with
+  | none => rw [hE] at hexp; simp at hexp
+  | some (.inl closedBr) => simp
+  | some (.inr (ob, oOrd, oAp)) =>
+      dsimp only
+      split
+      · simp
+      · match hsb : saturateBlocked ob fuel oOrd fc with
+        | none => exact absurd hsb (saturateBlocked_ne_none ob fuel oOrd fc)
+        | some (.inl cb) => simp
+        | some (.inr (satBr, satOrd)) =>
+            dsimp only
+            split
+            · simp
+            · rename_i sf2 hg2
+              rw [hpb ob oOrd fuel satBr satOrd hsb] at hg2
+              simp at hg2
+
+/--
+**THE TERMINUS.** `buildTableauAt` is total at the derived fuel figure and a quantified branch
+budget, with the branching arms discharged rather than excluded.
+
+Read against what this replaces: `buildTableau_isSome` is false at the engine's default budget at
+*any* fuel, and the register below records why. This statement quantifies the budget, names the
+fuel figure it earns, discharges `RunInvariant` at the seed via `runInvariant_initial` so that it
+does **not** appear as a caller obligation, and applies to runs that branch — both split shapes are
+proved, not confined.
+
+**The residuals, stated once.** `UniverseClosed`, `DifficultyBounded` with `β ≥ 3`,
+`MintPaysForTime` and `PostBlockingSettles`, each with its own docstring above saying what would
+discharge it. The mint budget is **not** among them: it is a parameter this development discharges
+(`mintPotential_le_eight_mul` supplies the ceiling outright), and the time bound is derived from it
+rather than assumed (`derivedTmax_spec`).
+-/
+theorem buildTableauAt_isSome_of_budget {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosed fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U Tmax) (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 8 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuel U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuel U.card Tmax mintBudget D β) fc maxBranches).isSome
+      = true := by
+  refine buildTableauAt_isSome_of_settles hpb ?_
+  exact expandBranchWithFuel_isSome_of_budget hβ hUcl hD hmint
+    (armSettlement_of_postBlockingSettles hpb)
+    (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
+    hseed (runInvariant_initial _) hmb hT (by omega)
+
+/-- **The caller-facing form**: both numbers read off, neither left as a proof obligation.
+
+The mint budget is instantiated at the ceiling `mintPotential_le_eight_mul` supplies, the time
+bound at `derivedTmax` (whose adequacy is `derivedTmax_spec`, definitional), and the branch budget
+at the `β`-linear figure the fuel forces. A caller supplies a universe containing the seed and the
+four residual hypotheses, and reads the fuel and the budget off the statement. -/
+theorem buildTableauAt_isSome_at_seed {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {D β : Nat} (phi : Formula)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosed fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U
+      (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuel U.card (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (8 * U.card) D β)
+        fc
+        (β * mintAwareFuel U.card
+          (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card) (8 * U.card) D β)
+      ).isSome = true :=
+  buildTableauAt_isSome_of_budget phi _ hβ hUcl hD hmint hpb hseed (Nat.le_refl _)
+    (derivedTmax_spec (seedBranch phi) U) (Nat.le_refl _)
+
+/-! ## C9. The do-not-re-attempt register
+
+Eight statements that look like the natural next lemma and are **not** available. Each is cited by
+declaration name and, where one exists, by refuting witness — never by an issue number or a
+tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
+already been here.
+
+1. **`buildTableau_isSome`, unconditionally.** False at the engine's own default: the first line of
+   `expandBranchWithFuel` returns `none` once `branchesUsed` reaches `maxBranches = 50000`, at
+   every fuel figure whatsoever. Any true statement has to quantify the branch budget, which is
+   what `buildTableauAt_isSome_of_budget` does. The default is a deliberate runtime guard and is
+   not edited by this development.
+
+2. **`buildTableau_isSome_of_budget` in the original target shape** — the branch budget quantified
+   as the *only* new hypothesis, with `soundFuel' φ` as the fuel. Refuted by measurement:
+   `φ = F(G p)` returns `none` at `fuel = 229376` and `maxBranches = 10¹²`, and the cause is
+   `resolveOpenArm = none`, neither the fuel guard nor the budget guard. Raising either number
+   changes nothing, because neither appears in the disagreement.
+
+3. **A `.splitOrdered` cardinality twin of `expandOnceUnblocked_split_card_lt`.** Branch
+   cardinality is not monotone across an ordered split — arm 3 merges two times and can shrink the
+   branch as a set — so there is no `b.toFinset.card < p.1.toFinset.card` to be had. The ordered
+   dimension is measured by `splitOrderedRank` instead.
+
+4. **An `allClosed` `iff` between `buildTableauAt` and `buildTableau`.** False, not merely
+   unproved. `buildTableauAt_allClosed_imp` is the direction that holds; the converse fails exactly
+   when the literal test finds outstanding work at the top-level open branch, the blocking-aware
+   test does not, and the post-blocking pass would have closed the branch. That is a genuine
+   difference in verdict.
+
+5. **The unconditional, `IrreflOrd`-free form of `witnessPresent_identifyTime`.** Refuted by
+   `witnessPresent_identifyTime_unconditional_false`: `TimeOrdering.identifyTime` drops every
+   constraint whose endpoints rename together, including a pre-existing self-loop, and a witness
+   reachable only around such a loop is destroyed.
+
+6. **Route (a): a lower bound on `(b.identifyTime t₂ t₁).toFinset.card` in terms of
+   `b.toFinset.card`.** Dead by definition — `Branch.identifyTime` is `(b.map relabel).eraseDups`
+   and the merge is bounded only by `|U|`. Bounding the *loss* from above is available and is
+   `shrinkage_le_card`; bounding the survivors from below is not. A reader who meets
+   `shrinkage_le_card` and thinks it revives this route has the direction backwards.
+
+7. **Preservation of `OrdTimesLeMaxTime` across the ordered split's identification arm.** Refuted,
+   not merely unproved, by `ordTimes_identifyTime_arm3_false`, which decides a configuration where
+   `Branch.maxTime` drops from `5` to `0`. The settled repair is `OrdTimesKnown` with
+   `ordTimesKnown_identifyTime`, and `ordTimesLeMaxTime_of_ordTimesKnown` records that this is a
+   **strengthening** rather than a weakening. A reader who "simplifies" the run invariant back to
+   the `≤ maxTime` form is re-attempting a refuted statement.
+
+8. **`BudgetedTotality` with its `β`-linear budget hypothesis and nothing else.** Refuted by
+   `budgetedTotality_beta_zero_false`: at `β = 0` the hypothesis degenerates to
+   `branchesUsed ≤ maxBranches`, which the engine's strict guard does not respect. The coefficient
+   needs `β ≥ 1` to make the budget hypothesis strict and `β ≥ 3` to cover the measured split
+   arity; `BudgetedTotalityAt` carries both. Separately, the *figure* in `BudgetedTotality` is
+   short — see the divergence recorded in section C7 — which is why the landed statement is at
+   `mintAwareFuel`, with `splitAwareFuel_le_mintAwareFuel` recording that the derived figure
+   enlarges rather than replaces the landed one. -/
+
 end FormalSystem.Metalogic.Decidability
