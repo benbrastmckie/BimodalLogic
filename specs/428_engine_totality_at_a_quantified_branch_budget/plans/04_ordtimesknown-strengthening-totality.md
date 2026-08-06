@@ -1131,11 +1131,19 @@ corollary; it does not consume an ordering-times invariant directly. It inherits
 bundle Phase 8's corollary carries, which is now `RunInvariant` — a rename, not a new obligation.
 
 **Tasks**:
-- [ ] Prove the mint guard fact: `findApplicableRule` gates every `ruleMintsFreshLabel` rule on
+- [x] *(landed as `findApplicableRule_guard_linear` / `findApplicableRule_guard_branching`, with
+      `not_selfGuarded_of_fresh`. **The reading is CONFIRMED against the source**: the guard is in
+      the *else*-free position — `if ruleMintsFreshLabel rule then (witness test) else (output
+      test)` — so it replaces the output-presence test rather than `&&`-composing with it, in both
+      arms. The two unguarded shapes are excluded by taking the result shape as a hypothesis.)*
+      Prove the mint guard fact: `findApplicableRule` gates every `ruleMintsFreshLabel` rule on
       `witnessPresent rule sf branch timeOrd` in **both** the `.linear` and `.branching` arms
       (`Tableau.lean:1908`, `:1931`), and **instead of** the output-presence test, never in addition
       to it. Confirm this reading against the source before relying on it.
-- [ ] Prove the post-mint fact: the rule's output **is** the witness (`Tableau.lean:2336` — all
+- [x] *(landed as `applyRule_fresh_witness_nonbranching` and `applyRule_fresh_witness_branching`,
+      covering all eight rules at both result shapes — the two branching rules' arms are proved
+      individually, neither absorbed into the other.)*
+      Prove the post-mint fact: the rule's output **is** the witness (`Tableau.lean:2336` — all
       eight constructors return a syntactic cons whose head is the witness), so immediately after a
       mint `witnessPresent = true` for that pair.
 - [ ] Combine with Phase 8 (never flips `true → false`) to get: a mint strictly decreases

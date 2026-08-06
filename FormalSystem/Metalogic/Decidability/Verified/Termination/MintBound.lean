@@ -3174,4 +3174,131 @@ def BudgetedTotality (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset Sign
     (expandBranchWithFuel b (splitAwareFuel U.card Tmax D β) ord fc tr applied
       maxBranches branchesUsed).isSome = true
 
+/-! ## C4. The once-only bound — the guard before a mint, the witness after one
+
+The mint potential decreases at a mint for two reasons that have to be read off the source rather
+than assumed, and they are proved here in that order.
+
+**Before.** `findApplicableRule` gates every `ruleMintsFreshLabel` rule on `witnessPresent`, in
+both arms that can carry one, and **instead of** the output-presence test rather than in addition
+to it. This reading was checked against the source before anything was built on it: the `.linear`
+arm tests `witnessPresent` under `if ruleMintsFreshLabel rule`, with the `fs.all branch.contains`
+test in the *else* branch; the `.branching` arm does the same behind the `ruleSelfGuarded` test,
+and `not_selfGuarded_of_fresh` proves no fresh-label rule is self-guarded, so the guard is always
+reached. The `.persistent` and `.branchingOrdered` arms carry no guard, which costs nothing here
+because the two lemmas below take the result shape as a hypothesis and are only ever applied at
+the two shapes that do.
+
+An `&&`-composition of the two tests would have broken the once-only argument, because a pair
+could then be re-selected after its witness existed. It is not one.
+
+**After.** All eight constructors return a syntactic cons whose head is the witness at the fresh
+label, and the rule's own ordering edge puts that label in reach: `addFuture l.time freshTime`
+for the future-directed rules, `addPast` for the past-directed ones, and the two world-minting
+rules need no edge at all because `witnessPresent` scans `Branch.knownWorlds`. So immediately
+after a mint, the pair reports a witness — which is what makes the decrease strict rather than
+merely non-increasing. -/
+
+/-- No fresh-label rule is self-guarded, so the `.branching` arm's `ruleSelfGuarded` test never
+diverts a mint away from its guard. Decided over all thirty-six constructors. -/
+theorem not_selfGuarded_of_fresh {r : TableauRule} (h : ruleMintsFreshLabel r = true) :
+    ruleSelfGuarded r = false := by
+  cases r <;> simp_all [ruleMintsFreshLabel, ruleSelfGuarded]
+
+/-- **The guard, at a `.linear` mint.** Generalises `findApplicableRule_guard_mint` from the two
+world-minting rules to all eight fresh-label rules, by taking the result shape as a hypothesis
+instead of excluding the unguarded shapes rule by rule. -/
+theorem findApplicableRule_guard_linear {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {r : TableauRule} {fs : List SignedFormula}
+    {o : TimeOrdering}
+    (h : findApplicableRule sf b ord fc = some (r, RuleResult.linear fs, o))
+    (hfresh : ruleMintsFreshLabel r = true) :
+    witnessPresent r sf b ord = false := by
+  unfold findApplicableRule at h
+  obtain ⟨rule, -, hr⟩ := List.exists_of_findSome?_eq_some h
+  (repeat' split at hr) <;> simp_all
+
+/-- **The guard, at a `.branching` mint.** The `.linear` twin, through the `ruleSelfGuarded` test
+that the `.branching` arm checks first. -/
+theorem findApplicableRule_guard_branching {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {r : TableauRule}
+    {bss : List (List SignedFormula)} {o : TimeOrdering}
+    (h : findApplicableRule sf b ord fc = some (r, RuleResult.branching bss, o))
+    (hfresh : ruleMintsFreshLabel r = true) :
+    witnessPresent r sf b ord = false := by
+  unfold findApplicableRule at h
+  obtain ⟨rule, -, hr⟩ := List.exists_of_findSome?_eq_some h
+  (repeat' split at hr) <;> simp_all [not_selfGuarded_of_fresh]
+
+set_option maxHeartbeats 4000000 in
+/-- **After a fresh-label rule fires, its own pair reports a witness** — non-branching shapes.
+
+The rule's emitted list is headed by the witness at the fresh label, and the second component
+carries the edge that puts the fresh label in `witnessPresent`'s search: `futureOf` for the
+future-directed rules, `pastOf` for the past-directed ones, `Branch.knownWorlds` for the two
+world-minting rules, which need no edge. Proved by the same goal-side skeleton as
+`applyRule_ordTimesKnown_nonbranching`, at the module's standing heartbeat figure — not above it. -/
+theorem applyRule_fresh_witness_nonbranching {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering} (hfresh : ruleMintsFreshLabel rule = true) :
+    ∀ nb ∈ nonBranchingResultBranch b (applyRule rule sf b ord).1,
+      witnessPresent rule sf nb (applyRule rule sf b ord).2 = true := by
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;> simp only [ruleMintsFreshLabel] at hfresh <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        first
+          | contradiction
+          | (intro nb hnb
+             simp only [nonBranchingResultBranch, Option.mem_def, Option.some.injEq] at hnb
+             first
+               | (subst hnb
+                  simp_all only [witnessPresent, TimeOrdering.addFuture, TimeOrdering.addPast,
+                    List.cons_append, List.any_eq_true]
+                  first
+                    | exact ⟨_, mem_knownWorlds_of_mem List.mem_cons_self,
+                        contains_of_mem List.mem_cons_self⟩
+                    | exact ⟨_, mem_futureOf_of_mem_constraints _ _ _ List.mem_cons_self,
+                        contains_of_mem List.mem_cons_self⟩
+                    | exact ⟨_, mem_pastOf_of_mem_constraints _ _ _ List.mem_cons_self,
+                        contains_of_mem List.mem_cons_self⟩)
+               | exact absurd hnb (by simp)))
+
+set_option maxHeartbeats 4000000 in
+/-- **After a fresh-label rule fires, its own pair reports a witness** — `.branching` shape, both
+arms.
+
+`untlPos` and `sncePos` are the only fresh-label rules that branch, and `witnessPresent`'s clause
+for each is a disjunction matching the two arms exactly: arm 1 carries the event witness at the
+fresh label, arm 2 carries the guard together with the Until/Since itself. Neither arm is the
+weaker one — both are proved. -/
+theorem applyRule_fresh_witness_branching {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering} (hfresh : ruleMintsFreshLabel rule = true) :
+    ∀ nb ∈ branchingResultBranches b (applyRule rule sf b ord).1,
+      witnessPresent rule sf nb (applyRule rule sf b ord).2 = true := by
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;> simp only [ruleMintsFreshLabel] at hfresh <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        first
+          | contradiction
+          | (intro nb hnb
+             simp only [branchingResultBranches, List.mem_map, List.mem_cons, List.not_mem_nil,
+               or_false] at hnb
+             all_goals
+               (obtain ⟨fs, hfs, rfl⟩ := hnb
+                rcases hfs with rfl | rfl <;>
+                  (simp_all only [witnessPresent, TimeOrdering.addFuture, TimeOrdering.addPast,
+                     List.cons_append, List.any_eq_true, Bool.or_eq_true, Bool.and_eq_true]
+                   all_goals first
+                     | exact ⟨_, mem_futureOf_of_mem_constraints _ _ _ List.mem_cons_self,
+                         Or.inl (contains_of_mem List.mem_cons_self)⟩
+                     | exact ⟨_, mem_futureOf_of_mem_constraints _ _ _ List.mem_cons_self,
+                         Or.inr ⟨contains_of_mem List.mem_cons_self,
+                           contains_of_mem (List.mem_cons_of_mem _ List.mem_cons_self)⟩⟩
+                     | exact ⟨_, mem_pastOf_of_mem_constraints _ _ _ List.mem_cons_self,
+                         Or.inl (contains_of_mem List.mem_cons_self)⟩
+                     | exact ⟨_, mem_pastOf_of_mem_constraints _ _ _ List.mem_cons_self,
+                         Or.inr ⟨contains_of_mem List.mem_cons_self,
+                           contains_of_mem (List.mem_cons_of_mem _ List.mem_cons_self)⟩⟩))))
+
 end FormalSystem.Metalogic.Decidability
