@@ -1,7 +1,7 @@
 # Implementation Plan: Task #434
 
 - **Task**: 434 - Discharge `MintPaysForTime fc U Tmax` (the open mathematical core on the totality terminus)
-- **Status**: [IMPLEMENTING]
+- **Status**: PARTIAL
 - **Effort**: 15 hours
 - **Dependencies**: None (unblocks task 432 Phase 7)
 - **Research Inputs**: `specs/434_discharge_mintpaysfortime_residual/reports/01_spawn-inherited-research.md`
@@ -541,11 +541,48 @@ three rows is reachable within the phase; if none is, mark the phase `[BLOCKED]`
 
 ---
 
-### Phase 7: The repaired predicate and its direction lemma [NOT STARTED]
+### Phase 7: The repaired predicate and its direction lemma [BLOCKED]
 
 **Goal**: Land the satisfiable form of the residual, with a machine-checked implication fixing its
 direction relative to `MintPaysForTime`. The direction lemma is a **gate**, not a nicety: register
 entry 7 exists because a "simplification" that was secretly a weakening was mistaken for a repair.
+
+**BLOCKER** (Phase 7):
+- **What failed**: No satisfiable repair of `MintPaysForTime` could be constructed. Both repair
+  routes the plan and the Phase 4 verdict identify are refuted by machine-checked statements.
+- **What was tried**:
+  1. *The rule-coordinate narrowing* the plan's task 1 specifies ("the second disjunct's index set
+     must cover `freshTimeRules`, not merely `freshLabelRules`"). Refuted in Phase 4:
+     `witnessPresent_eq_false_of_not_freshLabel` proves `witnessPresent`'s match has exactly eight
+     arms — one per `freshLabelRules` member — so the three added columns (`densityRule`, `untlNeg`,
+     `snceNeg`) are `false` at every state of every run. The wider potential is the narrower one
+     plus `3 · |U|` and moves exactly when it does.
+  2. *Stating disjunct 1 against `knownTimes_card_le_succ_of_unorderedSuccessor`*, which the plan's
+     task 1 also specifies. Since that inequality is now a theorem, the honest weakening is to drop
+     disjunct 1's cardinality conjunct entirely and leave the ordering-rank conjunct. Refuted:
+     `splitOrderedRank Tmax b ord = knownTimes.card * (Tmax² + 1) + (incompPairs b ord).card`, and
+     the base `Tmax² + 1` is by construction one more than `incompPairs`' range
+     (`incompPairs_card_le` plus the carried time bound), so one extra known time raises the rank by
+     at least 1 regardless of what the pair count does. `splitOrderedRank_lt_of_knownTimes_lt` is
+     that in general; `mintPaysForTime_rank_repair_false` decides the weakened predicate false at
+     the Phase 4 configuration, at every frame class, for every `Tmax ≥ 3`.
+- **Why it's stuck**: The rank conjunct fails at **every** time-minting step, and the potential
+  conjunct fails at exactly the three self-guarded minting rules. Each of those three has its own
+  termination argument and none of them is `mintPotential`: `untlNeg`/`snceNeg` are guarded by
+  `futureOf`/`pastOf` emptiness plus `ord.timeCount < 4`, and `densityRule` by the
+  maximal-unfilled-gap set. The obvious candidate potential for `untlNeg` — "branch times with empty
+  forward reach" — does not decrease, because the arm removes the trigger's empty future and mints a
+  fresh time whose future is empty, for a net change of zero. Composing the three into one measure
+  that also survives the identification arm (which can *lower* `ord.timeCount`, the very quantity
+  `untlNeg`'s cap is stated against — the same `maxTime`-lowering mechanism Phase 6's verdict turns
+  on) is open mathematics, not a proof-engineering gap.
+- **What is needed**: A fourth measure component paying for the three self-guarded minting rules
+  and preserved across `TimeOrdering.identifyTime`. Designing and validating it is a research task
+  in its own right and exceeds this plan's Phase 7 scope; it should be spawned rather than absorbed.
+- **Prohibited workarounds**: Do NOT land a `MintPaysForTimeAt` that is itself false (both
+  candidates above are), and do NOT use `sorry`, `def X := True`, or any vacuous placeholder. The
+  refutations above are landed in-source precisely so a future reader does not re-attempt them; see
+  do-not-re-attempt register entry 14.
 
 **Tasks**:
 - [ ] Define the repaired predicate, following Phase 4's verdict. Under the expected refutable
@@ -587,11 +624,18 @@ entry 7 exists because a "simplification" that was secretly a weakening was mist
 
 ---
 
-### Phase 8: Terminus restatement and the concrete instantiation [NOT STARTED]
+### Phase 8: Terminus restatement and the concrete instantiation [BLOCKED]
 
 **Goal**: Deliver the task's "done" condition: a sorry-free, axiom-free theorem establishing the
 residual (repaired if Phase 4 refuted it) at a **concrete, useful instantiation**, plus the seed-level
 terminus restated at the repaired shape.
+
+**BLOCKER** (Phase 8): Depends on Phase 7, which is `[BLOCKED]`. There is no repaired predicate to
+restate the termini against or to discharge at a concrete universe. Per the plan's own
+Rollback/Contingency section, "a repair that trades one named residual for another is not a
+discharge" — so nothing is landed here rather than landing a weaker substitute under the
+deliverable's name. `MintPaysForTime` is retained verbatim and every theorem stated against it is
+unchanged.
 
 **Tasks**:
 - [ ] Restate the two seed-level termini at the repaired predicate, mirroring how the 432 repair
@@ -637,19 +681,19 @@ record the count; do not silently expand into intermediate sites.
 
 ---
 
-### Phase 9: Register entries, docstring reconciliation, and the closing gate [NOT STARTED]
+### Phase 9: Register entries, docstring reconciliation, and the closing gate [COMPLETED]
 
 **Goal**: Bring the file's own narrative into agreement with what landed, and run the closing gates.
 Three docstrings currently assert that `applyRule_emitted_time_mem` does not exist; after Phase 3 it
 does, and leaving them is a correctness defect in the file's documentation.
 
 **Tasks**:
-- [ ] Update the three in-source notes that assert the time analogue's absence:
+- [x] Update the three in-source notes that assert the time analogue's absence:
       `MintPaysForTime`'s docstring, the section note preceding `applyRule_emitted_world_dichotomy`,
       and `UnorderedSuccessorLabelClosed`'s obligation map. Replace "there is no
       `applyRule_emitted_time_mem`" with the landed name and what it gives. These are doc comments,
       not proof terms — the byte-unchanged constraint on landed proof terms is not violated.
-- [ ] Add do-not-re-attempt register entries (section C9, continuing from entry 12):
+- [x] Add do-not-re-attempt register entries (section C9, continuing from entry 12):
       - the naive "non-`ruleMintsFreshLabel` implies no new time" reading, refuted by
         `freshTimeRules_incomparable_freshLabelRules`, with `expandOnceNoFresh`'s two-test sequence
         as the operational evidence;
@@ -657,9 +701,22 @@ does, and leaving them is a correctness defect in the file's documentation.
       - the time-reuse sub-question at whichever verdict Phase 6 reached, so a future reader who
         finds it attractive learns what is already known.
       Update the section header's "Twelve statements" count to match.
-- [ ] Update the residual roster note (the "`MintPaysForTime` — the development's one genuinely open
+- [x] Update the residual roster note (the "`MintPaysForTime` — the development's one genuinely open
       mathematical obligation, unchanged" line) to reflect the new status.
-- [ ] Run the closing gates.
+- [x] Run the closing gates.
+
+*(deviation: altered — the register grew by **four** entries rather than three, and the header count
+went 12 → 16 rather than 12 → 15. The fourth is the unconditional `applyRule_emitted_time_mem`
+without `OrdTimesKnown` (entry 16), which became a re-attemptable statement only because Phase 3
+landed the hypothesis-carrying form; it is refuted by
+`applyRule_emitted_time_mem_ordTimesKnown_needed`. The time-reuse entry (15) records a **settled
+negative** rather than an open question, per Phase 6's verdict.)*
+
+*(deviation: altered — this phase ran with Phases 7 and 8 `[BLOCKED]` rather than after them. The
+docstring reconciliation could not wait: three in-source notes asserted that
+`applyRule_emitted_time_mem` does not exist, and after Phase 3 that is a false statement in the
+file's own documentation regardless of what happens to the repair. The register entries likewise
+record what was settled, which is independent of the blocked repair.)*
 
 **Timing**: 1 hour
 

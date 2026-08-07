@@ -4006,7 +4006,28 @@ is a question about whether the engine can re-issue a time an earlier identifica
 `Branch.nextTime` is `maxTime + 1` and `Branch.identifyTime` can *lower* `maxTime` — and the
 equivalent live-times reformulation carries the identical obligation, which is what shows it is
 intrinsic to the situation rather than an artifact of this measure. It is **not** discharged here.
-It is a hypothesis, it is named, and nothing in this file assumes it. -/
+It is a hypothesis, it is named, and nothing in this file assumes it.
+
+**Both of those have since been settled, and this predicate is retained verbatim anyway.** Section
+D1 lands the time-dimension analogue the first disjunct asked for —
+`applyRule_emitted_time_mem`, `applyRule_emitted_time_dichotomy`,
+`unorderedSuccessor_time_dichotomy` and the quantitative
+`knownTimes_card_le_succ_of_unorderedSuccessor` — and the rule census `freshTimeRules` that the
+disjunct's rule-list reading got wrong. Section D2 settles the rest, negatively:
+
+* the predicate **as stated is false**, at every frame class and every `Tmax`
+  (`mintPaysForTime_untlNeg_false`), satisfiable only at `U = ∅` (`mintPaysForTime_empty`);
+* the σ-hit obligation is **false**, not merely open: the engine really does re-issue a retired
+  time on a run (`nextTime_reissues_retired_time`, `reuse_driven_through_engine`) and nothing minted
+  there lies in the renaming's image (`mint_not_in_rhoSF_image`);
+* neither of the two obvious repairs is available — re-indexing the potential on `freshTimeRules`
+  (`witnessPresent_eq_false_of_not_freshLabel`) nor dropping disjunct 1's cardinality conjunct
+  (`splitOrderedRank_lt_of_knownTimes_lt`, `mintPaysForTime_rank_repair_false`).
+
+So this remains the development's one open mathematical obligation, but it is now open at a
+*located* obstruction rather than an unexamined one: what is missing is a measure component paying
+for the three self-guarded minting rules that also survives the identification arm. See section
+D2's blocked-repair note for the full statement. -/
 def MintPaysForTime (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
     (Tmax : Nat) : Prop :=
   ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)
@@ -5944,25 +5965,31 @@ complete statement: every emitted formula sits either at a world the branch alre
 (`applyRule_emitted_world_mem`) and the two minting lemmas. So the world half of the label dimension
 needs nothing beyond `FreshWorldHeadroom`.
 
-**The time coordinate has no analogue, and that is the blocker.** There is no
-`applyRule_emitted_time_mem` — no statement bounding the *times* a rule emits at by the times the
-branch already carries, with the minting rules separated out. `MintPaysForTime`'s own docstring names
-this absence and its consequences: `densityRule` interpolates a fresh time and is deliberately
-**absent** from `ruleMintsFreshLabel`, and the active-mode arms of `untlNeg`/`snceNeg` introduce
-times while being classified `ruleSelfGuarded` rather than minting. So the eight-rule
-`ruleMintsFreshLabel` list is *not* the list of time-introducing rules, and no statement in the
-development says what that list is.
+**The time coordinate now has its analogue.** An earlier version of this note said there was no
+`applyRule_emitted_time_mem` and that the label dimension was blocked on its absence. That is no
+longer the state of the file: section D1 lands it, together with `freshTimeRules` (the census the
+note said no statement supplied), `applyRule_emitted_time_dichotomy`, and the engine-level
+`unorderedSuccessor_time_dichotomy`. The census is nine rules wide and is **incomparable** with
+`ruleMintsFreshLabel` in both directions — `freshTimeRules_incomparable_freshLabelRules` decides
+that, which is the precise content the old note gestured at when it observed that `densityRule` and
+the `untlNeg` / `snceNeg` ACTIVE arms mint times while sitting outside the witness-guarded list.
 
-Establishing it is a 36-arm accounting over `applyRule` in the time coordinate — the exact shape of
-`applyRule_emitted_world_mem`, in the other coordinate. It belongs with the mint/time story rather
-than with universe closure, and it is **not authored here**. Until it lands, the label dimension is
-carried as the named residual `UnorderedSuccessorLabelClosed` below, exactly as this file carries
-`MintPaysForTime` and `PostBlockingSettles`: named, with its obligation map on its docstring, and
-assumed by nothing else.
+One asymmetry with the world coordinate is real and is not a gap in the proof:
+`applyRule_emitted_time_mem` carries `OrdTimesKnown b ord` where its world twin carries nothing,
+because four rules propagate to `TimeOrdering.futureOf` / `pastOf` and nothing in `applyRule` ties
+an ordering time to the branch. `applyRule_emitted_time_mem_ordTimesKnown_needed` decides that the
+hypothesis is not removable, and `expandOnceUnblocked_ordTimesKnown` supplies it at every consuming
+site, so nothing new reaches the terminus.
+
+`UnorderedSuccessorLabelClosed` below is nevertheless **still a named residual**, for the reason
+recorded on its own docstring: the world half of the label dimension is refuted at a fixed finite
+`L` (`universeClosed_fresh_world_escapes`) and no condition on `L` repairs it
+(`freshWorldHeadroom_not_universal`). The time accounting that was missing has landed; the world-side
+obstruction is what remains, and it was never the missing lemma.
 
 **What is delivered, then**: clause 1 at `signedUniverse C L` reduced to the label dimension **alone**
 (`unorderedSuccessor_confined_signedUniverse_of_headroom`), with the formula dimension discharged
-outright. That is the honest maximum available without the missing lemma. -/
+outright. -/
 
 /-- **The world dichotomy, complete.** Every formula a rule emits sits either at a world the branch
 already carries or at `Branch.nextWorld` — there is no third case.
@@ -6246,7 +6273,9 @@ closure residual is not among them:
 
 * `StepLengthBounded fc (signedUniverse C L) L'` — satisfiable; `difficultyBoundedAt_ceiling_at`
   reduces it further to the rule-local `StepLengthGrowth`.
-* `MintPaysForTime` — the development's one genuinely open mathematical obligation, unchanged.
+* `MintPaysForTime` — the development's one genuinely open mathematical obligation. Unchanged as a
+  declaration, and now **refuted as stated** (`mintPaysForTime_untlNeg_false`, section D2) with both
+  obvious repairs closed off and the residual obstruction located. See its own docstring.
 * `PostBlockingSettles` — unchanged.
 * `β ≥ 3` — the measured split arity.
 * `UnorderedSuccessorLabelClosed fc L` — **the residue of this task**: clause 1's label coordinate,
@@ -7105,6 +7134,115 @@ theorem mintPaysForTime_empty (fc : FormalSystem.ProofSystem.FrameClass) (Tmax :
   subst hb
   simp [expandOnceUnblocked, findUnexpandedUnblockedWith, unorderedSuccessorBranches] at hnb
 
+/-! ### The repair, attempted and BLOCKED
+
+The repair this section was to land is **not available**, and this subsection records why with
+machine-checked evidence rather than leaving the attempt undocumented. Nothing vacuous is
+substituted for it.
+
+*The rule-coordinate repair is out.* Widening `mintPotential`'s index set from `freshLabelRules` to
+`freshTimeRules` adds three columns that `witnessPresent_eq_false_of_not_freshLabel` proves are
+`false` at every state of every run. The wider potential is the narrower one plus `3 · |U|` and
+moves exactly when it does.
+
+*The disjunct-1 repair is out too, and this is the one that had to be tested.* The obvious
+remaining narrowing is to drop disjunct 1's first conjunct — `nb.knownTimes.card ≤ b.knownTimes.card`
+is exactly what a minting step falsifies, and `knownTimes_card_le_succ_of_unorderedSuccessor` shows
+the true bound is one larger — leaving the ordering-rank conjunct as disjunct 1's whole content.
+That does not work: `splitOrderedRank Tmax b ord` is
+`b.knownTimes.card * (Tmax² + 1) + (incompPairs b ord).card`, the second summand is bounded by
+`Tmax²` (`incompPairs_card_le` plus the carried time bound), and the base `Tmax² + 1` is *one more*
+than that bound by construction. So one extra known time raises the rank by at least `1` no matter
+what the incomparable-pair count does — `splitOrderedRank_lt_of_knownTimes_lt`. The rank conjunct
+therefore fails at **every** time-minting step, not just at the refuting one, and
+`mintPaysForTime_rank_repair_false` decides the weakened predicate false at the same configuration
+that refuted the original.
+
+*What is actually missing.* A fourth measure component that pays for the three self-guarded minting
+rules. Each has its own termination argument, and none of them is `mintPotential`:
+
+* `untlNeg` / `snceNeg` fire only when `ord.futureOf l.time` (resp. `pastOf`) is empty **and**
+  `ord.timeCount < 4`, and their own `newOrd` makes that first test fail at the next call — the
+  `ruleSelfGuarded` mechanism. The natural potential, "branch times with empty forward reach", does
+  **not** decrease: the arm removes the trigger's empty future and mints a fresh time whose future
+  is empty, for a net change of zero.
+* `densityRule` splits each maximal unfilled gap at most once, an argument about the *gap set*,
+  which mentions neither `knownTimes` nor `incompPairs` nor any `witnessPresent` count.
+
+Composing those into one measure that also survives the identification arm is open. The
+identification arm is the specific obstruction: `ord.timeCount` is the quantity `untlNeg`'s cap is
+stated against, and `TimeOrdering.identifyTime` can lower it — the same `maxTime`-lowering
+mechanism the time-reuse verdict above turns on.
+
+**Status: this phase is BLOCKED, and so is the concrete-instantiation discharge that depends on
+it.** What is delivered instead is the accounting the residual was blocked on
+(`applyRule_emitted_time_mem`, `applyRule_emitted_time_dichotomy`,
+`unorderedSuccessor_time_dichotomy`, `knownTimes_card_le_succ_of_unorderedSuccessor`), the
+satisfiability verdict on the residual as stated, the time-reuse verdict, and the two refutations
+below that close off the repair routes a reader would try first. `MintPaysForTime` remains a named,
+open hypothesis, retained verbatim; nothing in this file assumes it. -/
+
+/-- **One extra known time strictly raises the ordered rank**, whenever the smaller time count is
+within the carried bound.
+
+The base `Tmax * Tmax + 1` in `splitOrderedRank` is one more than `incompPairs`' range, and this is
+that design fact used in the direction it was built for: a *rise* in the first component cannot be
+absorbed by any fall in the second, exactly as a *fall* in the first cannot be absorbed by a rise.
+`splitOrderedRank_le` is the range statement it rests on. -/
+theorem splitOrderedRank_lt_of_knownTimes_lt {Tmax : Nat} {b nb : Branch}
+    {ord ord' : TimeOrdering}
+    (hT : b.knownTimes.toFinset.card ≤ Tmax)
+    (hlt : b.knownTimes.toFinset.card < nb.knownTimes.toFinset.card) :
+    splitOrderedRank Tmax b ord < splitOrderedRank Tmax nb ord' := by
+  have hip : (incompPairs b ord).card ≤ Tmax * Tmax :=
+    le_trans (incompPairs_card_le b ord) (Nat.mul_le_mul hT hT)
+  simp only [splitOrderedRank]
+  have h1 : b.knownTimes.toFinset.card + 1 ≤ nb.knownTimes.toFinset.card := hlt
+  have h2 : (b.knownTimes.toFinset.card + 1) * (Tmax * Tmax + 1)
+      ≤ nb.knownTimes.toFinset.card * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ h1
+  rw [Nat.add_mul, one_mul] at h2
+  omega
+
+/-- **Dropping disjunct 1's cardinality conjunct does not repair `MintPaysForTime`.**
+
+The weakened predicate is spelled out inline rather than given a name, because a repaired predicate
+that is itself false must not be landed as a definition for a later reader to pick up. It is
+`MintPaysForTime` with disjunct 1's first conjunct removed — the narrowing the satisfiability
+verdict pointed at — and it is false at the *same* configuration, at every frame class, for every
+`Tmax ≥ 3`.
+
+The `3` is not arbitrary: it is the witness branch's time count, and the hypothesis is exactly what
+`splitOrderedRank_lt_of_knownTimes_lt` needs. Any `Tmax` too small to bound the witness's own times
+is one the terminus could not have been instantiated at. -/
+theorem mintPaysForTime_rank_repair_false (fc : FormalSystem.ProofSystem.FrameClass)
+    {Tmax : Nat} (hT : 3 ≤ Tmax) :
+    ¬ (∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)
+         (tr : EventualityTracker), RunInvariant b ord →
+         (∀ x ∈ b, x ∈ mintWitnessUniverse) →
+         ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+           splitOrderedRank Tmax nb (expandOnceUnblocked b ord fc tr).2
+               ≤ splitOrderedRank Tmax b ord
+           ∨ (mintTimeBudget mintWitnessUniverse σ nb (expandOnceUnblocked b ord fc tr).2
+                 ≤ mintTimeBudget mintWitnessUniverse σ b ord ∧
+              mintPotential mintWitnessUniverse σ nb (expandOnceUnblocked b ord fc tr).2
+                 < mintPotential mintWitnessUniverse σ b ord)) := by
+  intro h
+  have hcard : mintWitnessBranch.knownTimes.toFinset.card ≤ Tmax := by
+    have h3 : mintWitnessBranch.knownTimes.toFinset.card = 3 := by decide
+    omega
+  have hgrow : mintWitnessBranch.knownTimes.toFinset.card
+      < mintWitnessSucc.knownTimes.toFinset.card := by decide
+  have key := h id mintWitnessBranch mintWitnessOrd EventualityTracker.empty
+    mintWitness_runInvariant mintWitness_confined
+  cases fc <;>
+    [ (rcases key mintWitnessSucc (by decide) with h1 | ⟨-, h3⟩);
+      (rcases key mintWitnessSucc (by decide) with h1 | ⟨-, h3⟩);
+      (rcases key mintWitnessSucc (by decide) with h1 | ⟨-, h3⟩);
+      (rcases key mintWitnessSucc (by decide) with h1 | ⟨-, h3⟩)] <;>
+    first
+      | exact absurd h1 (Nat.not_le.mpr (splitOrderedRank_lt_of_knownTimes_lt hcard hgrow))
+      | exact absurd h3 (by decide)
+
 /-! ### Verdict on the time-reuse sub-question
 
 **Verdict: reuse is possible.** Decided, at a configuration the engine itself drives.
@@ -7216,7 +7354,7 @@ theorem reuse_driven_through_engine :
 
 /-! ## C9. The do-not-re-attempt register
 
-Twelve statements that look like the natural next lemma and are **not** available. Each is cited by
+Sixteen statements that look like the natural next lemma and are **not** available. Each is cited by
 declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
@@ -7348,6 +7486,69 @@ already been here.
     refutation, since `universeClosed_identify_retime_false` instantiates at
     `t₂ = x.label.time`, which is a known time of its witness branch already; the pigeonhole runs on
     `t₁`. A reader who constrains both has needlessly weakened `UniverseClosedAt`; one who constrains
-    only `t₂` has not repaired anything. -/
+    only `t₂` has not repaired anything.
+
+13. **"Not in `ruleMintsFreshLabel`" read as "introduces no time".** Refuted in **both** directions
+    by `freshTimeRules_incomparable_freshLabelRules`: `boxNeg` and `diamondPos` are witness-guarded
+    and mint no time, while `densityRule` (gap-guarded) and the `untlNeg` / `snceNeg` ACTIVE arms
+    (`ruleSelfGuarded`) mint a time while sitting outside the list. The two lists are incomparable,
+    not nested. `expandOnceNoFresh` is the operational evidence and was there all along: it runs the
+    `ruleMintsFreshLabel` test **and then**, separately, a `newOrd.constraints.length` test, and two
+    tests in sequence are necessary only when neither list subsumes the other. The census that *is*
+    the time-minting list is `freshTimeRules`, nine rules wide, with `mem_freshTimeRules` as its
+    anti-drift guarantee.
+
+14. **`MintPaysForTime fc U Tmax` as literally stated.** Refuted, not merely unproved, by
+    `mintPaysForTime_untlNeg_false`, which is universally quantified in the frame class **and** in
+    `Tmax`. The cause in one line: `untlNeg` is in `freshTimeRules` and not in `freshLabelRules`, so
+    firing it mints a time while moving no pair of `mintPotential`'s index set `freshLabelRules ×ˢ U`
+    — disjunct 1 fails because a known time was added, disjunct 2 fails because the potential is
+    unchanged, and `mintTimeBudget` actually rises. `mintPaysForTime_empty` shows it does hold at
+    `U = ∅`, so as with `UniverseClosed` its satisfiability set is where the terminus it guards is
+    vacuous.
+
+    **Neither obvious repair is available**, and both are closed off by decided statements rather
+    than by argument. *Re-indexing the potential on `freshTimeRules`*:
+    `witnessPresent_eq_false_of_not_freshLabel` proves `witnessPresent` is identically `false`
+    outside `freshLabelRules` — its match has exactly eight arms — so the three added columns are
+    permanently false, contribute `3 · |U|` to the count, and never move. *Dropping disjunct 1's
+    cardinality conjunct*, leaving the ordering rank: `splitOrderedRank_lt_of_knownTimes_lt` proves
+    one extra known time strictly raises `splitOrderedRank`, because its base `Tmax² + 1` is by
+    construction one more than `incompPairs`' range, so the rank conjunct fails at **every**
+    time-minting step; `mintPaysForTime_rank_repair_false` decides the weakened predicate false at
+    the same configuration, at every frame class, for every `Tmax ≥ 3`.
+
+    What is missing is a **fourth measure component** paying for the three self-guarded minting
+    rules — `untlNeg` / `snceNeg`, whose guards are `futureOf`/`pastOf` emptiness plus
+    `ord.timeCount < 4`, and `densityRule`, whose guard is the maximal-unfilled-gap set — that also
+    survives the identification arm, which can lower `ord.timeCount`. That is open, and it is the
+    only thing that is.
+
+15. **Time reuse after an identification: it happens.** Not open, and not forbidden by the run
+    invariant. `nextTime_reissues_retired_time` decides a configuration where
+    `firstIncomparablePair` merges the branch's largest time away, `Branch.maxTime` drops with it,
+    and the post-identification `Branch.nextTime` is exactly the retired value;
+    `reuse_driven_through_engine` decides that two `expandOnceUnblocked` steps later that value is
+    back on the branch, so this is a run and not a hand-assembled `Branch`. The available facts a
+    reader will reach for — `src_not_mem_knownTimes_identifyTime`, `knownTimes_card_lt_identifyTime`
+    — say nothing about `Branch.maxTime` and cannot rule it out.
+
+    Consequently the **σ-hit hypothesis of `mintPotential_lt_of_mint` is false**, not merely
+    undischarged: `rhoSF_time_ne_src` shows the renaming's image omits the retired time entirely,
+    and `mint_not_in_rhoSF_image` turns that into the statement that nothing minted at the re-issued
+    time lies in σ's image. The **live-times reformulation does not escape it**: that variant filters
+    additionally on the formula's time being a fixed point of `σ`, and `rho_src_ne_src` shows the
+    re-issued time is not one. The obstruction is intrinsic to identification-plus-`maxTime`.
+
+16. **An unconditional `applyRule_emitted_time_mem`, without `OrdTimesKnown`.** Refuted by
+    `applyRule_emitted_time_mem_ordTimesKnown_needed`. A reader who notices that
+    `applyRule_emitted_world_mem` needs no run invariant and removes the hypothesis from its time
+    twin has already been here: four rules — `allFuturePos`, `allPastPos`, `someFutureNeg`,
+    `somePastNeg` — propagate to every time in `TimeOrdering.futureOf` / `pastOf` of the trigger, and
+    nothing in `applyRule` ties an ordering time to the branch. The witness is one branch carrying
+    `T(G p)` at the initial label with the ordering asserting `0 < 5`. Their world counterparts have
+    no such freedom because all four emit at `l.world`; the asymmetry is real, and it is why
+    `mem_knownTimes_of_mem_futureOf` / `_pastOf` exist. The hypothesis costs nothing at the consuming
+    sites — `expandOnceUnblocked_ordTimesKnown` supplies it. -/
 
 end FormalSystem.Metalogic.Decidability
