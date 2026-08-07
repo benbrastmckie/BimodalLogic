@@ -1093,14 +1093,20 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-07T15:22:56Z",
-      "last_updated": "2026-08-07T15:22:56Z",
+      "last_updated": "2026-08-07T16:52:33Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "type": "report",
+          "path": "specs/436_fourth_termination_measure_component/reports/01_fourth-measure-component.md",
+          "summary": "Fourth termination-measure component research: recommends selfGuardPotential; derives arm-3 weight-feasibility constraint (F); refute-first gate flagged"
         }
-      ]
+      ],
+      "session_id": "sess_1786120320_eb4769"
     }
   ],
   "artifacts": [
