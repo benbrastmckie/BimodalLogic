@@ -1,0 +1,40 @@
+{
+  "phase": 1,
+  "phase_name": "Baseline Capture and Candidate Resolution Audit",
+  "started_at": "2026-08-07T16:00:00Z",
+  "last_updated": "2026-08-07T16:10:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Capture baseline literature-briefing.sh stdout/stderr and lit-coverage marker",
+      "status": "done",
+      "files_touched": [],
+      "note": "Baseline: <!-- lit-coverage mode=repo seg_count=33 sparse=false threshold=3 -->; stderr empty; captured to scratchpad (not repo-tracked)."
+    },
+    {
+      "id": 2,
+      "description": "Record baseline sub-index entry count and hash of entries array",
+      "status": "done",
+      "files_touched": [],
+      "note": "33 entries; sha256 of jq -c .entries: bedb30e9791a718735559292d764a460980623a962c64997f535f464c1134b4a"
+    },
+    {
+      "id": 3,
+      "description": "Confirm each candidate doc_id resolves against global index .id, record provenance_fidelity and chunk/token info",
+      "status": "done",
+      "files_touched": [],
+      "note": "All candidates resolve via .id: massacci_2000_single_step_tableaux_for_modal_logics (verified_conversion, 77 chunks), caleiro_2013 (verified_conversion, 20846 tokens, ~7 chunks; its 7 secNN children all provenance_fidelity:null), venema_2001_sec04 (verified_conversion), gerth_1995_onthefly_ltl (verified_conversion), vardi_wolper_1986_automata_verification (verified_conversion), vardi_1996_automata_ltl (verified_conversion), blackburn_2002_book (verified_conversion, 35 chunks; its ch06 secNN children all provenance_fidelity:null), baier_katoen_2008_part01-12 (all verified_conversion but identical title/token_count=39848, confirming F6 metadata collision; 12 corresponding source .md files confirmed present on disk)."
+    },
+    {
+      "id": 4,
+      "description": "Confirm baseline stderr is free of 'not found in global index' warnings",
+      "status": "done",
+      "files_touched": [],
+      "note": "Confirmed clean (empty stderr) — establishes the clean-stderr gate as valid for Phase 6."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}
