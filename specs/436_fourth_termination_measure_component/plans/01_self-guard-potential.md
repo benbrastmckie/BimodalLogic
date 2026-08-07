@@ -1,7 +1,7 @@
 # Implementation Plan: The fourth termination-measure component (`selfGuardPotential`)
 
 - **Task**: 436 - fourth_termination_measure_component
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours
 - **Dependencies**: 435 (literature sub-index curation, [COMPLETED])
 - **Research Inputs**: `specs/436_fourth_termination_measure_component/reports/01_fourth-measure-component.md`
@@ -263,7 +263,45 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 
 ---
 
-### Phase 1: Refute-first gate on the inherited sigma-hit obligation [NOT STARTED]
+### Phase 1: Refute-first gate on the inherited sigma-hit obligation [COMPLETED]
+
+**VERDICT: FALSE.** Decided at the first gate configuration (attempt budget 3, one used). The
+recommended design does **not** survive the σ-hit hazard. Per the plan's own Rollback/Contingency
+section this is a *successful* phase outcome, not a failure: Phases 2-9 are `[BLOCKED]` citing this
+phase, and the task routes to Phase 10 for register entry 17.
+
+**What landed** (`MintBound.lean`, new D2 subsection immediately before `/-! ## C9`, +144 lines,
+against the plan-time estimate of ~200-250):
+
+- `selfGuardRules`, `selfGuardRules_card`, `selfGuardDischarged`, `selfGuardPotential`,
+  `MintPaysForTimeAt` — all four definitions, as specified.
+- `selfGuard_no_column_at_retired_time` — the **general** half of the verdict.
+- `gateTrigger`, `gateBranch`, `gateOrd`, `gateUniverse`, `gateSucc`, `gateNewOrd`, `gateSigma`;
+  `gate_runInvariant`, `gate_confined`, `gate_is_reissue_hazard` (seven decided conjuncts),
+  `gate_step_fires`.
+- `selfGuardPotential_lt_at_gate_with_id`, `selfGuardPotential_eq_at_gate_with_sigma` — the
+  discriminating pair.
+- `mintPaysForTimeAt_reuse_false` — the verdict theorem, at every frame class and every `Tmax`.
+
+**Why FALSE.** `rhoSF_time_ne_src` is already a statement about *times*: `(rhoSF src tgt sf).label
+.time ≠ src` for every `sf`. Register entry 15's formula-hit refutation (`mint_not_in_rhoSF_image`)
+is a three-line corollary of it. So weakening the obligation from a formula hit to a *time* hit
+weakens nothing the refutation depended on — the curing edge `untlNeg`'s ACTIVE arm adds is anchored
+at the trigger's time, and when that time is one an earlier identification retired, no column of
+`selfGuardRules ×ˢ U` is indexed there at all.
+
+**Measured at the gate** (σ = `rhoSF 2 0`, the renaming the identification itself produces):
+`knownTimes` 3 → 4 (disjunct 1's first conjunct `4 ≤ 3` false); `mintTimeBudget` 27 → 28 and
+`mintPotential` 24 → 24 (both of disjunct 2's conjuncts false); `selfGuardPotential` 3 → 3
+(disjunct 3's `3 < 3` false).
+
+**The refutation is attributable to σ, not to an inert component.** At the same step with `σ = id`
+the potential *does* drop, 4 → 3 (`selfGuardPotential_lt_at_gate_with_id`). The failure is located
+exactly at the σ-hit obligation, and `gate_is_reissue_hazard` decides all seven preconditions so it
+is not attributable to a violated hypothesis either.
+
+**Scope Hypothesis confirmed:** one configuration, not three; +144 lines, not 200-250. Recorded per
+the phase's own instruction rather than silently absorbed.
 
 - **Goal:** Decide, before any plumbing lemma exists, whether `MintPaysForTimeAt` survives at the
   configuration register entry 15 identifies as the σ-hit hazard. This phase produces a **binary
@@ -346,7 +384,9 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 
 ---
 
-### Phase 2: Index-set agreement, the ceiling, and growth monotonicity [NOT STARTED]
+### Phase 2: Index-set agreement, the ceiling, and growth monotonicity [BLOCKED]
+
+**BLOCKER** (Phase 2): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
 
 - **Goal:** Give `selfGuardPotential` the two structural facts every consumer needs — a linear
   ceiling and non-increase under growth — by transcribing the already-landed `mintPotential`
@@ -380,7 +420,9 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 
 ---
 
-### Phase 3: Preservation across the identification arm [NOT STARTED]
+### Phase 3: Preservation across the identification arm [BLOCKED]
+
+**BLOCKER** (Phase 3): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
 
 - **Goal:** The discriminating property, and the one Constraint (F) turns on: `selfGuardPotential`
   does not rise across `TimeOrdering.identifyTime` at an incomparable trigger. This is the crux
@@ -424,7 +466,9 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 
 ---
 
-### Phase 4: The `untlNeg` discharge lemma [NOT STARTED]
+### Phase 4: The `untlNeg` discharge lemma [BLOCKED]
+
+**BLOCKER** (Phase 4): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
 
 - **Goal:** Prove that the `untlNeg` ACTIVE arm strictly drops `selfGuardPotential`. This phase
   establishes the proof skeleton that Phase 5 mirrors.
@@ -461,7 +505,9 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 
 ---
 
-### Phase 5: The `snceNeg` discharge lemma [NOT STARTED]
+### Phase 5: The `snceNeg` discharge lemma [BLOCKED]
+
+**BLOCKER** (Phase 5): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
 
 - **Goal:** The exact past mirror of Phase 4. Research risk R3 was resolved during
   adversarial verification: the mirror is exact, so this phase is a transcription, not a
@@ -490,7 +536,9 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 
 ---
 
-### Phase 6: `MintPaysForTimeAt`'s direction lemma and the no-leak confirmation [NOT STARTED]
+### Phase 6: `MintPaysForTimeAt`'s direction lemma and the no-leak confirmation [BLOCKED]
+
+**BLOCKER** (Phase 6): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
 
 - **Goal:** Complete the parent plan's Phase 7 deliverable. The direction lemma is a **gate, not a
   nicety**: register entry 7 exists because a "simplification" that was secretly a weakening was
@@ -532,7 +580,9 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 
 ---
 
-### Phase 7: The four-component measure and its identification arm [NOT STARTED]
+### Phase 7: The four-component measure and its identification arm [BLOCKED]
+
+**BLOCKER** (Phase 7): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
 
 - **Goal:** Land `budgetPotentialAt`, the additive four-component sibling of `budgetPotential`, and
   re-prove the identification-arm step lemma at it. This phase is where Constraint (F) is tested for
@@ -571,7 +621,9 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 
 ---
 
-### Phase 8: The unordered step lemma and the fuel-figure re-derivation [NOT STARTED]
+### Phase 8: The unordered step lemma and the fuel-figure re-derivation [BLOCKED]
+
+**BLOCKER** (Phase 8): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
 
 - **Goal:** Re-prove the unordered step lemma at the four-component measure, consuming
   `MintPaysForTimeAt`'s third disjunct, and re-derive the fuel figures that carry it.
@@ -606,7 +658,9 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 
 ---
 
-### Phase 9: Terminus restatement and the concrete instantiation [NOT STARTED]
+### Phase 9: Terminus restatement and the concrete instantiation [BLOCKED]
+
+**BLOCKER** (Phase 9): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
 
 - **Goal:** Deliver the task's "done" condition — the two seed-level termini restated at the
   repaired shape, and the repaired predicate discharged at a **concrete, useful** universe.
@@ -649,6 +703,8 @@ dispatches a parallel wave; every other wave is sequential. **Phase 1 gates the 
 ---
 
 ### Phase 10: Register entries, the density residual, and the closing gate [NOT STARTED]
+
+**ROUTED HERE BY PHASE 1's FALSE VERDICT.** This is now the only other phase that runs. Register entry 17 takes its **Phase 1 FALSE branch** form: the `selfGuardPotential` design and the σ-hit exposure it inherits, with `mintPaysForTimeAt_reuse_false` as the refuting witness and `selfGuard_no_column_at_retired_time` as the general reason. The Phase 1 TRUE branch's candidate entry (Candidate 1 / `timeSlotDeficit`) is **not** the one to land.
 
 - **Goal:** Bring the file's own narrative into agreement with what landed, record every route
   refuted along the way, and run the closing gates. **This phase runs on every path through the
