@@ -404,14 +404,14 @@ not close, downgrade to the "repairable" row and say which step of the sketch fa
 
 ---
 
-### Phase 5: The time dichotomy and its engine-level lift [NOT STARTED]
+### Phase 5: The time dichotomy and its engine-level lift [COMPLETED]
 
 **Goal**: Complete the time coordinate the way the world coordinate is complete: every emission sits
 at a branch time or at `Branch.nextTime`, no third case — then lift it to the level
 `MintPaysForTime` and `UnorderedSuccessorLabelClosed` actually quantify over.
 
 **Tasks**:
-- [ ] Per minting rule in `freshTimeRules`, prove the `nextTime` pinning lemma, mirroring
+- [x] Per minting rule in `freshTimeRules`, prove the `nextTime` pinning lemma, mirroring
       `applyRule_boxNeg_emitted_world` / `applyRule_diamondPos_emitted_world`. Group them where the
       proof is shared (the six `freshLabelRules ∩ freshTimeRules` members share the
       `freshTime := branch.nextTime` + `boxDiamondPersistence` shape); handle `densityRule`,
@@ -419,7 +419,7 @@ at a branch time or at `Branch.nextTime`, no third case — then lift it to the 
       Note these lemmas cannot conclude `= b.nextTime` unconditionally for the rules whose arms also
       re-include the source formula (`untlNeg`/`snceNeg` re-include their trigger in every arm, per
       `ruleSelfGuarded`'s docstring) — for those, the conclusion is the disjunction directly.
-- [ ] Assemble `applyRule_emitted_time_dichotomy`, mirroring `applyRule_emitted_world_dichotomy`
+- [x] Assemble `applyRule_emitted_time_dichotomy`, mirroring `applyRule_emitted_world_dichotomy`
       exactly:
       ```
       theorem applyRule_emitted_time_dichotomy {rule : TableauRule} {sf : SignedFormula}
@@ -429,14 +429,28 @@ at a branch time or at `Branch.nextTime`, no third case — then lift it to the 
       ```
       Assemble it from Phase 3's sweep plus the per-rule pinning lemmas and nothing else — the world
       dichotomy's proof is a `by_cases` chain of exactly that shape; follow it.
-- [ ] Lift to the engine: `unorderedSuccessor_time_dichotomy`, quantified over
+- [x] Lift to the engine: `unorderedSuccessor_time_dichotomy`, quantified over
       `nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1`, giving
       `∀ t ∈ nb.knownTimes, t ∈ b.knownTimes ∨ t = b.nextTime`. Route through the existing
       `expandOnceUnblocked` shape lemmas and `knownTimes_mono`; do not re-derive the pick
       destructuring.
-- [ ] Derive the cardinality corollary `knownTimes_card_le_succ_of_unorderedSuccessor`:
+- [x] Derive the cardinality corollary `knownTimes_card_le_succ_of_unorderedSuccessor`:
       `nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card + 1`. This is the quantitative form
       `MintPaysForTime`'s disjunct 1 is really about, and Phase 7's repair will be stated against it.
+
+*(deviation: altered — the nine minting rules landed as **two** lemmas rather than nine. The six in
+`freshTimeRules ∩ freshLabelRules` share one arm shape and are grouped as
+`applyRule_emitted_nextTime_of_freshLabel` (conclusion `= b.nextTime`, no `hsf` needed); the three
+in `freshTimeRules \ freshLabelRules` are grouped as
+`applyRule_emitted_time_dichotomy_selfGuarded` (conclusion the disjunction, `hsf` needed). This is
+the grouping the plan's own task text authorises — "group them where the proof is shared" — with the
+three individually-handled rules sharing enough arm structure that splitting them further would
+have duplicated one tactic block three times. `OrdTimesKnown` is not needed by either minting
+lemma; it enters the dichotomy only through the sweep.)*
+
+*(deviation: altered — `applyRule_emitted_time_dichotomy` carries `haux : OrdTimesKnown b ord`,
+inherited from `applyRule_emitted_time_mem`. Same cause and same justification as the Phase 3
+deviation; `expandOnceUnblocked_ordTimesKnown` supplies it at every consuming site.)*
 
 **Timing**: 2 hours
 

@@ -6758,6 +6758,212 @@ theorem applyRule_emitted_time_mem_ordTimesKnown_needed :
   revert hbad
   decide
 
+/-! ### The time dichotomy, and its lift to the engine
+
+The world coordinate is complete because `applyRule_emitted_world_dichotomy` says every emission
+sits at a branch world or at `Branch.nextWorld`, with no third case. This subsection closes the
+time coordinate the same way. The shape is the same because the *fact* is the same: every fresh
+time in `applyRule` is `branch.nextTime`, bound at exactly nine sites, with no `nextTime + k`
+anywhere.
+
+The nine minting rules split two ways, and the split is not cosmetic:
+
+* the **six** in `freshTimeRules ∩ freshLabelRules` are *consumable* — they do not re-include their
+  trigger — so every one of their emissions is pinned to `Branch.nextTime` outright
+  (`applyRule_emitted_nextTime_of_freshLabel`);
+* the **three** in `freshTimeRules \ freshLabelRules` re-include the trigger in every arm
+  (`untlNeg` and `snceNeg` are `ruleSelfGuarded`; `densityRule` emits alongside branch-carried
+  material), so a `= Branch.nextTime` conclusion is *false* for them and the honest statement is
+  the disjunction directly. That is why they get their own lemmas rather than joining the group. -/
+
+set_option maxHeartbeats 2000000 in
+/-- **The six consumable minting rules emit only at `Branch.nextTime`.** The exact time-coordinate
+analogue of `applyRule_boxNeg_emitted_world` / `applyRule_diamondPos_emitted_world`, grouped
+because all six share one arm shape: a witness at `freshLabel`, auto-propagation blocks relabelled
+to `freshTime`, and a `boxDiamondPersistence` block whose label
+`mem_boxDiamondPersistence_label` pins to `{ world := _, time := freshTime }`.
+
+The two hypotheses together name exactly `freshTimeRules ∩ freshLabelRules` =
+`{allFutureNeg, allPastNeg, someFuturePos, somePastPos, untlPos, sncePos}`. No `hsf` is needed:
+nothing in these arms reaches back to the trigger's own time. -/
+theorem applyRule_emitted_nextTime_of_freshLabel {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering}
+    (hT : ruleMintsFreshTime rule = true) (hL : ruleMintsFreshLabel rule = true) :
+    ∀ g ∈ (applyRule rule sf b ord).1.emitted, g.label.time = b.nextTime := by
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;> first
+      | exact Bool.noConfusion hT
+      | exact Bool.noConfusion hL
+      | (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+          (try contradiction) <;>
+          intro g hg <;>
+          repeat' first
+            | rfl
+            | (rw [(mem_boxDiamondPersistence_label hg).1])
+            | (refine mem_filterMap_const_time ?_ hg
+               clear hg
+               intro x y hy
+               repeat' first
+                 | split at hy
+                 | simp only [Option.some.injEq] at hy
+               all_goals first
+                 | (subst hy; rfl)
+                 | (simp only [reduceCtorEq] at hy))
+            | (simp only [RuleResult.emitted,
+                 Branch.allFuturePosFormulas, Branch.allPastPosFormulas,
+                 Branch.someFutureNegFormulas, Branch.somePastNegFormulas,
+                 List.flatten_cons, List.flatten_nil,
+                 List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil,
+                 or_false] at hg)
+            | (subst hg; rfl)
+            | (rcases hg with hg | hg))
+
+set_option maxHeartbeats 2000000 in
+/-- **The three self-guarded minting rules, at the honest disjunction.**
+
+`untlNeg` and `snceNeg` re-include their trigger `sf` in **every** arm — that is what
+`ruleSelfGuarded` means for them — and `densityRule` emits beside branch-carried material, so none
+of the three admits a `= Branch.nextTime` conclusion. What is true is the disjunction, and it needs
+`hsf` (for the re-included trigger) where the group lemma above needed nothing.
+
+The three are handled together because their arms differ only in which auto-propagation blocks they
+carry, all of which relabel to `freshTime`. `OrdTimesKnown` is *not* needed: unlike the sweep, no
+arm here reads a time off the ordering. -/
+theorem applyRule_emitted_time_dichotomy_selfGuarded {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering} (hsf : sf ∈ b)
+    (h : rule = .untlNeg ∨ rule = .snceNeg ∨ rule = .densityRule) :
+    ∀ g ∈ (applyRule rule sf b ord).1.emitted,
+      g.label.time ∈ b.knownTimes ∨ g.label.time = b.nextTime := by
+  have ht : sf.label.time ∈ b.knownTimes := mem_knownTimes_of_mem hsf
+  cases sf with
+  | mk sign formula label =>
+    rcases h with rfl | rfl | rfl <;>
+      (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+        (try contradiction) <;>
+        intro g hg <;>
+        repeat' first
+          | exact Or.inr rfl
+          | exact Or.inl ht
+          | exact Or.inl (mem_knownTimes_of_mem hg)
+          | (refine Or.inr ?_; rw [(mem_boxDiamondPersistence_label hg).1])
+          | (refine Or.inr (mem_filterMap_const_time ?_ hg)
+             clear hg
+             intro x y hy
+             repeat' first
+               | split at hy
+               | simp only [Option.some.injEq] at hy
+             all_goals first
+               | (subst hy; rfl)
+               | (simp only [reduceCtorEq] at hy))
+          | (simp only [RuleResult.emitted,
+               Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
+               Branch.somePastNegFormulas,
+               List.flatten_cons, List.flatten_nil,
+               List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil,
+               or_false] at hg)
+          | (subst hg; exact Or.inl ht)
+          | (subst hg; exact Or.inr rfl)
+          | (rcases hg with hg | hg))
+
+/-- **The time dichotomy, complete.** Every formula a rule emits sits either at a time the branch
+already carries or at `Branch.nextTime` — there is no third case.
+
+The exact counterpart of `applyRule_emitted_world_dichotomy`, and assembled the same way: from the
+landed sweep (`applyRule_emitted_time_mem`, the 27 non-minting rules) plus the two minting lemmas
+(the six consumable ones and the three self-guarded ones), and nothing else. The case split is on
+the two `Bool` census predicates rather than on rule names, which is what keeps it nine-and-27
+rather than a chain of 36 inequalities.
+
+**It carries `OrdTimesKnown b ord`, and its world twin does not.** The hypothesis enters through
+the sweep, not through the minting lemmas — neither of those needs it. See
+`applyRule_emitted_time_mem_ordTimesKnown_needed` for why it cannot be dropped, and
+`expandOnceUnblocked_ordTimesKnown` for why every consuming site already has it. -/
+theorem applyRule_emitted_time_dichotomy {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering} (hsf : sf ∈ b) (haux : OrdTimesKnown b ord) :
+    ∀ g ∈ (applyRule rule sf b ord).1.emitted,
+      g.label.time ∈ b.knownTimes ∨ g.label.time = b.nextTime := by
+  intro g hg
+  by_cases hT : ruleMintsFreshTime rule = true
+  · by_cases hL : ruleMintsFreshLabel rule = true
+    · exact Or.inr (applyRule_emitted_nextTime_of_freshLabel hT hL g hg)
+    · refine applyRule_emitted_time_dichotomy_selfGuarded hsf ?_ g hg
+      simp only [Bool.not_eq_true] at hL
+      revert hT hL
+      cases rule <;> simp +decide [ruleMintsFreshTime, ruleMintsFreshLabel]
+  · simp only [Bool.not_eq_true] at hT
+    exact Or.inl (applyRule_emitted_time_mem hsf haux hT g hg)
+
+/-! #### The lift to the engine
+
+`MintPaysForTime` and `UnorderedSuccessorLabelClosed` quantify over
+`unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1`, not over `applyRule`. The lift
+routes through the same invariant-agnostic machinery `expandOnceUnblocked_ordTimesKnown` uses —
+`pick_branches_eq`, `pick_stage_source`, `resultBranch_sub` — so the three-stage pick is never
+destructured a second time. -/
+
+private theorem pickBranches_time_dichotomy {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (haux : OrdTimesKnown b ord)
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o)) :
+    ∀ nb ∈ pickBranches b p, ∀ t ∈ nb.knownTimes, t ∈ b.knownTimes ∨ t = b.nextTime := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA⟩ := hp r res o rfl
+    intro nb hnb t htm
+    obtain ⟨-, hsub⟩ := resultBranch_sub (b := b) (nb := nb) (res := res) hnb
+    obtain ⟨x, hx, rfl⟩ := exists_mem_of_mem_knownTimes htm
+    rcases hsub x hx with hxe | hxb
+    · refine applyRule_emitted_time_dichotomy (rule := r) (sf := sf) hsf haux x ?_
+      rw [hA]
+      exact hxe
+    · exact Or.inl (mem_knownTimes_of_mem hxb)
+
+/-- **The time dichotomy at engine level.** Every time an unordered successor knows is a time `b`
+knew, or `b.nextTime`. One step adds at most the one fresh time, and never more.
+
+This is the statement `MintPaysForTime`'s first disjunct is really about, lifted to the shape that
+disjunct quantifies at. -/
+theorem unorderedSuccessor_time_dichotomy {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (haux : OrdTimesKnown b ord) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      ∀ t ∈ nb.knownTimes, t ∈ b.knownTimes ∨ t = b.nextTime := by
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyB]
+  exact pickBranches_time_dichotomy haux (pick_stage_source b ord fc tr)
+
+/-- **The quantitative form: one step adds at most one time.**
+
+`MintPaysForTime`'s first disjunct asks for `nb.knownTimes.card ≤ b.knownTimes.card`, which is
+false at every minting step. This is the true inequality one apart from it, and it is a *theorem*
+rather than a hypothesis — which is exactly why the repaired predicate in the next subsection
+states its first disjunct against this rather than against the flat bound. -/
+theorem knownTimes_card_le_succ_of_unorderedSuccessor {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (haux : OrdTimesKnown b ord) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card + 1 := by
+  intro nb hnb
+  have hsub : nb.knownTimes.toFinset ⊆ insert b.nextTime b.knownTimes.toFinset := by
+    intro t ht
+    rcases unorderedSuccessor_time_dichotomy haux nb hnb t (List.mem_toFinset.mp ht) with h | h
+    · exact Finset.mem_insert_of_mem (List.mem_toFinset.mpr h)
+    · exact h ▸ Finset.mem_insert_self _ _
+  exact le_trans (Finset.card_le_card hsub) (Finset.card_insert_le _ _)
+
 /-! ## D2. `MintPaysForTime`: the verdict
 
 **Verdict: refutable as literally stated.** `mintPaysForTime_untlNeg_false` is the witness, and it
