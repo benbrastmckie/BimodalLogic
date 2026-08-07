@@ -1,0 +1,39 @@
+{
+  "phase": 2,
+  "phase_name": "Identify the baier_katoen_2008 Parts Worth Registering",
+  "started_at": "2026-08-07T16:15:00Z",
+  "last_updated": "2026-08-07T16:35:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Grep each of the 12 baier_katoen_2008 part files for LTL-to-automaton vocabulary",
+      "status": "done",
+      "files_touched": [],
+      "note": "Combining-mark-aware regex required for Buchi (source uses decomposed U+0308 diaeresis). part04: elementary_set=23, closure_of=3; part02: closure_of=6; part03: NBA=167; rest negligible."
+    },
+    {
+      "id": 2,
+      "description": "Read top-scoring parts to confirm the closure-set termination argument is genuine, not name-dropped",
+      "status": "done",
+      "files_touched": [],
+      "note": "part04 confirmed: Def 5.35 Elementary Sets of Formulae, Thm 5.37 GNBA construction with state bound 2^|subf(phi)|. part02/part03/part07/10/11 confirmed as false positives (different closure senses or general background); part12 confirmed as index-only."
+    },
+    {
+      "id": 3,
+      "description": "Fix final part list with cited evidence for inclusions and exclusions",
+      "status": "done",
+      "files_touched": ["specs/435_curate_termination_literature_subindex/plans/01_curate-termination-subindex.md"],
+      "note": "Final list: baier_katoen_2008_part04 only. Evidence recorded inline in plan file Phase 2 Verification block."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {
+      "approach": "grep -o -E 'B[üu]chi' (precomposed ü)",
+      "result": "failed",
+      "reason": "Source .md encodes Buchi with decomposed combining diaeresis (U+0308), not precomposed U+00FC — returned 0 matches everywhere despite visible 'Büchi' text in the file."
+    }
+  ],
+  "handoff_count": 0,
+  "deviations": []
+}

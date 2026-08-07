@@ -183,20 +183,33 @@ do not carry these forward on this plan's authority.
 
 ---
 
-### Phase 2: Identify the `baier_katoen_2008` Parts Worth Registering [NOT STARTED]
+### Phase 2: Identify the `baier_katoen_2008` Parts Worth Registering [COMPLETED]
 
 **Goal**: Replace "the parts covering LTL-to-automaton tableau construction" with a specific,
 evidence-backed list.
 
 **Tasks**:
-- [ ] Grep each of the 12 part files under
+- [x] Grep each of the 12 part files under
       `~/Projects/Literature/sources/baier_katoen_2008/` for the LTL-to-automaton vocabulary
-      (`elementary set`, `closure of`, `Büchi`/`Buchi`, `NBA`).
-- [ ] Read enough of the top-scoring part(s) to confirm the closure-set construction and its
+      (`elementary set`, `closure of`, `Büchi`/`Buchi`, `NBA`). *(completed: note the corpus
+      encodes Büchi with a decomposed combining diaeresis (U+0308) after 'u', not precomposed
+      ü — a naive grep for precomposed ü silently returns 0 everywhere; using a combining-mark-
+      aware pattern surfaces the true counts. part04: elementary_set=23, closure_of=3;
+      part02: closure_of=6; part03: NBA=167; all other parts negligible (0-2))*
+- [x] Read enough of the top-scoring part(s) to confirm the closure-set construction and its
       termination argument are genuinely present, not merely name-dropped in a forward
-      reference or index.
-- [ ] Fix the final part list, and record the evidence (hit counts plus a confirming quotation
-      or section heading) that justifies including each part and excluding the rest.
+      reference or index. *(completed: part04 confirmed genuine — Definition 5.35 "Elementary
+      Sets of Formulae", Theorem 5.37 GNBA construction with state-space bound O(2^|subf(ϕ)|).
+      part02's "closure of" hits are a DIFFERENT concept — the topological closure of a
+      linear-time property (Ch.3 safety/liveness), not the syntactic closure(ϕ) used in the
+      tableau. part03's NBA hits are the general Ch.4 NBA definition and nested-DFS emptiness
+      check — real automata background but not the specific elementary-set termination bound.
+      part07/10/11's "closure of" hits are all bisimulation/relational closure, unrelated.
+      part12's 2 "elementary set" hits are back-matter index entries pointing to page 276
+      (inside part04), not content.)*
+- [x] Fix the final part list, and record the evidence (hit counts plus a confirming quotation
+      or section heading) that justifies including each part and excluding the rest. *(completed:
+      final list is `baier_katoen_2008_part04` only — see Phase 2 evidence note below)*
 
 **Timing**: 0.5 hours
 
@@ -215,6 +228,34 @@ answer to be one part or three rather than two.
 **Verification**:
 - A written list of `baier_katoen_2008_partNN` ids to register, each with cited evidence.
 - An explicit statement of which parts were excluded and why.
+
+**Result — final part list**: `baier_katoen_2008_part04` only.
+
+**Evidence for inclusion (part04)**: Definition 5.35 "Elementary Sets of Formulae" —
+`B ⊆ closure(ϕ)` consistent, maximal, locally consistent w.r.t. until; Theorem 5.37 proof
+constructing the GNBA `Gϕ = (Q, 2^AP, δ, Q0, F)` with `Q` = the set of all elementary sets of
+`closure(ϕ)`, and the accompanying state-space bound `|Q| ≤ 2^|subf(ϕ)|` — this is the
+closure-set potential/termination argument the research report names, cited by definition and
+theorem number rather than a keyword hit alone.
+
+**Evidence for exclusion**:
+- `part02` (closure_of=6): a different "closure" — the *topological* closure of a linear-time
+  property (Ch.3 safety/liveness decomposition, `closure(P) = {σ | pref(σ) ⊆ pref(P)}`), not the
+  syntactic `closure(ϕ)` of an LTL formula used in the tableau construction.
+- `part03` (NBA=167): Ch.4's general nondeterministic Büchi automaton definition and the nested
+  depth-first-search emptiness check — genuine automata background but not the specific
+  elementary-set termination bound.
+- `part07`, `part10`, `part11` (closure_of=1-2 each): all reflexive/transitive/bisimulation
+  relational closure, unrelated to LTL formula closure.
+- `part12` (elementary_set=2): back-matter index entries ("elementary sets, 276") pointing back
+  into part04, not content of their own.
+- `part01`, `part05`, `part06`, `part08`, `part09`: 0-1 incidental hits, no relevant content.
+
+**Methodology note**: the source `.md` encodes "Büchi" with a *decomposed* combining diaeresis
+(U+0308 following `u`) rather than the precomposed `ü` (U+00FC) — a naive `grep -o 'ü'`
+search silently returns 0 matches across all 12 parts. A combining-mark-aware pattern
+(`[Bb]ü?chi`) was required to get true counts; this is the same corpus-wide combining-mark
+defect documented in `specs/literature-index.json`'s `rabinovich_2014` entry hazard note.
 
 ---
 
