@@ -7180,7 +7180,19 @@ it.** What is delivered instead is the accounting the residual was blocked on
 `unorderedSuccessor_time_dichotomy`, `knownTimes_card_le_succ_of_unorderedSuccessor`), the
 satisfiability verdict on the residual as stated, the time-reuse verdict, and the two refutations
 below that close off the repair routes a reader would try first. `MintPaysForTime` remains a named,
-open hypothesis, retained verbatim; nothing in this file assumes it. -/
+open hypothesis, retained verbatim; nothing in this file assumes it.
+
+**Since this note was written, the fourth component has been attempted and decided.** The subsection
+"The fourth measure component: the self-guard discharge potential" below builds the natural
+candidate — a second defect ledger over `selfGuardRules ×ˢ U`, measured against each rule's own
+discharge rather than against `ord.timeCount`, and therefore immune to the two routes the register
+already refutes — and `mintPaysForTimeAt_reuse_false` decides it **false**, at every frame class and
+every `Tmax`. So the paragraph above is now sharper than "open": the identification arm is not only
+the obstruction to composing a measure in general, it defeats this composition specifically, through
+the σ-hit route of the time-reuse verdict in a weakened *time-hit* form that escapes nothing.
+Register entry 17 is the standing record, and the subsection "The density residual" below records
+the one coordinate the verdict leaves untouched. `MintPaysForTime` is still a named, open
+hypothesis, and is still assumed by nothing. -/
 
 /-- **One extra known time strictly raises the ordered rank**, whenever the smaller time count is
 within the carried bound.
@@ -7632,10 +7644,47 @@ theorem mintPaysForTimeAt_reuse_false (fc : FormalSystem.ProofSystem.FrameClass)
       | exact absurd h2 (by decide)
       | exact absurd h3 (by decide)
 
+/-! #### The density residual: `gapPotential`, unattempted rather than refuted
+
+Recorded immediately after the verdict because the verdict closes the **self-guard** coordinate and
+would otherwise leave a reader believing the whole fourth-component question closed with it. It is
+not. This subsection states precisely which coordinate remains, why it is a separate clause rather
+than another disjunct fitted to the same ledger, and that nothing here is implemented or assumed.
+
+*The exposure the verdict does not cover.* `MintPaysForTimeAt` carrying only the
+`selfGuardPotential` disjunct is separately refutable at `.Dense` / `.Dedekind` by a `densityRule`
+vehicle, on grounds that have nothing to do with the σ-hit hazard. `densityRule` is inside the
+predicate's scope — it returns `.persistent` (`Tableau.lean:1385`), which `expandOnceUnblocked` maps
+to `.extended` (`MintBound.lean:1071`) — and it mints a fresh time while sitting outside **both**
+`freshLabelRules` and `selfGuardRules`. So a `densityRule` step moves no disjunct of the predicate
+at all, at any `U`, independently of everything above. `freshTimeRules_incomparable_freshLabelRules`
+is the census fact that puts it outside the first list; `selfGuardRules` excludes it by construction.
+
+*The intended component, named so that its absence is legible.* `gapPotential`, indexed by `U ×ˢ U`
+rather than by `selfGuardRules ×ˢ U`. The index shape is forced by the rule's own argument:
+`densityRule` splits each *maximal unfilled gap* at most once, and a gap is a **pair**, so the
+ledger transcribes the rule's own `gapTargets` filter (`Tableau.lean:1364-1366`) —
+`(timeOrd.futureOf t').isEmpty`, together with `t'` lying below no other future time of the trigger
+— rather than any per-rule discharge test. It is therefore quadratic in `|U|` where
+`selfGuardPotential` is linear, and it is gated on `denseRules` (`Tableau.lean:1593`), so it
+contributes nothing at `.Base` / `.Discrete`.
+
+*That it has to be a separate clause is not this development's invention.* In the mosaic
+decidability argument whose residual structure this file follows, density is `(SVDns)`, listed among
+the *additional vertical saturation conditions* and kept apart from the eventuality conditions the
+other clauses discharge (Caleiro–Viganò–Volpe 2013, §3.1). The separation is the source's. The
+pair-indexing conclusion is independently forced by `densityRule`'s own docstring in any case, so
+nothing here rests on the citation alone.
+
+**Nothing of `gapPotential` is implemented in this file, and no theorem in this file assumes it.**
+It is named so that a reader arriving at the verdict above can tell which coordinate is *refuted*
+and which is merely *untried*; see register entry 17. Refuting the self-guard coordinate says
+nothing about this one in either direction. -/
+
 /-! ## C9. The do-not-re-attempt register
 
-Sixteen statements that look like the natural next lemma and are **not** available. Each is cited by
-declaration name and, where one exists, by refuting witness — never by an issue number or a
+Seventeen statements that look like the natural next lemma and are **not** available. Each is cited
+by declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
 
@@ -7829,6 +7878,59 @@ already been here.
     `T(G p)` at the initial label with the ordering asserting `0 < 5`. Their world counterparts have
     no such freedom because all four emit at `l.world`; the asymmetry is real, and it is why
     `mem_knownTimes_of_mem_futureOf` / `_pastOf` exist. The hypothesis costs nothing at the consuming
-    sites — `expandOnceUnblocked_ordTimesKnown` supplies it. -/
+    sites — `expandOnceUnblocked_ordTimesKnown` supplies it.
+
+17. **A fourth measure component in the shape of a second defect ledger over `selfGuardRules ×ˢ U`,
+    paying for the self-guarded minting rules by their own discharge.** This is the component entry
+    14 says is missing, built in the one shape that survives every objection entry 14 raises — and
+    it is refuted anyway, not merely unproved, by `mintPaysForTimeAt_reuse_false`, which is
+    universally quantified in the frame class **and** in `Tmax`. The design is landed and named
+    (`selfGuardRules`, `selfGuardDischarged`, `selfGuardPotential`, `MintPaysForTimeAt`) only
+    because a refutation has to be stated about something; none of it is offered as a repair.
+
+    *What the design gets right, so that a reader does not re-attempt it by fixing the wrong thing.*
+    It is a **second** ledger with its own defect notion rather than a widening of `mintPotential`'s,
+    so entry 14's `witnessPresent_eq_false_of_not_freshLabel` route does not touch it — the
+    catch-all polarity of `selfGuardDischarged` is `true`, making out-of-range columns permanently
+    *cured* and contributing `0`, the mirror image of the polarity that kills the re-indexing route.
+    It is stated against `ord.futureOf` / `ord.pastOf` emptiness and never against `ord.timeCount`,
+    so `TimeOrdering.identifyTime` lowering the cap does not reach it. And it is not inert:
+    `selfGuardPotential_lt_at_gate_with_id` decides that at the very step that refutes it the
+    potential **does** fall, `4` to `3`, under `σ = id`.
+
+    *What refutes it.* Entry 15's σ-hit obligation, inherited in a weakened **time-hit** form and
+    still false. `selfGuardPotential`'s columns are indexed by the σ-image's *time*, not by the
+    σ-image formula, so it needs only some `sf ∈ U` with `(σ sf).label.time` equal to the trigger's
+    time — strictly less than the literal `σ sf` that `mintPotential_lt_of_mint` demands. **The
+    weakening escapes nothing, and the reason is one line.** `rhoSF_time_ne_src` is *already* a
+    statement about times: `(rhoSF src tgt sf).label.time ≠ src`, for every `sf` whatsoever. Entry
+    15's formula-hit refutation `mint_not_in_rhoSF_image` is three lines on top of it. A weakening
+    cannot escape the statement its own refutation was a corollary of.
+
+    *The general reason, then the decided instance.* `selfGuard_no_column_at_retired_time`: the
+    curing edge that `untlNeg`'s ACTIVE arm adds is anchored at the trigger's time, so when that
+    time is one an earlier identification retired — which entry 15 decides the engine re-issues —
+    **no column of `selfGuardRules ×ˢ U` is indexed there at all**, the arm cures nothing, and the
+    count cannot fall. That holds for every `U`, every trigger and every retired time; the concrete
+    gate is an instance of it, not a lucky configuration. At that gate (`σ = rhoSF 2 0`) all three
+    disjuncts fail on decided numbers: the step mints time `3`, so `knownTimes` goes `3 → 4` and
+    disjunct 1's `4 ≤ 3` is false; `mintTimeBudget` goes `27 → 28` while `mintPotential` is `24`
+    before and after, so both of disjunct 2's conjuncts are false; and `selfGuardPotential` is `3`
+    before and after, so disjunct 3's `3 < 3` is false. `gate_is_reissue_hazard` decides all seven
+    preconditions separately, so the failure is attributable to the arm rather than to a violated
+    hypothesis, and the `σ = id` measurement above locates it at σ rather than at the ledger's shape.
+
+    **So no reshaping of this component is the repair.** The obstruction is intrinsic to
+    identification-plus-`maxTime` — the same wall entry 15's live-times reformulation hits — and it
+    is indifferent to whether the decrease is witnessed at the trigger's formula or at its time. A
+    reader who arrives holding a fourth component whose decrease is witnessed anywhere on the
+    trigger's *label* has already been here. What entry 14 says is missing is still missing; this is
+    one more closed route to it.
+
+    *What is **not** refuted.* The density coordinate. `densityRule` is outside `selfGuardRules` by
+    construction, its termination argument is about the *gap set* rather than about any self-guard,
+    and nothing above touches it. The intended second component `gapPotential` — indexed by
+    `U ×ˢ U`, `denseRules`-gated, quadratic in `|U|` — is a named residual recorded in the
+    subsection "The density residual" above the register, unattempted rather than refuted. -/
 
 end FormalSystem.Metalogic.Decidability
