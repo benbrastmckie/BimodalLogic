@@ -6,7 +6,7 @@ next_project_number: 435
 
 ## Task Order
 
-*Updated 2026-08-06. Generated from state.json dependency graph.*
+*Updated 2026-08-07. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -34,7 +34,7 @@ next_project_number: 435
 
 ### Decidability
 
-434 [PLANNED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
+434 [IMPLEMENTING] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
   └─ 432 [IMPLEMENTING] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
     └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
       └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
@@ -97,7 +97,7 @@ next_project_number: 435
 
 ### 434. Discharge mintpaysfortime residual
 - **Effort**: 10-15 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 431
