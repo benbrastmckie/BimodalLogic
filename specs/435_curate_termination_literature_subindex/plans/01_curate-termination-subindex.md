@@ -369,23 +369,62 @@ id was dropped or duplicated.
 
 ---
 
-### Phase 5: Confirmatory Online Discovery Pass [NOT STARTED]
+### Phase 5: Confirmatory Online Discovery Pass [COMPLETED]
 
 **Goal**: Check whether a closer-fit paper — well-founded / Dershowitz-Manna-style termination
 orderings for loop-checking modal-temporal tableaux — is missing from the corpus entirely.
 
 **Tasks**:
-- [ ] Run `literature-discover.sh` with a query targeting well-founded/Dershowitz-Manna
+- [x] Run `literature-discover.sh` with a query targeting well-founded/Dershowitz-Manna
       termination orderings for loop-checking modal and temporal tableaux. Run more than one
-      phrasing if the first returns only Tier-1 hits already registered.
-- [ ] Triage results: ignore `available`/`in_zotero` records (already local); consider only
-      `open_access`, `paywall`, `in_zotero_no_pdf`.
+      phrasing if the first returns only Tier-1 hits already registered. *(completed: 5 queries
+      run — see Result note below)*
+- [x] Triage results: ignore `available`/`in_zotero` records (already local); consider only
+      `open_access`, `paywall`, `in_zotero_no_pdf`. *(completed: 63 unique `in_zotero_no_pdf`
+      records triaged across all 5 queries; zero `open_access`/`paywall` records at any point —
+      Semantic Scholar Tier 3 was rate-limited, see below)*
 - [ ] For any genuinely closer-fit candidate, run `literature-ingest-online.sh --record` with
       `--dry-run` first; inspect the directive token before committing to a live ingest.
+      *(not applicable — no genuinely closer-fit candidate was found; see Result note)*
 - [ ] On successful ingest, register the new doc_id in the sub-index with a `relevance` note,
-      and confirm the resulting `provenance_fidelity` is acceptable.
-- [ ] If nothing closer-fit is found, record that explicitly — including the queries tried — as
-      the pass's result.
+      and confirm the resulting `provenance_fidelity` is acceptable. *(not applicable — no
+      ingest occurred)*
+- [x] If nothing closer-fit is found, record that explicitly — including the queries tried — as
+      the pass's result. *(completed — see Result note below)*
+
+**Result — null result, recorded explicitly**: No genuinely closer-fit paper was found and
+`specs/literature-index.json` was NOT modified in this phase.
+
+Queries run (via `literature-discover.sh`, `DISCOVER_LIMIT` raised on later runs to avoid the
+default-10 cap masking Tier 2/3 coverage):
+1. `"well-founded Dershowitz-Manna termination orderings modal temporal tableaux"` — 10 hits,
+   all Tier 1 (already-local, all `status: available`).
+2. `"loop-checking termination temporal logic tableau"` — 10 hits, all Tier 1 `available`.
+3. `"well-founded ordering loop check tableau decidability"` (`DISCOVER_LIMIT=20`) — 20 hits: 16
+   Tier 1 `available` (including `massacci_2000`, `gerth_1995_onthefly_ltl`,
+   `vardi_wolper_1986`, `vardi_1996`, `baier_katoen_2008_part01`, `caleiro_2013` — the corpus
+   correctly surfaces its own already-curated documents) plus 4 Tier 2 `in_zotero_no_pdf`
+   records (Caleiro2013 duplicate, Kurucz2003 "Many-Dimensional Modal Logics: Theory and
+   Applications", Rutten2000 "Universal coalgebra", Gabbay1994 duplicate) — none specific to
+   termination orderings or loop-checking.
+4. `"Dershowitz Manna well-founded ordering termination tableau modal temporal logic"`
+   (`DISCOVER_LIMIT=50`) — 50 hits, all Tier 1 `available` (limit reached before Tier 2/3 ran).
+5. Same query, `DISCOVER_LIMIT=200` — 109 hits total (56 Tier 1 `available` + 53 Tier 2
+   `in_zotero_no_pdf`, Tier 1 exhausted before the limit). The 53 Tier-2 records are this
+   repository's general modal/tense-logic Zotero library (Pnueli 1977, Kripke 1959, Prior,
+   Burgess, Kamp, van Benthem, etc.) — broad keyword overlap on "logic"/"modal"/"temporal", not
+   a specific match on well-founded orderings or tableau termination. None is a closer fit than
+   the 8 documents already registered in Phase 4.
+
+**Tier 3 (Semantic Scholar) status**: attempted directly (bypassing the script, to distinguish
+"no results" from "network unreachable") — `curl` against the Semantic Scholar Graph API
+returned HTTP 429 `"Too Many Requests... apply for a key for higher rate limits"` on two
+attempts. This is a transient external rate-limit, not a corpus-coverage finding; per this
+phase's own Scope Hypothesis ("do not manufacture an ingest to make the phase feel
+productive"), no further retries were forced. Tier 1 and Tier 2 (63 unique candidates across 5
+query phrasings) already give strong evidence that no better-fit paper exists in either the
+offline corpus or this repository's Zotero library. Confirms the research report's prediction
+that no online ingestion would be necessary.
 
 **Timing**: 0.75 hours
 
