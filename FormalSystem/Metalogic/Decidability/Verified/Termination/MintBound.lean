@@ -7488,6 +7488,150 @@ theorem selfGuard_no_column_at_retired_time {src tgt : TimeIndex} (h : tgt ≠ s
     ∀ p ∈ selfGuardRules ×ˢ U, ((rhoSF src tgt) p.2).label.time ≠ src :=
   fun p _ => rhoSF_time_ne_src h p.2
 
+/-- The gate's trigger: `F(U(e,g))` at the **re-issued** time `2`. Same formula shape as
+`mintWitnessTrigger`; the label's time is what differs, and it is the whole point. -/
+def gateTrigger : SignedFormula := SignedFormula.neg (Formula.untl mwE mwG) ⟨0, 2⟩
+
+/-- The gate branch. The trigger sits at the re-issued time `2`; the two atoms carry times `0` and
+`1`, which the ordering's one constraint mentions and `OrdTimesKnown` therefore requires. Atoms fire
+no rule, so nothing pre-empts the trigger. -/
+def gateBranch : Branch :=
+  [gateTrigger, SignedFormula.pos mwP ⟨0, 0⟩, SignedFormula.pos mwQ ⟨0, 1⟩]
+
+/-- The gate ordering. It is `TimeOrdering.identifyTime reuseWitnessOrd 2 0` on the nose — the
+ordering the identification arm of `nextTime_reissues_retired_time` leaves behind (the retired time
+`2` appears in no constraint, so the substitution is a no-op there). `futureOf 2` is empty and
+`timeCount` is `2`, which is exactly `untlNeg`'s ACTIVE guard. -/
+def gateOrd : TimeOrdering := ⟨[(0, 1)]⟩
+
+/-- The gate universe: the branch itself, so confinement is immediate. -/
+def gateUniverse : Finset SignedFormula :=
+  {gateTrigger, SignedFormula.pos mwP ⟨0, 0⟩, SignedFormula.pos mwQ ⟨0, 1⟩}
+
+/-- The first arm of the split the ACTIVE `untlNeg` reports: `F(e)` at the freshly minted time `3`,
+the re-included trigger, and the original branch. -/
+def gateSucc : Branch :=
+  [SignedFormula.neg mwE ⟨0, 3⟩, gateTrigger, gateTrigger,
+   SignedFormula.pos mwP ⟨0, 0⟩, SignedFormula.pos mwQ ⟨0, 1⟩]
+
+/-- The ordering after the ACTIVE arm: `addFuture 2 3` prepended. This is the edge that is supposed
+to cure the trigger's column. -/
+def gateNewOrd : TimeOrdering := ⟨[(2, 3), (0, 1)]⟩
+
+/-- **The run-realizable renaming.** `rhoSF 2 0` is the σ the identification `2 → 0` itself
+produces, not a σ chosen to make the refutation work. Refuting a σ-mediated potential with a σ
+unconstrained by the run is worthless — a hostile σ defeats every such potential and teaches
+nothing — so the gate uses the *most favorable available* σ, the discipline
+`mintPaysForTime_untlNeg_false` sets by using `id`. -/
+def gateSigma : SignedFormula → SignedFormula := rhoSF 2 0
+
+/-- The gate state satisfies the run invariant. -/
+theorem gate_runInvariant : RunInvariant gateBranch gateOrd := by
+  constructor
+  · unfold IrreflOrd gateOrd; decide
+  · unfold OrdTimesKnown; decide
+
+/-- …and it is confined to the gate universe. -/
+theorem gate_confined : ∀ x ∈ gateBranch, x ∈ gateUniverse := by decide
+
+/-- **The gate configuration really is the re-issue hazard.** Seven conjuncts, all decided, in the
+discipline `nextTime_reissues_retired_time` uses: without them a negative verdict below would be
+attributable to a violated precondition rather than to the arm.
+
+1-2. the standing hypotheses hold at the gate state;
+3. `firstIncomparablePair` selects `(0, 2)` on the predecessor state, so the identification that
+   produces `gateSigma = rhoSF 2 0` is the one the engine itself takes;
+4. time `2` really is retired by it;
+5. …and really is re-issued: the post-identification `nextTime` is `2` again;
+6. the gate ordering is exactly what that identification leaves behind;
+7. the trigger sits at the re-issued time and `untlNeg`'s ACTIVE guard is met there — empty forward
+   reach, with `timeCount` inside the `(0, 4)` window. -/
+theorem gate_is_reissue_hazard :
+    IrreflOrd gateOrd ∧ OrdTimesKnown gateBranch gateOrd ∧
+      firstIncomparablePair reuseWitnessBranch reuseWitnessOrd = some (0, 2) ∧
+      2 ∉ (Branch.identifyTime reuseWitnessBranch 2 0).knownTimes ∧
+      (Branch.identifyTime reuseWitnessBranch 2 0).nextTime = 2 ∧
+      gateOrd.constraints = (TimeOrdering.identifyTime reuseWitnessOrd 2 0).constraints ∧
+      (gateTrigger.label.time = 2 ∧ (gateOrd.futureOf 2).isEmpty = true ∧
+        0 < gateOrd.timeCount ∧ gateOrd.timeCount < 4) := by
+  refine ⟨?_, ?_, by decide, by decide, by decide, by decide, by decide, by decide, by decide,
+    by decide⟩
+  · unfold IrreflOrd gateOrd; decide
+  · unfold OrdTimesKnown; decide
+
+/-- **The engine fires the ACTIVE arm here**, at every frame class: the reported ordering is
+`gateNewOrd` and `gateSucc` is one of the two unordered successors. `untlNeg` is a `carrierBase`
+rule, so this is not a frame-class accident. -/
+theorem gate_step_fires (fc : FormalSystem.ProofSystem.FrameClass) :
+    (expandOnceUnblocked gateBranch gateOrd fc EventualityTracker.empty).2.constraints
+        = gateNewOrd.constraints ∧
+      gateSucc ∈ unorderedSuccessorBranches
+        (expandOnceUnblocked gateBranch gateOrd fc EventualityTracker.empty).1 := by
+  cases fc <;> exact ⟨by decide, by decide⟩
+
+/-- **The component is not inert: with `σ = id` the self-guard potential does drop**, `4` to `3`, at
+exactly this step. The trigger's own column at time `2` flips uncured → cured, which is the whole
+mechanism `selfGuardPotential` was designed around.
+
+This is the discriminating measurement. It is what makes the refutation below a statement about the
+**σ-hit obligation** rather than about the component failing to move at all — the distinction that
+separates a located obstruction from an unexamined one. -/
+theorem selfGuardPotential_lt_at_gate_with_id :
+    selfGuardPotential gateUniverse id gateNewOrd
+      < selfGuardPotential gateUniverse id gateOrd := by decide
+
+/-- **…and with the run-realizable `σ` it does not.** `4 → 3` becomes `3 → 3`. The column that
+flipped under `id` was the trigger's own, indexed at time `2`; under `gateSigma = rhoSF 2 0` no
+column is indexed there at all (`selfGuard_no_column_at_retired_time`), so the curing edge
+`(2, 3)` that the ACTIVE arm adds lands outside the index set. -/
+theorem selfGuardPotential_eq_at_gate_with_sigma :
+    selfGuardPotential gateUniverse gateSigma gateNewOrd
+      = selfGuardPotential gateUniverse gateSigma gateOrd := by decide
+
+/-- **VERDICT: `MintPaysForTimeAt` is FALSE.** At every frame class and every `Tmax`, at the
+configuration the time-reuse verdict identifies as the σ-hit hazard, with the most favorable
+run-realizable renaming.
+
+*The verdict in words.* The self-guard discharge potential does **not** repair the time-minting
+residual. The σ-hit obligation that the time-reuse verdict decides false for `mintPotential` is
+inherited by `selfGuardPotential` in a weakened *time-hit* form, and **the weakening does not
+escape it.** `mint_not_in_rhoSF_image` is a corollary of `rhoSF_time_ne_src`, which is already a
+statement about times, so relaxing "the minting formula is `σ sf`" to "the minting formula's *time*
+is `(σ sf)`'s time" relaxes nothing that the refutation depended on.
+
+*How all three disjuncts fail here.* The step mints time `3`, so `knownTimes` goes from `3` to `4`
+and disjunct 1's first conjunct `4 ≤ 3` is false. `mintTimeBudget` goes from `27` to `28` and
+`mintPotential` is `24` both before and after — `untlNeg` is not in `freshLabelRules` — so both of
+disjunct 2's conjuncts are false. And `selfGuardPotential` is `3` both before and after, so
+disjunct 3's `3 < 3` is false.
+
+*Why this is a real refutation and not a measurement artifact.* Three things are established
+separately rather than assumed. `gate_is_reissue_hazard` decides all seven preconditions, so the
+failure is attributable to the arm and not to a violated hypothesis.
+`selfGuardPotential_lt_at_gate_with_id` decides that the component **does** drop at this very step
+under `σ = id`, so the component is not inert and the failure is located precisely at σ.
+And `selfGuard_no_column_at_retired_time` gives the general reason — no configuration escapes it,
+because the obstruction is the renaming's image omitting the retired time, which holds for every
+`U`, every trigger and every retired time.
+
+*Consequence.* The self-guard coordinate is not the missing fourth measure component, and the
+obstruction is not this component's shape: it is intrinsic to identification-plus-`maxTime`, the
+same conclusion the live-times reformulation reaches. See register entry 17. -/
+theorem mintPaysForTimeAt_reuse_false (fc : FormalSystem.ProofSystem.FrameClass) (Tmax : Nat) :
+    ¬ MintPaysForTimeAt fc gateUniverse Tmax := by
+  intro h
+  have key := h gateSigma gateBranch gateOrd EventualityTracker.empty
+    gate_runInvariant gate_confined
+  cases fc <;>
+    [ (rcases key gateSucc (by decide) with ⟨h1, -⟩ | ⟨h2, -⟩ | h3);
+      (rcases key gateSucc (by decide) with ⟨h1, -⟩ | ⟨h2, -⟩ | h3);
+      (rcases key gateSucc (by decide) with ⟨h1, -⟩ | ⟨h2, -⟩ | h3);
+      (rcases key gateSucc (by decide) with ⟨h1, -⟩ | ⟨h2, -⟩ | h3)] <;>
+    first
+      | exact absurd h1 (by decide)
+      | exact absurd h2 (by decide)
+      | exact absurd h3 (by decide)
+
 /-! ## C9. The do-not-re-attempt register
 
 Sixteen statements that look like the natural next lemma and are **not** available. Each is cited by
