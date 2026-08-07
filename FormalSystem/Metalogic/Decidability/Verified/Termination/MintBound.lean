@@ -6758,6 +6758,147 @@ theorem applyRule_emitted_time_mem_ordTimesKnown_needed :
   revert hbad
   decide
 
+/-! ## D2. `MintPaysForTime`: the verdict
+
+**Verdict: refutable as literally stated.** `mintPaysForTime_untlNeg_false` is the witness, and it
+is universally quantified in the frame class and in `Tmax`. This is the third residual on this
+terminus to come out refutable rather than merely unproved, after `DifficultyBounded`
+(`difficultyBounded_multiplicity_false`) and `UniverseClosed`
+(`universeClosed_identify_retime_false`).
+
+**The cause, in one line.** `untlNeg` is in `freshTimeRules` and **not** in `freshLabelRules`
+(`freshTimeRules_incomparable_freshLabelRules`), so a step that fires it mints a time while moving
+no pair of `mintPotential`'s index set `freshLabelRules ×ˢ U`. Disjunct 1's first conjunct then
+fails because a known time was added, and disjunct 2's second conjunct fails because the potential
+is unchanged — `mintTimeBudget = knownTimes.card + mintPotential` even *rises*, so disjunct 2's
+first conjunct fails too. All three failures are decided at the concrete configuration below.
+
+**Re-indexing the potential on `freshTimeRules` does not repair it**, and that is worth stating
+before anyone tries. `mintPotential` filters on `witnessPresent r (σ sf) b ord = false`, and
+`witnessPresent`'s match has exactly eight arms — one per `freshLabelRules` member — with
+everything else falling to the catch-all `false`. `witnessPresent_eq_false_of_not_freshLabel`
+decides that. So widening the index set to `freshTimeRules` adds `densityRule`, `untlNeg` and
+`snceNeg` columns that are *permanently* false at every state, contributing a constant to the count
+and never decreasing. The wider potential is the narrower one plus `3 * |U|`, and it moves exactly
+when the narrower one does. The rule coordinate is not where the repair lives.
+
+**Where the repair does live**, and what Phase 7 builds: disjunct 1's first conjunct is the wrong
+inequality. `applyRule_emitted_time_dichotomy` says an unordered successor's times are the branch's
+plus at most `Branch.nextTime` — one new time per step, never more. The satisfiable statement is
+therefore `nb.knownTimes.card ≤ b.knownTimes.card + 1`, which is a *theorem*
+(`knownTimes_card_le_succ_of_unorderedSuccessor`) rather than a hypothesis, leaving the ordering
+rank as disjunct 1's only real content.
+
+**The satisfiability boundary.** `mintPaysForTime_empty` holds at `U = ∅`: confinement forces
+`b = []`, on which the engine reports `.saturated` and there are no unordered successors at all.
+As with `UniverseClosed`, the predicate is satisfiable exactly where the terminus it guards is
+vacuous — `signedUniverse C L` is empty only when `C` or `L` is.
+
+`MintPaysForTime` itself is retained **verbatim**. Nothing in this file is withdrawn. -/
+
+/-- **`witnessPresent` is identically `false` outside `freshLabelRules`.** Its match has eight
+arms, one per witness-guarded rule, and every other `(rule, sign, formula)` triple reaches the
+catch-all.
+
+This is the fact that rules out repairing `MintPaysForTime` by widening `mintPotential`'s index
+set from `freshLabelRules` to `freshTimeRules`: the three added columns — `densityRule`, `untlNeg`,
+`snceNeg` — would be false at every state of every run, so they contribute `3 * |U|` to the count
+and never move. See the register entry. -/
+theorem witnessPresent_eq_false_of_not_freshLabel {r : TableauRule}
+    (h : ruleMintsFreshLabel r = false) (sf : SignedFormula) (b : Branch) (ord : TimeOrdering) :
+    witnessPresent r sf b ord = false := by
+  cases sf with
+  | mk sign formula label =>
+    cases r <;> first
+      | exact Bool.noConfusion h
+      | (cases sign <;> simp only [witnessPresent])
+
+/-! ### The refuting configuration
+
+`untlNeg`'s ACTIVE arm fires when `timeOrd.futureOf l.time` is empty while `timeOrd.timeCount` is
+in `(0, 4)`. The configuration below meets that with the least machinery possible: the trigger
+`F(U(e,g))` sits at time `0`, and the ordering's single constraint `1 < 2` involves neither `0` nor
+anything reachable from it. Two atoms at times `1` and `2` carry those times on the branch, which
+is what `OrdTimesKnown` needs; atoms fire no rule, so nothing pre-empts the trigger.
+
+`untlNeg` is a `carrierBase` rule, so this configuration is available at **every** frame class —
+the witness quantifies over `fc` and the four cases are decided separately. It also quantifies over
+`Tmax`: disjunct 1 fails at its *first* conjunct, which does not mention `Tmax` at all. -/
+
+private def mwE : Formula := .atom (Atom.mkBase "e")
+private def mwG : Formula := .atom (Atom.mkBase "g")
+private def mwP : Formula := .atom (Atom.mkBase "p")
+private def mwQ : Formula := .atom (Atom.mkBase "q")
+
+/-- The trigger: `F(U(e,g))` at the initial label. -/
+def mintWitnessTrigger : SignedFormula := SignedFormula.neg (Formula.untl mwE mwG) ⟨0, 0⟩
+
+/-- The witness branch. The two atoms exist to carry times `1` and `2`, which the ordering's one
+constraint mentions and `OrdTimesKnown` therefore requires. -/
+def mintWitnessBranch : Branch :=
+  [mintWitnessTrigger, SignedFormula.pos mwP ⟨0, 1⟩, SignedFormula.pos mwQ ⟨0, 2⟩]
+
+/-- The witness ordering: `1 < 2`, leaving `futureOf 0` empty with `timeCount = 2`. Exactly the
+ACTIVE arm's trigger condition. -/
+def mintWitnessOrd : TimeOrdering := { constraints := [(1, 2)] }
+
+/-- The witness universe: the branch itself, so confinement is immediate. -/
+def mintWitnessUniverse : Finset SignedFormula :=
+  {mintWitnessTrigger, SignedFormula.pos mwP ⟨0, 1⟩, SignedFormula.pos mwQ ⟨0, 2⟩}
+
+/-- The first arm of the split: `F(e)` at the freshly minted time `3`, the re-included trigger, and
+the original branch. -/
+def mintWitnessSucc : Branch :=
+  [SignedFormula.neg mwE ⟨0, 3⟩, mintWitnessTrigger, mintWitnessTrigger,
+   SignedFormula.pos mwP ⟨0, 1⟩, SignedFormula.pos mwQ ⟨0, 2⟩]
+
+/-- The witness state satisfies the run invariant, so the refutation is not reached by feeding
+`MintPaysForTime` a state the run cannot occupy. -/
+theorem mintWitness_runInvariant : RunInvariant mintWitnessBranch mintWitnessOrd := by
+  constructor
+  · unfold IrreflOrd mintWitnessOrd; decide
+  · unfold OrdTimesKnown; decide
+
+/-- …and it is confined to the witness universe. -/
+theorem mintWitness_confined : ∀ x ∈ mintWitnessBranch, x ∈ mintWitnessUniverse := by decide
+
+/-- **`MintPaysForTime` is false, at every frame class and every `Tmax`.**
+
+At the configuration above the engine fires `untlNeg`'s ACTIVE arm and reports a two-arm `.split`.
+On the first arm: `knownTimes` goes from `{0,1,2}` to `{0,1,2,3}`, so disjunct 1's first conjunct
+`4 ≤ 3` is false; `mintPotential` is `24` before and `24` after, so disjunct 2's second conjunct
+`24 < 24` is false. Both disjuncts fail and the four frame classes are decided separately.
+
+The step is a genuine mint — it issues `Branch.nextTime` — but it is invisible to `mintPotential`
+because `untlNeg` is not in `freshLabelRules`, and `witnessPresent_eq_false_of_not_freshLabel`
+records that no re-indexing recovers it. -/
+theorem mintPaysForTime_untlNeg_false (fc : FormalSystem.ProofSystem.FrameClass) (Tmax : Nat) :
+    ¬ MintPaysForTime fc mintWitnessUniverse Tmax := by
+  intro h
+  have key := h id mintWitnessBranch mintWitnessOrd EventualityTracker.empty
+    mintWitness_runInvariant mintWitness_confined
+  cases fc <;>
+    [ (rcases key mintWitnessSucc (by decide) with ⟨h1, -⟩ | ⟨-, h3⟩);
+      (rcases key mintWitnessSucc (by decide) with ⟨h1, -⟩ | ⟨-, h3⟩);
+      (rcases key mintWitnessSucc (by decide) with ⟨h1, -⟩ | ⟨-, h3⟩);
+      (rcases key mintWitnessSucc (by decide) with ⟨h1, -⟩ | ⟨-, h3⟩)] <;>
+    first
+      | exact absurd h1 (by decide)
+      | exact absurd h3 (by decide)
+
+/-- **The satisfiability boundary: `U = ∅`.** Confinement forces the branch empty, the engine has
+nothing to pick in any of its three stages and reports `.saturated`, and `unorderedSuccessorBranches`
+of a `.saturated` result is `[]`. So the whole statement is vacuous there.
+
+The same shape as `universeClosed_identify_empty`: the residual is satisfiable exactly where the
+terminus it guards has nothing to say, since `signedUniverse C L` is empty only when `C` or `L` is. -/
+theorem mintPaysForTime_empty (fc : FormalSystem.ProofSystem.FrameClass) (Tmax : Nat) :
+    MintPaysForTime fc ∅ Tmax := by
+  intro _ b ord tr _ hconf nb hnb
+  have hb : b = [] := List.eq_nil_iff_forall_not_mem.mpr fun x hx => by simpa using hconf x hx
+  subst hb
+  simp [expandOnceUnblocked, findUnexpandedUnblockedWith, unorderedSuccessorBranches] at hnb
+
 /-! ## C9. The do-not-re-attempt register
 
 Twelve statements that look like the natural next lemma and are **not** available. Each is cited by

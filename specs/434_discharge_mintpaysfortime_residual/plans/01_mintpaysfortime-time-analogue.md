@@ -327,32 +327,47 @@ docstring if taken; do **not** widen it to further rules without escalating per
 
 ---
 
-### Phase 4: Satisfiability verdict on `MintPaysForTime` as stated [IN PROGRESS]
+### Phase 4: Satisfiability verdict on `MintPaysForTime` as stated [COMPLETED]
 
 **Goal**: Decide, before any proof-side investment, whether `MintPaysForTime fc U Tmax` is provable,
 repairable, or refutable. Both completed siblings on this terminus came out refutable as literally
 stated; this phase treats that as the leading hypothesis and tests it.
 
 **Tasks**:
-- [ ] Read `MintPaysForTime`'s two disjuncts against Phase 1's census and record the decision
+- [x] Read `MintPaysForTime`'s two disjuncts against Phase 1's census and record the decision
       structure: at an `unorderedSuccessorBranches` step, either no known time was added (disjunct 1
       is live) or the rule that fired is in `freshTimeRules` (disjunct 2 must carry it). Note that
       `mintPotential`'s index set is `freshLabelRules ×ˢ U`, so a `freshTimeRules \ freshLabelRules`
       rule moves neither disjunct.
-- [ ] Attempt the refutation at the `untlNeg` ACTIVE arm: construct a concrete `b`, `ord`, `tr`,
+- [x] Attempt the refutation at the `untlNeg` ACTIVE arm: construct a concrete `b`, `ord`, `tr`,
       `fc`, `U`, `σ` where `expandOnceUnblocked` fires `untlNeg`, the successor gains a known time,
       and no `freshLabelRules ×ˢ U` pair flips. `untlNeg` is in `carrierBase`, so the witness is
       available at **every** frame class — state the witness universally quantified in `fc`, as
       `difficultyBounded_multiplicity_false` and `universeClosed_identify_retime_false` are.
-- [ ] Name the witness `mintPaysForTime_untlNeg_false` (or `_densityRule_false` if the
+- [x] Name the witness `mintPaysForTime_untlNeg_false` (or `_densityRule_false` if the
       `.Dense`-gated vehicle is the one that lands; then also record why the frame-class-universal
       version was not available).
-- [ ] Check the vacuity boundary, mirroring `universeClosed_identify_empty` /
+- [x] Check the vacuity boundary, mirroring `universeClosed_identify_empty` /
       `universeClosed_nonempty_false`: does `MintPaysForTime` hold at `U = ∅` (confinement forces
       `b = []`, no unordered successors)? If so, land `mintPaysForTime_empty` and state whether
       `{∅}` is the whole satisfiability set.
-- [ ] Write the verdict as a `/-! ### … -/` section note above the witness, in the register's voice:
+- [x] Write the verdict as a `/-! ### … -/` section note above the witness, in the register's voice:
       one-line cause, the refuting declaration name, and the repair direction.
+
+**VERDICT RECORDED: refutable.** Evidence: `mintPaysForTime_untlNeg_false`, universally quantified
+in the frame class **and** in `Tmax`, axiom-free. The `untlNeg` ACTIVE-arm vehicle landed as
+expected (the `.Dense`-gated `densityRule` was not needed). The vacuity boundary landed as
+`mintPaysForTime_empty`. One additional structural fact landed beside the witness and is load-bearing
+for Phase 7: `witnessPresent_eq_false_of_not_freshLabel` proves `witnessPresent` is identically
+`false` outside `freshLabelRules`, which **rules out** the obvious repair of re-indexing
+`mintPotential` on `freshTimeRules` — the three added columns would be permanently false, adding
+`3 · |U|` to the count and never moving. The rule coordinate is not where the repair lives; disjunct
+1's first conjunct is.
+
+*(deviation: altered — the witness universe is a concrete three-element `Finset`, not a universally
+quantified nonempty `U`. This mirrors `universeClosed_fresh_world_escapes` rather than
+`universeClosed_identify_retime_false`: the refutation is driven by the engine's rule scheduler
+choosing `untlNeg`, which is a property of the concrete configuration, not of `U` as such.)*
 
 **Pre-declared outcomes** (exactly one must be recorded, with its named evidence):
 | Verdict | Evidence required | Routes to |
