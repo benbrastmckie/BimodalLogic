@@ -7451,7 +7451,17 @@ discharging its own guard, which is invisible to both existing disjuncts — the
 **Verdict on this predicate at the σ-hit hazard: see `mintPaysForTimeAt_reuse_false` below. It is
 false there, for the same reason `MintPaysForTime`'s second disjunct is.** The definition is landed
 anyway, and named, because the refutation has to be *stated about something*; it is not offered as
-a working repair. -/
+a working repair.
+
+**Obligation map — the density coordinate is a second, independent gap.** Even setting the σ-hit
+verdict aside, this predicate carrying only the `selfGuardPotential` disjunct is separately
+refutable at `.Dense` / `.Dedekind` by a `densityRule` vehicle: `densityRule` returns `.persistent`
+(`Tableau.lean:1385`), which `expandOnceUnblocked` maps to `.extended` (`MintBound.lean:1071`), so
+it is inside this predicate's scope, and it mints a fresh time while lying outside **both**
+`freshLabelRules` and `selfGuardRules` — no disjunct moves at all. The intended component is
+`gapPotential`, indexed by `U ×ˢ U` and gated on `denseRules`; it is a **named residual**,
+implemented nowhere and assumed by nothing. See the subsection "The density residual" following
+`mintPaysForTimeAt_reuse_false`, and register entry 17. -/
 def MintPaysForTimeAt (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
     (Tmax : Nat) : Prop :=
   ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)

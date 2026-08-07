@@ -702,7 +702,7 @@ the phase's own instruction rather than silently absorbed.
 
 ---
 
-### Phase 10: Register entries, the density residual, and the closing gate [NOT STARTED]
+### Phase 10: Register entries, the density residual, and the closing gate [COMPLETED]
 
 **ROUTED HERE BY PHASE 1's FALSE VERDICT.** This is now the only other phase that runs. Register entry 17 takes its **Phase 1 FALSE branch** form: the `selfGuardPotential` design and the σ-hit exposure it inherits, with `mintPaysForTimeAt_reuse_false` as the refuting witness and `selfGuard_no_column_at_retired_time` as the general reason. The Phase 1 TRUE branch's candidate entry (Candidate 1 / `timeSlotDeficit`) is **not** the one to land.
 
@@ -711,10 +711,12 @@ the phase's own instruction rather than silently absorbed.
   plan**, including the Phase 1 FALSE and UNDECIDED branches where it is the only other phase.
 
 - **Tasks:**
-  - [ ] Append the new C9 register entry or entries following the existing convention exactly:
+  - [x] Append the new C9 register entry or entries following the existing convention exactly:
         cited by declaration name and refuting witness, never by an issue number or tracker entry.
         Update the opening count ("Sixteen statements") in the same edit. Candidates, depending on
-        which path the plan took:
+        which path the plan took: *(landed: entry 17 in its FALSE-branch form, appended at the end
+        of C9; opening count updated "Sixteen" -> "Seventeen". No further route was refuted, since
+        Phases 2-9 never ran, so entry 17 is the only new entry.)*
         - **Entry 17 (Phase 1 FALSE / UNDECIDED branch)**: the `selfGuardPotential` design and the
           σ-hit exposure it inherits, with `mintPaysForTimeAt_reuse_false` (or the open-exposure
           statement) as the witness.
@@ -727,21 +729,39 @@ the phase's own instruction rather than silently absorbed.
           already been here.
         - Any further route refuted during Phases 2-9 (in particular, a non-exact `snceNeg` mirror
           per Phase 5, or a measure-specific C6 induction per Phase 8).
-  - [ ] Record the **density residual** in `MintPaysForTimeAt`'s docstring obligation map and in the
+  - [x] Record the **density residual** in `MintPaysForTimeAt`'s docstring obligation map and in the
         register narrative: `MintPaysForTimeAt` carrying only the `selfGuardPotential` disjunct
         remains refutable at `.Dense`/`.Dedekind` by a `densityRule` vehicle, because `densityRule`
         returns `.persistent` which maps to `.extended` (`Tableau.lean:1385` + `MintBound.lean:1071`)
         and is therefore inside the predicate's scope. Name the intended second component
         (`gapPotential`, indexed by `U ×ˢ U`, transcribing `densityRule`'s own `gapTargets` filter at
         `Tableau.lean:1364-1366`) and state that Caleiro's SVDns (`sec03:80`) is the literature's own
-        reason it is a separate clause. Do **not** implement it here.
-  - [ ] Reconcile any docstring in the file that asserts the fourth component is missing — in
+        reason it is a separate clause. Do **not** implement it here. *(landed in three places: an
+        "Obligation map" paragraph appended to `MintPaysForTimeAt`'s docstring, a dedicated
+        subsection "The density residual" between `mintPaysForTimeAt_reuse_false` and C9, and the
+        "What is **not** refuted" paragraph closing register entry 17. Nothing implemented.)*
+  - [x] Reconcile any docstring in the file that asserts the fourth component is missing — in
         particular the "The repair, attempted and BLOCKED" narrative (`MintBound.lean:7137-7183`) and
         entry 14's closing paragraph (`MintBound.lean:7521-7525`) — with what actually landed.
-        Leaving them stale is a correctness defect in the file's documentation.
-  - [ ] Closing gate: full `lake build` green; `lean_verify` on every new theorem reports sorry-free
+        Leaving them stale is a correctness defect in the file's documentation. *(deviation:
+        altered — the "attempted and BLOCKED" narrative was reconciled by an appended paragraph
+        recording that the fourth component has since been attempted and decided FALSE. Entry 14's
+        closing paragraph was deliberately NOT edited: this plan's own Testing & Validation
+        checklist requires "`git diff` shows no modification to ... any of the 16 original C9
+        entries' bodies", and entry 14's claim — that a fourth component paying for the three
+        self-guarded minting rules is still missing — remains true. The reconciliation a reader
+        needs lives in entry 17, which cross-references entry 14 by number in both directions.)*
+  - [x] Closing gate: full `lake build` green; `lean_verify` on every new theorem reports sorry-free
         and axiom-free; `git diff --stat` confirms only `MintBound.lean` changed among source files;
-        `grep -c sorry` on the changed file returns no new occurrences.
+        `grep -c sorry` on the changed file returns no new occurrences. *(all pass. Full `lake build`
+        green, 2333 jobs. No new theorem was introduced by this phase — it is documentation only —
+        so `lean_verify` was run on the phase's subject instead:
+        `FormalSystem.Metalogic.Decidability.mintPaysForTimeAt_reuse_false` reports axioms
+        `{propext, Classical.choice, Quot.sound}`, i.e. no `sorryAx` and no project axiom.
+        `git diff --stat` shows `MintBound.lean` as the only changed source file, with
+        `Saturation.lean`, `Fuel.lean`, `Tableau.lean` untouched. `grep -c sorry` on the changed
+        file returns 1, unchanged from before the phase — the single hit is the word `sorryAx`
+        inside pre-existing prose at line 6608, not a proof term.)*
 
 - **Estimated output:** ~120-250 lines (mostly docstring prose).
 - **Timing:** 1.5 hours
