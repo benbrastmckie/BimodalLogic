@@ -6537,6 +6537,227 @@ theorem mem_identifyTime_time_at_trigger {b : Branch} {ord : TimeOrdering} {t₁
   · exact hg ▸ (firstIncomparablePair_spec htrig).1
   · exact hg
 
+/-! ### `applyRule_emitted_time_mem`: the time analogue of the world sweep
+
+Three docstrings in this file say the same thing — `MintPaysForTime`'s own, the section note
+preceding `applyRule_emitted_world_dichotomy`, and `UnorderedSuccessorLabelClosed`'s obligation
+map: *there is no `applyRule_emitted_time_mem`, no statement bounding the times a rule emits at by
+`b.knownTimes` with the time-minting rules separated out.* This is that statement.
+
+**Which arm falls to which closer.** The twenty-seven non-minting constructors split five ways:
+
+* *The trigger's own time.* The propositional rules (`andPos` … `negNeg`), the modal-temporal
+  bridge `boxTemporal`, the discrete rules `priorUZ` / `priorSZ` / `z1Rule`, the Dedekind rules
+  `priorUGap` / `priorSGap` / `sepRule`, `serialityRule`, and `denseIndicatorClosure` all emit at
+  `l` itself. Closed by `mem_knownTimes_of_mem hsf`.
+* *A constant time carried across a world change.* `boxPos` / `diamondNeg` propagate to
+  `b.knownWorlds` at the trigger's time; `boxNeg` / `diamondPos` mint a fresh *world* and carry the
+  trigger's time onto it. Closed by `mem_filterMap_const_time_mem` — note the source list ranges
+  over worlds, which is why `mem_filterMap_const_time` was stated generically in the element type.
+* *A branch formula's own time.* `boxNeg` / `diamondPos`'s `boxPosFormulas` / `diamondNegFormulas`
+  auto-propagation blocks relabel branch formulas to the fresh world while keeping their times.
+  Closed by `mem_filterMap_time`.
+* *An ordering time.* `allFuturePos` / `allPastPos` / `someFutureNeg` / `somePastNeg` propagate to
+  every time in `TimeOrdering.futureOf` / `pastOf` of the trigger. Closed by
+  `mem_filterMap_futureOf_time` / `mem_filterMap_pastOf_time` — **and only under
+  `OrdTimesKnown b ord`**, which is why this theorem carries a hypothesis its world twin does not.
+  `applyRule_emitted_time_mem_ordTimesKnown_needed` decides that the hypothesis is not removable.
+* *The identification arm.* `timeLinearity` returns whole branches: arms 1 and 2 hand back `b`
+  unchanged, arm 3 hands back `b.identifyTime t₂ t₁`. Closed by `mem_knownTimes_of_mem` and
+  `mem_identifyTime_time_at_trigger` respectively — the pre-declared fallback of excluding
+  `timeLinearity` by hypothesis was **not** needed, because `firstIncomparablePair_spec` already
+  discharges the merge target.
+
+`orderTrichotomy` is the one arm that gets its own lemma rather than a line in the sweep: it emits
+at the *common predecessor* `t₀`, which is not the trigger's time and reaches the branch only
+through the candidate list's `ord.pastOf` source. Extracting that needs a `find?`-to-membership
+step the sweep's `first` chain cannot perform by unification alone. -/
+
+/-- `mem_filterMap_const_time` composed with membership of the constant. Stated separately rather
+than inlined because the sweep below must run entirely in tactic mode: a term-level `by` block
+inside a `first` alternative elaborates with error recovery, so a *failing* side goal would be
+silently filled with `sorryAx` and the alternative would appear to succeed. Every closer in the
+sweep is therefore a `refine … ?_` whose failure is a real, backtrackable failure. -/
+theorem mem_filterMap_const_time_mem {α : Type _} {b : Branch} {l : List α}
+    {F : α → Option SignedFormula} {t : TimeIndex} {g : SignedFormula}
+    (ht : t ∈ b.knownTimes)
+    (hF : ∀ x y, F x = some y → y.label.time = t) (h : g ∈ l.filterMap F) :
+    g.label.time ∈ b.knownTimes := by
+  rw [mem_filterMap_const_time hF h]; exact ht
+
+/-- `orderTrichotomy`'s candidate list is built by a `flatMap` whose outermost source is
+`ord.pastOf l.time`, so a surviving candidate's first component is in the trigger's past. Stated
+against the list's *shape* rather than against `applyRule`, so that the three nested binders can be
+peeled without re-entering the rule's guard. -/
+theorem fst_mem_of_mem_trichotomyCandidates {ord : TimeOrdering} {t : TimeIndex}
+    {sel : TimeIndex → List Formula} {filt : TimeIndex → Bool} {p : TimeIndex × Formula}
+    (h : p ∈ (ord.pastOf t).flatMap fun t0 =>
+      ((ord.futureOf t0).filter filt).flatMap fun t2 => (sel t2).map fun ψ => (t0, ψ)) :
+    p.1 ∈ ord.pastOf t := by
+  obtain ⟨t0, ht0, h⟩ := List.mem_flatMap.mp h
+  obtain ⟨t2, -, h⟩ := List.mem_flatMap.mp h
+  obtain ⟨ψ, -, rfl⟩ := List.mem_map.mp h
+  exact ht0
+
+set_option maxHeartbeats 1000000 in
+/-- **`orderTrichotomy` emits at the common predecessor and at its own trigger, and at nothing
+else.** The split's three arms are `[T(d) @ (w, t₀), sf]` for the three `temp_linearity` disjuncts
+`d`, so every emission is either `sf` itself — on the branch by hypothesis — or sits at `t₀`, which
+`fst_mem_of_mem_trichotomyCandidates` places in `ord.pastOf l.time` and
+`mem_knownTimes_of_mem_pastOf` then places in `b.knownTimes` under the run invariant.
+
+Separated from the sweep because the `find?`-to-membership step needs the candidate list named,
+which a `first`-chain closer cannot do by unification. -/
+theorem applyRule_orderTrichotomy_emitted_time {sf : SignedFormula} {b : Branch}
+    {ord : TimeOrdering} (hsf : sf ∈ b) (haux : OrdTimesKnown b ord) :
+    ∀ g ∈ (applyRule .orderTrichotomy sf b ord).1.emitted, g.label.time ∈ b.knownTimes := by
+  have ht : sf.label.time ∈ b.knownTimes := mem_knownTimes_of_mem hsf
+  intro g hg
+  unfold applyRule at hg
+  repeat' first
+    | split at hg
+    | simp only [apply_ite Prod.fst] at hg
+  all_goals (try simp only [RuleResult.emitted] at hg)
+  all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
+  have hcand := List.mem_of_find?_eq_some (by assumption)
+  have ht0 := mem_knownTimes_of_mem_pastOf haux (fst_mem_of_mem_trichotomyCandidates hcand)
+  simp only [List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil, List.append_nil,
+    List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hg
+  repeat' rcases hg with hg | hg
+  all_goals first
+    | exact ht0
+    | exact ht
+
+set_option maxHeartbeats 4000000 in
+/-- **The time-dimension analogue of `applyRule_emitted_world_mem`.** A rule outside the minting
+census emits only at times the branch already knows.
+
+The exclusion is carried as `ruleMintsFreshTime rule = false` rather than as a chain of
+`rule ≠ …` inequalities: the census is nine rules wide where the world lemma's was two, and the
+`Bool` form keeps this signature stable if the census is ever re-derived. `mem_freshTimeRules`
+is what ties the `Bool` back to the `Finset`.
+
+**`OrdTimesKnown b ord` is a genuine hypothesis, not a convenience.** Its world twin needs
+nothing, because every non-minting rule emits at a world some branch formula already carries.
+The time coordinate has no such luck: `allFuturePos` and its three siblings propagate to
+`TimeOrdering.futureOf` / `pastOf`, and nothing in `applyRule` ties an ordering time to the
+branch. `applyRule_emitted_time_mem_ordTimesKnown_needed` decides a configuration where dropping
+the hypothesis makes the statement false. The invariant is available at every consuming site —
+it is section A7's, threaded by `ordTimesKnown_expandOnceUnblocked`. -/
+theorem applyRule_emitted_time_mem {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering}
+    (hsf : sf ∈ b) (haux : OrdTimesKnown b ord)
+    (hmint : ruleMintsFreshTime rule = false) :
+    ∀ g ∈ (applyRule rule sf b ord).1.emitted, g.label.time ∈ b.knownTimes := by
+  have ht : sf.label.time ∈ b.knownTimes := mem_knownTimes_of_mem hsf
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;> first
+      | exact Bool.noConfusion hmint
+      | exact applyRule_orderTrichotomy_emitted_time hsf haux
+      | (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+          (try contradiction) <;>
+          intro g hg <;>
+          repeat' first
+            | exact ht
+            | exact mem_knownTimes_of_mem hg
+            | (refine mem_identifyTime_time_at_trigger (ord := ord) ?_ hg
+               assumption)
+            | (refine mem_filterMap_const_time_mem (t := label.time) ht ?_ hg
+               clear hg
+               intro x y hy
+               repeat' first
+                 | split at hy
+                 | simp only [Option.some.injEq] at hy
+               all_goals first
+                 | (subst hy; rfl)
+                 | (simp only [reduceCtorEq] at hy))
+            | (refine mem_filterMap_time ?_ hg
+               clear hg
+               intro x y hy
+               repeat' first
+                 | split at hy
+                 | simp only [Option.some.injEq] at hy
+               all_goals first
+                 | (subst hy; rfl)
+                 | (simp only [reduceCtorEq] at hy))
+            | (refine mem_filterMap_futureOf_time haux ?_ hg
+               clear hg
+               intro x y hy
+               repeat' first
+                 | split at hy
+                 | simp only [Option.some.injEq] at hy
+               all_goals first
+                 | (subst hy; rfl)
+                 | (simp only [reduceCtorEq] at hy))
+            | (refine mem_filterMap_pastOf_time haux ?_ hg
+               clear hg
+               intro x y hy
+               repeat' first
+                 | split at hy
+                 | simp only [Option.some.injEq] at hy
+               all_goals first
+                 | (subst hy; rfl)
+                 | (simp only [reduceCtorEq] at hy))
+            | (simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas,
+                 List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil,
+                 List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil,
+                 or_false, List.mem_filter] at hg)
+            | (subst hg; exact ht)
+            | (rcases hg with hg | hg))
+
+/-- The same statement in the `Finset` coordinate, restoring shape parity with
+`applyRule_emitted_world_mem`, which concludes in `b.worldFinset`. -/
+theorem applyRule_emitted_timeFinset_mem {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering}
+    (hsf : sf ∈ b) (haux : OrdTimesKnown b ord)
+    (hmint : ruleMintsFreshTime rule = false) :
+    ∀ g ∈ (applyRule rule sf b ord).1.emitted, g.label.time ∈ b.timeFinset := fun g hg =>
+  List.mem_toFinset.mpr (applyRule_emitted_time_mem hsf haux hmint g hg)
+
+/-! #### `OrdTimesKnown` is not removable from the sweep
+
+The witness: one branch carrying `T(G p)` at the initial label, and an ordering asserting `0 < 5`
+with nothing at time `5` on the branch. `allFuturePos` propagates `T(p)` to every time in
+`ord.futureOf 0`, hence to time `5`, which `b.knownTimes = [0]` does not contain. The rule is
+outside the minting census — it mints no time, it *reads* one off the ordering — so the exclusion
+hypothesis is satisfied and the only thing standing between this configuration and a
+counterexample is `OrdTimesKnown`, which the witness ordering fails. -/
+
+private def otwP : Formula := .atom (Atom.mkBase "p")
+
+/-- The trigger of the `OrdTimesKnown`-necessity witness: `T(G p)` at the initial label. -/
+def ordTimesWitnessSF : SignedFormula :=
+  SignedFormula.pos (Formula.allFuture otwP) Label.initial
+
+/-- The witness branch: one formula, known times `[0]`. -/
+def ordTimesWitnessBranch : Branch := [ordTimesWitnessSF]
+
+/-- The witness ordering: `0 < 5`, with `5` on no branch formula. Fails `OrdTimesKnown`. -/
+def ordTimesWitnessOrd : TimeOrdering := { constraints := [(0, 5)] }
+
+/-- The witness ordering does fail the invariant — otherwise the configuration below would refute
+`applyRule_emitted_time_mem` itself rather than justify its hypothesis. -/
+theorem ordTimesWitnessOrd_not_ordTimesKnown :
+    ¬ OrdTimesKnown ordTimesWitnessBranch ordTimesWitnessOrd := by
+  unfold OrdTimesKnown; decide
+
+/-- **`OrdTimesKnown` cannot be dropped from `applyRule_emitted_time_mem`.** Decided, not argued.
+
+This is the time coordinate's structural departure from the world coordinate stated as a fact: the
+world sweep needs no run invariant because no rule reads a world off anything but the branch,
+whereas four rules read *times* off the ordering. A reader who removes the hypothesis on the
+grounds that its world twin does without one is re-attempting a refuted statement. -/
+theorem applyRule_emitted_time_mem_ordTimesKnown_needed :
+    ¬ (∀ (rule : TableauRule) (sf : SignedFormula) (b : Branch) (ord : TimeOrdering),
+        sf ∈ b → ruleMintsFreshTime rule = false →
+        ∀ g ∈ (applyRule rule sf b ord).1.emitted, g.label.time ∈ b.knownTimes) := by
+  intro h
+  have hbad := h .allFuturePos ordTimesWitnessSF ordTimesWitnessBranch ordTimesWitnessOrd
+    (by decide) (by decide)
+  revert hbad
+  decide
+
 /-! ## C9. The do-not-re-attempt register
 
 Twelve statements that look like the natural next lemma and are **not** available. Each is cited by

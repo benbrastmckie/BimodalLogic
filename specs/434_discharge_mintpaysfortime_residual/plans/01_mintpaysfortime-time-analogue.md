@@ -260,7 +260,7 @@ from, so Phase 3's sweep has the same closers available that `applyRule_emitted_
 
 ---
 
-### Phase 3: `applyRule_emitted_time_mem` — the deliverable task 432 consumes [IN PROGRESS]
+### Phase 3: `applyRule_emitted_time_mem` — the deliverable task 432 consumes [COMPLETED]
 
 **Goal**: Land the time-dimension analogue of `applyRule_emitted_world_mem` under that exact name.
 **This is the phase whose output task 432 Phase 7 consumes by name.** It must land as a standalone,
@@ -268,7 +268,7 @@ stably-named theorem — not folded into a larger composite — and it is valid 
 verdict rendered later in this plan.
 
 **Tasks**:
-- [ ] State, mirroring `applyRule_emitted_world_mem`'s signature in the time coordinate:
+- [x] State, mirroring `applyRule_emitted_world_mem`'s signature in the time coordinate: *(deviation: altered — the landed signature additionally carries `haux : OrdTimesKnown b ord`. Not a convenience: `allFuturePos` / `allPastPos` / `someFutureNeg` / `somePastNeg` propagate to `TimeOrdering.futureOf` / `pastOf` and nothing in `applyRule` ties an ordering time to the branch, so the plan's unconditional form is FALSE, not merely unproved — `applyRule_emitted_time_mem_ordTimesKnown_needed` decides a refuting configuration. Phase 2's landed docstring already pre-declared this hypothesis and named that witness. The invariant is available at every consuming site via `ordTimesKnown_expandOnceUnblocked`, so it leaks nothing into the terminus.)*
       ```
       theorem applyRule_emitted_time_mem {rule : TableauRule} {sf : SignedFormula}
           {b : Branch} {ord : TimeOrdering}
@@ -278,19 +278,23 @@ verdict rendered later in this plan.
       Use `ruleMintsFreshTime rule = false` as the single exclusion hypothesis rather than a chain of
       `rule ≠ …` inequalities: the census is 9 rules wide, where the world lemma's was 2, and the
       `Bool` form keeps the signature stable if Phase 1's census count moves.
-- [ ] Add the `b.timeFinset` corollary `applyRule_emitted_timeFinset_mem` (one line, via
+- [x] Add the `b.timeFinset` corollary `applyRule_emitted_timeFinset_mem` (one line, via
       `List.mem_toFinset`) so consumers can work in either the `List` or the `Finset` coordinate —
       the world lemma concludes in `b.worldFinset`, so this restores full shape parity.
-- [ ] Prove by `cases sf with | mk sign formula label => cases rule <;> first | …`, following the
+- [x] Prove by `cases sf with | mk sign formula label => cases rule <;> first | …`, following the
       world sweep's tactic skeleton: `exact absurd rfl hmint`-style discharge of the excluded rules
       (adapted to the `Bool` hypothesis — `simp at hmint` on each minting constructor), then the
       per-arm closer chain built from Phase 2's helpers plus `mem_knownTimes_of_mem hsf` for the
       trigger's own time.
-- [ ] Set `set_option maxHeartbeats 4000000 in` on the sweep, matching the world sweep's measured
+- [x] Set `set_option maxHeartbeats 4000000 in` on the sweep, matching the world sweep's measured
       budget.
-- [ ] Docstring it as the answer to the three in-source "there is no `applyRule_emitted_time_mem`"
+- [x] Docstring it as the answer to the three in-source "there is no `applyRule_emitted_time_mem`"
       notes, naming which arms fall to which closer (trigger's own time / branch time via the
       filterMap helpers / `boxDiamondPersistence` block / the identification arm).
+
+*(deviation: altered — the Scope Hypothesis's "identification arm is the only hard one" claim is refuted by execution. `timeLinearity` closed exactly as planned via `mem_identifyTime_time_at_trigger`, and the pre-declared narrowing fallback was **not** taken: the signature excludes no rule by name. The arm that actually needed separate treatment was `orderTrichotomy`, which emits at the common predecessor `t₀` reachable only through the candidate list's `ord.pastOf` source; it is discharged by its own lemma `applyRule_orderTrichotomy_emitted_time`. Two extra closers landed with it: `mem_filterMap_const_time_mem` and `fst_mem_of_mem_trichotomyCandidates`.)*
+
+*(deviation: altered — every closer in the sweep is a tactic-mode `refine … ?_` rather than an `exact … (by …)`. A term-level `by` block inside a `first` alternative elaborates with error recovery, so a failing side goal is filled with `sorryAx` and the alternative appears to succeed. The first draft of the sweep did exactly that and `#print axioms` reported `sorryAx`; the landed form is verified axiom-free. This is recorded in `mem_filterMap_const_time_mem`'s docstring.)*
 
 **Timing**: 2 hours
 
@@ -323,7 +327,7 @@ docstring if taken; do **not** widen it to further rules without escalating per
 
 ---
 
-### Phase 4: Satisfiability verdict on `MintPaysForTime` as stated [NOT STARTED]
+### Phase 4: Satisfiability verdict on `MintPaysForTime` as stated [IN PROGRESS]
 
 **Goal**: Decide, before any proof-side investment, whether `MintPaysForTime fc U Tmax` is provable,
 repairable, or refutable. Both completed siblings on this terminus came out refutable as literally
