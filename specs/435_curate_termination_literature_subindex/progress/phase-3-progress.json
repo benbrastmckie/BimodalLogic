@@ -1,0 +1,40 @@
+{
+  "phase": 3,
+  "phase_name": "Fix the Registration Granularity Policy",
+  "started_at": "2026-08-07T16:40:00Z",
+  "last_updated": "2026-08-07T16:50:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Reconfirm F5 provenance_fidelity presence/absence for caleiro and blackburn parent vs section entries",
+      "status": "done",
+      "files_touched": [],
+      "note": "Reconfirmed from Phase 1 audit data — no new queries needed."
+    },
+    {
+      "id": 2,
+      "description": "Decide caleiro granularity (parent vs 7 sections)",
+      "status": "done",
+      "files_touched": ["specs/435_curate_termination_literature_subindex/plans/01_curate-termination-subindex.md"],
+      "note": "Decision: register parent caleiro_2013. The whole 20,846-token span is already the focused paper, entirely on-topic; splitting loses fidelity for no precision gain."
+    },
+    {
+      "id": 3,
+      "description": "Decide Blackburn granularity (Ch.6 sections vs whole book)",
+      "status": "done",
+      "files_touched": ["specs/435_curate_termination_literature_subindex/plans/01_curate-termination-subindex.md"],
+      "note": "Decision: register exactly blackburn_2002_ch06_sec04-05 (titled 'Quasi-models, Mosaics, and Tiling', pp.358-394) — precise on-topic match. Reject the other 3 Ch.6 sections (off-topic: general setup, NP/PSPACE, EXPTIME) and reject the 35-chunk whole book (dilutes with unrelated content). UNVERIFIED stamp accepted deliberately given precision payoff."
+    },
+    {
+      "id": 4,
+      "description": "Produce final registrable id list",
+      "status": "done",
+      "files_touched": ["specs/435_curate_termination_literature_subindex/plans/01_curate-termination-subindex.md"],
+      "note": "Final list (8 ids): caleiro_2013, blackburn_2002_ch06_sec04-05, massacci_2000_single_step_tableaux_for_modal_logics, venema_2001_sec04, gerth_1995_onthefly_ltl, baier_katoen_2008_part04, vardi_wolper_1986_automata_verification, vardi_1996_automata_ltl."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

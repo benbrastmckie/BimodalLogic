@@ -259,22 +259,46 @@ defect documented in `specs/literature-index.json`'s `rabinovich_2014` entry haz
 
 ---
 
-### Phase 3: Fix the Registration Granularity Policy [NOT STARTED]
+### Phase 3: Fix the Registration Granularity Policy [COMPLETED]
 
 **Goal**: Decide parent-vs-section registration for `caleiro_2013` and the Blackburn Ch.6
 sections, on the record, before any file is written.
 
 **Tasks**:
-- [ ] Confirm F5 directly: check `provenance_fidelity` presence for `caleiro_2013` versus its
+- [x] Confirm F5 directly: check `provenance_fidelity` presence for `caleiro_2013` versus its
       `secNN` children, and for `blackburn_2002_ch06_secNN` versus `blackburn_2002_book`.
-- [ ] Decide caleiro granularity. The task description asks for "all 7 chunked sections"; the
+      *(completed: reconfirmed in Phase 1 — caleiro_2013 parent verified_conversion, all 7
+      secNN children provenance_fidelity:null; blackburn_2002_book verified_conversion (35
+      chunks), all 4 ch06 secNN groups provenance_fidelity:null)*
+- [x] Decide caleiro granularity. The task description asks for "all 7 chunked sections"; the
       verified tradeoff favors the parent (verified provenance, all 7 chunks reachable, one
       entry instead of seven UNVERIFIED ones). Record the decision and its rationale.
-- [ ] Decide Blackburn granularity, weighing Ch.6 section precision against the UNVERIFIED
+      *(completed: DECISION — register the parent `caleiro_2013`, not its 7 sections. The
+      parent is verified_conversion, its 20,846-token span (pp.33-69) is already the whole
+      focused paper "On the Mosaic Method for Many-Dimensional Modal Logics" — every page of
+      it is on-topic for a mosaic-style termination bound, so there is no precision to gain
+      from splitting, only fidelity to lose.)*
+- [x] Decide Blackburn granularity, weighing Ch.6 section precision against the UNVERIFIED
       stamp that section-level entries carry, given the only verified alternative is the entire
-      35-chunk book.
-- [ ] Produce the final registrable id list: caleiro, Blackburn, massacci, venema, gerth, the
-      two vardi entries, and Phase 2's baier parts.
+      35-chunk book. *(completed: DECISION — register exactly one section,
+      `blackburn_2002_ch06_sec04-05`, not the full 4-way Ch.6 split and not the 35-chunk
+      `blackburn_2002_book`. Its title is verbatim "Chapter 6: §6.4-6.5 Quasi-models, Mosaics,
+      and Tiling" (pp.358-394, 10,005 tokens) — this is the textbook's canonical mosaic/tiling
+      decidability treatment and the direct textbook analogue to caleiro_2013's mosaic method,
+      unlike the other three Ch.6 sections (§6.1-3 general satisfiability/decidability setup,
+      §6.6-7 NP/PSPACE complexity, §6.8-9 EXPTIME/summary) which are adjacent but not on-topic.
+      The UNVERIFIED stamp is accepted deliberately: the whole book would dilute the briefing
+      with ~25 chunks of unrelated bisimulation/correspondence-theory/general-frames content to
+      buy verified provenance on material that is mostly off-topic, while all three other Ch.6
+      sections would add UNVERIFIED noise without adding on-topic content. Precision wins here
+      unlike the caleiro case, because Blackburn's verified parent is the whole book rather than
+      an already-focused paper.)*
+- [x] Produce the final registrable id list: caleiro, Blackburn, massacci, venema, gerth, the
+      two vardi entries, and Phase 2's baier parts. *(completed: final list of 8 —
+      `caleiro_2013`, `blackburn_2002_ch06_sec04-05`,
+      `massacci_2000_single_step_tableaux_for_modal_logics`, `venema_2001_sec04`,
+      `gerth_1995_onthefly_ltl`, `baier_katoen_2008_part04`,
+      `vardi_wolper_1986_automata_verification`, `vardi_1996_automata_ltl`)*
 
 **Timing**: 0.5 hours
 
