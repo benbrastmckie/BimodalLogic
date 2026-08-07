@@ -1,7 +1,7 @@
 # Implementation Plan: Task #435
 
 - **Task**: 435 - curate_termination_literature_subindex
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md

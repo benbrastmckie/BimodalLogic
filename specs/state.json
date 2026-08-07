@@ -1045,7 +1045,7 @@
     {
       "project_number": 435,
       "project_name": "curate_termination_literature_subindex",
-      "status": "researched",
+      "status": "completed",
       "task_type": "meta",
       "description": "Task 434's implementation is blocked at Phase 7: no satisfiable repair of MintPaysForTime exists among the two routes refuted in-source (see MintBound.lean section C9 entry 14). What is needed is a fourth well-founded termination-measure component paying for the three self-guarded minting rules (untlNeg, snceNeg, densityRule) that is also preserved across TimeOrdering.identifyTime (which can lower ord.timeCount). The per-repo sub-index at specs/literature-index.json currently has zero entries relevant to this question (all 33 entries trace to the unrelated Kamp-theorem/temporal-expressive-completeness research line). The global corpus at ~/Projects/Literature/index.json, however, already contains several directly relevant, previously-ingested sources that are not yet registered in the sub-index. Register the following into specs/literature-index.json with relevance annotations explaining their bearing on the measure-design question: massacci_2000_single_step_tableaux_for_modal_logics (verified_conversion; a rule-bounding termination technique for modal tableaux); caleiro_2013 (all 7 chunked sections; mosaic-method decidability for combined tense-and-modal logics, the closest structural analogue to TM's S5-modal + linear-temporal combination, especially sections 6-7 on mosaic-based tableau systems and decidability/complexity bounds); blackburn_2002_ch06_sec01-03, sec04-05, sec06-07 (Blackburn-de Rijke-Venema Modal Logic Ch.6 'Satisfiability and Decidability' including 'Quasi-models, Mosaics, and Tiling', the standard textbook treatment); venema_2001_sec04 (section 5, Interval-Based Temporal Logic, relevant to densityRule's maximal-unfilled-gap guard); gerth_1995_onthefly_ltl and the baier_katoen_2008 parts covering LTL-to-automaton tableau construction (the classical closure-set termination argument, structurally close to a measure over an evolving time/state set that must not grow unboundedly); vardi_wolper_1986_automata_verification and vardi_1996_automata_ltl (automata-theoretic background for the same family of arguments). After registering these, run one confirmatory literature-discover.sh online pass with a query targeting well-founded/Dershowitz-Manna-style termination orderings for loop-checking modal-temporal tableaux specifically, to check whether a closer-fit paper is missing from the corpus entirely; if found, ingest it via the standard literature-ingest-online.sh bridge and register it too. Verify by running literature-briefing.sh (or literature-briefing-invoke.sh) against the per-repo sub-index with a query on 'termination measure time minting rules preserved under identification' and confirming the resulting <!-- lit-coverage --> marker reports sparse=false (segment count at or above LITERATURE_SPARSE_THRESHOLD, default 3).",
       "effort": "2-3 hours",
@@ -1056,14 +1056,26 @@
         "specs/literature-index.json"
       ],
       "created": "2026-08-07T15:22:56Z",
-      "last_updated": "2026-08-07T15:22:56Z",
+      "last_updated": "2026-08-07T15:51:53Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "path": "specs/435_curate_termination_literature_subindex/plans/01_curate-termination-subindex.md",
+          "type": "plan",
+          "summary": "6-phase plan for curating termination-measure literature into the per-repo sub-index"
+        },
+        {
+          "path": "specs/435_curate_termination_literature_subindex/summaries/01_curate-termination-subindex-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 7 new termination-measure entries registered in the per-repo sub-index"
         }
-      ]
+      ],
+      "session_id": "sess_1786116479_61b0c4",
+      "completion_summary": "Registered 7 termination-measure-relevant documents (caleiro_2013, blackburn_2002_ch06_sec04-05, massacci_2000_single_step_tableaux_for_modal_logics, gerth_1995_onthefly_ltl, baier_katoen_2008_part04, vardi_wolper_1986_automata_verification, vardi_1996_automata_ltl) into specs/literature-index.json with design-specific relevance annotations, merged a relevance field into the pre-existing venema_2001_sec04 entry to fix a duplicate-doc_id defect Phase 6 caught, ran a well-documented null-result online discovery pass, and verified against discriminating criteria (clean stderr, per-document Relevance-line render, exact seg_count arithmetic, search reachability)."
     },
     {
       "project_number": 436,

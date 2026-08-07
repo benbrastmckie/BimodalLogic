@@ -11,19 +11,18 @@ next_project_number: 437
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,435 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,420,422,425,436 | 193,231,298,415,421,423,435 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,414,434 | 420,422,436 | decidability, paper-refactor, strong_completeness |
-| 4 | 362,417,432 | 169,414,434 | decidability, paper-refactor, strong_completeness |
-| 5 | 427,433 | 417,419,432 | decidability, paper-refactor |
-| 6 | 428 | 433 | decidability |
-| 7 | 429 | 428 | decidability |
-| 8 | 410 | 429 | -- |
-| 9 | 411 | 410 | -- |
-| 10 | 430 | 411 | decidability |
-| 11 | 412 | 430 | -- |
-| 12 | 426 | 412 | completeness |
-| 13 | 95,177 | 193,426 | completeness, formula-refactor |
+| 1 | 125,127,128,193,231,257,298,413,415,419,421,423,424,436 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,420,422,425,434 | 193,231,298,415,421,423,436 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,414,432 | 420,422,434 | decidability, paper-refactor, strong_completeness |
+| 4 | 362,417,433 | 169,414,432 | decidability, paper-refactor, strong_completeness |
+| 5 | 427,428 | 417,419,433 | decidability, paper-refactor |
+| 6 | 429 | 428 | decidability |
+| 7 | 410 | 429 | -- |
+| 8 | 411 | 410 | -- |
+| 9 | 430 | 411 | decidability |
+| 10 | 412 | 430 | -- |
+| 11 | 426 | 412 | completeness |
+| 12 | 95,177 | 193,426 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -36,17 +35,16 @@ next_project_number: 437
 
 ### Decidability
 
-435 [RESEARCHED] — Task 434's implementation is blocked at Phase 7: no satisfiable r
-  └─ 436 [RESEARCHED] — Resume task 434's implementation plan (specs/434_discharge_mintpa
-    └─ 434 [BLOCKED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
-      └─ 432 [IMPLEMENTING] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
-        └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
-          └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
-            └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
-              └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
-                └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-                  └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
-                    └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+436 [RESEARCHED] — Resume task 434's implementation plan (specs/434_discharge_mintpa
+  └─ 434 [BLOCKED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
+    └─ 432 [IMPLEMENTING] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
+      └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
+        └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
+          └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
+            └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
+              └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+                └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
+                  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 
 ### Formula Refactor
 
@@ -113,11 +111,13 @@ next_project_number: 437
 
 ### 435. Curate termination literature subindex
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md]
+- **Plan**: [435_curate_termination_literature_subindex/plans/01_curate-termination-subindex.md]
+- **Summary**: [435_curate_termination_literature_subindex/summaries/01_curate-termination-subindex-summary.md]
 
 **Description**: Task 434's implementation is blocked at Phase 7: no satisfiable repair of MintPaysForTime exists among the two routes refuted in-source (see MintBound.lean section C9 entry 14). What is needed is a fourth well-founded termination-measure component paying for the three self-guarded minting rules (untlNeg, snceNeg, densityRule) that is also preserved across TimeOrdering.identifyTime (which can lower ord.timeCount). The per-repo sub-index at specs/literature-index.json currently has zero entries relevant to this question (all 33 entries trace to the unrelated Kamp-theorem/temporal-expressive-completeness research line). The global corpus at ~/Projects/Literature/index.json, however, already contains several directly relevant, previously-ingested sources that are not yet registered in the sub-index. Register the following into specs/literature-index.json with relevance annotations explaining their bearing on the measure-design question: massacci_2000_single_step_tableaux_for_modal_logics (verified_conversion; a rule-bounding termination technique for modal tableaux); caleiro_2013 (all 7 chunked sections; mosaic-method decidability for combined tense-and-modal logics, the closest structural analogue to TM's S5-modal + linear-temporal combination, especially sections 6-7 on mosaic-based tableau systems and decidability/complexity bounds); blackburn_2002_ch06_sec01-03, sec04-05, sec06-07 (Blackburn-de Rijke-Venema Modal Logic Ch.6 'Satisfiability and Decidability' including 'Quasi-models, Mosaics, and Tiling', the standard textbook treatment); venema_2001_sec04 (section 5, Interval-Based Temporal Logic, relevant to densityRule's maximal-unfilled-gap guard); gerth_1995_onthefly_ltl and the baier_katoen_2008 parts covering LTL-to-automaton tableau construction (the classical closure-set termination argument, structurally close to a measure over an evolving time/state set that must not grow unboundedly); vardi_wolper_1986_automata_verification and vardi_1996_automata_ltl (automata-theoretic background for the same family of arguments). After registering these, run one confirmatory literature-discover.sh online pass with a query targeting well-founded/Dershowitz-Manna-style termination orderings for loop-checking modal-temporal tableaux specifically, to check whether a closer-fit paper is missing from the corpus entirely; if found, ingest it via the standard literature-ingest-online.sh bridge and register it too. Verify by running literature-briefing.sh (or literature-briefing-invoke.sh) against the per-repo sub-index with a query on 'termination measure time minting rules preserved under identification' and confirming the resulting <!-- lit-coverage --> marker reports sparse=false (segment count at or above LITERATURE_SPARSE_THRESHOLD, default 3).
 
