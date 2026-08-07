@@ -319,23 +319,35 @@ to hit a number.
 
 ---
 
-### Phase 4: Register Entries into the Sub-Index [NOT STARTED]
+### Phase 4: Register Entries into the Sub-Index [COMPLETED]
 
 **Goal**: Write the entries with annotations that render and that carry the design signal the
 dependent measure-design task needs.
 
 **Tasks**:
-- [ ] For each id, write both `relevance` (rendered by the briefing — F2) and `reason`
-      (matching the file's existing convention and recording provenance).
-- [ ] Make each `relevance` note state the *bearing on the measure-design question*, not just
+- [x] For each id, write both `relevance` (rendered by the briefing — F2) and `reason`
+      (matching the file's existing convention and recording provenance). *(completed: all 8
+      new entries carry both fields, verified non-empty)*
+- [x] Make each `relevance` note state the *bearing on the measure-design question*, not just
       the document's topic — which termination-ordering pattern it supplies (mosaic bound,
       closure-set potential, prefix-length rule bound, interval/density guard) and how it
       relates to paying for `untlNeg`/`snceNeg`/`densityRule` or to preservation across
-      `identifyTime`.
-- [ ] Where a section-level entry was chosen despite the UNVERIFIED stamp, say so in the note
-      so a downstream reader is not misled about provenance.
-- [ ] Append via jq rather than hand-editing; update the `updated` timestamp.
-- [ ] Validate the file parses and that the 33 pre-existing entries are byte-for-byte unchanged.
+      `identifyTime`. *(completed: caleiro_2013/blackburn_2002_ch06_sec04-05 -> mosaic bound;
+      massacci_2000 -> prefix-length rule bound, ties to untlNeg/snceNeg's futureOf/pastOf +
+      timeCount<4 guard; venema_2001_sec04 -> interval/density guard, ties to densityRule;
+      gerth_1995/baier_katoen_2008_part04 -> closure-set potential; vardi_wolper_1986/vardi_1996
+      -> automata-theoretic background for the closure-set pattern; caleiro's note additionally
+      flags that a mosaic bound over local configurations, rather than a counter on
+      ord.timeCount, is the property that would need to survive identifyTime)*
+- [x] Where a section-level entry was chosen despite the UNVERIFIED stamp, say so in the note
+      so a downstream reader is not misled about provenance. *(completed: blackburn_2002_ch06_sec04-05's
+      `reason` field states it carries no provenance_fidelity and cross-references the plan's
+      Phase 3 rationale)*
+- [x] Append via jq rather than hand-editing; update the `updated` timestamp. *(completed: jq
+      --slurpfile append; updated bumped to 2026-08-07T15:42:08Z)*
+- [x] Validate the file parses and that the 33 pre-existing entries are byte-for-byte unchanged.
+      *(completed: `jq empty` succeeds; `diff` on `.entries[0:33]` (compact JSON) between
+      baseline and post-write copies is empty)*
 
 **Timing**: 0.75 hours
 

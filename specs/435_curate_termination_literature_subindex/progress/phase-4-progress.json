@@ -1,0 +1,26 @@
+{
+  "phase": 4,
+  "phase_name": "Register Entries into the Sub-Index",
+  "started_at": "2026-08-07T16:55:00Z",
+  "last_updated": "2026-08-07T17:10:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Write relevance + reason for each of the 8 entries with measure-design-specific bearing",
+      "status": "done",
+      "files_touched": ["specs/literature-index.json"],
+      "note": "8 entries appended via jq --slurpfile. Each relevance note names a specific termination-ordering pattern (mosaic bound / closure-set potential / prefix-length bound / interval-density guard) and its bearing on untlNeg/snceNeg/densityRule or identifyTime preservation."
+    },
+    {
+      "id": 2,
+      "description": "Validate JSON parses and 33 pre-existing entries unchanged; verify entry count arithmetic",
+      "status": "done",
+      "files_touched": [],
+      "note": "jq empty succeeds. diff on .entries[0:33] (compact) between baseline scratch copy and post-write file is empty. Post-write entry count = 41 = 33 baseline + 8 new, exact match."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

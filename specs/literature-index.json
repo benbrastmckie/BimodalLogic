@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-07-27T21:09:16Z",
+  "updated": "2026-08-07T15:42:08Z",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
@@ -166,6 +166,46 @@
       "doc_id": "goldblatt_2023_strong-completeness-real-time",
       "reason": "Task 408: the only published source directly on STRONG completeness over real-flowed time (arXiv:2310.20069). Propositional TL over the reals is finitely axiomatizable; the first-order counterpart is not recursively axiomatizable; strong completeness only via restricted admissible-models semantics. Decision-relevant cross-check for the finite-context strong-completeness verdict.",
       "hazard": "provenance_fidelity: unverified_conversion — converted via the PyMuPDF fallback tier after the primary tier failed the sentence-boundary-glue quality gate; chunks are auto-segmented (chunk_NNNN, no section titles). Spot-check against the source PDF (in the same sources dir) before any load-bearing citation. Result is for FIRST-ORDER temporal logic; applicability to the propositional bimodal TM must be argued, not assumed."
+    },
+    {
+      "doc_id": "caleiro_2013",
+      "relevance": "Termination-measure design (task 434 blocker): proves decidability for S5 combined with linear tense logic via the MOSAIC METHOD — bounding the model-search space by a finite set of compatible local configurations ('mosaics') rather than by a counter over an unboundedly-growing time set. This is the closest structural analogue to TM's S5-modal + linear-temporal combination in the corpus and the primary candidate for a mosaic-bound termination pattern that could replace/supplement the refuted mintPotential-based routes (see MintBound.lean section C9 entries 14). A mosaic bound is defined over local satisfiability configurations rather than ord.timeCount directly, which is the property that would need to survive TimeOrdering.identifyTime lowering timeCount.",
+      "reason": "Task 435 (curate_termination_literature_subindex): primary mosaic-method source for the fourth termination-measure component blocking task 434 Phase 7/8 (MintPaysForTime). Registered as the verified parent rather than its 7 secNN children — see plan Phase 3 granularity decision."
+    },
+    {
+      "doc_id": "blackburn_2002_ch06_sec04-05",
+      "relevance": "Termination-measure design (task 434 blocker): the standard textbook treatment of Quasi-models, Mosaics, and Tiling (§6.4-6.5) — an independent, more didactic presentation of the same mosaic-bound termination pattern as caleiro_2013. Useful for cross-checking the mosaic-bound approach's mechanics (compatibility conditions between adjacent mosaics, finiteness of the mosaic set) against a second source before committing to it as the fourth measure component.",
+      "reason": "Task 435: companion textbook exposition of the mosaic method, registered despite carrying no provenance_fidelity stamp (section-level entry) — see plan Phase 3 for the precision-vs-provenance rationale (only verified alternative is the 35-chunk whole book, which is mostly off-topic)."
+    },
+    {
+      "doc_id": "massacci_2000_single_step_tableaux_for_modal_logics",
+      "relevance": "Termination-measure design (task 434 blocker): a single-step tableau calculus for modal logics whose termination argument bounds rule application by PREFIX LENGTH along the tableau branch. This is the closest direct analogue in the corpus to a 'bound that pays for a rule class' — structurally similar to what a repaired untlNeg/snceNeg measure component would need (those rules are guarded by futureOf/pastOf emptiness and ord.timeCount < 4, i.e. a small-prefix-style condition). Worth checking whether the prefix-length technique composes with, or is subsumed by, a mosaic bound.",
+      "reason": "Task 435: primary prefix-length-bound source for the fourth termination-measure component blocking task 434 Phase 7/8."
+    },
+    {
+      "doc_id": "venema_2001_sec04",
+      "relevance": "Termination-measure design (task 434 blocker): §5 Interval-Based Temporal Logic — directly relevant to densityRule's maximal-unfilled-gap guard, which is an interval/density-style condition over the known-times set. If the fourth measure component needs an interval/density potential (rather than a mosaic or prefix-length bound) to pay specifically for densityRule, this is the corpus's primary source for that pattern.",
+      "reason": "Task 435: interval/density-pattern source for the fourth termination-measure component blocking task 434 Phase 7/8, specifically targeting densityRule."
+    },
+    {
+      "doc_id": "gerth_1995_onthefly_ltl",
+      "relevance": "Termination-measure design (task 434 blocker): the on-the-fly LTL-to-automaton tableau construction — a CLOSURE-SET POTENTIAL termination argument (the automaton's state space is bounded by the finite closure of the formula under construction), companion to baier_katoen_2008_part04's textbook presentation of the same technique. Candidate pattern if the fourth measure component is better modeled as a potential over a closure set than as a counter or mosaic bound.",
+      "reason": "Task 435: closure-set/on-the-fly construction source for the fourth termination-measure component blocking task 434 Phase 7/8."
+    },
+    {
+      "doc_id": "baier_katoen_2008_part04",
+      "relevance": "Termination-measure design (task 434 blocker): Definition 5.35 'Elementary Sets of Formulae' and Theorem 5.37's GNBA construction — the canonical CLOSURE-SET POTENTIAL termination bound (state space |Q| <= 2^|subf(phi)|, a potential over the finite closure of the formula rather than a counter over an unboundedly-growing time set). This is the standard reference point named in the spawn analysis for 'a measure over an evolving time/state set that must not grow unboundedly' and the primary candidate if the fourth component is modeled as a closure-set potential rather than a mosaic bound.",
+      "reason": "Task 435: primary closure-set-potential source for the fourth termination-measure component blocking task 434 Phase 7/8. Confirmed genuinely on-topic by reading (Def 5.35, Thm 5.37) — see plan Phase 2 for the full part-selection evidence and the excluded parts."
+    },
+    {
+      "doc_id": "vardi_wolper_1986_automata_verification",
+      "relevance": "Termination-measure design (task 434 blocker): the original automata-theoretic approach to program verification underlying the closure-set/automaton-construction termination arguments in gerth_1995 and baier_katoen_2008. Background source for understanding why the closure-set bound is sound, in case the fourth measure component needs to be justified from first principles rather than by textbook citation alone.",
+      "reason": "Task 435: foundational automata-theoretic background for the fourth termination-measure component blocking task 434 Phase 7/8."
+    },
+    {
+      "doc_id": "vardi_1996_automata_ltl",
+      "relevance": "Termination-measure design (task 434 blocker): a later survey-style automata-theoretic treatment of LTL, restating and extending the closure-set/automaton-construction termination argument. Secondary background source alongside vardi_wolper_1986_automata_verification for the closure-set potential pattern.",
+      "reason": "Task 435: secondary automata-theoretic background for the fourth termination-measure component blocking task 434 Phase 7/8."
     }
   ]
 }
