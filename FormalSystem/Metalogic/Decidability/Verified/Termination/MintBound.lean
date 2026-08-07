@@ -7105,6 +7105,115 @@ theorem mintPaysForTime_empty (fc : FormalSystem.ProofSystem.FrameClass) (Tmax :
   subst hb
   simp [expandOnceUnblocked, findUnexpandedUnblockedWith, unorderedSuccessorBranches] at hnb
 
+/-! ### Verdict on the time-reuse sub-question
+
+**Verdict: reuse is possible.** Decided, at a configuration the engine itself drives.
+
+*The obligation, restated precisely.* `mintPotential_lt_of_mint` asks that the minting pair be
+**σ-hit**: the formula the rule fires on must be `σ sf` for some `sf ∈ U`, where `σ` is the
+composition of the `rhoSF`s of the ordered splits taken so far. `rhoSF src tgt` never lands on
+`src` (`rhoSF_time_ne_src`), so σ's image omits exactly the times earlier identifications merged
+away. The obligation is therefore: *a minting formula does not sit at a merged-away time.*
+
+*The affirmative direction fails.* The available facts about identification are
+`src_not_mem_knownTimes_identifyTime` (the retired time leaves `knownTimes`) and
+`knownTimes_card_lt_identifyTime` (the count strictly drops). Neither says anything about
+`Branch.maxTime`, and `Branch.nextTime` is `maxTime + 1`. When the retired time is the branch's
+largest, `maxTime` drops with it and the next fresh time lands *back on the retired value*.
+`nextTime_reissues_retired_time` decides exactly that: `firstIncomparablePair` selects `(0, 2)` on
+a three-time branch, `2` leaves `knownTimes`, and the post-identification `nextTime` is `2` again.
+
+*And the engine drives it.* `reuse_driven_through_engine` decides that two `expandOnceUnblocked`
+steps after the identification, the branch carries time `2` once more. So this is not a
+configuration reachable only by hand-assembling a `Branch`; it is on a run.
+
+*The consequence for the measure.* `mint_not_in_rhoSF_image` is the σ-hit failure stated directly:
+a formula minted at `b.nextTime`, when that value is the retired `src`, is in the image of no
+`rhoSF src tgt`. The hypothesis of `mintPotential_lt_of_mint` is therefore not discharged — it is
+**false** at this step — and Phase 7's repair must carry it structurally rather than discharge it.
+
+*The live-times reformulation carries the identical obligation, verified rather than asserted.*
+That reformulation filters additionally on the formula's time being a fixed point of `σ`. But
+`rho_src_ne_src` says `src` is not a fixed point of `rho src tgt`, and the re-issued time **is**
+`src`. So the extra filter excludes the re-minted formula for precisely the reason the image
+condition does, and defeating one defeats the other. The obstruction is intrinsic to
+identification-plus-`maxTime`, not to this measure's shape. -/
+
+/-- The renaming never fixes the time it retires. One line, and the whole σ-hit story rests on it. -/
+theorem rho_src_ne_src {src tgt : TimeIndex} (h : tgt ≠ src) : rho src tgt src ≠ src := by
+  simp [rho, h]
+
+/-- **`rhoSF src tgt`'s image omits the time `src` entirely.** Everything at `src` is moved to
+`tgt`, and everything else keeps a time that was not `src` to begin with. This is why σ's image
+omits exactly the merged-away times. -/
+theorem rhoSF_time_ne_src {src tgt : TimeIndex} (h : tgt ≠ src) (sf : SignedFormula) :
+    (rhoSF src tgt sf).label.time ≠ src := by
+  simp only [rhoSF, rho]
+  by_cases hc : sf.label.time = src <;> simp [hc, h]
+
+/-- **The σ-hit failure, stated directly.** If the branch's next fresh time *is* the time an
+earlier identification retired, then nothing the rule mints there lies in the renaming's image —
+so `mintPotential_lt_of_mint`'s hypothesis is false, not merely unproved, at that step. -/
+theorem mint_not_in_rhoSF_image {src tgt : TimeIndex} (h : tgt ≠ src) {b : Branch}
+    (hnext : b.nextTime = src) {g : SignedFormula} (hg : g.label.time = b.nextTime)
+    (sf : SignedFormula) : rhoSF src tgt sf ≠ g := by
+  intro heq
+  exact rhoSF_time_ne_src h sf (by rw [heq, hg, hnext])
+
+/-- **The retired time comes back.** `firstIncomparablePair` selects `(0, 2)` here, so the
+identification arm merges the branch's *largest* time away; `Branch.maxTime` drops from `2` to `1`
+and `Branch.nextTime` becomes `2` — the value just retired.
+
+All six conjuncts are decided. The first three establish that this is a genuine ordered-split
+trigger meeting both standing hypotheses, so the coincidence in the last three is attributable to
+the arm rather than to a violated precondition — the same discipline
+`ordTimes_identifyTime_arm3_false` uses. -/
+theorem nextTime_reissues_retired_time :
+    letI p : Formula := .atom ⟨"p", none⟩
+    letI q : Formula := .atom ⟨"q", none⟩
+    letI r : Formula := .atom ⟨"r", none⟩
+    letI b : Branch := [⟨.pos, p, ⟨0, 0⟩⟩, ⟨.pos, q, ⟨0, 1⟩⟩, ⟨.pos, r, ⟨0, 2⟩⟩]
+    letI ord : TimeOrdering := ⟨[(0, 1)]⟩
+    IrreflOrd ord ∧ OrdTimesKnown b ord ∧
+      firstIncomparablePair b ord = some (0, 2) ∧
+      2 ∈ b.knownTimes ∧
+      2 ∉ (b.identifyTime 2 0).knownTimes ∧
+      (b.identifyTime 2 0).nextTime = 2 := by
+  refine ⟨?_, ?_, by decide, by decide, by decide, by decide⟩
+  · unfold IrreflOrd; decide
+  · unfold OrdTimesKnown; decide
+
+/-- One engine step along the first reported unordered successor. A witness helper, not part of
+the development's interface — it exists so the continuation below is a closed term `decide` can
+evaluate. -/
+def reuseStep (s : Branch × TimeOrdering) : Option (Branch × TimeOrdering) :=
+  let r := expandOnceUnblocked s.1 s.2 FormalSystem.ProofSystem.FrameClass.Base
+    EventualityTracker.empty
+  match unorderedSuccessorBranches r.1 with
+  | [] => none
+  | nb :: _ => some (nb, r.2)
+
+/-- The branch of `nextTime_reissues_retired_time`. -/
+def reuseWitnessBranch : Branch :=
+  [⟨.pos, .atom ⟨"p", none⟩, ⟨0, 0⟩⟩, ⟨.pos, .atom ⟨"q", none⟩, ⟨0, 1⟩⟩,
+   ⟨.pos, .atom ⟨"r", none⟩, ⟨0, 2⟩⟩]
+
+/-- The ordering of `nextTime_reissues_retired_time`. -/
+def reuseWitnessOrd : TimeOrdering := ⟨[(0, 1)]⟩
+
+/-- The state of `nextTime_reissues_retired_time`, after the identification arm. -/
+def reuseWitnessState : Branch × TimeOrdering :=
+  (Branch.identifyTime reuseWitnessBranch 2 0, TimeOrdering.identifyTime reuseWitnessOrd 2 0)
+
+/-- **The engine really does re-issue it.** Two `expandOnceUnblocked` steps after the
+identification, time `2` is back on the branch. Decided.
+
+This is what turns the coincidence above into a statement about *runs* rather than about
+hand-assembled branches, and it is why the verdict is "reuse possible" rather than "open". -/
+theorem reuse_driven_through_engine :
+    ((reuseStep reuseWitnessState).bind reuseStep).map
+      (fun s => s.1.knownTimes.contains 2) = some true := by decide
+
 /-! ## C9. The do-not-re-attempt register
 
 Twelve statements that look like the natural next lemma and are **not** available. Each is cited by

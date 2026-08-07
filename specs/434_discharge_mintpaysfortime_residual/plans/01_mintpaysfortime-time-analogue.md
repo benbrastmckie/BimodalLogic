@@ -472,7 +472,7 @@ deviation; `expandOnceUnblocked_ordTimesKnown` supplies it at every consuming si
 
 ---
 
-### Phase 6: Verdict on the time-reuse sub-question [NOT STARTED]
+### Phase 6: Verdict on the time-reuse sub-question [COMPLETED]
 
 **Goal**: Settle, with an explicit verdict, the genuinely open sub-question the source names: since
 `Branch.nextTime = Branch.maxTime + 1` and `Branch.identifyTime` can *lower* `maxTime`, can the
@@ -480,23 +480,35 @@ engine re-issue a time an earlier identification retired? This is the σ-hit obl
 `mintPotential_lt_of_mint` and it is intrinsic — the live-times reformulation carries it identically.
 
 **Tasks**:
-- [ ] Restate the obligation precisely: `mintPotential_lt_of_mint` requires the firing formula to be
+- [x] Restate the obligation precisely: `mintPotential_lt_of_mint` requires the firing formula to be
       `σ sf` for some `sf ∈ U`, and `σ`'s image omits exactly the times earlier identifications
       merged away. So the obligation is: *a minting formula does not sit at a merged-away time.*
-- [ ] Attempt the affirmative direction: does the run invariant already forbid reuse? Candidate
+- [x] Attempt the affirmative direction: does the run invariant already forbid reuse? Candidate
       route — `OrdTimesKnown` plus `src_not_mem_knownTimes_identifyTime` and
       `knownTimes_card_lt_identifyTime` (`Fuel.lean`) may show a retired time cannot re-enter
       `knownTimes` without a fresh mint above the current `maxTime`. Check whether `maxTime` dropping
       to a value *below* a retired time actually re-exposes that value as a future `nextTime`.
-- [ ] If the affirmative fails, exhibit the decision-relevant configuration: a concrete run prefix
+- [x] If the affirmative fails, exhibit the decision-relevant configuration: a concrete run prefix
       where `identifyTime` retires time `k`, `maxTime` drops below `k`, and a subsequent mint issues
       `k` again. Decide it if decidable; if the configuration cannot be driven through
       `expandOnceUnblocked` concretely, say so and say why.
-- [ ] Cross-check the live-times reformulation (filter additionally on the formula's time being a
+- [x] Cross-check the live-times reformulation (filter additionally on the formula's time being a
       fixed point of `σ`) and confirm in-source that it carries the identical obligation — the source
       asserts this; verify it rather than repeating it.
-- [ ] Record the verdict as a `/-! ### … -/` note under section D2, and add the corresponding
+- [x] Record the verdict as a `/-! ### … -/` note under section D2, and add the corresponding
       do-not-re-attempt register entry in Phase 9.
+
+**VERDICT RECORDED: reuse possible.** Evidence, all decided or axiom-free:
+`nextTime_reissues_retired_time` (`firstIncomparablePair` merges the branch's largest time away,
+`Branch.maxTime` drops with it, and the post-identification `Branch.nextTime` is the retired value
+again), `reuse_driven_through_engine` (two `expandOnceUnblocked` steps later the retired time is
+back on the branch — so this is a run, not a hand-assembled `Branch`), `rhoSF_time_ne_src` and
+`mint_not_in_rhoSF_image` (the σ-hit hypothesis of `mintPotential_lt_of_mint` is therefore **false**
+at such a step, not merely unproved), and `rho_src_ne_src` (the live-times reformulation's fixed-point
+filter excludes the re-minted formula for exactly the same reason, so the obstruction is intrinsic).
+
+Consequence for the plan: the σ-hit obligation must be carried structurally by Phase 7's repair
+rather than discharged, which is the pre-declared "reuse possible" route.
 
 **Pre-declared outcomes** (exactly one):
 | Verdict | Evidence required |
