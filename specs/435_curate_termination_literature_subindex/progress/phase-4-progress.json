@@ -22,5 +22,13 @@
   "current_objective": null,
   "approaches_tried": [],
   "handoff_count": 0,
-  "deviations": []
+  "deviations": [
+    {
+      "task_id": "4.1",
+      "description": "venema_2001_sec04 was appended as a new entry via jq --slurpfile without first checking whether it already existed among the 33 baseline entries",
+      "type": "altered",
+      "reason": "Phase 6's render check caught that venema_2001_sec04 was already present (task 408, Kamp-theorem line, reason-only, no relevance) -- the duplicate doc_id caused literature-briefing.sh to match the relevance-less copy first and never render the new relevance. Corrected in Phase 6 by merging into the pre-existing entry and removing the duplicate; final entry count is 40 (33 + 7 genuinely-new docs), not 41.",
+      "annotation": "*(deviation: altered — venema_2001_sec04 merged into its pre-existing entry rather than duplicated; see Phase 6 for the correction)*"
+    }
+  ]
 }

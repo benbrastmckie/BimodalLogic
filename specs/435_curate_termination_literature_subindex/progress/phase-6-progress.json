@@ -1,0 +1,48 @@
+{
+  "phase": 6,
+  "phase_name": "Verify Against Discriminating Criteria",
+  "started_at": "2026-08-07T17:40:00Z",
+  "last_updated": "2026-08-07T18:05:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Re-run literature-briefing.sh, assert clean stderr, and assert per-document title + Relevance line for every new entry",
+      "status": "done",
+      "files_touched": [],
+      "note": "First pass caught a real defect: venema_2001_sec04 rendered its title but no Relevance line, because Phase 4 had appended a duplicate doc_id entry rather than checking whether it was already registered (it was, under task 408). Fixed by merging into the pre-existing entry (see Phase 4 correction) and removing the duplicate. Second pass: stderr clean, all 8 target documents (7 new + merged venema_2001_sec04) render title and Relevance line."
+    },
+    {
+      "id": 2,
+      "description": "Assert seg_count arithmetic and record sparse=false as non-diagnostic",
+      "status": "done",
+      "files_touched": [],
+      "note": "seg_count=40 = 33 baseline + 7 genuinely-new documents (not 8 -- venema_2001_sec04 was already registered). sparse=false on both passes, consistent with F3's finding that this metric cannot fail here."
+    },
+    {
+      "id": 3,
+      "description": "Run short AND-safe literature-search.sh queries and confirm reachability",
+      "status": "done",
+      "files_touched": [],
+      "note": "'mosaic' -> caleiro_2013 top hit. 'closure'/'elementary sets' -> baier_katoen_2008 (bare parent doc_id, matching F6's finding that the FTS5 index does not distinguish parts) -- confirms the closure-set material is reachable via search despite the part-level id/FTS mismatch."
+    },
+    {
+      "id": 4,
+      "description": "Record the F2 follow-up defect status and correct the plan/Testing & Validation section for the venema_2001_sec04 fix",
+      "status": "done",
+      "files_touched": ["specs/435_curate_termination_literature_subindex/plans/01_curate-termination-subindex.md"],
+      "note": "32 of 33 pre-existing entries remain relevance-less by design (Non-Goal); venema_2001_sec04 is the one exception, an incidental consequence of the duplicate-doc_id fix rather than a deliberate corpus-wide backfill."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "6.1",
+      "description": "First literature-briefing.sh re-run after Phase 4 failed the Relevance-line check for venema_2001_sec04",
+      "type": "altered",
+      "reason": "Discovered and fixed a Phase 4 defect (duplicate doc_id) rather than treating the check as a simple pass/fail gate -- corrected the underlying data and re-verified.",
+      "annotation": "*(deviation: altered -- see Phase 4 post-hoc correction note and Phase 6 task list)*"
+    }
+  ]
+}

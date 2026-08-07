@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-08-07T15:42:08Z",
+  "updated": "2026-08-07T15:47:33Z",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
@@ -150,7 +150,8 @@
     },
     {
       "doc_id": "venema_2001_sec04",
-      "reason": "Task 408: Venema survey §4 Since and Until — the completeness-landscape section most relevant to the Dedekind route."
+      "reason": "Task 408: Venema survey §4 Since and Until — the completeness-landscape section most relevant to the Dedekind route. Task 435: also relevant to termination-measure design for task 434's MintPaysForTime blocker — §5 Interval-Based Temporal Logic directly bears on densityRule's maximal-unfilled-gap guard (interval/density pattern); see .relevance for the design-specific note.",
+      "relevance": "Termination-measure design (task 434 blocker): §5 Interval-Based Temporal Logic — directly relevant to densityRule's maximal-unfilled-gap guard, which is an interval/density-style condition over the known-times set. If the fourth measure component needs an interval/density potential (rather than a mosaic or prefix-length bound) to pay specifically for densityRule, this is the corpus's primary source for that pattern."
     },
     {
       "doc_id": "venema_1993_since_sec01",
@@ -181,11 +182,6 @@
       "doc_id": "massacci_2000_single_step_tableaux_for_modal_logics",
       "relevance": "Termination-measure design (task 434 blocker): a single-step tableau calculus for modal logics whose termination argument bounds rule application by PREFIX LENGTH along the tableau branch. This is the closest direct analogue in the corpus to a 'bound that pays for a rule class' — structurally similar to what a repaired untlNeg/snceNeg measure component would need (those rules are guarded by futureOf/pastOf emptiness and ord.timeCount < 4, i.e. a small-prefix-style condition). Worth checking whether the prefix-length technique composes with, or is subsumed by, a mosaic bound.",
       "reason": "Task 435: primary prefix-length-bound source for the fourth termination-measure component blocking task 434 Phase 7/8."
-    },
-    {
-      "doc_id": "venema_2001_sec04",
-      "relevance": "Termination-measure design (task 434 blocker): §5 Interval-Based Temporal Logic — directly relevant to densityRule's maximal-unfilled-gap guard, which is an interval/density-style condition over the known-times set. If the fourth measure component needs an interval/density potential (rather than a mosaic or prefix-length bound) to pay specifically for densityRule, this is the corpus's primary source for that pattern.",
-      "reason": "Task 435: interval/density-pattern source for the fourth termination-measure component blocking task 434 Phase 7/8, specifically targeting densityRule."
     },
     {
       "doc_id": "gerth_1995_onthefly_ltl",

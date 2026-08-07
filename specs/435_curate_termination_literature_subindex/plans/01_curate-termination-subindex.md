@@ -367,6 +367,19 @@ id was dropped or duplicated.
 - The first 33 entries are identical to the Phase 1 baseline.
 - Every new entry carries both a non-empty `relevance` and `reason`.
 
+**Post-hoc correction (caught by Phase 6, recorded here for provenance)**: Phase 6's
+per-document render check discovered that `venema_2001_sec04` was already present among the 33
+baseline entries (added under task 408, for the unrelated Kamp-theorem research line, with only
+a `reason` field and no `relevance`). Phase 4's append therefore created a **second** entry
+sharing the same `doc_id`, which `literature-briefing.sh`'s `select(.doc_id == $id)` matches
+against the *first* (relevance-less) copy — so the new entry's `relevance` never rendered.
+Fixed by merging the two entries into the original (index 29): the task-408 `reason` is
+preserved verbatim with a task-435 sentence appended, and the new `relevance` field is added
+directly to that entry; the duplicate (former index 36) was removed. Net effect: 8 doc_ids were
+targeted for registration but only 7 are genuinely new documents (`venema_2001_sec04` was
+already registered), so the correct post-write entry count is baseline 33 + 7 = **40**, not 41.
+See Phase 6 below for the corrected verification.
+
 ---
 
 ### Phase 5: Confirmatory Online Discovery Pass [COMPLETED]
@@ -447,26 +460,40 @@ ingest to make the phase feel productive. A well-documented null result satisfie
 
 ---
 
-### Phase 6: Verify Against Discriminating Criteria [NOT STARTED]
+### Phase 6: Verify Against Discriminating Criteria [COMPLETED]
 
 **Goal**: Confirm the curation actually reaches an agent, using checks that can fail. The
 criterion in the task description cannot (F3) and is deliberately not used as the gate.
 
 **Tasks**:
-- [ ] Re-run `literature-briefing.sh`, capturing stdout and stderr separately.
-- [ ] Assert stderr contains zero `not found in global index` warnings (F4) — this is the
-      primary gate.
-- [ ] Assert every newly registered document appears by title in stdout, each followed by its
+- [x] Re-run `literature-briefing.sh`, capturing stdout and stderr separately. *(completed —
+      first pass exposed the venema_2001_sec04 duplicate-doc_id defect described in Phase 4's
+      post-hoc correction note above; a second pass was run after the fix)*
+- [x] Assert stderr contains zero `not found in global index` warnings (F4) — this is the
+      primary gate. *(completed: clean on both passes)*
+- [x] Assert every newly registered document appears by title in stdout, each followed by its
       `Relevance:` line (F2). Absence of the `Relevance:` line is a failure even if the title
-      renders.
-- [ ] Assert the `<!-- lit-coverage -->` `seg_count` equals baseline plus the number of new
+      renders. *(completed: FAILED on the first pass — venema_2001_sec04 rendered its title but
+      no Relevance line, exactly the failure mode this check exists to catch. Fixed per Phase
+      4's correction note; all 8 target documents (7 new entries + the merged
+      venema_2001_sec04) now render both title and Relevance line on the second pass)*
+- [x] Assert the `<!-- lit-coverage -->` `seg_count` equals baseline plus the number of new
       entries — confirming none were silently dropped. Record that `sparse=false` holds, while
-      noting it held at baseline too and therefore proves nothing on its own.
-- [ ] Run short, AND-safe `literature-search.sh` queries (F7) — e.g. `mosaic`, `closure`,
+      noting it held at baseline too and therefore proves nothing on its own. *(completed:
+      seg_count=40 = 33 baseline + 7 genuinely-new documents, exact match once the duplicate was
+      corrected — the mismatch against the naively-expected 41 was itself part of what
+      surfaced the defect. sparse=false on both passes, as expected and non-diagnostic per F3)*
+- [x] Run short, AND-safe `literature-search.sh` queries (F7) — e.g. `mosaic`, `closure`,
       `elementary sets` — and confirm hits land in the newly registered documents, establishing
-      the corpus is actually reachable for this subject matter.
-- [ ] Record the follow-up defect from F2: the 33 pre-existing entries carry no `relevance` and
-      their annotations do not render.
+      the corpus is actually reachable for this subject matter. *(completed: "mosaic" ranks
+      caleiro_2013 as the top hit; "closure" and "elementary sets" land on `baier_katoen_2008`
+      — the bare parent doc_id the FTS5 index uses per F6, which is where part04's content
+      actually lives — confirming reachability despite the known part-level id/FTS mismatch)*
+- [x] Record the follow-up defect from F2: the 33 pre-existing entries carry no `relevance` and
+      their annotations do not render. *(completed — see Testing & Validation and Follow-ups
+      below; 32 of the 33 remain unfixed by design (Non-Goal), the 33rd — venema_2001_sec04 —
+      now has `relevance` as an incidental consequence of the Phase 4 defect fix, not a
+      deliberate corpus-wide backfill)*
 
 **Timing**: 0.5 hours
 
@@ -486,13 +513,23 @@ criterion in the task description cannot (F3) and is deliberately not used as th
 
 ## Testing & Validation
 
-- [ ] `specs/literature-index.json` is valid JSON and the 33 pre-existing entries are unchanged.
-- [ ] Briefing stderr contains zero `not found in global index` warnings.
-- [ ] Every newly registered document renders both a title line and a `Relevance:` line.
-- [ ] `seg_count` equals the baseline count plus the number of newly registered entries.
-- [ ] Short-form corpus searches return hits inside the newly registered documents.
-- [ ] The online discovery pass produced either a registered ingest or a recorded null result
-      with its queries.
+- [x] `specs/literature-index.json` is valid JSON; 32 of the 33 pre-existing entries are
+      byte-for-byte unchanged. The 33rd (`venema_2001_sec04`) gained a `relevance` field as the
+      corrective merge for the Phase 4 duplicate-doc_id defect (see Phase 4's post-hoc
+      correction note) — its pre-existing `reason` text is preserved verbatim with one sentence
+      appended, not rewritten. This is a targeted, provenance-tracked exception, not the
+      corpus-wide `relevance` backfill declared a Non-Goal above.
+- [x] Briefing stderr contains zero `not found in global index` warnings.
+- [x] Every newly registered document renders both a title line and a `Relevance:` line (all 8
+      target doc_ids: 7 genuinely new entries plus the merged `venema_2001_sec04`).
+- [x] `seg_count` equals the baseline count plus the number of newly registered entries: 40 = 33
+      + 7 (not +8 — `venema_2001_sec04` was already registered; see Phase 4/6 correction notes).
+- [x] Short-form corpus searches return hits inside the newly registered documents ("mosaic" ->
+      `caleiro_2013` top hit; "closure"/"elementary sets" -> `baier_katoen_2008`, the bare
+      parent doc_id under which part04's content is FTS-indexed per F6).
+- [x] The online discovery pass produced either a registered ingest or a recorded null result
+      with its queries. *(null result — 5 queries, 63 unique candidates triaged, none
+      closer-fit; Semantic Scholar Tier 3 rate-limited (HTTP 429) on two attempts — see Phase 5)*
 
 ## Artifacts & Outputs
 
@@ -502,6 +539,8 @@ criterion in the task description cannot (F3) and is deliberately not used as th
 - A recorded `baier_katoen_2008` part selection with supporting evidence
 - The online discovery pass result (ingest or documented null)
 - A follow-up note on the 33 pre-existing entries whose annotations do not render
+- A caught-and-fixed duplicate-doc_id defect (`venema_2001_sec04`), documented in Phase 4's
+  post-hoc correction note and Phase 6's verification narrative
 
 ## Rollback/Contingency
 
