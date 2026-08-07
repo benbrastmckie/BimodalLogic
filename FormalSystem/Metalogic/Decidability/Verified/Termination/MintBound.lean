@@ -7352,6 +7352,142 @@ theorem reuse_driven_through_engine :
     ((reuseStep reuseWitnessState).bind reuseStep).map
       (fun s => s.1.knownTimes.contains 2) = some true := by decide
 
+/-! ### The fourth measure component: the self-guard discharge potential
+
+The component the blocked-repair note above says is missing: a potential paying for the
+**self-guarded** minting rules, measured against each rule's own discharge rather than against its
+cap. `untlNeg` and `snceNeg` fire only when the trigger's forward (resp. backward) reach is empty,
+and each arm's own `newOrd` makes that test fail at the next call. That is a defect ledger with its
+own defect notion — deliberately *not* a widening of `mintPotential`'s, which is what closes it off
+from the two routes the register already refutes. It is stated against `ord.futureOf` / `ord.pastOf`
+emptiness and never against `ord.timeCount`, the quantity `TimeOrdering.identifyTime` lowers.
+
+The subsection opens with a refute-first gate on the one exposure the design inherits and cannot
+argue away in advance: the σ-hit obligation. -/
+
+/-- **The two self-guarded time-minting rules**, as a `Finset`, so the potential's index set is a
+product in the shape `mintPotential` already uses.
+
+This is deliberately **not** `freshTimeRules` and **not** a widening of `freshLabelRules`. Widening
+`mintPotential`'s index set to `freshTimeRules` is the route the do-not-re-attempt register closes
+with `witnessPresent_eq_false_of_not_freshLabel`: the added columns are permanently `false`, so the
+wider potential is the narrower one plus a constant. This index set carries a **different** cured/
+uncured predicate (`selfGuardDischarged`, below), so it is a second ledger rather than a wider
+first one.
+
+`densityRule` is excluded on purpose. Its termination argument is about the *gap set*, is quadratic
+in `|U|`, and is gated on `denseRules`; it is the right second component and is a named residual,
+not a member of this list. -/
+def selfGuardRules : Finset TableauRule :=
+  {TableauRule.untlNeg, TableauRule.snceNeg}
+
+/-- There are exactly two, decided rather than counted by hand. -/
+theorem selfGuardRules_card : selfGuardRules.card = 2 := by decide
+
+/-- **The self-guard's own discharge test**, transcribed from each rule's own firing guard in
+inverted polarity.
+
+`untlNeg`'s ACTIVE arm fires only when `timeOrd.futureOf l.time` is empty, and `snceNeg`'s only when
+`timeOrd.pastOf l.time` is. So "the defect is already cured at this column" is exactly
+*non*-emptiness of that reach — the rule cannot fire there again.
+
+**The catch-all is `true`, the mirror image of `witnessPresent`'s polarity, and this is the design
+decision that separates this component from the refuted re-indexing route.** A rule outside the
+index set reports `true` here, so its column is permanently *cured* and contributes `0` to the
+count; under `witnessPresent`'s polarity the out-of-range arms report `false` and contribute a
+permanent positive constant, which is precisely why
+`witnessPresent_eq_false_of_not_freshLabel` kills that route. The catch-all is unreachable from
+`selfGuardPotential` anyway, since the index set's left factor is exactly the two named rules
+(`mem_selfGuardRules`); the polarity choice is what makes any future widening harmless rather than
+inert.
+
+`ord.timeCount` is deliberately absent. It is the second conjunct of both arms' guards, and it is
+the quantity `TimeOrdering.identifyTime` can lower; measuring the discharge rather than the cap is
+what this component is for. -/
+def selfGuardDischarged (r : TableauRule) (sf : SignedFormula) (ord : TimeOrdering) : Bool :=
+  match r with
+  | .untlNeg => !(ord.futureOf sf.label.time).isEmpty
+  | .snceNeg => !(ord.pastOf sf.label.time).isEmpty
+  | _ => true
+
+/-- **The self-guard potential**: the number of `(rule, formula)` pairs drawn from the fixed index
+set `selfGuardRules ×ˢ U` whose self-guard is **not** yet discharged, with the formula carried
+through the accumulated renaming `σ`.
+
+It deliberately does **not** take a `Branch`. The self-guard is a property of the ordering alone,
+so the branch-growth half of `mintPotential`'s monotonicity has no analogue here and no branch-side
+hypothesis is needed at any call site.
+
+`σ` is the composition of the `rhoSF`s of the ordered splits taken so far, exactly as in
+`mintPotential`; carrying it keeps the index set fixed across the whole run. -/
+def selfGuardPotential (U : Finset SignedFormula) (σ : SignedFormula → SignedFormula)
+    (ord : TimeOrdering) : Nat :=
+  ((selfGuardRules ×ˢ U).filter (fun p => selfGuardDischarged p.1 (σ p.2) ord = false)).card
+
+/-- **The repaired time-minting residual**: `MintPaysForTime`'s body verbatim, with a **third**
+disjunct added and nothing removed.
+
+Nothing is dropped, so the implication runs `MintPaysForTime → MintPaysForTimeAt` and never the
+other way; the converse is refuted by `mintPaysForTime_untlNeg_false` at a `U` where the weaker
+form was intended to hold. This is the `universeClosedAt_of_universeClosed` idiom.
+
+The third disjunct is the self-guard coordinate: a self-guarded minting step is paid for by
+discharging its own guard, which is invisible to both existing disjuncts — the mint raises
+`knownTimes` (killing disjunct 1's first conjunct) and `untlNeg` / `snceNeg` are not in
+`freshLabelRules` (so `mintPotential` does not move at all).
+
+**Verdict on this predicate at the σ-hit hazard: see `mintPaysForTimeAt_reuse_false` below. It is
+false there, for the same reason `MintPaysForTime`'s second disjunct is.** The definition is landed
+anyway, and named, because the refutation has to be *stated about something*; it is not offered as
+a working repair. -/
+def MintPaysForTimeAt (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
+    (Tmax : Nat) : Prop :=
+  ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)
+    (tr : EventualityTracker), RunInvariant b ord → (∀ x ∈ b, x ∈ U) →
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      (nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card ∧
+        splitOrderedRank Tmax nb (expandOnceUnblocked b ord fc tr).2
+          ≤ splitOrderedRank Tmax b ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord ∧
+          mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+            < mintPotential U σ b ord)
+      ∨ selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+          < selfGuardPotential U σ ord
+
+/-! #### The gate: the σ-hit obligation, inherited in weakened form and still false
+
+The time-reuse verdict decides that σ's image omits the times earlier identifications merged away,
+and that the engine re-issues exactly those times. `mintPotential_lt_of_mint` needs the minting
+formula to be **σ-hit** — literally `σ sf` for some `sf ∈ U` — and `mint_not_in_rhoSF_image`
+refutes that at the re-issue configuration.
+
+`selfGuardPotential` inherits the obligation in a *weaker* form. Its columns are indexed by the
+σ-image's **time**, not by the σ-image formula, so it needs only a *time* hit: some `sf ∈ U` with
+`(σ sf).label.time` equal to the trigger's time. The question this gate decides is whether that
+weakening escapes the refutation.
+
+**It does not, and the reason is one line.** `rhoSF_time_ne_src` is already a statement about
+*times*: `(rhoSF src tgt sf).label.time ≠ src`, for every `sf` whatsoever. The formula-hit
+refutation was derived from it (`mint_not_in_rhoSF_image` is three lines on top of it), so the
+time-hit weakening cannot escape what the formula-hit failure was a corollary of. -/
+
+/-- **No column of `selfGuardPotential`'s index set is indexed at a retired time.**
+
+The general half of the gate, and the reason the concrete configuration below is not a lucky
+choice. The ACTIVE arm of `untlNeg` cures its trigger's column by adding `(l.time, freshTime)` to
+the ordering, so the only column that arm can flip is the one at `l.time`. When `l.time` is a time
+an earlier identification retired — which the time-reuse verdict decides the engine re-issues —
+`rhoSF_time_ne_src` says no column lives there at all. Nothing flips, so nothing drops.
+
+This is `mint_not_in_rhoSF_image`'s obligation stated one level weaker and still unmet: weakening
+a formula hit to a time hit gains nothing, because the refutation was a time-level fact to begin
+with. -/
+theorem selfGuard_no_column_at_retired_time {src tgt : TimeIndex} (h : tgt ≠ src)
+    (U : Finset SignedFormula) :
+    ∀ p ∈ selfGuardRules ×ˢ U, ((rhoSF src tgt) p.2).label.time ≠ src :=
+  fun p _ => rhoSF_time_ne_src h p.2
+
 /-! ## C9. The do-not-re-attempt register
 
 Sixteen statements that look like the natural next lemma and are **not** available. Each is cited by
