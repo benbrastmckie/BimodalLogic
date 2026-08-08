@@ -586,40 +586,6 @@
       "last_updated": "2026-07-27"
     },
     {
-      "project_number": 408,
-      "project_name": "faithful_route_to_strong_completeness_for_the_dedekind_extension",
-      "status": "completed",
-      "task_type": "lean4",
-      "topic": "completeness",
-      "priority": "high",
-      "description": "Identify and implement the most faithful and mathematically correct route to completeness for FrameClass.Dedekind (the Dedekind-complete extension of the Base and Dense logics).\n\nTARGET (SETTLED 2026-07-27 by the project-wide terminology settlement; this paragraph replaces the former \"TARGET IS SETTLED: strong completeness is the goal\" directive, which is SUPERSEDED and must not be reinstated): the class HEADLINE is weak completeness `completeness_dedekind`, together with the finite-context consequence form `consequence_completeness_dedekind` (formerly misnamed \"strong_completeness_dedekind\"), the two being inter-derivable via the deduction theorem. Project-wide, \"strong completeness\" is RESERVED for consequence from possibly-infinite premise sets (Γ : Set Formula) with finitary set-derivability. Genuine strong completeness is PROVABLY UNAVAILABLE for this class: the Dedekind consequence relation is not compact (Reynolds 1992 §2, printed p.169; his Theorem 7, printed p.189, is explicitly \"sound and weakly complete\" and the restriction is genuine). A derivation is finite and can cite only finitely many premises, so strong completeness for a finitary derivability relation would entail compactness. It is REFUTED, not deferred — no strengthening of the countermodel construction can reach it. Do NOT reintroduce the \"strong\" name for any finite-context result, and do NOT treat the weak headline as a shortfall. See FormalSystem/Metalogic/StrongCompleteness.lean's module docstring for the per-class programme and plan v10's Reframing Note.\n\nWHY THIS IS NOT MERELY \"EXECUTE THE 390 PLAN\": the route proposed in specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md is Reynolds' transfer argument. That report correctly identifies Reynolds 1992 Theorem 7 as weak completeness. Under the settled target above this is no longer a mismatch: weak completeness IS the terminus, so the Reynolds/Doets route is the faithful one. The remaining question is which construction discharges it most faithfully, not whether it reaches an infinitary statement.\n\nDESIGN CONSTRAINT FROM THE USER: avoid needless bridges. Prefer the construction that is faithful to the mathematics over one that accumulates intermediate scaffolding, adapter lemmas, or bespoke bridge predicates. If a proposed step exists only to connect two artifacts the tree happens to already have, that is evidence the route is wrong, not evidence a bridge is needed. This applies specifically to the phase-5 gap-freeness bridge (Gap-free <-> conditionally complete for the dense case), which was NOT authorized as standalone work and should only appear if the faithful route genuinely requires it.\n\nCURRENT STATE (verified 2026-07-27, do not re-derive from stale notes):\n- Soundness is COMPLETE. FrameClass.Dedekind exists (ProofSystem/Axioms.lean:453) with the Base < Dense < Dedekind chain; the three Reynolds axioms prior_U_gap/prior_S_gap/sep exist (:377,:387,:398) with minFrameClass at :524-526; ValidDedekind and ValidDedekindDense exist (Semantics/Validity.lean:231,:255); all three axioms and the sep temporal dual are proved valid; soundness_dedekind is assembled at Metalogic/Soundness.lean:1910. Soundness.lean is at ZERO sorries.\n- The terminus scaffolding EXISTS and is pinned: consequence_completeness_dedekind_of_engine, completeness_dedekind_of_engine, soundness_dedekind_consequence, and SemanticConsequenceDedekindDense are landed in Metalogic/StrongCompleteness.lean and are [COMPLETED]. What remains is discharging the `engine` hypothesis (one formula in, one derivation from the empty context out).\n- completeness_dense and completeness_discrete exist and are sorryAx-free (Metalogic/BXCanonical/Completeness.lean:255,:296).\n- The only live sorry outside Boneyard is Metalogic/WeakCanonical/Transfer.lean:1242, on the DISCRETE countermodel branch (a Base-MCS -> Discrete-MCS gap). It blocks general `completeness` and is not on the Dedekind route.\n\nTHREE KNOWN OBSTRUCTIONS the work must address explicitly:\n1. The input model does not exist. Reynolds' step 1 needs a Q-flowed model validating Prior-U/Prior-S/Sep. The tree's countermodel_dense_enriched (Metalogic/BXCanonical/Completeness.lean:133) produces a Q model for FrameClass.Dense (density + dense_indicator) -- a different axiom set.\n2. TRAP -- the Base-MCS problem applies verbatim. Completeness.lean:178-193 documents why general `completeness` carries sorryAx: a Base-MCS is not automatically Discrete-consistent. A Dedekind variant hits the structurally identical problem, since a Base-MCS need not validate Prior-U/Prior-S/Sep. Any countermodel must be built from an MCS of its own class. A proof that reuses the dense pipeline's MCS will look complete and be unsound at the seam.\n3. The transfer engine is Z-specialized. Metalogic/WeakCanonical/IntegerModel/ has the right primitives (good, VeryGood, ContempEquiv, k_equiv_of_iso, KEquiv, orderedSumPt) but its engine is subinterval_finite_of_succ_archimedean -- a FINITENESS argument with no dense analogue.\n\nDO NOT ASSUME THE BIMODAL GRAFT IS FREE. The completed sep_valid work found the bimodal graft trivial for SOUNDNESS, because Sep's operators are all temporal evaluated at a fixed history, so the statement reduced to pure order theory. That result does NOT transfer to completeness, where the construction must PRODUCE histories rather than evaluate at one. Research task 390 flagged grafting a monadic-FO transfer argument onto TaskFrame/WorldHistory/Omega/ShiftClosed semantics as genuinely new work not present in any source read.\n\nCOORDINATE WITH the completeness architecture axis: tasks 361 (strong_completeness_architecture_and_weak_terminus_gap_analysis, completed) and 362 (completeness_capstone_consequence_all_classes_strong_where_compact). Per-class status recorded there and in StrongCompleteness.lean: strong completeness is refuted for Dedekind and for Discrete (witness {F p} u {not X^n p : n}, finitely satisfiable over Z but unsatisfiable over any Archimedean discrete carrier -- task 425 machine-checks it), and OPEN for Base and Dense, whose binder lists impose no Archimedean-ness (tasks 423, 424). If the faithful Dedekind route is subsumed by that architecture, say so plainly rather than proposing a parallel construction.\n\nLITERATURE: run with --lit. Primary sources already local: /home/benjamin/Projects/Literature/sources/reynolds_1992/ (all sections; sec04 is the separability section). GHR 1994 chapter 10 treats Dedekind completeness as a HYPOTHESIS rather than deriving it, per 390's Finding 3. Doets' theorem is reached via Reynolds section 8 (printed pp.184-188, lemmas 11-13). Read verbatim; do not reconstruct statements from memory.\n\nDONE WHEN: `completeness_dedekind` and `consequence_completeness_dedekind` are landed unconditionally (the `engine` hypothesis discharged), sorry-free and axiom-clean outside Boneyard, with lake build green; the faithful route is justified against at least one rejected alternative; and it is recorded which existing tree assets are genuinely reused versus which would have been needless bridges. If some sub-goal turns out to be unreachable, say so honestly and state what would have to change. Do NOT state, name, or gesture at an infinite-premise completeness result for this class.",
-      "created": "2026-07-27T20:47:13Z",
-      "last_updated": "2026-08-05T17:45:45Z",
-      "session_id": "sess_1785950044_3d9ce0",
-      "artifacts": [
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/plans/10_strong-completeness-dedekind-v10.md",
-          "type": "plan",
-          "summary": "Plan v10 — Lemma 4 boundary case and sub-phase 22.1"
-        },
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/reports/09_lemma6-first-clause-blocker.md",
-          "type": "report",
-          "summary": "Blocker research: Lemma 6 first clause (F1) and anti-vacuity module direction (F2)"
-        },
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/12_section6-parameterized-class-summary.md",
-          "type": "summary",
-          "summary": "Dispatch summary for Phase 29.8: the design, the six commits, the verification results, and the two named follow-ups."
-        },
-        {
-          "path": "specs/408_faithful_route_to_strong_completeness_for_the_dedekind_extension/summaries/14_phase-30-dedekind-terminus-summary.md",
-          "type": "summary"
-        }
-      ],
-      "completion_summary": "Completed the faithful route to Dedekind-class completeness at its settled terminus: weak + finite-context completeness (strong completeness remains refuted by non-compactness). Landed Reynolds Section 9 Theorem 7 countermodel on the reals (countermodel_dedekind_dense), completeness_dedekind_engine, and the pinned-signature instances consequence_completeness_dedekind / completeness_dedekind in StrongCompleteness.lean, all sorry-free with axioms [propext, Classical.choice, Quot.sound]. Full lake build green (2332 jobs); the four strong-completeness records and frozen Z originals byte-identical; plan v10 closed at 34/34 phases."
-    },
-    {
       "project_number": 410,
       "project_name": "internalize_tableau_branches_and_prove_routine_rule_admissibility",
       "status": "planned",
@@ -909,42 +875,6 @@
       "last_updated": "2026-07-29T23:39:38Z"
     },
     {
-      "project_number": 431,
-      "project_name": "discharge_difficultybounded_residual",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Discharge `DifficultyBounded fc U D` (at `β >= 3`), defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3914, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). This is a SCOPE DECISION before it is a proof problem: `estimateBranchDifficulty` (Saturation.lean:360) is built from `temporalCount` and `modalCount` (Saturation.lean:330, 342), both `private` to Saturation.lean, which the parent task's plan v4 froze byte-identical (md5-pinned, alongside Fuel.lean and Tableau.lean) and forbade editing. Before attempting a proof, explicitly decide between: (a) widen visibility of `temporalCount`/`modalCount` (or expose an equivalent public lemma bounding `estimateBranchDifficulty` in terms of formula complexity) in Saturation.lean, which breaks the prior freeze and must be stated as a deliberate choice, not a silent edit; or (b) restate/discharge the bound using only `estimateBranchDifficulty`'s existing public interface plus branch-confinement facts already available in MintBound.lean, avoiding Saturation.lean entirely. Record the choice made and why. Done means: a theorem (or corollary) proving `DifficultyBounded fc U D` holds for a concrete, useful instantiation of `U` and `D` (matching the shape the terminus's caller-facing forms `buildTableauAt_isSome_of_budget` / `buildTableauAt_isSome_at_seed`, MintBound.lean:4416-4453, expect), landed sorry-free and axiom-free, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting) and do not touch `Fuel.lean` or `Tableau.lean`.",
-      "effort": "3-5 hours",
-      "parent_task": 428,
-      "topic": "decidability",
-      "dependencies": [],
-      "file_scope": [
-        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
-        "FormalSystem/Metalogic/Decidability/Saturation.lean"
-      ],
-      "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-06T17:32:04Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md",
-          "summary": "Spawn analysis from parent task"
-        },
-        {
-          "path": "specs/431_discharge_difficultybounded_residual/plans/01_discharge-difficultybounded-residual.md",
-          "type": "plan",
-          "summary": "7-phase plan; scope decision (b)"
-        },
-        {
-          "path": "specs/431_discharge_difficultybounded_residual/summaries/01_discharge-difficultybounded-residual-summary.md",
-          "type": "summary",
-          "summary": "Refutation plus repair: StepLengthBounded sibling terminus"
-        }
-      ],
-      "session_id": "sess_1786032616_1f0e93_431",
-      "completion_summary": "Settled the DifficultyBounded residual on the buildTableauAt totality terminus: the hypothesis as literally stated is refuted at every D and every frame class (difficultyBounded_multiplicity_false), the cause is branch-list multiplicity rather than the private visibility of Saturation.lean's counters, and the repair is StepLengthBounded -- provably equivalent up to a factor of 4 -- with sibling termini buildTableauAt_isSome_of_lengthBudget and buildTableauAt_isSome_at_seed_lengthBudget stated at it. All 20-odd new declarations are sorry-free and axiom-free, the landed terminus proof terms are byte-unchanged, and Saturation.lean, Fuel.lean and Tableau.lean are untouched (md5s re-verified)."
-    },
-    {
       "project_number": 432,
       "project_name": "discharge_universeclosed_residual",
       "status": "implementing",
@@ -1041,41 +971,6 @@
       ],
       "session_id": "sess_1786115845_d6a7bd",
       "previous_status": "implementing"
-    },
-    {
-      "project_number": 435,
-      "project_name": "curate_termination_literature_subindex",
-      "status": "completed",
-      "task_type": "meta",
-      "description": "Task 434's implementation is blocked at Phase 7: no satisfiable repair of MintPaysForTime exists among the two routes refuted in-source (see MintBound.lean section C9 entry 14). What is needed is a fourth well-founded termination-measure component paying for the three self-guarded minting rules (untlNeg, snceNeg, densityRule) that is also preserved across TimeOrdering.identifyTime (which can lower ord.timeCount). The per-repo sub-index at specs/literature-index.json currently has zero entries relevant to this question (all 33 entries trace to the unrelated Kamp-theorem/temporal-expressive-completeness research line). The global corpus at ~/Projects/Literature/index.json, however, already contains several directly relevant, previously-ingested sources that are not yet registered in the sub-index. Register the following into specs/literature-index.json with relevance annotations explaining their bearing on the measure-design question: massacci_2000_single_step_tableaux_for_modal_logics (verified_conversion; a rule-bounding termination technique for modal tableaux); caleiro_2013 (all 7 chunked sections; mosaic-method decidability for combined tense-and-modal logics, the closest structural analogue to TM's S5-modal + linear-temporal combination, especially sections 6-7 on mosaic-based tableau systems and decidability/complexity bounds); blackburn_2002_ch06_sec01-03, sec04-05, sec06-07 (Blackburn-de Rijke-Venema Modal Logic Ch.6 'Satisfiability and Decidability' including 'Quasi-models, Mosaics, and Tiling', the standard textbook treatment); venema_2001_sec04 (section 5, Interval-Based Temporal Logic, relevant to densityRule's maximal-unfilled-gap guard); gerth_1995_onthefly_ltl and the baier_katoen_2008 parts covering LTL-to-automaton tableau construction (the classical closure-set termination argument, structurally close to a measure over an evolving time/state set that must not grow unboundedly); vardi_wolper_1986_automata_verification and vardi_1996_automata_ltl (automata-theoretic background for the same family of arguments). After registering these, run one confirmatory literature-discover.sh online pass with a query targeting well-founded/Dershowitz-Manna-style termination orderings for loop-checking modal-temporal tableaux specifically, to check whether a closer-fit paper is missing from the corpus entirely; if found, ingest it via the standard literature-ingest-online.sh bridge and register it too. Verify by running literature-briefing.sh (or literature-briefing-invoke.sh) against the per-repo sub-index with a query on 'termination measure time minting rules preserved under identification' and confirming the resulting <!-- lit-coverage --> marker reports sparse=false (segment count at or above LITERATURE_SPARSE_THRESHOLD, default 3).",
-      "effort": "2-3 hours",
-      "parent_task": 434,
-      "topic": "decidability",
-      "dependencies": [],
-      "file_scope": [
-        "specs/literature-index.json"
-      ],
-      "created": "2026-08-07T15:22:56Z",
-      "last_updated": "2026-08-07T15:51:53Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md",
-          "summary": "Spawn analysis from parent task"
-        },
-        {
-          "path": "specs/435_curate_termination_literature_subindex/plans/01_curate-termination-subindex.md",
-          "type": "plan",
-          "summary": "6-phase plan for curating termination-measure literature into the per-repo sub-index"
-        },
-        {
-          "path": "specs/435_curate_termination_literature_subindex/summaries/01_curate-termination-subindex-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: 7 new termination-measure entries registered in the per-repo sub-index"
-        }
-      ],
-      "session_id": "sess_1786116479_61b0c4",
-      "completion_summary": "Registered 7 termination-measure-relevant documents (caleiro_2013, blackburn_2002_ch06_sec04-05, massacci_2000_single_step_tableaux_for_modal_logics, gerth_1995_onthefly_ltl, baier_katoen_2008_part04, vardi_wolper_1986_automata_verification, vardi_1996_automata_ltl) into specs/literature-index.json with design-specific relevance annotations, merged a relevance field into the pre-existing venema_2001_sec04 entry to fix a duplicate-doc_id defect Phase 6 caught, ran a well-documented null-result online discovery pass, and verified against discriminating criteria (clean stderr, per-document Relevance-line render, exact seg_count arithmetic, search reachability)."
     },
     {
       "project_number": 436,
@@ -1175,8 +1070,8 @@
     "abandoned": 0
   },
   "repository_health": {
-    "last_assessed": "2026-08-05T17:13:13Z",
-    "todo_count": 5,
+    "last_assessed": "2026-08-08T19:14:17Z",
+    "todo_count": 6,
     "fixme_count": 0,
     "build_errors": 0,
     "status": "healthy"
