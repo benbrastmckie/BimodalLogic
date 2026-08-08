@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 437,
+  "next_project_number": 438,
   "active_projects": [
     {
       "project_number": 425,
@@ -1080,20 +1080,21 @@
     {
       "project_number": 436,
       "project_name": "fourth_termination_measure_component",
-      "status": "partial",
+      "status": "blocked",
       "task_type": "lean4",
       "description": "Resume task 434's implementation plan (specs/434_discharge_mintpaysfortime_residual/plans/01_mintpaysfortime-time-analogue.md) at Phase 7. Before starting, read the full do-not-re-attempt register (MintBound.lean section C9, 16 entries) and in particular entry 14, which records both refuted repair routes for MintPaysForTime: (1) re-indexing mintPotential on freshTimeRules instead of freshLabelRules -- refuted by witnessPresent_eq_false_of_not_freshLabel, whose match has exactly eight arms so the three added columns are permanently false; (2) dropping disjunct 1's cardinality conjunct and relying only on the ordering-rank conjunct -- refuted by splitOrderedRank_lt_of_knownTimes_lt plus mintPaysForTime_rank_repair_false, since splitOrderedRank's base Tmax^2+1 is by construction one more than incompPairs' range so any new known time raises the rank regardless of the pair count. Neither route may be re-attempted. Design a fourth measure component that pays for the three self-guarded minting rules -- untlNeg/snceNeg (guarded by futureOf/pastOf emptiness plus ord.timeCount < 4) and densityRule (guarded by the maximal-unfilled-gap set) -- and that is also preserved across TimeOrdering.identifyTime, which can lower ord.timeCount (the same maxTime-lowering mechanism Phase 6's verdict in the existing plan turns on; see nextTime_reissues_retired_time and reuse_driven_through_engine). Run this task with --lit against the sub-index populated by the literature-curation task, drawing specifically on: caleiro_2013's mosaic-method decidability treatment for combined tense-and-modal logics (sections 6-7, mosaic-based tableau systems and complexity bounds) as a structural analogue for a combined-logic termination measure; venema_2001 section 5's interval-based temporal logic treatment for the density/gap-guarded densityRule component; gerth_1995 and baier_katoen_2008's closure-set LTL tableau termination argument as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000's rule-bounding technique. Once a candidate measure is validated, land it in MintBound.lean following the plan's existing Phase 7-8 task lists: define the repaired predicate (e.g. MintPaysForTimeAt, mirroring UniverseClosedAt's naming), prove its direction lemma relative to MintPaysForTime (weakening or strengthening, stated explicitly), confirm it leaks no new hypothesis into the terminus, restate the two seed-level termini at the repaired shape, and discharge the repaired predicate at a concrete instantiation (U = signedUniverse C L). All work must be sorry-free, axiom-free, and additive only (Saturation.lean, Fuel.lean, Tableau.lean remain untouched, and no previously-landed declaration in MintBound.lean is altered). Full lake build must be green at completion, and the new do-not-re-attempt register entries (if any further route is refuted along the way) must be recorded in section C9 following the existing convention.",
       "effort": "10-14 hours",
       "parent_task": 434,
       "topic": "decidability",
       "dependencies": [
-        435
+        435,
+        437
       ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-07T15:22:56Z",
-      "last_updated": "2026-08-07T17:58:52Z",
+      "last_updated": "2026-08-08T17:56:54Z",
       "artifacts": [
         {
           "type": "research",
@@ -1116,10 +1117,43 @@
           "summary": "Machine-checked negative result: selfGuardPotential refuted by mintPaysForTimeAt_reuse_false; register entry 17 landed; gapPotential density residual left unattempted"
         }
       ],
-      "session_id": "sess_1786120320_eb4769",
+      "session_id": "sess_1786211798_a93adc",
       "roadmap_items": [
         "Attempt gapPotential, the density coordinate of the termination measure: indexed by U x U, transcribing densityRule's own gapTargets filter, denseRules-gated and quadratic in |U|. It is the one fourth-component coordinate this task leaves unattempted rather than refuted, and it is a genuinely separate exposure from the refuted self-guard coordinate.",
         "Revisit the missing fourth measure component from the identification-plus-maxTime side rather than from the measure side. C9 entries 15 and 17 together establish that the obstruction is the renaming's image omitting retired times, and that no fourth component witnessed anywhere on the trigger's label can escape it; a repair has to change what identification does to maxTime, not what the measure counts."
+      ],
+      "previous_status": "partial"
+    },
+    {
+      "project_number": 437,
+      "project_name": "repair_time_index_reuse_in_identification_plus_nexttime_bookkeeping",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Attack the missing fourth termination-measure component from the identification-plus-maxTime side rather than the measure side, per task 436's roadmap item 2. Root cause: Branch.identifyTime (FormalSystem/Metalogic/Decidability/SignedFormula.lean:364-367) relabels every formula at time src to tgt and erases duplicates, so src disappears from Branch.knownTimes (SignedFormula.lean:349-350) whenever no other formula independently sits at tgt. Branch.maxTime (SignedFormula.lean:373-374, foldl max 0 over the live branch) and Branch.nextTime (SignedFormula.lean:380-381, maxTime + 1) are both recomputed from the current branch on every call, with no memory of a previously-larger retired value. TimeOrdering.identifyTime (SignedFormula.lean:705-710) does the analogous constraint substitution. The decided consequence is nextTime_reissues_retired_time (MintBound.lean:7321): firstIncomparablePair merges away the branch's current maximum time, maxTime drops, and post-identification nextTime re-issues the retired value; reuse_driven_through_engine (MintBound.lean:7363) confirms the live engine actually drives through this path. The accumulated renaming sigma (composed from rhoSF src tgt at each identification) is constructed so it can never land on a retired source time -- rhoSF_time_ne_src (MintBound.lean:7299) proves (rhoSF src tgt sf).label.time != src for every sf -- so mint_not_in_rhoSF_image (MintBound.lean:7307) and, by extension, register entries 15 and 17 (MintBound.lean:7866-7938) refute every measure-side candidate whose decrease is witnessed anywhere on the trigger's label, formula or time. This task's goal is to make Branch/TimeOrdering time issuance monotone across a run -- nextTime must never again hand out an index a prior identification retired -- so the reuse configuration nextTime_reissues_retired_time decides today stops occurring at all, rather than continuing to search for a measure component robust to it. REQUIRED SHAPE: refute-first gate as phase 1, in the same spirit as this task's own predecessor plan (specs/436_fourth_termination_measure_component/plans/01_self-guard-potential.md) -- prototype the monotone-time-issuance mechanism (e.g. a highwater-mark tracked on TimeOrdering, which is already threaded alongside Branch at every rule call site, or an equivalent run-level counter) against the SAME witness configuration used by nextTime_reissues_retired_time and gate_is_reissue_hazard, and decide, before touching any live engine file, both (a) whether reissue is actually prevented, and (b) whether RunInvariant, OrdTimesKnown (the settled repair for the adjacent register entry 7 refutation of OrdTimesLeMaxTime across identification, MintBound.lean entry 7), and UniverseClosedAt-style confinement to U survive the change. Only if the gate passes should later phases thread the repair through the live engine. WIDENED BLAST RADIUS (do not assume additive-only-in-MintBound.lean; explicitly confirmed by grep): Branch.nextTime is called at 9 sites in FormalSystem/Metalogic/Decidability/Tableau.lean (lines 761, 801, 834, 878, 924, 971, 1069, 1168, 1370 -- one per freshTimeRules member, not only the two self-guarded rules the predecessor task touched); Branch.identifyTime/TimeOrdering.identifyTime are called together at Tableau.lean:1520 and consumed in proofs at FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean lines 1948, 1959, 1973, 1991, 2445-2457 that already reason about identifyTime's effect on knownTimes cardinality and must be re-verified (not necessarily rewritten) against any redefinition; FormalSystem/Metalogic/Decidability/Saturation.lean does NOT reference nextTime or identifyTime (confirmed by grep) and should stay untouched; the definitions themselves live in SignedFormula.lean:349-381 and 671-710. DO NOT RE-ATTEMPT (per C9 register, MintBound.lean:7694-7944, all 17 entries read): entry 14's two measure-side repairs (re-indexing mintPotential on freshTimeRules; dropping disjunct 1's cardinality conjunct); entry 17's whole family (any fourth measure component whose decrease is witnessed anywhere on the trigger's label, time or formula). This task is not a measure-side route at all, so none of entries 14/15/17's refutations apply directly to it, but entries 7 and 16 name OrdTimesKnown as a settled repair this task's bookkeeping change must not silently re-break. Must be sorry-free and axiom-free; lake build must be green at completion. Land any newly-refuted route as a fresh C9 register entry (18) following the file's existing convention if the gate or a later phase decides a sub-route false.",
+      "effort": "16-22 hours",
+      "parent_task": 436,
+      "topic": "decidability",
+      "dependencies": [],
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/SignedFormula.lean",
+        "FormalSystem/Metalogic/Decidability/Tableau.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
+      ],
+      "created": "2026-08-08T18:13:34Z",
+      "last_updated": "2026-08-08T18:13:34Z",
+      "session_id": "sess_1786211798_a93adc",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/436_fourth_termination_measure_component/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        },
+        {
+          "type": "research",
+          "path": "specs/437_repair_time_index_reuse_in_identification_plus_nexttime_bookkeeping/reports/01_spawn-analysis-pointer.md",
+          "summary": "Pointer to parent spawn analysis and supporting context"
+        }
       ]
     }
   ],
