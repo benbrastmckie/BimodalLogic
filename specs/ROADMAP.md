@@ -303,7 +303,7 @@ BXCanonical sorries (task 109 Phase 1 removed 4 dead-code sorries from Canonical
 | **Irreflexive-consequence** (BX1 removal artifacts) | 14 | Frame, TruthLemma, CanonicalModel, Construction, Realization, SigmaOrdering | **OPEN** (task 109) |
 | **Total BXCanonical** | **19** | 7 files | |
 | Oracle replacement (qm_bfmcs) | 6 | archived to Boneyard/OracleCoherence.lean | **ARCHIVED** (2026-04-18) |
-| Legacy strict-semantics files | 107 | archived to Boneyard/StrictSemanticsLegacy/ | **DONE** (task 94, 2026-04-12) |
+| Legacy strict-semantics files | 107 | archived to Boneyard/StrictSemanticsLegacy/ | **DONE** (task 94, 2026-04-12) *(Completed: Task 94)* |
 
 The 5 critical-path sorries in `RootScopedChain.lean` (lines 1065, 1092, 1099, 1107, 1114)
 block `dd_countermodel`, which `Completeness.lean` delegates to for the completeness proof.
