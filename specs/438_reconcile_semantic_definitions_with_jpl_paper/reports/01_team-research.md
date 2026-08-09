@@ -422,7 +422,14 @@ Cluster inventory re-confirmed by both Teammate B (direct `jq` re-query) and Tea
   these counts from the underlying reachability analysis (out of critic-scope), so this stands as
   B's verification specifically, not a triangulated fact from two independent primary-source
   reads — but it is a confirmed check against the source report, not merely an inherited,
-  unverified claim. The specific replacement *text* for each LIVE-P/LIVE-P+lemma declaration
+  unverified claim. **Scope of that confirmation (see Conflict 5 and Gap 1):** what is confirmed
+  is that the counts are an internally-consistent, correctly-cited transcription of 414's report
+  02. Nobody re-ran the reachability analysis against the *current* Lean tree this round, and that
+  report predates task 415's landing, so the cardinalities may have drifted. The bucketing is
+  orthogonal to the totality change and survives regardless; the numbers are the open item. Part
+  B's re-issued 414 description must carry both halves and must not present the counts as freshly
+  re-derived by this research round.
+  The specific replacement *text* for each LIVE-P/LIVE-P+lemma declaration
   (`IsMax`-flavored) does not survive and must be re-derived against totality — plausibly a
   *simplification* in most cases (e.g. `multiFamOmega`/`multiFamHistory` are already described as
   "total-domain flow line", so the deterministic-flow lead frame construction is plausibly
