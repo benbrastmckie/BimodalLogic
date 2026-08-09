@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 438,
+  "next_project_number": 439,
   "active_projects": [
     {
       "project_number": 425,
@@ -124,7 +124,8 @@
       ],
       "blockers": "Phase 6 (add the limit_nullity structure field and discharge all 18 instantiation sites) is blocked on task 415. ParametricCanonicalTaskFrame (Algebraic/ParametricCanonical.lean:207) is duration-blind above zero and genuinely violates Limit Nullity over dense D; it witnesses the LIVE theorem countermodel_dense_enriched (BXCanonical/Completeness.lean:143, stated as exists (F : TaskFrame Rat)) and is also the witness at ChronicleToCountermodelBasic.lean:839. Rat/Real have no SuccOrder, so the discrete binders cannot be added. Resolution: task 415's bundleFlowFrame (deterministic-shift carrier) discharges the obligation via TaskFrame.limit_nullity_of_shift, already landed and verified by phases 1-5. Phase 6 is then a mechanical drop-in; re-run the site-inventory greps first since the 18-site inventory predates 415.",
       "dependencies": [
-        415
+        415,
+        438
       ]
     },
     {
@@ -656,7 +657,8 @@
       "description": "DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; revised 2026-07-28: change the basic definitions, no bridge lemmas). Make maximal-history validity THE validity of the repo, eliminating the Omega parameter from the semantics core. (1) Define the extension order on WorldHistory (sigma extends tau iff tau.domain subset-of sigma.domain and states agree on tau.domain), the Maximal predicate, and prove: every history extends to a maximal one (Zorn) and maximality is preserved by time-shift — the paper re-verified both. (2) Refactor TruthAt, valid, satisfiable, and semantic consequence to quantify over MAXIMAL histories of the frame, removing Omega and ShiftClosed hypotheses everywhere; the false Set.univ-equivalence docstrings (Semantics/Validity.lean:33,70-71) disappear with the parameter. (3) Propagate through Soundness (expected to survive verbatim via Zorn extension + shift-preservation). NO compatibility shims, aliases, or parallel validity notions: one uniform Omega-free API. Downstream metalogic rebasing is task 415; 417 restates against this semantics.\n\nFRAME-PRESENTATION COORDINATION (2026-07-28, PossibleWorlds task 51): the paper's def:frame has been refactored to the positive-cone presentation with Limit Nullity, Reflection demoted to a derived remark (supersedes fix.md A1). This task's charter (Omega-free maximal-history validity) is mathematically unaffected -- the paper's world-history apparatus gained only a converse-convention gloss, and the Zorn extension + shift-preservation claims were re-verified paper-side under the new axioms. Frame-axiom alignment (new Limit Nullity field, converse-as-definitional docstring recast, 02-Semantics.tex restatement) is owned by task 420, which this task now DEPENDS ON so the validity refactor lands once against the final TaskFrame structure. Any def:frame line-number citations in this task's research artifacts refer to the pre-refactor paper and must be re-anchored during implementation.",
       "effort": "large",
       "dependencies": [
-        420
+        420,
+        438
       ],
       "parent_task": null,
       "artifacts": [
@@ -685,7 +687,8 @@
       "effort": "large",
       "dependencies": [
         414,
-        420
+        420,
+        438
       ],
       "parent_task": null,
       "artifacts": [
@@ -709,7 +712,8 @@
       "effort": "medium",
       "dependencies": [
         414,
-        420
+        420,
+        438
       ],
       "parent_task": null,
       "artifacts": [
@@ -1050,6 +1054,20 @@
           "summary": "Pointer to parent spawn analysis and supporting context"
         }
       ]
+    },
+    {
+      "project_number": 438,
+      "project_name": "reconcile_semantic_definitions_with_jpl_paper",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "paper-refactor",
+      "priority": "high",
+      "effort": "medium",
+      "description": "DEFINITIONAL RECONCILIATION AUDIT (scoping only -- no semantics refactor, no Lean proof work). The paper's basic semantic definitions have changed AGAIN since the task 414/415/417/420 cluster was specified, and all four of those specs are now stale. This task establishes, from the authoritative source, exactly which definitions are current, and re-issues the downstream specs. It MUST NOT begin the refactor itself.\n\nAUTHORITATIVE SOURCE (user decision, 2026-08-09): /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex is the single source of truth for the basic semantic definitions; the Lean tree and this repo's latex/typst prose are both downstream and must be refactored to match it faithfully. Any conflict resolves in the paper's favour. Cite the paper by \\label and quote verbatim; do NOT cite bare line numbers, which have already gone stale twice in this cluster (task 420 phase 1 had to re-anchor 7 citations).\n\nTHE TWO CHANGES, AS ALREADY VERIFIED AGAINST THE PAPER (starting facts, not conclusions -- the audit re-verifies and completes them):\n\n(A) def:frame now carries FOUR axioms, and Nullity is NOT one of them:\n  - Compositionality is now a BICONDITIONAL: \"w =>_{x+y} v if and only if w =>_x u and u =>_y v for some u in W\". This REVERSES the settled decision recorded in task 420's description, which adopted the LAX inclusion-only law and stated that equality \"would additionally assert interpolation, NOT adopted\". Interpolation is now asserted.\n  - Seriality (NEW): for every w and x in D+, w =>_x u for some u, and v =>_x w for some v.\n  - Limit: intersection over x > 0 of the cones (w)_x equals {w}. (Formerly named \"Limit Nullity\" in the 420 spec.)\n  - Spherical (NEW): every superset-directed family of nonempty segments has nonempty intersection -- condition Sd1 from the ball-space literature (Cmiel2021), applied to the ball space of segments.\n  - Nullity is DEMOTED to a derived lemma (lem:nullity), obtained from Seriality together with Limit, choice-free. The Occurrence condition, formerly required of every frame, is likewise now DERIVED (thm:occurrence, which appeals to Zorn and hence to AC).\n  - NEW primitive-level machinery the axioms consume: the segment Seg(w, v; a, b) := {u : w =>_a u and u =>_b v}, with the fibers {u : w =>_a u} and {u : u =>_b v} included among the segments as one-sided cases. Unchanged: positive-cone task relation on D+ and the definitional converse convention.\n\n(B) Logical consequence quantifies over TOTAL world histories, i.e. POSSIBLE WORLDS:\n  - def:world-history: a world history over F is a function tau : X -> W where X is a nonempty convex subset of D, task-constrained. It is TOTAL -- equivalently, a POSSIBLE WORLD -- just in case X = D. H_F denotes the set of all TOTAL world histories over F. The extension order is defined here too (sigma extends tau iff dom tau subset dom sigma and they agree on dom tau).\n  - The logical-consequence definition quantifies over \"possible worlds tau in H_F\", i.e. over TOTAL histories.\n  - thm:extension: every task-constrained function on a nonempty subset of D is extended by SOME total world history. This is what makes the totality restriction non-vacuous, and per the app:gluing footnote the DIRECTED case of gluing rests on Spherical rather than on Compositionality alone -- so change (A)'s Spherical axiom and change (B)'s totality restriction are coupled, not independent.\n  - CONSEQUENCE FOR TASK 414: 414's researched target is MAXIMAL histories (Mathlib IsMax under the extension order, reached by Zorn). The paper's target is TOTAL histories. These are NOT the same predicate, and totality is the paper's. 414's ~85-line machine-checked prototype (Preorder instance, timeShift_mono, isMax_timeShift, chainSup, exists_maximal_extension) is PARTIALLY reusable as the mathematical engine behind thm:extension, but the predicate appearing in TruthAt/valid/SemanticConsequence must be totality, not IsMax.\n\nCURRENT REPO STATE (verified 2026-08-09; the audit re-verifies before relying on any of it):\n  - FormalSystem/Semantics/TaskFrame.lean structure TaskFrame has exactly THREE fields beyond the carrier: nullity_identity (iff form, still an AXIOM -- paper has demoted it), forward_comp (with 0 <= x, 0 <= y hypotheses -- the lax law the paper has replaced with a biconditional), and converse (the definitional convention carried as structure data). ABSENT: Limit, Seriality, Spherical, segments, fibers. Also absent, and already flagged in-file as known gaps: a Nonempty WorldState field and a [Nontrivial D] structure binder, both of which def:frame requires.\n  - FormalSystem/Semantics/WorldHistory.lean has domain : D -> Prop, convex, states (dependent on the domain proof), respects_task. NO totality predicate, NO extension order, NO maximality notion. Repo-wide, every \"maximal\" hit is maximal-consistent-set vocabulary, not histories.\n  - FormalSystem/Semantics/Validity.lean and Truth.lean quantify over an arbitrary shift-closed Omega : Set (WorldHistory F): TruthAt takes Omega, the box clause reads \"for all sigma in Omega\", and valid/SemanticConsequence bind (Omega) (ShiftClosed Omega) (tau in Omega). Blast radius measured: 1194 occurrences of Omega across 45 files; ShiftClosed referenced in 32 files; 92 TaskFrame instantiation sites tree-wide; 519 Lean files / ~333k lines total.\n  - This repo's OWN prose is stale on BOTH counts and is NOT a valid secondary source: latex/subfiles/02-Semantics.tex and typst/chapters/02-semantics.typ state the PREVIOUS three-axiom frame (iff-Nullity, lax positive-cone Compositionality, Limit Nullity) and define logical consequence over \"history tau in H_F\" with no totality or maximality qualifier at all. Both must be re-derived from the paper, not patched.\n\nREQUIRED DELIVERABLES (this task produces a research report and re-issued specs -- NOT code):\n  1. A three-way reconciliation table with one row per definitional clause, columns: paper (verbatim + \\label anchor) | current Lean (declaration + file) | current repo prose (file + section) | verdict (match / stale / absent). Cover at minimum: every def:frame axiom and its supporting machinery (cone, segment, fiber, converse convention, positive cone, nonempty W, nontrivial D), def:world-history including totality and the extension order, the truth clauses (especially the box clause's quantifier domain), logical consequence, validity, and satisfiability.\n  2. An explicit statement of the target Lean signatures for the changed definitions -- the TaskFrame structure fields and the TruthAt / valid / SemanticConsequence binder lists -- so downstream research has one unambiguous target. Do not implement them.\n  3. A coupling analysis of (A) and (B): which frame axioms are load-bearing for the totality restriction. In particular determine whether thm:extension (and hence a nonempty H_F) is derivable in Lean from the four axioms as stated, and what Spherical costs to state over a Lean TaskFrame given that segments must be introduced first. Flag any axiom whose Lean transcription is not routine.\n  4. A per-task staleness verdict for 414, 415, 417, and 420, each saying explicitly which parts of the existing research survive, which are refuted, and what the re-issued task description should say. Known starting points: 420 phases 1-5 are landed and green (5 commits) and its three helper theorems -- limit_nullity_of_succOrder, limit_nullity_of_shift, exists_uniform_radius_of_finite -- are stated against a bare relation rather than a frame field, so they plausibly survive verbatim; but 420's phase 6 target field, and its phase 5 rewrite of 02-Semantics.tex, are both stale. 414's Omega-excision reachability analysis (report 02: of ~110 Omega-affected declarations, ~88 dead, 16 live-and-portable, only 8 live-and-unportable) is about Omega and is likely independent of the totality-vs-maximality change -- confirm rather than assume.\n  5. A resolution for the dependency cycle 420 -> 415 -> 414 -> 420 currently in state.json. Prior analysis found the cycle is an artifact of task-level rather than phase-level edges (420's helpers are already landed, so only 420's phase 6 genuinely waits on 415). Propose the corrected edge set alongside the re-issued specs.\n  6. A recommendation on whether the four existing tasks should be revised in place or abandoned and replaced, given how much of their researched content survives.\n\nNON-GOALS (hard boundaries): do NOT add, remove, or alter any field of TaskFrame; do NOT touch TruthAt, valid, SemanticConsequence, or any Omega binder; do NOT edit latex/ or typst/; do NOT edit anything under /home/benjamin/Philosophy/Papers/ (the paper is read-only input); do NOT begin any part of the 414/415/417/420 work. Producing a reconciliation report and re-issued task specifications IS the complete deliverable -- this is deliberately a scoping task, and an analysis-only output is the correct outcome here rather than a deflection.\n\nVERIFICATION: every paper claim quoted verbatim with its \\label; every Lean claim carrying file plus declaration name and confirmed against the current tree (re-run the greps -- the 18-site inventory in 420's report predates 415 and the counts above predate this task); every \"unchanged\" verdict positively checked rather than assumed.",
+      "dependencies": [],
+      "created": "2026-08-09T15:38:25Z",
+      "last_updated": "2026-08-09T15:38:25Z",
+      "artifacts": {}
     }
   ],
   "artifacts": [
