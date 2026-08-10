@@ -1596,48 +1596,87 @@ characterization.
 
 ---
 
-## Paper Alignment Programme (possible_worlds.tex, 2026-07-28; revised same day)
+## Paper Alignment Programme (possible_worlds.tex; re-issued 2026-08-10)
 
-The JPL paper (PossibleWorlds/JPL/possible_worlds.tex) has settled its semantic-core
-decisions (PossibleWorlds/Comments/fix.md, Parts A-B): same-sign frame axioms with
-identity Nullity (already this repo's axiomatization), nontrivial `D` (already
-`[Nontrivial D]`), and — the load-bearing change — **official validity =
-maximal-history validity**. Direction of alignment: **the repo's basic definitions
-change to match the paper** (definitional alignment). No bridge lemmas, transfer
-theorems, compatibility shims, or parallel validity notions: one uniform Ω-free
-API, with the mathematical content of countermodel realization absorbed into the
-canonical constructions themselves.
+The JPL paper (`PossibleWorlds/JPL/possible_worlds.tex`) is the single source of truth
+for the basic semantic definitions; the Lean tree, `latex/` prose, and the `typst/` book
+are all downstream and refactor to match it. Any conflict resolves in the paper's favour.
+Cite the paper by `\label` and quote verbatim — **never by bare line number**, which has
+gone stale repeatedly across this programme.
 
-- **414** — *refactor semantics to maximal-history validity*: extension order +
-  `Maximal` on `WorldHistory` (Zorn extension, shift-preservation); `TruthAt`/
-  `valid`/satisfiability/consequence refactored to quantify over maximal histories,
-  **removing the Omega parameter entirely** (the false Set.univ-equivalence
-  docstrings die with it); Soundness propagated.
-- **415** (dep: 414) — *completeness over the new semantics, internalized*: per-class
-  weak completeness reproved so canonical/chronicle constructions deliver
-  maximal-history countermodels outright (deterministic frames replace the
-  singleton-Omega device). Rebases the targets of 169/170/408.
-- **416** — *adopt the CO axiom basis*: the paper's single CO axiom (line 3250)
-  becomes the official Dedekind-class basis; Reynolds-style gap principles are
-  re-derived as internal theorems where proofs need them; Hoelder classification
-  (complete ⇒ ≅ ℤ or ℝ; dense+complete ⇒ ℝ) recorded; rebases 408/411 targets.
-- **417** (dep: 414) — *semantic FMP*, finite `WorldState` over `D = ℤ`, connected to
-  the refactored `TruthAt`, + decidable model checking there (the follow-on
-  descoped from 165).
+**This section was rewritten because its previous content was superseded twice over.** It
+described a three-axiom frame with identity Nullity and "official validity =
+maximal-history validity". Both are wrong: the frame now carries four axioms with Nullity
+demoted to a derived lemma, and consequence quantifies over **total** histories, not
+maximal ones. Totality and maximality are not the same predicate.
 
-Existing tasks carrying the rest — all rebasing onto the 414 semantics as they land:
-**413** (TM conservativity bridge, paper thm:ConservativeExtension),
-**169/170/408/361/362** (completeness programme; paper cor:tm-completeness scoped to
-WEAK completeness per the settled terminology), **165/410/411/412** (tableau
-decidability). Paper-side edits that remain regardless (paper's own mathematics):
-weak-completeness wording, the false non-Archimedean footnote (3252-3255), ℤ-time
-rescope of UZ/Z1, and the enumeration argument restated as finite W over ℤ.
+### The two load-bearing definitions
 
-**Cost note (accepted)**: the refactor temporarily regresses currently-green
-theorems (restatement against the new semantics) and removes the Ω degree of
-freedom the old completeness proofs exploited — the constructions must now earn
-full maximal-history countermodels. This is the intended trade: uniformity and
-mathematical quality over incremental cheapness.
+**`def:frame` carries FOUR axioms** — *Compositionality* (now a **biconditional**, which
+asserts interpolation; this reverses the earlier settled decision to adopt the lax
+inclusion-only law), *Seriality* (new), *Limit* (formerly "Limit Nullity"), and
+*Spherical* (new — condition Sd1 from the ball-space literature, applied to the ball space
+of segments). *Nullity* is demoted to a derived lemma (`lem:nullity`, choice-free from
+Seriality + Limit); *Occurrence* is likewise derived (`thm:occurrence`, via Zorn, hence
+AC). Supporting primitive machinery: fibers, cones, and segments, with the fibers counted
+among the segments as the one-sided cases.
+
+**Logical consequence quantifies over TOTAL world histories, i.e. possible worlds.** A
+world history is a task-constrained `τ : X → W` on a nonempty convex `X ⊆ D`
+(`def:world-history`); it is *total* — equivalently, a *possible world* — exactly when
+`X = D`, and `H_F` is the set of total histories. `thm:extension` (every task-constrained
+function on a nonempty subset of `D` extends to some total history) is what keeps the
+totality restriction non-vacuous. Per the `app:gluing` footnote the **directed** case of
+gluing rests on *Spherical* rather than on Compositionality alone — so the four-axiom
+change and the totality change are **coupled, not independent**.
+
+### Cluster status
+
+The cluster's specifications were re-issued against these definitions; each task's own
+description carries its `\label`-anchored quotes and an explicit survives/superseded
+breakdown. Order: **420 → 414 → {415, 417} → 427**, with 419 independent and 427 last.
+
+- **420** *(blocked)* — the four-axiom `TaskFrame`: adds Limit, Seriality, Spherical and
+  the interpolation direction together, plus the segment/fiber machinery Spherical is
+  stated over, the `Nonempty WorldState` field, and the `[Nontrivial D]` binder. Phases
+  1-5 have landed and are green; its phase 6 phase-waits on 415's `bundleFlowFrame`.
+- **414** *(not started; dep 420)* — refactor semantics to **total**-history validity:
+  totality predicate + extension order on `WorldHistory`, with `TruthAt`/`valid`/
+  satisfiability/consequence quantifying over total histories and **the Ω parameter
+  removed entirely**. Its earlier research targeted Mathlib `IsMax` under the extension
+  order; that machinery is partially reusable as the engine behind `thm:extension`, but
+  the predicate in the semantics must be **totality**.
+- **415** *(not started; dep 414, 420)* — completeness over the total-history semantics,
+  internalized: canonical/chronicle constructions must deliver total-history countermodels
+  outright, and `bundleFlowFrame` must now additionally discharge Seriality and Spherical,
+  not just Limit. Rebases the targets of 169/170/408.
+- **417** *(not started; dep 414, 420)* — semantic FMP, finite `WorldState` over `D = ℤ`,
+  restated against the refactored `TruthAt`, plus decidable model checking there.
+- **419** *(not started)* — machine-check the CO/Reynolds independence argument, and
+  re-check the Q-flow countermodel sketch for conformance to the new `def:frame`
+  (interpolation, Seriality, and Spherical all constrain admissible countermodels). Note
+  `CO` and `TMP-CO` are `\aitem` axiom **keys** resolved by `\aref`, not `\label{}` names.
+- **427** *(not started; dep all of the above)* — sync the typst book. It must be written
+  from the **paper**, not from `latex/subfiles/02-Semantics.tex`, which is itself
+  downstream and was stale on both counts.
+
+Rebasing onto the 414 semantics as they land: **413** (TM conservativity bridge),
+**169/170/408/361/362** (completeness programme; `cor:tm-completeness` is scoped to WEAK
+completeness), **165/410/411/412** (tableau decidability). **424** (shift-set
+representation) also touches `TruthAt` and sits outside the `paper-refactor` topic, so it
+was not covered by the cluster re-issue — audit it before it runs. The CO axiom basis for
+the Dedekind class landed separately and is archived.
+
+**Cost note (accepted)**: the refactor temporarily regresses currently-green theorems
+(restatement against the new semantics) and removes the Ω degree of freedom the old
+completeness proofs exploited — the constructions must now earn full total-history
+countermodels. This is the intended trade: uniformity and mathematical quality over
+incremental cheapness.
+
+**Drift warning**: the paper's definitions have moved through five waves in three days,
+twice *during* an in-flight dispatch. Re-read `git log` on the paper and re-verify every
+quoted definition before consuming any spec in this programme; treat a spec's pinned paper
+SHA as a baseline to check, never as a guarantee.
 
 ## Recommended Priority Order
 
