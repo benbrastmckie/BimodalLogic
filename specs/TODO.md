@@ -111,6 +111,7 @@ next_project_number: 439
   - [438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md]
   - [438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md]
 - **Plan**: [438_reconcile_semantic_definitions_with_jpl_paper/plans/03_reissue-paper-refactor-cluster.md]
+- **Summary**: [438_reconcile_semantic_definitions_with_jpl_paper/summaries/03_reissue-paper-refactor-cluster-summary.md]
 
 **Description**: DEFINITIONAL RECONCILIATION AND CLUSTER RE-ISSUE. The paper's basic semantic definitions have changed AGAIN since the paper-refactor cluster was specified, and every task in that cluster now carries a stale specification. This task has TWO parts: (A) establish from the authoritative source exactly which definitions are current, and (B) APPLY the resulting corrections to the existing cluster tasks so the whole cluster is back in sync. Part B is a required deliverable, not a recommendation -- this task is not finished while any cluster task still describes a superseded definition. What this task must NOT do is perform the cluster's underlying Lean, LaTeX, or typst work; see NON-GOALS.
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #438 (Part B — Cluster Re-Issue), Revision 2
 
 - **Task**: 438 - reconcile_semantic_definitions_with_jpl_paper
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 6 hours
 - **Dependencies**: None (Part A research — rounds 1 and 2 — is complete and is the input to this plan)
 - **Research Inputs**:
@@ -982,24 +982,24 @@ The compensating record for the dropped edge is present and was verified in plac
 
 ---
 
-### Phase 7: Final verification, regeneration, and closing commit [IN PROGRESS]
+### Phase 7: Final verification, regeneration, and closing commit [COMPLETED]
 
 **Goal**: Run the task description's mandated end-to-end verification over the finished state
 with the EXTENDED forbidden-token list, regenerate TODO.md a final time, and land the closing
 commit of state.json + TODO.md together.
 
 **Tasks**:
-- [ ] Re-read all six rewritten descriptions end to end (extract each via `jq` and read in
+- [x] Re-read all six rewritten descriptions end to end (extract each via `jq` and read in
   full), confirming: current four-axiom `def:frame` + totality-based consequence stated as
   settled inputs; partial-history vocabulary and bracket segment notation; `\label` anchors with
   verbatim quoted text; survives/superseded breakdown present; still-valid content preserved.
-- [ ] **Bare-locator gate**: grep the six descriptions for `possible_worlds\.tex:[0-9]` — any hit
+- [x] **Bare-locator gate**: grep the six descriptions for `possible_worlds\.tex:[0-9]` — any hit
   must be a parenthetical locator written beside a `\label`, never a citation in itself. Also
   grep for the specific stale locators report 02 named: `:2412`, `:2570`, `:926`, `:912-913`,
   `:949-960`, `:1833`, `:3250`. The `:3250` case has a legitimate remaining home — 419's
   description recording the two `FormalSystem/` files that still carry it as 419's own future
   work — and that hit is justified, not removed.
-- [ ] **Extended superseded-vocabulary grep** over the six descriptions. Plan v01's five terms,
+- [x] **Extended superseded-vocabulary grep** over the six descriptions. Plan v01's five terms,
   PLUS four added in this revision for the newly superseded machinery:
   1. `Limit Nullity` (v01)
   2. `lax` (v01)
@@ -1017,23 +1017,23 @@ commit of state.json + TODO.md together.
   prior target, or a "superseded: X" line) are expected and correct. Every remaining hit must be
   individually justified in the implementation summary, and **any hit presenting superseded
   content as CURRENT is a defect to fix before closing**.
-- [ ] **Positive-presence gate** (the complement of the forbidden-token grep — a description can
+- [x] **Positive-presence gate** (the complement of the forbidden-token grep — a description can
   avoid every forbidden term and still be silently missing the correction): confirm each of the
   six descriptions contains the current-generation tokens it should, per its C-assignment —
   `lem:constraint` and `lem:step` (414, 415, 420, 427), `partial history` (414, 415, 420, 427),
   `[w, v]_x^y` or its ASCII rendering (414, 415, 420, 427), `def:directed` (414, 420, 427),
   `def:temporal-order` and `def:task-relation` (414, 420), and the pinned snapshot SHA
   `98b52b41` (414, 415, 417, 419).
-- [ ] Confirm statuses: 414/415/417 `not_started`; 419/427 `not_started`; 420 `blocked` with the
+- [x] Confirm statuses: 414/415/417 `not_started`; 419/427 `not_started`; 420 `blocked` with the
   revised blockers field. Confirm no report file was deleted or content-modified (banners are
   insertions only): `git diff --stat` across the task shows no deletions in any `reports/` or
   `summaries/` file, and `plans/01_reissue-paper-refactor-cluster.md` is unmodified.
-- [ ] Final `bash .claude/scripts/generate-todo.sh`; confirm TODO.md renders the renamed slugs
+- [x] Final `bash .claude/scripts/generate-todo.sh`; confirm TODO.md renders the renamed slugs
   and updated statuses; `jq empty specs/state.json` passes.
-- [ ] Closing commit including `specs/state.json` + `specs/TODO.md` together (per deliverable 10;
+- [x] Closing commit including `specs/state.json` + `specs/TODO.md` together (per deliverable 10;
   both research reports are already committed with Part A), message per git-workflow conventions
   with the session ID.
-- [ ] Write the implementation summary listing: renames executed vs. recorded, banner inventory,
+- [x] Write the implementation summary listing: renames executed vs. recorded, banner inventory,
   the justified extended-vocabulary hits, the positive-presence gate results, the before/after
   `generate-task-order.sh` outputs, any paper drift observed in Phase 1's snapshot re-check, and
   the four Recommended Follow-Ups (424, ROADMAP.md staleness, the escalated recurrence-prevention
@@ -1061,26 +1061,55 @@ list, add it to the summary's recorded term list rather than silently passing.
   positive-presence token confirmed present in its assigned descriptions.
 - Closing commit contains state.json + TODO.md together; working tree clean for `specs/`.
 
+#### Phase 7 Execution Notes
+
+All gates run over the six finished descriptions with hit counts recorded. Full tables live in
+`summaries/03_reissue-paper-refactor-cluster-summary.md`; the verdicts:
+
+- **Forbidden-vocabulary grep (all nine terms)**: PASS. `lax`, `IsMaximal`, `NOT adopted`, `Seg(`,
+  `lem:segments`, `nonempty segments`, and `counting among the segments` are absent from all six.
+  `Limit Nullity` (415 x2, 417 x1, 420 x1), `maximal-history` (414 x2, 415 x4, 417 x2),
+  `task-constrained` (x2 in each of 414/415/417/420/427), and `count among the segments`
+  (414 x1) all appear exclusively inside explicit supersession framing. No hit presents superseded
+  content as current. **No superseded phrase outside the plan's nine-term list surfaced during the
+  read-through**, so the recorded term list is the plan's list unextended.
+- **Positive-presence gate**: PASS. Every token is present in every description the plan assigns
+  it to, with no zero in an assigned cell. All six descriptions additionally carry the
+  re-verification SHA `c3da9852` alongside the required `98b52b41`.
+- **Bare-locator gate**: PASS. Zero locators in 414/415/417/420/427. 419's four hits (`:3250` x3,
+  `:926` x1) are the plan's own named justified case. `:2412`, `:2570`, `:912-913`, `:949-960`,
+  and `:1833` are absent everywhere.
+- **Statuses**: 414/415/417/419/427 `not_started`; 420 `blocked` with the revised `blockers` field.
+- **Artifact integrity**: `git diff --numstat` across every `reports/`, `plans/`, and `summaries/`
+  file in the cluster shows `+2 -0` (banner insertions) and nothing else — no deletion, no content
+  modification. `plans/01_reissue-paper-refactor-cluster.md` is byte-unmodified. All changes are
+  confined to `specs/**`.
+- **Structural**: `jq empty specs/state.json` passes; `generate-todo.sh` exits 0;
+  `generate-task-order.sh --print` renders an acyclic graph with 427 last.
+
+Both 414 and 420 (the two longest and most correction-dense descriptions) were additionally
+re-read end to end from the extracted text, not just grepped.
+
 ## Testing & Validation
 
-- [ ] `jq empty specs/state.json` passes after every phase that edits it.
-- [ ] `bash .claude/scripts/generate-todo.sh` exits 0 after every state.json edit; TODO.md is
+- [x] `jq empty specs/state.json` passes after every phase that edits it.
+- [x] `bash .claude/scripts/generate-todo.sh` exits 0 after every state.json edit; TODO.md is
   never hand-edited.
-- [ ] `bash .claude/scripts/generate-task-order.sh --print` post-Phase-6 passes the four checks:
+- [x] `bash .claude/scripts/generate-task-order.sh --print` post-Phase-6 passes the four checks:
   415 out of wave 1, 415 blocked by 414+420, 420 before 414/415/417, 427 last.
-- [ ] Rename integrity: old-slug greps return only justified historical-prose hits; every
+- [x] Rename integrity: old-slug greps return only justified historical-prose hits; every
   `artifacts[].path` in state.json resolves to an existing file.
-- [ ] Extended superseded-vocabulary grep (nine terms: "Limit Nullity", "lax", "maximal-history",
+- [x] Extended superseded-vocabulary grep (nine terms: "Limit Nullity", "lax", "maximal-history",
   "IsMaximal", "NOT adopted", "Seg(", "lem:segments", "task-constrained", the old-Spherical
   phrasings) across all six rewritten descriptions, with every remaining hit justified.
-- [ ] Positive-presence gate: `lem:constraint`/`lem:step`, "partial history", `[w, v]_x^y`,
+- [x] Positive-presence gate: `lem:constraint`/`lem:step`, "partial history", `[w, v]_x^y`,
   `def:directed`, `def:temporal-order`/`def:task-relation`, and the pinned SHA `98b52b41` present
   in their assigned descriptions.
-- [ ] Bare-locator gate: no `possible_worlds.tex:NNNN` citation stands alone without a `\label`
+- [x] Bare-locator gate: no `possible_worlds.tex:NNNN` citation stands alone without a `\label`
   beside it; the named stale locators are absent except where justified.
-- [ ] No file under `FormalSystem/`, `latex/`, `typst/`, or `/home/benjamin/Philosophy/Papers/`
+- [x] No file under `FormalSystem/`, `latex/`, `typst/`, or `/home/benjamin/Philosophy/Papers/`
   is touched: `git status` shows changes confined to `specs/**`.
-- [ ] No report file deleted or content-rewritten; SUPERSEDED banners are pure top-of-file
+- [x] No report file deleted or content-rewritten; SUPERSEDED banners are pure top-of-file
   insertions; `plans/01_reissue-paper-refactor-cluster.md` unmodified.
 
 ## Artifacts & Outputs

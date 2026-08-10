@@ -1084,6 +1084,11 @@
         {
           "path": "specs/438_reconcile_semantic_definitions_with_jpl_paper/plans/03_reissue-paper-refactor-cluster.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/438_reconcile_semantic_definitions_with_jpl_paper/summaries/03_reissue-paper-refactor-cluster-summary.md",
+          "type": "summary",
+          "summary": "Part B cluster re-issue: 3 renames, 6 descriptions rewritten, 7 banners, dependency cycle broken"
         }
       ],
       "session_id": "sess_1786403143_9c42da",
