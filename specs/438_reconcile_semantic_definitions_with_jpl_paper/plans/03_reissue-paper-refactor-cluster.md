@@ -698,7 +698,7 @@ time.
 
 ---
 
-### Phase 5: SUPERSEDED banners on stale report files [NOT STARTED]
+### Phase 5: SUPERSEDED banners on stale report files [COMPLETED]
 
 **Goal**: Insert a one-line `> **SUPERSEDED** ...` banner at the top of each report file whose
 content predates the four-axiom/totality generation, so a future agent opening the file directly
@@ -706,26 +706,26 @@ sees the warning (report 01 Gap 6 / Recommendation 5; unaffected by report 02 pe
 insertion only — never delete, truncate, or otherwise rewrite any report content.
 
 **Tasks**:
-- [ ] Insert the banner at the top of: 414's `reports/01_maximal-history-validity-refactor.md`
+- [x] Insert the banner at the top of: 414's `reports/01_maximal-history-validity-refactor.md`
   and `reports/02_group-c-reconciliation.md`; 415's
   `reports/01_completeness-maximal-history-rebase.md`; 417's
   `reports/01_semantic-fmp-finite-worldstate.md` (its research targets `IsMaximal`, the same
   refuted predicate); and 420's report and summary
   (`01_taskframe-limit-nullity-alignment-summary.md` and its report) whose sections describe the
   three-axiom frame.
-- [ ] Banner text names WHAT superseded the file and where the verdict lives, e.g.:
+- [x] Banner text names WHAT superseded the file and where the verdict lives, e.g.:
   `> **SUPERSEDED** (2026-08-10): written against the three-axiom frame / maximal-history
   (IsMax) target, superseded by the paper's four-axiom def:frame + totality-based H_F. See
   specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md
   (Deliverable 4) for what survives, and reports/02_logical-consequence-discrepancy-audit.md
   (Findings 1b/4) for what report 01 itself got superseded on.` Adjust the survives-pointer per
   file; use post-Phase-2 (renamed) paths.
-- [ ] **Do NOT banner** task 438's own `reports/01_team-research.md`. It is partially superseded
+- [x] **Do NOT banner** task 438's own `reports/01_team-research.md`. It is partially superseded
   by report 02, but it remains an authoritative content source for everything report 02 did not
   touch, and a blanket SUPERSEDED banner would misrepresent that. If a pointer is wanted, it is a
   "see also report 02, which overlays this one and wins conflicts" note — record the decision
   either way in the phase notes rather than silently doing neither.
-- [ ] Confirm by diff that each change is a pure top-of-file insertion (banner + one blank
+- [x] Confirm by diff that each change is a pure top-of-file insertion (banner + one blank
   line); no other line of any report is touched.
 
 **Timing**: 0.5 hours
@@ -749,6 +749,37 @@ superseded three-axiom frame or `IsMax` target, and record the final count and l
   is byte-identical; final banner inventory recorded.
 - Task 438's own `reports/01_team-research.md` and `reports/02_*.md` and
   `plans/01_reissue-paper-refactor-cluster.md` are untouched.
+
+#### Phase 5 Execution Notes
+
+**Final banner inventory: 7 files** (the Scope Hypothesis estimated ~6; the seventh was added by
+applying the phase's own stated criterion — "banner every file that states the superseded
+three-axiom frame or `IsMax` target" — rather than the estimate):
+
+| # | File | Why superseded |
+|---|---|---|
+| 1 | `specs/414_.../reports/01_maximal-history-validity-refactor.md` | `IsMax` validity target |
+| 2 | `specs/414_.../reports/02_group-c-reconciliation.md` | `IsMax`-flavored replacement lemmas; counts never re-derived |
+| 3 | `specs/415_.../reports/01_completeness-maximal-history-rebase.md` | maximal-history countermodel family |
+| 4 | `specs/417_.../reports/01_semantic-fmp-finite-worldstate.md` | inherits 414's refuted `IsMaximal` target |
+| 5 | `specs/420_.../reports/01_taskframe-positive-cone-limit-nullity.md` | three-axiom frame |
+| 6 | `specs/420_.../summaries/01_taskframe-limit-nullity-alignment-summary.md` | three-axiom frame; phase-5 LaTeX text stale a second time |
+| 7 | `specs/420_.../plans/01_taskframe-limit-nullity-alignment.md` | **added beyond the estimate** — 9 hits for "Limit Nullity"/"NOT adopted"; its phase-6 scope must be re-scoped against the four-axiom frame |
+
+Every banner names both what superseded the file and where the verdict lives, and each carries a
+file-specific survives-clause (not a generic pointer). All banners use post-Phase-2 renamed paths.
+
+`git diff --numstat` reports exactly `2 0` for all seven files: two inserted lines (banner +
+blank), zero deletions. No report content was modified.
+
+**Decision recorded on task 438's own `reports/01_team-research.md`: NOT bannered, and no
+see-also note added either.** Report 01 is partially superseded by report 02, but it remains the
+authoritative content source for everything report 02 did not touch, and a SUPERSEDED banner
+would misrepresent that. A "see also report 02" note was considered and declined because the
+precedence rule already lives in a more durable place — the plan's Research Integration section
+and every rewritten description's own survives/superseded breakdown state it explicitly — and
+editing a frozen Part A artifact to duplicate it would contradict the non-goal forbidding
+content-modification of that file. This is an explicit decision, not an omission.
 
 ---
 

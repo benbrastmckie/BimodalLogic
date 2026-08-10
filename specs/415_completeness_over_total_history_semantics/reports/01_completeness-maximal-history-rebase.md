@@ -1,3 +1,5 @@
+> **SUPERSEDED** (2026-08-10): written against the maximal-history countermodel family, superseded by the full TOTAL-history set `H_F`; the per-class obligation is now Seriality + Limit + Spherical + biconditional Compositionality, not "Limit Nullity" alone. The Discrete->Dense->Base->Dedekind staging and the `bundleFlowFrame` lead-frame strategy survive. See specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md (Deliverable 4) for what survives, and specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md (Findings 1b/4) for what report 01 itself got superseded on.
+
 # Research Report: Completeness over Maximal-History Semantics (Rebase)
 
 - **Task**: 415 — completeness_over_maximal_history_semantics

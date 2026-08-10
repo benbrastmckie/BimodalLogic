@@ -1,3 +1,5 @@
+> **SUPERSEDED** (2026-08-10): phases 1-5 recorded here are landed, green, and committed and are NOT undone; but the phase-5 LaTeX definition text and the phase-6 scope described here are written against the superseded THREE-axiom frame and are stale a second time against the paper's four-axiom `\label{def:frame}` + `\label{lem:constraint}`/`\label{lem:step}` proof architecture. See specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md (Deliverable 4) for what survives, and specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md (Findings 1b/4) for what report 01 itself got superseded on.
+
 # Implementation Summary: Aligning `TaskFrame` with the Positive-Cone `def:frame`
 
 - **Task**: 420 - align_task_frame_with_positive_cone_limit_nullity

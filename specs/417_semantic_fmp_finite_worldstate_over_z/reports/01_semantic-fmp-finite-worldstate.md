@@ -1,3 +1,5 @@
+> **SUPERSEDED** (2026-08-10): researched against the refuted `IsMaximal`/maximal-history target inherited from task 414, superseded by totality-based `H_F` over the four-axiom `\label{def:frame}`. The "Limit automatic over Z" result survives verbatim under the renamed *Limit* axiom. See specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md (Deliverable 4) for what survives, and specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md (Findings 1b/4) for what report 01 itself got superseded on.
+
 # Research Report: Semantic FMP with Finite WorldState over ℤ
 
 - **Task**: 417 `semantic_fmp_finite_worldstate_over_z`

@@ -1,3 +1,5 @@
+> **SUPERSEDED** (2026-08-10): written against the maximal-history (Mathlib `IsMax`) validity target, superseded by the paper's totality-based `H_F` (`\label{def:world-history}`: a world history is *total* iff `X = D`) and its four-axiom `\label{def:frame}`. The `Preorder`/Zorn/`chainSup` engine material survives; the target predicate does not. See specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md (Deliverable 4) for what survives, and specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md (Findings 1b/4) for what report 01 itself got superseded on.
+
 # Research Report: Omega-Free Maximal-History Validity Refactor
 
 - **Task**: 414 `refactor_semantics_to_maximal_history_validity`

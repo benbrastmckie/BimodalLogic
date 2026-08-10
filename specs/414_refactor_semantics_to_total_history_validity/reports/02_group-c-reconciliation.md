@@ -1,3 +1,5 @@
+> **SUPERSEDED** (2026-08-10): the Group C dead/live/portable bucketing survives as a reachability fact, but every quoted replacement lemma is `IsMax`-flavored and the 88/16/8 counts were never re-derived against the current tree; written against the three-axiom frame / maximal-history target, superseded by the four-axiom `\label{def:frame}` + totality-based `H_F`. See specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md (Deliverable 4) for what survives, and specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md (Findings 1b/4) for what report 01 itself got superseded on.
+
 # Research Report: Group C Live/Dead/Portable Reconciliation
 
 - **Task**: 414 `refactor_semantics_to_maximal_history_validity` (reconciliation for the 414/415 planning decision)

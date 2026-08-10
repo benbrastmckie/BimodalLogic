@@ -1,3 +1,5 @@
+> **SUPERSEDED** (2026-08-10): its phases 1-5 are landed, green, and committed and are NOT undone, but the plan is written against the superseded THREE-axiom frame ("Limit Nullity", LAX Compositionality with interpolation "NOT adopted") and its phase-6 scope must be re-scoped against the paper's four-axiom `\label{def:frame}` (biconditional Compositionality, Seriality, Limit, Spherical) and the `\label{lem:constraint}`/`\label{lem:step}` proof architecture before implementation resumes. See specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md (Deliverable 4) for what survives, and specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md (Findings 1b/4) for what report 01 itself got superseded on.
+
 # Implementation Plan: Task #420
 
 - **Task**: 420 - align_task_frame_with_positive_cone_limit_nullity

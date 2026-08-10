@@ -1,3 +1,5 @@
+> **SUPERSEDED** (2026-08-10): written against the superseded THREE-axiom frame (iff-Nullity as a primitive axiom, LAX positive-cone Compositionality with interpolation "NOT adopted", "Limit Nullity"), superseded by the paper's four-axiom `\label{def:frame}`: biconditional Compositionality, Seriality, Limit, Spherical, with Nullity demoted to derived `\label{lem:nullity}`. The three bare-relation helper theorems survive verbatim. See specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md (Deliverable 4) for what survives, and specs/438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md (Findings 1b/4) for what report 01 itself got superseded on.
+
 # Research Report: Aligning `TaskFrame` with the Refactored Paper `def:frame`
 
 **Task**: 420 — align_task_frame_with_positive_cone_limit_nullity
