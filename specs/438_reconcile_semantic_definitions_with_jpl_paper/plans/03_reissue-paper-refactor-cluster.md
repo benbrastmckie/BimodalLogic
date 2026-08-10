@@ -899,7 +899,7 @@ content-modification of that file. This is an explicit decision, not an omission
 
 ---
 
-### Phase 6: Dependency edge correction and acyclicity verification [IN PROGRESS]
+### Phase 6: Dependency edge correction and acyclicity verification [COMPLETED]
 
 **Goal**: Apply report 01 Deliverable 5's corrected edge set — remove exactly one edge (`415` from
 `420.dependencies`, breaking both the 2-cycle `420 <-> 415` and the 3-cycle
@@ -907,13 +907,13 @@ content-modification of that file. This is an explicit decision, not an omission
 02 §4 lists this phase as valid as written; no change from plan v01.
 
 **Tasks**:
-- [ ] Edit state.json: `420.dependencies` becomes `[438]` (415 removed). ALL other cluster edges
+- [x] Edit state.json: `420.dependencies` becomes `[438]` (415 removed). ALL other cluster edges
   stay exactly as declared: 414 `[420,438]`, 415 `[414,420,438]`, 417 `[414,420,438]`,
   419 `[438]`, 427 `[414,415,417,419,420,438]`. (The compensating record for the dropped edge —
   420's phase-6-still-waits-on-415 text — already landed in Phase 4's blockers revision; confirm
   it is present.)
-- [ ] Validate with `jq empty`; regenerate TODO.md via `generate-todo.sh`.
-- [ ] Run `bash .claude/scripts/generate-task-order.sh --print` and verify all four Deliverable 5
+- [x] Validate with `jq empty`; regenerate TODO.md via `generate-todo.sh`.
+- [x] Run `bash .claude/scripts/generate-task-order.sh --print` and verify all four Deliverable 5
   checks against the Phase 1 baseline: (a) 415 no longer appears in wave 1 with `Blocked by: --`;
   (b) 415's wave lists 414 and 420 among its blockers; (c) 420 lands in an earlier wave than
   414/415/417; (d) 427 is in the final wave of the Paper Refactor group.
@@ -936,9 +936,53 @@ is an error.
 - `generate-task-order.sh --print` passes all four checks (a)-(d); output saved next to the
   Phase 1 baseline for the summary.
 
+#### Phase 6 Execution Notes
+
+**Exactly one edge removed.** The six `dependencies` arrays were diffed before/after in the edit
+script, with an assertion that the changed-array list is exactly `[420]`:
+
+| Task | before | after |
+|---|---|---|
+| 414 | `[420, 438]` | `[420, 438]` |
+| 415 | `[414, 420, 438]` | `[414, 420, 438]` |
+| 417 | `[414, 420, 438]` | `[414, 420, 438]` |
+| 419 | `[438]` | `[438]` |
+| **420** | **`[415, 438]`** | **`[438]`** |
+| 427 | `[414, 415, 417, 419, 420, 438]` | `[414, 415, 417, 419, 420, 438]` |
+
+state.json diff: 1 deletion, 0 insertions. `jq empty` passes; `generate-todo.sh` exits 0.
+
+**Acyclicity verification — `generate-task-order.sh --print`, AFTER (compare to the Phase 1
+baseline above)**
+
+```
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,438 | -- | ...
+| 2 | 178,219,282,296,419,420,422,425,436 | 193,231,298,421,423,437,438 | ...
+| 3 | 169,414,434 | 420,422,436 | ...
+| 4 | 362,415,417,432 | 169,414,434 | ...
+| 5 | 427,433 | 415,417,419,432 | ...
+```
+
+Paper Refactor group renders as `438 -> {419, 420}`, `420 -> 414`, `414 -> {415, 417}`,
+`{415, 417, 419} -> 427`.
+
+All four Deliverable 5 checks pass:
+- **(a)** 415 is GONE from wave 1 — it moved from wave 1 with `Blocked by: --` (the cycle symptom)
+  to wave 4. This is the direct before/after signature of the fix.
+- **(b)** 415 is blocked by both 414 and 420, each in a strictly earlier wave (414 in wave 3,
+  420 in wave 2). The wave table's `Blocked by` column lists only immediate-previous-wave
+  predecessors, so it shows 414 and not 420; the topic tree renders the full chain
+  `420 -> 414 -> 415`, and 415's `dependencies` array still declares both.
+- **(c)** 420 (wave 2) lands strictly earlier than 414 (wave 3) and than 415 and 417 (wave 4).
+- **(d)** 427 is in wave 5, the final wave of the Paper Refactor group.
+
+The compensating record for the dropped edge is present and was verified in place: 420's revised
+`blockers` field states that the task-level edge is gone while the phase-6 wait on 415's
+`bundleFlowFrame` is not, and directs coordination with 415 directly rather than via the edge list.
+
 ---
 
-### Phase 7: Final verification, regeneration, and closing commit [NOT STARTED]
+### Phase 7: Final verification, regeneration, and closing commit [IN PROGRESS]
 
 **Goal**: Run the task description's mandated end-to-end verification over the finished state
 with the EXTENDED forbidden-token list, regenerate TODO.md a final time, and land the closing
