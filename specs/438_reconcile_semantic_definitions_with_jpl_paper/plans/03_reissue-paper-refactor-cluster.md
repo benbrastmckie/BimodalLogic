@@ -482,7 +482,7 @@ touched by the renames resolve.
 
 ---
 
-### Phase 3: Rewrite descriptions and reset status — tasks 414, 415, 417 [NOT STARTED]
+### Phase 3: Rewrite descriptions and reset status — tasks 414, 415, 417 [COMPLETED]
 
 **Goal**: Re-issue the three research-invalidated tasks: rewrite each `description` from report
 01's Deliverable 4 "Re-issued description must say" content **overlaid with report 02's
@@ -496,14 +496,14 @@ Findings §1(b), §1(c), §2, §3, and §4 — and **wins every conflict**. Comp
 report 01 that C1-C7 corrects is the defect this revision exists to prevent.
 
 **Tasks**:
-- [ ] **414**: rewrite the description to state — target predicate for `TruthAt`'s box clause,
+- [x] **414**: rewrite the description to state — target predicate for `TruthAt`'s box clause,
   `valid`, `SemanticConsequence`, `satisfiable`, and `H_F` is TOTALITY (`∀ t, τ.domain t`), not
   Mathlib `IsMax`; the `Preorder`/Zorn/`chainSup`/`isMax_timeShift` prototype survives as reusable
   engine material but is not the destination API; the Group C dead/live/portable bucketing
   (88/16/8) survives as verified-as-transcribed but NOT re-derived against the current tree —
   carry both halves, never present the counts as fresh; preserve all still-valid
   scope/non-goal/notation content including the superscript-inverse converse convention.
-- [ ] **414 — apply C3**: state the paper's layering `partial ⊃ world ⊃ total` using
+- [x] **414 — apply C3**: state the paper's layering `partial ⊃ world ⊃ total` using
   **partial-history** vocabulary throughout ("task-constrained function" is retired). Fold in the
   `PartialHistory`/`WorldHistory` layering decision and the **corrected earlier error 1**: Lean
   `WorldHistory` has NO nonempty-domain field, so report 01's "match" verdict on the base
@@ -511,36 +511,36 @@ report 01 that C1-C7 corrects is the defect this revision exists to prevent.
   needs the nonemptiness field or an explicit empty-case argument the paper does not make. Report
   02's Recommendation 4 places this decision in 414/420's scope, to be made ONCE before the
   consequence refactor, not after.
-- [ ] **414 — apply C2**: use `[w, v]_x^y` bracket notation with `[w, v]_x^y := Fib(w, x) ∩
+- [x] **414 — apply C2**: use `[w, v]_x^y` bracket notation with `[w, v]_x^y := Fib(w, x) ∩
   Fib(v, -y)` spelled out; `Seg(...)` is not current notation (the macro is deleted). Spherical
   ranges over directed families of nonempty **fibers and segments** as separate classes, with
   directedness per `def:directed`.
-- [ ] **414 — apply C1**: anchors are `\label{def:temporal-order}`, `\label{def:task-relation}`,
+- [x] **414 — apply C1**: anchors are `\label{def:temporal-order}`, `\label{def:task-relation}`,
   `\label{def:directed}`, `\label{def:frame}`, `\label{def:world-history}`, `\label{lem:nullity}`,
   `\label{lem:constraint}`, `\label{lem:step}`, `\label{thm:extension}`, `\label{thm:occurrence}`,
   `\label{app:nonempty}`, `\label{def:BL-semantics}`, `\label{def:frame-validity}`,
   `\label{def:logical-consequence}`. No `lem:segments` (it no longer exists). No bare line
   locators — every `:2412`/`:2570`/`:1833`-style citation inherited from earlier generations is
   purged.
-- [ ] **414 — apply C6**: the cross-task acceptance criterion shared with 420 reads "Spherical's
+- [x] **414 — apply C6**: the cross-task acceptance criterion shared with 420 reads "Spherical's
   Lean statement must be literally the hypothesis **`lem:step`'s** proof consumes, not an inert
   field" — re-pointed from `thm:extension`.
-- [ ] **414 — corrected earlier error 2**: state that `valid` and `SemanticConsequence` ALREADY
+- [x] **414 — corrected earlier error 2**: state that `valid` and `SemanticConsequence` ALREADY
   carry `[Nontrivial D]` (`Validity.lean:80`, `:104`), so the binder gap is only at the
   `TaskFrame` **structure** level (missing `[Nontrivial D]` binder and `Nonempty WorldState`
   field). The consequence-level delta is exactly: drop `Omega`/`ShiftClosed`/`τ ∈ Omega`, add the
   totality constraint on `τ`. Do NOT restate report 01 Deliverable 2's overstated binder delta.
   Also carry report 02 item c3: `untl`/`snce` are the Lean primitives and their binders must be
   rewritten by the totality refactor too.
-- [ ] **414 — new coupling material from report 02 §3**: `thm:extension` is CHEAPER than report 01
+- [x] **414 — new coupling material from report 02 §3**: `thm:extension` is CHEAPER than report 01
   estimated because the paper now supplies the lemma decomposition (`lem:constraint` -> `lem:step`
   -> Zorn) report 01 said Lean would have to invent; the Lean development should mirror it
   lemma-for-lemma per the literature-fidelity policy; the Zorn engine from 414's prototype
   retargets to `PartialHistory` with the final "maximal ⇒ total" step going through `lem:step`.
-- [ ] **414 — optional deliverable (report 02 Recommendation 5)**: name the frame-relative
+- [x] **414 — optional deliverable (report 02 Recommendation 5)**: name the frame-relative
   validity gap explicitly — `def:frame-validity`'s `⊨_F` has no Lean counterpart and is the
   natural home for `app:nonempty`'s never-vacuous theorem. Mark it OPTIONAL, not required scope.
-- [ ] **415**: rewrite to state — countermodel family is the full TOTAL-history set `H_F`, not
+- [x] **415**: rewrite to state — countermodel family is the full TOTAL-history set `H_F`, not
   maximal; staging plan (Discrete -> Dense -> Base -> Dedekind) and deterministic lead-frame
   (`bundleFlowFrame`) strategy survive and are plausibly totality-favorable (report 01, untouched
   by report 02); every canonical/chronicle construction must discharge Seriality, Limit ("Limit
@@ -548,7 +548,7 @@ report 01 that C1-C7 corrects is the defect this revision exists to prevent.
   Compositionality (interpolation direction) is a new proof obligation for constructions that
   relied on the lax inclusion only. Apply **C1**, **C2**, **C3** to all definitional statements
   in the rewrite.
-- [ ] **417**: rewrite to state — target totality per 414's corrected charter; the "Limit
+- [x] **417**: rewrite to state — target totality per 414's corrected charter; the "Limit
   automatic over Z" claim survives verbatim under the renamed "Limit" axiom
   (`limit_nullity_of_succOrder`). Apply **C5** in place of report 01's weaker lead: over discrete
   `D = ℤ` the constraint family has a `⊆`-least member so the STEP EXTENSION is Spherical-free
@@ -556,7 +556,7 @@ report 01 that C1-C7 corrects is the defect this revision exists to prevent.
   frame instance; the finite-`W` pigeonhole lead stands separately as a lead to verify, not
   assume. Whether Seriality is also automatic over `ℤ` remains an open question for 417's next
   research pass. Apply **C1** and **C3** to definitional statements.
-- [ ] In all three descriptions: carry `\label`-based paper anchors only, each accompanied by the
+- [x] In all three descriptions: carry `\label`-based paper anchors only, each accompanied by the
   quoted definition TEXT verbatim so a renamed label stays detectable by text search (pinned-
   snapshot discipline); name explicitly which prior research survives and which is superseded,
   distinguishing report 01-superseded-by-02 items from report 01 items that still stand, so the
@@ -564,9 +564,9 @@ report 01 that C1-C7 corrects is the defect this revision exists to prevent.
   research dispatch to check the paper's git log against the pinned baseline (HEAD `98b52b41`,
   md5 `aa0488c1fe6134e59256803ae891a5f2`, 2026-08-10) as its literal FIRST step before re-reading
   any definition, with the explicit warning that the file changes intra-day.
-- [ ] Set `status` to `not_started` for 414, 415, 417 in state.json. Do not touch
+- [x] Set `status` to `not_started` for 414, 415, 417 in state.json. Do not touch
   `next_artifact_number`; do not delete or modify any existing report file.
-- [ ] Validate with `jq empty`; regenerate TODO.md via `generate-todo.sh`; re-read each of the
+- [x] Validate with `jq empty`; regenerate TODO.md via `generate-todo.sh`; re-read each of the
   three rewritten descriptions end to end against BOTH reports before committing.
 
 **Timing**: 1.5 hours
@@ -593,9 +593,65 @@ additional task has been added to the cluster since Phase 1's re-query (re-check
 - Zero occurrences of `lem:segments`, `Seg(`, or "task-constrained function" presented as current
   in any of the three descriptions (checked here, re-checked globally in Phase 7).
 
+#### Phase 3 Execution Notes
+
+Cluster re-checked immediately before editing: still exactly {414, 415, 417, 419, 420, 427} under
+`topic == "paper-refactor"`, no task added since Phase 1. All three tasks were still `researched`
+at edit time (asserted in the edit script, not assumed).
+
+**Result**: three descriptions rewritten, three statuses set to `not_started`.
+`next_artifact_number` untouched; no report file deleted or modified. `jq empty` passes;
+`generate-todo.sh` exits 0; TODO.md renders 414/415/417 as `[NOT STARTED]` under the renamed
+slugs. state.json diff is 6 insertions / 6 deletions (three `description` lines, three `status`
+lines) with no incidental reformatting.
+
+| Task | chars | corrections applied |
+|---|---|---|
+| 414 | 15,442 | C1, C2, C3, C6, C7 + both corrected earlier errors + report 02 §3 coupling + the optional frame-relative-validity deliverable |
+| 415 | 10,207 | C1, C2, C3, C7 |
+| 417 | 8,034 | C1, C3, C5, C7 |
+
+**Positive-presence gate (measured hit counts per description)**
+
+| token | 414 | 415 | 417 |
+|---|---|---|---|
+| `lem:constraint` | 3 | 1 | 2 |
+| `lem:step` | 5 | 1 | 2 |
+| `partial history` | 6 | 2 | 2 |
+| `[w, v]_x^y` | 2 | 1 | 1 |
+| `def:directed` | 3 | 1 | 1 |
+| `def:temporal-order` | 2 | 0 | 0 |
+| `def:task-relation` | 2 | 1 | 1 |
+| SHA `98b52b41` (round-2 pin) | 1 | 1 | 1 |
+| SHA `c3da9852` (re-verification snapshot) | 1 | 1 | 1 |
+
+`def:temporal-order` is assigned by the plan to 414 and 420 only, so its absence from 415/417 is
+per spec, not a miss. Both snapshot SHAs are carried, per the Phase 1 drift finding.
+
+**Forbidden-vocabulary gate**: no hit presents superseded content as current. Every hit sits
+inside explicit supersession framing:
+
+| term | 414 | 415 | 417 | framing |
+|---|---|---|---|---|
+| `task-constrained` | 2 | 2 | 2 | "the vocabulary ... is RETIRED throughout the paper" / listed under SUPERSEDED |
+| `maximal-history` | 2 | 3 | 2 | the `RE-ISSUED ... (supersedes the prior maximal-history charter/framing)` header, plus SUPERSEDED-list entries |
+| `Limit Nullity` | 0 | 2 | 1 | "the axiom formerly called ... is now simply named *Limit*" / SUPERSEDED list |
+| `count among the segments` | 1 | 0 | 0 | "the device by which one-sided fibers used to count among the segments is RETIRED" |
+| `lem:segments`, `Seg(`, `IsMaximal`, `NOT adopted`, `nonempty segments`, `lax` | 0 | 0 | 0 | absent entirely |
+
+`IsMaximal` is absent as a token; where the refuted predicate must be named the descriptions say
+`IsMax` (Mathlib's actual name) inside supersession framing. The retired segment lemma is referred
+to as "the lemma formerly cited for the two-sided segment family ... no longer exists in the
+paper" rather than by its dead label, so the label itself never appears.
+
+**Bare-locator gate**: zero `possible_worlds.tex:NNNN` locators. The only `possible_worlds.tex:`
+occurrences (2 per description) are the metasyntactic `possible_worlds.tex:NNNN` inside the
+citation-discipline instruction itself ("A bare possible_worlds.tex:NNNN is never a citation").
+None of `:2412`, `:2570`, `:926`, `:912-913`, `:949-960`, `:1833`, `:3250` appears.
+
 ---
 
-### Phase 4: Rewrite descriptions — tasks 419, 420, 427 (statuses stand) [NOT STARTED]
+### Phase 4: Rewrite descriptions — tasks 419, 420, 427 (statuses stand) [IN PROGRESS]
 
 **Goal**: Re-issue the three tasks whose status is unchanged: description rewrites per report 01
 Deliverable 4 **overlaid with report 02's C1-C7**, plus 420's revised `blockers` field. No status
