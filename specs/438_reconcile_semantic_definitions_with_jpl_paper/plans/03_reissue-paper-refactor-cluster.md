@@ -651,7 +651,7 @@ None of `:2412`, `:2570`, `:926`, `:912-913`, `:949-960`, `:1833`, `:3250` appea
 
 ---
 
-### Phase 4: Rewrite descriptions — tasks 419, 420, 427 (statuses stand) [IN PROGRESS]
+### Phase 4: Rewrite descriptions — tasks 419, 420, 427 (statuses stand) [COMPLETED]
 
 **Goal**: Re-issue the three tasks whose status is unchanged: description rewrites per report 01
 Deliverable 4 **overlaid with report 02's C1-C7**, plus 420's revised `blockers` field. No status
@@ -661,25 +661,25 @@ transitions in this phase.
 report 01 authoritative for everything report 02 did not touch.
 
 **Tasks**:
-- [ ] **419** (stays `not_started`): replace the stale `possible_worlds.tex:3250` CO citation
+- [x] **419** (stays `not_started`): replace the stale `possible_worlds.tex:3250` CO citation
   with `\label{TMP-CO}` (the `def:TMplus-c` restatement that `Formula.co` actually mirrors) and
   `\label{CO}` for the base-TM form; state that the converse direction (`co_derived`/`co_valid`)
   is done, sorry-free, and must not be redone. Flag the Spherical risk as the PRIMARY open
   question for the next research pass: the Q-flow countermodel sketch may not be a legitimate
   `TaskFrame` under the four-axiom `def:frame` and may need a different carrier — not softened to
   a routine conformance check.
-- [ ] **419 — apply C4**: quote the CURRENT ℚ non-example footnote verbatim (the partial-history
+- [x] **419 — apply C4**: quote the CURRENT ℚ non-example footnote verbatim (the partial-history
   wording WITH the new forcing computation "since $\vert{u - (1 - s)} \leq 1 - s$ for every
   $s < 1$ forces $u \leq 0$"), NOT report 01's version, and do NOT cite `:926`. Record that the
   footnote carries no label of its own and that `def:world-history` is the durable formal anchor;
   it sits as a footnote to the world-history sentence in the `sec:Construction` body.
-- [ ] **419 — apply C1 and C7**: purge every bare line locator; carry the pinned-snapshot
+- [x] **419 — apply C1 and C7**: purge every bare line locator; carry the pinned-snapshot
   baseline and the paper-git-log-first instruction (419 is one of the four re-run research
   dispatches). Note that the stale `possible_worlds.tex:3250` locator ALSO persists in
   `FormalSystem/Theorems/DedekindDerived.lean:359` and `FormalSystem/Syntax/Formula.lean:467` —
   419-relevant but OUT of task 438's write scope, so it is recorded in 419's description as work
   for 419, never edited here.
-- [ ] **420** (stays `blocked` — report 01 Conflict 6, both teammates converged, re-affirmed by
+- [x] **420** (stays `blocked` — report 01 Conflict 6, both teammates converged, re-affirmed by
   report 02 §4; phases 1-5 are landed/green/committed and must NOT be presented as undone):
   rewrite the description to state the CURRENT four-axiom `def:frame` with `\label{def:frame}` as
   the formal anchor and the axiom text quoted verbatim; inventory landed-vs-stale explicitly
@@ -691,19 +691,19 @@ report 01 authoritative for everything report 02 did not touch.
   alone); note `nullity_identity`-as-field-vs-derived-lemma is an open design question (the paper
   asserts reflexivity only via `lem:nullity`, while Lean's field is the strictly stronger iff
   form).
-- [ ] **420 — apply C2, C3, C6**: bracket notation `[w, v]_x^y` with its defining equation,
+- [x] **420 — apply C2, C3, C6**: bracket notation `[w, v]_x^y` with its defining equation,
   fibers-and-segments as separate classes, `def:directed` directedness (C2); partial-history
   vocabulary and the `PartialHistory`/`WorldHistory` layering plus the Lean nonemptiness gap
   shared with 414 (C3 + corrected earlier error 1); and the `lem:step`-pointed cross-task
   acceptance criterion (C6). Apply **C1**'s anchor set including `lem:constraint`/`lem:step` and
   the deletion of `lem:segments`.
-- [ ] **420 `blockers` field**: revise to (a) preserve the 415-phase-6 explanation (phase 6's
+- [x] **420 `blockers` field**: revise to (a) preserve the 415-phase-6 explanation (phase 6's
   `bundleFlowFrame` discharge still phase-waits on 415 even though the task-level edge is being
   dropped in Phase 6 — the compensating record from report 01 Deliverable 5), and (b) add that
   the description/phase-6 scope was stale a second time and the next research pass must re-scope
   phase 6 against the four-axiom target and the `lem:constraint`/`lem:step` proof architecture
   before resuming implementation.
-- [ ] **427** (stays `not_started`): rewrite to state — do NOT use
+- [x] **427** (stays `not_started`): rewrite to state — do NOT use
   `latex/subfiles/02-Semantics.tex` as the model (it was rewritten by 420 phase 5 against the
   now-superseded THREE-axiom frame; the prior instruction would write wrong definitions into the
   book); model the typst restatement directly on the paper's `\label{def:frame}` and
@@ -714,15 +714,15 @@ report 01 authoritative for everything report 02 did not touch.
   the stale-site enumeration must be re-audited against the current four-axiom paper, not trusted
   from the prior description; 427 remains LAST in the cluster; audit scope beyond
   `02-semantics.typ` survives.
-- [ ] **427 — apply C1, C2, C3**: the definitions 427 must write into the book use bracket segment
+- [x] **427 — apply C1, C2, C3**: the definitions 427 must write into the book use bracket segment
   notation with the defining equation, fibers-and-segments Spherical with `def:directed`
   directedness, and partial-history vocabulary — writing `Seg(...)`, `lem:segments`, or
   "task-constrained function" into the typst book is precisely the failure mode 427 exists to
   prevent.
-- [ ] All three: `\label` anchors only, each with verbatim quoted definition text (pinned-snapshot
+- [x] All three: `\label` anchors only, each with verbatim quoted definition text (pinned-snapshot
   discipline); survives/superseded breakdown distinguishing report 01-superseded-by-02 from
   report 01 items still standing; preserve still-valid scope/non-goal/notation content.
-- [ ] Validate with `jq empty`; regenerate TODO.md; re-read all three rewritten descriptions end
+- [x] Validate with `jq empty`; regenerate TODO.md; re-read all three rewritten descriptions end
   to end against BOTH reports before committing.
 
 **Timing**: 1.5 hours
@@ -751,6 +751,66 @@ time.
   LaTeX subfile as source.
 - Zero occurrences of `lem:segments`, `Seg(`, or "task-constrained function" presented as current
   in any of the three descriptions.
+
+#### Phase 4 Execution Notes
+
+Statuses re-asserted immediately before editing (in the edit script, not assumed): 420 `blocked`,
+419 `not_started`, 427 `not_started`. **Zero status transitions in this phase**; only
+`description` x3 and 420's `blockers` were written. state.json diff is 4 insertions / 4
+deletions. `jq empty` passes; `generate-todo.sh` exits 0.
+
+| Task | description chars | blockers chars | corrections applied |
+|---|---|---|---|
+| 419 | 9,344 | -- | C1, C4, C7 |
+| 420 | 14,391 | 2,180 | C1, C2, C3, C6, C7 + corrected earlier error 1 |
+| 427 | 11,374 | -- | C1, C2, C3 |
+
+**Positive-presence gate**
+
+| token | 419 | 420 | 427 | 420 `blockers` |
+|---|---|---|---|---|
+| `lem:constraint` | 1 | 3 | 2 | 1 |
+| `lem:step` | 1 | 7 | 3 | 2 |
+| `partial history` | 3 | 11 | 6 | -- |
+| `[w, v]_x^y` | 1 | 2 | 2 | -- |
+| `def:directed` | 1 | 2 | 3 | 1 |
+| `def:temporal-order` | -- | 3 | 2 | -- |
+| `def:task-relation` | 1 | 3 | 2 | 1 |
+| `TMP-CO` | 5 | -- | -- | -- |
+| SHA `98b52b41` / `c3da9852` | 1 / 1 | 1 / 1 | 1 / 1 | -- |
+
+**Forbidden-vocabulary gate**: 419 and 420's `blockers` have zero hits. 420 has
+`task-constrained` x2 and `Limit Nullity` x1; 427 has `task-constrained` x2. Every hit is inside
+explicit supersession framing ("the vocabulary ... is retired paper-wide and must not appear as
+current terminology", and SUPERSEDED-list entries). `lem:segments`, `Seg(`, `IsMaximal`,
+`NOT adopted`, `maximal-history`, `nonempty segments`, `lax` are absent from all four texts.
+
+**Bare-locator gate**: 420, 427, and 420's `blockers` carry zero locators. 419 carries
+`possible_worlds.tex:3250` three times, all three the justified case the plan anticipated:
+(i) naming the stale citation being corrected, (ii) recording that the same stale locator still
+lives at `FormalSystem/Theorems/DedekindDerived.lean:359` and
+`FormalSystem/Syntax/Formula.lean:467` as 419's own future work (task 438 has no write scope in
+`FormalSystem/` and did not touch them), and (iii) the SUPERSEDED list entry retiring it. 419's
+one `:926` occurrence likewise appears only inside its SUPERSEDED list, naming the locator being
+purged.
+
+**Anchor precision correction landed in 419** (discovered in Phase 1, beyond what either report
+specified): `CO` and `TMP-CO` are `\aitem` axiom KEYS resolved by `\aref`, not `\label{}` names.
+419's rewrite states the base-TM form as `\aitem{CO}` inside `\label{sub:Extension}` and the
+TM$^+$ restatement as `\aitem[CO]{TMP-CO}` inside `\label{def:TMplus-c}`, both quoted verbatim.
+
+**419's ℚ non-example** is quoted at full current length including the forcing computation
+("since $\vert{u - (1 - s)} \leq 1 - s$ for every $s < 1$ forces $u \leq 0$") and the closing
+sentence "*Spherical* is exactly what excludes this structure", with the record that the footnote
+carries no label and `def:world-history` is the durable formal anchor. The Spherical risk is
+stated as the PRIMARY open question, explicitly not softened to a conformance check.
+
+**420's `blockers`** carries both required halves: (1) the phase-6 wait on 415's `bundleFlowFrame`
+preserved verbatim in substance, with an added note that the task-level `420 -> 415` edge is being
+dropped in Phase 6 while the phase-level wait is NOT, so coordination must be direct rather than
+edge-driven; and (2) the re-scope requirement against the four-axiom target and the
+`lem:constraint` -> `lem:step` -> `thm:extension` architecture. Phases 1-5 are stated as landed,
+green, and committed in both the description and the blockers field.
 
 ---
 
@@ -839,7 +899,7 @@ content-modification of that file. This is an explicit decision, not an omission
 
 ---
 
-### Phase 6: Dependency edge correction and acyclicity verification [NOT STARTED]
+### Phase 6: Dependency edge correction and acyclicity verification [IN PROGRESS]
 
 **Goal**: Apply report 01 Deliverable 5's corrected edge set — remove exactly one edge (`415` from
 `420.dependencies`, breaking both the 2-cycle `420 <-> 415` and the 3-cycle
