@@ -82,7 +82,7 @@ next_project_number: 439
     └─ 414 [RESEARCHED] — DEFINITIONAL ALIGNMENT (PossibleWorlds Comments/fix.md B1/C1; rev
       └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored 
         └─ 427 [NOT STARTED] — Bring the BimodalReference typst book back into sync with the ref
-438 [RESEARCHED] — DEFINITIONAL RECONCILIATION AND CLUSTER RE-ISSUE. The paper's bas
+438 [PLANNED] — DEFINITIONAL RECONCILIATION AND CLUSTER RE-ISSUE. The paper's bas
   └─ 417 [RESEARCHED] — Semantic FMP over a fixed carrier, stated against the refactored  (see above)
   └─ 419 [NOT STARTED] — Machine-check the CO-does-not-derive-Reynolds independence result
     └─ 427 [NOT STARTED] — Bring the BimodalReference typst book back into sync with the ref (see above)
@@ -103,14 +103,14 @@ next_project_number: 439
 
 ### 438. Reconcile semantic definitions with jpl paper
 - **Effort**: large
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
 - **Research**:
   - [438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md]
   - [438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md]
-- **Plan**: [438_reconcile_semantic_definitions_with_jpl_paper/plans/01_reissue-paper-refactor-cluster.md]
+- **Plan**: [438_reconcile_semantic_definitions_with_jpl_paper/plans/03_reissue-paper-refactor-cluster.md]
 
 **Description**: DEFINITIONAL RECONCILIATION AND CLUSTER RE-ISSUE. The paper's basic semantic definitions have changed AGAIN since the paper-refactor cluster was specified, and every task in that cluster now carries a stale specification. This task has TWO parts: (A) establish from the authoritative source exactly which definitions are current, and (B) APPLY the resulting corrections to the existing cluster tasks so the whole cluster is back in sync. Part B is a required deliverable, not a recommendation -- this task is not finished while any cluster task still describes a superseded definition. What this task must NOT do is perform the cluster's underlying Lean, LaTeX, or typst work; see NON-GOALS.
 
