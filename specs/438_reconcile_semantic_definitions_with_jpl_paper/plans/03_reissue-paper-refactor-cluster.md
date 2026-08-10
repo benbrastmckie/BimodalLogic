@@ -1,7 +1,7 @@
 # Implementation Plan: Task #438 (Part B — Cluster Re-Issue), Revision 2
 
 - **Task**: 438 - reconcile_semantic_definitions_with_jpl_paper
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None (Part A research — rounds 1 and 2 — is complete and is the input to this plan)
 - **Research Inputs**:
@@ -233,19 +233,19 @@ user's call, not the plan's:
 Phases within the same wave can execute in parallel. (Phases 3 and 4 both edit `state.json` and
 are deliberately serialized; Phase 5 touches only report files and may run parallel to Phase 3.)
 
-### Phase 1: Preflight — cluster re-verification and rename-cost grep [NOT STARTED]
+### Phase 1: Preflight — cluster re-verification and rename-cost grep [COMPLETED]
 
 **Goal**: Re-verify the cluster's live state and measure the rename reference surface BEFORE any
 mutation, producing the rename-vs-record decision input. Read-only; no file is modified.
 
 **Tasks**:
-- [ ] Re-query `specs/state.json` for `topic == "paper-refactor"`: confirm the cluster is still
+- [x] Re-query `specs/state.json` for `topic == "paper-refactor"`: confirm the cluster is still
   exactly {414, 415, 417, 419, 420, 427} with statuses/dependencies as both reports record
   (420 blocked deps [415,438]; 419 not_started [438]; 414 researched [420,438]; 415 researched
   [414,420,438]; 417 researched [414,420,438]; 427 not_started [414,415,417,419,420,438]). Report
   02 re-verified this inventory live on 2026-08-10 and found it unchanged, including the cycle.
   Any divergence: stop and reconcile against the live state before proceeding.
-- [ ] Run the rename-cost grep preflight the research flags as NOT yet run (report 01 Gap 4; not
+- [x] Run the rename-cost grep preflight the research flags as NOT yet run (report 01 Gap 4; not
   contradicted by report 02): for each old slug —
   `414_refactor_semantics_to_maximal_history_validity`,
   `415_completeness_over_maximal_history_semantics`,
@@ -253,19 +253,19 @@ mutation, producing the rename-vs-record decision input. Read-only; no file is m
   `grep -rl '<slug>' specs/ --include='*.md'` AND `grep -c '<slug>' specs/state.json`, and also
   check `.return-meta.json` / `.orchestrator-handoff.json` files under each task directory.
   Record per-slug file lists and hit counts.
-- [ ] Enumerate, via `jq`, every `artifacts[].path` in state.json (any task) that points into
+- [x] Enumerate, via `jq`, every `artifacts[].path` in state.json (any task) that points into
   `specs/414_*/`, `specs/415_*/`, or `specs/420_*/` — these must all be updated if the rename
   proceeds (the research expects 420 to have the widest surface: plan, report, summary,
   `.return-meta.json`, `.orchestrator-handoff.json`).
-- [ ] Decide rename-vs-record per task and write the decision (with measured counts) into the
+- [x] Decide rename-vs-record per task and write the decision (with measured counts) into the
   phase notes for Phase 2. Decision rule: rename when every hit is inside `specs/**` and
   enumerable in the Phase 2 batch; record-instead-of-rename when hits extend beyond what one
   atomic batch can consistently update (per the task's own instruction to record the decision
   and cost rather than leave dangling paths).
-- [ ] Capture the BEFORE state of the dependency graph: run
+- [x] Capture the BEFORE state of the dependency graph: run
   `bash .claude/scripts/generate-task-order.sh --print` and save the output showing 415 in wave 1
   with `Blocked by: --` (the cycle symptom) for before/after comparison in Phase 6.
-- [ ] **Snapshot re-check (read-only, added in v02)**: record the paper's current HEAD SHA and the
+- [x] **Snapshot re-check (read-only, added in v02)**: record the paper's current HEAD SHA and the
   file's current md5 for `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`,
   and compare against report 02's pinned snapshot (HEAD `98b52b41`, md5
   `aa0488c1fe6134e59256803ae891a5f2`, 3975 lines). ALSO re-grep the label inventory for
@@ -299,9 +299,100 @@ than exceptional and is recorded, not treated as a blocker.
 - Paper snapshot SHA/md5 recorded and compared against report 02's pin; label-inventory re-grep
   results recorded.
 
+#### Phase 1 Execution Notes (recorded 2026-08-10)
+
+**Cluster re-query (live `jq`, `topic == "paper-refactor"`)** — matches both reports exactly, no
+divergence:
+
+```
+420 align_task_frame_with_positive_cone_limit_nullity  blocked      deps=[415,438]
+419 machine_check_co_reynolds_independence             not_started  deps=[438]
+414 refactor_semantics_to_maximal_history_validity     researched   deps=[420,438]
+415 completeness_over_maximal_history_semantics        researched   deps=[414,420,438]
+417 semantic_fmp_finite_worldstate_over_z              researched   deps=[414,420,438]
+427 sync_typst_book_with_refactored_paper              not_started  deps=[414,415,417,419,420,438]
+438 reconcile_semantic_definitions_with_jpl_paper      implementing deps=[]
+```
+
+Directories exist for 414, 415, 417, 420 only; 419 and 427 have no task directory yet.
+
+**Rename-cost grep (measured, per old slug)**
+
+| Old slug | `*.md` hits | `state.json` hits | other files |
+|---|---|---|---|
+| `414_refactor_semantics_to_maximal_history_validity` | `specs/TODO.md`; 438 `plans/01`, `plans/03`; 438 `reports/01_teammate-b-findings.md`, `reports/01_team-research.md`; `specs/415_.../reports/01_completeness-maximal-history-rebase.md`; `specs/414_.../reports/02_group-c-reconciliation.md` (7) | 2 | `specs/414_.../.return-meta.json`, `specs/414_.../.return-meta-reconcile.json` |
+| `415_completeness_over_maximal_history_semantics` | `specs/TODO.md`; 438 `plans/01`, `plans/03`; 438 `reports/01_teammate-b-findings.md`, `reports/01_team-research.md`; `specs/414_.../reports/02_group-c-reconciliation.md` (6) | 1 | `specs/415_.../.return-meta.json` |
+| `420_align_task_frame_with_positive_cone_limit_nullity` | `specs/TODO.md`; 438 `plans/01`, `plans/03`; 438 `reports/01_teammate-b-findings.md`, `reports/01_team-research.md`; `specs/420_.../plans/01_taskframe-limit-nullity-alignment.md`; `specs/420_.../summaries/01_taskframe-limit-nullity-alignment-summary.md` (7) | 3 | `specs/420_.../.return-meta.json`, `specs/420_.../.orchestrator-handoff.json` |
+
+**`artifacts[].path` entries pointing into the three directories** (enumerated via `jq`; all belong
+to the owning task, no cross-task references):
+
+- 420: `reports/01_taskframe-positive-cone-limit-nullity.md`, `plans/01_taskframe-limit-nullity-alignment.md`, `summaries/01_taskframe-limit-nullity-alignment-summary.md` (3)
+- 414: `reports/01_maximal-history-validity-refactor.md`, `reports/02_group-c-reconciliation.md` (2)
+- 415: `reports/01_completeness-maximal-history-rebase.md` (1)
+
+**Rename-vs-record decision: RENAME all three.** Every measured hit is inside `specs/**` and is
+enumerable in a single Phase 2 batch. The only `*.md` hits outside the moved directories are
+(a) `specs/TODO.md`, which is regenerated from state.json and never hand-edited, and (b) task
+438's own reports and plan v01, which are frozen historical artifacts (a non-goal forbids
+content-modifying them) and whose old-slug mentions are historical prose by construction. Hits
+*inside* the moved directories travel with the `git mv` and are likewise historical prose in
+superseded reports. Live path references requiring update therefore reduce to exactly:
+`project_name` (3) + `artifacts[].path` (6) in `specs/state.json`, plus the directory moves.
+
+**Baseline `generate-task-order.sh --print` (BEFORE)** — cycle symptom confirmed present:
+
+```
+| 1 | 125,127,128,193,231,257,298,413,415,421,423,424,437,438 | -- | ...
+| 2 | 178,219,282,296,419,420,422,425,436 | 193,231,298,415,421,423,437,438 | ...
+| 3 | 169,414,434 | 420,422,436 | ...
+| 4 | 362,417,432 | 169,414,434,438 | ...
+| 5 | 427,433 | 417,419,432 | ...
+```
+
+415 appears in wave 1 with `Blocked by: --` despite declaring `dependencies = [414,420,438]` —
+exactly the symptom report 01 Deliverable 5 predicted for the `420 <-> 415` cycle. Paper Refactor
+group renders as `415 -> 420 -> 414 -> 417 -> 427`.
+
+**Paper snapshot re-check — A FOURTH DRIFT WAVE HAS OCCURRED (recorded, not blocking).**
+
+| | report 02's pin | observed 2026-08-10 (this dispatch) |
+|---|---|---|
+| repo | `/home/benjamin/Philosophy/Papers/PossibleWorlds` | same (note: the git root is `PossibleWorlds/`, not `Papers/`) |
+| HEAD | `98b52b41` "task 66: complete implementation", 14:57 -0700 | **`c3da9852` "task 67: complete research", 16:05:57 -0700** |
+| md5 of `JPL/possible_worlds.tex` | `aa0488c1fe6134e59256803ae891a5f2` | **`0225d65a3d995275c6565145c71dade0`** |
+| line count | 3975 | **3943** |
+
+Per the plan's contingency, no definitions were re-derived. Instead every quote this plan relies
+on was re-read read-only and **all are confirmed verbatim at the new snapshot**:
+`def:temporal-order` (:2409), `def:task-relation` (:2413, Fiber/Cone/Segment + converse
+convention), `def:directed` (:2423), `def:frame` (:2427, four axioms, Spherical over "nonempty
+fibers and segments"), `lem:nullity` (:2460), `def:world-history` (:2531, partial-history
+primary, nonempty `X`, no convexity), `lem:constraint` (:2566), `lem:step` (:2584, including the
+$\subseteq$-least-member closing remark), `thm:extension` (:2598, Zorn + Step Lemma),
+`thm:occurrence` (:2630), `app:nonempty` (:2642), `def:BL-semantics` (:2658, box over $H_\F$, no
+dom conjunct), `def:frame-validity` (:2832), `def:logical-consequence` (:3318). `lem:segments`
+confirmed **absent**. `\Seg` survives only inside three `%% OLD:` comment lines — the macro is
+retired from live text as report 02 records. The ℚ non-example footnote is at the world-history
+sentence in the `sec:Construction` body and carries the full current text **including** the
+closing sentence "*Spherical* is exactly what excludes this structure."
+
+**Anchor correction for 419 discovered during the label re-grep**: neither `TMP-CO` nor `CO` is a
+`\label{}`. They are `\aitem` axiom keys resolved by `\aref`: the base **TM** axiom is
+`\aitem{CO}` inside `\label{sub:Extension}`, and the **TM$^+$** restatement is
+`\aitem[CO]{TMP-CO}` inside `\label{def:TMplus-c}`. Report 01's "`\label{CO}` at :1217 /
+`\label{TMP-CO}` at :3709" phrasing is therefore imprecise as well as line-stale; Phase 4 writes
+the `\aitem`/enclosing-`\label` form instead.
+
+This fourth wave is direct evidence for the recurrence-prevention follow-up and is carried into
+the completion summary. Consequence for **C7**: the rewritten descriptions record BOTH baselines —
+report 02's pin (`98b52b41` / `aa0488c1…`) as the generation the surviving research was audited
+against, and this dispatch's re-verification snapshot (`c3da9852` / `0225d65a…`, 3943 lines) as
+the most recent point at which every quoted definition was confirmed verbatim.
+
 ---
 
-### Phase 2: Renames (or recorded rename decisions) [NOT STARTED]
+### Phase 2: Renames (or recorded rename decisions) [COMPLETED]
 
 **Goal**: Execute the renames green-lit by Phase 1 — 414 -> `refactor_semantics_to_total_history_validity`,
 415 -> `completeness_over_total_history_semantics`, 420 -> `align_task_frame_with_positive_cone_axioms`
@@ -311,19 +402,19 @@ write descriptions against final paths. Report 02 explicitly re-confirms these t
 targets: they name totality and the four-axiom frame, both of which the finalized paper confirms.
 
 **Tasks**:
-- [ ] For each green-lit rename, as ONE batch per task: (a) update `project_name` in state.json;
+- [x] For each green-lit rename, as ONE batch per task: (a) update `project_name` in state.json;
   (b) `git mv specs/{NNN}_{old_slug} specs/{NNN}_{new_slug}`; (c) update every `artifacts[].path`
   entry in state.json referencing the old directory (in the task's own record and any other
   task's record found by Phase 1); (d) update every `specs/**/*.md` reference from Phase 1's hit
   list (superseded report files keep their historical prose — only live path references change;
   a report's own internal mention of the old name as history is acceptable per the rename-surface
   analysis).
-- [ ] For any task where Phase 1 decided record-instead-of-rename: leave `project_name` and the
+- [x] For any task where Phase 1 decided record-instead-of-rename: leave `project_name` and the
   directory untouched, and add the decision + measured cost to the notes Phase 3/4 will fold
-  into that task's rewritten description.
-- [ ] Validate state.json with `jq empty` after each batch; run
+  into that task's rewritten description. *(deviation: not applicable — Phase 1 green-lit all three renames; no task took the record-instead-of-rename path)*
+- [x] Validate state.json with `jq empty` after each batch; run
   `bash .claude/scripts/generate-todo.sh` and confirm it exits 0.
-- [ ] Confirm zero dangling paths: re-run the Phase 1 greps for each old slug; every remaining
+- [x] Confirm zero dangling paths: re-run the Phase 1 greps for each old slug; every remaining
   hit must be inside a superseded report file as historical prose, justified in the phase notes.
 
 **Timing**: 1 hour
@@ -350,6 +441,44 @@ for each rename is exactly Phase 1's enumeration for that slug, fixed before the
 - `jq empty specs/state.json` passes; `generate-todo.sh` exits 0.
 - Old-slug greps return only justified historical-prose hits; `ls specs/` shows the new
   directory names; every `artifacts[].path` in state.json resolves to an existing file.
+
+#### Phase 2 Execution Notes
+
+**All three renames executed** (Phase 1's decision rule was satisfied for each — every measured
+hit was inside `specs/**` and enumerable in one batch):
+
+| Task | Old directory | New directory |
+|---|---|---|
+| 414 | `specs/414_refactor_semantics_to_maximal_history_validity/` | `specs/414_refactor_semantics_to_total_history_validity/` |
+| 415 | `specs/415_completeness_over_maximal_history_semantics/` | `specs/415_completeness_over_total_history_semantics/` |
+| 420 | `specs/420_align_task_frame_with_positive_cone_limit_nullity/` | `specs/420_align_task_frame_with_positive_cone_axioms/` |
+
+Batch contents: `git mv` of the three directories; `project_name` updated for 414/415/420;
+6 `artifacts[].path` entries rewritten (420 x3, 414 x2, 415 x1) — all owned by the renaming task
+itself, no cross-task artifact path pointed into a moved directory. `jq empty specs/state.json`
+passes; the diff is 12 insertions / 12 deletions with no incidental reformatting.
+`generate-todo.sh` exits 0.
+
+Additionally, the five ephemeral dispatch-scratch files that travelled with the moved directories
+had their embedded self-paths rewritten so no dangling path survives:
+`414/.return-meta.json`, `414/.return-meta-reconcile.json`, `415/.return-meta.json`,
+`420/.return-meta.json`, `420/.orchestrator-handoff.json` (all re-validated with `jq empty`).
+
+**Residual old-slug hits — all justified as historical prose, none a live path reference**:
+
+| File | Justification |
+|---|---|
+| `specs/414_.../reports/02_group-c-reconciliation.md` | superseded report; names the old slugs as the state of the world when written |
+| `specs/415_.../reports/01_completeness-maximal-history-rebase.md` | same |
+| `specs/420_.../plans/01_taskframe-limit-nullity-alignment.md`, `.../summaries/01_...-summary.md` | 420's own landed phase-1-5 artifacts, historically accurate |
+| 438 `plans/01_reissue-paper-refactor-cluster.md`, `reports/01_teammate-b-findings.md`, `reports/01_team-research.md` | frozen Part A artifacts; a non-goal forbids content-modifying them |
+| 438 `plans/03_reissue-paper-refactor-cluster.md` (this file) | names the old slugs as the rename *sources*, which is the point |
+
+**Pre-existing unrelated defect observed** (recorded, not fixed — outside this task's scope): the
+`artifacts[].path` resolution sweep flagged one missing file repo-wide,
+`specs/418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/artifacts/after-verdicts.md`,
+belonging to task 418. It is unrelated to this cluster and predates this dispatch. All six paths
+touched by the renames resolve.
 
 ---
 
