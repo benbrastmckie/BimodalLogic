@@ -11,11 +11,11 @@ next_project_number: 439
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,438 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,419,420,422,425,436 | 193,231,298,421,423,437,438 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,414,434 | 420,422,436 | decidability, paper-refactor, strong_completeness |
-| 4 | 362,415,417,432 | 169,414,434 | decidability, paper-refactor, strong_completeness |
-| 5 | 427,433 | 415,417,419,432 | decidability, paper-refactor |
+| 1 | 125,127,128,193,231,257,298,413,419,420,421,423,424,437 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,414,422,425,436 | 193,231,298,420,421,423,437 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,415,417,434 | 414,422,436 | decidability, paper-refactor, strong_completeness |
+| 4 | 362,427,432 | 169,415,417,419,434 | decidability, paper-refactor, strong_completeness |
+| 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
 | 7 | 429 | 428 | decidability |
 | 8 | 410 | 429 | -- |
@@ -77,15 +77,14 @@ next_project_number: 439
 
 ### Paper Refactor
 
-438 [IMPLEMENTING] — DEFINITIONAL RECONCILIATION AND CLUSTER RE-ISSUE. The paper's bas
-  └─ 419 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
-    └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
-  └─ 420 [BLOCKED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
-    └─ 414 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
-      └─ 415 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-        └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
-      └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-        └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
+419 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
+  └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
+420 [BLOCKED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
+  └─ 414 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
+    └─ 415 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+      └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
+    └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+      └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
 
 ### Strong Completeness
 
@@ -103,7 +102,7 @@ next_project_number: 439
 
 ### 438. Reconcile semantic definitions with jpl paper
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None

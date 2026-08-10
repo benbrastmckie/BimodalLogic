@@ -1,7 +1,7 @@
 # Implementation Plan: Task #438 (Part B — Cluster Re-Issue), Revision 2
 
 - **Task**: 438 - reconcile_semantic_definitions_with_jpl_paper
-- **Status**: COMPLETED
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None (Part A research — rounds 1 and 2 — is complete and is the input to this plan)
 - **Research Inputs**:
