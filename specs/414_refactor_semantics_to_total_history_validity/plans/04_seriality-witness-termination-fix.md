@@ -2710,7 +2710,7 @@ itself, then run the task-level gates.
 
 ---
 
-### Phase 23: Frame-relative validity `⊨_F` — OPTIONAL [NOT STARTED]
+### Phase 23: Frame-relative validity `⊨_F` — OPTIONAL [IN PROGRESS]
 
 > **Execution note (added by revision 4).** This phase is **OPTIONAL and is not on the critical
 > path.** Because it is lower-numbered than the strand-2 phases, a next-phase scan will select it
@@ -2748,7 +2748,7 @@ at all. **This phase is OPTIONAL and may be skipped without affecting task compl
 
 ---
 
-### Phase 24: Pre-fix baseline capture and narrowed verification target [NOT STARTED]
+### Phase 24: Pre-fix baseline capture and narrowed verification target [COMPLETED]
 
 **Goal**: Freeze, as a written record, exactly what the tree and the probe suite say *before* the
 guard lands — so that Phase 29's re-baseline is a diff against a measured baseline rather than
@@ -2756,25 +2756,28 @@ against memory, and so that the ten excluded `#guard_msgs` mismatches are enumer
 row before anything can launder them into the re-baseline. **This phase edits no Lean file.**
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh` and record the outcome case (a/b/c) and the
+- [x] Run `bash scripts/check-paper-definitions.sh` and record the outcome case (a/b/c) and the
       recorded-definition count. Case (c) is a STOP.
-- [ ] Run `lake build` (default `FormalSystem` target) and record: job count, live non-Boneyard
+- [x] Run `lake build` (default `FormalSystem` target) and record: job count, live non-Boneyard
       sorry count, and strict `axiom <ident>` count outside Boneyard. Expected 2331 / 1 / 0.
-- [ ] Transcribe verbatim, into the baseline record, the current expectation text of every
+- [x] Transcribe verbatim, into the baseline record, the current expectation text of every
       `#guard_msgs` row in `Tests/BimodalTest/BoxNegReachabilityProbe.lean` (rows 1-12) and
       `Tests/BimodalTest/CrossWorldPropagationProbe.lean` (rows A-F). Source text only — **do not
       run the probes**, and do not attempt `lake build BimodalTest`.
-- [ ] Enumerate the ten pre-existing `#guard_msgs` mismatches by **file and row locator**
+- [x] Enumerate the ten pre-existing `#guard_msgs` mismatches by **file and row locator**
       (`TableauConformance.lean` 7 of 29, `RegionGateProbe.lean` 2 of 10, `BoxSpreadProbe.lean`
       1 of 5), marking each EXCLUDED-BY-NAME from the Phase 29 re-baseline. If the exact seven /
       two / one rows cannot be identified without running the suite, record the file-level counts
       and state plainly that the row-level identification is deferred to Phase 29.1's measurement —
-      do not guess.
-- [ ] Record the **narrowed verification targets** in force until Phase 29: `lake build` for
+      do not guess. *(taken: file-level denominators 29/10/5 measured; row-level identification
+      recorded `[UNVERIFIED]` and deferred to Phase 29.1 — the plan's own stated fallback, not a
+      deviation. Two source-level identification routes were attempted and both came up empty; see
+      `summaries/05_phase24-prefix-baseline.md` §5.)*
+- [x] Record the **narrowed verification targets** in force until Phase 29: `lake build` for
       tree-wide facts; `lake build FormalSystem.Metalogic.Decidability.Tableau` and
       `lake build FormalSystem.Metalogic.Decidability.Saturation` for module-local facts; and the
       standing prohibition on invoking `lake build BimodalTest` before Phase 29.1.
-- [ ] Re-run, on the green tree, the plan-time census this revision recorded, and confirm or
+- [x] Re-run, on the green tree, the plan-time census this revision recorded, and confirm or
       correct it in the record: `witnessPresent` occurrences per file; the `Verified/Termination/`
       vs `Verified/Bridge/` locations of `MintBound.lean` and `Fuel.lean`; and whether
       `PropSaturation.lean` / `BoxSaturation.lean` carry any *term-level* `witnessPresent`
