@@ -923,25 +923,31 @@ extension, mirroring the paper's decomposition exactly.
 
 ---
 
-### Phase 9: `lem:step` — the Step Lemma, sole *Spherical* application site [NOT STARTED]
+### Phase 9: `lem:step` — the Step Lemma, sole *Spherical* application site [COMPLETED]
 
 **Goal**: Prove the Step Lemma, and thereby discharge the charter's §7 cross-task acceptance
 criterion. This is the phase the §7 mechanism turns on.
 
 **Tasks**:
-- [ ] State `theorem step (F : TaskFrame D) (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel)
+- [x] State `theorem step (F : TaskFrame D) (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel)
       (hInt : Interpolates F.TaskRel) (τ : PartialHistory F) (z : D) :
       ∃ σ : PartialHistory F, PartialHistory.Extends σ τ ∧ σ.domain z`. Docstring cites `lem:step`
-      verbatim.
-- [ ] Prove it as `lem:constraint` + *Spherical* + `lem:admissible`: the constraints form a
+      verbatim. *(deviation: altered — one additional binder `hLim : ∀ w v, (∀ x, 0 < x → ∃ y,
+      |y| < x ∧ F.TaskRel w y v) → v = w` sits between `hInt` and `τ`. Forced by the inherited
+      Phase 8 interface: `PartialHistory.admissible` takes `hLim` explicitly, because `TaskFrame`
+      deliberately does not carry *Limit* as a structure field and `lem:admissible` needs
+      `lem:nullity` at `z` itself. No other binder, the conclusion, or the proof strategy changed.
+      The forthcoming frame-axiom-field refactor discharges `hLim` the same mechanical way it
+      discharges `hSph`/`hSer`/`hInt`.)*
+- [x] Prove it as `lem:constraint` + *Spherical* + `lem:admissible`: the constraints form a
       directed family of nonempty fibers and segments (Phase 7), *Spherical* yields a point in
       their intersection, `lem:fibers` converts that to the fiber condition, `lem:admissible`
       converts that to the one-point extension.
-- [ ] Handle the `z ∈ dom τ` case trivially (`σ := τ`).
-- [ ] Transcribe the paper's closing remark in the docstring, verbatim: `When the family has a
+- [x] Handle the `z ∈ dom τ` case trivially (`σ := τ`).
+- [x] Transcribe the paper's closing remark in the docstring, verbatim: `When the family has a
       subset-least member, that member already contains a candidate and *Spherical* is not
       needed.`
-- [ ] Add a module-level comment naming this as **the sole *Spherical* application site**, and
+- [x] Add a module-level comment naming this as **the sole *Spherical* application site**, and
       restating the 420-phase-10 invariant from "The §7 mechanism" above.
 
 **Timing**: 2.5 hours
@@ -959,6 +965,26 @@ criterion. This is the phase the §7 mechanism turns on.
   the failure message in the phase's commit or the implementation summary as evidence that
   *Spherical* is genuinely consumed and not inert.
 - `grep -rn "Spherical" --include=*.lean FormalSystem/` shows exactly one consuming proof site.
+
+**Verification results (recorded)**:
+- `lake build` green over the whole project (2330 jobs). `FormalSystem/Semantics/` is sorry-free
+  (`grep -c sorry` = 0); the 161 census sorries are all pre-existing (160 under `Boneyard/`, one
+  at `Metalogic/WeakCanonical/Transfer.lean:1085`), none introduced here.
+- `#print axioms FormalSystem.Semantics.PartialHistory.step` →
+  `[propext, Classical.choice, Quot.sound]` — Lean's three standard axioms only, no `sorryAx`,
+  no project axiom.
+- **§7 deletion probe** — re-elaborating `step`'s body verbatim with the `hSph` binder removed
+  fails:
+  `error(lean.unknownIdentifier): Unknown identifier 'hSph'` at the `obtain` line, followed by
+  `error: Tactic 'rcases' failed: 'x✝ : ?m.124' is not an inductive datatype`.
+- **§7 proof-term inspection** — `#print FormalSystem.Semantics.PartialHistory.step` shows `hSph`
+  twice: once bound (`hSph hSer hInt hLim τ z =>`) and once **applied as a function head**
+  (`hSph (τ.Constraints z) hdir fun c hc`). *Spherical* is literally the hypothesis the proof
+  consumes, not an inert binder.
+- **Sole application site** — the only code occurrences of `Spherical` in `FormalSystem/` are its
+  definition (`Semantics/FrameAxioms.lean:122`) and `step`'s binder + application
+  (`Semantics/Extension/Step.lean:116,127`). Every other hit is docstring prose.
+- Registered in the aggregator `FormalSystem/Semantics.lean` (import + submodule note).
 
 ---
 

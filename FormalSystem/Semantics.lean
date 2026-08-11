@@ -10,6 +10,7 @@ import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.FrameAxioms
 import FormalSystem.Semantics.Extension.Constraint
 import FormalSystem.Semantics.Extension.Admissible
+import FormalSystem.Semantics.Extension.Step
 import FormalSystem.Semantics.WorldHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
@@ -40,6 +41,9 @@ polymorphic over temporal types.
   the fiber condition at every domain time, and that is exactly what makes the one-point extension
   `τ ∪ {⟨z, u⟩}` (`PartialHistory.adjoin`) a partial history; consumes `lem:nullity` via
   *Seriality* plus *Limit*
+- `Extension.Step`: `lem:step` — every partial history extends by one arbitrary duration; the
+  join of `lem:constraint`, *Spherical*, and `lem:admissible`, and **the sole application site of
+  the *Spherical* axiom** in the development
 - `WorldHistory`: World histories `τ: X → W` as functions from convex time domains to
   world states, respecting the task relation
 - `TaskModel`: Task models extending frames with valuation functions `V: W × String → Prop`
