@@ -260,7 +260,7 @@ consumer against `bundleFlowFrame` in this phase rather than retaining the devic
 
 ---
 
-### Phase 3: Dense truth-lemma re-host under Omega signature (420-unblocking milestone) [NOT STARTED]
+### Phase 3: Dense truth-lemma re-host under Omega signature (420-unblocking milestone) [COMPLETED]
 
 **Goal**: Re-host the dense truth lemma onto `bundleFlowFrame` under the CURRENT Omega
 signature (report §6.2 **Option A**, `Omega := multiFamOmegaGen ...`), replacing the
@@ -268,24 +268,42 @@ Limit-violating `ParametricCanonicalTaskFrame` at all three live-path exposure s
 phase's completion discharges 420 phase 10's gate — notify the orchestrator/420 on green.
 
 **Tasks**:
-- [ ] Re-host `fully_restricted_parametric_shifted_truth_lemma`
+- [x] Re-host `fully_restricted_parametric_shifted_truth_lemma`
       (`RestrictedParametricTruthLemma.lean:286`) as `bundleFlow_truth_lemma` with `(fam, w₀)`
       replacing `timeShift (parametricToHistory fam) delta` (the flow history at offset w₀ IS
-      the shifted history — the separate "shifted" formulation dissolves)
-- [ ] Atom case: definitional MCS membership; imp/bot/untl/snce: FMCS temporal coherence
+      the shifted history — the separate "shifted" formulation dissolves) *(deviation:
+      altered — batch additionally includes `ChronicleMonadicBridge.lean`: the generic
+      `multiFam*Gen` definitions moved from there into `FlowFrame.lean` (namespace
+      `Algebraic`) and the import inverted, because ChronicleToCountermodelBasic must import
+      the truth-lemma module and the old direction was a cycle. The `_int` specialization
+      lemmas stay in ChronicleMonadicBridge; all proofs moved verbatim)*
+- [x] Atom case: definitional MCS membership; imp/bot/untl/snce: FMCS temporal coherence
       (`forward_G`, restricted tc/buc/fuc — frame-independent, preserved verbatim); box case:
       `parametric_box_persistent` + `B.modal_forward`/`B.modal_backward` (`Bundle/BFMCS.lean:91`
-      ff.) with Omega-destructuring against `multiFamOmegaGen`
-- [ ] Re-point `Completeness.lean:143` (`countermodel_dense_enriched` witness) at
+      ff.) with Omega-destructuring against `multiFamOmegaGen` *(temporal cases carry a `± w₀`
+      clock translation; no timeShift machinery anywhere in the box case)*
+- [x] Re-point `Completeness.lean:143` (`countermodel_dense_enriched` witness) at
       `bundleFlowFrame` at `D := ℚ` using the unchanged chronicle suppliers
       (`Chronicle.cantorBfmcsDense`, `rootedCantorFmcsDense`,
       `cantor_bfmcs_dense_restricted_tc/buc/fuc`)
-- [ ] Re-point `ChronicleToCountermodelBasic.lean:839` likewise
-- [ ] Re-point the ℝ elaborations at `CompletenessDedekind.lean:78/81/86`
-- [ ] Confirm `ParametricCanonicalTaskFrame` no longer appears on any live (non-Boneyard,
-      non-superseded-module) path
-- [ ] On green: record in the phase completion notes + handoff that 420 phase 10's gate is
+- [x] Re-point `ChronicleToCountermodelBasic.lean:839` likewise
+- [x] Re-point the ℝ elaborations at `CompletenessDedekind.lean:78/81/86` *(all three probes
+      plus the load-bearing engine probe re-pointed at
+      `bundleFlowFrame`/`bundleFlowModel`/`bundleFlowOmega`/
+      `bundleFlow_completeness_from_neg_membership`)*
+- [x] Confirm `ParametricCanonicalTaskFrame` no longer appears on any live (non-Boneyard,
+      non-superseded-module) path *(grep: hits only in `Algebraic/Parametric*.lean` — the
+      superseded modules themselves, Phase 4 territory)*
+- [x] On green: record in the phase completion notes + handoff that 420 phase 10's gate is
       discharged (the orchestrator relays; do not edit 420's plan from this dispatch)
+
+**Phase completion note (420-unblocking milestone)**: DISCHARGED. `bundleFlowFrame` is live:
+the dense countermodel (`countermodel_dense_enriched`, `countermodel_dense`) and the ℝ probes
+all elaborate against it; `ParametricCanonicalTaskFrame` survives only inside the superseded
+parametric modules. The Coordination Contract carrier (`{fam // fam ∈ B.families} × D`,
+`pos = Prod.snd`, `bundleFlow_pos_shift`) plus the four-axiom conformance theorems
+(`bundleFlow_comp_iff/_serial/_limit/_spherical`) are exactly what 420 phase 10's field
+population consumes.
 
 **Timing**: 2.5 hours
 

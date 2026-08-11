@@ -12,6 +12,7 @@ import FormalSystem.Metalogic.WeakCanonical.PriorDefsDense
 import FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
 import FormalSystem.Metalogic.WeakCanonical.PriorExpressivenessDense
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic
+import FormalSystem.Metalogic.Algebraic.FlowFrame
 
 /-!
 # The Dense Monadic Bridge: Chronicle to `OrderedMonadicStructure` over `ℚ`
@@ -82,7 +83,8 @@ Phase 15's first task is a gate: are `mkSigFrom`, `Formula.predFormulas`,
   `ℤ` occurs only as the carrier and `+` only as its group operation; likewise
   `multiFamOmega` (`:694`) and `multiFamOmega_shiftClosed` (`:708`).
 
-The generic re-statements below (`multiFamTaskFrameGen` and siblings) *discharge* the gate
+The generic re-statements (`multiFamTaskFrameGen` and siblings, hosted in
+`Metalogic/Algebraic/FlowFrame.lean`) *discharge* the gate
 rather than merely asserting it: they typecheck over an arbitrary
 `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]`, and the `ℤ` originals are
 recovered as definitional specializations (`multiFamTaskFrameGen_int` and siblings). The
@@ -97,8 +99,9 @@ universal in this tree. `Transfer.lean:1242` is not attempted here.
 
 ## Main results
 
-* `multiFamTaskFrameGen` / `multiFamOmegaGen` / `multiFamOmegaGen_shiftClosed` — the
-  discreteness-free multi-family frame, over an arbitrary ordered abelian group.
+* `multiFamTaskFrameGen_int` / `multiFamHistoryGen_int` / `multiFamOmegaGen_int` — the `ℤ`
+  originals certified as definitional specializations of the discreteness-free multi-family
+  frame (now hosted in `Metalogic/Algebraic/FlowFrame.lean`).
 * `chronicleMonadicStructureOf` — a chronicle family as an `OrderedMonadicStructure` over
   the finite signature `mkSigFrom root`, with carrier `ℚ`.
 * `chronicleMonadic_truth_correspondence` — for every `φ ∈ subformulaClosure root`,
@@ -116,88 +119,21 @@ open FormalSystem.Metalogic.Core
 open FormalSystem.Metalogic.Bundle
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Semantics
+open FormalSystem.Metalogic.Algebraic
 
 /-! ## Part 1: The discreteness-free multi-family frame (R7 gate discharge)
 
-Generic re-statements of `ReynoldsBridge.lean`'s `multiFamTaskFrame`/`multiFamHistory`/
-`multiFamOmega` family over an arbitrary ordered abelian group `D`. These are landed
-**beside** the `ℤ` originals, which are untouched: `countermodel_discrete_reynolds_v2`
-continues to consume the originals, and the `_int` lemmas below certify that the originals
-are the definitional `D := ℤ` specializations of these.
-
-No source: this generalization is original work, adapted from the `ℤ` definitions named
-above.
+The generic re-statements of `ReynoldsBridge.lean`'s `multiFamTaskFrame`/`multiFamHistory`/
+`multiFamOmega` family over an arbitrary ordered abelian group `D` —
+`multiFamTaskFrameGen`/`multiFamHistoryGen`/`multiFamOmegaGen` — are now hosted in
+`Metalogic/Algebraic/FlowFrame.lean` (imported above), together with their four-axiom
+conformance layer and totality characterization. The `ℤ` originals are untouched:
+`countermodel_discrete_reynolds_v2` continues to consume the originals, and the `_int` lemmas
+below certify that the originals are the definitional `D := ℤ` specializations of the generic
+ones.
 -/
 
 section MultiFamGen
-
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-
-/-- `TaskFrame` with `WorldState = FamIdx × D` over an arbitrary ordered abelian group `D`.
-The generic form of `multiFamTaskFrame` (`ReynoldsBridge.lean:671`); the task relation is
-deterministic, stepping by `d` from `(f, x)` to `(f, x + d)`. -/
-noncomputable def multiFamTaskFrameGen (D : Type) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (FamIdx : Type) : TaskFrame D where
-  WorldState := FamIdx × D
-  TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
-  nullity_identity := fun p q => by
-    constructor
-    · rintro ⟨h1, h2⟩
-      refine Prod.ext h1 ?_
-      rw [h2, add_zero]
-    · rintro rfl; exact ⟨rfl, (add_zero _).symm⟩
-  forward_comp := fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ =>
-    ⟨h1.trans h3, by rw [h4, h2, add_assoc]⟩
-  converse := fun _ _ _ => by
-    constructor
-    · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
-    · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
-
-/-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`.
-Generic form of `multiFamHistory` (`ReynoldsBridge.lean:684`). -/
-noncomputable def multiFamHistoryGen {FamIdx : Type} (f : FamIdx) (w₀ : D) :
-    WorldHistory (multiFamTaskFrameGen D FamIdx) where
-  domain := fun _ => True
-  convex := fun _ _ _ _ _ _ _ => trivial
-  states := fun t _ => (f, w₀ + t)
-  respects_task := fun s t _ _ _ => by
-    refine ⟨rfl, ?_⟩
-    show w₀ + t = w₀ + s + (t - s)
-    abel
-
-/-- Omega for `multiFamTaskFrameGen`: all histories `multiFamHistoryGen f w₀`.
-Generic form of `multiFamOmega` (`ReynoldsBridge.lean:694`). -/
-def multiFamOmegaGen (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    (FamIdx : Type) : Set (WorldHistory (multiFamTaskFrameGen D FamIdx)) :=
-  Set.range (fun (p : FamIdx × D) => multiFamHistoryGen p.1 p.2)
-
-/-- Time-shifting `multiFamHistoryGen f w₀` by `Δ` gives `multiFamHistoryGen f (w₀ + Δ)`.
-Generic form of `multiFamHistory_shift_eq` (`ReynoldsBridge.lean:698`). -/
-theorem multiFamHistoryGen_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : D) :
-    WorldHistory.timeShift
-        (multiFamHistoryGen f w₀ : WorldHistory (multiFamTaskFrameGen D FamIdx)) Δ =
-      multiFamHistoryGen f (w₀ + Δ) := by
-  have h_states : (fun (t : D) (_ : True) => ((f, w₀ + (t + Δ)) : FamIdx × D)) =
-      (fun (t : D) (_ : True) => ((f, w₀ + Δ + t) : FamIdx × D)) := by
-    funext t _; congr 1; abel
-  change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
-  congr 1
-
-/-- The generic multi-family Omega is shift-closed. Generic form of
-`multiFamOmega_shiftClosed` (`ReynoldsBridge.lean:708`). -/
-theorem multiFamOmegaGen_shiftClosed (D : Type) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (FamIdx : Type) :
-    ShiftClosed (multiFamOmegaGen D FamIdx) := by
-  intro σ hσ Δ
-  obtain ⟨⟨f, w₀⟩, hw₀⟩ := hσ
-  rw [← hw₀, multiFamHistoryGen_shift_eq]
-  exact ⟨⟨f, w₀ + Δ⟩, rfl⟩
-
-/-- Every generic multi-family history is in the generic Omega. Generic form of
-`multiFamHistory_mem_omega` (`ReynoldsBridge.lean:717`). -/
-theorem multiFamHistoryGen_mem_omega {FamIdx : Type} (f : FamIdx) (w₀ : D) :
-    multiFamHistoryGen f w₀ ∈ multiFamOmegaGen D FamIdx :=
-  ⟨⟨f, w₀⟩, rfl⟩
 
 /-! ### The `ℤ` originals are the definitional specializations
 

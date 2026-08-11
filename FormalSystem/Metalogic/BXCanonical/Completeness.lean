@@ -10,6 +10,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 import FormalSystem.Metalogic.BXCanonical.Chronicle.MCSMixedCase
 import FormalSystem.Metalogic.WeakCanonical
+import FormalSystem.Metalogic.Algebraic.FlowFrame
 import FormalSystem.Semantics.Validity
 import Mathlib.Data.Int.SuccPred
 
@@ -120,15 +121,15 @@ theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
       DerivationTree.modus_ponens [] _ _ h_ef d
     exact h_not_deriv ⟨d_phi⟩
 
--- The two witnesses used below have fully-qualified names 97 and 118 characters long, so
--- they cannot be written out inside this proof and stay under the 100-column limit.
-open FormalSystem.Metalogic.Algebraic.ParametricHistory in
-open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma in
+open FormalSystem.Metalogic.Algebraic in
 /--
 Enriched dense countermodel: constructs the same countermodel as `countermodel_dense`
 but with `Rat` explicit throughout, so `DenselyOrdered` is available for `ValidDense`.
 This is the single canonical dense countermodel used by both `completeness` and
-`completeness_dense`.
+`completeness_dense`. The countermodel lives on the bundle flow frame
+(`Metalogic/Algebraic/FlowFrame.lean`): its admissible-history set is extensionally the
+frame's total-history set H_F (`def:world-history`), so the box clause is the paper's
+(`def:BL-semantics`) realized under the current Omega signature.
 -/
 theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -140,26 +141,21 @@ theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
       ¬TruthAt TM Omega τ t φ := by
   let bfmcs := Chronicle.cantorBfmcsDense fc A h_mcs h_box_dense
   let fam₀ := Chronicle.rootedCantorFmcsDense fc A h_mcs h_box_dense 0
-  refine ⟨FormalSystem.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Rat,
-    FormalSystem.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Rat,
-    FormalSystem.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
-    shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
-    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricToHistory fam₀,
-    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed
-        bfmcs
-      ⟨fam₀, ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
+  have hfam₀ : fam₀ ∈ bfmcs.families := ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩
+  refine ⟨bundleFlowFrame bfmcs, bundleFlowModel bfmcs,
+    bundleFlowOmega bfmcs, bundleFlowOmega_shiftClosed bfmcs,
+    bundleFlowHistory ⟨fam₀, hfam₀⟩ 0, bundleFlowHistory_mem_omega _ _,
     0, ?_⟩
-  have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
-    rw [Chronicle.rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
-  exact
-      fully_restricted_parametric_completeness_from_neg_membership
+  have h_neg_fam : φ.neg ∈ fam₀.mcs ((0 : Rat) + 0) := by
+    rw [zero_add, Chronicle.rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
+  exact bundleFlow_completeness_from_neg_membership
     bfmcs φ
     (Chronicle.cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
     (Chronicle.cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense φ)
     (Chronicle.cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense φ)
     φ (self_mem_subformulaClosure φ)
-    fam₀ ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
+    ⟨fam₀, hfam₀⟩ 0 0 h_neg_fam
 
 /-! ## BX Completeness Theorem -/
 

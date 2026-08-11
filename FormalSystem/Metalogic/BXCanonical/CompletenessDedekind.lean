@@ -42,7 +42,7 @@ therefore no order-theoretic bridge to build.
   terminus.
 
 The `example`s in the "Carrier probe" section are compile-time checks, not exports: they record
-that the `D`-generic parametric canonical machinery accepts `D := ℝ` unchanged, which is the
+that the `D`-generic bundle flow machinery accepts `D := ℝ` unchanged, which is the
 hypothesis the whole Dedekind route rests on.
 
 ## References
@@ -61,33 +61,31 @@ open FormalSystem.Semantics
 
 /-! ## Carrier probe: the `D`-generic machinery at `D := ℝ`
 
-These `example`s exist to fail loudly if the parametric canonical construction ever acquires a
-binder that `ℝ` cannot discharge (a `Countable`, an `Encodable`, a `SuccOrder`, ...). They are
-the compile-time form of the claim "only the layer beneath the chronicle moves to `ℝ`". -/
+These `example`s exist to fail loudly if the bundle flow machinery
+(`Metalogic/Algebraic/FlowFrame.lean`) ever acquires a binder that `ℝ` cannot discharge (a
+`Countable`, an `Encodable`, a `SuccOrder`, ...). They are the compile-time form of the claim
+"only the layer beneath the chronicle moves to `ℝ`". -/
 
 section CarrierProbe
 
-open FormalSystem.Metalogic.Algebraic.ParametricCanonical
-open FormalSystem.Metalogic.Algebraic.ParametricHistory
-open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
-open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic
 
 variable {fc : FrameClass}
 
-/-- The parametric canonical task frame elaborates at `D := ℝ`. -/
-noncomputable example : TaskFrame ℝ := ParametricCanonicalTaskFrame (fc := fc) ℝ
+/-- The bundle flow frame elaborates at `D := ℝ`. -/
+noncomputable example (B : BFMCS (fc := fc) ℝ) : TaskFrame ℝ := bundleFlowFrame B
 
-/-- The parametric canonical task model elaborates at `D := ℝ`. -/
-noncomputable example : TaskModel (ParametricCanonicalTaskFrame (fc := fc) ℝ) :=
-  ParametricCanonicalTaskModel (fc := fc) ℝ
+/-- The bundle flow model elaborates at `D := ℝ`. -/
+noncomputable example (B : BFMCS (fc := fc) ℝ) : TaskModel (bundleFlowFrame B) :=
+  bundleFlowModel B
 
-/-- The shift-closed canonical history space elaborates at `D := ℝ`. -/
+/-- The flow-line history space elaborates at `D := ℝ`. -/
 noncomputable example (B : BFMCS (fc := fc) ℝ) :
-    Set (WorldHistory (ParametricCanonicalTaskFrame (fc := fc) ℝ)) :=
-  ShiftClosedParametricCanonicalOmega B
+    Set (WorldHistory (bundleFlowFrame B)) :=
+  bundleFlowOmega B
 
 /--
-The restricted-completeness engine typechecks at `D := ℝ` against a hypothesised real-carrier
+The re-hosted completeness engine typechecks at `D := ℝ` against a hypothesised real-carrier
 bundle. This is the load-bearing probe: it is the single declaration the Dedekind countermodel
 will be assembled from, and its binder list is `{fc} {D} [AddCommGroup D] [LinearOrder D]
 [IsOrderedAddMonoid D]` — no `DenselyOrdered`, no `Countable`, no `Rat`.
@@ -98,11 +96,10 @@ noncomputable example (B : BFMCS (fc := fc) ℝ) (root : Formula)
     (h_fuc : B.RestrictedForwardUntilSinceCoherent root)
     (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
     (fam : FMCS (fc := fc) ℝ) (hfam : fam ∈ B.families)
-    (t : ℝ) (h_neg_in : φ.neg ∈ fam.mcs t) :
-    ¬TruthAt (ParametricCanonicalTaskModel ℝ) (ShiftClosedParametricCanonicalOmega B)
-      (parametricToHistory fam) t φ :=
-  fully_restricted_parametric_completeness_from_neg_membership B root h_rtc h_buc h_fuc φ h_sub
-    fam hfam t h_neg_in
+    (w₀ t : ℝ) (h_neg_in : φ.neg ∈ fam.mcs (w₀ + t)) :
+    ¬TruthAt (bundleFlowModel B) (bundleFlowOmega B) (bundleFlowHistory ⟨fam, hfam⟩ w₀) t φ :=
+  bundleFlow_completeness_from_neg_membership B root h_rtc h_buc h_fuc φ h_sub
+    ⟨fam, hfam⟩ w₀ t h_neg_in
 
 end CarrierProbe
 
@@ -294,6 +291,7 @@ theorem chronicle_mem_of_box_mem {fc : FrameClass} (N : Set Formula)
 
 open FormalSystem.Metalogic.WeakCanonical in
 open FormalSystem.Metalogic.BXCanonical.Chronicle in
+open FormalSystem.Metalogic.Algebraic in
 /--
 **Reynolds §9 Theorem 7, the countermodel half** (printed p.189).
 

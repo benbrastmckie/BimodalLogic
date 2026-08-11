@@ -5,14 +5,23 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.TaskFrame
-import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleMonadicBridge
+import FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+import FormalSystem.Metalogic.Bundle.TemporalCoherence
+import FormalSystem.Syntax.SubformulaClosure.TemporalFormulas
 
 /-!
 # FlowFrame - Generic Flow-Frame Conformance and Totality Layer
 
-This module proves, once and D-generically, that the deterministic multi-family flow frame
-`multiFamTaskFrameGen` (`ChronicleMonadicBridge.lean`) satisfies all four axioms of the
-paper's frame definition (`def:frame`), and characterizes its total histories as flow lines.
+This module defines the deterministic multi-family flow frame `multiFamTaskFrameGen` over an
+arbitrary ordered abelian group (previously hosted beside the chronicle monadic bridge; moved
+here so the chronicle-side countermodel modules can consume the bundle flow frame without an
+import cycle), proves — once and D-generically — that it satisfies all four axioms of the
+paper's frame definition (`def:frame`), characterizes its total histories as flow lines, and
+re-hosts the dense truth lemma onto its bundle-index instantiation `bundleFlowFrame`.
+
+The `ℤ` originals (`multiFamTaskFrame` and siblings, `ReynoldsBridge.lean`) are certified as
+the definitional `D := ℤ` specializations of these generic definitions by the `_int` lemmas in
+`ChronicleMonadicBridge.lean`, which imports this module.
 
 ## Paper Specification Reference
 
@@ -76,8 +85,9 @@ namespace FormalSystem.Metalogic.Algebraic
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Semantics
+open FormalSystem.Metalogic.Core
 open FormalSystem.Metalogic.Bundle
-open FormalSystem.Metalogic.BXCanonical.Chronicle
+open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
 
 /-! ## The generic Spherical helper
 
@@ -105,6 +115,80 @@ theorem sInter_nonempty_of_directed_subsingleton
 section FlowFrameConformance
 
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+
+/-! ## The generic multi-family flow frame
+
+The discreteness-free multi-family frame over an arbitrary ordered abelian group `D`: world
+states are pairs `(f, x)` of a family index and a time, and the task relation is the
+deterministic clock stepping by `d` from `(f, x)` to `(f, x + d)`. The `ℤ` originals
+(`multiFamTaskFrame`/`multiFamHistory`/`multiFamOmega`, `ReynoldsBridge.lean`) are recovered
+as definitional specializations by `ChronicleMonadicBridge.lean`'s `_int` lemmas. -/
+
+/-- `TaskFrame` with `WorldState = FamIdx × D` over an arbitrary ordered abelian group `D`.
+The generic form of `multiFamTaskFrame` (`ReynoldsBridge.lean`); the task relation is
+deterministic, stepping by `d` from `(f, x)` to `(f, x + d)`. -/
+noncomputable def multiFamTaskFrameGen (D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] (FamIdx : Type) : TaskFrame D where
+  WorldState := FamIdx × D
+  TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
+  nullity_identity := fun p q => by
+    constructor
+    · rintro ⟨h1, h2⟩
+      refine Prod.ext h1 ?_
+      rw [h2, add_zero]
+    · rintro rfl; exact ⟨rfl, (add_zero _).symm⟩
+  forward_comp := fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ =>
+    ⟨h1.trans h3, by rw [h4, h2, add_assoc]⟩
+  converse := fun _ _ _ => by
+    constructor
+    · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
+    · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
+
+/-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`.
+Generic form of `multiFamHistory` (`ReynoldsBridge.lean`). -/
+noncomputable def multiFamHistoryGen {FamIdx : Type} (f : FamIdx) (w₀ : D) :
+    WorldHistory (multiFamTaskFrameGen D FamIdx) where
+  domain := fun _ => True
+  convex := fun _ _ _ _ _ _ _ => trivial
+  states := fun t _ => (f, w₀ + t)
+  respects_task := fun s t _ _ _ => by
+    refine ⟨rfl, ?_⟩
+    show w₀ + t = w₀ + s + (t - s)
+    abel
+
+/-- Omega for `multiFamTaskFrameGen`: all histories `multiFamHistoryGen f w₀`.
+Generic form of `multiFamOmega` (`ReynoldsBridge.lean`). -/
+def multiFamOmegaGen (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (FamIdx : Type) : Set (WorldHistory (multiFamTaskFrameGen D FamIdx)) :=
+  Set.range (fun (p : FamIdx × D) => multiFamHistoryGen p.1 p.2)
+
+/-- Time-shifting `multiFamHistoryGen f w₀` by `Δ` gives `multiFamHistoryGen f (w₀ + Δ)`.
+Generic form of `multiFamHistory_shift_eq` (`ReynoldsBridge.lean`). -/
+theorem multiFamHistoryGen_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : D) :
+    WorldHistory.timeShift
+        (multiFamHistoryGen f w₀ : WorldHistory (multiFamTaskFrameGen D FamIdx)) Δ =
+      multiFamHistoryGen f (w₀ + Δ) := by
+  have h_states : (fun (t : D) (_ : True) => ((f, w₀ + (t + Δ)) : FamIdx × D)) =
+      (fun (t : D) (_ : True) => ((f, w₀ + Δ + t) : FamIdx × D)) := by
+    funext t _; congr 1; abel
+  change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
+  congr 1
+
+/-- The generic multi-family Omega is shift-closed. Generic form of
+`multiFamOmega_shiftClosed` (`ReynoldsBridge.lean`). -/
+theorem multiFamOmegaGen_shiftClosed (D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] (FamIdx : Type) :
+    ShiftClosed (multiFamOmegaGen D FamIdx) := by
+  intro σ hσ Δ
+  obtain ⟨⟨f, w₀⟩, hw₀⟩ := hσ
+  rw [← hw₀, multiFamHistoryGen_shift_eq]
+  exact ⟨⟨f, w₀ + Δ⟩, rfl⟩
+
+/-- Every generic multi-family history is in the generic Omega. Generic form of
+`multiFamHistory_mem_omega` (`ReynoldsBridge.lean`). -/
+theorem multiFamHistoryGen_mem_omega {FamIdx : Type} (f : FamIdx) (w₀ : D) :
+    multiFamHistoryGen f w₀ ∈ multiFamOmegaGen D FamIdx :=
+  ⟨⟨f, w₀⟩, rfl⟩
 
 /-! ## The derived segment identity
 
@@ -334,6 +418,247 @@ theorem bundleFlow_total_eq {B : BFMCS (fc := fc) D}
     (σ : WorldHistory (bundleFlowFrame B)) (htot : ∀ t, σ.domain t) :
     ∃ fam w₀, σ = bundleFlowHistory fam w₀ :=
   multiFamGen_total_eq σ htot
+
+/-! ## The bundle flow Omega
+
+The admissible-history set for the bundle flow frame under the current Omega-parameterized
+truth signature: all flow lines. By `bundleFlowHistory_total` and `bundleFlow_total_eq` this
+set coincides with the frame's total-history set H_F (`def:world-history`), so the box clause
+quantifying over it is the paper's box clause per `def:BL-semantics` ("M,σ,x ⊨ φ for all
+σ ∈ H_F") realized under the present signature. -/
+
+/-- All flow lines of the bundle flow frame — extensionally the frame's total-history set H_F
+(`def:world-history`), via `bundleFlowHistory_total` and `bundleFlow_total_eq`. -/
+def bundleFlowOmega (B : BFMCS (fc := fc) D) : Set (WorldHistory (bundleFlowFrame B)) :=
+  multiFamOmegaGen D {fam : FMCS (fc := fc) D // fam ∈ B.families}
+
+/-- The bundle flow Omega is shift-closed. -/
+theorem bundleFlowOmega_shiftClosed (B : BFMCS (fc := fc) D) :
+    ShiftClosed (bundleFlowOmega B) :=
+  multiFamOmegaGen_shiftClosed D _
+
+/-- Every bundle flow line is in the bundle flow Omega. -/
+theorem bundleFlowHistory_mem_omega {B : BFMCS (fc := fc) D}
+    (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ : D) :
+    bundleFlowHistory fam w₀ ∈ bundleFlowOmega B :=
+  multiFamHistoryGen_mem_omega fam w₀
+
+/-! ## Helper tautologies for the implication case
+
+Classical propositional facts about `neg (ψ → χ)`. These duplicate the *private* helpers
+`neg_imp_implies_antecedent` / `neg_imp_implies_neg_consequent` of
+`RestrictedParametricTruthLemma.lean`, which are not exported. The proofs are transcribed from
+there unchanged; nothing in the original file is edited or weakened. -/
+
+/-- Classical tautology: `neg (ψ → χ) → ψ`. -/
+private noncomputable def neg_imp_antecedent (ψ χ : Formula) :
+    DerivationTree fc [] ((ψ.imp χ).neg.imp ψ) := by
+  have h_efq : DerivationTree FrameClass.Base [] (ψ.neg.imp (ψ.imp χ)) :=
+    FormalSystem.Theorems.Propositional.impOfNeg ψ χ
+  have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
+    DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
+  have h_neg_psi : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg :=
+    DerivationTree.assumption _ _ (by simp)
+  have h_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
+    DerivationTree.modus_ponens _ _ _ h_efq_ctx h_neg_psi
+  have h_neg_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
+    DerivationTree.assumption _ _ (by simp)
+  have h_bot : [ψ.neg, (ψ.imp χ).neg] ⊢ Formula.bot :=
+    DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+  have h_neg_neg_psi : [(ψ.imp χ).neg] ⊢ ψ.neg.neg :=
+    FormalSystem.Metalogic.Core.deductionTheorem [(ψ.imp χ).neg] ψ.neg Formula.bot h_bot
+  have h_deduct : [] ⊢ (ψ.imp χ).neg.imp ψ.neg.neg :=
+    FormalSystem.Metalogic.Core.deductionTheorem [] (ψ.imp χ).neg ψ.neg.neg h_neg_neg_psi
+  have h_dne : [] ⊢ ψ.neg.neg.imp ψ :=
+    FormalSystem.Theorems.Propositional.doubleNegation ψ
+  have h_b : [] ⊢ (ψ.neg.neg.imp ψ).imp
+      (((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ)) :=
+    FormalSystem.Theorems.Combinators.bCombinator
+  have h_step1 : [] ⊢ ((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ) :=
+    DerivationTree.modus_ponens _ _ _ h_b h_dne
+  have h_base : [] ⊢ (ψ.imp χ).neg.imp ψ :=
+    DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
+  exact h_base.lift (by cases fc <;> trivial)
+
+/-- Classical tautology: `neg (ψ → χ) → neg χ`. -/
+private noncomputable def neg_imp_neg_consequent (ψ χ : Formula) :
+    DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := by
+  have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s χ ψ) trivial
+  have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
+    DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
+  have h_chi : [χ, (ψ.imp χ).neg] ⊢ χ := DerivationTree.assumption _ _ (by simp)
+  have h_imp : [χ, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
+    DerivationTree.modus_ponens _ _ _ h_prop_s_ctx h_chi
+  have h_neg_imp : [χ, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
+    DerivationTree.assumption _ _ (by simp)
+  have h_bot : [χ, (ψ.imp χ).neg] ⊢ Formula.bot :=
+    DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+  have h_neg_chi : [(ψ.imp χ).neg] ⊢ χ.neg :=
+    FormalSystem.Metalogic.Core.deductionTheorem [(ψ.imp χ).neg] χ Formula.bot h_bot
+  have h_base : [] ⊢ (ψ.imp χ).neg.imp χ.neg :=
+    FormalSystem.Metalogic.Core.deductionTheorem [] (ψ.imp χ).neg χ.neg h_neg_chi
+  exact h_base.lift (by cases fc <;> trivial)
+
+/-! ## The re-hosted dense truth lemma
+
+Re-host of `fully_restricted_parametric_shifted_truth_lemma`
+(`RestrictedParametricTruthLemma.lean`) onto the bundle flow frame: the flow line
+`bundleFlowHistory fam w₀` at evaluation time `t` visits `(fam, w₀ + t)`, so truth at `t`
+corresponds to MCS membership at absolute time `w₀ + t` — the flow history at offset `w₀` IS
+the shifted history, and the separate "shifted" formulation dissolves. Because the carrier
+contains ONLY bundle families, the frame's full total-history set is exactly the flow-line
+family (`bundleFlow_total_eq`): internalization holds by construction, with no transfer or
+realization lemma.
+
+Case inventory: atom is definitional MCS membership; bot/imp use MCS consistency and closure;
+untl/snce use the bundle's restricted Until/Since coherence (frame-independent, preserved
+verbatim modulo the `± w₀` clock translation); box uses `parametric_box_persistent` plus
+`B.modal_forward`/`B.modal_backward`, destructuring the quantified history against
+`bundleFlowOmega`. -/
+
+/--
+**Re-hosted dense truth lemma.** For `φ ∈ subformulaClosure root`, membership of `φ` in a
+bundle family's MCS at absolute time `w₀ + t` coincides with truth of `φ` at evaluation time
+`t` along the flow line through that family at offset `w₀`.
+-/
+theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
+    (_h_rtc : B.RestrictedTemporallyCoherent root)
+    (h_buc : B.RestrictedBackwardUntilSinceCoherent root)
+    (h_fuc : B.RestrictedForwardUntilSinceCoherent root) (φ : Formula)
+    (h_sub : φ ∈ subformulaClosure root)
+    (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ t : D) :
+    φ ∈ fam.val.mcs (w₀ + t) ↔
+    TruthAt (bundleFlowModel B) (bundleFlowOmega B) (bundleFlowHistory fam w₀) t φ := by
+  induction φ generalizing fam w₀ t with
+  | atom p =>
+    simp only [TruthAt, bundleFlowModel, bundleFlowHistory, multiFamHistoryGen]
+    constructor
+    · intro h_mem
+      exact ⟨trivial, h_mem⟩
+    · intro ⟨_, h_val⟩
+      exact h_val
+  | bot =>
+    simp only [TruthAt]
+    constructor
+    · intro h_mem
+      exfalso
+      have h_cons := (fam.val.is_mcs (w₀ + t)).1
+      have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
+        DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+      exact h_cons [Formula.bot] (fun psi hpsi => by simp only
+          [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
+    · intro h; exact h.elim
+  | imp ψ χ ih_ψ ih_χ =>
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_imp_left root ψ χ h_sub
+    have h_χ_sub : χ ∈ subformulaClosure root := closure_imp_right root ψ χ h_sub
+    simp only [TruthAt]
+    have h_mcs := fam.val.is_mcs (w₀ + t)
+    constructor
+    · intro h_imp h_ψ_true
+      have h_ψ_mem := (ih_ψ h_ψ_sub fam w₀ t).mpr h_ψ_true
+      exact (ih_χ h_χ_sub fam w₀ t).mp
+        (SetMaximalConsistent.implication_property h_mcs h_imp h_ψ_mem)
+    · intro h_truth_imp
+      rcases SetMaximalConsistent.negation_complete h_mcs (ψ.imp χ) with h_imp | h_neg_imp
+      · exact h_imp
+      · exfalso
+        have h_ψ_mcs : ψ ∈ fam.val.mcs (w₀ + t) :=
+          SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
+            (by simp [h_neg_imp])
+            (DerivationTree.modus_ponens _ _ _
+              (DerivationTree.weakening [] _ _ (neg_imp_antecedent ψ χ) (by intro; simp))
+              (DerivationTree.assumption _ _ (by simp)))
+        have h_neg_χ_mcs : χ.neg ∈ fam.val.mcs (w₀ + t) :=
+          SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
+            (by simp [h_neg_imp])
+            (DerivationTree.modus_ponens _ _ _
+              (DerivationTree.weakening [] _ _ (neg_imp_neg_consequent ψ χ) (by intro; simp))
+              (DerivationTree.assumption _ _ (by simp)))
+        have h_χ_mcs : χ ∈ fam.val.mcs (w₀ + t) :=
+          (ih_χ h_χ_sub fam w₀ t).mpr (h_truth_imp ((ih_ψ h_ψ_sub fam w₀ t).mp h_ψ_mcs))
+        exact set_consistent_not_both (fam.val.is_mcs (w₀ + t)).1 χ h_χ_mcs h_neg_χ_mcs
+  | box ψ ih =>
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_box root ψ h_sub
+    constructor
+    · intro h_box σ h_σ_mem
+      obtain ⟨⟨fam', w₀'⟩, rfl⟩ := h_σ_mem
+      have h_box' : Formula.box ψ ∈ fam.val.mcs (w₀' + t) :=
+        parametric_box_persistent fam.val ψ (w₀ + t) (w₀' + t) h_box
+      have h_ψ_fam' : ψ ∈ fam'.val.mcs (w₀' + t) :=
+        B.modal_forward fam.val fam.property ψ (w₀' + t) h_box' fam'.val fam'.property
+      exact (ih h_ψ_sub fam' w₀' t).mp h_ψ_fam'
+    · intro h_all_σ
+      have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs (w₀ + t) := by
+        intro fam' hfam'
+        exact (ih h_ψ_sub ⟨fam', hfam'⟩ w₀ t).mpr
+          (h_all_σ (bundleFlowHistory ⟨fam', hfam'⟩ w₀) (bundleFlowHistory_mem_omega _ _))
+      exact B.modal_backward fam.val fam.property ψ (w₀ + t) h_all_fam
+  | untl α β ih_α ih_β =>
+    have h_α_sub : α ∈ subformulaClosure root := closure_untl_left root α β h_sub
+    have h_β_sub : β ∈ subformulaClosure root := closure_untl_right root α β h_sub
+    simp only [TruthAt]
+    obtain ⟨h_fwd_U, _⟩ := h_fuc fam.val fam.property
+    obtain ⟨h_bwd_U, _⟩ := h_buc fam.val fam.property
+    constructor
+    · intro h_U
+      obtain ⟨s, h_ts, h_α_s, h_β_guard⟩ := h_fwd_U (w₀ + t) α β h_sub h_U
+      refine ⟨s - w₀, lt_sub_iff_add_lt'.mpr h_ts, ?_, ?_⟩
+      · refine (ih_α h_α_sub fam w₀ (s - w₀)).mp ?_
+        rw [show w₀ + (s - w₀) = s from by abel]
+        exact h_α_s
+      · intro r h_tr h_rs
+        exact (ih_β h_β_sub fam w₀ r).mp
+          (h_β_guard (w₀ + r) ((add_lt_add_iff_left w₀).mpr h_tr) (lt_sub_iff_add_lt'.mp h_rs))
+    · rintro ⟨s, h_ts, h_α_s, h_β_guard⟩
+      refine h_bwd_U (w₀ + t) α β h_sub
+        ⟨w₀ + s, (add_lt_add_iff_left w₀).mpr h_ts, (ih_α h_α_sub fam w₀ s).mpr h_α_s, ?_⟩
+      intro r h_tr h_rs
+      have h_mem := (ih_β h_β_sub fam w₀ (r - w₀)).mpr
+        (h_β_guard (r - w₀) (lt_sub_iff_add_lt'.mpr h_tr) (sub_lt_iff_lt_add'.mpr h_rs))
+      rwa [show w₀ + (r - w₀) = r from by abel] at h_mem
+  | snce α β ih_α ih_β =>
+    have h_α_sub : α ∈ subformulaClosure root := closure_snce_left root α β h_sub
+    have h_β_sub : β ∈ subformulaClosure root := closure_snce_right root α β h_sub
+    simp only [TruthAt]
+    obtain ⟨_, h_fwd_S⟩ := h_fuc fam.val fam.property
+    obtain ⟨_, h_bwd_S⟩ := h_buc fam.val fam.property
+    constructor
+    · intro h_S
+      obtain ⟨s, h_st, h_α_s, h_β_guard⟩ := h_fwd_S (w₀ + t) α β h_sub h_S
+      refine ⟨s - w₀, sub_lt_iff_lt_add'.mpr h_st, ?_, ?_⟩
+      · refine (ih_α h_α_sub fam w₀ (s - w₀)).mp ?_
+        rw [show w₀ + (s - w₀) = s from by abel]
+        exact h_α_s
+      · intro r h_sr h_rt
+        exact (ih_β h_β_sub fam w₀ r).mp
+          (h_β_guard (w₀ + r) (sub_lt_iff_lt_add'.mp h_sr) ((add_lt_add_iff_left w₀).mpr h_rt))
+    · rintro ⟨s, h_st, h_α_s, h_β_guard⟩
+      refine h_bwd_S (w₀ + t) α β h_sub
+        ⟨w₀ + s, (add_lt_add_iff_left w₀).mpr h_st, (ih_α h_α_sub fam w₀ s).mpr h_α_s, ?_⟩
+      intro r h_sr h_rt
+      have h_mem := (ih_β h_β_sub fam w₀ (r - w₀)).mpr
+        (h_β_guard (r - w₀) (lt_sub_iff_add_lt'.mpr h_sr) (sub_lt_iff_lt_add'.mpr h_rt))
+      rwa [show w₀ + (r - w₀) = r from by abel] at h_mem
+
+/--
+**Re-hosted countermodel engine.** If `φ.neg` is in a bundle family's MCS at absolute time
+`w₀ + t`, then `φ` is false at evaluation time `t` along that family's flow line at offset
+`w₀`. This is the bundle-flow form of
+`fully_restricted_parametric_completeness_from_neg_membership`.
+-/
+theorem bundleFlow_completeness_from_neg_membership (B : BFMCS (fc := fc) D) (root : Formula)
+    (h_rtc : B.RestrictedTemporallyCoherent root)
+    (h_buc : B.RestrictedBackwardUntilSinceCoherent root)
+    (h_fuc : B.RestrictedForwardUntilSinceCoherent root)
+    (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
+    (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ t : D)
+    (h_neg_in : φ.neg ∈ fam.val.mcs (w₀ + t)) :
+    ¬TruthAt (bundleFlowModel B) (bundleFlowOmega B) (bundleFlowHistory fam w₀) t φ := by
+  intro h_phi_true
+  have h_phi_in :=
+    (bundleFlow_truth_lemma B root h_rtc h_buc h_fuc φ h_sub fam w₀ t).mpr h_phi_true
+  exact set_consistent_not_both (fam.val.is_mcs (w₀ + t)).1 φ h_phi_in h_neg_in
 
 end BundleFlow
 

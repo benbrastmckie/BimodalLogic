@@ -9,6 +9,7 @@ import FormalSystem.Metalogic.BXCanonical.CanonicalModel
 import FormalSystem.Metalogic.Bundle.UntilSinceCoherence
 import FormalSystem.Metalogic.Algebraic.ParametricCompleteness
 import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+import FormalSystem.Metalogic.Algebraic.FlowFrame
 import Mathlib.Algebra.Order.Ring.Rat
 import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.Order.CountableDenseLinearOrder
@@ -824,7 +825,9 @@ build a countermodel on `Rat` where `φ` is false.
 
 Uses `cantorBfmcsDense` (sorry-free BFMCS) with the three restricted
 coherence conditions. The eval family is `rootedCantorFmcsDense fc A h_mcs h_box_dense 0`
-which has `mcs 0 = A`, so `¬φ ∈ evalFamily.mcs 0`.
+which has `mcs 0 = A`, so `¬φ ∈ evalFamily.mcs 0`. The countermodel lives on the bundle
+flow frame (`Metalogic/Algebraic/FlowFrame.lean`), whose admissible-history set is
+extensionally the frame's total-history set H_F (`def:world-history`).
 -/
 theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -835,26 +838,28 @@ theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬TruthAt TM Omega τ t φ := by
+  have hfam₀ : rootedCantorFmcsDense fc A h_mcs h_box_dense 0 ∈
+      (cantorBfmcsDense fc A h_mcs h_box_dense).families :=
+    ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩
   refine ⟨Rat, inferInstance, inferInstance, inferInstance, inferInstance,
-    ParametricCanonicalTaskFrame Rat, ParametricCanonicalTaskModel Rat,
-    ShiftClosedParametricCanonicalOmega (cantorBfmcsDense fc A h_mcs h_box_dense),
-    shiftClosedParametricCanonicalOmega_is_shift_closed _,
-    parametricToHistory (rootedCantorFmcsDense fc A h_mcs h_box_dense 0),
-    parametricCanonicalOmega_subset_shiftClosed _
-      ⟨rootedCantorFmcsDense fc A h_mcs h_box_dense 0,
-       ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
+    Algebraic.bundleFlowFrame (cantorBfmcsDense fc A h_mcs h_box_dense),
+    Algebraic.bundleFlowModel (cantorBfmcsDense fc A h_mcs h_box_dense),
+    Algebraic.bundleFlowOmega (cantorBfmcsDense fc A h_mcs h_box_dense),
+    Algebraic.bundleFlowOmega_shiftClosed _,
+    Algebraic.bundleFlowHistory ⟨rootedCantorFmcsDense fc A h_mcs h_box_dense 0, hfam₀⟩ 0,
+    Algebraic.bundleFlowHistory_mem_omega _ _,
     0, ?_⟩
-  have h_neg_fam : φ.neg ∈ (rootedCantorFmcsDense fc A h_mcs h_box_dense 0).mcs 0 := by
-    rw [rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
-  exact fully_restricted_parametric_completeness_from_neg_membership
+  have h_neg_fam : φ.neg ∈ (rootedCantorFmcsDense fc A h_mcs h_box_dense 0).mcs
+      ((0 : Rat) + 0) := by
+    rw [zero_add, rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
+  exact Algebraic.bundleFlow_completeness_from_neg_membership
     (cantorBfmcsDense fc A h_mcs h_box_dense) φ
     (cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
     (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense φ)
     (cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense φ)
     φ (self_mem_subformulaClosure φ)
-    (rootedCantorFmcsDense fc A h_mcs h_box_dense 0)
-    ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
+    ⟨rootedCantorFmcsDense fc A h_mcs h_box_dense 0, hfam₀⟩ 0 0 h_neg_fam
 
 /-! ## Discrete Case: Z-Isomorphism from U(⊤,⊥)
 
