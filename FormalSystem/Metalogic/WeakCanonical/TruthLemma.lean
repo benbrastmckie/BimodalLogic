@@ -38,8 +38,8 @@ The dead truth-lemma cluster formerly in this file (`reflCanTruth`,
 `until_backward_mcs`, `since_forward_mcs`, `since_backward_mcs`,
 `truth_lemma` — 12 declarations, 6 documented sorries, zero external
 consumers) was archived to
-`Boneyard/SorriedDeclExcisions/WeakTruthLemmaCluster.lean`. The parametric
-truth lemma (ParametricTruthLemma.lean) is the live truth-lemma path,
+`Boneyard/SorriedDeclExcisions/WeakTruthLemmaCluster.lean`. The flow-frame
+re-hosted truth lemma (Algebraic/FlowFrame.lean) is the live truth-lemma path,
 handling Until/Since via BFMCS coherence.
 -/
 namespace FormalSystem.Metalogic.WeakCanonical

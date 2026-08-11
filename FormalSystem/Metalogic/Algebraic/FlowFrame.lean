@@ -5,9 +5,10 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.TaskFrame
-import FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+import FormalSystem.Semantics.Truth
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import FormalSystem.Syntax.SubformulaClosure.TemporalFormulas
+import FormalSystem.Theorems.Propositional.Core
 
 /-!
 # FlowFrame - Generic Flow-Frame Conformance and Totality Layer
@@ -87,7 +88,6 @@ open FormalSystem.ProofSystem
 open FormalSystem.Semantics
 open FormalSystem.Metalogic.Core
 open FormalSystem.Metalogic.Bundle
-open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
 
 /-! ## The generic Spherical helper
 
@@ -445,10 +445,9 @@ theorem bundleFlowHistory_mem_omega {B : BFMCS (fc := fc) D}
 
 /-! ## Helper tautologies for the implication case
 
-Classical propositional facts about `neg (ψ → χ)`. These duplicate the *private* helpers
-`neg_imp_implies_antecedent` / `neg_imp_implies_neg_consequent` of
-`RestrictedParametricTruthLemma.lean`, which are not exported. The proofs are transcribed from
-there unchanged; nothing in the original file is edited or weakened. -/
+Classical propositional facts about `neg (ψ → χ)`, transcribed unchanged from the private
+helpers of the retired restricted parametric truth-lemma module (deleted with the rest of the
+parametric canonical stack; this module's truth lemma is its replacement). -/
 
 /-- Classical tautology: `neg (ψ → χ) → ψ`. -/
 private noncomputable def neg_imp_antecedent (ψ χ : Formula) :
@@ -500,10 +499,53 @@ private noncomputable def neg_imp_neg_consequent (ψ χ : Formula) :
     FormalSystem.Metalogic.Core.deductionTheorem [] (ψ.imp χ).neg χ.neg h_neg_chi
   exact h_base.lift (by cases fc <;> trivial)
 
+/-! ## Box persistence
+
+`□φ` in an FMCS at one time is `□φ` at every time, via the TF axiom (`□φ → G□φ`) and its
+temporal dual (`□φ → H□φ`). Relocated from the superseded parametric truth-lemma module;
+purely MCS-level, frame-independent. -/
+
+/-- Past analog of TF axiom: `□φ → H(□φ)`, derived via temporal duality. -/
+private def past_tf_deriv (φ : Formula) :
+    DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).allPast) := by
+  have h_tf_swap : DerivationTree fc [] _ :=
+      FormalSystem.Theorems.Combinators.temporalFutureDerived (Formula.swapTemporal φ)
+  have h_dual := DerivationTree.temporal_duality _ h_tf_swap
+  have h_eq : Formula.swapTemporal ((Formula.box (Formula.swapTemporal φ)).imp
+      (Formula.box (Formula.swapTemporal φ)).allFuture) =
+    (Formula.box φ).imp (Formula.box φ).allPast := by
+    simp [Formula.swapTemporal, Formula.swap_temporal_involution]
+  rw [h_eq] at h_dual
+  exact h_dual
+
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
+/-- `□φ` at time `t` implies `□φ` at every time `s`, for any FMCS family.
+
+The proof uses the TF axiom (`□φ → G□φ`), its temporal dual (`□φ → H□φ`), and
+`forward_G`/`backward_H` to extract `□φ` at the target time. -/
+theorem fmcs_box_persistent
+    (fam : FMCS (fc := fc) D)
+    (φ : Formula) (t s : D)
+    (h_box : Formula.box φ ∈ fam.mcs t) :
+    Formula.box φ ∈ fam.mcs s := by
+  have h_tf : (Formula.box φ).imp (Formula.box φ).allFuture ∈ fam.mcs t :=
+    theorem_in_mcs (fam.is_mcs t) (FormalSystem.Theorems.Combinators.temporalFutureDerived φ)
+  have h_G_box : (Formula.box φ).allFuture ∈ fam.mcs t :=
+    SetMaximalConsistent.implication_property (fam.is_mcs t) h_tf h_box
+  have h_past_tf : (Formula.box φ).imp (Formula.box φ).allPast ∈ fam.mcs t :=
+    theorem_in_mcs (fam.is_mcs t) (past_tf_deriv φ)
+  have h_H_box : (Formula.box φ).allPast ∈ fam.mcs t :=
+    SetMaximalConsistent.implication_property (fam.is_mcs t) h_past_tf h_box
+  rcases lt_trichotomy t s with h_lt | h_eq | h_gt
+  · exact fam.forward_G t s (Formula.box φ) h_lt h_G_box
+  · exact h_eq ▸ h_box
+  · exact fam.backward_H t s (Formula.box φ) h_gt h_H_box
+
 /-! ## The re-hosted dense truth lemma
 
-Re-host of `fully_restricted_parametric_shifted_truth_lemma`
-(`RestrictedParametricTruthLemma.lean`) onto the bundle flow frame: the flow line
+Re-host of the fully-restricted parametric shifted truth lemma (from the retired restricted
+parametric truth-lemma module, deleted with the parametric canonical stack whose frame
+violated `def:frame#Limit` over dense duration types) onto the bundle flow frame: the flow line
 `bundleFlowHistory fam w₀` at evaluation time `t` visits `(fam, w₀ + t)`, so truth at `t`
 corresponds to MCS membership at absolute time `w₀ + t` — the flow history at offset `w₀` IS
 the shifted history, and the separate "shifted" formulation dissolves. Because the carrier
@@ -513,7 +555,7 @@ realization lemma.
 
 Case inventory: atom is definitional MCS membership; bot/imp use MCS consistency and closure;
 untl/snce use the bundle's restricted Until/Since coherence (frame-independent, preserved
-verbatim modulo the `± w₀` clock translation); box uses `parametric_box_persistent` plus
+verbatim modulo the `± w₀` clock translation); box uses `fmcs_box_persistent` plus
 `B.modal_forward`/`B.modal_backward`, destructuring the quantified history against
 `bundleFlowOmega`. -/
 
@@ -584,7 +626,7 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
     · intro h_box σ h_σ_mem
       obtain ⟨⟨fam', w₀'⟩, rfl⟩ := h_σ_mem
       have h_box' : Formula.box ψ ∈ fam.val.mcs (w₀' + t) :=
-        parametric_box_persistent fam.val ψ (w₀ + t) (w₀' + t) h_box
+        fmcs_box_persistent fam.val ψ (w₀ + t) (w₀' + t) h_box
       have h_ψ_fam' : ψ ∈ fam'.val.mcs (w₀' + t) :=
         B.modal_forward fam.val fam.property ψ (w₀' + t) h_box' fam'.val fam'.property
       exact (ih h_ψ_sub fam' w₀' t).mp h_ψ_fam'

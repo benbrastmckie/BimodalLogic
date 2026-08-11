@@ -51,11 +51,7 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 open FormalSystem.Metalogic.Bundle
-open FormalSystem.Metalogic.Algebraic.ParametricCanonical
-open FormalSystem.Metalogic.Algebraic.ParametricHistory
-open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
-open FormalSystem.Metalogic.Algebraic.ParametricCompleteness
-open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic
 open FormalSystem.Semantics
 open FormalSystem.Theorems.Propositional
 open FormalSystem.Theorems.Combinators
@@ -1177,7 +1173,7 @@ noncomputable def cantorBfmcsDiscrete (fc : FrameClass) (A : Set Formula)
 /-! ## Discrete Restricted Coherence
 
 Restricted temporal and Until/Since coherence for `cantorBfmcsDiscrete`.
-These are the three conditions needed by the parametric completeness theorem.
+These are the three conditions needed by the flow-frame completeness engine (`bundleFlow_completeness_from_neg_membership`).
 
 The key technique: for backward coherence (BUC), the squeeze lemma maps C4
 counterexample witnesses back to integers. For forward coherence (TC, FUC),

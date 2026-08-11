@@ -8,28 +8,26 @@ import FormalSystem.Metalogic.Algebraic.BooleanStructure
 import FormalSystem.Metalogic.Algebraic.FlowFrame
 import FormalSystem.Metalogic.Algebraic.InteriorOperators
 import FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
-import FormalSystem.Metalogic.Algebraic.ParametricCanonical
-import FormalSystem.Metalogic.Algebraic.ParametricCompleteness
-import FormalSystem.Metalogic.Algebraic.ParametricHistory
-import FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
-import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import FormalSystem.Metalogic.Algebraic.UltrafilterMCS
 
 /-!
-# Metalogic.Algebraic: The Parametric/Algebraic Completeness Route
+# Metalogic.Algebraic: The Algebraic Layer and the Flow-Frame Engine
 
-Aggregator for `Metalogic/Algebraic/`. This is one of the three completeness
-developments in the tree; it works through the Lindenbaum-Tarski quotient algebra
-and a parametric canonical model rather than through an explicit chronicle.
+Aggregator for `Metalogic/Algebraic/`. This directory hosts the Lindenbaum-Tarski quotient
+algebra and the flow-frame countermodel engine consumed by the chronicle route.
+
+The former parametric canonical model (`ParametricCanonical`/`ParametricHistory`/
+`ParametricTruthLemma`/`RestrictedParametricTruthLemma`/`ParametricCompleteness`) violated
+the frame definition's *Limit* axiom (`def:frame#Limit`) over dense duration types and has
+been deleted; its truth lemma is re-hosted on `bundleFlowFrame` in `FlowFrame.lean`.
 
 ## Contents
 
 - `BooleanStructure`, `LindenbaumQuotient`, `InteriorOperators` — the quotient algebra
   and the modal operators on it
 - `UltrafilterMCS` — the ultrafilter/MCS correspondence
-- `ParametricCanonical`, `ParametricHistory` — the parametric canonical model
-- `ParametricTruthLemma`, `RestrictedParametricTruthLemma`, `ParametricCompleteness` —
-  the truth lemma and the completeness result
+- `FlowFrame` — the generic multi-family flow frame, its four-axiom conformance and
+  totality layer, the bundle flow frame/model, and the re-hosted dense truth lemma
 
 ## Position in the Layering
 

@@ -345,9 +345,9 @@ No source: original work. -/
 /-! ### Helper tautologies for the implication case
 
 Classical propositional facts about `neg (ψ → χ)`. These duplicate the *private* helpers
-`neg_imp_implies_antecedent` / `neg_imp_implies_neg_consequent` of
-`Algebraic/RestrictedParametricTruthLemma.lean`, which are not exported. The proofs are
-transcribed from there unchanged; nothing in the original file is edited or weakened. -/
+`neg_imp_antecedent` / `neg_imp_neg_consequent` of `Algebraic/FlowFrame.lean` (originally of
+the retired restricted parametric truth-lemma module), which are not exported. The proofs are
+transcribed unchanged; nothing in the source file is edited or weakened. -/
 
 /-- Classical tautology: `neg (ψ → χ) → ψ`. -/
 private noncomputable def neg_imp_antecedent {fc : FrameClass} (ψ χ : Formula) :

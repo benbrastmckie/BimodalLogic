@@ -36,14 +36,15 @@ supplementary infrastructure, not required for the current proof architecture.
 |--------|---------|--------|
 | `UltrafilterFrame.lean` | R_G/R_H/R_Box, UltrafilterChain, F/P resolution | **Archived** (2 sorries for temp_4) |
 
-### Parametric Infrastructure
+### Flow-Frame Countermodel Engine
 | Module | Purpose | Status |
 |--------|---------|--------|
-| `ParametricHistory.lean` | Parametric history infrastructure | **Sorry-free** |
-| `ParametricTruthLemma.lean` | Parametric truth lemma | **Sorry-free** |
-| `ParametricCanonical.lean` | Parametric canonical model | **Sorry-free** |
-| `ParametricCompleteness.lean` | Parametric completeness theorem | **Sorry-free** |
-| `RestrictedParametricTruthLemma.lean` | Restricted parametric truth lemma | **Sorry-free** |
+| `FlowFrame.lean` | Generic multi-family flow frame, four-axiom conformance + totality layer, bundle flow frame/model, re-hosted dense truth lemma | **Sorry-free** |
+
+The former parametric canonical stack (`ParametricHistory`/`ParametricTruthLemma`/
+`ParametricCanonical`/`ParametricCompleteness`/`RestrictedParametricTruthLemma`) is deleted:
+its frame violated the frame definition's *Limit* axiom over dense duration types, and its
+truth lemma is re-hosted on `bundleFlowFrame` in `FlowFrame.lean`.
 
 ### Chain Constructions (Archived to Boneyard/ChainCompleteness)
 | Module | Purpose | Status |
@@ -71,20 +72,15 @@ Boolean Algebra Path:
                          v
            AlgebraicRepresentation
 
-Completeness Path:
+Completeness Path (current):
 
-    UltrafilterChain ──> ParametricHistory ──> ParametricTruthLemma
-                                                        │
-                                                        v
-                                              ParametricRepresentation
-                                                        │
-                              DeterministicChain ───────>│
-                                                        v
-                                              DeterministicFMCS
-                                                        │
-                                    FiniteDeferral ────>│
-                                                        v
-                                              (Completeness wiring)
+    FlowFrame (generic frame + conformance + totality)
+        │
+        v
+    FlowFrame (bundleFlowFrame/Model/Omega + re-hosted truth lemma)
+        │
+        v
+    BXCanonical countermodels (Completeness.lean, CompletenessDedekind.lean)
 ```
 
 ## Key Definitions

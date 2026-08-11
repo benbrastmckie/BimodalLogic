@@ -338,18 +338,33 @@ additional live site found joins this phase's batch.
 
 ---
 
-### Phase 4: Superseded-parametric cleanup [NOT STARTED]
+### Phase 4: Superseded-parametric cleanup [COMPLETED]
 
 **Goal**: Remove (or confine to Boneyard) the parametric modules the re-host orphaned, so the
 live tree has one dense countermodel engine.
 
 **Tasks**:
-- [ ] Enumerate remaining consumers of `ParametricCanonicalTaskFrame`
+- [x] Enumerate remaining consumers of `ParametricCanonicalTaskFrame`
       (`ParametricCanonical.lean:207`), `ParametricHistory.lean`'s Omega definitions,
-      `ParametricTruthLemma.lean`, and `ParametricCompleteness.lean`
-- [ ] Delete each module (or module section) with zero live consumers; retain anything the
-      restricted truth lemma's re-host still genuinely consumes
-- [ ] Update module docstrings/imports accordingly (no task-number references in deliverables)
+      `ParametricTruthLemma.lean`, and `ParametricCompleteness.lean` *(per-symbol grep over
+      every declaration of all four modules plus `RestrictedParametricTruthLemma.lean`:
+      external consumers were exactly (a) `fmcs_box_persistent` (né `parametric_box_persistent`,
+      a pure FMCS lemma) consumed by the re-hosted truth lemma, and (b)
+      `fc_theorem_true_in_parametric_model` in `Bundle/LimitMCS.lean`, itself zero-consumer)*
+- [x] Delete each module (or module section) with zero live consumers; retain anything the
+      restricted truth lemma's re-host still genuinely consumes *(deviation: altered — all
+      FIVE parametric modules deleted, including `RestrictedParametricTruthLemma.lean` (not in
+      the enumerated four but the literally-superseded module; keeping it would have kept the
+      whole stack alive as its consumer). Retained content relocated: `parametric_box_persistent`
+      + private `past_tf_deriv` moved into `FlowFrame.lean` as `fmcs_box_persistent`;
+      `fc_theorem_true_in_parametric_model` re-hosted as `fc_theorem_true_in_bundle_flow_model`
+      per the plan's restate-the-consumer contingency. Also swept the Phase-2-orphaned
+      `unboundedZIntervalEquiv` (`Transfer.lean`))*
+- [x] Update module docstrings/imports accordingly (no task-number references in deliverables)
+      *(imports/opens purged from `Transfer.lean`, `ChronicleToCountermodelBasic.lean`,
+      `ChronicleToCountermodel.lean`, `LimitMCS.lean`, `Algebraic.lean`; prose updated in
+      `Metalogic.lean`, `WeakCanonical/TruthLemma.lean`, `Bundle/FMCSDef.lean`,
+      `ChronicleConstruction.lean`, `ChronicleMonadicBridge.lean`, `Algebraic/README.md`)*
 
 **Timing**: 1 hour
 

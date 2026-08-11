@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Bundle.FMCSDef
-import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+import FormalSystem.Metalogic.Algebraic.FlowFrame
 import Mathlib.Algebra.Order.Archimedean.Real.Basic
 import Mathlib.Order.Filter.Ultrafilter.Basic
 
@@ -439,32 +439,26 @@ theorem limitMCSBelow_is_mcs {fc : FrameClass} (m : Rat → Set Formula)
     exact ((hm q).negation_complete φ).resolve_left hq
   exact set_consistent_not_both hins φ (Set.mem_insert _ _) (Set.mem_insert_of_mem _ hneg)
 
-/-! ## Theorems of the frame class are true in the parametric canonical model -/
+/-! ## Theorems of the frame class are true in the bundle flow model -/
 
-open FormalSystem.Metalogic.Algebraic.ParametricCanonical
-open FormalSystem.Metalogic.Algebraic.ParametricHistory
-open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
-open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic
 open FormalSystem.Semantics
 
 /--
 **Every theorem of `fc` inside the root's subformula closure is true at every point of the
-parametric canonical model.**
+bundle flow model.**
 
 The one-line composition of `theorem_in_mcs` (`Core/MaximalConsistent.lean`) with the forward
-direction of `fully_restricted_parametric_shifted_truth_lemma`
-(`Algebraic/RestrictedParametricTruthLemma.lean`). This is how a frame-class theorem — Prior-U,
-Prior-S or Sep, for instance — gets from membership in every maximal consistent set to truth in
-the model.
+direction of `bundleFlow_truth_lemma` (`Algebraic/FlowFrame.lean`). This is how a frame-class
+theorem — Prior-U, Prior-S or Sep, for instance — gets from membership in every maximal
+consistent set to truth in the model.
 
-The *fully restricted* truth lemma is used deliberately. Its unrestricted sibling
-`parametric_shifted_truth_lemma` (`Algebraic/ParametricTruthLemma.lean`) is stated at
-`BFMCS D`, whose `fc` argument takes its default value `FrameClass.Base`, so it is not
-available at `FrameClass.Dedekind`; and it demands unrestricted Until/Since coherence, which
-the back-and-forth chronicle does not supply. The price is the `h_sub` hypothesis: the theorem
-must lie in `subformulaClosure root`.
+The *restricted* truth lemma is used deliberately: it demands only root-restricted Until/Since
+coherence, which the back-and-forth chronicle supplies. The price is the `h_sub` hypothesis:
+the theorem must lie in `subformulaClosure root`. Note `D` is `Type` (not `Type*`), matching
+the flow-frame carrier.
 -/
-theorem fc_theorem_true_in_parametric_model {fc : FrameClass} {D : Type*}
+theorem fc_theorem_true_in_bundle_flow_model {fc : FrameClass} {D : Type}
     [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (B : BFMCS (fc := fc) D) (root : Formula)
     (h_rtc : B.RestrictedTemporallyCoherent root)
@@ -472,11 +466,9 @@ theorem fc_theorem_true_in_parametric_model {fc : FrameClass} {D : Type*}
     (h_fuc : B.RestrictedForwardUntilSinceCoherent root)
     (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
     (h_deriv : DerivationTree fc [] φ)
-    (fam : FMCS (fc := fc) D) (hfam : fam ∈ B.families) (t : D) :
-    TruthAt (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
-      (parametricToHistory fam) t φ :=
-  (fully_restricted_parametric_shifted_truth_lemma B root h_rtc h_buc h_fuc φ h_sub
-      fam hfam t).mp
-    (theorem_in_mcs (fam.is_mcs t) h_deriv)
+    (fam : FMCS (fc := fc) D) (hfam : fam ∈ B.families) (w₀ t : D) :
+    TruthAt (bundleFlowModel B) (bundleFlowOmega B) (bundleFlowHistory ⟨fam, hfam⟩ w₀) t φ :=
+  (bundleFlow_truth_lemma B root h_rtc h_buc h_fuc φ h_sub ⟨fam, hfam⟩ w₀ t).mp
+    (theorem_in_mcs (fam.is_mcs (w₀ + t)) h_deriv)
 
 end FormalSystem.Metalogic.Bundle

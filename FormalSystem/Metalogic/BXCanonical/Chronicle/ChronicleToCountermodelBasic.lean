@@ -7,8 +7,6 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleConstruction
 import FormalSystem.Metalogic.BXCanonical.CanonicalModel
 import FormalSystem.Metalogic.Bundle.UntilSinceCoherence
-import FormalSystem.Metalogic.Algebraic.ParametricCompleteness
-import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import FormalSystem.Metalogic.Algebraic.FlowFrame
 import Mathlib.Algebra.Order.Ring.Rat
 import Mathlib.Algebra.Order.Archimedean.Basic
@@ -60,11 +58,7 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 open FormalSystem.Metalogic.Bundle
-open FormalSystem.Metalogic.Algebraic.ParametricCanonical
-open FormalSystem.Metalogic.Algebraic.ParametricHistory
-open FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
-open FormalSystem.Metalogic.Algebraic.ParametricCompleteness
-open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+open FormalSystem.Metalogic.Algebraic
 open FormalSystem.Semantics
 open FormalSystem.Theorems.Propositional
 open FormalSystem.Theorems.Combinators
@@ -616,7 +610,7 @@ noncomputable def cantorBfmcsDense (fc : FrameClass) (A : Set Formula)
 /-! ## Dense Restricted Coherence
 
 Restricted temporal and Until/Since coherence for `cantorBfmcsDense`.
-These are the three conditions needed by the parametric completeness theorem.
+These are the three conditions needed by the flow-frame completeness engine (`bundleFlow_completeness_from_neg_membership`).
 -/
 
 /--

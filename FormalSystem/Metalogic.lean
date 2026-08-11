@@ -56,7 +56,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 The completeness proof uses a three-way case split based on MCS membership:
 
 1. **Dense case** (Box(F'T) in M): Countermodel on Rat via Cantor isomorphism
-   (Chronicle/ChronicleToCountermodel.lean, Algebraic/ParametricCompleteness.lean)
+   (Chronicle/ChronicleToCountermodel.lean, Algebraic/FlowFrame.lean)
 2. **Discrete case** (Box(U(T,bot)) in M): Countermodel on Int
    (WeakCanonical/Transfer.lean)
 3. **Mixed case**: Eliminated by `mcs_mixed_case_absurd`
@@ -71,7 +71,7 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
 
 ### Key Components
 
-- **Algebraic/ParametricTruthLemma**: D-parametric truth lemma (core of countermodel)
+- **Algebraic/FlowFrame**: generic flow frame, four-axiom conformance, and the D-generic re-hosted truth lemma (core of countermodel)
 - **BXCanonical/Chronicle/**: Burgess 1982 chronicle construction for dense case
 - **WeakCanonical/**: Reynolds/Doets pipeline for discrete case
 - **WeakCanonical/DenseModelSurgery/**, **WeakCanonical/RealModel/**: Reynolds Sections 6-8
@@ -103,7 +103,7 @@ File and line counts exclude BOTH Boneyards (there are two -- see
 Metalogic/
 ├── Core/                    4 files   # MCS theory, Lindenbaum, deduction theorem
 ├── Bundle/                 12 files   # BFMCS canonical-frame construction
-├── Algebraic/               9 files   # Parametric/algebraic completeness route
+├── Algebraic/               5 files   # Quotient algebra + flow-frame countermodel engine
 ├── BXCanonical/            20 files   # Chronicle completeness route -- the wired entry point
 │   ├── Chronicle/           8 files   # Burgess chronicle construction
 │   ├── Quasimodel/          5 files   # Hintikka points, realization

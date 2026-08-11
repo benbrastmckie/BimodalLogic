@@ -26,7 +26,7 @@ proper temporal model construction, `D` should be a temporal domain such as:
 **Active Implementations**:
 - `BXCanonical/CanonicalModel.lean` uses D=Int for discrete completeness
 - `BXCanonical/Chronicle/` uses D=Rat for dense completeness (Burgess 1982)
-- `Algebraic/ParametricCanonical.lean` provides D-parametric infrastructure
+- `Algebraic/FlowFrame.lean` provides the D-generic flow-frame infrastructure
 
 **WARNING: W=D Conflation Error**: Never conflate world states (MCS)
 with time indices. World states describe WHAT is true; time indices describe WHEN.

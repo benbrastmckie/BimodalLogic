@@ -1092,7 +1092,7 @@ theorem h_content_sub_imp_g_content_sub {fc : FrameClass} {A B : Set Formula}
 
 /-! ## Forward_G / Backward_H for Domain Points
 
-The key coherence properties for the truth lemma (ParametricTruthLemma.lean).
+The key coherence properties for the truth lemma (Algebraic/FlowFrame.lean).
 The FMCS structure requires forward_G as a field (it IS an input to the
 truth lemma, not a consequence).
 

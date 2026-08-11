@@ -7,10 +7,6 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
 import FormalSystem.Metalogic.WeakCanonical.OrderedSum
-import FormalSystem.Metalogic.Algebraic.ParametricCanonical
-import FormalSystem.Metalogic.Algebraic.ParametricHistory
-import FormalSystem.Metalogic.Algebraic.ParametricCompleteness
-import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 import FormalSystem.Metalogic.WeakCanonical.Expressiveness.Theorem6
 import FormalSystem.Semantics.Validity
@@ -47,8 +43,6 @@ namespace FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
-open FormalSystem.Metalogic.Algebraic.ParametricCanonical
-open FormalSystem.Metalogic.Algebraic.ParametricHistory
 open FormalSystem.Semantics
 
 /-! ## Signature and Atom Map Construction -/
@@ -533,26 +527,6 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
       obtain ⟨s, hst, hφ₁s, h_guard⟩ := M.since_coherent_fwd t φ₁ φ₂ h_since
       refine ⟨s, hst, (ih₁ s h_sec1).mpr hφ₁s, fun r hsr hrt =>
         (ih₂ r h_sec2).mpr (h_guard r hsr hrt)⟩
-
-/-! ## Z-Interval to TaskFrame Int Bridge -/
-
-/--
-A Z-interval structure with `lo = none` and `hi = none` has carrier
-isomorphic to ℤ (since every integer satisfies the trivial bounds).
--/
-noncomputable def unboundedZIntervalEquiv {sig : MonadicSignature} [Fintype sig.preds]
-    [DecidableEq sig.preds]
-    (Z : ZIntervalStructure sig) (h_lo : Z.lo = none) (h_hi : Z.hi = none) :
-    Z.intervalCarrier ≃o ℤ :=
-  Equiv.toOrderIso
-    { toFun := fun x => x.val
-      invFun := fun z => ⟨z, by
-        simp only [h_lo, h_hi]
-        exact ⟨trivial, trivial⟩⟩
-      left_inv := fun ⟨_, _⟩ => rfl
-      right_inv := fun _ => rfl }
-    (fun _ _ h => h)
-    (fun _ _ h => h)
 
 /-! ## Discrete Pipeline: No Gaps on Integers
 
