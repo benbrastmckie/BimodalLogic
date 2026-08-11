@@ -26,14 +26,26 @@ histories that `valid` quantifies over.
 so refuting it means producing a **shift-closed** `Ω`. That is not a formality, and it decides
 the shape of everything below.
 
-### Consequence 1: `Ω = Set.univ` is unusable
+### Consequence 1: `Ω = Set.univ` is unusable, but `Ω = H_F` is exactly right
 
 `Set.univ` is shift-closed, and the plan named it as the fallback, but it cannot be used here.
-`Set.univ` contains the empty history (`domain := fun _ => False`, all other fields vacuous), at
-which every atom is false. `TruthAt … (box φ)` is a universal over `Ω` at a fixed time, so a
-single such history falsifies `□p` outright and no branch carrying `T(□p)` could ever be
-satisfied. `Ω` is therefore taken to be a *range*: exactly the histories the branch calls for,
-and their time-translates.
+`Set.univ` ranges over *all* world histories, partial ones included, and a history whose domain
+omits the evaluation point carries no state there. `TruthAt … (box φ)` is a universal over `Ω`
+at a fixed time, so a single such history falsifies `□p` outright and no branch carrying `T(□p)`
+could ever be satisfied.
+
+The fix is **totality**, not a hand-picked range. Since `regionFrame`'s task relation is the
+deterministic clock (see "The frame" below), a total history is pinned by its state at time `0`:
+`regionFrame_total_eq` shows every total history *is* some `regionHistory f w Δ`, and
+`regionOmega_eq_total` records the resulting set equation `regionOmega f = H_F`. So `Ω` may be
+read either as the range the branch calls for or as the frame's total-history set — they are the
+same set, and the box clause quantifying over `H_F` is a rewrite rather than a change of content.
+
+This is what the earlier, maximally-permissive task relation `TaskRel s d s' := d = 0 → s = s'`
+could not deliver: above zero it constrained nothing, so *any* assignment of states to all of
+`D` was a legal total history and `H_F` was the full function space — strictly larger than the
+intended family. Totality fixed the empty-history problem but not the junk-history problem, and
+`Ω` had to be given as an explicit range because `H_F` was too big to use.
 
 ### Consequence 2: `□` is the universal modality
 
@@ -69,25 +81,36 @@ region-mates and forces `τ.states (r + Δ) = τ.states (r' + Δ)` for cofinitel
 `τ.states` constant. A history with constant states cannot separate two times, so no branch
 asserting `T(p) @ t₁` and `F(p) @ t₂` in one world could be satisfied.
 
-`regionConstant_regionHistory_zero` therefore proves region-constancy for the **base** history
-only, and `not_regionConstant_regionHistory_one` exhibits a translate that is genuinely not
-region-constant (`D = ℚ`, one placed point at `0`, `Δ = 1`, region-mates `-1/2` and `-2` whose
-translates `1/2` and `-1` straddle the placed point). The truth induction Phase 7 runs is
-consequently the **per-history** form `InterpInvariantAt` (`Bridge/TruthLemma.lean`), whose
-`box` case is discharged by `truthAt_box_iff` instead of by an induction hypothesis at every
-history. This is a correction to the Phase 6 → Phase 7 interface, not a re-opening of Phase 6:
-every region lemma in `Interpolate.lean` is consumed unchanged.
+Under the deterministic re-host the situation is sharper still: **no** history is region-constant,
+the base history included. `not_regionConstant_regionHistory` proves this for every offset, and
+`not_regionConstant_regionHistory_one` keeps the concrete witness on record (`D = ℚ`, one placed
+point at `0`, `Δ = 1`, region-mates `-1/2` and `-2`). A deterministic task relation propagates a
+state along the clock, so a region-constant history would repeat a state at two distinct times
+and be periodic, which the clock forbids.
+
+Region-invariance therefore lives on the **valuation** rather than on histories: `M.V` factors
+through `regionCode f` applied to the time component of a state. The truth induction Phase 7
+runs is the **per-history** form `InterpInvariantAt` (`Bridge/TruthLemma.lean`), whose `box`
+case is discharged by `truthAt_box_iff` instead of by an induction hypothesis at every history,
+and whose `atom` case now takes its region hypothesis from the valuation. This is a correction
+to the Phase 6 → Phase 7 interface, not a re-opening of Phase 6: every region lemma in
+`Interpolate.lean` is consumed unchanged.
 
 ## The frame
 
-`regionFrame W ι D` has states `W × (Set ι × Set ι)` — a branch world paired with a region code
-(`regionCode`, `Interpolate.lean`) — and the weakest task relation the `TaskFrame` axioms allow,
-`TaskRel s d s' := d = 0 → s = s'`. `nullity_identity` forces at least this much, and asking for
-no more keeps `respects_task` free for every history built below. A universal `TaskRel` is *not*
-available: `nullity_identity` is an iff, so `TaskRel w 0 u` must imply `w = u`.
+`regionFrame W ι D` has states `W × D` — a branch world paired with a time — and the
+deterministic clock relation `TaskRel s d s' := s.1 = s'.1 ∧ s'.2 = s.2 + d`, the structural
+analogue of `multiFamTaskFrameGen` (`Metalogic/Algebraic/FlowFrame.lean`). Determinism is what
+makes totality sufficient (Consequence 1 above): `respects_task` propagates the state at time
+`0` along the clock, so a total history has no freedom left.
 
-Pairing the world with a region *code* rather than with the raw time is what makes
-`RegionConstant` provable at the base history: the code is by construction constant on regions.
+`ι` survives as a parameter of the frame without occurring in its state space, and the placement
+`f : ι → D` survives as a parameter of `regionHistory` and `regionOmega` without occurring in
+the states. This keeps the admissible-set interface unchanged while the region structure moves
+where determinism forces it to go — into the **valuation**, which reads `regionCode f`
+(`Interpolate.lean`) off the time component of a state. `RegionConstant` is correspondingly no
+longer provable of any history (`not_regionConstant_regionHistory`); region-invariance of atomic
+truth is now a property of `M.V`, not of a history's states.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.Verified.Bridge
@@ -122,45 +145,52 @@ theorem worldHistory_ext {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrdered
 
 section Frame
 
-variable (W ι D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-
+set_option linter.unusedVariables false in
 /--
-The countermodel's frame: a state is a branch world together with a region code, and the task
-relation is the weakest one `nullity_identity` permits.
+The countermodel's frame: a state is a branch world together with a **time**, and the task
+relation is the deterministic clock `(w, x) ⇒_d (w, x + d)` — the structural analogue of
+`multiFamTaskFrameGen` (`Metalogic/Algebraic/FlowFrame.lean`).
 
-Weakest is deliberate. `respects_task` is the only constraint a history must satisfy, and with
-this relation it reduces to "equal times carry equal states", which is free. Anything stronger
-would restrict which region-code assignments are legal histories without buying anything: the
-admissible set `Ω` is given as an explicit range, not carved out by the frame.
+Deterministic is deliberate, and it is a change from the earlier weakest-possible relation
+`TaskRel s d s' := d = 0 → s = s'`. That relation was maximally permissive above zero, so *any*
+assignment of states to all of `D` was a legal total history: the frame's total-history set
+`H_F` was the full function space, strictly larger than the intended `regionHistory` family, and
+`regionOmega = H_F` was therefore false. Under the clock relation, `respects_task` propagates
+the state at time `0` to every other time (`regionFrame_total_eq`), so totality *alone* pins the
+history and `regionOmega_eq_total` holds.
+
+The region structure has correspondingly moved out of the state and into the valuation: a state
+no longer carries a region code, and region-invariance of atomic truth is imposed on the
+valuation rather than read off the history's states. `ι` and the placement `f` are retained as
+parameters throughout this file so that the admissible-set interface below keeps its shape.
 -/
-def regionFrame : TaskFrame D where
-  WorldState := W × (Set ι × Set ι)
-  TaskRel := fun s d s' => d = 0 → s = s'
+def regionFrame (W ι D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+    TaskFrame D where
+  WorldState := W × D
+  TaskRel := fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d
   nullity_identity := by
-    intro w u
-    exact ⟨fun h => h rfl, fun h _ => h⟩
-  forward_comp := by
-    intro w u v x y hx hy h₁ h₂ hxy
-    have hx0 : x = 0 := by
-      have : x ≤ x + y := le_add_of_nonneg_right hy
-      rw [hxy] at this
-      exact le_antisymm this hx
-    have hy0 : y = 0 := by
-      have : y ≤ x + y := le_add_of_nonneg_left hx
-      rw [hxy] at this
-      exact le_antisymm this hy
-    exact (h₁ hx0).trans (h₂ hy0)
-  converse := by
-    intro w d u
+    intro s s'
     constructor
-    · intro h hd
-      exact (h (neg_eq_zero.mp hd)).symm
-    · intro h hd
-      exact (h (by rw [hd, neg_zero])).symm
+    · rintro ⟨h₁, h₂⟩
+      refine Prod.ext h₁ ?_
+      rw [h₂, add_zero]
+    · rintro rfl
+      exact ⟨rfl, (add_zero _).symm⟩
+  forward_comp := by
+    rintro s u v x y _ _ ⟨h₁, h₂⟩ ⟨h₃, h₄⟩
+    exact ⟨h₁.trans h₃, by rw [h₄, h₂, add_assoc]⟩
+  converse := by
+    intro s d s'
+    constructor
+    · rintro ⟨h₁, h₂⟩
+      exact ⟨h₁.symm, by rw [h₂]; abel⟩
+    · rintro ⟨h₁, h₂⟩
+      exact ⟨h₁.symm, by rw [h₂]; abel⟩
 
 @[simp]
-theorem regionFrame_taskRel (s : W × (Set ι × Set ι)) (d : D) (s' : W × (Set ι × Set ι)) :
-    (regionFrame W ι D).TaskRel s d s' ↔ (d = 0 → s = s') := Iff.rfl
+theorem regionFrame_taskRel (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] (s : W × D) (d : D) (s' : W × D) :
+    (regionFrame W ι D).TaskRel s d s' ↔ (s.1 = s'.1 ∧ s'.2 = s.2 + d) := Iff.rfl
 
 end Frame
 
@@ -170,26 +200,30 @@ section Histories
 
 variable {W ι D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
+set_option linter.unusedVariables false in
 /--
 The history of world `w` viewed with time offset `Δ`: total in time, assigning to `r` the state
-"world `w`, in the region of `r + Δ`".
+"world `w`, at time `r + Δ`".
 
 `Δ = 0` is the history the branch is really about; the nonzero offsets exist only because `Ω`
 has to be shift-closed, and `timeShift_regionHistory` says they are exactly the time-shifts of
 the base histories.
+
+The placement `f` is retained as a parameter — it no longer occurs in the states, since the
+region code moved out of the frame's state space when the task relation became deterministic —
+so that every declaration about `regionOmega f` below keeps its shape. Regions re-enter through
+the valuation, which reads `regionCode f` off the time component.
 -/
 def regionHistory (f : ι → D) (w : W) (Δ : D) : WorldHistory (regionFrame W ι D) where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
   convex := by intro _ _ _ _ _ _ _; trivial
-  states := fun r _ => (w, regionCode f (r + Δ))
+  states := fun r _ => (w, r + Δ)
   respects_task := by
-    intro s t _ _ hd
-    have : t = s := by
-      have := sub_eq_zero.mp hd
-      exact this
-    subst this
-    rfl
+    intro s t _ _
+    refine ⟨rfl, ?_⟩
+    show t + Δ = s + Δ + (t - s)
+    abel
 
 @[simp]
 theorem regionHistory_domain (f : ι → D) (w : W) (Δ : D) (r : D) :
@@ -197,14 +231,14 @@ theorem regionHistory_domain (f : ι → D) (w : W) (Δ : D) (r : D) :
 
 @[simp]
 theorem regionHistory_states (f : ι → D) (w : W) (Δ : D) (r : D) (h : (regionHistory f w Δ).domain r) :
-    (regionHistory f w Δ).states r h = (w, regionCode f (r + Δ)) := rfl
+    (regionHistory f w Δ).states r h = (w, r + Δ) := rfl
 
 /-- Time-shifting a region history is again a region history, with the offsets added. -/
 theorem timeShift_regionHistory (f : ι → D) (w : W) (Δ Δ' : D) :
     WorldHistory.timeShift (regionHistory f w Δ) Δ' = regionHistory f w (Δ' + Δ) := by
   refine worldHistory_ext rfl ?_
   intro r _ _
-  show (w, regionCode f (r + Δ' + Δ)) = (w, regionCode f (r + (Δ' + Δ)))
+  show ((w, r + Δ' + Δ) : W × D) = (w, r + (Δ' + Δ))
   rw [add_assoc]
 
 /--
@@ -238,6 +272,53 @@ theorem regionOmega_total (f : ι → D) (σ : WorldHistory (regionFrame W ι D)
     (hσ : σ ∈ regionOmega f) (r : D) : σ.domain r := by
   obtain ⟨w, Δ, rfl⟩ := (mem_regionOmega_iff f σ).mp hσ
   trivial
+
+/-! ### Totality is now sufficient
+
+The two theorems that the deterministic re-host exists to make true. Under the previous
+maximally-permissive task relation both were false: totality fixed the empty-history problem but
+not the junk-history problem, and `regionOmega` was a strict subset of `H_F`.
+-/
+
+/--
+**Every total history of `regionFrame` is a region history.** The direct analogue of
+`multiFamGen_total_eq` (`Metalogic/Algebraic/FlowFrame.lean`): the state at time `0` fixes the
+world and the offset, and `respects_task` propagates the clock to every other time.
+-/
+theorem regionFrame_total_eq (f : ι → D) (σ : WorldHistory (regionFrame W ι D))
+    (htot : ∀ r, σ.domain r) : ∃ (w : W) (Δ : D), σ = regionHistory f w Δ := by
+  have key : ∀ (r : D) (hr : σ.domain r),
+      σ.states r hr = ((σ.states 0 (htot 0)).1, r + (σ.states 0 (htot 0)).2) := by
+    intro r hr
+    obtain ⟨h₁, h₂⟩ := σ.respects_task 0 r (htot 0) hr
+    refine Prod.ext h₁.symm ?_
+    rw [h₂]
+    abel_nf
+  refine ⟨(σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2, ?_⟩
+  refine worldHistory_ext (funext fun r => propext ⟨fun _ => trivial, fun _ => htot r⟩) ?_
+  intro r hr _
+  exact key r hr
+
+/--
+**`Ω` is exactly the frame's total-history set `H_F`.** `def:world-history` fixes `H_F` as the
+totality-cut of the world histories: "A world history is *total* --- equivalently, a *possible
+world* --- just in case $X = D$. ... The set of all total world histories over $\F$ is denoted
+$H_{\F}$." Here the totality predicate `X = D` is spelled `∀ r, σ.domain r`.
+
+The `⊆` direction is definitional: `regionHistory` carries `domain := fun _ => True`. The `⊇`
+direction is `regionFrame_total_eq`. So on this carrier, replacing the `Ω`-parameterized box
+clause by the `def:BL-semantics` box clause ("for all $\sigma \in H_{\F}$") is a rewrite along
+this equation, not a change of content.
+-/
+theorem regionOmega_eq_total (f : ι → D) :
+    regionOmega (W := W) f = {σ : WorldHistory (regionFrame W ι D) | ∀ r, σ.domain r} := by
+  ext σ
+  constructor
+  · rintro ⟨⟨w, Δ⟩, rfl⟩ r
+    trivial
+  · intro htot
+    obtain ⟨w, Δ, rfl⟩ := regionFrame_total_eq f σ htot
+    exact regionHistory_mem_regionOmega f w Δ
 
 end Histories
 
@@ -339,16 +420,28 @@ section RegionConstancy
 variable {W ι D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /--
-**The base history is region-constant.** Its state at `r` is the region code of `r` itself, and
-`SameRegion` is equality of codes.
+**No region history is region-constant** as soon as some region contains two distinct points —
+at *any* offset, the base history `Δ = 0` included.
+
+This is a deliberate reversal of the situation under the previous, maximally-permissive
+`regionFrame`, where a state was a world paired with a region *code*, the base history's state
+at `r` was the code of `r` itself, and `RegionConstant f (regionHistory f w 0)` was therefore
+provable.
+
+The reversal is forced, not incidental. A deterministic task relation propagates the state at
+one time to every other time, so a history's states determine the time they are read at; a
+region-constant history would have to repeat a state at two distinct times and so be periodic,
+which the clock forbids. Region-invariance consequently cannot be read off a history's states
+any more. It has to be imposed on the **valuation** instead — `M.V` factoring through
+`regionCode f` applied to the time component of the state — which is the interface
+`Bridge/Valuation.lean` and `Bridge/TruthLemma.lean` now take it from.
 -/
-theorem regionConstant_regionHistory_zero (f : ι → D) (w : W) :
-    RegionConstant f (regionHistory f w (0 : D)) where
-  domain_congr := fun _ => Iff.rfl
-  states_congr := by
-    intro r r' h _ _
-    show (w, regionCode f (r + 0)) = (w, regionCode f (r' + 0))
-    rw [add_zero, add_zero, sameRegion_iff_regionCode_eq.mp h]
+theorem not_regionConstant_regionHistory (f : ι → D) (w : W) (Δ : D) (r r' : D)
+    (hne : r ≠ r') (hsame : SameRegion f r r') :
+    ¬ RegionConstant f (regionHistory f w Δ) := by
+  intro hRC
+  have h : ((w, r + Δ) : W × D) = (w, r' + Δ) := hRC.states_congr hsame trivial trivial
+  exact hne (add_right_cancel (congrArg Prod.snd h))
 
 end RegionConstancy
 
@@ -364,25 +457,15 @@ section Checks
 `∀ τ ∈ Ω, RegionConstant f τ` promised in the module docstring.
 
 One placed point at `0 : ℚ`; `-1/2` and `-2` are region-mates (both strictly below the only
-placed point), but the `Δ = 1` history reads their states off `1/2` and `-1`, which straddle it.
+placed point), but the `Δ = 1` history reads their states off the distinct times `1/2` and `-1`.
 -/
 theorem not_regionConstant_regionHistory_one :
     ¬ RegionConstant (fun _ : Fin 1 => (0 : ℚ)) (regionHistory (W := Unit) (fun _ : Fin 1 => (0 : ℚ)) () 1) := by
-  intro hRC
-  have hsame : SameRegion (fun _ : Fin 1 => (0 : ℚ)) (-1/2) (-2) := by
-    intro i
-    constructor
-    · constructor <;> intro h <;> norm_num at h
-    · constructor <;> intro _ <;> norm_num
-  have := hRC.states_congr hsame trivial trivial
-  have hcode : regionCode (fun _ : Fin 1 => (0 : ℚ)) (-1/2 + 1) =
-      regionCode (fun _ : Fin 1 => (0 : ℚ)) (-2 + 1) := congrArg Prod.snd this
-  have hmem : (0 : Fin 1) ∈ (regionCode (fun _ : Fin 1 => (0 : ℚ)) (-1/2 + 1)).1 := by
-    simp only [regionCode, Set.mem_setOf_eq]
-    norm_num
-  rw [hcode] at hmem
-  simp only [regionCode, Set.mem_setOf_eq] at hmem
-  norm_num at hmem
+  refine not_regionConstant_regionHistory _ _ _ (-1/2) (-2) (by norm_num) ?_
+  intro i
+  constructor
+  · constructor <;> intro h <;> norm_num at h
+  · constructor <;> intro _ <;> norm_num
 
 /-- The frame elaborates at each of the three dense carriers and at `ℤ`. -/
 example : Nonempty (TaskFrame ℚ) := ⟨regionFrame Unit (Fin 1) ℚ⟩
