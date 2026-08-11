@@ -127,24 +127,23 @@ Enriched dense countermodel: constructs the same countermodel as `countermodel_d
 but with `Rat` explicit throughout, so `DenselyOrdered` is available for `ValidDense`.
 This is the single canonical dense countermodel used by both `completeness` and
 `completeness_dense`. The countermodel lives on the bundle flow frame
-(`Metalogic/Algebraic/FlowFrame.lean`): its admissible-history set is extensionally the
-frame's total-history set H_F (`def:world-history`), so the box clause is the paper's
-(`def:BL-semantics`) realized under the current Omega signature.
+(`Metalogic/Algebraic/FlowFrame.lean`), and the witness history is exhibited by its
+**totality** (`bundleFlowHistory_total`) — `def:world-history`'s `H_F` — matching the
+`def:BL-semantics` box clause and the totality binder of `valid`/`ValidDense` directly, with
+no admissible-history set and no shift-closure side condition.
 -/
 theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
     ∃ (F : TaskFrame Rat) (TM : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Rat),
-      ¬TruthAt TM Omega τ t φ := by
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : Rat),
+      ¬TruthAt TM Set.univ τ t φ := by
   let bfmcs := Chronicle.cantorBfmcsDense fc A h_mcs h_box_dense
   let fam₀ := Chronicle.rootedCantorFmcsDense fc A h_mcs h_box_dense 0
   have hfam₀ : fam₀ ∈ bfmcs.families := ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩
   refine ⟨bundleFlowFrame bfmcs, bundleFlowModel bfmcs,
-    bundleFlowOmega bfmcs, bundleFlowOmega_shiftClosed bfmcs,
-    bundleFlowHistory ⟨fam₀, hfam₀⟩ 0, bundleFlowHistory_mem_omega _ _,
+    bundleFlowHistory ⟨fam₀, hfam₀⟩ 0, bundleFlowHistory_total _ _,
     0, ?_⟩
   have h_neg_fam : φ.neg ∈ fam₀.mcs ((0 : Rat) + 0) := by
     rw [zero_add, Chronicle.rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
@@ -213,16 +212,16 @@ theorem completeness (φ : Formula) :
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat (countermodel_dense_enriched)
-    obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+    obtain ⟨F, TM, τ, h_tot, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
-    exact h_not_true (h_valid Rat F TM Omega h_sc τ h_mem t)
+    exact h_not_true (h_valid Rat F TM τ h_tot t)
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.nextTop) with h_box_discrete | h_not_box_discrete
     · -- Purely discrete case: □(U(T,bot)) ∈ M — all box-equivalent MCS's are discrete
-      obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+      obtain ⟨D, _, _, _, _, F, TM, τ, h_tot, t, h_not_true⟩ :=
         WeakCanonical.countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
-      exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
+      exact h_not_true (h_valid D F TM τ h_tot t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Base M hM_mcs
         h_not_box_dense h_not_box_discrete)
@@ -258,9 +257,9 @@ theorem completeness_dense (φ : Formula) :
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat (DenselyOrdered)
-    obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+    obtain ⟨F, TM, τ, h_tot, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
-    exact h_not_true (h_valid_dense Rat F TM Omega h_sc τ h_mem t)
+    exact h_not_true (h_valid_dense Rat F TM τ h_tot t)
   · -- Non-dense case: ¬□(F'T) ∈ M. But the dense_indicator axiom ¬U(⊤,⊥)
     -- is a Dense theorem, so □(¬U(⊤,⊥)) = □(F'T) is in every Dense-MCS.
     -- Contradiction with h_not_box_dense : ¬□(F'T) ∈ M.
@@ -353,10 +352,10 @@ theorem completeness_discrete (φ : Formula) :
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.nextTop) with h_box_discrete | h_not_box_discrete
     · -- Discrete case: □(U(T,bot)) ∈ M — countermodel on ℤ via Reynolds pipeline
-      obtain ⟨D, _, _, _, _, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+      obtain ⟨D, _, _, _, _, _, _, _, _, F, TM, τ, h_tot, t, h_not_true⟩ :=
         FormalSystem.Metalogic.WeakCanonical.countermodel_discrete_reynolds_v2
           M hM_mcs φ h_neg_in h_box_discrete
-      exact h_not_true (h_valid_discrete D F TM Omega h_sc τ h_mem t)
+      exact h_not_true (h_valid_discrete D F TM τ h_tot t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Discrete M hM_mcs
           h_not_box_dense h_not_box_discrete)

@@ -97,7 +97,7 @@ noncomputable example (B : BFMCS (fc := fc) ℝ) (root : Formula)
     (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
     (fam : FMCS (fc := fc) ℝ) (hfam : fam ∈ B.families)
     (w₀ t : ℝ) (h_neg_in : φ.neg ∈ fam.mcs (w₀ + t)) :
-    ¬TruthAt (bundleFlowModel B) (bundleFlowOmega B) (bundleFlowHistory ⟨fam, hfam⟩ w₀) t φ :=
+    ¬TruthAt (bundleFlowModel B) Set.univ (bundleFlowHistory ⟨fam, hfam⟩ w₀) t φ :=
   bundleFlow_completeness_from_neg_membership B root h_rtc h_buc h_fuc φ h_sub
     ⟨fam, hfam⟩ w₀ t h_neg_in
 
@@ -317,9 +317,8 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
     ∃ (F : TaskFrame ℝ) (TM : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : ℝ),
-      ¬TruthAt TM Omega τ t φ := by
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : ℝ),
+      ¬TruthAt TM Set.univ τ t φ := by
   classical
   -- The finite monadic language and the depth Reynolds sets "one greater than the depth".
   let sig := mkSigFrom φ
@@ -360,12 +359,11 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
   -- Step 5, second half: the `ℝ`-flowed structure read back as a task model.
   suffices h_truth_corr : ∀ ψ : Formula, ψ ∈ subformulaClosure φ →
       ∀ (f : FamIdx) (w₀ t : ℝ),
-      TruthAt TM (multiFamOmegaGen ℝ FamIdx) (multiFamHistoryGen f w₀) t ψ ↔
+      TruthAt TM Set.univ (multiFamHistoryGen f w₀) t ψ ↔
         TemporalTruth ((Rf f).toOrdered sig) (mkAtomMapFwd φ) (realFlowPoint (hR f) (w₀ + t))
           ψ by
-    refine ⟨multiFamTaskFrameGen ℝ FamIdx, TM, multiFamOmegaGen ℝ FamIdx,
-      multiFamOmegaGen_shiftClosed ℝ FamIdx, multiFamHistoryGen f₀ 0,
-      multiFamHistoryGen_mem_omega f₀ 0, s₀.val, ?_⟩
+    refine ⟨multiFamTaskFrameGen ℝ FamIdx, TM, multiFamHistoryGen f₀ 0,
+      multiFamHistoryGen_total f₀ 0, s₀.val, ?_⟩
     intro h_truth_phi
     have h_corr := (h_truth_corr φ (self_mem_subformulaClosure φ) f₀ 0 s₀.val).mp h_truth_phi
     have h_eq : realFlowPoint (hR f₀) (0 + s₀.val) = s₀ :=
@@ -456,8 +454,8 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
         have h_pt : ∀ x : ((Rf f').toOrdered sig).carrier,
             TemporalTruth ((Rf f').toOrdered sig) (mkAtomMapFwd φ) x ψ := by
           intro x
-          have h_mem := multiFamHistoryGen_mem_omega (D := ℝ) f' (x.val - t)
-          have h_ta := h_all _ h_mem
+          have h_tot := multiFamHistoryGen_total (D := ℝ) f' (x.val - t)
+          have h_ta := h_all _ h_tot
           rw [ih h_sub_ψ f' (x.val - t) t] at h_ta
           have h_eq : realFlowPoint (hR f') (x.val - t + t) = x :=
             Subtype.ext (show x.val - t + t = x.val by ring)
@@ -482,8 +480,8 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
     · -- Backward: the box predicate at `f` forces `□ψ ∈ A`, hence `ψ` everywhere on every
       -- family.
       intro h_box σ h_mem
-      obtain ⟨⟨f', w₀'⟩, h_eq⟩ := h_mem
-      rw [← h_eq, ih h_sub_ψ f' w₀' t]
+      obtain ⟨f', w₀', h_eq⟩ := multiFamGen_total_eq σ h_mem
+      rw [h_eq, ih h_sub_ψ f' w₀' t]
       have h_ex_depth : (MonadicFormula.ex (.atom p ⟨0, by omega⟩) :
           MonadicSentence sig).quantifierDepth ≤ k := by
         simp only [MonadicFormula.quantifierDepth, k]; omega
@@ -588,9 +586,9 @@ theorem completeness_dedekind_engine (ψ : Formula) :
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum {Formula.neg ψ} h_cons
   have h_neg_in : Formula.neg ψ ∈ M := hM_sup (Set.mem_singleton _)
   have h_box_dense : Formula.box Chronicle.nextTop.neg ∈ M := dedekind_box_dense_mem hM_mcs
-  obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+  obtain ⟨F, TM, τ, h_tot, t, h_not_true⟩ :=
     countermodel_dedekind_dense (by decide) M hM_mcs ψ h_neg_in h_box_dense
-  exact h_not_true (h_valid ℝ real_lub_of_bddAbove F TM Omega h_sc τ h_mem t)
+  exact h_not_true (h_valid ℝ real_lub_of_bddAbove F TM τ h_tot t)
 
 /-! ## Axiom Audit
 

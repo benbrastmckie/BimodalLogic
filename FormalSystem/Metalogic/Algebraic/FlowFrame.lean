@@ -192,6 +192,14 @@ theorem multiFamHistoryGen_mem_omega {FamIdx : Type} (f : FamIdx) (w₀ : D) :
     multiFamHistoryGen f w₀ ∈ multiFamOmegaGen D FamIdx :=
   ⟨⟨f, w₀⟩, rfl⟩
 
+/-- Every generic multi-family history is total (`def:world-history`'s cut `X = D`, spelled
+`∀ t, σ.domain t`). Definitional: `multiFamHistoryGen` carries `domain := fun _ => True`. This
+is what the totality-targeted box clause (`def:BL-semantics`) consumes in place of the former
+`∈ multiFamOmegaGen` witness. -/
+theorem multiFamHistoryGen_total {FamIdx : Type} (f : FamIdx) (w₀ : D) :
+    (multiFamHistoryGen f w₀ : WorldHistory (multiFamTaskFrameGen D FamIdx)).IsTotal :=
+  fun _ => trivial
+
 /-! ## The derived segment identity
 
 `w ⇒_{x+y} v ↔ [w,v]_x^y ≠ ∅`, derived from the compositionality biconditional
@@ -592,7 +600,9 @@ Case inventory: atom is definitional MCS membership; bot/imp use MCS consistency
 untl/snce use the bundle's restricted Until/Since coherence (frame-independent, preserved
 verbatim modulo the `± w₀` clock translation); box uses `fmcs_box_persistent` plus
 `B.modal_forward`/`B.modal_backward`, destructuring the quantified history against
-`bundleFlowOmega`. -/
+**totality** (`bundleFlow_total_eq`) rather than against `bundleFlowOmega` — the box clause
+now quantifies over `H_F` per `def:BL-semantics`, and `TruthAt`'s remaining set argument is
+inert (`truthAt_carrier_irrelevant`), supplied here as `Set.univ`. -/
 
 /--
 **Re-hosted dense truth lemma.** For `φ ∈ subformulaClosure root`, membership of `φ` in a
@@ -606,7 +616,7 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
     (h_sub : φ ∈ subformulaClosure root)
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ t : D) :
     φ ∈ fam.val.mcs (w₀ + t) ↔
-    TruthAt (bundleFlowModel B) (bundleFlowOmega B) (bundleFlowHistory fam w₀) t φ := by
+    TruthAt (bundleFlowModel B) Set.univ (bundleFlowHistory fam w₀) t φ := by
   induction φ generalizing fam w₀ t with
   | atom p =>
     simp only [TruthAt, bundleFlowModel, bundleFlowHistory, multiFamHistoryGen]
@@ -731,7 +741,7 @@ theorem bundleFlow_completeness_from_neg_membership (B : BFMCS (fc := fc) D) (ro
     (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ t : D)
     (h_neg_in : φ.neg ∈ fam.val.mcs (w₀ + t)) :
-    ¬TruthAt (bundleFlowModel B) (bundleFlowOmega B) (bundleFlowHistory fam w₀) t φ := by
+    ¬TruthAt (bundleFlowModel B) Set.univ (bundleFlowHistory fam w₀) t φ := by
   intro h_phi_true
   have h_phi_in :=
     (bundleFlow_truth_lemma B root h_rtc h_buc h_fuc φ h_sub fam w₀ t).mpr h_phi_true

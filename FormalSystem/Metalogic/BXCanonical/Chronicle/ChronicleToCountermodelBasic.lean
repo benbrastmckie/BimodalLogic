@@ -829,19 +829,16 @@ theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
     (h_box_dense : Formula.box nextTop.neg ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
       (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      ¬TruthAt TM Omega τ t φ := by
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+      ¬TruthAt TM Set.univ τ t φ := by
   have hfam₀ : rootedCantorFmcsDense fc A h_mcs h_box_dense 0 ∈
       (cantorBfmcsDense fc A h_mcs h_box_dense).families :=
     ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩
   refine ⟨Rat, inferInstance, inferInstance, inferInstance, inferInstance,
     Algebraic.bundleFlowFrame (cantorBfmcsDense fc A h_mcs h_box_dense),
     Algebraic.bundleFlowModel (cantorBfmcsDense fc A h_mcs h_box_dense),
-    Algebraic.bundleFlowOmega (cantorBfmcsDense fc A h_mcs h_box_dense),
-    Algebraic.bundleFlowOmega_shiftClosed _,
     Algebraic.bundleFlowHistory ⟨rootedCantorFmcsDense fc A h_mcs h_box_dense 0, hfam₀⟩ 0,
-    Algebraic.bundleFlowHistory_mem_omega _ _,
+    Algebraic.bundleFlowHistory_total _ _,
     0, ?_⟩
   have h_neg_fam : φ.neg ∈ (rootedCantorFmcsDense fc A h_mcs h_box_dense 0).mcs
       ((0 : Rat) + 0) := by

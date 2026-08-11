@@ -849,9 +849,8 @@ theorem countermodel_discrete_reynolds_v2
       (_ : Nontrivial D) (_ : SuccOrder D) (_ : PredOrder D)
       (_ : IsSuccArchimedean D) (_ : IsPredArchimedean D)
       (F : TaskFrame D) (TM : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      ¬TruthAt TM Omega τ t φ := by
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+      ¬TruthAt TM Set.univ τ t φ := by
   -- === Multi-Family Z-Interval Approach (bypasses chronicle_gap_contradiction) ===
   --
   -- FamIdx: type of box-equivalent MCSes (one per S5 accessibility class)
@@ -907,15 +906,14 @@ theorem countermodel_discrete_reynolds_v2
   -- predFormulas are contained in φ.predFormulas (needed for the box case)
   suffices h_truth_corr : ∀ (ψ : Formula) (h_sub : ψ.predFormulas ⊆ φ.predFormulas)
       (f : FamIdx) (w₀ : ℤ) (t : ℤ),
-      TruthAt TM (multiFamOmega FamIdx) (multiFamHistory f w₀) t ψ ↔
+      TruthAt TM Set.univ (multiFamHistory f w₀) t ψ ↔
         TemporalTruth ((getZ f).toOrdered sig) (mkAtomMapFwd φ)
           (toCarrier (h_lo f) (h_hi f) (w₀ + t)) ψ by
     -- Package the existential
     refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
       inferInstance, inferInstance, inferInstance, inferInstance,
       multiFamTaskFrame FamIdx, TM,
-      multiFamOmega FamIdx, multiFamOmega_shiftClosed FamIdx,
-      multiFamHistory f₀ 0, multiFamHistory_mem_omega f₀ 0,
+      multiFamHistory f₀ 0, multiFamHistory_total f₀ 0,
       s₀.val, ?_⟩
     intro h_truth_phi
     have h_corr := (h_truth_corr φ (Finset.Subset.refl _) f₀ 0 s₀.val).mp h_truth_phi
