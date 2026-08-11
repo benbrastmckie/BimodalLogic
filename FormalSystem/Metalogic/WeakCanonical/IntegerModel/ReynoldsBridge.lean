@@ -585,6 +585,49 @@ theorem zOmega_v2_mem_iff (σ : WorldHistory zTaskFrameV2) :
   · intro ⟨w₀, hw₀⟩; exact ⟨w₀, hw₀.symm⟩
   · intro ⟨w₀, hw₀⟩; exact ⟨w₀, hw₀.symm⟩
 
+/-- Every total history of `zTaskFrameV2` is an offset history. Totality here is
+`def:world-history`'s cut `X = D`, spelled `∀ t, σ.domain t`.
+
+`zTaskFrameV2`'s task relation `u = w + d` is deterministic, so the state at time `0` fixes the
+offset and `respects_task` propagates it to every other time. -/
+theorem zHistoryV2_total_eq (σ : WorldHistory zTaskFrameV2) (htot : ∀ t, σ.domain t) :
+    ∃ w₀, σ = zHistoryV2 w₀ := by
+  -- `zTaskFrameV2.WorldState` is `ℤ` but not syntactically so; `show ℤ from` forces the
+  -- arithmetic to elaborate in `ℤ` where `omega` can see it.
+  have key : ∀ (t : ℤ) (ht : σ.domain t),
+      (show ℤ from σ.states t ht) = (show ℤ from σ.states 0 (htot 0)) + t := by
+    intro t ht
+    have h : (show ℤ from σ.states t ht) =
+        (show ℤ from σ.states 0 (htot 0)) + (t - 0) :=
+      σ.respects_task 0 t (htot 0) ht
+    omega
+  refine ⟨σ.states 0 (htot 0), ?_⟩
+  obtain ⟨⟨dom, nedom, sts, resp⟩, conv⟩ := σ
+  have hdom : dom = fun _ => True :=
+    funext fun t => propext ⟨fun _ => trivial, fun _ => htot t⟩
+  subst hdom
+  have h_states : sts = fun t (_ : True) => (show ℤ from sts 0 (htot 0)) + t :=
+    funext fun t => funext fun ht => key t ht
+  change WorldHistory.mk (PartialHistory.mk _ _ _ _) _ =
+    WorldHistory.mk (PartialHistory.mk _ _ _ _) _
+  congr 2
+
+/-- `ZOmegaV2` **is** `zTaskFrameV2`'s total-history set `H_F` (`def:world-history`: "The set of
+all total world histories over $\F$ is denoted $H_{\F}$").
+
+`⊆` is definitional — `zHistoryV2` carries `domain := fun _ => True`; `⊇` is
+`zHistoryV2_total_eq`. Verdict for the Omega-elimination sweep: **equal to `H_F`**, so this
+carrier needs a rewrite, not a re-host. -/
+theorem zOmegaV2_eq_total :
+    ZOmegaV2 = {σ : WorldHistory zTaskFrameV2 | ∀ t, σ.domain t} := by
+  ext σ
+  constructor
+  · rintro ⟨w₀, rfl⟩ t
+    trivial
+  · intro htot
+    obtain ⟨w₀, rfl⟩ := zHistoryV2_total_eq σ htot
+    exact ⟨w₀, rfl⟩
+
 /--
 Temporal truth of `φ.neg` at the root point of the limitdom structure.
 
@@ -720,6 +763,54 @@ theorem multiFamOmega_shiftClosed (FamIdx : Type) :
 theorem multiFamHistory_mem_omega {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
     multiFamHistory f w₀ ∈ multiFamOmega FamIdx :=
   ⟨⟨f, w₀⟩, rfl⟩
+
+/-- Every total history of the multi-family frame is a family line. Totality is
+`def:world-history`'s cut `X = D`, spelled `∀ t, σ.domain t`.
+
+`multiFamTaskFrame`'s task relation is deterministic (same family, position shifted by `d`), so
+the state at time `0` fixes both the family index and the offset, and `respects_task` propagates
+them to every other time. This is the `ℤ` specialization of `multiFamGen_total_eq`
+(`FlowFrame.lean`), reproved here because the two frames are separate definitions. -/
+theorem multiFam_total_eq {FamIdx : Type}
+    (σ : WorldHistory (multiFamTaskFrame FamIdx)) (htot : ∀ t, σ.domain t) :
+    ∃ f w₀, σ = multiFamHistory f w₀ := by
+  have key : ∀ (t : ℤ) (ht : σ.domain t),
+      σ.states t ht = ((σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2 + t) := by
+    intro t ht
+    obtain ⟨h₁, h₂⟩ : (σ.states 0 (htot 0)).1 = (σ.states t ht).1 ∧
+        (σ.states t ht).2 = (σ.states 0 (htot 0)).2 + (t - 0) :=
+      σ.respects_task 0 t (htot 0) ht
+    refine Prod.ext h₁.symm ?_
+    show (σ.states t ht).2 = (σ.states 0 (htot 0)).2 + t
+    omega
+  refine ⟨(σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2, ?_⟩
+  obtain ⟨⟨dom, nedom, sts, resp⟩, conv⟩ := σ
+  have hdom : dom = fun _ => True :=
+    funext fun t => propext ⟨fun _ => trivial, fun _ => htot t⟩
+  subst hdom
+  have h_states : sts = fun t (_ : True) =>
+      ((sts 0 (htot 0)).1, (sts 0 (htot 0)).2 + t) :=
+    funext fun t => funext fun ht => key t ht
+  change WorldHistory.mk (PartialHistory.mk _ _ _ _) _ =
+    WorldHistory.mk (PartialHistory.mk _ _ _ _) _
+  congr 2
+
+/-- `multiFamOmega` **is** its frame's total-history set `H_F` (`def:world-history`: "The set of
+all total world histories over $\F$ is denoted $H_{\F}$").
+
+`⊆` is definitional — `multiFamHistory` carries `domain := fun _ => True`; `⊇` is
+`multiFam_total_eq`. Verdict for the Omega-elimination sweep: **equal to `H_F`**, matching the
+generic `multiFamOmegaGen_eq_total` (`FlowFrame.lean`) of which this is the `ℤ` case. -/
+theorem multiFamOmega_eq_total (FamIdx : Type) :
+    multiFamOmega FamIdx =
+      {σ : WorldHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} := by
+  ext σ
+  constructor
+  · rintro ⟨⟨f, w₀⟩, rfl⟩ t
+    trivial
+  · intro htot
+    obtain ⟨f, w₀, rfl⟩ := multiFam_total_eq σ htot
+    exact multiFamHistory_mem_omega f w₀
 
 /--
 Reynolds pipeline countermodel v2 (Strategy B): countermodel on ℤ
