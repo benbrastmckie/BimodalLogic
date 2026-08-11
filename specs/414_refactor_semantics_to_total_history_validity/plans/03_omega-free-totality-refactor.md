@@ -1139,7 +1139,7 @@ definition exists, classify it here too and record the correction.
 
 ---
 
-### Phase 12: `regionFrame` deterministic re-host [NOT STARTED]
+### Phase 12: `regionFrame` deterministic re-host [COMPLETED]
 
 **Goal**: Replace `regionFrame`'s permissive task relation with a deterministic carrier whose total
 histories are exactly the intended `regionHistory` family, so that `regionOmega = H_F` becomes
@@ -1155,19 +1155,43 @@ could ever be satisfied. **Totality fixes the empty-history problem but not the 
 problem.**
 
 **Tasks**:
-- [ ] Redefine `regionFrame`'s `TaskRel` as a deterministic-shift relation, so that
+- [x] Redefine `regionFrame`'s `TaskRel` as a deterministic-shift relation, so that
       `TaskRel s d s'` holds iff `s'` is the shift of `s` by `d` under the region structure — the
       structural analogue of `multiFamTaskFrameGen`.
-- [ ] Re-prove the `TaskFrame` fields for the new relation: `nullity_identity`, `forward_comp`,
+      *(deviation: altered — the state space had to change too. A state carrying only a region
+      code provably CANNOT support a deterministic relation: region-mates `r ≠ r'` share a code
+      but their `d`-shifts need not, so no shift function on codes exists. `WorldState` is now
+      `W × D` (world paired with time) and `TaskRel s d s' := s.1 = s'.1 ∧ s'.2 = s.2 + d`,
+      matching `multiFamTaskFrameGen` exactly. `ι` and `f` are retained as phantom parameters so
+      every statement about `regionOmega f` keeps its shape.)*
+- [x] Re-prove the `TaskFrame` fields for the new relation: `nullity_identity`, `forward_comp`,
       `converse`.
-- [ ] Prove `regionFrame_total_eq` — every total history of the new `regionFrame` is a
+- [x] Prove `regionFrame_total_eq` — every total history of the new `regionFrame` is a
       `regionHistory f w Δ` — the direct analogue of `multiFamGen_total_eq`.
-- [ ] Prove `regionOmega_eq_total : regionOmega f = {σ | ∀ r, σ.domain r}`.
-- [ ] Re-prove the five `Bridge/Omega.lean` declarations against the new relation, **keeping their
+- [x] Prove `regionOmega_eq_total : regionOmega f = {σ | ∀ r, σ.domain r}`.
+- [x] Re-prove the five `Bridge/Omega.lean` declarations against the new relation, **keeping their
       statements unchanged**: `regionHistory_mem_regionOmega`, `mem_regionOmega_iff`,
       `shiftClosed_regionOmega`, `regionOmega_total`, and the box-reduction lemma at `:322`.
-- [ ] Update the module docstring's explanation of why `Set.univ` is rejected, since the reason
+      *(verified: `git diff` shows no `+`/`-` line touching any of the five statements.)*
+- [x] Update the module docstring's explanation of why `Set.univ` is rejected, since the reason
       changes: under the new relation the frame's `H_F` no longer contains junk histories.
+- [x] *(added)* Replace `regionConstant_regionHistory_zero`, which the re-host makes **false**,
+      with `not_regionConstant_regionHistory`. Determinism propagates a state along the clock, so
+      a region-constant history would repeat a state at two distinct times and be periodic. Region
+      invariance therefore moves onto the valuation; this is the one downstream break (Phase 13).
+
+**Outcome**: `Bridge/Omega.lean` builds green and sorry-free. `regionFrame_total_eq` and
+`regionOmega_eq_total` are choice-free (`propext`, `Quot.sound`); no declaration in the file
+depends on `sorryAx`. `regionOmega` is no longer a strict subset of `H_F` — it **is** `H_F`, so
+all five Omega-valued definitions in the live tree now carry an `= H_F` verdict.
+
+**Scope Hypothesis — confirmed, and better than estimated**: exactly ONE downstream site breaks,
+`Bridge/TruthLemma.lean:319` (`Unknown identifier regionConstant_regionHistory_zero`). Decision C's
+spawn contingency is NOT triggered. The remaining four Phase 13 files (`Valuation.lean`,
+`IntTruth.lean`, `DenseTruth.lean`, `RegionLabel.lean`) plus `Decidable.lean` all sit
+*transitively behind* that single site in the import DAG, so their true status cannot be observed
+until it is repaired — they may well need no edit at all, exactly as this Scope Hypothesis
+predicted, since they pass `regionOmega` opaquely through the five stable interface lemmas.
 
 **Timing**: 3 hours
 
@@ -1198,7 +1222,20 @@ contingency.
 **Goal**: Repair whatever the new `regionFrame` relation breaks in the bridge consumers, still
 entirely within the current Omega architecture, so the tree returns to green before any API change.
 
+**Inherited from Phase 12** (the single observed break, and the shape of its repair):
+`TruthLemma.lean:319` calls `regionConstant_regionHistory_zero f w`, which no longer exists
+because it is now false. `hRC : RegionConstant f τ` is threaded through `interpInvariantAt`
+(`:288`) for the sole purpose of the atom case (`interpInvariantAt_atom`, `:92`), which needs
+only (a) domain agreement on region-mates and (b) `M.V p (τ.states r) ↔ M.V p (τ.states r')`.
+Under the new frame `regionHistory f w 0` has states `r ↦ (w, r)`, so (b) is exactly the
+statement that `M.V` factors through `regionCode f` on the time component — a property of the
+countermodel's valuation (`Valuation.lean`), not of the history. Replace the `RegionConstant`
+hypothesis with that valuation-level one and discharge it where the valuation is built. Any
+consumer that transports an old `Atom → W × (Set ι × Set ι) → Prop` valuation can do so as
+`V p (w, x) := V₀ p (w, regionCode f x)`.
+
 **Tasks**:
+- [ ] Repair `Bridge/TruthLemma.lean` (the one observed break — do this first; it gates the rest).
 - [ ] Repair `Bridge/Valuation.lean`.
 - [ ] Repair `Bridge/IntTruth.lean`.
 - [ ] Repair `Bridge/DenseTruth.lean`.
