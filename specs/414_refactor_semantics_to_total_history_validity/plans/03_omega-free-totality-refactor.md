@@ -2051,20 +2051,38 @@ the carried ten-item `#guard_msgs` baseline cannot have moved.
 
 ---
 
-### Phase 21: Omega-binder sweep C — canonical and algebraic [PARTIAL]
+### Phase 21: Omega-binder sweep C — canonical and algebraic [COMPLETED]
 
-> **Marker downgraded by the orchestrator, not by the implementing agent.** The agent wrote
+> **Resolved by an independent re-census dispatch.** The first dispatch on this phase wrote
 > `[COMPLETED]` together with the verification record below, then was terminated by an external
-> API usage limit before it could (a) write `.orchestrator-handoff.json` — the slot still reports
-> `phases_completed: 20` — or (b) make a phase-completion commit. Only sub-step commit
-> `fd05967eb` (21.1) exists, covering `Algebraic/FlowFrame.lean`,
-> `Chronicle/ChronicleMonadicBridge.lean`, `BXCanonical/CompletenessDedekind.lean`, and
-> `WeakCanonical/IntegerModel/ReynoldsBridge.lean`. The working tree carries no uncommitted Lean
-> source, so that commit plausibly holds all of this phase's source edits — but the orchestrator
-> is a pure dispatcher and did not verify it, and no handoff corroborates the agent's claim.
-> The verification record below is the agent's own and is preserved verbatim; it is evidence,
-> not confirmation. Resuming work should re-census this phase before advancing to Phase 22 —
-> a wasted re-census is cheap, whereas building Phase 22 on an unconfirmed base is not.
+> API usage limit before it could write `.orchestrator-handoff.json` or make a phase-completion
+> commit; the orchestrator, being a pure dispatcher unable to verify the claim, downgraded the
+> marker to `[PARTIAL]`. A subsequent dispatch re-censused the phase from scratch against the
+> green tree and **confirmed the original claim in full**. Findings, each independently measured
+> rather than inherited:
+>
+> - All four Omega-valued definitions (`ZOmegaV2`, `multiFamOmega`, `multiFamOmegaGen`,
+>   `bundleFlowOmega`) return **zero** token hits across `FormalSystem/` and `Tests/`
+>   outside `Boneyard/`. All five totality-side replacements are present and referenced.
+> - The five-spelling census (`Omega`, `\bOm\b`, `Ω`, `ShiftClosed`, `Set (WorldHistory`) over
+>   this phase's territory — `WeakCanonical/`, `Algebraic/`, `BXCanonical/` — returns only the
+>   five ω-chain false positives in `ChronicleConstruction.lean` and the retargeted totality
+>   probe at `CompletenessDedekind.lean:85`. Both are correct as they stand.
+> - `lake build` **re-run by the verifying dispatch**: GREEN at **2331 jobs**, matching the
+>   figure the first dispatch claimed. Live non-Boneyard sorries = 1 (the pre-existing
+>   `Transfer.lean:1084`), 0 introduced. Strict `axiom <ident>` declaration sites outside
+>   Boneyard = 0, identical to the Phase 20 baseline commit `e630ceb97`.
+>
+> No source edits were required, so commit `fd05967eb` (21.1) does in fact hold the whole of
+> this phase's source work. **One correction was made to this phase's own census table** — see
+> the `Metalogic/Bundle/**` row below.
+
+**Correction to the census table below**: the row claiming `Metalogic/Bundle/**` "does not
+exist" is **wrong**. The directory exists and holds 16 files. It carries zero occurrences of any
+of the five spellings, so the operational conclusion (nothing to do there) stands — but the
+stated reason does not, and this row must not be cited as evidence about the repository layout.
+The row is left in place below, struck through in prose here rather than silently rewritten, so
+that the correction itself stays visible.
 
 **Goal**: Remove the Omega binders across the completeness stack, and delete the remaining
 Omega-valued definitions.
@@ -2086,7 +2104,7 @@ The a-priori file list erred in **both** directions again, as lesson 3 predicted
 
 | Plan said | Reality |
 |-----------|---------|
-| `Metalogic/Bundle/**` | **Does not exist.** No such directory. |
+| `Metalogic/Bundle/**` | ~~**Does not exist.** No such directory.~~ **CORRECTED**: it exists (16 files) and carries zero occurrences of any of the five spellings. Right conclusion, wrong reason. |
 | `Metalogic/Chronicle/**` | Real path is `Metalogic/BXCanonical/Chronicle/**`. |
 | `Metalogic/CompletenessDedekind.lean` | Real path is `Metalogic/BXCanonical/CompletenessDedekind.lean`. |
 | `Metalogic/WeakCanonical/**` (whole subtree) | Exactly **one** file carried anything: `IntegerModel/ReynoldsBridge.lean`. |
