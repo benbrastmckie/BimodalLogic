@@ -70,11 +70,11 @@ point.
 Stated for an arbitrary `ψ` so that the CO proof below never has to unfold the particular
 `Hφ → F(Hφ)` sitting under the triangle.
 -/
-theorem always_elim {F : TaskFrame D} {M : TaskModel F} {Omega : Set (WorldHistory F)}
+theorem always_elim {F : TaskFrame D} {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {ψ : Formula}
-    (h : TruthAt M Omega τ t (Formula.always ψ)) :
-    (∀ u : D, u < t → TruthAt M Omega τ u ψ) ∧ TruthAt M Omega τ t ψ ∧
-      (∀ v : D, t < v → TruthAt M Omega τ v ψ) := by
+    (h : TruthAt M τ t (Formula.always ψ)) :
+    (∀ u : D, u < t → TruthAt M τ u ψ) ∧ TruthAt M τ t ψ ∧
+      (∀ v : D, t < v → TruthAt M τ v ψ) := by
   simp only [Formula.always, Formula.and, Formula.neg, TruthAt, Truth.past_iff,
     Truth.future_iff] at h
   obtain ⟨h_past, h_rest⟩ := and_of_not_imp_not h
@@ -104,12 +104,12 @@ theorem co_valid (φ : Formula) : ValidDedekindDense (Formula.co φ) := by
   simp only [Formula.co]
   intro h_tri h_H
   obtain ⟨-, h_mid, h_fut⟩ := always_elim h_tri
-  have hH : ∀ r : D, r < t → TruthAt M Omega τ r φ := (Truth.past_iff Omega φ).mp h_H
+  have hH : ∀ r : D, r < t → TruthAt M τ r φ := (Truth.past_iff φ).mp h_H
   rw [Truth.future_iff]
   intro v htv
   by_contra hnv
   -- `A` collects the points at or after `t` at which `Hφ` still holds.
-  set A : Set D := {u : D | t ≤ u ∧ ∀ r : D, r < u → TruthAt M Omega τ r φ} with hA
+  set A : Set D := {u : D | t ≤ u ∧ ∀ r : D, r < u → TruthAt M τ r φ} with hA
   have htA : t ∈ A := ⟨le_refl t, hH⟩
   have hAbdd : BddAbove A := by
     refine ⟨v, ?_⟩
@@ -125,14 +125,14 @@ theorem co_valid (φ : Formula) : ValidDedekindDense (Formula.co φ) := by
     obtain ⟨u, huA, hru, -⟩ := hs.exists_between hrs
     exact huA.2 r hru
   -- The `△`-antecedent applies at `s`: middle conjunct if `s = t`, `G` conjunct if `t < s`.
-  have hχs : TruthAt M Omega τ s ((Formula.allPast φ).imp (Formula.someFuture (Formula.allPast φ))) := by
+  have hχs : TruthAt M τ s ((Formula.allPast φ).imp (Formula.someFuture (Formula.allPast φ))) := by
     rcases eq_or_lt_of_le hts with h_eq | h_lt
     · exact h_eq ▸ h_mid
     · exact h_fut s h_lt
   obtain ⟨s', hss', hHs'⟩ :=
-    (Truth.some_future_iff Omega (Formula.allPast φ)).mp (hχs ((Truth.past_iff Omega φ).mpr hsA.2))
+    (Truth.some_future_iff (Formula.allPast φ)).mp (hχs ((Truth.past_iff φ).mpr hsA.2))
   have hs'A : s' ∈ A :=
-    ⟨le_trans hts (le_of_lt hss'), (Truth.past_iff Omega φ).mp hHs'⟩
+    ⟨le_trans hts (le_of_lt hss'), (Truth.past_iff φ).mp hHs'⟩
   exact absurd (hs.1 hs'A) (not_le_of_gt hss')
 
 end FormalSystem.Metalogic.SoundnessLemmas

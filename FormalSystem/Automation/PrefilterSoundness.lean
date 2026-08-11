@@ -84,9 +84,9 @@ theorem isUnsatBotTemporal_not_truth
     {F : TaskFrame D} {M : TaskModel F}
     {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D}
     {φ : Formula} (h : isUnsatBotTemporal φ = true) :
-    ¬ TruthAt M Set.univ τ t φ := by
+    ¬ TruthAt M τ t φ := by
   induction φ generalizing τ t with
-  | bot => exact Truth.bot_false Set.univ
+  | bot => exact Truth.bot_false
   | untl event guard ih_event _ih_guard =>
     simp only [isUnsatBotTemporal] at h
     intro ⟨s, _hts, h_event, _h_guard⟩
@@ -121,12 +121,12 @@ theorem unfulfillable_until_not_truth
     {F : TaskFrame D} {M : TaskModel F}
     {τ : WorldHistory F} {t : D}
     {event guard : Formula}
-    (h_g_neg : TruthAt M Set.univ τ t (Formula.allFuture event.neg)) :
-    ¬ TruthAt M Set.univ τ t (Formula.untl event guard) := by
+    (h_g_neg : TruthAt M τ t (Formula.allFuture event.neg)) :
+    ¬ TruthAt M τ t (Formula.untl event guard) := by
   rw [Truth.future_iff] at h_g_neg
   intro ⟨s, hts, h_event_s, _h_guard⟩
   have h_neg_event_s := h_g_neg s hts
-  -- h_neg_event_s : TruthAt M Set.univ τ s event.neg = (TruthAt ... event → False)
+  -- h_neg_event_s : TruthAt M τ s event.neg = (TruthAt ... event → False)
   exact h_neg_event_s h_event_s
 
 /--
@@ -141,8 +141,8 @@ theorem unfulfillable_since_not_truth
     {F : TaskFrame D} {M : TaskModel F}
     {τ : WorldHistory F} {t : D}
     {event guard : Formula}
-    (h_h_neg : TruthAt M Set.univ τ t (Formula.allPast event.neg)) :
-    ¬ TruthAt M Set.univ τ t (Formula.snce event guard) := by
+    (h_h_neg : TruthAt M τ t (Formula.allPast event.neg)) :
+    ¬ TruthAt M τ t (Formula.snce event guard) := by
   rw [Truth.past_iff] at h_h_neg
   intro ⟨s, hst, h_event_s, _h_guard⟩
   have h_neg_event_s := h_h_neg s hst
@@ -170,8 +170,8 @@ theorem false_consequent_not_truth
     {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D}
     {antecedent consequent : Formula}
     (h_false : isUnsatBotTemporal consequent = true)
-    (h_ante_true : TruthAt M Set.univ τ t antecedent) :
-    ¬ TruthAt M Set.univ τ t (Formula.imp antecedent consequent) := by
+    (h_ante_true : TruthAt M τ t antecedent) :
+    ¬ TruthAt M τ t (Formula.imp antecedent consequent) := by
   intro h_imp
   have h_conseq := h_imp h_ante_true
   exact isUnsatBotTemporal_not_truth hτ h_false h_conseq

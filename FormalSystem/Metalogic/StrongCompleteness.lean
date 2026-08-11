@@ -110,7 +110,7 @@ open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem
 Semantic consequence over dense, Dedekind-complete ordered carriers.
 
 The binder list is that of `ValidDedekindDense` (`Semantics/Validity.lean`) verbatim, with the
-context hypothesis `∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ` inserted before the conclusion. It is
+context hypothesis `∀ ψ ∈ Γ, TruthAt M τ t ψ` inserted before the conclusion. It is
 therefore exactly the hypothesis-and-conclusion shape of `soundness_dedekind`
 (`Metalogic/Soundness.lean`), packaged as a definition so that the completeness converse can be
 stated against the same relation.
@@ -132,7 +132,7 @@ def SemanticConsequenceDedekindDense (Γ : Context) (φ : Formula) : Prop :=
     (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ
+    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-! ## The semantic deduction theorem -/
 
@@ -145,10 +145,10 @@ enters, which is why the lemma is stated at the bare `TaskModel` binder set and 
 the Base, Dense and Discrete instances below.
 -/
 theorem truthAt_foldr_imp {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    {F : TaskFrame D} (M : TaskModel F) (Omega : Set (WorldHistory F))
+    {F : TaskFrame D} (M : TaskModel F)
     (τ : WorldHistory F) (t : D) (Γ : Context) (φ : Formula) :
-    TruthAt M Omega τ t (Γ.foldr Formula.imp φ) ↔
-      ((∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ) := by
+    TruthAt M τ t (Γ.foldr Formula.imp φ) ↔
+      ((∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) := by
   induction Γ with
   | nil => simp
   | cons ψ Γ' ih =>
@@ -167,9 +167,9 @@ theorem semantic_deduction_dedekind_dense (Γ : Context) (φ : Formula) :
     SemanticConsequenceDedekindDense Γ φ ↔ ValidDedekindDense (Γ.foldr Formula.imp φ) := by
   constructor
   · intro h D _ _ _ _ _ h_lub F M τ hτ t
-    exact (truthAt_foldr_imp M Set.univ τ t Γ φ).mpr (h D h_lub F M τ hτ t)
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h D h_lub F M τ hτ t)
   · intro h D _ _ _ _ _ h_lub F M τ hτ t
-    exact (truthAt_foldr_imp M Set.univ τ t Γ φ).mp (h D h_lub F M τ hτ t)
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h D h_lub F M τ hτ t)
 
 /-! ## The proof-theoretic deduction theorem, in fold form -/
 

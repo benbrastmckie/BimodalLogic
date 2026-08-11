@@ -130,8 +130,8 @@ is only the formulas it actually carries that are constrained.
 def SatAt (M : TaskModel F)
     (hist : WorldIndex → WorldHistory F) (tv : TimeIndex → D) (sf : SignedFormula) : Prop :=
   match sf.sign with
-  | .pos => TruthAt M Set.univ (hist sf.label.world) (tv sf.label.time) sf.formula
-  | .neg => ¬ TruthAt M Set.univ (hist sf.label.world) (tv sf.label.time) sf.formula
+  | .pos => TruthAt M (hist sf.label.world) (tv sf.label.time) sf.formula
+  | .neg => ¬ TruthAt M (hist sf.label.world) (tv sf.label.time) sf.formula
 
 /--
 An interpretation satisfying a branch together with its abstract time ordering.
@@ -425,9 +425,9 @@ theorem ruleSound_andPos : RuleSound carrierBase .andPos := by
       have hφ : φ = .imp (.imp ψ (.imp χ .bot)) .bot := asAnd?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hψ : TruthAt M Set.univ (hist l.world) (tv l.time) ψ := by
+      have hψ : TruthAt M (hist l.world) (tv l.time) ψ := by
         by_contra hc; exact hsrc fun h _ => hc h
-      have hχ : TruthAt M Set.univ (hist l.world) (tv l.time) χ := by
+      have hχ : TruthAt M (hist l.world) (tv l.time) χ := by
         by_contra hc; exact hsrc fun _ h => hc h
       refine satResult_linear (fs := [SignedFormula.pos ψ l, SignedFormula.pos χ l]) (ord := ord)
         (by simp [applyRule, hA]) ⟨hist, tv, hst.append ?_⟩
@@ -451,10 +451,10 @@ theorem ruleSound_andNeg : RuleSound carrierBase .andNeg := by
       have hφ : φ = .imp (.imp ψ (.imp χ .bot)) .bot := asAnd?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.neg, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hAB : TruthAt M Set.univ (hist l.world) (tv l.time) ψ →
-          TruthAt M Set.univ (hist l.world) (tv l.time) χ → False := by
+      have hAB : TruthAt M (hist l.world) (tv l.time) ψ →
+          TruthAt M (hist l.world) (tv l.time) χ → False := by
         by_contra hc; exact hsrc hc
-      by_cases hψ : TruthAt M Set.univ (hist l.world) (tv l.time) ψ
+      by_cases hψ : TruthAt M (hist l.world) (tv l.time) ψ
       · refine satResult_branching (bss := [[SignedFormula.neg ψ l], [SignedFormula.neg χ l]])
           (ord := ord) (by simp [applyRule, hA])
           ⟨[SignedFormula.neg χ l], by simp, hist, tv, hst.append ?_⟩
@@ -484,7 +484,7 @@ theorem ruleSound_orPos : RuleSound carrierBase .orPos := by
       have hφ : φ = .imp (.imp ψ .bot) χ := asOr?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      by_cases hψ : TruthAt M Set.univ (hist l.world) (tv l.time) ψ
+      by_cases hψ : TruthAt M (hist l.world) (tv l.time) ψ
       · refine satResult_branching (bss := [[SignedFormula.pos ψ l], [SignedFormula.pos χ l]])
           (ord := ord) (by simp [applyRule, hA])
           ⟨[SignedFormula.pos ψ l], by simp, hist, tv, hst.append ?_⟩
@@ -514,9 +514,9 @@ theorem ruleSound_orNeg : RuleSound carrierBase .orNeg := by
       have hφ : φ = .imp (.imp ψ .bot) χ := asOr?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.neg, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hψ : ¬ TruthAt M Set.univ (hist l.world) (tv l.time) ψ := by
+      have hψ : ¬ TruthAt M (hist l.world) (tv l.time) ψ := by
         intro hc; exact hsrc fun h => absurd hc h
-      have hχ : ¬ TruthAt M Set.univ (hist l.world) (tv l.time) χ := fun hc => hsrc fun _ => hc
+      have hχ : ¬ TruthAt M (hist l.world) (tv l.time) χ := fun hc => hsrc fun _ => hc
       refine satResult_linear (fs := [SignedFormula.neg ψ l, SignedFormula.neg χ l]) (ord := ord)
         (by simp [applyRule, hA]) ⟨hist, tv, hst.append ?_⟩
       intro g hg
@@ -536,7 +536,7 @@ theorem ruleSound_impPos : RuleSound carrierBase .impPos := by
     | imp ψ χ =>
       have hsrc : SatAt M hist tv ⟨.pos, Formula.imp ψ χ, l⟩ := hst.sat _ hmem
       simp only [SatAt, TruthAt] at hsrc
-      by_cases hψ : TruthAt M Set.univ (hist l.world) (tv l.time) ψ
+      by_cases hψ : TruthAt M (hist l.world) (tv l.time) ψ
       · refine satResult_branching (bss := [[SignedFormula.neg ψ l], [SignedFormula.pos χ l]])
           (ord := ord) (by simp [applyRule])
           ⟨[SignedFormula.pos χ l], by simp, hist, tv, hst.append ?_⟩
@@ -564,9 +564,9 @@ theorem ruleSound_impNeg : RuleSound carrierBase .impNeg := by
     | imp ψ χ =>
       have hsrc : SatAt M hist tv ⟨.neg, Formula.imp ψ χ, l⟩ := hst.sat _ hmem
       simp only [SatAt, TruthAt] at hsrc
-      have hψ : TruthAt M Set.univ (hist l.world) (tv l.time) ψ := by
+      have hψ : TruthAt M (hist l.world) (tv l.time) ψ := by
         by_contra hc; exact hsrc fun h => absurd h hc
-      have hχ : ¬ TruthAt M Set.univ (hist l.world) (tv l.time) χ := fun hc => hsrc fun _ => hc
+      have hχ : ¬ TruthAt M (hist l.world) (tv l.time) χ := fun hc => hsrc fun _ => hc
       refine satResult_linear (fs := [SignedFormula.pos ψ l, SignedFormula.neg χ l]) (ord := ord)
         (by simp [applyRule]) ⟨hist, tv, hst.append ?_⟩
       intro g hg
@@ -609,7 +609,7 @@ theorem ruleSound_negNeg : RuleSound carrierBase .negNeg := by
       have hφ : φ = .imp ψ .bot := asNeg?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.neg, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hψ : TruthAt M Set.univ (hist l.world) (tv l.time) ψ := by
+      have hψ : TruthAt M (hist l.world) (tv l.time) ψ := by
         by_contra hc; exact hsrc fun h => absurd h hc
       refine satResult_linear (fs := [SignedFormula.pos ψ l]) (ord := ord)
         (by simp [applyRule, hA]) ⟨hist, tv, hst.append ?_⟩
@@ -655,11 +655,11 @@ instantiates against, and totality is preserved by `timeShift` unconditionally.
 -/
 theorem truthAt_allFuture_of_box {M : TaskModel F}
     {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D} {ψ : Formula}
-    (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Set.univ σ t ψ) :
-    TruthAt M Set.univ τ t ψ.allFuture := by
+    (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M σ t ψ) :
+    TruthAt M τ t ψ.allFuture := by
   rw [Truth.future_iff]
   intro s _
-  exact (TimeShift.time_shift_preserves_truth M Set.univ τ t s ψ).mp
+  exact (TimeShift.time_shift_preserves_truth M τ t s ψ).mp
     (h (WorldHistory.timeShift τ (s - t)) (WorldHistory.isTotal_timeShift hτ (s - t)))
 
 /-- **Totality carries `□` into `H`.** The past mirror of `truthAt_allFuture_of_box`; the
@@ -667,11 +667,11 @@ shift argument is insensitive to the direction of the inequality, so the two pro
 in which characterisation lemma they open with. -/
 theorem truthAt_allPast_of_box {M : TaskModel F}
     {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D} {ψ : Formula}
-    (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Set.univ σ t ψ) :
-    TruthAt M Set.univ τ t ψ.allPast := by
+    (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M σ t ψ) :
+    TruthAt M τ t ψ.allPast := by
   rw [Truth.past_iff]
   intro s _
-  exact (TimeShift.time_shift_preserves_truth M Set.univ τ t s ψ).mp
+  exact (TimeShift.time_shift_preserves_truth M τ t s ψ).mp
     (h (WorldHistory.timeShift τ (s - t)) (WorldHistory.isTotal_timeShift hτ (s - t)))
 
 /-- `T(□A) → T(A)` at every known world, same time. Persistent: the source stays. -/
@@ -713,7 +713,7 @@ theorem ruleSound_diamondNeg : RuleSound carrierBase .diamondNeg := by
       have hφ : φ = .imp (.box (.imp ψ .bot)) .bot := asDiamond?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.neg, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hbox : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Set.univ σ (tv l.time) ψ → False := by
+      have hbox : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M σ (tv l.time) ψ → False := by
         by_contra hc
         exact hsrc hc
       simp only [applyRule, hA]
@@ -741,9 +741,9 @@ theorem ruleSound_boxTemporal : RuleSound carrierBase .boxTemporal := by
     | box ψ =>
       have hsrc : SatAt M hist tv ⟨.pos, Formula.box ψ, l⟩ := hst.sat _ hmem
       simp only [SatAt, TruthAt] at hsrc
-      have hG : TruthAt M Set.univ (hist l.world) (tv l.time) ψ.allFuture :=
+      have hG : TruthAt M (hist l.world) (tv l.time) ψ.allFuture :=
         truthAt_allFuture_of_box (hst.histTotal l.world) hsrc
-      have hH : TruthAt M Set.univ (hist l.world) (tv l.time) ψ.allPast :=
+      have hH : TruthAt M (hist l.world) (tv l.time) ψ.allPast :=
         truthAt_allPast_of_box (hst.histTotal l.world) hsrc
       simp only [applyRule]
       split
@@ -842,7 +842,7 @@ theorem satAt_of_mem_diaProps {M : TaskModel F}
       rw [SatAt, hsign, hbf] at hsrc
       simp only [TruthAt] at hsrc
       have hbox : ∀ τ : WorldHistory F, τ.IsTotal →
-          TruthAt M Set.univ τ (tv dsf.label.time) inner → False := by
+          TruthAt M τ (tv dsf.label.time) inner → False := by
         by_contra hcon
         exact hsrc hcon
       rw [← Option.some_inj.mp hw]
@@ -897,7 +897,7 @@ theorem ruleSound_diamondPos : RuleSound carrierBase .diamondPos := by
       have hφ : φ = .imp (.box (.imp ψ .bot)) .bot := asDiamond?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hex : ∃ σ : WorldHistory F, σ.IsTotal ∧ TruthAt M Set.univ σ (tv l.time) ψ := by
+      have hex : ∃ σ : WorldHistory F, σ.IsTotal ∧ TruthAt M σ (tv l.time) ψ := by
         by_contra hcon
         push_neg at hcon
         exact hsrc fun σ hσ hσt => hcon σ hσ hσt
@@ -1162,28 +1162,28 @@ folds it back without the proof ever having to name the matrix.
 
 /-- `T(Gψ) @ t` gives `ψ` at any later time of the same history. -/
 theorem truthAt_of_allFuture {M : TaskModel F} {τ : WorldHistory F}
-    {t s : D} {ψ : Formula} (h : TruthAt M Set.univ τ t ψ.allFuture) (hlt : t < s) :
-    TruthAt M Set.univ τ s ψ :=
-  (Truth.future_iff Set.univ ψ).mp h s hlt
+    {t s : D} {ψ : Formula} (h : TruthAt M τ t ψ.allFuture) (hlt : t < s) :
+    TruthAt M τ s ψ :=
+  (Truth.future_iff ψ).mp h s hlt
 
 /-- `T(Hψ) @ t` gives `ψ` at any earlier time of the same history. -/
 theorem truthAt_of_allPast {M : TaskModel F} {τ : WorldHistory F}
-    {t s : D} {ψ : Formula} (h : TruthAt M Set.univ τ t ψ.allPast) (hlt : s < t) :
-    TruthAt M Set.univ τ s ψ :=
-  (Truth.past_iff Set.univ ψ).mp h s hlt
+    {t s : D} {ψ : Formula} (h : TruthAt M τ t ψ.allPast) (hlt : s < t) :
+    TruthAt M τ s ψ :=
+  (Truth.past_iff ψ).mp h s hlt
 
 /-- `F(Fψ) @ t` denies `ψ` at every later time: an existential's negation is a universal, which
 is why the `F`/`P` negative rules are propagators and not fresh-time rules. -/
 theorem not_truthAt_of_someFuture {M : TaskModel F}
     {τ : WorldHistory F} {t s : D} {ψ : Formula}
-    (h : ¬ TruthAt M Set.univ τ t (Formula.someFuture ψ)) (hlt : t < s) : ¬ TruthAt M Set.univ τ s ψ :=
-  fun hc => h ((Truth.some_future_iff Set.univ ψ).mpr ⟨s, hlt, hc⟩)
+    (h : ¬ TruthAt M τ t (Formula.someFuture ψ)) (hlt : t < s) : ¬ TruthAt M τ s ψ :=
+  fun hc => h ((Truth.some_future_iff ψ).mpr ⟨s, hlt, hc⟩)
 
 /-- `F(Pψ) @ t` denies `ψ` at every earlier time. -/
 theorem not_truthAt_of_somePast {M : TaskModel F}
     {τ : WorldHistory F} {t s : D} {ψ : Formula}
-    (h : ¬ TruthAt M Set.univ τ t (Formula.somePast ψ)) (hlt : s < t) : ¬ TruthAt M Set.univ τ s ψ :=
-  fun hc => h ((Truth.some_past_iff Set.univ ψ).mpr ⟨s, hlt, hc⟩)
+    (h : ¬ TruthAt M τ t (Formula.somePast ψ)) (hlt : s < t) : ¬ TruthAt M τ s ψ :=
+  fun hc => h ((Truth.some_past_iff ψ).mpr ⟨s, hlt, hc⟩)
 
 /-!
 The four fresh-time producers each need the *existential* reading of their source formula: a
@@ -1198,33 +1198,33 @@ lemma's statement — the same reason `truthAt_of_allFuture` exists rather than 
 `allFutureNeg`. -/
 theorem exists_gt_not_truthAt_of_allFuture {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {ψ : Formula}
-    (h : ¬ TruthAt M Set.univ τ t ψ.allFuture) : ∃ s, t < s ∧ ¬ TruthAt M Set.univ τ s ψ := by
+    (h : ¬ TruthAt M τ t ψ.allFuture) : ∃ s, t < s ∧ ¬ TruthAt M τ s ψ := by
   by_contra hcon
   push_neg at hcon
-  exact h ((Truth.future_iff Set.univ ψ).mpr hcon)
+  exact h ((Truth.future_iff ψ).mpr hcon)
 
 /-- `F(Hψ) @ t` yields a strictly earlier time at which `ψ` fails. The witness time of
 `allPastNeg`. -/
 theorem exists_lt_not_truthAt_of_allPast {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {ψ : Formula}
-    (h : ¬ TruthAt M Set.univ τ t ψ.allPast) : ∃ s, s < t ∧ ¬ TruthAt M Set.univ τ s ψ := by
+    (h : ¬ TruthAt M τ t ψ.allPast) : ∃ s, s < t ∧ ¬ TruthAt M τ s ψ := by
   by_contra hcon
   push_neg at hcon
-  exact h ((Truth.past_iff Set.univ ψ).mpr hcon)
+  exact h ((Truth.past_iff ψ).mpr hcon)
 
 /-- `T(Fψ) @ t` yields a strictly later time at which `ψ` holds. The witness time of
 `someFuturePos`. -/
 theorem exists_gt_truthAt_of_someFuture {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {ψ : Formula}
-    (h : TruthAt M Set.univ τ t (Formula.someFuture ψ)) : ∃ s, t < s ∧ TruthAt M Set.univ τ s ψ :=
-  (Truth.some_future_iff Set.univ ψ).mp h
+    (h : TruthAt M τ t (Formula.someFuture ψ)) : ∃ s, t < s ∧ TruthAt M τ s ψ :=
+  (Truth.some_future_iff ψ).mp h
 
 /-- `T(Pψ) @ t` yields a strictly earlier time at which `ψ` holds. The witness time of
 `somePastPos`. -/
 theorem exists_lt_truthAt_of_somePast {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {ψ : Formula}
-    (h : TruthAt M Set.univ τ t (Formula.somePast ψ)) : ∃ s, s < t ∧ TruthAt M Set.univ τ s ψ :=
-  (Truth.some_past_iff Set.univ ψ).mp h
+    (h : TruthAt M τ t (Formula.somePast ψ)) : ∃ s, s < t ∧ TruthAt M τ s ψ :=
+  (Truth.some_past_iff ψ).mp h
 
 /-- `F A` is `U(A, ⊤)`. -/
 theorem asSomeFuture?_eq_some {φ ψ : Formula} (h : asSomeFuture? φ = some ψ) :
@@ -1372,8 +1372,8 @@ and consumed by the rule's proof with the plumbing kept separate.
 /-- `φ ∧ ψ` holds where both conjuncts do. `Formula.and` is `¬(φ → ¬ψ)`, so this is the
 double-negation step, needed three times below and stated once. -/
 theorem truthAt_and {M : TaskModel F} {τ : WorldHistory F} {t : D}
-    {φ ψ : Formula} (hφ : TruthAt M Set.univ τ t φ) (hψ : TruthAt M Set.univ τ t ψ) :
-    TruthAt M Set.univ τ t (Formula.and φ ψ) := by
+    {φ ψ : Formula} (hφ : TruthAt M τ t φ) (hψ : TruthAt M τ t ψ) :
+    TruthAt M τ t (Formula.and φ ψ) := by
   simp only [Formula.and, Formula.neg, TruthAt]
   intro h
   exact h hφ hψ
@@ -1388,15 +1388,15 @@ witness for each disjunct is the earlier of the two times.
 theorem exists_trichotomy_disjunct {M : TaskModel F}
     {τ : WorldHistory F} {c a b : D} {φ ψ : Formula}
     (hca : c < a) (hcb : c < b)
-    (hφ : TruthAt M Set.univ τ a φ) (hψ : TruthAt M Set.univ τ b ψ) :
-    TruthAt M Set.univ τ c (Formula.someFuture (Formula.and φ ψ))
-      ∨ TruthAt M Set.univ τ c (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
-      ∨ TruthAt M Set.univ τ c (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ)) := by
+    (hφ : TruthAt M τ a φ) (hψ : TruthAt M τ b ψ) :
+    TruthAt M τ c (Formula.someFuture (Formula.and φ ψ))
+      ∨ TruthAt M τ c (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
+      ∨ TruthAt M τ c (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ)) := by
   rcases lt_trichotomy a b with hab | hab | hab
   · -- `a < b`: the earlier time carries `φ`, and `ψ` is still ahead of it.
     refine Or.inr (Or.inl ?_)
     rw [Truth.some_future_iff]
-    exact ⟨a, hca, truthAt_and hφ ((Truth.some_future_iff Set.univ ψ).mpr ⟨b, hab, hψ⟩)⟩
+    exact ⟨a, hca, truthAt_and hφ ((Truth.some_future_iff ψ).mpr ⟨b, hab, hψ⟩)⟩
   · -- `a = b`: both formulas stand at one time.
     subst hab
     refine Or.inl ?_
@@ -1405,7 +1405,7 @@ theorem exists_trichotomy_disjunct {M : TaskModel F}
   · -- `b < a`: the earlier time carries `ψ`, and `φ` is still ahead of it.
     refine Or.inr (Or.inr ?_)
     rw [Truth.some_future_iff]
-    exact ⟨b, hcb, truthAt_and ((Truth.some_future_iff Set.univ φ).mpr ⟨a, hab, hφ⟩) hψ⟩
+    exact ⟨b, hcb, truthAt_and ((Truth.some_future_iff φ).mpr ⟨a, hab, hφ⟩) hψ⟩
 
 theorem ruleSound_orderTrichotomy : RuleSound carrierBase .orderTrichotomy := by
   intro D _ _ _ _ _ F M hist tv b sf ord hmem hst _
@@ -1440,11 +1440,11 @@ theorem ruleSound_orderTrichotomy : RuleSound carrierBase .orderTrichotomy := by
             exact ⟨hcond.1.1, hcond.1.2, Option.some_inj.mp hxeq⟩
           · simp at hxeq
         -- The two truths, both in the source label's world.
-        have hψtrue : TruthAt M Set.univ (hist l.world) (tv t2) ψ' := by
+        have hψtrue : TruthAt M (hist l.world) (tv t2) ψ' := by
           have hsx := hst.sat x hxb
           simp only [SatAt, hxsign] at hsx
           rwa [hxrest.1, hxrest.2.1, hxrest.2.2] at hsx
-        have hφtrue : TruthAt M Set.univ (hist l.world) (tv l.time) φ := hst.sat _ hmem
+        have hφtrue : TruthAt M (hist l.world) (tv l.time) φ := hst.sat _ hmem
         -- The two order facts, from the bridge.
         have hc1 : tv t0' < tv l.time := hst.gt_of_mem_pastOf ht0
         have hc2 : tv t0' < tv t2 := hst.lt_of_mem_futureOf ht2
@@ -1518,9 +1518,9 @@ Shift-closure is not a hypothesis: `WorldHistory.isTotal_timeShift` supplies the
 witness's totality with no side condition. -/
 theorem forall_truthAt_time_invariant {M : TaskModel F}
     {t s : D} {ψ : Formula}
-    (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Set.univ σ t ψ) :
-    ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Set.univ σ s ψ := fun τ hτ =>
-  (TimeShift.time_shift_preserves_truth M Set.univ τ t s ψ).mp
+    (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M σ t ψ) :
+    ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M σ s ψ := fun τ hτ =>
+  (TimeShift.time_shift_preserves_truth M τ t s ψ).mp
     (h (WorldHistory.timeShift τ (s - t)) (WorldHistory.isTotal_timeShift hτ (s - t)))
 
 /-- Everything `boxDiamondPersistence` emits is satisfied at the fresh time by the *same* history
@@ -1551,7 +1551,7 @@ theorem satAt_of_boxForm_time {M : TaskModel F}
     have hsf : s.formula = Formula.imp (.box (.imp χ .bot)) .bot := hform.trans hgf
     simp only [SatAt, hss, hsf, hslab] at hsrc
     have hbox : ∀ σ : WorldHistory F, σ.IsTotal →
-        TruthAt M Set.univ σ (tv t) (Formula.imp χ .bot) := by
+        TruthAt M σ (tv t) (Formula.imp χ .bot) := by
       by_contra hcon
       exact hsrc hcon
     simp only [SatAt, hgs, hgf, hglab]
@@ -1979,7 +1979,7 @@ theorem asSince?_eq_some {φ e g : Formula} (h : asSince? φ = some (e, g)) :
 `untlPos` asserts only the event, and the fresh time is interpreted as the witness. -/
 theorem exists_gt_truthAt_of_untl {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
-    (h : TruthAt M Set.univ τ t (Formula.untl e g)) : ∃ d, t < d ∧ TruthAt M Set.univ τ d e := by
+    (h : TruthAt M τ t (Formula.untl e g)) : ∃ d, t < d ∧ TruthAt M τ d e := by
   simp only [TruthAt] at h
   obtain ⟨s, hts, hs, _⟩ := h
   exact ⟨s, hts, hs⟩
@@ -1987,7 +1987,7 @@ theorem exists_gt_truthAt_of_untl {M : TaskModel F}
 /-- The witness half of `Since`'s truth condition, the past mirror. -/
 theorem exists_lt_truthAt_of_snce {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
-    (h : TruthAt M Set.univ τ t (Formula.snce e g)) : ∃ d, d < t ∧ TruthAt M Set.univ τ d e := by
+    (h : TruthAt M τ t (Formula.snce e g)) : ∃ d, d < t ∧ TruthAt M τ d e := by
   simp only [TruthAt] at h
   obtain ⟨s, hst, hs, _⟩ := h
   exact ⟨s, hst, hs⟩
@@ -2127,8 +2127,8 @@ one — the passive arm asserted the split at a time the *branch* named, `t'`, w
 since the guard failure `¬U(e,g)@t` licenses lies strictly inside `(t,t')`. -/
 theorem exists_gt_not_untl_disj [Nontrivial D] {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
-    (h : ¬ TruthAt M Set.univ τ t (Formula.untl e g)) :
-    ∃ d, t < d ∧ (¬ TruthAt M Set.univ τ d e ∨ ¬ TruthAt M Set.univ τ d g) := by
+    (h : ¬ TruthAt M τ t (Formula.untl e g)) :
+    ∃ d, t < d ∧ (¬ TruthAt M τ d e ∨ ¬ TruthAt M τ d g) := by
   by_contra hcon
   push Not at hcon
   obtain ⟨d₀, hd₀⟩ := exists_gt_self (D := D) t
@@ -2137,8 +2137,8 @@ theorem exists_gt_not_untl_disj [Nontrivial D] {M : TaskModel F}
 /-- The past mirror of `exists_gt_not_untl_disj`. -/
 theorem exists_lt_not_snce_disj [Nontrivial D] {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
-    (h : ¬ TruthAt M Set.univ τ t (Formula.snce e g)) :
-    ∃ d, d < t ∧ (¬ TruthAt M Set.univ τ d e ∨ ¬ TruthAt M Set.univ τ d g) := by
+    (h : ¬ TruthAt M τ t (Formula.snce e g)) :
+    ∃ d, d < t ∧ (¬ TruthAt M τ d e ∨ ¬ TruthAt M τ d g) := by
   by_contra hcon
   push Not at hcon
   obtain ⟨d₀, hd₀⟩ := exists_lt_self (D := D) t
@@ -2377,7 +2377,7 @@ three `.Discrete` call sites read the same as they did when a carrier transport 
 it disappears with `TruthAt`'s set parameter itself. -/
 theorem truthAt_of_isValid {F : TaskFrame D} {M : TaskModel F}
     {φ : Formula} (h : SoundnessLemmas.IsValid D φ)
-    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D) : TruthAt M Set.univ τ t φ :=
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D) : TruthAt M τ t φ :=
   h F M τ hτ t
 
 /-- `T(F ψ)` gives `T(U(ψ, ¬ψ))` at the **same** label — the consequent of Prior-UZ, whose
@@ -2555,13 +2555,13 @@ supremum. -/
 private theorem truthAt_priorUGap {M : TaskModel F}
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     {τ : WorldHistory F} {t : D} {g : Formula}
-    (h_ant : TruthAt M Set.univ τ t (Formula.and (Formula.untl Formula.top g) g.neg.someFuture)) :
-    TruthAt M Set.univ τ t (Formula.untl (Formula.or g.neg (Formula.kPlus g.neg)) g) := by
+    (h_ant : TruthAt M τ t (Formula.and (Formula.untl Formula.top g) g.neg.someFuture)) :
+    TruthAt M τ t (Formula.untl (Formula.or g.neg (Formula.kPlus g.neg)) g) := by
   simp only [TruthAt, Formula.and, Formula.neg, Formula.someFuture, Formula.top] at h_ant
   obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
   obtain ⟨s0, hts0, -, hp0⟩ := h1
   obtain ⟨v, htv, hnpv, -⟩ := h2
-  set A : Set D := {u : D | t < u ∧ ∀ r : D, t < r → r < u → TruthAt M Set.univ τ r g} with hA
+  set A : Set D := {u : D | t < u ∧ ∀ r : D, t < r → r < u → TruthAt M τ r g} with hA
   have hs0A : s0 ∈ A := ⟨hts0, hp0⟩
   have hAbdd : BddAbove A := by
     refine ⟨v, ?_⟩
@@ -2570,7 +2570,7 @@ private theorem truthAt_priorUGap {M : TaskModel F}
     exact hnpv (hu.2 v htv (lt_of_not_ge hvu))
   obtain ⟨s, hs⟩ := h_lub A ⟨s0, hs0A⟩ hAbdd
   have hts : t < s := lt_of_lt_of_le hts0 (hs.1 hs0A)
-  have hguard : ∀ r : D, t < r → r < s → TruthAt M Set.univ τ r g := by
+  have hguard : ∀ r : D, t < r → r < s → TruthAt M τ r g := by
     intro r htr hrs
     obtain ⟨u, huA, hru, -⟩ := hs.exists_between hrs
     exact huA.2 r htr hru
@@ -2578,7 +2578,7 @@ private theorem truthAt_priorUGap {M : TaskModel F}
   refine ⟨s, hts, ?_, hguard⟩
   intro hnn
   rintro ⟨w, hsw, -, hw⟩
-  have hps : TruthAt M Set.univ τ s g := Classical.byContradiction hnn
+  have hps : TruthAt M τ s g := Classical.byContradiction hnn
   have hwA : w ∈ A := by
     refine ⟨lt_trans hts hsw, ?_⟩
     intro r htr hrw
@@ -2595,13 +2595,13 @@ the mirror order: the `K⁻` interval lies to the left of `s`, not the right. -/
 private theorem truthAt_priorSGap {M : TaskModel F}
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     {τ : WorldHistory F} {t : D} {g : Formula}
-    (h_ant : TruthAt M Set.univ τ t (Formula.and (Formula.snce Formula.top g) g.neg.somePast)) :
-    TruthAt M Set.univ τ t (Formula.snce (Formula.or g.neg (Formula.kMinus g.neg)) g) := by
+    (h_ant : TruthAt M τ t (Formula.and (Formula.snce Formula.top g) g.neg.somePast)) :
+    TruthAt M τ t (Formula.snce (Formula.or g.neg (Formula.kMinus g.neg)) g) := by
   simp only [TruthAt, Formula.and, Formula.neg, Formula.somePast, Formula.top] at h_ant
   obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
   obtain ⟨s0, hs0t, -, hp0⟩ := h1
   obtain ⟨v, hvt, hnpv, -⟩ := h2
-  set B : Set D := {u : D | u < t ∧ ∀ r : D, u < r → r < t → TruthAt M Set.univ τ r g} with hB
+  set B : Set D := {u : D | u < t ∧ ∀ r : D, u < r → r < t → TruthAt M τ r g} with hB
   have hs0B : s0 ∈ B := ⟨hs0t, hp0⟩
   have hBbdd : BddBelow B := by
     refine ⟨v, ?_⟩
@@ -2610,7 +2610,7 @@ private theorem truthAt_priorSGap {M : TaskModel F}
     exact hnpv (hu.2 v (lt_of_not_ge huv) hvt)
   obtain ⟨s, hs⟩ := exists_isGLB_of_lub' h_lub ⟨s0, hs0B⟩ hBbdd
   have hst : s < t := lt_of_le_of_lt (hs.1 hs0B) hs0t
-  have hguard : ∀ r : D, s < r → r < t → TruthAt M Set.univ τ r g := by
+  have hguard : ∀ r : D, s < r → r < t → TruthAt M τ r g := by
     intro r hsr hrt
     obtain ⟨u, huB, -, hur⟩ := hs.exists_between hsr
     exact huB.2 r hur hrt
@@ -2618,7 +2618,7 @@ private theorem truthAt_priorSGap {M : TaskModel F}
   refine ⟨s, hst, ?_, hguard⟩
   intro hnn
   rintro ⟨w, hws, -, hw⟩
-  have hps : TruthAt M Set.univ τ s g := Classical.byContradiction hnn
+  have hps : TruthAt M τ s g := Classical.byContradiction hnn
   have hwB : w ∈ B := by
     refine ⟨lt_trans hws hst, ?_⟩
     intro r hwr hrt
@@ -2728,23 +2728,23 @@ private theorem truthAt_sep {M : TaskModel F}
     [DenselyOrdered D] [Nontrivial D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     {τ : WorldHistory F} {t : D} {ψ : Formula}
-    (h_ant : TruthAt M Set.univ τ t (Formula.and (Formula.kPlus ψ)
+    (h_ant : TruthAt M τ t (Formula.and (Formula.kPlus ψ)
         (Formula.kPlus (Formula.and ψ (Formula.untl ψ ψ.neg))).neg)) :
-    TruthAt M Set.univ τ t (Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ))) := by
+    TruthAt M τ t (Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ))) := by
   obtain ⟨Q, hQc, hQd⟩ :=
     FormalSystem.Metalogic.SoundnessLemmas.exists_countable_order_dense h_lub
   simp only [TruthAt, Formula.and, Formula.neg, Formula.kPlus, Formula.kMinus,
     Formula.top] at h_ant ⊢
   obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
   rintro ⟨s₂, hts₂, -, hno⟩
-  have hK : ∀ v, t < v → ∃ u, t < u ∧ u < v ∧ TruthAt M Set.univ τ u ψ := by
+  have hK : ∀ v, t < v → ∃ u, t < u ∧ u < v ∧ TruthAt M τ u ψ := by
     intro v htv
     by_contra hc
     refine h1 ⟨v, htv, fun hb => hb, ?_⟩
     intro r htr hrv hrφ
     exact hc ⟨r, htr, hrv, hrφ⟩
   have h2' : ∃ s₁, t < s₁ ∧ (True) ∧ ∀ u, t < u → u < s₁ →
-      (TruthAt M Set.univ τ u ψ → TruthAt M Set.univ τ u (Formula.untl ψ ψ.neg) → False) := by
+      (TruthAt M τ u ψ → TruthAt M τ u (Formula.untl ψ ψ.neg) → False) := by
     refine Classical.byContradiction (fun hc => h2 ?_)
     intro hbad
     exact hc (by
@@ -2752,18 +2752,18 @@ private theorem truthAt_sep {M : TaskModel F}
       exact ⟨s₁, hts₁, trivial, fun u htu hus => Classical.byContradiction (hu u htu hus)⟩)
   obtain ⟨s₁, hts₁, -, hstart⟩ := h2'
   refine FormalSystem.Metalogic.SoundnessLemmas.sep_order h_lub Q hQc hQd
-    {u | TruthAt M Set.univ τ u ψ} t s₁ s₂ hts₁ hts₂ hK ?_ ?_
+    {u | TruthAt M τ u ψ} t s₁ s₂ hts₁ hts₂ hK ?_ ?_
   · rintro u htu hus₁ huP ⟨v, huv, hvP, hfree⟩
     exact hstart u htu hus₁ huP ⟨v, huv, hvP, fun r hur hrv => hfree r hur hrv⟩
   · intro u htu hus₂
-    have hAB : TruthAt M Set.univ τ u (Formula.kPlus ψ) →
-        TruthAt M Set.univ τ u (Formula.kMinus ψ) → False := by
+    have hAB : TruthAt M τ u (Formula.kPlus ψ) →
+        TruthAt M τ u (Formula.kMinus ψ) → False := by
       intro ha hb
       exact hno u htu hus₂ (fun k => k ha hb)
-    by_cases hR : ∃ v, u < v ∧ ∀ w, u < w → w < v → ¬ TruthAt M Set.univ τ w ψ
+    by_cases hR : ∃ v, u < v ∧ ∀ w, u < w → w < v → ¬ TruthAt M τ w ψ
     · exact Or.inl hR
     · refine Or.inr ?_
-      have ha : TruthAt M Set.univ τ u (Formula.kPlus ψ) := by
+      have ha : TruthAt M τ u (Formula.kPlus ψ) := by
         simp only [TruthAt, Formula.kPlus, Formula.neg, Formula.top]
         rintro ⟨v, huv, -, hw⟩
         exact hR ⟨v, huv, fun w huw hwv => hw w huw hwv⟩

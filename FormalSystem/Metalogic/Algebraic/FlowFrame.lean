@@ -576,7 +576,7 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
     (h_sub : φ ∈ subformulaClosure root)
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ t : D) :
     φ ∈ fam.val.mcs (w₀ + t) ↔
-    TruthAt (bundleFlowModel B) Set.univ (bundleFlowHistory fam w₀) t φ := by
+    TruthAt (bundleFlowModel B) (bundleFlowHistory fam w₀) t φ := by
   induction φ generalizing fam w₀ t with
   | atom p =>
     simp only [TruthAt, bundleFlowModel, bundleFlowHistory, multiFamHistoryGen]
@@ -701,7 +701,7 @@ theorem bundleFlow_completeness_from_neg_membership (B : BFMCS (fc := fc) D) (ro
     (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ t : D)
     (h_neg_in : φ.neg ∈ fam.val.mcs (w₀ + t)) :
-    ¬TruthAt (bundleFlowModel B) Set.univ (bundleFlowHistory fam w₀) t φ := by
+    ¬TruthAt (bundleFlowModel B) (bundleFlowHistory fam w₀) t φ := by
   intro h_phi_true
   have h_phi_in :=
     (bundleFlow_truth_lemma B root h_rtc h_buc h_fuc φ h_sub fam w₀ t).mpr h_phi_true

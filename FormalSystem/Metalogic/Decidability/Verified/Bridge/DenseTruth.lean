@@ -265,7 +265,7 @@ theorem branchTruthAt_untl_neg_dense (hf : Function.Injective f) (hOF : OrderFai
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (w : WorldIndex) (r : D) :
     b.hasNegAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
-      ¬ TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
+      ¬ TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
         (Formula.untl φ ψ) := by
   intro hn hT
   obtain ⟨s, hrs, hsφ, -⟩ := hT
@@ -302,7 +302,7 @@ theorem branchTruthAt_snce_neg_dense (hf : Function.Injective f) (hOF : OrderFai
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (w : WorldIndex) (r : D) :
     b.hasNegAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
-      ¬ TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
+      ¬ TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
         (Formula.snce φ ψ) := by
   intro hn hT
   obtain ⟨s, hsr, hsφ, -⟩ := hT
@@ -401,7 +401,7 @@ theorem branchTruthAt_untl_pos_dense [DenselyOrdered D] [NoMaxOrder D]
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
     b.hasPosAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
-      TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
+      TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
         (Formula.untl φ ψ) := by
   intro hp
   have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
@@ -471,7 +471,7 @@ theorem branchTruthAt_snce_pos_dense [DenselyOrdered D] [NoMinOrder D]
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
     b.hasPosAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
-      TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
+      TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
         (Formula.snce φ ψ) := by
   intro hp
   have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
@@ -615,7 +615,6 @@ theorem exists_countermodel_dense (D : Type) [AddCommGroup D] [LinearOrder D]
     {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
     (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) :
     ∃ t : D, ¬ TruthAt (normModel b ord (g ∘ intPlace b ord hV))
-      Set.univ
       (regionHistory (g ∘ intPlace b ord hV) l₀.world (0 : D)) t χ := by
   set f : BranchTime b → D := g ∘ intPlace b ord hV with hf_def
   have hf : Function.Injective f := hg.injective.comp (intPlace_injective hV)

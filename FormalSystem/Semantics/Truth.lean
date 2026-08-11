@@ -46,7 +46,7 @@ temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice
   matches paper's domain check at line 892 (atoms false outside domain)
 ✓ Bot: `False` matches paper's definition
 ✓ Imp: Standard material conditional matches paper
-✓ Box: `∀ (σ : WorldHistory F), σ ∈ Ω → TruthAt M Ω σ t φ`
+✓ Box: `∀ (σ : WorldHistory F), σ ∈ Ω → TruthAt M σ t φ`
   matches paper's quantification over σ ∈ Ω (admissible histories)
 ✓ Past (H): via `@[simp] past_iff`: `∀ s, s < t → TruthAt M τ s φ`
   uses strict ordering (all past times, excluding now); derived via def + Until/Since
@@ -143,16 +143,16 @@ depend on the event-first reading. The divergence is recorded, and the Lean conv
 deliberately preserved, in `specs/decisions/untl-snce-argument-order.md`. These clauses are
 τ-local and are untouched by the box retarget.
 -/
-def TruthAt (M : TaskModel F) (_Omega : Set (WorldHistory F))
+def TruthAt (M : TaskModel F)
     (τ : WorldHistory F) (t : D) : Formula → Prop
   | Formula.atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
   | Formula.bot => False
-  | Formula.imp φ ψ => TruthAt M _Omega τ t φ → TruthAt M _Omega τ t ψ
-  | Formula.box φ => ∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M _Omega σ t φ
-  | Formula.untl φ ψ => ∃ s : D, t < s ∧ TruthAt M _Omega τ s φ ∧
-      ∀ r : D, t < r → r < s → TruthAt M _Omega τ r ψ
-  | Formula.snce φ ψ => ∃ s : D, s < t ∧ TruthAt M _Omega τ s φ ∧
-      ∀ r : D, s < r → r < t → TruthAt M _Omega τ r ψ
+  | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
+  | Formula.box φ => ∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M σ t φ
+  | Formula.untl φ ψ => ∃ s : D, t < s ∧ TruthAt M τ s φ ∧
+      ∀ r : D, t < r → r < s → TruthAt M τ r ψ
+  | Formula.snce φ ψ => ∃ s : D, s < t ∧ TruthAt M τ s φ ∧
+      ∀ r : D, s < r → r < t → TruthAt M τ r ψ
 
 -- Note: We avoid defining a notation for TruthAt as it causes parsing conflicts
 -- with the validity notation in Validity.lean. Use TruthAt directly.
@@ -165,9 +165,8 @@ Bot (⊥) is false everywhere.
 theorem bot_false
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D}
-    (Omega : Set (WorldHistory F)) :
-    ¬(TruthAt M Omega τ t Formula.bot) := by
+    {t : D} :
+    ¬(TruthAt M τ t Formula.bot) := by
   intro h
   exact h
 
@@ -178,10 +177,9 @@ theorem imp_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
-    (Omega : Set (WorldHistory F))
     (φ ψ : Formula) :
-    (TruthAt M Omega τ t (φ.imp ψ)) ↔
-      ((TruthAt M Omega τ t φ) → (TruthAt M Omega τ t ψ)) := by
+    (TruthAt M τ t (φ.imp ψ)) ↔
+      ((TruthAt M τ t φ) → (TruthAt M τ t ψ)) := by
   rfl
 
 /--
@@ -192,9 +190,8 @@ theorem atom_iff_of_domain
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D} (ht : τ.domain t)
-    (Omega : Set (WorldHistory F))
     (p : Atom) :
-    (TruthAt M Omega τ t (Formula.atom p)) ↔
+    (TruthAt M τ t (Formula.atom p)) ↔
       M.valuation (τ.states t ht) p := by
   simp only [TruthAt]
   constructor
@@ -211,9 +208,8 @@ theorem atom_false_of_not_domain
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D} (ht : ¬τ.domain t)
-    (Omega : Set (WorldHistory F))
     (p : Atom) :
-    ¬(TruthAt M Omega τ t (Formula.atom p)) := by
+    ¬(TruthAt M τ t (Formula.atom p)) := by
   simp only [TruthAt]
   intro ⟨ht', _⟩
   exact ht ht'
@@ -229,10 +225,9 @@ theorem box_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
-    (Omega : Set (WorldHistory F))
     (φ : Formula) :
-    (TruthAt M Omega τ t φ.box) ↔
-      ∀ (σ : WorldHistory F), σ.IsTotal → (TruthAt M Omega σ t φ) := by
+    (TruthAt M τ t φ.box) ↔
+      ∀ (σ : WorldHistory F), σ.IsTotal → (TruthAt M σ t φ) := by
   rfl
 
 /--
@@ -243,10 +238,9 @@ F(φ) = U(φ, ⊤) is true iff there exists a strictly future time where φ hold
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
-    (Omega : Set (WorldHistory F))
     (φ : Formula) :
-    TruthAt M Omega τ t (Formula.someFuture φ) ↔
-      ∃ s, t < s ∧ TruthAt M Omega τ s φ := by
+    TruthAt M τ t (Formula.someFuture φ) ↔
+      ∃ s, t < s ∧ TruthAt M τ s φ := by
   simp only [Formula.someFuture, Formula.top, TruthAt]
   constructor
   · rintro ⟨s, hlt, hevent, _⟩
@@ -262,10 +256,9 @@ P(φ) = S(φ, ⊤) is true iff there exists a strictly past time where φ held.
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
-    (Omega : Set (WorldHistory F))
     (φ : Formula) :
-    TruthAt M Omega τ t (Formula.somePast φ) ↔
-      ∃ s, s < t ∧ TruthAt M Omega τ s φ := by
+    TruthAt M τ t (Formula.somePast φ) ↔
+      ∃ s, s < t ∧ TruthAt M τ s φ := by
   simp only [Formula.somePast, Formula.top, TruthAt]
   constructor
   · rintro ⟨s, hlt, hevent, _⟩
@@ -281,10 +274,9 @@ G(φ) = ¬F(¬φ) is true iff φ holds at all strictly future times.
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
-    (Omega : Set (WorldHistory F))
     (φ : Formula) :
-    TruthAt M Omega τ t φ.allFuture ↔
-      ∀ (s : D), t < s → TruthAt M Omega τ s φ := by
+    TruthAt M τ t φ.allFuture ↔
+      ∀ (s : D), t < s → TruthAt M τ s φ := by
   simp only [Formula.allFuture, Formula.neg, Formula.someFuture, Formula.top, TruthAt]
   constructor
   · intro h s hlt
@@ -301,10 +293,9 @@ H(φ) = ¬P(¬φ) is true iff φ holds at all strictly past times.
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
-    (Omega : Set (WorldHistory F))
     (φ : Formula) :
-    TruthAt M Omega τ t φ.allPast ↔
-      ∀ (s : D), s < t → TruthAt M Omega τ s φ := by
+    TruthAt M τ t φ.allPast ↔
+      ∀ (s : D), s < t → TruthAt M τ s φ := by
   simp only [Formula.allPast, Formula.neg, Formula.somePast, Formula.top, TruthAt]
   constructor
   · intro h s hlt
@@ -322,11 +313,10 @@ with ψ holding at all intermediate times.
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
-    (Omega : Set (WorldHistory F))
     (φ ψ : Formula) :
-    TruthAt M Omega τ t (Formula.strongRelease φ ψ) ↔
-      ∃ s : D, t < s ∧ TruthAt M Omega τ s (Formula.and ψ φ) ∧
-        ∀ r : D, t < r → r < s → TruthAt M Omega τ r ψ := by
+    TruthAt M τ t (Formula.strongRelease φ ψ) ↔
+      ∃ s : D, t < s ∧ TruthAt M τ s (Formula.and ψ φ) ∧
+        ∀ r : D, t < r → r < s → TruthAt M τ r ψ := by
   simp [Formula.strongRelease, Formula.and, TruthAt]
 
 /--
@@ -338,34 +328,13 @@ with ψ holding at all intermediate times.
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
-    (Omega : Set (WorldHistory F))
     (φ ψ : Formula) :
-    TruthAt M Omega τ t (Formula.strongTrigger φ ψ) ↔
-      ∃ s : D, s < t ∧ TruthAt M Omega τ s (Formula.and ψ φ) ∧
-        ∀ r : D, s < r → r < t → TruthAt M Omega τ r ψ := by
+    TruthAt M τ t (Formula.strongTrigger φ ψ) ↔
+      ∃ s : D, s < t ∧ TruthAt M τ s (Formula.and ψ φ) ∧
+        ∀ r : D, s < r → r < t → TruthAt M τ r ψ := by
   simp [Formula.strongTrigger, Formula.and, TruthAt]
 
 end Truth
-
-/--
-A set of world histories is shift-closed if shifting any history by any amount
-keeps it in the set.
-
-**No longer load-bearing.** `time_shift_preserves_truth` used to require this to keep shifted
-histories inside the box modality's quantifier range; under the totality box clause that role is
-filled by `WorldHistory.isTotal_timeShift` with no side condition. This definition survives only
-so that the still-`ShiftClosed`-hypothesised statements downstream keep elaborating during the
-reverse-topological sweep; it is scheduled for deletion once no statement mentions it.
--/
-def ShiftClosed (Omega : Set (WorldHistory F)) : Prop :=
-  ∀ σ ∈ Omega, ∀ (Δ : D), WorldHistory.timeShift σ Δ ∈ Omega
-
-/--
-The universal set of world histories is trivially shift-closed.
--/
-theorem Set.univ_shift_closed : ShiftClosed (Set.univ : Set (WorldHistory F)) := by
-  intro σ _ Δ
-  exact Set.mem_univ _
 
 /-! ## Time-Shift Preservation
 
@@ -388,10 +357,10 @@ Truth transport across equal histories.
 
 When two histories are equal, truth is preserved.
 -/
-theorem truth_history_eq (M : TaskModel F) (Omega : Set (WorldHistory F))
+theorem truth_history_eq (M : TaskModel F)
     (τ₁ τ₂ : WorldHistory F) (t : D)
     (h_eq : τ₁ = τ₂) (φ : Formula) :
-    TruthAt M Omega τ₁ t φ ↔ TruthAt M Omega τ₂ t φ := by
+    TruthAt M τ₁ t φ ↔ TruthAt M τ₂ t φ := by
   cases h_eq
   rfl
 
@@ -401,11 +370,11 @@ Truth at double time-shift with opposite amounts equals truth at original histor
 This is the key transport lemma for the box case of time_shift_preserves_truth.
 It allows us to transfer truth from (timeShift (timeShift σ Δ) (-Δ)) back to σ.
 -/
-theorem truth_double_shift_cancel (M : TaskModel F) (Omega : Set (WorldHistory F))
+theorem truth_double_shift_cancel (M : TaskModel F)
     (σ : WorldHistory F) (Δ : D) (t : D)
     (φ : Formula) :
-    TruthAt M Omega (WorldHistory.timeShift (WorldHistory.timeShift σ Δ) (-Δ)) t φ ↔
-    TruthAt M Omega σ t φ := by
+    TruthAt M (WorldHistory.timeShift (WorldHistory.timeShift σ Δ) (-Δ)) t φ ↔
+    TruthAt M σ t φ := by
   induction φ generalizing t with
   | atom p =>
     simp only [TruthAt]
@@ -472,10 +441,10 @@ shifted history's membership in the quantifier's range is `WorldHistory.isTotal_
 definitionally `fun t => hρ (t + Δ)` — there is no closure condition left to assume, so this
 statement is strictly stronger than the `ShiftClosed`-hypothesised version it replaces.
 -/
-theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory F))
+theorem time_shift_preserves_truth (M : TaskModel F)
     (σ : WorldHistory F) (x y : D)
     (φ : Formula) :
-    TruthAt M Omega (WorldHistory.timeShift σ (y - x)) x φ ↔ TruthAt M Omega σ y φ := by
+    TruthAt M (WorldHistory.timeShift σ (y - x)) x φ ↔ TruthAt M σ y φ := by
   -- Proof by structural induction on φ
   induction φ generalizing x y σ with
   | atom p =>
@@ -528,16 +497,16 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
       have h1 := h_box_y (WorldHistory.timeShift ρ (x - y)) h_shifted_tot
       -- Apply IH with timeShift ρ (x - y) instead of σ
       have h2 := (ih (WorldHistory.timeShift ρ (x - y)) x y).mpr h1
-      -- h2 : TruthAt M Omega (timeShift (timeShift ρ (x-y)) (y-x)) x ψ
-      -- Need: TruthAt M Omega ρ x ψ
+      -- h2 : TruthAt M (timeShift (timeShift ρ (x-y)) (y-x)) x ψ
+      -- Need: TruthAt M ρ x ψ
       have h_cancel : y - x = -(x - y) := (neg_sub x y).symm
       have h_hist_eq :
         WorldHistory.timeShift (WorldHistory.timeShift ρ (x - y)) (y - x) =
         WorldHistory.timeShift (WorldHistory.timeShift ρ (x - y)) (-(x - y)) := by
         exact WorldHistory.time_shift_congr
           (WorldHistory.timeShift ρ (x - y)) (y - x) (-(x - y)) h_cancel
-      have h2' := (truth_history_eq M Omega _ _ x h_hist_eq ψ).mp h2
-      exact (truth_double_shift_cancel M Omega ρ (x - y) x ψ).mp h2'
+      have h2' := (truth_history_eq M _ _ x h_hist_eq ψ).mp h2
+      exact (truth_double_shift_cancel M ρ (x - y) x ψ).mp h2'
   | untl φ ψ ih_φ ih_ψ =>
     -- Until (Burgess convention): untl(event=φ, guard=ψ)
     -- ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r)
@@ -565,7 +534,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           WorldHistory.timeShift σ ((s + (y - x)) - s) =
           WorldHistory.timeShift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ ((s + (y - x)) - s) (y - x) h_shift_eq2
-        have h_conv := (truth_history_eq M Omega _ _ s h_hist_eq.symm φ).mp h_event_s
+        have h_conv := (truth_history_eq M _ _ s h_hist_eq.symm φ).mp h_event_s
         exact (ih_φ σ s (s + (y - x))).mp h_conv
       · -- guard: ∀ r, y < r → r < s + (y - x) → ψ(σ, r)
         intro r h_y_lt_r h_r_lt_s'
@@ -583,7 +552,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           WorldHistory.timeShift σ (r - (r - (y - x))) =
           WorldHistory.timeShift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
-        have h_conv := (truth_history_eq M Omega _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
+        have h_conv := (truth_history_eq M _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
         exact (ih_ψ σ (r - (y - x)) r).mp h_conv
     · -- (←) original at y → shifted at x
       intro ⟨s, h_y_lt_s, h_event_s, h_guard⟩
@@ -600,7 +569,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           WorldHistory.timeShift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
         have h_conv := (ih_φ σ (s - (y - x)) s).mpr h_event_s
-        exact (truth_history_eq M Omega _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
+        exact (truth_history_eq M _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
       · -- guard: ∀ r', x < r' → r' < s - (y - x) → ψ(shifted σ, r')
         intro r' h_x_lt_r' h_r'_lt_s'
         have h_y_lt_r : y < r' + (y - x) := by
@@ -624,7 +593,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           exact WorldHistory.time_shift_congr σ ((r' + (y - x)) - r')
             (y - x) h_shift_eq
         have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
-        exact (truth_history_eq M Omega _ _ r' h_hist_eq ψ).mp h_conv
+        exact (truth_history_eq M _ _ r' h_hist_eq ψ).mp h_conv
   | snce φ ψ ih_φ ih_ψ =>
     -- Since (Burgess convention): snce(event=φ, guard=ψ)
     -- ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r)
@@ -649,7 +618,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           WorldHistory.timeShift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ ((s + (y - x)) - s)
             (y - x) h_shift_eq
-        have h_conv := (truth_history_eq M Omega _ _ s h_hist_eq.symm φ).mp h_event_s
+        have h_conv := (truth_history_eq M _ _ s h_hist_eq.symm φ).mp h_event_s
         exact (ih_φ σ s (s + (y - x))).mp h_conv
       · -- guard: ∀ r, s + (y - x) < r → r < y → ψ(σ, r)
         intro r h_s'_lt_r h_r_lt_y
@@ -667,7 +636,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           WorldHistory.timeShift σ (r - (r - (y - x))) =
           WorldHistory.timeShift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
-        have h_conv := (truth_history_eq M Omega _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
+        have h_conv := (truth_history_eq M _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
         exact (ih_ψ σ (r - (y - x)) r).mp h_conv
     · -- (←) original at y → shifted at x
       intro ⟨s, h_s_lt_y, h_event_s, h_guard⟩
@@ -684,7 +653,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           WorldHistory.timeShift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
         have h_conv := (ih_φ σ (s - (y - x)) s).mpr h_event_s
-        exact (truth_history_eq M Omega _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
+        exact (truth_history_eq M _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
       · -- guard: ∀ r', s - (y - x) < r' → r' < x → ψ(shifted σ, r')
         intro r' h_s'_lt_r' h_r'_lt_x
         have h_s_lt_r : s < r' + (y - x) := by
@@ -703,7 +672,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           exact WorldHistory.time_shift_congr σ ((r' + (y - x)) - r')
             (y - x) h_shift_eq
         have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
-        exact (truth_history_eq M Omega _ _ r' h_hist_eq ψ).mp h_conv
+        exact (truth_history_eq M _ _ r' h_hist_eq ψ).mp h_conv
 
 /--
 Corollary: For any history σ at time y, there exists a history at time x
@@ -711,12 +680,12 @@ Corollary: For any history σ at time y, there exists a history at time x
 
 This is the key lemma for proving MF and TF axioms.
 -/
-theorem exists_shifted_history (M : TaskModel F) (Omega : Set (WorldHistory F))
+theorem exists_shifted_history (M : TaskModel F)
     (σ : WorldHistory F) (x y : D)
     (φ : Formula) :
-    TruthAt M Omega σ y φ ↔
-    TruthAt M Omega (WorldHistory.timeShift σ (y - x)) x φ := by
-  exact (time_shift_preserves_truth M Omega σ x y φ).symm
+    TruthAt M σ y φ ↔
+    TruthAt M (WorldHistory.timeShift σ (y - x)) x φ := by
+  exact (time_shift_preserves_truth M σ x y φ).symm
 
 end TimeShift
 

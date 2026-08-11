@@ -59,7 +59,7 @@ theorem soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAdd
     [Nontrivial D] (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
     soundness Γ φ d D F M τ h_mem t h_ctx
 
@@ -76,7 +76,7 @@ theorem soundness_linear {Γ : Context} {φ : Formula} (d : DerivationTree Frame
     [Nontrivial D] [LinearTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   soundness_over D Γ φ d
 
 /--
@@ -90,7 +90,7 @@ theorem soundness_dense {Γ : Context} {φ : Formula} (d : DerivationTree FrameC
     [DenseTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
     Metalogic.soundness_dense Γ φ d D F M τ h_mem t h_ctx
 
@@ -106,7 +106,7 @@ theorem soundness_discrete {Γ : Context} {φ : Formula} (d : DerivationTree Fra
     [DiscreteTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
     Metalogic.soundness_discrete Γ φ d D F M τ h_mem t h_ctx
 
@@ -159,7 +159,7 @@ This is the concrete instantiation of soundness for the standard discrete model.
 theorem soundness_Int {Γ : Context} {φ : Formula} (d : DerivationTree FrameClass.Discrete Γ φ) :
     ∀ (F : TaskFrame Int) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : Int),
-      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
+      (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
     Metalogic.soundness_discrete Γ φ d Int F M τ h_mem t h_ctx
 

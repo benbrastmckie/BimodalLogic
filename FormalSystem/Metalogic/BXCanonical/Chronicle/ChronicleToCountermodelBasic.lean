@@ -830,7 +830,7 @@ theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
       (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-      ¬TruthAt TM Set.univ τ t φ := by
+      ¬TruthAt TM τ t φ := by
   have hfam₀ : rootedCantorFmcsDense fc A h_mcs h_box_dense 0 ∈
       (cantorBfmcsDense fc A h_mcs h_box_dense).families :=
     ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩

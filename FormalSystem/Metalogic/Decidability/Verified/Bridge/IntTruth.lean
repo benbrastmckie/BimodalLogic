@@ -264,7 +264,7 @@ the atom case is the one case where the branch does determine the model.
 -/
 
 theorem truthAt_atom_state (hf : Function.Injective f) (w : WorldIndex) (r : D) (p : Atom) :
-    TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r (Formula.atom p) ↔
+    TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r (Formula.atom p) ↔
       b.hasPosAt (Formula.atom p) (stateLabel b ord f w r) = true := by
   by_cases hr : IsPlacedCode f (regionCode f r)
   · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
@@ -290,9 +290,9 @@ every label.
 def BranchTruthAt (b : Branch) (ord : TimeOrdering) (f : BranchTime b → D) (φ : Formula) : Prop :=
   ∀ (w : WorldIndex) (r : D),
     (b.hasPosAt φ (stateLabel b ord f w r) = true →
-      TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r φ) ∧
+      TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r φ) ∧
     (b.hasNegAt φ (stateLabel b ord f w r) = true →
-      ¬ TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r φ)
+      ¬ TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r φ)
 
 /--
 **Atom case.** The positive half is `truthAt_atom_state`; the negative half is that plus openness,
@@ -621,7 +621,7 @@ theorem branchTruthAt_untl_neg (hf : Function.Injective f) (hOR : OrderReflectin
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (w : WorldIndex) (r : D) :
     b.hasNegAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
-      ¬ TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
+      ¬ TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
         (Formula.untl φ ψ) := by
   intro hn hT
   obtain ⟨s, hrs, hsφ, -⟩ := hT
@@ -669,7 +669,7 @@ theorem branchTruthAt_snce_neg (hf : Function.Injective f) (hOR : OrderReflectin
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (w : WorldIndex) (r : D) :
     b.hasNegAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
-      ¬ TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
+      ¬ TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
         (Formula.snce φ ψ) := by
   intro hn hT
   obtain ⟨s, hsr, hsφ, -⟩ := hT
@@ -736,7 +736,7 @@ theorem branchTruthAt_untl_pos (hf : Function.Injective f) (hOF : OrderFaithful 
     (hTW : temporalWitnessCheck b ord = true) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
     b.hasPosAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
-      TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
+      TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
         (Formula.untl φ ψ) := by
   intro hp
   have hmem : (⟨.pos, .untl φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
@@ -802,7 +802,7 @@ theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful 
     (hTW : temporalWitnessCheck b ord = true) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
     b.hasPosAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
-      TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
+      TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
         (Formula.snce φ ψ) := by
   intro hp
   have hmem : (⟨.pos, .snce φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=

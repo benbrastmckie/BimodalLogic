@@ -98,7 +98,7 @@ noncomputable example (B : BFMCS (fc := fc) ℝ) (root : Formula)
     (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
     (fam : FMCS (fc := fc) ℝ) (hfam : fam ∈ B.families)
     (w₀ t : ℝ) (h_neg_in : φ.neg ∈ fam.mcs (w₀ + t)) :
-    ¬TruthAt (bundleFlowModel B) Set.univ (bundleFlowHistory ⟨fam, hfam⟩ w₀) t φ :=
+    ¬TruthAt (bundleFlowModel B) (bundleFlowHistory ⟨fam, hfam⟩ w₀) t φ :=
   bundleFlow_completeness_from_neg_membership B root h_rtc h_buc h_fuc φ h_sub
     ⟨fam, hfam⟩ w₀ t h_neg_in
 
@@ -320,7 +320,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
     (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
     ∃ (F : TaskFrame ℝ) (TM : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : ℝ),
-      ¬TruthAt TM Set.univ τ t φ := by
+      ¬TruthAt TM τ t φ := by
   classical
   -- The finite monadic language and the depth Reynolds sets "one greater than the depth".
   let sig := mkSigFrom φ
@@ -361,7 +361,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
   -- Step 5, second half: the `ℝ`-flowed structure read back as a task model.
   suffices h_truth_corr : ∀ ψ : Formula, ψ ∈ subformulaClosure φ →
       ∀ (f : FamIdx) (w₀ t : ℝ),
-      TruthAt TM Set.univ (multiFamHistoryGen f w₀) t ψ ↔
+      TruthAt TM (multiFamHistoryGen f w₀) t ψ ↔
         TemporalTruth ((Rf f).toOrdered sig) (mkAtomMapFwd φ) (realFlowPoint (hR f) (w₀ + t))
           ψ by
     refine ⟨multiFamTaskFrameGen ℝ FamIdx, TM, multiFamHistoryGen f₀ 0,

@@ -812,7 +812,7 @@ theorem countermodel_discrete_reynolds_v2
       (_ : IsSuccArchimedean D) (_ : IsPredArchimedean D)
       (F : TaskFrame D) (TM : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-      ¬TruthAt TM Set.univ τ t φ := by
+      ¬TruthAt TM τ t φ := by
   -- === Multi-Family Z-Interval Approach (bypasses chronicle_gap_contradiction) ===
   --
   -- FamIdx: type of box-equivalent MCSes (one per S5 accessibility class)
@@ -868,7 +868,7 @@ theorem countermodel_discrete_reynolds_v2
   -- predFormulas are contained in φ.predFormulas (needed for the box case)
   suffices h_truth_corr : ∀ (ψ : Formula) (h_sub : ψ.predFormulas ⊆ φ.predFormulas)
       (f : FamIdx) (w₀ : ℤ) (t : ℤ),
-      TruthAt TM Set.univ (multiFamHistory f w₀) t ψ ↔
+      TruthAt TM (multiFamHistory f w₀) t ψ ↔
         TemporalTruth ((getZ f).toOrdered sig) (mkAtomMapFwd φ)
           (toCarrier (h_lo f) (h_hi f) (w₀ + t)) ψ by
     -- Package the existential

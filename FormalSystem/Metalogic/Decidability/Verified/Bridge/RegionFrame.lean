@@ -20,7 +20,7 @@ that `valid` quantifies over.
 `FormalSystem.Semantics.valid` reads
 
 ```
-∀ D, ∀ F : TaskFrame D, ∀ M, ∀ τ, τ.IsTotal → ∀ t, TruthAt M Set.univ τ t φ
+∀ D, ∀ F : TaskFrame D, ∀ M, ∀ τ, τ.IsTotal → ∀ t, TruthAt M τ t φ
 ```
 
 so refuting it means producing a **total** history. That is not a formality, and it decides the
@@ -54,7 +54,7 @@ use. Determinism removes that need, and with it the designated set.
 with no closure side condition — totality is preserved by `timeShift` outright:
 
 ```
-TruthAt M Set.univ τ x (box φ) ↔ ∀ σ, σ.IsTotal → ∀ y, TruthAt M Set.univ σ y φ
+TruthAt M τ x (box φ) ↔ ∀ σ, σ.IsTotal → ∀ y, TruthAt M σ y φ
 ```
 
 (`truthAt_box_iff` below). Truth of a boxed formula does not depend on where it is evaluated;
@@ -326,12 +326,12 @@ outright.
 -/
 theorem truthAt_box_iff (M : TaskModel F)
     (τ : WorldHistory F) (x : D) (φ : Formula) :
-    TruthAt M Set.univ τ x φ.box ↔
-      ∀ σ : WorldHistory F, σ.IsTotal → ∀ y : D, TruthAt M Set.univ σ y φ := by
+    TruthAt M τ x φ.box ↔
+      ∀ σ : WorldHistory F, σ.IsTotal → ∀ y : D, TruthAt M σ y φ := by
   simp only [TruthAt]
   constructor
   · intro h σ hσ y
-    exact (TimeShift.time_shift_preserves_truth M Set.univ σ x y φ).mp
+    exact (TimeShift.time_shift_preserves_truth M σ x y φ).mp
       (h _ (WorldHistory.isTotal_timeShift hσ (y - x)))
   · intro h σ hσ
     exact h σ hσ x
@@ -339,13 +339,13 @@ theorem truthAt_box_iff (M : TaskModel F)
 /-- Truth of a boxed formula does not depend on the time it is evaluated at. -/
 theorem truthAt_box_congr (M : TaskModel F)
     (τ : WorldHistory F) (x y : D) (φ : Formula) :
-    TruthAt M Set.univ τ x φ.box ↔ TruthAt M Set.univ τ y φ.box := by
+    TruthAt M τ x φ.box ↔ TruthAt M τ y φ.box := by
   rw [truthAt_box_iff M τ x φ, truthAt_box_iff M τ y φ]
 
 /-- Nor on the history it is evaluated in. -/
 theorem truthAt_box_congr_history (M : TaskModel F)
     (τ σ : WorldHistory F) (x y : D) (φ : Formula) :
-    TruthAt M Set.univ τ x φ.box ↔ TruthAt M Set.univ σ y φ.box := by
+    TruthAt M τ x φ.box ↔ TruthAt M σ y φ.box := by
   rw [truthAt_box_iff M τ x φ, truthAt_box_iff M σ y φ]
 
 end BoxUniversal
@@ -369,10 +369,9 @@ theorem regionHistory_eq_timeShift (f : ι → D) (w : W) (Δ : D) :
 /-- Truth at an offset history is truth at its base history, read at the offset time. -/
 theorem truthAt_regionHistory_offset (M : TaskModel (regionFrame W ι D)) (f : ι → D)
     (w : W) (Δ r : D) (φ : Formula) :
-    TruthAt M Set.univ (regionHistory f w Δ) r φ ↔
-      TruthAt M Set.univ (regionHistory f w (0 : D)) (r + Δ) φ := by
+    TruthAt M (regionHistory f w Δ) r φ ↔
+      TruthAt M (regionHistory f w (0 : D)) (r + Δ) φ := by
   have h := TimeShift.time_shift_preserves_truth M
-    (Set.univ : Set (WorldHistory (regionFrame W ι D)))
     (regionHistory f w (0 : D)) r (r + Δ) φ
   rw [add_sub_cancel_left] at h
   rw [regionHistory_eq_timeShift]
@@ -388,8 +387,8 @@ the time quantifier by the `boxTemporal` chain together with region invariance.
 -/
 theorem truthAt_box_iff_base (M : TaskModel (regionFrame W ι D)) (f : ι → D)
     (τ : WorldHistory (regionFrame W ι D)) (x : D) (φ : Formula) :
-    TruthAt M Set.univ τ x φ.box ↔
-      ∀ (w : W) (y : D), TruthAt M Set.univ (regionHistory f w (0 : D)) y φ := by
+    TruthAt M τ x φ.box ↔
+      ∀ (w : W) (y : D), TruthAt M (regionHistory f w (0 : D)) y φ := by
   rw [truthAt_box_iff M τ x φ]
   constructor
   · intro h w y

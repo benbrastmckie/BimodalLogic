@@ -467,7 +467,7 @@ theorem fc_theorem_true_in_bundle_flow_model {fc : FrameClass} {D : Type}
     (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
     (h_deriv : DerivationTree fc [] φ)
     (fam : FMCS (fc := fc) D) (hfam : fam ∈ B.families) (w₀ t : D) :
-    TruthAt (bundleFlowModel B) Set.univ (bundleFlowHistory ⟨fam, hfam⟩ w₀) t φ :=
+    TruthAt (bundleFlowModel B) (bundleFlowHistory ⟨fam, hfam⟩ w₀) t φ :=
   (bundleFlow_truth_lemma B root h_rtc h_buc h_fuc φ h_sub ⟨fam, hfam⟩ w₀ t).mp
     (theorem_in_mcs (fam.is_mcs (w₀ + t)) h_deriv)
 

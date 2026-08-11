@@ -60,7 +60,7 @@ def ValidOver (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (φ : Formula) : Prop :=
   ∀ (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    TruthAt M Set.univ τ t φ
+    TruthAt M τ t φ
 
 /--
 Notation for parameterized validity: `⊨[D] φ` means `ValidOver D φ`.

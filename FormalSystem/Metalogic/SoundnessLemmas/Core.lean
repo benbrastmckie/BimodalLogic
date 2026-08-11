@@ -43,7 +43,7 @@ def IsValid (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] 
     Prop :=
   ∀ (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_hτ : τ.IsTotal) (t : D),
-    TruthAt M Set.univ τ t φ
+    TruthAt M τ t φ
 
 -- Section variable for theorem signatures
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -56,7 +56,7 @@ This is just the definition of validity, but stated as a lemma for clarity.
 -/
 theorem valid_at_triple {φ : Formula} (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_hτ : τ.IsTotal) (t : D) (h_valid : IsValid D φ) :
-    TruthAt M Set.univ τ t φ := h_valid F M τ _hτ t
+    TruthAt M τ t φ := h_valid F M τ _hτ t
 
 /--
 Helper lemma: TruthAt is invariant under double swap.
@@ -66,9 +66,8 @@ Required because TruthAt is defined by structural recursion, preventing direct u
 of the involution property φ.swap.swap = φ via substitution.
 -/
 theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
-    (Omega : Set (WorldHistory F))
     (τ : WorldHistory F) (t : D) (φ : Formula) :
-    TruthAt M Omega τ t φ.swapTemporal.swapTemporal ↔ TruthAt M Omega τ t φ := by
+    TruthAt M τ t φ.swapTemporal.swapTemporal ↔ TruthAt M τ t φ := by
   induction φ generalizing τ t with
   | atom p =>
     -- Atom case: swap doesn't change atoms

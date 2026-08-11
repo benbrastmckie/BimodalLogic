@@ -1072,7 +1072,7 @@ theorem countermodel_discrete (A : Set Formula)
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
       (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-      ¬TruthAt TM Set.univ τ t φ := by
+      ¬TruthAt TM τ t φ := by
   -- SORRY: open obligation. This was formerly proved through the BX pipeline
   -- (dd_countermodel_chronicle_discrete → succ_embed_surjective →
   -- limitDomSubtype_isSuccArchimedean → succ_cofinal), which was itself sorried

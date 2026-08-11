@@ -34,7 +34,7 @@ the assignment the plan names, and `truthAt_atom_branch_placed` is the readback 
 atom case consumes:
 
 ```
-TruthAt (branchModel b f gapVal) Set.univ (regionHistory f w 0) (f i) (.atom p)
+TruthAt (branchModel b f gapVal) (regionHistory f w 0) (f i) (.atom p)
   ↔ b.hasPosAt (.atom p) ⟨w, timeAt b i⟩ = true
 ```
 
@@ -227,7 +227,7 @@ atom is exactly the valuation at the point's region code.
 -/
 theorem truthAt_atom_regionHistory (f : ι → D) (placedVal : W → ι → Atom → Prop)
     (gapVal : W → Set ι × Set ι → Atom → Prop) (w : W) (r : D) (p : Atom) :
-    TruthAt (regionModel f placedVal gapVal) Set.univ (regionHistory f w (0 : D)) r
+    TruthAt (regionModel f placedVal gapVal) (regionHistory f w (0 : D)) r
         (Formula.atom p) ↔
       regionValuation f (placedVal w) (gapVal w) (regionCode f r) p := by
   simp only [TruthAt, regionHistory_states, regionModel_valuation, add_zero]
@@ -237,7 +237,7 @@ theorem truthAt_atom_regionHistory (f : ι → D) (placedVal : W → ι → Atom
 theorem truthAt_atom_placed {f : ι → D} (hf : Function.Injective f)
     (placedVal : W → ι → Atom → Prop) (gapVal : W → Set ι × Set ι → Atom → Prop)
     (w : W) (i : ι) (p : Atom) :
-    TruthAt (regionModel f placedVal gapVal) Set.univ (regionHistory f w (0 : D)) (f i)
+    TruthAt (regionModel f placedVal gapVal) (regionHistory f w (0 : D)) (f i)
         (Formula.atom p) ↔
       placedVal w i p := by
   rw [truthAt_atom_regionHistory]
@@ -247,7 +247,7 @@ theorem truthAt_atom_placed {f : ι → D} (hf : Function.Injective f)
 theorem truthAt_atom_gap {f : ι → D} {r : D} (hr : ¬ IsPlacedCode f (regionCode f r))
     (placedVal : W → ι → Atom → Prop) (gapVal : W → Set ι × Set ι → Atom → Prop)
     (w : W) (p : Atom) :
-    TruthAt (regionModel f placedVal gapVal) Set.univ (regionHistory f w (0 : D)) r
+    TruthAt (regionModel f placedVal gapVal) (regionHistory f w (0 : D)) r
         (Formula.atom p) ↔
       gapVal w (regionCode f r) p := by
   rw [truthAt_atom_regionHistory]
@@ -282,7 +282,7 @@ theorem truthAt_atom_branch_placed (b : Branch) {f : BranchTime b → D}
     (hf : Function.Injective f)
     (gapVal : WorldIndex → Set (BranchTime b) × Set (BranchTime b) → Atom → Prop)
     (w : WorldIndex) (i : BranchTime b) (p : Atom) :
-    TruthAt (branchModel b f gapVal) Set.univ (regionHistory f w (0 : D)) (f i)
+    TruthAt (branchModel b f gapVal) (regionHistory f w (0 : D)) (f i)
         (Formula.atom p) ↔
       b.hasPosAt (Formula.atom p) ⟨w, timeAt b i⟩ = true :=
   truthAt_atom_placed hf (branchPlacedVal b) gapVal w i p
@@ -309,16 +309,16 @@ structure GapDemands (f : ι → D) (placedVal : W → ι → Atom → Prop)
     (gapVal : W → Set ι × Set ι → Atom → Prop) : Prop where
   /-- `T(G φ)` at a placed point survives at every later point, gaps included. -/
   future : ∀ (w : W) (i : ι) (φ : Formula),
-    TruthAt (regionModel f placedVal gapVal) Set.univ (regionHistory f w (0 : D)) (f i)
+    TruthAt (regionModel f placedVal gapVal) (regionHistory f w (0 : D)) (f i)
       φ.allFuture →
     ∀ r : D, f i < r →
-      TruthAt (regionModel f placedVal gapVal) Set.univ (regionHistory f w (0 : D)) r φ
+      TruthAt (regionModel f placedVal gapVal) (regionHistory f w (0 : D)) r φ
   /-- `T(H φ)` at a placed point survives at every earlier point, gaps included. -/
   past : ∀ (w : W) (i : ι) (φ : Formula),
-    TruthAt (regionModel f placedVal gapVal) Set.univ (regionHistory f w (0 : D)) (f i)
+    TruthAt (regionModel f placedVal gapVal) (regionHistory f w (0 : D)) (f i)
       φ.allPast →
     ∀ r : D, r < f i →
-      TruthAt (regionModel f placedVal gapVal) Set.univ (regionHistory f w (0 : D)) r φ
+      TruthAt (regionModel f placedVal gapVal) (regionHistory f w (0 : D)) r φ
 
 end GapDemands
 
@@ -362,12 +362,10 @@ makes `p` false on the whole ray above it, so `G p` fails at `0` — although a 
 theorem not_leftCopy_gapAdequate (p : Atom) :
     ¬ TruthAt (regionModel refutePlacement refutePlacedVal
         (leftCopyGap refutePlacement refutePlacedVal False))
-      Set.univ
       (regionHistory refutePlacement () (0 : ℚ)) (0 : ℚ) (Formula.allFuture (Formula.atom p)) := by
   intro h
   have h1 : TruthAt (regionModel refutePlacement refutePlacedVal
-      (leftCopyGap refutePlacement refutePlacedVal False))
-      Set.univ (regionHistory refutePlacement () (0 : ℚ)) (1 : ℚ)
+      (leftCopyGap refutePlacement refutePlacedVal False)) (regionHistory refutePlacement () (0 : ℚ)) (1 : ℚ)
       (Formula.atom p) := by
     by_contra hc
     exact h ⟨1, by norm_num, hc, fun _ _ _ => id⟩
@@ -398,12 +396,10 @@ gap valuation cannot be imported from either endpoint and must be defined outrig
 theorem not_rightCopy_gapAdequate (p : Atom) :
     ¬ TruthAt (regionModel refutePlacement refutePlacedVal
         (rightCopyGap refutePlacement refutePlacedVal False))
-      Set.univ
       (regionHistory refutePlacement () (0 : ℚ)) (0 : ℚ) (Formula.allPast (Formula.atom p)) := by
   intro h
   have h1 : TruthAt (regionModel refutePlacement refutePlacedVal
-      (rightCopyGap refutePlacement refutePlacedVal False))
-      Set.univ (regionHistory refutePlacement () (0 : ℚ)) (-1 : ℚ)
+      (rightCopyGap refutePlacement refutePlacedVal False)) (regionHistory refutePlacement () (0 : ℚ)) (-1 : ℚ)
       (Formula.atom p) := by
     by_contra hc
     exact h ⟨-1, by norm_num, hc, fun _ _ _ => id⟩
@@ -429,7 +425,7 @@ end CopyRefuted
 
 `GapDemands` takes *model* truth of `G φ` at a placed point as its hypothesis. But
 `Semantics.future_iff` is an `iff`:
-`TruthAt M Set.univ τ x φ.allFuture ↔ ∀ s > x, TruthAt M Set.univ τ s φ`.
+`TruthAt M τ x φ.allFuture ↔ ∀ s > x, TruthAt M τ s φ`.
 The hypothesis therefore already *is* the conclusion, and `GapDemands` holds of every policy —
 including the two this file refutes. `gapDemands_trivial` below proves exactly that, so the
 vacuity is recorded as a theorem rather than discovered again.
@@ -451,8 +447,8 @@ left to right, so every `gapVal` whatsoever satisfies them.
 -/
 theorem gapDemands_trivial (f : ι → D) (placedVal : W → ι → Atom → Prop)
     (gapVal : W → Set ι × Set ι → Atom → Prop) : GapDemands f placedVal gapVal where
-  future := fun _ _ φ h r hr => (Truth.future_iff _ φ).mp h r hr
-  past := fun _ _ φ h r hr => (Truth.past_iff _ φ).mp h r hr
+  future := fun _ _ φ h r hr => (Truth.future_iff φ).mp h r hr
+  past := fun _ _ φ h r hr => (Truth.past_iff φ).mp h r hr
 
 end GapDemandsVacuous
 
@@ -507,19 +503,19 @@ structure GapAdequate (b : Branch) (f : BranchTime b → D)
   future : ∀ (w : WorldIndex) (i : BranchTime b) (p : Atom),
     b.hasPosAt (Formula.allFuture (Formula.atom p)) ⟨w, timeAt b i⟩ = true →
     ∀ r : D, f i < r → ¬ IsPlacedCode f (regionCode f r) →
-      TruthAt (branchModel b f gapVal) Set.univ (regionHistory f w (0 : D)) r
+      TruthAt (branchModel b f gapVal) (regionHistory f w (0 : D)) r
         (Formula.atom p)
   /-- `T(H p)` at a placed label makes `p` true at every gap point below it. -/
   past : ∀ (w : WorldIndex) (j : BranchTime b) (p : Atom),
     b.hasPosAt (Formula.allPast (Formula.atom p)) ⟨w, timeAt b j⟩ = true →
     ∀ r : D, r < f j → ¬ IsPlacedCode f (regionCode f r) →
-      TruthAt (branchModel b f gapVal) Set.univ (regionHistory f w (0 : D)) r
+      TruthAt (branchModel b f gapVal) (regionHistory f w (0 : D)) r
         (Formula.atom p)
   /-- `T(□ p)` anywhere makes `p` true at every gap point of every world. -/
   box : ∀ (l : Label) (p : Atom),
     (⟨.pos, Formula.box (Formula.atom p), l⟩ : SignedFormula) ∈ b →
     ∀ (w : WorldIndex) (r : D), ¬ IsPlacedCode f (regionCode f r) →
-      TruthAt (branchModel b f gapVal) Set.univ (regionHistory f w (0 : D)) r
+      TruthAt (branchModel b f gapVal) (regionHistory f w (0 : D)) r
         (Formula.atom p)
 
 /--
@@ -630,7 +626,6 @@ theorem not_truthLemma_branchGapVal (p q : Atom) (hpq : p ≠ q) :
         ∈ refuteBoxBranch p q ∧
     ¬ TruthAt (branchModel (refuteBoxBranch p q) (refuteBoxPlacement p q)
           (branchGapVal (refuteBoxBranch p q)))
-        Set.univ
         (regionHistory (refuteBoxPlacement p q) 0 (0 : ℚ)) (0 : ℚ)
         (Formula.box ((Formula.atom p).imp (Formula.atom q))) := by
   refine ⟨by simp [refuteBoxBranch], ?_⟩
@@ -646,7 +641,7 @@ theorem not_truthLemma_branchGapVal (p q : Atom) (hpq : p ≠ q) :
   have himp := (truthAt_box_iff_base _ (refuteBoxPlacement p q) _ _ _).mp h 0 (1 : ℚ)
   -- `p` is true at the gap, forced by `T(□p)`.
   have hp : TruthAt (branchModel (refuteBoxBranch p q) (refuteBoxPlacement p q)
-      (branchGapVal (refuteBoxBranch p q))) Set.univ
+      (branchGapVal (refuteBoxBranch p q)))
       (regionHistory (refuteBoxPlacement p q) 0 (0 : ℚ)) (1 : ℚ) (Formula.atom p) := by
     rw [hmodel, truthAt_atom_gap hgap]
     exact Or.inr (Or.inr ⟨⟨0, 0⟩, by simp [refuteBoxBranch]⟩)
@@ -686,7 +681,6 @@ theorem gapAdequate_insufficient (p q : Atom) (hpq : p ≠ q) :
         ∈ refuteBoxBranch p q ∧
     ¬ TruthAt (branchModel (refuteBoxBranch p q) (refuteBoxPlacement p q)
           (branchGapVal (refuteBoxBranch p q)))
-        Set.univ
         (regionHistory (refuteBoxPlacement p q) 0 (0 : ℚ)) (0 : ℚ)
         (Formula.box ((Formula.atom p).imp (Formula.atom q))) :=
   ⟨branchGapVal_gapAdequate _ _, (not_truthLemma_branchGapVal p q hpq).1,

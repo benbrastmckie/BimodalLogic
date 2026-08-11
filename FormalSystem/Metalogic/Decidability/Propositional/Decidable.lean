@@ -157,7 +157,7 @@ reification. Box/until/since cases are dismissed by `isPropositional`; the atom 
 via the trivial history's total domain. -/
 theorem trivial_truth_iff (v : Nat → Bool) (atomList : List Atom) (t : Int) :
     ∀ q : Formula, isPropositional q = true →
-      (FormalSystem.Semantics.TruthAt (trivialModel v atomList) Set.univ
+      (FormalSystem.Semantics.TruthAt (trivialModel v atomList)
           (WorldHistory.trivial (D := Int)) t q ↔ (reifyWith atomList q).eval v = true) := by
   intro q
   induction q with
@@ -194,7 +194,7 @@ theorem derivable_tautology (p : Formula) (hp : isPropositional p = true)
     obtain ⟨v, hv⟩ := this
     exact ⟨v, Bool.not_eq_true _ |>.mp hv⟩
   have htruth_iff := trivial_truth_iff v (formulaAtomsList p) (0 : Int) p hp
-  have hnot_truth : ¬ FormalSystem.Semantics.TruthAt (trivialModel v (formulaAtomsList p)) Set.univ
+  have hnot_truth : ¬ FormalSystem.Semantics.TruthAt (trivialModel v (formulaAtomsList p))
       (WorldHistory.trivial (D := Int)) (0 : Int) p := by
     rw [htruth_iff]
     simp [hv]

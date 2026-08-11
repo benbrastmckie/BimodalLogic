@@ -171,9 +171,9 @@ theorem peirce_valid (φ ψ : Formula) : ⊨ (((φ.imp ψ).imp φ).imp φ) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt]
   intro h_peirce
-  by_cases h : TruthAt M Set.univ τ t φ
+  by_cases h : TruthAt M τ t φ
   · exact h
-  · have h_imp : TruthAt M Set.univ τ t (φ.imp ψ) := by
+  · have h_imp : TruthAt M τ t (φ.imp ψ) := by
       simp only [TruthAt]
       intro h_phi
       exfalso
@@ -245,12 +245,12 @@ theorem temp_l_valid (φ : Formula) :
     Truth.future_iff, Truth.past_iff] at h_always
   -- Under strict semantics, always encodes: (∀ u < t, φ(u)) ∧ ((φ(t) → (∀ v > t, φ(v)) → ⊥) → ⊥)
   have h1 :
-    (∀ (u : T), u < t → TruthAt M Set.univ τ u φ) ∧
-    ((TruthAt M Set.univ τ t φ →
-      (∀ (v : T), t < v → TruthAt M Set.univ τ v φ) → False) → False) :=
+    (∀ (u : T), u < t → TruthAt M τ u φ) ∧
+    ((TruthAt M τ t φ →
+      (∀ (v : T), t < v → TruthAt M τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : TruthAt M Set.univ τ t φ ∧ (∀ (v : T), t < v → TruthAt M Set.univ τ v φ) :=
+  have h2 : TruthAt M τ t φ ∧ (∀ (v : T), t < v → TruthAt M τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
   rcases lt_trichotomy r t with h_lt | h_eq | h_gt
@@ -267,7 +267,7 @@ theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.allFuture).bo
   have h_phi_at_shifted :=
     h_box_phi (WorldHistory.timeShift σ (s - t))
       (WorldHistory.isTotal_timeShift h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M Set.univ σ t s φ).mp h_phi_at_shifted
+  exact (TimeShift.time_shift_preserves_truth M σ t s φ).mp h_phi_at_shifted
 
 /-- Temporal A Dual axiom is valid: `⊨ φ → H(Fφ)`.
 Under strict semantics: if φ at t, then for all s < t, there exists r > s with φ(r) (namely, t). -/
@@ -293,10 +293,10 @@ theorem temp_linearity_valid (φ ψ : Formula) :
     Truth.some_future_iff]
   intro h_conj
   -- Extract F(phi) and F(psi) witnesses from the conjunction
-  have h_F_phi : ∃ s, t < s ∧ TruthAt M Set.univ τ s φ := by
+  have h_F_phi : ∃ s, t < s ∧ TruthAt M τ s φ := by
     by_contra h_no
     exact h_conj (fun h1 _ => h_no h1)
-  have h_F_psi : ∃ s, t < s ∧ TruthAt M Set.univ τ s ψ := by
+  have h_F_psi : ∃ s, t < s ∧ TruthAt M τ s ψ := by
     by_contra h_no
     exact h_conj (fun _ h2 => h_no h2)
   obtain ⟨s1, hs1t, h_phi_s1⟩ := h_F_phi
@@ -330,10 +330,10 @@ theorem temp_linearity_past_valid (φ ψ : Formula) :
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt,
     Truth.some_past_iff]
   intro h_conj
-  have h_P_phi : ∃ s, s < t ∧ TruthAt M Set.univ τ s φ := by
+  have h_P_phi : ∃ s, s < t ∧ TruthAt M τ s φ := by
     by_contra h_no
     exact h_conj (fun h1 _ => h_no h1)
-  have h_P_psi : ∃ s, s < t ∧ TruthAt M Set.univ τ s ψ := by
+  have h_P_psi : ∃ s, s < t ∧ TruthAt M τ s ψ := by
     by_contra h_no
     exact h_conj (fun _ h2 => h_no h2)
   obtain ⟨s1, hs1t, h_phi_s1⟩ := h_P_phi
@@ -532,10 +532,10 @@ theorem enrichment_until_valid (φ ψ p : Formula) :
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro h_conj
-  have h_pt : TruthAt M Set.univ τ t p := by
+  have h_pt : TruthAt M τ t p := by
     by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
-  have h_until : ∃ s, t < s ∧ TruthAt M Set.univ τ s ψ ∧
-      ∀ r, t < r → r < s → TruthAt M Set.univ τ r φ := by
+  have h_until : ∃ s, t < s ∧ TruthAt M τ s ψ ∧
+      ∀ r, t < r → r < s → TruthAt M τ r φ := by
     by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
   obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
   refine ⟨s, hts, ?_, h_guard⟩
@@ -551,10 +551,10 @@ theorem enrichment_since_valid (φ ψ p : Formula) :
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro h_conj
-  have h_pt : TruthAt M Set.univ τ t p := by
+  have h_pt : TruthAt M τ t p := by
     by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
-  have h_since : ∃ s, s < t ∧ TruthAt M Set.univ τ s ψ ∧
-      ∀ r, s < r → r < t → TruthAt M Set.univ τ r φ := by
+  have h_since : ∃ s, s < t ∧ TruthAt M τ s ψ ∧
+      ∀ r, s < r → r < t → TruthAt M τ r φ := by
     by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
   obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
   refine ⟨s, hst, ?_, h_guard⟩
@@ -591,9 +591,9 @@ theorem absorb_until_valid (φ ψ : Formula) :
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
   -- Extract φ(s₁) and (φ U ψ)(s₁) from the conjunction (encoded as double negation)
-  have h_φs₁_and_until : TruthAt M Set.univ τ s₁ φ ∧
-      (∃ s₂, s₁ < s₂ ∧ TruthAt M Set.univ τ s₂ ψ ∧
-        ∀ q, s₁ < q → q < s₂ → TruthAt M Set.univ τ q φ) := by
+  have h_φs₁_and_until : TruthAt M τ s₁ φ ∧
+      (∃ s₂, s₁ < s₂ ∧ TruthAt M τ s₂ ψ ∧
+        ∀ q, s₁ < q → q < s₂ → TruthAt M τ q φ) := by
     constructor
     · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
     · by_contra h_neg; exact h_conj (fun _ h_until => h_neg h_until)
@@ -611,9 +611,9 @@ theorem absorb_since_valid (φ ψ : Formula) :
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
-  have h_φs₁_and_since : TruthAt M Set.univ τ s₁ φ ∧
-      (∃ s₂, s₂ < s₁ ∧ TruthAt M Set.univ τ s₂ ψ ∧
-        ∀ q, s₂ < q → q < s₁ → TruthAt M Set.univ τ q φ) := by
+  have h_φs₁_and_since : TruthAt M τ s₁ φ ∧
+      (∃ s₂, s₂ < s₁ ∧ TruthAt M τ s₂ ψ ∧
+        ∀ q, s₂ < q → q < s₁ → TruthAt M τ q φ) := by
     constructor
     · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
     · by_contra h_neg; exact h_conj (fun _ h_since => h_neg h_since)
@@ -641,10 +641,10 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt]
   intro h_conj
   -- Extract both Until hypotheses from the conjunction encoding
-  have h_both : (∃ s, t < s ∧ TruthAt M Set.univ τ s ψ ∧
-      ∀ r, t < r → r < s → TruthAt M Set.univ τ r φ) ∧
-    (∃ s, t < s ∧ TruthAt M Set.univ τ s θ ∧
-      ∀ r, t < r → r < s → TruthAt M Set.univ τ r χ) := by
+  have h_both : (∃ s, t < s ∧ TruthAt M τ s ψ ∧
+      ∀ r, t < r → r < s → TruthAt M τ r φ) ∧
+    (∃ s, t < s ∧ TruthAt M τ s θ ∧
+      ∀ r, t < r → r < s → TruthAt M τ r χ) := by
     constructor
     · by_contra h; exact h_conj (fun h1 _ => h h1)
     · by_contra h; exact h_conj (fun _ h2 => h h2)
@@ -676,10 +676,10 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt]
   intro h_conj
-  have h_both : (∃ s, s < t ∧ TruthAt M Set.univ τ s ψ ∧
-      ∀ r, s < r → r < t → TruthAt M Set.univ τ r φ) ∧
-    (∃ s, s < t ∧ TruthAt M Set.univ τ s θ ∧
-      ∀ r, s < r → r < t → TruthAt M Set.univ τ r χ) := by
+  have h_both : (∃ s, s < t ∧ TruthAt M τ s ψ ∧
+      ∀ r, s < r → r < t → TruthAt M τ r φ) ∧
+    (∃ s, s < t ∧ TruthAt M τ s θ ∧
+      ∀ r, s < r → r < t → TruthAt M τ r χ) := by
     constructor
     · by_contra h; exact h_conj (fun h1 _ => h h1)
     · by_contra h; exact h_conj (fun _ h2 => h h2)
@@ -729,7 +729,7 @@ They are valid over ALL `AddCommGroup D` with `IsOrderedAddMonoid D` because the
 group's translation invariance ensures that gaps (empty open intervals) are uniform
 across all time points.
 
-Key semantic fact: `TruthAt M Set.univ τ t (Formula.untl (bot.imp bot) bot)` means
+Key semantic fact: `TruthAt M τ t (Formula.untl (bot.imp bot) bot)` means
 ∃ s > t with (t,s) empty in D. The guard `bot` is always False, so no element can
 lie in (t,s). The event `bot.imp bot` is `⊤` which is always True.
 -/
@@ -1070,8 +1070,8 @@ theorem soundness (Γ : Context) (φ : Formula)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
-    (h_ctx : ∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) :
-    TruthAt M Set.univ τ t φ := by
+    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    TruthAt M τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
     -- All base axioms are universally valid; density/discrete excluded by h_fc
@@ -1242,8 +1242,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     [DenselyOrdered D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
-    (h_ctx : ∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) :
-    TruthAt M Set.univ τ t φ := by
+    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    TruthAt M τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
     cases h_ax with
@@ -1388,8 +1388,8 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
-    (h_ctx : ∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) :
-    TruthAt M Set.univ τ t φ := by
+    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    TruthAt M τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
     exact axiom_discrete_valid h_ax h_fc D F M τ h_mem t
@@ -1489,7 +1489,7 @@ theorem prior_U_gap_valid (φ : Formula) :
   obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
   obtain ⟨s0, hts0, -, hp0⟩ := h1
   obtain ⟨v, htv, hnpv, -⟩ := h2
-  set A : Set D := {u : D | t < u ∧ ∀ r : D, t < r → r < u → TruthAt M Set.univ τ r φ} with hA
+  set A : Set D := {u : D | t < u ∧ ∀ r : D, t < r → r < u → TruthAt M τ r φ} with hA
   have hs0A : s0 ∈ A := ⟨hts0, hp0⟩
   have hAbdd : BddAbove A := by
     refine ⟨v, ?_⟩
@@ -1498,7 +1498,7 @@ theorem prior_U_gap_valid (φ : Formula) :
     exact hnpv (hu.2 v htv (lt_of_not_ge hvu))
   obtain ⟨s, hs⟩ := h_lub A ⟨s0, hs0A⟩ hAbdd
   have hts : t < s := lt_of_lt_of_le hts0 (hs.1 hs0A)
-  have hguard : ∀ r : D, t < r → r < s → TruthAt M Set.univ τ r φ := by
+  have hguard : ∀ r : D, t < r → r < s → TruthAt M τ r φ := by
     intro r htr hrs
     obtain ⟨u, huA, hru, -⟩ := hs.exists_between hrs
     exact huA.2 r htr hru
@@ -1506,7 +1506,7 @@ theorem prior_U_gap_valid (φ : Formula) :
   refine ⟨s, hts, ?_, hguard⟩
   intro hnn
   rintro ⟨w, hsw, -, hw⟩
-  have hps : TruthAt M Set.univ τ s φ := Classical.byContradiction hnn
+  have hps : TruthAt M τ s φ := Classical.byContradiction hnn
   have hwA : w ∈ A := by
     refine ⟨lt_trans hts hsw, ?_⟩
     intro r htr hrw
@@ -1538,7 +1538,7 @@ theorem prior_S_gap_valid (φ : Formula) :
   obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
   obtain ⟨s0, hs0t, -, hp0⟩ := h1
   obtain ⟨v, hvt, hnpv, -⟩ := h2
-  set B : Set D := {u : D | u < t ∧ ∀ r : D, u < r → r < t → TruthAt M Set.univ τ r φ} with hB
+  set B : Set D := {u : D | u < t ∧ ∀ r : D, u < r → r < t → TruthAt M τ r φ} with hB
   have hs0B : s0 ∈ B := ⟨hs0t, hp0⟩
   have hBbdd : BddBelow B := by
     refine ⟨v, ?_⟩
@@ -1547,7 +1547,7 @@ theorem prior_S_gap_valid (φ : Formula) :
     exact hnpv (hu.2 v (lt_of_not_ge huv) hvt)
   obtain ⟨s, hs⟩ := exists_isGLB_of_lub h_lub ⟨s0, hs0B⟩ hBbdd
   have hst : s < t := lt_of_le_of_lt (hs.1 hs0B) hs0t
-  have hguard : ∀ r : D, s < r → r < t → TruthAt M Set.univ τ r φ := by
+  have hguard : ∀ r : D, s < r → r < t → TruthAt M τ r φ := by
     intro r hsr hrt
     obtain ⟨u, huB, -, hur⟩ := hs.exists_between hsr
     exact huB.2 r hur hrt
@@ -1555,7 +1555,7 @@ theorem prior_S_gap_valid (φ : Formula) :
   refine ⟨s, hst, ?_, hguard⟩
   intro hnn
   rintro ⟨w, hws, -, hw⟩
-  have hps : TruthAt M Set.univ τ s φ := Classical.byContradiction hnn
+  have hps : TruthAt M τ s φ := Classical.byContradiction hnn
   have hwB : w ∈ B := by
     refine ⟨lt_trans hws hst, ?_⟩
     intro r hwr hrt
@@ -1610,33 +1610,33 @@ theorem sep_valid (φ : Formula) :
     Formula.top] at h_ant ⊢
   obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
   rintro ⟨s₂, hts₂, -, hno⟩
-  have hK : ∀ v, t < v → ∃ u, t < u ∧ u < v ∧ TruthAt M Set.univ τ u φ := by
+  have hK : ∀ v, t < v → ∃ u, t < u ∧ u < v ∧ TruthAt M τ u φ := by
     intro v htv
     by_contra hc
     refine h1 ⟨v, htv, fun hb => hb, ?_⟩
     intro r htr hrv hrφ
     exact hc ⟨r, htr, hrv, hrφ⟩
   have h2' : ∃ s₁, t < s₁ ∧ (True) ∧ ∀ u, t < u → u < s₁ →
-      (TruthAt M Set.univ τ u φ → TruthAt M Set.univ τ u (Formula.untl φ φ.neg) → False) := by
+      (TruthAt M τ u φ → TruthAt M τ u (Formula.untl φ φ.neg) → False) := by
     refine Classical.byContradiction (fun hc => h2 ?_)
     intro hbad
     exact hc (by
       obtain ⟨s₁, hts₁, -, hu⟩ := hbad
       exact ⟨s₁, hts₁, trivial, fun u htu hus => Classical.byContradiction (hu u htu hus)⟩)
   obtain ⟨s₁, hts₁, -, hstart⟩ := h2'
-  refine SoundnessLemmas.sep_order h_lub Q hQc hQd {u | TruthAt M Set.univ τ u φ} t s₁ s₂
+  refine SoundnessLemmas.sep_order h_lub Q hQc hQd {u | TruthAt M τ u φ} t s₁ s₂
     hts₁ hts₂ hK ?_ ?_
   · rintro u htu hus₁ huP ⟨v, huv, hvP, hfree⟩
     exact hstart u htu hus₁ huP ⟨v, huv, hvP, fun r hur hrv => hfree r hur hrv⟩
   · intro u htu hus₂
-    have hAB : TruthAt M Set.univ τ u (Formula.kPlus φ) →
-        TruthAt M Set.univ τ u (Formula.kMinus φ) → False := by
+    have hAB : TruthAt M τ u (Formula.kPlus φ) →
+        TruthAt M τ u (Formula.kMinus φ) → False := by
       intro ha hb
       exact hno u htu hus₂ (fun k => k ha hb)
-    by_cases hR : ∃ v, u < v ∧ ∀ w, u < w → w < v → ¬ TruthAt M Set.univ τ w φ
+    by_cases hR : ∃ v, u < v ∧ ∀ w, u < w → w < v → ¬ TruthAt M τ w φ
     · exact Or.inl hR
     · refine Or.inr ?_
-      have ha : TruthAt M Set.univ τ u (Formula.kPlus φ) := by
+      have ha : TruthAt M τ u (Formula.kPlus φ) := by
         simp only [TruthAt, Formula.kPlus, Formula.neg, Formula.top]
         rintro ⟨v, huv, -, hw⟩
         exact hR ⟨v, huv, fun w huw hwv => hw w huw hwv⟩
@@ -1676,15 +1676,15 @@ theorem sep_swap_valid (φ : Formula) :
     Formula.swapTemporal, TruthAt] at h_ant ⊢
   obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
   rintro ⟨s₂, hs₂t, -, hno⟩
-  have hK : ∀ v, v < t → ∃ u, v < u ∧ u < t ∧ TruthAt M Set.univ τ u φ.swapTemporal := by
+  have hK : ∀ v, v < t → ∃ u, v < u ∧ u < t ∧ TruthAt M τ u φ.swapTemporal := by
     intro v hvt
     by_contra hc
     refine h1 ⟨v, hvt, fun hb => hb, ?_⟩
     intro r hvr hrt hrφ
     exact hc ⟨r, hvr, hrt, hrφ⟩
   have h2' : ∃ s₁, s₁ < t ∧ (True) ∧ ∀ u, u < t → s₁ < u →
-      (TruthAt M Set.univ τ u φ.swapTemporal →
-        TruthAt M Set.univ τ u (Formula.snce φ.swapTemporal φ.swapTemporal.neg) → False) := by
+      (TruthAt M τ u φ.swapTemporal →
+        TruthAt M τ u (Formula.snce φ.swapTemporal φ.swapTemporal.neg) → False) := by
     refine Classical.byContradiction (fun hc => h2 ?_)
     intro hbad
     exact hc (by
@@ -1692,18 +1692,18 @@ theorem sep_swap_valid (φ : Formula) :
       exact ⟨s₁, hs₁t, trivial, fun u hut hs₁u => Classical.byContradiction (hu u hs₁u hut)⟩)
   obtain ⟨s₁, hs₁t, -, hstart⟩ := h2'
   refine SoundnessLemmas.sep_order_mirror h_lub Q hQc hQd
-    {u | TruthAt M Set.univ τ u φ.swapTemporal} t s₁ s₂ hs₁t hs₂t hK ?_ ?_
+    {u | TruthAt M τ u φ.swapTemporal} t s₁ s₂ hs₁t hs₂t hK ?_ ?_
   · rintro u hut hs₁u huP ⟨v, hvu, hvP, hfree⟩
     exact hstart u hut hs₁u huP ⟨v, hvu, hvP, fun r hvr hru => hfree r hvr hru⟩
   · intro u hut hs₂u
-    have hAB : TruthAt M Set.univ τ u (Formula.kMinus φ.swapTemporal) →
-        TruthAt M Set.univ τ u (Formula.kPlus φ.swapTemporal) → False := by
+    have hAB : TruthAt M τ u (Formula.kMinus φ.swapTemporal) →
+        TruthAt M τ u (Formula.kPlus φ.swapTemporal) → False := by
       intro ha hb
       exact hno u hs₂u hut (fun k => k ha hb)
-    by_cases hL : ∃ v, v < u ∧ ∀ w, v < w → w < u → ¬ TruthAt M Set.univ τ w φ.swapTemporal
+    by_cases hL : ∃ v, v < u ∧ ∀ w, v < w → w < u → ¬ TruthAt M τ w φ.swapTemporal
     · exact Or.inl hL
     · refine Or.inr ?_
-      have ha : TruthAt M Set.univ τ u (Formula.kMinus φ.swapTemporal) := by
+      have ha : TruthAt M τ u (Formula.kMinus φ.swapTemporal) := by
         simp only [TruthAt, Formula.kMinus, Formula.neg, Formula.top]
         rintro ⟨v, hvu, -, hw⟩
         exact hL ⟨v, hvu, fun w hvw hwu => hw w hvw hwu⟩
@@ -1916,8 +1916,8 @@ theorem soundness_dedekind (Γ : Context) (φ : Formula)
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
-    (h_ctx : ∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) :
-    TruthAt M Set.univ τ t φ := by
+    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    TruthAt M τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
     exact axiom_dedekind_valid h_ax h_fc D h_lub F M τ h_mem t

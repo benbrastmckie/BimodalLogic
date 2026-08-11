@@ -66,34 +66,6 @@ namespace FormalSystem.Semantics
 open FormalSystem.Syntax
 
 /--
-`TruthAt`'s set argument is **inert**: no clause of `TruthAt` consults it, so truth at a given
-history and time does not depend on which set is supplied.
-
-This module supplies `Set.univ` at every call site. This lemma is the bridge that lets a
-consumer holding `TruthAt M Set.univ τ t φ` (the shape produced by `valid` and
-`SemanticConsequence` below) transport it to any other set argument, and conversely. It exists
-only because the parameter itself has not yet been deleted from `TruthAt`; once that deletion
-lands, this lemma becomes vacuous and should be removed along with it.
--/
-theorem truthAt_carrier_irrelevant
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    {F : TaskFrame D} {M : TaskModel F} (Om₁ Om₂ : Set (WorldHistory F)) :
-    ∀ (φ : Formula) (τ : WorldHistory F) (t : D),
-      TruthAt M Om₁ τ t φ ↔ TruthAt M Om₂ τ t φ := by
-  intro φ
-  induction φ with
-  | atom p => intro τ t; rfl
-  | bot => intro τ t; rfl
-  | imp φ ψ ihφ ihψ => intro τ t; simp only [TruthAt]; rw [ihφ, ihψ]
-  | box φ ih =>
-      intro τ t
-      simp only [TruthAt]
-      constructor <;> intro h σ hσ <;>
-        [exact (ih σ t).mp (h σ hσ); exact (ih σ t).mpr (h σ hσ)]
-  | untl φ ψ ihφ ihψ => intro τ t; simp only [TruthAt, ihφ, ihψ]
-  | snce φ ψ ihφ ihψ => intro τ t; simp only [TruthAt, ihφ, ihψ]
-
-/--
 A formula is valid if it is true in all models, at all times, at every **total** history, for
 every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
 
@@ -124,7 +96,7 @@ def valid (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    TruthAt M Set.univ τ t φ
+    TruthAt M τ t φ
 
 /--
 Notation for validity: `⊨ φ` means `valid φ`.
@@ -155,8 +127,8 @@ def SemanticConsequence (Γ : Context) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) →
-    TruthAt M Set.univ τ t φ
+    (∀ ψ ∈ Γ, TruthAt M τ t ψ) →
+    TruthAt M τ t φ
 
 /--
 Notation for semantic consequence: `Γ ⊨ φ`.
@@ -188,7 +160,7 @@ def satisfiable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid
     Prop :=
   ∃ (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    ∀ φ ∈ Γ, TruthAt M Set.univ τ t φ
+    ∀ φ ∈ Γ, TruthAt M τ t φ
 
 /--
 A context is absolutely satisfiable if it is satisfiable in some temporal type.
@@ -221,7 +193,7 @@ def FormulaSatisfiable (φ : Formula) : Prop :=
     (_ : Nontrivial D)
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    TruthAt M Set.univ τ t φ
+    TruthAt M τ t φ
 
 /--
 A formula is valid over dense temporal orders if it is true in all models where D is
@@ -237,7 +209,7 @@ def ValidDense (φ : Formula) : Prop :=
     [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    TruthAt M Set.univ τ t φ
+    TruthAt M τ t φ
 
 /--
 A formula is valid over discrete temporal orders if it is true in all models where D
@@ -253,7 +225,7 @@ def ValidDiscrete (φ : Formula) : Prop :=
     [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    TruthAt M Set.univ τ t φ
+    TruthAt M τ t φ
 
 /--
 A formula is valid over **Dedekind-complete** temporal orders if it is true in all models
@@ -306,7 +278,7 @@ def ValidDedekind (φ : Formula) : Prop :=
     (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    TruthAt M Set.univ τ t φ
+    TruthAt M τ t φ
 
 /--
 A formula is valid over **dense Dedekind-complete** temporal orders: `ValidDedekind` with
@@ -341,7 +313,7 @@ def ValidDedekindDense (φ : Formula) : Prop :=
     (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    TruthAt M Set.univ τ t φ
+    TruthAt M τ t φ
 
 namespace Validity
 
@@ -451,7 +423,7 @@ theorem unsatisfiable_implies_all_fixed {D : Type*} [AddCommGroup D] [LinearOrde
     {Γ : Context} {φ : Formula} :
     ¬satisfiable D Γ → ∀ (F : TaskFrame D) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal)
-      (t : D), (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ := by
+      (t : D), (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ := by
   intro h_unsat F M τ hτ t h_all
   exfalso
   apply h_unsat

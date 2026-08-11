@@ -73,7 +73,7 @@ theorem countermodelChronicleMixed (fc : FrameClass) (A : Set Formula)
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
       (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-      ¬TruthAt TM Set.univ τ t φ := by
+      ¬TruthAt TM τ t φ := by
   exact False.elim (mcs_mixed_case_absurd fc A h_mcs h_not_box_dense h_not_box_discrete)
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle

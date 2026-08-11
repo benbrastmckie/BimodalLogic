@@ -84,7 +84,7 @@ be established for a history whose *time-translates* are not region-constant.
 -/
 def InterpInvariantAt (f : ι → D) (M : TaskModel F)
     (τ : WorldHistory F) (χ : Formula) : Prop :=
-  ∀ r r' : D, SameRegion f r r' → (TruthAt M Set.univ τ r χ ↔ TruthAt M Set.univ τ r' χ)
+  ∀ r r' : D, SameRegion f r r' → (TruthAt M τ r χ ↔ TruthAt M τ r' χ)
 
 variable {f : ι → D} {M : TaskModel F} {τ : WorldHistory F}
 
@@ -186,7 +186,7 @@ variable [Fintype ι] [DenselyOrdered D]
 private theorem untlAt_forward [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariantAt f M τ φ) (hψ : InterpInvariantAt f M τ ψ)
     {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M Set.univ τ r (φ.untl ψ)) : TruthAt M Set.univ τ r' (φ.untl ψ) := by
+    (h : TruthAt M τ r (φ.untl ψ)) : TruthAt M τ r' (φ.untl ψ) := by
   obtain ⟨s, hrs, hφs, hg⟩ := h
   by_cases hcase : r' < s
   · exact ⟨s, hcase, hφs, fun x hx hxs => hg x (lt_trans hlt hx) hxs⟩
@@ -196,7 +196,7 @@ private theorem untlAt_forward [NoMaxOrder D] {φ ψ : Formula}
     obtain ⟨s', hr's', hs'reg⟩ := exists_gt_sameRegion (f := f) (r := r') hnp.2
     obtain ⟨x₀, hx₀l, hx₀r⟩ := exists_between hrs
     have hx₀reg : SameRegion f r x₀ := sameRegion_convex hsreg hx₀l.le hx₀r.le
-    have hψx₀ : TruthAt M Set.univ τ x₀ ψ := hg x₀ hx₀l hx₀r
+    have hψx₀ : TruthAt M τ x₀ ψ := hg x₀ hx₀l hx₀r
     refine ⟨s', hr's', ?_, ?_⟩
     · exact (hφ s s' ((hsreg.symm.trans hrr').trans hs'reg)).mp hφs
     · intro x hx hxs'
@@ -207,7 +207,7 @@ private theorem untlAt_forward [NoMaxOrder D] {φ ψ : Formula}
 private theorem untlAt_backward [NoMaxOrder D] {φ ψ : Formula}
     (hψ : InterpInvariantAt f M τ ψ)
     {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M Set.univ τ r' (φ.untl ψ)) : TruthAt M Set.univ τ r (φ.untl ψ) := by
+    (h : TruthAt M τ r' (φ.untl ψ)) : TruthAt M τ r (φ.untl ψ) := by
   obtain ⟨s, hr's, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
   obtain ⟨s₁, hr's₁, hs₁reg⟩ := exists_gt_sameRegion (f := f) (r := r') hnp.2
@@ -215,7 +215,7 @@ private theorem untlAt_backward [NoMaxOrder D] {φ ψ : Formula}
   have hys : y < s := lt_of_lt_of_le hyr (min_le_left _ _)
   have hys₁ : y < s₁ := lt_of_lt_of_le hyr (min_le_right _ _)
   have hyreg : SameRegion f r' y := sameRegion_convex hs₁reg hyl.le hys₁.le
-  have hψy : TruthAt M Set.univ τ y ψ := hg y hyl hys
+  have hψy : TruthAt M τ y ψ := hg y hyl hys
   refine ⟨s, lt_trans hlt hr's, hφs, ?_⟩
   intro x hx hxs
   by_cases hcase : r' < x
@@ -238,7 +238,7 @@ theorem interpInvariantAt_untl [NoMaxOrder D] {φ ψ : Formula}
 private theorem snceAt_forward [NoMinOrder D] {φ ψ : Formula}
     (hψ : InterpInvariantAt f M τ ψ)
     {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M Set.univ τ r (φ.snce ψ)) : TruthAt M Set.univ τ r' (φ.snce ψ) := by
+    (h : TruthAt M τ r (φ.snce ψ)) : TruthAt M τ r' (φ.snce ψ) := by
   obtain ⟨s, hsr, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
   obtain ⟨s₁, hs₁r, hs₁reg⟩ := exists_lt_sameRegion (f := f) (r := r) hnp.1
@@ -246,7 +246,7 @@ private theorem snceAt_forward [NoMinOrder D] {φ ψ : Formula}
   have hsy : s < y := lt_of_le_of_lt (le_max_left _ _) hyl
   have hs₁y : s₁ < y := lt_of_le_of_lt (le_max_right _ _) hyl
   have hyreg : SameRegion f r y := hs₁reg.trans (sameRegion_convex hs₁reg.symm hs₁y.le hyr.le)
-  have hψy : TruthAt M Set.univ τ y ψ := hg y hsy hyr
+  have hψy : TruthAt M τ y ψ := hg y hsy hyr
   refine ⟨s, lt_trans hsr hlt, hφs, ?_⟩
   intro x hsx hxr'
   by_cases hcase : x < r
@@ -259,7 +259,7 @@ private theorem snceAt_forward [NoMinOrder D] {φ ψ : Formula}
 private theorem snceAt_backward [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariantAt f M τ φ) (hψ : InterpInvariantAt f M τ ψ)
     {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M Set.univ τ r' (φ.snce ψ)) : TruthAt M Set.univ τ r (φ.snce ψ) := by
+    (h : TruthAt M τ r' (φ.snce ψ)) : TruthAt M τ r (φ.snce ψ) := by
   obtain ⟨s, hsr', hφs, hg⟩ := h
   by_cases hcase : s < r
   · exact ⟨s, hcase, hφs, fun x hsx hxr => hg x hsx (lt_trans hxr hlt)⟩
@@ -269,7 +269,7 @@ private theorem snceAt_backward [NoMinOrder D] {φ ψ : Formula}
     obtain ⟨s', hs'r, hs'reg⟩ := exists_lt_sameRegion (f := f) (r := r) hnp.1
     obtain ⟨y, hyl, hyr⟩ := exists_between hsr'
     have hyreg : SameRegion f s y := sameRegion_convex (hsreg.symm.trans hrr') hyl.le hyr.le
-    have hψy : TruthAt M Set.univ τ y ψ := hg y hyl hyr
+    have hψy : TruthAt M τ y ψ := hg y hyl hyr
     refine ⟨s', hs'r, ?_, ?_⟩
     · exact (hφ s s' (hsreg.symm.trans hs'reg)).mp hφs
     · intro x hs'x hxr
