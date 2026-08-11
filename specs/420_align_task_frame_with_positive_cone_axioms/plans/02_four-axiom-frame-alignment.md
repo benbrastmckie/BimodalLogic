@@ -460,14 +460,14 @@ of scope (its `WorldHistory` alignment is deferred, joint with 414).
 
 ---
 
-### Phase 7: Define the fiber/cone/segment/directed-family apparatus in Lean [NOT STARTED]
+### Phase 7: Define the fiber/cone/segment/directed-family apparatus in Lean [COMPLETED]
 
 **Goal**: The supporting apparatus that makes *Spherical* statable exists as standalone,
 sorry-free Lean definitions — pure additions over a bare relation, zero discharge obligations,
 build stays green throughout.
 
 **Tasks**:
-- [ ] Define, in `FormalSystem/Semantics/TaskFrame.lean` (same standalone style as the Phase 3
+- [x] Define, in `FormalSystem/Semantics/TaskFrame.lean` (same standalone style as the Phase 3
       helpers — against a bare relation or a frame parameter, NOT as structure fields), per
       `def:task-relation` (paper-definitions-of-record.md:161) and `def:directed` (:176):
       ```
@@ -480,13 +480,13 @@ build stays green throughout.
       hypothesis vs subtype for the cone's `0 < x` — but the MATHEMTICAL content must transcribe
       the recorded definitions exactly; segments use the two-endpoint bracket semantics, never a
       one-sided `\Seg`-style function application.)
-- [ ] Keep fibers and segments as TWO SEPARATE CLASSES wherever a "fibers and segments"
+- [x] Keep fibers and segments as TWO SEPARATE CLASSES wherever a "fibers and segments"
       predicate is needed (e.g. an `IsFiber s ∨ IsSegment s` disjunction) — the retired device
       by which one-sided fibers counted among the segments must not be reintroduced.
-- [ ] Docstring each definition with the `\label` anchor plus the verbatim recorded text (so a
+- [x] Docstring each definition with the `\label` anchor plus the verbatim recorded text (so a
       renamed anchor stays detectable by text search); no bare `possible_worlds.tex:NNNN`
       locators.
-- [ ] Optionally state and prove trivial sanity lemmas only if free (e.g. cone monotonicity);
+- [x] Optionally state and prove trivial sanity lemmas only if free (e.g. cone monotonicity);
       no obligation — this phase carries ZERO discharge obligation by design.
 
 **Timing**: 1.5 hours
