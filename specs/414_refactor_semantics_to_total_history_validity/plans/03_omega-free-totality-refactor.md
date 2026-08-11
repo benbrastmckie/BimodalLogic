@@ -988,29 +988,46 @@ criterion. This is the phase the §7 mechanism turns on.
 
 ---
 
-### Phase 10: `thm:extension` and hypothesis-form `cor:occurrence` [NOT STARTED]
+### Phase 10: `thm:extension` and hypothesis-form `cor:occurrence` [COMPLETED]
 
 **Goal**: Close the chain: every partial history is extended by some total world history, and
 every world state occurs at any prescribed time in some total world history — both with the frame
 axioms carried as explicit hypotheses.
 
 **Tasks**:
-- [ ] `theorem extension (F) (hSph) (hSer) (hInt) (τ : PartialHistory F) :
+- [x] `theorem extension (F) (hSph) (hSer) (hInt) (τ : PartialHistory F) :
       ∃ σ : F.HF, PartialHistory.Extends σ.val.toPartialHistory τ`. Docstring cites `thm:extension`
       verbatim. Proof = `exists_maximal_extension` (Phase 5) + `step` (Phase 9) only: a maximal
       partial history must be total, else `step` would extend it; a total partial history is
-      convex, hence a `WorldHistory`, hence an `F.HF` element.
-- [ ] Prove the maximal-to-total step explicitly and name it (`isTotal_of_isMax`), as the converse
+      convex, hence a `WorldHistory`, hence an `F.HF` element. *(deviation: altered — the same
+      extra `hLim` binder Phase 9 introduced sits between `hInt` and `τ`, inherited unchanged from
+      `step`'s signature and forwarded to it verbatim. No other binder, the conclusion, or the
+      proof strategy changed.)*
+- [x] Prove the maximal-to-total step explicitly and name it (`isTotal_of_isMax`), as the converse
       companion to Phase 5's `isMax_of_total`.
-- [ ] Prove `total_isConvex` — a total domain is convex — so the promotion to `WorldHistory` is
+- [x] Prove `total_isConvex` — a total domain is convex — so the promotion to `WorldHistory` is
       immediate.
-- [ ] `theorem occurrence (F) (hSph) (hSer) (hInt) (w : F.WorldState) (x : D) :
+- [x] `theorem occurrence (F) (hSph) (hSer) (hInt) (w : F.WorldState) (x : D) :
       ∃ τ : F.HF, τ.val.states x (τ.property x) = w`. Docstring cites `cor:occurrence` verbatim.
       Proof extends the one-point partial history `{⟨x, w⟩}` directly via `extension` — the old
-      translation argument is gone from this chain and must not be reintroduced.
-- [ ] Add a module comment stating that the **frame-intrinsic** form of `cor:occurrence` (which
+      translation argument is gone from this chain and must not be reintroduced. *(same inherited
+      `hLim` binder as above.)*
+- [x] Add a module comment stating that the **frame-intrinsic** form of `cor:occurrence` (which
       would need `Nonempty WorldState` plus *Seriality*/*Spherical* as `TaskFrame` data) is
-      deliberately **not** provided here and is gated on task 420 phase 10.
+      deliberately **not** provided here and is gated on the frame-axiom-field refactor.
+
+**Additive items** (not plan steps skipped or rerouted — every plan step above landed as named;
+these are the supporting definitions those steps required, plus the recorded anchor's own closing
+clause):
+- `PartialHistory.toWorldHistory` / `isTotal_toWorldHistory` — the promotion `total_isConvex`
+  exists to enable, needed to write `extension`'s `F.HF` witness at all.
+- `PartialHistory.point` (+ `point_states`) — the one-point partial history `{⟨x, w⟩}` named in
+  `occurrence`'s own task bullet; its `respects_task` obligation reduces to `TaskRel w 0 w`,
+  discharged by the existing `TaskFrame.nullity_identity` field (no new axiom hypothesis).
+- `PartialHistory.hF_nonempty` — the closing clause of `cor:occurrence`'s verbatim statement
+  ("…and so $H_{\F} \neq \emptyset$"), which would otherwise be the one recorded clause of the
+  anchor left untranscribed. Takes the starting world state `w` as an explicit argument, since
+  `TaskFrame` carries no `Nonempty WorldState`.
 
 **Timing**: 2 hours
 
@@ -1026,6 +1043,28 @@ axioms carried as explicit hypotheses.
 - `#print axioms extension` shows `Classical.choice` (via Zorn) and nothing beyond the Mathlib
   baseline.
 - `extension`'s proof mentions only `exists_maximal_extension` and `step` — no other axiom use.
+
+**Verification results (recorded)**:
+- `lake build` green over the whole project (2331 jobs, one more than Phase 9's 2330 — the new
+  module). `FormalSystem/Semantics/` remains sorry-free (`grep -c sorry` = 0).
+- `#print axioms` → `[propext, Classical.choice, Quot.sound]` for `extension`, `occurrence`,
+  `isTotal_of_isMax`, and `hF_nonempty`; `total_isConvex` needs only `[propext]`. Lean's standard
+  axioms only — no `sorryAx`, no project axiom. `Classical.choice` enters exactly where the
+  recorded footnote says it does (Zorn), consistent with `lem:nullity` remaining choice-free.
+- **"Zorn plus `lem:step` and nothing else"** — verified by inspecting the printed proof terms
+  rather than by reading the source. The project constants occurring in `extension` /
+  `isTotal_of_isMax` / `occurrence` are exactly: `exists_maximal_extension`, `step`,
+  `isTotal_of_isMax`, `isTotal_toWorldHistory`, `point`, `le_def.mp`, `le_def.mpr`. No other
+  extension-chain lemma appears.
+- **`Spherical`'s sole application site is preserved.** `Spherical` / `Serial` / `Interpolates`
+  occur in the new module's proof terms only as *binder types*, never as applied function heads —
+  the four axiom binders are forwarded to `step` unchanged and are not applied to anything here.
+  `step` remains the only consuming proof, so Phase 9's discharge of the charter's §7 criterion is
+  intact and no second application site was added.
+- **The former translation argument is not present.** `occurrence` reaches an arbitrary time `x`
+  by extending `point F w x` directly; no `timeShift` lemma appears anywhere in the new module's
+  proofs (time-shift machinery survives untouched elsewhere and plays no role in this chain).
+- Registered in the aggregator `FormalSystem/Semantics.lean` (import + submodule note).
 
 ---
 

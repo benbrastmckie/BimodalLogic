@@ -11,6 +11,7 @@ import FormalSystem.Semantics.FrameAxioms
 import FormalSystem.Semantics.Extension.Constraint
 import FormalSystem.Semantics.Extension.Admissible
 import FormalSystem.Semantics.Extension.Step
+import FormalSystem.Semantics.Extension.Extension
 import FormalSystem.Semantics.WorldHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
@@ -44,6 +45,12 @@ polymorphic over temporal types.
 - `Extension.Step`: `lem:step` — every partial history extends by one arbitrary duration; the
   join of `lem:constraint`, *Spherical*, and `lem:admissible`, and **the sole application site of
   the *Spherical* axiom** in the development
+- `Extension.Extension`: `thm:extension` — every partial history is extended by some total world
+  history, proved from Zorn over the extension order plus `lem:step` and nothing else — and
+  `cor:occurrence` in **hypothesis form**: every world state occurs at any prescribed time in some
+  total world history, by extending the one-point partial history `{⟨x, w⟩}`. The frame-intrinsic
+  form of `cor:occurrence` is deliberately not provided; it is gated on the frame-axiom-field
+  refactor described in `Extension.Step`
 - `WorldHistory`: World histories `τ: X → W` as functions from convex time domains to
   world states, respecting the task relation
 - `TaskModel`: Task models extending frames with valuation functions `V: W × String → Prop`
