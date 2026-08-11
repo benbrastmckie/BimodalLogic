@@ -817,7 +817,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Dependencies**: Task 420, Task 438, Task 439
 - **Research**: [414_refactor_semantics_to_total_history_validity/reports/05_seriality-witness-nontermination.md]
 - **Plan**: [414_refactor_semantics_to_total_history_validity/plans/04_seriality-witness-termination-fix.md]
-- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/05_phase24-prefix-baseline.md]
+- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/05_phase25-trivial-event-guard.md]
 
 **Description**: === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the sections named below) ===
 18 of 23 plan phases are COMPLETE, `lake build` is GREEN, 0 sorries were introduced (1

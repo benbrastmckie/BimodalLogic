@@ -727,9 +727,9 @@
           "summary": "31-phase revision: phases 1-21 preserved verbatim, phase 22 closed with the unrunnable BimodalTest gate re-homed to phase 29, phase 23 retained OPTIONAL, and seven new phases (24-30) implementing the additive trivialEventWitnessed guard behind a measurement go/no-go gate."
         },
         {
-          "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/05_phase24-prefix-baseline.md",
+          "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/05_phase25-trivial-event-guard.md",
           "type": "summary",
-          "summary": "Phase 24 pre-fix baseline: lake build GREEN at 2331 jobs / 1 pre-existing sorry / 0 axioms; all 12 BoxNegReachabilityProbe and 6 CrossWorldPropagationProbe rows transcribed from source; the ten excluded #guard_msgs mismatches enumerated with measured file-level denominators."
+          "summary": "Phase 25: additive trivialEventWitnessed guard landed as VARIANT A (the plan's variant-B Scope Hypothesis was measured and refuted); Decidability.Tableau green at 689 jobs and Decidability.Saturation green at 1352 jobs; witnessPresent verified byte-identical to baseline."
         }
       ],
       "created": "2026-07-28T22:51:10Z",
