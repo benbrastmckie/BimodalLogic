@@ -1591,26 +1591,82 @@ and Phase 21's deletion of `bundleFlowOmega`/`multiFamOmegaGen` is left unobstru
 
 ---
 
-### Phase 17: Box-clause repair — decidability side [IN PROGRESS]
+### Phase 17: Box-clause repair — decidability side [COMPLETED]
 
 **Goal**: Repair the decidability bridge and certificate stack against the retargeted box clause,
 rewriting along Phase 12's `regionOmega_eq_total`.
 
 **Tasks**:
-- [ ] Repair the box-reduction lemma in `Bridge/Omega.lean` (`truthAt_box_iff_region` at `:322`)
+- [x] Repair the box-reduction lemma in `Bridge/Omega.lean` (`truthAt_box_iff_region` at `:322`)
       so it reduces against `H_F` rather than `regionOmega`.
-- [ ] Repair `Bridge/TruthLemma.lean`'s `InterpInvariant` / `InterpInvariantAt` box reasoning
+      *(deviation: altered — **no declaration named `truthAt_box_iff_region` exists**, at `:322`
+      or anywhere in the file. The box-reduction lemmas are `truthAt_box_iff` (`:342`, the generic
+      one), its two corollaries `truthAt_box_congr` / `truthAt_box_congr_history`, and
+      `truthAt_box_iff_base` (`:402`, the region-specific reduction the truth lemma consumes). All
+      four were repaired; `truthAt_box_iff` now quantifies over `σ.IsTotal` and drops its
+      `ShiftClosed Om` hypothesis, and `truthAt_box_iff_base` bridges to `regionOmega` membership
+      through the already-proved `regionOmega_eq_total`, exactly as the task line intends.)*
+- [x] Repair `Bridge/TruthLemma.lean`'s `InterpInvariant` / `InterpInvariantAt` box reasoning
       (`:15`, `:27`, `:35`, `:71-77`, `:318-319`).
-- [ ] Repair `Bridge/DenseTruth.lean`, `Bridge/IntTruth.lean`, `Bridge/RegionLabel.lean`.
-- [ ] Repair `Bridge/Interpolate.lean` (note the section-`variable` Omega at `:459`, which means
+      *(deviation: altered — line numbers had drifted. The three genuine sites are
+      `interpInvariantAt_of_interpInvariant` (`hτ : τ ∈ Om` → `τ.IsTotal`),
+      `interpInvariantAt_box` and `interpInvariantAt` (both lose their `ShiftClosed Om`
+      hypothesis), plus `interpInvariantAt_regionHistory`'s call. `InterpInvariantAt`'s own
+      definition needed **no** change: it is already single-history and never quantified over
+      `Om`.)*
+- [x] Repair `Bridge/DenseTruth.lean`, `Bridge/IntTruth.lean`, `Bridge/RegionLabel.lean`.
+      *(deviation: skipped for `RegionLabel.lean` — it has zero errors and contains no
+      box-instantiation site; its only `truthAt_box_iff_base` occurrence is a prose reference in a
+      docstring, which the retarget leaves accurate. `DenseTruth.lean` (2 sites) and
+      `IntTruth.lean` (2 sites) were error-family A, not B: their breakage is the `valid` /
+      `ValidDense` / `ValidDiscrete` / `ValidDedekindDense` **binder delta** from Phase 18, not the
+      box clause. Each site drops the `Om` and `ShiftClosed` arguments, supplies the totality
+      witness `fun _ => trivial` (`regionHistory`'s domain is `fun _ => True`), and transports the
+      `Set.univ`-carrier conclusion onto `regionOmega f` via `truthAt_carrier_irrelevant`.)*
+- [x] Repair `Bridge/Interpolate.lean` (note the section-`variable` Omega at `:459`, which means
       the whole enclosing section is affected even where a per-declaration scan sees one hit).
-- [ ] Repair `Decidability/Verified/Decidable.lean`.
+      *(deviation: altered — the section `variable {Om : Set (WorldHistory F)}` **stays**, because
+      `Om` is still `TruthAt`'s carrier argument throughout the section; what moved is the
+      *quantifier*. `InterpInvariant` now reads `∀ τ, τ.IsTotal → …` instead of `∀ τ ∈ Om, …`,
+      which propagates to `interpInvariant_atom`'s and `interpInvariant`'s `hRC` hypothesis and to
+      the four private `untl`/`snce` direction lemmas. The Scope Hypothesis's warning was correct
+      in substance: a per-declaration scan saw 1 hit and the true count in this file was 7.)*
+- [x] Repair `Decidability/Verified/Decidable.lean`.
 
 **Timing**: 3 hours
 
 **Depends on**: 14
 
 **Verification Tier**: full
+
+#### Scope Hypothesis Outcome
+
+The plan put `Decidable.lean` at **42 declarations in the blast radius**; the measured error count
+was **16**, and the repair was structurally smaller still — one `SatState` field
+(`histMem : ∀ w, hist w ∈ Om` → `histTotal : ∀ w, (hist w).IsTotal`), five lemma signatures
+(`truthAt_allFuture_of_box`, `truthAt_allPast_of_box`, `forall_truthAt_time_invariant`,
+`satAt_of_mem_boxProps`, `satAt_of_mem_diaProps`), one vestigial hypothesis dropped
+(`satAt_of_boxForm_time`'s `hsc`), three in-proof `have` shapes, and one new 4-line helper
+(`truthAt_of_isValid`). Every remaining error dissolved as a cascade from those. The estimate was
+over-sized, as the phase's dispatch anticipated.
+
+**On the two diagnostic tips.** Neither the Phase 15 arity-cascade pattern nor a pure Phase 16
+judgment-site pattern applied cleanly; the break set had **mixed lineage**. Thirteen of the 16
+`Decidable.lean` errors were box-clause (Phase 16 lineage, same-arity membership→totality
+bridges); the remaining three (`prior_UZ_is_valid`, `prior_SZ_is_valid`, `z1_is_valid` call sites)
+were **Phase 15/18 binder-delta lineage** — an arity change in `IsValid`, diagnosable by the
+`Set (WorldHistory F)` vs `WorldHistory F` shape in the error rather than by any box reasoning.
+Diagnosing per-site rather than sweeping was the right call.
+
+#### Break Set Under-Count
+
+The dispatch's declared break set (17 errors: `Decidable.lean` 16, `Interpolate.lean` 1) was
+**complete only for the files the compiler had reached**. `Interpolate.lean` is an import ancestor
+of `TruthLemma.lean` → `IntTruth.lean` / `DenseTruth.lean`, so those three were never elaborated
+and their breakage was invisible to a pre-dispatch census. Repairing `Interpolate.lean` surfaced
+6 further errors across `Omega.lean` (2), `TruthLemma.lean` (2), `IntTruth.lean` (2), and then
+`DenseTruth.lean` (2) — 23 total, all repaired. This is a general property of censusing a red
+tree, not a defect in the estimate: error counts behind a failed import edge are lower bounds.
 
 **Scope Hypothesis**: the report puts `Decidable.lean` at 42 declarations in the blast radius, and
 flags `Bridge/TruthLemma.lean:79` and `Bridge/Interpolate.lean:459` as taking Omega from a section
@@ -1622,13 +1678,27 @@ implementation time from the build error list, not from the count.
 - `FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean`
 - `FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean`
 - `FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean`
-- `FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean`
+- ~~`FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean`~~ *(not modified — zero
+  errors, no box-instantiation site; see the task-line deviation above)*
 - `FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean`
 - `FormalSystem/Metalogic/Decidability/Verified/Decidable.lean`
 
+Nothing outside this list was modified.
+
 **Verification**:
-- `lake build` green, sorry-free, axiom-free.
-- The decidability certificate theorems retain their statements.
+- [x] `lake build` green, sorry-free, axiom-free. **The whole `FormalSystem` tree is green for the
+  first time since the box-clause retarget (Phase 14).** Live sorries repo-wide: **1**, the
+  pre-existing `WeakCanonical/Transfer.lean:1084`, untouched. No `sorryAx`, no new `axiom`
+  declaration, no vacuous definition introduced.
+- [x] The decidability certificate theorems retain their statements. `not_valid_of_hasOpen_int`,
+  `not_validDiscrete_of_hasOpen_int`, `not_validDense_of_hasOpen` and
+  `not_validDedekindDense_of_hasOpen` keep their conclusions verbatim (`¬ valid χ`,
+  `¬ ValidDiscrete χ`, `¬ ValidDense χ`, `¬ ValidDedekindDense χ`); only the *proof terms* changed,
+  to feed the post-delta binder list.
+- [x] `lake build BimodalTest`: **10** `#guard_msgs` mismatches, the identical pre-existing set
+  (`TableauConformance.lean` 7, `RegionGateProbe.lean` 2, `BoxSpreadProbe.lean` 1). Not
+  re-baselined, and provably not moved by this phase: every declaration edited here is `Prop`-
+  valued or a proof term, and no `#eval`-reachable computable definition was touched.
 
 ---
 
@@ -1721,7 +1791,7 @@ enumerating the definitions that survive.
 
 ---
 
-### Phase 19: Omega-binder sweep A — leaves [NOT STARTED]
+### Phase 19: Omega-binder sweep A — leaves [IN PROGRESS]
 
 **Goal**: Begin Decision D's reverse-topological removal at the leaves, where no other declaration
 depends on the affected signatures, so the phase ends green.
