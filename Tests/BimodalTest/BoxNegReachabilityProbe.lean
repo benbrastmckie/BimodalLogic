@@ -213,10 +213,21 @@ branch count.
 the defect this file exists to document. It is now `(0, 0)`: the budget is exhausted without the
 branch saturating.
 
-`(0, 0)` is an improvement over `(1, 1)` and is **not** the intended end state, which is
-`(2, _)`. Fuel 30, 60, 400 and 1000 all return `(0, 0)`, so the ceiling is not bracketed from
-above and this is a termination/bound question rather than a budget one. Pinned as measured. -/
-/-- info: (0, 0) -/
+`(0, 0)` was an improvement over `(1, 1)` and was **not** the intended end state, which is
+`(2, _)`. Fuel 30, 60, 400 and 1000 all returned `(0, 0)`, so the ceiling was not bracketed from
+above and this was a termination/bound question rather than a budget one.
+
+**It is now `(2, 40)`** — the intended end state. The branch saturates with an open branch of
+length 40 at unchanged fuel 1000.
+
+* **Old (pinned) value**: `(0, 0)`
+* **New (measured) value**: `(2, 40)`
+* **Owner of the move**: `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+  `def trivialEventWitnessed` and its two consultation sites. It is **not** owned by
+  `Decidability/Saturation.lean` (an earlier guess) and **not** by the semantics refactor. The
+  guard stops minting trivial seriality witnesses, so the time domain stops growing without
+  bound and the branch reaches saturation instead of exhausting fuel. -/
+/-- info: (2, 40) -/
 #guard_msgs in
 #eval match buildTableau (gp.imp gp.box) 1000 .Base with
       | none => (0, 0)
@@ -231,22 +242,48 @@ The tuple is `(isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndeci
 and then failed to extract a proof term. By this codebase's R7 semantics `isKnownValid` is true
 for `extractionFailed`, so that value **asserted the formula is valid**. It is not.
 
-It is now `(false, false, true, false, true)` — `fuelExhausted`, which `isUndecided` recognises
-as "undetermined". The move is from a wrong answer to no answer.
+It then became `(false, false, true, false, true)` — `fuelExhausted`, which `isUndecided`
+recognises as "undetermined". That move was from a wrong answer to no answer.
+
+**It is now `(false, true, false, false, false)`** — `.invalid`. The third and final step of the
+history: from a wrong answer, to no answer, to the right answer. The formula is invalid and the
+engine now says so.
+
+* **Old (pinned) value**: `(false, false, true, false, true)` (`fuelExhausted`)
+* **New (measured) value**: `(false, true, false, false, false)` (`invalid`)
+* **Owner of the move**: `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+  `def trivialEventWitnessed` and its two consultation sites — **not**
+  `Decidability/Saturation.lean` and **not** the semantics refactor. Row 9's saturation is the
+  precondition: once the branch saturates rather than exhausting fuel, `decide` reads an open
+  saturated branch and returns `.invalid`.
 
 This is the anchor row for the whole repair, and it is duplicated deliberately at
 `CrossWorldPropagationProbe.lean` row F, whose five sibling rows all call `isValid` and so
 cannot see this distinction. -/
-/-- info: (false, false, true, false, true) -/
+/-- info: (false, true, false, false, false) -/
 #guard_msgs in
 #eval let r := decide (gp.imp gp.box)
       (r.isValid, r.isInvalid, r.isFuelExhausted, r.isExtractionFailed, r.isUndecided)
 
-/-! ### Row 11 — and no countermodel is produced, before or after.
+/-! ### Row 11 — a countermodel **is** now produced.
 
-Unmoved at `false`, and this is the criterion still owed: the repair removed the false claim of
-validity but did not supply the positive refutation. -/
-/-- info: false -/
+This row was long unmoved at `false`, and it recorded the criterion still owed: the earlier
+repair removed the false claim of validity but did not supply the positive refutation.
+
+**That criterion is now met.** `getCountermodel?` returns `some`.
+
+* **Old (pinned) value**: `false`
+* **New (measured) value**: `true`
+* **Owner of the move**: `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+  `def trivialEventWitnessed` and its two consultation sites — **not**
+  `Decidability/Saturation.lean` and **not** the semantics refactor. Extraction runs off row 10's
+  `.invalid` verdict, which in turn runs off row 9's saturated open branch.
+
+Recorded separately: the returned Layer-0 `SimpleCountermodel` has `isConsistent = false`, since
+the Layer-0 flattening discards the `(world, time)` label. This row asserts only that extraction
+returns `some`, which is what is measured here; the `isConsistent` question is un-owned by this
+row and by the suite, which contains no `#guard_msgs` asserting it. -/
+/-- info: true -/
 #guard_msgs in
 #eval (decide (gp.imp gp.box)).getCountermodel?.isSome
 

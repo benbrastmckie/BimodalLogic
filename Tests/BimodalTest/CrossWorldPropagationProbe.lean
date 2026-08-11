@@ -116,11 +116,17 @@ The tuple is `(isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndeci
 * **Before the deletion**: `(false, false, false, true, false)` — `extractionFailed`. The tableau
   closed on an invalid formula, which by this codebase's R7 semantics (`isKnownValid` is true for
   `extractionFailed`) is an assertion that the formula is **valid**. That assertion was false.
-* **Now**: `fuelExhausted`, which `isUndecided` recognises as honest ignorance.
+* **Then**: `fuelExhausted`, which `isUndecided` recognises as honest ignorance.
+* **Now**: `(false, true, false, false, false)` — `.invalid`. The positive refutation this
+  formula is owed has arrived, and pinning that fact is now this row's job.
 
-The soundness defect is gone. The positive refutation this formula is owed — `.invalid` with an
-extracted countermodel — is **not** here yet, and pinning that fact is this row's job. -/
-/-- info: (false, false, true, false, true) -/
+* **Old (pinned) value**: `(false, false, true, false, true)` (`fuelExhausted`)
+* **New (measured) value**: `(false, true, false, false, false)` (`invalid`)
+* **Owner of the move**: `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+  `def trivialEventWitnessed` and its two consultation sites — **not**
+  `Decidability/Saturation.lean` and **not** the semantics refactor. Identical move to
+  `BoxNegReachabilityProbe.lean` row 10, on the same formula, as this row's design intends. -/
+/-- info: (false, true, false, false, false) -/
 #guard_msgs in
 #eval let d := decide ((Formula.allFuture p).imp ((Formula.allFuture p).box))
       (d.isValid, d.isInvalid, d.isFuelExhausted, d.isExtractionFailed, d.isUndecided)
