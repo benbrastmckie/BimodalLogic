@@ -5713,9 +5713,16 @@ private theorem ar_bn :
 private theorem rm_bn : ruleMintsFreshLabel .boxNeg = true := rfl
 private theorem wp_bn :
     witnessPresent .boxNeg freshWorldWitness freshWorldBranch TimeOrdering.empty = false := rfl
+/-- The fresh-label suppression test is `witnessPresent … || trivialEventWitnessed …`. The second
+disjunct returns `false` on every rule outside the four positive temporal minting rules, so at a
+`.boxNeg` witness it contributes nothing — but it still has to be reduced for the guard to
+collapse, which is what this companion to `wp_bn` supplies. -/
+private theorem tw_bn :
+    trivialEventWitnessed .boxNeg freshWorldWitness freshWorldBranch TimeOrdering.empty
+      = false := rfl
 
 attribute [local simp] ia_ug ia_sg ia_sep ia_np ia_nn ia_in ia_ap ia_on ia_bp ia_bn ar_bn rm_bn
-  wp_bn
+  wp_bn tw_bn
 
 /-- **`.boxNeg` is the rule the engine picks at the witness, at every frame class.** The nine rules
 ahead of it — the three Dedekind rules, then `negPos`, `negNeg`, `impNeg`, `andPos`, `orNeg`,
