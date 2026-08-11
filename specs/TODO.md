@@ -78,7 +78,7 @@ next_project_number: 440
 ### Paper Refactor
 
 420 [PARTIAL] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
-  └─ 414 [RESEARCHING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
+  └─ 414 [PLANNING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
     └─ 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
     └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
@@ -811,13 +811,11 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 414. Refactor semantics to total history validity
 - **Effort**: large
-- **Status**: [RESEARCHING]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 420, Task 438, Task 439
-- **Research**:
-  - [414_refactor_semantics_to_total_history_validity/reports/01_maximal-history-validity-refactor.md]
-  - [414_refactor_semantics_to_total_history_validity/reports/02_group-c-reconciliation.md]
+- **Research**: [414_refactor_semantics_to_total_history_validity/reports/03_total-history-validity-refactor.md]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charter in full). TOTAL-HISTORY VALIDITY REFACTOR: make totality-based validity THE validity of the repo, eliminating the Omega parameter from the semantics core.
 
