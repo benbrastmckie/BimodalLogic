@@ -1891,6 +1891,49 @@ def witnessPresent (rule : TableauRule) (sf : SignedFormula) (branch : Branch)
   | _, _, _ => false
 
 /--
+Is this fresh-label rule's witness obligation discharged by the *validity of its event*, with no
+witness formula needed at all?
+
+The only event this fires on is the syntactic constant `⊤` (`Formula.top`,
+`FormalSystem/Syntax/Formula.lean:118`), reached through the two derived existential temporal
+operators: `F ⊤` is `untl ⊤ ⊤` and `P ⊤` is `snce ⊤ ⊤` (`Formula.someFuture` / `Formula.somePast`,
+`Formula.lean:131` / `:141`). On such a trigger the test is *purely* that the ordering already has
+some strictly-later (resp. strictly-earlier) time; the branch is not consulted.
+
+**Soundness.** `⊤` is true at every label of every model. So if the ordering already puts some
+`t' ∈ timeOrd.futureOf l.time`, that `t'` *is* a witness for `T(F ⊤) @ (w, t)` whether or not the
+branch literally carries `T(⊤) @ (w, t')` — the semantic obligation "some future time satisfies
+the event" is discharged by an already-ordered time alone. Acting on that is
+satisfiability-preserving in both directions, by exactly the argument the existing witness guard
+already gives above (`Tableau.lean:1786-1787`: "do not duplicate an existing witness"), specialised
+here to an event formula that needs no witness to duplicate. The past-directed arms are the
+time-reversal mirror.
+
+**Warning — do not generalise the event.** The argument above is available *only* because the
+event is valid. For any event `ψ` that is not valid, an already-ordered `t'` is not thereby a
+witness (`ψ` may fail at `t'`), and suppressing or redirecting the mint on that basis would be
+UNSOUND: it would report a branch as saturated while the existential obligation is undischarged,
+losing a closure the tableau is required to find. Keying on the syntactic `Formula.top` is
+therefore load-bearing, not a convenience. Widening this predicate to any other event requires a
+validity proof for that event, not a plausibility argument.
+
+Returns `false` for every other rule and every other trigger shape, so — like `witnessPresent`,
+beside which it is consulted and which it never replaces — it is only ever read behind
+`ruleMintsFreshLabel`.
+-/
+def trivialEventWitnessed (rule : TableauRule) (sf : SignedFormula) (_branch : Branch)
+    (timeOrd : TimeOrdering) : Bool :=
+  let l := sf.label
+  match rule, sf.sign, sf.formula with
+  | .someFuturePos, .pos, .untl event guard
+  | .untlPos, .pos, .untl event guard =>
+      event == Formula.top && guard == Formula.top && !(timeOrd.futureOf l.time).isEmpty
+  | .somePastPos, .pos, .snce event guard
+  | .sncePos, .pos, .snce event guard =>
+      event == Formula.top && guard == Formula.top && !(timeOrd.pastOf l.time).isEmpty
+  | _, _, _ => false
+
+/--
 Find a rule that applies to a signed formula.
 Returns the first applicable rule, its result, and the updated TimeOrdering.
 
