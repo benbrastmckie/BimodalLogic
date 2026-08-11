@@ -503,34 +503,41 @@ def trivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoi
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
 
 /--
-Identity task frame: task relation is identity.
+Static task frame: every world state is related to itself, and only itself, at every duration.
 
-World states can be any type, task relation holds iff source equals target and time is 0.
-Polymorphic over both world state type and temporal type.
+World states can be any type. `TaskRel w x u` holds iff `w = u`, for every duration `x`:
+nothing ever changes, at any timescale. Polymorphic over both world state type and temporal
+type.
+
+This frame replaces the former zero-duration-only identity frame
+(`TaskRel := fun w x u => w = u ∧ x = 0`), which violated the paper's *Seriality* axiom
+(`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some
+$u, v \in W$") over every nontrivial duration type: at any `x > 0` no successor existed. The
+static relation satisfies all four recorded axioms of `def:frame` — *Compositionality* in both
+directions (interpolate through `w` itself), *Seriality* (`staticFrame_serial` below),
+*Limit* (only `w` is reachable from `w` at all), and *Spherical* (every nonempty fiber and
+segment is the same singleton along a directed family) — as well as every field of the current
+structure.
 -/
-def identityFrame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+def staticFrame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
     TaskFrame D where
   WorldState := W
-  TaskRel := fun w x u => w = u ∧ x = 0
-  nullity_identity := fun w u => by
-    constructor
-    · intro ⟨h1, _⟩; exact h1
-    · intro h; exact ⟨h, rfl⟩
-  forward_comp := by
-    intros w u v x y _ _ hwu huv
-    obtain ⟨h1, h2⟩ := hwu
-    obtain ⟨h3, h4⟩ := huv
-    subst h1 h3
-    simp [h2, h4]
-  converse := fun w d u => by
-    constructor
-    · intro ⟨h1, h2⟩
-      subst h1 h2
-      simp
-    · intro ⟨h1, h2⟩
-      constructor
-      · exact h1.symm
-      · exact neg_eq_zero.mp h2
+  TaskRel := fun w _ u => w = u
+  nullity_identity := fun _ _ => Iff.rfl
+  forward_comp := fun _ _ _ _ _ _ _ h1 h2 => h1.trans h2
+  converse := fun _ _ _ => ⟨Eq.symm, Eq.symm⟩
+
+/--
+The static frame satisfies the paper's *Seriality* axiom (`def:frame#Seriality`, verbatim:
+"$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$"): at every duration the
+state itself is both a successor and a predecessor. Stated for all durations, so the paper's
+`x ≥ 0` proviso is subsumed.
+-/
+theorem staticFrame_serial (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] (w : W) (x : D) :
+    (∃ u, (staticFrame W (D := D)).TaskRel w x u) ∧
+      (∃ v, (staticFrame W (D := D)).TaskRel v x w) :=
+  ⟨⟨w, rfl⟩, ⟨w, rfl⟩⟩
 
 /--
 Natural number based task frame.

@@ -518,7 +518,7 @@ defining; if a genuine collision has appeared since, reconcile naming rather tha
 
 ---
 
-### Phase 8: Repair or delete identityFrame (Seriality violation, 415-independent) [NOT STARTED]
+### Phase 8: Repair or delete identityFrame (Seriality violation, 415-independent) [COMPLETED]
 
 **Goal**: `identityFrame` no longer violates *Seriality*, so the Phase 10 atomic batch does not
 trip over a defect that has nothing to do with 415.
@@ -531,10 +531,10 @@ so task 415 is IRRELEVANT to it, and it MUST NOT be discovered inside the atomic
 window. This is a failure plan v1 did not contemplate.
 
 **Tasks**:
-- [ ] Enumerate the live references (Scope Hypothesis below): the export at TaskFrame.lean:390
+- [x] Enumerate the live references (Scope Hypothesis below): the export at TaskFrame.lean:390
       and the three consumers — WorldHistory.lean:125, SemanticPropertyTest.lean:108,
       TaskFrameTest.lean:41-42. Confirm by grep before editing.
-- [ ] Choose ONE of, based on what the reference sites actually need:
+- [x] Choose ONE of, based on what the reference sites actually need: *(chosen: option (a) re-carrier/redefine — renamed to `staticFrame` with `TaskRel := fun w _ u => w = u`; all three consumers updated; `staticFrame_serial` is the standalone Seriality lemma)*
       - **(a) Re-carrier/redefine**: replace the relation with one satisfying all four target
         axioms — the natural candidate is the static frame `TaskRel := fun w _ u => w = u`
         (every state related to itself at every duration), which satisfies biconditional
@@ -542,9 +542,9 @@ window. This is a failure plan v1 did not contemplate.
         `nullity_identity` intact. Rename if "identity" no longer describes it (e.g.
         `staticFrame`), updating the three consumers.
       - **(b) Delete**: remove `identityFrame` and repoint or delete the three consumers.
-- [ ] Whichever option: docstring the frame's axiom status against the recorded `def:frame`
+- [x] Whichever option: docstring the frame's axiom status against the recorded `def:frame`
       anchors; keep the `[Nontrivial D]` binder if the definition still requires it.
-- [ ] Do NOT add any structure field in this phase; the repaired frame must discharge the
+- [x] Do NOT add any structure field in this phase; the repaired frame must discharge the
       CURRENT structure's fields only (Phase 10 adds the rest and re-discharges).
 
 **Timing**: 1 hour

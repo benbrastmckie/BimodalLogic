@@ -35,11 +35,15 @@ example : (TaskFrame.trivialFrame (D := Int)).TaskRel () 5 () := trivial
 -- Test: trivialFrame with negative duration
 example : (TaskFrame.trivialFrame (D := Int)).TaskRel () (-3) () := trivial
 
-/-! ## identityFrame Tests -/
+/-! ## staticFrame Tests -/
 
--- Test: identityFrame satisfies nullity (with explicit type annotation)
-example : (TaskFrame.identityFrame Nat (D := Int)).TaskRel (3 : Nat) 0 (3 : Nat) :=
-  (TaskFrame.identityFrame Nat (D := Int)).nullity (3 : Nat)
+-- Test: staticFrame satisfies nullity (with explicit type annotation)
+example : (TaskFrame.staticFrame Nat (D := Int)).TaskRel (3 : Nat) 0 (3 : Nat) :=
+  (TaskFrame.staticFrame Nat (D := Int)).nullity (3 : Nat)
+
+-- Test: staticFrame is reflexive at every duration (the Seriality witness), unlike the
+-- former zero-duration-only identity frame it replaces
+example : (TaskFrame.staticFrame Nat (D := Int)).TaskRel (3 : Nat) 7 (3 : Nat) := rfl
 
 /-! ## natFrame Tests (using Int time) -/
 

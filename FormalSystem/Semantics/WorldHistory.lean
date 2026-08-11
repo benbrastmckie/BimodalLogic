@@ -119,10 +119,14 @@ A frame is reflexive if for all world states `w` and durations `d`, the task rel
 
 **Examples of Reflexive Frames**:
 - `trivialFrame`: TaskRel is always True (reflexive)
-- `natFrame`: TaskRel is always True (reflexive)
+- `natFrame`: TaskRel is `d ≠ 0 ∨ w = u` (reflexive via the right disjunct)
+- `staticFrame`: TaskRel is `w = u` at every duration (reflexive)
 
 **Non-Reflexive Frame Example**:
-- `identityFrame`: TaskRel only holds at duration 0 (not reflexive for d ≠ 0)
+- A frame whose TaskRel holds only at duration 0 (e.g. `fun w x u => w = u ∧ x = 0`) is not
+  reflexive for `d ≠ 0`. The library's former identity frame was such a frame; it violated the
+  paper's *Seriality* axiom (`def:frame#Seriality`) and was replaced by the reflexive
+  `staticFrame`.
 
 **Justification**: For a constant history to respect the task relation, we need
 `TaskRel w (t - s) w` for all times `s ≤ t`. Nullity only gives this when `s = t`.

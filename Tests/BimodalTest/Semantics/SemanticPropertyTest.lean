@@ -99,13 +99,13 @@ example (w u : Unit) (x : Int) :
     (TaskFrame.trivialFrame (D := Int)).TaskRel w x u := by
   trivial
 
-/-! ## Identity Frame Properties -/
+/-! ## Static Frame Properties -/
 
 /-!
-Property: Identity frame task relation requires w = u and x = 0.
+Property: Static frame task relation requires w = u, at every duration.
 -/
 example (W : Type) (w u : W) (x : Int) :
-    (TaskFrame.identityFrame W (D := Int)).TaskRel w x u ↔ w = u ∧ x = 0 := by
+    (TaskFrame.staticFrame W (D := Int)).TaskRel w x u ↔ w = u := by
   rfl
 
 /-! ## Nat Frame Properties -/
