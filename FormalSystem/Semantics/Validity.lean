@@ -16,8 +16,8 @@ This module defines semantic validity and consequence for TM formulas.
 
 ## Main Definitions
 
-- `valid`: A formula is valid if true in all models with shift-closed Omega
-- `SemanticConsequence`: Semantic consequence relation (with shift-closed Omega)
+- `valid`: A formula is valid if true at every **total** history, in every model
+- `SemanticConsequence`: Semantic consequence relation, quantified over total histories
 - `satisfiable`: A context is satisfiable if consistent (exists some temporal type)
 - Notation: `⊨ φ` for validity, `Γ ⊨ φ` for semantic consequence
 
@@ -29,20 +29,30 @@ This module defines semantic validity and consequence for TM formulas.
 ## Implementation Notes
 
 - Validity quantifies over all temporal types `D : Type*` with `LinearOrderedAddCommGroup D`
-- Validity and consequence quantify over all shift-closed Omega and histories in Omega
-- This parameterization is equivalent to using `Set.univ` (since `Set.univ` is shift-closed)
-  but enables completeness proofs to provide a matching Omega
-- Satisfiability existentially quantifies over Omega with a membership constraint `τ ∈ Omega`
+- Validity and consequence quantify over the **total** histories: `τ.IsTotal`, i.e. `∀ t, τ.domain t`.
+  There is no admissible-history parameter and no shift-closure side condition anywhere in this
+  module. `TruthAt`'s remaining set argument is inert (see `truthAt_carrier_irrelevant` below) and
+  is supplied as `Set.univ` at every call site here; it is scheduled for deletion outright.
+- `ShiftClosed` is not needed in the *statement* of validity or consequence because totality is
+  trivially preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), so time-shift invariance
+  no longer has a side condition to carry.
+- Satisfiability existentially quantifies over a total witness history.
 - Semantic consequence: truth in all models where premises true
 - Used in soundness theorem: `Γ ⊢ φ → Γ ⊨ φ`
 - Temporal types include Int, Rat, Real, and custom bounded types
 
 ## Paper Alignment
 
-JPL paper §app:TaskSemantics defines validity as truth at all task frames with totally ordered
-abelian group D = ⟨D, +, ≤⟩. Our polymorphic quantification over `LinearOrderedAddCommGroup D`
-captures this exactly. The ShiftClosed Omega condition ensures time-shift invariance holds,
-which is implicit in the paper's use of the full universe of histories.
+`def:logical-consequence` reads verbatim:
+
+> A conclusion phi is a *logical consequence* of a set of premises Gamma --- written
+> Gamma |= phi --- just in case for all models M, possible worlds tau in H_F, and times x in D,
+> if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is
+> *valid* just in case |= phi.
+
+`H_F` is the set of total histories of the frame `F`, so `τ ∈ H_F` is rendered as `τ.IsTotal`.
+Our polymorphic quantification over `LinearOrderedAddCommGroup D` renders "for all models M"
+and "times x in D".
 
 ## References
 
@@ -56,32 +66,65 @@ namespace FormalSystem.Semantics
 open FormalSystem.Syntax
 
 /--
-A formula is valid if it is true in all models at all times in all histories within
-any shift-closed set of histories, for every temporal type `D` satisfying
-`LinearOrderedAddCommGroup`.
+`TruthAt`'s set argument is **inert**: no clause of `TruthAt` consults it, so truth at a given
+history and time does not depend on which set is supplied.
 
-Formally: for every temporal type `D`, every task frame `F : TaskFrame D`,
-every model `M` over `F`, every shift-closed set `Omega` of histories,
-every history `τ ∈ Omega`, and every time `t : D`,
-the formula is true at `(M, Omega, τ, t)`.
+This module supplies `Set.univ` at every call site. This lemma is the bridge that lets a
+consumer holding `TruthAt M Set.univ τ t φ` (the shape produced by `valid` and
+`SemanticConsequence` below) transport it to any other set argument, and conversely. It exists
+only because the parameter itself has not yet been deleted from `TruthAt`; once that deletion
+lands, this lemma becomes vacuous and should be removed along with it.
+-/
+theorem truthAt_carrier_irrelevant
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} (Om₁ Om₂ : Set (WorldHistory F)) :
+    ∀ (φ : Formula) (τ : WorldHistory F) (t : D),
+      TruthAt M Om₁ τ t φ ↔ TruthAt M Om₂ τ t φ := by
+  intro φ
+  induction φ with
+  | atom p => intro τ t; rfl
+  | bot => intro τ t; rfl
+  | imp φ ψ ihφ ihψ => intro τ t; simp only [TruthAt]; rw [ihφ, ihψ]
+  | box φ ih =>
+      intro τ t
+      simp only [TruthAt]
+      constructor <;> intro h σ hσ <;>
+        [exact (ih σ t).mp (h σ hσ); exact (ih σ t).mpr (h σ hσ)]
+  | untl φ ψ ihφ ihψ => intro τ t; simp only [TruthAt, ihφ, ihψ]
+  | snce φ ψ ihφ ihψ => intro τ t; simp only [TruthAt, ihφ, ihψ]
 
-The `ShiftClosed Omega` condition ensures that time-shift invariance properties
-hold, which is required for soundness of the MF and TF axioms. This condition
-is equivalent to the standard definition using `Set.univ` (since `Set.univ` is
-trivially shift-closed and `τ ∈ Set.univ` holds for all `τ`), but enables
-completeness proofs to provide a matching Omega.
+/--
+A formula is valid if it is true in all models, at all times, at every **total** history, for
+every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
 
-**Paper Reference (lines 924, 2272-2273)**: Logical consequence quantifies over
-all `x ∈ D` (all times in the temporal order), not just times in dom(τ).
+Formally: for every temporal type `D`, every task frame `F : TaskFrame D`, every model `M` over
+`F`, every history `τ` with `τ.IsTotal`, and every time `t : D`, the formula is true at
+`(M, τ, t)`.
+
+**Definition of record — `def:logical-consequence`**, verbatim:
+
+> A conclusion phi is a *logical consequence* of a set of premises Gamma --- written
+> Gamma |= phi --- just in case for all models M, possible worlds tau in H_F, and times x in D,
+> if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is
+> *valid* just in case |= phi.
+
+The "possible worlds tau in H_F" of that clause are the frame's **total** histories, which is
+what `τ.IsTotal` says. There is no admissible-history parameter and no shift-closure side
+condition: `ShiftClosed` is unnecessary in the statement of validity because totality is
+trivially preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), so time-shift invariance
+carries no side condition to quantify over. `TruthAt`'s remaining set argument is inert and is
+supplied here as `Set.univ`; see `truthAt_carrier_irrelevant`.
+
+Validity also quantifies over all `x ∈ D` (all times in the temporal order), not just times in
+`dom(τ)` — for a total history those coincide.
 
 Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 -/
 def valid (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    TruthAt M Omega τ t φ
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    TruthAt M Set.univ τ t φ
 
 /--
 Notation for validity: `⊨ φ` means `valid φ`.
@@ -92,21 +135,28 @@ notation:50 "⊨ " φ:50 => valid φ
 Semantic consequence: `Γ ⊨ φ` means φ is true in all models where all of `Γ` are true,
 for every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
 
-Formally: for every temporal type `D`, for every model-history-time with shift-closed Omega
-where all formulas in `Γ` are true, formula `φ` is also true.
+Formally: for every temporal type `D`, at every model, **total** history and time where all
+formulas in `Γ` are true, formula `φ` is also true.
 
-**Paper Reference (lines 924, 2272-2273)**: Logical consequence quantifies over
-all `x ∈ D` (all times in the temporal order), not just times in dom(τ).
+**Definition of record — `def:logical-consequence`**, verbatim:
+
+> A conclusion phi is a *logical consequence* of a set of premises Gamma --- written
+> Gamma |= phi --- just in case for all models M, possible worlds tau in H_F, and times x in D,
+> if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is
+> *valid* just in case |= phi.
+
+This is that clause on the nose: "possible worlds tau in H_F" is `τ.IsTotal`, and the
+quantification is over all `x ∈ D` (all times in the temporal order), not just times in
+`dom(τ)`. No admissible-history parameter, no shift-closure side condition.
 
 Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 -/
 def SemanticConsequence (Γ : Context) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) →
-    TruthAt M Omega τ t φ
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) →
+    TruthAt M Set.univ τ t φ
 
 /--
 Notation for semantic consequence: `Γ ⊨ φ`.
@@ -117,26 +167,38 @@ notation:50 Γ:50 " ⊨ " φ:50 => SemanticConsequence Γ φ
 A context is satisfiable in temporal type `D` if there exists a model where all formulas
 in the context are true.
 
-Existentially quantifies over a set of admissible histories `Omega` and requires
-the witness history `τ ∈ Omega`. This ensures satisfiability witnesses are
-consistent with the Omega parameter in `TruthAt`.
+The witness history is required to be **total** (`τ.IsTotal`), which is the exact dual of the
+totality constraint in `valid`: `satisfiable D Γ` and validity-style quantification range over
+the same class of histories, so `¬satisfiable` and consequence line up (see
+`unsatisfiable_implies_all`).
+
+**No paper anchor.** Unlike `valid` and `SemanticConsequence`, which render
+`def:logical-consequence` verbatim, satisfiability has no counterpart in the definitions of
+record. Its totality constraint and its `[Nontrivial D]` binder are a **design decision**
+inherited from `valid` so that the two notions are duals over one and the same history class —
+not a reconciliation finding, and not attributable to any definition anchor.
 
 This is the semantic notion of consistency relative to a temporal type.
 For absolute satisfiability (exists in some type), use `∃ D, satisfiable D Γ`.
 
 **Note**: Satisfiability quantifies over all times `t : D`, not just domain times.
 -/
-def satisfiable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (Γ : Context) :
+def satisfiable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] (Γ : Context) :
     Prop :=
-  ∃ (F : TaskFrame D) (M : TaskModel F) (Omega : Set (WorldHistory F))
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    ∀ φ ∈ Γ, TruthAt M Omega τ t φ
+  ∃ (F : TaskFrame D) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    ∀ φ ∈ Γ, TruthAt M Set.univ τ t φ
 
 /--
 A context is absolutely satisfiable if it is satisfiable in some temporal type.
+
+Carries `Nontrivial` alongside the other structure binders so that `satisfiable` applies; see
+the "No paper anchor" note on `satisfiable`.
 -/
 def SatisfiableAbs (Γ : Context) : Prop :=
-  ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D), satisfiable D Γ
+  ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
+    (_ : Nontrivial D), satisfiable D Γ
 
 /--
 A single formula is satisfiable if there exists a model where it is true at some point.
@@ -150,16 +212,20 @@ to the existence of finite models.
 
 **Relationship to Context Satisfiability**:
 `FormulaSatisfiable φ ↔ satisfiable Int [φ]` (for Int time, but holds for any D)
+
+**No paper anchor** — see the note on `satisfiable`. The totality constraint on the witness
+history and the `Nontrivial` binder are inherited from `valid` as a design decision.
 -/
 def FormulaSatisfiable (φ : Formula) : Prop :=
   ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-    (F : TaskFrame D) (M : TaskModel F) (Omega : Set (WorldHistory F))
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    TruthAt M Omega τ t φ
+    (_ : Nontrivial D)
+    (F : TaskFrame D) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    TruthAt M Set.univ τ t φ
 
 /--
 A formula is valid over dense temporal orders if it is true in all models where D is
-densely ordered, for all shift-closed Omega, all histories in Omega, and all times.
+densely ordered, at all total histories, and all times.
 
 This restricts `valid` to temporal types with `DenselyOrdered D`, capturing the
 frame condition for the density axiom DN: `F(phi) -> F(F(phi))`.
@@ -170,14 +236,12 @@ def ValidDense (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    TruthAt M Omega τ t φ
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    TruthAt M Set.univ τ t φ
 
 /--
 A formula is valid over discrete temporal orders if it is true in all models where D
-has successor and predecessor structure, for all shift-closed Omega, all histories
-in Omega, and all times.
+has successor and predecessor structure, at all total histories, and all times.
 
 This restricts `valid` to temporal types with `SuccOrder D` and `PredOrder D`,
 capturing the frame condition for the discreteness axioms DF/DP.
@@ -188,14 +252,13 @@ def ValidDiscrete (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
     [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    TruthAt M Omega τ t φ
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    TruthAt M Set.univ τ t φ
 
 /--
 A formula is valid over **Dedekind-complete** temporal orders if it is true in all models
-whose temporal type `D` has the least-upper-bound property, for all shift-closed `Omega`,
-all histories in `Omega`, and all times.
+whose temporal type `D` has the least-upper-bound property, at all total histories, and all
+times.
 
 Dedekind completeness is expressed by the explicit Prop-valued hypothesis
 
@@ -242,9 +305,8 @@ def ValidDedekind (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    TruthAt M Omega τ t φ
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    TruthAt M Set.univ τ t φ
 
 /--
 A formula is valid over **dense Dedekind-complete** temporal orders: `ValidDedekind` with
@@ -278,9 +340,8 @@ def ValidDedekindDense (φ : Formula) : Prop :=
     [Nontrivial D]
     (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    TruthAt M Omega τ t φ
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    TruthAt M Set.univ τ t φ
 
 namespace Validity
 
@@ -288,14 +349,14 @@ namespace Validity
 Validity implies validity over dense orders: every valid formula is ValidDense.
 -/
 theorem valid_implies_valid_dense {φ : Formula} (h : valid φ) : ValidDense φ := by
-  intro D _ _ _ _ _ F M Omega h_sc τ h_mem t
-  exact h D F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ _ F M τ hτ t
+  exact h D F M τ hτ t
 
 /--
 Validity implies validity over discrete orders: every valid formula is ValidDiscrete.
 -/
 theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : ValidDiscrete φ :=
-  fun D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
+  fun D _ _ _ _ _ _ _ _ F M τ hτ t => h D F M τ hτ t
 
 /--
 Validity implies validity over Dedekind-complete orders: every valid formula is
@@ -303,14 +364,14 @@ Validity implies validity over Dedekind-complete orders: every valid formula is
 quantifies over every `D` satisfying the weaker binder set.
 -/
 theorem valid_implies_validDedekind {φ : Formula} (h : valid φ) : ValidDedekind φ :=
-  fun D _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
+  fun D _ _ _ _ _ F M τ hτ t => h D F M τ hτ t
 
 /--
 Validity implies validity over dense Dedekind-complete orders: every valid formula is
 `ValidDedekindDense`.
 -/
 theorem valid_implies_validDedekindDense {φ : Formula} (h : valid φ) : ValidDedekindDense φ :=
-  fun D _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
+  fun D _ _ _ _ _ _ F M τ hτ t => h D F M τ hτ t
 
 /--
 `ValidDedekind` is strictly stronger than `ValidDedekindDense`: adding the `DenselyOrdered`
@@ -323,7 +384,7 @@ proves the weaker `ValidDedekindDense`, and anything genuinely established at
 -/
 theorem validDedekindDense_of_validDedekind {φ : Formula} (h : ValidDedekind φ) :
     ValidDedekindDense φ :=
-  fun D _ _ _ _ _ h_lub F M Omega h_sc τ h_mem t => h D h_lub F M Omega h_sc τ h_mem t
+  fun D _ _ _ _ _ h_lub F M τ hτ t => h D h_lub F M τ hτ t
 
 /--
 Valid formulas are semantic consequences of empty context.
@@ -331,18 +392,18 @@ Valid formulas are semantic consequences of empty context.
 theorem valid_iff_empty_consequence (φ : Formula) :
     (⊨ φ) ↔ ([] ⊨ φ) := by
   constructor
-  · intro h D _ _ _ _ F M Omega h_sc τ h_mem t _
-    exact h D F M Omega h_sc τ h_mem t
-  · intro h D _ _ _ _ F M Omega h_sc τ h_mem t
-    exact h D F M Omega h_sc τ h_mem t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
+  · intro h D _ _ _ _ F M τ hτ t _
+    exact h D F M τ hτ t
+  · intro h D _ _ _ _ F M τ hτ t
+    exact h D F M τ hτ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 /--
 Semantic consequence is monotonic: adding premises preserves consequences.
 -/
 theorem consequence_monotone {Γ Δ : Context} {φ : Formula} :
     Γ ⊆ Δ → (Γ ⊨ φ) → (Δ ⊨ φ) := by
-  intro h_sub h_cons D _ _ _ _ F M Omega h_sc τ h_mem t h_delta
-  apply h_cons D F M Omega h_sc τ h_mem t
+  intro h_sub h_cons D _ _ _ _ F M τ hτ t h_delta
+  apply h_cons D F M τ hτ t
   intro ψ hψ
   exact h_delta ψ (h_sub hψ)
 
@@ -351,14 +412,14 @@ If a formula is valid, it is a semantic consequence of any context.
 -/
 theorem valid_consequence (φ : Formula) (Γ : Context) :
     (⊨ φ) → (Γ ⊨ φ) :=
-  fun h D _ _ _ _ F M Omega h_sc τ h_mem t _ => h D F M Omega h_sc τ h_mem t
+  fun h D _ _ _ _ F M τ hτ t _ => h D F M τ hτ t
 
 /--
 Context with all formulas true implies each formula individually true.
 -/
 theorem consequence_of_member {Γ : Context} {φ : Formula} :
     φ ∈ Γ → (Γ ⊨ φ) := by
-  intro h _ _ _ _ _ F M Omega h_sc τ h_mem t h_all
+  intro h _ _ _ _ _ F M τ hτ t h_all
   exact h_all φ h
 
 /--
@@ -368,28 +429,33 @@ unsatisfiable in every temporal type, then it implies anything.
 
 Note: For the weaker statement that unsatisfiability in a SPECIFIC type implies
 consequence in that type, see `unsatisfiable_implies_all_fixed`.
+
+The hypothesis now carries `[Nontrivial D]`, matching both `satisfiable` and the binder list of
+`SemanticConsequence`. Without it the two sides would range over different classes of temporal
+type and the statement would be quantifying the antecedent over strictly more types than the
+conclusion can use.
 -/
 theorem unsatisfiable_implies_all {Γ : Context} {φ : Formula} :
-    (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], ¬satisfiable D Γ) →
+    (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D],
+      ¬satisfiable D Γ) →
       (Γ ⊨ φ) :=
-  fun h_unsat D _ _ _ _ F M Omega _h_sc τ h_mem t h_all =>
-    absurd ⟨F, M, Omega, τ, h_mem, t, h_all⟩ (h_unsat D)
+  fun h_unsat D _ _ _ _ F M τ hτ t h_all =>
+    absurd ⟨F, M, τ, hτ, t, h_all⟩ (h_unsat D)
 
 /--
 Unsatisfiable context in a fixed temporal type implies consequence in that type.
 This is the type-specific version of explosion.
 -/
 theorem unsatisfiable_implies_all_fixed {D : Type*} [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D]
+    [IsOrderedAddMonoid D] [Nontrivial D]
     {Γ : Context} {φ : Formula} :
     ¬satisfiable D Γ → ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega)
-      (t : D), (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ := by
-  intro h_unsat F M Omega _h_sc τ h_mem t h_all
+      (τ : WorldHistory F) (_ : τ.IsTotal)
+      (t : D), (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ := by
+  intro h_unsat F M τ hτ t h_all
   exfalso
   apply h_unsat
-  exact ⟨F, M, Omega, τ, h_mem, t, h_all⟩
+  exact ⟨F, M, τ, hτ, t, h_all⟩
 
 /-! ### Validity Reduction Lemmas
 
@@ -405,9 +471,9 @@ this gives TruthAt φ at t.
 -/
 theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.allFuture φ)) :
     valid φ := by
-  intro D _ _ _ _ F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ F M τ hτ t
   -- G(φ) valid means ∀ t, ∀ s > t, φ(s). Pick r < t, then G(φ)(r) gives φ(t).
-  have h_G := h D F M Omega h_sc τ h_mem
+  have h_G := h D F M τ hτ
   obtain ⟨r, hrt⟩ := exists_lt t
   have := h_G r
   simp only [Truth.future_iff] at this
@@ -418,9 +484,9 @@ If H(φ) is valid, then φ is valid.
 -/
 theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.allPast φ)) :
     valid φ := by
-  intro D _ _ _ _ F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ F M τ hτ t
   -- H(φ) valid at all times. Pick s > t, then H(φ)(s) gives φ(t) since t < s.
-  have h_H := h D F M Omega h_sc τ h_mem
+  have h_H := h D F M τ hτ
   obtain ⟨s, hts⟩ := exists_gt t
   have := h_H s
   simp only [Truth.past_iff] at this
@@ -429,33 +495,22 @@ theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.allPast φ)) 
 /--
 If □φ is valid, then φ is valid.
 
-Proof (target): □φ at (τ, t) means `∀ σ, σ.IsTotal → TruthAt φ at (σ, t)`. Instantiating at
-`σ := τ` needs `τ.IsTotal`, so the step goes through exactly once `valid` quantifies over the
-total histories.
+Proof: □φ at `(τ, t)` means `∀ σ, σ.IsTotal → TruthAt φ at (σ, t)` per `def:BL-semantics`
+("M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all σ ∈ H_F"). Instantiating that at `σ := τ` needs exactly
+`τ.IsTotal` — which is precisely the hypothesis `valid` now binds. So the step is the identity
+move: feed `τ`'s own totality witness back in as the box witness.
 
-**STRATEGIC SORRY — owned by the validity-layer binder delta.** The box clause of `TruthAt` now
-reads `∀ σ, σ.IsTotal → …` per `def:BL-semantics` ("M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all σ ∈ H_F"),
-but `valid` still binds its history as `τ ∈ Omega`. Those two binders do not meet: `τ ∈ Omega`
-does not yield `τ.IsTotal` under any hypothesis currently in scope, so this instantiation is
-**not provable as stated** and no local tactic can rescue it. It is not a gap in the argument —
-it is the seam between the truth layer (retargeted here) and the validity layer (retargeted in
-the scheduled validity-layer binder delta phase, which replaces `(τ : WorldHistory F) (_ : τ ∈ Omega)`
-with `(τ : WorldHistory F) (hτ : τ.IsTotal)` throughout `valid`/`satisfiable`/consequence).
-
-Once that delta lands, the proof is the one-liner it was before, with the membership argument
-replaced by the totality argument:
-  `intro D _ _ _ _ F M Omega h_sc τ hτ t; exact h D F M Omega h_sc τ hτ t τ hτ`
-
-This sorry is deliberately scoped to this single declaration; it is the only place in
-`Semantics/**` where the truth-layer and validity-layer binders are forced to meet before the
-delta lands. Do not discharge it by weakening the statement or by adding an `IsTotal` hypothesis
-to `valid_of_valid_box` alone — that would fork the validity predicate, which Decision A forbids.
+**Formerly a strategic sorry; discharged by the validity-layer binder delta.** Before that delta,
+`valid` bound its history as `τ ∈ Omega` while `TruthAt`'s box clause already bound `σ.IsTotal`,
+and those two binders did not meet — `τ ∈ Omega` yielded `τ.IsTotal` under no hypothesis then in
+scope, so the statement was not provable as written and no local tactic could rescue it. That was
+a seam between the truth layer and the validity layer, not a gap in the argument, and the delta
+closed it by construction: no new mathematical content was needed, only the corrected binder.
 -/
 theorem valid_of_valid_box {φ : Formula} (h : valid (Formula.box φ)) :
     valid φ := by
-  intro D _ _ _ _ F M Omega h_sc τ h_mem t
-  -- Needs `τ.IsTotal`; `valid` supplies only `τ ∈ Omega`. See the docstring above.
-  sorry
+  intro D _ _ _ _ F M τ hτ t
+  exact h D F M τ hτ t τ hτ
 
 end Validity
 
