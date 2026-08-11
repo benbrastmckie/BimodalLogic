@@ -47,9 +47,10 @@ rule now emits `.linear (witness :: boxProps ++ diaProps)`.
 
 So the clash is gone (row 6), the branch the engine builds is **open** rather than closed
 (rows 7-8), and `buildTableau` no longer returns `allClosed` for `(G p) → □(G p)` (row 9) — a
-formula that is **invalid**: `box φ` is `∀ σ ∈ Ω, TruthAt … σ t φ`, quantifying over admissible
-histories at the fixed time, while `G p` is evaluated along `τ` alone, so an `Ω` holding one
-history with `p` throughout the future and one without refutes it. The tableau no longer reports
+formula that is **invalid**: `box φ` is `∀ σ, σ.IsTotal → TruthAt … σ t φ`, quantifying over the
+total histories `H_F` at the fixed time, while `G p` is evaluated along `τ` alone, so a frame
+carrying one total history with `p` throughout the future and one without refutes it. The tableau
+no longer reports
 a valid formula where there is none.
 
 ## What is fixed, and what is still owed

@@ -38,8 +38,9 @@ quantifier — which under `def:BL-semantics` ranges over the total histories
 `H_F` — is instantiable at the evaluation history itself. This is automatically
 satisfied in the validity definition, where `τ.IsTotal` is a premise.
 
-No declaration in this module carries an admissible-history (`Ω`) parameter or a
-`ShiftClosed` hypothesis. `TruthAt`'s remaining set argument is inert (see
+No declaration in this module quantifies over an admissible-history set, and none
+carries a shift-closure side condition: under the totality box clause there is no
+such side condition to carry. `TruthAt`'s remaining set argument is inert (see
 `truthAt_carrier_irrelevant` in `Semantics/Validity.lean`) and is supplied here as
 `Set.univ`, matching `valid`'s own call shape; it is scheduled for deletion outright.
 -/

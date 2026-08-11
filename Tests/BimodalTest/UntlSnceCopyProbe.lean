@@ -21,7 +21,7 @@ would not have caught either defect.
 time *unconditionally* to the freshly minted time. `Formula.untl` is evaluated along one history
 and its truth is interval-relative, so `F(U(e',g'))@t` does not imply `F(U(e',g'))@t'` for
 `t < t'`. Unlike the `□`/`◇` copies `boxDiamondPersistence` performs, no shift-closure argument
-is available, because the claim is not `Ω`-universal.
+is available, because the claim is not universal over the total histories `H_F`.
 
 The refuting model (`ℤ`, four atoms `V(n,p) ⟺ n = 5`, `V(n,q) ⟺ n ≥ 1`, `V(n,r) ⟺ n ≥ 2`,
 `V(n,s) ⟺ n ≠ 1`) is recorded in full at

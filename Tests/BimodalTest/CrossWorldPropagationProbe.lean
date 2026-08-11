@@ -40,7 +40,7 @@ distinguish a correct refutation from a wrong closure.
 
 ## The rows
 
-Rows A-C are formulas that are **invalid** — `Ω` may hold a history with a future (resp. past)
+Rows A-C are formulas that are **invalid** — some total history may carry a future (resp. past)
 `p` while `τ` has none, so the antecedent can hold at `τ` while the `□`-consequent fails — and
 that were also shaped to drive exactly the suspect copy.
 
