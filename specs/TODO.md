@@ -1,5 +1,5 @@
 ---
-next_project_number: 440
+next_project_number: 442
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 440
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,231,257,298,413,420,421,423,437 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 125,178,219,282,296,414,419,425,436 | 193,231,298,420,423,437 | decidability, formula-refactor, algebraic-representation, ... |
+| 1 | 127,128,193,231,257,298,413,420,421,423,437,440 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 125,178,219,282,296,414,419,425,436,441 | 193,231,298,420,423,437,440 | decidability, formula-refactor, algebraic-representation, ... |
 | 3 | 415,417,422,424,434 | 414,421,436 | decidability, paper-refactor, strong_completeness |
 | 4 | 169,427,432 | 415,417,419,422,434 | decidability, paper-refactor, strong_completeness |
 | 5 | 362,433 | 169,432 | decidability, strong_completeness |
@@ -85,6 +85,8 @@ next_project_number: 440
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
   └─ 419 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
     └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
+440 [NOT STARTED] — Discharge two of the four frame-axiom hypotheses of the extension
+  └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
 
 ### Strong Completeness
 
@@ -99,6 +101,61 @@ next_project_number: 440
 ### Uncategorized
 
 ## Tasks
+
+### 441. Effective periodic extension over finite frames
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-refactor
+- **Dependencies**: Task 440
+
+**Description**: Strengthen `thm:extension` for the finite discrete case into an EFFECTIVE result: construct a finitely representable total world history, rather than merely proving one exists. A model checker cannot ship a Zorn appeal as a certificate, and this is the theorem that lets it ship something checkable instead.
+
+WHY. `thm:extension` is an existence result proved by Zorn's lemma; `#print axioms FormalSystem.Semantics.PartialHistory.extension` confirms the `Classical.choice` dependency (verified 2026-08-11). To certify that a bounded countermodel window really is a fragment of a total world history, a checker needs a witness it can write down and re-verify. Over the frame class the ModelChecker's Z3 search produces -- finite `WorldState`, `D = Int`, serial relation -- such a witness exists and is a lasso.
+
+DELIVERABLE 1 -- `extend_periodic`. Given a `FiniteTaskFrame Int` with a serial relation and a partial history `t` on a FINITE domain, construct a total world history `s` in `F.HF` extending `t` that is eventually periodic in both directions: there exist `n0 p0 n1 p1` with `s (x + p1) = s x` for all `x >= n1` and `s (x - p0) = s x` for all `x <= n0`, with `p0` and `p1` bounded by the cardinality of `WorldState`. Construction: extend forward by repeatedly choosing a unit-step successor (licensed by *Seriality*); since `WorldState` is finite the forward orbit must revisit a state, closing a cycle; symmetrically backwards via the converse convention. State the relation to `thm:extension` explicitly -- this STRENGTHENS the finite case, it does not replace the general theorem, which must remain as it is for arbitrary `W` and `D`.
+
+DELIVERABLE 2 -- A FINITE PRESENTATION. A datatype presenting such an `s` as a prefix plus a cycle in each direction, a decoding function to a total history, and a proof that decoding yields the `s` of Deliverable 1. This is the object a model checker emits and re-checks, so it should be plainly serializable -- prefer plain lists and integers over dependent packaging.
+
+DELIVERABLE 3 -- THE AGREEMENT LEMMA, AND ITS LIMITS. Prove that the constructed `s` agrees with `t` on `dom t`, so any property depending only on the window transfers. Then state, PROMINENTLY in the docstring and not merely in passing, what does NOT transfer:
+  - truth of `box phi`, which quantifies over ALL of `H_F` and not over the constructed `s`;
+  - truth of `Past phi` and `Future phi`, which quantify over ALL of `D` and not over the window.
+Deliverable 3 is the theorem ModelChecker 154 consumes, and these limits are exactly why that task cannot claim more than it does. A downstream reader who takes the agreement lemma as licensing the dropping of abundance constraints has misused it; make that hard to do by saying so here.
+
+ON CHOICE. The successor selection is a choice over a finite nonempty set and should be made with decidability or `Finite.exists`-style reasoning rather than `Classical.choice` wherever practical, so the finite construction is visibly cheaper than the general one. Report the actual `#print axioms` result for `extend_periodic` in the docstring. If `Classical.choice` proves unavoidable, state that outright with the obstruction named -- do not leave it implicit and do not quietly claim constructivity the term does not have.
+
+DEPENDENCIES. BimodalLogic 440 (the finite axiom bundle, which supplies *Spherical* and *Limit* for this carrier), and PossibleWorlds 79 Deliverable 2 (the effective-extension remark this transcribes). Downstream: ModelChecker 154.
+
+---
+
+### 440. Finite frame discharge of spherical and limit
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-refactor
+- **Dependencies**: None
+
+**Description**: Discharge two of the four frame-axiom hypotheses of the extension chain for the frame class that finite model search actually produces: finite `WorldState` over `D = Int`. This is a small, additive task that unblocks Z3-backed countermodel certification in the ModelChecker repository.
+
+STATE OF PLAY -- VERIFIED 2026-08-11, DO NOT RE-DERIVE. The extension chain is COMPLETE and GREEN. `FormalSystem/Semantics/Extension/{Constraint,Admissible,Step,Extension}.lean` implement `def:constraints` -> `lem:constraint` -> `lem:fibers` -> `lem:admissible` -> `lem:step` -> `thm:extension` -> `cor:occurrence`. `lake build FormalSystem.Semantics.Extension.Extension` succeeds (791 jobs). `#print axioms FormalSystem.Semantics.PartialHistory.extension` reports exactly `[propext, Classical.choice, Quot.sound]` -- no sorries, no custom axioms, `Classical.choice` being the expected Zorn dependency that the paper's own footnote to `thm:extension` predicts. The same holds for `occurrence` and `step`. Nothing in this task re-proves any of that, and any dispatch that starts by re-implementing the extension chain has misread the task.
+
+THE GAP. `extension`, `occurrence`, `hF_nonempty`, `step`, and `isTotal_of_isMax` each take *Spherical*, *Seriality*, *Interpolates*, and *Limit* as LOOSE HYPOTHESES, because `TaskFrame` carries none of them. `FormalSystem/Semantics/TaskFrame.lean` records this explicitly in its own docstring: the interpolation direction of *Compositionality* is absent and only `forward_comp` is carried, and *Spherical* is absent from the structure although the apparatus that makes it statable (`Fib`, `cone`, `Seg`, `DirectedFamily`, `IsFiber`, `IsSegment`) is already defined. Every consumer must therefore supply four hypotheses by hand. For a finite carrier over `Int`, three of the four are free -- and nothing in the repo says so.
+
+DELIVERABLE 1 -- `spherical_of_finite`. For `{W : Type} [Finite W] (R : W -> D -> W -> Prop)`, prove `Spherical R` (the predicate already defined at `FormalSystem/Semantics/FrameAxioms.lean`). The argument is the paper's, isolated as a corollary by PossibleWorlds 79: a directed family of nonempty subsets of a finite carrier has finitely many DISTINCT members, so directedness yields a subset-least member, which is nonempty and equal to the intersection. Note that the family may be presented as an infinite indexed family; finiteness applies to the set of distinct member SETS, not to the index. Cite the recorded anchor via `specs/paper-definitions-of-record.md`, never a bare line number.
+
+This must be CHOICE-FREE. Verify with `#print axioms` and assert the absence of `Classical.choice` in a regression test, since the entire point of the corollary is that the finite case does not need what `thm:extension` in general does. If a choice-free proof turns out to be genuinely awkward in Lean, say so in the docstring with the specific obstruction rather than silently shipping a `Classical.choice` dependency.
+
+DELIVERABLE 2 -- THE FINITE-INT AXIOM BUNDLE. Package, for a `FiniteTaskFrame Int` (the structure already exists at `TaskFrame.lean`, carrying `finite_world : Finite WorldState`):
+  - *Spherical* from Deliverable 1;
+  - *Limit* from the existing `TaskFrame.limit_of_succOrder` applied to the structure's own `nullity_identity` field -- `SuccOrder Int` and `NoMaxOrder Int` are both available, and `limit_of_succOrder`'s hypothesis is exactly the `R w 0 u <-> w = u` biconditional that `nullity_identity` already asserts;
+  - leaving *Seriality* and *Interpolates* as the ONLY genuine remaining obligations.
+Then land specializations `extension_of_finite` and `occurrence_of_finite` taking just those two hypotheses. These are what a model checker cites.
+
+DELIVERABLE 3 -- DOCUMENTATION. Record in `Extension.lean`'s module docstring that the finite specialization exists and what it costs, beside the existing note that the FRAME-INTRINSIC form is gated on the frame-axiom-field refactor. Keep the two clearly distinct: this task deliberately stays in hypothesis form and merely discharges two hypotheses for a specific carrier.
+
+EXPLICIT NON-GOAL AND NON-DEPENDENCY. Do NOT do the frame-axiom-field refactor here (that is the separately tracked `420_align_task_frame_with_positive_cone_axioms`, currently `[PARTIAL]`). This work is INDEPENDENT of it and must not be blocked on it: it adds lemmas beside the existing hypothesis-form results and changes no `TaskFrame` field. Once 420 lands, these specializations become mechanical, which is a reason to land them now rather than a reason to wait. Also: no change to the extension chain's proofs, and no touching `Boneyard`.
+
+DEPENDENCIES. PossibleWorlds 79 supplies the citable corollary; the record file `specs/paper-definitions-of-record.md` must be re-pinned after it lands. Downstream consumers: BimodalLogic 441, and ModelChecker 153 and 154.
+
+---
 
 ### 439. Guard paper definition drift with definitions of record
 - **Effort**: medium
@@ -817,7 +874,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Dependencies**: Task 420, Task 438, Task 439
 - **Research**: [414_refactor_semantics_to_total_history_validity/reports/05_seriality-witness-nontermination.md]
 - **Plan**: [414_refactor_semantics_to_total_history_validity/plans/04_seriality-witness-termination-fix.md]
-- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/08_phase29-1-bimodaltest-measurement.md]
+- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/09_phase29-2-preguard-differential-rebaseline.md]
 
 **Description**: === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the sections named below) ===
 18 of 23 plan phases are COMPLETE, `lake build` is GREEN, 0 sorries were introduced (1
