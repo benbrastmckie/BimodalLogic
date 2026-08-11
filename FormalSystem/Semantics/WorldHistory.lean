@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.TaskFrame
+import FormalSystem.Semantics.PartialHistory
 
 /-!
 # WorldHistory - World Histories for Task Semantics
@@ -22,18 +23,22 @@ $y \in X$ whenever $x, z \in X$ and $x < y < z$. A world history is \textit{tota
 equivalently, a \textit{possible world}--- just in case $X = D$."
 
 **ProofChecker Implementation**:
-- `domain: D → Prop` represents the convex time subset `X ⊆ D`
+- `WorldHistory F` **extends** `PartialHistory F` (`FormalSystem/Semantics/PartialHistory.lean`),
+  adding exactly one field: `convex`. This is the paper's layering, read as written — "a world
+  history is any partial history whose domain `X` is convex".
+- `domain: D → Prop` (inherited) represents the time subset `X ⊆ D`
+- `nonempty_domain` (inherited) is the paper's requirement that `X` be *nonempty*
+- `states: (t: D) → domain t → F.WorldState` (inherited) represents the function `τ: X → W`
+- `respects_task` (inherited) is stated **unconditionally**, per the paper's own note that
+  negative-difference instances are covered by the converse convention; the guarded form is
+  available as `PartialHistory.respects_task_le`
 - `convex` field enforces the paper's convexity requirement explicitly
-- `states: (t: D) → domain t → F.WorldState` represents the function `τ: X → W`
-- `respects_task` constraint matches the paper's task-respect requirement
 
-**Known gaps relative to `def:world-history`** (stated plainly rather than silently repaired):
-- NO nonemptiness field: the paper requires the domain `X` to be a *nonempty* set, so the
-  empty history is a legal Lean `WorldHistory` but is not a world history per the paper.
-- NO `PartialHistory` layer: the paper's partial history requires nonemptiness WITHOUT
-  convexity, so it cannot be carved out by weakening this structure.
-Introducing the paper's partial-history → world-history → total layering is deferred, joint
-scope with the consequence-refactor work; no field is changed here.
+**Two gaps this module used to record are now closed.** The nonemptiness field and the
+`PartialHistory` layer both live in `PartialHistory.lean`, and `WorldHistory` inherits them. The
+layering decision (why `extends` rather than a standalone structure or an `IsConvex` mixin, and
+why nonemptiness is a field rather than a side hypothesis) is recorded in
+`specs/decisions/total-history-validity-decisions.md`, Decision B.
 
 **Convexity Requirement**: A domain is convex if whenever `x, z ∈ domain` with `x ≤ z`,
 then all times `y` with `x ≤ y ≤ z` are also in the domain. This ensures histories
@@ -81,20 +86,19 @@ such that the history respects the task relation of the frame.
 - `D`: Temporal duration type with totally ordered abelian group structure
 - `F`: Task frame over temporal type `D`
 
-**Paper Alignment**: PARTIALLY matches the paper's `def:world-history` (see the module
-docstring for the verbatim quote). This structure carries the convex domain, the state
-assignment, and the task-respect constraint, but it does NOT fully match: there is no
-nonemptiness field (the empty history is a legal Lean `WorldHistory` but not a world history
-per `def:world-history`), and the library has no `PartialHistory` layer at all (the paper's
-partial history requires nonemptiness WITHOUT convexity, so it cannot be carved out by
-weakening this structure). Closing that gap — the partial-history → world-history → total
-layering — is deferred, joint scope with the consequence-refactor work; no field is changed
-here.
+**Paper Alignment**: matches the paper's `def:world-history` (see the module docstring for the
+verbatim quote), which defines a world history as *any partial history whose domain is convex*.
+This structure is exactly that: it `extends PartialHistory F` — inheriting `domain`,
+`nonempty_domain`, `states`, and the unconditional `respects_task` — and adds the single
+`convex` field.
+
+Two gaps this docstring used to record are closed by the re-basing: the nonemptiness field now
+exists (so the empty history is no longer a legal Lean `WorldHistory`), and the `PartialHistory`
+layer exists as its own structure, since the paper's partial history requires nonemptiness
+WITHOUT convexity and therefore cannot be carved out by weakening this one.
 -/
 structure WorldHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F :
-      TaskFrame D) where
-  /-- Domain predicate (which times are in the history) -/
-  domain : D → Prop
+      TaskFrame D) extends PartialHistory F where
   /--
   Convexity constraint: domain has no temporal gaps.
 
@@ -106,22 +110,6 @@ structure WorldHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAd
   $x, z \in X$ and $x < y < z$.").
   -/
   convex : ∀ (x z : D), domain x → domain z → ∀ (y : D), x ≤ y → y ≤ z → domain y
-  /--
-  State assignment function.
-
-  For each time `t` in the domain, assigns a world state.
-  -/
-  states : (t : D) → domain t → F.WorldState
-  /--
-  Task relation respect constraint.
-
-  For any times `s, t` in domain with `s ≤ t`, the states at `s` and `t`
-  must be related by the task relation with duration `t - s`.
-
-  This ensures the history is consistent with possible task executions.
-  -/
-  respects_task : ∀ (s t : D) (hs : domain s) (ht : domain t),
-    s ≤ t → F.TaskRel (states s hs) (t - s) (states t ht)
 
 namespace WorldHistory
 
@@ -164,13 +152,14 @@ use the frame-specific constructors `universalTrivialFrame` or `universalNatFram
 def universal (F : TaskFrame D) (w : F.WorldState)
     (h_refl : ∀ d : D, F.TaskRel w d w) : WorldHistory F where
   domain := fun _ => True
+  nonempty_domain := ⟨0, True.intro⟩
   convex := by
     intros x z hx hz y hxy hyz
     -- Full domain is trivially convex
     exact True.intro
   states := fun _ _ => w
   respects_task := by
-    intros s t hs ht hst
+    intros s t hs ht
     -- Use the reflexivity proof for duration (t - s)
     exact h_refl (t - s)
 
@@ -183,12 +172,13 @@ The full domain is convex.
 def trivial {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
     WorldHistory (TaskFrame.trivialFrame (D := D)) where
   domain := fun _ => True
+  nonempty_domain := ⟨0, True.intro⟩
   convex := by
     intros x z hx hz y hxy hyz
     exact True.intro
   states := fun _ _ => ()
   respects_task := by
-    intros s t hs ht hst
+    intros s t hs ht
     exact True.intro
 
 /--
@@ -204,12 +194,13 @@ def universalTrivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrdere
     (w : (TaskFrame.trivialFrame (D := D)).WorldState) :
     WorldHistory (TaskFrame.trivialFrame (D := D)) where
   domain := fun _ => True
+  nonempty_domain := ⟨0, True.intro⟩
   convex := by
     intros x z hx hz y hxy hyz
     exact True.intro
   states := fun _ _ => w
   respects_task := by
-    intros s t hs ht hst
+    intros s t hs ht
     exact True.intro
 
 /--
@@ -225,12 +216,13 @@ def universalNatFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAdd
       Nat) :
     WorldHistory (TaskFrame.natFrame (D := D)) where
   domain := fun _ => True
+  nonempty_domain := ⟨0, True.intro⟩
   convex := by
     intros x z hx hz y hxy hyz
     exact True.intro
   states := fun _ _ => n
   respects_task := by
-    intros s t hs ht hst
+    intros s t hs ht
     -- natFrame.TaskRel is d ≠ 0 ∨ w = u
     -- Since states s = states t = n, we have n = n
     right
@@ -269,6 +261,10 @@ so does the shifted history, because:
 -/
 def timeShift (σ : WorldHistory F) (Δ : D) : WorldHistory F where
   domain := fun z => σ.domain (z + Δ)
+  nonempty_domain := by
+    obtain ⟨t, ht⟩ := σ.nonempty_domain
+    refine ⟨t - Δ, ?_⟩
+    rwa [sub_add_cancel]
   convex := by
     intros x z hx hz y hxy hyz
     -- Need: σ.domain (y + Δ)
@@ -279,17 +275,18 @@ def timeShift (σ : WorldHistory F) (Δ : D) : WorldHistory F where
     exact σ.convex (x + Δ) (z + Δ) hx hz (y + Δ) hxy' hyz'
   states := fun z hz => σ.states (z + Δ) hz
   respects_task := by
-    intros s t hs ht hst
+    intros s t hs ht
     -- Need: TaskRel (σ.states (s + Δ)) (t - s) (σ.states (t + Δ))
     -- We have: σ respects task, so
     -- TaskRel (σ.states (s + Δ)) ((t + Δ) - (s + Δ)) (σ.states (t + Δ))
-    -- Since (t + Δ) - (s + Δ) = t - s, this is exactly what we need
-    have h_shifted : s + Δ ≤ t + Δ := by rw [add_comm s, add_comm t]; exact add_le_add_right hst Δ
+    -- Since (t + Δ) - (s + Δ) = t - s, this is exactly what we need.
+    -- The unconditional `respects_task` needs no `s ≤ t` side condition, so the shifted
+    -- inequality the guarded form required has been dropped.
     have h_duration : (t + Δ) - (s + Δ) = t - s := by
       -- (t + Δ) - (s + Δ) = t - s by group theory
       rw [add_sub_add_right_eq_sub]
     rw [← h_duration]
-    exact σ.respects_task (s + Δ) (t + Δ) hs ht h_shifted
+    exact σ.respects_task (s + Δ) (t + Δ) hs ht
 
 /--
 Time-shift preserves domain membership (forward direction).
@@ -445,6 +442,88 @@ theorem neg_injective (s t : D) : -s = -t ↔ s = t := by
   · intro h
     rw [h]
 
+/-! ## Totality and `H_F`
+
+`def:world-history`, verbatim: "A world history is \textit{total}--- equivalently, a
+\textit{possible world}--- just in case $X = D$. … The set of all total world histories over
+$\F$ is denoted $H_{\F}$."
+
+Totality is inherited from `PartialHistory.IsTotal`; `WorldHistory.IsTotal` below is the
+`WorldHistory`-level spelling of the same predicate, not a second notion. `TaskFrame.HF` bundles
+it as a type, per Decision A of `specs/decisions/total-history-validity-decisions.md`: the
+predicate form is used wherever totality is a *hypothesis*, and the subtype form only where `H_F`
+is quantified over as an *object* in its own right.
+-/
+
+/--
+A world history is **total** — equivalently, a **possible world** — just in case its domain is
+all of `D`.
+
+**Paper Reference**: `def:world-history` (verbatim: "A world history is \textit{total}---
+equivalently, a \textit{possible world}--- just in case $X = D$.").
+
+This delegates to `PartialHistory.IsTotal`; it is a spelling, not a second predicate. It is
+deliberately **not** Mathlib's `IsMax` or any order-theoretic maximality predicate — maximality
+under the extension order is an internal step en route to the Extension Theorem, while totality
+is what validity quantifies over.
+-/
+def IsTotal (τ : WorldHistory F) : Prop := τ.toPartialHistory.IsTotal
+
+/-- `WorldHistory.IsTotal` unfolds to the pointwise domain condition. -/
+theorem isTotal_iff (τ : WorldHistory F) : τ.IsTotal ↔ ∀ t : D, τ.domain t := Iff.rfl
+
+/--
+Totality is preserved by time shift.
+
+The proof is `fun t => h (t + Δ)`: the shifted domain at `t` *is* the original domain at
+`t + Δ`, definitionally, so a total original domain gives a total shifted domain with no
+side condition whatsoever.
+
+This is the lemma that replaces `ShiftClosed` in the box case of time-shift preservation of
+truth: under totality, shift-preservation is strictly easier than it was under a designated
+shift-closed set, because there is no closure condition left to carry.
+-/
+theorem isTotal_timeShift {σ : WorldHistory F} (h : σ.IsTotal) (Δ : D) :
+    (σ.timeShift Δ).IsTotal :=
+  fun t => h (t + Δ)
+
+/-- A total world history's domain is nonempty (witness `0`), so `nonempty_domain` costs nothing
+at a total construction site. -/
+theorem total_nonempty {τ : WorldHistory F} (h : τ.IsTotal) : ∃ t : D, τ.domain t :=
+  τ.toPartialHistory.total_nonempty h
+
 end WorldHistory
+
+/--
+`H_F` — the set of all total world histories over a frame, bundled as a type.
+
+**Paper Reference**: `def:world-history` (verbatim: "The set of all total world histories over
+$\F$ is denoted $H_{\F}$.").
+
+**Encoding note** (Decision A of `specs/decisions/total-history-validity-decisions.md`): this
+subtype is used **only** where `H_F` appears as an object in its own right — the Extension
+Theorem's conclusion, the Occurrence Corollary, and the optional frame-relative validity. Where
+totality is a *hypothesis* (truth, validity, semantic consequence, satisfiability), the predicate
+form `(τ : WorldHistory F) (hτ : τ.IsTotal)` is used instead.
+
+This is **not** a parallel validity notion or an alias: there is exactly one validity predicate,
+and `HF` is a bundled name for the same `IsTotal` predicate, bridged only by `.val` / `.property`.
+-/
+def TaskFrame.HF {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (F : TaskFrame D) : Type _ :=
+  {τ : WorldHistory F // τ.IsTotal}
+
+namespace TaskFrame.HF
+
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F : TaskFrame D}
+
+/-- Time shift lifted to `H_F`, through `WorldHistory.isTotal_timeShift`. -/
+def timeShift (τ : F.HF) (Δ : D) : F.HF :=
+  ⟨τ.val.timeShift Δ, WorldHistory.isTotal_timeShift τ.property Δ⟩
+
+@[simp]
+theorem timeShift_val (τ : F.HF) (Δ : D) : (τ.timeShift Δ).val = τ.val.timeShift Δ := rfl
+
+end TaskFrame.HF
 
 end FormalSystem.Semantics

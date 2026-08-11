@@ -476,27 +476,39 @@ extension order and the totality predicate, without yet touching `WorldHistory`.
 
 ---
 
-### Phase 4: Re-base `WorldHistory` onto `PartialHistory` [NOT STARTED]
+### Phase 4: Re-base `WorldHistory` onto `PartialHistory` [COMPLETED]
 
 **Goal**: Make `WorldHistory` the convex special case of `PartialHistory`, per `def:world-history`
 ("A *world history* is any partial history whose domain X is *convex*"), so the paper's layering
 holds in Lean.
 
 **Tasks**:
-- [ ] Change `structure WorldHistory (F) extends PartialHistory F` keeping only `convex` as its own
-      field; remove the duplicated `domain` / `states` / guarded `respects_task` fields.
-- [ ] Add `nonempty_domain := …` at every `WorldHistory … where` construction site; for sites with
-      `domain := fun _ => True` this is `⟨0, trivial⟩`.
-- [ ] For `WorldHistory.timeShift` (`WorldHistory.lean:270`, `domain := fun z => σ.domain (z + Δ)`)
-      derive nonemptiness from `σ.nonempty_domain`.
-- [ ] Convert each site's guarded `respects_task` proof via `PartialHistory.ofLe` where it is not
-      already unconditional.
-- [ ] Add `WorldHistory.IsTotal` (delegating to the `PartialHistory` field) and
+- [x] Change `structure WorldHistory (F) extends PartialHistory F` keeping only `convex` as its own
+      field; remove the duplicated `domain` / `states` / guarded `respects_task` fields. *(completed)*
+- [x] Add `nonempty_domain := …` at every `WorldHistory … where` construction site; for sites with
+      `domain := fun _ => True` this is `⟨0, trivial⟩`. *(completed at all 11 sites. Inside
+      `namespace WorldHistory` the term must be spelled `⟨0, True.intro⟩` — the local
+      `WorldHistory.trivial` history shadows the `trivial` tactic/term and the elaborator picks the
+      history, giving a `Type` vs `Prop` mismatch. Outside that namespace `⟨0, trivial⟩` is fine.)*
+- [x] For `WorldHistory.timeShift` (`domain := fun z => σ.domain (z + Δ)`) derive nonemptiness from
+      `σ.nonempty_domain`. *(completed — witness `t - Δ`, closed by `sub_add_cancel`)*
+- [x] Convert each site's guarded `respects_task` proof via `PartialHistory.ofLe` where it is not
+      already unconditional. *(completed — **`ofLe` was needed at zero sites**: all 11 existing
+      proofs ignore their `s ≤ t` argument, so each converted by deleting one binder. The single
+      site that consumed the guard, `timeShift`, consumed it only to build the *shifted*
+      inequality needed to invoke `σ.respects_task`; that invocation is now unconditional too, so
+      the proof got shorter rather than longer. `ofLe` remains landed API for future sites — the
+      one-point extension construction in a later phase is its intended consumer.)*
+- [x] Add `WorldHistory.IsTotal` (delegating to the `PartialHistory` field) and
       `isTotal_timeShift : IsTotal σ → IsTotal (σ.timeShift Δ)`, whose proof is
-      `fun t => h (t + Δ)` — machine-verified as a one-liner by the round-3 report.
-- [ ] Add `def TaskFrame.HF (F : TaskFrame D) : Type := {τ : WorldHistory F // τ.IsTotal}` per
-      Decision A, docstring citing `def:world-history`'s `H_F` sentence verbatim.
-- [ ] Add `TaskFrame.HF.timeShift` lifted through `isTotal_timeShift`.
+      `fun t => h (t + Δ)` — machine-verified as a one-liner by the round-3 report. *(completed —
+      landed verbatim as `fun t => h (t + Δ)`; also added `isTotal_iff` (`Iff.rfl`) and
+      `WorldHistory.total_nonempty`)*
+- [x] Add `def TaskFrame.HF (F : TaskFrame D) : Type := {τ : WorldHistory F // τ.IsTotal}` per
+      Decision A, docstring citing `def:world-history`'s `H_F` sentence verbatim. *(completed —
+      universe-polymorphic as `Type _`, since `WorldState` is `Type*`)*
+- [x] Add `TaskFrame.HF.timeShift` lifted through `isTotal_timeShift`. *(completed, plus a
+      `@[simp]` projection lemma `timeShift_val`)*
 
 **Timing**: 2.5 hours
 
@@ -523,9 +535,37 @@ set before proceeding.
 - `FormalSystem/Examples/TemporalStructures.lean`
 
 **Verification**:
-- `lake build` green, sorry-free, axiom-free.
-- `isTotal_timeShift` typechecks with the one-line proof.
+- `lake build` green, sorry-free, axiom-free. **PASSED** (2325 jobs, exit 0). Every new
+  declaration (`IsTotal`, `isTotal_timeShift`, `total_nonempty`, `TaskFrame.HF`,
+  `TaskFrame.HF.timeShift`) depends on `[propext]` only. The live tree carries exactly one
+  `sorry`, at `FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1085`; it is **pre-existing and
+  untouched** (present at `HEAD` before this dispatch, in a file this phase does not modify), not
+  introduced here.
+- `isTotal_timeShift` typechecks with the one-line proof. **PASSED** — landed exactly as
+  `fun t => h (t + Δ)`, no coercion or `simp` needed, because the shifted domain at `t` *is* the
+  original domain at `t + Δ` definitionally.
 - Every prior `WorldHistory` consumer still compiles unchanged (flat field syntax preserved).
+  **PASSED for field-syntax sites; 5 non-field-syntax sites needed repair**, all mechanical and
+  all recorded here rather than absorbed silently:
+  - 4 `change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _` sites (`FlowFrame.lean` ×2,
+    `ReynoldsBridge.lean` ×2). `WorldHistory.mk` now takes 2 arguments (`toPartialHistory`,
+    `convex`), so each became
+    `change WorldHistory.mk (PartialHistory.mk _ _ _ _) _ = WorldHistory.mk (PartialHistory.mk _ _ _ _) _`
+    with the following `congr 1` promoted to `congr 2` (one extra layer to descend).
+  - 2 `obtain ⟨d, c, s, t⟩ := σ` destructurings (`Omega.lean`'s `worldHistory_ext`,
+    `FlowFrame.lean`'s `multiFamGen_total_eq`) became nested: `⟨⟨d, n, s, t⟩, c⟩`.
+  - 2 consuming call sites of the guarded `respects_task` (`FlowFrame.lean:311,314`) dropped their
+    `≤` argument; the surrounding `rcases le_total 0 t` became vacuous and its binders were
+    renamed to `_h0t | _ht0` rather than deleting the split.
+
+**Scope Hypothesis — CONFIRMED exactly.** `grep -rn "WorldHistory .*where$" --include=*.lean
+FormalSystem/ Tests/ | grep -v Boneyard` returns the predicted 11 construction sites and no
+others: `FlowFrame.lean:150`, `ReynoldsBridge.lean:461`/`:684`, `Bridge/Omega.lean:181`,
+`WorldHistory.lean` ×5 (`universal`, `trivial`, `universalTrivialFrame`, `universalNatFrame`,
+`timeShift`), `TemporalStructures.lean:138`/`:216`. `Bridge/Interpolate.lean:441`'s
+`RegionConstant` was correctly predicted to be a `Prop` structure *about* a history, not a
+construction site. 10 of the 11 have `domain := fun _ => True`; the exception is `timeShift`, as
+predicted.
 
 ---
 

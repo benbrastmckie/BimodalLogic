@@ -108,8 +108,8 @@ theorem worldHistory_ext {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrdered
     {F : TaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
     (hs : ∀ (r : D) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
     σ = τ := by
-  obtain ⟨d₁, c₁, s₁, t₁⟩ := σ
-  obtain ⟨d₂, c₂, s₂, t₂⟩ := τ
+  obtain ⟨⟨d₁, n₁, s₁, t₁⟩, c₁⟩ := σ
+  obtain ⟨⟨d₂, n₂, s₂, t₂⟩, c₂⟩ := τ
   simp only at hd hs
   subst hd
   have : s₁ = s₂ := by
@@ -180,10 +180,11 @@ the base histories.
 -/
 def regionHistory (f : ι → D) (w : W) (Δ : D) : WorldHistory (regionFrame W ι D) where
   domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
   convex := by intro _ _ _ _ _ _ _; trivial
   states := fun r _ => (w, regionCode f (r + Δ))
   respects_task := by
-    intro s t _ _ _ hd
+    intro s t _ _ hd
     have : t = s := by
       have := sub_eq_zero.mp hd
       exact this

@@ -460,9 +460,10 @@ noncomputable def zTaskFrameV2 : TaskFrame ℤ where
 /-- World history with offset w₀: domain = all of ℤ, states t _ = w₀ + t. -/
 noncomputable def zHistoryV2 (w₀ : ℤ) : WorldHistory zTaskFrameV2 where
   domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => w₀ + t
-  respects_task := fun s t _ _ _ => by change w₀ + t = (w₀ + s) + (t - s); omega
+  respects_task := fun s t _ _ => by change w₀ + t = (w₀ + s) + (t - s); omega
 
 /-- Omega = set of all offset histories. -/
 def ZOmegaV2 : Set (WorldHistory zTaskFrameV2) := Set.range zHistoryV2
@@ -472,11 +473,12 @@ theorem zHistory_v2_mem_omega : zHistoryV2 0 ∈ ZOmegaV2 := ⟨0, rfl⟩
 /-- Time-shifting zHistoryV2 w₀ by Δ gives zHistoryV2 (w₀ + Δ). -/
 theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
     WorldHistory.timeShift (zHistoryV2 w₀) Δ = zHistoryV2 (w₀ + Δ) := by
-  change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
+  change WorldHistory.mk (PartialHistory.mk _ _ _ _) _ =
+    WorldHistory.mk (PartialHistory.mk _ _ _ _) _
   have h_states : (fun (t : ℤ) (_ : True) => w₀ + (t + Δ)) =
       (fun (t : ℤ) (_ : True) => (w₀ + Δ) + t) := by
     funext t _; omega
-  congr 1
+  congr 2
 
 theorem zOmega_v2_shiftClosed : ShiftClosed ZOmegaV2 := by
   intro σ hσ Δ
@@ -683,9 +685,10 @@ and a base offset. The history visits states `(f, w₀ + t)` at each time `t`. -
 noncomputable def multiFamHistory {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
     WorldHistory (multiFamTaskFrame FamIdx) where
   domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => (f, w₀ + t)
-  respects_task := fun s t _ _ _ => by
+  respects_task := fun s t _ _ => by
     change (f, w₀ + s).1 = (f, w₀ + t).1 ∧ (f, w₀ + t).2 = (f, w₀ + s).2 + (t - s)
     exact ⟨rfl, by omega⟩
 
@@ -698,11 +701,12 @@ def multiFamOmega (FamIdx : Type) : Set (WorldHistory (multiFamTaskFrame FamIdx)
 theorem multiFamHistory_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : ℤ) :
     WorldHistory.timeShift (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)) Δ =
       multiFamHistory f (w₀ + Δ) := by
-  change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
+  change WorldHistory.mk (PartialHistory.mk _ _ _ _) _ =
+    WorldHistory.mk (PartialHistory.mk _ _ _ _) _
   have h_states : (fun (t : ℤ) (_ : True) => (f, w₀ + (t + Δ))) =
       (fun (t : ℤ) (_ : True) => (f, (w₀ + Δ) + t)) := by
     funext t _; congr 1; omega
-  congr 1
+  congr 2
 
 /-- The multi-family Omega is shift-closed. -/
 theorem multiFamOmega_shiftClosed (FamIdx : Type) :

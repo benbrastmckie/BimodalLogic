@@ -149,9 +149,10 @@ Generic form of `multiFamHistory` (`ReynoldsBridge.lean`). -/
 noncomputable def multiFamHistoryGen {FamIdx : Type} (f : FamIdx) (w₀ : D) :
     WorldHistory (multiFamTaskFrameGen D FamIdx) where
   domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => (f, w₀ + t)
-  respects_task := fun s t _ _ _ => by
+  respects_task := fun s t _ _ => by
     refine ⟨rfl, ?_⟩
     show w₀ + t = w₀ + s + (t - s)
     abel
@@ -171,8 +172,9 @@ theorem multiFamHistoryGen_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : D) :
   have h_states : (fun (t : D) (_ : True) => ((f, w₀ + (t + Δ)) : FamIdx × D)) =
       (fun (t : D) (_ : True) => ((f, w₀ + Δ + t) : FamIdx × D)) := by
     funext t _; congr 1; abel
-  change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
-  congr 1
+  change WorldHistory.mk (PartialHistory.mk _ _ _ _) _ =
+    WorldHistory.mk (PartialHistory.mk _ _ _ _) _
+  congr 2
 
 /-- The generic multi-family Omega is shift-closed. Generic form of
 `multiFamOmega_shiftClosed` (`ReynoldsBridge.lean`). -/
@@ -306,15 +308,15 @@ theorem multiFamGen_total_eq {FamIdx : Type}
   have key : ∀ (t : D) (ht : σ.domain t),
       σ.states t ht = ((σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2 + t) := by
     intro t ht
-    rcases le_total 0 t with h0t | ht0
-    · obtain ⟨h₁, h₂⟩ := σ.respects_task 0 t (htot 0) ht h0t
+    rcases le_total 0 t with _h0t | _ht0
+    · obtain ⟨h₁, h₂⟩ := σ.respects_task 0 t (htot 0) ht
       refine Prod.ext h₁.symm ?_
       rw [h₂]; abel_nf
-    · obtain ⟨h₁, h₂⟩ := σ.respects_task t 0 ht (htot 0) ht0
+    · obtain ⟨h₁, h₂⟩ := σ.respects_task t 0 ht (htot 0)
       refine Prod.ext h₁ ?_
       rw [h₂]; abel_nf
   refine ⟨(σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2, ?_⟩
-  obtain ⟨dom, conv, sts, resp⟩ := σ
+  obtain ⟨⟨dom, nedom, sts, resp⟩, conv⟩ := σ
   -- Totality collapses the domain to the full predicate.
   have hdom : dom = fun _ => True :=
     funext fun t => propext ⟨fun _ => trivial, fun _ => htot t⟩
@@ -322,8 +324,9 @@ theorem multiFamGen_total_eq {FamIdx : Type}
   have h_states : sts = fun t (_ : True) =>
       ((sts 0 (htot 0)).1, (sts 0 (htot 0)).2 + t) :=
     funext fun t => funext fun ht => key t ht
-  change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
-  congr 1
+  change WorldHistory.mk (PartialHistory.mk _ _ _ _) _ =
+    WorldHistory.mk (PartialHistory.mk _ _ _ _) _
+  congr 2
 
 end FlowFrameConformance
 

@@ -137,9 +137,10 @@ All integer times are in the domain. This is the simplest possible history.
 -/
 def intTimeHistory : WorldHistory intTimeFrame where
   domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun _ _ => ()
-  respects_task := fun _ _ _ _ _ => trivial
+  respects_task := fun _ _ _ _ => trivial
 
 /-! ## Polymorphic Examples -/
 
@@ -215,9 +216,10 @@ Works with the genericTimeFrame, demonstrating polymorphism over the temporal ty
 -/
 def genericTimeHistory : WorldHistory (genericTimeFrame D) where
   domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun _ _ => ()
-  respects_task := fun _ _ _ _ _ => trivial
+  respects_task := fun _ _ _ _ => trivial
 
 end Polymorphic
 
