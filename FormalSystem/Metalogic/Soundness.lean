@@ -1476,7 +1476,7 @@ at `s` would give φ on all of `(s, w)`, which together with φ at `s` and φ on
 itself in `A` -- above its own supremum.
 
 Note that the proof consumes only the least-upper-bound hypothesis and the linear order: it uses
-no `DenselyOrdered`, `Nontrivial`, `AddCommGroup`, `IsOrderedAddMonoid`, or `ShiftClosed`
+no `DenselyOrdered`, `Nontrivial`, `AddCommGroup`, `IsOrderedAddMonoid`, or shift-closure
 assumption, so both Prior gap axioms are in fact valid on every Dedekind-complete linear order.
 The `DenselyOrdered` binder is present for consistency with the rest of the chain, not because
 the mathematics needs it; see the `ValidDedekindDense` discussion above for why the weaker binder

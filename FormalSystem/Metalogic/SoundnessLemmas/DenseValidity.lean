@@ -60,9 +60,9 @@ box(swap φ)`.
 
 This is still M4, just applied to swapped formula.
 
-**Proof**: If φ.swap holds at all histories in Omega at t, then
-"φ.swap holds at all histories in Omega at t"
-holds at all histories in Omega at t (trivially, as this is a global property).
+**Proof**: If φ.swap holds at all total histories at t, then
+"φ.swap holds at all total histories at t"
+holds at all total histories at t (trivially, as this is a global property).
 -/
 theorem swap_axiom_m4_valid (φ : Formula) :
     IsValid D ((Formula.box φ).imp (Formula.box (Formula.box φ))).swapTemporal := by
@@ -77,9 +77,9 @@ diamond(swap φ)`.
 
 This is still MB, just applied to swapped formula.
 
-**Proof**: If φ.swap holds at (M, τ, t), then for any history σ in Omega at t, diamond(φ.swap) holds
+**Proof**: If φ.swap holds at (M, τ, t), then for any total history σ at t, diamond(φ.swap) holds
 at σ.
-The diamond means "there exists some history in Omega where it holds". We have τ witnessing this.
+The diamond means "there exists some total history where it holds". We have τ witnessing this.
 -/
 theorem swap_axiom_mb_valid (φ : Formula) :
     IsValid D (φ.imp (Formula.box φ.diamond)).swapTemporal := by

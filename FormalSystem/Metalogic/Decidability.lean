@@ -101,9 +101,9 @@ Tableau-based decision procedure returning proof terms or countermodels.
   the whole induction with only the `untl`/`snce` cases abstracted, the four others discharged
   from `IntTruth` unchanged
 - `Verified.Decidable`: the *other* direction — `allClosed → valid`. `SatState` is the
-  satisfiability notion a branch supports (a model, a shift-closed `Ω`, an interpretation of the
-  branch's world labels landing inside `Ω`, and an interpretation of its time labels respecting
-  the abstract `TimeOrdering`); `SatResult` is satisfiability preservation read off `applyRule`'s
+  satisfiability notion a branch supports (a model, an interpretation of the branch's world
+  labels by **total** histories, and an interpretation of its time labels respecting the
+  abstract `TimeOrdering`); `SatResult` is satisfiability preservation read off `applyRule`'s
   own `RuleResult × TimeOrdering`; `RuleSound` is the per-rule obligation, indexed by a carrier
   property so that a frame-class-gated rule can assume what its class supplies
 

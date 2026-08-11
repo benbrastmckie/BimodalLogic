@@ -561,8 +561,8 @@ untl/snce use the bundle's restricted Until/Since coherence (frame-independent, 
 verbatim modulo the `± w₀` clock translation); box uses `fmcs_box_persistent` plus
 `B.modal_forward`/`B.modal_backward`, destructuring the quantified history against
 **totality** (`bundleFlow_total_eq`) rather than against an admissible-history parameter — the
-box clause now quantifies over `H_F` per `def:BL-semantics`, and `TruthAt`'s set argument is
-inert (`truthAt_carrier_irrelevant`), supplied here as `Set.univ`. -/
+box clause quantifies over `H_F` per `def:BL-semantics`, and `TruthAt` carries no set argument
+at all. -/
 
 /--
 **Re-hosted dense truth lemma.** For `φ ∈ subformulaClosure root`, membership of `φ` in a

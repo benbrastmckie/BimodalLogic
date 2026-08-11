@@ -40,9 +40,8 @@ satisfied in the validity definition, where `τ.IsTotal` is a premise.
 
 No declaration in this module quantifies over an admissible-history set, and none
 carries a shift-closure side condition: under the totality box clause there is no
-such side condition to carry. `TruthAt`'s remaining set argument is inert (see
-`truthAt_carrier_irrelevant` in `Semantics/Validity.lean`) and is supplied here as
-`Set.univ`, matching `valid`'s own call shape; it is scheduled for deletion outright.
+such side condition to carry. `TruthAt` takes no set argument, so the call shape
+here is exactly `valid`'s own.
 -/
 
 set_option autoImplicit false

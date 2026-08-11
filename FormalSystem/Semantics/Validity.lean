@@ -31,11 +31,10 @@ This module defines semantic validity and consequence for TM formulas.
 - Validity quantifies over all temporal types `D : Type*` with `LinearOrderedAddCommGroup D`
 - Validity and consequence quantify over the **total** histories: `τ.IsTotal`, i.e. `∀ t, τ.domain t`.
   There is no admissible-history parameter and no shift-closure side condition anywhere in this
-  module. `TruthAt`'s remaining set argument is inert (see `truthAt_carrier_irrelevant` below) and
-  is supplied as `Set.univ` at every call site here; it is scheduled for deletion outright.
-- `ShiftClosed` is not needed in the *statement* of validity or consequence because totality is
-  trivially preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), so time-shift invariance
-  no longer has a side condition to carry.
+  module, and `TruthAt` itself no longer carries a set argument to supply.
+- No shift-closure hypothesis is needed in the *statement* of validity or consequence, because
+  totality is trivially preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), so
+  time-shift invariance no longer has a side condition to carry.
 - Satisfiability existentially quantifies over a total witness history.
 - Semantic consequence: truth in all models where premises true
 - Used in soundness theorem: `Γ ⊢ φ → Γ ⊨ φ`
@@ -82,10 +81,9 @@ Formally: for every temporal type `D`, every task frame `F : TaskFrame D`, every
 
 The "possible worlds tau in H_F" of that clause are the frame's **total** histories, which is
 what `τ.IsTotal` says. There is no admissible-history parameter and no shift-closure side
-condition: `ShiftClosed` is unnecessary in the statement of validity because totality is
-trivially preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), so time-shift invariance
-carries no side condition to quantify over. `TruthAt`'s remaining set argument is inert and is
-supplied here as `Set.univ`; see `truthAt_carrier_irrelevant`.
+condition: a shift-closure hypothesis is unnecessary in the statement of validity because
+totality is trivially preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), so time-shift
+invariance carries no side condition to quantify over. `TruthAt` takes no set argument.
 
 Validity also quantifies over all `x ∈ D` (all times in the temporal order), not just times in
 `dom(τ)` — for a total history those coincide.

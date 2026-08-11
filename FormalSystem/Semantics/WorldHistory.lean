@@ -479,9 +479,9 @@ The proof is `fun t => h (t + Δ)`: the shifted domain at `t` *is* the original 
 `t + Δ`, definitionally, so a total original domain gives a total shifted domain with no
 side condition whatsoever.
 
-This is the lemma that replaces `ShiftClosed` in the box case of time-shift preservation of
-truth: under totality, shift-preservation is strictly easier than it was under a designated
-shift-closed set, because there is no closure condition left to carry.
+This is the lemma that carries the box case of time-shift preservation of truth. Under totality,
+shift-preservation is strictly easier than it was under a designated shift-closed set of
+admissible histories, because there is no closure condition left to carry.
 -/
 theorem isTotal_timeShift {σ : WorldHistory F} (h : σ.IsTotal) (Δ : D) :
     (σ.timeShift Δ).IsTotal :=

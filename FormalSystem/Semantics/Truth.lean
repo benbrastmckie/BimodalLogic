@@ -30,7 +30,7 @@ strict temporal quantification (a refinement of the paper's reflexive convention
 - `M,τ,x ⊨ p` iff `x ∈ dom(τ)` AND `τ(x) ∈ V(p)` (atom satisfaction, line 892)
 - `M,τ,x ⊨ ⊥` is false (bottom)
 - `M,τ,x ⊨ φ → ψ` iff `M,τ,x ⊨ φ` implies `M,τ,x ⊨ ψ` (implication)
-- `M,τ,x ⊨ □φ` iff `M,σ,x ⊨ φ` for all σ ∈ Ω (box: necessity)
+- `M,τ,x ⊨ □φ` iff `M,σ,x ⊨ φ` for all σ ∈ H_F, the total histories (box: necessity)
 - `M,τ,x ⊨ Past φ` iff `M,τ,y ⊨ φ` for all y ∈ D where y ≤ x (past, reflexive)
 - `M,τ,x ⊨ Future φ` iff `M,τ,y ⊨ φ` for all y ∈ D where x ≤ y (future, reflexive)
 
@@ -46,8 +46,8 @@ temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice
   matches paper's domain check at line 892 (atoms false outside domain)
 ✓ Bot: `False` matches paper's definition
 ✓ Imp: Standard material conditional matches paper
-✓ Box: `∀ (σ : WorldHistory F), σ ∈ Ω → TruthAt M σ t φ`
-  matches paper's quantification over σ ∈ Ω (admissible histories)
+✓ Box: `∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M σ t φ`
+  matches paper's quantification over σ ∈ H_F (the frame's total histories)
 ✓ Past (H): via `@[simp] past_iff`: `∀ s, s < t → TruthAt M τ s φ`
   uses strict ordering (all past times, excluding now); derived via def + Until/Since
 ✓ Future (G): via `@[simp] future_iff`: `∀ s, t < s → TruthAt M τ s φ`
@@ -123,12 +123,11 @@ shift-closure side condition. `WorldHistory.IsTotal` is the predicate form of `H
 (Decision A of `specs/decisions/total-history-validity-decisions.md`); it is deliberately **not**
 Mathlib's `IsMax` or any order-theoretic maximality predicate.
 
-**The `_Omega` parameter is inert.** After this retarget nothing in `TruthAt`'s clauses consults
-it — it is threaded through the recursive calls only so that its removal can be done as a
-reverse-topological sweep over the whole tree while every intermediate state stays green. It is a
-**transient carrier scheduled for deletion**, never a shipped shim: no new declaration may
-acquire a meaning that depends on it, and no `Ω`-restricted reading of the box modality survives
-this definition.
+**There is no admissible-history parameter.** `TruthAt` takes the model, the history, the time
+and the formula, and nothing else. The designated-carrier argument that earlier revisions
+threaded through every clause has been deleted outright: the box clause reads its quantifier
+range off `WorldHistory.IsTotal`, so no set-valued parameter can narrow, widen, or otherwise
+influence the meaning of any connective.
 
 **Atom clause** (Decision A, accepted gap): the `∃ (ht : τ.domain t)` conjunct is retained even
 though `def:BL-semantics`'s atom clause has no domain conjunct. Under totality the conjunct is
@@ -218,8 +217,8 @@ theorem atom_false_of_not_domain
 Truth of box: formula true at every **total** history at the current time.
 
 **Paper Reference**: `def:BL-semantics`'s box clause, "M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all
-σ ∈ H_F". `Omega` is inert here (see `TruthAt`'s docstring) and is retained only as the
-transient carrier that the terminal sweep removes.
+σ ∈ H_F". The quantifier's range is `WorldHistory.IsTotal`, taken directly from the frame; there
+is no carrier parameter to supply.
 -/
 theorem box_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -436,10 +435,10 @@ The proof proceeds by structural induction on formulas:
   supplies the shifted history's totality, enabling the bijection argument
 - **Past/Future**: Times shift together with the history
 
-**Key Insight**: **no `ShiftClosed` hypothesis is required.** Under the totality box clause the
+**Key Insight**: **no shift-closure hypothesis is required.** Under the totality box clause the
 shifted history's membership in the quantifier's range is `WorldHistory.isTotal_timeShift`,
 definitionally `fun t => hρ (t + Δ)` — there is no closure condition left to assume, so this
-statement is strictly stronger than the `ShiftClosed`-hypothesised version it replaces.
+statement is strictly stronger than the shift-closure-hypothesised version it replaces.
 -/
 theorem time_shift_preserves_truth (M : TaskModel F)
     (σ : WorldHistory F) (x y : D)

@@ -88,7 +88,7 @@ theorem always_elim {F : TaskFrame D} {M : TaskModel F}
 
 **Hypotheses actually consumed.** Only the least-upper-bound hypothesis `h_lub` and the linear
 order. The proof uses no `DenselyOrdered`, no `Nontrivial`, no `AddCommGroup` /
-`IsOrderedAddMonoid` structure, and no `ShiftClosed` assumption — exactly as with the two Prior
+`IsOrderedAddMonoid` structure, and no shift-closure assumption — exactly as with the two Prior
 gap lemmas (see the note preceding `prior_U_gap_valid` in `Metalogic/Soundness.lean`). CO is
 thus valid on *every* Dedekind-complete linear order, `ℤ` included. The `DenselyOrdered` binder
 is carried here only for chain consistency with the rest of the `ValidDedekindDense` chain, not
@@ -100,7 +100,7 @@ Hilbert-side companion is `FormalSystem.Theorems.DedekindDerived.co_derived`. Se
 `Formula.co` for the source citation and the operator-resolution warning.
 -/
 theorem co_valid (φ : Formula) : ValidDedekindDense (Formula.co φ) := by
-  intro D _ _ _ _ _ h_lub F M Omega _h_sc τ _h_mem t
+  intro D _ _ _ _ _ h_lub F M _ _h_sc τ _h_mem t
   simp only [Formula.co]
   intro h_tri h_H
   obtain ⟨-, h_mid, h_fut⟩ := always_elim h_tri
