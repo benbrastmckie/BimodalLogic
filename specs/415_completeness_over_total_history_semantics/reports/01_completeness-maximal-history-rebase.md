@@ -3,6 +3,13 @@
 # Research Report: Completeness over Maximal-History Semantics (Rebase)
 
 - **Task**: 415 — completeness_over_maximal_history_semantics
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Session**: sess_1785280411_23b0e6_415
 - **Agent**: lean-research-hard-agent (H2+H3+H4 active; H5 not activated)
 - **Date**: 2026-07-28

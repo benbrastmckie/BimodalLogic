@@ -1,6 +1,13 @@
 # Research Report: Completeness over Total-History Semantics — Internalized, Not Bridged
 
 - **Task**: 415 — completeness_over_total_history_semantics (re-issued 2026-08-10, total-history framing)
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Session**: sess_1786417819_f9ee53
 - **Agent**: lean-research-agent (orchestrator dispatch, delegation depth 2)
 - **Date**: 2026-08-10
