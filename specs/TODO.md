@@ -81,7 +81,7 @@ next_project_number: 440
   └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
 420 [PARTIAL] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
   └─ 414 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
-    └─ 415 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+    └─ 415 [RESEARCHED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
     └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
@@ -762,11 +762,11 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 415. Completeness over total history semantics
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414, Task 420, Task 438
-- **Research**: [415_completeness_over_total_history_semantics/reports/01_completeness-maximal-history-rebase.md]
+- **Research**: [415_completeness_over_total_history_semantics/reports/02_total-history-internalization.md]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing in full). COMPLETENESS OVER TOTAL-HISTORY SEMANTICS -- INTERNALIZED, NOT BRIDGED: restate and reprove WEAK completeness per frame class so the canonical/chronicle constructions deliver countermodels that are total-history models OUTRIGHT.
 
