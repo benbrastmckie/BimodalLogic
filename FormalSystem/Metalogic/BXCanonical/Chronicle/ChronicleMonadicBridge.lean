@@ -64,7 +64,7 @@ coherence, not by the monadic language.
 ## The R7 gate (recorded answer)
 
 Phase 15's first task is a gate: are `mkSigFrom`, `Formula.predFormulas`,
-`multiFamTaskFrame`, `multiFamOmega` and `multiFamOmega_shiftClosed` independent of
+`multiFamTaskFrame` and its total-history set independent of
 `SuccOrder`/`PredOrder`/`IsSuccArchimedean`, or is discreteness baked into the encoding?
 
 **Answer: they are independent. Discreteness is baked only into
@@ -72,7 +72,7 @@ Phase 15's first task is a gate: are `mkSigFrom`, `Formula.predFormulas`,
 
 * `TaskFrame` (`Semantics/TaskFrame.lean:99`) is parameterized by
   `(D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]` and by nothing
-  else. `WorldHistory`, `WorldHistory.timeShift` and `ShiftClosed` carry the same three
+  else. `WorldHistory` and `WorldHistory.timeShift` carry the same three
   instances and no successor structure.
 * `Formula.predFormulas` (`Syntax/Formula.lean`) is a purely syntactic recursion on
   `Formula` with no temporal parameter at all, and `mkSigFrom φ`
@@ -81,7 +81,7 @@ Phase 15's first task is a gate: are `mkSigFrom`, `Formula.predFormulas`,
 * `multiFamTaskFrame FamIdx : TaskFrame ℤ` (`ReynoldsBridge.lean:671`) has
   `WorldState := FamIdx × ℤ` and `TaskRel p d q := p.1 = q.1 ∧ q.2 = p.2 + d`, in which
   `ℤ` occurs only as the carrier and `+` only as its group operation; likewise
-  `multiFamOmega` (`:694`) and `multiFamOmega_shiftClosed` (`:708`).
+  `multiFamHistory` and the totality characterization `multiFam_total_eq_range`.
 
 The generic re-statements (`multiFamTaskFrameGen` and siblings, hosted in
 `Metalogic/Algebraic/FlowFrame.lean`) *discharge* the gate
@@ -99,7 +99,7 @@ universal in this tree. `Transfer.lean:1242` is not attempted here.
 
 ## Main results
 
-* `multiFamTaskFrameGen_int` / `multiFamHistoryGen_int` / `multiFamOmegaGen_int` — the `ℤ`
+* `multiFamTaskFrameGen_int` / `multiFamHistoryGen_int` / `multiFamGen_total_int` — the `ℤ`
   originals certified as definitional specializations of the discreteness-free multi-family
   frame (now hosted in `Metalogic/Algebraic/FlowFrame.lean`).
 * `chronicleMonadicStructureOf` — a chronicle family as an `OrderedMonadicStructure` over
@@ -123,9 +123,9 @@ open FormalSystem.Metalogic.Algebraic
 
 /-! ## Part 1: The discreteness-free multi-family frame (R7 gate discharge)
 
-The generic re-statements of `ReynoldsBridge.lean`'s `multiFamTaskFrame`/`multiFamHistory`/
-`multiFamOmega` family over an arbitrary ordered abelian group `D` —
-`multiFamTaskFrameGen`/`multiFamHistoryGen`/`multiFamOmegaGen` — are now hosted in
+The generic re-statements of `ReynoldsBridge.lean`'s `multiFamTaskFrame`/`multiFamHistory`
+family over an arbitrary ordered abelian group `D` —
+`multiFamTaskFrameGen`/`multiFamHistoryGen` — are now hosted in
 `Metalogic/Algebraic/FlowFrame.lean` (imported above), together with their four-axiom
 conformance layer and totality characterization. The `ℤ` originals are untouched:
 `countermodel_discrete_reynolds_v2` continues to consume the originals, and the `_int` lemmas
@@ -149,9 +149,11 @@ theorem multiFamTaskFrameGen_int (FamIdx : Type) :
 theorem multiFamHistoryGen_int {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
     multiFamHistoryGen f w₀ = multiFamHistory f w₀ := rfl
 
-/-- `multiFamOmega` is definitionally `multiFamOmegaGen ℤ`. -/
-theorem multiFamOmegaGen_int (FamIdx : Type) :
-    multiFamOmegaGen ℤ FamIdx = multiFamOmega FamIdx := rfl
+/-- The `ℤ` frame's total-history set `H_F` (`def:world-history`) is definitionally the
+generic frame's at `D := ℤ`. -/
+theorem multiFamGen_total_int (FamIdx : Type) :
+    {σ : WorldHistory (multiFamTaskFrameGen ℤ FamIdx) | ∀ t, σ.domain t} =
+      {σ : WorldHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} := rfl
 
 end MultiFamGen
 

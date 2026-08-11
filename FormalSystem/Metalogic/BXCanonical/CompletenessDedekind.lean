@@ -79,10 +79,11 @@ noncomputable example (B : BFMCS (fc := fc) ℝ) : TaskFrame ℝ := bundleFlowFr
 noncomputable example (B : BFMCS (fc := fc) ℝ) : TaskModel (bundleFlowFrame B) :=
   bundleFlowModel B
 
-/-- The flow-line history space elaborates at `D := ℝ`. -/
+/-- The flow-line history space — the frame's total-history set `H_F`
+(`def:world-history`) — elaborates at `D := ℝ`. -/
 noncomputable example (B : BFMCS (fc := fc) ℝ) :
     Set (WorldHistory (bundleFlowFrame B)) :=
-  bundleFlowOmega B
+  {σ | ∀ t, σ.domain t}
 
 /--
 The re-hosted completeness engine typechecks at `D := ℝ` against a hypothesised real-carrier
@@ -302,7 +303,8 @@ the box-dense indicator `□(¬U(⊤,⊥))`, there is a task model **over the re
 The construction is the dense mirror of `countermodel_discrete_reynolds_v2`: one `ℝ`-flowed
 monadic structure per box-equivalence class of MCSs, assembled into the single task frame
 `multiFamTaskFrameGen ℝ FamIdx` whose world states are `FamIdx × ℝ`. Box quantification over
-`Omega` — which contains every family at every offset — is what makes the modal dimension come
+the frame's total histories `H_F` — which comprises every family at every offset
+(`multiFamGen_total_eq_range`) — is what makes the modal dimension come
 out right, exactly as in the `ℤ` original: the monadic language never unfolds `□`, it reads it
 as an opaque unary predicate, and the S5 content is carried by the chronicle's box-equivalence
 instead.

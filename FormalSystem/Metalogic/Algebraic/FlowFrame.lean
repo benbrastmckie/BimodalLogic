@@ -121,7 +121,7 @@ variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 The discreteness-free multi-family frame over an arbitrary ordered abelian group `D`: world
 states are pairs `(f, x)` of a family index and a time, and the task relation is the
 deterministic clock stepping by `d` from `(f, x)` to `(f, x + d)`. The `ℤ` originals
-(`multiFamTaskFrame`/`multiFamHistory`/`multiFamOmega`, `ReynoldsBridge.lean`) are recovered
+(`multiFamTaskFrame`/`multiFamHistory`, `ReynoldsBridge.lean`) are recovered
 as definitional specializations by `ChronicleMonadicBridge.lean`'s `_int` lemmas. -/
 
 /-- `TaskFrame` with `WorldState = FamIdx × D` over an arbitrary ordered abelian group `D`.
@@ -157,12 +157,6 @@ noncomputable def multiFamHistoryGen {FamIdx : Type} (f : FamIdx) (w₀ : D) :
     show w₀ + t = w₀ + s + (t - s)
     abel
 
-/-- Omega for `multiFamTaskFrameGen`: all histories `multiFamHistoryGen f w₀`.
-Generic form of `multiFamOmega` (`ReynoldsBridge.lean`). -/
-def multiFamOmegaGen (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    (FamIdx : Type) : Set (WorldHistory (multiFamTaskFrameGen D FamIdx)) :=
-  Set.range (fun (p : FamIdx × D) => multiFamHistoryGen p.1 p.2)
-
 /-- Time-shifting `multiFamHistoryGen f w₀` by `Δ` gives `multiFamHistoryGen f (w₀ + Δ)`.
 Generic form of `multiFamHistory_shift_eq` (`ReynoldsBridge.lean`). -/
 theorem multiFamHistoryGen_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : D) :
@@ -176,26 +170,9 @@ theorem multiFamHistoryGen_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : D) :
     WorldHistory.mk (PartialHistory.mk _ _ _ _) _
   congr 2
 
-/-- The generic multi-family Omega is shift-closed. Generic form of
-`multiFamOmega_shiftClosed` (`ReynoldsBridge.lean`). -/
-theorem multiFamOmegaGen_shiftClosed (D : Type) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (FamIdx : Type) :
-    ShiftClosed (multiFamOmegaGen D FamIdx) := by
-  intro σ hσ Δ
-  obtain ⟨⟨f, w₀⟩, hw₀⟩ := hσ
-  rw [← hw₀, multiFamHistoryGen_shift_eq]
-  exact ⟨⟨f, w₀ + Δ⟩, rfl⟩
-
-/-- Every generic multi-family history is in the generic Omega. Generic form of
-`multiFamHistory_mem_omega` (`ReynoldsBridge.lean`). -/
-theorem multiFamHistoryGen_mem_omega {FamIdx : Type} (f : FamIdx) (w₀ : D) :
-    multiFamHistoryGen f w₀ ∈ multiFamOmegaGen D FamIdx :=
-  ⟨⟨f, w₀⟩, rfl⟩
-
 /-- Every generic multi-family history is total (`def:world-history`'s cut `X = D`, spelled
 `∀ t, σ.domain t`). Definitional: `multiFamHistoryGen` carries `domain := fun _ => True`. This
-is what the totality-targeted box clause (`def:BL-semantics`) consumes in place of the former
-`∈ multiFamOmegaGen` witness. -/
+is what the totality-targeted box clause (`def:BL-semantics`) consumes. -/
 theorem multiFamHistoryGen_total {FamIdx : Type} (f : FamIdx) (w₀ : D) :
     (multiFamHistoryGen f w₀ : WorldHistory (multiFamTaskFrameGen D FamIdx)).IsTotal :=
   fun _ => trivial
@@ -336,27 +313,27 @@ theorem multiFamGen_total_eq {FamIdx : Type}
     WorldHistory.mk (PartialHistory.mk _ _ _ _) _
   congr 2
 
-/-- The generic flow frame's Omega **is** its total-history set `H_F`, as a set equation.
+/-- The generic flow frame's total-history set `H_F` **is** the set of flow lines, as a set
+equation.
 
 `def:world-history` fixes `H_F` as the totality-cut of the world histories: "A world history is
 *total* --- equivalently, a *possible world* --- just in case $X = D$. ... The set of all total
 world histories over $\F$ is denoted $H_{\F}$." Here the totality predicate `X = D` is spelled
 `∀ t, σ.domain t`.
 
-The `⊆` direction is definitional: `multiFamHistoryGen` carries `domain := fun _ => True`. The
-`⊇` direction is `multiFamGen_total_eq`. So on this carrier, replacing an Omega-parameterized
-box clause by the `def:BL-semantics` box clause ("for all $\sigma \in H_{\F}$") is a rewrite
-along this equation, not a change of content. -/
-theorem multiFamOmegaGen_eq_total (FamIdx : Type) :
-    multiFamOmegaGen D FamIdx =
-      {σ : WorldHistory (multiFamTaskFrameGen D FamIdx) | ∀ t, σ.domain t} := by
+The `⊇` direction is definitional: `multiFamHistoryGen` carries `domain := fun _ => True`. The
+`⊆` direction is `multiFamGen_total_eq`. This is the extensional content the box clause
+(`def:BL-semantics`, "for all $\sigma \in H_{\F}$") quantifies over on this carrier. -/
+theorem multiFamGen_total_eq_range (FamIdx : Type) :
+    {σ : WorldHistory (multiFamTaskFrameGen D FamIdx) | ∀ t, σ.domain t} =
+      Set.range (fun (p : FamIdx × D) => multiFamHistoryGen p.1 p.2) := by
   ext σ
   constructor
-  · rintro ⟨⟨f, w₀⟩, rfl⟩ t
-    trivial
   · intro htot
     obtain ⟨f, w₀, rfl⟩ := multiFamGen_total_eq σ htot
-    exact multiFamHistoryGen_mem_omega f w₀
+    exact ⟨⟨f, w₀⟩, rfl⟩
+  · rintro ⟨⟨f, w₀⟩, rfl⟩ t
+    trivial
 
 end FlowFrameConformance
 
@@ -452,39 +429,22 @@ theorem bundleFlow_total_eq {B : BFMCS (fc := fc) D}
     ∃ fam w₀, σ = bundleFlowHistory fam w₀ :=
   multiFamGen_total_eq σ htot
 
-/-! ## The bundle flow Omega
+/-! ## The bundle flow frame's total-history set
 
-The admissible-history set for the bundle flow frame under the current Omega-parameterized
-truth signature: all flow lines. By `bundleFlowHistory_total` and `bundleFlow_total_eq` this
-set coincides with the frame's total-history set H_F (`def:world-history`), so the box clause
-quantifying over it is the paper's box clause per `def:BL-semantics` ("M,σ,x ⊨ φ for all
-σ ∈ H_F") realized under the present signature. -/
+The bundle flow frame's total-history set H_F (`def:world-history`) is exactly its set of flow
+lines, by `bundleFlowHistory_total` and `bundleFlow_total_eq`. This is what the box clause
+quantifies over per `def:BL-semantics` ("M,σ,x ⊨ φ for all σ ∈ H_F"). -/
 
-/-- All flow lines of the bundle flow frame — extensionally the frame's total-history set H_F
-(`def:world-history`), via `bundleFlowHistory_total` and `bundleFlow_total_eq`. -/
-def bundleFlowOmega (B : BFMCS (fc := fc) D) : Set (WorldHistory (bundleFlowFrame B)) :=
-  multiFamOmegaGen D {fam : FMCS (fc := fc) D // fam ∈ B.families}
+/-- The bundle flow frame's total-history set `H_F` (`def:world-history`: "The set of all total
+world histories over $\F$ is denoted $H_{\F}$") **is** its set of flow lines.
 
-/-- The bundle flow Omega is shift-closed. -/
-theorem bundleFlowOmega_shiftClosed (B : BFMCS (fc := fc) D) :
-    ShiftClosed (bundleFlowOmega B) :=
-  multiFamOmegaGen_shiftClosed D _
-
-/-- Every bundle flow line is in the bundle flow Omega. -/
-theorem bundleFlowHistory_mem_omega {B : BFMCS (fc := fc) D}
-    (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ : D) :
-    bundleFlowHistory fam w₀ ∈ bundleFlowOmega B :=
-  multiFamHistoryGen_mem_omega fam w₀
-
-/-- The bundle flow Omega **is** the bundle flow frame's total-history set `H_F`
-(`def:world-history`: "The set of all total world histories over $\F$ is denoted $H_{\F}$").
-
-Immediate specialization of `multiFamOmegaGen_eq_total` at the bundle index, since
-`bundleFlowOmega` is `multiFamOmegaGen` at that index by definition. -/
-theorem bundleFlowOmega_eq_total (B : BFMCS (fc := fc) D) :
-    bundleFlowOmega B =
-      {σ : WorldHistory (bundleFlowFrame B) | ∀ t, σ.domain t} :=
-  multiFamOmegaGen_eq_total _
+Immediate specialization of `multiFamGen_total_eq_range` at the bundle index, since
+`bundleFlowFrame` is `multiFamTaskFrameGen` at that index by definition. -/
+theorem bundleFlow_total_eq_range (B : BFMCS (fc := fc) D) :
+    {σ : WorldHistory (bundleFlowFrame B) | ∀ t, σ.domain t} =
+      Set.range (fun (p : {fam : FMCS (fc := fc) D // fam ∈ B.families} × D) =>
+        bundleFlowHistory p.1 p.2) :=
+  multiFamGen_total_eq_range _
 
 /-! ## Helper tautologies for the implication case
 
@@ -600,8 +560,8 @@ Case inventory: atom is definitional MCS membership; bot/imp use MCS consistency
 untl/snce use the bundle's restricted Until/Since coherence (frame-independent, preserved
 verbatim modulo the `± w₀` clock translation); box uses `fmcs_box_persistent` plus
 `B.modal_forward`/`B.modal_backward`, destructuring the quantified history against
-**totality** (`bundleFlow_total_eq`) rather than against `bundleFlowOmega` — the box clause
-now quantifies over `H_F` per `def:BL-semantics`, and `TruthAt`'s remaining set argument is
+**totality** (`bundleFlow_total_eq`) rather than against an admissible-history parameter — the
+box clause now quantifies over `H_F` per `def:BL-semantics`, and `TruthAt`'s set argument is
 inert (`truthAt_carrier_irrelevant`), supplied here as `Set.univ`. -/
 
 /--

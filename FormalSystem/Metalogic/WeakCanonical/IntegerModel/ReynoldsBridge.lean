@@ -445,7 +445,7 @@ because atom predicates on the Z-interval are not constant in general.
 
 With this frame:
 - Each history is parameterized by an offset w₀, with states t _ = w₀ + t
-- Omega contains all offset histories (shift-closed)
+- The frame's total-history set `H_F` is exactly the offset histories (`zHistoryV2_total_eq`)
 - Box quantification ranges over all offsets, giving S5 semantics
 -/
 
@@ -465,11 +465,6 @@ noncomputable def zHistoryV2 (w₀ : ℤ) : WorldHistory zTaskFrameV2 where
   states := fun t _ => w₀ + t
   respects_task := fun s t _ _ => by change w₀ + t = (w₀ + s) + (t - s); omega
 
-/-- Omega = set of all offset histories. -/
-def ZOmegaV2 : Set (WorldHistory zTaskFrameV2) := Set.range zHistoryV2
-
-theorem zHistory_v2_mem_omega : zHistoryV2 0 ∈ ZOmegaV2 := ⟨0, rfl⟩
-
 /-- Time-shifting zHistoryV2 w₀ by Δ gives zHistoryV2 (w₀ + Δ). -/
 theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
     WorldHistory.timeShift (zHistoryV2 w₀) Δ = zHistoryV2 (w₀ + Δ) := by
@@ -479,12 +474,6 @@ theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
       (fun (t : ℤ) (_ : True) => (w₀ + Δ) + t) := by
     funext t _; omega
   congr 2
-
-theorem zOmega_v2_shiftClosed : ShiftClosed ZOmegaV2 := by
-  intro σ hσ Δ
-  obtain ⟨w₀, hw₀⟩ := hσ
-  rw [← hw₀, zHistory_v2_shift_eq]
-  exact ⟨w₀ + Δ, rfl⟩
 
 /-- TaskModel: valuation at world state w evaluates Z-interval atom predicate at w. -/
 noncomputable def zTaskModelV2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -578,13 +567,6 @@ theorem z_interval_carrier_contains_all
   · rw [h_lo_none]; simp [Option.elim]
   · rw [h_hi_none]; simp [Option.elim]
 
-/-- Every history in ZOmegaV2 is of the form zHistoryV2 w₀ for some w₀. -/
-theorem zOmega_v2_mem_iff (σ : WorldHistory zTaskFrameV2) :
-    σ ∈ ZOmegaV2 ↔ ∃ w₀, σ = zHistoryV2 w₀ := by
-  constructor
-  · intro ⟨w₀, hw₀⟩; exact ⟨w₀, hw₀.symm⟩
-  · intro ⟨w₀, hw₀⟩; exact ⟨w₀, hw₀.symm⟩
-
 /-- Every total history of `zTaskFrameV2` is an offset history. Totality here is
 `def:world-history`'s cut `X = D`, spelled `∀ t, σ.domain t`.
 
@@ -612,21 +594,20 @@ theorem zHistoryV2_total_eq (σ : WorldHistory zTaskFrameV2) (htot : ∀ t, σ.d
     WorldHistory.mk (PartialHistory.mk _ _ _ _) _
   congr 2
 
-/-- `ZOmegaV2` **is** `zTaskFrameV2`'s total-history set `H_F` (`def:world-history`: "The set of
-all total world histories over $\F$ is denoted $H_{\F}$").
+/-- `zTaskFrameV2`'s total-history set `H_F` (`def:world-history`: "The set of all total world
+histories over $\F$ is denoted $H_{\F}$") **is** its set of offset histories.
 
-`⊆` is definitional — `zHistoryV2` carries `domain := fun _ => True`; `⊇` is
-`zHistoryV2_total_eq`. Verdict for the Omega-elimination sweep: **equal to `H_F`**, so this
-carrier needs a rewrite, not a re-host. -/
-theorem zOmegaV2_eq_total :
-    ZOmegaV2 = {σ : WorldHistory zTaskFrameV2 | ∀ t, σ.domain t} := by
+`⊇` is definitional — `zHistoryV2` carries `domain := fun _ => True`; `⊆` is
+`zHistoryV2_total_eq`. -/
+theorem zHistoryV2_total_eq_range :
+    {σ : WorldHistory zTaskFrameV2 | ∀ t, σ.domain t} = Set.range zHistoryV2 := by
   ext σ
   constructor
-  · rintro ⟨w₀, rfl⟩ t
-    trivial
   · intro htot
     obtain ⟨w₀, rfl⟩ := zHistoryV2_total_eq σ htot
     exact ⟨w₀, rfl⟩
+  · rintro ⟨w₀, rfl⟩ t
+    trivial
 
 /--
 Temporal truth of `φ.neg` at the root point of the limitdom structure.
@@ -694,11 +675,11 @@ theorem predFormulas_operator_depth_le (φ : Formula) :
 
 The multi-family approach resolves the box semantics mismatch:
 - `TemporalTruth(.box ψ)` = opaque predicate lookup on each Z-interval
-- `TruthAt(.box ψ)` = universal quantification over all histories in Omega
+- `TruthAt(.box ψ)` = universal quantification over the frame's total histories `H_F`
 
-By using one Z-interval per box-equivalent MCS family, with Omega containing
-histories for all families × all offsets, the universal quantification over
-Omega ranges over all families and offsets. The truth correspondence then
+By using one Z-interval per box-equivalent MCS family, `H_F` comprises
+histories for all families × all offsets (`multiFam_total_eq_range`), so the universal
+quantification ranges over all families and offsets. The truth correspondence then
 relates `TruthAt(.box ψ)` to whether `.box ψ ∈ A`, which equals
 `Z.interp(atomMap(.box ψ)) z` by the constancy of box predicates on Z-intervals.
 -/
@@ -735,11 +716,6 @@ noncomputable def multiFamHistory {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
     change (f, w₀ + s).1 = (f, w₀ + t).1 ∧ (f, w₀ + t).2 = (f, w₀ + s).2 + (t - s)
     exact ⟨rfl, by omega⟩
 
-/-- Omega for the multi-family TaskFrame: all histories of the form
-`multiFamHistory f w₀` for any family `f` and any offset `w₀`. -/
-def multiFamOmega (FamIdx : Type) : Set (WorldHistory (multiFamTaskFrame FamIdx)) :=
-  Set.range (fun (p : FamIdx × ℤ) => multiFamHistory p.1 p.2)
-
 /-- Time-shifting `multiFamHistory f w₀` by `Δ` gives `multiFamHistory f (w₀ + Δ)`. -/
 theorem multiFamHistory_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : ℤ) :
     WorldHistory.timeShift (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)) Δ =
@@ -751,24 +727,10 @@ theorem multiFamHistory_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : ℤ) :
     funext t _; congr 1; omega
   congr 2
 
-/-- The multi-family Omega is shift-closed. -/
-theorem multiFamOmega_shiftClosed (FamIdx : Type) :
-    ShiftClosed (multiFamOmega FamIdx) := by
-  intro σ hσ Δ
-  obtain ⟨⟨f, w₀⟩, hw₀⟩ := hσ
-  rw [← hw₀, multiFamHistory_shift_eq]
-  exact ⟨⟨f, w₀ + Δ⟩, rfl⟩
-
-/-- The root history is in Omega. -/
-theorem multiFamHistory_mem_omega {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
-    multiFamHistory f w₀ ∈ multiFamOmega FamIdx :=
-  ⟨⟨f, w₀⟩, rfl⟩
-
 /-- Every family line is total (`def:world-history`'s cut `X = D`, spelled `∀ t, σ.domain t`).
 Definitional: `multiFamHistory` carries `domain := fun _ => True`. This is the `ℤ` counterpart
 of `bundleFlowHistory_total` (`FlowFrame.lean`), and is what the totality-targeted box clause
-(`def:BL-semantics`, "for all $\sigma \in H_{\F}$") consumes in place of the former
-`∈ multiFamOmega` witness. -/
+(`def:BL-semantics`, "for all $\sigma \in H_{\F}$") consumes. -/
 theorem multiFamHistory_total {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
     (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)).IsTotal :=
   fun _ => trivial
@@ -804,22 +766,22 @@ theorem multiFam_total_eq {FamIdx : Type}
     WorldHistory.mk (PartialHistory.mk _ _ _ _) _
   congr 2
 
-/-- `multiFamOmega` **is** its frame's total-history set `H_F` (`def:world-history`: "The set of
-all total world histories over $\F$ is denoted $H_{\F}$").
+/-- The multi-family frame's total-history set `H_F` (`def:world-history`: "The set of all total
+world histories over $\F$ is denoted $H_{\F}$") **is** its set of family lines.
 
-`⊆` is definitional — `multiFamHistory` carries `domain := fun _ => True`; `⊇` is
-`multiFam_total_eq`. Verdict for the Omega-elimination sweep: **equal to `H_F`**, matching the
-generic `multiFamOmegaGen_eq_total` (`FlowFrame.lean`) of which this is the `ℤ` case. -/
-theorem multiFamOmega_eq_total (FamIdx : Type) :
-    multiFamOmega FamIdx =
-      {σ : WorldHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} := by
+`⊇` is definitional — `multiFamHistory` carries `domain := fun _ => True`; `⊆` is
+`multiFam_total_eq`. This is the `ℤ` case of the generic `multiFamGen_total_eq_range`
+(`FlowFrame.lean`). -/
+theorem multiFam_total_eq_range (FamIdx : Type) :
+    {σ : WorldHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} =
+      Set.range (fun (p : FamIdx × ℤ) => multiFamHistory p.1 p.2) := by
   ext σ
   constructor
-  · rintro ⟨⟨f, w₀⟩, rfl⟩ t
-    trivial
   · intro htot
     obtain ⟨f, w₀, rfl⟩ := multiFam_total_eq σ htot
-    exact multiFamHistory_mem_omega f w₀
+    exact ⟨⟨f, w₀⟩, rfl⟩
+  · rintro ⟨⟨f, w₀⟩, rfl⟩ t
+    trivial
 
 /--
 Reynolds pipeline countermodel v2 (Strategy B): countermodel on ℤ
@@ -830,10 +792,10 @@ constructs a countermodel on ℤ where φ is false.
 
 Uses the multi-family Z-interval approach: one Z-interval per box-equivalent
 MCS family, with `WorldState = FamIdx × ℤ`. Box quantification ranges over
-all families (via Omega containing all family×offset histories), resolving
+all families (via `H_F` comprising all family×offset histories), resolving
 the single-Z-interval box semantics mismatch.
 
-The key insight: `TruthAt(.box ψ)` quantifies over all histories in Omega,
+The key insight: `TruthAt(.box ψ)` quantifies over all total histories,
 which includes all families. By the S5 box-equivalence structure, `.box ψ ∈ A`
 iff `.box ψ ∈ N` for every box-equivalent MCS N. The box predicate on each
 Z-interval is constant (inherited from the chronicle's S5 structure via
@@ -940,14 +902,14 @@ theorem countermodel_discrete_reynolds_v2
       (ih₁ (Finset.Subset.trans Finset.subset_union_left h_sub) f w₀ t)
       (ih₂ (Finset.Subset.trans Finset.subset_union_right h_sub) f w₀ t)
   | box ψ ih =>
-    -- Box case: TruthAt(.box ψ) = ∀ σ ∈ Omega, TruthAt σ t ψ
+    -- Box case: TruthAt(.box ψ) = ∀ σ, σ.IsTotal → TruthAt σ t ψ
     -- h_sub : (.box ψ).predFormulas ⊆ φ.predFormulas
     -- This gives: ψ.predFormulas ⊆ φ.predFormulas and .box ψ ∈ φ.predFormulas
     have h_sub_ψ : ψ.predFormulas ⊆ φ.predFormulas :=
       Finset.Subset.trans Finset.subset_union_right h_sub
     simp only [TruthAt]
     constructor
-    · -- Forward: (∀ σ ∈ Omega, TruthAt σ t ψ) → TemporalTruth (.box ψ)
+    · -- Forward: (∀ σ, σ.IsTotal → TruthAt σ t ψ) → TemporalTruth (.box ψ)
       intro h_all
       -- Convert to: ∀ f' z, TemporalTruth Z_{f'} atomMap (toCarrier z) ψ
       have h_univ : ∀ (f' : FamIdx) (z : ℤ),
@@ -1089,7 +1051,7 @@ theorem countermodel_discrete_reynolds_v2
         simp only [sent, eval] at h_eval_Z
         exact fun x => h_eval_Z x
       exact h_all_pred_Z (toCarrier (h_lo f) (h_hi f) (w₀ + t))
-    · -- Backward: TemporalTruth (.box ψ) → (∀ σ ∈ Omega, TruthAt σ t ψ)
+    · -- Backward: TemporalTruth (.box ψ) → (∀ σ, σ.IsTotal → TruthAt σ t ψ)
       intro h_box σ h_mem
       obtain ⟨f', w₀', h_eq⟩ := multiFam_total_eq σ h_mem
       rw [h_eq, ih h_sub_ψ f' w₀' t]
