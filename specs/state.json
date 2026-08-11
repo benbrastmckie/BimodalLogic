@@ -727,9 +727,9 @@
           "summary": "31-phase revision: phases 1-21 preserved verbatim, phase 22 closed with the unrunnable BimodalTest gate re-homed to phase 29, phase 23 retained OPTIONAL, and seven new phases (24-30) implementing the additive trivialEventWitnessed guard behind a measurement go/no-go gate."
         },
         {
-          "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/06_phase26-guard-measurement.md",
+          "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/07_phase27-28-bridge-and-tree-gate.md",
           "type": "summary",
-          "summary": "Phase 26 go/no-go gate: VERDICT GO. buildTableau ((G p) -> box (G p)) 1000 .Base returns (2,40) = hasOpen, the owed (2,_); saturation first at step 23, stable through 48; report 05 claim 10 measured and confirmed. Found the phase 27/28 import-order blocker."
+          "summary": "Phases 27+28 (executed 28-repair -> 27 -> 28-gate on a confirmed import-direction blocker): bridge extraction widened at the two genuine sites, countermodel extraction repaired, MintBound.lean red found and fixed; lake build GREEN at 2331 jobs, matching the phase-24 baseline. Claim 11 settled: row 11 re-baselines to true."
         }
       ],
       "created": "2026-07-28T22:51:10Z",
