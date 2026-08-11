@@ -1529,24 +1529,46 @@ judgment-bearing sites in this phase were the four `soundness*` signatures, the 
 
 ---
 
-### Phase 16: Box-clause repair — completeness side [IN PROGRESS]
+### Phase 16: Box-clause repair — completeness side [COMPLETED]
 
 **Goal**: Repair the canonical/algebraic completeness stack, rewriting along Phase 11's set
 equations rather than re-proving anything. Per the round-3 report this is a rewrite, not a
 re-proof: the live completeness-side Omega *is* `H_F`.
 
 **Tasks**:
-- [ ] Repair `FormalSystem/Metalogic/Algebraic/FlowFrame.lean`.
-- [ ] Repair `BXCanonical/Completeness.lean` — in particular `countermodel_dense_enriched`
+- [x] Repair `FormalSystem/Metalogic/Algebraic/FlowFrame.lean`.
+- [x] Repair `BXCanonical/Completeness.lean` — in particular `countermodel_dense_enriched`
       (`:134`), the live witness for both `completeness` and `completeness_dense`, whose docstring
       already anticipates this task by recording that its admissible-history set is extensionally
       the frame's total-history set.
-- [ ] Repair `CompletenessDedekind.lean`, `ChronicleMonadicBridge.lean`,
+- [x] Repair `CompletenessDedekind.lean`, `ChronicleMonadicBridge.lean`,
       `ChronicleToCountermodelBasic.lean`, `Bundle/LimitMCS.lean`.
-- [ ] Repair `WeakCanonical/IntegerModel/ReynoldsBridge.lean` per Phase 11's classification of
+      *(deviation: `ChronicleMonadicBridge.lean` needed no edit — it contains no `TruthAt` box
+      site and no countermodel existential; its `multiFamOmegaGen_int` bridge is a `rfl`
+      identification of two Omega-valued definitions, whose deletion belongs to Phase 21.)*
+- [x] Repair `WeakCanonical/IntegerModel/ReynoldsBridge.lean` per Phase 11's classification of
       `ZOmegaV2` and `multiFamOmega`.
-- [ ] Rewrite the countermodel existentials of the shape `∃ Omega, ShiftClosed Omega ∧ τ ∈ Omega`
+- [x] Rewrite the countermodel existentials of the shape `∃ Omega, ShiftClosed Omega ∧ τ ∈ Omega`
       to their totality form.
+      *(deviation: altered — two additional sites carrying the identical existential shape were
+      found outside this phase's file list and had to be rewritten together with the rest, since
+      `completeness` destructures both: `Chronicle/MCSMixedCase.lean` (`mcs_mixed_case_absurd`'s
+      countermodel wrapper) and `WeakCanonical/Transfer.lean` (`countermodel_discrete`, which
+      retains its pre-existing sorry — only its statement changed).)*
+
+**Scope correction recorded at implementation time**: the phase's `Files to modify` list gives
+three paths that do not exist at those locations. The real paths are
+`FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`,
+`FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean`, and
+`FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean` (all under
+`BXCanonical/`, not `Metalogic/` and `WeakCanonical/` directly).
+
+**Carrier decision**: `TruthAt`'s Omega parameter is not yet deleted (that is Phase 22), so every
+rewritten statement supplies the inert transient carrier `Set.univ`, matching what the Phase 18
+`valid`/`ValidDense`/`ValidDiscrete`/`ValidDedekindDense` binders already produce. The
+`bundleFlow`/`multiFamGen` truth lemmas were retargeted to the same carrier rather than
+transported per-site through `truthAt_carrier_irrelevant`, so no transport call was introduced
+and Phase 21's deletion of `bundleFlowOmega`/`multiFamOmegaGen` is left unobstructed.
 
 **Timing**: 3 hours
 
@@ -1569,7 +1591,7 @@ re-proof: the live completeness-side Omega *is* `H_F`.
 
 ---
 
-### Phase 17: Box-clause repair — decidability side [NOT STARTED]
+### Phase 17: Box-clause repair — decidability side [IN PROGRESS]
 
 **Goal**: Repair the decidability bridge and certificate stack against the retargeted box clause,
 rewriting along Phase 12's `regionOmega_eq_total`.
