@@ -576,42 +576,46 @@ editing; treat any new site as in scope.
 
 ---
 
-### Phase 9: Correct stale docstrings, naming, and citations (field-independent subset) [NOT STARTED]
+### Phase 9: Correct stale docstrings, naming, and citations (field-independent subset) [COMPLETED]
 
 **Goal**: Every C.4 item that does NOT depend on the structure change landing is corrected: the
 prose tells the truth about the four-axiom target, and every paper reference is a `\label`
 citation with verbatim quoted text.
 
 **Tasks**:
-- [ ] **Lax-law claims** (TaskFrame.lean:48-53, 170-176): delete the claim that "the law is the
+- [x] **Lax-law claims** (TaskFrame.lean:48-53, 170-176): delete the claim that "the law is the
       LAX inclusion `R_{x+y} ⊇ R_x ∘ R_y`: an equality would additionally assert interpolation
       and is not adopted" — it directly contradicts `def:frame#Compositionality`
       (BICONDITIONAL, right-to-left load-bearing). Recast `forward_comp`'s docstring (:177): it
       is the `←` HALF of the paper's biconditional; the `→` (interpolation) direction lands with
       the structure change.
-- [ ] **Nullity claim** (TaskFrame.lean:47): replace "Paper's *Nullity* is an iff, and
+- [x] **Nullity claim** (TaskFrame.lean:47): replace "Paper's *Nullity* is an iff, and
       `nullity_identity` … is an exact match" — Nullity is NOT an axiom; `lem:nullity`
       (paper-definitions-of-record.md:220) is DERIVED and asserts reflexivity only. Document the
       `nullity_identity` iff-form as an OPEN DESIGN QUESTION (three options, joint with 414 —
       frame it exactly as this plan's Open Design Questions section does; do NOT settle it and
       do NOT change the field).
-- [ ] **"Limit Nullity" → *Limit*** naming (TaskFrame.lean:69, 84, 86, 232, and the :261
+- [x] **"Limit Nullity" → *Limit*** naming (TaskFrame.lean:69, 84, 86, 232, and the :261
       header): the axiom is now simply *Limit*. Update all prose unconditionally. Rename the
       Lean identifiers (`limit_nullity_of_succOrder`, `limit_nullity_of_shift`) ONLY under the
       Scope Hypothesis below; otherwise record the naming lag in their docstrings and defer the
       rename into Phase 10's batch.
-- [ ] **Known-gaps block** (TaskFrame.lean:66-72): currently lists only `Nonempty W`,
+- [x] **Known-gaps block** (TaskFrame.lean:66-72): currently lists only `Nonempty W`,
       `Nontrivial D`, "Limit Nullity". Rewrite to the full gap list: `Nonempty W`,
       `[Nontrivial D]` (structure level — already carried by `valid`/`SemanticConsequence` at
       Validity.lean:80/104/171/189/242/278), *Seriality*, *Limit*, *Spherical*, the
       interpolation (`→`) direction of *Compositionality*, and the apparatus consumption
       (pointing at the Phase 7 definitions).
-- [ ] **Bare locators → `\label` citations** (TaskFrame.lean:52, 59, 63, 71, 105-106, 187, 232;
+- [x] **Bare locators → `\label` citations** (TaskFrame.lean:52, 59, 63, 71, 105-106, 187, 232;
       WorldHistory.lean:73, 84): "a bare `possible_worlds.tex:NNNN` is never a citation" —
       convert every one to a `\label` reference (`def:frame`, `def:task-relation`,
       `def:temporal-order`, `def:world-history`, `lem:nullity`, …) quoting the recorded
-      definition text verbatim alongside the anchor.
-- [ ] **WorldHistory.lean:73, 84**: beyond the locator fix, correct "Matches JPL paper
+      definition text verbatim alongside the anchor. *(deviation: altered — the site set was
+      widened beyond this phase's declared "Files to modify" to three further files carrying
+      the same `possible_worlds.tex:NNNN` form: `Syntax/Formula.lean`,
+      `Theorems/DedekindDerived.lean`, `Examples/TemporalStructures.lean`. See the Deviations
+      record below.)*
+- [x] **WorldHistory.lean:73, 84**: beyond the locator fix, correct "Matches JPL paper
       def:world-history (line 1849)" — it does NOT fully match: no nonemptiness field (the
       empty history is legal in Lean but not per `def:world-history`,
       paper-definitions-of-record.md:232) and no `PartialHistory` layer. State the gap plainly
@@ -648,6 +652,46 @@ from the 2026-08-10 findings; confirm each by reading before editing.
 - `grep -rn "possible_worlds.tex:[0-9]" FormalSystem/ --include=*.lean` returns nothing (all
   converted to `\label` citations)
 - `grep -rn "Limit Nullity" FormalSystem/ --include=*.lean` returns nothing (prose renamed)
+
+**Verification results** (measured 2026-08-10):
+- `lake build` — GREEN, exit 0, 2333 jobs, no new warnings attributable to this phase
+- `grep -rn "possible_worlds.tex:[0-9]" FormalSystem/ --include=*.lean` — 0 hits
+- `grep -rn "Limit Nullity" FormalSystem/ --include=*.lean` — 0 hits
+- `grep -rn "limit_nullity_of" FormalSystem/ Tests/` — 0 hits (Scope Hypothesis satisfied: zero
+  external consumers, so the rename to `limit_of_succOrder` / `limit_of_shift` was in scope and
+  was applied; it did NOT have to be folded into Phase 10's batch)
+- `git diff` confined to comment/docstring regions plus the two grep-gated rename sites — no
+  structure field, no `nullity_identity` change, no `forward_comp` change
+- Zero new `sorry`, zero new `axiom`
+
+**Deviations**:
+- **Site set widened beyond the declared "Files to modify"** (altered, justified). The declared
+  file list named only `TaskFrame.lean` and `WorldHistory.lean`, but this phase's own
+  verification criterion — `grep -rn "possible_worlds.tex:[0-9]" FormalSystem/ --include=*.lean`
+  returns nothing — is repo-wide over `FormalSystem/`. Three further files carried locators of
+  exactly that form and would have kept the criterion red:
+  - `FormalSystem/Syntax/Formula.lean` — `possible_worlds.tex:3250` → the `TMP-CO` `\aitem`
+    anchor with its verbatim `\aitem[CO]{TMP-CO} …` text
+  - `FormalSystem/Theorems/DedekindDerived.lean` — the same `possible_worlds.tex:3250` → the
+    same `TMP-CO` anchor and verbatim text
+  - `FormalSystem/Examples/TemporalStructures.lean` — `possible_worlds.tex:2423-2451` and
+    `possible_worlds.tex:908-926` → the `def:temporal-order` and `def:frame` anchors, with
+    `def:temporal-order` quoted verbatim
+  Every edit is the same class as the declared work (bare locator replaced by a `\label` /
+  `\aitem` anchor with verbatim quoted text, per the binding "a bare locator is never a
+  citation" rule), is comment-only, and changes no declaration. Judged in scope.
+- **Two residual paper locators in a different textual form were deliberately NOT touched**
+  (skipped, out of scope). They do not match this phase's declared grep and lie outside its
+  enumerated site list:
+  - `FormalSystem/Metalogic/Soundness.lean:95` — "JPL Paper app:valid (line 1984)". Already
+    carries an anchor (`app:valid`); only the parenthetical line number is stale decoration.
+  - `FormalSystem/Semantics/Truth.lean:46` — "matches paper's domain check at line 892 (atoms
+    false outside domain)". This is more than a citation defect: `def:BL-semantics`'s current
+    atom clause is `$\M,\tau,x \vDash p_i$ \textit{iff} $\tau(x) \in |p_i|$` — the `dom`
+    conjunct was explicitly removed, so the claim is substantively stale, not merely
+    ill-cited. Repairing it is `def:BL-semantics` / `TruthAt` architecture work, which
+    `paper-definitions-of-record.md` assigns to the separate consequence-refactor scope; it is
+    not a docstring correction and is not settled here.
 
 ---
 

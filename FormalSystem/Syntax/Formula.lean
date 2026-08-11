@@ -464,9 +464,12 @@ The paper's **CO** formula (Cauchy/completeness-of-order principle), as a *named
 
   `CO(φ) := △(Hφ → F(Hφ)) → (Hφ → Gφ)`
 
-**Source**: `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex:3250`
-(`def:TMplus-c`), where CO is listed as the extra axiom distinguishing the complete-order
-extension of the base tense logic.
+**Source**: JPL paper anchor `TMP-CO` (the `\aitem[CO]{TMP-CO}` entry inside `def:TMplus-c`;
+displayed key CO), verbatim:
+"`\aitem[CO]{TMP-CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow
+(\Past\varphi \rightarrow \Future\varphi)$.`"
+There CO is listed as the extra axiom distinguishing the complete-order extension of the base
+tense logic.
 
 **Operator resolution (important).** The `△` here is the **temporal** triangle
 `Formula.always` — i.e. `△ψ = Hψ ∧ ψ ∧ Gψ` (see `Formula.always` immediately above) — and

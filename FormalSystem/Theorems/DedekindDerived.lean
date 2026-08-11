@@ -356,8 +356,11 @@ private noncomputable def coEventBot {fc : FrameClass} (φ : Formula) :
 
 `⊢[fc] △(Hφ → F(Hφ)) → (Hφ → Gφ)` whenever `FrameClass.Dedekind ≤ fc`.
 
-**Source of the formula**: `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex:3250`
-(`def:TMplus-c`), where CO is the extra axiom of the paper's complete-order extension BX_c. The
+**Source of the formula**: JPL paper anchor `TMP-CO` (the `\aitem[CO]{TMP-CO}` entry inside
+`def:TMplus-c`; displayed key CO), verbatim:
+"`\aitem[CO]{TMP-CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow
+(\Past\varphi \rightarrow \Future\varphi)$.`"
+There CO is the extra axiom of the paper's complete-order extension BX_c. The
 `△` is the temporal triangle `Formula.always`, not `Formula.box`; see `Formula.co`.
 
 **CO is derived here, not primitive.** No `Axiom.co` constructor exists; the official

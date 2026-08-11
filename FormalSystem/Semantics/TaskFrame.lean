@@ -17,18 +17,31 @@ This module defines task frames, the fundamental semantic structures for bimodal
 
 ## Paper Specification Reference
 
-**Task Frames (app:TaskSemantics, def:frame, possible_worlds.tex:2423-2451)**:
-The JPL paper "The Perpetuity Calculus of Agency" defines a frame as a structure
-`F = ⟨W, D, ⇒⟩` where:
-- `W` is a **nonempty** set of world states
-- `D = ⟨D, +, 0, ≤⟩` is a **nontrivial** totally ordered abelian group of durations
-- `⇒ ⊆ W × D⁺ × W` is a task relation on the **positive cone** `D⁺ = {x ∈ D : 0 ≤ x}`,
-  extended to negative durations by the **converse convention** `w ⇒_x u := u ⇒_{-x} w`
-  for `x < 0`, and determining for each `w` and each `x > 0` the **cone**
-  `(w)_x = {u : w ⇒_y u for some |y| < x}` over the extended relation, subject to:
-  - *Nullity*: `w ⇒_0 u` if and only if `w = u`.
-  - *Compositionality*: if `w ⇒_x u` and `u ⇒_y v` then `w ⇒_{x + y} v` (on `D⁺`).
-  - *Limit Nullity*: `⋂_{x > 0} (w)_x = {w}`.
+**Task Frames (`def:frame`)**:
+The JPL paper "The Perpetuity Calculus of Agency" defines a frame (verbatim: "A \textit{frame}
+is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world states, $\D$ is
+a temporal order, and $\Rightarrow$ is a task relation satisfying the following for
+$x, y \geq 0$") with exactly FOUR axioms:
+- *Compositionality* (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if
+  and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$." — a
+  BICONDITIONAL: right-to-left is composition, left-to-right is interpolation, and both
+  directions are load-bearing.
+- *Seriality* (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+  for some $u, v \in W$."
+- *Limit* (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$."
+- *Spherical* (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
+  directed family $\mathcal{S}$ of nonempty fibers and segments."
+
+Nullity is NOT an axiom. The paper's `lem:nullity` (verbatim: "$w \Rightarrow_0 w$ for every
+world state $w \in W$ in every frame $\F = \tuple{W, \D, \Rightarrow}$.") is DERIVED,
+choice-free, from *Seriality* at `x = 0` plus *Limit*, and asserts reflexivity only.
+
+The supporting apparatus — nonempty `W`, the positive-cone primitive relation, the converse
+convention, fiber, cone, and segment (`def:task-relation`), and the directed family
+(`def:directed`) — is transcribed in this module's "Fiber, cone, segment, and directed-family
+apparatus" section. The temporal order is `def:temporal-order` (verbatim: "A \textit{temporal
+order} is a nontrivial totally ordered abelian group $\D = \tuple{D, +, 0, \leq}$ with
+\textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$.").
 
 **ProofChecker Implementation**:
 This implementation generalizes the time group to any type `D` with an
@@ -43,49 +56,58 @@ This allows for various temporal structures:
 - `Real`: Continuous real time (for physical systems)
 - Custom bounded or modular time structures
 
-**Alignment Verification** — this module *agrees* with the paper's official presentation:
-- Paper's *Nullity* is an iff, and `nullity_identity : TaskRel w 0 u ↔ w = u` is an exact match.
-- Paper's *Compositionality* on the positive cone is `forward_comp`, whose `0 ≤ x` and `0 ≤ y`
-  hypotheses are how the paper's domain restriction is expressed against a two-sided relation.
-  The law is the **lax** one (`R_{x + y} ⊇ R_x ∘ R_y`); the inclusion replaces the usual
-  equality, which would additionally assert interpolation and is **not** adopted
-  (possible_worlds.tex:964, which calls the positive-cone presentation "its official form").
+**Alignment status relative to the four-axiom `def:frame`**:
 - The two-sided `TaskRel` together with the `converse` field **is** the paper's extended
-  relation over a primitive relation living on the positive cone. `converse` packages the
-  paper's definitional converse convention as structure data; it is not an extra
+  relation over a primitive relation living on the positive cone. `converse` packages
+  `def:task-relation`'s definitional converse convention as structure data; it is not an extra
   temporal-symmetry axiom.
+- `forward_comp` is the `←` (composition) HALF of the paper's biconditional *Compositionality*;
+  the `→` (interpolation) direction is a known gap that lands with the structure change.
+- `nullity_identity` is an iff, strictly STRONGER than the paper's derived `lem:nullity`
+  (reflexivity only). Its final form is an open design question — see the field's docstring.
 - Reflection (`nullity`) and backward composition (`backward_comp`) are **derived** here,
-  matching their derived status in the paper (possible_worlds.tex:954-959).
+  matching `lem:nullity`'s derived status in the paper.
 - Mixed-sign composition is not so much prohibited as **inexpressible at the primitive level**,
-  since primitive durations are nonnegative. Were it extended across mixed signs, *Nullity*
-  would collapse nondeterminism: `w ⇒_x u` and `w ⇒_x u'` give `u ⇒_{-x} w` by the converse
-  convention, whence `u ⇒_0 u'` and so `u = u'` (possible_worlds.tex:957-959).
+  since primitive durations are nonnegative.
 - The ordered additive group structure provides the required abelian group with total order.
 
 **Known gaps relative to the paper** (stated plainly rather than silently repaired):
-- The paper requires `W` nonempty; the structure carries no `Nonempty WorldState` field.
-- The paper requires `D` nontrivial; `[Nontrivial D]` is not among the structure's binders and
-  is supplied ad hoc at the sites that need it.
-- *Limit Nullity* is the one paper clause still absent from the structure. Its intended
-  transcription against the extended relation is
-  `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w`; the `⊇` half of the paper's
-  equality is `nullity` plus cone monotonicity and needs no field.
+- The paper requires `W` nonempty (`def:task-relation`); the structure carries no
+  `Nonempty WorldState` field.
+- The paper requires `D` nontrivial (`def:temporal-order`); `[Nontrivial D]` is not among the
+  structure's binders, though `valid`/`SemanticConsequence` (Semantics/Validity.lean) already
+  carry it — the gap is exactly and only at structure level.
+- *Seriality* (`def:frame#Seriality`) is absent from the structure.
+- *Limit* (`def:frame#Limit`) is absent from the structure. Its transcription against the
+  extended relation is `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w`; the `⊇`
+  half of the paper's equality is `nullity` plus cone membership and needs no field. The two
+  reusable discharge routes are `limit_of_succOrder` and `limit_of_shift` below.
+- The interpolation (`→`) direction of *Compositionality* (`def:frame#Compositionality`) is
+  absent; only the `←` half is carried, as `forward_comp`.
+- *Spherical* (`def:frame#Spherical`) is absent from the structure. The apparatus that makes it
+  statable — `Fib`, `cone`, `Seg`, `DirectedFamily`, `IsFiber`, `IsSegment` — is defined below
+  and awaits consumption by the structure change.
 
 ## Main Definitions
 
 - `TaskFrame D`: Structure with world states, times of type `D`, task relation, and constraints
-- `TaskFrame.nullity_identity`: Zero duration iff identity (`TaskRel w 0 u ↔ w = u`)
-- `TaskFrame.forward_comp`: Lax positive-cone compositionality (`0 ≤ x`, `0 ≤ y`)
+- `TaskFrame.nullity_identity`: Zero duration iff identity (`TaskRel w 0 u ↔ w = u`) —
+  stronger than the paper's derived `lem:nullity`; open design question, see its docstring
+- `TaskFrame.forward_comp`: the `←` (composition) half of the paper's biconditional
+  *Compositionality* (`0 ≤ x`, `0 ≤ y`)
 - `TaskFrame.converse`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
-- `TaskFrame.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`)
+- `TaskFrame.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, matching `lem:nullity`)
+- `TaskFrame.Fib`, `TaskFrame.cone`, `TaskFrame.Seg`, `TaskFrame.DirectedFamily`,
+  `TaskFrame.IsFiber`, `TaskFrame.IsSegment`: the `def:task-relation` / `def:directed`
+  apparatus over a bare relation
 
 ## Main Results
 
-- `TaskFrame.limit_nullity_of_succOrder`: Limit Nullity is automatic over a discrete duration
+- `TaskFrame.limit_of_succOrder`: *Limit* is automatic over a discrete duration
   type (`[SuccOrder D] [NoMaxOrder D]`)
-- `TaskFrame.limit_nullity_of_shift`: Limit Nullity is automatic for deterministic-shift frames
+- `TaskFrame.limit_of_shift`: *Limit* is automatic for deterministic-shift frames
   over any nontrivial duration type, dense included
-- `TaskFrame.exists_uniform_radius_of_finite`: on a finite carrier, Limit Nullity upgrades to a
+- `TaskFrame.exists_uniform_radius_of_finite`: on a finite carrier, *Limit* upgrades to a
   uniform positive radius around each state
 - Example task frames for testing and demonstrations (polymorphic over time type)
 
@@ -94,15 +116,19 @@ This allows for various temporal structures:
 - Type parameter `D` represents temporal duration with ordered additive group structure
 - Task relation `TaskRel w x u` means: world state `u` is reachable from `w` by task
   of duration `x`
-- Nullity: zero-duration task is identity, stated as an iff
-- Compositionality: sequential tasks compose on the positive cone (lax law, no interpolation)
+- Nullity: zero-duration task is identity, stated as an iff (open design question against the
+  paper's reflexivity-only `lem:nullity`)
+- Compositionality: currently only the `←` (composition) half on the positive cone; the paper's
+  axiom is a biconditional whose interpolation direction is not yet carried
 - Typeclass parameter convention: `(D : Type*)` explicit, ordered group instances implicit
 
 ## References
 
 * [architecture.md](../../../docs/user-guide/architecture.md) - Task semantics specification
-* JPL Paper app:TaskSemantics (def:frame, possible_worlds.tex:2423-2451) - Formal task frame
-  definition; the body statement is at possible_worlds.tex:908-926 with gloss at 932
+* JPL Paper anchors `def:frame` (with sub-anchors `def:frame#Compositionality`,
+  `def:frame#Seriality`, `def:frame#Limit`, `def:frame#Spherical`), `def:task-relation`,
+  `def:directed`, `def:temporal-order`, and `lem:nullity` — cited by `\label` anchor with
+  verbatim quotes above, never by raw line number
 -/
 
 namespace FormalSystem.Semantics
@@ -124,30 +150,29 @@ executing a task of duration `x` can result in world state `u`.
 **Type Parameters**:
 - `D`: Temporal duration type with totally ordered abelian group structure
 
-**Paper Alignment**: Matches JPL paper def:frame (possible_worlds.tex:2423-2451) on three of
-its four clauses — iff-*Nullity*, the lax positive-cone *Compositionality*, and the converse
-convention. *Limit Nullity* is not yet carried as a field; see the module docstring's
-"Known gaps" list for its intended transcription.
+**Paper Alignment**: The paper's `def:frame` carries exactly FOUR axioms — *Compositionality*
+(a biconditional), *Seriality*, *Limit*, *Spherical* — and no Nullity axiom (`lem:nullity` is
+derived, reflexivity only). This structure currently carries the converse convention
+(`converse`), the `←` half of *Compositionality* (`forward_comp`), and an iff-form
+zero-duration law (`nullity_identity`) that is strictly stronger than the paper's derived
+`lem:nullity`. See the module docstring's "Known gaps" list for everything absent.
 
 **Axiomatization Notes**:
-The paper's own presentation takes the primitive task relation to live on the positive cone
-`D⁺ = {x : 0 ≤ x}` and extends it to negative durations by the converse convention. This
-structure is that presentation: the two-sided `TaskRel` is the *extended* relation, `converse`
-is the convention that defines it from the primitive one, and `forward_comp`'s `0 ≤ x`, `0 ≤ y`
-hypotheses confine composition to the primitive domain. The paper calls this positive-cone form
-"not merely equivalent to the definition above but its official form" and states the law as the
-**lax** inclusion `R_{x + y} ⊇ R_x ∘ R_y`, the inclusion replacing an equality that would
-additionally assert interpolation (possible_worlds.tex:964).
+The paper's own presentation (`def:task-relation`) takes the primitive task relation to live on
+the positive cone `D⁺ = {x : 0 ≤ x}` and extends it to negative durations by the converse
+convention. This structure is that presentation: the two-sided `TaskRel` is the *extended*
+relation, `converse` is the convention that defines it from the primitive one, and
+`forward_comp`'s `0 ≤ x`, `0 ≤ y` hypotheses confine composition to the primitive domain.
 
-Consequently *Reflection* and backward composition are derived rather than postulated here
-(`nullity`, `backward_comp`), exactly as in the paper, and mixed-sign composition is not
-prohibited but inexpressible at the primitive level, since primitive durations are nonnegative.
-The paper gives the same nondeterminism-collapse argument for why it must stay that way: from
-`w ⇒_x u` and `w ⇒_x u'` the converse convention yields `u ⇒_{-x} w`, so mixed-sign composition
-would give `u ⇒_0 u'` and hence `u = u'` (possible_worlds.tex:957-959).
+The paper's *Compositionality* (`def:frame#Compositionality`, verbatim: "$w \Rightarrow_{x + y}
+v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$") is a
+BICONDITIONAL: its right-to-left (composition) direction is `forward_comp`, and its
+left-to-right (interpolation) direction is a known gap that lands with the structure change.
 
-This block previously recorded a divergence from the paper. There is none: the paper has since
-adopted the same positive-cone presentation, and the agreement is recorded here instead.
+*Reflection* and backward composition are derived rather than postulated here (`nullity`,
+`backward_comp`), matching `lem:nullity`'s derived status in the paper, and mixed-sign
+composition is not prohibited but inexpressible at the primitive level, since primitive
+durations are nonnegative.
 -/
 structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
   /-- Type of world states -/
@@ -159,6 +184,16 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
 
   For any world states `w` and `u`, `TaskRel w 0 u` holds iff `w = u`.
   This is stronger than just reflexivity: it says zero duration means no change.
+
+  **Strictly stronger than the paper — OPEN DESIGN QUESTION.** The paper has no Nullity axiom:
+  `lem:nullity` (verbatim: "$w \Rightarrow_0 w$ for every world state $w \in W$ in every frame
+  $\F = \tuple{W, \D, \Rightarrow}$.") is DERIVED, choice-free, from *Seriality* at `x = 0`
+  plus *Limit*, and asserts reflexivity only. This field's iff form additionally asserts
+  injectivity-at-zero. Three live options: (a) demote it to a derived lemma proved from
+  Seriality + Limit once those land; (b) keep the iff as a deliberate, documented
+  strengthening; (c) keep reflexivity derived and drop injectivity-at-zero. The choice is
+  joint with the consequence-refactor work and is deliberately NOT settled by this module;
+  the field stays as-is until that joint decision lands.
   -/
   nullity_identity : ∀ w u, TaskRel w 0 u ↔ w = u
   /--
@@ -167,11 +202,13 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   If task of duration `x ≥ 0` takes `w` to `u`, and task of duration `y ≥ 0` takes `u` to `v`,
   then task of duration `x + y` takes `w` to `v`.
 
-  The paper states *Compositionality* proviso-free, but on a primitive relation that already
-  lives on the positive cone `D⁺`; the `0 ≤ x`, `0 ≤ y` hypotheses are how that domain
-  restriction is expressed against the two-sided extended relation. The law is the **lax**
-  inclusion `R_{x + y} ⊇ R_x ∘ R_y`: an equality would additionally assert interpolation and is
-  not adopted. Composition over negative durations is derived (`backward_comp`); mixed-sign
+  **This is the `←` (composition) HALF of the paper's biconditional.**
+  `def:frame#Compositionality` (verbatim: "$w \Rightarrow_{x + y} v$ if and only if
+  $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$") is an iff whose
+  right-to-left direction is this field and whose left-to-right (interpolation) direction is a
+  known gap that lands with the structure change. The `0 ≤ x`, `0 ≤ y` hypotheses are how the
+  paper's positive-cone domain restriction is expressed against the two-sided extended
+  relation. Composition over negative durations is derived (`backward_comp`); mixed-sign
   composition is inexpressible at the primitive level rather than prohibited.
   -/
   forward_comp : ∀ w u v x y, 0 ≤ x → 0 ≤ y → TaskRel w x u → TaskRel u y v → TaskRel w (x + y) v
@@ -181,8 +218,10 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   `TaskRel w d u` holds iff `TaskRel u (-d) w` holds.
 
   This is *not* a substantive temporal-symmetry axiom. The paper's primitive task relation
-  lives on the positive cone `D⁺ = {x : 0 ≤ x}` and is extended to negative durations by
-  stipulating `w ⇒_x u := u ⇒_{-x} w` for `x < 0` (possible_worlds.tex:2423-2451). A two-sided
+  lives on the positive cone `D⁺ = {x : 0 ≤ x}` and is extended to negative durations by the
+  converse convention (`def:task-relation`, verbatim: "extended to negative durations by the
+  \textit{converse convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for
+  $x \geq 0$"). A two-sided
   Lean relation cannot carry that stipulation in its type, so it is carried as this field: the
   pair (two-sided `TaskRel`, `converse`) is precisely the paper's *extended* relation over a
   primitive relation on `D⁺`, and it constrains the negative half of `TaskRel` to be exactly
@@ -228,10 +267,10 @@ theorem backward_comp (F : TaskFrame D) (w u v : F.WorldState) (x y : D)
   exact F.converse w (x + y) v |>.mpr h3
 
 /-!
-### Limit Nullity discharge helpers
+### Limit discharge helpers
 
-The paper's *Limit Nullity* clause (`⋂_{x > 0} (w)_x = {w}`, possible_worlds.tex:2423-2451)
-transcribes against the extended relation as
+The paper's *Limit* axiom (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x =
+\set{w}$") transcribes against the extended relation as
 
 ```
 ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w
@@ -239,11 +278,13 @@ transcribes against the extended relation as
 
 The two theorems below are the two reusable ways to discharge that obligation. They are stated
 against a bare relation `R : W → D → W → Prop` rather than against a `TaskFrame` field, so they
-apply verbatim to a frame's `TaskRel` whether or not the clause is carried as structure data.
+apply verbatim to a frame's `TaskRel` whether or not the axiom is carried as structure data.
+(An earlier paper wave folded Nullity into this axiom's name; the paper's current name is
+simply *Limit*, and the helpers are named accordingly.)
 -/
 
 /--
-Limit Nullity holds automatically over a duration type with a successor operation.
+*Limit* holds automatically over a duration type with a successor operation.
 
 Over a `SuccOrder`, `Order.succ 0` is a positive duration with nothing strictly between it and
 `0` in absolute value, so the hypothesis at `x = Order.succ 0` already forces the witness
@@ -258,7 +299,7 @@ throughout `SoundnessLemmas/FrameClassVariants.lean`) therefore subsumes both hy
 frame carrying that bundle needs any new hypothesis to apply this lemma. `IsSuccArchimedean` is
 not used.
 -/
-theorem limit_nullity_of_succOrder [SuccOrder D] [NoMaxOrder D]
+theorem limit_of_succOrder [SuccOrder D] [NoMaxOrder D]
     {W : Type} {R : W → D → W → Prop} (hnull : ∀ w u, R w 0 u ↔ w = u) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w := by
   intro w u h
@@ -269,11 +310,11 @@ theorem limit_nullity_of_succOrder [SuccOrder D] [NoMaxOrder D]
   exact ((hnull w u).mp hR).symm
 
 /--
-Limit Nullity holds for any deterministic-shift frame, over *any* duration type — dense included.
+*Limit* holds for any deterministic-shift frame, over *any* duration type — dense included.
 
 A frame is a *deterministic shift* when the duration of a transition is recoverable from its
 endpoints, via a position function `pos : W → D` with `R w y u → pos u = pos w + y`. The witness
-duration supplied by the Limit Nullity hypothesis is then the *same* `pos u - pos w` for every
+duration supplied by the *Limit* hypothesis is then the *same* `pos u - pos w` for every
 radius `x`, so `|pos u - pos w| < x` for all `x > 0` and the shift must be `0`; `hzero` then
 closes the goal.
 
@@ -286,7 +327,7 @@ This is the shape of every flow-style frame — carriers of the form `Index × D
 advances the second component by the duration — so it is the discharge route for the bundled
 flow frames as well as the multi-family bridge frames.
 -/
-theorem limit_nullity_of_shift [Nontrivial D] {W : Type} (pos : W → D)
+theorem limit_of_shift [Nontrivial D] {W : Type} (pos : W → D)
     {R : W → D → W → Prop}
     (hshift : ∀ w y u, R w y u → pos u = pos w + y)
     (hzero : ∀ w u, R w 0 u → u = w) :
@@ -316,25 +357,25 @@ theorem limit_nullity_of_shift [Nontrivial D] {W : Type} (pos : W → D)
   exact hzero w u hR₀
 
 /--
-On a finite carrier, Limit Nullity upgrades to a *uniform* positive radius around each state.
+On a finite carrier, *Limit* upgrades to a *uniform* positive radius around each state.
 
-Limit Nullity is a pointwise limit statement: for each `u ≠ w` there is *some* radius below
+*Limit* is a pointwise limit statement: for each `u ≠ w` there is *some* radius below
 which `u` is unreachable from `w`. When the carrier is finite, taking the minimum of those
 radii over the carrier turns this into a single positive `x` that works for every `u` at once:
 nothing but `w` is reachable from `w` within `x`.
 
-**Consequence.** A finite frame satisfying Limit Nullity over a densely ordered duration type is
+**Consequence.** A finite frame satisfying *Limit* over a densely ordered duration type is
 temporally *rigid*: a world history through `w` at time `t` is constant on `(t - x, t + x)`, so
 over a dense duration domain histories are locally constant. That is the correct content of the
 axiom, not a defect — but it means the filtration and FMP frames cannot remain
-dense-polymorphic once Limit Nullity is carried as a frame axiom. The move of FMP to `ℤ` is
+dense-polymorphic once *Limit* is carried as a frame axiom. The move of FMP to `ℤ` is
 therefore forced by the axiom rather than being a convenience.
 
 **Status.** This is the deliberate substitute for the paper's cone-topology T1 result
 (`app:topology-r0`). Formalizing that result requires first building the cone topology — `(w)_x`
 as a basis, a proof that it *is* a basis, a `TopologicalSpace` instance — and no topology exists
 anywhere in this library; the infrastructure, not the one-line proof, is the cost. This lemma
-gives a machine-checked consequence of Limit Nullity in the same cost bracket, is topology-free,
+gives a machine-checked consequence of *Limit* in the same cost bracket, is topology-free,
 and has direct bearing on the finite-model constructions.
 -/
 theorem exists_uniform_radius_of_finite [Nontrivial D] {W : Type} [Fintype W]
@@ -348,7 +389,7 @@ theorem exists_uniform_radius_of_finite [Nontrivial D] {W : Type} [Fintype W]
     rcases lt_or_gt_of_ne ha with hlt | hgt
     · exact ⟨-a, neg_pos.mpr hlt⟩
     · exact ⟨a, hgt⟩
-  -- Pointwise: each `u` has its own radius, from the contrapositive of Limit Nullity.
+  -- Pointwise: each `u` has its own radius, from the contrapositive of *Limit*.
   have hrad : ∀ u : W, ∃ x : D, 0 < x ∧ ∀ y, |y| < x → R w y u → u = w := by
     intro u
     by_cases huw : u = w

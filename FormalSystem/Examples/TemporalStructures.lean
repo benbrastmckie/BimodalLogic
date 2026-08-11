@@ -17,11 +17,13 @@ with ProofChecker's generalized semantics. The polymorphic `TaskFrame T` and
 
 ## Paper Alignment
 
-The JPL paper "The Perpetuity Calculus of Agency"
-(§app:TaskSemantics, def:frame, possible_worlds.tex:2423-2451)
-specifies that the temporal structure is a "totally ordered abelian group D = ⟨D, +, ≤⟩".
-ProofChecker implements this via the unbundled typeclasses `[AddCommGroup D] [LinearOrder D]
-[IsOrderedAddMonoid D]`, which provide exactly this structure.
+The JPL paper "The Perpetuity Calculus of Agency" specifies the temporal structure in
+`def:temporal-order` (verbatim): "A \textit{temporal order} is a nontrivial totally ordered
+abelian group $\D = \tuple{D, +, 0, \leq}$ with \textit{positive cone}
+$D^+ \coloneq \set{x \in D : x \geq 0}$." ProofChecker implements the ordered abelian group
+via the unbundled typeclasses `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]`; the
+paper's nontriviality requirement is supplied at the sites that need it rather than by the
+`TaskFrame` structure (see TaskFrame.lean's known-gaps list).
 
 ## Example Temporal Types
 
@@ -55,8 +57,9 @@ includes:
 
 * [TaskFrame.lean](../ProofChecker/Semantics/TaskFrame.lean) - TaskFrame definition
 * [WorldHistory.lean](../ProofChecker/Semantics/WorldHistory.lean) - WorldHistory definition
-* JPL Paper app:TaskSemantics (def:frame, possible_worlds.tex:2423-2451) - Temporal structure
-  specification; the body statement is at possible_worlds.tex:908-926
+* JPL Paper anchors `def:temporal-order` (temporal structure, quoted verbatim above) and
+  `def:frame` (frame definition; see TaskFrame.lean's module docstring for the verbatim
+  four-axiom statement) — cited by `\label` anchor, never by raw line number
 -/
 
 namespace FormalSystem.Examples.TemporalStructures

@@ -13,16 +13,27 @@ This module defines world histories, which are functions from time domains to wo
 
 ## Paper Specification Reference
 
-**World Histories (app:TaskSemantics, def:world-history, line 1849)**:
-The JPL paper defines world histories (possible worlds) as functions `τ: X → W`
-where `X ⊆ D` is a **convex** subset of the time group `D` and the function respects
-the task relation: for all `x, y ∈ X` with `x ≤ y`, we have `τ(y) ∈ τ(x) · (y - x)`.
+**World Histories (`def:world-history`)**:
+The JPL paper's layering, quoted verbatim: "A \textit{partial history} over a frame
+$\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set
+$X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$. A
+\textit{world history} is any partial history whose domain $X$ is \textit{convex}, so that
+$y \in X$ whenever $x, z \in X$ and $x < y < z$. A world history is \textit{total}---
+equivalently, a \textit{possible world}--- just in case $X = D$."
 
 **ProofChecker Implementation**:
 - `domain: D → Prop` represents the convex time subset `X ⊆ D`
 - `convex` field enforces the paper's convexity requirement explicitly
 - `states: (t: D) → domain t → F.WorldState` represents the function `τ: X → W`
-- `respects_task` constraint matches the paper's requirement exactly
+- `respects_task` constraint matches the paper's task-respect requirement
+
+**Known gaps relative to `def:world-history`** (stated plainly rather than silently repaired):
+- NO nonemptiness field: the paper requires the domain `X` to be a *nonempty* set, so the
+  empty history is a legal Lean `WorldHistory` but is not a world history per the paper.
+- NO `PartialHistory` layer: the paper's partial history requires nonemptiness WITHOUT
+  convexity, so it cannot be carved out by weakening this structure.
+Introducing the paper's partial-history → world-history → total layering is deferred, joint
+scope with the consequence-refactor work; no field is changed here.
 
 **Convexity Requirement**: A domain is convex if whenever `x, z ∈ domain` with `x ≤ z`,
 then all times `y` with `x ≤ y ≤ z` are also in the domain. This ensures histories
@@ -54,7 +65,8 @@ have no "gaps" in time.
 
 * [architecture.md](../../../docs/user-guide/architecture.md) - World history specification
 * [TaskFrame.lean](TaskFrame.lean) - Task frame structure
-* JPL Paper app:TaskSemantics (def:world-history, line 1849) - Formal world history definition
+* JPL Paper anchor `def:world-history` — cited by `\label` anchor with the verbatim quote
+  above, never by raw line number
 -/
 
 namespace FormalSystem.Semantics
@@ -69,8 +81,15 @@ such that the history respects the task relation of the frame.
 - `D`: Temporal duration type with totally ordered abelian group structure
 - `F`: Task frame over temporal type `D`
 
-**Paper Alignment**: Matches JPL paper def:world-history (line 1849) with
-explicit convexity constraint on domain.
+**Paper Alignment**: PARTIALLY matches the paper's `def:world-history` (see the module
+docstring for the verbatim quote). This structure carries the convex domain, the state
+assignment, and the task-respect constraint, but it does NOT fully match: there is no
+nonemptiness field (the empty history is a legal Lean `WorldHistory` but not a world history
+per `def:world-history`), and the library has no `PartialHistory` layer at all (the paper's
+partial history requires nonemptiness WITHOUT convexity, so it cannot be carved out by
+weakening this structure). Closing that gap — the partial-history → world-history → total
+layering — is deferred, joint scope with the consequence-refactor work; no field is changed
+here.
 -/
 structure WorldHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F :
       TaskFrame D) where
@@ -82,8 +101,9 @@ structure WorldHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAd
   If times `x` and `z` are in the domain with `x ≤ z`, then every time `y`
   between them (`x ≤ y ≤ z`) must also be in the domain.
 
-  **Paper Reference**: JPL paper def:world-history (line 1849) requires domain
-  to be a convex subset of the time group.
+  **Paper Reference**: `def:world-history` (verbatim: "A \textit{world history} is any
+  partial history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever
+  $x, z \in X$ and $x < y < z$.").
   -/
   convex : ∀ (x z : D), domain x → domain z → ∀ (y : D), x ≤ y → y ≤ z → domain y
   /--
