@@ -9,7 +9,7 @@
     {
       "project_number": 439,
       "project_name": "guard_paper_definition_drift_with_definitions_of_record",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "topic": "paper-refactor",
       "priority": "high",
@@ -21,7 +21,7 @@
         "scripts/check-paper-definitions.sh"
       ],
       "created": "2026-08-10T23:40:48Z",
-      "last_updated": "2026-08-11T00:14:04Z",
+      "last_updated": "2026-08-11T00:25:39Z",
       "artifacts": [
         {
           "path": "specs/439_guard_paper_definition_drift_with_definitions_of_record/reports/01_paper-definition-drift-guard.md",
@@ -32,10 +32,16 @@
           "path": "specs/439_guard_paper_definition_drift_with_definitions_of_record/plans/01_paper-definition-drift-guard.md",
           "type": "plan",
           "summary": "Six-phase verification-and-finalization plan auditing the three already-authored deliverables rather than re-authoring them."
+        },
+        {
+          "path": "specs/439_guard_paper_definition_drift_with_definitions_of_record/summaries/01_paper-definition-drift-guard-summary.md",
+          "type": "summary",
+          "summary": "Independent verification of the definitions-of-record file, drift lint, and task-424 audit; corrected a live tracked-anchor drift."
         }
       ],
       "next_artifact_number": 1,
-      "session_id": "sess_1786405634_dbeba7"
+      "session_id": "sess_1786405634_dbeba7",
+      "completion_summary": "Independently re-verified all three pre-authored deliverables (definitions-of-record file, drift lint, task-424 audit) from scratch rather than trusting the prior dispatch's self-report. Caught and corrected a genuine live drift (the paper renamed \\label{thm:occurrence} to \\label{cor:occurrence} mid-verification, merging it with a former app:nonempty corollary); re-pinned the record's checksum/line count and confirmed the lint now passes cleanly (case a) against the live paper. Independently confirmed the 424->414 dependency edge is warranted (direct read of Truth.lean:128, the design document, and 414's charter) and introduces no cycle; kept it as-is. All non-goal boundaries (paper repo untouched, no FormalSystem/latex/typst/.claude writes, no task-number citation in the script) verified clean. Committed as 5a5ded090."
     },
     {
       "project_number": 425,

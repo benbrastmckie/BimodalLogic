@@ -11,7 +11,7 @@ next_project_number: 440
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,419,420,421,423,437,439 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,419,420,421,423,437 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,414,422,425,436 | 193,231,298,420,421,423,437 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,415,417,424,434 | 414,422,436 | decidability, paper-refactor, strong_completeness |
 | 4 | 362,427,432 | 169,415,417,419,434 | decidability, paper-refactor, strong_completeness |
@@ -85,7 +85,6 @@ next_project_number: 440
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
     └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
-439 [IMPLEMENTING] — PAPER-DEFINITION DRIFT GUARD. Build a definitions-of-record file 
 
 ### Strong Completeness
 
@@ -103,12 +102,13 @@ next_project_number: 440
 
 ### 439. Guard paper definition drift with definitions of record
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: paper-refactor
 - **Dependencies**: None
 - **Research**: [439_guard_paper_definition_drift_with_definitions_of_record/reports/01_paper-definition-drift-guard.md]
 - **Plan**: [439_guard_paper_definition_drift_with_definitions_of_record/plans/01_paper-definition-drift-guard.md]
+- **Summary**: [439_guard_paper_definition_drift_with_definitions_of_record/summaries/01_paper-definition-drift-guard-summary.md]
 
 **Description**: PAPER-DEFINITION DRIFT GUARD. Build a definitions-of-record file plus a local lint so that a change to the JPL paper's basic semantic definitions is DETECTED mechanically instead of being discovered by an agent mid-dispatch. This is infrastructure for the paper-refactor cluster, not cluster work: it does not restate, re-derive, or implement any definition, it only records the current ones and detects when they move.
 

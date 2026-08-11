@@ -7,6 +7,7 @@
 **Dependencies**: None
 **Sources/Inputs**: - Live paper source (`/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`), its git history, `specs/state.json`, `FormalSystem/Semantics/{Truth,Validity}.lean`, the archived task-361 design document, and the paper-refactor cluster's re-issued task descriptions (420, 414, 415, 417, 419, 427).
 **Artifacts**:
+- **Standards**: TBD
 - `specs/paper-definitions-of-record.md` (deliverable 1)
 - `scripts/check-paper-definitions.sh` (deliverable 2)
 - `specs/state.json` (task 424 description + dependencies edited; deliverable 3)
