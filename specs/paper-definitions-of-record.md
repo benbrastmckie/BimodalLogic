@@ -1,0 +1,463 @@
+# Paper Definitions of Record
+
+This file is the pinned, verbatim record of the semantic definitions that this repository
+depends on from the JPL paper (`/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`).
+The paper is **read-only input** to this repository: it is never edited from here, and this file
+never restates, re-derives, or "improves" any definition it records — it only quotes what the
+paper currently says and detects when that text moves.
+
+**Specs and task descriptions in this repository should cite this file, not the paper directly.**
+Citing the paper by bare line number has repeatedly gone stale (the paper moved through five
+definitional waves between 2026-08-08 and 2026-08-10, and a sixth wave landed on disk, uncommitted,
+while this very file was being authored — see "Recording provenance" below). Anchors here are
+resolved by `\label{}` name or `\aitem{}` key, never by line number, and `scripts/check-paper-definitions.sh`
+re-derives every hash below directly from the live paper file on every run.
+
+## Recording provenance
+
+| Field | Value |
+|---|---|
+| Paper file | `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` |
+| Paper git repo root | `/home/benjamin/Philosophy/Papers/PossibleWorlds` |
+| File path relative to repo root | `JPL/possible_worlds.tex` |
+| Base commit (`git HEAD` at recording time) | `eb5be99ea3f19a86c9891d7798e619890e36cd43` |
+| **File checksum at recording time (sha256, authoritative pin)** | `efe6fc74688aa5ee89b91957b3681771cdcbdfaacb6077040024c395c568cbbd` |
+| Line count at recording time | 3988 |
+| Recorded (UTC) | 2026-08-10T23:56:47Z |
+| **File checksum, re-pinned after drift correction (sha256, current authoritative pin)** | `485aa76449488f4c5ee75b001da68796a5d51ecd6ea448fd8e8e6587e1211a95` |
+| Line count, re-pinned after drift correction | 3999 |
+| Re-pinned (UTC) | 2026-08-11T00:25:00Z |
+
+<!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
+<!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
+<!-- PINNED_COMMIT: eb5be99ea3f19a86c9891d7798e619890e36cd43 -->
+<!-- FILE_CHECKSUM: 485aa76449488f4c5ee75b001da68796a5d51ecd6ea448fd8e8e6587e1211a95 -->
+<!-- LINE_COUNT: 3999 -->
+
+### Dirty-pin caveat (why the pin is a checksum, not a clean commit)
+
+At the moment this file was authored, the paper's working tree was **dirty relative to its own
+git HEAD**: `git status --porcelain` reported `M possible_worlds.tex` against base commit
+`eb5be99e` (`git diff --stat HEAD` showed 32 insertions / 12 deletions, net +12 lines). This is a
+live instance of the exact failure mode this file exists to guard against — a sixth definitional
+wave landing while this task was in flight — and it is recorded here rather than papered over.
+
+The dirty edit was independently confirmed, by re-deriving every hash below **both** before and
+after the edit landed, to be **entirely confined to the `def:constraints` / `lem:constraint` /
+`lem:admissible` proof-machinery neighborhood** (it restructured that proof and split out a new
+`lem:fibers` lemma) — a region deliberately **not** in this file's coverage (see "Deliberately
+not covered" below). Every anchor tracked in the manifest hashed identically before and after.
+This is exactly **case (b)** from `check-paper-definitions.sh`'s three-outcome contract: the paper
+changed, but no recorded definition drifted.
+
+Because the working tree was dirty and no clean commit captured the exact content this file
+quotes, the **file checksum** above (not the commit SHA) is the authoritative pin. The commit SHA
+is recorded as the best-available provenance anchor (the base the dirty edit was made against),
+not as a claim that the quoted content is byte-identical to that commit's committed blob — it is
+not (see the caveat's own diff above). Anyone citing this record should treat the checksum as
+ground truth and the commit SHA as "approximately where in history this sits."
+
+### Drift correction (2026-08-11, found during independent verification)
+
+The paper's dirty working tree moved **again** while this record was being independently
+verified — a live wave, on top of the wave described in the caveat above, occurring in real time
+during the verification pass rather than between authoring and verification. Two successive
+checksum changes were observed during verification (`efe6fc74...` recording-time →
+`645018ae...` mid-verification → `485aa764...`, the final, since-stable state this record is now
+re-pinned to). This is exactly the phenomenon this infrastructure exists to catch, and it is
+recorded here rather than silently re-pinned without explanation.
+
+Unlike the caveat's original dirty edit (confined to the excluded `def:constraints` neighborhood,
+case (b), no tracked anchor affected), **this wave genuinely drifted a tracked anchor**: the paper
+renamed `\label{thm:occurrence}` to `\label{cor:occurrence}` and merged its statement with a
+separate corollary formerly labelled `app:nonempty` (per the paper's own `%% CHANGE
+(occurrence-nonempty-merged)` editorial comment at the site), producing a strictly stronger
+statement — the evaluation time `x` is now universally given rather than merely existentially
+witnessed. `thm:extension`'s footnote, which cross-references the anchor by name, changed
+correspondingly (`\ref{thm:occurrence}` → `\ref{cor:occurrence}`), so both anchors' recorded text
+and hash were updated. This is case (c) — genuine drift — correctly caught by
+`check-paper-definitions.sh` against the live paper, not a false positive.
+
+**Correction applied**: the `thm:occurrence` entry above is renamed to `cor:occurrence` with its
+current verbatim text and freshly-derived hash; `thm:extension`'s entry is re-hashed to match its
+updated footnote; the manifest below reflects both changes; the file checksum and line count in
+the provenance table above are re-pinned to the post-correction live state. No other tracked
+anchor was affected by this wave (confirmed by re-running the full lint after this correction —
+see the implementation summary for the verbatim re-run output).
+
+**Known consequence of this correction**: `check-paper-definitions.sh --against eb5be99e...`
+(the recorded base commit) will now report `thm:extension`/`cor:occurrence` as drifted/dangling,
+because the rename is an uncommitted edit in the paper's working tree that postdates the base
+commit — the base commit still has the pre-rename `thm:occurrence` text. This is expected, not a
+lint defect: the checksum (re-pinned above), not the base commit, is this record's authoritative
+pin, exactly per the dirty-pin caveat's own logic. The no-argument invocation against the live
+paper — the check this lint exists to run day to day — passes cleanly (case a) as of this
+correction.
+
+## How to read this file
+
+Each entry below has:
+- **Anchor**: the `\label{}` name, or (for axioms introduced via the paper's `\aitem` macro) the
+  `\aitem` key together with its enclosing section.
+- **Verbatim text**: the exact LaTeX source of the defining block, quoted character-for-character
+  (including the block's own `%%` editorial-history comments where present — those are literal
+  source text and are quoted, not stripped, so the record and the hash always agree).
+- **Content hash**: `sha256` of exactly the quoted text (see "Hashing method" below).
+
+Anchors marked **DERIVED** are theorems/lemmas proved from the primitive definitions, not
+definitions themselves — recorded here because downstream tasks cite their exact statements as
+settled inputs, same as a definition.
+
+### Hashing method (must match `check-paper-definitions.sh` exactly)
+
+- **`env` anchors** (a `\label{X}` on the same line as `\begin{ENV}`, e.g. `\begin{Ddef} \label{def:frame}`):
+  the hash covers every line from that `\begin{ENV}` line (inclusive) through the next line
+  containing the literal string `\end{ENV}` (inclusive) — i.e. the whole definition/theorem
+  environment, including any editorial `%%` comment lines inside it.
+- **`item` anchors** (one of `def:frame`'s four axioms, which are `\item[\it NAME:]` entries with
+  no `\label` of their own): the enclosing environment is resolved first as above, then the hash
+  covers exactly the single line inside that block matching `\item[\it NAME:]`.
+- **`aitem` anchors** (an axiom introduced via the paper's `\newcommand{\aitem}[2][]{...\label{#2}}`
+  macro, e.g. `\aitem{CO}` or `\aitem[CO]{TMP-CO}`): the hash covers exactly the single line
+  matching `\aitem` (optionally `[KEY]`) `{LABEL}`.
+
+This assumes none of the tracked environments nest another instance of the same environment name
+inside itself (true for every entry below, verified at recording time) — the extraction takes the
+*first* matching `\end{ENV}` after the label line.
+
+---
+
+## Entries
+
+### `def:temporal-order` — temporal order, positive cone, nontrivial `D`
+
+```latex
+\begin{Ddef} \label{def:temporal-order}
+	A \textit{temporal order} is a nontrivial totally ordered abelian group $\D = \tuple{D, +, 0, \leq}$ with \textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$.
+\end{Ddef}
+```
+sha256: `bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f`
+
+### `def:task-relation` — task relation, nonempty `W`, converse convention, fiber, cone, segment
+
+```latex
+\begin{Ddef} \label{def:task-relation}
+	A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the \textit{converse convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$, determining the following for any world states $w, v \in W$ and durations $x, y \in D$:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[\it Fiber:] $\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}$.
+		\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)$ where $x > 0$.
+		\item[\it Segment:] $[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)$ where $x, y \geq 0$.
+	\end{enumerate}
+  \vspace{-.15in}
+\end{Ddef}
+```
+sha256: `b63a34aa6a9f64e5e18df88de658530739caa0561755e694d6cd4b983eeb267b`
+
+### `def:directed` — directed family (used by Spherical)
+
+```latex
+\begin{Ddef} \label{def:directed}
+	A nonempty family of sets $\mathcal{S}$ is \textit{directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
+\end{Ddef}
+```
+sha256: `ef9852efbe0e53cc226423bd2c9d5da0decba54cde07bd7f91f1e06515c97d20`
+
+### `def:frame` — the frame definition (whole block, all four axioms)
+
+```latex
+\begin{Ddef} \label{def:frame}
+	A \textit{frame} is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world states, $\D$ is a temporal order, and $\Rightarrow$ is a task relation satisfying the following for $x, y \geq 0$:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.
+		\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.
+		\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.
+		\item[\it Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family $\mathcal{S}$ of nonempty fibers and segments.
+    % \footnote{
+    %   Spherical is the directed-intersection condition $\mathbf{S}_1^d$ in the theory of ball spaces~\cite{Cmiel2021}.
+    % }
+	\end{enumerate}
+  \vspace{-.15in}
+\end{Ddef}
+```
+sha256: `944879579f6b176390b9622db9c9cdfa52f07bc3f8244bd3f01dac1f77ca6926`
+
+Four axioms, not more, not fewer — **Nullity is NOT an axiom**, it is `lem:nullity` below, DERIVED
+from Seriality and Limit. Each axiom is also tracked individually (sub-anchors of `def:frame`, no
+`\label` of their own — resolved as the enclosing block's `\item[\it NAME:]` line), so that a
+future paper edit which reorders or drops exactly one axiom is named precisely rather than only
+flagging "`def:frame` changed":
+
+| Sub-anchor | Verbatim text | sha256 |
+|---|---|---|
+| `def:frame#Compositionality` | `\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.` | `4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa` |
+| `def:frame#Seriality` | `\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.` | `ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad` |
+| `def:frame#Limit` | `\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.` | `3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec923cfdc165ca75dbe60a5f` |
+| `def:frame#Spherical` | `\item[\it Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family $\mathcal{S}$ of nonempty fibers and segments.` | `656c4b68708828cbf47849b70636c428257b45f6b9427fa0368d6876408947c9` |
+
+Note: **Compositionality is a biconditional**, not a one-directional implication — this is load
+bearing (the right-to-left direction is used directly in, e.g., the constraint-family proofs).
+
+### `lem:nullity` — DERIVED: `w ⇒₀ w` (Nullity is not an axiom)
+
+```latex
+\begin{Lthm} \label{lem:nullity}
+	$w \Rightarrow_0 w$ for every world state $w \in W$ in every frame $\F = \tuple{W, \D, \Rightarrow}$.
+\end{Lthm}
+```
+sha256: `7840512db4eb75a6f8d4224b80d784239e554f2742163722236df4778de8d9de`
+
+Proved (per the paper) from Seriality at `x = 0` plus Limit — choice-free, unlike `thm:extension`
+below which needs Zorn's lemma.
+
+### `def:world-history` — partial history, world history, totality, the extension order, `H_F`
+
+```latex
+\begin{Ddef} \label{def:world-history}
+	A \textit{partial history} over a frame $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$.
+	% Since the difference $y - x$ is negative whenever $y < x$, these instances are covered by the converse convention: $\tau(x) \Rightarrow_{y-x} \tau(y)$ then reads $\tau(y) \Rightarrow_{x-y} \tau(x)$.
+	A \textit{world history} is any partial history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever $x, z \in X$ and $x < y < z$.
+  A world history is \textit{total}--- equivalently, a \textit{possible world}--- just in case $X = D$.
+	A partial history $\sigma$ \textit{extends} $\tau$ just in case $\dom{\tau} \subseteq \dom{\sigma}$ and $\tau(x) = \sigma(x)$ for all $x \in \dom{\tau}$.
+	The set of all total world histories over $\F$ is denoted $H_{\F}$.
+\end{Ddef}
+```
+sha256: `4aaa6ec0db38ccbba25ce6dc61d81b8a28f82913ba6b2b1defabaa42f9caf205`
+
+Layering, exactly as the paper states it: **partial history** (nonempty domain, no convexity
+requirement) → **world history** (convex domain) → **total** / **possible world** (`X = D`). The
+vocabulary "task-constrained function" is retired paper-wide and must not be reintroduced as
+current terminology (see the paper-refactor cluster's task descriptions, which record the same
+point). `H_F` denotes only the *total* histories.
+
+### `thm:extension` — every partial history extends to a total world history
+
+```latex
+\begin{Tthm} \label{thm:extension}
+	Every partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history $\sigma \in H_{\F}$.%
+	  \footnote{
+	    The proof appeals to Zorn's lemma and hence to the axiom of choice, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the choice-free derivation of the zero loops in \textbf{\ref{lem:nullity}}.
+	  }
+\end{Tthm}
+```
+sha256: `af9b23bf53bd9194a496db497197a641317cd3882078f52654b890f1c08b6dab`
+
+### `cor:occurrence` — DERIVED: every world state occurs at any prescribed time in some total world history (renamed from `thm:occurrence`; see "Drift correction" below)
+
+```latex
+\begin{Cthm} \label{cor:occurrence}
+	For any frame $\F = \tuple{W, \D, \Rightarrow}$, world state $w \in W$, and time $x \in D$, there is a total world history $\tau \in H_{\F}$ where $\tau(x) = w$, and so $H_{\F} \neq \emptyset$.
+\end{Cthm}
+```
+sha256: `b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea`
+
+Follows from `thm:extension`, hence is also a ZFC (not choice-free) result. The paper merged the
+former `thm:occurrence` (existential over both the history and the time) with a separate
+`app:nonempty` corollary into this single, strictly stronger statement (time `x` is now given, not
+merely witnessed) under the new label `cor:occurrence` — see "Drift correction" below.
+
+### `def:BL-model` — model of `BL`
+
+```latex
+\begin{Ddef} \label{def:BL-model}
+	A \textit{model} of $\BL$ is a structure $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$ is a frame and $\vert{p_i} \subseteq W$ for every sentence letter $p_i \in \SL$.
+\end{Ddef}
+```
+sha256: `239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f`
+
+### `def:BL-semantics` — the truth clauses (TruthAt), including the box clause's quantifier domain
+
+```latex
+\begin{Ddef} \label{def:BL-semantics}
+%% CHANGE (fix.md B1): formal mirror of body 941 -- evaluation point is a world segment, matching def:world-history's renamed object.
+%% OLD: 	Truth in a model at a possible world and time is defined recursively:
+%% CHANGE (task 52 total-histories): mirror of the Phase 2 body edits -- evaluation point is a possible world (world history); atom clause loses the dom conjunct, matching the total, bivalent body clause.
+%% OLD: 	Truth in a model at a world segment and time is defined recursively:
+%% OLD: 		\item[($p_i$)] $\M,\tau,x \vDash p_i$ \textit{iff} $x \in \dom{\tau}$ and $\tau(x) \in |p_i|$.
+%% CHANGE (convex-domains): evaluation points are the total possible worlds in H_F, matching the body.
+%% OLD: 	Truth in a model at a possible world and time is defined recursively:
+%% CHANGE (two-tier): "total possible world" is redundant under the tier discipline -- possible worlds are total by definition.
+%% OLD: 	Truth in a model at a total possible world $\tau \in H_{\F}$ and time is defined recursively:
+	Truth in a model at a possible world $\tau \in H_{\F}$ and time is defined recursively:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[($p_i$)] $\M,\tau,x \vDash p_i$ \textit{iff} $\tau(x) \in |p_i|$.
+		\item[($\bot$)] $\M,\tau,x \nvDash \bot$.
+		\item[($\shortrightarrow$)] $\M,\tau,x \vDash \varphi \rightarrow \psi$ \textit{iff} $\M,\tau,x \nvDash \varphi$ or $\M,\tau,x \vDash \psi$.
+%% CHANGE (fix.md B1): formal mirror of body 946; must match exactly -- $\Box$ ranges over $H^{\max}_{\F}$.
+%% OLD: 		\item[($\Box$)] $\M,\tau,x \vDash \Box \varphi$ \textit{iff} $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H_{\F}$.
+%% CHANGE (task 52 total-histories): supersedes the fix.md B1 mirror edit above -- H^max_F is eliminated; Box ranges over H_F, matching the Phase 2 body clause exactly.
+%% OLD: 		\item[($\Box$)] $\M,\tau,x \vDash \Box \varphi$ \textit{iff} $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H^{\max}_{\F}$.
+		\item[($\Box$)] $\M,\tau,x \vDash \Box \varphi$ \textit{iff} $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H_{\F}$.
+		\item[($\Past$)] $\M,\tau,x \vDash \Past \varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y\in D$ where $y < x$.
+		\item[($\Future$)] $\M,\tau,x \vDash \Future \varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y\in D$ where $x < y$.
+	\end{enumerate}
+  \vspace{-.15in}
+\end{Ddef}
+```
+sha256: `8fec78985c2efea20d13c1e6d5c7536ae0e0d864172bbe0460441d61addf22e3`
+
+**The box clause's quantifier domain is `H_F`** — the full set of *total* world histories, not a
+maximal-history set `H^max_F` (that vocabulary is retired; the block's own `%%` comment history
+above shows it was explicitly eliminated) and not an externally-supplied `Omega` subset. This is
+the single most consequential clause for the current `paper-refactor` cluster: the Lean tree's
+`TruthAt` (`FormalSystem/Semantics/Truth.lean:128`) still takes an explicit
+`Omega : Set (WorldHistory F)` parameter and quantifies `Box` over `Omega`, not over the full
+total-history set directly — that is precisely the gap the cluster's total-history refactor
+closes. See "Downstream consumers" below.
+
+### `def:frame-validity` — validity over a frame
+
+```latex
+\begin{Ddef} \label{def:frame-validity}
+	A well-formed sentence $\varphi$ of $\BL$ is \emph{valid over a frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write $\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible world $\tau \in H_{\F}$, and time $x \in D$.
+\end{Ddef}
+```
+sha256: `2bcc85b0781fd4cc5af05d0741c64f44662706523cf023f3d5237d4ed1e8d1b9`
+
+### `def:logical-consequence` — logical consequence and (global) validity
+
+```latex
+\begin{Ddef} \label{def:logical-consequence}
+%% CHANGE (task 52 total-histories): the x in T typo is fixed to x in D, aligning the mirror with the Phase 3 body consequence definition (models, possible worlds tau in H_F, times x in D).
+%% OLD: 	A conclusion $\varphi$ is a \textit{logical consequence} of a set of premises $\Gamma$--- written $\Gamma \vDash \varphi$--- just in case for all models $\M$, possible worlds $\tau \in H_{\F}$, and times $x \in T$, if $\M,\tau,x \vDash \gamma$ for all premises $\gamma \in \Gamma$, then $\M,\tau,x \vDash \varphi$.
+	A conclusion $\varphi$ is a \textit{logical consequence} of a set of premises $\Gamma$--- written $\Gamma \vDash \varphi$--- just in case for all models $\M$, possible worlds $\tau \in H_{\F}$, and times $x \in D$, if $\M,\tau,x \vDash \gamma$ for all premises $\gamma \in \Gamma$, then $\M,\tau,x \vDash \varphi$.
+	A sentence $\varphi$ is \textit{valid} just in case $\vDash \varphi$.
+\end{Ddef}
+```
+sha256: `e65c228721a39f8622d2256988b574c96a6cb7fdd6723a2eb63ce8a1f87770f0`
+
+This block covers **both** logical consequence (`Γ ⊨ φ`) **and** global validity (`⊨ φ`, "valid
+just in case ⊨φ") — the paper defines them in the same `Ddef`. `def:frame-validity` above is the
+separate, frame-relative validity notion (`⊨_F φ`); the two are distinct anchors and both are
+tracked.
+
+### `CO` / `TMP-CO` — worked example of the `\aitem`-key anchor kind
+
+The paper introduces some axioms via a custom `\aitem[KEY]{LABEL}` macro
+(`\newcommand{\aitem}[2][]{\item[{\bf ...}] \refstepcounter{acount}\label{#2}%`), which sets the
+**bold displayed key** to its optional first argument (or, if omitted, to the second argument) and
+sets the **`\label`** (hence the `\aref`-resolvable anchor) to the second argument. This means a
+single displayed key like "CO" can correspond to *two different* `\label` anchors in different
+parts of the paper — exactly the case recorded here, per this task's explicit instruction to
+demonstrate the mechanism handles both anchor kinds:
+
+| Anchor (`\label`) | Displayed key | Verbatim text | sha256 |
+|---|---|---|---|
+| `CO` | CO | `\aitem{CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.` | `5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41` |
+| `TMP-CO` | CO (same displayed key, `BL^+` restatement) | `\aitem[CO]{TMP-CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.` | `2205e7115342b037faeb67a24cb7679e393af582cedf6752c0c07d9a28b8f1be` |
+
+`CO` and `TMP-CO` are **not** part of `def:frame`'s four axioms (an unrelated coincidence of
+abbreviation — `CO` here names a temporal continuity/completeness axiom, unrelated to `def:frame`'s
+"Compositionality"). They are included to keep the extraction mechanism exercised against both
+anchor kinds the paper actually uses, per this task's instruction; they are not otherwise consumed
+by a live task at recording time.
+
+### Satisfiability — **no paper-native definition exists** (recorded as a gap, not fabricated)
+
+The paper does not define "satisfiable" or "satisfiability" anywhere as a `\label`led `Ddef`,
+`\aitem`, or otherwise-named clause. This was confirmed by an exhaustive `satisfiab` grep over the
+current paper text: every occurrence is informal prose ("this is easy to satisfy", "satisfiability
+in HyperLTL is undecidable" in a related-work discussion), never a definition. This is independently
+corroborated by task 417's own governing description, which states the same finding in its own
+words ("Satisfiability has no labeled paper definition").
+
+**This file therefore does not, and must not, invent a satisfiability definition on the paper's
+behalf** — doing so would violate this file's own charter of recording only what the paper says.
+The Lean tree's `satisfiable` / `SatisfiableAbs` / `FormulaSatisfiable` (`FormalSystem/Semantics/Validity.lean:129,138,154`)
+are **repository-native vocabulary**, built from `def:logical-consequence`'s consequence relation
+(existential witness against `⊭ ⊥`-style unsatisfiability) but not themselves quoted from, or
+citable against, any paper anchor. Any future task that wants to claim "satisfiability" as a
+paper-sourced notion should be corrected to cite `def:logical-consequence` (consequence) instead,
+or should first get an actual `Ddef`/`\aitem` added to the paper before this file can track it.
+
+---
+
+## Deliberately not covered (scope boundary, not an oversight)
+
+The following paper machinery is adjacent to the entries above but was **not** included in this
+round's manifest, because it was not requested and adding it would widen this file's maintenance
+surface without a consuming task yet:
+
+- `def:constraints`, `lem:constraint`, `lem:admissible`, `lem:step`, and (as of the dirty edit
+  recorded above) the new `lem:fibers` — the proof-internal machinery supporting `thm:extension`.
+  This is exactly the region that moved in the live wave 6 edit described under "Dirty-pin
+  caveat" above; excluding it was a pre-existing scope decision, not a reaction to that edit.
+- `def:task-topology` and its topology properties (`T1`, `R0`, `Discrete`) — topology is not named
+  in this task's "cover at minimum" list.
+- `def:frame-properties` (`Discrete`, `Dense`, `Complete`, `Deterministic` frame classes).
+- `def:derivability`, `def:soundness` — proof-theoretic, not semantic, definitions; not named in
+  this task's "cover at minimum" list.
+- `def:time-shift-histories` and the time-shift preservation lemmas.
+
+If a future task needs to cite paper text for any of the above, add it here first (see "How to
+extend this record" below), rather than quoting the paper directly in a task spec.
+
+## Downstream consumers (informational, not authoritative — the tasks own their own scoping)
+
+At recording time, the following live tasks quote paper anchors tracked in this file directly in
+their `state.json` descriptions and should be re-checked against this file (not the paper) on any
+future revision: the `paper-refactor` cluster (tasks whose `topic` field is `paper-refactor` in
+`specs/state.json` — quote `def:frame`, `def:world-history`, `def:logical-consequence`,
+`def:BL-semantics`'s box clause, and `def:temporal-order`/`def:task-relation`/`def:directed`
+verbatim in their re-issued descriptions). See this task's own research report for the audit of
+task 424's exposure to the `def:BL-semantics` box-clause / `TruthAt` architecture.
+
+## How to extend this record
+
+1. Identify the anchor's `\label{}` name (environment case) or `\aitem` key + enclosing label
+   (item case) or `\aitem` label (aitem case) in the live paper — never a line number.
+2. Run `scripts/check-paper-definitions.sh --resolve "ANCHOR|KIND|ENCLOSING|LOCATOR"` (see that
+   script's `--help`) to print the currently-resolved text and its sha256.
+3. Add a new `### \`ANCHOR\`` entry above quoting that text verbatim, and add a row to the
+   machine-readable manifest below with the printed hash.
+4. Re-run `scripts/check-paper-definitions.sh` with no arguments and confirm it reports the quiet
+   case-(a) pass.
+
+## Machine-readable manifest
+
+`scripts/check-paper-definitions.sh` parses the fenced block below directly — it is the single
+source of truth for anchor IDs, kinds, and expected hashes; the prose entries above exist for
+human readability and are not machine-parsed. Columns: `anchor_id|kind|enclosing|locator|sha256`.
+`kind` is one of `env`, `item`, `aitem` (see "Hashing method" above). `-` means "not applicable".
+
+<!-- MANIFEST:BEGIN -->
+```
+# anchor_id|kind|enclosing|locator|sha256
+def:temporal-order|env|-|-|bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f
+def:task-relation|env|-|-|b63a34aa6a9f64e5e18df88de658530739caa0561755e694d6cd4b983eeb267b
+def:directed|env|-|-|ef9852efbe0e53cc226423bd2c9d5da0decba54cde07bd7f91f1e06515c97d20
+def:frame|env|-|-|944879579f6b176390b9622db9c9cdfa52f07bc3f8244bd3f01dac1f77ca6926
+def:frame#Compositionality|item|def:frame|Compositionality|4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa
+def:frame#Seriality|item|def:frame|Seriality|ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad
+def:frame#Limit|item|def:frame|Limit|3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec923cfdc165ca75dbe60a5f
+def:frame#Spherical|item|def:frame|Spherical|656c4b68708828cbf47849b70636c428257b45f6b9427fa0368d6876408947c9
+lem:nullity|env|-|-|7840512db4eb75a6f8d4224b80d784239e554f2742163722236df4778de8d9de
+def:world-history|env|-|-|4aaa6ec0db38ccbba25ce6dc61d81b8a28f82913ba6b2b1defabaa42f9caf205
+thm:extension|env|-|-|af9b23bf53bd9194a496db497197a641317cd3882078f52654b890f1c08b6dab
+cor:occurrence|env|-|-|b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea
+def:BL-model|env|-|-|239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f
+def:BL-semantics|env|-|-|8fec78985c2efea20d13c1e6d5c7536ae0e0d864172bbe0460441d61addf22e3
+def:frame-validity|env|-|-|2bcc85b0781fd4cc5af05d0741c64f44662706523cf023f3d5237d4ed1e8d1b9
+def:logical-consequence|env|-|-|e65c228721a39f8622d2256988b574c96a6cb7fdd6723a2eb63ce8a1f87770f0
+CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41
+TMP-CO|aitem|-|-|2205e7115342b037faeb67a24cb7679e393af582cedf6752c0c07d9a28b8f1be
+```
+<!-- MANIFEST:END -->
+
+## Invocation from skills or hooks — decision (recorded, not implemented)
+
+CI cannot enforce this lint: `.github/workflows/ci.yml` has no visibility into
+`/home/benjamin/Philosophy/Papers/` (a different repository entirely), so wiring it into CI would
+require vendoring or submoduling the paper, which is explicitly out of scope for this task.
+
+**Decision**: `scripts/check-paper-definitions.sh` should be invoked manually for now, in the same
+family as its siblings (`check-copyright-headers.sh`, `check-module-invariants.sh`,
+`readme-lint.sh`, `typst-sync-check.sh`), none of which are CI- or hook-wired either. The strongest
+candidate for automatic invocation, if this is revisited, is a **skill preflight hook** for the
+`paper-refactor` topic specifically (e.g. `/research`, `/plan`, `/implement` preflight for a task
+whose `topic` is `paper-refactor`) — that is the exact population of tasks that quotes this file's
+anchors and would benefit from an automatic staleness check before dispatch. A git pre-commit hook
+was considered and rejected: this repository's commits do not touch the paper file at all (it
+lives in a separate repository), so a pre-commit hook here would never fire on the event that
+actually causes drift. **Implementing either integration is explicitly out of scope for this task**
+(deliverable 2 is the lint script itself); this section records the recommendation for whoever
+picks up that follow-on work.

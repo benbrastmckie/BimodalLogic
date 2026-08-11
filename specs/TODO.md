@@ -6,14 +6,14 @@ next_project_number: 440
 
 ## Task Order
 
-*Updated 2026-08-10. Generated from state.json dependency graph.*
+*Updated 2026-08-11. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,419,420,421,423,424,437,439 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,419,420,421,423,437,439 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,414,422,425,436 | 193,231,298,420,421,423,437 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,415,417,434 | 414,422,436 | decidability, paper-refactor, strong_completeness |
+| 3 | 169,415,417,424,434 | 414,422,436 | decidability, paper-refactor, strong_completeness |
 | 4 | 362,427,432 | 169,415,417,419,434 | decidability, paper-refactor, strong_completeness |
 | 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
@@ -85,7 +85,7 @@ next_project_number: 440
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
     └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
-439 [NOT STARTED] — PAPER-DEFINITION DRIFT GUARD. Build a definitions-of-record file 
+439 [IMPLEMENTING] — PAPER-DEFINITION DRIFT GUARD. Build a definitions-of-record file 
 
 ### Strong Completeness
 
@@ -95,7 +95,7 @@ next_project_number: 440
       └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
-424 [NOT STARTED] — Prove, in both directions, that the task-model class is represent
+424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n
 
 ### Uncategorized
 
@@ -103,10 +103,12 @@ next_project_number: 440
 
 ### 439. Guard paper definition drift with definitions of record
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: paper-refactor
 - **Dependencies**: None
+- **Research**: [439_guard_paper_definition_drift_with_definitions_of_record/reports/01_paper-definition-drift-guard.md]
+- **Plan**: [439_guard_paper_definition_drift_with_definitions_of_record/plans/01_paper-definition-drift-guard.md]
 
 **Description**: PAPER-DEFINITION DRIFT GUARD. Build a definitions-of-record file plus a local lint so that a change to the JPL paper's basic semantic definitions is DETECTED mechanically instead of being discovered by an agent mid-dispatch. This is infrastructure for the paper-refactor cluster, not cluster work: it does not restate, re-derive, or implement any definition, it only records the current ones and detects when they move.
 
@@ -477,17 +479,47 @@ Acceptance: archWitness_finitely_satisfiable, archWitness_not_satisfiable, and d
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361
+- **Dependencies**: Task 361, Task 414
 
-**Description**: Prove, in both directions, that the task-model class is representable by shift sets <Omega, D, sh, A> — D an ordered abelian group, Omega a nonempty type with a D-action sh : Omega -> D -> Omega, and A : Atom -> Omega -> Prop.
+**Description**: RE-ISSUED 2026-08-10 (description rewrite only; status remains `not_started` -- no work on the gate itself has been touched by this re-issue). AUDITED FOR EXPOSURE TO THE TruthAt / TOTAL-HISTORY REFACTOR under the paper-definition drift guard infrastructure (definitions-of-record: specs/paper-definitions-of-record.md; lint: scripts/check-paper-definitions.sh).
 
-THIS TASK IS THE GATE FOR THE ENTIRE ULTRAPRODUCT BRANCH. The follow-on work — the ultraproduct carrier (S2), the Los lemma for TruthAt (S3), compactness of the Base/Dense consequence relations (S4), and strong completeness for Dense and Base (S5-Dense, S5-Base) — is NOT AUTHORIZED and has deliberately NOT been created as tasks. It becomes authorized only when this task lands sorry-free. Do not spawn, plan, or dispatch any of it from within this task.
+=== 1. EXPOSURE VERDICT: YES -- this task's governing design is built on Lean vocabulary a sibling task plans to eliminate ===
+
+This task carries topic `strong_completeness`, not `paper-refactor`, so it sat outside the six-task paper-refactor cluster re-issue and was never checked against that cluster's findings. The check was overdue: task 424's governing design document states its whole Representation Theorem (both directions -- the entire content of this gate) in terms of `TruthAt (M : TaskModel F) (Omega : Set (WorldHistory F)) ...`, i.e. the CURRENT Lean signature where `Box` quantifies over an explicitly-supplied `Omega : Set (WorldHistory F)` parameter (`FormalSystem/Semantics/Truth.lean:128`, `Formula.box φ => ∀ σ ∈ Omega, TruthAt M Omega σ t φ`), and the reverse direction of the representation theorem literally sets `Ω := Omega` -- identifying the shift-set carrier with that Lean parameter directly. `valid`, `SemanticConsequence`, and `satisfiable` (`FormalSystem/Semantics/Validity.lean:77-139`) are quantified/witnessed the same way: over an arbitrary shift-closed `Omega`, not fixed to the full total-history set.
+
+Task 414 (`refactor_semantics_to_total_history_validity`, re-issued 2026-08-10, same day as this audit) states its charter as: "make totality-based validity THE validity of the repo, eliminating the Omega parameter from the semantics core," matching the paper's current `def:BL-semantics` box clause exactly -- `Box` ranges over `H_F` (the full set of total world histories), with no externally-supplied `Omega`. This is a real, named, imminent architectural change to the exact vocabulary this task's design document manipulates directly, not a hypothetical.
+
+**This is NOT the same failure mode as the paper-refactor cluster's six** (paper prose moving under a task that quotes it verbatim) -- this task's design document does not quote the paper at all; it cites Lean source (`Truth.lean:128-137`, `Validity.lean:77`) directly. The exposure here is one hop removed: task 424 depends on Lean-side vocabulary that task 414 (itself a paper-alignment task) is about to delete. It would not have been caught by the cluster's own re-issue process, which is exactly why this audit exists as a separate check.
+
+=== 2. WHAT IS CURRENTLY TRUE OF THE TREE (settled fact as of this audit -- not a stale assumption, yet) ===
+
+As of this audit, task 414 has NOT landed (`status: not_started`), so task 424's design document is currently an ACCURATE description of the live tree: `TruthAt` does take an `Omega` parameter today, and `valid`/`SemanticConsequence`/`satisfiable` are quantified over it today. Nothing in this task's description is presently wrong. The risk is entirely forward-looking: if 414 lands before 424 starts (or completes), 424's construction needs to be re-derived against whatever post-refactor `TruthAt` looks like, at cost proportional to how much of S1 has already been built against the Omega-parameterized signature.
+
+=== 3. WHAT SURVIVES vs WHAT IS AT RISK ===
+
+**Survives**: the underlying MODEL-THEORETIC ARGUMENT -- that the task-model class is first-order axiomatizable over the two-sorted signature `<Ω, D; <, +, 0, sh, (A_p)>` because the frame's algebraic content reaches `TruthAt` only through the atom clause -- does not depend on whether `Box`'s quantifier domain is an explicit parameter or a fixed total-history set. Fixing `Omega := H_F` (all total histories) is a special case of the general argument, not a different argument; Q1's structural evidence (design doc section "Q1 -- the compactness argument") and the four-step Route B plan (S1-S4) both survive intact.
+
+**At risk**: the LITERAL Lean statement of both directions of the representation theorem, which is this task's actual, sole acceptance criterion. The reverse direction's `Ω := Omega` identification and the forward direction's `Omega := Set.range (fun σ => h_σ)` construction are stated directly against the current Lean parameter name and type; if task 414 removes that parameter, both directions' STATEMENTS (not just their proofs) need restating against whatever replaces it (most likely: `Omega` is simply dropped and `Box` is hard-coded to quantify over `{σ : WorldHistory F // σ.IsTotal}` or equivalent). This is a restatement cost paid once, not a refutation of the route -- Q1's verdict ("likely, not proved") and Route B's four-step plan are expected to survive under totality-fixed semantics, since `Omega = H_F` is the totality-fixed case already covered by the general argument above.
+
+=== 4. RECOMMENDATION APPLIED: dependency edge added on task 414 ===
+
+Because this task's SOLE deliverable (the gate for the entire ultraproduct/strong-completeness branch) is stated directly against vocabulary task 414 is actively eliminating, and because 424 is `effort: high` (a costly restatement to redo if 414 lands mid-flight or just after), this re-issue adds `414` to this task's `dependencies` array (previously `[361]`, now `[361, 414]`). This is a judgment call made under this audit's authority, not a cluster-wide policy -- reviewable/revertable by the user or a future orchestration pass if the sequencing cost is judged acceptable. Rationale: `414`'s own charter is explicitly to make the paper-aligned totality semantics "THE validity of the repo," so building this gate against the pre-refactor signature and then discovering the rug pulled out from under it is the exact wasted-work failure mode the paper-definition drift guard infrastructure (of which this audit is a part) exists to prevent -- generalized here from paper drift to a Lean-architecture drift originating in a sibling task rather than the paper directly.
+
+=== 5. GOVERNING DESIGN DOCUMENT -- PATH CORRECTED ===
+
+Task 361 has completed and archived since this task was created. The governing design document has moved from `specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md` to `specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md` -- the same content, corrected path. All section references below (Representation theorem, Risks R3, GATING RULE) are unchanged in content.
+
+=== 6. PRESERVED FROM THE ORIGINAL DESCRIPTION (still binding, unchanged in substance) ===
+
+Prove, in both directions, that the task-model class is representable by shift sets <Omega, D, sh, A> -- D an ordered abelian group, Omega a nonempty type with a D-action sh : Omega -> D -> Omega, and A : Atom -> Omega -> Prop. (Note: once task 414 lands, re-derive this statement against the post-refactor `TruthAt`/`Box` signature per section 3 above before proceeding -- the shift-set carrier `Omega` in THIS sentence is the paper-facing mathematical object, distinct from the Lean parameter of the same name discussed in sections 1-3, which is exactly the coincidence-of-naming this audit had to disentangle.)
+
+THIS TASK IS THE GATE FOR THE ENTIRE ULTRAPRODUCT BRANCH. The follow-on work -- the ultraproduct carrier (S2), the Los lemma for TruthAt (S3), compactness of the Base/Dense consequence relations (S4), and strong completeness for Dense and Base (S5-Dense, S5-Base) -- is NOT AUTHORIZED and has deliberately NOT been created as tasks. It becomes authorized only when this task lands sorry-free. Do not spawn, plan, or dispatch any of it from within this task.
 
 Gate-passed evidence standard, and nothing weaker: a sorry-free Lean statement of both directions, with #print axioms on each direction reporting no sorryAx. A statement that type-checks with a sorry body does not pass. Proving only the forward direction does not pass. A prose argument does not pass.
 
 Cancel condition: if either direction is refuted, or the construction cannot be stated without an additional non-elementary hypothesis, then Route B (semantic compactness via ultraproduct) is REFUTED and the whole branch is cancelled, not retried. Record the refutation and re-open the compactness question; do not proceed to S2 hoping the gap can be patched downstream.
 
-Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md — section "Representation theorem" for both directions (the reverse direction uses WorldHistory.timeShift and FormalSystem.Semantics.TimeShift.time_shift_preserves_truth, FormalSystem/Semantics/Truth.lean:446), section "Risks" R3 for the Type vs Type* constraint (assert it EARLY, not at assembly time), and section "GATING RULE" for the full gate contract.
+Governing design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md -- section "Representation theorem" for both directions (the reverse direction uses WorldHistory.timeShift and FormalSystem.Semantics.TimeShift.time_shift_preserves_truth, FormalSystem/Semantics/Truth.lean:446), section "Risks" R3 for the Type vs Type* constraint (assert it EARLY, not at assembly time), and section "GATING RULE" for the full gate contract.
 
 Acceptance: both directions sorry-free; #print axioms clean on each; lake build green; the task's summary states explicitly whether the gate PASSED or FAILED.
 
