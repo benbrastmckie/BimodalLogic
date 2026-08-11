@@ -52,12 +52,12 @@ open FormalSystem.Automation
 
 The key soundness lemma: any formula recognized as "always false" by
 `isUnsatBotTemporal` is indeed false at every evaluation point, provided
-the evaluation history is in Omega (needed for the box case).
+the evaluation history is total (needed for the box case).
 -/
 
 /--
 If `isUnsatBotTemporal φ = true`, then `φ` evaluates to `False` at every
-model point `(M, Omega, τ, t)` where `τ ∈ Omega`.
+model point `(M, Omega, τ, t)` where `τ` is total.
 
 This is the core soundness lemma for the invalid prefilter. It establishes
 that `isUnsatBotTemporal` is a sound "always false" recognizer.
@@ -69,15 +69,15 @@ Proof by structural induction on `φ`:
   TruthAt ... s event`, which is impossible.
 - `snce event guard`: Symmetric to Until.
 - `box a`: If `isUnsatBotTemporal a = true`, then by IH, `a` is false
-  at every model point where the history is in Omega. Since `τ ∈ Omega`
-  and `box(a)` requires `∀ σ ∈ Omega, TruthAt ... σ t a`, choosing
+  at every model point whose history is total. Since `τ` is total
+  and `box(a)` requires `∀ σ, σ.IsTotal → TruthAt ... σ t a`, choosing
   `σ = τ` gives `TruthAt ... τ t a`, which contradicts the IH.
 -/
 theorem isUnsatBotTemporal_not_truth
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F}
     {Omega : Set (WorldHistory F)}
-    {τ : WorldHistory F} (hτ : τ ∈ Omega) {t : D}
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D}
     {φ : Formula} (h : isUnsatBotTemporal φ = true) :
     ¬ TruthAt M Omega τ t φ := by
   induction φ generalizing τ t with
@@ -154,7 +154,7 @@ foundation for the `invalid_false_consequent` pattern.
 -/
 
 /--
-If `φ` is always false (at points where `τ ∈ Omega`), then `antecedent → φ`
+If `φ` is always false (at points where `τ` is total), then `antecedent → φ`
 is false at any point where `antecedent` is true.
 
 This is immediate: `antecedent → φ` evaluated as `TruthAt ... antecedent →
@@ -165,7 +165,7 @@ theorem false_consequent_not_truth
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F}
     {Omega : Set (WorldHistory F)}
-    {τ : WorldHistory F} (hτ : τ ∈ Omega) {t : D}
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D}
     {antecedent consequent : Formula}
     (h_false : isUnsatBotTemporal consequent = true)
     (h_ante_true : TruthAt M Omega τ t antecedent) :
