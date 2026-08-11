@@ -24,15 +24,18 @@ re-derives every hash below directly from the live paper file on every run.
 | **File checksum at recording time (sha256, authoritative pin)** | `efe6fc74688aa5ee89b91957b3681771cdcbdfaacb6077040024c395c568cbbd` |
 | Line count at recording time | 3988 |
 | Recorded (UTC) | 2026-08-10T23:56:47Z |
-| **File checksum, re-pinned after drift correction (sha256, current authoritative pin)** | `485aa76449488f4c5ee75b001da68796a5d51ecd6ea448fd8e8e6587e1211a95` |
+| File checksum, re-pinned after drift correction (sha256) | `485aa76449488f4c5ee75b001da68796a5d51ecd6ea448fd8e8e6587e1211a95` |
 | Line count, re-pinned after drift correction | 3999 |
 | Re-pinned (UTC) | 2026-08-11T00:25:00Z |
+| **File checksum, re-pinned at coverage extension (sha256, current authoritative pin)** | `1256e21837ff81139fda69e9faa14ac756b1f795df32c78b82d885af5055374f` |
+| Line count at coverage extension | 3949 |
+| Coverage extension re-pin (UTC) | 2026-08-11T01:16:05Z (checksum re-taken at 01:25Z after two further live case-(b) waves during the extension itself) |
 
 <!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
 <!-- PINNED_COMMIT: eb5be99ea3f19a86c9891d7798e619890e36cd43 -->
-<!-- FILE_CHECKSUM: 485aa76449488f4c5ee75b001da68796a5d51ecd6ea448fd8e8e6587e1211a95 -->
-<!-- LINE_COUNT: 3999 -->
+<!-- FILE_CHECKSUM: 1256e21837ff81139fda69e9faa14ac756b1f795df32c78b82d885af5055374f -->
+<!-- LINE_COUNT: 3949 -->
 
 ### Dirty-pin caveat (why the pin is a checksum, not a clean commit)
 
@@ -93,6 +96,23 @@ lint defect: the checksum (re-pinned above), not the base commit, is this record
 pin, exactly per the dirty-pin caveat's own logic. The no-argument invocation against the live
 paper — the check this lint exists to run day to day — passes cleanly (case a) as of this
 correction.
+
+### Coverage extension (2026-08-11): the extension-machinery anchors
+
+The paper-refactor cluster's task descriptions quote the extension machinery (`lem:constraint`,
+`lem:step`) directly, and two cluster tasks commit to mirroring the paper's proof decomposition
+lemma-for-lemma. Per this file's own extension protocol, those anchors are now **tracked**, not
+excluded: `def:constraints`, `lem:constraint`, `lem:fibers`, `lem:admissible`, and `lem:step`
+(five entries, added below with hashes derived from the live paper). Note that a paper wave
+restructured this neighborhood after the original recording: the admissibility characterization
+was **split out** of the old Constraint Lemma into its own `lem:admissible`, warranted by the new
+`lem:fibers`, and the lead-in prose was promoted to the numbered `def:constraints`. The current
+chain is `def:constraints` → `lem:constraint` (directedness + nonemptiness only) → `lem:fibers`
+→ `lem:admissible` → `lem:step` (sole *Spherical* application site) → `thm:extension` (Zorn) →
+`cor:occurrence`. The file checksum in the provenance table above is re-pinned to the live state
+these hashes were derived from; all 18 previously-recorded anchors were re-verified unchanged at
+this re-pin (case (b) — the intervening edits were comment cleanup and proof-prose restructuring
+outside every previously-tracked block).
 
 ## How to read this file
 
@@ -253,7 +273,71 @@ sha256: `b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea`
 Follows from `thm:extension`, hence is also a ZFC (not choice-free) result. The paper merged the
 former `thm:occurrence` (existential over both the history and the time) with a separate
 `app:nonempty` corollary into this single, strictly stronger statement (time `x` is now given, not
-merely witnessed) under the new label `cor:occurrence` — see "Drift correction" below.
+merely witnessed) under the new label `cor:occurrence` — see "Drift correction" below. Its
+current proof extends the one-point partial history `{⟨x, w⟩}` directly via `thm:extension`; the
+former translation argument is gone from this chain (time-shift machinery survives separately
+under `def:time-shift-histories`, which remains untracked).
+
+### `def:constraints` — the constraints imposed on a new duration
+
+```latex
+\begin{Ddef} \label{def:constraints}
+	For a partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints imposed on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise.
+\end{Ddef}
+```
+sha256: `d763818240e73faca164fde60ceeed97a3c5ab9ece9af814724eed28c4488e41`
+
+Promoted from lead-in prose to a numbered definition so the lemmas below can cite it by name.
+
+### `lem:constraint` — DERIVED: the constraint family is directed and nonempty
+
+```latex
+\begin{Lthm} \label{lem:constraint}
+	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the constraints imposed on $z$ form a directed family of nonempty sets.
+\end{Lthm}
+```
+sha256: `9ebed5d29cd939e0b3486dee775b8135077819f0de7228877ffeef6a928bf5e7`
+
+This lemma now states **only** directedness + nonemptiness. The admissibility characterization
+that an earlier paper wave carried inside this lemma was split out into `lem:admissible` below —
+task specs quoting the old merged statement are stale. Its proof consumes Compositionality in
+BOTH directions plus Seriality.
+
+### `lem:fibers` — DERIVED: membership in all constraints ⟺ fiber condition at every time
+
+```latex
+\begin{Lthm} \label{lem:fibers}
+	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, a world state $u \in W$ belongs to every member of the constraints imposed on $z$ just in case $\tau(t) \Rightarrow_{z-t} u$ for every $t \in X$.
+\end{Lthm}
+```
+sha256: `42ec404f8082ceeff30b1da5a28c076c9880704c92d500cb5068ce8b0a1ba7e2`
+
+New lemma (introduced by the same wave that split `lem:admissible` out of `lem:constraint`).
+
+### `lem:admissible` — DERIVED: one-point extension is a partial history ⟺ membership in all constraints
+
+```latex
+\begin{Lthm} \label{lem:admissible}
+	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the function $\tau \cup \set{\tuple{z, u}}$ is a partial history on $X \cup \set{z}$ just in case $u$ belongs to every member of the constraints imposed on $z$.
+\end{Lthm}
+```
+sha256: `cc94cfdca6f3c1f581f3876ba737525288417ac9c05b3293c8fa4a621d262469`
+
+Proof consumes `lem:nullity` (the zero loop at `z` itself) plus `lem:fibers`.
+
+### `lem:step` — DERIVED: the Step Lemma (sole *Spherical* application site)
+
+```latex
+\begin{Lthm} \label{lem:step}
+	Every partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ extends to a partial history on $X \cup \set{z}$ for any duration $z \in D$.
+\end{Lthm}
+```
+sha256: `82ab9eb861c6e4cb99575946f4a74f4296b5c8b979d3c2f6e28ac9fa705da94f`
+
+Proof: `lem:constraint` gives the directed family, *Spherical* provides a common member, and
+`lem:admissible` certifies the extension. Closing remark (verbatim, load-bearing for the discrete
+case): "When the family has a $\subseteq$-least member, that member already contains a candidate
+and \textit{Spherical} is not needed."
 
 ### `def:BL-model` — model of `BL`
 
@@ -377,10 +461,10 @@ The following paper machinery is adjacent to the entries above but was **not** i
 round's manifest, because it was not requested and adding it would widen this file's maintenance
 surface without a consuming task yet:
 
-- `def:constraints`, `lem:constraint`, `lem:admissible`, `lem:step`, and (as of the dirty edit
-  recorded above) the new `lem:fibers` — the proof-internal machinery supporting `thm:extension`.
-  This is exactly the region that moved in the live wave 6 edit described under "Dirty-pin
-  caveat" above; excluding it was a pre-existing scope decision, not a reaction to that edit.
+- ~~`def:constraints`, `lem:constraint`, `lem:fibers`, `lem:admissible`, `lem:step`~~ — **no
+  longer excluded**: promoted into coverage on 2026-08-11 (see "Coverage extension" above),
+  because the paper-refactor cluster's descriptions quote them and commit to lemma-for-lemma
+  mirroring.
 - `def:task-topology` and its topology properties (`T1`, `R0`, `Discrete`) — topology is not named
   in this task's "cover at minimum" list.
 - `def:frame-properties` (`Discrete`, `Dense`, `Complete`, `Deterministic` frame classes).
@@ -434,6 +518,11 @@ lem:nullity|env|-|-|7840512db4eb75a6f8d4224b80d784239e554f2742163722236df4778de8
 def:world-history|env|-|-|4aaa6ec0db38ccbba25ce6dc61d81b8a28f82913ba6b2b1defabaa42f9caf205
 thm:extension|env|-|-|af9b23bf53bd9194a496db497197a641317cd3882078f52654b890f1c08b6dab
 cor:occurrence|env|-|-|b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea
+def:constraints|env|-|-|d763818240e73faca164fde60ceeed97a3c5ab9ece9af814724eed28c4488e41
+lem:constraint|env|-|-|9ebed5d29cd939e0b3486dee775b8135077819f0de7228877ffeef6a928bf5e7
+lem:fibers|env|-|-|42ec404f8082ceeff30b1da5a28c076c9880704c92d500cb5068ce8b0a1ba7e2
+lem:admissible|env|-|-|cc94cfdca6f3c1f581f3876ba737525288417ac9c05b3293c8fa4a621d262469
+lem:step|env|-|-|82ab9eb861c6e4cb99575946f4a74f4296b5c8b979d3c2f6e28ac9fa705da94f
 def:BL-model|env|-|-|239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f
 def:BL-semantics|env|-|-|8fec78985c2efea20d13c1e6d5c7536ae0e0d864172bbe0460441d61addf22e3
 def:frame-validity|env|-|-|2bcc85b0781fd4cc5af05d0741c64f44662706523cf023f3d5237d4ed1e8d1b9
