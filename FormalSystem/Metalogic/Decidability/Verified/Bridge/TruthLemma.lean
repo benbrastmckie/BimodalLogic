@@ -384,7 +384,7 @@ retarget of the box clause to totality.
 -/
 theorem interpInvariantAt_regionHistory {f : ι → D} {M : TaskModel (regionFrame W ι D)}
     (hRV : RegionValued f M) (w : W) (χ : Formula) :
-    InterpInvariantAt f M (regionOmega f) (regionHistory f w (0 : D)) χ :=
+    InterpInvariantAt f M Set.univ (regionHistory f w (0 : D)) χ :=
   interpInvariantAt (atomRegionInvariant_regionHistory hRV w) χ
 
 end Countermodel
@@ -503,13 +503,13 @@ section Checks
 example (M : TaskModel (regionFrame Unit (Fin 1) ℚ))
     (hRV : RegionValued (fun _ : Fin 1 => (0 : ℚ)) M) (χ : Formula) :
     InterpInvariantAt (fun _ : Fin 1 => (0 : ℚ)) M
-      (regionOmega (fun _ : Fin 1 => (0 : ℚ))) (regionHistory (fun _ : Fin 1 => (0 : ℚ)) () 0) χ :=
+      Set.univ (regionHistory (fun _ : Fin 1 => (0 : ℚ)) () 0) χ :=
   interpInvariantAt_regionHistory hRV () χ
 
 example (M : TaskModel (regionFrame Unit (Fin 1) ℝ))
     (hRV : RegionValued (fun _ : Fin 1 => (0 : ℝ)) M) (χ : Formula) :
     InterpInvariantAt (fun _ : Fin 1 => (0 : ℝ)) M
-      (regionOmega (fun _ : Fin 1 => (0 : ℝ))) (regionHistory (fun _ : Fin 1 => (0 : ℝ)) () 0) χ :=
+      Set.univ (regionHistory (fun _ : Fin 1 => (0 : ℝ)) () 0) χ :=
   interpInvariantAt_regionHistory hRV () χ
 
 end Checks

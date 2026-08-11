@@ -38,13 +38,12 @@ this file leaves owed; see the section "What the temporal cases still need".
 ## Correction 10 — the carrier has worlds the branch never mentioned, and the model must not
 notice
 
-`regionOmega f` is `Set.range fun p : WorldIndex × D => regionHistory f p.1 p.2` — the range of a
-two-parameter family, over **all** of `WorldIndex`, which is `Nat`, and all time offsets. Under
-`regionFrame`'s task relation — the deterministic clock `(w, x) ⇒_d (w, x + d)` — that range is
-not merely a chosen admissible set: `regionOmega_eq_total` proves it is *exactly* the frame's
-total histories, because `respects_task` propagates the state at time `0` to every other time. So
-the range description and the totality description of `Ω` coincide here, and there is no total
-history outside the family to worry about.
+The total histories of this frame are `regionHistory f w Δ` ranging over **all** of `WorldIndex`,
+which is `Nat`, and all time offsets. Under `regionFrame`'s task relation — the deterministic
+clock `(w, x) ⇒_d (w, x + d)` — that family is *exactly* the frame's total histories
+(`isTotal_iff_regionHistory`), because `respects_task` propagates the state at time `0` to every
+other time. So there is no total history outside the family to worry about, and the box clause's
+quantifier over total histories is a quantifier over this family.
 
 `truthAt_box_iff_base` quantifies over exactly that range, so `T(□φ)` at a label demands `φ` at
 every world of the model, including the cofinitely
@@ -70,9 +69,9 @@ certificate says "no *ordinary* rule applies", and a certified branch may still 
 
 This costs the extracted model nothing: `F ⊤` and `P ⊤` are true at every point of every history
 of any serial frame, and `ℤ` (like `ℚ` and `ℝ`) has no endpoints, so both hold everywhere in
-`regionOmega f` regardless of what the branch says. Every member of `regionOmega f` has total
-domain, and by `regionOmega_eq_total` those are all of the frame's total histories, so the
-argument leaves no admissible history uncovered. But it is a genuine gap in the certificate,
+every region history regardless of what the branch says. Every region history has total domain,
+and by `isTotal_iff_regionHistory` those are all of the frame's total histories, so the argument
+leaves no history the box clause can reach uncovered. But it is a genuine gap in the certificate,
 and the truth lemma **names** it rather than assuming it away: no lemma below takes
 `T(F ⊤) ∈ b` or `T(P ⊤) ∈ b` as a hypothesis, and none needs to.
 -/
@@ -265,7 +264,7 @@ the atom case is the one case where the branch does determine the model.
 -/
 
 theorem truthAt_atom_state (hf : Function.Injective f) (w : WorldIndex) (r : D) (p : Atom) :
-    TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r (Formula.atom p) ↔
+    TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r (Formula.atom p) ↔
       b.hasPosAt (Formula.atom p) (stateLabel b ord f w r) = true := by
   by_cases hr : IsPlacedCode f (regionCode f r)
   · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
@@ -291,9 +290,9 @@ every label.
 def BranchTruthAt (b : Branch) (ord : TimeOrdering) (f : BranchTime b → D) (φ : Formula) : Prop :=
   ∀ (w : WorldIndex) (r : D),
     (b.hasPosAt φ (stateLabel b ord f w r) = true →
-      TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r φ) ∧
+      TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r φ) ∧
     (b.hasNegAt φ (stateLabel b ord f w r) = true →
-      ¬ TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r φ)
+      ¬ TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r φ)
 
 /--
 **Atom case.** The positive half is `truthAt_atom_state`; the negative half is that plus openness,
@@ -622,7 +621,7 @@ theorem branchTruthAt_untl_neg (hf : Function.Injective f) (hOR : OrderReflectin
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (w : WorldIndex) (r : D) :
     b.hasNegAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
-      ¬ TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+      ¬ TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
         (Formula.untl φ ψ) := by
   intro hn hT
   obtain ⟨s, hrs, hsφ, -⟩ := hT
@@ -670,7 +669,7 @@ theorem branchTruthAt_snce_neg (hf : Function.Injective f) (hOR : OrderReflectin
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (w : WorldIndex) (r : D) :
     b.hasNegAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
-      ¬ TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+      ¬ TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
         (Formula.snce φ ψ) := by
   intro hn hT
   obtain ⟨s, hsr, hsφ, -⟩ := hT
@@ -737,7 +736,7 @@ theorem branchTruthAt_untl_pos (hf : Function.Injective f) (hOF : OrderFaithful 
     (hTW : temporalWitnessCheck b ord = true) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
     b.hasPosAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
-      TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+      TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
         (Formula.untl φ ψ) := by
   intro hp
   have hmem : (⟨.pos, .untl φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
@@ -803,7 +802,7 @@ theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful 
     (hTW : temporalWitnessCheck b ord = true) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
     b.hasPosAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
-      TruthAt (normModel b ord f) (regionOmega f) (regionHistory f w (0 : D)) r
+      TruthAt (normModel b ord f) Set.univ (regionHistory f w (0 : D)) r
         (Formula.snce φ ψ) := by
   intro hp
   have hmem : (⟨.pos, .snce φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
@@ -1030,7 +1029,7 @@ both are true at every point of the `ℤ` countermodel regardless.
 refutes `valid χ`.
 
 The countermodel is `normModel b ord (intPlace b ord hV)` over `regionFrame WorldIndex
-(BranchTime b) ℤ`, with `regionOmega` as the shift-closed admissible set and the base history of
+(BranchTime b) ℤ`, and the base history of
 the denying label's own world as the falsifying history.
 -/
 theorem not_valid_of_hasOpen_int (hV : branchOrderValid b ord = true)
@@ -1053,9 +1052,8 @@ theorem not_valid_of_hasOpen_int (hV : branchOrderValid b ord = true)
       (rayOnly_intPlace hV) (raySplit_intPlace hV) stepped_int hV fc hSat hOpen hTot hBA hCheck hTW
       hne
       χ l₀.world (f i)).2 hneg
-    ((truthAt_carrier_irrelevant Set.univ (regionOmega f) χ _ (f i)).mp
-      (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f)
-        (regionHistory f l₀.world (0 : ℤ)) (fun _ => trivial) (f i)))
+    (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f)
+      (regionHistory f l₀.world (0 : ℤ)) (fun _ => trivial) (f i))
 
 /--
 **The `ValidDiscrete` companion.** `ℤ` carries `SuccOrder`, `PredOrder`, `IsSuccArchimedean` and
@@ -1082,9 +1080,8 @@ theorem not_validDiscrete_of_hasOpen_int (hV : branchOrderValid b ord = true)
       (rayOnly_intPlace hV) (raySplit_intPlace hV) stepped_int hV fc hSat hOpen hTot hBA hCheck hTW
       hne
       χ l₀.world (f i)).2 hneg
-    ((truthAt_carrier_irrelevant Set.univ (regionOmega f) χ _ (f i)).mp
-      (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f)
-        (regionHistory f l₀.world (0 : ℤ)) (fun _ => trivial) (f i)))
+    (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f)
+      (regionHistory f l₀.world (0 : ℤ)) (fun _ => trivial) (f i))
 
 end IntCarrier
 

@@ -243,42 +243,22 @@ theorem timeShift_regionHistory (f : ι → D) (w : W) (Δ Δ' : D) :
   rw [add_assoc]
 
 /--
-The admissible set: the branch's worlds, at every time offset.
+**Every region history is total**, at every offset — `regionHistory` carries
+`domain := fun _ => True`, so totality is immediate.
 
-Shift-closed by `timeShift_regionHistory`, and containing no history whose domain is partial —
-which is what keeps `□` satisfiable (see the module docstring, Consequence 1).
+Totality is what `def:BL-semantics`'s box clause quantifies over, so this is the fact that
+puts a region history in range of `□`. It replaces the former membership lemma about a
+designated admissible set: there is no such set here any more, and membership is no longer
+what `□` instantiates against.
 -/
-def regionOmega (f : ι → D) : Set (WorldHistory (regionFrame W ι D)) :=
-  Set.range fun p : W × D => regionHistory f p.1 p.2
-
-theorem regionHistory_mem_regionOmega (f : ι → D) (w : W) (Δ : D) :
-    regionHistory f w Δ ∈ regionOmega f :=
-  ⟨(w, Δ), rfl⟩
-
-theorem mem_regionOmega_iff (f : ι → D) (σ : WorldHistory (regionFrame W ι D)) :
-    σ ∈ regionOmega f ↔ ∃ (w : W) (Δ : D), σ = regionHistory f w Δ := by
-  constructor
-  · rintro ⟨⟨w, Δ⟩, rfl⟩
-    exact ⟨w, Δ, rfl⟩
-  · rintro ⟨w, Δ, rfl⟩
-    exact regionHistory_mem_regionOmega f w Δ
-
-/-- **The shift-closure obligation, discharged.** -/
-theorem shiftClosed_regionOmega (f : ι → D) : ShiftClosed (regionOmega (W := W) f) := by
-  rintro σ ⟨⟨w, Δ⟩, rfl⟩ Δ'
-  exact ⟨(w, Δ' + Δ), (timeShift_regionHistory f w Δ Δ').symm⟩
-
-/-- Every region history has total domain, so every point of the carrier carries a state. -/
-theorem regionOmega_total (f : ι → D) (σ : WorldHistory (regionFrame W ι D))
-    (hσ : σ ∈ regionOmega f) (r : D) : σ.domain r := by
-  obtain ⟨w, Δ, rfl⟩ := (mem_regionOmega_iff f σ).mp hσ
-  trivial
+theorem regionHistory_isTotal (f : ι → D) (w : W) (Δ : D) :
+    (regionHistory f w Δ).IsTotal := fun _ => trivial
 
 /-! ### Totality is now sufficient
 
-The two theorems that the deterministic re-host exists to make true. Under the previous
-maximally-permissive task relation both were false: totality fixed the empty-history problem but
-not the junk-history problem, and `regionOmega` was a strict subset of `H_F`.
+The theorem that the deterministic re-host exists to make true. Under the previous
+maximally-permissive task relation it was false: totality fixed the empty-history problem but
+not the junk-history problem, so the region histories were a strict subset of `H_F`.
 -/
 
 /--
@@ -301,25 +281,24 @@ theorem regionFrame_total_eq (f : ι → D) (σ : WorldHistory (regionFrame W ι
   exact key r hr
 
 /--
-**`Ω` is exactly the frame's total-history set `H_F`.** `def:world-history` fixes `H_F` as the
-totality-cut of the world histories: "A world history is *total* --- equivalently, a *possible
-world* --- just in case $X = D$. ... The set of all total world histories over $\F$ is denoted
-$H_{\F}$." Here the totality predicate `X = D` is spelled `∀ r, σ.domain r`.
+**The frame's total-history set `H_F` is exactly the region histories.** `def:world-history`
+fixes `H_F` as the totality-cut of the world histories: "A world history is *total* ---
+equivalently, a *possible world* --- just in case $X = D$. ... The set of all total world
+histories over $\F$ is denoted $H_{\F}$." Here the totality predicate `X = D` is spelled
+`WorldHistory.IsTotal`, i.e. `∀ r, σ.domain r`.
 
-The `⊆` direction is definitional: `regionHistory` carries `domain := fun _ => True`. The `⊇`
-direction is `regionFrame_total_eq`. So on this carrier, replacing the `Ω`-parameterized box
-clause by the `def:BL-semantics` box clause ("for all $\sigma \in H_{\F}$") is a rewrite along
-this equation, not a change of content.
+The `←` direction is `regionHistory_isTotal`, definitional. The `→` direction is
+`regionFrame_total_eq`. This is the characterization every downstream proof consumes: the
+`def:BL-semantics` box clause ("for all $\sigma \in H_{\F}$") reduces on this carrier to a
+quantifier over the region histories, with no designated admissible set in the statement.
 -/
-theorem regionOmega_eq_total (f : ι → D) :
-    regionOmega (W := W) f = {σ : WorldHistory (regionFrame W ι D) | ∀ r, σ.domain r} := by
-  ext σ
+theorem isTotal_iff_regionHistory (f : ι → D) (σ : WorldHistory (regionFrame W ι D)) :
+    σ.IsTotal ↔ ∃ (w : W) (Δ : D), σ = regionHistory f w Δ := by
   constructor
-  · rintro ⟨⟨w, Δ⟩, rfl⟩ r
-    trivial
   · intro htot
-    obtain ⟨w, Δ, rfl⟩ := regionFrame_total_eq f σ htot
-    exact regionHistory_mem_regionOmega f w Δ
+    exact regionFrame_total_eq f σ htot
+  · rintro ⟨w, Δ, rfl⟩
+    exact regionHistory_isTotal f w Δ
 
 end Histories
 
@@ -390,9 +369,10 @@ theorem regionHistory_eq_timeShift (f : ι → D) (w : W) (Δ : D) :
 /-- Truth at an offset history is truth at its base history, read at the offset time. -/
 theorem truthAt_regionHistory_offset (M : TaskModel (regionFrame W ι D)) (f : ι → D)
     (w : W) (Δ r : D) (φ : Formula) :
-    TruthAt M (regionOmega f) (regionHistory f w Δ) r φ ↔
-      TruthAt M (regionOmega f) (regionHistory f w (0 : D)) (r + Δ) φ := by
-  have h := TimeShift.time_shift_preserves_truth M (regionOmega (W := W) f)
+    TruthAt M Set.univ (regionHistory f w Δ) r φ ↔
+      TruthAt M Set.univ (regionHistory f w (0 : D)) (r + Δ) φ := by
+  have h := TimeShift.time_shift_preserves_truth M
+    (Set.univ : Set (WorldHistory (regionFrame W ι D)))
     (regionHistory f w (0 : D)) r (r + Δ) φ
   rw [add_sub_cancel_left] at h
   rw [regionHistory_eq_timeShift]
@@ -408,19 +388,16 @@ the time quantifier by the `boxTemporal` chain together with region invariance.
 -/
 theorem truthAt_box_iff_base (M : TaskModel (regionFrame W ι D)) (f : ι → D)
     (τ : WorldHistory (regionFrame W ι D)) (x : D) (φ : Formula) :
-    TruthAt M (regionOmega f) τ x φ.box ↔
-      ∀ (w : W) (y : D), TruthAt M (regionOmega f) (regionHistory f w (0 : D)) y φ := by
+    TruthAt M Set.univ τ x φ.box ↔
+      ∀ (w : W) (y : D), TruthAt M Set.univ (regionHistory f w (0 : D)) y φ := by
   rw [truthAt_box_iff M τ x φ]
   constructor
   · intro h w y
-    -- `regionOmega f = H_F` (`regionOmega_eq_total`), so a base history's membership *is* its
-    -- totality; the box clause now instantiates against the latter.
-    exact h _ (by
-      have := regionHistory_mem_regionOmega f w (0 : D)
-      rwa [regionOmega_eq_total f] at this) y
+    -- A base history is total (`regionHistory_isTotal`), which is exactly what the box clause
+    -- instantiates against now that it no longer mentions a designated admissible set.
+    exact h _ (regionHistory_isTotal f w (0 : D)) y
   · intro h σ hσ y
-    obtain ⟨w, Δ, rfl⟩ := (mem_regionOmega_iff f σ).mp
-      (by rwa [regionOmega_eq_total f])
+    obtain ⟨w, Δ, rfl⟩ := (isTotal_iff_regionHistory f σ).mp hσ
     exact (truthAt_regionHistory_offset M f w Δ y φ).mpr (h w (y + Δ))
 
 end BaseReduction
@@ -484,9 +461,10 @@ example : Nonempty (TaskFrame ℚ) := ⟨regionFrame Unit (Fin 1) ℚ⟩
 example : Nonempty (TaskFrame ℝ) := ⟨regionFrame Unit (Fin 1) ℝ⟩
 example : Nonempty (TaskFrame ℤ) := ⟨regionFrame Unit (Fin 1) ℤ⟩
 
-/-- The admissible set is shift-closed at a concrete carrier. -/
-example : ShiftClosed (regionOmega (W := Unit) (fun _ : Fin 1 => (0 : ℚ))) :=
-  shiftClosed_regionOmega _
+/-- The base histories are total at a concrete carrier, and totality is all `□` now asks of
+them. -/
+example : (regionHistory (W := Unit) (fun _ : Fin 1 => (0 : ℚ)) () 1).IsTotal :=
+  regionHistory_isTotal _ _ _
 
 end Checks
 

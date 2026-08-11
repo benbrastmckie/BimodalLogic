@@ -460,7 +460,7 @@ consumes, in the same shape `truthAt_atom_branch_placed` has at placed points.
 -/
 theorem truthAt_atom_branch_region (b : Branch) (ord : TimeOrdering) {f : BranchTime b → D}
     {r : D} (hr : ¬ IsPlacedCode f (regionCode f r)) (w : WorldIndex) (p : Atom) :
-    TruthAt (branchModel b f (branchRegionVal b ord)) (regionOmega f)
+    TruthAt (branchModel b f (branchRegionVal b ord)) Set.univ
         (regionHistory f w (0 : D)) r (Formula.atom p) ↔
       b.hasPosAt (Formula.atom p)
         ⟨w, regionLabel b ord w (cutIndex (regionCode f r))⟩ = true :=
@@ -479,7 +479,7 @@ theorem truthAt_atom_gap_of_box (b : Branch) (ord : TimeOrdering) {f : BranchTim
     (hcheck : regionLabelCheck b ord = true) {w : WorldIndex} (hw : w ∈ b.knownWorlds)
     {p : Atom} {l : Label}
     (hmem : (⟨.pos, .box (Formula.atom p), l⟩ : SignedFormula) ∈ b) :
-    TruthAt (branchModel b f (branchRegionVal b ord)) (regionOmega f)
+    TruthAt (branchModel b f (branchRegionVal b ord)) Set.univ
       (regionHistory f w (0 : D)) r (Formula.atom p) := by
   rw [truthAt_atom_branch_region b ord hr w p]
   exact regionLabel_hasPos hcheck hw (cutIndex_le b _)
