@@ -1217,7 +1217,7 @@ contingency.
 
 ---
 
-### Phase 13: `regionFrame` consumer repair [NOT STARTED]
+### Phase 13: `regionFrame` consumer repair [COMPLETED]
 
 **Goal**: Repair whatever the new `regionFrame` relation breaks in the bridge consumers, still
 entirely within the current Omega architecture, so the tree returns to green before any API change.
@@ -1235,15 +1235,59 @@ consumer that transports an old `Atom → W × (Set ι × Set ι) → Prop` valu
 `V p (w, x) := V₀ p (w, regionCode f x)`.
 
 **Tasks**:
-- [ ] Repair `Bridge/TruthLemma.lean` (the one observed break — do this first; it gates the rest).
-- [ ] Repair `Bridge/Valuation.lean`.
-- [ ] Repair `Bridge/IntTruth.lean`.
-- [ ] Repair `Bridge/DenseTruth.lean`.
-- [ ] Repair `Bridge/TruthLemma.lean`.
-- [ ] Repair `Bridge/RegionLabel.lean`.
-- [ ] Repair whatever `Decidability/Verified/Decidable.lean` surfaces.
-- [ ] Update the `IntTruth.lean:41-66` prose describing `regionOmega` as the range of a
+- [x] Repair `Bridge/TruthLemma.lean` (the one observed break — do this first; it gates the rest).
+- [x] Repair `Bridge/Valuation.lean`.
+- [x] Repair `Bridge/IntTruth.lean` *(deviation: altered — no code repair was required; the file
+      built green unedited once `TruthLemma.lean` and `Valuation.lean` were fixed. Only the prose
+      task below was applied to it.)*
+- [x] Repair `Bridge/DenseTruth.lean` *(deviation: skipped — no edit required; built green
+      unedited, exactly as the Scope Hypothesis predicted.)*
+- [x] Repair `Bridge/TruthLemma.lean`. *(duplicate of the first item; discharged there.)*
+- [x] Repair `Bridge/RegionLabel.lean` *(deviation: skipped — no edit required; built green
+      unedited.)*
+- [x] Repair whatever `Decidability/Verified/Decidable.lean` surfaces *(deviation: skipped —
+      nothing surfaced; built green unedited.)*
+- [x] Update the `IntTruth.lean:41-66` prose describing `regionOmega` as the range of a
       two-parameter family, and the genuine certificate gap it names, to match the new relation.
+
+#### Outcome
+
+**The repair was exactly the two files Phase 12 predicted, and the Scope Hypothesis held in full.**
+
+`TruthLemma.lean`: `RegionConstant f τ` is replaced as the atom case's hypothesis by
+`AtomRegionInvariant f M τ` — a *joint* condition on model and history asking only that region-mates
+agree in `τ`'s domain and in the atomic truth values the valuation assigns to the states there, not
+that they carry the same state. `RegionConstant.atomRegionInvariant` records that nothing proved
+under the old hypothesis is lost. The countermodel-side condition is named `RegionValued f M`
+(`M.valuation (w, r) p ↔ M.valuation (w, r') p` for region-mates `r`, `r'`), discharged into
+`AtomRegionInvariant` at the base history by `atomRegionInvariant_regionHistory`, and
+`interpInvariantAt_regionHistory` now takes it as a hypothesis. This is the promised move of the
+region condition off the history and onto the valuation.
+
+`Valuation.lean`: `regionModel`'s valuation is transported exactly as the inherited repair shape
+specified — `V p (w, x) := V₀ p (w, regionCode f x)` — and `regionValued_regionModel` discharges
+`RegionValued` for it from `sameRegion_iff_regionCode_eq`. **Every statement downstream of
+`regionModel` is unchanged**, including `truthAt_atom_regionHistory`, `truthAt_atom_placed`,
+`truthAt_atom_gap`, `truthAt_atom_branch_placed`, `GapDemands`, and both copy-policy refutations;
+only `regionModel`'s definition and its `@[simp]` readback moved.
+
+The other four named files plus `Decidable.lean` needed **no edit at all** — the Scope Hypothesis's
+stated prediction, now confirmed by observation rather than assumed. `lake build` is green over the
+whole `FormalSystem` library (2331 jobs), sorry-free and with no new axioms: the three new
+declarations depend only on `propext` / `Classical.choice` / `Quot.sound`, never `sorryAx`.
+
+**Pre-existing test drift, out of scope and NOT introduced here.** `lake build BimodalTest` reports
+`#guard_msgs` mismatches in `TableauConformance.lean` (7), `RegionGateProbe.lean` (2), and
+`BoxSpreadProbe.lean` (1). All are tableau-engine `#eval` expectations, and none can be reached
+from this phase's edits: `TableauConformance.lean` imports only `Decidability.Saturation` and
+`Decidability.Tableau`, and `BoxSpreadProbe.lean` only `Bridge.BoxSaturation` (whose imports are
+`CountermodelExtraction` and `Termination.Fuel`) — none of which import `Bridge/TruthLemma.lean` or
+`Bridge/Valuation.lean`. `RegionGateProbe.lean` does reach `Valuation.lean` via `RegionLabel.lean`,
+but its output is a `#eval` of branch statistics that no `Prop`-valued, `noncomputable` valuation
+can enter. The drift is dated: the probe expectations were last baselined 2026-07-29, while
+`Decidability/Saturation.lean` was last changed 2026-08-05 by separate work. Re-baselining them
+would both exceed this phase's declared file scope and mask an engine-behaviour change owned
+elsewhere, so they are reported rather than silently absorbed.
 
 **Timing**: 3 hours
 

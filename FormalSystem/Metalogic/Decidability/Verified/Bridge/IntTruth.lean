@@ -38,9 +38,16 @@ this file leaves owed; see the section "What the temporal cases still need".
 ## Correction 10 — the carrier has worlds the branch never mentioned, and the model must not
 notice
 
-`regionOmega f` is `Set.range fun p : WorldIndex × D => regionHistory f p.1 p.2` — the range over
-**all** of `WorldIndex`, which is `Nat`. `truthAt_box_iff_base` quantifies over exactly that
-range, so `T(□φ)` at a label demands `φ` at every world of the model, including the cofinitely
+`regionOmega f` is `Set.range fun p : WorldIndex × D => regionHistory f p.1 p.2` — the range of a
+two-parameter family, over **all** of `WorldIndex`, which is `Nat`, and all time offsets. Under
+`regionFrame`'s task relation — the deterministic clock `(w, x) ⇒_d (w, x + d)` — that range is
+not merely a chosen admissible set: `regionOmega_eq_total` proves it is *exactly* the frame's
+total histories, because `respects_task` propagates the state at time `0` to every other time. So
+the range description and the totality description of `Ω` coincide here, and there is no total
+history outside the family to worry about.
+
+`truthAt_box_iff_base` quantifies over exactly that range, so `T(□φ)` at a label demands `φ` at
+every world of the model, including the cofinitely
 many the branch never mentions. At such a world `branchPlacedVal b w i p` is
 `b.hasPosAt (.atom p) ⟨w, timeAt b i⟩`, which is `false` for every atom — so a single unmentioned
 world falsifies `□p` for a branch carrying `T(□p)`, and the `box` case would be unclosable.
@@ -63,7 +70,9 @@ certificate says "no *ordinary* rule applies", and a certified branch may still 
 
 This costs the extracted model nothing: `F ⊤` and `P ⊤` are true at every point of every history
 of any serial frame, and `ℤ` (like `ℚ` and `ℝ`) has no endpoints, so both hold everywhere in
-`regionOmega f` regardless of what the branch says. But it is a genuine gap in the certificate,
+`regionOmega f` regardless of what the branch says. Every member of `regionOmega f` has total
+domain, and by `regionOmega_eq_total` those are all of the frame's total histories, so the
+argument leaves no admissible history uncovered. But it is a genuine gap in the certificate,
 and the truth lemma **names** it rather than assuming it away: no lemma below takes
 `T(F ⊤) ∈ b` or `T(P ⊤) ∈ b` as a hypothesis, and none needs to.
 -/

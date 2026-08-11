@@ -9,15 +9,19 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
 /-!
 # The countermodel's valuation, and the shape of the gap obligation
 
-`Bridge/Omega.lean` fixes the frame (`regionFrame W ι D`, whose states are
-`W × (Set ι × Set ι)` — a branch world paired with a region code) and the shift-closed admissible
-set. `Bridge/TruthLemma.lean` proves that truth is constant on each region of the placement.
-Neither file supplies a `TaskModel`. This file does.
+`Bridge/Omega.lean` fixes the frame (`regionFrame W ι D`, whose states are `W × D` — a branch
+world paired with a **time**, since the deterministic clock relation forced the region code out of
+the state space) and the shift-closed admissible set. `Bridge/TruthLemma.lean` proves that truth is
+constant on each region of the placement, given that the *model* reads the time only through its
+region code (`RegionValued`). Neither file supplies a `TaskModel`. This file does, and discharges
+that condition for it (`regionValued_regionModel`).
 
 ## O1 — the valuation (discharged here)
 
-A `TaskModel (regionFrame W ι D)` is exactly a predicate on `(world, region code) × Atom`.
-`regionValuation` splits that predicate along the only distinction the placement makes:
+A `TaskModel (regionFrame W ι D)` is a predicate on `(world, time) × Atom`; `regionModel` builds
+the one this file needs by factoring the time through `regionCode f`, so it is equivalently a
+predicate on `(world, region code) × Atom`. `regionValuation` splits that predicate along the only
+distinction the placement makes:
 
 * a **placed** code is one of the form `regionCode f (f i)` — the region of a placed point, which
   `sameRegion_singleton` shows is the singleton `{f i}`. There the branch dictates the value, and

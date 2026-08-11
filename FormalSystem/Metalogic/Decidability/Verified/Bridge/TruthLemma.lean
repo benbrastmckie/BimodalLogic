@@ -393,8 +393,9 @@ before budgeting anything, and read `gapAdequate_insufficient` (`Bridge/Valuatio
 budgeting the induction: the induction cannot be closed against `GapAdequate`, whatever policy is
 plugged into it. The interfaces, and where they live:
 
-**O1 — the valuation. Done** (`Bridge/Valuation.lean`). `regionFrame`'s states are
-`W × (Set ι × Set ι)`, so a `TaskModel` over it is a predicate on (world, region code). At a
+**O1 — the valuation. Done** (`Bridge/Valuation.lean`). `regionFrame`'s states are `W × D`, and
+`regionModel` factors the time component through `regionCode f`, so the model is a predicate on
+(world, region code) — and is `RegionValued` by construction. At a
 *placed* code — one of the form `regionCode f (f i)` — the branch dictates the value:
 `branchPlacedVal`, reading `b.hasPosAt (.atom p) ⟨w, timeAt b i⟩`, with `truthAt_atom_branch_placed`
 the readback. `regionValuation` is total on codes; `truthAt_atom_regionHistory` discharges the
