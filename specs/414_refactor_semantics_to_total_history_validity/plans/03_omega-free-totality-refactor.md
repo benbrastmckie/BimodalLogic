@@ -644,7 +644,7 @@ ported: neither appears in this phase's task list, and neither is reachable from
 
 ---
 
-### Phase 6: Frame-axiom Props in hypothesis form, and `def:constraints` [NOT STARTED]
+### Phase 6: Frame-axiom Props in hypothesis form, and `def:constraints` [COMPLETED]
 
 **Goal**: State *Spherical*, *Seriality*, and Compositionality's interpolation half as `Prop`s over
 a bare task relation, using the `Fib` / `Seg` / `DirectedFamily` / `IsFiber` / `IsSegment`
@@ -652,26 +652,62 @@ apparatus task 420's phase 7 already landed; and transcribe `def:constraints`. T
 against the live tree (round-3 report §2, verified by `lean_run_code`).
 
 **Tasks**:
-- [ ] `def Spherical {W} (R : W → D → W → Prop) : Prop` — `∀ S : Set (Set W), DirectedFamily S →
+- [x] `def Spherical {W} (R : W → D → W → Prop) : Prop` — `∀ S : Set (Set W), DirectedFamily S →
       (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty`. Docstring cites
       `def:frame#Spherical` verbatim, and notes that fibers and segments are two **separate**
       classes (the retired device by which one-sided fibers counted among segments must not
-      reappear), with directedness its own definition per `def:directed`.
-- [ ] `def Serial {W} (R : W → D → W → Prop) : Prop` — `∀ (w : W) (x : D), 0 ≤ x →
+      reappear), with directedness its own definition per `def:directed`. *(completed — landed as
+      `TaskFrame.Spherical`, statement exactly as specified)*
+- [x] `def Serial {W} (R : W → D → W → Prop) : Prop` — `∀ (w : W) (x : D), 0 ≤ x →
       (∃ u, R w x u) ∧ (∃ v, R v x w)`. Docstring cites `def:frame#Seriality` verbatim.
-- [ ] `def Interpolates {W} (R : W → D → W → Prop) : Prop` — `∀ w v x y, 0 ≤ x → 0 ≤ y →
+      *(completed — `TaskFrame.Serial`)*
+- [x] `def Interpolates {W} (R : W → D → W → Prop) : Prop` — `∀ w v x y, 0 ≤ x → 0 ≤ y →
       R w (x + y) v → ∃ u, R w x u ∧ R u y v`. Docstring cites `def:frame#Compositionality`
       verbatim and states that the `←` half is the existing `TaskFrame.forward_comp` field, so the
-      biconditional is `forward_comp ∧ Interpolates`.
-- [ ] `theorem nullity_of_serial_limit` — `lem:nullity` (`w ⇒₀ w`) derived from *Seriality* at
+      biconditional is `forward_comp ∧ Interpolates`. *(completed — `TaskFrame.Interpolates`)*
+- [x] `theorem nullity_of_serial_limit` — `lem:nullity` (`w ⇒₀ w`) derived from *Seriality* at
       `x = 0` plus *Limit*, in hypothesis form, choice-free. Docstring: Nullity is DERIVED, not an
-      axiom.
-- [ ] `def Constraints (τ : PartialHistory F) (z : D) : Set (Set F.WorldState)` — the segments
+      axiom. *(completed — choice-freeness machine-checked, see Verification below)*
+- [x] `def Constraints (τ : PartialHistory F) (z : D) : Set (Set F.WorldState)` — the segments
       `[τ(t), τ(s)]_{z-t}^{s-z}` for `t, s ∈ dom τ` with `t < z < s`, and the fibers
       `Fib(τ(t), z - t)` for `t ∈ dom τ` otherwise. Docstring cites `def:constraints` verbatim and
-      writes segments in the bracket form only.
-- [ ] Record in the module docstring that these are hypothesis-form Props today and become
-      `TaskFrame` fields at 420 phase 10, with the invariant from "The §7 mechanism" restated.
+      writes segments in the bracket form only. *(completed — `PartialHistory.Constraints`; see
+      the "otherwise" note below)*
+- [x] Record in the module docstring that these are hypothesis-form Props today and become
+      `TaskFrame` fields when the four-axiom frame alignment lands, with the invariant from
+      "The §7 mechanism" restated. *(completed — the module docstring's "Why hypothesis form"
+      section carries the invariant and cites the durable decision record
+      `specs/decisions/total-history-validity-decisions.md` rather than a task number, per
+      `.claude/rules/no-task-references-in-deliverables.md`)*
+
+**Two transcription decisions this phase had to make, recorded rather than absorbed silently**
+(neither is a skipped, altered, or deferred plan step — both are forced readings the listed tasks
+did not pin down):
+
+1. **`def:constraints`'s "otherwise" is transcribed per-time, as `¬ PartialHistory.IsPaired τ z t`.**
+   The paper's clause — fibers "for $t \in X$ otherwise" — does not say what `t` is otherwise
+   *to*. The reading taken is: `t` contributes a fiber exactly when it is not half of a
+   sandwiching pair, since when it is, the constraint it imposes is already carried by a segment
+   (`[τ(t), τ(s)]_{z-t}^{s-z}` is definitionally the intersection of the fiber conditions at `t`
+   and at `s`). `IsPaired` is landed as a named definition so Phases 7-8 consume one fixed
+   reading rather than re-deciding. Recorded observation, noted in its docstring but not needed
+   this phase: the condition collapses globally — if `dom τ` has times on both sides of `z` then
+   every `t` is paired and the family is all segments; if `dom τ` lies entirely on one side then
+   no `t` is paired and the family is all fibers.
+2. **`Limit` is deliberately NOT given a name.** It is not in this phase's task list, and the one
+   place it is needed (`nullity_of_serial_limit`) takes it as a hypothesis in the literal
+   transcribed shape `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w` — which is exactly
+   the *conclusion* of the two existing discharge helpers `TaskFrame.limit_of_succOrder` and
+   `TaskFrame.limit_of_shift`, so either can be passed directly with no unfolding. Naming it
+   would have introduced a fourth predicate the plan did not authorize and would have put a
+   definitional barrier between the axiom and its two existing discharge routes.
+
+Three small supporting lemmas are landed alongside `Constraints`, since Phase 7's directedness
+and nonemptiness proofs cannot address the family without them: `mem_Constraints` (the
+`Iff.rfl` unfolding), `isSegment_of_mem_Constraints_left` (the segment clause meets
+`IsSegment`'s `x, y ≥ 0` proviso, because `t < z < s`), and
+`isFiber_or_isSegment_of_mem_Constraints` (every member is a fiber **or** a segment — the exact
+disjunction *Spherical* ranges over, with the two classes kept separate).
 
 **Timing**: 2 hours
 
@@ -680,12 +716,25 @@ against the live tree (round-3 report §2, verified by `lean_run_code`).
 **Verification Tier**: local
 
 **Files to modify**:
-- `FormalSystem/Semantics/FrameAxioms.lean` (new) or an agreed home alongside `TaskFrame.lean`
+- `FormalSystem/Semantics/FrameAxioms.lean` (new) — the sibling-file option was taken, keeping
+  `TaskFrame.lean` untouched
+- `FormalSystem/Semantics.lean` — aggregator import and submodule docstring entry
 
 **Verification**:
-- `lake build` green, sorry-free.
+- `lake build` green, sorry-free. **PASSED** — full-project `lake build` exit 0 (2327 jobs);
+  `grep -c sorry FormalSystem/Semantics/FrameAxioms.lean` returns 0.
 - Each Prop's statement is quotable side-by-side with its `\label` anchor's verbatim text.
-- No `TaskFrame` structure field is added or changed by this phase.
+  **PASSED** — every definition's docstring carries a "Recorded source (`anchor`, verbatim)"
+  line quoting `specs/paper-definitions-of-record.md`: `Spherical` ← `def:frame#Spherical`,
+  `Serial` ← `def:frame#Seriality`, `Interpolates` ← `def:frame#Compositionality`,
+  `nullity_of_serial_limit` ← `lem:nullity`, `Constraints` ← `def:constraints`, with
+  `def:directed` and `def:frame#Limit` quoted in the module docstring.
+- No `TaskFrame` structure field is added or changed by this phase. **PASSED** —
+  `TaskFrame.lean` is not in this phase's diff at all.
+- Additional check, since the plan calls `lem:nullity` choice-free:
+  `#print axioms TaskFrame.nullity_of_serial_limit` reports `[propext]` only — no
+  `Classical.choice`, matching the paper's contrast between the choice-free zero loops and the
+  Zorn-dependent Extension Theorem.
 
 ---
 
