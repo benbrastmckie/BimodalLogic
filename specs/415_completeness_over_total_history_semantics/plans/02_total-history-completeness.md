@@ -1,7 +1,7 @@
 # Implementation Plan: Task #415
 
 - **Task**: 415 - Completeness over total-history semantics — internalized, not bridged
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13.5 hours
 - **Dependencies**: 438 (completed); 414 (not_started — gates Phases 5-7 only); 420 phase 10 (gates Phase 8 only)
 - **Research Inputs**: specs/415_completeness_over_total_history_semantics/reports/02_total-history-internalization.md
@@ -155,36 +155,41 @@ phase 10 landing. Phases 1-4 are 414-independent and executable immediately.
 
 ---
 
-### Phase 1: Generic flow-frame conformance + totality layer [NOT STARTED]
+### Phase 1: Generic flow-frame conformance + totality layer [COMPLETED]
 
 **Goal**: Prove, once and D-generically, the four `def:frame` axiom obligations, the derived
 segment identity, and the totality characterization for `multiFamTaskFrameGen` — the layer every
 later phase (and 420 phase 10) consumes.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh`; STOP on case (c)
-- [ ] Create `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` (imports:
-      `ChronicleMonadicBridge`, `TaskFrame`; wire into the library's import root)
-- [ ] `sInter_nonempty_of_directed_subsingleton` — for any `W`: a `TaskFrame.DirectedFamily` of
+- [x] Run `bash scripts/check-paper-definitions.sh`; STOP on case (c) *(completed — case (b)
+      notice, all 23 definitions unchanged, pass)*
+- [x] Create `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` (imports:
+      `ChronicleMonadicBridge`, `TaskFrame`; wire into the library's import root) *(completed —
+      import root confirmed as `FormalSystem/Metalogic/Algebraic.lean`)*
+- [x] `sInter_nonempty_of_directed_subsingleton` — for any `W`: a `TaskFrame.DirectedFamily` of
       nonempty subsingleton sets has nonempty `⋂₀` (~10 lines; proof per report §4: pick
       `a ∈ s₀`, directedness + subsingleton elimination force `a ∈ s₁` for every `s₁ ∈ S`)
-- [ ] `taskRel_add_iff_seg_nonempty` — DERIVED (never cited to the paper):
+- [x] `taskRel_add_iff_seg_nonempty` — DERIVED (never cited to the paper):
       `R w (x+y) v ↔ (TaskFrame.Seg R w v x y).Nonempty` from the comp biconditional +
       converse convention + `mem_Seg` (~3 lines)
-- [ ] `multiFamGen_comp_iff` — biconditional Compositionality; `←` is the existing
+- [x] `multiFamGen_comp_iff` — biconditional Compositionality; `←` is the existing
       `forward_comp`, `→` interpolates via the unique intermediate `u := (w.1, w.2 + x)`
       (`abel`-level algebra; state the strong form holding for all x, y, project the sign-
-      hypothesis field form)
-- [ ] `multiFamGen_serial` — `u := (w.1, w.2 + x)`, `v := (w.1, w.2 - x)`
-- [ ] `multiFamGen_limit` — `exact TaskFrame.limit_of_shift Prod.snd ...` with `hshift` from the
+      hypothesis field form) *(strong form + `multiFamGen_comp_iff_of_nonneg` projection)*
+- [x] `multiFamGen_serial` — `u := (w.1, w.2 + x)`, `v := (w.1, w.2 - x)`
+- [x] `multiFamGen_limit` — `exact TaskFrame.limit_of_shift Prod.snd ...` with `hshift` from the
       relation's second conjunct, `hzero` from `nullity_identity`; requires `[Nontrivial D]`
-- [ ] `multiFamGen_spherical` — every fiber `Fib R (f,a) x = {(f, a + x)}` is a singleton, every
+- [x] `multiFamGen_spherical` — every fiber `Fib R (f,a) x = {(f, a + x)}` is a singleton, every
       segment an intersection of fibers hence subsingleton; apply the sInter helper
-- [ ] `multiFamGen_total_eq` — `(htot : ∀ t, σ.domain t) → ∃ f w₀, σ = multiFamHistoryGen f w₀`;
+      *(fiber subsingleton-ness factored as `multiFamGen_fib_subsingleton`)*
+- [x] `multiFamGen_total_eq` — `(htot : ∀ t, σ.domain t) → ∃ f w₀, σ = multiFamHistoryGen f w₀`;
       states-field equality via the `change WorldHistory.mk ...; congr 1` precedent
       (`multiFamHistoryGen_shift_eq`)
-- [ ] Zero sorries in the new module; docstrings cite paper anchors by `\label` only and MUST
+- [x] Zero sorries in the new module; docstrings cite paper anchors by `\label` only and MUST
       NOT reference task numbers (durable anchors only, per repo deliverable rules)
+      *(verified: `grep -cw sorry` = 0; `lean_verify` on `multiFamGen_total_eq` and
+      `multiFamGen_spherical` shows standard axioms only)*
 
 **Timing**: 2 hours
 

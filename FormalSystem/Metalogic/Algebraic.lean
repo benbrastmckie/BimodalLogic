@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Algebraic.BooleanStructure
+import FormalSystem.Metalogic.Algebraic.FlowFrame
 import FormalSystem.Metalogic.Algebraic.InteriorOperators
 import FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
 import FormalSystem.Metalogic.Algebraic.ParametricCanonical
