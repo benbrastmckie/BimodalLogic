@@ -817,7 +817,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Dependencies**: Task 420, Task 438, Task 439
 - **Research**: [414_refactor_semantics_to_total_history_validity/reports/05_seriality-witness-nontermination.md]
 - **Plan**: [414_refactor_semantics_to_total_history_validity/plans/04_seriality-witness-termination-fix.md]
-- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/07_phase27-28-bridge-and-tree-gate.md]
+- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/08_phase29-1-bimodaltest-measurement.md]
 
 **Description**: === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the sections named below) ===
 18 of 23 plan phases are COMPLETE, `lake build` is GREEN, 0 sorries were introduced (1

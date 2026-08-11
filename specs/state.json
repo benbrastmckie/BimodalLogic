@@ -727,9 +727,9 @@
           "summary": "31-phase revision: phases 1-21 preserved verbatim, phase 22 closed with the unrunnable BimodalTest gate re-homed to phase 29, phase 23 retained OPTIONAL, and seven new phases (24-30) implementing the additive trivialEventWitnessed guard behind a measurement go/no-go gate."
         },
         {
-          "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/07_phase27-28-bridge-and-tree-gate.md",
+          "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/08_phase29-1-bimodaltest-measurement.md",
           "type": "summary",
-          "summary": "Phases 27+28 (executed 28-repair -> 27 -> 28-gate on a confirmed import-direction blocker): bridge extraction widened at the two genuine sites, countermodel extraction repaired, MintBound.lean red found and fixed; lake build GREEN at 2331 jobs, matching the phase-24 baseline. Claim 11 settled: row 11 re-baselines to true."
+          "summary": "Phase 29.1: lake build BimodalTest TERMINATES in 35 s (was unrunnable; killed twice after >45 min). BoxNegReachabilityProbe 1.0 s, CrossWorldPropagationProbe 1.7 s (was 2418 s). All four predicted rows moved to predicted values; census found 40 mismatching rows of 178, only 4 cleared to apply; the excluded-ten bucket needs a pre-guard differential."
         }
       ],
       "created": "2026-07-28T22:51:10Z",
