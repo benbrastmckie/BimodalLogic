@@ -837,27 +837,57 @@ and `seg_subset_seg` (segment monotonicity in both endpoints).
 
 ---
 
-### Phase 8: `lem:fibers` and `lem:admissible` [NOT STARTED]
+### Phase 8: `lem:fibers` and `lem:admissible` [COMPLETED]
 
 **Goal**: Transcribe the two lemmas that turn membership in all constraints into a one-point
 extension, mirroring the paper's decomposition exactly.
 
 **Tasks**:
-- [ ] `theorem fibers` — `u` belongs to every member of `Constraints τ z` iff
+- [x] `theorem fibers` — `u` belongs to every member of `Constraints τ z` iff
       `F.TaskRel (τ.states t ht) (z - t) u` for every `t ∈ dom τ`. Docstring cites `lem:fibers`
       verbatim. Note that the statement carries **no sign proviso**, which is why
-      `PartialHistory.respects_task` is unconditional (Decision B).
-- [ ] `theorem admissible` — the function `τ ∪ {⟨z, u⟩}` is a partial history on `dom τ ∪ {z}`
+      `PartialHistory.respects_task` is unconditional (Decision B). *(completed —
+      `PartialHistory.fibers`, statement exactly as specified, `lem:fibers` quoted verbatim from
+      `specs/paper-definitions-of-record.md`; the docstring states the no-sign-proviso point and
+      its link to the unconditional `respects_task` field)*
+- [x] `theorem admissible` — the function `τ ∪ {⟨z, u⟩}` is a partial history on `dom τ ∪ {z}`
       iff `u` belongs to every member of `Constraints τ z`. Docstring cites `lem:admissible`
       verbatim and records the proof recipe: `lem:nullity` (the zero loop at `z` itself) plus
-      `lem:fibers`.
-- [ ] Provide the concrete one-point extension construction
+      `lem:fibers`. *(completed — `PartialHistory.admissible`, an iff between
+      `AdjoinRespects τ z u` and `∀ c ∈ Constraints τ z, u ∈ c`; the recipe is recorded and the
+      four pair-cases are annotated inline with which half discharges each)*
+- [x] Provide the concrete one-point extension construction
       `PartialHistory.adjoin τ z u (h : …) : PartialHistory F` with `Extends (adjoin …) τ`.
-- [ ] Discharge `lem:nullity`'s reflexivity half via Phase 6's `nullity_of_serial_limit`. Record
-      that `nullity_identity` (`TaskFrame.lean:198`) is strictly stronger than `lem:nullity` and
-      that its open design question — demote, keep the iff, or drop injectivity-at-zero — is
-      joint with task 420 and **not decided here**; `lem:admissible` consumes only the
-      reflexivity half, so the choice does not obstruct this phase.
+      *(completed — `PartialHistory.adjoin` over `adjoinDomain` / `adjoinFun`, with
+      `adjoin_extends`, plus `adjoin_domain_self` and `adjoin_states_self` so Phase 9 can read off
+      that the extension actually covers `z` and takes the new value there)*
+- [x] Discharge `lem:nullity`'s reflexivity half via Phase 6's `nullity_of_serial_limit`. Record
+      that `nullity_identity` is strictly stronger than `lem:nullity` and that its open design
+      question — demote, keep the iff, or drop injectivity-at-zero — is joint with the four-axiom
+      frame-alignment work and **not decided here**; `lem:admissible` consumes only the
+      reflexivity half, so the choice does not obstruct this phase. *(completed — the `⟨z, z⟩`
+      pair-case is closed by `TaskFrame.nullity_of_serial_limit hSer hLim u`; the module docstring
+      records that `TaskFrame.nullity_identity` is an iff, strictly stronger than the paper's
+      derived `lem:nullity`, that nothing in this module depends on the field, and that all three
+      options therefore stay open. Note the plan's `TaskFrame.lean:198` line locator was not
+      carried into the Lean docstring, per the durable-anchor rule)*
+
+**Two transcription decisions this phase had to make, recorded rather than absorbed silently**
+(neither is a skipped, altered, or deferred plan step):
+
+1. **The `z ∉ dom τ` proviso *is* assumed here, unlike in Phase 7.** `admissible` carries
+   `hz : ¬ τ.domain z`, and it is load bearing in the left-to-right direction: when `z ∈ dom τ`
+   the paper's `τ ∪ {⟨z, u⟩}` is not a well-defined extension at all, `adjoinFun` keeps `τ`'s own
+   value at `z` and discards `u`, and the task-respect condition then holds for *every* `u` while
+   constraint membership does not. `fibers` needs no such proviso and does not assume one. This is
+   the exact complement of Phase 7's decision 1, and the contrast is recorded in the module
+   docstring so a reader does not conclude the two phases disagree.
+2. **The extended state function is total on `D` (`adjoinFun : D → WorldState`), not a dependent
+   function of a domain proof.** `adjoin` restricts it to `adjoinDomain τ z`, so nothing reads its
+   value off the domain and the paper's `τ ∪ {⟨z, u⟩}` is unchanged. The proof-free form is what
+   keeps the two rewriting lemmas (`adjoinFun_of_domain` / `adjoinFun_of_not_domain`) free of
+   proof-argument metavariables; the dependent form was tried first and made every `rw` in
+   `admissible` fail to find its pattern.
 
 **Timing**: 2.5 hours
 
@@ -867,10 +897,29 @@ extension, mirroring the paper's decomposition exactly.
 
 **Files to modify**:
 - `FormalSystem/Semantics/Extension/Admissible.lean` (new)
+- `FormalSystem/Semantics.lean` — aggregator import and submodule docstring entry *(deviation:
+  added — the new module is unreachable from the aggregator without it, exactly as Phase 7
+  needed)*
 
 **Verification**:
-- `lake build` green, sorry-free, axiom-free.
+- `lake build` green, sorry-free, axiom-free. **PASSED** — full-project `lake build` exit 0
+  (2329 jobs, one more than Phase 7's 2328); `grep -c sorry
+  FormalSystem/Semantics/Extension/Admissible.lean` returns 0; no `axiom` declaration anywhere in
+  `FormalSystem/` (the five `^axiom ` grep hits are all docstring prose, unchanged from the
+  phase's baseline); `#print axioms` for `fibers`, `admissible`, `adjoin`, and `adjoin_extends`
+  reports the three standard Lean axioms `[propext, Classical.choice, Quot.sound]` and nothing
+  else. `Classical.choice` enters through `adjoinFun`'s case distinction on the domain predicate
+  and through `by_cases`; this is a property of the *construction*, and no claim of
+  choice-freeness is made for it. `lem:nullity` itself remains choice-free as
+  `nullity_of_serial_limit` proves it.
 - `adjoin`'s `nonempty_domain` and unconditional `respects_task` fields are both discharged.
+  **PASSED** — `nonempty_domain` from `τ.nonempty_domain` (the old domain injects into the new
+  one via `Or.inl`), and `respects_task` from the `AdjoinRespects` hypothesis directly, with no
+  `ofLe` detour and no guarded restatement.
+- Additional check, since the phase feeds the section-7 threading criterion: *Spherical* is
+  **not** consumed by either lemma, and the module docstring says so explicitly. `lem:step`
+  (Phase 9) remains its sole application site; this module supplies that application its *other*
+  input, the certificate that a state common to all constraints yields a genuine extension.
 
 ---
 

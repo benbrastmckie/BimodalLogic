@@ -9,6 +9,7 @@ import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.FrameAxioms
 import FormalSystem.Semantics.Extension.Constraint
+import FormalSystem.Semantics.Extension.Admissible
 import FormalSystem.Semantics.WorldHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
@@ -35,6 +36,10 @@ polymorphic over temporal types.
 - `Extension.Constraint`: `lem:constraint` — the constraints imposed on a new duration form a
   directed family of nonempty sets, consuming *Seriality* and *Compositionality* in both of its
   directions
+- `Extension.Admissible`: `lem:fibers` and `lem:admissible` — membership in every constraint is
+  the fiber condition at every domain time, and that is exactly what makes the one-point extension
+  `τ ∪ {⟨z, u⟩}` (`PartialHistory.adjoin`) a partial history; consumes `lem:nullity` via
+  *Seriality* plus *Limit*
 - `WorldHistory`: World histories `τ: X → W` as functions from convex time domains to
   world states, respecting the task relation
 - `TaskModel`: Task models extending frames with valuation functions `V: W × String → Prop`
