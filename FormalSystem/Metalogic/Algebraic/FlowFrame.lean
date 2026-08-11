@@ -328,6 +328,28 @@ theorem multiFamGen_total_eq {FamIdx : Type}
     WorldHistory.mk (PartialHistory.mk _ _ _ _) _
   congr 2
 
+/-- The generic flow frame's Omega **is** its total-history set `H_F`, as a set equation.
+
+`def:world-history` fixes `H_F` as the totality-cut of the world histories: "A world history is
+*total* --- equivalently, a *possible world* --- just in case $X = D$. ... The set of all total
+world histories over $\F$ is denoted $H_{\F}$." Here the totality predicate `X = D` is spelled
+`∀ t, σ.domain t`.
+
+The `⊆` direction is definitional: `multiFamHistoryGen` carries `domain := fun _ => True`. The
+`⊇` direction is `multiFamGen_total_eq`. So on this carrier, replacing an Omega-parameterized
+box clause by the `def:BL-semantics` box clause ("for all $\sigma \in H_{\F}$") is a rewrite
+along this equation, not a change of content. -/
+theorem multiFamOmegaGen_eq_total (FamIdx : Type) :
+    multiFamOmegaGen D FamIdx =
+      {σ : WorldHistory (multiFamTaskFrameGen D FamIdx) | ∀ t, σ.domain t} := by
+  ext σ
+  constructor
+  · rintro ⟨⟨f, w₀⟩, rfl⟩ t
+    trivial
+  · intro htot
+    obtain ⟨f, w₀, rfl⟩ := multiFamGen_total_eq σ htot
+    exact multiFamHistoryGen_mem_omega f w₀
+
 end FlowFrameConformance
 
 /-! ## The bundle flow frame
@@ -445,6 +467,16 @@ theorem bundleFlowHistory_mem_omega {B : BFMCS (fc := fc) D}
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ : D) :
     bundleFlowHistory fam w₀ ∈ bundleFlowOmega B :=
   multiFamHistoryGen_mem_omega fam w₀
+
+/-- The bundle flow Omega **is** the bundle flow frame's total-history set `H_F`
+(`def:world-history`: "The set of all total world histories over $\F$ is denoted $H_{\F}$").
+
+Immediate specialization of `multiFamOmegaGen_eq_total` at the bundle index, since
+`bundleFlowOmega` is `multiFamOmegaGen` at that index by definition. -/
+theorem bundleFlowOmega_eq_total (B : BFMCS (fc := fc) D) :
+    bundleFlowOmega B =
+      {σ : WorldHistory (bundleFlowFrame B) | ∀ t, σ.domain t} :=
+  multiFamOmegaGen_eq_total _
 
 /-! ## Helper tautologies for the implication case
 
