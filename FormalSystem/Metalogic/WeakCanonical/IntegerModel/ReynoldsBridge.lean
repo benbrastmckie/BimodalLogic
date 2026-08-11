@@ -764,6 +764,15 @@ theorem multiFamHistory_mem_omega {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
     multiFamHistory f w₀ ∈ multiFamOmega FamIdx :=
   ⟨⟨f, w₀⟩, rfl⟩
 
+/-- Every family line is total (`def:world-history`'s cut `X = D`, spelled `∀ t, σ.domain t`).
+Definitional: `multiFamHistory` carries `domain := fun _ => True`. This is the `ℤ` counterpart
+of `bundleFlowHistory_total` (`FlowFrame.lean`), and is what the totality-targeted box clause
+(`def:BL-semantics`, "for all $\sigma \in H_{\F}$") consumes in place of the former
+`∈ multiFamOmega` witness. -/
+theorem multiFamHistory_total {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
+    (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)).IsTotal :=
+  fun _ => trivial
+
 /-- Every total history of the multi-family frame is a family line. Totality is
 `def:world-history`'s cut `X = D`, spelled `∀ t, σ.domain t`.
 
@@ -947,9 +956,9 @@ theorem countermodel_discrete_reynolds_v2
           TemporalTruth ((getZ f').toOrdered sig) (mkAtomMapFwd φ)
             (toCarrier (h_lo f') (h_hi f') z) ψ := by
         intro f' z
-        have h_mem : multiFamHistory f' (z - t) ∈ multiFamOmega FamIdx :=
-          multiFamHistory_mem_omega f' (z - t)
-        have h_ta := h_all (multiFamHistory f' (z - t)) h_mem
+        have h_tot : (multiFamHistory f' (z - t)).IsTotal :=
+          multiFamHistory_total f' (z - t)
+        have h_ta := h_all (multiFamHistory f' (z - t)) h_tot
         rw [ih h_sub_ψ f' (z - t) t] at h_ta
         have h_eq : z - t + t = z := by omega
         rw [h_eq] at h_ta
@@ -1084,8 +1093,8 @@ theorem countermodel_discrete_reynolds_v2
       exact h_all_pred_Z (toCarrier (h_lo f) (h_hi f) (w₀ + t))
     · -- Backward: TemporalTruth (.box ψ) → (∀ σ ∈ Omega, TruthAt σ t ψ)
       intro h_box σ h_mem
-      obtain ⟨⟨f', w₀'⟩, h_eq⟩ := h_mem
-      rw [← h_eq, ih h_sub_ψ f' w₀' t]
+      obtain ⟨f', w₀', h_eq⟩ := multiFam_total_eq σ h_mem
+      rw [h_eq, ih h_sub_ψ f' w₀' t]
       -- h_box : TemporalTruth (.box ψ) at (f, w₀+t) on Z_f
       -- = (getZ f).interp (mkAtomMapFwd φ (.box ψ)) (w₀+t)
       -- = ((getZ f).toOrdered sig).interp (mkAtomMapFwd φ (.box ψ)) (toCarrier(w₀+t))

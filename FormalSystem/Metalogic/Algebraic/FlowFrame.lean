@@ -659,7 +659,7 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
     have h_ψ_sub : ψ ∈ subformulaClosure root := closure_box root ψ h_sub
     constructor
     · intro h_box σ h_σ_mem
-      obtain ⟨⟨fam', w₀'⟩, rfl⟩ := h_σ_mem
+      obtain ⟨fam', w₀', rfl⟩ := bundleFlow_total_eq σ h_σ_mem
       have h_box' : Formula.box ψ ∈ fam.val.mcs (w₀' + t) :=
         fmcs_box_persistent fam.val ψ (w₀ + t) (w₀' + t) h_box
       have h_ψ_fam' : ψ ∈ fam'.val.mcs (w₀' + t) :=
@@ -669,7 +669,7 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
       have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs (w₀ + t) := by
         intro fam' hfam'
         exact (ih h_ψ_sub ⟨fam', hfam'⟩ w₀ t).mpr
-          (h_all_σ (bundleFlowHistory ⟨fam', hfam'⟩ w₀) (bundleFlowHistory_mem_omega _ _))
+          (h_all_σ (bundleFlowHistory ⟨fam', hfam'⟩ w₀) (bundleFlowHistory_total _ _))
       exact B.modal_backward fam.val fam.property ψ (w₀ + t) h_all_fam
   | untl α β ih_α ih_β =>
     have h_α_sub : α ∈ subformulaClosure root := closure_untl_left root α β h_sub
