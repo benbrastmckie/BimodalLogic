@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
 
 `CountermodelExtraction.lean` supplies `sat_box_pos`: `T(□φ) @ (w,t)` on a saturated branch puts
 `T(φ)` at `(w', t)` for **every known world** `w'`, at the *same* time. The `box` case of the truth
-lemma needs more than that, because `truthAt_box_iff_base` (`Bridge/Omega.lean`) makes `□` the
+lemma needs more than that, because `truthAt_box_iff_base` (`Bridge/RegionFrame.lean`) makes `□` the
 universal modality over *both* coordinates: every world **and** every point of the carrier.
 
 This file adds the three facts that the same saturation hypothesis does yield, kept in a separate

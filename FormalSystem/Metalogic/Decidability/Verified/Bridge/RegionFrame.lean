@@ -8,52 +8,53 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.Interpolate
 import FormalSystem.Semantics.Validity
 
 /-!
-# The countermodel's frame, histories, and admissible set
+# The countermodel's frame and histories
 
 `Bridge/Interpolate.lean` ends with a total valuation on the carrier and the statement that truth
 is constant on each region cut out by the placement. This file supplies the objects that
-statement is about: a `TaskFrame`, a family of `WorldHistory`s, and the set `Ω` of admissible
-histories that `valid` quantifies over.
+statement is about: a `TaskFrame` and a family of `WorldHistory`s, among them the *total* ones
+that `valid` quantifies over.
 
 ## What `valid` demands, and the one constraint that is not negotiable
 
 `FormalSystem.Semantics.valid` reads
 
 ```
-∀ D, ∀ F : TaskFrame D, ∀ M, ∀ Ω, ShiftClosed Ω → ∀ τ ∈ Ω, ∀ t, TruthAt M Ω τ t φ
+∀ D, ∀ F : TaskFrame D, ∀ M, ∀ τ, τ.IsTotal → ∀ t, TruthAt M Set.univ τ t φ
 ```
 
-so refuting it means producing a **shift-closed** `Ω`. That is not a formality, and it decides
-the shape of everything below.
+so refuting it means producing a **total** history. That is not a formality, and it decides the
+shape of everything below.
 
-### Consequence 1: `Ω = Set.univ` is unusable, but `Ω = H_F` is exactly right
+### Consequence 1: totality is the whole of the demand, and it is met exactly
 
-`Set.univ` is shift-closed, and the plan named it as the fallback, but it cannot be used here.
-`Set.univ` ranges over *all* world histories, partial ones included, and a history whose domain
-omits the evaluation point carries no state there. `TruthAt … (box φ)` is a universal over `Ω`
-at a fixed time, so a single such history falsifies `□p` outright and no branch carrying `T(□p)`
-could ever be satisfied.
+An arbitrary world history is no use here: a history whose domain omits the evaluation point
+carries no state there. `TruthAt … (box φ)` is a universal over the total histories at a fixed
+time, so admitting partial histories would let a single one falsify `□p` outright and no branch
+carrying `T(□p)` could ever be satisfied. Totality is precisely the cut that excludes them, and
+it is what the box clause now quantifies over.
 
 The fix is **totality**, not a hand-picked range. Since `regionFrame`'s task relation is the
 deterministic clock (see "The frame" below), a total history is pinned by its state at time `0`:
 `regionFrame_total_eq` shows every total history *is* some `regionHistory f w Δ`, and
-`regionOmega_eq_total` records the resulting set equation `regionOmega f = H_F`. So `Ω` may be
-read either as the range the branch calls for or as the frame's total-history set — they are the
-same set, and the box clause quantifying over `H_F` is a rewrite rather than a change of content.
+`isTotal_iff_regionHistory` records the resulting characterization. So the frame's total-history
+set `H_F` may be read either as the range the branch calls for or as the totality cut — they are
+the same family, and the box clause quantifying over `H_F` costs nothing to instantiate.
 
 This is what the earlier, maximally-permissive task relation `TaskRel s d s' := d = 0 → s = s'`
 could not deliver: above zero it constrained nothing, so *any* assignment of states to all of
 `D` was a legal total history and `H_F` was the full function space — strictly larger than the
 intended family. Totality fixed the empty-history problem but not the junk-history problem, and
-`Ω` had to be given as an explicit range because `H_F` was too big to use.
+a designated admissible set had to be given as an explicit range because `H_F` was too big to
+use. Determinism removes that need, and with it the designated set.
 
 ### Consequence 2: `□` is the universal modality
 
-For any shift-closed `Ω`, `time_shift_preserves_truth` turns the fixed-time universal into a
-universal over times as well:
+`time_shift_preserves_truth` turns the fixed-time universal into a universal over times as well,
+with no closure side condition — totality is preserved by `timeShift` outright:
 
 ```
-TruthAt M Ω τ x (box φ) ↔ ∀ σ, σ.IsTotal → ∀ y, TruthAt M Ω σ y φ
+TruthAt M Set.univ τ x (box φ) ↔ ∀ σ, σ.IsTotal → ∀ y, TruthAt M Set.univ σ y φ
 ```
 
 (`truthAt_box_iff` below). Truth of a boxed formula does not depend on where it is evaluated;
@@ -63,18 +64,18 @@ region-invariance induction *free* rather than an appeal to the induction hypoth
 The engine agrees, which is worth recording because it is the load-bearing adequacy check for
 this design: `□p → □Gp`, `□p → □□p`, `□p → G□p` and `□p → ¬◇F¬p` all close, and so do the
 seriality rows `G p → F p`, `¬(Gp ∧ G¬p)`, `¬(Hp ∧ H¬p)`, `F ⊤`, `P ⊤`, while `F p → p` stays
-open. See `Checks` at the bottom of this file for the two facts that are cheap to state in Lean;
+open. See `Checks` at the bottom of this file for the fact that is cheap to state in Lean;
 the closure rows are `#eval` probes against `buildTableau`.
 
 ### Consequence 3: the global `RegionConstant` hypothesis is NOT satisfiable here
 
 `Interpolate.lean` hands `interpInvariant` over with the hypothesis
 `∀ τ, τ.IsTotal → RegionConstant f τ` — every *total* history is constant on the regions of the
-*fixed* placement `f`. On this carrier `regionOmega f = H_F` (`regionOmega_eq_total`), so the
-hypothesis ranges over exactly the histories `Ω` used to range over, and it forces the model to be
-trivial. The argument is short enough to state exactly:
+*fixed* placement `f`. On this carrier the total histories are exactly the region histories
+(`isTotal_iff_regionHistory`), so the hypothesis ranges over the whole family and forces the
+model to be trivial. The argument is short enough to state exactly:
 
-Let `τ ∈ Ω` and `r ≠ r'`. `Ω` contains `timeShift τ Δ` for every `Δ`, whose state at `r` is
+Let `τ` be total and `r ≠ r'`. Every `timeShift τ Δ` is again total, and its state at `r` is
 `τ.states (r + Δ)`. Region-constancy of *that* history at `r, r'` says: if `r` and `r'` are
 region-mates then `τ.states (r + Δ) = τ.states (r' + Δ)`. Since `ι` is finite, only finitely many
 `Δ` place a point of `f` between `r + Δ` and `r' + Δ`; choosing any other `Δ` makes the two
@@ -106,8 +107,8 @@ makes totality sufficient (Consequence 1 above): `respects_task` propagates the 
 `0` along the clock, so a total history has no freedom left.
 
 `ι` survives as a parameter of the frame without occurring in its state space, and the placement
-`f : ι → D` survives as a parameter of `regionHistory` and `regionOmega` without occurring in
-the states. This keeps the admissible-set interface unchanged while the region structure moves
+`f : ι → D` survives as a parameter of `regionHistory` without occurring in the states. This
+keeps every declaration below in the shape its consumers expect while the region structure moves
 where determinism forces it to go — into the **valuation**, which reads `regionCode f`
 (`Interpolate.lean`) off the time component of a state. `RegionConstant` is correspondingly no
 longer provable of any history (`not_regionConstant_regionHistory`); region-invariance of atomic
@@ -124,7 +125,7 @@ open FormalSystem.Metalogic.Decidability
 
 `WorldHistory` carries two proof fields, so equality of two histories is decided by the domain
 and the state assignment alone. Needed to identify a time-shifted history with another member of
-the range that defines `Ω`.
+the `regionHistory` family.
 -/
 
 /-- Two histories with the same domain and the same states are equal. -/
@@ -155,15 +156,15 @@ relation is the deterministic clock `(w, x) ⇒_d (w, x + d)` — the structural
 Deterministic is deliberate, and it is a change from the earlier weakest-possible relation
 `TaskRel s d s' := d = 0 → s = s'`. That relation was maximally permissive above zero, so *any*
 assignment of states to all of `D` was a legal total history: the frame's total-history set
-`H_F` was the full function space, strictly larger than the intended `regionHistory` family, and
-`regionOmega = H_F` was therefore false. Under the clock relation, `respects_task` propagates
-the state at time `0` to every other time (`regionFrame_total_eq`), so totality *alone* pins the
-history and `regionOmega_eq_total` holds.
+`H_F` was the full function space, strictly larger than the intended `regionHistory` family. Under
+the clock relation, `respects_task` propagates the state at time `0` to every other time
+(`regionFrame_total_eq`), so totality *alone* pins the history and `isTotal_iff_regionHistory`
+holds.
 
 The region structure has correspondingly moved out of the state and into the valuation: a state
 no longer carries a region code, and region-invariance of atomic truth is imposed on the
 valuation rather than read off the history's states. `ι` and the placement `f` are retained as
-parameters throughout this file so that the admissible-set interface below keeps its shape.
+parameters throughout this file so that the declarations below keep their shape.
 -/
 def regionFrame (W ι D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
     TaskFrame D where
@@ -195,7 +196,7 @@ theorem regionFrame_taskRel (W ι D : Type) [AddCommGroup D] [LinearOrder D]
 
 end Frame
 
-/-! ## The histories and the admissible set -/
+/-! ## The histories -/
 
 section Histories
 
@@ -206,14 +207,14 @@ set_option linter.unusedVariables false in
 The history of world `w` viewed with time offset `Δ`: total in time, assigning to `r` the state
 "world `w`, at time `r + Δ`".
 
-`Δ = 0` is the history the branch is really about; the nonzero offsets exist only because `Ω`
-has to be shift-closed, and `timeShift_regionHistory` says they are exactly the time-shifts of
-the base histories.
+`Δ = 0` is the history the branch is really about; the nonzero offsets are the time-shifts of the
+base histories (`timeShift_regionHistory`), and they are total exactly as the base histories
+are.
 
 The placement `f` is retained as a parameter — it no longer occurs in the states, since the
 region code moved out of the frame's state space when the task relation became deterministic —
-so that every declaration about `regionOmega f` below keeps its shape. Regions re-enter through
-the valuation, which reads `regionCode f` off the time component.
+so that every declaration below keeps its shape. Regions re-enter through the valuation, which
+reads `regionCode f` off the time component.
 -/
 def regionHistory (f : ι → D) (w : W) (Δ : D) : WorldHistory (regionFrame W ι D) where
   domain := fun _ => True
@@ -304,10 +305,9 @@ end Histories
 
 /-! ## `□` is the universal modality
 
-The single semantic fact the region bridge rests on. Stated for an arbitrary `Ω` — the set is
-`TruthAt`'s inert carrier argument here and nothing about `regionOmega` is used — and with no
-shift-closure hypothesis, because the box clause quantifies over totality and totality is
-preserved by `timeShift` outright.
+The single semantic fact the region bridge rests on. `TruthAt`'s remaining set argument is inert
+and is supplied as `Set.univ`; there is no shift-closure hypothesis, because the box clause
+quantifies over totality and totality is preserved by `timeShift` outright.
 -/
 
 section BoxUniversal
@@ -319,41 +319,41 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F 
 total history and *every* time.
 
 The forward direction shifts an arbitrary `(σ, y)` back to `x` — legal because totality is
-preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), with no side condition on `Ω` —
-and reads the result off `time_shift_preserves_truth`. Shift-closure of `Ω` is no longer a
-hypothesis: the box clause quantifies over totality, and totality is shift-stable outright.
+preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), with no side condition on the
+carrier — and reads the result off `time_shift_preserves_truth`. Shift-closure is no longer a
+hypothesis anywhere: the box clause quantifies over totality, and totality is shift-stable
+outright.
 -/
-theorem truthAt_box_iff (M : TaskModel F) {Om : Set (WorldHistory F)}
+theorem truthAt_box_iff (M : TaskModel F)
     (τ : WorldHistory F) (x : D) (φ : Formula) :
-    TruthAt M Om τ x φ.box ↔
-      ∀ σ : WorldHistory F, σ.IsTotal → ∀ y : D, TruthAt M Om σ y φ := by
+    TruthAt M Set.univ τ x φ.box ↔
+      ∀ σ : WorldHistory F, σ.IsTotal → ∀ y : D, TruthAt M Set.univ σ y φ := by
   simp only [TruthAt]
   constructor
   · intro h σ hσ y
-    exact (TimeShift.time_shift_preserves_truth M Om σ x y φ).mp
+    exact (TimeShift.time_shift_preserves_truth M Set.univ σ x y φ).mp
       (h _ (WorldHistory.isTotal_timeShift hσ (y - x)))
   · intro h σ hσ
     exact h σ hσ x
 
 /-- Truth of a boxed formula does not depend on the time it is evaluated at. -/
-theorem truthAt_box_congr (M : TaskModel F) {Om : Set (WorldHistory F)}
+theorem truthAt_box_congr (M : TaskModel F)
     (τ : WorldHistory F) (x y : D) (φ : Formula) :
-    TruthAt M Om τ x φ.box ↔ TruthAt M Om τ y φ.box := by
+    TruthAt M Set.univ τ x φ.box ↔ TruthAt M Set.univ τ y φ.box := by
   rw [truthAt_box_iff M τ x φ, truthAt_box_iff M τ y φ]
 
 /-- Nor on the history it is evaluated in. -/
-theorem truthAt_box_congr_history (M : TaskModel F) {Om : Set (WorldHistory F)}
+theorem truthAt_box_congr_history (M : TaskModel F)
     (τ σ : WorldHistory F) (x y : D) (φ : Formula) :
-    TruthAt M Om τ x φ.box ↔ TruthAt M Om σ y φ.box := by
+    TruthAt M Set.univ τ x φ.box ↔ TruthAt M Set.univ σ y φ.box := by
   rw [truthAt_box_iff M τ x φ, truthAt_box_iff M σ y φ]
 
 end BoxUniversal
 
 /-! ## Reduction to the base histories
 
-The offsets in `Ω` exist only to satisfy shift-closure. This section shows they carry no
-independent semantic content: every member of `Ω` is a time-shift of a base history, so every
-truth value in the model is a truth value at some `regionHistory f w 0`. `truthAt_box_iff_base`
+The nonzero offsets carry no independent semantic content: every total history is a time-shift of
+a base history, so every truth value in the model is a truth value at some `regionHistory f w 0`. `truthAt_box_iff_base`
 is the form the truth lemma's `box` case consumes.
 -/
 
@@ -443,7 +443,7 @@ section Checks
 
 /--
 **The translates are not region-constant** — the concrete refutation of the Phase 6 hypothesis
-`∀ τ ∈ Ω, RegionConstant f τ` promised in the module docstring.
+`∀ τ, τ.IsTotal → RegionConstant f τ` promised in the module docstring.
 
 One placed point at `0 : ℚ`; `-1/2` and `-2` are region-mates (both strictly below the only
 placed point), but the `Δ = 1` history reads their states off the distinct times `1/2` and `-1`.

@@ -9,9 +9,9 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
 /-!
 # The countermodel's valuation, and the shape of the gap obligation
 
-`Bridge/Omega.lean` fixes the frame (`regionFrame W ι D`, whose states are `W × D` — a branch
-world paired with a **time**, since the deterministic clock relation forced the region code out of
-the state space) and the shift-closed admissible set. `Bridge/TruthLemma.lean` proves that truth is
+`Bridge/RegionFrame.lean` fixes the frame (`regionFrame W ι D`, whose states are `W × D` — a
+branch world paired with a **time**, since the deterministic clock relation forced the region code
+out of the state space) and its total histories. `Bridge/TruthLemma.lean` proves that truth is
 constant on each region of the placement, given that the *model* reads the time only through its
 region code (`RegionValued`). Neither file supplies a `TaskModel`. This file does, and discharges
 that condition for it (`regionValued_regionModel`).
@@ -51,7 +51,7 @@ constrained only by the *universally quantified* ones: at a gap point `r`,
 1. every `p` with `T(G p) @ (w, t)` and `f t < r` must be true,
 2. every `p` with `T(H p) @ (w, t)` and `r < f t` must be true,
 3. every `p` with `T(□ p)` anywhere must be true (`truthAt_box_iff_base`: `□` is the universal
-   modality once `Ω` is shift-closed), and
+   modality), and
 4. the guard of every `T(U(φ,ψ))`/`T(S(φ,ψ))` whose witness straddles `r` must be true.
 
 The obvious shortcut is refuted, and this file records the refutation as a theorem rather than as
@@ -464,7 +464,7 @@ banner names:
 * `{p : T(G p)` at a placed point **below** the gap`}` — everything the past forces forward,
 * `{p : T(H p)` at a placed point **above** the gap`}` — everything the future forces backward,
 * `{p : T(□ p)` anywhere`}` — `□` is the universal modality over the whole model once `Ω` is
-  shift-closed (`truthAt_box_iff_base`), so its content is forced at every point of every world.
+  universal (`truthAt_box_iff_base`), so its content is forced at every point of every world.
 
 A gap region carries no label, so no *atomic* branch fact contradicts the assignment: the three
 disjuncts are the only constraints there are, and taking their union is the largest — hence the

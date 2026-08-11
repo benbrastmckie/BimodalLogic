@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Decidability.Verified.Bridge.Omega
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionFrame
 
 /-!
 # Region invariance, per history — the truth lemma's engine
@@ -16,7 +16,7 @@ InterpInvariant f M χ := ∀ τ, τ.IsTotal → ∀ r r', SameRegion f r r' →
   (TruthAt … τ r χ ↔ … τ r' χ)
 ```
 
-from the hypothesis `∀ τ, τ.IsTotal → RegionConstant f τ`. `Bridge/Omega.lean`'s module docstring
+from the hypothesis `∀ τ, τ.IsTotal → RegionConstant f τ`. `Bridge/RegionFrame.lean`'s module docstring
 shows that hypothesis is **unsatisfiable** here (the total histories are closed under time
 translation, and asking every translate to be constant on the regions of one fixed placement
 forces the states constant, hence the model blind to time);
@@ -319,7 +319,7 @@ The one hypothesis is exactly what the countermodel supplies:
 `atomRegionInvariant_regionHistory` for the base history. Shift-closure of `Ω` is no longer
 needed — the box case now instantiates against totality, which `timeShift` preserves outright.
 Contrast the global `interpInvariant`, which additionally demands region-constancy of *every*
-total history — a demand this carrier cannot meet (`Bridge/Omega.lean`, Consequence 3).
+total history — a demand this carrier cannot meet (`Bridge/RegionFrame.lean`, Consequence 3).
 -/
 theorem interpInvariantAt [NoMaxOrder D] [NoMinOrder D]
     (hAI : AtomRegionInvariant f M τ) (χ : Formula) :
@@ -336,7 +336,7 @@ end Invariance
 
 /-! ## The countermodel's invariance, instantiated
 
-The two hypotheses of `interpInvariantAt` discharged against the objects of `Bridge/Omega.lean`,
+The two hypotheses of `interpInvariantAt` discharged against the objects of `Bridge/RegionFrame.lean`,
 for an arbitrary carrier and then at each of the three dense carriers the Phase 6 route serves.
 -/
 
