@@ -168,9 +168,95 @@ before Phase 29.2 runs.
 
 Row-10/11 values (the `decide` tuple and the countermodel) are covered by Measurement 4.
 
-## Measurement 4 — `decide`, and the downstream build
+## Measurement 4 — `decide` (rows 10-12): NOT MEASURABLE, with a measured reason
 
-_[pending]_
+`decide` lives in `DecisionProcedure.lean`, which imports `CountermodelExtraction.lean`. Rather
+than read `decide` off a stale olean, `DecisionProcedure` was **rebuilt**.
+
+Command: `lake build FormalSystem.Metalogic.Decidability.DecisionProcedure`.
+**Bound**: 900 s. **Actual**: 6 s, `EXIT=1`.
+
+```
+✔ [1355/1357] Built FormalSystem.Metalogic.Decidability.ProofExtraction (1.4s)
+✖ [1356/1357] Building FormalSystem.Metalogic.Decidability.CountermodelExtraction (4.5s)
+Some required targets logged failures:
+- FormalSystem.Metalogic.Decidability.CountermodelExtraction
+```
+
+**1355 of 1357 jobs green; exactly one module red.** `decide` therefore cannot be evaluated at
+all in this dispatch, and probe rows 10, 11 and 12 are recorded as
+**`[UNVERIFIED] — not measurable until `CountermodelExtraction.lean` is green`**, which is Phase
+28's territory. This is not a timeout and not a guess: the module does not compile, so there is
+no `decide` to run. Lowering fuel, weakening a probe, or excluding a file would not have changed
+this and was not attempted.
+
+### Evidence sizing Phases 27-28 — Phase 25's `[UNVERIFIED]` prediction, now MEASURED
+
+Phase 25 predicted `[UNVERIFIED]` that downstream cost would land in
+`CountermodelExtraction.lean` and `Verified/Bridge/*`. The `CountermodelExtraction` half is now
+**confirmed by measurement**, and it is exactly the shape predicted:
+
+| # | Site | Enclosing theorem |
+|---|---|---|
+| 1 | `CountermodelExtraction.lean:520:20` unsolved goals | `sat_box_neg` (`:505`) |
+| 2 | `CountermodelExtraction.lean:551:98` unsolved goals | `sat_untl_pos` (`:534`) |
+| 3 | `CountermodelExtraction.lean:567:22` unsolved goals | `sat_untl_pos` (`:534`) |
+| 4 | `CountermodelExtraction.lean:597:96` unsolved goals | `sat_snce_pos` (`:581`) |
+| 5 | `CountermodelExtraction.lean:612:22` unsolved goals | `sat_snce_pos` (`:581`) |
+
+**Five errors, three theorems, one file.** Every residual goal has the same shape — the file
+`unfold`s `findApplicableRule`, which now reads
+`if (witnessPresent … || trivialEventWitnessed …) = true then none`, leaving:
+
+```
+⊢ witnessPresent  TableauRule.sncePos {…} b timeOrd = false
+∧ trivialEventWitnessed TableauRule.sncePos {…} b timeOrd = false
+```
+
+This is precisely the `not_or.mp` treatment Phase 25 applied to `saturated_downward_closed`, so
+the repair pattern is already established in-tree rather than novel. No new `sorry` and no new
+axiom is implied by it.
+
+## Measurement 5 — the `Verified/` side, and a phase-ordering finding
+
+Command: `lake build …Verified.Bridge.TemporalSaturation …Verified.Bridge.PropSaturation
+…Verified.Bridge.BoxSaturation`. **Bound**: 900 s. **Actual**: 550 s, `EXIT=1`.
+
+**Green (measured this dispatch)**:
+
+| Module | Status |
+|---|---|
+| `Verified/Termination/Fuel.lean` | **BUILT GREEN** |
+| `Verified/Termination/SubformulaProperty.lean` | **BUILT GREEN** |
+| `Verified/Termination/TimeTypeBound.lean` | **BUILT GREEN** |
+| `Verified/Bridge/BranchOrder.lean` | **BUILT GREEN** |
+
+`Fuel.lean` building green is a second confirmation of Phase 25's variant-A reasoning: variant A
+gives `findApplicableRule` only a **new `none` path**, so every `some` it produces is unchanged,
+and `findApplicableRule_applyRule_eq` (`Fuel.lean:238-242`) — the theorem Phase 25 identified as
+falsified *at the statement level* by variant B — is untouched. Phase 25 recorded that as
+`[UNVERIFIED: derived, not built]`. It is now **built**.
+
+**Still unmeasured**: `Verified/Bridge/BoxSaturation.lean`, `…/PropSaturation.lean`,
+`…/TemporalSaturation.lean` were **never reached** — the build failed upstream on
+`CountermodelExtraction`. Their status is unmeasured, **not** known-broken.
+
+**Phase-ordering finding (actionable for the orchestrator).** The import graph is:
+
+```
+CountermodelExtraction.lean
+  └── Verified/Bridge/BoxSaturation.lean
+        ├── Verified/Bridge/PropSaturation.lean
+        └── Verified/Bridge/TemporalSaturation.lean   (also imports BranchOrder)
+```
+
+The plan assigns `Verified/Bridge/*` to **Phase 27** and `CountermodelExtraction.lean` to
+**Phase 28**. But `BoxSaturation.lean` *imports* `CountermodelExtraction.lean`, so **Phase 27's
+territory cannot be compiled at all until Phase 28's `CountermodelExtraction` repair lands.** As
+written, Phase 27 would spend itself unable to verify anything. Either the five
+`CountermodelExtraction` errors move into Phase 27, or Phases 27 and 28 swap order. This is a
+plan defect surfaced by measurement; **this phase does not edit Phases 27-28 to fix it** — that
+is the orchestrator's call.
 
 ## GO condition
 
@@ -189,5 +275,32 @@ All three hold. **VERDICT: GO** — Phase 27 may proceed.
   `trivialEventWitnessed`, and the `.sncePos` mirror, are unreachable defensive code. **Nothing
   measured here is evidence about those two arms either way.** The termination effect measured
   above is carried entirely by the `.someFuturePos` / `.somePastPos` arms.
-- Modules outside `Tableau` and `Saturation` are **unmeasured, not known-broken** (declared red
-  window for Phases 25-28), except as recorded in Measurement 4.
+- Modules outside `Tableau` and `Saturation` were **unmeasured, not known-broken** on entry
+  (declared red window for Phases 25-28). This dispatch narrowed that: see Measurements 4 and 5
+  for what is now measured green, measured red, and still unmeasured.
+
+## Green / knowingly red / unmeasured at exit
+
+**Green (measured this dispatch)**: `Verified/Termination/Fuel.lean`,
+`Verified/Termination/SubformulaProperty.lean`, `Verified/Termination/TimeTypeBound.lean`,
+`Verified/Bridge/BranchOrder.lean`, `ProofExtraction.lean`, plus everything in the 1355-job
+prefix of the `DecisionProcedure` build. `Tableau.lean` and `Saturation.lean` remain green
+(replayed from cache, unmodified by this phase).
+
+**Knowingly red (measured this dispatch)**: `CountermodelExtraction.lean` — 5 errors, 3
+theorems, listed above. This is inside the declared Phase 25-28 red window.
+
+**Unmeasured (not known-broken)**: `Verified/Bridge/BoxSaturation.lean`, `…/PropSaturation.lean`,
+`…/TemporalSaturation.lean`, `DecisionProcedure.lean`, `TraceCertificate.lean`, and every module
+downstream of `CountermodelExtraction`. `BimodalTest` is unmeasured by dispatch constraint
+(Phase 29.1 owns it).
+
+## What this phase did NOT do
+
+- No file under `FormalSystem/` or `Tests/` was edited. `git status --short -- FormalSystem/
+  Tests/` is empty at exit.
+- No probe expectation was re-baselined. Row 9's measured `(2, 40)` is **recorded** above for
+  Phase 29.2 to apply; the probe file is untouched.
+- No fuel was lowered, no probe weakened, no file excluded from the build, no `sorry` and no
+  axiom added.
+- `lake build BimodalTest` was not run.

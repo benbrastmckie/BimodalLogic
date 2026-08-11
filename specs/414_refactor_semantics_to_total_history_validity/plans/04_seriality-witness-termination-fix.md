@@ -2937,7 +2937,23 @@ revive variant B starts from this obstacle rather than rediscovering it.
 
 ---
 
-### Phase 26: Measure the landed guard on the live engine (the go/no-go gate) [NOT STARTED]
+### Phase 26: Measure the landed guard on the live engine (the go/no-go gate) [COMPLETED]
+
+**VERDICT: GO** — all three GO conditions met, measured on the unmodified engine. See
+`summaries/06_phase26-guard-measurement.md`. Saturation first at step **23** (not 31), contiguous
+23-48, **6** times (not 8), 2 worlds; after `saturateBlocked` the literal `findUnexpanded = none`
+and `findClosure = none`; end-to-end `buildTableau ((G p) → □(G p)) 1000 .Base` returns
+**`(2, 40)`** — `.hasOpen`, the owed `(2, _)`. Report 05's `[DERIVED, not measured]` claim 10 is
+now measured and confirmed.
+
+**Two findings for the orchestrator, from measurement rather than reading:**
+1. `Verified/Bridge/BoxSaturation.lean` **imports** `CountermodelExtraction.lean`, so **Phase 27's
+   territory cannot compile until Phase 28's repair lands**. Phases 27/28 must swap order, or the
+   five `CountermodelExtraction` errors must move into Phase 27.
+2. `CountermodelExtraction.lean` is the **single** red module in a 1355/1357-green build: 5
+   unsolved-goals errors in 3 theorems (`sat_box_neg`, `sat_untl_pos` ×2, `sat_snce_pos` ×2), all
+   the `not_or.mp` shape Phase 25 already established. `Verified/Termination/Fuel.lean` built
+   **green**, confirming Phase 25's `[UNVERIFIED: derived, not built]` variant-A reasoning.
 
 **Goal**: Convert report 05's `[DERIVED, not measured]` claim 10 into a measurement on the real
 engine, **before** any proof cost is paid downstream. This phase exists precisely so that a
@@ -2945,30 +2961,34 @@ dispatch cannot spend itself proving lemmas against a guard that has not been sh
 the search. It edits no `FormalSystem/` or `Tests/` file.
 
 **Tasks**:
-- [ ] Write standalone diagnostic drivers under the session scratchpad and compile them with
+- [x] Write standalone diagnostic drivers under the session scratchpad and compile them with
       `lake env lean` against the oleans Phase 25 rebuilt (report 05 §3's method). Drive
       `expandOnceUnblocked` from the probe's own initial branch,
       `b0 := [SignedFormula.pos gp ⟨0,0⟩, SignedFormula.neg (Formula.box gp) ⟨0,0⟩]` at `.Base`
       (identical to `BoxNegReachabilityProbe.lean:85-87`), for bounded round counts up to ~48.
-- [ ] Record per round: branch length, `#times`, `#worlds`, `#blocked`, and whether
+- [x] Record per round: branch length, `#times`, `#worlds`, `#blocked`, and whether
       blocking-aware saturation (`findUnexpandedUnblockedWith … = none`) holds. Report 05 §5.2
       predicts first saturation at step 31, stable through 44, settling at 8 times and 2 worlds.
-- [ ] **The claim-10 measurement**: run `saturateBlocked b 1000 o .Base` on the first saturated
+- [x] **The claim-10 measurement**: run `saturateBlocked b 1000 o .Base` on the first saturated
       branch exactly as `Saturation.lean:1176` does, then evaluate the **literal**
       `findUnexpanded … = none` that `ExpandedTableau.hasOpen` (`Saturation.lean:75`) demands and
       that `buildTableau` checks at `Saturation.lean:1171` and `:1179`. Report 05 measured
       `literalNone = false` / `suppressedNone = true` for the *finder* placement and derived that
       the *guard* placement reads `none`. **This phase measures it.**
-- [ ] Confirm `findClosure = none` on the saturated branch (a genuine open branch, i.e. the
+- [x] Confirm `findClosure = none` on the saturated branch (a genuine open branch, i.e. the
       semantically correct `.invalid` verdict per `def:BL-semantics`).
-- [ ] Attempt, under an explicit `timeout` of at most 900 s, an end-to-end evaluation of
+- [x] Attempt, under an explicit `timeout` of at most 900 s, an end-to-end evaluation of
       `buildTableau (gp.imp gp.box) 1000 .Base` and of
       `decide (gp.imp gp.box)` / `(decide (gp.imp gp.box)).getCountermodel?.isSome`. If it
       completes, record the constructor and the actual branch length `N` — these are Phase 29.2's
       row-9/10/11 values, measured rather than predicted. If it times out, record the timeout as
       the measurement and leave the values to Phase 29.1; **do not** lower the fuel to make it
-      finish.
-- [ ] Write the measurement record, stating which variant (A or B) Phase 25 landed and whether
+      finish. *(deviation: partially altered — `buildTableau` measured, `(2, 40)` in 2 s, well
+      inside the 900 s bound. `decide` NOT measurable, and not for a timeout reason: its module
+      `DecisionProcedure.lean` does not compile, because `CountermodelExtraction.lean` is red
+      (5 errors). Row 9 is measured; rows 10/11/12 are `[UNVERIFIED]` until Phase 28 lands. Fuel
+      was not lowered.)*
+- [x] Write the measurement record, stating which variant (A or B) Phase 25 landed and whether
       the go condition below is met.
 
 **Timing**: 2 hours
