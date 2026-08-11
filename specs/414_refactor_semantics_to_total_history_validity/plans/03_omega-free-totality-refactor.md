@@ -425,26 +425,35 @@ divergence as documented) a reasonable outcome rather than a capitulation.
 
 ---
 
-### Phase 3: `PartialHistory` module [NOT STARTED]
+### Phase 3: `PartialHistory` module [COMPLETED]
 
 **Goal**: Land the `PartialHistory` layer as new, self-contained material (Decision B), with the
 extension order and the totality predicate, without yet touching `WorldHistory`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/PartialHistory.lean` with `structure PartialHistory` exactly
+- [x] Create `FormalSystem/Semantics/PartialHistory.lean` with `structure PartialHistory` exactly
       as in Decision B (`domain`, `nonempty_domain`, `states`, unconditional `respects_task`),
-      docstring citing `def:world-history` with its verbatim text.
-- [ ] Add `PartialHistory.respects_task_le` — the guarded form, derived.
-- [ ] Add `PartialHistory.ofLe` — smart constructor taking a guarded proof, discharging the
+      docstring citing `def:world-history` with its verbatim text. *(completed)*
+- [x] Add `PartialHistory.respects_task_le` — the guarded form, derived. *(completed)*
+- [x] Add `PartialHistory.ofLe` — smart constructor taking a guarded proof, discharging the
       unconditional field via `TaskFrame.converse`. Docstring must state it is a proof-convenience
-      constructor, not a compatibility shim.
-- [ ] Add `PartialHistory.IsTotal (τ) : Prop := ∀ t : D, τ.domain t`, citing `def:world-history`'s
-      totality clause verbatim.
-- [ ] Add `PartialHistory.Extends σ τ : Prop` — domain inclusion plus state agreement on the
-      smaller domain, citing `def:world-history`'s extension clause.
-- [ ] Add `PartialHistory.total_nonempty` — totality implies the nonemptiness field is derivable
-      (witness `0 : D`).
-- [ ] Register the new module in the appropriate import aggregator.
+      constructor, not a compatibility shim. *(completed — proof is `le_total` split, then
+      `F.converse … |>.mp` plus `neg_sub`)*
+- [x] Add `PartialHistory.IsTotal (τ) : Prop := ∀ t : D, τ.domain t`, citing `def:world-history`'s
+      totality clause verbatim. *(completed — docstring also records the standing constraint that
+      this is never Mathlib's `IsMax`)*
+- [x] Add `PartialHistory.Extends σ τ : Prop` — domain inclusion plus state agreement on the
+      smaller domain, citing `def:world-history`'s extension clause. *(completed — landed as a
+      `structure … : Prop` with fields `subset`/`agree`, so `agree` can refer to `subset`'s
+      coercion directly; this avoids an `∃`-over-a-proof encoding that later phases would have to
+      destructure at every use)*
+- [x] Add `PartialHistory.total_nonempty` — totality implies the nonemptiness field is derivable
+      (witness `0 : D`). *(completed — plus `nonempty_of_total`, the standalone form over a bare
+      domain predicate, which is the one usable at a **construction** site where the structure
+      does not yet exist; the τ-level form alone cannot discharge a `nonempty_domain` field)*
+- [x] Register the new module in the appropriate import aggregator. *(completed —
+      `FormalSystem/Semantics.lean`, imported after `TaskFrame` and before `WorldHistory`, with a
+      submodule-list entry)*
 
 **Timing**: 2 hours
 
@@ -454,12 +463,16 @@ extension order and the totality predicate, without yet touching `WorldHistory`.
 
 **Files to modify**:
 - `FormalSystem/Semantics/PartialHistory.lean` (new)
-- the `FormalSystem/Semantics` import aggregator
+- the `FormalSystem/Semantics` import aggregator — confirmed to be `FormalSystem/Semantics.lean`
 
 **Verification**:
-- `lake build` green; the new module compiles sorry-free.
+- `lake build` green; the new module compiles sorry-free. **PASSED** (2325 jobs, exit 0; no
+  `sorry`/`admit`/`axiom` token in the file).
 - `#print axioms` on each new declaration shows no additional axioms beyond the Mathlib baseline.
-- No existing file's behavior changes (nothing imports the new module yet).
+  **PASSED** — `respects_task_le`, `ofLe`, `total_nonempty`, and `nonempty_of_total` each depend
+  on `[propext]` only. No `Classical.choice`, no `sorryAx`.
+- No existing file's behavior changes (nothing imports the new module yet). **PASSED** — the only
+  edit outside the new file is the aggregator import line and its submodule-list entry.
 
 ---
 
