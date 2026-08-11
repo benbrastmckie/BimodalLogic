@@ -1,0 +1,272 @@
+/-
+Copyright (c) 2025 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Semantics.PartialHistory
+import Mathlib.Data.Set.Lattice
+
+/-!
+# Frame axioms in hypothesis form, and the constraints imposed on a new duration
+
+This module states three of the paper's four frame axioms — *Spherical*, *Seriality*, and the
+interpolation half of *Compositionality* — as `Prop`-valued predicates over a **bare task
+relation** `R : W → D → W → Prop`, and transcribes `def:constraints`.
+
+## Why hypothesis form
+
+None of these three is a field of `TaskFrame` today: the structure carries `nullity_identity`,
+`forward_comp` (the composition half of *Compositionality* only), and `converse`. Stating the
+missing axioms as predicates over a bare relation lets every downstream result take exactly the
+axiom it consumes as an explicit hypothesis, and lets `TaskFrame` acquire them as fields later
+**without restating anything**.
+
+That later acquisition carries a hard invariant, recorded in
+`specs/decisions/total-history-validity-decisions.md` (the four-axiom frame-alignment decision):
+when the frame structure grows the axiom fields, `TaskFrame.spherical` must be *definitionally*
+`Spherical TaskRel`, `TaskFrame.serial` definitionally `Serial TaskRel`, and the interpolation
+half of biconditional *Compositionality* definitionally `Interpolates TaskRel`, **all as defined
+in this module**. Discharging a downstream hypothesis is then a mechanical substitution
+(`F.spherical`, `F.serial`, `F.interpolates`) with zero restatement. If a field lands whose
+statement differs, the results that consume these predicates stop typechecking — and that
+compilation failure *is* the acceptance test. This is why the hypothesis form is landed first
+rather than waiting for the fields.
+
+*Spherical* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
+sole application site the paper names, never an inert structure field.
+
+## Paper Specification Reference
+
+Anchors below are `\label` keys into `specs/paper-definitions-of-record.md`, which — not the
+paper source — is the citation source of record.
+
+- *Compositionality* (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if and
+  only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$."
+- *Seriality* (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for
+  some $u, v \in W$."
+- *Limit* (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$."
+- *Spherical* (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
+  directed family $\mathcal{S}$ of nonempty fibers and segments."
+- `def:directed` (verbatim): "A nonempty family of sets $\mathcal{S}$ is \textit{directed} just in
+  case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in
+  \mathcal{S}$."
+- `lem:nullity` (verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$ in every frame
+  $\F = \tuple{W, \D, \Rightarrow}$."
+- `def:constraints` (verbatim): "For a partial history $\tau : X \to W$ over a frame
+  $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints
+  imposed on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where
+  $t < z < s$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise."
+
+The `Fib` / `Seg` / `DirectedFamily` / `IsFiber` / `IsSegment` apparatus these statements are
+built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation` and
+`def:directed`.
+
+## Main Definitions
+
+- `TaskFrame.Spherical` — the *Spherical* axiom over a bare relation
+- `TaskFrame.Serial` — the *Seriality* axiom over a bare relation
+- `TaskFrame.Interpolates` — the interpolation (left-to-right) half of *Compositionality*
+- `PartialHistory.IsPaired` — the "otherwise" side condition of `def:constraints`
+- `PartialHistory.Constraints` — `def:constraints`, the constraints imposed on a new duration
+
+## Main Results
+
+- `TaskFrame.nullity_of_serial_limit` — `lem:nullity`, DERIVED (not an axiom) from *Seriality* at
+  `x = 0` plus *Limit*, choice-free
+
+## Implementation Notes
+
+- **No `TaskFrame` structure field is added or changed here.** Everything is stated over a bare
+  relation or over an existing frame's `TaskRel`.
+- **Fibers and segments are two separate classes.** A "fibers and segments" hypothesis is always
+  the disjunction `IsFiber R s ∨ IsSegment R s`. The retired device by which a one-sided fiber
+  counted among the segments must not reappear.
+- **Directedness is its own definition** (`def:directed`, transcribed as
+  `TaskFrame.DirectedFamily`), including the nonemptiness of the *family*; the nonemptiness of
+  its *members* is a separate conjunct in `Spherical`, exactly as the paper phrases it.
+- **`Limit` is deliberately not given a name here.** It is used only as a hypothesis of
+  `nullity_of_serial_limit`, in the literal transcribed shape
+  `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is precisely the conclusion of
+  `TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift`. Keeping the raw shape lets those
+  two existing discharge helpers be passed directly.
+- Segments are written in the paper's bracket form `[w, v]_x^y` only; the retired `\Seg`
+  function-application notation is gone from the paper preamble and must not be reintroduced.
+-/
+
+namespace FormalSystem.Semantics
+
+namespace TaskFrame
+
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+
+/--
+The *Spherical* axiom, over a bare task relation.
+
+Recorded source (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments."
+
+Three points of the transcription, each load bearing:
+
+1. *Directed* is `def:directed`, transcribed as `DirectedFamily` — a definition in its own right,
+   which already carries the nonemptiness of the family `S`.
+2. "Nonempty fibers and segments" is a condition on each *member*: it is both a class condition
+   (`IsFiber R s ∨ IsSegment R s`) and a nonemptiness condition (`s.Nonempty`). Fibers and
+   segments are **two separate classes**; a one-sided fiber does not count as a segment.
+3. "$\bigcap \mathcal{S} \neq \emptyset$" is `(⋂₀ S).Nonempty`.
+
+This predicate is the sole form in which *Spherical* is available: it is what the Step Lemma's
+proof consumes at the one application site the paper names, and what a future `TaskFrame`
+spherical field must be definitionally equal to.
+-/
+def Spherical {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ S : Set (Set W), DirectedFamily S →
+    (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
+
+/--
+The *Seriality* axiom, over a bare task relation.
+
+Recorded source (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$."
+
+The `0 ≤ x` proviso is `def:frame`'s own blanket condition on its axiom list (verbatim: "a task
+relation satisfying the following for $x, y \geq 0$"), carried here as an explicit hypothesis
+rather than in the type. Both conjuncts are stated: every state has an `x`-successor *and* an
+`x`-predecessor.
+-/
+def Serial {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ (w : W) (x : D), 0 ≤ x → (∃ u, R w x u) ∧ (∃ v, R v x w)
+
+/--
+The interpolation half of *Compositionality*, over a bare task relation.
+
+Recorded source (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if and only
+if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$."
+
+*Compositionality* is a **biconditional**, and both directions are load bearing. The
+right-to-left direction — composition — is already the existing structure field
+`TaskFrame.forward_comp`. This definition is the missing left-to-right direction: a task of
+duration `x + y` can be *interpolated* at every intermediate point. The full biconditional axiom
+is therefore `forward_comp ∧ Interpolates`.
+
+As with `Serial`, the `0 ≤ x`, `0 ≤ y` provisos are `def:frame`'s blanket condition on its axiom
+list, carried as explicit hypotheses.
+-/
+def Interpolates {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ w v x y, 0 ≤ x → 0 ≤ y → R w (x + y) v → ∃ u, R w x u ∧ R u y v
+
+/--
+`lem:nullity`: every world state loops at duration zero.
+
+Recorded source (`lem:nullity`, verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$
+in every frame $\F = \tuple{W, \D, \Rightarrow}$."
+
+**Nullity is DERIVED, not an axiom.** `def:frame` has exactly four axioms — *Compositionality*,
+*Seriality*, *Limit*, *Spherical* — and Nullity is not among them. This theorem is the
+derivation, from *Seriality* at `x = 0` plus *Limit*, and it is **choice-free**, in contrast with
+the Extension Theorem's appeal to Zorn's lemma.
+
+The argument is the paper's: *Seriality* at `x = 0` supplies some `u` with `w ⇒₀ u`; since
+`|0| < x` for every `x > 0`, that `u` lies in the cone `(w)_x` at every positive radius, so
+*Limit* forces `u = w`.
+
+The *Limit* hypothesis is taken in the literal transcribed shape
+`∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is exactly what
+`TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift` conclude, so either may be passed
+directly.
+
+Note this asserts **reflexivity only**. The existing `TaskFrame.nullity_identity` field is an
+iff, strictly stronger than the paper's `lem:nullity`; nothing here strengthens or weakens that
+field, and nothing here depends on it.
+-/
+theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
+    (hSer : Serial R)
+    (hLim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
+    (w : W) : R w 0 w := by
+  obtain ⟨u, hu⟩ := (hSer w 0 le_rfl).1
+  have huw : u = w := hLim w u fun x hx => ⟨0, by simpa using hx, hu⟩
+  exact huw ▸ hu
+
+end TaskFrame
+
+namespace PartialHistory
+
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {F : TaskFrame D}
+
+/--
+The time `t` is *paired* about the duration `z`: some other time in the domain lies on the
+opposite side of `z`, so that the two sandwich `z`.
+
+This is the side condition behind `def:constraints`'s "otherwise": a time `t ∈ X` contributes a
+*fiber* precisely when it is **not** paired, since when it is paired the constraint it imposes is
+already carried by a segment (the segment `[τ(t), τ(s)]_{z-t}^{s-z}` is the intersection of the
+fiber conditions at `t` and at `s`).
+
+Both disjuncts are needed because `t` may lie on either side of `z`; `z ∉ X` is what makes the
+two disjuncts exhaustive at every `t ∈ X`.
+
+Observation, recorded but not needed here: this collapses globally. If `X` has times both below
+and above `z` then *every* `t ∈ X` is paired and `Constraints τ z` consists of segments only; if
+`X` lies entirely on one side of `z` then no `t` is paired and `Constraints τ z` consists of
+fibers only.
+-/
+def IsPaired (τ : PartialHistory F) (z t : D) : Prop :=
+  (t < z ∧ ∃ s, τ.domain s ∧ z < s) ∨ (z < t ∧ ∃ s, τ.domain s ∧ s < z)
+
+/--
+`def:constraints`: the constraints imposed on a new duration `z` by a partial history `τ`.
+
+Recorded source (`def:constraints`, verbatim): "For a partial history $\tau : X \to W$ over a
+frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the
+\textit{constraints imposed on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times
+$t,s \in X$ where $t < z < s$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise."
+
+The two clauses are the two disjuncts, in the paper's order:
+
+- **Segments**, for every pair of domain times `t < z < s`, written in the bracket form
+  `[τ(t), τ(s)]_{z-t}^{s-z}` — i.e. `Seg F.TaskRel (τ t) (τ s) (z - t) (s - z)`. Both offsets
+  `z - t` and `s - z` are positive here, so each such member genuinely satisfies `IsSegment`.
+- **Fibers**, `Fib(τ(t), z - t)`, for every domain time `t` that is *not* paired about `z` — the
+  paper's "otherwise", transcribed as `¬ IsPaired τ z t`.
+
+`z ∉ dom τ` (the paper's `z ∈ D \ X`) is **not** carried in this definition's type; it is a
+hypothesis at the use sites that need it, matching how the `x, y ≥ 0` segment proviso is carried
+by `IsSegment` rather than by `Seg`.
+-/
+def Constraints (τ : PartialHistory F) (z : D) : Set (Set F.WorldState) :=
+  {c | (∃ (t s : D) (ht : τ.domain t) (hs : τ.domain s), t < z ∧ z < s ∧
+          c = TaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z))
+     ∨ (∃ (t : D) (ht : τ.domain t), ¬ IsPaired τ z t ∧
+          c = TaskFrame.Fib F.TaskRel (τ.states t ht) (z - t))}
+
+/-- Membership in `Constraints`, unfolded: a set is a constraint on `z` exactly when it is one of
+the two clauses of `def:constraints`. -/
+theorem mem_Constraints {τ : PartialHistory F} {z : D} {c : Set F.WorldState} :
+    c ∈ Constraints τ z ↔
+      (∃ (t s : D) (ht : τ.domain t) (hs : τ.domain s), t < z ∧ z < s ∧
+          c = TaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z))
+     ∨ (∃ (t : D) (ht : τ.domain t), ¬ IsPaired τ z t ∧
+          c = TaskFrame.Fib F.TaskRel (τ.states t ht) (z - t)) := Iff.rfl
+
+/-- Every segment member of `Constraints τ z` is a segment in the sense of `IsSegment`: the
+paper's `x, y ≥ 0` proviso is met because `t < z < s`. -/
+theorem isSegment_of_mem_Constraints_left {τ : PartialHistory F} {z t s : D}
+    (ht : τ.domain t) (hs : τ.domain s) (htz : t < z) (hzs : z < s) :
+    TaskFrame.IsSegment F.TaskRel
+      (TaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)) :=
+  ⟨τ.states t ht, τ.states s hs, z - t, s - z, le_of_lt (sub_pos.mpr htz),
+    le_of_lt (sub_pos.mpr hzs), rfl⟩
+
+/-- Every member of `Constraints τ z` is a fiber or a segment — the disjunction the *Spherical*
+axiom ranges over. The two classes stay separate. -/
+theorem isFiber_or_isSegment_of_mem_Constraints {τ : PartialHistory F} {z : D}
+    {c : Set F.WorldState} (hc : c ∈ Constraints τ z) :
+    TaskFrame.IsFiber F.TaskRel c ∨ TaskFrame.IsSegment F.TaskRel c := by
+  rcases hc with ⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, _, rfl⟩
+  · exact Or.inr (isSegment_of_mem_Constraints_left ht hs htz hzs)
+  · exact Or.inl ⟨τ.states t ht, z - t, rfl⟩
+
+end PartialHistory
+
+end FormalSystem.Semantics

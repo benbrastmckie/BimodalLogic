@@ -6,6 +6,8 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Semantics.PartialHistory
+import FormalSystem.Semantics.PartialHistoryOrder
+import FormalSystem.Semantics.FrameAxioms
 import FormalSystem.Semantics.WorldHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
@@ -26,6 +28,9 @@ polymorphic over temporal types.
 - `PartialHistory`: The paper's partial-history layer (`def:world-history`) — task-respecting
   state assignments on a *nonempty* time set, with no convexity requirement; carries the
   totality predicate `IsTotal` and the extension relation `Extends`
+- `FrameAxioms`: *Spherical*, *Seriality*, and the interpolation half of *Compositionality* as
+  hypothesis-form `Prop`s over a bare task relation (`def:frame`), the derived `lem:nullity`,
+  and `def:constraints` — the constraints a partial history imposes on a new duration
 - `WorldHistory`: World histories `τ: X → W` as functions from convex time domains to
   world states, respecting the task relation
 - `TaskModel`: Task models extending frames with valuation functions `V: W × String → Prop`

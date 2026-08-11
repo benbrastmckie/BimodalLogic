@@ -569,7 +569,7 @@ predicted.
 
 ---
 
-### Phase 5: Order machinery on `PartialHistory` (Zorn prototype port) [NOT STARTED]
+### Phase 5: Order machinery on `PartialHistory` (Zorn prototype port) [COMPLETED]
 
 **Goal**: Land the extension-order machinery. Per the round-3 report §8.1 this material is **not
 in the tree** — `exists_maximal_extension`, `isMax_of_total`, `chainSup`, and `timeShift_mono`
@@ -578,18 +578,46 @@ report 01. It must be landed here, and **ported** from `WorldHistory` to `Partia
 copied.
 
 **Tasks**:
-- [ ] Instantiate `Preorder (PartialHistory F)` from `PartialHistory.Extends` (reflexive,
+- [x] Instantiate `Preorder (PartialHistory F)` from `PartialHistory.Extends` (reflexive,
       transitive), or provide the two lemmas directly if the instance causes elaboration trouble.
-- [ ] Port `timeShift_mono` — the extension order is preserved by time shift.
-- [ ] Port the shift/unshift lemma pair.
-- [ ] Port `chainSup` — the chain union of partial histories is a partial history (domain union,
+      *(completed — the instance elaborates cleanly with `le τ σ := Extends σ τ`. One
+      proof-engineering consequence worth recording: because the head symbol of `τ ≤ σ` is
+      `LE.le`, dot notation `h.subset` on an order hypothesis resolves to Mathlib's deprecated
+      `LE.le.subset` (a set lemma) rather than `Extends.subset`. Every use outside the instance
+      body therefore goes through the `le_def : τ ≤ σ ↔ Extends σ τ := Iff.rfl` bridge as
+      `(le_def.mp h).subset`. This is a naming collision, not a defeq problem.)*
+- [x] Port `timeShift_mono` — the extension order is preserved by time shift. *(completed)*
+- [x] Port the shift/unshift lemma pair. *(completed — `le_timeShift_timeShift_neg` and
+      `timeShift_timeShift_neg_le`, on top of `timeShift_timeShift_neg_domain_iff` and
+      `timeShift_timeShift_neg_states`)*
+- [x] Port `chainSup` — the chain union of partial histories is a partial history (domain union,
       states by choice of a chain member, `respects_task` from the chain's directedness,
-      `nonempty_domain` from any member).
-- [ ] Port `exists_maximal_extension` — Zorn's lemma over `PartialHistory` ordered by extension,
+      `nonempty_domain` from any member). *(completed — see the nonemptiness note below)*
+- [x] Port `exists_maximal_extension` — Zorn's lemma over `PartialHistory` ordered by extension,
       closed via `chainSup`. Note in the docstring that this is an **internal lemma en route to
       `thm:extension`**, demoted from round 1's "target existence theorem" per charter §5.
-- [ ] Port `isMax_of_total` — total implies maximal under the extension order. Docstring: this is
-      the load-bearing direction per charter §5.
+      *(completed, docstring note included, via `zorn_le_nonempty_Ici₀`)*
+- [x] Port `isMax_of_total` — total implies maximal under the extension order. Docstring: this is
+      the load-bearing direction per charter §5. *(completed, docstring note included)*
+
+**Two porting consequences of the `PartialHistory` layer, recorded rather than absorbed silently**
+(neither is a skipped, altered, or deferred plan step — both are supporting material the listed
+tasks require, which the round-1 `WorldHistory` prototype did not need):
+
+1. **`chainSup` takes the chain's nonemptiness as an explicit argument.** In the prototype,
+   `WorldHistory` had no `nonempty_domain` field, so the union of the *empty* chain was a legal
+   history. `PartialHistory` carries nonemptiness as data (Decision B), so the empty chain's union
+   is not a partial history at all. `zorn_le_nonempty_Ici₀`'s upper-bound obligation supplies
+   `∀ y ∈ c` precisely, so the extra argument costs nothing at the only call site.
+2. **`PartialHistory.timeShift` had to be defined here.** The prototype's `timeShift_mono` and
+   shift/unshift pair are stated about `WorldHistory.timeShift`; porting them to `PartialHistory`
+   requires the operation to exist at that layer. It is landed alongside, with
+   `timeShift_domain` (`Iff.rfl`) and the transport lemma `states_eq_of_time_eq` that any
+   dependent `states` rewrite needs.
+
+`isMax_timeShift` and `le_timeShift_timeShift_of_neg` from the round-1 prototype are **not**
+ported: neither appears in this phase's task list, and neither is reachable from the
+`exists_maximal_extension` + Step Lemma route to `thm:extension`.
 
 **Timing**: 2.5 hours
 
@@ -598,13 +626,21 @@ copied.
 **Verification Tier**: local
 
 **Files to modify**:
-- `FormalSystem/Semantics/PartialHistory.lean` (or a new `PartialHistoryOrder.lean` sibling)
+- `FormalSystem/Semantics/PartialHistoryOrder.lean` (new) — the sibling option was taken, to keep
+  the `Mathlib.Order.Zorn` import off `PartialHistory.lean` and therefore off `WorldHistory.lean`
+- `FormalSystem/Semantics.lean` — aggregator import
 
 **Verification**:
-- `lake build` green, sorry-free.
+- `lake build` green, sorry-free. **PASSED** (2326 jobs, exit 0).
 - `#print axioms exists_maximal_extension` shows `Classical.choice` (Zorn) and nothing unexpected.
+  **PASSED** — `[propext, Classical.choice, Quot.sound]`, the standard Mathlib baseline, and the
+  same triple for `chainSup`/`le_chainSup` (which use `Classical.choose`). Everything that does
+  **not** go through Zorn or choice — `isMax_of_total`, `timeShift_mono`, and both halves of the
+  shift/unshift pair — is `[propext]` only.
 - `grep -rn "exists_maximal_extension\|isMax_of_total\|chainSup\|timeShift_mono" --include=*.lean FormalSystem/`
-  now returns matches (it returned none before this phase).
+  now returns matches (it returned none before this phase). **PASSED** — 18 matches, all in
+  `PartialHistoryOrder.lean`, confirming the round-3 report's finding that this material was
+  genuinely absent from the tree rather than merely un-located.
 
 ---
 
