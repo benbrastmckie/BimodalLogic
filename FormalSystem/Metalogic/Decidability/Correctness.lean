@@ -59,8 +59,8 @@ This follows immediately from the `soundness` theorem with empty context,
 where the context hypothesis is vacuously satisfied.
 -/
 theorem decide_sound (φ : Formula) (d : ⊢ φ) : ⊨ φ := by
-  intro D _ _ _ _ F M Omega h_sc τ h_mem t
-  exact soundness [] φ d D F M Omega h_sc τ h_mem t (by simp)
+  intro D _ _ _ _ F M τ h_mem t
+  exact soundness [] φ d D F M τ h_mem t (by simp)
 
 /--
 Variant of `decide_sound` that extracts the proof from a `DecisionResult.valid`.

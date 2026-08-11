@@ -58,11 +58,10 @@ if all formulas in Γ are true, then φ is true.
 theorem soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
     ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
-  fun F M Omega h_sc τ h_mem t h_ctx =>
-    soundness Γ φ d D F M Omega h_sc τ h_mem t h_ctx
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
+  fun F M τ h_mem t h_ctx =>
+    soundness Γ φ d D F M τ h_mem t h_ctx
 
 /-! ## Frame-Class Soundness Theorems -/
 
@@ -76,9 +75,8 @@ theorem soundness_linear {Γ : Context} {φ : Formula} (d : DerivationTree Frame
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [LinearTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
   soundness_over D Γ φ d
 
 /--
@@ -91,11 +89,10 @@ theorem soundness_dense {Γ : Context} {φ : Formula} (d : DerivationTree FrameC
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
     [DenseTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
-  fun F M Omega h_sc τ h_mem t h_ctx =>
-    Metalogic.soundness_dense Γ φ d D F M Omega h_sc τ h_mem t h_ctx
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
+  fun F M τ h_mem t h_ctx =>
+    Metalogic.soundness_dense Γ φ d D F M τ h_mem t h_ctx
 
 /--
 Soundness for discrete temporal frames.
@@ -108,11 +105,10 @@ theorem soundness_discrete {Γ : Context} {φ : Formula} (d : DerivationTree Fra
     [IsSuccArchimedean D] [IsPredArchimedean D]
     [DiscreteTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
-  fun F M Omega h_sc τ h_mem t h_ctx =>
-    Metalogic.soundness_discrete Γ φ d D F M Omega h_sc τ h_mem t h_ctx
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
+  fun F M τ h_mem t h_ctx =>
+    Metalogic.soundness_discrete Γ φ d D F M τ h_mem t h_ctx
 
 /-! ## Axiom Validity by Frame Class -/
 
@@ -124,8 +120,8 @@ theorem axiom_base_valid_linear {φ : Formula} (ax : Axiom φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [LinearTemporalFrame D] :
     ValidOver D φ := by
-  intro F M Omega h_sc τ h_mem t
-  exact axiom_valid ax h_fc D F M Omega h_sc τ h_mem t
+  intro F M τ h_mem t
+  exact axiom_valid ax h_fc D F M τ h_mem t
 
 /--
 Dense-compatible axioms are valid on dense temporal frames.
@@ -136,8 +132,8 @@ theorem axiom_dense_valid_fc {φ : Formula} (ax : Axiom φ)
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
     [DenseTemporalFrame D] :
     ValidOver D φ := by
-  intro F M Omega h_sc τ h_mem t
-  exact axiom_dense_valid ax h_fc D F M Omega h_sc τ h_mem t
+  intro F M τ h_mem t
+  exact axiom_dense_valid ax h_fc D F M τ h_mem t
 
 /--
 Discrete-compatible axioms are valid on discrete temporal frames.
@@ -148,10 +144,10 @@ theorem axiom_discrete_valid_fc {φ : Formula} (ax : Axiom φ)
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D]
     [DiscreteTemporalFrame D] :
     ValidOver D φ := by
-  intro F M Omega h_sc τ h_mem t
+  intro F M τ h_mem t
   -- Use axiom_discrete_valid from Soundness.lean
   have h := axiom_discrete_valid ax h_fc
-  exact h D F M Omega h_sc τ h_mem t
+  exact h D F M τ h_mem t
 
 /-! ## Soundness over Int -/
 
@@ -162,11 +158,10 @@ This is the concrete instantiation of soundness for the standard discrete model.
 -/
 theorem soundness_Int {Γ : Context} {φ : Formula} (d : DerivationTree FrameClass.Discrete Γ φ) :
     ∀ (F : TaskFrame Int) (M : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Int),
-      (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ :=
-  fun F M Omega h_sc τ h_mem t h_ctx =>
-    Metalogic.soundness_discrete Γ φ d Int F M Omega h_sc τ h_mem t h_ctx
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : Int),
+      (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ :=
+  fun F M τ h_mem t h_ctx =>
+    Metalogic.soundness_discrete Γ φ d Int F M τ h_mem t h_ctx
 
 /-! ## Axiom Coverage Summary
 
