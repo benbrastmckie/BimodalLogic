@@ -2,6 +2,11 @@
 
 **Plan**: `plans/03_omega-free-totality-refactor.md`, Phase 11
 **Status**: `[COMPLETED]` — 11 of 23 phases complete
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 **Build**: full `lake build` green (2331 jobs); touched files sorry-free
 
 ## What landed

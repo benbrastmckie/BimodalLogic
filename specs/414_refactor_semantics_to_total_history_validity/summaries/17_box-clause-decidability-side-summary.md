@@ -2,6 +2,11 @@
 
 - **Plan**: `plans/03_omega-free-totality-refactor.md`, Phase 17
 - **Status**: `[COMPLETED]`
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Outcome**: the whole `FormalSystem` tree is **green** for the first time since the
   box-clause retarget
 

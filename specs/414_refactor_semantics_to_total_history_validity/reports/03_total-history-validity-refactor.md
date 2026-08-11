@@ -1,6 +1,13 @@
 # Research Report: Total-History Validity Refactor (round 3)
 
 - **Task**: 414 `refactor_semantics_to_total_history_validity`
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Session**: sess_1786421639_4348c4
 - **Date**: 2026-08-10
 - **Agent**: lean-research-agent

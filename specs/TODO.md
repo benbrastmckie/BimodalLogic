@@ -78,7 +78,7 @@ next_project_number: 440
 ### Paper Refactor
 
 420 [PARTIAL] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
-  └─ 414 [PLANNED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
+  └─ 414 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
     └─ 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
     └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
@@ -811,7 +811,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 414. Refactor semantics to total history validity
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 420, Task 438, Task 439
