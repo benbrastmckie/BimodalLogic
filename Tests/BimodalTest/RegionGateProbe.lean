@@ -72,6 +72,58 @@ Each engine row runs `buildTableau` at fuel `200`, on the order of tens of secon
 why this lives in the test library rather than beside the definitions it measures.
 -/
 
+/-! ## Re-baseline record — the `trivialEventWitnessed` guard
+
+The `#guard_msgs` expectations marked `RE-BASELINED (guard)` below were moved from their previous
+pinned values. **Owner of every such move**: `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+`def trivialEventWitnessed`, consulted as a disjunct beside `witnessPresent` in both fresh-label
+guards of `findApplicableRule`. It is **not** owned by `Decidability/Saturation.lean` and **not**
+by the semantics refactor. The guard stops the engine minting trivial seriality witnesses, so the
+time domain stops growing without bound; the shorter time domains and the renumbered downstream
+indices below are the direct consequence.
+
+**Evidence — a three-point differential, not an inference.** Each row's value was measured at
+three commits, with `#guard_msgs` output captured and compared row by row:
+
+| Point | Commit | Meaning |
+|---|---|---|
+| P0 | `edcecd551^` (`d49b977c0`) | guard defined but **not consulted** — pre-guard behaviour |
+| P1 | `edcecd551` | guard consulted |
+| P2 | current `HEAD` | today |
+
+A row was re-baselined **only** when its pinned value equalled its P0 value — i.e. the row was
+correct before the guard, so the guard is the sole cause of its present mismatch. Rows whose
+pinned value already disagreed with P0 were **already stale before the guard**; those are the
+separately-owned mismatches baselined 2026-07-29 against an engine-behaviour change owned outside
+this refactor, and they are left pinned, unedited, and enumerated below. Re-baselining them would
+absorb that separately-owned change into this attribution, which is exactly what the plan forbids.
+
+The window `edcecd551^ .. HEAD` contains only the guard consultation plus proof-body-only edits to
+three files (`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.lean`,
+`Verified/Termination/MintBound.lean`); those diffs add and remove no `def`, `abbrev`, `instance`,
+`structure`, or `inductive` line at all, so no `#eval` here can have moved because of them. This is
+corroborated directly in `TableauConformance.lean`, whose P1 and P2 values are identical on every
+row.
+
+**Re-baselined in this file** (guard-attributed): 2 row(s) at line(s) 280, 291 — each carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
+
+**EXCLUDED — left pinned and unedited**: 2 row(s) at line(s) 299, 330.
+These are members of the ten pre-existing, separately-declined mismatches, identified at
+row level for the first time by the P0 measurement above. For each, the pinned value, the
+pre-guard (P0) value, and the current (P2) value are three *different* values: the row was already
+stale before the guard **and** the guard moved it again. Correcting it here would silently fold a
+separately-owned engine change into this refactor's re-baseline. It stays pinned:
+
+* line 299
+  - pinned: `info: "OPEN |W|=2 |T|=8 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3], [1, 1, 1, 1, 1, 1, 1, 1, 1]]"`
+  - P0 pre-guard: `info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]"`
+  - P2 current: `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]"`
+* line 330
+  - pinned: `info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]"`
+  - P0 pre-guard: `info: "OPEN |W|=2 |T|=9 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [1, 1, 1, 0, 0, 0, 0, 0, 0, 0]]"`
+  - P2 current: `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]"`
+-/
+
 namespace BimodalTest.RegionGateProbe
 
 open FormalSystem.Syntax
@@ -222,7 +274,9 @@ consequence. -/
 
 -- A. The minimal witness: one box, one diamond, an unrelated consequent.
 -- Was `gate=true check=true` with world 1's vector `[3, 3, 3, 3, 3, 3, 3, 3]`.
-/-- info: "OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0]]" -/
+-- RE-BASELINED (guard): was `"OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0]]"`;
+-- now `"OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
 
@@ -231,7 +285,9 @@ consequence. -/
 -- reached the minted world only via the deleted copy, so the row now collapses to A's: no
 -- eligible label anywhere in world 1.
 -- Was `gate=true check=true` with world 1's vector `[3, 3, 3, 3, 1, 1, 1, 1]`.
-/-- info: "OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0]]" -/
+-- RE-BASELINED (guard): was `"OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0]]"`;
+-- now `"OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r)
 

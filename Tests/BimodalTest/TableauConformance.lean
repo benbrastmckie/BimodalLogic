@@ -66,6 +66,78 @@ the same commit as the calculus change, with the flip justified. Rows currently 
 `[DEFECT]` marker is progress, a row gaining one is a regression.
 -/
 
+/-! ## Re-baseline record — the `trivialEventWitnessed` guard
+
+The `#guard_msgs` expectations marked `RE-BASELINED (guard)` below were moved from their previous
+pinned values. **Owner of every such move**: `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+`def trivialEventWitnessed`, consulted as a disjunct beside `witnessPresent` in both fresh-label
+guards of `findApplicableRule`. It is **not** owned by `Decidability/Saturation.lean` and **not**
+by the semantics refactor. The guard stops the engine minting trivial seriality witnesses, so the
+time domain stops growing without bound; the shorter time domains and the renumbered downstream
+indices below are the direct consequence.
+
+**Evidence — a three-point differential, not an inference.** Each row's value was measured at
+three commits, with `#guard_msgs` output captured and compared row by row:
+
+| Point | Commit | Meaning |
+|---|---|---|
+| P0 | `edcecd551^` (`d49b977c0`) | guard defined but **not consulted** — pre-guard behaviour |
+| P1 | `edcecd551` | guard consulted |
+| P2 | current `HEAD` | today |
+
+A row was re-baselined **only** when its pinned value equalled its P0 value — i.e. the row was
+correct before the guard, so the guard is the sole cause of its present mismatch. Rows whose
+pinned value already disagreed with P0 were **already stale before the guard**; those are the
+separately-owned mismatches baselined 2026-07-29 against an engine-behaviour change owned outside
+this refactor, and they are left pinned, unedited, and enumerated below. Re-baselining them would
+absorb that separately-owned change into this attribution, which is exactly what the plan forbids.
+
+The window `edcecd551^ .. HEAD` contains only the guard consultation plus proof-body-only edits to
+three files (`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.lean`,
+`Verified/Termination/MintBound.lean`); those diffs add and remove no `def`, `abbrev`, `instance`,
+`structure`, or `inductive` line at all, so no `#eval` here can have moved because of them. This is
+corroborated directly in `TableauConformance.lean`, whose P1 and P2 values are identical on every
+row.
+
+**Re-baselined in this file** (guard-attributed): 3 row(s) at line(s) 880, 892, 902 — each carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
+
+**EXCLUDED — left pinned and unedited**: 7 row(s) at line(s) 483, 513, 578, 873, 885, 910, 916.
+These are members of the ten pre-existing, separately-declined mismatches, identified at
+row level for the first time by the P0 measurement above. For each, the pinned value, the
+pre-guard (P0) value, and the current (P2) value are three *different* values: the row was already
+stale before the guard **and** the guard moved it again. Correcting it here would silently fold a
+separately-owned engine change into this refactor's re-baseline. It stays pinned:
+
+* line 483
+  - pinned: `C4 Fp->FFp         OPEN     target=OPEN            no density over an arbitrary linear order`
+  - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=OPEN    [DEFECT] no density over an arbitrary linear order`
+  - P2 current: `(now matches the pinned value — the guard repaired this row)`
+* line 513
+  - pinned: `C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] density: a time strictly between t and the witness`
+  - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=CLOSED          density: a time strictly between t and the witness`
+  - P2 current: `(now matches the pinned value — the guard repaired this row)`
+* line 578
+  - pinned: `C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] ValidDedekindDense includes density`
+  - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=CLOSED          ValidDedekindDense includes density`
+  - P2 current: `(now matches the pinned value — the guard repaired this row)`
+* line 873
+  - pinned: `info: total=true knownTimes=[9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (9, 3), (9, 5), (8, 9), (1, 8), (6, 8), (2, 6), (3, 5), (4, 0), (0, 3)...`
+  - P0 pre-guard: `info: total=true knownTimes=[7, 9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(7, 1), (7, 8), (9, 3), (9, 5), (7, 9), (8, 9), (1, 8), (6, 7), (2, 6), (3,...`
+  - P2 current: `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
+* line 885
+  - pinned: `info: total=true knownTimes=[10, 3, 4, 7, 9, 8, 1, 0] constraints=[(7, 3), (7, 10), (9, 7), (8, 9), (1, 8), (3, 10), (4, 0), (0, 3), (0, 8), (0, 1)...`
+  - P0 pre-guard: `info: total=true knownTimes=[5, 11, 4, 10, 7, 9, 8, 1, 0] constraints=[(11, 4), (10, 5), (7, 10), (9, 7), (8, 9), (1, 8), (4, 0), (0, 10), (0, 8), ...`
+  - P2 current: `info: total=true knownTimes=[4, 8, 9, 2, 5, 6, 7, 1, 3, 0] constraints=[(8, 2), (8, 5), (6, 9), (8, 6), (7, 8), (1, 7), (5, 6), (2, 5), (4, 3), (3,...`
+* line 910
+  - pinned: `info: total=true knownTimes=[3, 4, 5, 0, 2, 1] constraints=[(3, 0), (5, 3), (5, 0), (2, 4), (3, 1), (1, 2), (0, 1)] incomparable=[]`
+  - P0 pre-guard: `info: CLOSED`
+  - P2 current: `info: total=true knownTimes=[3, 4, 0, 2, 1] constraints=[(4, 0), (2, 3), (1, 2), (0, 1)] incomparable=[]`
+* line 916
+  - pinned: `info: total=true knownTimes=[9, 7, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (6, 8), (6, 9), (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6, 7), (2,...`
+  - P0 pre-guard: `info: total=true knownTimes=[9, 7, 5, 6, 3, 4, 8, 1, 2, 0] constraints=[(2, 1), (2, 8), (2, 9), (9, 6), (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6,...`
+  - P2 current: `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
+-/
+
 namespace BimodalTest.TableauConformance
 
 open FormalSystem.Syntax
@@ -802,7 +874,9 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base linearityFuel)
 
 -- W2. Two bare future eventualities: the same shape with no universal involved.
-/-- info: total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[] -/
+-- RE-BASELINED (guard): was `total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[]`;
+-- now `total=true knownTimes=[4, 5, 6, 1, 2, 3, 0] constraints=[(6, 2), (6, 5), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: total=true knownTimes=[4, 5, 6, 1, 2, 3, 0] constraints=[(6, 2), (6, 5), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F p) (F q))) FrameClass.Base linearityFuel)
 
@@ -812,7 +886,9 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base linearityFuel)
 
 -- W4. W1 with the conjuncts swapped: the order the eventualities appear in does not matter.
-/-- info: total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[] -/
+-- RE-BASELINED (guard): was `total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[]`;
+-- now `total=true knownTimes=[4, 6, 7, 1, 5, 2, 3, 0] constraints=[(7, 2), (7, 5), (7, 6), (1, 7), (5, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: total=true knownTimes=[4, 6, 7, 1, 5, 2, 3, 0] constraints=[(7, 2), (7, 5), (7, 6), (1, 7), (5, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (nt p)) (F (G p)))) FrameClass.Base linearityFuel)
 
@@ -820,7 +896,9 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 -- seriality both known times were comparable and totality already held (`total=true`,
 -- `knownTimes=[0, 2, 1]`). `serialityRule` minted six further times that regressed the row to
 -- `false`; `timeLinearity` orders them and restores it. Still on `conformanceFuel`.
-/-- info: total=true knownTimes=[4, 5, 6, 8, 7, 1, 2, 3, 0] constraints=[(2, 4), (6, 4), (8, 3), (8, 5), (7, 8), (1, 7), (6, 2), (3, 5), (4, 0), (0, 3), (2, 0), (0, 1)] incomparable=[] -/
+-- RE-BASELINED (guard): was `total=true knownTimes=[4, 5, 6, 8, 7, 1, 2, 3, 0] constraints=[(2, 4), (6, 4), (8, 3), (8, 5), (7, 8), (1, 7), (6, 2), (3, 5), (4, 0), (0, 3), (2, 0), (0, 1)] incomparable=[]`;
+-- now `total=true knownTimes=[4, 5, 1, 3, 2, 0] constraints=[(1, 5), (4, 3), (3, 2), (2, 0), (0, 1)] incomparable=[]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: total=true knownTimes=[4, 5, 1, 3, 2, 0] constraints=[(1, 5), (4, 3), (3, 2), (2, 0), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F p) (P q))) FrameClass.Base)
 

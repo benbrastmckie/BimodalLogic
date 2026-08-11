@@ -100,6 +100,42 @@ is recorded at each bullet and at the `armsB` binder itself.
   It is the only instrument here that separates a retired arm from a capped one.
 -/
 
+/-! ## Re-baseline record — the `trivialEventWitnessed` guard
+
+The `#guard_msgs` expectations marked `RE-BASELINED (guard)` below were moved from their previous
+pinned values. **Owner of every such move**: `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+`def trivialEventWitnessed`, consulted as a disjunct beside `witnessPresent` in both fresh-label
+guards of `findApplicableRule`. It is **not** owned by `Decidability/Saturation.lean` and **not**
+by the semantics refactor. The guard stops the engine minting trivial seriality witnesses, so the
+time domain stops growing without bound; the shorter time domains and the renumbered downstream
+indices below are the direct consequence.
+
+**Evidence — a three-point differential, not an inference.** Each row's value was measured at
+three commits, with `#guard_msgs` output captured and compared row by row:
+
+| Point | Commit | Meaning |
+|---|---|---|
+| P0 | `edcecd551^` (`d49b977c0`) | guard defined but **not consulted** — pre-guard behaviour |
+| P1 | `edcecd551` | guard consulted |
+| P2 | current `HEAD` | today |
+
+A row was re-baselined **only** when its pinned value equalled its P0 value — i.e. the row was
+correct before the guard, so the guard is the sole cause of its present mismatch. Rows whose
+pinned value already disagreed with P0 were **already stale before the guard**; those are the
+separately-owned mismatches baselined 2026-07-29 against an engine-behaviour change owned outside
+this refactor, and they are left pinned, unedited, and enumerated below. Re-baselining them would
+absorb that separately-owned change into this attribution, which is exactly what the plan forbids.
+
+The window `edcecd551^ .. HEAD` contains only the guard consultation plus proof-body-only edits to
+three files (`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.lean`,
+`Verified/Termination/MintBound.lean`); those diffs add and remove no `def`, `abbrev`, `instance`,
+`structure`, or `inductive` line at all, so no `#eval` here can have moved because of them. This is
+corroborated directly in `TableauConformance.lean`, whose P1 and P2 values are identical on every
+row.
+
+**Re-baselined in this file** (guard-attributed): 7 row(s) at line(s) 384, 398, 684, 696, 718, 777, 789 — each carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
+-/
+
 namespace BimodalTest.UntlSnceCopyProbe
 
 open FormalSystem.Syntax
@@ -342,7 +378,9 @@ def stepTimes : Nat → Branch → TimeOrdering → Nat
 
 /-! Triggered profile, at `k = 0, 4, 8, 16, 32, 64, 128`. Was `[2, 3, 4, 6, 10, 18, 34]` while
 the PASSIVE arm still fired. -/
-/-- info: [2, 4, 5, 8, 13, 24, 45] -/
+-- RE-BASELINED (guard): was `[2, 4, 5, 8, 13, 24, 45]`;
+-- now `[2, 3, 5, 7, 13, 23, 45]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: [2, 3, 5, 7, 13, 23, 45] -/
 #guard_msgs in
 #eval [stepTimes 0 bB ordB, stepTimes 4 bB ordB, stepTimes 8 bB ordB, stepTimes 16 bB ordB,
        stepTimes 32 bB ordB, stepTimes 64 bB ordB, stepTimes 128 bB ordB]
@@ -354,7 +392,9 @@ def bBctl : Branch := [ SignedFormula.pos x { world := 0, time := 1 } ]
 `Until` — which is what makes it the reference the triggered profile's shift is measured
 against. It used to sit entry-wise `≥` the triggered profile from `k = 16` on; it now sits
 exactly one below it everywhere. -/
-/-- info: [1, 3, 4, 7, 12, 23, 44] -/
+-- RE-BASELINED (guard): was `[1, 3, 4, 7, 12, 23, 44]`;
+-- now `[1, 2, 4, 6, 12, 22, 44]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: [1, 2, 4, 6, 12, 22, 44] -/
 #guard_msgs in
 #eval [stepTimes 0 bBctl ordB, stepTimes 4 bBctl ordB, stepTimes 8 bBctl ordB,
        stepTimes 16 bBctl ordB, stepTimes 32 bBctl ordB, stepTimes 64 bBctl ordB,
@@ -638,7 +678,9 @@ radius. These rows are that comparison, on the same two profiles and the same fu
 Identical, entry for entry, to B5's triggered `knownTimes` profile: on this branch every known
 time is an ordered time. Was `[2, 3, 4, 6, 10, 18, 34]` before the PASSIVE arms were retired,
 and moved in lockstep with B5 for the reason B5's note gives. -/
-/-- info: [2, 4, 5, 8, 13, 24, 45] -/
+-- RE-BASELINED (guard): was `[2, 4, 5, 8, 13, 24, 45]`;
+-- now `[2, 3, 5, 7, 13, 23, 45]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: [2, 3, 5, 7, 13, 23, 45] -/
 #guard_msgs in
 #eval [stepOrd 0 bB ordB, stepOrd 4 bB ordB, stepOrd 8 bB ordB, stepOrd 16 bB ordB,
        stepOrd 32 bB ordB, stepOrd 64 bB ordB, stepOrd 128 bB ordB]
@@ -648,7 +690,9 @@ and moved in lockstep with B5 for the reason B5's note gives. -/
 Exactly one above B5's control `knownTimes` profile at every entry, and the offset is
 accounted for: `ordB = ⟨[(0,1)]⟩` mentions time `0`, which the control branch never labels.
 **Unmoved by the retirement**, like B5's control and for the same reason. -/
-/-- info: [2, 4, 5, 8, 13, 24, 45] -/
+-- RE-BASELINED (guard): was `[2, 4, 5, 8, 13, 24, 45]`;
+-- now `[2, 3, 5, 7, 13, 23, 45]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: [2, 3, 5, 7, 13, 23, 45] -/
 #guard_msgs in
 #eval [stepOrd 0 bBctl ordB, stepOrd 4 bBctl ordB, stepOrd 8 bBctl ordB, stepOrd 16 bBctl ordB,
        stepOrd 32 bBctl ordB, stepOrd 64 bBctl ordB, stepOrd 128 bBctl ordB]
@@ -668,7 +712,9 @@ triggered and control crossings have **collapsed onto each other**, at both thre
 strengthens the original reading rather than qualifying it: with the arm gone, the negative
 `Until` no longer delays the crossing even by the one step it used to, so the crossing is now
 purely background minting, with no contribution from the rule whatsoever. -/
-/-- info: [some 4, some 4, some 16, some 16] -/
+-- RE-BASELINED (guard): was `[some 4, some 4, some 16, some 16]`;
+-- now `[some 5, some 5, some 17, some 17]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: [some 5, some 5, some 17, some 17] -/
 #guard_msgs in
 #eval [(List.range 33).find? fun k => stepOrd k bB ordB ≥ 4,
        (List.range 33).find? fun k => stepOrd k bBctl ordB ≥ 4,
@@ -725,7 +771,9 @@ retirement touched, so the manufacture continues; what changed is only that the 
 sources no longer spend steps firing the retired arm, leaving one more of them standing by
 `k = 64`. The refutation this row supports is therefore unaffected — which matters, because it
 is one of the two measurements the retirement was chosen on. -/
-/-- info: [0, 1, 1, 3, 5, 10] -/
+-- RE-BASELINED (guard): was `[0, 1, 1, 3, 5, 10]`;
+-- now `[0, 1, 1, 3, 5, 11]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: [0, 1, 1, 3, 5, 11] -/
 #guard_msgs in
 #eval [0, 4, 8, 16, 32, 64].map fun k => (negUntlTimes (stepFull k bE ordB)).length
 
@@ -735,7 +783,9 @@ Guards against reading E2a's growth as an artefact of a branch that merely got l
 negative `Until`s sit at five *distinct* times, not five copies at one. The branch length was
 `44` before the retirement and is `42` after — two formulas smaller, the co-decomposition output
 the arm used to add — while **the five times are unchanged**, which is the point of the row. -/
-/-- info: ([6, 4, 3, 2, 1], 42) -/
+-- RE-BASELINED (guard): was `([6, 4, 3, 2, 1], 42)`;
+-- now `([5, 4, 3, 2, 1], 42)`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: ([5, 4, 3, 2, 1], 42) -/
 #guard_msgs in
 #eval ((negUntlTimes (stepFull 32 bE ordB)), (stepFull 32 bE ordB).length)
 

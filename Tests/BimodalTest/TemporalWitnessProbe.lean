@@ -186,6 +186,42 @@ the corresponding row cannot be adopted as an additional gate row, and it must b
 DO-NOT-RE-ATTEMPT entry rather than proved around. `posDichotomy` is exactly that: finding 1
 above is its DO-NOT-RE-ATTEMPT entry.
 -/
+/-! ## Re-baseline record — the `trivialEventWitnessed` guard
+
+The `#guard_msgs` expectations marked `RE-BASELINED (guard)` below were moved from their previous
+pinned values. **Owner of every such move**: `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+`def trivialEventWitnessed`, consulted as a disjunct beside `witnessPresent` in both fresh-label
+guards of `findApplicableRule`. It is **not** owned by `Decidability/Saturation.lean` and **not**
+by the semantics refactor. The guard stops the engine minting trivial seriality witnesses, so the
+time domain stops growing without bound; the shorter time domains and the renumbered downstream
+indices below are the direct consequence.
+
+**Evidence — a three-point differential, not an inference.** Each row's value was measured at
+three commits, with `#guard_msgs` output captured and compared row by row:
+
+| Point | Commit | Meaning |
+|---|---|---|
+| P0 | `edcecd551^` (`d49b977c0`) | guard defined but **not consulted** — pre-guard behaviour |
+| P1 | `edcecd551` | guard consulted |
+| P2 | current `HEAD` | today |
+
+A row was re-baselined **only** when its pinned value equalled its P0 value — i.e. the row was
+correct before the guard, so the guard is the sole cause of its present mismatch. Rows whose
+pinned value already disagreed with P0 were **already stale before the guard**; those are the
+separately-owned mismatches baselined 2026-07-29 against an engine-behaviour change owned outside
+this refactor, and they are left pinned, unedited, and enumerated below. Re-baselining them would
+absorb that separately-owned change into this attribution, which is exactly what the plan forbids.
+
+The window `edcecd551^ .. HEAD` contains only the guard consultation plus proof-body-only edits to
+three files (`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.lean`,
+`Verified/Termination/MintBound.lean`); those diffs add and remove no `def`, `abbrev`, `instance`,
+`structure`, or `inductive` line at all, so no `#eval` here can have moved because of them. This is
+corroborated directly in `TableauConformance.lean`, whose P1 and P2 values are identical on every
+row.
+
+**Re-baselined in this file** (guard-attributed): 11 row(s) at line(s) 481, 488, 500, 512, 528, 543, 570, 577, 898, 912, 932 — each carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
+-/
+
 namespace BimodalTest.TemporalWitnessProbe
 
 open FormalSystem.Syntax
@@ -439,12 +475,16 @@ effect measured on the candidate grid directly.
 -/
 
 -- A. `F p → p`.
-/-- info: "OPEN |T|=6 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+-- RE-BASELINED (guard): was `"OPEN |T|=6 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`;
+-- now `"OPEN |T|=5 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |T|=5 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (Formula.someFuture p) p)
 
 -- B. `P p → p`.
-/-- info: "OPEN |T|=7 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+-- RE-BASELINED (guard): was `"OPEN |T|=7 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`;
+-- now `"OPEN |T|=5 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |T|=5 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (Formula.somePast p) p)
 
@@ -454,7 +494,9 @@ effect measured on the candidate grid directly.
 #eval probe (.imp (.allFuture p) p)
 
 -- D. `(□p ∧ ◇q) → r`.
-/-- info: "OPEN |T|=7 gen=false check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]" -/
+-- RE-BASELINED (guard): was `"OPEN |T|=7 gen=false check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]"`;
+-- now `"OPEN |T|=4 gen=false check=false U[dich=false wit=false gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=false gw=true ruG=true nStr=true nCo=true rP=false rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |T|=4 gen=false check=false U[dich=false wit=false gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=false gw=true ruG=true nStr=true nCo=true rP=false rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
 
@@ -464,7 +506,9 @@ effect measured on the candidate grid directly.
 #eval probe (.imp (andF (.box p) (.box (.imp p q))) r)
 
 -- F. Row A under `.Dense`.
-/-- info: "OPEN |T|=6 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+-- RE-BASELINED (guard): was `"OPEN |T|=6 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`;
+-- now `"OPEN |T|=5 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |T|=5 gen=false check=true U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (Formula.someFuture p) p) 200 .Dense
 
@@ -478,7 +522,9 @@ contain.
 
 -- H. `U(p,q) → q`, a positive genuine until. **`regionLabelCheck` itself reports `false`**, and
 -- the two rows that fail (`gw`, `rP`) fail on that same branch — see the docstring.
-/-- info: "OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=false rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+-- RE-BASELINED (guard): was `"OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=false rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`;
+-- now `"OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (.untl p q) q)
 
@@ -491,7 +537,9 @@ contain.
 #eval probe (.imp p (.untl p q))
 
 -- J. `S(p,q) → q`, the mirror of H, and the gate reports `false` in the same way.
-/-- info: "OPEN |T|=7 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]" -/
+-- RE-BASELINED (guard): was `"OPEN |T|=7 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]"`;
+-- now `"OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (.snce p q) q)
 
@@ -516,12 +564,16 @@ contain.
 --
 -- Note that rows H, J and M — the other genuine-until rows — are **unchanged**, as is every
 -- other row in this file. `|T|=6` here matches H's table size.
-/-- info: "OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=false rdG=true nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+-- RE-BASELINED (guard): was `"OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=false rdG=true nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`;
+-- now `"OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (.untl p q) (.untl q p))
 
 -- M. Row H under `.Dense`: the frame class does not move any of the twelve verdicts.
-/-- info: "OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=false rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
+-- RE-BASELINED (guard): was `"OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=false rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`;
+-- now `"OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
 #eval probe (.imp (.untl p q) q) 200 .Dense
 
@@ -840,7 +892,9 @@ def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "C " ++ probe4 (.imp (.allFuture p) p)
 
-/-- info: "D gen=false check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+-- RE-BASELINED (guard): was `"D gen=false check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]"`;
+-- now `"D gen=false check=false uGW=false [gw=true wit=false] sGW=false [gw=true wit=false] uRD=false [rdG=true] sRU=false [ruG=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "D gen=false check=false uGW=false [gw=true wit=false] sGW=false [gw=true wit=false] uRD=false [rdG=true] sRU=false [ruG=true]" -/
 #guard_msgs in
 #eval "D " ++ probe4 (.imp (andF (.box p) (dia q)) r)
 
@@ -852,7 +906,9 @@ def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "F " ++ probe4 (.imp (Formula.someFuture p) p) 200 .Dense
 
-/-- info: "H gen=true check=false uGW=false [gw=false wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+-- RE-BASELINED (guard): was `"H gen=true check=false uGW=false [gw=false wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]"`;
+-- now `"H gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "H gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
 #eval "H " ++ probe4 (.imp (.untl p q) q)
 
@@ -870,7 +926,9 @@ def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "K " ++ probe4 (.imp p (.snce p q))
 
-/-- info: "M gen=true check=false uGW=false [gw=false wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
+-- RE-BASELINED (guard): was `"M gen=true check=false uGW=false [gw=false wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]"`;
+-- now `"M gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "M gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
 #eval "M " ++ probe4 (.imp (.untl p q) q) 200 .Dense
 

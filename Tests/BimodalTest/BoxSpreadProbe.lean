@@ -56,6 +56,54 @@ Each row runs `buildTableau` at fuel `200` and takes on the order of tens of sec
 these live in the test library and not next to the definitions they check.
 -/
 
+/-! ## Re-baseline record — the `trivialEventWitnessed` guard
+
+The `#guard_msgs` expectations marked `RE-BASELINED (guard)` below were moved from their previous
+pinned values. **Owner of every such move**: `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+`def trivialEventWitnessed`, consulted as a disjunct beside `witnessPresent` in both fresh-label
+guards of `findApplicableRule`. It is **not** owned by `Decidability/Saturation.lean` and **not**
+by the semantics refactor. The guard stops the engine minting trivial seriality witnesses, so the
+time domain stops growing without bound; the shorter time domains and the renumbered downstream
+indices below are the direct consequence.
+
+**Evidence — a three-point differential, not an inference.** Each row's value was measured at
+three commits, with `#guard_msgs` output captured and compared row by row:
+
+| Point | Commit | Meaning |
+|---|---|---|
+| P0 | `edcecd551^` (`d49b977c0`) | guard defined but **not consulted** — pre-guard behaviour |
+| P1 | `edcecd551` | guard consulted |
+| P2 | current `HEAD` | today |
+
+A row was re-baselined **only** when its pinned value equalled its P0 value — i.e. the row was
+correct before the guard, so the guard is the sole cause of its present mismatch. Rows whose
+pinned value already disagreed with P0 were **already stale before the guard**; those are the
+separately-owned mismatches baselined 2026-07-29 against an engine-behaviour change owned outside
+this refactor, and they are left pinned, unedited, and enumerated below. Re-baselining them would
+absorb that separately-owned change into this attribution, which is exactly what the plan forbids.
+
+The window `edcecd551^ .. HEAD` contains only the guard consultation plus proof-body-only edits to
+three files (`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.lean`,
+`Verified/Termination/MintBound.lean`); those diffs add and remove no `def`, `abbrev`, `instance`,
+`structure`, or `inductive` line at all, so no `#eval` here can have moved because of them. This is
+corroborated directly in `TableauConformance.lean`, whose P1 and P2 values are identical on every
+row.
+
+**Re-baselined in this file** (guard-attributed): 2 row(s) at line(s) 149, 158 — each carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
+
+**EXCLUDED — left pinned and unedited**: 1 row(s) at line(s) 165.
+These are members of the ten pre-existing, separately-declined mismatches, identified at
+row level for the first time by the P0 measurement above. For each, the pinned value, the
+pre-guard (P0) value, and the current (P2) value are three *different* values: the row was already
+stale before the guard **and** the guard moved it again. Correcting it here would silently fold a
+separately-owned engine change into this refactor's re-baseline. It stays pinned:
+
+* line 165
+  - pinned: `info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=8"`
+  - P0 pre-guard: `info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=10"`
+  - P2 current: `info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=6"`
+-/
+
 namespace BimodalTest.BoxSpreadProbe
 
 open FormalSystem.Syntax
@@ -95,14 +143,18 @@ Each row's `anchor` and `grid` moved `true → false` with the deletion, and row
 -- A. The minimal witness: one box, one diamond, an unrelated consequent. The world is minted at
 -- the same time the box sits at, so the failure is purely the later time-minting.
 -- Was `anchor=true grid=true`.
-/-- info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=7" -/
+-- RE-BASELINED (guard): was `"OPEN spread=false anchor=false grid=false |W|=2 |T|=7"`;
+-- now `"OPEN spread=false anchor=false grid=true |W|=2 |T|=4"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN spread=false anchor=false grid=true |W|=2 |T|=4" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
 
 -- B. The witness world carries a temporal universal of its own. Was `anchor=true grid=true`.
 -- Note this row is unmoved from A even though its `◇` argument is itself a `G`: that `T(G q)`
 -- never reached the minted world either.
-/-- info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=7" -/
+-- RE-BASELINED (guard): was `"OPEN spread=false anchor=false grid=false |W|=2 |T|=7"`;
+-- now `"OPEN spread=false anchor=false grid=true |W|=2 |T|=4"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+/-- info: "OPEN spread=false anchor=false grid=true |W|=2 |T|=4" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r)
 
