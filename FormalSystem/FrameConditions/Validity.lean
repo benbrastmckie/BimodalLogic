@@ -51,7 +51,7 @@ open FormalSystem.Semantics
 
 /--
 A formula is valid over temporal domain D if it is true in all models
-at all times in all histories within any shift-closed set of histories.
+at all times at every **total** history (`τ.IsTotal`, i.e. `τ ∈ H_F`).
 
 This is the parameterized version of `FormalSystem.Semantics.valid`, fixed to
 a specific temporal type D rather than quantifying over all types.
@@ -59,9 +59,8 @@ a specific temporal type D rather than quantifying over all types.
 def ValidOver (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (φ : Formula) : Prop :=
   ∀ (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    TruthAt M Omega τ t φ
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    TruthAt M Set.univ τ t φ
 
 /--
 Notation for parameterized validity: `⊨[D] φ` means `ValidOver D φ`.
@@ -114,32 +113,32 @@ This is immediate since `valid` quantifies over all D.
 theorem valid_of_forall_valid_over {φ : Formula}
     (h : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], ValidOver D φ) :
     valid φ := by
-  intro D _ _ _ _ F M Omega h_sc τ h_mem t
-  exact h D F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ F M τ hτ t
+  exact h D F M τ hτ t
 
 /--
 Universal validity implies validity over any specific type.
 -/
 theorem valid_over_of_valid {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] {φ : Formula} (h : valid φ) : ValidOver D φ := by
-  intro F M Omega h_sc τ h_mem t
-  exact h D F M Omega h_sc τ h_mem t
+  intro F M τ hτ t
+  exact h D F M τ hτ t
 
 /--
 Dense validity (typeclass version) implies existing `ValidDense`.
 -/
 theorem valid_dense_of_valid_dense_fc {φ : Formula} (h : ValidDenseFc φ) : ValidDense φ := by
-  intro D _ _ _ _ _ F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ _ F M τ hτ t
   -- We need DenseTemporalFrame D, but we can construct it since D has all the required instances
   haveI : DenseTemporalFrame D := {}
-  exact h D F M Omega h_sc τ h_mem t
+  exact h D F M τ hτ t
 
 /--
 Existing `ValidDense` implies dense validity (typeclass version).
 -/
 theorem valid_dense_fc_of_valid_dense {φ : Formula} (h : ValidDense φ) : ValidDenseFc φ := by
-  intro D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
-  exact h D F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ _ _ _ _ F M τ hτ t
+  exact h D F M τ hτ t
 
 /--
 Dense validity equivalence: `ValidDenseFc φ ↔ ValidDense φ`.
@@ -162,8 +161,8 @@ typeclass-constrained types is sufficient for the weaker `ValidDiscrete`.
 -/
 theorem valid_discrete_fc_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ) :
     ValidDiscreteFc φ := by
-  intro D _ _ _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
-  exact h D F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ _ _ _ _ _ _ F M τ hτ t
+  exact h D F M τ hτ t
 
 /-! ## Relationship Between Frame Classes -/
 
@@ -171,26 +170,26 @@ theorem valid_discrete_fc_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ
 Universal validity implies linear validity.
 -/
 theorem valid_linear_of_valid {φ : Formula} (h : valid φ) : ValidLinear φ := by
-  intro D _ _ _ _ _ F M Omega h_sc τ h_mem t
-  exact h D F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ _ F M τ hτ t
+  exact h D F M τ hτ t
 
 /--
 Linear validity implies dense validity (base axioms are valid on dense frames).
 -/
 theorem valid_dense_fc_of_valid_linear {φ : Formula} (h : ValidLinear φ) : ValidDenseFc φ := by
-  intro D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ _ _ _ _ F M τ hτ t
   -- DenseTemporalFrame extends SerialFrame which extends LinearTemporalFrame
   haveI : LinearTemporalFrame D := {}
-  exact h D F M Omega h_sc τ h_mem t
+  exact h D F M τ hτ t
 
 /--
 Linear validity implies discrete validity (base axioms are valid on discrete frames).
 -/
 theorem valid_discrete_fc_of_valid_linear {φ : Formula} (h : ValidLinear φ) :
     ValidDiscreteFc φ := by
-  intro D _ _ _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ _ _ _ _ _ _ F M τ hτ t
   haveI : LinearTemporalFrame D := {}
-  exact h D F M Omega h_sc τ h_mem t
+  exact h D F M τ hτ t
 
 /-! ## Validity over Int -/
 
@@ -204,7 +203,7 @@ If a formula is discretely valid, it is valid over Int.
 -/
 theorem valid_over_Int_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ) :
     ValidOverInt φ := by
-  intro F M Omega h_sc τ h_mem t
-  exact h Int F M Omega h_sc τ h_mem t
+  intro F M τ hτ t
+  exact h Int F M τ hτ t
 
 end FormalSystem.FrameConditions
