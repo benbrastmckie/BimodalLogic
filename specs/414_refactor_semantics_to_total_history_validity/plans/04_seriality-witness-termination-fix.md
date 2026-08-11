@@ -3258,29 +3258,58 @@ dispatchable units, and a container heading would be a phase no consumer could e
 
 ---
 
-### Phase 29.1: Run `lake build BimodalTest` and record the actuals [NOT STARTED]
+### Phase 29.1: Run `lake build BimodalTest` and record the actuals [COMPLETED]
 
 **Goal**: Run the previously-unusable gate and record what it actually says. **This sub-phase
 edits no file under `Tests/`.**
 
+**MILESTONE MET**: `lake build BimodalTest` **TERMINATED in 35 s** under a 3600 s bound (0.97% of
+budget), 2380 jobs, `EXIT=1` on `#guard_msgs` expectation mismatches only — **0 errors outside
+`Tests/`**. `BoxNegReachabilityProbe` elaborated in **1.0 s** (previously killed twice after
+>45 min); `CrossWorldPropagationProbe` in **1.7 s** (previously 2418 s). All eight probe modules
+report lake `Building`, not `Replayed`, so this is genuine elaboration and not a cache replay.
+Measurement record: `summaries/08_phase29-1-bimodaltest-measurement.md`.
+
 **Tasks**:
-- [ ] Run `lake build BimodalTest`. Budget generously — Phase 21 recorded a dispatch giving up at
+- [x] Run `lake build BimodalTest`. Budget generously — Phase 21 recorded a dispatch giving up at
       10 minutes, and report 04 recorded >45 minutes on the unfixed engine; a dispatch that
       genuinely needs this must budget well beyond either. Record wall-clock time and exit status.
-- [ ] Record the **actual** measured values for `BoxNegReachabilityProbe` rows 4-12 (rows 4-8 read
+      *(measured: 35 s wall-clock, bound 3600 s, `EXIT=1` from stale `#guard_msgs` expectations
+      only; tree-wide `lake build` re-verified GREEN at 2331 jobs, 1 live sorry, 0 axiom
+      declarations — all unchanged from the Phase 24/28 baseline)*
+- [x] Record the **actual** measured values for `BoxNegReachabilityProbe` rows 4-12 (rows 4-8 read
       `reached := run 12`, whose round-12 branch differs under the guard, so rows 7 and 8 are the
       exposed ones), `CrossWorldPropagationProbe` row F, and **every** `#guard_msgs` row that
       reports a mismatch anywhere in the suite.
-- [ ] Classify each mismatching row into exactly one of three buckets, and record the
+      *(measured: **40 mismatching rows of 178 total across 8 files**. `BoxNegReachabilityProbe`
+      rows 4-8 and row 12 do **not** move; only rows 9/10/11 do. `CrossWorldPropagationProbe`
+      row F moves. Full per-file, per-row enumeration in the measurement record §4.)*
+- [x] Classify each mismatching row into exactly one of three buckets, and record the
       classification: **(a) moved because of the new guard** — to be re-baselined in 29.2 with
       attribution to `FormalSystem/Metalogic/Decidability/Tableau.lean`'s `trivialEventWitnessed`;
       **(b) one of the ten pre-existing, separately-declined mismatches** — untouched, still
       declined; **(c) neither** — a surprise, which must be investigated and recorded, never
       absorbed into bucket (a).
+      *(deviation: altered — bucket (a) is established for exactly **4** rows, each independently
+      corroborated by a Phase 26/28 measurement. The remaining **36** could not be assigned to a
+      single bucket, because the measurement showed the buckets are **not disjoint** — see the next
+      task. Bucket (c) surprises recorded in §7.)*
 - [ ] Resolve the row-level identification of the ten excluded mismatches if Phase 24 had to defer
-      it.
-- [ ] Write the re-baseline declaration: for every bucket-(a) row, its old value, its new value,
-      and its attribution.
+      it. *(deviation: **not resolved — deferred with a stated blocker and a decision rule**, not
+      guessed. Running the suite — Phase 24's stated prerequisite — proved insufficient: a
+      `#guard_msgs` failure reports pinned-vs-current only and carries no pre-guard value. All
+      three recovery routes came up empty (zero in-source markers; no row-level record anywhere in
+      `specs/` outside this task; git history fixes ordering but not rows). The measurement further
+      shows the declared counts are exceeded — `TableauConformance` 7 of 29 (exact match) but
+      `RegionGateProbe` **4** of 10 (declared 2) and `BoxSpreadProbe` **3** of 5 (declared 1), i.e.
+      **14 measured against 10 declared** — and that 6 of `TableauConformance`'s 7 carry the guard's
+      `knownTimes`-shrink signature, so neither "all pre-existing" nor "all guard-caused" is
+      supportable. **The separating measurement is a pre-guard differential against `edcecd551^`**,
+      recorded in §6.4 as the outstanding prerequisite for re-baselining anything in the three
+      excluded files.)*
+- [x] Write the re-baseline declaration: for every bucket-(a) row, its old value, its new value,
+      and its attribution. *(§8 of the measurement record: 4 rows cleared to move, each attributed
+      to `trivialEventWitnessed` at `d49b977c0`/`edcecd551`; the other 36 explicitly withheld.)*
 
 **Timing**: 1.5 hours (plus build wall-clock)
 
