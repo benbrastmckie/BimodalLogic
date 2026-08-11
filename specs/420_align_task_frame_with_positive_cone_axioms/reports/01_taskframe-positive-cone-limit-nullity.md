@@ -3,6 +3,13 @@
 # Research Report: Aligning `TaskFrame` with the Refactored Paper `def:frame`
 
 **Task**: 420 — align_task_frame_with_positive_cone_limit_nullity
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 **Type**: lean4
 **Session**: sess_1785332177_7809d8
 **Date**: 2026-07-29

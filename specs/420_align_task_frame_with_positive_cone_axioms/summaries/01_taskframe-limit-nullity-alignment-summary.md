@@ -3,6 +3,11 @@
 # Implementation Summary: Aligning `TaskFrame` with the Positive-Cone `def:frame`
 
 - **Task**: 420 - align_task_frame_with_positive_cone_limit_nullity
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4
 - **Session**: sess_1785332177_7809d8
 - **Date**: 2026-07-29

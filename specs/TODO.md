@@ -79,7 +79,7 @@ next_project_number: 440
 
 419 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
   └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
-420 [BLOCKED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
+420 [PARTIAL] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
   └─ 414 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
     └─ 415 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
@@ -588,13 +588,13 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 
 ### 420. Align task frame with positive cone axioms
 - **Effort**: medium
-- **Status**: [BLOCKED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 438
 - **Research**: [420_align_task_frame_with_positive_cone_axioms/reports/01_taskframe-positive-cone-limit-nullity.md]
-- **Plan**: [420_align_task_frame_with_positive_cone_axioms/plans/01_taskframe-limit-nullity-alignment.md]
 - **Summary**: [420_align_task_frame_with_positive_cone_axioms/summaries/01_taskframe-limit-nullity-alignment-summary.md]
+- **Plan**: [420_align_task_frame_with_positive_cone_axioms/plans/02_four-axiom-frame-alignment.md]
 
 **Description**: RE-ISSUED 2026-08-10 (description rewrite only; status remains `blocked` -- phases 1-5 are LANDED, GREEN, and COMMITTED and are not undone by this re-issue). ALIGN THE LEAN TaskFrame WITH THE PAPER'S FOUR-AXIOM def:frame.
 
