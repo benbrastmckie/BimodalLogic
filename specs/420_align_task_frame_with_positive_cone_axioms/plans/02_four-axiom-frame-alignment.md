@@ -702,6 +702,36 @@ from the 2026-08-10 findings; confirm each by reading before editing.
 live construction site discharging every field sorry-free, and *Spherical* demonstrably
 consumed by `lem:step` per the Cross-Task Acceptance Criterion.
 
+**BINDING CROSS-TASK INVARIANT (added by task 414, the total-history-validity refactor).**
+Task 414 lands *Spherical*, *Serial*, and Compositionality's interpolation half **now**, as
+`Prop`-valued predicates over a bare task relation, and proves `lem:step` **consuming
+`hSph : Spherical F.TaskRel` in its proof body** — the charter §7 criterion is discharged there,
+not deferred to this phase.
+
+Consequently, when this phase adds the axiom fields:
+
+- `TaskFrame.spherical` MUST be **definitionally** `Spherical TaskRel`,
+- `TaskFrame.serial` MUST be **definitionally** `Serial TaskRel`,
+- the interpolation half of biconditional `comp` MUST be **definitionally** `Interpolates TaskRel`,
+
+all three as defined by task 414. This phase then discharges `step`'s hypotheses by
+`F.spherical` / `F.serial` / `F.interpolates` — a mechanical substitution with **zero
+restatement**. Do NOT restate any of the three Props in the field, however equivalent the
+restatement looks.
+
+**The acceptance test is a compilation failure.** If a field lands whose statement differs from
+task 414's Prop, `step` stops typechecking. That build break IS the test — it is exactly why
+landing the hypothesis form first was chosen over waiting for these fields, and it is what
+forecloses the inert-field failure mode (a `spherical` field that no proof ever consumes).
+
+The per-axiom target table below predates this invariant. Where its `Spherical` / `serial` rows
+differ in phrasing from task 414's landed Props, **task 414's Props win** and the table row is to
+be treated as an approximation of them. Full rationale:
+`specs/decisions/total-history-validity-decisions.md`, section "The §7 acceptance criterion".
+Note in particular that *Spherical* keeps fibers and segments as **two separate classes** (the
+retired device by which one-sided fibers counted among segments must not reappear), and that
+directedness is its own definition per `def:directed`.
+
 **BLOCKED ON**: task 415's `bundleFlowFrame` (phase-level wait — the `dependencies[]` edge was
 deliberately dropped 2026-08-10 and MUST NOT be re-added; coordinate directly). Mechanism
 (finding B.2, confirmed): `ParametricCanonicalTaskFrame` (ParametricCanonical.lean:207-215) has

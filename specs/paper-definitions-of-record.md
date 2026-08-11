@@ -446,9 +446,16 @@ clauses (`FormalSystem/Semantics/Truth.lean:134-135`) are **event-first / guard-
 (`FormalSystem/Syntax/Formula.lean:164-166`) depend on the event-first reading. This record quotes
 the paper verbatim, as it must; the divergence is recorded and escalated separately in
 `specs/decisions/untl-snce-argument-order.md`, and the Lean convention is **not** being changed.
-The *clause bodies* themselves (which time is existentially witnessed, which is universally
-quantified over the open interval) match the Lean definitions exactly; only the footnote's prose
-description of the constructor argument order diverges.
+
+Precisely what does and does not diverge: the **shape** of each clause is identical to Lean's (one
+existentially witnessed time on the correct side of `x`, one universal quantifier over the open
+interval between them). What differs is **which argument plays which role**. The paper's infix
+`$\varphi\since\psi$` puts the *event* second (`ψ` is witnessed at `z < x`; `φ` holds throughout),
+consistent with its own `def:BLplus-defined` abbreviations `$\past\varphi \coloneq \top\since\varphi$`
+and `$\future\varphi \coloneq \top\until\varphi$`. Lean's prefix `Formula.untl φ ψ` puts the *event*
+first — `someFuture φ = untl φ ⊤` (`Formula.lean:131`), the mirror image. So the footnote accurately
+describes **the paper's own** infix convention; its error is attributing that convention to **this
+repository's constructors**, which are the other way round.
 
 ### `def:BLplus-defined` — the defined temporal operators of `BL^+`
 

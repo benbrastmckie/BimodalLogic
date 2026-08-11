@@ -353,30 +353,40 @@ existential time and quantify the *second* over the open interval).
 
 ---
 
-### Phase 2: Decision record and cross-task handoff [NOT STARTED]
+### Phase 2: Decision record and cross-task handoff [COMPLETED]
 
 **Goal**: Write the plan-time decisions to a durable record so neither this task nor task 420
 makes any of them twice, and escalate the `untl`/`snce` contradiction to the user.
 
 **Tasks**:
-- [ ] Create `specs/decisions/total-history-validity-decisions.md` recording Decisions A-D above
-      verbatim, each with its rationale and its §9 justification.
-- [ ] Record the accepted atom-clause fidelity gap (`∃ (ht : τ.domain t)` retained under the
+- [x] Create `specs/decisions/total-history-validity-decisions.md` recording Decisions A-D above
+      verbatim, each with its rationale and its §9 justification. *(completed)*
+- [x] Record the accepted atom-clause fidelity gap (`∃ (ht : τ.domain t)` retained under the
       predicate encoding; literal only under the subtype encoding) as a known, reasoned deviation.
-- [ ] Record the **420 phase-10 invariant** (see "The §7 mechanism" above) in the decision record.
-- [ ] Append a cross-reference note to
+      *(completed — Decision A subsection "Accepted fidelity gap")*
+- [x] Record the **420 phase-10 invariant** (see "The §7 mechanism" above) in the decision record.
+      *(completed — section "THE INVARIANT")*
+- [x] Append a cross-reference note to
       `specs/420_align_task_frame_with_positive_cone_axioms/plans/02_four-axiom-frame-alignment.md`
       under phase 10, stating that the four axiom fields must be definitionally the Props this task
-      defines, and naming the compilation failure as the acceptance test.
-- [ ] Write an escalation record `specs/decisions/untl-snce-argument-order.md`: quote the live
+      defines, and naming the compilation failure as the acceptance test. *(completed — inserted
+      directly under phase 10's Goal, above the `[BLOCKED]` mechanism note, and explicitly
+      subordinating the pre-existing per-axiom target table's `Spherical`/`serial` rows to this
+      task's Props)*
+- [x] Write an escalation record `specs/decisions/untl-snce-argument-order.md`: quote the live
       `def:BLplus-semantics` footnote (marked **UNVERIFIED-BY-RECORD** until Phase 1 lands, then
       cite the record), quote `Formula.lean:85-90` and `Truth.lean:134-135`, name
       `Axiom.dense_indicator` (`Validity.lean:229-231`) and `K⁺` (`Formula.lean:164-166`) as the
       two load-bearing dependents of the event-first reading, and state the decision requested of
       the user: correct the paper's footnote, or accept the divergence as documented. State
       explicitly that the Lean convention is **not** being changed either way.
-- [ ] Surface the escalation in the implementation summary so it reaches the user, not only the
-      file.
+      *(completed, with two corrections to the plan's own framing — see the deviation note below:
+      Phase 1 landed first, so the footnote is cited **against the record** rather than marked
+      UNVERIFIED-BY-RECORD; and the dependent list is **four**, not two — `someFuture`
+      (`Formula.lean:131`) and `somePast` (`Formula.lean:141`) are equally load-bearing and were
+      found during verification)*
+- [x] Surface the escalation in the implementation summary so it reaches the user, not only the
+      file. *(completed — carried in the dispatch wrap-up)*
 
 **Timing**: 1.5 hours
 
@@ -390,9 +400,28 @@ makes any of them twice, and escalate the `untl`/`snce` contradiction to the use
 - `specs/420_align_task_frame_with_positive_cone_axioms/plans/02_four-axiom-frame-alignment.md`
 
 **Verification**:
-- Both decision files exist and are non-empty.
-- 420's plan contains the invariant note under phase 10.
-- No Lean file is modified by this phase.
+- Both decision files exist and are non-empty. **PASSED**.
+- 420's plan contains the invariant note under phase 10. **PASSED**.
+- No Lean file is modified by this phase. **PASSED** (the phase's diff touches only `specs/**`).
+
+**Deviations from the plan's task text** (both are corrections in the direction of accuracy):
+1. The plan told this phase to mark the footnote **UNVERIFIED-BY-RECORD**. Phase 1 landed first in
+   the same dispatch, so `def:BLplus-semantics` is a tracked anchor with a pinned sha256; the
+   escalation cites the record, as the plan's own fallback clause directs.
+2. The plan named **two** load-bearing dependents of the event-first reading
+   (`Axiom.dense_indicator`, `K⁺`). Verification in-tree found **four**: `someFuture`
+   (`Formula.lean:131`, `untl φ ⊤`) and `somePast` (`Formula.lean:141`, `snce φ ⊤`) also invert
+   their meaning under a guard-first reading, becoming `K⁺`-shaped rather than `F`/`P`. All four
+   are tabulated in the escalation record. `kMinus` (`Formula.lean:193`) is noted as carrying the
+   same dependency as `kPlus`.
+
+**Additional finding worth carrying forward.** The paper's footnote is an accurate description of
+**the paper's own** infix notation — corroborated inside the paper by `def:BLplus-defined`'s
+`$\past\varphi \coloneq \top\since\varphi$` — and its only error is **attributing that
+convention to this repository's constructors**. The divergence is therefore purely notational: every
+paper formula has a Lean counterpart obtained by swapping the two arguments. This is a narrower and
+more tractable finding than "the paper is wrong", and it is what makes option (B) (accept the
+divergence as documented) a reasonable outcome rather than a capitulation.
 
 ---
 
