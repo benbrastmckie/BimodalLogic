@@ -86,9 +86,9 @@ def InterpInvariantAt (f : ι → D) (M : TaskModel F) (Om : Set (WorldHistory F
 
 variable {f : ι → D} {M : TaskModel F} {Om : Set (WorldHistory F)} {τ : WorldHistory F}
 
-/-- The global Phase 6 statement implies the per-history one at each of its histories. -/
+/-- The global statement implies the per-history one at each *total* history. -/
 theorem interpInvariantAt_of_interpInvariant {χ : Formula}
-    (h : InterpInvariant f M Om χ) (hτ : τ ∈ Om) : InterpInvariantAt f M Om τ χ :=
+    (h : InterpInvariant f M Om χ) (hτ : τ.IsTotal) : InterpInvariantAt f M Om τ χ :=
   fun r r' hrr' => h τ hτ r r' hrr'
 
 /--
@@ -152,15 +152,15 @@ theorem interpInvariantAt_imp {φ ψ : Formula} (hφ : InterpInvariantAt f M Om 
 /--
 **Box case.** Free, and it does not consume the induction hypothesis.
 
-For a shift-closed `Om`, `truthAt_box_iff` says `box φ` holds at a point iff `φ` holds at every
-history of `Om` and every time — a statement with no free evaluation point left in it. This is
-the case that forced Phase 6's global formulation, and it is exactly the case shift-closure pays
-for.
+`truthAt_box_iff` says `box φ` holds at a point iff `φ` holds at every *total* history and every
+time — a statement with no free evaluation point left in it. This is the case that forced the
+global formulation. It used to be the case shift-closure paid for; under the totality box clause
+it costs nothing, because `WorldHistory.isTotal_timeShift` supplies the shifted witness outright.
 -/
-theorem interpInvariantAt_box (hsc : ShiftClosed Om) (φ : Formula) :
+theorem interpInvariantAt_box (φ : Formula) :
     InterpInvariantAt f M Om τ φ.box := by
   intro r r' _
-  exact truthAt_box_congr M hsc τ r r' φ
+  exact truthAt_box_congr M τ r r' φ
 
 /-- **Negation.** -/
 theorem interpInvariantAt_neg {φ : Formula} (hφ : InterpInvariantAt f M Om τ φ) :
@@ -311,22 +311,22 @@ theorem interpInvariantAt_allPast [NoMinOrder D] {φ : Formula}
 
 /--
 **Per-history interpolation invariance.** On a densely ordered carrier with no endpoints, truth of
-every formula in an *atomically region-invariant* history is constant on each region, provided the
-admissible set is shift-closed.
+every formula in an *atomically region-invariant* history is constant on each region.
 
-The hypotheses are exactly the two the countermodel supplies: `atomRegionInvariant_regionHistory`
-for the base history and `shiftClosed_regionOmega` for `Ω`. Contrast Phase 6's `interpInvariant`,
-which additionally demands region-constancy of *every* member of `Om` — a demand no shift-closed
-`Om` can meet (`Bridge/Omega.lean`, Consequence 3).
+The one hypothesis is exactly what the countermodel supplies:
+`atomRegionInvariant_regionHistory` for the base history. Shift-closure of `Ω` is no longer
+needed — the box case now instantiates against totality, which `timeShift` preserves outright.
+Contrast the global `interpInvariant`, which additionally demands region-constancy of *every*
+total history — a demand this carrier cannot meet (`Bridge/Omega.lean`, Consequence 3).
 -/
 theorem interpInvariantAt [NoMaxOrder D] [NoMinOrder D]
-    (hsc : ShiftClosed Om) (hAI : AtomRegionInvariant f M τ) (χ : Formula) :
+    (hAI : AtomRegionInvariant f M τ) (χ : Formula) :
     InterpInvariantAt f M Om τ χ := by
   induction χ with
   | atom p => exact interpInvariantAt_atom hAI p
   | bot => exact interpInvariantAt_bot
   | imp φ ψ hφ hψ => exact interpInvariantAt_imp hφ hψ
-  | box φ _ => exact interpInvariantAt_box hsc φ
+  | box φ _ => exact interpInvariantAt_box φ
   | untl φ ψ hφ hψ => exact interpInvariantAt_untl hφ hψ
   | snce φ ψ hφ hψ => exact interpInvariantAt_snce hφ hψ
 
@@ -374,14 +374,15 @@ theorem atomRegionInvariant_regionHistory {f : ι → D} {M : TaskModel (regionF
     exact hRV w r r' h p
 
 /--
-**The countermodel is region-invariant at every base history.** Both hypotheses of
-`interpInvariantAt` are discharged by construction: the model is region-valued (supplied by
-`Bridge/Valuation.lean`) and `Ω` is shift-closed (`shiftClosed_regionOmega`).
+**The countermodel is region-invariant at every base history.** The hypothesis of
+`interpInvariantAt` is discharged by construction: the model is region-valued (supplied by
+`Bridge/Valuation.lean`). The former second hypothesis, shift-closure of `Ω`, is gone with the
+retarget of the box clause to totality.
 -/
 theorem interpInvariantAt_regionHistory {f : ι → D} {M : TaskModel (regionFrame W ι D)}
     (hRV : RegionValued f M) (w : W) (χ : Formula) :
     InterpInvariantAt f M (regionOmega f) (regionHistory f w (0 : D)) χ :=
-  interpInvariantAt (shiftClosed_regionOmega f) (atomRegionInvariant_regionHistory hRV w) χ
+  interpInvariantAt (atomRegionInvariant_regionHistory hRV w) χ
 
 end Countermodel
 

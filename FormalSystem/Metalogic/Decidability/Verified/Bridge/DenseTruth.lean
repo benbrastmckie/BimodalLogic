@@ -658,8 +658,8 @@ theorem not_validDense_of_hasOpen (hV : branchOrderValid b ord = true)
   intro hval
   obtain ⟨t, ht⟩ := exists_countermodel_dense ℚ strictMono_intCast_rat hV fc hSat hOpen hTot hBA
     hCheck hTW hw₀ hroot
-  exact ht (hval ℚ (regionFrame WorldIndex (BranchTime b) ℚ) _ _
-    (shiftClosed_regionOmega _) _ (regionHistory_mem_regionOmega _ _ _) t)
+  exact ht ((truthAt_carrier_irrelevant Set.univ _ χ _ t).mp
+    (hval ℚ (regionFrame WorldIndex (BranchTime b) ℚ) _ _ (fun _ => trivial) t))
 
 /-! ### Headline result, at `ℝ` -/
 
@@ -681,9 +681,9 @@ theorem not_validDedekindDense_of_hasOpen (hV : branchOrderValid b ord = true)
   intro hval
   obtain ⟨t, ht⟩ := exists_countermodel_dense ℝ strictMono_intCast_real hV fc hSat hOpen hTot hBA
     hCheck hTW hw₀ hroot
-  exact ht (hval ℝ (fun s hs hb => ⟨sSup s, isLUB_csSup hs hb⟩)
-    (regionFrame WorldIndex (BranchTime b) ℝ) _ _
-    (shiftClosed_regionOmega _) _ (regionHistory_mem_regionOmega _ _ _) t)
+  exact ht ((truthAt_carrier_irrelevant Set.univ _ χ _ t).mp
+    (hval ℝ (fun s hs hb => ⟨sSup s, isLUB_csSup hs hb⟩)
+      (regionFrame WorldIndex (BranchTime b) ℝ) _ _ (fun _ => trivial) t))
 
 end DenseCarrier
 

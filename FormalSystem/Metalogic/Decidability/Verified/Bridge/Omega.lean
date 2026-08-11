@@ -333,33 +333,37 @@ section BoxUniversal
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F : TaskFrame D}
 
 /--
-**Box is evaluation-point independent.** For a shift-closed `Ω`, `box φ` holds at one point iff
-`φ` holds at *every* history of `Ω` and *every* time.
+**Box is evaluation-point independent.** `box φ` holds at one point iff `φ` holds at *every*
+total history and *every* time.
 
-The forward direction shifts an arbitrary `(σ, y)` back to `x` — legal precisely because `Ω` is
-shift-closed — and reads the result off `time_shift_preserves_truth`.
+The forward direction shifts an arbitrary `(σ, y)` back to `x` — legal because totality is
+preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), with no side condition on `Ω` —
+and reads the result off `time_shift_preserves_truth`. Shift-closure of `Ω` is no longer a
+hypothesis: the box clause quantifies over totality, and totality is shift-stable outright.
 -/
-theorem truthAt_box_iff (M : TaskModel F) {Om : Set (WorldHistory F)} (hsc : ShiftClosed Om)
+theorem truthAt_box_iff (M : TaskModel F) {Om : Set (WorldHistory F)}
     (τ : WorldHistory F) (x : D) (φ : Formula) :
-    TruthAt M Om τ x φ.box ↔ ∀ σ ∈ Om, ∀ y : D, TruthAt M Om σ y φ := by
+    TruthAt M Om τ x φ.box ↔
+      ∀ σ : WorldHistory F, σ.IsTotal → ∀ y : D, TruthAt M Om σ y φ := by
   simp only [TruthAt]
   constructor
   · intro h σ hσ y
-    exact (TimeShift.time_shift_preserves_truth M Om σ x y φ).mp (h _ (hsc σ hσ (y - x)))
+    exact (TimeShift.time_shift_preserves_truth M Om σ x y φ).mp
+      (h _ (WorldHistory.isTotal_timeShift hσ (y - x)))
   · intro h σ hσ
     exact h σ hσ x
 
 /-- Truth of a boxed formula does not depend on the time it is evaluated at. -/
-theorem truthAt_box_congr (M : TaskModel F) {Om : Set (WorldHistory F)} (hsc : ShiftClosed Om)
+theorem truthAt_box_congr (M : TaskModel F) {Om : Set (WorldHistory F)}
     (τ : WorldHistory F) (x y : D) (φ : Formula) :
     TruthAt M Om τ x φ.box ↔ TruthAt M Om τ y φ.box := by
-  rw [truthAt_box_iff M hsc τ x φ, truthAt_box_iff M hsc τ y φ]
+  rw [truthAt_box_iff M τ x φ, truthAt_box_iff M τ y φ]
 
 /-- Nor on the history it is evaluated in. -/
 theorem truthAt_box_congr_history (M : TaskModel F) {Om : Set (WorldHistory F)}
-    (hsc : ShiftClosed Om) (τ σ : WorldHistory F) (x y : D) (φ : Formula) :
+    (τ σ : WorldHistory F) (x y : D) (φ : Formula) :
     TruthAt M Om τ x φ.box ↔ TruthAt M Om σ y φ.box := by
-  rw [truthAt_box_iff M hsc τ x φ, truthAt_box_iff M hsc σ y φ]
+  rw [truthAt_box_iff M τ x φ, truthAt_box_iff M σ y φ]
 
 end BoxUniversal
 
@@ -403,12 +407,17 @@ theorem truthAt_box_iff_base (M : TaskModel (regionFrame W ι D)) (f : ι → D)
     (τ : WorldHistory (regionFrame W ι D)) (x : D) (φ : Formula) :
     TruthAt M (regionOmega f) τ x φ.box ↔
       ∀ (w : W) (y : D), TruthAt M (regionOmega f) (regionHistory f w (0 : D)) y φ := by
-  rw [truthAt_box_iff M (shiftClosed_regionOmega f) τ x φ]
+  rw [truthAt_box_iff M τ x φ]
   constructor
   · intro h w y
-    exact h _ (regionHistory_mem_regionOmega f w 0) y
+    -- `regionOmega f = H_F` (`regionOmega_eq_total`), so a base history's membership *is* its
+    -- totality; the box clause now instantiates against the latter.
+    exact h _ (by
+      have := regionHistory_mem_regionOmega f w (0 : D)
+      rwa [regionOmega_eq_total f] at this) y
   · intro h σ hσ y
-    obtain ⟨w, Δ, rfl⟩ := (mem_regionOmega_iff f σ).mp hσ
+    obtain ⟨w, Δ, rfl⟩ := (mem_regionOmega_iff f σ).mp
+      (by rwa [regionOmega_eq_total f])
     exact (truthAt_regionHistory_offset M f w Δ y φ).mpr (h w (y + Δ))
 
 end BaseReduction

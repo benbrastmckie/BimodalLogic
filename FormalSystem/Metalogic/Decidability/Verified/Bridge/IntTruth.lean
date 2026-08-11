@@ -1053,9 +1053,9 @@ theorem not_valid_of_hasOpen_int (hV : branchOrderValid b ord = true)
       (rayOnly_intPlace hV) (raySplit_intPlace hV) stepped_int hV fc hSat hOpen hTot hBA hCheck hTW
       hne
       χ l₀.world (f i)).2 hneg
-    (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f) (regionOmega f)
-      (shiftClosed_regionOmega f) (regionHistory f l₀.world (0 : ℤ))
-      (regionHistory_mem_regionOmega f l₀.world 0) (f i))
+    ((truthAt_carrier_irrelevant Set.univ (regionOmega f) χ _ (f i)).mp
+      (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f)
+        (regionHistory f l₀.world (0 : ℤ)) (fun _ => trivial) (f i)))
 
 /--
 **The `ValidDiscrete` companion.** `ℤ` carries `SuccOrder`, `PredOrder`, `IsSuccArchimedean` and
@@ -1082,9 +1082,9 @@ theorem not_validDiscrete_of_hasOpen_int (hV : branchOrderValid b ord = true)
       (rayOnly_intPlace hV) (raySplit_intPlace hV) stepped_int hV fc hSat hOpen hTot hBA hCheck hTW
       hne
       χ l₀.world (f i)).2 hneg
-    (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f) (regionOmega f)
-      (shiftClosed_regionOmega f) (regionHistory f l₀.world (0 : ℤ))
-      (regionHistory_mem_regionOmega f l₀.world 0) (f i))
+    ((truthAt_carrier_irrelevant Set.univ (regionOmega f) χ _ (f i)).mp
+      (hval ℤ (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f)
+        (regionHistory f l₀.world (0 : ℤ)) (fun _ => trivial) (f i)))
 
 end IntCarrier
 

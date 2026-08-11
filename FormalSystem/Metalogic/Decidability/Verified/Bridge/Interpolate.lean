@@ -446,15 +446,19 @@ structure RegionConstant (f : ι → D) (τ : WorldHistory F) : Prop where
       τ.states r hr = τ.states r' hr'
 
 /--
-The invariance property for a single formula: within `Om`, truth of `χ` does not distinguish
-points of a common region.
+The invariance property for a single formula: across the total histories, truth of `χ` does not
+distinguish points of a common region.
 
-Quantified over all of `Om` rather than over one history, because `box` is a universal over `Om`
-at a fixed time and its case needs the induction hypothesis at every history simultaneously.
+Quantified over all total histories rather than over one history, because `box` is a universal
+over the total histories at a fixed time and its case needs the induction hypothesis at every
+such history simultaneously. `Om` survives only as `TruthAt`'s inert carrier argument; the
+quantifier tracks the box clause, which is totality (`def:BL-semantics`,
+`specs/paper-definitions-of-record.md`), not `Ω`-membership.
 -/
 def InterpInvariant (f : ι → D) (M : TaskModel F) (Om : Set (WorldHistory F))
     (χ : Formula) : Prop :=
-  ∀ τ ∈ Om, ∀ r r' : D, SameRegion f r r' → (TruthAt M Om τ r χ ↔ TruthAt M Om τ r' χ)
+  ∀ τ : WorldHistory F, τ.IsTotal →
+    ∀ r r' : D, SameRegion f r r' → (TruthAt M Om τ r χ ↔ TruthAt M Om τ r' χ)
 
 variable {f : ι → D} {M : TaskModel F} {Om : Set (WorldHistory F)}
 
@@ -465,7 +469,8 @@ variable {f : ι → D} {M : TaskModel F} {Om : Set (WorldHistory F)}
 at the state there; a region-constant history agrees with its region-mates on both, so the atom's
 truth value is a function of the region alone.
 -/
-theorem interpInvariant_atom (hRC : ∀ τ ∈ Om, RegionConstant f τ) (p : Atom) :
+theorem interpInvariant_atom (hRC : ∀ τ : WorldHistory F, τ.IsTotal → RegionConstant f τ)
+    (p : Atom) :
     InterpInvariant f M Om (Formula.atom p) := by
   intro τ hτ r r' hrr'
   have hC := hRC τ hτ
@@ -492,10 +497,10 @@ theorem interpInvariant_imp {φ ψ : Formula} (hφ : InterpInvariant f M Om φ)
   exact imp_congr (hφ τ hτ r r' hrr') (hψ τ hτ r r' hrr')
 
 /--
-**Box case.** `TruthAt … (box φ)` is a universal over `Om` at a *fixed* time, with no accessibility
-relation to move the time, so the case is pure transport of the induction hypothesis across the
-histories of `Om`. This is exactly why `InterpInvariant` quantifies over `Om` rather than over a
-single history.
+**Box case.** `TruthAt … (box φ)` is a universal over the *total* histories at a *fixed* time,
+with no accessibility relation to move the time, so the case is pure transport of the induction
+hypothesis across those histories. This is exactly why `InterpInvariant` quantifies over the
+total histories rather than over a single history.
 -/
 theorem interpInvariant_box {φ : Formula} (hφ : InterpInvariant f M Om φ) :
     InterpInvariant f M Om φ.box := by
@@ -525,7 +530,7 @@ variable [Fintype ι] [DenselyOrdered D]
 /-- One direction of the `untl` case, for `r < r'`. The other follows by symmetry of the setup. -/
 private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M Om φ) (hψ : InterpInvariant f M Om ψ)
-    {τ : WorldHistory F} (hτ : τ ∈ Om) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M Om τ r (φ.untl ψ)) : TruthAt M Om τ r' (φ.untl ψ) := by
   obtain ⟨s, hrs, hφs, hg⟩ := h
   by_cases hcase : r' < s
@@ -546,7 +551,7 @@ private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
 /-- The reverse direction of the `untl` case, for `r < r'`. -/
 private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M Om ψ)
-    {τ : WorldHistory F} (hτ : τ ∈ Om) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M Om τ r' (φ.untl ψ)) : TruthAt M Om τ r (φ.untl ψ) := by
   obtain ⟨s, hr's, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
@@ -584,7 +589,7 @@ theorem interpInvariant_untl [NoMaxOrder D] {φ ψ : Formula}
 /-- One direction of the `snce` case, for `r < r'`. -/
 private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M Om ψ)
-    {τ : WorldHistory F} (hτ : τ ∈ Om) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M Om τ r (φ.snce ψ)) : TruthAt M Om τ r' (φ.snce ψ) := by
   obtain ⟨s, hsr, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
@@ -605,7 +610,7 @@ private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
 /-- The reverse direction of the `snce` case, for `r < r'`. -/
 private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M Om φ) (hψ : InterpInvariant f M Om ψ)
-    {τ : WorldHistory F} (hτ : τ ∈ Om) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M Om τ r' (φ.snce ψ)) : TruthAt M Om τ r (φ.snce ψ) := by
   obtain ⟨s, hsr', hφs, hg⟩ := h
   by_cases hcase : s < r
@@ -674,7 +679,8 @@ This is the whole of stage 3 of the semantic bridge: it is what lets Phase 7's t
 truth at an arbitrary point of the carrier off the branch time whose region that point is in.
 -/
 theorem interpInvariant [NoMaxOrder D] [NoMinOrder D]
-    (hRC : ∀ τ ∈ Om, RegionConstant f τ) (χ : Formula) : InterpInvariant f M Om χ := by
+    (hRC : ∀ τ : WorldHistory F, τ.IsTotal → RegionConstant f τ) (χ : Formula) :
+    InterpInvariant f M Om χ := by
   induction χ with
   | atom p => exact interpInvariant_atom hRC p
   | bot => exact interpInvariant_bot
