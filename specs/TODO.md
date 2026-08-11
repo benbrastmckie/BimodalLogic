@@ -817,6 +817,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Dependencies**: Task 420, Task 438, Task 439
 - **Research**: [414_refactor_semantics_to_total_history_validity/reports/03_total-history-validity-refactor.md]
 - **Plan**: [414_refactor_semantics_to_total_history_validity/plans/03_omega-free-totality-refactor.md]
+- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/19_omega-binder-sweep-leaves-summary.md]
 
 **Description**: === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the sections named below) ===
 18 of 23 plan phases are COMPLETE, `lake build` is GREEN, 0 sorries were introduced (1

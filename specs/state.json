@@ -725,6 +725,11 @@
           "path": "specs/414_refactor_semantics_to_total_history_validity/plans/03_omega-free-totality-refactor.md",
           "type": "plan",
           "summary": "23-phase Omega-free totality-validity refactor plan: PartialHistory layering, paper-mirroring extension chain in hypothesis form, regionFrame deterministic re-host, and a reverse-topological Omega collapse."
+        },
+        {
+          "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/19_omega-binder-sweep-leaves-summary.md",
+          "type": "summary",
+          "summary": "Phase 19: Omega-binder sweep A (leaves)"
         }
       ],
       "created": "2026-07-28T22:51:10Z",

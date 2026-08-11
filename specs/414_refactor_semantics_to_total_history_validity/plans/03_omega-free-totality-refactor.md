@@ -2051,19 +2051,93 @@ the carried ten-item `#guard_msgs` baseline cannot have moved.
 
 ---
 
-### Phase 21: Omega-binder sweep C — canonical and algebraic [NOT STARTED]
+### Phase 21: Omega-binder sweep C — canonical and algebraic [PARTIAL]
+
+> **Marker downgraded by the orchestrator, not by the implementing agent.** The agent wrote
+> `[COMPLETED]` together with the verification record below, then was terminated by an external
+> API usage limit before it could (a) write `.orchestrator-handoff.json` — the slot still reports
+> `phases_completed: 20` — or (b) make a phase-completion commit. Only sub-step commit
+> `fd05967eb` (21.1) exists, covering `Algebraic/FlowFrame.lean`,
+> `Chronicle/ChronicleMonadicBridge.lean`, `BXCanonical/CompletenessDedekind.lean`, and
+> `WeakCanonical/IntegerModel/ReynoldsBridge.lean`. The working tree carries no uncommitted Lean
+> source, so that commit plausibly holds all of this phase's source edits — but the orchestrator
+> is a pure dispatcher and did not verify it, and no handoff corroborates the agent's claim.
+> The verification record below is the agent's own and is preserved verbatim; it is evidence,
+> not confirmation. Resuming work should re-census this phase before advancing to Phase 22 —
+> a wasted re-census is cheap, whereas building Phase 22 on an unconfirmed base is not.
 
 **Goal**: Remove the Omega binders across the completeness stack, and delete the remaining
 Omega-valued definitions.
 
 **Tasks**:
-- [ ] Remove binders from `Metalogic/WeakCanonical/**`, `Metalogic/Algebraic/**`,
+- [x] Remove binders from `Metalogic/WeakCanonical/**`, `Metalogic/Algebraic/**`,
       `Metalogic/BXCanonical/**`, `Metalogic/Bundle/**`, `Metalogic/CompletenessDedekind.lean`,
-      `Metalogic/Chronicle/**`.
-- [ ] Delete the remaining Omega-valued definitions — `ZOmegaV2`, `multiFamOmega`,
+      `Metalogic/Chronicle/**`. *(deviation: altered — the real census found **zero** declaration
+      binders in this territory; all Omega presence here was definitional, so the work was
+      entirely task 2/3. See "Census result" below for the four path corrections.)*
+- [x] Delete the remaining Omega-valued definitions — `ZOmegaV2`, `multiFamOmega`,
       `multiFamOmegaGen`, `bundleFlowOmega` — and their `ShiftClosed` proofs, folding any needed
       characterization into the theorems that consumed them.
-- [ ] Delete the corresponding `ShiftClosed` proofs about them.
+- [x] Delete the corresponding `ShiftClosed` proofs about them.
+
+#### Census result (measured on the green tree, all five spellings)
+
+The a-priori file list erred in **both** directions again, as lesson 3 predicted:
+
+| Plan said | Reality |
+|-----------|---------|
+| `Metalogic/Bundle/**` | **Does not exist.** No such directory. |
+| `Metalogic/Chronicle/**` | Real path is `Metalogic/BXCanonical/Chronicle/**`. |
+| `Metalogic/CompletenessDedekind.lean` | Real path is `Metalogic/BXCanonical/CompletenessDedekind.lean`. |
+| `Metalogic/WeakCanonical/**` (whole subtree) | Exactly **one** file carried anything: `IntegerModel/ReynoldsBridge.lean`. |
+| `Metalogic/BXCanonical/**` (whole subtree) | Three files, one of which (`ChronicleConstruction.lean`) is a **false positive** — see below. |
+
+**Four files carried the work** (not six directories):
+`Algebraic/FlowFrame.lean`, `WeakCanonical/IntegerModel/ReynoldsBridge.lean`,
+`BXCanonical/Chronicle/ChronicleMonadicBridge.lean`, `BXCanonical/CompletenessDedekind.lean`.
+
+**A fourth spelling collision, new to this phase**: `BXCanonical/Chronicle/ChronicleConstruction.lean`'s
+five `Omega` tokens ("Omega-Chain Construction", "Omega Chain g-value Lifting", …) are the
+**ω-chain** of the transfinite counterexample-elimination enumeration — a completely unrelated
+mathematical object that merely shares the name. It was read and deliberately **not** touched.
+Lesson 3 said a single-token grep undercounts; this phase shows the same grep also produces
+semantic **false positives**. A census must be read, not just counted.
+
+**Scope-hypothesis outcome**: the hypothesis (4 definitions + remaining `ShiftClosed` proofs) was
+**correct on the definitions** and **low on the companions**. Actually deleted: 4 Omega-valued
+definitions, 4 `ShiftClosed` proofs (`zOmega_v2_shiftClosed`, `multiFamOmega_shiftClosed`,
+`multiFamOmegaGen_shiftClosed`, `bundleFlowOmega_shiftClosed`), and 5 further mem-witness /
+`_eq_total` / `_int` companions that existed only to talk about the deleted sets.
+No sixth Omega-valued definition was discovered by Phase 11.
+
+#### Repair shape: every `_eq_total` became a `_total_eq_range`
+
+The Omega-vs-`H_F` set equations were not simply dropped — each was *inverted* to the
+totality-side statement it was really proving, preserving the mathematical content while removing
+the Omega side of the equation:
+
+| Deleted | Replacement |
+|---------|-------------|
+| `zOmegaV2_eq_total` | `zHistoryV2_total_eq_range` |
+| `multiFamOmega_eq_total` | `multiFam_total_eq_range` |
+| `multiFamOmegaGen_eq_total` | `multiFamGen_total_eq_range` |
+| `bundleFlowOmega_eq_total` | `bundleFlow_total_eq_range` |
+| `multiFamOmegaGen_int` | `multiFamGen_total_int` |
+
+The last one matters for the **R7 gate**: `ChronicleMonadicBridge.lean`'s gate discharge rests on
+three `rfl` proofs certifying the `ℤ` originals as definitional specializations. Deleting the
+third would have left the gate with two; retargeting it at the total-history set keeps the
+three-`rfl` structure and the gate's stated evidence intact.
+
+`CompletenessDedekind.lean`'s `D := ℝ` carrier probe (the load-bearing "only the layer beneath the
+chronicle moves to `ℝ`" check) was retargeted from `bundleFlowOmega B` to `{σ | ∀ t, σ.domain t}`,
+so it still probes exactly what it was written to probe.
+
+**Deliberately not deleted** (out of scope, recorded so Phase 22 need not re-derive):
+`multiFamHistoryGen_shift_eq` and `multiFamHistory_shift_eq` lost their only consumers when the
+`ShiftClosed` proofs went. They are standalone time-shift facts, neither Omega-valued nor
+`ShiftClosed` proofs, so deleting them would have exceeded this phase's charter. They are now
+dead code and are Phase 22's to keep or drop.
 
 **Timing**: 2.5 hours
 
@@ -2091,6 +2165,37 @@ provisional in both directions.
 **Verification**:
 - `lake build` green, sorry-free, axiom-free.
 - No Omega-valued definition remains outside `FormalSystem/Boneyard/**`.
+
+**Verification result**: `lake build` GREEN at **2331 jobs** (identical to the Phase 20 baseline —
+these were pure deletions plus equal-count replacements). Live non-Boneyard sorries = **1**
+(the pre-existing `WeakCanonical/Transfer.lean:1084`, out of scope); **0 introduced**. Axioms =
+**6**, unchanged. Omega-valued-definition gate **passes**: the only surviving
+`def … : Set (WorldHistory …)` sites are `Truth.lean:146`'s `TruthAt _Omega` carrier parameter
+and `Truth.lean:360`'s `ShiftClosed` itself, both of which Phase 22 owns by name.
+`lake build BimodalTest`: see the handoff for its measured state.
+
+#### Measured Phase 22 surface (handed forward, not a guess)
+
+Every remaining binder in the tree is the **transient `TruthAt` carrier** from Phase 14, not the
+admissible-history binder this sweep was chasing. It dissolves the moment Phase 22 deletes
+`TruthAt`'s `_Omega` parameter. Exact sites, on the green tree:
+
+| File | Sites |
+|------|-------|
+| `Semantics/Truth.lean` | the `_Omega` parameter (`:146`), `ShiftClosed` (`:360`), `Set.univ_shift_closed` (`:366`), plus prose |
+| `Semantics/Validity.lean` | `Om₁`/`Om₂` in the carrier-irrelevance lemma (`:80-82`), plus prose at `:36`, `:113`, `:504-505` |
+| `Metalogic/StrongCompleteness.lean` | 1 declaration, `:148-151` |
+| `Metalogic/SoundnessLemmas/Core.lean` | 1 declaration, `:69-71` |
+| `Metalogic/SoundnessLemmas/CoValidity.lean` | 1 declaration + its proof body, `:73-77`, `:103-135` |
+| `Metalogic/SoundnessLemmas/DenseValidity.lean` | prose only (`:63-82`) |
+| `Metalogic/Soundness.lean` | prose only (`:1479`) |
+| `Metalogic/Decidability.lean` | prose only (`:104-105`) |
+| `Semantics/WorldHistory.lean` | prose only (`:482`) |
+| `Metalogic/Decidability/Verified/Bridge/RegionFrame.lean` | `Set.univ` ascription only (`:375`) — settled convention, nothing to do |
+
+Note that **four of these files appear in no phase's "Files to modify" list** (`StrongCompleteness.lean`,
+`SoundnessLemmas/Core.lean`, `SoundnessLemmas/CoValidity.lean`, `Metalogic/Decidability.lean`),
+continuing the pattern recorded under "Corrections to this plan's own lists".
 
 ---
 
