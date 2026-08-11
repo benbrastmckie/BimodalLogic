@@ -3030,7 +3030,17 @@ fuel, excluding a file from the build, or adding a heuristic verdict.**
 
 ---
 
-### Phase 27: Saturation-extraction bridge under the widened guard [NOT STARTED]
+### Phase 27: Saturation-extraction bridge under the widened guard [COMPLETED]
+
+**Executed SECOND, after Phase 28's `CountermodelExtraction.lean` repair — deliberately, for an
+import-direction reason, not by accident.**
+`Verified/Bridge/BoxSaturation.lean:7` imports
+`FormalSystem.Metalogic.Decidability.CountermodelExtraction`, and both `PropSaturation` and
+`TemporalSaturation` import `BoxSaturation`. With `CountermodelExtraction.lean` red, no module in
+`Bridge/` could be built at all, so this phase as scheduled could have verified nothing. The two
+phases were therefore executed as 28-repair, then 27, then 28's tree-wide gate. No task in either
+phase was skipped or altered.
+
 
 **Goal**: Bring `FormalSystem/Metalogic/Decidability/Verified/Bridge/` back to green under the new
 guard, with zero new `sorry` and zero new axioms — either by confirming no widening is needed
@@ -3038,31 +3048,51 @@ guard, with zero new `sorry` and zero new axioms — either by confirming no wid
 (variant A).
 
 **Tasks**:
-- [ ] Re-census, on the post-Phase-25 tree, every *term-level* occurrence of `witnessPresent` and
+- [x] Re-census, on the post-Phase-25 tree, every *term-level* occurrence of `witnessPresent` and
       of `saturated_downward_closed` under `Verified/`, in both bare and fully-qualified spellings
       (lesson 4). Record the result before editing anything.
-- [ ] Build `lake build FormalSystem.Metalogic.Decidability.Verified.Bridge.TemporalSaturation`.
-      If it is already green, the widening is a no-op for this file and that is the phase's
-      finding, recorded with the build output as evidence.
-- [ ] If it is red: widen each affected lemma's reasoning so that a `findApplicableRule … = none`
-      hypothesis yields `witnessPresent … = true ∨ trivialEventWitnessed … = true`, and discharge
-      the new disjunct. The four affected lemmas are the `.someFuturePos`, `.untlPos`,
-      `.somePastPos`, `.sncePos` witness steps inside `sat_untl_pos_future`
-      (`TemporalSaturation.lean:99-142`) and `sat_snce_pos_past` (`:144-187`), whose `hwit`
-      obligations sit at `:115`, `:126`, `:160`, `:171`. The new case is discharged by the
-      validity of `⊤` — it is provable, not merely plausible.
-- [ ] Under variant A, decide and record explicitly what the *statement* of `sat_untl_pos_future`
-      becomes. Its current conclusion asserts a `t'` at which the event or the guard is
-      **literally on the branch**; variant A makes that false for the `F ⊤` case, so the statement
-      must gain the ordered-witness disjunct. **Do not weaken it to a strictly weaker claim that
-      its own consumers cannot use** — if the consumers break, that breakage is Phase 28's, and it
-      must be recorded here, not hidden.
-- [ ] Build `…Verified.Bridge.PropSaturation` and `…Verified.Bridge.BoxSaturation` and confirm
-      both green.
-- [ ] Build `…Verified.Termination.MintBound` and `…Verified.Termination.Fuel` — the two largest
-      `witnessPresent` consumers (111 and 6 occurrences). Report 05 does not name them as widening
-      sites; confirm that, and if either is red, that is a scope finding to record and size, not
-      to absorb silently.
+      **Measured**: `witnessPresent` — `BoxSaturation.lean` 1 (prose, `:241`), `PropSaturation.lean`
+      1 (prose, `:23`), `TemporalSaturation.lean` 10 (2 prose + 8 term-level across the four `hwit`
+      sites and their four follow-up `simp only` unfoldings), `Termination/Fuel.lean` 6,
+      `Termination/MintBound.lean` 111. `saturated_downward_closed` — **zero** occurrences anywhere
+      under `Verified/`. `trivialEventWitnessed` — zero before this phase. The Scope Hypothesis is
+      confirmed exactly.
+- [x] Build `lake build FormalSystem.Metalogic.Decidability.Verified.Bridge.TemporalSaturation`.
+      **Measured RED**, at exactly the four predicted `hwit` sites: `:115`, `:130`, `:160`, `:175`.
+      Variant A applies.
+- [x] Widened. Two of the four sites needed no statement change after all: the `.untlPos` and
+      `.sncePos` branches carry `hg' : (guard == ⊤) = false`, and `trivialEventWitnessed` requires
+      `guard == ⊤`, so the second disjunct is refutable there and the guard collapses back to
+      `witnessPresent` alone. The `.someFuturePos` and `.somePastPos` branches are the genuine
+      widening sites, and their new disjunct is discharged exactly as predicted — by the validity
+      of `⊤`, provably.
+- [x] Statement recorded. `sat_untl_pos_future` becomes
+      `∃ t', strictBefore timeOrd t t' = true ∧ ((t' ∈ b.knownTimes ∧ (branch witness)) ∨
+      (event = ⊤ ∧ guard = ⊤))`, and `sat_snce_pos_past` the past-directed mirror.
+      **`strictBefore` moves out of the disjunction and is delivered unconditionally** — it is
+      available in the trivial case too, since `trivialEventWitnessed` tests exactly
+      `futureOf`/`pastOf` non-emptiness. What the trivial case trades away is `t' ∈ b.knownTimes`
+      and branch membership, in exchange for `event = ⊤`, whose semantic obligation is immediate at
+      every label of every model. `t' ∈ b.knownTimes` is **not** asserted in that case, and
+      deliberately so: `futureOf` is a closure over ordering constraints and can name a time no
+      branch formula mentions (this file's own head note), so the membership is genuinely
+      unavailable there. No consumer broke: `sat_untl_pos_future`/`sat_snce_pos_past` have **no
+      term-level consumers** at present (only `TemporalGate.lean`'s import and prose references in
+      `Decidability.lean` and `Bridge/IntTruth.lean`), and the tree-wide build is green.
+- [x] `…Verified.Bridge.PropSaturation` and `…Verified.Bridge.BoxSaturation`: **both already
+      green** before any edit (1358 and 1357 jobs). Variant B for both, exactly as the Scope
+      Hypothesis predicted — their single `witnessPresent` occurrence each is docstring prose.
+- [x] `…Verified.Termination.Fuel`: **already green** (1355 jobs), no edit.
+      **`…Verified.Termination.MintBound`: SCOPE FINDING — measured RED**, 2 errors at `:5730` and
+      `:5731`. This redness is **independent of this dispatch**: MintBound's import closure is
+      `Fuel → TimeTypeBound, Saturation` and never reaches `CountermodelExtraction`, so it was
+      already red on the Phase 26 tree and corrects that phase's "single red module" reading.
+      **Size: 1 line of proof plus a docstring.** Both errors are one and the same failure — the
+      file's local simp set carries `wp_bn : witnessPresent .boxNeg … = false` but had no
+      counterpart for the guard's new second disjunct, so the `||` would not collapse. Adding
+      `tw_bn : trivialEventWitnessed .boxNeg … = false := rfl` to the `attribute [local simp]` list
+      closes both. Neither error touched any of the file's other 111 `witnessPresent` occurrences.
+      **Recorded here rather than absorbed silently, per this phase's own instruction.**
 
 **Timing**: 3 hours
 
@@ -3107,24 +3137,56 @@ under variant A.
 
 ---
 
-### Phase 28: Countermodel extraction, and the tree-wide green gate [NOT STARTED]
+### Phase 28: Countermodel extraction, and the tree-wide green gate [COMPLETED]
+
+**Split across the reordered sequence** (see the note under Phase 27): this phase's
+`CountermodelExtraction.lean` repair ran FIRST, because `Verified/Bridge/` imports that module and
+could not otherwise be built; its tree-wide gate ran LAST, after Phase 27's Bridge work.
+
 
 **Goal**: Confirm (or repair) that countermodel extraction still produces a countermodel from a
 branch whose `F ⊤` / `P ⊤` witnesses are *ordered* rather than *literal*, close the tree-wide red
 window opened at Phase 25, and settle report 05's `[UNVERIFIED]` claim 11.
 
 **Tasks**:
-- [ ] Build `lake build FormalSystem.Metalogic.Decidability.CountermodelExtraction`. Under
-      variant B this is expected to be a no-op check (the literal witness is still on the branch);
-      under variant A it is where §5.4's declared risk is settled.
-- [ ] If red, repair the four temporal witness lemmas at `CountermodelExtraction.lean:551`
-      (`.someFuturePos`), `:563` (`.untlPos`), `:597` (`.somePastPos`), `:608` (`.sncePos`),
-      mirroring Phase 27's disjunction. **`:517` is the `.boxNeg` lemma and is OUT of the
-      suppression set — do not touch it.**
-- [ ] Confirm `extractCountermodelSimple` (`DecisionProcedure.lean:209`) returns `some` on the
-      `(G p) → □(G p)` open branch — report 05 claim 11, currently `[UNVERIFIED]`. Use Phase 26's
-      driver if it already answered this; otherwise run it here under a bounded `timeout`.
-- [ ] Run `lake build` (default `FormalSystem` target) and confirm the tree-wide gate.
+- [x] Build `lake build FormalSystem.Metalogic.Decidability.CountermodelExtraction`. **Measured
+      RED**: 5 unsolved-goals errors at `:520`, `:551`, `:567`, `:597`, `:612`. Variant A; §5.4's
+      declared risk is settled below.
+- [x] Repaired. The four temporal witness lemmas split two ways, which the Scope Hypothesis did
+      not anticipate and which is recorded here rather than glossed:
+      **`.untlPos` (`:563`) and `.sncePos` (`:608`) needed no statement change** — each carries
+      `hg' : (guard == ⊤) = false`, and `trivialEventWitnessed` requires `guard == ⊤`, so the
+      guard's second disjunct is refutable there. Only **`.someFuturePos` (`:551`) and
+      `.somePastPos` (`:597`)** are genuine widening sites, and `sat_untl_pos` / `sat_snce_pos`
+      gain `∨ (event = ⊤ ∧ guard = ⊤ ∧ timeOrd.futureOf t ≠ [])` (resp. `pastOf`) accordingly.
+      **`:517` `.boxNeg` — statement untouched, as instructed.** Its `hwit` *proof* did need one
+      added line, because the guard is now `witnessPresent … || trivialEventWitnessed …` and the
+      `||` has to be reduced even where the second disjunct is definitionally `false`. That is a
+      proof-script repair, not a move of `.boxNeg` into the suppression set: its conclusion,
+      hypotheses and consumers (`Bridge/IntTruth.lean:381`) are all unchanged.
+- [x] **Claim 11 settled: `some`.** Measured with a scratchpad driver compiled by
+      `lake env lean` under a 900 s bound; **actual 2.1 s, EXIT=0**, fuel 1000 throughout, no probe
+      file read, edited, or re-baselined.
+      `buildTableau ((G p) → □(G p)) 1000 .Base` reproduces Phase 26's `(2, 40)` exactly.
+      `extractCountermodelFromTableau` on that tableau returns **`some`** — so
+      `DecisionProcedure.lean:209`'s `extractCountermodelSimple` call is reached and the verdict is
+      `.invalid`, not `.fuelExhausted`: `(isValid, isInvalid, isFuelExhausted) = (false, true,
+      false)`. **Report 05 claim 11 is confirmed `true`; row 11 re-baselines to `true`, not to
+      `false`.**
+      **Declared, bounded caveat, measured not inferred**: the returned `SimpleCountermodel` has
+      `trueAtoms = [p,p,p,p,p,p]`, `falseAtoms = [p]`, and therefore
+      `SimpleCountermodel.isConsistent = false`. `SimpleCountermodel` is the Layer-0
+      representation and tracks only *which atoms* are true or false, discarding the
+      `(world, time)` label — so a branch that legitimately carries `T(p)` at some labels and
+      `F(p)` at the `boxNeg`-minted world flattens to an inconsistent atom list. This is a
+      property of the Layer-0 flattening, **not** evidence the branch is unsatisfiable
+      (`saturateBlocked` never closes it — Phase 26, step 48). It is **not a regression**: before
+      the guard landed this formula returned `(0, 0)`/`.fuelExhausted`, so no countermodel was
+      produced at all and there was nothing to be consistent. Whether the Layer-1
+      `SemanticCountermodel` path should be the one `DecisionProcedure.lean:209` reports is a
+      separate, un-owned question and is flagged in the handoff rather than settled here.
+- [x] `lake build` (default `FormalSystem` target): **GREEN, 2331 jobs** — identical to the Phase
+      24 baseline, no change to explain. **This closes the red window opened at Phase 25.**
 
 **Timing**: 3 hours
 
@@ -3162,6 +3224,28 @@ the disjunct.
   then re-baselined to `false` *with the reason stated*, and the extraction gap is recorded as a
   declared, bounded caveat with a named follow-up task — never as a probe weakening and never as a
   reason to stop at `.fuelExhausted`.
+
+**Measured at exit** (all figures measured, none inferred):
+
+| Gate | Baseline (Phase 24) | Measured | Verdict |
+|---|---|---|---|
+| `lake build` (default target) | green, 2331 jobs | **green, 2331 jobs** | matches |
+| Live non-Boneyard `sorry` | 1, `Metalogic/WeakCanonical/Transfer.lean:1084` | **1**, same location | unchanged |
+| Strict `axiom <ident>` declarations | 0 | **0** | unchanged |
+| Lines matching `^axiom ` (all prose, 4 non-Boneyard + 2 Boneyard) | 6 | **6** | unchanged |
+| `witnessPresent` definition | byte-identical since Phase 25 | **`Tableau.lean` untouched this dispatch** (`git diff` empty) | unchanged |
+| New `sorry` / new `axiom` in the diff | 0 / 0 | **0 / 0** | clean |
+
+The `^axiom ` figure of 6 is worth stating precisely, since the Verification bullet above reads as
+though 6 real axioms exist: **all six matches are prose lines inside comments and docstrings that
+happen to begin with the word "axiom" at column 0** (`Semantics/Extension/Extension.lean:175`,
+`Semantics/TaskFrame.lean:516`, `Semantics/FrameAxioms.lean:22` and `:262`, plus two under
+`Boneyard/`). There are **zero** actual `axiom` declarations anywhere in `FormalSystem/`, inside
+Boneyard or out. Counts unchanged either way.
+
+`Tests/BimodalTest` was **not** built — `lake build BimodalTest` is a separate target, it hangs,
+and Phase 29.1 owns it. Its state is therefore `[UNVERIFIED]` from this phase's evidence, as
+Phase 21 already recorded.
 
 ---
 
