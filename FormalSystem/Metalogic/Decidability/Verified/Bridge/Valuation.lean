@@ -179,21 +179,42 @@ section Model
 variable {W ι : Type} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /--
-**The countermodel.** A world of `regionFrame W ι D` is a pair `(w, c)`; its valuation is the
-world's own placed assignment at placed codes and its own gap assignment elsewhere.
+**The countermodel.** A world of `regionFrame W ι D` is a pair `(w, x)` — a branch world together
+with a **time** — and its valuation is the world's own placed assignment at placed codes and its
+own gap assignment elsewhere, read off the *region code of the time*.
+
+The time enters only through `regionCode f`, never bare: that factorisation is the whole content
+of `RegionValued` (`Bridge/TruthLemma.lean`), and it is what the invariance induction consumes now
+that the region code has moved out of the frame's state space. A valuation stated against the
+former code-carrying states transports here verbatim as `V p (w, x) := V₀ p (w, regionCode f x)`,
+which is precisely the definition below.
 
 Both parameters are indexed by the world: the branch assigns atoms per label, and a label carries
 a world as well as a time.
 -/
 noncomputable def regionModel (f : ι → D) (placedVal : W → ι → Atom → Prop)
     (gapVal : W → Set ι × Set ι → Atom → Prop) : TaskModel (regionFrame W ι D) where
-  valuation := fun s p => regionValuation f (placedVal s.1) (gapVal s.1) s.2 p
+  valuation := fun s p => regionValuation f (placedVal s.1) (gapVal s.1) (regionCode f s.2) p
 
 @[simp]
 theorem regionModel_valuation (f : ι → D) (placedVal : W → ι → Atom → Prop)
-    (gapVal : W → Set ι × Set ι → Atom → Prop) (s : W × (Set ι × Set ι)) (p : Atom) :
+    (gapVal : W → Set ι × Set ι → Atom → Prop) (s : W × D) (p : Atom) :
     (regionModel f placedVal gapVal).valuation s p =
-      regionValuation f (placedVal s.1) (gapVal s.1) s.2 p := rfl
+      regionValuation f (placedVal s.1) (gapVal s.1) (regionCode f s.2) p := rfl
+
+/--
+**The region condition, discharged.** `regionModel`'s valuation is a function of `regionCode f`
+applied to the time component, and region-mates have equal codes
+(`sameRegion_iff_regionCode_eq`), so the model cannot separate them.
+
+This is the hypothesis `interpInvariantAt_regionHistory` asks for, and the reason the region
+structure survives the move to a deterministic task relation.
+-/
+theorem regionValued_regionModel (f : ι → D) (placedVal : W → ι → Atom → Prop)
+    (gapVal : W → Set ι × Set ι → Atom → Prop) :
+    RegionValued f (regionModel f placedVal gapVal) := by
+  intro w r r' h p
+  simp only [regionModel_valuation, sameRegion_iff_regionCode_eq.mp h]
 
 /--
 **The atom clause of the truth lemma, at an arbitrary carrier point.** Every region history has
