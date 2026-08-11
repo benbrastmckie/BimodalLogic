@@ -11,11 +11,11 @@ next_project_number: 440
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,419,420,421,423,437 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,414,422,425,436 | 193,231,298,420,421,423,437 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,415,417,424,434 | 414,422,436 | decidability, paper-refactor, strong_completeness |
-| 4 | 362,427,432 | 169,415,417,419,434 | decidability, paper-refactor, strong_completeness |
-| 5 | 433 | 432 | decidability |
+| 1 | 127,128,193,231,257,298,413,420,421,423,437 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 125,178,219,282,296,414,419,425,436 | 193,231,298,420,423,437 | decidability, formula-refactor, algebraic-representation, ... |
+| 3 | 415,417,422,424,434 | 414,421,436 | decidability, paper-refactor, strong_completeness |
+| 4 | 169,427,432 | 415,417,419,422,434 | decidability, paper-refactor, strong_completeness |
+| 5 | 362,433 | 169,432 | decidability, strong_completeness |
 | 6 | 428 | 433 | decidability |
 | 7 | 429 | 428 | decidability |
 | 8 | 410 | 429 | -- |
@@ -77,14 +77,14 @@ next_project_number: 440
 
 ### Paper Refactor
 
-419 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
-  └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
 420 [PARTIAL] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
-  └─ 414 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
+  └─ 414 [RESEARCHING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
     └─ 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-      └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
+      └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
     └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
+  └─ 419 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
+    └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
 
 ### Strong Completeness
 
@@ -382,7 +382,7 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 - **Status**: [NOT STARTED]
 - **Task Type**: typst
 - **Topic**: paper-refactor
-- **Dependencies**: Task 414, Task 415, Task 417, Task 419, Task 420, Task 438
+- **Dependencies**: Task 414, Task 415, Task 417, Task 419, Task 420, Task 438, Task 439
 
 **Description**: RE-ISSUED 2026-08-10 (description rewrite only; status unchanged). Bring the BimodalReference typst book back into sync with the paper at /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and with the Lean tree as it stands once the paper-refactor task chain has landed. This is the typst-side counterpart of the LaTeX work in latex/subfiles/; it was deliberately deferred and declared out of scope there, so the typst chapters currently contradict both the paper and the corrected LaTeX.
 
@@ -479,7 +479,7 @@ Acceptance: archWitness_finitely_satisfiable, archWitness_not_satisfiable, and d
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 414
+- **Dependencies**: Task 361, Task 414, Task 439
 
 **Description**: RE-ISSUED 2026-08-10 (description rewrite only; status remains `not_started` -- no work on the gate itself has been touched by this re-issue). AUDITED FOR EXPOSURE TO THE TruthAt / TOTAL-HISTORY REFACTOR under the paper-definition drift guard infrastructure (definitions-of-record: specs/paper-definitions-of-record.md; lint: scripts/check-paper-definitions.sh).
 
@@ -547,7 +547,7 @@ Acceptance (from design/01 section 6, all five required): zero sorries and zero 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 421
+- **Dependencies**: Task 414, Task 420, Task 421, Task 439
 
 **Description**: Construct the discrete-case analogue of the existing dense chronicle machinery, over the non-Archimedean carrier Q x_lex Z confirmed by the predecessor task.
 
@@ -591,7 +591,7 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 - **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: Task 438
+- **Dependencies**: Task 438, Task 439
 - **Research**: [420_align_task_frame_with_positive_cone_axioms/reports/01_taskframe-positive-cone-limit-nullity.md]
 - **Summary**: [420_align_task_frame_with_positive_cone_axioms/summaries/01_taskframe-limit-nullity-alignment-summary.md]
 - **Plan**: [420_align_task_frame_with_positive_cone_axioms/plans/02_four-axiom-frame-alignment.md]
@@ -667,7 +667,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: Task 438
+- **Dependencies**: Task 420, Task 438, Task 439
 
 **Description**: RE-ISSUED 2026-08-10 (description rewrite only; status unchanged). Machine-check the CO-does-not-derive-Reynolds independence result. Currently recorded ONLY as a pen-and-paper model sketch in the Layer 9 prose of FormalSystem/ProofSystem/Axioms.lean (immediately above the `Axiom.prior_U_gap` constructor), where it is explicitly flagged as NOT machine-checked.
 
@@ -725,7 +725,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: Task 414, Task 420, Task 438
+- **Dependencies**: Task 414, Task 420, Task 438, Task 439
 - **Research**: [417_semantic_fmp_finite_worldstate_over_z/reports/01_semantic-fmp-finite-worldstate.md]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing). SEMANTIC FMP OVER A FIXED CARRIER, stated against the TOTAL-history semantics of task 414: prove the TruthAt-connected finite model property the paper's decidability corollary proof text cites -- any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z -- replacing reliance on the syntactic closure-MCS FMP theorems (FormalSystem/Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper's enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by the task-165 redirect; the tableau programme remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
@@ -765,7 +765,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: Task 414, Task 420, Task 438
+- **Dependencies**: Task 414, Task 420, Task 438, Task 439
 - **Research**: [415_completeness_over_total_history_semantics/reports/02_total-history-internalization.md]
 - **Plan**: [415_completeness_over_total_history_semantics/plans/02_total-history-completeness.md]
 
@@ -811,10 +811,10 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 414. Refactor semantics to total history validity
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: Task 420, Task 438
+- **Dependencies**: Task 420, Task 438, Task 439
 - **Research**:
   - [414_refactor_semantics_to_total_history_validity/reports/01_maximal-history-validity-refactor.md]
   - [414_refactor_semantics_to_total_history_validity/reports/02_group-c-reconciliation.md]
@@ -894,7 +894,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: None
+- **Dependencies**: Task 439
 
 **Description**: Formalize the TM+ over TM conservativity bridge in Lean 4 (paper thm:ConservativeExtension, CEB/CEF/CED/CEC): add a BL base-language Formula type with primitive box/G/H, its TM axiom set and derivation trees, a translation into the existing BL+ Formula type, and prove that TM+ derivability of a translated BL-formula yields TM derivability, supplying the missing step in the paper's cor:tm-completeness route
 
@@ -1145,7 +1145,7 @@ Governing design document: specs/361_strong_completeness_architecture_and_weak_t
 - **Status**: [NOT STARTED]
 - **Task Type**: formal
 - **Topic**: algebraic-representation
-- **Dependencies**: None
+- **Dependencies**: Task 420, Task 439
 
 **Description**: Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 — Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 — Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 — Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 — Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).
 
