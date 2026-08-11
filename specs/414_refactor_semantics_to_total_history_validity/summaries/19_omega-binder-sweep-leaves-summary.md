@@ -83,11 +83,19 @@ this phase's "four trees" → 1).
 | New axioms | 0 |
 | Vacuous definitions | 0 |
 | Territory grep `Omega\|ShiftClosed\|Ω` over all four trees | returns nothing |
-| `lake build BimodalTest` | ten `#guard_msgs` mismatches, unmoved from the recorded pre-existing baseline (`TableauConformance` 7, `RegionGateProbe` 2, `BoxSpreadProbe` 1) |
+| `lake build BimodalTest` | ten `#guard_msgs` mismatches, unmoved from the recorded pre-existing baseline (`TableauConformance` 7, `RegionGateProbe` 2, `BoxSpreadProbe` 1) — see the caveat below |
 
 The test-target mismatches remain the carried caveat the plan records; nothing in this phase can
 reach them, since every edit is either a `Prop`-valued statement or a comment and no
 `#eval`-reachable computable definition was touched.
+
+**Caveat, stated precisely rather than rounded off**: the `lake build BimodalTest` run was still
+elaborating its remaining modules when this summary was written — that target runs past forty
+minutes, dominated by `TableauConformance`'s `#eval` blocks. All three modules carrying the
+baseline mismatches had already elaborated and reproduced their counts exactly (7 + 2 + 1, plus
+three per-file `Lean exited with code 1` lines, for the same 13 error lines the baseline shows).
+The unelaborated remainder has never carried a mismatch in any prior dispatch. The phase's
+required gate is `lake build` on the `FormalSystem` default target, which completed GREEN.
 
 ## Commits
 
