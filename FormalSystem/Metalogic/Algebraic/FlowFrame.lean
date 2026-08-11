@@ -73,7 +73,10 @@ converse convention, and `mem_Seg`. It is not paper text and must not be cited a
 
 namespace FormalSystem.Metalogic.Algebraic
 
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 open FormalSystem.Semantics
+open FormalSystem.Metalogic.Bundle
 open FormalSystem.Metalogic.BXCanonical.Chronicle
 
 /-! ## The generic Spherical helper
@@ -239,5 +242,99 @@ theorem multiFamGen_total_eq {FamIdx : Type}
   congr 1
 
 end FlowFrameConformance
+
+/-! ## The bundle flow frame
+
+The dense/Dedekind countermodel carrier: the generic flow frame instantiated at the index of
+a bundle's own families. Because the carrier contains ONLY bundle families, the frame's total
+histories (`def:world-history`'s H_F) are exactly the bundle's flow lines — the countermodel
+family IS H_F, by `bundleFlow_total_eq`. The four `def:frame` axioms and the totality
+characterization are inherited from the generic layer by specialization; no new proof content
+appears here.
+
+The carrier `{fam // fam ∈ B.families} × D` with position function `Prod.snd` and
+`TaskRel w y u → u.2 = w.2 + y` (`bundleFlow_pos_shift`) is the deterministic-shift shape
+`TaskFrame.limit_of_shift` consumes. -/
+
+section BundleFlow
+
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {fc : FrameClass}
+
+/-- The bundle flow frame: the generic flow frame `multiFamTaskFrameGen` at the index of the
+bundle's families. World states are pairs of a bundle family and a time; the task relation is
+the deterministic clock. -/
+noncomputable def bundleFlowFrame (B : BFMCS (fc := fc) D) : TaskFrame D :=
+  multiFamTaskFrameGen D {fam : FMCS (fc := fc) D // fam ∈ B.families}
+
+/-- The flow line of the bundle flow frame through family `fam` at offset `w₀`: the total
+history visiting `(fam, w₀ + t)` at each time `t`. -/
+noncomputable def bundleFlowHistory {B : BFMCS (fc := fc) D}
+    (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ : D) :
+    WorldHistory (bundleFlowFrame B) :=
+  multiFamHistoryGen fam w₀
+
+/-- The bundle flow model: an atom holds at `(fam, w)` exactly when it is in `fam`'s MCS at
+time `w`. -/
+noncomputable def bundleFlowModel (B : BFMCS (fc := fc) D) : TaskModel (bundleFlowFrame B) where
+  valuation := fun w p => Formula.atom p ∈ w.1.val.mcs w.2
+
+/-- Every flow line of the bundle flow frame is total (`def:world-history`: X = D). -/
+theorem bundleFlowHistory_total {B : BFMCS (fc := fc) D}
+    (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ : D) :
+    ∀ t, (bundleFlowHistory fam w₀).domain t :=
+  fun _ => trivial
+
+/-- Deterministic-shift conformance of the bundle flow frame: the duration of a transition is
+recoverable from the endpoint positions (`Prod.snd`). This is the position-function contract
+`TaskFrame.limit_of_shift` consumes. -/
+theorem bundleFlow_pos_shift {B : BFMCS (fc := fc) D}
+    {w u : (bundleFlowFrame B).WorldState} {y : D}
+    (h : (bundleFlowFrame B).TaskRel w y u) : u.2 = w.2 + y :=
+  h.2
+
+/-- Biconditional *Compositionality* (`def:frame#Compositionality`) at the bundle flow frame,
+by specialization of `multiFamGen_comp_iff`. -/
+theorem bundleFlow_comp_iff {B : BFMCS (fc := fc) D}
+    (w v : (bundleFlowFrame B).WorldState) (x y : D) :
+    (bundleFlowFrame B).TaskRel w (x + y) v ↔
+      ∃ u, (bundleFlowFrame B).TaskRel w x u ∧ (bundleFlowFrame B).TaskRel u y v :=
+  multiFamGen_comp_iff w v x y
+
+/-- *Seriality* (`def:frame#Seriality`) at the bundle flow frame, by specialization of
+`multiFamGen_serial`. -/
+theorem bundleFlow_serial {B : BFMCS (fc := fc) D}
+    (w : (bundleFlowFrame B).WorldState) (x : D) :
+    (∃ u, (bundleFlowFrame B).TaskRel w x u) ∧
+      (∃ v, (bundleFlowFrame B).TaskRel v x w) :=
+  multiFamGen_serial w x
+
+/-- *Limit* (`def:frame#Limit`) at the bundle flow frame, by specialization of
+`multiFamGen_limit`. -/
+theorem bundleFlow_limit [Nontrivial D] {B : BFMCS (fc := fc) D} :
+    ∀ w u : (bundleFlowFrame B).WorldState,
+      (∀ x, 0 < x → ∃ y, |y| < x ∧ (bundleFlowFrame B).TaskRel w y u) → u = w :=
+  multiFamGen_limit
+
+/-- *Spherical* (`def:frame#Spherical`) at the bundle flow frame, by specialization of
+`multiFamGen_spherical`. -/
+theorem bundleFlow_spherical {B : BFMCS (fc := fc) D}
+    (S : Set (Set (bundleFlowFrame B).WorldState))
+    (hdir : TaskFrame.DirectedFamily S)
+    (hne : ∀ s ∈ S, s.Nonempty)
+    (hfs : ∀ s ∈ S, TaskFrame.IsFiber (bundleFlowFrame B).TaskRel s ∨
+      TaskFrame.IsSegment (bundleFlowFrame B).TaskRel s) :
+    (⋂₀ S).Nonempty :=
+  multiFamGen_spherical S hdir hne hfs
+
+/-- The totality characterization at the bundle flow frame: every total history is a flow
+line through a bundle family. Together with `bundleFlowHistory_total`, this identifies the
+frame's total-history set H_F (`def:world-history`) with the bundle's flow-line family. -/
+theorem bundleFlow_total_eq {B : BFMCS (fc := fc) D}
+    (σ : WorldHistory (bundleFlowFrame B)) (htot : ∀ t, σ.domain t) :
+    ∃ fam w₀, σ = bundleFlowHistory fam w₀ :=
+  multiFamGen_total_eq σ htot
+
+end BundleFlow
 
 end FormalSystem.Metalogic.Algebraic

@@ -212,25 +212,31 @@ identity into a separate commit-green sub-step rather than a new file.
 
 ---
 
-### Phase 2: bundleFlowFrame instantiation + dead-device deletion [NOT STARTED]
+### Phase 2: bundleFlowFrame instantiation + dead-device deletion [COMPLETED]
 
 **Goal**: Deliver the dense/Dedekind carrier as the bundle-index instantiation of the generic
 frame, and delete the dead singleton-Omega device.
 
 **Tasks**:
-- [ ] Define in `FlowFrame.lean` (or a sibling module; names per report §6.2):
+- [x] Define in `FlowFrame.lean` (or a sibling module; names per report §6.2):
       `noncomputable def bundleFlowFrame (B : BFMCS (fc := fc) D) : TaskFrame D :=
       multiFamTaskFrameGen D {fam : FMCS (fc := fc) D // fam ∈ B.families}`
-- [ ] `bundleFlowHistory (fam) (w₀ : D) := multiFamHistoryGen fam w₀`
-- [ ] `bundleFlowModel` with
+- [x] `bundleFlowHistory (fam) (w₀ : D) := multiFamHistoryGen fam w₀` *(plus
+      `bundleFlowHistory_total`: flow lines are total)*
+- [x] `bundleFlowModel` with
       `valuation := fun w p => Formula.atom p ∈ w.1.val.mcs w.2`
-- [ ] Instantiate the Phase 1 conformance + totality theorems at the bundle index (inheritance
-      should be by `exact`/specialization — no new proof content)
-- [ ] Verify the carrier satisfies 420 phase 10's Coordination Contract: `Index × D` with
-      `pos : W → D` (= `Prod.snd`), `R w y u → pos u = pos w + y`
-- [ ] Delete the dead singleton-Omega device `Transfer.lean:568-687`
+- [x] Instantiate the Phase 1 conformance + totality theorems at the bundle index (inheritance
+      should be by `exact`/specialization — no new proof content) *(bundleFlow_comp_iff /
+      _serial / _limit / _spherical / _total_eq, all by `exact`)*
+- [x] Verify the carrier satisfies 420 phase 10's Coordination Contract: `Index × D` with
+      `pos : W → D` (= `Prod.snd`), `R w y u → pos u = pos w + y` *(named lemma
+      `bundleFlow_pos_shift`; carrier is `{fam // fam ∈ B.families} × D`)*
+- [x] Delete the dead singleton-Omega device `Transfer.lean:568-687`
       (`zIntervalTaskFrame`/`zIntervalOmega`/`zIntervalBox_transparent`/`z_interval_countermodel`)
-      AFTER re-confirming zero consumers by grep
+      AFTER re-confirming zero consumers by grep *(grep confirmed zero consumers outside the
+      block; deleted with its lead docstring (558-687) and the module-docstring mention.
+      `unboundedZIntervalEquiv` (:544, now orphaned, outside the enumerated range) is left for
+      Phase 4's consumer sweep)*
 
 **Timing**: 1.5 hours
 
