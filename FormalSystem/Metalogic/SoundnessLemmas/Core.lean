@@ -24,7 +24,7 @@ open FormalSystem.Semantics
 
 /--
 Local definition of validity to avoid circular dependency with Validity.lean.
-A formula is valid if it's true at all model-history-time triples within any shift-closed Omega.
+A formula is valid if it's true at every model and every **total** history, at all times.
 
 This is a monomorphic definition (fixed to explicit type parameter D) to avoid
 universe level mismatch errors.
@@ -33,29 +33,30 @@ Per research report Option A: Make D explicit to allow type inference at call si
 **Note**: Validity quantifies over ALL times,
 not just times in the history's domain.
 
-**Omega Parameterization**: Quantifies over all shift-closed Omega sets
-and histories in Omega, matching the global `valid` definition in Validity.lean.
+**Totality**: quantifies over the histories `τ` with `τ.IsTotal` (i.e. `τ ∈ H_F`), matching the
+global `valid` definition in Validity.lean binder for binder. There is no admissible-history
+parameter and no shift-closure side condition: totality is trivially preserved by `timeShift`,
+so time-shift invariance carries no side condition. `TruthAt`'s remaining set argument is inert
+and is supplied as `Set.univ`.
 -/
 def IsValid (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (φ : Formula) :
     Prop :=
   ∀ (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_h_sc : ShiftClosed Omega)
-    (τ : WorldHistory F) (_h_mem : τ ∈ Omega) (t : D),
-    TruthAt M Omega τ t φ
+    (τ : WorldHistory F) (_hτ : τ.IsTotal) (t : D),
+    TruthAt M Set.univ τ t φ
 
 -- Section variable for theorem signatures
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /--
-Auxiliary lemma: If φ is valid, then for any specific tuple (M, Omega, h_sc, τ, h_mem, t),
+Auxiliary lemma: If φ is valid, then for any specific tuple `(M, τ, hτ, t)` with `τ` total,
 φ is true at that tuple.
 
 This is just the definition of validity, but stated as a lemma for clarity.
 -/
 theorem valid_at_triple {φ : Formula} (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_h_sc : ShiftClosed Omega)
-    (τ : WorldHistory F) (_h_mem : τ ∈ Omega) (t : D) (h_valid : IsValid D φ) :
-    TruthAt M Omega τ t φ := h_valid F M Omega _h_sc τ _h_mem t
+    (τ : WorldHistory F) (_hτ : τ.IsTotal) (t : D) (h_valid : IsValid D φ) :
+    TruthAt M Set.univ τ t φ := h_valid F M τ _hτ t
 
 /--
 Helper lemma: TruthAt is invariant under double swap.

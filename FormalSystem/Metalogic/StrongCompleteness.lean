@@ -110,7 +110,7 @@ open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem
 Semantic consequence over dense, Dedekind-complete ordered carriers.
 
 The binder list is that of `ValidDedekindDense` (`Semantics/Validity.lean`) verbatim, with the
-context hypothesis `∀ ψ ∈ Γ, TruthAt M Omega τ t ψ` inserted before the conclusion. It is
+context hypothesis `∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ` inserted before the conclusion. It is
 therefore exactly the hypothesis-and-conclusion shape of `soundness_dedekind`
 (`Metalogic/Soundness.lean`), packaged as a definition so that the completeness converse can be
 stated against the same relation.
@@ -131,9 +131,8 @@ def SemanticConsequenceDedekindDense (Γ : Context) (φ : Formula) : Prop :=
     [Nontrivial D]
     (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (F : TaskFrame D) (M : TaskModel F)
-    (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-    (∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) → TruthAt M Omega τ t φ
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    (∀ ψ ∈ Γ, TruthAt M Set.univ τ t ψ) → TruthAt M Set.univ τ t φ
 
 /-! ## The semantic deduction theorem -/
 
@@ -167,10 +166,10 @@ single-formula: it converts the arbitrary-`Γ` target into a `ValidDedekindDense
 theorem semantic_deduction_dedekind_dense (Γ : Context) (φ : Formula) :
     SemanticConsequenceDedekindDense Γ φ ↔ ValidDedekindDense (Γ.foldr Formula.imp φ) := by
   constructor
-  · intro h D _ _ _ _ _ h_lub F M Omega h_sc τ h_mem t
-    exact (truthAt_foldr_imp M Omega τ t Γ φ).mpr (h D h_lub F M Omega h_sc τ h_mem t)
-  · intro h D _ _ _ _ _ h_lub F M Omega h_sc τ h_mem t
-    exact (truthAt_foldr_imp M Omega τ t Γ φ).mp (h D h_lub F M Omega h_sc τ h_mem t)
+  · intro h D _ _ _ _ _ h_lub F M τ hτ t
+    exact (truthAt_foldr_imp M Set.univ τ t Γ φ).mpr (h D h_lub F M τ hτ t)
+  · intro h D _ _ _ _ _ h_lub F M τ hτ t
+    exact (truthAt_foldr_imp M Set.univ τ t Γ φ).mp (h D h_lub F M τ hτ t)
 
 /-! ## The proof-theoretic deduction theorem, in fold form -/
 
@@ -292,8 +291,8 @@ vacuous: its hypothesis is inhabited for every derivable pair `(Γ, φ)`.
 -/
 theorem soundness_dedekind_consequence (Γ : Context) (φ : Formula)
     (h : Derivable FrameClass.Dedekind Γ φ) : SemanticConsequenceDedekindDense Γ φ := by
-  intro D _ _ _ _ _ h_lub F M Omega h_sc τ h_mem t h_ctx
-  exact h.elim fun d => soundness_dedekind Γ φ d D h_lub F M Omega h_sc τ h_mem t h_ctx
+  intro D _ _ _ _ _ h_lub F M τ hτ t h_ctx
+  exact h.elim fun d => soundness_dedekind Γ φ d D h_lub F M τ hτ t h_ctx
 
 /--
 **Weak completeness — the headline result for the Dedekind class — as the `Γ = []` instance
