@@ -3348,25 +3348,139 @@ lesson 1's inverse, this prediction may err in either direction; the measured li
 
 ---
 
-### Phase 29.2: Apply the declared re-baseline with attribution [NOT STARTED]
+### Phase 29.2: Apply the declared re-baseline with attribution [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Edit `Tests/BimodalTest/**` expectations to the values 29.1 measured, each with a
 docstring recording the move and its owner, and leave the ten excluded mismatches untouched.
 
+**OUTCOME**: **33 of 40 mismatching rows re-baselined with measured attribution; 7 excluded.**
+`lake build BimodalTest` goes from **40 mismatches to 7**, and the 7 are exactly the enumerated
+exclusions. The pre-guard differential that 29.1 recorded as its outstanding prerequisite **was
+obtained**, and it settled every open question 29.1 left. Record:
+`summaries/09_phase29-2-preguard-differential-rebaseline.md`.
+
+#### The measurement that settled it: a three-point differential
+
+| Point | Commit | Meaning | Result |
+|---|---|---|---|
+| **P0** | `edcecd551^` = `d49b977c0` | guard defined, **not consulted** — pre-guard behaviour | `FormalSystem` GREEN, 2331 jobs; 6 probe modules elaborated in 3-53 s each |
+| **P1** | `edcecd551` | guard consulted | `FormalSystem` **RED** — `CountermodelExtraction.lean` and `MintBound.lean` did not compile until phases 27/28 repaired them, so only `TableauConformance` elaborated |
+| **P2** | `HEAD` | today | the 29.1 census |
+
+Method: a non-destructive `git worktree` at a scratch path with `.lake/packages` symlinked to the
+main tree, so Mathlib was reused and no dependency was refetched. `BoxNegReachabilityProbe` was
+**never** built at P0 — at that commit it hangs — exactly as the dispatch required.
+
+#### Correction to the plan: the declared **10 is right**; 29.1's "14 measured" is superseded
+
+29.1 reported `RegionGateProbe` 4-of-10 against a declared 2, `BoxSpreadProbe` 3-of-5 against a
+declared 1, and concluded "**14 measured vs 10 declared** … evidence the 7/2/1 declaration was
+never row-verified." **That conclusion is now measured to be wrong, and the original declaration
+right.** At P0 the mismatch count is **exactly 10, split exactly 7 / 2 / 1**:
+
+| File | Declared pre-existing | **Measured at P0** | Row-level identity (first time obtained) |
+|---|---:|---:|---|
+| `TableauConformance.lean` | 7 | **7** | old lines 411, 441, 506, 801, 811, 832, 838 |
+| `RegionGateProbe.lean` | 2 | **2** | old lines 243, 274 |
+| `BoxSpreadProbe.lean` | 1 | **1** | old line 113 |
+| **Total** | **10** | **10** | — |
+
+29.1's file-level counts were correct as counts but conflated two causes: `RegionGateProbe`'s 4
+current mismatches are 2 pre-existing **plus** 2 guard-caused; `BoxSpreadProbe`'s 3 are 1 **plus**
+2. The apparent "+4 overflow" was never extra pre-existing rows — it was guard-caused rows landing
+in the same files. `TableauConformance`'s coincidence is likewise explained rather than guessed:
+its current 7 = 4 pre-existing that still mismatch **+ 3 guard-caused**, while **3 further
+pre-existing rows (411, 441, 506) were repaired by the guard** and now pass at their pinned values.
+7 in, 7 out, different rows. This is exactly why 29.1 saw "exactly 7, matching the declaration" yet
+found 6 of the 7 carrying the guard signature.
+
+#### The buckets: 29.1's non-disjointness finding is confirmed, and now resolvable
+
+29.1 was right that the plan's buckets are not disjoint, and right to refuse to guess. With P0 in
+hand the classes separate cleanly:
+
+| Class | Rule | Count | Disposition |
+|---|---|---:|---|
+| **(b) guard-caused only** | pinned **==** P0, pinned ≠ P2 — correct before the guard | **29** | **RE-BASELINED** with attribution |
+| **(c) both** | pinned ≠ P0 **and** P0 ≠ P2 — already stale **and** further moved | **7** | **EXCLUDED**, left pinned |
+| **(a) stale only** | pinned ≠ P0, P0 == P2 | **0** | none exist |
+| **guard-repaired** | pinned ≠ P0, P2 **==** pinned — the guard fixed a pre-existing mismatch | **3** | no edit needed; now passing |
+
+Plus the 4 rows applied earlier in this phase (`BoxNegReachabilityProbe` 220/241/250,
+`CrossWorldPropagationProbe` 124) = **33 rows re-baselined, 7 excluded, 40 accounted for**.
+
+**The rule applied to the non-disjoint class, stated**: a row is re-baselined **only** when the
+guard is the *sole* cause of its present mismatch. For a class-(c) row the pinned value is already
+wrong for a reason owned outside this task; moving it to its current value would silently fold that
+separately-owned engine change into this refactor's attribution — the laundering six prior
+dispatches declined to perform. Class (c) therefore stays pinned. It is now *documented* rather
+than merely declined: each excluded row's pinned / P0 / P2 triple is recorded in its file's
+`Re-baseline record` header, which is the row-level identification Phase 24 deferred and 29.1 could
+not obtain.
+
+#### Attribution is measured, not inferred
+
+The window `edcecd551^ .. HEAD` contains only two kinds of change: the guard consultation in
+`Tableau.lean` (computational — two sites in `findApplicableRule`), and proof-body-only edits to
+`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.lean`, and
+`Verified/Termination/MintBound.lean`. Those three diffs add and remove **no `def`, `abbrev`,
+`instance`, `structure`, or `inductive` line at all**, so no `#eval` can have moved because of
+them — and `TableauConformance`, the one file that did elaborate at P1, has **P1 == P2 on every
+one of its rows**, confirming the point by direct measurement rather than by reading the diff.
+
 **Tasks**:
-- [ ] For each bucket-(a) row from 29.1, update the `#guard_msgs` expectation to the **measured**
+- [x] For each bucket-(a) row from 29.1, update the `#guard_msgs` expectation to the **measured**
       value, and extend the row's docstring to state (a) the old value, (b) the new value, (c)
       that the change is owned by `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
       `trivialEventWitnessed` guard — **not** by `Decidability/Saturation.lean` (report 04's guess)
       and **not** by this refactor's semantics work. This three-part record is required per row.
-- [ ] Preserve the existing narrative structure of `BoxNegReachabilityProbe.lean`'s row
+      *(applied to 33 rows: the 4 declared by 29.1 carry a full narrative three-part record; the 29
+      established by the differential each carry a two-line `RE-BASELINED (guard):` note giving old
+      value, new value, and owner, backed by a per-file `Re-baseline record` header stating the
+      attribution, the three-point evidence, and the exclusions in full.)*
+- [x] Preserve the existing narrative structure of `BoxNegReachabilityProbe.lean`'s row
       docstrings, which deliberately read as a history (`Was (1, 1)` … `It is now (0, 0)` …). Add
-      the new step to that history; do not overwrite it.
-- [ ] Leave every bucket-(b) row untouched and their declination intact.
-- [ ] Handle any bucket-(c) row explicitly: either it is a genuine regression (fix forward) or it
-      is a further legitimate move (re-baseline with its own attribution). Never fold it into
-      bucket (a)'s attribution without evidence.
-- [ ] Re-run `lake build BimodalTest` and confirm every intended row now passes.
+      the new step to that history; do not overwrite it. *(rows 9/10/11 each gained a further step:
+      row 10 now reads "from a wrong answer, to no answer, to the right answer".)*
+- [x] Leave every bucket-(b) row untouched and their declination intact. *(all 7 excluded rows are
+      byte-unchanged in their expectation and docstring; they are enumerated, with their pinned/P0/P2
+      values, in each file's `Re-baseline record` header — never silent, never edited.)*
+- [x] Handle any bucket-(c) row explicitly. *(29.1's "bucket (c) surprises" — `TemporalWitnessProbe`
+      11, `UntlSnceCopyProbe` 7, `RayRegionProbe` 4 — measure as **clean guard-caused rows**: all 22
+      have pinned == P0, so all three files were fully green pre-guard. They are re-baselined on that
+      evidence, not folded in by assumption. `TableauConformance:811`, the row moving **opposite** to
+      the guard signature, measures as class (c) and is **excluded**; "shrinks" was correctly rejected
+      as an acceptance criterion, and the actual criterion used was pinned == P0.)*
+- [x] Re-run `lake build BimodalTest` and confirm every intended row now passes. *(**40 → 7**;
+      `EXIT=1` from the 7 enumerated exclusions only, at lines `BoxSpreadProbe:165`,
+      `RegionGateProbe:299,330`, `TableauConformance:873,885,910,916`. No other error of any kind.)*
+
+#### Reasoned Exclusions
+
+Seven rows, each excluded because its pinned value was **already wrong before the guard**, verified
+by direct measurement at `edcecd551^`. Re-baselining any of them would absorb a separately-owned
+engine change (baselined 2026-07-29) into this refactor's attribution.
+
+| # | File:line (current) | Evidence | Why excluded |
+|---|---|---|---|
+| 1 | `BoxSpreadProbe.lean:165` | pinned `\|T\|=8`; P0 `\|T\|=10`; P2 `\|T\|=6` | three distinct values — stale pre-guard **and** moved again by the guard |
+| 2 | `RegionGateProbe.lean:299` | pinned `\|T\|=8 gate=true check=true`; P0 `\|T\|=10 gate=false`; P2 `\|T\|=6 gate=false` | same; also the only excluded row whose `gate`/`check` flags were already wrong |
+| 3 | `RegionGateProbe.lean:330` | pinned `\|T\|=10`; P0 `\|T\|=9`; P2 `\|T\|=6` | same |
+| 4 | `TableauConformance.lean:873` | pinned `knownTimes` 9 entries; P0 10 entries; P2 8 entries | same |
+| 5 | `TableauConformance.lean:885` | pinned 8; P0 9; P2 10 | same — and this is 29.1's flagged opposite-direction row |
+| 6 | `TableauConformance.lean:910` | pinned a full `total=true …` record; **P0 `CLOSED`**; P2 a different record | sharpest case: pre-guard the branch closed outright |
+| 7 | `TableauConformance.lean:916` | pinned 10 entries; P0 10 entries in a different order; P2 8 entries | same |
+
+**Owner**: the 2026-07-29 engine-behaviour change, owned outside this task. **Follow-up**: a
+dedicated dispatch that re-baselines these seven against that change, now cheap because each row's
+pinned / pre-guard / current triple is recorded in-source and the identification problem that
+blocked six dispatches is solved.
+
+#### Routed, not fixed
+
+The Phase 28 Layer-0 `isConsistent = false` finding is **not** touched. The suite remains silent on
+it: no `#guard_msgs` row asserts `isConsistent`. It is noted in `BoxNegReachabilityProbe` row 11's
+docstring as un-owned by that row, and stands exactly where Phase 28 left it.
 
 **Timing**: 2 hours
 
@@ -3387,13 +3501,26 @@ docstring recording the move and its owner, and leave the ten excluded mismatche
 **Verification**:
 - `lake build BimodalTest` completes with **no `#guard_msgs` mismatch other than the ten
   pre-existing, separately-declined ones**, whose count is re-confirmed as exactly ten.
+  *(**MET, and better than stated**: the pre-existing count is re-confirmed as **exactly ten** by
+  direct measurement at `edcecd551^` — 7 / 2 / 1, matching the declaration. Only **7** of those ten
+  still mismatch; the guard repaired the other 3. So the suite finishes with **7** mismatches, not
+  ten, and every one is an enumerated exclusion. `EXIT=1` on those 7 alone.)*
 - `lake build` (default `FormalSystem` target) still green; sorries 1; axioms 6.
+  *(**MET**: `EXIT=0`, **2331 jobs**, byte-identical to the Phase 24/28/29.1 baseline. Live
+  non-Boneyard sorries **1**, unchanged, at `Metalogic/WeakCanonical/Transfer.lean:1084`. `^axiom`
+  matches **6**, all docstring prose, **0 declarations**, unchanged.)*
 - `git diff` over `Tests/` touches **only** expectation strings and docstrings — no fuel figure
   lowered, no `#eval` removed or commented, no probe deleted, no `sorry` added, no file removed
   from the build.
+  *(**MET**: `git diff -- Tests/` contains **0** removed `#eval` or `#guard_msgs` lines, **0** added
+  `sorry`, and no fuel literal on any changed line. `git diff -- FormalSystem/` is **empty** —
+  `Tableau.lean` needed no edit and `witnessPresent` is byte-identical.)*
 - Every changed row's docstring carries the three-part record (old / new / owner).
+  *(**MET** for all 33: 4 as full narrative history, 29 as a `RE-BASELINED (guard):` note plus a
+  per-file `Re-baseline record` header carrying the owner, the three-point evidence, and the
+  exclusions.)*
 - **Done when**: the suite is green modulo the ten declined rows, and every moved row is
-  attributed in source.
+  attributed in source. *(**MET**, with 7 declined rather than ten.)*
 
 ---
 
