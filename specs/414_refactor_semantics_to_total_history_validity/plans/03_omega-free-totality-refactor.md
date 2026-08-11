@@ -1403,7 +1403,7 @@ and by the post-edit error list.
 
 ---
 
-### Phase 15: Box-clause repair — soundness, frame conditions, automation, tests [IN PROGRESS]
+### Phase 15: Box-clause repair — soundness, frame conditions, automation, tests [COMPLETED]
 
 **Goal**: Repair every proof whose reasoning depended on the old `σ ∈ Omega` box clause in the
 soundness and support layers. Per charter §5, soundness consumes shift-preservation, not Zorn
@@ -1411,13 +1411,33 @@ extension, and the totality-based version is strictly easier — this phase shou
 its declaration count suggests.
 
 **Tasks**:
-- [ ] Repair `FormalSystem/Metalogic/Soundness.lean`'s modal-axiom cases.
-- [ ] Repair `FormalSystem/FrameConditions/Validity.lean` and `FrameConditions/Soundness.lean`.
-- [ ] Repair `FormalSystem/Automation/PrefilterSoundness.lean` and `Automation/DatasetGenerator.lean`.
-- [ ] Repair `Tests/BimodalTest/Integration/Helpers.lean` and any test breakage.
-- [ ] Replace `Set.univ` box-clause arguments where they appear in a semantics position
+- [x] Repair `FormalSystem/Metalogic/Soundness.lean`'s modal-axiom cases. *(Also retargeted the
+      four top-level `soundness*` theorem signatures from the `Omega`/`ShiftClosed`/`τ ∈ Omega`
+      triple to `τ.IsTotal`, and the MF case from `h_sc` to `WorldHistory.isTotal_timeShift`.)*
+- [x] Repair `FormalSystem/FrameConditions/Validity.lean` and `FrameConditions/Soundness.lean`.
+      *(deviation: altered — `FrameConditions/Validity.lean` was already green from Phase 18's
+      `ValidOver` delta and needed no work; only `FrameConditions/Soundness.lean` was repaired.
+      See correction 2 below.)*
+- [x] Repair `FormalSystem/Automation/PrefilterSoundness.lean` and `Automation/DatasetGenerator.lean`.
+      *(deviation: altered — `DatasetGenerator.lean` contains zero `Omega`/`ShiftClosed`
+      occurrences and built green throughout; no edit was warranted. `PrefilterSoundness.lean`'s
+      two lemmas had their `τ ∈ Omega` hypothesis retargeted to `τ.IsTotal`.)*
+- [x] Repair `Tests/BimodalTest/Integration/Helpers.lean` and any test breakage.
+      *(deviation: skipped — `Helpers.lean` contains zero `Omega`/`ShiftClosed` occurrences and no
+      test broke from the box-clause retarget. The only `BimodalTest` failures are the ten
+      pre-existing `#guard_msgs` mismatches — 7 `TableauConformance.lean`, 1 `BoxSpreadProbe.lean`,
+      2 `RegionGateProbe.lean` — which are owned elsewhere and were deliberately not re-baselined.
+      This phase's edits do not alter any of those ten expectations.)*
+- [x] Replace `Set.univ` box-clause arguments where they appear in a semantics position
       (`Chronicle/RRelation.lean`, `Decidability/Propositional/Decidable.lean`, `Soundness.lean`)
-      with the totality form.
+      with the totality form. *(deviation: altered — `BXCanonical/Chronicle/RRelation.lean`'s
+      `Set.univ` occurrences are all set-of-formulas closure values, not box-clause carrier
+      arguments, so no semantics-position site exists there; it was a no-op. The
+      `Propositional/Decidable.lean` and `Soundness.lean` sites were converted.)*
+- [x] **ADDED**: Repair `FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean` (correction 1).
+- [x] **ADDED**: Repair `FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean`
+      (correction 3).
+- [x] **ADDED**: Repair `FormalSystem/Metalogic/Decidability/Correctness.lean` (correction 3).
 
 **Timing**: 3 hours
 
@@ -1459,19 +1479,57 @@ contrary to the pre-dispatch expectation. It is still family A and still this ph
 `FrameConditions/Validity.lean` **is** now green and needs no work here — Phase 18 repaired it as
 a consequence of the `ValidOver` delta.
 
-**Files to modify**:
+**Files to modify** (corrected at implementation time — see the three corrections above and
+"Correction 3" below; entries marked *(no-op)* were on the original list but needed no edit):
+- `FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean` **(added, correction 1)**
+- `FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean` **(added, correction 3)**
 - `FormalSystem/Metalogic/Soundness.lean`
-- `FormalSystem/FrameConditions/Validity.lean`, `FormalSystem/FrameConditions/Soundness.lean`
-- `FormalSystem/Automation/PrefilterSoundness.lean`, `FormalSystem/Automation/DatasetGenerator.lean`
-- `Tests/BimodalTest/Integration/Helpers.lean`
+- `FormalSystem/FrameConditions/Soundness.lean`
+- `FormalSystem/Automation/PrefilterSoundness.lean`
+- `FormalSystem/Metalogic/Decidability/Correctness.lean` **(added, correction 3)**
+- `FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean` **(added, correction 3)**
+- ~~`FormalSystem/FrameConditions/Validity.lean`~~ **(removed, correction 2 — green from Phase 18)**
+- `FormalSystem/Automation/DatasetGenerator.lean` *(no-op — zero Omega occurrences)*
+- `Tests/BimodalTest/Integration/Helpers.lean` *(no-op — zero Omega occurrences)*
+
+**Correction 3 (discovered at implementation time).** Three further files carried the same
+`IsValid`/`valid` binder-delta breakage and appear in no phase's file list. They surfaced only as
+each preceding red file cleared, because each was compiling behind the red chain:
+
+| File | Errors | Shape |
+|------|--------|-------|
+| `SoundnessLemmas/FrameClassVariants.lean` | 60 | 56 uniform `intro F M Omega _h_sc τ _h_mem t` sites |
+| `Metalogic/Decidability/Correctness.lean` | 1 | one `decide_sound` intro + application |
+| `Decidability/Propositional/Decidable.lean` | 2 | one `soundness` application passing `Set.univ` + `Set.univ_shift_closed` + `Set.mem_univ _` |
+
+`FrameClassVariants.lean` is the exact sibling shape of `DenseValidity.lean` and belongs to this
+phase for the same reason (soundness layer, `IsValid` consumer). `Correctness.lean` and
+`Propositional/Decidable.lean` are `Metalogic.soundness` *callers*, so they follow this phase's
+retarget of the `soundness*` signatures rather than Phase 17's `Bridge/**` work.
+`Decidability/Verified/Decidable.lean` (16 errors) is explicitly listed under Phase 17 and was
+deliberately left alone.
+
+**Measured outcome**: the pre-dispatch census expected ~14 of `DenseValidity.lean`'s 94 errors to
+need judgment (6 `simp` no-progress, 4 application type mismatches, 2 anonymous-constructor pairs).
+**All 14 dissolved with the mechanical `intro` sweep** — they were downstream artifacts of the
+`introN` arity failures in the same proof blocks, not independent defects. The same held for
+`FrameClassVariants.lean`'s 2 anonymous-constructor and 2 `simp` errors. The genuinely
+judgment-bearing sites in this phase were the four `soundness*` signatures, the two
+`h_sc`-consuming MF/modal-future cases (retargeted to `WorldHistory.isTotal_timeShift`), and the
+`WorldHistory.trivial` totality witness in `Propositional/Decidable.lean`.
 
 **Verification**:
-- `lake build` green, sorry-free, axiom-free.
-- Soundness theorems retain their statements modulo the totality binder.
+- `lake build` green over this phase's file set, sorry-free, axiom-free. **Tree-wide build is still
+  RED at 19 errors, all owned by later phases**: `Metalogic/Algebraic/FlowFrame.lean` (2, Phase 16),
+  `Decidability/Verified/Bridge/Interpolate.lean` (1, Phase 17),
+  `Decidability/Verified/Decidable.lean` (16, Phase 17). No Phase 15 file is red.
+- Soundness theorems retain their statements modulo the totality binder: the four `soundness*`
+  theorems now bind `(τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)` in place of the
+  `Omega`/`ShiftClosed Omega`/`τ ∈ Omega` triple, with the conclusion unchanged.
 
 ---
 
-### Phase 16: Box-clause repair — completeness side [NOT STARTED]
+### Phase 16: Box-clause repair — completeness side [IN PROGRESS]
 
 **Goal**: Repair the canonical/algebraic completeness stack, rewriting along Phase 11's set
 equations rather than re-proving anything. Per the round-3 report this is a rewrite, not a
