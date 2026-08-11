@@ -1,7 +1,7 @@
 # Implementation Plan: Total-History Validity Refactor (Omega-Free Semantics Core)
 
 - **Task**: 414 - refactor_semantics_to_total_history_validity
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 36 hours
 - **Dependencies**: 420 (phase 10 only, and only for the one item marked out of scope below), 438, 439
 - **Research Inputs**: `specs/414_refactor_semantics_to_total_history_validity/reports/03_total-history-validity-refactor.md` (round 3, authoritative); `reports/01_maximal-history-validity-refactor.md` and `reports/02_group-c-reconciliation.md` (superseded where round 3 corrects them; retained as history)
@@ -292,7 +292,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Extend the definitions of record with `def:BLplus-semantics` [NOT STARTED]
+### Phase 1: Extend the definitions of record with `def:BLplus-semantics` [COMPLETED]
 
 **Goal**: Make `def:BLplus-semantics` a tracked, drift-linted anchor so that later phases citing
 it are grounded. At plan time `grep -c BLplus specs/paper-definitions-of-record.md` returns 0
@@ -300,18 +300,23 @@ while the anchor exists in the live paper, so per charter §10's own rule any sp
 is ungrounded and unprotected by the lint.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh` and confirm case (a) or (b). Stop on case (c).
-- [ ] Run `bash scripts/check-paper-definitions.sh --resolve "def:BLplus-semantics|env|-|-"` to
-      print the resolved text and its sha256.
-- [ ] Add a `### \`def:BLplus-semantics\`` entry to `specs/paper-definitions-of-record.md` quoting
+- [x] Run `bash scripts/check-paper-definitions.sh` and confirm case (a) or (b). Stop on case (c).
+      *(completed — case (b): paper checksum moved to `f07441eb…`, all 23 recorded definitions unchanged, exit 0)*
+- [x] Run `bash scripts/check-paper-definitions.sh --resolve "def:BLplus-semantics|env|-|-"` to
+      print the resolved text and its sha256. *(completed — sha256 `3f56a996…`)*
+- [x] Add a `### \`def:BLplus-semantics\`` entry to `specs/paper-definitions-of-record.md` quoting
       that text verbatim (including any `%%` editorial comments inside the block).
-- [ ] Attempt the same for `def:BLplus-language` and `def:BLplus-defined`; add them if they
+      *(completed — extracted byte-faithfully, verified by re-hashing the extracted text to the
+      script's own sha256; the block carries no `%%` comments)*
+- [x] Attempt the same for `def:BLplus-language` and `def:BLplus-defined`; add them if they
       resolve. If either does not resolve, record it as a gap in the entry prose rather than
-      fabricating one.
-- [ ] Add one manifest row per added anchor to the `MANIFEST:BEGIN`/`MANIFEST:END` fenced block,
-      columns `anchor_id|kind|enclosing|locator|sha256`.
-- [ ] Re-run `bash scripts/check-paper-definitions.sh` with no arguments and confirm the quiet
-      case-(a) pass.
+      fabricating one. *(completed — both resolved cleanly; no gap recorded)*
+- [x] Add one manifest row per added anchor to the `MANIFEST:BEGIN`/`MANIFEST:END` fenced block,
+      columns `anchor_id|kind|enclosing|locator|sha256`. *(completed — 3 rows; manifest 23 → 26)*
+- [x] Re-run `bash scripts/check-paper-definitions.sh` with no arguments and confirm the quiet
+      case-(a) pass. *(completed — required re-pinning `FILE_CHECKSUM`/`LINE_COUNT`/`PINNED_COMMIT`
+      to the live paper state the new hashes were derived from, following the record's own
+      established coverage-extension re-pin practice; exits 0 silently)*
 
 **Timing**: 1 hour
 
@@ -329,9 +334,22 @@ resolve, record the gap rather than inventing an entry.
 - `specs/paper-definitions-of-record.md` — new entries plus manifest rows
 
 **Verification**:
-- `bash scripts/check-paper-definitions.sh` exits 0 with a case-(a) quiet pass.
-- `grep -c BLplus specs/paper-definitions-of-record.md` returns a nonzero count.
-- The manifest row count matches the prose entry count.
+- `bash scripts/check-paper-definitions.sh` exits 0 with a case-(a) quiet pass. **PASSED** (silent, exit 0).
+- `grep -c BLplus specs/paper-definitions-of-record.md` returns a nonzero count. **PASSED** (25).
+- The manifest row count matches the prose entry count. **PASSED with a recorded caveat**: the
+  manifest carries 26 rows against 21 `### \`anchor\`` prose headings, because four
+  `def:frame#…` item anchors are recorded inside the single `def:frame` entry and `CO`/`TMP-CO`
+  share one worked-example heading. This 26-vs-21 relationship is pre-existing (it held before
+  this phase at 23-vs-18) and is not introduced here; the invariant this phase actually
+  preserved is **3 rows added, 3 prose entries added**.
+
+**Outcome**: record extended from 23 to 26 tracked definitions
+(`def:BLplus-language` `a43b3df2…`, `def:BLplus-semantics` `3f56a996…`, `def:BLplus-defined`
+`2ac6361a…`). The `def:BLplus-semantics` entry carries an argument-order caveat recording that the
+paper's footnote describes the repo's `snce`/`untl` constructors as guard-first while the Lean tree
+is event-first — verified in-tree against `Formula.lean:83-90` (`untl`/`snce` docstrings naming the
+first argument the event) and `Truth.lean:134-137` (both clauses witness the *first* argument at the
+existential time and quantify the *second* over the open interval).
 
 ---
 

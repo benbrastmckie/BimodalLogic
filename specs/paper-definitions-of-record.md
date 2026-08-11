@@ -27,15 +27,19 @@ re-derives every hash below directly from the live paper file on every run.
 | File checksum, re-pinned after drift correction (sha256) | `485aa76449488f4c5ee75b001da68796a5d51ecd6ea448fd8e8e6587e1211a95` |
 | Line count, re-pinned after drift correction | 3999 |
 | Re-pinned (UTC) | 2026-08-11T00:25:00Z |
-| **File checksum, re-pinned at coverage extension (sha256, current authoritative pin)** | `1256e21837ff81139fda69e9faa14ac756b1f795df32c78b82d885af5055374f` |
+| File checksum, re-pinned at coverage extension (sha256) | `1256e21837ff81139fda69e9faa14ac756b1f795df32c78b82d885af5055374f` |
 | Line count at coverage extension | 3949 |
 | Coverage extension re-pin (UTC) | 2026-08-11T01:16:05Z (checksum re-taken at 01:25Z after two further live case-(b) waves during the extension itself) |
+| Base commit at `BL^+` coverage extension (paper repo `git HEAD`; file dirty against it) | `cf0da976bd7947e6fae2aa9212953d094faab2c1` |
+| **File checksum, re-pinned at `BL^+` coverage extension (sha256, current authoritative pin)** | `f07441ebb9751d1e955d5af135bebc107ef7163dea49ccfb29b763aae67d1b27` |
+| Line count at `BL^+` coverage extension | 4098 |
+| `BL^+` coverage extension re-pin (UTC) | 2026-08-10 (three `def:BLplus-*` anchors added; the run immediately before the re-pin reported case (b) — paper moved, all 23 previously-recorded definitions unchanged) |
 
 <!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: eb5be99ea3f19a86c9891d7798e619890e36cd43 -->
-<!-- FILE_CHECKSUM: 1256e21837ff81139fda69e9faa14ac756b1f795df32c78b82d885af5055374f -->
-<!-- LINE_COUNT: 3949 -->
+<!-- PINNED_COMMIT: cf0da976bd7947e6fae2aa9212953d094faab2c1 -->
+<!-- FILE_CHECKSUM: f07441ebb9751d1e955d5af135bebc107ef7163dea49ccfb29b763aae67d1b27 -->
+<!-- LINE_COUNT: 4098 -->
 
 ### Dirty-pin caveat (why the pin is a checksum, not a clean commit)
 
@@ -113,6 +117,21 @@ chain is `def:constraints` → `lem:constraint` (directedness + nonemptiness onl
 these hashes were derived from; all 18 previously-recorded anchors were re-verified unchanged at
 this re-pin (case (b) — the intervening edits were comment cleanup and proof-prose restructuring
 outside every previously-tracked block).
+
+### Coverage extension (2026-08-10): the `BL^+` anchors
+
+`def:BLplus-semantics` was cited by the total-history-validity refactor's plan while being
+**untracked** — `grep -c BLplus` over this file returned 0 — so any spec quoting it was ungrounded
+and unprotected by the lint. Three anchors are now tracked: `def:BLplus-language` (the `BL^+`
+language and its `\since`/`\until` constructors), `def:BLplus-semantics` (the two extra truth
+clauses, plus the constructor-argument-order footnote), and `def:BLplus-defined` (the derived
+temporal operators). All three resolved cleanly, so none is recorded as a gap. The record moves
+from 23 to **26** tracked definitions.
+
+The `def:BLplus-semantics` entry carries an argument-order caveat: the paper's footnote describes
+this repository's `snce`/`untl` constructors as guard-first/event-second, and the Lean tree is
+event-first/guard-second. That divergence is quoted here (never silently corrected — this file
+records what the paper says) and escalated in `specs/decisions/untl-snce-argument-order.md`.
 
 ## How to read this file
 
@@ -388,6 +407,72 @@ the single most consequential clause for the current `paper-refactor` cluster: t
 total-history set directly — that is precisely the gap the cluster's total-history refactor
 closes. See "Downstream consumers" below.
 
+### `def:BLplus-language` — the language of `BL^+` (since/until constructors)
+
+```latex
+\begin{Ddef} \label{def:BLplus-language}
+	The language $\BL^+ \coloneq \tuple{\SL,\bot,\rightarrow,\Box,\since,\until}$ where $\SL \coloneq \set{p_i: i\in \N}$ is a countable set of sentence letters as before where the remaining symbols denote falsity, material implication, the metaphysical necessity operator, the since operator, and the until operator, respectively.
+	Well-formed sentences of $\BL^+$ are defined by:
+	\[
+		\varphi, \psi \Coloneq p_i \mid \bot \mid \varphi \rightarrow \psi \mid \Box\varphi \mid \varphi\since\psi \mid \varphi\until\psi.
+	\]
+\end{Ddef}
+```
+sha256: `a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7`
+
+### `def:BLplus-semantics` — the `\since` / `\until` truth clauses (and the argument-order footnote)
+
+```latex
+\begin{Ddef} \label{def:BLplus-semantics}
+  The \textit{models} of $\BL^+$ are defined in \textbf{\ref{def:BL-model}}, where \textit{truth in a model} $\M$ at $\tau \in H_{\F}$ and $x \in D$ extends the semantics \textbf{\ref{def:BL-semantics}} with the following clauses:\footnote{%
+	Although the axioms of \textbf{TM}$^+$ are drawn from the Burgess-Xu (BX) system, the repository's \texttt{snce}/\texttt{untl} constructors follow the Pnueli convention with the guard as the first argument and the event as the second: $\varphi\since\psi$ means $\psi$ held at some past time with $\varphi$ holding throughout the interval since, and $\varphi\until\psi$ means $\psi$ will hold at some future time with $\varphi$ holding throughout the interval until $\psi$ holds.%
+	}
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[($\since$)] $\M,\tau,x \vDash \varphi\since\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z < x$ where $\M,\tau,y \vDash \varphi$\\
+      \strut\hspace{1.55in}for all $y \in D$ with $z < y < x$.
+		\item[($\until$)] $\M,\tau,x \vDash \varphi\until\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z > x$ where $\M,\tau,y \vDash \varphi$\\ 
+      \strut\hspace{1.55in}for all $y \in D$ with $x < y < z$.
+	\end{enumerate}
+\end{Ddef}
+```
+sha256: `3f56a996ad17e1318eb1c448b3af7d3a5bc583785df739045ce274ba6d8be59b`
+
+**Argument-order caveat — the footnote misdescribes this repository.** The `\footnote` inside the
+block above asserts that "the repository's `snce`/`untl` constructors follow the Pnueli convention
+with the guard as the first argument and the event as the second". The Lean tree is the other way
+round: `Formula.snce`/`Formula.untl` (`FormalSystem/Syntax/Formula.lean:85-90`) and `TruthAt`'s
+clauses (`FormalSystem/Semantics/Truth.lean:134-135`) are **event-first / guard-second**, and both
+`Axiom.dense_indicator` (`FormalSystem/Semantics/Validity.lean:229-231`) and the `K⁺` combinator
+(`FormalSystem/Syntax/Formula.lean:164-166`) depend on the event-first reading. This record quotes
+the paper verbatim, as it must; the divergence is recorded and escalated separately in
+`specs/decisions/untl-snce-argument-order.md`, and the Lean convention is **not** being changed.
+The *clause bodies* themselves (which time is existentially witnessed, which is universally
+quantified over the open interval) match the Lean definitions exactly; only the footnote's prose
+description of the constructor argument order diverges.
+
+### `def:BLplus-defined` — the defined temporal operators of `BL^+`
+
+```latex
+\begin{Ddef} \label{def:BLplus-defined}
+	The following operators are defined in $\BL^+$:
+  \vspace{-.125in}
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\begin{multicols}{2}
+			\item[\bf Past:] $\past\varphi \coloneq \top\since\varphi$.
+			\item[\bf Future:] $\future\varphi \coloneq \top\until\varphi$.
+			\item[\bf Historical:] $\Past\varphi \coloneq \neg\past\neg\varphi$.
+			\item[\bf Henceforth:] $\Future\varphi \coloneq \neg\future\neg\varphi$.
+			\item[\bf Always:] $\always\varphi \coloneq \Past\varphi \wedge \varphi \wedge \Future\varphi$.
+			\item[\bf Sometimes:] $\sometimes\varphi \coloneq \past\varphi \vee \varphi \vee \future\varphi$.
+			\item[\bf Next:] $\Next\varphi \coloneq \bot\until\varphi$.
+			\item[\bf Previous:] $\Previous\varphi \coloneq \bot\since\varphi$.
+		\end{multicols}
+	\end{enumerate}
+  \vspace{-.25in}
+\end{Ddef}    
+```
+sha256: `2ac6361a2b84d20dd498f3e392072862554dd964a9ab6fc54bd868ee0a5bf56e`
+
 ### `def:frame-validity` — validity over a frame
 
 ```latex
@@ -525,6 +610,9 @@ lem:admissible|env|-|-|cc94cfdca6f3c1f581f3876ba737525288417ac9c05b3293c8fa4a621
 lem:step|env|-|-|82ab9eb861c6e4cb99575946f4a74f4296b5c8b979d3c2f6e28ac9fa705da94f
 def:BL-model|env|-|-|239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f
 def:BL-semantics|env|-|-|8fec78985c2efea20d13c1e6d5c7536ae0e0d864172bbe0460441d61addf22e3
+def:BLplus-language|env|-|-|a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7
+def:BLplus-semantics|env|-|-|3f56a996ad17e1318eb1c448b3af7d3a5bc583785df739045ce274ba6d8be59b
+def:BLplus-defined|env|-|-|2ac6361a2b84d20dd498f3e392072862554dd964a9ab6fc54bd868ee0a5bf56e
 def:frame-validity|env|-|-|2bcc85b0781fd4cc5af05d0741c64f44662706523cf023f3d5237d4ed1e8d1b9
 def:logical-consequence|env|-|-|e65c228721a39f8622d2256988b574c96a6cb7fdd6723a2eb63ce8a1f87770f0
 CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41
