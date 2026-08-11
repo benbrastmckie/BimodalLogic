@@ -242,6 +242,37 @@ if [ -z "$MANIFEST_ROWS" ]; then
   exit 2
 fi
 
+# --- Pinned-text recovery from the record itself (authoritative) --------------
+# On drift we want to show the operator what the RECORD pinned, not merely what some
+# commit happens to contain. These can differ: the record is pinned by file checksum
+# and may have been recorded from a dirty working tree, in which case the base commit's
+# blob is a third, unrelated version. Printing the base-commit text under an "OLD
+# (pinned @ ...)" label made a correct drift report look like a false positive whenever
+# the base commit and the compared commit agreed with each other but not with the pin.
+#
+# The record stores pinned text in two shapes: a fenced ```latex block followed by a
+# `sha256: <hash>` line (byte-exact), and a markdown table cell (whitespace-normalized
+# for display, so NOT byte-exact and deliberately not recovered here). Rather than
+# trusting layout, the candidate is re-hashed and returned only if it reproduces the
+# recorded hash -- so this can never print text that merely looks like the pinned text.
+#
+# pinned_text_from_record EXPECTED_HASH -> prints verified pinned text, or returns 1.
+pinned_text_from_record() {
+  local expected="$1" cand
+  [ -n "$expected" ] || return 1
+  [ -f "$RECORD" ] || return 1
+
+  cand=$(awk -v want="$expected" '
+    /^```/ { if (infence) { infence = 0; blk = buf } else { infence = 1; buf = "" } ; next }
+    infence { buf = buf $0 "\n" ; next }
+    index($0, want) && /sha256/ { printf "%s", blk; exit }
+  ' "$RECORD")
+
+  [ -n "$cand" ] || return 1
+  [ "$(printf '%s\n' "$cand" | sha256_of_stdin)" = "$expected" ] || return 1
+  printf '%s' "$cand"
+}
+
 DRIFTED=()
 MISSING=()
 DRIFT_DETAIL=""
@@ -261,27 +292,47 @@ while IFS='|' read -r anchor kind enclosing locator expected_hash; do
   if [ "$new_hash" != "$expected_hash" ]; then
     DRIFTED+=("$anchor")
 
-    # Try to recover the OLD text from the pinned commit for a human-readable diff.
+    # Recover the OLD text for a human-readable diff. Preference order matters:
+    #   1. the record's own pinned text, verified by re-hash (authoritative);
+    #   2. the base commit's text, which is NOT the pin and is labelled as such.
     old_text=""
-    if [ -n "$RECORD_REPO_ROOT" ] && [ -n "$PAPER_RELPATH" ]; then
-      old_tmp="$(mktemp)"
-      CLEANUP_TMPS+=("$old_tmp")
-      if git -C "$RECORD_REPO_ROOT" show "${PINNED_COMMIT}:${PAPER_RELPATH}" > "$old_tmp" 2>/dev/null; then
-        old_text=$(resolve_text "$old_tmp" "$kind" "$enclosing" "$locator" "$anchor" || true)
+    old_label=""
+    old_text=$(pinned_text_from_record "$expected_hash" || true)
+    if [ -n "$old_text" ]; then
+      old_label="OLD (pinned text from ${RECORD}, sha256 ${expected_hash} -- verified):"
+    else
+      if [ -n "$RECORD_REPO_ROOT" ] && [ -n "$PAPER_RELPATH" ]; then
+        old_tmp="$(mktemp)"
+        CLEANUP_TMPS+=("$old_tmp")
+        if git -C "$RECORD_REPO_ROOT" show "${PINNED_COMMIT}:${PAPER_RELPATH}" > "$old_tmp" 2>/dev/null; then
+          old_text=$(resolve_text "$old_tmp" "$kind" "$enclosing" "$locator" "$anchor" || true)
+        fi
+      fi
+      if [ -n "$old_text" ]; then
+        old_base_hash=$(printf '%s\n' "$old_text" | sha256_of_stdin)
+        if [ "$old_base_hash" = "$expected_hash" ]; then
+          old_label="OLD (base commit ${PINNED_COMMIT}, sha256 ${expected_hash} -- matches the record's pin):"
+        else
+          old_label="OLD (re-extracted from base commit ${PINNED_COMMIT}, sha256 ${old_base_hash}):
+  WARNING: this is NOT the record's pinned text (pinned sha256 ${expected_hash}). The record
+  is pinned by file checksum and may have been recorded from a working tree differing from
+  this commit, so the block below can be identical to NEW even though the anchor really did
+  drift from the pin. The hashes above, not this text, are the authoritative comparison."
+        fi
       fi
     fi
 
     DRIFT_DETAIL+="--- anchor: ${anchor} ---
 "
     if [ -n "$old_text" ]; then
-      DRIFT_DETAIL+="OLD (pinned @ ${PINNED_COMMIT}):
+      DRIFT_DETAIL+="${old_label}
 $(printf '%s\n' "$old_text" | sed 's/^/  /')
 "
     else
-      DRIFT_DETAIL+="OLD: (could not retrieve pinned commit text -- see recorded sha256 ${expected_hash} in $RECORD)
+      DRIFT_DETAIL+="OLD: (could not retrieve pinned text -- see recorded sha256 ${expected_hash} in $RECORD)
 "
     fi
-    DRIFT_DETAIL+="NEW (${CURRENT_LABEL}):
+    DRIFT_DETAIL+="NEW (${CURRENT_LABEL}, sha256 ${new_hash}):
 $(printf '%s\n' "$new_text" | sed 's/^/  /')
 "
   fi
