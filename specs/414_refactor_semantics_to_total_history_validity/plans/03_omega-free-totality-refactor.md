@@ -1403,7 +1403,7 @@ and by the post-edit error list.
 
 ---
 
-### Phase 15: Box-clause repair — soundness, frame conditions, automation, tests [NOT STARTED]
+### Phase 15: Box-clause repair — soundness, frame conditions, automation, tests [IN PROGRESS]
 
 **Goal**: Repair every proof whose reasoning depended on the old `σ ∈ Omega` box clause in the
 soundness and support layers. Per charter §5, soundness consumes shift-preservation, not Zorn
@@ -1431,6 +1431,33 @@ Omega/validity blast radius and group (C) at 21 (`FrameConditions/Validity.lean`
 `Automation/DatasetGenerator.lean` 1). **Most of those are signature-only and are not this phase's
 work** — this phase repairs only proofs whose *reasoning* used `σ ∈ Omega`. Confirm the actual
 repair set from the build error list after Phase 14.
+
+**RESIZE after the re-sequenced Phase 18 (supersedes the counts above).** Measured tree census
+after Phase 18 landed: **98 errors in 4 files**, of which **94 are in
+`Metalogic/SoundnessLemmas/DenseValidity.lean`** (was 8 before Phase 18). Three corrections this
+phase must absorb:
+
+1. **`DenseValidity.lean` is not in any phase's "Files to modify" list — including this one.**
+   That gap pre-dates Phase 18 (Phase 14's census assigned its 8 sites `owner: Phase 15` by
+   judgment, not by the file list). It carries 96% of the remaining breakage and must be added to
+   this phase's scope explicitly.
+2. **The 8→94 growth is the `IsValid` binder delta propagating, not new damage.** 80 of the 94 are
+   `introN` arity failures: proofs that still `intro … Omega h_sc τ h_mem t` against a definition
+   that now binds `… τ hτ t`. The repair is one mechanical sweep — drop `Omega h_sc`, rename
+   `h_mem` to `hτ` — across ~100 `h_sc`/`h_mem` references. These sites were always going to break
+   at the Omega-binder sweep; Phase 18 pulled the trigger forward, and no later sweep claims this
+   file, so the work is not duplicated.
+3. **Only 14 of the 94 need judgment**, and they are the pre-existing ones: 6 `simp` made no
+   progress (`245`, `304`, `312`, `725`, `758`, `1276`), 4 application type mismatches (`562:52`,
+   `586:52`, `880:50`, `912:50`), 2 anonymous-constructor failures against
+   `∀ t_1, τ.domain t_1` (`669:10`, `1231:10`) with their paired "no goals" (`669:38`, `1231:38`).
+   The anonymous-constructor pair is the same shape as `FlowFrame.lean:662` — destructuring a
+   totality function as if it were Omega-membership.
+
+**`Automation/PrefilterSoundness.lean:96:29` was NOT dissolved** by the validity binder delta,
+contrary to the pre-dispatch expectation. It is still family A and still this phase's to repair.
+`FrameConditions/Validity.lean` **is** now green and needs no work here — Phase 18 repaired it as
+a consequence of the `ValidOver` delta.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Soundness.lean`
@@ -1525,7 +1552,17 @@ implementation time from the build error list, not from the count.
 
 ---
 
-### Phase 18: Validity-layer binder delta [NOT STARTED]
+### Phase 18: Validity-layer binder delta [COMPLETED WITH EXCLUSIONS]
+
+**RE-SEQUENCED**: executed out of heading order, *before* Phases 15-17, on the Phase 14 agent's
+recommendation after its downstream census. Rationale: six of the twelve break sites were
+error-family A (a history known only to be in `Ω` where totality is now required), which this
+binder delta dissolves at the source rather than site by site; and this phase also discharges the
+one tracked strategic sorry. **Soundness of the re-sequencing was verified before any edit**: this
+phase declares `**Depends on**: 14` and nothing else, Phase 14 was `[COMPLETED WITH EXCLUSIONS]`,
+and Phases 15/16/17 each independently declare `**Depends on**: 14` — so no prerequisite edge from
+18 into 15, 16, or 17 exists. Phases 15-17 remain to be run and are now differently sized; see the
+`downstream_breakage` block in `.orchestrator-handoff.json`.
 
 **Goal**: Apply the charter §2 two-move delta to every definition that binds the
 `Omega + ShiftClosed + τ ∈ Omega` triple in its **body**: drop the triple, add the totality
@@ -1533,20 +1570,39 @@ constraint. These are definitions whose Omega is internal, so their callers are 
 binder can be removed here rather than in a later sweep.
 
 **Tasks**:
-- [ ] `valid` (`Validity.lean:80`) and `SemanticConsequence` (`:104`) — drop `Omega`/`ShiftClosed`/
+- [x] `valid` (`Validity.lean:80`) and `SemanticConsequence` (`:104`) — drop `Omega`/`ShiftClosed`/
       `τ ∈ Omega`, add `(_ : τ.IsTotal)`. Both **already carry `[Nontrivial D]`** (verified), so no
       binder is added there. Docstrings cite `def:BL-semantics` and `def:logical-consequence`
       verbatim.
-- [ ] The four variant validity predicates — `ValidDense` (`:169`), `ValidDiscrete` (`:187`),
+- [x] The four variant validity predicates — `ValidDense` (`:169`), `ValidDiscrete` (`:187`),
       `ValidDedekind` (`:241`), `ValidDedekindDense` (`:276`) — identical delta; all four already
       carry `[Nontrivial D]`.
-- [ ] The satisfiable family — `satisfiable` (`:129`), `SatisfiableAbs` (`:138`),
+- [x] The satisfiable family — `satisfiable` (`:129`), `SatisfiableAbs` (`:138`),
       `FormulaSatisfiable` (`:154`) — same delta, **plus add `[Nontrivial D]`**, which these three
       lack. Docstring must record that satisfiability has **no paper anchor**: this is a design
       decision inherited from `valid`, not a reconciliation finding.
-- [ ] `ValidOver`, `IsValid`, `SemanticConsequenceDedekindDense` — same delta.
-- [ ] Check `unsatisfiable_implies_all` (`:372`), whose statement quantifies without `Nontrivial`,
-      and align it.
+- [x] `ValidOver`, `IsValid`, `SemanticConsequenceDedekindDense` — same delta.
+      *(deviation: altered — file scope widened. These three live in
+      `FrameConditions/Validity.lean`, `SoundnessLemmas/Core.lean`, and `StrongCompleteness.lean`,
+      none of which appear in this phase's "Files to modify" list. The list named only
+      `Semantics/Validity.lean` and was simply incomplete relative to this task line; the task line
+      is the more specific instruction and was followed. See "Files to modify" below.)*
+- [x] Check `unsatisfiable_implies_all` (`:372`), whose statement quantifies without `Nontrivial`,
+      and align it. *(Also aligned `unsatisfiable_implies_all_fixed` (`:382`), which had the same
+      omission and would otherwise have been left mismatched against the new `satisfiable`.)*
+- [x] Discharge the tracked strategic sorry at `Validity.lean:458` (`valid_of_valid_box`), for
+      which this phase was the recorded `follow_up_task`. The proof is now
+      `intro D _ _ _ _ F M τ hτ t; exact h D F M τ hτ t τ hτ` — the totality witness fed back in as
+      the box witness, exactly as the Phase 14 docstring predicted. `sorry_inventory` is empty.
+- [x] *(added, not in the original task list)* `truthAt_carrier_irrelevant` in `Validity.lean`.
+      **Why it was needed**: `TruthAt`'s set argument still exists (it is `_Omega`, the transient
+      carrier Phase 22 deletes), so the delta could not simply drop it — every call site in these
+      definitions must pass *something*, and `Set.univ` is the value the module docstring already
+      identified as equivalent. But `TruthAt M Om₁ τ t φ` and `TruthAt M Om₂ τ t φ` are **not**
+      defeq (verified: `rfl` fails), so consumers holding a `Set.univ`-carried truth cannot
+      silently transport it to their own carrier. This lemma is that transport, proved by
+      induction on `φ`. It becomes vacuous and should be deleted together with the parameter in
+      Phase 22.
 
 **Timing**: 2.5 hours
 
@@ -1565,11 +1621,23 @@ enumerating the definitions that survive.
 
 **Files to modify**:
 - `FormalSystem/Semantics/Validity.lean`
+- *(added at implementation time, required by the `ValidOver`/`IsValid`/
+  `SemanticConsequenceDedekindDense` task line above, which named declarations this list omitted)*
+  `FormalSystem/FrameConditions/Validity.lean`, `FormalSystem/Metalogic/SoundnessLemmas/Core.lean`,
+  `FormalSystem/Metalogic/StrongCompleteness.lean`
 
 **Verification**:
 - `lake build` green, sorry-free.
 - `grep -n "Omega\|ShiftClosed" FormalSystem/Semantics/Validity.lean` returns nothing.
 - Each of `satisfiable`, `SatisfiableAbs`, `FormulaSatisfiable` now carries `[Nontrivial D]`.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `lake build` tree-green (this phase's stated Verification) | Structurally unreachable at this phase boundary, for the same reason it was at Phase 14's: the twelve break sites Phase 14 enumerated are the declared charter of Phases 15-17, which have not run. This phase was re-sequenced ahead of them precisely because the binder delta dissolves the family-A subset at the source; it cannot also perform the family-B and `rcases` repairs those phases own without absorbing them wholesale. | Every module this phase edited builds green **in isolation**: `Semantics.Validity` (757/757), `FrameConditions.Validity` (866/866), `SoundnessLemmas.Core` (758/758). `StrongCompleteness` sits behind the still-red `DenseValidity`/`Soundness` chain and could not be built; its six application sites were retargeted mechanically and are unverified until that chain lands — this is the phase's one genuinely unverified edit and it is recorded as such in `.orchestrator-handoff.json`. The residual tree error set is enumerated there with `repair_shape` and `owner` per site. |
+| `grep -n "Omega\|ShiftClosed" Semantics/Validity.lean` returning **nothing** | Four hits survive, all in prose. Three describe the retired architecture historically (the `ShiftClosed`-is-unnecessary rationale, and the record of what the discharged strategic sorry used to block on); one names `ShiftClosed` to state that it is *not* needed. Phase 22's parallel criterion already carves out exactly this case ("outside prose that explicitly describes the retired architecture as historical"), and deleting the prose would destroy the reconciliation record. | `grep -n "Omega\|ShiftClosed" FormalSystem/Semantics/Validity.lean` → lines 36, 113, 504, 505, all inside docstrings. Zero occurrences in any binder, body, or statement. |
+| `truthAt_foldr_imp`'s carrier binder (`StrongCompleteness.lean:148`) left in place | Out of charter. It binds a bare `Omega : Set (WorldHistory F)` with **no** `ShiftClosed` and **no** `τ ∈ Omega`, so it is not an instance of the `Omega + ShiftClosed + τ ∈ Omega` triple this phase removes — it is a direct pass-through of `TruthAt`'s inert parameter, which Phase 22 deletes at the source. | The definition is a pure `TruthAt` currying lemma with no validity content; its two call sites in this file were updated to pass `Set.univ`, matching the delta. |
 
 ---
 
