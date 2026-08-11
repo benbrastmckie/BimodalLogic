@@ -2818,14 +2818,14 @@ recorded as a correction in the baseline record, never silently absorbed.
 
 ---
 
-### Phase 25: The `trivialEventWitnessed` guard, with `Tableau.lean` green [NOT STARTED]
+### Phase 25: The `trivialEventWitnessed` guard, with `Tableau.lean` green [COMPLETED]
 
 **Goal**: Land the additive mint-suppression guard in
 `FormalSystem/Metalogic/Decidability/Tableau.lean` and leave that module compiling, `witnessPresent`
 byte-identical, and no other file edited.
 
 **Tasks**:
-- [ ] Add a new definition beside `witnessPresent` (i.e. after `Tableau.lean:1891`), named
+- [x] Add a new definition beside `witnessPresent` (i.e. after `Tableau.lean:1891`), named
       `trivialEventWitnessed`, with the arms:
       - `.someFuturePos` / `.untlPos` on trigger `⟨.pos, .untl ⊤ ⊤, l⟩` →
         `!(timeOrd.futureOf l.time).isEmpty`
@@ -2833,26 +2833,29 @@ byte-identical, and no other file edited.
         `!(timeOrd.pastOf l.time).isEmpty`
       - every other rule/shape → `false`
       Key it on the syntactic event `Formula.top` (`FormalSystem/Syntax/Formula.lean:118`) **only**.
-- [ ] Give it a docstring carrying the soundness argument verbatim — `⊤` is true at every label of
+- [x] Give it a docstring carrying the soundness argument verbatim — `⊤` is true at every label of
       every model, so an already-ordered future (resp. past) time witnesses `F ⊤` (resp. `P ⊤`)
       whether or not the branch literally carries `T(⊤)` there; this is the same
       satisfiability-preserving argument `Tableau.lean:1786-1787` already gives for the existing
       witness guard, specialised to an event formula that needs no witness at all — **and** an
       explicit warning that generalising to a non-valid event `ψ` is unsound.
-- [ ] Consult it in `findApplicableRule`'s two fresh-label guards as a disjunct beside
+- [x] Consult it in `findApplicableRule`'s two fresh-label guards as a disjunct beside
       `witnessPresent`: `Tableau.lean:1913` (`.linear` arm) and `:1936` (`.branching` arm).
       **Do not edit `witnessPresent` itself.**
-- [ ] Prefer **variant B (redirect)** over variant A (suppress): where the guard fires, emit
+- [x] Prefer **variant B (redirect)** over variant A (suppress) *(deviation: altered — variant B
+      was implemented and REFUTED by the plan's own confirmation command; **variant A landed**,
+      see the Scope Hypothesis verdict below)*: where the guard fires, emit
       `T(⊤)` at the existing ordered witness time instead of minting a fresh one, so the literal
       witness stays on the branch and the ordinary "wholly on branch" test provides idempotence.
       Variant A (emit nothing) is the declared fallback.
-- [ ] Keep `saturated_downward_closed` (`Tableau.lean`, the `findUnexpanded … = none`
+- [x] Keep `saturated_downward_closed` *(deviation: altered — under the landed variant A the
+      widening WAS required and was applied to both clauses)* (`Tableau.lean`, the `findUnexpanded … = none`
       characterization theorem) compiling. Under variant B this is expected to need **no change**
       (see the Scope Hypothesis). Under variant A its conclusion
       `ruleMintsFreshLabel rule = true → witnessPresent rule sf b ord = true` must be widened to
       `… → witnessPresent … = true ∨ trivialEventWitnessed … = true`, in both the `.linear` and
       `.branching` clauses, and the new disjunct discharged.
-- [ ] Record in the phase's commit message and in the progress record **which variant landed**.
+- [x] Record in the phase's commit message and in the progress record **which variant landed**.
       Phases 26-28 branch on this.
 
 **Timing**: 3 hours
@@ -2895,6 +2898,42 @@ is itself a hypothesis subject to the same confirmation.
 - **Done when**: `Tableau.lean` compiles with the guard present and consulted, `witnessPresent`
   unmodified, and the landed variant recorded. **The tree-wide `lake build` is NOT this phase's
   gate** — see the declared red window in `## Rollback/Contingency`.
+
+#### Scope Hypothesis verdict: **REFUTED** (measured)
+
+The plan's stated confirmation command was run against variant B with
+`saturated_downward_closed` untouched:
+
+```
+lake build FormalSystem.Metalogic.Decidability.Tableau   # RED under variant B
+```
+
+Three failures, none of which the hypothesis anticipated:
+
+| Site | Failure | Statement or proof? |
+|------|---------|---------------------|
+| `findApplicableRule_extending_adds_new` (`Tableau.lean:2839`) | `cases` dependent elimination failed on the new redirect case | statement still true; needs a NEW progress argument (redirect target absent from branch when `witnessPresent = false`) |
+| `saturated_downward_closed` `.linear` clause | `simp` made no progress | proof repair only |
+| `saturated_downward_closed` `.branching` clause | `simp` made no progress | proof repair only |
+
+Per the plan's own decision rule ("if it fails, the hypothesis is refuted, variant A's widening
+is the actual scope"), **variant A was landed**. The `~150 lines under B / ~300 under A` estimate
+was also refuted downward: the landed variant A diff is **62 insertions, 7 deletions** in one
+file.
+
+**Additional, independent obstacle to variant B — `[UNVERIFIED: derived from the theorem
+statement, not built]`.** `findApplicableRule_applyRule_eq`
+(`FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean:238-242`) states
+`findApplicableRule sf b ord fc = some (r, res, o) → (applyRule r sf b ord).1 = res`. Variant B's
+redirect returns a `res` that is by construction NOT `applyRule`'s result, so this theorem is
+falsified at the *statement* level, not merely broken at the proof level. This was not measured
+(it would have required first repairing variant B in `Tableau.lean`, work the refutation above
+had already made moot) and `lake build …Decidability.Tableau` cannot detect it, since `Fuel.lean`
+is downstream of `Tableau.lean` rather than upstream. Recorded so that any future attempt to
+revive variant B starts from this obstacle rather than rediscovering it.
+
+**Landed variant: A (suppress).** Phases 26-28 branch on this.
+
 
 ---
 
