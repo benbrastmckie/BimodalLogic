@@ -738,23 +738,68 @@ disjunction *Spherical* ranges over, with the two classes kept separate).
 
 ---
 
-### Phase 7: `lem:constraint` — the constraint family is directed and nonempty [NOT STARTED]
+### Phase 7: `lem:constraint` — the constraint family is directed and nonempty [COMPLETED]
 
 **Goal**: Prove the Constraint Lemma in its **restructured** form: directedness plus nonemptiness
 only. The admissibility clause its earlier merged statement carried is split out into
 `lem:admissible` (Phase 8) and must not be folded back in here.
 
 **Tasks**:
-- [ ] State `theorem constraint (F) (hSer : Serial F.TaskRel) (hInt : Interpolates F.TaskRel)
+- [x] State `theorem constraint (F) (hSer : Serial F.TaskRel) (hInt : Interpolates F.TaskRel)
       (τ : PartialHistory F) (z : D) : DirectedFamily (Constraints τ z) ∧ ∀ s ∈ Constraints τ z, s.Nonempty`,
-      docstring citing `lem:constraint` verbatim.
-- [ ] Prove nonemptiness of each fiber from *Seriality*.
-- [ ] Prove nonemptiness of each segment from *Seriality* plus Compositionality.
-- [ ] Prove directedness per `def:directed`: for any two members, exhibit a member contained in
+      docstring citing `lem:constraint` verbatim. *(completed — `PartialHistory.constraint`,
+      statement exactly as specified, `lem:constraint` quoted verbatim from
+      `specs/paper-definitions-of-record.md`)*
+- [x] Prove nonemptiness of each fiber from *Seriality*. *(completed —
+      `nonempty_fib_of_serial`: successor half of *Seriality* at `z - t ≥ 0` when `t ≤ z`,
+      predecessor half at `t - z ≥ 0` plus the converse convention when `t ≥ z`)*
+- [x] Prove nonemptiness of each segment from *Seriality* plus Compositionality. *(completed —
+      `nonempty_seg_of_interpolates`; see the recorded reading below: the segment case needs the
+      interpolation half of Compositionality and does **not** additionally need *Seriality*)*
+- [x] Prove directedness per `def:directed`: for any two members, exhibit a member contained in
       their intersection. The proof consumes Compositionality in **both** directions —
       `TaskFrame.forward_comp` for the composition half and `hInt` for the interpolation half.
-- [ ] Assert in the docstring exactly which axioms the proof consumes, so a later reader can check
-      the §7-style threading for this lemma too.
+      *(completed — `exists_mem_subset_inter`, over the two fiber-monotonicity lemmas
+      `fib_subset_fib_of_le_of_le` / `fib_subset_fib_of_le_of_le'`, both built on
+      `TaskFrame.forward_comp`)*
+- [x] Assert in the docstring exactly which axioms the proof consumes, so a later reader can check
+      the §7-style threading for this lemma too. *(completed — both the module docstring's "Which
+      axioms this consumes" section and `constraint`'s own docstring enumerate the three
+      consumed items and state explicitly that *Spherical* and *Limit* are **not** consumed
+      here, *Spherical* being reserved for `lem:step`'s sole application site)*
+
+**Two transcription decisions this phase had to make, recorded rather than absorbed silently**
+(neither is a skipped, altered, or deferred plan step — both are forced readings the listed tasks
+did not pin down):
+
+1. **The `z ∉ dom τ` proviso is not assumed, and the lemma is proved without it.**
+   `lem:constraint` and `def:constraints` both say `z ∈ D \ X`, and Phase 6 deliberately left
+   that proviso out of `Constraints`' type ("carried at use sites that need it"). This use site
+   does not need it: when `z` *is* a domain time, `z` is unpaired (both `IsPaired` disjuncts
+   demand a strict inequality), so `Fib(τ(z), 0)` is itself a constraint, and by fiber
+   monotonicity it is contained in every other constraint — directedness then holds a fortiori.
+   Adding the proviso would have weakened the lemma for no gain and would have forced Phase 8 to
+   carry a hypothesis it can now omit. The `fib_zero_subset_of_mem_Constraints` branch is exactly
+   this case.
+2. **Segment nonemptiness consumes the interpolation half of *Compositionality* alone, not
+   *Seriality* as well.** The plan's third task says "from *Seriality* plus Compositionality";
+   the actual proof obligation is discharged by `hInt` on its own, because the witness the
+   segment needs is produced by interpolating the history's *own* task-respect step
+   `τ(t) ⇒_{s-t} τ(s)` at the split `s - t = (z - t) + (s - z)` — there is no residual
+   existential for *Seriality* to supply. `hSer` remains genuinely load-bearing for the lemma as
+   a whole (it is what makes the fiber members nonempty), and the deletion probe below confirms
+   it; it is simply not used in the segment branch. This is a narrowing of a plan task's stated
+   means, not of its stated end, and the phase's stated verification criterion ("the proof body
+   genuinely mentions `hSer`, `hInt`, and `forward_comp`") is met unchanged.
+
+Six supporting lemmas are landed alongside `constraint`, since neither the directedness nor the
+nonemptiness argument is expressible without them: `seg_eq_inter_fib` (a constraint segment is
+the intersection of its two endpoint fiber conditions, with `-(s - z)` normalized to `z - s` so
+that segment endpoints and fibers are handled by one monotonicity lemma each),
+`fib_subset_fib_of_le_of_le` and `fib_subset_fib_of_le_of_le'` (fiber monotonicity below and
+above `z` — the constraint imposed by the domain time *nearer* `z` is the tighter one),
+`fib_zero_subset` and `fib_zero_subset_of_mem_Constraints` (the `z ∈ dom τ` case of decision 1),
+and `seg_subset_seg` (segment monotonicity in both endpoints).
 
 **Timing**: 2.5 hours
 
@@ -764,11 +809,31 @@ only. The admissibility clause its earlier merged statement carried is split out
 
 **Files to modify**:
 - `FormalSystem/Semantics/Extension/Constraint.lean` (new)
+- `FormalSystem/Semantics.lean` — aggregator import and submodule docstring entry
 
 **Verification**:
-- `lake build` green, sorry-free, axiom-free.
+- `lake build` green, sorry-free, axiom-free. **PASSED** — full-project `lake build` exit 0
+  (2328 jobs); `grep -c sorry FormalSystem/Semantics/Extension/Constraint.lean` returns 0;
+  `grep -rn "^axiom " FormalSystem/` matches only docstring prose, no `axiom` declaration
+  anywhere in the tree (unchanged from the phase's baseline); `#print axioms
+  PartialHistory.constraint` reports the three standard Lean axioms
+  `[propext, Classical.choice, Quot.sound]` and nothing else. Classical reasoning enters through
+  the `by_cases` on `IsPaired` (an existential over `D`, not decidable); this is not the
+  choice-free régime `lem:nullity` was held to, and no claim of choice-freeness is made for this
+  lemma.
 - The proof body genuinely mentions `hSer`, `hInt`, and `forward_comp` (grep the proof term or
-  check by deleting a hypothesis and observing failure).
+  check by deleting a hypothesis and observing failure). **PASSED** — both checks run:
+  (a) deletion probe — re-elaborating the verbatim bodies of `nonempty_fib_of_serial` and
+  `nonempty_seg_of_interpolates` with `hSer` / `hInt` deleted from the binder list fails with
+  `unknown identifier 'hSer'` / `unknown identifier 'hInt'`, so neither hypothesis is inferable
+  from context; (b) proof-term grep — `#print` of `fib_subset_fib_of_le_of_le` and
+  `fib_subset_fib_of_le_of_le'` mentions `TaskFrame.forward_comp` in both, and directedness
+  routes through those two lemmas exclusively.
+- Additional check, since the phase feeds the section-7 threading criterion:
+  *Spherical* is **not** consumed by this lemma, and its docstring says so explicitly. That is
+  the intended shape — `lem:constraint` *supplies* the directed-family-of-nonempty-sets
+  hypothesis that `lem:step` (Phase 9) will feed to *Spherical* at the paper's sole application
+  site, so *Spherical* staying a consumable hypothesis-form `Prop` is preserved, not spent.
 
 ---
 

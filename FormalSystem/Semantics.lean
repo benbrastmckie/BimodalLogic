@@ -8,6 +8,7 @@ import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.FrameAxioms
+import FormalSystem.Semantics.Extension.Constraint
 import FormalSystem.Semantics.WorldHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
@@ -31,6 +32,9 @@ polymorphic over temporal types.
 - `FrameAxioms`: *Spherical*, *Seriality*, and the interpolation half of *Compositionality* as
   hypothesis-form `Prop`s over a bare task relation (`def:frame`), the derived `lem:nullity`,
   and `def:constraints` — the constraints a partial history imposes on a new duration
+- `Extension.Constraint`: `lem:constraint` — the constraints imposed on a new duration form a
+  directed family of nonempty sets, consuming *Seriality* and *Compositionality* in both of its
+  directions
 - `WorldHistory`: World histories `τ: X → W` as functions from convex time domains to
   world states, respecting the task relation
 - `TaskModel`: Task models extending frames with valuation functions `V: W × String → Prop`
