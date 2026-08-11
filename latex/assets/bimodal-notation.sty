@@ -56,8 +56,14 @@
 \newcommand{\taskto}[1]{\Rightarrow_{#1}}
 % Positive cone of durations: the domain of the primitive task relation
 \newcommand{\poscone}{D^{+}}
+% Fiber operator: \Fib(w, x) is the set of states reachable from w in duration x
+\newcommand{\Fib}{\mathrm{Fib}}
 % Cone of radius #2 around world state #1
 \newcommand{\taskcone}[2]{(#1)_{#2}}
+% Segment between world states #1 and #2 at forward duration #3 and backward duration #4,
+% in the bracket form [w, v]_x^y (the paper's retired \Seg function-application notation
+% must not be reintroduced)
+\newcommand{\taskseg}[4]{[#1, #2]_{#3}^{#4}}
 
 % --- Model Structure ---
 % \model provided by notation-standards.sty

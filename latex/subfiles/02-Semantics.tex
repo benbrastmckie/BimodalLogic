@@ -20,46 +20,96 @@ $D$ & Type & Temporal durations (nontrivial totally ordered abelian group) \\
 $\poscone$ & $\{x : D \mid 0 \leq x\}$ & Positive cone of durations \\
 $w \taskto{x} u$ & $\worldstate \to \poscone \to \worldstate \to \text{Prop}$ & Primitive task relation \\
 $w \taskto{x} u$ & $\worldstate \to D \to \worldstate \to \text{Prop}$ & Extended task relation \\
-$\taskcone{w}{x}$ & $\worldstate \to D \to \mathcal{P}(\worldstate)$ & Cone of radius $x$ around $w$ \\
+$\Fib(w, x)$ & $\worldstate \to D \to \mathcal{P}(\worldstate)$ & Fiber of $w$ at duration $x$ \\
+$\taskcone{w}{x}$ & $\worldstate \to \{x : D \mid 0 < x\} \to \mathcal{P}(\worldstate)$ & Cone of radius $x$ around $w$ \\
+$\taskseg{w}{v}{x}{y}$ & $\worldstate \to \worldstate \to \poscone \to \poscone \to \mathcal{P}(\worldstate)$ & Segment between $w$ and $v$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \noindent
-The task relation is primitive only on the positive cone; the extended relation is obtained from it by the converse convention stated below, and the cone is defined in terms of the extended relation.
+The task relation is primitive only on the positive cone; the extended relation is obtained from it by the converse convention stated below, and the fibers, cones, and segments are all defined in terms of the extended relation.
 
-\begin{definition}[Task Frame]\label{def:frame}
-A \textbf{task frame} is a structure $\taskframe = (\worldstate, \D, {\taskto{}})$ where:
-\begin{enumerate}
-  \item \textbf{World States}: $\worldstate$ is a nonempty set of world states.
-  \item \textbf{Temporal Order}: $\D = (D, +, 0, \leq)$ is a nontrivial totally ordered abelian group.
-  \item \textbf{Task Relation}: ${\taskto{}} \subseteq \worldstate \times \poscone \times \worldstate$ is a parameterised task relation on the \emph{positive cone} $\poscone \define \{x \in D : x \geq 0\}$, extended to negative durations by the \emph{converse convention}
-  \[
-    w \taskto{x} u \quad \define \quad u \taskto{-x} w
-    \qquad \text{for any } x < 0,
-  \]
-  and determining, for each $w \in \worldstate$ and each $x > 0$, the \emph{cone}
-  \[
-    \taskcone{w}{x} \define \{\, u \in \worldstate : w \taskto{y} u \text{ or } u \taskto{y} w \text{ for some } 0 \leq y < x \,\},
-  \]
-  subject to:
-  \begin{itemize}
-    \item[\emph{Nullity}:] $w \taskto{0} u$ if and only if $w = u$.
-    \item[\emph{Compositionality}:] if $w \taskto{x} u$ and $u \taskto{y} v$, then $w \taskto{x+y} v$.
-    \item[\emph{Limit Nullity}:] $\bigcap_{x > 0} \taskcone{w}{x} = \{w\}$.
-  \end{itemize}
-\end{enumerate}
+% Restates the JPL paper's \label{def:task-relation}. Verbatim source text (quoted so a
+% renamed anchor stays detectable by text search):
+%   "A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal
+%    order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and
+%    $x \in D^+$, extended to negative durations by the \textit{converse convention}
+%    $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$ ..."
+%   "\item[\it Fiber:] $\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}$."
+%   "\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)$ where $x > 0$."
+%   "\item[\it Segment:] $[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)$ where $x, y \geq 0$."
+\begin{definition}[Task Relation]\label{def:task-relation}
+A \textbf{task relation} on a nonempty set of world states $\worldstate$ over a temporal order $\D$ is any parameterised relation $w \taskto{x} u$ for $w, u \in \worldstate$ and $x \in \poscone$, extended to negative durations by the \emph{converse convention}
+\[
+  w \taskto{-x} u \quad \define \quad u \taskto{x} w
+  \qquad \text{for } x \geq 0,
+\]
+determining the following for any world states $w, v \in \worldstate$ and durations $x, y \in D$:
+\begin{itemize}
+  \item[\emph{Fiber}:] $\Fib(w, x) \define \{\, u \in \worldstate : w \taskto{x} u \,\}$.
+  \item[\emph{Cone}:] $\taskcone{w}{x} \define \bigcup_{|y| < x} \Fib(w, y)$ where $x > 0$.
+  \item[\emph{Segment}:] $\taskseg{w}{v}{x}{y} \define \Fib(w, x) \cap \Fib(v, -y)$ where $x, y \geq 0$.
+\end{itemize}
 \end{definition}
 
 \noindent
-\emph{Nullity} is a biconditional, and so says more than that zero-duration tasks leave the world state unchanged: it also says that no two distinct world states are related by a zero-duration task.
-\emph{Compositionality} is stated on the positive cone, where the primitive relation lives, and asserts the inclusion $\taskrel_{x+y} \supseteq \taskrel_{x} \circ \taskrel_{y}$ rather than the corresponding equality, which would additionally assert interpolation.
-\emph{Limit Nullity} excludes world states that are distinct from $w$ and yet reachable from $w$ within arbitrarily small durations; equivalently, $w$ is the only world state lying in every cone around $w$.
+The fiber $\Fib(w, x)$ collects the world states reachable from $w$ by a task of duration exactly $x$; by the converse convention, negative-duration fibers run the relation backwards.
+The cone $\taskcone{w}{x}$ collects the world states reachable forwards or backwards from $w$ within any duration of magnitude strictly less than $x$.
+The segment $\taskseg{w}{v}{x}{y}$ collects the world states reachable forwards from $w$ in duration $x$ that also reach $v$ forwards in duration $y$: the candidate states lying between the two endpoints.
+Fibers and segments are two separate classes of sets; in particular, a one-sided fiber does not count as a segment.
+
+% Restates the JPL paper's \label{def:directed}. Verbatim source text:
+%   "A nonempty family of sets $\mathcal{S}$ is \textit{directed} just in case
+%    $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$."
+\begin{definition}[Directed Family]\label{def:directed}
+A nonempty family of sets $\mathcal{S}$ is \textbf{directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
+\end{definition}
+
+% Restates the JPL paper's \label{def:frame}: exactly FOUR axioms (Compositionality,
+% Seriality, Limit, Spherical). Nullity is NOT an axiom -- it is the derived \ref{lem:nullity}
+% below. Verbatim axiom text (sub-anchors def:frame#Compositionality, def:frame#Seriality,
+% def:frame#Limit, def:frame#Spherical):
+%   "\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$
+%    and $u \Rightarrow_y v$ for some $u \in W$."
+%   "\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$."
+%   "\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$."
+%   "\item[\it Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family
+%    $\mathcal{S}$ of nonempty fibers and segments."
+\begin{definition}[Task Frame]\label{def:frame}
+A \textbf{task frame} is any structure $\taskframe = (\worldstate, \D, {\taskto{}})$ where $\worldstate$ is a nonempty set of world states, $\D = (D, +, 0, \leq)$ is a nontrivial totally ordered abelian group, and ${\taskto{}}$ is a task relation satisfying the following for $x, y \geq 0$:
+\begin{itemize}
+  \item[\emph{Compositionality}:] $w \taskto{x+y} v$ if and only if $w \taskto{x} u$ and $u \taskto{y} v$ for some $u \in \worldstate$.
+  \item[\emph{Seriality}:] $w \taskto{x} u$ and $v \taskto{x} w$ for some $u, v \in \worldstate$.
+  \item[\emph{Limit}:] $\bigcap_{x > 0} \taskcone{w}{x} = \{w\}$.
+  \item[\emph{Spherical}:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family $\mathcal{S}$ of nonempty fibers and segments.
+\end{itemize}
+\end{definition}
+
+\noindent
+\emph{Compositionality} is a biconditional.
+Read right to left, it asserts closure under composition: tasks of durations $x$ and $y$ performed in sequence compose to a single task of duration $x + y$.
+Read left to right, it asserts interpolation: every task of duration $x + y$ passes through an intermediate world state that splits it into consecutive tasks of durations $x$ and $y$.
+Both directions are load-bearing; in particular the interpolation direction is used directly in the proofs about constraint families of fibers and segments.
+\emph{Seriality} provides, at every nonnegative duration, both a successor and a predecessor for every world state, so no world state is a temporal dead end in either direction.
+\emph{Limit} excludes world states that are distinct from $w$ and yet reachable from $w$ within arbitrarily small durations; equivalently, $w$ is the only world state lying in every cone around $w$.
+\emph{Spherical} is a directed-intersection condition: any directed family drawn from the nonempty fibers and segments has a common element.
+It supplies the candidate world state needed to extend a partial history to one further time, and is consumed exactly at that step of the extension argument for world histories.
+
+% Restates the JPL paper's derived \label{lem:nullity} (Nullity is a lemma, not an axiom).
+% Verbatim source text:
+%   "$w \Rightarrow_0 w$ for every world state $w \in W$ in every frame
+%    $\F = \tuple{W, \D, \Rightarrow}$."
+\begin{lemma}[Nullity]\label{lem:nullity}
+$w \taskto{0} w$ for every world state $w \in \worldstate$ in every task frame $\taskframe = (\worldstate, \D, {\taskto{}})$.
+\end{lemma}
+
+\noindent
+Nullity is \emph{derived} rather than postulated, and the derivation is choice-free: \emph{Seriality} at $x = 0$ supplies some $u$ with $w \taskto{0} u$; since $|0| < x$ for every $x > 0$, this $u$ lies in every cone around $w$, and \emph{Limit} then forces $u = w$.
 
 \begin{remark}
-Reflection ($w \taskto{0} w$) and composition over negative durations are \emph{derived} rather than postulated: the first from \emph{Nullity}, and the second by taking converses, composing on the positive cone, and taking the converse of the result.
+Composition over negative durations is likewise derived rather than postulated: take converses, compose on the positive cone via \emph{Compositionality}, and take the converse of the result.
 Mixed-sign composition is not so much prohibited as inexpressible at the primitive level, since primitive durations are nonnegative.
-This is just as well: were composition extended across mixed-sign durations, \emph{Nullity} would collapse nondeterminism, since $w \taskto{x} u$ and $w \taskto{x} u'$ give $u \taskto{-x} w$ by the converse convention, whence $u \taskto{0} u'$ and so $u = u'$.
 \end{remark}
 
 \subsection{World Histories}
