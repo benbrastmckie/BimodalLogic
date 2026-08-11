@@ -514,9 +514,17 @@ theorem sat_box_neg (b : Branch) (timeOrd : TimeOrdering)
   have h := hExp .boxNeg (by simp [allRulesForFC, allRules, denseRules, discreteRules])
   -- `boxNeg` mints a fresh world, so its suppression is the witness guard, not output
   -- presence: some already-known world carries `F(φ)` at this time.
+  -- The suppression test is `witnessPresent … || trivialEventWitnessed …`. `.boxNeg` mints a
+  -- *world*, and `trivialEventWitnessed` returns `false` on every rule other than the four
+  -- positive temporal minting rules, so the second disjunct is definitionally `false` here and
+  -- the guard collapses back to `witnessPresent` alone. This lemma's statement is therefore
+  -- unchanged by the guard.
+  have htriv : trivialEventWitnessed .boxNeg ⟨.neg, .box φ, ⟨w, t⟩⟩ b timeOrd = false := rfl
   have hwit : witnessPresent .boxNeg ⟨.neg, .box φ, ⟨w, t⟩⟩ b timeOrd = true := by
     by_contra hc
-    simp only [isApplicable, applyRule, ruleMintsFreshLabel, if_true, if_neg hc] at h
+    rw [Bool.not_eq_true] at hc
+    simp only [isApplicable, applyRule, ruleMintsFreshLabel, if_true, hc, htriv,
+      Bool.or_self, Bool.false_eq_true, if_false] at h
     exact absurd h (by simp)
   simp only [witnessPresent, List.any_eq_true] at hwit
   obtain ⟨w', hw', hcont⟩ := hwit
@@ -525,19 +533,31 @@ theorem sat_box_neg (b : Branch) (timeOrd : TimeOrdering)
 set_option maxHeartbeats 800000 in
 /--
 **Until positive saturation**: if `T(U(event, guard))` at `(w, t)` is on a saturated branch,
-some known time carries the event witness, or carries the guard together with the Until itself.
+some known time carries the event witness, or carries the guard together with the Until itself —
+*or* the formula is `F ⊤` and the ordering already has a strictly later time.
 
 Both rules that can act here mint a fresh time — `someFuturePos` when `guard = ⊤` (where the
 formula is `F(event)`), `untlPos` otherwise — so in both cases suppression is the witness
 guard, and the witness's own label puts its time in `Branch.knownTimes`.
+
+**The second disjunct.** Suppression is now `witnessPresent … || trivialEventWitnessed …`
+(`Tableau.lean:1956-1957`, `:1980-1981`). `trivialEventWitnessed` fires on exactly one shape,
+`untl ⊤ ⊤` (that is, `F ⊤`), and on that shape it consults the *ordering* and not the branch: an
+already-ordered strictly-later time discharges the existential obligation because `⊤` holds
+there, with no witness formula needed. So on `F ⊤` the branch may carry no witness at all, and
+the first disjunct is genuinely unavailable. The statement therefore gains the ordered-witness
+disjunct rather than being asserted past its truth. It is not a weakening consumers cannot use:
+`event = ⊤` makes the semantic witness obligation immediate at *any* time, and
+`timeOrd.futureOf t ≠ []` supplies the ordered time to use.
 -/
 theorem sat_untl_pos (b : Branch) (timeOrd : TimeOrdering)
     (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
     (event guard : Formula) (w : WorldIndex) (t : TimeIndex)
     (hmem : ⟨.pos, .untl event guard, ⟨w, t⟩⟩ ∈ b) :
-    ∃ t' ∈ b.knownTimes,
+    (∃ t' ∈ b.knownTimes,
       (⟨.pos, event, ⟨w, t'⟩⟩ ∈ b) ∨
-      (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .untl event guard, ⟨w, t'⟩⟩ ∈ b) := by
+      (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .untl event guard, ⟨w, t'⟩⟩ ∈ b))
+    ∨ (event = Formula.top ∧ guard = Formula.top ∧ timeOrd.futureOf t ≠ []) := by
   have hExp :=
     findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .untl event guard, ⟨w, t⟩⟩ hmem
   simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
@@ -548,43 +568,66 @@ theorem sat_untl_pos (b : Branch) (timeOrd : TimeOrdering)
     subst hg
     have h := hExp .someFuturePos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
     have hwit :
-        witnessPresent .someFuturePos ⟨.pos, .untl event Formula.top, ⟨w, t⟩⟩ b timeOrd = true := by
+        witnessPresent .someFuturePos ⟨.pos, .untl event Formula.top, ⟨w, t⟩⟩ b timeOrd = true
+        ∨ trivialEventWitnessed .someFuturePos ⟨.pos, .untl event Formula.top, ⟨w, t⟩⟩ b timeOrd
+            = true := by
       by_contra hc
-      simp only [Bool.not_eq_true, Formula.top] at hc
-      simp [isApplicable, asSomeFuture?, Formula.top, applyRule, ruleMintsFreshLabel, hc] at h
-    simp only [witnessPresent, asSomeFuture?, Formula.top, List.any_eq_true] at hwit
-    obtain ⟨t', _, hcont⟩ := hwit
-    have hmem' : (⟨.pos, event, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := (contains_iff_mem b _).mp hcont
-    exact ⟨t', mem_knownTimes_of_mem hmem', Or.inl hmem'⟩
+      rw [not_or] at hc
+      obtain ⟨hc1, hc2⟩ := hc
+      rw [Bool.not_eq_true] at hc1 hc2
+      -- `simp` unfolds `Formula.top` inside `h`; unfold it in the refutations too so they match.
+      simp only [Formula.top] at hc1 hc2
+      simp [isApplicable, asSomeFuture?, Formula.top, applyRule, ruleMintsFreshLabel,
+        hc1, hc2] at h
+    rcases hwit with hwit | htriv
+    · simp only [witnessPresent, asSomeFuture?, Formula.top, List.any_eq_true] at hwit
+      obtain ⟨t', _, hcont⟩ := hwit
+      have hmem' : (⟨.pos, event, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := (contains_iff_mem b _).mp hcont
+      exact Or.inl ⟨t', mem_knownTimes_of_mem hmem', Or.inl hmem'⟩
+    · -- `F ⊤`: no witness formula is on the branch; the ordering carries the witness instead.
+      refine Or.inr ⟨?_, rfl, ?_⟩
+      · by_contra hne
+        simp [trivialEventWitnessed, hne] at htriv
+      · intro hnil
+        simp [trivialEventWitnessed, hnil] at htriv
   · -- Genuine Until: `untlPos` is the acting rule, and it is branching.
     have hg' : (guard == Formula.top) = false := by simp [hg]
     have h := hExp .untlPos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+    -- `trivialEventWitnessed` fires only on `F ⊤` / `P ⊤`, i.e. only when the guard *is* `⊤`.
+    -- This is the genuine-Until branch (`hg' : (guard == ⊤) = false`), so the second disjunct of
+    -- the suppression test is `false` and the guard collapses to `witnessPresent` alone.
+    have htriv : trivialEventWitnessed .untlPos ⟨.pos, .untl event guard, ⟨w, t⟩⟩ b timeOrd
+        = false := by simp [trivialEventWitnessed, hg']
     have hwit :
         witnessPresent .untlPos ⟨.pos, .untl event guard, ⟨w, t⟩⟩ b timeOrd = true := by
       by_contra hc
+      rw [Bool.not_eq_true] at hc
       simp only [isApplicable, asUntil?, hg', if_false, applyRule, ruleMintsFreshLabel,
-        ruleSelfGuarded, if_true, Option.isSome_some, if_neg hc] at h
-      exact absurd h (by simp)
+        ruleSelfGuarded, if_true, Option.isSome_some] at h
+      exact absurd h (by simp [hc, htriv])
     simp only [witnessPresent, asUntil?, hg', Bool.false_eq_true, if_false, List.any_eq_true,
       Bool.or_eq_true, Bool.and_eq_true] at hwit
     obtain ⟨t', _, hcont⟩ := hwit
     rcases hcont with he | ⟨hgd, hu⟩
     · have hmem' : (⟨.pos, event, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := (contains_iff_mem b _).mp he
-      exact ⟨t', mem_knownTimes_of_mem hmem', Or.inl hmem'⟩
+      exact Or.inl ⟨t', mem_knownTimes_of_mem hmem', Or.inl hmem'⟩
     · have hmemG : (⟨.pos, guard, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := (contains_iff_mem b _).mp hgd
       have hmemU : (⟨.pos, .untl event guard, ⟨w, t'⟩⟩ : SignedFormula) ∈ b :=
         (contains_iff_mem b _).mp hu
-      exact ⟨t', mem_knownTimes_of_mem hmemG, Or.inr ⟨hmemG, hmemU⟩⟩
+      exact Or.inl ⟨t', mem_knownTimes_of_mem hmemG, Or.inr ⟨hmemG, hmemU⟩⟩
 
 set_option maxHeartbeats 800000 in
-/-- **Since positive saturation**: past-directed mirror of `sat_untl_pos`. -/
+/-- **Since positive saturation**: past-directed mirror of `sat_untl_pos`, ordered-witness
+disjunct included. There the trigger shape is `P ⊤` (`snce ⊤ ⊤`) and the ordering fact is
+`timeOrd.pastOf t ≠ []`. -/
 theorem sat_snce_pos (b : Branch) (timeOrd : TimeOrdering)
     (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
     (event guard : Formula) (w : WorldIndex) (t : TimeIndex)
     (hmem : ⟨.pos, .snce event guard, ⟨w, t⟩⟩ ∈ b) :
-    ∃ t' ∈ b.knownTimes,
+    (∃ t' ∈ b.knownTimes,
       (⟨.pos, event, ⟨w, t'⟩⟩ ∈ b) ∨
-      (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .snce event guard, ⟨w, t'⟩⟩ ∈ b) := by
+      (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .snce event guard, ⟨w, t'⟩⟩ ∈ b))
+    ∨ (event = Formula.top ∧ guard = Formula.top ∧ timeOrd.pastOf t ≠ []) := by
   have hExp :=
     findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .snce event guard, ⟨w, t⟩⟩ hmem
   simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
@@ -594,32 +637,50 @@ theorem sat_snce_pos (b : Branch) (timeOrd : TimeOrdering)
   · subst hg
     have h := hExp .somePastPos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
     have hwit :
-        witnessPresent .somePastPos ⟨.pos, .snce event Formula.top, ⟨w, t⟩⟩ b timeOrd = true := by
+        witnessPresent .somePastPos ⟨.pos, .snce event Formula.top, ⟨w, t⟩⟩ b timeOrd = true
+        ∨ trivialEventWitnessed .somePastPos ⟨.pos, .snce event Formula.top, ⟨w, t⟩⟩ b timeOrd
+            = true := by
       by_contra hc
-      simp only [Bool.not_eq_true, Formula.top] at hc
-      simp [isApplicable, asSomePast?, Formula.top, applyRule, ruleMintsFreshLabel, hc] at h
-    simp only [witnessPresent, asSomePast?, Formula.top, List.any_eq_true] at hwit
-    obtain ⟨t', _, hcont⟩ := hwit
-    have hmem' : (⟨.pos, event, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := (contains_iff_mem b _).mp hcont
-    exact ⟨t', mem_knownTimes_of_mem hmem', Or.inl hmem'⟩
+      rw [not_or] at hc
+      obtain ⟨hc1, hc2⟩ := hc
+      rw [Bool.not_eq_true] at hc1 hc2
+      -- `simp` unfolds `Formula.top` inside `h`; unfold it in the refutations too so they match.
+      simp only [Formula.top] at hc1 hc2
+      simp [isApplicable, asSomePast?, Formula.top, applyRule, ruleMintsFreshLabel,
+        hc1, hc2] at h
+    rcases hwit with hwit | htriv
+    · simp only [witnessPresent, asSomePast?, Formula.top, List.any_eq_true] at hwit
+      obtain ⟨t', _, hcont⟩ := hwit
+      have hmem' : (⟨.pos, event, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := (contains_iff_mem b _).mp hcont
+      exact Or.inl ⟨t', mem_knownTimes_of_mem hmem', Or.inl hmem'⟩
+    · -- `P ⊤`: the ordering carries the witness; no witness formula is on the branch.
+      refine Or.inr ⟨?_, rfl, ?_⟩
+      · by_contra hne
+        simp [trivialEventWitnessed, hne] at htriv
+      · intro hnil
+        simp [trivialEventWitnessed, hnil] at htriv
   · have hg' : (guard == Formula.top) = false := by simp [hg]
     have h := hExp .sncePos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+    -- Mirror of the `untlPos` branch: `hg'` refutes the `trivialEventWitnessed` disjunct.
+    have htriv : trivialEventWitnessed .sncePos ⟨.pos, .snce event guard, ⟨w, t⟩⟩ b timeOrd
+        = false := by simp [trivialEventWitnessed, hg']
     have hwit :
         witnessPresent .sncePos ⟨.pos, .snce event guard, ⟨w, t⟩⟩ b timeOrd = true := by
       by_contra hc
+      rw [Bool.not_eq_true] at hc
       simp only [isApplicable, asSince?, hg', if_false, applyRule, ruleMintsFreshLabel,
-        ruleSelfGuarded, if_true, Option.isSome_some, if_neg hc] at h
-      exact absurd h (by simp)
+        ruleSelfGuarded, if_true, Option.isSome_some] at h
+      exact absurd h (by simp [hc, htriv])
     simp only [witnessPresent, asSince?, hg', Bool.false_eq_true, if_false, List.any_eq_true,
       Bool.or_eq_true, Bool.and_eq_true] at hwit
     obtain ⟨t', _, hcont⟩ := hwit
     rcases hcont with he | ⟨hgd, hu⟩
     · have hmem' : (⟨.pos, event, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := (contains_iff_mem b _).mp he
-      exact ⟨t', mem_knownTimes_of_mem hmem', Or.inl hmem'⟩
+      exact Or.inl ⟨t', mem_knownTimes_of_mem hmem', Or.inl hmem'⟩
     · have hmemG : (⟨.pos, guard, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := (contains_iff_mem b _).mp hgd
       have hmemU : (⟨.pos, .snce event guard, ⟨w, t'⟩⟩ : SignedFormula) ∈ b :=
         (contains_iff_mem b _).mp hu
-      exact ⟨t', mem_knownTimes_of_mem hmemG, Or.inr ⟨hmemG, hmemU⟩⟩
+      exact Or.inl ⟨t', mem_knownTimes_of_mem hmemG, Or.inr ⟨hmemG, hmemU⟩⟩
 
 set_option maxHeartbeats 3200000 in
 -- `sat_some_future_neg` combines the `allRulesForFC` rule-table reduction with a case
