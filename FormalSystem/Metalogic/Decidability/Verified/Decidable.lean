@@ -140,8 +140,11 @@ The four fields are independent obligations and all four are load-bearing:
 * `shiftClosed` — `Ω` is shift-closed. Not a convenience: it is the *only* hypothesis all four
   validity notions impose on `Ω`, and it is what makes `□` behave as the universal modality
   across times as well as histories. `boxTemporal` is unsound without it.
-* `histMem` — every branch world lands in `Ω`. `□` quantifies over `Ω`, so without this a
-  `T(□A)` on the branch would say nothing about the branch's own other worlds.
+* `histTotal` — every branch world is interpreted by a *total* history. `□` quantifies over the
+  total histories (`def:BL-semantics`'s box clause, `specs/paper-definitions-of-record.md`), so
+  without this a `T(□A)` on the branch would say nothing about the branch's own other worlds.
+  This replaced the former `histTotal : ∀ w, hist w ∈ Ω` when the box clause was retargeted from
+  `Ω`-membership to totality; membership is no longer what `□` instantiates against.
 * `ordResp` — every recorded ordering constraint is a genuine strict inequality in `D`. This is
   what a fresh-time rule has to re-establish for the *extended* ordering it returns.
 * `sat` — every signed formula on the branch is satisfied.
@@ -151,8 +154,8 @@ structure SatState (M : TaskModel F) (Om : Set (WorldHistory F))
     (b : Branch) (ord : TimeOrdering) : Prop where
   /-- The admissible set is shift-closed, as every validity notion requires of it. -/
   shiftClosed : ShiftClosed Om
-  /-- Every branch world is interpreted by an admissible history. -/
-  histMem : ∀ w, hist w ∈ Om
+  /-- Every branch world is interpreted by a total history. -/
+  histTotal : ∀ w, (hist w).IsTotal
   /-- Every abstract ordering constraint is a genuine strict inequality. -/
   ordResp : ∀ p ∈ ord.constraints, tv p.1 < tv p.2
   /-- Every signed formula on the branch is satisfied. -/
@@ -164,7 +167,7 @@ theorem SatState.mono {M : TaskModel F} {Om : Set (WorldHistory F)}
     {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b b' : Branch} {ord : TimeOrdering}
     (h : SatState M Om hist tv b ord) (hsub : ∀ sf ∈ b', sf ∈ b) :
     SatState M Om hist tv b' ord :=
-  ⟨h.shiftClosed, h.histMem, h.ordResp, fun sf hsf => h.sat sf (hsub sf hsf)⟩
+  ⟨h.shiftClosed, h.histTotal, h.ordResp, fun sf hsf => h.sat sf (hsub sf hsf)⟩
 
 /-- Build a state on `fs ++ b` from a state on `b` plus satisfaction of each added formula. The
 shape every non-branching rule's proof ends in. -/
@@ -173,7 +176,7 @@ theorem SatState.append {M : TaskModel F} {Om : Set (WorldHistory F)}
     {fs : List SignedFormula} (h : SatState M Om hist tv b ord)
     (hfs : ∀ sf ∈ fs, SatAt M Om hist tv sf) :
     SatState M Om hist tv (fs ++ b) ord :=
-  ⟨h.shiftClosed, h.histMem, h.ordResp, by
+  ⟨h.shiftClosed, h.histTotal, h.ordResp, by
     intro sf hsf
     rcases List.mem_append.mp hsf with h' | h'
     · exact hfs sf h'
@@ -619,7 +622,7 @@ theorem ruleSound_negNeg : RuleSound carrierBase .negNeg := by
 /-!
 ## The S5 modal family
 
-`□` quantifies over the admissible set `Ω`, and `SatState.histMem` puts every branch world inside
+`□` quantifies over the admissible set `Ω`, and `SatState.histTotal` puts every branch world inside
 `Ω`. That is the whole content of the two *universal* modal rules: `boxPos` reads `T(□A)` at one
 label and asserts `T(A)` at every known world at the same time, and `diamondNeg` does the mirror
 image for `F(◇A)`. Neither mints a label, neither touches the ordering, and neither needs
@@ -638,33 +641,38 @@ theorem asDiamond?_eq_some {φ ψ : Formula} (h : asDiamond? φ = some ψ) :
   split at h <;> simp_all
 
 /--
-**Shift-closure carries `□` into `G`.** If `A` holds at time `t` in every admissible history, it
-holds at every *later* time of any one admissible history.
+**Totality carries `□` into `G`.** If `A` holds at time `t` in every *total* history, it
+holds at every *later* time of any one total history.
 
-The witness is the shifted history `τ ⊕ (s - t)`, admissible by shift-closure, at which truth at
-`t` is truth at `s` in `τ` (`TimeShift.time_shift_preserves_truth`). This is the point form of
-`Metalogic.Soundness.modal_future_valid`, which states the same fact as the validity of
-`□A → □(GA)`; it is derived here from the same primitive rather than imported, so that the
+The witness is the shifted history `τ ⊕ (s - t)`, total by `WorldHistory.isTotal_timeShift`, at
+which truth at `t` is truth at `s` in `τ` (`TimeShift.time_shift_preserves_truth`). This is the
+point form of `Metalogic.Soundness.modal_future_valid`, which states the same fact as the validity
+of `□A → □(GA)`; it is derived here from the same primitive rather than imported, so that the
 decidability tree acquires no import edge into the soundness tree.
+
+Shift-closure of `Ω` is no longer a hypothesis: the shifted witness's *totality* is what `□` now
+instantiates against, and totality is preserved by `timeShift` unconditionally.
 -/
 theorem truthAt_allFuture_of_box {M : TaskModel F} {Om : Set (WorldHistory F)}
-    (hsc : ShiftClosed Om) {τ : WorldHistory F} (hτ : τ ∈ Om) {t : D} {ψ : Formula}
-    (h : ∀ σ ∈ Om, TruthAt M Om σ t ψ) : TruthAt M Om τ t ψ.allFuture := by
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D} {ψ : Formula}
+    (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Om σ t ψ) :
+    TruthAt M Om τ t ψ.allFuture := by
   rw [Truth.future_iff]
   intro s _
   exact (TimeShift.time_shift_preserves_truth M Om τ t s ψ).mp
-    (h (WorldHistory.timeShift τ (s - t)) (hsc τ hτ (s - t)))
+    (h (WorldHistory.timeShift τ (s - t)) (WorldHistory.isTotal_timeShift hτ (s - t)))
 
-/-- **Shift-closure carries `□` into `H`.** The past mirror of `truthAt_allFuture_of_box`; the
+/-- **Totality carries `□` into `H`.** The past mirror of `truthAt_allFuture_of_box`; the
 shift argument is insensitive to the direction of the inequality, so the two proofs differ only
 in which characterisation lemma they open with. -/
 theorem truthAt_allPast_of_box {M : TaskModel F} {Om : Set (WorldHistory F)}
-    (hsc : ShiftClosed Om) {τ : WorldHistory F} (hτ : τ ∈ Om) {t : D} {ψ : Formula}
-    (h : ∀ σ ∈ Om, TruthAt M Om σ t ψ) : TruthAt M Om τ t ψ.allPast := by
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D} {ψ : Formula}
+    (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Om σ t ψ) :
+    TruthAt M Om τ t ψ.allPast := by
   rw [Truth.past_iff]
   intro s _
   exact (TimeShift.time_shift_preserves_truth M Om τ t s ψ).mp
-    (h (WorldHistory.timeShift τ (s - t)) (hsc τ hτ (s - t)))
+    (h (WorldHistory.timeShift τ (s - t)) (WorldHistory.isTotal_timeShift hτ (s - t)))
 
 /-- `T(□A) → T(A)` at every known world, same time. Persistent: the source stays. -/
 theorem ruleSound_boxPos : RuleSound carrierBase .boxPos := by
@@ -688,11 +696,11 @@ theorem ruleSound_boxPos : RuleSound carrierBase .boxPos := by
         · exact absurd hw (by simp)
         · rw [Option.some.injEq] at hw
           subst hw
-          exact hsrc (hist w) (hst.histMem w)
+          exact hsrc (hist w) (hst.histTotal w)
     | _ => simp [applyRule, SatResult]
 
 /-- `F(◇A) → F(A)` at every known world, same time. The mirror of `boxPos`: `F(◇A)` is
-`T(□¬A)` after unfolding `◇`, so the same `histMem` step does the work. -/
+`T(□¬A)` after unfolding `◇`, so the same `histTotal` step does the work. -/
 theorem ruleSound_diamondNeg : RuleSound carrierBase .diamondNeg := by
   intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
@@ -705,7 +713,7 @@ theorem ruleSound_diamondNeg : RuleSound carrierBase .diamondNeg := by
       have hφ : φ = .imp (.box (.imp ψ .bot)) .bot := asDiamond?_eq_some hA
       have hsrc : SatAt M Om hist tv ⟨.neg, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hbox : ∀ σ ∈ Om, TruthAt M Om σ (tv l.time) ψ → False := by
+      have hbox : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Om σ (tv l.time) ψ → False := by
         by_contra hc
         exact hsrc hc
       simp only [applyRule, hA]
@@ -719,10 +727,10 @@ theorem ruleSound_diamondNeg : RuleSound carrierBase .diamondNeg := by
         · exact absurd hw (by simp)
         · rw [Option.some.injEq] at hw
           subst hw
-          exact hbox (hist w) (hst.histMem w)
+          exact hbox (hist w) (hst.histTotal w)
 
-/-- `T(□A) → T(GA), T(HA)` at the same label. The one rule in this family that consumes
-shift-closure, via `truthAt_allFuture_of_box` and `truthAt_allPast_of_box`. -/
+/-- `T(□A) → T(GA), T(HA)` at the same label. The one rule in this family that moves the
+evaluation time, via `truthAt_allFuture_of_box` and `truthAt_allPast_of_box`. -/
 theorem ruleSound_boxTemporal : RuleSound carrierBase .boxTemporal := by
   intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf
@@ -734,9 +742,9 @@ theorem ruleSound_boxTemporal : RuleSound carrierBase .boxTemporal := by
       have hsrc : SatAt M Om hist tv ⟨.pos, Formula.box ψ, l⟩ := hst.sat _ hmem
       simp only [SatAt, TruthAt] at hsrc
       have hG : TruthAt M Om (hist l.world) (tv l.time) ψ.allFuture :=
-        truthAt_allFuture_of_box hst.shiftClosed (hst.histMem l.world) hsrc
+        truthAt_allFuture_of_box (hst.histTotal l.world) hsrc
       have hH : TruthAt M Om (hist l.world) (tv l.time) ψ.allPast :=
-        truthAt_allPast_of_box hst.shiftClosed (hst.histMem l.world) hsrc
+        truthAt_allPast_of_box (hst.histTotal l.world) hsrc
       simp only [applyRule]
       split
       · trivial
@@ -775,10 +783,10 @@ it stood before that removal.
 -/
 
 /-- Everything the fresh-world rules propagate out of a `T(□B)` on the branch is satisfied at the
-fresh world, whichever admissible history is filed there. -/
+fresh world, whichever *total* history is filed there. -/
 theorem satAt_of_mem_boxProps {M : TaskModel F} {Om : Set (WorldHistory F)}
     {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
-    (hst : SatState M Om hist tv b ord) {σ : WorldHistory F} (hσ : σ ∈ Om)
+    (hst : SatState M Om hist tv b ord) {σ : WorldHistory F} (hσ : σ.IsTotal)
     {w : WorldIndex} {g : SignedFormula}
     (hg : g ∈ b.boxPosFormulas.filterMap fun bsf =>
       match bsf.formula with
@@ -805,10 +813,10 @@ theorem satAt_of_mem_boxProps {M : TaskModel F} {Om : Set (WorldHistory F)}
     simpa [SatAt, SignedFormula.pos] using hsrc σ hσ
 
 /-- The `F(◇B)` mirror of `satAt_of_mem_boxProps`. `F(◇B)` is `T(□¬B)` once `◇` is unfolded, so
-the same `Ω`-quantification does the work, with the sign flipped. -/
+the same totality quantification does the work, with the sign flipped. -/
 theorem satAt_of_mem_diaProps {M : TaskModel F} {Om : Set (WorldHistory F)}
     {hist : WorldIndex → WorldHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
-    (hst : SatState M Om hist tv b ord) {σ : WorldHistory F} (hσ : σ ∈ Om)
+    (hst : SatState M Om hist tv b ord) {σ : WorldHistory F} (hσ : σ.IsTotal)
     {w : WorldIndex} {g : SignedFormula}
     (hg : g ∈ b.diamondNegFormulas.filterMap fun dsf =>
       match dsf.formula with
@@ -832,7 +840,8 @@ theorem satAt_of_mem_diaProps {M : TaskModel F} {Om : Set (WorldHistory F)}
       have hsrc : SatAt M Om hist tv dsf := hst.sat _ hmem
       rw [SatAt, hsign, hbf] at hsrc
       simp only [TruthAt] at hsrc
-      have hbox : ∀ τ ∈ Om, TruthAt M Om τ (tv dsf.label.time) inner → False := by
+      have hbox : ∀ τ : WorldHistory F, τ.IsTotal →
+          TruthAt M Om τ (tv dsf.label.time) inner → False := by
         by_contra hcon
         exact hsrc hcon
       rw [← Option.some_inj.mp hw]
@@ -859,7 +868,7 @@ theorem ruleSound_boxNeg : RuleSound carrierBase .boxNeg := by
       · intro v
         rcases eq_or_ne v b.nextWorld with rfl | hv
         · simpa using hσ
-        · simpa [Function.update_of_ne hv] using hst.histMem v
+        · simpa [Function.update_of_ne hv] using hst.histTotal v
       · intro g hg
         rcases List.mem_append.mp hg with hnew | hb
         · rcases List.mem_cons.mp hnew with rfl | hrest
@@ -887,17 +896,17 @@ theorem ruleSound_diamondPos : RuleSound carrierBase .diamondPos := by
       have hφ : φ = .imp (.box (.imp ψ .bot)) .bot := asDiamond?_eq_some hA
       have hsrc : SatAt M Om hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hex : ∃ σ ∈ Om, TruthAt M Om σ (tv l.time) ψ := by
+      have hex : ∃ σ : WorldHistory F, σ.IsTotal ∧ TruthAt M Om σ (tv l.time) ψ := by
         by_contra hcon
         push_neg at hcon
-        exact hsrc hcon
+        exact hsrc fun σ hσ hσt => hcon σ hσ hσt
       obtain ⟨σ, hσ, hσtrue⟩ := hex
       simp only [applyRule, hA]
       refine ⟨Function.update hist b.nextWorld σ, tv, hst.shiftClosed, ?_, hst.ordResp, ?_⟩
       · intro v
         rcases eq_or_ne v b.nextWorld with rfl | hv
         · simpa using hσ
-        · simpa [Function.update_of_ne hv] using hst.histMem v
+        · simpa [Function.update_of_ne hv] using hst.histTotal v
       · intro g hg
         rcases List.mem_append.mp hg with hnew | hb
         · rcases List.mem_cons.mp hnew with rfl | hrest
@@ -1137,7 +1146,7 @@ unchanged, and all four are `.persistent`, since a universal formula is never sp
 The whole content is the bridge above plus the relevant `Truth` characterisation:
 `Truth.future_iff` and `Truth.past_iff` for the two `G`/`H` rules, `Truth.some_future_iff` and
 `Truth.some_past_iff` for the two `F`/`P` rules, whose negations are what the `.neg` sign
-asserts. Nothing here needs shift-closure or `histMem`: every emitted formula stays in the source
+asserts. Nothing here needs shift-closure or `histTotal`: every emitted formula stays in the source
 label's own world.
 -/
 
@@ -1496,18 +1505,22 @@ time-invariant when `Ω` is shift-closed. `mem_boxDiamondPersistence_shape` is w
 restriction visible across the `private` definition.
 -/
 
-/-- **An `Ω`-universal claim is time-invariant.** If `ψ` holds at time `t` in *every* admissible
-history, it holds at *any* time in every admissible history.
+/-- **A totality-universal claim is time-invariant.** If `ψ` holds at time `t` in *every* total
+history, it holds at *any* time in every total history.
 
 This is the ungated core of `truthAt_allFuture_of_box` and `truthAt_allPast_of_box`: those two
 wrap this fact in `G` and `H` respectively, and each discards the direction information the
 wrapper supplies. The fresh-time rules need it raw, because they move a `□` formula to a time
-whose position relative to the source is recorded in the ordering rather than in the formula. -/
+whose position relative to the source is recorded in the ordering rather than in the formula.
+
+Shift-closure of `Ω` is not a hypothesis: `WorldHistory.isTotal_timeShift` supplies the shifted
+witness's totality with no side condition. -/
 theorem forall_truthAt_time_invariant {M : TaskModel F} {Om : Set (WorldHistory F)}
-    (hsc : ShiftClosed Om) {t s : D} {ψ : Formula}
-    (h : ∀ σ ∈ Om, TruthAt M Om σ t ψ) : ∀ σ ∈ Om, TruthAt M Om σ s ψ := fun τ hτ =>
+    {t s : D} {ψ : Formula}
+    (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Om σ t ψ) :
+    ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M Om σ s ψ := fun τ hτ =>
   (TimeShift.time_shift_preserves_truth M Om τ t s ψ).mp
-    (h (WorldHistory.timeShift τ (s - t)) (hsc τ hτ (s - t)))
+    (h (WorldHistory.timeShift τ (s - t)) (WorldHistory.isTotal_timeShift hτ (s - t)))
 
 /-- Everything `boxDiamondPersistence` emits is satisfied at the fresh time by the *same* history
 that satisfies its source at the trigger's time.
@@ -1518,7 +1531,7 @@ Stated against the conclusions of `mem_boxDiamondPersistence_label` and
 interpretation `tv'` is unconstrained: time-invariance means the fresh time's value is
 irrelevant, which is why this lemma survives an arbitrary one-point update. -/
 theorem satAt_of_boxForm_time {M : TaskModel F} {Om : Set (WorldHistory F)}
-    (hsc : ShiftClosed Om) {hist : WorldIndex → WorldHistory F} {tv tv' : TimeIndex → D}
+    {hist : WorldIndex → WorldHistory F} {tv tv' : TimeIndex → D}
     {w : WorldIndex} {t ft : TimeIndex} {s g : SignedFormula}
     (hsrc : SatAt M Om hist tv s)
     (hslab : s.label = { world := w, time := t })
@@ -1532,16 +1545,17 @@ theorem satAt_of_boxForm_time {M : TaskModel F} {Om : Set (WorldHistory F)}
     have hsf : s.formula = Formula.box χ := hform.trans hgf
     simp only [SatAt, hss, hsf, hslab, TruthAt] at hsrc
     simp only [SatAt, hgs, hgf, hglab, TruthAt]
-    exact forall_truthAt_time_invariant hsc hsrc
+    exact forall_truthAt_time_invariant hsrc
   · have hss : s.sign = .neg := hsign.trans hgs
     have hsf : s.formula = Formula.imp (.box (.imp χ .bot)) .bot := hform.trans hgf
     simp only [SatAt, hss, hsf, hslab] at hsrc
-    have hbox : ∀ σ ∈ Om, TruthAt M Om σ (tv t) (Formula.imp χ .bot) := by
+    have hbox : ∀ σ : WorldHistory F, σ.IsTotal →
+        TruthAt M Om σ (tv t) (Formula.imp χ .bot) := by
       by_contra hcon
       exact hsrc hcon
     simp only [SatAt, hgs, hgf, hglab]
     intro hc
-    exact hc (forall_truthAt_time_invariant hsc hbox)
+    exact hc (forall_truthAt_time_invariant hbox)
 
 /-- A branch formula is undisturbed by a one-point update of `tv` at the branch's fresh time: no
 branch formula sits there, by `not_mem_of_time_nextTime`. -/
@@ -1801,7 +1815,7 @@ theorem ruleSound_allFutureNeg : RuleSound carrierBase .allFutureNeg := by
     split
     all_goals try trivial
     obtain ⟨d, hlt, hfail⟩ := exists_gt_not_truthAt_of_allFuture hsrc
-    refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+    refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histTotal,
       ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
     intro g hg
     rcases List.mem_append.mp hg with hnew | hb
@@ -1813,7 +1827,7 @@ theorem ruleSound_allFutureNeg : RuleSound carrierBase .allFutureNeg := by
           · exact satAt_of_mem_fNegProps hst hlt hfn
         · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
             mem_boxDiamondPersistence_label hmodal
-          exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+          exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
             hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
     · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
 
@@ -1833,7 +1847,7 @@ theorem ruleSound_allPastNeg : RuleSound carrierBase .allPastNeg := by
     split
     all_goals try trivial
     obtain ⟨d, hlt, hfail⟩ := exists_lt_not_truthAt_of_allPast hsrc
-    refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+    refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histTotal,
       ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
     intro g hg
     rcases List.mem_append.mp hg with hnew | hb
@@ -1845,7 +1859,7 @@ theorem ruleSound_allPastNeg : RuleSound carrierBase .allPastNeg := by
           · exact satAt_of_mem_pNegProps hst hlt hpn
         · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
             mem_boxDiamondPersistence_label hmodal
-          exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+          exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
             hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
     · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
 
@@ -1869,7 +1883,7 @@ theorem ruleSound_someFuturePos : RuleSound carrierBase .someFuturePos := by
       simp only [SatAt, hφ] at hsrc
       simp only [applyRule, hA]
       obtain ⟨d, hlt, htrue⟩ := exists_gt_truthAt_of_someFuture hsrc
-      refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+      refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histTotal,
         ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
       intro g hg
       rcases List.mem_append.mp hg with hnew | hb
@@ -1881,7 +1895,7 @@ theorem ruleSound_someFuturePos : RuleSound carrierBase .someFuturePos := by
             · exact satAt_of_mem_fNegProps hst hlt hfn
           · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
               mem_boxDiamondPersistence_label hmodal
-            exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+            exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
               hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
       · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
 
@@ -1901,7 +1915,7 @@ theorem ruleSound_somePastPos : RuleSound carrierBase .somePastPos := by
       simp only [SatAt, hφ] at hsrc
       simp only [applyRule, hA]
       obtain ⟨d, hlt, htrue⟩ := exists_lt_truthAt_of_somePast hsrc
-      refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+      refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histTotal,
         ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
       intro g hg
       rcases List.mem_append.mp hg with hnew | hb
@@ -1913,7 +1927,7 @@ theorem ruleSound_somePastPos : RuleSound carrierBase .somePastPos := by
             · exact satAt_of_mem_pNegProps hst hlt hpn
           · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
               mem_boxDiamondPersistence_label hmodal
-            exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+            exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
               hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
       · exact satAt_update_nextTime_of_mem hb (hst.sat g hb)
 
@@ -1995,7 +2009,7 @@ theorem ruleSound_untlPos : RuleSound carrierBase .untlPos := by
       simp only [applyRule, hA]
       obtain ⟨d, hlt, htrue⟩ := exists_gt_truthAt_of_untl hsrc
       refine ⟨_, List.mem_cons_self, hist, Function.update tv b.nextTime d,
-        hst.shiftClosed, hst.histMem,
+        hst.shiftClosed, hst.histTotal,
         ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
       intro c hc
       rcases List.mem_append.mp hc with hnew | hb
@@ -2009,7 +2023,7 @@ theorem ruleSound_untlPos : RuleSound carrierBase .untlPos := by
             · exact satAt_of_mem_fNegProps hst hlt hfn
           · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
               mem_boxDiamondPersistence_label hmodal
-            exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+            exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
               hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
       · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
 
@@ -2032,7 +2046,7 @@ theorem ruleSound_sncePos : RuleSound carrierBase .sncePos := by
       simp only [applyRule, hA]
       obtain ⟨d, hlt, htrue⟩ := exists_lt_truthAt_of_snce hsrc
       refine ⟨_, List.mem_cons_self, hist, Function.update tv b.nextTime d,
-        hst.shiftClosed, hst.histMem,
+        hst.shiftClosed, hst.histTotal,
         ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
       intro c hc
       rcases List.mem_append.mp hc with hnew | hb
@@ -2046,7 +2060,7 @@ theorem ruleSound_sncePos : RuleSound carrierBase .sncePos := by
             · exact satAt_of_mem_pNegProps hst hlt hpn
           · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
               mem_boxDiamondPersistence_label hmodal
-            exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+            exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
               hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
       · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
 
@@ -2152,7 +2166,7 @@ theorem ruleSound_untlNeg : RuleSound carrierBase .untlNeg := by
         obtain ⟨d, hlt, hdisj⟩ := exists_gt_not_untl_disj hsrc
         rcases hdisj with hfail | hfail
         · refine ⟨_, List.mem_cons_self, hist, Function.update tv b.nextTime d,
-            hst.shiftClosed, hst.histMem,
+            hst.shiftClosed, hst.histTotal,
             ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
           intro c hc
           rcases List.mem_append.mp hc with hnew | hb
@@ -2168,11 +2182,11 @@ theorem ruleSound_untlNeg : RuleSound carrierBase .untlNeg := by
                 · exact satAt_of_mem_fNegProps hst hlt hfn
               · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
                   mem_boxDiamondPersistence_label hmodal
-                exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+                exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
                   hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
           · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
         · refine ⟨_, List.mem_cons_of_mem _ List.mem_cons_self, hist,
-            Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+            Function.update tv b.nextTime d, hst.shiftClosed, hst.histTotal,
             ordResp_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
           intro c hc
           rcases List.mem_append.mp hc with hnew | hb
@@ -2188,7 +2202,7 @@ theorem ruleSound_untlNeg : RuleSound carrierBase .untlNeg := by
                 · exact satAt_of_mem_fNegProps hst hlt hfn
               · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
                   mem_boxDiamondPersistence_label hmodal
-                exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+                exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
                   hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
           · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
 
@@ -2215,7 +2229,7 @@ theorem ruleSound_snceNeg : RuleSound carrierBase .snceNeg := by
         obtain ⟨d, hlt, hdisj⟩ := exists_lt_not_snce_disj hsrc
         rcases hdisj with hfail | hfail
         · refine ⟨_, List.mem_cons_self, hist, Function.update tv b.nextTime d,
-            hst.shiftClosed, hst.histMem,
+            hst.shiftClosed, hst.histTotal,
             ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
           intro c hc
           rcases List.mem_append.mp hc with hnew | hb
@@ -2231,11 +2245,11 @@ theorem ruleSound_snceNeg : RuleSound carrierBase .snceNeg := by
                 · exact satAt_of_mem_pNegProps hst hlt hfn
               · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
                   mem_boxDiamondPersistence_label hmodal
-                exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+                exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
                   hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
           · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
         · refine ⟨_, List.mem_cons_of_mem _ List.mem_cons_self, hist,
-            Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+            Function.update tv b.nextTime d, hst.shiftClosed, hst.histTotal,
             ordResp_addPast_update hst hord (mem_knownTimes_of_mem_branch hmem) hlt, ?_⟩
           intro c hc
           rcases List.mem_append.mp hc with hnew | hb
@@ -2251,7 +2265,7 @@ theorem ruleSound_snceNeg : RuleSound carrierBase .snceNeg := by
                 · exact satAt_of_mem_pNegProps hst hlt hfn
               · obtain ⟨hglab, s', hs'mem, hs'lab, hs'sign, hs'form⟩ :=
                   mem_boxDiamondPersistence_label hmodal
-                exact satAt_of_boxForm_time hst.shiftClosed (hst.sat s' hs'mem) hs'lab hglab
+                exact satAt_of_boxForm_time (hst.sat s' hs'mem) hs'lab hglab
                   hs'sign hs'form (mem_boxDiamondPersistence_shape hmodal)
           · exact satAt_update_nextTime_of_mem hb (hst.sat c hb)
 
@@ -2302,7 +2316,7 @@ theorem ruleSound_densityRule : RuleSound carrierDense .densityRule := by
         List.mem_of_mem_filter (a := t') (by rw [hgap]; exact List.mem_cons_self)
       have hltt : tv l.time < tv t' := hst.lt_of_mem_futureOf hmemf
       obtain ⟨d, hlt, hlt'⟩ := exists_between hltt
-      refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histMem,
+      refine ⟨hist, Function.update tv b.nextTime d, hst.shiftClosed, hst.histTotal,
         ordResp_addFuture_addFuture_update hst hord (mem_knownTimes_of_mem_branch hmem)
           (mem_knownTimes_of_mem_futureOf hord hmemf) hlt hlt', ?_⟩
       intro g hg
@@ -2354,6 +2368,18 @@ Existentially quantified because `SuccOrder`/`PredOrder` are data; see the secti
 def carrierDiscrete : CarrierProp := fun D =>
   ∃ (hs : SuccOrder D) (hp : PredOrder D), @IsSuccArchimedean D _ hs ∧ @IsPredArchimedean D _ hp
 
+/-- Land a `SoundnessLemmas.IsValid` conclusion on this module's carrier `Ω`.
+
+`IsValid` states truth at the inert carrier `Set.univ`; the rule-soundness proofs below evaluate
+against a universally quantified `Ω`. The two are interchangeable — `TruthAt`'s set argument is
+semantically inert, which is exactly `truthAt_carrier_irrelevant` — so this transports across it
+once rather than at each of the three `.Discrete` call sites. It disappears with `TruthAt`'s set
+parameter itself; nothing here depends on `Ω` beyond its being a set of histories. -/
+theorem truthAt_of_isValid {F : TaskFrame D} {M : TaskModel F} (Om : Set (WorldHistory F))
+    {φ : Formula} (h : SoundnessLemmas.IsValid D φ)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D) : TruthAt M Om τ t φ :=
+  (truthAt_carrier_irrelevant Set.univ Om φ τ t).mp (h F M τ hτ t)
+
 /-- `T(F ψ)` gives `T(U(ψ, ¬ψ))` at the **same** label — the consequent of Prior-UZ, whose
 antecedent is the source formula. On a discrete order `F ψ` has a *nearest* `ψ`-point, and `¬ψ`
 guards the interval strictly below it; that is the whole content, and it is
@@ -2386,8 +2412,8 @@ theorem ruleSound_priorUZ : RuleSound carrierDiscrete .priorUZ := by
         rw [List.mem_singleton] at hc
         subst hc
         simpa [SatAt, SignedFormula.pos] using
-          SoundnessLemmas.prior_UZ_is_valid ψ F M Om hst.shiftClosed (hist l.world)
-            (hst.histMem l.world) (tv l.time) hsrc
+          truthAt_of_isValid Om (SoundnessLemmas.prior_UZ_is_valid ψ) (hist l.world)
+            (hst.histTotal l.world) (tv l.time) hsrc
 
 /-- `T(P ψ)` gives `T(S(ψ, ¬ψ))` at the same label — Prior-SZ, the exact time reversal of
 `priorUZ`. -/
@@ -2419,8 +2445,8 @@ theorem ruleSound_priorSZ : RuleSound carrierDiscrete .priorSZ := by
         rw [List.mem_singleton] at hc
         subst hc
         simpa [SatAt, SignedFormula.pos] using
-          SoundnessLemmas.prior_SZ_is_valid ψ F M Om hst.shiftClosed (hist l.world)
-            (hst.histMem l.world) (tv l.time) hsrc
+          truthAt_of_isValid Om (SoundnessLemmas.prior_SZ_is_valid ψ) (hist l.world)
+            (hst.histTotal l.world) (tv l.time) hsrc
 
 /-- `T(G(Gφ → φ))` together with `T(F(Gφ))` at the same label gives `T(Gφ)` there — Z1, the
 discrete backward-induction axiom. Unlike the other two `.Discrete` rules this one is *binary*:
@@ -2469,8 +2495,8 @@ theorem ruleSound_z1Rule : RuleSound carrierDiscrete .z1Rule := by
       rw [List.mem_singleton] at hc
       subst hc
       simpa [SatAt, SignedFormula.pos] using
-        SoundnessLemmas.z1_is_valid inner F M Om hst.shiftClosed (hist l.world)
-          (hst.histMem l.world) (tv l.time) hsrc hfgs
+        truthAt_of_isValid Om (SoundnessLemmas.z1_is_valid inner) (hist l.world)
+          (hst.histTotal l.world) (tv l.time) hsrc hfgs
 
 /-!
 ### The `.Dedekind` family: `priorUGap` and `priorSGap`
