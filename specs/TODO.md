@@ -78,7 +78,7 @@ next_project_number: 440
 ### Paper Refactor
 
 420 [PARTIAL] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
-  └─ 414 [PLANNED] — === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the secti
+  └─ 414 [IMPLEMENTING] — === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the secti
     └─ 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
     └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
@@ -811,13 +811,13 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 414. Refactor semantics to total history validity
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 420, Task 438, Task 439
-- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/19_omega-binder-sweep-leaves-summary.md]
 - **Research**: [414_refactor_semantics_to_total_history_validity/reports/05_seriality-witness-nontermination.md]
 - **Plan**: [414_refactor_semantics_to_total_history_validity/plans/04_seriality-witness-termination-fix.md]
+- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/05_phase24-prefix-baseline.md]
 
 **Description**: === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the sections named below) ===
 18 of 23 plan phases are COMPLETE, `lake build` is GREEN, 0 sorries were introduced (1

@@ -2710,7 +2710,7 @@ itself, then run the task-level gates.
 
 ---
 
-### Phase 23: Frame-relative validity `⊨_F` — OPTIONAL [IN PROGRESS]
+### Phase 23: Frame-relative validity `⊨_F` — OPTIONAL [NOT STARTED]
 
 > **Execution note (added by revision 4).** This phase is **OPTIONAL and is not on the critical
 > path.** Because it is lower-numbered than the strand-2 phases, a next-phase scan will select it
