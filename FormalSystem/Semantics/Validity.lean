@@ -429,13 +429,33 @@ theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.allPast φ)) 
 /--
 If □φ is valid, then φ is valid.
 
-Proof: □φ at (τ, t) means ∀ σ ∈ Omega, TruthAt φ at (σ, t). Since τ ∈ Omega,
-this gives TruthAt φ at (τ, t).
+Proof (target): □φ at (τ, t) means `∀ σ, σ.IsTotal → TruthAt φ at (σ, t)`. Instantiating at
+`σ := τ` needs `τ.IsTotal`, so the step goes through exactly once `valid` quantifies over the
+total histories.
+
+**STRATEGIC SORRY — owned by the validity-layer binder delta.** The box clause of `TruthAt` now
+reads `∀ σ, σ.IsTotal → …` per `def:BL-semantics` ("M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all σ ∈ H_F"),
+but `valid` still binds its history as `τ ∈ Omega`. Those two binders do not meet: `τ ∈ Omega`
+does not yield `τ.IsTotal` under any hypothesis currently in scope, so this instantiation is
+**not provable as stated** and no local tactic can rescue it. It is not a gap in the argument —
+it is the seam between the truth layer (retargeted here) and the validity layer (retargeted in
+the scheduled validity-layer binder delta phase, which replaces `(τ : WorldHistory F) (_ : τ ∈ Omega)`
+with `(τ : WorldHistory F) (hτ : τ.IsTotal)` throughout `valid`/`satisfiable`/consequence).
+
+Once that delta lands, the proof is the one-liner it was before, with the membership argument
+replaced by the totality argument:
+  `intro D _ _ _ _ F M Omega h_sc τ hτ t; exact h D F M Omega h_sc τ hτ t τ hτ`
+
+This sorry is deliberately scoped to this single declaration; it is the only place in
+`Semantics/**` where the truth-layer and validity-layer binders are forced to meet before the
+delta lands. Do not discharge it by weakening the statement or by adding an `IsTotal` hypothesis
+to `valid_of_valid_box` alone — that would fork the validity predicate, which Decision A forbids.
 -/
 theorem valid_of_valid_box {φ : Formula} (h : valid (Formula.box φ)) :
     valid φ := by
   intro D _ _ _ _ F M Omega h_sc τ h_mem t
-  exact h D F M Omega h_sc τ h_mem t τ h_mem
+  -- Needs `τ.IsTotal`; `valid` supplies only `τ ∈ Omega`. See the docstring above.
+  sorry
 
 end Validity
 

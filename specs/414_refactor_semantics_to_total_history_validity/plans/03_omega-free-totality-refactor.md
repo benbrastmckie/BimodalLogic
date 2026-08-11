@@ -1317,7 +1317,7 @@ here, invoke Decision C's spawn contingency rather than absorbing the overrun si
 
 ---
 
-### Phase 14: Retarget `TruthAt`'s box clause to totality [NOT STARTED]
+### Phase 14: Retarget `TruthAt`'s box clause to totality [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The semantic heart of the refactor. Change the box clause from `∀ σ ∈ Omega` to
 `∀ σ, σ.IsTotal →`, per `def:BL-semantics`'s box clause (`for all $\sigma \in H_{\F}$`), and
@@ -1326,22 +1326,46 @@ this phase — inert — so that Decision D's reverse-topological sweep can remo
 keeping every intermediate green.
 
 **Tasks**:
-- [ ] Rewrite `TruthAt`'s `Formula.box` clause as `∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M _Omega σ t φ`.
-- [ ] Rename the now-inert parameter `_Omega` and document, in the definition's docstring, that it
+- [x] Rewrite `TruthAt`'s `Formula.box` clause as `∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M _Omega σ t φ`.
+- [x] Rename the now-inert parameter `_Omega` and document, in the definition's docstring, that it
       is a transient carrier removed in the terminal sweep — never a shipped shim.
-- [ ] Leave the `untl` / `snce` clauses' shape untouched (they are τ-local). Add a docstring note
+- [x] Leave the `untl` / `snce` clauses' shape untouched (they are τ-local). Add a docstring note
       recording the **event-first / guard-second** convention and the divergence from the paper's
       `def:BLplus-semantics` footnote, cross-referencing `specs/decisions/untl-snce-argument-order.md`.
       Do **not** change the argument order.
-- [ ] Retain the atom clause's `∃ (ht : τ.domain t)` and document why (Decision A, accepted gap).
-- [ ] Rewrite `truthAt_box_iff` against totality.
-- [ ] Rewrite `truth'_double_shift_cancel`; its box case becomes `simp only [TruthAt]` with no
+- [x] Retain the atom clause's `∃ (ht : τ.domain t)` and document why (Decision A, accepted gap).
+- [x] Rewrite `truthAt_box_iff` against totality. *(deviation: altered — applied to
+      `Semantics/Truth.lean`'s `Truth.box_iff`, the box characterisation theorem inside this
+      phase's declared file scope. The identically-named `Bridge/Omega.lean:342 truthAt_box_iff`
+      was NOT touched: `Omega.lean` is outside this phase's "Files to modify", and the
+      decidability-side box repair — including rewriting along `regionOmega_eq_total` — is
+      Phase 17's declared charter. `Omega.lean` currently has zero errors of its own.)*
+- [x] Rewrite `truth'_double_shift_cancel`; its box case becomes `simp only [TruthAt]` with no
       residual goal, because both sides now quantify over the same `IsTotal` predicate.
-- [ ] Rewrite `TimeShift.time_shift_preserves_truth` **with no `ShiftClosed` hypothesis in the
+      *(deviation: altered — the declaration's actual name is `truth_double_shift_cancel`, no
+      prime. Confirmed: the box case is now `simp only [TruthAt]` alone, no residual goal.)*
+- [x] Rewrite `TimeShift.time_shift_preserves_truth` **with no `ShiftClosed` hypothesis in the
       statement**; the box case's `h_sc ρ h_rho_mem (y - x)` is replaced by
       `isTotal_timeShift hρ _`, definitionally `fun t => hρ (t + Δ)`.
-- [ ] Drop the now-absent `h_sc` argument at its live call sites (`Soundness.lean:265`,
+- [x] Drop the now-absent `h_sc` argument at its live call sites (`Soundness.lean:265`,
       `DenseValidity.lean:206`/`:858`, `Decidable.lean:655`/`:666`/`:1509`, plus doc references).
+      *(deviation: altered — the Scope Hypothesis's count of 8 is CONFIRMED, but its enumeration
+      was incomplete: it omitted `Bridge/Omega.lean:348` and `:388`, which are the 7th and 8th
+      live call sites. All 8 were edited. Downstream **doc** references that describe proofs
+      Phases 15-17 will rewrite were deliberately left alone rather than made to describe a state
+      those proofs are not yet in; `Truth.lean`'s own docs, including `ShiftClosed`'s, are
+      updated.)*
+- [x] Additional, not listed in the plan but forced by the same signature change:
+      `TimeShift.exists_shifted_history` (`Truth.lean`) also loses its `h_sc` argument, since it
+      is a one-line corollary of `time_shift_preserves_truth`.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `lake build` tree-green (this phase's stated Verification) | Structurally unreachable at this phase boundary. The whole point of the retarget is that box-hypothesis instantiation sites now demand `σ.IsTotal` where they previously demanded `σ ∈ Omega`; repairing them is the declared charter of Phases 15-17, which are scheduled AFTER this phase. A Phase 14 that left the tree green would mean the box clause had not actually changed. | Tree-wide error census after the retarget: **12 error sites in exactly 4 files** — `SoundnessLemmas/DenseValidity.lean` (8), `Algebraic/FlowFrame.lean` (2), `Automation/PrefilterSoundness.lean` (1), `Bridge/Interpolate.lean` (1). All 12 are enumerated with repair shapes and owners in this phase's summary and in `.orchestrator-handoff.json`'s `downstream_breakage`. |
+| Sorry-freedom (this phase's stated Verification) | One tracked strategic sorry at `Semantics/Validity.lean:458` (`valid_of_valid_box`). Not a proof gap: the truth layer now binds `σ.IsTotal` while `valid` still binds `τ ∈ Omega`, and `τ ∈ Omega` does not yield `τ.IsTotal` under any hypothesis in scope. The statement is **not provable as written** until Phase 18's validity-layer binder delta lands. Landing the documented skeleton (rather than reverting the retarget) is what let the downstream census above be taken at all — `Validity.lean` is a hub, and every one of the 12 sites is behind it. | `Semantics/Validity.lean:435-458`: full docstring records the seam, names Phase 18 as owner, and gives the exact one-line proof that becomes valid once the delta lands. Recorded in `sorry_inventory` with `strategic: true`. Total in-tree sorries: 2 (this one + the pre-existing `WeakCanonical/Transfer.lean:1085`, untouched). Axiom count 6, unchanged from the Phase 13 baseline. |
+| `Bridge/Omega.lean:342 truthAt_box_iff` restatement | Outside this phase's declared "Files to modify"; the decidability-side box repair is Phase 17's charter, and doing it here would pre-empt Phase 17's rewrite along `regionOmega_eq_total`. | `Omega.lean` has **zero errors of its own** after the retarget — `lake build …Bridge.Omega` fails solely on upstream `Interpolate.lean:504`. Nothing is being deferred that is currently broken. |
 
 **Timing**: 3 hours
 
@@ -1358,10 +1382,21 @@ and by the post-edit error list.
 
 **Files to modify**:
 - `FormalSystem/Semantics/Truth.lean`
-- `FormalSystem/Semantics/TimeShift.lean`
+- ~~`FormalSystem/Semantics/TimeShift.lean`~~ *(deviation: skipped — **this file does not exist.**
+  `ls FormalSystem/Semantics/` lists no `TimeShift.lean`; the `TimeShift` namespace, including
+  `time_shift_preserves_truth`, `truth_double_shift_cancel`, `truth_history_eq` and
+  `exists_shifted_history`, lives inside `Truth.lean` (`namespace TimeShift`, lines 357-692).
+  All work the plan assigned to `TimeShift.lean` was done in `Truth.lean`; nothing was dropped.)*
+- Actually modified beyond the declared scope, by the `h_sc` call-site drop task above:
+  `Metalogic/Soundness.lean`, `Metalogic/SoundnessLemmas/DenseValidity.lean`,
+  `Metalogic/Decidability/Verified/Decidable.lean`,
+  `Metalogic/Decidability/Verified/Bridge/Omega.lean`, and `Semantics/Validity.lean`
+  (strategic-sorry skeleton, see Reasoned Exclusions).
 
 **Verification**:
 - `lake build` green after this phase's batch completes, sorry-free.
+  *(NOT met — see `#### Reasoned Exclusions` above. Module-level `lake build
+  FormalSystem.Semantics.Truth` and `FormalSystem.Semantics.Validity` are both green.)*
 - `ShiftClosed` no longer appears in any statement in `Semantics/**` (the definition itself is
   deleted in Phase 22).
 - The box clause reads as `def:BL-semantics`'s box clause modulo the `IsTotal` predicate encoding.

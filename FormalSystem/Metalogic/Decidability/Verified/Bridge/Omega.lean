@@ -345,7 +345,7 @@ theorem truthAt_box_iff (M : TaskModel F) {Om : Set (WorldHistory F)} (hsc : Shi
   simp only [TruthAt]
   constructor
   · intro h σ hσ y
-    exact (TimeShift.time_shift_preserves_truth M Om hsc σ x y φ).mp (h _ (hsc σ hσ (y - x)))
+    exact (TimeShift.time_shift_preserves_truth M Om σ x y φ).mp (h _ (hsc σ hσ (y - x)))
   · intro h σ hσ
     exact h σ hσ x
 
@@ -386,7 +386,7 @@ theorem truthAt_regionHistory_offset (M : TaskModel (regionFrame W ι D)) (f : �
     TruthAt M (regionOmega f) (regionHistory f w Δ) r φ ↔
       TruthAt M (regionOmega f) (regionHistory f w (0 : D)) (r + Δ) φ := by
   have h := TimeShift.time_shift_preserves_truth M (regionOmega (W := W) f)
-    (shiftClosed_regionOmega f) (regionHistory f w (0 : D)) r (r + Δ) φ
+    (regionHistory f w (0 : D)) r (r + Δ) φ
   rw [add_sub_cancel_left] at h
   rw [regionHistory_eq_timeShift]
   exact h

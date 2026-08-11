@@ -110,31 +110,49 @@ The evaluation is defined recursively on formula structure (6 constructors):
   AND valuation says so at current state (atoms are false at times outside domain)
 - Bot (⊥): always false
 - Implication: standard material conditional
-- Box (□): true iff φ true at all world histories in Ω at time t
+- Box (□): true iff φ true at all **total** world histories at time t
 - Until U(φ,ψ): ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r) (strict witness, open guard)
 - Since S(φ,ψ): ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r) (strict witness, open guard)
 
 G (allFuture), H (allPast), F (someFuture), P (somePast) are `def` abbreviations
 with `@[simp]` characterization theorems (see `future_iff`, `past_iff`, etc.).
 
-The `Omega` parameter restricts which histories the box modality quantifies over.
-When `Omega = Set.univ`, this recovers the original universal quantification.
+**Paper Reference**: `def:BL-semantics`'s box clause, verbatim: "M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ
+for all σ ∈ H_F". The quantifier ranges over `H_F` — the TOTAL histories — with no `Ω` and no
+shift-closure side condition. `WorldHistory.IsTotal` is the predicate form of `H_F` membership
+(Decision A of `specs/decisions/total-history-validity-decisions.md`); it is deliberately **not**
+Mathlib's `IsMax` or any order-theoretic maximality predicate.
 
-**Paper Reference**: def:BL-semantics (lines 1857-1872) specifies:
-- Atoms check domain membership: M,τ,x ⊨ p iff x ∈ dom(τ) and τ(x) ∈ V(p)
-- Box quantifies over σ ∈ Ω (admissible histories)
-- Temporal operators quantify over ALL times in D, not just dom(τ)
+**The `_Omega` parameter is inert.** After this retarget nothing in `TruthAt`'s clauses consults
+it — it is threaded through the recursive calls only so that its removal can be done as a
+reverse-topological sweep over the whole tree while every intermediate state stays green. It is a
+**transient carrier scheduled for deletion**, never a shipped shim: no new declaration may
+acquire a meaning that depends on it, and no `Ω`-restricted reading of the box modality survives
+this definition.
+
+**Atom clause** (Decision A, accepted gap): the `∃ (ht : τ.domain t)` conjunct is retained even
+though `def:BL-semantics`'s atom clause has no domain conjunct. Under totality the conjunct is
+vacuously satisfiable at every `t`, so the two readings agree on `H_F`; the conjunct is what keeps
+`TruthAt` meaningful at the partial histories that the extension machinery still traffics in.
+
+**Until / Since argument order** (do not "fix" this): `untl`/`snce` are **event-first /
+guard-second** here — `untl φ ψ` reads "φ is the event, ψ is the guard". `def:BLplus-semantics`'s
+footnote describes this repository's constructors as guard-first/event-second, which is
+**backwards**; `Formula.someFuture φ = untl φ ⊤` and the `dense_indicator`/K-plus machinery both
+depend on the event-first reading. The divergence is recorded, and the Lean convention is
+deliberately preserved, in `specs/decisions/untl-snce-argument-order.md`. These clauses are
+τ-local and are untouched by the box retarget.
 -/
-def TruthAt (M : TaskModel F) (Omega : Set (WorldHistory F))
+def TruthAt (M : TaskModel F) (_Omega : Set (WorldHistory F))
     (τ : WorldHistory F) (t : D) : Formula → Prop
   | Formula.atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
   | Formula.bot => False
-  | Formula.imp φ ψ => TruthAt M Omega τ t φ → TruthAt M Omega τ t ψ
-  | Formula.box φ => ∀ (σ : WorldHistory F), σ ∈ Omega → TruthAt M Omega σ t φ
-  | Formula.untl φ ψ => ∃ s : D, t < s ∧ TruthAt M Omega τ s φ ∧
-      ∀ r : D, t < r → r < s → TruthAt M Omega τ r ψ
-  | Formula.snce φ ψ => ∃ s : D, s < t ∧ TruthAt M Omega τ s φ ∧
-      ∀ r : D, s < r → r < t → TruthAt M Omega τ r ψ
+  | Formula.imp φ ψ => TruthAt M _Omega τ t φ → TruthAt M _Omega τ t ψ
+  | Formula.box φ => ∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M _Omega σ t φ
+  | Formula.untl φ ψ => ∃ s : D, t < s ∧ TruthAt M _Omega τ s φ ∧
+      ∀ r : D, t < r → r < s → TruthAt M _Omega τ r ψ
+  | Formula.snce φ ψ => ∃ s : D, s < t ∧ TruthAt M _Omega τ s φ ∧
+      ∀ r : D, s < r → r < t → TruthAt M _Omega τ r ψ
 
 -- Note: We avoid defining a notation for TruthAt as it causes parsing conflicts
 -- with the validity notation in Validity.lean. Use TruthAt directly.
@@ -201,7 +219,11 @@ theorem atom_false_of_not_domain
   exact ht ht'
 
 /--
-Truth of box: formula true at all histories in Omega at current time.
+Truth of box: formula true at every **total** history at the current time.
+
+**Paper Reference**: `def:BL-semantics`'s box clause, "M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all
+σ ∈ H_F". `Omega` is inert here (see `TruthAt`'s docstring) and is retained only as the
+transient carrier that the terminal sweep removes.
 -/
 theorem box_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -210,7 +232,7 @@ theorem box_iff
     (Omega : Set (WorldHistory F))
     (φ : Formula) :
     (TruthAt M Omega τ t φ.box) ↔
-      ∀ (σ : WorldHistory F), σ ∈ Omega → (TruthAt M Omega σ t φ) := by
+      ∀ (σ : WorldHistory F), σ.IsTotal → (TruthAt M Omega σ t φ) := by
   rfl
 
 /--
@@ -327,8 +349,13 @@ end Truth
 
 /--
 A set of world histories is shift-closed if shifting any history by any amount
-keeps it in the set. This is required for time_shift_preserves_truth to work
-with the box modality, since we need shifted histories to remain in Omega.
+keeps it in the set.
+
+**No longer load-bearing.** `time_shift_preserves_truth` used to require this to keep shifted
+histories inside the box modality's quantifier range; under the totality box clause that role is
+filled by `WorldHistory.isTotal_timeShift` with no side condition. This definition survives only
+so that the still-`ShiftClosed`-hypothesised statements downstream keep elaborating during the
+reverse-topological sweep; it is scheduled for deletion once no statement mentions it.
 -/
 def ShiftClosed (Omega : Set (WorldHistory F)) : Prop :=
   ∀ σ ∈ Omega, ∀ (Δ : D), WorldHistory.timeShift σ Δ ∈ Omega
@@ -407,8 +434,9 @@ theorem truth_double_shift_cancel (M : TaskModel F) (Omega : Set (WorldHistory F
       exact (ih_χ t).mpr (h h_ψ)
   | box ψ ih =>
     simp only [TruthAt]
-    -- Box quantifies over sigma in Omega at time t, independent of current history
-    -- Both sides quantify over the same Omega, so definitionally equal
+    -- Box quantifies over the total histories at time t, independent of the current history.
+    -- Both sides quantify over the same `IsTotal` predicate, so this is definitionally closed
+    -- and leaves no residual goal.
   | untl φ ψ ih_φ ih_ψ =>
     simp only [TruthAt]
     constructor
@@ -435,16 +463,17 @@ The proof proceeds by structural induction on formulas:
 - **Atom**: States match because (timeShift σ Δ).states x = σ.states (x + Δ) = σ.states y
 - **Bot**: Both sides are False
 - **Imp**: By induction hypothesis on subformulas
-- **Box**: Both quantify over histories in Omega; ShiftClosed ensures shifted histories
-  remain in Omega, enabling the bijection argument
+- **Box**: Both sides quantify over the total histories; `WorldHistory.isTotal_timeShift`
+  supplies the shifted history's totality, enabling the bijection argument
 - **Past/Future**: Times shift together with the history
 
-**Key Insight**: The box case requires ShiftClosed(Omega) to ensure that when we shift
-a history ρ ∈ Omega by (y - x) or (x - y), the result stays in Omega. This is needed
-to apply the box hypothesis to the shifted history.
+**Key Insight**: **no `ShiftClosed` hypothesis is required.** Under the totality box clause the
+shifted history's membership in the quantifier's range is `WorldHistory.isTotal_timeShift`,
+definitionally `fun t => hρ (t + Δ)` — there is no closure condition left to assume, so this
+statement is strictly stronger than the `ShiftClosed`-hypothesised version it replaces.
 -/
 theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory F))
-    (h_sc : ShiftClosed Omega) (σ : WorldHistory F) (x y : D)
+    (σ : WorldHistory F) (x y : D)
     (φ : Formula) :
     TruthAt M Omega (WorldHistory.timeShift σ (y - x)) x φ ↔ TruthAt M Omega σ y φ := by
   -- Proof by structural induction on φ
@@ -479,24 +508,24 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
       have h_psi := (ih_ψ σ x y).mp h_psi'
       exact (ih_χ σ x y).mpr (h h_psi)
   | box ψ ih =>
-    -- For box, both quantify over histories in Omega at their times
-    -- We use ShiftClosed to ensure shifted histories remain in Omega
+    -- For box, both sides quantify over the total histories at their respective times.
+    -- Totality of the shifted history is `isTotal_timeShift`, definitionally `fun t => hρ (t + Δ)`.
     simp only [TruthAt]
     constructor
-    · intro h_box_x ρ h_rho_mem
-      -- ρ ∈ Omega, need to show truth at (ρ, y)
-      -- timeShift ρ (y - x) ∈ Omega by h_sc
-      have h_shifted_mem : WorldHistory.timeShift ρ (y - x) ∈ Omega :=
-        h_sc ρ h_rho_mem (y - x)
-      have h1 := h_box_x (WorldHistory.timeShift ρ (y - x)) h_shifted_mem
+    · intro h_box_x ρ h_rho_tot
+      -- ρ is total, need to show truth at (ρ, y)
+      -- timeShift ρ (y - x) is total by isTotal_timeShift
+      have h_shifted_tot : (WorldHistory.timeShift ρ (y - x)).IsTotal :=
+        WorldHistory.isTotal_timeShift h_rho_tot (y - x)
+      have h1 := h_box_x (WorldHistory.timeShift ρ (y - x)) h_shifted_tot
       -- Apply IH with ρ instead of σ
       exact (ih ρ x y).mp h1
-    · intro h_box_y ρ h_rho_mem
-      -- ρ ∈ Omega, need to show truth at (ρ, x)
-      -- timeShift ρ (x - y) ∈ Omega by h_sc
-      have h_shifted_mem : WorldHistory.timeShift ρ (x - y) ∈ Omega :=
-        h_sc ρ h_rho_mem (x - y)
-      have h1 := h_box_y (WorldHistory.timeShift ρ (x - y)) h_shifted_mem
+    · intro h_box_y ρ h_rho_tot
+      -- ρ is total, need to show truth at (ρ, x)
+      -- timeShift ρ (x - y) is total by isTotal_timeShift
+      have h_shifted_tot : (WorldHistory.timeShift ρ (x - y)).IsTotal :=
+        WorldHistory.isTotal_timeShift h_rho_tot (x - y)
+      have h1 := h_box_y (WorldHistory.timeShift ρ (x - y)) h_shifted_tot
       -- Apply IH with timeShift ρ (x - y) instead of σ
       have h2 := (ih (WorldHistory.timeShift ρ (x - y)) x y).mpr h1
       -- h2 : TruthAt M Omega (timeShift (timeShift ρ (x-y)) (y-x)) x ψ
@@ -683,11 +712,11 @@ Corollary: For any history σ at time y, there exists a history at time x
 This is the key lemma for proving MF and TF axioms.
 -/
 theorem exists_shifted_history (M : TaskModel F) (Omega : Set (WorldHistory F))
-    (h_sc : ShiftClosed Omega) (σ : WorldHistory F) (x y : D)
+    (σ : WorldHistory F) (x y : D)
     (φ : Formula) :
     TruthAt M Omega σ y φ ↔
     TruthAt M Omega (WorldHistory.timeShift σ (y - x)) x φ := by
-  exact (time_shift_preserves_truth M Omega h_sc σ x y φ).symm
+  exact (time_shift_preserves_truth M Omega σ x y φ).symm
 
 end TimeShift
 

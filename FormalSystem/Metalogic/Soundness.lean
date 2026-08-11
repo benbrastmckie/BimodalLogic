@@ -262,7 +262,7 @@ theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.allFuture).bo
   simp only [TruthAt, Truth.future_iff]
   intro h_box_phi σ h_σ_mem s hts
   have h_phi_at_shifted := h_box_phi (WorldHistory.timeShift σ (s - t)) (h_sc σ h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
+  exact (TimeShift.time_shift_preserves_truth M Omega σ t s φ).mp h_phi_at_shifted
 
 /-- Temporal A Dual axiom is valid: `⊨ φ → H(Fφ)`.
 Under strict semantics: if φ at t, then for all s < t, there exists r > s with φ(r) (namely, t). -/

@@ -652,7 +652,7 @@ theorem truthAt_allFuture_of_box {M : TaskModel F} {Om : Set (WorldHistory F)}
     (h : ∀ σ ∈ Om, TruthAt M Om σ t ψ) : TruthAt M Om τ t ψ.allFuture := by
   rw [Truth.future_iff]
   intro s _
-  exact (TimeShift.time_shift_preserves_truth M Om hsc τ t s ψ).mp
+  exact (TimeShift.time_shift_preserves_truth M Om τ t s ψ).mp
     (h (WorldHistory.timeShift τ (s - t)) (hsc τ hτ (s - t)))
 
 /-- **Shift-closure carries `□` into `H`.** The past mirror of `truthAt_allFuture_of_box`; the
@@ -663,7 +663,7 @@ theorem truthAt_allPast_of_box {M : TaskModel F} {Om : Set (WorldHistory F)}
     (h : ∀ σ ∈ Om, TruthAt M Om σ t ψ) : TruthAt M Om τ t ψ.allPast := by
   rw [Truth.past_iff]
   intro s _
-  exact (TimeShift.time_shift_preserves_truth M Om hsc τ t s ψ).mp
+  exact (TimeShift.time_shift_preserves_truth M Om τ t s ψ).mp
     (h (WorldHistory.timeShift τ (s - t)) (hsc τ hτ (s - t)))
 
 /-- `T(□A) → T(A)` at every known world, same time. Persistent: the source stays. -/
@@ -1506,7 +1506,7 @@ whose position relative to the source is recorded in the ordering rather than in
 theorem forall_truthAt_time_invariant {M : TaskModel F} {Om : Set (WorldHistory F)}
     (hsc : ShiftClosed Om) {t s : D} {ψ : Formula}
     (h : ∀ σ ∈ Om, TruthAt M Om σ t ψ) : ∀ σ ∈ Om, TruthAt M Om σ s ψ := fun τ hτ =>
-  (TimeShift.time_shift_preserves_truth M Om hsc τ t s ψ).mp
+  (TimeShift.time_shift_preserves_truth M Om τ t s ψ).mp
     (h (WorldHistory.timeShift τ (s - t)) (hsc τ hτ (s - t)))
 
 /-- Everything `boxDiamondPersistence` emits is satisfied at the fresh time by the *same* history

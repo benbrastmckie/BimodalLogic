@@ -203,7 +203,7 @@ theorem swap_axiom_mf_valid (φ : Formula) :
   simp only [TruthAt, Truth.past_iff]
   intro h_box_swap σ h_σ_mem s h_s_lt_t
   have h_at_shifted := h_box_swap (WorldHistory.timeShift σ (s - t)) (h_sc σ h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swapTemporal).mp h_at_shifted
+  exact (TimeShift.time_shift_preserves_truth M Omega σ t s φ.swapTemporal).mp h_at_shifted
 
 /-! ## Rule Preservation (Phase 3)
 
@@ -855,7 +855,7 @@ theorem axiom_modal_future_valid (φ : Formula) :
   simp only [TruthAt, Truth.future_iff]
   intro h_box_phi σ h_σ_mem s hts
   have h_phi_at_shifted := h_box_phi (WorldHistory.timeShift σ (s - t)) (h_sc σ h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
+  exact (TimeShift.time_shift_preserves_truth M Omega σ t s φ).mp h_phi_at_shifted
 
 -- Note: axiom_temp_future_valid removed -- TF is now derived from MF + T + Modal 4.
 
