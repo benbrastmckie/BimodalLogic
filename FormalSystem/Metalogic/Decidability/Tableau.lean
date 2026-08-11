@@ -1953,7 +1953,8 @@ def findApplicableRule (sf : SignedFormula) (branch : Branch := [])
       | .notApplicable => none
       | .linear fs =>
           if ruleMintsFreshLabel rule then
-            if witnessPresent rule sf branch timeOrd then none
+            if witnessPresent rule sf branch timeOrd
+                || trivialEventWitnessed rule sf branch timeOrd then none
             else some (rule, result, newOrd)
           else if fs.all branch.contains then none
           else some (rule, result, newOrd)
@@ -1976,7 +1977,9 @@ def findApplicableRule (sf : SignedFormula) (branch : Branch := [])
           -- saturation lemmas and the witness condition they need to read off.
           if ruleSelfGuarded rule then some (rule, result, newOrd)
           else if ruleMintsFreshLabel rule then
-            (if witnessPresent rule sf branch timeOrd then none else some (rule, result, newOrd))
+            (if witnessPresent rule sf branch timeOrd
+                || trivialEventWitnessed rule sf branch timeOrd then none
+             else some (rule, result, newOrd))
           else if bss.any (fun fs => fs.all branch.contains) then none
           else some (rule, result, newOrd)
       | .branchingOrdered _ =>
@@ -2987,11 +2990,14 @@ theorem saturated_downward_closed
     (hmem : rule ∈ allRulesForFC fc) :
     (∀ fs, (applyRule rule sf b ord).1 = .linear fs →
        (ruleMintsFreshLabel rule = false → ∀ g ∈ fs, b.contains g = true)
-       ∧ (ruleMintsFreshLabel rule = true → witnessPresent rule sf b ord = true))
+       ∧ (ruleMintsFreshLabel rule = true →
+            witnessPresent rule sf b ord = true ∨ trivialEventWitnessed rule sf b ord = true))
   ∧ (∀ fs, (applyRule rule sf b ord).1 = .persistent fs → ∀ g ∈ fs, b.contains g = true)
   ∧ (∀ bss, (applyRule rule sf b ord).1 = .branching bss →
        (∃ fs ∈ bss, ∀ g ∈ fs, b.contains g = true)
-       ∨ (ruleMintsFreshLabel rule = true ∧ witnessPresent rule sf b ord = true)) := by
+       ∨ (ruleMintsFreshLabel rule = true ∧
+            (witnessPresent rule sf b ord = true
+              ∨ trivialEventWitnessed rule sf b ord = true))) := by
   have hExp := isExpanded_of_findUnexpanded_none h hsf
   unfold findApplicableRule at hExp
   rw [List.findSome?_eq_none_iff] at hExp
@@ -3009,9 +3015,13 @@ theorem saturated_downward_closed
     dsimp only at hr
     by_cases hfresh : ruleMintsFreshLabel rule
     · refine ⟨fun hc => absurd hc (by simp [hfresh]), fun _ => ?_⟩
+      -- Variant A widening: the fresh-label guard is now the disjunction
+      -- `witnessPresent || trivialEventWitnessed`, so refuting the conclusion has to refute
+      -- *both* disjuncts before the `if` can be shown not to have fired.
       by_contra hw
-      simp only [hfresh, if_true, Bool.not_eq_true] at hr
-      rw [if_neg (by simpa using hw)] at hr
+      obtain ⟨hw1, hw2⟩ := not_or.mp hw
+      simp only [hfresh, if_true] at hr
+      rw [if_neg (by simp only [Bool.or_eq_true, not_or]; exact ⟨hw1, hw2⟩)] at hr
       exact absurd hr (by simp)
     · refine ⟨fun _ g hg => ?_, fun hc => absurd hc (by simp [hfresh])⟩
       simp only [hfresh, Bool.false_eq_true, if_false] at hr
@@ -3032,9 +3042,11 @@ theorem saturated_downward_closed
     · simp only [hself, Bool.false_eq_true, if_false] at hr
       by_cases hfresh : ruleMintsFreshLabel rule
       · refine Or.inr ⟨hfresh, ?_⟩
+        -- Same variant A widening as the `.linear` clause above.
         by_contra hw
+        obtain ⟨hw1, hw2⟩ := not_or.mp hw
         simp only [hfresh, if_true] at hr
-        rw [if_neg (by simpa using hw)] at hr
+        rw [if_neg (by simp only [Bool.or_eq_true, not_or]; exact ⟨hw1, hw2⟩)] at hr
         exact absurd hr (by simp)
       · refine Or.inl ?_
         simp only [hfresh, Bool.false_eq_true, if_false] at hr
