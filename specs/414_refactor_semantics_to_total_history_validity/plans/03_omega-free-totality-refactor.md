@@ -1068,25 +1068,52 @@ clause):
 
 ---
 
-### Phase 11: Completeness-side Omega is `H_F` [NOT STARTED]
+### Phase 11: Completeness-side Omega is `H_F` [COMPLETED]
 
 **Goal**: Land the provable set equation that turns the completeness side's Omega-elimination into
 a rewrite, and classify the two Omega-valued definitions the round-3 report left UNVERIFIED before
 any collapse phase depends on them.
 
 **Tasks**:
-- [ ] Land `multiFamOmegaGen_eq_total : multiFamOmegaGen D FamIdx = {σ | ∀ t, σ.domain t}`, proved
+- [x] Land `multiFamOmegaGen_eq_total : multiFamOmegaGen D FamIdx = {σ | ∀ t, σ.domain t}`, proved
       from `multiFamHistoryGen`'s `domain := fun _ => True` (`⊆`) and `multiFamGen_total_eq` (`⊇`),
       both already in the tree from task 415. The round-3 report verified this proof sorry-free
-      against the live tree.
-- [ ] Derive the corollary for `bundleFlowOmega` (`FlowFrame.lean:432-433`), which is
-      `multiFamOmegaGen` at the bundle index.
-- [ ] **Classify `multiFamOmega`** (`ReynoldsBridge.lean:694`): prove it equal to its frame's
+      against the live tree. *(landed at `FlowFrame.lean` after `multiFamGen_total_eq`, inside
+      `section FlowFrameConformance`; compiled green on first attempt, exactly as the report
+      predicted — a rewrite, not a re-proof)*
+- [x] Derive the corollary for `bundleFlowOmega` (`FlowFrame.lean:432-433`), which is
+      `multiFamOmegaGen` at the bundle index. *(`bundleFlowOmega_eq_total`, a one-line term-mode
+      specialization `multiFamOmegaGen_eq_total _`)*
+- [x] **Classify `multiFamOmega`** (`ReynoldsBridge.lean:694`): prove it equal to its frame's
       `H_F`, or prove it a strict subset. The report flags it as likely behaving like
       `multiFamOmegaGen` (it is the `ℤ` specialization) but did **not** confirm this.
-- [ ] **Classify `ZOmegaV2`** (`ReynoldsBridge.lean:468`) the same way.
-- [ ] If either classification comes out strict-subset, record it immediately: it means a second
+      **VERDICT: equal to `H_F`.** `multiFamOmega_eq_total`, resting on the new
+      `multiFam_total_eq` (the `ℤ` totality characterization, transcribed from
+      `multiFamGen_total_eq` — the two frames are separate `def`s, not one specialized, so the
+      characterization had to be reproved rather than instantiated).
+- [x] **Classify `ZOmegaV2`** (`ReynoldsBridge.lean:468`) the same way. **VERDICT: equal to
+      `H_F`.** `zOmegaV2_eq_total`, resting on the new `zHistoryV2_total_eq`.
+- [x] If either classification comes out strict-subset, record it immediately: it means a second
       carrier re-host in the mould of Phase 12, and the plan must be revised before Phase 14 runs.
+      *(Not triggered — both classifications came out equal-to-`H_F`. No plan revision needed;
+      Phases 12-13 remain the only carrier re-host, and it remains `regionFrame`-only.)*
+
+**Verdict table** (all 5 Omega-valued definitions, population confirmed at implementation time):
+
+| Definition | Site | Verdict | Witness |
+|---|---|---|---|
+| `multiFamOmegaGen` | `FlowFrame.lean:163` | `= H_F` | `multiFamOmegaGen_eq_total` |
+| `bundleFlowOmega` | `FlowFrame.lean:435` | `= H_F` | `bundleFlowOmega_eq_total` |
+| `ZOmegaV2` | `ReynoldsBridge.lean:469` | `= H_F` | `zOmegaV2_eq_total` |
+| `multiFamOmega` | `ReynoldsBridge.lean:697` | `= H_F` | `multiFamOmega_eq_total` |
+| `regionOmega` | `Bridge/Omega.lean:216` | `⊊ H_F` | prior finding: `regionFrame`'s `TaskRel` is maximally permissive above zero, admitting total junk histories outside the `regionHistory` family — hence Phases 12-13 |
+
+**Scope-hypothesis confirmation**: `grep -rn "Set (WorldHistory" --include=*.lean FormalSystem/ |
+grep -v Boneyard` was run. It returns 5 `def`s and no sixth; every other hit is a binder
+(`(Omega : Set (WorldHistory F))`) or a type ascription. The one near-miss —
+`CompletenessDedekind.lean:84`, which *does* return `Set (WorldHistory (bundleFlowFrame B))` — is
+an `example`, not a `def`, and its body is `bundleFlowOmega B`, already covered above. The
+population is exactly 5, as the round-3 report stated.
 
 **Timing**: 2 hours
 
