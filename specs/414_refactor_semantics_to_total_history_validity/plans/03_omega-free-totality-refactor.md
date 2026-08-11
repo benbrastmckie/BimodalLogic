@@ -1863,18 +1863,57 @@ enumerating the definitions that survive.
 
 ---
 
-### Phase 19: Omega-binder sweep A — leaves [NOT STARTED]
+### Phase 19: Omega-binder sweep A — leaves [COMPLETED]
 
 **Goal**: Begin Decision D's reverse-topological removal at the leaves, where no other declaration
 depends on the affected signatures, so the phase ends green.
 
 **Tasks**:
-- [ ] Remove `Omega` parameters and `ShiftClosed` hypotheses from `Tests/BimodalTest/**`.
-- [ ] Same for `FormalSystem/Examples/**`.
-- [ ] Same for `FormalSystem/Automation/**`.
-- [ ] Same for `FormalSystem/FrameConditions/**`.
-- [ ] Confirm the reverse-topological precondition before each file: every declaration mentioning
+- [x] Remove `Omega` parameters and `ShiftClosed` hypotheses from `Tests/BimodalTest/**`.
+      *(deviation: altered — no declaration under `Tests/BimodalTest/**` carried either binder.
+      The residue was five probe docstrings still describing the box clause as a quantifier over
+      an admissible-history set; those were retargeted to the totality reading.)*
+- [x] Same for `FormalSystem/Examples/**`. *(deviation: skipped — census on the green tree found
+      no `Omega`/`ShiftClosed`/`Ω` occurrence anywhere under `Examples/`, and no `TruthAt` call
+      site at all. Nothing to remove.)*
+- [x] Same for `FormalSystem/Automation/**`. **This was the whole of the phase's declaration
+      work**: `Automation/PrefilterSoundness.lean`'s four theorems each lost their
+      `{Omega : Set (WorldHistory F)}` binder and now supply `Set.univ`.
+- [x] Same for `FormalSystem/FrameConditions/**`. *(deviation: skipped — `FrameConditions/`
+      carries `TruthAt` call sites in `Validity.lean` and `Soundness.lean`, but every one of them
+      already passes `Set.univ`; Phases 15 and 18 had brought both files to the settled shape.
+      No binder survived to remove.)*
+- [x] Confirm the reverse-topological precondition before each file: every declaration mentioning
       the one being changed has already dropped its own binder, or is in this same phase.
+      **Confirmed by name-grep across the whole tree**: none of `isUnsatBotTemporal_not_truth`,
+      `unfulfillable_until_not_truth`, `unfulfillable_since_not_truth`,
+      `false_consequent_not_truth` has any consumer outside its own file, so all four are true
+      leaves and the precondition holds vacuously.
+
+#### Execution record
+
+**Carrier convention.** These leaves cannot become argument-free while `TruthAt` still takes its
+inert `_Omega` parameter (that deletion is Phase 22). Per the shape already settled by Phase 18 in
+`Semantics/Validity.lean`, dropping a leaf's binder means supplying `Set.univ` at the call site —
+the same value `valid` and `SemanticConsequence` supply. This introduces **no new carrier
+transport**: `truthAt_carrier_irrelevant` is not invoked anywhere in this phase, because the
+leaves have no consumers to bridge to a different carrier. The Phase 22 unwind surface is
+therefore unchanged by this phase, still exactly the five sites the Phase 17 handoff enumerated.
+
+**Scope, measured rather than estimated.** The plan's file list named four directory trees; three
+of them turned out to hold no binder at all. This is the *third* consecutive over-sizing in the
+same direction as the Execution Status section's lesson 1 records — but note the mechanism is the
+opposite one: here the census was taken on a **green** tree and was therefore an accurate
+measurement, and the over-sizing came from the plan's *a priori* guess, not from a red-tree
+undercount. Both failure modes are live; only red-tree counts are systematically low.
+
+**Verification run**: `lake build` green at 2331 jobs. Territory grep for
+`Omega\|ShiftClosed\|Ω` over all four trees returns nothing (the replacement prose in
+`PrefilterSoundness.lean` was deliberately worded to avoid the tokens so the phase's own gate is
+literally satisfied). Repo-wide live sorries: 1, the pre-existing
+`WeakCanonical/Transfer.lean:1084`. New axioms: 0. `lake build BimodalTest` mismatch count
+unmoved from its ten-item pre-existing baseline — expected, since every edit in this phase is
+either a `Prop`-valued statement or a comment.
 
 **Timing**: 2 hours
 
