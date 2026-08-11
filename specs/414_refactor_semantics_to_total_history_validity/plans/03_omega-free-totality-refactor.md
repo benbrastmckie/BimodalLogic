@@ -10,6 +10,64 @@
 - **Type**: lean4
 - **Lean Intent**: false
 
+## Execution Status
+
+**18 of 23 phases complete; `lake build` GREEN; 0 sorries introduced (1 pre-existing,
+`Metalogic/WeakCanonical/Transfer.lean:1084`, out of scope); 0 new axioms.**
+
+| Phases | State |
+|--------|-------|
+| 1-13, 15-18 | `[COMPLETED]` (14 and 18 as `[COMPLETED WITH EXCLUSIONS]`, each with a Reasoned Exclusions block) |
+| 19-22 | `[NOT STARTED]` — the Omega-binder sweeps, the remaining work |
+| 23 | `[NOT STARTED]` — OPTIONAL frame-relative validity |
+
+**Phase 18 ran out of numeric order**, before 15-17, on a census finding from Phase 14: six break
+sites were error-family A (a history known only to be in `Ω` where totality is now required),
+which the validity-layer binder delta was expected to dissolve at the source. The dispatched agent
+verified first that Phase 18 depends only on Phase 14 and that 15/16/17 each depend only on 14, so
+no prerequisite edge runs from 18 into them. **The expectation was only half right, recorded here
+so it is not repeated**: family A did not dissolve wholesale (`PrefilterSoundness.lean:96:29`
+survived it), and the `IsValid` delta propagated into `DenseValidity.lean`, taking the tree from
+12 errors to 98. Phase 15 then cleared 175 errors and the net effect was favourable, but the
+dissolve-at-the-source reasoning should not be treated as validated.
+
+### Two lessons that should govern Phases 19-23
+
+1. **An error census taken on a red tree is a LOWER BOUND, never a measurement.** Every phase that
+   sized itself from one was wrong, always upward: Phase 12 predicted 1 break site; Phase 16 was
+   told 2 and found 4; Phase 17 was told 17 and found 23. Files hidden behind a red import chain
+   are invisible to the compiler and surface only as their ancestors clear. **Edit first, census
+   after.** Conversely the plan's own *a priori* estimates over-sized badly where they were
+   guesses rather than measurements (`Soundness.lean` "70 declarations" → 0 own-errors;
+   `Verified/Decidable.lean` "42 declarations" → 16).
+2. **Repair lineage is mixed; diagnose before sweeping.** Two distinct error families are in play.
+   The box-clause retarget (`∀ σ, σ ∈ Omega → …` → `∀ σ, σ.IsTotal → …`) preserves arity, so its
+   sites are genuine small judgment work needing a membership→totality bridge. The `IsValid` /
+   `Valid*` binder deltas *do* change arity, so their sites cascade — a mechanical `intro`-arity
+   sweep dissolved all 14 of `DenseValidity.lean`'s apparent "judgment sites" as artifacts of an
+   already-failed `intro` line. Phase 17 found both lineages mixed within one file; a blanket
+   sweep in either style would have missed half.
+
+### Corrections to this plan's own "Files to modify" lists (all applied inline)
+
+Four files carried real work while appearing in **no** phase's list, each discovered only when it
+surfaced from behind the red chain: `SoundnessLemmas/DenseValidity.lean` (which at one point
+carried 96% of all remaining breakage), `SoundnessLemmas/FrameClassVariants.lean`,
+`Decidability/Correctness.lean`, `Decidability/Propositional/Decidable.lean`. Conversely
+`FrameConditions/Validity.lean` was listed under Phase 15 but had already been brought green by
+Phase 18. Three further paths in Phase 16's list do not exist as written (the real locations are
+all under `BXCanonical/`). Treat the remaining phases' lists as provisional.
+
+### Carried caveat, deliberately not fixed here
+
+`lake build BimodalTest` has ten pre-existing `#guard_msgs` mismatches (`TableauConformance.lean`
+7, `RegionGateProbe.lean` 2, `BoxSpreadProbe.lean` 1). Six dispatches independently declined to
+re-baseline them: probe expectations were baselined 2026-07-29 while `Decidability/Saturation.lean`
+last changed 2026-08-05 under separate work, and Phase 17 confirmed structurally that nothing in
+this refactor can reach them (every declaration edited is `Prop`-valued or a proof term; no
+`#eval`-reachable computable definition was touched). Re-baselining them here would mask an
+engine-behaviour change owned elsewhere.
+
 ## Overview
 
 Make totality-based validity THE validity of the repository and eliminate the `Omega` parameter
@@ -66,6 +124,20 @@ in the report's favour, stated openly rather than silently:
 | `untl`/`snce` clause shape | §2: "τ-local and unchanged in shape", mirroring `def:BLplus-semantics` | §6.2: the paper's `def:BLplus-semantics` footnote describes the repo **backwards** (guard-first); `Formula.lean:85-90` and `Truth.lean:134-135` are event-first, and `Axiom.dense_indicator` plus `K⁺` depend on the event-first reading | **Report.** The Lean convention is **not** flipped. The divergence is recorded and escalated (Phase 2). |
 
 ## The §7 mechanism (how the cross-task criterion is satisfied, not deferred)
+
+> **STATUS: DISCHARGED** (Phase 9, re-verified as intact by Phase 10). Evidence, not assertion:
+> a deletion probe re-elaborating `step`'s body with the `hSph` binder removed fails with
+> `Unknown identifier 'hSph'` plus a cascading `rcases` failure; `#print` shows `hSph` both bound
+> and **applied as a function head** (`hSph (τ.Constraints z) hdir fun c hc`); and the only code
+> occurrences of `Spherical` anywhere in `FormalSystem/` are its definition
+> (`Semantics/FrameAxioms.lean`) and `Extension/Step.lean` — every other hit is docstring prose.
+> Phase 10 re-checked that `thm:extension` forwards the four axiom binders to `step` without
+> applying them, so `step` remains the sole application site and its signature is untouched.
+>
+> **One deviation task 420 must absorb**: `step` carries an extra `hLim` binder (the *Limit*
+> axiom in hypothesis form) between `hInt` and `τ`, because `TaskFrame` deliberately does not
+> carry *Limit* as a field and `lem:admissible` needs `lem:nullity` at `z`. It discharges by the
+> same mechanical substitution as `hSph`/`hSer`/`hInt` when the axiom fields land.
 
 Charter §7 requires that *Spherical*'s Lean statement be literally the hypothesis `lem:step`'s
 proof consumes — not an inert structure field. This plan discharges it as follows:
@@ -1791,7 +1863,7 @@ enumerating the definitions that survive.
 
 ---
 
-### Phase 19: Omega-binder sweep A — leaves [IN PROGRESS]
+### Phase 19: Omega-binder sweep A — leaves [NOT STARTED]
 
 **Goal**: Begin Decision D's reverse-topological removal at the leaves, where no other declaration
 depends on the affected signatures, so the phase ends green.

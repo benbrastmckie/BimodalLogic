@@ -78,7 +78,7 @@ next_project_number: 440
 ### Paper Refactor
 
 420 [PARTIAL] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
-  └─ 414 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charte
+  └─ 414 [IMPLEMENTING] — === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the secti
     └─ 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
       └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
     └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
@@ -818,7 +818,70 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Research**: [414_refactor_semantics_to_total_history_validity/reports/03_total-history-validity-refactor.md]
 - **Plan**: [414_refactor_semantics_to_total_history_validity/plans/03_omega-free-totality-refactor.md]
 
-**Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charter in full). TOTAL-HISTORY VALIDITY REFACTOR: make totality-based validity THE validity of the repo, eliminating the Omega parameter from the semantics core.
+**Description**: === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the sections named below) ===
+18 of 23 plan phases are COMPLETE, `lake build` is GREEN, 0 sorries were introduced (1
+pre-existing, Metalogic/WeakCanonical/Transfer.lean:1084, out of scope), 0 new axioms. Plan of
+record: plans/03_omega-free-totality-refactor.md, whose "## Execution Status" section carries the
+per-phase detail, the two lessons governing the remainder, and the four file-list corrections.
+REMAINING: phases 19-22 (the Omega-binder sweeps) and phase 23 (OPTIONAL frame-relative validity).
+
+The paper anchors, verbatim definitions, and NOTATION rules in sections 1-10 below remain ground
+truth and are unchanged. What follows records only which OPEN QUESTIONS and PENDING OBLIGATIONS
+have since been settled, so the charter stops posing as open work that is already done.
+
+SETTLED -- section 7 (CROSS-TASK ACCEPTANCE CRITERION), the most consequential: **DISCHARGED.**
+*Spherical* is verified as literally the hypothesis lem:step's proof consumes, by two independent
+checks -- a deletion probe (removing the `hSph` binder makes the proof fail to elaborate with
+`Unknown identifier`) and proof-term inspection (`#print` shows it applied as a function head).
+`Extension/Step.lean` is its SOLE application site repo-wide; every other occurrence is docstring
+prose. Phase 10 re-verified the invariant survived thm:extension, which forwards the axiom binders
+without applying them. The obligation "this task is not done until that threading is demonstrated"
+is met. One item task 420 must absorb: `step` carries an extra `hLim` binder (Limit in hypothesis
+form), because TaskFrame does not carry Limit as a field and lem:admissible needs lem:nullity at
+z; it discharges by the same mechanical substitution as the others when 420's frame-axiom-field
+phase lands.
+
+SETTLED -- section 3 (THE HISTORY-STRUCTURE GAP): the layering decision was made ONCE, at plan
+time, and is landed. `PartialHistory` (nonempty domain, respects_task, no convexity) exists with
+`WorldHistory` re-based onto it, plus the extension order and the Zorn machinery, in
+FormalSystem/Semantics/PartialHistory*.lean and Semantics/Extension/. The paper's decomposition
+(def:constraints -> lem:constraint -> lem:fibers -> lem:admissible -> lem:step -> thm:extension ->
+cor:occurrence) is transcribed lemma-for-lemma and is sorry-free. Frame-intrinsic cor:occurrence
+was deliberately NOT attempted and remains gated on task 420's frame-axiom-field phase, as scoped.
+
+SETTLED -- section 2 (THE ACTUAL BINDER DELTA): applied. TruthAt's box clause now reads
+`forall (sigma : WorldHistory F), sigma.IsTotal -> ...`, matching def:BL-semantics with no Omega
+and no shift-closure side condition; the target predicate is TOTALITY, never IsMax. The validity
+layer's binder delta landed across twelve definitions. `ShiftClosed` was DELETED from
+time_shift_preserves_truth rather than replaced -- the statement got strictly stronger while
+losing a hypothesis, confirming the charter's "strictly easier" prediction. untl/snce remain
+EVENT-FIRST; the paper footnote's contradictory guard-first reading was NOT adopted.
+
+SETTLED -- the three-way delete-vs-generalize question for Omega (section 5 / report 7.5): all
+five Omega-valued definitions are now provably = H_F, so no split-scope spawn was needed. The
+completeness side was largely the predicted rewrite; the decidability side required the real work
+the charter anticipated -- regionFrame was re-hosted onto a deterministic clock carrier
+(WorldState := W x D) IN THIS TASK, and its consumers repaired, closing the junk-history problem
+that totality alone does not fix. Note two corrections to prior research discovered en route:
+(a) "rewrite, not re-proof" held only for the two FlowFrame definitions; multiFamTaskFrame and
+zTaskFrameV2 are independent defs with no totality characterization to rewrite along, so two new
+proofs were required; (b) `regionConstant_regionHistory_zero` became FALSE, not merely unproved,
+under the deterministic carrier, and was replaced by `not_regionConstant_regionHistory`.
+
+CORRECTION to section 5's SURVIVES list: it states, on round-3 authority, that the extension-order
+machinery (Preorder, chainSup, exists_maximal_extension, isMax_of_total, timeShift_mono) "exists
+ONLY as a prototype inside report 01 and is NOT in the tree". That was true when written and is
+now STALE -- the order-machinery phase ported it, and it is in the tree. The rest of the SURVIVES
+list stands, including the soundness-survival analysis, which the ShiftClosed deletion above
+confirms a fortiori. The Group C 88/16/8 counts remain unverified against the current tree; still
+never present them as freshly derived.
+
+STILL OPEN -- section 8 (OPTIONAL DELIVERABLE): frame-relative validity |=_F has no Lean
+counterpart yet. It is the plan's final phase and remains explicitly OPTIONAL.
+
+STILL BINDING -- section 10 (FIRST STEP FOR THE NEXT DISPATCH): unchanged. Run
+`bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-of-record.md before
+consuming any definition. It passed silently at the start of the 2026-08-11 run.RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charter in full). TOTAL-HISTORY VALIDITY REFACTOR: make totality-based validity THE validity of the repo, eliminating the Omega parameter from the semantics core.
 
 === 1. THE TARGET PREDICATE (the single most consequential correction) ===
 The target predicate for TruthAt's box clause, valid, SemanticConsequence, the satisfiable family, and H_F generally is TOTALITY -- in Lean, `IsTotal (tau) := forall t, tau.domain t` -- NOT Mathlib's `IsMax` and not any order-theoretic maximality predicate. The paper's own layering is partial history, then world history, then total (equivalently: possible world). Paper anchor \label{def:world-history}, verbatim: "A *partial history* over a frame F = <W, D, =>> is a function tau : X -> W on a nonempty set X subset-of D where tau(x) =>_{y-x} tau(y) for all times x, y in X. ... A *world history* is any partial history whose domain X is *convex*, so that y in X whenever x, z in X and x < y < z. A world history is *total* --- equivalently, a *possible world* --- just in case X = D. A partial history sigma *extends* tau just in case dom(tau) subset-of dom(sigma) and tau(x) = sigma(x) for all x in dom(tau). The set of all total world histories over F is denoted H_F."
