@@ -76,7 +76,7 @@ two rays, or a gap with an identified pair of endpoints.
 
 ## What the invariance lemmas quantify over
 
-`InterpInvariant f M Om χ` says: for every **total** history and every pair of `SameRegion`
+`InterpInvariant f M χ` says: for every **total** history and every pair of `SameRegion`
 points, `χ` has the same truth value. The quantifier over the total histories rather than over the
 single history under consideration is what makes the `box` case go through: `TruthAt … (box φ)` is
 a universal over the total histories at a *fixed* time, so the induction hypothesis has to be
@@ -85,8 +85,8 @@ case's hypothesis (`RegionConstant`) is likewise imposed on every total history.
 **no accessibility relation** — `TruthAt` quantifies over totality outright — so that case is pure
 transport and needs nothing from the order.
 
-`Om` survives in the statement only as `TruthAt`'s inert carrier argument, scheduled for deletion
-with the parameter itself; it no longer indexes what `box` ranges over.
+The designated admissible set is gone from the statement entirely: `TruthAt`'s remaining carrier
+argument is inert and is supplied as `Set.univ`, and it no longer indexes what `box` ranges over.
 
 ## What the temporal cases turned out *not* to need
 
@@ -454,16 +454,15 @@ distinguish points of a common region.
 
 Quantified over all total histories rather than over one history, because `box` is a universal
 over the total histories at a fixed time and its case needs the induction hypothesis at every
-such history simultaneously. `Om` survives only as `TruthAt`'s inert carrier argument; the
-quantifier tracks the box clause, which is totality (`def:BL-semantics`,
-`specs/paper-definitions-of-record.md`), not `Ω`-membership.
+such history simultaneously. No designated admissible set appears; the quantifier tracks the box
+clause, which is totality (`def:BL-semantics`, `specs/paper-definitions-of-record.md`), not
+membership in a chosen set.
 -/
-def InterpInvariant (f : ι → D) (M : TaskModel F) (Om : Set (WorldHistory F))
-    (χ : Formula) : Prop :=
+def InterpInvariant (f : ι → D) (M : TaskModel F) (χ : Formula) : Prop :=
   ∀ τ : WorldHistory F, τ.IsTotal →
-    ∀ r r' : D, SameRegion f r r' → (TruthAt M Om τ r χ ↔ TruthAt M Om τ r' χ)
+    ∀ r r' : D, SameRegion f r r' → (TruthAt M Set.univ τ r χ ↔ TruthAt M Set.univ τ r' χ)
 
-variable {f : ι → D} {M : TaskModel F} {Om : Set (WorldHistory F)}
+variable {f : ι → D} {M : TaskModel F}
 
 /-! ### Propositional and modal cases -/
 
@@ -474,7 +473,7 @@ truth value is a function of the region alone.
 -/
 theorem interpInvariant_atom (hRC : ∀ τ : WorldHistory F, τ.IsTotal → RegionConstant f τ)
     (p : Atom) :
-    InterpInvariant f M Om (Formula.atom p) := by
+    InterpInvariant f M (Formula.atom p) := by
   intro τ hτ r r' hrr'
   have hC := hRC τ hτ
   simp only [TruthAt]
@@ -489,13 +488,13 @@ theorem interpInvariant_atom (hRC : ∀ τ : WorldHistory F, τ.IsTotal → Regi
     rwa [hC.states_congr hrr' hr hr']
 
 /-- **Bottom case.** `⊥` is false everywhere, so it is in particular region-invariant. -/
-theorem interpInvariant_bot : InterpInvariant f M Om Formula.bot := by
+theorem interpInvariant_bot : InterpInvariant f M Formula.bot := by
   intro _ _ _ _ _
   exact Iff.rfl
 
 /-- **Implication case.** The material conditional of two region-invariant formulas. -/
-theorem interpInvariant_imp {φ ψ : Formula} (hφ : InterpInvariant f M Om φ)
-    (hψ : InterpInvariant f M Om ψ) : InterpInvariant f M Om (φ.imp ψ) := by
+theorem interpInvariant_imp {φ ψ : Formula} (hφ : InterpInvariant f M φ)
+    (hψ : InterpInvariant f M ψ) : InterpInvariant f M (φ.imp ψ) := by
   intro τ hτ r r' hrr'
   exact imp_congr (hφ τ hτ r r' hrr') (hψ τ hτ r r' hrr')
 
@@ -505,19 +504,19 @@ with no accessibility relation to move the time, so the case is pure transport o
 hypothesis across those histories. This is exactly why `InterpInvariant` quantifies over the
 total histories rather than over a single history.
 -/
-theorem interpInvariant_box {φ : Formula} (hφ : InterpInvariant f M Om φ) :
-    InterpInvariant f M Om φ.box := by
+theorem interpInvariant_box {φ : Formula} (hφ : InterpInvariant f M φ) :
+    InterpInvariant f M φ.box := by
   intro _ _ r r' hrr'
   simp only [TruthAt]
   exact forall_congr' fun σ => imp_congr_right fun hσ => hφ σ hσ r r' hrr'
 
 /-- **Negation.** `¬φ` is `φ → ⊥` by definition, so it inherits invariance from `φ`. -/
-theorem interpInvariant_neg {φ : Formula} (hφ : InterpInvariant f M Om φ) :
-    InterpInvariant f M Om φ.neg :=
+theorem interpInvariant_neg {φ : Formula} (hφ : InterpInvariant f M φ) :
+    InterpInvariant f M φ.neg :=
   interpInvariant_imp hφ interpInvariant_bot
 
 /-- **Verum.** `⊤` is `⊥ → ⊥` by definition; `someFuture`/`somePast` guard with it. -/
-theorem interpInvariant_top : InterpInvariant f M Om (Formula.top : Formula) :=
+theorem interpInvariant_top : InterpInvariant f M (Formula.top : Formula) :=
   interpInvariant_imp interpInvariant_bot interpInvariant_bot
 
 /-! ### Temporal cases
@@ -532,9 +531,9 @@ variable [Fintype ι] [DenselyOrdered D]
 
 /-- One direction of the `untl` case, for `r < r'`. The other follows by symmetry of the setup. -/
 private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
-    (hφ : InterpInvariant f M Om φ) (hψ : InterpInvariant f M Om ψ)
+    (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M Om τ r (φ.untl ψ)) : TruthAt M Om τ r' (φ.untl ψ) := by
+    (h : TruthAt M Set.univ τ r (φ.untl ψ)) : TruthAt M Set.univ τ r' (φ.untl ψ) := by
   obtain ⟨s, hrs, hφs, hg⟩ := h
   by_cases hcase : r' < s
   · exact ⟨s, hcase, hφs, fun x hx hxs => hg x (lt_trans hlt hx) hxs⟩
@@ -544,7 +543,7 @@ private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
     obtain ⟨s', hr's', hs'reg⟩ := exists_gt_sameRegion (f := f) (r := r') hnp.2
     obtain ⟨x₀, hx₀l, hx₀r⟩ := exists_between hrs
     have hx₀reg : SameRegion f r x₀ := sameRegion_convex hsreg hx₀l.le hx₀r.le
-    have hψx₀ : TruthAt M Om τ x₀ ψ := hg x₀ hx₀l hx₀r
+    have hψx₀ : TruthAt M Set.univ τ x₀ ψ := hg x₀ hx₀l hx₀r
     refine ⟨s', hr's', ?_, ?_⟩
     · exact (hφ τ hτ s s' ((hsreg.symm.trans hrr').trans hs'reg)).mp hφs
     · intro x hx hxs'
@@ -553,9 +552,9 @@ private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
 
 /-- The reverse direction of the `untl` case, for `r < r'`. -/
 private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
-    (hψ : InterpInvariant f M Om ψ)
+    (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M Om τ r' (φ.untl ψ)) : TruthAt M Om τ r (φ.untl ψ) := by
+    (h : TruthAt M Set.univ τ r' (φ.untl ψ)) : TruthAt M Set.univ τ r (φ.untl ψ) := by
   obtain ⟨s, hr's, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
   obtain ⟨s₁, hr's₁, hs₁reg⟩ := exists_gt_sameRegion (f := f) (r := r') hnp.2
@@ -563,7 +562,7 @@ private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
   have hys : y < s := lt_of_lt_of_le hyr (min_le_left _ _)
   have hys₁ : y < s₁ := lt_of_lt_of_le hyr (min_le_right _ _)
   have hyreg : SameRegion f r' y := sameRegion_convex hs₁reg hyl.le hys₁.le
-  have hψy : TruthAt M Om τ y ψ := hg y hyl hys
+  have hψy : TruthAt M Set.univ τ y ψ := hg y hyl hys
   refine ⟨s, lt_trans hlt hr's, hφs, ?_⟩
   intro x hx hxs
   by_cases hcase : r' < x
@@ -581,8 +580,8 @@ falls inside the region is pinned by `ψ`'s invariance, and any witness that has
 replaced by a fresh one inside the region.
 -/
 theorem interpInvariant_untl [NoMaxOrder D] {φ ψ : Formula}
-    (hφ : InterpInvariant f M Om φ) (hψ : InterpInvariant f M Om ψ) :
-    InterpInvariant f M Om (Formula.untl φ ψ) := by
+    (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ) :
+    InterpInvariant f M (Formula.untl φ ψ) := by
   intro τ hτ r r' hrr'
   rcases lt_trichotomy r r' with hlt | heq | hgt
   · exact ⟨untl_forward hφ hψ hτ hrr' hlt, untl_backward hψ hτ hrr' hlt⟩
@@ -591,9 +590,9 @@ theorem interpInvariant_untl [NoMaxOrder D] {φ ψ : Formula}
 
 /-- One direction of the `snce` case, for `r < r'`. -/
 private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
-    (hψ : InterpInvariant f M Om ψ)
+    (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M Om τ r (φ.snce ψ)) : TruthAt M Om τ r' (φ.snce ψ) := by
+    (h : TruthAt M Set.univ τ r (φ.snce ψ)) : TruthAt M Set.univ τ r' (φ.snce ψ) := by
   obtain ⟨s, hsr, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
   obtain ⟨s₁, hs₁r, hs₁reg⟩ := exists_lt_sameRegion (f := f) (r := r) hnp.1
@@ -601,7 +600,7 @@ private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
   have hsy : s < y := lt_of_le_of_lt (le_max_left _ _) hyl
   have hs₁y : s₁ < y := lt_of_le_of_lt (le_max_right _ _) hyl
   have hyreg : SameRegion f r y := hs₁reg.trans (sameRegion_convex hs₁reg.symm hs₁y.le hyr.le)
-  have hψy : TruthAt M Om τ y ψ := hg y hsy hyr
+  have hψy : TruthAt M Set.univ τ y ψ := hg y hsy hyr
   refine ⟨s, lt_trans hsr hlt, hφs, ?_⟩
   intro x hsx hxr'
   by_cases hcase : x < r
@@ -612,9 +611,9 @@ private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
 
 /-- The reverse direction of the `snce` case, for `r < r'`. -/
 private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
-    (hφ : InterpInvariant f M Om φ) (hψ : InterpInvariant f M Om ψ)
+    (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M Om τ r' (φ.snce ψ)) : TruthAt M Om τ r (φ.snce ψ) := by
+    (h : TruthAt M Set.univ τ r' (φ.snce ψ)) : TruthAt M Set.univ τ r (φ.snce ψ) := by
   obtain ⟨s, hsr', hφs, hg⟩ := h
   by_cases hcase : s < r
   · exact ⟨s, hcase, hφs, fun x hsx hxr => hg x hsx (lt_trans hxr hlt)⟩
@@ -624,7 +623,7 @@ private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
     obtain ⟨s', hs'r, hs'reg⟩ := exists_lt_sameRegion (f := f) (r := r) hnp.1
     obtain ⟨y, hyl, hyr⟩ := exists_between hsr'
     have hyreg : SameRegion f s y := sameRegion_convex (hsreg.symm.trans hrr') hyl.le hyr.le
-    have hψy : TruthAt M Om τ y ψ := hg y hyl hyr
+    have hψy : TruthAt M Set.univ τ y ψ := hg y hyl hyr
     refine ⟨s', hs'r, ?_, ?_⟩
     · exact (hφ τ hτ s s' (hsreg.symm.trans hs'reg)).mp hφs
     · intro x hs'x hxr
@@ -637,8 +636,8 @@ private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
 least element.
 -/
 theorem interpInvariant_snce [NoMinOrder D] {φ ψ : Formula}
-    (hφ : InterpInvariant f M Om φ) (hψ : InterpInvariant f M Om ψ) :
-    InterpInvariant f M Om (Formula.snce φ ψ) := by
+    (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ) :
+    InterpInvariant f M (Formula.snce φ ψ) := by
   intro τ hτ r r' hrr'
   rcases lt_trichotomy r r' with hlt | heq | hgt
   · exact ⟨snce_forward hψ hτ hrr' hlt, snce_backward hφ hψ hτ hrr' hlt⟩
@@ -653,29 +652,29 @@ theorem interpInvariant_snce [NoMinOrder D] {φ ψ : Formula}
 
 /-- **`F φ`.** `someFuture φ` is `U(φ, ⊤)`. -/
 theorem interpInvariant_someFuture [NoMaxOrder D] {φ : Formula}
-    (hφ : InterpInvariant f M Om φ) : InterpInvariant f M Om φ.someFuture :=
+    (hφ : InterpInvariant f M φ) : InterpInvariant f M φ.someFuture :=
   interpInvariant_untl hφ interpInvariant_top
 
 /-- **`P φ`.** `somePast φ` is `S(φ, ⊤)`. -/
 theorem interpInvariant_somePast [NoMinOrder D] {φ : Formula}
-    (hφ : InterpInvariant f M Om φ) : InterpInvariant f M Om φ.somePast :=
+    (hφ : InterpInvariant f M φ) : InterpInvariant f M φ.somePast :=
   interpInvariant_snce hφ interpInvariant_top
 
 /-- **`G φ`.** `allFuture φ` is `¬ F ¬ φ`. -/
 theorem interpInvariant_allFuture [NoMaxOrder D] {φ : Formula}
-    (hφ : InterpInvariant f M Om φ) : InterpInvariant f M Om φ.allFuture :=
+    (hφ : InterpInvariant f M φ) : InterpInvariant f M φ.allFuture :=
   interpInvariant_neg (interpInvariant_someFuture (interpInvariant_neg hφ))
 
 /-- **`H φ`.** `allPast φ` is `¬ P ¬ φ`. -/
 theorem interpInvariant_allPast [NoMinOrder D] {φ : Formula}
-    (hφ : InterpInvariant f M Om φ) : InterpInvariant f M Om φ.allPast :=
+    (hφ : InterpInvariant f M φ) : InterpInvariant f M φ.allPast :=
   interpInvariant_neg (interpInvariant_somePast (interpInvariant_neg hφ))
 
 /-! ### The assembled induction -/
 
 /--
 **Interpolation invariance.** On a densely ordered carrier with no endpoints, truth of *every*
-formula is constant on each region cut out by the placement, provided every history of `Om` is
+formula is constant on each region cut out by the placement, provided every total history is
 region-constant.
 
 This is the whole of stage 3 of the semantic bridge: it is what lets Phase 7's truth lemma read
@@ -683,7 +682,7 @@ truth at an arbitrary point of the carrier off the branch time whose region that
 -/
 theorem interpInvariant [NoMaxOrder D] [NoMinOrder D]
     (hRC : ∀ τ : WorldHistory F, τ.IsTotal → RegionConstant f τ) (χ : Formula) :
-    InterpInvariant f M Om χ := by
+    InterpInvariant f M χ := by
   induction χ with
   | atom p => exact interpInvariant_atom hRC p
   | bot => exact interpInvariant_bot
