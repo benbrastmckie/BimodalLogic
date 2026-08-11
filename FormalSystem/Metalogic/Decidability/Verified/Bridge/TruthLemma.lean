@@ -27,7 +27,15 @@ This file supplies the form Phase 7 can actually use: invariance at **one** hist
 InterpInvariantAt f M Om τ χ := ∀ r r', SameRegion f r r' → (TruthAt … τ r χ ↔ … τ r' χ)
 ```
 
-hypothesised on `RegionConstant f τ` for that history alone, plus `ShiftClosed Om`.
+hypothesised on `AtomRegionInvariant f M τ` for that history alone, plus `ShiftClosed Om`.
+
+`AtomRegionInvariant` is the weakening `regionFrame`'s determinism forces: it asks that `M` and
+`τ` agree *atomically* on region-mates, not that `τ` assign them the same state. Region-constancy
+of a history is no longer available at all — the clock relation propagates a state along time, so
+a region-constant history would repeat a state at two distinct times
+(`not_regionConstant_regionHistory`) — and the condition therefore sits on the valuation instead
+(`RegionValued`, discharged by `regionModel` in `Bridge/Valuation.lean`).
+`RegionConstant.atomRegionInvariant` records that the old hypothesis still implies the new one.
 
 ## What changes, and what does not
 
@@ -36,7 +44,7 @@ form exists at all: `TruthAt … (box φ)` is a universal over `Om`, so equating
 at `r'` needed the induction hypothesis at every history of `Om` simultaneously. Here the case
 consumes `truthAt_box_iff` instead — for a shift-closed `Om`, truth of `box φ` does not depend on
 the evaluation point at all — and uses **no** induction hypothesis. The atom case needs
-region-constancy of `τ` only, and the `untl`/`snce` cases were already single-history arguments
+atomic region-invariance of `τ` against `M` only, and the `untl`/`snce` cases were already single-history arguments
 in Phase 6: every witness, guard point and replacement witness they manipulate lives in the one
 history being quantified over. They are reproduced here against the weaker hypothesis, unchanged
 in structure; the region lemmas they run on (`sameRegion_convex`, `placed_ne_of_sameRegion_ne`,
@@ -83,25 +91,52 @@ theorem interpInvariantAt_of_interpInvariant {χ : Formula}
     (h : InterpInvariant f M Om χ) (hτ : τ ∈ Om) : InterpInvariantAt f M Om τ χ :=
   fun r r' hrr' => h τ hτ r r' hrr'
 
+/--
+**The atom case's actual hypothesis**: the pair `(M, τ)` cannot tell two points of one region
+apart *atomically* — neither in `τ`'s domain, nor in the truth value the valuation assigns to the
+states there.
+
+This is strictly weaker than `RegionConstant f τ`, which demands the two states be *equal*.
+The weakening is forced: `regionFrame`'s task relation is now the deterministic clock, so a state
+carries a time and a region-constant history would repeat a state at two distinct times
+(`not_regionConstant_regionHistory`). The region structure therefore lives in the valuation — the
+model may read the time component, but only through its region code — and that is exactly what
+this predicate asks for. `RegionConstant.atomRegionInvariant` records that nothing is lost:
+wherever the old, stronger hypothesis is available, this one follows.
+-/
+structure AtomRegionInvariant (f : ι → D) (M : TaskModel F) (τ : WorldHistory F) : Prop where
+  /-- Region-mates are both in the domain or both out of it. -/
+  domain_congr : ∀ {r r' : D}, SameRegion f r r' → (τ.domain r ↔ τ.domain r')
+  /-- Region-mates carry the same atomic truth values. -/
+  valuation_congr : ∀ {r r' : D} (_h : SameRegion f r r') (hr : τ.domain r) (hr' : τ.domain r')
+      (p : Atom), (M.valuation (τ.states r hr) p ↔ M.valuation (τ.states r' hr') p)
+
+/-- A region-constant history is atomically region-invariant against *every* model. -/
+theorem RegionConstant.atomRegionInvariant (hRC : RegionConstant f τ) (M : TaskModel F) :
+    AtomRegionInvariant f M τ where
+  domain_congr := hRC.domain_congr
+  valuation_congr := by
+    intro r r' h hr hr' p
+    rw [hRC.states_congr h hr hr']
+
 /-! ### Propositional and modal cases -/
 
 /--
-**Atom case.** Needs region-constancy of this history only: the atom's value at `r` is a function
-of `τ`'s domain and state at `r`, and both agree with their region-mates.
+**Atom case.** Needs atomic region-invariance of this history against this model only: the atom's
+value at `r` is a function of `τ`'s domain at `r` and of the valuation at the state there, and
+both agree with their region-mates.
 -/
-theorem interpInvariantAt_atom (hRC : RegionConstant f τ) (p : Atom) :
+theorem interpInvariantAt_atom (hAI : AtomRegionInvariant f M τ) (p : Atom) :
     InterpInvariantAt f M Om τ (Formula.atom p) := by
   intro r r' hrr'
   simp only [TruthAt]
   constructor
   · rintro ⟨hr, hv⟩
-    have hr' : τ.domain r' := (hRC.domain_congr hrr').mp hr
-    refine ⟨hr', ?_⟩
-    rwa [← hRC.states_congr hrr' hr hr']
+    have hr' : τ.domain r' := (hAI.domain_congr hrr').mp hr
+    exact ⟨hr', (hAI.valuation_congr hrr' hr hr' p).mp hv⟩
   · rintro ⟨hr', hv⟩
-    have hr : τ.domain r := (hRC.domain_congr hrr').mpr hr'
-    refine ⟨hr, ?_⟩
-    rwa [hRC.states_congr hrr' hr hr']
+    have hr : τ.domain r := (hAI.domain_congr hrr').mpr hr'
+    exact ⟨hr, (hAI.valuation_congr hrr' hr hr' p).mpr hv⟩
 
 /-- **Bottom case.** -/
 theorem interpInvariantAt_bot : InterpInvariantAt f M Om τ Formula.bot := by
@@ -276,19 +311,19 @@ theorem interpInvariantAt_allPast [NoMinOrder D] {φ : Formula}
 
 /--
 **Per-history interpolation invariance.** On a densely ordered carrier with no endpoints, truth of
-every formula in a *region-constant* history is constant on each region, provided the admissible
-set is shift-closed.
+every formula in an *atomically region-invariant* history is constant on each region, provided the
+admissible set is shift-closed.
 
-The hypotheses are exactly the two the countermodel supplies: `regionConstant_regionHistory_zero`
+The hypotheses are exactly the two the countermodel supplies: `atomRegionInvariant_regionHistory`
 for the base history and `shiftClosed_regionOmega` for `Ω`. Contrast Phase 6's `interpInvariant`,
 which additionally demands region-constancy of *every* member of `Om` — a demand no shift-closed
 `Om` can meet (`Bridge/Omega.lean`, Consequence 3).
 -/
 theorem interpInvariantAt [NoMaxOrder D] [NoMinOrder D]
-    (hsc : ShiftClosed Om) (hRC : RegionConstant f τ) (χ : Formula) :
+    (hsc : ShiftClosed Om) (hAI : AtomRegionInvariant f M τ) (χ : Formula) :
     InterpInvariantAt f M Om τ χ := by
   induction χ with
-  | atom p => exact interpInvariantAt_atom hRC p
+  | atom p => exact interpInvariantAt_atom hAI p
   | bot => exact interpInvariantAt_bot
   | imp φ ψ hφ hψ => exact interpInvariantAt_imp hφ hψ
   | box φ _ => exact interpInvariantAt_box hsc φ
@@ -309,14 +344,44 @@ variable {W ι : Type} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAdd
 variable [Fintype ι] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]
 
 /--
-**The countermodel is region-invariant at every base history.** Both hypotheses of
-`interpInvariantAt` are discharged by construction: the base history is region-constant
-(`regionConstant_regionHistory_zero`) and `Ω` is shift-closed (`shiftClosed_regionOmega`).
+**The region condition on the valuation.** `regionFrame`'s states are `(world, time)` pairs, and a
+`RegionValued` model is one whose atoms read the time component only through its region code —
+equivalently, one that cannot separate two region-mates at a fixed world.
+
+This is where the region structure went when `regionFrame`'s task relation became deterministic.
+It cannot be imposed on the histories any longer: determinism propagates a state along the clock,
+so region-constancy of a history is now outright false (`not_regionConstant_regionHistory`). It is
+a condition on the *model*, discharged once and for all by `regionModel` in `Bridge/Valuation.lean`,
+whose valuation is literally a function of `regionCode f` applied to the time component.
 -/
-theorem interpInvariantAt_regionHistory (f : ι → D) (M : TaskModel (regionFrame W ι D)) (w : W)
-    (χ : Formula) :
+def RegionValued (f : ι → D) (M : TaskModel (regionFrame W ι D)) : Prop :=
+  ∀ (w : W) (r r' : D), SameRegion f r r' → ∀ p : Atom,
+    (M.valuation (w, r) p ↔ M.valuation (w, r') p)
+
+omit [Fintype ι] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D] in
+/--
+**A region-valued model is atomically region-invariant at every base history.** `regionHistory`'s
+domain is total, so the domain half is trivial, and its state at `r` is `(w, r)`, so the valuation
+half is exactly `RegionValued`.
+-/
+theorem atomRegionInvariant_regionHistory {f : ι → D} {M : TaskModel (regionFrame W ι D)}
+    (hRV : RegionValued f M) (w : W) :
+    AtomRegionInvariant f M (regionHistory f w (0 : D)) where
+  domain_congr := fun _ => Iff.rfl
+  valuation_congr := by
+    intro r r' h hr hr' p
+    simp only [regionHistory_states, add_zero]
+    exact hRV w r r' h p
+
+/--
+**The countermodel is region-invariant at every base history.** Both hypotheses of
+`interpInvariantAt` are discharged by construction: the model is region-valued (supplied by
+`Bridge/Valuation.lean`) and `Ω` is shift-closed (`shiftClosed_regionOmega`).
+-/
+theorem interpInvariantAt_regionHistory {f : ι → D} {M : TaskModel (regionFrame W ι D)}
+    (hRV : RegionValued f M) (w : W) (χ : Formula) :
     InterpInvariantAt f M (regionOmega f) (regionHistory f w (0 : D)) χ :=
-  interpInvariantAt (shiftClosed_regionOmega f) (regionConstant_regionHistory_zero f w) χ
+  interpInvariantAt (shiftClosed_regionOmega f) (atomRegionInvariant_regionHistory hRV w) χ
 
 end Countermodel
 
@@ -430,15 +495,17 @@ and then be unclosable.
 section Checks
 
 /-- The three dense carriers admit the invariance instantiation; `ℤ` deliberately does not. -/
-example (M : TaskModel (regionFrame Unit (Fin 1) ℚ)) (χ : Formula) :
+example (M : TaskModel (regionFrame Unit (Fin 1) ℚ))
+    (hRV : RegionValued (fun _ : Fin 1 => (0 : ℚ)) M) (χ : Formula) :
     InterpInvariantAt (fun _ : Fin 1 => (0 : ℚ)) M
       (regionOmega (fun _ : Fin 1 => (0 : ℚ))) (regionHistory (fun _ : Fin 1 => (0 : ℚ)) () 0) χ :=
-  interpInvariantAt_regionHistory _ M () χ
+  interpInvariantAt_regionHistory hRV () χ
 
-example (M : TaskModel (regionFrame Unit (Fin 1) ℝ)) (χ : Formula) :
+example (M : TaskModel (regionFrame Unit (Fin 1) ℝ))
+    (hRV : RegionValued (fun _ : Fin 1 => (0 : ℝ)) M) (χ : Formula) :
     InterpInvariantAt (fun _ : Fin 1 => (0 : ℝ)) M
       (regionOmega (fun _ : Fin 1 => (0 : ℝ))) (regionHistory (fun _ : Fin 1 => (0 : ℝ)) () 0) χ :=
-  interpInvariantAt_regionHistory _ M () χ
+  interpInvariantAt_regionHistory hRV () χ
 
 end Checks
 
