@@ -53,7 +53,7 @@ For any shift-closed `Ω`, `time_shift_preserves_truth` turns the fixed-time uni
 universal over times as well:
 
 ```
-TruthAt M Ω τ x (box φ) ↔ ∀ σ ∈ Ω, ∀ y, TruthAt M Ω σ y φ
+TruthAt M Ω τ x (box φ) ↔ ∀ σ, σ.IsTotal → ∀ y, TruthAt M Ω σ y φ
 ```
 
 (`truthAt_box_iff` below). Truth of a boxed formula does not depend on where it is evaluated;
@@ -66,12 +66,13 @@ seriality rows `G p → F p`, `¬(Gp ∧ G¬p)`, `¬(Hp ∧ H¬p)`, `F ⊤`, `P 
 open. See `Checks` at the bottom of this file for the two facts that are cheap to state in Lean;
 the closure rows are `#eval` probes against `buildTableau`.
 
-### Consequence 3: Phase 6's `∀ τ ∈ Ω, RegionConstant f τ` is NOT satisfiable here
+### Consequence 3: the global `RegionConstant` hypothesis is NOT satisfiable here
 
-`Interpolate.lean` hands `interpInvariant` over with the hypothesis `∀ τ ∈ Om, RegionConstant f τ`
-— every history of the admissible set is constant on the regions of the *fixed* placement `f`.
-For a shift-closed `Ω` that hypothesis forces the model to be trivial, and the argument is short
-enough to state exactly:
+`Interpolate.lean` hands `interpInvariant` over with the hypothesis
+`∀ τ, τ.IsTotal → RegionConstant f τ` — every *total* history is constant on the regions of the
+*fixed* placement `f`. On this carrier `regionOmega f = H_F` (`regionOmega_eq_total`), so the
+hypothesis ranges over exactly the histories `Ω` used to range over, and it forces the model to be
+trivial. The argument is short enough to state exactly:
 
 Let `τ ∈ Ω` and `r ≠ r'`. `Ω` contains `timeShift τ Δ` for every `Δ`, whose state at `r` is
 `τ.states (r + Δ)`. Region-constancy of *that* history at `r, r'` says: if `r` and `r'` are
@@ -324,8 +325,10 @@ end Histories
 
 /-! ## `□` is the universal modality
 
-The single semantic fact that makes a shift-closed `Ω` workable at all. Stated for an arbitrary
-shift-closed `Ω`, because nothing about `regionOmega` is used.
+The single semantic fact the region bridge rests on. Stated for an arbitrary `Ω` — the set is
+`TruthAt`'s inert carrier argument here and nothing about `regionOmega` is used — and with no
+shift-closure hypothesis, because the box clause quantifies over totality and totality is
+preserved by `timeShift` outright.
 -/
 
 section BoxUniversal

@@ -76,14 +76,17 @@ two rays, or a gap with an identified pair of endpoints.
 
 ## What the invariance lemmas quantify over
 
-`InterpInvariant f M Om χ` says: for every history **in `Om`** and every pair of `SameRegion`
-points, `χ` has the same truth value. The quantifier over `Om` rather than over the single history
-under consideration is what makes the `box` case go through: `TruthAt … (box φ)` is a universal
-over `Om` at a *fixed* time, so the induction hypothesis has to be available at every history of
-`Om` simultaneously. It is available at no cost, because the atom case's hypothesis
-(`RegionConstant`) is likewise imposed on all of `Om`. `box` carries **no accessibility
-relation** — `TruthAt` quantifies over `Om` outright — so that case is pure transport and needs
-nothing from the order.
+`InterpInvariant f M Om χ` says: for every **total** history and every pair of `SameRegion`
+points, `χ` has the same truth value. The quantifier over the total histories rather than over the
+single history under consideration is what makes the `box` case go through: `TruthAt … (box φ)` is
+a universal over the total histories at a *fixed* time, so the induction hypothesis has to be
+available at every such history simultaneously. It is available at no cost, because the atom
+case's hypothesis (`RegionConstant`) is likewise imposed on every total history. `box` carries
+**no accessibility relation** — `TruthAt` quantifies over totality outright — so that case is pure
+transport and needs nothing from the order.
+
+`Om` survives in the statement only as `TruthAt`'s inert carrier argument, scheduled for deletion
+with the parameter itself; it no longer indexes what `box` ranges over.
 
 ## What the temporal cases turned out *not* to need
 

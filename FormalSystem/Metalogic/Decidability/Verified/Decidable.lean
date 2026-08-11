@@ -143,7 +143,7 @@ The four fields are independent obligations and all four are load-bearing:
 * `histTotal` — every branch world is interpreted by a *total* history. `□` quantifies over the
   total histories (`def:BL-semantics`'s box clause, `specs/paper-definitions-of-record.md`), so
   without this a `T(□A)` on the branch would say nothing about the branch's own other worlds.
-  This replaced the former `histTotal : ∀ w, hist w ∈ Ω` when the box clause was retargeted from
+  This replaced the former `histMem : ∀ w, hist w ∈ Ω` when the box clause was retargeted from
   `Ω`-membership to totality; membership is no longer what `□` instantiates against.
 * `ordResp` — every recorded ordering constraint is a genuine strict inequality in `D`. This is
   what a fresh-time rule has to re-establish for the *extended* ordering it returns.
@@ -622,16 +622,17 @@ theorem ruleSound_negNeg : RuleSound carrierBase .negNeg := by
 /-!
 ## The S5 modal family
 
-`□` quantifies over the admissible set `Ω`, and `SatState.histTotal` puts every branch world inside
-`Ω`. That is the whole content of the two *universal* modal rules: `boxPos` reads `T(□A)` at one
+`□` quantifies over the *total* histories, and `SatState.histTotal` makes every branch world
+total. That is the whole content of the two *universal* modal rules: `boxPos` reads `T(□A)` at one
 label and asserts `T(A)` at every known world at the same time, and `diamondNeg` does the mirror
-image for `F(◇A)`. Neither mints a label, neither touches the ordering, and neither needs
-shift-closure.
+image for `F(◇A)`. Neither mints a label, neither touches the ordering.
 
-`boxTemporal` does need shift-closure, and it is the first rule here that does. `T(□A) → T(GA)`
-is not a modal-logic step at all: it holds because `Ω` shift-closed makes `□` reach across
-*times* as well as histories, which is the semantic content of the `modal_future` (MF) axiom the
-rule declares as its grounding (`RuleSpec.ruleAxioms`).
+`boxTemporal` is the one rule here that moves the evaluation time. `T(□A) → T(GA)` is not a
+modal-logic step at all: it holds because totality is preserved by `timeShift`
+(`WorldHistory.isTotal_timeShift`), which makes `□` reach across *times* as well as histories —
+the semantic content of the `modal_future` (MF) axiom the rule declares as its grounding
+(`RuleSpec.ruleAxioms`). Under the former `Ω`-membership box clause this was what shift-closure
+of `Ω` paid for; under the totality clause it carries no side condition.
 -/
 
 /-- `◇A` is `¬□¬A`. -/
@@ -700,7 +701,7 @@ theorem ruleSound_boxPos : RuleSound carrierBase .boxPos := by
     | _ => simp [applyRule, SatResult]
 
 /-- `F(◇A) → F(A)` at every known world, same time. The mirror of `boxPos`: `F(◇A)` is
-`T(□¬A)` after unfolding `◇`, so the same `histTotal` step does the work. -/
+`T(□¬A)` after unfolding `◇`, so the same `histTotal` totality step does the work. -/
 theorem ruleSound_diamondNeg : RuleSound carrierBase .diamondNeg := by
   intro D _ _ _ _ _ F M Om hist tv b sf ord hmem hst _
   obtain ⟨s, φ, l⟩ := sf

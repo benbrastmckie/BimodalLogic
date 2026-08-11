@@ -12,14 +12,15 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.Omega
 `Bridge/Interpolate.lean` proves region invariance in the form
 
 ```
-InterpInvariant f M Om χ := ∀ τ ∈ Om, ∀ r r', SameRegion f r r' → (TruthAt … τ r χ ↔ … τ r' χ)
+InterpInvariant f M Om χ := ∀ τ, τ.IsTotal → ∀ r r', SameRegion f r r' →
+  (TruthAt … τ r χ ↔ … τ r' χ)
 ```
 
-from the hypothesis `∀ τ ∈ Om, RegionConstant f τ`. `Bridge/Omega.lean`'s module docstring shows
-that hypothesis is **unsatisfiable** for the shift-closed `Ω` that `valid` demands (a shift-closed
-admissible set contains the time-translates of its members, and asking every translate to be
-constant on the regions of one fixed placement forces the states constant, hence the model
-blind to time); `not_regionConstant_regionHistory_one` is the concrete witness.
+from the hypothesis `∀ τ, τ.IsTotal → RegionConstant f τ`. `Bridge/Omega.lean`'s module docstring
+shows that hypothesis is **unsatisfiable** here (the total histories are closed under time
+translation, and asking every translate to be constant on the regions of one fixed placement
+forces the states constant, hence the model blind to time);
+`not_regionConstant_regionHistory_one` is the concrete witness.
 
 This file supplies the form Phase 7 can actually use: invariance at **one** history,
 
@@ -27,7 +28,8 @@ This file supplies the form Phase 7 can actually use: invariance at **one** hist
 InterpInvariantAt f M Om τ χ := ∀ r r', SameRegion f r r' → (TruthAt … τ r χ ↔ … τ r' χ)
 ```
 
-hypothesised on `AtomRegionInvariant f M τ` for that history alone, plus `ShiftClosed Om`.
+hypothesised on `AtomRegionInvariant f M τ` for that history alone — and, since the box clause was
+retargeted from `Ω`-membership to totality, on nothing else.
 
 `AtomRegionInvariant` is the weakening `regionFrame`'s determinism forces: it asks that `M` and
 `τ` agree *atomically* on region-mates, not that `τ` assign them the same state. Region-constancy
@@ -39,11 +41,11 @@ a region-constant history would repeat a state at two distinct times
 
 ## What changes, and what does not
 
-Only the `box` case changes, and it gets *easier*. Phase 6's `box` case is the reason the global
-form exists at all: `TruthAt … (box φ)` is a universal over `Om`, so equating its value at `r` and
-at `r'` needed the induction hypothesis at every history of `Om` simultaneously. Here the case
-consumes `truthAt_box_iff` instead — for a shift-closed `Om`, truth of `box φ` does not depend on
-the evaluation point at all — and uses **no** induction hypothesis. The atom case needs
+Only the `box` case changes, and it gets *easier*. The global form's `box` case is the reason that
+form exists at all: `TruthAt … (box φ)` is a universal over the total histories, so equating its
+value at `r` and at `r'` needed the induction hypothesis at every total history simultaneously.
+Here the case consumes `truthAt_box_iff` instead — truth of `box φ` does not depend on the
+evaluation point at all — and uses **no** induction hypothesis. The atom case needs
 atomic region-invariance of `τ` against `M` only, and the `untl`/`snce` cases were already single-history arguments
 in Phase 6: every witness, guard point and replacement witness they manipulate lives in the one
 history being quantified over. They are reproduced here against the weaker hypothesis, unchanged
@@ -76,9 +78,10 @@ variable {F : TaskFrame D} {ι : Type*}
 Region invariance of `χ` at a single history: truth of `χ` in `τ` does not distinguish points of
 one region.
 
-The single-history refinement of `InterpInvariant`. `Om` still appears — it is `TruthAt`'s
-admissible set, which the `box` clause quantifies over — but the property is asserted of `τ`
-alone, so it can be established for a history whose *translates* in `Om` are not region-constant.
+The single-history refinement of `InterpInvariant`. `Om` still appears — it is `TruthAt`'s inert
+carrier argument, which the `box` clause no longer quantifies over — but the property is asserted
+of `τ` alone, so it can be established for a history whose *time-translates* are not
+region-constant.
 -/
 def InterpInvariantAt (f : ι → D) (M : TaskModel F) (Om : Set (WorldHistory F))
     (τ : WorldHistory F) (χ : Formula) : Prop :=
