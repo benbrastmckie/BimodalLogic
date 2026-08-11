@@ -2190,7 +2190,14 @@ these were pure deletions plus equal-count replacements). Live non-Boneyard sorr
 **6**, unchanged. Omega-valued-definition gate **passes**: the only surviving
 `def … : Set (WorldHistory …)` sites are `Truth.lean:146`'s `TruthAt _Omega` carrier parameter
 and `Truth.lean:360`'s `ShiftClosed` itself, both of which Phase 22 owns by name.
-`lake build BimodalTest`: see the handoff for its measured state.
+`lake build BimodalTest`: **NOT MEASURED.** The re-census dispatch launched it, but it ran past
+10 minutes without completing and was still compiling when the dispatch ended. Its carried
+baseline remains the Phase 19 figure — ten `#guard_msgs` mismatches (TableauConformance 7,
+RegionGateProbe 2, BoxSpreadProbe 1). It is unmeasured, **not** green; do not record it as
+passing. This phase's stated verification is `lake build`, which is GREEN, so the test target
+does not gate Phase 21. A dispatch that genuinely needs it should budget well beyond 10 minutes.
+Separately, `Tests/` carries **zero** occurrences of all five spellings, so this refactor has no
+surface in the test tree at all.
 
 #### Measured Phase 22 surface (handed forward, not a guess)
 
