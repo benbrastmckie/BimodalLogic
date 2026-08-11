@@ -23,12 +23,13 @@ satisfiability, so a branch every extension of which closes was unsatisfiable to
 
 A branch is a list of signed formulas carrying `Label`s — a `WorldIndex` and a `TimeIndex`, both
 `Nat`. The semantics of `Formula` (`FormalSystem/Semantics/Truth.lean`) evaluates at a
-*world history* `τ` drawn from a shift-closed admissible set `Ω`, and a *time* `t : D`. So a
-branch is satisfied relative to four pieces of data:
+*total* world history `τ` and a *time* `t : D`. So a branch is satisfied relative to three
+pieces of data:
 
-* a model `M` over a `TaskFrame D`, and a shift-closed `Ω`;
+* a model `M` over a `TaskFrame D`;
 * an interpretation `hist : WorldIndex → WorldHistory F` of the branch's world labels, landing
-  inside `Ω` — this is what makes `□` (which quantifies over `Ω`) reach every branch world;
+  on *total* histories — this is what makes `□` (which quantifies over totality) reach every
+  branch world;
 * an interpretation `tv : TimeIndex → D` of the branch's time labels.
 
 `SatState` bundles those with the two side conditions and the branch itself. The `ordResp` field
@@ -60,7 +61,7 @@ the fresh-label rules need. `boxNeg` mints `branch.nextWorld` and must point it 
 history; `someFuturePos` mints `branch.nextTime` and must point it at the witness time. Both
 indices are absent from `b` (`Tableau.not_mem_of_world_nextWorld`,
 `Tableau.not_mem_of_time_nextTime`), so a one-point update leaves the rest of the branch
-satisfied. The model `M` and the admissible set `Ω` are *not* re-chosen by any rule.
+satisfied. The model `M` is *not* re-chosen by any rule.
 
 ## `CarrierProp`
 
@@ -186,7 +187,7 @@ actual return type, `RuleResult × TimeOrdering`, so that the ordering a fresh-t
 is part of the obligation rather than an afterthought.
 
 See the module docstring for the reading of each constructor, and in particular for why the
-successor is allowed to re-choose `hist` and `tv` but not `M` or `Ω`.
+successor is allowed to re-choose `hist` and `tv` but not `M`.
 -/
 def SatResult (M : TaskModel F) (b : Branch) :
     RuleResult → TimeOrdering → Prop
@@ -629,8 +630,8 @@ image for `F(◇A)`. Neither mints a label, neither touches the ordering.
 modal-logic step at all: it holds because totality is preserved by `timeShift`
 (`WorldHistory.isTotal_timeShift`), which makes `□` reach across *times* as well as histories —
 the semantic content of the `modal_future` (MF) axiom the rule declares as its grounding
-(`RuleSpec.ruleAxioms`). Under the former `Ω`-membership box clause this was what shift-closure
-of `Ω` paid for; under the totality clause it carries no side condition.
+(`RuleSpec.ruleAxioms`). Under the former membership-based box clause this was what shift-closure
+of the admissible set paid for; under the totality clause it carries no side condition.
 -/
 
 /-- `◇A` is `¬□¬A`. -/
@@ -649,7 +650,7 @@ point form of `Metalogic.Soundness.modal_future_valid`, which states the same fa
 of `□A → □(GA)`; it is derived here from the same primitive rather than imported, so that the
 decidability tree acquires no import edge into the soundness tree.
 
-Shift-closure of `Ω` is no longer a hypothesis: the shifted witness's *totality* is what `□` now
+Shift-closure is no longer a hypothesis: the shifted witness's *totality* is what `□` now
 instantiates against, and totality is preserved by `timeShift` unconditionally.
 -/
 theorem truthAt_allFuture_of_box {M : TaskModel F}
@@ -768,8 +769,9 @@ re-choice they make is of `hist`, at a single world index absent from the branch
 
 Each emits the same three groups: the witness, every `T(□B)` on the branch relabelled to the
 fresh world, and every `F(◇B)` likewise. Groups two and three are sound because `□` quantifies
-over `Ω` and not over the branch's worlds — `T(□B) @ (w', t')` says `B` holds at `t'` in *every*
-admissible history, so it says it of the witness history too, whatever world index that history
+over the total histories and not over the branch's worlds — `T(□B) @ (w', t')` says `B` holds at
+`t'` in *every* total history, so it says it of the witness history too, whatever world index that
+history
 is filed under. The two helpers below prove exactly that, once, since both rules emit the two
 lists verbatim.
 
@@ -1499,9 +1501,9 @@ rather than the usual one, and each part is discharged by a different piece of t
 The modal family is the subtle one. Copying a formula from one time to another inside a single
 world is unsound in general — that is precisely the defect that was removed from the fresh-*world*
 rules. It is sound here only because the two source lists hold `T(□A)` and `F(◇A)` formulas
-exclusively, whose truth conditions are `Ω`-universal, and an `Ω`-universal claim is
-time-invariant when `Ω` is shift-closed. `mem_boxDiamondPersistence_shape` is what makes that
-restriction visible across the `private` definition.
+exclusively, whose truth conditions are universal over the total histories, and such a claim is
+time-invariant because totality is preserved by `timeShift`. `mem_boxDiamondPersistence_shape` is
+what makes that restriction visible across the `private` definition.
 -/
 
 /-- **A totality-universal claim is time-invariant.** If `ψ` holds at time `t` in *every* total
@@ -1512,7 +1514,7 @@ wrap this fact in `G` and `H` respectively, and each discards the direction info
 wrapper supplies. The fresh-time rules need it raw, because they move a `□` formula to a time
 whose position relative to the source is recorded in the ordering rather than in the formula.
 
-Shift-closure of `Ω` is not a hypothesis: `WorldHistory.isTotal_timeShift` supplies the shifted
+Shift-closure is not a hypothesis: `WorldHistory.isTotal_timeShift` supplies the shifted
 witness's totality with no side condition. -/
 theorem forall_truthAt_time_invariant {M : TaskModel F}
     {t s : D} {ψ : Formula}
@@ -2367,17 +2369,16 @@ Existentially quantified because `SuccOrder`/`PredOrder` are data; see the secti
 def carrierDiscrete : CarrierProp := fun D =>
   ∃ (hs : SuccOrder D) (hp : PredOrder D), @IsSuccArchimedean D _ hs ∧ @IsPredArchimedean D _ hp
 
-/-- Land a `SoundnessLemmas.IsValid` conclusion on this module's carrier `Ω`.
+/-- Land a `SoundnessLemmas.IsValid` conclusion where the rule-soundness proofs need it.
 
-`IsValid` states truth at the inert carrier `Set.univ`; the rule-soundness proofs below evaluate
-against a universally quantified `Ω`. The two are interchangeable — `TruthAt`'s set argument is
-semantically inert, which is exactly `truthAt_carrier_irrelevant` — so this transports across it
-once rather than at each of the three `.Discrete` call sites. It disappears with `TruthAt`'s set
-parameter itself; nothing here depends on `Ω` beyond its being a set of histories. -/
+`IsValid` states truth at the inert carrier `Set.univ`, which is exactly what the rule-soundness
+proofs below evaluate against, so this is now a plain re-export. It is kept as a named step so the
+three `.Discrete` call sites read the same as they did when a carrier transport was still needed;
+it disappears with `TruthAt`'s set parameter itself. -/
 theorem truthAt_of_isValid {F : TaskFrame D} {M : TaskModel F}
     {φ : Formula} (h : SoundnessLemmas.IsValid D φ)
     (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D) : TruthAt M Set.univ τ t φ :=
-  (truthAt_carrier_irrelevant Set.univ Set.univ φ τ t).mp (h F M τ hτ t)
+  h F M τ hτ t
 
 /-- `T(F ψ)` gives `T(U(ψ, ¬ψ))` at the **same** label — the consequent of Prior-UZ, whose
 antecedent is the source formula. On a discrete order `F ψ` has a *nearest* `ψ`-point, and `¬ψ`
@@ -2844,7 +2845,7 @@ emits an `untlNegProps` block that copies every `F(U(e', g'))` sitting at the tr
 *unconditionally* to the freshly minted time. `Formula.untl` is evaluated along one history and
 its truth is interval-relative, so `F(U(e', g'))` at `t` does not imply `F(U(e', g'))` at a later
 time. Unlike the `□`/`◇` copies that `boxDiamondPersistence` performs, there is no shift-closure
-argument available: the claim is not `Ω`-universal.
+argument available: the claim is not universal over the total histories.
 
 **The counterexample**, over `ℤ`. `RuleSound` quantifies over *all* carriers, so a refutation
 over one carrier refutes the statement, and discrete time is what makes the refutation work
@@ -2998,7 +2999,7 @@ temporal formulas too, and no such argument is in the tree.
 **The verdict measurement, and its limit.** `Tests/BimodalTest/CrossWorldPropagationProbe.lean`
 runs the full decision procedure on the three shapes that would expose an unsound group-3 copy as
 a wrong *verdict* — `(¬F p) → □(¬F p)`, `(G p) → □(G p)` and `(¬P p) → □(¬P p)`, each invalid
-because `Ω` may hold a history with a future (resp. past) `p` while `τ` has none. All three report
+because some *other* total history may have a future (resp. past) `p` while `τ` has none. All three report
 `false`, the correct answer, alongside a `true` control and a `false` control. That probe was
 explicit that it measured verdicts and not steps, and it was right to be.
 

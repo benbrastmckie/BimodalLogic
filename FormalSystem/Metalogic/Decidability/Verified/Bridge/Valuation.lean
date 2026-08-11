@@ -428,7 +428,8 @@ end CopyRefuted
 /-! ## `GapDemands` is stated backwards, and this is the proof
 
 `GapDemands` takes *model* truth of `G φ` at a placed point as its hypothesis. But
-`Semantics.future_iff` is an `iff`: `TruthAt M Ω τ x φ.allFuture ↔ ∀ s > x, TruthAt M Ω τ s φ`.
+`Semantics.future_iff` is an `iff`:
+`TruthAt M Set.univ τ x φ.allFuture ↔ ∀ s > x, TruthAt M Set.univ τ s φ`.
 The hypothesis therefore already *is* the conclusion, and `GapDemands` holds of every policy —
 including the two this file refutes. `gapDemands_trivial` below proves exactly that, so the
 vacuity is recorded as a theorem rather than discovered again.
@@ -463,8 +464,8 @@ banner names:
 
 * `{p : T(G p)` at a placed point **below** the gap`}` — everything the past forces forward,
 * `{p : T(H p)` at a placed point **above** the gap`}` — everything the future forces backward,
-* `{p : T(□ p)` anywhere`}` — `□` is the universal modality over the whole model once `Ω` is
-  universal (`truthAt_box_iff_base`), so its content is forced at every point of every world.
+* `{p : T(□ p)` anywhere`}` — `□` is the universal modality over the whole model
+  (`truthAt_box_iff_base`), so its content is forced at every point of every world.
 
 A gap region carries no label, so no *atomic* branch fact contradicts the assignment: the three
 disjuncts are the only constraints there are, and taking their union is the largest — hence the

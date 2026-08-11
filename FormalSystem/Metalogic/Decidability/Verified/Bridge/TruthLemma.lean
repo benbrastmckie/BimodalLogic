@@ -29,7 +29,7 @@ InterpInvariantAt f M τ χ := ∀ r r', SameRegion f r r' → (TruthAt … τ r
 ```
 
 hypothesised on `AtomRegionInvariant f M τ` for that history alone — and, since the box clause was
-retargeted from `Ω`-membership to totality, on nothing else.
+retargeted from membership in a designated set to totality, on nothing else.
 
 `AtomRegionInvariant` is the weakening `regionFrame`'s determinism forces: it asks that `M` and
 `τ` agree *atomically* on region-mates, not that `τ` assign them the same state. Region-constancy
@@ -316,8 +316,8 @@ theorem interpInvariantAt_allPast [NoMinOrder D] {φ : Formula}
 every formula in an *atomically region-invariant* history is constant on each region.
 
 The one hypothesis is exactly what the countermodel supplies:
-`atomRegionInvariant_regionHistory` for the base history. Shift-closure of `Ω` is no longer
-needed — the box case now instantiates against totality, which `timeShift` preserves outright.
+`atomRegionInvariant_regionHistory` for the base history. Shift-closure is no longer needed — the
+box case now instantiates against totality, which `timeShift` preserves outright.
 Contrast the global `interpInvariant`, which additionally demands region-constancy of *every*
 total history — a demand this carrier cannot meet (`Bridge/RegionFrame.lean`, Consequence 3).
 -/
@@ -378,8 +378,8 @@ theorem atomRegionInvariant_regionHistory {f : ι → D} {M : TaskModel (regionF
 /--
 **The countermodel is region-invariant at every base history.** The hypothesis of
 `interpInvariantAt` is discharged by construction: the model is region-valued (supplied by
-`Bridge/Valuation.lean`). The former second hypothesis, shift-closure of `Ω`, is gone with the
-retarget of the box clause to totality.
+`Bridge/Valuation.lean`). The former second hypothesis, shift-closure of the admissible set, is
+gone with the retarget of the box clause to totality.
 -/
 theorem interpInvariantAt_regionHistory {f : ι → D} {M : TaskModel (regionFrame W ι D)}
     (hRV : RegionValued f M) (w : W) (χ : Formula) :

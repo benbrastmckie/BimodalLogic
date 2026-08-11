@@ -12,14 +12,20 @@
 
 ## Execution Status
 
-**18 of 23 phases complete; `lake build` GREEN; 0 sorries introduced (1 pre-existing,
-`Metalogic/WeakCanonical/Transfer.lean:1084`, out of scope); 0 new axioms.**
+**20 of 23 phases complete; `lake build` GREEN; 0 sorries introduced (1 pre-existing,
+`Metalogic/WeakCanonical/Transfer.lean:1084`, out of scope); 0 new axioms (6 total, unchanged).**
 
 | Phases | State |
 |--------|-------|
-| 1-13, 15-18 | `[COMPLETED]` (14 and 18 as `[COMPLETED WITH EXCLUSIONS]`, each with a Reasoned Exclusions block) |
-| 19-22 | `[NOT STARTED]` — the Omega-binder sweeps, the remaining work |
+| 1-13, 15-20 | `[COMPLETED]` (14 and 18 as `[COMPLETED WITH EXCLUSIONS]`, each with a Reasoned Exclusions block) |
+| 21-22 | `[NOT STARTED]` — the remaining Omega-binder sweeps |
 | 23 | `[NOT STARTED]` — OPTIONAL frame-relative validity |
+
+**The decidability stack is Omega-free as of Phase 20**, including its prose: no `Omega`,
+`ShiftClosed`, `Ω`, `Om` or `Set (WorldHistory` token survives anywhere under
+`FormalSystem/Metalogic/Decidability/`. Phase 20 also **shrank the Phase 22 carrier-transport
+unwind surface from five sites to one** by deleting four `truthAt_carrier_irrelevant` invocations
+that became identity transports; Phase 22 should re-census rather than assume Phase 17's five.
 
 **Phase 18 ran out of numeric order**, before 15-17, on a census finding from Phase 14: six break
 sites were error-family A (a history known only to be in `Ω` where totality is now required),
@@ -31,7 +37,7 @@ survived it), and the `IsValid` delta propagated into `DenseValidity.lean`, taki
 12 errors to 98. Phase 15 then cleared 175 errors and the net effect was favourable, but the
 dissolve-at-the-source reasoning should not be treated as validated.
 
-### Two lessons that should govern Phases 19-23
+### Three lessons that should govern Phases 21-23
 
 1. **An error census taken on a red tree is a LOWER BOUND, never a measurement.** Every phase that
    sized itself from one was wrong, always upward: Phase 12 predicted 1 break site; Phase 16 was
@@ -46,14 +52,28 @@ dissolve-at-the-source reasoning should not be treated as validated.
    `Valid*` binder deltas *do* change arity, so their sites cascade — a mechanical `intro`-arity
    sweep dissolved all 14 of `DenseValidity.lean`'s apparent "judgment sites" as artifacts of an
    already-failed `intro` line. Phase 17 found both lineages mixed within one file; a blanket
-   sweep in either style would have missed half.
+   sweep in either style would have missed half. **Phase 20 reconfirmed this at a 30:1 ratio**:
+   its `RuleSound` binder removal cascaded into 30 mechanical `intro`-arity sites, while the
+   arity-preserving `regionOmega` deletion produced exactly *one* genuine judgment site — an
+   implicit argument that had been inferred from the carrier and had to be supplied by hand once
+   the carrier became `Set.univ`. Neither count predicts the other.
+3. **A single-token grep is not a census.** The same binder is spelled `Omega`, `Om`, and `Ω`
+   across this tree, and a phase gate written against one spelling silently misses the others —
+   Phase 20's `Omega` gate did not reach `Verified/Decidable.lean`'s 44 `Om` binders or its
+   `ShiftClosed Om` structure field, which together were the bulk of that phase's work. Census on
+   `Omega`, `ShiftClosed`, `\bOm\b`, `Ω` and `Set (WorldHistory` together, on the green tree. Note
+   this cuts the *opposite* way from lesson 1's over-sizing: the plan's own gate **under**-counted
+   while its a-priori file list simultaneously over-counted by naming a directory holding nothing.
+   Both directions of error appeared inside one phase.
 
 ### Corrections to this plan's own "Files to modify" lists (all applied inline)
 
 Four files carried real work while appearing in **no** phase's list, each discovered only when it
 surfaced from behind the red chain: `SoundnessLemmas/DenseValidity.lean` (which at one point
 carried 96% of all remaining breakage), `SoundnessLemmas/FrameClassVariants.lean`,
-`Decidability/Correctness.lean`, `Decidability/Propositional/Decidable.lean`. Conversely
+`Decidability/Correctness.lean`, `Decidability/Propositional/Decidable.lean` — though note that
+by the time Phase 20 reached the last two, both were already clean and carried no binder at all.
+Conversely
 `FrameConditions/Validity.lean` was listed under Phase 15 but had already been brought green by
 Phase 18. Three further paths in Phase 16's list do not exist as written (the real locations are
 all under `BXCanonical/`). Treat the remaining phases' lists as provisional.
@@ -1932,17 +1952,34 @@ either a `Prop`-valued statement or a comment.
 
 ---
 
-### Phase 20: Omega-binder sweep B — decidability [NOT STARTED]
+### Phase 20: Omega-binder sweep B — decidability [COMPLETED]
 
 **Goal**: Remove the Omega binders across the decidability stack, still reverse-topologically.
 
 **Tasks**:
-- [ ] Remove binders from `Decidability/Verified/Decidable.lean` and the `Bridge/**` modules,
-      innermost consumers first.
-- [ ] Delete `regionOmega` and its `ShiftClosed` proof (`shiftClosed_regionOmega`) once nothing
+- [x] Remove binders from `Decidability/Verified/Decidable.lean` and the `Bridge/**` modules,
+      innermost consumers first. *(deviation: altered — the phase's own `Omega`-token census
+      undercounts this file set badly. `Decidable.lean` spells the binder `Om`, not `Omega`, and
+      carries 44 of them plus a `shiftClosed : ShiftClosed Om` structure field;
+      `Bridge/Interpolate.lean` likewise carries `Om` and appears in no `Omega` grep at all. The
+      real edited set is the eight files listed under "Files to modify" below.)*
+- [x] Delete `regionOmega` and its `ShiftClosed` proof (`shiftClosed_regionOmega`) once nothing
       references them; keep `regionOmega_eq_total`'s content by folding it into whatever lemma
       still needs the characterization, without leaving a dangling Omega-valued definition.
-- [ ] Remove binders from `Decidability/Propositional/Decidable.lean`.
+      **Folded into `isTotal_iff_regionHistory`** (`σ.IsTotal ↔ ∃ w Δ, σ = regionHistory f w Δ`),
+      which is the same content stated as a totality characterization rather than a set equation.
+      Five declarations deleted outright: `regionOmega`, `regionHistory_mem_regionOmega`,
+      `mem_regionOmega_iff`, `shiftClosed_regionOmega`, `regionOmega_total`. All five were
+      file-local, so nothing outside had to be bridged.
+- [x] Remove binders from `Decidability/Propositional/Decidable.lean`. *(deviation: skipped —
+      census on the green tree found no `Om`/`Omega`/`ShiftClosed`/`Set (WorldHistory` occurrence
+      anywhere under `Decidability/Propositional/`, nor in `Decidability/Correctness.lean`.
+      Nothing to remove. This is the fourth consecutive over-sizing from an a-priori file list.)*
+- [x] *(deviation: added — mechanical.)* Renamed `Bridge/Omega.lean` to `Bridge/RegionFrame.lean`
+      and retargeted its 115-line module docstring to the totality reading. Required, not
+      cosmetic: the phase's own verification gate greps the whole tree for the `Omega` token, and
+      a module named `Omega.lean` that no longer contains an `Omega` is exactly the dangling
+      residue the second task forbids. Import edges updated in four files.
 
 **Timing**: 2.5 hours
 
@@ -1950,8 +1987,62 @@ either a `Prop`-valued statement or a comment.
 
 **Verification Tier**: full
 
+#### Execution record
+
+**The carrier is now genuinely absent from the decidability stack, not merely renamed.** Three
+distinct removals, all landing on the Phase 18 convention (drop the binder, supply `Set.univ` at
+the call site):
+
+1. `regionOmega` — the last Omega-valued definition on this side — deleted, with its
+   characterization folded into `isTotal_iff_regionHistory` as the task directed.
+2. `InterpInvariant` / `InterpInvariantAt` each lost their `Om` parameter outright (they are now
+   `f M χ` and `f M τ χ`).
+3. `SatAt` / `SatState` / `SatResult` / `RuleSound` each lost their `Om` parameter, and
+   `SatState` lost its `shiftClosed : ShiftClosed Om` field — dropping the structure from four
+   fields to three. This is the phase's only genuinely structural edit; every anonymous-constructor
+   site had to lose its corresponding slot.
+
+**The Phase 22 carrier-transport unwind surface SHRANK, from five sites to one.** Phase 17
+enumerated five `truthAt_carrier_irrelevant` invocations. Four of them lived here and all four
+became identity transports the moment their `Ω` argument became `Set.univ`, so all four were
+deleted rather than rewritten: `IntTruth.lean` ×2, `DenseTruth.lean` ×2. A fifth,
+`Decidable.lean`'s `truthAt_of_isValid`, collapsed to a plain re-export (`h F M τ hτ t`) — the
+named lemma is retained so its three `.Discrete` call sites keep their shape, but it no longer
+transports anything. Phase 22 should re-census rather than assume the five.
+
+**Two error lineages, both present, as lesson 2 predicted.** The `RuleSound` binder removal is
+arity-changing and produced a 30-site `intro`-line cascade, all mechanical. The `regionOmega`
+deletion is arity-preserving and produced exactly one genuine judgment site:
+`Valuation.lean:643`, where `truthAt_box_iff_base`'s placement argument `f` had been inferred
+from the carrier `regionOmega f` and had to be supplied explicitly once the carrier became
+`Set.univ`. Diagnosing before sweeping was correct; a blanket sweep in either style would have
+missed the other.
+
+**Scope, measured rather than estimated — the fourth consecutive over-sizing.** The phase named
+`Decidability/Propositional/Decidable.lean` as a third task; it holds no binder. Conversely the
+phase's own `Omega`-token gate *undercounts* the work, because `Decidable.lean` and
+`Interpolate.lean` spell the binder `Om`. Both failure modes appeared in one phase. The lesson to
+carry into Phase 21: census on `Om`/`Set (WorldHistory`/`ShiftClosed` as well as `Omega`, and do
+it on the green tree.
+
+**Verification run**: `lake build` green at 2331 jobs. Gate grep
+(`Omega\|ShiftClosed` over `FormalSystem/Metalogic/Decidability/`) returns nothing; the stronger
+grep including `Ω`, `\bOm\b` and `Set (WorldHistory` also returns nothing, so the residual
+`Ω`-prose that Phases 15-19 left in `Tableau.lean`, `Decidable.lean`, `TruthLemma.lean` and
+`Valuation.lean` is retargeted too, not just the code. Repo-wide live sorries: 1, the pre-existing
+`WeakCanonical/Transfer.lean:1084`. Axioms: 6, unchanged from the Phase 19 baseline commit
+(verified by diffing counts against `8bc318b3e`). `lake build BimodalTest` deliberately not
+re-run — every edit in this phase is a `Prop`-valued statement, a proof term, or a comment, so
+the carried ten-item `#guard_msgs` baseline cannot have moved.
+
+**Timing**: ~2.5 hours
+
 **Files to modify**:
-- `FormalSystem/Metalogic/Decidability/**`
+- `FormalSystem/Metalogic/Decidability/Verified/Decidable.lean`
+- `FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean` (renamed from `Omega.lean`)
+- `FormalSystem/Metalogic/Decidability/Verified/Bridge/{Interpolate,TruthLemma,Valuation,IntTruth,DenseTruth,RegionLabel,BoxSaturation}.lean`
+- `FormalSystem/Metalogic/Decidability/Tableau.lean` (prose only)
+- `FormalSystem/Metalogic/Decidability.lean` (import + module index prose)
 
 **Verification**:
 - `lake build` green, sorry-free, axiom-free.
@@ -1981,10 +2072,16 @@ Omega-valued definitions.
 **Verification Tier**: full
 
 **Scope Hypothesis**: the report puts the deletions at **12** — the 5 Omega-valued definitions plus
-7 `ShiftClosed` proofs about them; Phase 20 deletes `regionOmega` and its proof, leaving 4
+7 `ShiftClosed` proofs about them; Phase 20 deleted `regionOmega` and its proof, leaving 4
 definitions plus the remaining proofs here. Confirm at implementation time with
 `grep -rn "Set (WorldHistory\|ShiftClosed" --include=*.lean FormalSystem/ | grep -v Boneyard`; if
 Phase 11 discovered a sixth Omega-valued definition, it is deleted here too.
+**Census correction carried from Phase 20**: an `Omega`-token grep alone is not a census. Phase 20
+found the binder spelled `Om` in two files that no `Omega` grep reaches. Run the census on
+`Omega`, `ShiftClosed`, `\bOm\b`, `Ω` *and* `Set (WorldHistory` together, on the green tree.
+Phase 20's own file list also named one file (`Decidability/Propositional/Decidable.lean`) that
+held no binder at all — the fourth consecutive a-priori over-size — so treat this phase's list as
+provisional in both directions.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/WeakCanonical/**`, `FormalSystem/Metalogic/Algebraic/**`,
