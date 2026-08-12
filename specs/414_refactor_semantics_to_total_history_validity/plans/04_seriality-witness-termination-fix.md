@@ -1,7 +1,7 @@
 # Implementation Plan: Total-History Validity Refactor (Omega-Free Semantics Core) — Revision 4
 
 - **Task**: 414 - refactor_semantics_to_total_history_validity
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 53 hours (36 carried from plan 03 + 17 added by this revision)
 - **Dependencies**: 420 (phase 10 only, and only for the one item marked out of scope below), 438, 439
 - **Research Inputs**: `reports/03_total-history-validity-refactor.md` (round 3, authoritative for the Omega/totality strand); `reports/05_seriality-witness-nontermination.md` (round 5, authoritative for the decision-procedure non-termination strand, and the one that *refutes* report 04's mechanism); `reports/04_boxneg-reachability-pathology.md` (retained: its higher-level conclusion stands, its mechanism does not — see `## Revision Note`); `reports/01_maximal-history-validity-refactor.md` and `reports/02_group-c-reconciliation.md` (superseded where round 3 corrects them; retained as history)

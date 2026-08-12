@@ -11,11 +11,11 @@ next_project_number: 442
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,231,257,298,413,420,421,423,437,440 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 125,178,219,282,296,414,419,425,436,441 | 193,231,298,420,423,437,440 | decidability, formula-refactor, algebraic-representation, ... |
-| 3 | 415,417,422,424,434 | 414,421,436 | decidability, paper-refactor, strong_completeness |
-| 4 | 169,427,432 | 415,417,419,422,434 | decidability, paper-refactor, strong_completeness |
-| 5 | 362,433 | 169,432 | decidability, strong_completeness |
+| 1 | 127,128,193,231,257,298,413,420,421,423,424,437,440 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 125,178,219,282,296,415,417,419,422,425,436,441 | 193,231,298,420,421,423,437,440 | decidability, formula-refactor, algebraic-representation, ... |
+| 3 | 169,427,434 | 415,417,419,422,436 | decidability, paper-refactor, strong_completeness |
+| 4 | 362,432 | 169,434 | decidability, strong_completeness |
+| 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
 | 7 | 429 | 428 | decidability |
 | 8 | 410 | 429 | -- |
@@ -78,11 +78,10 @@ next_project_number: 442
 ### Paper Refactor
 
 420 [PARTIAL] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
-  └─ 414 [IMPLEMENTING] — === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the secti
-    └─ 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-      └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
-    └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-      └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
+  └─ 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+    └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
+  └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+    └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
   └─ 419 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
     └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
 440 [NOT STARTED] — Discharge two of the four frame-axiom hypotheses of the extension
@@ -868,7 +867,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 414. Refactor semantics to total history validity
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 420, Task 438, Task 439

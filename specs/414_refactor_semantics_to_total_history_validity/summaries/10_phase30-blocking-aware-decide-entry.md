@@ -1,6 +1,11 @@
 # Phase 30 — Route `decide` through the blocking-aware entry
 
 **Status**: `[COMPLETED]`
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 **Phase**: 30 of 31 (optional)
 **Files touched**: `FormalSystem/Metalogic/Decidability/DecisionProcedure.lean` (only)
 **Diff shape**: 103 insertions, 0 deletions

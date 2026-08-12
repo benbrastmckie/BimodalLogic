@@ -5,6 +5,10 @@
 - **Dispatch**: `dispatch_seq` 4, session `sess_1786573183_94ad61`
 - **Plan**: `plans/04_seriality-witness-termination-fix.md`
 - **Status**: `[COMPLETED]` — plan reaches 31/31
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 
 ## What this phase was, and why it took four dispatches
 
