@@ -3648,7 +3648,7 @@ docstring as un-owned by that row, and stands exactly where Phase 28 left it.
 
 ---
 
-### Phase 30: Route `decide` through the blocking-aware entry — OPTIONAL [NOT STARTED]
+### Phase 30: Route `decide` through the blocking-aware entry — OPTIONAL [IN PROGRESS]
 
 **Goal**: Add a `decide` path that consumes `BudgetedTableau`, so formulas whose refutation needs
 blocking can return `.invalid` on the blocking-aware certificate. **A complement, not a

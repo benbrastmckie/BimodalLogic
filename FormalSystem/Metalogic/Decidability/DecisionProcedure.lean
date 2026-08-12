@@ -208,6 +208,109 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
               -- Formula is invalid, extract countermodel
               .invalid (extractCountermodelSimple φ_n openBranch hSat)
 
+/-!
+## Blocking-Aware Decision Entry
+
+`decide` above consumes `buildTableau`, whose open certificate carries the *literal* saturation
+test `findUnexpanded … = none`. On a blocking engine that test is unreachable for exactly the
+formulas whose refutation needs blocking: work remains outstanding at times a saturated ancestor
+blocks, so `buildTableau` returns `none` and `decide` reports `.fuelExhausted` for a formula it
+has in fact refuted.
+
+`decideBlocking` is the complement. It consumes `buildTableauAt`, whose `hasOpen` carries the
+engine's *real* saturation test relative to a named blocked set, so those formulas can be
+reported `.invalid` on the certificate the engine can actually produce.
+
+**It is a complement, not a substitute.** `decide` is untouched, still calls `buildTableau`, and
+nothing routes through this entry that did not ask for it. And it does not by itself rescue a
+formula whose branch never reaches blocking-aware saturation either — that is what
+`trivialEventWitnessed` in `Tableau.lean` is for; without that guard `expandBranchWithFuel`
+returns `none` and `buildTableauAt` returns `none` here just as `buildTableau` does above.
+
+**No free path to the strong certificate.** The closed arm reaches `ExpandedTableau` only through
+`BudgetedTableau.upgrade`; the open arm never reaches `ExpandedTableau` at all. In particular no
+`ExpandedTableau.hasOpen` is constructed here, so `upgrade_hasOpen_isSome_iff` remains the only
+route from `BudgetedTableau.hasOpen` to `ExpandedTableau.hasOpen`.
+-/
+
+/--
+Extract a simple countermodel from an open **blocking-aware** saturated branch.
+
+The blocking-aware analogue of `extractCountermodelSimple`: identical extraction, keyed on the
+certificate `BudgetedTableau.hasOpen` actually carries
+(`findUnexpandedUnblockedWith … (blockedTimes … tracker) = none`) rather than on the literal
+`findUnexpanded … = none`. Stating the witness rather than dropping it is what keeps the two
+extraction entries distinguishable at their call sites: a reader can see from the signature which
+saturation notion the branch was certified against.
+
+This is deliberately *not* routed through `extractCountermodelSimple`, because doing so would
+require manufacturing the literal saturation proof this branch does not have.
+-/
+def extractCountermodelBlocked (φ : Formula) (b : Branch)
+    {ord : TimeOrdering} {fc : FrameClass} {tracker : EventualityTracker}
+    (_hSaturated : findUnexpandedUnblockedWith b ord fc
+      (blockedTimes b ord fc tracker) = none)
+    : SimpleCountermodel :=
+  extractSimpleCountermodel φ b
+
+/--
+Decide validity of a TM bimodal logic formula through the blocking-aware tableau entry.
+
+Arm for arm this is `decide`, with exactly two differences, both forced:
+
+1. The tableau call is `buildTableauAt φ_n tableauFuel fc maxBranches` rather than
+   `buildTableau φ_n tableauFuel fc`, so the branch budget is named rather than left at the
+   engine default, and the open certificate is blocking-aware.
+2. The open arm extracts through `extractCountermodelBlocked`, which consumes the blocking-aware
+   witness the certificate carries.
+
+The fast paths (axiom instance, compositional proof, bounded search) are unchanged and are
+reached in the same order, so a formula either entry settles early is settled identically by
+both.
+
+**Parameters**: as `decide`, plus `maxBranches` (default `50000`, the engine's own default in
+`expandBranchWithFuel`), so that `decideBlocking φ` at default arguments and `decide φ` at
+default arguments run at the same budget and differ only in the certificate they demand.
+
+**Returns**: as `decide`. `.fuelExhausted` here means fuel or branch budget ran out before
+*blocking-aware* saturation, which is a strictly weaker demand than the one `decide` reports
+`.fuelExhausted` against.
+-/
+def decideBlocking (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
+    (fc : FrameClass := .Base) (maxBranches : Nat := 50000) : DecisionResult φ :=
+  have h_norm : Automation.Normalization.normalizeFormula φ = φ :=
+    Automation.Normalization.normalizeFormula_id φ
+  let φ_n := Automation.Normalization.normalizeFormula φ
+  match tryAxiomProof φ_n with
+  | some proof => .valid (h_norm ▸ proof)
+  | none =>
+    match buildCompositionalProof φ_n 10 with
+    | some proof => .valid (h_norm ▸ proof)
+    | none =>
+    match boundedSearchWithProof [] φ_n searchDepth with
+    | (some proof, _, _) => .valid (h_norm ▸ proof)
+    | (none, _, _) =>
+      match buildTableauAt φ_n tableauFuel fc maxBranches with
+      | none => .fuelExhausted
+      | some (.allClosed cs) =>
+          -- Cross the bridge. `upgrade` is the only path to the strong certificate, and
+          -- `allClosed` is the arm it crosses unconditionally.
+          match hup : (BudgetedTableau.allClosed cs).upgrade with
+          | some tableau =>
+              match extractProof φ_n tableau fc with
+              | .success proof => .valid (h_norm ▸ proof)
+              | .incomplete _ =>
+                  -- As in `decide`: the tableau closed, so the formula IS valid; only the
+                  -- proof-term reconstruction failed.
+                  .extractionFailed
+          | none =>
+              -- Dead by `upgrade_allClosed`. Discharged, not guessed at: emitting any verdict
+              -- here would be a heuristic one.
+              absurd hup (by simp)
+      | some (.hasOpen openBranch _ord _fc _tracker hSatBlocked) =>
+          -- Blocking-aware saturated and open: invalid on the certificate the engine produced.
+          .invalid (extractCountermodelBlocked φ_n openBranch hSatBlocked)
+
 /--
 Simplified decision: just return whether formula is valid.
 -/
