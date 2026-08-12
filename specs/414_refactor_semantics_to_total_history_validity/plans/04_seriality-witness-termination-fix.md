@@ -2710,7 +2710,45 @@ itself, then run the task-level gates.
 
 ---
 
-### Phase 23: Frame-relative validity `⊨_F` — OPTIONAL [NOT STARTED]
+### Phase 23: Frame-relative validity `⊨_F` — OPTIONAL [BLOCKED]
+
+**BLOCKER** (Phase 23): paper-definitions gate is case (c) FAIL; no Lean edit was attempted.
+
+- **What failed**: `bash scripts/check-paper-definitions.sh` exits **1** (case (c), genuine
+  drift) against the live paper working tree. Output: `1 recorded definition(s) drifted`, naming
+  anchor **`def:BLplus-semantics`**. Recorded/pinned text sha256
+  `3f56a996ad17e1318eb1c448b3af7d3a5bc583785df739045ce274ba6d8be59b`; live text sha256
+  `f40f514e60dcb7a6b36dee664ebcc1d55c2c6bce9e044c5814071f521674d670`.
+- **What was tried**: the gate was run first, before consuming any definition, per the dispatch
+  contract ("case (c) FAIL naming a drifted anchor → STOP and report it as a blocker"). The
+  drift was then characterized (below) rather than waved through. No `.lean` file was read for
+  editing and no edit was applied, because the contract forbids consuming definitions past a
+  case-(c) gate.
+- **Why stuck**: the gate is a dispatch-level precondition and is stated unconditionally. It is
+  deliberately not the implementer's call to narrow it to "anchors this phase happens to
+  consume" — that judgment is exactly what the gate removes from the implementer. Correcting a
+  checksum-pinned, repo-wide record (`specs/paper-definitions-of-record.md`) is also outside
+  this phase's declared file scope (`FormalSystem/Semantics/Validity.lean` only).
+- **What is needed**: absorb the drift into the record per that file's own documented
+  correction protocol — re-quote `def:BLplus-semantics`'s verbatim text, re-derive its hash in
+  the manifest, and re-pin the provenance table's file checksum and line count. Then re-run the
+  gate (expect case (a)/(b)) and re-dispatch this phase unchanged.
+- **Prohibited**: Do NOT use sorry, `def X := True`, or a vacuous placeholder. Do NOT edit the
+  paper (`/home/benjamin/Philosophy/Papers/**` is read-only ground truth).
+
+**Assessment of the drift (for the record owner, not a self-authorization to proceed)**: the
+drift is confined to the footnote of `def:BLplus-semantics` and is a paper-side **correction**,
+not a semantic change. The old footnote claimed the repository's `snce`/`untl` constructors
+follow the guard-first Pnueli convention; the new text states the paper's surface notation is
+guard-first while the repository's constructors are event-first (Burgess), and that the truth
+conditions agree once the argument order is swapped. The repository already recorded exactly
+this, independently and earlier: `FormalSystem/Semantics/Truth.lean:137-142` says `untl`/`snce`
+are "event-first / guard-second", says `def:BLplus-semantics` stated it **backwards**, and cites
+`specs/decisions/untl-snce-argument-order.md`. The paper has therefore moved *toward* the repo's
+recorded position. The two anchors this phase would consume — `def:frame-validity` and
+`cor:occurrence` — were re-verified **unchanged** against the live paper by this same lint run
+(only one anchor drifted, and it is neither of them). Absorbing the correction should be
+mechanical.
 
 > **Execution note (added by revision 4).** This phase is **OPTIONAL and is not on the critical
 > path.** Because it is lower-numbered than the strand-2 phases, a next-phase scan will select it
