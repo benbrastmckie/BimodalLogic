@@ -31,15 +31,19 @@ re-derives every hash below directly from the live paper file on every run.
 | Line count at coverage extension | 3949 |
 | Coverage extension re-pin (UTC) | 2026-08-11T01:16:05Z (checksum re-taken at 01:25Z after two further live case-(b) waves during the extension itself) |
 | Base commit at `BL^+` coverage extension (paper repo `git HEAD`; file dirty against it) | `cf0da976bd7947e6fae2aa9212953d094faab2c1` |
-| **File checksum, re-pinned at `BL^+` coverage extension (sha256, current authoritative pin)** | `f07441ebb9751d1e955d5af135bebc107ef7163dea49ccfb29b763aae67d1b27` |
+| File checksum, re-pinned at `BL^+` coverage extension (sha256) | `f07441ebb9751d1e955d5af135bebc107ef7163dea49ccfb29b763aae67d1b27` |
 | Line count at `BL^+` coverage extension | 4098 |
 | `BL^+` coverage extension re-pin (UTC) | 2026-08-10 (three `def:BLplus-*` anchors added; the run immediately before the re-pin reported case (b) — paper moved, all 23 previously-recorded definitions unchanged) |
+| Base commit at three-anchor drift correction (paper repo `git HEAD`; file dirty against it) | `f56cdea0237d102edbb9c64dcef7617d8d2cbc3e` |
+| **File checksum, re-pinned at three-anchor drift correction (sha256, current authoritative pin)** | `76406e77cb3936c38b306bf7c4b9272f2c96bb164e7d04dc263650239746276e` |
+| Line count at three-anchor drift correction | 4290 |
+| Three-anchor drift correction re-pin (UTC) | 2026-08-12T22:55Z (`thm:extension`, `def:constraints`, `def:BLplus-semantics` re-quoted and re-hashed together in one correction; see "Drift correction (2026-08-12)" below) |
 
 <!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: cf0da976bd7947e6fae2aa9212953d094faab2c1 -->
-<!-- FILE_CHECKSUM: f07441ebb9751d1e955d5af135bebc107ef7163dea49ccfb29b763aae67d1b27 -->
-<!-- LINE_COUNT: 4098 -->
+<!-- PINNED_COMMIT: f56cdea0237d102edbb9c64dcef7617d8d2cbc3e -->
+<!-- FILE_CHECKSUM: 76406e77cb3936c38b306bf7c4b9272f2c96bb164e7d04dc263650239746276e -->
+<!-- LINE_COUNT: 4290 -->
 
 ### Dirty-pin caveat (why the pin is a checksum, not a clean commit)
 
@@ -101,6 +105,54 @@ pin, exactly per the dirty-pin caveat's own logic. The no-argument invocation ag
 paper — the check this lint exists to run day to day — passes cleanly (case a) as of this
 correction.
 
+### Drift correction (2026-08-12): the three-anchor wave, absorbed as one re-pin
+
+A further live wave drifted **three** tracked anchors at once — `def:BLplus-semantics`,
+`thm:extension`, and `def:constraints` — and the gate reported case (c) against all three. All
+three are corrected here **together, in a single coherent correction with one whole-file
+re-pin**. This is deliberate and is the lesson of the two earlier corrections above: because the
+authoritative pin is a **whole-file** checksum, correcting one drifted anchor while leaving the
+others uncorrected re-pins the file to a state the record does not fully quote, which is
+incoherent — the checksum would then assert "the record matches this file" while two entries
+still quoted superseded text. A drift wave is absorbed as a unit or not at all.
+
+What moved, per anchor (each re-quoted verbatim above, each hash re-derived from the live paper
+by the same extraction the lint performs, and each re-derivation confirmed against the hash the
+lint itself reported for the live text):
+
+- **`def:BLplus-semantics`** (`3f56a996…` → `f40f514e…`): the argument-order footnote was
+  **repaired by the paper**, per its own `%% CHANGE (halden-defect-repair,
+  untl-snce-convention)` comment at the site. The footnote previously attributed a guard-first
+  Pnueli convention to this repository's `snce`/`untl` constructors; it now states the mismatch
+  in the direction that actually holds (paper surface notation guard-first, repository
+  constructors event-first/Burgess), and adds that the truth conditions agree once the argument
+  order is swapped. **The two `($\since$)` / `($\until$)` truth clauses themselves are unchanged
+  byte-for-byte** — no semantic claim moved. This resolves, in the paper, the divergence this
+  record escalated in `specs/decisions/untl-snce-argument-order.md`; the caveat under that entry
+  is rewritten below to describe the repaired footnote rather than the old defective one.
+- **`thm:extension`** (`af9b23bf…` → `e63eac74…`): statement unchanged; the footnote's existing
+  choice-contrast clause was extended to also name the finite-`W` case discharged choice-free by
+  a new corollary (paper comment `%% CHANGE (finite-spherical-corollary)`). See the residual gap
+  below.
+- **`def:constraints`** (`d763818…` → `3678ab02…`): two changes, both narrowing/wording rather
+  than restructuring. The defined term is now "the *constraints on `z`*" (formerly "the
+  *constraints imposed on `z`*"), and the segment case gained an explicit "when both `t,s ∈ X`"
+  guard on the `t < z < s` condition. The constraint family itself — segments between bracketing
+  times, fibers otherwise — is the same family.
+
+**Known residual gap (recorded, deliberately not resolved here).** The same wave added three
+anchors this record does **not** track at all: `cor:spherical-finite` (finite `W` satisfies
+*Spherical*, choice-free), `lem:nesting` (imposed fibers and segments nest along the time order),
+and `lem:nonempty` (every imposed constraint is nonempty). They are not added here because
+widening this record's coverage is a scoping decision reserved to whoever owns the record, and it
+is not needed for the lint: the lint checks *recorded* anchors for drift, and an untracked anchor
+cannot drift. Concretely, this leaves **`thm:extension`'s re-quoted footnote citing
+`\ref{cor:spherical-finite}`, an anchor outside the tracked set** — a tracked entry now
+references an untracked one, so a future rename or restatement of `cor:spherical-finite` would
+silently invalidate the cross-reference inside `thm:extension`'s recorded text without the lint
+saying anything. That is stated plainly rather than resolved silently in either direction. See
+"How to extend this record" for the protocol if the owner decides to close it.
+
 ### Coverage extension (2026-08-11): the extension-machinery anchors
 
 The paper-refactor cluster's task descriptions quote the extension machinery (`lem:constraint`,
@@ -128,10 +180,13 @@ clauses, plus the constructor-argument-order footnote), and `def:BLplus-defined`
 temporal operators). All three resolved cleanly, so none is recorded as a gap. The record moves
 from 23 to **26** tracked definitions.
 
-The `def:BLplus-semantics` entry carries an argument-order caveat: the paper's footnote describes
-this repository's `snce`/`untl` constructors as guard-first/event-second, and the Lean tree is
-event-first/guard-second. That divergence is quoted here (never silently corrected — this file
-records what the paper says) and escalated in `specs/decisions/untl-snce-argument-order.md`.
+The `def:BLplus-semantics` entry carried an argument-order caveat: at the time of this coverage
+extension the paper's footnote described this repository's `snce`/`untl` constructors as
+guard-first/event-second, while the Lean tree is event-first/guard-second. That divergence was
+quoted here (never silently corrected — this file records what the paper says) and escalated in
+`specs/decisions/untl-snce-argument-order.md`. **Superseded 2026-08-12**: the paper has since
+repaired the footnote in the direction that actually holds; see "Drift correction (2026-08-12)"
+above and the rewritten caveat under the entry itself.
 
 ## How to read this file
 
@@ -274,11 +329,13 @@ point). `H_F` denotes only the *total* histories.
 \begin{Tthm} \label{thm:extension}
 	Every partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history $\sigma \in H_{\F}$.%
 	  \footnote{
-	    The proof appeals to Zorn's lemma and hence to the axiom of choice, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the choice-free derivation of the zero loops in \textbf{\ref{lem:nullity}}.
+%% CHANGE (finite-spherical-corollary): footnote's existing choice-contrast clause extended to name the finite-$W$ case discharged choice-free by cor:spherical-finite.
+%% OLD: 	    The proof appeals to Zorn's lemma and hence to the axiom of choice, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the choice-free derivation of the zero loops in \textbf{\ref{lem:nullity}}.
+	    The proof appeals to Zorn's lemma and hence to the axiom of choice, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the choice-free derivation of the zero loops in \textbf{\ref{lem:nullity}} and of \textit{Spherical} for finite $W$ in \textbf{\ref{cor:spherical-finite}}.
 	  }
 \end{Tthm}
 ```
-sha256: `af9b23bf53bd9194a496db497197a641317cd3882078f52654b890f1c08b6dab`
+sha256: `e63eac74fb8de22197f9bbb732bf83ea49def7308ca499817683145c99762b3e`
 
 ### `cor:occurrence` — DERIVED: every world state occurs at any prescribed time in some total world history (renamed from `thm:occurrence`; see "Drift correction" below)
 
@@ -297,16 +354,20 @@ current proof extends the one-point partial history `{⟨x, w⟩}` directly via 
 former translation argument is gone from this chain (time-shift machinery survives separately
 under `def:time-shift-histories`, which remains untracked).
 
-### `def:constraints` — the constraints imposed on a new duration
+### `def:constraints` — the constraints on a new duration (renamed from "constraints *imposed on*"; see "Drift correction (2026-08-12)")
 
 ```latex
 \begin{Ddef} \label{def:constraints}
-	For a partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints imposed on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise.
+	For a partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$ when both $t,s \in X$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise.
 \end{Ddef}
 ```
-sha256: `d763818240e73faca164fde60ceeed97a3c5ab9ece9af814724eed28c4488e41`
+sha256: `3678ab023f5c7f51e790eb1f8790ae78f4c7f6bb4cd4f7dc3e41b0408b3ac581`
 
 Promoted from lead-in prose to a numbered definition so the lemmas below can cite it by name.
+The 2026-08-12 wave shortened the defined term to "the *constraints on `z`*" and added an explicit
+"when both `t,s ∈ X`" guard to the segment case; the family being defined is unchanged. Note that
+surrounding paper text (and `lem:nonempty`, untracked) still says "imposed on", so both phrasings
+appear in the live paper — this record quotes whichever one appears inside the tracked block.
 
 ### `lem:constraint` — DERIVED: the constraint family is directed and nonempty
 
@@ -425,7 +486,10 @@ sha256: `a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7`
 ```latex
 \begin{Ddef} \label{def:BLplus-semantics}
   The \textit{models} of $\BL^+$ are defined in \textbf{\ref{def:BL-model}}, where \textit{truth in a model} $\M$ at $\tau \in H_{\F}$ and $x \in D$ extends the semantics \textbf{\ref{def:BL-semantics}} with the following clauses:\footnote{%
-	Although the axioms of \textbf{TM}$^+$ are drawn from the Burgess-Xu (BX) system, the repository's \texttt{snce}/\texttt{untl} constructors follow the Pnueli convention with the guard as the first argument and the event as the second: $\varphi\since\psi$ means $\psi$ held at some past time with $\varphi$ holding throughout the interval since, and $\varphi\until\psi$ means $\psi$ will hold at some future time with $\varphi$ holding throughout the interval until $\psi$ holds.%
+%% CHANGE (halden-defect-repair, untl-snce-convention): the footnote described the repository's \texttt{snce}/\texttt{untl} constructors as following the Pnueli guard-first convention. They do not--- they are event-first (Burgess), while the paper's own surface notation is guard-first. The mismatch is now stated in the direction that actually holds, with an explicit note that the truth conditions agree once the argument order is swapped, so no semantic claim changes.
+%% OLD: 	Although the axioms of \textbf{TM}$^+$ are drawn from the Burgess-Xu (BX) system, the repository's \texttt{snce}/\texttt{untl} constructors follow the Pnueli convention with the guard as the first argument and the event as the second: $\varphi\since\psi$ means $\psi$ held at some past time with $\varphi$ holding throughout the interval since, and $\varphi\until\psi$ means $\psi$ will hold at some future time with $\varphi$ holding throughout the interval until $\psi$ holds.
+	Although the axioms of \textbf{TM}$^+$ are drawn from the Burgess-Xu (BX) system, the paper's surface notation $\varphi\since\psi$ and $\varphi\until\psi$ below is guard-first, with $\varphi$ the guard and $\psi$ the event, whereas the repository's \texttt{snce}/\texttt{untl} constructors follow the event-first Burgess convention, with the event given first and the guard second.
+	The truth conditions agree once the argument order is swapped: $\varphi\since\psi$ means $\psi$ held at some past time with $\varphi$ holding throughout the interval since, and $\varphi\until\psi$ means $\psi$ will hold at some future time with $\varphi$ holding throughout the interval until $\psi$ holds.%
 	}
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
 		\item[($\since$)] $\M,\tau,x \vDash \varphi\since\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z < x$ where $\M,\tau,y \vDash \varphi$\\
@@ -435,17 +499,26 @@ sha256: `a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7`
 	\end{enumerate}
 \end{Ddef}
 ```
-sha256: `3f56a996ad17e1318eb1c448b3af7d3a5bc583785df739045ce274ba6d8be59b`
+sha256: `f40f514e60dcb7a6b36dee664ebcc1d55c2c6bce9e044c5814071f521674d670`
 
-**Argument-order caveat — the footnote misdescribes this repository.** The `\footnote` inside the
-block above asserts that "the repository's `snce`/`untl` constructors follow the Pnueli convention
-with the guard as the first argument and the event as the second". The Lean tree is the other way
-round: `Formula.snce`/`Formula.untl` (`FormalSystem/Syntax/Formula.lean:85-90`) and `TruthAt`'s
-clauses (`FormalSystem/Semantics/Truth.lean:134-135`) are **event-first / guard-second**, and both
-`Axiom.dense_indicator` (`FormalSystem/Semantics/Validity.lean:229-231`) and the `K⁺` combinator
-(`FormalSystem/Syntax/Formula.lean:164-166`) depend on the event-first reading. This record quotes
-the paper verbatim, as it must; the divergence is recorded and escalated separately in
-`specs/decisions/untl-snce-argument-order.md`, and the Lean convention is **not** being changed.
+**Argument-order caveat — the footnote now describes this repository correctly (repaired
+2026-08-12).** The `\footnote` inside the block above *previously* asserted that "the repository's
+`snce`/`untl` constructors follow the Pnueli convention with the guard as the first argument and
+the event as the second", which was false of the Lean tree. As of the wave re-quoted above, the
+paper has repaired that sentence itself (its own `%% CHANGE (halden-defect-repair,
+untl-snce-convention)` comment, retained verbatim in the quoted block): the footnote now says the
+paper's surface notation is guard-first while **the repository's constructors are event-first
+(Burgess)**, and adds that the truth conditions agree once the argument order is swapped.
+
+That matches the Lean tree: `Formula.snce`/`Formula.untl` (`FormalSystem/Syntax/Formula.lean:85-90`)
+and `TruthAt`'s clauses (`FormalSystem/Semantics/Truth.lean:134-135`) are **event-first /
+guard-second**, and both `Axiom.dense_indicator` (`FormalSystem/Semantics/Validity.lean:229-231`)
+and the `K⁺` combinator (`FormalSystem/Syntax/Formula.lean:164-166`) depend on the event-first
+reading. The Lean convention was **not** changed and did not need to be. The divergence remains
+recorded in `specs/decisions/untl-snce-argument-order.md`; what changed is that the paper and this
+repository now *agree about which convention each of them uses*, so the remaining difference is a
+notational one the paper explicitly flags, not a defect. This record continues to quote the paper
+verbatim either way — it records what the paper says, including when what it says becomes correct.
 
 Precisely what does and does not diverge: the **shape** of each clause is identical to Lean's (one
 existentially witnessed time on the correct side of `x`, one universal quantifier over the open
@@ -608,9 +681,9 @@ def:frame#Limit|item|def:frame|Limit|3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec9
 def:frame#Spherical|item|def:frame|Spherical|656c4b68708828cbf47849b70636c428257b45f6b9427fa0368d6876408947c9
 lem:nullity|env|-|-|7840512db4eb75a6f8d4224b80d784239e554f2742163722236df4778de8d9de
 def:world-history|env|-|-|4aaa6ec0db38ccbba25ce6dc61d81b8a28f82913ba6b2b1defabaa42f9caf205
-thm:extension|env|-|-|af9b23bf53bd9194a496db497197a641317cd3882078f52654b890f1c08b6dab
+thm:extension|env|-|-|e63eac74fb8de22197f9bbb732bf83ea49def7308ca499817683145c99762b3e
 cor:occurrence|env|-|-|b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea
-def:constraints|env|-|-|d763818240e73faca164fde60ceeed97a3c5ab9ece9af814724eed28c4488e41
+def:constraints|env|-|-|3678ab023f5c7f51e790eb1f8790ae78f4c7f6bb4cd4f7dc3e41b0408b3ac581
 lem:constraint|env|-|-|9ebed5d29cd939e0b3486dee775b8135077819f0de7228877ffeef6a928bf5e7
 lem:fibers|env|-|-|42ec404f8082ceeff30b1da5a28c076c9880704c92d500cb5068ce8b0a1ba7e2
 lem:admissible|env|-|-|cc94cfdca6f3c1f581f3876ba737525288417ac9c05b3293c8fa4a621d262469
@@ -618,7 +691,7 @@ lem:step|env|-|-|82ab9eb861c6e4cb99575946f4a74f4296b5c8b979d3c2f6e28ac9fa705da94
 def:BL-model|env|-|-|239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f
 def:BL-semantics|env|-|-|8fec78985c2efea20d13c1e6d5c7536ae0e0d864172bbe0460441d61addf22e3
 def:BLplus-language|env|-|-|a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7
-def:BLplus-semantics|env|-|-|3f56a996ad17e1318eb1c448b3af7d3a5bc583785df739045ce274ba6d8be59b
+def:BLplus-semantics|env|-|-|f40f514e60dcb7a6b36dee664ebcc1d55c2c6bce9e044c5814071f521674d670
 def:BLplus-defined|env|-|-|2ac6361a2b84d20dd498f3e392072862554dd964a9ab6fc54bd868ee0a5bf56e
 def:frame-validity|env|-|-|2bcc85b0781fd4cc5af05d0741c64f44662706523cf023f3d5237d4ed1e8d1b9
 def:logical-consequence|env|-|-|e65c228721a39f8622d2256988b574c96a6cb7fdd6723a2eb63ce8a1f87770f0
