@@ -2714,6 +2714,14 @@ itself, then run the task-level gates.
 
 **BLOCKER** (Phase 23): paper-definitions gate is case (c) FAIL; no Lean edit was attempted.
 
+> **RE-ADJUDICATED 2026-08-12 (dispatch_seq 1)** — everything in this subsection was written
+> against a **1-anchor** drift observed 2026-08-11 18:46. The paper has moved again since. The
+> gate now reports **3** drifted anchors, and the wave that drifted them also added three
+> anchors the record does not track at all. The authoritative, current statement of this
+> blocker is the **"Re-adjudication (2026-08-12)"** subsection at the end of this phase — read
+> that first; the text immediately below is retained as the historical record, not as current
+> fact.
+
 - **What failed**: `bash scripts/check-paper-definitions.sh` exits **1** (case (c), genuine
   drift) against the live paper working tree. Output: `1 recorded definition(s) drifted`, naming
   anchor **`def:BLplus-semantics`**. Recorded/pinned text sha256
@@ -2778,6 +2786,84 @@ at all. **This phase is OPTIONAL and may be skipped without affecting task compl
 
 **Files to modify**:
 - `FormalSystem/Semantics/Validity.lean`
+
+#### Re-adjudication (2026-08-12, dispatch_seq 1) — blocker STANDS, and has grown
+
+This dispatch was sent with `specs/paper-definitions-of-record.md` added to its territory and
+authority to absorb **one** anchor's drift (`def:BLplus-semantics`) per that record's own
+correction protocol. The gate was re-run first, before consuming any definition, as required.
+**It now fails with three drifted anchors, not one**, so the authorized correction is no longer
+sufficient and the blocker stands.
+
+**Gate result** (`bash scripts/check-paper-definitions.sh`, exit **1**): `3 recorded
+definition(s) drifted`.
+
+| Anchor | Pinned sha256 | Live sha256 | Authorized to absorb? |
+|---|---|---|---|
+| `def:BLplus-semantics` | `3f56a996…` | `f40f514e…` | **yes** |
+| `thm:extension` | `af9b23bf…` | `e63eac74…` | **no** |
+| `def:constraints` | `d7638182…` | `3678ab02…` | **no** |
+
+**Independently re-derived, not inherited.** The prior dispatch's characterization was re-checked
+from the live paper rather than trusted. The extraction/hash method (env anchor: `\begin{ENV}`
+label line through the first following `\end{ENV}`, inclusive) was self-validated by reproducing
+the gate's own reported live hash for `def:BLplus-semantics` (`f40f514e…`) exactly, then applied
+to the two anchors this phase consumes:
+
+- `def:frame-validity` — live `2bcc85b0…` == manifest `2bcc85b0…` → **UNCHANGED** (confirmed)
+- `cor:occurrence` — live `b0228712…` == manifest `b0228712…` → **UNCHANGED** (confirmed)
+
+So the prior dispatch was right that this phase's own two definitions are stable. That is
+necessary but **not** sufficient, for the reason below.
+
+**Why the authorized one-anchor absorption cannot be applied.** The record's provenance pin is
+**whole-file**, not per-anchor (`<!-- FILE_CHECKSUM: f07441eb… -->`, `<!-- LINE_COUNT: 4098 -->`),
+and its documented correction protocol requires re-pinning that whole-file checksum and line
+count to the post-correction live state. Absorbing only `def:BLplus-semantics` would therefore
+re-pin the provenance table to a live file whose `thm:extension` and `def:constraints` text the
+record still quotes **staleley** — an internally inconsistent record that asserts a clean pin it
+does not have. That is strictly worse than the current honest-failing state. The protocol's own
+stated precondition is explicitly the opposite case ("No other tracked anchor was affected by
+this wave — confirmed by re-running the full lint after this correction"); here two other tracked
+anchors *were* affected, so the precondition is not met, and the gate would still exit 1 after a
+correct application. All three of this dispatch's STOP conditions fire.
+
+**The drift is a new wave, not a stray footnote — and it is a coverage question, not just a
+re-pin.** The live paper is at **4290** lines / sha256 `76406e77…` against the record's pinned
+4098 / `f07441eb…`. The wave (the paper's own `%% CHANGE (finite-spherical-corollary)` and
+`%% CHANGE (nearest-constraint-lemmas)` markers) introduced three **new** anchors, none tracked
+by the record, all sitting inside the record's own documented extension-machinery chain
+(`def:constraints` → `lem:constraint` → `lem:fibers` → `lem:admissible` → `lem:step` →
+`thm:extension` → `cor:occurrence`):
+
+- `cor:spherical-finite` — new corollary isolating the finite-`W` discharge of *Spherical*; it is
+  what `thm:extension`'s footnote now additionally cites, which is *why* that anchor drifted.
+- `lem:nesting`, `lem:nonempty` — new lemmas extracting nesting/nonemptiness facts previously
+  proven inline; `lem:constraint`'s proof was refactored to route through them (its statement is
+  unchanged, which is why `lem:constraint` itself did **not** drift).
+
+Deciding whether these three become tracked anchors is a scoping judgment the record owner makes
+under the record's "How to extend this record" protocol. It is not this phase's call, and it is
+well beyond the one-anchor authority this dispatch was given.
+
+**Concurrency observed (reported, not worked around).** The paper is under active live editing
+during this orchestration window: paper-repo commit `f56cdea0` at 2026-08-12 12:21, working tree
+still dirty (`M JPL/possible_worlds.tex`), file mtime 13:23. The 1-anchor → 3-anchor growth
+happened between the prior dispatch (2026-08-11 18:46) and this one. Neither the record file nor
+the gate script changed in this repo (both clean; last touched 2026-08-10), so the movement is
+entirely paper-side. Re-pinning a whole-file checksum against a target still being edited is the
+exact race this record documents having hit twice before.
+
+**What is needed to unblock** (record owner, one decision, then a mechanical pass):
+1. Confirm the paper wave has settled (checksum stable across two reads).
+2. Decide coverage for `cor:spherical-finite`, `lem:nesting`, `lem:nonempty` — track or
+   explicitly exclude, per the record's extension protocol.
+3. Absorb all three drifted anchors together (re-quote verbatim text, re-derive manifest hashes),
+   then re-pin `FILE_CHECKSUM` + `LINE_COUNT` **once**, to the settled state.
+4. Re-run the gate, expect case (a)/(b), then re-dispatch this phase unchanged.
+
+**Baseline confirmed not regressed by this dispatch**: `lake build` **green**, exit 0, 2331 jobs;
+zero `.lean` files modified; zero new sorries; zero new axioms; the paper was not edited.
 
 **Verification**:
 - `lake build` green, sorry-free.
