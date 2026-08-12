@@ -2802,10 +2802,24 @@ Two facts from it are worth keeping, because they are what made this phase safe 
 The durable account of what drifted and why now lives in `specs/paper-definitions-of-record.md`’s
 own "Drift correction" sections, which is where a future reader should look.
 
-**Verification**:
-- `lake build` green, sorry-free.
-- `valid φ ↔ ∀ F, F.ValidOn φ` proved, establishing that `ValidOn` is a specialization and not a
-  competing notion.
+**Verification**: — all measured 2026-08-12 (dispatch_seq 4); full record in
+`summaries/20_frame-relative-validity-summary.md`.
+
+- [x] `lake build` green, sorry-free. **Green, exit 0, 2331 jobs — the baseline job count exactly.**
+      Sorry-free in the sense the baseline fixes: exactly one compiler `declaration uses 'sorry'`
+      warning tree-wide, at `WeakCanonical/Transfer.lean:1068` (the declaration head for the
+      pre-existing `:1084` site, out of scope). No new sorry, no new axiom.
+- [x] `valid φ ↔ ∀ F, F.ValidOn φ` proved, establishing that `ValidOn` is a specialization and not a
+      competing notion. **`Validity.valid_iff_forall_validOn`.** Its axiom audit is the machine
+      check on the "not a competing notion" claim: it reports **`propext` alone** — no
+      `Classical.choice`, no `Quot.sound` — so the equivalence adds no mathematical content.
+      (`TaskFrame.not_validOn_bot` reports `[propext, Classical.choice, Quot.sound]`; choice enters
+      correctly through `cor:occurrence`'s Zorn route, exactly as the paper's own footnote says.)
+- [x] `lake build FormalSystem.Semantics.Validity` green, 820 jobs, on the **first** attempt.
+- [x] Probe rows unmoved: `lake build BimodalTest` yields **exactly 7** `#guard_msgs` mismatches, at
+      exactly the baselined rows (`BoxSpreadProbe:165`; `RegionGateProbe:299,330`;
+      `TableauConformance:873,885,910,916`). Exit 1 is the baseline condition for that target, since
+      mismatches are errors. Nothing re-baselined.
 
 ---
 
