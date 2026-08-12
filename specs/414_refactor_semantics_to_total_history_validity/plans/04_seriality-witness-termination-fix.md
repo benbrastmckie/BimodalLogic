@@ -2710,53 +2710,20 @@ itself, then run the task-level gates.
 
 ---
 
-### Phase 23: Frame-relative validity `⊨_F` — OPTIONAL [BLOCKED]
+### Phase 23: Frame-relative validity `⊨_F` — OPTIONAL [COMPLETED]
 
-**BLOCKER** (Phase 23): paper-definitions gate is case (c) FAIL; no Lean edit was attempted.
-
-> **RE-ADJUDICATED 2026-08-12 (dispatch_seq 1)** — everything in this subsection was written
-> against a **1-anchor** drift observed 2026-08-11 18:46. The paper has moved again since. The
-> gate now reports **3** drifted anchors, and the wave that drifted them also added three
-> anchors the record does not track at all. The authoritative, current statement of this
-> blocker is the **"Re-adjudication (2026-08-12)"** subsection at the end of this phase — read
-> that first; the text immediately below is retained as the historical record, not as current
-> fact.
-
-- **What failed**: `bash scripts/check-paper-definitions.sh` exits **1** (case (c), genuine
-  drift) against the live paper working tree. Output: `1 recorded definition(s) drifted`, naming
-  anchor **`def:BLplus-semantics`**. Recorded/pinned text sha256
-  `3f56a996ad17e1318eb1c448b3af7d3a5bc583785df739045ce274ba6d8be59b`; live text sha256
-  `f40f514e60dcb7a6b36dee664ebcc1d55c2c6bce9e044c5814071f521674d670`.
-- **What was tried**: the gate was run first, before consuming any definition, per the dispatch
-  contract ("case (c) FAIL naming a drifted anchor → STOP and report it as a blocker"). The
-  drift was then characterized (below) rather than waved through. No `.lean` file was read for
-  editing and no edit was applied, because the contract forbids consuming definitions past a
-  case-(c) gate.
-- **Why stuck**: the gate is a dispatch-level precondition and is stated unconditionally. It is
-  deliberately not the implementer's call to narrow it to "anchors this phase happens to
-  consume" — that judgment is exactly what the gate removes from the implementer. Correcting a
-  checksum-pinned, repo-wide record (`specs/paper-definitions-of-record.md`) is also outside
-  this phase's declared file scope (`FormalSystem/Semantics/Validity.lean` only).
-- **What is needed**: absorb the drift into the record per that file's own documented
-  correction protocol — re-quote `def:BLplus-semantics`'s verbatim text, re-derive its hash in
-  the manifest, and re-pin the provenance table's file checksum and line count. Then re-run the
-  gate (expect case (a)/(b)) and re-dispatch this phase unchanged.
-- **Prohibited**: Do NOT use sorry, `def X := True`, or a vacuous placeholder. Do NOT edit the
-  paper (`/home/benjamin/Philosophy/Papers/**` is read-only ground truth).
-
-**Assessment of the drift (for the record owner, not a self-authorization to proceed)**: the
-drift is confined to the footnote of `def:BLplus-semantics` and is a paper-side **correction**,
-not a semantic change. The old footnote claimed the repository's `snce`/`untl` constructors
-follow the guard-first Pnueli convention; the new text states the paper's surface notation is
-guard-first while the repository's constructors are event-first (Burgess), and that the truth
-conditions agree once the argument order is swapped. The repository already recorded exactly
-this, independently and earlier: `FormalSystem/Semantics/Truth.lean:137-142` says `untl`/`snce`
-are "event-first / guard-second", says `def:BLplus-semantics` stated it **backwards**, and cites
-`specs/decisions/untl-snce-argument-order.md`. The paper has therefore moved *toward* the repo's
-recorded position. The two anchors this phase would consume — `def:frame-validity` and
-`cor:occurrence` — were re-verified **unchanged** against the live paper by this same lint run
-(only one anchor drifted, and it is neither of them). Absorbing the correction should be
-mechanical.
+> **Blocker cleared 2026-08-12 (dispatch_seq 4).** This phase was `[BLOCKED]` across two
+> dispatches on the paper-definitions gate, which failed case (c) against a live paper-side
+> drift wave — first 1 anchor, then 3. The blocker was **never about this phase's own content**:
+> both anchors it consumes were verified unchanged throughout. It was cleared by the record
+> correction in commit `5de357c70` ("absorb three-anchor paper drift wave into definitions of
+> record"), which absorbed `def:BLplus-semantics`, `thm:extension`, and `def:constraints`
+> together and re-pinned the whole-file provenance once, as the record's correction protocol
+> requires. The gate now exits **0 at case (a)** (whole-file checksum matches the pin; silent
+> pass), re-verified independently at the start of this dispatch before any definition was
+> consumed. The former `**BLOCKER**` block and the `#### Re-adjudication (2026-08-12)`
+> subsection are retired as spent; the durable account of what drifted and why lives in
+> `specs/paper-definitions-of-record.md`'s own "Drift correction" sections, not here.
 
 > **Execution note (added by revision 4).** This phase is **OPTIONAL and is not on the critical
 > path.** Because it is lower-numbered than the strand-2 phases, a next-phase scan will select it
@@ -2770,13 +2737,39 @@ mechanical.
 at all. **This phase is OPTIONAL and may be skipped without affecting task completion.**
 
 **Tasks**:
-- [ ] Add `TaskFrame.ValidOn (F : TaskFrame D) (φ : Formula) : Prop` quantifying over every model,
+- [x] Add `TaskFrame.ValidOn (F : TaskFrame D) (φ : Formula) : Prop` quantifying over every model,
       every `τ : F.HF`, and every time. Docstring cites `def:frame-validity` verbatim.
-- [ ] Add the never-vacuous statement as a **hypothesis-parameterized** theorem (it needs
+- [x] Add the never-vacuous statement as a **hypothesis-parameterized** theorem (it needs
       `cor:occurrence`, hence *Seriality*/*Spherical* as hypotheses): `¬ F.ValidOn ⊥` given the
       frame-axiom hypotheses. Record that the frame-intrinsic form arrives with task 420 phase 10.
-- [ ] Relate `ValidOn` to `valid` (validity is validity on every frame) — as a theorem, not as an
+      *(deviation: altered — the "arrives with task 420 phase 10" citation could not be written
+      into the `.lean` docstring. `.claude/rules/no-task-references-in-deliverables.md` forbids
+      task-qualified phase references outside `specs/**`, and the `validate-no-task-references.sh`
+      PreToolUse hook **blocked the write**; this is a rule override, not a judgment call. The
+      same fact is recorded against the durable anchor the repository already uses for it —
+      `Step.lean`'s "Invariant for a future frame-axiom-field refactor", which is exactly what
+      `Extension/Extension.lean` cites for the frame-intrinsic form of `cor:occurrence`. The
+      task/phase pointer is preserved here in `specs/**`, where it is permitted.)*
+- [x] Relate `ValidOn` to `valid` (validity is validity on every frame) — as a theorem, not as an
       alias, so no parallel validity notion is created.
+
+**What landed** (all in `FormalSystem/Semantics/Validity.lean`, after `end Validity`):
+
+| Declaration | Role |
+|---|---|
+| `TaskFrame.ValidOn` | `def:frame-validity` on the nose: `∀ (M : TaskModel F) (τ : F.HF) (x : D), TruthAt M τ.val x φ`. Bundled `F.HF` used per `WorldHistory.lean`'s Decision-A encoding note (bundled where `H_F` is an object in its own right — which is how the recorded text reads). |
+| `TaskFrame.not_validOn_bot` | Never-vacuity: `¬ F.ValidOn ⊥`, hypothesis-parameterized on *Spherical*/*Seriality*/*Interpolation*/*Limit* plus a world state, inheriting `PartialHistory.occurrence`'s shape verbatim. Proof: `occurrence` supplies `τ ∈ H_F`, `Truth.bot_false` refutes. |
+| `TaskFrame.hF_nonempty_of_frameAxioms` | `cor:occurrence`'s closing clause (`H_F ≠ ∅`) restated adjacent to the statement it justifies; thin wrapper on `PartialHistory.hF_nonempty`. |
+| `Validity.valid_iff_forall_validOn` | `valid φ ↔ ∀ D F, F.ValidOn φ` — the theorem (not alias) that forecloses a parallel validity notion. Both directions are the `.val`/`.property` bridge; no mathematical content added, which is the point. |
+| `Validity.validOn_of_valid` | Forward half in usable form. |
+
+One import added: `FormalSystem.Semantics.Extension.Extension` (for `PartialHistory.occurrence`).
+No cycle — the extension chain does not import `Validity`.
+
+**No `⊨_F` notation was introduced.** `Truth.lean` records that a `TruthAt` notation was dropped
+for conflicting with this file's `⊨` validity notation; a subscripted variant sits in the same
+parser neighbourhood for no gain. Dot-notation `F.ValidOn φ` carries the reading instead. The
+plan's task list did not require notation, so this is a recorded choice, not a deviation.
 
 **Timing**: 1.5 hours
 
@@ -2787,83 +2780,27 @@ at all. **This phase is OPTIONAL and may be skipped without affecting task compl
 **Files to modify**:
 - `FormalSystem/Semantics/Validity.lean`
 
-#### Re-adjudication (2026-08-12, dispatch_seq 1) — blocker STANDS, and has grown
+#### Blocker record — retired 2026-08-12 (dispatch_seq 4)
 
-This dispatch was sent with `specs/paper-definitions-of-record.md` added to its territory and
-authority to absorb **one** anchor's drift (`def:BLplus-semantics`) per that record's own
-correction protocol. The gate was re-run first, before consuming any definition, as required.
-**It now fails with three drifted anchors, not one**, so the authorized correction is no longer
-sufficient and the blocker stands.
+This phase carried a `#### Re-adjudication (2026-08-12, dispatch_seq 1)` subsection recording a
+three-anchor paper drift wave (`def:BLplus-semantics`, `thm:extension`, `def:constraints`), three
+newly-introduced untracked anchors (`cor:spherical-finite`, `lem:nesting`, `lem:nonempty`), and a
+whole-file provenance pin that could not be honestly re-pinned one anchor at a time. That
+subsection is **retired as spent**: the record correction in commit `5de357c70` absorbed all three
+drifted anchors together and re-pinned `FILE_CHECKSUM` + `LINE_COUNT` once, exactly as the
+blocker’s "What is needed" step 3 asked. The gate now exits **0 at case (a)**.
 
-**Gate result** (`bash scripts/check-paper-definitions.sh`, exit **1**): `3 recorded
-definition(s) drifted`.
+Two facts from it are worth keeping, because they are what made this phase safe to run unchanged:
 
-| Anchor | Pinned sha256 | Live sha256 | Authorized to absorb? |
-|---|---|---|---|
-| `def:BLplus-semantics` | `3f56a996…` | `f40f514e…` | **yes** |
-| `thm:extension` | `af9b23bf…` | `e63eac74…` | **no** |
-| `def:constraints` | `d7638182…` | `3678ab02…` | **no** |
+- The drift never touched this phase. `def:frame-validity` (`2bcc85b0…`) and `cor:occurrence`
+  (`b0228712…`) were verified equal to their manifest pins by two independent prior dispatches,
+  and again at the head of dispatch_seq 4 — the third independent confirmation.
+- The correct unit of absorption is the whole wave, not the convenient anchor. Absorbing one
+  anchor while the pin is whole-file would have produced a record asserting a clean pin it did not
+  have. Holding the blocker rather than narrowing the gate is what preserved that.
 
-**Independently re-derived, not inherited.** The prior dispatch's characterization was re-checked
-from the live paper rather than trusted. The extraction/hash method (env anchor: `\begin{ENV}`
-label line through the first following `\end{ENV}`, inclusive) was self-validated by reproducing
-the gate's own reported live hash for `def:BLplus-semantics` (`f40f514e…`) exactly, then applied
-to the two anchors this phase consumes:
-
-- `def:frame-validity` — live `2bcc85b0…` == manifest `2bcc85b0…` → **UNCHANGED** (confirmed)
-- `cor:occurrence` — live `b0228712…` == manifest `b0228712…` → **UNCHANGED** (confirmed)
-
-So the prior dispatch was right that this phase's own two definitions are stable. That is
-necessary but **not** sufficient, for the reason below.
-
-**Why the authorized one-anchor absorption cannot be applied.** The record's provenance pin is
-**whole-file**, not per-anchor (`<!-- FILE_CHECKSUM: f07441eb… -->`, `<!-- LINE_COUNT: 4098 -->`),
-and its documented correction protocol requires re-pinning that whole-file checksum and line
-count to the post-correction live state. Absorbing only `def:BLplus-semantics` would therefore
-re-pin the provenance table to a live file whose `thm:extension` and `def:constraints` text the
-record still quotes **staleley** — an internally inconsistent record that asserts a clean pin it
-does not have. That is strictly worse than the current honest-failing state. The protocol's own
-stated precondition is explicitly the opposite case ("No other tracked anchor was affected by
-this wave — confirmed by re-running the full lint after this correction"); here two other tracked
-anchors *were* affected, so the precondition is not met, and the gate would still exit 1 after a
-correct application. All three of this dispatch's STOP conditions fire.
-
-**The drift is a new wave, not a stray footnote — and it is a coverage question, not just a
-re-pin.** The live paper is at **4290** lines / sha256 `76406e77…` against the record's pinned
-4098 / `f07441eb…`. The wave (the paper's own `%% CHANGE (finite-spherical-corollary)` and
-`%% CHANGE (nearest-constraint-lemmas)` markers) introduced three **new** anchors, none tracked
-by the record, all sitting inside the record's own documented extension-machinery chain
-(`def:constraints` → `lem:constraint` → `lem:fibers` → `lem:admissible` → `lem:step` →
-`thm:extension` → `cor:occurrence`):
-
-- `cor:spherical-finite` — new corollary isolating the finite-`W` discharge of *Spherical*; it is
-  what `thm:extension`'s footnote now additionally cites, which is *why* that anchor drifted.
-- `lem:nesting`, `lem:nonempty` — new lemmas extracting nesting/nonemptiness facts previously
-  proven inline; `lem:constraint`'s proof was refactored to route through them (its statement is
-  unchanged, which is why `lem:constraint` itself did **not** drift).
-
-Deciding whether these three become tracked anchors is a scoping judgment the record owner makes
-under the record's "How to extend this record" protocol. It is not this phase's call, and it is
-well beyond the one-anchor authority this dispatch was given.
-
-**Concurrency observed (reported, not worked around).** The paper is under active live editing
-during this orchestration window: paper-repo commit `f56cdea0` at 2026-08-12 12:21, working tree
-still dirty (`M JPL/possible_worlds.tex`), file mtime 13:23. The 1-anchor → 3-anchor growth
-happened between the prior dispatch (2026-08-11 18:46) and this one. Neither the record file nor
-the gate script changed in this repo (both clean; last touched 2026-08-10), so the movement is
-entirely paper-side. Re-pinning a whole-file checksum against a target still being edited is the
-exact race this record documents having hit twice before.
-
-**What is needed to unblock** (record owner, one decision, then a mechanical pass):
-1. Confirm the paper wave has settled (checksum stable across two reads).
-2. Decide coverage for `cor:spherical-finite`, `lem:nesting`, `lem:nonempty` — track or
-   explicitly exclude, per the record's extension protocol.
-3. Absorb all three drifted anchors together (re-quote verbatim text, re-derive manifest hashes),
-   then re-pin `FILE_CHECKSUM` + `LINE_COUNT` **once**, to the settled state.
-4. Re-run the gate, expect case (a)/(b), then re-dispatch this phase unchanged.
-
-**Baseline confirmed not regressed by this dispatch**: `lake build` **green**, exit 0, 2331 jobs;
-zero `.lean` files modified; zero new sorries; zero new axioms; the paper was not edited.
+The durable account of what drifted and why now lives in `specs/paper-definitions-of-record.md`’s
+own "Drift correction" sections, which is where a future reader should look.
 
 **Verification**:
 - `lake build` green, sorry-free.
