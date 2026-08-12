@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.Extension.Extension
 import FormalSystem.Syntax.Context
 import Mathlib.Order.SuccPred.Basic
 import Mathlib.Order.SuccPred.Archimedean
@@ -481,6 +482,145 @@ theorem valid_of_valid_box {φ : Formula} (h : valid (Formula.box φ)) :
     valid φ := by
   intro D _ _ _ _ F M τ hτ t
   exact h D F M τ hτ t τ hτ
+
+end Validity
+
+/-! ## Frame-relative validity `⊨_F` (`def:frame-validity`)
+
+Charter §8's optional deliverable. Everything above quantifies over *all* frames; this section
+adds the notion that holds a single frame fixed.
+
+**Definition of record — `def:frame-validity`**, verbatim:
+
+> A well-formed sentence phi of BL is *valid over a frame* F = ⟨W, D, ⇒⟩ which we may write
+> |=_F phi if and only if M,tau,x |= phi for every model M = ⟨W, D, ⇒, |·|⟩ where
+> F = ⟨W, D, ⇒⟩, possible world tau in H_F, and time x in D.
+
+**No notation is introduced for `⊨_F`.** `Truth.lean` records that a `TruthAt` notation was
+dropped because it conflicts with the `⊨` validity notation in this file; a subscripted variant
+would sit in the same parser neighbourhood for no gain. The ASCII name `TaskFrame.ValidOn` is
+used instead, and dot-notation (`F.ValidOn φ`) reads as the paper's `⊨_F φ` does.
+
+**This is not a parallel validity notion.** `valid_iff_forall_validOn` below proves the two are
+related by quantification over frames, so `ValidOn` is a specialization of the one validity
+predicate rather than a competitor to it — the same discipline `TaskFrame.HF` follows with
+respect to `WorldHistory.IsTotal`.
+-/
+
+/--
+`def:frame-validity`: `φ` is **valid over the frame `F`** iff it is true at every model over `F`,
+every possible world `τ ∈ H_F`, and every time `x ∈ D`.
+
+Recorded source (`def:frame-validity`, verbatim): "A well-formed sentence $\varphi$ of $\BL$ is
+\emph{valid over a frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write
+$\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model
+$\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible
+world $\tau \in H_{\F}$, and time $x \in D$."
+
+Each of the three quantifiers is rendered on the nose:
+
+* "every model `M = ⟨W, D, ⇒, |·|⟩` where `F = ⟨W, D, ⇒⟩`" is `∀ M : TaskModel F` — the frame is
+  a *parameter* of `TaskModel`, so the side condition that `M`'s frame reduct is `F` is carried
+  by the type rather than by a hypothesis.
+* "possible world `τ ∈ H_F`" is `∀ τ : F.HF`, the bundled subtype. Per `WorldHistory.lean`'s
+  encoding note, the bundled form is used exactly where `H_F` appears as an object in its own
+  right, which is how the recorded text reads here.
+* "time `x ∈ D`" is `∀ x : D` — all of the temporal order, not merely `dom(τ)`; for a total `τ`
+  the two coincide.
+
+Unlike `valid`, this carries no `[Nontrivial D]` binder: `valid` needs it to state its
+quantification over temporal types, whereas here `D` and `F` are both already given.
+-/
+def TaskFrame.ValidOn {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (F : TaskFrame D) (φ : Formula) : Prop :=
+  ∀ (M : TaskModel F) (τ : F.HF) (x : D), TruthAt M τ.val x φ
+
+namespace TaskFrame
+
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+
+/--
+Frame-relative validity is **never vacuous**: no frame validates `⊥`.
+
+Without this, `F.ValidOn` would be satisfied trivially by any frame whose `H_F` happened to be
+empty, and `F.ValidOn ⊥` would be a theorem rather than a refutation. What rules that out is
+exactly `cor:occurrence`'s closing clause — `H_F ≠ ∅` — so the frame axioms it consumes appear
+here as hypotheses.
+
+**Hypothesis-parameterized, matching `PartialHistory.occurrence`.** `cor:occurrence` is landed in
+`Extension/Extension.lean` in hypothesis form only: *Spherical*, *Seriality*, *Interpolation* and
+*Limit* are taken as arguments because `TaskFrame` does not carry them as structure fields, and
+the world state `w` is taken explicitly because `TaskFrame` carries no nonemptiness field either.
+This theorem inherits that shape verbatim rather than re-deriving it. **The frame-intrinsic form
+— quantifying over a frame alone, with no axiom hypotheses — is gated on the same frame-axiom-field
+refactor `Extension/Extension.lean` names, recorded in `Step.lean`'s "Invariant for a future
+frame-axiom-field refactor"; once `TaskFrame.spherical` is definitionally `Spherical TaskRel` (and
+likewise for the others), this statement collapses to `¬ F.ValidOn ⊥` with `F` its only
+argument.**
+
+The model witness is `TaskModel.allFalse`; any model would do, since `⊥`'s truth clause is
+`False` independently of the valuation.
+-/
+theorem not_validOn_bot (F : TaskFrame D)
+    (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel) (hInt : Interpolates F.TaskRel)
+    (hLim : ∀ w v, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y v) → v = w)
+    (w : F.WorldState) :
+    ¬ F.ValidOn Formula.bot := by
+  intro hvalid
+  obtain ⟨τ, _⟩ := PartialHistory.occurrence F hSph hSer hInt hLim w 0
+  exact Truth.bot_false (hvalid TaskModel.allFalse τ 0)
+
+/--
+`cor:occurrence`'s closing clause restated in the shape this section consumes it: under the frame
+axioms, `H_F` has an inhabitant, so the `∀ τ : F.HF` in `ValidOn` is a non-vacuous quantifier.
+
+This is a thin restatement of `PartialHistory.hF_nonempty`, kept here so the reason
+`not_validOn_bot` holds is legible next to the statement itself.
+-/
+theorem hF_nonempty_of_frameAxioms (F : TaskFrame D)
+    (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel) (hInt : Interpolates F.TaskRel)
+    (hLim : ∀ w v, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y v) → v = w)
+    (w : F.WorldState) :
+    Nonempty F.HF :=
+  PartialHistory.hF_nonempty F hSph hSer hInt hLim w
+
+end TaskFrame
+
+namespace Validity
+
+/--
+Validity **is** validity on every frame: `⊨ φ` iff `φ` is valid over every frame of every
+temporal type.
+
+This is the theorem that keeps `TaskFrame.ValidOn` from being a second, competing validity
+notion. `valid` (`def:logical-consequence`'s closing clause) and `TaskFrame.ValidOn`
+(`def:frame-validity`) differ only in *which* quantifiers are discharged: `valid` closes over the
+temporal type and the frame, `ValidOn` leaves both fixed. Stated as a theorem rather than
+introduced as an abbreviation, exactly so that the equivalence is a proof obligation the build
+checks and not a definitional identity asserted by fiat.
+
+Both directions are the `.val`/`.property` bridge between `F.HF` and the predicate form
+`(τ : WorldHistory F) (hτ : τ.IsTotal)` that `valid` uses — the two spellings of one and the same
+`IsTotal` predicate, per `WorldHistory.lean`'s encoding note. No mathematical content is added in
+either direction; that is the point of the statement.
+-/
+theorem valid_iff_forall_validOn (φ : Formula) :
+    valid φ ↔ ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+      (F : TaskFrame D), F.ValidOn φ := by
+  constructor
+  · intro h D _ _ _ _ F M τ x
+    exact h D F M τ.val τ.property x
+  · intro h D _ _ _ _ F M τ hτ x
+    exact h D F M ⟨τ, hτ⟩ x
+
+/--
+The forward half of `valid_iff_forall_validOn`, in the direction that gets used: a valid formula
+is valid over any particular frame.
+-/
+theorem validOn_of_valid {φ : Formula} (h : valid φ) (D : Type)
+    [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    (F : TaskFrame D) : F.ValidOn φ :=
+  (valid_iff_forall_validOn φ).mp h D F
 
 end Validity
 
