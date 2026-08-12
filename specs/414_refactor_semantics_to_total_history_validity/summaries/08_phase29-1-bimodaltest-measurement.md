@@ -5,6 +5,11 @@ task — killed twice, once by `timeout 3000` (`EXIT=124`) and once by hand, aft
 ~99.7% for >45 min — now completes in **35 seconds**. The milestone is met.
 
 **Status**: COMPLETED. This sub-phase is measurement-only: **no file under `Tests/` or
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 `FormalSystem/` was edited** (`git status --porcelain Tests/ FormalSystem/` empty at entry and at
 exit). The re-baseline is Phase 29.2's exclusive job and is **not** applied here.
 

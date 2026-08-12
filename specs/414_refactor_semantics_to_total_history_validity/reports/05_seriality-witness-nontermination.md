@@ -1,6 +1,13 @@
 # Report 05 — The `(G p) → □(G p)` non-termination is a seriality-witness defect, not a blocking defect
 
 - **Task**: 414 — refactor_semantics_to_total_history_validity (phase 22 terminus, follow-up to report 04)
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Status**: [FINDINGS] — written 2026-08-11
 - **Context**: `git log` HEAD is `03c67767f task 414 phase 22.2: retire the Omega architecture from
   the semantics prose`. Input: `reports/04_boxneg-reachability-pathology.md` §4, which named four

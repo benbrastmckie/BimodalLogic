@@ -1,6 +1,13 @@
 # Report 04 — BoxNegReachability probe pathology and the `(G p) → □(G p)` question
 
 - **Task**: 414 — refactor_semantics_to_total_history_validity (phase 22 terminus)
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Status**: [FINDINGS] — written 2026-08-11 while the phase-22 `lake build BimodalTest`
   verification gate was still running (killed by hand after this report; see §5)
 - **Context**: `git log` HEAD is `03c67767f task 414 phase 22.2: retire the Omega architecture

@@ -1,6 +1,11 @@
 # Phase 24 — Pre-fix baseline capture and narrowed verification target
 
 **Status**: COMPLETED. This phase edited no Lean file. It is a measurement record only.
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 
 **Measured on**: 2026-08-11, green tree, branch `main`, HEAD `b5a4c6056`
 (`task 414: revise plan (v4) — seriality-witness termination fix`).

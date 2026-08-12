@@ -5,6 +5,11 @@ exactly the rows that were **already wrong before the guard landed** — identif
 the first time, by measurement.
 
 **Status**: `[COMPLETED WITH EXCLUSIONS]`. 33 of 40 rows re-baselined with measured attribution;
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 7 excluded, enumerated, and documented in-source with their pinned / pre-guard / current triples.
 
 ---

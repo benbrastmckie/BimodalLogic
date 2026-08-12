@@ -1,6 +1,11 @@
 # Phases 27 and 28 — the saturation-extraction bridge, and the tree-wide green gate
 
 **Status**: both phases `[COMPLETED]`. **The red window opened at Phase 25 is closed.**
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 
 `lake build` (default `FormalSystem` target) is **green at 2331 jobs**, identical to the Phase 24
 baseline, with the live non-Boneyard sorry count still **1** and zero `axiom` declarations.
