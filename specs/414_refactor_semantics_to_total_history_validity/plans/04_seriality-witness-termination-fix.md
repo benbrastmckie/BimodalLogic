@@ -3648,7 +3648,7 @@ docstring as un-owned by that row, and stands exactly where Phase 28 left it.
 
 ---
 
-### Phase 30: Route `decide` through the blocking-aware entry — OPTIONAL [IN PROGRESS]
+### Phase 30: Route `decide` through the blocking-aware entry — OPTIONAL [COMPLETED]
 
 **Goal**: Add a `decide` path that consumes `BudgetedTableau`, so formulas whose refutation needs
 blocking can return `.invalid` on the blocking-aware certificate. **A complement, not a
@@ -3659,13 +3659,58 @@ returns `none` too). **This phase is OPTIONAL and may be skipped without affecti
 completion.**
 
 **Tasks**:
-- [ ] Add the `decide` path consuming `BudgetedTableau` / `buildTableauAt`
+- [x] Add the `decide` path consuming `BudgetedTableau` / `buildTableauAt`
       (`Saturation.lean:2091-2099`, `:2196-2215`), alongside — not replacing — the existing
       `buildTableau` call at `DecisionProcedure.lean:193`.
-- [ ] Preserve `upgrade` and `upgrade_hasOpen_isSome_iff` (`Saturation.lean:2124-2155`) as the
+- [x] Preserve `upgrade` and `upgrade_hasOpen_isSome_iff` (`Saturation.lean:2124-2155`) as the
       **only** path from the weak certificate to the strong one. No free path may be introduced.
-- [ ] Confirm no probe row moves as a result; if one does, re-baseline it with its own attribution
+- [x] Confirm no probe row moves as a result; if one does, re-baseline it with its own attribution
       to this phase, following Phase 29.2's three-part record.
+
+#### Measured record
+
+**What landed.** `decideBlocking` in `DecisionProcedure.lean`, plus its extraction helper
+`extractCountermodelBlocked`. The diff is **103 insertions, 0 deletions** — `decide` is
+byte-identical and still calls `buildTableau` at what is now line 193 + 0 offset above the
+insertion point. `Saturation.lean` needed no widening: `buildTableauAt`, `upgrade`, `armTracker`
+and `blockedTimes` all already existed and were already exported.
+
+**Bridge invariant, confirmed by reading the diff and not by assertion.** The closed arm reaches
+`ExpandedTableau` only through `(BudgetedTableau.allClosed cs).upgrade`. The open arm never
+constructs an `ExpandedTableau` at all — it extracts through `extractCountermodelBlocked`, which
+consumes the blocking-aware witness (`findUnexpandedUnblockedWith … (blockedTimes … tracker) =
+none`) that `BudgetedTableau.hasOpen` actually carries, rather than manufacturing the literal
+witness the branch does not have. So `upgrade_hasOpen_isSome_iff` remains the only route from
+`BudgetedTableau.hasOpen` to `ExpandedTableau.hasOpen`. The `upgrade = none` arm on `allClosed`
+is dead by `upgrade_allClosed` and is discharged with `absurd`, not filled with a verdict: no
+heuristic verdict and no new verdict constructor was added.
+
+**No probe row moved.** `lake build BimodalTest` exits with exactly **7** `#guard_msgs`
+mismatches, at `BoxSpreadProbe.lean:165`, `RegionGateProbe.lean:299,330`, and
+`TableauConformance.lean:873,885,910,916` — the same seven rows, at the same line numbers, that
+`summaries/09_phase29-2-preguard-differential-rebaseline.md` §8 enumerates as the reasoned
+exclusions left pinned at Phase 29.2 exit. Nothing under `Tests/` was modified by this phase
+(`git diff --stat` touches one file, and it is not under `Tests/`), so no re-baseline and no
+Phase-30 attribution record was owed.
+
+**Verdict-level effect: none, and this was predicted.** Measured on the live post-Phase-25
+engine at default arguments, `decideBlocking` agrees with `decide` on every formula probed:
+`(G p) → □(G p)` → `.invalid` from both (and `decideBlocking`'s countermodel is `isSome`);
+`p → p` → `.valid` from both; `p → □p` → `.invalid` from both. This is the phase's own stated
+character — *a complement, not a substitute* — holding as written: Phase 25's guard is what
+rescues `(G p) → □(G p)`, and it had already rescued it, so there is no formula left for the
+blocking-aware certificate to newly settle at the default budget. The complement is present and
+functional rather than currently load-bearing, which is the honest description.
+
+**The `maxBranches` parameter is live, not decorative.** Sweeping it on `(G p) → □(G p)` at
+fuel 1000: budgets `1, 2, 4, 8, 16` give `.fuelExhausted`, budgets `32, 64, 1000` give
+`.invalid`. The threshold is real, so the budget is genuinely threaded through to
+`expandBranchWithFuel` rather than being shadowed by the engine default.
+
+**Verification actuals**: tree-wide `lake build` green (2331 jobs). Live-tree sorries **1**
+(`Metalogic/WeakCanonical/Transfer.lean:1084`, pre-existing, untouched — the diff adds no
+`sorry`). `#print axioms` on `decideBlocking` reports exactly `propext`, `Classical.choice`,
+`Quot.sound`: the Mathlib baseline, no `sorryAx`, no project axiom.
 
 **Timing**: 1.5 hours
 
