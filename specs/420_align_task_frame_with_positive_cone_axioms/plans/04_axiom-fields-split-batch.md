@@ -1329,7 +1329,7 @@ so over dense `D` every filtered world sits in every cone of every other and *Li
 
 ---
 
-### Phase 14.1: Add the four axiom fields and discharge all 14 sites (atomic batch) [IN PROGRESS]
+### Phase 14.1: Add the four axiom fields and discharge all 14 sites (atomic batch) [COMPLETED]
 
 *(This phase is the "14a" half of the split recorded in `#### SIZING FINDING` below. It is the
 core deliverable and the only part Phase 15 depends on.)*
@@ -1502,41 +1502,41 @@ therefore expected cheap — confirm, do not assume.
 **Tasks**:
 
 *Sub-step 14.1.0 — gates (cheap; re-run, do not trust the recorded PASSes above).*
-- [ ] Re-run the full site-discovery greps and reconcile against the table above **before adding
+- [x] Re-run the full site-discovery greps and reconcile against the table above **before adding
       any field**. Treat any newly-appeared site as in scope (and as a signal that a Phase 10-13
       lemma is missing); treat any disappeared site as resolved.
-- [ ] Confirm every site in the table has a citable lemma from Phases 10-13. If one does not,
-      **do not enter the batch**.
-- [ ] Re-confirm the `Boneyard/` exclusion still holds.
-- [ ] Re-read `FormalSystem/Semantics/TaskFrame.lean` around the three hoisted Props and
+- [x] Confirm every site in the table has a citable lemma from Phases 10-13. If one does not,
+      **do not enter the batch**. *(deviation: altered — all 56 frame-level lemmas verified present, but they are stated over `(X).TaskRel` and so are NOT citable from inside `X`'s own `where` block (forward reference). The five class-helper families of Phase 10 ARE citable, being bare-relation; the four deterministic-shift sites transcribe their landed lemma's proof term over the raw relation instead. No proof was discovered.)*
+- [x] Re-confirm the `Boneyard/` exclusion still holds.
+- [x] Re-read `FormalSystem/Semantics/TaskFrame.lean` around the three hoisted Props and
       `structure TaskFrame` and record their **current** line numbers. Sub-step 14.0's hoist
       shifted every line number this plan recorded before 2026-08-12; the numbers in this phase
       body are hypotheses.
 
 *Sub-step 14.1.1 — per-site binder propagation. GREEN, committed per-substep, BEFORE the batch
 opens.*
-- [ ] For each frame definition in the "Per-site binder propagation targets" table above, add the
+- [x] For each frame definition in the "Per-site binder propagation targets" table above, add the
       binders its cited *Limit* lemma carries, and thread them through that definition's
       consumers until `lake build` is green. **Commit each frame's propagation separately as its
       own green sub-step.** This is ordinary per-substep work and is NOT part of the atomic batch.
-- [ ] If any single frame's propagation turns out NOT to be green on its own — i.e. the binder
+- [x] If any single frame's propagation turns out NOT to be green on its own *(deviation: skipped — all five propagations were green on their own; none had to be folded into the batch)* — original text: — i.e. the binder
       cannot be added without a field already existing — stop treating it as a pre-batch step,
       record why, and fold that one frame into the batch below. Do not fold the others in with it.
-- [ ] Confirm after the last propagation commit: `lake build` green, working tree clean. The batch
+- [x] Confirm after the last propagation commit: `lake build` green, working tree clean. The batch
       may not open until this holds.
 
 *Sub-step 14.1.2 — the atomic batch. Red from the first field to the last discharge; no commit
 until green.*
-- [ ] Add the four fields per the target table, each definitionally one of the three hoisted Props
-      (or *Limit*'s literal shape). **Do NOT add `[Nontrivial D]` to the `TaskFrame` structure
+- [x] Add the four fields per the target table, each definitionally one of the three hoisted Props
+      (or *Limit*'s literal shape). *(deviation: altered — `comp` is stated as the NEW named Prop `TaskFrame.Compositional TaskRel`, declared beside `Serial`/`Interpolates`/`Spherical` above the structure and delta-reducing to the plan's exact `∀ w v x y, 0 ≤ x → 0 ≤ y → (TaskRel w (x+y) v ↔ ∃ u, …)` shape. Naming it is what keeps the field a citation rather than an inline restatement, and it makes the site discharges unify first-order instead of against an applied metavariable.)* **Do NOT add `[Nontrivial D]` to the `TaskFrame` structure
       binder list and do NOT add a `Nonempty WorldState` field — those are Phase 14.2.**
-- [ ] Immediately re-derive `forward_comp` as the `←` projection of `comp` (if `comp` replaces it
+- [x] Immediately re-derive `forward_comp` as the `←` projection of `comp` (if `comp` replaces it
       as a single biconditional field), so the 46 existing references across 12 files stay
       mechanical or untouched.
-- [ ] Discharge all 14 sites by citation, in the order of the table. Every site's binders are
+- [x] Discharge all 14 sites by citation, in the order of the table. Every site's binders are
       already in place from 14.1.1, so no discharge should require a signature change here; if one
       does, that is a missed propagation target — add it and record the miss.
-- [ ] **Correct every docstring that describes these FOUR AXIOMS as absent.** The interpolation
+- [x] **Correct every docstring that describes these FOUR AXIOMS as absent.** The interpolation
       direction, *Seriality*, *Limit*, and *Spherical* are no longer "known gaps" once this phase
       lands; the prose must say so. **Leave the `Nonempty WorldState` and `[Nontrivial D]` entries
       in those same blocks standing** — they are still true until Phase 14.2 lands, and marking
@@ -1554,7 +1554,7 @@ until green.*
       arrangement as provisional, "When the axiom fields are …"). Confirm each line by reading
       before editing; **all these numbers predate sub-step 14.0's hoist and are stale by
       construction**.
-- [ ] Leave `nullity_identity` AS-IS (caveat (b)) unless the joint decision has landed by then; if
+- [x] Leave `nullity_identity` AS-IS (caveat (b)) unless the joint decision has landed by then; if
       it has, apply it inside this same batch and cite the decision record.
 
 **Timing**: 3 hours (1 hour for sub-step 14.1.1's propagation, 2 hours for the batch)
@@ -1772,7 +1772,7 @@ absence before writing a proof that may since have landed elsewhere.
 
 ---
 
-### Phase 15: Substitute the fields for step's explicit hypotheses (acceptance) [NOT STARTED]
+### Phase 15: Substitute the fields for step's explicit hypotheses (acceptance) [IN PROGRESS]
 
 **Goal**: `step` and the chain around it consume `F.serial` / `F.interpolates` / `F.spherical`
 instead of explicit hypothesis binders, discharging the Cross-Task Acceptance Criterion by
