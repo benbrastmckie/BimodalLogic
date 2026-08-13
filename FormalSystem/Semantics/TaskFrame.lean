@@ -616,6 +616,291 @@ list, carried as explicit hypotheses.
 def Interpolates {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ w v x y, 0 ≤ x → 0 ≤ y → R w (x + y) v → ∃ u, R w x u ∧ R u y v
 
+/-!
+## Reusable axiom-class discharge helpers
+
+Every live `TaskFrame` construction in this library whose relation is *not* a deterministic
+shift falls into one of three relation classes, and each class discharges `def:frame`'s four
+axioms once and for all:
+
+- **total** — `R w x u` for all `w`, `x`, `u`, on a `Subsingleton` carrier (`trivialFrame`,
+  `intTimeFrame`, `genericTimeFrame`);
+- **permissive** — `R w d u ↔ (d ≠ 0 ∨ w = u)` (`natFrame`, `intNatFrame`, `genericNatFrame`,
+  and the test frames);
+- **equality** — `R w d u ↔ w = u` (`staticFrame`).
+
+The fourth class, deterministic shift, is already served by `limit_of_shift` above.
+
+Each helper takes the class membership as an `Iff` hypothesis rather than matching a literal
+lambda, so a site discharges it with `fun _ _ _ => Iff.rfl` and no defeq-unfolding risk. Every
+conclusion is *syntactically* `Serial R` / `Interpolates R` / `Spherical R`, or the literal
+transcribed *Limit* shape `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w` that
+`limit_of_succOrder` and `limit_of_shift` conclude and `nullity_of_serial_limit` consumes — never
+a restatement.
+-/
+
+/--
+A nontrivial totally ordered abelian group has a positive element.
+
+The paper mandates a nontrivial duration group (`def:frame`), and this is the one consequence of
+that mandate the *Limit* arguments actually use: without a positive radius the *Limit* hypothesis
+is vacuous and the axiom is unprovable.
+-/
+theorem exists_pos_of_nontrivial [Nontrivial D] : ∃ x : D, 0 < x := by
+  obtain ⟨a, ha⟩ := exists_ne (0 : D)
+  rcases lt_or_gt_of_ne ha with hlt | hgt
+  · exact ⟨-a, neg_pos.mpr hlt⟩
+  · exact ⟨a, hgt⟩
+
+/--
+The *Spherical* core argument for every relation whose nonempty fibers and segments are each
+either the whole carrier or a singleton.
+
+Recorded source (`def:directed`, verbatim): "A nonempty family of sets $\mathcal{S}$ is
+\textit{directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
+$S_1, S_2 \in \mathcal{S}$."
+
+If some member is a singleton `{a}`, directedness forces `a` into every other member: the
+witness `S' ⊆ {a} ∩ t` is nonempty, so its point is both `a` and a point of `t`. If no member is
+a singleton, every member is the whole carrier and any point of any member serves. This is the
+`⊆`-least-member argument `lem:step`'s closing remark uses, isolated so that the permissive and
+equality classes can both cite it.
+-/
+theorem sInter_nonempty_of_directed_of_univ_or_singleton {W : Type} {S : Set (Set W)}
+    (hdir : DirectedFamily S) (hne : ∀ s ∈ S, s.Nonempty)
+    (hcls : ∀ s ∈ S, s = Set.univ ∨ ∃ a, s = {a}) : (⋂₀ S).Nonempty := by
+  classical
+  obtain ⟨s₀, hs₀⟩ := hdir.1
+  by_cases hsing : ∃ s ∈ S, ∃ a : W, s = {a}
+  · obtain ⟨s, hsS, a, rfl⟩ := hsing
+    refine ⟨a, ?_⟩
+    intro t ht
+    obtain ⟨S', hS'S, hsub⟩ := hdir.2 _ hsS _ ht
+    obtain ⟨c, hc⟩ := hne S' hS'S
+    have hc' := hsub hc
+    have hca : c = a := hc'.1
+    rw [← hca]
+    exact hc'.2
+  · obtain ⟨a, ha⟩ := hne s₀ hs₀
+    refine ⟨a, ?_⟩
+    intro t ht
+    rcases hcls t ht with hu | ⟨b, hb⟩
+    · rw [hu]; exact Set.mem_univ a
+    · exact absurd ⟨t, ht, b, hb⟩ hsing
+
+/-! ### Helper A — the total class on a subsingleton carrier -/
+
+omit [IsOrderedAddMonoid D] in
+/--
+*Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for
+some $u, v \in W$") for a total relation: the state itself witnesses both conjuncts.
+-/
+theorem serial_of_total {W : Type} {R : W → D → W → Prop} (htot : ∀ w x u, R w x u) :
+    Serial R := fun w _ _ => ⟨⟨w, htot _ _ _⟩, ⟨w, htot _ _ _⟩⟩
+
+omit [IsOrderedAddMonoid D] in
+/--
+The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for a total relation: interpolate through the source state.
+-/
+theorem interpolates_of_total {W : Type} {R : W → D → W → Prop} (htot : ∀ w x u, R w x u) :
+    Interpolates R := fun w _ _ _ _ _ _ => ⟨w, htot _ _ _, htot _ _ _⟩
+
+omit [IsOrderedAddMonoid D] in
+/--
+*Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") on a
+subsingleton carrier: there is nothing for `u` to be other than `w`. Stated in the literal
+transcribed shape, so it is interchangeable with `limit_of_succOrder` and `limit_of_shift`.
+-/
+theorem limit_of_subsingleton {W : Type} [Subsingleton W] {R : W → D → W → Prop} :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w :=
+  fun _ _ _ => Subsingleton.elim _ _
+
+omit [IsOrderedAddMonoid D] in
+/--
+*Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") on a subsingleton carrier: every
+nonempty subset is the whole carrier, so the intersection of a nonempty family of nonempty sets
+is nonempty. Independent of the relation.
+-/
+theorem spherical_of_subsingleton {W : Type} [Subsingleton W] {R : W → D → W → Prop} :
+    Spherical R := by
+  intro S hdir hmem
+  obtain ⟨s₀, hs₀⟩ := hdir.1
+  obtain ⟨a, ha⟩ := (hmem s₀ hs₀).2
+  refine ⟨a, ?_⟩
+  intro t ht
+  obtain ⟨b, hb⟩ := (hmem t ht).2
+  rw [Subsingleton.elim a b]
+  exact hb
+
+/-! ### Helper B — the permissive class `R w d u ↔ (d ≠ 0 ∨ w = u)` -/
+
+omit [LinearOrder D] [IsOrderedAddMonoid D] in
+/-- Zero-duration fibers of a permissive relation are singletons. -/
+theorem Fib_permissive_zero {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) (w : W) : Fib R w 0 = {w} := by
+  ext u; simp [Fib, hR, eq_comm]
+
+omit [LinearOrder D] [IsOrderedAddMonoid D] in
+/-- Nonzero-duration fibers of a permissive relation are the whole carrier. -/
+theorem Fib_permissive_ne {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) (w : W) {x : D} (hx : x ≠ 0) :
+    Fib R w x = Set.univ := by
+  ext u; simp [Fib, hR, hx]
+
+omit [IsOrderedAddMonoid D] in
+/--
+*Seriality* for a permissive relation: the state itself is both an `x`-successor and an
+`x`-predecessor at every duration, via the `w = u` disjunct.
+-/
+theorem serial_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : Serial R := fun w x _ =>
+  ⟨⟨w, (hR w x w).mpr (Or.inr rfl)⟩, ⟨w, (hR w x w).mpr (Or.inr rfl)⟩⟩
+
+omit [IsOrderedAddMonoid D] in
+/--
+The interpolation half of *Compositionality* for a permissive relation.
+
+Interpolate through `w` when `y ≠ 0` (the second leg is then free) and through `v` when `y = 0`
+(the first leg is then free, because `0 ≤ x`, `0 ≤ y` and `x + y ≠ 0` force `x ≠ 0`). When the
+hypothesis came from the `w = v` disjunct, `w` serves for both legs.
+-/
+theorem interpolates_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : Interpolates R := by
+  intro w v x y _ _ h
+  rcases (hR w (x + y) v).mp h with hxy | hwv
+  · by_cases hy : y = 0
+    · refine ⟨v, (hR w x v).mpr (Or.inl ?_), (hR v y v).mpr (Or.inr rfl)⟩
+      intro hx0
+      exact hxy (by rw [hx0, hy, add_zero])
+    · exact ⟨w, (hR w x w).mpr (Or.inr rfl), (hR w y v).mpr (Or.inl hy)⟩
+  · exact ⟨w, (hR w x w).mpr (Or.inr rfl), (hR w y v).mpr (Or.inr hwv)⟩
+
+/--
+*Limit* for a permissive relation over a discrete duration type.
+
+A permissive relation satisfies iff-Nullity (`R w 0 u ↔ w = u`), so `limit_of_succOrder`
+applies verbatim. The `[SuccOrder D] [NoMaxOrder D]` restriction is not removable: over a dense
+`D` every state lies in every cone of every other state (pick any `y ≠ 0` with `|y| < x`), and
+*Limit* fails outright.
+-/
+theorem limit_of_permissive [SuccOrder D] [NoMaxOrder D] {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w :=
+  limit_of_succOrder (fun w u => by rw [hR]; simp)
+
+omit [IsOrderedAddMonoid D] in
+/--
+Every nonempty fiber or segment of a permissive relation is the whole carrier or a singleton.
+
+Fibers are the carrier at nonzero duration and a singleton at zero. A segment
+`[w, v]_x^y = \Fib(w, x) ∩ \Fib(v, -y)` is therefore an intersection of two such sets; when both
+offsets vanish the two singletons must coincide for the segment to be nonempty.
+-/
+theorem univ_or_singleton_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) {s : Set W}
+    (hcls : IsFiber R s ∨ IsSegment R s) (hne : s.Nonempty) :
+    s = Set.univ ∨ ∃ a, s = {a} := by
+  rcases hcls with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
+  · by_cases hx : x = 0
+    · subst hx; exact Or.inr ⟨w, Fib_permissive_zero hR w⟩
+    · exact Or.inl (Fib_permissive_ne hR w hx)
+  · by_cases hx : x = 0
+    · by_cases hy : y = 0
+      · subst hx; subst hy
+        obtain ⟨c, hc⟩ := hne
+        rw [mem_Seg] at hc
+        have hwc : w = c := by
+          have := (hR w 0 c).mp hc.1; simpa using this
+        have hvc : v = c := by
+          have := (hR v (-0) c).mp hc.2; simpa using this
+        refine Or.inr ⟨c, ?_⟩
+        rw [Seg, neg_zero, hwc, hvc, Fib_permissive_zero hR c, Set.inter_self]
+      · subst hx
+        refine Or.inr ⟨w, ?_⟩
+        rw [Seg, Fib_permissive_zero hR w,
+          Fib_permissive_ne hR v (by simpa using hy), Set.inter_univ]
+    · by_cases hy : y = 0
+      · subst hy
+        refine Or.inr ⟨v, ?_⟩
+        rw [Seg, Fib_permissive_ne hR w hx, neg_zero, Fib_permissive_zero hR v,
+          Set.univ_inter]
+      · exact Or.inl (by
+          rw [Seg, Fib_permissive_ne hR w hx, Fib_permissive_ne hR v (by simpa using hy),
+            Set.inter_self])
+
+omit [IsOrderedAddMonoid D] in
+/--
+*Spherical* for a permissive relation: its nonempty fibers and segments are each the whole
+carrier or a singleton, so the directed-family argument
+`sInter_nonempty_of_directed_of_univ_or_singleton` applies. No restriction on `D` is needed.
+-/
+theorem spherical_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : Spherical R := by
+  intro S hdir hmem
+  exact sInter_nonempty_of_directed_of_univ_or_singleton hdir (fun s hs => (hmem s hs).2)
+    (fun s hs => univ_or_singleton_of_permissive hR (hmem s hs).1 (hmem s hs).2)
+
+/-! ### Helper C — the equality class `R w d u ↔ w = u` -/
+
+omit [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] in
+/-- Every fiber of an equality relation is the singleton of its base point. -/
+theorem Fib_eq_singleton {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ w = u) (w : W) (x : D) : Fib R w x = {w} := by
+  ext u; simp [Fib, hR, eq_comm]
+
+omit [IsOrderedAddMonoid D] in
+/-- *Seriality* for an equality relation: the state is its own successor and predecessor. -/
+theorem serial_of_eq {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ w = u) : Serial R := fun w x _ =>
+  ⟨⟨w, (hR w x w).mpr rfl⟩, ⟨w, (hR w x w).mpr rfl⟩⟩
+
+omit [IsOrderedAddMonoid D] in
+/--
+The interpolation half of *Compositionality* for an equality relation: interpolate through the
+source state, which is the target state.
+-/
+theorem interpolates_of_eq {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ w = u) : Interpolates R := by
+  intro w v x y _ _ h
+  exact ⟨w, (hR w x w).mpr rfl, (hR w y v).mpr ((hR w (x + y) v).mp h)⟩
+
+/--
+*Limit* for an equality relation: nothing but `w` is reachable from `w` at any duration, so a
+single positive radius already forces `u = w`. `[Nontrivial D]` is what supplies that radius, and
+is not removable — over a trivial duration group the *Limit* hypothesis is vacuous.
+-/
+theorem limit_of_eq [Nontrivial D] {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ w = u) :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w := by
+  intro w u h
+  obtain ⟨x₀, hx₀⟩ := exists_pos_of_nontrivial (D := D)
+  obtain ⟨y, _, hR'⟩ := h x₀ hx₀
+  exact ((hR w y u).mp hR').symm
+
+omit [IsOrderedAddMonoid D] in
+/--
+*Spherical* for an equality relation: every fiber is a singleton and every segment is an
+intersection of two singletons, so every nonempty member of a directed family is a singleton and
+`sInter_nonempty_of_directed_of_univ_or_singleton` applies.
+-/
+theorem spherical_of_eq {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ w = u) : Spherical R := by
+  intro S hdir hmem
+  refine sInter_nonempty_of_directed_of_univ_or_singleton hdir (fun s hs => (hmem s hs).2)
+    (fun s hs => ?_)
+  obtain ⟨hcl, hne⟩ := hmem s hs
+  rcases hcl with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
+  · exact Or.inr ⟨w, Fib_eq_singleton hR w x⟩
+  · obtain ⟨c, hc⟩ := hne
+    rw [mem_Seg] at hc
+    have hwc : w = c := (hR w x c).mp hc.1
+    have hvc : v = c := (hR v (-y) c).mp hc.2
+    refine Or.inr ⟨c, ?_⟩
+    rw [Seg, hwc, hvc, Fib_eq_singleton hR c x, Fib_eq_singleton hR c (-y), Set.inter_self]
+
 /--
 Simple unit-based task frame for testing.
 
