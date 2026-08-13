@@ -151,3 +151,11 @@ dataset_validator
 kind: "axiom"
 kind: "inference_rule"
 kind: "derived_operator"
+
+# --- Task-topology paper anchors, cited only in typst/FormalFoundations.typ's
+# system section. def:task-topology defines the cone-generated topology on
+# world states and app:topology-t1 states its T1 separation; neither has a
+# Lean counterpart, since the topology is paper-side only. (app:topology-r0
+# already resolves via an unrelated Lean doc-comment and needs no entry.) ---
+def:task-topology
+app:topology-t1

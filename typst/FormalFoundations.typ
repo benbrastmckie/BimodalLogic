@@ -26,7 +26,7 @@
 
 // Local notation and template (includes thmbox theorem environments)
 #import "notation/bimodal-notation.typ": *
-#import "template.typ": thmbox-show, URLblue, definition, theorem, lemma, axiom, remark, proof, corollary, proposition
+#import "template.typ": thmbox-show, URLblue, definition, theorem, lemma, axiom, remark, proof, corollary, proposition, leansrc, items
 
 // ============================================================================
 // Document Configuration -- matches BimodalReference.typ's type settings
@@ -71,6 +71,23 @@
 #let HRule = line(length: 100%, stroke: 0.5pt)
 
 // ============================================================================
+// Local notation for this report
+//
+// The paper writes Since and Until infix, as \lhd and \rhd, and guard-first:
+// in "phi S psi" the guard is phi and the event is psi. These are the paper's
+// own glyphs and argument order. (The Lean tree's snce/untl constructors are
+// event-first; that internal convention is not used here.)
+// ============================================================================
+
+#let BL = $op("BL")$
+#let BLplus = $op("BL")^+$
+#let since = $lt.tri$
+#let until = $gt.tri$
+#let Nxt = $op("Next")$
+#let Prev = $op("Prev")$
+
+
+// ============================================================================
 // Title Block
 // ============================================================================
 
@@ -108,54 +125,248 @@ bimodal logic assuming neither density nor discreteness nor Dedekind-completenes
 
 = The System <sec:system>
 
-== Languages
+The order of exposition is the paper's own: the frame structures and the truth definition first,
+the proof systems that answer to them last.
 
-// FIX: the definitions and notation depart from /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex which I would like to align with. Also, I'd like to focus on the extended language using the same symbol \BL^+ used in possible_worlds.tex, leaving off mention of \BL accept perhaps for a footnote that cites the paper with a link to https://benbrastmckie.com/publications/possible_worlds.pdf, presuming no familiarity with the paper so that everything here is ground up. 
-The base language is $#taskframe = chevron.l "SL", bot, arrow.r, square.stroked, allpast, allfuture chevron.r$ where $"SL" := {p_i : i in NN}$#footnote[`sub:Logic` (untracked prose, cited by key only -- no environment block exists at this site to quote). @brastmckie2026possibleworlds] -- one-place *Past* ($#allpast$) and *Future* ($#allfuture$) as primitives, alongside classical connectives and the S5 necessity operator $square.stroked$.
-The extended language replaces $#allpast$/$#allfuture$ with binary *Since* / *Until*:
+== The Language
 
-$op("BL")^+ = chevron.l "SL", bot, arrow.r, square.stroked, S, U chevron.r$, with $S(phi.alt, psi)$ ("$psi$ since $phi.alt$") and $U(phi.alt, psi)$ ("$psi$ until $phi.alt$") in the Burgess *event-first* convention: $phi.alt$ is the event, true at some witness time, $psi$ the guard, true throughout the intervening interval.#footnote[`def:BLplus-language`. @brastmckie2026possibleworlds]
+#definition("Language")[
+  $#BLplus := chevron.l "SL", bot, arrow.r, square.stroked, #since, #until chevron.r$, where
+  $"SL" := {p_i : i in NN}$ is a countable set of sentence letters and the remaining symbols denote
+  falsity, material implication, metaphysical necessity, *since*, and *until*. Well-formed
+  sentences are given by
+  $ phi.alt, psi ::= p_i | bot | phi.alt arrow.r psi | square.stroked phi.alt | phi.alt #since psi | phi.alt #until psi. $
+]#footnote[`def:BLplus-language`. @brastmckie2026possibleworlds The paper's base language $#BL$ replaces $#since$ and $#until$ with the one-place operators $#allpast$ and $#allfuture$ taken as primitive; $#BL$ embeds into $#BLplus$ under the definitions of @def-operators, and every $#BL$-theorem is recovered. Nothing below depends on the base language, and it is not used again. The paper is @brastmckie2026possibleworlds, available at #link("https://benbrastmckie.com/publications/possible_worlds.pdf")[benbrastmckie.com].]
 
-$#allpast, #allfuture, #somepast, #somefuture, #always, #sometimes$ and the propositional connectives are then *defined* operators of $op("BL")^+$#footnote[`def:BLplus-defined`. @brastmckie2026possibleworlds] (e.g. $#allfuture phi.alt := not U(not phi.alt, top)$), and $op("BL")$ embeds into $op("BL")^+$ unconditionally: every $op("BL")$-theorem is recovered under the Past/Future reduction.#footnote[`thm:BLplus-PastFuture` (untracked, cited by key). @brastmckie2026possibleworlds] Over discrete frames, $op("BL")^+$ additionally defines *Next* / *Previous* operators witnessing the immediate successor/predecessor.#footnote[`thm:BLplus-NextPrevious` (untracked, cited by key). @brastmckie2026possibleworlds]
+The two primitives are written infix and are *guard-first*: in $phi.alt #since psi$ the guard is
+$phi.alt$, holding throughout an interval, and the event is $psi$, witnessed at its far endpoint.
 
-== Task-Frame Semantics
+#definition("Defined Operators")[
+  #items[
+    + $#somepast phi.alt := top #since phi.alt$ and $#somefuture phi.alt := top #until phi.alt$.
+    + $#allpast phi.alt := not #somepast not phi.alt$ and $#allfuture phi.alt := not #somefuture not phi.alt$.
+    + $#always phi.alt := #allpast phi.alt and phi.alt and #allfuture phi.alt$ and
+      $#sometimes phi.alt := #somepast phi.alt or phi.alt or #somefuture phi.alt$.
+    + $#Prev phi.alt := bot #since phi.alt$ and $#Nxt phi.alt := bot #until phi.alt$.
+  ]
+] <def-operators>#footnote[`def:BLplus-defined`. @brastmckie2026possibleworlds]
 
-// FIX: the converse convention deserves its own definition, as do the other definitions used below, where these may occur indented inside a single definition however achieves the best visual appearance
-A *temporal order* is a nontrivial totally ordered abelian group $#Dur = (D, +, 0, lt.eq)$ with *positive cone* $D^+ := {x in D : x gt.eq 0}$.#footnote[`def:temporal-order`. @brastmckie2026possibleworlds] A *task relation* on world states $#worldstate$ over $#Dur$ is $w arrow.r.double.long_(x) u$ for $x in D^+$, extended by the *converse convention* $w arrow.r.double.long_(-x) u := u arrow.r.double.long_(x) w$; it determines the fiber $"Fib"(w,x) := {u : w arrow.r.double.long_(x) u}$, cone $(w)_x := union.big_(|y|<x) "Fib"(w,y)$, and segment $[w,v]_x^y := "Fib"(w,x) inter "Fib"(v,-y)$.#footnote[`def:task-relation`. @brastmckie2026possibleworlds]
+Each defined operator has the clause its name advertises: $#allpast$ and $#allfuture$ are the
+universal past and future tenses, and over a discrete order $#Nxt phi.alt$ holds exactly when
+$phi.alt$ holds at the immediate successor, while $#Nxt phi.alt$ is equivalent to $bot$ at any time
+lacking one.#footnote[`thm:BLplus-PastFuture`, `thm:BLplus-NextPrevious`. @brastmckie2026possibleworlds The guard $bot$ in $#Nxt phi.alt := bot #until phi.alt$ forces the open interval to the witness to be empty, which over a discrete order means the witness is the immediate successor.]
+The sentence $#Nxt top$ therefore *says* that the present moment has an immediate successor. That
+one sentence is what separates $#BLplus$ from $#BL$ everywhere below: it is the
+discreteness indicator on which the completeness construction of @sec:construction case-splits, and
+its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
 
-// FIX: this definition also feels scrunched up and should be expanded into indented elements as appears best, and similarly throughout what follows as appropriate
+== Frames
+
+#definition("Temporal Order")[
+  A *temporal order* is a nontrivial totally ordered abelian group $#Dur = (D, +, 0, lt.eq)$ with
+  *positive cone* $D^+ := {x in D : x gt.eq 0}$.
+]#footnote[`def:temporal-order`. @brastmckie2026possibleworlds]
+
+#definition("Task Relation")[
+  A *task relation* on a nonempty set $#worldstate$ of *world states* over a temporal order $#Dur$
+  is a parameterized relation $w arrow.r.double.long_(x) u$ for $w, u in #worldstate$ and
+  $x in D^+$, extended to negative durations by the *converse convention*
+  $ w arrow.r.double.long_(-x) u := u arrow.r.double.long_(x) w quad (x gt.eq 0), $
+  and determining, for $w, v in #worldstate$ and $x, y in D$:
+  #items[
+    + *Fiber*: $"Fib"(w, x) := {u in #worldstate : w arrow.r.double.long_(x) u}$.
+    + *Cone*: $(w)_x := union.big_(|y| < x) "Fib"(w, y)$, for $x > 0$.
+    + *Segment*: $[w, v]_x^y := "Fib"(w, x) inter "Fib"(v, -y)$, for $x, y gt.eq 0$.
+  ]
+]#footnote[`def:task-relation`. @brastmckie2026possibleworlds The relation is primitive only on $D^+$; negative durations are defined, not given.]
+
+#definition("Directed Family")[
+  A nonempty family of sets $cal(S)$ is *directed* just in case $S subset.eq S_1 inter S_2$ for
+  some $S in cal(S)$ whenever $S_1, S_2 in cal(S)$.
+]#footnote[`def:directed`. @brastmckie2026possibleworlds]
+
 #definition("Frame")[
-  A *frame* $#taskframe = (#worldstate, #Dur, arrow.r.double.long_(dot.c))$ satisfies, for $x, y gt.eq 0$: *Compositionality* (biconditional) $w arrow.r.double.long_(x+y) v$ iff $w arrow.r.double.long_(x) u$ and $u arrow.r.double.long_(y) v$ for some $u$; *Seriality*: some $u,v$ have $w arrow.r.double.long_(x) u$, $v arrow.r.double.long_(x) w$; *Limit*: $inter.big_(x>0) (w)_x = {w}$; *Spherical*: $inter.big cal(S) eq.not emptyset$ for any directed family $cal(S)$#footnote[`def:directed`. @brastmckie2026possibleworlds] of nonempty fibers and segments.
-]#footnote[`def:frame` (all four sub-anchors), a biconditional load-bearing in both directions. @brastmckie2026possibleworlds]
+  A *frame* is any $#taskframe = (#worldstate, #Dur, arrow.r.double.long)$ where $#worldstate$ is a
+  nonempty set of world states, $#Dur$ is a temporal order, and $arrow.r.double.long$ is a task
+  relation satisfying, for $x, y gt.eq 0$:
+  #items[
+    + *Compositionality*: $w arrow.r.double.long_(x+y) v$ if and only if
+      $w arrow.r.double.long_(x) u$ and $u arrow.r.double.long_(y) v$ for some $u in #worldstate$.
+    + *Seriality*: $w arrow.r.double.long_(x) u$ and $v arrow.r.double.long_(x) w$ for some
+      $u, v in #worldstate$.
+    + *Limit*: $inter.big_(x > 0) (w)_x = {w}$.
+    + *Spherical*: $inter.big cal(S) eq.not emptyset$ for any directed family $cal(S)$ of nonempty
+      fibers and segments.
+  ]
+]#footnote[`def:frame`. @brastmckie2026possibleworlds Compositionality is a biconditional, load-bearing in both directions.]
 
-Nullity ($w arrow.r.double.long_(0) w$ for every $w$, every frame) is *derived* from Seriality (at $x=0$) and Limit, not a fifth axiom.#footnote[`lem:nullity`, derived, choice-free. @brastmckie2026possibleworlds]
+#lemma("Nullity")[$w arrow.r.double.long_(0) w$ for every world state $w$ of every frame.]#footnote[`lem:nullity`. @brastmckie2026possibleworlds]
+#proof[
+  *Seriality* at $x = 0$ gives $u$ with $w arrow.r.double.long_(0) u$. Since $|0| < x$ for every
+  $x > 0$, $u in (w)_x$ for every such $x$, so $u in inter.big_(x>0)(w)_x = {w}$ by *Limit*, whence
+  $u = w$.
+]
 
-A *partial history* over $#taskframe$ is $tau : X arrow.r #worldstate$ on nonempty $X subset.eq D$ with $tau(x) arrow.r.double.long_(y-x) tau(y)$; a *world history* has convex domain; a world history is *total* -- equivalently a *possible world* -- iff $X = D$, and $H_(#taskframe)$ denotes all total world histories.#footnote[`def:world-history`. @brastmckie2026possibleworlds] Every partial history extends to a total world history (`thm:extension`, Zorn's lemma), hence to a world state occurring at any prescribed time (`cor:occurrence`) -- both ZFC results, unlike Nullity's choice-free derivation; a *finite*-$W$ frame satisfies *Spherical* choice-free instead (`cor:spherical-finite`).#footnote[@brastmckie2026possibleworlds Both tracked.]
+Nullity is derived, not postulated, and its derivation uses no choice. The distinction matters
+below: two of the three results in @sec:histories are theorems of ZFC.
 
-// FIX: not only is $|p| subset.eq H_(#taskframe) times D$ wrong, it offends the most fundamental ideas that /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex argues for at length, requiring careful analysis throughout this document to make sure there is no other discrepancies, fixing everything to be faithful to /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex
-A model $#model = (#worldstate, #Dur, arrow.r.double.long_(dot.c), |dot.c|)$ interprets atoms $|p| subset.eq H_(#taskframe) times D$; $#model, tau, x #satisfies square.stroked phi.alt$ iff $#model, sigma, x #satisfies phi.alt$ for every $sigma in H_(#taskframe)$ -- $square.stroked$ quantifies over *all* total world histories.#footnote[`def:BL-model`, `def:BL-semantics` (box clause). @brastmckie2026possibleworlds] Frame validity ($#taskframe #satisfies phi.alt$), logical consequence ($Gamma #satisfies phi.alt$), and global validity ($#satisfies phi.alt$) close the semantic layer.#footnote[`def:frame-validity`, `def:logical-consequence`. @brastmckie2026possibleworlds]
+== Histories and the Task Topology <sec:histories>
+
+#definition("History")[
+  Let $#taskframe = (#worldstate, #Dur, arrow.r.double.long)$ be a frame.
+  #items[
+    + A *partial history* is a function $tau : X arrow.r #worldstate$ on a nonempty $X subset.eq D$
+      with $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all $x, y in X$.
+    + A *world history* is a partial history whose domain is *convex*: $y in X$ whenever
+      $x, z in X$ and $x < y < z$.
+    + A world history is *total* --- equivalently, a *possible world* --- just in case $X = D$.
+    + $sigma$ *extends* $tau$ just in case $"dom"(tau) subset.eq "dom"(sigma)$ and
+      $tau(x) = sigma(x)$ throughout $"dom"(tau)$.
+    + $H_(#taskframe)$ is the set of all total world histories over $#taskframe$.
+  ]
+]#footnote[`def:world-history`. @brastmckie2026possibleworlds]
+
+#theorem("Extension")[
+  Every partial history over a frame is extended by some total world history.
+]#footnote[`thm:extension`. @brastmckie2026possibleworlds]
+#proof[
+  The partial histories extending $tau$ are ordered by extension, and every chain is bounded above
+  by its union, which is again a partial history since any two of its times already lie in a common
+  member of the chain. Zorn's lemma yields a maximal $sigma : T arrow.r #worldstate$ extending
+  $tau$. Were $T eq.not D$, the Step Lemma would extend $sigma$ to $T union {z}$ for
+  $z in D without T$, against maximality; so $T = D$.
+]
+
+#corollary("Occurrence")[
+  For every frame $#taskframe$, world state $w$, and time $x$, some $tau in H_(#taskframe)$ has
+  $tau(x) = w$. In particular $H_(#taskframe) eq.not emptyset$.
+]#footnote[`cor:occurrence`. @brastmckie2026possibleworlds]
+
+The Step Lemma is the sole application site of *Spherical* in the paper, and Extension is the sole
+consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
+point.#footnote[`lem:step`. @brastmckie2026possibleworlds The Step Lemma's own proof notes that *Spherical* is not needed when the directed family has a $subset.eq$-least member. On a finite carrier *Spherical* holds outright and choice-free (`cor:spherical-finite`), so the Zorn appeal is the general case only.] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
+localization is what makes *Spherical* the identified obstruction of @sec:representation.
+
+The cones are a basis for a topology on world states, and that topology is separated.
+
+#definition("Task Topology")[
+  For a frame $#taskframe$, let $B_(#taskframe) := {(w)_x : w in #worldstate, x in D, x > 0}$ and
+  let $cal(O)_(#taskframe)$ be the closure of $B_(#taskframe)$ under arbitrary union and finite
+  intersection; write $cal(T)_(#taskframe) := (#worldstate, cal(O)_(#taskframe))$. For
+  $S subset.eq #worldstate$, $overline(S) := {w : O inter S eq.not emptyset$ for every open $O in.rev w}$.
+  The topology is *T1* just in case $overline({w}) = {w}$ for all $w$, and *R0* just in case
+  $w in overline({u})$ iff $u in overline({w})$ for all $w, u$.
+]#footnote[`def:task-topology`. @brastmckie2026possibleworlds The topology is carried by the world states, not by $H_(#taskframe)$ or by $D$.]
+
+#theorem("Separation")[$cal(T)_(#taskframe)$ is T1, and hence R0, for every frame $#taskframe$.]#footnote[`app:topology-t1`, `app:topology-r0`. @brastmckie2026possibleworlds]
+#proof[
+  ${u} subset.eq overline({u})$ is immediate. Conversely let $w in overline({u})$. By Nullity
+  every basic open $(w)_x$ contains $w$, so $u in (w)_x$ for every $x > 0$; hence for each such $x$
+  there is $y$ with $|y| < x$ and $w arrow.r.double.long_(y) u$, so $u arrow.r.double.long_(-y) w$
+  by the converse convention and $w in (u)_x$. *Limit* then gives
+  $w in inter.big_(x>0)(u)_x = {u}$. R0 follows at once.
+]
+
+#remark[
+  Extension makes every partial history a restriction of a possible world, and Separation shows the
+  cone topology distinguishes world states. Whether these results license *defining* a partial
+  history as a restriction of a possible world, instead of defining it independently and proving
+  Extension, is a question about the order of the theory and not about its content: the two
+  definitions agree extensionally, by Extension. They differ in what must be assumed at the outset.
+  The restriction definition makes $H_(#taskframe)$ prior and hides the appeal to *Spherical*
+  inside the existence of the objects it quantifies over; the order taken here keeps *Spherical*
+  visible at the single site where it is used.
+]
+
+== Models and Truth
+
+#definition("Model")[
+  A *model* is a structure $#model = (#worldstate, #Dur, arrow.r.double.long, |dot.c|)$ where
+  $(#worldstate, #Dur, arrow.r.double.long)$ is a frame and $|p_i| subset.eq #worldstate$ for every
+  sentence letter $p_i$.
+]#footnote[`def:BL-model`. @brastmckie2026possibleworlds An interpretation assigns each sentence letter a set of *world states*. Truth at a time is mediated entirely by the world state the history occupies there; this is the content of the atomic clause below, and it is what makes a possible world a trajectory through a fixed state space and not an independent index.]
+
+#definition("Truth")[
+  Truth in a model $#model$ at a possible world $tau in H_(#taskframe)$ and a time $x in D$ is
+  defined by:
+  #items[
+    + $#model, tau, x #satisfies p_i$ iff $tau(x) in |p_i|$.
+    + $#model, tau, x #notsatisfies bot$.
+    + $#model, tau, x #satisfies phi.alt arrow.r psi$ iff $#model, tau, x #notsatisfies phi.alt$ or
+      $#model, tau, x #satisfies psi$.
+    + $#model, tau, x #satisfies square.stroked phi.alt$ iff $#model, sigma, x #satisfies phi.alt$
+      for every $sigma in H_(#taskframe)$.
+    + $#model, tau, x #satisfies phi.alt #since psi$ iff $#model, tau, z #satisfies psi$ for some
+      $z < x$ with $#model, tau, y #satisfies phi.alt$ for all $y$ with $z < y < x$.
+    + $#model, tau, x #satisfies phi.alt #until psi$ iff $#model, tau, z #satisfies psi$ for some
+      $z > x$ with $#model, tau, y #satisfies phi.alt$ for all $y$ with $x < y < z$.
+  ]
+]#footnote[`def:BL-semantics`, `def:BLplus-semantics`. @brastmckie2026possibleworlds The two share their models; the extended language adds only the last two clauses.]
+
+$square.stroked$ quantifies over the possible worlds of the frame at the *same* time, and over all
+of them. It is not a relational modality with an accessibility relation to be tuned: the frame
+fixes $H_(#taskframe)$, and $square.stroked$ ranges over that set entire. Its logic is
+correspondingly S5, and @sec:objective-modality takes up what else, beyond being S5, is needed to
+single it out.
+
+#definition("Frame Properties")[
+  A frame is *Discrete* if every $x in D$ having some $y > x$ has a least such; *Dense* if
+  $x < z < y$ for some $z$ whenever $x < y$; *Complete* if every nonempty subset of $D$ bounded
+  above has a least upper bound; and *Deterministic* if $w arrow.r.double.long_(x) u$ and
+  $w arrow.r.double.long_(x) v$ imply $u = v$.
+]#footnote[`def:frame-properties`. @brastmckie2026possibleworlds The first three constrain $#Dur$; the fourth constrains $arrow.r.double.long$.]
+
+#definition("Validity and Consequence")[
+  $#taskframe #satisfies phi.alt$ just in case $#model, tau, x #satisfies phi.alt$ for every model
+  $#model$ on $#taskframe$, every $tau in H_(#taskframe)$, and every $x in D$. And
+  $Gamma #satisfies phi.alt$ just in case, for every model, possible world, and time at which every
+  member of $Gamma$ is true, $phi.alt$ is true; $phi.alt$ is *valid* when $emptyset #satisfies phi.alt$.
+]#footnote[`def:frame-validity`, `def:logical-consequence`. @brastmckie2026possibleworlds]
+
+By Occurrence $H_(#taskframe)$ is never empty, so frame validity is never vacuous and
+$#taskframe #notsatisfies bot$ for every frame. Fixing $H_(#taskframe)$ with the frame does not
+make $#taskframe$ a *general frame* in the sense of Blackburn, de Rijke, and Venema
+@blackburnderijkevenema2001: a general frame restricts the admissible valuations to a designated
+subalgebra, whereas here every $|p_i| subset.eq #worldstate$ is admissible. What the frame
+constrains is the points of evaluation, not the propositions.
 
 == Proof Systems
 
-#definition("S5")[The smallest CPL-extension closed under MK, MT, M5, MP, MN.]#footnote[`def:S5`. @brastmckie2026possibleworlds]
+#definition("S5")[
+  The smallest extension of classical propositional logic closed under MK
+  ($square.stroked(phi.alt arrow.r psi) arrow.r (square.stroked phi.alt arrow.r square.stroked psi)$),
+  MT ($square.stroked phi.alt arrow.r phi.alt$), M5
+  ($diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$), modus ponens, and
+  necessitation.
+]#footnote[`def:S5`. @brastmckie2026possibleworlds]
 
-#definition("BX")[The *Base Burgess--Xu Tense Logic*: TN, TD (temporal necessitation, past/future duality); the seriality/linearity/connectedness triple TB, TL, CN; the primary Since/Until axioms TA, UE, UT, UI, UC, UF, UG, SU; and uniformity axioms NP, NF, NA, NB, vacuous unless discrete.]#footnote[`def:BX`. @brastmckie2026possibleworlds]
+#definition("BX")[
+  The *Base Burgess--Xu Tense Logic*: the rules TN (temporal necessitation) and TD (the rule
+  swapping $#since$ and $#until$ throughout a theorem); the seriality, linearity, and connectedness
+  axioms TB, TL, CN; the primary Since/Until axioms TA, UE, UT, UI, UC, UF, UG, SU; and the
+  uniformity axioms NP, NF, NA, NB, which are vacuous unless the order is discrete.
+]#footnote[`def:BX`. @brastmckie2026possibleworlds Seventeen named keys. The past direction of each axiom is derived from the future direction by TD, not postulated.]
 
-$op("TM")^+$, the base logic for $op("BL")^+$, is $"S5" + "BX" + "MF"$ ($square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$), with discrete/dense/complete extensions adding the axioms distinguishing $op("BX")_f$/$op("BX")_d$/$op("BX")_c$:
+$op("TM")^+$, the base logic for $#BLplus$, is $"S5" + "BX" + "MF"$, where MF is
+$square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$, the sole bimodal-interaction
+axiom. Its three frame-class extensions add the axioms below.
 
 #figure(
   table(
     columns: 2, stroke: none, align: (left,left),
     table.hline(), table.header([*System*],[*Additional axioms*]), table.hline(),
-    [$op("BX")_f$ / $op("TM")^+_f$], [UZ, Z1 (backward induction; successor-Archimedean, i.e. $ZZ$-time, by Hölder)],
-    [$op("BX")_d$ / $op("TM")^+_d$], [DN ($#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt$), NN ($not "Next"top$)],
-    [$op("BX")_c$ / $op("TM")^+_c$], [Prior-U, Sep (the *Reynolds triple*, with Prior-S the TD-mirror of Prior-U); CO is a *derived theorem* from Prior-U alone, not a further axiom],
+    [$op("TM")^+_f$], [UZ, Z1 (backward induction; successor-Archimedean, hence $ZZ$-time by Hölder's theorem)],
+    [$op("TM")^+_d$], [DN ($#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt$), NN ($not #Nxt top$)],
+    [$op("TM")^+_c$], [the *Reynolds triple* Prior-U, Prior-S, Sep; CO is a derived theorem, not a further axiom],
     table.hline(),
   ),
   caption: [The three frame-class extensions of $op("TM")^+$.],
-)#footnote[`def:TMplus-f`, `def:TMplus-d`, `def:TMplus-c`, `def:TMplus`. @brastmckie2026possibleworlds Whether TMP-CO alone axiomatizes the same $op("BL")^+$-logic as the full Reynolds triple is *open* (conjectured to fail, via an unformalized pen-and-paper sketch; not established).]
+)#footnote[`def:TMplus`, `def:TMplus-f`, `def:TMplus-d`, `def:TMplus-c`. @brastmckie2026possibleworlds Whether CO alone axiomatizes the same $#BLplus$-logic as the full Reynolds triple is open.]
 
-The *BL-level* system this report's pain points concern is $op("TM")$ itself, the smallest CPL-extension closed under MP, MN, MK, MT, M5 (S5, as above), MF (the sole bimodal-interaction axiom), and TD, TK, T4, TB, TA, TL (temporal necessitation, future-K, transitivity, seriality, past/future exchange, linearity) -- axiomatized directly over $#allpast$/$#allfuture$, with no Since/Until primitives.#footnote[Untracked prose (`sub:Logic`), cited by key only -- these twelve axiom/rule keys are not individually quoted verbatim here. @brastmckie2026possibleworlds] Its discrete/dense/complete extensions $op("TM")_f, op("TM")_d, op("TM")_c, op("TM")_(d c)$ add DF, DN, CO respectively (@sec:contingency). $op("TM")$ is the paper's *economical* presentation; $op("BX")$ is the Lean development's more fine-grained, frame-class-parameterized proof system (@sec:construction) -- the two are related but not silently identified (@sec:construction states the open cross-reference precisely).
+By Hölder's theorem a nontrivial discrete Archimedean totally ordered abelian group is isomorphic
+to $ZZ$, and a nontrivial Dedekind-complete one is Archimedean and so isomorphic to $ZZ$ or $RR$.
+The complete class is therefore exactly ${ZZ, RR}$ up to isomorphism, and the dense-and-complete
+class exactly $RR$.
 
 = What Is Proved: Completeness and Decidability <sec:key-theorems>
 
