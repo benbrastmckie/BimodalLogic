@@ -330,6 +330,8 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
   let FamIdx := {N : Set Formula // SetMaximalConsistent (fc := fc) N ∧
     Formula.box Chronicle.nextTop.neg ∈ N ∧ (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N)}
   let f₀ : FamIdx := ⟨A, h_mcs, h_box_dense, fun _ => Iff.rfl⟩
+  -- The root family inhabits the index, discharging the flow frame's carrier nonemptiness.
+  haveI : Nonempty FamIdx := ⟨f₀⟩
   -- Step 2: the chronicle bridge at each family, over `ℚ`.
   let Mst : FamIdx → OrderedMonadicStructure sig := fun f =>
     chronicleMonadicStructure fc f.val f.property.1 f.property.2.1 φ

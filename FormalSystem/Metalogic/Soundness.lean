@@ -1967,8 +1967,7 @@ derivation of `⊥` from `[]` into `trivialFrame.ValidOn ⊥`, which
 -/
 theorem not_derivable_nil_bot : ¬ Derivable FrameClass.Base ([] : Context) Formula.bot := by
   rintro ⟨d⟩
-  refine TaskFrame.not_validOn_bot (D := Int) TaskFrame.trivialFrame
-    (show (TaskFrame.trivialFrame (D := Int)).WorldState from ()) ?_
+  refine TaskFrame.not_validOn_bot (D := Int) TaskFrame.trivialFrame ?_
   intro M τ x
   exact soundness [] Formula.bot d Int TaskFrame.trivialFrame M τ.val τ.property x
     (by simp)

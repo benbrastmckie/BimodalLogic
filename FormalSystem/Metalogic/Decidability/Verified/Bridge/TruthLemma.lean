@@ -342,7 +342,8 @@ for an arbitrary carrier and then at each of the three dense carriers the Phase 
 
 section Countermodel
 
-variable {W ι : Type} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {W ι : Type} [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder D]
+  [IsOrderedAddMonoid D]
 variable [Fintype ι] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]
 -- `regionFrame` carries `[Nontrivial D]` (its *Limit* lemma needs it). It is declared here in its
 -- own right rather than being recovered from `[NoMaxOrder D]`, so that the `omit` clauses below

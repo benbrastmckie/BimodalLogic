@@ -259,6 +259,7 @@ elaborates at a dense duration type, and nothing outside `FMP/` refers to any of
 noncomputable def RefinedFilteredTaskFrame [SuccOrder D] [NoMaxOrder D]
     (phi : Formula) : TaskFrame D where
   WorldState := FilteredWorld phi
+  nonempty := filteredWorld_nonempty phi
   TaskRel := refinedFilteredTaskRel D phi
   nullity_identity := by
     intro w u

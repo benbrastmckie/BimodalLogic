@@ -148,8 +148,9 @@ deterministic, stepping by `d` from `(f, x)` to `(f, x + d)`.
 `bundleFlowFrame` and everything stated over it; every consumer elaborates at `ℤ`, `ℚ`, or `ℝ`,
 each of which supplies the instance. -/
 noncomputable def multiFamTaskFrameGen (D : Type) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] (FamIdx : Type) : TaskFrame D where
+    [IsOrderedAddMonoid D] [Nontrivial D] (FamIdx : Type) [Nonempty FamIdx] : TaskFrame D where
   WorldState := FamIdx × D
+  nonempty := inferInstance
   TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
   nullity_identity := fun p q => by
     constructor
@@ -186,7 +187,7 @@ noncomputable def multiFamTaskFrameGen (D : Type) [AddCommGroup D] [LinearOrder 
 
 /-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`.
 Generic form of `multiFamHistory` (`ReynoldsBridge.lean`). -/
-noncomputable def multiFamHistoryGen [Nontrivial D] {FamIdx : Type} (f : FamIdx) (w₀ : D) :
+noncomputable def multiFamHistoryGen [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : D) :
     WorldHistory (multiFamTaskFrameGen D FamIdx) where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
@@ -199,7 +200,7 @@ noncomputable def multiFamHistoryGen [Nontrivial D] {FamIdx : Type} (f : FamIdx)
 
 /-- Time-shifting `multiFamHistoryGen f w₀` by `Δ` gives `multiFamHistoryGen f (w₀ + Δ)`.
 Generic form of `multiFamHistory_shift_eq` (`ReynoldsBridge.lean`). -/
-theorem multiFamHistoryGen_shift_eq [Nontrivial D] {FamIdx : Type} (f : FamIdx) (w₀ Δ : D) :
+theorem multiFamHistoryGen_shift_eq [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ Δ : D) :
     WorldHistory.timeShift
         (multiFamHistoryGen f w₀ : WorldHistory (multiFamTaskFrameGen D FamIdx)) Δ =
       multiFamHistoryGen f (w₀ + Δ) := by
@@ -213,7 +214,7 @@ theorem multiFamHistoryGen_shift_eq [Nontrivial D] {FamIdx : Type} (f : FamIdx) 
 /-- Every generic multi-family history is total (`def:world-history`'s cut `X = D`, spelled
 `∀ t, σ.domain t`). Definitional: `multiFamHistoryGen` carries `domain := fun _ => True`. This
 is what the totality-targeted box clause (`def:BL-semantics`) consumes. -/
-theorem multiFamHistoryGen_total [Nontrivial D] {FamIdx : Type} (f : FamIdx) (w₀ : D) :
+theorem multiFamHistoryGen_total [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : D) :
     (multiFamHistoryGen f w₀ : WorldHistory (multiFamTaskFrameGen D FamIdx)).IsTotal :=
   fun _ => trivial
 
@@ -251,7 +252,7 @@ frame, in the strong form holding for ALL durations `x, y`. The `←` direction 
 composition; the `→` (interpolation) direction goes through the unique intermediate
 `(w.1, w.2 + x)`. The paper's positive-cone form is the projection
 `multiFamGen_comp_iff_of_nonneg`. -/
-theorem multiFamGen_comp_iff [Nontrivial D] {FamIdx : Type} (w v : FamIdx × D) (x y : D) :
+theorem multiFamGen_comp_iff [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] (w v : FamIdx × D) (x y : D) :
     (multiFamTaskFrameGen D FamIdx).TaskRel w (x + y) v ↔
       ∃ u, (multiFamTaskFrameGen D FamIdx).TaskRel w x u ∧
         (multiFamTaskFrameGen D FamIdx).TaskRel u y v := by
@@ -266,7 +267,7 @@ theorem multiFamGen_comp_iff [Nontrivial D] {FamIdx : Type} (w v : FamIdx × D) 
 /-- The positive-cone projection of `multiFamGen_comp_iff`: `def:frame#Compositionality`
 exactly as the paper states it, "for $x, y \geq 0$". The sign hypotheses are unused because
 the strong form holds for all durations. -/
-theorem multiFamGen_comp_iff_of_nonneg [Nontrivial D] {FamIdx : Type} (w v : FamIdx × D) (x y : D)
+theorem multiFamGen_comp_iff_of_nonneg [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] (w v : FamIdx × D) (x y : D)
     (_ : 0 ≤ x) (_ : 0 ≤ y) :
     (multiFamTaskFrameGen D FamIdx).TaskRel w (x + y) v ↔
       ∃ u, (multiFamTaskFrameGen D FamIdx).TaskRel w x u ∧
@@ -276,7 +277,7 @@ theorem multiFamGen_comp_iff_of_nonneg [Nontrivial D] {FamIdx : Type} (w v : Fam
 /-- *Seriality* (`def:frame#Seriality`) for the generic flow frame: at every duration the
 clock supplies both a successor `(w.1, w.2 + x)` and a predecessor `(w.1, w.2 - x)`. Stated
 for all durations, so the paper's `x ≥ 0` proviso is subsumed. -/
-theorem multiFamGen_serial [Nontrivial D] {FamIdx : Type} (w : FamIdx × D) (x : D) :
+theorem multiFamGen_serial [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × D) (x : D) :
     (∃ u, (multiFamTaskFrameGen D FamIdx).TaskRel w x u) ∧
       (∃ v, (multiFamTaskFrameGen D FamIdx).TaskRel v x w) :=
   ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by show w.2 = w.2 - x + x; abel⟩⟩
@@ -285,7 +286,7 @@ theorem multiFamGen_serial [Nontrivial D] {FamIdx : Type} (w : FamIdx × D) (x :
 `TaskFrame.limit_of_shift` with position function `Prod.snd`: the clock relation makes the
 duration of a transition recoverable from its endpoints. `[Nontrivial D]` is required,
 matching `def:temporal-order`'s mandate that the temporal order be nontrivial. -/
-theorem multiFamGen_limit [Nontrivial D] {FamIdx : Type} :
+theorem multiFamGen_limit [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] :
     ∀ w u : FamIdx × D,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrameGen D FamIdx).TaskRel w y u) → u = w :=
   TaskFrame.limit_of_shift Prod.snd
@@ -294,7 +295,7 @@ theorem multiFamGen_limit [Nontrivial D] {FamIdx : Type} :
 
 /-- Every fiber (`def:task-relation`, *Fiber* clause) of the generic flow frame is a
 subsingleton: the clock is deterministic, so `Fib R w x ⊆ {(w.1, w.2 + x)}`. -/
-theorem multiFamGen_fib_subsingleton [Nontrivial D] {FamIdx : Type} (w : FamIdx × D) (x : D) :
+theorem multiFamGen_fib_subsingleton [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × D) (x : D) :
     (TaskFrame.Fib (multiFamTaskFrameGen D FamIdx).TaskRel w x).Subsingleton := by
   rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
   exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
@@ -303,7 +304,7 @@ theorem multiFamGen_fib_subsingleton [Nontrivial D] {FamIdx : Type} (w : FamIdx 
 singleton and every segment is an intersection of fibers, hence a subsingleton, so a
 directed family (`def:directed`) of nonempty fibers and segments meets the hypotheses of
 `sInter_nonempty_of_directed_subsingleton`. -/
-theorem multiFamGen_spherical [Nontrivial D] {FamIdx : Type} (S : Set (Set (FamIdx × D)))
+theorem multiFamGen_spherical [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] (S : Set (Set (FamIdx × D)))
     (hdir : TaskFrame.DirectedFamily S)
     (hne : ∀ s ∈ S, s.Nonempty)
     (hfs : ∀ s ∈ S, TaskFrame.IsFiber (multiFamTaskFrameGen D FamIdx).TaskRel s ∨
@@ -327,7 +328,7 @@ new argument; each is a repackaging of the lemma directly above it. -/
 for some $u, v \in W$") for the generic flow frame, as the predicate of record. Repackages
 `multiFamGen_serial`; the paper's `x ≥ 0` proviso is `Serial`'s own hypothesis and is unused,
 since the clock supplies witnesses at every duration. -/
-theorem multiFamTaskFrameGen_serial [Nontrivial D] {FamIdx : Type} :
+theorem multiFamTaskFrameGen_serial [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] :
     TaskFrame.Serial (multiFamTaskFrameGen D FamIdx).TaskRel :=
   fun w x _ => multiFamGen_serial w x
 
@@ -335,14 +336,14 @@ theorem multiFamTaskFrameGen_serial [Nontrivial D] {FamIdx : Type} :
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for the generic flow frame, as the predicate of record. This is the `→` direction of
 `multiFamGen_comp_iff`, whose `←` direction is the frame's `forward_comp` field. -/
-theorem multiFamTaskFrameGen_interpolates [Nontrivial D] {FamIdx : Type} :
+theorem multiFamTaskFrameGen_interpolates [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] :
     TaskFrame.Interpolates (multiFamTaskFrameGen D FamIdx).TaskRel :=
   fun w v x y _ _ h => (multiFamGen_comp_iff w v x y).mp h
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for the
 generic flow frame, in the literal transcribed shape. An alias of `multiFamGen_limit` under this
 section's naming convention; `[Nontrivial D]` is required, per `def:temporal-order`. -/
-theorem multiFamTaskFrameGen_limit [Nontrivial D] {FamIdx : Type} :
+theorem multiFamTaskFrameGen_limit [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] :
     ∀ w u : FamIdx × D,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrameGen D FamIdx).TaskRel w y u) → u = w :=
   multiFamGen_limit
@@ -351,7 +352,7 @@ theorem multiFamTaskFrameGen_limit [Nontrivial D] {FamIdx : Type} :
 directed family $\mathcal{S}$ of nonempty fibers and segments") for the generic flow frame, as
 the predicate of record. Repackages `multiFamGen_spherical`, splitting `Spherical`'s single
 per-member conjunction into that lemma's two separate hypotheses. -/
-theorem multiFamTaskFrameGen_spherical [Nontrivial D] {FamIdx : Type} :
+theorem multiFamTaskFrameGen_spherical [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] :
     TaskFrame.Spherical (multiFamTaskFrameGen D FamIdx).TaskRel :=
   fun S hdir hmem =>
     multiFamGen_spherical S hdir (fun s hs => (hmem s hs).2) (fun s hs => (hmem s hs).1)
@@ -368,7 +369,7 @@ family — the internalization the total-history countermodels rest on. -/
 /-- Every total history of the generic flow frame is a flow line: if `σ.domain` is full
 (`def:world-history`'s totality, X = D), then `σ = multiFamHistoryGen f w₀` for the family
 index and offset read off from `σ` at time `0`. -/
-theorem multiFamGen_total_eq [Nontrivial D] {FamIdx : Type}
+theorem multiFamGen_total_eq [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx]
     (σ : WorldHistory (multiFamTaskFrameGen D FamIdx)) (htot : ∀ t, σ.domain t) :
     ∃ f w₀, σ = multiFamHistoryGen f w₀ := by
   -- The state at any time is the state at time 0 advanced by the clock.
@@ -406,7 +407,7 @@ world histories over $\F$ is denoted $H_{\F}$." Here the totality predicate `X =
 The `⊇` direction is definitional: `multiFamHistoryGen` carries `domain := fun _ => True`. The
 `⊆` direction is `multiFamGen_total_eq`. This is the extensional content the box clause
 (`def:BL-semantics`, "for all $\sigma \in H_{\F}$") quantifies over on this carrier. -/
-theorem multiFamGen_total_eq_range [Nontrivial D] (FamIdx : Type) :
+theorem multiFamGen_total_eq_range [Nontrivial D] (FamIdx : Type) [Nonempty FamIdx] :
     {σ : WorldHistory (multiFamTaskFrameGen D FamIdx) | ∀ t, σ.domain t} =
       Set.range (fun (p : FamIdx × D) => multiFamHistoryGen p.1 p.2) := by
   ext σ
@@ -436,6 +437,17 @@ section BundleFlow
 
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 variable {fc : FrameClass}
+
+/-- The bundle's family index is nonempty, so the bundle flow frame's carrier is.
+
+**This is derived, not postulated**, and no new `BFMCS` field was added for it: `BFMCS` already
+carries `evalFamily` together with `eval_family_mem : evalFamily ∈ families`, which is exactly an
+inhabitant of the subtype. (`BFMCS.nonempty : families.Nonempty` would serve equally; the
+distinguished evaluation family is used because it is the canonical choice and needs no
+`choice`.) Every consumer of `bundleFlowFrame` therefore keeps its present binder list. -/
+instance bundleFamilies_nonempty (B : BFMCS (fc := fc) D) :
+    Nonempty {fam : FMCS (fc := fc) D // fam ∈ B.families} :=
+  ⟨⟨B.evalFamily, B.eval_family_mem⟩⟩
 
 /-- The bundle flow frame: the generic flow frame `multiFamTaskFrameGen` at the index of the
 bundle's families. World states are pairs of a bundle family and a time; the task relation is

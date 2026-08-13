@@ -60,6 +60,7 @@ example : (TaskFrame.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) := Or.
 -- Test: Construct custom simple task frame with explicit Int time
 def customFrame : TaskFrame Int where
   WorldState := Bool
+  nonempty := inferInstanceAs (Nonempty Bool)
   -- Permissive within non-zero durations; identity at zero duration (mirrors `natFrame`).
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by

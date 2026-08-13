@@ -78,11 +78,15 @@ This allows for various temporal structures:
 - The ordered additive group structure provides the required abelian group with total order.
 
 **Known gaps relative to the paper** (stated plainly rather than silently repaired):
-- The paper requires `W` nonempty (`def:task-relation`); the structure carries no
-  `Nonempty WorldState` field.
 - The paper requires `D` nontrivial (`def:temporal-order`); `[Nontrivial D]` is not among the
   structure's binders, though `valid`/`SemanticConsequence` (Semantics/Validity.lean) already
   carry it — the gap is exactly and only at structure level.
+The paper's requirement that `W` be nonempty (`def:frame`, verbatim: "$W$ is a nonempty set of
+world states"; `def:task-relation`) is no longer a gap: it is the `nonempty` field, discharged at
+every frame in the tree. Its immediate payoff is that `TaskFrame.not_validOn_bot`
+(Semantics/Validity.lean) is now the bare `¬ F.ValidOn ⊥`, with no world state taken as an
+argument.
+
 All four of `def:frame`'s axioms are now carried by the structure, so the former entries here
 for *Seriality*, *Limit*, *Spherical*, and the interpolation direction of *Compositionality*
 are retired rather than restated: they are the `serial`, `limit`, `spherical`, and `comp`
@@ -465,6 +469,21 @@ durations are nonnegative.
 structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
   /-- Type of world states -/
   WorldState : Type
+  /--
+  **The world-state type is nonempty.**
+
+  `def:temporal-order` and `def:task-relation` both read `W` as a nonempty set of world states:
+  *Seriality* quantifies existentially over `W` at every duration, and `cor:occurrence` builds a
+  total history through a *given* world state. A frame with an empty carrier satisfies every one
+  of the four axioms vacuously while validating `⊥`, which is exactly what
+  `Semantics/Validity.lean`'s `TaskFrame.not_validOn_bot` has to rule out — it did so by taking a
+  world state as an extra argument precisely because this field was absent.
+
+  Carried as a field rather than as an instance binder on the structure: instance binders on
+  `TaskFrame` would have to be supplied at all 600-odd mentions of the type, whereas a field is
+  discharged once per frame at its construction site and read off as `F.nonempty` thereafter.
+  -/
+  nonempty : Nonempty WorldState
   /-- Task relation: `TaskRel w x u` means u is reachable from w by task of duration x -/
   TaskRel : WorldState → D → WorldState → Prop
   /--
@@ -1050,6 +1069,7 @@ This is the simplest possible task frame, polymorphic over temporal type `D`.
 def trivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
     TaskFrame D where
   WorldState := Unit
+  nonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
   comp := comp_of (interpolates_of_total fun _ _ _ => trivial) fun _ _ _ _ _ _ _ _ _ => trivial
@@ -1107,10 +1127,11 @@ duration type `0 < x` is unsatisfiable, so *Limit*'s hypothesis is vacuous and t
 `u = w` cannot be reached. Every reference to this frame elaborates at `Int`, which supplies the
 instance.
 -/
-def staticFrame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] :
+def staticFrame (W : Type) [Nonempty W] {D : Type*} [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] :
     TaskFrame D where
   WorldState := W
+  nonempty := inferInstance
   TaskRel := fun w _ u => w = u
   nullity_identity := fun _ _ => Iff.rfl
   comp := comp_of (interpolates_of_eq fun _ _ _ => Iff.rfl) fun _ _ _ _ _ _ _ h1 h2 => h1.trans h2
@@ -1125,7 +1146,7 @@ def staticFrame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrder
 The static frame's relation is the equality class: `TaskRel w x u` holds exactly when `w = u`,
 at every duration. This is the class-membership witness Helper C's lemmas consume.
 -/
-theorem staticFrame_rel_iff [Nontrivial D] (W : Type) :
+theorem staticFrame_rel_iff [Nontrivial D] (W : Type) [Nonempty W] :
     ∀ w d u, (staticFrame W (D := D)).TaskRel w d u ↔ w = u := fun _ _ _ => Iff.rfl
 
 /--
@@ -1138,26 +1159,27 @@ conjunction, so that it is citable verbatim for the frame's *Seriality* field. T
 `x ≥ 0` proviso is `Serial`'s own hypothesis and is simply unused here, since the witness works
 at every duration.
 -/
-theorem staticFrame_serial [Nontrivial D] (W : Type) : Serial (staticFrame W (D := D)).TaskRel :=
+theorem staticFrame_serial [Nontrivial D] (W : Type) [Nonempty W] :
+    Serial (staticFrame W (D := D)).TaskRel :=
   serial_of_eq (staticFrame_rel_iff W)
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `staticFrame`: interpolate through `w` itself. -/
-theorem staticFrame_interpolates [Nontrivial D] (W : Type) :
+theorem staticFrame_interpolates [Nontrivial D] (W : Type) [Nonempty W] :
     Interpolates (staticFrame W (D := D)).TaskRel :=
   interpolates_of_eq (staticFrame_rel_iff W)
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
 `staticFrame`, in the literal transcribed shape: only `w` is reachable from `w` at all. -/
-theorem staticFrame_limit [Nontrivial D] (W : Type) :
+theorem staticFrame_limit [Nontrivial D] (W : Type) [Nonempty W] :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (staticFrame W (D := D)).TaskRel w y u) → u = w :=
   limit_of_eq (staticFrame_rel_iff W)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 directed family $\mathcal{S}$ of nonempty fibers and segments") for `staticFrame`: every nonempty
 fiber and segment is the same singleton along a directed family. -/
-theorem staticFrame_spherical [Nontrivial D] (W : Type) :
+theorem staticFrame_spherical [Nontrivial D] (W : Type) [Nonempty W] :
     Spherical (staticFrame W (D := D)).TaskRel :=
   spherical_of_eq (staticFrame_rel_iff W)
 
@@ -1178,6 +1200,7 @@ def natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [SuccOrder D] [NoMaxOrder D] :
     TaskFrame D where
   WorldState := Nat
+  nonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
     constructor

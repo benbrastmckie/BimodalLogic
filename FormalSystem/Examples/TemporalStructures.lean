@@ -77,6 +77,7 @@ Discrete time steps with integer arithmetic. WorldState is Unit (trivial).
 -/
 def intTimeFrame : TaskFrame Int where
   WorldState := Unit
+  nonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
   comp := TaskFrame.comp_of (TaskFrame.interpolates_of_total fun _ _ _ => trivial)
@@ -121,6 +122,7 @@ to satisfy nullity_identity while remaining permissive for non-zero durations.
 -/
 def intNatFrame : TaskFrame Int where
   WorldState := Nat
+  nonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
     constructor
@@ -223,6 +225,7 @@ This demonstrates ProofChecker's polymorphic design. WorldState is Unit (trivial
 -/
 def genericTimeFrame : TaskFrame D where
   WorldState := Unit
+  nonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
   comp := TaskFrame.comp_of (TaskFrame.interpolates_of_total fun _ _ _ => trivial)
@@ -271,6 +274,7 @@ state and *Limit* (`def:frame#Limit`) fails outright.
 -/
 def genericNatFrame [SuccOrder D] [NoMaxOrder D] : TaskFrame D where
   WorldState := Nat
+  nonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
     constructor

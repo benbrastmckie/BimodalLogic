@@ -104,7 +104,7 @@ example (w u : Unit) (x : Int) :
 /-!
 Property: Static frame task relation requires w = u, at every duration.
 -/
-example (W : Type) (w u : W) (x : Int) :
+example (W : Type) [Nonempty W] (w u : W) (x : Int) :
     (TaskFrame.staticFrame W (D := Int)).TaskRel w x u ↔ w = u := by
   rfl
 

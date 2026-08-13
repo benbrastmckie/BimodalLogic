@@ -547,32 +547,30 @@ empty, and `F.ValidOn ⊥` would be a theorem rather than a refutation. What rul
 exactly `cor:occurrence`'s closing clause — `H_F ≠ ∅` — so the frame axioms it consumes appear
 here as hypotheses.
 
-**Frame-intrinsic in its axioms, matching `PartialHistory.occurrence`.** *Spherical*,
-*Seriality*, *Interpolation* and *Limit* are no longer arguments: `TaskFrame` carries them as
-structure fields, and `cor:occurrence` reads them off the frame. The world state `w` is still
-taken explicitly, because `TaskFrame` carries no nonemptiness field yet — that is the one
-remaining gap between this statement and the bare `¬ F.ValidOn ⊥` with `F` its only argument.
+**Wholly frame-intrinsic.** *Spherical*, *Seriality*, *Interpolation* and *Limit* are not
+arguments: `TaskFrame` carries them as structure fields, and `cor:occurrence` reads them off the
+frame. Neither is a world state: the carrier's nonemptiness is the `nonempty` field, so the
+statement is the bare `¬ F.ValidOn ⊥` with `F` its only argument, exactly as `def:frame`'s
+"nonempty set of world states" licenses.
 
 The model witness is `TaskModel.allFalse`; any model would do, since `⊥`'s truth clause is
 `False` independently of the valuation.
 -/
-theorem not_validOn_bot (F : TaskFrame D) (w : F.WorldState) :
-    ¬ F.ValidOn Formula.bot := by
+theorem not_validOn_bot (F : TaskFrame D) : ¬ F.ValidOn Formula.bot := by
   intro hvalid
-  obtain ⟨τ, _⟩ := PartialHistory.occurrence F w 0
+  obtain ⟨τ, _⟩ := PartialHistory.occurrence F F.nonempty.some 0
   exact Truth.bot_false (hvalid TaskModel.allFalse τ 0)
 
 /--
-`cor:occurrence`'s closing clause restated in the shape this section consumes it: given a world
-state, `H_F` has an inhabitant, so the `∀ τ : F.HF` in `ValidOn` is a non-vacuous quantifier. The
-frame axioms it rests on are the frame's own fields.
+`cor:occurrence`'s closing clause restated in the shape this section consumes it: `H_F` has an
+inhabitant, so the `∀ τ : F.HF` in `ValidOn` is a non-vacuous quantifier. Everything it rests
+on — the four axioms and the carrier's nonemptiness — is a field of the frame.
 
 This is a thin restatement of `PartialHistory.hF_nonempty`, kept here so the reason
 `not_validOn_bot` holds is legible next to the statement itself.
 -/
-theorem hF_nonempty_of_frameAxioms (F : TaskFrame D) (w : F.WorldState) :
-    Nonempty F.HF :=
-  PartialHistory.hF_nonempty F w
+theorem hF_nonempty_of_frameAxioms (F : TaskFrame D) : Nonempty F.HF :=
+  PartialHistory.hF_nonempty F F.nonempty.some
 
 end TaskFrame
 

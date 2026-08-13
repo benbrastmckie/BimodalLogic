@@ -452,6 +452,7 @@ With this frame:
 /-- TaskFrame with WorldState = ℤ. Task relation: u = w + d (deterministic). -/
 noncomputable def zTaskFrameV2 : TaskFrame ℤ where
   WorldState := ℤ
+  nonempty := inferInstanceAs (Nonempty ℤ)
   TaskRel w d u := u = w + d
   nullity_identity w u := by constructor <;> intro h <;> omega
   comp := TaskFrame.comp_of
@@ -763,8 +764,9 @@ noncomputable def toCarrier {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-- TaskFrame with `WorldState = FamIdx × ℤ`. Each world state is a family index
 paired with a position. The task relation is deterministic: stepping by `d` from
 `(f, z)` reaches `(f, z + d)` (same family, shifted position). -/
-noncomputable def multiFamTaskFrame (FamIdx : Type) : TaskFrame ℤ where
+noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : TaskFrame ℤ where
   WorldState := FamIdx × ℤ
+  nonempty := inferInstance
   TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
   nullity_identity := fun p q => by
     constructor
@@ -799,13 +801,13 @@ FamIdx` holds by `rfl`. The four axiom facts are therefore *derived* from the ge
 not re-proved: `multiFamTaskFrameGen_serial` and its siblings apply directly. -/
 
 /-- The `ℤ` multi-family frame is definitionally the generic flow frame at `ℤ`. -/
-theorem multiFamTaskFrame_eq_gen (FamIdx : Type) :
+theorem multiFamTaskFrame_eq_gen (FamIdx : Type) [Nonempty FamIdx] :
     multiFamTaskFrame FamIdx = Algebraic.multiFamTaskFrameGen ℤ FamIdx := rfl
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `multiFamTaskFrame`, by specialization of
 `multiFamTaskFrameGen_serial`. -/
-theorem multiFamTaskFrame_serial (FamIdx : Type) :
+theorem multiFamTaskFrame_serial (FamIdx : Type) [Nonempty FamIdx] :
     TaskFrame.Serial (multiFamTaskFrame FamIdx).TaskRel :=
   Algebraic.multiFamTaskFrameGen_serial
 
@@ -813,7 +815,7 @@ theorem multiFamTaskFrame_serial (FamIdx : Type) :
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `multiFamTaskFrame`, by specialization of
 `multiFamTaskFrameGen_interpolates`. -/
-theorem multiFamTaskFrame_interpolates (FamIdx : Type) :
+theorem multiFamTaskFrame_interpolates (FamIdx : Type) [Nonempty FamIdx] :
     TaskFrame.Interpolates (multiFamTaskFrame FamIdx).TaskRel :=
   Algebraic.multiFamTaskFrameGen_interpolates
 
@@ -821,7 +823,7 @@ theorem multiFamTaskFrame_interpolates (FamIdx : Type) :
 `multiFamTaskFrame`, in the literal transcribed shape, by specialization of
 `multiFamTaskFrameGen_limit`. `ℤ` is nontrivial, so the generic lemma's `[Nontrivial D]` binder
 is discharged by instance search. -/
-theorem multiFamTaskFrame_limit (FamIdx : Type) :
+theorem multiFamTaskFrame_limit (FamIdx : Type) [Nonempty FamIdx] :
     ∀ w u : FamIdx × ℤ,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrame FamIdx).TaskRel w y u) → u = w :=
   Algebraic.multiFamTaskFrameGen_limit
@@ -829,13 +831,13 @@ theorem multiFamTaskFrame_limit (FamIdx : Type) :
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 directed family $\mathcal{S}$ of nonempty fibers and segments") for `multiFamTaskFrame`, by
 specialization of `multiFamTaskFrameGen_spherical`. -/
-theorem multiFamTaskFrame_spherical (FamIdx : Type) :
+theorem multiFamTaskFrame_spherical (FamIdx : Type) [Nonempty FamIdx] :
     TaskFrame.Spherical (multiFamTaskFrame FamIdx).TaskRel :=
   Algebraic.multiFamTaskFrameGen_spherical
 
 /-- World history for the multi-family TaskFrame, parameterized by a family index
 and a base offset. The history visits states `(f, w₀ + t)` at each time `t`. -/
-noncomputable def multiFamHistory {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
+noncomputable def multiFamHistory {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
     WorldHistory (multiFamTaskFrame FamIdx) where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
@@ -846,7 +848,7 @@ noncomputable def multiFamHistory {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
     exact ⟨rfl, by omega⟩
 
 /-- Time-shifting `multiFamHistory f w₀` by `Δ` gives `multiFamHistory f (w₀ + Δ)`. -/
-theorem multiFamHistory_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : ℤ) :
+theorem multiFamHistory_shift_eq {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ Δ : ℤ) :
     WorldHistory.timeShift (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)) Δ =
       multiFamHistory f (w₀ + Δ) := by
   change WorldHistory.mk (PartialHistory.mk _ _ _ _) _ =
@@ -860,7 +862,7 @@ theorem multiFamHistory_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : ℤ) :
 Definitional: `multiFamHistory` carries `domain := fun _ => True`. This is the `ℤ` counterpart
 of `bundleFlowHistory_total` (`FlowFrame.lean`), and is what the totality-targeted box clause
 (`def:BL-semantics`, "for all $\sigma \in H_{\F}$") consumes. -/
-theorem multiFamHistory_total {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
+theorem multiFamHistory_total {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
     (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)).IsTotal :=
   fun _ => trivial
 
@@ -871,7 +873,7 @@ theorem multiFamHistory_total {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
 the state at time `0` fixes both the family index and the offset, and `respects_task` propagates
 them to every other time. This is the `ℤ` specialization of `multiFamGen_total_eq`
 (`FlowFrame.lean`), reproved here because the two frames are separate definitions. -/
-theorem multiFam_total_eq {FamIdx : Type}
+theorem multiFam_total_eq {FamIdx : Type} [Nonempty FamIdx]
     (σ : WorldHistory (multiFamTaskFrame FamIdx)) (htot : ∀ t, σ.domain t) :
     ∃ f w₀, σ = multiFamHistory f w₀ := by
   have key : ∀ (t : ℤ) (ht : σ.domain t),
@@ -901,7 +903,7 @@ world histories over $\F$ is denoted $H_{\F}$") **is** its set of family lines.
 `⊇` is definitional — `multiFamHistory` carries `domain := fun _ => True`; `⊆` is
 `multiFam_total_eq`. This is the `ℤ` case of the generic `multiFamGen_total_eq_range`
 (`FlowFrame.lean`). -/
-theorem multiFam_total_eq_range (FamIdx : Type) :
+theorem multiFam_total_eq_range (FamIdx : Type) [Nonempty FamIdx] :
     {σ : WorldHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} =
       Set.range (fun (p : FamIdx × ℤ) => multiFamHistory p.1 p.2) := by
   ext σ
@@ -949,6 +951,8 @@ theorem countermodel_discrete_reynolds_v2
     Formula.box nextTop ∈ N ∧ (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N)}
   -- Root family: A itself
   let f₀ : FamIdx := ⟨A, h_mcs, h_box_discrete, fun _ => Iff.rfl⟩
+  -- The root family inhabits the index, discharging `multiFamTaskFrame`'s carrier nonemptiness.
+  haveI : Nonempty FamIdx := ⟨f₀⟩
   -- Signature and depth
   let sig := mkSigFrom φ
   let k := operatorDepth φ + 2

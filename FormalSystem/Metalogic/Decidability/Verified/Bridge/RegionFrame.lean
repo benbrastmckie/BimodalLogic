@@ -171,10 +171,11 @@ parameters throughout this file so that the declarations below keep their shape.
 unsatisfiable and *Limit* (`def:frame#Limit`) has nothing to conclude from. Every consumer
 elaborates at `ℤ`, `ℚ`, or `ℝ`, each of which supplies the instance.
 -/
-def regionFrame (W ι D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] :
+def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] :
     TaskFrame D where
   WorldState := W × D
+  nonempty := inferInstance
   TaskRel := fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d
   nullity_identity := by
     intro s s'
@@ -223,7 +224,7 @@ def regionFrame (W ι D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
       exact ⟨h₁.symm, by rw [h₂]; abel⟩
 
 @[simp]
-theorem regionFrame_taskRel (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+theorem regionFrame_taskRel (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (d : D) (s' : W × D) :
     (regionFrame W ι D).TaskRel s d s' ↔ (s.1 = s'.1 ∧ s'.2 = s.2 + d) := Iff.rfl
 
@@ -244,7 +245,7 @@ falsification test the flag needed, and it fails to falsify. -/
 
 /-- Every fiber (`def:task-relation`, *Fiber* clause) of `regionFrame` is a subsingleton: the
 clock is deterministic, so `Fib R s x ⊆ {(s.1, s.2 + x)}`. -/
-theorem regionFrame_fib_subsingleton (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+theorem regionFrame_fib_subsingleton (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (x : D) :
     (TaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton := by
   rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
@@ -253,7 +254,7 @@ theorem regionFrame_fib_subsingleton (W ι D : Type) [AddCommGroup D] [LinearOrd
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `regionFrame`: the clock supplies the successor `(s.1, s.2 + x)` and
 the predecessor `(s.1, s.2 - x)`. -/
-theorem regionFrame_serial (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+theorem regionFrame_serial (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] : TaskFrame.Serial (regionFrame W ι D).TaskRel :=
   fun s x _ =>
     ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
@@ -262,7 +263,7 @@ theorem regionFrame_serial (W ι D : Type) [AddCommGroup D] [LinearOrder D]
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `regionFrame`: interpolate at the unique intermediate `(s.1, s.2 + x)`. -/
-theorem regionFrame_interpolates (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+theorem regionFrame_interpolates (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     TaskFrame.Interpolates (regionFrame W ι D).TaskRel := by
   rintro s v x y _ _ ⟨h₁, h₂⟩
@@ -274,7 +275,7 @@ theorem regionFrame_interpolates (W ι D : Type) [AddCommGroup D] [LinearOrder D
 `regionFrame`, in the literal transcribed shape, via `TaskFrame.limit_of_shift` with
 `pos := Prod.snd`. `[Nontrivial D]` is the only hypothesis on `D` — the axiom holds over dense
 duration types as well as discrete ones. -/
-theorem regionFrame_limit (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+theorem regionFrame_limit (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     ∀ s u : W × D,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (regionFrame W ι D).TaskRel s y u) → u = s :=
@@ -286,7 +287,7 @@ directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame
 a subsingleton and every segment is an intersection of fibers, so every nonempty member of a
 directed family is a singleton and
 `TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
-theorem regionFrame_spherical (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+theorem regionFrame_spherical (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     TaskFrame.Spherical (regionFrame W ι D).TaskRel := by
   intro S hdir hmem
@@ -306,7 +307,8 @@ end Frame
 
 section Histories
 
-variable {W ι D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {W ι D : Type} [Nonempty W] [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+  [Nontrivial D]
 
 set_option linter.unusedVariables false in
 /--
@@ -465,7 +467,8 @@ is the form the truth lemma's `box` case consumes.
 
 section BaseReduction
 
-variable {W ι D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {W ι D : Type} [Nonempty W] [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+  [Nontrivial D]
 
 /-- Every region history is a time-shift of the base history of its world. -/
 theorem regionHistory_eq_timeShift (f : ι → D) (w : W) (Δ : D) :
@@ -511,7 +514,8 @@ end BaseReduction
 
 section RegionConstancy
 
-variable {W ι D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {W ι D : Type} [Nonempty W] [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+  [Nontrivial D]
 
 /--
 **No region history is region-constant** as soon as some region contains two distinct points —

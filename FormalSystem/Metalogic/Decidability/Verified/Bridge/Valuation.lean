@@ -180,7 +180,8 @@ end Valuation
 
 section Model
 
-variable {W ι : Type} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {W ι : Type} [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder D]
+  [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 **The countermodel.** A world of `regionFrame W ι D` is a pair `(w, x)` — a branch world together
@@ -293,7 +294,8 @@ end BranchModel
 
 section GapDemands
 
-variable {W ι : Type} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {W ι : Type} [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder D]
+  [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 **What a gap policy must deliver.** Stated semantically — against the assembled model rather than
@@ -439,7 +441,8 @@ left-copy policy by showing the model's `G p` is false where the branch may asse
 
 section GapDemandsVacuous
 
-variable {W ι : Type} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {W ι : Type} [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder D]
+  [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 **`GapDemands` constrains nothing.** Both fields are instances of `future_iff`/`past_iff` read
