@@ -335,29 +335,29 @@ total-history restriction stated. Discharges FIX-113, FIX-123, FIX-126, FIX-135.
 
 ---
 
-### Phase 4: Section 2 — What Is Proved, Stated Per System [NOT STARTED]
+### Phase 4: Section 2 — What Is Proved, Stated Per System [COMPLETED]
 
 **Goal**: Replace the single dump-everything completeness theorem and the vague framing prose with
 per-system statements, and state the decidability position as formal fact rather than narration.
 Discharges FIX-174 and FIX-189.
 
 **Tasks**:
-- [ ] Rewrite the soundness statement as one theorem covering the systems in scope, compressed.
-- [ ] Compress the three correspondence statements (discreteness, density, Dedekind-completeness)
+- [x] Rewrite the soundness statement as one theorem covering the systems in scope, compressed. *(completed)*
+- [x] Compress the three correspondence statements (discreteness, density, Dedekind-completeness)
       to statement plus one-line idea, keeping the *claims* while removing the confusing framing
       prose. The contingency argument in section 4 presupposes these, so they are compressed, not
-      dropped.
-- [ ] Break the current one-sentence completeness theorem (`:192-194`) into per-class statements:
+      dropped. *(completed: all three kept as one Correspondence proposition; the translation-flow witness stated once instead of thrice)*
+- [x] Break the current one-sentence completeness theorem (`:192-194`) into per-class statements:
       which system is complete over which frame class, each with its machine-checked status quoted
-      as measured. The general Base-frame result keeps its "outstanding obligation" framing.
-- [ ] Rewrite the decidability subsection: state the r.e.-theorems / FMP argument formally, state
+      as measured. The general Base-frame result keeps its "outstanding obligation" framing. *(completed: four separate theorems -- dense, discrete, dense-and-complete each with its own #leansrc and axiom report; base class stated as outstanding with sorryAx named)*
+- [x] Rewrite the decidability subsection: state the r.e.-theorems / FMP argument formally, state
       the retraction of the blanket FMP premise with both witnesses as formal facts, and state the
-      two intersection reductions as a target strategy rather than a result.
-- [ ] Add a bridging remark of at most four sentences connecting the system layer to what
-      completeness would buy, closing the section-1-to-section-2 gap the research diagnosed.
-- [ ] Use `#leansrc(module, name)` for the headline machine-checked results so machine-checked and
-      paper-side claims are visually distinct.
-- [ ] Remove the FIX comments at lines 174 and 189.
+      two intersection reductions as a target strategy rather than a result. *(completed: the FMP retraction is now a proposition with both witnesses; the reductions are a bounded remark labelled a target)*
+- [x] Add a bridging remark of at most four sentences connecting the system layer to what
+      completeness would buy, closing the section-1-to-section-2 gap the research diagnosed. *(completed: 4-sentence opening remark)*
+- [x] Use `#leansrc(module, name)` for the headline machine-checked results so machine-checked and
+      paper-side claims are visually distinct. *(completed: 3 #leansrc blocks, each followed by its measured axiom report)*
+- [x] Remove the FIX comments at lines 174 and 189. *(completed)*
 
 **Timing**: 1.5 hours
 
