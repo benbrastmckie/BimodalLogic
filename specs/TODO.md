@@ -82,7 +82,7 @@ next_project_number: 444
 419 [PLANNED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
 440 [RESEARCHED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
-443 [RESEARCHED] — GOAL. Write a NEW, standalone ~10-page Typst report, `typst/Forma
+443 [PLANNED] — GOAL. Write a NEW, standalone ~10-page Typst report, `typst/Forma
 
 ### Strong Completeness
 
@@ -99,11 +99,12 @@ next_project_number: 444
 ## Tasks
 
 ### 443. Formal foundations report completeness and representation
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: typst
 - **Topic**: paper-refactor
 - **Dependencies**: Task 442
 - **Research**: [443_formal_foundations_report_completeness_and_representation/reports/01_formal-foundations-research.md]
+- **Plan**: [443_formal_foundations_report_completeness_and_representation/plans/01_formal-foundations-report.md]
 
 **Description**: GOAL. Write a NEW, standalone ~10-page Typst report, `typst/FormalFoundations.typ`, presenting the formal foundations of the bimodal logic: a formally precise and compressed overview of the system and its logic, stating key theorems where appropriate; then the PAIN POINTS -- the contingency of the temporal axioms (density, discreteness, Dedekind-completeness) and the axiomatization of the strongest objective modality; then, and most importantly, THE COMPLETENESS CONSTRUCTION AS ACTUALLY IMPLEMENTED IN THIS REPOSITORY together with the early steps toward a representation theorem, closing with an outline of the best way forward to a fully adequate representation theorem and completeness results for a very weak, general base bimodal logic that assumes neither density nor discreteness nor perhaps even Dedekind-completeness.
 
