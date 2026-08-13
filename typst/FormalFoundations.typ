@@ -242,7 +242,47 @@ The three frame conditions Discrete/Dense/Complete (`def:frame-properties`) are 
 
 = Pain Point Two: Split Validity and TM's Semantic Incompleteness <sec:split-validity>
 
-// PHASE-6-PLACEHOLDER: content added in a later phase.
+#theorem("Discrete-or-Dense Dichotomy")[
+  Every nontrivial totally ordered abelian group $#Dur$ is either discrete (has a least positive element) or dense, and never both.
+]#footnote[Give in full, briefly, per this report's own remit. Translation invariance makes the dichotomy exhaustive: if there is no least positive element, some positive $e < y-x$ exists for any $x<y$ (else $y-x$ would itself be least positive), giving $x < x+e < y$; conversely a least positive element $e$ forbids anything strictly between $x$ and $x+e$. The dichotomy depends essentially on the *group* structure and fails for a bare linear order (e.g. a copy of $ZZ$ followed by a copy of $QQ$), which is why `def:temporal-order` requires a group and not merely a linear order. @brastmckie2026possibleworlds]
+
+Consequently $op("Log")("all task frames") = op("Log")("Discrete") inter op("Log")("Dense")$: the class of all task frames is a disjoint union of incompatible subclasses, *not closed under disjoint union*. Unions of logics characteristically admit *split validities* -- disjunctions valid on every frame yet unprovable from either disjunct's axioms alone -- and TM exhibits exactly this:
+
+#theorem("The (DD) Split Validity")[
+  The schema $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN")) $ (no variable-disjointness restriction; TD supplies the past mirrors), for arbitrary instances of DF and DN, is valid over every task frame yet *TM*-unprovable.
+]#footnote[Give in full, briefly. A two-fibre countermodel (one fibre over $ZZ$, one over $RR$, with $square.stroked$ read globally across both) is TM-sound -- no TM axiom or rule constrains how $square.stroked$ interacts across fibres -- while refuting both disjuncts of a variable-sharing instance. Part of `cor:tm-completeness`'s proof. @brastmckie2026possibleworlds In $op("BL")^+$, (DD) is already a theorem with no added axiom: TMP-NB and M5 give $tack.r_(op("TM")^+) square.stroked "Next" top or square.stroked not "Next" top$, and since $"Next" top arrow.r phi.alt_(op("DF"))$ and $not "Next" top arrow.r psi_(op("DN"))$ are $op("BL")^+$-valid, $op("TM")^+$'s weak completeness (inheriting its own outstanding base-case obligation, @sec:key-theorems) gives the two conditionals as theorems, whence necessitation and distribution yield (DD).]
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+    let yZ = 1.4
+    let yR = 0.0
+    let xL = -2.6
+    let xR = 2.6
+    line((xL, yZ), (xR, yZ), stroke: (paint: blue.darken(20%), thickness: 1.5pt))
+    for i in range(-4, 5) {
+      let x = i * 0.55
+      line((x, yZ - 0.09), (x, yZ + 0.09), stroke: (paint: blue.darken(20%), thickness: 1pt))
+    }
+    content((xR + 0.55, yZ), text(size: 9pt, fill: blue.darken(20%))[fibre $ZZ$])
+    content((0, yZ + 0.35), text(size: 8pt, fill: blue.darken(20%))[$"Next"top$ true here])
+    line((xL, yR), (xR, yR), stroke: (paint: orange.darken(10%), thickness: 1.5pt))
+    content((xR + 0.55, yR), text(size: 9pt, fill: orange.darken(20%))[fibre $RR$])
+    content((0, yR - 0.35), text(size: 8pt, fill: orange.darken(20%))[$not "Next"top$ true here])
+    line((-1.7, yR), (-1.7, yZ), stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"),
+      mark: (end: ">", start: ">", fill: gray.darken(20%)))
+    content((-1.7, (yZ + yR) / 2), anchor: "west", text(size: 8pt, fill: gray.darken(20%))[ $square.stroked$ reads globally])
+  })
+]
+#align(center)[#text(size: 0.85em, style: "italic")[
+  The two-fibre countermodel witnessing (DD): a discrete $ZZ$ fibre (ticked) where $"Next"top$ holds, and a dense $RR$ fibre (unticked) where it fails, with $square.stroked$ reading globally across both.
+]]
+
+*The taxonomy, kept unblurred*: TM is *semantically* incomplete (a formula valid but unprovable), *not* Halldén-incomplete. $"TM" + "(DD)"$ would *create* Halldén-incompleteness: a provable variable-disjoint disjunction with neither disjunct provable, since each fails soundness on the complementary subclass. Halldén-incompleteness of $op("Log")("all task frames")$ *itself is a theorem* -- the correct formal signature of a class that is a union of two incompatible kinds, and not a defect to be repaired.
+
+In $op("BL")^+$, (DD) is already a theorem with no added axiom, as the footnote above derives -- inheriting $op("TM")^+$'s own outstanding base-case obligation, a hedge carried explicitly rather than dropped. The schematic form (DD) takes in $op("BL")$ records nothing about the semantics and everything about the *language*: $op("BL")$ has no sentence naming discreteness, so it must disjoin schemas where $op("BL")^+$ disjoins a sentence ($"Next"top$) with its negation.
+
+$op("TM")_c$ fails identically over ${ZZ,RR}$, compounded by the further, independent open question of whether CO alone axiomatizes the same $op("BL")^+$-logic as the full Reynolds triple (@sec:system). $op("TM")_f$'s status *differs and must not be lumped in*: it is sound over *every* discrete frame (DF is valid there), but its completeness over that broader class is *open* -- the machine-checked discrete result is for $op("BX")_f$ over $ZZ$-time specifically, a narrower and deductively stronger system than $op("TM") + "DF"$, and no counterexample to $op("TM")_f$'s completeness over the full discrete class is known. The paper states no separate incompleteness argument for $op("TM")_d$; its status is covered only by `cor:tm-completeness`'s flat "none is complete" headline, not by a dedicated countermodel.#footnote[This section's material is reused, with permission of its own authorship lineage, from the verbatim quotes and derivations already independently verified against the live paper in this report's companion book chapter (`typst/chapters/04-metalogic.typ`) -- re-confirmed current at this report's own authoring pass rather than re-derived from scratch. @brastmckie2026possibleworlds]
 
 = Pain Point Three: Axiomatizing the Strongest Objective Modality <sec:objective-modality>
 

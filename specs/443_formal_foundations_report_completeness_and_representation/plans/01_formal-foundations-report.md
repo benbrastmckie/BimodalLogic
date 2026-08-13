@@ -437,7 +437,7 @@ overall, take it from elsewhere.
 
 ---
 
-### Phase 6: Section 4 — pain point two, split validity and TM's semantic incompleteness [NOT STARTED]
+### Phase 6: Section 4 — pain point two, split validity and TM's semantic incompleteness [COMPLETED]
 
 **Goal**: The sharpest formal result among the pain points, with both designated proofs given in
 full and briefly, the taxonomy kept unblurred, and diagram 1.
