@@ -112,46 +112,23 @@ bimodal logic assuming neither density nor discreteness nor Dedekind-completenes
 The base language is $#taskframe = chevron.l "SL", bot, arrow.r, square.stroked, allpast, allfuture chevron.r$ where $"SL" := {p_i : i in NN}$#footnote[`sub:Logic` (untracked prose, cited by key only -- no environment block exists at this site to quote). @brastmckie2026possibleworlds] -- one-place *Past* ($#allpast$) and *Future* ($#allfuture$) as primitives, alongside classical connectives and the S5 necessity operator $square.stroked$.
 The extended language replaces $#allpast$/$#allfuture$ with binary *Since* / *Until*:
 
-#definition("Language of BL+")[
-  $ op("BL")^+ = chevron.l "SL", bot, arrow.r, square.stroked, S, U chevron.r $
-  with $S(phi.alt, psi)$ ("$psi$ since $phi.alt$") and $U(phi.alt, psi)$ ("$psi$ until $phi.alt$") in the Burgess *event-first* convention: $phi.alt$ is the event, true at some witness time, $psi$ the guard, true throughout the intervening interval.
-]#footnote[`def:BLplus-language`. @brastmckie2026possibleworlds]
+$op("BL")^+ = chevron.l "SL", bot, arrow.r, square.stroked, S, U chevron.r$, with $S(phi.alt, psi)$ ("$psi$ since $phi.alt$") and $U(phi.alt, psi)$ ("$psi$ until $phi.alt$") in the Burgess *event-first* convention: $phi.alt$ is the event, true at some witness time, $psi$ the guard, true throughout the intervening interval.#footnote[`def:BLplus-language`. @brastmckie2026possibleworlds]
 
 $#allpast, #allfuture, #somepast, #somefuture, #always, #sometimes$ and the propositional connectives are then *defined* operators of $op("BL")^+$#footnote[`def:BLplus-defined`. @brastmckie2026possibleworlds] (e.g. $#allfuture phi.alt := not U(not phi.alt, top)$), and $op("BL")$ embeds into $op("BL")^+$ unconditionally: every $op("BL")$-theorem is recovered under the Past/Future reduction.#footnote[`thm:BLplus-PastFuture` (untracked, cited by key). @brastmckie2026possibleworlds] Over discrete frames, $op("BL")^+$ additionally defines *Next* / *Previous* operators witnessing the immediate successor/predecessor.#footnote[`thm:BLplus-NextPrevious` (untracked, cited by key). @brastmckie2026possibleworlds]
 
 == Task-Frame Semantics
 
-#definition("Temporal Order")[
-  A *temporal order* is a nontrivial totally ordered abelian group $#Dur = (D, +, 0, lt.eq)$ with *positive cone* $D^+ := {x in D : x gt.eq 0}$.
-]#footnote[`def:temporal-order`. @brastmckie2026possibleworlds]
-
-#definition("Task Relation")[
-  A *task relation* on world states $#worldstate$ over $#Dur$ is $w arrow.r.double.long_(x) u$ for $x in D^+$, extended by the *converse convention* $w arrow.r.double.long_(-x) u := u arrow.r.double.long_(x) w$, determining $"Fib"(w,x) := {u : w arrow.r.double.long_(x) u}$, the cone $(w)_x := union.big_(|y|<x) "Fib"(w,y)$, and the segment $[w,v]_x^y := "Fib"(w,x) inter "Fib"(v,-y)$.
-]#footnote[`def:task-relation`. @brastmckie2026possibleworlds]
+A *temporal order* is a nontrivial totally ordered abelian group $#Dur = (D, +, 0, lt.eq)$ with *positive cone* $D^+ := {x in D : x gt.eq 0}$.#footnote[`def:temporal-order`. @brastmckie2026possibleworlds] A *task relation* on world states $#worldstate$ over $#Dur$ is $w arrow.r.double.long_(x) u$ for $x in D^+$, extended by the *converse convention* $w arrow.r.double.long_(-x) u := u arrow.r.double.long_(x) w$; it determines the fiber $"Fib"(w,x) := {u : w arrow.r.double.long_(x) u}$, cone $(w)_x := union.big_(|y|<x) "Fib"(w,y)$, and segment $[w,v]_x^y := "Fib"(w,x) inter "Fib"(v,-y)$.#footnote[`def:task-relation`. @brastmckie2026possibleworlds]
 
 #definition("Frame")[
-  A *frame* $#taskframe = (#worldstate, #Dur, arrow.r.double.long_(dot.c))$ satisfies, for $x, y gt.eq 0$:
-  + *Compositionality* (biconditional): $w arrow.r.double.long_(x+y) v$ iff $w arrow.r.double.long_(x) u$ and $u arrow.r.double.long_(y) v$ for some $u$.
-  + *Seriality*: some $u, v in W$ have $w arrow.r.double.long_(x) u$ and $v arrow.r.double.long_(x) w$.
-  + *Limit*: $inter.big_(x>0) (w)_x = {w}$.
-  + *Spherical*: $inter.big cal(S) eq.not emptyset$ for any directed family $cal(S)$#footnote[Directed: `def:directed`. @brastmckie2026possibleworlds] of nonempty fibers and segments.
-]#footnote[`def:frame` (all four sub-anchors). @brastmckie2026possibleworlds Compositionality is a biconditional, load-bearing in both directions.]
+  A *frame* $#taskframe = (#worldstate, #Dur, arrow.r.double.long_(dot.c))$ satisfies, for $x, y gt.eq 0$: *Compositionality* (biconditional) $w arrow.r.double.long_(x+y) v$ iff $w arrow.r.double.long_(x) u$ and $u arrow.r.double.long_(y) v$ for some $u$; *Seriality*: some $u,v$ have $w arrow.r.double.long_(x) u$, $v arrow.r.double.long_(x) w$; *Limit*: $inter.big_(x>0) (w)_x = {w}$; *Spherical*: $inter.big cal(S) eq.not emptyset$ for any directed family $cal(S)$#footnote[`def:directed`. @brastmckie2026possibleworlds] of nonempty fibers and segments.
+]#footnote[`def:frame` (all four sub-anchors), a biconditional load-bearing in both directions. @brastmckie2026possibleworlds]
 
-Nullity ($w arrow.r.double.long_(0) w$) is *derived* from Seriality (at $x=0$) and Limit, not a fifth axiom:
+Nullity ($w arrow.r.double.long_(0) w$ for every $w$, every frame) is *derived* from Seriality (at $x=0$) and Limit, not a fifth axiom.#footnote[`lem:nullity`, derived, choice-free. @brastmckie2026possibleworlds]
 
-#lemma("Nullity")[$w arrow.r.double.long_(0) w$ for every $w in W$ in every frame.]#footnote[`lem:nullity`, derived, choice-free. @brastmckie2026possibleworlds]
+A *partial history* over $#taskframe$ is $tau : X arrow.r #worldstate$ on nonempty $X subset.eq D$ with $tau(x) arrow.r.double.long_(y-x) tau(y)$; a *world history* has convex domain; a world history is *total* -- equivalently a *possible world* -- iff $X = D$, and $H_(#taskframe)$ denotes all total world histories.#footnote[`def:world-history`. @brastmckie2026possibleworlds] Every partial history extends to a total world history (`thm:extension`, Zorn's lemma), hence to a world state occurring at any prescribed time (`cor:occurrence`) -- both ZFC results, unlike Nullity's choice-free derivation; a *finite*-$W$ frame satisfies *Spherical* choice-free instead (`cor:spherical-finite`).#footnote[@brastmckie2026possibleworlds Both tracked.]
 
-#definition("World History")[
-  A *partial history* over $#taskframe$ is $tau : X arrow.r #worldstate$ on nonempty $X subset.eq D$ with $tau(x) arrow.r.double.long_(y-x) tau(y)$; a *world history* has convex domain; a world history is *total* -- equivalently a *possible world* -- iff $X = D$. $H_(#taskframe)$ denotes all total world histories.
-]#footnote[`def:world-history`. @brastmckie2026possibleworlds]
-
-Every partial history extends to a total world history (`thm:extension`, by Zorn's lemma), hence to a world state occurring at any prescribed time (`cor:occurrence`) -- both ZFC results, unlike Nullity's choice-free derivation; a frame with *finite* $W$ satisfies *Spherical* choice-free instead (`cor:spherical-finite`).#footnote[@brastmckie2026possibleworlds Both anchors tracked.] Truth is evaluated at a model, a possible world, and a time:
-
-#definition("BL Truth, BL Model")[
-  A model $#model = (#worldstate, #Dur, arrow.r.double.long_(dot.c), |dot.c|)$ interprets atoms $|p| subset.eq H_(#taskframe) times D$; $#model, tau, x #satisfies square.stroked phi.alt$ iff $#model, sigma, x #satisfies phi.alt$ for every $sigma in H_(#taskframe)$ -- $square.stroked$ quantifies over *all* total world histories, the very set at which sentences are evaluated.
-]#footnote[`def:BL-model`, `def:BL-semantics` (box clause). @brastmckie2026possibleworlds]
-
-Validity over a frame ($#taskframe #satisfies phi.alt$), logical consequence ($Gamma #satisfies phi.alt$), and global validity ($#satisfies phi.alt$, valid over every frame) close the semantic layer.#footnote[`def:frame-validity`, `def:logical-consequence`. @brastmckie2026possibleworlds]
+A model $#model = (#worldstate, #Dur, arrow.r.double.long_(dot.c), |dot.c|)$ interprets atoms $|p| subset.eq H_(#taskframe) times D$; $#model, tau, x #satisfies square.stroked phi.alt$ iff $#model, sigma, x #satisfies phi.alt$ for every $sigma in H_(#taskframe)$ -- $square.stroked$ quantifies over *all* total world histories.#footnote[`def:BL-model`, `def:BL-semantics` (box clause). @brastmckie2026possibleworlds] Frame validity ($#taskframe #satisfies phi.alt$), logical consequence ($Gamma #satisfies phi.alt$), and global validity ($#satisfies phi.alt$) close the semantic layer.#footnote[`def:frame-validity`, `def:logical-consequence`. @brastmckie2026possibleworlds]
 
 == Proof Systems
 
@@ -181,7 +158,7 @@ The *BL-level* system this report's pain points concern is $op("TM")$ itself, th
 
 Every partial history extends to a total one by a Step Lemma#footnote[`lem:step`, the sole *Spherical* application site. @brastmckie2026possibleworlds] driving a Zorn's-lemma argument (`thm:extension`), hence `cor:occurrence`; both are ZFC results, not choice-free. This matters for a Lean/paper mismatch worth flagging once: "choice-free" in the paper's sense means *no further use of AC given classical logic*, whereas Lean's single `Classical.choice` axiom already yields both excluded middle and choice jointly, so `#print axioms` cannot express the paper's finer distinction directly -- this repository has separately machine-checked that *Spherical* on a finite carrier implies weak excluded middle, so no `Classical.choice`-free Lean proof of `thm:extension` could exist even for the finite case.
 
-#theorem("Soundness")[If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM and each of its four frame-class extensions.]#footnote[`thm:TM-soundness`. Representative validity proofs: `thm:M5-valid` ($#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, via $square.stroked$'s universal quantification over the evaluation set $H_(#taskframe)$ itself), plus TD, TA, TL, MF. @brastmckie2026possibleworlds]
+*Soundness*: if $tack.r phi.alt$ then $#satisfies phi.alt$, for TM and each of its four frame-class extensions.#footnote[`thm:TM-soundness`. Representative validity proofs: `thm:M5-valid` ($#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, via $square.stroked$'s universal quantification over $H_(#taskframe)$ itself), plus TD, TA, TL, MF. @brastmckie2026possibleworlds]
 
 The three correspondence theorems are compressed to statement and one-line idea -- these are *not* the "give in full" exceptions (@sec:split-validity's dichotomy and (DD) are):
 
@@ -242,41 +219,37 @@ The three frame conditions Discrete/Dense/Complete (`def:frame-properties`) are 
 
 = Pain Point Two: Split Validity and TM's Semantic Incompleteness <sec:split-validity>
 
-#theorem("Discrete-or-Dense Dichotomy")[
-  Every nontrivial totally ordered abelian group $#Dur$ is either discrete (has a least positive element) or dense, and never both.
-]#footnote[Give in full, briefly, per this report's own remit. Translation invariance makes the dichotomy exhaustive: if there is no least positive element, some positive $e < y-x$ exists for any $x<y$ (else $y-x$ would itself be least positive), giving $x < x+e < y$; conversely a least positive element $e$ forbids anything strictly between $x$ and $x+e$. The dichotomy depends essentially on the *group* structure and fails for a bare linear order (e.g. a copy of $ZZ$ followed by a copy of $QQ$), which is why `def:temporal-order` requires a group and not merely a linear order. @brastmckie2026possibleworlds]
+#theorem("Discrete-or-Dense Dichotomy")[Every nontrivial totally ordered abelian group $#Dur$ is either discrete (has a least positive element) or dense, and never both.]#footnote[`cor:tm-completeness`'s proof. @brastmckie2026possibleworlds Give in full, briefly, per this report's own remit.]
+#proof[Translation invariance makes it exhaustive: if there is no least positive element, some positive $e<y-x$ exists for any $x<y$ (else $y-x$ would itself be least positive), giving $x<x+e<y$; a least positive element $e$ conversely forbids anything strictly between $x$ and $x+e$. Depends essentially on the *group* structure -- fails for a bare linear order (e.g.\ a copy of $ZZ$ followed by a copy of $QQ$), which is why `def:temporal-order` requires a group, not merely a linear order.]
 
 Consequently $op("Log")("all task frames") = op("Log")("Discrete") inter op("Log")("Dense")$: the class of all task frames is a disjoint union of incompatible subclasses, *not closed under disjoint union*. Unions of logics characteristically admit *split validities* -- disjunctions valid on every frame yet unprovable from either disjunct's axioms alone -- and TM exhibits exactly this:
 
-#theorem("The (DD) Split Validity")[
-  The schema $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN")) $ (no variable-disjointness restriction; TD supplies the past mirrors), for arbitrary instances of DF and DN, is valid over every task frame yet *TM*-unprovable.
-]#footnote[Give in full, briefly. A two-fibre countermodel (one fibre over $ZZ$, one over $RR$, with $square.stroked$ read globally across both) is TM-sound -- no TM axiom or rule constrains how $square.stroked$ interacts across fibres -- while refuting both disjuncts of a variable-sharing instance. Part of `cor:tm-completeness`'s proof. @brastmckie2026possibleworlds In $op("BL")^+$, (DD) is already a theorem with no added axiom: TMP-NB and M5 give $tack.r_(op("TM")^+) square.stroked "Next" top or square.stroked not "Next" top$, and since $"Next" top arrow.r phi.alt_(op("DF"))$ and $not "Next" top arrow.r psi_(op("DN"))$ are $op("BL")^+$-valid, $op("TM")^+$'s weak completeness (inheriting its own outstanding base-case obligation, @sec:key-theorems) gives the two conditionals as theorems, whence necessitation and distribution yield (DD).]
+#theorem("The (DD) Split Validity")[The schema $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN"))$ (no variable-disjointness restriction; TD supplies the past mirrors), for arbitrary instances of DF and DN, is valid over every task frame yet *TM*-unprovable.]#footnote[Part of `cor:tm-completeness`'s proof. @brastmckie2026possibleworlds Give in full, briefly.]
+#proof[A two-fibre countermodel (one fibre $ZZ$, one $RR$, $square.stroked$ read globally across both) is TM-sound -- no TM axiom or rule constrains how $square.stroked$ interacts across fibres -- while refuting both disjuncts of a variable-sharing instance. In $op("BL")^+$, (DD) is already a theorem with no added axiom: TMP-NB and M5 give $tack.r_(op("TM")^+) square.stroked "Next" top or square.stroked not "Next" top$, and since $"Next" top arrow.r phi.alt_(op("DF"))$ and $not "Next" top arrow.r psi_(op("DN"))$ are $op("BL")^+$-valid, $op("TM")^+$'s weak completeness (inheriting its own outstanding base-case obligation, @sec:key-theorems) gives the two conditionals as theorems, whence necessitation and distribution yield (DD).]
 
-#align(center)[
-  #cetz.canvas({
+#figure(
+  cetz.canvas({
     import cetz.draw: *
-    let yZ = 1.4
+    let yZ = 1.1
     let yR = 0.0
-    let xL = -2.6
-    let xR = 2.6
+    let xL = -2.4
+    let xR = 2.4
     line((xL, yZ), (xR, yZ), stroke: (paint: blue.darken(20%), thickness: 1.5pt))
     for i in range(-4, 5) {
-      let x = i * 0.55
-      line((x, yZ - 0.09), (x, yZ + 0.09), stroke: (paint: blue.darken(20%), thickness: 1pt))
+      let x = i * 0.5
+      line((x, yZ - 0.08), (x, yZ + 0.08), stroke: (paint: blue.darken(20%), thickness: 1pt))
     }
-    content((xR + 0.55, yZ), text(size: 9pt, fill: blue.darken(20%))[fibre $ZZ$])
-    content((0, yZ + 0.35), text(size: 8pt, fill: blue.darken(20%))[$"Next"top$ true here])
+    content((xR + 0.5, yZ), text(size: 8pt, fill: blue.darken(20%))[fibre $ZZ$])
+    content((0, yZ + 0.3), text(size: 7.5pt, fill: blue.darken(20%))[$"Next"top$ true here])
     line((xL, yR), (xR, yR), stroke: (paint: orange.darken(10%), thickness: 1.5pt))
-    content((xR + 0.55, yR), text(size: 9pt, fill: orange.darken(20%))[fibre $RR$])
-    content((0, yR - 0.35), text(size: 8pt, fill: orange.darken(20%))[$not "Next"top$ true here])
-    line((-1.7, yR), (-1.7, yZ), stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"),
+    content((xR + 0.5, yR), text(size: 8pt, fill: orange.darken(20%))[fibre $RR$])
+    content((0, yR - 0.3), text(size: 7.5pt, fill: orange.darken(20%))[$not "Next"top$ true here])
+    line((-1.5, yR), (-1.5, yZ), stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"),
       mark: (end: ">", start: ">", fill: gray.darken(20%)))
-    content((-1.7, (yZ + yR) / 2), anchor: "west", text(size: 8pt, fill: gray.darken(20%))[ $square.stroked$ reads globally])
-  })
-]
-#align(center)[#text(size: 0.85em, style: "italic")[
-  The two-fibre countermodel witnessing (DD): a discrete $ZZ$ fibre (ticked) where $"Next"top$ holds, and a dense $RR$ fibre (unticked) where it fails, with $square.stroked$ reading globally across both.
-]]
+    content((-1.5, (yZ + yR) / 2), anchor: "west", text(size: 7.5pt, fill: gray.darken(20%))[ $square.stroked$ reads globally])
+  }),
+  caption: [The two-fibre (DD) countermodel: a discrete $ZZ$ fibre (ticked) where $"Next"top$ holds, a dense $RR$ fibre (unticked) where it fails, $square.stroked$ reading globally across both.],
+)
 
 *The taxonomy, kept unblurred*: TM is *semantically* incomplete (a formula valid but unprovable), *not* Halldén-incomplete. $"TM" + "(DD)"$ would *create* Halldén-incompleteness: a provable variable-disjoint disjunction with neither disjunct provable, since each fails soundness on the complementary subclass. Halldén-incompleteness of $op("Log")("all task frames")$ *itself is a theorem* -- the correct formal signature of a class that is a union of two incompatible kinds, and not a defect to be repaired.
 
@@ -288,11 +261,7 @@ $op("TM")_c$ fails identically over ${ZZ,RR}$, compounded by the further, indepe
 
 $op("BL")$ is extended with a primitive propositional identity operator $equiv$ and higher-order quantifiers: `def:id`'s Ref, Imp, LL axiomatize $equiv$ minimally (not assumed Boolean), and operator variables range over an unrestricted domain of operations on propositions.#footnote[@brastmckie2026possibleworlds] The objective modalities are *axiomatized* by a primitive predicate $O$ on operator terms, following the theory of necessities in Bacon @bacon2022necessities, rather than *defined* outright -- *predicativity* (operator comprehension confined to formulas with no operator variables and no occurrence of $O$) blocks Russell--Myhill and keeps the system consistent with a fine-grained identity; Walsh @walsh2016predicativity proves consistency of a predicative restriction of Church's intensional logic. Predicativity could be dropped by strengthening the theory of identity instead, since coarse-grained identity also blocks Russell--Myhill.
 
-#definition("Strongest Objective Normal Modal Operator")[
-  $Q$ is a *strongest objective normal modal operator in $L$* -- $op("Str")^O_L (Q)$ -- iff (1) $tack.r O(Q)$ and (2) $tack.r forall P [O(P) arrow.r (Q prec.eq P)]$, with $prec.eq$ the dominance ordering. Objectivity and normality need not be stated separately: clause (1) already entails them.
-]#footnote[`def:strongest`. @brastmckie2026possibleworlds]
-
-#theorem("Existence")[$op("Str")^O_L (B m)$ -- the meet operator witnesses existence.]#footnote[`thm:exist`: clause (1) is the second conjunct of O-Meet, clause (2) follows from the first, T/N/K/necessitation-closure obtained by detaching O-Fac, O-Ax, O-Nec at $B m$. This *replaces* reliance on the separate, weaker `cor:exists` route (gated by a coarse-grained identity the paper does not assume) -- `cor:exists` is not the paper's existence result. @brastmckie2026possibleworlds]
+$Q$ is a *strongest objective normal modal operator in $L$* -- $op("Str")^O_L (Q)$ -- iff (1) $tack.r O(Q)$ and (2) $tack.r forall P [O(P) arrow.r (Q prec.eq P)]$, with $prec.eq$ the dominance ordering; objectivity and normality need not be stated separately, since clause (1) already entails them.#footnote[`def:strongest`. @brastmckie2026possibleworlds] $op("Str")^O_L (B m)$: the meet operator witnesses *existence* -- clause (1) is the second conjunct of O-Meet, clause (2) follows from the first, T/N/K/necessitation-closure obtained by detaching O-Fac, O-Ax, O-Nec at $B m$.#footnote[`thm:exist`, *replacing* reliance on the separate, weaker `cor:exists` route (gated by a coarse-grained identity the paper does not assume) -- `cor:exists` is not the paper's existence result. @brastmckie2026possibleworlds]
 
 Any two strongest objective normal modal operators are provably equivalent (`lem:uniq`); $op("Str")^O_L (Q)$ yields S4 for $Q$ (`thm:s4`) and B/Symmetry for $Q$ (`thm:sym`, a $tilde.op 15$-line chain compressed here to result-and-cite). Under $op("Str")^O_L (square.stroked)$: `lem:uniq` gives $tack.r forall p (square.stroked p arrow.l.r B m p)$, `thm:s4` gives S4, `thm:sym` gives B, factivity and necessitation follow by detaching O-Fac and O-Nec -- together delivering an S5 logic for $square.stroked$.#footnote[@brastmckie2026possibleworlds]
 
@@ -306,33 +275,31 @@ Any two strongest objective normal modal operators are provably equivalent (`lem
 
 *Architecture*: by contraposition, if $phi.alt$ is underivable then ${not phi.alt}$ is consistent and extends to an MCS $M in.rev not phi.alt$. A countermodel is then built by a *three-way case split* on the discreteness indicator $U(top,bot)$ ("there is an immediate successor," i.e. whether $square.stroked not "Next"top$ or $not square.stroked not "Next"top$ is in $M$), with the *mixed case eliminated outright* by `mcs_mixed_case_absurd` (`BXCanonical/Chronicle/MCSMixedCase.lean`): an MCS cannot be undecided about discreteness.
 
-#align(center)[
-  #cetz.canvas({
+#figure(
+  cetz.canvas({
     import cetz.draw: *
-    let root = (0, 1.9)
-    let dense = (-3.6, 0)
+    let root = (0, 1.5)
+    let dense = (-3.3, 0)
     let discrete = (0, 0)
-    let mixed = (3.6, 0)
+    let mixed = (3.3, 0)
     line(root, dense, stroke: (paint: gray.darken(20%), thickness: 1pt))
     line(root, discrete, stroke: (paint: gray.darken(20%), thickness: 1pt))
     line(root, mixed, stroke: (paint: gray.darken(20%), thickness: 1pt))
-    content(root, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 6pt, radius: 3pt)[
-      #text(size: 8pt)[MCS $M$: decide $U(top, bot)$]
+    content(root, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 5pt, radius: 3pt)[
+      #text(size: 7.5pt)[MCS $M$: decide $U(top, bot)$]
     ])
-    content(dense, box(fill: blue.transparentize(85%), stroke: (paint: blue.darken(20%), thickness: 1pt), inset: 6pt, radius: 3pt, width: 3.3cm)[
-      #align(center)[#text(size: 7.5pt)[Dense case \ $square.stroked not U(top,bot) in M$ \ chronicle on $QQ$]]
+    content(dense, box(fill: blue.transparentize(85%), stroke: (paint: blue.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
+      #align(center)[#text(size: 7pt)[Dense case \ $square.stroked not U(top,bot) in M$ \ chronicle on $QQ$]]
     ])
-    content(discrete, box(fill: orange.transparentize(85%), stroke: (paint: orange.darken(20%), thickness: 1pt), inset: 6pt, radius: 3pt, width: 3.3cm)[
-      #align(center)[#text(size: 7.5pt)[Discrete case \ $square.stroked U(top,bot) in M$ \ Reynolds/Doets on $ZZ$]]
+    content(discrete, box(fill: orange.transparentize(85%), stroke: (paint: orange.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
+      #align(center)[#text(size: 7pt)[Discrete case \ $square.stroked U(top,bot) in M$ \ Reynolds/Doets on $ZZ$]]
     ])
-    content(mixed, box(fill: red.transparentize(88%), stroke: (paint: red.darken(20%), thickness: 1pt), inset: 6pt, radius: 3pt, width: 3.3cm)[
-      #align(center)[#text(size: 7.5pt)[Mixed case \ eliminated: absurd]]
+    content(mixed, box(fill: red.transparentize(88%), stroke: (paint: red.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
+      #align(center)[#text(size: 7pt)[Mixed case \ eliminated: absurd]]
     ])
-  })
-]
-#align(center)[#text(size: 0.85em, style: "italic")[
-  The three-way case split on the discreteness indicator $U(top,bot)$. Same dichotomy that breaks $op("BL")$ (@sec:split-validity) makes $op("BL")^+$ go through: $op("BL")^+$ has a sentence naming discreteness where $op("BL")$ does not.
-]]
+  }),
+  caption: [The three-way case split on $U(top,bot)$. Same dichotomy that breaks $op("BL")$ (@sec:split-validity) makes $op("BL")^+$ go through: $op("BL")^+$ has a sentence naming discreteness where $op("BL")$ does not.],
+)
 
 *The structural rhyme*, this report's single most illuminating connection: this is the *same* discrete/dense dichotomy that breaks TM at the $op("BL")$ level (@sec:split-validity) -- the difference is that $op("BL")^+$ has a sentence naming discreteness ($not "Next"top$) and $op("BL")$ does not, so exactly the fact producing (DD)'s unprovable-but-valid disjunction at the $op("BL")$ level is what the $op("BL")^+$ completeness architecture case-splits on to make the canonical-model construction go through.
 
@@ -366,32 +333,30 @@ Of three candidate "early representation work" items, exactly *one* is live Lean
 
 *The Jönsson--Tarski programme* -- the complex algebra $"Cm"(cal(F))$ of a task frame, the ultrafilter frame $"Uf"(A)$ of an abstract algebra, and the canonical embedding $eta(a) = {U : a in U}$ -- is an *archived target*: this material was moved out of the live tree into an archived subtree, with revival tracked only as an unstarted future item. No content under that archived subtree is live. The important obstruction on revival: *Spherical* for an ultrafilter frame is a genuinely nontrivial *new* obligation, and the finite-$W$ discharge pattern (`cor:spherical-finite`) does not apply -- ultrafilter frames are typically infinite.
 
-#align(center)[
-  #cetz.canvas({
+#figure(
+  cetz.canvas({
     import cetz.draw: *
-    let start = (-4.6, 0)
-    let algMid = (-1.4, 1.1)
-    let algEnd = (1.6, 1.1)
-    let jtEnd = (4.4, 1.1)
-    let ssMid = (-1.4, -1.1)
-    let ssEnd = (4.4, -1.1)
-    let boxstyle(fill-c, stroke-c) = (fill: fill-c, stroke: (paint: stroke-c, thickness: 1pt), inset: 5pt, radius: 3pt, width: 2.7cm)
-    content(start, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 5pt, radius: 3pt)[#text(size: 7.5pt)[task-model class]])
+    let start = (-4.4, 0)
+    let algMid = (-1.3, 1.0)
+    let algEnd = (1.5, 1.0)
+    let jtEnd = (4.2, 1.0)
+    let ssMid = (-1.3, -1.0)
+    let ssEnd = (4.2, -1.0)
+    let boxstyle(fill-c, stroke-c) = (fill: fill-c, stroke: (paint: stroke-c, thickness: 1pt), inset: 4pt, radius: 3pt, width: 2.5cm)
+    content(start, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 4pt, radius: 3pt)[#text(size: 7pt)[task-model class]])
     line(start, algMid, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
-    content(algMid, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 7pt)[Lindenbaum--Tarski algebra -- *live*]]])
+    content(algMid, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 6.5pt)[Lindenbaum--Tarski algebra -- *live*]]])
     line(algMid, algEnd, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
-    content(algEnd, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 7pt)[ultrafilters, interior ops -- *live*]]])
+    content(algEnd, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 6.5pt)[ultrafilters, interior ops -- *live*]]])
     line(algEnd, jtEnd, stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"), mark: (end: ">"))
-    content(jtEnd, box(..boxstyle(red.transparentize(88%), red.darken(20%)))[#align(center)[#text(size: 7pt)[Jönsson--Tarski duality -- *archived target*]]])
+    content(jtEnd, box(..boxstyle(red.transparentize(88%), red.darken(20%)))[#align(center)[#text(size: 6.5pt)[Jönsson--Tarski duality -- *archived target*]]])
     line(start, ssMid, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
-    content(ssMid, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 7pt)[shift-set design doc -- *target*]]])
+    content(ssMid, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 6.5pt)[shift-set design doc -- *target*]]])
     line(ssMid, ssEnd, stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"), mark: (end: ">"))
-    content(ssEnd, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 7pt)[ultraproduct pipeline -- *not started*]]])
-  })
-]
-#align(center)[#text(size: 0.85em, style: "italic")[
-  The representation-theorem landscape: two routes, each starting live and ending in a target. Solid arrows mark completed steps; dashed arrows mark the gap. Status labels are the point of this figure.
-]]
+    content(ssEnd, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 6.5pt)[ultraproduct pipeline -- *not started*]]])
+  }),
+  caption: [The representation-theorem landscape: two routes, each starting live and ending in a target. Solid arrows mark completed steps; dashed arrows mark the gap.],
+)
 
 == The Way Forward
 
