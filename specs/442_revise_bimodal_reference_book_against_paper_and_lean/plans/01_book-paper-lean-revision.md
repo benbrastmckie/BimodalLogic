@@ -445,7 +445,7 @@ the dead `Metalogic/ConservativeExtension/` citations deleted, never repointed.
 
 ---
 
-### Phase 7: Correct the Decidability Status [NOT STARTED]
+### Phase 7: Correct the Decidability Status [COMPLETED]
 
 **Goal**: Decidability of TM and its extensions is **open**. Fix the retracted FMP-over-Z premise,
 repoint the two false-negative FMP theorem citations, and delete the dead per-class FMP file

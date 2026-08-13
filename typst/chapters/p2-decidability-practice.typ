@@ -14,6 +14,18 @@
 )
 
 
+== Whole-System Decidability Is Open
+
+Whether *TM*, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, and $op("TM")_(d c)$ are decidable is *open*.#footnote[`cor:tm-decidability` --- an anchor outside the 26 tracked by `specs/paper-definitions-of-record.md`, re-verified directly against the live paper for this citation rather than assumed. @brastmckie2026possibleworlds]
+An earlier presentation of this claim rested on a blanket finite-model-property-over-$D = ZZ$ premise; that premise is *false* and has been retracted, witnessed twice over:
+axiom DF is a non-theorem of *TM*, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ (each is sound over a class containing a dense or $RR$ member on which DF fails) yet is valid in every model over $D = ZZ$; and axiom CO is a non-theorem of $op("TM")_f$ (witnessed by the non-Archimedean discrete order $ZZ times_(op("lex")) ZZ$) yet is likewise valid in every model over $D = ZZ$.
+A repaired finite model property would have to be *class-specific*, ranging over effective non-Archimedean carriers such as $ZZ times_(op("lex")) ZZ$ for the discrete systems rather than $ZZ$ alone, with analogous constructions needed for the dense and complete classes; none of this is currently established.
+
+What *is* true: each system here is recursively axiomatized -- a recursive set of schemata and finitary rules -- so its theorems are recursively enumerable regardless of completeness.
+Decidability additionally needs the non-theorems to be r.e. as well, standardly via a finite model property of the repaired, class-specific kind above; none is established.
+Decidability of $op("Log")("all task frames") = op("Log")(op("Discrete")) inter op("Log")(op("Dense"))$ (@sec:metalogic) would *follow* from decidability of the two factor logics separately -- that intersection reduction is the target *strategy*, not a result.
+A verified *sound* tableau procedure exists in this repository (below), and the semantic, truth-connected finite model property for the $ZZ$-time discrete case is the target of ongoing formalization; no decidability theorem is machine-checked at present.
+
 == The Finite Model Property <sec:fmp-resolution>
 
 The completeness side of the decision procedure rests on a finite model property, developed in `Metalogic/Decidability/FMP/`.
@@ -45,11 +57,13 @@ def FilteredWorld (phi : Formula) : Type :=
 ```
 
 The number of equivalence classes is bounded by $2^(|op("closure")(φ)|)$, and finiteness is witnessed constructively by `FilteredWorld.finite` (`FMP/FiniteModel.lean:137`).
-Both halves of that sentence are now proved, and the bound is a theorem rather than an estimate: `FMP.filtered_world_bound` states `Nat.card (FilteredWorld φ) ≤ 2^(|op("closure")(φ)|)` and `FMP.assignmentSpace_card` computes the right-hand side as an *equality*, `Nat.card (Set ↥(subformulaClosure φ)) = 2^(|op("closure")(φ)|)`.
+Both halves of that sentence are now proved, and the bound is a theorem rather than an estimate: `filtered_world_bound` states `Nat.card (FilteredWorld φ) ≤ 2^(|op("closure")(φ)|)` and `assignmentSpace_card` computes the right-hand side as an *equality*, `Nat.card (Set ↥(subformulaClosure φ)) = 2^(|op("closure")(φ)|)`.
 Both travel along `filteredCharacteristicSet_injective` (`FMP/FiniteModel.lean:96`) -- the same injection that witnesses finiteness, read for cardinality as well as for `Finite`.
 This is worth stating explicitly because the two theorems previously carrying these names were vacuous: each concluded in an `and True` conjunct discharged by `trivial`, so neither constrained `FilteredWorld` at all.
 From there, `FMP.mcs_finite_model_property` (`FMP/FMP.lean:193`) shows that a formula outside some closure MCS fails in the induced finite structure, and `FMP.fmp_contrapositive` (`FMP/FMP.lean:206`) turns this into the completeness form quoted above: membership in *every* closure MCS bundle forces derivability.
-Truth preservation across the quotient is handled in `FMP/TruthPreservation.lean`, and the dense and discrete refinements live in `FMP/DenseFMP.lean` and `FMP/DiscreteFMP.lean`.
+Truth preservation across the quotient is handled in `FMP/TruthPreservation.lean`.
+The construction is *discrete-only*, not a dense/discrete pair: `RefinedFilteredTaskFrame` requires `[SuccOrder D] [NoMaxOrder D]`, a restriction forced by the paper's *Limit* axiom rather than adopted for convenience -- over a dense $D$ every filtered world would sit in every cone of every other one, collapsing *Limit* outright, while a finite frame satisfying *Limit* over a dense duration type is temporally rigid, so the filtration and FMP frames cannot both be finite and dense-polymorphic.
+There is accordingly no live per-class split into separate dense and discrete FMP files; the whole `FMP/` tree already is the discrete construction.
 The construction is thus a complete, self-contained finite combinatorics of the proof system; what it does not supply -- the open bridge noted above -- is the semantic step identifying "true in every closure MCS bundle" with task-frame validity.
 
 == The Decision Procedure

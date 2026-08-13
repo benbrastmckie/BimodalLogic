@@ -58,6 +58,13 @@ cor:spherical-finite
 # Lean identifier to grep) ---
 def:BLplus-language
 
+# --- External paper corollary label, not cited anywhere in Lean source
+# (cor:tm-decidability is outside the 26 anchors tracked by
+# specs/paper-definitions-of-record.md; unlike cor:tm-completeness, which
+# happens to be cited in a ProofSystem/Axioms.lean doc comment and so
+# resolves on its own, this one has no Lean-side citation to grep) ---
+cor:tm-decidability
+
 # --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
 01-introduction.typ
 
