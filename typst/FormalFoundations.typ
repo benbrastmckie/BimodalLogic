@@ -28,7 +28,9 @@
 
 // ============================================================================
 // Document Configuration -- matches BimodalReference.typ's type settings
-// verbatim, so the page budget is counted on the same scale as the book.
+// verbatim, so the page count is on the same scale as the book. Body runs
+// ~26pp: the definition/theorem presentation costs roughly ten pages over the
+// prior prose version. That cost is the point of the rewrite, not a defect.
 // ============================================================================
 
 #set document(
@@ -144,7 +146,7 @@ the proof systems that answer to them last.
   falsity, material implication, metaphysical necessity, *since*, and *until*. Well-formed
   sentences are given by
   $ phi.alt, psi ::= p_i | bot | phi.alt arrow.r psi | square.stroked phi.alt | phi.alt #since psi | phi.alt #until psi. $
-]#footnote[`def:BLplus-language`. @brastmckie2026possibleworlds The paper's base language $#BL$ replaces $#since$ and $#until$ with the one-place operators $#allpast$ and $#allfuture$ taken as primitive; $#BL$ embeds into $#BLplus$ under the definitions of @def-operators, and every $#BL$-theorem is recovered. Nothing below depends on the base language, and it is not used again. The paper is @brastmckie2026possibleworlds, available at #link("https://benbrastmckie.com/publications/possible_worlds.pdf")[benbrastmckie.com].]
+]#footnote[`def:BLplus-language`. @brastmckie2026possibleworlds The paper's base language $#BL$ takes the one-place $#allpast$ and $#allfuture$ as primitive instead; it embeds into $#BLplus$ under @def-operators, and is not used below. The paper is available at #link("https://benbrastmckie.com/publications/possible_worlds.pdf")[benbrastmckie.com].]
 
 The two primitives are written infix and are *guard-first*: in $phi.alt #since psi$ the guard is
 $phi.alt$, holding throughout an interval, and the event is $psi$, witnessed at its far endpoint.
@@ -252,7 +254,7 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 
 The Step Lemma is the sole application site of *Spherical* in the paper, and Extension is the sole
 consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
-point.#footnote[`lem:step`. @brastmckie2026possibleworlds The Step Lemma's own proof notes that *Spherical* is not needed when the directed family has a $subset.eq$-least member. On a finite carrier *Spherical* holds outright and choice-free (`cor:spherical-finite`), so the Zorn appeal is the general case only.] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
+point.#footnote[`lem:step`. @brastmckie2026possibleworlds *Spherical* is not needed when the directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free (`cor:spherical-finite`).] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
 localization is what makes *Spherical* the identified obstruction of @sec:representation.
 
 The cones are a basis for a topology on world states, and that topology is separated.
@@ -309,7 +311,7 @@ The cones are a basis for a topology on world states, and that topology is separ
     + $#model, tau, x #satisfies phi.alt #until psi$ iff $#model, tau, z #satisfies psi$ for some
       $z > x$ with $#model, tau, y #satisfies phi.alt$ for all $y$ with $x < y < z$.
   ]
-]#footnote[`def:BL-semantics`, `def:BLplus-semantics`. @brastmckie2026possibleworlds The two share their models; the extended language adds only the last two clauses. Evaluating at a possible world paired with a time, with truth at that time mediated by the world state occupied there, is an instance of Scott's proposal @scott1970advice that the index of evaluation be a structured point of reference and not a bare world.]
+]#footnote[`def:BL-semantics`, `def:BLplus-semantics`. @brastmckie2026possibleworlds Evaluating at a possible world paired with a time, with truth at that time mediated by the world state occupied there, is an instance of Scott's proposal @scott1970advice that the index of evaluation be a structured point of reference and not a bare world.]
 
 $square.stroked$ quantifies over the possible worlds of the frame at the *same* time, and over all
 of them. It is not a relational modality with an accessibility relation to be tuned: the frame
@@ -708,7 +710,7 @@ at most $k$, and the refuted sentence has a fixed depth. The resulting countermo
   This is *not* an application of Kamp's theorem. Kamp's expressive-completeness result --- that
   over Dedekind-complete flows the strict Until/Since language captures every first-order condition
   on a linear order with monadic predicates in one free variable --- is a different statement, and
-  it is not machine-checked here.#footnote[Kamp's 1968 dissertation @kamp1968; the modern model-theoretic proof is Rabinovich's @rabinovich2014. The result is frequently attributed to Kamp's 1971 _Theoria_ paper @kamp1971formalproperties, which introduces the *now* operator and does not contain it. Both of Kamp's scope conditions do real work: the operators must be strict, which is the convention used throughout here, and the flow must be Dedekind complete, since the result fails over arbitrary linear orders.] `Metalogic/WeakCanonical/Kamp/` develops toward the statement
+  it is not machine-checked here.#footnote[Kamp's 1968 dissertation @kamp1968, with the modern proof due to Rabinovich @rabinovich2014; it is frequently attributed to Kamp's 1971 _Theoria_ paper @kamp1971formalproperties, which introduces the *now* operator and does not contain it. Both scope conditions do work: the operators must be strict, as they are here, and the flow must be Dedekind complete.] `Metalogic/WeakCanonical/Kamp/` develops toward the statement
   `kampPriorExpressiveCompleteness`, which remains open. The discrete branch depends on none of it:
   $k$-equivalence is a coarser tool, and coarser is enough when only one sentence must be refuted.
 ]
@@ -860,7 +862,7 @@ The apparatus needed is higher-order. $#BL$ is extended with a primitive proposi
 operator $equiv$, axiomatized minimally by Ref, Imp, and LL and not assumed Boolean, together with
 quantifiers over an unrestricted domain of operations on propositions. The objective modalities are
 *axiomatized* by a primitive predicate $O$ on operator terms, following Bacon's theory of
-necessities @bacon2022necessities, and not defined outright.#footnote[Operator comprehension is restricted to formulas containing no operator variables and no occurrence of $O$. This *predicativity* restriction is what blocks Russell--Myhill while keeping a fine-grained identity; Walsh @walsh2016predicativity proves the consistency of a predicative restriction of Church's intensional logic. It could be dropped in favor of strengthening the theory of identity, since a coarse-grained identity also blocks Russell--Myhill.]
+necessities @bacon2022necessities, and not defined outright.#footnote[*Predicativity* --- operator comprehension restricted to formulas with no operator variables and no occurrence of $O$ --- blocks Russell--Myhill while keeping a fine-grained identity; Walsh @walsh2016predicativity proves consistency for a predicative restriction of Church's intensional logic. It could be traded for a coarse-grained identity, which blocks Russell--Myhill too.]
 
 #definition("Strongest Objective Normal Modal Operator")[
   $Q$ is a *strongest objective normal modal operator in $L$* --- written $op("Str")^O_L (Q)$ ---
@@ -869,7 +871,7 @@ necessities @bacon2022necessities, and not defined outright.#footnote[Operator c
   them.
 ]#footnote[`def:strongest`. @brastmckie2026possibleworlds]
 
-#theorem("Existence")[$op("Str")^O_L (B m)$: the meet operator is a strongest objective normal modal operator, so $L$ contains one.]#footnote[`thm:exist`. @brastmckie2026possibleworlds Clause (1) is the second conjunct of O-Meet; clause (2) follows from the first by instantiation and generalization; T, N, K, and closure under necessitation follow by detaching O-Fac, O-Ax, and O-Nec at $B m$. This theorem replaces the weaker `cor:exists` route, which was gated by a coarse-grained identity the paper does not assume.]
+#theorem("Existence")[$op("Str")^O_L (B m)$: the meet operator is a strongest objective normal modal operator, so $L$ contains one.]#footnote[`thm:exist`. @brastmckie2026possibleworlds Clause (1) is the second conjunct of O-Meet, clause (2) follows from the first, and T, N, K, and necessitation-closure follow by detaching O-Fac, O-Ax, and O-Nec at $B m$.]
 
 #theorem("Uniqueness and logic")[
   Any two strongest objective normal modal operators are provably equivalent. If

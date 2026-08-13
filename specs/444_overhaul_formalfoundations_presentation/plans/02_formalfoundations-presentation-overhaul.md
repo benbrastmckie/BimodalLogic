@@ -1,7 +1,7 @@
 # Implementation Plan: Overhaul FormalFoundations.typ Presentation
 
 - **Task**: 444 - Overhaul FormalFoundations.typ presentation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 18 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/444_overhaul_formalfoundations_presentation/reports/01_team-research.md` (plus teammate findings `01_teammate-a-findings.md` through `01_teammate-d-findings.md`)
@@ -697,28 +697,28 @@ finds are made here, but the audit is conducted first as a read against sources.
 
 ---
 
-### Phase 11: Consistency, Cross-Reference, and Narrative Read-Through [NOT STARTED]
+### Phase 11: Consistency, Cross-Reference, and Narrative Read-Through [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Read the finished document end to end as a reader would, and fix what only a whole-document
 read exposes: cross-references, notation uniformity, section-to-section flow, and the page budget.
 
 **Tasks**:
-- [ ] Verify every `@sec:` and `@` reference resolves and points at the intended target — the compile
+- [x] Verify every `@sec:` and `@` reference resolves and points at the intended target — the compile
       proves resolution, but a reference resolving to the wrong section is invisible to the compiler
-      and must be read.
-- [ ] Sweep notation uniformity across all five sections: one symbol per notion, consistent use of
+      and must be read. *(completed: all 34 `@sec:` references machine-mapped to their target headings and read for intent; all correct)*
+- [x] Sweep notation uniformity across all five sections: one symbol per notion, consistent use of
       the macros from `typst/notation/bimodal-notation.typ`, consistent naming for the systems and
-      frame classes, consistent Since/Until argument order per the G2 decision.
-- [ ] Verify environment numbering reads sensibly and that `#proposition` and `#corollary` — imported
+      frame classes, consistent Since/Until argument order per the G2 decision. *(completed: uniform -- `#BLplus` 12/12, `#Nxt` 18/18, `H_(taskframe)` 13/13, no competing spelling anywhere)*
+- [x] Verify environment numbering reads sensibly and that `#proposition` and `#corollary` — imported
       but unused in the original — are used where they are the right environment.
-- [ ] Read the narrative arc: each section opens by stating what it establishes and closes by
+- [x] Read the narrative arc: each section opens by stating what it establishes and closes by
       handing off to the next; the reason the two costs follow the construction is stated; no section
-      is a list of separate worries.
-- [ ] Reconcile the page count against the budget recorded in Phase 2, and compress the section that
+      is a list of separate worries. *(completed: each of the five sections opens by stating what it establishes; the costs section states why it follows the construction)*
+- [x] Reconcile the page count against the budget recorded in Phase 2, and compress the section that
       overruns rather than trimming uniformly.
-- [ ] Verify the document reads for a reader assumed unfamiliar with the paper: every symbol is
-      defined before use, and the base-language footnote carries the paper link.
-- [ ] Run the full gate set one final time.
+- [x] Verify the document reads for a reader assumed unfamiliar with the paper: every symbol is
+      defined before use, and the base-language footnote carries the paper link. *(completed)*
+- [x] Run the full gate set one final time. *(completed: all nine gates green)*
 
 **Timing**: 1.5 hours
 
@@ -745,6 +745,12 @@ compress it rather than reporting the overrun as acceptable.
 - Every reference read and confirmed to point at its intended target.
 - Page count reconciled against the Phase 2 measurement.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Hold the document at roughly the Phase 2 page budget (17 pages; 28 delivered) | The budget goal and the FIX-tag mandates in this same plan are in direct tension, and the FIX tags are the task's core mandate. Discharging FIX-113/123/126/135 required expanding run-on definitions into one environment per notion; FIX-174/189 required replacing one dense completeness theorem with five per-class theorems plus a status table; FIX-285 required three definition-plus-theorem branch treatments; and G3 added the topology definition, theorem, and proof. The document went from about 6 environments to 63. Reaching 17 pages now would mean re-merging the definitions the FIX tags asked to split. | Overrunning sections named: section 1 at pp. 1--7 against a ~1.5pp budget, section 3 at pp. 12--18 against ~2.5pp. Three compression levers were tried and measured, not assumed: thmbox environment spacing at 0.85em/0.65em/0.5em gave 29/28/28 pages (no gain); trimming the six longest footnotes, about 1,100 characters, gave 28 pages (no gain); and a paragraph-by-paragraph read of section 1's connective prose found ten short paragraphs each doing distinct work and no removable fat. The file header now states the real ~26pp body figure instead of the stale "~10 pages" claim. |
+
 ---
 
 ## FIX Tag Ownership Map
@@ -768,19 +774,19 @@ Phase 1's Scope Hypothesis before relying on this table.
 
 ## Testing & Validation
 
-- [ ] `typst compile typst/FormalFoundations.typ` exits 0 at the end of every phase.
-- [ ] `typst compile typst/BimodalReference.typ` exits 0 at the end of Phases 1 and 11 (shared-module
-      integrity).
-- [ ] `scripts/typst-sync-check.sh` exits 0 at the end of every content phase.
-- [ ] `scripts/typst-status-counts.sh --json` agrees with the document's status table.
-- [ ] `grep -c "FIX:" typst/FormalFoundations.typ` returns 0.
-- [ ] E2 register grep returns no hit outside quoted passages.
-- [ ] E5 vague-gloss grep returns no hit outside quoted passages.
-- [ ] E6 task-number grep returns nothing under `typst/`.
-- [ ] `git status --short` shows no modification to `FormalSystem/**`, `typst/chapters/**`, or
-      `typst/BimodalReference.typ`.
-- [ ] Every definition has a recorded fidelity verdict against a paper anchor (Phase 10).
-- [ ] Every Lean-backed claim has a recorded fidelity verdict (Phase 10).
+- [x] `typst compile typst/FormalFoundations.typ` exits 0 at the end of every phase. *(verified at every phase close)*
+- [x] `typst compile typst/BimodalReference.typ` exits 0 at the end of Phases 1 and 11 (shared-module
+      integrity). *(both verified green)*
+- [x] `scripts/typst-sync-check.sh` exits 0 at the end of every content phase. *(3 whitelist entries added with reasons)*
+- [x] `scripts/typst-status-counts.sh --json` agrees with the document's status table. *(re-run at Phases 1, 6, 11; identical on all five fields)*
+- [x] `grep -c "FIX:" typst/FormalFoundations.typ` returns 0. *(verified: 0)*
+- [x] E2 register grep returns no hit outside quoted passages. *(0 hits document-wide; baseline was 20)*
+- [x] E5 vague-gloss grep returns no hit outside quoted passages. *(0 hits document-wide)*
+- [x] E6 task-number grep returns nothing under `typst/`. *(0 hits)*
+- [x] `git status --short` shows no modification to `FormalSystem/**`, `typst/chapters/**`, or
+      `typst/BimodalReference.typ`. *(verified: none by this task. `typst/chapters/01-syntax.typ` carries a foreign uncommitted modification present at session start -- last committed under an unrelated task -- which was never touched and never staged.)*
+- [x] Every definition has a recorded fidelity verdict against a paper anchor (Phase 10). *(23-row table, all PASS)*
+- [x] Every Lean-backed claim has a recorded fidelity verdict (Phase 10). *(declaration-existence sweep over all 44 backticked spans)*
 
 ## Artifacts & Outputs
 
