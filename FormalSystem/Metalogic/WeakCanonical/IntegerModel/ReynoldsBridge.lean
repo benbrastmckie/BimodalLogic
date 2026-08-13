@@ -457,6 +457,61 @@ noncomputable def zTaskFrameV2 : TaskFrame ℤ where
   forward_comp w u v x y _ _ h1 h2 := by rw [h2, h1, add_assoc]
   converse w d u := by constructor <;> intro h <;> omega
 
+/-! ### `zTaskFrameV2` discharges `def:frame`'s four axioms (deterministic shift at `ℤ`)
+
+The relation `u = w + d` is a deterministic shift whose position function is the identity, so
+*Limit* is `TaskFrame.limit_of_shift` with `pos := id` and every fiber is the singleton
+`{w + x}`. Unlike `multiFamTaskFrame` below, this frame's carrier is `ℤ` itself rather than a
+product, so it is **not** an instance of `multiFamTaskFrameGen` and its four facts are proved
+directly rather than derived. -/
+
+/-- Every fiber (`def:task-relation`, *Fiber* clause) of `zTaskFrameV2` is a subsingleton: the
+shift is deterministic, so `Fib R w x ⊆ {w + x}`. -/
+theorem zTaskFrameV2_fib_subsingleton (w x : ℤ) :
+    (TaskFrame.Fib zTaskFrameV2.TaskRel w x).Subsingleton := by
+  intro u hu u' hu'
+  have h1 : u = w + x := hu
+  have h2 : u' = w + x := hu'
+  exact h1.trans h2.symm
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `zTaskFrameV2`: the shift supplies both `w + x` and `w - x`. -/
+theorem zTaskFrameV2_serial : TaskFrame.Serial zTaskFrameV2.TaskRel := by
+  show ∀ (w : ℤ) (x : ℤ), 0 ≤ x → (∃ u : ℤ, u = w + x) ∧ (∃ v : ℤ, w = v + x)
+  intro w x _
+  exact ⟨⟨w + x, rfl⟩, ⟨w - x, by omega⟩⟩
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `zTaskFrameV2`: interpolate at the unique intermediate `w + x`. -/
+theorem zTaskFrameV2_interpolates : TaskFrame.Interpolates zTaskFrameV2.TaskRel := by
+  show ∀ (w v : ℤ) (x y : ℤ), 0 ≤ x → 0 ≤ y → v = w + (x + y) →
+    ∃ u : ℤ, u = w + x ∧ v = u + y
+  intro w v x y _ _ h
+  exact ⟨w + x, rfl, by omega⟩
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`zTaskFrameV2`, in the literal transcribed shape, via `TaskFrame.limit_of_shift` with the
+identity position function. -/
+theorem zTaskFrameV2_limit :
+    ∀ w u : ℤ, (∀ x, 0 < x → ∃ y, |y| < x ∧ zTaskFrameV2.TaskRel w y u) → u = w := by
+  refine TaskFrame.limit_of_shift id (fun _ _ _ h => h) ?_
+  show ∀ (w u : ℤ), u = w + 0 → u = w
+  intro w u h
+  omega
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `zTaskFrameV2`: every fiber
+is a singleton and every segment is an intersection of fibers, hence a subsingleton, so
+`Algebraic.sInter_nonempty_of_directed_subsingleton` applies. -/
+theorem zTaskFrameV2_spherical : TaskFrame.Spherical zTaskFrameV2.TaskRel := by
+  intro S hdir hmem
+  refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir
+    (fun s hs => (hmem s hs).2) (fun s hs => ?_)
+  rcases (hmem s hs).1 with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
+  · exact zTaskFrameV2_fib_subsingleton w x
+  · exact (zTaskFrameV2_fib_subsingleton w x).anti Set.inter_subset_left
+
 /-- World history with offset w₀: domain = all of ℤ, states t _ = w₀ + t. -/
 noncomputable def zHistoryV2 (w₀ : ℤ) : WorldHistory zTaskFrameV2 where
   domain := fun _ => True
@@ -703,6 +758,49 @@ noncomputable def multiFamTaskFrame (FamIdx : Type) : TaskFrame ℤ where
     · rintro h; subst h; exact ⟨rfl, by omega⟩
   forward_comp := fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ => ⟨h1.trans h3, by omega⟩
   converse := fun _ _ _ => by constructor <;> (rintro ⟨h1, h2⟩; exact ⟨h1.symm, by omega⟩)
+
+/-! ### `multiFamTaskFrame` discharges `def:frame`'s four axioms (by specialization)
+
+`multiFamTaskFrame FamIdx` and `multiFamTaskFrameGen ℤ FamIdx` (`FlowFrame.lean`) have the same
+carrier `FamIdx × ℤ` and the same task relation, and their remaining fields are `Prop`s, so the
+two frames are **definitionally equal** — `multiFamTaskFrame FamIdx = multiFamTaskFrameGen ℤ
+FamIdx` holds by `rfl`. The four axiom facts are therefore *derived* from the generic frame's,
+not re-proved: `multiFamTaskFrameGen_serial` and its siblings apply directly. -/
+
+/-- The `ℤ` multi-family frame is definitionally the generic flow frame at `ℤ`. -/
+theorem multiFamTaskFrame_eq_gen (FamIdx : Type) :
+    multiFamTaskFrame FamIdx = Algebraic.multiFamTaskFrameGen ℤ FamIdx := rfl
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `multiFamTaskFrame`, by specialization of
+`multiFamTaskFrameGen_serial`. -/
+theorem multiFamTaskFrame_serial (FamIdx : Type) :
+    TaskFrame.Serial (multiFamTaskFrame FamIdx).TaskRel :=
+  Algebraic.multiFamTaskFrameGen_serial
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `multiFamTaskFrame`, by specialization of
+`multiFamTaskFrameGen_interpolates`. -/
+theorem multiFamTaskFrame_interpolates (FamIdx : Type) :
+    TaskFrame.Interpolates (multiFamTaskFrame FamIdx).TaskRel :=
+  Algebraic.multiFamTaskFrameGen_interpolates
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`multiFamTaskFrame`, in the literal transcribed shape, by specialization of
+`multiFamTaskFrameGen_limit`. `ℤ` is nontrivial, so the generic lemma's `[Nontrivial D]` binder
+is discharged by instance search. -/
+theorem multiFamTaskFrame_limit (FamIdx : Type) :
+    ∀ w u : FamIdx × ℤ,
+      (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrame FamIdx).TaskRel w y u) → u = w :=
+  Algebraic.multiFamTaskFrameGen_limit
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `multiFamTaskFrame`, by
+specialization of `multiFamTaskFrameGen_spherical`. -/
+theorem multiFamTaskFrame_spherical (FamIdx : Type) :
+    TaskFrame.Spherical (multiFamTaskFrame FamIdx).TaskRel :=
+  Algebraic.multiFamTaskFrameGen_spherical
 
 /-- World history for the multi-family TaskFrame, parameterized by a family index
 and a base offset. The history visits states `(f, w₀ + t)` at each time `t`. -/

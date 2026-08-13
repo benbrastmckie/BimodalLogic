@@ -980,7 +980,7 @@ blocking finding to record, not to work around.
 
 ---
 
-### Phase 12: Axiom lemmas for the deterministic-shift frames [NOT STARTED]
+### Phase 12: Axiom lemmas for the deterministic-shift frames [COMPLETED]
 
 **Goal**: `multiFamTaskFrameGen` (and hence `bundleFlowFrame`), `zTaskFrameV2`, and
 `multiFamTaskFrame` each have the four axiom facts as standalone sorry-free lemmas.
@@ -993,19 +993,19 @@ blocking finding to record, not to work around.
 proved for the bundle specialization and are the template.
 
 **Tasks**:
-- [ ] Generalize the four `bundleFlow_*` lemmas from the specialization to `multiFamTaskFrameGen`
+- [x] Generalize the four `bundleFlow_*` lemmas from the specialization to `multiFamTaskFrameGen`
       (FlowFrame.lean:130) itself — the frame `bundleFlowFrame` (:361) is *definitionally*
       (`multiFamTaskFrameGen D {fam // fam ∈ B.families}`), so the generic statements should
       specialize back to the existing lemmas by `rfl`/direct application. Keep the existing
       `bundleFlow_*` names as corollaries so their consumers are untouched.
       **Fallback if generalization resists**: prove the generic facts directly by the same
       deterministic-shift argument; do NOT `sorry`, and do NOT delete the specialization lemmas.
-- [ ] `zTaskFrameV2` (ReynoldsBridge.lean:453) and `multiFamTaskFrame` (:697): the same four
+- [x] `zTaskFrameV2` (ReynoldsBridge.lean:453) and `multiFamTaskFrame` (:697): the same four
       lemmas at `ℤ`. Where either is definitionally an instance of `multiFamTaskFrameGen`, derive
       rather than re-prove; record which route was taken.
-- [ ] Record explicitly, in the module docstring and in the summary, that `bundleFlowFrame` is a
+- [x] Record explicitly, in the module docstring and in the summary, that `bundleFlowFrame` is a
       definitional specialization and therefore is **not** a separate discharge site for Phase 14.
-- [ ] Docstring each lemma with the `def:frame` sub-anchor and verbatim recorded text.
+- [x] Docstring each lemma with the `def:frame` sub-anchor and verbatim recorded text.
 
 **Timing**: 2 hours
 
@@ -1037,6 +1037,53 @@ and confirm before proving; treat any additional `where`-site as in scope.
 - `#print axioms` on each new lemma — only the standard Lean axioms
 - `Completeness.lean`, `ChronicleToCountermodelBasic.lean`, and `CompletenessDedekind.lean` still
   elaborate unchanged
+
+**Verification results** (measured 2026-08-12):
+- `lake build` — GREEN, exit 0, 2331 jobs, no new warnings
+- `grep -n "sorry"` on both touched files — `FlowFrame.lean` 0 hits; `ReynoldsBridge.lean` 6 hits,
+  all prose mentions in docstrings ("the sorry-free Reynolds pipeline", etc.), identical to the
+  pre-phase baseline (`git show HEAD:… | grep -c sorry` = 6). Zero `sorry` tactics, zero added.
+- `#print axioms` on all 13 new declarations — only `propext`, `Classical.choice`, `Quot.sound`
+- `Completeness.lean`, `ChronicleToCountermodelBasic.lean`, and `CompletenessDedekind.lean` still
+  elaborate (covered by the green full build)
+- Scope Hypothesis confirmed: three `where`-sites in this territory, plus the definitional
+  specialization `bundleFlowFrame`. No additional `where`-site appeared.
+
+**Route taken for each site** (the phase asked this be recorded):
+- `multiFamTaskFrameGen` — **already proved**. The generalization the phase anticipated had
+  already landed in the tree: `multiFamGen_comp_iff` (:214), `multiFamGen_serial` (:239),
+  `multiFamGen_limit` (:248, via `TaskFrame.limit_of_shift` with `pos := Prod.snd`), and
+  `multiFamGen_spherical` (:266) are stated for the *generic* frame, and the `bundleFlow_*`
+  lemmas are already their specializations. What was missing was only the *shape*: those four are
+  stated pointwise, not as the bare-relation predicates of record. Added
+  `multiFamTaskFrameGen_{serial,interpolates,limit,spherical}` as pure repackagings — no new
+  mathematical argument. The `bundleFlow_*` names are untouched and survive unchanged.
+- `multiFamTaskFrame` (ReynoldsBridge.lean) — **derived, not re-proved**. `multiFamTaskFrame
+  FamIdx = multiFamTaskFrameGen ℤ FamIdx` holds by `rfl` (same carrier, same relation, remaining
+  fields are `Prop`s), recorded as `multiFamTaskFrame_eq_gen`. The four lemmas are the generic
+  ones applied directly.
+- `zTaskFrameV2` (ReynoldsBridge.lean) — **proved directly**. Its carrier is `ℤ` itself, not a
+  product, so it is *not* an instance of `multiFamTaskFrameGen` and could not be derived. Same
+  deterministic-shift argument: `TaskFrame.limit_of_shift` with `pos := id`, fibers are
+  singletons (`zTaskFrameV2_fib_subsingleton`), *Spherical* via
+  `Algebraic.sInter_nonempty_of_directed_subsingleton`.
+
+**Landed declarations**:
+- `FormalSystem.Metalogic.Algebraic`: `multiFamTaskFrameGen_{serial,interpolates,limit,spherical}`
+- `FormalSystem.Metalogic.WeakCanonical`: `zTaskFrameV2_{fib_subsingleton,serial,interpolates,limit,spherical}`,
+  `multiFamTaskFrame_{eq_gen,serial,interpolates,limit,spherical}`
+
+**Deviations**:
+- **No fallback needed** (noted). The phase's stated fallback ("if generalization resists, prove
+  the generic facts directly") was not reached — the generic facts were already in the tree.
+- **The phase's caution that `bundleFlow_*` "are consumed elsewhere" is stale** (noted, no action).
+  `grep -rn "multiFamGen_*\|bundleFlow_*" FormalSystem/ Tests/` outside `FlowFrame.lean` returns
+  **zero hits** — none of these lemmas has an external consumer today. They were nonetheless left
+  untouched, as the phase's constraint requires.
+- **`bundleFlowFrame`'s non-site status recorded in the module docstring**, as the phase asked:
+  `FlowFrame.lean` now carries a dedicated "`bundleFlowFrame` is a specialization, not a
+  construction site" section stating that it is a `def` whose body applies the generic frame, has
+  no field obligations of its own, and must not be counted in any site inventory.
 
 ---
 

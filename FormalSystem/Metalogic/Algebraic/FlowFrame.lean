@@ -70,6 +70,20 @@ converse convention, and `mem_Seg`. It is not paper text and must not be cited a
 - `multiFamGen_limit`: *Limit* (requires `[Nontrivial D]`, as `def:temporal-order` mandates)
 - `multiFamGen_spherical`: *Spherical*
 - `multiFamGen_total_eq`: the totality characterization (every total history is a flow line)
+- `multiFamTaskFrameGen_serial` / `_interpolates` / `_limit` / `_spherical`: the same four
+  axioms restated in the bare-relation predicates of record (`TaskFrame.Serial`,
+  `TaskFrame.Interpolates`, `TaskFrame.Spherical`, and *Limit*'s literal transcribed shape), so
+  they are citable verbatim when the frame structure grows the corresponding fields
+
+## `bundleFlowFrame` is a specialization, not a construction site
+
+`bundleFlowFrame B` is *definitionally* `multiFamTaskFrameGen D {fam // fam ∈ B.families}` — a
+`def` whose body is an application of the generic frame, not a `where`-block of its own. It
+therefore carries **no field obligations of its own**: whatever discharges
+`multiFamTaskFrameGen`'s fields discharges its, automatically and by definition. The
+`bundleFlow_*` axiom lemmas below are that specialization made explicit for readers, not an
+independent conformance proof, and `bundleFlowFrame` must not be counted as a separate frame
+construction site in any inventory of sites that owe the structure a field.
 
 ## References
 
@@ -273,6 +287,48 @@ theorem multiFamGen_spherical {FamIdx : Type} (S : Set (Set (FamIdx × D)))
   rcases hfs s hs with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
   · exact multiFamGen_fib_subsingleton w x
   · exact (multiFamGen_fib_subsingleton w x).anti Set.inter_subset_left
+
+/-! ### The same four axioms in the bare-relation predicate form
+
+The four lemmas above are stated pointwise, in the shapes their own proofs produce. The four
+below restate exactly the same content in `TaskFrame.Serial` / `TaskFrame.Interpolates` /
+`TaskFrame.Spherical` — the bare-relation predicates of record (`TaskFrame.lean`) — so that they
+are citable verbatim when the frame structure grows the corresponding fields. *Limit* needs no
+restatement: `multiFamGen_limit` is already in the literal transcribed shape. Nothing here is a
+new argument; each is a repackaging of the lemma directly above it. -/
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for the generic flow frame, as the predicate of record. Repackages
+`multiFamGen_serial`; the paper's `x ≥ 0` proviso is `Serial`'s own hypothesis and is unused,
+since the clock supplies witnesses at every duration. -/
+theorem multiFamTaskFrameGen_serial {FamIdx : Type} :
+    TaskFrame.Serial (multiFamTaskFrameGen D FamIdx).TaskRel :=
+  fun w x _ => multiFamGen_serial w x
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for the generic flow frame, as the predicate of record. This is the `→` direction of
+`multiFamGen_comp_iff`, whose `←` direction is the frame's `forward_comp` field. -/
+theorem multiFamTaskFrameGen_interpolates {FamIdx : Type} :
+    TaskFrame.Interpolates (multiFamTaskFrameGen D FamIdx).TaskRel :=
+  fun w v x y _ _ h => (multiFamGen_comp_iff w v x y).mp h
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for the
+generic flow frame, in the literal transcribed shape. An alias of `multiFamGen_limit` under this
+section's naming convention; `[Nontrivial D]` is required, per `def:temporal-order`. -/
+theorem multiFamTaskFrameGen_limit [Nontrivial D] {FamIdx : Type} :
+    ∀ w u : FamIdx × D,
+      (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrameGen D FamIdx).TaskRel w y u) → u = w :=
+  multiFamGen_limit
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for the generic flow frame, as
+the predicate of record. Repackages `multiFamGen_spherical`, splitting `Spherical`'s single
+per-member conjunction into that lemma's two separate hypotheses. -/
+theorem multiFamTaskFrameGen_spherical {FamIdx : Type} :
+    TaskFrame.Spherical (multiFamTaskFrameGen D FamIdx).TaskRel :=
+  fun S hdir hmem =>
+    multiFamGen_spherical S hdir (fun s hs => (hmem s hs).2) (fun s hs => (hmem s hs).1)
 
 /-! ## The totality characterization
 
