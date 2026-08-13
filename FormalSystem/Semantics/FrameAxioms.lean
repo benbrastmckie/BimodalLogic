@@ -8,30 +8,35 @@ import FormalSystem.Semantics.PartialHistory
 import Mathlib.Data.Set.Lattice
 
 /-!
-# Frame axioms in hypothesis form, and the constraints imposed on a new duration
+# The derived nullity lemma, and the constraints imposed on a new duration
 
-This module states three of the paper's four frame axioms — *Spherical*, *Seriality*, and the
-interpolation half of *Compositionality* — as `Prop`-valued predicates over a **bare task
-relation** `R : W → D → W → Prop`, and transcribes `def:constraints`.
+This module derives `lem:nullity` from *Seriality* and *Limit*, transcribes `def:constraints`,
+and proves the fiber/segment classification lemmas that `def:constraints` supports.
 
-## Why hypothesis form
+## Where the axiom predicates live
 
-None of these three is a field of `TaskFrame` today: the structure carries `nullity_identity`,
-`forward_comp` (the composition half of *Compositionality* only), and `converse`. Stating the
-missing axioms as predicates over a bare relation lets every downstream result take exactly the
-axiom it consumes as an explicit hypothesis, and lets `TaskFrame` acquire them as fields later
-**without restating anything**.
+*Spherical*, *Seriality*, and the interpolation half of *Compositionality* are `Prop`-valued
+predicates over a **bare task relation** `R : W → D → W → Prop`, and are declared in
+`Semantics/TaskFrame.lean` **above** the `TaskFrame` structure — a structure field's type may
+only mention earlier declarations, so that is where they must live for the fields to cite them.
+This module consumes them.
 
-That later acquisition carries a hard invariant, recorded in
-`specs/decisions/total-history-validity-decisions.md` (the four-axiom frame-alignment decision):
-when the frame structure grows the axiom fields, `TaskFrame.spherical` must be *definitionally*
-`Spherical TaskRel`, `TaskFrame.serial` definitionally `Serial TaskRel`, and the interpolation
-half of biconditional *Compositionality* definitionally `Interpolates TaskRel`, **all as defined
-in this module**. Discharging a downstream hypothesis is then a mechanical substitution
-(`F.spherical`, `F.serial`, `F.interpolates`) with zero restatement. If a field lands whose
-statement differs, the results that consume these predicates stop typechecking — and that
-compilation failure *is* the acceptance test. This is why the hypothesis form is landed first
-rather than waiting for the fields.
+## The fields, and the invariant they were held to
+
+`TaskFrame` now carries all four of `def:frame`'s axioms: `comp` (the full biconditional
+*Compositionality*, as `TaskFrame.Compositional TaskRel`), `serial`, `limit`, and `spherical`.
+The hard invariant recorded in `specs/decisions/total-history-validity-decisions.md` (the
+four-axiom frame-alignment decision) was met: `TaskFrame.spherical` is *definitionally*
+`Spherical TaskRel`, `TaskFrame.serial` is definitionally `Serial TaskRel`, and the
+interpolation half of biconditional *Compositionality* is available as `TaskFrame.interpolates`,
+definitionally `Interpolates TaskRel`. Discharging a downstream hypothesis is therefore a
+mechanical substitution (`F.spherical`, `F.serial`, `F.interpolates`) with zero restatement; a
+field whose statement differed would make the results that consume these predicates stop
+typechecking, and that compilation failure *is* the acceptance test.
+
+The bare-relation form is retained alongside the fields on purpose: results that need only one
+axiom take exactly that axiom as an explicit hypothesis, and remain applicable to a relation
+that is not (yet) packaged as a frame.
 
 *Spherical* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
 sole application site the paper names, never an inert structure field.

@@ -184,9 +184,36 @@ def regionFrame (W ι D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
       rw [h₂, add_zero]
     · rintro rfl
       exact ⟨rfl, (add_zero _).symm⟩
-  forward_comp := by
-    rintro s u v x y _ _ ⟨h₁, h₂⟩ ⟨h₃, h₄⟩
-    exact ⟨h₁.trans h₃, by rw [h₄, h₂, add_assoc]⟩
+  comp := TaskFrame.comp_of
+    (by
+      rintro s v x y _ _ ⟨h₁, h₂⟩
+      refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
+      show v.2 = s.2 + x + y
+      rw [h₂]; abel)
+    (by
+      rintro s u v x y _ _ ⟨h₁, h₂⟩ ⟨h₃, h₄⟩
+      exact ⟨h₁.trans h₃, by rw [h₄, h₂, add_assoc]⟩)
+  serial := fun s x _ =>
+    ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
+     ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩
+  limit :=
+    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+      (fun s u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
+  spherical := by
+    intro S hdir hmem
+    refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
+      (fun s hs => (hmem s hs).2) (fun s hs => ?_)
+    obtain ⟨hcl, hne⟩ := hmem s hs
+    obtain ⟨a, ha⟩ := hne
+    have hfib : ∀ (t : W × D) (x : D),
+        (TaskFrame.Fib (fun (s : W × D) (d : D) (s' : W × D) =>
+          s.1 = s'.1 ∧ s'.2 = s.2 + d) t x).Subsingleton := by
+      rintro t x u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
+    refine Or.inr ⟨a, ?_⟩
+    rcases hcl with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
+    · exact (hfib w x).eq_singleton_of_mem ha
+    · exact ((hfib w x).anti Set.inter_subset_left).eq_singleton_of_mem ha
   converse := by
     intro s d s'
     constructor

@@ -222,31 +222,40 @@ noncomputable def RefinedFilteredTaskFrame [SuccOrder D] [NoMaxOrder D]
       exact h
     · intro h
       simp [h]
-  forward_comp := by
-    intro w u v x y hx hy h_wu h_uv
-    simp only [refinedFilteredTaskRel] at *
-    by_cases hxy : x + y = 0
-    · -- x + y = 0 with x ≥ 0 and y ≥ 0 implies x = 0 and y = 0
-      simp only [hxy, ↓reduceIte]
-      -- In an ordered additive group, if x ≥ 0 and y ≥ 0 and x + y = 0, then x = y = 0
-      have hx0 : x = 0 := by
-        have h_sum := add_nonneg hx hy
-        rw [hxy] at h_sum
-        -- 0 ≤ x, x + y = 0, 0 ≤ y means x = 0
-        have h1 : y = -x := (neg_eq_of_add_eq_zero_right hxy).symm
-        rw [h1] at hy
-        have h2 : 0 ≤ -x := hy
-        have h3 : x ≤ 0 := neg_nonneg.mp h2
-        exact le_antisymm h3 hx
-      have hy0 : y = 0 := by
-        have h1 : y = -x := (neg_eq_of_add_eq_zero_right hxy).symm
-        rw [hx0] at h1
-        simp only [neg_zero] at h1
-        exact h1
-      simp [hx0] at h_wu
-      simp only [hy0, ↓reduceIte] at h_uv
-      exact h_wu.trans h_uv
-    · simp [hxy]
+  comp := TaskFrame.comp_of
+    (TaskFrame.interpolates_of_permissive fun w d u => by
+      by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
+    (by
+      intro w u v x y hx hy h_wu h_uv
+      simp only [refinedFilteredTaskRel] at *
+      by_cases hxy : x + y = 0
+      · -- x + y = 0 with x ≥ 0 and y ≥ 0 implies x = 0 and y = 0
+        simp only [hxy, ↓reduceIte]
+        -- In an ordered additive group, if x ≥ 0 and y ≥ 0 and x + y = 0, then x = y = 0
+        have hx0 : x = 0 := by
+          have h_sum := add_nonneg hx hy
+          rw [hxy] at h_sum
+          -- 0 ≤ x, x + y = 0, 0 ≤ y means x = 0
+          have h1 : y = -x := (neg_eq_of_add_eq_zero_right hxy).symm
+          rw [h1] at hy
+          have h2 : 0 ≤ -x := hy
+          have h3 : x ≤ 0 := neg_nonneg.mp h2
+          exact le_antisymm h3 hx
+        have hy0 : y = 0 := by
+          have h1 : y = -x := (neg_eq_of_add_eq_zero_right hxy).symm
+          rw [hx0] at h1
+          simp only [neg_zero] at h1
+          exact h1
+        simp [hx0] at h_wu
+        simp only [hy0, ↓reduceIte] at h_uv
+        exact h_wu.trans h_uv
+      · simp [hxy])
+  serial := TaskFrame.serial_of_permissive fun w d u => by
+    by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
+  limit := TaskFrame.limit_of_permissive fun w d u => by
+    by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
+  spherical := TaskFrame.spherical_of_permissive fun w d u => by
+    by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
   converse := by
     intro w d u
     simp only [refinedFilteredTaskRel]

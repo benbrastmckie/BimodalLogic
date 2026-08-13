@@ -79,8 +79,12 @@ def intTimeFrame : TaskFrame Int where
   WorldState := Unit
   TaskRel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
-  forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
+  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_total fun _ _ _ => trivial)
+    fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
+  serial := TaskFrame.serial_of_total fun _ _ _ => trivial
+  limit := TaskFrame.limit_of_subsingleton
+  spherical := TaskFrame.spherical_of_subsingleton
 
 /-! ### `intTimeFrame` discharges `def:frame`'s four axioms (total class) -/
 
@@ -126,27 +130,31 @@ def intNatFrame : TaskFrame Int where
       | inr h => exact h
     · intro h
       right; exact h
-  forward_comp := fun w u v x y hx hy h1 h2 => by
-    cases h1 with
-    | inl hxne =>
-      left
-      intro heq
-      have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
-      have h1 : 0 ≤ -x := hy_eq ▸ hy
-      have h2 : x ≤ 0 := neg_nonneg.mp h1
-      have h3 : x = 0 := le_antisymm h2 hx
-      exact hxne h3
-    | inr hw =>
-      cases h2 with
-      | inl hyne =>
+  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
+    fun w u v x y hx hy h1 h2 => by
+      cases h1 with
+      | inl hxne =>
         left
         intro heq
-        have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
-        have h1 : 0 ≤ -y := hx_eq ▸ hx
-        have h2 : y ≤ 0 := neg_nonneg.mp h1
-        have h3 : y = 0 := le_antisymm h2 hy
-        exact hyne h3
-      | inr hu => right; exact hw.trans hu
+        have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
+        have h1 : 0 ≤ -x := hy_eq ▸ hy
+        have h2 : x ≤ 0 := neg_nonneg.mp h1
+        have h3 : x = 0 := le_antisymm h2 hx
+        exact hxne h3
+      | inr hw =>
+        cases h2 with
+        | inl hyne =>
+          left
+          intro heq
+          have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
+          have h1 : 0 ≤ -y := hx_eq ▸ hx
+          have h2 : y ≤ 0 := neg_nonneg.mp h1
+          have h3 : y = 0 := le_antisymm h2 hy
+          exact hyne h3
+        | inr hu => right; exact hw.trans hu
+  serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
+  limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
+  spherical := TaskFrame.spherical_of_permissive fun _ _ _ => Iff.rfl
   converse := fun w d u => by
     constructor
     · intro h
@@ -217,8 +225,12 @@ def genericTimeFrame : TaskFrame D where
   WorldState := Unit
   TaskRel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
-  forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
+  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_total fun _ _ _ => trivial)
+    fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
+  serial := TaskFrame.serial_of_total fun _ _ _ => trivial
+  limit := TaskFrame.limit_of_subsingleton
+  spherical := TaskFrame.spherical_of_subsingleton
 
 /-! ### `genericTimeFrame` discharges `def:frame`'s four axioms (total class) -/
 
@@ -268,27 +280,31 @@ def genericNatFrame [SuccOrder D] [NoMaxOrder D] : TaskFrame D where
       | inr h => exact h
     · intro h
       right; exact h
-  forward_comp := fun w u v x y hx hy h1 h2 => by
-    cases h1 with
-    | inl hxne =>
-      left
-      intro heq
-      have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
-      have h1 : 0 ≤ -x := hy_eq ▸ hy
-      have h2 : x ≤ 0 := neg_nonneg.mp h1
-      have h3 : x = 0 := le_antisymm h2 hx
-      exact hxne h3
-    | inr hw =>
-      cases h2 with
-      | inl hyne =>
+  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
+    fun w u v x y hx hy h1 h2 => by
+      cases h1 with
+      | inl hxne =>
         left
         intro heq
-        have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
-        have h1 : 0 ≤ -y := hx_eq ▸ hx
-        have h2 : y ≤ 0 := neg_nonneg.mp h1
-        have h3 : y = 0 := le_antisymm h2 hy
-        exact hyne h3
-      | inr hu => right; exact hw.trans hu
+        have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
+        have h1 : 0 ≤ -x := hy_eq ▸ hy
+        have h2 : x ≤ 0 := neg_nonneg.mp h1
+        have h3 : x = 0 := le_antisymm h2 hx
+        exact hxne h3
+      | inr hw =>
+        cases h2 with
+        | inl hyne =>
+          left
+          intro heq
+          have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
+          have h1 : 0 ≤ -y := hx_eq ▸ hx
+          have h2 : y ≤ 0 := neg_nonneg.mp h1
+          have h3 : y = 0 := le_antisymm h2 hy
+          exact hyne h3
+        | inr hu => right; exact hw.trans hu
+  serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
+  limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
+  spherical := TaskFrame.spherical_of_permissive fun _ _ _ => Iff.rfl
   converse := fun w d u => by
     constructor
     · intro h

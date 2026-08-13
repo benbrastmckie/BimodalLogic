@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Mathlib.Algebra.Order.Group.Int
+import Mathlib.Data.Int.SuccPred
 import FormalSystem.Syntax.Formula
 import FormalSystem.Syntax.Context
 import FormalSystem.Semantics.TaskFrame

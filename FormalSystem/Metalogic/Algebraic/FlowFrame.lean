@@ -157,12 +157,32 @@ noncomputable def multiFamTaskFrameGen (D : Type) [AddCommGroup D] [LinearOrder 
       refine Prod.ext h1 ?_
       rw [h2, add_zero]
     · rintro rfl; exact ⟨rfl, (add_zero _).symm⟩
-  forward_comp := fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ =>
-    ⟨h1.trans h3, by rw [h4, h2, add_assoc]⟩
+  comp := TaskFrame.comp_of
+    (fun w v x y _ _ h => by
+      obtain ⟨h₁, h₂⟩ := h
+      refine ⟨(w.1, w.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
+      show v.2 = w.2 + x + y
+      rw [h₂]; abel)
+    (fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ => ⟨h1.trans h3, by rw [h4, h2, add_assoc]⟩)
   converse := fun _ _ _ => by
     constructor
     · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
     · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
+  serial := fun w x _ =>
+    ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by show w.2 = w.2 - x + x; abel⟩⟩
+  limit :=
+    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+      (fun w u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
+  spherical := by
+    intro S hdir hmem
+    refine sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
+      fun s hs => ?_
+    rcases (hmem s hs).1 with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
+    · rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
+    · refine Set.Subsingleton.anti ?_ Set.inter_subset_left
+      rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
 
 /-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`.
 Generic form of `multiFamHistory` (`ReynoldsBridge.lean`). -/

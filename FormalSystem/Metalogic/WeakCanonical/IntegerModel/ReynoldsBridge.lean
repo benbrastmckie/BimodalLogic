@@ -454,8 +454,22 @@ noncomputable def zTaskFrameV2 : TaskFrame ℤ where
   WorldState := ℤ
   TaskRel w d u := u = w + d
   nullity_identity w u := by constructor <;> intro h <;> omega
-  forward_comp w u v x y _ _ h1 h2 := by rw [h2, h1, add_assoc]
+  comp := TaskFrame.comp_of
+    (fun w v x y _ _ h => ⟨w + x, rfl, by omega⟩)
+    (fun w u v x y _ _ h1 h2 => by rw [h2, h1, add_assoc])
   converse w d u := by constructor <;> intro h <;> omega
+  serial := fun w x _ => ⟨⟨w + x, rfl⟩, ⟨w - x, by omega⟩⟩
+  limit := TaskFrame.limit_of_shift id (fun _ _ _ h => h) (fun _ _ h => by omega)
+  spherical := by
+    intro S hdir hmem
+    refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
+      fun s hs => ?_
+    rcases (hmem s hs).1 with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
+    · intro u hu u' hu'
+      exact (hu : u = w + x).trans (hu' : u' = w + x).symm
+    · refine Set.Subsingleton.anti ?_ Set.inter_subset_left
+      intro u hu u' hu'
+      exact (hu : u = w + x).trans (hu' : u' = w + x).symm
 
 /-! ### `zTaskFrameV2` discharges `def:frame`'s four axioms (deterministic shift at `ℤ`)
 
@@ -756,8 +770,25 @@ noncomputable def multiFamTaskFrame (FamIdx : Type) : TaskFrame ℤ where
     constructor
     · rintro ⟨h1, h2⟩; ext <;> [exact h1; omega]
     · rintro h; subst h; exact ⟨rfl, by omega⟩
-  forward_comp := fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ => ⟨h1.trans h3, by omega⟩
+  comp := TaskFrame.comp_of
+    (fun w v x y _ _ h => ⟨(w.1, w.2 + x), ⟨rfl, rfl⟩, h.1, by omega⟩)
+    (fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ => ⟨h1.trans h3, by omega⟩)
   converse := fun _ _ _ => by constructor <;> (rintro ⟨h1, h2⟩; exact ⟨h1.symm, by omega⟩)
+  serial := fun w x _ =>
+    ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by omega⟩⟩
+  limit :=
+    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+      (fun w u h => Prod.ext h.1.symm (by omega))
+  spherical := by
+    intro S hdir hmem
+    refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
+      fun s hs => ?_
+    rcases (hmem s hs).1 with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
+    · rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
+    · refine Set.Subsingleton.anti ?_ Set.inter_subset_left
+      rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
 
 /-! ### `multiFamTaskFrame` discharges `def:frame`'s four axioms (by specialization)
 
