@@ -135,6 +135,6 @@ The Lean 4 implementation is in the `FormalSystem/` directory:
 - `ProofSystem/` -- The Burgess-Xu (BX) axiom system: #axiom-count axiom constructors in 8 layers and #rule-count inference rules forming a Hilbert-style proof system, parameterized by frame class (Base/Dense/Discrete).
 - `Semantics/` -- Task frames model possible worlds; world histories model time; strict (irreflexive) truth conditions define meaning.
 - `FrameConditions/` -- Frame-class semantics (dense, discrete) and per-class validity.
-- `Metalogic/` -- Soundness (proven for all three frame classes), deduction theorem and Lindenbaum lemma (proven), a canonical-model construction toward completeness (which remains an open problem), and a tableau-based decision procedure (soundness proven).
+- `Metalogic/` -- Soundness (proven for all three frame classes), deduction theorem and Lindenbaum lemma (proven), canonical-model machinery underlying the machine-checked $op("BL")^+$ completeness results of @sec:metalogic (*TM* itself is sound but provably incomplete over its frame classes), and a tableau-based decision procedure (soundness proven).
 - `Theorems/` -- Perpetuity principles (P1--P6, proven), modal and propositional theorem libraries, and derived temporal axioms.
 - `Automation/`, `Examples/` -- Proof tactics, the training-data pipeline, and worked examples, covered in Part II.

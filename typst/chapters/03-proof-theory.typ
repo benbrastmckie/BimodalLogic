@@ -7,7 +7,7 @@
 #import "../template.typ": *
 #import "../generated/status.typ": axiom-count, rule-count, base-count, dense-only-count, discrete-only-count
 
-= Proof Theory
+= Proof Theory <sec:proof-theory>
 
 
 The Lean proof system for *TM* is the *Burgess-Xu (BX) axiom system*: a Hilbert-style calculus over the Until/Since language of @sec:formulas, with *#axiom-count axiom constructors* organized into eight layers and *#rule-count inference rules*.

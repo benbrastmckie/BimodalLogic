@@ -14,7 +14,8 @@
 
 The syntax (six primitive constructors over the Until/Since basis), the task-frame semantics with strict truth conditions, and the BX proof system (#axiom-count axiom constructors in eight layers, #rule-count inference rules, frame-class parameter) are complete in Lean.
 Soundness for all three frame classes, the deduction theorem, and the perpetuity principles P1--P6 are proven.
-A canonical-model construction toward completeness is developed via `completeness` (`Metalogic/BXCanonical/`), with completeness itself remaining an open problem; the tableau decision procedure has soundness proven (`decide_sound`), and its finite-model-property component is discussed below.
+A canonical-model construction is developed via `completeness` (`Metalogic/BXCanonical/`), underlying the machine-checked $op("BL")^+$ completeness results of @sec:metalogic; *TM* itself is sound but provably incomplete over its own frame classes (`cor:tm-completeness`), not merely unresolved.
+The tableau decision procedure has soundness proven (`decide_sound`), and its finite-model-property component is discussed below.
 
 == Relation to the Published Presentation
 
@@ -71,10 +72,12 @@ TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is derived as `te
 
 === Completeness Status
 
-The paper @brastmckie2026possibleworlds sketches completeness for *TM* and its extensions.
-In Lean the completeness theorems are stated for each frame class (`completeness`, `completeness_dense`, `completeness_discrete` in `Metalogic/BXCanonical/Completeness.lean`) and approached through the canonical-model construction; the open steps lie on the construction path (chronicle construction for the dense case, discrete truth lemma and transfer), and completeness remains an open problem.
+The paper @brastmckie2026possibleworlds does not sketch completeness for *TM* and its extensions as an open target: `cor:tm-completeness` states that *TM*, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, and $op("TM")_(d c)$ are sound but none is established as complete, with the base case *provably* incomplete via the (DD) split validity (@sec:metalogic).
+Completeness is instead carried by the machine-checked $op("BL")^+$ systems built on the canonical-model infrastructure in `Metalogic/BXCanonical/Completeness.lean` (`completeness`, `completeness_dense`, `completeness_discrete`).
+// LEAN-ANCHOR-MAY-MOVE: canonical-completeness -- see typst/README.md
+How these Lean, frame-class-indexed BX results relate to `cor:tm-completeness`'s claims about *TM*'s own extensions is an open cross-reference, recorded in this task's findings note rather than resolved here.
 Soundness, the deduction theorem, the Lindenbaum lemma, and the perpetuity principles are fully proven.
-The discrete case runs through Kamp-theorem expressiveness @kamp1971formalproperties and likewise remains open.
+The discrete case runs through Kamp-theorem expressiveness @kamp1971formalproperties; a machine-checked Kamp theorem remains a separate open problem in its own right (@ch:vlach-blstar), distinct from *TM*'s completeness status.
 
 === Decidability Implementation
 

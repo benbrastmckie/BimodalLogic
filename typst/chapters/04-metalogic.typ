@@ -12,7 +12,8 @@
 
 The metalogic for the bimodal logic *TM* relates the BX proof system of the previous chapter to the task semantics.
 Soundness is fully proven for all three frame classes.
-Completeness is approached through a canonical-model construction developed end-to-end for each frame class; the argument's open steps lie in the chronicle construction for the dense case and in the discrete transfer pipeline, and the completeness of *TM* remains an open problem.
+Completeness, however, is not merely unresolved for *TM* itself: it is *provably absent*, for a structural reason worth understanding before the technical development below, and this is the headline correction this chapter makes relative to earlier drafts of this book.
+Completeness is instead carried by machine-checked $op("BL")^+$ systems built on the canonical-model infrastructure developed here.
 The chapter closes with the tableau-based decision procedure and the live module structure of `Metalogic/`.
 
 == Soundness
@@ -81,15 +82,64 @@ The key step is showing that the union of any chain of consistent sets is itself
 
 == Completeness
 
-The completeness theorem is stated for each frame class, with the base-class theorem as the primary entry point.
+=== Why *TM* Is Incomplete
 
-#theorem("Completeness (Base)")[
-  If $tack.r.double phi.alt$, then there is a derivation of $phi.alt$ at frame class `Base`.#footnote[Stated as `completeness` in `Metalogic/BXCanonical/Completeness.lean`: `valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)`. The open steps of the proof are described at the end of this section.]
-]
+*TM* and its extensions $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, and $op("TM")_(d c)$ are sound over their respective classes of all, discrete, dense, complete, and dense-and-complete task frames, but *none is established as complete*.#footnote[`cor:tm-completeness` --- an anchor outside the 26 tracked by `specs/paper-definitions-of-record.md`, re-verified directly against the live paper for this citation rather than assumed. @brastmckie2026possibleworlds]
+Completeness is instead carried by machine-checked $op("BL")^+$ systems (@sec:formulas's Until/Since-and-store/recall-extended language sits above $op("BL")^+$; see `def:BLplus-language`):
+
+#figure(
+  table(
+    columns: 2,
+    stroke: none,
+    align: (left, left),
+    table.hline(),
+    table.header([*System*], [*Status*]),
+    table.hline(),
+    [$op("TM")^+_d$], [Weakly complete over the full *Dense* class; machine-checked, sorry-free.],
+    [$op("TM")^+_f$], [Weakly complete over $ZZ$-time, machine-checked directly over the successor-Archimedean class.],
+    [$op("TM")^+_c$], [Weakly complete over the dense-and-complete class (exactly $RR$), machine-checked directly, aligned with `def:TMplus-c`'s Reynolds-triple basis for $op("BX")_c$.],
+    [$op("TM")^+$], [Weak completeness over all task frames is the stated Lean-formalization target; one proof obligation remains outstanding, so this is *not yet* an established theorem.],
+    table.hline(),
+  ),
+  caption: [Completeness status of the $op("BL")^+$ systems, per `cor:tm-completeness`.],
+)
+
+The reason *TM* itself resists a complete BL-level axiomatization is one of the more interesting facts about the system, and it turns on the temporal order being an ordered abelian group (@sec:metalogic's payoff on the choice foreshadowed in the introduction):
+
+#theorem("Discrete-or-Dense Dichotomy")[
+  Every nontrivial totally ordered abelian group $D$ is either discrete (has a least positive element) or dense, and never both.
+]#footnote[Translation invariance is what makes the dichotomy exhaustive: if there is no least positive element then some positive $e < y - x$ exists for any $x < y$ (else $y - x$ would itself be least positive), giving $x < x+e < y$; conversely a least positive element $e$ forbids anything strictly between $x$ and $x+e$. The dichotomy *fails* for bare linear orders --- e.g. a copy of $ZZ$ followed by a copy of $QQ$ is neither uniformly discrete nor uniformly dense --- which is exactly why `def:temporal-order` requires the group structure and not merely a linear order. @brastmckie2026possibleworlds]
+
+Consequently $op("Log")("all task frames") = op("Log")(op("Discrete")) inter op("Log")(op("Dense"))$: the class of all task frames is the disjoint union of its discrete and dense subclasses, and it is *not closed under disjoint union*.
+Unions of logics characteristically admit *split validities* --- disjunctions valid on every frame yet unprovable from either disjunct's axioms alone --- and *TM* exhibits exactly this.
+
+#theorem("The (DD) Split Validity")[
+  The schema $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN"))$, for arbitrary $phi.alt_(op("DF")), psi_(op("DN"))$ instantiating axioms DF and DN, is valid over every task frame yet *TM*-unprovable: a two-fibre countermodel (one fibre over $ZZ$, one over $RR$, with $square.stroked$ read globally across both) is *TM*-sound --- every *TM* axiom and rule remains valid, since none of them constrains how $square.stroked$ interacts across the two fibres --- while refuting both disjuncts of a variable-sharing instance.
+]#footnote[(DD), part of `cor:tm-completeness`'s proof. @brastmckie2026possibleworlds In $op("BL")^+$, (DD) is already a theorem with no added axiom: axioms TMP-NB and M5 give $tack.r_(op("TM")^+) square.stroked op("Next") top or square.stroked not op("Next") top$, and since $op("Next") top arrow.r phi.alt_(op("DF"))$ and $not op("Next") top arrow.r psi_(op("DN"))$ are $op("BL")^+$-valid, $op("TM")^+$'s weak completeness (inheriting its own outstanding base-case obligation) gives the two conditionals as theorems, whence necessitation and distribution yield (DD).]
+
+*TM* does not prove (DD), so *TM* is nowhere shown *Halldén*-incomplete --- it is *semantically* incomplete instead, a different defect: a formula valid but unprovable, rather than a provable variable-disjoint disjunction with no provable disjunct.
+$op("TM") + op("(DD)")$ would instead *create* Halldén-incompleteness, proving the variable-disjoint disjunction while proving neither disjunct (each fails soundness on the complementary subclass).
+$op("Log")("all task frames")$ itself contains (DD) and neither disjunct, so *Halldén-incompleteness of the target logic is a theorem* --- the correct formal signature of a class that is a union of two incompatible kinds, and not a defect to be repaired.
+
+$op("TM")_c$ fails identically over ${ZZ, RR}$, for the same reason, compounded by the further, independent open question of whether axiom CO alone axiomatizes the same $op("BL")^+$-logic as the full Reynolds triple (@sec:proof-theory).
+$op("TM")_f$'s status differs: it is sound over every discrete frame, but whether it is complete over that class is *open* --- the machine-checked discrete completeness result is for the Reynolds-axiom system $op("BX")_f$ over $ZZ$-time specifically, a narrower and deductively stronger system than $op("TM") + op("DF")$, and no counterexample to $op("TM")_f$'s completeness over the broader discrete class is known.
+The paper states no separate incompleteness argument for $op("TM")_d$; its status is covered only by the corollary's flat "none is complete" headline, not by a dedicated countermodel.
+
+=== The BX Canonical-Model Infrastructure
+
+The Lean development's own canonical-model chain is stated for the more fine-grained, frame-class-parameterized $op("BX")$ proof system of @sec:proof-theory (Base/Dense/Discrete/Dedekind), not for the paper's economical *TM* presentation directly (@sec:paper-contrast explains the correspondence).
 
 #theorem("Completeness (Dense, Discrete)")[
-  Validity over densely ordered frames implies derivability at frame class `Dense`; validity over discrete frames implies derivability at frame class `Discrete`.#footnote[Stated as `completeness_dense` and `completeness_discrete` in `Metalogic/BXCanonical/Completeness.lean`.]
-]
+  Validity over densely ordered frames implies derivability at frame class `Dense`; validity over discrete frames implies derivability at frame class `Discrete`.
+]#footnote[Stated as `completeness_dense` and `completeness_discrete` in `Metalogic/BXCanonical/Completeness.lean`, sorry-free per that file's own axiom audit.
+// LEAN-ANCHOR-MAY-MOVE: canonical-completeness -- see typst/README.md
+How these frame-class-indexed BX results relate to `cor:tm-completeness`'s claim that $op("TM")_d$'s and $op("TM")_f$'s own completeness is not established (open for $op("TM")_f$, unstated for $op("TM")_d$) is not resolved in this book; it is recorded as an open cross-reference in this task's findings note rather than adjudicated here.]
+
+#theorem("Completeness (Base)")[
+  If $tack.r.double phi.alt$, then there is a derivation of $phi.alt$ at frame class `Base`.
+]#footnote[Stated as `completeness` in `Metalogic/BXCanonical/Completeness.lean`: `valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)`. This statement currently carries `sorryAx`, with the module's own audit attributing the sole source to a deprecated dead-code dependency in its discrete branch, not to an identified mathematical obstruction --- but a Base-frame completeness theorem, if closed as stated, would need to be reconciled with `cor:tm-completeness`'s (DD)-witnessed incompleteness of *TM* over the same class.
+// LEAN-ANCHOR-MAY-MOVE: canonical-completeness -- see typst/README.md
+This tension is recorded in this task's findings note and is not resolved here.]
 
 === Proof Architecture
 
@@ -107,11 +157,12 @@ The construction rests on shared infrastructure:
 - *Chronicles* (`Metalogic/BXCanonical/Chronicle/`): the Burgess @burgess1982axioms dense-order construction, filling in witnesses for Until/Since eventualities over $QQ$.
 - *Filtration and quasimodels* (`Metalogic/BXCanonical/Filtration/`, `Quasimodel/`): finitary approximations used in the canonical chain construction.
 
-=== Open Steps in the Completeness Argument
+=== Open Steps in the Base-Frame Completeness Derivation
 
-The completeness of *TM* with respect to its frame classes is an open problem.
-The open steps are concentrated in the chronicle construction (coherence of the constructed MCS family) and in the discrete-case truth lemma and transfer (`WeakCanonical/TruthLemma.lean`, `Transfer.lean`, and the Kamp-style expressiveness modules @kamp1971formalproperties).
-The discrete path runs through a Kamp-theorem-based expressive-completeness argument, developed in `WeakCanonical/`, which likewise remains open.
+The general Base-frame `completeness` theorem above is the one member of this family not yet closed.
+Its documented open step is entirely engineering debt, not a mathematical gap: the discrete branch still routes through a deprecated dead-code dependency (`WeakCanonical.countermodel_discrete`) rather than the sorry-free Reynolds/Doets pipeline that `completeness_discrete` already uses on its own.
+// LEAN-ANCHOR-MAY-MOVE: canonical-completeness -- see typst/README.md
+Closing this step does not by itself resolve the tension flagged above with *TM*'s own (DD)-witnessed incompleteness over the Base class; that reconciliation is out of scope for this book and is recorded in the findings note.
 
 == Decidability
 
@@ -152,7 +203,7 @@ The live metalogic code is organized as follows (`FormalSystem/Metalogic/`):
 == Implementation Status
 
 Soundness in all three frame-class variants, the deduction theorem, the MCS/Lindenbaum infrastructure, the perpetuity principles P1--P6, and the entire `Syntax/`, `Semantics/`, `ProofSystem/`, and `Theorems/` trees are fully proven in Lean under `FormalSystem/`.
-The canonical-model construction toward completeness is developed end-to-end for each frame class, with the open steps localized as described above; completeness itself remains an open problem.
+The canonical-model construction is developed end-to-end for each frame class and underlies the machine-checked $op("BL")^+$ completeness results above; *TM* itself is sound but provably incomplete over its own frame classes, per `cor:tm-completeness`, so no amount of further canonical-model work closes that gap for *TM* -- only for the $op("BL")^+$ systems built on top of it.
 The decision procedure's soundness (`decide_sound`) and the finite-filtration FMP statement (`fmp_completeness`) are likewise proven, with the semantic-validity bridge treated in @sec:decidability-practice.
 
 === Semantic Convention

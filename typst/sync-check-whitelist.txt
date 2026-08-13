@@ -53,6 +53,11 @@ thm:BLplus-NextPrevious
 # specs/paper-definitions-of-record.md and has no Lean counterpart) ---
 cor:spherical-finite
 
+# --- External paper language-definition label (def:BLplus-language names
+# the BL^+ language's constructor signature paper-side; no single matching
+# Lean identifier to grep) ---
+def:BLplus-language
+
 # --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
 01-introduction.typ
 

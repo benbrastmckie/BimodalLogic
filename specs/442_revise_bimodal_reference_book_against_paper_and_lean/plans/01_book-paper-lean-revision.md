@@ -323,7 +323,7 @@ frame section's staleness makes likely to be equally stale.
 
 ---
 
-### Phase 5: Correct the Completeness Story [NOT STARTED]
+### Phase 5: Correct the Completeness Story [COMPLETED]
 
 **Goal**: Replace the book's "completeness remains an open problem" framing with the paper's actual
 claim — TM is sound but **provably incomplete** — at every site, starting with the abstract.
