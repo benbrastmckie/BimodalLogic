@@ -1632,7 +1632,7 @@ discovery grep before adding a field.
 
 ---
 
-### Phase 14.2: TaskFrame structure binders — Nontrivial D and Nonempty WorldState [NOT STARTED]
+### Phase 14.2: TaskFrame structure binders — Nontrivial D and Nonempty WorldState [COMPLETED]
 
 *(This phase is the "14b" half of the split recorded in `#### SIZING FINDING` above. It is
 independent of the four axiom fields and **gates nothing in Phase 15**.)*
@@ -1667,47 +1667,94 @@ and one of its discharges is a proof that has to be found rather than cited. See
 
 *Sub-step 14.2.1 — the missing `FilteredWorld` nonemptiness proof. GREEN pure addition, committed
 before either window opens.*
-- [ ] Confirm the gap before proving: `grep -rn "FilteredWorld" FormalSystem/ --include=*.lean`
+- [x] Confirm the gap before proving: `grep -rn "FilteredWorld" FormalSystem/ --include=*.lean`
       yields a `Finite` instance (`FilteredWorld.finite`, FiniteModel.lean:137) and **no
       `Nonempty` instance or lemma**. `Finite` does not give `Nonempty`. Do not assume the proof
       exists and do not assume it is trivial.
-- [ ] Prove `Nonempty (FilteredWorld phi)` (or the inhabited-ness statement the field shape
+- [x] Prove `Nonempty (FilteredWorld phi)` (or the inhabited-ness statement the field shape
       chosen below actually needs). `FilteredWorld phi` (Filtration.lean:158) is a quotient of
       `ClosureMCSBundle phi`, so the obligation reduces to exhibiting one closure MCS — i.e. a
       Lindenbaum-style extension over the closure of `phi`. **Locate the existing MCS-existence
       result and cite it; if none applies, prove it. Either way, no `sorry`.**
-- [ ] If the proof turns out to require a hypothesis the filtration sites cannot supply (e.g. a
+- [x] If the proof turns out to require a hypothesis the filtration sites cannot supply (e.g. a
       consistency assumption on `phi`), **STOP and record a precise gap statement rather than
       weakening the frame or the field** — the same standard the retired blocker was held to. That
       is a genuine new blocker, and it is a blocker on 14.2 only; Phase 14.1 and Phase 15 are
-      unaffected by it.
-- [ ] Commit this proof green, on its own, before opening any window below.
+      unaffected by it. *(did not fire — the proof needs no hypothesis on `phi` at all; see the
+      route note below)*
+- [x] Commit this proof green, on its own, before opening any window below.
 
 *Sub-step 14.2.2 — `Nonempty WorldState`. Atomic window #1.*
-- [ ] Decide and document the shape: a `nonempty : Nonempty WorldState` structure field, or an
+- [x] Decide and document the shape: a `nonempty : Nonempty WorldState` structure field, or an
       instance argument. Record the choice and its reason in the phase body and in the summary.
-- [ ] Add it, and discharge it at all 14 sites per the inventory table above, adding the
+- [x] Add it, and discharge it at all 14 sites per the inventory table above, adding the
       `[Nonempty W]` / `[Nonempty FamIdx]` binders those sites need and propagating each to its
-      consumers.
-- [ ] Commit once, green.
+      consumers. *(deviation: altered — the discovery grep found **13** `where`-block construction
+      sites, not 14: `genericNatFrame` (`Examples/TemporalStructures.lean`) is a site the plan's
+      table did not list, and `bundleFlowFrame` is a specialization rather than a site, exactly as
+      `FlowFrame.lean`'s own module docstring says. `FiniteFilteredTaskFrame` inherits through
+      `toTaskFrame` and owes nothing of its own. Every route in the table that was listed held.)*
+- [x] Commit once, green.
 
 *Sub-step 14.2.3 — `[Nontrivial D]` as a structure binder. Atomic window #2.*
-- [ ] Re-measure first: `grep -rn "TaskFrame" FormalSystem/ Tests/ --include=*.lean` excluding
+- [x] Re-measure first: `grep -rn "TaskFrame" FormalSystem/ Tests/ --include=*.lean` excluding
       `Boneyard/` (575 mentions / 49 files on 2026-08-12; 578 / 49 on 2026-08-13). Record the
       observed count in the commit message.
-- [ ] Add `[Nontrivial D]` to `structure TaskFrame`'s binder list (TaskFrame.lean:401 as read on
+- [x] Add `[Nontrivial D]` to `structure TaskFrame`'s binder list (TaskFrame.lean:401 as read on
       2026-08-13 — confirm), and thread the instance through every declaration that mentions
       `TaskFrame D` at polymorphic `D`, including `FiniteTaskFrame` (TaskFrame.lean:1151), which
       `extends TaskFrame` and inherits the requirement.
-- [ ] Note that `valid` and `SemanticConsequence` in `FormalSystem/Semantics/Validity.lean`
+- [x] Note that `valid` and `SemanticConsequence` in `FormalSystem/Semantics/Validity.lean`
       already carry `[Nontrivial D]`, so the gap is specifically at the structure level; those
       sites should need no change beyond possibly becoming redundant. Record any that do.
-- [ ] Commit once, green.
+- [x] Commit once, green.
 
 *Sub-step 14.2.4 — prose.*
-- [ ] Correct the two remaining entries in `TaskFrame.lean`'s "Known gaps relative to the paper"
+- [x] Correct the two remaining entries in `TaskFrame.lean`'s "Known gaps relative to the paper"
       block — `Nonempty WorldState` and `[Nontrivial D]` — which Phase 14.1 deliberately left
       standing. After this phase the block should carry no gap that the structure now closes.
+
+#### Outcome record (both windows landed)
+
+**The `FilteredWorld` nonemptiness route.** `Nonempty (FilteredWorld phi)` holds for *every*
+`phi`, with no side condition, and needs no `choice` beyond what Lindenbaum already uses:
+Lindenbaum-extend the **empty** set within `closureWithNeg phi` (`closure_mcs_extension`,
+`FMP/ClosureMCS.lean`), whose two obligations are `ClosureRestricted phi ∅` (immediate) and
+`SetConsistent ∅`. The latter collapses to `Consistent []` — the consistency of the base system —
+which **also did not exist in the tree**. It is added as
+`FormalSystem.Metalogic.not_derivable_nil_bot` (`Metalogic/Soundness.lean`): `soundness` turns a
+derivation of `⊥` from `[]` into `trivialFrame.ValidOn ⊥` over `Int`, which
+`TaskFrame.not_validOn_bot` refutes. `#print axioms` on the result: `propext`,
+`Classical.choice`, `Quot.sound` — no new axiom. Landed and committed green as 14.2.1 before
+either window opened, per the plan's pre-repair-before-the-batch pattern.
+
+**The `bundleFlowFrame` nonemptiness route.** **Derived; no new `BFMCS` field and no new
+hypothesis.** `BFMCS` already carries `evalFamily` together with
+`eval_family_mem : evalFamily ∈ families`, which is precisely an inhabitant of
+`{fam // fam ∈ B.families}`; that is `Algebraic.bundleFamilies_nonempty`. (`BFMCS.nonempty :
+families.Nonempty` would serve equally; the distinguished evaluation family was preferred because
+it is canonical and needs no `choice`.) Every consumer of `bundleFlowFrame` therefore keeps its
+present binder list unchanged.
+
+**The `Nonempty WorldState` shape decision.** A plain structure field, not an instance binder on
+the structure. An instance binder would have to be supplied at each of the ~650 `TaskFrame`
+mentions; a field is discharged once per frame and read off as `F.nonempty` thereafter. Immediate
+payoff: `TaskFrame.not_validOn_bot` and `TaskFrame.hF_nonempty_of_frameAxioms`
+(`Semantics/Validity.lean`) are now the bare statements over `F` alone, with no world state
+argument.
+
+**`[Nontrivial D]` re-measurement.** 653 mentions / 49 files immediately before the edit (plan
+recorded 575/49 on 2026-08-12, 578/49 on 2026-08-13); 655/49 after. The delta is Phases 14.1, 15
+and 14.2.2 landing in between. `valid` and `SemanticConsequence` needed **no** change and were
+made redundant by nothing: they bind `D` themselves. Two mechanical call-site adjustments were
+required beyond binder threading — `CarrierProp`/`RuleSound`
+(`Metalogic/Decidability/Verified/Decidable.lean`) gained the binder in their own quantifier
+prefixes, so the two `RuleSound.mono` applications gained a matching argument.
+
+**Pre-existing test drift, not caused here.** `lake build BimodalTest` carries 7 `#guard_msgs`
+docstring mismatches (`BoxSpreadProbe.lean`, `RegionGateProbe.lean`, `TableauConformance.lean`).
+They are tableau-enumeration outputs; `BoxSpreadProbe` and `TableauConformance` import nothing
+this phase touched. Present before this phase and left as found.
 
 **Timing**: 4 hours
 
@@ -1852,9 +1899,9 @@ Line numbers are plan-time hypotheses from 2026-08-12; confirm by reading.
 - [ ] `example : Serial F.TaskRel := F.serial`, and the `Interpolates` / `Spherical` analogues,
       elaborate by `rfl` (the definitional-content check)
 - [ ] `step` (and the chain) consume the fields; the consuming declaration is named in the summary
-- [ ] `Nonempty (FilteredWorld phi)` exists as a proved, sorry-free declaration (Phase 14.2), and
+- [x] `Nonempty (FilteredWorld phi)` exists as a proved, sorry-free declaration (Phase 14.2), and
       its route is named in the summary — it was absent from the tree when this plan was written
-- [ ] Phase 14.1 and Phase 14.2 landed as separate commits with separate red windows; no commit
+- [x] Phase 14.1 and Phase 14.2 landed as separate commits with separate red windows; no commit
       contains both a four-axiom field addition and a structure-binder/nonemptiness change
 - [ ] `bash scripts/check-paper-definitions.sh` still exits 0 silent (no anchor drift)
 - [ ] `grep -rn "possible_worlds.tex:[0-9]" FormalSystem/ --include=*.lean` still returns nothing
