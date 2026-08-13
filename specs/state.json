@@ -1296,7 +1296,7 @@
     {
       "project_number": 442,
       "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
-      "status": "researched",
+      "status": "planned",
       "task_type": "typst",
       "topic": "paper-refactor",
       "priority": "high",
@@ -1318,11 +1318,16 @@
           "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/reports/01_book-paper-lean-sync-audit.md",
           "type": "report",
           "summary": "Sync-check disposition table, corrected completeness/decidability text, frame-class/module-tree corrections, bibliography entries, marker-string proposal, diagram sketches, and punch list."
+        },
+        {
+          "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/plans/01_book-paper-lean-revision.md",
+          "type": "plan",
+          "summary": "16-phase, 21-hour plan across 9 dependency waves covering the sync-check gate closure, the reversed completeness story, the conservativity and decidability corrections, the module-table rebuild, and the expository mandate."
         }
       ],
       "blockers": null,
       "created": "2026-08-13T06:31:40Z",
-      "last_updated": "2026-08-13T06:44:32Z",
+      "last_updated": "2026-08-13T06:54:41Z",
       "next_artifact_number": 1,
       "session_id": "sess_1786602947_2f48be_442"
     },

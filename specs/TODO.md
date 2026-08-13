@@ -82,7 +82,7 @@ next_project_number: 444
 419 [PLANNED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
 440 [RESEARCHED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
-442 [RESEARCHED] — ABSORBS AND SUPERSEDES 427 (`sync_typst_book_with_refactored_pape
+442 [PLANNED] — ABSORBS AND SUPERSEDES 427 (`sync_typst_book_with_refactored_pape
   └─ 443 [NOT STARTED] — GOAL. Write a NEW, standalone ~10-page Typst report, `typst/Forma
 
 ### Strong Completeness
@@ -192,11 +192,12 @@ Identical to the predecessor task's: run `bash scripts/check-paper-definitions.s
 ---
 
 ### 442. Revise bimodal reference book against paper and lean
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: typst
 - **Topic**: paper-refactor
 - **Dependencies**: None
 - **Research**: [442_revise_bimodal_reference_book_against_paper_and_lean/reports/01_book-paper-lean-sync-audit.md]
+- **Plan**: [442_revise_bimodal_reference_book_against_paper_and_lean/plans/01_book-paper-lean-revision.md]
 
 **Description**: ABSORBS AND SUPERSEDES 427 (`sync_typst_book_with_refactored_paper`), which is marked [EXPANDED] by this task's creation. 427's quote-backed anchor content is carried forward VERBATIM in sections 3 and 9 below and remains binding; nothing in 427 is discarded except its gating and its narrow definitional-only remit. Do not re-read 427 for instructions -- this description is authoritative over it.
 
