@@ -749,7 +749,7 @@ actually hits the stumble rather than where this plan guessed.
 
 ---
 
-### Phase 13: Semantics Diagrams [NOT STARTED]
+### Phase 13: Semantics Diagrams [COMPLETED]
 
 **Goal**: Two cetz diagrams in `02-semantics.typ`, matching the existing light-cone idiom.
 

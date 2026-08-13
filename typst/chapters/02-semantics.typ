@@ -4,6 +4,7 @@
 // ============================================================================
 
 #import "../template.typ": *
+#import "@preview/cetz:0.3.4"
 
 = Task Semantics
 
@@ -50,6 +51,55 @@ The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) requires exactly thi
 
 There is therefore no separate *Reflection* axiom: the equivalence $w arrow.r.double.long_x u arrow.l.r.double u arrow.r.double.long_(-x) w$ is built into the task relation's definition by the converse convention above, not imposed as a further constraint on frames.
 Any converse operation written explicitly in this book uses a superscript inverse ($arrow.r.double.long^(-1)$), never the relation-algebra breve or smile common in the arrow-logic literature; the paper itself introduces no operator symbol for the convention at all, writing it only as subscript negation.
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+    let theta = 0deg
+    let alpha = 32deg
+    let L = 2.6
+    let pt(ang, r) = (calc.cos(ang) * r, calc.sin(ang) * r)
+
+    let w = (0, 0)
+    let v = (0, 3.4)
+    let sliceH = 1.55  // height of the shared segment slice
+
+    // w's forward cone (opens upward): the union of Fib(w, y) for 0 < y < x0
+    line(w, pt(90deg + alpha, L), pt(90deg - alpha, L), close: true,
+      fill: blue.transparentize(85%), stroke: gray.lighten(40%))
+
+    // v's backward cone (opens downward): the union of Fib(v, -y) for 0 < y < y0
+    line(v, (v.at(0) + calc.cos(-90deg + alpha) * L, v.at(1) + calc.sin(-90deg + alpha) * L),
+      (v.at(0) + calc.cos(-90deg - alpha) * L, v.at(1) + calc.sin(-90deg - alpha) * L),
+      close: true, fill: orange.transparentize(85%), stroke: gray.lighten(40%))
+
+    // The overlap band at the shared slice height: the segment [w,v]
+    let hw = calc.tan(alpha) * sliceH
+    let hv = calc.tan(alpha) * (v.at(1) - sliceH)
+    let segHalf = calc.min(hw, hv)
+    rect((-segHalf, sliceH - 0.12), (segHalf, sliceH + 0.12),
+      fill: purple.transparentize(60%), stroke: none)
+
+    // Fib(w, x0): the horizontal slice through w's cone
+    line((-hw, sliceH), (hw, sliceH), stroke: (paint: blue.darken(30%), thickness: 1.2pt, dash: "dashed"))
+
+    // Marked points
+    circle(w, radius: 0.06, fill: blue.darken(40%), stroke: none)
+    content((0.35, -0.15), text(size: 9pt)[$w$])
+    circle(v, radius: 0.06, fill: orange.darken(30%), stroke: none)
+    content((0.35, v.at(1) + 0.15), text(size: 9pt)[$v$])
+
+    content((hw + 0.55, sliceH), text(size: 9pt, fill: blue.darken(30%))[$"Fib"(w, x)$])
+    content((segHalf + 1.15, sliceH - 0.32), text(size: 9pt, fill: purple.darken(20%))[$[w,v]_x^y$])
+    content((-1.65, 0.7), text(size: 9pt, fill: blue.darken(30%))[$(w)_x$])
+  })
+]
+
+#align(center)[
+  #text(size: 0.85em, style: "italic")[
+    The fiber/cone/segment apparatus of `def:task-relation`. Shaded regions are $w$'s forward cone (blue) and $v$'s backward cone (orange); the dashed line is the fiber $"Fib"(w,x)$ at duration $x$ above $w$; the darker overlap band is the segment $[w,v]_x^y$, where $v$ sits at duration $x+y$ above $w$ so that $"Fib"(w,x)$ and $"Fib"(v,-y)$ share the same duration level.
+  ]
+]
 
 #definition("Directed Family")[
   A nonempty family of sets $S$ is *directed* just in case $S' subset.eq S_1 inter S_2$ for some $S' in S$ whenever $S_1, S_2 in S$.
@@ -108,6 +158,48 @@ Only the total tier is what the semantics of @sec:truth quantifies over.
   A world history is *total* --- equivalently, a *possible world* --- just in case $"dom"$ holds of every time, i.e. $"dom" = D$.
   The set of all *total* world histories over frame $cal(F)$ is denoted $H_(cal(F))$: a world history with a proper convex domain is *not* a member of $H_(cal(F))$, only the total ones are.
 ]#footnote[`def:world-history`. @brastmckie2026possibleworlds]
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+    let axisL = -2.6
+    let axisR = 2.6
+    let rows = ((y: 2.2, label: [not a world history: domain has a gap]),
+                (y: 1.1, label: [world history, not total: convex but proper]),
+                (y: 0.0, label: [total world history (possible world): $"dom" = D$]))
+
+    for r in rows {
+      line((axisL, r.y), (axisR, r.y), stroke: (paint: gray.lighten(55%), thickness: 0.8pt))
+      content((axisR + 0.35, r.y), text(size: 8pt)[$D$])
+    }
+
+    // Row 1: non-convex domain -- two disjoint marked segments with a visible gap
+    let thick1 = (paint: red.darken(10%), thickness: 3pt)
+    line((-2.2, 2.2), (-0.6, 2.2), stroke: thick1)
+    line((0.6, 2.2), (2.2, 2.2), stroke: thick1)
+    content((0.0, 2.2 + 0.32), text(size: 8pt, fill: red.darken(20%))[gap: not in $"dom"$])
+
+    // Row 2: convex proper subinterval
+    let thick2 = (paint: blue.darken(20%), thickness: 3pt)
+    line((-1.3, 1.1), (1.3, 1.1), stroke: thick2)
+    circle((-1.3, 1.1), radius: 0.045, fill: blue.darken(20%), stroke: none)
+    circle((1.3, 1.1), radius: 0.045, fill: blue.darken(20%), stroke: none)
+
+    // Row 3: total -- the whole axis marked
+    let thick3 = (paint: green.darken(25%), thickness: 3pt)
+    line((axisL, 0.0), (axisR, 0.0), stroke: thick3)
+
+    for r in rows {
+      content((axisL - 0.2, r.y), anchor: "east", text(size: 8pt)[#r.label])
+    }
+  })
+]
+
+#align(center)[
+  #text(size: 0.85em, style: "italic")[
+    The layering of `def:world-history`: a partial history (any nonempty domain, row omitted here since it subsumes all three) narrows to a *world history* once the domain is convex (row 2), and narrows further to *total* -- a possible world -- once the domain is all of $D$ (row 3). Row 1 has a gap and so is not convex: not a world history at all, regardless of nonemptiness.
+  ]
+]
 
 Not every partial history is total, and it is not obvious that a frame has *any* total world histories at all --- the existence of $H_(cal(F))$ needs an argument, and this is exactly where *Spherical* earns its place in `def:frame`.
 
