@@ -194,6 +194,77 @@ theorem regionFrame_taskRel (W ι D : Type) [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] (s : W × D) (d : D) (s' : W × D) :
     (regionFrame W ι D).TaskRel s d s' ↔ (s.1 = s'.1 ∧ s'.2 = s.2 + d) := Iff.rfl
 
+/-! ### `regionFrame` discharges `def:frame`'s four axioms
+
+The clock relation `s.1 = s'.1 ∧ s'.2 = s.2 + d` makes the duration of a transition recoverable
+from its endpoints, via the position function `Prod.snd`. That is exactly the deterministic-shift
+contract `TaskFrame.limit_of_shift` consumes, so *Limit* holds over **any** nontrivial duration
+type — dense included — and every fiber is a singleton, which discharges *Spherical*.
+
+This supersedes an earlier record flagging this frame as failing dense-polymorphically. That flag
+was accurate against the frame's **former** relation, the maximally-permissive
+`TaskRel s d s' := d = 0 → s = s'` described in `regionFrame`'s docstring above: above zero that
+relation related every pair, so over a dense `D` every state sat in every cone of every other and
+*Limit* collapsed. The relation is no longer that one. The four lemmas below elaborate at
+polymorphic `D` under `[Nontrivial D]` alone, with **no** discreteness hypothesis — which is the
+falsification test the flag needed, and it fails to falsify. -/
+
+/-- Every fiber (`def:task-relation`, *Fiber* clause) of `regionFrame` is a subsingleton: the
+clock is deterministic, so `Fib R s x ⊆ {(s.1, s.2 + x)}`. -/
+theorem regionFrame_fib_subsingleton (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] (s : W × D) (x : D) :
+    (TaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton := by
+  rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+  exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `regionFrame`: the clock supplies the successor `(s.1, s.2 + x)` and
+the predecessor `(s.1, s.2 - x)`. -/
+theorem regionFrame_serial (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] : TaskFrame.Serial (regionFrame W ι D).TaskRel :=
+  fun s x _ =>
+    ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
+     ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `regionFrame`: interpolate at the unique intermediate `(s.1, s.2 + x)`. -/
+theorem regionFrame_interpolates (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] : TaskFrame.Interpolates (regionFrame W ι D).TaskRel := by
+  rintro s v x y _ _ ⟨h₁, h₂⟩
+  refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
+  show v.2 = s.2 + x + y
+  rw [h₂]; abel
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`regionFrame`, in the literal transcribed shape, via `TaskFrame.limit_of_shift` with
+`pos := Prod.snd`. `[Nontrivial D]` is the only hypothesis on `D` — the axiom holds over dense
+duration types as well as discrete ones. -/
+theorem regionFrame_limit (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] :
+    ∀ s u : W × D,
+      (∀ x, 0 < x → ∃ y, |y| < x ∧ (regionFrame W ι D).TaskRel s y u) → u = s :=
+  TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+    (fun s u h => (((regionFrame W ι D).nullity_identity s u).mp h).symm)
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame`: every fiber is
+a subsingleton and every segment is an intersection of fibers, so every nonempty member of a
+directed family is a singleton and
+`TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
+theorem regionFrame_spherical (W ι D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] : TaskFrame.Spherical (regionFrame W ι D).TaskRel := by
+  intro S hdir hmem
+  refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
+    (fun s hs => (hmem s hs).2) (fun s hs => ?_)
+  obtain ⟨hcl, hne⟩ := hmem s hs
+  obtain ⟨a, ha⟩ := hne
+  refine Or.inr ⟨a, ?_⟩
+  rcases hcl with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
+  · exact (regionFrame_fib_subsingleton W ι D w x).eq_singleton_of_mem ha
+  · exact ((regionFrame_fib_subsingleton W ι D w x).anti
+      Set.inter_subset_left).eq_singleton_of_mem ha
+
 end Frame
 
 /-! ## The histories -/
