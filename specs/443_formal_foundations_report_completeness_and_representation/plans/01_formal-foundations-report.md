@@ -248,7 +248,7 @@ only (without quoting its text) does not require tracking.
 
 ---
 
-### Phase 3: Section 1 — the system, compressed [NOT STARTED]
+### Phase 3: Section 1 — the system, compressed [COMPLETED]
 
 **Goal**: A ~2-page formally precise compression of the languages, task-frame semantics, and proof
 systems, using the notation module so nothing drifts from the book.

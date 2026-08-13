@@ -91,6 +91,25 @@ def:BLplus-language
 # resolves on its own, this one has no Lean-side citation to grep) ---
 cor:tm-decidability
 
+# --- External paper anchors cited only in typst/FormalFoundations.typ (a
+# standalone report, not a book chapter -- see typst/README.md's "Standalone
+# Reports" entry). These are paper-side \label/\aitem anchors tracked in
+# specs/paper-definitions-of-record.md's coverage extension for this report;
+# they have no matching Lean identifier to grep, exactly the same category
+# as def:BLplus-language and cor:spherical-finite above. ---
+def:S5
+def:BX
+def:BL-model
+def:BLplus-defined
+sub:Logic
+thm:BLplus-PastFuture
+
+# --- External paper definition labels (def:TMplus-f, def:TMplus-d): the
+# discrete/dense BX extensions. def:TMplus and def:TMplus-c happen to
+# resolve on their own via Lean doc-comment citations; these two do not. ---
+def:TMplus-f
+def:TMplus-d
+
 # --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
 01-introduction.typ
 
