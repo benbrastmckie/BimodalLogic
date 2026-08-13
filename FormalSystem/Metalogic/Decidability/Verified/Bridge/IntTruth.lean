@@ -167,7 +167,7 @@ theorem normWorld_idem {b : Branch} (hne : b.knownWorlds ≠ []) (w : WorldIndex
 
 section Model
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 **The countermodel, with worlds normalised.**

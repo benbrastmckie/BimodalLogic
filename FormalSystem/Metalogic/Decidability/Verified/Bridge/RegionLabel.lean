@@ -451,7 +451,7 @@ noncomputable def branchRegionVal (b : Branch) (ord : TimeOrdering) :
 
 section Model
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 **The atom clause at a gap point.** Truth of an atom at a non-placed point is exactly the

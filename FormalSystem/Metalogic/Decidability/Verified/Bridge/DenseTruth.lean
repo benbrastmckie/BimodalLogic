@@ -54,7 +54,7 @@ open FormalSystem.Metalogic.Decidability
 
 section Model
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
 
 /-! ## The assembly, with the temporal cases abstracted
@@ -148,7 +148,7 @@ end Counting
 
 section Bridge
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
 
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
@@ -249,7 +249,7 @@ not state at all.
 
 section Dense
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
 
 /--
@@ -549,7 +549,7 @@ which is exactly the content of `not_exists_gt_sameRegion_int` read the other wa
 section Transport
 
 variable {D E : Type}
-variable [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable [AddCommGroup E] [LinearOrder E] [IsOrderedAddMonoid E]
 variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
 
@@ -567,7 +567,7 @@ end Transport
 
 section Assembly
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
 
 /-- **The truth lemma at a dense carrier**, at every formula.
