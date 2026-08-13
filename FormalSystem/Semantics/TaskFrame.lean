@@ -9,6 +9,7 @@ import Mathlib.Data.Fintype.Basic
 import Mathlib.Algebra.Order.Group.Abs
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Order.SuccPred.Basic
+import Mathlib.Data.Set.Lattice
 
 /-!
 # TaskFrame - Task Frame Structure for TM Semantics
@@ -100,6 +101,10 @@ This allows for various temporal structures:
 - `TaskFrame.Fib`, `TaskFrame.cone`, `TaskFrame.Seg`, `TaskFrame.DirectedFamily`,
   `TaskFrame.IsFiber`, `TaskFrame.IsSegment`: the `def:task-relation` / `def:directed`
   apparatus over a bare relation
+- `TaskFrame.Spherical`, `TaskFrame.Serial`, `TaskFrame.Interpolates`: three of `def:frame`'s
+  four axioms as predicates over a bare relation, hosted here so that they can become
+  `TaskFrame` fields *definitionally* (a field's type may only mention earlier declarations).
+  *Limit* is deliberately unnamed and used in its literal transcribed shape
 
 ## Main Results
 
@@ -528,6 +533,88 @@ is the disjunction `IsFiber R s ∨ IsSegment R s`.
 -/
 def IsSegment {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
   ∃ w v x y, 0 ≤ x ∧ 0 ≤ y ∧ s = Seg R w v x y
+
+/-!
+## The frame axioms in bare-relation form
+
+`def:frame`'s four axioms, stated as `Prop`-valued predicates over a bare task relation
+`R : W → D → W → Prop`. Three of them live here — *Spherical*, *Seriality*, and the
+interpolation half of *Compositionality*; *Limit* is deliberately left unnamed and used in its
+literal transcribed shape (see the discharge helpers `limit_of_succOrder` and `limit_of_shift`
+above).
+
+**These predicates are the sole form in which the axioms are available.** When the `TaskFrame`
+structure grows the corresponding fields, `TaskFrame.spherical` must be *definitionally*
+`Spherical TaskRel`, `TaskFrame.serial` definitionally `Serial TaskRel`, and the interpolation
+half of biconditional *Compositionality* definitionally `Interpolates TaskRel`, **all as defined
+here**. Discharging a downstream hypothesis is then a mechanical substitution (`F.spherical`,
+`F.serial`, `F.interpolates`) with zero restatement. If a field lands whose statement differs,
+the results that consume these predicates stop typechecking — and that compilation failure *is*
+the acceptance test. That invariant is recorded in
+`specs/decisions/total-history-validity-decisions.md` (the four-axiom frame-alignment decision).
+
+*Spherical* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
+sole application site the paper names, never an inert structure field.
+
+They are hosted in this module, rather than beside `Constraints` in `FrameAxioms.lean`, for a
+structural reason: a structure field's type may only mention declarations that precede it, so a
+predicate declared in a module that *imports* this one could never become a `TaskFrame` field.
+-/
+
+/--
+The *Spherical* axiom, over a bare task relation.
+
+Recorded source (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments."
+
+Three points of the transcription, each load bearing:
+
+1. *Directed* is `def:directed`, transcribed as `DirectedFamily` — a definition in its own right,
+   which already carries the nonemptiness of the family `S`.
+2. "Nonempty fibers and segments" is a condition on each *member*: it is both a class condition
+   (`IsFiber R s ∨ IsSegment R s`) and a nonemptiness condition (`s.Nonempty`). Fibers and
+   segments are **two separate classes**; a one-sided fiber does not count as a segment.
+3. "$\bigcap \mathcal{S} \neq \emptyset$" is `(⋂₀ S).Nonempty`.
+
+This predicate is the sole form in which *Spherical* is available: it is what the Step Lemma's
+proof consumes at the one application site the paper names, and what a future `TaskFrame`
+spherical field must be definitionally equal to.
+-/
+def Spherical {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ S : Set (Set W), DirectedFamily S →
+    (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
+
+/--
+The *Seriality* axiom, over a bare task relation.
+
+Recorded source (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$."
+
+The `0 ≤ x` proviso is `def:frame`'s own blanket condition on its axiom list (verbatim: "a task
+relation satisfying the following for $x, y \geq 0$"), carried here as an explicit hypothesis
+rather than in the type. Both conjuncts are stated: every state has an `x`-successor *and* an
+`x`-predecessor.
+-/
+def Serial {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ (w : W) (x : D), 0 ≤ x → (∃ u, R w x u) ∧ (∃ v, R v x w)
+
+/--
+The interpolation half of *Compositionality*, over a bare task relation.
+
+Recorded source (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if and only
+if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$."
+
+*Compositionality* is a **biconditional**, and both directions are load bearing. The
+right-to-left direction — composition — is already the existing structure field
+`TaskFrame.forward_comp`. This definition is the missing left-to-right direction: a task of
+duration `x + y` can be *interpolated* at every intermediate point. The full biconditional axiom
+is therefore `forward_comp ∧ Interpolates`.
+
+As with `Serial`, the `0 ≤ x`, `0 ≤ y` provisos are `def:frame`'s blanket condition on its axiom
+list, carried as explicit hypotheses.
+-/
+def Interpolates {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ w v x y, 0 ≤ x → 0 ≤ y → R w (x + y) v → ∃ u, R w x u ∧ R u y v
 
 /--
 Simple unit-based task frame for testing.

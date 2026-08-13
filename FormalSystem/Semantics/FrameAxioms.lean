@@ -100,60 +100,22 @@ namespace TaskFrame
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
-/--
-The *Spherical* axiom, over a bare task relation.
+/-!
+## Where `Spherical` / `Serial` / `Interpolates` live
 
-Recorded source (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments."
+The three axiom predicates this module was originally written to host —
+`TaskFrame.Spherical`, `TaskFrame.Serial`, `TaskFrame.Interpolates` — now live in
+`FormalSystem/Semantics/TaskFrame.lean`, beside the `Fib` / `cone` / `Seg` / `DirectedFamily` /
+`IsFiber` / `IsSegment` apparatus they are built from. Their fully qualified names, statements,
+and namespace are unchanged (`FormalSystem.Semantics.TaskFrame.{Spherical,Serial,Interpolates}`),
+so every consumer of this module sees them exactly as before.
 
-Three points of the transcription, each load bearing:
-
-1. *Directed* is `def:directed`, transcribed as `DirectedFamily` — a definition in its own right,
-   which already carries the nonemptiness of the family `S`.
-2. "Nonempty fibers and segments" is a condition on each *member*: it is both a class condition
-   (`IsFiber R s ∨ IsSegment R s`) and a nonemptiness condition (`s.Nonempty`). Fibers and
-   segments are **two separate classes**; a one-sided fiber does not count as a segment.
-3. "$\bigcap \mathcal{S} \neq \emptyset$" is `(⋂₀ S).Nonempty`.
-
-This predicate is the sole form in which *Spherical* is available: it is what the Step Lemma's
-proof consumes at the one application site the paper names, and what a future `TaskFrame`
-spherical field must be definitionally equal to.
+The relocation is forced by the invariant recorded above: the `TaskFrame` structure must be able
+to carry these predicates as fields *definitionally*, and a structure field's type can only
+mention declarations that precede it. A predicate declared in a module that imports
+`TaskFrame.lean` can never be a `TaskFrame` field. Hosting them beside the apparatus is what
+makes the fields statable without restating anything.
 -/
-def Spherical {W : Type} (R : W → D → W → Prop) : Prop :=
-  ∀ S : Set (Set W), DirectedFamily S →
-    (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
-
-/--
-The *Seriality* axiom, over a bare task relation.
-
-Recorded source (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
-for some $u, v \in W$."
-
-The `0 ≤ x` proviso is `def:frame`'s own blanket condition on its axiom list (verbatim: "a task
-relation satisfying the following for $x, y \geq 0$"), carried here as an explicit hypothesis
-rather than in the type. Both conjuncts are stated: every state has an `x`-successor *and* an
-`x`-predecessor.
--/
-def Serial {W : Type} (R : W → D → W → Prop) : Prop :=
-  ∀ (w : W) (x : D), 0 ≤ x → (∃ u, R w x u) ∧ (∃ v, R v x w)
-
-/--
-The interpolation half of *Compositionality*, over a bare task relation.
-
-Recorded source (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if and only
-if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$."
-
-*Compositionality* is a **biconditional**, and both directions are load bearing. The
-right-to-left direction — composition — is already the existing structure field
-`TaskFrame.forward_comp`. This definition is the missing left-to-right direction: a task of
-duration `x + y` can be *interpolated* at every intermediate point. The full biconditional axiom
-is therefore `forward_comp ∧ Interpolates`.
-
-As with `Serial`, the `0 ≤ x`, `0 ≤ y` provisos are `def:frame`'s blanket condition on its axiom
-list, carried as explicit hypotheses.
--/
-def Interpolates {W : Type} (R : W → D → W → Prop) : Prop :=
-  ∀ w v x y, 0 ≤ x → 0 ≤ y → R w (x + y) v → ∃ u, R w x u ∧ R u y v
 
 /--
 `lem:nullity`: every world state loops at duration zero.
