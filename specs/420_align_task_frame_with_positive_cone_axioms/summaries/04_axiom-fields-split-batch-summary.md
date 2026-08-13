@@ -144,3 +144,138 @@ term over the raw relation — see "Plan Deviations" for why citation was not av
 `[Nontrivial D]` as a `TaskFrame` structure binder (measured at 575+ mentions across 49 files) and
 `Nonempty WorldState`, including the `Nonempty (FilteredWorld phi)` proof that does not exist in
 the tree. Neither gates anything that landed here.
+
+---
+
+# Phase 14.2 — TaskFrame structure binders (both windows landed)
+
+Supersedes the "Still open (Phase 14.2, not started)" section above. Phase 14.2 is `[COMPLETED]`:
+both declared atomic windows opened and closed green in a single run, so the phase's permitted
+`[PARTIAL]` close was not taken. Every phase in `plans/04_axiom-fields-split-batch.md` is now
+`[COMPLETED]`.
+
+Four commits: `3d73e85fe` (14.2.1), `d33aca8e8` (14.2.2, window #1), `ddfcb59c3` (14.2.3,
+window #2), `2277a3e64` (plan markers and outcome record).
+
+## 14.2.1 — the `FilteredWorld` nonemptiness proof (green pre-window addition)
+
+The gap was confirmed before proving, exactly as the plan required: `FilteredWorld` had a
+`Finite` instance (`FiniteModel.lean:137`) and **no** `Nonempty` instance or lemma anywhere in
+the tree. `Finite` does not give `Nonempty`.
+
+**Route, and it needs no hypothesis on `phi`.** Lindenbaum-extend the **empty** set within
+`closureWithNeg phi` via `closure_mcs_extension` (`FMP/ClosureMCS.lean`). Its two obligations are
+`ClosureRestricted phi ∅` (immediate, `Set.empty_subset`) and `SetConsistent ∅`, and the latter
+collapses to `Consistent []` — the consistency of the base system.
+
+**That second fact was also absent from the tree**, and is the substantive part of this
+sub-step. Every existing site that needed it (e.g. `neg_consistent_of_not_derivable`,
+`BXCanonical/Completeness.lean`) had routed around it by carrying an underivability hypothesis
+instead. It is added as `FormalSystem.Metalogic.not_derivable_nil_bot`
+(`Metalogic/Soundness.lean`): `soundness` turns a derivation of `⊥` from `[]` into
+`trivialFrame.ValidOn ⊥` over `Int`, which `TaskFrame.not_validOn_bot` refutes — and that
+refutation is itself `cor:occurrence`'s closing clause, so the frame axioms doing the work are
+`trivialFrame`'s own fields. `Soundness.lean` gained one import
+(`FormalSystem.ProofSystem.Derivable`); `Filtration.lean` gained one
+(`FormalSystem.Metalogic.Soundness`). Neither introduces a cycle.
+
+New declarations: `Metalogic.not_derivable_nil_bot`, `FMP.setConsistent_empty`,
+`FMP.closureMCSBundle_nonempty`, `FMP.filteredWorld_nonempty`. `#print axioms` on the last:
+`propext`, `Classical.choice`, `Quot.sound` — no new axiom, no `sorryAx`.
+
+## 14.2.2 — `Nonempty WorldState` (window #1)
+
+**Shape decision: a plain structure field `nonempty : Nonempty WorldState`, not an instance
+binder on the structure.** Reason: an instance binder would have to be supplied at each of the
+~650 `TaskFrame` mentions, whereas a field is discharged once per frame at its construction site
+and read off as `F.nonempty` thereafter.
+
+Discharges by class (13 `where`-block construction sites — see Plan Deviations):
+
+| Site | Route |
+|---|---|
+| `trivialFrame`, `intTimeFrame`, `genericTimeFrame` | `Unit` carrier — `inferInstanceAs` |
+| `natFrame`, `intNatFrame`, `genericNatFrame` | `Nat` carrier — `inferInstanceAs` |
+| `zTaskFrameV2` | `ℤ` carrier — `inferInstanceAs` |
+| `customFrame` (test) | `Bool` carrier — `inferInstanceAs` |
+| `staticFrame W` | new `[Nonempty W]` binder, propagated to its five axiom lemmas and two test sites |
+| `regionFrame W ι D` | new `[Nonempty W]` binder, propagated through `RegionFrame.lean`, `TruthLemma.lean`, `Valuation.lean` |
+| `multiFamTaskFrameGen`, `multiFamTaskFrame` | new `[Nonempty FamIdx]` binder, propagated through `FlowFrame.lean`, `ReynoldsBridge.lean`, `ChronicleMonadicBridge.lean`; the two countermodel proofs supply it locally from their root family `f₀` |
+| `RefinedFilteredTaskFrame` (and `FiniteFilteredTaskFrame` by inheritance) | the 14.2.1 instance |
+
+**`bundleFlowFrame`'s route: derived, no new `BFMCS` field and no new hypothesis.** `BFMCS`
+already carries `evalFamily` with `eval_family_mem : evalFamily ∈ families`, which *is* an
+inhabitant of `{fam // fam ∈ B.families}`. That is `Algebraic.bundleFamilies_nonempty`.
+(`BFMCS.nonempty : families.Nonempty` would serve equally; the evaluation family was preferred
+because it is the canonical choice and needs no `choice`.) Every consumer keeps its present
+binder list.
+
+**Payoff, and it is checked by the build**: `TaskFrame.not_validOn_bot` is now the bare
+`¬ F.ValidOn ⊥` with `F` its only argument, and `TaskFrame.hF_nonempty_of_frameAxioms` likewise
+drops its world-state argument — both take the witness from `F.nonempty` instead. This is the
+"one remaining gap" the previous statement's own docstring named.
+
+## 14.2.3 — `[Nontrivial D]` as a structure binder (window #2)
+
+**Re-measurement immediately before editing: 653 `TaskFrame` mentions across 49 files** (the plan
+recorded 575/49 on 2026-08-12 and 578/49 on 2026-08-13; the delta is Phases 14.1, 15 and 14.2.2
+landing since). 655/49 after.
+
+`structure TaskFrame` and `structure FiniteTaskFrame` (which `extends` it) now carry
+`[Nontrivial D]`, as `def:temporal-order` requires. The instance is threaded through the 33 files
+whose declarations mention `TaskFrame D` at polymorphic `D` — `variable` lines and per-declaration
+binder lists alike.
+
+Two adjustments beyond plain binder threading, both in
+`Metalogic/Decidability/Verified/Decidable.lean`: `CarrierProp` and `RuleSound` gained the binder
+inside their own quantifier prefixes, so the two `RuleSound.mono` applications gained a matching
+argument.
+
+**`valid` and `SemanticConsequence` needed no change, and nothing about them became redundant.**
+They bind `D` themselves, so their own `[Nontrivial D]` is not subsumed by the structure's. What
+the structure binder buys is that `TaskFrame D` can no longer be *written* at a trivial `D`.
+
+## 14.2.4 — prose
+
+`TaskFrame.lean`'s module header no longer lists any structural known gap. Both entries that
+stood there — `W` nonempty and `D` nontrivial — are recorded as closed, with the field/binder
+that closes each named, rather than deleted.
+
+## Plan Deviations
+
+- **The site count is 13, not the plan's 14** *(altered)*. The discovery grep found thirteen
+  `where`-block `TaskFrame` construction sites. `genericNatFrame`
+  (`Examples/TemporalStructures.lean`) is a site the plan's inventory table did not list;
+  `bundleFlowFrame` is a *specialization* of `multiFamTaskFrameGen` rather than a site, exactly as
+  `FlowFrame.lean`'s own module docstring states, and owes no field of its own;
+  `FiniteFilteredTaskFrame` inherits through `toTaskFrame`. Every route the plan's table did
+  predict held.
+- **14.2.1's "STOP and record a gap" branch did not fire** *(skipped)*. The proof needs no
+  hypothesis on `phi` at all, so there was no gap to escalate.
+- **`Metalogic/Soundness.lean` was modified, and the plan's file list did not name it**
+  *(altered)*. Reached as the only sound home for `not_derivable_nil_bot`, which 14.2.1 needs and
+  which sits below `Metalogic/Core/` in the import graph.
+- **`Semantics/Validity.lean`'s `not_validOn_bot` / `hF_nonempty_of_frameAxioms` lost their
+  world-state arguments** *(altered)*. Not in the plan's file list, but the plan's own
+  `Verification` block asks that no "known gap" prose referring to `Nonempty WorldState` remain,
+  and that prose lives on `not_validOn_bot` — leaving the argument while declaring the gap closed
+  would have been incoherent.
+- **Two peripheral files were reverted after the binder sweep** *(altered)*.
+  `Semantics/DurationClassification.lean` and `FrameConditions/FrameClass.lean` took
+  `[Nontrivial D]` from the mechanical sweep and did not need it; both were reverted and the tree
+  re-verified green, keeping the diff to declarations that genuinely mention `TaskFrame D`.
+- `nullity_identity` untouched, per caveat (b) — the joint decision has still not landed.
+
+## Verification
+
+| Check | Result |
+|---|---|
+| `lake build` | **green**, exit 0, after each of the three code commits |
+| `lake build BimodalTest` | 7 `#guard_msgs` failures, **the same 7 pre-existing exclusions** (TableauConformance 4, RegionGateProbe 2, BoxSpreadProbe 1); zero frame-related failures. `BoxSpreadProbe` and `TableauConformance` import nothing this phase touched |
+| `sorry`, `FormalSystem/` + `Tests/` outside `Boneyard/` | 313 — **identical at the dispatch-start commit `0b102f70f` and at HEAD** |
+| `sorry`, including `Boneyard/` | 971 — identical at both |
+| `axiom` declarations | 6 — identical at both |
+| `#print axioms` on `filteredWorld_nonempty` | `propext`, `Classical.choice`, `Quot.sound` only |
+| `bash scripts/check-paper-definitions.sh` | exit 0, no anchor drift |
+| `grep -n "known gap\|awaits consumption" FormalSystem/Semantics/TaskFrame.lean` | no hit referring to `Nonempty WorldState` or `[Nontrivial D]` as open |
+| `bash .claude/scripts/check-task-references.sh` | PASS, 0 unexempted occurrences |
