@@ -578,7 +578,7 @@ point or the pain paragraph.
 
 ---
 
-### Phase 8: Section 6 — the completeness construction as implemented here [NOT STARTED]
+### Phase 8: Section 6 — the completeness construction as implemented here [COMPLETED]
 
 **Goal**: An honest, measured, anchor-by-anchor account of what is actually in
 `FormalSystem/Metalogic/`, with diagram 2 and the report's strongest structural insight made

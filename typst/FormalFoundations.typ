@@ -302,7 +302,55 @@ Any two strongest objective normal modal operators are provably equivalent (`lem
 
 = The Completeness Construction as Implemented Here <sec:construction>
 
-// PHASE-8-PLACEHOLDER: content added in a later phase.
+*Core layer* (`Metalogic/Core/`): consistency, maximal consistent sets (MCS, negation-complete), the deduction theorem, and Lindenbaum's lemma via Zorn (`set_lindenbaum` in `MaximalConsistent.lean`); the set-level `SetConsistent`/`SetMaximalConsistent` layer is correctly finitary.
+
+*Architecture*: by contraposition, if $phi.alt$ is underivable then ${not phi.alt}$ is consistent and extends to an MCS $M in.rev not phi.alt$. A countermodel is then built by a *three-way case split* on the discreteness indicator $U(top,bot)$ ("there is an immediate successor," i.e. whether $square.stroked not "Next"top$ or $not square.stroked not "Next"top$ is in $M$), with the *mixed case eliminated outright* by `mcs_mixed_case_absurd` (`BXCanonical/Chronicle/MCSMixedCase.lean`): an MCS cannot be undecided about discreteness.
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+    let root = (0, 1.9)
+    let dense = (-3.6, 0)
+    let discrete = (0, 0)
+    let mixed = (3.6, 0)
+    line(root, dense, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    line(root, discrete, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    line(root, mixed, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    content(root, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 6pt, radius: 3pt)[
+      #text(size: 8pt)[MCS $M$: decide $U(top, bot)$]
+    ])
+    content(dense, box(fill: blue.transparentize(85%), stroke: (paint: blue.darken(20%), thickness: 1pt), inset: 6pt, radius: 3pt, width: 3.3cm)[
+      #align(center)[#text(size: 7.5pt)[Dense case \ $square.stroked not U(top,bot) in M$ \ chronicle on $QQ$]]
+    ])
+    content(discrete, box(fill: orange.transparentize(85%), stroke: (paint: orange.darken(20%), thickness: 1pt), inset: 6pt, radius: 3pt, width: 3.3cm)[
+      #align(center)[#text(size: 7.5pt)[Discrete case \ $square.stroked U(top,bot) in M$ \ Reynolds/Doets on $ZZ$]]
+    ])
+    content(mixed, box(fill: red.transparentize(88%), stroke: (paint: red.darken(20%), thickness: 1pt), inset: 6pt, radius: 3pt, width: 3.3cm)[
+      #align(center)[#text(size: 7.5pt)[Mixed case \ eliminated: absurd]]
+    ])
+  })
+]
+#align(center)[#text(size: 0.85em, style: "italic")[
+  The three-way case split on the discreteness indicator $U(top,bot)$. Same dichotomy that breaks $op("BL")$ (@sec:split-validity) makes $op("BL")^+$ go through: $op("BL")^+$ has a sentence naming discreteness where $op("BL")$ does not.
+]]
+
+*The structural rhyme*, this report's single most illuminating connection: this is the *same* discrete/dense dichotomy that breaks TM at the $op("BL")$ level (@sec:split-validity) -- the difference is that $op("BL")^+$ has a sentence naming discreteness ($not "Next"top$) and $op("BL")$ does not, so exactly the fact producing (DD)'s unprovable-but-valid disjunction at the $op("BL")$ level is what the $op("BL")^+$ completeness architecture case-splits on to make the canonical-model construction go through.
+
+*Dense path*: the Burgess-style *chronicle construction* over $QQ$ (`Metalogic/BXCanonical/Chronicle/`, `singletonChronicle` #sym.arrow.r `omegaChain` #sym.arrow.r `limit_chronicle`), filling in Until/Since eventualities, with `completeness_dense` in `BXCanonical/Completeness.lean`.#footnote[@burgess1982axioms]
+
+*Discrete path*: the Reynolds/Doets pipeline over $ZZ$ (`Metalogic/WeakCanonical/`, `IntegerModel/ReynoldsBridge.lean`'s `countermodel_discrete_reynolds_v2`), running through a Kamp-theorem-based expressive-completeness argument (`WeakCanonical/Kamp/`, `Separation/`, `EFGames/`, `Expressiveness/`).#footnote[@reynolds1992 @doets1987 @kamp1971formalproperties]
+
+*Dedekind path*, which the reference book currently omits entirely: `BXCanonical/CompletenessDedekind.lean` (`completeness_dedekind_engine`), `Metalogic/StrongCompleteness.lean` (`completeness_dedekind`, `consequence_completeness_dedekind`), and the `WeakCanonical/RealModel/` subtree (Doets, shuffle, order-isomorphism to $RR$), on the Reynolds-triple basis Prior-U + Sep with CO derived.
+
+*Shared infrastructure*: bundled families of MCSs with G/H coherence (`Metalogic/Bundle/BFMCS.lean`, `modal_forward`/`modal_backward`), enabling a Henkin-style construction where $square.stroked$ quantifies over *bundled* histories; the *D-parametric* algebraic truth lemma (`Metalogic/Algebraic/FlowFrame.lean`, `multiFamTaskFrameGen`) that turns a coherent MCS family into a task model once, generically, for every duration type $D$ -- its *Spherical* discharge (the deterministic-fiber argument) is a *third* pattern distinct from the finite-$W$ (`cor:spherical-finite`) and general-Zorn (`thm:extension`) routes; filtration and quasimodels (`BXCanonical/Filtration/`, `Quasimodel/`).
+
+*Status discipline* (measured 2026-08-13 at commit c2b8da5d6 via `scripts/typst-status-counts.sh` and `scripts/check-module-invariants.sh`'s check C2/C3 -- see this task's `reports/02_measured-status.md`; re-stamped at this report's final pass, @sec:key-theorems's discipline applies here identically): `completeness_dense`, `completeness_discrete`, `countermodel_dense` each carry exactly `[propext, Classical.choice, Quot.sound]` -- sorry-free; `completeness` (the general Base-frame theorem) alone carries `sorryAx`, traced to a single dead-code dependency in `WeakCanonical/Transfer.lean`'s `countermodel_discrete`, whose *live* replacement `countermodel_discrete_reynolds_v2` is what `completeness_discrete` actually calls. The algebraic layer's sorry count measures zero directly, contradicting `UltrafilterMCS.lean`'s own stale docstring ("Contains sorries pending MCS helper lemmas") -- the measured fact is reported here; the docstring is not edited (non-goal) and its stale prose is not repeated. `completeness_dedekind_engine`'s four declarations are likewise confirmed `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, per that module's own axiom-audit section. No `Boneyard/` content is described as live anywhere in this account.
+
+*Terminology, settled project-wide*: "strong completeness" is reserved for consequence from a possibly-infinite premise set; because `Context := List Formula` is finite, every finite-context consequence result is inter-derivable with weak completeness via the deduction theorem and is called *consequence completeness*, never strong -- paraphrasing `StrongCompleteness.lean`'s own module docstring, the in-tree authority.
+
+*BX/TM discipline*: this architecture is stated in `Metalogic/`'s own vocabulary (`FrameClass.Dense`/`Discrete`/`Base`) throughout -- `completeness_dense` is never silently renamed "$op("TM")_d$'s completeness." Whether these BX-level theorems resolve, contradict, or are orthogonal to `cor:tm-completeness`'s $op("TM")_d$/$op("TM")_f$ status is explicitly *open* and not adjudicated here.
+
+*Decidability* (@sec:key-theorems's companion): the tableau decision procedure's soundness (`decide_sound`) is sorry-free; the finite-model-property completeness result (`fmp_completeness`) is sorry-free as a finite-filtration statement whose semantic-validity bridge is a separately open obligation, not yet closed.
 
 = Early Representation Work and the Way Forward <sec:representation>
 
