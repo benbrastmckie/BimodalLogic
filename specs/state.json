@@ -9,12 +9,12 @@
     {
       "project_number": 444,
       "project_name": "overhaul_formalfoundations_presentation",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "formal",
       "description": "Review the email other/dana.md sent to Dana Scott regarding the paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and systematically overhaul typst/FormalFoundations.typ so it presents, for Dana Scott as reader: the core mechanics of the existing completeness results, the current state of decidability, and the best direction for developing a representation theorem. Carefully review and incorporate the FIX tags already added in the file. The rewrite must adopt the writing style of an advanced textbook -- no vague glosses or platitudes -- with clean, precise definitions and theorems, and terse but informative introductions and remarks only where needed to motivate and explain the flow of results. The current document has virtually no detectable narrative arc; the presentation must be rewritten at a much higher level of formal sophistication, taking the time needed to do so accurately and masterfully.",
       "topic": "publication-quality",
       "created": "2026-08-13T21:52:59Z",
-      "last_updated": "2026-08-13T23:04:18Z",
+      "last_updated": "2026-08-13T23:53:07Z",
       "session_id": "sess_1786662238_92e4de",
       "next_artifact_number": 2,
       "artifacts": [
@@ -27,6 +27,53 @@
           "path": "specs/444_overhaul_formalfoundations_presentation/plans/02_formalfoundations-presentation-overhaul.md",
           "type": "plan",
           "summary": "11-phase, 18-hour plan overhauling typst/FormalFoundations.typ into a five-section advanced-textbook presentation, with per-phase editorial and fidelity gates, a full FIX-tag ownership map, and typst compile plus sync-check verification."
+        },
+        {
+          "path": "specs/444_overhaul_formalfoundations_presentation/summaries/01_formalfoundations-presentation-overhaul-summary.md",
+          "type": "summary",
+          "summary": "Execution summary for the FormalFoundations.typ presentation overhaul: what changed, the G1/G2/G3 decisions, plan deviations, verification results, and follow-ups."
+        }
+      ],
+      "completion_summary": "Overhauled typst/FormalFoundations.typ into a five-section advanced-textbook presentation of the bimodal logic TM's completeness mechanics, decidability status, and representation-theorem direction. Discharged all 11 FIX tags, corrected the atom-interpretation error (|p_i| is a set of world states, atomic clause tau(x) in |p_i|), and caught four further fidelity defects during verification: a citation to limit_chronicle which is not a declaration, the false claim that the discrete completeness branch runs through Kamp's theorem, the standard miscitation of Kamp's expressive-completeness result, and an inconsistent hedging posture on the BX/frame-class identification between sections 2 and 3.",
+      "memory_candidates": [
+        {
+          "content": "When a document cites Lean identifiers, `scripts/typst-sync-check.sh`'s Check 1 is not sufficient to establish the identifier exists: it greps for the string anywhere in a .lean file, so a name appearing only in a module docstring passes. To verify a citation actually names a declaration, parse declaration binders (theorem/lemma/def/abbrev/structure/inductive/instance/class) and match against that set. This caught `limit_chronicle` in FormalFoundations.typ, which is documented in ChronicleConstruction.lean's docstring but is not a declaration.",
+          "category": "TECHNIQUE",
+          "source_artifact": "specs/444_overhaul_formalfoundations_presentation/summaries/01_formalfoundations-presentation-overhaul-summary.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "typst-sync-check",
+            "lean-identifier",
+            "docstring",
+            "citation-verification",
+            "declaration-binder"
+          ]
+        },
+        {
+          "content": "The paper possible_worlds.tex writes Since/Until infix (\\lhd, \\rhd) and GUARD-FIRST: in phi S psi, phi is the guard holding throughout the interval and psi is the event witnessed at the endpoint. The Lean tree's snce/untl constructors are EVENT-FIRST (Burgess). Corroborate on the paper side with def:BLplus-defined (Past phi := top S phi; Next phi := bot U phi) and on the Lean side with Semantics/Truth.lean and Formula.lean's somePast/next. Note that specs/decisions/untl-snce-argument-order.md and Truth.lean's docstring both quote a since-corrected version of the paper footnote and are stale. Writing the discreteness indicator as Next-top rather than U(top,bot) sidesteps the hazard entirely.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/444_overhaul_formalfoundations_presentation/definitions-of-record-444.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "since-until",
+            "argument-order",
+            "guard-first",
+            "burgess-convention",
+            "snce-untl"
+          ]
+        },
+        {
+          "content": "A plan can carry a page-budget goal that is in direct tension with its own content mandates. When that happens, do not silently accept the overrun and do not gut the content: name the overrunning sections by measured page span, try each available compression lever and RECORD the measurement of each (environment spacing, footnote trimming, prose-fat read), then close the phase [COMPLETED WITH EXCLUSIONS] with an Item/Reason/Evidence record citing those measurements. Measured negative results are what make the exclusion reasoned rather than an excuse.",
+          "category": "WORKFLOW",
+          "source_artifact": "specs/444_overhaul_formalfoundations_presentation/plans/02_formalfoundations-presentation-overhaul.md",
+          "confidence": 0.8,
+          "suggested_keywords": [
+            "reasoned-exclusions",
+            "page-budget",
+            "plan-tension",
+            "measured-negative-result",
+            "completed-with-exclusions"
+          ]
         }
       ]
     },

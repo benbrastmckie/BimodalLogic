@@ -225,11 +225,11 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 #definition("History")[
   Let $#taskframe = (#worldstate, #Dur, arrow.r.double.long)$ be a frame.
   #items[
-    + A *partial history* is a function $tau : X arrow.r #worldstate$ on a nonempty $X subset.eq D$
+    + A *partial history* is a function $tau : X arrow.r #worldstate$ on a nonempty set $X subset.eq D$
       with $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all $x, y in X$.
     + A *world history* is a partial history whose domain is *convex*: $y in X$ whenever
       $x, z in X$ and $x < y < z$.
-    + A world history is *total* --- equivalently, a *possible world* --- just in case $X = D$.
+    + A *possible world* is a world history that is *total* where $X = D$.
     + $sigma$ *extends* $tau$ just in case $"dom"(tau) subset.eq "dom"(sigma)$ and
       $tau(x) = sigma(x)$ throughout $"dom"(tau)$.
     + $H_(#taskframe)$ is the set of all total world histories over $#taskframe$.

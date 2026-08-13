@@ -11,7 +11,7 @@ next_project_number: 445
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440,444 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,422,425,436,441 | 193,231,298,421,423,437,440 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,434 | 422,436 | decidability, strong_completeness |
 | 4 | 362,432 | 169,434 | decidability, strong_completeness |
@@ -62,10 +62,6 @@ next_project_number: 445
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
 
-### Publication Quality
-
-444 [IMPLEMENTING] — Review the email other/dana.md sent to Dana Scott regarding the p
-
 ### Automation
 
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
@@ -102,12 +98,13 @@ next_project_number: 445
 ## Tasks
 
 ### 444. Overhaul formalfoundations presentation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Topic**: publication-quality
 - **Dependencies**: None
 - **Research**: [444_overhaul_formalfoundations_presentation/reports/01_team-research.md]
 - **Plan**: [444_overhaul_formalfoundations_presentation/plans/02_formalfoundations-presentation-overhaul.md]
+- **Summary**: [444_overhaul_formalfoundations_presentation/summaries/01_formalfoundations-presentation-overhaul-summary.md]
 
 **Description**: Review the email other/dana.md sent to Dana Scott regarding the paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and systematically overhaul typst/FormalFoundations.typ so it presents, for Dana Scott as reader: the core mechanics of the existing completeness results, the current state of decidability, and the best direction for developing a representation theorem. Carefully review and incorporate the FIX tags already added in the file. The rewrite must adopt the writing style of an advanced textbook -- no vague glosses or platitudes -- with clean, precise definitions and theorems, and terse but informative introductions and remarks only where needed to motivate and explain the flow of results. The current document has virtually no detectable narrative arc; the presentation must be rewritten at a much higher level of formal sophistication, taking the time needed to do so accurately and masterfully.
 
