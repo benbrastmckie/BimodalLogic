@@ -175,7 +175,7 @@ structure BundledFilteredFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
 The filtered task frame for a formula is finite.
 -/
 noncomputable def filteredFiniteFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D]
+    [IsOrderedAddMonoid D] [SuccOrder D] [NoMaxOrder D]
     (phi : Formula) : Semantics.FiniteTaskFrame D :=
   FiniteFilteredTaskFrame D phi
 
