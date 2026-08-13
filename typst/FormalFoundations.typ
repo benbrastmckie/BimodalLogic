@@ -440,24 +440,28 @@ discrete frame, since DF is valid there, but whether it is complete over that cl
 no counterexample is known. The paper offers no separate incompleteness argument for
 $op("TM")_d$ either; its status is covered only by the headline above.
 
-At the $#BLplus$ level three positive results are machine-checked, each in the form
-$"Valid"_cal(C) phi.alt arrow.r "Derivable"_cal(C) phi.alt$ for the frame class $cal(C)$ named.
+At the $#BLplus$ level three positive results are machine-checked, each of the form
+$"Valid"_cal(C) phi.alt arrow.r "Derivable"_cal(C) phi.alt$. They are stated here in the
+development's own frame-class vocabulary. The paper attributes them to its systems
+$op("TM")^+_d$, $op("TM")^+_f$, $op("TM")^+_c$; that identification is a conjecture, and
+@sec:construction says why it is left as one.
 
 #theorem("Weak completeness, dense class")[
-  $op("TM")^+_d$ is weakly complete over the class of all dense task frames.
+  Every sentence valid over every dense task frame is derivable in the Dense frame class.
 ]
 #leansrc("Metalogic.BXCanonical", "completeness_dense")
 Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 
 #theorem("Weak completeness, discrete class")[
-  $op("TM")^+_f$ is weakly complete over $ZZ$-time, in its successor-Archimedean formulation.
+  Every sentence valid over $ZZ$-time, in its successor-Archimedean formulation, is derivable in
+  the Discrete frame class.
 ]
 #leansrc("Metalogic.BXCanonical", "completeness_discrete")
 Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 
 #theorem("Weak completeness, dense-and-complete class")[
-  $op("TM")^+_c$ is weakly complete over the dense-and-complete class, which by Hölder's theorem
-  is exactly $RR$.
+  Every sentence valid over the dense-and-complete class, which by Hölder's theorem is exactly
+  $RR$, is derivable in the Dedekind frame class.
 ]
 #leansrc("Metalogic.BXCanonical", "completeness_dedekind_engine")
 Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
@@ -465,7 +469,7 @@ Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 The fourth result, over *all* task frames, is the stated formalization target and is not a theorem.
 
 #theorem("Base-class completeness (outstanding)")[
-  $op("TM")^+$'s weak completeness over all task frames is stated in the development as
+  Weak completeness over all task frames, for the Base frame class, is stated in the development as
   `completeness`, with one proof obligation outstanding. Its axiom report contains `sorryAx`. It
   is not an established theorem and is not used below.
 ]#footnote[The `sorryAx` traces to a single dependency, `countermodel_discrete` in `WeakCanonical/Transfer.lean`, which is dead code: the live replacement `countermodel_discrete_reynolds_v2` is what `completeness_discrete` actually calls (@sec:construction). The obligation is therefore narrow and identified, which is not the same as discharged.]
@@ -624,7 +628,7 @@ in $M$. A maximal consistent set cannot be undecided about discreteness.
       #align(center)[#text(size: 7pt)[Mixed \ eliminated by NB]]
     ])
   }),
-  caption: [The case split on $#Nxt top$. The dense-and-complete branch of @sec:completeness-status is the dense branch specialized to $RR$, where the split is not needed at all: over the Dedekind class the dense indicator is available unconditionally.],
+  caption: [The case split on $#Nxt top$. The Dedekind class needs no split: there the dense indicator is derivable unconditionally, so the branch that the Base and Discrete arguments must discharge does not arise.],
 )
 
 == Coherent Families and the Truth Lemma

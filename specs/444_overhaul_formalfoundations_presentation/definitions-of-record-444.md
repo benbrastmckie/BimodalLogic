@@ -443,3 +443,134 @@ sympathy (the separate `rmk:dg-parity` cites p. 635 for Symmetry).
 
 To be re-verified at Phase 7 authoring. The general lesson drawn from it is the report's own
 analysis; the paper's own sentence stating it generally is commented out.
+
+---
+
+# Phase 10 Audit Verdicts
+
+Adversarial read of the finished document against the paper and the Lean tree, conducted as a
+read against sources before any repair. Two discrepancies were found and repaired; both are
+recorded below.
+
+## A1 — Declaration-existence sweep (V2)
+
+Every backticked identifier-shaped span in the document was extracted (44 candidates) and
+matched against the set of *actual declaration names* under `FormalSystem/` excluding
+`Boneyard/`, parsed from `theorem`/`lemma`/`def`/`abbrev`/`structure`/`inductive`/`instance`/
+`class` binders. This is strictly stronger than `scripts/typst-sync-check.sh`'s Check 1, which
+greps for the string anywhere in a `.lean` file and therefore accepts a name that appears only
+in a docstring — the exact failure mode that let the pre-rewrite document cite `limit_chronicle`,
+which is not a declaration.
+
+**Verdict: no unresolved declaration remains.** Every non-matching span is one of:
+`.lean` filenames (`BooleanStructure.lean`, `FlowFrame.lean`, `InteriorOperators.lean`,
+`UltrafilterMCS.lean`, `Shuffle.lean`, `ShuffleReal.lean`, `EpsilonDense.lean`,
+`OrderIsoReal.lean`); Lean core axioms and keywords (`propext`, `Classical.choice`, `Quot.sound`,
+`sorryAx`, `sorry`); or constructors of `inductive FrameClass` (`FrameClass.Base`, `Dense`,
+`Discrete`, `Dedekind`), which the binder parser does not enumerate.
+
+## A2 — Environment citation sweep (E4)
+
+46 environments. Every one carries either a paper anchor footnote citing
+`@brastmckie2026possibleworlds` or a `#leansrc` block, except `#definition("Shift set")`.
+
+**Verdict: correct as it stands.** The shift-set definition is deliberately uncited: it names a
+design target with no paper anchor and no Lean identifier, and the adjacent prose states exactly
+that ("no such identifier exists anywhere in the tree, and the programme is not started"). The
+status claim is traceable even though the definition is not; nothing is asserted as proved.
+
+## A3 — Definition diffs against recorded anchors (V1)
+
+| Document environment | Anchor | Verdict |
+|---|---|---|
+| Language | `def:BLplus-language` | PASS (infix, as the paper writes it) |
+| Defined Operators | `def:BLplus-defined` | PASS (all four clauses, paper's order) |
+| Temporal Order | `def:temporal-order` | PASS |
+| Task Relation | `def:task-relation` | PASS (side conditions restored) |
+| Directed Family | `def:directed` | PASS |
+| Frame | `def:frame` | PASS (biconditional preserved) |
+| Nullity | `lem:nullity` | PASS (proof matches) |
+| History | `def:world-history` | PASS (all five clauses) |
+| Extension / Occurrence | `thm:extension`, `cor:occurrence` | PASS |
+| Task Topology | `def:task-topology` | PASS on the four clauses used; the Discrete clause is deliberately omitted (unused; `app:topology-nondiscrete` is commented out and uncitable) |
+| Separation | `app:topology-t1`, `app:topology-r0` | PASS |
+| Model | `def:BL-model` | PASS — **the corrected clause** |
+| Truth | `def:BL-semantics`, `def:BLplus-semantics` | PASS — atom clause is `τ(x) ∈ |p_i|` |
+| Frame Properties | `def:frame-properties` | PASS |
+| Validity and Consequence | `def:frame-validity`, `def:logical-consequence` | PASS |
+| S5 | `def:S5` | PASS |
+| BX | `def:BX` | PASS (17 keys; TD-duality note correct) |
+| Extensions table (DN, NN) | `def:TMplus-d` | PASS — re-verified at `:3989`: DN is `GGφ → Gφ`, NN is `¬Next⊤` |
+| Irregular World | `sub:Extension` footnote | PASS (re-verified verbatim) |
+| Strongest Objective Normal Modal Operator | `def:strongest` | PASS |
+| Existence | `thm:exist` | PASS |
+| Uniqueness and logic | `lem:uniq`, `thm:s4`, `thm:sym` | PASS |
+| Orthogonality | live Stability footnote | PASS (re-verified verbatim) |
+
+## A4 — Atom-interpretation propagation
+
+Every occurrence of a valuation or model-structure paraphrase was re-read. `|p_i| ⊆ W` appears at
+the Model definition and again in the general-frame remark; the atomic clause is `τ(x) ∈ |p_i|`;
+no occurrence of `H_F × D` survives anywhere. The Correspondence proposition's Complete case
+interprets an atom as the lower half of a Dedekind cut on the translation-flow frame, where
+`W = D`, so that reading is consistent with the corrected definition and required no repair.
+The Box clause, frame validity, and logical consequence all match their anchors verbatim.
+
+**Verdict: propagation complete; no residual drift.**
+
+## A5 — Status labels against tree state
+
+Base-frame `completeness` carries `sorryAx` and is stated as outstanding, not upgraded. The three
+sorry-free results are cited only with their measured axiom reports. `kampPriorExpressiveCompleteness`
+is labelled open, matching its status. The Jónsson–Tarski material is labelled archived; the
+subtree `Boneyard/UltrafilterFrame/` exists and contains `TenseS5Algebra.lean` and
+`UltrafilterFrame.lean`. The shift-set programme is labelled not started; no `ShiftSet`/`shiftSet`
+identifier exists anywhere. No archived content is described as live.
+
+One stale *source* was found and routed around rather than repeated:
+`FormalSystem/Metalogic/Algebraic/README.md` lists `AlgebraicCompleteness.lean` as live and
+sorry-free, but that file is in `Boneyard/UltrafilterFrame/`. The document cites only the five
+modules actually present in `Metalogic/Algebraic/`. Editing the README is a non-goal.
+
+**Verdict: PASS.**
+
+## A6 — G1 posture consistency: **DISCREPANCY FOUND AND REPAIRED**
+
+The Phase 4 text stated the three machine-checked results as claims about the paper's systems
+($\mathbf{TM}^+_\textsc{d}$, $\mathbf{TM}^+_\textsc{f}$, $\mathbf{TM}^+_\textsc{c}$) while citing
+Lean declarations about `FrameClass.Dense`/`Discrete`/`Dedekind` — making exactly the
+identification that the Phase 6 remark calls a conjecture and claims is "treated as one
+throughout". Two sections, opposite postures.
+
+**Repair**: the three theorems are restated in the development's own frame-class vocabulary, which
+is what both the Lean statements and the paper's proof actually establish, with one sentence
+recording that the paper attributes them to its systems and that the identification is a
+conjecture, cross-referenced to the Phase 6 remark. The posture is now uniform.
+
+## A7 — Since/Until argument order (G2)
+
+Every occurrence of `◁`/`▷`, `Next`, and `Prev` was checked against the Phase 1 decision. All are
+infix and guard-first, and all agree with the paper: `Pφ := ⊤ ◁ φ`, `Fφ := ⊤ ▷ φ`,
+`Prev φ := ⊥ ◁ φ`, `Next φ := ⊥ ▷ φ`; the truth clauses witness the event at the second argument.
+The discreteness indicator is written `Next⊤` everywhere and never as `U(⊤,⊥)`, which is the Lean
+order. The case-split membership conditions were checked against `mcs_mixed_case_absurd`'s actual
+hypotheses (`¬□(¬Next⊤) ∈ A` and `¬□Next⊤ ∈ A`) and match.
+
+**Verdict: PASS, no residual.** One adjacent overstatement was found and repaired: the case-split
+figure caption described the Dedekind branch as "the dense branch specialized to ℝ", which
+conflates the case split with the construction — the Dedekind route uses a different construction
+(shuffle plus order-isomorphism), and what is true is only that it needs no split.
+
+## A8 — Quoted passages (V1)
+
+Both re-verified against the live paper on 2026-08-13: the irregular-worlds footnote
+(`:1279-1283`), whose displacement sentence remains commented out and is not cited as paper text;
+and the Stability footnote (`:1079-1083`).
+
+**Verdict: PASS.**
+
+## Summary
+
+Two discrepancies found, both repaired in place: the G1 posture inconsistency (A6) and the
+case-split caption overstatement (A7). No discrepancy remains open, and nothing unresolved is
+asserted in the document — the three genuinely open items are stated as open questions.

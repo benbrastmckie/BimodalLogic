@@ -651,29 +651,29 @@ section leaked and that section's owning phase is re-opened rather than patched 
 
 ---
 
-### Phase 10: Mathematical Fidelity Audit [NOT STARTED]
+### Phase 10: Mathematical Fidelity Audit [COMPLETED]
 
 **Goal**: Verify that the rewritten document is faithful to the paper and to the Lean development,
 independently of whether it compiles. This is an adversarial read, not a repair pass; repairs it
 finds are made here, but the audit is conducted first as a read against sources.
 
 **Tasks**:
-- [ ] Diff every definition in the finished document against its anchor in the definitions-of-record
-      file produced in Phase 1. Record a per-definition verdict.
-- [ ] Re-check the atom-interpretation clause and every downstream paraphrase of model structure,
+- [x] Diff every definition in the finished document against its anchor in the definitions-of-record
+      file produced in Phase 1. Record a per-definition verdict. *(completed: 23-row verdict table, all PASS -- A3)*
+- [x] Re-check the atom-interpretation clause and every downstream paraphrase of model structure,
       atom valuation, the Box clause, frame validity, and logical consequence — the propagation the
       research report says is bounded but must be checked line by line rather than assumed.
-- [ ] Re-check every Lean-backed claim against the research report's verification table: declaration
+- [x] Re-check every Lean-backed claim against the research report's verification table: declaration
       exists, at the named module, with the sorry/axiom status as stated. Confirm in particular that
-      the general Base-frame result is still described as carrying an outstanding obligation.
-- [ ] Re-check every "open", "retracted", "archived", and "not started" label against the actual tree
-      state; confirm no archived content is described as live.
-- [ ] Re-check that the hedging posture chosen in Phase 1 for the frame-class/system identification
+      the general Base-frame result is still described as carrying an outstanding obligation. *(completed: confirmed. A stronger sweep than sync-check was run -- every backticked identifier matched against actual declaration binders, not docstring text -- with no unresolved declaration remaining. A1.)*
+- [x] Re-check every "open", "retracted", "archived", and "not started" label against the actual tree
+      state; confirm no archived content is described as live. *(completed -- A5. A stale live README listing an archived file as sorry-free was found and routed around, not repeated.)*
+- [x] Re-check that the hedging posture chosen in Phase 1 for the frame-class/system identification
       (G1) is applied consistently everywhere the identification appears — an inconsistent posture is
-      worse than either choice.
-- [ ] Re-check the Since/Until argument-order presentation against Phase 1's G2 finding.
-- [ ] Re-verify the two verbatim quoted passages against the live paper.
-- [ ] Repair every discrepancy found, and record the audit verdicts.
+      worse than either choice. *(DISCREPANCY FOUND AND REPAIRED -- A6: section 2 stated the machine-checked results as claims about the paper's systems while section 3 called that identification a conjecture. The three theorems are now stated in the development's frame-class vocabulary with the attribution flagged.)*
+- [x] Re-check the Since/Until argument-order presentation against Phase 1's G2 finding. *(completed: PASS throughout -- A7. One adjacent overstatement repaired: the case-split figure caption conflated the Dedekind construction with the dense branch.)*
+- [x] Re-verify the two verbatim quoted passages against the live paper. *(completed: both PASS -- A8)*
+- [x] Repair every discrepancy found, and record the audit verdicts. *(completed: 2 found, 2 repaired, 0 open)*
 
 **Timing**: 1.5 hours
 
