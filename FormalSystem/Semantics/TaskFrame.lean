@@ -138,6 +138,225 @@ This allows for various temporal structures:
 
 namespace FormalSystem.Semantics
 
+/-!
+## The `def:frame` apparatus and axiom predicates
+
+The fiber/cone/segment/directed-family apparatus and three of `def:frame`'s four axioms are
+declared **before** the `TaskFrame` structure, not after it. That ordering is load bearing: a
+structure field's type may only mention declarations that precede it, so these are the
+declarations the structure's axiom fields are stated from. Everything here is over a bare
+relation `R : W → D → W → Prop`, so nothing in this block depends on the structure.
+-/
+
+namespace TaskFrame
+
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+
+/-!
+### Fiber, cone, segment, and directed-family apparatus
+
+The supporting apparatus of the paper's frame definition (`def:frame`), stated — like the Limit
+discharge helpers above — against a bare relation `R : W → D → W → Prop` rather than a
+`TaskFrame` field, so the definitions apply verbatim to a frame's `TaskRel` whether or not the
+corresponding axioms are carried as structure data. This apparatus is what makes the paper's
+*Spherical* axiom ("`⋂ 𝒮 ≠ ∅` for any directed family `𝒮` of nonempty fibers and segments")
+statable at all.
+
+Recorded source, `def:task-relation` (verbatim):
+- *Fiber:* `\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}`.
+- *Cone:* `(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)` where `x > 0`.
+- *Segment:* `[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)` where `x, y \geq 0`.
+
+Recorded source, `def:directed` (verbatim): "A nonempty family of sets $\mathcal{S}$ is
+\textit{directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
+$S_1, S_2 \in \mathcal{S}$."
+
+Fibers and segments are TWO separate classes of sets (`IsFiber`, `IsSegment`): a one-sided
+fiber does not count as a segment, and a "fibers and segments" hypothesis is always the
+disjunction `IsFiber s ∨ IsSegment s`, never a single merged class.
+-/
+
+/--
+Fiber of `w` at duration `x` under the relation `R`.
+
+Recorded source (`def:task-relation`, *Fiber* clause, verbatim):
+"`\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}`."
+
+`Fib R w x` is the set of states reachable from `w` by a task of duration exactly `x`; by the
+converse convention, negative-duration fibers run the relation backwards. The paper defines
+fibers for every duration `x ∈ D`, so no sign proviso is carried here.
+-/
+def Fib {W : Type} (R : W → D → W → Prop) (w : W) (x : D) : Set W := {u | R w x u}
+
+omit [AddCommGroup D] [LinearOrder D] in
+@[simp]
+theorem mem_Fib {W : Type} {R : W → D → W → Prop} {w u : W} {x : D} :
+    u ∈ Fib R w x ↔ R w x u := Iff.rfl
+
+/--
+Cone of radius `x` around `w` under the relation `R`.
+
+Recorded source (`def:task-relation`, *Cone* clause, verbatim):
+"`(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)` where `x > 0`."
+
+The paper's proviso `x > 0` is carried at use sites rather than in the type: for `x ≤ 0` no
+duration `y` satisfies `|y| < x`, so the cone is empty and the definition is harmless outside
+the intended domain. Membership `u ∈ cone R w x` unfolds to exactly the witness shape the Limit
+discharge helpers above consume (`∃ y, |y| < x ∧ R w y u`), so the paper's *Limit* axiom
+`⋂_{x > 0} (w)_x = {w}` transcribes as
+`∀ w u, (∀ x, 0 < x → u ∈ cone R w x) → u = w` (the `⊇` half being reflexivity plus cone
+membership at every radius).
+-/
+def cone {W : Type} (R : W → D → W → Prop) (w : W) (x : D) : Set W :=
+  {u | ∃ y, |y| < x ∧ u ∈ Fib R w y}
+
+omit [IsOrderedAddMonoid D] in
+@[simp]
+theorem mem_cone {W : Type} {R : W → D → W → Prop} {w u : W} {x : D} :
+    u ∈ cone R w x ↔ ∃ y, |y| < x ∧ R w y u := Iff.rfl
+
+omit [IsOrderedAddMonoid D] in
+/-- Cones are monotone in the radius. Free sanity lemma for the apparatus; no discharge
+obligation rides on it. -/
+theorem cone_mono {W : Type} (R : W → D → W → Prop) (w : W) {x₁ x₂ : D} (h : x₁ ≤ x₂) :
+    cone R w x₁ ⊆ cone R w x₂ :=
+  fun _ ⟨y, hy, hR⟩ => ⟨y, lt_of_lt_of_le hy h, hR⟩
+
+/--
+Segment between `w` and `v` at forward offset `x` and backward offset `y`, written `[w, v]_x^y`
+in the paper's bracket form.
+
+Recorded source (`def:task-relation`, *Segment* clause, verbatim):
+"`[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)` where `x, y \geq 0`."
+
+The bracket form is the notation of record; the paper's retired `\Seg` function-application
+notation is deleted from its preamble and must not be reintroduced. The proviso `x, y ≥ 0` is
+carried by `IsSegment` below rather than in this definition's type.
+-/
+def Seg {W : Type} (R : W → D → W → Prop) (w v : W) (x y : D) : Set W :=
+  Fib R w x ∩ Fib R v (-y)
+
+omit [LinearOrder D] [IsOrderedAddMonoid D] in
+@[simp]
+theorem mem_Seg {W : Type} {R : W → D → W → Prop} {w v u : W} {x y : D} :
+    u ∈ Seg R w v x y ↔ R w x u ∧ R v (-y) u := Iff.rfl
+
+/--
+A directed family of sets.
+
+Recorded source (`def:directed`, verbatim): "A nonempty family of sets $\mathcal{S}$ is
+\textit{directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
+$S_1, S_2 \in \mathcal{S}$."
+
+The nonemptiness of the family is part of the definition (a directed family is a *nonempty*
+family); the nonemptiness of its *members* is a separate hypothesis wherever *Spherical*-shaped
+statements need it.
+-/
+def DirectedFamily {W : Type} (S : Set (Set W)) : Prop :=
+  S.Nonempty ∧ ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂
+
+/--
+`s` is a fiber of the relation `R`: one of the two separate classes of sets the *Spherical*
+axiom (`def:frame`) ranges over. Fibers exist at every duration `x ∈ D`, matching
+`def:task-relation`'s proviso-free *Fiber* clause.
+-/
+def IsFiber {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
+  ∃ w x, s = Fib R w x
+
+/--
+`s` is a segment of the relation `R` with nonnegative endpoint offsets, per
+`def:task-relation`'s *Segment* clause ("where `x, y ≥ 0`"): the second of the two separate
+classes of sets the *Spherical* axiom (`def:frame`) ranges over. A one-sided fiber does not
+count as a segment — the two classes are kept separate, and a "fibers and segments" hypothesis
+is the disjunction `IsFiber R s ∨ IsSegment R s`.
+-/
+def IsSegment {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
+  ∃ w v x y, 0 ≤ x ∧ 0 ≤ y ∧ s = Seg R w v x y
+
+/-!
+## The frame axioms in bare-relation form
+
+`def:frame`'s four axioms, stated as `Prop`-valued predicates over a bare task relation
+`R : W → D → W → Prop`. Three of them live here — *Spherical*, *Seriality*, and the
+interpolation half of *Compositionality*; *Limit* is deliberately left unnamed and used in its
+literal transcribed shape (see the discharge helpers `limit_of_succOrder` and `limit_of_shift`
+above).
+
+**These predicates are the sole form in which the axioms are available.** When the `TaskFrame`
+structure grows the corresponding fields, `TaskFrame.spherical` must be *definitionally*
+`Spherical TaskRel`, `TaskFrame.serial` definitionally `Serial TaskRel`, and the interpolation
+half of biconditional *Compositionality* definitionally `Interpolates TaskRel`, **all as defined
+here**. Discharging a downstream hypothesis is then a mechanical substitution (`F.spherical`,
+`F.serial`, `F.interpolates`) with zero restatement. If a field lands whose statement differs,
+the results that consume these predicates stop typechecking — and that compilation failure *is*
+the acceptance test. That invariant is recorded in
+`specs/decisions/total-history-validity-decisions.md` (the four-axiom frame-alignment decision).
+
+*Spherical* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
+sole application site the paper names, never an inert structure field.
+
+They are hosted in this module, rather than beside `Constraints` in `FrameAxioms.lean`, for a
+structural reason: a structure field's type may only mention declarations that precede it, so a
+predicate declared in a module that *imports* this one could never become a `TaskFrame` field.
+-/
+
+/--
+The *Spherical* axiom, over a bare task relation.
+
+Recorded source (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments."
+
+Three points of the transcription, each load bearing:
+
+1. *Directed* is `def:directed`, transcribed as `DirectedFamily` — a definition in its own right,
+   which already carries the nonemptiness of the family `S`.
+2. "Nonempty fibers and segments" is a condition on each *member*: it is both a class condition
+   (`IsFiber R s ∨ IsSegment R s`) and a nonemptiness condition (`s.Nonempty`). Fibers and
+   segments are **two separate classes**; a one-sided fiber does not count as a segment.
+3. "$\bigcap \mathcal{S} \neq \emptyset$" is `(⋂₀ S).Nonempty`.
+
+This predicate is the sole form in which *Spherical* is available: it is what the Step Lemma's
+proof consumes at the one application site the paper names, and what a future `TaskFrame`
+spherical field must be definitionally equal to.
+-/
+def Spherical {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ S : Set (Set W), DirectedFamily S →
+    (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
+
+/--
+The *Seriality* axiom, over a bare task relation.
+
+Recorded source (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$."
+
+The `0 ≤ x` proviso is `def:frame`'s own blanket condition on its axiom list (verbatim: "a task
+relation satisfying the following for $x, y \geq 0$"), carried here as an explicit hypothesis
+rather than in the type. Both conjuncts are stated: every state has an `x`-successor *and* an
+`x`-predecessor.
+-/
+def Serial {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ (w : W) (x : D), 0 ≤ x → (∃ u, R w x u) ∧ (∃ v, R v x w)
+
+/--
+The interpolation half of *Compositionality*, over a bare task relation.
+
+Recorded source (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if and only
+if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$."
+
+*Compositionality* is a **biconditional**, and both directions are load bearing. The
+right-to-left direction — composition — is already the existing structure field
+`TaskFrame.forward_comp`. This definition is the missing left-to-right direction: a task of
+duration `x + y` can be *interpolated* at every intermediate point. The full biconditional axiom
+is therefore `forward_comp ∧ Interpolates`.
+
+As with `Serial`, the `0 ≤ x`, `0 ≤ y` provisos are `def:frame`'s blanket condition on its axiom
+list, carried as explicit hypotheses.
+-/
+def Interpolates {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ w v x y, 0 ≤ x → 0 ≤ y → R w (x + y) v → ∃ u, R w x u ∧ R u y v
+
+end TaskFrame
+
 /--
 Task frame for bimodal logic TM.
 
@@ -412,209 +631,6 @@ theorem exists_uniform_radius_of_finite [Nontrivial D] {W : Type} [Fintype W]
   · intro u y hy hR
     have hle : Finset.univ.inf' huniv f ≤ f u := Finset.inf'_le f (Finset.mem_univ u)
     exact (hrad u).choose_spec.2 y (lt_of_lt_of_le hy hle) hR
-
-/-!
-### Fiber, cone, segment, and directed-family apparatus
-
-The supporting apparatus of the paper's frame definition (`def:frame`), stated — like the Limit
-discharge helpers above — against a bare relation `R : W → D → W → Prop` rather than a
-`TaskFrame` field, so the definitions apply verbatim to a frame's `TaskRel` whether or not the
-corresponding axioms are carried as structure data. This apparatus is what makes the paper's
-*Spherical* axiom ("`⋂ 𝒮 ≠ ∅` for any directed family `𝒮` of nonempty fibers and segments")
-statable at all.
-
-Recorded source, `def:task-relation` (verbatim):
-- *Fiber:* `\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}`.
-- *Cone:* `(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)` where `x > 0`.
-- *Segment:* `[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)` where `x, y \geq 0`.
-
-Recorded source, `def:directed` (verbatim): "A nonempty family of sets $\mathcal{S}$ is
-\textit{directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
-$S_1, S_2 \in \mathcal{S}$."
-
-Fibers and segments are TWO separate classes of sets (`IsFiber`, `IsSegment`): a one-sided
-fiber does not count as a segment, and a "fibers and segments" hypothesis is always the
-disjunction `IsFiber s ∨ IsSegment s`, never a single merged class.
--/
-
-/--
-Fiber of `w` at duration `x` under the relation `R`.
-
-Recorded source (`def:task-relation`, *Fiber* clause, verbatim):
-"`\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}`."
-
-`Fib R w x` is the set of states reachable from `w` by a task of duration exactly `x`; by the
-converse convention, negative-duration fibers run the relation backwards. The paper defines
-fibers for every duration `x ∈ D`, so no sign proviso is carried here.
--/
-def Fib {W : Type} (R : W → D → W → Prop) (w : W) (x : D) : Set W := {u | R w x u}
-
-omit [AddCommGroup D] [LinearOrder D] in
-@[simp]
-theorem mem_Fib {W : Type} {R : W → D → W → Prop} {w u : W} {x : D} :
-    u ∈ Fib R w x ↔ R w x u := Iff.rfl
-
-/--
-Cone of radius `x` around `w` under the relation `R`.
-
-Recorded source (`def:task-relation`, *Cone* clause, verbatim):
-"`(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)` where `x > 0`."
-
-The paper's proviso `x > 0` is carried at use sites rather than in the type: for `x ≤ 0` no
-duration `y` satisfies `|y| < x`, so the cone is empty and the definition is harmless outside
-the intended domain. Membership `u ∈ cone R w x` unfolds to exactly the witness shape the Limit
-discharge helpers above consume (`∃ y, |y| < x ∧ R w y u`), so the paper's *Limit* axiom
-`⋂_{x > 0} (w)_x = {w}` transcribes as
-`∀ w u, (∀ x, 0 < x → u ∈ cone R w x) → u = w` (the `⊇` half being reflexivity plus cone
-membership at every radius).
--/
-def cone {W : Type} (R : W → D → W → Prop) (w : W) (x : D) : Set W :=
-  {u | ∃ y, |y| < x ∧ u ∈ Fib R w y}
-
-omit [IsOrderedAddMonoid D] in
-@[simp]
-theorem mem_cone {W : Type} {R : W → D → W → Prop} {w u : W} {x : D} :
-    u ∈ cone R w x ↔ ∃ y, |y| < x ∧ R w y u := Iff.rfl
-
-omit [IsOrderedAddMonoid D] in
-/-- Cones are monotone in the radius. Free sanity lemma for the apparatus; no discharge
-obligation rides on it. -/
-theorem cone_mono {W : Type} (R : W → D → W → Prop) (w : W) {x₁ x₂ : D} (h : x₁ ≤ x₂) :
-    cone R w x₁ ⊆ cone R w x₂ :=
-  fun _ ⟨y, hy, hR⟩ => ⟨y, lt_of_lt_of_le hy h, hR⟩
-
-/--
-Segment between `w` and `v` at forward offset `x` and backward offset `y`, written `[w, v]_x^y`
-in the paper's bracket form.
-
-Recorded source (`def:task-relation`, *Segment* clause, verbatim):
-"`[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)` where `x, y \geq 0`."
-
-The bracket form is the notation of record; the paper's retired `\Seg` function-application
-notation is deleted from its preamble and must not be reintroduced. The proviso `x, y ≥ 0` is
-carried by `IsSegment` below rather than in this definition's type.
--/
-def Seg {W : Type} (R : W → D → W → Prop) (w v : W) (x y : D) : Set W :=
-  Fib R w x ∩ Fib R v (-y)
-
-omit [LinearOrder D] [IsOrderedAddMonoid D] in
-@[simp]
-theorem mem_Seg {W : Type} {R : W → D → W → Prop} {w v u : W} {x y : D} :
-    u ∈ Seg R w v x y ↔ R w x u ∧ R v (-y) u := Iff.rfl
-
-/--
-A directed family of sets.
-
-Recorded source (`def:directed`, verbatim): "A nonempty family of sets $\mathcal{S}$ is
-\textit{directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
-$S_1, S_2 \in \mathcal{S}$."
-
-The nonemptiness of the family is part of the definition (a directed family is a *nonempty*
-family); the nonemptiness of its *members* is a separate hypothesis wherever *Spherical*-shaped
-statements need it.
--/
-def DirectedFamily {W : Type} (S : Set (Set W)) : Prop :=
-  S.Nonempty ∧ ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂
-
-/--
-`s` is a fiber of the relation `R`: one of the two separate classes of sets the *Spherical*
-axiom (`def:frame`) ranges over. Fibers exist at every duration `x ∈ D`, matching
-`def:task-relation`'s proviso-free *Fiber* clause.
--/
-def IsFiber {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
-  ∃ w x, s = Fib R w x
-
-/--
-`s` is a segment of the relation `R` with nonnegative endpoint offsets, per
-`def:task-relation`'s *Segment* clause ("where `x, y ≥ 0`"): the second of the two separate
-classes of sets the *Spherical* axiom (`def:frame`) ranges over. A one-sided fiber does not
-count as a segment — the two classes are kept separate, and a "fibers and segments" hypothesis
-is the disjunction `IsFiber R s ∨ IsSegment R s`.
--/
-def IsSegment {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
-  ∃ w v x y, 0 ≤ x ∧ 0 ≤ y ∧ s = Seg R w v x y
-
-/-!
-## The frame axioms in bare-relation form
-
-`def:frame`'s four axioms, stated as `Prop`-valued predicates over a bare task relation
-`R : W → D → W → Prop`. Three of them live here — *Spherical*, *Seriality*, and the
-interpolation half of *Compositionality*; *Limit* is deliberately left unnamed and used in its
-literal transcribed shape (see the discharge helpers `limit_of_succOrder` and `limit_of_shift`
-above).
-
-**These predicates are the sole form in which the axioms are available.** When the `TaskFrame`
-structure grows the corresponding fields, `TaskFrame.spherical` must be *definitionally*
-`Spherical TaskRel`, `TaskFrame.serial` definitionally `Serial TaskRel`, and the interpolation
-half of biconditional *Compositionality* definitionally `Interpolates TaskRel`, **all as defined
-here**. Discharging a downstream hypothesis is then a mechanical substitution (`F.spherical`,
-`F.serial`, `F.interpolates`) with zero restatement. If a field lands whose statement differs,
-the results that consume these predicates stop typechecking — and that compilation failure *is*
-the acceptance test. That invariant is recorded in
-`specs/decisions/total-history-validity-decisions.md` (the four-axiom frame-alignment decision).
-
-*Spherical* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
-sole application site the paper names, never an inert structure field.
-
-They are hosted in this module, rather than beside `Constraints` in `FrameAxioms.lean`, for a
-structural reason: a structure field's type may only mention declarations that precede it, so a
-predicate declared in a module that *imports* this one could never become a `TaskFrame` field.
--/
-
-/--
-The *Spherical* axiom, over a bare task relation.
-
-Recorded source (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments."
-
-Three points of the transcription, each load bearing:
-
-1. *Directed* is `def:directed`, transcribed as `DirectedFamily` — a definition in its own right,
-   which already carries the nonemptiness of the family `S`.
-2. "Nonempty fibers and segments" is a condition on each *member*: it is both a class condition
-   (`IsFiber R s ∨ IsSegment R s`) and a nonemptiness condition (`s.Nonempty`). Fibers and
-   segments are **two separate classes**; a one-sided fiber does not count as a segment.
-3. "$\bigcap \mathcal{S} \neq \emptyset$" is `(⋂₀ S).Nonempty`.
-
-This predicate is the sole form in which *Spherical* is available: it is what the Step Lemma's
-proof consumes at the one application site the paper names, and what a future `TaskFrame`
-spherical field must be definitionally equal to.
--/
-def Spherical {W : Type} (R : W → D → W → Prop) : Prop :=
-  ∀ S : Set (Set W), DirectedFamily S →
-    (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
-
-/--
-The *Seriality* axiom, over a bare task relation.
-
-Recorded source (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
-for some $u, v \in W$."
-
-The `0 ≤ x` proviso is `def:frame`'s own blanket condition on its axiom list (verbatim: "a task
-relation satisfying the following for $x, y \geq 0$"), carried here as an explicit hypothesis
-rather than in the type. Both conjuncts are stated: every state has an `x`-successor *and* an
-`x`-predecessor.
--/
-def Serial {W : Type} (R : W → D → W → Prop) : Prop :=
-  ∀ (w : W) (x : D), 0 ≤ x → (∃ u, R w x u) ∧ (∃ v, R v x w)
-
-/--
-The interpolation half of *Compositionality*, over a bare task relation.
-
-Recorded source (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if and only
-if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$."
-
-*Compositionality* is a **biconditional**, and both directions are load bearing. The
-right-to-left direction — composition — is already the existing structure field
-`TaskFrame.forward_comp`. This definition is the missing left-to-right direction: a task of
-duration `x + y` can be *interpolated* at every intermediate point. The full biconditional axiom
-is therefore `forward_comp ∧ Interpolates`.
-
-As with `Serial`, the `0 ≤ x`, `0 ≤ y` provisos are `def:frame`'s blanket condition on its axiom
-list, carried as explicit hypotheses.
--/
-def Interpolates {W : Type} (R : W → D → W → Prop) : Prop :=
-  ∀ w v x y, 0 ≤ x → 0 ≤ y → R w (x + y) v → ∃ u, R w x u ∧ R u y v
 
 /-!
 ## Reusable axiom-class discharge helpers
