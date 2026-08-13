@@ -607,24 +607,24 @@ Discharges FIX-337.
 
 ---
 
-### Phase 9: Abstract, Front Matter, and Document-Wide Register Sweep [NOT STARTED]
+### Phase 9: Abstract, Front Matter, and Document-Wide Register Sweep [COMPLETED]
 
 **Goal**: Fix the abstract's typography, rewrite the abstract to describe the new five-section
 document, and sweep any register violation that survived the per-section passes. Discharges FIX-93.
 
 **Tasks**:
-- [ ] Add a local `#let abstract-block(body)` at the top of `typst/FormalFoundations.typ` setting no
+- [x] Add a local `#let abstract-block(body)` at the top of `typst/FormalFoundations.typ` setting no
       first-line indent and a body size one point below the document's, and wrap the abstract in it.
-      Keep this local to the standalone report; do not modify `typst/template.typ`.
-- [ ] Rewrite the abstract to describe the five-section document and its three payloads, in the
-      target register, replacing the section-by-section tour of the old seven-section structure.
-- [ ] Update the file's header comment block to describe the new structure.
-- [ ] Run the E2 and E5 greps over the whole file and repair every remaining hit.
-- [ ] Optionally add the one-sentence Scott anchor (research decision D5), at the author's register;
-      one sentence maximum, or none.
-- [ ] Add the one-line acknowledgment that complexity, interpolation, and finite axiomatizability
-      are known-open and out of scope (research gap G4).
-- [ ] Remove the FIX comment at line 93 — after this phase, `grep -c "FIX:"` must be 0.
+      Keep this local to the standalone report; do not modify `typst/template.typ`. *(completed: abstract-block sets first-line-indent 0em and text 10pt against the 11pt body; template.typ confirmed unmodified by git status)*
+- [x] Rewrite the abstract to describe the five-section document and its three payloads, in the
+      target register, replacing the section-by-section tour of the old seven-section structure. *(completed)*
+- [x] Update the file's header comment block *(completed)* to describe the new structure.
+- [x] Run the E2 and E5 greps over the whole file and repair every remaining hit. *(completed: residual was 3 header-comment lines and 2 abstract lines, exactly as the Scope Hypothesis predicted -- no section leaked. Both greps now return nothing document-wide.)*
+- [x] Optionally add the one-sentence Scott anchor (research decision D5), at the author's register;
+      one sentence maximum, or none. *(completed: one sentence, as a footnote to the Truth definition, connecting the structured evaluation point to Scott's 'Advice on Modal Logic')*
+- [x] Add the one-line acknowledgment that complexity, interpolation, and finite axiomatizability
+      are known-open and out of scope (research gap G4). *(completed: final sentence of the abstract)*
+- [x] Remove the FIX comment at line 93 — after this phase, `grep -c "FIX:"` must be 0.
 
 **Timing**: 1 hour
 

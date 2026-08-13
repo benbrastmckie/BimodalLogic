@@ -3,16 +3,14 @@
 // Formal Foundations of Bimodal TM Logic: Completeness and Representation
 //
 // A standalone research report on the formal foundations of the bimodal logic
-// TM: a compressed system overview, the three pain points of the axiomatization
-// (temporal-axiom contingency, split-validity incompleteness, the axiomatization
-// of the strongest objective modality), the completeness construction as
-// actually implemented in FormalSystem/Metalogic/, and a reasoned outline of
-// the way forward toward a general representation theorem.
+// TM, in five sections: the system (semantics first, then the proof systems);
+// what is proved, stated per system and per frame class; the completeness
+// construction as implemented in FormalSystem/Metalogic/; the two costs the
+// semantics incurs; and the routes toward a representation theorem.
 //
 // This document is NOT a chapter of BimodalReference.typ and is not #include'd
 // by it. It imports the book's notation and template modules so that notation
-// cannot drift between this report and the book, and cites the book's shared
-// bibliography.
+// cannot drift between the two, and cites the book's shared bibliography.
 // ============================================================================
 
 // Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
@@ -30,8 +28,7 @@
 
 // ============================================================================
 // Document Configuration -- matches BimodalReference.typ's type settings
-// verbatim, so a "~10 pages of body text" budget is measured on the same
-// scale as the book.
+// verbatim, so the page budget is counted on the same scale as the book.
 // ============================================================================
 
 #set document(
@@ -71,7 +68,7 @@
 #let HRule = line(length: 100%, stroke: 0.5pt)
 
 // ============================================================================
-// Local notation for this report
+// Local notation for this document
 //
 // The paper writes Since and Until infix, as \lhd and \rhd, and guard-first:
 // in "phi S psi" the guard is phi and the event is psi. These are the paper's
@@ -85,6 +82,13 @@
 #let until = $gt.tri$
 #let Nxt = $op("Next")$
 #let Prev = $op("Prev")$
+
+// Abstract environment: no first-line indent, one point below the body size.
+#let abstract-block(body) = block(above: 0.6cm, below: 0.6cm, width: 100%)[
+  #set par(first-line-indent: 0em, justify: true)
+  #set text(size: 10pt)
+  #body
+]
 
 
 // ============================================================================
@@ -107,19 +111,23 @@
 
 #v(0.6cm)
 
-// FIX: no indent here, and smaller font, creating an environment as appropriate
-*Abstract.*
-This report states, precisely and compressed, what is actually proved about the bimodal logic
-*TM* -- a fusion of S5 metaphysical modality with a Burgess--Xu tense logic over task-frame
-semantics -- what is not, and what it would take to close the gap. Section 1 compresses the
-system; Section 2 states the load-bearing theorems and the exact completeness and decidability
-status, unsoftened. Sections 3-5 are the three genuine pain points of the axiomatization: the
-metaphysical contingency of the temporal axioms, a sharp split-validity incompleteness result for
-*TM* itself, and the higher-order cost of axiomatizing the strongest objective modality. Section 6
-gives an honest, measured account of the completeness construction as it is actually implemented
-in this repository's Lean 4 development, and Section 7 closes with the early steps toward a
-representation theorem and a reasoned outline of the way forward for a general, weaker base
-bimodal logic assuming neither density nor discreteness nor Dedekind-completeness.
+#abstract-block[
+  *Abstract.* This report states what is proved about the bimodal logic *TM* --- a fusion of S5
+  metaphysical modality with a Burgess--Xu tense logic over task-frame semantics --- and what is
+  not. Section 1 gives the semantics and the proof systems, including the task topology and the
+  separation result that bear on whether a partial history should be identified with a restriction
+  of a possible world. Section 2 states soundness, the three frame-property correspondences,
+  completeness per system and per frame class with the axiom report of each machine-checked claim,
+  and the open status of decidability. Section 3 gives the completeness construction: maximal
+  consistent sets, the discreteness dichotomy and the case split it licenses, the coherence
+  conditions that discharge the modal case of the truth lemma, and the three canonical
+  constructions with their sources. Section 4 states the two costs the semantics incurs --- the
+  necessity of temporal structure, and the higher-order character of the condition singling out
+  $square.stroked$ --- and where the two meet. Section 5 assesses the three candidate routes to a
+  representation theorem, commits to the one with live groundwork, and closes with the single
+  obstruction the others share. Complexity as distinct from decidability, interpolation, and finite
+  axiomatizability are known open and are not treated here.
+]
 
 #v(0.3cm)
 
@@ -301,7 +309,7 @@ The cones are a basis for a topology on world states, and that topology is separ
     + $#model, tau, x #satisfies phi.alt #until psi$ iff $#model, tau, z #satisfies psi$ for some
       $z > x$ with $#model, tau, y #satisfies phi.alt$ for all $y$ with $x < y < z$.
   ]
-]#footnote[`def:BL-semantics`, `def:BLplus-semantics`. @brastmckie2026possibleworlds The two share their models; the extended language adds only the last two clauses.]
+]#footnote[`def:BL-semantics`, `def:BLplus-semantics`. @brastmckie2026possibleworlds The two share their models; the extended language adds only the last two clauses. Evaluating at a possible world paired with a time, with truth at that time mediated by the world state occupied there, is an instance of Scott's proposal @scott1970advice that the index of evaluation be a structured point of reference and not a bare world.]
 
 $square.stroked$ quantifies over the possible worlds of the frame at the *same* time, and over all
 of them. It is not a relational modality with an accessibility relation to be tuned: the frame
