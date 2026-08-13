@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.FMP.ClosureMCS
+import FormalSystem.Metalogic.Soundness
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.Truth
 import Mathlib.Data.Setoid.Basic
@@ -163,6 +164,52 @@ Quotient map: lift a closure MCS bundle to its equivalence class.
 -/
 def toFilteredWorld (phi : Formula) (S : ClosureMCSBundle phi) : FilteredWorld phi :=
   Quotient.mk (ClosureMCSSetoid phi) S
+
+/-!
+### Nonemptiness of the filtered world type
+
+`FilteredWorld phi` is inhabited for **every** `phi`, with no consistency side condition on
+`phi` itself: the witness comes from Lindenbaum-extending the *empty* set within the closure,
+which needs only that the logic itself is consistent. `Finite (FilteredWorld phi)`
+(`FiniteModel.lean`) is a genuinely different fact and does not imply this one.
+-/
+
+/--
+The empty set of formulas is consistent.
+
+The only list all of whose members lie in `∅` is `[]`, so the obligation collapses to
+`Consistent []`, which is `Metalogic/Soundness.lean`'s `not_derivable_nil_bot` — the
+consistency of the base system, read off soundness.
+-/
+theorem setConsistent_empty :
+    SetConsistent (fc := ProofSystem.FrameClass.Base) (∅ : Set Formula) := by
+  intro L hL
+  have hnil : L = [] := by
+    cases L with
+    | nil => rfl
+    | cons a _ => exact absurd (hL a (by simp)) (by simp)
+  subst hnil
+  exact FormalSystem.Metalogic.not_derivable_nil_bot
+
+/--
+Every formula has at least one closure MCS: Lindenbaum-extend `∅` within `closureWithNeg phi`.
+
+The extension lemma is `closure_mcs_extension` (`ClosureMCS.lean`), whose two hypotheses are
+`ClosureRestricted phi ∅` (immediate) and `SetConsistent ∅` (`setConsistent_empty` above).
+-/
+theorem closureMCSBundle_nonempty (phi : Formula) : Nonempty (ClosureMCSBundle phi) := by
+  obtain ⟨M, _, hM⟩ :=
+    closure_mcs_extension phi ∅ (Set.empty_subset _) setConsistent_empty
+  exact ⟨⟨M, hM⟩⟩
+
+/--
+The filtered world type is nonempty: push `closureMCSBundle_nonempty` through the quotient map.
+
+This is what lets the filtration frames satisfy a world-state nonemptiness requirement without
+assuming anything about `phi`.
+-/
+instance filteredWorld_nonempty (phi : Formula) : Nonempty (FilteredWorld phi) :=
+  (closureMCSBundle_nonempty phi).map (toFilteredWorld phi)
 
 /-!
 ## Filtered Task Frame

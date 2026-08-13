@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.ProofSystem.Derivation
+import FormalSystem.ProofSystem.Derivable
 import FormalSystem.Semantics.Validity
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
 import FormalSystem.Metalogic.SoundnessLemmas.Separability
@@ -1940,5 +1941,36 @@ theorem soundness_dedekind (Γ : Context) (φ : Formula)
     exact (derivable_valid_and_swap_valid_dedekind d').2 D h_lub F M τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+
+/-! ## Consistency of the Base System
+
+Soundness's most immediate corollary: `⊥` is not a theorem. Every "the logic is consistent" side
+condition in the tree ultimately wants this, and until it was stated here each such site had to
+route around it by carrying an underivability hypothesis instead.
+
+Stated as `¬ Derivable …` rather than as `Metalogic.Core.Consistent []`, which is the same
+proposition by definition (`Consistent Γ := ¬ Derivable fc Γ ⊥`), because this module sits below
+`Metalogic/Core/` in the import graph. Downstream files spell it with `Consistent` freely.
+-/
+
+/--
+**The base system is consistent**: `⊥` is not derivable from the empty context.
+
+The witness is `trivialFrame` over `Int` at its single world state. `soundness` turns a
+derivation of `⊥` from `[]` into `trivialFrame.ValidOn ⊥`, which
+`Semantics/Validity.lean`'s `TaskFrame.not_validOn_bot` refutes — that refutation is itself
+`cor:occurrence`'s closing clause (`H_F ≠ ∅`), so the frame axioms doing the work here are
+`trivialFrame`'s own fields.
+
+`Int` is chosen only because it is the smallest temporal type in the tree supplying
+`[Nontrivial D]`, which `soundness` binds; nothing about the argument depends on the choice.
+-/
+theorem not_derivable_nil_bot : ¬ Derivable FrameClass.Base ([] : Context) Formula.bot := by
+  rintro ⟨d⟩
+  refine TaskFrame.not_validOn_bot (D := Int) TaskFrame.trivialFrame
+    (show (TaskFrame.trivialFrame (D := Int)).WorldState from ()) ?_
+  intro M τ x
+  exact soundness [] Formula.bot d Int TaskFrame.trivialFrame M τ.val τ.property x
+    (by simp)
 
 end FormalSystem.Metalogic
