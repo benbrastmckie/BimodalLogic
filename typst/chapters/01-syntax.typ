@@ -43,7 +43,7 @@ $S(phi.alt, psi)$ is the past mirror: the event held at some strictly past time,
 )
 
 The paper's base language $cal(L)$ for *TM* instead takes the one-place tense operators $H$ and $G$ as primitive, introducing Until and Since only in its extended language $cal(L)^+$.
-The Lean formalization works with the Until/Since basis throughout --- a conservative change of presentation (the paper's *TM*#super[+] extends *TM* conservatively), under which $H$, $G$, $F$, and $P$ become derived operators.
+The Lean formalization works with the Until/Since basis throughout --- the paper's language embedding $cal(L) subset.eq cal(L)^+$ is unconditional (@sec:conservative-extension in the Frame Classes chapter gives the finer, *not* unconditional, proof-system conservativity status between *TM* and *TM*#super[+]) --- under which $H$, $G$, $F$, and $P$ become derived operators.
 
 == Derived Operators
 

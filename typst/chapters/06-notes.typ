@@ -26,15 +26,13 @@ The Lean source is authoritative for all implementation claims; the paper is aut
 
 - The paper uses "perpetuity principles" for P1--P6; the Lean code uses the same terminology.
 - The paper's notation $triangle.stroked.t$ and $triangle.stroked.b$ for "always" and "sometimes" is preserved in the Lean implementation as `always` and `sometimes`.
-- The paper's *Reflection* constraint on task frames is the Lean field `converse` (in biconditional form); the paper's *Nullity* is strengthened to the Lean field `nullity_identity`.
+- The paper has no *Reflection* axiom (retired terminology): negative durations come from the converse convention of `def:task-relation`, packaged as the Lean field `converse` (in biconditional form); the paper's *Nullity* (`lem:nullity`, a derived lemma, not an axiom) is strengthened to the Lean field `nullity_identity` (the Task Frames section of the Semantics chapter has the full account, including the open design question this strengthening raises).
 
 === Language Basis
 
-The paper's base language $cal(L)$ takes $H$ and $G$ as primitive tense operators, and extends to $cal(L)^+$ with Until and Since; the corresponding proof systems are *TM* and *TM*#super[+], related by a conservative-extension theorem.
+The paper's base language $cal(L)$ takes $H$ and $G$ as primitive tense operators, and extends to $cal(L)^+$ with Until and Since; the corresponding proof systems are *TM* and *TM*#super[+].
+$op("BL")$ embeds into $op("BL")^+$ unconditionally (@sec:conservative-extension in the Frame Classes chapter gives the precise, *not* unconditional, four-part conservativity status between *TM* and *TM*#super[+] as proof systems -- the deleted `thm:ConservativeExtension` made a stronger claim than the paper now supports).
 The Lean formalization works in the Until/Since basis throughout: `untl` and `snce` are primitive, $H$/$G$/$F$/$P$ are derived (see @sec:formulas).
-
-The module `Metalogic/ConservativeExtension/` contains `lift_derivation_qfree` (`Metalogic/ConservativeExtension/Lifting.lean`), a Goldblatt/BdRV-style fresh-atom naming lemma supporting the irreflexivity argument of @sec:design-choices (see @sec:conservative-extension in the Frame Classes chapter).
-It is distinct from the paper's $cal(L)$-vs-$cal(L)^+$ conservative-extension theorem, which is a paper-side result: no Lean module formalizes it.
 
 === Axiom Correspondence
 

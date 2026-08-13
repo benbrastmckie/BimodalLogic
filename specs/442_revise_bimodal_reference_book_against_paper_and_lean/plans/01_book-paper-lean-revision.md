@@ -397,7 +397,7 @@ grep result, not this enumeration, is the work scope.
 
 ---
 
-### Phase 6: Rewrite the Conservativity Passages [NOT STARTED]
+### Phase 6: Rewrite the Conservativity Passages [COMPLETED]
 
 **Goal**: The conservative-extension theorem is **deleted from the paper**. Every book passage
 presenting conservativity as an established result must be rewritten to the four-part status — and

@@ -2,7 +2,7 @@
 // p2-frame-classes.typ
 // Part I chapter -- Frame Classes and Extensions
 // Lean name ground truth: ProofSystem/Axioms.lean, FrameConditions/,
-// Metalogic/ConservativeExtension/ (see ../SYNC-MAP.md).
+// Syntax/Atom.lean (see ../SYNC-MAP.md).
 // ============================================================================
 
 #import "../template.typ": *
@@ -11,7 +11,7 @@
 = Frame Classes and Extensions
 
 #chapter-header(
-  description: [How the base proof system of @sec:formulas and the proof theory chapter extends to dense and discrete linear orders, and how the Until/Since-primitive language relates to derived Next/Previous operators and to a fresh-atom conservative-extension technique used internally by the metalogic.],
+  description: [How the base proof system of @sec:formulas and the proof theory chapter extends to dense and discrete linear orders, how the Until/Since-primitive language relates to derived Next/Previous operators, and the status of conservativity between *TM*'s tense-primitive and Until/Since-primitive language levels.],
   dependencies: [Chapters 1--3 (syntax, semantics, proof theory).],
 )
 
@@ -128,12 +128,21 @@ $X(phi.alt)$ at $t$ means $phi.alt$ holds at the immediate successor of $t$ (eve
 The unfold lemmas confirming this characterization are `next_unfold` (`Automation/Normalization.lean:70`) and `prev_unfold` (`Automation/Normalization.lean:73`), both `@[simp]`-tagged and proven by `rfl`.
 The paper's own Next/Previous theorem is a paper-side result with no Lean counterpart.
 
-== A Fresh-Atom Conservative-Extension Technique <sec:conservative-extension>
+== Conservativity Between *TM* and *TM*#super[+] <sec:conservative-extension>
 
-`Metalogic/ConservativeExtension/` is sorry-free, and its main theorem is a Goldblatt/BdRV-style fresh-atom naming lemma: extend the atom set with one fresh atom ($op("ExtAtom") := op("Atom") ⊕ op("Unit")$, `ExtFormula.lean`), and any derivation over the extended language projects back down to a derivation over the original language, *provided* the fresh atom's own status is only used as a marker:
+An earlier presentation of this book cited a fresh-atom lifting technique here (extending the atom set with one marker atom and projecting derivations back down), used as infrastructure for @sec:design-choices's fresh-atom argument that irreflexivity is not modally definable.
+That module has since been archived and is no longer part of the live formalization; the live resource the irreflexivity argument actually needs is simpler and still present, the primitive fact that a fresh atom exists outside any finite set (`Atom.exists_fresh`, `Syntax/Atom.lean`).
+Note in passing that this atom-extension technique was never a formalization of the paper's *TM*-versus-*TM*#super[+] conservativity claim below, despite the coincidence of name --- it extended the *atom set*, not the *operator set*.
 
-#theorem("Conservative Lifting")[
-  For any frame class `fc`, context `L`, and formula `φ`, if the extended system derives `embedFormula φ` from `L.map embedFormula`, then the base system derives `φ` from `L`.#footnote[`lift_derivation_qfree` in `Metalogic/ConservativeExtension/Lifting.lean:683-695`. The proof collects the extended derivation's `inl`-atoms, picks a genuinely fresh atom outside that finite set (`exists_fresh_atom`), and projects the derivation back via `liftDerivationWith`. The module's own doc comment states this is "the key result enabling the irreflexivity proof" -- i.e. it is infrastructure for @sec:design-choices's fresh-atom argument that irreflexivity is not modally definable, not a direct formalization of the paper's base-language-vs-Until/Since-extended-language split.]
-]
+The paper's own conservativity claim is the one this section should state, and it is *not* the unconditional theorem an earlier draft of this book implied.
+`thm:ConservativeExtension` no longer exists in the paper: `def:TMplus`'s footnote replaces it and makes *no* conservativity claim, stating instead a four-part status.
 
-This lemma is distinct from the paper's $cal(L)$-vs-$cal(L)^+$ (H/G-primitive vs. Until/Since-extended) conservative-extension theorem: no Lean module implements a base-language-vs-Until/Since-extended-language lifting theorem, so the paper's conservativity result for $cal(L) subset.eq cal(L)^+$ is a paper-side result (see also the Language Basis note of @sec:notes).
+#theorem("Conservativity Status (TM vs. TM+)")[
+  + *Backward* (every $op("BL")$-theorem of *TM*, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$ survives in *TM*#super[+], $op("TM")^+_f$, $op("TM")^+_d$, $op("TM")^+_c$ respectively): holds *unconditionally*, since $op("BL")$ embeds into $op("BL")^+$.
+  + *Forward* (does the richer language prove genuinely new $op("BL")$-theorems) *fails* for the base case, witnessed by the (DD) split validity of @sec:metalogic.
+  + *Forward fails unconditionally* for the discrete extension, witnessed by axiom TMP-Z1: a theorem of the discrete extension's base tense logic and so a $op("TM")^+_f$-theorem trivially, yet unsound over the non-Archimedean discrete order $ZZ times_(op("lex")) ZZ$ and so not a $op("TM")_f$-theorem.
+  + *Forward remains open* for the dense and complete extensions, with no known counterexample.
+]#footnote[`def:TMplus`'s footnote, replacing the deleted `thm:ConservativeExtension`. @brastmckie2026possibleworlds]
+
+No conservativity claim is therefore made for *TM*#super[+] over *TM*.
+A separate, Lean-side task targets a formalized conservativity bridge; its premise is the now-deleted `thm:ConservativeExtension`, so that task's scope is affected by this correction (recorded in this task's findings note).

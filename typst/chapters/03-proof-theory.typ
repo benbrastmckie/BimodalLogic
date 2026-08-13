@@ -210,7 +210,7 @@ Derivations are parameterized by a frame class, making frame-dependent reasoning
 The axiom rule of the proof system admits an axiom into a derivation at frame class `fc` only when its minimum frame class is at most `fc`.
 Derivations are monotone along the order: `DerivationTree.lift` coerces a derivation at `Base` into one at `Dense` or `Discrete`.
 
-This mirrors the paper's hierarchy of *TM* extensions (@brastmckie2026possibleworlds §3.3): frame class `Base` corresponds to the base system (*TM*#super[+], the paper's Until/Since extension of *TM*, of which *TM* is a conservative reduct --- see `Metalogic/ConservativeExtension/`), `Dense` to the dense extension *TM*#sub[d], and `Discrete` to the discrete extension *TM*#sub[f].
+This mirrors the paper's hierarchy of *TM* extensions (@brastmckie2026possibleworlds §3.3): frame class `Base` corresponds to the base system (*TM*#super[+], the paper's Until/Since extension of *TM* -- see @sec:conservative-extension for the paper's actual, non-unconditional conservativity status between the two), `Dense` to the dense extension *TM*#sub[d], and `Discrete` to the discrete extension *TM*#sub[f].
 The paper's complete extension *TM*#sub[c] (order-completeness) and combined *TM*#sub[dc] are paper-side extensions and do not correspond to frame classes in the Lean formalization.
 
 == Derived Axioms <sec:derived-axioms>
@@ -324,7 +324,7 @@ Derivations are represented as inductive trees.
 == Relation to the Paper's Presentation <sec:paper-contrast>
 
 The paper presents *TM* economically, as the smallest extension of classical propositional logic closed under twelve schemata: the rules MP, MN, and TD, and the axioms MK, MT, M5, MF, TK, T4, TB, TA, and TL (with H/G primitive in the base language $cal(L)$).
-The Lean system is the constructor-level *BX* axiomatization of the paper's *TM*#super[+] (the Until/Since system of the paper's §3.3, proven there to extend *TM* conservatively).
+The Lean system is the constructor-level *BX* axiomatization of the paper's *TM*#super[+] (the Until/Since system of the paper's §3.3; see @sec:conservative-extension for its actual, non-unconditional conservativity relationship to *TM*).
 The differences are presentational granularity, not logical strength:
 
 - *CPL is spelled out*: the paper subsumes classical propositional logic in a single phrase; Lean lists its four Hilbert schemata (Layer 1) explicitly.
