@@ -7,6 +7,7 @@
 
 #import "../template.typ": *
 #import "../generated/status.typ": base-count, dense-only-count, discrete-only-count, dedekind-only-count
+#import "@preview/cetz:0.3.4"
 
 = Frame Classes and Extensions
 
@@ -32,20 +33,37 @@ inductive FrameClass where
 `Base` is the bottom element (`FrameClass.base_le`); `Dense` and `Discrete` are incomparable extensions of `Base` -- density and discreteness are jointly inconsistent frame properties, so no derivation may combine both.
 `Dedekind` sits *strictly above* `Dense`, not as a fourth incomparable leaf: it is `Discrete` that is incomparable to both `Dense` and `Dedekind`.
 
-#figure(
-  table(
-    columns: 2,
-    stroke: none,
-    align: (center, center),
-    table.hline(),
-    [], [`Dedekind`],
-    [`Dense`], [],
-    [], [`Discrete`],
-    [], [`Base`],
-    table.hline(),
-  ),
-  caption: [The `FrameClass` lattice, reading upward: `Base` at the bottom, `Dense` and `Discrete` incomparable above it, `Dedekind` strictly above `Dense` alone.],
-)
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+
+    let nodeBase = (0, 0)
+    let nodeDense = (-1.3, 1.6)
+    let nodeDiscrete = (1.3, 1.6)
+    let nodeDedekind = (-1.3, 3.2)
+
+    // Edges (Hasse diagram: draw before nodes so nodes sit on top)
+    line(nodeBase, nodeDense, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    line(nodeBase, nodeDiscrete, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    line(nodeDense, nodeDedekind, stroke: (paint: gray.darken(20%), thickness: 1pt))
+
+    let node(pos, label) = {
+      circle(pos, radius: 0.55, fill: white, stroke: (paint: blue.darken(20%), thickness: 1.2pt))
+      content(pos, text(size: 9pt, weight: "bold")[#label])
+    }
+
+    node(nodeBase, [Base])
+    node(nodeDense, [Dense])
+    node(nodeDiscrete, [Discrete])
+    node(nodeDedekind, [Dedekind])
+  })
+]
+
+#align(center)[
+  #text(size: 0.85em, style: "italic")[
+    The `FrameClass` lattice, reading upward from `Base`. `Dense` and `Discrete` are incomparable; `Dedekind` sits *strictly above* `Dense` alone, not as a fourth incomparable leaf, since Reynolds' real-flow axiomatization already contains the density axioms. Per-class axiom assignments are in the table below.
+  ]
+]
 
 `Dedekind` extends `Dense` with Reynolds' definable-gap axioms (Prior-U, Prior-S, Sep) because Reynolds' own real-flow axiomatization already contains the density axiom and `dense_indicator` -- making `Dedekind` a fresh incomparable leaf would make those two axioms inadmissible at `Dedekind` and so could not host Reynolds' system at all.
 This is a primary-source placement, not a design preference: `ProofSystem/Axioms.lean`'s own doc comment traces it to Reynolds 1992 (p.168) axiom by axiom.

@@ -783,7 +783,7 @@ actually hits the stumble rather than where this plan guessed.
 
 ---
 
-### Phase 14: Metalogic and Frame-Class Diagrams [NOT STARTED]
+### Phase 14: Metalogic and Frame-Class Diagrams [COMPLETED]
 
 **Goal**: Three cetz diagrams, including the single highest-value diagram in the book.
 

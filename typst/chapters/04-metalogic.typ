@@ -6,6 +6,7 @@
 
 #import "../template.typ": *
 #import "../generated/status.typ": axiom-count
+#import "@preview/cetz:0.3.4"
 
 = Metalogic <sec:metalogic>
 
@@ -117,6 +118,42 @@ Unions of logics characteristically admit *split validities* --- disjunctions va
   The schema $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN"))$, for arbitrary $phi.alt_(op("DF")), psi_(op("DN"))$ instantiating axioms DF and DN, is valid over every task frame yet *TM*-unprovable: a two-fibre countermodel (one fibre over $ZZ$, one over $RR$, with $square.stroked$ read globally across both) is *TM*-sound --- every *TM* axiom and rule remains valid, since none of them constrains how $square.stroked$ interacts across the two fibres --- while refuting both disjuncts of a variable-sharing instance.
 ]#footnote[(DD), part of `cor:tm-completeness`'s proof. @brastmckie2026possibleworlds In $op("BL")^+$, (DD) is already a theorem with no added axiom: axioms TMP-NB and M5 give $tack.r_(op("TM")^+) square.stroked op("Next") top or square.stroked not op("Next") top$, and since $op("Next") top arrow.r phi.alt_(op("DF"))$ and $not op("Next") top arrow.r psi_(op("DN"))$ are $op("BL")^+$-valid, $op("TM")^+$'s weak completeness (inheriting its own outstanding base-case obligation) gives the two conditionals as theorems, whence necessitation and distribution yield (DD).]
 
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+
+    let yZ = 1.4
+    let yR = 0.0
+    let xL = -2.6
+    let xR = 2.6
+
+    // Fibre 1: Z (discrete ticks)
+    line((xL, yZ), (xR, yZ), stroke: (paint: blue.darken(20%), thickness: 1.5pt))
+    for i in range(-4, 5) {
+      let x = i * 0.55
+      line((x, yZ - 0.09), (x, yZ + 0.09), stroke: (paint: blue.darken(20%), thickness: 1pt))
+    }
+    content((xR + 0.55, yZ), text(size: 9pt, fill: blue.darken(20%))[fibre $ZZ$])
+    content((0, yZ + 0.35), text(size: 8pt, fill: blue.darken(20%))[$op("Next")top$ true here])
+
+    // Fibre 2: R (continuous line)
+    line((xL, yR), (xR, yR), stroke: (paint: orange.darken(10%), thickness: 1.5pt))
+    content((xR + 0.55, yR), text(size: 9pt, fill: orange.darken(20%))[fibre $RR$])
+    content((0, yR - 0.35), text(size: 8pt, fill: orange.darken(20%))[$not op("Next")top$ true here])
+
+    // Box arrow crossing both fibres
+    line((-1.7, yR), (-1.7, yZ), stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"),
+      mark: (end: ">", start: ">", fill: gray.darken(20%)))
+    content((-1.7, (yZ + yR) / 2), anchor: "west", text(size: 8pt, fill: gray.darken(20%))[ $square.stroked$ reads globally])
+  })
+]
+
+#align(center)[
+  #text(size: 0.85em, style: "italic")[
+    The two-fibre countermodel witnessing (DD): a discrete $ZZ$ fibre (ticked) where $op("Next")top$ holds, and a dense $RR$ fibre (unticked) where it fails, with $square.stroked$ reading globally across both. Every *TM* axiom and rule is sound on this structure -- none constrains how $square.stroked$ interacts across fibres -- yet $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN"))$ is refuted by a variable-sharing instance, since each disjunct fails on its complementary fibre.
+  ]
+]
+
 *TM* does not prove (DD), so *TM* is nowhere shown *Halldén*-incomplete --- it is *semantically* incomplete instead, a different defect: a formula valid but unprovable, rather than a provable variable-disjoint disjunction with no provable disjunct.
 $op("TM") + op("(DD)")$ would instead *create* Halldén-incompleteness, proving the variable-disjoint disjunction while proving neither disjunct (each fails soundness on the complementary subclass).
 $op("Log")("all task frames")$ itself contains (DD) and neither disjunct, so *Halldén-incompleteness of the target logic is a theorem* --- the correct formal signature of a class that is a union of two incompatible kinds, and not a defect to be repaired.
@@ -150,6 +187,40 @@ A countermodel for $phi.alt$ is then built from $M$ by a three-way case split on
 + *Dense case* ($square.stroked not U(top, bot) in M$): a countermodel is constructed on the rational timeline $QQ$ via the Burgess-style *chronicle construction* @burgess1982axioms.#footnote[`Metalogic/BXCanonical/Chronicle/`, entry point `countermodel_dense` in `ChronicleToCountermodelBasic.lean`, drawing on the D-parametric truth lemma in `Metalogic/Algebraic/`.]
 + *Discrete case* ($square.stroked U(top, bot) in M$): a countermodel is constructed on the integer timeline $ZZ$ via the Reynolds/Doets pipeline @reynolds1992 @doets1987.#footnote[`Metalogic/WeakCanonical/`, transfer step in `WeakCanonical/Transfer.lean`.]
 + *Mixed case*: eliminated outright --- an MCS cannot be undecided about discreteness.#footnote[`mcs_mixed_case_absurd` in `Metalogic/BXCanonical/Chronicle/MCSMixedCase.lean`.]
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+
+    let root = (0, 1.9)
+    let dense = (-3.6, 0)
+    let discrete = (0, 0)
+    let mixed = (3.6, 0)
+
+    line(root, dense, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    line(root, discrete, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    line(root, mixed, stroke: (paint: gray.darken(20%), thickness: 1pt))
+
+    content(root, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 6pt, radius: 3pt)[
+      #text(size: 8pt)[MCS $M$: decide $U(top, bot)$]
+    ])
+    content(dense, box(fill: blue.transparentize(85%), stroke: (paint: blue.darken(20%), thickness: 1pt), inset: 6pt, radius: 3pt, width: 3.2cm)[
+      #align(center)[#text(size: 7.5pt)[Dense case \ $square.stroked not U(top,bot) in M$ \ chronicle on $QQ$]]
+    ])
+    content(discrete, box(fill: orange.transparentize(85%), stroke: (paint: orange.darken(20%), thickness: 1pt), inset: 6pt, radius: 3pt, width: 3.2cm)[
+      #align(center)[#text(size: 7.5pt)[Discrete case \ $square.stroked U(top,bot) in M$ \ Reynolds/Doets on $ZZ$]]
+    ])
+    content(mixed, box(fill: red.transparentize(88%), stroke: (paint: red.darken(20%), thickness: 1pt), inset: 6pt, radius: 3pt, width: 3.2cm)[
+      #align(center)[#text(size: 7.5pt)[Mixed case \ eliminated: absurd]]
+    ])
+  })
+]
+
+#align(center)[
+  #text(size: 0.85em, style: "italic")[
+    The three-way case split driving the completeness construction, on the discreteness indicator $U(top, bot)$ ("there is an immediate successor"). An MCS cannot be undecided about discreteness, so the mixed branch is eliminated outright rather than handled.
+  ]
+]
 
 The construction rests on shared infrastructure:
 - *Bundled families of MCSs* (`Metalogic/Bundle/`): time-indexed families of maximal consistent sets with G/H coherence conditions, used by all completeness paths.
