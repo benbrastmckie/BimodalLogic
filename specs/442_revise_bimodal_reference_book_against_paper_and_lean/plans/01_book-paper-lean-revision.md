@@ -658,7 +658,7 @@ in Phases 5-8's prose may have changed what is needed.
 
 ---
 
-### Phase 11: Rewrite the Introduction [NOT STARTED]
+### Phase 11: Rewrite the Introduction [COMPLETED]
 
 **Goal**: A reader who knows modal logic but not this system should arrive at the frame definition
 understanding why the system is built the way it is.
