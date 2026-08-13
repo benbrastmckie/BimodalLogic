@@ -4,8 +4,18 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 444,
+  "next_project_number": 445,
   "active_projects": [
+    {
+      "project_number": 444,
+      "project_name": "overhaul_formalfoundations_presentation",
+      "status": "not_started",
+      "task_type": "formal",
+      "description": "Review the email other/dana.md sent to Dana Scott regarding the paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and systematically overhaul typst/FormalFoundations.typ so it presents, for Dana Scott as reader: the core mechanics of the existing completeness results, the current state of decidability, and the best direction for developing a representation theorem. Carefully review and incorporate the FIX tags already added in the file. The rewrite must adopt the writing style of an advanced textbook -- no vague glosses or platitudes -- with clean, precise definitions and theorems, and terse but informative introductions and remarks only where needed to motivate and explain the flow of results. The current document has virtually no detectable narrative arc; the presentation must be rewritten at a much higher level of formal sophistication, taking the time needed to do so accurately and masterfully.",
+      "topic": "publication-quality",
+      "created": "2026-08-13T21:52:59Z",
+      "last_updated": "2026-08-13T21:52:59Z"
+    },
     {
       "project_number": 441,
       "project_name": "effective_periodic_extension_over_finite_frames",
