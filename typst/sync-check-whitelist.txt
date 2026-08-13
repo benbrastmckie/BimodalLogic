@@ -115,6 +115,9 @@ def:TMplus-d
 def:frame-properties
 thm:M5-valid
 thm:TM-soundness
+def:strongest
+thm:exist
+sub:Extension
 
 # --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
 01-introduction.typ

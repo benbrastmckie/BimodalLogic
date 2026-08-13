@@ -369,7 +369,7 @@ before touching the completeness or decidability paragraphs, which are non-negot
 
 ---
 
-### Phase 5: Section 3 — pain point one, the contingency of the temporal axioms [NOT STARTED]
+### Phase 5: Section 3 — pain point one, the contingency of the temporal axioms [COMPLETED]
 
 **Goal**: The report's most carefully written prose: the contingency worry at full strength, the
 paper's irregular-worlds response with its exact price, the paper's defense presented fairly and
