@@ -64,7 +64,7 @@ next_project_number: 445
 
 ### Publication Quality
 
-444 [PLANNED] — Review the email other/dana.md sent to Dana Scott regarding the p
+444 [IMPLEMENTING] — Review the email other/dana.md sent to Dana Scott regarding the p
 
 ### Automation
 
@@ -102,7 +102,7 @@ next_project_number: 445
 ## Tasks
 
 ### 444. Overhaul formalfoundations presentation
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Topic**: publication-quality
 - **Dependencies**: None
