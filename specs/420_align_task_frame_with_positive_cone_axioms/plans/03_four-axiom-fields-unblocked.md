@@ -904,22 +904,22 @@ finding in the summary rather than silently passing over it.
 
 ---
 
-### Phase 11: Axiom lemmas for the TemporalStructures example frames [NOT STARTED]
+### Phase 11: Axiom lemmas for the TemporalStructures example frames [COMPLETED]
 
 **Goal**: `intTimeFrame`, `intNatFrame`, `genericTimeFrame`, and `genericNatFrame` each have the
 four axiom facts as standalone sorry-free lemmas, citing Phase 10's helpers.
 
 **Tasks**:
-- [ ] `intTimeFrame` (TemporalStructures.lean:77) and `genericTimeFrame` (:157): `Unit` carrier,
+- [x] `intTimeFrame` (TemporalStructures.lean:77) and `genericTimeFrame` (:157): `Unit` carrier,
       `TaskRel := fun _ _ _ => True` — discharge all four via Helper A.
-- [ ] `intNatFrame` (:90): permissive relation at `Int` — Helper B; *Limit* via
+- [x] `intNatFrame` (:90): permissive relation at `Int` — Helper B; *Limit* via
       `limit_of_succOrder`, whose `[SuccOrder Int] [NoMaxOrder Int]` instances are available
       without a binder change.
-- [ ] `genericNatFrame` (:169): permissive relation at **polymorphic** `D` — *Limit* fails over
+- [x] `genericNatFrame` (:169): permissive relation at **polymorphic** `D` — *Limit* fails over
       dense `D`, so this site needs `[SuccOrder D] [NoMaxOrder D]`. Add the binders if its
       consumers can supply them (Scope Hypothesis); otherwise state the *Limit* lemma under those
       instances as explicit hypotheses and record the binder change for Phase 14's batch.
-- [ ] Docstring each lemma with the `def:frame` sub-anchor and verbatim recorded text.
+- [x] Docstring each lemma with the `def:frame` sub-anchor and verbatim recorded text.
 
 **Timing**: 1.5 hours
 
@@ -947,6 +947,36 @@ blocking finding to record, not to work around.
 - `lake build` — green after every sub-step commit
 - `grep -n "sorry" FormalSystem/Examples/TemporalStructures.lean` returns nothing
 - `#print axioms` on each new lemma — only the standard Lean axioms
+
+**Verification results** (measured 2026-08-12):
+- `lake build` — GREEN, exit 0, 2331 jobs, no new warnings
+- `grep -n "sorry" FormalSystem/Examples/TemporalStructures.lean` — 0 hits
+- `#print axioms` on all 18 new declarations — only `propext`, `Classical.choice`, `Quot.sound`
+- Scope Hypothesis confirmed: exactly four sites in this file, at :78 (`intTimeFrame`), :118
+  (`intNatFrame`), :215 (`genericTimeFrame`), :251 (`genericNatFrame`) as read today (the plan's
+  :77/:90/:157/:169 shifted by this phase's own insertions). Consumer enumeration
+  (`grep -rn "genericNatFrame\|genericTimeFrame\|intNatFrame\|intTimeFrame" FormalSystem/ Tests/`):
+  **no consumer outside this file at all** — the only external hits are two prose mentions in
+  `TaskFrame.lean`'s helper-section docstring. Within the file, `genericTimeFrame` is used by
+  `genericTimeHistory` and four examples; `genericNatFrame` and `intNatFrame` have **zero** uses.
+  No consumer elaborates at a dense duration type, so nothing here is a blocking finding.
+
+**Landed declarations** (namespace `FormalSystem.Examples.TemporalStructures`):
+`intTimeFrame_{serial,interpolates,limit,spherical}` (total class),
+`intNatFrame_{rel_iff,serial,interpolates,limit,spherical}` (permissive at `Int`),
+`genericTimeFrame_{serial,interpolates,limit,spherical}` (total class, any `D`),
+`genericNatFrame_{rel_iff,serial,interpolates,limit,spherical}` (permissive, polymorphic).
+
+**Deviations**:
+- **`genericNatFrame` binder change deferred** (altered; the plan's own sanctioned second branch).
+  `genericNatFrame_limit` carries `[SuccOrder D] [NoMaxOrder D]` on the lemma; `genericNatFrame`'s
+  binders are unchanged, and the change is recorded for Phase 14's batch. It is free when taken:
+  `genericNatFrame` has **zero consumers** anywhere in `FormalSystem/` or `Tests/`.
+- **`import Mathlib.Data.Int.SuccPred` added** (added) — the `SuccOrder ℤ` instance
+  `intNatFrame_limit` needs. Same one-line addition as in `TaskFrameTest.lean`.
+- **`genericTimeFrame_limit` needs no restriction on `D`** (noted). The plan grouped it with the
+  total class; its `Unit` carrier discharges *Limit* via `limit_of_subsingleton` over **any**
+  duration type, dense included, so — unlike `genericNatFrame` — it carries no deferred binder.
 
 ---
 

@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Mathlib.Algebra.Order.Group.Int
+import Mathlib.Data.Int.SuccPred
 import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Semantics.WorldHistory
 
@@ -81,6 +82,33 @@ def intTimeFrame : TaskFrame Int where
   forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
 
+/-! ### `intTimeFrame` discharges `def:frame`'s four axioms (total class) -/
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `intTimeFrame`: its relation is total. -/
+theorem intTimeFrame_serial : TaskFrame.Serial intTimeFrame.TaskRel :=
+  TaskFrame.serial_of_total fun _ _ _ => trivial
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `intTimeFrame`: its relation is total. -/
+theorem intTimeFrame_interpolates : TaskFrame.Interpolates intTimeFrame.TaskRel :=
+  TaskFrame.interpolates_of_total fun _ _ _ => trivial
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`intTimeFrame`, in the literal transcribed shape: its carrier is `Unit`. -/
+theorem intTimeFrame_limit :
+    ∀ w u, (∀ x : Int, 0 < x → ∃ y, |y| < x ∧ intTimeFrame.TaskRel w y u) → u = w := by
+  haveI : Subsingleton intTimeFrame.WorldState := inferInstanceAs (Subsingleton Unit)
+  exact TaskFrame.limit_of_subsingleton
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `intTimeFrame`: its carrier
+is `Unit`, so every nonempty subset is the whole carrier. -/
+theorem intTimeFrame_spherical : TaskFrame.Spherical intTimeFrame.TaskRel := by
+  haveI : Subsingleton intTimeFrame.WorldState := inferInstanceAs (Subsingleton Unit)
+  exact TaskFrame.spherical_of_subsingleton
+
 /--
 Integer time task frame with natural number world states.
 
@@ -130,6 +158,37 @@ def intNatFrame : TaskFrame Int where
       | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
       | inr heq => right; exact heq.symm
 
+/-! ### `intNatFrame` discharges `def:frame`'s four axioms (permissive class) -/
+
+/-- `intNatFrame`'s relation is the permissive class `d ≠ 0 ∨ w = u`. -/
+theorem intNatFrame_rel_iff :
+    ∀ w d u, intNatFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `intNatFrame`, via the `w = u` disjunct. -/
+theorem intNatFrame_serial : TaskFrame.Serial intNatFrame.TaskRel :=
+  TaskFrame.serial_of_permissive intNatFrame_rel_iff
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `intNatFrame`. -/
+theorem intNatFrame_interpolates : TaskFrame.Interpolates intNatFrame.TaskRel :=
+  TaskFrame.interpolates_of_permissive intNatFrame_rel_iff
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`intNatFrame`, in the literal transcribed shape. The duration type is `Int`, whose `SuccOrder`
+and `NoMaxOrder` instances the permissive class needs and which are available without any binder
+change. -/
+theorem intNatFrame_limit :
+    ∀ w u, (∀ x : Int, 0 < x → ∃ y, |y| < x ∧ intNatFrame.TaskRel w y u) → u = w :=
+  TaskFrame.limit_of_permissive intNatFrame_rel_iff
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `intNatFrame`: every nonempty
+fiber and segment is the whole carrier or a singleton. -/
+theorem intNatFrame_spherical : TaskFrame.Spherical intNatFrame.TaskRel :=
+  TaskFrame.spherical_of_permissive intNatFrame_rel_iff
+
 /--
 Integer time world history with universal domain.
 
@@ -160,6 +219,34 @@ def genericTimeFrame : TaskFrame D where
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
   forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
+
+/-! ### `genericTimeFrame` discharges `def:frame`'s four axioms (total class) -/
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `genericTimeFrame`: its relation is total, at every `D`. -/
+theorem genericTimeFrame_serial : TaskFrame.Serial (genericTimeFrame D).TaskRel :=
+  TaskFrame.serial_of_total fun _ _ _ => trivial
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `genericTimeFrame`: its relation is total, at every `D`. -/
+theorem genericTimeFrame_interpolates : TaskFrame.Interpolates (genericTimeFrame D).TaskRel :=
+  TaskFrame.interpolates_of_total fun _ _ _ => trivial
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`genericTimeFrame`, in the literal transcribed shape. Its carrier is `Unit`, so the axiom holds
+over **any** duration type, dense included — no restriction on `D` is needed. -/
+theorem genericTimeFrame_limit :
+    ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ (genericTimeFrame D).TaskRel w y u) → u = w := by
+  haveI : Subsingleton (genericTimeFrame D).WorldState := inferInstanceAs (Subsingleton Unit)
+  exact TaskFrame.limit_of_subsingleton
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `genericTimeFrame`: its
+carrier is `Unit`, so every nonempty subset is the whole carrier. -/
+theorem genericTimeFrame_spherical : TaskFrame.Spherical (genericTimeFrame D).TaskRel := by
+  haveI : Subsingleton (genericTimeFrame D).WorldState := inferInstanceAs (Subsingleton Unit)
+  exact TaskFrame.spherical_of_subsingleton
 
 /--
 Generic polymorphic task frame with natural number world states.
@@ -208,6 +295,44 @@ def genericNatFrame : TaskFrame D where
       cases h with
       | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
       | inr heq => right; exact heq.symm
+
+/-! ### `genericNatFrame` discharges `def:frame`'s four axioms (permissive class) -/
+
+/-- `genericNatFrame`'s relation is the permissive class `d ≠ 0 ∨ w = u`. -/
+theorem genericNatFrame_rel_iff :
+    ∀ w d u, (genericNatFrame D).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `genericNatFrame`, via the `w = u` disjunct. Holds at every `D`. -/
+theorem genericNatFrame_serial : TaskFrame.Serial (genericNatFrame D).TaskRel :=
+  TaskFrame.serial_of_permissive (genericNatFrame_rel_iff D)
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `genericNatFrame`. Holds at every `D`. -/
+theorem genericNatFrame_interpolates : TaskFrame.Interpolates (genericNatFrame D).TaskRel :=
+  TaskFrame.interpolates_of_permissive (genericNatFrame_rel_iff D)
+
+/--
+*Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`genericNatFrame`, in the literal transcribed shape — **over a discrete duration type only**.
+
+`[SuccOrder D] [NoMaxOrder D]` is carried by this lemma rather than by `genericNatFrame` itself,
+and the restriction is not removable: over a dense `D` the permissive relation puts every state
+in every cone of every other state (pick any `y ≠ 0` with `|y| < x`), and *Limit* fails outright.
+When the frame structure grows the *Limit* field, this frame's own binders must acquire the two
+instances; it has no consumers anywhere in `FormalSystem/` or `Tests/`, so that change is free.
+-/
+theorem genericNatFrame_limit [SuccOrder D] [NoMaxOrder D] :
+    ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ (genericNatFrame D).TaskRel w y u) → u = w :=
+  TaskFrame.limit_of_permissive (genericNatFrame_rel_iff D)
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `genericNatFrame`: every
+nonempty fiber and segment is the whole carrier or a singleton, and a directed family cannot
+contain two distinct singletons. No restriction on `D` is needed. -/
+theorem genericNatFrame_spherical : TaskFrame.Spherical (genericNatFrame D).TaskRel :=
+  TaskFrame.spherical_of_permissive (genericNatFrame_rel_iff D)
 
 /--
 Generic polymorphic world history with universal domain.
