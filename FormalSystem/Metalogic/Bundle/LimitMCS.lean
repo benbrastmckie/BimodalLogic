@@ -459,7 +459,7 @@ the theorem must lie in `subformulaClosure root`. Note `D` is `Type` (not `Type*
 the flow-frame carrier.
 -/
 theorem fc_theorem_true_in_bundle_flow_model {fc : FrameClass} {D : Type}
-    [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (B : BFMCS (fc := fc) D) (root : Formula)
     (h_rtc : B.RestrictedTemporallyCoherent root)
     (h_buc : B.RestrictedBackwardUntilSinceCoherent root)
