@@ -7,7 +7,7 @@
 #import "../template.typ": *
 #import "../generated/status.typ": axiom-count
 
-= Metalogic
+= Metalogic <sec:metalogic>
 
 
 The metalogic for the bimodal logic *TM* relates the BX proof system of the previous chapter to the task semantics.

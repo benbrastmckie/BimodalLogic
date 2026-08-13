@@ -232,7 +232,7 @@ authoritative scope, not the four known rows.
 
 ---
 
-### Phase 3: Rewrite the Task Frames Section of 02-semantics.typ [NOT STARTED]
+### Phase 3: Rewrite the Task Frames Section of 02-semantics.typ [COMPLETED]
 
 **Goal**: Bring the book's frame definition up to the paper's current four axioms. This is the
 largest single content gap in the book and is invisible to the sync checker.

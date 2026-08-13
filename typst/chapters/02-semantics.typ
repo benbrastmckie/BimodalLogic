@@ -24,31 +24,66 @@ The following primitives are required to define a task frame:
       [*Primitive*], [*Type*], [*Description*],
     ),
     table.hline(),
-    [$W$], [Type], [World states],
-    [$D$], [Type], [Temporal durations],
-    [$w #overset($arrow.r.double.long$, $x$) u$], [$W arrow.r D arrow.r W arrow.r "Prop"$], [Task relation],
+    [$W$], [Type], [World states (nonempty)],
+    [$D$], [Temporal order], [Durations --- a nontrivial totally ordered abelian group],
+    [$w #overset($arrow.r.double.long$, $x$) u$], [$W arrow.r D^+ arrow.r W arrow.r "Prop"$], [Task relation, primitive on the positive cone $D^+$ and extended below],
     table.hline(),
   ),
   caption: none,
 )
 
-#definition("Task Frame")[
-  A *task frame* over temporal type $D$ is a triple $cal(F) = (W, D, arrow.r.double.long)$ satisfying:
-  + *Nullity*: For all $w : W$, we have $w arrow.r.double.long_0 w$.
-  + *Reflection*: For all $w, u : W$ and $x : D$, if $w arrow.r.double.long_x u$, then $u arrow.r.double.long_(-x) w$.
-  + *Compositionality*: For all $w, u, v : W$ and $x, y : D$, if $w arrow.r.double.long_x u$ and $u arrow.r.double.long_y v$, then $w arrow.r.double.long_(x+y) v$.
+#definition("Temporal Order")[
+  A *temporal order* is a nontrivial totally ordered abelian group $D = (D, +, 0, lt.eq)$ with *positive cone* $D^+ := { x in D : x gt.eq 0 }$.#footnote[`def:temporal-order`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds]
 ]
 
-Nullity ensures that zero-duration tasks leave the world state unchanged.
-Reflection ensures that every task is invertible by flipping the sign of its duration.
-Compositionality ensures that executing tasks sequentially yields results consistent with a single task of combined duration.
+This algebraic choice is not incidental to the rest of the book: the discrete-or-dense dichotomy driving the completeness architecture of @sec:metalogic depends on $D$ being an ordered abelian group and *fails* for a bare linear order (translation invariance is what globalizes a local gap or density witness).
+The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) requires exactly this: `D` carries `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`, and `Nontrivial` instances, matching `def:temporal-order` field for field.
 
-The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean:93`) packages these constraints as three fields, in a form that is equivalent for all semantic purposes but algebraically tighter:
-- #leanNullityIdentity : $w arrow.r.double.long_0 u arrow.l.r.double w = u$ --- Nullity strengthened to an identity (zero duration means *no* change);
-- #leanConverse : $w arrow.r.double.long_x u arrow.l.r.double u arrow.r.double.long_(-x) w$ --- Reflection, in biconditional form;
-- #leanForwardComp : Compositionality restricted to non-negative durations $0 lt.eq x, y$ --- the unrestricted mixed-sign form is algebraically impossible for non-deterministic relations, and the restricted form together with #leanConverse recovers every instance the semantics uses.
+#definition("Task Relation")[
+  A *task relation* on a nonempty set of world states $W$ over a temporal order $D$ is any parameterized relation $w arrow.r.double.long_x u$ for $w, u in W$ and $x in D^+$, extended to negative durations by the *converse convention*
+  $ w arrow.r.double.long_(-x) u := u arrow.r.double.long_x w quad "for" x gt.eq 0, $
+  determining, for any world states $w, v in W$ and durations $x, y in D$:
+  - *Fiber*: $"Fib"(w, x) := { u in W : w arrow.r.double.long_x u }$.
+  - *Cone*: $(w)_x := union.big_(|y| < x) "Fib"(w, y)$ where $x > 0$.
+  - *Segment*: $[w, v]_x^y := "Fib"(w, x) inter "Fib"(v, -y)$ where $x, y gt.eq 0$.
+]#footnote[`def:task-relation`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds]
 
-== World Histories
+There is therefore no separate *Reflection* axiom: the equivalence $w arrow.r.double.long_x u arrow.l.r.double u arrow.r.double.long_(-x) w$ is built into the task relation's definition by the converse convention above, not imposed as a further constraint on frames.
+Any converse operation written explicitly in this book uses a superscript inverse ($arrow.r.double.long^(-1)$), never the relation-algebra breve or smile common in the arrow-logic literature; the paper itself introduces no operator symbol for the convention at all, writing it only as subscript negation.
+
+#definition("Directed Family")[
+  A nonempty family of sets $S$ is *directed* just in case $S' subset.eq S_1 inter S_2$ for some $S' in S$ whenever $S_1, S_2 in S$.
+]#footnote[`def:directed`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds]
+
+#definition("Frame")[
+  A *frame* is any $cal(F) = (W, D, arrow.r.double.long)$ where $W$ is a nonempty set of world states, $D$ is a temporal order, and $arrow.r.double.long$ is a task relation satisfying the following for $x, y gt.eq 0$:
+  + *Compositionality*: $w arrow.r.double.long_(x+y) v$ if and only if $w arrow.r.double.long_x u$ and $u arrow.r.double.long_y v$ for some $u in W$.
+  + *Seriality*: $w arrow.r.double.long_x u$ and $v arrow.r.double.long_x w$ for some $u, v in W$.
+  + *Limit*: $inter.big_(x > 0) (w)_x = {w}$.
+  + *Spherical*: $inter.big S eq.not emptyset$ for any directed family $S$ of nonempty fibers and segments.
+]#footnote[`def:frame`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds Compositionality is a *biconditional*, load bearing in both directions.]
+
+*Compositionality* ensures that executing tasks sequentially yields results consistent with a single task of combined duration, in both directions.
+*Seriality* ensures every world state has a successor and a predecessor at every nonnegative duration.
+*Limit* ensures that shrinking the duration bound around $w$ pins down $w$ uniquely --- no other world state lies in every cone around it.
+*Spherical* is what makes the extension machinery of @sec:world-histories go through: it guarantees that a directed family of nonempty fibers and segments --- the constraints a new time imposes on a partial history, kept as two separate classes, never conflated --- has a common point.
+Fibers and segments range over *two separate classes* in *Spherical*; the retired device by which fibers were folded into a one-sided case of segments is not current notation.
+
+Nullity is conspicuously absent from this list because it is not an axiom:
+
+#lemma("Nullity")[
+  $w arrow.r.double.long_0 w$ for every world state $w in W$ in every frame $cal(F) = (W, D, arrow.r.double.long)$.
+]#footnote[`lem:nullity`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds]
+
+The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get some $u in W$ with $w arrow.r.double.long_0 u$; *Limit* at $x arrow.r 0^+$ then forces $u = w$, since $w$ is the unique point in every cone around itself.
+This is worth pausing on, because demoting Nullity from axiom to lemma is a genuine simplification, not mere reshuffling: *Seriality* and *Limit* alone suffice, so a frame satisfying the four axioms above automatically satisfies Nullity, and nothing is lost by not stating it separately.
+
+The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive `TaskRel` relation carries #leanComp, the paper's biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as `def:frame` states it); #leanConverse packages the *converse convention* of `def:task-relation` as structure data, since a two-sided Lean relation cannot carry the convention in its type, so the pair (two-sided `TaskRel`, #leanConverse) *is* the paper's extended relation over a primitive relation on $D^+$, constraining rather than adding to it; #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSpherical is *Spherical* verbatim, stated by citation as `TaskFrame.Spherical TaskRel` so that fibers and segments remain two separate classes, exactly as `def:directed` and `def:frame` require --- this field is what the Step Lemma of @sec:world-histories consumes.
+#leanNullityDerived (`TaskRel w 0 w`) is *derived* from these fields via #leanNullityIdentity, matching `lem:nullity`'s derived status in the paper.
+
+One open point should be recorded rather than smoothed over: #leanNullityIdentity is stated as an *iff* ($w arrow.r.double.long_0 u arrow.l.r.double w = u$), which is strictly stronger than `lem:nullity`'s reflexivity-only conclusion --- it additionally asserts injectivity at zero duration. The Lean module documents this as an open design question, not yet settled jointly with other in-flight formalization work, and it is left as-is here; no Lean change is made by this revision.
+
+== World Histories <sec:world-histories>
 
 A world history is a function from times to world states that respects the task relation over a convex temporal domain.
 World histories represent possible paths through the space of world states.

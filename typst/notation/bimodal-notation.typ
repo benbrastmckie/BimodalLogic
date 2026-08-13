@@ -102,9 +102,11 @@
 #let leanConvex = raw("convex")
 #let leanDomain = raw("domain")
 #let leanStates = raw("states")
-#let leanNullity = raw("nullity")
-#let leanCompositionality = raw("compositionality")
 #let leanNullityIdentity = raw("nullity_identity")
+#let leanComp = raw("comp")
 #let leanForwardComp = raw("forward_comp")
 #let leanConverse = raw("converse")
-#let leanReflection = raw("converse")  // Lean field name for the paper's Reflection constraint
+#let leanSerial = raw("serial")
+#let leanLimit = raw("limit")
+#let leanSpherical = raw("spherical")
+#let leanNullityDerived = raw("nullity")  // derived theorem, not a field: TaskRel w 0 w
