@@ -363,3 +363,64 @@ illustrations, typst/template API names, planned-but-not-yet-created files (foll
 tasks), external paper filenames/appendix/theorem labels (`possible_worlds.tex`,
 `counterfactual_worlds.tex`), external-repo (Logos) chapter citations, external URLs, and
 `lake exe` target names not resolvable as Bimodal Lean identifiers.
+
+## 2026-08-13 Verdict — Book-Paper-Lean Revision (Sync-Check to Zero + Content Corrections)
+
+Ground truth re-verified live at this revision: `check-paper-definitions.sh` exits case (b)
+("possible_worlds.tex changed but all 26 recorded definitions are unchanged -- pass"). Lean
+source ground truth remains `FormalSystem/` excluding `Boneyard/`.
+
+**`scripts/typst-sync-check.sh` result: PASS on all three checks.** Check 1 (backtick name
+resolution) started this revision at **25 violations** (matching the prior audit exactly) and
+is now **0**, against **582 candidates**. Check 2 (count freshness) is 0-mismatch after
+`typst-status-counts.sh` regenerated `generated/status.typ` (axiom_count 45, sorry_total 5,
+sorry_total_excl_boneyard 1). Check 3 (machine-appendix freshness) is clean throughout.
+
+**What closed Check 1, by disposition** (see the task's `reports/01_book-paper-lean-sync-audit.md`
+for the full pre-revision classification and this file's own commit history for the per-phase
+breakdown):
+- *Repointed to a live replacement* (2): `FMP.assignmentSpace_card` / `FMP.filtered_world_bound`
+  → `assignmentSpace_card` / `filtered_world_bound` (the Lean source never spells the `FMP.`
+  prefix literally); `Bridge.lean` → `MonotonicityDuality.lean` (Perpetuity P6 infrastructure).
+- *Claim deleted, not repointed* (the `ConservativeExtension/` cluster, ~9 distinct violations):
+  `Metalogic/ConservativeExtension/` exists only under `Boneyard/`; every citation of it, its
+  `Lifting.lean`, `lift_derivation_qfree`, `exists_fresh_atom`, `liftDerivationWith`, and
+  `ExtFormula.lean` was deleted along with the established-result framing they supported, per
+  the task's binding delete-don't-repoint rule.
+- *Claim corrected to match the live tree* (2): `FMP/DenseFMP.lean` / `FMP/DiscreteFMP.lean` do
+  not exist — `RefinedFilteredTaskFrame` is discrete-only (`[SuccOrder D] [NoMaxOrder D]`),
+  forced by the paper's *Limit* axiom collapsing outright over a dense duration type, so there
+  never was a per-class split to cite; `rabinovich_translate` lives only under
+  `WeakCanonical/Kamp/Boneyard/`, contradicting the chapter's own correct "a machine-checked
+  Kamp theorem is an open problem" sentence a few lines above — rewritten to state the
+  Rabinovich-style translation as an archived, paper-side proof strategy.
+- *Whitelisted as expository or negative-resolution citations, never a dead Lean path* (8, each
+  with a one-line reason in `sync-check-whitelist.txt`): the two `Nat.card(...)` Typst-math
+  renderings of `assignmentSpace_card`/`filtered_world_bound`; `allClosed arrow.r "valid"`
+  (Typst math for the open `valid_iff_allClosed` bridge); `⊥ U φ` (a rejected-construction
+  illustration, not a citation); `thm:ConservativeExtension` and `cor:tm-decidability`
+  (deliberate negative-resolution / untracked-anchor citations, same category as the
+  already-whitelisted `thm:BLplus-NextPrevious`); `cor:spherical-finite` and
+  `def:BLplus-language` (external paper labels with no Lean counterpart to grep).
+- *Reformatted instead of whitelisted* (1, per the task's stated preference): `and True` in
+  `p2-decidability-practice.typ` — dropped the backticks entirely rather than whitelisting a
+  historical, now-fixed vacuous-conjunct pattern.
+
+**Content corrections beyond the mechanical gate** (the headline work; full detail in the
+task's own findings note, `specs/442_.../reports/02_revision-findings.md`): the completeness
+story was reversed, not merely stale — *TM* is sound but *provably* incomplete over its own
+frame classes (the (DD) split-validity witness, following from the discrete-or-dense dichotomy
+for ordered abelian groups), with completeness carried instead by machine-checked `BL^+`
+systems; the conservative-extension theorem is deleted from the paper and every established-
+result framing was rewritten to the four-part backward-unconditional / forward-fails-for-base-
+and-discrete / forward-open-for-dense-and-complete status; decidability of *TM* and its
+extensions is open, not FMP-established; there are four frame classes (Base, Dense, Discrete,
+Dedekind), not three, with `Dedekind` sitting strictly above `Dense`; and `02-semantics.typ`'s
+task-frame axiomatization was brought up to the paper's current four-axiom `def:frame`
+(Compositionality, Seriality, Limit, Spherical) with Nullity restated as a derived lemma. The
+expository mandate added a motivated introduction, six reader-stumble remarks, and five cetz
+diagrams (the two-fibre `Z`/`R` countermodel witnessing (DD) foremost among them).
+
+No dead `.lean` path was whitelisted at any point in this revision (whitelist diff reviewed
+end-to-end against the pre-revision baseline commit `3c949d103`). This section is a dated
+addition; the historical tables above it are unmodified, per this file's own header.

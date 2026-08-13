@@ -1,7 +1,7 @@
 # Implementation Plan: Revise BimodalReference Against the Paper and the Lean Tree
 
 - **Task**: 442 - revise_bimodal_reference_book_against_paper_and_lean
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 21 hours
 - **Dependencies**: None (the 414/415/417/419/420 gate is LIFTED per the task description's binding
   section 1; exposure to those three in-flight tasks is managed by the marker convention in Phase 2,
@@ -870,7 +870,7 @@ the grep define the occurrence list.
 
 ---
 
-### Phase 16: Acceptance Gates, SYNC-MAP Verdict, and Findings Note [NOT STARTED]
+### Phase 16: Acceptance Gates, SYNC-MAP Verdict, and Findings Note [COMPLETED]
 
 **Goal**: Satisfy the task description's five-item acceptance list and record what was found but not
 fixed.
