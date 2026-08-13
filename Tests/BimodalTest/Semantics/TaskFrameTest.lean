@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Mathlib.Algebra.Order.Group.Int
+import Mathlib.Data.Int.SuccPred
 import FormalSystem.Semantics.TaskFrame
 
 /-!
@@ -99,6 +100,36 @@ def customFrame : TaskFrame Int where
 -- Test: Custom frame satisfies properties
 example : customFrame.TaskRel true 0 true := customFrame.nullity true
 example : customFrame.TaskRel false 5 true := Or.inl (by decide)
+
+/-! ### `customFrame` discharges `def:frame`'s four axioms (permissive class) -/
+
+/-- `customFrame`'s relation is the permissive class, the same class as `natFrame`'s. -/
+theorem customFrame_rel_iff :
+    ∀ w d u, customFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `customFrame`. -/
+theorem customFrame_serial : TaskFrame.Serial customFrame.TaskRel :=
+  TaskFrame.serial_of_permissive customFrame_rel_iff
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `customFrame`. -/
+theorem customFrame_interpolates : TaskFrame.Interpolates customFrame.TaskRel :=
+  TaskFrame.interpolates_of_permissive customFrame_rel_iff
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`customFrame`, in the literal transcribed shape. The duration type is `Int`, which supplies the
+`SuccOrder` / `NoMaxOrder` instances the permissive class needs, so no binder change is
+required here. -/
+theorem customFrame_limit :
+    ∀ w u, (∀ x : Int, 0 < x → ∃ y, |y| < x ∧ customFrame.TaskRel w y u) → u = w :=
+  TaskFrame.limit_of_permissive customFrame_rel_iff
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `customFrame`. -/
+theorem customFrame_spherical : TaskFrame.Spherical customFrame.TaskRel :=
+  TaskFrame.spherical_of_permissive customFrame_rel_iff
 
 /-! ## Polymorphism Tests -/
 

@@ -915,6 +915,33 @@ def trivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoi
   forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
 
+/-! #### `trivialFrame` discharges `def:frame`'s four axioms (total class, Helper A) -/
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `trivialFrame`: its relation is total. -/
+theorem trivialFrame_serial : Serial (trivialFrame (D := D)).TaskRel :=
+  serial_of_total fun _ _ _ => trivial
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `trivialFrame`: its relation is total. -/
+theorem trivialFrame_interpolates : Interpolates (trivialFrame (D := D)).TaskRel :=
+  interpolates_of_total fun _ _ _ => trivial
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`trivialFrame`, in the literal transcribed shape: its carrier is `Unit`. -/
+theorem trivialFrame_limit :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (trivialFrame (D := D)).TaskRel w y u) → u = w := by
+  haveI : Subsingleton (trivialFrame (D := D)).WorldState := inferInstanceAs (Subsingleton Unit)
+  exact limit_of_subsingleton
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `trivialFrame`: its carrier
+is `Unit`, so every nonempty subset is the whole carrier. -/
+theorem trivialFrame_spherical : Spherical (trivialFrame (D := D)).TaskRel := by
+  haveI : Subsingleton (trivialFrame (D := D)).WorldState := inferInstanceAs (Subsingleton Unit)
+  exact spherical_of_subsingleton
+
 /--
 Static task frame: every world state is related to itself, and only itself, at every duration.
 
@@ -940,17 +967,45 @@ def staticFrame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrder
   forward_comp := fun _ _ _ _ _ _ _ h1 h2 => h1.trans h2
   converse := fun _ _ _ => ⟨Eq.symm, Eq.symm⟩
 
+/-! #### `staticFrame` discharges `def:frame`'s four axioms (equality class, Helper C) -/
+
+/--
+The static frame's relation is the equality class: `TaskRel w x u` holds exactly when `w = u`,
+at every duration. This is the class-membership witness Helper C's lemmas consume.
+-/
+theorem staticFrame_rel_iff (W : Type) :
+    ∀ w d u, (staticFrame W (D := D)).TaskRel w d u ↔ w = u := fun _ _ _ => Iff.rfl
+
 /--
 The static frame satisfies the paper's *Seriality* axiom (`def:frame#Seriality`, verbatim:
 "$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$"): at every duration the
-state itself is both a successor and a predecessor. Stated for all durations, so the paper's
-`x ≥ 0` proviso is subsumed.
+state itself is both a successor and a predecessor.
+
+Stated as `Serial` — the bare-relation predicate of record — rather than as an unfolded
+conjunction, so that it is citable verbatim for the frame's *Seriality* field. The paper's
+`x ≥ 0` proviso is `Serial`'s own hypothesis and is simply unused here, since the witness works
+at every duration.
 -/
-theorem staticFrame_serial (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (w : W) (x : D) :
-    (∃ u, (staticFrame W (D := D)).TaskRel w x u) ∧
-      (∃ v, (staticFrame W (D := D)).TaskRel v x w) :=
-  ⟨⟨w, rfl⟩, ⟨w, rfl⟩⟩
+theorem staticFrame_serial (W : Type) : Serial (staticFrame W (D := D)).TaskRel :=
+  serial_of_eq (staticFrame_rel_iff W)
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `staticFrame`: interpolate through `w` itself. -/
+theorem staticFrame_interpolates (W : Type) : Interpolates (staticFrame W (D := D)).TaskRel :=
+  interpolates_of_eq (staticFrame_rel_iff W)
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`staticFrame`, in the literal transcribed shape: only `w` is reachable from `w` at all. -/
+theorem staticFrame_limit [Nontrivial D] (W : Type) :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (staticFrame W (D := D)).TaskRel w y u) → u = w :=
+  limit_of_eq (staticFrame_rel_iff W)
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `staticFrame`: every nonempty
+fiber and segment is the same singleton along a directed family. -/
+theorem staticFrame_spherical (W : Type) : Spherical (staticFrame W (D := D)).TaskRel :=
+  spherical_of_eq (staticFrame_rel_iff W)
 
 /--
 Natural number based task frame.
@@ -1008,6 +1063,49 @@ def natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
       cases h with
       | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
       | inr heq => right; exact heq.symm
+
+/-! #### `natFrame` discharges `def:frame`'s four axioms (permissive class, Helper B) -/
+
+/--
+The natural-number frame's relation is the permissive class: `TaskRel w d u` holds exactly when
+`d ≠ 0` or `w = u`. This is the class-membership witness Helper B's lemmas consume.
+-/
+theorem natFrame_rel_iff :
+    ∀ w d u, (natFrame (D := D)).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `natFrame`, via the `w = u` disjunct. -/
+theorem natFrame_serial : Serial (natFrame (D := D)).TaskRel :=
+  serial_of_permissive natFrame_rel_iff
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `natFrame`. -/
+theorem natFrame_interpolates : Interpolates (natFrame (D := D)).TaskRel :=
+  interpolates_of_permissive natFrame_rel_iff
+
+/--
+*Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for `natFrame`,
+in the literal transcribed shape — **over a discrete duration type only**.
+
+`[SuccOrder D] [NoMaxOrder D]` is carried by this lemma rather than by `natFrame` itself, and the
+restriction is not an artifact: over a dense `D` the permissive relation puts every state in
+every cone of every other state, and *Limit* fails outright. When the frame structure grows the
+*Limit* field, `natFrame`'s own binders must acquire these two instances; the only declaration
+that propagation reaches is `WorldHistory.universalNatFrame`, which is itself polymorphic in `D`
+and has no consumers of its own. Every other reference to `natFrame` in the library and test
+suite elaborates at `Int`, which carries both instances.
+-/
+theorem natFrame_limit [SuccOrder D] [NoMaxOrder D] :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (natFrame (D := D)).TaskRel w y u) → u = w :=
+  limit_of_permissive natFrame_rel_iff
+
+/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `natFrame`: every nonempty
+fiber and segment is the whole carrier or a singleton, and a directed family cannot contain two
+distinct singletons. No restriction on `D` is needed. -/
+theorem natFrame_spherical : Spherical (natFrame (D := D)).TaskRel :=
+  spherical_of_permissive natFrame_rel_iff
 
 end TaskFrame
 
