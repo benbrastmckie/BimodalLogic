@@ -22,6 +22,12 @@ Formulas are defined inductively with six primitive constructors, with *Until* a
 The binary temporal operators follow the *Burgess convention* @burgess1982axioms (`Syntax/Formula.lean`): in $U(phi.alt, psi)$ the first argument $phi.alt$ is the *event*, true at some strictly future witness time, and the second argument $psi$ is the *guard*, true at all times strictly between now and the witness.
 $S(phi.alt, psi)$ is the past mirror: the event held at some strictly past time, with the guard holding strictly in between.
 
+#remark("The Argument Order Is a Known, Deliberate Divergence -- Not a Bug")[
+  The paper's surface notation $phi.alt op("Since") psi$ / $phi.alt op("Until") psi$ is *guard-first* ($phi.alt$ the guard, $psi$ the event) -- the opposite of the event-first Burgess convention `untl`/`snce` use here.
+  The two readings are not in tension: the truth conditions agree exactly once the argument order is swapped, and `def:BLplus-semantics`'s own footnote states the direction of the divergence explicitly.
+  This is worth flagging because an earlier version of the paper stated the direction *backwards* (as Pnueli-style guard-first, matching a different literature convention than the one now adopted) -- a corrected error, not a live one, and this book does not repeat it: every truth-condition and axiom-schema statement here uses the event-first Burgess/Lean convention consistently, matching `untl`/`snce`, `dense_indicator`, and the derived-operator unfold lemmas throughout.
+]
+
 #figure(
   table(
     columns: 4,

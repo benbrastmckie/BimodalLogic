@@ -700,7 +700,7 @@ understanding why the system is built the way it is.
 
 ---
 
-### Phase 12: Reader-Stumble Remarks [NOT STARTED]
+### Phase 12: Reader-Stumble Remarks [COMPLETED]
 
 **Goal**: Add short, clearly-marked remarks at the six points where a reader predictably stumbles.
 

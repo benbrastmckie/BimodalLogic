@@ -108,10 +108,18 @@ The paper likewise distinguishes the irreflexive tense operators (primitive) fro
 
 - *Frame definability is real*: density ($G G phi.alt arrow.r G phi.alt$), discreteness (Prior/Z1), and seriality genuinely characterize frame classes, which is what makes the `Base`/`Dense`/`Discrete` frame-class parameter of the proof system meaningful.
   Under reflexive semantics all of these collapse to trivial validity.
-- *Three completeness targets*: the base, dense, and discrete systems each get their own completeness statement (`completeness`, `completeness_dense`, `completeness_discrete`), matching the paper's *TM*#super[+] extensions.
+- *Four completeness targets*: the base, dense, discrete, and Dedekind systems each get their own soundness statement (`soundness`, `soundness_dense`, `soundness_discrete`, `soundness_dedekind`), matching the paper's *TM*#super[+] extensions -- completeness itself is carried by the $op("BL")^+$ systems of @sec:metalogic, not by *TM* directly.
 - *Irreflexivity is not modally definable* @blackburnderijkevenema2001: no axiom forces the canonical accessibility to be irreflexive.
   The construction compensates with fresh-atom machinery --- the structured `Atom` type exists precisely so that a fresh atom is available outside any finite set --- and with the chronicle/transfer constructions of the metalogic chapter rather than a naive canonical model.
 - *Seriality is axiomatic, not automatic*: BX1/BX1$'$ ($top arrow.r F top$, $top arrow.r P top$) require every time to have a strict successor and predecessor time, which holds in every nontrivial ordered abelian group of durations.
+
+=== S5-Hood Does Not Single Out Metaphysical Necessity
+
+#remark("Why S5 Alone Underdetermines the Reading of Box")[
+  $square.stroked$ is S5 because $H_(cal(F))$-quantification is an equivalence-free but frame-wide universal: nothing about the *proof system* forces the reading "necessarily" onto $square.stroked$ rather than some other modality that happens to validate the same schemata.
+  The paper makes this point with a deliberately close counterexample rather than an abstract worry: a *stability* operator $op("Stability") phi.alt$, true at a possible world $tau$ and time $x$ just in case $phi.alt$ holds at every possible world *agreeing with $tau$ at $x$* (not every possible world whatsoever), is monomodal S5 for exactly the same reason $square.stroked$ is --- membership in the same equivalence class --- yet it is manifestly *not* metaphysical necessity: for non-temporal $phi.alt$ it collapses to the trivial modality, since agreement at $x$ already fixes $phi.alt$'s truth value there.
+  S5-hood is therefore necessary but not sufficient for the metaphysical-necessity reading; what does the further work is the specific choice to quantify over *all* of $H_(cal(F))$ rather than a restricted equivalence class, which is a modeling decision the axioms alone do not force.
+]#footnote[Stability operator, `possible_worlds.tex` §5.2 ("Restricted Modalities"): $chevron.l tau chevron.r_x := { sigma in H_(cal(F)) : sigma(x) = tau(x) }$, and $op("Stability")$ quantifies over it. The paper's own remark: "the monomodal logic of Stability is also S5 ... for non-temporal $phi.alt$ ... $phi.alt arrow.r op("Stability") phi.alt$ is valid, collapsing Stability to the trivial modality on this fragment." No Lean counterpart -- this is a paper-side observation about the semantic framework's expressive range, not a formalized result. @brastmckie2026possibleworlds @bacon2022necessities]
 
 === Historical Context
 
@@ -126,5 +134,5 @@ The paper likewise distinguishes the irreflexive tense operators (primitive) fro
 ]
 
 #remark("The Reflexive Alternative")[
-  A reflexive convention ($lt.eq$) yields a single collapsed completeness target in which the frame classes are indistinguishable; the strict convention ($<$, the A2 guard convention) supports the Burgess-Xu axioms, replaces the temporal T-axioms with seriality axioms, and sustains three genuinely distinct frame classes.
+  A reflexive convention ($lt.eq$) yields a single collapsed completeness target in which the frame classes are indistinguishable; the strict convention ($<$, the A2 guard convention) supports the Burgess-Xu axioms, replaces the temporal T-axioms with seriality axioms, and sustains four genuinely distinct frame classes (Base, Dense, Discrete, Dedekind).
 ]

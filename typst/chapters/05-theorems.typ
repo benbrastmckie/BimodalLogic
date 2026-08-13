@@ -37,6 +37,13 @@ P1 in particular is the formal counterpart of a thesis defended independently in
   $tack.r triangle.stroked.b square.stroked phi.alt arrow.r square.stroked triangle.stroked.t phi.alt$
 ]
 
+#remark("Why the Perpetuity Principles Follow from MF and MT Alone")[
+  None of P1--P6 needs a bespoke semantic argument: every one is a theorem of classical propositional and modal reasoning once two ingredients are in hand.
+  MT ($square.stroked phi.alt arrow.r phi.alt$, the S5 reflexivity axiom) supplies "necessary implies actual"; MF ($square.stroked phi.alt arrow.r square.stroked G phi.alt$, the bimodal interaction axiom) supplies "necessary implies necessarily always future".
+  Composing MF with MT (instantiating MT at $G phi.alt$) already derives TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$: necessity is preserved into the future's necessity) by nothing more than propositional substitution and modus ponens --- no fresh semantic insight, just classical bookkeeping on axioms already in hand.
+  P1--P6 then follow from TF (and its past mirror, via temporal duality) together with classical propositional reasoning and the standard modal/tense duals ($diamond.stroked := not square.stroked not$, $triangle.stroked.b := not triangle.stroked.t not$): the *substance* of the perpetuity principles lives entirely in MF, and everything past that point is bookkeeping the Lean kernel checks mechanically rather than a further creative step.
+]
+
 All six perpetuity principles are fully proven (sorry-free) in the Lean implementation, in `Theorems/Perpetuity/` (`Principles.lean`, with P6 infrastructure in `MonotonicityDuality.lean`'s "Bridge Lemmas for P6 Derivation" section).
 
 #figure(

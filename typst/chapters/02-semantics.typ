@@ -76,7 +76,12 @@ Nullity is conspicuously absent from this list because it is not an axiom:
 ]#footnote[`lem:nullity`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds]
 
 The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get some $u in W$ with $w arrow.r.double.long_0 u$; *Limit* at $x arrow.r 0^+$ then forces $u = w$, since $w$ is the unique point in every cone around itself.
-This is worth pausing on, because demoting Nullity from axiom to lemma is a genuine simplification, not mere reshuffling: *Seriality* and *Limit* alone suffice, so a frame satisfying the four axioms above automatically satisfies Nullity, and nothing is lost by not stating it separately.
+
+#remark("Why Nullity Is a Lemma, Not an Axiom")[
+  A reader who has seen other presentations of similar systems might expect "zero duration is a no-op" to be postulated outright, as it was in an earlier draft of this book.
+  Demoting it to a derived lemma is a genuine simplification, not mere reshuffling: *Seriality* and *Limit* alone already force it, so a frame satisfying the four axioms of `def:frame` automatically satisfies Nullity, and nothing beyond those four axioms is needed to get it.
+  Stating it as a fifth axiom would therefore not strengthen the theory, only lengthen the definition.
+]
 
 The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive `TaskRel` relation carries #leanComp, the paper's biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as `def:frame` states it); #leanConverse packages the *converse convention* of `def:task-relation` as structure data, since a two-sided Lean relation cannot carry the convention in its type, so the pair (two-sided `TaskRel`, #leanConverse) *is* the paper's extended relation over a primitive relation on $D^+$, constraining rather than adding to it; #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSpherical is *Spherical* verbatim, stated by citation as `TaskFrame.Spherical TaskRel` so that fibers and segments remain two separate classes, exactly as `def:directed` and `def:frame` require --- this field is what the Step Lemma of @sec:world-histories consumes.
 #leanNullityDerived (`TaskRel w 0 w`) is *derived* from these fields via #leanNullityIdentity, matching `lem:nullity`'s derived status in the paper.
@@ -131,6 +136,12 @@ Not every partial history is total, and it is not obvious that a frame has *any*
 #corollary("Spherical for Finite Carriers")[
   Every frame $cal(F) = (W, D, arrow.r.double.long)$ with finite $W$ satisfies *Spherical*, choice-free.
 ]#footnote[`cor:spherical-finite` --- an anchor outside the 26 tracked by `specs/paper-definitions-of-record.md`, re-verified directly against the live paper for this citation rather than assumed. @brastmckie2026possibleworlds]
+
+#remark("What the Finite-Carrier Discharge Does and Does Not Give")[
+  *Spherical* earns its place in `def:frame` because, without it, nothing guarantees a directed family of nonempty fibers and segments has a common point --- and the Step Lemma needs exactly that common point to extend a partial history by one more duration.
+  The finite-carrier corollary above discharges *Spherical* choice-free whenever $W$ is finite, which covers every worked example and every finite countermodel this book constructs.
+  It does *not* discharge *Spherical* for infinite-$W$ frames: those still need the axiom in full, and the Lean-status footnote of @sec:metalogic records this as a genuine outstanding obligation for an infinite-$W$ frame, not a solved case dressed up as open.
+]
 
 The Lean formalization runs this exact chain. `PartialHistory` and `WorldHistory` (`Semantics/PartialHistory.lean`, `Semantics/WorldHistory.lean`) implement the two-tier structure, with `WorldHistory` extending `PartialHistory` by a single `convex` field, and `WorldHistory.IsTotal` as the totality predicate identifying membership in $H_(cal(F))$.
 `Semantics/Extension/Constraint.lean`, `Admissible.lean`, `Step.lean`, and `Extension.lean` carry `def:constraints` through `lem:constraint`, `lem:fibers`, `lem:admissible`, `lem:step`, `thm:extension`, and `cor:occurrence` as a machine-checked chain, cited by anchor throughout rather than restated inline.
@@ -192,6 +203,12 @@ The derived tense operators then receive their expected *strict* truth condition
 The modal operator $square.stroked$ quantifies over all world histories $sigma : H_(cal(F))$ at the current time $x : D$.
 The temporal operators quantify over all earlier and later times $y : D$ --- over the whole temporal order, not merely the history's domain, so atoms are false (rather than undefined) at times outside $"dom"(tau)$.
 
+#remark("Strict Semantics Costs the T-Axioms")[
+  $G$ and $H$ exclude the present moment: they are genuinely *strict*, not the reflexive $lt.eq$/$gt.eq$ convention familiar from some model-checking traditions.
+  This has a real cost worth stating plainly, because it is easy to expect otherwise: the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are *not* valid under this semantics --- truth at every strictly later time says nothing about truth right now.
+  What replaces them is *Seriality* (`def:frame`), supplied axiomatically by BX1/BX1$'$ ($top arrow.r F top$, $top arrow.r P top$) rather than following from the truth conditions themselves.
+  The strict convention is not a free stylistic choice: @sec:notes's Design Choices section shows that the reflexive alternative collapses the frame classes this book spends two chapters distinguishing.
+]
 
 == Time-Shift
 
