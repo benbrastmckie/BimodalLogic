@@ -132,10 +132,23 @@ PDF). The `<scope>` suffix names what will move the anchor, not a task number:
 - `co-reynolds-independence` -- `ProofSystem/Axioms.lean` Layer 9, immediately above the
   `Axiom.prior_U_gap` constructor
 
-Sweep with `grep -rn "LEAN-ANCHOR-MAY-MOVE" typst/chapters/`. Occurrence list (filled in as
-markers are placed; kept in sync with the live grep output):
+Sweep with `grep -rn "LEAN-ANCHOR-MAY-MOVE" typst/chapters/`. Occurrence list (7 markers,
+matching the live grep output as of this revision):
 
-_pending -- populated when markers are placed against the chapters that cite this territory._
+| Scope | File | Line | What it guards |
+|-------|------|------|----------------|
+| `canonical-completeness` | `chapters/04-metalogic.typ` | 172 | `Completeness (Dense, Discrete)` theorem box (`soundness_dense`/`soundness_discrete`/`soundness_dedekind`) |
+| `canonical-completeness` | `chapters/04-metalogic.typ` | 178 | `Completeness (Base)` theorem box and its `sorryAx` status note |
+| `canonical-completeness` | `chapters/04-metalogic.typ` | 235 | Base-frame completeness open-step paragraph (`WeakCanonical.countermodel_discrete` dependency) |
+| `canonical-completeness` | `chapters/06-notes.typ` | 75 | Completeness Status subsection's `Metalogic/BXCanonical/Completeness.lean` citation |
+| `semantic-fmp` | `chapters/p2-decidability-practice.typ` | 34 | `FMP-Based Completeness` theorem box (`fmp_completeness`) |
+| `semantic-fmp` | `chapters/p2-decidability-practice.typ` | 61 | `filtered_world_bound`/`assignmentSpace_card` sentence |
+| `co-reynolds-independence` | `chapters/p2-frame-classes.typ` | 84 | `Dedekind` row of the axiom-assignment table (`prior_U_gap`/`prior_S_gap`/`sep`) |
+
+This list is not claimed exhaustive of every citation that could plausibly move -- it covers the
+headline theorem boxes and summary claims for each scope, which is where a re-sync sweep should
+start; a full re-audit after 415/417/419 land may still surface secondary prose mentions the
+grep-based sweep above did not individually mark.
 
 ## Relationship to LaTeX Version
 

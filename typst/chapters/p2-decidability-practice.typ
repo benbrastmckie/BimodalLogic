@@ -31,6 +31,7 @@ A verified *sound* tableau procedure exists in this repository (below), and the 
 The completeness side of the decision procedure rests on a finite model property, developed in `Metalogic/Decidability/FMP/`.
 The entire `Metalogic/Decidability/` tree, including all seven `FMP/` files, is sorry-free, and the central theorem is `fmp_completeness` (`Decidability/Correctness.lean:123`):
 
+// LEAN-ANCHOR-MAY-MOVE: semantic-fmp -- see typst/README.md
 #theorem("FMP-Based Completeness")[
   If $φ$ is a member of every closure maximal-consistent-set bundle for $φ$, then $φ$ is derivable at frame class `Base`.#footnote[`fmp_completeness (φ : Formula) : (∀ (S : FMP.ClosureMCSBundle φ), φ ∈ S.carrier) → Nonempty (DerivationTree FrameClass.Base [] φ)`, `Metalogic/Decidability/Correctness.lean:123-126`, proved (sorry-free) by `FMP.fmp_contrapositive` (`FMP/FMP.lean:206`), itself built from `FMP.mcs_finite_model_property` (`FMP/FMP.lean:193`) over the finite quotient type `FilteredWorld` (`FMP/Filtration.lean:152`, finiteness witnessed sorry-free by `FilteredWorld.finite`, `FMP/FiniteModel.lean:131`).]
 ]
@@ -57,6 +58,7 @@ def FilteredWorld (phi : Formula) : Type :=
 ```
 
 The number of equivalence classes is bounded by $2^(|op("closure")(φ)|)$, and finiteness is witnessed constructively by `FilteredWorld.finite` (`FMP/FiniteModel.lean:137`).
+// LEAN-ANCHOR-MAY-MOVE: semantic-fmp -- see typst/README.md
 Both halves of that sentence are now proved, and the bound is a theorem rather than an estimate: `filtered_world_bound` states `Nat.card (FilteredWorld φ) ≤ 2^(|op("closure")(φ)|)` and `assignmentSpace_card` computes the right-hand side as an *equality*, `Nat.card (Set ↥(subformulaClosure φ)) = 2^(|op("closure")(φ)|)`.
 Both travel along `filteredCharacteristicSet_injective` (`FMP/FiniteModel.lean:96`) -- the same injection that witnesses finiteness, read for cardinality as well as for `Finite`.
 This is worth stating explicitly because the two theorems previously carrying these names were vacuous: each concluded in a conjunct equivalent to plain `True`, discharged by `trivial`, so neither constrained `FilteredWorld` at all.

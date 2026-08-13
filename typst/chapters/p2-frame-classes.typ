@@ -81,6 +81,7 @@ Every axiom constructor carries a minimum frame class via `Axiom.minFrameClass` 
     [`Base`], [#base-count axioms (layers 1--5): all base propositional, modal, BX temporal, interaction, and uniformity axioms],
     [`Dense`], [#dense-only-count axioms: `density`, `dense_indicator`],
     [`Discrete`], [#discrete-only-count axioms: `prior_UZ`, `prior_SZ`, `z1`],
+    // LEAN-ANCHOR-MAY-MOVE: co-reynolds-independence -- see typst/README.md
     [`Dedekind`], [#dedekind-only-count axioms (Reynolds' definable-gap layer, admissible together with `Dense`'s axioms): `prior_U_gap`, `prior_S_gap`, `sep`],
     table.hline(),
   ),

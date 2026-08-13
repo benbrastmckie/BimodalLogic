@@ -823,7 +823,7 @@ actually hits the stumble rather than where this plan guessed.
 
 ---
 
-### Phase 15: Marker Sweep and Occurrence List [NOT STARTED]
+### Phase 15: Marker Sweep and Occurrence List [COMPLETED]
 
 **Goal**: Make the follow-up re-sync a grep, not a re-audit.
 
