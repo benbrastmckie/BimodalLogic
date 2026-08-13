@@ -48,6 +48,11 @@ app:discrete
 # a deliberate negative-resolution citation, not a Lean claim) ---
 thm:BLplus-NextPrevious
 
+# --- External paper corollary label, not formalized in Lean (paper-side
+# result only -- cor:spherical-finite is outside the 26 anchors tracked by
+# specs/paper-definitions-of-record.md and has no Lean counterpart) ---
+cor:spherical-finite
+
 # --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
 01-introduction.typ
 

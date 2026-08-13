@@ -283,7 +283,7 @@ before assuming the scope; do not trust any prior enumeration of stale sites, in
 
 ---
 
-### Phase 4: Re-audit the World Histories Section of 02-semantics.typ [NOT STARTED]
+### Phase 4: Re-audit the World Histories Section of 02-semantics.typ [COMPLETED]
 
 **Goal**: Bring the world-history layering into line with `\label{def:world-history}`, which the
 frame section's staleness makes likely to be equally stale.

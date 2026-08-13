@@ -85,8 +85,12 @@ One open point should be recorded rather than smoothed over: #leanNullityIdentit
 
 == World Histories <sec:world-histories>
 
-A world history is a function from times to world states that respects the task relation over a convex temporal domain.
-World histories represent possible paths through the space of world states.
+The paper builds possible worlds up through three tiers, and the order matters: a *partial history* requires only a nonempty domain; a *world history* additionally requires the domain to be *convex*; and a world history is *total* --- equivalently, a *possible world* --- just in case its domain is all of $D$.
+Only the total tier is what the semantics of @sec:truth quantifies over.
+
+#definition("Partial History")[
+  A *partial history* over a frame $cal(F) = (W, D, arrow.r.double.long)$ is a dependent function $tau : (x : D) arrow.r "dom"(x) arrow.r W$ where $"dom" : D arrow.r "Prop"$ is a *nonempty* subset of $D$ and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all times $x, y : D$ with $"dom"(x)$ and $"dom"(y)$.
+]#footnote[`def:world-history`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds Nonemptiness of the domain is required; convexity is *not*.]
 
 #definition("Convex Domain")[
   A domain $"dom" : D arrow.r "Prop"$ is *convex* if whenever $a, c in "dom"$ with $a lt.eq c$, every time $b$ with $a lt.eq b lt.eq c$ is also in $"dom"$.
@@ -95,9 +99,41 @@ World histories represent possible paths through the space of world states.
 ]
 
 #definition("World History")[
-  A *world history* in a task frame $cal(F)$ is a dependent function $tau : (x : D) arrow.r "dom"(x) arrow.r W$ where $"dom" : D arrow.r "Prop"$ is a convex subset of $D$ and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all times $x, y : D$ with $"dom"(x)$, $"dom"(y)$, and $x lt.eq y$.
-  We write $H_(cal(F))$ for all world histories over frame $cal(F)$.
-]
+  A *world history* is any partial history whose domain is convex.
+  A world history is *total* --- equivalently, a *possible world* --- just in case $"dom"$ holds of every time, i.e. $"dom" = D$.
+  The set of all *total* world histories over frame $cal(F)$ is denoted $H_(cal(F))$: a world history with a proper convex domain is *not* a member of $H_(cal(F))$, only the total ones are.
+]#footnote[`def:world-history`. @brastmckie2026possibleworlds]
+
+Not every partial history is total, and it is not obvious that a frame has *any* total world histories at all --- the existence of $H_(cal(F))$ needs an argument, and this is exactly where *Spherical* earns its place in `def:frame`.
+
+#definition("Constraints on a New Time")[
+  For a partial history $tau$ with domain $"dom"$ and a duration $z in.not "dom"$, the *constraints on* $z$ are the segments $[tau(t), tau(s)]_(z-t)^(s-z)$ for times $t, s : D$ with $"dom"(t)$, $"dom"(s)$, and $t < z < s$ when both hold, and the fibers $"Fib"(tau(t), z-t)$ for $t$ with $"dom"(t)$ otherwise.
+]#footnote[`def:constraints`. @brastmckie2026possibleworlds]
+
+#lemma("Constraint Lemma")[
+  The constraints on $z$ form a directed family of nonempty sets.
+]#footnote[`lem:constraint`; proof uses *Compositionality* in both directions plus *Seriality*. @brastmckie2026possibleworlds]
+
+#lemma("Step Lemma")[
+  Every partial history extends to a partial history on $"dom" union {z}$ for any duration $z in D$.
+]#footnote[`lem:step`; the sole application site of *Spherical* in the whole existence chain. @brastmckie2026possibleworlds Closing remark, load bearing for the discrete case: when the constraint family has a $subset.eq$-least member, that member already contains a candidate and *Spherical* is not needed.]
+
+#theorem("Extension Theorem")[
+  Every partial history $tau$ over a frame $cal(F)$ is extended by some total world history $sigma in H_(cal(F))$.
+]#footnote[`thm:extension`; proved by Zorn's lemma over partial histories ordered by extension, closing via the Step Lemma --- a ZFC, not choice-free, result. @brastmckie2026possibleworlds]
+
+#corollary("Occurrence")[
+  For any frame $cal(F)$, world state $w in W$, and time $x : D$, there is a total world history $tau in H_(cal(F))$ where $tau(x) = w$; in particular $H_(cal(F))$ is nonempty for every frame.
+]#footnote[`cor:occurrence`, extending the one-point partial history ${(x, w)}$ via the Extension Theorem. @brastmckie2026possibleworlds]
+
+*Spherical* is genuinely needed for the Step Lemma in general, but it comes for free when the world-state carrier is finite:
+
+#corollary("Spherical for Finite Carriers")[
+  Every frame $cal(F) = (W, D, arrow.r.double.long)$ with finite $W$ satisfies *Spherical*, choice-free.
+]#footnote[`cor:spherical-finite` --- an anchor outside the 26 tracked by `specs/paper-definitions-of-record.md`, re-verified directly against the live paper for this citation rather than assumed. @brastmckie2026possibleworlds]
+
+The Lean formalization runs this exact chain. `PartialHistory` and `WorldHistory` (`Semantics/PartialHistory.lean`, `Semantics/WorldHistory.lean`) implement the two-tier structure, with `WorldHistory` extending `PartialHistory` by a single `convex` field, and `WorldHistory.IsTotal` as the totality predicate identifying membership in $H_(cal(F))$.
+`Semantics/Extension/Constraint.lean`, `Admissible.lean`, `Step.lean`, and `Extension.lean` carry `def:constraints` through `lem:constraint`, `lem:fibers`, `lem:admissible`, `lem:step`, `thm:extension`, and `cor:occurrence` as a machine-checked chain, cited by anchor throughout rather than restated inline.
 
 == Task Models
 
@@ -113,11 +149,11 @@ World states themselves are specific configurations of the total system at an in
 
 == Truth Conditions <sec:truth>
 
-Truth is evaluated relative to a model $cal(M)$ providing the interpretation, a world history $tau$ representing a possible path through the space of world states, and a time $x : D$.
+Truth is evaluated relative to a model $cal(M)$ providing the interpretation, a *possible world* $tau in H_(cal(F))$ --- a total world history, per @sec:world-histories --- and a time $x : D$.
 Whereas the model fixes the interpretation of the language, the contextual parameters $tau$ and $x$ determine the truth value of every sentence of the language.
 
 #definition("Truth")[
-  For model $cal(M)$, history $tau : H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`.]
+  For model $cal(M)$, possible world $tau in H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`. `def:BL-semantics`'s box clause, verbatim, ranges over "all $sigma in H_F$" with no further parameter; the Lean implementation matches exactly, with the box case quantifying over `WorldHistory.IsTotal` and taking no admissible-history or shift-closure parameter. @brastmckie2026possibleworlds]
   $
     cal(M), tau, x tack.r.double p &#Iff x in "dom"(tau) "and" I(tau(x), p) \
     cal(M), tau, x tack.r.double.not bot \
@@ -133,6 +169,9 @@ Whereas the model fixes the interpretation of the language, the contextual param
       &quad "and" cal(M), tau, z tack.r.double psi "for all" z : D "where" y < z < x
   $
 ]
+
+The atom clause above carries a domain conjunct, $x in "dom"(tau)$; `def:BL-semantics`'s atom clause has none, since the paper's evaluation point is already total ($"dom" = D$), so the conjunct is vacuously true there.
+This is a deliberate, documented Lean-side choice, not an oversight: `TruthAt` keeps the conjunct so that it stays meaningful when applied to the *partial* histories the extension machinery of @sec:world-histories traffics in internally, and the two readings provably agree once restricted to $H_(cal(F))$.
 
 Until and Since use a *strict witness* with an *open guard*: the witness time $y$ is strictly future (respectively strictly past), and the guard $psi$ is required only on the open interval strictly between $x$ and $y$.
 The derived tense operators then receive their expected *strict* truth conditions as characterization theorems:#footnote[`future_iff`, `past_iff`, and companions in `Semantics/Truth.lean`; the semantics is irreflexive: G and H exclude the present moment, so the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are not valid.]
