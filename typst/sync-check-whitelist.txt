@@ -24,6 +24,25 @@ valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)
 atom a
 fmp_completeness (φ : Formula) : (∀ (S : FMP.ClosureMCSBundle φ), φ ∈ S.carrier) → Nonempty (DerivationTree FrameClass.Base [] φ)
 
+# --- Typst-math renderings of live Lean statements (assignmentSpace_card,
+# filtered_world_bound), spelled with Typst operator names (op(...), the
+# up-tack coercion glyph) rather than literal Lean/Unicode source syntax,
+# so they cannot literal-grep-match the .lean text despite describing a
+# real, live, sorry-free theorem ---
+Nat.card (FilteredWorld φ) ≤ 2^(|op("closure")(φ)|)
+Nat.card (Set ↥(subformulaClosure φ)) = 2^(|op("closure")(φ)|)
+
+# --- Typst-rendered math for the still-open valid_iff_allClosed bridge
+# (p2-decidability-practice.typ) -- "arrow.r" is Typst notation for the
+# implication arrow, not a Lean identifier; the span names an obligation
+# that is explicitly NOT yet a theorem, so it cannot resolve as a claim ---
+allClosed arrow.r "valid"
+
+# --- Rejected/contrastive construction in prose (p2-frame-classes.typ:
+# "not `⊥ U φ` as an event-second convention would give"), illustrating
+# the convention *not* adopted -- not a citation of any Lean expression ---
+⊥ U φ
+
 # --- typst/template API names (not Lean identifiers) ---
 ref
 link

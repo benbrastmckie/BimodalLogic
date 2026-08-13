@@ -36,7 +36,7 @@ The perpetuity principles establish deep connections between modal necessity ($s
   $tack.r triangle.stroked.b square.stroked phi.alt arrow.r square.stroked triangle.stroked.t phi.alt$
 ]
 
-All six perpetuity principles are fully proven (sorry-free) in the Lean implementation, in `Theorems/Perpetuity/` (`Principles.lean`, with P6 infrastructure in `Bridge.lean`).
+All six perpetuity principles are fully proven (sorry-free) in the Lean implementation, in `Theorems/Perpetuity/` (`Principles.lean`, with P6 infrastructure in `MonotonicityDuality.lean`'s "Bridge Lemmas for P6 Derivation" section).
 
 #figure(
   table(
@@ -188,7 +188,7 @@ The `Theorems/` directory is organized as follows:
       [*Module*], [*Contents*],
     ),
     table.hline(),
-    [`Perpetuity/`], [P1--P6 principles (`Principles.lean`, `Bridge.lean`, `Helpers.lean`); re-exported by `Perpetuity.lean`],
+    [`Perpetuity/`], [P1--P6 principles (`Principles.lean`, `MonotonicityDuality.lean`, `Helpers.lean`); re-exported by `Perpetuity.lean`],
     [`Propositional/`], [Classical propositional theorems (`Core.lean`, `Connectives.lean`, `Reasoning.lean`)],
     [`ModalS5.lean`], [S5 characteristic theorems],
     [`ModalS4.lean`], [S4 properties (modal5, diamond4)],

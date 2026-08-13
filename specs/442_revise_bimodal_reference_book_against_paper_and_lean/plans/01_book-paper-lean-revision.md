@@ -560,7 +560,7 @@ five-row figure is a hypothesis, and the table is being rebuilt wholesale regard
 
 ---
 
-### Phase 9: Remaining Repoints, Whitelist, and Check 1 to Zero [NOT STARTED]
+### Phase 9: Remaining Repoints, Whitelist, and Check 1 to Zero [COMPLETED]
 
 **Goal**: Close the last Check-1 violations and drive TOTAL_VIOLATIONS to 0 with no dead path
 whitelisted.
