@@ -503,7 +503,7 @@ are designated "give in full".
 
 ---
 
-### Phase 7: Section 5 — pain point three, axiomatizing the strongest objective modality [NOT STARTED]
+### Phase 7: Section 5 — pain point three, axiomatizing the strongest objective modality [COMPLETED]
 
 **Goal**: The paper's objective-modality appendix compressed to its load-bearing structure, with
 the orthogonality point foregrounded and the pain stated plainly.

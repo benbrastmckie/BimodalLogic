@@ -118,6 +118,12 @@ thm:TM-soundness
 def:strongest
 thm:exist
 sub:Extension
+def:id
+lem:uniq
+thm:s4
+thm:sym
+cor:exists
+sub:RestrictedModalities
 
 # --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
 01-introduction.typ
