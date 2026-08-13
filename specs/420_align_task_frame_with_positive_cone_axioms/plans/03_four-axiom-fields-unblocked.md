@@ -1087,7 +1087,7 @@ and confirm before proving; treat any additional `where`-site as in scope.
 
 ---
 
-### Phase 13: Caveat (a) — restrict or re-carrier the dense-polymorphic failure sites [NOT STARTED]
+### Phase 13: Caveat (a) — restrict or re-carrier the dense-polymorphic failure sites [COMPLETED]
 
 **Goal**: The three sites flagged as failing dense-polymorphically — `RefinedFilteredTaskFrame`,
 `FiniteFilteredTaskFrame`, and `regionFrame` — each either have the four axiom facts proved, or
@@ -1099,28 +1099,28 @@ vacuous, or by a `sorry`. If a site cannot be discharged, the correct outcome is
 precise gap statement and re-revise — the same rule that governed the retired blocker.
 
 **Sub-step 13.1 — `regionFrame` (RegionFrame.lean:169): falsification test FIRST.**
-- [ ] Read the current definition. As observed 2026-08-12 it is `WorldState := W × D` with
+- [x] Read the current definition. As observed 2026-08-12 it is `WorldState := W × D` with
       `TaskRel := fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d` — deterministic-shift shape, for which
       `limit_of_shift` applies with `pos := Prod.snd`, i.e. structurally identical to
       `multiFamTaskFrameGen`. **Test this, do not assume it.**
-- [ ] If the test passes: prove the four lemmas exactly as in Phase 12, and CLOSE the flag by
+- [x] If the test passes: prove the four lemmas exactly as in Phase 12, and CLOSE the flag by
       recording a `#### Reasoned Exclusions` entry in this phase whose Evidence column carries the
       definition text and the discharging lemma names. The flag predates the RegionFrame refactor
       (region structure moved from state to valuation, RegionFrame.lean:160-168) and the site's
       move out of `Omega.lean`; closing it on that evidence is legitimate, closing it on assumption
       is not.
-- [ ] If the test fails: treat `regionFrame` under sub-step 13.2's restriction/re-carrier ladder
+- [x] If the test fails: treat `regionFrame` under sub-step 13.2's restriction/re-carrier ladder
       and say so plainly in the summary.
 
 **Sub-step 13.2 — the two filtration sites.**
-- [ ] Enumerate the consumers of `RefinedFilteredTaskFrame` (Filtration.lean:197) and
+- [x] Enumerate the consumers of `RefinedFilteredTaskFrame` (Filtration.lean:197) and
       `FiniteFilteredTaskFrame` (FiniteModel.lean:159) and the duration types they elaborate at
       (`grep -rn "RefinedFilteredTaskFrame\|FiniteFilteredTaskFrame\|refinedFilteredTaskRel" FormalSystem/ Tests/`).
       This enumeration decides the option, and must come before any edit.
-- [ ] Confirm the failure: `refinedFilteredTaskRel` (Filtration.lean:190) is
+- [x] Confirm the failure: `refinedFilteredTaskRel` (Filtration.lean:190) is
       `if d = 0 then w = u else True`, so over dense `D` every `u` sits in every cone and *Limit*
       collapses. Over a discrete `D`, `|y| < 1 → y = 0` restores it.
-- [ ] Choose ONE, based on what the enumerated consumers need, and record the choice with its
+- [x] Choose ONE, based on what the enumerated consumers need, and record the choice with its
       reason:
       - **(a) Restrict**: add `[SuccOrder D] [NoMaxOrder D]` to both definitions and discharge
         *Limit* via `limit_of_succOrder`. Coordinate with the FMP-to-`ℤ` direction if that move is
@@ -1128,11 +1128,11 @@ precise gap statement and re-revise — the same rule that governed the retired 
         honest option.
       - **(b) Re-carrier**: give the filtered frame a position-carrying carrier so `limit_of_shift`
         applies — the same manoeuvre that retired the blocker for the canonical model.
-- [ ] Prove *Seriality* (both conjuncts; at `d ≠ 0` the relation is universal, at `d = 0` it is
+- [x] Prove *Seriality* (both conjuncts; at `d ≠ 0` the relation is universal, at `d = 0` it is
       identity), interpolation (split on whether `x + y = 0`; the existing `forward_comp` proof at
       Filtration.lean:208+ is the template), and *Spherical* (Phase 10's Helper B argument adapts:
       fibers are the whole carrier or a singleton) for the chosen form.
-- [ ] `FiniteFilteredTaskFrame` is `FiniteTaskFrame D where toTaskFrame := RefinedFilteredTaskFrame D phi`
+- [x] `FiniteFilteredTaskFrame` is `FiniteTaskFrame D where toTaskFrame := RefinedFilteredTaskFrame D phi`
       — it inherits whatever the refined frame becomes. Confirm `FiniteTaskFrame` (TaskFrame.lean:665)
       `extends TaskFrame`, so Phase 14's new fields propagate to it, and that no other
       `FiniteTaskFrame` construction exists.
@@ -1169,6 +1169,58 @@ only live `FiniteTaskFrame` construction — confirm with
 - `#print axioms` on each new lemma — only the standard Lean axioms
 - The chosen option, and for `regionFrame` the falsification-test result, are recorded in the phase
   body (a `#### Reasoned Exclusions` record if the flag is closed) and in the summary
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `regionFrame` (RegionFrame.lean:169) — the dense-polymorphic failure flag | **Flag REFUTED, not assumed away.** The falsification test was run first, as this phase requires, and failed to falsify: all four `def:frame` axioms were proved for `regionFrame` at **polymorphic `D` under `[Nontrivial D]` alone**, with no discreteness hypothesis anywhere. Had the flag been right, *Limit* could not have elaborated. The site therefore needs neither restriction nor re-carriering, and is excluded from sub-step 13.2's ladder. | **Definition text** (RegionFrame.lean:169-171): `def regionFrame (W ι D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] : TaskFrame D where WorldState := W × D; TaskRel := fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d` — the deterministic clock, structurally identical to `multiFamTaskFrameGen`. **Discharging lemmas** (all `lake build` green, `#print axioms` standard-only): `regionFrame_fib_subsingleton`, `regionFrame_serial`, `regionFrame_interpolates`, `regionFrame_limit` (via `TaskFrame.limit_of_shift` with `pos := Prod.snd`, hypotheses `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]` — no `SuccOrder`, no `NoMaxOrder`), `regionFrame_spherical` (via `TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton`). **Root cause of the stale flag**, now recorded in the file: the flag was accurate against the frame's *former* relation `TaskRel s d s' := d = 0 → s = s'`, described in `regionFrame`'s own docstring at :155-157, which above zero related every pair and so did collapse *Limit* over dense `D`. The RegionFrame refactor replaced it with the clock; the flag was never re-tested against the replacement. |
+
+**Verification results** (measured 2026-08-12):
+- `lake build` — GREEN, exit 0, 2331 jobs, after each of the two sub-step commits
+- `grep -n "sorry"` on all four touched files (`RegionFrame.lean`, `Filtration.lean`,
+  `FiniteModel.lean`, `FMP.lean`) — **0 hits each**
+- `#print axioms` on all new declarations — only `propext`, `Classical.choice`, `Quot.sound`
+- Scope Hypothesis confirmed: exactly three flagged sites; `FiniteFilteredTaskFrame` is the only
+  live `FiniteTaskFrame` construction (`grep -rn "FiniteTaskFrame" FormalSystem/ Tests/`: the
+  structure itself, its namespace/`Coe` instance, `TaskModel.lean:98`, `FMP.lean:171/179`, and
+  `FiniteModel.lean:160` — one construction); `FiniteTaskFrame` `extends TaskFrame`
+  (TaskFrame.lean:1135-1136) confirmed, so Phase 14's fields propagate to it.
+
+**Sub-step 13.2 — the option chosen, and why**: **(a) Restrict.** The consumer enumeration
+required before any edit returned: `RefinedFilteredTaskFrame` → `FiniteFilteredTaskFrame` (and
+`FiniteFilteredTaskFrame.worldState_eq`) → `filteredFiniteFrame` (FMP.lean:177), all three
+polymorphic in `D`, and **nothing outside `FMP/` refers to any of them** — `filteredFiniteFrame`
+and `BundledFilteredFrame` have zero consumers anywhere in `FormalSystem/` or `Tests/`. No live
+consumer elaborates at a dense duration type, so the restriction breaks nothing. Option (b)
+re-carriering would rebuild a carrier that `FilteredWorld.finite` depends on, for no gain. The
+restriction is *forced by the axiom*: `refinedFilteredTaskRel` is universal above duration zero,
+so over dense `D` every filtered world sits in every cone of every other and *Limit* collapses;
+`TaskFrame.exists_uniform_radius_of_finite` records the same fact from the other side. Both
+`TaskFrame.lean:371-372` and the frame's new docstring say so.
+`[SuccOrder D] [NoMaxOrder D]` was added to `RefinedFilteredTaskFrame`,
+`FiniteFilteredTaskFrame`, `FiniteFilteredTaskFrame.worldState_eq`, and `filteredFiniteFrame`.
+
+**Landed declarations**:
+- `…Verified.Bridge`: `regionFrame_{fib_subsingleton,serial,interpolates,limit,spherical}`
+- `…Decidability.FMP`: `RefinedFilteredTaskFrame_{rel_iff,serial,interpolates,limit,spherical}`,
+  `FiniteFilteredTaskFrame.taskRel_eq`,
+  `FiniteFilteredTaskFrame_{serial,interpolates,limit,spherical}`
+
+**Deviations**:
+- **`regionFrame`'s *Spherical* routes through `TaskFrame.lean`'s directed-family helper, not
+  `FlowFrame.lean`'s** (altered). The phase text points at Phase 12's route, but
+  `Algebraic.sInter_nonempty_of_directed_subsingleton` is unreachable: `FlowFrame.lean` is not in
+  the transitive import closure of either `RegionFrame.lean` or `Filtration.lean` (verified by
+  walking the `import` graph). `TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton`
+  (Phase 10) is reachable everywhere and does the same work, so **no edit to
+  `FormalSystem/Semantics/TaskFrame.lean` was needed** and the phase's no-edit constraint on that
+  file holds.
+- **`refinedFilteredTaskRel` is the permissive class, so the helpers applied directly** (noted).
+  The phase anticipated adapting Helper B's *Spherical* argument and using the existing
+  `forward_comp` proof as an interpolation template. Neither was necessary: `if d = 0 then w = u
+  else True` and `d ≠ 0 ∨ w = u` are the same proposition, recorded once as
+  `RefinedFilteredTaskFrame_rel_iff`, after which all four axioms are one-line helper citations.
 
 ---
 
