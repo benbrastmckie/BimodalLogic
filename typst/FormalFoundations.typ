@@ -513,11 +513,85 @@ discrete case (@sec:construction). No decidability theorem is machine-checked.
 
 = The Completeness Construction <sec:construction>
 
-// FIX: This section needs to be completely rewritten, presenting the Henkin construction in precise formal detail so that it is easy to see what the main ideas of the existing completeness proofs are, citing relevant literature where appropriate. Currently, all I see are words and pointless declarations like what 'strong completeness' means which is entirely obvious. This needs to be brought up to a much higher level.
+Every completeness result of @sec:completeness-status is proved by contraposition, on the same
+plan: an underivable $phi.alt$ makes ${not phi.alt}$ consistent, Lindenbaum extends it to a maximal
+consistent set, and a countermodel is read off that set. What differs between the three results is
+only the *shape of the flow* the countermodel is built on, and the choice of shape is forced by a
+single sentence in the maximal consistent set. This section gives that machinery.
 
-*Core layer* (`Metalogic/Core/`): consistency, maximal consistent sets (MCS, negation-complete), the deduction theorem, and Lindenbaum's lemma via Zorn (`set_lindenbaum` in `MaximalConsistent.lean`); the set-level `SetConsistent`/`SetMaximalConsistent` layer is correctly finitary.
+== Consistency and Maximal Consistent Sets
 
-*Architecture*: by contraposition, if $phi.alt$ is underivable then ${not phi.alt}$ is consistent and extends to an MCS $M in.rev not phi.alt$. A countermodel is then built by a *three-way case split* on the discreteness indicator $U(top,bot)$ ("there is an immediate successor," i.e. whether $square.stroked not "Next"top$ or $not square.stroked not "Next"top$ is in $M$), with the *mixed case eliminated outright* by `mcs_mixed_case_absurd` (`BXCanonical/Chronicle/MCSMixedCase.lean`): an MCS cannot be undecided about discreteness.
+#definition("Consistent and Maximal Consistent Sets")[
+  Relative to a frame class $cal(C)$, a set $S$ of $#BLplus$-sentences is *consistent* just in case
+  no finite subset of $S$ derives $bot$ in the proof system for $cal(C)$, and *maximal consistent*
+  just in case it is consistent and *negation-complete*: $phi.alt in S$ or $not phi.alt in S$ for
+  every sentence $phi.alt$.
+]#footnote[`SetConsistent` and `SetMaximalConsistent` in `Metalogic/Core/MaximalConsistent.lean`. Consistency is defined on finite subsets, so the set-level layer is finitary even though the sets themselves are infinite.]
+
+#lemma("Lindenbaum")[
+  Every consistent set of sentences is contained in a maximal consistent set of the same frame
+  class.
+]
+#leansrc("Metalogic.Core", "set_lindenbaum")
+The proof is Zorn's lemma over the consistent supersets, whose chains are bounded by their unions;
+finitary consistency is what makes a union of a chain of consistent sets consistent.
+
+Write $M$ for a maximal consistent set. Negation-completeness is used below exactly as a
+decision procedure: for any sentence $psi$ of interest, $M$ has already settled $psi$ one way or
+the other, and the construction may branch on which.
+
+== The Discreteness Dichotomy <sec:dichotomy>
+
+The sentence the construction branches on is $#Nxt top$, and the reason a branch on it is
+exhaustive is a fact about temporal orders, not about the logic.
+
+#theorem("Dichotomy")[
+  Every temporal order is either discrete or dense, and never both.
+]#footnote[Part of `cor:tm-completeness`'s proof. @brastmckie2026possibleworlds]
+#proof[
+  Suppose $#Dur$ has no least positive element and let $x < y$. Then $y - x$ is not least positive,
+  so some $e$ has $0 < e < y - x$, and translation invariance gives $x < x + e < y$; so $#Dur$ is
+  dense. Conversely a least positive $e$ admits nothing strictly between $x$ and $x + e$, so
+  $#Dur$ is not dense. The argument uses the *group* structure twice, to translate a witness found
+  at $0$ to an arbitrary interval and to form the difference $y - x$; it fails for a bare linear
+  order, as a copy of $ZZ$ followed by a copy of $QQ$ shows.
+]
+
+#corollary[
+  $op("Log")("all task frames") = op("Log")("Discrete") inter op("Log")("Dense")$.
+]
+
+So the class of all task frames is a disjoint union of two incompatible subclasses and is not
+closed under disjoint union. In $#BLplus$ the dichotomy is *internal*: the uniformity axiom NB
+($#Nxt top arrow.r square.stroked #Nxt top$) and M5 together give
+$ tack.r_(op("TM")^+) square.stroked #Nxt top or square.stroked not #Nxt top, $
+so every maximal consistent set contains one of the two disjuncts, and which one it contains fixes
+the shape of the flow its countermodel must be built on.
+
+#remark[
+  $#BL$ has no sentence naming discreteness, and this is what its incompleteness comes to. The
+  disjunction above is available there only as the schema
+  $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN")) $, valid over every task
+  frame yet TM-unprovable, since a structure with one $ZZ$ fibre and one $RR$ fibre and
+  $square.stroked$ read across both is TM-sound while refuting both disjuncts. The same dichotomy
+  that leaves $#BL$ with an unprovable validity gives $#BLplus$ a theorem to case-split on. Nothing
+  below uses the $#BL$-level schema.
+]
+
+== The Three-Way Case Split
+
+#theorem("Case Split")[
+  Let $M$ be a maximal consistent set. Then exactly one of the following holds:
+  #items[
+    + *Dense*: $square.stroked not #Nxt top in M$, and the countermodel is built over $QQ$.
+    + *Discrete*: $square.stroked #Nxt top in M$, and the countermodel is built over $ZZ$.
+  ]
+  The remaining case, in which $M$ contains neither, is impossible.
+]
+#leansrc("Metalogic.BXCanonical.Chronicle", "mcs_mixed_case_absurd")
+The mixed case is eliminated from the axiom NB alone: were $not square.stroked #Nxt top$ and
+$not square.stroked not #Nxt top$ both in $M$, contraposing NB and necessitating would put $bot$
+in $M$. A maximal consistent set cannot be undecided about discreteness.
 
 #figure(
   cetz.canvas({
@@ -530,30 +604,65 @@ discrete case (@sec:construction). No decidability theorem is machine-checked.
     line(root, discrete, stroke: (paint: gray.darken(20%), thickness: 1pt))
     line(root, mixed, stroke: (paint: gray.darken(20%), thickness: 1pt))
     content(root, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 5pt, radius: 3pt)[
-      #text(size: 7.5pt)[MCS $M$: decide $U(top, bot)$]
+      #text(size: 7.5pt)[MCS $M$: decide $#Nxt top$]
     ])
     content(dense, box(fill: blue.transparentize(85%), stroke: (paint: blue.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
-      #align(center)[#text(size: 7pt)[Dense case \ $square.stroked not U(top,bot) in M$ \ chronicle on $QQ$]]
+      #align(center)[#text(size: 7pt)[Dense \ $square.stroked not #Nxt top in M$ \ chronicle over $QQ$]]
     ])
     content(discrete, box(fill: orange.transparentize(85%), stroke: (paint: orange.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
-      #align(center)[#text(size: 7pt)[Discrete case \ $square.stroked U(top,bot) in M$ \ Reynolds/Doets on $ZZ$]]
+      #align(center)[#text(size: 7pt)[Discrete \ $square.stroked #Nxt top in M$ \ Reynolds/Doets over $ZZ$]]
     ])
     content(mixed, box(fill: red.transparentize(88%), stroke: (paint: red.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
-      #align(center)[#text(size: 7pt)[Mixed case \ eliminated: absurd]]
+      #align(center)[#text(size: 7pt)[Mixed \ eliminated by NB]]
     ])
   }),
-  caption: [The three-way case split on $U(top,bot)$. Same dichotomy that breaks $op("BL")$ (@sec:dichotomy) makes $op("BL")^+$ go through: $op("BL")^+$ has a sentence naming discreteness where $op("BL")$ does not.],
+  caption: [The case split on $#Nxt top$. The dense-and-complete branch of @sec:completeness-status is the dense branch specialized to $RR$, where the split is not needed at all: over the Dedekind class the dense indicator is available unconditionally.],
 )
 
-*The structural rhyme*, this report's single most illuminating connection: this is the *same* discrete/dense dichotomy that breaks TM at the $op("BL")$ level (@sec:dichotomy) -- the difference is that $op("BL")^+$ has a sentence naming discreteness ($not "Next"top$) and $op("BL")$ does not, so exactly the fact producing (DD)'s unprovable-but-valid disjunction at the $op("BL")$ level is what the $op("BL")^+$ completeness architecture case-splits on to make the canonical-model construction go through.
+== Coherent Families and the Truth Lemma
+
+A countermodel must interpret $square.stroked$, which quantifies over *all* possible worlds of the
+frame at the evaluation time. A single maximal consistent set per time is therefore not enough; the
+construction carries a family of them, one indexed history per possible world, and constrains the
+family so that the box clause comes out right by fiat.
+
+#definition("Bundled Family of MCSs")[
+  A *bundled family* over a duration type $D$ assigns to each family index a map from $D$ to
+  maximal consistent sets, subject to two coherence conditions:
+  #items[
+    + *Forward*: if $square.stroked phi.alt$ belongs to some family's set at time $t$, then
+      $phi.alt$ belongs to *every* family's set at $t$.
+    + *Backward*: if $phi.alt$ belongs to every family's set at $t$, then $square.stroked phi.alt$
+      belongs to each family's set at $t$.
+  ]
+]#footnote[`BFMCS` in `Metalogic/Bundle/BFMCS.lean`, fields `modal_forward` and `modal_backward`; the structure also designates an evaluation family, the one containing the original consistent set.]
+
+The two conditions are exactly the two directions of the box clause, transposed from truth to
+membership. Together they discharge the modal case of the truth lemma without any appeal to an
+accessibility relation: reflexivity of $square.stroked$, for instance, falls out of Forward applied
+to the family itself.
+
+#theorem("Truth Lemma, D-parametric form")[
+  A coherent bundled family over any duration type $D$ induces a task frame whose possible worlds
+  are the family's indexed histories, and in the induced model a sentence is true at a family and
+  time exactly when it belongs to that family's maximal consistent set there.
+]
+#leansrc("Metalogic.Algebraic", "multiFamTaskFrameGen")
+The construction is generic in $D$: it is performed once and instantiated at $QQ$, at $ZZ$, and at
+$RR$ by the three branches below. Its frame axioms are discharged separately, and *Spherical* is
+discharged by a *third* pattern, distinct from the two of @sec:histories. The induced task relation
+is deterministic, so its fibers are subsingletons, and a directed family of nonempty subsingletons
+has nonempty intersection outright.#footnote[`multiFamGen_spherical`, via the reusable helper `sInter_nonempty_of_directed_subsingleton`. The argument sees only the shape of the fibers, so it applies to every deterministic frame. Contrast the finite-carrier discharge (`cor:spherical-finite`) and the Zorn route through the Step Lemma (`thm:extension`); this third pattern is what @sec:representation returns to.]
+
+== The Three Branches and Machine Status
+
+// FIX: This section needs to be completely rewritten, presenting the Henkin construction in precise formal detail so that it is easy to see what the main ideas of the existing completeness proofs are, citing relevant literature where appropriate. Currently, all I see are words and pointless declarations like what 'strong completeness' means which is entirely obvious. This needs to be brought up to a much higher level.
 
 *Dense path*: the Burgess-style *chronicle construction* over $QQ$ (`Metalogic/BXCanonical/Chronicle/`, `singletonChronicle` #sym.arrow.r `omegaChain` #sym.arrow.r `limit_chronicle`), filling in Until/Since eventualities, with `completeness_dense` in `BXCanonical/Completeness.lean`.#footnote[@burgess1982axioms]
 
 *Discrete path*: the Reynolds/Doets pipeline over $ZZ$ (`Metalogic/WeakCanonical/`, `IntegerModel/ReynoldsBridge.lean`'s `countermodel_discrete_reynolds_v2`), running through a Kamp-theorem-based expressive-completeness argument (`WeakCanonical/Kamp/`, `Separation/`, `EFGames/`, `Expressiveness/`).#footnote[@reynolds1992 @doets1987 @kamp1971formalproperties]
 
 *Dedekind path*, which the reference book currently omits entirely: `BXCanonical/CompletenessDedekind.lean` (`completeness_dedekind_engine`), `Metalogic/StrongCompleteness.lean` (`completeness_dedekind`, `consequence_completeness_dedekind`), and the `WeakCanonical/RealModel/` subtree (Doets, shuffle, order-isomorphism to $RR$), on the Reynolds-triple basis Prior-U + Sep with CO derived.
-
-*Shared infrastructure*: bundled families of MCSs with G/H coherence (`Metalogic/Bundle/BFMCS.lean`, `modal_forward`/`modal_backward`), enabling a Henkin-style construction where $square.stroked$ quantifies over *bundled* histories; the *D-parametric* algebraic truth lemma (`Metalogic/Algebraic/FlowFrame.lean`, `multiFamTaskFrameGen`) that turns a coherent MCS family into a task model once, generically, for every duration type $D$ -- its *Spherical* discharge (the deterministic-fiber argument) is a *third* pattern distinct from the finite-$W$ (`cor:spherical-finite`) and general-Zorn (`thm:extension`) routes; filtration and quasimodels (`BXCanonical/Filtration/`, `Quasimodel/`).
 
 *Status discipline* (measured 2026-08-13 at commit c2b8da5d6 via `scripts/typst-status-counts.sh` and `scripts/check-module-invariants.sh`'s check C2/C3 -- see this task's `reports/02_measured-status.md`; re-stamped at this report's final pass, @sec:key-theorems's discipline applies here identically): `completeness_dense`, `completeness_discrete`, `countermodel_dense` each carry exactly `[propext, Classical.choice, Quot.sound]` -- sorry-free; `completeness` (the general Base-frame theorem) alone carries `sorryAx`, traced to a single dead-code dependency in `WeakCanonical/Transfer.lean`'s `countermodel_discrete`, whose *live* replacement `countermodel_discrete_reynolds_v2` is what `completeness_discrete` actually calls. The algebraic layer's sorry count measures zero directly, contradicting `UltrafilterMCS.lean`'s own stale docstring ("Contains sorries pending MCS helper lemmas") -- the measured fact is reported here; the docstring is not edited (non-goal) and its stale prose is not repeated. `completeness_dedekind_engine`'s four declarations are likewise confirmed `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, per that module's own axiom-audit section. No `Boneyard/` content is described as live anywhere in this account.
 
@@ -562,48 +671,6 @@ discrete case (@sec:construction). No decidability theorem is machine-checked.
 *BX/TM discipline*: this architecture is stated in `Metalogic/`'s own vocabulary (`FrameClass.Dense`/`Discrete`/`Base`) throughout -- `completeness_dense` is never silently renamed "$op("TM")_d$'s completeness." Whether these BX-level theorems resolve, contradict, or are orthogonal to `cor:tm-completeness`'s $op("TM")_d$/$op("TM")_f$ status is explicitly *open* and not adjudicated here.
 
 *Decidability* (@sec:key-theorems's companion): the tableau decision procedure's soundness (`decide_sound`) is sorry-free; the finite-model-property completeness result (`fmp_completeness`) is sorry-free as a finite-filtration statement whose semantic-validity bridge is a separately open obligation, not yet closed.
-
-== The Discreteness Dichotomy <sec:dichotomy>
-
-// FIX: this section can be dropped entirely since I don't want to focus on TM at all, focusing all attention on TM^+ which includes the `snce` and `untl` operators as the only tense operators
-
-#theorem("Discrete-or-Dense Dichotomy")[Every nontrivial totally ordered abelian group $#Dur$ is either discrete (has a least positive element) or dense, and never both.]#footnote[`cor:tm-completeness`'s proof. @brastmckie2026possibleworlds Give in full, briefly, per this report's own remit.]
-#proof[Translation invariance makes it exhaustive: if there is no least positive element, some positive $e<y-x$ exists for any $x<y$ (else $y-x$ would itself be least positive), giving $x<x+e<y$; a least positive element $e$ conversely forbids anything strictly between $x$ and $x+e$. Depends essentially on the *group* structure -- fails for a bare linear order (e.g.\ a copy of $ZZ$ followed by a copy of $QQ$), which is why `def:temporal-order` requires a group, not merely a linear order.]
-
-Consequently $op("Log")("all task frames") = op("Log")("Discrete") inter op("Log")("Dense")$: the class of all task frames is a disjoint union of incompatible subclasses, *not closed under disjoint union*. Unions of logics characteristically admit *split validities* -- disjunctions valid on every frame yet unprovable from either disjunct's axioms alone -- and TM exhibits exactly this:
-
-#theorem("The (DD) Split Validity")[The schema $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN"))$ (no variable-disjointness restriction; TD supplies the past mirrors), for arbitrary instances of DF and DN, is valid over every task frame yet *TM*-unprovable.]#footnote[Part of `cor:tm-completeness`'s proof. @brastmckie2026possibleworlds Give in full, briefly.]
-#proof[A two-fibre countermodel (one fibre $ZZ$, one $RR$, $square.stroked$ read globally across both) is TM-sound -- no TM axiom or rule constrains how $square.stroked$ interacts across fibres -- while refuting both disjuncts of a variable-sharing instance. In $op("BL")^+$, (DD) is already a theorem with no added axiom: TMP-NB and M5 give $tack.r_(op("TM")^+) square.stroked "Next" top or square.stroked not "Next" top$, and since $"Next" top arrow.r phi.alt_(op("DF"))$ and $not "Next" top arrow.r psi_(op("DN"))$ are $op("BL")^+$-valid, $op("TM")^+$'s weak completeness (inheriting its own outstanding base-case obligation, @sec:key-theorems) gives the two conditionals as theorems, whence necessitation and distribution yield (DD).]
-
-#figure(
-  cetz.canvas({
-    import cetz.draw: *
-    let yZ = 1.1
-    let yR = 0.0
-    let xL = -2.4
-    let xR = 2.4
-    line((xL, yZ), (xR, yZ), stroke: (paint: blue.darken(20%), thickness: 1.5pt))
-    for i in range(-4, 5) {
-      let x = i * 0.5
-      line((x, yZ - 0.08), (x, yZ + 0.08), stroke: (paint: blue.darken(20%), thickness: 1pt))
-    }
-    content((xR + 0.5, yZ), text(size: 8pt, fill: blue.darken(20%))[fibre $ZZ$])
-    content((0, yZ + 0.3), text(size: 7.5pt, fill: blue.darken(20%))[$"Next"top$ true here])
-    line((xL, yR), (xR, yR), stroke: (paint: orange.darken(10%), thickness: 1.5pt))
-    content((xR + 0.5, yR), text(size: 8pt, fill: orange.darken(20%))[fibre $RR$])
-    content((0, yR - 0.3), text(size: 7.5pt, fill: orange.darken(20%))[$not "Next"top$ true here])
-    line((-1.5, yR), (-1.5, yZ), stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"),
-      mark: (end: ">", start: ">", fill: gray.darken(20%)))
-    content((-1.5, (yZ + yR) / 2), anchor: "west", text(size: 7.5pt, fill: gray.darken(20%))[ $square.stroked$ reads globally])
-  }),
-  caption: [The two-fibre (DD) countermodel: a discrete $ZZ$ fibre (ticked) where $"Next"top$ holds, a dense $RR$ fibre (unticked) where it fails, $square.stroked$ reading globally across both.],
-)
-
-*The taxonomy, kept unblurred*: TM is *semantically* incomplete (a formula valid but unprovable), *not* Halldén-incomplete. $"TM" + "(DD)"$ would *create* Halldén-incompleteness: a provable variable-disjoint disjunction with neither disjunct provable, since each fails soundness on the complementary subclass. Halldén-incompleteness of $op("Log")("all task frames")$ *itself is a theorem* -- the correct formal signature of a class that is a union of two incompatible kinds, and not a defect to be repaired.
-
-In $op("BL")^+$, (DD) is already a theorem with no added axiom, as the footnote above derives -- inheriting $op("TM")^+$'s own outstanding base-case obligation, a hedge carried explicitly rather than dropped. The schematic form (DD) takes in $op("BL")$ records nothing about the semantics and everything about the *language*: $op("BL")$ has no sentence naming discreteness, so it must disjoin schemas where $op("BL")^+$ disjoins a sentence ($"Next"top$) with its negation.
-
-$op("TM")_c$ fails identically over ${ZZ,RR}$, compounded by the further, independent open question of whether CO alone axiomatizes the same $op("BL")^+$-logic as the full Reynolds triple (@sec:system). $op("TM")_f$'s status *differs and must not be lumped in*: it is sound over *every* discrete frame (DF is valid there), but its completeness over that broader class is *open* -- the machine-checked discrete result is for $op("BX")_f$ over $ZZ$-time specifically, a narrower and deductively stronger system than $op("TM") + "DF"$, and no counterexample to $op("TM")_f$'s completeness over the full discrete class is known. The paper states no separate incompleteness argument for $op("TM")_d$; its status is covered only by `cor:tm-completeness`'s flat "none is complete" headline, not by a dedicated countermodel.#footnote[This section's material is reused, with permission of its own authorship lineage, from the verbatim quotes and derivations already independently verified against the live paper in this report's companion book chapter (`typst/chapters/04-metalogic.typ`) -- re-confirmed current at this report's own authoring pass rather than re-derived from scratch. @brastmckie2026possibleworlds]
 
 = Two Costs of the Semantics <sec:costs>
 

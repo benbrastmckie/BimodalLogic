@@ -381,7 +381,7 @@ Discharges FIX-174 and FIX-189.
 
 ---
 
-### Phase 5: Section 3, Part I — Canonical Machinery and the Discreteness Split [NOT STARTED]
+### Phase 5: Section 3, Part I — Canonical Machinery and the Discreteness Split [COMPLETED]
 
 **Goal**: Open the construction section at book-chapter formality: consistency and maximal
 consistent sets, Lindenbaum, the three-way discreteness case split with the mixed case eliminated,
@@ -389,28 +389,28 @@ and the truth-lemma mechanism that the Box case actually uses. Discharges FIX-23
 of FIX-285.
 
 **Tasks**:
-- [ ] Write the MCS / Lindenbaum layer as definitions plus a lemma, naming `set_lindenbaum` in
-      `FormalSystem/Metalogic/Core/MaximalConsistent.lean` and the finitary set-level layer.
-- [ ] State the three-way case split as a theorem: on the discreteness indicator, the dense branch
+- [x] Write the MCS / Lindenbaum layer as definitions plus a lemma, naming `set_lindenbaum` in
+      `FormalSystem/Metalogic/Core/MaximalConsistent.lean` and the finitary set-level layer. *(completed: verified at MaximalConsistent.lean:303)*
+- [x] State the three-way case split as a theorem: on the discreteness indicator, the dense branch
       and the discrete branch, with the mixed branch eliminated by `mcs_mixed_case_absurd`
-      (`FormalSystem/Metalogic/BXCanonical/Chronicle/MCSMixedCase.lean:42`).
-- [ ] Restate the (DD) phenomenon compactly for the extended language directly, via the sentence
+      (`FormalSystem/Metalogic/BXCanonical/Chronicle/MCSMixedCase.lean:42`). *(completed: verified at that exact line; the elimination is stated as following from NB alone, which is what the Lean proof does)*
+- [x] Restate the (DD) phenomenon compactly for the extended language directly, via the sentence
       naming discreteness, as the motivation for why the split is the right move — the fold decided
       in Phase 2, now rewritten. It appears here as a motivating result, not as a named pain point,
-      satisfying FIX-231.
-- [ ] Rewrite the structural-rhyme observation as a bounded `#remark` stating the mathematical
+      satisfying FIX-231. *(completed: stated via the internal theorem |- []Next-top or []not-Next-top from NB and M5; the BL-level schema survives only inside one bounded remark)*
+- [x] Rewrite the structural-rhyme observation as a bounded `#remark` stating the mathematical
       fact (the extended language has a sentence naming discreteness; the base language does not),
-      with the self-referential praise removed.
-- [ ] State the bundled-MCS coherence machinery (`Metalogic/Bundle/BFMCS.lean`,
+      with the self-referential praise removed. *(completed: folded into the four-sentence dichotomy remark)*
+- [x] State the bundled-MCS coherence machinery (`Metalogic/Bundle/BFMCS.lean`,
       `modal_forward`/`modal_backward`) as an actual definition plus the Box-case obligation it
-      discharges in the truth lemma, rather than naming the module and moving on.
-- [ ] State the D-parametric algebraic truth lemma (`Metalogic/Algebraic/FlowFrame.lean`,
+      discharges in the truth lemma, rather than naming the module and moving on. *(completed: Forward and Backward stated as the two directions of the box clause transposed to membership; verified as fields of structure BFMCS at BFMCS.lean:104 and :112)*
+- [x] State the D-parametric algebraic truth lemma (`Metalogic/Algebraic/FlowFrame.lean`,
       `multiFamTaskFrameGen`) and its Spherical discharge as a third named discharge pattern; this
-      is the fact Phase 8's way-forward argument depends on.
-- [ ] Retain or redraw the three-way case-split `cetz` figure so it illustrates the theorem just
+      is the fact Phase 8's way-forward argument depends on. *(completed: verified multiFamTaskFrameGen at FlowFrame.lean:150; the Spherical discharge is multiFamGen_spherical via sInter_nonempty_of_directed_subsingleton -- determinism makes fibers subsingletons)*
+- [x] Retain or redraw the three-way case-split `cetz` figure so it illustrates the theorem just
       stated. Retire the two-fibre figure or repurpose it for the (DD) restatement, whichever the
-      rewritten text actually needs.
-- [ ] Remove the FIX comment at line 231.
+      rewritten text actually needs. *(completed: case-split figure retained and re-labelled to Next-top; two-fibre figure RETIRED -- the TM-level countermodel it illustrated is now one clause of one remark and no longer earns a figure)*
+- [x] Remove the FIX comment at line 231. *(completed)*
 
 **Timing**: 2 hours
 
