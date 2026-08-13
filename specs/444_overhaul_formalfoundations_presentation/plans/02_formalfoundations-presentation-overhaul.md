@@ -1,7 +1,7 @@
 # Implementation Plan: Overhaul FormalFoundations.typ Presentation
 
 - **Task**: 444 - Overhaul FormalFoundations.typ presentation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 18 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/444_overhaul_formalfoundations_presentation/reports/01_team-research.md` (plus teammate findings `01_teammate-a-findings.md` through `01_teammate-d-findings.md`)
@@ -166,38 +166,38 @@ to one file are not safe.
 
 ---
 
-### Phase 1: Ground Truth, Scope Lock, and Bibliography [NOT STARTED]
+### Phase 1: Ground Truth, Scope Lock, and Bibliography [COMPLETED]
 
 **Goal**: Fix every fact the rewrite depends on before a single sentence is rewritten: the paper's
 verbatim definitions, the two unresolved research gaps, the re-stamped Lean status counts, the
 FIX-tag disposition table, and the bibliography entries for sources about to be cited.
 
 **Tasks**:
-- [ ] Extract verbatim, into `specs/444_overhaul_formalfoundations_presentation/definitions-of-record-444.md`,
+- [x] Extract verbatim, into `specs/444_overhaul_formalfoundations_presentation/definitions-of-record-444.md`,
       the paper text at `def:temporal-order`, `def:task-relation`, `def:frame`, `def:world-history`,
       `def:BL-model` (`possible_worlds.tex:2876-2878`), `def:BL-semantics` (atomic clause `:2892`,
       Box clause `:2899`), `def:frame-validity`, `def:logical-consequence`, `def:BLplus-language`,
       `def:BLplus-semantics` (`:3820-3823`), `def:task-topology` (`:2622-2632`), `app:topology-t1`
       (`:2653-2666`), `app:topology-r0` (`:2673-2680`). Cross-check against the existing
-      `specs/paper-definitions-of-record.md` mechanism and note any anchor that has moved.
-- [ ] Close G2: read the `snce`/`untl` constructor signatures and semantic clauses in the Lean
+      `specs/paper-definitions-of-record.md` mechanism and note any anchor that has moved. *(completed: all 13 anchors located by label; line numbers drifted ~+27, recorded in a drift table)*
+- [x] Close G2: read the `snce`/`untl` constructor signatures and semantic clauses in the Lean
       source directly, and record whether the paper's `S`/`U` is guard-first (the paper's own
       footnote at `:3816-3817` says it is) and the Lean convention event-first. Record the decision
-      on whether the Lean-convention footnote is kept at all.
-- [ ] Close G1: compare the Lean `FrameClass.Dense` axiom set against the paper's `def:BX` list
+      on whether the Lean-convention footnote is kept at all. *(completed: document is backwards; paper is guard-first, Lean event-first; footnote dropped)*
+- [x] Close G1: compare the Lean `FrameClass.Dense` axiom set against the paper's `def:BX` list
       (17 named keys vs `typst/SYNC-MAP.md`'s 22 BX Temporal constructors) and record the decision:
       either state the identification argument in one sentence, or hedge it exactly as the TM case
-      is hedged. Record which, with the reason.
-- [ ] Close G3: decide and record the depth of the topology treatment (remark / subsection /
-      definition-plus-theorem) that Phase 3 will write.
-- [ ] Re-run `scripts/typst-status-counts.sh --json` at the current commit and record the counts and
-      the commit hash for Phase 6's status table. Do not hand-derive any count.
-- [ ] Build the FIX disposition table (tag line, verbatim text, owning phase, resolution) covering
-      every `FIX:` occurrence returned by `grep -n "FIX:" typst/FormalFoundations.typ`.
-- [ ] Add to `typst/bibliography.bib` only those sources Phases 3-8 will actually cite, drawn from
+      is hedged. Record which, with the reason. *(completed: exact 11-axiom-to-11-pair bijection found; reconciliation stated, hedge retained)*
+- [x] Close G3: decide and record the depth of the topology treatment (remark / subsection /
+      definition-plus-theorem) that Phase 3 will write. *(completed: definition-plus-theorem)*
+- [x] Re-run `scripts/typst-status-counts.sh --json` at the current commit and record the counts and
+      the commit hash for Phase 6's status table. Do not hand-derive any count. *(completed: all five counts identical to hypothesis; only stamp_commit moved, c2b8da5d6 -> dfd00bb6c)*
+- [x] Build the FIX disposition table (tag line, verbatim text, owning phase, resolution) covering
+      every `FIX:` occurrence returned by `grep -n "FIX:" typst/FormalFoundations.typ`. *(completed: 11 tags at exactly the hypothesized lines)*
+- [x] Add to `typst/bibliography.bib` only those sources Phases 3-8 will actually cite, drawn from
       the research report's absent list: Goldblatt *Logics of Time and Computation*,
       Chagrov-Zakharyaschev *Modal Logic*, Jonsson-Tarski (1951/52), Stone (1936), Scott "Advice on
-      Modal Logic" (1970). Do not add an entry that will not be cited.
+      Modal Logic" (1970). Do not add an entry that will not be cited. *(completed: 6 entries added -- Jonsson-Tarski split into I and II)*
 
 **Timing**: 1.5 hours
 
