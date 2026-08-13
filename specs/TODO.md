@@ -130,6 +130,7 @@ DEPENDENCIES. BimodalLogic 440 (the finite axiom bundle, which supplies *Spheric
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
+- **Research**: [440_finite_frame_discharge_of_spherical_and_limit/reports/01_finite-spherical-limit-discharge.md]
 
 **Description**: Discharge two of the four frame-axiom hypotheses of the extension chain for the frame class that finite model search actually produces: finite `WorldState` over `D = Int`. This is a small, additive task that unblocks Z3-backed countermodel certification in the ModelChecker repository.
 

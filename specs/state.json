@@ -44,7 +44,13 @@
         "FormalSystem/Semantics/Extension/Extension.lean",
         "specs/paper-definitions-of-record.md"
       ],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/440_finite_frame_discharge_of_spherical_and_limit/reports/01_finite-spherical-limit-discharge.md",
+          "type": "report",
+          "summary": "Task 420's frame-axiom-field refactor has landed and guts Deliverable 2; Deliverable 1's spherical_of_finite is absent and task 417's proof does not compile; a working proof is given, and Spherical on a finite carrier is machine-checked to imply weak excluded middle, proving the choice-free acceptance test unsatisfiable."
+        }
+      ],
       "blockers": null,
       "created": "2026-08-11T23:10:56Z",
       "last_updated": "2026-08-13T05:30:55Z",
