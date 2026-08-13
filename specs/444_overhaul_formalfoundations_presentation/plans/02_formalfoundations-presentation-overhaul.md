@@ -547,43 +547,43 @@ where there were block quotes, propositions where there were stage directions. D
 
 ---
 
-### Phase 8: Section 5 — Toward a Representation Theorem [NOT STARTED]
+### Phase 8: Section 5 — Toward a Representation Theorem [COMPLETED]
 
 **Goal**: Restructure the representation section to open with what is live, present the three-tier
 status honestly, commit to a recommended route, and close with one precisely-posed open question.
 Discharges FIX-337.
 
 **Tasks**:
-- [ ] Cut the superseded-waypoint subsection from a four-point defect list to at most one sentence
+- [x] Cut the superseded-waypoint subsection from a four-point defect list to at most one sentence
       plus a footnote, stating only that an earlier sketch is superseded and the one substantive way
-      the live architecture differs.
-- [ ] Open the section with the live algebraic layer as a definition-plus-remark pair: the
+      the live architecture differs. *(completed: subsection deleted; reduced to a single footnote on the opening paragraph)*
+- [x] Open the section with the live algebraic layer as a definition-plus-remark pair: the
       Lindenbaum-Tarski algebra, its ultrafilters, and the interior-operator treatment of the
       modalities, with the measured sorry-free status cited. Adapt the five-step overview in
-      `FormalSystem/Metalogic/Algebraic/README.md` as source material.
-- [ ] Present the three-tier status table (live algebraic; archived Jonsson-Tarski with its named
-      revival gate; design-only shift-set) with the labels kept explicit, per research decision D3.
-- [ ] State the shift-set target formally: the structure, the induced task model in both directions,
+      `FormalSystem/Metalogic/Algebraic/README.md` as source material. *(completed. V2 catch: that README lists AlgebraicCompleteness.lean as live and sorry-free, but the file is in Boneyard/UltrafilterFrame/, not Metalogic/Algebraic/. The README is stale; only the five genuinely present modules are cited as live.)*
+- [x] Present the three-tier status table (live algebraic; archived Jonsson-Tarski with its named
+      revival gate; design-only shift-set) with the labels kept explicit, per research decision D3. *(completed: three-row table with a Blocking condition column; the landscape figure is retained beside it, showing where each route stops)*
+- [x] State the shift-set target formally: the structure, the induced task model in both directions,
       and the first-order axiomatizability payoff. Keep shift-set names as ordinary mathematics, not
       backticked Lean identifiers, since no such identifier exists.
-- [ ] State the roadmap gate by its content — the shift-set representation theorem landing sorry-free
+- [x] State the roadmap gate by its content — the shift-set representation theorem landing sorry-free
       in both directions with a clean axiom report gates the expensive ultraproduct programme — with
-      no task number anywhere in the file (E6).
-- [ ] Compress the six lettered forks to the two substantive arguments: the Spherical
+      no task number anywhere in the file (E6). *(completed: stated by content; E6 grep returns nothing document-wide)*
+- [x] Compress the six lettered forks to the two substantive arguments: the Spherical
       discharge-pattern analysis (three known patterns; whether a weaker saturation condition
       suffices for the Step Lemma) and the group-structure-as-crux argument (the discrete-or-dense
       dichotomy is a theorem about ordered abelian groups and fails for bare linear orders, so
       weakening the group structure dissolves the obstruction at a stated cost). The remaining
       points collapse into one closing remark.
-- [ ] Add a short note, per research decision D2, on why expressive completeness (the Kamp
+- [x] Add a short note, per research decision D2, on why expressive completeness (the Kamp
       machinery used inside the discrete branch) is not a representation theorem — a duality is a
-      different target. This is what earns Dana's own hedge about metric tense operators its place.
-- [ ] Close with one precisely-posed open question rather than an enumeration: whether Spherical
-      admits a reformulation surviving infinite carriers.
-- [ ] Address Dana's third question directly, including the metric-tense-operator suggestion, at the
-      section's register.
-- [ ] Retain or redraw the landscape `cetz` figure so it matches the restructured tiering.
-- [ ] Remove the FIX comment at line 337.
+      different target. This is what earns Dana's own hedge about metric tense operators its place. *(completed: the expressive-completeness/representation distinction and the metric-operator answer are one remark)*
+- [x] Close with one precisely-posed open question rather than an enumeration: whether Spherical
+      admits a reformulation surviving infinite carriers. *(completed: posed as a three-condition question on a candidate condition Phi, with both answers' consequences stated)*
+- [x] Address Dana's third question directly, including the metric-tense-operator suggestion, at the
+      section's register. *(completed: metric operators bear on the representation target, not on the existing completeness results, which they would not preserve)*
+- [x] Retain or redraw the landscape `cetz` figure so it matches the restructured tiering.
+- [x] Remove the FIX comment at line 337. *(completed)*
 
 **Timing**: 1.5 hours
 
