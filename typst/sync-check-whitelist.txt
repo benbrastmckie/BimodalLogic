@@ -125,6 +125,18 @@ thm:sym
 cor:exists
 sub:RestrictedModalities
 
+# --- typst/FormalFoundations.typ section 7: deliberately-non-Lean shift-set
+# names (the whole point of the section is that these do NOT exist in Lean
+# yet -- see the "shift-set representation programme" paragraph), an
+# external Mathlib name cited only as the rejected single-sorted encoding
+# alternative, and metalogic.tex/\input citing the read-only superseded
+# draft this section names defects in without lifting any content. ---
+ShiftSet
+shiftSet
+FirstOrder.Language
+metalogic.tex
+\input
+
 # --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
 01-introduction.typ
 

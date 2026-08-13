@@ -663,7 +663,7 @@ report's listing; the tree is under active development.
 
 ---
 
-### Phase 9: Section 7 — early representation work and the way forward [NOT STARTED]
+### Phase 9: Section 7 — early representation work and the way forward [COMPLETED]
 
 **Goal**: The report's terminus: the `metalogic.tex` warning heeded, the live algebraic layer
 described accurately, the shift-set and Jönsson–Tarski programmes written as TARGETS, a reasoned

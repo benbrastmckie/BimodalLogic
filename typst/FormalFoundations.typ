@@ -354,6 +354,57 @@ Any two strongest objective normal modal operators are provably equivalent (`lem
 
 = Early Representation Work and the Way Forward <sec:representation>
 
-// PHASE-9-PLACEHOLDER: content added in a later phase.
+== A Superseded Waypoint, Heeded
+
+An earlier, unpublished draft (`metalogic.tex`, not `\input`-ed by the live paper) sketched a Representation Theorem; it is cited here only as a historical waypoint, with its defects named rather than any content lifted: (1) its canonical temporal order is hard-coded to $ZZ$, not $D$-parametric, unlike the live construction (@sec:construction); (2) its representation theorem and frame-characterization corollary assert TM is sound *and complete* over the class of all task semantic frames, directly contradicting `cor:tm-completeness`; (3) its Truth Lemma's $square.stroked$ case assumes global agreement across all canonical histories directly from the S5 axioms, rather than deriving it from an accessibility/modal-saturation construction -- the live architecture instead routes through BFMCS `modal_forward`/`modal_backward` coherence (@sec:construction), a materially different and actually-discharged argument; (4) its weak- and strong-completeness claims for TM are exactly what `cor:tm-completeness` and `StrongCompleteness.lean`'s docstring both refute. No definition, theorem statement, or proof step from this draft is restated here.
+
+== What Actually Exists: The Algebraic Layer, and Only It
+
+Of three candidate "early representation work" items, exactly *one* is live Lean development: `Metalogic/Algebraic/` (`BooleanStructure.lean`, `LindenbaumQuotient.lean`, `UltrafilterMCS.lean`, `InteriorOperators.lean`, `FlowFrame.lean`) -- the Lindenbaum--Tarski algebra, its ultrafilters, and an interior-operator treatment of the modalities, measured sorry-free (@sec:construction). The other two are targets, not existing work, and are stated as such below.
+
+*The shift-set representation programme* is *not started*: no `ShiftSet` or `shiftSet` identifier exists anywhere under `FormalSystem/`. What exists is a design document stating the target in both directions: a shift set $chevron.l Omega, D, "sh", A chevron.r$ ($D$ an ordered abelian group, $Omega$ a nonempty type carrying a $D$-action via $"sh" : Omega arrow.r D arrow.r Omega$, $A : "Atom" arrow.r Omega arrow.r "Prop"$) would induce a task model by construction, and conversely; the payoff would be first-order axiomatizability of the task-model class over the two-sorted signature $chevron.l Omega, D; <, +, 0, "sh", (A_p) chevron.r$, since the frame's algebraic content reaches truth only through the atom clause. The design document's literal Lean snippets predate the completed total-history refactor and would need restatement (the underlying argument is recorded as surviving; the exact signature does not). Shift-set names are ordinary math and prose here, not Lean identifiers, and are never backticked as such.
+
+*The Jönsson--Tarski programme* -- the complex algebra $"Cm"(cal(F))$ of a task frame, the ultrafilter frame $"Uf"(A)$ of an abstract algebra, and the canonical embedding $eta(a) = {U : a in U}$ -- is an *archived target*: this material was moved out of the live tree into an archived subtree, with revival tracked only as an unstarted future item. No content under that archived subtree is live. The important obstruction on revival: *Spherical* for an ultrafilter frame is a genuinely nontrivial *new* obligation, and the finite-$W$ discharge pattern (`cor:spherical-finite`) does not apply -- ultrafilter frames are typically infinite.
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+    let start = (-4.6, 0)
+    let algMid = (-1.4, 1.1)
+    let algEnd = (1.6, 1.1)
+    let jtEnd = (4.4, 1.1)
+    let ssMid = (-1.4, -1.1)
+    let ssEnd = (4.4, -1.1)
+    let boxstyle(fill-c, stroke-c) = (fill: fill-c, stroke: (paint: stroke-c, thickness: 1pt), inset: 5pt, radius: 3pt, width: 2.7cm)
+    content(start, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 5pt, radius: 3pt)[#text(size: 7.5pt)[task-model class]])
+    line(start, algMid, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
+    content(algMid, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 7pt)[Lindenbaum--Tarski algebra -- *live*]]])
+    line(algMid, algEnd, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
+    content(algEnd, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 7pt)[ultrafilters, interior ops -- *live*]]])
+    line(algEnd, jtEnd, stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"), mark: (end: ">"))
+    content(jtEnd, box(..boxstyle(red.transparentize(88%), red.darken(20%)))[#align(center)[#text(size: 7pt)[Jönsson--Tarski duality -- *archived target*]]])
+    line(start, ssMid, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
+    content(ssMid, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 7pt)[shift-set design doc -- *target*]]])
+    line(ssMid, ssEnd, stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"), mark: (end: ">"))
+    content(ssEnd, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 7pt)[ultraproduct pipeline -- *not started*]]])
+  })
+]
+#align(center)[#text(size: 0.85em, style: "italic")[
+  The representation-theorem landscape: two routes, each starting live and ending in a target. Solid arrows mark completed steps; dashed arrows mark the gap. Status labels are the point of this figure.
+]]
+
+== The Way Forward
+
+*(a) What must be weakened.* Of `def:frame`'s four axioms, *Spherical* is the prime suspect -- hardest to discharge at infinite carriers, and exactly where the Jönsson--Tarski route stumbles. Three discharge patterns are known (finite-$W$ choice-free, general Zorn, the $D$-parametric deterministic-fiber argument of @sec:construction); whether a weaker saturation condition suffices for the Step Lemma (`lem:step`) is open.
+
+*(b) The group structure as crux, both ways -- this report's single most valuable analysis.* The discrete-or-dense dichotomy (@sec:split-validity) is a theorem about ordered abelian *groups* and fails for bare linear orders, so dropping $D$ to a linearly ordered set (or a monoid, or a partially ordered group) *dissolves the (DD) obstruction outright*. The cost: MF and the perpetuity principles depend on translation invariance; the converse convention depends on negation; Compositionality is stated in terms of addition. What survives each weakening is exactly what a general representation theorem must reckon with, and is not yet worked out.
+
+*(c) Disjoint-union closure.* Is the coset-domain construction of @sec:contingency the right route -- whose price is precisely a loss of the correspondence results a representation theorem would want -- or is a genuinely multi-frame semantics needed, and what would $square.stroked$ then quantify over? Open.
+
+*(d) Algebraic vs.~shift-set.* The shift-set route's payoff is first-order axiomatizability and hence a compactness/ultraproduct argument; the Jönsson--Tarski route's payoff is a canonical embedding and duality. The design document's own recorded route: a feasibility gate, a bespoke two-sorted ultraproduct (Mathlib's single-sorted `FirstOrder.Language` was rejected as an encoding target), a Łoś lemma for truth, model existence/compactness, then per-class strong completeness -- with four named risks: the dependent ultraproduct of carriers as the largest unknown; the box case of Łoś needing a choice-function argument; a `Type`-vs-`Type*` universe constraint that must be asserted early; and the honest verdict "promising, not certain." Whether the two routes are the same theorem twice is itself open.
+
+*(e) What would count as adequate.* Quoted from the in-tree acceptance standard directly: a sorry-free Lean statement of *both* directions with `#print axioms` reporting no `sorryAx`. A statement that type-checks with a sorry body does not count; one direction does not count; a prose argument does not count.
+
+*(f) What is foreclosed.* Genuine strong completeness is *impossible* for $ZZ$-time and for $RR$ (compactness fails; an explicit non-compactness witness exists for the successor-Archimedean discrete case, and Reynolds @reynolds1992 establishes the analogous failure over $RR$). Base and Dense are *open*, not settled -- the missing piece is a model-existence theorem (every consistent set satisfiable in a class frame), which does not follow from the single-formula countermodel engines already built. Any way forward promising strong completeness for $ZZ$-time or $RR$ is wrong on arrival.
 
 #bibliography("bibliography.bib")
