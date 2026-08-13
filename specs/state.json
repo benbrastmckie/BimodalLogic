@@ -32,7 +32,7 @@
     {
       "project_number": 440,
       "project_name": "finite_frame_discharge_of_spherical_and_limit",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "paper-refactor",
       "priority": "high",
@@ -47,9 +47,9 @@
       "artifacts": [],
       "blockers": null,
       "created": "2026-08-11T23:10:56Z",
-      "last_updated": "2026-08-11T23:10:56Z",
+      "last_updated": "2026-08-13T05:30:55Z",
       "next_artifact_number": 1,
-      "session_id": "sess_manual_440"
+      "session_id": "sess_1786598333_f1a43e"
     },
     {
       "project_number": 439,

@@ -83,7 +83,7 @@ next_project_number: 442
   └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
 419 [PLANNED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
   └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
-440 [NOT STARTED] — Discharge two of the four frame-axiom hypotheses of the extension
+440 [RESEARCHED] — Discharge two of the four frame-axiom hypotheses of the extension
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
 
 ### Strong Completeness
@@ -126,7 +126,7 @@ DEPENDENCIES. BimodalLogic 440 (the finite axiom bundle, which supplies *Spheric
 ---
 
 ### 440. Finite frame discharge of spherical and limit
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
