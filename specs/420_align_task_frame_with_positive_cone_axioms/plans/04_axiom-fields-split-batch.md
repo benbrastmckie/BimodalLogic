@@ -1772,7 +1772,7 @@ absence before writing a proof that may since have landed elsewhere.
 
 ---
 
-### Phase 15: Substitute the fields for step's explicit hypotheses (acceptance) [IN PROGRESS]
+### Phase 15: Substitute the fields for step's explicit hypotheses (acceptance) [COMPLETED]
 
 **Goal**: `step` and the chain around it consume `F.serial` / `F.interpolates` / `F.spherical`
 instead of explicit hypothesis binders, discharging the Cross-Task Acceptance Criterion by
@@ -1789,22 +1789,22 @@ as Phase 14.1 — Phase 14.1 is not "done" in any meaningful sense until this la
 not let a `[PARTIAL]` 14.2 block this.
 
 **Tasks**:
-- [ ] Replace `step`'s explicit binders (`Step.lean:116`, currently
+- [x] Replace `step`'s explicit binders (`Step.lean:116`, currently
       `theorem step (F : TaskFrame D) (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel) …`)
       with the field projections. The proof body at :125-131 already consumes `hSph`, `hSer`, and
       the interpolation hypothesis; the substitution is by definition, with **zero restatement**.
-- [ ] Propagate to the rest of the chain where the same hypotheses are threaded: `constraint`
+- [x] Propagate to the rest of the chain where the same hypotheses are threaded: `constraint`
       (Constraint.lean:393), `fibers` (Admissible.lean:144), `admissible` (Admissible.lean:283),
       `isTotal_of_isMax` (Extension.lean:157), `extension` (Extension.lean:187), `occurrence`
       (Extension.lean:237), `hF_nonempty` (Extension.lean:253) — updating call sites in step.
-- [ ] Where a lemma is genuinely more useful over a bare relation than over a frame (the
+- [x] Where a lemma is genuinely more useful over a bare relation than over a frame (the
       three recorded Props are all bare-relation by design), keep the bare-relation statement
       and pass `F.serial` etc. at the call site rather than rewriting the lemma. Record which
       declarations were converted and which were left bare, and why.
-- [ ] Record the consuming declaration name(s) in the implementation summary — the acceptance
+- [x] Record the consuming declaration name(s) in the implementation summary — the acceptance
       criterion is "demonstrably consumed", not "typechecks".
-- [ ] Update `Step.lean:39` and `Extension.lean:63`, which describe the explicit-binder
-      arrangement as the provisional pre-field state.
+- [x] Update `Step.lean:39` and `Extension.lean:63`, which describe the explicit-binder
+      arrangement as the provisional pre-field state. *(deviation: altered — `FormalSystem/Semantics/Validity.lean`'s `not_validOn_bot` / `hF_nonempty_of_frameAxioms` carried the same provisional prose and the same four hypothesis binders, so both were converted and their prose corrected. The plan's file list did not name the file; it is reached as a call site.)*
 
 **Timing**: 1 hour
 
