@@ -162,3 +162,21 @@ architecture. A full latex re-sync is a suggested follow-up task.
 
 The document uses "New Computer Modern" font. If not available, Typst will fall
 back to similar fonts.
+
+## Standalone Reports
+
+This directory also hosts standalone research reports that are **not** chapters of
+`BimodalReference.typ` and are not `#include`d by it -- they import the book's
+`template.typ` and `notation/bimodal-notation.typ` so notation cannot drift, and cite
+the shared `bibliography.bib`, but compile to their own, separate PDF.
+
+### `FormalFoundations.typ`
+
+Formal foundations of bimodal *TM* logic: completeness and representation. A
+research-facing report on what is proved, what is not, and what a general
+representation theorem would require.
+
+```bash
+cd typst
+typst compile FormalFoundations.typ build/FormalFoundations.pdf
+```

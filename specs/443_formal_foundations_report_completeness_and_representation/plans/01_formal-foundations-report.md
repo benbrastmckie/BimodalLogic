@@ -1,7 +1,7 @@
 # Implementation Plan: Task #443
 
 - **Task**: 443 - formal_foundations_report_completeness_and_representation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: 442 (completed)
 - **Research Inputs**: `specs/443_formal_foundations_report_completeness_and_representation/reports/01_formal-foundations-research.md`
@@ -142,7 +142,7 @@ touches disjoint files (`specs/paper-definitions-of-record.md` and a measurement
 
 ---
 
-### Phase 1: Scaffold the standalone document and its build target [NOT STARTED]
+### Phase 1: Scaffold the standalone document and its build target [COMPLETED]
 
 **Goal**: A compiling skeleton of `typst/FormalFoundations.typ` with correct imports, document
 configuration matching the book's type settings, section headings for all seven content areas, and
@@ -190,7 +190,7 @@ a documented build command — so every later phase has a green baseline to add 
 
 ---
 
-### Phase 2: Extend the definitions-of-record file and take the gate baseline [NOT STARTED]
+### Phase 2: Extend the definitions-of-record file and take the gate baseline [COMPLETED]
 
 **Goal**: Every paper anchor whose definition text the report will quote verbatim is tracked in
 `specs/paper-definitions-of-record.md`, and the measured Lean status baseline is recorded, dated,
