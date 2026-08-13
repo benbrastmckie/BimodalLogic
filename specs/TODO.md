@@ -6,7 +6,7 @@ next_project_number: 442
 
 ## Task Order
 
-*Updated 2026-08-12. Generated from state.json dependency graph.*
+*Updated 2026-08-13. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -77,7 +77,7 @@ next_project_number: 442
 
 ### Paper Refactor
 
-420 [PARTIAL] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
+420 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
   └─ 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
     └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
   └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
@@ -644,13 +644,17 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 
 ### 420. Align task frame with positive cone axioms
 - **Effort**: medium
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 438, Task 439
 - **Research**: [420_align_task_frame_with_positive_cone_axioms/reports/01_taskframe-positive-cone-limit-nullity.md]
-- **Summary**: [420_align_task_frame_with_positive_cone_axioms/summaries/01_taskframe-limit-nullity-alignment-summary.md]
-- **Plan**: [420_align_task_frame_with_positive_cone_axioms/plans/02_four-axiom-frame-alignment.md]
+- **Summary**:
+  - [420_align_task_frame_with_positive_cone_axioms/summaries/01_taskframe-limit-nullity-alignment-summary.md]
+  - [420_align_task_frame_with_positive_cone_axioms/summaries/03_four-axiom-fields-unblocked-summary.md]
+- **Plan**:
+  - [420_align_task_frame_with_positive_cone_axioms/plans/02_four-axiom-frame-alignment.md]
+  - [420_align_task_frame_with_positive_cone_axioms/plans/03_four-axiom-fields-unblocked.md]
 
 **Description**: RE-ISSUED 2026-08-10 (description rewrite only; status remains `blocked` -- phases 1-5 are LANDED, GREEN, and COMMITTED and are not undone by this re-issue). ALIGN THE LEAN TaskFrame WITH THE PAPER'S FOUR-AXIOM def:frame.
 
