@@ -749,7 +749,7 @@ from the 2026-08-10 findings; confirm each by reading before editing.
     not a docstring correction and is not settled here.
 
 ---
-### Phase 10: Reusable axiom-class helpers and the TaskFrame.lean example sites [IN PROGRESS]
+### Phase 10: Reusable axiom-class helpers and the TaskFrame.lean example sites [COMPLETED]
 
 **Goal**: The four axiom facts (*Seriality*, interpolation, *Limit*, *Spherical*) exist as
 standalone, sorry-free lemmas for `trivialFrame`, `staticFrame`, `natFrame`, and `customFrame`,
@@ -762,7 +762,7 @@ build is green, and Phase 14 may only *cite* what these phases proved. This is t
 "pre-repair before the batch" pattern Phase 8 used successfully for `identityFrame`.
 
 **Tasks**:
-- [ ] GATE (retirement confirmation, cheap; ~10 minutes, not an analysis budget): re-confirm the
+- [x] GATE (retirement confirmation, cheap; ~10 minutes, not an analysis budget): re-confirm the
       four facts the Blocker Retirement Record rests on —
       `ls FormalSystem/Metalogic/Algebraic/` shows no `ParametricCanonical.lean`;
       `grep -rn "ParametricCanonicalTaskFrame\|zIntervalTaskFrame\|identityFrame" FormalSystem/ Tests/ --include=*.lean`
@@ -770,29 +770,35 @@ build is green, and Phase 14 may only *cite* what these phases proved. This is t
       are present in `FlowFrame.lean`; the site-discovery greps yield 14 live `where`-sites. Record
       the observed counts in the phase's commit message. If any fact fails, STOP and re-revise —
       do not improvise around it.
-- [ ] **Helper A — subsingleton/total-relation class**: a lemma set giving `Serial R`,
+- [x] **Helper A — subsingleton/total-relation class**: a lemma set giving `Serial R`,
       `Interpolates R`, the *Limit* hypothesis shape, and `Spherical R` for any frame whose
       relation is `fun _ _ _ => True` on a subsingleton carrier. Covers sites `trivialFrame`,
       `intTimeFrame`, `genericTimeFrame`. State it once, over a bare relation, in
       `namespace TaskFrame` beside the Phase-3 helpers.
-- [ ] **Helper B — permissive class** `fun w d u => d ≠ 0 ∨ w = u`: *Seriality* and interpolation
+- [x] **Helper B — permissive class** `fun w d u => d ≠ 0 ∨ w = u`: *Seriality* and interpolation
       are unconditional; *Limit* needs `[SuccOrder D] [NoMaxOrder D]` and goes through
       `limit_of_succOrder` (TaskFrame.lean:302); *Spherical* holds because every fiber is either
       the whole carrier (`d ≠ 0`) or a singleton (`d = 0`), so a directed family whose members are
       all nonempty cannot contain two distinct singletons — a `⊆`-least member argument mirroring
       `lem:step`'s recorded closing remark. Covers `natFrame`, `intNatFrame`, `genericNatFrame`,
       `customFrame`.
-- [ ] **Helper C — equality class** `fun w _ u => w = u` (`staticFrame`): *Seriality* is already
+- [x] **Helper C — equality class** `fun w _ u => w = u` (`staticFrame`): *Seriality* is already
       `staticFrame_serial` (TaskFrame.lean:577); add interpolation (interpolate through `w`
       itself), *Limit* (only `w` is reachable), and *Spherical* (every nonempty fiber and segment
       is the same singleton).
-- [ ] Apply the helpers to `trivialFrame` (TaskFrame.lean:538), `staticFrame` (:563), `natFrame`
+- [x] Apply the helpers to `trivialFrame` (TaskFrame.lean:538), `staticFrame` (:563), `natFrame`
       (:591), and `customFrame` (TaskFrameTest.lean:60), yielding one named lemma per site per
       axiom (or one bundled per-site lemma — implementer's choice, documented).
-- [ ] Add `[SuccOrder D] [NoMaxOrder D]` to `natFrame`'s binders **only if** the Scope Hypothesis
+- [x] Add `[SuccOrder D] [NoMaxOrder D]` to `natFrame`'s binders **only if** the Scope Hypothesis
       below confirms its consumers can supply them; otherwise state its *Limit* lemma under those
-      instances as explicit hypotheses and record the deferral for Phase 14.
-- [ ] Docstring every new lemma with the `def:frame` sub-anchor (`#Compositionality`, `#Seriality`,
+      instances as explicit hypotheses and record the deferral for Phase 14. *(deviation:
+      altered — the plan's second branch was taken. `natFrame_limit` carries
+      `[SuccOrder D] [NoMaxOrder D]` on the lemma, and `natFrame`'s own binders are unchanged;
+      the binder change is deferred into Phase 14's batch. Enumerated propagation target for
+      that later change: only `WorldHistory.universalNatFrame` (WorldHistory.lean:215), itself
+      polymorphic in `D` and with zero consumers of its own — every other `natFrame` reference
+      in `FormalSystem/` and `Tests/` elaborates at `Int`.)*
+- [x] Docstring every new lemma with the `def:frame` sub-anchor (`#Compositionality`, `#Seriality`,
       `#Limit`, `#Spherical`) plus the verbatim recorded text, per the "a bare locator is never a
       citation" rule.
 
@@ -841,6 +847,60 @@ finding in the summary rather than silently passing over it.
 - `#print axioms` on each new lemma — only the standard Lean axioms
 - Each new lemma's statement is syntactically `Serial …` / `Interpolates …` / `Spherical …` (not a
   restatement) where the corresponding Prop applies
+
+**Verification results** (measured 2026-08-12):
+- GATE observed counts: `FormalSystem/Metalogic/Algebraic/` holds 6 entries and no
+  `ParametricCanonical.lean`; `ParametricCanonicalTaskFrame|zIntervalTaskFrame|identityFrame`
+  outside `Boneyard/` = **0 hits**; `bundleFlow_comp_iff`/`_serial`/`_limit`/`_spherical` present
+  at FlowFrame.lean:392/400/408/415; site-discovery grep yields **14 live `where`-sites, 0 `.mk`
+  sites**, reconciling exactly with Phase 14's table.
+- `lake build` — GREEN, exit 0, 2331 jobs, no new warnings
+- `lake build BimodalTest.Semantics.TaskFrameTest` — GREEN
+- `#print axioms` on all 21 new declarations — only `propext`, `Classical.choice`, `Quot.sound`
+- `grep -n "sorry"` on both touched files — 0 hits
+- `lake build BimodalTest` failure set unchanged from the pre-phase baseline
+  (`BoxSpreadProbe`, `RegionGateProbe`, `TableauConformance`; 11 errors) — pre-existing, unrelated
+
+**Deviations**:
+- **Prerequisite relocation, landed as sub-step 10.0** (added, forced). `Spherical`, `Serial`,
+  and `Interpolates` were defined in `FormalSystem/Semantics/FrameAxioms.lean`, which *imports*
+  `TaskFrame.lean` (via `PartialHistory.lean`). They were therefore invisible inside
+  `TaskFrame.lean`, so neither this phase's requirement that every lemma be stated *syntactically*
+  as `Serial R` / `Interpolates R` / `Spherical R` **in `namespace TaskFrame` beside the Phase-3
+  helpers**, nor Phase 14's requirement that the fields be those Props *definitionally*, was
+  reachable: a structure field's type may only mention declarations that precede it, so a
+  predicate declared in a module importing `TaskFrame.lean` can never become a `TaskFrame` field.
+  The three definitions were moved verbatim into `TaskFrame.lean`, beside the
+  `Fib`/`cone`/`Seg`/`DirectedFamily`/`IsFiber`/`IsSegment` apparatus they are built from. Both
+  modules already open `namespace FormalSystem.Semantics / namespace TaskFrame`, so the fully
+  qualified names, statements, and namespace are **unchanged** and no consumer changed.
+  `FrameAxioms.lean` keeps `IsPaired`, `Constraints`, `nullity_of_serial_limit`, and the
+  classification lemmas, plus a pointer block recording the new home.
+- **`staticFrame_serial` restated in `Serial` form** (altered). It previously read as an unfolded
+  conjunction `(∃ u, …) ∧ (∃ v, …)` without the paper's `0 ≤ x` proviso, which Phase 14 could not
+  cite for a `Serial TaskRel` field. It had zero consumers anywhere in the tree
+  (`grep -rn "staticFrame_serial"` = the definition and one docstring mention). Content unchanged.
+- **`import Mathlib.Data.Int.SuccPred` added to `TaskFrameTest.lean`** (added) — the `SuccOrder ℤ`
+  instance `customFrame_limit` needs.
+- **Scope Hypothesis (iii) resolved, not passed over**:
+  `Tests/BimodalTest/Semantics/SemanticBenchmark.lean:50` references `TaskFrame.trivial_frame`,
+  which has no definition in the live tree. The module is unreachable from
+  `Tests/BimodalTest.lean` (named only in its module docstring at :76) and is absent from the
+  default build — it would fail to elaborate if it were in it. It carries **no field obligation**.
+
+**Landed declarations** (all in `namespace FormalSystem.Semantics.TaskFrame` unless noted):
+- Shared: `exists_pos_of_nontrivial`, `sInter_nonempty_of_directed_of_univ_or_singleton`
+- Helper A (total relation, subsingleton carrier): `serial_of_total`, `interpolates_of_total`,
+  `limit_of_subsingleton`, `spherical_of_subsingleton`
+- Helper B (permissive, `R w d u ↔ (d ≠ 0 ∨ w = u)`): `Fib_permissive_zero`, `Fib_permissive_ne`,
+  `serial_of_permissive`, `interpolates_of_permissive`, `limit_of_permissive`,
+  `univ_or_singleton_of_permissive`, `spherical_of_permissive`
+- Helper C (equality, `R w d u ↔ w = u`): `Fib_eq_singleton`, `serial_of_eq`,
+  `interpolates_of_eq`, `limit_of_eq`, `spherical_of_eq`
+- Sites: `trivialFrame_{serial,interpolates,limit,spherical}`,
+  `staticFrame_{rel_iff,serial,interpolates,limit,spherical}`,
+  `natFrame_{rel_iff,serial,interpolates,limit,spherical}`, and in
+  `BimodalTest.Semantics`: `customFrame_{rel_iff,serial,interpolates,limit,spherical}`
 
 ---
 
