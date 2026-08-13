@@ -1,6 +1,13 @@
 # Finite-frame discharge of *Spherical* and *Limit* over `D = Int`
 
 - **Task**: 440 — `finite_frame_discharge_of_spherical_and_limit`
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4
 - **Session**: `sess_1786598333_f1a43e`
 - **Date**: 2026-08-12
