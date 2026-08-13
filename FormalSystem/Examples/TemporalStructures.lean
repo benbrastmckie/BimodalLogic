@@ -252,8 +252,12 @@ theorem genericTimeFrame_spherical : TaskFrame.Spherical (genericTimeFrame D).Ta
 Generic polymorphic task frame with natural number world states.
 
 Task relation is `d ≠ 0 ∨ w = u` to satisfy nullity_identity.
+
+The `[SuccOrder D] [NoMaxOrder D]` binders are carried because `genericNatFrame_limit` requires
+them: over a dense `D` the permissive relation puts every state in every cone of every other
+state and *Limit* (`def:frame#Limit`) fails outright.
 -/
-def genericNatFrame : TaskFrame D where
+def genericNatFrame [SuccOrder D] [NoMaxOrder D] : TaskFrame D where
   WorldState := Nat
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
@@ -299,29 +303,31 @@ def genericNatFrame : TaskFrame D where
 /-! ### `genericNatFrame` discharges `def:frame`'s four axioms (permissive class) -/
 
 /-- `genericNatFrame`'s relation is the permissive class `d ≠ 0 ∨ w = u`. -/
-theorem genericNatFrame_rel_iff :
+theorem genericNatFrame_rel_iff [SuccOrder D] [NoMaxOrder D] :
     ∀ w d u, (genericNatFrame D).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `genericNatFrame`, via the `w = u` disjunct. Holds at every `D`. -/
-theorem genericNatFrame_serial : TaskFrame.Serial (genericNatFrame D).TaskRel :=
+theorem genericNatFrame_serial [SuccOrder D] [NoMaxOrder D] :
+    TaskFrame.Serial (genericNatFrame D).TaskRel :=
   TaskFrame.serial_of_permissive (genericNatFrame_rel_iff D)
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `genericNatFrame`. Holds at every `D`. -/
-theorem genericNatFrame_interpolates : TaskFrame.Interpolates (genericNatFrame D).TaskRel :=
+theorem genericNatFrame_interpolates [SuccOrder D] [NoMaxOrder D] :
+    TaskFrame.Interpolates (genericNatFrame D).TaskRel :=
   TaskFrame.interpolates_of_permissive (genericNatFrame_rel_iff D)
 
 /--
 *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
 `genericNatFrame`, in the literal transcribed shape — **over a discrete duration type only**.
 
-`[SuccOrder D] [NoMaxOrder D]` is carried by this lemma rather than by `genericNatFrame` itself,
-and the restriction is not removable: over a dense `D` the permissive relation puts every state
-in every cone of every other state (pick any `y ≠ 0` with `|y| < x`), and *Limit* fails outright.
-When the frame structure grows the *Limit* field, this frame's own binders must acquire the two
-instances; it has no consumers anywhere in `FormalSystem/` or `Tests/`, so that change is free.
+`[SuccOrder D] [NoMaxOrder D]` is now carried by `genericNatFrame` itself as well, so that this
+lemma discharges the frame's *Limit* field. The restriction is not removable: over a dense `D`
+the permissive relation puts every state in every cone of every other state (pick any `y ≠ 0`
+with `|y| < x`), and *Limit* fails outright. The frame has no consumers anywhere in
+`FormalSystem/` or `Tests/`, so acquiring the binders was free.
 -/
 theorem genericNatFrame_limit [SuccOrder D] [NoMaxOrder D] :
     ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ (genericNatFrame D).TaskRel w y u) → u = w :=
@@ -331,7 +337,8 @@ theorem genericNatFrame_limit [SuccOrder D] [NoMaxOrder D] :
 directed family $\mathcal{S}$ of nonempty fibers and segments") for `genericNatFrame`: every
 nonempty fiber and segment is the whole carrier or a singleton, and a directed family cannot
 contain two distinct singletons. No restriction on `D` is needed. -/
-theorem genericNatFrame_spherical : TaskFrame.Spherical (genericNatFrame D).TaskRel :=
+theorem genericNatFrame_spherical [SuccOrder D] [NoMaxOrder D] :
+    TaskFrame.Spherical (genericNatFrame D).TaskRel :=
   TaskFrame.spherical_of_permissive (genericNatFrame_rel_iff D)
 
 /--
