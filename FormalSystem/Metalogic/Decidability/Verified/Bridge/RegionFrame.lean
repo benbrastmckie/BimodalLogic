@@ -129,7 +129,7 @@ the `regionHistory` family.
 -/
 
 /-- Two histories with the same domain and the same states are equal. -/
-theorem worldHistory_ext {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+theorem worldHistory_ext {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
     (hs : ∀ (r : D) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
     σ = τ := by
@@ -420,7 +420,7 @@ quantifies over totality and totality is preserved by `timeShift` outright.
 
 section BoxUniversal
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F : TaskFrame D}
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : TaskFrame D}
 
 /--
 **Box is evaluation-point independent.** `box φ` holds at one point iff `φ` holds at *every*

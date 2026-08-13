@@ -88,7 +88,7 @@ $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \i
 The paper's `\textit{world history}` is the **convex** special case of this structure; see
 `FormalSystem.Semantics.WorldHistory`.
 -/
-structure PartialHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+structure PartialHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : TaskFrame D) where
   /-- Domain predicate: which times are in the history, i.e. the paper's `X ⊆ D`. -/
   domain : D → Prop
@@ -120,7 +120,7 @@ structure PartialHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrdered
 
 namespace PartialHistory
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F : TaskFrame D}
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : TaskFrame D}
 
 /--
 The guarded form of task-respect, **derived** from the unconditional field.

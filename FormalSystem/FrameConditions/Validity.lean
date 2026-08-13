@@ -56,7 +56,7 @@ at all times at every **total** history (`τ.IsTotal`, i.e. `τ ∈ H_F`).
 This is the parameterized version of `FormalSystem.Semantics.valid`, fixed to
 a specific temporal type D rather than quantifying over all types.
 -/
-def ValidOver (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+def ValidOver (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (φ : Formula) : Prop :=
   ∀ (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
@@ -111,7 +111,7 @@ if `ValidOver D φ` for all D, then `valid φ`.
 This is immediate since `valid` quantifies over all D.
 -/
 theorem valid_of_forall_valid_over {φ : Formula}
-    (h : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], ValidOver D φ) :
+    (h : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D], ValidOver D φ) :
     valid φ := by
   intro D _ _ _ _ F M τ hτ t
   exact h D F M τ hτ t

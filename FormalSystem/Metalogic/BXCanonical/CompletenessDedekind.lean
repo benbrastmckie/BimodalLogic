@@ -89,7 +89,7 @@ noncomputable example (B : BFMCS (fc := fc) ℝ) :
 The re-hosted completeness engine typechecks at `D := ℝ` against a hypothesised real-carrier
 bundle. This is the load-bearing probe: it is the single declaration the Dedekind countermodel
 will be assembled from, and its binder list is `{fc} {D} [AddCommGroup D] [LinearOrder D]
-[IsOrderedAddMonoid D]` — no `DenselyOrdered`, no `Countable`, no `Rat`.
+[IsOrderedAddMonoid D] [Nontrivial D]` — no `DenselyOrdered`, no `Countable`, no `Rat`.
 -/
 noncomputable example (B : BFMCS (fc := fc) ℝ) (root : Formula)
     (h_rtc : B.RestrictedTemporallyCoherent root)

@@ -103,7 +103,7 @@ namespace FormalSystem.Semantics
 
 namespace TaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-!
 ## Where `Spherical` / `Serial` / `Interpolates` live
@@ -158,7 +158,7 @@ end TaskFrame
 
 namespace PartialHistory
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable {F : TaskFrame D}
 
 /--

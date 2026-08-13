@@ -164,7 +164,7 @@ The main FMP theorem connects unsatisfiability to finite model falsification.
 Bundled finite filtered task frame with its formula.
 -/
 structure BundledFilteredFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] where
+    [IsOrderedAddMonoid D] [Nontrivial D] where
   /-- The formula whose subformula closure the filtration was taken with respect to. -/
   phi : Formula
   /-- The finite task frame obtained by filtering through `phi`'s subformula closure. -/
@@ -175,7 +175,7 @@ structure BundledFilteredFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
 The filtered task frame for a formula is finite.
 -/
 noncomputable def filteredFiniteFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [SuccOrder D] [NoMaxOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] [SuccOrder D] [NoMaxOrder D]
     (phi : Formula) : Semantics.FiniteTaskFrame D :=
   FiniteFilteredTaskFrame D phi
 

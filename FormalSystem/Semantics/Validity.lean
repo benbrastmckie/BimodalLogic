@@ -531,13 +531,13 @@ Each of the three quantifiers is rendered on the nose:
 Unlike `valid`, this carries no `[Nontrivial D]` binder: `valid` needs it to state its
 quantification over temporal types, whereas here `D` and `F` are both already given.
 -/
-def TaskFrame.ValidOn {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+def TaskFrame.ValidOn {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : TaskFrame D) (φ : Formula) : Prop :=
   ∀ (M : TaskModel F) (τ : F.HF) (x : D), TruthAt M τ.val x φ
 
 namespace TaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 Frame-relative validity is **never vacuous**: no frame validates `⊥`.

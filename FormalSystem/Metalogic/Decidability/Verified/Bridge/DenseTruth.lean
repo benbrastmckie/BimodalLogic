@@ -606,7 +606,7 @@ same objects, exactly as `not_valid_of_hasOpen_int` and `not_validDiscrete_of_ha
 `ℤ`.
 -/
 theorem exists_countermodel_dense (D : Type) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]
     {g : ℤ → D} (hg : StrictMono g)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)

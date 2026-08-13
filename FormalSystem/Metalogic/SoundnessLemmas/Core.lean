@@ -39,14 +39,14 @@ parameter and no shift-closure side condition: totality is trivially preserved b
 so time-shift invariance carries no side condition. `TruthAt`'s remaining set argument is inert
 and is supplied as `Set.univ`.
 -/
-def IsValid (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (φ : Formula) :
+def IsValid (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] (φ : Formula) :
     Prop :=
   ∀ (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_hτ : τ.IsTotal) (t : D),
     TruthAt M τ t φ
 
 -- Section variable for theorem signatures
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 Auxiliary lemma: If φ is valid, then for any specific tuple `(M, τ, hτ, t)` with `τ` total,

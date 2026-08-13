@@ -71,7 +71,7 @@ Phase 15's first task is a gate: are `mkSigFrom`, `Formula.predFormulas`,
 `countermodel_discrete_reynolds_v2`'s statement, not into the encoding.** Evidence:
 
 * `TaskFrame` (`Semantics/TaskFrame.lean:99`) is parameterized by
-  `(D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]` and by nothing
+  `(D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]` and by nothing
   else. `WorldHistory` and `WorldHistory.timeShift` carry the same three
   instances and no successor structure.
 * `Formula.predFormulas` (`Syntax/Formula.lean`) is a purely syntactic recursion on
@@ -86,7 +86,7 @@ Phase 15's first task is a gate: are `mkSigFrom`, `Formula.predFormulas`,
 The generic re-statements (`multiFamTaskFrameGen` and siblings, hosted in
 `Metalogic/Algebraic/FlowFrame.lean`) *discharge* the gate
 rather than merely asserting it: they typecheck over an arbitrary
-`[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]`, and the `ℤ` originals are
+`[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]`, and the `ℤ` originals are
 recovered as definitional specializations (`multiFamTaskFrameGen_int` and siblings). The
 `ℤ` originals are left byte-identical; `countermodel_discrete_reynolds_v2` still consumes
 them. Phase 30 consumes the generic versions at `D := ℝ`.

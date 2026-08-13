@@ -71,7 +71,7 @@ open FormalSystem.Metalogic.Decidability
 
 section Invariance
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable {F : TaskFrame D} {ι : Type*}
 
 /--
@@ -343,7 +343,7 @@ for an arbitrary carrier and then at each of the three dense carriers the Phase 
 section Countermodel
 
 variable {W ι : Type} [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder D]
-  [IsOrderedAddMonoid D]
+  [IsOrderedAddMonoid D] [Nontrivial D]
 variable [Fintype ι] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]
 -- `regionFrame` carries `[Nontrivial D]` (its *Limit* lemma needs it). It is declared here in its
 -- own right rather than being recovered from `[NoMaxOrder D]`, so that the `omit` clauses below

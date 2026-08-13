@@ -100,7 +100,7 @@ namespace PartialHistory
 
 open TaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-! ## From totality to `WorldHistory` -/
 

@@ -77,15 +77,18 @@ This allows for various temporal structures:
   since primitive durations are nonnegative.
 - The ordered additive group structure provides the required abelian group with total order.
 
-**Known gaps relative to the paper** (stated plainly rather than silently repaired):
-- The paper requires `D` nontrivial (`def:temporal-order`); `[Nontrivial D]` is not among the
-  structure's binders, though `valid`/`SemanticConsequence` (Semantics/Validity.lean) already
-  carry it — the gap is exactly and only at structure level.
-The paper's requirement that `W` be nonempty (`def:frame`, verbatim: "$W$ is a nonempty set of
-world states"; `def:task-relation`) is no longer a gap: it is the `nonempty` field, discharged at
-every frame in the tree. Its immediate payoff is that `TaskFrame.not_validOn_bot`
-(Semantics/Validity.lean) is now the bare `¬ F.ValidOn ⊥`, with no world state taken as an
-argument.
+**Known gaps relative to the paper**: none of the structural ones remain. The two that stood
+here are now closed, and are recorded as closed rather than deleted, since both were long-lived:
+
+- `W` nonempty (`def:frame`, verbatim: "$W$ is a nonempty set of world states";
+  `def:task-relation`) is the `nonempty` field, discharged at every frame in the tree. Its
+  immediate payoff is that `TaskFrame.not_validOn_bot` (Semantics/Validity.lean) is now the bare
+  `¬ F.ValidOn ⊥`, with no world state taken as an argument.
+- `D` nontrivial (`def:temporal-order`) is `[Nontrivial D]`, now among the structure's own
+  binders and inherited by `FiniteTaskFrame`. `valid` and `SemanticConsequence`
+  (Semantics/Validity.lean) already carried it and still do — they bind `D` themselves, so
+  theirs is not made redundant by the structure's; what the structure's binder removes is the
+  possibility of writing `TaskFrame D` at a trivial `D` at all.
 
 All four of `def:frame`'s axioms are now carried by the structure, so the former entries here
 for *Seriality*, *Limit*, *Spherical*, and the interpolation direction of *Compositionality*
@@ -166,7 +169,7 @@ relation `R : W → D → W → Prop`, so nothing in this block depends on the s
 
 namespace TaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-!
 ### Fiber, cone, segment, and directed-family apparatus
@@ -466,7 +469,8 @@ is projected out as `forward_comp` and its left-to-right (interpolation) directi
 composition is not prohibited but inexpressible at the primitive level, since primitive
 durations are nonnegative.
 -/
-structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
+structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] where
   /-- Type of world states -/
   WorldState : Type
   /--
@@ -572,7 +576,7 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
 
 namespace TaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 **Composition on the positive cone — the `←` projection of the `comp` field.**
@@ -1066,7 +1070,8 @@ Simple unit-based task frame for testing.
 World states are Unit (trivial), task relation is always true.
 This is the simplest possible task frame, polymorphic over temporal type `D`.
 -/
-def trivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+def trivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] :
     TaskFrame D where
   WorldState := Unit
   nonempty := inferInstanceAs (Nonempty Unit)
@@ -1197,7 +1202,7 @@ over a dense `D` the permissive relation puts every state in every cone of every
 `WorldHistory.universalNatFrame` elaborates at `Int`, which supplies both instances.
 -/
 def natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [SuccOrder D] [NoMaxOrder D] :
+    [Nontrivial D] [SuccOrder D] [NoMaxOrder D] :
     TaskFrame D where
   WorldState := Nat
   nonempty := inferInstanceAs (Nonempty Nat)
@@ -1322,13 +1327,13 @@ the Finite Model Property and related results.
 into a standard format for the Finite Model Property.
 -/
 structure FiniteTaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    extends TaskFrame D where
+    [Nontrivial D] extends TaskFrame D where
   /-- Proof that the set of world states is finite -/
   finite_world : Finite WorldState
 
 namespace FiniteTaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 Coercion from a finite task frame to its underlying task frame.
@@ -1352,7 +1357,7 @@ the moment a field's statement were restated rather than cited.
 
 section DefinitionalContent
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 example (F : TaskFrame D) : TaskFrame.Serial F.TaskRel := F.serial
 

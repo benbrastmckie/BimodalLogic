@@ -148,7 +148,7 @@ noncomputable instance FilteredWorld.finite (phi : Formula) :
 Bundle the filtered frame with its finiteness proof.
 -/
 
-variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 The finite filtered task frame.

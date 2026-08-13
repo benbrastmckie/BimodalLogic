@@ -54,7 +54,7 @@ namespace FormalSystem.Metalogic.SoundnessLemmas
 open FormalSystem.Syntax
 open FormalSystem.Semantics
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-- Two-conjunct extraction through the doubly-negated encoding of `Formula.and`
 (`φ ∧ ψ = ¬(φ → ¬ψ)`). Classical; the same helper appears in `Metalogic/Soundness.lean`. -/

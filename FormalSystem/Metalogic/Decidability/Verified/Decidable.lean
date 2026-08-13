@@ -116,7 +116,7 @@ open FormalSystem.Semantics
 ## Satisfaction of a signed formula, a branch, and a rule result
 -/
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
   {F : TaskFrame D}
 
 /--
@@ -240,7 +240,7 @@ theorem satResult_branching {M : TaskModel F} {b : Branch}
 they impose, so indexing `RuleSound` by one lets the frame-class-gated rules carry their own
 hypothesis while the base rules carry none. -/
 def CarrierProp : Type 1 :=
-  (D : Type) → [AddCommGroup D] → [LinearOrder D] → [IsOrderedAddMonoid D] → Prop
+  (D : Type) → [AddCommGroup D] → [LinearOrder D] → [IsOrderedAddMonoid D] → [Nontrivial D] → Prop
 
 /-- The empty carrier property: what a `.Base` rule may assume about `D`, namely nothing beyond
 the ordered-group structure every validity notion already binds. -/
@@ -368,7 +368,7 @@ the base family be proved once at `carrierBase` and reused verbatim at `.Dense`,
 `.Dedekind`, and it is why no frame-class carrier property needs declaring until a rule actually
 consumes it. -/
 theorem RuleSound.mono {C C' : CarrierProp} {r : TableauRule}
-    (hle : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], C' D → C D)
+    (hle : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D], C' D → C D)
     (h : RuleSound C r) : RuleSound C' r := by
   intro D _ _ _ _ hC F M hist tv b sf ord hmem hst hord
   exact h D (hle D hC) F M hist tv b sf ord hmem hst hord
@@ -3111,7 +3111,7 @@ def carrierForFC : FrameClass -> CarrierProp
 is `fun _ => True`. The workhorse of the assembly: 27 of the 34 rules travel this way. -/
 theorem ruleSound_base_mono {C : CarrierProp} {r : TableauRule}
     (h : RuleSound carrierBase r) : RuleSound C r :=
-  h.mono (fun _ _ _ _ _ => trivial)
+  h.mono (fun _ _ _ _ _ _ => trivial)
 
 /-- **The 7.2 assembly.** Every rule `allRulesForFC` can schedule at a frame class is sound under
 that class's carrier property. One induction over `mem_allRulesForFC_iff`, discharged case by
@@ -3149,7 +3149,7 @@ theorem ruleSound_of_mem_allRulesForFC (fc : FrameClass) (r : TableauRule)
       | exact ruleSound_base_mono ruleSound_orderTrichotomy
       | exact ruleSound_base_mono ruleSound_denseIndicatorClosure
       | exact ruleSound_densityRule
-      | exact ruleSound_densityRule.mono (fun _ _ _ _ hC => hC.1)
+      | exact ruleSound_densityRule.mono (fun _ _ _ _ _ hC => hC.1)
       | exact ruleSound_priorUZ
       | exact ruleSound_priorSZ
       | exact ruleSound_z1Rule

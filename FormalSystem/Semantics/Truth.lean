@@ -92,7 +92,7 @@ namespace FormalSystem.Semantics
 
 open FormalSystem.Syntax
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F : TaskFrame D}
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : TaskFrame D}
 
 /--
 Truth of a formula at a model-history-time triple.
@@ -162,7 +162,7 @@ namespace Truth
 Bot (⊥) is false everywhere.
 -/
 theorem bot_false
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D} :
     ¬(TruthAt M τ t Formula.bot) := by
@@ -173,7 +173,7 @@ theorem bot_false
 Truth of implication is material conditional.
 -/
 theorem imp_iff
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (φ ψ : Formula) :
@@ -186,7 +186,7 @@ Truth of atom at a time in the domain: true iff valuation says so at current sta
 For times outside domain, atoms are always false.
 -/
 theorem atom_iff_of_domain
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D} (ht : τ.domain t)
     (p : Atom) :
@@ -204,7 +204,7 @@ theorem atom_iff_of_domain
 Truth of atom at a time outside the domain is false.
 -/
 theorem atom_false_of_not_domain
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D} (ht : ¬τ.domain t)
     (p : Atom) :
@@ -221,7 +221,7 @@ Truth of box: formula true at every **total** history at the current time.
 is no carrier parameter to supply.
 -/
 theorem box_iff
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (φ : Formula) :
@@ -234,7 +234,7 @@ Truth of someFuture: existential future operator.
 F(φ) = U(φ, ⊤) is true iff there exists a strictly future time where φ holds.
 -/
 @[simp] theorem some_future_iff
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (φ : Formula) :
@@ -252,7 +252,7 @@ Truth of somePast: existential past operator.
 P(φ) = S(φ, ⊤) is true iff there exists a strictly past time where φ held.
 -/
 @[simp] theorem some_past_iff
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (φ : Formula) :
@@ -270,7 +270,7 @@ Truth of allFuture: universal future operator.
 G(φ) = ¬F(¬φ) is true iff φ holds at all strictly future times.
 -/
 @[simp] theorem future_iff
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (φ : Formula) :
@@ -289,7 +289,7 @@ Truth of allPast: universal past operator.
 H(φ) = ¬P(¬φ) is true iff φ holds at all strictly past times.
 -/
 @[simp] theorem past_iff
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (φ : Formula) :
@@ -309,7 +309,7 @@ True iff there exists a strictly future time where ψ ∧ φ holds,
 with ψ holding at all intermediate times.
 -/
 @[simp] theorem strong_release_iff
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (φ ψ : Formula) :
@@ -324,7 +324,7 @@ True iff there exists a strictly past time where ψ ∧ φ held,
 with ψ holding at all intermediate times.
 -/
 @[simp] theorem strong_trigger_iff
-    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D}
     (φ ψ : Formula) :

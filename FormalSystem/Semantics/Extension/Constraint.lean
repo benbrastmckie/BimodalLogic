@@ -95,7 +95,7 @@ namespace PartialHistory
 
 open TaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable {F : TaskFrame D}
 
 /-!

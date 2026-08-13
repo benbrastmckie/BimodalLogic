@@ -20,7 +20,7 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem (Axiom DerivationTree FrameClass)
 open FormalSystem.Semantics
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-! ## General (Frame-Class-Free) Versions
 

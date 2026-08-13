@@ -144,7 +144,7 @@ This is pure list induction against the `Formula.imp` clause of `TruthAt`
 enters, which is why the lemma is stated at the bare `TaskModel` binder set and is reusable by
 the Base, Dense and Discrete instances below.
 -/
-theorem truthAt_foldr_imp {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+theorem truthAt_foldr_imp {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : TaskFrame D} (M : TaskModel F)
     (τ : WorldHistory F) (t : D) (Γ : Context) (φ : Formula) :
     TruthAt M τ t (Γ.foldr Formula.imp φ) ↔

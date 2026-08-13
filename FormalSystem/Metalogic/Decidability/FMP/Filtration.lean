@@ -226,7 +226,7 @@ A more refined "smallest filtration" could be used for preserving
 additional frame properties (reflexivity, transitivity, etc.).
 -/
 
-variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 Refined filtered task relation.

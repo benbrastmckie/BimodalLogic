@@ -22,7 +22,7 @@ The JPL paper "The Perpetuity Calculus of Agency" specifies the temporal structu
 `def:temporal-order` (verbatim): "A \textit{temporal order} is a nontrivial totally ordered
 abelian group $\D = \tuple{D, +, 0, \leq}$ with \textit{positive cone}
 $D^+ \coloneq \set{x \in D : x \geq 0}$." ProofChecker implements the ordered abelian group
-via the unbundled typeclasses `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]`; the
+via the unbundled typeclasses `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]`; the
 paper's nontriviality requirement is supplied at the sites that need it rather than by the
 `TaskFrame` structure (see TaskFrame.lean's known-gaps list).
 
@@ -215,7 +215,7 @@ def intTimeHistory : WorldHistory intTimeFrame where
 
 section Polymorphic
 
-variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 Generic polymorphic task frame.
@@ -399,7 +399,7 @@ theorem int_nullity_example : intTimeFrame.TaskRel () 0 () :=
 Generic time satisfies the nullity constraint (polymorphic proof, derived from nullity_identity).
 -/
 theorem generic_nullity_example (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] :
+    [IsOrderedAddMonoid D] [Nontrivial D] :
     (genericTimeFrame D).TaskRel () 0 () :=
   TaskFrame.nullity (genericTimeFrame D) ()
 
@@ -421,7 +421,7 @@ Generic forward compositionality theorem (polymorphic).
 For any temporal type `D` and non-negative durations `x` and `y`, tasks compose
 to a task of duration `x + y`.
 -/
-theorem generic_compositionality (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+theorem generic_compositionality (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (x y : D) (hx : 0 ≤ x) (hy : 0 ≤ y) :
     (genericTimeFrame D).TaskRel () (x + y) () :=
   (genericTimeFrame D).forward_comp () () () x y hx hy
@@ -439,7 +439,7 @@ theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial
 Generic histories have universal domains (polymorphic).
 -/
 theorem generic_domain_universal (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (t : D) :
+    [IsOrderedAddMonoid D] [Nontrivial D] (t : D) :
     (genericTimeHistory D).domain t := trivial
 
 end FormalSystem.Examples.TemporalStructures

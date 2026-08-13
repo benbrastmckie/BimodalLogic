@@ -128,7 +128,7 @@ theorem sInter_nonempty_of_directed_subsingleton
 
 section FlowFrameConformance
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-! ## The generic multi-family flow frame
 
@@ -435,7 +435,7 @@ The carrier `{fam // fam ∈ B.families} × D` with position function `Prod.snd`
 
 section BundleFlow
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable {fc : FrameClass}
 
 /-- The bundle's family index is nonempty, so the bundle flow frame's carrier is.

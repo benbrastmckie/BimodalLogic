@@ -85,7 +85,7 @@ namespace PartialHistory
 
 open TaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 `lem:step`: the Step Lemma. Every partial history extends by one arbitrary duration.
