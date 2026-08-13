@@ -81,7 +81,7 @@ next_project_number: 442
   └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
 417 [PLANNED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
   └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
-419 [PLANNING] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
+419 [PLANNED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
   └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
 440 [NOT STARTED] — Discharge two of the four frame-axiom hypotheses of the extension
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
@@ -725,11 +725,12 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 419. Machine check co reynolds independence
 - **Effort**: large
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 420, Task 438, Task 439
 - **Research**: [419_machine_check_co_reynolds_independence/reports/01_co-not-derives-prior-u.md]
+- **Plan**: [419_machine_check_co_reynolds_independence/plans/01_machine-check-co-independence.md]
 
 **Description**: RE-ISSUED 2026-08-10 (description rewrite only; status unchanged). Machine-check the CO-does-not-derive-Reynolds independence result. Currently recorded ONLY as a pen-and-paper model sketch in the Layer 9 prose of FormalSystem/ProofSystem/Axioms.lean (immediately above the `Axiom.prior_U_gap` constructor), where it is explicitly flagged as NOT machine-checked.
 
