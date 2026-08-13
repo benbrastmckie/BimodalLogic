@@ -1,0 +1,7 @@
+{"phase":2,"phase_name":"Structural Reorder to the Five-Section Skeleton","started_at":"2026-08-13T16:45:00Z","last_updated":"2026-08-13T17:00:00Z",
+"objectives":[{"id":1,"description":"Five-section skeleton + reorder + fold + label repair","status":"done","files_touched":["typst/FormalFoundations.typ"]}],
+"current_objective":1,"approaches_tried":[],
+"deviations":[],
+"page_budget":{"before":17,"after":17},
+"observations":["typst/chapters/01-syntax.typ carries a foreign uncommitted modification present at session start; not touched, not staged. Its FIX text independently confirms the Phase 1 G2 decision (paper's infix since/until, not the Burgess prefix convention) and adds an ordering preference (since before until, past before future) honored in Phase 3."],
+"handoff_count":0}

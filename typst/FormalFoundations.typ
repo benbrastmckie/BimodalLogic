@@ -90,6 +90,7 @@
 
 #v(0.6cm)
 
+// FIX: no indent here, and smaller font, creating an environment as appropriate
 *Abstract.*
 This report states, precisely and compressed, what is actually proved about the bimodal logic
 *TM* -- a fusion of S5 metaphysical modality with a Burgess--Xu tense logic over task-frame
@@ -105,10 +106,11 @@ bimodal logic assuming neither density nor discreteness nor Dedekind-completenes
 
 #v(0.3cm)
 
-= The System, Compressed <sec:system>
+= The System <sec:system>
 
 == Languages
 
+// FIX: the definitions and notation depart from /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex which I would like to align with. Also, I'd like to focus on the extended language using the same symbol \BL^+ used in possible_worlds.tex, leaving off mention of \BL accept perhaps for a footnote that cites the paper with a link to https://benbrastmckie.com/publications/possible_worlds.pdf, presuming no familiarity with the paper so that everything here is ground up. 
 The base language is $#taskframe = chevron.l "SL", bot, arrow.r, square.stroked, allpast, allfuture chevron.r$ where $"SL" := {p_i : i in NN}$#footnote[`sub:Logic` (untracked prose, cited by key only -- no environment block exists at this site to quote). @brastmckie2026possibleworlds] -- one-place *Past* ($#allpast$) and *Future* ($#allfuture$) as primitives, alongside classical connectives and the S5 necessity operator $square.stroked$.
 The extended language replaces $#allpast$/$#allfuture$ with binary *Since* / *Until*:
 
@@ -118,8 +120,10 @@ $#allpast, #allfuture, #somepast, #somefuture, #always, #sometimes$ and the prop
 
 == Task-Frame Semantics
 
+// FIX: the converse convention deserves its own definition, as do the other definitions used below, where these may occur indented inside a single definition however achieves the best visual appearance
 A *temporal order* is a nontrivial totally ordered abelian group $#Dur = (D, +, 0, lt.eq)$ with *positive cone* $D^+ := {x in D : x gt.eq 0}$.#footnote[`def:temporal-order`. @brastmckie2026possibleworlds] A *task relation* on world states $#worldstate$ over $#Dur$ is $w arrow.r.double.long_(x) u$ for $x in D^+$, extended by the *converse convention* $w arrow.r.double.long_(-x) u := u arrow.r.double.long_(x) w$; it determines the fiber $"Fib"(w,x) := {u : w arrow.r.double.long_(x) u}$, cone $(w)_x := union.big_(|y|<x) "Fib"(w,y)$, and segment $[w,v]_x^y := "Fib"(w,x) inter "Fib"(v,-y)$.#footnote[`def:task-relation`. @brastmckie2026possibleworlds]
 
+// FIX: this definition also feels scrunched up and should be expanded into indented elements as appears best, and similarly throughout what follows as appropriate
 #definition("Frame")[
   A *frame* $#taskframe = (#worldstate, #Dur, arrow.r.double.long_(dot.c))$ satisfies, for $x, y gt.eq 0$: *Compositionality* (biconditional) $w arrow.r.double.long_(x+y) v$ iff $w arrow.r.double.long_(x) u$ and $u arrow.r.double.long_(y) v$ for some $u$; *Seriality*: some $u,v$ have $w arrow.r.double.long_(x) u$, $v arrow.r.double.long_(x) w$; *Limit*: $inter.big_(x>0) (w)_x = {w}$; *Spherical*: $inter.big cal(S) eq.not emptyset$ for any directed family $cal(S)$#footnote[`def:directed`. @brastmckie2026possibleworlds] of nonempty fibers and segments.
 ]#footnote[`def:frame` (all four sub-anchors), a biconditional load-bearing in both directions. @brastmckie2026possibleworlds]
@@ -128,6 +132,7 @@ Nullity ($w arrow.r.double.long_(0) w$ for every $w$, every frame) is *derived* 
 
 A *partial history* over $#taskframe$ is $tau : X arrow.r #worldstate$ on nonempty $X subset.eq D$ with $tau(x) arrow.r.double.long_(y-x) tau(y)$; a *world history* has convex domain; a world history is *total* -- equivalently a *possible world* -- iff $X = D$, and $H_(#taskframe)$ denotes all total world histories.#footnote[`def:world-history`. @brastmckie2026possibleworlds] Every partial history extends to a total world history (`thm:extension`, Zorn's lemma), hence to a world state occurring at any prescribed time (`cor:occurrence`) -- both ZFC results, unlike Nullity's choice-free derivation; a *finite*-$W$ frame satisfies *Spherical* choice-free instead (`cor:spherical-finite`).#footnote[@brastmckie2026possibleworlds Both tracked.]
 
+// FIX: not only is $|p| subset.eq H_(#taskframe) times D$ wrong, it offends the most fundamental ideas that /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex argues for at length, requiring careful analysis throughout this document to make sure there is no other discrepancies, fixing everything to be faithful to /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex
 A model $#model = (#worldstate, #Dur, arrow.r.double.long_(dot.c), |dot.c|)$ interprets atoms $|p| subset.eq H_(#taskframe) times D$; $#model, tau, x #satisfies square.stroked phi.alt$ iff $#model, sigma, x #satisfies phi.alt$ for every $sigma in H_(#taskframe)$ -- $square.stroked$ quantifies over *all* total world histories.#footnote[`def:BL-model`, `def:BL-semantics` (box clause). @brastmckie2026possibleworlds] Frame validity ($#taskframe #satisfies phi.alt$), logical consequence ($Gamma #satisfies phi.alt$), and global validity ($#satisfies phi.alt$) close the semantic layer.#footnote[`def:frame-validity`, `def:logical-consequence`. @brastmckie2026possibleworlds]
 
 == Proof Systems
@@ -152,7 +157,7 @@ $op("TM")^+$, the base logic for $op("BL")^+$, is $"S5" + "BX" + "MF"$ ($square.
 
 The *BL-level* system this report's pain points concern is $op("TM")$ itself, the smallest CPL-extension closed under MP, MN, MK, MT, M5 (S5, as above), MF (the sole bimodal-interaction axiom), and TD, TK, T4, TB, TA, TL (temporal necessitation, future-K, transitivity, seriality, past/future exchange, linearity) -- axiomatized directly over $#allpast$/$#allfuture$, with no Since/Until primitives.#footnote[Untracked prose (`sub:Logic`), cited by key only -- these twelve axiom/rule keys are not individually quoted verbatim here. @brastmckie2026possibleworlds] Its discrete/dense/complete extensions $op("TM")_f, op("TM")_d, op("TM")_c, op("TM")_(d c)$ add DF, DN, CO respectively (@sec:contingency). $op("TM")$ is the paper's *economical* presentation; $op("BX")$ is the Lean development's more fine-grained, frame-class-parameterized proof system (@sec:construction) -- the two are related but not silently identified (@sec:construction states the open cross-reference precisely).
 
-= Key Theorems, Completeness Status, and Decidability <sec:key-theorems>
+= What Is Proved: Completeness and Decidability <sec:key-theorems>
 
 == Existence, Soundness, Correspondence
 
@@ -160,12 +165,13 @@ Every partial history extends to a total one by a Step Lemma#footnote[`lem:step`
 
 *Soundness*: if $tack.r phi.alt$ then $#satisfies phi.alt$, for TM and each of its four frame-class extensions.#footnote[`thm:TM-soundness`. Representative validity proofs: `thm:M5-valid` ($#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, via $square.stroked$'s universal quantification over $H_(#taskframe)$ itself), plus TD, TA, TL, MF. @brastmckie2026possibleworlds]
 
-The three correspondence theorems are compressed to statement and one-line idea -- these are *not* the "give in full" exceptions (@sec:split-validity's dichotomy and (DD) are):
+The three correspondence theorems are compressed to statement and one-line idea -- these are *not* the "give in full" exceptions (@sec:dichotomy's dichotomy and (DD) are):
 
 #figure(
   table(
     columns: 2, stroke: none, align: (left,left),
     table.hline(), table.header([*Correspondence*],[*Idea*]), table.hline(),
+    // FIX: these are poorly stated and confusing to read. moreover, this is not what is needed. What I need is to drill down to the Henkin constructions that make each completeness result work, presenting the core constructions and ideas formally and clearly in this section, clearing away all the empty remarks and setup. I want to cut through to the bone, just presenting the most substantive details that it is useful to present in order to get an understanding of the core mechanics of the completeness results
     [DF valid over $#taskframe$ iff $#Dur$ Discrete], [both directions via the translation-flow frame $W=D$, $w arrow.r.double.long_d u :<=> u=w+d$],
     [DN valid over $#taskframe$ iff $#Dur$ Dense], [same frame, DN forces/is forced by an interpolant],
     [CO valid over $#taskframe$ iff $#Dur$ Complete], [same frame with $|p| = L$ for a Dedekind cut $(L,U)$],
@@ -180,7 +186,8 @@ The perpetuity principles P1-P6 and TF ($square.stroked phi.alt arrow.r #allfutu
 
 By Hölder's theorem, a nontrivial *discrete* Archimedean totally ordered abelian group is isomorphic to $ZZ$, and a nontrivial *Dedekind-complete* one is Archimedean hence isomorphic to $ZZ$ or $RR$ -- so the complete class is exactly ${ZZ, RR}$ up to isomorphism, and the dense-and-complete class is exactly $RR$.#footnote[`def:TMplus-f`, `def:TMplus-c` footnotes. @brastmckie2026possibleworlds The paper names Hölder's theorem without a bibliography entry, a standard-result convention this report matches.]
 
-== Completeness -- Stated Exactly, Unsoftened <sec:completeness-status>
+// FIX: all of the meta-commentary like ' -- Stated Exactly, Unsoftened' is empty noise that should be completely removed. This should read like an advanced textbook, not a commentary on itself. Also, there is virtually no substance here. I want clean formal definitions first with no fat that adds little.
+== Completeness <sec:completeness-status>
 
 #theorem("Completeness")[
   TM, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ are sound over their respective classes of all, discrete, dense, complete, and dense-and-complete task frames, but *none is complete*. Completeness is instead carried by $op("BL")^+$ systems: $op("TM")^+_d$ is weakly complete over the full Dense class (machine-checked, sorry-free); $op("TM")^+_f$ is weakly complete over $ZZ$-time (machine-checked over the successor-Archimedean class); $op("TM")^+_c$ is weakly complete over the dense-and-complete class, exactly $RR$ (machine-checked); $op("TM")^+$'s weak completeness over *all* task frames is the stated formalization *target*, with one proof obligation outstanding -- *not* an established theorem.
@@ -188,36 +195,69 @@ By Hölder's theorem, a nontrivial *discrete* Archimedean totally ordered abelia
 
 *Strong* completeness -- consequence from a possibly infinite premise set -- is the aim for $op("TM")^+$ and $op("TM")^+_d$, with no known obstruction to a fully compact treatment of the base and dense classes; it *provably fails* for $ZZ$-time and for the dense-and-complete class $RR$, where compactness fails. Nothing is asserted about compactness of the full discrete class in either direction, or about $op("TM")_c$'s completeness over ${ZZ,RR}$, which is not claimed even weakly.
 
-The former conservative-extension theorem is deleted from the paper; its replacement is a four-part footnote at `def:TMplus`: the *backward* direction ($op("BL")$-theorems of TM/$op("TM")_f$/$op("TM")_d$/$op("TM")_c$ remain theorems of $op("TM")^+$ and its extensions) holds unconditionally, since $op("BL")$ embeds into $op("BL")^+$; the *forward* direction fails for the base case, witnessed by (DD) (@sec:split-validity); fails unconditionally for the discrete extension via TMP-Z1 over $ZZ times_"lex" ZZ$; and remains *open* for the dense and complete extensions, with no known counterexample. No conservativity claim is made for $op("TM")^+$ over TM.
+The former conservative-extension theorem is deleted from the paper; its replacement is a four-part footnote at `def:TMplus`: the *backward* direction ($op("BL")$-theorems of TM/$op("TM")_f$/$op("TM")_d$/$op("TM")_c$ remain theorems of $op("TM")^+$ and its extensions) holds unconditionally, since $op("BL")$ embeds into $op("BL")^+$; the *forward* direction fails for the base case, witnessed by (DD) (@sec:dichotomy); fails unconditionally for the discrete extension via TMP-Z1 over $ZZ times_"lex" ZZ$; and remains *open* for the dense and complete extensions, with no known counterexample. No conservativity claim is made for $op("TM")^+$ over TM.
 
-== Decidability -- Faithfully Open
+== Decidability
 
 #theorem("Decidability")[Whether TM, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ are decidable is *open*.]#footnote[`cor:tm-decidability`. @brastmckie2026possibleworlds]
 
 A recursively axiomatized system's theorems are recursively enumerable regardless of completeness status; decidability additionally needs the *non*-theorems to be r.e., standardly secured via a finite model property (FMP). A former blanket FMP-over-$D=ZZ$ premise is *retracted as false*, witnessed twice: DF is a non-theorem of TM, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ yet valid in every model over $D=ZZ$; CO is a non-theorem of $op("TM")_f$, witnessed by $ZZ times_"lex" ZZ$, yet likewise valid over $D=ZZ$. A repaired FMP must therefore be *class-specific*, ranging over effective non-Archimedean carriers such as $ZZ times_"lex" ZZ$. What exists: a verified sound tableau procedure, and ongoing formalization of a semantic, truth-connected FMP for the $ZZ$-time discrete case (@sec:construction). What would suffice: the two intersection reductions -- $op("Log")("all task frames") = op("Log")("Discrete") inter op("Log")("Dense")$ and $op("Log")("complete frames") = op("Th")(ZZ) inter op("Th")(RR)$ -- each reducing decidability to that of the two factor logics. This is a target *strategy*, not a result; no decidability theorem is proposed here.
 
-= Pain Point One: The Contingency of the Temporal Axioms <sec:contingency>
+= The Completeness Construction <sec:construction>
 
-The three frame conditions Discrete/Dense/Complete (`def:frame-properties`) are characterized by axioms DF, DN, CO respectively (`app:discrete`, `app:dense`, `app:complete`), giving systems $op("TM")_f, op("TM")_d, op("TM")_c$, with $op("TM")_(d c)$ the minimal common extension of $op("TM")_d$ and $op("TM")_c$. No temporal order is both discrete and dense, so TM cannot consistently contain both DF and DN.
+// FIX: This section needs to be completely rewritten, presenting the Henkin construction in precise formal detail so that it is easy to see what the main ideas of the existing completeness proofs are, citing relevant literature where appropriate. Currently, all I see are words and pointless declarations like what 'strong completeness' means which is entirely obvious. This needs to be brought up to a much higher level.
 
-*The worry, at full strength.* Since every possible world is defined over the frame's own temporal order $#Dur$, the structure $#Dur$ has -- discrete or dense, and in either case Dedekind complete or not -- holds *of metaphysical necessity* for that system: if $#Dur$ is dense, DN and its necessitation $square.stroked(#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt)$ are both valid over that frame. This is not idiosyncratic to task semantics; it is an instance of frame validity being closed under necessitation (the Kripke B/symmetry precedent: over symmetric frames, B and its necessitation are both valid, so symmetry is necessary-if-true wherever it holds). Dorr and Goodman @dorr2020diamonds express sympathy for an account of metaphysical modality able to express theses about the contingency of the structure of time -- a real cost, not a strawman, and one the present framework must answer.
+*Core layer* (`Metalogic/Core/`): consistency, maximal consistent sets (MCS, negation-complete), the deduction theorem, and Lindenbaum's lemma via Zorn (`set_lindenbaum` in `MaximalConsistent.lean`); the set-level `SetConsistent`/`SetMaximalConsistent` layer is correctly finitary.
 
-*The irregular-worlds response*, quoted in full since the price must be stated exactly:
+*Architecture*: by contraposition, if $phi.alt$ is underivable then ${not phi.alt}$ is consistent and extends to an MCS $M in.rev not phi.alt$. A countermodel is then built by a *three-way case split* on the discreteness indicator $U(top,bot)$ ("there is an immediate successor," i.e. whether $square.stroked not "Next"top$ or $not square.stroked not "Next"top$ is in $M$), with the *mixed case eliminated outright* by `mcs_mixed_case_absurd` (`BXCanonical/Chronicle/MCSMixedCase.lean`): an MCS cannot be undecided about discreteness.
 
-#quote(block: true, quotes: false)[
-  "Within the present framework one might give voice to such contingency by relaxing totality, admitting *irregular worlds* -- functions $tau : X arrow.r W$ where $X subset.neq D$ is a *coset domain*, a translate $G+c$ of a nontrivial subgroup $G lt.eq #Dur$, and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all $x,y in X$ -- and defining consequence over the irregular and possible worlds alike. Cosets rather than subgroups, since a family of translates is closed under ambient translation and so preserves MF and the perpetuity principles, which the subgroup formulation loses. The price is exact: every nontrivial ordered abelian group contains a discrete cyclic subgroup, so DN is then valid over no frame whatever, and DF fails over discrete orders possessing a subgroup that is itself dense, such as $QQ times_"lex" ZZ$, so the correspondence results of `app:discrete`, `app:dense`, and `app:complete` collapse together. These considerations recommend possible over irregular worlds."
-]
-#footnote[Quoted verbatim from the live footnote at `sub:Extension` (unlabeled -- no `\label` exists to track via `specs/paper-definitions-of-record.md`'s mechanism, so this quote is re-verified directly against the paper at authoring time rather than pinned). @brastmckie2026possibleworlds]
+#figure(
+  cetz.canvas({
+    import cetz.draw: *
+    let root = (0, 1.5)
+    let dense = (-3.3, 0)
+    let discrete = (0, 0)
+    let mixed = (3.3, 0)
+    line(root, dense, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    line(root, discrete, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    line(root, mixed, stroke: (paint: gray.darken(20%), thickness: 1pt))
+    content(root, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 5pt, radius: 3pt)[
+      #text(size: 7.5pt)[MCS $M$: decide $U(top, bot)$]
+    ])
+    content(dense, box(fill: blue.transparentize(85%), stroke: (paint: blue.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
+      #align(center)[#text(size: 7pt)[Dense case \ $square.stroked not U(top,bot) in M$ \ chronicle on $QQ$]]
+    ])
+    content(discrete, box(fill: orange.transparentize(85%), stroke: (paint: orange.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
+      #align(center)[#text(size: 7pt)[Discrete case \ $square.stroked U(top,bot) in M$ \ Reynolds/Doets on $ZZ$]]
+    ])
+    content(mixed, box(fill: red.transparentize(88%), stroke: (paint: red.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
+      #align(center)[#text(size: 7pt)[Mixed case \ eliminated: absurd]]
+    ])
+  }),
+  caption: [The three-way case split on $U(top,bot)$. Same dichotomy that breaks $op("BL")$ (@sec:dichotomy) makes $op("BL")^+$ go through: $op("BL")^+$ has a sentence naming discreteness where $op("BL")$ does not.],
+)
 
-*The price, stated exactly*: (i) DN is valid over *no* frame whatever, since every nontrivial ordered abelian group contains a discrete cyclic subgroup; (ii) DF fails over discrete orders possessing a dense subgroup, such as $QQ times_"lex" ZZ$; (iii) `app:discrete`, `app:dense`, `app:complete` *lapse together*; (iv) the broadened operator, while still factive, normal, and closed under necessitation relative to the broadened consequence relation, is *displaced* from its standing as the strongest objective modality. Point (iv) is this report's own analysis, not a paper quotation -- the paper's sentence stating it is currently commented out in the live source (`sub:Extension`, immediately following the footnote above) and must not be cited as live text; it is grounded here directly in `def:strongest`/`thm:exist` (@sec:objective-modality) plus the observation that broadening the consequence relation changes which operator is $prec.eq$-least.
+*The structural rhyme*, this report's single most illuminating connection: this is the *same* discrete/dense dichotomy that breaks TM at the $op("BL")$ level (@sec:dichotomy) -- the difference is that $op("BL")^+$ has a sentence naming discreteness ($not "Next"top$) and $op("BL")$ does not, so exactly the fact producing (DD)'s unprovable-but-valid disjunction at the $op("BL")$ level is what the $op("BL")^+$ completeness architecture case-splits on to make the canonical-model construction go through.
 
-*The defense*, live paper text quotable directly: necessity-if-true of density is an instance of the general fact that frame validity is closed under necessitation, with the Kripke B/symmetry precedent above; structural disputes about metaphysical accessibility (S4 vs.~S5, closure under converses validating B) are already conducted as questions about which frame class and logic are correct, never as claims that transitivity or symmetry is itself metaphysically contingent; since possible worlds are only ever defined over a single frame, no modality quantifies across frames.#footnote[@brastmckie2026possibleworlds `sub:Extension`, live prose.]
+*Dense path*: the Burgess-style *chronicle construction* over $QQ$ (`Metalogic/BXCanonical/Chronicle/`, `singletonChronicle` #sym.arrow.r `omegaChain` #sym.arrow.r `limit_chronicle`), filling in Until/Since eventualities, with `completeness_dense` in `BXCanonical/Completeness.lean`.#footnote[@burgess1982axioms]
 
-*What irregular worlds do and do not deliver*: contingency in the *structure and cardinality* of the time series -- but not composition contingency of the catastrophe or proper-initial-segment kind, since a difference-closed domain is a subgroup (or a translate of one) and so unbounded in both directions either way.
+*Discrete path*: the Reynolds/Doets pipeline over $ZZ$ (`Metalogic/WeakCanonical/`, `IntegerModel/ReynoldsBridge.lean`'s `countermodel_discrete_reynolds_v2`), running through a Kamp-theorem-based expressive-completeness argument (`WeakCanonical/Kamp/`, `Separation/`, `EFGames/`, `Expressiveness/`).#footnote[@reynolds1992 @doets1987 @kamp1971formalproperties]
 
-*The residual question*, stated, not resolved: is there a semantics recovering temporal-structure contingency without lapsing the correspondence results? The paper's own target is a semantic class *closed under disjoint union*, under which the Halldén phenomenon of @sec:split-validity dissolves structurally -- @sec:split-validity develops exactly why the unrestricted class is *not* such a class, and @sec:representation returns to this target directly.
+*Dedekind path*, which the reference book currently omits entirely: `BXCanonical/CompletenessDedekind.lean` (`completeness_dedekind_engine`), `Metalogic/StrongCompleteness.lean` (`completeness_dedekind`, `consequence_completeness_dedekind`), and the `WeakCanonical/RealModel/` subtree (Doets, shuffle, order-isomorphism to $RR$), on the Reynolds-triple basis Prior-U + Sep with CO derived.
 
-= Pain Point Two: Split Validity and TM's Semantic Incompleteness <sec:split-validity>
+*Shared infrastructure*: bundled families of MCSs with G/H coherence (`Metalogic/Bundle/BFMCS.lean`, `modal_forward`/`modal_backward`), enabling a Henkin-style construction where $square.stroked$ quantifies over *bundled* histories; the *D-parametric* algebraic truth lemma (`Metalogic/Algebraic/FlowFrame.lean`, `multiFamTaskFrameGen`) that turns a coherent MCS family into a task model once, generically, for every duration type $D$ -- its *Spherical* discharge (the deterministic-fiber argument) is a *third* pattern distinct from the finite-$W$ (`cor:spherical-finite`) and general-Zorn (`thm:extension`) routes; filtration and quasimodels (`BXCanonical/Filtration/`, `Quasimodel/`).
+
+*Status discipline* (measured 2026-08-13 at commit c2b8da5d6 via `scripts/typst-status-counts.sh` and `scripts/check-module-invariants.sh`'s check C2/C3 -- see this task's `reports/02_measured-status.md`; re-stamped at this report's final pass, @sec:key-theorems's discipline applies here identically): `completeness_dense`, `completeness_discrete`, `countermodel_dense` each carry exactly `[propext, Classical.choice, Quot.sound]` -- sorry-free; `completeness` (the general Base-frame theorem) alone carries `sorryAx`, traced to a single dead-code dependency in `WeakCanonical/Transfer.lean`'s `countermodel_discrete`, whose *live* replacement `countermodel_discrete_reynolds_v2` is what `completeness_discrete` actually calls. The algebraic layer's sorry count measures zero directly, contradicting `UltrafilterMCS.lean`'s own stale docstring ("Contains sorries pending MCS helper lemmas") -- the measured fact is reported here; the docstring is not edited (non-goal) and its stale prose is not repeated. `completeness_dedekind_engine`'s four declarations are likewise confirmed `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, per that module's own axiom-audit section. No `Boneyard/` content is described as live anywhere in this account.
+
+*Terminology, settled project-wide*: "strong completeness" is reserved for consequence from a possibly-infinite premise set; because `Context := List Formula` is finite, every finite-context consequence result is inter-derivable with weak completeness via the deduction theorem and is called *consequence completeness*, never strong -- paraphrasing `StrongCompleteness.lean`'s own module docstring, the in-tree authority.
+
+*BX/TM discipline*: this architecture is stated in `Metalogic/`'s own vocabulary (`FrameClass.Dense`/`Discrete`/`Base`) throughout -- `completeness_dense` is never silently renamed "$op("TM")_d$'s completeness." Whether these BX-level theorems resolve, contradict, or are orthogonal to `cor:tm-completeness`'s $op("TM")_d$/$op("TM")_f$ status is explicitly *open* and not adjudicated here.
+
+*Decidability* (@sec:key-theorems's companion): the tableau decision procedure's soundness (`decide_sound`) is sorry-free; the finite-model-property completeness result (`fmp_completeness`) is sorry-free as a finite-filtration statement whose semantic-validity bridge is a separately open obligation, not yet closed.
+
+== The Discreteness Dichotomy <sec:dichotomy>
+
+// FIX: this section can be dropped entirely since I don't want to focus on TM at all, focusing all attention on TM^+ which includes the `snce` and `untl` operators as the only tense operators
 
 #theorem("Discrete-or-Dense Dichotomy")[Every nontrivial totally ordered abelian group $#Dur$ is either discrete (has a least positive element) or dense, and never both.]#footnote[`cor:tm-completeness`'s proof. @brastmckie2026possibleworlds Give in full, briefly, per this report's own remit.]
 #proof[Translation invariance makes it exhaustive: if there is no least positive element, some positive $e<y-x$ exists for any $x<y$ (else $y-x$ would itself be least positive), giving $x<x+e<y$; a least positive element $e$ conversely forbids anything strictly between $x$ and $x+e$. Depends essentially on the *group* structure -- fails for a bare linear order (e.g.\ a copy of $ZZ$ followed by a copy of $QQ$), which is why `def:temporal-order` requires a group, not merely a linear order.]
@@ -257,7 +297,32 @@ In $op("BL")^+$, (DD) is already a theorem with no added axiom, as the footnote 
 
 $op("TM")_c$ fails identically over ${ZZ,RR}$, compounded by the further, independent open question of whether CO alone axiomatizes the same $op("BL")^+$-logic as the full Reynolds triple (@sec:system). $op("TM")_f$'s status *differs and must not be lumped in*: it is sound over *every* discrete frame (DF is valid there), but its completeness over that broader class is *open* -- the machine-checked discrete result is for $op("BX")_f$ over $ZZ$-time specifically, a narrower and deductively stronger system than $op("TM") + "DF"$, and no counterexample to $op("TM")_f$'s completeness over the full discrete class is known. The paper states no separate incompleteness argument for $op("TM")_d$; its status is covered only by `cor:tm-completeness`'s flat "none is complete" headline, not by a dedicated countermodel.#footnote[This section's material is reused, with permission of its own authorship lineage, from the verbatim quotes and derivations already independently verified against the live paper in this report's companion book chapter (`typst/chapters/04-metalogic.typ`) -- re-confirmed current at this report's own authoring pass rather than re-derived from scratch. @brastmckie2026possibleworlds]
 
-= Pain Point Three: Axiomatizing the Strongest Objective Modality <sec:objective-modality>
+= Two Costs of the Semantics <sec:costs>
+
+== The Contingency of the Temporal Axioms <sec:contingency>
+
+// FIX: the quality of this section is very poor, and can likely be tightened considerably, and improved by setting up the problem formally. EVERY ISSUE should be introduced through a formal lens. No vague glosses or empty words should be included anywhere.
+
+The three frame conditions Discrete/Dense/Complete (`def:frame-properties`) are characterized by axioms DF, DN, CO respectively (`app:discrete`, `app:dense`, `app:complete`), giving systems $op("TM")_f, op("TM")_d, op("TM")_c$, with $op("TM")_(d c)$ the minimal common extension of $op("TM")_d$ and $op("TM")_c$. No temporal order is both discrete and dense, so TM cannot consistently contain both DF and DN.
+
+*The worry, at full strength.* Since every possible world is defined over the frame's own temporal order $#Dur$, the structure $#Dur$ has -- discrete or dense, and in either case Dedekind complete or not -- holds *of metaphysical necessity* for that system: if $#Dur$ is dense, DN and its necessitation $square.stroked(#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt)$ are both valid over that frame. This is not idiosyncratic to task semantics; it is an instance of frame validity being closed under necessitation (the Kripke B/symmetry precedent: over symmetric frames, B and its necessitation are both valid, so symmetry is necessary-if-true wherever it holds). Dorr and Goodman @dorr2020diamonds express sympathy for an account of metaphysical modality able to express theses about the contingency of the structure of time -- a real cost, not a strawman, and one the present framework must answer.
+
+*The irregular-worlds response*, quoted in full since the price must be stated exactly:
+
+#quote(block: true, quotes: false)[
+  "Within the present framework one might give voice to such contingency by relaxing totality, admitting *irregular worlds* -- functions $tau : X arrow.r W$ where $X subset.neq D$ is a *coset domain*, a translate $G+c$ of a nontrivial subgroup $G lt.eq #Dur$, and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all $x,y in X$ -- and defining consequence over the irregular and possible worlds alike. Cosets rather than subgroups, since a family of translates is closed under ambient translation and so preserves MF and the perpetuity principles, which the subgroup formulation loses. The price is exact: every nontrivial ordered abelian group contains a discrete cyclic subgroup, so DN is then valid over no frame whatever, and DF fails over discrete orders possessing a subgroup that is itself dense, such as $QQ times_"lex" ZZ$, so the correspondence results of `app:discrete`, `app:dense`, and `app:complete` collapse together. These considerations recommend possible over irregular worlds."
+]
+#footnote[Quoted verbatim from the live footnote at `sub:Extension` (unlabeled -- no `\label` exists to track via `specs/paper-definitions-of-record.md`'s mechanism, so this quote is re-verified directly against the paper at authoring time rather than pinned). @brastmckie2026possibleworlds]
+
+*The price, stated exactly*: (i) DN is valid over *no* frame whatever, since every nontrivial ordered abelian group contains a discrete cyclic subgroup; (ii) DF fails over discrete orders possessing a dense subgroup, such as $QQ times_"lex" ZZ$; (iii) `app:discrete`, `app:dense`, `app:complete` *lapse together*; (iv) the broadened operator, while still factive, normal, and closed under necessitation relative to the broadened consequence relation, is *displaced* from its standing as the strongest objective modality. Point (iv) is this report's own analysis, not a paper quotation -- the paper's sentence stating it is currently commented out in the live source (`sub:Extension`, immediately following the footnote above) and must not be cited as live text; it is grounded here directly in `def:strongest`/`thm:exist` (@sec:objective-modality) plus the observation that broadening the consequence relation changes which operator is $prec.eq$-least.
+
+*The defense*, live paper text quotable directly: necessity-if-true of density is an instance of the general fact that frame validity is closed under necessitation, with the Kripke B/symmetry precedent above; structural disputes about metaphysical accessibility (S4 vs.~S5, closure under converses validating B) are already conducted as questions about which frame class and logic are correct, never as claims that transitivity or symmetry is itself metaphysically contingent; since possible worlds are only ever defined over a single frame, no modality quantifies across frames.#footnote[@brastmckie2026possibleworlds `sub:Extension`, live prose.]
+
+*What irregular worlds do and do not deliver*: contingency in the *structure and cardinality* of the time series -- but not composition contingency of the catastrophe or proper-initial-segment kind, since a difference-closed domain is a subgroup (or a translate of one) and so unbounded in both directions either way.
+
+*The residual question*, stated, not resolved: is there a semantics recovering temporal-structure contingency without lapsing the correspondence results? The paper's own target is a semantic class *closed under disjoint union*, under which the Halldén phenomenon of @sec:dichotomy dissolves structurally -- @sec:dichotomy develops exactly why the unrestricted class is *not* such a class, and @sec:representation returns to this target directly.
+
+== The Strongest Objective Modality <sec:objective-modality>
 
 $op("BL")$ is extended with a primitive propositional identity operator $equiv$ and higher-order quantifiers: `def:id`'s Ref, Imp, LL axiomatize $equiv$ minimally (not assumed Boolean), and operator variables range over an unrestricted domain of operations on propositions.#footnote[@brastmckie2026possibleworlds] The objective modalities are *axiomatized* by a primitive predicate $O$ on operator terms, following the theory of necessities in Bacon @bacon2022necessities, rather than *defined* outright -- *predicativity* (operator comprehension confined to formulas with no operator variables and no occurrence of $O$) blocks Russell--Myhill and keeps the system consistent with a fine-grained identity; Walsh @walsh2016predicativity proves consistency of a predicative restriction of Church's intensional logic. Predicativity could be dropped by strengthening the theory of identity instead, since coarse-grained identity also blocks Russell--Myhill.
 
@@ -269,57 +334,9 @@ Any two strongest objective normal modal operators are provably equivalent (`lem
 
 *The pain, stated plainly*: what is axiomatized is a *higher-order* theory of the objective modalities, not a $op("BL")$- or $op("BL")^+$-level proof system -- the connection between the two levels is a *hypothesis* ($op("Str")^O_L (square.stroked)$) adopted afresh for each system under study, not a theorem of TM or $op("TM")^+$. Left open: whether the leastness characterization is expressible or derivable at the propositional level at all; what a propositional axiomatization would have to add; whether the frame-relative plurality of $square.stroked$ operators is genuinely benign (the paper argues it is, since no cross-frame rival is formulable within the theory, and a reader wanting absoluteness may take the universal system); and how @sec:contingency's irregular-worlds broadening interacts, given that it *displaces* $square.stroked$ from its standing as $op("Str")^O_L (square.stroked)$ -- these two pain points are *not independent*.
 
-= The Completeness Construction as Implemented Here <sec:construction>
+= Toward a Representation Theorem <sec:representation>
 
-*Core layer* (`Metalogic/Core/`): consistency, maximal consistent sets (MCS, negation-complete), the deduction theorem, and Lindenbaum's lemma via Zorn (`set_lindenbaum` in `MaximalConsistent.lean`); the set-level `SetConsistent`/`SetMaximalConsistent` layer is correctly finitary.
-
-*Architecture*: by contraposition, if $phi.alt$ is underivable then ${not phi.alt}$ is consistent and extends to an MCS $M in.rev not phi.alt$. A countermodel is then built by a *three-way case split* on the discreteness indicator $U(top,bot)$ ("there is an immediate successor," i.e. whether $square.stroked not "Next"top$ or $not square.stroked not "Next"top$ is in $M$), with the *mixed case eliminated outright* by `mcs_mixed_case_absurd` (`BXCanonical/Chronicle/MCSMixedCase.lean`): an MCS cannot be undecided about discreteness.
-
-#figure(
-  cetz.canvas({
-    import cetz.draw: *
-    let root = (0, 1.5)
-    let dense = (-3.3, 0)
-    let discrete = (0, 0)
-    let mixed = (3.3, 0)
-    line(root, dense, stroke: (paint: gray.darken(20%), thickness: 1pt))
-    line(root, discrete, stroke: (paint: gray.darken(20%), thickness: 1pt))
-    line(root, mixed, stroke: (paint: gray.darken(20%), thickness: 1pt))
-    content(root, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 5pt, radius: 3pt)[
-      #text(size: 7.5pt)[MCS $M$: decide $U(top, bot)$]
-    ])
-    content(dense, box(fill: blue.transparentize(85%), stroke: (paint: blue.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
-      #align(center)[#text(size: 7pt)[Dense case \ $square.stroked not U(top,bot) in M$ \ chronicle on $QQ$]]
-    ])
-    content(discrete, box(fill: orange.transparentize(85%), stroke: (paint: orange.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
-      #align(center)[#text(size: 7pt)[Discrete case \ $square.stroked U(top,bot) in M$ \ Reynolds/Doets on $ZZ$]]
-    ])
-    content(mixed, box(fill: red.transparentize(88%), stroke: (paint: red.darken(20%), thickness: 1pt), inset: 5pt, radius: 3pt, width: 3cm)[
-      #align(center)[#text(size: 7pt)[Mixed case \ eliminated: absurd]]
-    ])
-  }),
-  caption: [The three-way case split on $U(top,bot)$. Same dichotomy that breaks $op("BL")$ (@sec:split-validity) makes $op("BL")^+$ go through: $op("BL")^+$ has a sentence naming discreteness where $op("BL")$ does not.],
-)
-
-*The structural rhyme*, this report's single most illuminating connection: this is the *same* discrete/dense dichotomy that breaks TM at the $op("BL")$ level (@sec:split-validity) -- the difference is that $op("BL")^+$ has a sentence naming discreteness ($not "Next"top$) and $op("BL")$ does not, so exactly the fact producing (DD)'s unprovable-but-valid disjunction at the $op("BL")$ level is what the $op("BL")^+$ completeness architecture case-splits on to make the canonical-model construction go through.
-
-*Dense path*: the Burgess-style *chronicle construction* over $QQ$ (`Metalogic/BXCanonical/Chronicle/`, `singletonChronicle` #sym.arrow.r `omegaChain` #sym.arrow.r `limit_chronicle`), filling in Until/Since eventualities, with `completeness_dense` in `BXCanonical/Completeness.lean`.#footnote[@burgess1982axioms]
-
-*Discrete path*: the Reynolds/Doets pipeline over $ZZ$ (`Metalogic/WeakCanonical/`, `IntegerModel/ReynoldsBridge.lean`'s `countermodel_discrete_reynolds_v2`), running through a Kamp-theorem-based expressive-completeness argument (`WeakCanonical/Kamp/`, `Separation/`, `EFGames/`, `Expressiveness/`).#footnote[@reynolds1992 @doets1987 @kamp1971formalproperties]
-
-*Dedekind path*, which the reference book currently omits entirely: `BXCanonical/CompletenessDedekind.lean` (`completeness_dedekind_engine`), `Metalogic/StrongCompleteness.lean` (`completeness_dedekind`, `consequence_completeness_dedekind`), and the `WeakCanonical/RealModel/` subtree (Doets, shuffle, order-isomorphism to $RR$), on the Reynolds-triple basis Prior-U + Sep with CO derived.
-
-*Shared infrastructure*: bundled families of MCSs with G/H coherence (`Metalogic/Bundle/BFMCS.lean`, `modal_forward`/`modal_backward`), enabling a Henkin-style construction where $square.stroked$ quantifies over *bundled* histories; the *D-parametric* algebraic truth lemma (`Metalogic/Algebraic/FlowFrame.lean`, `multiFamTaskFrameGen`) that turns a coherent MCS family into a task model once, generically, for every duration type $D$ -- its *Spherical* discharge (the deterministic-fiber argument) is a *third* pattern distinct from the finite-$W$ (`cor:spherical-finite`) and general-Zorn (`thm:extension`) routes; filtration and quasimodels (`BXCanonical/Filtration/`, `Quasimodel/`).
-
-*Status discipline* (measured 2026-08-13 at commit c2b8da5d6 via `scripts/typst-status-counts.sh` and `scripts/check-module-invariants.sh`'s check C2/C3 -- see this task's `reports/02_measured-status.md`; re-stamped at this report's final pass, @sec:key-theorems's discipline applies here identically): `completeness_dense`, `completeness_discrete`, `countermodel_dense` each carry exactly `[propext, Classical.choice, Quot.sound]` -- sorry-free; `completeness` (the general Base-frame theorem) alone carries `sorryAx`, traced to a single dead-code dependency in `WeakCanonical/Transfer.lean`'s `countermodel_discrete`, whose *live* replacement `countermodel_discrete_reynolds_v2` is what `completeness_discrete` actually calls. The algebraic layer's sorry count measures zero directly, contradicting `UltrafilterMCS.lean`'s own stale docstring ("Contains sorries pending MCS helper lemmas") -- the measured fact is reported here; the docstring is not edited (non-goal) and its stale prose is not repeated. `completeness_dedekind_engine`'s four declarations are likewise confirmed `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, per that module's own axiom-audit section. No `Boneyard/` content is described as live anywhere in this account.
-
-*Terminology, settled project-wide*: "strong completeness" is reserved for consequence from a possibly-infinite premise set; because `Context := List Formula` is finite, every finite-context consequence result is inter-derivable with weak completeness via the deduction theorem and is called *consequence completeness*, never strong -- paraphrasing `StrongCompleteness.lean`'s own module docstring, the in-tree authority.
-
-*BX/TM discipline*: this architecture is stated in `Metalogic/`'s own vocabulary (`FrameClass.Dense`/`Discrete`/`Base`) throughout -- `completeness_dense` is never silently renamed "$op("TM")_d$'s completeness." Whether these BX-level theorems resolve, contradict, or are orthogonal to `cor:tm-completeness`'s $op("TM")_d$/$op("TM")_f$ status is explicitly *open* and not adjudicated here.
-
-*Decidability* (@sec:key-theorems's companion): the tableau decision procedure's soundness (`decide_sound`) is sorry-free; the finite-model-property completeness result (`fmp_completeness`) is sorry-free as a finite-filtration statement whose semantic-validity bridge is a separately open obligation, not yet closed.
-
-= Early Representation Work and the Way Forward <sec:representation>
+// FIX: similar remarks apply here as well. ALL that is needed are the precise formal mechanics briefly introduced, where remarks are only to be included to expose the most substantive points about which to reflect.
 
 == A Superseded Waypoint, Heeded
 
@@ -362,7 +379,7 @@ Of three candidate "early representation work" items, exactly *one* is live Lean
 
 *(a) What must be weakened.* Of `def:frame`'s four axioms, *Spherical* is the prime suspect -- hardest to discharge at infinite carriers, and exactly where the Jönsson--Tarski route stumbles. Three discharge patterns are known (finite-$W$ choice-free, general Zorn, the $D$-parametric deterministic-fiber argument of @sec:construction); whether a weaker saturation condition suffices for the Step Lemma (`lem:step`) is open.
 
-*(b) The group structure as crux, both ways -- this report's single most valuable analysis.* The discrete-or-dense dichotomy (@sec:split-validity) is a theorem about ordered abelian *groups* and fails for bare linear orders, so dropping $D$ to a linearly ordered set (or a monoid, or a partially ordered group) *dissolves the (DD) obstruction outright*. The cost: MF and the perpetuity principles depend on translation invariance; the converse convention depends on negation; Compositionality is stated in terms of addition. What survives each weakening is exactly what a general representation theorem must reckon with, and is not yet worked out.
+*(b) The group structure as crux, both ways -- this report's single most valuable analysis.* The discrete-or-dense dichotomy (@sec:dichotomy) is a theorem about ordered abelian *groups* and fails for bare linear orders, so dropping $D$ to a linearly ordered set (or a monoid, or a partially ordered group) *dissolves the (DD) obstruction outright*. The cost: MF and the perpetuity principles depend on translation invariance; the converse convention depends on negation; Compositionality is stated in terms of addition. What survives each weakening is exactly what a general representation theorem must reckon with, and is not yet worked out.
 
 *(c) Disjoint-union closure.* Is the coset-domain construction of @sec:contingency the right route -- whose price is precisely a loss of the correspondence results a representation theorem would want -- or is a genuinely multi-frame semantics needed, and what would $square.stroked$ then quantify over? Open.
 

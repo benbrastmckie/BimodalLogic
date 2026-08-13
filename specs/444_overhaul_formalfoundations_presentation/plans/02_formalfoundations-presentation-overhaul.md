@@ -226,30 +226,30 @@ below is amended before Phase 2 begins.
 
 ---
 
-### Phase 2: Structural Reorder to the Five-Section Skeleton [NOT STARTED]
+### Phase 2: Structural Reorder to the Five-Section Skeleton [COMPLETED]
 
 **Goal**: Move the document into the target section order and heading set, relocating existing
 content blocks without rewriting them, so that every later phase rewrites in place against a stable
 skeleton and the compile stays green throughout.
 
 **Tasks**:
-- [ ] Rewrite the top-level headings to the five-section skeleton: (1) The System; (2) What Is
+- [x] Rewrite the top-level headings to the five-section skeleton: (1) The System; (2) What Is
       Proved: Completeness and Decidability; (3) The Completeness Construction; (4) Two Costs of the
       Semantics; (5) Toward a Representation Theorem.
-- [ ] Move the current section 6 (`<sec:construction>`, `:283-333`) ahead of the current sections 3
+- [x] Move the current section 6 (`<sec:construction>`, `:283-333`) ahead of the current sections 3
       and 5, per research decision D1.
-- [ ] Merge the current section 3 (contingency, `<sec:contingency>`) and section 5 (objective
+- [x] Merge the current section 3 (contingency, `<sec:contingency>`) and section 5 (objective
       modality, `<sec:objective-modality>`) into the single section 4 shell, as two subsections,
       content unrewritten.
-- [ ] Fold, do not delete, the current section 4 (`<sec:split-validity>`): move the (DD) theorem,
+- [x] Fold, do not delete, the current section 4 (`<sec:split-validity>`): move the (DD) theorem,
       its proof, and the two-fibre `cetz` figure into a holding subsection at the end of the new
       section 3, marked for rewrite by Phase 5. Retire the `<sec:split-validity>` label and repoint
       every `@sec:split-validity` reference (`:227`, `:314`, `:317`, `:378`) at its new home.
-- [ ] Rename every remaining `<sec:...>` label to match the new numbering and repair every `@sec:`
-      reference. Typst errors on an unresolved label, so the compile is the gate.
-- [ ] Delete the "Pain Point One/Two/Three" heading language and the em-dash heading qualifiers
-      ("Stated Exactly, Unsoftened", "Faithfully Open") as part of the move (FIX-189 partial).
-- [ ] Record the page count before and after the move for the Phase 11 budget reconciliation.
+- [x] Rename every remaining `<sec:...>` label to match the new numbering and repair every `@sec:`
+      reference. Typst errors on an unresolved label, so the compile is the gate. *(completed)*
+- [x] Delete the "Pain Point One/Two/Three" heading language and the em-dash heading qualifiers
+      ("Stated Exactly, Unsoftened", "Faithfully Open") as part of the move (FIX-189 partial). *(completed: headings clean; the only residual grep hit is the FIX-189 comment text quoting the string it asks to remove, owned by Phase 4)*
+- [x] Record the page count before and after the move for the Phase 11 budget reconciliation. *(completed: 17 pages before, 17 pages after -- the move is content-neutral)*
 
 **Timing**: 1.5 hours
 
