@@ -5,11 +5,12 @@
 // Written at a Lk-abstracted level (no Lk-specific results until TACAS
 // acceptance).
 //
-// EMBARGO (user decision 2, task 313): this file may NEVER cite, attribute,
+// EMBARGO (user decision 2): this file may NEVER cite, attribute,
 // or lift Lk-specific results (BL*-ladder table, L_k complexity theorems,
 // hardware case study) until the Lk paper (anonymous TACAS 2027 double-blind
 // submission) is accepted. The // SLOT-IN: anchors below are the ONLY
-// sanctioned insertion points for that content, reserved for task 318.
+// sanctioned insertion points for that content, reserved for the
+// post-TACAS-acceptance follow-up.
 // ============================================================================
 
 #import "../template.typ": *
@@ -55,7 +56,7 @@ By the pattern above, the expectation from prior art is clear: undecidability at
 That is an expectation, not a theorem -- no result about the tower is stated or attributed here, and the paper's own boundary (no axiomatization of BL#super[⋆], @ch:vlach-blstar) applies with equal force to its computational theory.
 
 // SLOT-IN: ladder-table
-// Reserved for task 318 (post-TACAS-acceptance): the BL* ladder table from
+// Reserved for post-TACAS-acceptance: the BL* ladder table from
 // Lk 07-related-work.tex (tab:bl-star-ladder). Do not populate before the
 // embargo lifts.
 
@@ -65,10 +66,10 @@ A complexity map for the BL#super[⋆] tower would need to chart, at minimum: sa
 Until such a map is published, the safe summary is the sectional pattern above: every cell of the map has a published analogue predicting its rough altitude, and none of the analogues predicts a free lunch.
 
 // SLOT-IN: complexity-map
-// Reserved for task 318: the complexity map (L1 = PTL x S5 EXPSPACE-complete;
-// L_k undecidable for k >= 2; alternation-freedom does not restore
-// decidability (Theorem F-B); forall-AF-L_k PSPACE-complete flagship
-// (Theorem F-A)). Do not populate before the embargo lifts.
+// Reserved for post-TACAS-acceptance: the complexity map (L1 = PTL x S5
+// EXPSPACE-complete; L_k undecidable for k >= 2; alternation-freedom does
+// not restore decidability (Theorem F-B); forall-AF-L_k PSPACE-complete
+// flagship (Theorem F-A)). Do not populate before the embargo lifts.
 
 == Applications Outlook
 
@@ -76,8 +77,8 @@ The practical stakes mirror those of the model-checking tradition @baierkatoen20
 Cross-referencing operators are attractive for exactly the specifications that motivate them in natural language -- properties relating the evolving present to a remembered reference point, or one possible evolution to another -- and the frontier surveyed here determines when such specifications remain checkable.
 
 // SLOT-IN: case-study
-// Reserved for task 318: the hardware case study (constant-time as
-// forall-forall, reset convergence, SVA/Logos-Hardware bridge,
+// Reserved for post-TACAS-acceptance: the hardware case study (constant-time
+// as forall-forall, reset convergence, SVA/Logos-Hardware bridge,
 // Lk 06-case-study.tex). Do not populate before the embargo lifts.
 
 == TM's Own Position

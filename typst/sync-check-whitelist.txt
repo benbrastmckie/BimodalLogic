@@ -52,11 +52,11 @@ thm:BLplus-NextPrevious
 01-introduction.typ
 
 # --- lake exe target names (declared in the repo-root lakefile.lean, not
-# a Bimodal Lean identifier -- task 313 Phase 10; dataset_generator already
-# resolves via a live doc-comment reference in DatasetExport.lean) ---
+# a Bimodal Lean identifier; dataset_generator already resolves via a live
+# doc-comment reference in DatasetExport.lean) ---
 dataset_validator
 
-# --- Machine appendix JSONL field illustrations (task 316) --- the Lean
+# --- Machine appendix JSONL field illustrations --- the Lean
 # source writes these with escaped quotes (\"kind\": \"axiom\"), so the
 # chapter's unescaped exposition spans cannot literal-grep-match it.
 kind: "axiom"

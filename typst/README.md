@@ -100,16 +100,42 @@ document recording the claim-verification history; it does not govern the compil
 When the Lean source moves, regenerate via the scripts above rather than editing counts
 by hand.
 
-## Follow-Up Tasks
+## Follow-Up Work
 
-The remaining in-progress chapters are completed by follow-up tasks:
+The remaining in-progress chapters are completed by follow-up work, tracked internally in this
+repository's task-management system (not cited here by number -- see the repository rule against
+task-number references in deliverables):
 
-| Task | Scope |
-|------|-------|
-| 315 | Part I positioning chapters (p3-ltl-to-tm, p3-vlach-blstar, p3-decidability-frontier; Lk-abstracted) |
-| 316 | Machine-readable JSONL appendix, exported from Lean (pointer in p4-dataset-pipeline) |
-| 317 | ~~Part III/IV chapters (tensed counterfactual logic, then constitutive structure)~~ -- superseded: Parts III/IV were cut entirely, so this scope no longer applies |
-| 318 | Lk slot-in for the Decidability Frontier chapter (post-TACAS-acceptance only) |
+| Chapter(s) / Artifact | Scope |
+|------------------------|-------|
+| `p3-ltl-to-tm.typ`, `p3-vlach-blstar.typ`, `p3-decidability-frontier.typ` | Part I positioning chapters (Lk-abstracted; see EMBARGO note in `p3-decidability-frontier.typ`) |
+| `generated/machine-appendix.*` (pointer in `p4-dataset-pipeline.typ`) | Machine-readable JSONL appendix, exported from Lean |
+| Part III/IV chapters (tensed counterfactual logic, then constitutive structure) | Superseded -- Parts III/IV were cut entirely, so this scope no longer applies |
+| Decidability Frontier `// SLOT-IN:` anchors (`ladder-table`, `complexity-map`, `case-study`) | Lk slot-in for the Decidability Frontier chapter, post-TACAS-acceptance only |
+
+## Marker Convention
+
+Some claims cite a Lean anchor that sits in territory an in-flight Lean formalization task is
+expected to move (canonical-frame/completeness proofs, the semantic FMP, and the CO/Reynolds-triple
+independence result). Rather than hedge the reader-facing prose, the anchor itself is flagged with
+a maintainer-only marker so a later re-sync sweep is a `grep`, not a re-audit:
+
+```
+// LEAN-ANCHOR-MAY-MOVE: <scope> -- see typst/README.md
+```
+
+placed as a plain Typst line comment immediately above the citing line (invisible in the compiled
+PDF). The `<scope>` suffix names what will move the anchor, not a task number:
+
+- `canonical-completeness` -- canonical-frame and completeness anchors under `Metalogic/BXCanonical/`
+- `semantic-fmp` -- FMP anchors under `Metalogic/Decidability/FMP/`
+- `co-reynolds-independence` -- `ProofSystem/Axioms.lean` Layer 9, immediately above the
+  `Axiom.prior_U_gap` constructor
+
+Sweep with `grep -rn "LEAN-ANCHOR-MAY-MOVE" typst/chapters/`. Occurrence list (filled in as
+markers are placed; kept in sync with the live grep output):
+
+_pending -- populated when markers are placed against the chapters that cite this territory._
 
 ## Relationship to LaTeX Version
 

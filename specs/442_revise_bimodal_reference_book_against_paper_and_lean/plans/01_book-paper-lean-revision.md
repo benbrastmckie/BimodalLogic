@@ -196,7 +196,7 @@ Phase 9 disposition table must be re-checked before use.
 
 ---
 
-### Phase 2: Marker Convention and typst/README.md De-numbering [NOT STARTED]
+### Phase 2: Marker Convention and typst/README.md De-numbering [COMPLETED]
 
 **Goal**: Fix the live task-number rule violation in `typst/README.md` and establish the single
 marker token later phases will apply.
