@@ -1340,7 +1340,7 @@
     {
       "project_number": 443,
       "project_name": "formal_foundations_report_completeness_and_representation",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "typst",
       "topic": "paper-refactor",
       "priority": "high",
@@ -1355,12 +1355,18 @@
         "typst/bibliography.bib",
         "typst/README.md"
       ],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/443_formal_foundations_report_completeness_and_representation/reports/01_formal-foundations-research.md",
+          "type": "report",
+          "summary": "Citation package, verified Lean architecture, status corrections, diagram sketches, and planner punch list for FormalFoundations.typ."
+        }
+      ],
       "blockers": null,
       "created": "2026-08-13T06:31:40Z",
-      "last_updated": "2026-08-13T06:31:40Z",
+      "last_updated": "2026-08-13T08:11:04Z",
       "next_artifact_number": 1,
-      "session_id": "sess_1786602700_bkref"
+      "session_id": "sess_1786602947_2f48be_443"
     }
   ],
   "artifacts": [
