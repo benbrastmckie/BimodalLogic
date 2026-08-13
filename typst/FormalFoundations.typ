@@ -654,23 +654,115 @@ discharged by a *third* pattern, distinct from the two of @sec:histories. The in
 is deterministic, so its fibers are subsingletons, and a directed family of nonempty subsingletons
 has nonempty intersection outright.#footnote[`multiFamGen_spherical`, via the reusable helper `sInter_nonempty_of_directed_subsingleton`. The argument sees only the shape of the fibers, so it applies to every deterministic frame. Contrast the finite-carrier discharge (`cor:spherical-finite`) and the Zorn route through the Step Lemma (`thm:extension`); this third pattern is what @sec:representation returns to.]
 
-== The Three Branches and Machine Status
+== The Dense Branch
 
-// FIX: This section needs to be completely rewritten, presenting the Henkin construction in precise formal detail so that it is easy to see what the main ideas of the existing completeness proofs are, citing relevant literature where appropriate. Currently, all I see are words and pointless declarations like what 'strong completeness' means which is entirely obvious. This needs to be brought up to a much higher level.
+#definition("Chronicle")[
+  A *chronicle* over a maximal consistent set $A$ assigns a maximal consistent set to each point of
+  a domain $X subset.eq QQ$, subject to coherence conditions C0--C5 relating the assignments at
+  distinct points to the Since and Until sentences they contain. It is built as the limit of an
+  $omega$-chain: the *singleton chronicle* maps $0$ to $A$; each successor step eliminates one
+  potential counterexample, enumerated from $QQ times "Formula" times "Formula" times "Bool"$; and
+  the limit is the union of the chain.
+]#footnote[`singletonChronicle` and `omegaChain` in `Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean`. Countability of the enumeration is what makes an $omega$-chain sufficient.]
 
-*Dense path*: the Burgess-style *chronicle construction* over $QQ$ (`Metalogic/BXCanonical/Chronicle/`, `singletonChronicle` #sym.arrow.r `omegaChain` #sym.arrow.r `limit_chronicle`), filling in Until/Since eventualities, with `completeness_dense` in `BXCanonical/Completeness.lean`.#footnote[@burgess1982axioms]
+The obligation the chain exists to discharge is *eventuality-filling*. A sentence
+$phi.alt #until psi$ in a chronicle's set at $t$ is a promise that $psi$ holds at some later
+point of the domain with $phi.alt$ throughout the interval; a chronicle need not keep such a
+promise, and a countermodel must. Each step of the chain keeps one promise, and because every
+potential counterexample is enumerated, the limit keeps them all.#footnote[`limit_satisfies_c5_strong` and its Since mirror `limit_satisfies_c5'_strong`, in the same module. The construction is Burgess's @burgess1982axioms, whose $omega$-chain over $QQ$ is what makes density available: a new witness can always be inserted between two existing points.]
 
-*Discrete path*: the Reynolds/Doets pipeline over $ZZ$ (`Metalogic/WeakCanonical/`, `IntegerModel/ReynoldsBridge.lean`'s `countermodel_discrete_reynolds_v2`), running through a Kamp-theorem-based expressive-completeness argument (`WeakCanonical/Kamp/`, `Separation/`, `EFGames/`, `Expressiveness/`).#footnote[@reynolds1992 @doets1987 @kamp1971formalproperties]
+The limit chronicle induces a bundled family over $QQ$ satisfying the coherence conditions of the
+previous subsection, and the truth lemma then gives a countermodel. This is `completeness_dense`.
 
-*Dedekind path*, which the reference book currently omits entirely: `BXCanonical/CompletenessDedekind.lean` (`completeness_dedekind_engine`), `Metalogic/StrongCompleteness.lean` (`completeness_dedekind`, `consequence_completeness_dedekind`), and the `WeakCanonical/RealModel/` subtree (Doets, shuffle, order-isomorphism to $RR$), on the Reynolds-triple basis Prior-U + Sep with CO derived.
+== The Discrete Branch
 
-*Status discipline* (measured 2026-08-13 at commit c2b8da5d6 via `scripts/typst-status-counts.sh` and `scripts/check-module-invariants.sh`'s check C2/C3 -- see this task's `reports/02_measured-status.md`; re-stamped at this report's final pass, @sec:key-theorems's discipline applies here identically): `completeness_dense`, `completeness_discrete`, `countermodel_dense` each carry exactly `[propext, Classical.choice, Quot.sound]` -- sorry-free; `completeness` (the general Base-frame theorem) alone carries `sorryAx`, traced to a single dead-code dependency in `WeakCanonical/Transfer.lean`'s `countermodel_discrete`, whose *live* replacement `countermodel_discrete_reynolds_v2` is what `completeness_discrete` actually calls. The algebraic layer's sorry count measures zero directly, contradicting `UltrafilterMCS.lean`'s own stale docstring ("Contains sorries pending MCS helper lemmas") -- the measured fact is reported here; the docstring is not edited (non-goal) and its stale prose is not repeated. `completeness_dedekind_engine`'s four declarations are likewise confirmed `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, per that module's own axiom-audit section. No `Boneyard/` content is described as live anywhere in this account.
+Over $ZZ$ no witness can be inserted between adjacent points, so the chronicle chain is
+unavailable and the argument runs the other way: build a structure first, then show it is
+*indistinguishable* from one over $ZZ$.
 
-*Terminology, settled project-wide*: "strong completeness" is reserved for consequence from a possibly-infinite premise set; because `Context := List Formula` is finite, every finite-context consequence result is inter-derivable with weak completeness via the deduction theorem and is called *consequence completeness*, never strong -- paraphrasing `StrongCompleteness.lean`'s own module docstring, the in-tree authority.
+#definition("The Reynolds pipeline")[
+  For a fixed quantifier depth $k$, a linearly ordered structure with monadic predicates is *good*
+  when it is $k$-equivalent to a structure assembled from finitely many one-class pieces, and
+  *very good* when that decomposition is uniform. The pipeline shows the chronicle's limit domain
+  is good, extracts a $k$-equivalent interval of $ZZ$, and transfers satisfiability across the
+  $k$-equivalence.
+]#footnote[`one_class` (`WeakCanonical/IntegerModel/NoGapsDiscreteProof.lean`), `VeryGood` (`IntegerModel/GoodStructures.lean`), `good` (`RealModel/DoetsTheorem.lean`), `limitdom_is_good` and `truth_transfer` (`WeakCanonical/Transfer.lean`). The decomposition technique is Doets's @doets1987; the step-by-step k-equivalence argument for Until/Since is Reynolds's @reynolds1992, as developed in Gabbay, Hodkinson, and Reynolds @gabbayhodkinsonreynolds1994.]
 
-*BX/TM discipline*: this architecture is stated in `Metalogic/`'s own vocabulary (`FrameClass.Dense`/`Discrete`/`Base`) throughout -- `completeness_dense` is never silently renamed "$op("TM")_d$'s completeness." Whether these BX-level theorems resolve, contradict, or are orthogonal to `cor:tm-completeness`'s $op("TM")_d$/$op("TM")_f$ status is explicitly *open* and not adjudicated here.
+Transfer is sound because $k$-equivalence preserves the truth of every formula of quantifier depth
+at most $k$, and the refuted sentence has a fixed depth. The resulting countermodel over $ZZ$ is
+`countermodel_discrete_reynolds_v2`, and it is what `completeness_discrete` calls.
 
-*Decidability* (@sec:key-theorems's companion): the tableau decision procedure's soundness (`decide_sound`) is sorry-free; the finite-model-property completeness result (`fmp_completeness`) is sorry-free as a finite-filtration statement whose semantic-validity bridge is a separately open obligation, not yet closed.
+#remark[
+  This is *not* an application of Kamp's theorem. Kamp's expressive-completeness result --- that
+  over Dedekind-complete flows the strict Until/Since language captures every first-order condition
+  on a linear order with monadic predicates in one free variable --- is a different statement, and
+  it is not machine-checked here.#footnote[Kamp's 1968 dissertation @kamp1968; the modern model-theoretic proof is Rabinovich's @rabinovich2014. The result is frequently attributed to Kamp's 1971 _Theoria_ paper @kamp1971formalproperties, which introduces the *now* operator and does not contain it. Both of Kamp's scope conditions do real work: the operators must be strict, which is the convention used throughout here, and the flow must be Dedekind complete, since the result fails over arbitrary linear orders.] `Metalogic/WeakCanonical/Kamp/` develops toward the statement
+  `kampPriorExpressiveCompleteness`, which remains open. The discrete branch depends on none of it:
+  $k$-equivalence is a coarser tool, and coarser is enough when only one sentence must be refuted.
+]
+
+== The Dedekind Branch
+
+Over $RR$ the case split is not needed at all: the class is dense, so the dense indicator is
+available unconditionally and the branch that the base and discrete arguments must discharge does
+not arise.
+
+#definition("The real-model construction")[
+  A good structure over a dense order is *shuffled* into a structure over $RR$: the one-class
+  pieces are interleaved densely, and the result is shown order-isomorphic to $RR$ by a
+  back-and-forth argument. Truth transfers along the isomorphism.
+]#footnote[`RealModel/DoetsTheorem.lean`, `Shuffle.lean`, `ShuffleReal.lean`, `EpsilonDense.lean`, and `OrderIsoReal.lean`. The basis is the Reynolds triple Prior-U, Prior-S, and Sep, with CO derived.]
+
+The engine is `completeness_dedekind_engine`. Its consequence form,
+`consequence_completeness_dedekind`, is what the development calls *consequence completeness*
+and not strong completeness: a derivation's context is a finite list, so a finite-context
+consequence result is inter-derivable with weak completeness by the deduction theorem, and the
+term *strong* is reserved for consequence from a possibly infinite premise set.
+
+== Machine-Checked Status
+
+The axiom reports below were taken at commit 7aae4e51c via `scripts/typst-status-counts.sh`.
+
+#figure(
+  table(
+    columns: 4, stroke: none, align: (left, left, left, left),
+    table.hline(),
+    table.header([*Declaration*], [*Module*], [*Axioms*], [*`sorryAx`*]),
+    table.hline(),
+    [`completeness_dense`], [`BXCanonical/Completeness.lean`], [`propext`, `Classical.choice`, `Quot.sound`], [no],
+    [`completeness_discrete`], [`BXCanonical/Completeness.lean`], [same], [no],
+    [`countermodel_dense`], [`Chronicle/ChronicleToCountermodelBasic.lean`], [same], [no],
+    [`completeness_dedekind_engine`], [`BXCanonical/CompletenessDedekind.lean`], [same], [no],
+    [`completeness`], [`BXCanonical/Completeness.lean`], [same, plus `sorryAx`], [*yes*],
+    table.hline(),
+  ),
+  caption: [Axiom reports for the four completeness results and the shared dense countermodel.],
+)
+
+Outside `Boneyard/`, the development contains exactly one structural `sorry`, and it is the source
+of the single `sorryAx` above: `countermodel_discrete` in `WeakCanonical/Transfer.lean`. It is dead
+code. `completeness_discrete` routes through `countermodel_discrete_reynolds_v2` instead, which is
+a different theorem and is sorry-free; the dead chain was excised precisely because the bypass
+made it unreachable. What the `sorryAx` on the general Base-frame `completeness` records is
+therefore a stale dependency edge, not an unproved mathematical step in any result stated in this
+report --- but the edge is real, and until it is cut the theorem's axiom report says so.
+
+The algebraic layer of @sec:representation measures zero sorries.
+
+#remark[
+  The vocabulary above is the development's own: `FrameClass.Base`, `Dense`, `Discrete`,
+  `Dedekind`. It is not silently identified with the paper's $op("TM")^+$, $op("TM")^+_d$,
+  $op("TM")^+_f$, $op("TM")^+_c$. The two axiomatizations do line up in shape --- the paper states
+  eleven primary Since/Until axioms and derives their past mirrors by the rule TD, while the
+  development has no TD rule and states all twenty-two explicitly, one pair per paper axiom --- but
+  no theorem establishes that they prove the same sentences, and the uniformity layer does not even
+  match in count. The identification is a conjecture and is treated as one throughout.
+]
+
+Decidability's two machine-checked components are narrower than the open question of
+@sec:key-theorems: `decide_sound` establishes that the tableau procedure never accepts a
+non-theorem, and `fmp_completeness` is a finite-filtration statement whose bridge to semantic
+validity is a separate, open obligation.#footnote[Both in `Metalogic/Decidability/Correctness.lean`. Soundness of a decision procedure without the matching completeness bridge does not yield a decision procedure.]
 
 = Two Costs of the Semantics <sec:costs>
 

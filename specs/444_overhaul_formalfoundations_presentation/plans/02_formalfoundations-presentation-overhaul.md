@@ -434,36 +434,36 @@ of FIX-285.
 
 ---
 
-### Phase 6: Section 3, Part II — The Three Canonical Constructions and Status [NOT STARTED]
+### Phase 6: Section 3, Part II — The Three Canonical Constructions and Status [COMPLETED]
 
 **Goal**: Give each completeness branch its own definition-plus-theorem treatment with the actual
 construction named and credited, then close the section with the re-stamped machine-status table.
 Discharges the second half of FIX-285.
 
 **Tasks**:
-- [ ] Dense branch: the Burgess-style chronicle construction, stated as a definition (the chain from
+- [x] Dense branch: the Burgess-style chronicle construction, stated as a definition (the chain from
       the singleton chronicle through the omega-chain to the limit chronicle) plus the completeness
       theorem it yields, with the eventuality-filling obligation stated. Credit Burgess 1982 at the
-      construction itself.
-- [ ] Discrete branch: the Reynolds/Doets pipeline, stated as a definition plus theorem, with the
+      construction itself. *(completed: `limit_chronicle` was NOT citable -- it exists only in a docstring, not as a declaration; the eventuality obligation is cited as `limit_satisfies_c5_strong` instead)*
+- [x] Discrete branch: the Reynolds/Doets pipeline, stated as a definition plus theorem, with the
       Kamp-theorem-based expressive-completeness step stated as the step it is. Credit Reynolds 1992,
       Doets 1987, Kamp 1971, and Gabbay-Hodkinson-Reynolds at the construction, per research finding
-      F7's uncredited-citation observation.
-- [ ] Adapt, with compression, the correctly-scoped Kamp treatment from
+      F7's uncredited-citation observation. *(completed with a correction: the discrete branch does NOT run through Kamp's theorem. It runs through Reynolds k-equivalence -- one_class -> VeryGood -> good -> truth_transfer. The document's prior claim was inaccurate. Reynolds/Doets/GHR credited at the construction; Kamp moved to its own remark and cited to the 1968 dissertation, not the 1971 Theoria paper)*
+- [x] Adapt, with compression, the correctly-scoped Kamp treatment from
       `typst/chapters/p3-vlach-blstar.typ:108-128` (strict operators, Dedekind-complete flows, the
       standard miscitation corrected). Adapt by reading and rewriting; do not `#include` and do not
-      edit that chapter file.
-- [ ] Dedekind branch: the engine and the real-model subtree, stated as definition plus theorem on
-      the Reynolds-triple basis, with the order-isomorphism step named.
-- [ ] Rewrite the machine-status paragraph as a table: declaration, module, axiom set, sorry status,
+      edit that chapter file. *(completed: read p3-vlach-blstar.typ:108-128 and rewrote; that chapter file is unmodified)*
+- [x] Dedekind branch: the engine and the real-model subtree, stated as definition plus theorem on
+      the Reynolds-triple basis, with the order-isomorphism step named. *(completed: shuffle plus back-and-forth order-isomorphism, `OrderIsoReal.lean`)*
+- [x] Rewrite the machine-status paragraph as a table: declaration, module, axiom set, sorry status,
       using Phase 1's re-stamped counts and commit hash. Keep the dead-code observation about the
       superseded discrete countermodel, since it is what makes the Base-frame `sorryAx` framing
-      precise.
-- [ ] Delete the "Terminology, settled project-wide" paragraph; if the finite-context fact is worth
-      keeping, fold it into a single parenthetical at first use of consequence completeness.
-- [ ] Keep the discipline note that the Lean-side frame-class vocabulary is not silently renamed to
-      the paper's system names, at the hedging posture decided in Phase 1 (G1).
-- [ ] Remove the FIX comment at line 285.
+      precise. *(completed: 5-row table; dead-code observation kept and sharpened to 'a stale dependency edge, not an unproved mathematical step')*
+- [x] Delete the "Terminology, settled project-wide" paragraph; if the finite-context fact is worth
+      keeping, fold it into a single parenthetical at first use of consequence completeness. *(completed: folded into the Dedekind branch at `consequence_completeness_dedekind`)*
+- [x] Keep the discipline note that the Lean-side frame-class vocabulary is not silently renamed to
+      the paper's system names, at the hedging posture decided in Phase 1 (G1). *(completed: reconciliation stated -- 11 paper axioms to 11 Lean pairs via TD -- with the hedge retained and the uniformity-layer mismatch named)*
+- [x] Remove the FIX comment at line 285. *(completed)*
 
 **Timing**: 2 hours
 
