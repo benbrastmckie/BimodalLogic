@@ -1273,6 +1273,70 @@ Non-sites (aliases or specializations; no field obligation of their own): `bundl
 Dead and excluded: everything under `FormalSystem/Boneyard/` — re-confirm the exclusion holds
 (`lakefile.lean:16-19` roots only `FormalSystem`; `FormalSystem.lean` has no `Boneyard` import).
 
+#### Pre-batch state as of 2026-08-12 (batch NOT opened)
+
+**Sub-step 14.0 is LANDED and committed green** — the one piece of this phase that could be done
+without opening the red window. The `Fib`/`cone`/`Seg`/`DirectedFamily`/`IsFiber`/`IsSegment`
+apparatus and the `Spherical`/`Serial`/`Interpolates` predicates were hoisted from *after* the
+`TaskFrame` structure to *before* it (TaskFrame.lean, own `namespace TaskFrame` block at :151-358;
+the structure now begins at :401). Pure relocation, no statement changed, no consumer touched.
+It is a hard prerequisite: a structure field's type may only mention declarations that precede
+it, so without it not one of the four fields is statable. `lake build` green, 2331 jobs.
+
+**All four pre-batch gates PASS** (re-run 2026-08-12, after Phase 13):
+
+| Gate | Result |
+|---|---|
+| Site-discovery grep reconciles with the table below | **PASS — exactly 14 live `where`-sites**, no new site, no disappeared site (line numbers have shifted from this table by the Phases 10-13 insertions; see the readiness table below for current ones) |
+| Zero `.mk` sites | **PASS** — `grep -rn "TaskFrame.mk\|FiniteTaskFrame.mk"` outside `Boneyard/` returns nothing |
+| Every site has a citable lemma from Phases 10-13 | **PASS — 14/14**, enumerated in the readiness table below |
+| `Boneyard/` exclusion still holds | **PASS** — `lakefile.lean:15-19` roots only `FormalSystem`; `FormalSystem.lean` has no `Boneyard` import |
+| Caveat (b) — has the `nullity_identity` joint decision landed? | **NO.** `specs/decisions/` holds `total-history-validity-decisions.md` and `untl-snce-argument-order.md`; neither mentions `nullity_identity`. Leave the field AS-IS. |
+
+**Site readiness — all 14 discharged by an existing, landed, sorry-free lemma**:
+
+| # | Site | file:line (current) | Citable lemmas |
+|---|---|---|---|
+| 1 | `trivialFrame` | Semantics/TaskFrame.lean:911 | `trivialFrame_{serial,interpolates,limit,spherical}` |
+| 2 | `staticFrame` | Semantics/TaskFrame.lean:963 | `staticFrame_{serial,interpolates,limit,spherical}` (`limit` needs `[Nontrivial D]`) |
+| 3 | `natFrame` | Semantics/TaskFrame.lean:1019 | `natFrame_{serial,interpolates,limit,spherical}` (`limit` needs `[SuccOrder D] [NoMaxOrder D]`) |
+| 4 | `intTimeFrame` | Examples/TemporalStructures.lean:78 | `intTimeFrame_{serial,interpolates,limit,spherical}` |
+| 5 | `intNatFrame` | Examples/TemporalStructures.lean:118 | `intNatFrame_{serial,interpolates,limit,spherical}` |
+| 6 | `genericTimeFrame` | Examples/TemporalStructures.lean:216 | `genericTimeFrame_{serial,interpolates,limit,spherical}` (no restriction on `D`) |
+| 7 | `genericNatFrame` | Examples/TemporalStructures.lean:256 | `genericNatFrame_{serial,interpolates,limit,spherical}` (`limit` needs `[SuccOrder D] [NoMaxOrder D]`) |
+| 8 | `multiFamTaskFrameGen` | Metalogic/Algebraic/FlowFrame.lean:145 | `multiFamTaskFrameGen_{serial,interpolates,limit,spherical}` (`limit` needs `[Nontrivial D]`) — also covers `bundleFlowFrame`, which is NOT a site |
+| 9 | `zTaskFrameV2` | …/ReynoldsBridge.lean:453 | `zTaskFrameV2_{serial,interpolates,limit,spherical}` |
+| 10 | `multiFamTaskFrame` | …/ReynoldsBridge.lean:752 | `multiFamTaskFrame_{serial,interpolates,limit,spherical}` |
+| 11 | `RefinedFilteredTaskFrame` | …/FMP/Filtration.lean:213 | `RefinedFilteredTaskFrame_{serial,interpolates,limit,spherical}` — binders already applied |
+| 12 | `FiniteFilteredTaskFrame` | …/FMP/FiniteModel.lean:160 | `FiniteFilteredTaskFrame_{serial,interpolates,limit,spherical}` — binders already applied |
+| 13 | `regionFrame` | …/Bridge/RegionFrame.lean:170 | `regionFrame_{serial,interpolates,limit,spherical}` (`limit` needs `[Nontrivial D]`) |
+| 14 | `customFrame` | Tests/…/TaskFrameTest.lean:61 | `customFrame_{serial,interpolates,limit,spherical}` |
+
+#### SIZING FINDING — this phase is mis-sized and needs a re-size decision before it is opened
+
+**The batch was deliberately NOT opened.** Not because a site lacks a lemma — all 14 have one —
+but because the phase's task list bundles the four axiom fields together with two *structural*
+changes whose blast radius was never measured when the phase was written, and which together are
+far more than one agent run can close inside a window where `sorry` is forbidden and no partial
+state may be committed. Opening it would have produced a long red window with nothing
+committable. Measured 2026-08-12:
+
+| Task-list item | Measured blast radius |
+|---|---|
+| `[Nontrivial D]` as a `TaskFrame` structure binder | **575 `TaskFrame` mentions across 49 files.** Every declaration with a polymorphic `D` that mentions `TaskFrame D` needs the instance in scope. This is not needed to *state* any of the four axiom fields — the field types are `Serial TaskRel`, `Interpolates TaskRel`, `Spherical TaskRel`, and *Limit*'s literal shape, none of which mentions `Nontrivial`. |
+| `Nonempty WorldState` | Cheap as a *field*, but its **discharge** is not: `staticFrame` and `regionFrame` need `[Nonempty W]`, `multiFamTaskFrameGen` needs `[Nonempty FamIdx]`, `bundleFlowFrame` needs `B.families` nonempty, and `FilteredWorld phi` needs a nonemptiness proof that does not exist yet. Each new binder propagates to that frame's consumers. |
+| Per-site binder propagation forced by the *Limit* field | **~225 mentions across ~20 files**: `staticFrame` 27/4, `multiFamTaskFrameGen` 63/5 (plus `bundleFlowFrame` 29), `regionFrame` 65/5, `natFrame` 50/5, `genericNatFrame` 20/2. The frames whose *Limit* lemmas carry `[Nontrivial D]` or `[SuccOrder D] [NoMaxOrder D]` must acquire those binders on their definitions, and every consumer must supply them. |
+
+**Recommended re-size** (a plan decision, not taken here): split Phase 14 into
+(14a) the four axiom fields plus the per-site binder propagation and the 14 discharges — the core
+deliverable, and the only part the Cross-Task Acceptance Criterion binds; and
+(14b) `[Nontrivial D]` and `Nonempty WorldState`, which are independent of the four axioms, have
+their own much larger propagation, and gate nothing in Phase 15. Phase 15's substitution depends
+only on 14a.
+
+**Nothing here is descoped by assumption.** Every gate the phase names was run and passed; the
+only reason the batch stayed shut is the measured sizing above.
+
 **Tasks**:
 - [ ] Re-run the full site-discovery greps and reconcile against the table above **before adding
       any field**. Treat any newly-appeared site as in scope (and as a signal that a Phase 10-13
