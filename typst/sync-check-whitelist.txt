@@ -110,6 +110,12 @@ thm:BLplus-PastFuture
 def:TMplus-f
 def:TMplus-d
 
+# --- More external paper anchors cited only in typst/FormalFoundations.typ,
+# same category as above: no matching Lean identifier to grep. ---
+def:frame-properties
+thm:M5-valid
+thm:TM-soundness
+
 # --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
 01-introduction.typ
 

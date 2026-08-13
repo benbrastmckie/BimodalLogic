@@ -295,7 +295,7 @@ the fiber/cone/segment apparatus to a one-sentence statement before cutting any 
 
 ---
 
-### Phase 4: Section 2 — key theorems, completeness status, decidability as open [NOT STARTED]
+### Phase 4: Section 2 — key theorems, completeness status, decidability as open [COMPLETED]
 
 **Goal**: A ~2-page statement-and-anchor treatment of the load-bearing theorems, the exact
 completeness status from `cor:tm-completeness` unsoftened, and a faithful open-status account of

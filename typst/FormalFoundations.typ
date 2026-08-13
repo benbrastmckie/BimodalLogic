@@ -177,7 +177,47 @@ The *BL-level* system this report's pain points concern is $op("TM")$ itself, th
 
 = Key Theorems, Completeness Status, and Decidability <sec:key-theorems>
 
-// PHASE-4-PLACEHOLDER: content added in a later phase.
+== Existence, Soundness, Correspondence
+
+Every partial history extends to a total one by a Step Lemma#footnote[`lem:step`, the sole *Spherical* application site. @brastmckie2026possibleworlds] driving a Zorn's-lemma argument (`thm:extension`), hence `cor:occurrence`; both are ZFC results, not choice-free. This matters for a Lean/paper mismatch worth flagging once: "choice-free" in the paper's sense means *no further use of AC given classical logic*, whereas Lean's single `Classical.choice` axiom already yields both excluded middle and choice jointly, so `#print axioms` cannot express the paper's finer distinction directly -- this repository has separately machine-checked that *Spherical* on a finite carrier implies weak excluded middle, so no `Classical.choice`-free Lean proof of `thm:extension` could exist even for the finite case.
+
+#theorem("Soundness")[If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM and each of its four frame-class extensions.]#footnote[`thm:TM-soundness`. Representative validity proofs: `thm:M5-valid` ($#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, via $square.stroked$'s universal quantification over the evaluation set $H_(#taskframe)$ itself), plus TD, TA, TL, MF. @brastmckie2026possibleworlds]
+
+The three correspondence theorems are compressed to statement and one-line idea -- these are *not* the "give in full" exceptions (@sec:split-validity's dichotomy and (DD) are):
+
+#figure(
+  table(
+    columns: 2, stroke: none, align: (left,left),
+    table.hline(), table.header([*Correspondence*],[*Idea*]), table.hline(),
+    [DF valid over $#taskframe$ iff $#Dur$ Discrete], [both directions via the translation-flow frame $W=D$, $w arrow.r.double.long_d u :<=> u=w+d$],
+    [DN valid over $#taskframe$ iff $#Dur$ Dense], [same frame, DN forces/is forced by an interpolant],
+    [CO valid over $#taskframe$ iff $#Dur$ Complete], [same frame with $|p| = L$ for a Dedekind cut $(L,U)$],
+    table.hline(),
+  ),
+  caption: [The three frame-property correspondences (`app:discrete`, `app:dense`, `app:complete`), against the four frame-class predicates of `def:frame-properties`.],
+)#footnote[@brastmckie2026possibleworlds]
+
+== Perpetuity and the Collapse Theorems
+
+The perpetuity principles P1-P6 and TF ($square.stroked phi.alt arrow.r #allfuture square.stroked phi.alt$) follow from MF and MT by short classical chains at `sub:Logic`; four modal-temporal collapses are worth naming, since they bound the language's real expressive complexity: $#sometimes square.stroked phi.alt arrow.l.r square.stroked phi.alt$ (Pthm:13), $#always square.stroked phi.alt arrow.l.r square.stroked phi.alt$ (Pthm:14), $square.stroked #always phi.alt arrow.l.r square.stroked phi.alt$ (Pthm:18), $diamond.stroked phi.alt arrow.l.r diamond.stroked #sometimes phi.alt$ (Pthm:20) -- each a short ($lt.eq 6$-line) chain from P1-P6, TF, MN, MK, M5.#footnote[Untracked, cited by key; paraphrased, not quoted verbatim. @brastmckie2026possibleworlds]
+
+By Hölder's theorem, a nontrivial *discrete* Archimedean totally ordered abelian group is isomorphic to $ZZ$, and a nontrivial *Dedekind-complete* one is Archimedean hence isomorphic to $ZZ$ or $RR$ -- so the complete class is exactly ${ZZ, RR}$ up to isomorphism, and the dense-and-complete class is exactly $RR$.#footnote[`def:TMplus-f`, `def:TMplus-c` footnotes. @brastmckie2026possibleworlds The paper names Hölder's theorem without a bibliography entry, a standard-result convention this report matches.]
+
+== Completeness -- Stated Exactly, Unsoftened <sec:completeness-status>
+
+#theorem("Completeness")[
+  TM, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ are sound over their respective classes of all, discrete, dense, complete, and dense-and-complete task frames, but *none is complete*. Completeness is instead carried by $op("BL")^+$ systems: $op("TM")^+_d$ is weakly complete over the full Dense class (machine-checked, sorry-free); $op("TM")^+_f$ is weakly complete over $ZZ$-time (machine-checked over the successor-Archimedean class); $op("TM")^+_c$ is weakly complete over the dense-and-complete class, exactly $RR$ (machine-checked); $op("TM")^+$'s weak completeness over *all* task frames is the stated formalization *target*, with one proof obligation outstanding -- *not* an established theorem.
+]#footnote[`cor:tm-completeness`. @brastmckie2026possibleworlds]
+
+*Strong* completeness -- consequence from a possibly infinite premise set -- is the aim for $op("TM")^+$ and $op("TM")^+_d$, with no known obstruction to a fully compact treatment of the base and dense classes; it *provably fails* for $ZZ$-time and for the dense-and-complete class $RR$, where compactness fails. Nothing is asserted about compactness of the full discrete class in either direction, or about $op("TM")_c$'s completeness over ${ZZ,RR}$, which is not claimed even weakly.
+
+The former conservative-extension theorem is deleted from the paper; its replacement is a four-part footnote at `def:TMplus`: the *backward* direction ($op("BL")$-theorems of TM/$op("TM")_f$/$op("TM")_d$/$op("TM")_c$ remain theorems of $op("TM")^+$ and its extensions) holds unconditionally, since $op("BL")$ embeds into $op("BL")^+$; the *forward* direction fails for the base case, witnessed by (DD) (@sec:split-validity); fails unconditionally for the discrete extension via TMP-Z1 over $ZZ times_"lex" ZZ$; and remains *open* for the dense and complete extensions, with no known counterexample. No conservativity claim is made for $op("TM")^+$ over TM.
+
+== Decidability -- Faithfully Open
+
+#theorem("Decidability")[Whether TM, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ are decidable is *open*.]#footnote[`cor:tm-decidability`. @brastmckie2026possibleworlds]
+
+A recursively axiomatized system's theorems are recursively enumerable regardless of completeness status; decidability additionally needs the *non*-theorems to be r.e., standardly secured via a finite model property (FMP). A former blanket FMP-over-$D=ZZ$ premise is *retracted as false*, witnessed twice: DF is a non-theorem of TM, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ yet valid in every model over $D=ZZ$; CO is a non-theorem of $op("TM")_f$, witnessed by $ZZ times_"lex" ZZ$, yet likewise valid over $D=ZZ$. A repaired FMP must therefore be *class-specific*, ranging over effective non-Archimedean carriers such as $ZZ times_"lex" ZZ$. What exists: a verified sound tableau procedure, and ongoing formalization of a semantic, truth-connected FMP for the $ZZ$-time discrete case (@sec:construction). What would suffice: the two intersection reductions -- $op("Log")("all task frames") = op("Log")("Discrete") inter op("Log")("Dense")$ and $op("Log")("complete frames") = op("Th")(ZZ) inter op("Th")(RR)$ -- each reducing decidability to that of the two factor logics. This is a target *strategy*, not a result; no decidability theorem is proposed here.
 
 = Pain Point One: The Contingency of the Temporal Axioms <sec:contingency>
 
