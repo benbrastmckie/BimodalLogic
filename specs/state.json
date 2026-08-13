@@ -874,15 +874,15 @@
           "summary": "Rescopes the semantic FMP from the Discrete class to Z-time with the paper's own refutation; machine-checked cor:spherical-finite transcription and Seriality-independence counterexample; Z-frame normal form as the plannable spine; seven-point stale-claim inventory for the task description."
         },
         {
-          "path": "specs/417_semantic_fmp_finite_worldstate_over_z/plans/02_semantic-fmp-z-time.md",
-          "type": "plan",
-          "summary": "13-phase plan for the truth-connected semantic FMP over Z-time and a decidable IntPresentation model checker, spined on the Z-frame normal form, with the untl/snce eventuality core isolated in a [BLOCKED]-escalating phase."
+          "path": "specs/417_semantic_fmp_finite_worldstate_over_z/plans/03_semantic-fmp-z-time.md",
+          "type": "plan"
         }
       ],
       "created": "2026-07-28T22:51:10Z",
       "last_updated": "2026-08-13T05:15:12Z",
       "topic": "paper-refactor",
-      "session_id": "sess_1786596250_cff2d5_417"
+      "session_id": "sess_1786596250_cff2d5_417",
+      "next_artifact_number": 2
     },
     {
       "project_number": 426,
