@@ -504,7 +504,7 @@ citations — while preserving the one correctly-scoped "open problem" statement
 
 ---
 
-### Phase 8: Rebuild the Module Table and Correct the Frame-Class Count [NOT STARTED]
+### Phase 8: Rebuild the Module Table and Correct the Frame-Class Count [COMPLETED]
 
 **Goal**: There are **four** frame classes, not three, and `04-metalogic.typ`'s `Metalogic/` module
 table is wrong in five rows. Rebuild both against the live tree.

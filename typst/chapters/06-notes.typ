@@ -13,7 +13,7 @@
 == Implementation Status
 
 The syntax (six primitive constructors over the Until/Since basis), the task-frame semantics with strict truth conditions, and the BX proof system (#axiom-count axiom constructors in eight layers, #rule-count inference rules, frame-class parameter) are complete in Lean.
-Soundness for all three frame classes, the deduction theorem, and the perpetuity principles P1--P6 are proven.
+Soundness for all four frame classes (Base, Dense, Discrete, Dedekind), the deduction theorem, and the perpetuity principles P1--P6 are proven.
 A canonical-model construction is developed via `completeness` (`Metalogic/BXCanonical/`), underlying the machine-checked $op("BL")^+$ completeness results of @sec:metalogic; *TM* itself is sound but provably incomplete over its own frame classes (`cor:tm-completeness`), not merely unresolved.
 The tableau decision procedure has soundness proven (`decide_sound`), and its finite-model-property component is discussed below.
 

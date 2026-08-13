@@ -11,7 +11,7 @@
 
 
 The metalogic for the bimodal logic *TM* relates the BX proof system of the previous chapter to the task semantics.
-Soundness is fully proven for all three frame classes.
+Soundness is fully proven for all four frame classes.
 Completeness, however, is not merely unresolved for *TM* itself: it is *provably absent*, for a structural reason worth understanding before the technical development below, and this is the headline correction this chapter makes relative to earlier drafts of this book.
 Completeness is instead carried by machine-checked $op("BL")^+$ systems built on the canonical-model infrastructure developed here.
 The chapter closes with the tableau-based decision procedure and the live module structure of `Metalogic/`.
@@ -26,11 +26,11 @@ It is proven separately for each frame class, matching the `FrameClass` paramete
 ]
 
 #theorem("Frame-Class Soundness")[
-  Derivability at frame class `Dense` (respectively `Discrete`) implies validity over densely ordered (respectively discrete) task frames.#footnote[Proven sorry-free as `soundness_dense` in `Metalogic/DenseSoundness.lean` and `soundness_discrete` in `Metalogic/DiscreteSoundness.lean`.]
+  Derivability at frame class `Dense` (respectively `Discrete`, `Dedekind`) implies validity over densely ordered (respectively discrete, dense-Dedekind-complete) task frames.#footnote[Proven sorry-free as `soundness_dense`, `soundness_discrete`, and `soundness_dedekind`, all in the single unified `Metalogic/Soundness.lean` module -- not the separate per-class files an earlier draft of this book cited; the module structure changed from per-class files to one unified module. `FrameClass.Dedekind` corresponds to the paper's $op("TM")^+_(d c)$ (dense-and-complete, i.e. the real flow), not $op("TM")^+_c$ (completeness alone, whose models are $ZZ$ and $RR$ up to isomorphism) -- see @sec:frame-classes for why no `FrameClass` constructor targets $op("TM")^+_c$ itself.]
 ]
 
 The proof proceeds by induction on the derivation structure:
-- *Axioms*: Each of the #axiom-count axiom constructors is proven valid on the frames of its minimum frame class (base axioms on all linear orders, `density`/`dense_indicator` on dense orders, `prior_UZ`/`prior_SZ`/`z1` on discrete orders)
+- *Axioms*: Each of the #axiom-count axiom constructors is proven valid on the frames of its minimum frame class (base axioms on all linear orders, `density`/`dense_indicator` on dense orders, `prior_UZ`/`prior_SZ`/`z1` on discrete orders, `prior_U_gap`/`prior_S_gap`/`sep` on dense-Dedekind-complete orders)
 - *Assumptions*: Assumed formulas are true by hypothesis
 - *Modus ponens*: Validity preserved under implication elimination
 - *Necessitation*: Valid formulas become necessarily valid
@@ -38,7 +38,7 @@ The proof proceeds by induction on the derivation structure:
 - *Temporal duality*: Past-future swap preserves validity
 - *Weakening*: Adding premises preserves semantic consequence
 
-The axiom validity lemmas live in `Metalogic/SoundnessLemmas/` (with `Core.lean`, `DenseValidity.lean`, and `FrameClassVariants.lean`), and the frame-condition semantics for the Base/Dense/Discrete classes is developed in the top-level `FrameConditions/` directory.
+The axiom validity lemmas live in `Metalogic/SoundnessLemmas/` (with `Core.lean`, `DenseValidity.lean`, and `FrameClassVariants.lean`), and the frame-condition semantics for the Base/Dense/Discrete classes is developed in the top-level `FrameConditions/` directory (the Dedekind class's semantic side lives in `WeakCanonical/RealModel/`, per @sec:frame-classes).
 The modal-temporal interaction axiom MF uses time-shift invariance (via `timeShift` on world histories) to relate truth at different times.
 
 == Core Infrastructure
@@ -183,26 +183,24 @@ The live metalogic code is organized as follows (`FormalSystem/Metalogic/`):
       [*Module*], [*Contents*],
     ),
     table.hline(),
-    [`Core/`], [MCS theory, provability interface, deduction theorem],
+    [`Core/`], [MCS theory, provability interface, deduction theorem, Lindenbaum lemma (`set_lindenbaum`); `RestrictedMCS/` subtree],
     [`Bundle/`], [Time-indexed MCS families (BFMCS) with coherence conditions],
     [`Algebraic/`], [D-parametric algebraic completeness and truth lemma],
-    [`BXCanonical/`], [Completeness theorem; `Chronicle/` (dense case), `Filtration/`, `Quasimodel/`],
-    [`WeakCanonical/`], [Reynolds/Doets discrete completeness path; `Separation/`; Kamp-style expressiveness modules],
-    [`ConservativeExtension/`], [Conservative extension results],
-    [`Decidability/`], [Tableau decision procedure; `FMP/` finite model property],
-    [`SoundnessLemmas/`], [Per-axiom validity lemmas, dense/discrete variants],
-    [`Soundness.lean`], [Soundness theorem (sorry-free)],
-    [`DenseSoundness.lean`, `DiscreteSoundness.lean`], [Frame-class soundness (sorry-free)],
-    [`Completeness.lean`], [MCS properties and Lindenbaum lemma],
+    [`BXCanonical/`], [`Completeness.lean` (Base/Dense/Discrete completeness), `CompletenessDedekind.lean`; `Chronicle/` (dense case), `Filtration/`, `Quasimodel/`],
+    [`WeakCanonical/`], [Reynolds/Doets discrete completeness path; `Separation/`; Kamp-style expressiveness modules (`Kamp/`); `RealModel/` (Dedekind/real-flow semantics), `IntegerModel/`, `EFGames/`, `Expressiveness/`, `DenseModelSurgery/`],
+    [`Decidability/`], [Tableau decision procedure; `FMP/` finite model property (discrete-only, @sec:decidability-practice); `Propositional/`, `Verified/`],
+    [`SoundnessLemmas/`], [Per-axiom validity lemmas, dense/discrete/Dedekind variants],
+    [`Soundness.lean`], [Unified soundness theorem for all four frame classes: `soundness`, `soundness_dense`, `soundness_discrete`, `soundness_dedekind` (sorry-free) -- not separate per-class files],
+    [`StrongCompleteness.lean`], [`completeness_dedekind`, `consequence_completeness_dedekind`],
     [`Decidability.lean`], [Decidability interface],
     table.hline(),
   ),
-  caption: [Live `Metalogic/` module structure.],
+  caption: [Live `Metalogic/` module structure. The former conservative-extension module no longer exists -- see @sec:conservative-extension for the paper's actual conservativity status.],
 )
 
 == Implementation Status
 
-Soundness in all three frame-class variants, the deduction theorem, the MCS/Lindenbaum infrastructure, the perpetuity principles P1--P6, and the entire `Syntax/`, `Semantics/`, `ProofSystem/`, and `Theorems/` trees are fully proven in Lean under `FormalSystem/`.
+Soundness in all four frame-class variants (Base, Dense, Discrete, Dedekind), the deduction theorem, the MCS/Lindenbaum infrastructure, the perpetuity principles P1--P6, and the entire `Syntax/`, `Semantics/`, `ProofSystem/`, and `Theorems/` trees are fully proven in Lean under `FormalSystem/`.
 The canonical-model construction is developed end-to-end for each frame class and underlies the machine-checked $op("BL")^+$ completeness results above; *TM* itself is sound but provably incomplete over its own frame classes, per `cor:tm-completeness`, so no amount of further canonical-model work closes that gap for *TM* -- only for the $op("BL")^+$ systems built on top of it.
 The decision procedure's soundness (`decide_sound`) and the finite-filtration FMP statement (`fmp_completeness`) are likewise proven, with the semantic-validity bridge treated in @sec:decidability-practice.
 

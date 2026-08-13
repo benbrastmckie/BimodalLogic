@@ -23,7 +23,7 @@ Adapting the Logos manual's framing:#footnote[Logos `01-introduction.typ`, "Dual
 #items[
   #item[*Proof certificates* -- a kernel-checked `DerivationTree` term is a machine-verifiable witness explaining *why* a formula is a theorem, not merely *that* it is one. Every `valid` result from `decide` (@sec:decidability-practice) carries one.]
   #item[*Counterexamples* -- an explicit `SimpleCountermodel` (or the richer `SemanticCountermodel`) gives targeted corrective feedback: not merely that an inference fails, but which atoms make it fail.]
-  #item[*Soundness guarantees* -- soundness (proven for `TM`, all three frame classes) is what makes a proof certificate reliable independent of the search procedure that found it: if the kernel accepts a `DerivationTree`, the corresponding formula is genuinely valid.]
+  #item[*Soundness guarantees* -- soundness (proven for `TM`, all four frame classes: Base, Dense, Discrete, Dedekind) is what makes a proof certificate reliable independent of the search procedure that found it: if the kernel accepts a `DerivationTree`, the corresponding formula is genuinely valid.]
 ]
 
 In this repository, the lean-verified instance of this architecture is the decision procedure of @sec:decidability-practice (`decide_sound` proven, countermodels extracted from open tableau branches); the cross-project vision above remains architectural only, where ModelChecker's independent Z3-based search would corroborate ProofChecker's Lean-checked derivations for the same formula.
