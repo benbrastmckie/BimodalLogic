@@ -974,8 +974,14 @@ directions (interpolate through `w` itself), *Seriality* (`staticFrame_serial` b
 *Limit* (only `w` is reachable from `w` at all), and *Spherical* (every nonempty fiber and
 segment is the same singleton along a directed family) — as well as every field of the current
 structure.
+
+The `[Nontrivial D]` binder is carried because `staticFrame_limit` requires it: over a trivial
+duration type `0 < x` is unsatisfiable, so *Limit*'s hypothesis is vacuous and the conclusion
+`u = w` cannot be reached. Every reference to this frame elaborates at `Int`, which supplies the
+instance.
 -/
-def staticFrame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+def staticFrame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] :
     TaskFrame D where
   WorldState := W
   TaskRel := fun w _ u => w = u
@@ -989,7 +995,7 @@ def staticFrame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrder
 The static frame's relation is the equality class: `TaskRel w x u` holds exactly when `w = u`,
 at every duration. This is the class-membership witness Helper C's lemmas consume.
 -/
-theorem staticFrame_rel_iff (W : Type) :
+theorem staticFrame_rel_iff [Nontrivial D] (W : Type) :
     ∀ w d u, (staticFrame W (D := D)).TaskRel w d u ↔ w = u := fun _ _ _ => Iff.rfl
 
 /--
@@ -1002,13 +1008,14 @@ conjunction, so that it is citable verbatim for the frame's *Seriality* field. T
 `x ≥ 0` proviso is `Serial`'s own hypothesis and is simply unused here, since the witness works
 at every duration.
 -/
-theorem staticFrame_serial (W : Type) : Serial (staticFrame W (D := D)).TaskRel :=
+theorem staticFrame_serial [Nontrivial D] (W : Type) : Serial (staticFrame W (D := D)).TaskRel :=
   serial_of_eq (staticFrame_rel_iff W)
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `staticFrame`: interpolate through `w` itself. -/
-theorem staticFrame_interpolates (W : Type) : Interpolates (staticFrame W (D := D)).TaskRel :=
+theorem staticFrame_interpolates [Nontrivial D] (W : Type) :
+    Interpolates (staticFrame W (D := D)).TaskRel :=
   interpolates_of_eq (staticFrame_rel_iff W)
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
@@ -1020,7 +1027,8 @@ theorem staticFrame_limit [Nontrivial D] (W : Type) :
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 directed family $\mathcal{S}$ of nonempty fibers and segments") for `staticFrame`: every nonempty
 fiber and segment is the same singleton along a directed family. -/
-theorem staticFrame_spherical (W : Type) : Spherical (staticFrame W (D := D)).TaskRel :=
+theorem staticFrame_spherical [Nontrivial D] (W : Type) :
+    Spherical (staticFrame W (D := D)).TaskRel :=
   spherical_of_eq (staticFrame_rel_iff W)
 
 /--
