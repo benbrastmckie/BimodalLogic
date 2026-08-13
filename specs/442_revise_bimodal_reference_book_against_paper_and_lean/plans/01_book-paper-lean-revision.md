@@ -614,7 +614,7 @@ whitelist) from evidence before adding any entry.
 
 ---
 
-### Phase 10: Bibliography [NOT STARTED]
+### Phase 10: Bibliography [COMPLETED]
 
 **Goal**: Every `@`-citation resolves, and the entries actually used are correct.
 

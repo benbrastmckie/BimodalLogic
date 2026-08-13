@@ -35,3 +35,17 @@ These three anchors are NOT among the 26 tracked in specs/paper-definitions-of-r
 Re-verified directly against the live paper (2026-08-13 live tree) for every quote in this task;
 matches the task description's section 4/5 verbatim. check-paper-definitions.sh does not protect
 this book's completeness/decidability text against future paper drift on these three anchors.
+
+## Phase 10: Hölder's theorem citation style
+The book does not currently invoke Hölder's theorem by name anywhere (confirmed via grep). The
+paper names it without a bibliography entry, treating it as a standard result. Since the book
+doesn't state the fact yet, the style question (name without citation, matching the paper's own
+practice, vs. add a formal reference) is moot for this revision. If a later phase's exposition
+states the fact (a nontrivial discrete Archimedean totally ordered abelian group is isomorphic to
+Z), match the paper's practice and name it without a formal citation rather than silently adding
+one -- flagged here per the task's instruction, not resolved.
+
+## Phase 10: vlach1973nowandthen citation status
+Confirmed (not assumed): already cited three times in p3-vlach-blstar.typ. No action needed;
+the plan's "appears to be uncited" hypothesis was incorrect for the live tree at implementation
+time.

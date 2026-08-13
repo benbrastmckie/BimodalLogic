@@ -11,6 +11,7 @@
 == Perpetuity Principles <sec:perpetuity>
 
 The perpetuity principles establish deep connections between modal necessity ($square.stroked$) and temporal operators ($triangle.stroked.t$, $triangle.stroked.b$); they are the touchstone principles P1--P6 of @brastmckie2026possibleworlds, proven here in Lean (`Theorems/Perpetuity/`).
+P1 in particular is the formal counterpart of a thesis defended independently in the philosophical literature: every necessarily true proposition is always true @dorr2020diamonds.
 
 #theorem("P1: Necessity Implies Always")[
   $tack.r square.stroked phi.alt arrow.r triangle.stroked.t phi.alt$
