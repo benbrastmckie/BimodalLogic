@@ -212,12 +212,12 @@ For a domain time `t ≤ z` this is the successor half of *Seriality* at the non
 `z - t`; for `t ≥ z` it is the predecessor half at `t - z`, turned around by the converse
 convention. No other axiom is used.
 -/
-theorem nonempty_fib_of_serial {τ : PartialHistory F} (hSer : Serial F.TaskRel) {z t : D}
+theorem nonempty_fib_of_serial {τ : PartialHistory F} {z t : D}
     (ht : τ.domain t) : (Fib F.TaskRel (τ.states t ht) (z - t)).Nonempty := by
   rcases le_total t z with h | h
-  · obtain ⟨u, hu⟩ := (hSer (τ.states t ht) (z - t) (sub_nonneg.mpr h)).1
+  · obtain ⟨u, hu⟩ := (F.serial (τ.states t ht) (z - t) (sub_nonneg.mpr h)).1
     exact ⟨u, TaskFrame.mem_Fib.mpr hu⟩
-  · obtain ⟨v, hv⟩ := (hSer (τ.states t ht) (t - z) (sub_nonneg.mpr h)).2
+  · obtain ⟨v, hv⟩ := (F.serial (τ.states t ht) (t - z) (sub_nonneg.mpr h)).2
     refine ⟨v, TaskFrame.mem_Fib.mpr ?_⟩
     have h' := (F.converse v (t - z) (τ.states t ht)).mp hv
     rwa [neg_sub] at h'
@@ -230,26 +230,24 @@ both summands positive because `t < z < s`. Interpolating at that split produces
 `τ(t) ⇒_{z-t} u` and `u ⇒_{s-z} τ(s)`; the converse convention rewrites the second conjunct as
 `τ(s) ⇒_{-(s-z)} u`, which is exactly membership in `[τ(t), τ(s)]_{z-t}^{s-z}`.
 -/
-theorem nonempty_seg_of_interpolates {τ : PartialHistory F} (hInt : Interpolates F.TaskRel)
-    {z t s : D} (ht : τ.domain t) (hs : τ.domain s) (htz : t < z) (hzs : z < s) :
+theorem nonempty_seg_of_interpolates {τ : PartialHistory F} {z t s : D} (ht : τ.domain t) (hs : τ.domain s) (htz : t < z) (hzs : z < s) :
     (Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)).Nonempty := by
   have hrel : F.TaskRel (τ.states t ht) ((z - t) + (s - z)) (τ.states s hs) := by
     have h := τ.respects_task t s ht hs
     have heq : z - t + (s - z) = s - t := by abel
     rw [heq]
     exact h
-  obtain ⟨u, hu1, hu2⟩ := hInt (τ.states t ht) (τ.states s hs) (z - t) (s - z)
+  obtain ⟨u, hu1, hu2⟩ := F.interpolates (τ.states t ht) (τ.states s hs) (z - t) (s - z)
     (le_of_lt (sub_pos.mpr htz)) (le_of_lt (sub_pos.mpr hzs)) hrel
   exact ⟨u, hu1, (F.converse u (s - z) (τ.states s hs)).mp hu2⟩
 
 /-- Every constraint on `z` is nonempty: the two cases of `def:constraints`, discharged by
 *Seriality* and by the interpolation half of *Compositionality* respectively. -/
-theorem nonempty_of_mem_Constraints {τ : PartialHistory F} (hSer : Serial F.TaskRel)
-    (hInt : Interpolates F.TaskRel) {z : D} {c : Set F.WorldState}
+theorem nonempty_of_mem_Constraints {τ : PartialHistory F} {z : D} {c : Set F.WorldState}
     (hc : c ∈ Constraints τ z) : c.Nonempty := by
   rcases hc with ⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, _, rfl⟩
-  · exact nonempty_seg_of_interpolates hInt ht hs htz hzs
-  · exact nonempty_fib_of_serial hSer ht
+  · exact nonempty_seg_of_interpolates ht hs htz hzs
+  · exact nonempty_fib_of_serial ht
 
 /-!
 ### Directedness
@@ -390,11 +388,10 @@ hypothesis. *Limit* is not consumed either.
 The paper's `z ∈ D \ X` proviso is not assumed: see this module's docstring for why the lemma
 holds a fortiori when `z` is itself a domain time.
 -/
-theorem constraint (hSer : Serial F.TaskRel) (hInt : Interpolates F.TaskRel)
-    (τ : PartialHistory F) (z : D) :
+theorem constraint (τ : PartialHistory F) (z : D) :
     DirectedFamily (Constraints τ z) ∧ ∀ c ∈ Constraints τ z, c.Nonempty :=
   ⟨⟨nonempty_Constraints τ z, fun _ h₁ _ h₂ => exists_mem_subset_inter h₁ h₂⟩,
-    fun _ hc => nonempty_of_mem_Constraints hSer hInt hc⟩
+    fun _ hc => nonempty_of_mem_Constraints hc⟩
 
 end PartialHistory
 

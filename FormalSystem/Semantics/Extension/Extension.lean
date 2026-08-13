@@ -53,20 +53,19 @@ maximality plus the ability to extend by one arbitrary duration forces the domai
 `D`. Totality then yields convexity for free (`total_isConvex`), so the promotion of the maximal
 partial history to a `WorldHistory`, and thence to an `F.HF` element, is immediate.
 
-## `cor:occurrence` is landed in **hypothesis form** only
+## `cor:occurrence` is landed in **frame-intrinsic** form
 
-`occurrence` below carries the frame axioms as explicit hypotheses, exactly as `extension` does.
+`occurrence` below quantifies over a frame alone, with no axiom hypotheses — which is what the
+paper's own statement literally reads as. It once carried the axioms as explicit hypotheses,
+gated on the frame-axiom-field refactor recorded in `Step.lean`; that refactor has landed.
+`TaskFrame` carries *Compositionality* (biconditional), *Seriality*, *Limit*, and *Spherical* as
+structure data, each stated by citation of the bare-relation predicate rather than restated, so
+threading them through this chain is now a projection rather than a hypothesis — with zero
+restatement, exactly as the hypothesis-form discipline was designed to guarantee.
 
-The **frame-intrinsic** form of `cor:occurrence` — the statement quantifying over a frame alone,
-with no axiom hypotheses, which is what the paper's own statement literally reads as — is
-deliberately **not** provided here. It would require `TaskFrame` to carry *Seriality*,
-*Spherical*, *Interpolation*, and *Limit* as structure data (together with `Nonempty WorldState`
-where the paper's ambient convention supplies it), which `TaskFrame` does not do today. Landing
-it here would mean restating those axioms in a second place, which is precisely the divergence
-the hypothesis-form discipline exists to prevent. It is gated on the frame-axiom-field refactor
-recorded in `Step.lean`'s "Invariant for a future frame-axiom-field refactor": once
-`TaskFrame.spherical` is **definitionally** `Spherical TaskRel` (and likewise for the others),
-the frame-intrinsic form is a mechanical specialization of `occurrence` with zero restatement.
+One argument the paper's ambient convention supplies and `TaskFrame` still does not is the world
+state: `hF_nonempty` continues to take `w` explicitly, because the structure carries no
+`Nonempty WorldState` field yet.
 
 ## The one-point partial history, and what is *not* in this chain
 
@@ -92,7 +91,7 @@ plays no role here.
 - `PartialHistory.total_isConvex` — a total domain is convex
 - `PartialHistory.isTotal_of_isMax` — maximal implies total (the converse of `isMax_of_total`)
 - `PartialHistory.extension` — `thm:extension`
-- `PartialHistory.occurrence` — `cor:occurrence`, hypothesis form
+- `PartialHistory.occurrence` — `cor:occurrence`, frame-intrinsic form
 -/
 
 namespace FormalSystem.Semantics
@@ -154,12 +153,10 @@ extending `τ` with `z` in its domain; maximality then forces `τ` to extend `σ
 The four axiom hypotheses are **pass-through arguments to `step`**. Nothing here applies any of
 them; in particular this is not a second *Spherical* application site.
 -/
-theorem isTotal_of_isMax (F : TaskFrame D) (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel)
-    (hInt : Interpolates F.TaskRel)
-    (hLim : ∀ w v, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y v) → v = w)
-    {τ : PartialHistory F} (hmax : IsMax τ) : τ.IsTotal := by
+theorem isTotal_of_isMax (F : TaskFrame D) {τ : PartialHistory F} (hmax : IsMax τ) :
+    τ.IsTotal := by
   intro z
-  obtain ⟨σ, hext, hσz⟩ := step F hSph hSer hInt hLim τ z
+  obtain ⟨σ, hext, hσz⟩ := step F τ z
   -- `hext : Extends σ τ` is `τ ≤ σ`; maximality turns it around into `σ ≤ τ`.
   exact (le_def.mp (hmax (le_def.mpr hext))).subset z hσz
 
@@ -184,16 +181,13 @@ result is a world history, and totality is exactly its `H_F` membership.
 **These two are the whole proof.** *Spherical* is not threaded in directly — it is handed to
 `step`, which remains its sole application site.
 -/
-theorem extension (F : TaskFrame D) (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel)
-    (hInt : Interpolates F.TaskRel)
-    (hLim : ∀ w v, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y v) → v = w)
-    (τ : PartialHistory F) :
+theorem extension (F : TaskFrame D) (τ : PartialHistory F) :
     ∃ σ : F.HF, Extends σ.val.toPartialHistory τ := by
   obtain ⟨μ, hle, hmax⟩ := exists_maximal_extension τ
-  have htot : μ.IsTotal := isTotal_of_isMax F hSph hSer hInt hLim hmax
+  have htot : μ.IsTotal := isTotal_of_isMax F hmax
   exact ⟨⟨μ.toWorldHistory htot, isTotal_toWorldHistory μ htot⟩, le_def.mp hle⟩
 
-/-! ## `cor:occurrence`, hypothesis form -/
+/-! ## `cor:occurrence`, frame-intrinsic form -/
 
 /--
 The **one-point** partial history `{⟨x, w⟩}`: the state `w` at the single time `x`.
@@ -220,7 +214,7 @@ theorem point_states (F : TaskFrame D) (w : F.WorldState) (x : D) (t : D)
     (ht : (point F w x).domain t) : (point F w x).states t ht = w := rfl
 
 /--
-`cor:occurrence`, in **hypothesis form**: every world state occurs at any prescribed time in some
+`cor:occurrence`, in **frame-intrinsic form**: every world state occurs at any prescribed time in some
 total world history.
 
 Recorded source (`cor:occurrence`, verbatim): "For any frame
@@ -230,31 +224,25 @@ world history $\tau \in H_{\F}$ where $\tau(x) = w$, and so $H_{\F} \neq \emptys
 **Proof recipe, exactly as recorded**: extend the one-point partial history `{⟨x, w⟩}` directly
 via `thm:extension`. The extension agrees with the one-point history at `x`, which is the claim.
 
-**Hypothesis form only.** The frame-intrinsic statement — quantifying over a frame with no axiom
-hypotheses, which is how the recorded source literally reads — is deliberately not provided here;
-see this module's docstring for why, and for the refactor it is gated on.
+**Frame-intrinsic.** The statement quantifies over a frame with no axiom hypotheses, which is
+how the recorded source literally reads; the axioms reach `step` as the frame's own fields. See
+this module's docstring.
 -/
-theorem occurrence (F : TaskFrame D) (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel)
-    (hInt : Interpolates F.TaskRel)
-    (hLim : ∀ w v, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y v) → v = w)
-    (w : F.WorldState) (x : D) :
+theorem occurrence (F : TaskFrame D) (w : F.WorldState) (x : D) :
     ∃ τ : F.HF, τ.val.states x (τ.property x) = w := by
-  obtain ⟨τ, hext⟩ := extension F hSph hSer hInt hLim (point F w x)
+  obtain ⟨τ, hext⟩ := extension F (point F w x)
   exact ⟨τ, hext.agree x rfl⟩
 
 /--
-`cor:occurrence`'s closing clause, in hypothesis form: `H_F` is nonempty.
+`cor:occurrence`'s closing clause: `H_F` is nonempty.
 
 Recorded source (`cor:occurrence`, verbatim, closing clause): "…and so
 $H_{\F} \neq \emptyset$." This needs a world state to start from, which the paper's ambient
 convention supplies and which `TaskFrame` does not; it is therefore taken here as the explicit
 argument `w`.
 -/
-theorem hF_nonempty (F : TaskFrame D) (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel)
-    (hInt : Interpolates F.TaskRel)
-    (hLim : ∀ w v, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y v) → v = w)
-    (w : F.WorldState) : Nonempty F.HF :=
-  let ⟨τ, _⟩ := occurrence F hSph hSer hInt hLim w 0
+theorem hF_nonempty (F : TaskFrame D) (w : F.WorldState) : Nonempty F.HF :=
+  let ⟨τ, _⟩ := occurrence F w 0
   ⟨τ⟩
 
 end PartialHistory

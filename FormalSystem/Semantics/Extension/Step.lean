@@ -33,19 +33,20 @@ The proof is a composition, not a re-derivation. Each of its three inputs is alr
 `lem:admissible` explicitly does not consume it either. A `grep` for `Spherical` across
 `FormalSystem/` should therefore find exactly one consuming proof — the proof of `step` below.
 
-### Invariant for a future frame-axiom-field refactor
+### The frame-axiom-field invariant, discharged
 
-*Spherical* currently lives as the `Prop`-valued predicate `TaskFrame.Spherical` over a bare task
-relation, and `step` takes it as an explicit hypothesis binder `hSph`. When the axiom fields are
-later added to the `TaskFrame` structure, `TaskFrame.spherical` must be **definitionally**
-`Spherical TaskRel`, `TaskFrame.serial` definitionally `Serial TaskRel`, and the interpolation
-half of *Compositionality* definitionally `Interpolates TaskRel`, exactly as those predicates are
-defined in `FormalSystem.Semantics.FrameAxioms`. That refactor then discharges `step`'s
-hypotheses by `F.spherical` / `F.serial` / `F.interpolates` — a mechanical substitution with zero
-restatement. **If a field lands whose statement differs, `step` stops typechecking**, and that
-compilation failure is the acceptance test. This is why the hypothesis form is landed first: an
-inert structure field nothing consumes could diverge silently, whereas a consumed hypothesis
-cannot.
+`step` once took *Spherical* as an explicit hypothesis binder `hSph`, against the day the
+`TaskFrame` structure would carry the axioms as fields. **That day has come, and the invariant
+held.** `TaskFrame.spherical` is definitionally `TaskFrame.Spherical TaskRel`,
+`TaskFrame.serial` definitionally `TaskFrame.Serial TaskRel`, and `TaskFrame.interpolates` —
+the `→` projection of the biconditional `comp` field — definitionally
+`TaskFrame.Interpolates TaskRel`. `step` now applies `F.spherical` **directly**, with zero
+restatement and no hypothesis binder in sight.
+
+That is the acceptance test, and it is now permanent rather than pending: the fields are not
+inert decoration that could drift from the predicates, because this proof consumes
+`F.spherical` at the sole application site the paper names. A field whose statement differed
+would make this file stop typechecking.
 
 ## Paper Specification Reference
 
@@ -105,30 +106,29 @@ that route existing.
 fibers and segments, *Spherical* provides a common member, and `lem:admissible` certifies the
 extension.
 
-**This is the sole *Spherical* application site.** `hSph` is consumed in the proof body below —
-it is not decoration, and deleting it from the binder list makes this proof fail to elaborate.
-See this module's docstring for the invariant a later frame-axiom-field refactor must preserve.
+**This is the sole *Spherical* application site.** `F.spherical` — the structure field itself —
+is consumed in the proof body below. It is not decoration: a field whose statement differed from
+`TaskFrame.Spherical TaskRel` would make this proof fail to elaborate. See this module's
+docstring for the frame-axiom-field invariant that discharges.
 
-The hypotheses are the paper's frame axioms in the hypothesis form of
-`FormalSystem.Semantics.FrameAxioms`, plus *Limit*, which the `TaskFrame` structure deliberately
-does not carry as a field and which `lem:admissible` needs for `lem:nullity` at `z` itself.
+The frame axioms are taken from the structure's own fields — `F.spherical` here, and
+`F.serial` / `F.interpolates` / `F.limit` through `constraint` and `admissible` — so this
+theorem quantifies over a frame alone, with no axiom hypotheses. *Limit* reaches
+`lem:admissible` the same way, where it is needed for `lem:nullity` at `z` itself.
 -/
-theorem step (F : TaskFrame D) (hSph : Spherical F.TaskRel) (hSer : Serial F.TaskRel)
-    (hInt : Interpolates F.TaskRel)
-    (hLim : ∀ w v, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y v) → v = w)
-    (τ : PartialHistory F) (z : D) :
+theorem step (F : TaskFrame D) (τ : PartialHistory F) (z : D) :
     ∃ σ : PartialHistory F, Extends σ τ ∧ σ.domain z := by
   by_cases hz : τ.domain z
   · -- `z` is already a domain time: `τ` itself is the extension, no axiom needed.
     exact ⟨τ, ⟨fun _ ht => ht, fun _ _ => rfl⟩, hz⟩
   · -- `z ∈ D \ X`: the paper's route, through the constraints.
-    obtain ⟨hdir, hne⟩ := constraint hSer hInt τ z
+    obtain ⟨hdir, hne⟩ := constraint τ z
     -- *Spherical*, applied to the family `lem:constraint` just certified.
-    obtain ⟨u, hu⟩ := hSph (Constraints τ z) hdir fun c hc =>
+    obtain ⟨u, hu⟩ := F.spherical (Constraints τ z) hdir fun c hc =>
       ⟨isFiber_or_isSegment_of_mem_Constraints hc, hne c hc⟩
     -- `lem:admissible` converts membership in every constraint into task-respect.
     have hadm : AdjoinRespects τ z u :=
-      (admissible hSer hLim τ hz u).mpr fun c hc => Set.mem_sInter.mp hu c hc
+      (admissible τ hz u).mpr fun c hc => Set.mem_sInter.mp hu c hc
     exact ⟨adjoin τ z u hadm, adjoin_extends τ z u hadm, adjoin_domain_self τ z u hadm⟩
 
 end PartialHistory

@@ -280,9 +280,7 @@ holds without it.
 
 *Spherical* is not consumed.
 -/
-theorem admissible (hSer : Serial F.TaskRel)
-    (hLim : ∀ w v, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y v) → v = w)
-    (τ : PartialHistory F) {z : D} (hz : ¬ τ.domain z) (u : F.WorldState) :
+theorem admissible (τ : PartialHistory F) {z : D} (hz : ¬ τ.domain z) (u : F.WorldState) :
     AdjoinRespects τ z u ↔ ∀ c ∈ Constraints τ z, u ∈ c := by
   rw [fibers]
   constructor
@@ -307,7 +305,7 @@ theorem admissible (hSer : Serial F.TaskRel)
       obtain rfl : z = s := (Or.resolve_left hs hsd).symm
       obtain rfl : z = t := (Or.resolve_left ht htd).symm
       rw [adjoinFun_of_not_domain τ u hsd, sub_self]
-      exact TaskFrame.nullity_of_serial_limit hSer hLim u
+      exact TaskFrame.nullity_of_serial_limit F.serial F.limit u
 
 end PartialHistory
 
