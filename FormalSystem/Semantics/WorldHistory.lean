@@ -212,8 +212,8 @@ satisfies `respects_task` because `n = n` holds (right disjunct).
 This demonstrates that frames with `nullity_identity` admit constant histories
 as long as zero-duration relates identical states. The full domain is convex.
 -/
-def universalNatFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (n :
-      Nat) :
+def universalNatFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+      [SuccOrder D] [NoMaxOrder D] (n : Nat) :
     WorldHistory (TaskFrame.natFrame (D := D)) where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩

@@ -1038,8 +1038,14 @@ World states are natural numbers. Task relation: `TaskRel w d u` holds iff
 either `d ≠ 0` (any transition for non-zero duration) or `w = u` (identity for zero duration).
 This satisfies nullity_identity while remaining permissive.
 Polymorphic over temporal type `D`.
+
+The `[SuccOrder D] [NoMaxOrder D]` binders are carried because `natFrame_limit` requires them:
+over a dense `D` the permissive relation puts every state in every cone of every other state and
+*Limit* (`def:frame#Limit`) fails outright. Every reference to this frame outside
+`WorldHistory.universalNatFrame` elaborates at `Int`, which supplies both instances.
 -/
-def natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+def natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [SuccOrder D] [NoMaxOrder D] :
     TaskFrame D where
   WorldState := Nat
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
@@ -1094,18 +1100,19 @@ def natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 The natural-number frame's relation is the permissive class: `TaskRel w d u` holds exactly when
 `d ≠ 0` or `w = u`. This is the class-membership witness Helper B's lemmas consume.
 -/
-theorem natFrame_rel_iff :
+theorem natFrame_rel_iff [SuccOrder D] [NoMaxOrder D] :
     ∀ w d u, (natFrame (D := D)).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `natFrame`, via the `w = u` disjunct. -/
-theorem natFrame_serial : Serial (natFrame (D := D)).TaskRel :=
+theorem natFrame_serial [SuccOrder D] [NoMaxOrder D] : Serial (natFrame (D := D)).TaskRel :=
   serial_of_permissive natFrame_rel_iff
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `natFrame`. -/
-theorem natFrame_interpolates : Interpolates (natFrame (D := D)).TaskRel :=
+theorem natFrame_interpolates [SuccOrder D] [NoMaxOrder D] :
+    Interpolates (natFrame (D := D)).TaskRel :=
   interpolates_of_permissive natFrame_rel_iff
 
 /--
@@ -1114,11 +1121,11 @@ in the literal transcribed shape — **over a discrete duration type only**.
 
 `[SuccOrder D] [NoMaxOrder D]` is carried by this lemma rather than by `natFrame` itself, and the
 restriction is not an artifact: over a dense `D` the permissive relation puts every state in
-every cone of every other state, and *Limit* fails outright. When the frame structure grows the
-*Limit* field, `natFrame`'s own binders must acquire these two instances; the only declaration
-that propagation reaches is `WorldHistory.universalNatFrame`, which is itself polymorphic in `D`
-and has no consumers of its own. Every other reference to `natFrame` in the library and test
-suite elaborates at `Int`, which carries both instances.
+every cone of every other state, and *Limit* fails outright. `natFrame` itself now carries these
+two instances, so that this lemma discharges the frame's *Limit* field; the only declaration that
+propagation reached is `WorldHistory.universalNatFrame`, which is itself polymorphic in `D` and
+has no consumers of its own. Every other reference to `natFrame` in the library and test suite
+elaborates at `Int`, which carries both instances.
 -/
 theorem natFrame_limit [SuccOrder D] [NoMaxOrder D] :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (natFrame (D := D)).TaskRel w y u) → u = w :=
@@ -1128,7 +1135,8 @@ theorem natFrame_limit [SuccOrder D] [NoMaxOrder D] :
 directed family $\mathcal{S}$ of nonempty fibers and segments") for `natFrame`: every nonempty
 fiber and segment is the whole carrier or a singleton, and a directed family cannot contain two
 distinct singletons. No restriction on `D` is needed. -/
-theorem natFrame_spherical : Spherical (natFrame (D := D)).TaskRel :=
+theorem natFrame_spherical [SuccOrder D] [NoMaxOrder D] :
+    Spherical (natFrame (D := D)).TaskRel :=
   spherical_of_permissive natFrame_rel_iff
 
 end TaskFrame
