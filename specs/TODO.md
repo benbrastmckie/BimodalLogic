@@ -11,9 +11,9 @@ next_project_number: 442
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,231,257,298,413,420,421,423,424,437,440 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 125,178,219,282,296,415,417,419,422,425,436,441 | 193,231,298,420,421,423,437,440 | decidability, formula-refactor, algebraic-representation, ... |
-| 3 | 169,427,434 | 415,417,419,422,436 | decidability, paper-refactor, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,427,436,441 | 193,231,298,415,417,419,421,423,437,440 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,434 | 422,436 | decidability, strong_completeness |
 | 4 | 362,432 | 169,434 | decidability, strong_completeness |
 | 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
@@ -77,13 +77,12 @@ next_project_number: 442
 
 ### Paper Refactor
 
-420 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `b
-  └─ 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-    └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
-  └─ 417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-    └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
-  └─ 419 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
-    └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
+415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+  └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
+417 [NOT STARTED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+  └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
+419 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
+  └─ 427 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged) (see above)
 440 [NOT STARTED] — Discharge two of the four frame-axiom hypotheses of the extension
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
 
@@ -644,7 +643,7 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 
 ### 420. Align task frame with positive cone axioms
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 438, Task 439

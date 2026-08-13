@@ -1,7 +1,7 @@
 # Implementation Plan: Task #420 (v4) — Four-Axiom Frame Alignment, Phase 14 Split by Size
 
 - **Task**: 420 - align_task_frame_with_positive_cone_axioms
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours (Phases 1-5, landed) + 5.5 hours (Phases 6-9, landed) + 8 hours
   (Phases 10-13, landed) + ~8 hours (Phases 14.1, 14.2, 15 — the remaining work, re-sized by
   this revision)
