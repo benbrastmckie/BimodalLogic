@@ -766,40 +766,134 @@ validity is a separate, open obligation.#footnote[Both in `Metalogic/Decidabilit
 
 = Two Costs of the Semantics <sec:costs>
 
+The construction of @sec:construction buys completeness at a price paid in the semantics, not in
+the proof theory, and the price has two components. The first is that the structure of time comes
+out necessary. The second is that the operator $square.stroked$ is picked out by a higher-order
+condition that the object language cannot state. They are not independent, and the closing remark
+of this section says where they meet.
+
 == The Contingency of the Temporal Axioms <sec:contingency>
 
-// FIX: the quality of this section is very poor, and can likely be tightened considerably, and improved by setting up the problem formally. EVERY ISSUE should be introduced through a formal lens. No vague glosses or empty words should be included anywhere.
+By @sec:key-theorems's Correspondence proposition, each of Discrete, Dense, and Complete is
+characterized by an axiom, giving the systems $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, with
+$op("TM")_(d c)$ the minimal common extension of the last two. By the Dichotomy no temporal order
+is both discrete and dense, so no consistent system contains both DF and DN.
 
-The three frame conditions Discrete/Dense/Complete (`def:frame-properties`) are characterized by axioms DF, DN, CO respectively (`app:discrete`, `app:dense`, `app:complete`), giving systems $op("TM")_f, op("TM")_d, op("TM")_c$, with $op("TM")_(d c)$ the minimal common extension of $op("TM")_d$ and $op("TM")_c$. No temporal order is both discrete and dense, so TM cannot consistently contain both DF and DN.
-
-*The worry, at full strength.* Since every possible world is defined over the frame's own temporal order $#Dur$, the structure $#Dur$ has -- discrete or dense, and in either case Dedekind complete or not -- holds *of metaphysical necessity* for that system: if $#Dur$ is dense, DN and its necessitation $square.stroked(#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt)$ are both valid over that frame. This is not idiosyncratic to task semantics; it is an instance of frame validity being closed under necessitation (the Kripke B/symmetry precedent: over symmetric frames, B and its necessitation are both valid, so symmetry is necessary-if-true wherever it holds). Dorr and Goodman @dorr2020diamonds express sympathy for an account of metaphysical modality able to express theses about the contingency of the structure of time -- a real cost, not a strawman, and one the present framework must answer.
-
-*The irregular-worlds response*, quoted in full since the price must be stated exactly:
-
-#quote(block: true, quotes: false)[
-  "Within the present framework one might give voice to such contingency by relaxing totality, admitting *irregular worlds* -- functions $tau : X arrow.r W$ where $X subset.neq D$ is a *coset domain*, a translate $G+c$ of a nontrivial subgroup $G lt.eq #Dur$, and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all $x,y in X$ -- and defining consequence over the irregular and possible worlds alike. Cosets rather than subgroups, since a family of translates is closed under ambient translation and so preserves MF and the perpetuity principles, which the subgroup formulation loses. The price is exact: every nontrivial ordered abelian group contains a discrete cyclic subgroup, so DN is then valid over no frame whatever, and DF fails over discrete orders possessing a subgroup that is itself dense, such as $QQ times_"lex" ZZ$, so the correspondence results of `app:discrete`, `app:dense`, and `app:complete` collapse together. These considerations recommend possible over irregular worlds."
+#proposition("Necessity of temporal structure")[
+  If $#taskframe #satisfies phi.alt$ then $#taskframe #satisfies square.stroked phi.alt$. In
+  particular, over a dense frame both DN and $square.stroked "DN"$ are valid.
 ]
-#footnote[Quoted verbatim from the live footnote at `sub:Extension` (unlabeled -- no `\label` exists to track via `specs/paper-definitions-of-record.md`'s mechanism, so this quote is re-verified directly against the paper at authoring time rather than pinned). @brastmckie2026possibleworlds]
+#proof[
+  Immediate from the truth clause for $square.stroked$: it quantifies over $H_(#taskframe)$, so if
+  $phi.alt$ holds at every possible world and time of every model on $#taskframe$, then so does
+  $square.stroked phi.alt$.
+]
 
-*The price, stated exactly*: (i) DN is valid over *no* frame whatever, since every nontrivial ordered abelian group contains a discrete cyclic subgroup; (ii) DF fails over discrete orders possessing a dense subgroup, such as $QQ times_"lex" ZZ$; (iii) `app:discrete`, `app:dense`, `app:complete` *lapse together*; (iv) the broadened operator, while still factive, normal, and closed under necessitation relative to the broadened consequence relation, is *displaced* from its standing as the strongest objective modality. Point (iv) is this report's own analysis, not a paper quotation -- the paper's sentence stating it is currently commented out in the live source (`sub:Extension`, immediately following the footnote above) and must not be cited as live text; it is grounded here directly in `def:strongest`/`thm:exist` (@sec:objective-modality) plus the observation that broadening the consequence relation changes which operator is $prec.eq$-least.
+So whichever structure $#Dur$ has --- discrete or dense, Dedekind complete or not --- it holds of
+metaphysical necessity in that system. Dorr and Goodman @dorr2020diamonds express sympathy for an
+account of metaphysical modality able to express theses about the contingency of the structure of
+time, and this is the cost that view charges here.
 
-*The defense*, live paper text quotable directly: necessity-if-true of density is an instance of the general fact that frame validity is closed under necessitation, with the Kripke B/symmetry precedent above; structural disputes about metaphysical accessibility (S4 vs.~S5, closure under converses validating B) are already conducted as questions about which frame class and logic are correct, never as claims that transitivity or symmetry is itself metaphysically contingent; since possible worlds are only ever defined over a single frame, no modality quantifies across frames.#footnote[@brastmckie2026possibleworlds `sub:Extension`, live prose.]
+#remark[
+  The phenomenon is not special to task semantics. It is an instance of frame validity being
+  closed under necessitation, and the Kripke case supplies the precedent: over symmetric frames
+  the axiom B and its necessitation are both valid, so symmetry is necessary-if-true wherever it
+  holds. Structural disputes about metaphysical modality are already conducted in this key ---
+  whether S4 or S5 is the correct logic for $square.stroked$, whether the objective modalities
+  are closed under converses and so validate B --- and never as claims that transitivity or
+  symmetry is itself metaphysically contingent. Since possible worlds are only ever defined over
+  a single frame, no modality of the theory quantifies across frames, and so none can express the
+  contingency in question.
+]#footnote[`sub:Extension`, live prose. @brastmckie2026possibleworlds]
 
-*What irregular worlds do and do not deliver*: contingency in the *structure and cardinality* of the time series -- but not composition contingency of the catastrophe or proper-initial-segment kind, since a difference-closed domain is a subgroup (or a translate of one) and so unbounded in both directions either way.
+The response available inside the framework is to relax totality.
 
-*The residual question*, stated, not resolved: is there a semantics recovering temporal-structure contingency without lapsing the correspondence results? The paper's own target is a semantic class *closed under disjoint union*, under which the Halldén phenomenon of @sec:dichotomy dissolves structurally -- @sec:dichotomy develops exactly why the unrestricted class is *not* such a class, and @sec:representation returns to this target directly.
+#definition("Irregular World")[
+  An *irregular world* over a frame $#taskframe$ is a function $tau : X arrow.r #worldstate$ where
+  $X subset.neq D$ is a *coset domain* --- a translate $G + c$ of a nontrivial subgroup
+  $G lt.eq #Dur$ --- and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all $x, y in X$. Consequence
+  is then defined over the irregular and the possible worlds alike.
+]#footnote[Quoted in substance from the live footnote at `sub:Extension`, which is unlabelled and so cannot be pinned by anchor; re-verified verbatim against the live paper on 2026-08-13. @brastmckie2026possibleworlds Cosets and not subgroups: a family of translates is closed under ambient translation and so preserves MF and the perpetuity principles, which the subgroup formulation loses.]
+
+#proposition("The price of irregular worlds")[
+  Under the broadened consequence relation:
+  #items[
+    + DN is valid over *no* frame whatever, since every nontrivial ordered abelian group contains a
+      discrete cyclic subgroup.
+    + DF fails over discrete orders possessing a subgroup that is itself dense, such as
+      $QQ times_"lex" ZZ$.
+    + The three correspondences of @sec:key-theorems therefore lapse together.
+    + $square.stroked$ remains factive, normal, and closed under necessitation relative to the
+      broadened consequence relation, but is *displaced* from its standing as the strongest
+      objective modality.
+  ]
+]#footnote[Parts (i)--(iii) are the paper's own, at `sub:Extension`; its verdict there is that "these considerations recommend possible over irregular worlds." Part (iv) is this document's addition, grounded in `def:strongest` and `thm:exist` below together with the observation that broadening the consequence relation changes which operator is $prec.eq$-least; the paper's sentence stating it is commented out in the live source and is not cited as paper text. @brastmckie2026possibleworlds]
+
+Parts (i)--(iii) are severe: they cost the three theorems that make the frame-class hierarchy
+mean anything. What is bought is contingency in the *structure and cardinality* of the time
+series, and not composition contingency of the catastrophe or proper-initial-segment kind, since a
+difference-closed domain is a subgroup or a translate of one and so is unbounded in both
+directions either way.
+
+#remark[
+  The question this leaves open is whether some semantics recovers temporal-structure contingency
+  without lapsing the correspondences. The target is a class of frames closed under disjoint
+  union: by the Dichotomy the unrestricted class is not one, and @sec:representation returns to
+  what a class that is one would have to look like.
+]
 
 == The Strongest Objective Modality <sec:objective-modality>
 
-$op("BL")$ is extended with a primitive propositional identity operator $equiv$ and higher-order quantifiers: `def:id`'s Ref, Imp, LL axiomatize $equiv$ minimally (not assumed Boolean), and operator variables range over an unrestricted domain of operations on propositions.#footnote[@brastmckie2026possibleworlds] The objective modalities are *axiomatized* by a primitive predicate $O$ on operator terms, following the theory of necessities in Bacon @bacon2022necessities, rather than *defined* outright -- *predicativity* (operator comprehension confined to formulas with no operator variables and no occurrence of $O$) blocks Russell--Myhill and keeps the system consistent with a fine-grained identity; Walsh @walsh2016predicativity proves consistency of a predicative restriction of Church's intensional logic. Predicativity could be dropped by strengthening the theory of identity instead, since coarse-grained identity also blocks Russell--Myhill.
+The apparatus needed is higher-order. $#BL$ is extended with a primitive propositional identity
+operator $equiv$, axiomatized minimally by Ref, Imp, and LL and not assumed Boolean, together with
+quantifiers over an unrestricted domain of operations on propositions. The objective modalities are
+*axiomatized* by a primitive predicate $O$ on operator terms, following Bacon's theory of
+necessities @bacon2022necessities, and not defined outright.#footnote[Operator comprehension is restricted to formulas containing no operator variables and no occurrence of $O$. This *predicativity* restriction is what blocks Russell--Myhill while keeping a fine-grained identity; Walsh @walsh2016predicativity proves the consistency of a predicative restriction of Church's intensional logic. It could be dropped in favor of strengthening the theory of identity, since a coarse-grained identity also blocks Russell--Myhill.]
 
-$Q$ is a *strongest objective normal modal operator in $L$* -- $op("Str")^O_L (Q)$ -- iff (1) $tack.r O(Q)$ and (2) $tack.r forall P [O(P) arrow.r (Q prec.eq P)]$, with $prec.eq$ the dominance ordering; objectivity and normality need not be stated separately, since clause (1) already entails them.#footnote[`def:strongest`. @brastmckie2026possibleworlds] $op("Str")^O_L (B m)$: the meet operator witnesses *existence* -- clause (1) is the second conjunct of O-Meet, clause (2) follows from the first, T/N/K/necessitation-closure obtained by detaching O-Fac, O-Ax, O-Nec at $B m$.#footnote[`thm:exist`, *replacing* reliance on the separate, weaker `cor:exists` route (gated by a coarse-grained identity the paper does not assume) -- `cor:exists` is not the paper's existence result. @brastmckie2026possibleworlds]
+#definition("Strongest Objective Normal Modal Operator")[
+  $Q$ is a *strongest objective normal modal operator in $L$* --- written $op("Str")^O_L (Q)$ ---
+  iff (1) $tack.r O(Q)$ and (2) $tack.r forall P [O(P) arrow.r (Q prec.eq P)]$, where $prec.eq$ is
+  the dominance ordering. Objectivity and normality are not stated separately: clause (1) entails
+  them.
+]#footnote[`def:strongest`. @brastmckie2026possibleworlds]
 
-Any two strongest objective normal modal operators are provably equivalent (`lem:uniq`); $op("Str")^O_L (Q)$ yields S4 for $Q$ (`thm:s4`) and B/Symmetry for $Q$ (`thm:sym`, a $tilde.op 15$-line chain compressed here to result-and-cite). Under $op("Str")^O_L (square.stroked)$: `lem:uniq` gives $tack.r forall p (square.stroked p arrow.l.r B m p)$, `thm:s4` gives S4, `thm:sym` gives B, factivity and necessitation follow by detaching O-Fac and O-Nec -- together delivering an S5 logic for $square.stroked$.#footnote[@brastmckie2026possibleworlds]
+#theorem("Existence")[$op("Str")^O_L (B m)$: the meet operator is a strongest objective normal modal operator, so $L$ contains one.]#footnote[`thm:exist`. @brastmckie2026possibleworlds Clause (1) is the second conjunct of O-Meet; clause (2) follows from the first by instantiation and generalization; T, N, K, and closure under necessitation follow by detaching O-Fac, O-Ax, and O-Nec at $B m$. This theorem replaces the weaker `cor:exists` route, which was gated by a coarse-grained identity the paper does not assume.]
 
-*The orthogonality point*, foregrounded: S5-hood alone cannot single $square.stroked$ out. The paper's own restricted case is the counterexample -- the *Stability* modality ($M,tau,x #satisfies "Stability" phi.alt$ iff $phi.alt$ holds at every $sigma$ agreeing with $tau$ at $x$) is likewise S5, since its accessibility partitions $H_(#taskframe)$ into equivalence classes, yet on non-temporal formulas $phi.alt arrow.r "Stability" phi.alt$ is valid, collapsing it to the trivial modality on that fragment.#footnote[Live `Stability` footnote, immediately following its semantic clause at `sub:RestrictedModalities`. @brastmckie2026possibleworlds] A strictly narrower accessibility relation can carry a strictly stronger logic; it is $prec.eq$-leastness, not S5-hood, that picks $square.stroked$ out. This general lesson is this report's *own analysis*, grounded in the live *Stability* footnote plus `def:strongest`/`thm:exist` -- the paper's own sentence stating the lesson generally is currently commented out in the live source (immediately after the *Stability* footnote's citing site) and must not be cited as paper text.
+#theorem("Uniqueness and logic")[
+  Any two strongest objective normal modal operators are provably equivalent. If
+  $op("Str")^O_L (Q)$ then $Q$ satisfies S4 and B. In particular, under the hypothesis
+  $op("Str")^O_L (square.stroked)$, the logic of $square.stroked$ is S5.
+]#footnote[`lem:uniq`, `thm:s4`, `thm:sym`. @brastmckie2026possibleworlds Under the hypothesis, `lem:uniq` gives $tack.r forall p(square.stroked p arrow.l.r B m p)$, and factivity and necessitation follow by detaching O-Fac and O-Nec.]
 
-*The pain, stated plainly*: what is axiomatized is a *higher-order* theory of the objective modalities, not a $op("BL")$- or $op("BL")^+$-level proof system -- the connection between the two levels is a *hypothesis* ($op("Str")^O_L (square.stroked)$) adopted afresh for each system under study, not a theorem of TM or $op("TM")^+$. Left open: whether the leastness characterization is expressible or derivable at the propositional level at all; what a propositional axiomatization would have to add; whether the frame-relative plurality of $square.stroked$ operators is genuinely benign (the paper argues it is, since no cross-frame rival is formulable within the theory, and a reader wanting absoluteness may take the universal system); and how @sec:contingency's irregular-worlds broadening interacts, given that it *displaces* $square.stroked$ from its standing as $op("Str")^O_L (square.stroked)$ -- these two pain points are *not independent*.
+Being S5 is not enough to identify $square.stroked$, and the paper supplies its own counterexample.
+
+#proposition("Orthogonality")[
+  A strictly narrower accessibility relation can carry a strictly stronger logic. The *Stability*
+  operator --- $#model, tau, x #satisfies "Stability" phi.alt$ iff $phi.alt$ holds at $x$ in every
+  possible world occupying the same world state as $tau$ at $x$ --- is S5, since its accessibility
+  is the equivalence relation $sigma tilde.op_x tau$ iff $sigma(x) = tau(x)$. Yet on non-temporal
+  sentences $phi.alt arrow.r "Stability" phi.alt$ is valid, so Stability collapses to the trivial
+  modality on that fragment.
+]#footnote[The live Stability footnote following its semantic clause. @brastmckie2026possibleworlds The general lesson drawn in the statement is this document's own; the paper's sentence stating it generally is commented out in the live source and is not cited as paper text.]
+
+It is $prec.eq$-leastness, and not S5-hood, that picks $square.stroked$ out.
+
+#remark[
+  The cost is that leastness is a condition of the higher-order theory, and the link between the
+  two levels is a *hypothesis*, $op("Str")^O_L (square.stroked)$, adopted afresh for each system
+  under study and never a theorem of TM or $op("TM")^+$. Whether the characterization is
+  expressible or derivable at the propositional level at all is open, as is what a propositional
+  axiomatization would have to add.
+]
+
+#remark[
+  The two costs meet at part (iv) of the price above. Broadening the consequence relation to admit
+  irregular worlds is exactly what displaces $square.stroked$ from $op("Str")^O_L (square.stroked)$,
+  so the move that would answer the first cost forfeits the hypothesis on which the second cost's
+  only positive result rests. Any semantics recovering temporal contingency must therefore say
+  which operator is strongest under the broadened relation, and that question is not addressed by
+  either cost taken alone.
+]
 
 = Toward a Representation Theorem <sec:representation>
 

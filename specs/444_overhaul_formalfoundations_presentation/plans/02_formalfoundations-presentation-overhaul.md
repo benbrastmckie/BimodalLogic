@@ -494,34 +494,34 @@ surrounding prose is re-checked for a claim that the change invalidates.
 
 ---
 
-### Phase 7: Section 4 — Two Costs of the Semantics [NOT STARTED]
+### Phase 7: Section 4 — Two Costs of the Semantics [COMPLETED]
 
 **Goal**: Rewrite the contingency and objective-modality material through a formal lens: definitions
 where there were block quotes, propositions where there were stage directions. Discharges FIX-208.
 
 **Tasks**:
-- [ ] Formalize irregular worlds and coset domains as an actual `#definition`, currently present
+- [x] Formalize irregular worlds and coset domains as an actual `#definition`, currently present
       only inside a block quote. Keep the paper's own quoted passage only where the exact wording is
-      load-bearing.
-- [ ] State the necessity-if-true argument as a one-line formal fact (frame validity is closed under
+      load-bearing. *(completed: the four-sentence block quote is replaced by a #definition plus a #proposition; only the paper's verdict sentence, 'these considerations recommend possible over irregular worlds', is retained verbatim, in a footnote)*
+- [x] State the necessity-if-true argument as a one-line formal fact (frame validity is closed under
       necessitation) plus the symmetry precedent, in a bounded remark — not as a paragraph of prose.
-- [ ] State the price of irregular worlds as a proposition with its parts enumerated: density is
+- [x] State the price of irregular worlds as a proposition with its parts enumerated: density is
       valid over no frame; the discreteness axiom fails over a discrete order with a dense subgroup;
       the three correspondences lapse together; the strongest-objective-modality standing is
       displaced. Keep the existing discipline that distinguishes the report's own analysis from
-      quotable paper text.
-- [ ] Rewrite the strongest-objective-modality subsection: the identity and predicativity apparatus
+      quotable paper text. *(completed: four enumerated parts; the footnote marks (i)-(iii) as the paper's and (iv) as this document's, noting the paper's own sentence is commented out)*
+- [x] Rewrite the strongest-objective-modality subsection: the identity and predicativity apparatus
       compressed to what the definition needs; the strongest-objective-normal-operator definition,
       the existence result, and the uniqueness/S4/B chain as stated results; the orthogonality point
       (a strictly narrower accessibility relation can carry a strictly stronger logic) as a
-      proposition with the Stability operator as the witness.
-- [ ] Add a bounded remark stating why exactly these two costs remain and how they interact — the
+      proposition with the Stability operator as the witness. *(completed: definition, Existence theorem, Uniqueness-and-logic theorem, Orthogonality proposition; the identity/predicativity apparatus compressed into one paragraph plus one footnote)*
+- [x] Add a bounded remark stating why exactly these two costs remain and how they interact — the
       displacement of the strongest modality is the point of contact, and the research's structural
       diagnosis says the ordering logic must be stated rather than left implicit.
-- [ ] Address Dana's second question directly at the register of the rest of the section: whether
+- [x] Address Dana's second question directly at the register of the rest of the section: whether
       the necessity-if-true of temporal structure is a genuine problem or an instance of an ordinary
       necessitation phenomenon.
-- [ ] Remove the FIX comment at line 208.
+- [x] Remove the FIX comment at line 208. *(completed)*
 
 **Timing**: 2 hours
 
