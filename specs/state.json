@@ -1296,7 +1296,7 @@
     {
       "project_number": 442,
       "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
-      "status": "planned",
+      "status": "completed",
       "task_type": "typst",
       "topic": "paper-refactor",
       "priority": "high",
@@ -1315,21 +1315,27 @@
       ],
       "artifacts": [
         {
-          "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/reports/01_book-paper-lean-sync-audit.md",
-          "type": "report",
-          "summary": "Sync-check disposition table, corrected completeness/decidability text, frame-class/module-tree corrections, bibliography entries, marker-string proposal, diagram sketches, and punch list."
-        },
-        {
           "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/plans/01_book-paper-lean-revision.md",
           "type": "plan",
           "summary": "16-phase, 21-hour plan across 9 dependency waves covering the sync-check gate closure, the reversed completeness story, the conservativity and decidability corrections, the module-table rebuild, and the expository mandate."
+        },
+        {
+          "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+        },
+        {
+          "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/reports/02_revision-findings.md",
+          "type": "report",
+          "summary": "Findings note: Lean/paper divergences not fixed here, the marker occurrence list pointer, the stale conservativity-bridge premise, untracked paper anchors, and deferred citation-style questions."
         }
       ],
       "blockers": null,
       "created": "2026-08-13T06:31:40Z",
-      "last_updated": "2026-08-13T06:54:41Z",
+      "last_updated": "2026-08-13T08:00:44Z",
       "next_artifact_number": 1,
-      "session_id": "sess_1786602947_2f48be_442"
+      "session_id": "sess_1786602947_2f48be_442",
+      "completion_summary": "Revised the BimodalReference book against the paper and the live Lean tree across all 16 plan phases: drove typst-sync-check.sh Check 1 from 25 violations to 0 (full PASS on all three checks), corrected the reversed completeness story (TM sound but provably incomplete, completeness carried by BL^+ systems), rewrote the deleted conservative-extension theorem's four-part status, corrected the retracted decidability premise, rebuilt the module table for four frame classes (Base/Dense/Discrete/Dedekind), and delivered the expository mandate (motivated introduction, six reader-stumble remarks, five cetz diagrams, five new bibliography entries)."
     },
     {
       "project_number": 443,

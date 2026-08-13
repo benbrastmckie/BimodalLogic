@@ -11,8 +11,8 @@ next_project_number: 444
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440,442 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,436,441,443 | 193,231,298,421,423,437,440,442 | decidability, formula-refactor, dataset-enhancement, ... |
+| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440,443 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,436,441 | 193,231,298,421,423,437,440 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,434 | 422,436 | decidability, strong_completeness |
 | 4 | 362,432 | 169,434 | decidability, strong_completeness |
 | 5 | 433 | 432 | decidability |
@@ -82,8 +82,7 @@ next_project_number: 444
 419 [PLANNED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
 440 [RESEARCHED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
-442 [PLANNED] — ABSORBS AND SUPERSEDES 427 (`sync_typst_book_with_refactored_pape
-  └─ 443 [NOT STARTED] — GOAL. Write a NEW, standalone ~10-page Typst report, `typst/Forma
+443 [NOT STARTED] — GOAL. Write a NEW, standalone ~10-page Typst report, `typst/Forma
 
 ### Strong Completeness
 
@@ -192,12 +191,13 @@ Identical to the predecessor task's: run `bash scripts/check-paper-definitions.s
 ---
 
 ### 442. Revise bimodal reference book against paper and lean
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: paper-refactor
 - **Dependencies**: None
-- **Research**: [442_revise_bimodal_reference_book_against_paper_and_lean/reports/01_book-paper-lean-sync-audit.md]
 - **Plan**: [442_revise_bimodal_reference_book_against_paper_and_lean/plans/01_book-paper-lean-revision.md]
+- **Summary**: [442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md]
+- **Research**: [442_revise_bimodal_reference_book_against_paper_and_lean/reports/02_revision-findings.md]
 
 **Description**: ABSORBS AND SUPERSEDES 427 (`sync_typst_book_with_refactored_paper`), which is marked [EXPANDED] by this task's creation. 427's quote-backed anchor content is carried forward VERBATIM in sections 3 and 9 below and remains binding; nothing in 427 is discarded except its gating and its narrow definitional-only remit. Do not re-read 427 for instructions -- this description is authoritative over it.
 
