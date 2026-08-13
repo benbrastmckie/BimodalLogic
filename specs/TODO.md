@@ -64,7 +64,7 @@ next_project_number: 445
 
 ### Publication Quality
 
-444 [RESEARCHED] — Review the email other/dana.md sent to Dana Scott regarding the p
+444 [PLANNED] — Review the email other/dana.md sent to Dana Scott regarding the p
 
 ### Automation
 
@@ -102,11 +102,12 @@ next_project_number: 445
 ## Tasks
 
 ### 444. Overhaul formalfoundations presentation
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: formal
 - **Topic**: publication-quality
 - **Dependencies**: None
 - **Research**: [444_overhaul_formalfoundations_presentation/reports/01_team-research.md]
+- **Plan**: [444_overhaul_formalfoundations_presentation/plans/02_formalfoundations-presentation-overhaul.md]
 
 **Description**: Review the email other/dana.md sent to Dana Scott regarding the paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and systematically overhaul typst/FormalFoundations.typ so it presents, for Dana Scott as reader: the core mechanics of the existing completeness results, the current state of decidability, and the best direction for developing a representation theorem. Carefully review and incorporate the FIX tags already added in the file. The rewrite must adopt the writing style of an advanced textbook -- no vague glosses or platitudes -- with clean, precise definitions and theorems, and terse but informative introductions and remarks only where needed to motivate and explain the flow of results. The current document has virtually no detectable narrative arc; the presentation must be rewritten at a much higher level of formal sophistication, taking the time needed to do so accurately and masterfully.
 
