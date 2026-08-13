@@ -652,9 +652,11 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 - **Summary**:
   - [420_align_task_frame_with_positive_cone_axioms/summaries/01_taskframe-limit-nullity-alignment-summary.md]
   - [420_align_task_frame_with_positive_cone_axioms/summaries/03_four-axiom-fields-unblocked-summary.md]
+  - [420_align_task_frame_with_positive_cone_axioms/summaries/04_axiom-fields-split-batch-summary.md]
 - **Plan**:
   - [420_align_task_frame_with_positive_cone_axioms/plans/02_four-axiom-frame-alignment.md]
   - [420_align_task_frame_with_positive_cone_axioms/plans/03_four-axiom-fields-unblocked.md]
+  - [420_align_task_frame_with_positive_cone_axioms/plans/04_axiom-fields-split-batch.md]
 
 **Description**: RE-ISSUED 2026-08-10 (description rewrite only; status remains `blocked` -- phases 1-5 are LANDED, GREEN, and COMMITTED and are not undone by this re-issue). ALIGN THE LEAN TaskFrame WITH THE PAPER'S FOUR-AXIOM def:frame.
 

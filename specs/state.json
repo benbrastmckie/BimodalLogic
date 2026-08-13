@@ -217,6 +217,16 @@
           "path": "specs/420_align_task_frame_with_positive_cone_axioms/summaries/03_four-axiom-fields-unblocked-summary.md",
           "type": "summary",
           "summary": "Phases 10-13 green: 14 sites have citable axiom lemmas; caveat (a) resolved; phase 14 re-size finding"
+        },
+        {
+          "path": "specs/420_align_task_frame_with_positive_cone_axioms/plans/04_axiom-fields-split-batch.md",
+          "type": "plan",
+          "summary": "Split-batch plan v4 (16 phases; 1-13,14.1,15 COMPLETED; 14.2 pending)"
+        },
+        {
+          "path": "specs/420_align_task_frame_with_positive_cone_axioms/summaries/04_axiom-fields-split-batch-summary.md",
+          "type": "summary",
+          "summary": "Four axiom fields landed; step consumes F.spherical; acceptance criterion discharged"
         }
       ],
       "blockers": "",
