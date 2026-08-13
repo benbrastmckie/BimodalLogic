@@ -1,7 +1,7 @@
 # Implementation Plan: Revise BimodalReference Against the Paper and the Lean Tree
 
 - **Task**: 442 - revise_bimodal_reference_book_against_paper_and_lean
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 21 hours
 - **Dependencies**: None (the 414/415/417/419/420 gate is LIFTED per the task description's binding
   section 1; exposure to those three in-flight tasks is managed by the marker convention in Phase 2,
@@ -159,7 +159,7 @@ may insert `@`-citations into any chapter). File territory per phase is listed u
 
 ---
 
-### Phase 1: Baseline Gates and Generated-Count Refresh [NOT STARTED]
+### Phase 1: Baseline Gates and Generated-Count Refresh [COMPLETED]
 
 **Goal**: Establish a re-verified baseline and close Check 2 mechanically, so all later phases work
 against known-good numbers.
