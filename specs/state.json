@@ -9,7 +9,7 @@
     {
       "project_number": 441,
       "project_name": "effective_periodic_extension_over_finite_frames",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "paper-refactor",
       "priority": "high",
@@ -22,12 +22,18 @@
         "FormalSystem/Semantics/WorldHistory.lean",
         "FormalSystem/Semantics/TaskFrame.lean"
       ],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/441_effective_periodic_extension_over_finite_frames/reports/01_effective-periodic-extension.md",
+          "type": "report",
+          "summary": "Effective periodic extension over finite frames: BiLasso reuse with an origin offset, measured choice-source analysis, and three (not two) limits on the agreement lemma."
+        }
+      ],
       "blockers": null,
       "created": "2026-08-11T23:10:56Z",
-      "last_updated": "2026-08-11T23:10:56Z",
+      "last_updated": "2026-08-17T23:51:20Z",
       "next_artifact_number": 1,
-      "session_id": "sess_manual_441"
+      "session_id": "sess_1787007762_7d00d6_441"
     },
     {
       "project_number": 440,

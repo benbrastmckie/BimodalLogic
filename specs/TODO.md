@@ -83,7 +83,7 @@ next_project_number: 452
 
 ### Paper Refactor
 
-441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
+441 [RESEARCHED] — Strengthen `thm:extension` for the finite discrete case into an E
 417 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
 
 ### Strong Completeness
@@ -283,10 +283,11 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 ---
 
 ### 441. Effective periodic extension over finite frames
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 440
+- **Research**: [441_effective_periodic_extension_over_finite_frames/reports/01_effective-periodic-extension.md]
 
 **Description**: Strengthen `thm:extension` for the finite discrete case into an EFFECTIVE result: construct a finitely representable total world history, rather than merely proving one exists. A model checker cannot ship a Zorn appeal as a certificate, and this is the theorem that lets it ship something checkable instead.
 
