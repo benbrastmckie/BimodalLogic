@@ -214,26 +214,31 @@ transposition, record it and re-scope this phase rather than absorbing it silent
 
 ---
 
-### Phase 2: `BiLasso` datatype, `unroll`, and `unroll_isStepPath` [NOT STARTED]
+### Phase 2: `BiLasso` datatype, `unroll`, and `unroll_isStepPath` [COMPLETED]
 
 **Goal**: a finitely-presented bi-infinite step path over an `IntPresentation`, with its decoding
 proved to land in the frame's step paths.
 
 **Tasks**:
-- [ ] Re-run the duplication check before writing anything:
+- [x] Re-run the duplication check before writing anything:
       `grep -rn "structure .*Lasso\|extend_periodic" FormalSystem/ --include=*.lean | grep -v Boneyard`.
       Empty at planning time. If non-empty, reuse and record; do not define a second datatype.
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean` and
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean` and
       `FormalSystem/Metalogic/Decidability/BiLasso/README.md`.
-- [ ] Define `structure BiLasso (P : IntPresentation)` with `back`, `mid`, `fwd : List (Fin P.card)`,
+- [x] Define `structure BiLasso (P : IntPresentation)` with `back`, `mid`, `fwd : List (Fin P.card)`,
       `back_ne`, `fwd_ne`, and a `coherent` field covering adjacency within each segment, the three
       seams, and the two wrap-arounds. Prefer plain `List` and `Int` over dependent packaging so the
-      object stays serializable.
-- [ ] Define `BiLasso.unroll (L) : ℤ → Fin P.card` — `mid` on its finite window, `fwd` repeated
+      object stays serializable. *(deviation: altered — the segments are indexed left-to-right in
+      time via an `Int.emod`-based `cyc`, which makes the segment chains, seams and wrap-arounds a
+      single contiguous window `[-|back|-1, |mid|+|fwd|)` rather than separate clauses; the window
+      is quantified as `∀ i : Fin (|back|+1+|mid|+|fwd|)` rather than a `Finset.Ico` over ℤ, because
+      `Finset.Ico` at ℤ is not in this module's transitive imports and `Fin` needs no extra import
+      to be decidable. Same content, fewer clauses, same decidability.)*
+- [x] Define `BiLasso.unroll (L) : ℤ → Fin P.card` — `mid` on its finite window, `fwd` repeated
       rightward, `back` repeated leftward.
-- [ ] Prove `BiLasso.unroll_isStepPath : IsStepPath P.toTaskFrame L.unroll`, via `P.step_iff` and
+- [x] Prove `BiLasso.unroll_isStepPath : IsStepPath P.toTaskFrame L.unroll`, via `P.step_iff` and
       `P.isStepPath_iff`.
-- [ ] Provide `BiLasso.toHF := HFofStepPath _ _ L.unroll_isStepPath` so the path is usable as an
+- [x] Provide `BiLasso.toHF := HFofStepPath _ _ L.unroll_isStepPath` so the path is usable as an
       element of `H_F` (`IntNormalForm.lean:281`).
 
 **Timing**: 2 hours
