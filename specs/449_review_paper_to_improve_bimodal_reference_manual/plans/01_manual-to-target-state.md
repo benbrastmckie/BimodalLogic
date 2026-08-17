@@ -578,20 +578,20 @@ E2 governs paper citations only.)
   dichotomy theorem retained standalone and labeled; no dangling labels or stub headings;
   gates green.
 
-### Phase 6: Frame-Classes and Decidability-in-Practice Chapters [NOT STARTED]
+### Phase 6: Frame-Classes and Decidability-in-Practice Chapters [COMPLETED]
 
 - **Goal:** Fix the TM+_c labeling, replace the conservativity theorem box with the
   deferred-subsystem note, and restate decidability as a CONFIRM-guarded target.
 - **Territory:** `typst/chapters/p2-frame-classes.typ`,
   `typst/chapters/p2-decidability-practice.typ`
 - **Tasks:**
-  - [ ] R6a (source: `def:TMplus-c`; finding C6): fix the frame-classes chapter's naming —
+  - [x] R6a (source: `def:TMplus-c`; finding C6): fix the frame-classes chapter's naming —
     `FrameClass.Dedekind` hosts BX_c/TM+_c (Reynolds; dense-and-complete, real-flow); the
     live paper defines no TM+_dc. The genuine unformalized gap is the BL-level complete-order
     class ({Z, R} up to isomorphism), which no FrameClass targets — keep that gap paragraph's
     substance, relabeled, phrased as a design-scope fact (the book's system does not target
     that class), not as pending work.
-  - [ ] R6b (source: `thm:BLplus-PastFuture` live; finding D4): replace §Conservativity's
+  - [x] R6b (source: `thm:BLplus-PastFuture` live; finding D4): replace §Conservativity's
     theorem box (its paper footnote-source is deleted) with a short "Deferred: the
     tense-primitive subsystem" note — the unconditional language embedding stated as the
     book's own result with NO anchor citation (Decision E2), guarded by
@@ -602,8 +602,8 @@ E2 governs paper citations only.)
     no theorem box, no four-part status, and drop the "(DD) split validity" cross-reference
     (this removal also closes this chapter's only dangling reference into the incompleteness
     exposition Phase 5 cuts under Decision D1).
-  - [ ] R6c: notation sweep of the Next/Previous section (guard-first infix).
-  - [ ] R7 (directive-re-aimed; finding D3): in the decidability-practice chapter, remove the
+  - [x] R6c: notation sweep of the Next/Previous section (guard-first infix).
+  - [x] R7 (directive-re-aimed; finding D3): in the decidability-practice chapter, remove the
     dead `cor:tm-decidability` citation (whitelist entry removal deferred to Phase 8). State
     the target: the decision procedure decides TM+ (body, as the aim the paper's conclusion
     asserts), guarded by

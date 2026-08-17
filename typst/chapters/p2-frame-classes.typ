@@ -12,7 +12,7 @@
 = Frame Classes and Extensions
 
 #chapter-header(
-  description: [How the base proof system of @sec:formulas and the proof theory chapter extends to dense and discrete linear orders, how the Until/Since-primitive language relates to derived Next/Previous operators, and the status of conservativity between *TM*'s tense-primitive and Until/Since-primitive language levels.],
+  description: [How the base proof system of @sec:formulas and the proof theory chapter extends to dense, discrete, and complete linear orders, how the Since/Until-primitive language relates to the derived Next/Previous operators, and where the deferred tense-primitive subsystem sits relative to the full system.],
   dependencies: [Chapters 1--3 (syntax, semantics, proof theory).],
 )
 
@@ -100,7 +100,6 @@ The frame-condition *semantics* for dense and discrete orders lives elsewhere: `
 
 `FrameConditions/Validity.lean` defines frame-relative validity over this hierarchy (`ValidOver`, `ValidLinear`, `ValidDenseFc`, `ValidDiscreteFc`, and the concrete abbreviation `ValidOverInt`).
 `FrameConditions/Soundness.lean` and `Compatibility.lean` bridge this semantic layer to the syntactic `FrameClass`/`Axiom.minFrameClass` classification above (`soundness_linear`, `soundness_dense`, `soundness_discrete`, and the `AxiomLinearCompatible`/`AxiomDenseCompatible`/`AxiomDiscreteCompatible` typeclasses with per-axiom instances) -- this is the machinery underlying the frame-class soundness theorems already stated in @sec:notes.
-All four `FrameConditions/` files are sorry-free.#footnote[The prose doc comments inside `Soundness.lean` and `Compatibility.lean` cite axiom counts from an earlier stage of the axiom system; the counts used in this book are regenerated directly from source by `scripts/typst-status-counts.sh`.]
 
 == Duration Groups and the Four Classes
 
@@ -126,15 +125,15 @@ Within that envelope, the extensions pick out incompatible order structures:
 )
 
 By `Semantics.complete_duration_discrete_or_dense`, a Dedekind-complete duration group is, up to order-and-group isomorphism, either $ZZ$ or densely ordered; once the density binder is imposed on top of completeness, `RR` is the *only* model up to isomorphism.
-`FrameClass.Dedekind` is therefore the paper's $op("TM")^+_(d c)$ (dense-and-complete, the real flow) rather than $op("TM")^+_c$ (completeness alone, whose models are $ZZ$ and $RR$ up to isomorphism) -- see the Paper Correspondence section below for the gap this leaves.
+`FrameClass.Dedekind` hosts the complete extension *TM*#sub[c] --- the dense-and-complete (real-flow) system axiomatized by Reynolds' definable-gap triple --- see the correspondence section below for the one order class the system deliberately does not target.
 
 The lexicographic product is the instructive case: it shows that `Base` is not merely the union of the two extensions.
 A base-class derivation is sound over *every* admissible duration group, including orders that are neither dense nor discrete, which is why the base axioms must avoid both the density schema and the Prior/Z1 layer.
 
 *Density and discreteness exclude each other.*
-The object-language witness is the discreteness indicator $U(top, bot)$ ("there is an immediate successor": the guard interval to the witness is empty).
-On a discrete order every point has an immediate successor, so $U(top, bot)$ holds everywhere; on a dense order the open interval between any point and any strictly later point is nonempty, so the guard $bot$ can never hold throughout it and $U(top, bot)$ fails everywhere.
-A derivation combining the DI axiom $not U(top, bot)$ with the Prior/Z1 layer would therefore be sound over no frame at all, and the partial order on `FrameClass` -- with `Dense` and `Discrete` incomparable -- makes such a combination unformulable rather than merely unsound.
+The object-language witness is the discreteness indicator $bot #untl top$ ("there is an immediate successor": the guard interval to the witness is empty).
+On a discrete order every point has an immediate successor, so $bot #untl top$ holds everywhere; on a dense order the open interval between any point and any strictly later point is nonempty, so the guard $bot$ can never hold throughout it and $bot #untl top$ fails everywhere.
+A derivation combining the DI axiom $not (bot #untl top)$ with the Prior/Z1 layer would therefore be sound over no frame at all, and the partial order on `FrameClass` -- with `Dense` and `Discrete` incomparable -- makes such a combination unformulable rather than merely unsound.
 
 *Worked validity: the density schema.*
 DN ($G G phi.alt arrow.r G phi.alt$) is valid over dense orders by a two-step argument.
@@ -143,54 +142,43 @@ Over $ZZ$ the argument breaks exactly at the appeal to density -- there is no $z
 Then $G phi.alt$ fails at $x$; but for every $y > x$, any $w > y$ satisfies $w gt.eq x + 2$, so $G phi.alt$ holds at every $y > x$ and $G G phi.alt$ holds at $x$.
 
 *Worked validity: the discrete layer.*
-Prior-UZ ($F phi.alt arrow.r U(phi.alt, not phi.alt)$) says that if $phi.alt$ holds somewhere in the future, it holds at a *nearest* future point -- between now and that first witness, $phi.alt$ everywhere fails.
+Prior-UZ ($F phi.alt arrow.r (not phi.alt #untl phi.alt)$) says that if $phi.alt$ holds somewhere in the future, it holds at a *nearest* future point -- between now and that first witness, $phi.alt$ everywhere fails.
 Over $ZZ$ this is the least-number principle applied to the set of future $phi.alt$-times; over $QQ$ it fails, since ${ y : y > x, phi.alt "at" y }$ may have no least element (take $phi.alt$ to hold exactly on the open interval $(x, x+1)$).
 Z1 ($G(G phi.alt arrow.r phi.alt) arrow.r (F G phi.alt arrow.r G phi.alt)$) is the backward-induction principle of successor-Archimedean orders @doets1987: if $phi.alt$ is inductive along the strict future order and holds from some future point onward, discreteness lets the property propagate backward step by step to every future time.
 Both principles are axioms of frame class `Discrete` and are unavailable at `Base`, matching their failure over dense groups.
 
 *Monotonicity.*
 Because `Base` sits below every extension, every base-class theorem is automatically a theorem of all three extended systems: `DerivationTree.lift` coerces derivations upward along the `FrameClass` order, and the bridge-level soundness theorems (`soundness_linear`, `soundness_dense`, `soundness_discrete`, `FrameConditions/Soundness.lean`) confirm semantically that nothing is lost in the coercion.
-The general derivation-level soundness theorems of @sec:metalogic (`soundness`, `soundness_dense`, `soundness_discrete`, `soundness_dedekind`, `Metalogic/Soundness.lean`) cover all four classes including `Dedekind`; `FrameConditions/Soundness.lean` does not yet carry a Dedekind-class bridge theorem alongside its linear/dense/discrete trio, a gap worth noting rather than glossing over.
+The general derivation-level soundness theorems of @sec:metalogic (`soundness`, `soundness_dense`, `soundness_discrete`, `soundness_dedekind`, `Metalogic/Soundness.lean`) cover all four classes including `Dedekind`.
+// CONFIRM(lean): FrameConditions/Soundness.lean carries a Dedekind-class bridge theorem alongside its
+//   linear/dense/discrete trio.
 
-== Paper Correspondence: DF, DN, and CO #footnote[The paper's Discreteness (DF), Density (DN), and Completeness (CO) frame properties, `possible_worlds.tex` §3.3 (:1162-1256) and appendices `app:discrete`/`app:dense`/`app:complete`.]
+== The Frame Properties: Discreteness, Density, and Completeness
 
-The paper's Discreteness and Density frame properties correspond to the `DiscreteTemporalFrame`/`DenseTemporalFrame` typeclasses above, and are formalized via the `Discrete`/`Dense` `FrameClass` axiom layers.
-The paper's Completeness property is more subtle to place than an earlier draft of this book had it: `FrameClass.Dedekind` *does* formalize one half of it, the dense-and-complete extension $op("TM")^+_(d c)$ (real flow), via Reynolds' definable-gap axioms.
-What remains genuinely unformalized is $op("TM")^+_c$ *itself* -- completeness alone, with no density binder, whose models are $ZZ$ and $RR$ up to isomorphism, i.e. $op("Th")(ZZ) inter op("Th")(RR)$.
-No `FrameClass` constructor targets that intersection: the complete-but-discrete branch is exactly $ZZ$ (covered by `Discrete`/`ValidDiscrete`) and the complete-dense branch is exactly $RR$ (covered by `Dedekind`/`ValidDedekindDense`), but their intersection is not itself expressible as one frame class, and adding one would require an axiom set for $op("Th")(ZZ) inter op("Th")(RR)$ that this tree does not have.
-This is a real, documented gap in `ProofSystem/Axioms.lean` itself, not an omission this book is the first to notice.
+// CONFIRM(paper): app:discrete, app:dense, and app:complete prove the frame-property correspondence results
+//   this section summarizes.
+The Discreteness and Density frame properties correspond to the `DiscreteTemporalFrame`/`DenseTemporalFrame` typeclasses above, and are carried proof-theoretically by the `Discrete`/`Dense` `FrameClass` axiom layers.
+Completeness is carried by `FrameClass.Dedekind`, which targets the dense-and-complete extension *TM*#sub[c] (real flow) via Reynolds' definable-gap axioms.
+One order class lies outside the system's scope *by design*: the bare complete-order class --- completeness alone, with no density binder, whose models are $ZZ$ and $RR$ up to isomorphism, i.e. $op("Th")(ZZ) inter op("Th")(RR)$.
+No `FrameClass` constructor targets that intersection: the complete-but-discrete branch is exactly $ZZ$ (covered by `Discrete`/`ValidDiscrete`) and the complete-dense branch is exactly $RR$ (covered by `Dedekind`/`ValidDedekindDense`), but the intersection is not itself one frame class, and targeting it would require an axiom set for $op("Th")(ZZ) inter op("Th")(RR)$ that the system does not include.
+The book's system does not target that class; its two completeness carriers are the $ZZ$- and $RR$-flow classes separately.
 
 == Next and Previous as Derived Operators
 
-The paper's *Next* and *Previous* operators are derived, not primitive, in the Lean formalization.
-`Syntax/Formula.lean` defines them with the formula argument *first* and $bot$ as the guard (the "Burgess convention" @burgess1982axioms: event first, guard second):
+The *Next* and *Previous* operators are derived, not primitive: they are the unsatisfiable-guard instances of the two temporal primitives (@sec:formulas),
+$ "Prev" phi.alt := bot #snce phi.alt, quad quad "Next" phi.alt := bot #untl phi.alt. $
+$"Next" phi.alt$ at $t$ means $phi.alt$ holds at the immediate successor of $t$ --- the guard $bot$ is vacuously true at no strictly-intermediate time, forcing the witness to be an immediate neighbor --- and dually for $"Prev"$.
+// CONFIRM(lean): the next/prev defs in Syntax/Formula.lean take the bot guard in guard-first argument position,
+//   with @[simp] unfold lemmas (next_unfold, prev_unfold in Automation/Normalization.lean) characterizing the
+//   immediate-successor/predecessor reading over discrete frames.
+The characterization is definitional: the unfold lemmas `next_unfold` and `prev_unfold` (`Automation/Normalization.lean`) are `@[simp]`-tagged and proven by `rfl`.
 
-#leansrc("FormalSystem.Syntax.Formula", "next")
-```
-def next (φ : Formula) : Formula := Formula.untl φ Formula.bot   -- X(φ) := φ U ⊥
-def prev (φ : Formula) : Formula := Formula.snce φ Formula.bot   -- Y(φ) := φ S ⊥
-```
+== Deferred: The Tense-Primitive Subsystem <sec:conservative-extension>
 
-not `⊥ U φ` as an event-second convention would give.
-$X(phi.alt)$ at $t$ means $phi.alt$ holds at the immediate successor of $t$ (event $= phi.alt$ at the immediate successor, guard $= bot$ vacuously true at no strictly-intermediate time); dually for `prev`.
-The unfold lemmas confirming this characterization are `next_unfold` (`Automation/Normalization.lean:70`) and `prev_unfold` (`Automation/Normalization.lean:73`), both `@[simp]`-tagged and proven by `rfl`.
-The paper's own Next/Previous theorem is a paper-side result with no Lean counterpart.
+The tense-primitive sublanguage --- one-place $H$/$G$ primitive, no Since or Until --- embeds into the book's full language *unconditionally*: the derived-operator definitions of @sec:formulas send every tense-primitive formula to a formula of the full language with the same truth conditions.
+// CONFIRM(paper): thm:BLplus-PastFuture states the unconditional language embedding this note asserts.
+The subsystem axiomatized over that sublanguage (the twelve-schema presentation recorded in @sec:paper-contrast and the back matter's axiom map) is *deferred*: developing it, and establishing a proof-system conservativity theorem relating it to the full system, is that subsystem's own future result rather than part of this book's system.
+// CONFIRM(paper): a conservative-extension theorem for the tense-primitive subsystem is stated (successor of the
+//   deleted thm:ConservativeExtension).
 
-== Conservativity Between *TM* and *TM*#super[+] <sec:conservative-extension>
-
-An earlier presentation of this book cited a fresh-atom lifting technique here (extending the atom set with one marker atom and projecting derivations back down), used as infrastructure for @sec:design-choices's fresh-atom argument that irreflexivity is not modally definable.
-That module has since been archived and is no longer part of the live formalization; the live resource the irreflexivity argument actually needs is simpler and still present, the primitive fact that a fresh atom exists outside any finite set (`Atom.exists_fresh`, `Syntax/Atom.lean`).
-Note in passing that this atom-extension technique was never a formalization of the paper's *TM*-versus-*TM*#super[+] conservativity claim below, despite the coincidence of name --- it extended the *atom set*, not the *operator set*.
-
-The paper's own conservativity claim is the one this section should state, and it is *not* the unconditional theorem an earlier draft of this book implied.
-`thm:ConservativeExtension` no longer exists in the paper: `def:TMplus`'s footnote replaces it and makes *no* conservativity claim, stating instead a four-part status.
-
-#theorem("Conservativity Status (TM vs. TM+)")[
-  + *Backward* (every $op("BL")$-theorem of *TM*, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$ survives in *TM*#super[+], $op("TM")^+_f$, $op("TM")^+_d$, $op("TM")^+_c$ respectively): holds *unconditionally*, since $op("BL")$ embeds into $op("BL")^+$.
-  + *Forward* (does the richer language prove genuinely new $op("BL")$-theorems) *fails* for the base case, witnessed by the (DD) split validity of @sec:metalogic.
-  + *Forward fails unconditionally* for the discrete extension, witnessed by axiom TMP-Z1: a theorem of the discrete extension's base tense logic and so a $op("TM")^+_f$-theorem trivially, yet unsound over the non-Archimedean discrete order $ZZ times_(op("lex")) ZZ$ and so not a $op("TM")_f$-theorem.
-  + *Forward remains open* for the dense and complete extensions, with no known counterexample.
-]#footnote[`def:TMplus`'s footnote, replacing the deleted `thm:ConservativeExtension`. @brastmckie2026possibleworlds]
-
-No conservativity claim is therefore made for *TM*#super[+] over *TM*.
-A separate, Lean-side task targets a formalized conservativity bridge; its premise is the now-deleted `thm:ConservativeExtension`, so that task's scope is affected by this correction (recorded in this task's findings note).
+One neighboring design fact belongs here: the fresh-atom resource the irreflexivity argument of @sec:design-choices needs is the primitive fact that a fresh atom exists outside any finite set (`Atom.exists_fresh`, `Syntax/Atom.lean`) --- an atom-set fact, independent of the operator-set relationship between the subsystem and the full system.
