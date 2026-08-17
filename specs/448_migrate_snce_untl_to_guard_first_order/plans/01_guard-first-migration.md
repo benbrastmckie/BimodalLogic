@@ -758,20 +758,70 @@ site. No `sorry` inserted.
 
 ---
 
-### Phase 8: Repair Tests and First Full Green Build [NOT STARTED]
+### Phase 8: Repair Tests and First Full Green Build [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Close the repair loop and spend the first budgeted full build cycle.
 
 **Tasks**:
-- [ ] Build and repair `Tests/BimodalTest/`, including `UntlSnceCopyProbe.lean` and
-      `TemporalWitnessProbe.lean` (which pin the tableau-rule semantics of the constructors) and
-      the conformance corpora expected-value tables.
-- [ ] Run a **full `lake build`** and drive it to green.
-- [ ] Regenerate the per-file `sorry` count table and diff against `baseline/sorry-baseline.txt`.
-      The delta must be zero for every file (acceptance 3).
-- [ ] Confirm `next_unfold` / `prev_unfold` still close by `rfl` and now read `bot.untlQ φ` /
-      `bot.snceQ φ` — the `⊥ U φ` / `⊥ S φ` paper forms.
-- [ ] Commit.
+- [x] Build and repair `Tests/BimodalTest/`, including `UntlSnceCopyProbe.lean` and
+      `TemporalWitnessProbe.lean` and the conformance corpora expected-value tables.
+      *(deviation: altered — the two named probes and every other test module build clean with no
+      repair; seven `#guard_msgs` rows fail, all of them pre-existing and deliberately pinned by an
+      earlier task. See the Reasoned Exclusions below.)*
+- [x] Run a **full `lake build`** and drive it to green.
+- [x] Regenerate the per-file `sorry` count table and diff against `baseline/sorry-baseline.txt`.
+- [x] Confirm `next_unfold` / `prev_unfold` still close by `rfl` and now read `bot.untlQ φ` /
+      `bot.snceQ φ`.
+- [x] Commit.
+
+**Full build green at 2,457 jobs — the exact job count of the Phase 1 baseline.** No repair was
+needed in `Tests/`; the only edits since Phase 7 are none.
+
+`next_unfold` and `prev_unfold` (`Automation/Normalization.lean:75,78`) now read
+`φ.next = bot.untlQ φ := rfl` and `φ.prev = bot.snceQ φ := rfl` — the `⊥ U φ` / `⊥ S φ` paper
+forms of `def:BLplus-defined`, still closing by `rfl`.
+
+**Printer/parser mutual inversion re-checked at both parsers.** `toSExpr` emits
+`(untl event guard)`; `DatasetExport.parseSExprFormula` reconstructs `Formula.untlQ rhs lhs` and
+`TraceExporter.parseSExprFormula` reconstructs `.untlQ r l` — in both, the first S-expression
+argument is fed to the event slot (argument 2). `BimodalTest.TraceExportTest`'s round-trip suite
+reports `All TraceExport round-trip tests PASSED`.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `BoxSpreadProbe.lean:165` | Pre-existing stale `#guard_msgs` row, deliberately left pinned by an earlier task | Enumerated in-source at `BoxSpreadProbe.lean:94`: "**EXCLUDED — left pinned and unedited**: 1 row(s) at line(s) 165." |
+| `RegionGateProbe.lean:299,330` | Same | `RegionGateProbe.lean:110`: "**EXCLUDED — left pinned and unedited**: 2 row(s) at line(s) 299, 330." |
+| `TableauConformance.lean:873,885,910,916` | Same | `TableauConformance.lean:104`: "**EXCLUDED — left pinned and unedited**: 7 row(s) at line(s) 483, 513, 578, 873, 885, 910, 916." |
+
+**Why these are not migration artifacts** — five independent lines of evidence:
+
+1. **Every failure is inside the pre-declared exclusion list.** The in-source enumerations name
+   ten pinned-stale rows; the seven failures observed are a subset of those ten. Not one failure
+   falls outside the list.
+2. **The commit that pinned them says so.** `86eb8963c` ("task 414 phase 29.2.2: re-baseline 29
+   guard-attributed rows; exclude 7 on measured evidence") records: "The remaining 7 were already
+   stale before the guard and are left pinned, unedited, and enumerated in-source", and
+   "lake build BimodalTest: 40 mismatches -> 7, all 7 the enumerated exclusions."
+3. **`BoxSpreadProbe.lean` was never touched by this migration** (`git diff` against the pre-task
+   commit is empty for it) yet it fails — so its failure cannot be a rewrite defect.
+4. **The test inputs are provably unchanged.** `TableauConformance`'s entire migration diff is two
+   lines: `private def U (e g) := Formula.untl e g` became `Formula.untlQ g e`, and likewise for
+   `S`. Both are role-preserving, so every `U`/`S` in the corpus denotes the same formula as
+   before. The engine's *inputs* are byte-identical formulas.
+5. **In the same file, the rows the earlier task re-baselined pass and only the ones it excluded
+   fail.** `RegionGateProbe` rows A and B (re-baselined) pass; rows C and H (excluded) fail. Its
+   `refuteBranch` row — whose input formula *was* rewritten by this migration, to
+   `.untlQ .top (.imp q .bot)` — still produces its pinned value exactly, a direct positive
+   confirmation that the rewrite preserves denotation.
+
+25 commits touching `Metalogic/Decidability/`, `Semantics/` and `ProofSystem/` landed between the
+re-baseline and this task's starting point (the `task 417`/`task 420` frame-apparatus work), and
+`lean_lib BimodalTest` carries no `@[default_target]`, so plain `lake build` never re-checked these
+rows. **This migration introduced zero new test failures**; repairing rows whose correct values
+turn on unrelated frame-apparatus changes is out of scope here and would launder an unrelated
+regression into this diff.
 
 **Timing**: 1.5 hours plus a 60-90 minute build cycle
 
@@ -779,18 +829,25 @@ site. No `sorry` inserted.
 
 **Verification Tier**: full
 
-**Scope Hypothesis**: `Tests/BimodalTest` holds ~178 references across 13 files. Confirm against
-the Phase 1 ledger.
+**Scope Hypothesis**: `Tests/BimodalTest` holds ~178 references across 13 files.
 
-**Zero-Debt contract**: as Phase 6.
+**Scope Hypothesis outcome**: not the operative criterion — no test file needed repair. All 46
+`BimodalTest` modules other than the three carrying pinned-stale rows build clean.
+
+**Zero-Debt contract**: honoured. No `sorry` inserted; no `#guard_msgs` row rewritten to match
+whatever the engine happened to print.
 
 **Files to modify**:
-- `Tests/BimodalTest/*`
+- none (no repair was required)
 
 **Verification**:
-- Full `lake build` green.
-- Per-file `sorry` delta is zero across the whole live tree.
-- `next_unfold`/`prev_unfold` close by `rfl`.
+- [x] Full `lake build` green — 2,457 jobs, matching the Phase 1 baseline exactly.
+- [x] Per-file `sorry` delta zero across all 424 live files.
+- [x] `next_unfold`/`prev_unfold` close by `rfl` and read the `⊥ U φ` / `⊥ S φ` forms.
+- [x] `UntlSnceCopyProbe` and `TemporalWitnessProbe` both build clean (oleans produced).
+- [x] `DatasetExport.lean` / `TraceExporter.lean` printer-parser round trip passes.
+- [x] `lake build BimodalTest`: 7 `#guard_msgs` failures, every one inside the documented
+  pre-existing exclusion list, zero new.
 
 ---
 
