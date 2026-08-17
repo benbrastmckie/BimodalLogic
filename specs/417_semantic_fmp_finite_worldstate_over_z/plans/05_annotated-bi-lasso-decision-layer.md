@@ -465,37 +465,40 @@ than landing a duplicate.
 
 ---
 
-### Phase 5: Generic periodic decoding and the annotated bi-lasso datatype [NOT STARTED]
+### Phase 5: Generic periodic decoding and the annotated bi-lasso datatype [COMPLETED]
 
 **Goal**: `Annot P φ` — a landed `BiLasso P` carrying a per-position type label, presented as three
 lists matching the three segment lengths, with the label's periodicity lemmas.
 
 **Tasks**:
-- [ ] **Duplication check first**, before writing anything:
+- [x] **Duplication check first**, before writing anything:
       `grep -rn "structure .*Lasso\|extend_periodic\|periodicExtension" FormalSystem/ --include=*.lean | grep -v Boneyard`.
       Task 441 is `[RESEARCHING]` concurrently and specifies a prefix-plus-cycle-in-both-directions
       presentation. If it has landed a generic periodic-sequence type, **use it and record the
-      decision in the module docstring**; do not define a second one.
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Periodic.lean` with the `cyc`/`unrollOf`
+      decision in the module docstring**; do not define a second one. *(Grep returned only
+      `Basic.lean:145`'s own `structure BiLasso` — the effective-periodic-extension work has landed
+      no generic periodic-sequence type, so `Periodic.lean` was defined as planned. Scope hypothesis
+      confirmed; the phase did **not** shrink to the `Annot` datatype alone.)*
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Periodic.lean` with the `cyc`/`unrollOf`
       arithmetic generalised to an arbitrary `[Inhabited α]`, plus the two periodicity lemmas at
       that generality. **Do not modify `Basic.lean`** and do not refactor it onto this file: it is
       frozen for 441. Record the deliberate, small duplication of the `emod` arithmetic and the
       reason in the docstring, together with the trigger that would retire it (441 landing a shared
       periodic presentation).
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Annotation.lean`.
-- [ ] Define `structure Annot (P : IntPresentation) (φ : Formula)` with fields: the underlying
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Annotation.lean`.
+- [x] Define `structure Annot (P : IntPresentation) (φ : Formula)` with fields: the underlying
       `lasso : BiLasso P`; `backLab`, `midLab`, `fwdLab : List (Finset Formula)`; and three length
       agreements pinning them to `lasso.back.length`, `lasso.mid.length`, `lasso.fwd.length`.
       Keep the label lists as plain `List (Finset Formula)` — serializable, `DecidableEq`, and
       enumerable — rather than dependent packaging.
-- [ ] Define `Annot.label : ℤ → Finset Formula` by the generic decoding, so that it uses **exactly**
+- [x] Define `Annot.label : ℤ → Finset Formula` by the generic decoding, so that it uses **exactly**
       the same window/`emod` scheme as `unroll`. State and prove the alignment lemma
       `Annot.label_windowTime`-style, tying label positions to `unroll` positions, so the two are
       never off by one.
-- [ ] Prove the two label periodicity lemmas, mirroring `unroll_sub_back_length` /
+- [x] Prove the two label periodicity lemmas, mirroring `unroll_sub_back_length` /
       `unroll_add_fwd_length` at the label: `t < 0 → label (t - |back|) = label t` and
       `|mid| ≤ t → label (t + |fwd|) = label t`.
-- [ ] Prove `Annot.label_subset_closure`-style: every label is a subset of `subformulaClosure φ`
+- [x] Prove `Annot.label_subset_closure`-style: every label is a subset of `subformulaClosure φ`
       (either as a structure field or as a derived condition; prefer a field, since the enumeration
       in Phase 9 will filter on it anyway).
 
