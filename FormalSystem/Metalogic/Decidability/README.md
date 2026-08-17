@@ -24,6 +24,7 @@ This directory implements a verified decision procedure that:
 | `CountermodelExtraction.lean` | Extract countermodel from open branch | Sorry-free |
 | `FMP.lean` | Re-export for FMP subdirectory | Sorry-free |
 | `DecisionProcedure.lean` | Main `decide` function with proof search | Sorry-free |
+| `IntPresentation.lean` | Computational presentation of a finite ℤ-time frame (`Fin card` adjacency matrix + valuation) | Sorry-free |
 | `FMP/` | Finite model property proofs (7 files) | Sorry-free |
 
 ## Quick Reference

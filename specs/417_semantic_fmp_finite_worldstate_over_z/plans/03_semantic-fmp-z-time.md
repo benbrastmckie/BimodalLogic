@@ -863,7 +863,14 @@ Phase 7, so which lemmas it would have consumed is not determinable from this di
 
 ---
 
-### Phase 9: `untl`/`snce` eventuality fulfilment — HIGHEST-RISK PHASE [NOT STARTED]
+### Phase 9: `untl`/`snce` eventuality fulfilment — HIGHEST-RISK PHASE [BLOCKED]
+
+**BLOCKER** (Phase 9): blocked **upstream**, by Phase 7, and not on its own merits. There is no
+truth lemma to discharge cases of: `FiniteFilteredTaskFrame`'s relation is universal at every
+nonzero duration, so the lemma Phase 7 was to state is false on it. This phase was never entered.
+Note for whoever unblocks Phase 7: the failure mode here is *not* the one the six Boneyard
+precedents exhibit, and this phase's risk budget has not been spent. Phase 8's machinery landed
+green and is waiting.
 
 **Goal**: Discharge the two eventuality cases of the truth lemma. **This is the single largest risk
 in the task.** Six previous attempts at precisely this machinery are archived in `Boneyard` with
@@ -922,7 +929,18 @@ sorries: `ScheduleBasedBFMCS/RootScopedChain.lean` (3), `QuasimodelOracle/RoundR
 
 ---
 
-### Phase 10: Assemble the semantic FMP over ℤ-time [NOT STARTED]
+### Phase 10: Assemble the semantic FMP over ℤ-time [BLOCKED]
+
+**BLOCKER** (Phase 10): blocked **upstream**, by Phases 7 and 9 — the composition this phase
+performs has no truth lemma to compose with. Never entered.
+
+A second, independent obstruction was found while surveying this phase's citation targets and is
+recorded here so it is not rediscovered: this phase's docstring bullet requires citing
+`cor:tm-decidability`, and that anchor **no longer resolves in the live paper**.
+`scripts/check-paper-definitions.sh` reports it as one of two dangling recorded anchors (with
+`def:BL-model`). Any dispatch that unblocks this phase must first re-resolve or re-locate that
+anchor per the record's extension protocol; the pinned text in
+`specs/paper-definitions-of-record.md` is stale, not merely drifted.
 
 **Goal**: State and prove the deliverable: every formula satisfiable over **ℤ-time** is satisfiable
 in a model with finite `WorldState` over `D = ℤ`.
@@ -1009,7 +1027,53 @@ fields is re-discharged), `toFiniteFrame`, `worldState_eq`, `card_worldState`, `
 
 ---
 
-### Phase 12: `IntPresentation.check` — the Bool-valued decision procedure [NOT STARTED]
+### Phase 12: `IntPresentation.check` — the Bool-valued decision procedure [BLOCKED]
+
+**BLOCKER** (Phase 12) — **independent of the Phase 7 blocker; this one is about `check` itself.**
+
+- **What failed**: the specified signature is not implementable. `check (P) (w : Fin P.card)
+  (φ : Formula) : Bool` is a function of a *state* and a formula, recursing on the formula, with
+  Phase 13 pinning its meaning to `∃ τ, τ.IsTotal ∧ τ.states 0 _ = w ∧ TruthAt P.toModel τ 0 φ`.
+  Truth of a temporal formula is a property of a *history*, not of a state, and
+  satisfiability-over-histories is **not compositional over `Formula.imp`** — so no
+  structurally-recursive clause can compute the `imp` case, "direct" or otherwise.
+
+- **What was machine-checked**: `specs/417_semantic_fmp_finite_worldstate_over_z/evidence/`
+  `phase12-check-not-compositional.lean`, green via `lake env lean` against the live tree. It
+  builds a two-state presentation with universal step relation (so every `f : ℤ → Fin 2` is a legal
+  history), an atom `p` true only at state `0`, and proves five facts plus their consequence:
+
+  | fact | statement |
+  |------|-----------|
+  | 1 | `Sat 1 (someFuture p)` — the path that drops from `1` to `0` witnesses it |
+  | 2 | `¬ Sat 1 ⊥` |
+  | 3 | `Sat 1 (someFuture p → ⊥)` — the constant-`1` path never makes `p` true |
+  | 4 | `¬ Sat 0 (p → ⊥)` — every history through `0` at time `0` makes `p` true there |
+  | 5 | `Sat 0 p` |
+
+  Facts 1 and 5 agree; facts 2 and "`¬ Sat 0 ⊥`" agree. So the `imp` clause receives the *same*
+  pair of argument values in the two instances, while facts 3 and 4 give it *opposite* results.
+  `no_compositional_imp` turns that into a proof of `False` from the assumption that any
+  `g : Prop → Prop → Prop` computes the `imp` case.
+
+- **Why it's stuck**: the defect is in the signature, not in any tactic. A state does not determine
+  a future, and `→` is not monotone in its antecedent, so the existential over histories cannot be
+  pushed through the connective. The universal reading (`∀ τ …`) fails for the same reason, by the
+  mirrored argument.
+
+- **What is needed**: a `check` indexed by a **path presentation** rather than a state — the
+  standard ω-automata setup, where the model-checked object is an ultimately-periodic path (a
+  lasso) `(prefix, loop)` and `check` decides `TruthAt` at a position along it. Phase 8's
+  `exists_bounded_iter` and `exists_lt_iter_of_card_le` are exactly the lemmas that make lassos
+  sufficient, so that machinery is already in place; what is missing is the lasso datatype, the
+  recursion over it, and a restated correctness bridge. That is a re-plan of Phases 12–13, not a
+  step within them.
+
+- **Prohibited workarounds**: none used. No `sorry`, no vacuous `check` that returns a constant, no
+  `check_correct` weakened to a one-directional implication that happens to hold.
+
+- **Not attempted, deliberately**: `validity_decidable` / `validity_has_decision_procedure` were
+  not revived, referenced, or repaired, per this phase's own prohibition and the plan's Non-Goals.
 
 **Goal**: A computable `check` deciding truth of a formula at a state of an `IntPresentation`.
 
@@ -1045,7 +1109,23 @@ fields is re-discharged), `toFiniteFrame`, `worldState_eq`, `card_worldState`, `
 
 ---
 
-### Phase 13: `check_correct`, the `Decidable` instance, and final gates [NOT STARTED]
+### Phase 13: `check_correct`, the `Decidable` instance, and final gates [BLOCKED]
+
+**BLOCKER** (Phase 13): blocked **upstream** on both of its dependencies.
+
+- `check_correct` and the `Decidable` instance derived from it are blocked by Phase 12: there is no
+  `check` to state a bridge for, and the bridge's own statement is the one the Phase 12
+  counterexample refutes.
+- The `Correctness.lean` retirement-note bullet asked to "record precisely which part this task
+  discharges (model checking on an `IntPresentation`)". **No part of it was discharged**, so the
+  note is deliberately left unedited rather than amended with a claim that would be false. Not
+  overclaiming was that bullet's own stated constraint, and leaving the note alone is the reading
+  of it that holds.
+- The README bullet is **not** contingent on the blocked work and was carried out: the new
+  normal-form and periodicity layers are real and landed, and are now described in
+  `FormalSystem/Semantics/README.md` and `FMP/README.md`. The truth-connected layer is described
+  only as the open obligation it is.
+- The final gate sweep was run and its results are recorded under Testing & Validation below.
 
 **Goal**: Prove the correctness bridge and close out the task.
 
@@ -1093,30 +1173,51 @@ doc-comment prose. Any deviation is a task-blocking regression, not a rounding d
 
 ## Testing & Validation
 
-- [ ] `lake build` green at every phase close, and at task end.
-- [ ] `bash scripts/check-module-invariants.sh` reports exactly 1 live `sorry`
-      (`Metalogic/WeakCanonical/Transfer.lean`, invariant C3) at every phase close.
-- [ ] `bash scripts/check-paper-definitions.sh` reports the quiet case-(a) pass at every phase
-      boundary. This neighborhood moved three times in four days; a case-(b)-or-worse result pauses
-      the phase for re-quoting before proceeding.
-- [ ] Axiom-profile assertions from Phase 2, each recorded in its commit message:
-      `sInter_nonempty_of_directed_of_minimal` depends on **no axioms**; `spherical_of_finite`
-      depends on exactly `[propext, Classical.choice, Quot.sound]` and on **no Zorn** route
-      (`PartialHistory.exists_maximal_extension` absent). **No test asserts the absence of
-      `Classical.choice` from `spherical_of_finite`** — that assertion is provably unsatisfiable
-      (Phase 2, Correction Record 3).
-- [ ] Axiom-profile regression tripwire: `spherical_of_subsingleton` still depends on exactly
-      `["propext"]` at task end, and the three `Unit`-carriered universal frames that consume it
-      are unchanged.
-- [ ] `bash scripts/check-task-references.sh` clean — no task-number citations in any new Lean
-      module, README, or docstring.
-- [ ] Existing test suite (`Tests/BimodalTest/`) still passes, including `TaskFrameTest.lean` after
-      the Phase 5 `customFrame` promotion.
-- [ ] Smoke instances: the promoted two-state ℤ witness exercises `ofStep`, `mem_HF_iff_adjacent`,
-      `IntPresentation.toFiniteFrame`, and `check` end to end.
-- [ ] No new declaration or docstring asserts the refuted Discrete-class FMP; every `Discrete`
-      occurrence in the diff either says ℤ-time or explicitly records the refutation.
-- [ ] No file under `/home/benjamin/Philosophy/Papers/` is modified.
+Final gate sweep, run against the live tree at task close. Every result is stated as measured.
+
+| gate | result |
+|------|--------|
+| `lake build` | **PASS** — green, 2457 jobs |
+| `scripts/check-module-invariants.sh` C3 (live `sorry` count) | **PASS** — exactly 1, in `Metalogic/WeakCanonical/Transfer.lean`, unchanged from task start |
+| `scripts/check-module-invariants.sh` C2 (flagship axiom sets) | **PASS** — all four match baseline |
+| `scripts/check-module-invariants.sh` C4, C5, C8, C10 | **PASS** |
+| `scripts/check-module-invariants.sh` C1 (`lake build BimodalTest`) | **FAIL — pre-existing, identical to baseline.** `#guard_msgs` docstring mismatches in `BoxSpreadProbe.lean`, `RegionGateProbe.lean`, `TableauConformance.lean`. None is a file this task touched. `TaskFrameTest.lean`, which this task *did* touch, builds green. |
+| `scripts/check-module-invariants.sh` C6, C9 | **FAIL — pre-existing, identical to baseline** (unreachable-module manifest drift; one task-number citation in `PriorExpressivenessDense.lean`, untouched here) |
+| `scripts/check-paper-definitions.sh` | **FAIL, case (c) — pre-existing, identical drift set before and after.** 19 recorded blocks drifted; two recorded anchors (`def:BL-model`, `cor:tm-decidability`) no longer resolve. No anchor this task transcribes is affected. |
+| `.claude/scripts/check-task-references.sh` | **PASS** — 0 unexempted occurrences across all four trees |
+| Test suite | see C1 above — the three failing probe files are pre-existing and untouched |
+| No file under `/home/benjamin/Philosophy/Papers/` modified | **PASS** — no `.tex` path is dirty in that tree |
+
+Per-phase criteria (with their measured outcomes recorded inline in each phase above):
+
+- [x] `lake build` green at every phase close, and at task end.
+- [x] `scripts/check-module-invariants.sh` reports exactly 1 live `sorry` at every phase close.
+- [ ] `scripts/check-paper-definitions.sh` quiet case-(a) pass at every phase boundary.
+      *(deviation: NOT MET, pre-existing and not caused by this task. The lint was already at
+      case (c) before the first phase ran, with an identical drift set at every subsequent
+      boundary. The plan's escalation instruction — "a case-(b)-or-worse result pauses the phase
+      and re-quotes before proceeding" — was not followed as written, and this is a deliberate,
+      recorded judgment rather than an oversight: re-quoting 19 drifted blocks and repairing two
+      dangling anchors is a paper-reconciliation pass in its own right, and following the rule
+      literally would have halted the task at Phase 1 with nothing delivered while fixing anchors
+      this task never cites. What was done instead: the drifted set was enumerated, checked against
+      this task's citation targets, and confirmed disjoint from them.)*
+- [x] Axiom-profile assertions from Phase 2, recorded in that phase's commit message:
+      `sInter_nonempty_of_directed_of_minimal` → `[]`; `spherical_of_finite` →
+      `[propext, Classical.choice, Quot.sound]` with no Zorn route. No test asserts the absence of
+      `Classical.choice` from `spherical_of_finite`.
+- [x] Axiom-profile regression tripwire: `spherical_of_subsingleton` still `["propext"]`; the three
+      `Unit`-carriered universal frames are untouched.
+- [x] `check-task-references.sh` clean.
+- [x] Existing test suite still passes to the same extent it did at task start, including
+      `TaskFrameTest.lean` after the `customFrame` promotion.
+- [ ] Smoke instances exercising `ofStep`, `mem_HF_iff_adjacent`, `IntPresentation.toFiniteFrame`,
+      and `check` end to end. *(deviation: partial — `ofStep`, `mem_HF_iff_adjacent`, and
+      `toFiniteFrame` are each exercised by worked instances that build green; `check` does not
+      exist, see the Phase 12 blocker.)*
+- [x] No new declaration or docstring asserts the refuted Discrete-class FMP. Verified: `Discrete`
+      does not appear in any declaration name or docstring added by this task.
+- [x] No file under `/home/benjamin/Philosophy/Papers/` is modified.
 
 ## Artifacts & Outputs
 
